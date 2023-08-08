@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56F97C04A94
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 08:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 582EFC001DB
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 08:24:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=q978or1cm4I2co4nSR3SzQblPm88FlDxe1Vx2bLBGiQ=; b=je3MWh7FTHDOEmAiRN5xeTxB0N
-	KmZa1nhr8369+bLCIjCynl1VQonTUxBSj0s8fj96a54z6eS4+TgGtOItuXKdoHNSCE+RhPS0j/LBF
-	L3JQEBW3KXwifLRq6hL5e9rDVSOZ2sAJIuYKe66tcpj/iAbce+We8KsCX8YKbPsEPCujv/wupZ+y6
-	mhjmNuUvncPzPbMnwxfV56LEnkVpo4ot4VF7yKOEjkSvnVBLhR2Hu5WALXuG3+34d4rV8aYDrwhmz
-	U/iSC9fkWGsnrh1IcnSWxPQzWrEsBuMqLczjRaDly8TV9MTZ4lKr0KgcxmCEY0Yb2JvRvVLC+KDtg
-	k6fu3r1A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jNK80ee1/16HXXuNPBRqeHlCZe1JhDNuyipE8y+0R6g=; b=kS5xd4+4BWWJXR
+	QBa4hk0FFze7IEVlE+fAfft4FAYGrS7V3rqsW3v/7HYD7r8aVIYy3FTe5/RuWZwtdZvMC9H7OmHG6
+	taG+O1xheg5ySSihIteVKVkyJdcFXVaAFNksOwoNXQi73CYmPei1ZCVjb4efSczKZaHF2B4RsVVmc
+	8+5ETZI6nQowt+NO2796scFS6kBa/aVAdsU82XJ84KzPWO4XkClrbD0KIN0rqBGyeSDGWVnG0ld6T
+	WNI46PpYuvb28lS5Y8vLgiggdAiZUIPB4Nr7nqWM0BFeQV7VwX0ln0BqnY9lNQ7wxPCVOW0LnQDgR
+	8SAy/uQFpjWapns3s5Iw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTHoz-001yLE-05;
-	Tue, 08 Aug 2023 08:12:05 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qTI0j-0020MZ-0N;
+	Tue, 08 Aug 2023 08:24:13 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTHou-001yIB-1l
+	id 1qTI0f-0020K1-1C
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 08:12:04 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 3EB401200;
-	Tue,  8 Aug 2023 10:11:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1691482311;
+	Tue, 08 Aug 2023 08:24:11 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C3307E000F;
+	Tue,  8 Aug 2023 08:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1691483043;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KJzbbv1YlPyVCr0YSGm9a8pmXNQtoQxWN3bLRhqZMS8=;
-	b=c1Ty7jFjMXPkz+U/cN23xVMhixD+beBMOw1RUet3tiP5b79zLeWu2Xb6q3oLTpI0h9TCf+
-	7F1GovoYZLOC/w6AQNjCvDXRFIgUHwOgFgNvw6NxPw33i15xZl/dQ597xM2/TgZzxwFAGH
-	IF3BZlMHlE6TKZsKTSrnFxtT6EK+NQR93dwbUu33g2SzAmH7g6lRfg/7waIsWw4+T4c5sM
-	wLSEDoWHT3okD+LBCUFGwKv2aLrzoLK8D1X6tCG/uGrNGTV70Upr7yN03MDTpqLbsLUgcb
-	iuATaQAaVBCd2KLxA21xDu/BDaEqi9vHexfFENdpta1Y8CC08EUHckn9123elg==
-MIME-Version: 1.0
-Date: Tue, 08 Aug 2023 10:11:51 +0200
-From: Michael Walle <michael@walle.cc>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+	bh=wjl8iklOl4Sco9lFFRUCiekO2zkHS/KBAZhIV/cidUc=;
+	b=kpLQzW51p5g0ii/nK0b54X6JjThSn98hUvEytf20O/qae45dN7wS701sNXWL9WbvoIB8zL
+	RnoLj8DMWzLRL8C4Q9a/B2LTKRl8lfg75w0R9LYNhG2oVNg7fEWIVhjZ+GcVMChNyJT8pt
+	f7OfSgOSXhunIod3JthJ8i/SGyyPFWQ1YFe37idIWatkhvKHhdBvFshEkPjKIuAMbTSm9p
+	XLOu72snh+lc/xqeLK2oYdLVJ4rmDZo2kyZw39lt0Vy8UT8V5WgtToTPdF6IyuXnz3nb88
+	yy8gkU29AFr9bgD2crkkBCjCdaC3/kmdb/K0qxI40AQaLVnXQrJa/joxgAYrrg==
+Date: Tue, 8 Aug 2023 10:24:01 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Michael Walle <michael@walle.cc>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
  <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>
+ <thomas.petazzoni@bootlin.com>
 Subject: Re: [PATCH v4] mtd: spi-nor: Add support for sst26vf032b flash
-In-Reply-To: <20230808075001.223150-1-miquel.raynal@bootlin.com>
+Message-ID: <20230808102401.26631155@xps-13>
+In-Reply-To: <e618ba6c48d67469b9a2c19ee8bb5a1c@walle.cc>
 References: <20230808075001.223150-1-miquel.raynal@bootlin.com>
-Message-ID: <e618ba6c48d67469b9a2c19ee8bb5a1c@walle.cc>
-X-Sender: michael@walle.cc
+	<e618ba6c48d67469b9a2c19ee8bb5a1c@walle.cc>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_011200_735800_0B984403 
-X-CRM114-Status: GOOD (  24.79  )
+X-CRM114-CacheID: sfid-20230808_012409_697709_D027F702 
+X-CRM114-Status: GOOD (  34.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,123 +71,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2023-08-08 09:50, schrieb Miquel Raynal:
-> Describe this new part. The datasheet is public.
-> 
-> Link: 
-> https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
-> 
-> Here are the sfdp tables plus base testing to show it works.
-> 
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> sst26vf032b
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> bf2642
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> sst
-> $ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450060102ff00060110300000ff81000106000100ffbf0001180002
-> 0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
-> 083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
-> 1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
-> 3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
-> ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
-> ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
-> 0300fefe0202070e
-> $ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> e7efddddb3d5ee89ca37bf6b6e789645  
-> /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 
-> $ dd if=/dev/urandom of=./qspi_test bs=1M count=1
-> 1+0 records in
-> 1+0 records out
-> $ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-> Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-> $ mtd_debug erase /dev/mtd0 0 1048576
-> Erased 1048576 bytes from address 0x00000000 in flash
-> $ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-> Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-> $ hexdump qspi_read
-> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-> *
-> 0100000
-> $ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-> Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-> $ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-> Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-> $ sha1sum qspi_test qspi_read
-> 2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_test
-> 2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_read
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
-> 
-> Changes in v4:
-> * Just providing the PARSE_SFDP flag seem to work but actually does
->   not. As opposed to the NAND world which loudly fails when WP is
->   enabled, here the destructive operations are silently ignored by the
->   chip, so actually the reads work but without the additional
->   LOCK/SWP_IS_VOLATILE flags, the chip does not process writes and
->   erasures. Reinstate these two lines as in my backported patch (a
->   linux4microchip kernel on which I actually run this hardware), so I 
-> am
->   sure it also works in mainline.
-
-Mhh, this flash has vendor tables. The sst26vf global unlock should
-be discoverable. There is a table with all supported opcodes, which
-could be used to see whether this flash needs the global unlock.
-
-I'd like to push as much as possible into auto-discovering
-features.. after working on that flash db cleanup.
-
-> Changes in v3:
-> * Dropped the second patch (untested changes as advised by Tudor).
-> * Avoided playing with locking as I cannot test it either: simplified
->   the diff by just using the PARSE_SFDP flag.
-> * Rebased on top of -rc1 and adapted the patch to the current state.
-> 
->  drivers/mtd/spi-nor/sst.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-> index 688eb20c763e..414ee4692fd1 100644
-> --- a/drivers/mtd/spi-nor/sst.c
-> +++ b/drivers/mtd/spi-nor/sst.c
-> @@ -111,6 +111,10 @@ static const struct flash_info sst_nor_parts[] = {
->  			      SPI_NOR_QUAD_READ) },
->  	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
-> +	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-> +		PARSE_SFDP
-> +		.fixups = &sst26vf_nor_fixups },
->  	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-
-Honestly, this is such a mess. There are three identical chips:
-sst26v016b, 032b and 064b and all have different flags :(
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKCm1pY2hhZWxAd2FsbGUuY2Mgd3JvdGUgb24gVHVlLCAwOCBBdWcgMjAyMyAx
+MDoxMTo1MSArMDIwMDoKCj4gQW0gMjAyMy0wOC0wOCAwOTo1MCwgc2NocmllYiBNaXF1ZWwgUmF5
+bmFsOgo+ID4gRGVzY3JpYmUgdGhpcyBuZXcgcGFydC4gVGhlIGRhdGFzaGVldCBpcyBwdWJsaWMu
+Cj4gPiAKPiA+IExpbms6ID4gaHR0cHM6Ly93dzEubWljcm9jaGlwLmNvbS9kb3dubG9hZHMvYWVt
+RG9jdW1lbnRzL2RvY3VtZW50cy9NUEQvUHJvZHVjdERvY3VtZW50cy9EYXRhU2hlZXRzL1NTVDI2
+VkYwMzJCLVNTVDI2VkYwMzJCQS0yLjVWLTMuMFYtMzItTWJpdC1TZXJpYWwtUXVhZC1JTy0lMjhT
+UUklMjktRmxhc2gtTWVtb3J5LTIwMDA1MjE4Sy5wZGYKPiA+IAo+ID4gSGVyZSBhcmUgdGhlIHNm
+ZHAgdGFibGVzIHBsdXMgYmFzZSB0ZXN0aW5nIHRvIHNob3cgaXQgd29ya3MuCj4gPiAKPiA+ICQg
+Y2F0IC9zeXMvYnVzL3NwaS9kZXZpY2VzL3NwaTAuMC9zcGktbm9yL3BhcnRuYW1lCj4gPiBzc3Qy
+NnZmMDMyYgo+ID4gJCBjYXQgL3N5cy9idXMvc3BpL2RldmljZXMvc3BpMC4wL3NwaS1ub3IvamVk
+ZWNfaWQKPiA+IGJmMjY0Mgo+ID4gJCBjYXQgL3N5cy9idXMvc3BpL2RldmljZXMvc3BpMC4wL3Nw
+aS1ub3IvbWFudWZhY3R1cmVyCj4gPiBzc3QKPiA+ICQgeHhkIC1wIC9zeXMvYnVzL3NwaS9kZXZp
+Y2VzL3NwaTAuMC9zcGktbm9yL3NmZHAKPiA+IDUzNDY0NDUwMDYwMTAyZmYwMDA2MDExMDMwMDAw
+MGZmODEwMDAxMDYwMDAxMDBmZmJmMDAwMTE4MDAwMgo+ID4gMDAwMWZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmQyMGYxZmZmZmZmZmYwMTQ0ZWIwODZiCj4gPiAwODNiODBiYmZlZmZm
+ZmZmZmZmZjAwZmZmZmZmNDQwYjBjMjAwZGQ4MGZkODEwZDgyMDkxNDgyNDgwNmYKPiA+IDFkODFl
+ZDBmNzczODMwYjAzMGIwZjdmZmZmZmYyOWMyNWNmZmYwMzBjMDgwZmZmZmZmZmZmZmZmZmZmZgo+
+ID4gZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmCj4gPiBmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmYKPiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4gPiBmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmMDAwNGZmZjM3ZjAwMDBmNTdmMDAwMGY5ZmYKPiA+IDNkMDBmNTdmMDAwMGYz
+N2YwMDAwZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4g
+PiBmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmYKPiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4gPiBmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmYKPiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4gPiBmZmZmYmYy
+NjQyZmZiOTVmZmRmZjMwZjI2MGYzMzJmZjBhMTIyMzQ2ZmYwZjE5MzIwZjE5MTlmZmZmZmYKPiA+
+IGZmZmZmZmZmMDA2Njk5MzhmZjA1MDEzNTA2MDQwMjMyYjAzMDcyNDI4ZGU4OTg4OGE1ODVjMDlm
+YWY1YQo+ID4gZmZmZjA2ZWMwNjBjMDAwMzA4MGJmZmZmZmZmZmZmMDdmZmZmMDIwMmZmMDYwMzAw
+ZmRmZDA0MDYwMGZjCj4gPiAwMzAwZmVmZTAyMDIwNzBlCj4gPiAkIG1kNXN1bSAvc3lzL2J1cy9z
+cGkvZGV2aWNlcy9zcGkwLjAvc3BpLW5vci9zZmRwCj4gPiBlN2VmZGRkZGIzZDVlZTg5Y2EzN2Jm
+NmI2ZTc4OTY0NSAgPiAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGkwLjAvc3BpLW5vci9zZmRwCj4g
+PiAKPiA+ICQgZGQgaWY9L2Rldi91cmFuZG9tIG9mPS4vcXNwaV90ZXN0IGJzPTFNIGNvdW50PTEK
+PiA+IDErMCByZWNvcmRzIGluCj4gPiAxKzAgcmVjb3JkcyBvdXQKPiA+ICQgbXRkX2RlYnVnIHdy
+aXRlIC9kZXYvbXRkMCAwIDEwNDg1NzYgcXNwaV90ZXN0Cj4gPiBDb3BpZWQgMTA0ODU3NiBieXRl
+cyBmcm9tIHFzcGlfdGVzdCB0byBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2gKPiA+ICQgbXRk
+X2RlYnVnIGVyYXNlIC9kZXYvbXRkMCAwIDEwNDg1NzYKPiA+IEVyYXNlZCAxMDQ4NTc2IGJ5dGVz
+IGZyb20gYWRkcmVzcyAweDAwMDAwMDAwIGluIGZsYXNoCj4gPiAkIG10ZF9kZWJ1ZyByZWFkIC9k
+ZXYvbXRkMCAwIDEwNDg1NzYgcXNwaV9yZWFkCj4gPiBDb3BpZWQgMTA0ODU3NiBieXRlcyBmcm9t
+IGFkZHJlc3MgMHgwMDAwMDAwMCBpbiBmbGFzaCB0byBxc3BpX3JlYWQKPiA+ICQgaGV4ZHVtcCBx
+c3BpX3JlYWQKPiA+IDAwMDAwMDAgZmZmZiBmZmZmIGZmZmYgZmZmZiBmZmZmIGZmZmYgZmZmZiBm
+ZmZmCj4gPiAqCj4gPiAwMTAwMDAwCj4gPiAkIG10ZF9kZWJ1ZyB3cml0ZSAvZGV2L210ZDAgMCAx
+MDQ4NTc2IHFzcGlfdGVzdAo+ID4gQ29waWVkIDEwNDg1NzYgYnl0ZXMgZnJvbSBxc3BpX3Rlc3Qg
+dG8gYWRkcmVzcyAweDAwMDAwMDAwIGluIGZsYXNoCj4gPiAkIG10ZF9kZWJ1ZyByZWFkIC9kZXYv
+bXRkMCAwIDEwNDg1NzYgcXNwaV9yZWFkCj4gPiBDb3BpZWQgMTA0ODU3NiBieXRlcyBmcm9tIGFk
+ZHJlc3MgMHgwMDAwMDAwMCBpbiBmbGFzaCB0byBxc3BpX3JlYWQKPiA+ICQgc2hhMXN1bSBxc3Bp
+X3Rlc3QgcXNwaV9yZWFkCj4gPiAyZjJmMTkxYzdhOTM3ZWNhNWRiMjFhMWMzOWU3OWU3MzI3NTg3
+Y2MxICBxc3BpX3Rlc3QKPiA+IDJmMmYxOTFjN2E5MzdlY2E1ZGIyMWExYzM5ZTc5ZTczMjc1ODdj
+YzEgIHFzcGlfcmVhZAo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1
+ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+ID4gLS0tCj4gPiAKPiA+IENoYW5nZXMgaW4gdjQ6Cj4g
+PiAqIEp1c3QgcHJvdmlkaW5nIHRoZSBQQVJTRV9TRkRQIGZsYWcgc2VlbSB0byB3b3JrIGJ1dCBh
+Y3R1YWxseSBkb2VzCj4gPiAgIG5vdC4gQXMgb3Bwb3NlZCB0byB0aGUgTkFORCB3b3JsZCB3aGlj
+aCBsb3VkbHkgZmFpbHMgd2hlbiBXUCBpcwo+ID4gICBlbmFibGVkLCBoZXJlIHRoZSBkZXN0cnVj
+dGl2ZSBvcGVyYXRpb25zIGFyZSBzaWxlbnRseSBpZ25vcmVkIGJ5IHRoZQo+ID4gICBjaGlwLCBz
+byBhY3R1YWxseSB0aGUgcmVhZHMgd29yayBidXQgd2l0aG91dCB0aGUgYWRkaXRpb25hbAo+ID4g
+ICBMT0NLL1NXUF9JU19WT0xBVElMRSBmbGFncywgdGhlIGNoaXAgZG9lcyBub3QgcHJvY2VzcyB3
+cml0ZXMgYW5kCj4gPiAgIGVyYXN1cmVzLiBSZWluc3RhdGUgdGhlc2UgdHdvIGxpbmVzIGFzIGlu
+IG15IGJhY2twb3J0ZWQgcGF0Y2ggKGEKPiA+ICAgbGludXg0bWljcm9jaGlwIGtlcm5lbCBvbiB3
+aGljaCBJIGFjdHVhbGx5IHJ1biB0aGlzIGhhcmR3YXJlKSwgc28gSSA+IGFtCj4gPiAgIHN1cmUg
+aXQgYWxzbyB3b3JrcyBpbiBtYWlubGluZS4gIAo+IAo+IE1oaCwgdGhpcyBmbGFzaCBoYXMgdmVu
+ZG9yIHRhYmxlcy4gVGhlIHNzdDI2dmYgZ2xvYmFsIHVubG9jayBzaG91bGQKPiBiZSBkaXNjb3Zl
+cmFibGUuIFRoZXJlIGlzIGEgdGFibGUgd2l0aCBhbGwgc3VwcG9ydGVkIG9wY29kZXMsIHdoaWNo
+Cj4gY291bGQgYmUgdXNlZCB0byBzZWUgd2hldGhlciB0aGlzIGZsYXNoIG5lZWRzIHRoZSBnbG9i
+YWwgdW5sb2NrLgoKSXMgdGhpcyBsb2dpYyBhbHJlYWR5IGV4aXN0aW5nIGluIHRoZSBjb3JlPyBE
+byB5b3UgaGF2ZSBhIHBvaW50ZXI/Cgo+IEknZCBsaWtlIHRvIHB1c2ggYXMgbXVjaCBhcyBwb3Nz
+aWJsZSBpbnRvIGF1dG8tZGlzY292ZXJpbmcKPiBmZWF0dXJlcy4uIGFmdGVyIHdvcmtpbmcgb24g
+dGhhdCBmbGFzaCBkYiBjbGVhbnVwLgoKSSB1bmRlcnN0YW5kLCBidXQgYXMgSSBzYWlkLCB0ZXN0
+aW5nIGxhdGVzdCB2ZXJzaW9ucyBvZiB0aGUga2VybmVsIG9uCm15IGhhcmR3YXJlIGlzIG5vdCBz
+dHJhaWdodGZvcndhcmQuCgo+ID4gQ2hhbmdlcyBpbiB2MzoKPiA+ICogRHJvcHBlZCB0aGUgc2Vj
+b25kIHBhdGNoICh1bnRlc3RlZCBjaGFuZ2VzIGFzIGFkdmlzZWQgYnkgVHVkb3IpLgo+ID4gKiBB
+dm9pZGVkIHBsYXlpbmcgd2l0aCBsb2NraW5nIGFzIEkgY2Fubm90IHRlc3QgaXQgZWl0aGVyOiBz
+aW1wbGlmaWVkCj4gPiAgIHRoZSBkaWZmIGJ5IGp1c3QgdXNpbmcgdGhlIFBBUlNFX1NGRFAgZmxh
+Zy4KPiA+ICogUmViYXNlZCBvbiB0b3Agb2YgLXJjMSBhbmQgYWRhcHRlZCB0aGUgcGF0Y2ggdG8g
+dGhlIGN1cnJlbnQgc3RhdGUuCj4gPiAKPiA+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NzdC5jIHwg
+NCArKysrCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQo+ID4gCj4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+c3N0LmMKPiA+IGluZGV4IDY4OGViMjBjNzYzZS4uNDE0ZWU0NjkyZmQxIDEwMDY0NAo+ID4gLS0t
+IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9zc3QuYwo+ID4gQEAgLTExMSw2ICsxMTEsMTAgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFz
+aF9pbmZvIHNzdF9ub3JfcGFydHNbXSA9IHsKPiA+ICAJCQkgICAgICBTUElfTk9SX1FVQURfUkVB
+RCkgfSwKPiA+ICAJeyAic3N0MjZ2ZjAxNmIiLCBJTkZPKDB4YmYyNjQxLCAwLCA2NCAqIDEwMjQs
+IDMyKQo+ID4gIAkJTk9fU0ZEUF9GTEFHUyhTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQpIH0s
+Cj4gPiArCXsgInNzdDI2dmYwMzJiIiwgSU5GTygweGJmMjY0MiwgMCwgMCwgMCkKPiA+ICsJCUZM
+QUdTKFNQSV9OT1JfSEFTX0xPQ0sgfCBTUElfTk9SX1NXUF9JU19WT0xBVElMRSkKPiA+ICsJCVBB
+UlNFX1NGRFAKPiA+ICsJCS5maXh1cHMgPSAmc3N0MjZ2Zl9ub3JfZml4dXBzIH0sCj4gPiAgCXsg
+InNzdDI2dmYwNjRiIiwgSU5GTygweGJmMjY0MywgMCwgNjQgKiAxMDI0LCAxMjgpCj4gPiAgCQlG
+TEFHUyhTUElfTk9SX0hBU19MT0NLIHwgU1BJX05PUl9TV1BfSVNfVk9MQVRJTEUpCj4gPiAgCQlO
+T19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9S
+RUFEKSAgCj4gCj4gSG9uZXN0bHksIHRoaXMgaXMgc3VjaCBhIG1lc3MuIFRoZXJlIGFyZSB0aHJl
+ZSBpZGVudGljYWwgY2hpcHM6Cj4gc3N0MjZ2MDE2YiwgMDMyYiBhbmQgMDY0YiBhbmQgYWxsIGhh
+dmUgZGlmZmVyZW50IGZsYWdzIDooCgpJIG9ubHkgaGF2ZSB0aGUgMzJiIHZhcmlhbnQsIGJ1dCBJ
+IGJlbGlldmUgdGhleSBhcmUgYWxsIGlkZW50aWNhbC4gVGhlCkZMQUdTIGFuZCBmaXh1cHMgZmll
+bGRzIGFyZSBtaXNzaW5nIGZyb20gdGhlIDE2YiB2YXJpYW50IGluIG1haW5saW5lCmJ1dCB0aGV5
+IGFyZSBhbGwgaWRlbnRpY2FsIGluIHRoZSBsaW51eDRtaWNyb2NoaXAgcmVwb3NpdG9yeSwgSSBi
+ZWxpZXZlCnRoZSBtaXNzaW5nIHBhdGNoZXMgaGF2ZSBuZXZlciBiZWVuIHVwc3RyZWFtZWQsIHRo
+YXQncyBhbGwuCgpBbmQgSSBhbSBub3cgdXNpbmcgdGhlIFBBUlNFX1NGRFAgZmxhZyBhcyBhZHZp
+c2VkIGJlY2F1c2UgaXQgd29ya3MsIGJ1dAppbml0aWFsbHkgSSB3YW50ZWQgdG8ga2VlcCB0aGUg
+aGFyZGNvZGVkIGZsYWdzLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
