@@ -4,78 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5110EC001B0
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 18:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A126C001DB
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 19:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
+	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v1dhRYdGP21k3x4YNDLwLI6XAulRFVi8nhGbrB0As2Y=; b=xC2EuSkfbh5XUa
-	kFVGSxrCxcYv41knaHQOVF5yXkNiiXzVGM1J8Q85OLqUDdIOZEWLsVJRxyOciOi+NYIieSZ4vp116
-	671jAGRPoyswx7OYoGGQhWQe6NFc6ErK+inFiwNABI5I3N9hBBXrGTwYN7VAoNOG4ZVbvl3b9iOB4
-	0LmVi4dbCTLgsmvgDFfVMhusBP2BCycDKUiD8qERNgHTFcJCqChORfe6DvU8gg1Y80MJof3b509nP
-	J6sm4pd86m5pmVfvUnphUEqq5y0zPtrKSprWLU7WoazPWY9iIpGCxa+2QYXvMOyOlTuvBLCRcBFT0
-	NKb5o902FuB2xcQTXcJQ==;
+	List-Owner; bh=ecY3DLPZe3UPhDHZt+JKGg2TndQzkEmKAB8nNVrAQww=; b=lo+AUxArcN5g8f
+	5infP6Ivk9JlO8GiOTar3x2soIufS8gKLyQm+FAiUku/KW8XKLqTbvNRB2z1KG8svJZR1rDgFfNKE
+	69CeQBhiS+MyxBOxDa8q5p2zWGgmsA3ex0Se9trueDE9YC6uOdUjnSkEGN/gHBeGtHgQVySfKTvD6
+	IVo6TH9q9PtIPwkhE14TtwnRttZYUx0vP8SB7R+WHkrYYcrqYx7dvmryCko2gePuGqCypZAKY/rLG
+	FQT49sDAevVJdf8MLw/CG+xoWYqgSYFFYEqKxp0+jssJz/XNB+qQHWb7B7Tx5kjBwABRMmAMphv2f
+	otyBeW5KSzx7IoHCPs4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTRY4-003Ea3-2t;
-	Tue, 08 Aug 2023 18:35:16 +0000
-Received: from mgamail.intel.com ([192.55.52.120])
+	id 1qTSQ7-003KMQ-2a;
+	Tue, 08 Aug 2023 19:31:07 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTRY1-003EZQ-2L
+	id 1qTSQ4-003KLC-2E
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 18:35:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691519713; x=1723055713;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BuaT2/ImKU0LR1ovRnINUVS5qWtOBhmIP+p3v/iplT0=;
-  b=Dn4mjCpy8XIjViWKESpVx/LCIKkWYAKxPFn/Hm8j4wnD90r2IeZ2KMdW
-   hjmhB31GO9O9Nz9+R1IWB7q3iJ+vMsImdJ8TuIWoOMBWSpQtNFGtS2O6z
-   3lmE+Mc8LkApfWDb3Y6Qclw12DpCjjxcemc6D7u1loTiiBIWq3gBneOZc
-   Zn9MeJwR45q02YKZMy4uTjUTL3tnPphxcawOXi41ZN58rMwpve0/vOl6s
-   EVnn9kXsLYoLeOO+wuRnA4Ma5k3brszIEhaa0ThNcI6MlyFxM5+Z6BqQI
-   YKv+fPoQPwL0fJIktVXj/vQos1IPrX93Re90wPt7BERm7cGPWv2yC/TZ/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="369815572"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="369815572"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 11:35:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="978016740"
-X-IronPort-AV: E=Sophos;i="6.01,157,1684825200"; 
-   d="scan'208";a="978016740"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Aug 2023 11:35:08 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qTRXv-0005XQ-0y;
-	Tue, 08 Aug 2023 18:35:07 +0000
-Date: Wed, 9 Aug 2023 02:34:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Michael Walle <mwalle@kernel.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 01/41] mtd: spi-nor: remove catalyst 'flashes'
-Message-ID: <202308090236.poj47Yz8-lkp@intel.com>
-References: <20230807-mtd-flash-info-db-rework-v1-1-3d3d5bef4ba4@kernel.org>
+	Tue, 08 Aug 2023 19:31:06 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 200D962B44;
+	Tue,  8 Aug 2023 19:31:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2CF7C433C8;
+	Tue,  8 Aug 2023 19:31:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691523062;
+	bh=J7RrIowQ/RhLdZr79lNCXj2Xv8FU5WymsyiVAl5loJM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=DmxbfSKUiCSyowjkmO3Qw37R4UyDsbZ7icgbNoPkhZPh+ldKpBVzJZ5hWqt5YNkL+
+	 jxLxhwjmAyzN5I/Qn7V2jC5AYjLQ2STSeqYvTsXygafWyM/kR1wXCnvclZ4E4IYVOK
+	 hBG2pSOEQrRUjZg/dZoE2TB4cwfFhQ8OY/ksD35ofITWbH6UtSNAJsVs3VLdrcz56D
+	 DNqTuclzIOR5ILsIx+By9hmkVrLjKResPKJFA3AGEGMyosST1+LHQSOITOLNl+sQ19
+	 lbb8/fN/hx5Jca20iOBJLw5eeN8Pp9x7DeJaGixeiYOcIwTSt+k3MR0nNHWBQI0YgG
+	 N9ut5WPzV8H3g==
+Received: (nullmailer pid 4099639 invoked by uid 1000);
+	Tue, 08 Aug 2023 19:31:00 -0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v1-1-3d3d5bef4ba4@kernel.org>
+From: Rob Herring <robh@kernel.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>
+In-Reply-To: <094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org>
+References: <cover.1691510312.git.daniel@makrotopia.org>
+ <094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org>
+Message-Id: <169152306059.4099622.15085616978235620512.robh@kernel.org>
+Subject: Re: [PATCH v3 1/8] dt-bindings: mtd: add basic bindings for UBI
+Date: Tue, 08 Aug 2023 13:31:00 -0600
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_113513_782126_0DF191BF 
-X-CRM114-Status: UNSURE (   9.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230808_123104_772721_91906715 
+X-CRM114-Status: GOOD (  13.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,33 +76,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
 
-kernel test robot noticed the following build errors:
+On Tue, 08 Aug 2023 17:03:19 +0100, Daniel Golle wrote:
+> Add basic bindings for UBI devices and volumes.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../bindings/mtd/partitions/linux,ubi.yaml    | 65 +++++++++++++++++++
+>  .../bindings/mtd/partitions/ubi-volume.yaml   | 35 ++++++++++
+>  2 files changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> 
 
-[auto build test ERROR on f7dc24b3413851109c4047b22997bd0d95ed52a2]
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Walle/mtd-spi-nor-remove-catalyst-flashes/20230807-213321
-base:   f7dc24b3413851109c4047b22997bd0d95ed52a2
-patch link:    https://lore.kernel.org/r/20230807-mtd-flash-info-db-rework-v1-1-3d3d5bef4ba4%40kernel.org
-patch subject: [PATCH 01/41] mtd: spi-nor: remove catalyst 'flashes'
-config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20230809/202308090236.poj47Yz8-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308090236.poj47Yz8-lkp@intel.com/reproduce)
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml:29:5: [warning] wrong indentation: expected 6 but found 4 (indentation)
+./Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml:32:5: [warning] wrong indentation: expected 6 but found 4 (indentation)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308090236.poj47Yz8-lkp@intel.com/
+dtschema/dtc warnings/errors:
 
-All errors (new ones prefixed by >>):
+doc reference errors (make refcheckdocs):
 
->> make[6]: *** No rule to make target 'drivers/mtd/spi-nor/catalyst.o', needed by 'drivers/mtd/spi-nor/built-in.a'.
-   make[6]: Target 'drivers/mtd/spi-nor/' not remade because of errors.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
