@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC7EEC001B0
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 09:32:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25E39C001DF
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 09:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W9pPjs1VWYz5MsSRZP4wh4Umoxq5a4eQR+9WMSua7vs=; b=i8P9RELovwfs5i
-	GdvG37a9e0ygjM+XT9SMqXISCukHvTpuUuVrWoKKoRxsGC7by1e1+LhIyN9+7vZWmGDtQeB0Ckyim
-	8pM28WIgZw1Bv66+SY0ZrzGba3FhdU5arUlWfkKE8fKPfQXdLf/mQNa+56KcylmOl5vCeyZ5D1WFF
-	BPFtI2SQg0OrrZgR3XrgY35UkhBZjenga+3H7Uaj9sfRLzA7NaSM441k7GU6gM2mQqNF3N6dO/baV
-	FxNm5XtG3ohMPdz1G14r3rZ1+F6vEg9QBh5dkp/cM/oqny8HmG+QM9LoK/1D1EAGWaX4ofEe5CFCU
-	pQ5ef8cu63yoa11j64EQ==;
+	List-Owner; bh=2SN1B8+F0UOxBpcURbIqj5ZvCbVKwpp7PTTSiDQs0Rc=; b=sCVD8eRh2OjCxf
+	5XnFBQuuV/bcl8M3sFPHhwwXxVePt2E2LKs5lB3SHcPgsH711Suuirp5SVbpWdBPSS/cQI4ERLatu
+	MILBxeaAT56L7g9+MYAxuYJJFhJAOMUXv2R6drybOCWiAoqxPsMwxKUczAACZRYOennOYJnE3qWVJ
+	zL4CMLdbfzxlw5vXo8X0hn2sgzdPe0CGAUdmjERWyTCz3/PBzoOyf00bpbEvdJkwwQrLApt5XDzkx
+	Y6dfOvwGaZxN+MTJm1BR0ptXyFIPkW19Sldg26XnmwAxRKDYC14T55OqM58Mtvwjn2WCR5v7BgL7W
+	uhYYmkGn8OO+Ok+c1r4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTJ4p-00296L-06;
-	Tue, 08 Aug 2023 09:32:31 +0000
+	id 1qTJ9H-0029QO-0E;
+	Tue, 08 Aug 2023 09:37:07 +0000
 Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTJ4n-00295b-0J;
-	Tue, 08 Aug 2023 09:32:30 +0000
+	id 1qTJ9E-0029Ps-1O;
+	Tue, 08 Aug 2023 09:37:05 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 43D5822487;
-	Tue,  8 Aug 2023 09:32:27 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 40FDE22487;
+	Tue,  8 Aug 2023 09:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1691487147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1691487422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=URemeKpdb8J18iMONbqIB4P02haKyRX6mS8Xu4Mgmc8=;
-	b=kAP4/qU3eebbLi9EbGgoNiblqEAMz2n9d8dDZjEU/zYHxmh4xQUAW4aRmDsDFAo1LDW4XS
-	Jz3jziQyqFQJ2OS6XJQCmcd5h9qdcD3Byn8qpddgol9CAV8ew1WhVYDKOVKgTmZrEM14u3
-	+VucJ+n1ddguqczAaW5Ki56KFXcMMvI=
+	bh=+dwojIKMsZIfKNojdAYP/LpuQmw+6rqqzdeGXh9OKdQ=;
+	b=xNkmZedHCH4JfPl5aI/7jFcoHvCmU2Ei7iO7owXcuJIhPHMXaR9JIDbudRkrv+OpRvBT78
+	QcY9S7zG3KilNTQJsdlbMzoPhbFYNRjSDo58qiEL/KKnRHAz06+KLjpoPEh0KdB8jKpl0d
+	Paghc7ScJ479EYrBJsHB5zKlYU4EE1o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1691487147;
+	s=susede2_ed25519; t=1691487422;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=URemeKpdb8J18iMONbqIB4P02haKyRX6mS8Xu4Mgmc8=;
-	b=zakAo2cWrWyYBcipF4rIUwLGrOqm5ZeFyaCmUH+fTkQWLNKyEQyre7V0L+jFNWPtWdDjYF
-	EO0z/Yllpo+E3ODA==
+	bh=+dwojIKMsZIfKNojdAYP/LpuQmw+6rqqzdeGXh9OKdQ=;
+	b=C9mvCUPaAa2cOnSGsmSgpsXVt5ts05YWI0vruOwxYGEk08U30pxAruMbAfjG0JtSrXhSu+
+	h+OsL5aeMUqW5DAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 28DCC139E9;
-	Tue,  8 Aug 2023 09:32:27 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 20CE1139E9;
+	Tue,  8 Aug 2023 09:37:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id K7T5CasL0mR9GwAAMHmgww
-	(envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:32:27 +0000
+	id pmr0B74M0mRlHQAAMHmgww
+	(envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:37:02 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 82443A0769; Tue,  8 Aug 2023 11:32:26 +0200 (CEST)
-Date: Tue, 8 Aug 2023 11:32:26 +0200
+	id 9F88DA0769; Tue,  8 Aug 2023 11:37:01 +0200 (CEST)
+Date: Tue, 8 Aug 2023 11:37:01 +0200
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -120,16 +120,17 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
 	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
-Message-ID: <20230808093226.bq2qfxv5npckk643@quack3>
+Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
+ inode_update_timestamps
+Message-ID: <20230808093701.ggyj7tyqonivl7tb@quack3>
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+In-Reply-To: <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_023229_280953_8CFF20D0 
-X-CRM114-Status: GOOD (  21.33  )
+X-CRM114-CacheID: sfid-20230808_023704_616158_6DD96CA6 
+X-CRM114-Status: GOOD (  17.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,55 +147,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon 07-08-23 15:38:36, Jeff Layton wrote:
+On Mon 07-08-23 15:38:37, Jeff Layton wrote:
 > In later patches, we're going to drop the "now" parameter from the
-> update_time operation. Fix fat_update_time to fetch its own timestamp.
-> It turns out that this is easily done by just passing a NULL timestamp
-> pointer to fat_update_time.
-             ^^^ fat_truncate_time()
-
-> Also, it may be that things have changed by the time we get to calling
-> fat_update_time after checking inode_needs_update_time. Ensure that we
-> attempt the i_version bump if any of the S_* flags besides S_ATIME are
-> set.
+> update_time operation. Prepare ubifs for this, by having it use the new
+> inode_update_timestamps helper.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Looks good. Feel free to add:
+One comment below:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index df9086b19cd0..2d0178922e19 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
+>  		return err;
+>  
+>  	mutex_lock(&ui->ui_mutex);
+> -	if (flags & S_ATIME)
+> -		inode->i_atime = *time;
+> -	if (flags & S_CTIME)
+> -		inode_set_ctime_to_ts(inode, *time);
+> -	if (flags & S_MTIME)
+> -		inode->i_mtime = *time;
+> -
+> -	release = ui->dirty;
+> +	inode_update_timestamps(inode, flags);
+>  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
+> +	release = ui->dirty;
+>  	mutex_unlock(&ui->ui_mutex);
 
-								Honza
+I think this is wrong. You need to keep sampling ui->dirty before calling
+__mark_inode_dirty(). Otherwise you could release budget for inode update
+you really need...
 
-> ---
->  fs/fat/misc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-> index 67006ea08db6..8cab87145d63 100644
-> --- a/fs/fat/misc.c
-> +++ b/fs/fat/misc.c
-> @@ -347,14 +347,14 @@ int fat_update_time(struct inode *inode, struct timespec64 *now, int flags)
->  		return 0;
->  
->  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
-> -		fat_truncate_time(inode, now, flags);
-> +		fat_truncate_time(inode, NULL, flags);
->  		if (inode->i_sb->s_flags & SB_LAZYTIME)
->  			dirty_flags |= I_DIRTY_TIME;
->  		else
->  			dirty_flags |= I_DIRTY_SYNC;
->  	}
->  
-> -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
-> +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
->  		dirty_flags |= I_DIRTY_SYNC;
->  
->  	__mark_inode_dirty(inode, dirty_flags);
-> 
-> -- 
-> 2.41.0
-> 
+>  	if (release)
+>  		ubifs_release_budget(c, &req);
+
+									Honza
+
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
