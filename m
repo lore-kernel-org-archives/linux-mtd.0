@@ -4,83 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC644C001DB
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 11:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8726AC001DB
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 15:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GhXwibNqdAM+iVSaH+MgcT9LYYgoh1Z9gy/WHj71pIU=; b=CP0VxQRzjT4G+g
-	raQlzNh6K6f873IHlHJRB/P5ATGQTOR8sCaWLYnxxCehNzN22ggAcqk+gPMqqZdQpIn1QZ4g0SB/U
-	qQ5EIKhCTsCbwBTgWQNNbaus0DxNSk2WGFtJW+qMo1ikD8AsMXPyTO1kggoWw2BZBTnpA9+eaRfUy
-	rYdSMBRkCu/ymI1n8QqWp1geDJt/TpRVk2uMBB3HO+yySTvfQ+qSLAEee5uEf15B1nunVAdIsQP+S
-	ZyZFPZfz/jGXjuABxw5kRPyZpR22NdmJAeXccH+05mm0UUxYhTkctHz+q7e9dQRNh6knrdYR1bg5V
-	oBj0hHYJiBxSY07DvqbA==;
+	List-Owner; bh=uW09Vh2H5HRCbPMGLDY8IAZBwvxaHfWUq4wvAIJTXN8=; b=XvadJu+MlCtGXm
+	MSo+4Sd9pn+j+onngBCaxc5vh1se2dpERUxZdANphVX1BOoa7jujiDHSwGmueLCfHzyBxr6Iu1+W/
+	vxaYIUOslPThJjNzwolPp9I9/vcMYG/CxCo9brVPeN40xG0nPMsxw30CxOh/u0CGwil8LXJyAVbXK
+	vbdtAhqP5eqBEXcZcmOxuSW0YG72y0uGHZQCx8ae/ThjAzp4M/f73Z/hlJqCLdvz5Lc7r+zzW6fHk
+	th1GPv5nLvoAnmvjSNvaiViE2FbxMJIIVW41pydmHH1niKcyEHD6mx6BMhAm3QOt0gpLQqHjcQDtG
+	qmWnCvjT9GnUWYYcf91g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTKS1-002QeW-2K;
-	Tue, 08 Aug 2023 11:00:33 +0000
-Received: from mail-ot1-x335.google.com ([2607:f8b0:4864:20::335])
+	id 1qTOg8-002oni-38;
+	Tue, 08 Aug 2023 15:31:24 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTKRx-002QdY-2q
+	id 1qTOfq-002omn-2D
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 11:00:31 +0000
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bd0afbd616so133801a34.0
-        for <linux-mtd@lists.infradead.org>; Tue, 08 Aug 2023 04:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691492428; x=1692097228;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Klg6b7rTmA3/2CEHhPBL9kFFomypTM/SqIrAORONAmA=;
-        b=D22YIgpp/2H4eBXOOz8Y5rmtHfHEuwtkAzjbthwRKTGtZLfKiSCTfu9JQlNKW6pH7f
-         hVrB/n9zgtXR29b9Z2gV+GLnXaTZn/wOifCYkKpGjJtZV/wYKM9FtrrJm+MMKpt48Tok
-         YV2c7FoNwBFR6xJy5KCf8mVjiH66r6r/LPrXfawWmp2zKmaVxTLwZdyt9cNzzcQ49HW7
-         6P2qVeTnjn16lhsXemJ+DOEDf38jg66A8bPcgBMCVLXErGd8IZFhcta73eSBZ8VblcGl
-         2OuR3ucayKRA/AFKjCarY6gjc3LQb4l3Dqa2wgxhDYUy31DERQVgDL+hIFAIGcJu20aj
-         39cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691492428; x=1692097228;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Klg6b7rTmA3/2CEHhPBL9kFFomypTM/SqIrAORONAmA=;
-        b=A3I813+dQleLWFTPscXuorI+fby7yyWRTMOg+XEXTMcmNqda/SjJCeh8z6U2q2BFWc
-         zHs+VJYv570Eb7Y+MNuJRK5bDdXVqKxft+JtW3ANZF9snBwYpJ3ti3PBn7zNYnLqxKKB
-         g1WNCnuX8c8v4pnPhrSQ+JZGg2BgHV+HwFPOlkQYuFV360cH9GfK/Ppy6sKDpSJF6ds6
-         Qv9QaH9u9uYPGi8cDFaTozp0rWXXD4vTbE8PVuSZKrLa7N6Kqlr6PMV2g5uJyPySNtqW
-         Fjyo+iVPnKqHJIIvSFJR5v2tULrS02xLMHbK9bDQcrvFZOausa4wg4XsL9BJdwpoAg6j
-         E9qg==
-X-Gm-Message-State: AOJu0YxjylseNYcgbwVhDo9Pzr5uBthG7wzBbih5+1pfhA1bhr6AtmRz
-	NjOwFCItSSeCy5bOluleaDaGQVqcf8pTFBghG3mlcA==
-X-Google-Smtp-Source: AGHT+IFyFm7A28IM+G0on9OcPQxQMVC4tFTmtVJz+gYpID8XubCbPflmb8sfgiBS79hEh9WW2BWOpIws/LS1JffnNds=
-X-Received: by 2002:a05:6358:419b:b0:134:ca8a:7486 with SMTP id
- w27-20020a056358419b00b00134ca8a7486mr11887238rwc.28.1691492428398; Tue, 08
- Aug 2023 04:00:28 -0700 (PDT)
+	Tue, 08 Aug 2023 15:31:11 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B63C1C0002;
+	Tue,  8 Aug 2023 15:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1691508661;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+saSUU4i95GfsJnKcmRQztuk49lxmmudM5Ya+X+5DhA=;
+	b=UeDkMKfheiFCHa+8W6cgVYpEHQGVXUpsfrqAIpv1xcd7ponr4WJVr3VZRsfKLhvTjvkJ/E
+	btKpPQmKSFpQFuqzFGgAGrmglE8SWqaXbbYAayvHOOE7xxdyYBeT3TlwO5N6rFyUiGo5eS
+	wczMluH5x4gv8ipbUXz/SxRjnYX+OFJitzTpH52mCnEL41L7SFNm2rWivRXujYgBeoJ9O8
+	b+aFzNX1X32XGlMZgZYQeTk6+TQ3/BLTr7jtn0FE3VwAqFNfy9faHCTt/qD+nfbyfAUGVQ
+	44DwzHzsP6VptMgvxIc6/eNSlTISJ5DJnp9hIrIaoIYwSVHxxjFVDEH5/xtiiw==
+Date: Tue, 8 Aug 2023 17:30:59 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Michael Walle <michael@walle.cc>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v4] mtd: spi-nor: Add support for sst26vf032b flash
+Message-ID: <20230808173059.5fbea615@xps-13>
+In-Reply-To: <b2153d9bc6be2923f38a170afd82ba6f@walle.cc>
+References: <20230808075001.223150-1-miquel.raynal@bootlin.com>
+	<e618ba6c48d67469b9a2c19ee8bb5a1c@walle.cc>
+	<20230808102401.26631155@xps-13>
+	<b2153d9bc6be2923f38a170afd82ba6f@walle.cc>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <cover.1689802933.git.daniel@makrotopia.org> <1ce5f56df546cec25ef741f381286f1d7c33d000.1689802933.git.daniel@makrotopia.org>
- <CAPDyKFqhZtCHVmCNnm_Qm7X+=GtJY8uNJOWOgZXuTTVEw0msNA@mail.gmail.com> <ZNGULFxXpLT7zn35@makrotopia.org>
-In-Reply-To: <ZNGULFxXpLT7zn35@makrotopia.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 8 Aug 2023 12:59:52 +0200
-Message-ID: <CAPDyKFrpWgA=e-FSoKfYhWSOq5m5_pHjxgzaGeOFHFhU_mcmNw@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/6] mmc: block: set fwnode of disk devices
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Dave Chinner <dchinner@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>, Ming Lei <ming.lei@redhat.com>, 
-	Min Li <min15.li@samsung.com>, Christian Loehle <CLoehle@hyperstone.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Hannes Reinecke <hare@suse.de>, Jack Wang <jinpu.wang@ionos.com>, 
-	Florian Fainelli <f.fainelli@gmail.com>, Yeqi Fu <asuk4.q@gmail.com>, 
-	Avri Altman <avri.altman@wdc.com>, Hans de Goede <hdegoede@redhat.com>, Ye Bin <yebin10@huawei.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_040029_920142_AAF21786 
-X-CRM114-Status: GOOD (  28.15  )
+X-CRM114-CacheID: sfid-20230808_083107_051257_F6AAD3F0 
+X-CRM114-Status: GOOD (  37.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,65 +73,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 8 Aug 2023 at 03:02, Daniel Golle <daniel@makrotopia.org> wrote:
->
-> Hi Ulf,
->
-> thank you for reviewing and suggesting ways to improve this series!
->
-> On Mon, Aug 07, 2023 at 03:48:31PM +0200, Ulf Hansson wrote:
-> > On Thu, 20 Jul 2023 at 00:02, Daniel Golle <daniel@makrotopia.org> wrote:
-> > >
-> > > Set fwnode of disk devices to 'block', 'boot0' and 'boot1' subnodes of
-> > > the mmc-card. This is done in preparation for having the eMMC act as
-> > > NVMEM provider.
-> >
-> > Sorry, but I don't quite understand what you are trying to do here.
-> > Maybe you should re-order the patches in the series so it becomes
-> > clear why this is needed?
-> >
-> > Moreover, I don't see any DT docs being updated as a part of the
-> > series, which looks like it is needed too. That would also help to
-> > understand what you are proposing, I think.
->
-> I've prepared a tree on Github which now also includes commits adding
-> dt-bindings for block devices and partitions, so they can be referenced
-> as nvmem-cells provider.
->
-> The dt-schema addition supposedly explaining this specific patch:
->
-> https://github.com/dangowrt/linux/commit/b399a758f0e1c444ae9443dc80902a30de54af09
->
-> The whole tree:
->
-> https://github.com/dangowrt/linux/commits/for-nvmem-next
-
-Thanks for sharing. However, allow people to review, I suggest you
-post a new version with the updated DT bindings included.
-
-The point is, we really need confirmation from the DT maintainers -
-otherwise this is simply a no go.
-
->
-> Most comments have been addressed, however, I still depend on using
-> either a class_interface *or* adding calls to add/remove the NVMEM
-> representation of a block device to block/genhd.c as well as
-> block/partitions/core.c, simply because afaik there isn't any better
-> way for in-kernel users of block devices to be notified about the
-> creation or removal of a block device.
-
-Okay, so that needs further discussions then. I will try to chim in.
-
-[...]
-
-Kind regards
-Uffe
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKCm1pY2hhZWxAd2FsbGUuY2Mgd3JvdGUgb24gVHVlLCAwOCBBdWcgMjAyMyAx
+MDozNTowOCArMDIwMDoKCj4gSGksCj4gCj4gPj4gTWhoLCB0aGlzIGZsYXNoIGhhcyB2ZW5kb3Ig
+dGFibGVzLiBUaGUgc3N0MjZ2ZiBnbG9iYWwgdW5sb2NrIHNob3VsZAo+ID4+IGJlIGRpc2NvdmVy
+YWJsZS4gVGhlcmUgaXMgYSB0YWJsZSB3aXRoIGFsbCBzdXBwb3J0ZWQgb3Bjb2Rlcywgd2hpY2gK
+PiA+PiBjb3VsZCBiZSB1c2VkIHRvIHNlZSB3aGV0aGVyIHRoaXMgZmxhc2ggbmVlZHMgdGhlIGds
+b2JhbCB1bmxvY2suICAKPiA+IAo+ID4gSXMgdGhpcyBsb2dpYyBhbHJlYWR5IGV4aXN0aW5nIGlu
+IHRoZSBjb3JlPyAgCj4gCj4gTm8gdW5mb3J0dW5hdGVseSBub3QuCj4gCj4gPiBEbyB5b3UgaGF2
+ZSBhIHBvaW50ZXI/ICAKPiAKPiBJdCBzZWVtcyB0aGF0IHdlJ2QgbmVlZCB0byBoYXZlIHNvbWUg
+a2luZCBvZiBwYXJzZXIgc3VwcG9ydCBmb3IKPiB2ZW5kb3Igc3BlY2lmaWMgU0ZQRCB0YWJsZXMu
+IFRoZW4gbG9vayBmb3IgdGhlIHNzdDI1dmYgZmFtaWx5Cj4gYW5kIHRoZSBhdmFpbGFiaWxpdHkg
+b2YgdGhlIGdsb2JhbCB1bmxvY2sgY29tbWFuZCwgaWYgYm90aCBpcwo+IHNhdGlzZmllZCwgc2V0
+IHRoZSBsb2NraW5nIG9wcy4KCkRvIHlvdSBtaW5kIGlmIHdlIGFjdHVhbGx5IHRha2UgdGhhdCBv
+bmUgd2hpY2gsIG9uIHRoaXMgcmVnYXJkIHNob3VsZApiZSBhYnNvbHV0ZWx5IGlkZW50aWNhbCB0
+byB0aGUgZXhpc3RpbmcgNjRiIGVudHJ5PwoKSWYgb25lIGV2ZXIgYnJpbmdzIHRoZSBsb2dpYyB5
+b3UgZGVzY3JpYmVkIEknbGwgYmUgcGxlYXNlZCB0byB0ZXN0IGl0CmFzIGxvbmcgYXMgSSBoYXZl
+IHRoZSBib2FyZC4KCj4gPj4gSSdkIGxpa2UgdG8gcHVzaCBhcyBtdWNoIGFzIHBvc3NpYmxlIGlu
+dG8gYXV0by1kaXNjb3ZlcmluZwo+ID4+IGZlYXR1cmVzLi4gYWZ0ZXIgd29ya2luZyBvbiB0aGF0
+IGZsYXNoIGRiIGNsZWFudXAuICAKPiA+IAo+ID4gSSB1bmRlcnN0YW5kLCBidXQgYXMgSSBzYWlk
+LCB0ZXN0aW5nIGxhdGVzdCB2ZXJzaW9ucyBvZiB0aGUga2VybmVsIG9uCj4gPiBteSBoYXJkd2Fy
+ZSBpcyBub3Qgc3RyYWlnaHRmb3J3YXJkLgo+ID4gICAKPiA+PiA+IENoYW5nZXMgaW4gdjM6Cj4g
+Pj4gPiAqIERyb3BwZWQgdGhlIHNlY29uZCBwYXRjaCAodW50ZXN0ZWQgY2hhbmdlcyBhcyBhZHZp
+c2VkIGJ5IFR1ZG9yKS4KPiA+PiA+ICogQXZvaWRlZCBwbGF5aW5nIHdpdGggbG9ja2luZyBhcyBJ
+IGNhbm5vdCB0ZXN0IGl0IGVpdGhlcjogc2ltcGxpZmllZAo+ID4+ID4gICB0aGUgZGlmZiBieSBq
+dXN0IHVzaW5nIHRoZSBQQVJTRV9TRkRQIGZsYWcuCj4gPj4gPiAqIFJlYmFzZWQgb24gdG9wIG9m
+IC1yYzEgYW5kIGFkYXB0ZWQgdGhlIHBhdGNoIHRvIHRoZSBjdXJyZW50IHN0YXRlLgo+ID4+ID4K
+PiA+PiA+ICBkcml2ZXJzL210ZC9zcGktbm9yL3NzdC5jIHwgNCArKysrCj4gPj4gPiAgMSBmaWxl
+IGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQo+ID4+ID4KPiA+PiA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL210ZC9zcGktbm9yL3NzdC5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYwo+ID4+ID4g
+aW5kZXggNjg4ZWIyMGM3NjNlLi40MTRlZTQ2OTJmZDEgMTAwNjQ0Cj4gPj4gPiAtLS0gYS9kcml2
+ZXJzL210ZC9zcGktbm9yL3NzdC5jCj4gPj4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3Nz
+dC5jCj4gPj4gPiBAQCAtMTExLDYgKzExMSwxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNo
+X2luZm8gc3N0X25vcl9wYXJ0c1tdID0gewo+ID4+ID4gIAkJCSAgICAgIFNQSV9OT1JfUVVBRF9S
+RUFEKSB9LAo+ID4+ID4gIAl7ICJzc3QyNnZmMDE2YiIsIElORk8oMHhiZjI2NDEsIDAsIDY0ICog
+MTAyNCwgMzIpCj4gPj4gPiAgCQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxf
+UkVBRCkgfSwKPiA+PiA+ICsJeyAic3N0MjZ2ZjAzMmIiLCBJTkZPKDB4YmYyNjQyLCAwLCAwLCAw
+KQo+ID4+ID4gKwkJRkxBR1MoU1BJX05PUl9IQVNfTE9DSyB8IFNQSV9OT1JfU1dQX0lTX1ZPTEFU
+SUxFKQo+ID4+ID4gKwkJUEFSU0VfU0ZEUAo+ID4+ID4gKwkJLmZpeHVwcyA9ICZzc3QyNnZmX25v
+cl9maXh1cHMgfSwKPiA+PiA+ICAJeyAic3N0MjZ2ZjA2NGIiLCBJTkZPKDB4YmYyNjQzLCAwLCA2
+NCAqIDEwMjQsIDEyOCkKPiA+PiA+ICAJCUZMQUdTKFNQSV9OT1JfSEFTX0xPQ0sgfCBTUElfTk9S
+X1NXUF9JU19WT0xBVElMRSkKPiA+PiA+ICAJCU5PX1NGRFBfRkxBR1MoU0VDVF80SyB8IFNQSV9O
+T1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpICAKPiA+PiA+PiBIb25lc3RseSwgdGhp
+cyBpcyBzdWNoIGEgbWVzcy4gVGhlcmUgYXJlIHRocmVlIGlkZW50aWNhbCBjaGlwczogIAo+ID4+
+IHNzdDI2djAxNmIsIDAzMmIgYW5kIDA2NGIgYW5kIGFsbCBoYXZlIGRpZmZlcmVudCBmbGFncyA6
+KCAgCj4gPiAKPiA+IEkgb25seSBoYXZlIHRoZSAzMmIgdmFyaWFudCwgYnV0IEkgYmVsaWV2ZSB0
+aGV5IGFyZSBhbGwgaWRlbnRpY2FsLiBUaGUKPiA+IEZMQUdTIGFuZCBmaXh1cHMgZmllbGRzIGFy
+ZSBtaXNzaW5nIGZyb20gdGhlIDE2YiB2YXJpYW50IGluIG1haW5saW5lCj4gPiBidXQgdGhleSBh
+cmUgYWxsIGlkZW50aWNhbCBpbiB0aGUgbGludXg0bWljcm9jaGlwIHJlcG9zaXRvcnksIEkgYmVs
+aWV2ZQo+ID4gdGhlIG1pc3NpbmcgcGF0Y2hlcyBoYXZlIG5ldmVyIGJlZW4gdXBzdHJlYW1lZCwg
+dGhhdCdzIGFsbC4KPiA+IAo+ID4gQW5kIEkgYW0gbm93IHVzaW5nIHRoZSBQQVJTRV9TRkRQIGZs
+YWcgYXMgYWR2aXNlZCBiZWNhdXNlIGl0IHdvcmtzLCBidXQKPiA+IGluaXRpYWxseSBJIHdhbnRl
+ZCB0byBrZWVwIHRoZSBoYXJkY29kZWQgZmxhZ3MuICAKPiAKPiBBaCBzb3JyeSwgSSB3YXMganVz
+dCBzdGF0aW5nIGEgZmFjdCwgbm90IGNyaXRpY2l6aW5nIHlvdXIgcGF0Y2guIFRoZXJlCj4gYXJl
+IGFsc28gb3RoZXIgcGxhY2VzIGluIHRoZSBmbGFzaF9pbmZvIGRiIHdpdGggc3VjaCBhIG1lc3Mu
+IEJ1dCB3aXRoCj4gdGhlIGN1cnJlbnQgcnVsZSAibm90IHRvIHRvdWNoIGFueXRoaW5nIHVudGVz
+dGVkIiBJIGd1ZXNzIHRoYXQgaXMKPiB3aGF0IHdlIGdldC4gRnVubnkgZW5vdWdoLCB2ZW5kb3Ig
+dHJlZXMgc2VlbSB0byBmaXggJ2VtLgoKOy0pCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
