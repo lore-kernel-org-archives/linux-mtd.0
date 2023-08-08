@@ -4,55 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7E3FEB64DD
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 03:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 193A7C001B0
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 06:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CLPhTR1sYkbuzbUK8CSal4KMkDpwG/fDWCzdEEWvFXM=; b=RzyCPeTeyNRI9J
-	uJ+kOaC9sVHAAShwOCZVrmbVeAZyGFJ0zPdXMyqRN9ZlncgKUc8ecJGcSgyvy0+IO8Iatq+uzxKE7
-	+M/Rjx3DyFFuBu64CUAUbkKEyqLJrhKGRAFLK5gZYPoLX6MHwDtfoMOw2p8KOL3RHQ5m0HR3h4GqU
-	J2j9+1AnawUl2IxGTfLiPm7zJBN9isxunptVYnBzrpS/I8wb7pSPoG27i3D7cKpk+gONYsJeNkpAq
-	Q1G0EtLVe9tG//yDoCdSq2SguVqczIcQqsSIx/ocQoPmcm+w2v1ypMYTr35IZLr31ythXOwr+dPMo
-	KxbOk4K6qXJ5RYvyhh0g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=T4rTIV0uVrOqAAPtclxVTGSCUIiksgsWUVPwiDaxPsM=; b=YkCwLy7movgx3I
+	Nca92vlRTIc9seZcapbKSatYtg3S92URg44ov7AbXlAhronWJQZdpJQxw+Zth2jvmqKMNt08oeuMW
+	DEu85XR9U36NstDf6S2dj6n2rib92rdPA56QWfCpxVX7WbjX80m95xdMGtbzOUT5NQgo+bgtneRbV
+	3gw8TsKBUlQfKRW6UxXlXT3fv2gRJMIqmDG5ugSHjc2WrVokqoJEyGmYIT0xyrCysZIIKY8jEyCV7
+	SUcXPaSWn0P1AGVQU9fXg9kMbf9keEaIZnE7PxruPA0xl2u5pOE/tw6Cqyphaw+BMf6+i5AxF9scy
+	15V2UcsGjNPhsurj4nIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTDQQ-001dlF-0j;
-	Tue, 08 Aug 2023 03:30:26 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1qTGHU-001pUU-1M;
+	Tue, 08 Aug 2023 06:33:24 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTDQN-001dkE-14
+	id 1qTGHQ-001pRz-2x
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 03:30:24 +0000
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RKdsr0bf5z1Z1X5;
-	Tue,  8 Aug 2023 11:27:28 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
- 2023 11:30:16 +0800
-From: Ruan Jinjie <ruanjinjie@huawei.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris
-	<computersforpeace@gmail.com>, Kamal Dasu <kamal.dasu@broadcom.com>, Broadcom
- internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next v3 RESEND] mtd: rawnand: Propagate error and simplify ternary operators for brcmstb_nand_wait_for_completion()
-Date: Tue, 8 Aug 2023 11:29:43 +0800
-Message-ID: <20230808032943.3890545-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	Tue, 08 Aug 2023 06:33:23 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6873f64a290so1465087b3a.0
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 23:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691476392; x=1692081192;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m1STCrinczuq8FuoUgLs8N4vldOealvmees85dm6MPY=;
+        b=DHsGX8t2DlnQTZ3P5OI9n7d2eKbW76xN4tTGVVJSGRA1IM8FeS8yeKRc7hPuylIUq6
+         Vn6fFj0Cv1x6zxvq6HdiZeD3sss54GzeWb8hF97LFXrHomN7WJ9YcJ4yAlUPs8k8HgNL
+         jvDOSB+a6LFcWjcXHBVF7wtFqF14I5u1bMgCHhYO6BYyHXF5r6kcqyvIScTKejNj9azo
+         Dlxz0pBdKdmaGIcMiIhQ+2FswwrIXK2CIvDeChsrdQ0sCkYtUwWfiT2WKOfkpBIAGKTy
+         jKW26xAUSVtB349qP1v3gjKBFhibzKHRUcGcdDNMBlsrboMdDTLiQvbJMlgqGN2hazF3
+         /EiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691476392; x=1692081192;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m1STCrinczuq8FuoUgLs8N4vldOealvmees85dm6MPY=;
+        b=lns9yoCKv4nBBb99r7lXsS9v9JlX8mPg+9iSMsHwv58UhjW+QNaoU7Qqf9UWlbRhln
+         IEvwQFubBWBY3mMO56S7I6YYE1PoZcEWcsQGnqxBExTLCo8TFievv8qII3G5+uUFw4g1
+         7moEohpit7v8dTVafs+eIZI5R0yNOw2wUzk3OM5sH9/p+gLoJO9GxAph4eR3EbLh1qeE
+         FxypCx9etcRRZ5v7G892Txhfpc1yvkXd37ExJBOmUs4acFcisZ2cDjQLXG2sE/dpks6+
+         wdntMNHfEJibpvirySwSPoMD0haF8Mz1SLVXTzln6YKHeb2dUJ+CbNyPqLlCbUGzYq6D
+         j4eg==
+X-Gm-Message-State: ABy/qLa0DlGFjqVKNIB9gz2Hh/BcKhWHgsdNSOcSFzRxyd8cHk0i+O7o
+	dl2eU1eYPW1efkRm+0TrzolEsQ==
+X-Google-Smtp-Source: APBJJlEAHd7r+M3vyCUQDMAxEjMveuzSqb/Q6wUuSUNAB0Ns9zs1qKL/YECIY4J9DtcJjA3HpA/s7A==
+X-Received: by 2002:a05:6a21:998c:b0:13d:1ebf:5dfc with SMTP id ve12-20020a056a21998c00b0013d1ebf5dfcmr38062815pzb.5.1691476391828;
+        Mon, 07 Aug 2023 23:33:11 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id ff12-20020a056a002f4c00b0067f2f7eccdcsm7204570pfb.193.2023.08.07.23.32.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 23:33:11 -0700 (PDT)
+Message-ID: <0e7b16ce-19f9-0c70-4a94-f05cbfee613a@bytedance.com>
+Date: Tue, 8 Aug 2023 14:32:55 +0800
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 44/48] mm: shrinker: add a secondary array for
+ shrinker_info::{map, nr_deferred}
+To: Dave Chinner <david@fromorbit.com>
+Cc: akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+ roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+ paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com, cel@kernel.org,
+ senozhatsky@chromium.org, yujie.liu@intel.com, gregkh@linuxfoundation.org,
+ muchun.song@linux.dev, simon.horman@corigine.com, dlemoal@kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+ kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ Muchun Song <songmuchun@bytedance.com>
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-45-zhengqi.arch@bytedance.com>
+ <ZNGkcp3Dh8hOiFpk@dread.disaster.area>
+Content-Language: en-US
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZNGkcp3Dh8hOiFpk@dread.disaster.area>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_203023_541351_D633E5AB 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20230807_233320_967199_AF759CC8 
+X-CRM114-Status: GOOD (  45.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,71 +106,339 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As bcmnand_ctrl_poll_status() return negative errno, so return true if
-sts < 0. The < 0 case does not exist for wait_for_completion_timeout(),
-so return true if sts = 0 and zero otherwise. Both of the true return
-of them can be considered as a -ETIMEDOUT err, so return -ETIMEDOUT
-if err is true to propagate err from its caller.
+Hi Dave,
 
-Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
----
-v3:
-- Update the commit title and message.
-- Do not change the return type from bool to int.
-- Return -ETIMEDOUT if err is true.
-v2:
-- Update the commit title and message.
-- Propagate the error instead of upon error.
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+On 2023/8/8 10:12, Dave Chinner wrote:
+> On Mon, Aug 07, 2023 at 07:09:32PM +0800, Qi Zheng wrote:
+>> Currently, we maintain two linear arrays per node per memcg, which are
+>> shrinker_info::map and shrinker_info::nr_deferred. And we need to resize
+>> them when the shrinker_nr_max is exceeded, that is, allocate a new array,
+>> and then copy the old array to the new array, and finally free the old
+>> array by RCU.
+>>
+>> For shrinker_info::map, we do set_bit() under the RCU lock, so we may set
+>> the value into the old map which is about to be freed. This may cause the
+>> value set to be lost. The current solution is not to copy the old map when
+>> resizing, but to set all the corresponding bits in the new map to 1. This
+>> solves the data loss problem, but bring the overhead of more pointless
+>> loops while doing memcg slab shrink.
+>>
+>> For shrinker_info::nr_deferred, we will only modify it under the read lock
+>> of shrinker_rwsem, so it will not run concurrently with the resizing. But
+>> after we make memcg slab shrink lockless, there will be the same data loss
+>> problem as shrinker_info::map, and we can't work around it like the map.
+>>
+>> For such resizable arrays, the most straightforward idea is to change it
+>> to xarray, like we did for list_lru [1]. We need to do xa_store() in the
+>> list_lru_add()-->set_shrinker_bit(), but this will cause memory
+>> allocation, and the list_lru_add() doesn't accept failure. A possible
+>> solution is to pre-allocate, but the location of pre-allocation is not
+>> well determined.
+> 
+> So you implemented a two level array that preallocates leaf
+> nodes to work around it? It's remarkable complex for what it does,
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 03764b589ec5..440bef477930 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1666,13 +1666,13 @@ static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- 		disable_ctrl_irqs(ctrl);
- 		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
- 					       NAND_CTRL_RDY, 0);
--		err = (sts < 0) ? true : false;
-+		err = sts < 0;
- 	} else {
- 		unsigned long timeo = msecs_to_jiffies(
- 						NAND_POLL_STATUS_TIMEOUT_MS);
- 		/* wait for completion interrupt */
- 		sts = wait_for_completion_timeout(&ctrl->done, timeo);
--		err = (sts <= 0) ? true : false;
-+		err = !sts;
- 	}
- 
- 	return err;
-@@ -1688,6 +1688,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
- 	if (ctrl->cmd_pending)
- 		err = brcmstb_nand_wait_for_completion(chip);
- 
-+	ctrl->cmd_pending = 0;
- 	if (err) {
- 		u32 cmd = brcmnand_read_reg(ctrl, BRCMNAND_CMD_START)
- 					>> brcmnand_cmd_shift(ctrl);
-@@ -1696,8 +1697,8 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
- 			"timeout waiting for command %#02x\n", cmd);
- 		dev_err_ratelimited(ctrl->dev, "intfc status %08x\n",
- 			brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS));
-+		return -ETIMEDOUT;
- 	}
--	ctrl->cmd_pending = 0;
- 	return brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) &
- 				 INTFC_FLASH_STATUS;
- }
--- 
-2.34.1
+Yes, here I have implemented a two level array like the following:
 
++---------------+--------+--------+-----+
+| shrinker_info | unit 0 | unit 1 | ... | (secondary array)
++---------------+--------+--------+-----+
+                      ^
+                      |
+                 +---------------+-----+
+                 | nr_deferred[] | map | (leaf array)
+                 +---------------+-----+
+                 (shrinker_info_unit)
+
+The leaf array is never freed unless the memcg is destroyed. The
+secondary array will be resized every time the shrinker id exceeds
+shrinker_nr_max.
+
+> I can't help but think a radix tree using a special holder for
+> nr_deferred values of zero would end up being simpler...
+
+I tried. If the shrinker uses list_lru, then we can preallocate
+xa node where list_lru_one is pre-allocated. But for other types of
+shrinkers, the location of pre-allocation is not easy to determine
+(Such as deferred_split_shrinker). And we can't force all memcg aware
+shrinkers to use list_lru, so I gave up using xarray and implemented the 
+above two-level array.
+
+> 
+>> Therefore, this commit chooses to introduce a secondary array for
+>> shrinker_info::{map, nr_deferred}, so that we only need to copy this
+>> secondary array every time the size is resized. Then even if we get the
+>> old secondary array under the RCU lock, the found map and nr_deferred are
+>> also true, so no data is lost.
+> 
+> I don't understand what you are trying to describe here. If we get
+> the old array, then don't we get either a stale nr_deferred value,
+> or the update we do gets lost because the next shrinker lookup will
+> find the new array and os the deferred value stored to the old one
+> is never seen again?
+
+As shown above, the leaf array will not be freed when shrinker_info is
+expanded, so the shrinker_info_unit can be indexed from both the old
+and the new shrinker_info->unit[x]. So the updated nr_deferred and map
+will not be lost.
+
+> 
+>>
+>> [1]. https://lore.kernel.org/all/20220228122126.37293-13-songmuchun@bytedance.com/
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+>> ---
+> .....
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index a27779ed3798..1911c06b8af5 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -12,15 +12,50 @@ DECLARE_RWSEM(shrinker_rwsem);
+>>   #ifdef CONFIG_MEMCG
+>>   static int shrinker_nr_max;
+>>   
+>> -/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
+>> -static inline int shrinker_map_size(int nr_items)
+>> +static inline int shrinker_unit_size(int nr_items)
+>>   {
+>> -	return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+>> +	return (DIV_ROUND_UP(nr_items, SHRINKER_UNIT_BITS) * sizeof(struct shrinker_info_unit *));
+>>   }
+>>   
+>> -static inline int shrinker_defer_size(int nr_items)
+>> +static inline void shrinker_unit_free(struct shrinker_info *info, int start)
+>>   {
+>> -	return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
+>> +	struct shrinker_info_unit **unit;
+>> +	int nr, i;
+>> +
+>> +	if (!info)
+>> +		return;
+>> +
+>> +	unit = info->unit;
+>> +	nr = DIV_ROUND_UP(info->map_nr_max, SHRINKER_UNIT_BITS);
+>> +
+>> +	for (i = start; i < nr; i++) {
+>> +		if (!unit[i])
+>> +			break;
+>> +
+>> +		kvfree(unit[i]);
+>> +		unit[i] = NULL;
+>> +	}
+>> +}
+>> +
+>> +static inline int shrinker_unit_alloc(struct shrinker_info *new,
+>> +				       struct shrinker_info *old, int nid)
+>> +{
+>> +	struct shrinker_info_unit *unit;
+>> +	int nr = DIV_ROUND_UP(new->map_nr_max, SHRINKER_UNIT_BITS);
+>> +	int start = old ? DIV_ROUND_UP(old->map_nr_max, SHRINKER_UNIT_BITS) : 0;
+>> +	int i;
+>> +
+>> +	for (i = start; i < nr; i++) {
+>> +		unit = kvzalloc_node(sizeof(*unit), GFP_KERNEL, nid);
+> 
+> A unit is 576 bytes. Why is this using kvzalloc_node()?
+
+Ah, will use kzalloc_node() in the next version.
+
+> 
+>> +		if (!unit) {
+>> +			shrinker_unit_free(new, start);
+>> +			return -ENOMEM;
+>> +		}
+>> +
+>> +		new->unit[i] = unit;
+>> +	}
+>> +
+>> +	return 0;
+>>   }
+>>   
+>>   void free_shrinker_info(struct mem_cgroup *memcg)
+>> @@ -32,6 +67,7 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>>   	for_each_node(nid) {
+>>   		pn = memcg->nodeinfo[nid];
+>>   		info = rcu_dereference_protected(pn->shrinker_info, true);
+>> +		shrinker_unit_free(info, 0);
+>>   		kvfree(info);
+>>   		rcu_assign_pointer(pn->shrinker_info, NULL);
+>>   	}
+> 
+> Why is this safe? The info and maps are looked up by RCU, so why is
+> freeing them without a RCU grace period expiring safe?
+
+The free_shrinker_info() will be called in alloc_shrinker_info() and
+mem_cgroup_css_free().
+
+In alloc_shrinker_info(), it will only be called in the error path, so
+shrinker_info_unit and shrinker_info can be safely freed.
+
+In mem_cgroup_css_free(), when we get here, the traversal of this memcg
+has ended and will not be found again. That is to say, the corresponding
+shrink_slab() is also over, so shrinker_info_unit and shrinker_info can
+also be safely freed here.
+
+> 
+> Yes, it was safe to do this when it was all under a semaphore, but
+> now the lookup and use is under RCU, so this freeing isn't
+> serialised against lookups anymore...
+> 
+> 
+>> @@ -40,28 +76,27 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>>   int alloc_shrinker_info(struct mem_cgroup *memcg)
+>>   {
+>>   	struct shrinker_info *info;
+>> -	int nid, size, ret = 0;
+>> -	int map_size, defer_size = 0;
+>> +	int nid, ret = 0;
+>> +	int array_size = 0;
+>>   
+>>   	down_write(&shrinker_rwsem);
+>> -	map_size = shrinker_map_size(shrinker_nr_max);
+>> -	defer_size = shrinker_defer_size(shrinker_nr_max);
+>> -	size = map_size + defer_size;
+>> +	array_size = shrinker_unit_size(shrinker_nr_max);
+>>   	for_each_node(nid) {
+>> -		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+>> -		if (!info) {
+>> -			free_shrinker_info(memcg);
+>> -			ret = -ENOMEM;
+>> -			break;
+>> -		}
+>> -		info->nr_deferred = (atomic_long_t *)(info + 1);
+>> -		info->map = (void *)info->nr_deferred + defer_size;
+>> +		info = kvzalloc_node(sizeof(*info) + array_size, GFP_KERNEL, nid);
+>> +		if (!info)
+>> +			goto err;
+>>   		info->map_nr_max = shrinker_nr_max;
+>> +		if (shrinker_unit_alloc(info, NULL, nid))
+>> +			goto err;
+> 
+> That's going to now do a lot of small memory allocation when we have
+> lots of shrinkers active....
+> 
+>> @@ -150,17 +175,34 @@ static int expand_shrinker_info(int new_id)
+>>   	return ret;
+>>   }
+>>   
+>> +static inline int shriner_id_to_index(int shrinker_id)
+> 
+> shrinker_id_to_index
+
+Will fix.
+
+> 
+>> +{
+>> +	return shrinker_id / SHRINKER_UNIT_BITS;
+>> +}
+>> +
+>> +static inline int shriner_id_to_offset(int shrinker_id)
+> 
+> shrinker_id_to_offset
+
+Will fix.
+
+> 
+>> +{
+>> +	return shrinker_id % SHRINKER_UNIT_BITS;
+>> +}
+> 
+> ....
+>> @@ -209,26 +251,31 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+>>   				   struct mem_cgroup *memcg)
+>>   {
+>>   	struct shrinker_info *info;
+>> +	struct shrinker_info_unit *unit;
+>>   
+>>   	info = shrinker_info_protected(memcg, nid);
+>> -	return atomic_long_xchg(&info->nr_deferred[shrinker->id], 0);
+>> +	unit = info->unit[shriner_id_to_index(shrinker->id)];
+>> +	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
+>>   }
+>>   
+>>   static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+>>   				  struct mem_cgroup *memcg)
+>>   {
+>>   	struct shrinker_info *info;
+>> +	struct shrinker_info_unit *unit;
+>>   
+>>   	info = shrinker_info_protected(memcg, nid);
+>> -	return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
+>> +	unit = info->unit[shriner_id_to_index(shrinker->id)];
+>> +	return atomic_long_add_return(nr, &unit->nr_deferred[shriner_id_to_offset(shrinker->id)]);
+>>   }
+>>   
+>>   void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+>>   {
+>> -	int i, nid;
+>> +	int nid, index, offset;
+>>   	long nr;
+>>   	struct mem_cgroup *parent;
+>>   	struct shrinker_info *child_info, *parent_info;
+>> +	struct shrinker_info_unit *child_unit, *parent_unit;
+>>   
+>>   	parent = parent_mem_cgroup(memcg);
+>>   	if (!parent)
+>> @@ -239,9 +286,13 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+>>   	for_each_node(nid) {
+>>   		child_info = shrinker_info_protected(memcg, nid);
+>>   		parent_info = shrinker_info_protected(parent, nid);
+>> -		for (i = 0; i < child_info->map_nr_max; i++) {
+>> -			nr = atomic_long_read(&child_info->nr_deferred[i]);
+>> -			atomic_long_add(nr, &parent_info->nr_deferred[i]);
+>> +		for (index = 0; index < shriner_id_to_index(child_info->map_nr_max); index++) {
+>> +			child_unit = child_info->unit[index];
+>> +			parent_unit = parent_info->unit[index];
+>> +			for (offset = 0; offset < SHRINKER_UNIT_BITS; offset++) {
+>> +				nr = atomic_long_read(&child_unit->nr_deferred[offset]);
+>> +				atomic_long_add(nr, &parent_unit->nr_deferred[offset]);
+>> +			}
+>>   		}
+>>   	}
+>>   	up_read(&shrinker_rwsem);
+>> @@ -407,7 +458,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   {
+>>   	struct shrinker_info *info;
+>>   	unsigned long ret, freed = 0;
+>> -	int i;
+>> +	int offset, index = 0;
+>>   
+>>   	if (!mem_cgroup_online(memcg))
+>>   		return 0;
+>> @@ -419,56 +470,63 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   	if (unlikely(!info))
+>>   		goto unlock;
+>>   
+>> -	for_each_set_bit(i, info->map, info->map_nr_max) {
+>> -		struct shrink_control sc = {
+>> -			.gfp_mask = gfp_mask,
+>> -			.nid = nid,
+>> -			.memcg = memcg,
+>> -		};
+>> -		struct shrinker *shrinker;
+>> +	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
+>> +		struct shrinker_info_unit *unit;
+> 
+> This adds another layer of indent to shrink_slab_memcg(). Please
+> factor it first so that the code ends up being readable. Doing that
+> first as a separate patch will also make the actual algorithm
+> changes in this patch be much more obvious - this huge hunk of
+> diff is pretty much impossible to review...
+
+OK, I will send this patch together with PATCH v4 01/02/03/43 as
+a single cleanup patchset.
+
+Thanks,
+Qi
+
+> 
+> -Dave.
 
 ______________________________________________________
 Linux MTD discussion mailing list
