@@ -4,60 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E3EEC001B0
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 07:50:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15724C04A94
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 07:50:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lkQPVrVODK7WS4u4Iy7fqr76tGYo6UC/1P384nqji0s=; b=SsmkeEj+H6WA4o
-	XJYaQ3flipltPNluw6dKPYll/zicPpyInbc8a11uU2UDhZO+2UcTSfTfppSifhsC3QzHbDxEPsSpB
-	ByKTKbCUIOHiiF39KDeF/eK3bzDUbcANmqYzoQbHw8SlkyNRjAJApCb4EBpE7nyO1v2TR6JcVDqfQ
-	tZV0mTf03cVO13ynsXnKp08OkFnp1EHL/d2OrDES/5KdTcP8nCrzPIybx98jciiFePu9cvbnZcTbF
-	oSHTW6P2ZNrlN3LpDWYpMkUEBzLahFkGfAqvG52uthJsI+UiTixl588nnMLDc2RkeLt78o5lcLgV0
-	MM5yDQYqxtq0yh5ol+iQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qxF98Y/AjE1ntjAWLHsGKvqUDRqRR20Tm9og7W0TfK4=; b=FsmvLm3hsm7Z44
+	uzwmv1frH+a8uWezKe0KR0GrxNOLCkfJt/SdBD+SdUjA/FJKMiGgVB/dD5F5cbTs2FlE8JoLuu+eL
+	9GJrYyUOUKzVsjlJ1DGTTYwLtt1Pwjv/6s5ORq6GVN1IIdiYnOewjF829Z2hjHX0unxbjCqqQq36z
+	gJuDKiqEY3R0c6d7lO6rl7Nkmq25+HZlHgdxu9tJ2ZD+QuiHBLTo6m/iuI31ZilTYNVDoAwD93L4E
+	MyBYhJ9Kc+o0cT+h1+VcG0DNbtBot7f9AtxBZ2523rw0neeYmP+pZqd1TutNIBfF8k4NXQxzii5eF
+	4/saMC4t9JMbP/JnHBxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTHTn-001vXr-1r;
-	Tue, 08 Aug 2023 07:50:11 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1qTHUE-001vcr-1r;
+	Tue, 08 Aug 2023 07:50:38 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTHTk-001vUz-07
+	id 1qTHUB-001vbh-12
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 07:50:10 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DD8A04000A;
-	Tue,  8 Aug 2023 07:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1691481002;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=BWXcz4WvydTrWMEJTZGBEdkd0BPf4AggFhhcf+QomsI=;
-	b=V3CFQbW+DkR7nWoVmwDi+vSWGAgL4Awe+zbLP3GLlkXVZ7uj1qlCTZ6noUrBZevTUZzcoo
-	eo2cVZthCXOTFL2px2R4fqS+NdPtX2nfE1dWh9rsNJtQMyAiGpD6F6m6nA29oCfEIdZSPF
-	p+1vV4Kv4JaYFRa0z5wo5kdn43pRqEfDleBPtrYe7gHwmL/Uqnq8ZrOqUmCyUjI+99AAb6
-	GalHINmS+Uwm3KQgd/N5WheCuy3r0tzYgzcn00+EKhdW6qKtFwnNkAUjakzgN3Rkj+JYOc
-	oxJ6AMcOPJohDIJ7UEwahG6BXp5n3lfERWXjYoQfB2dGtsahd/LV1VExn9vdPg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4] mtd: spi-nor: Add support for sst26vf032b flash
-Date: Tue,  8 Aug 2023 09:50:01 +0200
-Message-Id: <20230808075001.223150-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
+	Tue, 08 Aug 2023 07:50:37 +0000
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-564670fad4bso521793a12.1
+        for <linux-mtd@lists.infradead.org>; Tue, 08 Aug 2023 00:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691481032; x=1692085832;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wpg6aIffbYjICJhycB3Bph3fxU0UaKYZ32RPKTrhmtc=;
+        b=FcXFQj7o5xQr1tbRw7Pn9UcrCi1B232+uajLTiNwX9TdfSjMFaRRVdHzMiOaxlryr4
+         TqsRZGIMtiNm6ZippcajS5s8BFNszaSa/g6yFRgc1b4Nrb+clf9RoWeRHJwEtReG4gDh
+         LBwyybjoJjy6Q47GUlBU0hOxHJ5B5n+H+unsOBMRFGW3IeVtuYALwNVCTH0vLIY9qjFM
+         CyLNGOebqxclIqP3q4eqEvOWKbqhuuoRiG1QYUPJbHFervGiVpOZhfBMii4BWNV8TQee
+         jZz6YmXfb9rl1Oy5qXM+JWmVZktQ1qA2f5FKoSylWcG/GIFy7RhDcwYEdv8PeGx8L8zA
+         uA1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691481032; x=1692085832;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wpg6aIffbYjICJhycB3Bph3fxU0UaKYZ32RPKTrhmtc=;
+        b=e1b6ynOACCPpkfaqyJQLVnzYGETp0QwYgQsLBZeQpesxOT7kF5G7KBCzq6itDHhNUJ
+         Yd+ZfFA3RzuRngeMxIJ/hiPlTq37iKRAS1kBQNQSBE4vATvazen87UIv/vGIQqn5sHrG
+         5JtPbsHPPlGp5JSgBS8EqUNlNxFKWdiBWFHiNEp7HOIQBgCtzF4/vVNHCnoA3Lp6LLg3
+         kIqqSkbr0Y76IRdrX+g0VxsyzQyGRHUOdkI2ao1EE39CNfBXgy99WDNP2xbWwLVS2596
+         IxY3259uevNFpGhUdaok+x/fXVGtFEymvSo3iIoQ7ohWR068uPkyElYqrezKE5gUacTI
+         jaTQ==
+X-Gm-Message-State: ABy/qLYQ8hstWPuAQlkOyCc9czFS2nAXBI9yKRXpQgQ8V1DNa+0lPunz
+	VUHsvJtziUmYi/iW/0qo+lca5A==
+X-Google-Smtp-Source: APBJJlEd8UgUmVjTGODajLkItGQ9rG+lZy4ypLT00ATvxhzy6MYHUWJPNACQWVHeXI8Weqa+eylbDA==
+X-Received: by 2002:a17:90a:6c97:b0:263:730b:f568 with SMTP id y23-20020a17090a6c9700b00263730bf568mr25207579pjj.3.1691481032358;
+        Tue, 08 Aug 2023 00:50:32 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id u4-20020a17090a410400b00263154aab24sm7244870pjf.57.2023.08.08.00.50.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 00:50:31 -0700 (PDT)
+Message-ID: <5757e341-b261-14de-e052-46606d530460@bytedance.com>
+Date: Tue, 8 Aug 2023 15:50:18 +0800
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 46/48] mm: shrinker: make memcg slab shrink lockless
+Content-Language: en-US
+To: Dave Chinner <david@fromorbit.com>
+Cc: akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+ roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+ paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com, cel@kernel.org,
+ senozhatsky@chromium.org, yujie.liu@intel.com, gregkh@linuxfoundation.org,
+ muchun.song@linux.dev, simon.horman@corigine.com, dlemoal@kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+ kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-47-zhengqi.arch@bytedance.com>
+ <ZNGr+1orhHaBORJG@dread.disaster.area>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZNGr+1orhHaBORJG@dread.disaster.area>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_005008_495756_8358E122 
-X-CRM114-Status: GOOD (  15.39  )
+X-CRM114-CacheID: sfid-20230808_005035_361182_F7B9E9B2 
+X-CRM114-Status: GOOD (  36.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,109 +104,210 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Describe this new part. The datasheet is public.
+Hi Dave,
 
-Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
+On 2023/8/8 10:44, Dave Chinner wrote:
+> On Mon, Aug 07, 2023 at 07:09:34PM +0800, Qi Zheng wrote:
+>> Like global slab shrink, this commit also uses refcount+RCU method to make
+>> memcg slab shrink lockless.
+> 
+> This patch does random code cleanups amongst the actual RCU changes.
+> Can you please move the cleanups to a spearate patch to reduce the
+> noise in this one?
 
-Here are the sfdp tables plus base testing to show it works.
+Sure, will do.
 
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-sst26vf032b
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-bf2642
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-sst
-$ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060102ff00060110300000ff81000106000100ffbf0001180002
-0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
-083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
-1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
-3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
-ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
-ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
-0300fefe0202070e
-$ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-e7efddddb3d5ee89ca37bf6b6e789645  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index d318f5621862..fee6f62904fb 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -107,6 +107,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+>>   					 lockdep_is_held(&shrinker_rwsem));
+>>   }
+>>   
+>> +static struct shrinker_info *shrinker_info_rcu(struct mem_cgroup *memcg,
+>> +					       int nid)
+>> +{
+>> +	return rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+>> +}
+> 
+> This helper doesn't add value. It doesn't tell me that
+> rcu_read_lock() needs to be held when it is called, for one....
 
-$ dd if=/dev/urandom of=./qspi_test bs=1M count=1
-1+0 records in
-1+0 records out
-$ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-$ mtd_debug erase /dev/mtd0 0 1048576
-Erased 1048576 bytes from address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-$ hexdump qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0100000
-$ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-$ sha1sum qspi_test qspi_read
-2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_test
-2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_read
+How about adding a comment or an assertion here?
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
+> 
+>>   static int expand_one_shrinker_info(struct mem_cgroup *memcg, int new_size,
+>>   				    int old_size, int new_nr_max)
+>>   {
+>> @@ -198,7 +204,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+>>   		struct shrinker_info_unit *unit;
+>>   
+>>   		rcu_read_lock();
+>> -		info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+>> +		info = shrinker_info_rcu(memcg, nid);
+> 
+> ... whilst the original code here was obviously correct.
+> 
+>>   		unit = info->unit[shriner_id_to_index(shrinker_id)];
+>>   		if (!WARN_ON_ONCE(shrinker_id >= info->map_nr_max)) {
+>>   			/* Pairs with smp mb in shrink_slab() */
+>> @@ -211,7 +217,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+>>   
+>>   static DEFINE_IDR(shrinker_idr);
+>>   
+>> -static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>> +static int shrinker_memcg_alloc(struct shrinker *shrinker)
+> 
+> Cleanups in a separate patch.
 
-Changes in v4:
-* Just providing the PARSE_SFDP flag seem to work but actually does
-  not. As opposed to the NAND world which loudly fails when WP is
-  enabled, here the destructive operations are silently ignored by the
-  chip, so actually the reads work but without the additional
-  LOCK/SWP_IS_VOLATILE flags, the chip does not process writes and
-  erasures. Reinstate these two lines as in my backported patch (a
-  linux4microchip kernel on which I actually run this hardware), so I am
-  sure it also works in mainline.
+OK.
 
-Changes in v3:
-* Dropped the second patch (untested changes as advised by Tudor).  
-* Avoided playing with locking as I cannot test it either: simplified
-  the diff by just using the PARSE_SFDP flag.
-* Rebased on top of -rc1 and adapted the patch to the current state.
+> 
+>> @@ -253,10 +258,15 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+>>   {
+>>   	struct shrinker_info *info;
+>>   	struct shrinker_info_unit *unit;
+>> +	long nr_deferred;
+>>   
+>> -	info = shrinker_info_protected(memcg, nid);
+>> +	rcu_read_lock();
+>> +	info = shrinker_info_rcu(memcg, nid);
+>>   	unit = info->unit[shriner_id_to_index(shrinker->id)];
+>> -	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
+>> +	nr_deferred = atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
+>> +	rcu_read_unlock();
+>> +
+>> +	return nr_deferred;
+>>   }
+> 
+> This adds two rcu_read_lock() sections to every call to
+> do_shrink_slab(). It's not at all clear ifrom any of the other code
+> that do_shrink_slab() now has internal rcu_read_lock() sections....
 
- drivers/mtd/spi-nor/sst.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The xchg_nr_deferred_memcg() will only be called in shrink_slab_memcg(),
+so other code doesn't need to know that information?
 
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index 688eb20c763e..414ee4692fd1 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -111,6 +111,10 @@ static const struct flash_info sst_nor_parts[] = {
- 			      SPI_NOR_QUAD_READ) },
- 	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
-+		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-+		PARSE_SFDP
-+		.fixups = &sst26vf_nor_fixups },
- 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--- 
-2.34.1
+> 
+>> @@ -464,18 +480,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   	if (!mem_cgroup_online(memcg))
+>>   		return 0;
+>>   
+>> -	if (!down_read_trylock(&shrinker_rwsem))
+>> -		return 0;
+>> -
+>> -	info = shrinker_info_protected(memcg, nid);
+>> +again:
+>> +	rcu_read_lock();
+>> +	info = shrinker_info_rcu(memcg, nid);
+>>   	if (unlikely(!info))
+>>   		goto unlock;
+>>   
+>> -	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
+>> +	if (index < shriner_id_to_index(info->map_nr_max)) {
+>>   		struct shrinker_info_unit *unit;
+>>   
+>>   		unit = info->unit[index];
+>>   
+>> +		/*
+>> +		 * The shrinker_info_unit will not be freed, so we can
+>> +		 * safely release the RCU lock here.
+>> +		 */
+>> +		rcu_read_unlock();
+> 
+> Why - what guarantees that the shrinker_info_unit exists at this
+> point? We hold no reference to it, we hold no reference to any
+> shrinker, etc. What provides this existence guarantee?
 
+The shrinker_info_unit is never freed unless the memcg is destroyed.
+Here we hold the refcount of this memcg (mem_cgroup_iter() -->
+css_tryget()), so the shrinker_info_unit will not be freed.
+
+> 
+>> +
+>>   		for_each_set_bit(offset, unit->map, SHRINKER_UNIT_BITS) {
+>>   			struct shrink_control sc = {
+>>   				.gfp_mask = gfp_mask,
+>> @@ -485,12 +506,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   			struct shrinker *shrinker;
+>>   			int shrinker_id = calc_shrinker_id(index, offset);
+>>   
+>> +			rcu_read_lock();
+>>   			shrinker = idr_find(&shrinker_idr, shrinker_id);
+>> -			if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
+>> -				if (!shrinker)
+>> -					clear_bit(offset, unit->map);
+>> +			if (unlikely(!shrinker || !shrinker_try_get(shrinker))) {
+>> +				clear_bit(offset, unit->map);
+>> +				rcu_read_unlock();
+>>   				continue;
+>>   			}
+>> +			rcu_read_unlock();
+>>   
+>>   			/* Call non-slab shrinkers even though kmem is disabled */
+>>   			if (!memcg_kmem_online() &&
+>> @@ -523,15 +546,20 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+>>   					set_shrinker_bit(memcg, nid, shrinker_id);
+>>   			}
+>>   			freed += ret;
+>> -
+>> -			if (rwsem_is_contended(&shrinker_rwsem)) {
+>> -				freed = freed ? : 1;
+>> -				goto unlock;
+>> -			}
+>> +			shrinker_put(shrinker);
+> 
+> Ok, so why is this safe to call without holding the rcu read lock?
+> The global shrinker has to hold the rcu_read_lock() whilst calling
+> shrinker_put() to guarantee the validity of the list next pointer,
+> but we don't hold off RCU here so what guarantees a racing global
+> shrinker walk doesn't trip over this shrinker_put() call dropping
+> the refcount to zero and freeing occuring in a different context...
+
+This will not be a problem, even if shrinker::refcount is reduced to
+0 here, the racing global shrinker walk already holds the rcu lock.
+
+         shrink_slab            shrink_slab_memcg
+         ===========            =================
+
+         rcu_read_lock()
+         shrinker_put()
+                                shrinker_put()
+
+And in shrink_slab_memcg(), the shrinker is not required to traverse the
+next bit in the shrinker_info_unit::map, so there is no need to hold the
+rcu lock to ensure the existence of this shrinker.
+
+> 
+> 
+>> +		/*
+>> +		 * We have already exited the read-side of rcu critical section
+>> +		 * before calling do_shrink_slab(), the shrinker_info may be
+>> +		 * released in expand_one_shrinker_info(), so reacquire the
+>> +		 * shrinker_info.
+>> +		 */
+>> +		index++;
+>> +		goto again;
+> 
+> With that, what makes the use of shrinker_info in
+> xchg_nr_deferred_memcg() in do_shrink_slab() coherent and valid?
+
+Holding rcu lock can ensure that the old shrinker_info will not be
+freed, and the shrinker_info_unit::nr_deferred can also be indexed from
+the old shrinker_info::unit[x], so the updated nr_deferred will not be
+lost.
+
+Thanks,
+Qi
+
+> 
+> -Dave.
 
 ______________________________________________________
 Linux MTD discussion mailing list
