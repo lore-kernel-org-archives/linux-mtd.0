@@ -4,65 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C13A8C001DF
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 09:25:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE94C001B0
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 09:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5tempOtLZ7Po+8B7DBU1ZWIVMC3thnh3HKuQOHWgpTA=; b=BGpNBYFbCZNc9tkBfIlytA1NV0
-	RDeX0znAt5PwBMk6iz1GxjKxx/wuXAfwGLn4C6iOvf8iMIRiycP+Wmw3NEWAejYYogIqwcMzqioUP
-	yVZHoPT1jM5bi/OGZ7Fjxvwq6QxoIcffnpYyp4OJXccGQOBui7JgJsRJq7mVN4hGAKoDNhdBMGlF1
-	9/jmQ/Tc0BlkQWRHc82xcFKNraDDhr0PcaN0zLk8kaD3KJc5nSB2pXhDzYhBW+geUNxIytWgCFRDx
-	CvRJbCgTQPP/IFCzvtsUGhDAvco88ChPi6NV71wEuRJxVHUOS10lw3pG+qWC7G6f3wQ5YzJrT8pEi
-	3Wrk7xqg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8cv++CIN5JF9N9HixSOHN4cel75K+3Iabz5Kkzsu4ag=; b=QugSrO99gEVfpC
+	3Yu5zcXPZi0OCGIyyFonhX1XTJt2OtbXmrUjQYVejFgpmz7DgYv6BpFijvmfkPFpypa9S66H49bU4
+	sq3NMr9KajWSy836g4K6WTHw/S5+3Ne3q6N9GrA+oV0/UTDQSotjtS9LHaYJ6t91Xg8zNgcLAP8Kd
+	FMSNkdPm44u5x2pdGPLRq9/7q2iseUw0VUP6WF54dBXreSlz1JGfYv25NPq24gubnMlELvN3ZN+We
+	5uI+x38NeJ48vDPnp4jQu0k7Qh9zIe9Mzed23AJHad/LoBxlI6ulCuRZnR6Zq2dPWdXIiyuqLb4IL
+	J7ltlJ+se9XpZqv7TwBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTIxs-0028EU-1u;
-	Tue, 08 Aug 2023 09:25:20 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1qTIzS-0028Vo-0c;
+	Tue, 08 Aug 2023 09:26:58 +0000
+Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTIxq-0028Cj-02
-	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 09:25:19 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	id 1qTIzP-0028Ud-0l;
+	Tue, 08 Aug 2023 09:26:56 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 9312B143;
-	Tue,  8 Aug 2023 11:25:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1691486713;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C51A520316;
+	Tue,  8 Aug 2023 09:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1691486813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DnWaMg3pDXLcdgXWo2n1OSIIXOLVVnJHBw9DYZAQRK8=;
-	b=MnY9VJuGz9KvfjWX5YQ/RtcCgRAL29rIouLpbf1EAhvtUwPg8l7woT1gozLX8/Uek3Aj25
-	Fb67HVnLhN+ex6M+a4bBO/yCnW6my4fXhXm35oaxvvIA66u68VupqNJMAimwfv4CGC65Fj
-	y1IE4fERwN7TqerqLThNewjWPHAVhhGD6dmzOjAAbUTNDmU2naImtO2y0+L87f35w1cDA0
-	sLglxX1QVeaMwuJp070VJBNCPXZLnRuZTiwb7s8GwuQ6qkY47lhL/OfVM3OmK67VDERzgD
-	H29uQMo8hXyKZ9ZRK6IMpkwxgFe6xt51wkAaZ8m8argYNxD9UBsCTizxb+iUaQ==
+	bh=b3NxAQUEhhiHtmalxt25UQpIEh3A8DobG2qOMrP77WQ=;
+	b=AoaZr4oK+uPjgRe+H1N/P4OqdxMzaLQwACpyg7af2LxycPofpRJURn7+dS209wAPqvb2Pa
+	pyguefJyN0BETiXosk+qeiLcs65x2b42r4Xs2kf58Hhxb2lmpsj3DMEMMNaki6d405++FY
+	0hRnLs55sh8fmVIdow8NkLHWnHGd+BI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1691486813;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b3NxAQUEhhiHtmalxt25UQpIEh3A8DobG2qOMrP77WQ=;
+	b=fxL/rpYwL46zGUX+wz6hOBohbpcZSktGMd5XhY0mnCjlb5Vurz5pFf3PTuD19V4sOSJ9Wo
+	YCByPZ22Ze/c5AAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9677713451;
+	Tue,  8 Aug 2023 09:26:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id rxmpJF0K0mRqGAAAMHmgww
+	(envelope-from <jack@suse.cz>); Tue, 08 Aug 2023 09:26:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1DB1BA0769; Tue,  8 Aug 2023 11:26:53 +0200 (CEST)
+Date: Tue, 8 Aug 2023 11:26:53 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bob Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 04/13] btrfs: have it use inode_update_timestamps
+Message-ID: <20230808092653.ma6d72b4xwa3jk3f@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-4-d1dec143a704@kernel.org>
 MIME-Version: 1.0
-Date: Tue, 08 Aug 2023 11:25:13 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 00/41] mtd: spi-nor: clean the flash_info database up
-In-Reply-To: <2d86bba8-6cad-d67f-59bf-157e245edc97@linaro.org>
-References: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
- <2d86bba8-6cad-d67f-59bf-157e245edc97@linaro.org>
-Message-ID: <ecd7b592e6aaa4ca7e98d231c74693ed@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <20230807-mgctime-v7-4-d1dec143a704@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_022518_199011_8AFC192F 
-X-CRM114-Status: UNSURE (   8.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230808_022655_423558_3D61C1F3 
+X-CRM114-Status: GOOD (  19.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,26 +141,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
+On Mon 07-08-23 15:38:35, Jeff Layton wrote:
+> In later patches, we're going to drop the "now" argument from the
+> update_time operation. Have btrfs_update_time use the new
+> inode_update_timestamps helper to fetch a new timestamp and update it
+> properly.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-Am 2023-08-08 11:21, schrieb Tudor Ambarus:
-> I skimmed over the patches, the idea is good as I already said.
-> When do you aim to have these integrated, now or after -rc1 is out?
-> After -rc1 is more conservative, as if there are problems, we'll have
-> more time to fix them. Either way is good for me as long as you're 
-> around
-> to fix possible problems, but I'd like some timeframe to know when to
-> invest time in reviewing all. We're at -rc5.
+Nice cleanup! Feel free to add:
 
-After -rc1 is out is fine. I just need to track the flash_info additions
-until then.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
--michael
+								Honza
+
+> ---
+>  fs/btrfs/inode.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 29a20f828dda..d52e7d64570a 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -6068,14 +6068,7 @@ static int btrfs_update_time(struct inode *inode, struct timespec64 *now,
+>  	if (btrfs_root_readonly(root))
+>  		return -EROFS;
+>  
+> -	if (flags & S_VERSION)
+> -		dirty |= inode_maybe_inc_iversion(inode, dirty);
+> -	if (flags & S_CTIME)
+> -		inode_set_ctime_to_ts(inode, *now);
+> -	if (flags & S_MTIME)
+> -		inode->i_mtime = *now;
+> -	if (flags & S_ATIME)
+> -		inode->i_atime = *now;
+> +	dirty = inode_update_timestamps(inode, flags);
+>  	return dirty ? btrfs_dirty_inode(BTRFS_I(inode)) : 0;
+>  }
+>  
+> 
+> -- 
+> 2.41.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
