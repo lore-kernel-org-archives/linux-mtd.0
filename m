@@ -4,55 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06459EB64DD
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 02:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08D31C04A94
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 02:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CLPhTR1sYkbuzbUK8CSal4KMkDpwG/fDWCzdEEWvFXM=; b=V6FRu8VEx70mXY
-	1V/J7rBH5cqxPA+b/UBWR/FHnN+mimZfkZBRNC2JCw6yFXWQXhmWpc3AQ0qGIB/a1ALPmAH8S0RIx
-	JP4tse5vg+X2rfETyAcrdXg7f8WqR9SiRDpH8Zgx3vMFCAQd4em8vcJYY36JuUur0ysFkOZgDjhhR
-	IywmxfXtuRVqXkOWGyQF5E7BSYa0g6Vl65ciudsELttoJWzIZ7UAk9vuL4QnDkd1dRJdWGHt+P1RH
-	nAtnhsy8ISxhdjZrFrQpgLXpVsNcaIKcYVBVbblMpMGsGnXguHNQqBWr6XSYumNFBZmNZEiTkvmOE
-	3fVoh0oiXUmdU4PASx8A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9sV7NlmOH7XTXyjrTv+1YMagM4hsNEILsXyasNkhcGk=; b=M+oaNOlpkeq7xY
+	M16aTTs4jHwxO6V1sCeEpN0O6zliS1PUg1Kng3zmCQblDHJN3EPiihgZaap9Xpv4GQW2pOQ01qx5C
+	dITF8NpLnSdWmtcDAz6Zd8xOeSgdVXK518+EQuYSi15y5yPDaH4aTPvYssKW69q+IvQuFzh9NtOAO
+	l0TBmZq9vE0Fy7tnQ00X4APLkraE5LXvWwJWm3DRIHTqnxcZkbhayW77eqgej+/s4Hi3rcZTXHK2k
+	Ur4cfEEEqYZ7BlXSUjcpq++vdQK3M1GY8FYEneHp4tg4oUz8ycn4ehOwRFKZlsAz8vYl9qHkLzx1f
+	+rr3Ee7AaioueQgcJLVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTCNO-001XdX-0D;
-	Tue, 08 Aug 2023 02:23:14 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1qTCOS-001XkM-0y;
+	Tue, 08 Aug 2023 02:24:20 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTCNK-001Xca-0s
+	id 1qTCOP-001Xj4-0m
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 02:23:11 +0000
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKcQ83CF1zrS8y;
-	Tue,  8 Aug 2023 10:21:52 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 8 Aug
- 2023 10:23:02 +0800
-From: Ruan Jinjie <ruanjinjie@huawei.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris
-	<computersforpeace@gmail.com>, Kamal Dasu <kamal.dasu@broadcom.com>, Broadcom
- internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next v3] Propagate error and simplify ternary operators for brcmstb_nand_wait_for_completion()
-Date: Tue, 8 Aug 2023 10:22:28 +0800
-Message-ID: <20230808022228.2983698-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	Tue, 08 Aug 2023 02:24:18 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bc65360648so19491615ad.1
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 19:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1691461454; x=1692066254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HUGk8Gm4qWKcvYyYW1oMdtOdnxgdWZtLrf0WmvG8aOg=;
+        b=E8R/sNcxrOK1IUnWWdPxuHAURfzEKsQXFvPF/8WoYIocyBzrOF6C/15wk0bBTyq8fp
+         w+9skh2POsCjChG96SdxCE1ukUJoo7U6iUCJoOHux3qHabiPQt2q8GYhzVnnqh4Ia8gf
+         otMrpF/u+4+6GZvnjfH9iZQVLX7oYyO80eB3aSg/65gqSdDxQ6TBQ0eTbg/7hck8CRIR
+         N2poqJrxPUv+xHM8+kwldwyyrpY8ClA2gjcNqxK3I6Rjaxj3f+CIGTw2aTNSrwyrBhAC
+         fS1NWvmq7XKVFcVROA15iTu7BqzTlMOOgRsfusR61dD9uCRFfNfvH5SixHmdTB0ZZ2at
+         NUZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691461454; x=1692066254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HUGk8Gm4qWKcvYyYW1oMdtOdnxgdWZtLrf0WmvG8aOg=;
+        b=hVVBFMQC8AqNEm6QvUI+KapWrVEaAjbWMAs3Y3vStwDFxIMcDCN1gk5/JNhqgwg9+p
+         CEm64XpeaAdIha5ZAb5uQXdsP1wq9maJ372JNU+3ipprWspqjCeMijBrC6eCMcUnO1xL
+         /o89xv+KkMuLrz868jMpmopvOjP7WMqV3sgxh+s3CL4Q5/1YEMzXL2iykiMxjYGki94D
+         Xe2E5JRfF8DQysfg+LkUsXlBh2GvGBOZVzNngzpvP3xc0INaAz9v7O1SH17RUKJuC9xQ
+         wCOoPQ9MRRWkE++Bjf2U8m8Js4hDuqNxqLDR7yglLZLLmB0uiH7YLPQsR479n6pL5hdA
+         mA1g==
+X-Gm-Message-State: AOJu0YziaeBtLUjcoN1rB+SwQTDhKt/gqyZLpMDn7ZLyCfSz7HutZBbP
+	49v8ZFeE+Zo3ZszLpL0qID+WQA==
+X-Google-Smtp-Source: AGHT+IEzrDGpXyLCXRNBmZGxK80nBmbnZ3Zc29NdEkVzSJ3QNXEJvOFh13D52+77LsVxnWz7HKqTHA==
+X-Received: by 2002:a17:902:8692:b0:1b9:d307:c1df with SMTP id g18-20020a170902869200b001b9d307c1dfmr10722096plo.17.1691461453690;
+        Mon, 07 Aug 2023 19:24:13 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-166-213.pa.nsw.optusnet.com.au. [49.180.166.213])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170902f55100b001b864add154sm7583543plf.154.2023.08.07.19.24.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 19:24:13 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1qTCOH-002Wjl-2u;
+	Tue, 08 Aug 2023 12:24:09 +1000
+Date: Tue, 8 Aug 2023 12:24:09 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: akpm@linux-foundation.org, tkhai@ya.ru, vbabka@suse.cz,
+	roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+	paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+	cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+	gregkh@linuxfoundation.org, muchun.song@linux.dev,
+	simon.horman@corigine.com, dlemoal@kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+	kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+	rcu@vger.kernel.org, netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+	dm-devel@redhat.com, linux-raid@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 45/48] mm: shrinker: make global slab shrink lockless
+Message-ID: <ZNGnSbiPN0lDLpSW@dread.disaster.area>
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-46-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <20230807110936.21819-46-zhengqi.arch@bytedance.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_192310_478545_2CA1A1A7 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20230807_192417_281657_FC5B8AFA 
+X-CRM114-Status: GOOD (  29.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,66 +112,145 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As bcmnand_ctrl_poll_status() return negative errno, so return true if
-sts < 0. The < 0 case does not exist for wait_for_completion_timeout(),
-so return true if sts = 0 and zero otherwise. Both of the true return
-of them can be considered as a -ETIMEDOUT err, so return -ETIMEDOUT
-if err is true to propagate err from its caller.
+On Mon, Aug 07, 2023 at 07:09:33PM +0800, Qi Zheng wrote:
+> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> index eb342994675a..f06225f18531 100644
+> --- a/include/linux/shrinker.h
+> +++ b/include/linux/shrinker.h
+> @@ -4,6 +4,8 @@
+>  
+>  #include <linux/atomic.h>
+>  #include <linux/types.h>
+> +#include <linux/refcount.h>
+> +#include <linux/completion.h>
+>  
+>  #define SHRINKER_UNIT_BITS	BITS_PER_LONG
+>  
+> @@ -87,6 +89,10 @@ struct shrinker {
+>  	int seeks;	/* seeks to recreate an obj */
+>  	unsigned flags;
+>  
+> +	refcount_t refcount;
+> +	struct completion done;
+> +	struct rcu_head rcu;
 
-Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
----
-v3:
-- Update the commit title and message.
-- Do not change the return type from bool to int.
-- Return -ETIMEDOUT if err is true.
-v2:
-- Update the commit title and message.
-- Propagate the error instead of upon error.
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Documentation, please. What does the refcount protect, what does the
+completion provide, etc.
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 03764b589ec5..440bef477930 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1666,13 +1666,13 @@ static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- 		disable_ctrl_irqs(ctrl);
- 		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
- 					       NAND_CTRL_RDY, 0);
--		err = (sts < 0) ? true : false;
-+		err = sts < 0;
- 	} else {
- 		unsigned long timeo = msecs_to_jiffies(
- 						NAND_POLL_STATUS_TIMEOUT_MS);
- 		/* wait for completion interrupt */
- 		sts = wait_for_completion_timeout(&ctrl->done, timeo);
--		err = (sts <= 0) ? true : false;
-+		err = !sts;
- 	}
- 
- 	return err;
-@@ -1688,6 +1688,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
- 	if (ctrl->cmd_pending)
- 		err = brcmstb_nand_wait_for_completion(chip);
- 
-+	ctrl->cmd_pending = 0;
- 	if (err) {
- 		u32 cmd = brcmnand_read_reg(ctrl, BRCMNAND_CMD_START)
- 					>> brcmnand_cmd_shift(ctrl);
-@@ -1696,8 +1697,8 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
- 			"timeout waiting for command %#02x\n", cmd);
- 		dev_err_ratelimited(ctrl->dev, "intfc status %08x\n",
- 			brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS));
-+		return -ETIMEDOUT;
- 	}
--	ctrl->cmd_pending = 0;
- 	return brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS) &
- 				 INTFC_FLASH_STATUS;
- }
+> +
+>  	void *private_data;
+>  
+>  	/* These are for internal use */
+> @@ -120,6 +126,17 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>  void shrinker_register(struct shrinker *shrinker);
+>  void shrinker_free(struct shrinker *shrinker);
+>  
+> +static inline bool shrinker_try_get(struct shrinker *shrinker)
+> +{
+> +	return refcount_inc_not_zero(&shrinker->refcount);
+> +}
+> +
+> +static inline void shrinker_put(struct shrinker *shrinker)
+> +{
+> +	if (refcount_dec_and_test(&shrinker->refcount))
+> +		complete(&shrinker->done);
+> +}
+> +
+>  #ifdef CONFIG_SHRINKER_DEBUG
+>  extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
+>  						  const char *fmt, ...);
+> diff --git a/mm/shrinker.c b/mm/shrinker.c
+> index 1911c06b8af5..d318f5621862 100644
+> --- a/mm/shrinker.c
+> +++ b/mm/shrinker.c
+> @@ -2,6 +2,7 @@
+>  #include <linux/memcontrol.h>
+>  #include <linux/rwsem.h>
+>  #include <linux/shrinker.h>
+> +#include <linux/rculist.h>
+>  #include <trace/events/vmscan.h>
+>  
+>  #include "internal.h"
+> @@ -577,33 +578,42 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
+>  	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
+>  		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+>  
+> -	if (!down_read_trylock(&shrinker_rwsem))
+> -		goto out;
+> -
+> -	list_for_each_entry(shrinker, &shrinker_list, list) {
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
+>  		struct shrink_control sc = {
+>  			.gfp_mask = gfp_mask,
+>  			.nid = nid,
+>  			.memcg = memcg,
+>  		};
+>  
+> +		if (!shrinker_try_get(shrinker))
+> +			continue;
+> +
+> +		/*
+> +		 * We can safely unlock the RCU lock here since we already
+> +		 * hold the refcount of the shrinker.
+> +		 */
+> +		rcu_read_unlock();
+> +
+>  		ret = do_shrink_slab(&sc, shrinker, priority);
+>  		if (ret == SHRINK_EMPTY)
+>  			ret = 0;
+>  		freed += ret;
+> +
+>  		/*
+> -		 * Bail out if someone want to register a new shrinker to
+> -		 * prevent the registration from being stalled for long periods
+> -		 * by parallel ongoing shrinking.
+> +		 * This shrinker may be deleted from shrinker_list and freed
+> +		 * after the shrinker_put() below, but this shrinker is still
+> +		 * used for the next traversal. So it is necessary to hold the
+> +		 * RCU lock first to prevent this shrinker from being freed,
+> +		 * which also ensures that the next shrinker that is traversed
+> +		 * will not be freed (even if it is deleted from shrinker_list
+> +		 * at the same time).
+>  		 */
+
+This needs to be moved to the head of the function, and document
+the whole list walk, get, put and completion parts of the algorithm
+that make it safe. There's more to this than "we hold a reference
+count", especially the tricky "we might see the shrinker before it
+is fully initialised" case....
+
+
+.....
+>  void shrinker_free(struct shrinker *shrinker)
+>  {
+>  	struct dentry *debugfs_entry = NULL;
+> @@ -686,9 +712,18 @@ void shrinker_free(struct shrinker *shrinker)
+>  	if (!shrinker)
+>  		return;
+>  
+> +	if (shrinker->flags & SHRINKER_REGISTERED) {
+> +		shrinker_put(shrinker);
+> +		wait_for_completion(&shrinker->done);
+> +	}
+
+Needs a comment explaining why we need to wait here...
+> +
+>  	down_write(&shrinker_rwsem);
+>  	if (shrinker->flags & SHRINKER_REGISTERED) {
+> -		list_del(&shrinker->list);
+> +		/*
+> +		 * Lookups on the shrinker are over and will fail in the future,
+> +		 * so we can now remove it from the lists and free it.
+> +		 */
+
+.... rather than here after the wait has been done and provided the
+guarantee that no shrinker is running or will run again...
+
+-Dave.
 -- 
-2.34.1
-
+Dave Chinner
+david@fromorbit.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
