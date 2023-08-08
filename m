@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 302B2C04FDF
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 16:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C16DC001B0
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Aug 2023 16:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w4jZytJb6OjXyeR42b1bdgY1vMlpmJ+YXoA1qSkJvo4=; b=Pn0f8kLAQ2VWun
-	qHPYi3zsjS+bSk97XiQuzomcaHI4B78z9/4J6z0PBF8s03qYZwkGNHhIPW/JdsxKqE/aK17TL7+8+
-	nNtE63uoOOgzRlaBpq3ABHjishtDl/5V4ylXodOsGOc0bmsay8J6END3UAorfVMHbc+Em6u7XH61d
-	f5GgO6cfoHGiYl772Jw7YHeppEqScrc4BiYMQXGlmALZnF8hW8iR5s/jwI1O1a3yU8dAK7hjuBxRv
-	u9dK/CBlhUx2xg8zjOT9fm/bFrzVZ81Rn++kEwBrFp5Bcx39cQk3I8zv3vAk1R6hQvJ/sz3RpFIaq
-	AAkVUh0lnke4kBDmOqxw==;
+	List-Owner; bh=x41/2nxEo2hRNxGFbgvOn5rJn1JebGuqqC5G/0scRTc=; b=f2f+jiX8y7EVRE
+	uQMp0Kf3d8V8agE3vlgCjFPJOdi1N82X+wdfdyTgKJK0Da8W1nR/vQZGh+Q4gT7GlTzlDL9TPvJxB
+	hqSX49RipGP6zRHfonbYPXeVVcl7Qtc7aDCy/kmUlW04G2vfw5VqdldzOHaQoM8dlKWuqPEIukEwO
+	NvHzfTtEdUwiT9kPyZ36Kkf3zu+7fqWYRAtbOmkLbi4Xz6zwCZxnq/VvYyqNMwFivanX5P616xXPa
+	4nT5MBr11cCLkjOPEGxkxAX/273XpIl5mXB/HAjTFlMFNX99Ivss6BP9wK+UraWWlikMrSs5DoDJ4
+	Z6uZ5tpmdFv9THst4IUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTPDB-002tPl-08;
-	Tue, 08 Aug 2023 16:05:33 +0000
+	id 1qTPDV-002tYz-0N;
+	Tue, 08 Aug 2023 16:05:53 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTPD8-002tOW-2w
+	id 1qTPDR-002tXq-2o
 	for linux-mtd@lists.infradead.org;
-	Tue, 08 Aug 2023 16:05:32 +0000
+	Tue, 08 Aug 2023 16:05:51 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1qTPD4-0007bf-1p;
-	Tue, 08 Aug 2023 16:05:26 +0000
-Date: Tue, 8 Aug 2023 17:05:18 +0100
+	id 1qTPDM-0007ca-10;
+	Tue, 08 Aug 2023 16:05:44 +0000
+Date: Tue, 8 Aug 2023 17:05:36 +0100
 From: Daniel Golle <daniel@makrotopia.org>
 To: Randy Dunlap <rdunlap@infradead.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -44,15 +44,15 @@ To: Randy Dunlap <rdunlap@infradead.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/8] mtd: ubi: populate ubi volume fwnode
-Message-ID: <eca0fc4ec44cfb5e4392474a9b225ebdc868f9b6.1691510312.git.daniel@makrotopia.org>
+Subject: [PATCH v3 8/8] mtd: ubi: provide NVMEM layer over UBI volumes
+Message-ID: <1cf385cf00ef8dc918060f56b129061662656287.1691510312.git.daniel@makrotopia.org>
 References: <cover.1691510312.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1691510312.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_090530_948165_43CE9BD8 
-X-CRM114-Status: GOOD (  13.34  )
+X-CRM114-CacheID: sfid-20230808_090549_908999_3AB2C06B 
+X-CRM114-Status: GOOD (  27.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,68 +69,252 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Look for the 'volumes' subnode of an MTD partition attached to a UBI
-device and attach matching child nodes to UBI volumes.
-This allows UBI volumes to be referenced in device tree, e.g. for use
-as NVMEM providers.
+In an ideal world we would like UBI to be used where ever possible on a
+NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
+is possible to achieve an (almost-)all-UBI flash layout. Hence the need
+for a way to also use UBI volumes to store board-level constants, such
+as MAC addresses and calibration data of wireless interfaces.
+
+Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
+providers. Allow UBI devices to have a "volumes" firmware subnode with
+volumes which may be compatible with "nvmem-cells".
+Access to UBI volumes via the NVMEM interface at this point is
+read-only, and it is slow, opening and closing the UBI volume for each
+access due to limitations of the NVMEM provider API.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/mtd/ubi/vmt.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/mtd/ubi/Kconfig  |  12 +++
+ drivers/mtd/ubi/Makefile |   1 +
+ drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 202 insertions(+)
+ create mode 100644 drivers/mtd/ubi/nvmem.c
 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index eed4b57c61bda..ee756a00a370b 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -124,6 +124,31 @@ static void vol_release(struct device *dev)
- 	kfree(vol);
- }
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 2ed77b7b3fcb5..45d939bbfa853 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
  
-+static struct fwnode_handle *find_volume_fwnode(struct ubi_volume *vol)
+ 	   If in doubt, say "N".
+ 
++config MTD_UBI_NVMEM
++	tristate "UBI virtual NVMEM"
++	default n
++	depends on NVMEM
++	help
++	   This option enabled an additional driver exposing UBI volumes as NVMEM
++	   providers, intended for platforms where UBI is part of the firmware
++	   specification and used to store also e.g. MAC addresses or board-
++	   specific Wi-Fi calibration data.
++
++	   If in doubt, say "N".
++
+ endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
+index 543673605ca72..4b51aaf00d1a2 100644
+--- a/drivers/mtd/ubi/Makefile
++++ b/drivers/mtd/ubi/Makefile
+@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
+ ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
+ 
+ obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
++obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
+diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
+new file mode 100644
+index 0000000000000..dd7cc6afb8d00
+--- /dev/null
++++ b/drivers/mtd/ubi/nvmem.c
+@@ -0,0 +1,189 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
++ */
++
++/* UBI NVMEM provider */
++#include "ubi.h"
++#include <linux/nvmem-provider.h>
++
++/* List of all NVMEM devices */
++static LIST_HEAD(nvmem_devices);
++static DEFINE_MUTEX(devices_mutex);
++
++struct ubi_nvmem {
++	struct nvmem_device *nvmem;
++	int ubi_num;
++	int vol_id;
++	int usable_leb_size;
++	struct list_head list;
++};
++
++static int ubi_nvmem_reg_read(void *priv, unsigned int from,
++			      void *val, size_t bytes)
 +{
-+	struct fwnode_handle *fw_vols, *fw_vol;
-+	const char *volname;
-+	u32 volid;
++	struct ubi_nvmem *unv = priv;
++	struct ubi_volume_desc *desc;
++	int err = 0, lnum, offs, bytes_left;
++	size_t to_read;
 +
-+	fw_vols = device_get_named_child_node(vol->dev.parent->parent, "volumes");
-+	if (!fw_vols)
-+		return NULL;
++	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
++	if (IS_ERR(desc))
++		return PTR_ERR(desc);
 +
-+	fwnode_for_each_child_node(fw_vols, fw_vol) {
-+		if (!fwnode_property_read_string(fw_vol, "volname", &volname) &&
-+		    strncmp(volname, vol->name, vol->name_len))
-+			continue;
++	lnum = div_u64_rem(from, unv->usable_leb_size, &offs);
++	bytes_left = bytes;
++	while (bytes_left) {
++		to_read = unv->usable_leb_size - offs;
 +
-+		if (!fwnode_property_read_u32(fw_vol, "volid", &volid) &&
-+		    vol->vol_id != volid)
-+			continue;
++		if (to_read > bytes_left)
++			to_read = bytes_left;
 +
-+		return fw_vol;
++		err = ubi_read(desc, lnum, val, offs, to_read);
++		if (err)
++			break;
++
++		lnum += 1;
++		offs = 0;
++		bytes_left -= to_read;
++		val += to_read;
 +	}
++	ubi_close_volume(desc);
 +
-+	return NULL;
++	if (err)
++		return err;
++
++	return bytes_left == 0 ? 0 : -EIO;
 +}
 +
- /**
-  * ubi_create_volume - create volume.
-  * @ubi: UBI device description object
-@@ -223,6 +248,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	vol->name_len  = req->name_len;
- 	memcpy(vol->name, req->name, vol->name_len);
- 	vol->ubi = ubi;
-+	device_set_node(&vol->dev, find_volume_fwnode(vol));
- 
- 	/*
- 	 * Finish all pending erases because there may be some LEBs belonging
-@@ -597,6 +623,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- 	vol->dev.class = &ubi_class;
- 	vol->dev.groups = volume_dev_groups;
- 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
-+	device_set_node(&vol->dev, find_volume_fwnode(vol));
- 	err = device_register(&vol->dev);
- 	if (err) {
- 		cdev_del(&vol->cdev);
++static int ubi_nvmem_add(struct ubi_volume_info *vi)
++{
++	struct nvmem_config config = {};
++	struct ubi_nvmem *unv;
++	int ret;
++
++	if (!device_is_compatible(vi->dev, "nvmem-cells"))
++		return 0;
++
++	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
++	if (!unv)
++		return -ENOMEM;
++
++	config.id = NVMEM_DEVID_NONE;
++	config.dev = vi->dev;
++	config.name = dev_name(vi->dev);
++	config.owner = THIS_MODULE;
++	config.priv = unv;
++	config.reg_read = ubi_nvmem_reg_read;
++	config.size = vi->usable_leb_size * vi->size;
++	config.word_size = 1;
++	config.stride = 1;
++	config.read_only = true;
++	config.root_only = true;
++	config.ignore_wp = true;
++	config.of_node = dev_of_node(vi->dev);
++
++	if (!config.of_node)
++		config.no_of_node = true;
++
++	unv->ubi_num = vi->ubi_num;
++	unv->vol_id = vi->vol_id;
++	unv->usable_leb_size = vi->usable_leb_size;
++	unv->nvmem = nvmem_register(&config);
++	if (IS_ERR(unv->nvmem)) {
++		/* Just ignore if there is no NVMEM support in the kernel */
++		if (PTR_ERR(unv->nvmem) == -EOPNOTSUPP)
++			ret = 0;
++		else
++			ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
++					    "Failed to register NVMEM device\n");
++
++		kfree(unv);
++		return ret;
++	}
++
++	mutex_lock(&devices_mutex);
++	list_add_tail(&unv->list, &nvmem_devices);
++	mutex_unlock(&devices_mutex);
++
++	return 0;
++}
++
++static void ubi_nvmem_remove(struct ubi_volume_info *vi)
++{
++	struct ubi_nvmem *unv_c, *unv = NULL;
++
++	mutex_lock(&devices_mutex);
++	list_for_each_entry(unv_c, &nvmem_devices, list)
++		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
++			unv = unv_c;
++			break;
++		}
++
++	if (!unv) {
++		mutex_unlock(&devices_mutex);
++		return;
++	}
++
++	list_del(&unv->list);
++	mutex_unlock(&devices_mutex);
++	nvmem_unregister(unv->nvmem);
++	kfree(unv);
++}
++
++/**
++ * nvmem_notify - UBI notification handler.
++ * @nb: registered notifier block
++ * @l: notification type
++ * @ns_ptr: pointer to the &struct ubi_notification object
++ */
++static int nvmem_notify(struct notifier_block *nb, unsigned long l,
++			 void *ns_ptr)
++{
++	struct ubi_notification *nt = ns_ptr;
++
++	switch (l) {
++	case UBI_VOLUME_RESIZED:
++		ubi_nvmem_remove(&nt->vi);
++		fallthrough;
++	case UBI_VOLUME_ADDED:
++		ubi_nvmem_add(&nt->vi);
++		break;
++	case UBI_VOLUME_SHUTDOWN:
++		ubi_nvmem_remove(&nt->vi);
++		break;
++	default:
++		break;
++	}
++	return NOTIFY_OK;
++}
++
++static struct notifier_block nvmem_notifier = {
++	.notifier_call = nvmem_notify,
++};
++
++static int __init ubi_nvmem_init(void)
++{
++	return ubi_register_volume_notifier(&nvmem_notifier, 0);
++}
++
++static void __exit ubi_nvmem_exit(void)
++{
++	struct ubi_nvmem *unv, *tmp;
++
++	mutex_lock(&devices_mutex);
++	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
++		nvmem_unregister(unv->nvmem);
++		list_del(&unv->list);
++		kfree(unv);
++	}
++	mutex_unlock(&devices_mutex);
++
++	ubi_unregister_volume_notifier(&nvmem_notifier);
++}
++
++module_init(ubi_nvmem_init);
++module_exit(ubi_nvmem_exit);
++MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
++MODULE_AUTHOR("Daniel Golle");
++MODULE_LICENSE("GPL");
 -- 
 2.41.0
 
