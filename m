@@ -4,69 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87419C001DE
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 22:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A41DC001DE
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 22:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=A6DaDEaN53E+xisw1JIfaKwnXJw2GRN127f/Pxaa6uw=; b=CQN0GZnx1HsLL+L0Uc/juLHcrr
-	a/T+sNNO6VTaSAjS26cWwJdy4oHfO8ZAUEL3C2LLCQUIuuhsVb0pws85i3LEREz4MLNjvxhLrNlnM
-	nafwzZBm/j+EYM41nmYHc2Ky8XKODEAqTCOFgyFZrWniqUV64WYfSLhGVwx9m029VfLNbxayj8oIS
-	1nPhIn0588kZgLwM6NqRv6QlRXJclV0l7w0aj6ptGleObpBX3RFiDgs6TJarkdqqljd/5BZVs8W3E
-	kBWYh8hNRtTukmMec8zpzzoi73DB+YyAgJwKKN4zOMCPZSb54+BUKVdgsAlskF7Uq2t9XI5KcDB4r
-	FuNB1SPQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LB9o2v3ru4n+/ACaqB5iwgLVe0BYtOwa4pfSL2ckoHQ=; b=pfabVX5kt5UXvL
+	6jaFcZK70FCd4qqdlHBbl5g51iGqvtZKdJbtprY6zWhdD7/P6vJpkHbYudT0sgBMFC71SoVK++AvQ
+	h+uwjYeB2F38+tQAWqDr+a2N6CLIa1ywjWQYxP2Q2dcmEhoe36laI891C2uUv52I5UbMUVqAo2IME
+	P2PeVmCu8v8xI1vTSiQ6Tn8TemR2L0Zf943LcqUSE6eH+Jrv1iXOmmRvdc+uOhn+Yn0TTDpzYkGqA
+	zmWVYlJnyBXbQg9r49h0svNTc7i0F7PUPAWiewT31VVBaM3PC9z20uugvSe76L+3wqsn9294xZ9bA
+	Ys5OiPUMfDy+inPOUujw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTruO-0060pd-0h;
-	Wed, 09 Aug 2023 22:44:04 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1qTs8X-0061fw-1m;
+	Wed, 09 Aug 2023 22:58:41 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTruL-0060ok-1S
+	id 1qTs8U-0061fB-0k
 	for linux-mtd@lists.infradead.org;
-	Wed, 09 Aug 2023 22:44:02 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id A2B1F635D29E;
-	Thu, 10 Aug 2023 00:43:59 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id v_JwZWmfHdUG; Thu, 10 Aug 2023 00:43:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 4E2D4635D29D;
-	Thu, 10 Aug 2023 00:43:59 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id jfzWTASF6VHD; Thu, 10 Aug 2023 00:43:59 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 2EA2A635D28F;
-	Thu, 10 Aug 2023 00:43:59 +0200 (CEST)
-Date: Thu, 10 Aug 2023 00:43:59 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: hch <hch@lst.de>
-Cc: Stephan Wurm <stephan.wurm@a-eberle.de>, 
-	linux-block <linux-block@vger.kernel.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Johannes Eigner <johannes.eigner@a-eberle.de>
-Message-ID: <533238598.5052964.1691621039144.JavaMail.zimbra@nod.at>
-In-Reply-To: <20230809223703.GA10719@lst.de>
-References: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm> <1293911429.1782934.1691445776353.JavaMail.zimbra@nod.at> <20230809135308.GA32214@lst.de> <ZNOec8JmndA63Mnh@PC-LX-Wurm> <20230809141542.GA32614@lst.de> <366198994.5052941.1691620484888.JavaMail.zimbra@nod.at> <20230809223703.GA10719@lst.de>
-Subject: Re: ubiblock: null pointer dereference using scatterlist in
- work_queue
+	Wed, 09 Aug 2023 22:58:40 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id EFF2864BB1;
+	Wed,  9 Aug 2023 22:58:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8894DC433C8;
+	Wed,  9 Aug 2023 22:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691621916;
+	bh=qXAY5+ypBMRjazkxqMPSQk8aD3TC6Q1gvPIppZsbcKg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BbgfgXdsOE1QpeBsua+opVOLktDulOVKwrCaVnE+j/XlHuEqn9K5n88UcwTAUVVoo
+	 zgTMn+okkEpKKSl1H69pYJOdDX/wQ9vbSY7IacbVHRfTOdAPT5LTyBGIR+3ApZPm9L
+	 Q4/9B+zSKZWhRLNoy2P6/ah0vmGksUfy+jnyq5gBvzs8TgZGWyIEOkoj6ksJRL3TeK
+	 1Tjn5N5Ry4ya7sJtVj+4DHPGpT5bBRbqiD0OEqy3kgFo002Y0r+3PNHgogA3sOBAm9
+	 0/aIl3X9uaOoK02IgDHKgKkryfRnhcv6bhevTFS2Jq6cC2j+hKSm6iHjfl5i4QSSUq
+	 a2ZeUbCL1tkgw==
+Received: (nullmailer pid 3162148 invoked by uid 1000);
+	Wed, 09 Aug 2023 22:58:34 -0000
+Date: Wed, 9 Aug 2023 16:58:34 -0600
+From: Rob Herring <robh@kernel.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/8] dt-bindings: mtd: add basic bindings for UBI
+Message-ID: <20230809225834.GA3144140-robh@kernel.org>
+References: <cover.1691510312.git.daniel@makrotopia.org>
+ <094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubiblock: null pointer dereference using scatterlist in work_queue
-Thread-Index: r+jP0Y2+YKP9h0H5tuoMD33XwrLVCg==
+Content-Disposition: inline
+In-Reply-To: <094e68da59bbd9efea1469b122f34f5dcf156f0f.1691510312.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230809_154401_666188_BBDF6676 
-X-CRM114-Status: UNSURE (   6.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230809_155838_378902_FAC7AFBE 
+X-CRM114-Status: GOOD (  21.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,23 +72,157 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IE9uIFRodSwgQXVnIDEwLCAyMDIzIGF0
-IDEyOjM0OjQ0QU0gKzAyMDAsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4gV2lsbCBkbyBz
-byEgU28gZmFyIEkgbWFuYWdlZCB0byBnZXQgVUJJYmxvY2sgd29yayB3aXRoIHNjc2lfa21hcF9h
-dG9taWNfc2coKS4KPj4gU2FkbHkgbm93IHdpdGgga21hcCdlZCBtZW1vcnkgYSBib3VuY2UgYnVm
-ZmVyIGlzIG5lZWRlZCBzaW5jZSBJTyBpbiBVQkkvTVREIGNhbgo+PiBzbGVlcC4KPj4gSXMgdGhl
-cmUgYSBzdHJvbmcgcmVhc29uIHdoeSBzY3NpX2ttYXBfYXRvbWljX3NnKCkgbmVlZHMgSVJRcyBk
-aXNhYmxlZD8KPiAKPiBJIGRvbid0IHRoaW5rIGl0IG5lZWRzIGlycXMgZGlzYWJsZWQuICBBbHNv
-IGlmIHlvdSBzd2l0Y2ggZnJvbSB0aGUKPiBkZXByZWNhdGVkIGttYXBfYXRvbWljIHRvIGttYXBf
-bG9jYWwgZmlyc3QgeW91IGNhbiBzbGVlcCBhbmQgZG9uJ3QKPiBuZWVkIGJvdW5jZSBidWZmZXJz
-LgoKWWVwLCBmb3IgdXBzdHJlYW0ga21hcF9sb2NhbCB3aWxsIGRvIHRoZSB0cmljaywgYnV0IEkg
-bmVlZCBhbHNvIHNvbWV0aGluZwpmb3IgdGhlIHN0YWJsZSB0cmVlcy4KQW55d2F5LCB0aW1lIHRv
-IGdldCBzb21lIHNsZWVwLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+On Tue, Aug 08, 2023 at 05:03:19PM +0100, Daniel Golle wrote:
+> Add basic bindings for UBI devices and volumes.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../bindings/mtd/partitions/linux,ubi.yaml    | 65 +++++++++++++++++++
+>  .../bindings/mtd/partitions/ubi-volume.yaml   | 35 ++++++++++
+>  2 files changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+> new file mode 100644
+> index 0000000000000..79cfa0a3eaa7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+> @@ -0,0 +1,65 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/linux,ubi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Unsorted Block Images
+> +
+> +description: |
+> +  UBI ("Unsorted Block Images") is a volume management system for raw
+> +  flash devices which manages multiple logical volumes on a single
+> +  physical flash device and spreads the I/O load (i.e, wear-leveling)
+> +  across whole flash chip.
+> +
+> +maintainers:
+> +  - Daniel Golle <daniel@makrotopia.org>
+> +
+> +allOf:
+> +  - $ref: partition.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: linux,ubi
+> +
+> +  volumes:
+> +    type: object
+> +    description: UBI Volumes
+> +
+> +    patternProperties:
+> +      "^ubi-volume-.*$":
+> +        $ref: "/schemas/mtd/partitions/ubi-volume.yaml"
+
+Don't need quotes.
+
+> +
+> +    unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    partitions {
+> +        compatible = "fixed-partitions";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        partition@0 {
+> +            reg = <0x0 0x100000>;
+> +            label = "bootloader";
+> +            read-only;
+> +        };
+> +
+> +        partition@100000 {
+> +            reg = <0x100000 0x1ff00000>;
+> +            label = "ubi";
+> +            compatible = "linux,ubi";
+> +
+> +            volumes {
+> +                ubi-volume-caldata {
+> +                    volid = <2>;
+> +                    volname = "rf";
+> +                };
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> new file mode 100644
+> index 0000000000000..c17d0caf07d97
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> @@ -0,0 +1,35 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/ubi-volume.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: UBI volume
+> +
+> +description: |
+> +  This binding describes a single UBI volume. Volumes can be matches either
+> +  by their ID or their name, or both.
+> +
+> +maintainers:
+> +  - Daniel Golle <daniel@makrotopia.org>
+> +
+> +properties:
+> +  volid:
+
+volume-id or ubi-vol-id.
+
+> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+
+Drop quotes.
+
+> +    description:
+> +      Match UBI volume ID
+> +
+> +  volname:
+> +    $ref: "/schemas/types.yaml#/definitions/string"
+> +    description:
+> +      Match UBI volume ID
+
+ID? 
+
+> +
+> +anyOf:
+> +  - required:
+> +    - volid
+> +
+> +  - required:
+> +    - volname
+> +
+> +# This is a generic file other binding inherit from and extend
+> +additionalProperties: true
+
+Where do we restrict this? You referenced it, but didn't didn't restrict 
+it there (with unevaluatedProperties).
+
+What other properties would you expect? These nodes ultimately need a 
+single schema (can be multiple files with $ref's) containing all 
+possible properties. Otherwise, any random property can be added 
+unchecked.
+
+Rob
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
