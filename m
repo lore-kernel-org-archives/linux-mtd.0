@@ -4,52 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53A64C0015E
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 14:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEF6BC0015E
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 14:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SBbMtE7q6nJdpoxMbup+AHOFc6PU+UOEqr82yV/1ZzQ=; b=O7090kE/jLCcrU
-	cQKWUoJMF9Cvj1ZFQqrGxdDzTMsVqMYcsTyo1YKyk/IyO5hmJCkVnIBY9tmwmtHXfR9YGkJ3nLbJE
-	3zBa2QZRATHRF/3Pqa0+GysXqQVm7vTVikJ29ITuiywJSC7mLM85iyQJrgUgbnEDgfNckJObwz1JP
-	O7SvDGiv8v9XTs+hVSfr/5geSIj/ruLyj0vTxp4cT8sdl3oo/1ePBNvUKk64iaRIpfbpaWrlMx/lg
-	u2JiaAPp6GQsNvP5ZjkvOq8KGRJBOaFS1c1U25mX0tANNi1ESd0zgcvbQ/+JVOnejTCJDBwXczb1x
-	Z9yeyONOh+TxMWf9c1Xw==;
+	List-Owner; bh=cuvdMmIZtNcBYayoynWnJcXCTzWusIBN9INP7l3w2Kk=; b=pW7C+COk8JOguq
+	viF4HUF/Shdfu7byu+VTyvQ8zi36nPoKQHaK1hWwFEBGSvASJ2YvpPnDEjQ7IfjtznjJi5mVpNiiZ
+	tY6GkntESH/UyHMXzr76v2fvzAPKXxwxN1AZMjTWo7xc07yRj/9aLkH+Q7G89tH+3VQ+r75SpG5FF
+	WdLoVMVr90gHjIMZsvQyJf1qK7cmu2hdBPO7TcczoJ5ZwsG9RzGXU6tWoLas4T/102IUYfNqlmS/e
+	pEkHi3YbDoMv5d6kImHpoC5ZIn7vq269JMhmEKGCnnPrbGsg77EeMjVk8sQf8ntla4pNNYdkOgodY
+	VitYE+3/GnnO2Fxxub3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTjyX-00589R-0k;
-	Wed, 09 Aug 2023 14:15:49 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1qTk5b-005988-28;
+	Wed, 09 Aug 2023 14:23:07 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTjyU-005890-1u
-	for linux-mtd@lists.infradead.org;
-	Wed, 09 Aug 2023 14:15:47 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 822116732D; Wed,  9 Aug 2023 16:15:42 +0200 (CEST)
-Date: Wed, 9 Aug 2023 16:15:42 +0200
-From: hch <hch@lst.de>
-To: Stephan Wurm <stephan.wurm@a-eberle.de>
-Cc: hch <hch@lst.de>, Richard Weinberger <richard@nod.at>,
-	linux-block <linux-block@vger.kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Johannes Eigner <johannes.eigner@a-eberle.de>
-Subject: Re: ubiblock: null pointer dereference using scatterlist in
- work_queue
-Message-ID: <20230809141542.GA32614@lst.de>
-References: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm> <1293911429.1782934.1691445776353.JavaMail.zimbra@nod.at> <20230809135308.GA32214@lst.de> <ZNOec8JmndA63Mnh@PC-LX-Wurm>
+	id 1qTk5Y-00595g-0j;
+	Wed, 09 Aug 2023 14:23:05 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 85ABA6250A;
+	Wed,  9 Aug 2023 14:23:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2D2C433C7;
+	Wed,  9 Aug 2023 14:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691590982;
+	bh=LgXOvH2tCTHIjBx4H7FiUs60LQPWskUEsq2zDenCRXk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=d3tvC2K0q9zmSKovb3MCz70OZ0zDUfwQjvtmqpayy/+0zTCRnvBnhoitfla9mzpYS
+	 6/IQTcAliZ/qw+jQL6ikoz6PNYzqJ5V/AqPdhloBtpJ7o+04K1HJBA1CLTORrD2v+D
+	 7LM1T9XMRPVFf25JkonEGd6tPIqFqFkNRPbUkBuWrkC1zyTV3QcmWREwMXrZwRBWOf
+	 qlZSX+5xrbt2rURYBov8h1oSuPFEc5pUfvutsD/+H96L3ykp7YO0AtG9js4MbdLlC5
+	 xVqrAhV0e5CphxqERFiIWxatm9vmAPUWZveD51138XqFFJM1+SpLi461h67PgiJAZz
+	 6pxgp2dPf4+Bg==
+Message-ID: <7edc9239f73022b9c2a1d3f4f946153f85f94739.camel@kernel.org>
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+From: Jeff Layton <jlayton@kernel.org>
+To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+ <brauner@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar
+ Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>, David Howells
+ <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Chris Mason
+ <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
+ <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov
+ <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+ Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, Chao Yu
+ <chao@kernel.org>, Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>, Jeffle
+ Xu <jefflexu@linux.alibaba.com>,  Namjae Jeon <linkinjeon@kernel.org>,
+ Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,  Theodore
+ Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk
+ Kim <jaegeuk@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson
+ <rpeterso@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker
+ <anna@kernel.org>,  Konstantin Komarov
+ <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>,
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg
+ <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
+ <keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>,  Steve French
+ <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg
+ <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom
+ Talpey <tom@talpey.com>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>,
+ Hugh Dickins <hughd@google.com>,  Andrew Morton
+ <akpm@linux-foundation.org>, Amir Goldstein <amir73il@gmail.com>, "Darrick
+ J. Wong" <djwong@kernel.org>, Benjamin Coddington <bcodding@redhat.com>, 
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+ linux-btrfs@vger.kernel.org,  ceph-devel@vger.kernel.org,
+ codalist@telemann.coda.cs.cmu.edu,  ecryptfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org,  linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net,  cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev, 
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+ linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+ linux-unionfs@vger.kernel.org,  linux-xfs@vger.kernel.org
+Date: Wed, 09 Aug 2023 10:22:54 -0400
+In-Reply-To: <878rak8hia.fsf@mail.parknet.co.jp>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+	 <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+	 <87msz08vc7.fsf@mail.parknet.co.jp>
+	 <52bead1d6a33fec89944b96e2ec20d1ea8747a9a.camel@kernel.org>
+	 <878rak8hia.fsf@mail.parknet.co.jp>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZNOec8JmndA63Mnh@PC-LX-Wurm>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230809_071546_780946_8A310081 
-X-CRM114-Status: GOOD (  13.07  )
+X-CRM114-CacheID: sfid-20230809_072304_349392_E10C8523 
+X-CRM114-Status: GOOD (  32.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,18 +117,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 09, 2023 at 04:10:59PM +0200, Stephan Wurm wrote:
-> Am 09. Aug 15:53 hat hch geschrieben:
-> > Well, a scatterlist culd contain a highmem page, in which case sg_virt
-> > isn't going to cut it and you need to kmap.  Is this a 32-bit system
-> > with highmem enabled?
-> I can confirm it is a 32-bit system with highmem enabled.
+On Wed, 2023-08-09 at 22:36 +0900, OGAWA Hirofumi wrote:
+> Jeff Layton <jlayton@kernel.org> writes:
+> 
+> > On Wed, 2023-08-09 at 17:37 +0900, OGAWA Hirofumi wrote:
+> > > Jeff Layton <jlayton@kernel.org> writes:
+> > > 
+> > > > Also, it may be that things have changed by the time we get to calling
+> > > > fat_update_time after checking inode_needs_update_time. Ensure that we
+> > > > attempt the i_version bump if any of the S_* flags besides S_ATIME are
+> > > > set.
+> > > 
+> > > I'm not sure what it meaning though, this is from
+> > > generic_update_time(). Are you going to change generic_update_time()
+> > > too? If so, it doesn't break lazytime feature?
+> > > 
+> > 
+> > Yes. generic_update_time is also being changed in a similar fashion.
+> > This shouldn't break the lazytime feature: lazytime is all about how and
+> > when timestamps get written to disk. This work is all about which
+> > clocksource the timestamps originally come from.
+> 
+> I can only find the following update in this series, another series
+> updates generic_update_time()? The patch updates only if S_VERSION is
+> set.
+> 
+> Your fat patch sets I_DIRTY_SYNC always instead of I_DIRTY_TIME. When I
+> last time checked lazytime, and it was depending on I_DIRTY_TIME.
+> 
+> Are you sure it doesn't break lazytime? I'm totally confusing, and
+> really similar with generic_update_time()?
+> 
 
-Yes.  So the code needs to stop using sg_virt to work on highmem
-setups and do the equivalent of scsi_kmap_atomic_sg.  Best way
-forward is probably to move scsi_kmap_atomic_sg to lib/scatterlist.c
-(and also convert it to kmap_local instead of kmap_atomic while you're
-at it) and then use that in ubiblock
+I'm a little confused too. Why do you believe this will break
+-o relatime handling? This patch changes two things:
+
+1/ it has fat_update_time fetch its own timestamp (and ignore the "now"
+parameter). This is in line with the changes in patch #3 of this series,
+which explains the rationale for this in more detail.
+
+2/ it changes fat_update_time to also update the i_version if any of
+S_CTIME|S_MTIME|S_VERSION are set. relatime is all about the S_ATIME,
+and it is specifically excluded from that set.
+
+The rationale for the second change is is also in patch #3, but
+basically, we can't guarantee that current_time hasn't changed since we
+last checked for inode_needs_update_time, so if any of
+S_CTIME/S_MTIME/S_VERSION have changed, then we need to assume that any
+of them may need to be changed and attempt to update all 3.
+
+That said, I think the logic in fat_update_time isn't quite right. I
+think want something like this on top of this patch to ensure that the
+S_CTIME and S_MTIME get updated, even if the flags only have S_VERSION
+set.
+
+Thoughts?
+
+---------------------8<-----------------------
+
+diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+index 080a5035483f..313eef02f45c 100644
+--- a/fs/fat/misc.c
++++ b/fs/fat/misc.c
+@@ -346,15 +346,21 @@ int fat_update_time(struct inode *inode, int flags)
+        if (inode->i_ino == MSDOS_ROOT_INO)
+                return 0;
+ 
+-       if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
+-               fat_truncate_time(inode, NULL, flags);
+-               if (inode->i_sb->s_flags & SB_LAZYTIME)
+-                       dirty_flags |= I_DIRTY_TIME;
+-               else
+-                       dirty_flags |= I_DIRTY_SYNC;
+-       }
++       /*
++        * If any of the flags indicate an expicit change to the file, then we
++        * need to ensure that we attempt to update all of 3. We do not do
++        * this in the case of an S_ATIME-only update.
++        */
++       if (flags & (S_CTIME | S_MTIME | S_VERSION))
++               flags |= S_CTIME | S_MTIME | S_VERSION;
++
++       fat_truncate_time(inode, NULL, flags);
++       if (inode->i_sb->s_flags & SB_LAZYTIME)
++               dirty_flags |= I_DIRTY_TIME;
++       else
++               dirty_flags |= I_DIRTY_SYNC;
+ 
+-       if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
++       if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+                dirty_flags |= I_DIRTY_SYNC;
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
