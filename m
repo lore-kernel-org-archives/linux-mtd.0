@@ -4,94 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4EDBC41513
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 07:10:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A29DC001B0
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 08:23:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sGsYhj+peDEmFtaShAeM8KxDSm6vbX0+b8zBlCQWMPA=; b=o7c7pG9MSYw7GI
-	rYliDPZZCuEcGBRtHj+T0ClMZyCkkZnNFFP3t+f5edETuB3YDkrrxl5SsUmZ3ymOmUHb+8+X9DYaN
-	SV4gng7KmNR54X0ZSt6bVi/OYOM/QwflL0knp8KmGEdpIaw5OoHaYBDAgyfY2jQNR9lbQ+i36Ryyi
-	zXXVu9V+1Q+EI8Y+DLb2YuEhMOtDGulfvJuT+V/kS++f0ZUg2p6N9lOrnYaiJ4S6MLmYrYz8QJu9x
-	gwyFtkX1nwL+l1/aZkRzG58A9rGe6W+o7ajaGcSKyq+US4lVCXEL/DQ721WoLi8JU2wwqu0NpO0vp
-	F4sT2Xg9ztC+mdiso78A==;
+	List-Owner; bh=NXtV5AvreSwvLjIlSFFhrejwHsK3vOoULLkyoIUUx4Q=; b=rTW6T7Pgw7I/Ud
+	y3n7Cvty+K8FHC1CNohJ3+1la6VQa89eo7LfTawsuEH2WoZ/ZhTCKVDsIl6H2LekA2yQV3TYBWC24
+	9aW4ErlImRso1bWPtKVnvXdZpRQk00WZx/2aRITYsaaPNOSgmSvkk0UNu1H6WwI7ve+mlLfqQNHpq
+	nes5926nxnCtSw64UnlpQ9kkfgEBqfzdHz3A314z3mPrcPTD4EWvIBuI2stQcFhTmX824SKiqMo0Q
+	88v5bs41bPiQJMRYaHWOqPKEkVNefo0ZMEqXbaaYm5HBu+ca/KyyDd4Tz1kUBBkUHDP2FPskdleBF
+	fsIbYqBQik2DztM/qahA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTdKi-004Dlc-36;
-	Wed, 09 Aug 2023 07:10:16 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qTeTD-004Lry-1O;
+	Wed, 09 Aug 2023 08:23:07 +0000
+Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTdKf-004Djx-1s;
-	Wed, 09 Aug 2023 07:10:15 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 1qTeTA-004LrA-2O;
+	Wed, 09 Aug 2023 08:23:06 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 14B3762FBF;
-	Wed,  9 Aug 2023 07:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 803F7C433C7;
-	Wed,  9 Aug 2023 07:09:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691565012;
-	bh=+3Y6neJgMvW5vfedbEeRcP7JJepyGcWsyiFSr/HW990=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ggBjfw6PiXZGX2pQ0PAP5cLTD5E0rfqWCYvfni6XgMaAu/qe1HDhVULCR34YpT5YS
-	 BKgPskzZUrQN/q0pADH7E3rJp+efq+TJqLpTcE7dWusL6zUTz83z7W2kEcL4C6I9Pl
-	 ufDj5BPqocIYlc8GG9bv5prUaOSZXY+wJG0igl2mx/MjAwyCvyPRsvUpSYuoG9hC3v
-	 Cpu7fhDWB2xklEWatdaUMtlv7AEsl0+OXnaMFZ2BdukJjZL1AZSUnY8BUua+nFhXag
-	 gAEez8RHLWI4JAU/88U4SJjdJFFBI98gXxi6sXBvp3qvswqNnsMmS0Eecbc3TwTHzz
-	 J9jzLmchFW2kQ==
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-afs@lists.infradead.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-nfs@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-unionfs@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	Jan Kara <jack@suse.cz>,
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3A8C41F388;
+	Wed,  9 Aug 2023 08:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1691569381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fun65h1R4diSDJnLTZ/cxzR1ILC0j7wzISUUtC+n2VQ=;
+	b=g4FDCoxrnA/p+GYB2SAgg9FCsHDC8xx9oZ/+5lp2F0zXGltHAWDKRIOtF8gm878iBpKXUt
+	roN9QLxvxxz/hruPD50xpPKd1EJgyufH1Q9BSATz9Nc8CpHpABXAhB63acjBhnT8R1dzx/
+	osOyq4rFMxe4W2YvEs3BmnQMVSN/P5A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1691569381;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fun65h1R4diSDJnLTZ/cxzR1ILC0j7wzISUUtC+n2VQ=;
+	b=YP+i5WCgxaDO0MJwnfKAGmomKqp+nrgJtNPAsBPZzyeBoI4TdjLxb1qRz8dnXxGoUZwRPp
+	ye7wBZnxxnt9gbCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2633E13251;
+	Wed,  9 Aug 2023 08:23:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id kWhPCeVM02RBbwAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 09 Aug 2023 08:23:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9D476A0769; Wed,  9 Aug 2023 10:23:00 +0200 (CEST)
+Date: Wed, 9 Aug 2023 10:23:00 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
 	Eric Van Hensbergen <ericvh@kernel.org>,
 	Latchesar Ionkov <lucho@ionkov.net>,
 	Dominique Martinet <asmadeus@codewreck.org>,
 	Christian Schoenebeck <linux_oss@crudebyte.com>,
 	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>,
-	Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
 	Jeffle Xu <jefflexu@linux.alibaba.com>,
 	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Jan Kara <jack@suse.com>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Andreas Dilger <adilger.kernel@dilger.ca>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
@@ -104,19 +91,16 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	Anna Schumaker <anna@kernel.org>,
 	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
 	Joseph Qi <joseph.qi@linux.alibaba.com>,
 	Mike Marshall <hubcap@omnibond.com>,
 	Martin Brandenburg <martin@omnibond.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
 	Kees Cook <keescook@chromium.org>,
-	Iurii Zaikin <yzaikin@google.com>,
-	Steve French <sfrench@samba.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
 	Paulo Alcantara <pc@manguebit.com>,
 	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
 	Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Richard Weinberger <richard@nod.at>,
 	Hans de Goede <hdegoede@redhat.com>,
@@ -124,19 +108,31 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Amir Goldstein <amir73il@gmail.com>,
 	"Darrick J. Wong" <djwong@kernel.org>,
-	Benjamin Coddington <bcodding@redhat.com>
-Subject: Re: [PATCH v7 00/13] fs: implement multigrain timestamps
-Date: Wed,  9 Aug 2023 09:09:49 +0200
-Message-Id: <20230809-neuigkeit-lahmgelegt-ec0ab744a2be@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
+ inode_update_timestamps
+Message-ID: <20230809082300.veczantamvcpinxu@quack3>
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
+ <20230808093701.ggyj7tyqonivl7tb@quack3>
+ <20230809-handreichung-umgearbeitet-951eebed4d61@brauner>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2693; i=brauner@kernel.org; h=from:subject:message-id; bh=+3Y6neJgMvW5vfedbEeRcP7JJepyGcWsyiFSr/HW990=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRctt58ofGmdrjT46zKic8e+j/qO6J62PGCzlmNRn/PL+ca DhW87ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZiIjiMjw77ybes4w5Z37p3j9lpveq 1v7yzNZOVwx1cX83f9exixeQ8jw5qJVSkpYSKnLt8M6dl09qHqq/xjLU9j3pdUzg+b1x8izQ4A
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Disposition: inline
+In-Reply-To: <20230809-handreichung-umgearbeitet-951eebed4d61@brauner>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230809_001013_696472_8FD997DC 
-X-CRM114-Status: GOOD (  16.20  )
+X-CRM114-CacheID: sfid-20230809_012305_037457_F639A4F9 
+X-CRM114-Status: GOOD (  21.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,60 +149,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 07 Aug 2023 15:38:31 -0400, Jeff Layton wrote:
-> The VFS always uses coarse-grained timestamps when updating the
-> ctime and mtime after a change. This has the benefit of allowing
-> filesystems to optimize away a lot metadata updates, down to around 1
-> per jiffy, even when a file is under heavy writes.
+On Wed 09-08-23 09:06:34, Christian Brauner wrote:
+> On Tue, Aug 08, 2023 at 11:37:01AM +0200, Jan Kara wrote:
+> > On Mon 07-08-23 15:38:37, Jeff Layton wrote:
+> > > In later patches, we're going to drop the "now" parameter from the
+> > > update_time operation. Prepare ubifs for this, by having it use the new
+> > > inode_update_timestamps helper.
+> > > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > One comment below:
+> > 
+> > > diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> > > index df9086b19cd0..2d0178922e19 100644
+> > > --- a/fs/ubifs/file.c
+> > > +++ b/fs/ubifs/file.c
+> > > @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
+> > >  		return err;
+> > >  
+> > >  	mutex_lock(&ui->ui_mutex);
+> > > -	if (flags & S_ATIME)
+> > > -		inode->i_atime = *time;
+> > > -	if (flags & S_CTIME)
+> > > -		inode_set_ctime_to_ts(inode, *time);
+> > > -	if (flags & S_MTIME)
+> > > -		inode->i_mtime = *time;
+> > > -
+> > > -	release = ui->dirty;
+> > > +	inode_update_timestamps(inode, flags);
+> > >  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
+> > > +	release = ui->dirty;
+> > >  	mutex_unlock(&ui->ui_mutex);
+> > 
+> > I think this is wrong. You need to keep sampling ui->dirty before calling
+> > __mark_inode_dirty(). Otherwise you could release budget for inode update
+> > you really need...
 > 
-> Unfortunately, this coarseness has always been an issue when we're
-> exporting via NFSv3, which relies on timestamps to validate caches. A
-> lot of changes can happen in a jiffy, so timestamps aren't sufficient to
-> help the client decide to invalidate the cache.
-> 
-> [...]
+> Fixed in-tree.
 
-Applied to the vfs.ctime branch of the vfs/vfs.git tree.
-Patches in the vfs.ctime branch should appear in linux-next soon.
+Thanks. With that feel free to add:
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.ctime
-
-[01/13] fs: remove silly warning from current_time
-        https://git.kernel.org/vfs/vfs/c/562bcab11bf4
-[02/13] fs: pass the request_mask to generic_fillattr
-        https://git.kernel.org/vfs/vfs/c/3592165f4378
-[03/13] fs: drop the timespec64 arg from generic_update_time
-        https://git.kernel.org/vfs/vfs/c/32586bb50943
-[04/13] btrfs: have it use inode_update_timestamps
-        https://git.kernel.org/vfs/vfs/c/51fc38e7c7d1
-[05/13] fat: make fat_update_time get its own timestamp
-        https://git.kernel.org/vfs/vfs/c/d6e7faae82dc
-[06/13] ubifs: have ubifs_update_time use inode_update_timestamps
-        https://git.kernel.org/vfs/vfs/c/853ff59b434a
-[07/13] xfs: have xfs_vn_update_time gets its own timestamp
-        https://git.kernel.org/vfs/vfs/c/7ad056c2cf36
-[08/13] fs: drop the timespec64 argument from update_time
-        https://git.kernel.org/vfs/vfs/c/3beae086b71f
-[09/13] fs: add infrastructure for multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/b16956ed812f
-[10/13] tmpfs: add support for multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/bd21ec574f16
-[11/13] xfs: switch to multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/fb9812d2c39e
-[12/13] ext4: switch to multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/7fdf02299f5d
-[13/13] btrfs: convert to multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/2ebbf04988b9
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
