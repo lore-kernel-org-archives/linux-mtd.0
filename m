@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F720EB64DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 07:04:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C766AC001E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 07:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=colKzG0mS2D4kU0bx+n7nO/1toQ0+Q7HrredXTbVqBk=; b=rYB/pNS1kW+5RD
-	Xbxi6RDWVETYjvxafRkJcE2FoUvWwyYOHVFxC/uTguPjrSn5lp3jncS8x8GAq1b1ndDtz3Wn+Gxmk
-	6VXRRBIFPfn3AbiY8mponDOaB+jjesIBO9LeUcol2vyoU7YLIhFwoBQ4buZnXki+kky1VqheJ3YI0
-	vD9ZPR9jPG9YkgrOhiXfmEl2XAR3AxRW29DOHNZw06zq/pzS773eBRIrFOoqfmHwZk88h48Y1Uwih
-	3+3DN4jOarhTWnH+/5GdwY6X6p4mgUBQOQuc/gaN0tEwKT12nLBkvdIeYp7F9xAIFmiJkXBu8vLwI
-	8knlp+4evvj+KLjX/aWw==;
+	List-Owner; bh=9fwS1QmR0D88BpZXeR0Hkzyo+U77ucpjNepscQbyLRE=; b=vHNdNMRD77+4rS
+	6AbAR0HOf3QmBIu39SP137CxbchR0Ly25MUmcHie/94xP/2Nvfk/CcU8WZwR1giRy/6yzGHxa1A6w
+	ij64w/54WLpC1JOBh7Xl4qTSWpWlXYyHURXZI64cPzOJcCYbgCscFyASL8B0w9e5lhFP9hBxysY6J
+	cVXCt1p3yQR+YLFivqTK7qQI4nEnELCeGonhCb23evfE6C5dRPYnfbIzwP62VecYXl/Azzv9o2/L+
+	BbMPZJ9ftXsdGBU6GV1Lhww/sCQIMiQiOokuT19tWf8r41fA/8/bNdojGXEF4b+DviyGk8cZiZl3F
+	dWgem2x0RACJejM+tuUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTdFC-004CfT-2u;
-	Wed, 09 Aug 2023 07:04:34 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qTdHU-004DHJ-1M;
+	Wed, 09 Aug 2023 07:06:56 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTdF9-004CeO-2N;
-	Wed, 09 Aug 2023 07:04:32 +0000
+	id 1qTdHR-004DGF-12;
+	Wed, 09 Aug 2023 07:06:54 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 012D462FB3;
-	Wed,  9 Aug 2023 07:04:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF415C433C8;
-	Wed,  9 Aug 2023 07:04:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9B61A62FBF;
+	Wed,  9 Aug 2023 07:06:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BD8C433C7;
+	Wed,  9 Aug 2023 07:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691564670;
-	bh=mNaI4yIhrZSJhUwcMni6JCN62HgxRgb2ToogP2H4jFU=;
+	s=k20201202; t=1691564812;
+	bh=LyptcIlHZJMPRLgCQdT8M5vqzNKCvVA2tglx+SSzKhk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dm1BfYtz2dqQMxa4y4K1DetMu3X3Ln+bwz+2jEemWCBc68DqnWDXfI9TyuC86JRyc
-	 OV6+7i/vF54n6ROMNvy+VNt+3Tcbr5mPPxWG7+kZZzvdk1l5Y2fXqdyi4kiTIEHp6R
-	 c+NokRM5ch22ngFHcUfi3IxiA2Hed3py0L00cGbjgid38+MsphBbYkHDRv8n5kfv6l
-	 165HU85tqTN8dPjx7l1xQ1d3Tv6OZoFdRY/kHWh7X900UpXqc/s3kp4a/FPaL7/Rze
-	 xRv3G8HkDEWg3uieFtEQ8pvVu174WnaDQBFW7zKSqu+mNZR7+LKPBNsWLcV/CsHS/4
-	 sOc78sTonZdgw==
-Date: Wed, 9 Aug 2023 09:04:12 +0200
+	b=bD7f0dTITrbaEv4ks9HGhx0VVGQl2go0/eu1op4nP82j4N7TgX5btWqWiaSGoe8jp
+	 i6+z7Q/Jk2DuDRVzKbPo4bN2rJnb7ZSAdXE4Z0xYd+h6nr/dULJQsuanMXc8U/mPWC
+	 durewToMDZYiugVbqFDpM/vlNxIknI7IjiKj4iWyBj6wWmzWhg0/t+ygbJ1TK6LZ+2
+	 DAg/4gaYUGbCnyrWc2K3wnSswvzR8b++oY6In8hF21Owe2spxR27o2A1Ew8ijOuuN3
+	 Wo+4rLZHSLxhk9EzIXmcSquBg+Bnp2nKOE70h2bjG7fT6iPfQRAHqxOjlzas9G4WAl
+	 a1bfUfvPCKxNg==
+Date: Wed, 9 Aug 2023 09:06:34 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Jan Kara <jack@suse.cz>
 Cc: Jeff Layton <jlayton@kernel.org>,
@@ -104,18 +104,18 @@ Cc: Jeff Layton <jlayton@kernel.org>,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
 	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 07/13] xfs: have xfs_vn_update_time gets its own
- timestamp
-Message-ID: <20230809-abartig-lachen-df1965c6b37a@brauner>
+Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
+ inode_update_timestamps
+Message-ID: <20230809-handreichung-umgearbeitet-951eebed4d61@brauner>
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
- <20230808093903.2cg5wwbwbvflkeph@quack3>
+ <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
+ <20230808093701.ggyj7tyqonivl7tb@quack3>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230808093903.2cg5wwbwbvflkeph@quack3>
+In-Reply-To: <20230808093701.ggyj7tyqonivl7tb@quack3>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230809_000431_849625_75289E51 
-X-CRM114-Status: GOOD (  20.23  )
+X-CRM114-CacheID: sfid-20230809_000653_444443_84E853C4 
+X-CRM114-Status: GOOD (  17.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,34 +132,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 08, 2023 at 11:39:03AM +0200, Jan Kara wrote:
-> On Mon 07-08-23 15:38:38, Jeff Layton wrote:
-> > In later patches we're going to drop the "now" parameter from the
-> > update_time operation. Prepare XFS for this by reworking how it fetches
-> > timestamps and sets them in the inode. Ensure that we update the ctime
-> > even if only S_MTIME is set.
+On Tue, Aug 08, 2023 at 11:37:01AM +0200, Jan Kara wrote:
+> On Mon 07-08-23 15:38:37, Jeff Layton wrote:
+> > In later patches, we're going to drop the "now" parameter from the
+> > update_time operation. Prepare ubifs for this, by having it use the new
+> > inode_update_timestamps helper.
 > > 
 > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/xfs/xfs_iops.c | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > index 731f45391baa..72d18e7840f5 100644
-> > --- a/fs/xfs/xfs_iops.c
-> > +++ b/fs/xfs/xfs_iops.c
-> > @@ -1037,6 +1037,7 @@ xfs_vn_update_time(
-> >  	int			log_flags = XFS_ILOG_TIMESTAMP;
-> >  	struct xfs_trans	*tp;
-> >  	int			error;
-> > +	struct timespec64	now = current_time(inode);
 > 
-> No need to fetch current_time() here where you overwrite it just a bit
-> later...
+> One comment below:
+> 
+> > diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> > index df9086b19cd0..2d0178922e19 100644
+> > --- a/fs/ubifs/file.c
+> > +++ b/fs/ubifs/file.c
+> > @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
+> >  		return err;
+> >  
+> >  	mutex_lock(&ui->ui_mutex);
+> > -	if (flags & S_ATIME)
+> > -		inode->i_atime = *time;
+> > -	if (flags & S_CTIME)
+> > -		inode_set_ctime_to_ts(inode, *time);
+> > -	if (flags & S_MTIME)
+> > -		inode->i_mtime = *time;
+> > -
+> > -	release = ui->dirty;
+> > +	inode_update_timestamps(inode, flags);
+> >  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
+> > +	release = ui->dirty;
+> >  	mutex_unlock(&ui->ui_mutex);
+> 
+> I think this is wrong. You need to keep sampling ui->dirty before calling
+> __mark_inode_dirty(). Otherwise you could release budget for inode update
+> you really need...
 
-It also shadows the @now parameter of that function. Since that function
-parameter is dropped in follow-up patches I simply s/now/time/g it here.
-In any case, fixed in-tree.
+Fixed in-tree.
 
 ______________________________________________________
 Linux MTD discussion mailing list
