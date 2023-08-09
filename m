@@ -4,76 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1165EC001B0
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 01:38:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F720EB64DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 07:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=De14inGKrtQif3FHeL1AhijVPBp+RXYDb3rSbwWDHnw=; b=IzULCd+1P3G+3s
-	GXPk0eLzgQ7fVN+PjMg9CcW+nASO/n59K44DcDDIldWA6l0kQ7e4yi/gjYy6MmG9rA9feOMty5o+w
-	Vsn3SrweGIs8p+e46HTC4vtNz8LLJ5hHYohTJUJsZmQibGtxlbSX79EvycK+do1kSaRmJNLB69GHj
-	8LJg778jKFISBWdpr3F016Wv+hocViNNGe4Yb6OAkKHgJejqC7qlVTEkOShRlUhclISKZHH81GR0z
-	AaQBjJAyfPFvtRwEUOG1l/IL4tAm/mkviSL8fJBhq70vP8Y3e4/8t/SxQ4e4x26gvHa+WP5ruMCE8
-	qwRnB8ludXXkLAkdGW8A==;
+	List-Owner; bh=colKzG0mS2D4kU0bx+n7nO/1toQ0+Q7HrredXTbVqBk=; b=rYB/pNS1kW+5RD
+	Xbxi6RDWVETYjvxafRkJcE2FoUvWwyYOHVFxC/uTguPjrSn5lp3jncS8x8GAq1b1ndDtz3Wn+Gxmk
+	6VXRRBIFPfn3AbiY8mponDOaB+jjesIBO9LeUcol2vyoU7YLIhFwoBQ4buZnXki+kky1VqheJ3YI0
+	vD9ZPR9jPG9YkgrOhiXfmEl2XAR3AxRW29DOHNZw06zq/pzS773eBRIrFOoqfmHwZk88h48Y1Uwih
+	3+3DN4jOarhTWnH+/5GdwY6X6p4mgUBQOQuc/gaN0tEwKT12nLBkvdIeYp7F9xAIFmiJkXBu8vLwI
+	8knlp+4evvj+KLjX/aWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTY97-003odO-16;
-	Wed, 09 Aug 2023 01:37:57 +0000
-Received: from mail-oi1-x22e.google.com ([2607:f8b0:4864:20::22e])
+	id 1qTdFC-004CfT-2u;
+	Wed, 09 Aug 2023 07:04:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTY94-003ocp-1Y
-	for linux-mtd@lists.infradead.org;
-	Wed, 09 Aug 2023 01:37:55 +0000
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a6f3ef3155so4928981b6e.1
-        for <linux-mtd@lists.infradead.org>; Tue, 08 Aug 2023 18:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691545073; x=1692149873;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yKSB+AQGoklGt5VEuk70Fb2LSYmIjX5auT6qf420390=;
-        b=lNoMZobBfDpUAAtaKFdE+LzBj0jVapznehKegu265rpM9+MyFxHYHZqnim8//XoPAL
-         wal2KjLO3Q/1MtRw188uZXzrJBYoKc0OgPlUwYtCOU4UVLmJJ+aAifeNAgqTcQyXwOEI
-         kZaWONoFSpHHLU5egqQQk61aa4QoAK+nneYdPLP8F2VK/MAChnTs7yN2UNm1gFnCmQKE
-         GqQojCHd7X1yW8PmBj2eV8mcvm3zgLxZpz5wl5ZOlmSGLH7yHeUYxNL5c8Xjo3T52iZ6
-         2blFR6Q9Mmk3g/uWZu+v33XseNERCrTlxMGb9h0WRi9YlW7+OZ+Hi3zIzg2nnMbsCsGO
-         FzLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691545073; x=1692149873;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yKSB+AQGoklGt5VEuk70Fb2LSYmIjX5auT6qf420390=;
-        b=lnVg5W1h/A0GxDg/YtGUk33VHD/7dAbpURKHkr0AVTD38x9fB8CyfSkSwsFzsgP3sT
-         DzltcjIdMiYA71RGCnVUVs7qDxbjDGmHFgJlk2l6SEuzgDgzgBa9iTmIqI/Y7AkJ++Hh
-         E3yLRyUwmKxUlZaiOCu3SE0pmKLvbWu0gr9rBBEjMCwTNhoEBTctePXRPQ80eBD4/h5e
-         ZqdvMkJRtMKrI64OgCVydDM9PQEtt5Y+htUgR9TuZ9M+5MQ6C9Q9uetoWyTRFyEu91Za
-         6hI7JyQUHv6M9VCCNp9YntjJrQM2i9D3pa+MVREkjjH8RoTnJSkDWi7mDRUTlDfr315F
-         dJJw==
-X-Gm-Message-State: AOJu0YzmZJe/CZ6XdNAikoN/vlSQqZ1tGSiX5qkFqPn1ohzeIgrboUdy
-	tHnWdtxl45I7qKooYXorRBihNH53wrP9cbAk24o=
-X-Google-Smtp-Source: AGHT+IGM2xUzsFZKBv+XcewjnWr/BmDcIc/wsb7WMnsyFRSGxftVnsPfJNtd4xRzLwlRxUwyYMZVnYluTrPHkkAjOks=
-X-Received: by 2002:a05:6808:2019:b0:3a7:2690:94d5 with SMTP id
- q25-20020a056808201900b003a7269094d5mr1768659oiw.8.1691545072879; Tue, 08 Aug
- 2023 18:37:52 -0700 (PDT)
+	id 1qTdF9-004CeO-2N;
+	Wed, 09 Aug 2023 07:04:32 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 012D462FB3;
+	Wed,  9 Aug 2023 07:04:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF415C433C8;
+	Wed,  9 Aug 2023 07:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691564670;
+	bh=mNaI4yIhrZSJhUwcMni6JCN62HgxRgb2ToogP2H4jFU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dm1BfYtz2dqQMxa4y4K1DetMu3X3Ln+bwz+2jEemWCBc68DqnWDXfI9TyuC86JRyc
+	 OV6+7i/vF54n6ROMNvy+VNt+3Tcbr5mPPxWG7+kZZzvdk1l5Y2fXqdyi4kiTIEHp6R
+	 c+NokRM5ch22ngFHcUfi3IxiA2Hed3py0L00cGbjgid38+MsphBbYkHDRv8n5kfv6l
+	 165HU85tqTN8dPjx7l1xQ1d3Tv6OZoFdRY/kHWh7X900UpXqc/s3kp4a/FPaL7/Rze
+	 xRv3G8HkDEWg3uieFtEQ8pvVu174WnaDQBFW7zKSqu+mNZR7+LKPBNsWLcV/CsHS/4
+	 sOc78sTonZdgw==
+Date: Wed, 9 Aug 2023 09:04:12 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Jeff Layton <jlayton@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bob Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 07/13] xfs: have xfs_vn_update_time gets its own
+ timestamp
+Message-ID: <20230809-abartig-lachen-df1965c6b37a@brauner>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-7-d1dec143a704@kernel.org>
+ <20230808093903.2cg5wwbwbvflkeph@quack3>
 MIME-Version: 1.0
-References: <20230804095409.278419-1-jaimeliao.tw@gmail.com>
- <20230804095409.278419-4-jaimeliao.tw@gmail.com> <49a226a128a908c4d99238246bbd09b2@walle.cc>
-In-Reply-To: <49a226a128a908c4d99238246bbd09b2@walle.cc>
-From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Wed, 9 Aug 2023 09:36:54 +0800
-Message-ID: <CAAQoYRmtUvnU-SmT1sLRgDGQr6UFwsd8=EyN31pv2cghK6apUg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] spi: spi-mem: Allow specifying the byte order in
- DTR mode
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org, 
-	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
-	JaimeLiao <jaimeliao@mxic.com.tw>
+Content-Disposition: inline
+In-Reply-To: <20230808093903.2cg5wwbwbvflkeph@quack3>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_183754_539834_6E094ADB 
-X-CRM114-Status: GOOD (  32.63  )
+X-CRM114-CacheID: sfid-20230809_000431_849625_75289E51 
+X-CRM114-Status: GOOD (  20.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,101 +132,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael
-
->
-> Am 2023-08-04 11:54, schrieb Jaime Liao:
-> > From: JaimeLiao <jaimeliao@mxic.com.tw>
->
-> This doesn't match..
->
-> >
-> > There are NOR flashes (Macronix) that swap the bytes on a 16-bit
-> > boundary when configured in Octal DTR mode. The byte order of
-> > 16-bit words is swapped when read or written in Octal Double
-> > Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
-> > modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
-> > 8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
-> > Swapping the bytes may introduce some endianness problems. It can
-> > affect the boot sequence if the entire boot sequence is not handled
-> > in either 8D-8D-8D mode or 1-1-1 mode. So we must swap the bytes
-> > back to have the same byte order as in STR modes. Fortunately there
-> > are controllers that could swap the bytes back at runtime,
-> > addressing the flash's endiannesses requirements. Provide a way for
-> > the upper layers to specify the byte order in Octal DTR mode.
-> >
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->
-> .. this. If you pick up a patch from another author, you should
-> keep the author of the patch.
-How could I do for this?
-Because of Tudor's patch is on old Linux kernel version, it need
-a small changes for suiting on v6.5-rc3.
-
->
-> -michael
->
+On Tue, Aug 08, 2023 at 11:39:03AM +0200, Jan Kara wrote:
+> On Mon 07-08-23 15:38:38, Jeff Layton wrote:
+> > In later patches we're going to drop the "now" parameter from the
+> > update_time operation. Prepare XFS for this by reworking how it fetches
+> > timestamps and sets them in the inode. Ensure that we update the ctime
+> > even if only S_MTIME is set.
+> > 
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > > ---
-> >  drivers/spi/spi-mem.c       | 3 +++
-> >  include/linux/spi/spi-mem.h | 6 ++++++
-> >  2 files changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> > index edd7430d4c05..fd6b1c69ab9b 100644
-> > --- a/drivers/spi/spi-mem.c
-> > +++ b/drivers/spi/spi-mem.c
-> > @@ -171,6 +171,9 @@ bool spi_mem_default_supports_op(struct spi_mem
-> > *mem,
-> >       if (op_is_dtr) {
-> >               if (!spi_mem_controller_is_capable(ctlr, dtr))
-> >                       return false;
-> > +             if (op->data.dtr_swab16 &&
-> > +                 !(spi_mem_controller_is_capable(ctlr, dtr_swab16)))
-> > +                     return false;
-> >
-> >               if (op->cmd.nbytes != 2)
-> >                       return false;
-> > diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> > index 8e984d75f5b6..9da6d53a29a3 100644
-> > --- a/include/linux/spi/spi-mem.h
-> > +++ b/include/linux/spi/spi-mem.h
-> > @@ -89,6 +89,8 @@ enum spi_mem_data_dir {
-> >   * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or
-> > not
-> >   * @data.buswidth: number of IO lanes used to send/receive the data
-> >   * @data.dtr: whether the data should be sent in DTR mode or not
-> > + * @data.dtr_swab16: whether the byte order of 16-bit words is swapped
-> > when read
-> > + *                or written in Octal DTR mode compare to STR mode
-> >   * @data.ecc: whether error correction is required or not
-> >   * @data.dir: direction of the transfer
-> >   * @data.nbytes: number of data bytes to send/receive. Can be zero if
-> > the
-> > @@ -120,6 +122,7 @@ struct spi_mem_op {
-> >       struct {
-> >               u8 buswidth;
-> >               u8 dtr : 1;
-> > +             u8 dtr_swab16 : 1;
-> >               u8 ecc : 1;
-> >               enum spi_mem_data_dir dir;
-> >               unsigned int nbytes;
-> > @@ -290,10 +293,13 @@ struct spi_controller_mem_ops {
-> >  /**
-> >   * struct spi_controller_mem_caps - SPI memory controller capabilities
-> >   * @dtr: Supports DTR operations
-> > + * @dtr_swab16: Supports swapping bytes on a 16 bit boundary when
-> > configured in
-> > +             Octal DTR
-> >   * @ecc: Supports operations with error correction
-> >   */
-> >  struct spi_controller_mem_caps {
-> >       bool dtr;
-> > +     bool dtr_swab16;
-> >       bool ecc;
-> >  };
+> >  fs/xfs/xfs_iops.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > index 731f45391baa..72d18e7840f5 100644
+> > --- a/fs/xfs/xfs_iops.c
+> > +++ b/fs/xfs/xfs_iops.c
+> > @@ -1037,6 +1037,7 @@ xfs_vn_update_time(
+> >  	int			log_flags = XFS_ILOG_TIMESTAMP;
+> >  	struct xfs_trans	*tp;
+> >  	int			error;
+> > +	struct timespec64	now = current_time(inode);
+> 
+> No need to fetch current_time() here where you overwrite it just a bit
+> later...
 
-Thanks your review
-Jaime
+It also shadows the @now parameter of that function. Since that function
+parameter is dropped in follow-up patches I simply s/now/time/g it here.
+In any case, fixed in-tree.
 
 ______________________________________________________
 Linux MTD discussion mailing list
