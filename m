@@ -4,135 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A29DC001B0
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 08:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61E68EB64DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 08:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NXtV5AvreSwvLjIlSFFhrejwHsK3vOoULLkyoIUUx4Q=; b=rTW6T7Pgw7I/Ud
-	y3n7Cvty+K8FHC1CNohJ3+1la6VQa89eo7LfTawsuEH2WoZ/ZhTCKVDsIl6H2LekA2yQV3TYBWC24
-	9aW4ErlImRso1bWPtKVnvXdZpRQk00WZx/2aRITYsaaPNOSgmSvkk0UNu1H6WwI7ve+mlLfqQNHpq
-	nes5926nxnCtSw64UnlpQ9kkfgEBqfzdHz3A314z3mPrcPTD4EWvIBuI2stQcFhTmX824SKiqMo0Q
-	88v5bs41bPiQJMRYaHWOqPKEkVNefo0ZMEqXbaaYm5HBu+ca/KyyDd4Tz1kUBBkUHDP2FPskdleBF
-	fsIbYqBQik2DztM/qahA==;
+	List-Owner; bh=LyEn3KTM8DRVeSZZPWWUsNUHLwmOloxT5JhCDfvmYgo=; b=tzsNPNdK7PyrNe
+	J6HPk3PQwnUA2ZWjWaCP4tt7xYoZpmG4RDBZZ24xGAT2jJmH55Ze/2cjsgDfm/MqK/oejRSPPky90
+	nIRLj7ngmH1PO4qTn/rbyWIVjj4xsnsxKIcLlYxRngE8tYvAlBkMgoHeM40A9UE3jGSD0Q11/DQSY
+	TvL1xndC5unM9ozH05otHhDPrOY/7g+3lD5ziGT6wPIKeye5o8ao2sXNksajE0xI4YtSC8BSi98ji
+	m7/EuhVXSx83xEanyooeOtcdVhaFPl+00dUG/DQ9m/a3Gvy00Cv4EaBqgEqjaqfnUKc5JVapyf57t
+	gj8T/Kgyn1lecbxKpCwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTeTD-004Lry-1O;
-	Wed, 09 Aug 2023 08:23:07 +0000
-Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTeTA-004LrA-2O;
-	Wed, 09 Aug 2023 08:23:06 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3A8C41F388;
-	Wed,  9 Aug 2023 08:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1691569381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fun65h1R4diSDJnLTZ/cxzR1ILC0j7wzISUUtC+n2VQ=;
-	b=g4FDCoxrnA/p+GYB2SAgg9FCsHDC8xx9oZ/+5lp2F0zXGltHAWDKRIOtF8gm878iBpKXUt
-	roN9QLxvxxz/hruPD50xpPKd1EJgyufH1Q9BSATz9Nc8CpHpABXAhB63acjBhnT8R1dzx/
-	osOyq4rFMxe4W2YvEs3BmnQMVSN/P5A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1691569381;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fun65h1R4diSDJnLTZ/cxzR1ILC0j7wzISUUtC+n2VQ=;
-	b=YP+i5WCgxaDO0MJwnfKAGmomKqp+nrgJtNPAsBPZzyeBoI4TdjLxb1qRz8dnXxGoUZwRPp
-	ye7wBZnxxnt9gbCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2633E13251;
-	Wed,  9 Aug 2023 08:23:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id kWhPCeVM02RBbwAAMHmgww
-	(envelope-from <jack@suse.cz>); Wed, 09 Aug 2023 08:23:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9D476A0769; Wed,  9 Aug 2023 10:23:00 +0200 (CEST)
-Date: Wed, 9 Aug 2023 10:23:00 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Bob Peterson <rpeterso@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Richard Weinberger <richard@nod.at>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Benjamin Coddington <bcodding@redhat.com>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
- inode_update_timestamps
-Message-ID: <20230809082300.veczantamvcpinxu@quack3>
+	id 1qTehk-004NBm-2h;
+	Wed, 09 Aug 2023 08:38:08 +0000
+Received: from mail.parknet.co.jp ([210.171.160.6])
+	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1qTehi-004NAF-0I;
+	Wed, 09 Aug 2023 08:38:07 +0000
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+	by mail.parknet.co.jp (Postfix) with ESMTPSA id 5F6A22055F9C;
+	Wed,  9 Aug 2023 17:37:57 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+	by ibmpc.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 3798btR4208465
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Wed, 9 Aug 2023 17:37:56 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+	by devron.myhome.or.jp (8.17.2/8.17.2/Debian-1) with ESMTPS id 3798btTt140448
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Wed, 9 Aug 2023 17:37:55 +0900
+Received: (from hirofumi@localhost)
+	by devron.myhome.or.jp (8.17.2/8.17.2/Submit) id 3798biDW140435;
+	Wed, 9 Aug 2023 17:37:44 +0900
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner
+ <brauner@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar
+ Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells
+ <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>, Chris
+ Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba
+ <dsterba@suse.com>,
+        Xiubo Li <xiubli@redhat.com>, Ilya Dryomov
+ <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu
+ <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu
+ <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger
+ <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Miklos
+ Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas
+ Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust
+ <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark
+ Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi
+ <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain
+ <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>, Iurii Zaikin
+ <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>, Paulo Alcantara
+ <pc@manguebit.com>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam
+ Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+        Sergey
+ Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger
+ <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>, Hugh Dickins
+ <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir
+ Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+In-Reply-To: <20230807-mgctime-v7-5-d1dec143a704@kernel.org> (Jeff Layton's
+	message of "Mon, 07 Aug 2023 15:38:36 -0400")
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
- <20230808093701.ggyj7tyqonivl7tb@quack3>
- <20230809-handreichung-umgearbeitet-951eebed4d61@brauner>
+	<20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+Date: Wed, 09 Aug 2023 17:37:44 +0900
+Message-ID: <87msz08vc7.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230809-handreichung-umgearbeitet-951eebed4d61@brauner>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230809_012305_037457_F639A4F9 
-X-CRM114-Status: GOOD (  21.31  )
+X-CRM114-CacheID: sfid-20230809_013806_357958_E6B3F54C 
+X-CRM114-Status: GOOD (  16.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,52 +147,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 09-08-23 09:06:34, Christian Brauner wrote:
-> On Tue, Aug 08, 2023 at 11:37:01AM +0200, Jan Kara wrote:
-> > On Mon 07-08-23 15:38:37, Jeff Layton wrote:
-> > > In later patches, we're going to drop the "now" parameter from the
-> > > update_time operation. Prepare ubifs for this, by having it use the new
-> > > inode_update_timestamps helper.
-> > > 
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > 
-> > One comment below:
-> > 
-> > > diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> > > index df9086b19cd0..2d0178922e19 100644
-> > > --- a/fs/ubifs/file.c
-> > > +++ b/fs/ubifs/file.c
-> > > @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
-> > >  		return err;
-> > >  
-> > >  	mutex_lock(&ui->ui_mutex);
-> > > -	if (flags & S_ATIME)
-> > > -		inode->i_atime = *time;
-> > > -	if (flags & S_CTIME)
-> > > -		inode_set_ctime_to_ts(inode, *time);
-> > > -	if (flags & S_MTIME)
-> > > -		inode->i_mtime = *time;
-> > > -
-> > > -	release = ui->dirty;
-> > > +	inode_update_timestamps(inode, flags);
-> > >  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
-> > > +	release = ui->dirty;
-> > >  	mutex_unlock(&ui->ui_mutex);
-> > 
-> > I think this is wrong. You need to keep sampling ui->dirty before calling
-> > __mark_inode_dirty(). Otherwise you could release budget for inode update
-> > you really need...
-> 
-> Fixed in-tree.
+Jeff Layton <jlayton@kernel.org> writes:
 
-Thanks. With that feel free to add:
+> Also, it may be that things have changed by the time we get to calling
+> fat_update_time after checking inode_needs_update_time. Ensure that we
+> attempt the i_version bump if any of the S_* flags besides S_ATIME are
+> set.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+I'm not sure what it meaning though, this is from
+generic_update_time(). Are you going to change generic_update_time()
+too? If so, it doesn't break lazytime feature?
 
-								Honza
+Thanks.
+
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/fat/misc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> index 67006ea08db6..8cab87145d63 100644
+> --- a/fs/fat/misc.c
+> +++ b/fs/fat/misc.c
+> @@ -347,14 +347,14 @@ int fat_update_time(struct inode *inode, struct timespec64 *now, int flags)
+>  		return 0;
+>  
+>  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
+> -		fat_truncate_time(inode, now, flags);
+> +		fat_truncate_time(inode, NULL, flags);
+>  		if (inode->i_sb->s_flags & SB_LAZYTIME)
+>  			dirty_flags |= I_DIRTY_TIME;
+>  		else
+>  			dirty_flags |= I_DIRTY_SYNC;
+>  	}
+>  
+> -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+> +	if ((flags & (S_VERSION|S_CTIME|S_MTIME)) && inode_maybe_inc_iversion(inode, false))
+>  		dirty_flags |= I_DIRTY_SYNC;
+>  
+>  	__mark_inode_dirty(inode, dirty_flags);
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
 ______________________________________________________
 Linux MTD discussion mailing list
