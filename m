@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C766AC001E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 07:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01F60EB64DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Aug 2023 07:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9fwS1QmR0D88BpZXeR0Hkzyo+U77ucpjNepscQbyLRE=; b=vHNdNMRD77+4rS
-	6AbAR0HOf3QmBIu39SP137CxbchR0Ly25MUmcHie/94xP/2Nvfk/CcU8WZwR1giRy/6yzGHxa1A6w
-	ij64w/54WLpC1JOBh7Xl4qTSWpWlXYyHURXZI64cPzOJcCYbgCscFyASL8B0w9e5lhFP9hBxysY6J
-	cVXCt1p3yQR+YLFivqTK7qQI4nEnELCeGonhCb23evfE6C5dRPYnfbIzwP62VecYXl/Azzv9o2/L+
-	BbMPZJ9ftXsdGBU6GV1Lhww/sCQIMiQiOokuT19tWf8r41fA/8/bNdojGXEF4b+DviyGk8cZiZl3F
-	dWgem2x0RACJejM+tuUg==;
+	List-Owner; bh=MQxCGvxJaZEG3H4Pwyt0U2DvLEH+1mqsM0CFRoEiycc=; b=uPjdvmRAT8FUfM
+	cYsWyRcDnYuFOREuX4X0T9pzu4BSV1MZ6uBVpoaTaEjWIGH7Kupbi3Q4a9P2k52YGstV0pfpEUIhg
+	vuTM5C1V6QDO0Hak6Ad1I7SaOu0c8tg0LDHwLqquhJSXA3cVvdWuhTw2Jejin8CKRjvZ4/86Hr8i3
+	+V4RPLc3s+jZqCMHIObDujEW5TWDOhfMVtQIpGRlw4I+x8+vtu/BD2CvtL9l+oo6gyvwcSggMKYHG
+	w0i08oJkidSr9CKEYlYo3dctpTRYsrJ56PHqIveVJrS11Y89k+9eYGmO4CAE4o6jOUBn7mcGOeaTn
+	qOmzkOw1bfBgPByIWQcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTdHU-004DHJ-1M;
-	Wed, 09 Aug 2023 07:06:56 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qTdJ4-004DX6-0c;
+	Wed, 09 Aug 2023 07:08:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTdHR-004DGF-12;
-	Wed, 09 Aug 2023 07:06:54 +0000
+	id 1qTdJ1-004DWJ-2M;
+	Wed, 09 Aug 2023 07:08:32 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9B61A62FBF;
-	Wed,  9 Aug 2023 07:06:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BD8C433C7;
-	Wed,  9 Aug 2023 07:06:37 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4397D60AD5;
+	Wed,  9 Aug 2023 07:08:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB972C433C8;
+	Wed,  9 Aug 2023 07:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691564812;
-	bh=LyptcIlHZJMPRLgCQdT8M5vqzNKCvVA2tglx+SSzKhk=;
+	s=k20201202; t=1691564910;
+	bh=/rZSqjAZtsBizYYtIOB21nSsnZRBJybWyyf062l+VJQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bD7f0dTITrbaEv4ks9HGhx0VVGQl2go0/eu1op4nP82j4N7TgX5btWqWiaSGoe8jp
-	 i6+z7Q/Jk2DuDRVzKbPo4bN2rJnb7ZSAdXE4Z0xYd+h6nr/dULJQsuanMXc8U/mPWC
-	 durewToMDZYiugVbqFDpM/vlNxIknI7IjiKj4iWyBj6wWmzWhg0/t+ygbJ1TK6LZ+2
-	 DAg/4gaYUGbCnyrWc2K3wnSswvzR8b++oY6In8hF21Owe2spxR27o2A1Ew8ijOuuN3
-	 Wo+4rLZHSLxhk9EzIXmcSquBg+Bnp2nKOE70h2bjG7fT6iPfQRAHqxOjlzas9G4WAl
-	 a1bfUfvPCKxNg==
-Date: Wed, 9 Aug 2023 09:06:34 +0200
+	b=XBXM6YuN/DJfcAIiFmHbtES3QfTM1C8dTZvNbHpT0ojlG4HZRC1KRdUNiYIozuLtf
+	 Mj8KiYlNBlPNH6bVN/SdgMEWVqW0bd0EXRksBsHLCfEXTYWFcUxKPmMlZQa4BLXc+u
+	 HVWJiPLV6I93Alqf8bHPAj4p352DMAD62OU7S075NpSOa7OY8Rzy7Lkh+DmR2NEoSD
+	 3F9BROSdL1LVyjHyT/qVqpX14CEeISxG8JvWDSf6VlsP5oBPdi9SjzN2dJtXprrLw2
+	 PAttEXxJZrNwNwPks/SfSAHbRPRAuqTa/QqJFHQ6a/wwq8PwFX8puWJ6ZzYsWf6rHi
+	 p6EZ4DAxuERvA==
+Date: Wed, 9 Aug 2023 09:08:13 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Jan Kara <jack@suse.cz>
 Cc: Jeff Layton <jlayton@kernel.org>,
@@ -104,18 +104,17 @@ Cc: Jeff Layton <jlayton@kernel.org>,
 	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
 	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 06/13] ubifs: have ubifs_update_time use
- inode_update_timestamps
-Message-ID: <20230809-handreichung-umgearbeitet-951eebed4d61@brauner>
+Subject: Re: [PATCH v7 05/13] fat: make fat_update_time get its own timestamp
+Message-ID: <20230809-goldpreis-nennen-798a895973be@brauner>
 References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230807-mgctime-v7-6-d1dec143a704@kernel.org>
- <20230808093701.ggyj7tyqonivl7tb@quack3>
+ <20230807-mgctime-v7-5-d1dec143a704@kernel.org>
+ <20230808093226.bq2qfxv5npckk643@quack3>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230808093701.ggyj7tyqonivl7tb@quack3>
+In-Reply-To: <20230808093226.bq2qfxv5npckk643@quack3>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230809_000653_444443_84E853C4 
-X-CRM114-Status: GOOD (  17.11  )
+X-CRM114-CacheID: sfid-20230809_000831_852933_6E0452FF 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,42 +131,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Aug 08, 2023 at 11:37:01AM +0200, Jan Kara wrote:
-> On Mon 07-08-23 15:38:37, Jeff Layton wrote:
+On Tue, Aug 08, 2023 at 11:32:26AM +0200, Jan Kara wrote:
+> On Mon 07-08-23 15:38:36, Jeff Layton wrote:
 > > In later patches, we're going to drop the "now" parameter from the
-> > update_time operation. Prepare ubifs for this, by having it use the new
-> > inode_update_timestamps helper.
-> > 
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> 
-> One comment below:
-> 
-> > diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> > index df9086b19cd0..2d0178922e19 100644
-> > --- a/fs/ubifs/file.c
-> > +++ b/fs/ubifs/file.c
-> > @@ -1397,15 +1397,9 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
-> >  		return err;
-> >  
-> >  	mutex_lock(&ui->ui_mutex);
-> > -	if (flags & S_ATIME)
-> > -		inode->i_atime = *time;
-> > -	if (flags & S_CTIME)
-> > -		inode_set_ctime_to_ts(inode, *time);
-> > -	if (flags & S_MTIME)
-> > -		inode->i_mtime = *time;
-> > -
-> > -	release = ui->dirty;
-> > +	inode_update_timestamps(inode, flags);
-> >  	__mark_inode_dirty(inode, I_DIRTY_SYNC);
-> > +	release = ui->dirty;
-> >  	mutex_unlock(&ui->ui_mutex);
-> 
-> I think this is wrong. You need to keep sampling ui->dirty before calling
-> __mark_inode_dirty(). Otherwise you could release budget for inode update
-> you really need...
+> > update_time operation. Fix fat_update_time to fetch its own timestamp.
+> > It turns out that this is easily done by just passing a NULL timestamp
+> > pointer to fat_update_time.
+>              ^^^ fat_truncate_time()
 
-Fixed in-tree.
+Fixed in-tree, thanks!
 
 ______________________________________________________
 Linux MTD discussion mailing list
