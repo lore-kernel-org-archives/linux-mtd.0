@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8E42C04FDF
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Aug 2023 16:00:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 200EAC04A6A
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Aug 2023 16:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nKIh2qOW2eCsOQGRm9AJEShdc/wAmhpTH22XSt19MeA=; b=ze308bV/+/cqwe
-	iCMNpAJxgHF2NWOinstcke+avyzp3A8PwvpfhNkFjzfvyVQUdd/eCW4v/5d7isSd7rlkrKOhmQA51
-	3Sdl5CDdSeeTd7OhPR4Pt8qI0u4SoPy+E+nWm+c5x1RPgC97fTlFZwqh0YQnEd7+mK7TSaW0D0s0o
-	tanJACI2kZPdKCFNT6+pBrk7l4cqJRNkRWEKrPIqrnKwXSjkchVhUPDTMZGAGhl8C8bvZKh0Bswb5
-	pqec2gp1b32fTKjQnAD4PTjhPo56YYggoga7jckbX2zorBy6cdoHIm8aY36oBtwu8ui4vm0+3VsXN
-	JxdWOYcdk4Ht4TfjipjQ==;
+	List-Owner; bh=41YD/fSlwa9Yi3mQeKcVYqAsvS7ccdS7TXKTWlIfYWg=; b=kCTR0kX9pRLA04
+	TLJiebh/5OCPJaor9Sl/lNP45DgPTHtZC/nGMhlmhDgoe8SnqUQmRxq+c3sjQ6uiHi9jNWWpCX8mQ
+	ZkvdK8GpK0N0APINcVxYMriRC2D/JvoVq/yrm5n8uBvf4nnyTZ7wvKiOWsE5jSUu/O5IBgtiqcvPS
+	sezWw+Uikl1EyRp+zDxrVb+mnw5XQWLWfJ/MTmfrdk8NYUFqAVc1mcDxUMXYsOY4EUHRvIb4Cw4S0
+	4KtfeEFjRDNEQboAjzaIg1eY3t3Cd0asnqKct8jTrSS23qofNb3wkM4021KQ5XzrEV6ZILy8EadMi
+	MVMvmriUlJgtj9QqTQQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qU85i-0086l8-2G;
-	Thu, 10 Aug 2023 16:00:50 +0000
+	id 1qU85j-0086lZ-17;
+	Thu, 10 Aug 2023 16:00:51 +0000
 Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qU85c-0086ep-1F
+	id 1qU85c-0086eh-0B
 	for linux-mtd@lists.infradead.org;
 	Thu, 10 Aug 2023 16:00:47 +0000
 Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 88BAB622F562;
-	Thu, 10 Aug 2023 18:00:40 +0200 (CEST)
+	by lithops.sigma-star.at (Postfix) with ESMTP id CC647635D290;
+	Thu, 10 Aug 2023 18:00:38 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
 	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id EDfStOmQ8fP8; Thu, 10 Aug 2023 18:00:40 +0200 (CEST)
+	with ESMTP id 98qcvanlYtQc; Thu, 10 Aug 2023 18:00:38 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 1C754635D2A1;
-	Thu, 10 Aug 2023 18:00:40 +0200 (CEST)
+	by lithops.sigma-star.at (Postfix) with ESMTP id 34314635D2A1;
+	Thu, 10 Aug 2023 18:00:38 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
 	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id yaVTxL2OMKCP; Thu, 10 Aug 2023 18:00:40 +0200 (CEST)
+	with ESMTP id xBBmf1iN98Fa; Thu, 10 Aug 2023 18:00:38 +0200 (CEST)
 Received: from foxxylove.corp.sigma-star.at (unknown [82.150.214.1])
-	by lithops.sigma-star.at (Postfix) with ESMTPSA id AF6E1635D295;
-	Thu, 10 Aug 2023 18:00:39 +0200 (CEST)
+	by lithops.sigma-star.at (Postfix) with ESMTPSA id C5849635D290;
+	Thu, 10 Aug 2023 18:00:37 +0200 (CEST)
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: Christoph Hellwig <hch@infradead.org>,
 	Stephan Wurm <stephan.wurm@a-eberle.de>,
 	Richard Weinberger <richard@nod.at>,
+	stable@vger.kernel.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Oliver Neukum <oliver@neukum.org>,
@@ -57,16 +58,16 @@ Cc: Christoph Hellwig <hch@infradead.org>,
 	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
 	linux-kernel@vger.kernel.org,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH 2/7] scatterlist: Add kmap helpers
-Date: Thu, 10 Aug 2023 18:00:13 +0200
-Message-Id: <20230810160019.16977-3-richard@nod.at>
+Subject: [PATCH 1/7] ubi: block: Refactor sg list processing for highmem
+Date: Thu, 10 Aug 2023 18:00:12 +0200
+Message-Id: <20230810160019.16977-2-richard@nod.at>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230810160019.16977-1-richard@nod.at>
 References: <20230810160019.16977-1-richard@nod.at>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230810_090044_747378_5A63D1AA 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20230810_090044_423726_B6611162 
+X-CRM114-Status: GOOD (  25.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,46 +84,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-kmap_sg() is basically scsi_kmap_atomic_sg() but uses kmap_local()
-and does not enforce disabled interrupts.
+Currently sg_virt() is used while filling the sg list from LEB data.
+This approach cannot work with highmem.
 
+Refactor ubi_eba_read_leb_sg() to use kmap_atomic() for sg list
+access.
+Since kmap_atomic() disables preempt a bounce buffer is needed.
+kmap_local_page() is not used to allow easy backporting of this patch
+to older kernels.
+
+The followup patches in this series will switch to kmap_sg()
+and we can remove our own helper and the bounce buffer.
+
+Cc: stable@vger.kernel.org
+Fixes: 9ff08979e1742 ("UBI: Add initial support for scatter gather")
+Reported-by: Stephan Wurm <stephan.wurm@a-eberle.de>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- include/linux/scatterlist.h |  3 ++
- lib/scatterlist.c           | 55 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 58 insertions(+)
+ drivers/mtd/ubi/block.c | 11 ++---
+ drivers/mtd/ubi/eba.c   | 95 ++++++++++++++++++++++++++++-------------
+ include/linux/mtd/ubi.h | 12 +++---
+ 3 files changed, 76 insertions(+), 42 deletions(-)
 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 77df3d7b18a61..dd25a87609491 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -692,4 +692,7 @@ bool sg_miter_skip(struct sg_mapping_iter *miter, off_t offset);
- bool sg_miter_next(struct sg_mapping_iter *miter);
- void sg_miter_stop(struct sg_mapping_iter *miter);
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 437c5b83ffe51..5b2e6c74ac5a8 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -193,13 +193,10 @@ static blk_status_t ubiblock_read(struct request *req)
  
-+void *kmap_sg(struct scatterlist *sgl, int sg_count, size_t *offset, size_t *len);
-+void kunmap_sg(void *virt);
-+
- #endif /* _LINUX_SCATTERLIST_H */
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index e86231a44c3de..7428d9461711d 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -1364,3 +1364,58 @@ ssize_t extract_iter_to_sg(struct iov_iter *iter, size_t maxsize,
- 	}
+ 	blk_mq_start_request(req);
+ 
+-	/*
+-	 * It is safe to ignore the return value of blk_rq_map_sg() because
+-	 * the number of sg entries is limited to UBI_MAX_SG_COUNT
+-	 * and ubi_read_sg() will check that limit.
+-	 */
+ 	ubi_sgl_init(&pdu->usgl);
+-	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
++	ret = blk_rq_map_sg(req->q, req, pdu->usgl.sg);
++	ubi_assert(ret > 0 && ret < UBI_MAX_SG_COUNT);
++	pdu->usgl.len = ret;
+ 
+ 	while (bytes_left) {
+ 		/*
+@@ -212,7 +209,7 @@ static blk_status_t ubiblock_read(struct request *req)
+ 		ret = ubi_read_sg(dev->desc, leb, &pdu->usgl, offset, to_read);
+ 		if (ret < 0)
+ 			break;
+-
++		pdu->usgl.tot_offset += to_read;
+ 		bytes_left -= to_read;
+ 		to_read = bytes_left;
+ 		leb += 1;
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 655ff41863e2b..82c54bf7c2067 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -31,6 +31,7 @@
+ #include <linux/slab.h>
+ #include <linux/crc32.h>
+ #include <linux/err.h>
++#include <linux/highmem.h>
+ #include "ubi.h"
+ 
+ /* Number of physical eraseblocks reserved for atomic LEB change operation */
+@@ -730,6 +731,44 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(extract_iter_to_sg);
-+
-+/**
-+ * kmap_sg - find and kmap an sg-elemnt
-+ * @sgl:	scatter-gather list
-+ * @sg_count:	number of segments in sg
-+ * @offset:	offset in bytes into sg, on return offset into the mapped area
-+ * @len:	bytes to map, on return number of bytes mapped
-+ *
-+ * Returns virtual address of the start of the mapped page
+ 
++/*
++ * Basically a copy of scsi_kmap_atomic_sg().
++ * As long scsi_kmap_atomic_sg() is not part of lib/scatterlist.c have
++ * our own version to avoid a dependency on CONFIG_SCSI.
 + */
-+void *kmap_sg(struct scatterlist *sgl, int sg_count, size_t *offset, size_t *len)
++static void *ubi_kmap_atomic_sg(struct scatterlist *sgl, int sg_count,
++			  size_t *offset, size_t *len)
 +{
 +	int i;
 +	size_t sg_len = 0, len_complete = 0;
@@ -136,11 +172,8 @@ index e86231a44c3de..7428d9461711d 100644
 +			break;
 +	}
 +
-+	if (WARN_ON_ONCE(i == sg_count)) {
-+		pr_err("%s: Bytes in sg: %zu, requested offset %zu, elements %d\n",
-+		       __func__, sg_len, *offset, sg_count);
++	if (WARN_ON_ONCE(i == sg_count))
 +		return NULL;
-+	}
 +
 +	/* Offset starting from the beginning of first page in this sg-entry */
 +	*offset = *offset - len_complete + sg->offset;
@@ -154,19 +187,117 @@ index e86231a44c3de..7428d9461711d 100644
 +	if (*len > sg_len)
 +		*len = sg_len;
 +
-+	return kmap_local_page(page);
++	return kmap_atomic(page);
 +}
-+EXPORT_SYMBOL(kmap_sg);
 +
-+/**
-+ * kunmap_sg - atomically unmap a virtual address, previously mapped with kmap_sg
-+ * @virt:	virtual address to be unmapped
-+ */
-+void kunmap_sg(void *virt)
-+{
-+	kunmap_local(virt);
-+}
-+EXPORT_SYMBOL(kunmap_sg);
+ /**
+  * ubi_eba_read_leb_sg - read data into a scatter gather list.
+  * @ubi: UBI device description object
+@@ -748,40 +787,38 @@ int ubi_eba_read_leb_sg(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			struct ubi_sgl *sgl, int lnum, int offset, int len,
+ 			int check)
+ {
+-	int to_read;
+-	int ret;
+-	struct scatterlist *sg;
++	size_t map_len, map_offset, cur_offset;
++	int ret, to_read = len;
++	char *bounce_buf;
+ 
+-	for (;;) {
+-		ubi_assert(sgl->list_pos < UBI_MAX_SG_COUNT);
+-		sg = &sgl->sg[sgl->list_pos];
+-		if (len < sg->length - sgl->page_pos)
+-			to_read = len;
+-		else
+-			to_read = sg->length - sgl->page_pos;
+-
+-		ret = ubi_eba_read_leb(ubi, vol, lnum,
+-				       sg_virt(sg) + sgl->page_pos, offset,
+-				       to_read, check);
+-		if (ret < 0)
+-			return ret;
+-
+-		offset += to_read;
+-		len -= to_read;
+-		if (!len) {
+-			sgl->page_pos += to_read;
+-			if (sgl->page_pos == sg->length) {
+-				sgl->list_pos++;
+-				sgl->page_pos = 0;
+-			}
++	bounce_buf = kvmalloc(to_read, GFP_KERNEL);
++	if (!bounce_buf) {
++		ret = -ENOMEM;
++		goto out;
++	}
+ 
+-			break;
+-		}
++	ret = ubi_eba_read_leb(ubi, vol, lnum, bounce_buf, offset, to_read, check);
++	if (ret < 0)
++		goto out;
++
++	cur_offset = 0;
++	while (to_read > 0) {
++		char *dst;
+ 
+-		sgl->list_pos++;
+-		sgl->page_pos = 0;
++		map_len = to_read;
++		map_offset = cur_offset + sgl->tot_offset;
++
++		dst = ubi_kmap_atomic_sg(sgl->sg, sgl->len, &map_offset, &map_len);
++		memcpy(dst + map_offset, bounce_buf + cur_offset, map_len);
++		kunmap_atomic(dst);
++
++		cur_offset += map_len;
++		to_read -= map_len;
+ 	}
+ 
++	ret = 0;
++out:
++	kvfree(bounce_buf);
+ 	return ret;
+ }
+ 
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index a529347fd75b2..521e0e8b3ede3 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -115,8 +115,8 @@ struct ubi_volume_info {
+ 
+ /**
+  * struct ubi_sgl - UBI scatter gather list data structure.
+- * @list_pos: current position in @sg[]
+- * @page_pos: current position in @sg[@list_pos]
++ * @list_len: number of elemtns in @sg[]
++ * @tot_offset: current position the scatter gather list
+  * @sg: the scatter gather list itself
+  *
+  * ubi_sgl is a wrapper around a scatter list which keeps track of the
+@@ -124,8 +124,8 @@ struct ubi_volume_info {
+  * it can be used across multiple ubi_leb_read_sg() calls.
+  */
+ struct ubi_sgl {
+-	int list_pos;
+-	int page_pos;
++	int len;
++	int tot_offset;
+ 	struct scatterlist sg[UBI_MAX_SG_COUNT];
+ };
+ 
+@@ -138,8 +138,8 @@ struct ubi_sgl {
+  */
+ static inline void ubi_sgl_init(struct ubi_sgl *usgl)
+ {
+-	usgl->list_pos = 0;
+-	usgl->page_pos = 0;
++	usgl->len = 0;
++	usgl->tot_offset = 0;
+ }
+ 
+ /**
 -- 
 2.35.3
 
