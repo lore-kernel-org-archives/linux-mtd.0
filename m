@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C8BC001DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Aug 2023 07:27:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 290E9C001DE
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Aug 2023 07:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NcxA3QBoHpsCicheavm5RafvGSOIAUtvi6Lr/Uy7h+s=; b=v7gH/cuZB8VoZqQlkIAlsDcEO+
-	ib6sxtE3lllQSbbw3AVfAptgVNyNL+6/6v166lgbFGyfQ5bFUIaL9xqWGDzLI52MKK9dToRztwu6z
-	1pE4FwCibQIxXFCL/mlM8wXQqMBNZlJiZXBxVKdKiItTIaeX9fgZddlZV4snndVzJWipRkT9xaClA
-	GEeCHBbPJeF5M7GuVGPAy13kchoz0DX4liqdQF2JCB6juTfEyIWvxgzNfGoDpSdQmLx1fCYxAZd8w
-	iu3zVFjcv9koWwP5kCACmm6qHa1ViUVl/HBgrci2Xys0N5YFMrzcpQ9U4kk6Ntzg+xbdth1EzxdJb
-	mJqsq9dA==;
+	bh=EyPaZBsX+VoW4SREqELwrSS5iGQiyqFyGsZ4nVb73bI=; b=tA7ZGeKnLVuq/ml8tcLPVDIUF6
+	Xppfl2v2GUvZ8TzG6jNBOiPwNF6mCpmimLlBId+q7scsdDZRFxLIX6p9achjKY+/xm5K+08NaMGsV
+	cgKtM5Y0Wkr+WrRHb1UfijypjT40UoLTfpSSg4307k/pWDyRXNeKkWYQjpqmtAUKwGSnNWq+wFf2e
+	4NfAghwkqLQI7znKhUEhn9as5Lh6XaThqa8/SB6miE9pnGmfSGsVfipzDnDIPnwfd+e3/H856ESKK
+	7A0nl9pqiLIv8eOFWIQoivKrMvxlpZ6EL6taJkuzDVoCJqznf+feE1BOHaeStP0SfRJmoL8U7bWfD
+	CUjFYkgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qU05D-006kc5-0G;
-	Thu, 10 Aug 2023 07:27:47 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qU08V-006ksV-2o;
+	Thu, 10 Aug 2023 07:31:11 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qU05A-006kbL-31
+	id 1qU08S-006krv-12
 	for linux-mtd@lists.infradead.org;
-	Thu, 10 Aug 2023 07:27:46 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	Thu, 10 Aug 2023 07:31:10 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E7D476514D;
-	Thu, 10 Aug 2023 07:27:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E82BDC433C7;
-	Thu, 10 Aug 2023 07:27:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691652463;
-	bh=nOa3HgEefuDFhQEt7dD9tMAOntTNRM1PVAbRUt6sTUM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AtFBp86q5ZSMIknjxo3WpL4kCiIkdxozbU9C7M1P6IUsrCTixIUdZSKWMs2wTyqMS
-	 iyPUGkCB0xnEEfdHir6mriUCjqLfLJ6xSPYRRNJJIXKe5htUDpCXUHjlaCuqCengKn
-	 dp8hQnIsjkstpc6ZlDhkMJy9ZSJa7MpR7ZjRazU2qeIhRW5OVKobiQh1vEPoz3kQ2/
-	 qesy2nmliA1nWZermrC/+eLcdu8BhFnPupeA2tzvLrOL8ktuGtu6uGqCDx8ZGmjQVd
-	 pPyev6bK3uImGZrG1wHR6CLcMusB/90ypyeFKrJgKLJZi6TvgXn4EPhrmgu55NxTUn
-	 0IfExfbJLzVJw==
+	by mail.3ffe.de (Postfix) with ESMTPSA id 7B46F132;
+	Thu, 10 Aug 2023 09:31:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1691652663;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fVw5NxE1R+4QXpXsrsoGk6V5tVYQaoQiywFAjXga/SU=;
+	b=OCNzBD9UwtFRvxxnEIEtrLi50KQsuyo1sA+QbQ+bnXgv9b++oeX05iVOPz04jYKHZIkFGL
+	upiuGGlnw3c8iaFFOvonyrBr1dsQrm2iuCHy5N4FkWklYtyO5L1KKZX7i7bA10foOHdXnx
+	3AdE4QpJdzGHKi6INJPHYElwP4yltGOxdb5iSV/KRlfi24PLroPSGV5boYTIbEddIxob/4
+	TS50mwmO7ZPrYw4ZNnmrZETCk7Ihg+VHV+zIOw9AF/+vG/l84jQlje+7GPTWop4+8p4Yaq
+	/wFPTYnSzczbLntf2fKCAcFbthvugX+cUu059iL67wGEAYeI9wIgSmgk/96sYQ==
 MIME-Version: 1.0
-Date: Thu, 10 Aug 2023 09:27:39 +0200
-From: Michael Walle <mwalle@kernel.org>
+Date: Thu, 10 Aug 2023 09:31:03 +0200
+From: Michael Walle <michael@walle.cc>
 To: liao jaime <jaimeliao.tw@gmail.com>
 Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
  pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, JaimeLiao
  <jaimeliao@mxic.com.tw>
-Subject: Re: [PATCH v3 2/5] mtd: spi-nor: core: Hook manufacture by checking
- first byte ID
-In-Reply-To: <CAAQoYR=JQVd3iqfCYKjvkbFSGVWJRX1xFni6CsNht9prhuQ1EA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] spi: spi-mem: Allow specifying the byte order in
+ DTR mode
+In-Reply-To: <CAAQoYRmtUvnU-SmT1sLRgDGQr6UFwsd8=EyN31pv2cghK6apUg@mail.gmail.com>
 References: <20230804095409.278419-1-jaimeliao.tw@gmail.com>
- <20230804095409.278419-3-jaimeliao.tw@gmail.com>
- <70e42ee5e4c5aba05ac896cb94956f25@kernel.org>
- <CAAQoYR=JQVd3iqfCYKjvkbFSGVWJRX1xFni6CsNht9prhuQ1EA@mail.gmail.com>
-Message-ID: <92234e4c5aca657a966d7c4d9d5f219a@kernel.org>
-X-Sender: mwalle@kernel.org
+ <20230804095409.278419-4-jaimeliao.tw@gmail.com>
+ <49a226a128a908c4d99238246bbd09b2@walle.cc>
+ <CAAQoYRmtUvnU-SmT1sLRgDGQr6UFwsd8=EyN31pv2cghK6apUg@mail.gmail.com>
+Message-ID: <1c47df564bca7a28c8f99e8105613dd5@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230810_002745_034074_A5696D32 
-X-CRM114-Status: GOOD (  15.51  )
+X-CRM114-CacheID: sfid-20230810_003108_511939_B6D3B5DA 
+X-CRM114-Status: GOOD (  17.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,50 +82,34 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
->> This won't work beacuse the manufacturer id is not always
->> one byte long, think of continuation codes. In fact, as the
->> flash_info table is of now, we cannot even rely on the
->> continuation codes, but we have to always check for the
->> complete id_len, i.e. there is at least one hack where
->> the id is reversed and the manufacturer is the last byte,
->> iirc. some oddball cypress mram chip.
-> According JEDEC standard, 1st byte is manufacture ID.
-> I check id table, "cy15x104q" with multi manufacture ID in
-> later bytes by RDID command(9F).
+>> > There are NOR flashes (Macronix) that swap the bytes on a 16-bit
+>> > boundary when configured in Octal DTR mode. The byte order of
+>> > 16-bit words is swapped when read or written in Octal Double
+>> > Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
+>> > modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
+>> > 8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
+>> > Swapping the bytes may introduce some endianness problems. It can
+>> > affect the boot sequence if the entire boot sequence is not handled
+>> > in either 8D-8D-8D mode or 1-1-1 mode. So we must swap the bytes
+>> > back to have the same byte order as in STR modes. Fortunately there
+>> > are controllers that could swap the bytes back at runtime,
+>> > addressing the flash's endiannesses requirements. Provide a way for
+>> > the upper layers to specify the byte order in Octal DTR mode.
+>> >
+>> > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> 
+>> .. this. If you pick up a patch from another author, you should
+>> keep the author of the patch.
+> How could I do for this?
+> Because of Tudor's patch is on old Linux kernel version, it need
+> a small changes for suiting on v6.5-rc3.
 
-Yes the currently supported cy15x104q is broken.. but nevertheless
-it's there. Also some spansion flashes uses winbond manufacturer
-ids.
+Ahh I see, you changed that patch. I'd pick up the patch, leave the
+original author and SoB, describe your changes and add your SoB
+after the one from Tudor.
 
-> Maybe some old flash didn't follow this but I think it isn't
-> a high percentage.
-> Most of all and new product are follow JEDEC.
-
-Have a look at JEP106 (mine is JEP106BC) and you'll see all the
-manufacturer IDs defined by JEDEC and you'll see that except
-for the first 127, all others are multibyte vendor IDs starting
-with continuation codes.
-
-And it seems that the command RDID 9F is not covered in any
-JEDEC standard. At least I haven't found anything. If you know
-where that command is defined, please let me know.
-
->> If you want to get the correct manufacturer for spi-nor-generic,
->> you should extract it from the SFDP tables. It seems that the
->> BFPT don't include a manufacturer id, but if there are proprietary
->> tables, you *might* use that id. I say might, because it only works
->> with one byte manufacturer ids, no continuation codes... *sigh*
-> 
-> Unfortunately, Macronix didn't include proprietary tables in SFDP for
-> octal flashes and as I understanding proprietary table is not a 
-> stardard.
-> So that content and address are not identical each vendor, it will need
-> a manufacturer fixups for reading.
-
-Yes thats by definition not a standard, *but* the header with the
-manufacturer id *is* standard.
-
-So better include some proprietary tables in your next NOR flashes ;)
+But I still don't see how these patches will help with your current
+problem.
 
 -michael
 
