@@ -4,90 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C20DC001DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Aug 2023 08:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81256C001B0
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Aug 2023 14:20:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Subject:From:To:MIME-Version:Date:Message-ID:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=B7r3Q1NNCFsO6L3/4oZaqTfSvkfiol8eh4HR7CXZ+zw=; b=lboyrOyZKDeGvn
-	CupZkY493jOB52t45cpIqdg2PzIp9IOv3ptUv7BJQkmAXSVowskRTvGF2sYhAR7trChYtvvunQX5/
-	GT8l3d3SAj1eNOFPmo7l2ICGF/B1XVVwDol714oCGbyTe+eUGKpCsFFjgoTha1GWxF4/JUuOAZki4
-	oGYPiD1IOjyseS8LfB++NUOBP115hPlPxQ09yMcVE+X1znJBdHoFp7I7oStsvllah0cZFSZ66PJ8e
-	RkvpFzEkei4em0YOJWC5H5jcnolMrkc6e36r+XznVmlrmUFn9ff71cmxhpYLHeQqArNJ8uSEI/9DT
-	rxYjGQ7qCbwTbMzPb/Pg==;
+	List-Owner; bh=qx0d6bj4LXUfNHPCqPv73JzoIYFGTD3xFoFgkKLkrZo=; b=W4euzyxH/G3w+8
+	Y6ObqM83Um7cbx+XH778BBnL3mxioUeHgDSo6SlcADgA8YXakMYk3j856CmxSykpImNH59U3pzHJl
+	vKr8/aYkZFd33jsyW2BQpjQZ0JNieXDuUs+bWJ7Gh3glfg/ojJgCMRbLmMKwfWkU+Wfs7G0RYfAqk
+	WjFMinvms8LV8VboEJh6s7z73tKaVgIt6t1/Ga4uj0aDl6N/eY86J3ZLlf5sP3L9qa/SxAChxqytD
+	k9w1q/a7bKx7M+6901GDN9aRStfR96gi7QMZ1VEWW/cYQ/JS/ixfVli5ITvdSBwWcC89gZcnn129s
+	xJaKKGDE0Df5szPvv0PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qU0ub-006re0-1E;
-	Thu, 10 Aug 2023 08:20:53 +0000
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20])
+	id 1qU6WX-007qMX-2Z;
+	Thu, 10 Aug 2023 14:20:25 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qU0uY-006rct-0R
-	for linux-mtd@lists.infradead.org;
-	Thu, 10 Aug 2023 08:20:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1691655647; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ny7ywmBB9uDbWIJeWIjmtHQ+AeEjiKEiN3gGlgRy733stUHygn4hVHsTOQTOI9ymfg
-    vo+4NcNLXedEW7R2uxeGLaJNC9yfINX2/3LQBtZ6xGKczg9XpI9HJWfSMvEeeu05KUpb
-    tmXweVhMlbEpQmbOG2T92ObA7neHtXavtsQjWm4SelSqJTCL1gcMT2P2PUR5ZLIKXSMw
-    yaAndm+uG08gcHsGVfytIHG3ErmRZN0cp0P48RAu1zLAPNo9NJMl5/ec51em3K6grcEp
-    56ffcbrz3IdyvanGMWyLUyxwhe0gZ4zsoXeBp0B8mrvS3p1hHCSz6iheQh+nMftcx8/h
-    J+RQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1691655647;
-    s=strato-dkim-0002; d=strato.com;
-    h=Subject:From:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=o9VfjkXSvikASlFk8uTPXnnZdW2TzF0Fb1ySnqi2or8=;
-    b=R3T/f/jpbZhqi8CgF+ormWcXvkiK+492LiPv49X21HwCS9h28jnZljubX4H/Jnyk/J
-    JzeYIamUlNIzoAYUU7GPsx7YsuFs7PfQvyinawNZ0OEeHlqMW23Ys+9ufFVmBXgboxBS
-    enpHwh3Uqj50YE+oTBqH7x9JhOC4Js35eNMEh+dpSRWVk9Qs8kEAXRTt/oyKLoXf0SVs
-    sItoc7r/ZfwgE30fJRu9YBfoSvuHpwDL9vawcdNyi1PDUsbqcI4iXtJ8yixqTcFNzC1f
-    LJz4pNxklAtOM6AwpoyO8em4oM5DUXIKkhNhsZ8Gh1pfIn7TPyuuwo2A/95uTx90zHwJ
-    nwWw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1691655647;
-    s=strato-dkim-0002; d=brainaid.de;
-    h=Subject:From:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=o9VfjkXSvikASlFk8uTPXnnZdW2TzF0Fb1ySnqi2or8=;
-    b=nf7raSQ30AjHkosYGjW/juu12c8vO7NthX7wgKyXSZwtgkRljrNirUl7vSgTiwjU4V
-    UiivdcufhqxpnVDYtxwDxY+TX6ePlEbbwySz2U2sUwmfFeBGS5p4BDI8HGGJp97NRVLz
-    ng4T8ooG+pYpUF4SPvT8s+l1xWj8WqzYQorTj8lnuxm5eli4J6m6X3V8DLluuX2X3L7F
-    0EdI0X326dGinPup8gV0mLeMS5z7E6KKhEIoIsjYnxunxxiYt273vwKuk8XhCeQhNbZQ
-    e8kpjHCQs0H3R34Dp5iDvJJbS6nksRZm5TQEHplBmYZS95ydrXp1bANP9EuDVqjQ/c2J
-    czDQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1691655647;
-    s=strato-dkim-0003; d=brainaid.de;
-    h=Subject:From:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=o9VfjkXSvikASlFk8uTPXnnZdW2TzF0Fb1ySnqi2or8=;
-    b=e+H1n7Mp5TdYj7VCyfdwp8oq1bNBLRLADIpxPGCFkj5jeDz2/2uN6NftYGBMI2Isb9
-    8MLPgjopHE55EC9933AA==
-X-RZG-AUTH: ":O2kGeEG7b/pS1BjuEyjk3CsOFCFu9/cqpJ3cRgJT0Ux2ESGZjBX033JkHTIUp9ccd0BET/7sdkrmRiIjmEiYStnYjVZPew=="
-Received: from b.brainaid.de
-    by smtp.strato.com (RZmta 49.6.6 AUTH)
-    with ESMTPSA id 661ed3z7A8Kl03r
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate)
-    for <linux-mtd@lists.infradead.org>;
-    Thu, 10 Aug 2023 10:20:47 +0200 (CEST)
-Received: from [10.252.32.21] (unknown [89.249.13.66])
-	by b.brainaid.de (Postfix) with ESMTPSA id 4F815AC1911
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Aug 2023 08:20:47 +0000 (UTC)
-Message-ID: <7c089577-710f-3310-305e-f05f1d125652@brainaid.de>
-Date: Thu, 10 Aug 2023 10:20:46 +0200
+	id 1qU6WT-007qL8-27;
+	Thu, 10 Aug 2023 14:20:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BDD466462E;
+	Thu, 10 Aug 2023 14:20:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E700C433C7;
+	Thu, 10 Aug 2023 14:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691677220;
+	bh=M6pCzl56hQfYBur6YmsekmzG2MMWL9hk5rFjJ0OsUU0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sEToNoLWqGtj4+RI0IeL2/r+G3nimZRvSUqztupu9NJ+WYoZP0DMJQzTc7AhlsCRR
+	 jK+SIxlfrcfMXKvWeumyeQOK5nFc2dY4tBk6a84vRp7cTftkekwCVyX2rgv9+6AmrC
+	 Dh91SfRjBjwYI9+cQxGNywuPyE4jUPyAUbzRq1qlPCpdc5pfBe17qe4QSw1GWxutDV
+	 LEqx6GOFuLUoidCbQEbTBmg9pIzjp2gcCgmaYfyZA/oR7dMrTfDlL6wCOIJiRAEh5z
+	 7bD2ltW5YMGSzYVVjE66ksMmUMrACNMp5UJJUI+KM+0mH1fxsUmNyF/NEvXI4YbDxf
+	 rS2tPNYilE83g==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Guo Ren <guoren@kernel.org>,
+	Brian Cain <bcain@quicinc.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Jonas Bonn <jonas@southpole.se>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Stafford Horne <shorne@gmail.com>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	x86@kernel.org,
+	Borislav Petkov <bp@alien8.de>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Richard Weinberger <richard@nod.at>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-next@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-ia64@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH 00/17] -Wmissing-prototype warning fixes
+Date: Thu, 10 Aug 2023 16:19:18 +0200
+Message-Id: <20230810141947.1236730-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: linux-mtd@lists.infradead.org
-From: Christian Wendt he/him <cw@brainaid.de>
-Subject: [PATCH] mtd-utils: nandtest: handle large nand devices
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230810_012050_596471_27BD4C79 
-X-CRM114-Status: GOOD (  12.92  )
+X-CRM114-CacheID: sfid-20230810_072021_806101_FAF282C1 
+X-CRM114-Status: GOOD (  24.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,117 +126,180 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[PATCH] mtd-utils: nandtest: handle large nand devices
+From: Arnd Bergmann <arnd@arndb.de>
 
-Running nandtest on devices with sizes of 4Gb or more does not work, as
-the size returned in mtd_info_user is reported as 0 for 4Gb devices for
-example.
+Most of the patches I sent so far for the -Wmissing-prototype warnings
+have made it into linux-next now. There are a few that I'm resending
+now as nobody has picked them up, and then a number of fixes that I
+found while test-building across all architectures rather than just the
+ones I usually test.
 
-The patch uses sysfs to figure out the size of the nand device (as
-recommended in a comment in include/mtd/mtd-abi.h) and changes sizes
-and offsets to 64 bit values.
+The first 15 patches in this series should be uncontroversial, so
+I expect that either a subsystem maintainer or Andrew Morton can
+apply these directly.
 
-[From: Christian Wendt <cw@brainaid.de>]
-diff --git a/nand-utils/nandtest.c b/nand-utils/nandtest.c
-index 06dec25..e60428f 100644
---- a/nand-utils/nandtest.c
-+++ b/nand-utils/nandtest.c
-@@ -8,6 +8,7 @@
-  #include <string.h>
-  #include <time.h>
-  #include <unistd.h>
-+#include <limits.h>
-  #include <sys/stat.h>
-  #include <sys/ioctl.h>
-  #include <sys/types.h>
-@@ -145,6 +146,26 @@ static int erase_and_write(loff_t ofs, unsigned 
-char *data, unsigned char *rbuf,
-  }
+For the last two patches, these might still need some debate about how
+to handle them. I added a Kconfig option to turn off most of the missing
+prototype warnings in the architectures that nobody has fixed yet,
+see patch 16 for those. The last patch does cause some known warnings
+and likely unknown ones for architectures other than x86 and arm,
+so applying it now will bring new problems, but not applying it also
+means that new warnings creep in, so I think this is mainly a question
+of what the best timing is for having this in linux-next.
 
+Arnd Bergmann (17):
+  [RESEND] jffs2: mark __jffs2_dbg_superblock_counts() static
+  [RESEND] irq_work: consolidate arch_irq_work_raise prototypes
+  [RESEND] ida: make 'ida_dump' static
+  pci: sysfs: move declarations to linux/pci.h
+  swim3: mark swim3_init() static
+  macintosh/ams: mark ams_init() static
+  scsi: qlogicpti: mark qlogicpti_info() static
+  microblaze: mark flush_dcache_folio() inline
+  parport: gsc: mark init function static
+  zorro: include zorro.h in names.c
+  scsi: gvp11: remove unused gvp11_setup() function
+  time: make sysfs_get_uname() function visible in header
+  stackleak: add declarations for global functions
+  kprobes: unify kprobes_exceptions_nofify() prototypes
+  arch: fix asm-offsets.c building with -Wmissing-prototypes
+  [RFC] arch: turn -Wmissing-prototypes off conditionally
+  [RFC] Makefile.extrawarn: turn on missing-prototypes again
 
-+static uint64_t get_mem_size(const char* device)
-+{
-+       const char* p = strrchr(device, '/');
-+       char path[PATH_MAX];
-+       int fd;
-+
-+       snprintf(path, sizeof(path), "/sys/class/mtd/%s/size", p);
-+       fd = open(path, O_RDONLY);
-+       if (fd) {
-+               char buffer[32];
-+               ssize_t n = read(fd, buffer, sizeof(buffer));
-+               close(fd);
-+               if (n > 0) {
-+                       return strtoull(buffer, NULL, 0);
-+               }
-+       }
-+
-+       return 0;
-+}
-+
-  /*
-   * Main program
-   */
-@@ -156,8 +177,9 @@ int main(int argc, char **argv)
-         int nr_passes = 1;
-         int nr_reads = 4;
-         int keep_contents = 0;
--       uint32_t offset = 0;
--       uint32_t length = -1;
-+       uint64_t offset = 0;
-+       uint64_t length = -1;
-+       uint64_t mem_size = 0;
-         int error = 0;
+ arch/alpha/Kbuild                        |  2 ++
+ arch/alpha/include/asm/pci.h             |  3 ---
+ arch/alpha/kernel/asm-offsets.c          |  2 +-
+ arch/alpha/lib/Makefile                  |  1 +
+ arch/arc/Kbuild                          |  2 ++
+ arch/arc/include/asm/kprobes.h           |  3 ---
+ arch/arm/include/asm/irq_work.h          |  2 --
+ arch/arm/include/asm/kprobes.h           |  2 --
+ arch/arm64/include/asm/irq_work.h        |  2 --
+ arch/arm64/include/asm/kprobes.h         |  2 --
+ arch/csky/Kbuild                         |  2 ++
+ arch/csky/include/asm/irq_work.h         |  2 +-
+ arch/hexagon/Kbuild                      |  2 ++
+ arch/ia64/Kbuild                         |  2 ++
+ arch/ia64/include/asm/kprobes.h          |  2 --
+ arch/ia64/kernel/asm-offsets.c           |  2 +-
+ arch/ia64/lib/Makefile                   |  1 +
+ arch/loongarch/Kbuild                    |  2 ++
+ arch/loongarch/kernel/asm-offsets.c      | 12 ++++++++++++
+ arch/m68k/Kbuild                         |  2 ++
+ arch/m68k/lib/Makefile                   |  1 +
+ arch/microblaze/Kbuild                   |  2 ++
+ arch/microblaze/include/asm/cacheflush.h |  2 +-
+ arch/mips/Kbuild                         |  2 ++
+ arch/mips/boot/compressed/Makefile       |  3 ++-
+ arch/mips/include/asm/kprobes.h          |  2 --
+ arch/nios2/Kbuild                        |  2 ++
+ arch/nios2/lib/Makefile                  |  1 +
+ arch/openrisc/Kbuild                     |  2 ++
+ arch/parisc/Kbuild                       |  2 ++
+ arch/parisc/lib/Makefile                 |  1 +
+ arch/powerpc/include/asm/irq_work.h      |  1 -
+ arch/powerpc/include/asm/kprobes.h       |  2 --
+ arch/riscv/include/asm/irq_work.h        |  2 +-
+ arch/s390/include/asm/irq_work.h         |  2 --
+ arch/s390/include/asm/kprobes.h          |  2 --
+ arch/sh/Kbuild                           |  2 ++
+ arch/sh/boot/compressed/Makefile         |  1 +
+ arch/sh/include/asm/kprobes.h            |  2 --
+ arch/sparc/Kbuild                        |  2 ++
+ arch/sparc/include/asm/kprobes.h         |  2 --
+ arch/sparc/kernel/asm-offsets.c          | 13 ++-----------
+ arch/sparc/lib/Makefile                  |  1 +
+ arch/sparc/prom/Makefile                 |  1 +
+ arch/x86/include/asm/irq_work.h          |  1 -
+ arch/x86/include/asm/kprobes.h           |  2 --
+ arch/xtensa/Kbuild                       |  2 ++
+ arch/xtensa/boot/lib/Makefile            |  2 ++
+ drivers/block/swim3.c                    |  2 +-
+ drivers/macintosh/ams/ams-core.c         |  2 +-
+ drivers/parport/parport_gsc.c            |  2 +-
+ drivers/scsi/gvp11.c                     |  5 -----
+ drivers/scsi/qlogicpti.c                 |  2 +-
+ drivers/zorro/names.c                    |  1 +
+ fs/jffs2/debug.c                         |  2 +-
+ include/linux/irq_work.h                 |  3 +++
+ include/linux/kprobes.h                  |  4 ++++
+ include/linux/pci.h                      |  5 +++++
+ include/linux/stackleak.h                |  6 ++++++
+ init/Kconfig                             | 10 ++++++++++
+ kernel/time/tick-internal.h              |  3 ++-
+ lib/test_ida.c                           |  2 +-
+ scripts/Makefile.extrawarn               |  5 +++--
+ 63 files changed, 101 insertions(+), 63 deletions(-)
 
-         seed = time(NULL);
-@@ -238,29 +260,31 @@ int main(int argc, char **argv)
-                 exit(1);
-         }
-
-+       mem_size = get_mem_size(argv[optind]);
-+
-         if (length == -1)
--               length = meminfo.size;
-+               length = mem_size;
-
-         if (offset % meminfo.erasesize) {
--               fprintf(stderr, "Offset %x not multiple of erase size %x\n",
-+               fprintf(stderr, "Offset %llx not multiple of erase size 
-%x\n",
-                         offset, meminfo.erasesize);
-                 exit(1);
-         }
-         if (length % meminfo.erasesize) {
--               fprintf(stderr, "Length %x not multiple of erase size %x\n",
-+               fprintf(stderr, "Length %llx not multiple of erase size 
-%x\n",
-                         length, meminfo.erasesize);
-                 exit(1);
-         }
--       if (length + offset > meminfo.size) {
--               fprintf(stderr, "Length %x + offset %x exceeds device 
-size %x\n",
--                       length, offset, meminfo.size);
-+       if (length + offset > mem_size) {
-+               fprintf(stderr, "Length %llx + offset %llx exceeds 
-device size %llx\n",
-+                       length, offset, mem_size);
-                 exit(1);
-         }
-
-         wbuf = malloc(meminfo.erasesize * 3);
-         if (!wbuf) {
-                 fprintf(stderr, "Could not allocate %d bytes for buffer\n",
--                       meminfo.erasesize * 2);
-+                       meminfo.erasesize * 3);
-                 exit(1);
-         }
-         rbuf = wbuf + meminfo.erasesize;
+-- 
+2.39.2
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Brian Cain <bcain@quicinc.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: x86@kernel.org
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-next@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-block@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-trace-kernel@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
