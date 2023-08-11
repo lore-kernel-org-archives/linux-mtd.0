@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79F1BC04A94
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Aug 2023 01:37:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6166C001DE
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Aug 2023 01:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0xuw5DKvOatRM9gw5WtuM+65kmeQzJJk32qd02lOf9g=; b=Cr6oa+iS38OJIF
-	GtKwNElxkBtrzOrxU9z8a2tOfw0V/bLUa+HokVt6H87alenFOU4pgEx1udVEM0wCr6dIbj2T4oz0U
-	VcfYIuNIWPP+hGOaKsqlAq0RT5Eyg6R9JI92LF5UxiUMGIjlpPhEK6MBngB8g0gIve4sxcmqefYVW
-	YyXRDsXkBz+q5X2zKjGyU5NWsTsNhErCsEAL7xrkDMlAsH8e1xK16UOcAt74aEKRnc6KQuN4w3lSy
-	bFhEW6Tut9fMUQPX+O6SsvnrKE/iTS3xtb5DsalkQRh4XQnBgn5GN7Wfx6whh2ij9uSjX6GO3Yyun
-	9NYJvdTAFOOs3RrSzzmA==;
+	List-Owner; bh=G0eWlqhRcl2fW27oQ8hkx+AM1NhyzIqsaappclAXBq8=; b=fB34B31LfLZGLa
+	IRMzH8Uuhq9wpfeeBQvrTluNj4XZPW07R9dC8VXKeMkOJfTcmPr7Ii/zDURAUD+usMV7r+Mvgyuhs
+	t0lBAxLW/2MtF/dOifRgnP2li9AA9WTlxatPk39KigKsXVPH8+JHESKv95t9LOTwjNBoXybO4bICb
+	SHHTBAwe1Ku1gwH24LDQX521U6zHgyom9UFICcSXHxfieVk0yVB05VZ0/JAFsQwzjR44WjzJPaMGQ
+	Nn2NFLxgy4zaccsr5FxKiu5Fe3nrq7s0n8sPGDIxBYwkFgVP/Gk7zzT/SJNpmoR3NV/CNMKI7LUez
+	egIe7PWhDuhDsyLK7d0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUH5S-0094yB-0i;
-	Fri, 11 Aug 2023 01:37:10 +0000
+	id 1qUH5l-00952M-1P;
+	Fri, 11 Aug 2023 01:37:29 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUH5Q-0094xY-04
+	id 1qUH5h-00951B-19
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Aug 2023 01:37:09 +0000
+	Fri, 11 Aug 2023 01:37:27 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1qUH5K-00053b-0T;
-	Fri, 11 Aug 2023 01:37:02 +0000
-Date: Fri, 11 Aug 2023 02:36:55 +0100
+	id 1qUH5b-00053x-15;
+	Fri, 11 Aug 2023 01:37:19 +0000
+Date: Fri, 11 Aug 2023 02:37:12 +0100
 From: Daniel Golle <daniel@makrotopia.org>
 To: Randy Dunlap <rdunlap@infradead.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -44,16 +44,15 @@ To: Randy Dunlap <rdunlap@infradead.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/8] dt-bindings: mtd: nvmem-cells: add support for UBI
- volumes
-Message-ID: <7df4543f5dacef006bd7067117cf959b59842d69.1691717480.git.daniel@makrotopia.org>
+Subject: [PATCH v4 3/8] mtd: ubi: block: don't return on error when removing
+Message-ID: <bac56760e1abec46e1ca5582fc30cbca1f42af9d.1691717480.git.daniel@makrotopia.org>
 References: <cover.1691717480.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1691717480.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230810_183708_058285_BD9DD44C 
-X-CRM114-Status: GOOD (  10.22  )
+X-CRM114-CacheID: sfid-20230810_183725_394591_E1D1539F 
+X-CRM114-Status: GOOD (  17.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,49 +69,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-UBI volumes may be used to contain NVMEM bits, typically device MAC
-addresses or wireless radio calibration data.
+There is no point on returning the error from ubiblock_remove in case
+it is being called due to a volume removal event -- the volume is gone,
+we should destroy and remove the ubiblock device no matter what.
+
+Introduce new boolean parameter 'force' to tell ubiblock_remove to go
+on even in case the ubiblock device is still busy. Use that new option
+when calling ubiblock_remove due to a UBI_VOLUME_REMOVED event.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- .../devicetree/bindings/mtd/partitions/linux,ubi.yaml        | 3 ++-
- .../devicetree/bindings/mtd/partitions/nvmem-cells.yaml      | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/block.c | 6 +++---
+ drivers/mtd/ubi/cdev.c  | 2 +-
+ drivers/mtd/ubi/ubi.h   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-index a06c1666d5184..e834441fe5e6a 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-@@ -56,9 +56,10 @@ examples:
-             compatible = "linux,ubi";
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 437c5b83ffe51..69fa6fecb8494 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -456,7 +456,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ 	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
+ }
  
-             volumes {
--                ubi-volume-caldata {
-+                wifi_caldata: ubi-volume-caldata {
-                     volume-id = <2>;
-                     volume-name = "rf";
-+                    compatible = "nvmem-cells";
-                 };
-             };
-         };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-index 5474d63268dc5..b92a0b35df094 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/nvmem-cells.yaml
-@@ -17,9 +17,12 @@ maintainers:
-   - Ansuel Smith <ansuelsmth@gmail.com>
+-int ubiblock_remove(struct ubi_volume_info *vi)
++int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+ {
+ 	struct ubiblock *dev;
+ 	int ret;
+@@ -470,7 +470,7 @@ int ubiblock_remove(struct ubi_volume_info *vi)
  
- allOf:
--  - $ref: /schemas/mtd/partitions/partition.yaml#
-   - $ref: /schemas/nvmem/nvmem.yaml#
+ 	/* Found a device, let's lock it so we can check if it's busy */
+ 	mutex_lock(&dev->dev_mutex);
+-	if (dev->refcnt > 0) {
++	if (dev->refcnt > 0 && !force) {
+ 		ret = -EBUSY;
+ 		goto out_unlock_dev;
+ 	}
+@@ -545,7 +545,7 @@ static int ubiblock_notify(struct notifier_block *nb,
+ 		 */
+ 		break;
+ 	case UBI_VOLUME_REMOVED:
+-		ubiblock_remove(&nt->vi);
++		ubiblock_remove(&nt->vi, true);
+ 		break;
+ 	case UBI_VOLUME_RESIZED:
+ 		ubiblock_resize(&nt->vi);
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index f43430b9c1e65..bb55e863dd296 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -572,7 +572,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		struct ubi_volume_info vi;
  
-+oneOf:
-+  - $ref: /schemas/mtd/partitions/partition.yaml#
-+  - $ref: /schemas/mtd/partitions/ubi-volume.yaml#
-+
- properties:
-   compatible:
-     const: nvmem-cells
+ 		ubi_get_volume_info(desc, &vi);
+-		err = ubiblock_remove(&vi);
++		err = ubiblock_remove(&vi, false);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index c8f1bd4fa1008..44c0eeaf1e1b0 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -979,7 +979,7 @@ static inline void ubi_fastmap_destroy_checkmap(struct ubi_volume *vol) {}
+ int ubiblock_init(void);
+ void ubiblock_exit(void);
+ int ubiblock_create(struct ubi_volume_info *vi);
+-int ubiblock_remove(struct ubi_volume_info *vi);
++int ubiblock_remove(struct ubi_volume_info *vi, bool force);
+ #else
+ static inline int ubiblock_init(void) { return 0; }
+ static inline void ubiblock_exit(void) {}
+@@ -987,7 +987,7 @@ static inline int ubiblock_create(struct ubi_volume_info *vi)
+ {
+ 	return -ENOSYS;
+ }
+-static inline int ubiblock_remove(struct ubi_volume_info *vi)
++static inline int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+ {
+ 	return -ENOSYS;
+ }
 -- 
 2.41.0
 
