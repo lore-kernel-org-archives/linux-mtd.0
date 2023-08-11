@@ -4,55 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5452DC001DE
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Aug 2023 01:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AA9AC0015E
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Aug 2023 05:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x41/2nxEo2hRNxGFbgvOn5rJn1JebGuqqC5G/0scRTc=; b=gBU6eb1nE1DpgW
-	ZGztyx7HJ+pzR2Hx3BQsEIw5Rjhl3FMj6Grw2PYZXcTcC5aBjT9Av02v05PmEoITdoemj76uXjiVa
-	CuKIehbDwP9MeLirdordPbmq9gGheOvFaj6aA5xAeVvW2LYkRS/U2X1LrtJZfzDcItA5B8UT/Am2W
-	rwMX2j9dKt7dVBBabrubGv9Ca0Bhxcob9Z94HhknvUkNtArJnBfWSE4Bi6q0LUCse9NAXPxpUHObC
-	2COl5PcYqVm6ICaktMdVMSaj9+dDzXZvE6+aI5fnmecsaE4E46j1xH38Km357HWs7hAVjGLtkOFEA
-	PDMR+8Qy1kJiJ2m/VPLA==;
+	List-Owner; bh=Lfp/B3VQh9+e3pdRJ6jIGPfqlU1ouoEr8P7+5cTxWyg=; b=rsZBiQSxk8dd9A
+	ZT55X3FyWzdK7UVatY/Aq5pMeu5cuDTeT40yzaGozlX9quIyoSc2k/4MTgG2lib5O2l3RWdvoREyh
+	NsMnd0Zs66Z3QqaHUjqTYHJIpoRaNrFpByjnWjsWgn9Pcb8dJmrjInarDQNysGCsVq3XZyYj0+Yn3
+	NPNb47aDAVQHAeXKhTTYV/CLUtmEyztUCRKbUoDAAVNZpvZGJOIsUvTmjSyomKZN3QI08Cx2+tRnK
+	AaxxA8c5keuiUEzuQXNzC7qdfoutkUkpnEG5/5ATYYaRu7dxej3ery45MyU3MZFXj4wtWIFDB24M4
+	26ta03/ODK4hI3GJ7HUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUH77-0095YF-2D;
-	Fri, 11 Aug 2023 01:38:53 +0000
-Received: from pidgin.makrotopia.org ([185.142.180.65])
+	id 1qUL50-009XyO-07;
+	Fri, 11 Aug 2023 05:52:58 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUH74-0095Wo-2j
+	id 1qUL4x-009Xwj-08
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Aug 2023 01:38:52 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1qUH6v-00056Z-2f;
-	Fri, 11 Aug 2023 01:38:42 +0000
-Date: Fri, 11 Aug 2023 02:38:34 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Randy Dunlap <rdunlap@infradead.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] mtd: ubi: provide NVMEM layer over UBI volumes
-Message-ID: <431de44b006c4c90f54cd3c7378b395369cbea30.1691717480.git.daniel@makrotopia.org>
-References: <cover.1691717480.git.daniel@makrotopia.org>
+	Fri, 11 Aug 2023 05:52:56 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66996FF802;
+	Fri, 11 Aug 2023 05:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1691733169;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6wSXUIypajoc4S0icVGjYQbDkDjBI1P9MywNlVtj23I=;
+	b=PmmYRmeUu0kh+eimWRkM6WMlJvlNOipCNG+n3GBPb5YwukvyWEAmLAPDBLizhVxjvisxoa
+	SgCcyu08SXk2ayEah/u83t3aKss5aEwR+wQsdT56z8WYSOYuG8euVJAgie68icjQdfkG6E
+	DVko1i6FxzjezmGMRB2ryt20WYJ6Pjr6llIXGWUZ0idHlNqCE2O0ZyHWkZsYQorgLFhn75
+	eSGcnBFKFeqeCN1eExhb0dlpcPSSAeruDS1LuKkwd7wnKIL186u82VnL93HOIAoUeEVjE+
+	/2m/ph35i5PJjIzyYjH0srrpEd3V/mMh0kpyahIl9WRQDbjhYziYkvcqfeGiBQ==
+Date: Fri, 11 Aug 2023 07:52:44 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, Christoph Hellwig <hch@infradead.org>,
+ Stephan Wurm <stephan.wurm@a-eberle.de>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Oliver Neukum <oliver@neukum.org>, Ali Akcaagac
+ <aliakc@web.de>, Jamie Lenehan <lenehan@twibble.org>, "James E.J.
+ Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 0/7] Fix UBI Block wrt. highmem
+Message-ID: <20230811075244.11c23eba@xps-13>
+In-Reply-To: <20230810160019.16977-1-richard@nod.at>
+References: <20230810160019.16977-1-richard@nod.at>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cover.1691717480.git.daniel@makrotopia.org>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230810_183850_885489_1B8902A3 
-X-CRM114-Status: GOOD (  26.40  )
+X-CRM114-CacheID: sfid-20230810_225255_231391_A525A8B6 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,260 +74,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In an ideal world we would like UBI to be used where ever possible on a
-NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
-is possible to achieve an (almost-)all-UBI flash layout. Hence the need
-for a way to also use UBI volumes to store board-level constants, such
-as MAC addresses and calibration data of wireless interfaces.
-
-Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
-providers. Allow UBI devices to have a "volumes" firmware subnode with
-volumes which may be compatible with "nvmem-cells".
-Access to UBI volumes via the NVMEM interface at this point is
-read-only, and it is slow, opening and closing the UBI volume for each
-access due to limitations of the NVMEM provider API.
-
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/Kconfig  |  12 +++
- drivers/mtd/ubi/Makefile |   1 +
- drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 202 insertions(+)
- create mode 100644 drivers/mtd/ubi/nvmem.c
-
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 2ed77b7b3fcb5..45d939bbfa853 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
- 
- 	   If in doubt, say "N".
- 
-+config MTD_UBI_NVMEM
-+	tristate "UBI virtual NVMEM"
-+	default n
-+	depends on NVMEM
-+	help
-+	   This option enabled an additional driver exposing UBI volumes as NVMEM
-+	   providers, intended for platforms where UBI is part of the firmware
-+	   specification and used to store also e.g. MAC addresses or board-
-+	   specific Wi-Fi calibration data.
-+
-+	   If in doubt, say "N".
-+
- endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 543673605ca72..4b51aaf00d1a2 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
- 
- obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
-+obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-new file mode 100644
-index 0000000000000..dd7cc6afb8d00
---- /dev/null
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -0,0 +1,189 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ */
-+
-+/* UBI NVMEM provider */
-+#include "ubi.h"
-+#include <linux/nvmem-provider.h>
-+
-+/* List of all NVMEM devices */
-+static LIST_HEAD(nvmem_devices);
-+static DEFINE_MUTEX(devices_mutex);
-+
-+struct ubi_nvmem {
-+	struct nvmem_device *nvmem;
-+	int ubi_num;
-+	int vol_id;
-+	int usable_leb_size;
-+	struct list_head list;
-+};
-+
-+static int ubi_nvmem_reg_read(void *priv, unsigned int from,
-+			      void *val, size_t bytes)
-+{
-+	struct ubi_nvmem *unv = priv;
-+	struct ubi_volume_desc *desc;
-+	int err = 0, lnum, offs, bytes_left;
-+	size_t to_read;
-+
-+	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	lnum = div_u64_rem(from, unv->usable_leb_size, &offs);
-+	bytes_left = bytes;
-+	while (bytes_left) {
-+		to_read = unv->usable_leb_size - offs;
-+
-+		if (to_read > bytes_left)
-+			to_read = bytes_left;
-+
-+		err = ubi_read(desc, lnum, val, offs, to_read);
-+		if (err)
-+			break;
-+
-+		lnum += 1;
-+		offs = 0;
-+		bytes_left -= to_read;
-+		val += to_read;
-+	}
-+	ubi_close_volume(desc);
-+
-+	if (err)
-+		return err;
-+
-+	return bytes_left == 0 ? 0 : -EIO;
-+}
-+
-+static int ubi_nvmem_add(struct ubi_volume_info *vi)
-+{
-+	struct nvmem_config config = {};
-+	struct ubi_nvmem *unv;
-+	int ret;
-+
-+	if (!device_is_compatible(vi->dev, "nvmem-cells"))
-+		return 0;
-+
-+	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
-+	if (!unv)
-+		return -ENOMEM;
-+
-+	config.id = NVMEM_DEVID_NONE;
-+	config.dev = vi->dev;
-+	config.name = dev_name(vi->dev);
-+	config.owner = THIS_MODULE;
-+	config.priv = unv;
-+	config.reg_read = ubi_nvmem_reg_read;
-+	config.size = vi->usable_leb_size * vi->size;
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.read_only = true;
-+	config.root_only = true;
-+	config.ignore_wp = true;
-+	config.of_node = dev_of_node(vi->dev);
-+
-+	if (!config.of_node)
-+		config.no_of_node = true;
-+
-+	unv->ubi_num = vi->ubi_num;
-+	unv->vol_id = vi->vol_id;
-+	unv->usable_leb_size = vi->usable_leb_size;
-+	unv->nvmem = nvmem_register(&config);
-+	if (IS_ERR(unv->nvmem)) {
-+		/* Just ignore if there is no NVMEM support in the kernel */
-+		if (PTR_ERR(unv->nvmem) == -EOPNOTSUPP)
-+			ret = 0;
-+		else
-+			ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
-+					    "Failed to register NVMEM device\n");
-+
-+		kfree(unv);
-+		return ret;
-+	}
-+
-+	mutex_lock(&devices_mutex);
-+	list_add_tail(&unv->list, &nvmem_devices);
-+	mutex_unlock(&devices_mutex);
-+
-+	return 0;
-+}
-+
-+static void ubi_nvmem_remove(struct ubi_volume_info *vi)
-+{
-+	struct ubi_nvmem *unv_c, *unv = NULL;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry(unv_c, &nvmem_devices, list)
-+		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
-+			unv = unv_c;
-+			break;
-+		}
-+
-+	if (!unv) {
-+		mutex_unlock(&devices_mutex);
-+		return;
-+	}
-+
-+	list_del(&unv->list);
-+	mutex_unlock(&devices_mutex);
-+	nvmem_unregister(unv->nvmem);
-+	kfree(unv);
-+}
-+
-+/**
-+ * nvmem_notify - UBI notification handler.
-+ * @nb: registered notifier block
-+ * @l: notification type
-+ * @ns_ptr: pointer to the &struct ubi_notification object
-+ */
-+static int nvmem_notify(struct notifier_block *nb, unsigned long l,
-+			 void *ns_ptr)
-+{
-+	struct ubi_notification *nt = ns_ptr;
-+
-+	switch (l) {
-+	case UBI_VOLUME_RESIZED:
-+		ubi_nvmem_remove(&nt->vi);
-+		fallthrough;
-+	case UBI_VOLUME_ADDED:
-+		ubi_nvmem_add(&nt->vi);
-+		break;
-+	case UBI_VOLUME_SHUTDOWN:
-+		ubi_nvmem_remove(&nt->vi);
-+		break;
-+	default:
-+		break;
-+	}
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block nvmem_notifier = {
-+	.notifier_call = nvmem_notify,
-+};
-+
-+static int __init ubi_nvmem_init(void)
-+{
-+	return ubi_register_volume_notifier(&nvmem_notifier, 0);
-+}
-+
-+static void __exit ubi_nvmem_exit(void)
-+{
-+	struct ubi_nvmem *unv, *tmp;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
-+		nvmem_unregister(unv->nvmem);
-+		list_del(&unv->list);
-+		kfree(unv);
-+	}
-+	mutex_unlock(&devices_mutex);
-+
-+	ubi_unregister_volume_notifier(&nvmem_notifier);
-+}
-+
-+module_init(ubi_nvmem_init);
-+module_exit(ubi_nvmem_exit);
-+MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
-+MODULE_AUTHOR("Daniel Golle");
-+MODULE_LICENSE("GPL");
--- 
-2.41.0
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUmljaGFyZCwKCnJpY2hhcmRAbm9kLmF0IHdyb3RlIG9uIFRodSwgMTAgQXVnIDIwMjMgMTg6
+MDA6MTEgKzAyMDA6Cgo+IFBhdGNoIDEgY2hhbmdlcyBVQklibG9jayB0byB1c2UgYSBjb3B5IG9m
+IHNjc2lfa21hcF9hdG9taWNfc2coKQo+IGZvciBzZyBsaXN0IHByb2Nlc3NpbmcuIFRoaXMgcGF0
+Y2ggaXMgbWVhbnQgZm9yIGJhY2twb3J0aW5nIHRvIHN0YWJsZS4KPiBJdCBtYWtlcyB1c2Ugb2Yg
+a21hcF9hdG9taWMoKSBhbmQgYSBib3VuY2UgYnVmZmVyIGJlY2F1c2UgTVREL1VCSSBJTwo+IGNh
+biBzbGVlcC4KPiAKPiBQYXRjaGVzIDIgdG8gNyBtb3ZlIHNjc2lfa21hcF9hdG9taWNfc2coKSBp
+bnRvIGxpYi9zY2F0dGVybGlzdC5jLAo+IGNvbnZlcnQgaXQgdG8ga21hcF9sb2NhbCgpLCBjb252
+ZXJ0IGFsbCB1c2VycyB0byBpdCBhbmQgcmVtb3ZlIHRoZQo+IGJvdW5jZSBidWZmZXIgZnJvbSBV
+QklibG9jayBhZ2Fpbi4KCkJvdGggdGhlIGlkZWEgYW5kIHRoZSBpbXBsZW1lbnRhdGlvbiBsb29r
+IG5pY2UsIEkgZG9uJ3QgZmVlbCBza2lsbGVkCmVub3VnaCBmb3Igc2VuZGluZyBSZXZpZXdlZC1i
+eSBoZXJlLCBidXQgaXQgc2VlbXMgb2theSBhdCBhIGZpcnN0CmdsYW5jZS4KCldlbGwgZG9uZSBS
+aWNoYXJkIDotKQoKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
