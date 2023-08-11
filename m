@@ -4,88 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA976C0015E
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Aug 2023 10:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8081CC0015E
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Aug 2023 10:20:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RxleBl65CENHs3oKvRE/nMi+6nA9hDYaLf0uRkG3Gwo=; b=Yia+paI7eIkmHj
-	WcMKEKGd3g6nBVTEiVqFCAOe+ZbLujEZWz+x2V7UHay0FTkLnzeghOqHETNNsPdM/sfZJeg+8aDce
-	vTLktD6ecfu7DyPzBuhoyIue9g8K76Jlm+OZv/m/kCpg9v9O/h2rSSjuhu3Z6tAe2aGtNo5U7g2s1
-	w1thixiDSqJ2PCzQW64+WFLSJUwJFejdsIyqEax4lIeTR/Vwk6WqrtjoRym5etITWDFb/MjhAobKF
-	+4mxtT9/L01vQYP396fz1BRPw1OVVWAgLBynds3xsPliM8Wd+glETLg0tD2KGUhiJqVtsdgjK1gZv
-	GJdKIscgbPK/LKIFs33A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4QwZTUX6098x9ggNaoBnRCstTrV0nJeIVNSWdeU4WRc=; b=CpQ/amY/OIBO3d2HwvA8I9PTuo
+	9AhR96Gx4kKfst1LRQW4Anat5XALEo/ErNk1fHhyxJapkjJRp1Lqpj6TN9sZV5OyEhRddZWRsnxN9
+	SYgbiPcnG3L8Nejm/4JNrZ/sdpNcHcFfiXYf17UJh6z4xQFb/chR+D/AGyXWeQ3uJNi1oPhDGuTv9
+	VZpn0/BL4IA/US67GQdRv1TYaA/PdiVsXRdnxA2abNKn1vSmj+leKxea2IOixhWLQ+4ghuQzQ4qJD
+	uX1v+srwv8mgwo7GBPzGYRaBC1k51gccacrkY2m9jSTuEcqInT6XiJLnXfciXMnZLVjMyYL7KCOW5
+	8li27Nqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUP7Y-00A7FZ-1h;
-	Fri, 11 Aug 2023 10:11:52 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1qUPG7-00A91H-2E;
+	Fri, 11 Aug 2023 10:20:43 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUP7V-00A7EN-23
+	id 1qUPG4-00A8zT-3B
 	for linux-mtd@lists.infradead.org;
-	Fri, 11 Aug 2023 10:11:50 +0000
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5236a9788a7so2386324a12.0
-        for <linux-mtd@lists.infradead.org>; Fri, 11 Aug 2023 03:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691748705; x=1692353505;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zqWWsXX18Vr9nyJzxcvLIMpTeq5ekcwK3gXWHrZto9c=;
-        b=GjrCSkm7XeAtB+feoSR01gnNQRT73GsbkgefVe8e7FvcEP6oUSBgGPIO8mFZQY8UwE
-         V0UhbmttDdlmJzE0+jZsmp8v/Ty/eR6Dv7AwIDrmMW91u2MR28f9zWF0giUBuSiqBc+8
-         mf8uxUqJsPM/O3wh+Lr/LI0brYh4YqVmO1gUK3VkBPKlOhBrjhJ808qMc7Y7QRePQtIA
-         WB8teQVHFC0QyK+tqbCyvZf+01xXEoC4ceNxPYkYnBwUO03kx4wudk3neQs6Q5CTZar7
-         to3eyi5RXyHWXstVdtUdzUnzV+QfB5/+HPKKI7NpRqHrPCxftxL4dQx0PvorstoLYx0g
-         G5+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691748705; x=1692353505;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zqWWsXX18Vr9nyJzxcvLIMpTeq5ekcwK3gXWHrZto9c=;
-        b=MP1kL4Ubwy0d9lR0qnoWieMO7lRCdV/D59525Twe4jI76DaAV9izXfDiH/TfAiT9KY
-         RyYRyW4kLJHB/jUtnOxjEoJeFXbcGHUiJmXIya77ql2VMgpzVJhUEejy9XlrrZdAX4Bf
-         dL5dDAQHu8rWDIYTZrWcsFUkP9HODd8Fc/kWWIcm/ZJmm6WDMJV3xFsPXtJ5z0tyirfp
-         XZtq1qVQaj4A7VFoghX9y9NLov81l9M/muiStTdkPTA3vFNRBwhX5SCmhFNdJ5ljbsJs
-         KZBx2T4AwcAsStrIheBmnDSwc26LFf0Qx7niHx5NAjy3ynTiTEfIBuu/b70D6A0h/VHT
-         UOJQ==
-X-Gm-Message-State: AOJu0YwRpXSJLVtTtshkrfdkaN+uWPvBrTdU0or8UElcEbRABOPkkHvm
-	OFeQUPZm93+L1LHPGYdddjGXnA==
-X-Google-Smtp-Source: AGHT+IEyUkbWxUdqH74NXUTExRAHtT3L/IPv+afwrggRFLJlW1wO6T/5nUfhFs7JJZb+T8wdeB9PzA==
-X-Received: by 2002:a17:907:2724:b0:99b:ead0:2733 with SMTP id d4-20020a170907272400b0099bead02733mr1415227ejl.72.1691748705533;
-        Fri, 11 Aug 2023 03:11:45 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.74])
-        by smtp.gmail.com with ESMTPSA id cb1-20020a170906a44100b0099cad8e04f3sm2049005ejb.48.2023.08.11.03.11.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 03:11:44 -0700 (PDT)
-Message-ID: <5c608c4d-ee22-5941-041c-37c6ecd8e4f8@linaro.org>
-Date: Fri, 11 Aug 2023 11:11:43 +0100
+	Fri, 11 Aug 2023 10:20:42 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2520063384;
+	Fri, 11 Aug 2023 10:20:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B5DDC433C8;
+	Fri, 11 Aug 2023 10:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691749237;
+	bh=CHbPJ3kGZVP91QcuTr1lZ9ls+N486AcPZ5CBAliKCys=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mMDZQ75FPV0iV9MVD6V7dHZLQd0o91jC3ZK0jcT7cR3yLdSpNzNjRjuAD6kdG1Nq0
+	 F+IcbJO7ZVL3lXysWQqi3BKjtyhy5pLtA6ksX7Z32pzMshaY3XTTa2VRX00sgSZ/Qx
+	 4colMsnMbmKopIf6dIliO4BKwuvyXRMopd2oXwud2Ec9FsjyoN3cGu4JoZJxp/EIK5
+	 LLfJ+FshHB4qhonu2lrBQXtVliNrCN7xhnmbAhiXGlGvZkCuCXBbr/hguiQwGIAJmB
+	 7BnPQX6SE9kL12JuUntjYe8oMPiHS6r7BeaCY2C7bxssYNVR6AfRe0Bit1MXmSF1dD
+	 Hwnnc4A27d9ow==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
+Date: Fri, 11 Aug 2023 12:20:33 +0200
+From: Michael Walle <mwalle@kernel.org>
+To: liao jaime <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, JaimeLiao
+ <jaimeliao@mxic.com.tw>
 Subject: Re: [PATCH v3 2/5] mtd: spi-nor: core: Hook manufacture by checking
  first byte ID
-To: liao jaime <jaimeliao.tw@gmail.com>, Michael Walle <mwalle@kernel.org>
-Cc: linux-mtd@lists.infradead.org, pratyush@kernel.org,
- miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
- JaimeLiao <jaimeliao@mxic.com.tw>
+In-Reply-To: <CAAQoYRnpGmo4Li5fJoRWq6_C4cF+OdzbuvQKtiGDJL1HcChXvA@mail.gmail.com>
 References: <20230804095409.278419-1-jaimeliao.tw@gmail.com>
  <20230804095409.278419-3-jaimeliao.tw@gmail.com>
  <70e42ee5e4c5aba05ac896cb94956f25@kernel.org>
  <CAAQoYR=JQVd3iqfCYKjvkbFSGVWJRX1xFni6CsNht9prhuQ1EA@mail.gmail.com>
  <92234e4c5aca657a966d7c4d9d5f219a@kernel.org>
  <CAAQoYRnpGmo4Li5fJoRWq6_C4cF+OdzbuvQKtiGDJL1HcChXvA@mail.gmail.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAAQoYRnpGmo4Li5fJoRWq6_C4cF+OdzbuvQKtiGDJL1HcChXvA@mail.gmail.com>
+Message-ID: <ab8e506ea941749b07f0a93565e731c0@kernel.org>
+X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230811_031149_672606_40DEC267 
-X-CRM114-Status: UNSURE (   7.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230811_032041_201209_B33C0803 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,19 +77,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiA4LzExLzIzIDEwOjAzLCBsaWFvIGphaW1lIHdyb3RlOgo+PiBTbyBiZXR0ZXIgaW5jbHVk
-ZSBzb21lIHByb3ByaWV0YXJ5IHRhYmxlcyBpbiB5b3VyIG5leHQgTk9SIGZsYXNoZXMg8J+YiQo+
-IEluIG15IG9waW5pb24sIHRoaXMgbWF5IG5vdCBhIGdvb2Qgd2F5IGJlY2F1c2Ugb2YgU0ZEUCBp
-cyBncm93aW5nIHVwCj4gdGhlbiBwcm9wcmlldGFyeSB0YWJsZXMgbWF5IGhhdmUgY29uZmxpY3Qg
-YWRkcmVzcyBpbiB0aGUgZnV0dXJlLgo+IFNvIHRoYXQgTWFjcm9uaXggb2N0YWwgZmxhc2hlcyBk
-aWRuJ3QgaW5jbHVkZSBpdCBub3cuCj4gCgpTRkRQIGFuZCB2ZW5kb3IgdGFibGVzIGNhbid0IGNv
-bGxpZGUgYXMgdGhleSB1c2UgZGlmZmVyZW50IFBhcmFtZXRlcgpJRCBNU0IgaW4gdGhlIFBhcmFt
-ZXRlciBIZWFkZXIuIENoZWNrIHNlY3Rpb24gNi4zLjMgaW4gamVzZDIxNmYtMDIuCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi,
+
+>> >> This won't work beacuse the manufacturer id is not always
+>> >> one byte long, think of continuation codes. In fact, as the
+>> >> flash_info table is of now, we cannot even rely on the
+>> >> continuation codes, but we have to always check for the
+>> >> complete id_len, i.e. there is at least one hack where
+>> >> the id is reversed and the manufacturer is the last byte,
+>> >> iirc. some oddball cypress mram chip.
+>> > According JEDEC standard, 1st byte is manufacture ID.
+>> > I check id table, "cy15x104q" with multi manufacture ID in
+>> > later bytes by RDID command(9F).
+>> 
+>> Yes the currently supported cy15x104q is broken.. but nevertheless
+>> it's there. Also some spansion flashes uses winbond manufacturer
+>> ids.
+> Ok, got it.
+> I have a idea, create a member maybe name .check_vendor in 
+> spi_nor_manufacturer.
+> A example, macronix_check_vendor function for checking this IC whether
+> belong macronix or not.
+> Each vendor could create their checking function for ID table didn't
+> include that ID.
+> Is it ok?
+
+Honestly, I'm against adding that vendor discovery stuff to the
+generic nor driver. What's the use case of it? You can just
+read the ID from userspace and a tool there can decide which
+flash it is.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
