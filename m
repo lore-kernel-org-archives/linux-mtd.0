@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D936C04E69
-	for <linux-mtd@archiver.kernel.org>; Sat, 12 Aug 2023 08:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 220F3C001E0
+	for <linux-mtd@archiver.kernel.org>; Sat, 12 Aug 2023 08:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T3oxvx/0L35KfZjvWwAZFcLCnM/63eCBXl2gHtfso8A=; b=B0TwSVCYVtyISN
-	Tliw9SSmvZhcCK4piUsYnWIkd4jEZIuipdU5XjKjcbm8O2DtBYAoGSon2l3E0zA4V4c6NUJ4wQVTB
-	1qpxTcQRggkR9PysKN16nX9atsmXKeiNQzK0qERhljeYga0zNlhsFw785TOzGAfCul6vktDpDdAj8
-	qgkGWtl0QW5A8ooU7v61Aglb1iutGwSe7LuQAe+gYHyWofSH4nUekWz1jqfDl8J7Qk8u5N4ysD6DP
-	r5dpN1CoMqmySGUZqg2GfcGsyjlwqAN1BhGaV8w84V3zcbFj44izc8fivnwAGR1EihxEkYNbhqXp+
-	3gETWkTp8W/AW+JMDVSg==;
+	List-Owner; bh=e0QXhRDWqR+iBffvjozMHmaoWKG84I0JMbg+T3XpC+Q=; b=OD4+YSTVXg+X8o
+	T0hvd7+qBOE7gJA8JklpDl+NxEpGd9mP9O8eA2dD5D+W7piJfXFjimADaafbYsQLu+vEeeMS2veUU
+	cpQIAs/egwUCZbMFYFdFq2i7M19w6CL5/5UJLnR7Yw674DpRGzI3fL9g/M9IpaP88/BRjJ4Ao+os8
+	sJDrCGpDK+1j1Eb8CZFqW4/RU5O8zGTBrGApVYTR2T5XbYqeKVu4laRgeMQq+53OjXsfdiXKGn66k
+	JyA6Csn7WfS/QJQx5p+FH4vlUmh2Fj0dLY4IZYBH8824ILEXaAFZ/8fsRj1qJX6bmp/fXl5wizjd1
+	4k4TBGtS0yEznSamiuwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUjb6-00CtnD-1A;
-	Sat, 12 Aug 2023 08:03:44 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1qUjbB-00Ctp9-16;
+	Sat, 12 Aug 2023 08:03:49 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUjb3-00Ctk5-1f
+	id 1qUjb3-00CtkI-2M
 	for linux-mtd@lists.infradead.org;
-	Sat, 12 Aug 2023 08:03:43 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.56])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RNCmK7029zTlXR;
-	Sat, 12 Aug 2023 16:01:37 +0800 (CST)
+	Sat, 12 Aug 2023 08:03:45 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RNCkb3qYGztRrS;
+	Sat, 12 Aug 2023 16:00:07 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 12 Aug
- 2023 16:03:36 +0800
+ 2023 16:03:39 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 02/12] ubi: fastmap: erase_block: Get erase counter from wl_entry rather than flash
-Date: Sat, 12 Aug 2023 15:59:55 +0800
-Message-ID: <20230812080005.3162125-3-chengzhihao1@huawei.com>
+Subject: [PATCH 07/12] ubi: fastmap: Remove unneeded break condition while filling pools
+Date: Sat, 12 Aug 2023 16:00:00 +0800
+Message-ID: <20230812080005.3162125-8-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230812080005.3162125-1-chengzhihao1@huawei.com>
 References: <20230812080005.3162125-1-chengzhihao1@huawei.com>
@@ -49,8 +49,8 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230812_010341_755157_9A5B6C7C 
-X-CRM114-Status: GOOD (  10.25  )
+X-CRM114-CacheID: sfid-20230812_010341_960289_FF016730 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,72 +67,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just like sync_erase() does, getting erase counter from wl_entry is
-faster than reading from flash.
+Change pool filling stop condition. Commit d09e9a2bddba ("ubi:
+fastmap: Fix high cpu usage of ubi_bgt by making sure wl_pool
+not empty") reserves fastmap data PEBs after filling 1 PEB in
+wl_pool. Now wait_free_pebs_for_pool() makes enough free PEBs
+before filling pool, there will still be at least 1 PEB in pool
+and 1 PEB in wl_pool after doing ubi_refill_pools().
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/fastmap.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+ drivers/mtd/ubi/fastmap-wl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index f8c230acc55e..05ecdc049343 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1399,36 +1399,27 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 18e46a1edf0a..ed51ea075226 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -144,8 +144,7 @@ static void wait_free_pebs_for_pool(struct ubi_device *ubi)
+  * @ubi: UBI device description object
+  *
+  * This helper function checks whether there are enough free pebs (deducted
+- * by fastmap pebs) to fill fm_pool and fm_wl_pool, above rule works after
+- * there is at least one of free pebs is filled into fm_wl_pool.
++ * by fastmap pebs) to fill fm_pool and fm_wl_pool.
   */
- static int erase_block(struct ubi_device *ubi, struct ubi_wl_entry *e)
+ static bool has_enough_free_count(struct ubi_device *ubi)
  {
--	int ret;
-+	int err;
- 	struct ubi_ec_hdr *ec_hdr;
--	long long ec;
-+	long long ec = e->ec;
+@@ -154,7 +153,7 @@ static bool has_enough_free_count(struct ubi_device *ubi)
+ 	if (!ubi->free.rb_node)
+ 		return false;
  
- 	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
- 	if (!ec_hdr)
- 		return -ENOMEM;
+-	if (ubi->fm_wl_pool.size > 0 && !(ubi->ro_mode || ubi->fm_disabled))
++	if (!ubi->ro_mode && !ubi->fm_disabled)
+ 		fm_used = ubi->fm_size / ubi->leb_size - 1;
  
--	ret = ubi_io_read_ec_hdr(ubi, e->pnum, ec_hdr, 0);
--	if (ret < 0)
--		goto out;
--	else if (ret && ret != UBI_IO_BITFLIPS) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	ret = ubi_io_sync_erase(ubi, e->pnum, 0);
--	if (ret < 0)
-+	err = ubi_io_sync_erase(ubi, e->pnum, 0);
-+	if (err < 0)
- 		goto out;
- 
--	ec = be64_to_cpu(ec_hdr->ec);
--	ec += ret;
-+	ec += err;
- 	if (ec > UBI_MAX_ERASECOUNTER) {
--		ret = -EINVAL;
-+		err = -EINVAL;
- 		goto out;
- 	}
- 
- 	ec_hdr->ec = cpu_to_be64(ec);
--	ret = ubi_io_write_ec_hdr(ubi, e->pnum, ec_hdr);
--	if (ret < 0)
-+	err = ubi_io_write_ec_hdr(ubi, e->pnum, ec_hdr);
-+	if (err < 0)
- 		goto out;
- 
- 	e->ec = ec;
-@@ -1439,7 +1430,7 @@ static int erase_block(struct ubi_device *ubi, struct ubi_wl_entry *e)
- 
- out:
- 	kfree(ec_hdr);
--	return ret;
-+	return err;
- }
- 
- /**
+ 	return ubi->free_count > fm_used;
 -- 
 2.39.2
 
