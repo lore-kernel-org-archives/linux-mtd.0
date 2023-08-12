@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07810C04FDF
-	for <linux-mtd@archiver.kernel.org>; Sat, 12 Aug 2023 08:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7523C04FE0
+	for <linux-mtd@archiver.kernel.org>; Sat, 12 Aug 2023 08:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gzjto+aRK8zNweEc4KBWHbonfu/vFYjC2WnjZ0ZOmEs=; b=m5WrGKKq9GAh9j
-	xZUkN3pITmgzBdriYQPKtQgMUuBkcEop3RD/1b3mUNeHCp3ac7U3zD2ufwJBq++L7frdETdQNs7ED
-	F4Mpf/QKPg8/PtYt036U2M24/o2p4nZZNwC8ZEssPo3/TEzXOdsyyftucxh2E47uHcaQiVBaYayMN
-	2X8El+Hkwz8X2yQLq4oI8OkX/caSldj9jvwlfHnJprLmisbE0+sYjbKRL3cul82sxMBZdwLuyoYOl
-	i0cdnokDovHK/xcTEu7oSgd/yVwVHyb/M2TuWjqJlXLZuqzIOsn1Y7ev9S5qf9RIrcJ6Ptp7qO9ZW
-	DhkETU1qUCSiCTG2r+Zg==;
+	List-Owner; bh=US5RVgKzQm4lBpyd/Va4nlGfW6lTCQ6rBsAkm01xN2Y=; b=LLOZyd2ftYeVkU
+	fUbAMKiAtLHgmihUKuhaFJ/tXxPuhaajfd5OFmdkgtt+Ckt1enNSzVgA0v0UdfA+Yy/1xUsv4jo/a
+	DBElS5Pq+GbQDVeJ8MlOitHjRsvDSpW29ZC6pXvd/plVbtAQlBF7dufVOOZPbj9Imn4MVz0X+Pkmu
+	+WB/1i5q+AYHYXq7T0XZuXp7zD67tZJYnbZU39xF4f3Z9qxgCciyKJZr2bXwpodTuVCpIRZArY2G7
+	+R5BUKVJ7Ma5u7lPIAWA5HbgpMgMlbbM+W4sypnS65EGJnRMw1acJczx0dADBknPoEuU5w5by/Jrn
+	YKOGD5x3Ieyl7ZTK+WBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUjb8-00Cto3-08;
-	Sat, 12 Aug 2023 08:03:46 +0000
+	id 1qUjbE-00CtqK-09;
+	Sat, 12 Aug 2023 08:03:52 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qUjb3-00CtkG-1f
+	id 1qUjb4-00CtkL-10
 	for linux-mtd@lists.infradead.org;
-	Sat, 12 Aug 2023 08:03:44 +0000
+	Sat, 12 Aug 2023 08:03:46 +0000
 Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.56])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RNCkd3ZKyzNmWv;
-	Sat, 12 Aug 2023 16:00:09 +0800 (CST)
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RNCmP02BCzTmNG;
+	Sat, 12 Aug 2023 16:01:40 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 12 Aug
- 2023 16:03:38 +0800
+ 2023 16:03:39 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 06/12] ubi: fastmap: Wait until there are enough free PEBs before filling pools
-Date: Sat, 12 Aug 2023 15:59:59 +0800
-Message-ID: <20230812080005.3162125-7-chengzhihao1@huawei.com>
+Subject: [PATCH 08/12] ubi: fastmap: may_reserve_for_fm: Don't reserve PEB if fm_anchor exists
+Date: Sat, 12 Aug 2023 16:00:01 +0800
+Message-ID: <20230812080005.3162125-9-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230812080005.3162125-1-chengzhihao1@huawei.com>
 References: <20230812080005.3162125-1-chengzhihao1@huawei.com>
@@ -49,8 +49,8 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230812_010341_905538_D72A7362 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20230812_010342_707652_FD70860B 
+X-CRM114-Status: GOOD (  14.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,165 +67,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Wait until there are enough free PEBs before filling pool/wl_pool,
-sometimes erase_worker is not scheduled in time, which causes two
-situations:
- A. There are few PEBs filled in pool, which makes ubi_update_fastmap
-    is frequently called and leads first 64 PEBs are erased more times
-    than other PEBs. So waiting free PEBs before filling pool reduces
-    fastmap updating frequency and prolongs flash service life.
- B. In situation that space is nearly running out, ubi_refill_pools()
-    cannot make sure pool and wl_pool are filled with free PEBs, caused
-    by the delay of erase_worker. After this patch applied, there must
-    exist free PEBs in pool after one call of ubi_update_fastmap.
-The minimum number of free PEBs to wait is total reserved PEBs in UBI:
-WL_RESERVED_PEBS + EBA_RESERVED_PEBS + ubi->fm_size / ubi->leb_size - 1
+This is the part 1 to fix cyclically reusing single fastmap data PEBs.
 
-Besides, this patch is a preparetion for fixing large erase counter in
-fastmap data block and fixing lapsed wear leveling for first 64 PEBs.
+After running fsstress on UBIFS for a while, UBI (16384 blocks, fastmap
+takes 2 blocks) has an erase block(PEB: 8031) with big erase counter
+greater than any other pebs:
 
+=========================================================
+from              to     count      min      avg      max
+---------------------------------------------------------
+0        ..        9:        0        0        0        0
+10       ..       99:      532       84       92       99
+100      ..      999:    15787      100      147      229
+1000     ..     9999:       64     4699     4765     4826
+10000    ..    99999:        0        0        0        0
+100000   ..      inf:        1   272935   272935   272935
+---------------------------------------------------------
+Total               :    16384       84      180   272935
+
+Not like fm_anchor, there is no candidate PEBs for fastmap data area,
+so old fastmap data pebs will be reused after all free pebs are filled
+into pool/wl_pool:
+ubi_update_fastmap
+ for (i = 1; i < new_fm->used_blocks; i++)
+  erase_block(ubi, old_fm->e[i]->pnum)
+  new_fm->e[i] = old_fm->e[i]
+
+According to wear leveling algorithm, UBI selects one small erase
+counter PEB from ubi->used and one big erase counter PEB from wl_pool,
+the reused fastmap data PEB is not in these trees. UBI won't schedule
+this PEB for wl even it is in ubi->used because wl algorithm expects
+small erase counter for used PEB.
+
+Don't reserve PEB for fastmap in may_reserve_for_fm() if fm_anchor
+already exists. Otherwise, when UBI is running out of free PEBs,
+the only one free PEB (pnum < 64) will be skipped and fastmap data
+will be written on the same old PEB.
+
+Fixes: dbb7d2a88d2a ("UBI: Add fastmap core")
 Link: https://bugzilla.kernel.org/show_bug.cgi?id=217787
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/eba.c        |  3 --
- drivers/mtd/ubi/fastmap-wl.c | 53 ++++++++++++++++++++++++++++++++++--
- drivers/mtd/ubi/fastmap.c    |  6 +---
- drivers/mtd/ubi/ubi.h        |  5 +++-
- 4 files changed, 56 insertions(+), 11 deletions(-)
+ drivers/mtd/ubi/fastmap-wl.c | 2 +-
+ drivers/mtd/ubi/wl.c         | 9 ++++++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 655ff41863e2..8d1f0e05892c 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -33,9 +33,6 @@
- #include <linux/err.h>
- #include "ubi.h"
- 
--/* Number of physical eraseblocks reserved for atomic LEB change operation */
--#define EBA_RESERVED_PEBS 1
--
- /**
-  * struct ubi_eba_entry - structure encoding a single LEB -> PEB association
-  * @pnum: the physical eraseblock number attached to the LEB
 diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 4611a75f1241..18e46a1edf0a 100644
+index ed51ea075226..04872089faa4 100644
 --- a/drivers/mtd/ubi/fastmap-wl.c
 +++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -97,6 +97,48 @@ struct ubi_wl_entry *ubi_wl_get_fm_peb(struct ubi_device *ubi, int anchor)
- 	return e;
- }
+@@ -523,7 +523,7 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
+ static struct ubi_wl_entry *may_reserve_for_fm(struct ubi_device *ubi,
+ 					   struct ubi_wl_entry *e,
+ 					   struct rb_root *root) {
+-	if (e && !ubi->fm_disabled && !ubi->fm &&
++	if (e && !ubi->fm_disabled && !ubi->fm && !ubi->fm_anchor &&
+ 	    e->pnum < UBI_FM_MAX_START)
+ 		e = rb_entry(rb_next(root->rb_node),
+ 			     struct ubi_wl_entry, u.rb);
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 0c78e09d7960..d8ae6a257af8 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -361,9 +361,12 @@ static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
+ 	if (last->ec - first->ec < WL_FREE_MAX_DIFF) {
+ 		e = rb_entry(root->rb_node, struct ubi_wl_entry, u.rb);
  
-+/*
-+ * wait_free_pebs_for_pool - wait until there enough free pebs
-+ * @ubi: UBI device description object
-+ *
-+ * Wait and execute do_work until there are enough free pebs, fill pool
-+ * as much as we can. This will reduce pool refilling times, which can
-+ * reduce the fastmap updating frequency.
-+ */
-+static void wait_free_pebs_for_pool(struct ubi_device *ubi)
-+{
-+	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
-+	struct ubi_fm_pool *pool = &ubi->fm_pool;
-+	int free, expect_free, works_count;
-+	/*
-+	 * There are at least following free pebs which reserved by UBI:
-+	 * 1. WL_RESERVED_PEBS[1]
-+	 * 2. EBA_RESERVED_PEBS[1]
-+	 * 3. fm pebs - 1: Twice fastmap size deducted by fastmap and fm_anchor
-+	 * 4. beb_rsvd_pebs: This value should be get under lock ubi->wl_lock
-+	 */
-+	int min_expect_free = WL_RESERVED_PEBS + EBA_RESERVED_PEBS +
-+			      ubi->fm_size / ubi->leb_size - 1;
-+
-+	do {
-+		spin_lock(&ubi->wl_lock);
-+		free = ubi->free_count;
-+		free += pool->size - pool->used + wl_pool->size - wl_pool->used;
-+		expect_free = min_expect_free + ubi->beb_rsvd_pebs;
-+		works_count = ubi->works_count;
-+		spin_unlock(&ubi->wl_lock);
-+
+-		/* If no fastmap has been written and this WL entry can be used
+-		 * as anchor PEB, hold it back and return the second best
+-		 * WL entry such that fastmap can use the anchor PEB later. */
 +		/*
-+		 * At least, there should be min. free PEBs to satisfy pool,
-+		 * wl_pool and fastmap data PEBs.
++		 * If no fastmap has been written and fm_anchor is not
++		 * reserved and this WL entry can be used as anchor PEB
++		 * hold it back and return the second best WL entry such
++		 * that fastmap can use the anchor PEB later.
 +		 */
-+		if (!works_count && free >= min_expect_free)
-+			break;
-+
-+		do_work(ubi);
-+	} while (free < expect_free);
-+}
-+
- /*
-  * has_enough_free_count - whether ubi has enough free pebs to fill fm pools
-  * @ubi: UBI device description object
-@@ -119,16 +161,23 @@ static bool has_enough_free_count(struct ubi_device *ubi)
- }
- 
- /**
-- * ubi_refill_pools - refills all fastmap PEB pools.
-+ * ubi_refill_pools_and_lock - refills all fastmap PEB pools and takes fm locks.
-  * @ubi: UBI device description object
-  */
--void ubi_refill_pools(struct ubi_device *ubi)
-+void ubi_refill_pools_and_lock(struct ubi_device *ubi)
- {
- 	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
- 	struct ubi_fm_pool *pool = &ubi->fm_pool;
- 	struct ubi_wl_entry *e;
- 	int enough;
- 
-+	if (!ubi->ro_mode && !ubi->fm_disabled)
-+		wait_free_pebs_for_pool(ubi);
-+
-+	down_write(&ubi->fm_protect);
-+	down_write(&ubi->work_sem);
-+	down_write(&ubi->fm_eba_sem);
-+
- 	spin_lock(&ubi->wl_lock);
- 
- 	return_unused_pool_pebs(ubi, wl_pool);
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 8f6052cb3217..2a728c31e6b8 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1491,11 +1491,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 	struct ubi_fastmap_layout *new_fm, *old_fm;
- 	struct ubi_wl_entry *tmp_e;
- 
--	down_write(&ubi->fm_protect);
--	down_write(&ubi->work_sem);
--	down_write(&ubi->fm_eba_sem);
--
--	ubi_refill_pools(ubi);
-+	ubi_refill_pools_and_lock(ubi);
- 
- 	if (ubi->ro_mode || ubi->fm_disabled) {
- 		up_write(&ubi->fm_eba_sem);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 2f0c0eacc013..423f66c91b1d 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -82,6 +82,9 @@ void ubi_err(const struct ubi_device *ubi, const char *fmt, ...);
- #define UBI_DFS_DIR_NAME "ubi%d"
- #define UBI_DFS_DIR_LEN  (3 + 2 + 1)
- 
-+/* Number of physical eraseblocks reserved for atomic LEB change operation */
-+#define EBA_RESERVED_PEBS 1
-+
- /*
-  * Error codes returned by the I/O sub-system.
-  *
-@@ -915,7 +918,7 @@ struct ubi_wl_entry *ubi_wl_get_fm_peb(struct ubi_device *ubi, int anchor);
- int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *used_e,
- 		      int lnum, int torture);
- int ubi_is_erase_work(struct ubi_work *wrk);
--void ubi_refill_pools(struct ubi_device *ubi);
-+void ubi_refill_pools_and_lock(struct ubi_device *ubi);
- int ubi_ensure_anchor_pebs(struct ubi_device *ubi);
- int ubi_bitflip_check(struct ubi_device *ubi, int pnum, int force_scrub);
- 
+ 		e = may_reserve_for_fm(ubi, e, root);
+ 	} else
+ 		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2);
 -- 
 2.39.2
 
