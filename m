@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A625C001DE
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 08:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68B68C001B0
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 08:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Cc:Date:
 	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s96QU4I/X3d+CCn64yk4e4daLN3s5WCLnzKwruITB9s=; b=SEqiArOhR4Pstu
-	Y6v6X8+wehQ0IRAQT3/yQj41UQISonKwtzormtUvcA8TKM3/aXuM6SRE5tE02WvEqZZ1Lpsvi8LSq
-	/7VN0ybVJZ5/Cyn2MJMswLzpCZ6S7iJR/ET2VU++P6TSqasUHQXq6zIy9fq2PqFanuwayOD2vhDfT
-	gFd7UgGNLtnFTD2FYJzg5DcpCgGpzfzlyo2NSnP9h9b9QzkA0vDqGvl+AQiyXuIC3PIbcSdRwLKGD
-	Fm6ZNate+ZBYrwURa/VDBnpatVGaYorIobg8jv4ywLe0hZF/GhALBvSVX9CDMvVmqEI0CtJgWFpcR
-	kcsX8Bv92HlGah9yAygA==;
+	List-Owner; bh=zp1EjeeFBxLAzk349VSNhzvrtAw3d6xu/CdIKA2GG2s=; b=5Bqc4Q9OI8HA9G
+	sLKJfPN0c+OrzQCIp4U53AYIyOJi4ou1KHKuF+ZvdkSwHoNIda2F1bNXEtHvur4RyprqIXaYpKzuN
+	onF/mHRZffA4bK+4d8pTJ12FVQ5bmKRNvJtlgUfxyyC6s01UycR00YlWvOS9u7uXqJouncFM+ANXa
+	qEa3gNdm+RazmYt/B5ktY3BxI2SAdf5dw22GT+qA/DgUUE6MeCR9JUz0pNfW0AiMvnZNMo+lOd6kX
+	/iiTb1XpD5k6Np9VOTYV+z85blfF/DF7e8A4c/bVYWZll3h8LSA05KfXg81WySZ38jbgjN3nHH2rp
+	CtCqVU72wea4Cr4bDwZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qVpYD-0018zZ-2N;
-	Tue, 15 Aug 2023 08:37:17 +0000
-Received: from out-61.mta0.migadu.com ([2001:41d0:1004:224b::3d])
+	id 1qVpfv-0019Ut-1E;
+	Tue, 15 Aug 2023 08:45:15 +0000
+Received: from out-27.mta1.migadu.com ([2001:41d0:203:375::1b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qVpY8-0018yT-2j
+	id 1qVpfs-0019Tn-2a
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Aug 2023 08:37:14 +0000
+	Tue, 15 Aug 2023 08:45:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692088626;
+	t=1692089107;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uBmn5bY96EnmwKJFlv+WltFrhGvpjIbZEKIiYirKvRY=;
-	b=vz0KHcPQmyiJWfmlN0KqRtShPV8OO94S7Ve+8NAyKaJzlfD3l3Gwdcs50vzwkyJwFeNk42
-	wWmdUe83i5yu+zc+P73iwMyGZC6f36VMufdeZyZpMS2xcjecgpOeJWBucmjek3/RmzHbqM
-	Esg+z/IvqlGN9dYsqiRnMi0+1ICkj/k=
+	bh=d2GQT27JBORMGN4q7RKbUYlAoigLeQM193KWTjK1+1c=;
+	b=FRL/ltyDk6h6CRg5cbkY9bVyLglBaTn6TN1AqP0hvLYmbCo7IPQK7K10OejYDI/exkfKch
+	6u6X9SpuAcMC1xJitcw9cZ/1rhmfJ5U48AMYSFpK2Bsy4fCi0AC+IGqXx9ZTbYi9bkVata
+	zUMcVl/PuRM8qvEN8trILpirtVGTVQA=
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 01/48] mm: move some shrinker-related function
- declarations to mm/internal.h
+Subject: Re: [PATCH v4 02/48] mm: vmscan: move shrinker-related code into a
+ separate file
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230807110936.21819-2-zhengqi.arch@bytedance.com>
-Date: Tue, 15 Aug 2023 16:36:31 +0800
+In-Reply-To: <20230807110936.21819-3-zhengqi.arch@bytedance.com>
+Date: Tue, 15 Aug 2023 16:44:21 +0800
 Cc: Andrew Morton <akpm@linux-foundation.org>,
  david@fromorbit.com,
  tkhai@ya.ru,
@@ -55,13 +55,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  tytso@mit.edu,
  steven.price@arm.com,
  cel@kernel.org,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
+ senozhatsky@chromium.org,
  yujie.liu@intel.com,
- Greg KH <gregkh@linuxfoundation.org>,
+ gregkh@linuxfoundation.org,
  simon.horman@corigine.com,
  dlemoal@kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- Linux-MM <linux-mm@kvack.org>,
+ linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org,
  x86@kernel.org,
  kvm@vger.kernel.org,
  xen-devel@lists.xenproject.org,
@@ -82,14 +82,15 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  linux-ext4@vger.kernel.org,
  linux-xfs@vger.kernel.org,
  linux-btrfs@vger.kernel.org
-Message-Id: <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
+Message-Id: <BEE5622B-8E74-405C-9A5B-0CF410F8344E@linux.dev>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-2-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-3-zhengqi.arch@bytedance.com>
 To: Qi Zheng <zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230815_013713_310001_D4103F91 
-X-CRM114-Status: GOOD (  11.18  )
+X-CRM114-CacheID: sfid-20230815_014512_979015_16437F4F 
+X-CRM114-Status: UNSURE (   6.73  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,57 +111,12 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 > On Aug 7, 2023, at 19:08, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 > 
-> The following functions are only used inside the mm subsystem, so it's
-> better to move their declarations to the mm/internal.h file.
-> 
-> 1. shrinker_debugfs_add()
-> 2. shrinker_debugfs_detach()
-> 3. shrinker_debugfs_remove()
+> The mm/vmscan.c file is too large, so separate the shrinker-related
+> code from it into a separate file. No functional changes.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-One nit bellow.
-
-[...]
-
-> +
-> +/*
-> + * shrinker related functions
-> + */
-
-This is a multi-comment format. "/* shrinker related functions. */" is
-the right one-line format of comment.
-
-> +
-> +#ifdef CONFIG_SHRINKER_DEBUG
-> +extern int shrinker_debugfs_add(struct shrinker *shrinker);
-> +extern struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-> +      int *debugfs_id);
-> +extern void shrinker_debugfs_remove(struct dentry *debugfs_entry,
-> +    int debugfs_id);
-> +#else /* CONFIG_SHRINKER_DEBUG */
-> +static inline int shrinker_debugfs_add(struct shrinker *shrinker)
-> +{
-> +	return 0;
-> +}
-> +static inline struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-> +     int *debugfs_id)
-> +{
-> +	*debugfs_id = -1;
-> +	return NULL;
-> +}
-> +static inline void shrinker_debugfs_remove(struct dentry *debugfs_entry,
-> +	int debugfs_id)
-> +{
-> +}
-> +#endif /* CONFIG_SHRINKER_DEBUG */
-> +
-> #endif /* __MM_INTERNAL_H */
-> -- 
-> 2.30.2
-> 
 
 
 ______________________________________________________
