@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAE12C04A6A
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 15:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FE70C001B0
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 15:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=CqEEYEf9Fz/MsSmw0j3cHp4AD4A6l+ZDONvW9oshn9U=; b=UAy6Y6CyTKCs4O
-	DM+AnkfdA0RpICBPln6U4vGkwVuSrxpS0XLNyywAaBGPYN5ocHb5bJYtNDxzZPvbZMen0BdFZuGMo
-	JMn303Pc7qk22jeN/3vrVHqRkMKjAZX66CQhAadZRT5QkmuLmHMD1eXh0GI5y+fr8iNlHFGEm2Wlq
-	OU8m8mjzMsHtQqF6LNHcvfGG2THRlteDsuQEkMC0Nrs7ak9IuO5jgjTavee7LdMHWoQRqRNtcnbvN
-	Xr8wqi3LyBUF8uweYFZPp+JxTh+OdkORS9fQQsxkR0rjRuEXUzQXjs/tP7z9w1Qhk7WSiGF7AcuL4
-	Z9Gpchz7nGN04zwdLatA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=abEjp4pHkrDwlEVm60N0eBivvnsKpCpw32d4vqlcR08=; b=L3HVI3TWMk9ybb
+	Zq5aVfSFadTi7ehdqM4+cWTHfi8QiR37GjAtl0XtO9X7hwwlVyctHnbdtcKKfwqkoG5W/XLWILEjd
+	uYAaOSoZdF1KU7z/E9miiSjq1HNVfS3y86G+NZynrldm2eo36Xb09evfVlZPXu0vLNRMAJd76WFd4
+	G3/4ZUspKBXXcYpOMZFhIHRuP+AJwk9bsmS6cz6ku1l4rGRFsT5S800A+bAtJwoPMtC8Nv0puYDdy
+	/xUj/K1SUJN3G2E3olTxtm87nBxG8KzzNMywnfbDUCFAoXUaWYVRY/vTk8PAF3lUMZTw9D0IpgJjY
+	XjFyTYcBzTm3TeCGivVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qVwE1-001tAV-2K;
-	Tue, 15 Aug 2023 15:44:53 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1qVwEH-001tJw-0j;
+	Tue, 15 Aug 2023 15:45:09 +0000
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qVwDz-001t8x-0B
+	id 1qVwE7-001tD3-3D
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Aug 2023 15:44:52 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686f0d66652so5267661b3a.2
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Aug 2023 08:44:48 -0700 (PDT)
+	Tue, 15 Aug 2023 15:45:01 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68859ba3a93so378275b3a.1
+        for <linux-mtd@lists.infradead.org>; Tue, 15 Aug 2023 08:44:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692114288; x=1692719088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X+b40dDlDBakx8+hTHp2ebRkg2RA++lkqQVSTeac6zA=;
-        b=BtS41tzhfK7XY6exlpjzQzgARG+Ehge1+0PRdLnYhdOW6v1Bo7SJIi4QfUUoIKcI9x
-         pbi2VdZOgXud1DEl9BDa7AbCo5HKvn/XKF10E4aOV81o3c7y81bD4TpDN0gxIjiW+o34
-         PdoWIJpg8d/x3+RQWmBeMDtnW3My6yZM1rnx0=
+        d=chromium.org; s=google; t=1692114298; x=1692719098;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tA3QjSCigQ8q8wip9gFTKQkaEIdBJK1A3l6+t1K7Bv0=;
+        b=ejBR2jtUerzx5wnrj86G8N+bYfois34YCppqR75oLTPLq7/QzDutph+WKgbHb9TqkQ
+         BRwskwQ64WTnA2SvrsJQrwU2R/Yf0P8FKH2BrA2mU1DIq1lqfoHLYujw3hlFqPKexAE0
+         PjCMKLHX9eH8M7wWAqubZGqfJFjytNf2qHyGE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692114288; x=1692719088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X+b40dDlDBakx8+hTHp2ebRkg2RA++lkqQVSTeac6zA=;
-        b=TZNvvWYMfkSBgiqPgqvpBI3VeFC3CamfxoAiwgq8tD5BEVJ3TBmD6CD6UtQnC4Dv7U
-         cfC58f7SRd7npUUVvF/cArrjhV01bgty/a3TQcRK/hMmb1yqRpzN8AZ/SjML6aqljxpj
-         yvTn6j2m3SP8cEXv9T+Kj0HQKnj8iyv4K/ukKldCF9pZ4ta72U6ppuMSN6/SzxSFQNnm
-         o7b/zdAQGxInTRu3RUe2rzjyW1fbOpn0+LLLW9Xv639MikyNDJxFxJT2XPlcrtWIbIOd
-         h0iqtbWalyq3yC8kalpZBGMAXepaekEt71oJo3o/ew8PJZUYdK49Boyck6NI5S8bAnNH
-         BoNw==
-X-Gm-Message-State: AOJu0Yw8yzCbk+NKbXiETB3n+gaWO5rCpqZswZPAHQZZ7sYIR48QZq83
-	PBBvDf3Fs4V0/6lXEPnMOCkddA==
-X-Google-Smtp-Source: AGHT+IGzSeQ7P7d6hIuKp8jX5Kc6bcArFd2OV1P4lsTdQ+wIT/RytQKLIYbcjxTcDvbMf4xA8ee6oA==
-X-Received: by 2002:a05:6a20:3d28:b0:134:1011:8582 with SMTP id y40-20020a056a203d2800b0013410118582mr17945878pzi.47.1692114288344;
-        Tue, 15 Aug 2023 08:44:48 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692114298; x=1692719098;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tA3QjSCigQ8q8wip9gFTKQkaEIdBJK1A3l6+t1K7Bv0=;
+        b=Xzd+WOYmSk3pdlQ00HRVi430INPD5xjYv/gJSUyUnfk9wMl7A69i6WyPMgfVxc8gDg
+         8NN0f9HPUN0iT825F3inW6BAb/fyWFB5FtyIU1tbE/dNDZHqU90F+w+jl4aCa8M70UzQ
+         1+Ry098lBU5nBztoXvwErZhlBLkMGmpY/r9zjIwEc1KHsTsvzwFgPU/jLgzkxhWA7l/O
+         aHHmtfV+U0T0IRJlziJCqDq097g/BGH/sxLE3+/4bMjvD3GIfBoLmE6iBtR5Zv6c0idF
+         cBBzv5GKKzlmUUG9eF3yvskdD7XWin+YpqhmwIAPdeNSGFjn3zGhEnxXGv5YTL+ER0Yp
+         X/HA==
+X-Gm-Message-State: AOJu0Yzx5fv0R2ppycPgC7S6zsb8VRE/uSZ6RNGfwRLJQoShWvfeOKMf
+	U55zVYsPC7n1YYbanhe2fAWV4Q==
+X-Google-Smtp-Source: AGHT+IG+MhhXs3J/eE7KIJtSsSOonQIqrRHLUlpGdM77zZQi1lncYBUpQPdXQrlw7WkocLYr2AbghA==
+X-Received: by 2002:a05:6a00:2305:b0:687:2fa9:532d with SMTP id h5-20020a056a00230500b006872fa9532dmr11655270pfh.17.1692114298463;
+        Tue, 15 Aug 2023 08:44:58 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:40cf:3807:f8c8:2d76])
-        by smtp.gmail.com with ESMTPSA id n13-20020aa78a4d000000b0065e154bac6dsm9431247pfa.133.2023.08.15.08.44.44
+        by smtp.gmail.com with ESMTPSA id n13-20020aa78a4d000000b0065e154bac6dsm9431247pfa.133.2023.08.15.08.44.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 08:44:47 -0700 (PDT)
+        Tue, 15 Aug 2023 08:44:58 -0700 (PDT)
 From: Hsin-Yi Wang <hsinyi@chromium.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -79,14 +80,16 @@ Cc: Pratyush Yadav <pratyush@kernel.org>,
 	cros-qcom-dts-watchers@chromium.org,
 	Andy Gross <agross@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH 0/4] Add a property to override the quad mode
-Date: Tue, 15 Aug 2023 23:31:51 +0800
-Message-ID: <20230815154412.713846-1-hsinyi@chromium.org>
+Subject: [PATCH 3/4] arm64: dts: mediatek: mt8183: disable quad mode for spi nor
+Date: Tue, 15 Aug 2023 23:31:54 +0800
+Message-ID: <20230815154412.713846-4-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+In-Reply-To: <20230815154412.713846-1-hsinyi@chromium.org>
+References: <20230815154412.713846-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230815_084451_093945_AEFF9986 
-X-CRM114-Status: GOOD (  11.30  )
+X-CRM114-CacheID: sfid-20230815_084500_033331_6118EC54 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,32 +106,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On gigadevice gd25lq64c, the quad mode is enabled after BFPT is parsed.
-According to datasheet[1], Quad enable (QE) bit needs to be set to 0 to
-use write protection (WP) pin. It also recommends setting default value of
-QE to 0 to avoid a potential short issue.
+Some of the SKUs are using gigadevice gd25lq64c flash chip. The chip
+default enables quad mode, which results in the write protect pin set to
+IO pin. In mt8183 kukui, we won't use quad enable for all SKUs, so apply
+the property to disable spi nor's quad mode.
 
-Add a disable-quad-mode property in devicetree that platform can use it to
-override the quad mode status parsed from BFPT to use write protection.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-[1]
-https://www.elm-tech.com/ja/products/spi-flash-memory/gd25lq64/gd25lq64.pdf
-page 13
-
-Hsin-Yi Wang (4):
-  dt-bindings: mtd: jedec,spi-nor: Add disable-quad-mode property
-  mtd: spi-nor: sfdp: read disable-quad-mode property
-  arm64: dts: mediatek: mt8183: disable quad mode for spi nor
-  arm64: dts: qcom: sc7180: disable quad mode for spi nor
-
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 7 +++++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi           | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi             | 1 +
- drivers/mtd/spi-nor/core.c                               | 5 +++++
- drivers/mtd/spi-nor/core.h                               | 1 +
- drivers/mtd/spi-nor/debugfs.c                            | 1 +
- 6 files changed, 16 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index 6ce16a265e053..8e4761e2b8ff4 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -877,6 +877,7 @@ w25q64dw: flash@0 {
+ 		compatible = "winbond,w25q64dw", "jedec,spi-nor";
+ 		reg = <0>;
+ 		spi-max-frequency = <25000000>;
++		disable-quad-mode;
+ 	};
+ };
+ 
 -- 
 2.41.0.694.ge786442a9b-goog
 
