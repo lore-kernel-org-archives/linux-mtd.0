@@ -4,85 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02DB1C0015E
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 21:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7080C0015E
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 23:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CWakGYozi0GR1kU1Ef+rHp4byA3rXdSxFOUJc4t/JVc=; b=3DUaDHdlTuvtmC
-	qePxF2NqtfeapQtMuBOYy9XIvqiQhYmscGOqShSaAXqohSb1ccuaZ7387tl3H/RqrYxk0yBxdvq/B
-	zZqMSkeznk21fNVeHEd7s0X8DJkO3Q4L4a0FZTE5S62/M4CQcDxAlddjBKOtKgeQpejr8WZldi5CX
-	gfw05QQ1x02Y11+zD0f4mz9T9/Hee1kSgaKmu4Eduvvylr0XlVdA9PxD/LIIxCP0hE1auhqP/svAh
-	6e9altLf/0XlURCA0ltlHME9OpREpz01kMeIkQX2IETsQydf3AGo9alYfKLgy1Tdprp5ddgR0AgkD
-	omkC1/Zrj2R+5Upg84Sg==;
+	List-Owner; bh=nlXLWpHGyqcZIH3kyXnIVFCCPFaMZnoARvzmaXNWV5Q=; b=X4p9GSco0kJiNb
+	rZ/yiJsasTqq8aZBDpHD0QdG2VxGbYlD7yttGSTS5n6Pw+ycYrEI0ejq3GDqj0HheKKIPRkzsEXDo
+	0jdX+kqs+5QL4iIO4OZtA5AImgMg8sLhQkCP0Skq0gKbsyFQ4AeBOpQIaaJCQfvwxIgIpy7zJUUm1
+	dfWsT7buiH20rO0+GUCByD8gFfRangCKDyo1yS2yVO9SW3oQDObun1qMIxSSeh72Kf18dNIu1EWT2
+	aJIEW5t4jLpbFOu882BdazUcOIdFDtBDoKOdCojIAsAWnmBOuamSVf8yR9YYih8/AZ41aKQ6IG1S8
+	0hx765GH6rjqEwl2qcUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qW1O3-002WVr-2s;
-	Tue, 15 Aug 2023 21:15:35 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1qW37i-002mG6-25;
+	Tue, 15 Aug 2023 23:06:50 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qW1O0-002WTE-0X
+	id 1qW37f-002mFD-2C
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Aug 2023 21:15:33 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c93638322so1211932166b.1
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Aug 2023 14:15:27 -0700 (PDT)
+	Tue, 15 Aug 2023 23:06:49 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bdcade7fbso764758266b.1
+        for <linux-mtd@lists.infradead.org>; Tue, 15 Aug 2023 16:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692134126; x=1692738926;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gFaPUM6OGKjL7heKdSNW4ylbvnWM2Tax9xH36Ej8xmI=;
-        b=p8e0jbjVH5XAqy90r+q8Ggo5ZQbgRA90aMDTQVbJCe93sdd5qbcoKqLTjOAPzJkI2c
-         f+VFUkJUG1dt981Sa2W1qtnfXf800u/TYahnWDh1VZNMRXDbwWvku/2asYWJ6Trw5dxW
-         aPtQqUf4Y7+FapIjLVG4FzEMSCH0j5Z4YuM3RHgcMKTvjC9zuVJzltVruWCKtc7VSeAQ
-         VZkLFVKgAakXLRcmDdPbPAr5gBwAwrYm7Myb0WROFW06va0c7MiWlX/fF2ehgnRfiBrV
-         WPGSqwOttNcPiWHE7C6HFDkFNDPuw4t+IwRRIuCvRwtAEqIqHm8weao9A1xH+CL9lTFa
-         KJ9Q==
+        d=google.com; s=20221208; t=1692140800; x=1692745600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nrPa0mBv24tqWNTDwul7//LSN1cVDKf7kn8qJcAv5os=;
+        b=I2gqKHVnynhn5a6q7JufzjrjRBbX85r9laDBvivZCmJTEHBX/D5v38OrAFPAQ4Ahuc
+         BiyPhwLlWkv5/U0J+sAvWtfA/Ee5uB0NoidvQXMtfa0FS74sBrPLCyRJmmEIQzd8EV7y
+         6/y3/f3zM1JfDx/29KU52/0d6Ru65VZzlri72Sx5Xe31cTIDpCeu0hsdP3cBw8UiVdIa
+         bJ2H2pnogg1LR7+3bKP5HbfMwKxX9p5tNM4N4yGhHNM0AjDm19KPz9SZ0cpmztJdTEJm
+         JYpg4T9J1ZqP6T57bMG+D2pVB60Cbw1NXwlJoKjH8PZ6RtPiWJAYrfjgcJMBFI4n/rwr
+         VBKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692134126; x=1692738926;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gFaPUM6OGKjL7heKdSNW4ylbvnWM2Tax9xH36Ej8xmI=;
-        b=apEXvSGEwjLj+H7GzW3TbENo0SK7AbKl0DfdNogYfSnPy55zwkelNc+AukYPyDP6g+
-         lYqaueISxaiomZG0bu4Ym8g8iqRxvsj4SY07TT47KJA0DmBycF1k83TE33XYeNIFG+jC
-         3hfAo2btlO8v8ANyvdPcCKJdh+uQLap74Sw1lAGIe8snWFo9I6iqACW7bICNbxYnsL92
-         7No9KkzmDDc9DXPS3cwjaIa+ALSylPREFkzTibIp1GFsN9zDhBb+Y+4TeodLW0jEQEOV
-         aoQQ/pbTW7+z3kSI9nMMMwro7LQDDtZmLlLnRQO0tlXN3YFXmKp8Xh+QIvkmoHbH5wes
-         KbZg==
-X-Gm-Message-State: AOJu0Yw5QeLZ9WKRP6OqbjhmCcqxtyZIEtiUkKME5QFvsuvyRTsQTvPH
-	CoJT74sUDC8RYQiSxGXSCcmVzA==
-X-Google-Smtp-Source: AGHT+IFabPaVP5DLcR7BtAD/7NeRP9lI+iUrNDDK9QJZ/8aQeCjq4VfiMHtSwPjZfUeGEMTtx/nJFw==
-X-Received: by 2002:a17:907:96a0:b0:99c:c8eb:51b2 with SMTP id hd32-20020a17090796a000b0099cc8eb51b2mr3483869ejc.2.1692134125829;
-        Tue, 15 Aug 2023 14:15:25 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id s10-20020a1709064d8a00b0099364d9f0e6sm7441940eju.117.2023.08.15.14.15.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 14:15:25 -0700 (PDT)
-Message-ID: <a7956e13-7b94-fb65-8b43-f2c9fd014353@linaro.org>
-Date: Tue, 15 Aug 2023 23:15:23 +0200
+        d=1e100.net; s=20221208; t=1692140800; x=1692745600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nrPa0mBv24tqWNTDwul7//LSN1cVDKf7kn8qJcAv5os=;
+        b=JvsEAnIgmbtf9iQXqBumoSwkMLJijHks8Q3Kwx92T3pC0UE3aNhe7/jotibiT7+tZl
+         UD+CmyVXR8kv5yfNJTCJCEB5XD5EsJvEZgp+98rr4EZR0v5J+8KlymOz6DTxUrvuHdyq
+         zd0I88c9IeOtGKnYtKJsgVhQsMgjyhj2af40iNR+Z0rRA2iZ8BOYJLf2g8maKKMrxyYb
+         16dzYlxZdIz8E7kFtXgXYiN+WSlVvm6mdfagDscDFUFYAXttjooWV6duoOcGNu2+KFwK
+         5oFPaArwrg3KMTFg9TTfbggxlOTSU8atvxmxqpdrgsiuzR56YmZYeThiWHQUbuBgQR+v
+         spMg==
+X-Gm-Message-State: AOJu0YyEKWyoY9n1TbTJx4HVlUiypGeva22D4CftAKy6tl3k74+RmUCl
+	ptYz/ZLk0U+3nqhAC74T/OvrP66tliK6dZs00pF+iw==
+X-Google-Smtp-Source: AGHT+IEYf/fyOVx0742lOUxeNNrFI2vcP6VhqTkYiAQ+DS6mXjvMmtfl0u01KMqRzs8F2tE5QS8vH45FY5IvumziGEA=
+X-Received: by 2002:a17:906:19:b0:992:bc8:58e4 with SMTP id
+ 25-20020a170906001900b009920bc858e4mr75813eja.20.1692140800125; Tue, 15 Aug
+ 2023 16:06:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] mtd: maps: fix -Wvoid-pointer-to-enum-cast warning
-To: Justin Stitt <justinstitt@google.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 References: <20230815-void-drivers-mtd-maps-physmap-versatile-v1-1-ba6fc86d5e4e@google.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230815-void-drivers-mtd-maps-physmap-versatile-v1-1-ba6fc86d5e4e@google.com>
+ <a7956e13-7b94-fb65-8b43-f2c9fd014353@linaro.org>
+In-Reply-To: <a7956e13-7b94-fb65-8b43-f2c9fd014353@linaro.org>
+From: Justin Stitt <justinstitt@google.com>
+Date: Tue, 15 Aug 2023 16:06:28 -0700
+Message-ID: <CAFhGd8rTU0o8uiGT1qUKbsOZTgqLR7Sw5h-+07y4SJ6QOd9KsA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: maps: fix -Wvoid-pointer-to-enum-cast warning
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230815_141532_255611_05297282 
-X-CRM114-Status: GOOD (  14.81  )
+X-CRM114-CacheID: sfid-20230815_160647_720732_BDF4F06B 
+X-CRM114-Status: GOOD (  21.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,47 +87,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 15/08/2023 23:11, Justin Stitt wrote:
-> When building with clang 18 I see the following warning:
-> |       drivers/mtd/maps/physmap-versatile.c:209:25: warning: cast to smaller
-> |               integer type 'enum versatile_flashprot' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-> |         209 |                 versatile_flashprot = (enum versatile_flashprot)devid->data;
-> 
-> This is due to the fact that `devid->data` is a void* while `enum
-> versatile_flashprot` has the size of an int. This leads to truncation
-> and possible data loss.
-
-Cast does not solve truncation. This part of commit msg suggests that
-you actually fix real issue... and that is an issue, because then
-AUTOSEL will grab it. This is just compiler warning silencing and rather
-coding standard correctness, no real fix, so please drop the sentence.
-
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1910
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: There is likely no data loss occurring here due to the fact that
-> `enum versatile_flashprot` has only a few enumerated fields, none of
-> which are large enough to cause data loss. 
-
-If there is a data loss, cast does not solve it.
-
-> Nonetheless, this patch helps
-> towards the goal of eventually enabling this warning for more builds.
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBBdWcgMTUsIDIwMjMgYXQgMjoxNeKAr1BNIEtyenlzenRvZiBLb3psb3dza2kKPGty
+enlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4gd3JvdGU6Cj4KPiBPbiAxNS8wOC8yMDIzIDIz
+OjExLCBKdXN0aW4gU3RpdHQgd3JvdGU6Cj4gPiBXaGVuIGJ1aWxkaW5nIHdpdGggY2xhbmcgMTgg
+SSBzZWUgdGhlIGZvbGxvd2luZyB3YXJuaW5nOgo+ID4gfCAgICAgICBkcml2ZXJzL210ZC9tYXBz
+L3BoeXNtYXAtdmVyc2F0aWxlLmM6MjA5OjI1OiB3YXJuaW5nOiBjYXN0IHRvIHNtYWxsZXIKPiA+
+IHwgICAgICAgICAgICAgICBpbnRlZ2VyIHR5cGUgJ2VudW0gdmVyc2F0aWxlX2ZsYXNocHJvdCcg
+ZnJvbSAnY29uc3Qgdm9pZCAqJyBbLVd2b2lkLXBvaW50ZXItdG8tZW51bS1jYXN0XQo+ID4gfCAg
+ICAgICAgIDIwOSB8ICAgICAgICAgICAgICAgICB2ZXJzYXRpbGVfZmxhc2hwcm90ID0gKGVudW0g
+dmVyc2F0aWxlX2ZsYXNocHJvdClkZXZpZC0+ZGF0YTsKPiA+Cj4gPiBUaGlzIGlzIGR1ZSB0byB0
+aGUgZmFjdCB0aGF0IGBkZXZpZC0+ZGF0YWAgaXMgYSB2b2lkKiB3aGlsZSBgZW51bQo+ID4gdmVy
+c2F0aWxlX2ZsYXNocHJvdGAgaGFzIHRoZSBzaXplIG9mIGFuIGludC4gVGhpcyBsZWFkcyB0byB0
+cnVuY2F0aW9uCj4gPiBhbmQgcG9zc2libGUgZGF0YSBsb3NzLgo+Cj4gQ2FzdCBkb2VzIG5vdCBz
+b2x2ZSB0cnVuY2F0aW9uLiBUaGlzIHBhcnQgb2YgY29tbWl0IG1zZyBzdWdnZXN0cyB0aGF0Cj4g
+eW91IGFjdHVhbGx5IGZpeCByZWFsIGlzc3VlLi4uIGFuZCB0aGF0IGlzIGFuIGlzc3VlLCBiZWNh
+dXNlIHRoZW4KPiBBVVRPU0VMIHdpbGwgZ3JhYiBpdC4gVGhpcyBpcyBqdXN0IGNvbXBpbGVyIHdh
+cm5pbmcgc2lsZW5jaW5nIGFuZCByYXRoZXIKPiBjb2Rpbmcgc3RhbmRhcmQgY29ycmVjdG5lc3Ms
+IG5vIHJlYWwgZml4LCBzbyBwbGVhc2UgZHJvcCB0aGUgc2VudGVuY2UuCk9LLCBtYWtlcyBzZW5z
+ZSBhYm91dCB0aGlzIG5vdCB0ZWNobmljYWxseSBzb2x2aW5nIGFuIGlzc3VlIGFuZCB0aHVzCkFV
+VE9TRUwgbWF5IHBpY2sgaXQgdXAuIENhbiB5b3UgZWxhYm9yYXRlLCB0aG91Z2gsIG9uIGhvdyB0
+aGUgY2FzdApkb2Vzbid0IHNvbHZlIHRydW5jYXRpb24uIElzIHRoZSBpbml0aWFsIGltcGxlbWVu
+dGF0aW9uIG5vdCBhCnBvaW50ZXItd2lkdGggZG93biB0byBpbnQtd2lkdGggY2FzdD8gU3VyZWx5
+IHdlJ3JlIGxvc2luZyB0aGUgdG9wIGhhbGYKb2YgYml0cy4gSSdtIHN0aWxsIG5vdCBzYXlpbmcg
+dGhlcmUncyBkYXRhIGxvc3MsIHRvIGJlIGNsZWFyLiBKdXN0CnRoYXQgdGhlIGNvbXBpbGVyIGlz
+IHdhcm5pbmcgYmVjYXVzZSBvZiB0aGUgdHJ1bmNhdGlvbi4KCj4KPiA+Cj4gPiBMaW5rOiBodHRw
+czovL2dpdGh1Yi5jb20vQ2xhbmdCdWlsdExpbnV4L2xpbnV4L2lzc3Vlcy8xOTEwCj4gPiBSZXBv
+cnRlZC1ieTogTmF0aGFuIENoYW5jZWxsb3IgPG5hdGhhbkBrZXJuZWwub3JnPgo+ID4gU2lnbmVk
+LW9mZi1ieTogSnVzdGluIFN0aXR0IDxqdXN0aW5zdGl0dEBnb29nbGUuY29tPgo+ID4gLS0tCj4g
+PiBOb3RlOiBUaGVyZSBpcyBsaWtlbHkgbm8gZGF0YSBsb3NzIG9jY3VycmluZyBoZXJlIGR1ZSB0
+byB0aGUgZmFjdCB0aGF0Cj4gPiBgZW51bSB2ZXJzYXRpbGVfZmxhc2hwcm90YCBoYXMgb25seSBh
+IGZldyBlbnVtZXJhdGVkIGZpZWxkcywgbm9uZSBvZgo+ID4gd2hpY2ggYXJlIGxhcmdlIGVub3Vn
+aCB0byBjYXVzZSBkYXRhIGxvc3MuCj4KPiBJZiB0aGVyZSBpcyBhIGRhdGEgbG9zcywgY2FzdCBk
+b2VzIG5vdCBzb2x2ZSBpdC4KPgo+ID4gTm9uZXRoZWxlc3MsIHRoaXMgcGF0Y2ggaGVscHMKPiA+
+IHRvd2FyZHMgdGhlIGdvYWwgb2YgZXZlbnR1YWxseSBlbmFibGluZyB0aGlzIHdhcm5pbmcgZm9y
+IG1vcmUgYnVpbGRzLgo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IEp1c3RpbiBTdGl0dCA8anVzdGlu
+c3RpdHRAZ29vZ2xlLmNvbT4KPgo+Cj4gQmVzdCByZWdhcmRzLAo+IEtyenlzenRvZgo+CgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
