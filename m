@@ -4,99 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5F82C0015E
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 09:15:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8728C001DB
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Aug 2023 15:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lO/K+i7VjZNlJBxy1E4mtsSZ2Y/uXHqSfhqjoGhP9Ak=; b=Qj5DalLs/5sQ64
-	3NV677hq6FmrHyO1rdgsqbXkjM0wB1wtqYxzr2TzDhgCNDUw++MXx6CkcoHC6blTCRhk3B2ShH9G/
-	jkr4nGp1fmv5xQgekPdgDGvzDEmmAN+i9gAqaAUXtYlF3DA0a1lY9q0U/Jpak7fIepIXu6lcnOaqx
-	dWm/Ec08uR0hEa2AzpyFj4fU7KWIfZ82FJETM4kvkETEsVDzb/aIl892vLXnr/3t9M/0RPI4Tt+64
-	EPL/DsfOpuRZ40sU6CiH0u4q3HEUeW6fTCXKdNmUXOvAJPHbmmwwFuYO4zsUwA0f+bclz4zRl281+
-	OIzyZ355DkhksPbTr9LA==;
+	List-Owner; bh=hiENrGJfU8ihUX0+V7UayXPp+A200MRBbE92NFj4mW4=; b=rCuhMcmeKjvynF
+	DCn4f9wuUmGQdBmsjtgMWcVvasx8s1fCt5MuNLKiF0H9U3+S5b+uxxSvGRdpcht/QjCLsCwIYaxl9
+	PoBdOCaJAd46YvxtTJBA5PEa/ajzjCNuJKSqGOcNyLYwAt9CGN9vOGZM9jPbUS1aDKG4yJcGbdfOX
+	3PzbdzZRaqMg8duGY/ZZDwT6Hw7n9WP8v0GEnt8mADaFbus0D8CyEp4QFllt7TWtzTkU97/e36YJU
+	PZdujgh4BElXqlQSpnByfycAjUhntrjYPyk95F0tXKb7njKJRK6vzFiHu1pegoNYJ4OtYaUSMsYAO
+	EpXfdVNoIBR1EhJkikrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qVq8u-001BsL-27;
-	Tue, 15 Aug 2023 09:15:12 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1qVwEB-001tGc-1W;
+	Tue, 15 Aug 2023 15:45:03 +0000
+Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qVq8q-001BqG-1w
+	id 1qVwE4-001tBe-2t
 	for linux-mtd@lists.infradead.org;
-	Tue, 15 Aug 2023 09:15:10 +0000
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb91c20602so9096635ad.0
-        for <linux-mtd@lists.infradead.org>; Tue, 15 Aug 2023 02:15:02 -0700 (PDT)
+	Tue, 15 Aug 2023 15:44:58 +0000
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68706b39c4cso3929183b3a.2
+        for <linux-mtd@lists.infradead.org>; Tue, 15 Aug 2023 08:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692090901; x=1692695701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N6UPah3rxy6GE+IW6hhaEXFukV19/RQgo9PDGSDaxjc=;
-        b=B4NWnukFtWBpBFBooLjjX+4xRi6cYrfaI8iegReeVzLQWKPXXt1CxHdKL4/tZ0fNPM
-         0UExtQR6YZe58qkKHpbXtHQV0uPapic2RYOUTB+6Pi7LdOE1C7GEcaF7+zgpTtYtD/de
-         UlP+/TDXrfMVghqI9OT3wDmB4f+60Ecld4ptmi3g4OGE44+/xTS+dFaCetp2KrysicqF
-         +aYy3xTBT6yAIsFwZB/EdPqMFUGo82MatiM8ko8K8L/pW/bDYDRzwOeVlfM6AvdWPq+b
-         HcGAAnq5GXzxPWbDmjMNdTVLUEtTfSjxZmvfFI4JrMMNezs7y6COdvHcs3klmaxHW6vC
-         FHlg==
+        d=chromium.org; s=google; t=1692114295; x=1692719095;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xmLPugTGz1sgSy2J/v99Dk0J3o8zfc9d+fDcwlxsiEo=;
+        b=hPdGnKSUgljhFqFsgGLQzZfUk5Zd5v3vXX+lFx5n/q9s02AfGmaHSqc010GOa/OM3f
+         aNaofPdOvBFPFjUmGdt3gDNvOc1wV1TJoZpvyVHeBIsK21QCzXmvuoygHnn6HnbssZcB
+         EsnO0+NmyNRllTqEzVtLDpy5CY61OZisnow1Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692090901; x=1692695701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6UPah3rxy6GE+IW6hhaEXFukV19/RQgo9PDGSDaxjc=;
-        b=cyJXmLR78vvD6hEF9b0seiV9hUj2S6k0HYCJ3fhXJlx1j+HFajqu5SdQc0sBIJL/X1
-         EHDpIIjEwMwilK3kHIEsYtjeSjm690nIuZaNFnWsE/neZLsnp7iNT6wUfaNOkrWR/RrS
-         AiDLQx4U1ZDBEStPY63yUK95f7MW2xr7TgSaYnsV6TwpyOKB+EFn61N5cVxemy0qBgr4
-         lNSvu7OqXDOzSsae5NC29Q01Fv+BJKNlK0QN6NUe7JPwFzEe78mNqp4gaQtSk4cqg/+X
-         uxHWsSpu4bB7IoqFtvvqejyDzTBXrrLR0XxD6fsPdX9T+FnyFium6+dMMSlPcvMxNMf8
-         DTZw==
-X-Gm-Message-State: AOJu0Yx51ndoB5tWBis5hXMhHhwVmrkQm/it7Jk7iCaczfp2sEwz8R9/
-	8ln2ZwxArki/1NlYEwhqb0KIOw==
-X-Google-Smtp-Source: AGHT+IGKaQyK0d17VyjHV7p/Fr8yAF+2JMAJsl65uoihXD9UcmAUSi1eF134pFnOBdZUKl9ThFMr5Q==
-X-Received: by 2002:a17:902:e5c8:b0:1bb:83ec:832 with SMTP id u8-20020a170902e5c800b001bb83ec0832mr13866844plf.2.1692090901535;
-        Tue, 15 Aug 2023 02:15:01 -0700 (PDT)
-Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([240e:694:e21:b::2])
-        by smtp.gmail.com with ESMTPSA id io13-20020a17090312cd00b001b39ffff838sm10630843plb.25.2023.08.15.02.14.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 02:15:01 -0700 (PDT)
-Message-ID: <4f64cd2d-90e8-7902-7ef7-1ac58d51b2a8@bytedance.com>
-Date: Tue, 15 Aug 2023 17:14:40 +0800
+        d=1e100.net; s=20221208; t=1692114295; x=1692719095;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xmLPugTGz1sgSy2J/v99Dk0J3o8zfc9d+fDcwlxsiEo=;
+        b=FPG5z8q2LY283J/rYiziLYNbXbF/KxiZDxJAeg8q70ziJE4lL5+ntQ7d0hexNW+/aN
+         2UmsXwalQLjLpycZidZ3xvySIRnZZPyE8+2CJ8yF5Ym9r+E4G2iuHFtv4mSJ/LZ3i5oZ
+         WbTHRMzZDCutQve8XXCYKidZ2Br4uttph90zRV95IWCFwZlaF9pD69aMCY1GOYuPZtG8
+         odTPnP+D0TexvZvlRwrLzdjbUd01RRtvrtq20BsK2pQhTWSqq7v0xULX5v3mD0HOd28q
+         j8zvX43Ku2XBVAchWcgitVQL+S0y1tRvWAU7Cdviyy0Emzuaz7gBI4I1xlrBDUCQnugI
+         GT5Q==
+X-Gm-Message-State: AOJu0YziWA+QqjyJutX6CJE9lt1qU4JES/GlnLwRAf/hogrTpL56IcRc
+	2W4oSJ3tmK5252ZpacoQUOEeYA==
+X-Google-Smtp-Source: AGHT+IFGfwXqvhlQgK3dZJYanVm1WhEoRWmNzCEnvvClZuT/nup6kWHRH9gSZE0NGJjts8ZfBG+bbA==
+X-Received: by 2002:a05:6a00:1a50:b0:668:73f5:dce0 with SMTP id h16-20020a056a001a5000b0066873f5dce0mr12705130pfv.29.1692114295080;
+        Tue, 15 Aug 2023 08:44:55 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:40cf:3807:f8c8:2d76])
+        by smtp.gmail.com with ESMTPSA id n13-20020aa78a4d000000b0065e154bac6dsm9431247pfa.133.2023.08.15.08.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 08:44:54 -0700 (PDT)
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	"Miquel Raynal )" <miquel.raynal@bootlin.com>,
+	"Richard Weinberger )" <richard@nod.at>,
+	"Vignesh Raghavendra )" <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	cros-qcom-dts-watchers@chromium.org,
+	Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 2/4] mtd: spi-nor: sfdp: read disable-quad-mode property
+Date: Tue, 15 Aug 2023 23:31:53 +0800
+Message-ID: <20230815154412.713846-3-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+In-Reply-To: <20230815154412.713846-1-hsinyi@chromium.org>
+References: <20230815154412.713846-1-hsinyi@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 01/48] mm: move some shrinker-related function
- declarations to mm/internal.h
-Content-Language: en-US
-To: Muchun Song <muchun.song@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
- tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
- Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
- Christian Brauner <brauner@kernel.org>, "Paul E. McKenney"
- <paulmck@kernel.org>, tytso@mit.edu, steven.price@arm.com, cel@kernel.org,
- Sergey Senozhatsky <senozhatsky@chromium.org>, yujie.liu@intel.com,
- Greg KH <gregkh@linuxfoundation.org>, simon.horman@corigine.com,
- dlemoal@kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Linux-MM <linux-mm@kvack.org>, x86@kernel.org, kvm@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
- linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
- <20230807110936.21819-2-zhengqi.arch@bytedance.com>
- <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230815_021508_639884_15072269 
-X-CRM114-Status: GOOD (  14.60  )
+X-CRM114-CacheID: sfid-20230815_084456_935823_5DDA9C82 
+X-CRM114-Status: GOOD (  14.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,76 +101,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Some flash devices, eg. gd25lq64c, enable quad mode by default after
+spi_nor_parse_bfpt(). However, the systems using these flash devices may
+required the quad mode to be turned off to use write protection or to
+avoid a potential short issue[1].
 
+Add a disable-quad-mode property in devicetree that system can use it to
+override the quad mode status parsed from BFPT.
 
-On 2023/8/15 16:36, Muchun Song wrote:
-> 
-> 
->> On Aug 7, 2023, at 19:08, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->>
->> The following functions are only used inside the mm subsystem, so it's
->> better to move their declarations to the mm/internal.h file.
->>
->> 1. shrinker_debugfs_add()
->> 2. shrinker_debugfs_detach()
->> 3. shrinker_debugfs_remove()
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> 
-> One nit bellow.
-> 
-> [...]
-> 
->> +
->> +/*
->> + * shrinker related functions
->> + */
-> 
-> This is a multi-comment format. "/* shrinker related functions. */" is
-> the right one-line format of comment.
+[1]https://www.elm-tech.com/ja/products/spi-flash-memory/gd25lq64/gd25lq64.pdf
+page 13
 
-Will do.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ drivers/mtd/spi-nor/core.c    | 5 +++++
+ drivers/mtd/spi-nor/core.h    | 1 +
+ drivers/mtd/spi-nor/debugfs.c | 1 +
+ 3 files changed, 7 insertions(+)
 
-Thanks,
-Qi
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 614960c7d22cc..dcf4ff46c37ae 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2847,6 +2847,11 @@ static void spi_nor_init_flags(struct spi_nor *nor)
+ 	if (of_property_read_bool(np, "no-wp"))
+ 		nor->flags |= SNOR_F_NO_WP;
+ 
++	if (of_property_read_bool(np, "disable-quad-mode")) {
++		nor->flags |= SNOR_F_DISABLE_QUAD;
++		nor->params->quad_enable = NULL;
++	}
++
+ 	if (flags & SPI_NOR_SWP_IS_VOLATILE)
+ 		nor->flags |= SNOR_F_SWP_IS_VOLATILE;
+ 
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 9217379b9cfef..b06bd97668f3a 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -133,6 +133,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_RWW		= BIT(14),
+ 	SNOR_F_ECC		= BIT(15),
+ 	SNOR_F_NO_WP		= BIT(16),
++	SNOR_F_DISABLE_QUAD	= BIT(17),
+ };
+ 
+ struct spi_nor_read_command {
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index 6e163cb5b478c..c17451ae0931a 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -28,6 +28,7 @@ static const char *const snor_f_names[] = {
+ 	SNOR_F_NAME(RWW),
+ 	SNOR_F_NAME(ECC),
+ 	SNOR_F_NAME(NO_WP),
++	SNOR_F_NAME(DISABLE_QUAD),
+ };
+ #undef SNOR_F_NAME
+ 
+-- 
+2.41.0.694.ge786442a9b-goog
 
-> 
->> +
->> +#ifdef CONFIG_SHRINKER_DEBUG
->> +extern int shrinker_debugfs_add(struct shrinker *shrinker);
->> +extern struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
->> +      int *debugfs_id);
->> +extern void shrinker_debugfs_remove(struct dentry *debugfs_entry,
->> +    int debugfs_id);
->> +#else /* CONFIG_SHRINKER_DEBUG */
->> +static inline int shrinker_debugfs_add(struct shrinker *shrinker)
->> +{
->> +	return 0;
->> +}
->> +static inline struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
->> +     int *debugfs_id)
->> +{
->> +	*debugfs_id = -1;
->> +	return NULL;
->> +}
->> +static inline void shrinker_debugfs_remove(struct dentry *debugfs_entry,
->> +	int debugfs_id)
->> +{
->> +}
->> +#endif /* CONFIG_SHRINKER_DEBUG */
->> +
->> #endif /* __MM_INTERNAL_H */
->> -- 
->> 2.30.2
->>
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
