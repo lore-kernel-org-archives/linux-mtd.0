@@ -4,90 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AC3FC001E0
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Aug 2023 15:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCFB7C001B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Aug 2023 15:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wB/RfqY3xQ/AmrsFgalJyiAhlzr0Efe2PbcrWcvD5Y8=; b=W3EwP8qDOkthFd
-	XUTmSXI64YJRuLpzeXQ7pUqbJ/6zD3flwJMps/RS0XtnHfewkL9lxYHfrQ/DVDQNqThJz1jc74+D9
-	+4L6SYS1zLAPKc05JA9ebze+z4pD6sT0fCBl4umkwWy3uh/ejU0iwDhqVevjpnO6MJKUQNB1GluXW
-	1/sen2gdm4PeYlncKDTDLNxW4z9sODiBGnJp1FyUyOoUE4fn2fiMEWyCEQgh6PK2SDi+PQFdX0ohN
-	tmSpdwfO7qBPq35R9c2hSnebOQEAExZmvFZaJLnwitmKY0exKOHz0yxWLwdY2gYhVyWDf66tX5FvE
-	Ci4vEyw2UrnIsiVarkjQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=JfH3GxN4Mjn8N+RxD4oeLeGqmlHGEPbWRkqG+4boF4A=; b=JImk5HZFwCwMceaNyi2DH4wBo5
+	pKkDyy2+UNpG2bGGK1qbrTQ1VEYxQcjd4gHMPLP/7Dc0SBkUYUy/O3ZQqHl2Zrk+QF6aTmWNI6js+
+	4Z+OEpzvf7aDomW4B6jwGPf5RI5PE9qNEKNuevuWlGFHXE9dOT1LfnmhfLZfoBqWLpYeqj5tTJlVg
+	kezt6tQFenXPCe1W2ZTh3Xz20EdNV3lRBaGYLAVkyE74DVHMPSnbKsaIX5OiQA66xvnAQ6SIfD9Pr
+	77g4IsB6+SrP8YlSTApHwkBBXKL3RhjDd0M0CAaqO1LQjezIKdu55ykCUt8XPeySMLkY2u91xwCSo
+	BSm6IBQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWIRd-004UMl-27;
-	Wed, 16 Aug 2023 15:28:25 +0000
-Received: from mx1.sberdevices.ru ([37.18.73.165])
+	id 1qWIZ8-004VF3-1O;
+	Wed, 16 Aug 2023 15:36:10 +0000
+Received: from mail-db8eur05on20720.outbound.protection.outlook.com ([2a01:111:f400:7e1a::720] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWIRY-004UKy-2j
+	id 1qWIZ1-004VDp-0O
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Aug 2023 15:28:23 +0000
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 6D4DA100004;
-	Wed, 16 Aug 2023 18:28:12 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6D4DA100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1692199692;
-	bh=WE0hIh5RLBABYfVTZR+pWZ3G2DbPLavvbNDma5RqYUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=OCAU+WoGGr5mo0/LaK5uScFYuclofAwnb4U5NcZP09BHntYjGIu+wflQrFBroWvHX
-	 wJXcFYrNS+P+oYbadIOkI+K1ukx0KDD3WdsxRllCeGkwstPc4fOMHBDonmbQUVJq2Y
-	 FVX9BdLrBGSUUx4USXQuqqzzi8PLJsHZpQGb/c/+y6rAeqXkxExUaTiatMonfuswXb
-	 wCydyTOKhrCwFcvCAqJZWJqLljy4nmWCWWTMtkOTzoyv48zxHHkDlWcVKeafb+blkF
-	 YaIvFDD1+MqmXtKvrpTc4X4hCGweaFQ5n+8suyqCAH7f5S9cKF94F0CyznkhPfL55V
-	 jRqXxwJxEaquA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed, 16 Aug 2023 18:28:12 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 16 Aug 2023 18:28:11 +0300
-Message-ID: <b619ef58-06c3-c61a-bb0f-ba243a4a2ade@sberdevices.ru>
-Date: Wed, 16 Aug 2023 18:28:11 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
+	Wed, 16 Aug 2023 15:36:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eo1blBw4QtKJQNDcdf+npQE5JSHAjU6d3jc8poWgGW9lM84X5uvTN+N+fX8704Cq8+jfDCe3gl5zUISIkYOZ9j88ACvmLW+RqeaNTbvftISnNvowNcgeR7mrP4N0TG0M5yxQjA3PLJDYskSzOTlO0JaIemH0dFEwvZCACg/sCqbhJfdUqP4t73Qg9FbugnwkGNRLNk47KgEAX0I9EuAFk37PPRR3crYPsDFrk5ttv3Ys1jb2NonjPpPhbFlW403NtIHSCfiuCrLw7HCYFSrsMh2g61MSYFTKsQ5/1RcTb6rCYXMuiuOvckZvgmDsg7SaTbSBl3UOj9MSIHS2sBV3gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TBTnd9tti+MVS/NSXcajTSuI1YjUrSsROgs92XzpKCY=;
+ b=bGz+8yHRwpNWTcxtk7w5hsSojRxZR+hiV1vHZYWglpE+oUjCVQUj7tWE7caStV4bGW3Vj7tn413/OGaBasf7nDIohOC9ifdT8rrdKaN0iHjG1/0RKV3W6bkOZ/TnLWljzv+UMOc7q9DaO9r1223frT/UtDmU+8Mc5g31SxMp4i+bUGEummLVMU9hB4HvgsOAoBlxPMrd9zO8/fY2RR+pg2iAYuG4RIVE1VlZBiZ2ypCXUCOZwkg0ZNnClCIVQd9r0+Xn9MnikeHaAneZrffEv23j64nUocJmGNoKehpVMDnH9nwz/HAqyue+Ss+7XeSpvWc5gJwIQ+QiZpxHl1+etQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TBTnd9tti+MVS/NSXcajTSuI1YjUrSsROgs92XzpKCY=;
+ b=PSIUJWK29WU5L4MJeBF9x8Li4FJrXiNYJ+ai8J5w9TRSBDbSGmr8UMDS26iKCi971gH5Hx+/yc/qIje9SXgtUtK39Eeo+zCexvgBkS1TegLccHpOgVdryoESQz4Dr3gYI3kqjQ5yKVSvlyAMKmB0L77JHBpRSfZ1eVddEJJFVQc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by DBAPR10MB4041.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:1c2::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Wed, 16 Aug
+ 2023 15:35:58 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::95ae:6cb:e93:cce0]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::95ae:6cb:e93:cce0%6]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
+ 15:35:58 +0000
+Message-ID: <53a4fe26-3a6a-47ce-8532-be60da674aca@kontron.de>
+Date: Wed, 16 Aug 2023 17:35:56 +0200
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v1] mtd: spinand: micron: correct parameters
-To: Frieder Schrempf <frieder.schrempf@kontron.de>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<kernel@sberdevices.ru>
+Content-Language: en-US, de-DE
+To: Martin Kurbanov <mmkurbanov@sberdevices.ru>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kernel@sberdevices.ru
 References: <20230815161024.810729-1-mmkurbanov@sberdevices.ru>
  <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
-Content-Language: en-US
-From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-In-Reply-To: <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179287 [Aug 16 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: MMKurbanov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/16 12:02:00 #21629266
-X-KSMG-AntiVirus-Status: Clean, skipped
+ <b619ef58-06c3-c61a-bb0f-ba243a4a2ade@sberdevices.ru>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <b619ef58-06c3-c61a-bb0f-ba243a4a2ade@sberdevices.ru>
+X-ClientProxiedBy: AS4P189CA0051.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:659::16) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|DBAPR10MB4041:EE_
+X-MS-Office365-Filtering-Correlation-Id: b5c76ba2-25db-4c26-012b-08db9e6e7cc2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n59x30/u+ruBH8r6wRCBxVNN4LyOb7DRqRePkZepWIfepgT7NXNjF34W1zxKjwm0qE61QknH66phkCe/WcZQfP5fNPlIGPRzQLttjEsrsYiPZnltfGg6wL+SnaJiccx+nyuchtPBFtBXbOseQrhAKET53J2HAEC9e6MzCE6BphrRfdFXvyZMjSTwb00frZhOvE9ZCMmciz/YO53cyH98cWzg5qXbxDz6qC2sEDZytebYYbOME8iUf/PuUcqcJ9j0ZvXspaGNveLOtMeVIx6Ct3st9el4J8cGVClAMWfZYQ8j7iRblupt8OFiikCb6QhzxftwJ4P81+vJNywoa5u0XQ0fzkRR5dgkMMeTmNR41DBEAvI7MkCwXVHpmJsqJ5EbK6XLOZYhKwqfIEUdWqJ3SaVsYHVv+KqYn2zt1YiFkFDJj6D4PEHgmxvn+bH9py1/zQ0v+yilEVUSWXkv/eB8Y8tKymcllILWvL9oFqW0NnADcUBCRSaqkd3dT78ItU9JZ19pTypMZnqmfuCD+Pw9ZyWpeWUVqKrs7O7tkW6hJ6aPr1LAkVA/WbYlW2VPnfmvzUiReR6sdkII358BgONbC70h9k1miO6gmdNFj3dUo3Krx3nZ/6rdONvHdfqnAQpYxfY8M2/xBxMHDjHRSEAP7w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(1800799009)(451199024)(186009)(316002)(66946007)(110136005)(66476007)(66556008)(41300700001)(5660300002)(44832011)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(83380400001)(26005)(478600001)(86362001)(31696002)(6512007)(53546011)(6506007)(36756003)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RnRFZi8yWnQrVGZYQ014NWtYNFNVaVI5U0p0WDNyKzgzWUg2d3Zlc2xEb3pU?=
+ =?utf-8?B?YkhkRXpmVzErQ1dpL1ZaTFpiSDJDMWJuQnE0cWREVXlzYk1KRjRYWXZDQm9J?=
+ =?utf-8?B?YVlUWHU0MkNnUXFmQ3V0aW5ubW0yNFZDYWI2MjB2b0VYeGt3eC9BVGxMZGh2?=
+ =?utf-8?B?OWtLcmxiT1RZZ0RIbDgyeHlKbjBlNnF1TzVBakRoWTJ1aDRtd2dIdFMzL3dJ?=
+ =?utf-8?B?R05wdDhjeWc1aVZHWmFoa3lUQ2RMUWVOSWFYTjRnTWZMVVhBMUYzcmJhN1pK?=
+ =?utf-8?B?QVlzaWdEblFCNE9KblFTb3FIWENVMjF2QUs4Q0NhODBkSUM2Z21tOURDdnZR?=
+ =?utf-8?B?bjhXd25Jek5QVHBtREVlRmJSTll2WS8reExlMUFiSzl1Y29PQnZIYXZJSStW?=
+ =?utf-8?B?SGxJUE1vNHNkSlBuTDZ0MW9JV3RTajBFWUtKV1JOUTA2UDRKZ2VBRGxXNm5x?=
+ =?utf-8?B?bi9GaU5JSzgyaHM1S0N1Q3M0cG5ucGlkVEZzOTJDYkRWOTNEcUhSN2tJeE5Z?=
+ =?utf-8?B?Z1E3aUpocXpTOG9aQU1yMGorTlNyaUJHT3FSVXhwK3VrK1YwRTRkTldLSG15?=
+ =?utf-8?B?R0NwZzJ2UUY0R1ZoOEZsSkpoaE41bEpYd0t5YU5mY0lxa0dZcFBndllvZ05V?=
+ =?utf-8?B?LzN3Q0lTWVQ1aXFTWW4wTW03SHBmL2greWc4dUE3Vm0rc3ExQThFSnhyVjdi?=
+ =?utf-8?B?cDZFTERsbDZxeXI0SnRLT3NLUWNNUWZVbjdwaUplWEFld202ZEpQR1hrc2pp?=
+ =?utf-8?B?VWxvVjhYS0dFdDVPcDFuK3dZS0Nqb1o5ZTVnS0ZRdHBTbzZacVFUYlJwWlZE?=
+ =?utf-8?B?S1VpVXJTWmk3Y3NUaEFKUTNYbXdNUXJTcEU4bXpUQXpIQ3RZMnI4TUlSMWdP?=
+ =?utf-8?B?clhUdnNHdG9yOGllbTYvV2pyVGRpQWRveHFycDJDSlBhMEE1MmZnMnNBVGJ0?=
+ =?utf-8?B?Rmt4bHFzMVJ6UnJ6K1ZaUDlMdW5zMEJEbVlheldvRXJiTzE3OGZOcGhqYjFo?=
+ =?utf-8?B?NHMrcHZQM0JzQTduVWJhelRMYThmREF0bkFjTlB3aUNaaFVEbm90dmVNTUls?=
+ =?utf-8?B?UEVqdUJDYTRHWHI0b3ZvZzNua3pvYjdlR3dxYjNLYkVnekNubmZMaG9oTlVk?=
+ =?utf-8?B?QUJGSDdsTm9sYU50NlJkTlVXQzdBc2cwSXl4Um8wV2s1L2JvQmpWQzNCOTRr?=
+ =?utf-8?B?eGtTWEEwek8vNFBJRzl0WWlhTFd4dDJaT0JIZHllRWp5b1BZOS9XYi9sQS92?=
+ =?utf-8?B?ZzdSY3dGRjZWSnFRWG50NnlNaDN1elVVZElQLzMxZjA4V2JyWUxYc0p2T2Ry?=
+ =?utf-8?B?MTJIVFRaQmhuMXlFT3l4SlI3aDZ2U1lCNTM1ZmdBWnR5VFcyZDhYR1lBVlRF?=
+ =?utf-8?B?YUVVZGl5b0laQmQ2dVJ2b2RsTmdhMERLQXEzVFVQcGR3eDRKby9tVm1jMG9Z?=
+ =?utf-8?B?MEl6OEdFS3AvL3lhZzZ5dDZrbVVOclBZVERZeUtUN3BqQS8zcXEzRXg2QnJB?=
+ =?utf-8?B?aTAvQS9oK3ZmVjBjVmYzTjNWQnNHelhCakJodTM4bVo2MVAxS0hkRHhBb01G?=
+ =?utf-8?B?eXl2YStUbnU1L3M2V21JOEY3bE5idzNjcmtPRzZZYUphZ0tubVl0ZmRMVis5?=
+ =?utf-8?B?TFlnT0x6WUM2bUJSNjYwdlFTaUIwa3lVRExRbFVEWmlWWmgwVmtnM0RDdlRM?=
+ =?utf-8?B?OXdEVDVNTklaeFdGdGhaRzZCNDArZVVQdzFmb3c2b3lqTHBPZ3ptcnhhZWRK?=
+ =?utf-8?B?L1lXZFhrTnNvYVlYb3RVY3ZXVXJjOTZINm5sMUMyNVU2YnU4c2N4cmlGTEw1?=
+ =?utf-8?B?bi9mU3R1MEVoaHppSVJEVXVya0JNNDRHcWRsdlQ0NzQzNDh5N1FuUTRQZ0ZO?=
+ =?utf-8?B?endLN283Nk5GWklhWmhLSEh4MngrZG1Kd1RoeDJqZEU1NkthVnd3eGNFc1F4?=
+ =?utf-8?B?YTAzNjlnTFBWdHRtTkRJbmNObE9Na3NiVXhpc3pJejhBeHUzaWFXZ2dEcXgr?=
+ =?utf-8?B?MG9SWXEvWGt5QlA4T1NkVGtjOEFWTEpuRzNMcVNMMzhCd0FVM2I3QTIwa21R?=
+ =?utf-8?B?cFkwdXAzN2tZeWhaVWNyQTZKVVpHOGxIdG0rOGVWcmt1bHNUMzkyRFhDQUxT?=
+ =?utf-8?B?RnlJODZDTDNwODRTWitnODk0YnZEd0V1WVJVTjRFZzIyejZkQy8yZkk2MnpM?=
+ =?utf-8?B?M1E9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5c76ba2-25db-4c26-012b-08db9e6e7cc2
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 15:35:58.1247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RIsrsejCxiMfux3sp7BLYz4gbOoyjhoH51/EeyQHY+IoDd5M7XsVSZX3T4PmxGQ7bMIf+KMtjbjI3XZ/p4EC/2TNEwFpAFJu0rA3yi0RP1s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR10MB4041
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230816_082821_568658_EE8D29DF 
-X-CRM114-Status: GOOD (  13.25  )
+X-CRM114-CacheID: sfid-20230816_083603_218181_1F4341B4 
+X-CRM114-Status: GOOD (  17.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,28 +149,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Frieder.
+On 16.08.23 17:28, Martin Kurbanov wrote:
+> Hi Frieder.
+> 
+> On 16.08.2023 10:21, Frieder Schrempf wrote:
+>> I'm okay with 1. and with adjusting region->offset to 4. But I don't
+>> really get why we want to restrict the free oob data to the
+>> non-ECC-protected area only. Is this specific to Micron? Other SPI NAND
+>> drivers also spread the free area over both, the ECC-protected and the
+>> non-protected bytes. Why do it differently here?
+> 
+> We encountered a problem with the JFFS2 file system: JFFS2 marks erased
+> blocks with a marker to avoid re-erasing them. To do this, it writes
+> a special marker (cleanmarker) in the free OOB area. And if this OOB
+> area is protected by ECC, the ECC will be written. However, during
+> the next write to the main area of the same block, the ECC will be
+> incorrect because it's necessary to program both the main area and
+> the OOB area at one programming time, so that the ECC parity code can
+> be calculated properly. Other SPI NAND flash also susceptible to
+> this problem.
 
-On 16.08.2023 10:21, Frieder Schrempf wrote:
-> I'm okay with 1. and with adjusting region->offset to 4. But I don't
-> really get why we want to restrict the free oob data to the
-> non-ECC-protected area only. Is this specific to Micron? Other SPI NAND
-> drivers also spread the free area over both, the ECC-protected and the
-> non-protected bytes. Why do it differently here?
+Thanks for the explanation. As this is a generic issue, we need to fix
+it in the core and not in the Micron driver.
 
-We encountered a problem with the JFFS2 file system: JFFS2 marks erased
-blocks with a marker to avoid re-erasing them. To do this, it writes
-a special marker (cleanmarker) in the free OOB area. And if this OOB
-area is protected by ECC, the ECC will be written. However, during
-the next write to the main area of the same block, the ECC will be
-incorrect because it's necessary to program both the main area and
-the OOB area at one programming time, so that the ECC parity code can
-be calculated properly. Other SPI NAND flash also susceptible to
-this problem.
+Also I wonder if JFFS2 should instead write the cleanmarker with ECC
+being turned of explicitly.
 
--- 
-Best Regards,
-Martin Kurbanov
+I don't know enough about NAND and JFFS2 to point out a correct fix, but
+I hope Miquel and Richard have some ideas.
 
 ______________________________________________________
 Linux MTD discussion mailing list
