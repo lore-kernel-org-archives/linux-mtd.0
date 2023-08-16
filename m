@@ -4,80 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EDD2C001B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Aug 2023 09:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E21FC001DF
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Aug 2023 10:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zsPgEyh4yHNkPQ+hzmOBz8T4Wz63Pv3H9nq16Cf1TQM=; b=HZWIP7yzPkE/bS
-	YNW2u+RQBkUtTkFhZOeTTTjNxThCQiTvRJFy7LJblmbF/PpuaBVkyzDwZTaaISrXxedS0JdR3DxMg
-	YlidpdnfRjVGQcQwJcIzTKOsXue7lj2itmD1ezNatgpJhj3FkXmCMOrK0FGEysWyyXwFeV8MR8UG0
-	g+l31COVAy4bBJJDpmkxpalYxgjqPpkS20rWZlQMy2TOCVtulATI9yrb+Ww0kyx0WHaafT1kpXWWC
-	+PuBWg94Yh1IByEBxhvKnuYJ9miBawDn88WNnWVCt4VLXAO3EGm5BBxK0KlNeTvAVjYw3Z77guVSu
-	5B/r2bJdtRyF4NMLBc1A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ADVmOb7+0jCxYGvQ+MX6p8Jh5DBqGriWG/+BzcGPU0M=; b=fNuprrJFEmreL9
+	XK6nH/jf2ZVnhU/4V24sXVIIIyepr+52YA7MhouTgdG3R7AonKmpBDMHnQ3iywZ+55aVJtUOSyBqo
+	Ihon6fIHw5dbjoXKnOz/Dd/ufgn3oolH52jhGbJF23/4hu6o2hORG+dcRDFI25bJsfZfcM2LDhKBe
+	5OBWIgwDJDwzH8Bel8wfXcudY3NNy4Q26iQTbcwbiaDSURoGRFag65y0wC9TTqdSkZz0FUW1d4fM8
+	0RpcbgeyzmPwXCBHxnWKiSs9p+65QLnJ1/VvF75hMGKYyaOkQk6bsGdzABG/1M1nfgXBVCBOwNU5r
+	UfvgJV/q04xvEXBwjLDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWDGo-003fsR-2U;
-	Wed, 16 Aug 2023 09:56:54 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1qWDzS-003s5E-0C;
+	Wed, 16 Aug 2023 10:43:02 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWDGk-003frp-2T
+	id 1qWDzP-003s3M-1X
 	for linux-mtd@lists.infradead.org;
-	Wed, 16 Aug 2023 09:56:52 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26b10e52ef8so3036583a91.2
-        for <linux-mtd@lists.infradead.org>; Wed, 16 Aug 2023 02:56:48 -0700 (PDT)
+	Wed, 16 Aug 2023 10:43:00 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bb84194bf3so39521685ad.3
+        for <linux-mtd@lists.infradead.org>; Wed, 16 Aug 2023 03:42:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692179808; x=1692784608;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692182578; x=1692787378;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WBbWFhxqqCcGSdxX6L9y8gpcH9P2VcnoWxvrGpmme/g=;
-        b=L7NZ5l6xxSfCK6y8MCFY/pEyDTkmWjQSrQCriAsKuhTsoVHCwkaMNEIDDVP5YYvqWX
-         bHxajzgVqykRTEfRlBynFp7azUVjqBaHiHD0WAkTWOtok7Jhj+hdq+ykMUzINmANvr0k
-         wsilIupRWQhh1eVgUSJ2QT/0c9uxnWBp+UvftskPPxnHXUooyizN78lFjfwXFK9r0HSw
-         SQfL7NWliXxvSACCEdcSYCVz5CKKIxORJb7RMU4XaafrgCDFdDqZbDsSv4O6yfhgdB8C
-         1SpUKikNr/7eB0Ni9LVke+5aCY2j4nz4LLalS91BhGhPHhvm2xrTfrxJLKx8ItxnEv5i
-         YV2A==
+        bh=Cub/3WoMWvIiQsdbQrE3OYpvx3EStTjQpVkye0ZIEPY=;
+        b=X+2roLU96FnUjC4UMH/RZzcPdjIQC7q3PfaiuYrl23IUrM5F/OtlaFd+SbRcoumS24
+         /JbhmuX8yLikjrYNkG+eOKcWRFlLL0NWoRcZQ1vgSTHQ+TVZXOw9RM+Vt33UA9Krn5H3
+         PF2LeNNjRnjzk+Kfl3Fg4yxytfvGrl/qQP1KU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692179808; x=1692784608;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WBbWFhxqqCcGSdxX6L9y8gpcH9P2VcnoWxvrGpmme/g=;
-        b=RQELtklJWVvtQWpQP+btr15OqD6R6qyB5RVBYg/uG/iTGyZNlAgtYWS20ozwNtb+Ap
-         J9+HGMypwsLAZ8j95ALW4FRoknkgadyVZ+Q8Z7cHPLBpaJWKG1fOqUKy+g9KzsjxtKAh
-         3tC950QTFVQjbu/ZSCT3kBB+xzmDW86TbifV6XqVkYlfodv8AGWcZHIxa8By09E90STQ
-         gEh3TADO8Nb0xpLYmzy0RgzQGmvWDpL0TqnY+37I8jXrBeyl1trCckJ1Ij7/YfmAyHjE
-         Z/zprmzsTW4ep3Wzc39b6wKXM+C8F24CvkbUbxk6G20cin5tYBNzEpZVaRgN9ZO8NrA0
-         Goww==
-X-Gm-Message-State: AOJu0YyHoztMdvdN3efVbEAzO1+R5ZZ3+zNMvC2zccYgCnVBxTHRM7lE
-	GBGdxqamwE92JscOTZ7Mbu4=
-X-Google-Smtp-Source: AGHT+IHMQqnNNpKK0OYvp3ioa9FinjRPGijehCrG6tg1HNg2sSFi2xL1LWlSANBX4nNGkBsuylbLbw==
-X-Received: by 2002:a17:90a:e004:b0:269:21ad:bdec with SMTP id u4-20020a17090ae00400b0026921adbdecmr904692pjy.28.1692179808036;
-        Wed, 16 Aug 2023 02:56:48 -0700 (PDT)
-Received: from [192.168.0.105] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id j6-20020a17090a31c600b00267eead2f16sm11610829pjf.36.2023.08.16.02.56.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 02:56:47 -0700 (PDT)
-Message-ID: <44f5a8f7-0bf4-c986-a0dc-dc12d0cb30ca@gmail.com>
-Date: Wed, 16 Aug 2023 16:56:44 +0700
+        d=1e100.net; s=20221208; t=1692182578; x=1692787378;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cub/3WoMWvIiQsdbQrE3OYpvx3EStTjQpVkye0ZIEPY=;
+        b=NuvXbz5jY9WQnih0IUo376J3hgjsjMJn5/kCh54p4RZZXvUIhvRgpA72OmSgwcaYdB
+         S+f1zzvTiFYfF6iVKTZY4EOMwhKt3RAUTGbMqOGJld61SdsReIv5I5P3/Jyzhe2XqmZh
+         QdVcHGCLeCR7EiVPRwy6GhBhSYtmkRpr4K8Upmx4SxNxVBI22GY0w6acwvUewJLgG+l+
+         YGEWERJ1eFa1u3Jge0YnE5LfN65AN190AYD0l3GMJHcxbxNW+WItU3y7fKw09IOvazpL
+         AypG8eFkc/LjC3A0fgdZCaw1i8Y2yt3yaTr4XAHyKNLJ/RuIfwcorWn6+Wdmw9Xr0O2l
+         hBQg==
+X-Gm-Message-State: AOJu0YzxdxCUer0DezXxmthhO7eOBX3PSo596O6gYnQNrOQ648C+npc4
+	I+4maZzSaRPwGQr9SE28/cbVQQ==
+X-Google-Smtp-Source: AGHT+IHvVQX8EoXpLKpCr/t52+6jeFgafZ76HEeFbRCi5SpSu2BnPfp6dIpbpqFaTJpaDOuKBalzOA==
+X-Received: by 2002:a17:902:6b86:b0:1bc:56c3:ebb7 with SMTP id p6-20020a1709026b8600b001bc56c3ebb7mr1052794plk.20.1692182578396;
+        Wed, 16 Aug 2023 03:42:58 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:40cf:3807:f8c8:2d76])
+        by smtp.gmail.com with ESMTPSA id kx14-20020a170902f94e00b001b8a3dd5a4asm2899270plb.283.2023.08.16.03.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 03:42:58 -0700 (PDT)
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	"Miquel Raynal )" <miquel.raynal@bootlin.com>,
+	"Richard Weinberger )" <richard@nod.at>,
+	"Vignesh Raghavendra )" <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	cros-qcom-dts-watchers@chromium.org,
+	Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2,2/2] arm64: dts: mediatek: mt8183: set bus rx width to disable quad mode
+Date: Wed, 16 Aug 2023 18:38:33 +0800
+Message-ID: <20230816104245.2676965-2-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+In-Reply-To: <20230816104245.2676965-1-hsinyi@chromium.org>
+References: <20230816104245.2676965-1-hsinyi@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Content-Language: en-US
-To: Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: ubi: fastmap: Fix a series of wear leveling problems
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230816_025650_823926_9F4BA899 
-X-CRM114-Status: GOOD (  10.73  )
+X-CRM114-CacheID: sfid-20230816_034259_532565_12DD0959 
+X-CRM114-Status: GOOD (  10.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,60 +106,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Some of the SKUs are using gigadevice gd25lq64c flash chip. The chip
+default enables quad mode, which results in the write protect pin set to
+IO pin. In mt8183 kukui, we won't use quad enable for all SKUs, so apply
+the property to disable spi nor's quad mode.
 
-I notice a bug report with proposed fixes on Bugzilla [1]. Quoting from it
-(only the first problem that is quoted):
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Problem 1: large erase counter for single fastmap data PEB
-> 
-> Config:
-> x86_64 qemu
-> flash: nandsim
-> CONFIG_MTD_UBI_WL_THRESHOLD=128
-> CONFIG_MTD_UBI_FASTMAP=y
-> ubi->beb_rsvd_pebs=0
-> 
-> Running fsstress on ubifs for 3h(fastmap data PEB has large erase counter than others):
-> =========================================================
-> from              to     count      min      avg      max
-> ---------------------------------------------------------
-> 0        ..        9:        0        0        0        0
-> 10       ..       99:      532       84       92       99
-> 100      ..      999:    15787      100      147      229
-> 1000     ..     9999:       64     4699     4765     4826
-> 10000    ..    99999:        0        0        0        0
-> 100000   ..      inf:        1   272935   272935   272935
-> ---------------------------------------------------------
-> Total               :    16384       84      180   272935
-> PEB 8031(ec=272935) is always taken for fastmap data.
-> 
-> After fix, running fsstress on ubifs for 12h(no pool reservation), no individual peb has big erase counter:
-> =========================================================
-> from              to     count      min      avg      max
-> ---------------------------------------------------------
-> 0        ..        9:        0        0        0        0
-> 10       ..       99:        0        0        0        0
-> 100      ..      999:    16320      609      642      705
-> 1000     ..     9999:        0        0        0        0
-> 10000    ..    99999:       64    18176    18234    18303
-> 100000   ..      inf:        0        0        0        0
-> ---------------------------------------------------------
-> Total               :    16384      609      710    18303
-
-See Bugzilla for the full thread (with other problems mentioned) and
-attached patch series that fixes them.
-
-Zhihao: I asked you on BZ to send your patches to linux-mtd list,
-but you didn't respond there. Would you like to send them for
-review?
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217787
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index 6ce16a265e053..ef472b522f2e7 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -877,6 +877,7 @@ w25q64dw: flash@0 {
+ 		compatible = "winbond,w25q64dw", "jedec,spi-nor";
+ 		reg = <0>;
+ 		spi-max-frequency = <25000000>;
++		spi-rx-bus-width = <2>;
+ 	};
+ };
+ 
 -- 
-An old man doll... just what I always wanted! - Clara
+2.41.0.694.ge786442a9b-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
