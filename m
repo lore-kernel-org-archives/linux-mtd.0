@@ -4,60 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5F19C2FC14
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 13:21:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B30DC3DA54
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 17:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DSkusQmC6HUIRIgpQ2KSJZSdIl3gawC5aJmu7Qa8omU=; b=3l2eGdPO85VQhZ
-	QDaIyWbXp9a+17FI0vNm3vG7iTFjR+vfmaJA1JKwkW5fhNOUyOIDresFo0NuSHo6sNNosnC2E9eF3
-	koEMH5MKwjsQkpj6VZSmn97T8VzYW6F7Um2wcdJ8JUdVFcttBRi+7CxnWnGC4vBk3himXLrPYgBun
-	05aEOnOK0nFJEQiYbdJ3I0jZKvEoa8QUanSZ72ShPbqc1/npAhEhq78BsDWOh7dAYJtkslYKp3fcN
-	tWDWoR6iU2jLbLro+mNY4JVDF2MQFdFYjPcRj8PAZOtkOVE2BfpsV/ef4ChJ5qfVNyK9CkUF9g7xy
-	kk6MasV3yJF1SjERFjUA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=r6o3FWmCu1vpYQud1uD3zM3jVTJq+u0837iOjMu4HFk=; b=XTtQULtaN45Fu3uw3wjJ7zRz3N
+	dZL4CYShrhqg29YhOT9tAWPCx3nl2se4n2Gdh/FYJAB+2YMnEleiQPtXqON3B8wk6KY1G4frK7uUN
+	1ucsH3MQ0VLXTquBHW74rMtR2M9oRu0oflsgbC02/wESeyWO0QlObjHZtLevw8ClBngsDd5/wArwM
+	ssIsaCu50ijTBZrIdiFSnJpvWazth9ouT7xVT79NMvakr0/He+MyrK20hSLQAjUggAD2R90POS5nh
+	G5Ug8PA2FIh1P56W04Ik76Wnqs8x9dODTmGUU5qd1uyqDqoE2LQ0lQQr9xc5fLjn8AyonMXrg2tX+
+	B7ZanPRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWcvs-006Rui-3D;
-	Thu, 17 Aug 2023 13:21:01 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1qWgPZ-006psg-1h;
+	Thu, 17 Aug 2023 17:03:53 +0000
+Received: from mail-il1-x12c.google.com ([2607:f8b0:4864:20::12c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWcvp-006Ru1-2v
+	id 1qWgPW-006psB-2u
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Aug 2023 13:20:59 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6035F1BF20A;
-	Thu, 17 Aug 2023 13:20:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1692278452;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TpkYJnEPG/Xi0SDa3SsdHsTZH3oAXFOzG5T3t2lM324=;
-	b=IzdrsoV8tGuQYKemeHLyhFseeaBfFOOlh4vxvABN0qMP0IEb0+M23SX4fb408x6nwaEDkh
-	gvpJktO/3CkI1m+NXwtJCHU5w/Dze72wZ15fBGQakMi+KXlx+fX9G/w6QXZlHeYS7LR/zd
-	xAYikvjHkt3z/wX4TdIyOWWO8ofgYKlTNJ8LbQgfOwmsKbBcmGrhzBoBXOIzKoRDoEZeLB
-	vVLsD/ck+quwgSwl6VhiucdoiHHYVWDIAK6hbl6yhEBosmz7rtLtdpOgJCKiFlPVAAs1iV
-	ARjIA+dXWNEdVhspbMocz0Hoj+aR+m1uFiAIxmLKbRXSyQjx3eGhz1UT7EP7Dg==
-Date: Thu, 17 Aug 2023 15:20:50 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: SSunk <ssunkkan@gmail.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
- richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Add support for more XMC series
-Message-ID: <20230817152050.6679eae3@xps-13>
-In-Reply-To: <20230817124655.13023-1-ssunkkan@gmail.com>
-References: <20230817124655.13023-1-ssunkkan@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Thu, 17 Aug 2023 17:03:52 +0000
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-3490cce329bso173475ab.0
+        for <linux-mtd@lists.infradead.org>; Thu, 17 Aug 2023 10:03:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692291829; x=1692896629;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H/CF1sp7z18+6hzC94tDeSNxB7GD4ts5/I3Q7/FCqPU=;
+        b=kZhb+6h+olefCaUxLh+5ROA9Q5Q0bYberN/mtcsV1M3xiXoWcHawfL+WLHazoMNlDb
+         e19laAhHDhd/bigAMTN6dsOCKk+QXlEjrreWfBIIoJPksyINsnUarmTi2/wzB738IMHz
+         UVQxI0I+8LuQsQvrujmNvtP4pixmOtv3VjOZRb4T79qQizq5lSy4oMB04UryeWLgkNXT
+         DLRuGGGWuFAiCJ7f3UjN0aBxOktVG9iOas4VPd1mG9fwr5Jt+cHHOqHpU9HIYVSvWrTL
+         a0ntdHT0g8+90gwCEBRdgcHCNZw5ao3niLnF+rcpXo1NsaxNDIFoLM0VLZdnodpZWdH6
+         MyLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692291829; x=1692896629;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H/CF1sp7z18+6hzC94tDeSNxB7GD4ts5/I3Q7/FCqPU=;
+        b=IjsSFlP/PaTJnjDxxH07K7xI9aiBnIjbdr8GTxajM1Fbz+2zWfo2jxneWgfTmWD+f9
+         QvV4AcU/U5Y4SvR4E0gH9Kv8BBqDF1bIVmQsMUwZzFtC1GGZrggugn+5BR7tFbMfOA+L
+         G00d9I79SB6Bjix4yzflWIJF+BZWSwC/s9NPS4S2fpExeq/wJ9t46Fk1K3plBuFQFNVq
+         wp7IzzOl2rFR/Y7EGIcars8Y7wsaTw1WOdcJtq89hGodmpq0W8WEkJHZvlrCjXokxaMX
+         tp11OGn2En6N1U0FUITDv09eSzcI1x9Gr6xkOzmhMWrPVtZ/8KCA6H+Y1hvZM7yelaIs
+         +/hg==
+X-Gm-Message-State: AOJu0Yzz60KfCOP8JIWqaUS6pXavqgwzViw9MHWQuCyblcth3fLM1WSu
+	hzRN15CjRZtHbwP//7fZcAo=
+X-Google-Smtp-Source: AGHT+IGS7UsBL/IVOjFXyITZjakLFnLw2xV75JF+PU9lUQC5ZN2voEGYjEhUJl+UjcQe77M9Cch8/A==
+X-Received: by 2002:a92:ca0b:0:b0:348:b086:2c4b with SMTP id j11-20020a92ca0b000000b00348b0862c4bmr4778445ils.9.1692291828909;
+        Thu, 17 Aug 2023 10:03:48 -0700 (PDT)
+Received: from sun-virtual-machine.localdomain ([103.149.144.245])
+        by smtp.gmail.com with ESMTPSA id r2-20020a92d982000000b00342093347d8sm5315859iln.76.2023.08.17.10.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 10:03:48 -0700 (PDT)
+From: SSunk <ssunkkan@gmail.com>
+To: miquel.raynal@bootlin.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	michael@walle.cc,
+	pratyush@kernel.org,
+	richard@nod.at,
+	ssunkkan@gmail.com,
+	tudor.ambarus@linaro.org,
+	vigneshr@ti.com
+Subject: [PATCH] Add support for more XMC series
+Date: Fri, 18 Aug 2023 01:03:35 +0800
+Message-Id: <20230817170335.3711-1-ssunkkan@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230817152050.6679eae3@xps-13>
+References: <20230817152050.6679eae3@xps-13>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230817_062058_222081_649A80D0 
-X-CRM114-Status: GOOD (  14.92  )
+X-CRM114-CacheID: sfid-20230817_100350_959462_782243A1 
+X-CRM114-Status: GOOD (  14.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,41 +93,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4661509945995069759=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpzc3Vua2thbkBnbWFpbC5jb20gd3JvdGUgb24gVGh1LCAxNyBBdWcgMjAyMyAyMDo0
-Njo1NSArMDgwMDoKCj4gQWRkIFhNQyBYTTI1UUgxMjhDL1hNMjVRSDI1NkMvWE0yNVFVMjU2Qy9Y
-TTI1UUg1MTJDL1hNMjVRVTUxMkMKPiBhbmQgc2V0IHRoZSBwYXJzZV9zZmRwIGZsYWcuCgpQbGVh
-c2UgbG9vayBhdCB0aGUgZ2l0IGhpc3RvcnkgYW5kIGNvcnJlY3QgdGhlIHRpdGxlLgoKPiBTaWdu
-ZWQtb2ZmLWJ5OiBLYW5rYW4gU3VuIDxzc3Vua2thbkBnbWFpbC5jb20+Cj4gLS0tCj4gIGRyaXZl
-cnMvbXRkL3NwaS1ub3IveG1jLmMgfCAxNiArKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAxNiBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1u
-b3IveG1jLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3htYy5jCj4gaW5kZXggMDUxNDExZTg2MzM5
-Li5iMjM3NDE4N2VjNGYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci94bWMuYwo+
-ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IveG1jLmMKPiBAQCAtMTYsNiArMTYsMjIgQEAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHhtY19ub3JfcGFydHNbXSA9IHsKPiAgCXsgIlhN
-MjVRSDEyOEEiLCBJTkZPKDB4MjA3MDE4LCAwLCA2NCAqIDEwMjQsIDI1NikKPiAgCQlOT19TRkRQ
-X0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8Cj4gIAkJCSAgICAgIFNQSV9OT1Jf
-UVVBRF9SRUFEKSB9LAo+ICsJeyAiWE0yNVFIMTI4QyIsIElORk8oMHgyMDQwMTgsIDAsIDY0ICog
-MTAyNCwgMjU2KQo+ICsJCU5PX1NGRFBfRkxBR1MoU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFE
-IHwKPiArCQkJICAgICAgU1BJX05PUl9RVUFEX1JFQUQpIH0sCj4gKwl7ICJYTTI1UUgyNTZDIiwg
-SU5GTygweDIwNDAxOSwgMCwgNjQgKiAxMDI0LCA1MTIpCj4gKwkJTk9fU0ZEUF9GTEFHUyhTRUNU
-XzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfAo+ICsJCQkgICAgICBTUElfTk9SX1FVQURfUkVBRCB8
-IFNQSV9OT1JfNEJfT1BDT0RFUykgfSwKPiArCXsgIlhNMjVRVTI1NkMiLCBJTkZPKDB4MjA0MTE5
-LCAwLCA2NCAqIDEwMjQsIDUxMikKPiArCQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9S
-X0RVQUxfUkVBRCB8Cj4gKwkJCSAgICAgIFNQSV9OT1JfUVVBRF9SRUFEIHwgU1BJX05PUl80Ql9P
-UENPREVTKSB9LAo+ICsJeyAiWE0yNVFINTEyQyIsIElORk8oMHgyMDQwMjAsIDAsIDY0ICogMTAy
-NCwgMTAyNCkKPiArCQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8
-Cj4gKwkJCSAgICAgIFNQSV9OT1JfUVVBRF9SRUFEIHwgU1BJX05PUl80Ql9PUENPREVTKSB9LAo+
-ICsJeyAiWE0yNVFVNTEyQyIsIElORk8oMHgyMDQxMjAsIDAsIDY0ICogMTAyNCwgMTAyNCkKPiAr
-CQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8Cj4gKwkJCSAgICAg
-IFNQSV9OT1JfUVVBRF9SRUFEIHwgU1BJX05PUl80Ql9PUENPREVTKSB9LAoKWW91IHNheSB5b3Ug
-ZW5hYmxlIFNGRFAgaW4gdGhlIGNvbW1pdCBsb2cgYnV0IHRoZSBkaWZmIHNob3dzIHRoZQpvcHBv
-c2l0ZT8KCj4gKwo+ICB9Owo+ICAKPiAgY29uc3Qgc3RydWN0IHNwaV9ub3JfbWFudWZhY3R1cmVy
-IHNwaV9ub3JfeG1jID0gewoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+--===============4661509945995069759==
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+
+Add XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
+and set the parse_sfdp flag.
+
+Signed-off-by: Kankan Sun <ssunkkan@gmail.com>
+---
+Hi Michael,
+Since this is the first time I've submitted code to the Linux community, please forgive me for some of the missteps that I've made.
+I uploaded the incorrect patch file.
+In a previous e-mail you said：
+XMC parts seem to have SFDP tables and they should work out of the box
+without any patches with the generic spi nor driver [1]. Therefore,
+you don't need any entry at all.
+
+I think it is related to the PARSE_SFDP flag.
+The XMC flash part supports SFDP, so i don’t need to add NO_SFDP_FLAGS() macro.
+ drivers/mtd/spi-nor/xmc.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+index 051411e86339..e78bf11792d9 100644
+--- a/drivers/mtd/spi-nor/xmc.c
++++ b/drivers/mtd/spi-nor/xmc.c
+@@ -11,11 +11,20 @@
+ static const struct flash_info xmc_nor_parts[] = {
+ 	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
+ 	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
++		PARSE_SFDP },
+ 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
++		PARSE_SFDP },
++	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
++		PARSE_SFDP },
++	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
++		PARSE_SFDP },
++	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
++		PARSE_SFDP },
++	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
++		PARSE_SFDP },
++	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
++		PARSE_SFDP },
++
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_xmc = {
+-- 
+2.34.1
+
+
+
+--===============4661509945995069759==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4661509945995069759==--
