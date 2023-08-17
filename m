@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE897C2FC0F
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 02:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2D65C05052
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 02:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6xG6/xYzA/SwUFDc+uRu9W3pV4rgJ50HgZ1LWyDB+bs=; b=jTWyxRbbSPepyB
-	3s5JyBbup30VXmer1M1nO8xIKB9BEN6vFXnOM9j/XDP16DjBckeAbPv5KtTvFZkHnoA7s4grINvd7
-	GOaum0IQ+kNOtQ9LOWIbyKmuJKdQ92oELIOt4z6DF2rxJtiMc2WyURMRCiF81ALGNnUHDmMYIGhwU
-	7ZOp4jT2yiIcXAw09t01xkWCVlGsbp3OM184bBZeyr9PHKLTXFJHLyYJK4nFg9PHTapQQW7sPnkun
-	SuFAffmrS4IbWMUtFcPsAwquN3Z+heit5gFvxKq8F2W6fSC+WoQ8GOJxsegbbPo6H7bEdSRVkGkbs
-	oujXOBthuYscJsDxieAQ==;
+	List-Owner; bh=vVycx1cqGxTweKFHr/iMrGrZExC9ECLMg8WQkzbpBOw=; b=kdCo+pECc07+jX
+	0fWjcMyiigDhmBJ/7iZDTqhF7sPuCIzA0hK/6j+878luC2w0hv+h7aXLi96f1xg3ZmewkTpkgaPkT
+	ePB//i0T8w88JEgunsoPnETlukTinQFNCmj926CptouP/blfHaB8KITGUi/xnjG6hyZ2JG403dOsq
+	EuhqlcsDIdhECiZFU3X5PECx3evXxeKXITAmc4YfDeqduuww2Tm8AbwpoVLPJoyrSlwyJoYAiS+hw
+	Oj4zSrHRfjnAFO+pg8u/ladficvID+9VY2wH5xXmrt3zQ7kfFrjPT5ug/Al5LqM2Gvzb/eW5kjTCp
+	gEeEq5fVCclJXBTI0S8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWT1U-005NKr-1r;
-	Thu, 17 Aug 2023 02:46:08 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1qWT1n-005NZp-2Q;
+	Thu, 17 Aug 2023 02:46:27 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWT10-005Mxu-1b;
-	Thu, 17 Aug 2023 02:45:40 +0000
+	id 1qWT11-005Mzr-2J;
+	Thu, 17 Aug 2023 02:45:41 +0000
 Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RR8Rr56nPzFqjm;
-	Thu, 17 Aug 2023 10:42:32 +0800 (CST)
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RR8R957c5ztRwX;
+	Thu, 17 Aug 2023 10:41:57 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
  (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
- 2023 10:45:29 +0800
+ 2023 10:45:34 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
 	<michal.simek@amd.com>, <vz@mleia.com>, <matthias.bgg@gmail.com>,
@@ -50,9 +50,9 @@ CC: <robh@kernel.org>, <martin.blumenstingl@googlemail.com>,
 	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-mediatek@lists.infradead.org>,
 	<linux-stm32@st-md-mailman.stormreply.com>, <linux-sunxi@lists.linux.dev>
-Subject: [PATCH -next 04/11] mtd: rawnand: intel: Use helper function devm_clk_get_enabled()
-Date: Thu, 17 Aug 2023 10:45:02 +0800
-Message-ID: <20230817024509.3951629-5-lizetao1@huawei.com>
+Subject: [PATCH -next 08/11] mtd: rawnand: stm32_fmc2: Use helper function devm_clk_get_enabled()
+Date: Thu, 17 Aug 2023 10:45:06 +0800
+Message-ID: <20230817024509.3951629-9-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230817024509.3951629-1-lizetao1@huawei.com>
 References: <20230817024509.3951629-1-lizetao1@huawei.com>
@@ -62,8 +62,8 @@ X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230816_194539_015082_714F4B4C 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20230816_194540_286131_D34A7DF1 
+X-CRM114-Status: GOOD (  11.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,58 +90,58 @@ handling path.
 
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
- drivers/mtd/nand/raw/intel-nand-controller.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index a9909eb08124..cb5d88f42297 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -626,16 +626,10 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 		goto err_of_node_put;
- 	}
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index 2f9e43f64dd7..88811139aaf5 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1951,21 +1951,17 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
  
--	ebu_host->clk = devm_clk_get(dev, NULL);
-+	ebu_host->clk = devm_clk_get_enabled(dev, NULL);
- 	if (IS_ERR(ebu_host->clk)) {
- 		ret = dev_err_probe(dev, PTR_ERR(ebu_host->clk),
--				    "failed to get clock\n");
--		goto err_of_node_put;
--	}
+ 	init_completion(&nfc->complete);
+ 
+-	nfc->clk = devm_clk_get(nfc->cdev, NULL);
+-	if (IS_ERR(nfc->clk))
++	nfc->clk = devm_clk_get_enabled(nfc->cdev, NULL);
++	if (IS_ERR(nfc->clk)) {
++		dev_err(dev, "can not get and enable the clock\n");
+ 		return PTR_ERR(nfc->clk);
 -
--	ret = clk_prepare_enable(ebu_host->clk);
+-	ret = clk_prepare_enable(nfc->clk);
 -	if (ret) {
--		dev_err(dev, "failed to enable clock: %d\n", ret);
-+				    "failed to get and enable clock\n");
- 		goto err_of_node_put;
+-		dev_err(dev, "can not enable the clock\n");
+-		return ret;
  	}
  
-@@ -643,7 +637,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(ebu_host->dma_tx)) {
- 		ret = dev_err_probe(dev, PTR_ERR(ebu_host->dma_tx),
- 				    "failed to request DMA tx chan!.\n");
--		goto err_disable_unprepare_clk;
-+		goto err_of_node_put;
- 	}
+ 	rstc = devm_reset_control_get(dev, NULL);
+ 	if (IS_ERR(rstc)) {
+ 		ret = PTR_ERR(rstc);
+ 		if (ret == -EPROBE_DEFER)
+-			goto err_clk_disable;
++			return ret;
+ 	} else {
+ 		reset_control_assert(rstc);
+ 		reset_control_deassert(rstc);
+@@ -2018,9 +2014,6 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	sg_free_table(&nfc->dma_data_sg);
+ 	sg_free_table(&nfc->dma_ecc_sg);
  
- 	ebu_host->dma_rx = dma_request_chan(dev, "rx");
-@@ -698,8 +692,6 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	nand_cleanup(&ebu_host->chip);
- err_cleanup_dma:
- 	ebu_dma_cleanup(ebu_host);
--err_disable_unprepare_clk:
--	clk_disable_unprepare(ebu_host->clk);
- err_of_node_put:
- 	of_node_put(chip_np);
- 
-@@ -716,7 +708,6 @@ static void ebu_nand_remove(struct platform_device *pdev)
- 	nand_cleanup(&ebu_host->chip);
- 	ebu_nand_disable(&ebu_host->chip);
- 	ebu_dma_cleanup(ebu_host);
--	clk_disable_unprepare(ebu_host->clk);
+-err_clk_disable:
+-	clk_disable_unprepare(nfc->clk);
+-
+ 	return ret;
  }
  
- static const struct of_device_id ebu_nand_match[] = {
+@@ -2045,8 +2038,6 @@ static void stm32_fmc2_nfc_remove(struct platform_device *pdev)
+ 	sg_free_table(&nfc->dma_data_sg);
+ 	sg_free_table(&nfc->dma_ecc_sg);
+ 
+-	clk_disable_unprepare(nfc->clk);
+-
+ 	stm32_fmc2_nfc_wp_enable(nand);
+ }
+ 
 -- 
 2.34.1
 
