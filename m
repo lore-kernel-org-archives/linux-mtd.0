@@ -4,55 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 639C5C05052
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 01:18:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77EA6C41513
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 02:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ThnDhqCkqoF/WSs6MPpRWoG0g367JQXLFFM6twYICcc=; b=hgeoV41pLbw3l3PYv8004cc0Wr
-	djrw1qsdz8+sP7hqSPNLT3znho8rUT/kSaSJWhLIeojIOs3H1U+iCk9w81uSKK5Luf2J3ZXhXM4GE
-	b+DMMOAZ+/ioexf097DJh2sUNi1CjU+YsiebNCLdj1t2Fc26QbhzGBbuxY+EU61ISVwAT+Vbekjdk
-	2U9Jr5AcALGCMWn0wHps8eAN3XepKLvtCBAGAWbQuzv0c9Ippk6WxS2WFZJVP1xy1vnS3l+l9vCWC
-	wFIqdSRjKwH1YmGVHmH9WB3yDVe0yUSdSusN+hSgYqEly17PHurzaIGKdmUm/d3PRpu906QEFLAUU
-	A4NIA9UA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rh1PHHuqFtNW93AtIVZhoKt/0EnDXnk+JtQFH/PYh2c=; b=TqqKeFWH1gKA7G
+	8D7NFUaLK/Whb4gsMuJVDSANiXrwW2nCZpI91sr9eRtqywzExYaH7zlDIagl44Royhvy1nYPkhbJ5
+	77rcSO1WgrMEtzOhLQd/Xf9zBvrdE/9g2cidlygreysbVGgBSfK6zzMdBiJBCGHWPULT4D6rmXies
+	f+XV5PQzjpKcf1QZzZFha+oOrNyXCxxHKxS9PpXnW2KeG+/UHUy3M5N7T/UabjFZrvx6DC1Hlj5TD
+	nmyIEwU9/1WH1p/vgDY3zq5Ycdq4bdKdYYyeNVfHgTHdrSyk7Ezp4t/7VkPxBGMThV50d2V8zsxho
+	jZNXEmIQFGkaV4RYy5NQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWRe5-005HzF-0T;
-	Thu, 17 Aug 2023 01:17:53 +0000
+	id 1qWT15-005N4Y-27;
+	Thu, 17 Aug 2023 02:45:43 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWRe0-005Hy2-19
-	for linux-mtd@lists.infradead.org;
-	Thu, 17 Aug 2023 01:17:50 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RR6Tq4F60zNmvw
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Aug 2023 09:14:07 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 17 Aug 2023 09:17:38 +0800
-Subject: Re: [PATCH] mtd-utils: nandtest: handle large nand devices
-To: Christian Wendt he/him <cw@brainaid.de>, <linux-mtd@lists.infradead.org>
-References: <7c089577-710f-3310-305e-f05f1d125652@brainaid.de>
- <3fb1f26d-83a8-8167-1847-b086665ece50@huawei.com>
- <88c3afe5-ff8a-b97b-519d-099568ef9131@brainaid.de>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <1ed2ed84-b1cf-8a15-fbd1-81ab38ff1c70@huawei.com>
-Date: Thu, 17 Aug 2023 09:17:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1qWT0y-005Mxq-2Z;
+	Thu, 17 Aug 2023 02:45:38 +0000
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RR8Sq0XFRzVkPQ;
+	Thu, 17 Aug 2023 10:43:23 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
+ (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
+ 2023 10:45:28 +0800
+From: Li Zetao <lizetao1@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<michal.simek@amd.com>, <vz@mleia.com>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <mcoquelin.stm32@gmail.com>,
+	<alexandre.torgue@foss.st.com>, <wens@csie.org>, <jernej.skrabec@gmail.com>,
+	<samuel@sholland.org>, <stefan@agner.ch>, <tudor.ambarus@linaro.org>,
+	<pratyush@kernel.org>, <michael@walle.cc>, <frank.li@vivo.com>
+CC: <robh@kernel.org>, <martin.blumenstingl@googlemail.com>,
+	<philmd@linaro.org>, <geert+renesas@glider.be>,
+	<u.kleine-koenig@pengutronix.de>, <rogerq@kernel.org>,
+	<paul@crapouillou.net>, <nicolas.ferre@microchip.com>,
+	<yangyingliang@huawei.com>, <dmitry.torokhov@gmail.com>, <heiko@sntech.de>,
+	<christophe.leroy@csgroup.eu>, <christophe.kerello@foss.st.com>,
+	<jinpu.wang@ionos.com>, <lizetao1@huawei.com>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>,
+	<linux-stm32@st-md-mailman.stormreply.com>, <linux-sunxi@lists.linux.dev>
+Subject: [PATCH -next 03/11] mtd: rawnand: fsmc: Use helper function devm_clk_get_enabled()
+Date: Thu, 17 Aug 2023 10:45:01 +0800
+Message-ID: <20230817024509.3951629-4-lizetao1@huawei.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230817024509.3951629-1-lizetao1@huawei.com>
+References: <20230817024509.3951629-1-lizetao1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <88c3afe5-ff8a-b97b-519d-099568ef9131@brainaid.de>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230816_181748_749953_89BD4AF4 
-X-CRM114-Status: GOOD (  18.63  )
+X-CRM114-CacheID: sfid-20230816_194537_057939_4C3CA3B6 
+X-CRM114-Status: GOOD (  11.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,102 +75,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjMvOC8xNiAyMjowNywgQ2hyaXN0aWFuIFdlbmR0IGhlL2hpbSDlhpnpgZM6Cj4gW1BB
-VENIXSBtdGQtdXRpbHM6IG5hbmR0ZXN0OiBoYW5kbGUgbGFyZ2UgbmFuZCBkZXZpY2VzCj4gCj4g
-UnVubmluZyBuYW5kdGVzdCBvbiBkZXZpY2VzIHdpdGggc2l6ZXMgb2YgNEdiIG9yIG1vcmUgZG9l
-cyBub3Qgd29yaywgYXMKPiB0aGUgc2l6ZSByZXR1cm5lZCBpbiBtdGRfaW5mb191c2VyIGlzIHJl
-cG9ydGVkIGFzIDAgZm9yIDRHYiBkZXZpY2VzIGZvcgo+IGV4YW1wbGUuCj4gCj4gVGhlIHBhdGNo
-IHVzZXMgc3lzZnMgdG8gZmlndXJlIG91dCB0aGUgc2l6ZSBvZiB0aGUgbmFuZCBkZXZpY2UgKGFz
-Cj4gcmVjb21tZW5kZWQgaW4gYSBjb21tZW50IGluIGluY2x1ZGUvbXRkL210ZC1hYmkuaCkgYW5k
-IGNoYW5nZXMgc2l6ZXMKPiBhbmQgb2Zmc2V0cyB0byA2NCBiaXQgdmFsdWVzLgo+IAo+IFtGcm9t
-OiBDaHJpc3RpYW4gV2VuZHQgPGN3QGJyYWluYWlkLmRlPl0KPiAKCkl0IHdvdWxkIGJlIGJldHRl
-ciB0byBzZW5kIGl0IGluIGEgcGF0Y2ggZm9ybWF0LCBvdGhlcndpc2UgdGhlcmUgaXMgYSAKaW5k
-ZW50IHByb2JsZW0uIEFueXdheSwKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhp
-aGFvMUBodWF3ZWkuY29tPgoKPiBkaWZmIC0tZ2l0IGEvbmFuZC11dGlscy9uYW5kdGVzdC5jIGIv
-bmFuZC11dGlscy9uYW5kdGVzdC5jCj4gaW5kZXggMDZkZWMyNS4uOTgyMTdiYSAxMDA2NDQKPiAt
-LS0gYS9uYW5kLXV0aWxzL25hbmR0ZXN0LmMKPiArKysgYi9uYW5kLXV0aWxzL25hbmR0ZXN0LmMK
-PiBAQCAtOCw2ICs4LDcgQEAKPiAgwqAjaW5jbHVkZSA8c3RyaW5nLmg+Cj4gIMKgI2luY2x1ZGUg
-PHRpbWUuaD4KPiAgwqAjaW5jbHVkZSA8dW5pc3RkLmg+Cj4gKyNpbmNsdWRlIDxsaW1pdHMuaD4K
-PiAgwqAjaW5jbHVkZSA8c3lzL3N0YXQuaD4KPiAgwqAjaW5jbHVkZSA8c3lzL2lvY3RsLmg+Cj4g
-IMKgI2luY2x1ZGUgPHN5cy90eXBlcy5oPgo+IEBAIC0xNDUsNiArMTQ2LDI3IEBAIHN0YXRpYyBp
-bnQgZXJhc2VfYW5kX3dyaXRlKGxvZmZfdCBvZnMsIHVuc2lnbmVkIAo+IGNoYXIgKmRhdGEsIHVu
-c2lnbmVkIGNoYXIgKnJidWYsCj4gIMKgfQo+IAo+IAo+ICtzdGF0aWMgdWludDY0X3QgZ2V0X21l
-bV9zaXplKGNvbnN0IGNoYXIqIGRldmljZSkKPiArewo+ICvCoMKgwqDCoMKgwqAgY29uc3QgY2hh
-ciogcCA9IHN0cnJjaHIoZGV2aWNlLCAnLycpOwo+ICvCoMKgwqDCoMKgwqAgY2hhciBwYXRoW1BB
-VEhfTUFYXTsKPiArwqDCoMKgwqDCoMKgIGludCBmZDsKPiArCj4gK8KgwqDCoMKgwqDCoCBzbnBy
-aW50ZihwYXRoLCBzaXplb2YocGF0aCksICIvc3lzL2NsYXNzL210ZC8lcy9zaXplIiwgcCk7Cj4g
-K8KgwqDCoMKgwqDCoCBmZCA9IG9wZW4ocGF0aCwgT19SRE9OTFkpOwo+ICvCoMKgwqDCoMKgwqAg
-aWYgKGZkID49IDApIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjaGFyIGJ1ZmZl
-clszMl07Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3NpemVfdCBuID0gcmVhZChm
-ZCwgYnVmZmVyLCBzaXplb2YoYnVmZmVyKSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgY2xvc2UoZmQpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChuID4gMCkg
-ewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4g
-c3RydG91bGwoYnVmZmVyLCBOVUxMLCAwKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCB9Cj4gK8KgwqDCoMKgwqDCoCB9Cj4gKwo+ICvCoMKgwqDCoMKgwqAgZnByaW50ZihzdGRlcnIs
-ICJDYW4ndCByZWFkIHNpemUgZnJvbSAlc1xuIiwgcGF0aCk7Cj4gK8KgwqDCoMKgwqDCoCBleGl0
-KDEpOwo+ICt9Cj4gKwo+ICDCoC8qCj4gIMKgICogTWFpbiBwcm9ncmFtCj4gIMKgICovCj4gQEAg
-LTE1Niw4ICsxNzgsOSBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpCj4gIMKgwqDC
-oMKgwqDCoMKgIGludCBucl9wYXNzZXMgPSAxOwo+ICDCoMKgwqDCoMKgwqDCoCBpbnQgbnJfcmVh
-ZHMgPSA0Owo+ICDCoMKgwqDCoMKgwqDCoCBpbnQga2VlcF9jb250ZW50cyA9IDA7Cj4gLcKgwqDC
-oMKgwqDCoCB1aW50MzJfdCBvZmZzZXQgPSAwOwo+IC3CoMKgwqDCoMKgwqAgdWludDMyX3QgbGVu
-Z3RoID0gLTE7Cj4gK8KgwqDCoMKgwqDCoCB1aW50NjRfdCBvZmZzZXQgPSAwOwo+ICvCoMKgwqDC
-oMKgwqAgdWludDY0X3QgbGVuZ3RoID0gLTE7Cj4gK8KgwqDCoMKgwqDCoCB1aW50NjRfdCBtZW1f
-c2l6ZSA9IDA7Cj4gIMKgwqDCoMKgwqDCoMKgIGludCBlcnJvciA9IDA7Cj4gCj4gIMKgwqDCoMKg
-wqDCoMKgIHNlZWQgPSB0aW1lKE5VTEwpOwo+IEBAIC0yMTIsMTEgKzIzNSwxMSBAQCBpbnQgbWFp
-bihpbnQgYXJnYywgY2hhciAqKmFyZ3YpCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4gCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBjYXNlICdvJzoKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgb2Zmc2V0ID0gc2ltcGxlX3N0cnRvdWwob3B0YXJnLCAmZXJyb3IpOwo+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvZmZzZXQgPSBzaW1wbGVfc3Ry
-dG91bGwob3B0YXJnLCAmZXJyb3IpOwo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+IAo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgY2FzZSAnbCc6Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGxlbmd0aCA9IHNpbXBsZV9zdHJ0b3VsKG9wdGFyZywgJmVycm9yKTsKPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGVuZ3RoID0gc2ltcGxlX3N0cnRv
-dWxsKG9wdGFyZywgJmVycm9yKTsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBicmVhazsKPiAKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IH0KPiBAQCAtMjM4LDI5ICsyNjEsMzEgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2
-KQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZXhpdCgxKTsKPiAgwqDCoMKgwqDC
-oMKgwqAgfQo+IAo+ICvCoMKgwqDCoMKgwqAgbWVtX3NpemUgPSBnZXRfbWVtX3NpemUoYXJndltv
-cHRpbmRdKTsKPiArCj4gIMKgwqDCoMKgwqDCoMKgIGlmIChsZW5ndGggPT0gLTEpCj4gLcKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGVuZ3RoID0gbWVtaW5mby5zaXplOwo+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGxlbmd0aCA9IG1lbV9zaXplOwo+IAo+ICDCoMKgwqDCoMKg
-wqDCoCBpZiAob2Zmc2V0ICUgbWVtaW5mby5lcmFzZXNpemUpIHsKPiAtwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBmcHJpbnRmKHN0ZGVyciwgIk9mZnNldCAleCBub3QgbXVsdGlwbGUgb2Yg
-ZXJhc2Ugc2l6ZSAKPiAleFxuIiwKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmcHJp
-bnRmKHN0ZGVyciwgIk9mZnNldCAlbGx4IG5vdCBtdWx0aXBsZSBvZiBlcmFzZSBzaXplIAo+ICV4
-XG4iLAo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9m
-ZnNldCwgbWVtaW5mby5lcmFzZXNpemUpOwo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgZXhpdCgxKTsKPiAgwqDCoMKgwqDCoMKgwqAgfQo+ICDCoMKgwqDCoMKgwqDCoCBpZiAobGVu
-Z3RoICUgbWVtaW5mby5lcmFzZXNpemUpIHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBmcHJpbnRmKHN0ZGVyciwgIkxlbmd0aCAleCBub3QgbXVsdGlwbGUgb2YgZXJhc2Ugc2l6ZSAK
-PiAleFxuIiwKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmcHJpbnRmKHN0ZGVyciwg
-Ikxlbmd0aCAlbGx4IG5vdCBtdWx0aXBsZSBvZiBlcmFzZSBzaXplIAo+ICV4XG4iLAo+ICDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGxlbmd0aCwgbWVtaW5m
-by5lcmFzZXNpemUpOwo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZXhpdCgxKTsK
-PiAgwqDCoMKgwqDCoMKgwqAgfQo+IC3CoMKgwqDCoMKgwqAgaWYgKGxlbmd0aCArIG9mZnNldCA+
-IG1lbWluZm8uc2l6ZSkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZwcmludGYo
-c3RkZXJyLCAiTGVuZ3RoICV4ICsgb2Zmc2V0ICV4IGV4Y2VlZHMgZGV2aWNlIAo+IHNpemUgJXhc
-biIsCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGxlbmd0
-aCwgb2Zmc2V0LCBtZW1pbmZvLnNpemUpOwo+ICvCoMKgwqDCoMKgwqAgaWYgKGxlbmd0aCArIG9m
-ZnNldCA+IG1lbV9zaXplKSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZnByaW50
-ZihzdGRlcnIsICJMZW5ndGggJWxseCArIG9mZnNldCAlbGx4IGV4Y2VlZHMgCj4gZGV2aWNlIHNp
-emUgJWxseFxuIiwKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgbGVuZ3RoLCBvZmZzZXQsIG1lbV9zaXplKTsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGV4aXQoMSk7Cj4gIMKgwqDCoMKgwqDCoMKgIH0KPiAKPiAgwqDCoMKgwqDCoMKgwqAg
-d2J1ZiA9IG1hbGxvYyhtZW1pbmZvLmVyYXNlc2l6ZSAqIDMpOwo+ICDCoMKgwqDCoMKgwqDCoCBp
-ZiAoIXdidWYpIHsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZwcmludGYoc3Rk
-ZXJyLCAiQ291bGQgbm90IGFsbG9jYXRlICVkIGJ5dGVzIGZvciAKPiBidWZmZXJcbiIsCj4gLcKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG1lbWluZm8uZXJhc2Vz
-aXplICogMik7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IG1lbWluZm8uZXJhc2VzaXplICogMyk7Cj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBleGl0KDEpOwo+ICDCoMKgwqDCoMKgwqDCoCB9Cj4gIMKgwqDCoMKgwqDCoMKgIHJidWYgPSB3
-YnVmICsgbWVtaW5mby5lcmFzZXNpemU7Cj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+After the commit 7ef9651e9792 ("clk: Provide new devm_clk helpers for
+prepared and enabled clocks"), it can replace the pair of functions,
+devm_clk_get() and clk_prepare_enable() with a single helper function
+devm_clk_get_enabled(). Moreover, the driver will keeps a clock prepared
+(or enabled) during the whole lifetime of the driver, it is unnecessary to
+unprepare and disable clock explicitly when remove driver or in the error
+handling path.
+
+Signed-off-by: Li Zetao <lizetao1@huawei.com>
+---
+ drivers/mtd/nand/raw/fsmc_nand.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 7b4742420dfc..ab1b9a5c93e9 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -1066,16 +1066,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	host->regs_va = base + FSMC_NOR_REG_SIZE +
+ 		(host->bank * FSMC_NAND_BANK_SZ);
+ 
+-	host->clk = devm_clk_get(&pdev->dev, NULL);
++	host->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk)) {
+ 		dev_err(&pdev->dev, "failed to fetch block clock\n");
+ 		return PTR_ERR(host->clk);
+ 	}
+ 
+-	ret = clk_prepare_enable(host->clk);
+-	if (ret)
+-		return ret;
+-
+ 	/*
+ 	 * This device ID is actually a common AMBA ID as used on the
+ 	 * AMBA PrimeCell bus. However it is not a PrimeCell.
+@@ -1157,7 +1153,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 		dma_release_channel(host->read_dma_chan);
+ disable_clk:
+ 	fsmc_nand_disable(host);
+-	clk_disable_unprepare(host->clk);
+ 
+ 	return ret;
+ }
+@@ -1182,7 +1177,6 @@ static void fsmc_nand_remove(struct platform_device *pdev)
+ 			dma_release_channel(host->write_dma_chan);
+ 			dma_release_channel(host->read_dma_chan);
+ 		}
+-		clk_disable_unprepare(host->clk);
+ 	}
+ }
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
