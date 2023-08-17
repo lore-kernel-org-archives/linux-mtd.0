@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96FFEC2FC14
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 13:15:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5F19C2FC14
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 13:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IhsFYHpRhrPRABYDU5dqMRY41VmqEJZrnAe11n2CZQ4=; b=U0wlpQLus0uZCbHqy3cnUSMa1G
-	MN3OwAPgT6q0IKtS/Ee3fV9b7kLCtBZF5Mst2/koBbG6mubVOhs2edTXSiwTbtKOAp7gNNC0gfsan
-	ZC0BkOM8QKuJesZaVNbwj8eiJAHz/9arovfsWbVFFCYIRjo0xOR2xUorakbwd7uYaJ1gqSnWakYSe
-	Lu92O970Kh6FzgttpOy/yORxmvZYhbDUgPFs9GIbVbC/lwT6XgxJJW+Qetl8dzIUyxff1fKu6RU7/
-	R5fI5OyxWVqQ5v4PzGJhaHRMH7x0LvBH2bAVTkF4OgAqBVA2CLC6GzewLuhylJQgHs6TYhVc8FmPh
-	LG+p0Y6A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DSkusQmC6HUIRIgpQ2KSJZSdIl3gawC5aJmu7Qa8omU=; b=3l2eGdPO85VQhZ
+	QDaIyWbXp9a+17FI0vNm3vG7iTFjR+vfmaJA1JKwkW5fhNOUyOIDresFo0NuSHo6sNNosnC2E9eF3
+	koEMH5MKwjsQkpj6VZSmn97T8VzYW6F7Um2wcdJ8JUdVFcttBRi+7CxnWnGC4vBk3himXLrPYgBun
+	05aEOnOK0nFJEQiYbdJ3I0jZKvEoa8QUanSZ72ShPbqc1/npAhEhq78BsDWOh7dAYJtkslYKp3fcN
+	tWDWoR6iU2jLbLro+mNY4JVDF2MQFdFYjPcRj8PAZOtkOVE2BfpsV/ef4ChJ5qfVNyK9CkUF9g7xy
+	kk6MasV3yJF1SjERFjUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWcqD-006RZ7-0M;
-	Thu, 17 Aug 2023 13:15:09 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qWcvs-006Rui-3D;
+	Thu, 17 Aug 2023 13:21:01 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWcq9-006RXy-2M
+	id 1qWcvp-006Ru1-2v
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Aug 2023 13:15:07 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 6CF1B3D9;
-	Thu, 17 Aug 2023 15:14:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1692278099;
+	Thu, 17 Aug 2023 13:20:59 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6035F1BF20A;
+	Thu, 17 Aug 2023 13:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1692278452;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=smIG5hi/qQQO7zsEVLHIIK2UNrg451bmx1kSE8izq6Y=;
-	b=vMbCq8i0GOclICjBdWlA/1LUt9oHo/9Ar1S8G9Lfo2W6y1NeYnL56AfRHLYTtxUQkbyyT+
-	jZcRK/odQ98uX4PrIUr/tdGhnT0lsyqAlU2Fffj6rmX7b9Yj8Mdk5q4rgWdldT4dXh8Asf
-	jwyKS2BaMXYhY7xaOqrtm7aAun0IOiqp0BxGDBoDJkmguviUi+dxW6JjlMTuHpLnBC2p1X
-	JkA0YaX7jywsD2K7Rb3BJV8GyHQqCm3xoQG6oT//dtK+pK/bqw085S5nTgG6+AjWqLQhTc
-	sPj+fB0ZbadnI9cxOIBbl5yHCfpqy8FaAmDTlUsiInXmSwAbU2188XRZERzTfw==
-MIME-Version: 1.0
-Date: Thu, 17 Aug 2023 15:14:59 +0200
-From: Michael Walle <michael@walle.cc>
+	bh=TpkYJnEPG/Xi0SDa3SsdHsTZH3oAXFOzG5T3t2lM324=;
+	b=IzdrsoV8tGuQYKemeHLyhFseeaBfFOOlh4vxvABN0qMP0IEb0+M23SX4fb408x6nwaEDkh
+	gvpJktO/3CkI1m+NXwtJCHU5w/Dze72wZ15fBGQakMi+KXlx+fX9G/w6QXZlHeYS7LR/zd
+	xAYikvjHkt3z/wX4TdIyOWWO8ofgYKlTNJ8LbQgfOwmsKbBcmGrhzBoBXOIzKoRDoEZeLB
+	vVLsD/ck+quwgSwl6VhiucdoiHHYVWDIAK6hbl6yhEBosmz7rtLtdpOgJCKiFlPVAAs1iV
+	ARjIA+dXWNEdVhspbMocz0Hoj+aR+m1uFiAIxmLKbRXSyQjx3eGhz1UT7EP7Dg==
+Date: Thu, 17 Aug 2023 15:20:50 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: SSunk <ssunkkan@gmail.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, SSunk
- <ssunkkan@gmail.com>
+Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] Add support for more XMC series
+Message-ID: <20230817152050.6679eae3@xps-13>
 In-Reply-To: <20230817124655.13023-1-ssunkkan@gmail.com>
 References: <20230817124655.13023-1-ssunkkan@gmail.com>
-Message-ID: <8bbfdeecc4085e4f7c916c26c98de147@walle.cc>
-X-Sender: michael@walle.cc
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230817_061506_227408_137BBFB2 
-X-CRM114-Status: UNSURE (   4.60  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230817_062058_222081_649A80D0 
+X-CRM114-Status: GOOD (  14.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,25 +69,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-> Add XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
-> and set the parse_sfdp flag.
-> 
-> Signed-off-by: Kankan Sun <ssunkkan@gmail.com>
-
-NAK. You're just posting the same patch over and over again.
-
-Please respond the the former questions and please read
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpzc3Vua2thbkBnbWFpbC5jb20gd3JvdGUgb24gVGh1LCAxNyBBdWcgMjAyMyAyMDo0
+Njo1NSArMDgwMDoKCj4gQWRkIFhNQyBYTTI1UUgxMjhDL1hNMjVRSDI1NkMvWE0yNVFVMjU2Qy9Y
+TTI1UUg1MTJDL1hNMjVRVTUxMkMKPiBhbmQgc2V0IHRoZSBwYXJzZV9zZmRwIGZsYWcuCgpQbGVh
+c2UgbG9vayBhdCB0aGUgZ2l0IGhpc3RvcnkgYW5kIGNvcnJlY3QgdGhlIHRpdGxlLgoKPiBTaWdu
+ZWQtb2ZmLWJ5OiBLYW5rYW4gU3VuIDxzc3Vua2thbkBnbWFpbC5jb20+Cj4gLS0tCj4gIGRyaXZl
+cnMvbXRkL3NwaS1ub3IveG1jLmMgfCAxNiArKysrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFu
+Z2VkLCAxNiBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1u
+b3IveG1jLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3htYy5jCj4gaW5kZXggMDUxNDExZTg2MzM5
+Li5iMjM3NDE4N2VjNGYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci94bWMuYwo+
+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IveG1jLmMKPiBAQCAtMTYsNiArMTYsMjIgQEAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHhtY19ub3JfcGFydHNbXSA9IHsKPiAgCXsgIlhN
+MjVRSDEyOEEiLCBJTkZPKDB4MjA3MDE4LCAwLCA2NCAqIDEwMjQsIDI1NikKPiAgCQlOT19TRkRQ
+X0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8Cj4gIAkJCSAgICAgIFNQSV9OT1Jf
+UVVBRF9SRUFEKSB9LAo+ICsJeyAiWE0yNVFIMTI4QyIsIElORk8oMHgyMDQwMTgsIDAsIDY0ICog
+MTAyNCwgMjU2KQo+ICsJCU5PX1NGRFBfRkxBR1MoU0VDVF80SyB8IFNQSV9OT1JfRFVBTF9SRUFE
+IHwKPiArCQkJICAgICAgU1BJX05PUl9RVUFEX1JFQUQpIH0sCj4gKwl7ICJYTTI1UUgyNTZDIiwg
+SU5GTygweDIwNDAxOSwgMCwgNjQgKiAxMDI0LCA1MTIpCj4gKwkJTk9fU0ZEUF9GTEFHUyhTRUNU
+XzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfAo+ICsJCQkgICAgICBTUElfTk9SX1FVQURfUkVBRCB8
+IFNQSV9OT1JfNEJfT1BDT0RFUykgfSwKPiArCXsgIlhNMjVRVTI1NkMiLCBJTkZPKDB4MjA0MTE5
+LCAwLCA2NCAqIDEwMjQsIDUxMikKPiArCQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9S
+X0RVQUxfUkVBRCB8Cj4gKwkJCSAgICAgIFNQSV9OT1JfUVVBRF9SRUFEIHwgU1BJX05PUl80Ql9P
+UENPREVTKSB9LAo+ICsJeyAiWE0yNVFINTEyQyIsIElORk8oMHgyMDQwMjAsIDAsIDY0ICogMTAy
+NCwgMTAyNCkKPiArCQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8
+Cj4gKwkJCSAgICAgIFNQSV9OT1JfUVVBRF9SRUFEIHwgU1BJX05PUl80Ql9PUENPREVTKSB9LAo+
+ICsJeyAiWE0yNVFVNTEyQyIsIElORk8oMHgyMDQxMjAsIDAsIDY0ICogMTAyNCwgMTAyNCkKPiAr
+CQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8Cj4gKwkJCSAgICAg
+IFNQSV9OT1JfUVVBRF9SRUFEIHwgU1BJX05PUl80Ql9PUENPREVTKSB9LAoKWW91IHNheSB5b3Ug
+ZW5hYmxlIFNGRFAgaW4gdGhlIGNvbW1pdCBsb2cgYnV0IHRoZSBkaWZmIHNob3dzIHRoZQpvcHBv
+c2l0ZT8KCj4gKwo+ICB9Owo+ICAKPiAgY29uc3Qgc3RydWN0IHNwaV9ub3JfbWFudWZhY3R1cmVy
+IHNwaV9ub3JfeG1jID0gewoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
