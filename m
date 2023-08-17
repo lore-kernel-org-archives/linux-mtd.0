@@ -4,62 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F024C2FC0E
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 08:43:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8FCBC27C7A
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Aug 2023 11:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ie9xlaf5/xnz0Zi7ct9MBspSI6Fn4d6CKsOUT6K3ovc=; b=MYWw8kGQx0V8gz
-	EPxMJhHimgux83rQC+ZVO1PNQEzlmpLapMFCMlI6JCJDg1v45S3QcmGq+3VPkAmuyqKCtjNIbGdcJ
-	ufQaFeLXIMsfcyTOnDzmRdm9jwmfKt4Ds4jTzbbib2uApHZk0ssjuOTP+HRwt6EUOFgT6/CuYwiwn
-	Ba5rwT3Vjpg7Cu4mlVeIaqskFg6syC0EFxgTbejUgGcoFnnS6XPXMNED/9hrqkTMrvLmAqXNn1r6x
-	sy6Amm9DdZBQA6WAabfq82gCOCeaT30dTswhcFhny8/vdKXX5qOUU3IY0Rh0WQwlo7gMjxw44QZY/
-	3skxB9mWHMKNdDPdy1FA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HJE6cNqvnpD+HqyJJeNwUy5wb7FVK8AMPv+lhd9ABTc=; b=Nx1CpYCRMilhvb
+	4SnPSPXeS5Cck89hogfelqOXZoV1iBtuJxa8cgFtjrUSz0aCsIHSbqsDDH5u0YzlIvxh5Zj94Tv8H
+	NrL6GJHr39gJSetmDMm4SUrcz1zFz+CcTFJ7QJM3drNjUEknVU8byeE2UN1ls1gbssoIO2hVA4Kii
+	tRYVesK5m24EChLyzWdk8lIg2Gu1hxezxuh4DhV3Ry0eZIGSjN5eN3K2u16T6yBcrVd75ZgkjnS3M
+	jeng6Ea9TuqP4jWkPoojlSWbrS1lJwT3CRF6NqYqlKTowzPgZXR3bA3j4jFuKhRugVVdG8vT9sss9
+	wjglkI2JR2fxqzYtMrKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWYbF-005qyJ-0C;
-	Thu, 17 Aug 2023 08:43:25 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qWbf2-006KfN-1G;
+	Thu, 17 Aug 2023 11:59:32 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWYbC-005qxw-0B
+	id 1qWbew-006KeT-1y
 	for linux-mtd@lists.infradead.org;
-	Thu, 17 Aug 2023 08:43:23 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 74A5A1BF20D;
-	Thu, 17 Aug 2023 08:43:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1692261798;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UZTPzGWR823YG5jFJrtbSl0SkHcpjEiMeVAQSp30Zyg=;
-	b=AXCaItneDiKmQZVzmSpvvVUGf/dhoyBk23IuegiE10XZWy/0yMUgAyYaoC7FPkhcDpLQv5
-	KPgswpVotS+ApFCCfTjOz1oKns26teIl1mvr/mvXRlVbm2UXc96N7FIhh/3HKVkeT8b9Ai
-	mjQ45ai64+wazBScB76VV5fmQacVd9MXJM2jFHyzhWNHNcgkZfPhDy6beiwYw75yRb4V9X
-	gENUL2m3FBeh+k7506ftz7X/52ysnNTgrF6t+VbruaaVszkz5L/ao83cBdNCKW96K5GoPq
-	aIlueyUYxwkChF4XXUc8g5a79Ay90iySe6Bgg3mNICpvSFXYqxq7TSxFoOvWig==
-Date: Thu, 17 Aug 2023 10:43:16 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Stefan Agner <stefan@agner.ch>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Nathan Chancellor
- <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix
- <trix@redhat.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] mtd: rawnand: fix -Wvoid-pointer-to-enum-cast warning
-Message-ID: <20230817104316.0ac684d0@xps-13>
-In-Reply-To: <20230815-void-drivers-mtd-nand-raw-vf610_nfc-v1-1-7cc65314c56c@google.com>
-References: <20230815-void-drivers-mtd-nand-raw-vf610_nfc-v1-1-7cc65314c56c@google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Thu, 17 Aug 2023 11:59:29 +0000
+Received: from kwepemm600014.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRNmY3J0WzrSG4;
+	Thu, 17 Aug 2023 19:57:49 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.175.28) by
+ kwepemm600014.china.huawei.com (7.193.23.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 17 Aug 2023 19:59:11 +0800
+From: Yi Yang <yiyang13@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<David.Woodhouse@intel.com>, <vireshk@kernel.org>
+CC: <martin.blumenstingl@googlemail.com>, <robh@kernel.org>,
+	<jernej.skrabec@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: rawnand: fsmc: handle clk prepare error in fsmc_nand_resume()
+Date: Thu, 17 Aug 2023 19:58:39 +0800
+Message-ID: <20230817115839.10192-1-yiyang13@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [10.67.175.28]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230817_014322_396590_E39058CB 
-X-CRM114-Status: GOOD (  12.20  )
+X-CRM114-CacheID: sfid-20230817_045926_905063_E93AC52C 
+X-CRM114-Status: UNSURE (   9.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,34 +63,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSnVzdGluLAoKanVzdGluc3RpdHRAZ29vZ2xlLmNvbSB3cm90ZSBvbiBUdWUsIDE1IEF1ZyAy
-MDIzIDIwOjU4OjQ3ICswMDAwOgoKPiBXaGVuIGJ1aWxkaW5nIHdpdGggY2xhbmcgMTggSSBzZWUg
-dGhlIGZvbGxvd2luZyB3YXJuaW5nOgo+IHwgICAgICAgZHJpdmVycy9tdGQvbmFuZC9yYXcvdmY2
-MTBfbmZjLmM6ODUzOjE3OiB3YXJuaW5nOiBjYXN0IHRvIHNtYWxsZXIgaW50ZWdlcgo+IHwgICAg
-ICAgICAgICAgICB0eXBlICdlbnVtIHZmNjEwX25mY192YXJpYW50JyBmcm9tICdjb25zdCB2b2lk
-IConIFstV3ZvaWQtcG9pbnRlci10by1lbnVtLWNhc3RdCj4gfCAgICAgICAgIDg1MyB8ICAgICAg
-ICAgbmZjLT52YXJpYW50ID0gKGVudW0gdmY2MTBfbmZjX3ZhcmlhbnQpb2ZfaWQtPmRhdGE7Cj4g
-Cj4gVGhpcyBpcyBkdWUgdG8gdGhlIGZhY3QgdGhhdCBgb2ZfaWQtPmRhdGFgIGlzIGEgdm9pZCog
-d2hpbGUgYGVudW0KPiB2ZjYxMF9uZmNfdmFyaWFudGAgaGFzIHRoZSBzaXplIG9mIGFuIGludC4g
-VGhpcyBsZWFkcyB0byB0cnVuY2F0aW9uIGFuZAo+IHBvc3NpYmxlIGRhdGEgbG9zcy4KCkNhbiB5
-b3UgcGxlYXNlIHVwZGF0ZSB0aGlzIGNvbW1pdCBsb2cgdG8gd2hhdCBLcnp5c3p0b2Ygc3VnZ2Vz
-dGVkIGluCnRoZSAibXRkOiBtYXBzOiBmaXggLVc8Zm9vPiB3YXJuaW5nIiB0aHJlYWQ/Cgo+IExp
-bms6IGh0dHBzOi8vZ2l0aHViLmNvbS9DbGFuZ0J1aWx0TGludXgvbGludXgvaXNzdWVzLzE5MTAK
-PiBSZXBvcnRlZC1ieTogTmF0aGFuIENoYW5jZWxsb3IgPG5hdGhhbkBrZXJuZWwub3JnPgo+IFNp
-Z25lZC1vZmYtYnk6IEp1c3RpbiBTdGl0dCA8anVzdGluc3RpdHRAZ29vZ2xlLmNvbT4KPiAtLS0K
-PiBOb3RlOiBUaGVyZSBpcyBsaWtlbHkgbm8gZGF0YSBsb3NzIGFjdHVhbGx5IG9jY3VycmluZyBo
-ZXJlIGR1ZSB0byB0aGUKPiBmYWN0IHRoYXQgYGVudW0gdmY2MTBfbmZjX3ZhcmlhbnRgIG9ubHkg
-aGFzIGEgZmV3IGZpZWxkcyB3aGljaCBhcmUgbm90Cj4gbmVhcmx5IGxhcmdlIGVub3VnaCB0byBj
-YXVzZSBkYXRhIGxvc3MuIFRoaXMgcGF0Y2ggaGVscHMgdG93YXJkcyB0aGUKPiBnb2FsIG9mIGV2
-ZW50dWFsbHkgZW5hYmxpbmcgdGhpcyB3YXJuaW5nLgo+IAo+IEFsc28sIHNob3VsZCB3ZSB1c2Ug
-YHVuc2lnbmVkIGxvbmdgIGhlcmUgaW5zdGVhZCBvZiBgdWludHB0cl90YD8gSSd2ZQo+IHNlZW4g
-bWFpbnRhaW5lcnMgcmVxdWVzdCBib3RoIGFuZCBJJ20gZmxpcHBpbmcgYSBjb2luIGhlcmUuCgpJ
-J20gZmluZSB3aXRoIHVpbnRwdHJfdC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+In fsmc_nand_resume(), the return value of clk_prepare_enable() should be
+checked since it might fail.
+
+Fixes: e25da1c07dfb ("mtd: fsmc_nand: Add clk_{un}prepare() support")
+Signed-off-by: Yi Yang <yiyang13@huawei.com>
+---
+ drivers/mtd/nand/raw/fsmc_nand.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 7b4742420dfc..2e33ae77502a 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -1200,9 +1200,14 @@ static int fsmc_nand_suspend(struct device *dev)
+ static int fsmc_nand_resume(struct device *dev)
+ {
+ 	struct fsmc_nand_data *host = dev_get_drvdata(dev);
++	int ret;
+ 
+ 	if (host) {
+-		clk_prepare_enable(host->clk);
++		ret = clk_prepare_enable(host->clk);
++		if (ret) {
++			dev_err(dev, "failed to enable clk\n");
++			return ret;
++		}
+ 		if (host->dev_timings)
+ 			fsmc_nand_setup(host, host->dev_timings);
+ 		nand_reset(&host->nand, 0);
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
