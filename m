@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9C0C678DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 07:48:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C41F1C001DE
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 07:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F02nkYOIdJiWl9XS8sX+CSDPFW1HgVG1Lytuq9F+/40=; b=4R6aZhxS+fb5yy
-	NiNGeMObMIbAUVJa4i50XY+AHRDsQ1t6h64TjKs/dV/eQLmw0R3Sca1r8o6BtZfJCkTHpnFJ+wyte
-	cRh8wfBcO2FzDfSpFLnajXBeA5/LKi9rllov5BOhIkRCK0qMclPcZHfynYVCzM+WaeJ0h061O3cv2
-	ufeRpyEObZbNu3uIz+1rds1jN5eoaEy4f3ucBPRl9/pl+I0kRHcJL0QnHHC7MAtIAXgkuiKhGfSTe
-	vu8YmM5zt1y5hmxp7ec+hGYrSOMPnY7PfdyeYkG1Ovsvjd5matD1TjV0rI91MPfs2K+aO5Msd7nJf
-	uFxcY+JgvFWfjX1iKwGA==;
+	List-Owner; bh=TUemx6KC6LDsnTc7bm0YWCmW3CMOiN00ZyVroIZ/sj0=; b=Ucir/QEVXlDMQh
+	ds92vBHisvAKmeTHdzGocBj6kpQLd0PBMA/6zHmjKURA2yRtfREhMve0mgTjZKQIl91EwIYGfpFuV
+	6ShLjkEjlEF0GjDds9LQ19UJogqx1Vb0z+ZinSpFGzAHW3MdVn+0gp8Jv63KajQKq2j6HtXOls0n9
+	fCYUL7zPkIy0o5cwGQanNBo/Givjwb81l0IZmmod544SPcjVYeqifl1qp2E0tGO+z5GujpbKjXpLK
+	cDf/bDlmtvWv2cXp0E/GE5EtFpI/khDIYiP25pF2VV2zn14C3h7DLynQQPj/Kz6LiRkzvjGshqcUn
+	U40cwSwvvTNVanCYriSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWuD6-007uXt-3D;
-	Fri, 18 Aug 2023 07:47:57 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1qWuDE-007ufN-2F;
+	Fri, 18 Aug 2023 07:48:05 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWuCS-007uCf-0P;
-	Fri, 18 Aug 2023 07:47:21 +0000
+	id 1qWuCW-007uES-2h;
+	Fri, 18 Aug 2023 07:47:23 +0000
 Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.56])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRv4m1MBPzNmml;
-	Fri, 18 Aug 2023 15:43:36 +0800 (CST)
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RRv5Z323BzFqk7;
+	Fri, 18 Aug 2023 15:44:18 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
  (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 15:47:07 +0800
+ 2023 15:47:16 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <lizetao1@huawei.com>
 CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
@@ -50,9 +50,9 @@ CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
 	<tudor.ambarus@linaro.org>, <u.kleine-koenig@pengutronix.de>,
 	<vigneshr@ti.com>, <vz@mleia.com>, <wens@csie.org>,
 	<yangyingliang@huawei.com>
-Subject: [PATCH -next v2 02/12] mtd: rawnand: arasan: Use helper function devm_clk_get_enabled()
-Date: Fri, 18 Aug 2023 15:46:32 +0800
-Message-ID: <20230818074642.308166-3-lizetao1@huawei.com>
+Subject: [PATCH -next v2 11/12] mtd: spi-nor: nxp-spifi: Use helper function devm_clk_get_enabled()
+Date: Fri, 18 Aug 2023 15:46:41 +0800
+Message-ID: <20230818074642.308166-12-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230818074642.308166-1-lizetao1@huawei.com>
 References: <20230817024509.3951629-1-lizetao1@huawei.com>
@@ -63,9 +63,8 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230818_004716_659795_5BC89387 
-X-CRM114-Status: UNSURE (   9.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230818_004721_392702_2A8BA865 
+X-CRM114-Status: GOOD (  10.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,81 +86,92 @@ and enabled clocks"), devm_clk_get() and clk_prepare_enable() can now be
 replaced by devm_clk_get_enabled() when driver enable (and possibly
 prepare) the clocks for the whole lifetime of the device. Moreover, it is
 no longer necessary to unprepare and disable the clock explicitly, so drop
-the label "disable_bus_clk" and "disable_controller_clk".
+the label "dis_clks" and "dis_clk_reg".
 
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
 v1 -> v2: Modify commit message.
-v1: https://lore.kernel.org/all/20230817024509.3951629-3-lizetao1@huawei.com/
+v1: https://lore.kernel.org/all/20230817024509.3951629-12-lizetao1@huawei.com/
 
- drivers/mtd/nand/raw/arasan-nand-controller.c | 29 ++++---------------
- 1 file changed, 5 insertions(+), 24 deletions(-)
+ drivers/mtd/spi-nor/controllers/nxp-spifi.c | 33 ++++-----------------
+ 1 file changed, 6 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 906eef70cb6d..4621ec549cc7 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -1440,45 +1440,29 @@ static int anfc_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/spi-nor/controllers/nxp-spifi.c b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
+index 337e83bf3362..5d8f47ab146f 100644
+--- a/drivers/mtd/spi-nor/controllers/nxp-spifi.c
++++ b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
+@@ -394,30 +394,18 @@ static int nxp_spifi_probe(struct platform_device *pdev)
+ 	if (IS_ERR(spifi->flash_base))
+ 		return PTR_ERR(spifi->flash_base);
  
- 	anfc_reset(nfc);
+-	spifi->clk_spifi = devm_clk_get(&pdev->dev, "spifi");
++	spifi->clk_spifi = devm_clk_get_enabled(&pdev->dev, "spifi");
+ 	if (IS_ERR(spifi->clk_spifi)) {
+-		dev_err(&pdev->dev, "spifi clock not found\n");
++		dev_err(&pdev->dev, "spifi clock not found or unable to enable\n");
+ 		return PTR_ERR(spifi->clk_spifi);
+ 	}
  
--	nfc->controller_clk = devm_clk_get(&pdev->dev, "controller");
-+	nfc->controller_clk = devm_clk_get_enabled(&pdev->dev, "controller");
- 	if (IS_ERR(nfc->controller_clk))
- 		return PTR_ERR(nfc->controller_clk);
+-	spifi->clk_reg = devm_clk_get(&pdev->dev, "reg");
++	spifi->clk_reg = devm_clk_get_enabled(&pdev->dev, "reg");
+ 	if (IS_ERR(spifi->clk_reg)) {
+-		dev_err(&pdev->dev, "reg clock not found\n");
++		dev_err(&pdev->dev, "reg clock not found or unable to enable\n");
+ 		return PTR_ERR(spifi->clk_reg);
+ 	}
  
--	nfc->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	nfc->bus_clk = devm_clk_get_enabled(&pdev->dev, "bus");
- 	if (IS_ERR(nfc->bus_clk))
- 		return PTR_ERR(nfc->bus_clk);
- 
--	ret = clk_prepare_enable(nfc->controller_clk);
--	if (ret)
+-	ret = clk_prepare_enable(spifi->clk_reg);
+-	if (ret) {
+-		dev_err(&pdev->dev, "unable to enable reg clock\n");
 -		return ret;
+-	}
 -
--	ret = clk_prepare_enable(nfc->bus_clk);
--	if (ret)
--		goto disable_controller_clk;
+-	ret = clk_prepare_enable(spifi->clk_spifi);
+-	if (ret) {
+-		dev_err(&pdev->dev, "unable to enable spifi clock\n");
+-		goto dis_clk_reg;
+-	}
 -
- 	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
- 	if (ret)
--		goto disable_bus_clk;
-+		return ret;
+ 	spifi->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, spifi);
  
- 	ret = anfc_parse_cs(nfc);
- 	if (ret)
--		goto disable_bus_clk;
-+		return ret;
+@@ -430,24 +418,17 @@ static int nxp_spifi_probe(struct platform_device *pdev)
+ 	flash_np = of_get_next_available_child(pdev->dev.of_node, NULL);
+ 	if (!flash_np) {
+ 		dev_err(&pdev->dev, "no SPI flash device to configure\n");
+-		ret = -ENODEV;
+-		goto dis_clks;
++		return -ENODEV;
+ 	}
  
- 	ret = anfc_chips_init(nfc);
- 	if (ret)
--		goto disable_bus_clk;
+ 	ret = nxp_spifi_setup_flash(spifi, flash_np);
+ 	of_node_put(flash_np);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "unable to setup flash chip\n");
+-		goto dis_clks;
 +		return ret;
- 
- 	platform_set_drvdata(pdev, nfc);
+ 	}
  
  	return 0;
 -
--disable_bus_clk:
--	clk_disable_unprepare(nfc->bus_clk);
--
--disable_controller_clk:
--	clk_disable_unprepare(nfc->controller_clk);
--
+-dis_clks:
+-	clk_disable_unprepare(spifi->clk_spifi);
+-dis_clk_reg:
+-	clk_disable_unprepare(spifi->clk_reg);
 -	return ret;
  }
  
- static void anfc_remove(struct platform_device *pdev)
-@@ -1486,9 +1470,6 @@ static void anfc_remove(struct platform_device *pdev)
- 	struct arasan_nfc *nfc = platform_get_drvdata(pdev);
+ static int nxp_spifi_remove(struct platform_device *pdev)
+@@ -455,8 +436,6 @@ static int nxp_spifi_remove(struct platform_device *pdev)
+ 	struct nxp_spifi *spifi = platform_get_drvdata(pdev);
  
- 	anfc_chips_cleanup(nfc);
--
--	clk_disable_unprepare(nfc->bus_clk);
--	clk_disable_unprepare(nfc->controller_clk);
+ 	mtd_device_unregister(&spifi->nor.mtd);
+-	clk_disable_unprepare(spifi->clk_spifi);
+-	clk_disable_unprepare(spifi->clk_reg);
+ 
+ 	return 0;
  }
- 
- static const struct of_device_id anfc_ids[] = {
 -- 
 2.34.1
 
