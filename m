@@ -4,85 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09330C05052
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 10:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A7EBC05052
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 10:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qj7OCsLZsZ1B5/uuDGVJv1AnzBLMCBRWf44jCynvEX8=; b=B8Tw/TiOOdy6pg
-	0V4+g7DoP1GPpaHmDiVDrcMg9KYkwdI0um46H0cbptIm34E8mNwkD5TdodVL1Cg7m87P3G9mBXJB8
-	hmd9XXiyrNRnpuUIWXlNjs/EQjPMaQ4KdE+UhVs2zQZWtr/NgguGy7wVkiMe3gL6kCNOAbA0hbl5Y
-	IrGN3rW2+ciZvsJOjntVtIT4zwKGv2vIlt4V1+bmQpbXDZyLtwwLnKy5Rk+ElLnF6gB04HJ7xVAfP
-	8LzwosDQo3sae9PCzcpxyF5ac5yYufdkFDjAbmEoXjSaNd9fwwZi2eGOEBzf5ItJMtWu75++FCz10
-	W3gQMKBbtdAzxMq8wNvA==;
+	List-Owner; bh=D6D/J0o4YamSz+wnIBQrn4ZXOrqBv6cNzG3wMGjpTXA=; b=CfqGtNckbyUYZw
+	VTl/kW+/pBh86/pDumMBfWX0p6gN9yRE54GUqC705DUfGFgL/gCYcyJ4aeXVnx/GD5lsGfSHXw1qu
+	+RqR7xc8UOfrAgD8QV79VdiZIXFWCozVkj4q70LWtLGc5JfNoSAvd4qCXagTXozbcu5oofV7uNICR
+	Y7gz7qyJGQCAnQ+wtuJieQ7ABXz6b+y3Wwnd0pdH5EN/J17cYzzxN+9h+aTfpH0QaMgk6rxWU7L1B
+	zkB4iSZo8faBkJ4Nrx8g0CK1MIxUkxdqy7Y2ENByWsC29omg4Tf21niyiSsq9auC/D121991muVTV
+	cEtttHcayZucJcmXjdmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWwOA-008BWg-2d;
-	Fri, 18 Aug 2023 10:07:30 +0000
-Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
+	id 1qWwaH-008CbR-2A;
+	Fri, 18 Aug 2023 10:20:01 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWwO7-008BVG-0g
+	id 1qWwaF-008CaS-0B
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Aug 2023 10:07:28 +0000
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-523476e868dso885793a12.3
-        for <linux-mtd@lists.infradead.org>; Fri, 18 Aug 2023 03:07:21 -0700 (PDT)
+	Fri, 18 Aug 2023 10:20:00 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso1052148e87.1
+        for <linux-mtd@lists.infradead.org>; Fri, 18 Aug 2023 03:19:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692353240; x=1692958040;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=brCyjYfKz7oGbPW+1bpZenjUR0IT1+POIU9mu6Z0Dvs=;
-        b=K1NTIyrQUn/MezTqz+JEXW8xRzYzvAeYIduPRW1RwNHSfMx09a6TAaayrEGIlXlsAh
-         GqFE9TMc2wryWBNXNShvtxxYHj06pJ2OoF29/yFwBuBjzZJfahAVu/Pj78fgHjQk3mAO
-         gzJoJ/555/8g6jWt1Qq8ukNvt8ABrWk40dsJGuA2Jgx8LWw7gwwLPmcZx7/PW0IAiJpE
-         k+XvxSU9G/anE5xhOa0d/3Cts0sRyEOIm3tDOJ82jCK/CRLTyT/LCVjUwn/GQxhYtfFN
-         cWofue9Al2ClFL7vQfY0Rq8E+7Lq/w7Xb1m9LQfh99e0Avs1YHOcV2S+KQtUOyLgxIY7
-         4xNg==
+        d=linaro.org; s=google; t=1692353996; x=1692958796;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pb0pctZb8QtUfFQr+rA7AG4CHO5Qtd4k3pKgwlh5qck=;
+        b=Pa05IZmzxUof/JTX5sYgmbso85hDS8hYULdKoqRJ9pa7oEJj3KKPJvlp8aKsu7BkWe
+         7LZCZAAJkdeFzE8FevvQGusqrJtgmxn63kAVxmqmD8CfifcwAxo4VH35MPrbg9GbhWMM
+         4Pw0oOpcSQ1TqydswzrxSNGG6n0QblyYXklq1LMn07Tim5a8r7oIQu4TBSHlU18VTiTy
+         sBll8RKZRHt1X3nHO72Gp4owtRF1Gac+qGE0ZG+H+wdJvjIc12gGSim0WTlF1kEbpD4M
+         /2t9f30R9G0Ku/t4SGWRcIvvtXOz0qNl7O68eEhByuz5Q9l7b+4Asm6TdNGwsKlLpIQ7
+         EULQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692353240; x=1692958040;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=brCyjYfKz7oGbPW+1bpZenjUR0IT1+POIU9mu6Z0Dvs=;
-        b=b/NgdIHd7yqVkdpduV85C6Or5/HU9UbBACbG2bidFj6/iks3ySYsPDZXz3nK/qx2I+
-         uyUaiU8DdH/5dP2CGkV0fMXzc3IZEMzq5ZUmMAooVkMSqSfiCqzViVv6pXAdjUCIh2Tm
-         u6/hRVLOD8rFGlHysoGNDe8dD0t7p89UULD4ugg3XlrDJ1bgTLGIwBREgXKlvIA7EWVA
-         Cc7RgKS4cCJ2ipOvrk2Qk+gnSgANzYUQlbrh6+Ezlrtu1e4Z6x4aOUi5y5CH3x7n8EYU
-         zHVXhkHDOyIsEydfJu/FzDQezQFGnpDOKQuZnn1PZxWF5ACwN5uKFOy/OH7OVTwoW2Iz
-         XvYg==
-X-Gm-Message-State: AOJu0YzJNNw5jVRqpRVq3Eq22njs7FBShWHDi37fALUn/uTjc80uO97M
-	pH9MKPcmInlpWa+hPzCqeVAL3Q==
-X-Google-Smtp-Source: AGHT+IE4dA/uJZVcZWDTT8RlMzphtTC0WyBnIY4s46zuihgI+FJK9EoX/MkC+IIvcfdnIw68SOL/3Q==
-X-Received: by 2002:aa7:cc8f:0:b0:523:47cf:5034 with SMTP id p15-20020aa7cc8f000000b0052347cf5034mr2002364edt.34.1692353240357;
-        Fri, 18 Aug 2023 03:07:20 -0700 (PDT)
-Received: from 1.. ([79.115.63.195])
-        by smtp.gmail.com with ESMTPSA id j5-20020aa7c405000000b005232e637c24sm892668edq.84.2023.08.18.03.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 03:07:19 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4] mtd: spi-nor: Add support for sst26vf032b flash
-Date: Fri, 18 Aug 2023 13:07:16 +0300
-Message-Id: <169235322869.47965.8268381534735835592.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808075001.223150-1-miquel.raynal@bootlin.com>
-References: <20230808075001.223150-1-miquel.raynal@bootlin.com>
+        d=1e100.net; s=20221208; t=1692353996; x=1692958796;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pb0pctZb8QtUfFQr+rA7AG4CHO5Qtd4k3pKgwlh5qck=;
+        b=DiiUViunbT4tZ21WBe6ZinQHwQ1+SGhw7QksVZQY8XBnmHFL1erJ2yhqIc/u+9fTqU
+         i9A0V3HJFAWmV+xAqbll2Z23nEdvuY1xZUPdw5aHKwD1DqjFqG3vOojKtRDLSP9SvDfX
+         ZwD0mvCmbyYM5zFxT2pkT2wKArew72gg+dXnCZ8mO65gPAZuoj+Bi2K1Ko7MCsaE7xIX
+         noWBNY+9mWGjoXNSkYIPoPZq8Wi1HtfLyoZUawnzpKNOSKa7CJhxsWyaFjkRgRjoX6vw
+         TBZ/EeCMGRKW1Gw442ZaXJGbP/MGEEGbiBmSU9XYCAZrFnds5PAB6wpn33RdKEzLKoQm
+         NfnA==
+X-Gm-Message-State: AOJu0YyWLkC7PGG3MruwKA36le1IxyMnoiRbRmTxOIjOK+YuSgBJehf3
+	4uFNUMgorYrf4GMpggPRvIcq7A==
+X-Google-Smtp-Source: AGHT+IGRjpQiG6m5okW2Rjffn2dFFyB2X81OzXUKgZV+AmI+W2jGdx/QNJfEpqKmEPeD398d/xB9VQ==
+X-Received: by 2002:a05:6512:3d08:b0:4ff:727e:9e67 with SMTP id d8-20020a0565123d0800b004ff727e9e67mr2032630lfv.40.1692353995812;
+        Fri, 18 Aug 2023 03:19:55 -0700 (PDT)
+Received: from [192.168.0.173] ([79.115.63.195])
+        by smtp.gmail.com with ESMTPSA id k12-20020adfe3cc000000b0031ad5470f89sm2306468wrm.18.2023.08.18.03.19.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 03:19:55 -0700 (PDT)
+Message-ID: <04f7f779-e92e-ec7a-994d-19e555e5c460@linaro.org>
+Date: Fri, 18 Aug 2023 13:19:52 +0300
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2345; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=PlE9VpJ7wzGcqvoEkjebVZWPbtkAr46bZ8tqA/TDmxY=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBk30LSyQ07IjUSqKWBdvVoU5hy4VykuuBNMvy54 7N2nv7dXwOJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZN9C0gAKCRBLVU9HpY0U 6cYQCACeiFti+LqqkDMpoTCBXDwkzdsYAsNC8pIa2RpFINfsR8qSPODQwGsRVUDZYTDiatkzLLR RuKV/m7yJZn00NZtEM22Umx8n4EAS7HO8gBj0hYh/PnPIwnMtmFjhol9xWGukTYQuH0mF6WWLaU t8DUGt22hkNLMh8sBMQpcOVRLrQZjeVMHDkF2Gedd57UniDJU4yEttIOYsZgYfsSDxhAAoRuFNn ZpreVewlrD6gQfy0PQz5LIqAW9nqj0tP5J7H6qNJuA11TvXVj5UHn7nvlQAbPEu6tAXcd3Ydi5k y2m9z+XV8n/OwgkZeFQvZOlNqJKxIBFYf4V+w/b+6X2Gy9Tc
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH -next v2 11/12] mtd: spi-nor: nxp-spifi: Use helper
+ function devm_clk_get_enabled()
+Content-Language: en-US
+To: Li Zetao <lizetao1@huawei.com>
+Cc: alexandre.torgue@foss.st.com, angelogioacchino.delregno@collabora.com,
+ christophe.kerello@foss.st.com, christophe.leroy@csgroup.eu,
+ dmitry.torokhov@gmail.com, frank.li@vivo.com, geert+renesas@glider.be,
+ heiko@sntech.de, jernej.skrabec@gmail.com, jinpu.wang@ionos.com,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-sunxi@lists.linux.dev, martin.blumenstingl@googlemail.com,
+ matthias.bgg@gmail.com, mcoquelin.stm32@gmail.com, michael@walle.cc,
+ michal.simek@amd.com, miquel.raynal@bootlin.com,
+ nicolas.ferre@microchip.com, paul@crapouillou.net, philmd@linaro.org,
+ pratyush@kernel.org, richard@nod.at, robh@kernel.org, rogerq@kernel.org,
+ samuel@sholland.org, stefan@agner.ch, u.kleine-koenig@pengutronix.de,
+ vigneshr@ti.com, vz@mleia.com, wens@csie.org, yangyingliang@huawei.com
+References: <20230817024509.3951629-1-lizetao1@huawei.com>
+ <20230818074642.308166-1-lizetao1@huawei.com>
+ <20230818074642.308166-12-lizetao1@huawei.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230818074642.308166-12-lizetao1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230818_030727_252713_83C0E57A 
-X-CRM114-Status: UNSURE (   8.59  )
+X-CRM114-CacheID: sfid-20230818_031959_111480_672EDACC 
+X-CRM114-Status: UNSURE (   6.85  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -100,55 +109,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 08 Aug 2023 09:50:01 +0200, Miquel Raynal wrote:
-> Describe this new part. The datasheet is public.
-> 
-> Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
-> 
-> Here are the sfdp tables plus base testing to show it works.
-> 
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> sst26vf032b
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> bf2642
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> sst
-> $ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450060102ff00060110300000ff81000106000100ffbf0001180002
-> 0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
-> 083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
-> 1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
-> 3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
-> ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
-> ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
-> 0300fefe0202070e
-> $ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> e7efddddb3d5ee89ca37bf6b6e789645  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 
-> [...]
-
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
-
-[1/1] mtd: spi-nor: Add support for sst26vf032b flash
-      https://git.kernel.org/mtd/c/9d0164c6500e
+Just a reminder that for the owners of the driver that we'd like to move
+all the SPI NOR controller drivers to drivers/spi and that until then
+we'll no longer queue features for the controllers, but just fixes or
+cosmetics patches like this one.
 
 Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
