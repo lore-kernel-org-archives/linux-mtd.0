@@ -4,114 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A3EC05052
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 10:29:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC160C71136
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 10:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y/ZrIEZ5IxuaJVxsJLsAM2QYRSqksevGomImhADJPQU=; b=O24IzWSUY14T9z
-	49nyvA8i+a7jxW21AVZ7NM40/UYcIHCUpBclEsj+LNoLmPbBffrWuEkEN1TfT2PZRLOqdItV6bKXC
-	NOdzDgCEsDpKlS4EyJGUuCRZeVDRNVg3GSWAuajspQXvtzibjp1obqpQZZEc4pJhc9TC0YZO3mTRo
-	wqfFUqyxLV1qlILdF4srZEpJ1spnfyXs3wYyRuXdsCAODod5qvzVoAoQlYPyPpWJ9pBbtC5cGtLVC
-	jfrxtFnovnXij3s/0sjwIFbfRa49FB8y8HFXJmtfelQbtmTIwiixb1SJEJE/0zB5DyiayZPwtX0hC
-	X9LHt321Qatm09IZ55AQ==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=isyftxC7upgKvgpdf2weoPCuL78DR2NtSSLH/PVoXNk=; b=2CI33CCjBDF58Q
+	Oz4HJwt19mbvNgCN1r56oFYk904iPR/4Jr6ztK4PSecx5KwRjfnnpqAGKYA+48WU/RLeJTkY0aRt8
+	KdkLQQQPrMQn6GCDtBGRKIyciWZBarF2WsxtvEG7hfOwuOXle2ag+trv9Fj3orz2D8MWt7x5cPKly
+	AUKDu2K9tig/AV5MmrnLnAtSP07CiIgpRrpFAi1fU8wBwqhnXblnIN61MtBtWEOguTUZXM6sj3ZbB
+	hLS75koeLPksbRjWrcLsSBtjC4BBu8cUvYHmtDqF6VQqGHyh4aP5kfZu8t9ZR1lAR15sC1VexvVH5
+	xuZ3BeqDyRXKbRSth+2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWwj7-008EOB-0y;
-	Fri, 18 Aug 2023 10:29:09 +0000
-Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
+	id 1qWx85-008Oxf-1C;
+	Fri, 18 Aug 2023 10:54:57 +0000
+Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWwj2-008EL7-22
+	id 1qWx82-008Otv-0w
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Aug 2023 10:29:07 +0000
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so1098853e87.1
-        for <linux-mtd@lists.infradead.org>; Fri, 18 Aug 2023 03:29:03 -0700 (PDT)
+	Fri, 18 Aug 2023 10:54:55 +0000
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-317716a4622so705895f8f.1
+        for <linux-mtd@lists.infradead.org>; Fri, 18 Aug 2023 03:54:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692354542; x=1692959342;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1692356090; x=1692960890;
+        h=content-transfer-encoding:subject:cc:to:content-language:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z9lhOsL9u2m/0CCpIqf7Y1Re49YhKns/kxGsCRmuFFg=;
-        b=Nk6lY/sji1554KDrGzAZ+vjyXmGCo042ElgTPya1gKwgEeUMJIcdq/wL5qfJOk4V6r
-         QpUtBXig489jzJ+hQHTfCcgZU7XF9+yuaQMzyuQk8iZDjOikQiIfZPwoK0Wg/COQrxl9
-         tst75NqToCwol8oi2fiM6+jxiNJKAd1RLZH3SeN+pBuIuKH/WuKDnSXySgnPRpO5W/nb
-         PPFXaNQ0Lf/DUU/JfkmOr6zu49ydwb49B3UEb+1l9Tdp03W7hGXDylEcrHtOjmw/+PJj
-         v6/iWoWcPIdSZfJBq2lglvRE39FwKzxVyKCNINBSk3RSKBjQ8EqABkiisBSTpwTrZ7hk
-         QKyA==
+        bh=IwyYBzvRuMnT/fqtQoFEMJRGJMRgxgxxTLHYusw2geM=;
+        b=eaqze0CbeKApJUXIq49mqodEMRI4atB9uLoCA/r3tgm0f9MUXMt/53mwl14Zx11AGd
+         xIQNg8m/PYohvncdDDIrplSRODUNXLy9KsvW8+KigfESZj4XWYdZ8Zchpm2QWRxK+xF8
+         kFRahQcPMHQKhI6zRMwNNxDM/BalRVaWhmvNYvgvzXnxjlc2grNKJaBRdikAfA/p/Wmg
+         EUpaamCWpvCp07SbfieRChvsdAWRlxsOATEPP7gCF+++giaYIQGUBonA2Sh2UJ56bZ44
+         oImecYSiwXVwKE15Yz/DOuwHvEkhzmIvqpatWyCVThMPdb1itP286AjorPbkHD7jTKhn
+         vJjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692354542; x=1692959342;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z9lhOsL9u2m/0CCpIqf7Y1Re49YhKns/kxGsCRmuFFg=;
-        b=awwlCtjdjazp952C7OKDEw4W21gGXLdv53FyHJ3z2uBuoAzlmtGbKWz4CEJNwR+aKN
-         T0EiOs0KEz88SX3Ivg4PWLZ1t9VXkt8U0W+sNucxk1lvF52tiPqW+4fNAQ7TUYoypitB
-         L0R5TX/Rp6YcK0H2bSTzjVMFA0AacoikOuVok3f7GrFmjEw2lwyFnSPkoz8JJ1CTC280
-         iZ+bkWhhYY370Zp1RBVxrVXbwlpbktO15juJDf1epVw4PPZ4Y5C38tvaBrHeKx8ETCba
-         m4UC3TnN5V0kTB3/bYvtaASigCfo96oOXvIdFjAsMej+EncBzGH/mnnAat46KmiOeYP3
-         HJTg==
-X-Gm-Message-State: AOJu0YzlCWli45dM9OHJieLvovZMD3Wi2Ptm66uMj54IQLE0mkFWrLks
-	yMlzuX6GAe0OG+iUJz+O3sSujg==
-X-Google-Smtp-Source: AGHT+IF40zslK9J+qU/URMrIBd2SvGHNIaxIqpROmnBlnsAtbhU8eCxr4zTdpXbQVvv4xnV2w+38qw==
-X-Received: by 2002:a05:6512:3613:b0:4fe:347c:874b with SMTP id f19-20020a056512361300b004fe347c874bmr1333211lfs.8.1692354541864;
-        Fri, 18 Aug 2023 03:29:01 -0700 (PDT)
-Received: from 1.. ([79.115.63.195])
-        by smtp.gmail.com with ESMTPSA id h6-20020a1ccc06000000b003fe8b249df1sm2338909wmb.41.2023.08.18.03.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 03:29:01 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Li Zetao <lizetao1@huawei.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	alexandre.torgue@foss.st.com,
-	angelogioacchino.delregno@collabora.com,
-	christophe.kerello@foss.st.com,
-	christophe.leroy@csgroup.eu,
-	dmitry.torokhov@gmail.com,
-	frank.li@vivo.com,
-	geert+renesas@glider.be,
-	heiko@sntech.de,
-	jernej.skrabec@gmail.com,
-	jinpu.wang@ionos.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev,
-	martin.blumenstingl@googlemail.com,
-	matthias.bgg@gmail.com,
-	mcoquelin.stm32@gmail.com,
-	michael@walle.cc,
-	michal.simek@amd.com,
-	miquel.raynal@bootlin.com,
-	nicolas.ferre@microchip.com,
-	paul@crapouillou.net,
-	philmd@linaro.org,
-	pratyush@kernel.org,
-	richard@nod.at,
-	robh@kernel.org,
-	rogerq@kernel.org,
-	samuel@sholland.org,
-	stefan@agner.ch,
-	u.kleine-koenig@pengutronix.de,
-	vigneshr@ti.com,
-	vz@mleia.com,
-	wens@csie.org,
-	yangyingliang@huawei.com
-Subject: (subset) [PATCH -next v2 00/12] mtd: Use devm_clk_get_*() helper function to simplify the drivers.
-Date: Fri, 18 Aug 2023 13:28:15 +0300
-Message-Id: <169235440227.51486.16999366988462758608.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230818074642.308166-1-lizetao1@huawei.com>
-References: <20230817024509.3951629-1-lizetao1@huawei.com> <20230818074642.308166-1-lizetao1@huawei.com>
+        d=1e100.net; s=20221208; t=1692356090; x=1692960890;
+        h=content-transfer-encoding:subject:cc:to:content-language:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IwyYBzvRuMnT/fqtQoFEMJRGJMRgxgxxTLHYusw2geM=;
+        b=kO+tOjcaoO8AZQAYo96i2j32ggUB1eDu0C713rxFh9Yys4zSi3gLLoDbW5CvQ9IyzX
+         pr9yffnT6WGzEKR7itW4Mp5e1adWHEEAGQJoy+AdWTgHe3ii1dDVlENuMaKGoG2lY4HU
+         HRmX9dfyCM4QcQRxM420ADAd1C6quZsLKwo/VgnSt0sT0CSxkF5nugTEh2MAwrDrOQV6
+         Fi0QgRwTDzoN94D4/ZP3ui69Ktmx/anFzbTXaeytxUYBx7g5et14CdzOTMLTiIO7FT69
+         +NcPGT35yQ/IlZRnmnYy1lO/1pRqEGgUkeqQzRVm48hwMsUn/dodwH6yqQXDweJKiKvS
+         F3iQ==
+X-Gm-Message-State: AOJu0YzTelVH+b8b41p2XNVWSt+AH0KZs+0nrYZDFULTJ1OIrsmwX0hH
+	ZLfXZemG5XmjpuFAeWOm1eIHuw==
+X-Google-Smtp-Source: AGHT+IGKvg0hGSiAs/Ll1YXwQW480n3WueR3ik5FIP1TWHixboAFrTS7CDb5tcFK95QCebmH8UDm1w==
+X-Received: by 2002:a5d:6a10:0:b0:317:cff4:7357 with SMTP id m16-20020a5d6a10000000b00317cff47357mr1549254wru.20.1692356090306;
+        Fri, 18 Aug 2023 03:54:50 -0700 (PDT)
+Received: from [192.168.0.173] ([79.115.63.195])
+        by smtp.gmail.com with ESMTPSA id m15-20020adfe94f000000b0031971ab70c9sm2371165wrn.73.2023.08.18.03.54.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 03:54:49 -0700 (PDT)
+Message-ID: <95ae3e7f-65ff-57bc-6a53-ec219f887959@linaro.org>
+Date: Fri, 18 Aug 2023 13:53:26 +0300
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1031; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=qpBLrC/ilH/3fBZL7I10FOtEch8tT5TWABqedTkdJLw=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBk30e9B36HHQiy8MTzJoUhZP19kuOAqlZ0xMr5A nGWgVSVIACJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZN9HvQAKCRBLVU9HpY0U 6SA9B/0bzJF2vkTay6CKZ3yxN1Qxor783Yen8TkIj1p7DKify7NmufB/YhIAWBjfBO4GpRl13s1 CjdOosz5zEZROL6X8tTpfxeSh0ND9LdnrAnUT73t4Zv6LpZfSmi2ACGdM9kOJUDj/ZTBM+5Vpw8 OwaqfV4pf0E4kSxStDENPPGV7HnolpkQjZhotKlZrd/RaLGKpZFuaVUWI4Va5Xia8dG/MvFoH69 jLFs6mGZGvoduGY6IeDSwIZT8c5gf8WhwlIqvXsLbhvF4ep9M6Y/VJTrx6ENfbLPoIYhkdDVILi eIdzLGW6/Qtz25I001dRDfNw7EKpXDe4XBsZKwnIrRmkMkAV
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
+ "open list:SPI NOR SUBSYSTEM" <linux-mtd@lists.infradead.org>
+Subject: [GIT PULL] mtd: spi-nor: changes for 6.6
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230818_032904_679525_5D6E0A6C 
-X-CRM114-Status: GOOD (  10.70  )
+X-CRM114-CacheID: sfid-20230818_035454_359076_B90CA3DD 
+X-CRM114-Status: GOOD (  11.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,29 +93,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 18 Aug 2023 15:46:30 +0800, Li Zetao wrote:
-> Commit 7ef9651e9792 ("clk: Provide new devm_clk helpers for prepared
-> and enabled clocks") provides a new helper function for prepared and
-> enabled clocks when a driver keeps a clock prepared (or enabled) during
-> the whole lifetime of the driver. So where drivers get clocks and enable
-> them immediately, it can be combined into a single function
-> devm_clk_get_*(). Moreover, the unprepare and disable function
-> has been registered to devm_clk_state, and before devm_clk_state is
-> released, the clocks will be unprepareed and disable, so it is unnecessary
-> to unprepare and disable clock explicitly when remove drivers or in the
-> error handling path.
-> 
-> [...]
+Hi,
 
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
-
-[11/12] mtd: spi-nor: nxp-spifi: Use helper function devm_clk_get_enabled()
-        https://git.kernel.org/mtd/c/69d50d0461a1
+Here's the SPI NOR PR for 6.6.
 
 Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+ta
+
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+tags/spi-nor/for-6.6
+
+for you to fetch changes up to 69d50d0461a182872b7f7892702fa3a1ba95950d:
+
+  mtd: spi-nor: nxp-spifi: Use helper function devm_clk_get_enabled()
+(2023-08-18 13:14:56 +0300)
+
+----------------------------------------------------------------
+SPI NOR core changes:
+* fix assumption on enabling quad mode in
+  spi_nor_write_16bit_sr_and_check()
+* avoid setting SRWD bit in SR if WP# signal not connected as it will
+  configure the SR permanently as read only. Add "no-wp" dt property.
+* clarify the need for spi-nor compatibles in dt-bindings
+
+SPI NOR manufacturer drivers changes:
+* spansion:
+  - add support for S28HS02GT
+  - switch methods to use vreg_offset from SFDP instead of hardcoding
+    the register value
+* microchip/sst:
+  - add support for sst26vf032b flash
+* winbond:
+  - correct flags for Winbond w25q128
+
+----------------------------------------------------------------
+Amit Kumar Mahapatra (2):
+      dt-bindings: mtd: jedec, spi-nor: Add DT property to avoid setting
+SRWD bit in status register
+      mtd: spi-nor: Avoid setting SRWD bit in SR if WP# signal not connected
+
+Hsin-Yi Wang (1):
+      mtd: spi-nor: Check bus width while setting QE bit
+
+Li Zetao (1):
+      mtd: spi-nor: nxp-spifi: Use helper function devm_clk_get_enabled()
+
+Linus Walleij (1):
+      mtd: spi-nor: Correct flags for Winbond w25q128
+
+Miquel Raynal (2):
+      dt-bindings: mtd: spi-nor: clarify the need for spi-nor compatibles
+      mtd: spi-nor: Add support for sst26vf032b flash
+
+Takahiro Kuwano (8):
+      mtd: spi-nor: spansion: use CLPEF as an alternative to CLSR
+      mtd: spi-nor: spansion: preserve CFR2V[7] when writing MEMLAT
+      mtd: spi-nor: spansion: prepare octal dtr methods for multi chip
+support
+      mtd: spi-nor: spansion: switch set_octal_dtr method to use vreg_offset
+      mtd: spi-nor: spansion: switch h28hx's ready() to use vreg_offset
+      mtd: spi-nor: spansion: add MCP support in set_octal_dtr()
+      mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP
+      mtd: spi-nor: spansion: add support for S28HS02GT
+
+Tudor Ambarus (5):
+      mtd: spi-nor: rename method for enabling or disabling octal DTR
+      mtd: spi-nor: spansion: return method directly
+      mtd: spi-nor: spansion: let SFDP determine the flash and sector size
+      mtd: spi-nor: spansion: switch s25hx_t to use vreg_offset for
+quad_enable()
+      mtd: spi-nor: spansion: switch cypress_nor_get_page_size() to use
+vreg_offset
+
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml |  21 +-
+ drivers/mtd/spi-nor/atmel.c                              |   8 +-
+ drivers/mtd/spi-nor/controllers/nxp-spifi.c              |  33 +--
+ drivers/mtd/spi-nor/core.c                               |  57 +++--
+ drivers/mtd/spi-nor/core.h                               |   9 +-
+ drivers/mtd/spi-nor/debugfs.c                            |   1 +
+ drivers/mtd/spi-nor/issi.c                               |   4 +-
+ drivers/mtd/spi-nor/macronix.c                           |   4 +-
+ drivers/mtd/spi-nor/micron-st.c                          |   8 +-
+ drivers/mtd/spi-nor/spansion.c                           | 318
+++++++++++++++++---------
+ drivers/mtd/spi-nor/sst.c                                |  12 +-
+ drivers/mtd/spi-nor/swp.c                                |   9 +-
+ drivers/mtd/spi-nor/winbond.c                            |   9 +-
+ drivers/mtd/spi-nor/xilinx.c                             |   4 +-
+ 14 files changed, 312 insertions(+), 185 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
