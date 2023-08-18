@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE9EDC7112B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE9B1C001DE
 	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 09:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,41 +12,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9U2hl0MVExfBdx/e06ZhmtYCpzKLeCOQEe862f/Nmhs=; b=TX+SqwbIbNIOn9
-	Hucm0oVKad+OCDGjBiqCF0EJMHnwVWesuhBMMeUevDmSD+upVSpPW/UhO1p0Wbj7MoAytn/qf+VFE
-	Z3WqCzXFiHqKvfaBTKFEp8daF3uBYcYj7rDARV8mb4F+gVkhGYLIYPBZMneaaIUIYDdwgQJMPUa1W
-	Xu4Kyh9d9yzD/cSkezvYM0HV/wVzVC61bGR3lOBvQ8sdJBMu4tSqqDryh8WHanaOc52GZFKz1BBFd
-	X1iJ3QShFGl0ev9vatIkZ87v2uR07IB8siKSP4GxzieDWOqvau7Dzp/1kxVJPeTW7cYBtVRZewmtz
-	FhVdCI7v4fX7F1/qJ2Nw==;
+	List-Owner; bh=KnCtJiwAhb+6tISj9yygTroF9O/clLG4fXy/ailm2N0=; b=286lzW6o9yxT08
+	HQY5xTumF72QB2jHzNF5jnu3BDolx526wjaKYDvtaQmc4Y7r7fbsV2OIyF2eSKXlNlJu6eXjMtXxB
+	V56PsAu+5WufWaR7PzHXbYoYdweY3QTMNtNTMS62Fhr15gpNWfxdbLQIgQKGGYrjOn4LdDQBEhpnv
+	lvnZOYzmujmvy4eJYfKvI3EkIbfWINoaRJ0nniiMGCnHu8SfAiMtp5G6RaCUYcMG7g+4hZeXaI5dV
+	SZciCX3TXVW1kaMrcwTWOHYJTFsdOzPcS3evi99hC5O2L5UaLuU/Bpug73RdHozEn0NH4TqDwtVTb
+	GTTpfJ5mWY4Q5IkurU7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWvLw-00830T-1Q;
-	Fri, 18 Aug 2023 09:01:08 +0000
+	id 1qWvLv-0082zv-1D;
+	Fri, 18 Aug 2023 09:01:07 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWuCp-007uLH-0f;
-	Fri, 18 Aug 2023 07:47:39 +0000
+	id 1qWuCo-007uKm-1A;
+	Fri, 18 Aug 2023 07:47:38 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
 	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=tcpa760vBUmGN9+NovwWLWgNYMhac0jXVZATCBCRa+M=; b=Mo7Y5mkl5evgZ2EvYqXDQ6r7DP
-	wWr46bc4xTVG+MLCrAo3Y5mJ8CiDKJACeNEH2WJa6YcA0Agy3OLT7ly/GpFEOPD3vrVidj2GdyqSp
-	8vZqC9fabmmzlmGFG+WXvba0Y9kNKJAvrbZ7pNrdFsBzl8ERaS4jaQibyTyOjXDBwmgQ8ousVAlLM
-	vX0ZCrFjrgCP09GZxcnWXhifNNYuEpNjY399bRGTu7VoyDU0xWzlrMlAcThnp52KrVY408vmxdpAb
-	IHHV0+p7p/Y3Y5WtHIgDGtqAJA2BAW9+XCF1/bgScX/ANOOoZRhbL3Y+Go/w1Vk6g2HkwaIOQPtW7
-	3ayP/JJg==;
+	bh=UBJ0/G8qCrpIYOSvdSC/c+l+uSPrnSEf5vuFBMJrvPk=; b=IcVqC5L85tUfUTS0o99jPGQE3d
+	GzKT5TS/vrLFZfBO7juhdtRzDNlP8CQ2JLBgTN1G+0Sl56q9IG1wcoVWCHp+bR5zWDlpLI3WEE8mE
+	fLHOARDUdn4j2z/lUnAjd1zjEehVMjwUeA2ohhyvrOEWwLPMYH7Kac9Xet5jDim9HbxuUL3y5IEQr
+	6RgKHacC5xuxZi1/QAOMyvXdrYIVq3+M6Vlx3uCjHbxB3g92jdCjpLb2JS5uok02qPLkq+hetbuVG
+	KPDGIOKqiBYTXbcc4KMnHGvJzhOXm6+Hwp9TbvdCsfom/GzSMm6xI9cye5vanhSrSskp4deISSS2b
+	wOQKJr1A==;
 Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWuCi-00FL7h-2D;
-	Fri, 18 Aug 2023 07:47:38 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRv4n19r9ztS5X;
-	Fri, 18 Aug 2023 15:43:37 +0800 (CST)
+	id 1qWuCi-00FL7f-12;
+	Fri, 18 Aug 2023 07:47:37 +0000
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.56])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRv7K2VNgzkX73;
+	Fri, 18 Aug 2023 15:45:49 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
  (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 15:47:14 +0800
+ 2023 15:47:11 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <lizetao1@huawei.com>
 CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
@@ -64,9 +64,9 @@ CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
 	<tudor.ambarus@linaro.org>, <u.kleine-koenig@pengutronix.de>,
 	<vigneshr@ti.com>, <vz@mleia.com>, <wens@csie.org>,
 	<yangyingliang@huawei.com>
-Subject: [PATCH -next v2 09/12] mtd: rawnand: sunxi: Use helper function devm_clk_get_enabled()
-Date: Fri, 18 Aug 2023 15:46:39 +0800
-Message-ID: <20230818074642.308166-10-lizetao1@huawei.com>
+Subject: [PATCH -next v2 06/12] mtd: rawnand: mpc5121: Use helper function devm_clk_get_enabled()
+Date: Fri, 18 Aug 2023 15:46:36 +0800
+Message-ID: <20230818074642.308166-7-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230818074642.308166-1-lizetao1@huawei.com>
 References: <20230817024509.3951629-1-lizetao1@huawei.com>
@@ -77,8 +77,8 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230818_084733_697032_AA185160 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20230818_084732_805736_8827D865 
+X-CRM114-Status: GOOD (  10.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,85 +99,49 @@ Since commit 7ef9651e9792 ("clk: Provide new devm_clk helpers for prepared
 and enabled clocks"), devm_clk_get() and clk_prepare_enable() can now be
 replaced by devm_clk_get_enabled() when driver enable (and possibly
 prepare) the clocks for the whole lifetime of the device. Moreover, it is
-no longer necessary to unprepare and disable the clock explicitly, so drop
-the label "out_mod_clk_unprepare" and "out_ahb_clk_unprepare".
+no longer necessary to unprepare and disable the clock explicitly.
 
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
 v1 -> v2: Modify commit message.
-v1: https://lore.kernel.org/all/20230817024509.3951629-10-lizetao1@huawei.com/
+v1: https://lore.kernel.org/all/20230817024509.3951629-7-lizetao1@huawei.com/
 
- drivers/mtd/nand/raw/sunxi_nand.c | 29 ++++++-----------------------
- 1 file changed, 6 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/raw/mpc5121_nfc.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 64c09eae951d..9abf38049d35 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -2094,37 +2094,26 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
+diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
+index 6e8e790f84e7..215610f808f1 100644
+--- a/drivers/mtd/nand/raw/mpc5121_nfc.c
++++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
+@@ -595,8 +595,6 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct mpc5121_nfc_prv *prv = nand_get_controller_data(chip);
  
--	nfc->ahb_clk = devm_clk_get(dev, "ahb");
-+	nfc->ahb_clk = devm_clk_get_enabled(dev, "ahb");
- 	if (IS_ERR(nfc->ahb_clk)) {
- 		dev_err(dev, "failed to retrieve ahb clk\n");
- 		return PTR_ERR(nfc->ahb_clk);
+-	clk_disable_unprepare(prv->clk);
+-
+ 	if (prv->csreg)
+ 		iounmap(prv->csreg);
+ }
+@@ -717,17 +715,12 @@ static int mpc5121_nfc_probe(struct platform_device *op)
  	}
  
--	ret = clk_prepare_enable(nfc->ahb_clk);
--	if (ret)
--		return ret;
--
--	nfc->mod_clk = devm_clk_get(dev, "mod");
-+	nfc->mod_clk = devm_clk_get_enabled(dev, "mod");
- 	if (IS_ERR(nfc->mod_clk)) {
- 		dev_err(dev, "failed to retrieve mod clk\n");
--		ret = PTR_ERR(nfc->mod_clk);
--		goto out_ahb_clk_unprepare;
-+		return PTR_ERR(nfc->mod_clk);
+ 	/* Enable NFC clock */
+-	clk = devm_clk_get(dev, "ipg");
++	clk = devm_clk_get_enabled(dev, "ipg");
+ 	if (IS_ERR(clk)) {
+-		dev_err(dev, "Unable to acquire NFC clock!\n");
++		dev_err(dev, "Unable to acquire and enable NFC clock!\n");
+ 		retval = PTR_ERR(clk);
+ 		goto error;
  	}
- 
--	ret = clk_prepare_enable(nfc->mod_clk);
--	if (ret)
--		goto out_ahb_clk_unprepare;
--
- 	nfc->reset = devm_reset_control_get_optional_exclusive(dev, "ahb");
--	if (IS_ERR(nfc->reset)) {
--		ret = PTR_ERR(nfc->reset);
--		goto out_mod_clk_unprepare;
+-	retval = clk_prepare_enable(clk);
+-	if (retval) {
+-		dev_err(dev, "Unable to enable NFC clock!\n");
+-		goto error;
 -	}
-+	if (IS_ERR(nfc->reset))
-+		return PTR_ERR(nfc->reset);
+ 	prv->clk = clk;
  
- 	ret = reset_control_deassert(nfc->reset);
- 	if (ret) {
- 		dev_err(dev, "reset err %d\n", ret);
--		goto out_mod_clk_unprepare;
-+		return ret;
- 	}
- 
- 	nfc->caps = of_device_get_match_data(&pdev->dev);
-@@ -2163,10 +2152,6 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 		dma_release_channel(nfc->dmac);
- out_ahb_reset_reassert:
- 	reset_control_assert(nfc->reset);
--out_mod_clk_unprepare:
--	clk_disable_unprepare(nfc->mod_clk);
--out_ahb_clk_unprepare:
--	clk_disable_unprepare(nfc->ahb_clk);
- 
- 	return ret;
- }
-@@ -2181,8 +2166,6 @@ static void sunxi_nfc_remove(struct platform_device *pdev)
- 
- 	if (nfc->dmac)
- 		dma_release_channel(nfc->dmac);
--	clk_disable_unprepare(nfc->mod_clk);
--	clk_disable_unprepare(nfc->ahb_clk);
- }
- 
- static const struct sunxi_nfc_caps sunxi_nfc_a10_caps = {
+ 	/* Reset NAND Flash controller */
 -- 
 2.34.1
 
