@@ -4,95 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A7EBC05052
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 10:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A3EC05052
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Aug 2023 10:29:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D6D/J0o4YamSz+wnIBQrn4ZXOrqBv6cNzG3wMGjpTXA=; b=CfqGtNckbyUYZw
-	VTl/kW+/pBh86/pDumMBfWX0p6gN9yRE54GUqC705DUfGFgL/gCYcyJ4aeXVnx/GD5lsGfSHXw1qu
-	+RqR7xc8UOfrAgD8QV79VdiZIXFWCozVkj4q70LWtLGc5JfNoSAvd4qCXagTXozbcu5oofV7uNICR
-	Y7gz7qyJGQCAnQ+wtuJieQ7ABXz6b+y3Wwnd0pdH5EN/J17cYzzxN+9h+aTfpH0QaMgk6rxWU7L1B
-	zkB4iSZo8faBkJ4Nrx8g0CK1MIxUkxdqy7Y2ENByWsC29omg4Tf21niyiSsq9auC/D121991muVTV
-	cEtttHcayZucJcmXjdmQ==;
+	List-Owner; bh=Y/ZrIEZ5IxuaJVxsJLsAM2QYRSqksevGomImhADJPQU=; b=O24IzWSUY14T9z
+	49nyvA8i+a7jxW21AVZ7NM40/UYcIHCUpBclEsj+LNoLmPbBffrWuEkEN1TfT2PZRLOqdItV6bKXC
+	NOdzDgCEsDpKlS4EyJGUuCRZeVDRNVg3GSWAuajspQXvtzibjp1obqpQZZEc4pJhc9TC0YZO3mTRo
+	wqfFUqyxLV1qlILdF4srZEpJ1spnfyXs3wYyRuXdsCAODod5qvzVoAoQlYPyPpWJ9pBbtC5cGtLVC
+	jfrxtFnovnXij3s/0sjwIFbfRa49FB8y8HFXJmtfelQbtmTIwiixb1SJEJE/0zB5DyiayZPwtX0hC
+	X9LHt321Qatm09IZ55AQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWwaH-008CbR-2A;
-	Fri, 18 Aug 2023 10:20:01 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1qWwj7-008EOB-0y;
+	Fri, 18 Aug 2023 10:29:09 +0000
+Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qWwaF-008CaS-0B
+	id 1qWwj2-008EL7-22
 	for linux-mtd@lists.infradead.org;
-	Fri, 18 Aug 2023 10:20:00 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso1052148e87.1
-        for <linux-mtd@lists.infradead.org>; Fri, 18 Aug 2023 03:19:57 -0700 (PDT)
+	Fri, 18 Aug 2023 10:29:07 +0000
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so1098853e87.1
+        for <linux-mtd@lists.infradead.org>; Fri, 18 Aug 2023 03:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692353996; x=1692958796;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pb0pctZb8QtUfFQr+rA7AG4CHO5Qtd4k3pKgwlh5qck=;
-        b=Pa05IZmzxUof/JTX5sYgmbso85hDS8hYULdKoqRJ9pa7oEJj3KKPJvlp8aKsu7BkWe
-         7LZCZAAJkdeFzE8FevvQGusqrJtgmxn63kAVxmqmD8CfifcwAxo4VH35MPrbg9GbhWMM
-         4Pw0oOpcSQ1TqydswzrxSNGG6n0QblyYXklq1LMn07Tim5a8r7oIQu4TBSHlU18VTiTy
-         sBll8RKZRHt1X3nHO72Gp4owtRF1Gac+qGE0ZG+H+wdJvjIc12gGSim0WTlF1kEbpD4M
-         /2t9f30R9G0Ku/t4SGWRcIvvtXOz0qNl7O68eEhByuz5Q9l7b+4Asm6TdNGwsKlLpIQ7
-         EULQ==
+        d=linaro.org; s=google; t=1692354542; x=1692959342;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z9lhOsL9u2m/0CCpIqf7Y1Re49YhKns/kxGsCRmuFFg=;
+        b=Nk6lY/sji1554KDrGzAZ+vjyXmGCo042ElgTPya1gKwgEeUMJIcdq/wL5qfJOk4V6r
+         QpUtBXig489jzJ+hQHTfCcgZU7XF9+yuaQMzyuQk8iZDjOikQiIfZPwoK0Wg/COQrxl9
+         tst75NqToCwol8oi2fiM6+jxiNJKAd1RLZH3SeN+pBuIuKH/WuKDnSXySgnPRpO5W/nb
+         PPFXaNQ0Lf/DUU/JfkmOr6zu49ydwb49B3UEb+1l9Tdp03W7hGXDylEcrHtOjmw/+PJj
+         v6/iWoWcPIdSZfJBq2lglvRE39FwKzxVyKCNINBSk3RSKBjQ8EqABkiisBSTpwTrZ7hk
+         QKyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692353996; x=1692958796;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pb0pctZb8QtUfFQr+rA7AG4CHO5Qtd4k3pKgwlh5qck=;
-        b=DiiUViunbT4tZ21WBe6ZinQHwQ1+SGhw7QksVZQY8XBnmHFL1erJ2yhqIc/u+9fTqU
-         i9A0V3HJFAWmV+xAqbll2Z23nEdvuY1xZUPdw5aHKwD1DqjFqG3vOojKtRDLSP9SvDfX
-         ZwD0mvCmbyYM5zFxT2pkT2wKArew72gg+dXnCZ8mO65gPAZuoj+Bi2K1Ko7MCsaE7xIX
-         noWBNY+9mWGjoXNSkYIPoPZq8Wi1HtfLyoZUawnzpKNOSKa7CJhxsWyaFjkRgRjoX6vw
-         TBZ/EeCMGRKW1Gw442ZaXJGbP/MGEEGbiBmSU9XYCAZrFnds5PAB6wpn33RdKEzLKoQm
-         NfnA==
-X-Gm-Message-State: AOJu0YyWLkC7PGG3MruwKA36le1IxyMnoiRbRmTxOIjOK+YuSgBJehf3
-	4uFNUMgorYrf4GMpggPRvIcq7A==
-X-Google-Smtp-Source: AGHT+IGRjpQiG6m5okW2Rjffn2dFFyB2X81OzXUKgZV+AmI+W2jGdx/QNJfEpqKmEPeD398d/xB9VQ==
-X-Received: by 2002:a05:6512:3d08:b0:4ff:727e:9e67 with SMTP id d8-20020a0565123d0800b004ff727e9e67mr2032630lfv.40.1692353995812;
-        Fri, 18 Aug 2023 03:19:55 -0700 (PDT)
-Received: from [192.168.0.173] ([79.115.63.195])
-        by smtp.gmail.com with ESMTPSA id k12-20020adfe3cc000000b0031ad5470f89sm2306468wrm.18.2023.08.18.03.19.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 03:19:55 -0700 (PDT)
-Message-ID: <04f7f779-e92e-ec7a-994d-19e555e5c460@linaro.org>
-Date: Fri, 18 Aug 2023 13:19:52 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH -next v2 11/12] mtd: spi-nor: nxp-spifi: Use helper
- function devm_clk_get_enabled()
-Content-Language: en-US
-To: Li Zetao <lizetao1@huawei.com>
-Cc: alexandre.torgue@foss.st.com, angelogioacchino.delregno@collabora.com,
- christophe.kerello@foss.st.com, christophe.leroy@csgroup.eu,
- dmitry.torokhov@gmail.com, frank.li@vivo.com, geert+renesas@glider.be,
- heiko@sntech.de, jernej.skrabec@gmail.com, jinpu.wang@ionos.com,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-sunxi@lists.linux.dev, martin.blumenstingl@googlemail.com,
- matthias.bgg@gmail.com, mcoquelin.stm32@gmail.com, michael@walle.cc,
- michal.simek@amd.com, miquel.raynal@bootlin.com,
- nicolas.ferre@microchip.com, paul@crapouillou.net, philmd@linaro.org,
- pratyush@kernel.org, richard@nod.at, robh@kernel.org, rogerq@kernel.org,
- samuel@sholland.org, stefan@agner.ch, u.kleine-koenig@pengutronix.de,
- vigneshr@ti.com, vz@mleia.com, wens@csie.org, yangyingliang@huawei.com
-References: <20230817024509.3951629-1-lizetao1@huawei.com>
- <20230818074642.308166-1-lizetao1@huawei.com>
- <20230818074642.308166-12-lizetao1@huawei.com>
+        d=1e100.net; s=20221208; t=1692354542; x=1692959342;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z9lhOsL9u2m/0CCpIqf7Y1Re49YhKns/kxGsCRmuFFg=;
+        b=awwlCtjdjazp952C7OKDEw4W21gGXLdv53FyHJ3z2uBuoAzlmtGbKWz4CEJNwR+aKN
+         T0EiOs0KEz88SX3Ivg4PWLZ1t9VXkt8U0W+sNucxk1lvF52tiPqW+4fNAQ7TUYoypitB
+         L0R5TX/Rp6YcK0H2bSTzjVMFA0AacoikOuVok3f7GrFmjEw2lwyFnSPkoz8JJ1CTC280
+         iZ+bkWhhYY370Zp1RBVxrVXbwlpbktO15juJDf1epVw4PPZ4Y5C38tvaBrHeKx8ETCba
+         m4UC3TnN5V0kTB3/bYvtaASigCfo96oOXvIdFjAsMej+EncBzGH/mnnAat46KmiOeYP3
+         HJTg==
+X-Gm-Message-State: AOJu0YzlCWli45dM9OHJieLvovZMD3Wi2Ptm66uMj54IQLE0mkFWrLks
+	yMlzuX6GAe0OG+iUJz+O3sSujg==
+X-Google-Smtp-Source: AGHT+IF40zslK9J+qU/URMrIBd2SvGHNIaxIqpROmnBlnsAtbhU8eCxr4zTdpXbQVvv4xnV2w+38qw==
+X-Received: by 2002:a05:6512:3613:b0:4fe:347c:874b with SMTP id f19-20020a056512361300b004fe347c874bmr1333211lfs.8.1692354541864;
+        Fri, 18 Aug 2023 03:29:01 -0700 (PDT)
+Received: from 1.. ([79.115.63.195])
+        by smtp.gmail.com with ESMTPSA id h6-20020a1ccc06000000b003fe8b249df1sm2338909wmb.41.2023.08.18.03.28.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 03:29:01 -0700 (PDT)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230818074642.308166-12-lizetao1@huawei.com>
+To: Li Zetao <lizetao1@huawei.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	alexandre.torgue@foss.st.com,
+	angelogioacchino.delregno@collabora.com,
+	christophe.kerello@foss.st.com,
+	christophe.leroy@csgroup.eu,
+	dmitry.torokhov@gmail.com,
+	frank.li@vivo.com,
+	geert+renesas@glider.be,
+	heiko@sntech.de,
+	jernej.skrabec@gmail.com,
+	jinpu.wang@ionos.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-sunxi@lists.linux.dev,
+	martin.blumenstingl@googlemail.com,
+	matthias.bgg@gmail.com,
+	mcoquelin.stm32@gmail.com,
+	michael@walle.cc,
+	michal.simek@amd.com,
+	miquel.raynal@bootlin.com,
+	nicolas.ferre@microchip.com,
+	paul@crapouillou.net,
+	philmd@linaro.org,
+	pratyush@kernel.org,
+	richard@nod.at,
+	robh@kernel.org,
+	rogerq@kernel.org,
+	samuel@sholland.org,
+	stefan@agner.ch,
+	u.kleine-koenig@pengutronix.de,
+	vigneshr@ti.com,
+	vz@mleia.com,
+	wens@csie.org,
+	yangyingliang@huawei.com
+Subject: (subset) [PATCH -next v2 00/12] mtd: Use devm_clk_get_*() helper function to simplify the drivers.
+Date: Fri, 18 Aug 2023 13:28:15 +0300
+Message-Id: <169235440227.51486.16999366988462758608.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230818074642.308166-1-lizetao1@huawei.com>
+References: <20230817024509.3951629-1-lizetao1@huawei.com> <20230818074642.308166-1-lizetao1@huawei.com>
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1031; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=qpBLrC/ilH/3fBZL7I10FOtEch8tT5TWABqedTkdJLw=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBk30e9B36HHQiy8MTzJoUhZP19kuOAqlZ0xMr5A nGWgVSVIACJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZN9HvQAKCRBLVU9HpY0U 6SA9B/0bzJF2vkTay6CKZ3yxN1Qxor783Yen8TkIj1p7DKify7NmufB/YhIAWBjfBO4GpRl13s1 CjdOosz5zEZROL6X8tTpfxeSh0ND9LdnrAnUT73t4Zv6LpZfSmi2ACGdM9kOJUDj/ZTBM+5Vpw8 OwaqfV4pf0E4kSxStDENPPGV7HnolpkQjZhotKlZrd/RaLGKpZFuaVUWI4Va5Xia8dG/MvFoH69 jLFs6mGZGvoduGY6IeDSwIZT8c5gf8WhwlIqvXsLbhvF4ep9M6Y/VJTrx6ENfbLPoIYhkdDVILi eIdzLGW6/Qtz25I001dRDfNw7EKpXDe4XBsZKwnIrRmkMkAV
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230818_031959_111480_672EDACC 
-X-CRM114-Status: UNSURE (   6.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230818_032904_679525_5D6E0A6C 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,13 +128,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just a reminder that for the owners of the driver that we'd like to move
-all the SPI NOR controller drivers to drivers/spi and that until then
-we'll no longer queue features for the controllers, but just fixes or
-cosmetics patches like this one.
+On Fri, 18 Aug 2023 15:46:30 +0800, Li Zetao wrote:
+> Commit 7ef9651e9792 ("clk: Provide new devm_clk helpers for prepared
+> and enabled clocks") provides a new helper function for prepared and
+> enabled clocks when a driver keeps a clock prepared (or enabled) during
+> the whole lifetime of the driver. So where drivers get clocks and enable
+> them immediately, it can be combined into a single function
+> devm_clk_get_*(). Moreover, the unprepare and disable function
+> has been registered to devm_clk_state, and before devm_clk_state is
+> released, the clocks will be unprepareed and disable, so it is unnecessary
+> to unprepare and disable clock explicitly when remove drivers or in the
+> error handling path.
+> 
+> [...]
+
+Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+spi-nor/next branch. Thanks!
+
+[11/12] mtd: spi-nor: nxp-spifi: Use helper function devm_clk_get_enabled()
+        https://git.kernel.org/mtd/c/69d50d0461a1
 
 Cheers,
-ta
+-- 
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
