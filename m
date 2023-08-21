@@ -4,87 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ED48EE49A8
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 05:31:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23F6EEE4996
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 05:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wzm7NFFseQhXxhvGa4CrlJ1cXB5GaKb2zT5OFbIdLcA=; b=zyUKGKAiJl70Av
-	PeB7PtTgAcvP67faZTnh1NHIkysI+w8LWtRzT68y8TxhDa1pJiv6Bne9JSxEDzFlD5F52XiE9clYH
-	iGnOErcNc4FZoS64eByWuoNefbTXms5wJFJ6SQTM59Yr/b45LcrCkNBWyt59I4jD4PHlvCVWize0N
-	Sm8sKIOfMSZPPf4dIlZ/u9tT0mP3L9vRYpoeV7da9ZVnZyn5uYlApxzWA0mZlFzsv/adaQp/rxI54
-	IkQEeC9zXOxl2xZG2ctunqGv2rbe2QuruIu5ig8cK4TyP8pl2lOz/HLLDvg7OFrwqd1DmZ21UwmRt
-	BeacYsw4L+8wWSUDr6cQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CnsxcAC0DutAgNnGdf/qYuVnbiXUNlVHqKyk2X16+1o=; b=11bArkx4p+b+6w
+	Wiw1BbXiCRQP0R+bDf31d55nO+pguxdnlITzQtrhP5AEDe8VCL6Munt1RkikPFKjfgqGOMDXhZfXN
+	xYCJGa/WSYWGqKl8UfhCl7jH3eH/Szp2hCqpVVhpenpXYAniORdz5rHd1N2hwc7hxtIH2ME/ASZlw
+	H2tKIf/q/2xqH7LmA1wA4Q8Slewe+/OvAG74Bbns6PNwx5DCb8j5TRJp0PDKuCH3CsRPUpCjJ2Bef
+	lG7NRRU93RmsPY97w7ALS1dbX5qmp9p3fqM+2SQOM5HxiSY4/ZBM7B3RrniRfzhunLrFEAuZEn/yr
+	IWHCBabMgZ3rrvLbnpbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXxVN-00DAKx-0z;
-	Mon, 21 Aug 2023 05:31:09 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qXxZb-00DAtN-1q;
+	Mon, 21 Aug 2023 05:35:31 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXxVH-00DAGs-0U
+	id 1qXxZZ-00DAsh-1G
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Aug 2023 05:31:07 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37L54abN025014;
-	Mon, 21 Aug 2023 05:30:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=c8uUEEZWKdhdjMO4DdNXq1RHRVYBuI0mJCa8u5UnvD0=;
- b=nXIV8CmzyHyecUi3DLWXPyDfB23Dj/xN9tf/48gvlOfVv489UPpOvEAOOd/w1bl8RoCv
- A1vlYRy5lZGZ4YfuD4NxPpSjUhC6fwpYqKsFugWasbzXwAJnR4d90grvsrXl4qE7t5mn
- eAjszgKrg846IFsAdrGQMGtkqgCJha65HNAJkHdRl4PVcKIdMhyUCShvWBma+AtMGDU4
- 8rFTxvTMcmhX0mjLH4WAlyNu9n/4P8NIjIsqLUQRqh0kcs7p3I5DL1rT6/bwy+wira9h
- eHySLtYaWeYLB/5TRmmjvqdWJpGzgHb8SDxIurrfvYZIHsf/w1vwFMrmmvIFEcYAYk0d tg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sjmpxk0d6-1
+	Mon, 21 Aug 2023 05:35:30 +0000
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37L500XT015608;
+	Mon, 21 Aug 2023 05:35:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=vZqBlmH2wGR+UOS/VlA3481JwpGSHATnLCf/CSV0MrY=;
+ b=YyZiPZ/KhESrdVk0qjt8gG/bzdbaHkcA2VovSgES5OTKwmbm69pk1lGpINn0hu0UIy+c
+ O6HhWEGsEAnLLF+eRP3S9H9Y7YW1rS5oPF2UIK0FVRYp+O0nw8F2ddQvb7vGaW1Xts3i
+ I7sprQtqxR1VSRvSWertw5at/kYxS7KQpK+JK8TMFwvFmKT9nMH12FG2wfx+q67GJHzV
+ 5CLn4brG1jsTyfe86jHXEjrOB1Lakh+RpsalTpbeCP+7sMOS/HXn3qHl6BfghiB+/Cxt
+ TD5U2cP2XwyXkzanS0TU/xlD0KmF2M8pbyc0Z63DS6Gjs2r/OkeiVCj+mcIR2oDUdLR5 EQ== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sjnu12q0k-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Aug 2023 05:30:37 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37L5UavZ031646
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Aug 2023 05:30:36 GMT
-Received: from [10.201.3.104] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 20 Aug
- 2023 22:30:33 -0700
-Message-ID: <1ee5a95c-2fe4-2163-5ff2-0c01d05c30cf@quicinc.com>
-Date: Mon, 21 Aug 2023 11:00:05 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 1/3] mtd: rawnand: qcom: Update read_loc size to 512
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
-References: <20230818145101.23825-1-quic_mdalam@quicinc.com>
- <20230818145101.23825-2-quic_mdalam@quicinc.com>
- <20230818215908.0e60b00b@xps-13>
-Content-Language: en-US
+	Mon, 21 Aug 2023 05:35:21 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37L5ZIVt019528;
+	Mon, 21 Aug 2023 05:35:18 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3sjptkewpd-1;
+	Mon, 21 Aug 2023 05:35:18 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37L5ZIVl019523;
+	Mon, 21 Aug 2023 05:35:18 GMT
+Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 37L5ZHNO019521;
+	Mon, 21 Aug 2023 05:35:18 +0000
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+	id E232A12010C6; Mon, 21 Aug 2023 11:05:16 +0530 (IST)
 From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20230818215908.0e60b00b@xps-13>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: quic_mdalam@quicinc.com, quic_srichara@quicinc.com
+Subject: [PATCH] mtd: rawnand: qcom: Fix build issue
+Date: Mon, 21 Aug 2023 11:05:13 +0530
+Message-Id: <20230821053513.13728-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nL12fBierDu-ThJenNzDjeTF1ZFvVonP
-X-Proofpoint-ORIG-GUID: nL12fBierDu-ThJenNzDjeTF1ZFvVonP
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Tn_DHjJjhkmqpd2QvulhN1VearquCJa6
+X-Proofpoint-GUID: Tn_DHjJjhkmqpd2QvulhN1VearquCJa6
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-20_15,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- adultscore=0 spamscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308210051
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ impostorscore=0 clxscore=1015 mlxlogscore=795 suspectscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308210051
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230820_223103_198551_C283F958 
-X-CRM114-Status: GOOD (  21.42  )
+X-CRM114-CacheID: sfid-20230820_223529_564264_2D10C1CC 
+X-CRM114-Status: GOOD (  13.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,44 +93,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiA4LzE5LzIwMjMgMToyOSBBTSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSBNZCwKPiAK
-PiBxdWljX21kYWxhbUBxdWljaW5jLmNvbSB3cm90ZSBvbiBGcmksIDE4IEF1ZyAyMDIzIDIwOjIw
-OjU5ICswNTMwOgo+IAo+PiBGb3IgcGFyYW1ldGVyIHBhZ2UgcmVhZCB1cHBlciBsYXllciBpcyBw
-YXNzaW5nIGxlbgo+PiBhcyAyNTYgYnl0ZXMgYW5kIGlmIHdlIHRyeSB0byBjb25maWd1cmUgMjU2
-IGJ5dGVzCj4+IHNpemUgaW4gcmVhZCBsb2FjdGlvbiByZWdpc3RlciB0aGVuIHN1YnNlcXVlbnQg
-YmFtCj4+IHRyYW5zYWN0aW9uIGlzIGdldHRpbmcgdGltZWQgb3V0IGZvciA0SyBuYW5kIGRldmlj
-ZXMuCj4+IFNvIHVwZGF0ZSB0aGlzIGxlbmd0aCBhcyBvbmUgc3RlcCBzaXplIGlmIGl0cwo+PiBs
-ZXNzIHRoYW4gTkFORENfU1RFUF9TSVpFLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTcmljaGFyYW4g
-UmFtYWJhZGhyYW4gPHF1aWNfc3JpY2hhcmFAcXVpY2luYy5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6
-IE1kIFNhZHJlIEFsYW0gPHF1aWNfbWRhbGFtQHF1aWNpbmMuY29tPgo+IAo+IEknbSBmaW5lIHdp
-dGggcGF0Y2hlcyAyIGFuZCAzIGFuZCB3aWxsIHRha2UgdGhlbS4gQnV0IHRoaXMgb25lIGRvZXMg
-bm90Cj4gc2VlbSBsZWdpdGltYXRlLiBJIGRvbid0IGxpa2UgaXQuIEFyZSB5b3Ugc3VyZSB0aGUg
-RUNDIGVuZ2luZSB3YXMgbm90Cj4gZW5hYmxlZCB3aGVuIGl0IHRpbWVkIG91dD8gRGVmYXVsdCBz
-aG91bGQgYmUgaGF2aW5nIHRoZSBFQ0MgZGlzYWJsZWQKPiBhbmQgaXQgc2hvdWxkIGp1c3QgZ2V0
-IGVuYWJsZWQgd2hlbiB5b3UgbmVlZCBpdC4gVGhlcmUgaXMgbm8gcmVhc29uCj4gd2h5LCBzcGVj
-aWZpY2FsbHkgb24gTkFORCBkZXZpY2VzLCBpdCB3b3VsZCBub3QgYmUgcG9zc2libGUgdG8gcmVh
-ZCAyNTYKPiBieXRlcy4KPiAKCiAgICBZZXMgZGVmYXVsdCBFQ0MgZW5naW5lIGlzIGRpc2FibGVk
-IG9ubHkuIFdoZW4gbGVuZ3RoIHdhcyA1MTIgYnl0ZXMgZm9yCiAgICBwYXJhbWV0ZXIgcGFnZSBy
-ZWFkIGl0IHdhcyBjYXVzaW5nIEJBTSB0aW1lb3V0IGVycm9yIG9uIFNEWDY1LCBidXQgaXQKICAg
-IHdhcyB3b3JraW5nIGZpbmUgb24gSVBRODA3eC4KICAgIFdlIHdpbGwgZHJvcCB0aGlzIHBhdGNo
-IGZvciBub3cuIExldCBtZSBjaGVjayBvbiBTRFg2NSBhbmQgdHJ5IHRvIGZpeAogICAgYWxsIHRo
-ZSBlcnJvci4KCj4+IC0tLQo+PiAgIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyB8
-IDMgKysrCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jIGIvZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvcWNvbV9uYW5kYy5jCj4+IGluZGV4IGQ0YmEwZDA0Yzk3MC4uNDEzZTIxNGM4ZTg3IDEw
-MDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPj4gKysrIGIv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4+IEBAIC0yODg1LDYgKzI4ODUsOSBA
-QCBzdGF0aWMgaW50IHFjb21fcGFyYW1fcGFnZV90eXBlX2V4ZWMoc3RydWN0IG5hbmRfY2hpcCAq
-Y2hpcCwgIGNvbnN0IHN0cnVjdCBuYW5kXwo+PiAgIAlvcF9pZCA9IHFfb3AuZGF0YV9pbnN0cl9p
-ZHg7Cj4+ICAgCWxlbiA9IG5hbmRfc3Vib3BfZ2V0X2RhdGFfbGVuKHN1Ym9wLCBvcF9pZCk7Cj4+
-ICAgCj4+ICsJaWYgKGxlbiA8IE5BTkRDX1NURVBfU0laRSkKPj4gKwkJbGVuID0gTkFORENfU1RF
-UF9TSVpFOwo+PiArCj4+ICAgCW5hbmRjX3NldF9yZWFkX2xvYyhjaGlwLCAwLCAwLCAwLCBsZW4s
-IDEpOwo+PiAgIAo+PiAgIAlpZiAoIW5hbmRjLT5wcm9wcy0+cXBpY192Mikgewo+IAo+IAo+IFRo
-YW5rcywKPiBNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Fix the build issue, after removing unused variable nandc
+in qcom_parse_instructions() function.
+
+Fixes: 0bb2bd18efe8 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
+Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 370a779610e2..6aff45f32260 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2593,7 +2593,6 @@ static int qcom_parse_instructions(struct nand_chip *chip,
+ 				    const struct nand_subop *subop,
+ 				    struct qcom_op *q_op)
+ {
+-	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	const struct nand_op_instr *instr = NULL;
+ 	unsigned int op_id;
+ 	int i, ret;
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
