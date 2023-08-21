@@ -4,54 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B32FDEE49A5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 08:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7D63EE4996
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 17:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SvvMEVq5n5wrqq8cB6bA7bI48pzCslCrMwEngdRYZFI=; b=dzbybqkUj6+32m
-	H65uQgrwU4ufev/gfgOWsIQKyl7Q+aJYcwic/lCk0kO6/KsuFNVOkqzicgBv7drVr51bDnASsFsAk
-	HGKCNxnwKnH0n4xoDI3E197IsLA9rM9SrBpKx7vm9U8AHCXUIPYUc3PR1+fX8uQ2kZX6LOaokI2wl
-	qup/UdBrfNukAkJISTQtLjGqyqF9+shJfNdkauCwrPWo97UR5/Um1+TfaU33W9GiS8LkhM5IlrjTH
-	a4Kh7fe4T/tXtrt+p+Rbdstfh4TyI+SDLwySzRCdGq1w/B0SybPdlE8+YNOKFaH/Nhg05i3i1ioOk
-	PuYVFnkVNeskZ7fLAOSg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=r0nBEWpD0Td4Q+uZ7nMgIwV+XUDKNKVbV2A/qp4C1n8=; b=eysptgZczh4W+6
+	6oEe9eOKYwlKWmlsGFjaBelUwnJPDle66ei3+KaMoKuejU9A+whZPutgm4wOV+bEfVacwze5m1klH
+	IkkhUCCyBAKrYMwXOmqoZyUPeeZ0s3N6CGatnrtwO5g6uy9nIcAb6DHX7HjLBaq0ezAowqa7RVPMo
+	KFeiBTaoSpgWYR2Z3gfZsDfNvkFUkuWQPTPT1oqXmDQA4JcvQiUUdMwjwmiy7lEFJXYUKOLUWF59r
+	BNo77XZMMyEiNxvmt+kaWVi1ujw7UTE2mSEjLnQW0z3ysJ/9MBdBdXhFWvvpQpbrct4IxrDYjXtMx
+	Df1Mv8p1sE0hKZezDYmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY0Yp-00DWMO-2u;
-	Mon, 21 Aug 2023 08:46:55 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1qY8kS-00ERa6-33;
+	Mon, 21 Aug 2023 17:31:28 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY0Ym-00DWLN-1x
+	id 1qY8kQ-00ERYq-1Z
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Aug 2023 08:46:54 +0000
-Received: from kwepemm600014.china.huawei.com (unknown [172.30.72.54])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RTmJZ2XdCz1L8xC;
-	Mon, 21 Aug 2023 16:45:18 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.175.28) by
- kwepemm600014.china.huawei.com (7.193.23.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 21 Aug 2023 16:46:44 +0800
-From: Yi Yang <yiyang13@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <martin.blumenstingl@googlemail.com>, <heiko@sntech.de>,
-	<jernej.skrabec@gmail.com>, <nicolas.ferre@microchip.com>,
-	<linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: rawnand: omap2: Fix check 0 for platform_get_irq()
-Date: Mon, 21 Aug 2023 16:46:22 +0800
-Message-ID: <20230821084622.218442-1-yiyang13@huawei.com>
-X-Mailer: git-send-email 2.17.1
+	Mon, 21 Aug 2023 17:31:27 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 58FE5636E3;
+	Mon, 21 Aug 2023 17:31:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA5AC433C7;
+	Mon, 21 Aug 2023 17:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692639084;
+	bh=h20Kkl5UnPX7qAyLV9K3yW7xdsP/ZAcy7V8OZ5SeLEw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZLvhkTSUncZ/bD8I/q4eCrfRw0ElcvysAb0wVtfvPIRt5Hhwm8m2mH50uIl7AwQao
+	 NPAj4HxoCBw216Ug2JMTsUydXHuAw096mCXLPHQe+Lld2np/zhZu64wP/SqC8WVqsB
+	 mslia/bHKMgDJReVCvatiIeFXXBBpJ6GkzZPpzk+anUr5yG1jDep2DtRDWQs0yl/74
+	 Uxi27CM0ds8gfvRiizbaQPQRCNDc+M72diw5VgzElBvRhpZ52oXq8DGqr0+J0lyVKH
+	 8Jp9c9d3JJA8GVM5dtZmLbA/XszwkNUNs5rNYkxt5GxIc/e4l6m1vQzdcDpeOfXVDz
+	 HshgJrHoyRIjw==
+Received: (nullmailer pid 2000677 invoked by uid 1000);
+	Mon, 21 Aug 2023 17:31:22 -0000
+Date: Mon, 21 Aug 2023 12:31:22 -0500
+From: Rob Herring <robh@kernel.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Randy Dunlap <rdunlap@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/8] dt-bindings: mtd: add basic bindings for UBI
+Message-ID: <169263908218.2000617.16931192155432403196.robh@kernel.org>
+References: <cover.1691717480.git.daniel@makrotopia.org>
+ <a640bb10e6fbaeef96efdb9e8b666ca39e993589.1691717480.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.175.28]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600014.china.huawei.com (7.193.23.54)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <a640bb10e6fbaeef96efdb9e8b666ca39e993589.1691717480.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230821_014652_889221_B42DFDCA 
-X-CRM114-Status: UNSURE (   9.35  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230821_103126_614879_9B72B496 
+X-CRM114-Status: GOOD (  11.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,44 +77,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Refer to commit a85a6c86c25b ("driver core: platform: Clarify that IRQ
-0 is invalid"). Do not check 0 for platform_get_irq(), because
-platform_get_irq() never return zero, and use the return error code of
-platform_get_irq() instead of -ENODEV.
 
-Signed-off-by: Yi Yang <yiyang13@huawei.com>
----
- drivers/mtd/nand/raw/omap2.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On Fri, 11 Aug 2023 02:36:37 +0100, Daniel Golle wrote:
+> Add basic bindings for UBI devices and volumes.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../bindings/mtd/partitions/linux,ubi.yaml    | 65 +++++++++++++++++++
+>  .../bindings/mtd/partitions/ubi-volume.yaml   | 36 ++++++++++
+>  2 files changed, 101 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+> 
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index c45bef6158e7..cf76afc6c0ed 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -1881,8 +1881,8 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 
- 	case NAND_OMAP_PREFETCH_IRQ:
- 		info->gpmc_irq_fifo = platform_get_irq(info->pdev, 0);
--		if (info->gpmc_irq_fifo <= 0)
--			return -ENODEV;
-+		if (info->gpmc_irq_fifo < 0)
-+			return info->gpmc_irq_fifo;
- 		err = devm_request_irq(dev, info->gpmc_irq_fifo,
- 				       omap_nand_irq, IRQF_SHARED,
- 				       "gpmc-nand-fifo", info);
-@@ -1894,8 +1894,8 @@ static int omap_nand_attach_chip(struct nand_chip *chip)
- 		}
- 
- 		info->gpmc_irq_count = platform_get_irq(info->pdev, 1);
--		if (info->gpmc_irq_count <= 0)
--			return -ENODEV;
-+		if (info->gpmc_irq_count < 0)
-+			return info->gpmc_irq_count;
- 		err = devm_request_irq(dev, info->gpmc_irq_count,
- 				       omap_nand_irq, IRQF_SHARED,
- 				       "gpmc-nand-count", info);
--- 
-2.17.1
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
 ______________________________________________________
