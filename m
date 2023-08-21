@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973ABEE49AB
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A1CDEE49A6
 	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 03:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,27 +12,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+Q25di2RmC8EgQXEhMcsIAT3mJF+04S9Y8LJTNuAV3w=; b=Pf4IBPaBvP347V
-	w1Nj3LueTRhEVzFRGmzEKNTSj+AOFbYAepU1szJOVhUI+hwvkfW3WqfjIs8xbOxZzvsjuq2SuO/Zl
-	xQes6sPSqQbFq2nA+qhmITdMkmmkffGHZFcc5/9qkylYb/mzmegy8pD5Tf4qh6BlAE52JVyN8V3Me
-	ZbsmXyozmE7L6d7OGuVk3rMFUIfspLv+WP0TvjZKFSRietcyUoZqDyZspvTU9OQ+yo0E8wu+1Y74N
-	dIfZahK2GXw4ctJgc4Om5EX1kWxrfNC3wglcgUBfv4VSLWE1mZ3kbODS/W1xEjcAm+vzx4ESbGDyv
-	i3USZDKhIwT0AzdLCcHw==;
+	List-Owner; bh=LgWTPdfnNmJHR4d85Q+y5x3F07kc7myaYFHDy4LwJqw=; b=h7MiuVXu9POAjH
+	ASkdM8uAW8fcUv4wgk4t5ol31UfO7SN3kOPtuhcKO/p7lzUZkPeN0VfyLFUvfD6uW4T4DOgy+K08X
+	7Q7v+QnW3R77XxG3VZnRO3cRE1ZBqG6wSH3Lv+/OXy5ib6CJRpvs9P9ZhOmyTxIAh/z6qtl3rOxzw
+	5m3cLUo9aquLXmAqbvXGqRyXJ/DvnKZ26YXNppN7x3r5JAt7MjkIpQhtuVOG8ZgwG9AYp/mKG7ZX5
+	naT21kIjluJCoQKjLoE1ECNoiNzdmct3iBpvj0dM8msLOZlnIUB2BA3xkKOxeMsIJjTJ8J+FpyoXg
+	czDQG9ABR4vYCDWzLaDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXvQr-00Cwc6-0v;
-	Mon, 21 Aug 2023 03:18:21 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1qXvQq-00Cwba-1L;
+	Mon, 21 Aug 2023 03:18:20 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXvQc-00CwTF-0j;
+	id 1qXvQb-00CwTE-33;
 	Mon, 21 Aug 2023 03:18:08 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.56])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RTcyb5stCztRjV;
-	Mon, 21 Aug 2023 11:14:15 +0800 (CST)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RTczJ6Tf9zLp6H;
+	Mon, 21 Aug 2023 11:14:52 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
  (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 21 Aug
- 2023 11:17:56 +0800
+ 2023 11:17:54 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <miquel.raynal@bootlin.com>
 CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
@@ -49,9 +49,9 @@ CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
 	<samuel@sholland.org>, <stefan@agner.ch>, <tudor.ambarus@linaro.org>,
 	<u.kleine-koenig@pengutronix.de>, <vigneshr@ti.com>, <vz@mleia.com>,
 	<wens@csie.org>, <yangyingliang@huawei.com>
-Subject: [PATCH -next v3 03/12] mtd: rawnand: fsmc: Use helper function devm_clk_get_enabled()
-Date: Mon, 21 Aug 2023 11:17:28 +0800
-Message-ID: <20230821031737.1973183-4-lizetao1@huawei.com>
+Subject: [PATCH -next v3 01/12] mtd: spear_smi: Use helper function devm_clk_get_enabled()
+Date: Mon, 21 Aug 2023 11:17:26 +0800
+Message-ID: <20230821031737.1973183-2-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230821031737.1973183-1-lizetao1@huawei.com>
 References: <20230818101004.4f2cd343@xps-13>
@@ -62,8 +62,9 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230820_201806_643889_9DBC233B 
-X-CRM114-Status: GOOD (  12.13  )
+X-CRM114-CacheID: sfid-20230820_201806_496718_2BACE44A 
+X-CRM114-Status: UNSURE (   9.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,68 +85,71 @@ Since commit 7ef9651e9792 ("clk: Provide new devm_clk helpers for prepared
 and enabled clocks"), devm_clk_get() and clk_prepare_enable() can now be
 replaced by devm_clk_get_enabled() when driver enables (and possibly
 prepares) the clocks for the whole lifetime of the device. Moreover, it is
-no longer necessary to unprepare and disable the clocks explicitly. The
-label "disable_clk" no longer makes sense, rename it to "disable_fsmc".
+no longer necessary to unprepare and disable the clocks explicitly, so drop
+the label "err_irq".
 
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
 v2 -> v3: Modify the syntax error in the commit message.
-v2: https://lore.kernel.org/all/20230818074642.308166-4-lizetao1@huawei.com/
-v1 -> v2: Modify commit message and rename the label "disable_clk" to "disable_fsmc"
-v1: https://lore.kernel.org/all/20230817024509.3951629-4-lizetao1@huawei.com/
+v2: https://lore.kernel.org/all/20230818074642.308166-2-lizetao1@huawei.com/
+v1 -> v2: Modify commit message.
+v1: https://lore.kernel.org/all/20230817024509.3951629-2-lizetao1@huawei.com/
 
- drivers/mtd/nand/raw/fsmc_nand.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/mtd/devices/spear_smi.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 7b4742420dfc..7d587284c9a5 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -1066,16 +1066,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	host->regs_va = base + FSMC_NOR_REG_SIZE +
- 		(host->bank * FSMC_NAND_BANK_SZ);
- 
--	host->clk = devm_clk_get(&pdev->dev, NULL);
-+	host->clk = devm_clk_get_enabled(&pdev->dev, NULL);
- 	if (IS_ERR(host->clk)) {
- 		dev_err(&pdev->dev, "failed to fetch block clock\n");
- 		return PTR_ERR(host->clk);
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index 93bca5225116..0a35e5236ae5 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -993,21 +993,17 @@ static int spear_smi_probe(struct platform_device *pdev)
+ 		dev->num_flashes = MAX_NUM_FLASH_CHIP;
  	}
  
--	ret = clk_prepare_enable(host->clk);
--	if (ret)
--		return ret;
--
- 	/*
- 	 * This device ID is actually a common AMBA ID as used on the
- 	 * AMBA PrimeCell bus. However it is not a PrimeCell.
-@@ -1111,7 +1107,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		if (!host->read_dma_chan) {
- 			dev_err(&pdev->dev, "Unable to get read dma channel\n");
- 			ret = -ENODEV;
--			goto disable_clk;
-+			goto disable_fsmc;
- 		}
- 		host->write_dma_chan = dma_request_channel(mask, filter, NULL);
- 		if (!host->write_dma_chan) {
-@@ -1155,9 +1151,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- release_dma_read_chan:
- 	if (host->mode == USE_DMA_ACCESS)
- 		dma_release_channel(host->read_dma_chan);
--disable_clk:
-+disable_fsmc:
- 	fsmc_nand_disable(host);
--	clk_disable_unprepare(host->clk);
+-	dev->clk = devm_clk_get(&pdev->dev, NULL);
++	dev->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+ 	if (IS_ERR(dev->clk)) {
+ 		ret = PTR_ERR(dev->clk);
+ 		goto err;
+ 	}
  
+-	ret = clk_prepare_enable(dev->clk);
+-	if (ret)
+-		goto err;
+-
+ 	ret = devm_request_irq(&pdev->dev, irq, spear_smi_int_handler, 0,
+ 			       pdev->name, dev);
+ 	if (ret) {
+ 		dev_err(&dev->pdev->dev, "SMI IRQ allocation failed\n");
+-		goto err_irq;
++		goto err;
+ 	}
+ 
+ 	mutex_init(&dev->lock);
+@@ -1020,14 +1016,11 @@ static int spear_smi_probe(struct platform_device *pdev)
+ 		ret = spear_smi_setup_banks(pdev, i, pdata->np[i]);
+ 		if (ret) {
+ 			dev_err(&dev->pdev->dev, "bank setup failed\n");
+-			goto err_irq;
++			goto err;
+ 		}
+ 	}
+ 
+ 	return 0;
+-
+-err_irq:
+-	clk_disable_unprepare(dev->clk);
+ err:
  	return ret;
  }
-@@ -1182,7 +1177,6 @@ static void fsmc_nand_remove(struct platform_device *pdev)
- 			dma_release_channel(host->write_dma_chan);
- 			dma_release_channel(host->read_dma_chan);
- 		}
--		clk_disable_unprepare(host->clk);
+@@ -1056,8 +1049,6 @@ static int spear_smi_remove(struct platform_device *pdev)
+ 		WARN_ON(mtd_device_unregister(&flash->mtd));
  	}
+ 
+-	clk_disable_unprepare(dev->clk);
+-
+ 	return 0;
  }
  
 -- 
