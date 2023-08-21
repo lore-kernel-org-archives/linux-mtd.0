@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78FAAEE49AA
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 03:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6062BEE49A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 03:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I+7mRkk0vHj/yVPaYa2kDB09nkLRtPwCI5hd/hpdnQw=; b=UMAKE2SP20dCP9
-	ZazKfUF/3y0Vocz003+nJ+9K5O7BCOTye1i342zIbszwIaqJNTThtI0//sztywgi06TszbVNqEcNC
-	/HR70EYal+jddhVUqEg/TMvFHHGSDuc0czHCGfE6auWYMNKOWdYy/2bvU43LFt9mKoFfn14c02aU1
-	esIVhMEuzbExVJMJgChDYe3gcV6mbV/CTSXhcPWuvjcb0rf6T5YZdHNvjFpaM1lo+Kw2ZDvMq5BXL
-	+3xrreByPe+QRIj1MbIrWSOzCmnH1aT+clLzdcaGvjTeq87PFdpxSnRiYNA1M5iDD/FvQYy1NmIpP
-	nelEUnVtjsxaiTzn/uzQ==;
+	List-Owner; bh=32P2BzI6Tn264BRttKgyelmyKKbFC4WvLlAf8vVvaUw=; b=QTZ35NaK3qA3nM
+	SCKzD6M0/HxjPf2d58tr8nEBbNCVAvby/neboBGM1drRtK+JETIuIKEbu/xzJz4xqCa0Ap0UgWZWY
+	ytzKvQfdlQ+qqzkGwFcT3LbFSdRlz0SoxTvKpdik9TpFWnS/5Fxmg3qM3dGChyxwWo+SJqfDO6KM/
+	+l5rG7EuydfmV7bYWG04w9aqCOeQ0+dD0GJEyVpFnA528tuib224KreVUArTT5C/FyZGbNEHWjAEK
+	+RUPvvPJmF1Hnh6mmesNhJcN/HLpOjoAxJIX9lDERMr1ryBe42VeDRZ4cjX5eHmy+kC0homxKp+Sd
+	Z3mLQtAP9v17Q4/w662w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXvRE-00CwvE-1k;
-	Mon, 21 Aug 2023 03:18:44 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1qXvRJ-00Cx1i-2W;
+	Mon, 21 Aug 2023 03:18:49 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXvQg-00CwVc-0J;
-	Mon, 21 Aug 2023 03:18:12 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RTd1H16KRzrSDK;
-	Mon, 21 Aug 2023 11:16:35 +0800 (CST)
+	id 1qXvQi-00CwVF-1D;
+	Mon, 21 Aug 2023 03:18:14 +0000
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.56])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RTd1J6c7jz1L9P0;
+	Mon, 21 Aug 2023 11:16:36 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
  (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 21 Aug
- 2023 11:18:00 +0800
+ 2023 11:18:02 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <miquel.raynal@bootlin.com>
 CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
@@ -49,9 +49,9 @@ CC: <alexandre.torgue@foss.st.com>, <angelogioacchino.delregno@collabora.com>,
 	<samuel@sholland.org>, <stefan@agner.ch>, <tudor.ambarus@linaro.org>,
 	<u.kleine-koenig@pengutronix.de>, <vigneshr@ti.com>, <vz@mleia.com>,
 	<wens@csie.org>, <yangyingliang@huawei.com>
-Subject: [PATCH -next v3 07/12] mtd: rawnand: mtk: Use helper function devm_clk_get_enabled()
-Date: Mon, 21 Aug 2023 11:17:32 +0800
-Message-ID: <20230821031737.1973183-8-lizetao1@huawei.com>
+Subject: [PATCH -next v3 08/12] mtd: rawnand: stm32_fmc2: Use helper function devm_clk_get_enabled()
+Date: Mon, 21 Aug 2023 11:17:33 +0800
+Message-ID: <20230821031737.1973183-9-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230821031737.1973183-1-lizetao1@huawei.com>
 References: <20230818101004.4f2cd343@xps-13>
@@ -62,8 +62,8 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230820_201810_630633_69F70BD5 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20230820_201812_866068_47AA122E 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,161 +85,68 @@ and enabled clocks"), devm_clk_get() and clk_prepare_enable() can now be
 replaced by devm_clk_get_enabled() when driver enables (and possibly
 prepares) the clocks for the whole lifetime of the device. Moreover, it is
 no longer necessary to unprepare and disable the clocks explicitly, so drop
-the label "clk_disable". And both mtk_nfc_enable_clk() and
-mtk_nfc_disable_clk() now have a single user, which is the resume or
-suspend callback, so drop this two helper function and just move related
-operations in the resume or suspend function.
+the label "err_clk_disable".
 
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
 v2 -> v3: Modify the syntax error in the commit message.
-v2; https://lore.kernel.org/all/20230818074642.308166-8-lizetao1@huawei.com/
-v1 -> v2: Modify commit message and drop two helper functions
-mtk_nfc_enable_clk() and mtk_nfc_disable_clk().
-v1: https://lore.kernel.org/all/20230817024509.3951629-8-lizetao1@huawei.com/
+v2: https://lore.kernel.org/all/20230818074642.308166-9-lizetao1@huawei.com/
+v1 -> v2: Modify commit message.
+v1: https://lore.kernel.org/all/20230817024509.3951629-9-lizetao1@huawei.com/
 
- drivers/mtd/nand/raw/mtk_nand.c | 62 ++++++++++-----------------------
- 1 file changed, 19 insertions(+), 43 deletions(-)
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index b6eb8cb6b5e9..29c8bddde67f 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -1118,32 +1118,6 @@ static irqreturn_t mtk_nfc_irq(int irq, void *id)
- 	return IRQ_HANDLED;
- }
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index 2f9e43f64dd7..88811139aaf5 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -1951,21 +1951,17 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
  
--static int mtk_nfc_enable_clk(struct device *dev, struct mtk_nfc_clk *clk)
--{
--	int ret;
+ 	init_completion(&nfc->complete);
+ 
+-	nfc->clk = devm_clk_get(nfc->cdev, NULL);
+-	if (IS_ERR(nfc->clk))
++	nfc->clk = devm_clk_get_enabled(nfc->cdev, NULL);
++	if (IS_ERR(nfc->clk)) {
++		dev_err(dev, "can not get and enable the clock\n");
+ 		return PTR_ERR(nfc->clk);
 -
--	ret = clk_prepare_enable(clk->nfi_clk);
+-	ret = clk_prepare_enable(nfc->clk);
 -	if (ret) {
--		dev_err(dev, "failed to enable nfi clk\n");
+-		dev_err(dev, "can not enable the clock\n");
 -		return ret;
--	}
+ 	}
+ 
+ 	rstc = devm_reset_control_get(dev, NULL);
+ 	if (IS_ERR(rstc)) {
+ 		ret = PTR_ERR(rstc);
+ 		if (ret == -EPROBE_DEFER)
+-			goto err_clk_disable;
++			return ret;
+ 	} else {
+ 		reset_control_assert(rstc);
+ 		reset_control_deassert(rstc);
+@@ -2018,9 +2014,6 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
+ 	sg_free_table(&nfc->dma_data_sg);
+ 	sg_free_table(&nfc->dma_ecc_sg);
+ 
+-err_clk_disable:
+-	clk_disable_unprepare(nfc->clk);
 -
--	ret = clk_prepare_enable(clk->pad_clk);
--	if (ret) {
--		dev_err(dev, "failed to enable pad clk\n");
--		clk_disable_unprepare(clk->nfi_clk);
--		return ret;
--	}
--
--	return 0;
--}
--
--static void mtk_nfc_disable_clk(struct mtk_nfc_clk *clk)
--{
--	clk_disable_unprepare(clk->nfi_clk);
--	clk_disable_unprepare(clk->pad_clk);
--}
--
- static int mtk_nfc_ooblayout_free(struct mtd_info *mtd, int section,
- 				  struct mtd_oob_region *oob_region)
- {
-@@ -1545,40 +1519,36 @@ static int mtk_nfc_probe(struct platform_device *pdev)
- 		goto release_ecc;
- 	}
- 
--	nfc->clk.nfi_clk = devm_clk_get(dev, "nfi_clk");
-+	nfc->clk.nfi_clk = devm_clk_get_enabled(dev, "nfi_clk");
- 	if (IS_ERR(nfc->clk.nfi_clk)) {
- 		dev_err(dev, "no clk\n");
- 		ret = PTR_ERR(nfc->clk.nfi_clk);
- 		goto release_ecc;
- 	}
- 
--	nfc->clk.pad_clk = devm_clk_get(dev, "pad_clk");
-+	nfc->clk.pad_clk = devm_clk_get_enabled(dev, "pad_clk");
- 	if (IS_ERR(nfc->clk.pad_clk)) {
- 		dev_err(dev, "no pad clk\n");
- 		ret = PTR_ERR(nfc->clk.pad_clk);
- 		goto release_ecc;
- 	}
- 
--	ret = mtk_nfc_enable_clk(dev, &nfc->clk);
--	if (ret)
--		goto release_ecc;
--
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		ret = -EINVAL;
--		goto clk_disable;
-+		goto release_ecc;
- 	}
- 
- 	ret = devm_request_irq(dev, irq, mtk_nfc_irq, 0x0, "mtk-nand", nfc);
- 	if (ret) {
- 		dev_err(dev, "failed to request nfi irq\n");
--		goto clk_disable;
-+		goto release_ecc;
- 	}
- 
- 	ret = dma_set_mask(dev, DMA_BIT_MASK(32));
- 	if (ret) {
- 		dev_err(dev, "failed to set dma mask\n");
--		goto clk_disable;
-+		goto release_ecc;
- 	}
- 
- 	platform_set_drvdata(pdev, nfc);
-@@ -1586,14 +1556,11 @@ static int mtk_nfc_probe(struct platform_device *pdev)
- 	ret = mtk_nfc_nand_chips_init(dev, nfc);
- 	if (ret) {
- 		dev_err(dev, "failed to init nand chips\n");
--		goto clk_disable;
-+		goto release_ecc;
- 	}
- 
- 	return 0;
- 
--clk_disable:
--	mtk_nfc_disable_clk(&nfc->clk);
--
- release_ecc:
- 	mtk_ecc_release(nfc->ecc);
- 
-@@ -1618,7 +1585,6 @@ static void mtk_nfc_remove(struct platform_device *pdev)
- 	}
- 
- 	mtk_ecc_release(nfc->ecc);
--	mtk_nfc_disable_clk(&nfc->clk);
+ 	return ret;
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -1626,7 +1592,8 @@ static int mtk_nfc_suspend(struct device *dev)
- {
- 	struct mtk_nfc *nfc = dev_get_drvdata(dev);
+@@ -2045,8 +2038,6 @@ static void stm32_fmc2_nfc_remove(struct platform_device *pdev)
+ 	sg_free_table(&nfc->dma_data_sg);
+ 	sg_free_table(&nfc->dma_ecc_sg);
  
--	mtk_nfc_disable_clk(&nfc->clk);
-+	clk_disable_unprepare(nfc->clk.nfi_clk);
-+	clk_disable_unprepare(nfc->clk.pad_clk);
- 
- 	return 0;
+-	clk_disable_unprepare(nfc->clk);
+-
+ 	stm32_fmc2_nfc_wp_enable(nand);
  }
-@@ -1641,9 +1608,18 @@ static int mtk_nfc_resume(struct device *dev)
  
- 	udelay(200);
- 
--	ret = mtk_nfc_enable_clk(dev, &nfc->clk);
--	if (ret)
-+	ret = clk_prepare_enable(nfc->clk.nfi_clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable nfi clk\n");
- 		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(nfc->clk.pad_clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable pad clk\n");
-+		clk_disable_unprepare(nfc->clk.nfi_clk);
-+		return ret;
-+	}
- 
- 	/* reset NAND chip if VCC was powered off */
- 	list_for_each_entry(chip, &nfc->chips, node) {
 -- 
 2.34.1
 
