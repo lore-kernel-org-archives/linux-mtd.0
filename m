@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B08D7EE49A5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 07:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAE37EE49A5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 07:58:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+qRcTZ4izI1UiBiDWjB4dTxz3ZFaui8Tl4XQziR/RhY=; b=zEWU+RAT7btdjC
-	vQOhFfKElHfDPbEn/UX5RI+1HtBYN7wuyNZx2DSio6wL485/McygZdQW1faOCjfigDpsfz4bsoVcD
-	aULy9+PI6toovdPsZ/huYlOC+oDLj4+PdwiOe2POdKPv6Wzd3yEuLVVUhS2KyRNPB0kgLKhDNmf5L
-	Kd3MlSmtUWtQqNWsjk+2VERFONmYAX2EzVgETzkiX2A+rVACR35FBPm2q98tSv/yXs9cLAG48x5em
-	HJ19AqwhmSP9G0WmCAihpom7MuP0sjFHnEfkYJJNT5ZyDmeqGjQgYIjAIFJue6d0a+KHXXGOO5VmK
-	8HQYxNo9SjdG4gAn38Tg==;
+	List-Owner; bh=4N9NHKc2YnBGYUnBAYIJV0ihvLvpkHONGlOzHf889XI=; b=PcJKW6EYVyckP+
+	ArJsDbjeLRKwyZH78Litm2GQyoBN0rdTTcUmPe5qczBZi+QXjmvVDxWZ1bWPWdHRRkqLxtJNWnJEb
+	U4ySwTKWy3M05sLSLkT7I1QrVPcx7hZ5kOQfFJjObI8u9pu2hB10PuC90N7SiwE9v+Db1P7wILAvs
+	uAK05F1xZtCLGFzA+z4OSdmdBLwbsvTknvFkKFiAdFJTlIs5ybpWRumVmAQ4ftWPuta2rAdCm+PSc
+	fP0YNj80FPaOL4R3AthmnvZbEOxkeqG8eDxyk1zd9fxV8qdg4Wn35gJnDTgWMGBP7qkoEj4T8PJ22
+	qH8c4IPbl/gahI6DbAmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXznP-00DPit-0q;
-	Mon, 21 Aug 2023 07:57:55 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1qXznZ-00DPqF-12;
+	Mon, 21 Aug 2023 07:58:05 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXznF-00DPb8-1O;
-	Mon, 21 Aug 2023 07:57:47 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 274F6C0004;
-	Mon, 21 Aug 2023 07:57:35 +0000 (UTC)
+	id 1qXznJ-00DPdR-0y;
+	Mon, 21 Aug 2023 07:57:50 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C3ABF40002;
+	Mon, 21 Aug 2023 07:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1692604661;
+	t=1692604666;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EjQzpmLeatj2IWSEVEqmjT65UvLg+N8jTIiui7Oe2w8=;
-	b=bPeVr3vMkvoX2FCglJ8GToHqugz07ra8A1nVMtMELprLejAB/r9UIVD5Kn9YfQ2mFmiuLM
-	O/ygABt99KKf3IE6viIBSBdE8mpQHGR5mGG14SgrLjTkQVetw2rLTaTScyUPajqD9SgufP
-	8e45/BF02146U2OwcLrCTT5zqDndkMhKTh0aCRBVqEAEKuTernH9z2TZ9IUhT+J/yjpGyP
-	Y+KOR6IJyGreTkT7pmmefKeUmpFQxLOpK5jewWAsGZC08I1JqbEsaJqeeugUd5wZGQpb3f
-	OSL+kKsEaJTf6wF4YNTrNO4TDPrSjCprjuXq6xuwgg4gAymOcC3c38kftPCKKQ==
+	bh=lFzltPP4nRIoSkqqx+KOAlNyaW9bJVOdCuDM+IuIKJw=;
+	b=YuiPmNNe9LVpR5rdIe5tKYeEpB8orrU7sUji4s69RX7fJZfUqOQJwgvrgCB0r0fsQKX0h4
+	Na53u1/mAp8ZrQsUV/n/yobkEps+OlcPD7mEHxNd9E+cWim4DBbVOHAOe5IlYaN9IMWa9a
+	oMt5RbzBQbmJDVKcbqtBcsAP2GnF2lAf8EslDjTn0EQ5jnm7PDWiyNRF09mPaBTIgi5r+5
+	opUzbaVAM0F43i3bKUhstBilo1T6q+xj4oD5ySSAbv/aK4TWXRRhCm5v3keHrDDPBuHmWn
+	GKDuPnSjSXRRiG/0z0WXqiu22ckkKbKWE33S3k2Wh9GSWIQpi/7b1RXx2mznJQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Li Zetao <lizetao1@huawei.com>,
 	miquel.raynal@bootlin.com
@@ -77,19 +77,19 @@ Cc: alexandre.torgue@foss.st.com,
 	vz@mleia.com,
 	wens@csie.org,
 	yangyingliang@huawei.com
-Subject: Re: [PATCH -next v3 09/12] mtd: rawnand: sunxi: Use helper function devm_clk_get_enabled()
-Date: Mon, 21 Aug 2023 09:57:35 +0200
-Message-Id: <20230821075735.33158-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH -next v3 08/12] mtd: rawnand: stm32_fmc2: Use helper function devm_clk_get_enabled()
+Date: Mon, 21 Aug 2023 09:57:43 +0200
+Message-Id: <20230821075743.33202-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230821031737.1973183-10-lizetao1@huawei.com>
+In-Reply-To: <20230821031737.1973183-9-lizetao1@huawei.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'a95da2721268e237eab6b2eeb9c6d117943d642f'
+X-linux-mtd-patch-commit: b'7ec53e2beb98201baeb834cde52f0e6d60baf1a8'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230821_005745_598078_37673561 
-X-CRM114-Status: UNSURE (   6.12  )
+X-CRM114-CacheID: sfid-20230821_005749_466340_1428F2B8 
+X-CRM114-Status: UNSURE (   5.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -107,13 +107,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2023-08-21 at 03:17:34 UTC, Li Zetao wrote:
+On Mon, 2023-08-21 at 03:17:33 UTC, Li Zetao wrote:
 > Since commit 7ef9651e9792 ("clk: Provide new devm_clk helpers for prepared
 > and enabled clocks"), devm_clk_get() and clk_prepare_enable() can now be
 > replaced by devm_clk_get_enabled() when driver enables (and possibly
 > prepares) the clocks for the whole lifetime of the device. Moreover, it is
 > no longer necessary to unprepare and disable the clocks explicitly, so drop
-> the label "out_mod_clk_unprepare" and "out_ahb_clk_unprepare".
+> the label "err_clk_disable".
 > 
 > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Signed-off-by: Li Zetao <lizetao1@huawei.com>
