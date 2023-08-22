@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74414EE49AB
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 07:10:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09193EE49A5
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 07:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=49TPmRaT9CclbfPQMOnzL2IK6r6F3XtfL2MJUcDs8q8=; b=0DKV3KOsIg38qu
-	ddfKlUNBk0qBME0c/2hZEb/BVOQi3X9WAUL9NVq3yLru9x9xg6xhCpODUSN4TCq/2HZm/T2IImye3
-	8UBDfPrlTTM5PobixzqJ4n1KCDm5WAK2SaB0HC9Ewj2FUrHA4Jr1jmRaaAlYogHSWKC3WJDwM7bFx
-	RDpSR1wfXUAdLoDb7UrvP8Nychc5jqV5tQke43b3qX73U53aNmIyJNkNvgNIqmtkpBmD6eS2av8L7
-	853cfvz3tE/PjR8M4XK78Lkdy4amxvh9TBT0OqcSi2NOL+MptSbesWNgLgXDrjK6XhsiAuhG90RbR
-	OKPAheYF0mzZ48CIuO4Q==;
+	List-Owner; bh=c2bH7nE8BXiYqcBVZ3DSDIawGTW/nvFjecL+pPpeIJ8=; b=sx2h/QBfBBvkim
+	oObVCks25jfdqcVVaTyx5bCHr4Rj6QQiNBUTQMjGS+qtVG57fCLudrMhTLVDr7MpLH3QjDq3xOHIW
+	7Q+cP6goMaOvZV9fCSSNbwLEB+X037eRI1uNBcyg0Bzz4o+mUsL4KBJUccSITLwuiyRc919h51PHF
+	uIPB6Gmg3MHYztZklHh4Zdqo/xEdH3vATx/kiWijUCHQjbPeLQRgqkyKxTZrGeWOQDTB8AsI/9Nue
+	khEfKw+FddPDEGJi3+x2s6/BfT/9HAClxcURgRGpo6BnKiSSLP/SBl7CdXpKHXASUX87MapXGyW67
+	j6nfCodpNY7DlyenYI4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLWq-00FIDH-2n;
-	Tue, 22 Aug 2023 07:10:16 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qYLWt-00FIGJ-0M;
+	Tue, 22 Aug 2023 07:10:19 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLWn-00FI9Q-37
+	id 1qYLWq-00FIBx-00
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Aug 2023 07:10:15 +0000
+	Tue, 22 Aug 2023 07:10:17 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7537264D79;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 757B364D7C;
+	Tue, 22 Aug 2023 07:10:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36B54C433C8;
 	Tue, 22 Aug 2023 07:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42DB6C433CB;
-	Tue, 22 Aug 2023 07:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692688212;
-	bh=FMrL+V9+pSz441pre2fqIuiBhaXySkpsxmO1V8C9qk8=;
+	s=k20201202; t=1692688214;
+	bh=Oyq3JU+jD6JnYKUuJ4JBwmfio4ODb3qr1zJ7EbxtHwc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=NnnND7hT7KN2mCxrnEse4O7hVa7RnICLH8m3d9nH0sbVyS0JrElMUbNV0mNjuGTzi
-	 svpDGG4GbupBmUdFAtjrj6iKuV+xEbyJ4y0RVMBiSTZEI77geG/SDg7neD0CUikUPv
-	 y6ConZFZNzIDfvR0QaPRLKLyvRHd16JD8dFzm2/2rJfcexglGOCsLbneWwdKvYZtxN
-	 apZWjA4FJR+TtDhwr1naDJpx0eAgjzRdw0h2W5pFRFmF9irg7TgObzrbKaS7maBq23
-	 aeAw3bVRWMEsNLpLFRP+9ITIEZ792fjeD3qs46MhEF8btSF2zPwGn8e1DVcG0EOZCb
-	 UBHLFXcMKVz2g==
+	b=eVtozZejeiHIL8QwemgG7UtgxfZN1SKMylhRkZA+6wPbRLWlfFMMlbjxYSXhdxRko
+	 1elffcVZ4VVThTubT+JqGK9nswKpqpKM9oOaWzK7kHru2EwSgHY0NB5TsQJZsparGc
+	 mZ/+VREHYoqDrE9BX2sFLOAMqTaGmXH9qAecOrtBTXK16AujcJy0sb/LAPtvyJgYAK
+	 2W2dmLEPxe6HKcOnNKHA77BqizkovPfsFbi+h4hR2J/MwCwRe5SwhZt93AXTZv6rtL
+	 8a5oZBbXnVShE+ujMxvU7TzzB2C34XBrGaHjVPcPFw915dqOlZr+tO2NZqrsHNU3Qy
+	 HBgkwdu74KHBA==
 From: Michael Walle <mwalle@kernel.org>
-Date: Tue, 22 Aug 2023 09:09:34 +0200
-Subject: [PATCH v2 18/41] mtd: spi-nor: eon: convert flash_info to new
+Date: Tue, 22 Aug 2023 09:09:35 +0200
+Subject: [PATCH v2 19/41] mtd: spi-nor: esmt: convert flash_info to new
  format
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v2-18-291a0f39f8d8@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-19-291a0f39f8d8@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -61,8 +61,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_001014_099931_1CBE6D6F 
-X-CRM114-Status: GOOD (  11.43  )
+X-CRM114-CacheID: sfid-20230822_001016_101788_AB7AA477 
+X-CRM114-Status: GOOD (  11.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,92 +84,48 @@ the new format.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/eon.c | 72 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 54 insertions(+), 18 deletions(-)
+ drivers/mtd/spi-nor/esmt.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
-index 4848ffe8b38f..ba09cb6c2abd 100644
---- a/drivers/mtd/spi-nor/eon.c
-+++ b/drivers/mtd/spi-nor/eon.c
-@@ -9,24 +9,60 @@
+diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
+index 12779bec5f99..089fcd1aa794 100644
+--- a/drivers/mtd/spi-nor/esmt.c
++++ b/drivers/mtd/spi-nor/esmt.c
+@@ -9,15 +9,25 @@
  #include "core.h"
  
- static const struct flash_info eon_nor_parts[] = {
--	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64)
+ static const struct flash_info esmt_nor_parts[] = {
+-	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64) },
--	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64) },
--	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128) },
--	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128)
+-	{ "f25l32qa-2s", INFO(0x8c4116, 0, 64 * 1024, 64)
+-		FLAGS(SPI_NOR_HAS_LOCK)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "en25q80a",   INFO(0x1c3014, 0, 64 * 1024,   16)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
--	{ "en25qh16",   INFO(0x1c7015, 0, 64 * 1024,   32)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
--	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64) },
--	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
--	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
--	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  0) },
--	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
+-	{ "f25l64qa", INFO(0x8c4117, 0, 64 * 1024, 128)
+-		FLAGS(SPI_NOR_HAS_LOCK)
 -		NO_SFDP_FLAGS(SECT_4K) },
 +	{
-+		.id = SNOR_ID(0x1c, 0x31, 0x16),
-+		.name = "en25f32",
++		.id = SNOR_ID(0x8c, 0x20, 0x16),
++		.name = "f25l32pa",
 +		.size = SZ_4M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0x1c, 0x20, 0x16),
-+		.name = "en25p32",
++		.id = SNOR_ID(0x8c, 0x41, 0x16),
++		.name = "f25l32qa-2s",
 +		.size = SZ_4M,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x30, 0x16),
-+		.name = "en25q32b",
-+		.size = SZ_4M,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x20, 0x17),
-+		.name = "en25p64",
-+		.size = SZ_8M,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x30, 0x17),
-+		.name = "en25q64",
-+		.size = SZ_8M,
++		.flags = SPI_NOR_HAS_LOCK,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0x1c, 0x30, 0x14),
-+		.name = "en25q80a",
-+		.size = SZ_1M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x70, 0x15),
-+		.name = "en25qh16",
-+		.size = SZ_2M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x70, 0x16),
-+		.name = "en25qh32",
-+		.size = SZ_4M,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x70, 0x17),
-+		.name = "en25qh64",
++		.id = SNOR_ID(0x8c, 0x41, 0x17),
++		.name = "f25l64qa",
 +		.size = SZ_8M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x70, 0x18),
-+		.name = "en25qh128",
-+		.size = SZ_16M,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x70, 0x19),
-+		.name = "en25qh256",
-+	}, {
-+		.name = "en25s64",
-+		.id = SNOR_ID(0x1c, 0x38, 0x17),
-+		.size = SZ_8M,
++		.flags = SPI_NOR_HAS_LOCK,
 +		.no_sfdp_flags = SECT_4K,
-+	},
++	}
  };
  
- const struct spi_nor_manufacturer spi_nor_eon = {
+ const struct spi_nor_manufacturer spi_nor_esmt = {
 
 -- 
 2.39.2
