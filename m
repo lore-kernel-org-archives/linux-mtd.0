@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A275DEE49AB
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5FFAEE49A5
 	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 07:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,59 +12,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RzjZzBb2/S6sBIjKdXflErxeV+YV/GgImanwi0zVMOg=; b=qyc3tJetn2hPqQ
-	zdWSUzYAkHXqQyJkxpkyaoxxfMW/Xq0reCHu6wncml82jt9VneTiXyhjfbc1ipe2gab9jmFT/whT9
-	M7tgQtg2aic49k0HzfPOqnQ0ePFjkbl2Xf2RUzxujk4nTkbDVUXTcBvwGE0cz7QTvISH1/V6KYP4e
-	J/bNpoTbUGknh/oTMjzOb6o7k2VTeHWKVdiXyuiXst//WOUDJYKThKHbCmf1TKUcFdVRbZVA1kEJ4
-	0i99I11D59pQGclF4pkSpUcMJxizgfA/ON8LTUc8wme03emzuw5MPtOIP72n7w2tCR9nw0M2l7hCU
-	MhEwD8XFb9W6+17uJGRg==;
+	List-Owner; bh=S9vHr0YUlvckr0JFjz+0tFS0+x2a39qVOz3+6lJjHS8=; b=rs46OESrxdVRqm
+	IlMW9eYV7ztZ3cHeA766c+OYFE0maQ6oyTGfF75ryoEaTfoa+nyG2b559bZeX6G1fvTyXuzNdNPu6
+	IT7YNfOAUMkDC6zyaYvfeNWPLF/i8i8ZNxEKiNHBAb7iB73yHz/4C2PscrkfqAIRfmjsr34KogxQ7
+	T+zt/TuYra1GFaMBYWp1xLUsNVgjHvCxK9f4ZRWZf9Y6P5G1OIaVn49rVN+1DmVZr7NOYhPrikz1+
+	AmhQHxc8+J9lSyMw6Zb4lsr+TnTiGaIa76AjPoqFx+QGv+E0yyo3/3/NCcSTiR+3AVr/VYWlwdA3d
+	g1Z17tGas5IU+VXpGHTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLYA-00FJZB-3B;
-	Tue, 22 Aug 2023 07:11:38 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qYLYD-00FJba-1L;
+	Tue, 22 Aug 2023 07:11:41 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLXd-00FIzo-1S
+	id 1qYLXd-00FIzO-20
 	for linux-mtd@bombadil.infradead.org;
 	Tue, 22 Aug 2023 07:11:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=ETsx/pSVgscKja8L3nLx8PkGq34Qk5mef6qRPgV8VaU=; b=RYQy186XHv8YmkhceGkDwY1djp
-	jWhlAG2RdzY39iw9lCC8tpldaJKRBbRi/u/QdUT7yRbUCXE5BuOatR47IBVBE5lL90VgiBYspvaS4
-	g3QWT0KyBC17oCvEVJseQ73KT1chejY23Cb+WzzJNf5FToCU3cohV7TN9PN0hHDeKPgA2c261Cxf7
-	hqsRVgBej7tDh2Z6ANIrI8t3tTWM7mZEI0/5zHKijleqTN6NwgJ8HYDf21IJq+LcZSXGR/N8vqv3j
-	kNHYUHI8gOrIb6ss1/ra+CPkwY04FM+UISJD+wdT48LvFaIxZa8iBspXDfq1YKM0drmb+jKb7cZtJ
-	D9XxUHqQ==;
+	d=infradead.org; s=casper.20170209; h=Cc:To:In-Reply-To:References:Message-Id
+	:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=IE4eauRJF29U+rDli/OXa2o/HvwBfmYdm6rpvh7Dsi4=; b=dvebyK5AdZN3s36bz6RKd2h3TL
+	yqMfPrUgyfZ2mfw+DiXOA+HUnkAjrY31AqPTvSmVsbHjVUhNuB4zMdU5clq8C1wMGrrd81CjQcj0E
+	4grBRhty3kqiH+ffxOMmgjOdSNOtpmHpQ5UfTNEMBmPoq73wzLJBzZ8ZpGprARxs4mlKBFodNdP40
+	tKiufSbwur7kewccWXIOKqK615s2RYWZciELBd+TyM43w77E1EntgJnYvZ9R3I1xCECLoBaKdQGy9
+	Pt341ydIQhzlgfPpb7nw645FF+SigAIpOvEXrHnNeXRI/uMnF2HQ6Q+yAFb93tvHWweCu8LMzhTcB
+	qG8bl8lA==;
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLXW-002YZv-2P
-	for linux-mtd@lists.infradead.org;
-	Tue, 22 Aug 2023 07:11:04 +0000
+	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1qYLXQ-00Ex4q-TP
+	for linux-mtd@lists.infradead.org; Tue, 22 Aug 2023 07:11:03 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 621A963B9E;
-	Tue, 22 Aug 2023 07:10:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD0AC433C7;
-	Tue, 22 Aug 2023 07:10:56 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E4E7763B64;
+	Tue, 22 Aug 2023 07:10:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BDAAC433C7;
+	Tue, 22 Aug 2023 07:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692688257;
-	bh=EvjRtRToKltCM0ftw1A20Yl2JRY0BCZyEmk1F0c80Pg=;
+	s=k20201202; t=1692688240;
+	bh=yf+i4Rv/o/8TXBlVhYljTJbV/eUqv5ZZTBjDmCQ4PA0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Xx5aL6u9pJIOguYJ8YSi5Lt2xYJaDiKJ3V7rMtNtMo7/wqgN3F9U8HtwieeVmoz67
-	 O3N+4wGX3gh7YtdYeya/CrVs5wr7302fgHGZykHIWXaL01G15VSQl1QN/t4PP2p1Pv
-	 BAd43SOB9ndpRrmzkg7oHPjsUla9bfhBfNJwilNLwuv+PZT4EDt5ZPbPA0Teq4EVf+
-	 bLUI8PPMBSjqrhVcByg4gUjqyxBPWTfEi8YDq0wX3ORk5BYjQPMQYIfrJUdcgQ+pSX
-	 uNGI2PP1uyKtoSOJnd23eaXd6232DAKd3tu2I+bxdPNr/aS9GUCn5XYd8xIzWSYkzc
-	 OmEtFhSlwgH3w==
+	b=qKh+Z+JW9aXiTrSnLy2qAMQrDPCSHzFhlHX1NUPDko1ydcEAPeUS/yZX/EhpSrYXH
+	 bETWdtNFj2yPM6MJcT2D0/+PL2wbmq91go6N/dNgrHU77JLCGYbX46aiLust2nG48c
+	 x3E5v7jAVyz5p6MAQE9vgPhVnHKnTV1WRkH9MkPIBsSjxSOYCa0gZuPa/7QxAcctTA
+	 YKej/C6tEeo0V5dqnALnFlYCvSCbE8nc7d9zyOKTPgwb/GsH/Q4rHw6LrBelr7lq18
+	 aLFwRvtrcShCpLiTJuwMkaVU8t7vKoeaiWsXdlM795xwS2hnjthQVkrJHdFV9JxO1P
+	 w28370b99WuNA==
 From: Michael Walle <mwalle@kernel.org>
-Date: Tue, 22 Aug 2023 09:09:57 +0200
-Subject: [PATCH v2 41/41] mtd: spi-nor: core: get rid of the INFOx() macros
+Date: Tue, 22 Aug 2023 09:09:48 +0200
+Subject: [PATCH v2 32/41] mtd: spi-nor: eon: sort flash_info database
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v2-41-291a0f39f8d8@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-32-291a0f39f8d8@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -75,9 +74,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_081059_156020_5024C50A 
-X-CRM114-Status: UNSURE (   9.67  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230822_081053_117338_B1686DA5 
+X-CRM114-Status: GOOD (  10.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,90 +92,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that all flash_info tables are converted to the new format, remove
-the old INFOx() macros.
+The flash ID is the new primary key into our database. Sort the entry by
+it. Keep the most specific ones first, because there might be ID
+collisions between shorter and longer ones.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/core.h | 65 ----------------------------------------------
- 1 file changed, 65 deletions(-)
+ drivers/mtd/spi-nor/eon.c | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 420e5ca2cfe1..1febb4a3c59b 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -573,71 +573,6 @@ struct flash_info {
- 		.n_regions = (_n_regions),				\
- 	})
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index ba09cb6c2abd..c1ddf662f782 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
+@@ -10,32 +10,37 @@
  
--#define SPI_NOR_ID_2ITEMS(_id) ((_id) >> 8) & 0xff, (_id) & 0xff
--#define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
--
--#define SPI_NOR_ID(_jedec_id, _ext_id)					\
--	.id = &(const struct spi_nor_id){				\
--		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
--				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
--		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
--	}
--
--#define SPI_NOR_ID6(_jedec_id, _ext_id)					\
--	.id = &(const struct spi_nor_id){				\
--		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
--				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
--		.len = 6,						\
--	}
--
--#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
--	.size = (_sector_size) * (_n_sectors),				\
--	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
--	.n_banks = (_n_banks)
--
--/* Used when the "_ext_id" is two bytes at most */
--#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
--	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
--
--#define INFO0(_sector_size, _n_sectors)					\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
--
--#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
--	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
--
--#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
--	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
--
--#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
--		.size = (_sector_size) * (_n_sectors),			\
--		.sector_size = (_sector_size),				\
--		.page_size = (_page_size),				\
--		.addr_nbytes = (_addr_nbytes),				\
--		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
--
--#define OTP_INFO(_len, _n_regions, _base, _offset)			\
--		.otp = &(const struct spi_nor_otp_organization){	\
--			.len = (_len),					\
--			.base = (_base),				\
--			.offset = (_offset),				\
--			.n_regions = (_n_regions),			\
--		},
--
--#define FLAGS(_flags)							\
--		.flags = (_flags),					\
--
--#define NO_SFDP_FLAGS(_no_sfdp_flags)					\
--		.no_sfdp_flags = (_no_sfdp_flags),			\
--
--#define FIXUP_FLAGS(_fixup_flags)					\
--		.fixup_flags = (_fixup_flags),				\
--
--#define MFR_FLAGS(_mfr_flags)						\
--		.mfr_flags = (_mfr_flags),				\
--
- /**
-  * struct spi_nor_manufacturer - SPI NOR manufacturer object
-  * @name: manufacturer name
+ static const struct flash_info eon_nor_parts[] = {
+ 	{
+-		.id = SNOR_ID(0x1c, 0x31, 0x16),
+-		.name = "en25f32",
+-		.size = SZ_4M,
+-		.no_sfdp_flags = SECT_4K,
+-	}, {
+ 		.id = SNOR_ID(0x1c, 0x20, 0x16),
+ 		.name = "en25p32",
+ 		.size = SZ_4M,
+-	}, {
+-		.id = SNOR_ID(0x1c, 0x30, 0x16),
+-		.name = "en25q32b",
+-		.size = SZ_4M,
+ 	}, {
+ 		.id = SNOR_ID(0x1c, 0x20, 0x17),
+ 		.name = "en25p64",
+ 		.size = SZ_8M,
++	}, {
++		.id = SNOR_ID(0x1c, 0x30, 0x14),
++		.name = "en25q80a",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++	}, {
++		.id = SNOR_ID(0x1c, 0x30, 0x16),
++		.name = "en25q32b",
++		.size = SZ_4M,
+ 	}, {
+ 		.id = SNOR_ID(0x1c, 0x30, 0x17),
+ 		.name = "en25q64",
+ 		.size = SZ_8M,
+ 		.no_sfdp_flags = SECT_4K,
+ 	}, {
+-		.id = SNOR_ID(0x1c, 0x30, 0x14),
+-		.name = "en25q80a",
+-		.size = SZ_1M,
+-		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++		.id = SNOR_ID(0x1c, 0x31, 0x16),
++		.name = "en25f32",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.name = "en25s64",
++		.id = SNOR_ID(0x1c, 0x38, 0x17),
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K,
+ 	}, {
+ 		.id = SNOR_ID(0x1c, 0x70, 0x15),
+ 		.name = "en25qh16",
+@@ -57,11 +62,6 @@ static const struct flash_info eon_nor_parts[] = {
+ 	}, {
+ 		.id = SNOR_ID(0x1c, 0x70, 0x19),
+ 		.name = "en25qh256",
+-	}, {
+-		.name = "en25s64",
+-		.id = SNOR_ID(0x1c, 0x38, 0x17),
+-		.size = SZ_8M,
+-		.no_sfdp_flags = SECT_4K,
+ 	},
+ };
+ 
 
 -- 
 2.39.2
