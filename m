@@ -4,93 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B185EE4996
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Aug 2023 17:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50262EE49A8
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 07:09:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OluXH7mo0pvmeQb/Ya9FZ6gTKANxEJJc2/xQnuDWjeg=; b=p4za8UUFXm/yHD
-	1qnw9Wt/EVtz1lbKDg9Jm7qQIFXF9uBRacYEfs57G+7qjGC6iTDivqeZHQLyNt+fHw9v2WV9UtH/b
-	7K3pODMouy6GE3vOuLI5NTBZ7vD+2K8xRfBj95mIkQoAZg2Y2RGl7dcyyEDCSZim1gIQEi8jmAfn7
-	2y1bqaqBCElaqQC9aWoOByvoWM+nKJOyF9ukKK7N4NQU3MWjm0/xMixr872bHKITWO4zOQ9l3IviO
-	FEjh7Z58w34djdW/TLiMI7Ze+e6sY6piKYJOSiNlkYIDWvCJEOZXoro5HaeOAFP3ZKxb4bcctt5Bp
-	8o5gknbqvbCv7TbUdlOQ==;
+	List-Owner; bh=HicNbg5MwI1Fl+MBsLvgfmWYmECklFVSPpata0RqyWU=; b=2WJrQrDd5hpc1O
+	AHc+TF0eYwKBOtHFiUTjz5RCcFH63QamGPb75Z7Kmm+Xyow/2nUoWjeX6PsWxlWPWt8tgyVcNc4Ke
+	W3eBE+V9d2HATJz1raCGk14kE+cMuSnFHIIc+YcUQQyaUHNWpbjb00Z+zwZkzoU5B28z4A894cDR8
+	Exj5qJUHH4mKCLfA7xuiivYHqmegEzBFmrOtczLpZb/61Q3N7mOYULjcq8eTkv6r0Bda8ygKZ7Pwm
+	0t+n5HUzKQZVhzCKTqUceuz4pZ/e7uM3xcI4Ua9BD8D9ltstp22x6O7PCnx/dXXkrZmFRGbZyfXwD
+	49PDxA91YvW8Z9+bm9lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY8pr-00ESNj-0D;
-	Mon, 21 Aug 2023 17:37:03 +0000
-Received: from mx1.sberdevices.ru ([37.18.73.165])
+	id 1qYLWN-00FHpO-0V;
+	Tue, 22 Aug 2023 07:09:47 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY8pm-00ESK7-13
+	id 1qYLWK-00FHoH-1n
 	for linux-mtd@lists.infradead.org;
-	Mon, 21 Aug 2023 17:37:00 +0000
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 8F4C8100004;
-	Mon, 21 Aug 2023 20:36:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8F4C8100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1692639400;
-	bh=tOU6u/lBwzWqXy+hZ7sPHDoc+oO2eRFw8MLRn7e+5mo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=B+geS4OU0dMadcoikssL3blFww0rXpe5wUGLa+5iNAHkQsFbVE3B6jr6WeX9llHyP
-	 RKnj+zEKe9CUiUqdeg6n8LCo6u+OPfPiFqivNmL5c/mDTV3tOH3W5N6Bq9EcVegptP
-	 4YGpJXe/1WkXPUGPAT/Ye+PW/Kjebw6s/EuDUPIpWyX7HCGxZo4eNXHoCC/3KAWEtr
-	 ZE05cV9FdXclEg6lctnFubRAaGUWIkK3ln3ytJ3NADuUM6zadWr0MUr04G+LAPvHjj
-	 23D9m4NAWzK4IWC9vllKK2cQYsHwTc6CYg6FWU/PO4wVzjkoj2qz5V4+5MtSsor8vH
-	 4iaqnuv5U98uA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	Tue, 22 Aug 2023 07:09:45 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 21 Aug 2023 20:36:40 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 21 Aug 2023 20:36:37 +0300
-Message-ID: <28c91187-1fcc-9ea1-90d5-c95e10378479@sberdevices.ru>
-Date: Mon, 21 Aug 2023 20:36:39 +0300
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 1507B64D4A;
+	Tue, 22 Aug 2023 07:09:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0FF4C433C8;
+	Tue, 22 Aug 2023 07:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692688182;
+	bh=yto9V/zcEZBJmLMoKJpHfJ7xX1RdTjUYPmlgcSHSm3Y=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=XcByFBx9BxiDHx0SrX6nTwNSxcYdjeo9UltySMbXGY707cFzznvdcs8Oy8DbPPO5Y
+	 TKu005fIxvsutMN902ugXc1x127/6zsfghqtUDov+klcLahpzNrsa+fHGWX9NEO8ao
+	 XP/SjtR50QoSeVvNqF1Qnvwo+Lwipledr52NjDR589DgJ+Lfb4FjtuRO3AHUQ13HSL
+	 ED6JXjS9jshKbtJunlwRmXVMkYO2iCLFMQ/o3dzRgL9NhMnT79o7vWCzJFH2FyCFnd
+	 OlIHgy/nW8kYL7DNgNFuIo/QKfjwZ1PPDMY2qKiU+OgNlu/TRavJHggLCpVeM+INJb
+	 n0EMFSP6lF4GQ==
+From: Michael Walle <mwalle@kernel.org>
+Date: Tue, 22 Aug 2023 09:09:19 +0200
+Subject: [PATCH v2 03/41] mtd: spi-nor: xilinx: use SPI_NOR_ID() in
+ S3AN_INFO()
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1] mtd: spinand: micron: correct parameters
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Frieder Schrempf
-	<frieder.schrempf@kontron.de>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <kernel@sberdevices.ru>
-References: <20230815161024.810729-1-mmkurbanov@sberdevices.ru>
- <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
- <b619ef58-06c3-c61a-bb0f-ba243a4a2ade@sberdevices.ru>
- <53a4fe26-3a6a-47ce-8532-be60da674aca@kontron.de>
- <20230817095354.3df2f7f9@xps-13>
-Content-Language: en-US
-From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-In-Reply-To: <20230817095354.3df2f7f9@xps-13>
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179363 [Aug 21 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/21 15:01:00 #21666375
-X-KSMG-AntiVirus-Status: Clean, skipped
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-3-291a0f39f8d8@kernel.org>
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Michael Walle <mwalle@kernel.org>
+X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230821_103658_761002_DE9B6B6C 
-X-CRM114-Status: GOOD (  23.76  )
+X-CRM114-CacheID: sfid-20230822_000944_636953_829C349B 
+X-CRM114-Status: GOOD (  10.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,41 +79,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+In commit 59273180299a ("mtd: spi-nor: Create macros to define chip IDs
+and geometries") SPI_NOR_ID() were introduced, but it did only update
+the INFO() macro in core.h. Also use it in S3AN_INFO().
 
-On 17.08.2023 10:53, Miquel Raynal wrote:
-> It's not the first time we face this issue and the first approach we
-> used was to "fix" the OOB layout to include all free bytes (not only
-> protected bytes), which had the nice side-effect of allowing to write
-> the cleanmarker in an ECC-free area and allow that chip to be used with
-> JFFS2. This is indeed not a proper solution and I agree we should have
-> a system-wide solution.
-> 
->> Also I wonder if JFFS2 should instead write the cleanmarker with ECC
->> being turned of explicitly.
-> The real question is, why would you still want to use JFFS2 on
-> SPI-NAND? UBI is meant for that. JFFS2 was designed with NORs in mind,
-> it can be used on small NAND chips because UBI is a bit glutton wrt,
-> but I doubt we still have "small" SPI-NANDs on the market which require
-> JFFS2 anymore. Do we?
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+---
+ drivers/mtd/spi-nor/xilinx.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-Unfortunately, we cannot use UBI because we have a small flash SPI-NAND
-and we need a small partition.
-
-> Anyhow, if people want JFFS2 on NANDs, I agree we should maybe change
-> how JFFS2 works and force raw accesses when it comes to writing the
-> cleanmarker, because there is no knowledge of what is ECC protected or
-> not in the current OOB layouts. I however have no idea of the possible
-> side-effects, I've never looked into JFFS2 so deeply.
-
-Then I can prepare a patchset that will disable cleanamarkers on the
-compile time.
-And today I will send the second version of this patch without fixes
-to the OOB area.
+diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+index 00d53eae5ee8..de5189c38432 100644
+--- a/drivers/mtd/spi-nor/xilinx.c
++++ b/drivers/mtd/spi-nor/xilinx.c
+@@ -22,12 +22,7 @@
+ 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+ 
+ #define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
+-		.id = {							\
+-			((_jedec_id) >> 16) & 0xff,			\
+-			((_jedec_id) >> 8) & 0xff,			\
+-			(_jedec_id) & 0xff				\
+-			},						\
+-		.id_len = 3,						\
++		SPI_NOR_ID(_jedec_id, 0),				\
+ 		.sector_size = (8 * (_page_size)),			\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = (_page_size),				\
 
 -- 
-Best Regards,
-Martin Kurbanov
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
