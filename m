@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5193CEE49A3
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 07:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74414EE49AB
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 07:10:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pBalnL0ADe+wjbwLi4fle0qHsnXjZ6E45X8BqRT8yWA=; b=Q5CCW/uhwcQkH0
-	dDGrRQb8hu6o62wOpAK5HXbj8z8cCGZwmfHY4rN8VRM172EvdFUj4YA3I+UL2YpkBkxRFPv0E+l+b
-	ILzHYJ/GQtslsvTVYV/2IkEU9J6ey/lX6f2f5iFzQDSBOwkIW2fbuXAy6mGZBhSqJzZ4nXEE3ijAx
-	E2fEXvt+vVJJzvZXSu5uXVpC2D9Qgi5ZNlQ+FrVQwlzlddsLe1COrq2hk2EDATXLlcWFSDpREmhuP
-	i9tDNmZfxohu2akPW9Tmke+i0jOGVgTOQYvb9GMqKUoiTlpgGc0QMmSnxSmKlDInkZ0kgxsnjK7Nq
-	ser0aako4pR8RgM/SrTw==;
+	List-Owner; bh=49TPmRaT9CclbfPQMOnzL2IK6r6F3XtfL2MJUcDs8q8=; b=0DKV3KOsIg38qu
+	ddfKlUNBk0qBME0c/2hZEb/BVOQi3X9WAUL9NVq3yLru9x9xg6xhCpODUSN4TCq/2HZm/T2IImye3
+	8UBDfPrlTTM5PobixzqJ4n1KCDm5WAK2SaB0HC9Ewj2FUrHA4Jr1jmRaaAlYogHSWKC3WJDwM7bFx
+	RDpSR1wfXUAdLoDb7UrvP8Nychc5jqV5tQke43b3qX73U53aNmIyJNkNvgNIqmtkpBmD6eS2av8L7
+	853cfvz3tE/PjR8M4XK78Lkdy4amxvh9TBT0OqcSi2NOL+MptSbesWNgLgXDrjK6XhsiAuhG90RbR
+	OKPAheYF0mzZ48CIuO4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLWq-00FICC-0P;
+	id 1qYLWq-00FIDH-2n;
 	Tue, 22 Aug 2023 07:10:16 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYLWm-00FI7F-0h
+	id 1qYLWn-00FI9Q-37
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Aug 2023 07:10:13 +0000
+	Tue, 22 Aug 2023 07:10:15 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A4E0F64D73;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7537264D79;
+	Tue, 22 Aug 2023 07:10:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42DB6C433CB;
 	Tue, 22 Aug 2023 07:10:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B001C433C9;
-	Tue, 22 Aug 2023 07:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692688210;
-	bh=yRymFxs0ZgCRKKfeCO93P0NNgII3piuTmdoZV/3f5XU=;
+	s=k20201202; t=1692688212;
+	bh=FMrL+V9+pSz441pre2fqIuiBhaXySkpsxmO1V8C9qk8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=kVhTsKoTYuerp+l0yRF7WqiCX5iyQFqQOOO8PhCFn4vyGqRzin/xCzIzM/HXhkgSZ
-	 Edd3UHHHwSCD0tIOyYHkwmdIXLTzP01MoFSUTHsyFPOKawmrXWRt5jmgaWpOJdcDpG
-	 jHMIYuyaiDumJDC+kRjl4IDhgnufcOVT3Vcjf6Br14gXQR8hZdGRw+giCL6dX0jiY7
-	 ihWTwNgxhfTTaDcjpa31nhhjp5s/8qUGbtI7/rLbDNmonaiuPijdUskBhf6AD7f3Hs
-	 4uOlrjvuA1kQdAZ7rKehe11N6J/2PoGIKg161WLtmg5B2iDILLrFG7lEibhXsFcRA7
-	 BbEKudoCzDEyQ==
+	b=NnnND7hT7KN2mCxrnEse4O7hVa7RnICLH8m3d9nH0sbVyS0JrElMUbNV0mNjuGTzi
+	 svpDGG4GbupBmUdFAtjrj6iKuV+xEbyJ4y0RVMBiSTZEI77geG/SDg7neD0CUikUPv
+	 y6ConZFZNzIDfvR0QaPRLKLyvRHd16JD8dFzm2/2rJfcexglGOCsLbneWwdKvYZtxN
+	 apZWjA4FJR+TtDhwr1naDJpx0eAgjzRdw0h2W5pFRFmF9irg7TgObzrbKaS7maBq23
+	 aeAw3bVRWMEsNLpLFRP+9ITIEZ792fjeD3qs46MhEF8btSF2zPwGn8e1DVcG0EOZCb
+	 UBHLFXcMKVz2g==
 From: Michael Walle <mwalle@kernel.org>
-Date: Tue, 22 Aug 2023 09:09:33 +0200
-Subject: [PATCH v2 17/41] mtd: spi-nor: atmel: convert flash_info to new
+Date: Tue, 22 Aug 2023 09:09:34 +0200
+Subject: [PATCH v2 18/41] mtd: spi-nor: eon: convert flash_info to new
  format
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v2-17-291a0f39f8d8@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-18-291a0f39f8d8@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -61,8 +61,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_001012_358373_1407764C 
-X-CRM114-Status: GOOD (  11.72  )
+X-CRM114-CacheID: sfid-20230822_001014_099931_1CBE6D6F 
+X-CRM114-Status: GOOD (  11.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,142 +84,92 @@ the new format.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/atmel.c | 122 +++++++++++++++++++++++++++++---------------
- 1 file changed, 80 insertions(+), 42 deletions(-)
+ drivers/mtd/spi-nor/eon.c | 72 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 54 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index d2de2cb0c066..ccc985c48ae3 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -163,48 +163,86 @@ static const struct spi_nor_fixups atmel_nor_global_protection_fixups = {
- };
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index 4848ffe8b38f..ba09cb6c2abd 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
+@@ -9,24 +9,60 @@
+ #include "core.h"
  
- static const struct flash_info atmel_nor_parts[] = {
--	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4)
--		FLAGS(SPI_NOR_HAS_LOCK)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &at25fs_nor_fixups },
--	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8)
--		FLAGS(SPI_NOR_HAS_LOCK)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &at25fs_nor_fixups },
--	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8)
+ static const struct flash_info eon_nor_parts[] = {
+-	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		.fixups = &atmel_nor_global_protection_fixups },
--	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16)
+-	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64) },
+-	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64) },
+-	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128) },
+-	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "en25q80a",   INFO(0x1c3014, 0, 64 * 1024,   16)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "en25qh16",   INFO(0x1c7015, 0, 64 * 1024,   32)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64) },
+-	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
+-	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  0) },
+-	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
 -		NO_SFDP_FLAGS(SECT_4K) },
 +	{
-+		.id = SNOR_ID(0x1f, 0x66, 0x01),
-+		.name = "at25fs010",
-+		.sector_size = SZ_32K,
-+		.size = SZ_128K,
-+		.flags = SPI_NOR_HAS_LOCK,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &at25fs_nor_fixups
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x66, 0x04),
-+		.name = "at25fs040",
-+		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &at25fs_nor_fixups
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x44, 0x01),
-+		.name = "at25df041a",
-+		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups,
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x47, 0x00),
-+		.name = "at25df321",
++		.id = SNOR_ID(0x1c, 0x31, 0x16),
++		.name = "en25f32",
 +		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
 +		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x47, 0x01),
-+		.name = "at25df321a",
++		.id = SNOR_ID(0x1c, 0x20, 0x16),
++		.name = "en25p32",
 +		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x48, 0x00),
-+		.name = "at25df641",
++		.id = SNOR_ID(0x1c, 0x30, 0x16),
++		.name = "en25q32b",
++		.size = SZ_4M,
++	}, {
++		.id = SNOR_ID(0x1c, 0x20, 0x17),
++		.name = "en25p64",
 +		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x42, 0x16),
-+		.name = "at25sl321",
-+		.size = SZ_4M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0x1f, 0x04, 0x00),
-+		.name = "at26f004",
-+		.size = SZ_512K,
++		.id = SNOR_ID(0x1c, 0x30, 0x17),
++		.name = "en25q64",
++		.size = SZ_8M,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x45, 0x01),
-+		.name = "at26df081a",
++		.id = SNOR_ID(0x1c, 0x30, 0x14),
++		.name = "en25q80a",
 +		.size = SZ_1M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x46, 0x01),
-+		.name = "at26df161a",
++		.id = SNOR_ID(0x1c, 0x70, 0x15),
++		.name = "en25qh16",
 +		.size = SZ_2M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x47, 0x00),
-+		.name = "at26df321",
++		.id = SNOR_ID(0x1c, 0x70, 0x16),
++		.name = "en25qh32",
 +		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.fixups = &atmel_nor_global_protection_fixups
 +	}, {
-+		.id = SNOR_ID(0x1f, 0x25, 0x00),
-+		.name = "at45db081d",
-+		.size = SZ_1M,
++		.id = SNOR_ID(0x1c, 0x70, 0x17),
++		.name = "en25qh64",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++	}, {
++		.id = SNOR_ID(0x1c, 0x70, 0x18),
++		.name = "en25qh128",
++		.size = SZ_16M,
++	}, {
++		.id = SNOR_ID(0x1c, 0x70, 0x19),
++		.name = "en25qh256",
++	}, {
++		.name = "en25s64",
++		.id = SNOR_ID(0x1c, 0x38, 0x17),
++		.size = SZ_8M,
 +		.no_sfdp_flags = SECT_4K,
 +	},
  };
  
- const struct spi_nor_manufacturer spi_nor_atmel = {
+ const struct spi_nor_manufacturer spi_nor_eon = {
 
 -- 
 2.39.2
