@@ -4,90 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4206EE4996
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 08:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E309EE49A3
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 08:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:To:Subject:From:MIME-Version:Date:Message-ID:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hhn7CTtetpLo3V0/ESFCRcxYf6Rrds268W19hQF/rNk=; b=wl9BOHm9QxlfDm
-	30MHe1/G57tuYVzuexLSIRrLVDQD/hp2ajt0CgqEd+5zqplkl/wx/15xJYFu7dGfaE5x5NezcbEss
-	K7rOgbB2trm+5p8mb7Ip6rPW0+A6SL1R3Aelu4YLgz1J7PPSgrP6y45OWatKZJ51m3dillqTzt6z2
-	EJpKv3GL7tsIo6n9jmWvRKXFZao37cZr+ALjCLd8v9lrmxcfYNHH5sEWzFeTw1lg3twUauOy5cBEm
-	WFw/1V44rplbFS0Xmnh3zVcLsA2AwNZTmAyclOWBW0prMKcqWHVBD7IKQzjTDajKwkc46u7m1i9wx
-	JtWOkg8S1B/eJws9nBiw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=u34aRo5fSScwMAW7ER/AznFl2cQgKnhCyP4+avvQRTg=; b=yVaFVJVVflXdoC
+	m6A0GU4gEvstrtlHmaLTgsgbIIunISXYQj3rNrq7lDziUi3xx4F9lnEsChmsjOOgOxsf7SdxE08v1
+	12UO5jL44+G9OvJhhlJaP0yX11eYOk5p6NqKabvUEXtmNmPt8CRb/7h5y3hby18D+BegGPow4UVqP
+	RrD+YMofazxOHwKWd3AK6BnYqgY8tvFGCe53k9NSxsPRlaVFdFnoeg/LZQoTbP7jHeuVwOt/zjwcO
+	PBJotz5UT9I+mir+my5LTFQGr3y7pm7aXp7abkN1GTjdHajDkmFkF5Gl1YZLmCRpTvyp9gagT9DgZ
+	0L6fPA9ZRGYeSMwRfVzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYMRq-00FQWu-0G;
-	Tue, 22 Aug 2023 08:09:10 +0000
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216])
+	id 1qYMXq-00FRBc-30;
+	Tue, 22 Aug 2023 08:15:22 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYMRm-00FQW7-2u
+	id 1qYLWx-00FILX-31
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Aug 2023 08:09:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1692691741; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=nIQpETQPcapaASquVIWzCy0cxWU/o/SlGUhfilQPy6vzr5FP1S3o8bqWMGGNVeX1Og
-    iYDV3QNxL0HT7nsW4uEZoWnAocSXPBUX74esTJdcFsZsaRXCx3nT6FtuDgUpDcE6mE5R
-    Y0kwQ/I6ViUj9GPRotDFchbV/v0xiYvJ5rrkJ3h57mmQSFsNWojdrga0+/S4eIydoHxy
-    7NnfUs6zPBSshYWY47Oru77F8n8Dweny6Jg4p5dlsmPNtyJZTfBs8/S9pCWRmETeALM/
-    oVxthQWEhaOvJrubsMCQojGhLOqMwz42P3hYy1FYfASWR6APPy6mX0NbVyCOVAx3ACiZ
-    ahuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1692691741;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:Subject:From:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=HVW80giOZSBBoNCtIVtoTESynwOPGm2fF3QlTpLi+6A=;
-    b=mqlEFU1V8p6h2Jgucv+78Pg5egjO4d3ToXlqab3+tAG8u6aWZgT31+3lNV4qoBjWx1
-    MH6EveGjo0azJQlqpd5MJTg/jw2ayEhv0EBwSgemN+b5Jn+CXQOrYXWyFWb6YiTIi8/V
-    tocYWf9PK8vc04yINoXIgLUEFlTRfocrAVL+bvFmKjRLoTBZJiyJK/F+JESwjEFR4GEG
-    chgpVc1RlxG4KSIruVM3NStrX3Mo3hklmqXJTIQ0RAeDSrfUHUVuVqyHvSJ6t/OfNFLR
-    gAvOdEZm3BmpRoigxuxnMFuSeJUXwd4nSkK75oQbGOnCLf+wmMNJNZ9aJUmp4/3Lff/t
-    1rrg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1692691741;
-    s=strato-dkim-0002; d=brainaid.de;
-    h=To:Subject:From:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=HVW80giOZSBBoNCtIVtoTESynwOPGm2fF3QlTpLi+6A=;
-    b=C7cbsWQSCl+h0Fg/s/xGoUWzk6/ms/zccYVNhrwIa5BiZtyp0f5MRNxeZrCou2cG3+
-    buvIb97DJL/TWdPGQglZgw5eHjwkrQcUth6U8t9WcElZBQqkifBE1/d9Wd5Mn1xj22tj
-    WW0opxdZGhTjNsToblX1fBjQF5lwGFsiangI3eebGclVX6JHmEXIaYOMQLMUuUDEI66v
-    SqkvQ6WLZNqnkTLxqgdwcsCTeWyZriJpNxjbuTxrsXHOMsWIGQAujVS5E2zLKrEjgukh
-    f0FSOFa4xkxtaEmg037FPnLgqI3dAi5HCoyOXsFXgy+Y/DvN+n0FZ+7tN7oPjPSwxeOR
-    i3Rg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1692691741;
-    s=strato-dkim-0003; d=brainaid.de;
-    h=To:Subject:From:Date:Message-ID:Cc:Date:From:Subject:Sender;
-    bh=HVW80giOZSBBoNCtIVtoTESynwOPGm2fF3QlTpLi+6A=;
-    b=E8yy+dG0Lu6LRu2EkL7OZcVc78ZWYfSo5unBx2puZBbZ2Uo/L40EF3jHmx1trMhURx
-    +llRZVOsXevkPTYrW5Bg==
-X-RZG-AUTH: ":O2kGeEG7b/pS1BjuEyjk3CsOFCFu9/cqpJ3cRgJT0Ux2ESGZjBX033JkHTIUp9ccd0BET/7sdkrmRiIjmEiYStnYjVZPew=="
-Received: from b.brainaid.de
-    by smtp.strato.com (RZmta 49.8.1 AUTH)
-    with ESMTPSA id V68849z7M8916Wm
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate)
-    for <linux-mtd@lists.infradead.org>;
-    Tue, 22 Aug 2023 10:09:01 +0200 (CEST)
-Received: from [10.252.32.21] (unknown [89.249.13.66])
-	by b.brainaid.de (Postfix) with ESMTPSA id F3D2AAC17E7
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Aug 2023 08:09:00 +0000 (UTC)
-Message-ID: <bc09bc68-ca99-d69e-9da8-cd9fa89fd127@brainaid.de>
-Date: Tue, 22 Aug 2023 10:09:00 +0200
+	Tue, 22 Aug 2023 07:10:26 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4426364D86;
+	Tue, 22 Aug 2023 07:10:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00447C433C8;
+	Tue, 22 Aug 2023 07:10:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692688222;
+	bh=u3h1HEnFV5TaycBrs44qWUZVzeJsRZVGR9YPZRIQPdw=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=i6tsOiYacy5pDoG3MZoOfb449zFhRoJ1yWOsPe/y3p1sos9s5RTgahaLvuNnlMeuJ
+	 8W64RS/m199kCR7ORAB/tuBxvFesulQO3nV7Gh3TM78E8Dq/4mdMOeBx6aTe7xBglf
+	 mrznSaNkcoeMHepgTfp5mN57qh8bujkykYtyuHBXv52CQ/b3AKay4SQ6uTQBiMTZzd
+	 b7UrrzpSsoFrQgcV9E/B6frRZOcShb3TEPQnVn+IW2336BmJlWo/A3I+AlOzQ+uTHN
+	 vxh8C7e1zR+vIou6fcsBqOgZfWSveS56jnCVhMBfEI9+G4CBmcYY+f+BpolzziAK8s
+	 sSUjdjQTZ9/JQ==
+From: Michael Walle <mwalle@kernel.org>
+Date: Tue, 22 Aug 2023 09:09:39 +0200
+Subject: [PATCH v2 23/41] mtd: spi-nor: issi: convert flash_info to new
+ format
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-From: Christian Wendt he/him <cw@brainaid.de>
-Subject: [PATCH] mtd-utils: nandtest: handle large nand devices
-Content-Language: en-US, da
-To: linux-mtd@lists.infradead.org
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-23-291a0f39f8d8@kernel.org>
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Michael Walle <mwalle@kernel.org>
+X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_010907_253590_04379D8E 
-X-CRM114-Status: GOOD (  15.40  )
+X-CRM114-CacheID: sfid-20230822_001024_115280_F4520998 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,124 +74,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Running nandtest on devices with sizes of 4Gb or more does not work, as
-the size returned in mtd_info_user is reported as 0 for 4Gb devices for
-example.
+The INFOx() macros are going away. Convert the flash_info database to
+the new format.
 
-The patch uses sysfs to figure out the size of the nand device (as
-recommended in a comment in include/mtd/mtd-abi.h) and changes sizes
-and offsets to 64 bit values.
-
-[From: Christian Wendt <cw@brainaid.de>]
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
-  nand-utils/nandtest.c | 47 +++++++++++++++++++++++++++++++++----------
-  1 file changed, 36 insertions(+), 11 deletions(-)
+ drivers/mtd/spi-nor/issi.c | 114 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 78 insertions(+), 36 deletions(-)
 
-diff --git a/nand-utils/nandtest.c b/nand-utils/nandtest.c
-index 06dec25..98217ba 100644
---- a/nand-utils/nandtest.c
-+++ b/nand-utils/nandtest.c
-@@ -8,6 +8,7 @@
-  #include <string.h>
-  #include <time.h>
-  #include <unistd.h>
-+#include <limits.h>
-  #include <sys/stat.h>
-  #include <sys/ioctl.h>
-  #include <sys/types.h>
-@@ -145,6 +146,27 @@ static int erase_and_write(loff_t ofs, unsigned 
-char *data, unsigned char *rbuf,
-  }
-   +static uint64_t get_mem_size(const char* device)
-+{
-+	const char* p = strrchr(device, '/');
-+	char path[PATH_MAX];
-+	int fd;
-+
-+	snprintf(path, sizeof(path), "/sys/class/mtd/%s/size", p);
-+	fd = open(path, O_RDONLY);
-+	if (fd >= 0) {
-+		char buffer[32];
-+		ssize_t n = read(fd, buffer, sizeof(buffer));
-+		close(fd);
-+		if (n > 0) {
-+			return strtoull(buffer, NULL, 0);
-+		}
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index d31401bcab64..9478f1e61626 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -47,44 +47,86 @@ static const struct spi_nor_fixups pm25lv_nor_fixups = {
+ };
+ 
+ static const struct flash_info issi_nor_parts[] = {
+-	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,   8)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "is25lp016d", INFO(0x9d6015, 0, 64 * 1024,  32)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "is25lp080d", INFO(0x9d6014, 0, 64 * 1024,  16)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "is25lp032",  INFO(0x9d6016, 0, 64 * 1024,  64)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "is25lp064",  INFO(0x9d6017, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 0)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		.fixups = &is25lp256_fixups },
+-	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "is25wp256", INFO(0x9d7019, 0, 0, 0)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		FLAGS(SPI_NOR_QUAD_PP)
+-		.fixups = &is25lp256_fixups },
+-
+-	{ "pm25lv512",   INFO0(32 * 1024,    2)
+-		NO_SFDP_FLAGS(SECT_4K)
++	{
++		.id = SNOR_ID(0x7f, 0x9d, 0x20),
++		.name = "is25cd512",
++		.sector_size = SZ_32K,
++		.size = SZ_64K,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0x9d, 0x40, 0x13),
++		.name = "is25lq040b",
++		.size = SZ_512K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x15),
++		.name = "is25lp016d",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x14),
++		.name = "is25lp080d",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x16),
++		.name = "is25lp032",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x17),
++		.name = "is25lp064",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x18),
++		.name = "is25lp128",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x60, 0x19),
++		.name = "is25lp256",
++		.fixups = &is25lp256_fixups,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0x9d, 0x70, 0x16),
++		.name = "is25wp032",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x70, 0x17),
++		.size = SZ_8M,
++		.name = "is25wp064",
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x70, 0x18),
++		.name = "is25wp128",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x9d, 0x70, 0x19),
++		.name = "is25wp256",
++		.flags = SPI_NOR_QUAD_PP,
++		.fixups = &is25lp256_fixups,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.name = "pm25lv512",
++		.sector_size = SZ_32K,
++		.size = SZ_64K,
++		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &pm25lv_nor_fixups
+-	},
+-	{ "pm25lv010",   INFO0(32 * 1024,    4)
+-		NO_SFDP_FLAGS(SECT_4K)
++	}, {
++		.name = "pm25lv010",
++		.sector_size = SZ_32K,
++		.size = SZ_128K,
++		.no_sfdp_flags = SECT_4K,
+ 		.fixups = &pm25lv_nor_fixups
+-	},
+-	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64)
+-		NO_SFDP_FLAGS(SECT_4K) },
++	}, {
++		.id = SNOR_ID(0x7f, 0x9d, 0x46),
++		.name = "pm25lq032",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
 +	}
-+
-+	fprintf(stderr, "Can't read size from %s\n", path);
-+	exit(1);
-+}
-+
-  /*
-   * Main program
-   */
-@@ -156,8 +178,9 @@ int main(int argc, char **argv)
-  	int nr_passes = 1;
-  	int nr_reads = 4;
-  	int keep_contents = 0;
--	uint32_t offset = 0;
--	uint32_t length = -1;
-+	uint64_t offset = 0;
-+	uint64_t length = -1;
-+	uint64_t mem_size = 0;
-  	int error = 0;
-   	seed = time(NULL);
-@@ -212,11 +235,11 @@ int main(int argc, char **argv)
-  			break;
-   		case 'o':
--			offset = simple_strtoul(optarg, &error);
-+			offset = simple_strtoull(optarg, &error);
-  			break;
-   		case 'l':
--			length = simple_strtoul(optarg, &error);
-+			length = simple_strtoull(optarg, &error);
-  			break;
-   		}
-@@ -238,29 +261,31 @@ int main(int argc, char **argv)
-  		exit(1);
-  	}
-  +	mem_size = get_mem_size(argv[optind]);
-+
-  	if (length == -1)
--		length = meminfo.size;
-+		length = mem_size;
-   	if (offset % meminfo.erasesize) {
--		fprintf(stderr, "Offset %x not multiple of erase size %x\n",
-+		fprintf(stderr, "Offset %llx not multiple of erase size %x\n",
-  			offset, meminfo.erasesize);
-  		exit(1);
-  	}
-  	if (length % meminfo.erasesize) {
--		fprintf(stderr, "Length %x not multiple of erase size %x\n",
-+		fprintf(stderr, "Length %llx not multiple of erase size %x\n",
-  			length, meminfo.erasesize);
-  		exit(1);
-  	}
--	if (length + offset > meminfo.size) {
--		fprintf(stderr, "Length %x + offset %x exceeds device size %x\n",
--			length, offset, meminfo.size);
-+	if (length + offset > mem_size) {
-+		fprintf(stderr, "Length %llx + offset %llx exceeds device size %llx\n",
-+			length, offset, mem_size);
-  		exit(1);
-  	}
-   	wbuf = malloc(meminfo.erasesize * 3);
-  	if (!wbuf) {
-  		fprintf(stderr, "Could not allocate %d bytes for buffer\n",
--			meminfo.erasesize * 2);
-+			meminfo.erasesize * 3);
-  		exit(1);
-  	}
-  	rbuf = wbuf + meminfo.erasesize;
+ };
+ 
+ static void issi_nor_default_init(struct spi_nor *nor)
+
 -- 
-2.39.3
+2.39.2
 
 
 ______________________________________________________
