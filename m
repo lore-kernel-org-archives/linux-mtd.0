@@ -4,65 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D74CEE49A0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 10:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59CB0EE49B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 10:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ieb3dcfwnQ56Yf7nodNQFBT1u4gJxLEEY6FCZKMiokk=; b=e3MTklQemm8pJI
-	hPZppnkD62x2QyhdFsNvF8nCGuY0XHPf3IfkR9vKbSg9J4cjCn1frCT4Bf6VHewhFOrkMfRI7XUpP
-	IWDVdKuyjslPNzBPkxD1o1JZjwS9KJMj9iiU+lexkQec832EbcvSsoy3/vcEMd9P5G/61Wq55di/x
-	JDwIl6lQgLPgGAVxeh++r5D2dm4PZ77DKwOw11N5ITgkx5Q4c1+6RhinyweN5f3qd7DBayJ1JjJiv
-	0ca7PmsgkVkzoep7cytF5c/+57oCWC/Nf+Q9mkPfH/EhDsK6t30zUsFhz5Q2L3BHqBHN6ooQsAwyb
-	t/AGfYXPmm3K/XoJCQvw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=W8V+475FSuNOmBHo6R2afZnawjonrExU3/ZjDQqMSOw=; b=h18X5A85tinFgM
+	NboTmJ/KI+wHe0I4YLNDX6CKPT7qi5dCWsvBW5IUBfYWJ0q19z0TkUpMYNfO2ucGnsugDQcLJ1Y1M
+	vnL0JGwNxvfr2Pqkkv4xZxdpHsCNp8gzg5XB3GXEXb+Rkp87zSEt93x1jl2+Xg49S+Zzl5cmt1aws
+	364XbhxjoUZPhRuawrXpkPl3oU8vvGxUewfx6/2M/XtfrgmaRU9es4p3J2mZz+9See17MZUGsJzs3
+	8bBfUZrQOKF9mFEn/Xn2Ygj2xVajPO/p+77szSRiLyDWTfMQb0n956hpKm0sxXxNHpdepb9UeZ5Eb
+	xelMF4YiMElsgwz7a3wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYlQD-000MeD-1s;
-	Wed, 23 Aug 2023 10:49:09 +0000
+	id 1qYlQC-000MdP-1o;
+	Wed, 23 Aug 2023 10:49:08 +0000
 Received: from smtp-out1.suse.de ([195.135.220.28])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYlQ6-000MUM-0y
-	for linux-mtd@lists.infradead.org;
+	id 1qYlQ6-000MUI-10;
 	Wed, 23 Aug 2023 10:49:06 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A76E21F18;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1F89B21EDA;
 	Wed, 23 Aug 2023 10:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1692787738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6A6hRvylgBwTZcuIETqZgEqdZsV0/K4HPCnVHk0AEc0=;
-	b=GeMwkoDq9jZsvipXdFUIfIpUxSEnoASpn4w5D4K/349brcv9sbkd2fiY04fzjilBKfCp/Q
-	PfAixdVkvOkyfGYM1BJlWbXdwJ6SMk+q8vcche7s9Dk9fivM4azCPu+LiS/bAXUPn48E33
-	KfkHhFLyYLCsXrCQ0u6aPGRz6kk0f+Y=
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=czbolVCNdiRIhtzRMydBVuDGtNoMVf0uK7rI8VUw4Wg=;
+	b=cea+STFByaV36NWMjg8zifEKP9bUJaVFrhrdsQ1BHrDjc+6YKTyOk0XUYe/aGcn7z1GdBW
+	Sp5Xg8/PcrR30C9G8GkmtNgleVHgoFT9VpO4HmYAD81nOJQ/2ts6Z2GJ97FCPouubZqTfM
+	7Ki5cRwEgj/8O3iByHVAhCDVhrdgZS0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1692787738;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6A6hRvylgBwTZcuIETqZgEqdZsV0/K4HPCnVHk0AEc0=;
-	b=KeK2hjT+B2Y4j3m53Ye2pSJSNNRfDc247PvVF1fiSGboUQ6SYEa5ckiNxiFQF8eFVQVByk
-	M9yF1nQ70oTK7YDA==
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=czbolVCNdiRIhtzRMydBVuDGtNoMVf0uK7rI8VUw4Wg=;
+	b=ccloVX/Tox8MPvEstSnU1swyihs7KV2puBqol0j3M4wpbT7Z67JF74RuKmYp8i9zsSQ2aK
+	Q/J06H24OiSZjOBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C9E613458;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0486813592;
 	Wed, 23 Aug 2023 10:48:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id +m9QIhrk5WRLIAAAMHmgww
+	id hdjcABrk5WQsIAAAMHmgww
 	(envelope-from <jack@suse.cz>); Wed, 23 Aug 2023 10:48:58 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 504F2A078C; Wed, 23 Aug 2023 12:48:57 +0200 (CEST)
+	id 0E216A0774; Wed, 23 Aug 2023 12:48:57 +0200 (CEST)
 From: Jan Kara <jack@suse.cz>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Jens Axboe <axboe@kernel.dk>,
@@ -70,21 +65,60 @@ Cc: Jens Axboe <axboe@kernel.dk>,
 	<linux-block@vger.kernel.org>,
 	Christoph Hellwig <hch@infradead.org>,
 	Jan Kara <jack@suse.cz>,
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com,
+	drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
 	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mm@kvack.org,
 	linux-mtd@lists.infradead.org,
-	Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 12/29] mtd: block2mtd: Convert to bdev_open_by_dev/path()
-Date: Wed, 23 Aug 2023 12:48:23 +0200
-Message-Id: <20230823104857.11437-12-jack@suse.cz>
+	linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com,
+	reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org,
+	Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: [PATCH v3 0/29] block: Make blkdev_get_by_*() return handle
+Date: Wed, 23 Aug 2023 12:48:11 +0200
+Message-Id: <20230818123232.2269-1-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
-References: <20230818123232.2269-1-jack@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6124; i=jack@suse.cz; h=from:subject; bh=Tz1ugp3DU+ZL/hNHyITzU2zJy8WxFdpgNi6kSxgLpeY=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBk5eP4BpWHOMZmxjSrW9wFbZII0CKnaJn+aayUt5VL 882/Y6mJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZOXj+AAKCRCcnaoHP2RA2fpBB/ 4kp25D2PqQ1jw+p/I0CJKROSenL7DrnJP8O8K48mC3nsufv/tYsZk8yiUxUD880RpPoKxF+7QEHpMW trZSANHdxAoTwOBAUTfIrje9gwRSw7zcyOOh7OqAlDxlzJJS5kH6W86wko3eYB1mt0ujtx4s/fkml7 mCZL27g5iEyDY7yhOU/4dfIttVF5+TWpXuAUzflZu5cXUHKiqjQ3qRudPO2BCWMns1R6X7EOqU4xJt rxOskwyUNJewZy8Wsw2SpbVbbaxzoLb4XxoMc/S2C3WwjSUwrBiNOZmMfot61QU4d+C9Moz8luGwzR Vx/zZeyP/rN/Ea+2sGf1r+bWltiZMV
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3781; i=jack@suse.cz; h=from:subject:message-id; bh=cMBb8bZk7tVGWo+BW5D78pH+ebOvNFFLsxdd3Uvzd/w=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBk5ePhrEMij+4xGF6e8K//xuADex0OXIFxlpO0VT6g 42vu5BeJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZOXj4QAKCRCcnaoHP2RA2RqoB/ 91nt6Qs4NSStbt9M1WXY1akBbAqu+Bv3ZXdZ6WMy9kKyYwY7zCnyQziikP60M2MjCrud4NP9os4YAr 4uXdyOyVcdJ9TjbciDgTyoYdfkFl7g+rZhj1pyPeep1xmvDMn3QtNJ28EbhLegdC+nkmL6+bxPGEwd IdsuBKGrdIIEryWwhBq0+BWowL3nzmQjs5GoDtXLoHADfHYhgC8RKYK/4FaML1/SsAZRvGJ/C8wFB4 JUGsDGFE4CJx9XgiRx407CSIGNSoCciqBpMaMA7x/dbq9Tu76xcqN4/DZrtT2qyG4I7GZYetndEl3F vWMZMQFPauZmB2S1r30HY+nn2IOCrM
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_034902_503001_418F35C1 
-X-CRM114-Status: GOOD (  24.64  )
+X-CRM114-CacheID: sfid-20230823_034902_504121_F751EB75 
+X-CRM114-Status: GOOD (  17.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,180 +135,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert block2mtd to use bdev_open_by_dev() and bdev_open_by_path() and
-pass the handle around.
+Hello,
 
+this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
+calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+makes the get and put calls for bdevs more obviously matching and allows us to
+propagate context from get to put without having to modify all the users
+(again!). In particular I need to propagate used open flags to blkdev_put() to
+be able count writeable opens and add support for blocking writes to mounted
+block devices. I'll send that series separately.
+
+The series is based on Christian's vfs tree as of today as there is quite
+some overlap. Patches have passed some reasonable testing - I've tested block
+changes, md, dm, bcache, xfs, btrfs, ext4, swap. More testing or review is
+always welcome. Thanks! I've pushed out the full branch to:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
+
+to ease review / testing. Since there were not many comments for v2 and
+Christoph has acked the series I think we should start discussing how to merge
+the series. Most collisions with this series seem to happen in the filesystems
+area so VFS tree would seem as the least painful way to merge this. Jens,
+are you OK with that?
+
+Changes since v2:
+* Rebased on top of current vfs tree
+* Added some acks
+* Reflected minor nits from Christoph
+* Added missing conversion of blkdev_put() calls in cramfs and erofs
+* Fixed possible leak of bdev handle in xfs if logdev is the same as fs dev
+
+Changes since v1:
+* Rebased on top of current vfs tree
+* Renamed final functions to bdev_open_by_*() and bdev_release()
+* Fixed detection of exclusive open in blkdev_ioctl() and blkdev_fallocate()
+* Fixed swap conversion to properly reinitialize swap_info->bdev_handle
+* Fixed xfs conversion to not oops with rtdev without logdev
+* Couple other minor fixups
+
+								Honza
+
+[1] https://lore.kernel.org/all/ZJGNsVDhZx0Xgs2H@infradead.org
+
+CC: Alasdair Kergon <agk@redhat.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Anna Schumaker <anna@kernel.org>
+CC: Chao Yu <chao@kernel.org>
+CC: Christian Borntraeger <borntraeger@linux.ibm.com>
+CC: Coly Li <colyli@suse.de
+CC: "Darrick J. Wong" <djwong@kernel.org>
+CC: Dave Kleikamp <shaggy@kernel.org>
+CC: David Sterba <dsterba@suse.com>
+CC: dm-devel@redhat.com
+CC: drbd-dev@lists.linbit.com
+CC: Gao Xiang <xiang@kernel.org>
+CC: Jack Wang <jinpu.wang@ionos.com>
+CC: Jaegeuk Kim <jaegeuk@kernel.org>
+CC: jfs-discussion@lists.sourceforge.net
 CC: Joern Engel <joern@lazybastard.org>
+CC: Joseph Qi <joseph.qi@linux.alibaba.com>
+CC: Kent Overstreet <kent.overstreet@gmail.com>
+CC: linux-bcache@vger.kernel.org
+CC: linux-btrfs@vger.kernel.org
+CC: linux-erofs@lists.ozlabs.org
+CC: <linux-ext4@vger.kernel.org>
+CC: linux-f2fs-devel@lists.sourceforge.net
+CC: linux-mm@kvack.org
 CC: linux-mtd@lists.infradead.org
-Acked-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- drivers/mtd/devices/block2mtd.c | 51 +++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 22 deletions(-)
+CC: linux-nfs@vger.kernel.org
+CC: linux-nilfs@vger.kernel.org
+CC: linux-nvme@lists.infradead.org
+CC: linux-pm@vger.kernel.org
+CC: linux-raid@vger.kernel.org
+CC: linux-s390@vger.kernel.org
+CC: linux-scsi@vger.kernel.org
+CC: linux-xfs@vger.kernel.org
+CC: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+CC: Mike Snitzer <snitzer@kernel.org>
+CC: Minchan Kim <minchan@kernel.org>
+CC: ocfs2-devel@oss.oracle.com
+CC: reiserfs-devel@vger.kernel.org
+CC: Sergey Senozhatsky <senozhatsky@chromium.org>
+CC: Song Liu <song@kernel.org>
+CC: Sven Schnelle <svens@linux.ibm.com>
+CC: target-devel@vger.kernel.org
+CC: Ted Tso <tytso@mit.edu>
+CC: Trond Myklebust <trond.myklebust@hammerspace.com>
+CC: xen-devel@lists.xenproject.org
 
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index be106dc20ff3..aa44a23ec045 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -37,7 +37,7 @@
- /* Info for the block device */
- struct block2mtd_dev {
- 	struct list_head list;
--	struct block_device *blkdev;
-+	struct bdev_handle *bdev_handle;
- 	struct mtd_info mtd;
- 	struct mutex write_mutex;
- };
-@@ -55,7 +55,8 @@ static struct page *page_read(struct address_space *mapping, pgoff_t index)
- /* erase a specified part of the device */
- static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
- {
--	struct address_space *mapping = dev->blkdev->bd_inode->i_mapping;
-+	struct address_space *mapping =
-+				dev->bdev_handle->bdev->bd_inode->i_mapping;
- 	struct page *page;
- 	pgoff_t index = to >> PAGE_SHIFT;	// page index
- 	int pages = len >> PAGE_SHIFT;
-@@ -105,6 +106,8 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		size_t *retlen, u_char *buf)
- {
- 	struct block2mtd_dev *dev = mtd->priv;
-+	struct address_space *mapping =
-+				dev->bdev_handle->bdev->bd_inode->i_mapping;
- 	struct page *page;
- 	pgoff_t index = from >> PAGE_SHIFT;
- 	int offset = from & (PAGE_SIZE-1);
-@@ -117,7 +120,7 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			cpylen = len;	// this page
- 		len = len - cpylen;
- 
--		page = page_read(dev->blkdev->bd_inode->i_mapping, index);
-+		page = page_read(mapping, index);
- 		if (IS_ERR(page))
- 			return PTR_ERR(page);
- 
-@@ -139,7 +142,8 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
- 		loff_t to, size_t len, size_t *retlen)
- {
- 	struct page *page;
--	struct address_space *mapping = dev->blkdev->bd_inode->i_mapping;
-+	struct address_space *mapping =
-+				dev->bdev_handle->bdev->bd_inode->i_mapping;
- 	pgoff_t index = to >> PAGE_SHIFT;	// page index
- 	int offset = to & ~PAGE_MASK;	// page offset
- 	int cpylen;
-@@ -194,7 +198,7 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- static void block2mtd_sync(struct mtd_info *mtd)
- {
- 	struct block2mtd_dev *dev = mtd->priv;
--	sync_blockdev(dev->blkdev);
-+	sync_blockdev(dev->bdev_handle->bdev);
- 	return;
- }
- 
-@@ -206,10 +210,10 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
- 
- 	kfree(dev->mtd.name);
- 
--	if (dev->blkdev) {
--		invalidate_mapping_pages(dev->blkdev->bd_inode->i_mapping,
--					0, -1);
--		blkdev_put(dev->blkdev, NULL);
-+	if (dev->bdev_handle) {
-+		invalidate_mapping_pages(
-+			dev->bdev_handle->bdev->bd_inode->i_mapping, 0, -1);
-+		bdev_release(dev->bdev_handle);
- 	}
- 
- 	kfree(dev);
-@@ -219,10 +223,10 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
-  * This function is marked __ref because it calls the __init marked
-  * early_lookup_bdev when called from the early boot code.
-  */
--static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
-+static struct bdev_handle __ref *mdtblock_early_get_bdev(const char *devname,
- 		blk_mode_t mode, int timeout, struct block2mtd_dev *dev)
- {
--	struct block_device *bdev = ERR_PTR(-ENODEV);
-+	struct bdev_handle *bdev_handle = ERR_PTR(-ENODEV);
- #ifndef MODULE
- 	int i;
- 
-@@ -230,7 +234,7 @@ static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
- 	 * We can't use early_lookup_bdev from a running system.
- 	 */
- 	if (system_state >= SYSTEM_RUNNING)
--		return bdev;
-+		return bdev_handle;
- 
- 	/*
- 	 * We might not have the root device mounted at this point.
-@@ -249,19 +253,20 @@ static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
- 		wait_for_device_probe();
- 
- 		if (!early_lookup_bdev(devname, &devt)) {
--			bdev = blkdev_get_by_dev(devt, mode, dev, NULL);
--			if (!IS_ERR(bdev))
-+			bdev_handle = bdev_open_by_dev(devt, mode, dev, NULL);
-+			if (!IS_ERR(bdev_handle))
- 				break;
- 		}
- 	}
- #endif
--	return bdev;
-+	return bdev_handle;
- }
- 
- static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 		char *label, int timeout)
- {
- 	const blk_mode_t mode = BLK_OPEN_READ | BLK_OPEN_WRITE;
-+	struct bdev_handle *bdev_handle;
- 	struct block_device *bdev;
- 	struct block2mtd_dev *dev;
- 	char *name;
-@@ -274,21 +279,23 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 		return NULL;
- 
- 	/* Get a handle on the device */
--	bdev = blkdev_get_by_path(devname, mode, dev, NULL);
--	if (IS_ERR(bdev))
--		bdev = mdtblock_early_get_bdev(devname, mode, timeout, dev);
--	if (IS_ERR(bdev)) {
-+	bdev_handle = bdev_open_by_path(devname, mode, dev, NULL);
-+	if (IS_ERR(bdev_handle))
-+		bdev_handle = mdtblock_early_get_bdev(devname, mode, timeout,
-+						      dev);
-+	if (IS_ERR(bdev_handle)) {
- 		pr_err("error: cannot open device %s\n", devname);
- 		goto err_free_block2mtd;
- 	}
--	dev->blkdev = bdev;
-+	dev->bdev_handle = bdev_handle;
-+	bdev = bdev_handle->bdev;
- 
- 	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
- 		pr_err("attempting to use an MTD device as a block device\n");
- 		goto err_free_block2mtd;
- 	}
- 
--	if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
-+	if ((long)bdev->bd_inode->i_size % erase_size) {
- 		pr_err("erasesize must be a divisor of device size\n");
- 		goto err_free_block2mtd;
- 	}
-@@ -306,7 +313,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 
- 	dev->mtd.name = name;
- 
--	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
-+	dev->mtd.size = bdev->bd_inode->i_size & PAGE_MASK;
- 	dev->mtd.erasesize = erase_size;
- 	dev->mtd.writesize = 1;
- 	dev->mtd.writebufsize = PAGE_SIZE;
--- 
-2.35.3
-
+Previous versions:
+Link: http://lore.kernel.org/r/20230629165206.383-1-jack@suse.cz # v1
+Link: http://lore.kernel.org/r/20230810171429.31759-1-jack@suse.cz # v2
 
 ______________________________________________________
 Linux MTD discussion mailing list
