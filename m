@@ -4,90 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C882DEE4993
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Aug 2023 16:57:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6712EEE49AD
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 03:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Cc:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ilOOO1XDTuA30n0zOMRFB3ebOJWcaLVMYPImuTOrqcQ=; b=YVAqcOkOCePSwp
-	/x64YZzD59sTx6TNnPGbjnazZZB5ZKNoVnBp5wMnTDfb2lkgi2PtaHEXCpjvo5PuRa6U6T4s13u4b
-	t+z9tfYnWtML+3RKrh/WOmcN0Clj9nS3YnW05loa8yMxL8Sn+LwZ1FuhPTAsXTbbB6m35zK5GU/UG
-	BRnnr7Rr8klJzOq/WMj3+a8LIpwUCFPqjHjk6bWMGYESmCqLBv31NEPe4VO+uaGZR//oAs6ZPP0bK
-	fZW5ms5NZYxVdO6A3qGYP4nqvFC+QFpRvYs3uHDTWyWqFMcaklhxXzHA0ezeejbD3sPt+4Ljg5a7O
-	W0YegyeH2BWeW3ybH1Sg==;
+	List-Owner; bh=spmWChi0v2/o85yX/ZWfBn05yCU7XeQWdzMhNtAitLE=; b=iCv/ufg42n0Z4g
+	GKyW8qH0rbySjs/nNx7mdiBMOA0EC6o1CwRguisQ3JztxmqICcO/fHBfMftdSazMquXjJVTKPtbY9
+	JiE1j50JYZ1EHWiPcFL/6MlNDQNTkYwzI69yujQMaMhopk/DR1D0EyD42mQ9At2jHs1fboSg7uia9
+	0SI/FNRDf3c11tDquP0ofVs1LvLoXJ8losvxvIz1o6gq5QKnPnK9gF2zSPXdxoku9FizbmI1KtQg9
+	5tY3Ponw0XwokAVhADBPPjTXxG1tvblAzzOJh3R5z9fzvDo/MbYtnECHvhvR9eDTLHuL9kqdyenrO
+	ufEPz7wRBR/30GVcroJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYUgz-00GXqB-0k;
-	Tue, 22 Aug 2023 16:57:21 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1qYe69-00H73W-1C;
+	Wed, 23 Aug 2023 02:59:57 +0000
+Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYUgv-00GXpQ-1K
+	id 1qYe66-00H71Z-0i
 	for linux-mtd@lists.infradead.org;
-	Tue, 22 Aug 2023 16:57:20 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 1FE66120007;
-	Tue, 22 Aug 2023 19:57:12 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1FE66120007
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1692723432;
-	bh=drhH7+YmqhbOL557A+typ2DY3+xT4Rr5zlMBEjbe3+Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=hhRttlqISvoDCwY91PCukwI7GEoGC1kDBWxglzmCK8jxdfU+8lSxomFeqqezK4gPF
-	 AVILo4fqPOmVj3vuEBZhd/YsAd0jYKAjusmSmRjmRGdxLwVOVDhgn+Y38ZTP1prvfG
-	 wKuYA9eMdnIf35JXjb+GhxdT+zxRlrPlUElxKkY4YriDVzUkbdJh8QfCowM5yUAQcW
-	 Geuj16u4aMIEWT4APbUKNwtKv5kWamHawUDOGLf/2azkclt/6z4C3ngDchB7taXRDE
-	 BIYJtNydfIlXixA2dmq5lk93dDfSWKycK1zDk0B8tZ/izM/otb5oHod8gL70qDsXud
-	 W9eRzXzOvXvbw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 22 Aug 2023 19:57:11 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 22 Aug 2023 19:57:10 +0300
-Message-ID: <01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
-Date: Tue, 22 Aug 2023 19:57:11 +0300
+	Wed, 23 Aug 2023 02:59:55 +0000
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1befe39630bso9174915ad.0
+        for <linux-mtd@lists.infradead.org>; Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692759588; x=1693364388;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bhgEqLuvf9ApSnTvUwn1L76c2o2W1Ei/QD6yE6yt7Vo=;
+        b=RzbIwpF/0rWWCHIbil/kmvbYsiH+zzV8cteo0NeX4iqS5Th3aMObOrBBZ5QIYYiYNO
+         EzLvxXnwaU3C6HJ66DVx0SYeH6DBUUXE/parOT0tZRTGaLZHY6BYCVv0BWvKsae2+Z4V
+         HEkSBtQA++hJt6hjIX8coUzQJXYdSMU0EhPZnC3wJk9rsU5aMcdQM2J2gdrxRnnAl7ZG
+         8NIlks8SUC7HZyd+TSNVs6GUNYerNVLSzTLDuAq02G7Vh6n7NQtQV5W2S/tTxnIxqdnK
+         Yk0AUrfOj+V8sxulrYV9L4sfBNDgKCkzUecP9KTfiIS3EGmzpdtRXoZ4mpHHvApm3vtv
+         04iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692759588; x=1693364388;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhgEqLuvf9ApSnTvUwn1L76c2o2W1Ei/QD6yE6yt7Vo=;
+        b=MEoWCxQrfZFqufh16C7djY7AxHD2zlJopGyb3/6EORe1dQ8gYCbG5n1xAoZksBOJtm
+         4Hwu6dwCrSvyK+SIaGSQSJhLbnP4WxOSgY7VUIEFSltPLN2P0PRg4mIDvY+FSvgGpMWA
+         d3kcBs84sUSJQWN/ZzrCNr3KRANXSw5/ZYeZqtz9c43IkoNPOlv8Kz6ktRNYfU6NPCfQ
+         UKyvMeB/We7wJWFntSOaBFWR2QiSQKOVk6GSgCKM3BF9QLeWyKx8OyCHeibW5VluqFaI
+         dt2Tj+9pgaVqv78OeDVKKUfjCeeNNP/WD1LpKzQ696gLRYHHlZJ+cHq5Ekq2McmuNSXL
+         Acyg==
+X-Gm-Message-State: AOJu0YxBN5+2eZbupV2jowFa3rsIBzCQ1icz06r8TEmBfuL/wCXAHqzK
+	4Pjh5f3T3f39tR3v2a0HxCoXfA==
+X-Google-Smtp-Source: AGHT+IEfrTZGJtg+pRH2EfLUkWhGiT4SJbELosEEcEbXeeoUMWHqtsVXqJsCto+j1ri8qfTaL4v/sQ==
+X-Received: by 2002:a17:90a:2f41:b0:26d:4ade:fcf0 with SMTP id s59-20020a17090a2f4100b0026d4adefcf0mr10521410pjd.4.1692759588304;
+        Tue, 22 Aug 2023 19:59:48 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([2408:8000:b001:1:1f:58ff:f102:103])
+        by smtp.gmail.com with ESMTPSA id z2-20020a17090a1fc200b00262ca945cecsm11045048pjz.54.2023.08.22.19.59.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 19:59:47 -0700 (PDT)
+Message-ID: <63dc1d86-2a15-6b7e-f63a-63fccb25eae2@bytedance.com>
+Date: Wed, 23 Aug 2023 10:59:34 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 43/48] drm/ttm: introduce pool_shrink_rwsem
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <kernel@sberdevices.ru>
-References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
- <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
- <20230822153556.630e65b9@xps-13>
-From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-In-Reply-To: <20230822153556.630e65b9@xps-13>
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179385 [Aug 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;datasheet.lcsc.com:7.1.1;www.micron.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/08/22 16:05:00
-X-KSMG-LinksScanning: Clean, bases: 2023/08/22 16:04:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/22 13:42:00 #21676335
-X-KSMG-AntiVirus-Status: Clean, skipped
+To: daniel@ffwll.ch
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-44-zhengqi.arch@bytedance.com>
+ <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+ vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+ brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+ cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+ gregkh@linuxfoundation.org, muchun.song@linux.dev,
+ simon.horman@corigine.com, dlemoal@kernel.org, kvm@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
+ linux-mm@kvack.org, dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+ x86@kernel.org, cluster-devel@redhat.com, xen-devel@lists.xenproject.org,
+ linux-ext4@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ rcu@vger.kernel.org, linux-bcache@vger.kernel.org,
+ Muchun Song <songmuchun@bytedance.com>, linux-raid@vger.kernel.org,
+ linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+ daniel.vetter@ffwll.ch
+In-Reply-To: <ZOS+g51Yx9PsYkGU@phenom.ffwll.local>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230822_095718_157252_FC353A36 
-X-CRM114-Status: GOOD (  10.86  )
+X-CRM114-CacheID: sfid-20230822_195954_264320_74318BC9 
+X-CRM114-Status: GOOD (  20.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,60 +106,134 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Hi Daniel,
 
-On 22.08.2023 16:35, Miquel Raynal wrote:
-> Hi Martin,
+On 2023/8/22 21:56, Daniel Vetter wrote:
+> On Mon, Aug 07, 2023 at 07:09:31PM +0800, Qi Zheng wrote:
+>> Currently, the synchronize_shrinkers() is only used by TTM pool. It only
+>> requires that no shrinkers run in parallel.
+>>
+>> After we use RCU+refcount method to implement the lockless slab shrink,
+>> we can not use shrinker_rwsem or synchronize_rcu() to guarantee that all
+>> shrinker invocations have seen an update before freeing memory.
+>>
+>> So we introduce a new pool_shrink_rwsem to implement a private
+>> synchronize_shrinkers(), so as to achieve the same purpose.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 > 
-> mmkurbanov@sberdevices.ru wrote on Tue, 22 Aug 2023 15:25:34 +0300:
+> On the 5 drm patches (I counted 2 ttm and 3 drivers) for merging through
+> some other tree (since I'm assuming that's how this will land):
+
+Yeah, there are 5 drm patches: PATCH v4 07/48 23/48 24/48 25/48 43/48.
+
 > 
->> The first 4 bytes are reserved for bad block data.
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+Thanks for your review!
+
+Qi
+
 > 
-> Are you sure about that? I've never seen 4-bytes BBM.
-
-Yes, I'm sure. I have checked in all the relevant datasheets:
-----------------------------------------------------------------------------------
-|        Name        | Max Byte | Min Byte |  Area   |        Description        |
-|                    | Address  | Address  |         |                           |
-|--------------------+----------+----------+---------+---------------------------|
-| MT29F2G01ABAGD [1] |          |          |         |                           |
-|--------------------|          |          |         |                           |
-| MT29F2G01ABBGD [2] |          |          |         |                           |
-|--------------------|   803h   |   800h   |         |                           |
-| MT29F1G01ABAFD [3] |          |          |         |                           |
-|--------------------|          |          |         |                           |
-| MT29F4G01ADAGD [4] |          |          |         |                           |
-|--------------------+----------+----------| Spare 0 | Reserved (bad block data) |
-| MT29F4G01ABAFD [5] |          |          |         |                           |
-|--------------------|          |          |         |                           |
-| MT29F4G01ABBFD [6] |          |          |         |                           |
-|--------------------|  1003h   |  1000h   |         |                           |
-| MT29F8G01ADAFD [7] |          |          |         |                           |
-|--------------------|          |          |         |                           |
-| MT29F8G01ADBFD [8] |          |          |         |                           |
-----------------------------------------------------------------------------------
-
-Note: to view the datasheet on the Micron (https://www.micron.com/) website, you need
-to register.
-
-Links:
-  [1] https://datasheet.lcsc.com/lcsc/1912111437_Micron-Tech-MT29F2G01ABAGDWB-IT-G_C410863.pdf - page 45
-  [2] https://www.micron.com/-/media/client/global/documents/products/data-sheet/nand-flash/70-series/m79a_2gb_1_8v_nand_spi.pdf - page 46
-  [3] https://datasheet.lcsc.com/lcsc/2209201030_Micron-Tech-MT29F1G01ABAFDWB-IT-F_C2905686.pdf - page 46
-  [4] https://www.micron.com/-/media/client/global/documents/products/data-sheet/nand-flash/70-series/m79a_ddp_4gb_3v_nand_spi.pdf - page 46
-  [5] https://www.micron.com/-/media/client/global/documents/products/data-sheet/nand-flash/70-series/m70a_4gb_3v_nand_spi.pdf - page 47
-  [6] https://www.micron.com/-/media/client/global/documents/products/data-sheet/nand-flash/70-series/m70a_4gb_1_8v_nand_spi.pdf - page 49
-  [7] https://www.micron.com/-/media/client/global/documents/products/data-sheet/nand-flash/70-series/m70a_ddp_8gb_3v_nand_spi.pdf - page 48
-  [8] https://www.micron.com/-/media/client/global/documents/products/data-sheet/nand-flash/70-series/m70a_ddp_8gb_1_8v_nand_spi.pdf - page 48
-
--- 
-Best Regards,
-Martin Kurbanov
+>> ---
+>>   drivers/gpu/drm/ttm/ttm_pool.c | 15 +++++++++++++++
+>>   include/linux/shrinker.h       |  2 --
+>>   mm/shrinker.c                  | 15 ---------------
+>>   3 files changed, 15 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+>> index c9c9618c0dce..38b4c280725c 100644
+>> --- a/drivers/gpu/drm/ttm/ttm_pool.c
+>> +++ b/drivers/gpu/drm/ttm/ttm_pool.c
+>> @@ -74,6 +74,7 @@ static struct ttm_pool_type global_dma32_uncached[MAX_ORDER + 1];
+>>   static spinlock_t shrinker_lock;
+>>   static struct list_head shrinker_list;
+>>   static struct shrinker *mm_shrinker;
+>> +static DECLARE_RWSEM(pool_shrink_rwsem);
+>>   
+>>   /* Allocate pages of size 1 << order with the given gfp_flags */
+>>   static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_flags,
+>> @@ -317,6 +318,7 @@ static unsigned int ttm_pool_shrink(void)
+>>   	unsigned int num_pages;
+>>   	struct page *p;
+>>   
+>> +	down_read(&pool_shrink_rwsem);
+>>   	spin_lock(&shrinker_lock);
+>>   	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
+>>   	list_move_tail(&pt->shrinker_list, &shrinker_list);
+>> @@ -329,6 +331,7 @@ static unsigned int ttm_pool_shrink(void)
+>>   	} else {
+>>   		num_pages = 0;
+>>   	}
+>> +	up_read(&pool_shrink_rwsem);
+>>   
+>>   	return num_pages;
+>>   }
+>> @@ -572,6 +575,18 @@ void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
+>>   }
+>>   EXPORT_SYMBOL(ttm_pool_init);
+>>   
+>> +/**
+>> + * synchronize_shrinkers - Wait for all running shrinkers to complete.
+>> + *
+>> + * This is useful to guarantee that all shrinker invocations have seen an
+>> + * update, before freeing memory, similar to rcu.
+>> + */
+>> +static void synchronize_shrinkers(void)
+>> +{
+>> +	down_write(&pool_shrink_rwsem);
+>> +	up_write(&pool_shrink_rwsem);
+>> +}
+>> +
+>>   /**
+>>    * ttm_pool_fini - Cleanup a pool
+>>    *
+>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>> index c55c07c3f0cb..025c8070dd86 100644
+>> --- a/include/linux/shrinker.h
+>> +++ b/include/linux/shrinker.h
+>> @@ -103,8 +103,6 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
+>>   void shrinker_register(struct shrinker *shrinker);
+>>   void shrinker_free(struct shrinker *shrinker);
+>>   
+>> -extern void synchronize_shrinkers(void);
+>> -
+>>   #ifdef CONFIG_SHRINKER_DEBUG
+>>   extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
+>>   						  const char *fmt, ...);
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index 3ab301ff122d..a27779ed3798 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -650,18 +650,3 @@ void shrinker_free(struct shrinker *shrinker)
+>>   	kfree(shrinker);
+>>   }
+>>   EXPORT_SYMBOL_GPL(shrinker_free);
+>> -
+>> -/**
+>> - * synchronize_shrinkers - Wait for all running shrinkers to complete.
+>> - *
+>> - * This is equivalent to calling unregister_shrink() and register_shrinker(),
+>> - * but atomically and with less overhead. This is useful to guarantee that all
+>> - * shrinker invocations have seen an update, before freeing memory, similar to
+>> - * rcu.
+>> - */
+>> -void synchronize_shrinkers(void)
+>> -{
+>> -	down_write(&shrinker_rwsem);
+>> -	up_write(&shrinker_rwsem);
+>> -}
+>> -EXPORT_SYMBOL(synchronize_shrinkers);
+>> -- 
+>> 2.30.2
+>>
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
