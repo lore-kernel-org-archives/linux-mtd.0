@@ -4,85 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2550EE49B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 11:52:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7449CEE49A0
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 12:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tHVmJFn6G0w7ORKbHCEtFEcm5lrlphcBXNJHbgAPPwA=; b=OlDr6wsmIWLBe4
-	NmXdNFP9ZetbE3NcXXUHIugKRhsvkzx1URg+ChwMdHY+moiJe2rr8XFvOj4GMtSagnMfC2vuLh2b4
-	bkbkxZa1b160rQIVDAa+/POLUiT5sSRAXOlmUJ/QQSH4O7eH96t9qbzt5QzbeI+yz+aitl306j/O5
-	FVH3IWXUkuVCD6aYm/uxDQFu78nUrLAFT+uxWtvEbQNzaJU2BplLxzeuvyMsasmfPqeNdbTQ6d0Y7
-	y7nPk9GmSGp6ISMzzsqAq290Ayxnlchb8MZ/jqE8wzeATUksbZ+BIJUcBwCaUzaOU+5OeoKxk9YJz
-	/S5sgWAYAtZtslF/StRg==;
+	List-Owner; bh=s0J+ozQ8OZlxeFpzuEIApzmbHSiC2lpRt7QV2wdro0Y=; b=jFQwPAU899S8zg
+	dk63bwbKvnGUk/4MSkO3uxXoi6y4y98qO4aPhOf1iWPqPEUioa0q4XOKL7YS+4eTe6k+OINu6s4u+
+	/n15n5LveSIkLKMC/GoAGxAsO/lwENbSBVr2Ym0EVI8mRJ5aLDrb//xPs2rCcvdEmhM3K0UVtz59X
+	3l7BkevzSWLIt89Zl/AV8BnUxvG4Krs4CXm5gCvnimOJ/LHBRUtEjs+4xe1x9/0+YiO2TlP9cAy9x
+	VK5tyOXNFAcH1eLQ4HzvnOWW8VXIyj6HHVXtnvzn6x6ycz7XyQsOhqwwxG19zCTriTU2H3Z66fc4x
+	dmtKVPENoqRrjtefXPfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYmOx-000Tql-30;
-	Wed, 23 Aug 2023 11:51:55 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qYnNu-000aMY-0B;
+	Wed, 23 Aug 2023 12:54:54 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYmOv-000TpT-0F
+	id 1qYnNr-000aLz-0f
 	for linux-mtd@lists.infradead.org;
-	Wed, 23 Aug 2023 11:51:54 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id EF162660C3
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Aug 2023 11:51:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 873F7C433C8
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Aug 2023 11:51:50 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Oj3Lj1HY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1692791505;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i9S50yEi/p2rCDiQFKotCIoS/umPPt7Pl2fEpLB+hPU=;
-	b=Oj3Lj1HY65EaQHFLtdgNjIcEe3MLKPMQNsIRBBkAPnTMBuaAWu5bCL/nhDb2s1/ctRnB72
-	czLerSADf38Jy6EHAAAytB+fvGrIib1/s7PAd5UQSLousDmXsgLRBqZRqOP7gXo8u8Ibvn
-	kQW9u1zrrbGEaLA/iMapdHRskK9qZlM=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 47a5c65d (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Aug 2023 11:51:44 +0000 (UTC)
-Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-79a2216a2d1so1740725241.2
-        for <linux-mtd@lists.infradead.org>; Wed, 23 Aug 2023 04:51:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzruP1w7jFdsTRylrXHd8kInNSA4RzM+QfvYdy9W6xhdv3Fnk1o
-	8slml6VZOeVxRb4rEEc/MuWvb7LQn7dHrXwqUds=
-X-Google-Smtp-Source: AGHT+IFt7G1/ZeusTY56LT7aeMj6tJiORTuiaRW4q76XBgQu2EncKhol2bejM2ffQ7Afv6eCg3gMogdKzIe6mnDS5dk=
-X-Received: by 2002:a67:ba0c:0:b0:44d:40b1:9273 with SMTP id
- l12-20020a67ba0c000000b0044d40b19273mr8437282vsn.4.1692791501269; Wed, 23 Aug
- 2023 04:51:41 -0700 (PDT)
+	Wed, 23 Aug 2023 12:54:53 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31aeef88a55so3366003f8f.2
+        for <linux-mtd@lists.infradead.org>; Wed, 23 Aug 2023 05:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares.net; s=google; t=1692795288; x=1693400088;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kz3nv5YqHQjqTTShi+P/CzY2fv/kkQKSSZsOTw+wpGs=;
+        b=S2KO5V11etuXn3HjsyIp2y0q8iehMpZfFWzj43jBCKU0GRlT1Jel7jYYKyWW+MMcyS
+         3gO4D3Fbn/rJWULMXNyJRmzc68C1v13z0fT20MJ5qYQLBDDVsqEDYIfgbZEXfozjoZWj
+         +s1KPUCOMcyEILjbeW+kPzeYZsDkxUSQ4uHbyP30pbTCZTDdz/LMA6JevVYEUwgmnILh
+         RgBCaFsdv7Zz/3iwo8jV7EojrOx5MmTri1GxJDOkpA+NFWGxHu0XHeQ6UOzyH7up8Bbw
+         DlRHe4E2vniUvAiejIk0q6NU2gh0yHhRRp9HxZT2KHEQlTarpdD26SiBS7CKiATWVnJO
+         DwVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692795288; x=1693400088;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kz3nv5YqHQjqTTShi+P/CzY2fv/kkQKSSZsOTw+wpGs=;
+        b=hWdIl00Uzj3wOOoGuLPg0/2r0gbEpCm0Q6i+5Z/QgIMybKObA6GraF4mQdex925ZDu
+         TL347VnTaiedC0IRIKMvhlLJ93ht/uMNX0EZ7wEe+TvIab6ZBV/2foqKIcQGWTbB02wI
+         HYrVUAHF9sV0dik8GuZOUW+Nx7RBOmahhU+2oaudur5eSckvEwz/TBfLu0eHZBwSTLn6
+         OiliMIC5qQtSbdnBLMViKw1qPkT7sGVeYWCmGeUUsDzkjiOT4D2pSPvzcLuZ4BoMwvAv
+         AxjW/eoGYADBmBakiRyZC9Wna3EUcVUcYFQSTqeYcfdF4NuSTDcnds4GeRsvac1LN+db
+         eaFA==
+X-Gm-Message-State: AOJu0Yw9BxFOqhUAHiDR70cCc/2qO8vQxRBVO9MmzgkbQ7gs3F4gsygr
+	J9gKk/EL2AjZdtya9XrROtyvL7nPnqfdInVnvHyWn0N3
+X-Google-Smtp-Source: AGHT+IHQKaFYegnuMIRWnuoQvRvExhXrBSR1pihsYbjd0/1pzNKi0f5Kv08dlWImgQCO3gNfePncHQ==
+X-Received: by 2002:adf:f64d:0:b0:319:7722:30c with SMTP id x13-20020adff64d000000b003197722030cmr10892417wrp.22.1692795287957;
+        Wed, 23 Aug 2023 05:54:47 -0700 (PDT)
+Received: from ?IPV6:2a02:578:8593:1200:5b4:abda:ac34:eca0? ([2a02:578:8593:1200:5b4:abda:ac34:eca0])
+        by smtp.gmail.com with ESMTPSA id m14-20020adffe4e000000b00317b0155502sm19387258wrs.8.2023.08.23.05.54.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 05:54:45 -0700 (PDT)
+Message-ID: <4ddaaf1e-753d-42c3-afb6-6836fff6a428@tessares.net>
+Date: Wed, 23 Aug 2023 14:53:56 +0200
 MIME-Version: 1.0
-References: <ZOXf3JTIqhRLbn5j@gondor.apana.org.au> <E1qYlAB-006vJI-Cv@formenos.hmeau.com>
-In-Reply-To: <E1qYlAB-006vJI-Cv@formenos.hmeau.com>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Wed, 23 Aug 2023 13:48:47 +0200
-X-Gmail-Original-Message-ID: <CAHmME9qwYhM55he7WyWQZXwSg9Ri6-9K31tHHqaKcMYFEJYxTw@mail.gmail.com>
-Message-ID: <CAHmME9qwYhM55he7WyWQZXwSg9Ri6-9K31tHHqaKcMYFEJYxTw@mail.gmail.com>
-Subject: Re: [PATCH 11/12] wireguard: Do not include crypto/algapi.h
-To: herbert@gondor.apana.org.au
-Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>, 
-	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, linux-fscrypt@vger.kernel.org, 
-	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, 
-	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, linux-bluetooth@vger.kernel.org, 
-	Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>, 
-	ceph-devel@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>, 
-	"David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, 
-	Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, 
-	Matthieu Baerts <matthieu.baerts@tessares.net>, Mat Martineau <martineau@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, linux-nfs@vger.kernel.org, 
-	Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org, 
-	Ayush Sawal <ayush.sawal@chelsio.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/12] mptcp: Do not include crypto/algapi.h
+Content-Language: en-GB
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, linux-fscrypt@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ linux-bluetooth@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+ Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+ ceph-devel@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>,
+ "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org,
+ Mat Martineau <martineau@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Neil Brown <neilb@suse.de>, linux-nfs@vger.kernel.org,
+ Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, Ayush Sawal <ayush.sawal@chelsio.com>
+References: <ZOXf3JTIqhRLbn5j@gondor.apana.org.au>
+ <E1qYlA3-006vGH-1L@formenos.hmeau.com>
+From: Matthieu Baerts <matthieu.baerts@tessares.net>
+Autocrypt: addr=matthieu.baerts@tessares.net; keydata=
+ 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
+In-Reply-To: <E1qYlA3-006vGH-1L@formenos.hmeau.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_045153_434758_C47A3476 
-X-CRM114-Status: GOOD (  19.62  )
+X-CRM114-CacheID: sfid-20230823_055451_529409_25DAF12E 
+X-CRM114-Status: GOOD (  13.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,54 +146,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBBdWcgMjMsIDIwMjMgYXQgMTI6MzPigK9QTSBIZXJiZXJ0IFh1IDxoZXJiZXJ0QGdv
-bmRvci5hcGFuYS5vcmcuYXU+IHdyb3RlOgo+Cj4gVGhlIGhlYWRlciBmaWxlIGNyeXB0by9hbGdh
-cGkuaCBpcyBmb3IgaW50ZXJuYWwgdXNlIG9ubHkuICBVc2UgdGhlCj4gaGVhZGVyIGZpbGUgY3J5
-cHRvL3V0aWxzLmggaW5zdGVhZC4KPgo+IFNpZ25lZC1vZmYtYnk6IEhlcmJlcnQgWHUgPGhlcmJl
-cnRAZ29uZG9yLmFwYW5hLm9yZy5hdT4KPiAtLS0KPgo+ICBkcml2ZXJzL25ldC93aXJlZ3VhcmQv
-Y29va2llLmMgIHwgICAgMiArLQo+ICBkcml2ZXJzL25ldC93aXJlZ3VhcmQvbmV0bGluay5jIHwg
-ICAgMiArLQo+ICBkcml2ZXJzL25ldC93aXJlZ3VhcmQvbm9pc2UuYyAgIHwgICAgMiArLQo+ICAz
-IGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPgo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL25ldC93aXJlZ3VhcmQvY29va2llLmMgYi9kcml2ZXJzL25ldC93aXJl
-Z3VhcmQvY29va2llLmMKPiBpbmRleCA0OTU2ZjA0OTljMTkuLmY4OTU4MWI1ZThjYiAxMDA2NDQK
-PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlZ3VhcmQvY29va2llLmMKPiArKysgYi9kcml2ZXJzL25l
-dC93aXJlZ3VhcmQvY29va2llLmMKPiBAQCAtMTIsOSArMTIsOSBAQAo+Cj4gICNpbmNsdWRlIDxj
-cnlwdG8vYmxha2Uycy5oPgo+ICAjaW5jbHVkZSA8Y3J5cHRvL2NoYWNoYTIwcG9seTEzMDUuaD4K
-PiArI2luY2x1ZGUgPGNyeXB0by91dGlscy5oPgo+Cj4gICNpbmNsdWRlIDxuZXQvaXB2Ni5oPgo+
-IC0jaW5jbHVkZSA8Y3J5cHRvL2FsZ2FwaS5oPgo+Cj4gIHZvaWQgd2dfY29va2llX2NoZWNrZXJf
-aW5pdChzdHJ1Y3QgY29va2llX2NoZWNrZXIgKmNoZWNrZXIsCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHN0cnVjdCB3Z19kZXZpY2UgKndnKQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25l
-dC93aXJlZ3VhcmQvbmV0bGluay5jIGIvZHJpdmVycy9uZXQvd2lyZWd1YXJkL25ldGxpbmsuYwo+
-IGluZGV4IDZkMWJkOWY1MmQwMi4uMGExNTAyMTAwZThiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
-bmV0L3dpcmVndWFyZC9uZXRsaW5rLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlZ3VhcmQvbmV0
-bGluay5jCj4gQEAgLTEyLDEwICsxMiwxMCBAQAo+Cj4gICNpbmNsdWRlIDx1YXBpL2xpbnV4L3dp
-cmVndWFyZC5oPgo+Cj4gKyNpbmNsdWRlIDxjcnlwdG8vdXRpbHMuaD4KPiAgI2luY2x1ZGUgPGxp
-bnV4L2lmLmg+Cj4gICNpbmNsdWRlIDxuZXQvZ2VuZXRsaW5rLmg+Cj4gICNpbmNsdWRlIDxuZXQv
-c29jay5oPgo+IC0jaW5jbHVkZSA8Y3J5cHRvL2FsZ2FwaS5oPgo+Cj4gIHN0YXRpYyBzdHJ1Y3Qg
-Z2VubF9mYW1pbHkgZ2VubF9mYW1pbHk7Cj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2ly
-ZWd1YXJkL25vaXNlLmMgYi9kcml2ZXJzL25ldC93aXJlZ3VhcmQvbm9pc2UuYwo+IGluZGV4IDcy
-MDk1MmI5MmU3OC4uZTdhZDgxY2E0YTM2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVn
-dWFyZC9ub2lzZS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWd1YXJkL25vaXNlLmMKPiBAQCAt
-MTAsMTIgKzEwLDEyIEBACj4gICNpbmNsdWRlICJxdWV1ZWluZy5oIgo+ICAjaW5jbHVkZSAicGVl
-cmxvb2t1cC5oIgo+Cj4gKyNpbmNsdWRlIDxjcnlwdG8vdXRpbHMuaD4KPiAgI2luY2x1ZGUgPGxp
-bnV4L3JjdXBkYXRlLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+Cj4gICNpbmNsdWRlIDxs
-aW51eC9iaXRtYXAuaD4KPiAgI2luY2x1ZGUgPGxpbnV4L3NjYXR0ZXJsaXN0Lmg+Cj4gICNpbmNs
-dWRlIDxsaW51eC9oaWdobWVtLmg+Cj4gLSNpbmNsdWRlIDxjcnlwdG8vYWxnYXBpLmg+Cj4KPiAg
-LyogVGhpcyBpbXBsZW1lbnRzIE5vaXNlX0lLcHNrMjoKPiAgICoKClNtYWxsIG5pdCAtIHdpdGgg
-dGhlIGV4Y2VwdGlvbiBvZiB0aGUgY29va2llLmMgcmVvcmRlcmluZywgY291bGQgeW91Cm1haW50
-YWluIHRoZSBleGlzdGluZyAjaW5jbHVkZSBvcmRlcmluZyBvZiB0aGUgb3RoZXIgZmlsZXM/IE5v
-IG5lZWQgdG8Kc2VuZCBhIHYyIGZvciB0aGF0IGlmIHlvdSBkb24ndCB3YW50LiBBbmQgcGxlYXNl
-IG1ha2UgdGhlIGVudGlyZQpjb21taXQgc3ViamVjdCBsb3dlcmNhc2UuIFdpdGggdGhvc2UgZG9u
-ZSwKCkFja2VkLWJ5OiBKYXNvbiBBLiBEb25lbmZlbGQgPEphc29uQHp4MmM0LmNvbT4KCkFzIGEg
-c2lkZSBub3RlLCB5b3UgbWF5IHdhbnQgdG8gZXZlbnR1YWxseSBkbyBzb21ldGhpbmcgdG8gbWFr
-ZSBzdXJlCnBlb3BsZSBkb24ndCBhZGQgYmFjayBhbGdhcGkuaCwgbGlrZSBtb3ZlIGl0IHRvIGlu
-dGVybmFsLyBvciBvdXQgb2YKaW5jbHVkZS8gYWxsIHRvZ2V0aGVyLiBJIGZpZ3VyZSB5b3UndmUg
-YWxyZWFkeSB0aG91Z2h0IGFib3V0IHRoaXMsIGFuZAp0aGlzIHNlcmllcyBpcyBqdXN0IHRoZSBm
-aXJzdCBzdGVwLgoKSmFzb24KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hello,
+
+On 23/08/2023 12:32, Herbert Xu wrote:
+> The header file crypto/algapi.h is for internal use only.  Use the
+> header file crypto/utils.h instead.
+
+Thank you for the patch! It looks good to me:
+
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+I understood that other patches will come later to make it clear
+crypto/algapi.h is for internal use only so that's good!
+
+> diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+> index 9ee3b7abbaf6..64bb200099dc 100644
+> --- a/net/mptcp/subflow.c
+> +++ b/net/mptcp/subflow.c
+> @@ -9,8 +9,8 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/netdevice.h>
+> -#include <crypto/algapi.h>
+>  #include <crypto/sha2.h>
+> +#include <crypto/utils.h>
+
+It is fine for me if you carry this patch in your tree: this part here
+has not changed for a while and there is no ongoing work going to modify
+it. So there should not be any conflicts when merging the different
+trees later.
+
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
