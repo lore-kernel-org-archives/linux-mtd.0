@@ -4,85 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 338B3EE49B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 10:59:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82C1DEE4993
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 11:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MktZ+fOxR/vfxjqaoLQD5pyzs4z7w9DIEYvcPtjFwxw=; b=eW0Lm8TuiqmqyI
-	9da6E9EiIMkttQIvLgXTaMv7AQdOY9IP0AjQaY2/C6Lr9kSAI5J8laS9brXiA02RbSTd7CCX2lSim
-	hNJnFntBU/mRYISQX2dSOFX9GxmGd6a5GttZM2XkJgOTfSBJeKkkMsAJwl+KoOksauvKQdBQP6q+C
-	myF9ZzXBH4yC2UgB/XLHqcsI9kZ57O5yLG0sonJ3+2QAxr1xlEBx7SqGvNRmvaapJxK4OT/T0Y2CD
-	rm+4w46W8JxyFjC1ELOUcwFukbZyifyCBq+wfu1wLGpun3qTeOV6n0K+Hn0ZGNPrGHo859IYC4AYg
-	v/OyvtkR574OFcM6JksQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:To:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TQrlJn4iGgNNjFX2ajJV8+U9ypMk5B2Taq6FReO++1A=; b=1+zxzrY1lgk5TEjgKMHO98NPpG
+	jJI3PPrR9GIHlStE+qNE0MWbqyugCZgtHJH4SZ90gUIhm263U/MIjRCRu/e2nWaWoLxcuzV4J7OJ/
+	fkh44WBFYmGh13P4BiZxhoUib2bu22e2S+4Qxb9s9YnV/JWSlm59zwFM99ZvGAcEOQ/CK0tclqY+9
+	w7832/EyxvZHHrus+wIPae6uYDaFxtAxoiA2FsiHfSY8kDdHzFJB/uNICG4N3X9ShrEiNAdbApni3
+	xdARF+LmhVPqug2ZVTUpaHZJrMCWdT9sqUIIjQ1X26POuqL4ZkFd+obvLVmdojYTw42BbhdSKRXCf
+	GkDDs3pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYlZv-000OGn-1p;
-	Wed, 23 Aug 2023 10:59:11 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1qYltz-000Q6X-1L;
+	Wed, 23 Aug 2023 11:19:55 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYlZs-000OEE-1L
+	id 1qYltv-000Q5Y-0i
 	for linux-mtd@lists.infradead.org;
-	Wed, 23 Aug 2023 10:59:10 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id B5B2C120009;
-	Wed, 23 Aug 2023 13:58:59 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B5B2C120009
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1692788339;
-	bh=Jhlhui1u6bMKkD+jQX9ubOwaBqanSrcPAZGkwyaedVA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=l9vqnGDPIf9enBfApcY6Q4z3ebwBXMuV9Ag6KmVWaQUUgXPudmK6VBRy2ioA5CtER
-	 EnVCZYJbju4bXGvHUO7fUBYPMe4aoTrn7rzVWBlHkJ/SCN9RNyZzvkg8VRW0U6ZmlY
-	 rE+vFiMOB8lXHIqkf4FZeoX4nYY9qma/gWU3q1F3Jvhu+iIjvDc22aa1stOy/W1zsc
-	 g88IUqd3iuJUvWlO8hgQQMycg3ZurEoOSj/ZCxEdW1QymCXu5P0aqgToFhfEPmeSUG
-	 lzsBNFq6VmYRq1LOqsiBYEONxyxe6JMCxU/p+AkMAbRFeD6XvToG7OD1+F4v3zjcCB
-	 DBgrXK9wW2fgA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed, 23 Aug 2023 13:58:59 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 23 Aug 2023 13:58:52 +0300
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, Johan Jonker <jbx6244@gmail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1] mtd: rawnand: remove 'nand_exit_status_op()' prototype
-Date: Wed, 23 Aug 2023 13:52:31 +0300
-Message-ID: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
+	Wed, 23 Aug 2023 11:19:53 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf3f59905so724631466b.3
+        for <linux-mtd@lists.infradead.org>; Wed, 23 Aug 2023 04:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1692789587; x=1693394387;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mvogEUy0PT+ajo0QwJruDfQ0E466U1X0VLcmzNsZEgw=;
+        b=rdSMJgjMCieyezquuoOiFzw0JYLaaIH954f73pHyclgJA5Rzqk5LOB0RmgwwOHAUnB
+         eTIfEo5Q+M3R+gWevhp4v92SIZVNIQMYKELcMdak9fhpwl7XSkp7SuqPQgvMVqEyzS8P
+         GU8e+PRna7ydLxJzj8N/bNSoRZMZ0KANgtErptA7uifswimCYsr1BMfFaeEdw9bmwtly
+         3pnADD+Phn8t7idDf4w3VBs8ZtLarEqq88c7fa2CXQzaRynWcABg9OCDdKTo4ZMx9ytM
+         QG9ZV895mCoaFrzRRLA2mhkranbauJXoU7rYXKcqCmYMjTO7ogQDA94EMwPgyiPyp1fC
+         go/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692789587; x=1693394387;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mvogEUy0PT+ajo0QwJruDfQ0E466U1X0VLcmzNsZEgw=;
+        b=HK2Gjt72p2+y3neqs6s0tvugIkOF2QFYREQHZA3c/MV9+VEp7MRZRZd3rx6h0mXgS/
+         c2vLeToWEcX9vArmaFqBJMnje31YAMQJ9ZyXCQsWE3mcnxhkwUfyrSO1P/fTgcLTqNM7
+         4URieZab9Ke7gbIcQ+ArE6RKIjXd+05Hh0Wtk8IfcPOz6i5b+l8Z2Pxqqj9cBUXkMTnz
+         8KoRxQ8FgURVPiSxkC97w1MqQ1HQ4DxMToIQ9PMAAyRGm8tyj3qAboVL+UFvCktKZzqP
+         p/qR5jUCseNBXUujVearNyh2bpsyjOGoqQ7fAhHMYiV9ca28NVafqkS/XtWv8yoTq0j7
+         mJhA==
+X-Gm-Message-State: AOJu0YzrfZ8D/o6EbeFoa+aBeZozvh4YBvWmPV2zo7PMGnrmMY3tt3Rd
+	5KJy6hCVLV1UDx5uwDSs16j0vBf3D+wmu0hFfog=
+X-Google-Smtp-Source: AGHT+IGMAjrVMgtFKe/QS5V2/TCGsBuZ6c1eXhwV9Npj7BWFEAd+vwEylnazI11+aepfLGfZUucE1A==
+X-Received: by 2002:a17:906:74d5:b0:9a1:bf88:b67a with SMTP id z21-20020a17090674d500b009a1bf88b67amr3649643ejl.52.1692789587199;
+        Wed, 23 Aug 2023 04:19:47 -0700 (PDT)
+Received: from [10.115.255.165] ([82.150.214.1])
+        by smtp.gmail.com with ESMTPSA id l20-20020a17090615d400b009930308425csm9602358ejd.31.2023.08.23.04.19.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 04:19:46 -0700 (PDT)
+Message-ID: <83b0d17f-ad37-2b22-b20b-49e9527e9623@sigma-star.at>
+Date: Wed, 23 Aug 2023 13:19:45 +0200
 MIME-Version: 1.0
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179398 [Aug 23 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/23 04:58:00 #21681850
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To: Christian Wendt he/him <cw@brainaid.de>, linux-mtd@lists.infradead.org
+References: <bc09bc68-ca99-d69e-9da8-cd9fa89fd127@brainaid.de>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH] mtd-utils: nandtest: handle large nand devices
+In-Reply-To: <bc09bc68-ca99-d69e-9da8-cd9fa89fd127@brainaid.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_035908_816335_FD2533F9 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20230823_041951_584860_219A3815 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,35 +87,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This function is exported and its prototype is already placed in
-include/linux/mtd/rawnand.h.
-
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- drivers/mtd/nand/raw/internals.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-index e9932da18bdd..b7162ced9efa 100644
---- a/drivers/mtd/nand/raw/internals.h
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -106,7 +106,6 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
- 			       int oob_required, int page);
- int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
- 				int oob_required, int page);
--int nand_exit_status_op(struct nand_chip *chip);
- int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
- 			    unsigned int len);
- void nand_decode_ext_id(struct nand_chip *chip);
--- 
-2.35.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpJIGFwcGxpZWQgdGhpcyB0byBtdGQtdXRpbHMuZ2l0IG1hc3Rlci4KCkEgcXVpY2sgc2lk
+ZSBub3RlOiBEaWQgeW91IHNlbmQgdGhpcyB2aWEgc29tZXRoaW5nIG90aGVyIHRoYW4gZ2l0LXNl
+bmQtZW1haWw/CgpZb3VyIG1haWwgY2xpZW50IG9yIHNlcnZlciBzZWVtcyB0byBoYXZlIG1hbmds
+ZWQgdGhlIHBhdGNoIGZvcm1hdCBxdWl0ZSBhIGJpdC4KCkUuZy4gaGVyZSwgdGhlcmUgaXMgc29t
+ZSB3aGl0ZSBzcGFjZSBkYW1hZ2UgdGhhdCBicmVha3MgdGhlIGZpbGU6CgpPbiA4LzIyLzIzIDEw
+OjA5LCBDaHJpc3RpYW4gV2VuZHQgaGUvaGltIHdyb3RlOgo+IEBAIC0xNDUsNiArMTQ2LDI3IEBA
+IHN0YXRpYyBpbnQgZXJhc2VfYW5kX3dyaXRlKGxvZmZfdCBvZnMsIHVuc2lnbmVkIGNoYXIgKmRh
+dGEsIHVuc2lnbmVkIGNoYXIgKnJidWYsCj4gIMKgfQo+ICDCoCArc3RhdGljIHVpbnQ2NF90IGdl
+dF9tZW1fc2l6ZShjb25zdCBjaGFyKiBkZXZpY2UpCj4gK3sKPiArwqDCoMKgIGNvbnN0IGNoYXIq
+IHAgPSBzdHJyY2hyKGRldmljZSwgJy8nKTsKCnNpbWlsYXJseSwgdGhlcmUgYXJlIHNvbWUgZXh0
+cmEgc3BhY2VzIHdoZXJlIHRoZXkgZG9uJ3QgYmVsb25nLAphbmQgc29tZSBlbXB0eSBsaW5lIGFy
+ZSBtaXNzaW5nIGhlcmU6Cgo+IEBAIC0yMTIsMTEgKzIzNSwxMSBAQCBpbnQgbWFpbihpbnQgYXJn
+YywgY2hhciAqKmFyZ3YpCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPiAgwqDC
+oMKgwqDCoMKgwqDCoMKgIGNhc2UgJ28nOgo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9mZnNl
+dCA9IHNpbXBsZV9zdHJ0b3VsKG9wdGFyZywgJmVycm9yKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBvZmZzZXQgPSBzaW1wbGVfc3RydG91bGwob3B0YXJnLCAmZXJyb3IpOwo+ICDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4gIMKgwqDCoMKgwqDCoMKgwqDCoCBjYXNlICdsJzoK
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsZW5ndGggPSBzaW1wbGVfc3RydG91bChvcHRhcmcs
+ICZlcnJvcik7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGVuZ3RoID0gc2ltcGxlX3N0cnRv
+dWxsKG9wdGFyZywgJmVycm9yKTsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+
+ICDCoMKgwqDCoMKgwqDCoMKgwqAgfQoKRm9yIG5vdywgSSBtYXNzYWdlZCB0aGUgcGF0Y2ggZmls
+ZSBhIGxpdHRsZSB0byBtYWtlIGl0IGFwcGx5IG9uIG15IGVuZC4KClRoYW5rcywKCkRhdmlkCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
