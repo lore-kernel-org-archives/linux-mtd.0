@@ -4,78 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82C1DEE4993
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 11:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28701EE49B2
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Aug 2023 11:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:To:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TQrlJn4iGgNNjFX2ajJV8+U9ypMk5B2Taq6FReO++1A=; b=1+zxzrY1lgk5TEjgKMHO98NPpG
-	jJI3PPrR9GIHlStE+qNE0MWbqyugCZgtHJH4SZ90gUIhm263U/MIjRCRu/e2nWaWoLxcuzV4J7OJ/
-	fkh44WBFYmGh13P4BiZxhoUib2bu22e2S+4Qxb9s9YnV/JWSlm59zwFM99ZvGAcEOQ/CK0tclqY+9
-	w7832/EyxvZHHrus+wIPae6uYDaFxtAxoiA2FsiHfSY8kDdHzFJB/uNICG4N3X9ShrEiNAdbApni3
-	xdARF+LmhVPqug2ZVTUpaHZJrMCWdT9sqUIIjQ1X26POuqL4ZkFd+obvLVmdojYTw42BbhdSKRXCf
-	GkDDs3pw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9x2S//vV/U7zTygy3VhfIQwj6FumUIX1kZ4qVG23aeU=; b=sHoVxDnrPX9g7/
+	JWD4AY5A/qcr1oAOV88E3t92h+Ip3V8/StAKv8vLhCb9mWWRJMiYBdFWSm35ykuRqiLk52fpw3tz3
+	oRv6+iLBdYT2cPQLlCz2Kj+WxVGiGZ1rrdgUlEY2dCT51waXwY5RlQWT2t4uUVk3w8WgWssr0OVv7
+	RvzK6Q/p1UBAYqZ0DdWKo6UdiCaZcAKYNq+bsdw7w8D3as2nGhdJsBL2ADyDAuBZepffpMuwEQZoE
+	9IW8DhUu3ysX2x5rp9Th7U3ZEr7nuWX60p8Ac7p7NYGSMQYxroXX7OUdrvgCWbhV04goQgWHGnKxq
+	VxLyzVR9yUKNbCyD5/lA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYltz-000Q6X-1L;
-	Wed, 23 Aug 2023 11:19:55 +0000
-Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
+	id 1qYm7q-000RhU-0e;
+	Wed, 23 Aug 2023 11:34:14 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qYltv-000Q5Y-0i
+	id 1qYm7m-000RbR-0V
 	for linux-mtd@lists.infradead.org;
-	Wed, 23 Aug 2023 11:19:53 +0000
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf3f59905so724631466b.3
-        for <linux-mtd@lists.infradead.org>; Wed, 23 Aug 2023 04:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1692789587; x=1693394387;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mvogEUy0PT+ajo0QwJruDfQ0E466U1X0VLcmzNsZEgw=;
-        b=rdSMJgjMCieyezquuoOiFzw0JYLaaIH954f73pHyclgJA5Rzqk5LOB0RmgwwOHAUnB
-         eTIfEo5Q+M3R+gWevhp4v92SIZVNIQMYKELcMdak9fhpwl7XSkp7SuqPQgvMVqEyzS8P
-         GU8e+PRna7ydLxJzj8N/bNSoRZMZ0KANgtErptA7uifswimCYsr1BMfFaeEdw9bmwtly
-         3pnADD+Phn8t7idDf4w3VBs8ZtLarEqq88c7fa2CXQzaRynWcABg9OCDdKTo4ZMx9ytM
-         QG9ZV895mCoaFrzRRLA2mhkranbauJXoU7rYXKcqCmYMjTO7ogQDA94EMwPgyiPyp1fC
-         go/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692789587; x=1693394387;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvogEUy0PT+ajo0QwJruDfQ0E466U1X0VLcmzNsZEgw=;
-        b=HK2Gjt72p2+y3neqs6s0tvugIkOF2QFYREQHZA3c/MV9+VEp7MRZRZd3rx6h0mXgS/
-         c2vLeToWEcX9vArmaFqBJMnje31YAMQJ9ZyXCQsWE3mcnxhkwUfyrSO1P/fTgcLTqNM7
-         4URieZab9Ke7gbIcQ+ArE6RKIjXd+05Hh0Wtk8IfcPOz6i5b+l8Z2Pxqqj9cBUXkMTnz
-         8KoRxQ8FgURVPiSxkC97w1MqQ1HQ4DxMToIQ9PMAAyRGm8tyj3qAboVL+UFvCktKZzqP
-         p/qR5jUCseNBXUujVearNyh2bpsyjOGoqQ7fAhHMYiV9ca28NVafqkS/XtWv8yoTq0j7
-         mJhA==
-X-Gm-Message-State: AOJu0YzrfZ8D/o6EbeFoa+aBeZozvh4YBvWmPV2zo7PMGnrmMY3tt3Rd
-	5KJy6hCVLV1UDx5uwDSs16j0vBf3D+wmu0hFfog=
-X-Google-Smtp-Source: AGHT+IGMAjrVMgtFKe/QS5V2/TCGsBuZ6c1eXhwV9Npj7BWFEAd+vwEylnazI11+aepfLGfZUucE1A==
-X-Received: by 2002:a17:906:74d5:b0:9a1:bf88:b67a with SMTP id z21-20020a17090674d500b009a1bf88b67amr3649643ejl.52.1692789587199;
-        Wed, 23 Aug 2023 04:19:47 -0700 (PDT)
-Received: from [10.115.255.165] ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id l20-20020a17090615d400b009930308425csm9602358ejd.31.2023.08.23.04.19.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Aug 2023 04:19:46 -0700 (PDT)
-Message-ID: <83b0d17f-ad37-2b22-b20b-49e9527e9623@sigma-star.at>
-Date: Wed, 23 Aug 2023 13:19:45 +0200
+	Wed, 23 Aug 2023 11:34:12 +0000
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 503B710000A;
+	Wed, 23 Aug 2023 14:33:58 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 503B710000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1692790438;
+	bh=TDpe3788q389R8EkJoQ6JIPa/NOggFKINRwRuJg7hiU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=orXMlmKrWDRSfA1/C4rMIK7AAZP/aloBPXvAFlBAlSPtIbkYDdv89LcoqkREISM+L
+	 4j6/UtcMucORmCHs1gu+lA/xllXne0d9U3y9fklEth/26J8g2oihAQUAa9DRRs9hLc
+	 TgcrItc7qCSNJ9exMVT8IOE6sd+XLIHuk6RZyeChNiIyUjt0Fl0tkwnjcKsBVztgQj
+	 DnQPPGKKXZOxM5NSbmAddcaSJGc2UDkazUxNj4V0K3Z2hByHFK50AROWas+VIb1SYl
+	 sjTp1UmFZUtxV0b3lH8UAGQjGHbjCxsgqWZtzxT2iXdxfcL70stxpDn75jjjrEyxPn
+	 +1aU4NqZ5xGmw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 23 Aug 2023 14:33:58 +0300 (MSK)
+Received: from [192.168.1.146] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 23 Aug 2023 14:33:57 +0300
+Message-ID: <f873d775-cda9-302d-a651-0113c7c7dc84@sberdevices.ru>
+Date: Wed, 23 Aug 2023 14:33:57 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+	<vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <kernel@sberdevices.ru>
+References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+ <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
+ <20230822153556.630e65b9@xps-13>
+ <01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
+ <20230823104143.760cc5bc@xps-13>
 Content-Language: en-US
-To: Christian Wendt he/him <cw@brainaid.de>, linux-mtd@lists.infradead.org
-References: <bc09bc68-ca99-d69e-9da8-cd9fa89fd127@brainaid.de>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: Re: [PATCH] mtd-utils: nandtest: handle large nand devices
-In-Reply-To: <bc09bc68-ca99-d69e-9da8-cd9fa89fd127@brainaid.de>
+From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+In-Reply-To: <20230823104143.760cc5bc@xps-13>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179399 [Aug 23 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/23 04:58:00 #21681850
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230823_041951_584860_219A3815 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20230823_043410_882302_D5C33871 
+X-CRM114-Status: GOOD (  15.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,33 +101,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpJIGFwcGxpZWQgdGhpcyB0byBtdGQtdXRpbHMuZ2l0IG1hc3Rlci4KCkEgcXVpY2sgc2lk
-ZSBub3RlOiBEaWQgeW91IHNlbmQgdGhpcyB2aWEgc29tZXRoaW5nIG90aGVyIHRoYW4gZ2l0LXNl
-bmQtZW1haWw/CgpZb3VyIG1haWwgY2xpZW50IG9yIHNlcnZlciBzZWVtcyB0byBoYXZlIG1hbmds
-ZWQgdGhlIHBhdGNoIGZvcm1hdCBxdWl0ZSBhIGJpdC4KCkUuZy4gaGVyZSwgdGhlcmUgaXMgc29t
-ZSB3aGl0ZSBzcGFjZSBkYW1hZ2UgdGhhdCBicmVha3MgdGhlIGZpbGU6CgpPbiA4LzIyLzIzIDEw
-OjA5LCBDaHJpc3RpYW4gV2VuZHQgaGUvaGltIHdyb3RlOgo+IEBAIC0xNDUsNiArMTQ2LDI3IEBA
-IHN0YXRpYyBpbnQgZXJhc2VfYW5kX3dyaXRlKGxvZmZfdCBvZnMsIHVuc2lnbmVkIGNoYXIgKmRh
-dGEsIHVuc2lnbmVkIGNoYXIgKnJidWYsCj4gIMKgfQo+ICDCoCArc3RhdGljIHVpbnQ2NF90IGdl
-dF9tZW1fc2l6ZShjb25zdCBjaGFyKiBkZXZpY2UpCj4gK3sKPiArwqDCoMKgIGNvbnN0IGNoYXIq
-IHAgPSBzdHJyY2hyKGRldmljZSwgJy8nKTsKCnNpbWlsYXJseSwgdGhlcmUgYXJlIHNvbWUgZXh0
-cmEgc3BhY2VzIHdoZXJlIHRoZXkgZG9uJ3QgYmVsb25nLAphbmQgc29tZSBlbXB0eSBsaW5lIGFy
-ZSBtaXNzaW5nIGhlcmU6Cgo+IEBAIC0yMTIsMTEgKzIzNSwxMSBAQCBpbnQgbWFpbihpbnQgYXJn
-YywgY2hhciAqKmFyZ3YpCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPiAgwqDC
-oMKgwqDCoMKgwqDCoMKgIGNhc2UgJ28nOgo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9mZnNl
-dCA9IHNpbXBsZV9zdHJ0b3VsKG9wdGFyZywgJmVycm9yKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBvZmZzZXQgPSBzaW1wbGVfc3RydG91bGwob3B0YXJnLCAmZXJyb3IpOwo+ICDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4gIMKgwqDCoMKgwqDCoMKgwqDCoCBjYXNlICdsJzoK
-PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsZW5ndGggPSBzaW1wbGVfc3RydG91bChvcHRhcmcs
-ICZlcnJvcik7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGVuZ3RoID0gc2ltcGxlX3N0cnRv
-dWxsKG9wdGFyZywgJmVycm9yKTsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+
-ICDCoMKgwqDCoMKgwqDCoMKgwqAgfQoKRm9yIG5vdywgSSBtYXNzYWdlZCB0aGUgcGF0Y2ggZmls
-ZSBhIGxpdHRsZSB0byBtYWtlIGl0IGFwcGx5IG9uIG15IGVuZC4KClRoYW5rcywKCkRhdmlkCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Miquel,
+
+On 23.08.2023 11:41, Miquel Raynal wrote:
+> Hi Martin,
+>
+> I don't think the four bytes have any "bad block specific" meaning. In
+> practice, the datasheet states:
+> 
+> 	Value programmed for bad block at the first byte of spare
+> 	area: 00h
+> 
+> So only the first byte is used to mark the block bad, the rest is
+> probably marked "reserved" for simplicity. I believe we should keep the
+> current layout because it would otherwise break users for no real
+> reason.
+
+I agree with you that this can break the work of users who use OOB.
+However, I believe it would be more appropriate to use an offset of 4,
+as the micron chip can use all 4 bytes for additional data about the
+bad block. So, there is a non-zero probability of losing OOB data in
+the reserved area (2 bytes) when the hardware chip attempts to mark
+the block as bad.
+
+-- 
+Best Regards,
+Martin Kurbanov
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
