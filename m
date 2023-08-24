@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51194C6FA8F
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Aug 2023 07:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E29C9C27C40
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Aug 2023 07:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Np1D60T7QSEL0Sb7Kq6QMWN0cyd1OpKMMNUfipzLelM=; b=ZLUIRXPNUeIQLF
-	COr+54BK4Ft4ogzv2jCUXxGYMFN/tKfq66l8Nkbd6Lz8HD7E/AdPBmcoToeC/2p2IgDaAhrLeox0K
-	Wv5qXM8ofhfes/OxPxYjwkaoVScjjypjv1A10Lj/QisXSVQXdGRp+M63J7ldsD8K8Ws51RWPEWj/U
-	7OqBNCa+vPIGs1GwhQER+B4ph5xad8jWtRHSlWZV8lItjkwa14VbsyY5EZLT5BkcLuFkTlvE9ZYi6
-	8QbW7PsmnUy9vyuBDurR78lIxGccWZ7nD3g+dJ9E5TavUEn/d6uX8ZzDISVhqDajBPYAATq3pKLXd
-	GHoedcsZiSFAWTj2CEtw==;
+	List-Owner; bh=ZKlC5qn56ZyLvsCBtpsZ2Nzlm8yAjhxvJnlfYgeqpII=; b=sUPaaiUmj9Q3+V
+	0vmeGXQIW2wEyBzH5yjfjOSiWf3hVdTbQQwneG4zDfh0pLpiXascu92FWE3HyfmGrcUVt3JgSAu/h
+	XR2qNdibKmIrclUKjRrvOjW1ax6ddvN/VLVSzu4dLIp1m4ar6dlsB6/VXbjIDAk2IgjHgdJGVs2Lc
+	40ynnXLrvmYGMAhkjaAZn8UztwuIEIFE6Scsb4PSvp1ztWo88lnLyaO55FXqDpUVFqGHQK2cBHfvZ
+	Kz/RXlaPbpwDh2UDC9Y79OEC+YfFokLji0Ie6vGJd06+U+eR4UM1rgzNAuef7xADhq+UGE357ONuf
+	Lq6CbDQszqufV7gsQU5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZ5CI-002TjD-12;
-	Thu, 24 Aug 2023 07:56:06 +0000
-Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
+	id 1qZ5Cg-002Tph-0m;
+	Thu, 24 Aug 2023 07:56:30 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZ5CF-002TiL-2f
+	id 1qZ5Cd-002To2-1N
 	for linux-mtd@lists.infradead.org;
-	Thu, 24 Aug 2023 07:56:05 +0000
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bbbda48904so81127841fa.2
-        for <linux-mtd@lists.infradead.org>; Thu, 24 Aug 2023 00:56:02 -0700 (PDT)
+	Thu, 24 Aug 2023 07:56:28 +0000
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so10276429e87.1
+        for <linux-mtd@lists.infradead.org>; Thu, 24 Aug 2023 00:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692863761; x=1693468561;
+        d=linaro.org; s=google; t=1692863785; x=1693468585;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JQ5a+a+DLZL8fu5vhZ5y8OBXDunDyHqp9ifQiH1QL7M=;
-        b=UXVnHFfpZFq1LJb4ZWf/G2cEwHw+fJVt2zhM9hthVbvLSfgNUnFRRKuzQbqHWqTZUt
-         zyZV06LRm9mSepyh2x4tcee3gcX5iSEPUzds0KZQ88tqlul76wcAPl/njtcmG1PTIewf
-         jQv/7eiFCVnH9/1Y/ZaExN3P3UGKOonjHBuRzkvV7cChbTrwNv3ZLq5m+d42h+eEM7Su
-         02spk8Fiw2aapuArfNPP0VzmuLyhY5aWfuirgv7kIMws9nbzIlMv2Q6BdaPdB5nFmWse
-         6IOSTLxytvNT/ypw1wd0KJScxYpCn52VcoABWf/izxOnqkyMBlTj0yUEkaR/8L+P4ysF
-         XVnA==
+        bh=PynNwQCUX3wPzw5dhP2cH8FHvUX1+YwHm6lT7fEr4Fk=;
+        b=Q583OY567Bl90SHbnnP8GzT0CrUcmo7WHAL1aezYrO1e0h3Vx9t6IyOXR4eOv9A7jZ
+         VAz8x8FiVxxeCc7r+omdb7yfqtOa1oG+lQdtR9wDyz7nYO2K80R2Nauvl5Nv8hqLKFKq
+         8GX0i+nanDBBNoP5xgiB+VkTGu64nLfPW9BvEd/KYpamN48PAOqU7Og56JuF6ye4QHcj
+         org84G0aHZyh7v1cx7wwB6DcaLKIbCtpn2x8KP22ogjPpgL9we7tJRX4JfpI05wZeq4o
+         Ai8oyCseik/si85OVXxgPaMrcy2KeucUHnVrJnh1eeHk+KHlwld88xiST/0WN6dJZ9p4
+         KCOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692863761; x=1693468561;
+        d=1e100.net; s=20221208; t=1692863785; x=1693468585;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQ5a+a+DLZL8fu5vhZ5y8OBXDunDyHqp9ifQiH1QL7M=;
-        b=OiiYKr7xboLjHdbf1/FFV+QaRkTF9IOsmLUc7CyKlPIXhncQX9XyDi46N9LOZWZ3P5
-         B4mTpOm/Pvq8ROwMnFV/EPF37WiuvuXwUgXShBGhAFzreoTzPbYCD7AguhXRl2zFDnhW
-         75sAGDn7NlJRUIBqq0WurSe954h43wGJ2sY9eMN5P+E428FEzBY5445PKTVdIszyubzQ
-         bq02FZ9eHpdGUYuNLJ/4GjijK4VvoYSaZVE1VZTcRyeB3W5W272xYO4IuK/6cDeuu4dL
-         pr27G9Gx+UIasgWJlQ9gkviE3G2lnS7DkxEfnzi1+dSMgSipJSkx39clw925Q0DDWfyc
-         hPeg==
-X-Gm-Message-State: AOJu0Yx5KS1L6H7+eyg0tvbhTMor9fhuQvWUbjD7V0sJZRvWMuPOp7Xv
-	tUIfc4O6B9EVfEaziVR8WdUc+w==
-X-Google-Smtp-Source: AGHT+IGC3XPafzP8NSdZ/hKJK7JbKy8UmB1lqAkMbRmd7SW14rIMO8s8arGdy0cESCpEpD7z2iRdQQ==
-X-Received: by 2002:a2e:9185:0:b0:2bc:bb46:4fc7 with SMTP id f5-20020a2e9185000000b002bcbb464fc7mr8746839ljg.24.1692863760980;
-        Thu, 24 Aug 2023 00:56:00 -0700 (PDT)
+        bh=PynNwQCUX3wPzw5dhP2cH8FHvUX1+YwHm6lT7fEr4Fk=;
+        b=gkVyeJwBVnJr3DtNPdvNkta6PFBzZMEeIfQvFWyZHDTlxEKc3GKbhVlJvXBAIqRbCp
+         gqIn04+KKoAfhSRHq/p7UJsBtG3RDVK/FsUeuePx2LsCGHTNnnjAA22cdDc/aIxQITI8
+         g3g+pqOmbtmyLqcFEYl76YHXd3gbZIh7S3rw0eqfLLzFEB6Oc2qw6iLJv3RjajMNgnAN
+         jT6ZVtZpkoJv1KRQEbzMXkZkrqQPzhot2MCW82HTIt8FuseP+0TnaOhdh5gbA93uVs8e
+         iZJWs4y3fbF/cOAZm5RsRcexASzO4RcDOYjjsr+dSmBHUVlL6PwR885qFNvUaM9Z4A9E
+         bHLg==
+X-Gm-Message-State: AOJu0YwnqaTGDIoL5NG0L5oHBXkP/PPJMGH5Vpuo4HhuRfbxzbmjzHf+
+	W7PMPuWUcS6C2QkbfRi2n5S0mA==
+X-Google-Smtp-Source: AGHT+IGogkwj/BkRT7dmk4avq99JLxp+gAOVq9hqdVhkIM2YvZFwShINXNgwOOYe7tblzzn44DMcrg==
+X-Received: by 2002:a19:520b:0:b0:4ff:9a75:211e with SMTP id m11-20020a19520b000000b004ff9a75211emr9576748lfb.42.1692863784938;
+        Thu, 24 Aug 2023 00:56:24 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.239])
-        by smtp.gmail.com with ESMTPSA id y11-20020a05600c364b00b003fe2a40d287sm1837211wmq.1.2023.08.24.00.55.59
+        by smtp.gmail.com with ESMTPSA id s10-20020a05600c044a00b003fbe791a0e8sm1926510wmb.0.2023.08.24.00.56.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 00:56:00 -0700 (PDT)
-Message-ID: <ea44da10-c9bd-22ba-576b-109670e3a63e@linaro.org>
-Date: Thu, 24 Aug 2023 08:55:59 +0100
+        Thu, 24 Aug 2023 00:56:24 -0700 (PDT)
+Message-ID: <ccaf038f-e11a-7669-7f35-5c0405d7ac98@linaro.org>
+Date: Thu, 24 Aug 2023 08:56:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.1
-Subject: Re: [PATCH v2 01/41] mtd: spi-nor: remove catalyst 'flashes'
+Subject: Re: [PATCH v2 02/41] mtd: spi-nor: remove Fujitsu MB85RS1MT support
 Content-Language: en-US
 To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-1-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-2-291a0f39f8d8@kernel.org>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-1-291a0f39f8d8@kernel.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-2-291a0f39f8d8@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230824_005603_864297_1BF10C69 
-X-CRM114-Status: GOOD (  18.18  )
+X-CRM114-CacheID: sfid-20230824_005627_465719_B2F3E983 
+X-CRM114-Status: GOOD (  18.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,39 +99,63 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 8/22/23 08:09, Michael Walle wrote:
-> CAT25xx are actually EEPROMs manufactured by Catalyst. The devices are
-> ancient (DS are from 1998), there are not in-tree users, nor are there
-> any device tree bindings. Remove it. The correct driver is the at25.
+> This part is not a flash but an EEPROM like FRAM. It is even has a DT
+> binding for the (correct) driver (at25), see
+> Documentation/devicetree/bindings/eeprom/at25.yaml. Just remove it.
 > 
 > Signed-off-by: Michael Walle <mwalle@kernel.org>
 
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 > ---
->  drivers/mtd/spi-nor/Makefile   |  1 -
->  drivers/mtd/spi-nor/catalyst.c | 24 ------------------------
->  drivers/mtd/spi-nor/core.c     |  1 -
->  drivers/mtd/spi-nor/core.h     |  1 -
->  4 files changed, 27 deletions(-)
+>  drivers/mtd/spi-nor/Makefile  |  1 -
+>  drivers/mtd/spi-nor/core.c    |  1 -
+>  drivers/mtd/spi-nor/core.h    |  1 -
+>  drivers/mtd/spi-nor/fujitsu.c | 21 ---------------------
+>  4 files changed, 24 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index e347b435a038..496dae9ca0f3 100644
+> index 496dae9ca0f3..5e68468b72fc 100644
 > --- a/drivers/mtd/spi-nor/Makefile
 > +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -2,7 +2,6 @@
->  
->  spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
->  spi-nor-objs			+= atmel.o
-> -spi-nor-objs			+= catalyst.o
+> @@ -5,7 +5,6 @@ spi-nor-objs			+= atmel.o
 >  spi-nor-objs			+= eon.o
 >  spi-nor-objs			+= esmt.o
 >  spi-nor-objs			+= everspin.o
-> diff --git a/drivers/mtd/spi-nor/catalyst.c b/drivers/mtd/spi-nor/catalyst.c
+> -spi-nor-objs			+= fujitsu.o
+>  spi-nor-objs			+= gigadevice.o
+>  spi-nor-objs			+= intel.o
+>  spi-nor-objs			+= issi.o
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index c44de69c4353..286155002cdc 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2002,7 +2002,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+>  	&spi_nor_eon,
+>  	&spi_nor_esmt,
+>  	&spi_nor_everspin,
+> -	&spi_nor_fujitsu,
+>  	&spi_nor_gigadevice,
+>  	&spi_nor_intel,
+>  	&spi_nor_issi,
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 6d31af6c39ed..dfc20a3296fb 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -634,7 +634,6 @@ extern const struct spi_nor_manufacturer spi_nor_atmel;
+>  extern const struct spi_nor_manufacturer spi_nor_eon;
+>  extern const struct spi_nor_manufacturer spi_nor_esmt;
+>  extern const struct spi_nor_manufacturer spi_nor_everspin;
+> -extern const struct spi_nor_manufacturer spi_nor_fujitsu;
+>  extern const struct spi_nor_manufacturer spi_nor_gigadevice;
+>  extern const struct spi_nor_manufacturer spi_nor_intel;
+>  extern const struct spi_nor_manufacturer spi_nor_issi;
+> diff --git a/drivers/mtd/spi-nor/fujitsu.c b/drivers/mtd/spi-nor/fujitsu.c
 > deleted file mode 100644
-> index 6d310815fb12..000000000000
-> --- a/drivers/mtd/spi-nor/catalyst.c
+> index 69cffc5c73ef..000000000000
+> --- a/drivers/mtd/spi-nor/fujitsu.c
 > +++ /dev/null
-> @@ -1,24 +0,0 @@
+> @@ -1,21 +0,0 @@
 > -// SPDX-License-Identifier: GPL-2.0
 > -/*
 > - * Copyright (C) 2005, Intec Automation Inc.
@@ -142,44 +166,17 @@ Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > -
 > -#include "core.h"
 > -
-> -static const struct flash_info catalyst_nor_parts[] = {
-> -	/* Catalyst / On Semiconductor -- non-JEDEC */
-> -	{ "cat25c11", CAT25_INFO(16, 8, 16, 1) },
-> -	{ "cat25c03", CAT25_INFO(32, 8, 16, 2) },
-> -	{ "cat25c09", CAT25_INFO(128, 8, 32, 2) },
-> -	{ "cat25c17", CAT25_INFO(256, 8, 32, 2) },
-> -	{ "cat25128", CAT25_INFO(2048, 8, 64, 2) },
+> -static const struct flash_info fujitsu_nor_parts[] = {
+> -	/* Fujitsu */
+> -	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1)
+> -		FLAGS(SPI_NOR_NO_ERASE) },
 > -};
 > -
-> -const struct spi_nor_manufacturer spi_nor_catalyst = {
-> -	.name = "catalyst",
-> -	.parts = catalyst_nor_parts,
-> -	.nparts = ARRAY_SIZE(catalyst_nor_parts),
+> -const struct spi_nor_manufacturer spi_nor_fujitsu = {
+> -	.name = "fujitsu",
+> -	.parts = fujitsu_nor_parts,
+> -	.nparts = ARRAY_SIZE(fujitsu_nor_parts),
 > -};
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 1b0c6770c14e..c44de69c4353 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1999,7 +1999,6 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
->  
->  static const struct spi_nor_manufacturer *manufacturers[] = {
->  	&spi_nor_atmel,
-> -	&spi_nor_catalyst,
->  	&spi_nor_eon,
->  	&spi_nor_esmt,
->  	&spi_nor_everspin,
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 9217379b9cfe..6d31af6c39ed 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -631,7 +631,6 @@ struct sfdp {
->  
->  /* Manufacturer drivers. */
->  extern const struct spi_nor_manufacturer spi_nor_atmel;
-> -extern const struct spi_nor_manufacturer spi_nor_catalyst;
->  extern const struct spi_nor_manufacturer spi_nor_eon;
->  extern const struct spi_nor_manufacturer spi_nor_esmt;
->  extern const struct spi_nor_manufacturer spi_nor_everspin;
 > 
 
 ______________________________________________________
