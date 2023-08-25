@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14ACAEE49AD
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:00:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C0F4C3DA6F
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6j5idQ4LSJ/STupdOA4JeM6y95AyozNnUETVGamrZeY=; b=YOpZi/I+9+Z6Zf
-	1dJZi/YBwlcTWsgHI/i2+9i6qw/NY3Hxj5ZN/Z3QX1OO1Yz+gjWxNiZoKdChG+Ib6hRIC53FQZa5o
-	+ZyQmkbMrlIxsr59nRo20f3MY7rAsvegB+fEerkjHk2PS1YeUbozKtzo42bCW466hPkSZkkl3cBNQ
-	+lQIpqoxsLLxI7RAsqkKOXiVOMZN3U/wM/2YKsuiDuYWpU+xUO1PRgGCOSu7DyVGgRPdqvqs6ZByx
-	NVWhpUuHlz49Dtm1w3j7p/KA4YCgua6qxwHEeaAh+v/Zed0BYaCl5Tr4vchP+KIlv58F3psyrX0ZL
-	iG8Fuj7C4WpqoQNLj5vw==;
+	List-Owner; bh=PV4yi0dTy7tmHZAyfBtmj+uAOLTdOfRdAnStNZy3txE=; b=ph7e77GxVnCnFb
+	YEAAlPzPlPmVIkHd0+IdBs13o2RyHE7l/f17FMnGEhge3dUoNLCpiIowNyeHJPMmJ8RBjLuynqbBZ
+	YFDA6SNttWh+G38FXRXd3IYyEa1tMHzs8IFhUZCj6obiUP58XSowBIoWAAesPkkFLOsfV6k88YeTw
+	mbyc+J103/7SFt5KLVmCYqMXvbpqrEuQEY7Gx1oiEcpIaSf/8xWXcTbNPv827aC9NPK1WstjzCIf1
+	v2yNaEoYuuTGhaOkiL4WOxpDvfSMMNut2n/NuUzt+/CzUFIpMj4TRETI0REzPgHnHO0lGkQGsYNJr
+	RCDho4Mmjxh8aVXGAIEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXMi-005Wcw-06;
-	Fri, 25 Aug 2023 14:00:44 +0000
-Received: from out-243.mta1.migadu.com ([2001:41d0:203:375::f3])
+	id 1qZXN8-005Wjo-1Z;
+	Fri, 25 Aug 2023 14:01:10 +0000
+Received: from out-242.mta1.migadu.com ([2001:41d0:203:375::f2])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXMe-005WbR-1h
+	id 1qZXN5-005Why-2n
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 14:00:42 +0000
+	Fri, 25 Aug 2023 14:01:09 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692972039;
+	t=1692972064;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A8n142m+ckTq2ok9t7Tm2FnSZDGwRTGaDgQRQd0QVrs=;
-	b=pz2+RJXny/FRc9X5ZHvo0v2sP0AhNIbG6GqEDC3f4IgSNhM3HBNVDwOESMUSOR4IEMUxcQ
-	QeB+zNMG6saCP+3Ee3iNvTaLm94PmwVrh29h0zPxcQxdxo6uNrunXvw2MGBXff+gKAxGGD
-	nCmOsY1G1aaOlGneScmRPtSGG9/rCYg=
+	bh=8gDZUIYfeApELVxpIbTdhBYkuCUYVAI89qfTIaKdMRE=;
+	b=T5TsYuTvtADJBxiHqsewoSqqKK2UBuXMKNSoxaDNp/NJgc7Q8+g8JEetIByTzkVFCGvNzG
+	tWnxRnfXklKMFPsrmWvd4eLQKArJQqjl9a4PVTfDC36l8fZblJzTpI0+nRJbIbwH5cYBhh
+	1gSrwgjCBl1L9hu8cUoTezmUDMAfEak=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -72,16 +72,16 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 12/29] xfs: enforce GFP_NOIO implicitly during nowait time update
-Date: Fri, 25 Aug 2023 21:54:14 +0800
-Message-Id: <20230825135431.1317785-13-hao.xu@linux.dev>
+Subject: [PATCH 13/29] xfs: make xfs_trans_alloc() support nowait semantics
+Date: Fri, 25 Aug 2023 21:54:15 +0800
+Message-Id: <20230825135431.1317785-14-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_070040_708205_1EC86366 
-X-CRM114-Status: GOOD (  10.08  )
+X-CRM114-CacheID: sfid-20230825_070108_062767_A117E960 
+X-CRM114-Status: GOOD (  12.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,65 +100,84 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Enforce GFP_NOIO logic implicitly by set pflags if we are in nowait
-time update process. Nowait semantics means no waiting for IO,
-therefore GFP_NOIO is needed.
+There are locks in xfs_trans_alloc(), spot them and apply trylock logic.
+Make them return -EAGAIN when it would block. To achieve this, add
+nowait parameter for those functions in the path. Besides, add a generic
+transaction flag XFS_TRANS_NOWAIT to deliver nowait info.
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/xfs/xfs_iops.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ fs/xfs/libxfs/xfs_shared.h |  2 ++
+ fs/xfs/xfs_iops.c          |  3 ++-
+ fs/xfs/xfs_trans.c         | 21 ++++++++++++++++++---
+ 3 files changed, 22 insertions(+), 4 deletions(-)
 
+diff --git a/fs/xfs/libxfs/xfs_shared.h b/fs/xfs/libxfs/xfs_shared.h
+index c4381388c0c1..0ba3d6f53405 100644
+--- a/fs/xfs/libxfs/xfs_shared.h
++++ b/fs/xfs/libxfs/xfs_shared.h
+@@ -83,6 +83,8 @@ void	xfs_log_get_max_trans_res(struct xfs_mount *mp,
+  * made then this algorithm will eventually find all the space it needs.
+  */
+ #define XFS_TRANS_LOWMODE	0x100	/* allocate in low space mode */
++/* Transaction should follow nowait semantics */
++#define XFS_TRANS_NOWAIT		(1u << 9)
+ 
+ /*
+  * Field values for xfs_trans_mod_sb.
 diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index bf1d4c31f009..5fa391083de9 100644
+index 5fa391083de9..47b4fd5f8f5c 100644
 --- a/fs/xfs/xfs_iops.c
 +++ b/fs/xfs/xfs_iops.c
-@@ -1037,6 +1037,8 @@ xfs_vn_update_time(
- 	int			log_flags = XFS_ILOG_TIMESTAMP;
- 	struct xfs_trans	*tp;
- 	int			error;
-+	int			old_pflags;
-+	bool			nowait = flags & S_NOWAIT;
+@@ -1054,7 +1054,8 @@ xfs_vn_update_time(
+ 	if (nowait)
+ 		old_pflags = memalloc_noio_save();
  
- 	trace_xfs_update_time(ip);
- 
-@@ -1049,13 +1051,18 @@ xfs_vn_update_time(
- 		log_flags |= XFS_ILOG_CORE;
- 	}
- 
-+	if (nowait)
-+		old_pflags = memalloc_noio_save();
-+
- 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
+-	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
++	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0,
++				nowait ? XFS_TRANS_NOWAIT : 0, &tp);
  	if (error)
--		return error;
-+		goto out;
+ 		goto out;
  
--	if (flags & S_NOWAIT) {
--		if (!xfs_ilock_nowait(ip, XFS_ILOCK_EXCL))
--			return -EAGAIN;
-+	if (nowait) {
-+		if (!xfs_ilock_nowait(ip, XFS_ILOCK_EXCL)) {
-+			error = -EAGAIN;
-+			goto out;
-+		}
- 	} else {
- 		xfs_ilock(ip, XFS_ILOCK_EXCL);
- 	}
-@@ -1069,7 +1076,12 @@ xfs_vn_update_time(
+diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+index 8c0bfc9a33b1..dbec685f4f4a 100644
+--- a/fs/xfs/xfs_trans.c
++++ b/fs/xfs/xfs_trans.c
+@@ -251,6 +251,9 @@ xfs_trans_alloc(
+ 	struct xfs_trans	*tp;
+ 	bool			want_retry = true;
+ 	int			error;
++	bool			nowait = flags & XFS_TRANS_NOWAIT;
++	gfp_t			gfp_flags = GFP_KERNEL |
++					    (nowait ? 0 : __GFP_NOFAIL);
  
- 	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
- 	xfs_trans_log_inode(tp, ip, log_flags);
--	return xfs_trans_commit(tp);
-+	error = xfs_trans_commit(tp);
+ 	/*
+ 	 * Allocate the handle before we do our freeze accounting and setting up
+@@ -258,9 +261,21 @@ xfs_trans_alloc(
+ 	 * by doing GFP_KERNEL allocations inside sb_start_intwrite().
+ 	 */
+ retry:
+-	tp = kmem_cache_zalloc(xfs_trans_cache, GFP_KERNEL | __GFP_NOFAIL);
+-	if (!(flags & XFS_TRANS_NO_WRITECOUNT))
+-		sb_start_intwrite(mp->m_super);
++	tp = kmem_cache_zalloc(xfs_trans_cache, gfp_flags);
++	if (!tp)
++		return -EAGAIN;
++	if (!(flags & XFS_TRANS_NO_WRITECOUNT)) {
++		if (nowait) {
++			bool locked = sb_start_intwrite_trylock(mp->m_super);
 +
-+out:
-+	if (nowait)
-+		memalloc_noio_restore(old_pflags);
-+	return error;
- }
++			if (!locked) {
++				xfs_trans_cancel(tp);
++				return -EAGAIN;
++			}
++		} else {
++			sb_start_intwrite(mp->m_super);
++		}
++	}
+ 	xfs_trans_set_context(tp);
  
- STATIC int
+ 	/*
 -- 
 2.25.1
 
