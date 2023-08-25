@@ -4,64 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76972C3DA6F
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 12:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A663C3DA6F
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 13:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YcFL++32GKOedZpF1GlZik//IEk9CZGBQI4HUL1DmzY=; b=FstuRK/DQKZ1UY
-	V32v5DM57854nlEBbREoikAniAPFY9+wOWdGj+/vnSGAJTry271Y0pZWt9Afne+DhTqhiZL1hzGMK
-	Zs6ivz6/tt48PLYHYKIQ3WZRIjFOlIC2gwnYAkb4DKJrtNq8XUnZQUfoZAd3YS52PeYtdVy4bge/p
-	3hohtTlWaeyE0cL5mra5EtY8sK2OCEcAyYKTA2zcy1gx1rxRBnrJXjTza3WMRxi+wHjr+RyKoT9wn
-	6HVEEWWcFZxa2stuPE6koeeetHBeJS7PsinCGYec9iU2W9Re+MVJHXKReMzCnz77NgclLiFm4GfQI
-	CgEp1ZNO3wvGRcg4G7Mg==;
+	List-Owner; bh=jjnxvtORKVoCQMiKumN1SbI6QTiY5mQKyZ0huEjNOVg=; b=ZePgRAr0MuVTr1
+	bN2gQnGGLocPlXRL2xLznnKPiyJqlZq9rp40jiA7LE3spoBNvcqPzjgCp5Tz6tJq9HZmG4+LgnFuc
+	lYLKcvh3WpCceLEzMIUiBMI6JksfI/xgLFtJ7bv9D6W6YAhFp7LOpkM5u0btFBrwbNYlaiUH7d0Vd
+	fwBiy39P2ux1pUJmQ7Bl5QEiDqdFkTSkwnWC5NF4RsjtP7/pxib48sRWEnQtemX2lA9kWCbGvAIOF
+	3ci74/+z+L1QzwBPUPGcuSqE9n1aLmVYNcd8JinxNEV5tZjpIgKscjzTkrnG02Nje7GWinfCIipzG
+	8nvSy2/I7OzccH88/eow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZVer-005Lcd-0h;
-	Fri, 25 Aug 2023 12:11:21 +0000
+	id 1qZWvu-005TAD-2u;
+	Fri, 25 Aug 2023 13:33:02 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZVeo-005Lbp-2c
-	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 12:11:19 +0000
+	id 1qZWvs-005T9R-2V;
+	Fri, 25 Aug 2023 13:33:02 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4B3FA63962;
-	Fri, 25 Aug 2023 12:11:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB353C433C7;
-	Fri, 25 Aug 2023 12:11:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 16F38673FF;
+	Fri, 25 Aug 2023 13:33:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E70AEC433C8;
+	Fri, 25 Aug 2023 13:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692965477;
-	bh=w9irN07rzpmcVFq+/nXz+ItXfH5K5JHFoVhhyoLEr4E=;
+	s=k20201202; t=1692970379;
+	bh=T3WCgKJR+2I3SNciRzSe5NGE9AO6KZcdR6qXwGAgd9M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bgwsQk83JEE356qZ5CIds68Z0EkxlmZZ7w/oW3RFs/1XfQUQ+cTThp2PA+jNR14p8
-	 D2Ky8aafAffwGCP0SDYiTJIGfK+CEolD7oM8MUdwGyRLsbPT2LFDHXD4vqNEvf3thT
-	 K8lRSq3fcE1UnMWgmxFCX9PKX4aUvxVJpothuvekxhPNI4P7wWhtzcchzl7HLrYV+v
-	 +aN3gW8+CFoR6RQ9xYTh0WEGnw7krHbnGf9dmVF22u2u2i6QbD0QoeQ093raBKQwLy
-	 oCPgHN9WOH5QI504GG9NVeK127lhQmshRebUjM+txQf8JiAQZarxxcy1K6OIbryq34
-	 5bXJKcz4OoDoQ==
-Date: Fri, 25 Aug 2023 14:11:12 +0200
+	b=BOzM2QQ1MZDAriB3IMOamPdHV+2S3m2FC6tyT1pwI/9DF+WhlbPxDXE6fFDwe1gQn
+	 nTHB+ewwdyxJVq1cwfq3lRDi07qJcCHvh+nPPtQwtyRFhMG1ktBk1+a5CxpNbFHlMo
+	 Es+8l14bPK+nfmT+9Vs7IvZUfkPWFzk8wOkU0sT7FJdKR3BT4c1FwZN9woHNBuu5tc
+	 jHLMCNsuGW/YHncoWpwLVgQ93zfRJ93+ghRIza8tLelTozCObl43Fv+mmuqvzrkB+C
+	 SdJZ6/x4IFa4j6NBHHUKQ0uLY4RqtzEgYesuRGMfUi0q6xmwPRpi/3TpKuwt6YF2IT
+	 8BYUF/YAoocgw==
+Date: Fri, 25 Aug 2023 15:32:47 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Jan Kara <jack@suse.cz>
 Cc: Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
 	linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-	Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
-	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 12/29] mtd: block2mtd: Convert to bdev_open_by_dev/path()
-Message-ID: <20230825-danken-erklommen-042e5f8678b1@brauner>
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
+	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v3 0/29] block: Make blkdev_get_by_*() return handle
+Message-ID: <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
 References: <20230818123232.2269-1-jack@suse.cz>
- <20230823104857.11437-12-jack@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230823104857.11437-12-jack@suse.cz>
+In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_051118_890555_573A7160 
-X-CRM114-Status: GOOD (  10.99  )
+X-CRM114-CacheID: sfid-20230825_063300_899632_5B555E98 
+X-CRM114-Status: GOOD (  21.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,18 +103,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 23, 2023 at 12:48:23PM +0200, Jan Kara wrote:
-> Convert block2mtd to use bdev_open_by_dev() and bdev_open_by_path() and
-> pass the handle around.
+On Wed, Aug 23, 2023 at 12:48:11PM +0200, Jan Kara wrote:
+> Hello,
 > 
-> CC: Joern Engel <joern@lazybastard.org>
-> CC: linux-mtd@lists.infradead.org
-> Acked-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
+> this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
+> calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+> makes the get and put calls for bdevs more obviously matching and allows us to
+> propagate context from get to put without having to modify all the users
+> (again!). In particular I need to propagate used open flags to blkdev_put() to
+> be able count writeable opens and add support for blocking writes to mounted
+> block devices. I'll send that series separately.
+> 
+> The series is based on Christian's vfs tree as of today as there is quite
+> some overlap. Patches have passed some reasonable testing - I've tested block
+> changes, md, dm, bcache, xfs, btrfs, ext4, swap. More testing or review is
+> always welcome. Thanks! I've pushed out the full branch to:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
+> 
+> to ease review / testing. Since there were not many comments for v2 and
+> Christoph has acked the series I think we should start discussing how to merge
+> the series. Most collisions with this series seem to happen in the filesystems
+> area so VFS tree would seem as the least painful way to merge this. Jens,
 
-Looks good to me,
-Acked-by: Christian Brauner <brauner@kernel.org>
+I really do like this series especially struct bdev_handle and moving
+the mode bits in there. I'll happily take this. So far there have only
+been minor things that can easily be fixed.
 
 ______________________________________________________
 Linux MTD discussion mailing list
