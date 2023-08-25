@@ -4,77 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CF5FC3DA6F
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 15:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB714C3DA66
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 21:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uAmHsvExd/PRh88PQwWZHNEml2ucWwXgBPVr9pCNrjo=; b=i+7q7mQB49Iz9c
-	xJC/ZPGwtsHyE98IKiYdBlBsOFTAguekGSMNNyv2+JgLkCaMdVJ4HlUHY49eGo8Dws451ZFPptuPz
-	YipDPyOZq6KoExpMTIhsYLmX6Ln4ODyy74YZbNNc2blPvgQNAtHXLK4yjTZ4EAOz0Awh51SH6h93M
-	/PMvuUa//lNG9NqmiT8wd/PTcFy/uccM7YddeV9GjaFS9X1DbY0S3mzpg5y1JiO9UNHhIOCMJ2GC/
-	v58NGK46sBXHYYl58nQacutG8zuDAQHkHh0PGvT/bIxX74rHkJzneG7+EuzMNB4SGSuUykTDmcOx1
-	K1cmaTqb3fZe8IpYlMEw==;
+	List-Owner; bh=OWVqCbHXMi28f1yxXO33WRivgAGMZHYSc3htasLyGus=; b=WO9z+m037LXVnk
+	5FoAHry5CHhEwEotUHQE766vYvCppCO8RAwSSyFCt1CH1yGeNVAi2l320CrLNka/vYM49dmTed2ds
+	EI7muweU1sXnWGmmq2bo/y6vAq2knCVhC+cwiwz4+GKqXJ4wucc8M02p6SVfTRu9pRBeS29f/k/kS
+	LOpKXz+Y2+sDxmRst5Y9RN27RLEo8GpZih6J0vkKURlHG4TUt/7MMVTf5oO+P7fUq2IfCUBYbObCg
+	nlBj4iQPGvtpHw33i6HlTfw8Rt5kfTAnLb5l5F2tDzweE3h5ZENngzC2k192MekUPkQnc3iBDkXJO
+	0voCD+nosmSH2bseqlHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZYT2-005ebt-32;
-	Fri, 25 Aug 2023 15:11:20 +0000
+	id 1qZe80-0062AU-11;
+	Fri, 25 Aug 2023 21:14:00 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZYSz-005ebT-08
+	id 1qZe7x-0062A7-0q
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 15:11:19 +0000
+	Fri, 25 Aug 2023 21:13:58 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4DC0561D9A;
-	Fri, 25 Aug 2023 15:11:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A51CFC433C7;
-	Fri, 25 Aug 2023 15:11:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0AD456142E;
+	Fri, 25 Aug 2023 21:13:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B0ECC433C7;
+	Fri, 25 Aug 2023 21:13:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692976275;
-	bh=Yk82zBo/CO5JhPqCebob30ONG4lnlvLUkORIUTY0ODE=;
+	s=k20201202; t=1692998035;
+	bh=uiXkyRVOSV4tA0Dr9xfhgTNwejV2oZiBsqM/hZn5yPg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NYYVRerqYqnGpLF8blJdmxVpMOEPQLv0528BjC5vvBFsZNAz6HSSGB0+0FSTqmw/7
-	 Db7P0mmTsJO1oNY1/ZHWu8NyzK9JrsOCasrcwziq7v3vDEDceQvRopW668kANjqE5f
-	 XtN676xYCoJvkIHN5kf251pR26YpJ9SQiBSWWbB3qvKX/kVrAeNfp0cfhulI06kGyS
-	 rDA+euytpnrfPPjqUYcEaqjX12Vj0EdMyf1Oo7A6QZMfrIIcEUaHvGZ8srUTvsTFVz
-	 en/rpIYHaZ7zIlQRk5TaAyXVnqxQP9imT2Z+zB9eRFWghRFbDct0Qujy/WQpJcsiaU
-	 Wx3ea7l8r3I0w==
-Date: Fri, 25 Aug 2023 08:11:15 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Hao Xu <hao.xu@linux.dev>
-Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-cachefs@redhat.com, ecryptfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-unionfs@vger.kernel.org,
-	bpf@vger.kernel.org, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	codalist@coda.cs.cmu.edu, linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com, linux-mm@kvack.org,
-	linux-nilfs@vger.kernel.org, devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org, Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH RFC v5 00/29] io_uring getdents
-Message-ID: <20230825151115.GB17891@frogsfrogsfrogs>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
+	b=UgSWvtl49FkDkaRYO3r0z4VzYK/yDU2hQmm5FUy/saN2DaYbzz5vuhxj+oTpq/YEz
+	 6iPySb9lNptNeguxiheMPfLw58USp34CyI6yLgGfRUu28v0iNMZb16krVHW1DR7eer
+	 X7/UJR9hvVw1WO8f9x3khDGmYa5/plHR8kM491NKMqEuNO4Pw9iZDNRrB6DqgVa63r
+	 +IjWV8he6N0kCyEWrQbC5VfgXNT058QGjrBf2pO6OG6y8NaLAaMZTNAT4pmMeyQyKD
+	 eh10XcSY2us9pZi/URLX1z5VvUzlXT9gvz7Jlc/CvSoA1f7ssDARtN21vNHvUsEQko
+	 AuIIYRR5eP06A==
+Date: Fri, 25 Aug 2023 14:13:52 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, linux-fscrypt@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+	Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+	ceph-devel@vger.kernel.org,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	"David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-wireless@vger.kernel.org,
+	Matthieu Baerts <matthieu.baerts@tessares.net>,
+	Mat Martineau <martineau@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+	linux-nfs@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+	linux-integrity@vger.kernel.org,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Ayush Sawal <ayush.sawal@chelsio.com>
+Subject: Re: [PATCH 1/12] fscrypt: Do not include crypto/algapi.h
+Message-ID: <20230825211352.GB1366@sol.localdomain>
+References: <ZOXf3JTIqhRLbn5j@gondor.apana.org.au>
+ <E1qYl9q-006vDd-FJ@formenos.hmeau.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
+In-Reply-To: <E1qYl9q-006vDd-FJ@formenos.hmeau.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_081117_186827_23CCF2B4 
-X-CRM114-Status: GOOD (  33.37  )
+X-CRM114-CacheID: sfid-20230825_141357_369052_6300C143 
+X-CRM114-Status: GOOD (  16.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,219 +95,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Aug 25, 2023 at 09:54:02PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
+On Wed, Aug 23, 2023 at 06:32:15PM +0800, Herbert Xu wrote:
+> The header file crypto/algapi.h is for internal use only.  Use the
+> header file crypto/utils.h instead.
 > 
-> This series introduce getdents64 to io_uring, the code logic is similar
-> with the snychronized version's. It first try nowait issue, and offload
-> it to io-wq threads if the first try fails.
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> ---
+> 
+>  fs/crypto/keysetup_v1.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/crypto/keysetup_v1.c b/fs/crypto/keysetup_v1.c
+> index 75dabd9b27f9..d698ecb9ad44 100644
+> --- a/fs/crypto/keysetup_v1.c
+> +++ b/fs/crypto/keysetup_v1.c
+> @@ -20,8 +20,8 @@
+>   *    managed alongside the master keys in the filesystem-level keyring)
+>   */
+>  
+> -#include <crypto/algapi.h>
+>  #include <crypto/skcipher.h>
+> +#include <crypto/utils.h>
+>  #include <keys/user-type.h>
+>  #include <linux/hashtable.h>
+>  #include <linux/scatterlist.h>
 
-NAK on the entire series until Jens actually writes down what NOWAIT
-does, so that we can check that the *existing* nowait code branches
-actually behave how he says it should.
+Acked-by: Eric Biggers <ebiggers@google.com>
 
-https://lore.kernel.org/all/e2d8e5f1-f794-38eb-cecf-ed30c571206b@kernel.dk/
-
---D
-
-> 
-> Patch1 and Patch2 are some preparation
-> Patch3 supports nowait for xfs getdents code
-> Patch4-11 are vfs change, include adding helpers and trylock for locks
-> Patch12-29 supports nowait for involved xfs journal stuff
-> note, Patch24 and 27 are actually two questions, might be removed later.
-> an xfs test may come later.
-> 
-> Tests I've done:
-> a liburing test case for functional test:
-> https://github.com/HowHsu/liburing/commit/39dc9a8e19c06a8cebf8c2301b85320eb45c061e?diff=unified
-> 
-> xfstests:
->     test/generic: 1 fails and 171 not run
->     test/xfs: 72 fails and 156 not run
-> run the code before without this patchset, same result.
-> I'll try to make the environment more right to run more tests here.
-> 
-> 
-> Tested it with a liburing performance test:
-> https://github.com/HowHsu/liburing/blob/getdents/test/getdents2.c
-> 
-> The test is controlled by the below script[2] which runs getdents2.t 100
-> times and calulate the avg.
-> The result show that io_uring version is about 2.6% faster:
-> 
-> note:
-> [1] the number of getdents call/request in io_uring and normal sync version
-> are made sure to be same beforehand.
-> 
-> [2] run_getdents.py
-> 
-> ```python3
-> 
-> import subprocess
-> 
-> N = 100
-> sum = 0.0
-> args = ["/data/home/howeyxu/tmpdir", "sync"]
-> 
-> for i in range(N):
->     output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
->     sum += float(output)
-> 
-> average = sum / N
-> print("Average of sync:", average)
-> 
-> sum = 0.0
-> args = ["/data/home/howeyxu/tmpdir", "iouring"]
-> 
-> for i in range(N):
->     output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
->     sum += float(output)
-> 
-> average = sum / N
-> print("Average of iouring:", average)
-> 
-> ```
-> 
-> v4->v5:
->  - move atime update to the beginning of getdents operation
->  - trylock for i_rwsem
->  - nowait semantics for involved xfs journal stuff
-> 
-> v3->v4:
->  - add Dave's xfs nowait code and fix a deadlock problem, with some code
->    style tweak.
->  - disable fixed file to avoid a race problem for now
->  - add a test program.
-> 
-> v2->v3:
->  - removed the kernfs patches
->  - add f_pos_lock logic
->  - remove the "reduce last EOF getdents try" optimization since
->    Dominique reports that doesn't make difference
->  - remove the rewind logic, I think the right way is to introduce lseek
->    to io_uring not to patch this logic to getdents.
->  - add Singed-off-by of Stefan Roesch for patch 1 since checkpatch
->    complained that Co-developed-by someone should be accompanied with
->    Signed-off-by same person, I can remove them if Stefan thinks that's
->    not proper.
-> 
-> 
-> Dominique Martinet (1):
->   fs: split off vfs_getdents function of getdents64 syscall
-> 
-> Hao Xu (28):
->   xfs: rename XBF_TRYLOCK to XBF_NOWAIT
->   xfs: add NOWAIT semantics for readdir
->   vfs: add nowait flag for struct dir_context
->   vfs: add a vfs helper for io_uring file pos lock
->   vfs: add file_pos_unlock() for io_uring usage
->   vfs: add a nowait parameter for touch_atime()
->   vfs: add nowait parameter for file_accessed()
->   vfs: move file_accessed() to the beginning of iterate_dir()
->   vfs: add S_NOWAIT for nowait time update
->   vfs: trylock inode->i_rwsem in iterate_dir() to support nowait
->   xfs: enforce GFP_NOIO implicitly during nowait time update
->   xfs: make xfs_trans_alloc() support nowait semantics
->   xfs: support nowait for xfs_log_reserve()
->   xfs: don't wait for free space in xlog_grant_head_check() in nowait
->     case
->   xfs: add nowait parameter for xfs_inode_item_init()
->   xfs: make xfs_trans_ijoin() error out -EAGAIN
->   xfs: set XBF_NOWAIT for xfs_buf_read_map if necessary
->   xfs: support nowait memory allocation in _xfs_buf_alloc()
->   xfs: distinguish error type of memory allocation failure for nowait
->     case
->   xfs: return -EAGAIN when bulk memory allocation fails in nowait case
->   xfs: comment page allocation for nowait case in xfs_buf_find_insert()
->   xfs: don't print warn info for -EAGAIN error in  xfs_buf_get_map()
->   xfs: support nowait for xfs_buf_read_map()
->   xfs: support nowait for xfs_buf_item_init()
->   xfs: return -EAGAIN when nowait meets sync in transaction commit
->   xfs: add a comment for xlog_kvmalloc()
->   xfs: support nowait semantics for xc_ctx_lock in xlog_cil_commit()
->   io_uring: add support for getdents
-> 
->  arch/s390/hypfs/inode.c         |  2 +-
->  block/fops.c                    |  2 +-
->  fs/btrfs/file.c                 |  2 +-
->  fs/btrfs/inode.c                |  2 +-
->  fs/cachefiles/namei.c           |  2 +-
->  fs/coda/dir.c                   |  4 +--
->  fs/ecryptfs/file.c              |  4 +--
->  fs/ext2/file.c                  |  4 +--
->  fs/ext4/file.c                  |  6 ++--
->  fs/f2fs/file.c                  |  4 +--
->  fs/file.c                       | 13 +++++++
->  fs/fuse/dax.c                   |  2 +-
->  fs/fuse/file.c                  |  4 +--
->  fs/gfs2/file.c                  |  2 +-
->  fs/hugetlbfs/inode.c            |  2 +-
->  fs/inode.c                      | 10 +++---
->  fs/internal.h                   |  8 +++++
->  fs/namei.c                      |  4 +--
->  fs/nfsd/vfs.c                   |  2 +-
->  fs/nilfs2/file.c                |  2 +-
->  fs/orangefs/file.c              |  2 +-
->  fs/orangefs/inode.c             |  2 +-
->  fs/overlayfs/file.c             |  2 +-
->  fs/overlayfs/inode.c            |  2 +-
->  fs/pipe.c                       |  2 +-
->  fs/ramfs/file-nommu.c           |  2 +-
->  fs/readdir.c                    | 61 +++++++++++++++++++++++++--------
->  fs/smb/client/cifsfs.c          |  2 +-
->  fs/splice.c                     |  2 +-
->  fs/stat.c                       |  2 +-
->  fs/ubifs/file.c                 |  2 +-
->  fs/udf/file.c                   |  2 +-
->  fs/xfs/libxfs/xfs_alloc.c       |  2 +-
->  fs/xfs/libxfs/xfs_attr_remote.c |  2 +-
->  fs/xfs/libxfs/xfs_btree.c       |  2 +-
->  fs/xfs/libxfs/xfs_da_btree.c    | 16 +++++++++
->  fs/xfs/libxfs/xfs_da_btree.h    |  1 +
->  fs/xfs/libxfs/xfs_dir2_block.c  |  7 ++--
->  fs/xfs/libxfs/xfs_dir2_priv.h   |  2 +-
->  fs/xfs/libxfs/xfs_shared.h      |  2 ++
->  fs/xfs/libxfs/xfs_trans_inode.c | 12 +++++--
->  fs/xfs/scrub/dir.c              |  2 +-
->  fs/xfs/scrub/readdir.c          |  2 +-
->  fs/xfs/scrub/repair.c           |  2 +-
->  fs/xfs/xfs_buf.c                | 43 +++++++++++++++++------
->  fs/xfs/xfs_buf.h                |  4 +--
->  fs/xfs/xfs_buf_item.c           |  9 +++--
->  fs/xfs/xfs_buf_item.h           |  2 +-
->  fs/xfs/xfs_buf_item_recover.c   |  2 +-
->  fs/xfs/xfs_dir2_readdir.c       | 49 ++++++++++++++++++++------
->  fs/xfs/xfs_dquot.c              |  2 +-
->  fs/xfs/xfs_file.c               |  6 ++--
->  fs/xfs/xfs_inode.c              | 27 +++++++++++++++
->  fs/xfs/xfs_inode.h              | 17 +++++----
->  fs/xfs/xfs_inode_item.c         | 12 ++++---
->  fs/xfs/xfs_inode_item.h         |  3 +-
->  fs/xfs/xfs_iops.c               | 31 ++++++++++++++---
->  fs/xfs/xfs_log.c                | 33 ++++++++++++------
->  fs/xfs/xfs_log.h                |  5 +--
->  fs/xfs/xfs_log_cil.c            | 17 +++++++--
->  fs/xfs/xfs_log_priv.h           |  4 +--
->  fs/xfs/xfs_trans.c              | 44 ++++++++++++++++++++----
->  fs/xfs/xfs_trans.h              |  2 +-
->  fs/xfs/xfs_trans_buf.c          | 18 ++++++++--
->  fs/zonefs/file.c                |  4 +--
->  include/linux/file.h            |  7 ++++
->  include/linux/fs.h              | 16 +++++++--
->  include/uapi/linux/io_uring.h   |  1 +
->  io_uring/fs.c                   | 53 ++++++++++++++++++++++++++++
->  io_uring/fs.h                   |  3 ++
->  io_uring/opdef.c                |  8 +++++
->  kernel/bpf/inode.c              |  4 +--
->  mm/filemap.c                    |  8 ++---
->  mm/shmem.c                      |  6 ++--
->  net/unix/af_unix.c              |  4 +--
->  75 files changed, 499 insertions(+), 161 deletions(-)
-> 
-> -- 
-> 2.25.1
-> 
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
