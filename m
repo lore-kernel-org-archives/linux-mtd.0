@@ -4,99 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54DAAEE49B3
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 22:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3439C83F05
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 22:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3ppmlPSj4VBTlvrFZdgDnx2n4/DQGtU7OaPht8Ej+DQ=; b=kINTS0rTdp3YgW
-	PYNNIFldfKL6ogRGfS2njOSnTMZCy01bSnexrkkzyPisvfeu/AZx5x/XAzLi6ZMIDUKD92TROaksN
-	8c7k6Hy5BiRzNBvQ9d81eFfsjCaoamrv2lWqsXUzzXJEKjQbi6Vs58XO/yeNT8Dku5tDphsRgZUio
-	Pcl7yIVN+Rrqck6cOqzuyJtnU2ose3/iSxHdmu6o2LBX5B/jjBpfEGUM2p5AskABmWwUSypLB/4j/
-	0kD8goCiVgLoh9BHZlXAYPrI2q8WAX7KNGOQ8PrNsVvMenl2whJKTjk9oz+aFvi4qZxFycrB17Q/1
-	U9W9giu9Inkt1T7QNH5A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:Subject:From:References:Cc:To:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=gE1LhHmKv1eGvf8M2mzwDKQ7J1pxb3tJCioOKJGdGJ4=; b=X1Kj12OyD4aJXheHoWTRCV8Oze
+	uLApkJGQws425ByEc+RmMjjeTW3SzMFFQhkJiPuBdSqYw+d37lniIZYZKQ4Vv9bKUqB2hIXrHflHI
+	xGt2Fe0yBp/jqMXMIpBL3dIFtI/dVN53+i37bMhQ731Gre8IFxxon7wi5+GYV01neIkF1AtcmcNH5
+	1bFcS9t3NAJeCvtC0nIlueY1jXWvqAjoG+0D44lVt7Dl+SQjshdO61fwGFXkeObdMOJFxalb9zYxq
+	l/1aT30JWKp1eBnkkrwgTfpbFqagMyPae/DUUK5q/iseTQH3e8H/hOnldBjx5MMxRpN8ylRZ3/mu3
+	GwI7VdDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZf6P-0066FP-1O;
-	Fri, 25 Aug 2023 22:16:25 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1qZfXt-0067is-0b;
+	Fri, 25 Aug 2023 22:44:49 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZf6M-0066Eh-21
-	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 22:16:24 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf7a6509deso10111555ad.3
-        for <linux-mtd@lists.infradead.org>; Fri, 25 Aug 2023 15:16:19 -0700 (PDT)
+	id 1qZfXq-0067hz-2O;
+	Fri, 25 Aug 2023 22:44:48 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf078d5f33so12018405ad.3;
+        Fri, 25 Aug 2023 15:44:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1693001779; x=1693606579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ppeQOWgbWz5gqWZs/rbytV4GhpZ82FSsmBh/giRYIfc=;
-        b=oGxnlMh0S/WiVEBqRgXg0XkOHzHqDpTBvnGnagMxXiK0WZOe1Z4r+2p1ptsCZGDnWB
-         pXEktmY/ad0PuwAxCgT0YcHOMRjDsuwyrAXCFtdwEmAj+muyxYQXIE+r39jHMvXhT5B0
-         o+SPYmvdCE0AaqEX44rBk89wjuy74zXAp3Vwzk0u1JPoPtSJh1DrCjw1RqWqiFdJpqby
-         tMNly65LV0QvaLstk47azhvzcHLQyEtc8q2u/G93EQr7wDi/F72WQh2TPKv7ILrD/tve
-         HoezaGEwtih61yu0zT7giO0Mqh1qaOyneAEL9vdEIb12mBB0wZbgWFOwNbvY6RzLwUwH
-         OW2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693001779; x=1693606579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693003477; x=1693608277;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ppeQOWgbWz5gqWZs/rbytV4GhpZ82FSsmBh/giRYIfc=;
-        b=QozPw4WL5eLSJ37JWg7TT4Hdq5oJu0uT0CBBtgqd5uYo/Y3PfJxu8HL7GVkAgIQpyC
-         vGfgBoUpq/7MxH1Qwl+yqW0cUMlDGJ/JsUJAVoEXoDN5MZYr7TggZDz0dpcJr7WYTv9C
-         U7k0Z6w653607nCL+xzVn6DSWGEBNktci+aIxOvqVoxOK3hTxceju0WarsFZsN89qrhu
-         p19PePEEhrFNNXtGoE2P/P1nYLUmLrM+V2PQFRqRE19dQqNpE2aLCamDsSpNGTG0usjx
-         F0O2uQphDqKjQR5TIczY4iSXKUNK5QIbpwwbMYtlQ2nf4wRzjiRj6ZbYEmuOsJ5u7SM6
-         Yybw==
-X-Gm-Message-State: AOJu0YxZL4oPEjjJdbYdxbT7ow58HC5hXPg3kvGS7eEyzozZAbdIT2hD
-	NTQcrSND2UAYKZ8P1Xu3QS80wg==
-X-Google-Smtp-Source: AGHT+IEjt82Q7/ukix1Bwi0HcqOCAUCGzooSpz1T14B8KRhD3u7v0lApveU1bnKvxuVgpN4iNhxk8w==
-X-Received: by 2002:a17:903:264e:b0:1bd:c338:ae14 with SMTP id je14-20020a170903264e00b001bdc338ae14mr16243879plb.12.1693001778913;
-        Fri, 25 Aug 2023 15:16:18 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b001c0bf60ba5csm2276046pln.272.2023.08.25.15.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 15:16:18 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1qZf6F-006Va3-0j;
-	Sat, 26 Aug 2023 08:16:15 +1000
-Date: Sat, 26 Aug 2023 08:16:15 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Hao Xu <hao.xu@linux.dev>
-Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 25/29] xfs: support nowait for xfs_buf_item_init()
-Message-ID: <ZOkoL8nuXJDVZM1H@dread.disaster.area>
-References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-26-hao.xu@linux.dev>
+        bh=+EfHZKV5Rs50FUqRYXClC9vzZD5WlxrYeYbs3IamXT4=;
+        b=YxGLOPcaOZR604IVjJRcGcoKnB33IZ0CTfYuHyWKXt+0pInUOQSMoNyJ0dS6B1KmgY
+         cxaBOMvor3UlQ6MZnz8hco99YltIQ+TVGTfUiOj3M6EtIom4aLy5Ogu10qSlU6URXk+W
+         RnRGmXEhLIg0POh+PDKptxk33OVTKsM2/52zz5494dr8R8CSNGpoqbrRI3gpmS9Q+cTN
+         hJYUsHOFyiz+AcMtmJLq8rt6PHOWgX+jhYTNJt4ghkMZ1YZYHd+UADqGIVtKxfSRzrdW
+         eHx1TWLsT9QLE3Re7SH9KzLMTXlxKvezJrH+R76CylIu77symnMHbROv+J2zJ4UP/BTK
+         7yuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693003477; x=1693608277;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+EfHZKV5Rs50FUqRYXClC9vzZD5WlxrYeYbs3IamXT4=;
+        b=JWVqNiHsmtiOi8ZwjfZ1D+X/XgIOJ0OjQGrbEnaA6CySwDyk+944f8RquHZPp/HBZB
+         JFbj1PtWEDA/D1qKyCXW/pjghm30oN41EsAmoHlSah56S5ehCm/RBhDPdCkQC3RklyUf
+         ZirnRkDF9v6Yv4fWRZUOCDYDGQrNbT1Mc5gnEWmc7gSm/5wOItEb8i7QiwNDm4/kOIu0
+         Z1RRBeNLxKXbNBOKfaBCcSVqy2tYblCJjur5yRXwix/TUTlIPLAgBosfqqvzSt5sBaSC
+         jsMmX2F0D87ClDZzZqHFEc8TUi63DHV741TjsDuNnAEdSPOGR2JSVWDeVN2QG3yvp//i
+         h98A==
+X-Gm-Message-State: AOJu0YyJAyFkWtK/JYgoe7h5XA+m3X6PT8NIzuN1BLMOHlvekD6D4He3
+	3Urll187QeL7s/LCj73tTZI=
+X-Google-Smtp-Source: AGHT+IHfISCtSa05UGz9PT6tDA2qtVyoG70cJPjb2fBEQ6/U+mzxDHROeZB/hJ4FR5D+DwWhbVxiGA==
+X-Received: by 2002:a17:903:25d4:b0:1bd:bbc3:c87b with SMTP id jc20-20020a17090325d400b001bdbbc3c87bmr18047490plb.41.1693003477133;
+        Fri, 25 Aug 2023 15:44:37 -0700 (PDT)
+Received: from Schmitz-MacBook-Pro.local (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
+        by smtp.googlemail.com with ESMTPSA id b1-20020a170902d50100b001adf6b21c77sm2280761plg.107.2023.08.25.15.44.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Aug 2023 15:44:36 -0700 (PDT)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Michal Simek <monstr@monstr.eu>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, x86@kernel.org,
+ Borislav Petkov <bp@alien8.de>, Max Filippov <jcmvbkbc@gmail.com>,
+ Jens Axboe <axboe@kernel.dk>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Bjorn Helgaas <bhelgaas@google.com>,
+ Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
+ <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
+ Guenter Roeck <linux@roeck-us.net>, Stephen Rothwell <sfr@canb.auug.org.au>,
+ linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-kbuild@vger.kernel.org
+References: <20230810141947.1236730-1-arnd@kernel.org>
+ <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
+ <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
+ <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
+Message-ID: <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
+Date: Sat, 26 Aug 2023 10:44:13 +1200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-26-hao.xu@linux.dev>
+In-Reply-To: <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_151622_667380_2E89CE9B 
-X-CRM114-Status: GOOD (  28.57  )
+X-CRM114-CacheID: sfid-20230825_154446_782954_074AADF6 
+X-CRM114-Status: GOOD (  18.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,157 +125,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Aug 25, 2023 at 09:54:27PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> support nowait for xfs_buf_item_init() and error out -EAGAIN to
-> _xfs_trans_bjoin() when it would block.
-> 
-> Signed-off-by: Hao Xu <howeyxu@tencent.com>
-> ---
->  fs/xfs/xfs_buf_item.c         |  9 +++++++--
->  fs/xfs/xfs_buf_item.h         |  2 +-
->  fs/xfs/xfs_buf_item_recover.c |  2 +-
->  fs/xfs/xfs_trans_buf.c        | 16 +++++++++++++---
->  4 files changed, 22 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_buf_item.c b/fs/xfs/xfs_buf_item.c
-> index 023d4e0385dd..b1e63137d65b 100644
-> --- a/fs/xfs/xfs_buf_item.c
-> +++ b/fs/xfs/xfs_buf_item.c
-> @@ -827,7 +827,8 @@ xfs_buf_item_free_format(
->  int
->  xfs_buf_item_init(
->  	struct xfs_buf	*bp,
-> -	struct xfs_mount *mp)
-> +	struct xfs_mount *mp,
-> +	bool   nowait)
->  {
->  	struct xfs_buf_log_item	*bip = bp->b_log_item;
->  	int			chunks;
-> @@ -847,7 +848,11 @@ xfs_buf_item_init(
->  		return 0;
->  	}
->  
-> -	bip = kmem_cache_zalloc(xfs_buf_item_cache, GFP_KERNEL | __GFP_NOFAIL);
-> +	bip = kmem_cache_zalloc(xfs_buf_item_cache,
-> +				GFP_KERNEL | (nowait ? 0 : __GFP_NOFAIL));
-> +	if (!bip)
-> +		return -EAGAIN;
-> +
->  	xfs_log_item_init(mp, &bip->bli_item, XFS_LI_BUF, &xfs_buf_item_ops);
->  	bip->bli_buf = bp;
-
-I see filesystem shutdowns....
-
-> diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
-> index 016371f58f26..a1e4f2e8629a 100644
-> --- a/fs/xfs/xfs_trans_buf.c
-> +++ b/fs/xfs/xfs_trans_buf.c
-> @@ -57,13 +57,14 @@ xfs_trans_buf_item_match(
->   * If the buffer does not yet have a buf log item associated with it,
->   * then allocate one for it.  Then add the buf item to the transaction.
->   */
-> -STATIC void
-> +STATIC int
->  _xfs_trans_bjoin(
->  	struct xfs_trans	*tp,
->  	struct xfs_buf		*bp,
->  	int			reset_recur)
->  {
->  	struct xfs_buf_log_item	*bip;
-> +	int ret;
->  
->  	ASSERT(bp->b_transp == NULL);
->  
-> @@ -72,7 +73,11 @@ _xfs_trans_bjoin(
->  	 * it doesn't have one yet, then allocate one and initialize it.
->  	 * The checks to see if one is there are in xfs_buf_item_init().
->  	 */
-> -	xfs_buf_item_init(bp, tp->t_mountp);
-> +	ret = xfs_buf_item_init(bp, tp->t_mountp,
-> +				tp->t_flags & XFS_TRANS_NOWAIT);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	bip = bp->b_log_item;
->  	ASSERT(!(bip->bli_flags & XFS_BLI_STALE));
->  	ASSERT(!(bip->__bli_format.blf_flags & XFS_BLF_CANCEL));
-> @@ -92,6 +97,7 @@ _xfs_trans_bjoin(
->  	xfs_trans_add_item(tp, &bip->bli_item);
->  	bp->b_transp = tp;
->  
-> +	return 0;
->  }
->  
->  void
-> @@ -309,7 +315,11 @@ xfs_trans_read_buf_map(
->  	}
->  
->  	if (tp) {
-> -		_xfs_trans_bjoin(tp, bp, 1);
-> +		error = _xfs_trans_bjoin(tp, bp, 1);
-> +		if (error) {
-> +			xfs_buf_relse(bp);
-> +			return error;
-> +		}
->  		trace_xfs_trans_read_buf(bp->b_log_item);
-
-So what happens at the callers when we have a dirty transaction and
-joining a buffer fails with -EAGAIN?
-
-Apart from the fact this may well propagate -EAGAIN up to userspace,
-cancelling a dirty transaction at this point will result in a
-filesystem shutdown....
-
-Indeed, this can happen in the "simple" timestamp update case that
-this "nowait" semantic is being aimed at. We log the inode in the
-timestamp update, which dirties the log item and registers a
-precommit operation to be run. We commit the
-transaction, which then runs xfs_inode_item_precommit() and that
-may need to attach the inode to the inode cluster buffer. This
-results in:
-
-xfs_inode_item_precommit
-  xfs_imap_to_bp
-    xfs_trans_read_buf_map
-      _xfs_trans_bjoin
-        xfs_buf_item_init(XFS_TRANS_NOWAIT)
-	  kmem_cache_zalloc(GFP_NOFS)
-	  <memory allocation fails>
-      gets -EAGAIN error
-    propagates -EAGAIN
-  fails due to -EAGAIN
-
-And now xfs_trans_commit() fails with a dirty transaction and the
-filesystem shuts down.
-
-IOWs, XFS_TRANS_NOWAIT as it stands is fundamentally broken. Once we
-dirty an item in a transaction, we *cannot* back out of the
-transaction. We *must block* in every place that could fail -
-locking, memory allocation and/or IO - until the transaction
-completes because we cannot undo the changes we've already made to
-the dirty items in the transaction....
-
-It's even worse than that - once we have committed intents, the
-whole chain of intent processing must be run to completionr. Hence
-we can't tolerate backing out of that defered processing chain half
-way through because we might have to block.
-
-Until we can roll back partial dirty transactions and partially
-completed defered intent chains at any random point of completion,
-XFS_TRANS_NOWAIT will not work.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR2VlcnQsCgpBbSAyNS4wOC4yMyB1bSAxOTozOSBzY2hyaWViIEdlZXJ0IFV5dHRlcmhvZXZl
+bjoKPiBIaSBNaWNoYWVsLAo+Cj4gT24gRnJpLCBBdWcgMjUsIDIwMjMgYXQgMzozMeKAr0FNIE1p
+Y2hhZWwgU2NobWl0eiA8c2NobWl0em1pY0BnbWFpbC5jb20+IHdyb3RlOgo+PiBPbiAyNS8wOC8y
+MyAxMzoxMiwgTWFydGluIEsuIFBldGVyc2VuIHdyb3RlOgo+Pj4gWzExLzE3XSBzY3NpOiBndnAx
+MTogcmVtb3ZlIHVudXNlZCBndnAxMV9zZXR1cCgpIGZ1bmN0aW9uCj4+PiAgICAgICAgICBodHRw
+czovL2dpdC5rZXJuZWwub3JnL21rcC9zY3NpL2MvYmZhYTRhMGNlMWJiCj4+IEkgc29tZWhvdyBt
+aXNzZWQgdGhhdCBvbmUgLi4uCj4+Cj4+IFRoZSBndnAxMV9zZXR1cCgpIGZ1bmN0aW9uIHdhcyBw
+cm9iYWJseSBhIHJlbGljIGZyb20gdGhlIHRpbWVzIGJlZm9yZQo+PiBtb2R1bGUgcGFyYW1ldGVy
+cy4KPj4KPj4gU2luY2UgZ3ZwMTFfeGZlcl9tYXNrIGFwcGVhcnMgdG8gYmUgcmVxdWlyZWQgZm9y
+IHNvbWUgQW1pZ2Egc3lzdGVtcyB0bwo+PiBzZXQgdGhlIERNQSBtYXNrLCBJJ2QgYmVzdCBzZW5k
+IGEgcGF0Y2ggdG8gYWRkIHN1Y2ggYSBtb2R1bGUgcGFyYW1ldGVyIC4uLgo+Pgo+PiBEbyB5b3Ug
+a25vdyBhbnkgZGV0YWlscyBhcm91bmQgdGhlIHVzZSBvZiBETUEgbWFza3MgZm9yIEFtaWdhIFdE
+MzNDOTMKPj4gZHJpdmVycywgR2VlcnQ/Cj4gRG9oLCBpdCdzIGJlZW4gYSB3aGlsZSwgYW5kIEkg
+bmV2ZXIgaGFkIGFuIGFmZmVjdGVkIHN5c3RlbS4KPiBQcm9iYWJseSBpdCdzIG5lZWRlZCBvbiBB
+MjAwMCB3aXRoIGFuIGFjY2VsZXJhdG9yIGNhcmQgYW5kIEdWUCBJSSBTQ1NJLAo+IHRvIHByZXZl
+bnQgRE1BIHRvIFJBTSBiYW5rcyB0aGF0IGRvIG5vdCBzdXBwb3J0IGZhc3QgRE1BIGN5Y2xlcy4K
+ClRoYW5rcywgdGhhdCdzIGdvb2QgZW5vdWdoIGZvciBtZS4KCkxpbnV4IDIuMCBoYWQgdGhpcyBj
+b21tZW50OgoKfC8qICogRE1BIHRyYW5zZmVyIG1hc2sgZm9yIEdWUCBTZXJpZXMgSUkgU0NTSSBj
+b250cm9sbGVyLiAqIFNvbWUKdmVyc2lvbnMgY2FuIG9ubHkgRE1BIGludG8gdGhlIDI0IGJpdCBh
+ZGRyZXNzIHNwYWNlICogKDAtPjE2TSkuIE90aGVycwpjYW4gRE1BIGludG8gdGhlIGZ1bGwgMzIg
+Yml0IGFkZHJlc3MgKiBzcGFjZS4gVGhlIGRlZmF1bHQgaXMgdG8gb25seQphbGxvdyBETUEgaW50
+byB0aGUgMjQgYml0ICogYWRkcmVzcyBzcGFjZS4gVGhlICJndnAxMT0weEZGRkZGRkZFIiBzZXR1
+cApwYXJhbWV0ZXIgY2FuICogYmUgc3VwcGxpZWQgdG8gZm9yY2UgYW4gYWx0ZXJuYXRlICgzMiBi
+aXQpIG1hc2suICovIHwKCnxXZSBub3cgaGFuZGxlIHRoYXQgKHNpbmNlIDIuNi4zNSkgdGhyb3Vn
+aCBtYXNrcyBkZWZpbmVkIGluCmd2cDExX3pvcnJvX3RibFtdICh0aG91Z2ggSSBub3RlIHRoZXNl
+IGRvbid0IGFjY291bnQgZm9yIHVuYWxpZ25lZAphZGRyZXNzZXMgc3VjaCBhcyBpbXBsaWVkIGJ5
+IHRoZSBleGFtcGxlIGluIHRoZSBjb21tZW50LiBBcmUgdW5hbGlnbmVkCkRNQSBidWZmZXJzIHN0
+aWxsIHBvc3NpYmxlIHRvZGF5PykuIFdvdWxkIHRoYXQgY292ZXIgdGhlICdBMjAwMCB3aXRoCmFj
+Y2VsZXJhdG9yJyBjYXNlPwp8Cgp8fAoKSSdtIGhhcHB5IHRvIHNlbmQgYSBwYXRjaCBpZiBhbiBv
+dmVycmlkZSB0byB0aGUgZGV2aWNlIGRlZmF1bHQgRE1BIG1hc2sKaXMgc3RpbGwgbmVjZXNzYXJ5
+LgoKKEluY2lkZW50YWxseSAtIGRpZCB5b3UgZXZlciBwdWJsaXNoIHRoZSBtNjhrIGZ1bGwgaGlz
+dG9yeSB0cmVlIGFueXdoZXJlCmluIGdpdD8pCgpDaGVlcnMsCgrCoMKgwqAgTWljaGFlbAoKCj4K
+PiBHcntvZXRqZSxlZXRpbmd9cywKPgo+ICAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0Cj4K
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
