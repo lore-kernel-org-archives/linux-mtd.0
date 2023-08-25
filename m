@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB633C71133
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 13:56:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3B4FC71133
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 13:57:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hm9sAW2FL0jBTTbCfsvxaE8ubCrAQ6CXtq4uXKbj+L4=; b=s2KOSKfZEgr8NQ
-	3G1ciG+98pFxtAE9w90I//ErJ3rZJ/l2MbzG7bXsG/XMmUVW68Wcptr6jVxAZHpW7Eye9jUlVfYSK
-	OyTdc/2lGUN5zqC1qvB4ehAFQ9ZCzPwYc2FnqlWpjMH8eqWkFLrMGAUg+wH+BVxQCSbN/wA1QhWOZ
-	SecCkimaMpqSbkS8WkxOcY9yYN0W58RiPBbRH7iLWD4WDu8fV1st7qo+e4c1bG/fKvg6pIorYqyEv
-	rJeX+gxa6hTMjlITFeJdEwsEeRGpaFq5CZ6t4mwZyaUfyYESHVNwPuArIKkgPefgSKGUXXPEBSGDl
-	mp7fhp+U63K5a3ljRl1w==;
+	List-Owner; bh=xwGzHoJUTd9siHjG/fTI14mM75lgykqyC4h0+ZCzYU4=; b=FrchqvMtA8kzCA
+	uOX3HIJ0qseLNVi9x+p3c2VetxBEP+75HkqDgNC9FutXiLNvJLTrQJnm9UosCM3T+p/NrB1BTDBwm
+	6hX6l998n5hdEhzPq7c5JgjZgigrqk/3q9kCbwrq6mwHd5oQhgMcGXcEDhT1euhptXp40oH4eWLMI
+	GMDpCQJ6cPAjnT37s3JdZWt361hBI7PGX+VDGr/rfpvNjllSnD2WBiRcRvrcOix0xQtQNQEpBmeBL
+	k/BogOPgPbaUmauDSJryW+wWQ/E4RMvpO27qh6qqeeoAe8NfSzhGpLp+BTyG8k8Z6UOEjfnGhwCAw
+	OnxLpc2OYB7P4QYLL14w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXIx-005VY5-1B;
-	Fri, 25 Aug 2023 13:56:51 +0000
-Received: from out-243.mta1.migadu.com ([95.215.58.243])
+	id 1qZXJS-005Vk6-0F;
+	Fri, 25 Aug 2023 13:57:22 +0000
+Received: from out-243.mta1.migadu.com ([2001:41d0:203:375::f3])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXIt-005VWC-35
+	id 1qZXJO-005ViV-2f
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 13:56:49 +0000
+	Fri, 25 Aug 2023 13:57:20 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692971805;
+	t=1692971837;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=W04QOWrrBuMFm18D/+g+MI2uZNnKBIsbwxq2wO1dKKw=;
-	b=GYR7q+ed6aYuRljJYmvSX9IH2GLL+DVsCTCg/+y32Q33mqJCInZ91y+uQeCstRhUPnoP3N
-	ePQXgcigakNgh8HTbQeNs8AWnI9Lei+c8/zQ92SOW8UgAHTnrdNmJY44TCN57rW11W5x8C
-	QP3i32OeE0C7qn2HcY/8yIvkb/iSTUs=
+	bh=/w6lIGuCSX5M2SzS7SE+A2P7DaEhoFOZKnfxuRd6M0g=;
+	b=ZBBdmQmn/QswMnMhJaSAfXlf1oUY8DtSqPmmn75d8pDMERuOJJX6J86JCF/c0yd1RLwCFL
+	31gixh9w5LkzzEj2vO8LvkCfQ90DBKrPt5Zp4Wgls4dziWWNaF03qzW9wejmnudGoy1bT6
+	SZd55YvanxvHQ0hgcOptPehal51m0m0=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -72,16 +72,17 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 05/29] vfs: add a vfs helper for io_uring file pos lock
-Date: Fri, 25 Aug 2023 21:54:07 +0800
-Message-Id: <20230825135431.1317785-6-hao.xu@linux.dev>
+Subject: [PATCH 06/29] vfs: add file_pos_unlock() for io_uring usage
+Date: Fri, 25 Aug 2023 21:54:08 +0800
+Message-Id: <20230825135431.1317785-7-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_065648_143563_91AFEB1F 
-X-CRM114-Status: GOOD (  10.95  )
+X-CRM114-CacheID: sfid-20230825_065719_039595_AF8D58C7 
+X-CRM114-Status: UNSURE (   6.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,53 +101,31 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Add a vfs helper file_pos_lock_nowait() for io_uring usage. The function
-have conditional nowait logic, i.e. if nowait is needed, return -EAGAIN
-when trylock fails.
+Add a helper to unlock f_pos_lock without any condition. Introduce this
+since io_uring handles f_pos_lock not with a fd struct, thus
+FDPUT_POS_UNLOCK isn't used.
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/file.c            | 13 +++++++++++++
- include/linux/file.h |  2 ++
- 2 files changed, 15 insertions(+)
+ include/linux/file.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/file.c b/fs/file.c
-index 35c62b54c9d6..8e5c38f5db52 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -1053,6 +1053,19 @@ void __f_unlock_pos(struct file *f)
- 	mutex_unlock(&f->f_pos_lock);
- }
- 
-+int file_pos_lock_nowait(struct file *file, bool nowait)
-+{
-+	if (!(file->f_mode & FMODE_ATOMIC_POS))
-+		return 0;
-+
-+	if (!nowait)
-+		mutex_lock(&file->f_pos_lock);
-+	else if (!mutex_trylock(&file->f_pos_lock))
-+		return -EAGAIN;
-+
-+	return 1;
-+}
-+
- /*
-  * We only lock f_pos if we have threads or if the file might be
-  * shared with another process. In both cases we'll have an elevated
 diff --git a/include/linux/file.h b/include/linux/file.h
-index 6e9099d29343..bcc6ba0aec50 100644
+index bcc6ba0aec50..a179f4794341 100644
 --- a/include/linux/file.h
 +++ b/include/linux/file.h
-@@ -81,6 +81,8 @@ static inline void fdput_pos(struct fd f)
+@@ -81,6 +81,11 @@ static inline void fdput_pos(struct fd f)
  	fdput(f);
  }
  
-+extern int file_pos_lock_nowait(struct file *file, bool nowait);
++static inline void file_pos_unlock(struct file *file)
++{
++	__f_unlock_pos(file);
++}
 +
- DEFINE_CLASS(fd, struct fd, fdput(_T), fdget(fd), int fd)
+ extern int file_pos_lock_nowait(struct file *file, bool nowait);
  
- extern int f_dupfd(unsigned int from, struct file *file, unsigned flags);
+ DEFINE_CLASS(fd, struct fd, fdput(_T), fdget(fd), int fd)
 -- 
 2.25.1
 
