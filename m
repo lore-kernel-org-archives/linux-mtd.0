@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10886C3DA6F
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 455DDC71133
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j5lc5CDfNpyqllahOVcx11zl77WjWgDRaduhB7D0crg=; b=RvvSfc5B7Pyc04
-	/wgIsABLD+g32KSBJPVbBNcJtq340xIjhnZr59bsQAqJPO00VBnXCmtnLVok99Am7GLOSEOa0ZK8k
-	+uEOOP+rKMctJdwpaUdQzYU51yv0XzjJriKc7jNL1rh0d55GNljfYxwxMQnpDGbP625eDt0Jxmviu
-	IkAvqT5VzxyydlevACDlujKL35s3tV16FSWGLgXDhfRNLmp0Z+NwxyOtVhrZ36shQ7hC7z5XJJn9r
-	8a+YJxmxk1M5txHqwNUxNvpDr10MMbduwLdmovC9HzgJISNC9dPOGHzaywSelGYHaGAX2E3aiNuzK
-	T/b+yEC/VbRHuu7e3Rtg==;
+	List-Owner; bh=AtLoKYaE3DGuW/kOwDCTeuB612U+nLcr2HxA6NUs2Fg=; b=WxkZIWuUJ6NCkU
+	Rxe9UIbMDbLmNKQxKdK2RTb0TEFatsQ8HiCjqEbXesCkuZ79aF780wWCNxTxesdWpCxaaQRyyXzm/
+	/IGN5xI45TnYCBjzW6h23DUxje4pQ101VVhAQQ7gyL/GgyHDueDUi3gXQpu/MRuQDfGKNxtxaHzxk
+	Xxf8UcdQ71rdfdQUSGnqC6b60PUcuV1uLXiOP+rbkH6f/kaj9/jC0yPORyKCYV5KbgkvlKTcIPO9h
+	1qLfkIp38VcSWZja7Xxd5BzD/toLEupYJn7twzL/1ATVLDZW2L7IwnvxFg80Z2h5P7LirEJfew7pk
+	W2C/OHXpkicHPemJbbLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXPk-005XiI-3A;
-	Fri, 25 Aug 2023 14:03:53 +0000
-Received: from out-246.mta1.migadu.com ([2001:41d0:203:375::f6])
+	id 1qZXQ6-005Xsp-0m;
+	Fri, 25 Aug 2023 14:04:14 +0000
+Received: from out-252.mta1.migadu.com ([2001:41d0:203:375::fc])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXPi-005XhE-2r
+	id 1qZXQ3-005XqX-0G
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 14:03:52 +0000
+	Fri, 25 Aug 2023 14:04:12 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692972229;
+	t=1692972248;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k/4ZXSLCSyhuRHiUlNViF+vdvrXezEQu+Nm95mQGfD4=;
-	b=XN4VKQ0vJWdKOqygAoO6O9s0mfT9sbRl6WKC6PlM4YizrHDbuoZWPHymJ4boioTyhTPsXz
-	mzB7w7XoqaVp3khAiC/KVcJAYhLbwQjG/YZ+xeSDe8Sd8K9S+AePqNUb6KBAAuKlTSuaCl
-	kFQBsj5S1c42QHrr1w1CZcr0QQo5mJc=
+	bh=ZAHRQkTlH3B9Ayy3ByDVW6IFO8x4JKviNIiMKvNnRxw=;
+	b=rqq9t63T1b93nHdvHPb4iPnifbVgNhCPhaGA0/+lVUtdq72oLevGN3oePkSOWgj4tFeMJO
+	883BuPqR+igY5LuYYZDHjdap5mSmKgc54EL0giqHkQRTPmks0t1/1oKfHQU1t1pMyd2ThX
+	7baCMPgFPzeqpA42kG/A+w1RFMlPw/c=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -72,16 +72,16 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 21/29] xfs: return -EAGAIN when bulk memory allocation fails in nowait case
-Date: Fri, 25 Aug 2023 21:54:23 +0800
-Message-Id: <20230825135431.1317785-22-hao.xu@linux.dev>
+Subject: [PATCH 22/29] xfs: comment page allocation for nowait case in xfs_buf_find_insert()
+Date: Fri, 25 Aug 2023 21:54:24 +0800
+Message-Id: <20230825135431.1317785-23-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_070351_062152_893EDF31 
-X-CRM114-Status: UNSURE (   8.76  )
+X-CRM114-CacheID: sfid-20230825_070411_260251_0E817767 
+X-CRM114-Status: UNSURE (   8.84  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -101,30 +101,26 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Rather than wait for a moment and retry, we return -EAGAIN when we fail
-to allocate bulk memory in xfs_buf_alloc_pages() in nowait case.
+Add comments for page allocation in nowait case in xfs_buf_find_insert()
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/xfs/xfs_buf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/xfs/xfs_buf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index a6e6e64ff940..eb3cd7702545 100644
+index eb3cd7702545..57bdc4c5dde1 100644
 --- a/fs/xfs/xfs_buf.c
 +++ b/fs/xfs/xfs_buf.c
-@@ -404,6 +404,11 @@ xfs_buf_alloc_pages(
- 		if (filled != last)
- 			continue;
- 
-+		if (nowait) {
-+			xfs_buf_free_pages(bp);
-+			return -EAGAIN;
-+		}
-+
- 		if (flags & XBF_READ_AHEAD) {
- 			xfs_buf_free_pages(bp);
- 			return -ENOMEM;
+@@ -633,6 +633,8 @@ xfs_buf_find_insert(
+ 	 * allocate the memory from the heap to minimise memory usage. If we
+ 	 * can't get heap memory for these small buffers, we fall back to using
+ 	 * the page allocator.
++	 * xfs_buf_alloc_kmem may return -EAGAIN, let's not return it but turn
++	 * to page allocator as well.
+ 	 */
+ 	if (BBTOB(new_bp->b_length) >= PAGE_SIZE ||
+ 	    xfs_buf_alloc_kmem(new_bp, flags) < 0) {
 -- 
 2.25.1
 
