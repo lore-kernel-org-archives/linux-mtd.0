@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4369C71133
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:06:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F27BC3DA6F
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:06:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6JPlhtabF+NAiyimnqyY0dUn7FznTrERyT+WlwvYbIY=; b=EVNGBqLPji6QM0
-	cyegJ/DfNNHwyegqVDreU2hqVcB7ZNGI/eco4z2alXb9sd5cQROPFa4yTq9CRhdjwEe11/FpaW/Dc
-	mDr7rarz1ykpyYv8r2CY3t3nSdMniJbz7wdCpRFkrg0jHEQTdVEKKCEhXFp2kgmy96iam9nAdcGtj
-	TimI2QWndVQ9lwCA6dq/24YaN6HJP4ffpFVDMoC+7FtYGPwUClhIuKP5SYBknSbbCBhcNlNO1witU
-	solFMNDT/jJVUrFdk1+PZARaI/P9r8DD+aWYMhX+99gI0nUEygd3jgOknvwdgLT9LpOd0Ds//OxNY
-	pA8k8b2C2EewUXaq3HMg==;
+	List-Owner; bh=9/K9v80q9f7TVSU3lR6/WR516JZwUujDa7vDxYedUDk=; b=cI23+qsBBNrrv4
+	L1zMn7fnDhyZt3cGXUtr6CNO8nCOolzmHSPIBBLysHQGP6/GnqM5gzPn7X9/0oQt54CJubGFJianA
+	zIe9CG9EfAupbJsJslnjlQHr/RqWe/N771RbMUOewKWYjJYBYZx1pYD6NMq3klmOnkH6Nocsmp2nw
+	dtPWB/LZoGNYyMStUS58lh3OjxzNHk6sRuLqx3NB/LCB+VeLn77phZByxhtnGK9Qi8DKkkNeZH0Xi
+	84G6aBGZvwdeLcjRFB9gvF2Y/4MHFGrpAI7yggTGrdH0A7qnPCGa0zu9UEsWuULOZ86PkR9AW6hte
+	JUPiKN+KfZ7e+njxb7Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXRl-005YcL-2b;
-	Fri, 25 Aug 2023 14:05:57 +0000
-Received: from out-243.mta1.migadu.com ([2001:41d0:203:375::f3])
+	id 1qZXS0-005YjI-3D;
+	Fri, 25 Aug 2023 14:06:13 +0000
+Received: from out-248.mta1.migadu.com ([95.215.58.248])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXRj-005Yb1-08
+	id 1qZXRx-005YhT-1x
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 14:05:56 +0000
+	Fri, 25 Aug 2023 14:06:11 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692972353;
+	t=1692972368;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4gmh1Yl1nIIBwKe+EGho8dT2/H6COtTrErlOIONZgFQ=;
-	b=gfnw7iot2v83zX2rBTLz1spXwFLJTgZUr3L11o+Xtkb6kMiY2V8isvCmRHCyeGMc3m+Cgc
-	4QGEiH3BvMZ39xF7zrn0F0ImfXnteloPQ0HANELCYOPXSgll6hNjSPIHSsKK/xLoS1sTMP
-	6uHJDx4f8EyPCrO0C+jtU3MY4km0+Ig=
+	bh=o5eD4gq5Ypmv7xNjaJcQB3ZOSw79lNA3YgufxQ7kbUU=;
+	b=IDkI/8FcKGXMrBLpAzKCujyKyUIvnRClPZG+PDDA+Kg6Ww/HgNrG0d8/UaYBPttRvdNV2G
+	ImRsaH6EObyEWgQtf31bAS82oxf65cz7kpZXIj7D5nH1V4igKHLmt2T1OZkYhVy9UsI8OJ
+	u9rq7LaZ7EE10dyazZwRdVBs5aqDaMI=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -72,17 +72,16 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 27/29] xfs: add a comment for xlog_kvmalloc()
-Date: Fri, 25 Aug 2023 21:54:29 +0800
-Message-Id: <20230825135431.1317785-28-hao.xu@linux.dev>
+Subject: [PATCH 28/29] xfs: support nowait semantics for xc_ctx_lock in xlog_cil_commit()
+Date: Fri, 25 Aug 2023 21:54:30 +0800
+Message-Id: <20230825135431.1317785-29-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_070555_218229_E041D9A7 
-X-CRM114-Status: UNSURE (   7.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230825_070609_806449_4AB98B32 
+X-CRM114-Status: GOOD (  11.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,28 +100,88 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-vmalloc() always succeed in 64 bit system?
-Not a real patch.
+Apply trylock logic for xc_ctx_lock in xlog_cil_commit() in nowait
+case and error out -EAGAIN for xlog_cil_commit().
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/xfs/xfs_log_cil.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/xfs/xfs_log_cil.c  | 12 ++++++++++--
+ fs/xfs/xfs_log_priv.h |  2 +-
+ fs/xfs/xfs_trans.c    |  4 +++-
+ 3 files changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
-index f17c1799b3c4..b31830ee36dd 100644
+index b31830ee36dd..6d054359bbb5 100644
 --- a/fs/xfs/xfs_log_cil.c
 +++ b/fs/xfs/xfs_log_cil.c
-@@ -335,6 +335,9 @@ xlog_cil_alloc_shadow_bufs(
- 			 * storage.
- 			 */
- 			kmem_free(lip->li_lv_shadow);
-+			/*
-+			 * May this be indefinite loop in nowait case?
-+			 */
- 			lv = xlog_kvmalloc(buf_size);
+@@ -1613,7 +1613,7 @@ xlog_cil_process_intents(
+  * background commit, returns without it held once background commits are
+  * allowed again.
+  */
+-void
++int
+ xlog_cil_commit(
+ 	struct xlog		*log,
+ 	struct xfs_trans	*tp,
+@@ -1623,6 +1623,7 @@ xlog_cil_commit(
+ 	struct xfs_cil		*cil = log->l_cilp;
+ 	struct xfs_log_item	*lip, *next;
+ 	uint32_t		released_space = 0;
++	bool			nowait = tp->t_flags & XFS_TRANS_NOWAIT;
  
- 			memset(lv, 0, xlog_cil_iovec_space(niovecs));
+ 	/*
+ 	 * Do all necessary memory allocation before we lock the CIL.
+@@ -1632,7 +1633,12 @@ xlog_cil_commit(
+ 	xlog_cil_alloc_shadow_bufs(log, tp);
+ 
+ 	/* lock out background commit */
+-	down_read(&cil->xc_ctx_lock);
++	if (nowait) {
++		if (!down_read_trylock(&cil->xc_ctx_lock))
++			return -EAGAIN;
++	} else {
++		down_read(&cil->xc_ctx_lock);
++	}
+ 
+ 	if (tp->t_flags & XFS_TRANS_HAS_INTENT_DONE)
+ 		released_space = xlog_cil_process_intents(cil, tp);
+@@ -1668,6 +1674,8 @@ xlog_cil_commit(
+ 
+ 	/* xlog_cil_push_background() releases cil->xc_ctx_lock */
+ 	xlog_cil_push_background(log);
++
++	return 0;
+ }
+ 
+ /*
+diff --git a/fs/xfs/xfs_log_priv.h b/fs/xfs/xfs_log_priv.h
+index 41edaa0ae869..eb7a1241deab 100644
+--- a/fs/xfs/xfs_log_priv.h
++++ b/fs/xfs/xfs_log_priv.h
+@@ -580,7 +580,7 @@ int	xlog_cil_init(struct xlog *log);
+ void	xlog_cil_init_post_recovery(struct xlog *log);
+ void	xlog_cil_destroy(struct xlog *log);
+ bool	xlog_cil_empty(struct xlog *log);
+-void	xlog_cil_commit(struct xlog *log, struct xfs_trans *tp,
++int	xlog_cil_commit(struct xlog *log, struct xfs_trans *tp,
+ 			xfs_csn_t *commit_seq, bool regrant);
+ void	xlog_cil_set_ctx_write_state(struct xfs_cil_ctx *ctx,
+ 			struct xlog_in_core *iclog);
+diff --git a/fs/xfs/xfs_trans.c b/fs/xfs/xfs_trans.c
+index f1f84a3dd456..e5beda636a37 100644
+--- a/fs/xfs/xfs_trans.c
++++ b/fs/xfs/xfs_trans.c
+@@ -1037,7 +1037,9 @@ __xfs_trans_commit(
+ 		xfs_trans_apply_sb_deltas(tp);
+ 	xfs_trans_apply_dquot_deltas(tp);
+ 
+-	xlog_cil_commit(log, tp, &commit_seq, regrant);
++	error = xlog_cil_commit(log, tp, &commit_seq, regrant);
++	if (error)
++		goto out_unreserve;
+ 
+ 	xfs_trans_free(tp);
+ 
 -- 
 2.25.1
 
