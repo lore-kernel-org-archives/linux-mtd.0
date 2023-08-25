@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EE7AC71133
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14ACAEE49AD
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Aw/AyHRuc0v0HSzuGnXyUu91YhcaugEjqfz25uNOl+c=; b=BGcDpenpWvSlQE
-	yU8WwIjLsptSklr6Zza5DHpnUPxKkDO8yFUajc8Gel33hBGAWDMjVWbbBgGl76iXWNL8bQZuYN8CM
-	rhE8vWwHxNmUSy7FSuBA+EDnTsrQBbF1hX9s/TICBl+EvaS2+9/RJPMPXSrNN43zRV7Mue5eHzwIj
-	htsDaTKqW/iHQBhtuefmDKISCerE3tTTk4nkCMZeszJ+S7j/k8t6T7tnBZKgVzoObH5MyMMSojRPf
-	io/RkAstarv8uOJOjCyiWTj74hh354smHXn0PXcra52oALChk6Uo45MBTrTQTFhg6ynZSmwL4h6hx
-	HBBuvuggrrdXjen5mPSA==;
+	List-Owner; bh=6j5idQ4LSJ/STupdOA4JeM6y95AyozNnUETVGamrZeY=; b=YOpZi/I+9+Z6Zf
+	1dJZi/YBwlcTWsgHI/i2+9i6qw/NY3Hxj5ZN/Z3QX1OO1Yz+gjWxNiZoKdChG+Ib6hRIC53FQZa5o
+	+ZyQmkbMrlIxsr59nRo20f3MY7rAsvegB+fEerkjHk2PS1YeUbozKtzo42bCW466hPkSZkkl3cBNQ
+	+lQIpqoxsLLxI7RAsqkKOXiVOMZN3U/wM/2YKsuiDuYWpU+xUO1PRgGCOSu7DyVGgRPdqvqs6ZByx
+	NVWhpUuHlz49Dtm1w3j7p/KA4YCgua6qxwHEeaAh+v/Zed0BYaCl5Tr4vchP+KIlv58F3psyrX0ZL
+	iG8Fuj7C4WpqoQNLj5vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXMN-005WXO-2M;
-	Fri, 25 Aug 2023 14:00:23 +0000
-Received: from out-250.mta1.migadu.com ([2001:41d0:203:375::fa])
+	id 1qZXMi-005Wcw-06;
+	Fri, 25 Aug 2023 14:00:44 +0000
+Received: from out-243.mta1.migadu.com ([2001:41d0:203:375::f3])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXMK-005WUU-1n
+	id 1qZXMe-005WbR-1h
 	for linux-mtd@lists.infradead.org;
-	Fri, 25 Aug 2023 14:00:22 +0000
+	Fri, 25 Aug 2023 14:00:42 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692972015;
+	t=1692972039;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CL8wzJoAbQ75iZcN0EHSqoGXIWt+IFMvEgcKIhs6zqE=;
-	b=UXdbOLDkxTPiI/RUD6vA6Y59upGR8p9yuOS0cheVOmW9wy55dk0PwGqrHNQocUaxtZPqwl
-	8SMpVuiY/GUEZaQEBzm6P0e4nsRhzT+GENJ6bzTIZGRyqbBvQsF+Q3u8++NZNdyfo398WE
-	Pbto4Fcj8Lgxb50rhsqaYEakh0iY2/E=
+	bh=A8n142m+ckTq2ok9t7Tm2FnSZDGwRTGaDgQRQd0QVrs=;
+	b=pz2+RJXny/FRc9X5ZHvo0v2sP0AhNIbG6GqEDC3f4IgSNhM3HBNVDwOESMUSOR4IEMUxcQ
+	QeB+zNMG6saCP+3Ee3iNvTaLm94PmwVrh29h0zPxcQxdxo6uNrunXvw2MGBXff+gKAxGGD
+	nCmOsY1G1aaOlGneScmRPtSGG9/rCYg=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -72,16 +72,16 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 11/29] vfs: trylock inode->i_rwsem in iterate_dir() to support nowait
-Date: Fri, 25 Aug 2023 21:54:13 +0800
-Message-Id: <20230825135431.1317785-12-hao.xu@linux.dev>
+Subject: [PATCH 12/29] xfs: enforce GFP_NOIO implicitly during nowait time update
+Date: Fri, 25 Aug 2023 21:54:14 +0800
+Message-Id: <20230825135431.1317785-13-hao.xu@linux.dev>
 In-Reply-To: <20230825135431.1317785-1-hao.xu@linux.dev>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230825_070020_733594_ABC1F697 
-X-CRM114-Status: GOOD (  10.04  )
+X-CRM114-CacheID: sfid-20230825_070040_708205_1EC86366 
+X-CRM114-Status: GOOD (  10.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,56 +100,65 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Trylock inode->i_rwsem in iterate_dir() to support nowait semantics and
-error out -EAGAIN when there is contention.
+Enforce GFP_NOIO logic implicitly by set pflags if we are in nowait
+time update process. Nowait semantics means no waiting for IO,
+therefore GFP_NOIO is needed.
 
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/readdir.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ fs/xfs/xfs_iops.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/fs/readdir.c b/fs/readdir.c
-index 6469f076ba6e..664ecd9665a1 100644
---- a/fs/readdir.c
-+++ b/fs/readdir.c
-@@ -43,6 +43,8 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 	struct inode *inode = file_inode(file);
- 	bool shared = false;
- 	int res = -ENOTDIR;
-+	bool nowait;
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index bf1d4c31f009..5fa391083de9 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -1037,6 +1037,8 @@ xfs_vn_update_time(
+ 	int			log_flags = XFS_ILOG_TIMESTAMP;
+ 	struct xfs_trans	*tp;
+ 	int			error;
++	int			old_pflags;
++	bool			nowait = flags & S_NOWAIT;
+ 
+ 	trace_xfs_update_time(ip);
+ 
+@@ -1049,13 +1051,18 @@ xfs_vn_update_time(
+ 		log_flags |= XFS_ILOG_CORE;
+ 	}
+ 
++	if (nowait)
++		old_pflags = memalloc_noio_save();
 +
- 	if (file->f_op->iterate_shared)
- 		shared = true;
- 	else if (!file->f_op->iterate)
-@@ -52,16 +54,22 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 	if (res)
- 		goto out;
+ 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
+ 	if (error)
+-		return error;
++		goto out;
  
--	if (shared)
--		res = down_read_killable(&inode->i_rwsem);
--	else
--		res = down_write_killable(&inode->i_rwsem);
--	if (res)
-+	nowait = ctx->flags & DIR_CONTEXT_F_NOWAIT;
+-	if (flags & S_NOWAIT) {
+-		if (!xfs_ilock_nowait(ip, XFS_ILOCK_EXCL))
+-			return -EAGAIN;
 +	if (nowait) {
-+		res = shared ? down_read_trylock(&inode->i_rwsem) :
-+			       down_write_trylock(&inode->i_rwsem);
-+		if (!res)
-+			res = -EAGAIN;
-+	} else {
-+		res = shared ? down_read_killable(&inode->i_rwsem) :
-+			       down_write_killable(&inode->i_rwsem);
-+	}
-+	if (res < 0)
- 		goto out;
++		if (!xfs_ilock_nowait(ip, XFS_ILOCK_EXCL)) {
++			error = -EAGAIN;
++			goto out;
++		}
+ 	} else {
+ 		xfs_ilock(ip, XFS_ILOCK_EXCL);
+ 	}
+@@ -1069,7 +1076,12 @@ xfs_vn_update_time(
  
- 	res = -ENOENT;
- 	if (!IS_DEADDIR(inode)) {
--		res = file_accessed(file, ctx->flags & DIR_CONTEXT_F_NOWAIT);
-+		res = file_accessed(file, nowait);
- 		if (res == -EAGAIN)
- 			goto out_unlock;
+ 	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+ 	xfs_trans_log_inode(tp, ip, log_flags);
+-	return xfs_trans_commit(tp);
++	error = xfs_trans_commit(tp);
++
++out:
++	if (nowait)
++		memalloc_noio_restore(old_pflags);
++	return error;
+ }
  
+ STATIC int
 -- 
 2.25.1
 
