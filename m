@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8504BC79F60
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EC56C71133
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Aug 2023 14:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=THzYEkojJqTW1HqC8zEfLUY2boEE86y69XbzqEgvm7k=; b=l9dwSMq5SdqzPA
-	rrHPXODDUPXARIqP01ir13rgkUIxU1SWrF05QatGFnpAYEiDS8mQIcwFO/4/TEspblXR0SNC+Ad1A
-	dOI1a4IDBakLNzvVCo4pn5+FmyqOqZW7GciVzVYWw8Kd31Qp8iVOSZoJssywfTSPENUc1HWxesdNk
-	bFP+VMeHi+VeiB46s+8Q1PdNVCJBjdaUQ/HgI6Rprl141KYHvfeqQnBa9MHYGPx4j9MyDtTQarKEG
-	KwuAZipNpP7WpugFS6hJ2DfMLm7RuaGiJr2K3O+EotjR6Ip0Y8J09AIgn0Cii8i4VDQkWXsC9Udfg
-	Su31d6/YMnh5unrVPyZA==;
+	List-Owner; bh=adt8+yZtcWWeiBqzW2uzD2quAPPmUUB1Td+/htecayc=; b=nAAMVLG3xbRkNI
+	0/kXNoKf8ZFUXPfZKOuz52jLYSEEGZ9CFcwBVRij/NgYvTQw9WBvU8uDmyvSASaymS2sluk1lFcuA
+	1Zr4rGf99BqcrdeaT1G0JRB19sCCY/SJ4Xcqw+EJVItNC0+Wtu1ujBZlxZ7F/HsOvQog6tFGDZe0m
+	s/Vbeb26M5gF8mBTTQvqCaFmChEnedK5li70SDDmjAAs/HZNGK/tHaxGNeEu90KlpBlfMbUQCzV70
+	Z/okSUZG3JGROC5Po9Th/+buRNpyZiGeOlRTs1Digh05zYC4I8flb3REe2XSB7DyvvVqn0CIqIzGU
+	VdexUqhbB0y5szbqhirw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXV2-005ZYv-2l;
-	Fri, 25 Aug 2023 14:09:20 +0000
+	id 1qZXfw-005aat-0p;
+	Fri, 25 Aug 2023 14:20:36 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZXV1-005ZYN-38
+	id 1qZXfu-005aai-0O
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 25 Aug 2023 14:09:19 +0000
+	Fri, 25 Aug 2023 14:20:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=EU4c+QvmUrzx56YT6HV/cCIR2Pjqx+IXpn7k2GV7Q+c=; b=sXnwInRucx8CcJKwrlTfZ031er
-	LEY7y8jsL9Hib5zZnhCnKvqEBOaupx8CYhaoOaWj/VYF41GGvSOMwZwP7gnqnUjyUY5nybhBoSrxT
-	cix5TlGhcoCY3jjdx5/eXfy7PSYCUWLL6z2ZL1LRTqjCJLf619sI6Mfr/SSckV734m8GK683QEHy+
-	aF/xKkJIUvAhE/VXofyvjMKZ4LYU11OPTfozENym+/mg5hUGQWADpmiwU301hOx3e6IcpV8ta4h3y
-	7U3MMVZnd623qdMqd3D0FkVtdSaK+AiLgU+Qa7F9jQSRFB1EUCUT2iSVWxr49S72DAzkgcEx6R3cM
-	2mytwuWw==;
+	bh=rIMc/jDCj9ILMqoJd0dO659w/9cB73A1MIGl7MCNQc0=; b=oBoPRF9uQlcnzO+kvA9HXiHIxh
+	1BCZOYk+GNL3b9Hbl9e0kK321R7GUMuXBq5CnzZVygX8jax4dLYLnGd1XSzW1m9qVXov6cTXOpVyv
+	sv5l1EBw3uu95Jxon5Sw3wlu1qTTRFkBQCTr+N8L/Prb1jdIi5jstgZjfRsnuOwWr9LDfkxjeCY5c
+	UoI4nSwH2jPxj2QMMHZp0Wkb5xy7QvRuP3ObBs4CYLKVGqr6YBri4brVlX/zJEjbKcNGc0kRvuWzw
+	6Da7DA+BObM8TzfQI+r1SxtKCOrEiJNsg27vpqxgEagx4gi10g2HUFqfKuMQw4f6GgzpXJkYlNle8
+	RUhWro7w==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1qZXUl-00HWBm-5H; Fri, 25 Aug 2023 14:09:03 +0000
-Date: Fri, 25 Aug 2023 15:09:03 +0100
+	id 1qZXfd-00HYsg-Qa; Fri, 25 Aug 2023 14:20:17 +0000
+Date: Fri, 25 Aug 2023 15:20:17 +0100
 From: Matthew Wilcox <willy@infradead.org>
 To: Hao Xu <hao.xu@linux.dev>
 Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -62,14 +62,14 @@ Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
 	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 22/29] xfs: comment page allocation for nowait case in
- xfs_buf_find_insert()
-Message-ID: <ZOi1/yafn3HQFWnW@casper.infradead.org>
+Subject: Re: [PATCH 12/29] xfs: enforce GFP_NOIO implicitly during nowait
+ time update
+Message-ID: <ZOi4oV7Ho3y0106O@casper.infradead.org>
 References: <20230825135431.1317785-1-hao.xu@linux.dev>
- <20230825135431.1317785-23-hao.xu@linux.dev>
+ <20230825135431.1317785-13-hao.xu@linux.dev>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230825135431.1317785-23-hao.xu@linux.dev>
+In-Reply-To: <20230825135431.1317785-13-hao.xu@linux.dev>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,16 +86,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Aug 25, 2023 at 09:54:24PM +0800, Hao Xu wrote:
-> @@ -633,6 +633,8 @@ xfs_buf_find_insert(
->  	 * allocate the memory from the heap to minimise memory usage. If we
->  	 * can't get heap memory for these small buffers, we fall back to using
->  	 * the page allocator.
-> +	 * xfs_buf_alloc_kmem may return -EAGAIN, let's not return it but turn
-> +	 * to page allocator as well.
+On Fri, Aug 25, 2023 at 09:54:14PM +0800, Hao Xu wrote:
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1037,6 +1037,8 @@ xfs_vn_update_time(
+>  	int			log_flags = XFS_ILOG_TIMESTAMP;
+>  	struct xfs_trans	*tp;
+>  	int			error;
+> +	int			old_pflags;
+> +	bool			nowait = flags & S_NOWAIT;
+>  
+>  	trace_xfs_update_time(ip);
+>  
+> @@ -1049,13 +1051,18 @@ xfs_vn_update_time(
+>  		log_flags |= XFS_ILOG_CORE;
+>  	}
+>  
+> +	if (nowait)
+> +		old_pflags = memalloc_noio_save();
+> +
+>  	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
 
-This new sentence seems like it says exactly the same thing as the
-previous sentence.  What am I missing?
+This is an abuse of the memalloc_noio_save() interface.  You shouldn't
+be setting it around individual allocations; it's the part of the kernel
+which decides "I can't afford to do I/O" that should be setting it.
+In this case, it should probably be set by io_uring, way way way up at
+the top.
+
+But Jens didn't actually answer my question about that:
+
+https://lore.kernel.org/all/ZMhZh2EYPMH1wIXX@casper.infradead.org/
 
 
 ______________________________________________________
