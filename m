@@ -4,39 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E72C2C83F12
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 13:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F64C83F11
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 13:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/l4V/jMUsPeojEfJAUPpKh4VTfmXfmVT0V0paOHfH3U=; b=HHJ6cjiV7Sdv8b
-	F1kjqeco5wL0MhA5Iw+836c6pK+3jeVJVqmfwCXVun/gfS3o7HTtfZNBNn8DJdY+7098shB6sJUIp
-	g0pNp3A2aHHSUMddrF0sv0nTBjlQoz2NH/1Xa4+qGsml/zYffYmbO5diYnU6SoJsIaFnIzRDGlyNt
-	2vxIn758v7ryRXHhjR4pT/vt+gec1MtVKN5srcdt4oWUoFJxwTWAHYPH0xHiUx865eqVB8NxnOtfH
-	pgzuzTPsxIXExXol1mMcgViYGpPTlguCjq6aEHP05amBI+X5WmPXISYEOA5zcffZExCaoKxES7vZQ
-	DqBVRz9yADtK5RJRgpsA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=veI1UPhcrWFU87J9PFZartHNacQHPEv9kZNVGyDIzlk=; b=zpq3DgKjcqgJsY
+	jKIN+McJ/Vkpmo1vW7FooHgRLErfvDtPgnt/nenzc8p3xRqdKYHpb0L3O81NagMlQGaHGXV38IJiT
+	SUjzmfTJ9jE6XptG49qMkkezNz51JK937ubL6vvtvXCOfW1ZfWhdfq81X7W+kt8D/3KQkfewn5wLX
+	gkVuD6H1PQVxRkTVM2g1sr6AxBdtOJmSs8FcqWLq+WX6rHdoAh/8L0hFaLJlG9k8Mkcns/G4CVuJg
+	etLLtvseKvEFqhdChuiTCyBG8tmqSQNcIaJtOxUkOgaD7eJz6QiAd1Z39zOyPDkbIK/2Vw4szQk2t
+	bhd5X0riHNwaA0DBcA3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaFqV-0085Gz-1e;
-	Sun, 27 Aug 2023 13:30:27 +0000
-Received: from out-242.mta1.migadu.com ([2001:41d0:203:375::f2])
+	id 1qaFr3-0085Ow-1i;
+	Sun, 27 Aug 2023 13:31:01 +0000
+Received: from out-250.mta1.migadu.com ([2001:41d0:203:375::fa])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaFqS-0085Fd-2P
+	id 1qaFr0-0085Lu-1h
 	for linux-mtd@lists.infradead.org;
-	Sun, 27 Aug 2023 13:30:26 +0000
+	Sun, 27 Aug 2023 13:31:00 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693143008;
+	t=1693143055;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=hH9Z1s3VyDbNI+o0MhVSnq4vtAmGphAu/NP9Lh4Iqho=;
-	b=D4glas+PskglEfull56Ie/EaUGDVyzdgOX1ZIuTOt4hIdaNgYSKi8HuTaE82KbnTe8VrVg
-	RYQOGm2sDsmgjyTzfYWA88b8swvCAy1S+AvUnlRILYK1CLtNBRiYb+57DIqLl/tE9VNEa0
-	45zeea98vHJXfwWbVyE91LWfpk5toEg=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hTZJGzowdwZotMVwWddSwVfC1FzrP/Lkz2Y0ayQQQXA=;
+	b=L3dZ2wnhLl3MpFT8Fx3GtXFd2RCwphC3uDYko8Q0nKz7ONNiGRoAamaCC5cUw2SONEU+W+
+	FNti/TRpT0IYzrVdjkthri+O6/3aV24bEu1xrJpC4BygFoLKHcj9ftj4kgaNqPcbLz1Ibc
+	FihN2zv2jXx86v+rCxyuW2cfhV75bQE=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -71,14 +72,16 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH v6 00/11] io_uring getdents
-Date: Sun, 27 Aug 2023 21:28:24 +0800
-Message-Id: <20230827132835.1373581-1-hao.xu@linux.dev>
+Subject: [PATCH 02/11] xfs: add NOWAIT semantics for readdir
+Date: Sun, 27 Aug 2023 21:28:26 +0800
+Message-Id: <20230827132835.1373581-3-hao.xu@linux.dev>
+In-Reply-To: <20230827132835.1373581-1-hao.xu@linux.dev>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_063024_950492_DDD1EC76 
-X-CRM114-Status: GOOD (  16.31  )
+X-CRM114-CacheID: sfid-20230827_063058_708125_89E9B330 
+X-CRM114-Status: GOOD (  29.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,156 +100,354 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-This series introduce getdents64 to io_uring, the code logic is similar
-with the snychronized version's. It first try nowait issue, and offload
-it to io-wq threads if the first try fails.
+Implement NOWAIT semantics for readdir. Return EAGAIN error to the
+caller if it would block, like failing to get locks, or going to
+do IO.
 
-Patch1 and Patch2 are some preparation
-Patch3 supports nowait for xfs getdents code
-Patch4-11 are vfs change, include adding helpers and trylock for locks
-
-Tests I've done:
-A liburing test case for functional test:
-https://github.com/HowHsu/liburing/commit/39dc9a8e19c06a8cebf8c2301b85320eb45c061e?diff=unified
-
-Tested it with a liburing performance test:
-https://github.com/HowHsu/liburing/blob/getdents/test/getdents2.c
-
-The test is controlled by the below script[2] which runs getdents2.t 100
-times and calulate the avg.
-The result show that io_uring version is about 2.6% faster:
-
-note:
-[1] the number of getdents call/request in io_uring and normal sync version
-are made sure to be same beforehand.
-
-[2] run_getdents.py
-
-```python3
-
-import subprocess
-
-N = 100
-sum = 0.0
-args = ["/data/home/howeyxu/tmpdir", "sync"]
-
-for i in range(N):
-    output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
-    sum += float(output)
-
-average = sum / N
-print("Average of sync:", average)
-
-sum = 0.0
-args = ["/data/home/howeyxu/tmpdir", "iouring"]
-
-for i in range(N):
-    output = subprocess.check_output(["./liburing/test/getdents2.t"] + args)
-    sum += float(output)
-
-average = sum / N
-print("Average of iouring:", average)
-
-```
-
-v5->v6:
- - remove xfs journal stuff since there are fundamental issues in the
-   design.
-
-v4->v5:
- - move atime update to the beginning of getdents operation
- - trylock for i_rwsem
- - nowait semantics for involved xfs journal stuff
-
-v3->v4:
- - add Dave's xfs nowait code and fix a deadlock problem, with some code
-   style tweak.
- - disable fixed file to avoid a race problem for now
- - add a test program.
-
-v2->v3:
- - removed the kernfs patches
- - add f_pos_lock logic
- - remove the "reduce last EOF getdents try" optimization since
-   Dominique reports that doesn't make difference
- - remove the rewind logic, I think the right way is to introduce lseek
-   to io_uring not to patch this logic to getdents.
- - add Singed-off-by of Stefan Roesch for patch 1 since checkpatch
-   complained that Co-developed-by someone should be accompanied with
-   Signed-off-by same person, I can remove them if Stefan thinks that's
-   not proper.
-
-
-Dominique Martinet (1):
-  fs: split off vfs_getdents function of getdents64 syscall
-
-Hao Xu (10):
-  xfs: add NOWAIT semantics for readdir
-  vfs: add nowait flag for struct dir_context
-  vfs: add a vfs helper for io_uring file pos lock
-  vfs: add file_pos_unlock() for io_uring usage
-  vfs: add a nowait parameter for touch_atime()
-  vfs: add nowait parameter for file_accessed()
-  vfs: move file_accessed() to the beginning of iterate_dir()
-  vfs: error out -EAGAIN if atime needs to be updated
-  vfs: trylock inode->i_rwsem in iterate_dir() to support nowait
-  io_uring: add support for getdents
-
- arch/s390/hypfs/inode.c        |  2 +-
- block/fops.c                   |  2 +-
- fs/btrfs/file.c                |  2 +-
- fs/btrfs/inode.c               |  2 +-
- fs/cachefiles/namei.c          |  2 +-
- fs/coda/dir.c                  |  4 +--
- fs/ecryptfs/file.c             |  4 +--
- fs/ext2/file.c                 |  4 +--
- fs/ext4/file.c                 |  6 ++--
- fs/f2fs/file.c                 |  4 +--
- fs/file.c                      | 13 ++++++++
- fs/fuse/dax.c                  |  2 +-
- fs/fuse/file.c                 |  4 +--
- fs/gfs2/file.c                 |  2 +-
- fs/hugetlbfs/inode.c           |  2 +-
- fs/inode.c                     | 10 ++++--
- fs/internal.h                  |  8 +++++
- fs/namei.c                     |  4 +--
- fs/nfsd/vfs.c                  |  2 +-
- fs/nilfs2/file.c               |  2 +-
- fs/orangefs/file.c             |  2 +-
- fs/orangefs/inode.c            |  2 +-
- fs/overlayfs/file.c            |  2 +-
- fs/overlayfs/inode.c           |  2 +-
- fs/pipe.c                      |  2 +-
- fs/ramfs/file-nommu.c          |  2 +-
- fs/readdir.c                   | 61 ++++++++++++++++++++++++++--------
- fs/smb/client/cifsfs.c         |  2 +-
- fs/splice.c                    |  2 +-
- fs/stat.c                      |  2 +-
- fs/ubifs/file.c                |  2 +-
- fs/udf/file.c                  |  2 +-
- fs/xfs/libxfs/xfs_da_btree.c   | 16 +++++++++
+Co-developed-by: Dave Chinner <dchinner@redhat.com>
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+Signed-off-by: Hao Xu <howeyxu@tencent.com>
+[fixes deadlock issue, tweak code style]
+---
+ fs/xfs/libxfs/xfs_da_btree.c   | 16 +++++++++++
  fs/xfs/libxfs/xfs_da_btree.h   |  1 +
- fs/xfs/libxfs/xfs_dir2_block.c |  7 ++--
+ fs/xfs/libxfs/xfs_dir2_block.c |  7 ++---
  fs/xfs/libxfs/xfs_dir2_priv.h  |  2 +-
  fs/xfs/scrub/dir.c             |  2 +-
  fs/xfs/scrub/readdir.c         |  2 +-
- fs/xfs/xfs_dir2_readdir.c      | 49 +++++++++++++++++++++------
- fs/xfs/xfs_file.c              |  6 ++--
- fs/xfs/xfs_inode.c             | 27 +++++++++++++++
- fs/xfs/xfs_inode.h             | 17 ++++++----
- fs/zonefs/file.c               |  4 +--
- include/linux/file.h           |  7 ++++
- include/linux/fs.h             | 15 +++++++--
- include/uapi/linux/io_uring.h  |  1 +
- io_uring/fs.c                  | 53 +++++++++++++++++++++++++++++
- io_uring/fs.h                  |  3 ++
- io_uring/opdef.c               |  8 +++++
- kernel/bpf/inode.c             |  4 +--
- mm/filemap.c                   |  8 ++---
- mm/shmem.c                     |  6 ++--
- net/unix/af_unix.c             |  4 +--
- 53 files changed, 310 insertions(+), 96 deletions(-)
+ fs/xfs/xfs_dir2_readdir.c      | 49 ++++++++++++++++++++++++++--------
+ fs/xfs/xfs_inode.c             | 27 +++++++++++++++++++
+ fs/xfs/xfs_inode.h             | 17 +++++++-----
+ 9 files changed, 99 insertions(+), 24 deletions(-)
 
+diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
+index e576560b46e9..7a1a0af24197 100644
+--- a/fs/xfs/libxfs/xfs_da_btree.c
++++ b/fs/xfs/libxfs/xfs_da_btree.c
+@@ -2643,16 +2643,32 @@ xfs_da_read_buf(
+ 	struct xfs_buf_map	map, *mapp = &map;
+ 	int			nmap = 1;
+ 	int			error;
++	int			buf_flags = 0;
+ 
+ 	*bpp = NULL;
+ 	error = xfs_dabuf_map(dp, bno, flags, whichfork, &mapp, &nmap);
+ 	if (error || !nmap)
+ 		goto out_free;
+ 
++	/*
++	 * NOWAIT semantics mean we don't wait on the buffer lock nor do we
++	 * issue IO for this buffer if it is not already in memory. Caller will
++	 * retry. This will return -EAGAIN if the buffer is in memory and cannot
++	 * be locked, and no buffer and no error if it isn't in memory.  We
++	 * translate both of those into a return state of -EAGAIN and *bpp =
++	 * NULL.
++	 */
++	if (flags & XFS_DABUF_NOWAIT)
++		buf_flags |= XBF_TRYLOCK | XBF_INCORE;
+ 	error = xfs_trans_read_buf_map(mp, tp, mp->m_ddev_targp, mapp, nmap, 0,
+ 			&bp, ops);
+ 	if (error)
+ 		goto out_free;
++	if (!bp) {
++		ASSERT(flags & XFS_DABUF_NOWAIT);
++		error = -EAGAIN;
++		goto out_free;
++	}
+ 
+ 	if (whichfork == XFS_ATTR_FORK)
+ 		xfs_buf_set_ref(bp, XFS_ATTR_BTREE_REF);
+diff --git a/fs/xfs/libxfs/xfs_da_btree.h b/fs/xfs/libxfs/xfs_da_btree.h
+index ffa3df5b2893..32e7b1cca402 100644
+--- a/fs/xfs/libxfs/xfs_da_btree.h
++++ b/fs/xfs/libxfs/xfs_da_btree.h
+@@ -205,6 +205,7 @@ int	xfs_da3_node_read_mapped(struct xfs_trans *tp, struct xfs_inode *dp,
+  */
+ 
+ #define XFS_DABUF_MAP_HOLE_OK	(1u << 0)
++#define XFS_DABUF_NOWAIT	(1u << 1)
+ 
+ int	xfs_da_grow_inode(xfs_da_args_t *args, xfs_dablk_t *new_blkno);
+ int	xfs_da_grow_inode_int(struct xfs_da_args *args, xfs_fileoff_t *bno,
+diff --git a/fs/xfs/libxfs/xfs_dir2_block.c b/fs/xfs/libxfs/xfs_dir2_block.c
+index 00f960a703b2..59b24a594add 100644
+--- a/fs/xfs/libxfs/xfs_dir2_block.c
++++ b/fs/xfs/libxfs/xfs_dir2_block.c
+@@ -135,13 +135,14 @@ int
+ xfs_dir3_block_read(
+ 	struct xfs_trans	*tp,
+ 	struct xfs_inode	*dp,
++	unsigned int		flags,
+ 	struct xfs_buf		**bpp)
+ {
+ 	struct xfs_mount	*mp = dp->i_mount;
+ 	xfs_failaddr_t		fa;
+ 	int			err;
+ 
+-	err = xfs_da_read_buf(tp, dp, mp->m_dir_geo->datablk, 0, bpp,
++	err = xfs_da_read_buf(tp, dp, mp->m_dir_geo->datablk, flags, bpp,
+ 				XFS_DATA_FORK, &xfs_dir3_block_buf_ops);
+ 	if (err || !*bpp)
+ 		return err;
+@@ -380,7 +381,7 @@ xfs_dir2_block_addname(
+ 	tp = args->trans;
+ 
+ 	/* Read the (one and only) directory block into bp. */
+-	error = xfs_dir3_block_read(tp, dp, &bp);
++	error = xfs_dir3_block_read(tp, dp, 0, &bp);
+ 	if (error)
+ 		return error;
+ 
+@@ -695,7 +696,7 @@ xfs_dir2_block_lookup_int(
+ 	dp = args->dp;
+ 	tp = args->trans;
+ 
+-	error = xfs_dir3_block_read(tp, dp, &bp);
++	error = xfs_dir3_block_read(tp, dp, 0, &bp);
+ 	if (error)
+ 		return error;
+ 
+diff --git a/fs/xfs/libxfs/xfs_dir2_priv.h b/fs/xfs/libxfs/xfs_dir2_priv.h
+index 7404a9ff1a92..7d4cf8a0f15b 100644
+--- a/fs/xfs/libxfs/xfs_dir2_priv.h
++++ b/fs/xfs/libxfs/xfs_dir2_priv.h
+@@ -51,7 +51,7 @@ extern int xfs_dir_cilookup_result(struct xfs_da_args *args,
+ 
+ /* xfs_dir2_block.c */
+ extern int xfs_dir3_block_read(struct xfs_trans *tp, struct xfs_inode *dp,
+-			       struct xfs_buf **bpp);
++			       unsigned int flags, struct xfs_buf **bpp);
+ extern int xfs_dir2_block_addname(struct xfs_da_args *args);
+ extern int xfs_dir2_block_lookup(struct xfs_da_args *args);
+ extern int xfs_dir2_block_removename(struct xfs_da_args *args);
+diff --git a/fs/xfs/scrub/dir.c b/fs/xfs/scrub/dir.c
+index 0b491784b759..5cc51f201bd7 100644
+--- a/fs/xfs/scrub/dir.c
++++ b/fs/xfs/scrub/dir.c
+@@ -313,7 +313,7 @@ xchk_directory_data_bestfree(
+ 		/* dir block format */
+ 		if (lblk != XFS_B_TO_FSBT(mp, XFS_DIR2_DATA_OFFSET))
+ 			xchk_fblock_set_corrupt(sc, XFS_DATA_FORK, lblk);
+-		error = xfs_dir3_block_read(sc->tp, sc->ip, &bp);
++		error = xfs_dir3_block_read(sc->tp, sc->ip, 0, &bp);
+ 	} else {
+ 		/* dir data format */
+ 		error = xfs_dir3_data_read(sc->tp, sc->ip, lblk, 0, &bp);
+diff --git a/fs/xfs/scrub/readdir.c b/fs/xfs/scrub/readdir.c
+index e51c1544be63..f0a727311632 100644
+--- a/fs/xfs/scrub/readdir.c
++++ b/fs/xfs/scrub/readdir.c
+@@ -101,7 +101,7 @@ xchk_dir_walk_block(
+ 	unsigned int		off, next_off, end;
+ 	int			error;
+ 
+-	error = xfs_dir3_block_read(sc->tp, dp, &bp);
++	error = xfs_dir3_block_read(sc->tp, dp, 0, &bp);
+ 	if (error)
+ 		return error;
+ 
+diff --git a/fs/xfs/xfs_dir2_readdir.c b/fs/xfs/xfs_dir2_readdir.c
+index 9f3ceb461515..dcdbd26e0402 100644
+--- a/fs/xfs/xfs_dir2_readdir.c
++++ b/fs/xfs/xfs_dir2_readdir.c
+@@ -149,6 +149,7 @@ xfs_dir2_block_getdents(
+ 	struct xfs_da_geometry	*geo = args->geo;
+ 	unsigned int		offset, next_offset;
+ 	unsigned int		end;
++	unsigned int		flags = 0;
+ 
+ 	/*
+ 	 * If the block number in the offset is out of range, we're done.
+@@ -156,7 +157,9 @@ xfs_dir2_block_getdents(
+ 	if (xfs_dir2_dataptr_to_db(geo, ctx->pos) > geo->datablk)
+ 		return 0;
+ 
+-	error = xfs_dir3_block_read(args->trans, dp, &bp);
++	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
++		flags |= XFS_DABUF_NOWAIT;
++	error = xfs_dir3_block_read(args->trans, dp, flags, &bp);
+ 	if (error)
+ 		return error;
+ 
+@@ -240,6 +243,7 @@ xfs_dir2_block_getdents(
+ STATIC int
+ xfs_dir2_leaf_readbuf(
+ 	struct xfs_da_args	*args,
++	struct dir_context	*ctx,
+ 	size_t			bufsize,
+ 	xfs_dir2_off_t		*cur_off,
+ 	xfs_dablk_t		*ra_blk,
+@@ -258,10 +262,15 @@ xfs_dir2_leaf_readbuf(
+ 	struct xfs_iext_cursor	icur;
+ 	int			ra_want;
+ 	int			error = 0;
+-
+-	error = xfs_iread_extents(args->trans, dp, XFS_DATA_FORK);
+-	if (error)
+-		goto out;
++	unsigned int		flags = 0;
++
++	if (ctx->flags & DIR_CONTEXT_F_NOWAIT) {
++		flags |= XFS_DABUF_NOWAIT;
++	} else {
++		error = xfs_iread_extents(args->trans, dp, XFS_DATA_FORK);
++		if (error)
++			goto out;
++	}
+ 
+ 	/*
+ 	 * Look for mapped directory blocks at or above the current offset.
+@@ -280,7 +289,7 @@ xfs_dir2_leaf_readbuf(
+ 	new_off = xfs_dir2_da_to_byte(geo, map.br_startoff);
+ 	if (new_off > *cur_off)
+ 		*cur_off = new_off;
+-	error = xfs_dir3_data_read(args->trans, dp, map.br_startoff, 0, &bp);
++	error = xfs_dir3_data_read(args->trans, dp, map.br_startoff, flags, &bp);
+ 	if (error)
+ 		goto out;
+ 
+@@ -360,6 +369,7 @@ xfs_dir2_leaf_getdents(
+ 	int			byteoff;	/* offset in current block */
+ 	unsigned int		offset = 0;
+ 	int			error = 0;	/* error return value */
++	int			written = 0;
+ 
+ 	/*
+ 	 * If the offset is at or past the largest allowed value,
+@@ -391,10 +401,17 @@ xfs_dir2_leaf_getdents(
+ 				bp = NULL;
+ 			}
+ 
+-			if (*lock_mode == 0)
+-				*lock_mode = xfs_ilock_data_map_shared(dp);
+-			error = xfs_dir2_leaf_readbuf(args, bufsize, &curoff,
+-					&rablk, &bp);
++			if (*lock_mode == 0) {
++				*lock_mode =
++					xfs_ilock_data_map_shared_generic(dp,
++					ctx->flags & DIR_CONTEXT_F_NOWAIT);
++				if (!*lock_mode) {
++					error = -EAGAIN;
++					break;
++				}
++			}
++			error = xfs_dir2_leaf_readbuf(args, ctx, bufsize,
++					&curoff, &rablk, &bp);
+ 			if (error || !bp)
+ 				break;
+ 
+@@ -479,6 +496,7 @@ xfs_dir2_leaf_getdents(
+ 		 */
+ 		offset += length;
+ 		curoff += length;
++		written += length;
+ 		/* bufsize may have just been a guess; don't go negative */
+ 		bufsize = bufsize > length ? bufsize - length : 0;
+ 	}
+@@ -492,6 +510,8 @@ xfs_dir2_leaf_getdents(
+ 		ctx->pos = xfs_dir2_byte_to_dataptr(curoff) & 0x7fffffff;
+ 	if (bp)
+ 		xfs_trans_brelse(args->trans, bp);
++	if (error == -EAGAIN && written > 0)
++		error = 0;
+ 	return error;
+ }
+ 
+@@ -514,6 +534,7 @@ xfs_readdir(
+ 	unsigned int		lock_mode;
+ 	bool			isblock;
+ 	int			error;
++	bool			nowait;
+ 
+ 	trace_xfs_readdir(dp);
+ 
+@@ -531,7 +552,11 @@ xfs_readdir(
+ 	if (dp->i_df.if_format == XFS_DINODE_FMT_LOCAL)
+ 		return xfs_dir2_sf_getdents(&args, ctx);
+ 
+-	lock_mode = xfs_ilock_data_map_shared(dp);
++	nowait = ctx->flags & DIR_CONTEXT_F_NOWAIT;
++	lock_mode = xfs_ilock_data_map_shared_generic(dp, nowait);
++	if (!lock_mode)
++		return -EAGAIN;
++
+ 	error = xfs_dir2_isblock(&args, &isblock);
+ 	if (error)
+ 		goto out_unlock;
+@@ -546,5 +571,7 @@ xfs_readdir(
+ out_unlock:
+ 	if (lock_mode)
+ 		xfs_iunlock(dp, lock_mode);
++	if (error == -EAGAIN)
++		ASSERT(nowait);
+ 	return error;
+ }
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index 9e62cc500140..d088f7d0c23a 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -120,6 +120,33 @@ xfs_ilock_data_map_shared(
+ 	return lock_mode;
+ }
+ 
++/*
++ * Similar to xfs_ilock_data_map_shared(), except that it will only try to lock
++ * the inode in shared mode if the extents are already in memory. If it fails to
++ * get the lock or has to do IO to read the extent list, fail the operation by
++ * returning 0 as the lock mode.
++ */
++uint
++xfs_ilock_data_map_shared_nowait(
++	struct xfs_inode	*ip)
++{
++	if (xfs_need_iread_extents(&ip->i_df))
++		return 0;
++	if (!xfs_ilock_nowait(ip, XFS_ILOCK_SHARED))
++		return 0;
++	return XFS_ILOCK_SHARED;
++}
++
++int
++xfs_ilock_data_map_shared_generic(
++	struct xfs_inode	*dp,
++	bool			nowait)
++{
++	if (nowait)
++		return xfs_ilock_data_map_shared_nowait(dp);
++	return xfs_ilock_data_map_shared(dp);
++}
++
+ uint
+ xfs_ilock_attr_map_shared(
+ 	struct xfs_inode	*ip)
+diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+index 7547caf2f2ab..ea206a5a27df 100644
+--- a/fs/xfs/xfs_inode.h
++++ b/fs/xfs/xfs_inode.h
+@@ -490,13 +490,16 @@ int		xfs_rename(struct mnt_idmap *idmap,
+ 			   struct xfs_name *target_name,
+ 			   struct xfs_inode *target_ip, unsigned int flags);
+ 
+-void		xfs_ilock(xfs_inode_t *, uint);
+-int		xfs_ilock_nowait(xfs_inode_t *, uint);
+-void		xfs_iunlock(xfs_inode_t *, uint);
+-void		xfs_ilock_demote(xfs_inode_t *, uint);
+-bool		xfs_isilocked(struct xfs_inode *, uint);
+-uint		xfs_ilock_data_map_shared(struct xfs_inode *);
+-uint		xfs_ilock_attr_map_shared(struct xfs_inode *);
++void		xfs_ilock(struct xfs_inode *ip, uint lockmode);
++int		xfs_ilock_nowait(struct xfs_inode *ip, uint lockmode);
++void		xfs_iunlock(struct xfs_inode *ip, uint lockmode);
++void		xfs_ilock_demote(struct xfs_inode *ip, uint lockmode);
++bool		xfs_isilocked(struct xfs_inode *ip, uint lockmode);
++uint		xfs_ilock_data_map_shared(struct xfs_inode *ip);
++uint		xfs_ilock_data_map_shared_nowait(struct xfs_inode *ip);
++int		xfs_ilock_data_map_shared_generic(struct xfs_inode *ip,
++						  bool nowait);
++uint		xfs_ilock_attr_map_shared(struct xfs_inode *ip);
+ 
+ uint		xfs_ip2xflags(struct xfs_inode *);
+ int		xfs_ifree(struct xfs_trans *, struct xfs_inode *);
 -- 
 2.25.1
 
