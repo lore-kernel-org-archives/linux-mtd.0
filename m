@@ -4,83 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8755C83F01
-	for <linux-mtd@archiver.kernel.org>; Sat, 26 Aug 2023 20:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43360C71153
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 01:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fi3anK9XCGBx/hdzkFUzEY75En/GlfLJmP4qJ6xWaNU=; b=4eKttO5QSjp5Le
-	EuF+bY0J/MsyMc4qi7cCsQnZ2eI7OHyBTerzEDsMRPVaNYK0EgHzHQeb7+08YK8s5aZwGcOHRQcU7
-	a3K+ZDZLmKC3Sa34tAhrzu90RDTmfOPwFcMMoWGCIqq6wpZnbQQQOeUOO3M70SMVXzoIbj6Z7poM6
-	t0GsSDGsydDgesmo67sLlRMDD5rdDULGYGW4oVBUN5ImRUes+1BvIBLsA3UZ2qqLC58YnLVKCpW8D
-	DTnxZt9OeJLfMnyZ1iZzD76yWDRTtSRUtp6X6dgqxoHp/h3fy+LCACZyUHny5Qhv8Z+fOzzQsoY88
-	RSdWPvTktE/t1mL85pWA==;
+	List-Owner; bh=X/40z6p1mjt0gg4LnIF7VXJAZY1VwXagcIchKsKEdHs=; b=g44H0eNU8dxhYi
+	8/+TY9mQrQqi6rV2Kp6Hf1f6Q+PNpq3jLpHR6ZixTYswZXj02XQwicNuf2GdKh3mWB+4hknGS3h8p
+	Kbp7ceS13W0QInimIVffDfAcSIwBfqWVGRjtgM7X+bL0nb1DsLTSClGkl/phS0YMOuBtKEKFnD/rz
+	scb90TtE2OhUxMGdLmpjWM6cXZI5cuDf8XXn6B3Fja1462kffdqLcU4KJhoNB4eh+5ppp/gsuSg/J
+	BMvd3einzLAo86BRKXb7SQY3iycJLSUS/Rp5Slkcf99b6/GfvE1GVEfxk0dQsFvMWgONstGaoMGbX
+	Jv+jXlRVXVCr2xwjp0ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZzh2-007CLl-1C;
-	Sat, 26 Aug 2023 20:15:36 +0000
-Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
+	id 1qa4mi-007NSn-30;
+	Sun, 27 Aug 2023 01:41:48 +0000
+Received: from mgamail.intel.com ([192.55.52.120])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qZzgz-007CKi-09
+	id 1qa4mg-007NST-0I
 	for linux-mtd@lists.infradead.org;
-	Sat, 26 Aug 2023 20:15:34 +0000
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5007f3d3235so3090248e87.2
-        for <linux-mtd@lists.infradead.org>; Sat, 26 Aug 2023 13:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693080929; x=1693685729;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fiClfjB25JQP+nvwhV5eVxfGres78QLziYRocpk7hNg=;
-        b=r4mXYBsZgZu4XhHaE9QWRSqYR7q8IE+oEin5qfpD6Sf/J3TWFuEa/ViTN1VsdtHFzl
-         aKOkLvPFGeuvP5g3fDazkDDX+isg9uywLXAzGIsjSVVgG717OlvIOWcYVzJ8W5UzR0cz
-         yta2QTDhx1KDOLnw1YGXBvC9JxCouGvN3GEiOZDEqxf3Qza6F8SP5VrpfgVncP7QOUuw
-         g64oR9ZWg4Y4xmzKeRPw9Opc4pYsfjCuhVSVoqTUjvHvqTb6cmmZBeJ4To1STVuFE6TW
-         KZsjz9kdI9fJyWtRIDeX73jR8EATlD4knXtFGgqiKQ4LWVySfrOrTLGKt+qwO5HXCEZN
-         E6JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693080929; x=1693685729;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fiClfjB25JQP+nvwhV5eVxfGres78QLziYRocpk7hNg=;
-        b=A1+9Z6oQY8ASA+B3aJqe6nOV6f1q02YIq3tccy2VnNE6nN69FEd8oXzFR7xOI/uZNZ
-         9q1kmfl8dpd4VtnCRBaf3gpnmg3mEKyZUc1j2M10YUa4yN2Bpgv7Fji5dU17VucvZwfM
-         jkLIQhf4rq8JBVh1H1Kb3MWgN5InomGBwdm+V6/+9QSIxLpgHKQJPFkqxEFCvck3ogw+
-         yDKVENjshDKHK5AKPxTIXJYCTUEGXZSNz8mf3FlqsYwI6N/TsjmXLbqKcZUETpUTzUV8
-         Q8KmQ3+aJVHPodbnlAzUGE1li9tQPpEfLACXatRhLsiyXqJabSuCY/8KGZ3aN3XSvOMs
-         uMlw==
-X-Gm-Message-State: AOJu0YwmDRj2royFnaQKQf1e1UeF7ospNE4SDRM0yVyj7Xx0BNwRt16l
-	r7ux8AFYMudgNEWWbRDBIME=
-X-Google-Smtp-Source: AGHT+IGqrFqmGE4oHqPCMDDR68XZhC2DGYJX9mBLn9ove4qTNG59NMxLTApREuKbJviG3CqQrT9bGg==
-X-Received: by 2002:a05:6512:114d:b0:4f8:67f0:7253 with SMTP id m13-20020a056512114d00b004f867f07253mr21782588lfg.49.1693080928758;
-        Sat, 26 Aug 2023 13:15:28 -0700 (PDT)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id j13-20020ac253ad000000b004fe119b0105sm825811lfh.272.2023.08.26.13.15.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 13:15:28 -0700 (PDT)
-Message-ID: <ba3c419a-6511-480a-b5f2-6c418f9c02e7@gmail.com>
-Date: Sat, 26 Aug 2023 22:15:27 +0200
+	Sun, 27 Aug 2023 01:41:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693100506; x=1724636506;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SwkzD2XXqz25xBQj7+Qw+0ndFDroxkcAVZksTk/82zE=;
+  b=X2I18fwQ+NEEoKTQSJLVZqhl+lmRzyZBCaaeYnGzdUgn7qfTwcjjW/tU
+   F/Iq8Vifym+QTg4zWzmPRi1Yb9300F5G7GOK2QX2SwDfZ18gv4wvIocBf
+   HK1HjKgzQWjsm7j8hxqpBLM75XPtPrS8kYkzuolfMEirNK9OzfYAAWq8x
+   whjWshXshuCioILcYRf5exOzPWe+3zrWTlvxSCMR3ZxFPr0kCoM+pl8vN
+   LfRr9pLurAL+PLlQLsaLnnHwo9w3lchMk4q69h1Ghu05JpkPqdb06P847
+   GN+P8wSbPyMkXgzJtws1o23LTzqNPAy64VR2ARe9G/ZeAGPr2nazyoeG4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="373790146"
+X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
+   d="scan'208";a="373790146"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2023 18:41:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10814"; a="687707446"
+X-IronPort-AV: E=Sophos;i="6.02,204,1688454000"; 
+   d="scan'208";a="687707446"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 26 Aug 2023 18:41:34 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qa4mT-0005GT-2s;
+	Sun, 27 Aug 2023 01:41:33 +0000
+Date: Sun, 27 Aug 2023 09:40:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y.Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	linux-fscrypt@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+	Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
+	ceph-devel@vger.kernel.org,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-wireless@vger.kernel.org,
+	Matthieu Baerts <matthieu.baerts@tessares.net>,
+	Mat Martineau <martineau@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+	linux-nfs@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+	linux-inte@web.codeaurora.org, grity@vger.kernel.org,
+	"Jason A.Donenfeld" <Jason@zx2c4.com>,
+	Ayush Sawal <ayush.sawal@chelsio.com>
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: [PATCH 2/12] ubifs: Do not include crypto/algapi.h
+Message-ID: <202308270908.Go1QPOZ7-lkp@intel.com>
+References: <E1qYl9s-006vDm-IW@formenos.hmeau.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "nvmem: add new config option"
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Alban Bedel
- <albeu@free.fr>, Christian Marangi <ansuelsmth@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20230718084804.20139-1-zajec5@gmail.com>
-Content-Language: en-US
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20230718084804.20139-1-zajec5@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <E1qYl9s-006vDm-IW@formenos.hmeau.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230826_131533_083671_069FB120 
-X-CRM114-Status: GOOD (  22.86  )
+X-CRM114-CacheID: sfid-20230826_184146_175435_5680C746 
+X-CRM114-Status: GOOD (  16.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,63 +101,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU3JpbmksCgpPbiAxOC4wNy4yMDIzIDEwOjQ4LCBSYWZhxYIgTWnFgmVja2kgd3JvdGU6Cj4g
-RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgo+IAo+IFRoaXMgcmV2ZXJ0
-cyBjb21taXQgNTE3ZjE0ZDljZjM1MzNkNWFiNGZkZWQxOTVhYjZmODBhOTJlMzc4Zi4KPiAKPiBJ
-dCBzZWVtcyB0aGF0ICJub19vZl9ub2RlIiBjb25maWcgb3B0aW9uIHdhcyBhZGRlZCB0byBoZWxw
-IG10ZCdzIGNhc2UuCj4gCj4gRFQgbm9kZXMgb2YgTVREIHBhcnRpdGlvbnMgKHRoYXQgYXJlIGFs
-c28gTlZNRU0gZGV2aWNlcykgbWF5IGNvbnRhaW4KPiBzdWJub2RlcyB0aGF0IFNIT1VMRCBOT1Qg
-YmUgdHJlYXRlZCBhcyBOVk1FTSBmaXhlZCBjZWxscy4gVG8gcHJldmVudAo+IE5WTUVNIGNvcmUg
-Y29kZSBmcm9tIHBhcnNpbmcgdGhlbSAibm9fb2Zfbm9kZSIgd2FzIHNldCB0byB0cnVlIGFuZCB0
-aGF0Cj4gbWFkZSBmb3JfZWFjaF9jaGlsZF9vZl9ub2RlKCkgaW4gTlZNRU0gYSBuby1vcC4KPiAK
-PiBXaXRoIHRoZSBpbnRyb2R1Y3Rpb24gb2YgImFkZF9sZWdhY3lfZml4ZWRfb2ZfY2VsbHMiIGNv
-bmZpZyBvcHRpb24KPiB0aGluZ3MgZ290IG1vcmUgZXhwbGljaXQuIE1URCBzdWJzeXN0ZW0gc2lt
-cGx5IHRlbGxzIE5WTUVNIHdoZW4gdG8gbG9vawo+IGZvciBmaXhlZCBjZWxscyBhbmQgdGhlcmUg
-aXMgbm8gbmVlZCB0byBoYWNrICJvZl9ub2RlIiBwb2ludGVyIGFueW1vcmUuCj4gCj4gU2lnbmVk
-LW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgo+IC0tLQo+IEltcG9y
-dGFudDogdGhpcyBpcyBiYXNlZCBvbiB0b3Agb2YgdGhlCj4gW1BBVENIIFY0XSBudm1lbTogYWRk
-IGV4cGxpY2l0IGNvbmZpZyBvcHRpb24gdG8gcmVhZCBvbGQgc3ludGF4IGZpeGVkIE9GIGNlbGxz
-CgpJIHNlZSB5b3Ugc2tpcHBlZCB0aG9zZSB0d28gcGF0Y2hlcyBmb3IgNi42LgoKQ2FuIHlvdSBx
-dWV1ZSB0aGVtIGZvciA2LjcsIHBsZWFzZT8KCgo+IC0tLQo+ICAgZHJpdmVycy9tdGQvbXRkY29y
-ZS5jICAgICAgICAgIHwgMSAtCj4gICBkcml2ZXJzL252bWVtL2NvcmUuYyAgICAgICAgICAgfCAy
-ICstCj4gICBpbmNsdWRlL2xpbnV4L252bWVtLXByb3ZpZGVyLmggfCAyIC0tCj4gICAzIGZpbGVz
-IGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9tdGRjb3JlLmMgYi9kcml2ZXJzL210ZC9tdGRjb3JlLmMKPiBpbmRleCA5
-ZGI4ZDc4NTM2MzkuLjNkNzgxZmZiOGMzMiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9tdGRj
-b3JlLmMKPiArKysgYi9kcml2ZXJzL210ZC9tdGRjb3JlLmMKPiBAQCAtNTU0LDcgKzU1NCw2IEBA
-IHN0YXRpYyBpbnQgbXRkX252bWVtX2FkZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKPiAgIAljb25m
-aWcucmVhZF9vbmx5ID0gdHJ1ZTsKPiAgIAljb25maWcucm9vdF9vbmx5ID0gdHJ1ZTsKPiAgIAlj
-b25maWcuaWdub3JlX3dwID0gdHJ1ZTsKPiAtCWNvbmZpZy5ub19vZl9ub2RlID0gIW9mX2Rldmlj
-ZV9pc19jb21wYXRpYmxlKG5vZGUsICJudm1lbS1jZWxscyIpOwo+ICAgCWNvbmZpZy5wcml2ID0g
-bXRkOwo+ICAgCj4gICAJbXRkLT5udm1lbSA9IG52bWVtX3JlZ2lzdGVyKCZjb25maWcpOwo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL252bWVtL2NvcmUuYyBiL2RyaXZlcnMvbnZtZW0vY29yZS5jCj4g
-aW5kZXggNThkODkxOWU2NjgyLi5hMGM5MTUzY2RhMjggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9u
-dm1lbS9jb3JlLmMKPiArKysgYi9kcml2ZXJzL252bWVtL2NvcmUuYwo+IEBAIC0xMDI3LDcgKzEw
-MjcsNyBAQCBzdHJ1Y3QgbnZtZW1fZGV2aWNlICpudm1lbV9yZWdpc3Rlcihjb25zdCBzdHJ1Y3Qg
-bnZtZW1fY29uZmlnICpjb25maWcpCj4gICAJbnZtZW0tPm5rZWVwb3V0ID0gY29uZmlnLT5ua2Vl
-cG91dDsKPiAgIAlpZiAoY29uZmlnLT5vZl9ub2RlKQo+ICAgCQludm1lbS0+ZGV2Lm9mX25vZGUg
-PSBjb25maWctPm9mX25vZGU7Cj4gLQllbHNlIGlmICghY29uZmlnLT5ub19vZl9ub2RlKQo+ICsJ
-ZWxzZQo+ICAgCQludm1lbS0+ZGV2Lm9mX25vZGUgPSBjb25maWctPmRldi0+b2Zfbm9kZTsKPiAg
-IAo+ICAgCXN3aXRjaCAoY29uZmlnLT5pZCkgewo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4
-L252bWVtLXByb3ZpZGVyLmggYi9pbmNsdWRlL2xpbnV4L252bWVtLXByb3ZpZGVyLmgKPiBpbmRl
-eCAxYjgxYWRlYmRiOGIuLmUzOTMwODM1MjM1YiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xpbnV4
-L252bWVtLXByb3ZpZGVyLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4L252bWVtLXByb3ZpZGVyLmgK
-PiBAQCAtODksNyArODksNiBAQCBzdHJ1Y3QgbnZtZW1fY2VsbF9pbmZvIHsKPiAgICAqIEByZWFk
-X29ubHk6CURldmljZSBpcyByZWFkLW9ubHkuCj4gICAgKiBAcm9vdF9vbmx5OglEZXZpY2UgaXMg
-YWNjZXNzaWJseSB0byByb290IG9ubHkuCj4gICAgKiBAb2Zfbm9kZToJSWYgZ2l2ZW4sIHRoaXMg
-d2lsbCBiZSB1c2VkIGluc3RlYWQgb2YgdGhlIHBhcmVudCdzIG9mX25vZGUuCj4gLSAqIEBub19v
-Zl9ub2RlOglEZXZpY2Ugc2hvdWxkIG5vdCB1c2UgdGhlIHBhcmVudCdzIG9mX25vZGUgZXZlbiBp
-ZiBpdCdzICFOVUxMLgo+ICAgICogQHJlZ19yZWFkOglDYWxsYmFjayB0byByZWFkIGRhdGEuCj4g
-ICAgKiBAcmVnX3dyaXRlOglDYWxsYmFjayB0byB3cml0ZSBkYXRhLgo+ICAgICogQHNpemU6CURl
-dmljZSBzaXplLgo+IEBAIC0xMjIsNyArMTIxLDYgQEAgc3RydWN0IG52bWVtX2NvbmZpZyB7Cj4g
-ICAJYm9vbAkJCWlnbm9yZV93cDsKPiAgIAlzdHJ1Y3QgbnZtZW1fbGF5b3V0CSpsYXlvdXQ7Cj4g
-ICAJc3RydWN0IGRldmljZV9ub2RlCSpvZl9ub2RlOwo+IC0JYm9vbAkJCW5vX29mX25vZGU7Cj4g
-ICAJbnZtZW1fcmVnX3JlYWRfdAlyZWdfcmVhZDsKPiAgIAludm1lbV9yZWdfd3JpdGVfdAlyZWdf
-d3JpdGU7Cj4gICAJaW50CXNpemU7CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Herbert,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on wireless-next/main]
+[also build test ERROR on wireless/main linus/master rw-ubifs/next rw-ubifs/fixes v6.5-rc7 next-20230825]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Herbert-Xu/fscrypt-Do-not-include-crypto-algapi-h/20230823-183716
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git main
+patch link:    https://lore.kernel.org/r/E1qYl9s-006vDm-IW%40formenos.hmeau.com
+patch subject: [PATCH 2/12] ubifs: Do not include crypto/algapi.h
+config: x86_64-randconfig-r016-20230823 (https://download.01.org/0day-ci/archive/20230827/202308270908.Go1QPOZ7-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce: (https://download.01.org/0day-ci/archive/20230827/202308270908.Go1QPOZ7-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308270908.Go1QPOZ7-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from fs/ubifs/auth.c:12:0:
+   include/linux/verification.h: In function 'system_keyring_id_check':
+>> include/linux/verification.h:23:11: error: 'EINVAL' undeclared (first use in this function)
+      return -EINVAL;
+              ^~~~~~
+   include/linux/verification.h:23:11: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +/EINVAL +23 include/linux/verification.h
+
+817aef260037f3 Yannik Sembritzki 2018-08-16  19  
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  20  static inline int system_keyring_id_check(u64 id)
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  21  {
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  22  	if (id > (unsigned long)VERIFY_USE_PLATFORM_KEYRING)
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20 @23  		return -EINVAL;
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  24  
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  25  	return 0;
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  26  }
+f3cf4134c5c6c4 Roberto Sassu     2022-09-20  27  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
