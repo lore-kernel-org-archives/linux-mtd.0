@@ -4,84 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4828EC83F12
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 13:36:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E0EEC83F01
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 20:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UpDJUDpnaQ2jg4zTqPsbg2ONk26V97cM8Ky+gydPT7E=; b=BKVtv9rfo2TPgJ
-	a4fSuXD9JfEF2Nwo19ml9LtNTdtPB/TBgkVI7SGi/lAR1/feoxfgDKyqMe0NMpaVQKYiNJmTMYSWN
-	GsUuJvoLoJKyFzzvEo8MQ8rJ9A6A5kzymtLWlcI4eJ7eQPvvDhfYr2vYLTVbOKWGgBQnYHxO7zCcT
-	q0JxF5zEhVXwFih92coCP8JoKRB6P0t3ATOqrouIoD171veTC0VNttqXMMlmFM0YG8/sQsBSaX0F+
-	7SU9w4zsWN6U/hGauBzm5mBmStE/f7X8AhAP3MqZcZbd7h8Sd8NvMUvrgTjmbb8FgtrC+eRP/T40b
-	oYCJBI6KFGgD7RJnD7oA==;
+	List-Owner; bh=9HouHWEHdP+TY7fWxfGOKbE6LcAHTyujOBBOuZ6nh7s=; b=LOyHmskH96dX4U
+	QdOVj8+X6Ftgz3NQdsjn6ZEISGKRSNmv1HgUpEizdbUxj3o+9ETYLZdCFvK2y148Xpf4h1Nj5cdem
+	WsYjGekmW1LFAcD6M4QKShw9vGI6n+48G579nW2eUFf3dF27RoYVYhn3lU0vDwGgA0m4nO+R4Sadq
+	Ek37aDL1QntPDqokbyMQhHHFc54yLJWPD/+p+oRpiAZsD6mNUD+XfBBw3fPsitmat5VBiaV0sND0B
+	eZtV2iYAR39MeXYox7F3UdTMAdTe3+OHdEcty8Eu0RjxKy3K4UJxEWAnbYE5U0phmULaNHYaif53i
+	JD0PujVc35BBAhqiDA8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaFwN-0086lr-28;
-	Sun, 27 Aug 2023 13:36:31 +0000
-Received: from out-250.mta1.migadu.com ([2001:41d0:203:375::fa])
+	id 1qaMdE-008Rpc-18;
+	Sun, 27 Aug 2023 20:45:12 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaFwK-0086l6-1Z
-	for linux-mtd@lists.infradead.org;
-	Sun, 27 Aug 2023 13:36:30 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693143386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NAMtHKwgj081g8lIPVs72MliioxtTYHj7D9CTN85ELE=;
-	b=u7n0PP5Y7t8pZAzx+5IbBJkZfY9azRKTfFVD9LVMOb4Thl+C2D6j0w7wWcMlmzcA25L4C8
-	zEudurGp2ODbmGylA6BsBPQ9105gr52QFoDr/T1ABSTboWT6yVGzUbuarS4ljsFfYjiAKI
-	tkX7K8GiO8NfI2EeGspOsslEfgzb2IA=
-From: Hao Xu <hao.xu@linux.dev>
-To: io-uring@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>
-Cc: Dominique Martinet <asmadeus@codewreck.org>,
+	id 1qaMdC-008RpV-28
+	for linux-mtd@bombadil.infradead.org;
+	Sun, 27 Aug 2023 20:45:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=b31OO6Xd9+jxzKw5QB3n4d33iA6sZ4nPi+nMylKSno4=; b=rh2eHyjfSChvP5M3GZFqng0djt
+	iCSjqmEmDczFMnSTrKUt8mmVXGPGgbJ4oq2lIEXyRSbFH+YR4YMUxP/z9QQKohjOoCQZks3WE0IMK
+	3S4hJ/QxWWGwrLIXBI8vnsgZg3HMNGIE+hIRemTa2iQvkDDHCCMd0yz1djBYQiyi1qOQAKg4GjHdy
+	fEL5cINLesPqAO5iR1xTPAPnXU+iFHAHJEGUTx86DeTnZzv1uxgeaR21j4BV+7nscvIXdd9sVE/Si
+	rCIGIbVvaskI417AUCK4HwQeBGpvqIcrg+ypempVGeBQFeEiZBUSg5QboubLY+HaM/1Y954EFPxgD
+	hXmevJ/g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1qaMcv-00Dkeb-PH; Sun, 27 Aug 2023 20:44:53 +0000
+Date: Sun, 27 Aug 2023 21:44:53 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Hao Xu <hao.xu@linux.dev>
+Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	Dominique Martinet <asmadeus@codewreck.org>,
 	Pavel Begunkov <asml.silence@gmail.com>,
 	Christian Brauner <brauner@kernel.org>,
 	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Stefan Roesch <shr@fb.com>,
-	Clay Harris <bugs@claycon.org>,
+	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
 	Dave Chinner <david@fromorbit.com>,
 	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-cachefs@redhat.com,
-	ecryptfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	linux-unionfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-mm@kvack.org,
-	linux-nilfs@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 11/11] io_uring: add support for getdents
-Date: Sun, 27 Aug 2023 21:28:35 +0800
-Message-Id: <20230827132835.1373581-12-hao.xu@linux.dev>
-In-Reply-To: <20230827132835.1373581-1-hao.xu@linux.dev>
+Subject: Re: [PATCH 02/11] xfs: add NOWAIT semantics for readdir
+Message-ID: <ZOu1xYS6LRmPgEiV@casper.infradead.org>
 References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-3-hao.xu@linux.dev>
 MIME-Version: 1.0
-X-Migadu-Flow: FLOW_OUT
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_063628_811233_39FE22A9 
-X-CRM114-Status: GOOD (  15.94  )
+Content-Disposition: inline
+In-Reply-To: <20230827132835.1373581-3-hao.xu@linux.dev>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,147 +85,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Hao Xu <howeyxu@tencent.com>
+On Sun, Aug 27, 2023 at 09:28:26PM +0800, Hao Xu wrote:
+> +++ b/fs/xfs/libxfs/xfs_da_btree.c
+> @@ -2643,16 +2643,32 @@ xfs_da_read_buf(
+>  	struct xfs_buf_map	map, *mapp = &map;
+>  	int			nmap = 1;
+>  	int			error;
+> +	int			buf_flags = 0;
+>  
+>  	*bpp = NULL;
+>  	error = xfs_dabuf_map(dp, bno, flags, whichfork, &mapp, &nmap);
+>  	if (error || !nmap)
+>  		goto out_free;
+>  
+> +	/*
+> +	 * NOWAIT semantics mean we don't wait on the buffer lock nor do we
+> +	 * issue IO for this buffer if it is not already in memory. Caller will
+> +	 * retry. This will return -EAGAIN if the buffer is in memory and cannot
+> +	 * be locked, and no buffer and no error if it isn't in memory.  We
+> +	 * translate both of those into a return state of -EAGAIN and *bpp =
+> +	 * NULL.
+> +	 */
 
-This add support for getdents64 to io_uring, acting exactly like the
-syscall: the directory is iterated from it's current's position as
-stored in the file struct, and the file's position is updated exactly as
-if getdents64 had been called.
+I would not include this comment.
 
-For filesystems that support NOWAIT in iterate_shared(), try to use it
-first; if a user already knows the filesystem they use do not support
-nowait they can force async through IOSQE_ASYNC in the sqe flags,
-avoiding the need to bounce back through a useless EAGAIN return.
+> +	if (flags & XFS_DABUF_NOWAIT)
+> +		buf_flags |= XBF_TRYLOCK | XBF_INCORE;
+>  	error = xfs_trans_read_buf_map(mp, tp, mp->m_ddev_targp, mapp, nmap, 0,
+>  			&bp, ops);
 
-Co-developed-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Hao Xu <howeyxu@tencent.com>
----
- include/uapi/linux/io_uring.h |  1 +
- io_uring/fs.c                 | 53 +++++++++++++++++++++++++++++++++++
- io_uring/fs.h                 |  3 ++
- io_uring/opdef.c              |  8 ++++++
- 4 files changed, 65 insertions(+)
+what tsting did you do with this?  Because you don't actually _use_
+buf_flags anywhere in this patch (presumably they should be the
+sixth argument to xfs_trans_read_buf_map() instead of 0).  So I can only
+conclude that either you didn't test, or your testing was inadequate.
 
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 8e61f8b7c2ce..3896397a1998 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -240,6 +240,7 @@ enum io_uring_op {
- 	IORING_OP_URING_CMD,
- 	IORING_OP_SEND_ZC,
- 	IORING_OP_SENDMSG_ZC,
-+	IORING_OP_GETDENTS,
- 
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
-diff --git a/io_uring/fs.c b/io_uring/fs.c
-index f6a69a549fd4..04711feac4e6 100644
---- a/io_uring/fs.c
-+++ b/io_uring/fs.c
-@@ -47,6 +47,12 @@ struct io_link {
- 	int				flags;
- };
- 
-+struct io_getdents {
-+	struct file			*file;
-+	struct linux_dirent64 __user	*dirent;
-+	unsigned int			count;
-+};
-+
- int io_renameat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- {
- 	struct io_rename *ren = io_kiocb_to_cmd(req, struct io_rename);
-@@ -291,3 +297,50 @@ void io_link_cleanup(struct io_kiocb *req)
- 	putname(sl->oldpath);
- 	putname(sl->newpath);
- }
-+
-+int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-+{
-+	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
-+
-+	if (READ_ONCE(sqe->off))
-+		return -EINVAL;
-+
-+	gd->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	gd->count = READ_ONCE(sqe->len);
-+
-+	return 0;
-+}
-+
-+int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
-+	struct file *file = req->file;
-+	unsigned long getdents_flags = 0;
-+	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
-+	bool locked;
-+	int ret;
-+
-+	if (force_nonblock) {
-+		if (!(file->f_flags & O_NONBLOCK) &&
-+		    !(file->f_mode & FMODE_NOWAIT))
-+			return -EAGAIN;
-+
-+		getdents_flags = DIR_CONTEXT_F_NOWAIT;
-+	}
-+
-+	ret = file_pos_lock_nowait(file, force_nonblock);
-+	if (ret == -EAGAIN)
-+		return ret;
-+	locked = ret;
-+
-+	ret = vfs_getdents(file, gd->dirent, gd->count, getdents_flags);
-+	if (locked)
-+		file_pos_unlock(file);
-+
-+	if (ret == -EAGAIN && force_nonblock)
-+		return -EAGAIN;
-+
-+	io_req_set_res(req, ret, 0);
-+	return 0;
-+}
-+
-diff --git a/io_uring/fs.h b/io_uring/fs.h
-index 0bb5efe3d6bb..f83a6f3a678d 100644
---- a/io_uring/fs.h
-+++ b/io_uring/fs.h
-@@ -18,3 +18,6 @@ int io_symlinkat(struct io_kiocb *req, unsigned int issue_flags);
- int io_linkat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
- int io_linkat(struct io_kiocb *req, unsigned int issue_flags);
- void io_link_cleanup(struct io_kiocb *req);
-+
-+int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
-+int io_getdents(struct io_kiocb *req, unsigned int issue_flags);
-diff --git a/io_uring/opdef.c b/io_uring/opdef.c
-index 3b9c6489b8b6..1bae6b2a8d0b 100644
---- a/io_uring/opdef.c
-+++ b/io_uring/opdef.c
-@@ -428,6 +428,11 @@ const struct io_issue_def io_issue_defs[] = {
- 		.prep			= io_eopnotsupp_prep,
- #endif
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.needs_file		= 1,
-+		.prep			= io_getdents_prep,
-+		.issue			= io_getdents,
-+	},
- };
- 
- 
-@@ -648,6 +653,9 @@ const struct io_cold_def io_cold_defs[] = {
- 		.fail			= io_sendrecv_fail,
- #endif
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.name			= "GETDENTS",
-+	},
- };
- 
- const char *io_uring_get_opcode(u8 opcode)
--- 
-2.25.1
+>  	if (error)
+>  		goto out_free;
+> +	if (!bp) {
+> +		ASSERT(flags & XFS_DABUF_NOWAIT);
+
+I don't think this ASSERT is appropriate.
+
+> @@ -391,10 +401,17 @@ xfs_dir2_leaf_getdents(
+>  				bp = NULL;
+>  			}
+>  
+> -			if (*lock_mode == 0)
+> -				*lock_mode = xfs_ilock_data_map_shared(dp);
+> +			if (*lock_mode == 0) {
+> +				*lock_mode =
+> +					xfs_ilock_data_map_shared_generic(dp,
+> +					ctx->flags & DIR_CONTEXT_F_NOWAIT);
+> +				if (!*lock_mode) {
+> +					error = -EAGAIN;
+> +					break;
+> +				}
+> +			}
+
+'generic' doesn't seem like a great suffix to mean 'takes nowait flag'.
+And this is far too far indented.
+
+			xfs_dir2_lock(dp, ctx, lock_mode);
+
+with:
+
+STATIC void xfs_dir2_lock(struct xfs_inode *dp, struct dir_context *ctx,
+		unsigned int lock_mode)
+{
+	if (*lock_mode)
+		return;
+	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
+		return xfs_ilock_data_map_shared_nowait(dp);
+	return xfs_ilock_data_map_shared(dp);
+}
+
+... which I think you can use elsewhere in this patch (reformat it to
+XFS coding style, of course).  And then you don't need
+xfs_ilock_data_map_shared_generic().
 
 
 ______________________________________________________
