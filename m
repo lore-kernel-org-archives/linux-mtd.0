@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDD01C83F01
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 13:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4828EC83F12
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Aug 2023 13:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Aw/AyHRuc0v0HSzuGnXyUu91YhcaugEjqfz25uNOl+c=; b=m/Iq3LeeJU+qk2
-	f2dFQW0hJiUD6YJdZBklEOh2ijgacEv8Y36yNRCKqp6El4ANCO4WkG919PzgonRI5tJEwaoEj/3Dh
-	vE82R4hk4i934msccSmSHrsKCuudIzSjkfAP+7CVYFjXr1tCotnEIHy+TcwXGnN42RhItkcKIFWe0
-	cvi6DMDNFgeFPHwm8sUaGWP+1h9KI9rPok1hfbAdLe+SWmR3ushExm/Lnb6XdataT3419SWPOshp8
-	My2iNbNLKgeOtuC90Q1uS4NXYs82vyZP/v3+cp/Fntowdx/0YMke+up7+uSeH1uTcr0UOqMtkxRer
-	FbglEDB/Km+EjsUCMagA==;
+	List-Owner; bh=UpDJUDpnaQ2jg4zTqPsbg2ONk26V97cM8Ky+gydPT7E=; b=BKVtv9rfo2TPgJ
+	a4fSuXD9JfEF2Nwo19ml9LtNTdtPB/TBgkVI7SGi/lAR1/feoxfgDKyqMe0NMpaVQKYiNJmTMYSWN
+	GsUuJvoLoJKyFzzvEo8MQ8rJ9A6A5kzymtLWlcI4eJ7eQPvvDhfYr2vYLTVbOKWGgBQnYHxO7zCcT
+	q0JxF5zEhVXwFih92coCP8JoKRB6P0t3ATOqrouIoD171veTC0VNttqXMMlmFM0YG8/sQsBSaX0F+
+	7SU9w4zsWN6U/hGauBzm5mBmStE/f7X8AhAP3MqZcZbd7h8Sd8NvMUvrgTjmbb8FgtrC+eRP/T40b
+	oYCJBI6KFGgD7RJnD7oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaFvW-0086Yi-1x;
-	Sun, 27 Aug 2023 13:35:38 +0000
-Received: from out-242.mta1.migadu.com ([95.215.58.242])
+	id 1qaFwN-0086lr-28;
+	Sun, 27 Aug 2023 13:36:31 +0000
+Received: from out-250.mta1.migadu.com ([2001:41d0:203:375::fa])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaFvT-0086Xh-1C
+	id 1qaFwK-0086l6-1Z
 	for linux-mtd@lists.infradead.org;
-	Sun, 27 Aug 2023 13:35:36 +0000
+	Sun, 27 Aug 2023 13:36:30 +0000
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693143333;
+	t=1693143386;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CL8wzJoAbQ75iZcN0EHSqoGXIWt+IFMvEgcKIhs6zqE=;
-	b=BRJIOv0sJCNWH9arCNNuOEeHNgvBAsJDXsD/9ROslY/E3EvWdOi7NTa+04JucH099rNnul
-	4aa7v7DjXCaaQfzVNr38jK1tfhfTVUIcRN9rZkXC1mcdwty8x7yMXlzmlXd+zl6Ur2HPps
-	a6OaK6jfFgLdJwLH2JKSlhPncqJxHqY=
+	bh=NAMtHKwgj081g8lIPVs72MliioxtTYHj7D9CTN85ELE=;
+	b=u7n0PP5Y7t8pZAzx+5IbBJkZfY9azRKTfFVD9LVMOb4Thl+C2D6j0w7wWcMlmzcA25L4C8
+	zEudurGp2ODbmGylA6BsBPQ9105gr52QFoDr/T1ABSTboWT6yVGzUbuarS4ljsFfYjiAKI
+	tkX7K8GiO8NfI2EeGspOsslEfgzb2IA=
 From: Hao Xu <hao.xu@linux.dev>
 To: io-uring@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
@@ -72,17 +72,16 @@ Cc: Dominique Martinet <asmadeus@codewreck.org>,
 	samba-technical@lists.samba.org,
 	linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCH 10/11] vfs: trylock inode->i_rwsem in iterate_dir() to support nowait
-Date: Sun, 27 Aug 2023 21:28:34 +0800
-Message-Id: <20230827132835.1373581-11-hao.xu@linux.dev>
+Subject: [PATCH 11/11] io_uring: add support for getdents
+Date: Sun, 27 Aug 2023 21:28:35 +0800
+Message-Id: <20230827132835.1373581-12-hao.xu@linux.dev>
 In-Reply-To: <20230827132835.1373581-1-hao.xu@linux.dev>
 References: <20230827132835.1373581-1-hao.xu@linux.dev>
 MIME-Version: 1.0
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_063535_548348_820DD4AF 
-X-CRM114-Status: UNSURE (   9.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230827_063628_811233_39FE22A9 
+X-CRM114-Status: GOOD (  15.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,56 +100,143 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Hao Xu <howeyxu@tencent.com>
 
-Trylock inode->i_rwsem in iterate_dir() to support nowait semantics and
-error out -EAGAIN when there is contention.
+This add support for getdents64 to io_uring, acting exactly like the
+syscall: the directory is iterated from it's current's position as
+stored in the file struct, and the file's position is updated exactly as
+if getdents64 had been called.
 
+For filesystems that support NOWAIT in iterate_shared(), try to use it
+first; if a user already knows the filesystem they use do not support
+nowait they can force async through IOSQE_ASYNC in the sqe flags,
+avoiding the need to bounce back through a useless EAGAIN return.
+
+Co-developed-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Hao Xu <howeyxu@tencent.com>
 ---
- fs/readdir.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ include/uapi/linux/io_uring.h |  1 +
+ io_uring/fs.c                 | 53 +++++++++++++++++++++++++++++++++++
+ io_uring/fs.h                 |  3 ++
+ io_uring/opdef.c              |  8 ++++++
+ 4 files changed, 65 insertions(+)
 
-diff --git a/fs/readdir.c b/fs/readdir.c
-index 6469f076ba6e..664ecd9665a1 100644
---- a/fs/readdir.c
-+++ b/fs/readdir.c
-@@ -43,6 +43,8 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 	struct inode *inode = file_inode(file);
- 	bool shared = false;
- 	int res = -ENOTDIR;
-+	bool nowait;
+diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+index 8e61f8b7c2ce..3896397a1998 100644
+--- a/include/uapi/linux/io_uring.h
++++ b/include/uapi/linux/io_uring.h
+@@ -240,6 +240,7 @@ enum io_uring_op {
+ 	IORING_OP_URING_CMD,
+ 	IORING_OP_SEND_ZC,
+ 	IORING_OP_SENDMSG_ZC,
++	IORING_OP_GETDENTS,
+ 
+ 	/* this goes last, obviously */
+ 	IORING_OP_LAST,
+diff --git a/io_uring/fs.c b/io_uring/fs.c
+index f6a69a549fd4..04711feac4e6 100644
+--- a/io_uring/fs.c
++++ b/io_uring/fs.c
+@@ -47,6 +47,12 @@ struct io_link {
+ 	int				flags;
+ };
+ 
++struct io_getdents {
++	struct file			*file;
++	struct linux_dirent64 __user	*dirent;
++	unsigned int			count;
++};
 +
- 	if (file->f_op->iterate_shared)
- 		shared = true;
- 	else if (!file->f_op->iterate)
-@@ -52,16 +54,22 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 	if (res)
- 		goto out;
- 
--	if (shared)
--		res = down_read_killable(&inode->i_rwsem);
--	else
--		res = down_write_killable(&inode->i_rwsem);
--	if (res)
-+	nowait = ctx->flags & DIR_CONTEXT_F_NOWAIT;
-+	if (nowait) {
-+		res = shared ? down_read_trylock(&inode->i_rwsem) :
-+			       down_write_trylock(&inode->i_rwsem);
-+		if (!res)
-+			res = -EAGAIN;
-+	} else {
-+		res = shared ? down_read_killable(&inode->i_rwsem) :
-+			       down_write_killable(&inode->i_rwsem);
+ int io_renameat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ {
+ 	struct io_rename *ren = io_kiocb_to_cmd(req, struct io_rename);
+@@ -291,3 +297,50 @@ void io_link_cleanup(struct io_kiocb *req)
+ 	putname(sl->oldpath);
+ 	putname(sl->newpath);
+ }
++
++int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
++{
++	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
++
++	if (READ_ONCE(sqe->off))
++		return -EINVAL;
++
++	gd->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
++	gd->count = READ_ONCE(sqe->len);
++
++	return 0;
++}
++
++int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
++{
++	struct io_getdents *gd = io_kiocb_to_cmd(req, struct io_getdents);
++	struct file *file = req->file;
++	unsigned long getdents_flags = 0;
++	bool force_nonblock = issue_flags & IO_URING_F_NONBLOCK;
++	bool locked;
++	int ret;
++
++	if (force_nonblock) {
++		if (!(file->f_flags & O_NONBLOCK) &&
++		    !(file->f_mode & FMODE_NOWAIT))
++			return -EAGAIN;
++
++		getdents_flags = DIR_CONTEXT_F_NOWAIT;
 +	}
-+	if (res < 0)
- 		goto out;
++
++	ret = file_pos_lock_nowait(file, force_nonblock);
++	if (ret == -EAGAIN)
++		return ret;
++	locked = ret;
++
++	ret = vfs_getdents(file, gd->dirent, gd->count, getdents_flags);
++	if (locked)
++		file_pos_unlock(file);
++
++	if (ret == -EAGAIN && force_nonblock)
++		return -EAGAIN;
++
++	io_req_set_res(req, ret, 0);
++	return 0;
++}
++
+diff --git a/io_uring/fs.h b/io_uring/fs.h
+index 0bb5efe3d6bb..f83a6f3a678d 100644
+--- a/io_uring/fs.h
++++ b/io_uring/fs.h
+@@ -18,3 +18,6 @@ int io_symlinkat(struct io_kiocb *req, unsigned int issue_flags);
+ int io_linkat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
+ int io_linkat(struct io_kiocb *req, unsigned int issue_flags);
+ void io_link_cleanup(struct io_kiocb *req);
++
++int io_getdents_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
++int io_getdents(struct io_kiocb *req, unsigned int issue_flags);
+diff --git a/io_uring/opdef.c b/io_uring/opdef.c
+index 3b9c6489b8b6..1bae6b2a8d0b 100644
+--- a/io_uring/opdef.c
++++ b/io_uring/opdef.c
+@@ -428,6 +428,11 @@ const struct io_issue_def io_issue_defs[] = {
+ 		.prep			= io_eopnotsupp_prep,
+ #endif
+ 	},
++	[IORING_OP_GETDENTS] = {
++		.needs_file		= 1,
++		.prep			= io_getdents_prep,
++		.issue			= io_getdents,
++	},
+ };
  
- 	res = -ENOENT;
- 	if (!IS_DEADDIR(inode)) {
--		res = file_accessed(file, ctx->flags & DIR_CONTEXT_F_NOWAIT);
-+		res = file_accessed(file, nowait);
- 		if (res == -EAGAIN)
- 			goto out_unlock;
  
+@@ -648,6 +653,9 @@ const struct io_cold_def io_cold_defs[] = {
+ 		.fail			= io_sendrecv_fail,
+ #endif
+ 	},
++	[IORING_OP_GETDENTS] = {
++		.name			= "GETDENTS",
++	},
+ };
+ 
+ const char *io_uring_get_opcode(u8 opcode)
 -- 
 2.25.1
 
