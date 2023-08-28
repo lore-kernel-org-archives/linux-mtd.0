@@ -4,55 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4058BC71153
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05E0AC83F11
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 08:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dOP7619rpEy4VJM46spLVPm4CTND6sySb7+rQ1I58+4=; b=2RhoZuYmxuLhQk
-	7TnsyHZgxphA/5tbEC4Ahohnrt542tKoV81uat07l1pMFFR8XJ0CWlYGthHdnuvTzsIlQ5uuQ2gqT
-	6MqRAyzqvqOb1Q9OaE/iJanr60SROhEgkpbplzvbYl2bAAltV1nqvT22e3Ri6KevwuKTyuHdhj14d
-	pMPs1zS1u5sYN3nBTNIs4TyGjSBYsO6+mSF51Qm6ddShyUBR+hs/nLcP0w3pYNiX9/qlm5JtsLJKd
-	FSWqH63GarmP3/NGfasN7ywpC6ilkJjtphmtjytXgLq9mB5EfEw4nlvkoQWZLQMW7177NoTHcLD0o
-	bBH51Li0pp4fhSB9xHQg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:Cc:
+	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Fm32qgqWLj7BtvveyoahWbmyvmTKY7zz7qqLSp2HNsA=; b=Geh9G8LEOXk5Xpz+aTCn313aKi
+	E5wuMxV6SEGsAUVaKoBtr5GAKphAFuTITOxvokwSrYhzizcsrGFtZOu34SiiPySNh67ZVtPGHFnBP
+	517PC0AUU3cCY3rql0A8zzU+zApV1iU9RG6lonq+sGXEGjaD4mws68fxmMBA9GGFTunrCZbitJD8D
+	7YfszrwfMyueSyVTLn4R2CLttWfLMDsU74zI5bAdkuUeH3rVSmNVcsJwM8uahnTljlbfmVE2sikmq
+	NhIBZqD3XFYj99mfpbJtkLGNYzI7CwOUjT2wXTRmHvFRdB5pvjUh4gUefd3g6OTpKNldqoIjGt4Ep
+	ACD1wRKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVzV-008zDn-0B;
-	Mon, 28 Aug 2023 06:44:49 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1qaXI5-0096uS-09;
+	Mon, 28 Aug 2023 08:08:05 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVy8-008yBY-1d;
-	Mon, 28 Aug 2023 06:43:29 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RZ1BP627QzNmv0;
-	Mon, 28 Aug 2023 14:39:41 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 28 Aug
- 2023 14:43:17 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>
-CC: <linux-mtd@lists.infradead.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>,
-	<linux-arm-kernel@lists.infradead.org>, <bagasdotme@gmail.com>
-Subject: [PATCH v2 09/12] ubi: fastmap: Get wl PEB even ec beyonds the 'max' if free PEBs are run out
-Date: Mon, 28 Aug 2023 14:38:42 +0800
-Message-ID: <20230828063845.3142561-10-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230828063845.3142561-1-chengzhihao1@huawei.com>
-References: <20230828063845.3142561-1-chengzhihao1@huawei.com>
+	id 1qaXI2-0096sj-2N;
+	Mon, 28 Aug 2023 08:08:03 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0bae4da38so19223465ad.0;
+        Mon, 28 Aug 2023 01:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693210077; x=1693814877;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pnrE6dyfVAprK/xFUC60jFewyVljQRt3NNtTMulp0V0=;
+        b=LVg55P2ejT0BJXH9H1+hgJHcBL2A+IF5g+KpwZsnJ2WoqXmcrL9ZfEfa3T6fNEdxE+
+         ga2nqaZ+gZjmffBcNuVnaXDtmvodkJeUEflTba5i6j/rIlhBduWdBgZRPVnHwy+erFMo
+         Q2sF5ZgAuDt+03EKZEd8qEogPdBU5cTg8EccDlTx6cSnC2QLYfomUfDCZyZGJl19L0Ry
+         zfDO9BgqWN0KlkikpK3fWA7KZvQWChySAj+L6JXiUhVTo7xH2gRnW3f4Al2lAGJTZzAW
+         5ZruNkogVGDYB3ptB7Tk7PeewBGyh+fZdTDyBJ7/jPzoGq3RnYeGV17VCUydj0j+5OXO
+         MJDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693210077; x=1693814877;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pnrE6dyfVAprK/xFUC60jFewyVljQRt3NNtTMulp0V0=;
+        b=S4amCH/BuU7Fo3V+GwLGIvmgRPRU/EKtWxmGujkGtQQMa5Z7JRuPbCfw6BlURE5BeQ
+         BQrfRGoPSHmMtPeG7Y1aZIia2ApZyGj7xMib1VCaYaQ1ZyZh2YLic5ZCajf3f/MtzQcI
+         z5csCJgJS3yEBMTcAQv8qlFCmBcXk25sElTqpXWNn0YIs8uIzo0UH7qgYKqSXT4QtGuy
+         qkGXULdkeAk3r/eXhAswbykSc4adYm5JbTUuak8PtKKASxcWtjS7K/eUVG0RI4NR/0MP
+         u/PVVJgoMAmD33TDotAAIdS/Mw3nYQBaUrF7BZtUfQdKShdsslRQyJ5u67UiUOOKMGBX
+         npig==
+X-Gm-Message-State: AOJu0YwuXezXQP5WkKenwUhyv9KxQcZy7/CumQ5SqGgJS/USuQAMa/rO
+	90V6zT73s+Oj85GZ3jUCOG1eITZdAHXOCQ==
+X-Google-Smtp-Source: AGHT+IHEN6rjlzubXIy3DuU1iYHuYGfJmUDj7MCrRMJIjxExjNAtfO/xrf/2cugqJ3sCcKtAmuhffg==
+X-Received: by 2002:a17:903:41d1:b0:1bf:193a:70b6 with SMTP id u17-20020a17090341d100b001bf193a70b6mr38374653ple.5.1693210077452;
+        Mon, 28 Aug 2023 01:07:57 -0700 (PDT)
+Received: from [10.1.1.24] (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
+        by smtp.gmail.com with ESMTPSA id x19-20020a170902ea9300b001bc445e2497sm6610519plb.79.2023.08.28.01.07.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Aug 2023 01:07:57 -0700 (PDT)
+Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20230810141947.1236730-1-arnd@kernel.org>
+ <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
+ <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
+ <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+ <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
+ <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Michal Simek <monstr@monstr.eu>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, x86@kernel.org,
+ Borislav Petkov <bp@alien8.de>, Max Filippov <jcmvbkbc@gmail.com>,
+ Jens Axboe <axboe@kernel.dk>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Bjorn Helgaas <bhelgaas@google.com>,
+ Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
+ <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
+ Guenter Roeck <linux@roeck-us.net>, Stephen Rothwell <sfr@canb.auug.org.au>,
+ linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-kbuild@vger.kernel.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <dbed3311-6b8e-a396-7e9e-2747902c5d6a@gmail.com>
+Date: Mon, 28 Aug 2023 20:07:27 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_234324_919354_F4E4DC3B 
-X-CRM114-Status: GOOD (  17.82  )
+X-CRM114-CacheID: sfid-20230828_010802_782190_ACA7C608 
+X-CRM114-Status: GOOD (  13.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,190 +126,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the part 2 to fix cyclically reusing single fastmap data PEBs.
-
-Consider one situation, if there are four free PEBs for fm_anchor, pool,
-wl_pool and fastmap data PEB with erase counter 100, 100, 100, 5096
-(ubi->beb_rsvd_pebs is 0). PEB with erase counter 5096 is always picked
-for fastmap data according to the realization of find_wl_entry(), since
-fastmap data PEB is not scheduled for wl, finally there are two PEBs
-(fm data) with great erase counter than other PEBS.
-Get wl PEB even its erase counter exceeds the 'max' in find_wl_entry()
-when free PEBs are run out after filling pools and fm data. Then the PEB
-with biggest erase conter is taken as wl PEB, it can be scheduled for wl.
-
-Fixes: dbb7d2a88d2a ("UBI: Add fastmap core")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217787
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mtd/ubi/fastmap-wl.c | 44 ++++++++++++++++++++++++++++--------
- drivers/mtd/ubi/wl.c         | 16 ++++++++-----
- 2 files changed, 44 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 490514da1e00..03c1f1016c0a 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -138,23 +138,44 @@ static void wait_free_pebs_for_pool(struct ubi_device *ubi)
- }
- 
- /*
-- * has_enough_free_count - whether ubi has enough free pebs to fill fm pools
-+ * left_free_count - returns the number of free pebs to fill fm pools
-  * @ubi: UBI device description object
-  *
-- * This helper function checks whether there are enough free pebs (deducted
-+ * This helper function returns the number of free pebs (deducted
-  * by fastmap pebs) to fill fm_pool and fm_wl_pool.
-  */
--static bool has_enough_free_count(struct ubi_device *ubi)
-+static int left_free_count(struct ubi_device *ubi)
- {
- 	int fm_used = 0;	// fastmap non anchor pebs.
- 
- 	if (!ubi->free.rb_node)
--		return false;
-+		return 0;
- 
- 	if (!ubi->ro_mode && !ubi->fm_disabled)
- 		fm_used = ubi->fm_size / ubi->leb_size - 1;
- 
--	return ubi->free_count > fm_used;
-+	return ubi->free_count - fm_used;
-+}
-+
-+/*
-+ * can_fill_pools - whether free PEBs will be left after filling pools
-+ * @ubi: UBI device description object
-+ * @free: current number of free PEBs
-+ *
-+ * Return %1 if there are still left free PEBs after filling pools,
-+ * otherwise %0 is returned.
-+ */
-+static int can_fill_pools(struct ubi_device *ubi, int free)
-+{
-+	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
-+	struct ubi_fm_pool *pool = &ubi->fm_pool;
-+	int pool_need = pool->max_size - pool->size +
-+			wl_pool->max_size - wl_pool->size;
-+
-+	if (free - pool_need < 1)
-+		return 0;
-+
-+	return 1;
- }
- 
- /**
-@@ -199,7 +220,7 @@ void ubi_refill_pools_and_lock(struct ubi_device *ubi)
- 	for (;;) {
- 		enough = 0;
- 		if (pool->size < pool->max_size) {
--			if (!has_enough_free_count(ubi))
-+			if (left_free_count(ubi) <= 0)
- 				break;
- 
- 			e = wl_get_wle(ubi);
-@@ -212,10 +233,13 @@ void ubi_refill_pools_and_lock(struct ubi_device *ubi)
- 			enough++;
- 
- 		if (wl_pool->size < wl_pool->max_size) {
--			if (!has_enough_free_count(ubi))
-+			int left_free = left_free_count(ubi);
-+
-+			if (left_free <= 0)
- 				break;
- 
--			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF,
-+					  !can_fill_pools(ubi, left_free));
- 			self_check_in_wl_tree(ubi, e, &ubi->free);
- 			rb_erase(&e->u.rb, &ubi->free);
- 			ubi->free_count--;
-@@ -355,12 +379,12 @@ static bool need_wear_leveling(struct ubi_device *ubi)
- 	if (!e) {
- 		if (!ubi->free.rb_node)
- 			return false;
--		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF, 0);
- 		ec = e->ec;
- 	} else {
- 		ec = e->ec;
- 		if (ubi->free.rb_node) {
--			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF, 0);
- 			ec = max(ec, e->ec);
- 		}
- 	}
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 40a1c306b8af..a357f3d27f2f 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -317,12 +317,14 @@ static void prot_queue_add(struct ubi_device *ubi, struct ubi_wl_entry *e)
-  * @ubi: UBI device description object
-  * @root: the RB-tree where to look for
-  * @diff: maximum possible difference from the smallest erase counter
-+ * @pick_max: pick PEB even its erase counter beyonds 'min_ec + @diff'
-  *
-  * This function looks for a wear leveling entry with erase counter closest to
-  * min + @diff, where min is the smallest erase counter.
-  */
- static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi,
--					  struct rb_root *root, int diff)
-+					  struct rb_root *root, int diff,
-+					  int pick_max)
- {
- 	struct rb_node *p;
- 	struct ubi_wl_entry *e;
-@@ -336,9 +338,11 @@ static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi,
- 		struct ubi_wl_entry *e1;
- 
- 		e1 = rb_entry(p, struct ubi_wl_entry, u.rb);
--		if (e1->ec >= max)
-+		if (e1->ec >= max) {
-+			if (pick_max)
-+				e = e1;
- 			p = p->rb_left;
--		else {
-+		} else {
- 			p = p->rb_right;
- 			e = e1;
- 		}
-@@ -375,7 +379,7 @@ static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
- 		 */
- 		e = may_reserve_for_fm(ubi, e, root);
- 	} else
--		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2);
-+		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2, 0);
- 
- 	return e;
- }
-@@ -1048,7 +1052,7 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
- 		 * %UBI_WL_THRESHOLD.
- 		 */
- 		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, u.rb);
--		e2 = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+		e2 = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF, 0);
- 
- 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD))
- 			goto out_unlock;
-@@ -2079,7 +2083,7 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- {
- 	struct ubi_wl_entry *e;
- 
--	e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+	e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF, 0);
- 	self_check_in_wl_tree(ubi, e, &ubi->free);
- 	ubi->free_count--;
- 	ubi_assert(ubi->free_count >= 0);
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR2VlcnQsCgpBbSAyOC4wOC4yMDIzIHVtIDE4OjQyIHNjaHJpZWIgR2VlcnQgVXl0dGVyaG9l
+dmVuOgo+IE9uIFNhdCwgQXVnIDI2LCAyMDIzIGF0IDEyOjQ04oCvQU0gTWljaGFlbCBTY2htaXR6
+IDxzY2htaXR6bWljQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IChJbmNpZGVudGFsbHkgLSBkaWQgeW91
+IGV2ZXIgcHVibGlzaCB0aGUgbTY4ayBmdWxsIGhpc3RvcnkgdHJlZSBhbnl3aGVyZQo+PiBpbiBn
+aXQ/KQo+Cj4gWW91IG1lYW4gdGhlIGdpdGlmaWVkIHZlcnNpb24gb2YgdGhlIExpbnV4L202OGsg
+Q1ZTIHRyZWUgUmFsZiBjcmVhdGVkCj4gZm9yIG1lIGJlY2F1c2UgbXkgbWFjaGluZSB3YXNuJ3Qg
+cG93ZXJmdWwgZW5vdWdoPwoKVGhlIHZlcnkgc2FtZSAuLi4KCj4gTm8sIGFuZCBJIHNob3VsZCBs
+b29rIGludG8gZG9pbmcgdGhhdC4uLgoKTm8gcHJlc3N1cmUhCgpDaGVlcnMsCgoJTWljaGFlbAoK
+Pgo+IEdye29ldGplLGVldGluZ31zLAo+Cj4gICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQK
+PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
