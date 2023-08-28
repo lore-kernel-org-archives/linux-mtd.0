@@ -4,71 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A4EC71153
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 14:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0AD0C83F15
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 14:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hb7pazAH9l8ypeN0mZQv3R30XNcAOY7Yg/Po3wfITkc=; b=w734YshG8Krpu8
-	9gStaOL91I6y2l4t8G3qkIDgyWKcWiIB7mygbW9M6zTRajdTPX2Ahol1QtBfQFGBrE+pzL0D1uVDd
-	c4rPAZE6SQbxGp6S0285ve9Mv3L1waAKI7IJWxCHZCQAfOaX5Atxo+ru7Oz4f0FziVK3Sg2SuZfI9
-	lt1knY0iKIVF5UDevg/XEk43BTuYHK6WZClH4WNEuVcITiiTRTd3+V74KFmB3GqV0fzSn2sGIZwZO
-	YkT863Wkc5jUkRT12WdTMAVC/R6koqP2G4YH88FSpjWrwwYtUYq3rPKoXN+PhpCtDm9TkOOSmuhue
-	KI6ZnEtOIQcTYvBUWP9w==;
+	List-Owner; bh=AKmCxy51uYeXxQenjMo+Tqj8FZppFpWoI3XaIBmiCUk=; b=nQTkICBcXNUxiI
+	VlQ9s3l1Krx6sIh4s5t78XAdEtecNY5MdbrRpvMV0r45NsWWBfinOkigBBOcABTv+UfZO9Uec0HpW
+	EzjSnPGrHGf7NjcqfJRon8WwgEe29bOO17hh0ccY6q7LuUtwxTNMmswtbTvG8VmABNX4BqZmoBKeP
+	T9J8xSFJWhXE6rPii6jn1yk46pvzm9XH3I0d7gu7EbthQGy3KNOSijLhyPgoq1q9iF6f1zHCQTuCU
+	MYacX/K1Vte1TPnO9o3pL4D9H8WnABChuTJouhfRJNcTkbAd3adOKBlirBt1UYjgXu4H5SiPVqxJS
+	QQYyGPp7FfYXdgZupCPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qadDQ-009iJ3-0x;
-	Mon, 28 Aug 2023 14:27:40 +0000
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1qadDM-009iIb-0l;
-	Mon, 28 Aug 2023 14:27:36 +0000
-Date: Mon, 28 Aug 2023 07:27:36 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-	linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-	Alasdair Kergon <agk@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
-	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	jfs-discussion@lists.sourceforge.net,
-	Joern Engel <joern@lazybastard.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
-	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	xen-devel@lists.xenproject.org, Jens Axboe <axboe@kernel.dk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v2 0/29] block: Make blkdev_get_by_*() return handle
-Message-ID: <ZOyu2FX7Fmzj6JJz@infradead.org>
-References: <20230810171429.31759-1-jack@suse.cz>
- <20230825015843.GB95084@ZenIV>
- <20230825134756.o3wpq6bogndukn53@quack3>
- <20230826022852.GO3390869@ZenIV>
+	id 1qadgK-009kTe-1R;
+	Mon, 28 Aug 2023 14:57:32 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qadgH-009kT0-09
+	for linux-mtd@lists.infradead.org;
+	Mon, 28 Aug 2023 14:57:30 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id ADA2D1BF207;
+	Mon, 28 Aug 2023 14:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1693234643;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+bKJk4wMc6vYXGJ/Nba7NCHSjT/CZJQKtm8Mhtz9xxc=;
+	b=b1JQ2p//EMwBuCfU1KehNjEXwK/kzqXJv5BxYV59Tkeqq1cS53DFQtDBkopXslV9rPKIte
+	zeBu1reB7S4hXkkEoljYiZaBYVjc7hUu487I0phneIJ7+H/DZXKFQJSN2HcJYefuOpM9aO
+	fkK3RvgYEwPzDTcaOHkCce9iaGbg77WZ3QhEjxNUoekP9xzgQNJE5iNk8dfNZ9+zW3Cm14
+	EFGPO/B3IGr4oiO56PTE3bXIT0R92fHgWtylERJ2jB9rPOYrxFtyUKB4Rd+C5yoNqSeAxH
+	1I4jpTau156pOIv8dTVrCJ6rIq2HWCsHTPEHFdLXB4dpHgqjfSN9bRivjk2tpA==
+Date: Mon, 28 Aug 2023 16:57:21 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <Tudor.Ambarus@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf
+ <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush
+ Yadav <pratyush@kernel.org>
+Subject: Re: [GIT PULL] mtd: nand: Changes for 6.6-rc1
+Message-ID: <20230828165721.10876db4@xps-13>
+In-Reply-To: <20230828111316.27f97e4a@xps-13>
+References: <20230828111316.27f97e4a@xps-13>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230826022852.GO3390869@ZenIV>
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230828_075729_224518_9EDE7530 
+X-CRM114-Status: UNSURE (   5.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,49 +71,14 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Aug 26, 2023 at 03:28:52AM +0100, Al Viro wrote:
-> I mean, look at claim_swapfile() for example:
->                 p->bdev = blkdev_get_by_dev(inode->i_rdev,
->                                    FMODE_READ | FMODE_WRITE | FMODE_EXCL, p);
->                 if (IS_ERR(p->bdev)) {
->                         error = PTR_ERR(p->bdev);
->                         p->bdev = NULL;
->                         return error;
->                 }
->                 p->old_block_size = block_size(p->bdev);
->                 error = set_blocksize(p->bdev, PAGE_SIZE);
->                 if (error < 0)
->                         return error;
-> we already have the file opened, and we keep it opened all the way until
-> the swapoff(2); here we have noticed that it's a block device and we
-> 	* open the fucker again (by device number), this time claiming
-> it with our swap_info_struct as holder, to be closed at swapoff(2) time
-> (just before we close the file)
-
-Note that some drivers look at FMODE_EXCL/BLK_OPEN_EXCL in ->open.
-These are probably bogus and maybe we want to kill them, but that will
-need an audit first.
-
-> BTW, what happens if two threads call ioctl(fd, BLKBSZSET, &n)
-> for the same descriptor that happens to have been opened O_EXCL?
-> Without O_EXCL they would've been unable to claim the sucker at the same
-> time - the holder we are using is the address of a function argument,
-> i.e. something that points to kernel stack of the caller.  Those would
-> conflict and we either get set_blocksize() calls fully serialized, or
-> one of the callers would eat -EBUSY.  Not so in "opened with O_EXCL"
-> case - they can very well overlap and IIRC set_blocksize() does *not*
-> expect that kind of crap...  It's all under CAP_SYS_ADMIN, so it's not
-> as if it was a meaningful security hole anyway, but it does look fishy.
-
-The user get to keep the pieces..  BLKBSZSET is kinda bogus anyway
-as the soft blocksize only matters for buffer_head-like I/O, and
-there only for file systems.  Not idea why anyone would set it manually.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Cm1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20gd3JvdGUgb24gTW9uLCAyOCBBdWcgMjAyMyAxMTox
+MzoxNiArMDIwMDoKCj4gSGVsbG8sCj4gCj4gVGhpcyBpcyB0aGUgTkFORCBQUiBmb3IgNi42LXJj
+MS4KCk1lcmdlZCBpbnRvIG10ZC9uZXh0LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
