@@ -4,99 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 875B3C83F12
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A93F3C83F12
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:43:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WGGymFbjhpgYUDSl1Bqz28jmUcQPUp/mWRuSc8X7MG4=; b=hGL4eOXfTuuEn0
-	59ipEOlu0F8EuBQ+dd0bvww+Q0Oh6qNL0UPqxooyASICfe937lvF+YWZQxnakEsxsNlJRVQCNyFLE
-	qx8z8C8nunYLn2hxc8Wpjpi8HMftOVLGwsl+sRjY1loKyCK53/EeEek1kBHiewICKfdUjDtShJXUh
-	0PFiG3LP0UwW+LOLNPm67nVcEwEoS9S9fz5KM+4BUmv1cBZtsnggEpSxWhKx4Br5RhdYXJLoPAGrf
-	kf6ZaHSUKldJAw/faYtv92hcXyMWt/tuL2JABxcyi+EmrioyrIDxJ31JEQSAkW8QfWsyiYOtUyRku
-	z3oc6bj6XeyrbqoFxxow==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HP/CeGP5GQ3gq9zImvLzmCo6Fq7L4DkMyK40KgaSlUo=; b=kslXwyfcT9c07w
+	JOMgvSglTqgG9ZFsDS/Gl3hSh2dGFLKknSiAHdaZNgQTtFMx/6yuk5YwqlQsmZxj/XxdONh27S7oG
+	GwwK+F4xJ30GfbR/Vj34kkKCYTdi5E/FX2XR/jaNYLnT/cJeaQcLZHyocBDfepRaEWmlLeT3YbqfN
+	9Y3uaidpvnkMDThTo0MIqwcndAIYropDFHG4EiACIkJpJ8ZyzSDQacp49vrygZWMo1cxxtrv0tFcQ
+	cTFhmuSFiJ9RbnnE9qewKGSFWWtY0JhUnoRV441OMix7DRtc6SZoXIVrFhNAx/tuIhSg61Iq82yYf
+	ulFcSuAb+k2VlEb7ajEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVy4-008yBu-1J;
-	Mon, 28 Aug 2023 06:43:20 +0000
-Received: from mail-oa1-f50.google.com ([209.85.160.50])
+	id 1qaVyC-008yIL-16;
+	Mon, 28 Aug 2023 06:43:28 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVxz-008yAb-0l;
-	Mon, 28 Aug 2023 06:43:16 +0000
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1c4c6717e61so2152389fac.1;
-        Sun, 27 Aug 2023 23:43:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693204992; x=1693809792;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1ZAs6BPn0UEnVbrYLaaDeF3O9l7Iturm7FWJFQ5jda0=;
-        b=haA9BINSYxg9I16DLf3fgaKahUg9RyJI8ocrl5VSTVOmiATrKnk1AACd5WK1IfTqyZ
-         zPWvop9xs1wwGErvhJsLJroxi7hDal/mwXbqUOvY0qB/q1EcZPyYd/LEm/9Qnwy7nUSe
-         s0N4hysrqK32tp4MZFMbo+XXrw/pdsDDNQBPWiB/3oQey1YLRs14VTQT0Ndlc9k+gznp
-         yZXQXQ55rSIFnkLLR5dPRCR7SwZDbbekaChAiLwnxcXur06bE1z1r2eq4WCHyK8405G4
-         55R+dpzOgEJd/UaUCxBYSjwuqg76GTqFCrn5SaoaL+gYuEO/D/CFuJo9Zt4FzsF9RwyS
-         cvxA==
-X-Gm-Message-State: AOJu0Yzq1NccGOBcT+1A7K6n3b2J30tKbd+GLpD36w3Z20vhZpq2oyCI
-	27lYPNYcYs8B5ONNUICySEncO5P28Np3IA==
-X-Google-Smtp-Source: AGHT+IHY521FO0Jk1lrPkv2LqZ7hVdj8zdPVAMtYKKNOpxWvwmtZGPMmtUrShWDNFCCjqC6tHN4+XQ==
-X-Received: by 2002:a05:6871:5214:b0:1c8:c27f:7dbb with SMTP id ht20-20020a056871521400b001c8c27f7dbbmr13378585oac.41.1693204992299;
-        Sun, 27 Aug 2023 23:43:12 -0700 (PDT)
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com. [209.85.160.50])
-        by smtp.gmail.com with ESMTPSA id y16-20020a056870b49000b001ccab369c09sm3839573oap.42.2023.08.27.23.43.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Aug 2023 23:43:12 -0700 (PDT)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1c4c6717e61so2152381fac.1;
-        Sun, 27 Aug 2023 23:43:11 -0700 (PDT)
-X-Received: by 2002:a25:8502:0:b0:d7a:e348:1e47 with SMTP id
- w2-20020a258502000000b00d7ae3481e47mr3956815ybk.36.1693204971245; Sun, 27 Aug
- 2023 23:42:51 -0700 (PDT)
+	id 1qaVy5-008yAq-1B;
+	Mon, 28 Aug 2023 06:43:23 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RZ1B22c9GzhZGk;
+	Mon, 28 Aug 2023 14:39:22 +0800 (CST)
+Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 28 Aug
+ 2023 14:43:10 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>
+CC: <linux-mtd@lists.infradead.org>,
+	<linux-stm32@st-md-mailman.stormreply.com>,
+	<linux-arm-kernel@lists.infradead.org>, <bagasdotme@gmail.com>
+Subject: [PATCH v2 00/12] ubi: fastmap: Fix a series of wear leveling problems
+Date: Mon, 28 Aug 2023 14:38:33 +0800
+Message-ID: <20230828063845.3142561-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230810141947.1236730-1-arnd@kernel.org> <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
- <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com> <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
- <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
-In-Reply-To: <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 28 Aug 2023 08:42:39 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
-Message-ID: <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
-Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, x86@kernel.org, 
-	Borislav Petkov <bp@alien8.de>, Max Filippov <jcmvbkbc@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Richard Weinberger <richard@nod.at>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Guenter Roeck <linux@roeck-us.net>, Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
+X-Originating-IP: [10.175.104.67]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_234315_275644_5092FBE2 
-X-CRM114-Status: GOOD (  14.64  )
+X-CRM114-CacheID: sfid-20230827_234321_581409_4781DA92 
+X-CRM114-Status: UNSURE (   9.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,23 +63,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU2F0LCBBdWcgMjYsIDIwMjMgYXQgMTI6NDTigK9BTSBNaWNoYWVsIFNjaG1pdHogPHNjaG1p
-dHptaWNAZ21haWwuY29tPiB3cm90ZToKPiAoSW5jaWRlbnRhbGx5IC0gZGlkIHlvdSBldmVyIHB1
-Ymxpc2ggdGhlIG02OGsgZnVsbCBoaXN0b3J5IHRyZWUgYW55d2hlcmUKPiBpbiBnaXQ/KQoKWW91
-IG1lYW4gdGhlIGdpdGlmaWVkIHZlcnNpb24gb2YgdGhlIExpbnV4L202OGsgQ1ZTIHRyZWUgUmFs
-ZiBjcmVhdGVkCmZvciBtZSBiZWNhdXNlIG15IG1hY2hpbmUgd2Fzbid0IHBvd2VyZnVsIGVub3Vn
-aD8KTm8sIGFuZCBJIHNob3VsZCBsb29rIGludG8gZG9pbmcgdGhhdC4uLgoKR3J7b2V0amUsZWV0
-aW5nfXMsCgogICAgICAgICAgICAgICAgICAgICAgICBHZWVydAoKLS0gCkdlZXJ0IFV5dHRlcmhv
-ZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgt
-bTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxl
-LCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFs
-aXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0LgogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+This series of patches fix three problems:
+1. Inconsistent erase counter from wl entry and disk, for patches 1~4.
+2. Same PEB is always resued for fastmap data, for patches 5~9.
+3. First 64 PEBs have large erase counter than others, for patches 10~12.
+
+Besides, patches 4/5 bring an improvement of the UBI service life.
+
+Regression tests are in [Link].
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217787.
+
+v1->v2:
+  Patch 6: Change wait condition in wait_free_pebs_for_pool(), there are
+	   two situations that cause waiting infinately:
+	   1. __erase_worker schedules itself if -EBUSY returned when
+	      shutting down system.
+	   2. The 'min_expect_free' cannot be satisfied when bad block
+	      occurs and ubi becomes ro(The erased PEB should be the
+              last one of 'min_expect_free', but it becomes bad in
+	      __erase_worker).
+ PS: After re-testing, the testing results in [Link] is not affected.
+
+
+Zhihao Cheng (12):
+  ubi: fastmap: Fix missed ec updating after erasing old fastmap data
+    block
+  ubi: fastmap: erase_block: Get erase counter from wl_entry rather than
+    flash
+  ubi: fastmap: Allocate memory with GFP_NOFS in ubi_update_fastmap
+  ubi: Replace erase_block() with sync_erase()
+  ubi: fastmap: Use free pebs reserved for bad block handling
+  ubi: fastmap: Wait until there are enough free PEBs before filling
+    pools
+  ubi: fastmap: Remove unneeded break condition while filling pools
+  ubi: fastmap: may_reserve_for_fm: Don't reserve PEB if fm_anchor
+    exists
+  ubi: fastmap: Get wl PEB even ec beyonds the 'max' if free PEBs are
+    run out
+  ubi: fastmap: Fix lapsed wear leveling for first 64 PEBs
+  ubi: fastmap: Add module parameter to control reserving filling pool
+    PEBs
+  ubi: fastmap: Add control in 'UBI_IOCATT' ioctl to reserve PEBs for
+    filling pools
+
+ drivers/mtd/ubi/build.c      |  25 +++++++-
+ drivers/mtd/ubi/cdev.c       |   3 +-
+ drivers/mtd/ubi/eba.c        |   3 -
+ drivers/mtd/ubi/fastmap-wl.c | 112 +++++++++++++++++++++++++++--------
+ drivers/mtd/ubi/fastmap.c    |  66 +++------------------
+ drivers/mtd/ubi/ubi.h        |  10 +++-
+ drivers/mtd/ubi/wl.c         |  48 +++++++++------
+ drivers/mtd/ubi/wl.h         |   6 +-
+ include/uapi/mtd/ubi-user.h  |   4 +-
+ 9 files changed, 164 insertions(+), 113 deletions(-)
+
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
