@@ -4,62 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0AD0C83F15
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 14:57:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B6BEC83F15
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 17:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AKmCxy51uYeXxQenjMo+Tqj8FZppFpWoI3XaIBmiCUk=; b=nQTkICBcXNUxiI
-	VlQ9s3l1Krx6sIh4s5t78XAdEtecNY5MdbrRpvMV0r45NsWWBfinOkigBBOcABTv+UfZO9Uec0HpW
-	EzjSnPGrHGf7NjcqfJRon8WwgEe29bOO17hh0ccY6q7LuUtwxTNMmswtbTvG8VmABNX4BqZmoBKeP
-	T9J8xSFJWhXE6rPii6jn1yk46pvzm9XH3I0d7gu7EbthQGy3KNOSijLhyPgoq1q9iF6f1zHCQTuCU
-	MYacX/K1Vte1TPnO9o3pL4D9H8WnABChuTJouhfRJNcTkbAd3adOKBlirBt1UYjgXu4H5SiPVqxJS
-	QQYyGPp7FfYXdgZupCPQ==;
+	List-Owner; bh=0583hzV99A3SU92vbaPZ2jG5gnE6o5ZdHviPXh7Q52A=; b=kmbVixcQ4JY1pc
+	1YECgPwHJCPVc4rywvxbshZacOc8Rtgv+hgWAxLTCt4MwIkrw9pDcHuveJ13CgCtpNgL93WSBu4Np
+	8wFBSGJvDHN+WdhqpQyeapVb22fTQVBRiSVnaDvewVis9t4WW8YULUDwK0tE7vSevX7ANK2+r46+1
+	blYZx2SvjFt6KyxWL1V/loGEZXJgyCjP58Dd7kk732L3FmjJvh3nN+fCxgTma99M2fzqBlHotboe/
+	jAeqEpVzadZhMb5h03n2q7yyHD6NWWVr3ABFG1LNpEGMftCIW+ZP2bD7W8s+S1vFsP5BjsVwxPw1j
+	fHk3f3GWPcuupJ7kKWzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qadgK-009kTe-1R;
-	Mon, 28 Aug 2023 14:57:32 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qafiQ-009xwZ-02;
+	Mon, 28 Aug 2023 17:07:50 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qadgH-009kT0-09
-	for linux-mtd@lists.infradead.org;
-	Mon, 28 Aug 2023 14:57:30 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id ADA2D1BF207;
-	Mon, 28 Aug 2023 14:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1693234643;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	id 1qafiM-009xvk-37;
+	Mon, 28 Aug 2023 17:07:48 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 873FB1F37E;
+	Mon, 28 Aug 2023 17:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1693242465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+bKJk4wMc6vYXGJ/Nba7NCHSjT/CZJQKtm8Mhtz9xxc=;
-	b=b1JQ2p//EMwBuCfU1KehNjEXwK/kzqXJv5BxYV59Tkeqq1cS53DFQtDBkopXslV9rPKIte
-	zeBu1reB7S4hXkkEoljYiZaBYVjc7hUu487I0phneIJ7+H/DZXKFQJSN2HcJYefuOpM9aO
-	fkK3RvgYEwPzDTcaOHkCce9iaGbg77WZ3QhEjxNUoekP9xzgQNJE5iNk8dfNZ9+zW3Cm14
-	EFGPO/B3IGr4oiO56PTE3bXIT0R92fHgWtylERJ2jB9rPOYrxFtyUKB4Rd+C5yoNqSeAxH
-	1I4jpTau156pOIv8dTVrCJ6rIq2HWCsHTPEHFdLXB4dpHgqjfSN9bRivjk2tpA==
-Date: Mon, 28 Aug 2023 16:57:21 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <Tudor.Ambarus@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush
- Yadav <pratyush@kernel.org>
-Subject: Re: [GIT PULL] mtd: nand: Changes for 6.6-rc1
-Message-ID: <20230828165721.10876db4@xps-13>
-In-Reply-To: <20230828111316.27f97e4a@xps-13>
-References: <20230828111316.27f97e4a@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	bh=gY+yGRa61TK2BR8Nw1XPStAseZID7tr6EzNodmZtwGI=;
+	b=qVtknFwaytxobpauxbbKFuuIVi6tPH4Iq6U6De70imbcWuGOxhftHNb/4FbPSlc5GK5oK7
+	GshsV6S1hXqpxSKPutaEa7H9BjX/0wslT8a/D4qnl6I13zhL54OxmZm3biLLUgjj3B0284
+	RPao+ZPH1kv8DfDq9EfFHRPOBMpXacI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1693242465;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gY+yGRa61TK2BR8Nw1XPStAseZID7tr6EzNodmZtwGI=;
+	b=R3UkEJ5CJtN+ADS2q+nxkKoBRTSfFifpdVN9hgBj3Kx2evg21jSoeC6uq7LeWXoMGsRfiN
+	pZDyCc1pRe5jtEDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A42A139CC;
+	Mon, 28 Aug 2023 17:07:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id scxcGWHU7GQMNQAAMHmgww
+	(envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 17:07:45 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CE101A0774; Mon, 28 Aug 2023 19:07:44 +0200 (CEST)
+Date: Mon, 28 Aug 2023 19:07:44 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
+	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v3 0/29] block: Make blkdev_get_by_*() return handle
+Message-ID: <20230828170744.iifdmaw732cfiauf@quack3>
+References: <20230818123232.2269-1-jack@suse.cz>
+ <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230828_075729_224518_9EDE7530 
-X-CRM114-Status: UNSURE (   5.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230828_100747_148266_1FD34488 
+X-CRM114-Status: GOOD (  28.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,14 +116,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cm1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20gd3JvdGUgb24gTW9uLCAyOCBBdWcgMjAyMyAxMTox
-MzoxNiArMDIwMDoKCj4gSGVsbG8sCj4gCj4gVGhpcyBpcyB0aGUgTkFORCBQUiBmb3IgNi42LXJj
-MS4KCk1lcmdlZCBpbnRvIG10ZC9uZXh0LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+On Fri 25-08-23 15:32:47, Christian Brauner wrote:
+> On Wed, Aug 23, 2023 at 12:48:11PM +0200, Jan Kara wrote:
+> > Hello,
+> > 
+> > this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
+> > calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+> > makes the get and put calls for bdevs more obviously matching and allows us to
+> > propagate context from get to put without having to modify all the users
+> > (again!). In particular I need to propagate used open flags to blkdev_put() to
+> > be able count writeable opens and add support for blocking writes to mounted
+> > block devices. I'll send that series separately.
+> > 
+> > The series is based on Christian's vfs tree as of today as there is quite
+> > some overlap. Patches have passed some reasonable testing - I've tested block
+> > changes, md, dm, bcache, xfs, btrfs, ext4, swap. More testing or review is
+> > always welcome. Thanks! I've pushed out the full branch to:
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
+> > 
+> > to ease review / testing. Since there were not many comments for v2 and
+> > Christoph has acked the series I think we should start discussing how to merge
+> > the series. Most collisions with this series seem to happen in the filesystems
+> > area so VFS tree would seem as the least painful way to merge this. Jens,
+> 
+> I really do like this series especially struct bdev_handle and moving
+> the mode bits in there. I'll happily take this. So far there have only
+> been minor things that can easily be fixed.
+
+Thanks. Since Al is fine with just doing a potential conversion to 'struct
+file' as a handle on top of this series (it will be dumb Coccinelle
+replacement) I think we can go ahead with the series as is. As you said
+there will be some conflicts in btrfs and I've learned about f2fs conflicts
+as well so I can rebase & repost the series on top of rc1 to make life
+easier for you.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
