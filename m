@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03F8BC71153
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:44:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67F78C83F12
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:44:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XIAXG3Ds86fTqiXqkecTZPLuipU9OwKA3aXLLkeJ3vo=; b=AL6Y1JOZOLCwsx
-	bEZe4H/aeFY5d0mPzCImrynifs4zmlFB+lpFKLFFy6gjOexfkx0LixdDy42Fbv0TgSVpsQS2RrGXR
-	xZHyHD/92JOa+waMzu8+7qnLinIjWa2onL92y1gq7G5P/ZIoGs35jc6uBm634wHHa6hYw5dGgELrc
-	tAS2b026dQ9vpvYwqddPloSRJh52V/fGZmJDdf/UHSRynunZPXJZZHSXuTdXuMfBL8ixUM9QZmSEO
-	0eZ/QXUzHWtRq3HuRTmjxN6+oBX1Mstirl6WsRSUtLb+LsLQV/PZ/jzU+TgVR3Ikxf9dp4AKCU2ic
-	jxFUTs/NC+BbBo14/Ixg==;
+	List-Owner; bh=QRe2EZmDKbXMRxYsddjv4jg33gkr6tSOW04t5GyQUzA=; b=xNq/u4kK/Hhsx1
+	ulTZer+URKHNvza8v3MUPuTNi0r33ACOKugQUoxVU0huUb8q/pBZ1Vqs882SDB2pEHJwYMjf0WfRx
+	MJT0wjjKQlzQCWyPkuF4Q6qn64/nxz01w2eeOXK3BLV5E4wUGxf930N7E4NFliwafiH1CFYzwXsSr
+	toksvB/8Y6wDKtxxcdxx9i7blBWmtIxqjK8pqACAdsxdJFKkLPvn0IjSi2aEMH/LbJ3c1lVBWUbTt
+	41NuThtbgrAI8eP/d08RsNKfNbF6SfjpztvTNJKU8+dQuesYDGK4xeIfXiG1CzdWO0znvmGaeMlzB
+	I6EdUabZUs3LXFBvYQSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVz9-008yxF-1g;
-	Mon, 28 Aug 2023 06:44:27 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1qaVzK-008z5B-1q;
+	Mon, 28 Aug 2023 06:44:38 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVy8-008yAp-0k;
+	id 1qaVy8-008yBR-0c;
 	Mon, 28 Aug 2023 06:43:28 +0000
 Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RZ1Bp2CqMzLp2V;
-	Mon, 28 Aug 2023 14:40:02 +0800 (CST)
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RZ1Cp37rqzVjXv;
+	Mon, 28 Aug 2023 14:40:54 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 28 Aug
- 2023 14:43:11 +0800
+ 2023 14:43:16 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
 	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>
 CC: <linux-mtd@lists.infradead.org>,
 	<linux-stm32@st-md-mailman.stormreply.com>,
 	<linux-arm-kernel@lists.infradead.org>, <bagasdotme@gmail.com>
-Subject: [PATCH v2 01/12] ubi: fastmap: Fix missed ec updating after erasing old fastmap data block
-Date: Mon, 28 Aug 2023 14:38:34 +0800
-Message-ID: <20230828063845.3142561-2-chengzhihao1@huawei.com>
+Subject: [PATCH v2 08/12] ubi: fastmap: may_reserve_for_fm: Don't reserve PEB if fm_anchor exists
+Date: Mon, 28 Aug 2023 14:38:41 +0800
+Message-ID: <20230828063845.3142561-9-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828063845.3142561-1-chengzhihao1@huawei.com>
 References: <20230828063845.3142561-1-chengzhihao1@huawei.com>
@@ -51,8 +51,8 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_234324_692518_23239C02 
-X-CRM114-Status: GOOD (  14.13  )
+X-CRM114-CacheID: sfid-20230827_234324_622239_506A4DDA 
+X-CRM114-Status: GOOD (  14.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,136 +69,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-After running fsstress on ubifs for a long time, UBI(16384 blocks,
-fastmap takes 2 blocks) has an erase block with different erase
-counters displayed from two views:
+This is the part 1 to fix cyclically reusing single fastmap data PEBs.
 
-From ubiscan view: PEB 8031 has erase counter 31581
+After running fsstress on UBIFS for a while, UBI (16384 blocks, fastmap
+takes 2 blocks) has an erase block(PEB: 8031) with big erase counter
+greater than any other pebs:
+
 =========================================================
 from              to     count      min      avg      max
 ---------------------------------------------------------
 0        ..        9:        0        0        0        0
-10       ..       99:        0        0        0        0
-100      ..      999:    16383      290      315      781
-1000     ..     9999:        0        0        0        0
-10000    ..    99999:        1    31581    31581    31581
-100000   ..      inf:        0        0        0        0
+10       ..       99:      532       84       92       99
+100      ..      999:    15787      100      147      229
+1000     ..     9999:       64     4699     4765     4826
+10000    ..    99999:        0        0        0        0
+100000   ..      inf:        1   272935   272935   272935
 ---------------------------------------------------------
-Total               :    16384      290      317    31581
+Total               :    16384       84      180   272935
 
-From detailed_erase_block_info view: PEB 8031 has erase counter 7
-physical_block_number   erase_count
-8030                    421
-8031                    7   # mem info is different from disk info
-8032                    434
-8033                    425
-8034                    431
-
-Following process missed updating erase counter in wl_entry(in memory):
+Not like fm_anchor, there is no candidate PEBs for fastmap data area,
+so old fastmap data pebs will be reused after all free pebs are filled
+into pool/wl_pool:
 ubi_update_fastmap
- for (i = 1; i < new_fm->used_blocks; i++) // update fastmap data
-  if (!tmp_e)
-   if (old_fm && old_fm->e[i])
-    erase_block(ubi, old_fm->e[i]->pnum)
-     ret = ubi_io_sync_erase(ubi, pnum, 0)
-     ec = be64_to_cpu(ec_hdr->ec)
-     ec += ret
-     ec_hdr->ec = cpu_to_be64(ec)
-     ubi_io_write_ec_hdr(ubi, pnum, ec_hdr)  // ec is updated on flash
-   // ec is not updated in old_fm->e[i] (in memory)
+ for (i = 1; i < new_fm->used_blocks; i++)
+  erase_block(ubi, old_fm->e[i]->pnum)
+  new_fm->e[i] = old_fm->e[i]
 
-Fix it by passing wl_enter into erase_block() and updating erase
-counter in erase_block().
+According to wear leveling algorithm, UBI selects one small erase
+counter PEB from ubi->used and one big erase counter PEB from wl_pool,
+the reused fastmap data PEB is not in these trees. UBI won't schedule
+this PEB for wl even it is in ubi->used because wl algorithm expects
+small erase counter for used PEB.
+
+Don't reserve PEB for fastmap in may_reserve_for_fm() if fm_anchor
+already exists. Otherwise, when UBI is running out of free PEBs,
+the only one free PEB (pnum < 64) will be skipped and fastmap data
+will be written on the same old PEB.
 
 Fixes: dbb7d2a88d2a ("UBI: Add fastmap core")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217787
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/fastmap.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ drivers/mtd/ubi/fastmap-wl.c | 2 +-
+ drivers/mtd/ubi/wl.c         | 9 ++++++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 28c8151a0725..f8c230acc55e 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -1392,11 +1392,12 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
- /**
-  * erase_block - Manually erase a PEB.
-  * @ubi: UBI device object
-- * @pnum: PEB to be erased
-+ * @e: the physical eraseblock to erase
-  *
-- * Returns the new EC value on success, < 0 indicates an internal error.
-+ * This function returns zero in case of success and a negative error code in
-+ * case of failure.
-  */
--static int erase_block(struct ubi_device *ubi, int pnum)
-+static int erase_block(struct ubi_device *ubi, struct ubi_wl_entry *e)
- {
- 	int ret;
- 	struct ubi_ec_hdr *ec_hdr;
-@@ -1406,7 +1407,7 @@ static int erase_block(struct ubi_device *ubi, int pnum)
- 	if (!ec_hdr)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 7c4cfd80da31..490514da1e00 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -521,7 +521,7 @@ static void ubi_fastmap_close(struct ubi_device *ubi)
+ static struct ubi_wl_entry *may_reserve_for_fm(struct ubi_device *ubi,
+ 					   struct ubi_wl_entry *e,
+ 					   struct rb_root *root) {
+-	if (e && !ubi->fm_disabled && !ubi->fm &&
++	if (e && !ubi->fm_disabled && !ubi->fm && !ubi->fm_anchor &&
+ 	    e->pnum < UBI_FM_MAX_START)
+ 		e = rb_entry(rb_next(root->rb_node),
+ 			     struct ubi_wl_entry, u.rb);
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 14edb65ce6a6..40a1c306b8af 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -367,9 +367,12 @@ static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
+ 	if (last->ec - first->ec < WL_FREE_MAX_DIFF) {
+ 		e = rb_entry(root->rb_node, struct ubi_wl_entry, u.rb);
  
--	ret = ubi_io_read_ec_hdr(ubi, pnum, ec_hdr, 0);
-+	ret = ubi_io_read_ec_hdr(ubi, e->pnum, ec_hdr, 0);
- 	if (ret < 0)
- 		goto out;
- 	else if (ret && ret != UBI_IO_BITFLIPS) {
-@@ -1414,7 +1415,7 @@ static int erase_block(struct ubi_device *ubi, int pnum)
- 		goto out;
- 	}
- 
--	ret = ubi_io_sync_erase(ubi, pnum, 0);
-+	ret = ubi_io_sync_erase(ubi, e->pnum, 0);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -1426,11 +1427,16 @@ static int erase_block(struct ubi_device *ubi, int pnum)
- 	}
- 
- 	ec_hdr->ec = cpu_to_be64(ec);
--	ret = ubi_io_write_ec_hdr(ubi, pnum, ec_hdr);
-+	ret = ubi_io_write_ec_hdr(ubi, e->pnum, ec_hdr);
- 	if (ret < 0)
- 		goto out;
- 
--	ret = ec;
-+	e->ec = ec;
-+	spin_lock(&ubi->wl_lock);
-+	if (e->ec > ubi->max_ec)
-+		ubi->max_ec = e->ec;
-+	spin_unlock(&ubi->wl_lock);
-+
- out:
- 	kfree(ec_hdr);
- 	return ret;
-@@ -1576,7 +1582,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 
- 		if (!tmp_e) {
- 			if (old_fm && old_fm->e[i]) {
--				ret = erase_block(ubi, old_fm->e[i]->pnum);
-+				ret = erase_block(ubi, old_fm->e[i]);
- 				if (ret < 0) {
- 					ubi_err(ubi, "could not erase old fastmap PEB");
- 
-@@ -1628,7 +1634,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 	if (old_fm) {
- 		/* no fresh anchor PEB was found, reuse the old one */
- 		if (!tmp_e) {
--			ret = erase_block(ubi, old_fm->e[0]->pnum);
-+			ret = erase_block(ubi, old_fm->e[0]);
- 			if (ret < 0) {
- 				ubi_err(ubi, "could not erase old anchor PEB");
- 
-@@ -1640,7 +1646,6 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 				goto err;
- 			}
- 			new_fm->e[0] = old_fm->e[0];
--			new_fm->e[0]->ec = ret;
- 			old_fm->e[0] = NULL;
- 		} else {
- 			/* we've got a new anchor PEB, return the old one */
+-		/* If no fastmap has been written and this WL entry can be used
+-		 * as anchor PEB, hold it back and return the second best
+-		 * WL entry such that fastmap can use the anchor PEB later. */
++		/*
++		 * If no fastmap has been written and fm_anchor is not
++		 * reserved and this WL entry can be used as anchor PEB
++		 * hold it back and return the second best WL entry such
++		 * that fastmap can use the anchor PEB later.
++		 */
+ 		e = may_reserve_for_fm(ubi, e, root);
+ 	} else
+ 		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2);
 -- 
 2.39.2
 
