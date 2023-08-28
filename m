@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E534DC83F12
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:44:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14969C71153
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 06:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/GnMHAewG23xkRC1J3ugjVh06IWotdW71CT8neJPIek=; b=nk0WqEkThh5znC
-	h4mt5nhhtWWA76Kaifm+Aip1lkZca6298vF1xX8KsV+bVrZPxQqUbZaxaRpu5Q7vV+tlq4NUjUQdY
-	E5YDQDIdk9ZS8gqZiwRkYGrAbrCPmWypxzLwzUeju9s17V9vBQQvLND35/hfSCYpzRHs0BpstZIrD
-	CJC3c2Jxv0KvaM8bSffMXgcCPGIwnbd1eagTDLP0pwGWYuJ51pLEb6q12iZJSh123TLsuKPc/VH+Y
-	wNVoG1XPkflcbIAfoDCbOs4pAoNQyKEXKdYYfFOaKi8DANTLs/kPxefKUY2/SgvEMcg2OhBeWO5AF
-	va4rrTBKCbI6XwrXODsQ==;
+	List-Owner; bh=qYQT4kAKZiCz1ruejwmHI9pN4aUj2gIh6VpK8w9voA8=; b=dQbWLhsTTBlP6O
+	AL9iTxAGT83Jq+5V1XEX93kM+RDQciGhuQbZ3lWmzrZZqm3Q+/bpedVbTXQrA05/PeQuchQQLzaVP
+	KOCpUlLuneTWSCWn7Azum4vbVRPv7osmyUqmMSrsBEpPI+0kzydxl6qaKejBWoz1tFFWrY67hoZjU
+	iijKSiIpLiL0ryiKQNQtI86cb5xotLg4HdsMCaJJU/T0GPuq7ITJfHhk7ynQcjyFOvCxgo6uzCTzK
+	3xDAf8t11uve6aatXTNdpm1P23DL3Z8XFpmDjx+TUt60r1PQmozFinZvXicM5UQ8xktb04ESkS3Nc
+	DAL0rhC1TpMwPFsMAqaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVyh-008ybo-1i;
-	Mon, 28 Aug 2023 06:43:59 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1qaVyg-008ybQ-2V;
+	Mon, 28 Aug 2023 06:43:58 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaVy7-008yBt-1d;
+	id 1qaVy5-008yC1-2q;
 	Mon, 28 Aug 2023 06:43:26 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RZ1Df2Ntgz1L9G5;
-	Mon, 28 Aug 2023 14:41:38 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.56])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RZ1BR2ZFXzNnFc;
+	Mon, 28 Aug 2023 14:39:43 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 28 Aug
- 2023 14:43:13 +0800
+ 2023 14:43:19 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
 	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>
 CC: <linux-mtd@lists.infradead.org>,
 	<linux-stm32@st-md-mailman.stormreply.com>,
 	<linux-arm-kernel@lists.infradead.org>, <bagasdotme@gmail.com>
-Subject: [PATCH v2 03/12] ubi: fastmap: Allocate memory with GFP_NOFS in ubi_update_fastmap
-Date: Mon, 28 Aug 2023 14:38:36 +0800
-Message-ID: <20230828063845.3142561-4-chengzhihao1@huawei.com>
+Subject: [PATCH v2 11/12] ubi: fastmap: Add module parameter to control reserving filling pool PEBs
+Date: Mon, 28 Aug 2023 14:38:44 +0800
+Message-ID: <20230828063845.3142561-12-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230828063845.3142561-1-chengzhihao1@huawei.com>
 References: <20230828063845.3142561-1-chengzhihao1@huawei.com>
@@ -51,9 +51,8 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230827_234323_748323_CD452225 
-X-CRM114-Status: UNSURE (   9.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230827_234322_356119_CF4C03E0 
+X-CRM114-Status: GOOD (  18.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,77 +69,136 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Function ubi_update_fastmap could be called in IO context, for example:
- ubifs_writepage
-  do_writepage
-   ubifs_jnl_write_data
-    write_head
-     ubifs_wbuf_write_nolock
-      ubifs_leb_write
-       ubi_leb_write
-        ubi_eba_write_leb
-	 try_write_vid_and_data
-	  ubi_wl_get_peb
-	   ubi_update_fastmap
-	    erase_block
-
-So it's better to allocate memory with GFP_NOFS mode, in case waiting
-page writeback(dead loop).
+Adding 6th module parameter in 'mtd=xxx' to control whether or not
+reserving PEBs for filling pool/wl_pool.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/fastmap.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/ubi/build.c | 26 ++++++++++++++++++++++----
+ drivers/mtd/ubi/cdev.c  |  3 ++-
+ drivers/mtd/ubi/ubi.h   |  2 +-
+ 3 files changed, 25 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 05ecdc049343..d64bfb986d40 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -20,7 +20,7 @@ static inline unsigned long *init_seen(struct ubi_device *ubi)
- 	if (!ubi_dbg_chk_fastmap(ubi))
- 		return NULL;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 66d7b6a16aad..7d4ff1193db6 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -35,7 +35,7 @@
+ #define MTD_PARAM_LEN_MAX 64
  
--	ret = bitmap_zalloc(ubi->peb_count, GFP_KERNEL);
-+	ret = bitmap_zalloc(ubi->peb_count, GFP_NOFS);
- 	if (!ret)
- 		return ERR_PTR(-ENOMEM);
+ /* Maximum number of comma-separated items in the 'mtd=' parameter */
+-#define MTD_PARAM_MAX_COUNT 5
++#define MTD_PARAM_MAX_COUNT 6
  
-@@ -105,7 +105,7 @@ static struct ubi_vid_io_buf *new_fm_vbuf(struct ubi_device *ubi, int vol_id)
- 	struct ubi_vid_io_buf *new;
- 	struct ubi_vid_hdr *vh;
+ /* Maximum value for the number of bad PEBs per 1024 PEBs */
+ #define MAX_MTD_UBI_BEB_LIMIT 768
+@@ -54,6 +54,7 @@
+  * @vid_hdr_offs: VID header offset
+  * @max_beb_per1024: maximum expected number of bad PEBs per 1024 PEBs
+  * @enable_fm: enable fastmap when value is non-zero
++ * @need_resv_pool: reserve pool->max_size pebs when value is none-zero
+  */
+ struct mtd_dev_param {
+ 	char name[MTD_PARAM_LEN_MAX];
+@@ -61,6 +62,7 @@ struct mtd_dev_param {
+ 	int vid_hdr_offs;
+ 	int max_beb_per1024;
+ 	int enable_fm;
++	int need_resv_pool;
+ };
  
--	new = ubi_alloc_vid_buf(ubi, GFP_KERNEL);
-+	new = ubi_alloc_vid_buf(ubi, GFP_NOFS);
- 	if (!new)
- 		goto out;
+ /* Numbers of elements set in the @mtd_dev_param array */
+@@ -825,6 +827,7 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
+  * @vid_hdr_offset: VID header offset
+  * @max_beb_per1024: maximum expected number of bad PEB per 1024 PEBs
+  * @disable_fm: whether disable fastmap
++ * @need_resv_pool: whether reserve pebs to fill fm_pool
+  *
+  * This function attaches MTD device @mtd_dev to UBI and assign @ubi_num number
+  * to the newly created UBI device, unless @ubi_num is %UBI_DEV_NUM_AUTO, in
+@@ -840,7 +843,8 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
+  * @ubi_devices_mutex.
+  */
+ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+-		       int vid_hdr_offset, int max_beb_per1024, bool disable_fm)
++		       int vid_hdr_offset, int max_beb_per1024, bool disable_fm,
++		       bool need_resv_pool)
+ {
+ 	struct ubi_device *ubi;
+ 	int i, err;
+@@ -951,7 +955,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 		UBI_FM_MIN_POOL_SIZE);
  
-@@ -1403,7 +1403,7 @@ static int erase_block(struct ubi_device *ubi, struct ubi_wl_entry *e)
- 	struct ubi_ec_hdr *ec_hdr;
- 	long long ec = e->ec;
+ 	ubi->fm_wl_pool.max_size = ubi->fm_pool.max_size / 2;
+-	ubi->fm_pool_rsv_cnt = ubi->fm_pool.max_size;
++	ubi->fm_pool_rsv_cnt = need_resv_pool ? ubi->fm_pool.max_size : 0;
+ 	ubi->fm_disabled = (!fm_autoconvert || disable_fm) ? 1 : 0;
+ 	if (fm_debug)
+ 		ubi_enable_dbg_chk_fastmap(ubi);
+@@ -1274,7 +1278,8 @@ static int __init ubi_init(void)
+ 		mutex_lock(&ubi_devices_mutex);
+ 		err = ubi_attach_mtd_dev(mtd, p->ubi_num,
+ 					 p->vid_hdr_offs, p->max_beb_per1024,
+-					 p->enable_fm == 0);
++					 p->enable_fm == 0,
++					 p->need_resv_pool != 0);
+ 		mutex_unlock(&ubi_devices_mutex);
+ 		if (err < 0) {
+ 			pr_err("UBI error: cannot attach mtd%d\n",
+@@ -1483,6 +1488,18 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
+ 	} else
+ 		p->enable_fm = 0;
  
--	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-+	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_NOFS);
- 	if (!ec_hdr)
- 		return -ENOMEM;
- 
-@@ -1459,7 +1459,7 @@ static int invalidate_fastmap(struct ubi_device *ubi)
- 	ubi->fm = NULL;
- 
- 	ret = -ENOMEM;
--	fm = kzalloc(sizeof(*fm), GFP_KERNEL);
-+	fm = kzalloc(sizeof(*fm), GFP_NOFS);
- 	if (!fm)
- 		goto out;
- 
-@@ -1548,7 +1548,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
- 		return 0;
- 	}
- 
--	new_fm = kzalloc(sizeof(*new_fm), GFP_KERNEL);
-+	new_fm = kzalloc(sizeof(*new_fm), GFP_NOFS);
- 	if (!new_fm) {
- 		up_write(&ubi->fm_eba_sem);
- 		up_write(&ubi->work_sem);
++	token = tokens[5];
++	if (token) {
++		int err = kstrtoint(token, 10, &p->need_resv_pool);
++
++		if (err) {
++			pr_err("UBI error: bad value for need_resv_pool parameter: %s\n",
++				token);
++			return -EINVAL;
++		}
++	} else
++		p->need_resv_pool = 0;
++
+ 	mtd_devs += 1;
+ 	return 0;
+ }
+@@ -1496,6 +1513,7 @@ MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|pa
+ 		      __stringify(CONFIG_MTD_UBI_BEB_LIMIT) ") if 0)\n"
+ 		      "Optional \"ubi_num\" parameter specifies UBI device number which have to be assigned to the newly created UBI device (assigned automatically by default)\n"
+ 		      "Optional \"enable_fm\" parameter determines whether to enable fastmap during attach. If the value is non-zero, fastmap is enabled. Default value is 0.\n"
++		      "Optional \"need_resv_pool\" parameter determines whether to reserve pool->max_size pebs during attach. If the value is non-zero, peb reservation is enabled. Default value is 0.\n"
+ 		      "\n"
+ 		      "Example 1: mtd=/dev/mtd0 - attach MTD device /dev/mtd0.\n"
+ 		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device with name \"content\" using VID header offset 1984, and MTD device number 4 with default VID header offset.\n"
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index f43430b9c1e6..98aa00344b29 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -1041,7 +1041,8 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		 */
+ 		mutex_lock(&ubi_devices_mutex);
+ 		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset,
+-					 req.max_beb_per1024, !!req.disable_fm);
++					 req.max_beb_per1024, !!req.disable_fm,
++					 false);
+ 		mutex_unlock(&ubi_devices_mutex);
+ 		if (err < 0)
+ 			put_mtd_device(mtd);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 6e20a0fee72f..a5ec566df0d7 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -944,7 +944,7 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+ /* build.c */
+ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 		       int vid_hdr_offset, int max_beb_per1024,
+-		       bool disable_fm);
++		       bool disable_fm, bool need_resv_pool);
+ int ubi_detach_mtd_dev(int ubi_num, int anyway);
+ struct ubi_device *ubi_get_device(int ubi_num);
+ void ubi_put_device(struct ubi_device *ubi);
 -- 
 2.39.2
 
