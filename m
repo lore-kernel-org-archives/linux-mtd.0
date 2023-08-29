@@ -4,107 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B6BEC83F15
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Aug 2023 17:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BF81C6FA8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Aug 2023 04:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0583hzV99A3SU92vbaPZ2jG5gnE6o5ZdHviPXh7Q52A=; b=kmbVixcQ4JY1pc
-	1YECgPwHJCPVc4rywvxbshZacOc8Rtgv+hgWAxLTCt4MwIkrw9pDcHuveJ13CgCtpNgL93WSBu4Np
-	8wFBSGJvDHN+WdhqpQyeapVb22fTQVBRiSVnaDvewVis9t4WW8YULUDwK0tE7vSevX7ANK2+r46+1
-	blYZx2SvjFt6KyxWL1V/loGEZXJgyCjP58Dd7kk732L3FmjJvh3nN+fCxgTma99M2fzqBlHotboe/
-	jAeqEpVzadZhMb5h03n2q7yyHD6NWWVr3ABFG1LNpEGMftCIW+ZP2bD7W8s+S1vFsP5BjsVwxPw1j
-	fHk3f3GWPcuupJ7kKWzQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=E3Pu2r2Iltme/1psq1Jt0dCMPFPeXwlpFz9HMm9tjnY=; b=XUWvsDGGkq432C4rEPx+GglotE
+	6xxevNXnp9AG5YtqdYTN3MyMR8NPBsrFPA5Rz1cU2Wr5bbSjuBZwfh+yWMdT2zGHjTQfAyGbO+1wd
+	VKbEXZ8aWXXURtPdd5aKBu6BWtuGJXAz+ORqr0jjx4X8PoiUyTJ0zDDp9RPWKJBLtD+Q8QTSn9Uz/
+	aOYC+puGf9EX58toRRMKJNrULG1G45vCnVcWOhdGftk/QEoY/EHTG/MGzEHvZdDA+8ooEHgpENFIF
+	d38woOI5RGYYXvGUi5x9Dp0w67HJYo2JWjUdshU4EOy0ucBYq4+oYyDMhJaDJ/WvJO3ycBEE0bIbo
+	ZofCfUwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qafiQ-009xwZ-02;
-	Mon, 28 Aug 2023 17:07:50 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1qaqm2-00AmWa-1p;
+	Tue, 29 Aug 2023 04:56:18 +0000
+Received: from mail-io1-xd2b.google.com ([2607:f8b0:4864:20::d2b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qafiM-009xvk-37;
-	Mon, 28 Aug 2023 17:07:48 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 873FB1F37E;
-	Mon, 28 Aug 2023 17:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1693242465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gY+yGRa61TK2BR8Nw1XPStAseZID7tr6EzNodmZtwGI=;
-	b=qVtknFwaytxobpauxbbKFuuIVi6tPH4Iq6U6De70imbcWuGOxhftHNb/4FbPSlc5GK5oK7
-	GshsV6S1hXqpxSKPutaEa7H9BjX/0wslT8a/D4qnl6I13zhL54OxmZm3biLLUgjj3B0284
-	RPao+ZPH1kv8DfDq9EfFHRPOBMpXacI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1693242465;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gY+yGRa61TK2BR8Nw1XPStAseZID7tr6EzNodmZtwGI=;
-	b=R3UkEJ5CJtN+ADS2q+nxkKoBRTSfFifpdVN9hgBj3Kx2evg21jSoeC6uq7LeWXoMGsRfiN
-	pZDyCc1pRe5jtEDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A42A139CC;
-	Mon, 28 Aug 2023 17:07:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id scxcGWHU7GQMNQAAMHmgww
-	(envelope-from <jack@suse.cz>); Mon, 28 Aug 2023 17:07:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CE101A0774; Mon, 28 Aug 2023 19:07:44 +0200 (CEST)
-Date: Mon, 28 Aug 2023 19:07:44 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>,
-	Alasdair Kergon <agk@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
-	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	jfs-discussion@lists.sourceforge.net,
-	Joern Engel <joern@lazybastard.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
-	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v3 0/29] block: Make blkdev_get_by_*() return handle
-Message-ID: <20230828170744.iifdmaw732cfiauf@quack3>
-References: <20230818123232.2269-1-jack@suse.cz>
- <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
+	id 1qaqlz-00AmW9-1Y
+	for linux-mtd@lists.infradead.org;
+	Tue, 29 Aug 2023 04:56:17 +0000
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-792918c5f33so85431139f.3
+        for <linux-mtd@lists.infradead.org>; Mon, 28 Aug 2023 21:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693284974; x=1693889774;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=56RQyKIWsd8kpcaxGIljWlOIf/R2gwH1nmqcYMjfge8=;
+        b=jQKq+OLkMrlIpEcrq5CSyptHHLDPZMI4hUcG/7Jcxsb58he671zk0zvgSI52h/8E5P
+         VRKEZBR9rwMum+R5P/OUwz0W85iCVWShOcHPN2pV8wnOAA1Vvil5LeDwlXmwreca55tb
+         gqvyOSBdoCeFtLfDGV3j+ilKs4+sMz2EnIvK7gzft0txvPR3FVrJzi2fbrgBYTHyrmka
+         9w2gYJidZcaj0T3LoD3oLtSIEtGkU9bWD4FoT1/2s32byzLlW2XXYI5yR0smkpBrSPon
+         6at21CsQqoBg2wNVPJ1IXpFlYso/vh5GUPsbWJB1jeUC0Crk69p7jkivPELnx0d6IDz2
+         R8iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693284974; x=1693889774;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=56RQyKIWsd8kpcaxGIljWlOIf/R2gwH1nmqcYMjfge8=;
+        b=BfoZEJnLx/7Og3r5OD+pDBQJxtLuRvJxjY3OLvekYYcNI0YBw2+CiIjPMJxcrhw9td
+         Unk/7/ASuNcD8/0YSgVTc6AUmtOWagFvB+AgFckKUmOHDNAxjSu/yk1V0We98qSl4jUh
+         kstp32iRboz8F9h3t/ugKB0kE34drA/KC9QzGl4NVdx1GK0/hmiLcN1fVfN9K4zJa9KC
+         BhbjFi/8UOohpyemVDAMtCo2OOPMg7pxtjP/8J/ETlUMKl/qQ3c6NLZWtH3G2f60BXNA
+         MCMHE5FNGz9QeV1Gi1NAHhZwaC7dAjiXcfYvZdgKjjOAuZmB9mywwbqIwLx7vSkQRG+L
+         O1yg==
+X-Gm-Message-State: AOJu0YyQJpPTT+yFYvVpke2Z6sn1v9R4IlkIxgXFTvPYD5NR2JGKP2Wl
+	7nVYgDEg1GVoxWrnECsKNbE=
+X-Google-Smtp-Source: AGHT+IEHMR6LmyvlNvHDGgy5W+SLGvFUf0xRqottL/TYP7YVWzKH8m2bPsr9ZU1J0RlXulwI8aALaw==
+X-Received: by 2002:a05:6e02:e08:b0:345:fbdc:bb78 with SMTP id a8-20020a056e020e0800b00345fbdcbb78mr16896466ilk.29.1693284973893;
+        Mon, 28 Aug 2023 21:56:13 -0700 (PDT)
+Received: from sun-virtual-machine.localdomain ([103.149.144.245])
+        by smtp.gmail.com with ESMTPSA id c1-20020a92cf41000000b0034ca3b29c5asm2868605ilr.57.2023.08.28.21.56.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Aug 2023 21:56:13 -0700 (PDT)
+From: SSunk <ssunkkan@gmail.com>
+To: ssunkkan@gmail.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com,
+	pratyush@kernel.org,
+	richard@nod.at,
+	tudor.ambarus@linaro.org,
+	vigneshr@ti.com
+Subject: Re: [PATCH] Add support for more XMC series
+Date: Tue, 29 Aug 2023 12:56:00 +0800
+Message-Id: <20230829045600.5254-1-ssunkkan@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2F4A4D23-1C71-42B9-8B2C-06496F773BDA@gmail.com>
+References: <2F4A4D23-1C71-42B9-8B2C-06496F773BDA@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230828_100747_148266_1FD34488 
-X-CRM114-Status: GOOD (  28.23  )
+X-CRM114-CacheID: sfid-20230828_215615_522660_79E2F884 
+X-CRM114-Status: GOOD (  15.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,51 +93,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3523531453230226108=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri 25-08-23 15:32:47, Christian Brauner wrote:
-> On Wed, Aug 23, 2023 at 12:48:11PM +0200, Jan Kara wrote:
-> > Hello,
-> > 
-> > this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
-> > calls returning bdev_handle which is then passed to blkdev_put() [1]. This
-> > makes the get and put calls for bdevs more obviously matching and allows us to
-> > propagate context from get to put without having to modify all the users
-> > (again!). In particular I need to propagate used open flags to blkdev_put() to
-> > be able count writeable opens and add support for blocking writes to mounted
-> > block devices. I'll send that series separately.
-> > 
-> > The series is based on Christian's vfs tree as of today as there is quite
-> > some overlap. Patches have passed some reasonable testing - I've tested block
-> > changes, md, dm, bcache, xfs, btrfs, ext4, swap. More testing or review is
-> > always welcome. Thanks! I've pushed out the full branch to:
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
-> > 
-> > to ease review / testing. Since there were not many comments for v2 and
-> > Christoph has acked the series I think we should start discussing how to merge
-> > the series. Most collisions with this series seem to happen in the filesystems
-> > area so VFS tree would seem as the least painful way to merge this. Jens,
+--===============3523531453230226108==
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+
+>Hi Michael,
+>Since this is the first time I've submitted code to the Linux community, please forgive me for some of the missteps that I've made.
+>I uploaded the incorrect patch file.
+>In a previous e-mail you said：
+>XMC parts seem to have SFDP tables and they should work out of the box
+>without any patches with the generic spi nor driver [1]. Therefore,
+>you don't need any entry at all.
+>
+>I think it is related to the PARSE_SFDP flag.
+>The XMC flash part supports SFDP, so i don’t need to add NO_SFDP_FLAGS() macro.
+> drivers/mtd/spi-nor/xmc.c | 17 +++++++++++++----
+> 1 file changed, 13 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+>index 051411e86339..e78bf11792d9 100644
+>--- a/drivers/mtd/spi-nor/xmc.c
+>+++ b/drivers/mtd/spi-nor/xmc.c
+>@@ -11,11 +11,20 @@
+> static const struct flash_info xmc_nor_parts[] = {
+> 	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
+> 	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
+>-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>-			      SPI_NOR_QUAD_READ) },
+>+		PARSE_SFDP },
+> 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
+>-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>-			      SPI_NOR_QUAD_READ) },
+>+		PARSE_SFDP },
+>+	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
+>+		PARSE_SFDP },
+>+	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
+>+		PARSE_SFDP },
+>+	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
+>+		PARSE_SFDP },
+>+	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
+>+		PARSE_SFDP },
+>+	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
+>+		PARSE_SFDP },
+>+
+> };
 > 
-> I really do like this series especially struct bdev_handle and moving
-> the mode bits in there. I'll happily take this. So far there have only
-> been minor things that can easily be fixed.
+> const struct spi_nor_manufacturer spi_nor_xmc = {
+>> Correct. If the flash is working with PARSE_SFDP, it has SFDP and
+>> all the information of the flash_info table is pulled from the SFDP
+>> tables, except for the part name. Therefore, you don't need any entry
+>> at all. The flash should just work out of the box. Are you using the
+>> latest kernel?
+>> 
+>> -michael
+--
+Hi Michael,
 
-Thanks. Since Al is fine with just doing a potential conversion to 'struct
-file' as a handle on top of this series (it will be dumb Coccinelle
-replacement) I think we can go ahead with the series as is. As you said
-there will be some conflicts in btrfs and I've learned about f2fs conflicts
-as well so I can rebase & repost the series on top of rc1 to make life
-easier for you.
+According to you, does this piece of my code still need to be modified?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Ssunk
+
+
+--===============3523531453230226108==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3523531453230226108==--
