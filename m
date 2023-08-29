@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4688C71153
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E0FC83F14
 	for <linux-mtd@archiver.kernel.org>; Tue, 29 Aug 2023 15:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,44 +12,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eMQOwp5VsoTx59uO3x+IPuwpmr2TDs47+tIx3Xi4mCU=; b=CGBYm5IvmLIlCq
-	Fzv5YVKYbP9hikvXgGx/afvohvVBf67vDCQXhft7e4jFnC9vvmdPcMqPsB6ixSzLxyZlgEKo2OU8M
-	57OdwDgRRU9IG2PjcV0nC9nghoVgoi95mQ9eb9xQeOjB/8a1SGxlemKrDR1UYufC1m1+1UXOQxTnq
-	qQwcza1pWxpEW1sd2839P5iE6lXYSRESkb9k9y9lFf41+lZKsCdbtm7U0I3M8OasPYXCgTDMw5zro
-	+vQN4UgORCm0a2zgdI19ZHJ/dez11qHugEMpJAOumiSBU85NKs9ujApOc/GsqxuMD+aicF/2fF/xB
-	zVmghOsxXCf8UtpC4WhQ==;
+	List-Owner; bh=t0IkpznZlAE0RdjMAcHEZ5lj13QiU1ufGGIzj1q8moc=; b=zYnl4Xid+cNIPT
+	Z3mYvkJPAjl6PHSTU1CB8llwqwl0GB2wVEiwB2uXr9kLoAa7I2yI5AolRnfHw97e3JDZr6J7XigYN
+	YfLk5T1NahY7IC+Z/P++JZV8Mz3EkujyiQbK8Wd65zk/T39DPBDPOZ5LLuRUo5NCTVFOa5bpek8QS
+	UHVetje/Wz3LlGPFfZ9EYsDawgJdzQapcTVWpR1HanGSLNydVddeha+Lqxo4NE4PyR9UXrqnKGNLu
+	FP+afDJWt7VMgiteRRXw8A/mtDvEoAGIjhTFR7LO4YRaU0Xz4dB14J+WjIOId0jBVVEvO4s/L06GA
+	9m+F2zRiH/GgBzHe78PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qb0aG-00BmT9-33;
-	Tue, 29 Aug 2023 15:24:48 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qb0aC-00BmSX-1g
-	for linux-mtd@lists.infradead.org;
+	id 1qb0aE-00BmSu-15;
 	Tue, 29 Aug 2023 15:24:46 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qb0aA-00BmS5-1G
+	for linux-mtd@lists.infradead.org;
+	Tue, 29 Aug 2023 15:24:43 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id EA54C626F1;
-	Tue, 29 Aug 2023 15:24:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61F9C433C9;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E60BC60C03;
 	Tue, 29 Aug 2023 15:24:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0E10C433CA;
+	Tue, 29 Aug 2023 15:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693322683;
-	bh=Exn2LZln7TVIpYAfmCkUGiUBtJ/Ig1A3tB21reF1oW8=;
+	s=k20201202; t=1693322681;
+	bh=iP4dX2qCO+ZT04YIUw2BpQIHHbY58GWkfTXwxjlTxA4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ADprn7JGDQ7MPkIqXzOmN55dCzErb0HTFAzZMFwZ31/NEcCjCimfhRFiEReLx3qLk
-	 QM6DatKMUZc6sJH407T9cEwyoe1cyyE3CYfTIwrcQQTbJHjn0YaPggqZBnTtWjg9cI
-	 DGA3KTwl7MROUd0ISVZ4BOe0Pi4bPYFqPuXTIqO1cwDxpnX6F5dP+E76fcm5i+r8rh
-	 xoPIrE1VU9kHED4BMcY3sWdu/hK9dB7HFFnL7TNdEEdfaPIf8ZhHLnLXz+DNvO+XnP
-	 gqGtS0AmumzHYinWFgooCTFOJlQto1zxhULiFX7g187qlTQV+oFDb7DO8rn02D6/a6
-	 nUuzh/G+FcRRw==
+	b=TasYuIJ5FvFMPV+4dFzGIueImrgHopM2U1xqEuJ7omaEP9KA61mG16XScH5IPD3bB
+	 /uxaqFt0xQaZdKohK3yDCh7VCPxMYfZNaDAJ4diSP1YR6Me7HZeKsw+I/PnPwL8mcg
+	 83bYZVwrnbgRLoR6SCyqp/8c+DTpaN8zzQOTIMtrsVqVFKdPmjvBV88P85WvInYi56
+	 YrJCBxQM1kq3gT5BrY1rHD2ADmqMcQVHnJT1rhiq3SX3P+QZZMmovGmJuIeRhyAA85
+	 e5RXoqHYzXAV0hsfI4VkDS5e0IzOPejGANUHMnrMFPiaVAAE/BE/6+YNdGZxMSOS2G
+	 WTm8+XjG/WhWg==
 From: Christian Brauner <brauner@kernel.org>
-Date: Tue, 29 Aug 2023 17:23:57 +0200
-Subject: [PATCH 2/2] mtd: key superblock by device number
+Date: Tue, 29 Aug 2023 17:23:56 +0200
+Subject: [PATCH 1/2] fs: export sget_dev()
 MIME-Version: 1.0
-Message-Id: <20230829-vfs-super-mtd-v1-2-fecb572e5df3@kernel.org>
+Message-Id: <20230829-vfs-super-mtd-v1-1-fecb572e5df3@kernel.org>
 References: <20230829-vfs-super-mtd-v1-0-fecb572e5df3@kernel.org>
 In-Reply-To: <20230829-vfs-super-mtd-v1-0-fecb572e5df3@kernel.org>
 To: Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, 
@@ -58,16 +58,16 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
  linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>
 X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2946; i=brauner@kernel.org;
- h=from:subject:message-id; bh=Exn2LZln7TVIpYAfmCkUGiUBtJ/Ig1A3tB21reF1oW8=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS8490ao2Ile8w40+Q3+5bWI5Nfx17zNr1c9sZCzumQ45fY
- 0zmLOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYiUcLwP5x5wvWjLP+U/4Uv+scw4+
- PJHIl0yfp3Gnd3dq4/+kA/YzIjwxSeex9jdm8zlpl++sScr0JrLyxbzfO04dGpwgcTJ756fo8HAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2131; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=iP4dX2qCO+ZT04YIUw2BpQIHHbY58GWkfTXwxjlTxA4=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS8490qzBjFfnbXuqO3TmVoL1PUndKY1uB5OrYr6T/n8sK6
+ 65JqHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABMR3czwTydzp6XBYuu6z66RFfkK3n
+ 5au3U23GjZIOFs7Pz9T0eDMiNDX5LE1Eere1XPzrIxqUrdwnpV1n3hzcm+NTet53xyr1BmAAA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230829_082444_642383_1831F5F1 
-X-CRM114-Status: GOOD (  21.15  )
+X-CRM114-CacheID: sfid-20230829_082442_516487_AE2E9D92 
+X-CRM114-Status: GOOD (  11.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,96 +84,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The mtd driver has similar problems than the one that was fixed in
-commit dc3216b14160 ("super: ensure valid info").
+They will be used for mtd devices as well.
 
-The kill_mtd_super() helper calls shuts the superblock down but leaves
-the superblock on fs_supers as the devices are still in use but puts the
-mtd device and cleans out the superblock's s_mtd field.
-
-This means another mounter can find the superblock on the list accessing
-its s_mtd field while it is curently in the process of being freed or
-already freed.
-
-Prevent that from happening by keying superblock by dev_t just as we do
-in the generic code.
-
-Link: https://lore.kernel.org/linux-fsdevel/20230829-weitab-lauwarm-49c40fc85863@brauner
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- drivers/mtd/mtdsuper.c | 45 +++++++++++----------------------------------
- 1 file changed, 11 insertions(+), 34 deletions(-)
+ fs/super.c         | 14 ++++++++++----
+ include/linux/fs.h |  1 +
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index 5ff001140ef4..b7e3763c47f0 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -19,38 +19,6 @@
- #include <linux/fs_context.h>
- #include "mtdcore.h"
+diff --git a/fs/super.c b/fs/super.c
+index ad7ac3a24d38..88cb628de6a1 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -1435,12 +1435,12 @@ static int set_bdev_super(struct super_block *s, void *data)
+ 	return 0;
+ }
  
--/*
-- * compare superblocks to see if they're equivalent
-- * - they are if the underlying MTD device is the same
-- */
--static int mtd_test_super(struct super_block *sb, struct fs_context *fc)
--{
--	struct mtd_info *mtd = fc->sget_key;
--
--	if (sb->s_mtd == fc->sget_key) {
--		pr_debug("MTDSB: Match on device %d (\"%s\")\n",
--			 mtd->index, mtd->name);
--		return 1;
--	}
--
--	pr_debug("MTDSB: No match, device %d (\"%s\"), device %d (\"%s\")\n",
--		 sb->s_mtd->index, sb->s_mtd->name, mtd->index, mtd->name);
--	return 0;
--}
--
--/*
-- * mark the superblock by the MTD device it is using
-- * - set the device number to be the correct MTD block device for pesuperstence
-- *   of NFS exports
-- */
--static int mtd_set_super(struct super_block *sb, struct fs_context *fc)
--{
--	sb->s_mtd = fc->sget_key;
--	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, sb->s_mtd->index);
--	sb->s_bdi = bdi_get(mtd_bdi);
--	return 0;
--}
--
- /*
-  * get a superblock on an MTD-backed filesystem
-  */
-@@ -62,8 +30,7 @@ static int mtd_get_sb(struct fs_context *fc,
- 	struct super_block *sb;
- 	int ret;
+-static int set_bdev_super_fc(struct super_block *s, struct fs_context *fc)
++static int super_s_dev_set(struct super_block *s, struct fs_context *fc)
+ {
+ 	return set_bdev_super(s, fc->sget_key);
+ }
  
--	fc->sget_key = mtd;
--	sb = sget_fc(fc, mtd_test_super, mtd_set_super);
-+	sb = sget_dev(fc, MKDEV(MTD_BLOCK_MAJOR, mtd->index));
- 	if (IS_ERR(sb))
- 		return PTR_ERR(sb);
+-static int test_bdev_super_fc(struct super_block *s, struct fs_context *fc)
++static int super_s_dev_test(struct super_block *s, struct fs_context *fc)
+ {
+ 	return !(s->s_iflags & SB_I_RETIRED) &&
+ 		s->s_dev == *(dev_t *)fc->sget_key;
+@@ -1500,6 +1500,13 @@ int setup_bdev_super(struct super_block *sb, int sb_flags,
+ }
+ EXPORT_SYMBOL_GPL(setup_bdev_super);
  
-@@ -77,6 +44,16 @@ static int mtd_get_sb(struct fs_context *fc,
- 		pr_debug("MTDSB: New superblock for device %d (\"%s\")\n",
- 			 mtd->index, mtd->name);
- 
-+		/*
-+		 * Would usually have been set with @sb_lock held but in
-+		 * contrast to sb->s_bdev that's checked with only
-+		 * @sb_lock held, nothing checks sb->s_mtd without also
-+		 * holding sb->s_umount and we're holding sb->s_umount
-+		 * here.
-+		 */
-+		sb->s_mtd = mtd;
-+		sb->s_bdi = bdi_get(mtd_bdi);
++struct super_block *sget_dev(struct fs_context *fc, dev_t dev)
++{
++	fc->sget_key = &dev;
++	return sget_fc(fc, super_s_dev_set, super_s_dev_test);
++}
++EXPORT_SYMBOL(sget_dev);
 +
- 		ret = fill_super(sb, fc);
- 		if (ret < 0)
- 			goto error_sb;
+ /**
+  * get_tree_bdev - Get a superblock based on a single block device
+  * @fc: The filesystem context holding the parameters
+@@ -1523,8 +1530,7 @@ int get_tree_bdev(struct fs_context *fc,
+ 	}
+ 
+ 	fc->sb_flags |= SB_NOSEC;
+-	fc->sget_key = &dev;
+-	s = sget_fc(fc, test_bdev_super_fc, set_bdev_super_fc);
++	s = sget_dev(fc, dev);
+ 	if (IS_ERR(s))
+ 		return PTR_ERR(s);
+ 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index ca8ceccde3d6..8a8d1cd5b0a9 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2274,6 +2274,7 @@ struct super_block *sget(struct file_system_type *type,
+ 			int (*test)(struct super_block *,void *),
+ 			int (*set)(struct super_block *,void *),
+ 			int flags, void *data);
++struct super_block *sget_dev(struct fs_context *fc, dev_t dev);
+ 
+ /* Alas, no aliases. Too much hassle with bringing module.h everywhere */
+ #define fops_get(fops) \
 
 -- 
 2.34.1
