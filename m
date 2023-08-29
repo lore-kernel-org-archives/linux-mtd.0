@@ -4,72 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00C5EC83F14
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Aug 2023 07:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9596CC6FA8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Aug 2023 11:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YWvJ0fCoJnxy9lDAoBrmlFc/zV+iMrt0eQnm77X+9hQ=; b=dTTwF0fgNG2jtk
-	TuOKdevFIHcVcaVntXRUt6sxtabTYYemvqTZGd581PEj53gJPCztdOmc8J0QPCjjszOS+ffH3o40Z
-	KapIxL6iwjL5eUZ699b8USf5bQ2htvReJ9YUC3hbvfyP/Mj0L2u0TTgL0MOLGpGu5Lg3drvB82DQw
-	f/GrgKS+33fTT1ynybSDdvFNDBk6h28V3es58dm+GOrkHrpCNYaBFz1U0Y9OALHRw7BpMfKZ6h53D
-	EKRVhYcYp+1YS2/Zk4KTFr4i/OB4n39zhYJGtheiT0F5Dr/cWgRwyQ3HHYtkCkOdNIXbbDqkBQali
-	7CXHnK9fIAzAxwxl5mxQ==;
+	List-Owner; bh=k5q3GMi2BG7N+pa6FuBw0gBl2a852vkQ5S3i42LV0A8=; b=Dgapmkj2x5fi61
+	r6EW8/GxzxJ0lGMBwQOKj8wcvEJ04xoX2vaKthGKDcc1MzrBY7eTecqgtVDxnjiPw256weSZD5jW1
+	Q8ROB0PNgZvyPWOzmjpUg80aa2WHmnXQCJLOrVrl51b/UYI7IXgExQNY7QaUEB+LTUiDeAfB3X/R+
+	f1kKDWWFcdxAy/JbHAeOY4ZcJKfSQHUsKWNQnZKBCqGp/txzLn2X6Bj1piPntdtEHbwcnyOZAAUY8
+	BqRQMzqMdjQ65HziovhnHunW9dATAU1v7INMhTaoNR/OQp02zOIAW4BH2bQIS/Hp8GOWThoo+BvR8
+	lt/bLybNu15gxn5Tx98w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qatQt-00AyGx-0Y;
-	Tue, 29 Aug 2023 07:46:39 +0000
-Received: from out-252.mta1.migadu.com ([2001:41d0:203:375::fc])
+	id 1qawV0-00BNCl-2V;
+	Tue, 29 Aug 2023 11:03:06 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qatQq-00AyFn-0t
-	for linux-mtd@lists.infradead.org;
-	Tue, 29 Aug 2023 07:46:37 +0000
-Message-ID: <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1693295192;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WP3nN15JcnIGn7wEIePFcf6LVOuPCzTP32Hu73YPviw=;
-	b=ngCnTfY2JVdB7UbTvhBxaE99SXYf68v1UOzv1oD4Q4J5vfDrhRAI+RinhUow/HJ/SENsM3
-	ljkpELTTwPgx4fdS1Wsi0U6qZJzH3KEWBSpgNNnZhZo9Ah7qcNPQhnBWxHwyd9Ba5JlzW/
-	R7n89/DPeOOyD3xIKShExED+0gXsmv8=
-Date: Tue, 29 Aug 2023 15:46:13 +0800
+	id 1qawUx-00BNAK-20;
+	Tue, 29 Aug 2023 11:03:04 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4E2B2653BA;
+	Tue, 29 Aug 2023 11:03:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A91DC433C8;
+	Tue, 29 Aug 2023 11:02:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693306979;
+	bh=U8tO0dLFljDnktuq80r4afitP93wv2ZaRihVU0Qyu2I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zpf44oWH5Z2L6QhPNIGp7PeBhJpnP4KfVurKgcL9DEj/BIRmEq8ijJzbb6q5k8Ovs
+	 9bWmbNzBkJw5MyDAxRy27lwjHGda6NbScABpEWJtXeah3765gQ9TUqIkk0ScRRsr4B
+	 pgJc/+HtIStX4e0zZcs6Mgm/y0cAQCiR+vX0i9HUCQ2jW21Dvj1m5KvDe2xJG8sZD9
+	 7J/ySnM4IatjDikdEeiDLegDHPGVAKFz5CZJOY4FIoLRlouJhKb12RDwuxVPSp/21Q
+	 Im6ZTKLVuSh6T0hvwNEhJP5WmzsfCpgy49EfIICESoo8yOH/FPp5HVYEAtlfB2KJ19
+	 jLNduaFs+ry8A==
+Date: Tue, 29 Aug 2023 13:02:47 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+	linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
+	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v3 0/29] block: Make blkdev_get_by_*() return handle
+Message-ID: <20230829-stark-trapez-2251bf78c6a9@brauner>
+References: <20230818123232.2269-1-jack@suse.cz>
+ <20230825-hubraum-gedreht-8c5c4db9330a@brauner>
+ <20230828170744.iifdmaw732cfiauf@quack3>
 MIME-Version: 1.0
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>
-Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- Dominique Martinet <asmadeus@codewreck.org>,
- Pavel Begunkov <asml.silence@gmail.com>,
- Christian Brauner <brauner@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Stefan Roesch <shr@fb.com>,
- Clay Harris <bugs@claycon.org>, Dave Chinner <david@fromorbit.com>,
- "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-cachefs@redhat.com, ecryptfs@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-unionfs@vger.kernel.org,
- bpf@vger.kernel.org, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
- linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
- linux-mm@kvack.org, linux-nilfs@vger.kernel.org, devel@lists.orangefs.org,
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
- linux-mtd@lists.infradead.org, Wanpeng Li <wanpengli@tencent.com>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Xu <hao.xu@linux.dev>
-In-Reply-To: <ZOvA5DJDZN0FRymp@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Disposition: inline
+In-Reply-To: <20230828170744.iifdmaw732cfiauf@quack3>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230829_004636_457836_05F7359F 
-X-CRM114-Status: UNSURE (   9.78  )
+X-CRM114-CacheID: sfid-20230829_040303_705736_5187CB0B 
+X-CRM114-Status: UNSURE (   9.97  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,25 +101,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 8/28/23 05:32, Matthew Wilcox wrote:
-> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
->> From: Hao Xu <howeyxu@tencent.com>
->>
->> Add a boolean parameter for file_accessed() to support nowait semantics.
->> Currently it is true only with io_uring as its initial caller.
-> 
-> So why do we need to do this as part of this series?  Apparently it
-> hasn't caused any problems for filemap_read().
-> 
+> replacement) I think we can go ahead with the series as is. As you said
+> there will be some conflicts in btrfs and I've learned about f2fs conflicts
+> as well so I can rebase & repost the series on top of rc1 to make life
+> easier for you.
 
-We need this parameter to indicate if nowait semantics should be 
-enforced in touch_atime(), There are locks and maybe IOs in it.
-
+That is be much appreciated. Thank you!
 
 ______________________________________________________
 Linux MTD discussion mailing list
