@@ -4,63 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2465DC83F10
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Aug 2023 06:41:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA41EC83F10
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Aug 2023 11:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UUhNwB1yt6OwN+f8PNbAjim+IxFbbNHSe7HlVrcP7p4=; b=faAZl+if2A11W9+NllaCdhdrlt
-	KHqKYc9i5clw5emqPnFUD2alQcqPpFZplTM53J3uOdxf1xa5mRmqZfP+GrGSB8j5gKG9y1fs3Rq6t
-	maLrZkScdj+N+0yO/dBqSvwAWXhR2GeBEQuUz9gX3K5hboeOoL+vKK2a1wpoWTwGHaiZ6M2swBFjX
-	FB8VngHfFM5Ksh6bgjQwFJX2JOtMJATOFKX69ktsYZyjQTRA4lEzJDFEbB9vSdJbivp3DHHfzTSFl
-	UO4TyttejcH/7zNEGTkeeivppXd5HvkaeG+4AgNDTLV1rBlBOvroEh2TSDBagXfcuP5DYF3wxAn2m
-	A45/r7hQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LTuNkBtQ0Zti5rTeC0lknsmTQORcmTSN7dst2E/Rvok=; b=FyiSnwiUCJpUnf
+	D4AWn+32s0MDxVtMPsv6+YlnwKuEanUuFxcPgYiGXFqgviZ5ihD3AEJk5ofyizAkhlAG6+F800bF9
+	XsPKTMlZGpCM4GZW3+k9qa9Yirk1n04oC3swQC++Q0yTrNnHYYrW3qGWnuxJ7xAYXYeyrLom6aRyy
+	grhvtMRNBq4cOXiP1LmUsW7kG4rxi+lBVBRZFN+/9UxZ/CTA9TLX+f+tigOB0cXQypZsQok8OHhkX
+	0YzatzE6xtlhyXahntZBAXL+cvLuiJGBbhiIOdF+8TZgwLMlny5JmsitpALquu88YcCBX9nvqqnyZ
+	x3MIQASNWAq1DId3mT5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qbbMg-00Eljc-1l;
-	Thu, 31 Aug 2023 06:41:14 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qbfZv-00FAxo-1l;
+	Thu, 31 Aug 2023 11:11:11 +0000
+Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qbbMd-00Elid-27
+	id 1qbfZr-00FAwr-1h
 	for linux-mtd@lists.infradead.org;
-	Thu, 31 Aug 2023 06:41:13 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	Thu, 31 Aug 2023 11:11:10 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 0C24B30A;
-	Thu, 31 Aug 2023 08:41:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1693464063;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0qlSvXs72kihayFUUjvnu+kLjorvIfsIcAxoti/RKzE=;
-	b=aFV6oVgTw5GVt4vQrfNy1/y3LH+ddTydLGMJ4Q7XwyoYCdZXSVW/iFOFGp9NJoT098VstI
-	MdlApVahHGk0shS3derZotrCHvA/U6X5b7/cTupVZWwB+4OsIplUFADNnJwzjZW9bp+aWH
-	Sv2NepLDfqrJma7uZDUj+A1NL6Exjo3gdo/aA3sxC8zBprU38OJGHxhNQWR7KsxavYzK3t
-	X+TRzLBXMx7FfSkN2Jd1MZ7aiZIyOoJbieKSVolVm7b2ojaKznNlUI/dbtTwTheXZCX0/9
-	oqgUYCqW9YJGL6EyXuxH2q/Yy8QxbCFaknXH3BltgrHf6BSmNtzPi79zORry9Q==
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EEB97211CE;
+	Thu, 31 Aug 2023 11:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1693480262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=5wheN2WF79/65e5XgWEbwyIVrsSXq6pkvKaE0P14I0o=;
+	b=C7C6uZ9Gar3iuAZ9mtJdJ9EjVqLCti2m9j/AS0WT+vJg9tGIiPA+Rv3pn6ILk5M0obqi/d
+	tOeQ8QfAlBCK7RgR6MMr1xZ1l6PUYHt5s1o8cwRIA5gm7lN06rA1lsIcDhy6K28OiORN9A
+	TFF4tWM7fYVCoe/BVBEuYqNSLbxlJik=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1693480262;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=5wheN2WF79/65e5XgWEbwyIVrsSXq6pkvKaE0P14I0o=;
+	b=OY97HYQJBhEJo8Q/CsFZB12rRk2DsWx9rdRMy8thBhP9utqUxQWA+j2R4pjPoRZZ/Z6VIB
+	7ZXSnJqHMBpLgrAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DFFEF13583;
+	Thu, 31 Aug 2023 11:11:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id yFayNkZ18GQQUgAAMHmgww
+	(envelope-from <jack@suse.cz>); Thu, 31 Aug 2023 11:11:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 60D54A0767; Thu, 31 Aug 2023 13:11:02 +0200 (CEST)
+From: Jan Kara <jack@suse.cz>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Yu Hao <yhao016@ucr.edu>
+Subject: [PATCH] ubi: Reject device with erasesize 0
+Date: Thu, 31 Aug 2023 13:11:00 +0200
+Message-Id: <20230831111100.26862-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Date: Thu, 31 Aug 2023 08:41:02 +0200
-From: Michael Walle <michael@walle.cc>
-To: SSunk <ssunkkan@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- miquel.raynal@bootlin.com, pratyush@kernel.org, richard@nod.at,
- ssunkkan@gmail.com, tudor.ambarus@linaro.org, vigneshr@ti.com
-Subject: Re: [PATCH] Add support for more XMC series
-In-Reply-To: <20230831041344.4653-1-ssunkkan@gmail.com>
-References: <1c04bbe2a65f13b9815ce465cc8dcdd5@walle.cc>
- <20230831041344.4653-1-ssunkkan@gmail.com>
-Message-ID: <c7b200d180278b43ddf8e1f870c846df@walle.cc>
-X-Sender: michael@walle.cc
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2730; i=jack@suse.cz; h=from:subject; bh=Pvoi5EPr314+/3ikYLwHlQiRR3ivNCHyuMLvn9rJre4=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBk8HU9Yiv9SWsXDlRQpAEZ5jrqekT9OjMBVsHdAS+O P483ii2JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZPB1PQAKCRCcnaoHP2RA2bZPCA DflpZxiPQ7KBK2uF37XWZpUXsZyE8rA+JVqQErtyzwhQNSVsIBtDmLyKTJG+iwPngCBID488hzEBj1 49aAu+jGIynMUVtjdlJZyS2o7hcyhbbWpZ4bwm4at9xTfGgm42QlEQTI0UARq6BfLRdNw77p+pR5Sd nl9T8J1QxCPdC6SMpY/lYBTzyVsgQlvunjykWjZbY4NDry9ff1u0iC860jiEL1YRu/QQWNuSSDrzaO MVxO6gxdB0RwtMPEdDvvQCH1SCTEpxNF37Pirsk9MqBwo8ca5OKgoZcYJWRan+87qeyQwIUa0EpYOt 2hMXE+EPnTW0A5WgjYufYufOBUdFuU
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230830_234112_079842_C08A0770 
-X-CRM114-Status: GOOD (  17.61  )
+X-CRM114-CacheID: sfid-20230831_041107_725829_7003204C 
+X-CRM114-Status: GOOD (  15.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,59 +86,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgo+Pj4+IFNpbmNlIHRoaXMgaXMgdGhlIGZpcnN0IHRpbWUgSSd2ZSBzdWJtaXR0ZWQgY29k
-ZSB0byB0aGUgTGludXgKPj4+PiBjb21tdW5pdHksIHBsZWFzZSBmb3JnaXZlIG1lIGZvciBzb21l
-IG9mIHRoZSBtaXNzdGVwcyB0aGF0IEkndmUgCj4+Pj4gbWFkZS4KPj4+PiBJIHVwbG9hZGVkIHRo
-ZSBpbmNvcnJlY3QgcGF0Y2ggZmlsZS4KPj4+PiBJbiBhIHByZXZpb3VzIGUtbWFpbCB5b3Ugc2Fp
-ZO+8mgo+Pj4+IFhNQyBwYXJ0cyBzZWVtIHRvIGhhdmUgU0ZEUCB0YWJsZXMgYW5kIHRoZXkgc2hv
-dWxkIHdvcmsgb3V0IG9mIHRoZSAKPj4+PiBib3gKPj4+PiB3aXRob3V0IGFueSBwYXRjaGVzIHdp
-dGggdGhlIGdlbmVyaWMgc3BpIG5vciBkcml2ZXIgWzFdLiBUaGVyZWZvcmUsCj4+Pj4geW91IGRv
-bid0IG5lZWQgYW55IGVudHJ5IGF0IGFsbC4KPj4+PiAKPj4+PiBJIHRoaW5rIGl0IGlzIHJlbGF0
-ZWQgdG8gdGhlIFBBUlNFX1NGRFAgZmxhZy4KPj4+PiBUaGUgWE1DIGZsYXNoIHBhcnQgc3VwcG9y
-dHMgU0ZEUCwgc28gaSBkb27igJl0IG5lZWQgdG8gYWRkCj4+Pj4gTk9fU0ZEUF9GTEFHUygpIG1h
-Y3JvLgo+Pj4+IGRyaXZlcnMvbXRkL3NwaS1ub3IveG1jLmMgfCAxNyArKysrKysrKysrKysrLS0t
-LQo+Pj4+IDEgZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+
-Pj4+IAo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3htYy5jIGIvZHJpdmVy
-cy9tdGQvc3BpLW5vci94bWMuYwo+Pj4+IGluZGV4IDA1MTQxMWU4NjMzOS4uZTc4YmYxMTc5MmQ5
-IDEwMDY0NAo+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IveG1jLmMKPj4+PiArKysgYi9k
-cml2ZXJzL210ZC9zcGktbm9yL3htYy5jCj4+Pj4gQEAgLTExLDExICsxMSwyMCBAQAo+Pj4+IHN0
-YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyB4bWNfbm9yX3BhcnRzW10gPSB7Cj4+Pj4gCS8q
-IFhNQyAoV3VoYW4gWGlueGluIFNlbWljb25kdWN0b3IgTWFudWZhY3R1cmluZyBDb3JwLikgKi8K
-Pj4+PiAJeyAiWE0yNVFINjRBIiwgSU5GTygweDIwNzAxNywgMCwgNjQgKiAxMDI0LCAxMjgpCj4+
-Pj4gLQkJTk9fU0ZEUF9GTEFHUyhTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfAo+Pj4+IC0J
-CQkgICAgICBTUElfTk9SX1FVQURfUkVBRCkgfSwKPj4+PiArCQlQQVJTRV9TRkRQIH0sCj4+Pj4g
-CXsgIlhNMjVRSDEyOEEiLCBJTkZPKDB4MjA3MDE4LCAwLCA2NCAqIDEwMjQsIDI1NikKPj4+PiAt
-CQlOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8Cj4+Pj4gLQkJCSAg
-ICAgIFNQSV9OT1JfUVVBRF9SRUFEKSB9LAo+Pj4+ICsJCVBBUlNFX1NGRFAgfSwKPj4+PiArCXsg
-IlhNMjVRSDEyOEMiLCBJTkZPKDB4MjA0MDE4LCAwLCA2NCAqIDEwMjQsIDI1NikKPj4+PiArCQlQ
-QVJTRV9TRkRQIH0sCj4+Pj4gKwl7ICJYTTI1UUgyNTZDIiwgSU5GTygweDIwNDAxOSwgMCwgNjQg
-KiAxMDI0LCA1MTIpCj4+Pj4gKwkJUEFSU0VfU0ZEUCB9LAo+Pj4+ICsJeyAiWE0yNVFVMjU2QyIs
-IElORk8oMHgyMDQxMTksIDAsIDY0ICogMTAyNCwgNTEyKQo+Pj4+ICsJCVBBUlNFX1NGRFAgfSwK
-Pj4+PiArCXsgIlhNMjVRSDUxMkMiLCBJTkZPKDB4MjA0MDIwLCAwLCA2NCAqIDEwMjQsIDEwMjQp
-Cj4+Pj4gKwkJUEFSU0VfU0ZEUCB9LAo+Pj4+ICsJeyAiWE0yNVFVNTEyQyIsIElORk8oMHgyMDQx
-MjAsIDAsIDY0ICogMTAyNCwgMTAyNCkKPj4+PiArCQlQQVJTRV9TRkRQIH0sCj4+Pj4gKwo+Pj4+
-IH07Cj4+Pj4gCj4+Pj4gY29uc3Qgc3RydWN0IHNwaV9ub3JfbWFudWZhY3R1cmVyIHNwaV9ub3Jf
-eG1jID0gewo+Pj4+PiBDb3JyZWN0LiBJZiB0aGUgZmxhc2ggaXMgd29ya2luZyB3aXRoIFBBUlNF
-X1NGRFAsIGl0IGhhcyBTRkRQIGFuZAo+Pj4+PiBhbGwgdGhlIGluZm9ybWF0aW9uIG9mIHRoZSBm
-bGFzaF9pbmZvIHRhYmxlIGlzIHB1bGxlZCBmcm9tIHRoZSBTRkRQCj4+Pj4+IHRhYmxlcywgZXhj
-ZXB0IGZvciB0aGUgcGFydCBuYW1lLiBUaGVyZWZvcmUsIHlvdSBkb24ndCBuZWVkIGFueSAKPj4+
-Pj4gZW50cnkKPj4+Pj4gYXQgYWxsLiBUaGUgZmxhc2ggc2hvdWxkIGp1c3Qgd29yayBvdXQgb2Yg
-dGhlIGJveC4gQXJlIHlvdSB1c2luZyAKPj4+Pj4gdGhlCj4+Pj4+IGxhdGVzdCBrZXJuZWw/Cj4+
-Pj4+IAo+Pj4+PiAtbWljaGFlbAo+Pj4gLS0KPj4+IEhpIE1pY2hhZWwsCj4+PiAKPj4+IEFjY29y
-ZGluZyB0byB5b3UsIGRvZXMgdGhpcyBwaWVjZSBvZiBteSBjb2RlIHN0aWxsIG5lZWQgdG8gYmUg
-Cj4+PiBtb2RpZmllZD8KPj4gCj4+IFlvdSBkb24ndCBuZWVkIGl0IGF0IGFsbC4gVGhlIGZsYXNo
-IHdpbGwgd29yayBhcyBpcyAtIHRoYXQgaXMgd2l0aG91dAo+PiB0aGF0Cj4+IHBpZWNlIG9mIGNv
-ZGUuCj4+IAo+PiAtbWljaGFlbAo+IC0tCj4gSGkgbWljaGFlbCwKPiAKPiBJZiB0aGVzZSBlbnRy
-aWVzIGFyZSBub3QgYWRkZWQsIHRoZSBmbGFzaCBwYXJ0IG5hbWUgaXMgdW5rbm93biBhbmQgb3Vy
-IAo+IGN1c3RvbWVycwo+IGNhbm5vdCBzZWUgb3VyIGZsYXNoIHBhcnQgbmFtZSBvbiB0aGUga2Vy
-bmVsIGxvZy4KPiBTbyxJIHRoaW5rIGl0J3MgbmVjZXNzYXJ5IHRvIGFkZCB0aGVzZSBlbnRyaWVz
-LgoKVGhleSBjYW4gc3RpbGwgc2VlIHRoZSBqZWRlYyBpZCBpbiB0aGUgc3lzZnMuIFdlIGRvbid0
-IGFkZCBlbnRyaWVzIGp1c3QgCmZvciB0aGUKbmFtZXMuIFNvcnJ5LgoKLW1pY2hhZWwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+In principle MTD device with erasesize 0 can exist and it is possible to
+create them e.g. via KVM. If that happens UBI layer currently crashes
+with:
+
+ubi7: attaching mtd147
+divide error: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 20023 Comm: syz-executor.0 Not tainted 6.2.0 #6
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:mtd_div_by_eb include/linux/mtd/mtd.h:580 [inline]
+RIP: 0010:io_init drivers/mtd/ubi/build.c:620 [inline]
+RIP: 0010:ubi_attach_mtd_dev+0x77f/0x2fe0 drivers/mtd/ubi/build.c:955
+Code: fc ff df 48 c1 ea 03 0f b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38
+d0 7c 08 84 d2 0f 85 1f 25 00 00 41 8b 4c 24 10 48 89 d8 31 d2 <48> f7
+f1 48 89 c3 e8 b6 f3 1b fc 48 8d 85 40 17 00 00 48 89 c2 48
+RSP: 0018:ffffc9000be0fd30 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff888047a49d40 RDI: 0000000000000002
+RBP: ffff888024e1c000 R08: 0000000000000016 R09: fffff520017c1f47
+R10: ffffc9000be0fa37 R11: fffff520017c1f46 R12: ffff88806545a000
+R13: 0000000000000000 R14: ffff88806545a010 R15: 0000000000000007
+FS:  00007fd45e85c700(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f64aeef53a4 CR3: 000000004f39a000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ ctrl_cdev_ioctl+0x303/0x3a0 drivers/mtd/ubi/cdev.c:1043
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x198/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Handle such devices gracefully and just reject attaching UBI to them
+instead of crashing.
+
+Reported-by: Yu Hao <yhao016@ucr.edu>
+Link: https://lore.kernel.org/all/CA+UBctDsHRpkLG5ppdiuV8Msn4Dx-ZJ2xDrxfa48VMb7ZE+xBA@mail.gmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ drivers/mtd/ubi/build.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+It doesn't seem the discussion linked above concluded in a patch. So is
+anything wrong with the trivial approach here so that we can close the issue?
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 8b91a55ec0d2..684273e13efb 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -613,6 +613,9 @@ static int io_init(struct ubi_device *ubi, int max_beb_per1024)
+ 	if (ubi->vid_hdr_offset < 0)
+ 		return -EINVAL;
+ 
++	if (ubi->mtd->erasesize == 0)
++		return -EINVAL;
++
+ 	/*
+ 	 * Note, in this implementation we support MTD devices with 0x7FFFFFFF
+ 	 * physical eraseblocks maximum.
+-- 
+2.35.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
