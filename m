@@ -4,81 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B17AC83F2F
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Aug 2023 21:08:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C4F0C83F12
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Aug 2023 21:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ya5MQygeE8nfkcL3qV2+HewfxYBrVMlUIOkrWAAIFGw=; b=eh0Rrc6lka7oub2Ninh2HWqWQr
-	+GPG2H9s3mbfay0i+3S0fGvRQ+IRJI2c8ZsXuUOLA8+xZbFoXxSxs6unxcKE+mcDoeMztG+lPPxEc
-	a2YSbn0CC3zdGxeHEn6RkhUL4SJuTXCFdH1/aYaamVa2tkPFp0wtjGNpn0eqOxeZNlmZoQaXLsOsW
-	bVLh/xIsepQXnVsiRfN9PyPkAz6SgY6JQq6zO+leucaCv2pf9xiBxhHwXnXM1hpSUfQii2rNRrWxM
-	2/ALKSo8MIeFAwwtl03Q5azCc7uQAJFMTbJB9+cJnuqerh5tn1Wg9qXDem4o7H4+dwNKvnbP0wDCg
-	/5NyIsbg==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:
+	To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ClQYvUKsjsxulWgmo1GLB6MUlyvgrsoly6TxjA3uOws=; b=mbPzOp0N+5dCiUrgcZGCadr1Nj
+	o4HYu2T57n/6sf/Z0GbLpbigEQ/78jUuuvYZ/3M8YB6cWUNm3jvbeCODrtIu+kObTeu/x2yQXPJn5
+	9GcAfXgoPZ5WAj5/rBQ7VcmkcphH5X9PF5WvVYKiTDRByVD0xVXeaPP8T55XHm0l6iNhrudwPkvGn
+	bWKzhwSsB/O3sWfqpC3yC0LpcqUp94OurM7lP/i+N4qBKL//FDArCf5RLpoYX0Lii64Fkx5REfs0o
+	MKmIJL6p1OIaf1/cb44WqIjsKDHw0/TXi65s5ynIxaS+yqaA5YpD2l16Pz7H0h3MlG+xOIqNTwlJi
+	X5VkBx8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qbotC-00FpPt-2l;
-	Thu, 31 Aug 2023 21:07:42 +0000
-Received: from mail-qk1-x729.google.com ([2607:f8b0:4864:20::729])
+	id 1qbpBI-00FqHW-1L;
+	Thu, 31 Aug 2023 21:26:24 +0000
+Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qbotA-00FpPT-0U
+	id 1qbpBF-00FqH0-1z
 	for linux-mtd@lists.infradead.org;
-	Thu, 31 Aug 2023 21:07:41 +0000
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-76da4437500so77360385a.1
-        for <linux-mtd@lists.infradead.org>; Thu, 31 Aug 2023 14:07:36 -0700 (PDT)
+	Thu, 31 Aug 2023 21:26:23 +0000
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so22467841fa.2
+        for <linux-mtd@lists.infradead.org>; Thu, 31 Aug 2023 14:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1693516056; x=1694120856; darn=lists.infradead.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rMvLzMjR+Y50/O8AwgZd1g+pYIdMAK+cL9YvJrfl40=;
-        b=CQgSzeKjEgriF47EYL81L0OShm7u5c5V2jt1Zkq+ITrE6/H56OjO2TvVlmbQd347HC
-         zQpgDSe6MJz74XDQuXxz+je0mefE5UMQTcp5Jv8LXgM2f63lbpmUNE2hnU9UnQp6CuM1
-         +LyPQu/HaIkbvjUqZhINq4oZRbUS/d2A0OuSQ=
+        d=broadcom.com; s=google; t=1693517178; x=1694121978; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NS5dPGy6x8tw9Fe2r5nrIvxnUjTN8417Pv76REaND9U=;
+        b=aAnLh02DM/hdiRElw55I/dUbXXbdr4yqggsu85QG4nG5dv8NmB1kNPhZOkAukREohC
+         zo+zi6uThdsxlFlZSzVmadpe84n95K0lLtqkdwjZDTOGBqAAmqxO/xCN9audynw4nQIH
+         MenCL/gIH5eDaC5CvxLhhZeXRpR77pYp6VIAQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693516056; x=1694120856;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/rMvLzMjR+Y50/O8AwgZd1g+pYIdMAK+cL9YvJrfl40=;
-        b=DVK4OXtQVi6ConYmtsGQjwAtXf/FZlHay0HHY0ZBCwzW1mIIAKLMaLe1Qs2nHPMUQb
-         ClbXKcfc6gJqcPg/4ae7zEOj4ZgCRi0ux/gUJwEPt9/hvEA3aehzrKg/AtYk9xQynaKC
-         0b1y+/HqPZ/DKty4UiTRuqdl4L1d8bryMUuyiiYZTSkGTd7Pr9Hq3h61GoZdndgvZKO0
-         bqVzw+OlU8wDKycYGZnjAF2z59Ne1gwxhkzY8mwagENx8xA5OK2p7i5hW6dahDaRBM78
-         SNHS++39cxRv6gXN1ZJSEUlktoUL8Sn2FdNgiF+YxqHAvqlgYNeaR9odl+y08AGRL5+1
-         k2vw==
-X-Gm-Message-State: AOJu0YwQ5xutVqFjdjub2h8piNvLyCcMWGn2zpSp4Tu6Y6J0Q/sqivYL
-	Gc/9xaCNsDvw/PB0qB28kQZzFg==
-X-Google-Smtp-Source: AGHT+IEzyfcGWEvEf0kDpvaN7tuIOl+n0cVblc+zjTUw+kr5Aje+/t3dwjInJQ6CYP3W7bMncQssGg==
-X-Received: by 2002:a0c:8f0a:0:b0:64f:60c3:39ff with SMTP id z10-20020a0c8f0a000000b0064f60c339ffmr362283qvd.41.1693516055782;
-        Thu, 31 Aug 2023 14:07:35 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id pc26-20020a05620a841a00b0076c707f3bafsm888566qkn.94.2023.08.31.14.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 14:07:34 -0700 (PDT)
-Message-ID: <068dbf3f-ba9a-a79a-f40f-d38fd2563d04@broadcom.com>
-Date: Thu, 31 Aug 2023 14:07:21 -0700
+        d=1e100.net; s=20221208; t=1693517178; x=1694121978;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NS5dPGy6x8tw9Fe2r5nrIvxnUjTN8417Pv76REaND9U=;
+        b=Va6dT+5blG24OlJCEqsf04nfNIQJie+mSzL6+GRzC9aaooMA/6mOH5y+8XjIXe33v6
+         uL040HlrwXJVGmABpefT/kv4jkNRtTdWN6EW9RYpaoc/nmPrt9Om/yqZBd3t83lmitQG
+         cc0Y1Dg5iGeeHOV7cgKSGLcRQosNsyIW/trq7qypDM/NnWETB3c3l9pNsqeRUFzIAR+j
+         Vo9uANUowdjGlkmLcwmE3LfUTxoUuICQYdMNNZAZE1HZTfNGLII4FwtUyU47A7EcUEL0
+         rbofYbCaNlf6KElbs5xIS7MxuBgsEwq0rTN12/leQ2G83LHxUtKqtma/zQrPXJW2BmQD
+         7p3A==
+X-Gm-Message-State: AOJu0YxGgvfW7VXu7L/SP/rcZvw76f1BdHcSTRUcJvNk4oI7SbNddq3F
+	NMEG9Dd21ByW0SR9R3mo1b6aRxwwVT/zA219R64yQg==
+X-Google-Smtp-Source: AGHT+IGujuldYnz8Zt2quWu6THm4M1X+pH+jCWWX/T3OQHfax3/D1vCYT8hYb2IXjyhg5F7wJV8IMQoJlirkgOBrGgU=
+X-Received: by 2002:a19:9116:0:b0:4fb:8bea:f5f6 with SMTP id
+ t22-20020a199116000000b004fb8beaf5f6mr333066lfd.34.1693517177894; Thu, 31 Aug
+ 2023 14:26:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Memory mapped flash access breaks Broadcom NAND controller based
- access
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kamal.dasu@broadcom.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 References: <CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
 In-Reply-To: <CACna6rwf3_9QVjYcM+847biTX=K0EoWXuXcSMkJO1Vy_5vmVqA@mail.gmail.com>
+From: Scott Branden <scott.branden@broadcom.com>
+Date: Thu, 31 Aug 2023 14:26:05 -0700
+Message-ID: <CA+JzhdLKXfat-C1i3EoGgPR_KsH463sRJaC+K+LQKMcvoAZ_Lg@mail.gmail.com>
+Subject: Re: Memory mapped flash access breaks Broadcom NAND controller based access
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Kamal Dasu <kamal.dasu@broadcom.com>, 
+	MTD Maling List <linux-mtd@lists.infradead.org>, 
+	bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, 
+	=?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>, 
+	Florian Fainelli <f.fainelli@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230831_140740_242745_12E86CAA 
-X-CRM114-Status: GOOD (  21.35  )
+X-CRM114-CacheID: sfid-20230831_142621_662909_0C7DE839 
+X-CRM114-Status: GOOD (  18.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,79 +82,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8962366932581869055=="
+Content-Type: multipart/mixed; boundary="===============2369206264392590328=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============8962366932581869055==
+--===============2369206264392590328==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000f2f2bf06043e6e10"
+	boundary="000000000000d5a24806043eb1ff"
 
---000000000000f2f2bf06043e6e10
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+--000000000000d5a24806043eb1ff
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Rafal,
+HI Rafal,
 
-On 8/31/23 08:30, Rafał Miłecki wrote:
+
+On Thu, Aug 31, 2023 at 8:30=E2=80=AFAM Rafa=C5=82 Mi=C5=82ecki <zajec5@gma=
+il.com> wrote:
+>
 > Hi,
-> 
+>
 > Broadcom Northstar platform has SPI controller and NAND controller
 > v6.1. Devices can come with serial or NAND flashes (or both).
-> 
+>
 > To provide early access to configuration data (NVRAM) stored on flash
 > Northstar provides MMIO mappings:
-> #define SI_NS_NANDFLASH            0x1c000000    /* NorthStar NAND flash base */
-> #define SI_NS_NORFLASH            0x1e000000    /* NorthStar NOR flash base */
-> 
+> #define SI_NS_NANDFLASH            0x1c000000    /* NorthStar NAND flash =
+base */
+> #define SI_NS_NORFLASH            0x1e000000    /* NorthStar NOR flash ba=
+se */
+>
 > It's possible to ioremap those and read flash content. Details:
 > Documentation/devicetree/bindings/nvmem/brcm,nvram.yaml
 > drivers/nvmem/brcm_nvram.c
-> 
+>
 > The problem is that reading flash that way breaks NAND controller
 > based access using brcmnand driver. A simple readb() triggers errors
 > like:
-> [  120.098439] SQUASHFS error: xz decompression failed, data probably corrupt
+> [  120.098439] SQUASHFS error: xz decompression failed, data probably cor=
+rupt
 > [  120.105371] SQUASHFS error: Failed to read block 0x3b8c02: -5
-> [  120.111158] SQUASHFS error: Unable to read metadata cache entry [3b8c00]
+> [  120.111158] SQUASHFS error: Unable to read metadata cache entry [3b8c0=
+0]
 > [  120.117877] SQUASHFS error: Unable to read inode 0x6760785
 > or
 > [    3.120527] ubi0 error: 0xc04f0b3c: PEB 0 contains corrupted VID
 > header, and the data does not contain all 0xFF
 > [    3.130664] ubi0 error: 0xc04f0b4c: this may be a non-UBI PEB or a
 > severe VID header corruption which requires manual inspection
-> 
+>
 > I assume that whatever hardware provides MMIO based access it
 > interferences with NAND controller.
-
-Yes there is a good chance that the MMIO interface which uses the NAND 
-controller underneath does not play ball when the NAND controller is in 
-use. Even on non-Northstar chips, we do not seem to have designed the 
-MMIO interface such that it would have a hardware enforced mutual 
-exclusion mechanism.
-
-> 
+>
 > Is that something that could be solved in brcmnand? Or should Linux
 > just don't use MMIO post-booting (after brcmnand initializes)? Is
 > there some generic cross-subsystem method to achieve that?
+Yes, you should just not use MMIO post-booting.  The NAND driver is
+sufficient for all uses cases is it not?
 
-I suppose you could have a lock exposed by either driver and grabbed by 
-both to serialize accesses? Unless there is a better way to do that 
-which would be to cache all of the values on boot and then no longer 
-touch the memory mapped interface?
--- 
-Florian
+>
+> --
+> Rafa=C5=82
 
-
---000000000000f2f2bf06043e6e10
+--000000000000d5a24806043eb1ff
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Description: S/MIME Cryptographic Signature
 
-MIIQeQYJKoZIhvcNAQcCoIIQajCCEGYCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3QMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
 VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
 AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
 AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
@@ -200,46 +189,45 @@ M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
 Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
 14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
 a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+XzCCBU8wggQ3oAMCAQICDE8D4z4BAwwalmdsKzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
 RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI1MjdaFw0yNTA5MTAwODI1MjdaMIGQ
 MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIH9Eg5RWbSmKZq8b
-9UUvtaf1kOEBTNI4FHy/wxmGxFzLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDgzMTIxMDczNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDYTWruhBSCx4YZokoYGa/sInmpvV2UTFfQ
-fXbxmqEhBIbvL9nTcrG5rSWPNrJBFmYr8631Z/EWl8x8SQ6JtRv+eRo15oSsnVj8fHBMUv++sdme
-ERfvPGLRdf5DQyKE+jOsS95QJMUJbMOOGAAhOU/XxJu4jqmNb6AX2EIL3hwLzRgs3lDlOstAgI03
-fhZFciYUkEpsJUcgd+8uYMlksovWrZii89CAVzG/AVZYNF2DMg5DIEcf1zZX3eb0HuIsXvHjHkYE
-hDEmWsWTTE7o8082KUndkqCZIE9Ndb8TtaSRS/psBuyw7BhxMcHMhqAjhpIWO8J4d2FvLFQVB2Vx
-emli
---000000000000f2f2bf06043e6e10--
+BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDVNjb3R0IEJyYW5kZW4xKTAnBgkqhkiG9w0B
+CQEWGnNjb3R0LmJyYW5kZW5AYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAo9mbREkJi8J8/NvDSl+KmH869odu/YFwp7LkXV52nkAZznm/6vzgb7tdMBnn4cZQIJGg
+isZ47sSEh2m9VKwWdhtE3MI4itH9gKR2K3s6FyeRSCeHbwTVDbGrVs0qojGSmql4Kc7EiCAZy/wt
+HZVH6VyfFeFxWtznSR328toXCPFoC3IpoftevI5YA1bS7e9cKoaYScAE/6vsJmImxQR/5Dc5Lu90
+aon9PduLGVgSMfiFb2nQ2w0PzDSefbrZKRQAGcSvcQlWb8XU7YKGbLhjR9c/r3KF4iUW8w2T2pd+
+bO6aQXt8b1C9YG/V+B65TuJXxgX0veIJEyP+Cl0Im5vNwwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU8+MSO/sprODwb9D5cjaq
+JNiLqgkwDQYJKoZIhvcNAQELBQADggEBAA25uPHwC95BhvFXuEOAk+J5FZV4v82uly/X7LATDzrf
+tsww461GRAidKV8lvziiIw6OQQgO9Ei/yC8bVdzDLQJF2PhxcWhc+4II6AkUyRC+Tmfk7xmPEYSv
+MHgQfpwPU6C1o4FI/8XjfJgk1dE4j4v16iLKC2qfBqfdzdT/cJaCg/fZfL0w5RLtGOOVIMBWwObx
+UKmtYSCgcvRKmLailjlxgiUaYgxdZSpwR0RvFJapt0KzMR5OIP96iyXYVWbl9qy8uY9gqEeNaaQm
+Bt8T4oEXHxRvse+Ij162RjEysEsDgkiE/koCb3YFlkVu5lL1N0M7EIo+XiuWWUEjuhztPasxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxPA+M+AQMMGpZn
+bCswDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDx/8nYYUo07y+D/Bub9oSrY6AJd
+d41RRCcjrqRsi052MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDgzMTIxMjYxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAtcK3oeD9Fyc/1A1hDVmtbZNAr0ji+WXoavBK8wGMsf+i9
+XI4c4pEYxV5hxQoV4ebpZeKLDr19UtPH6NYojglOB62ypLuIq+TgKYeu+mKO1qYb+BnBoco4qhQC
+zNiclM1ifKf1XyYeQ8NW2muokZKrw5XBbLyTrrKxwLvavCMT9ipIGU77ZQE3uFEbW+UcV2E7xF7M
+caP1k8FgLYUEBqPAM2fOzyqWL2xawtTe1+upxlzFeIxLp58oEoh6RHSCJE0Ki6qSg9V8CXI2Rkup
+tdqzRouU6UAnxrHuIadsrgNkmLcHJH0XAi/+r7iUU9p2XZRnpUix/1oeGbQj/3yiiqqP
+--000000000000d5a24806043eb1ff--
 
 
---===============8962366932581869055==
+--===============2369206264392590328==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -249,5 +237,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============8962366932581869055==--
+--===============2369206264392590328==--
 
