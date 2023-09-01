@@ -4,58 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA9F7CA0FE1
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Sep 2023 00:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD3DCA0FE1
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Sep 2023 01:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Date:Message-Id:Subject:Mime-Version
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JTLMcbwbNjH9R66To2aK66diieYYFpVVz6sm/mPIuVs=; b=qG7PrYUmjUdWAU
-	jNzHe4cTTJ/s4Dt+VgBu11DWFg3ykPowfCBPwo0teCpTZULUzBBpnl4ALd037VWSS8O+T8uxQa06n
-	SdSaVG0+AL4r0PjWKZ4Bwv5+071RgepHyzaJLFMsxlrSx62VjVuaRjL1su3DXQJoJlKOG0pPbjq7f
-	mEImnt2t77bs9gxvisFQrn9mYlLe6dZngLCYyfeq4PhfwIpn6l1lSawJVBsjvjW66ACxlSINAjS9S
-	PuzWDmPWkYZbkfB4Az6uR3JOZDOAVqe/YzLlncbtg6PH2q0aDLl2hUtjN34rf3NJDeUiOKKYRqsLr
-	5QG15O+7RI2dMU62EhOw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TFbl5XAH5XDzMdf4ew1bzNTG8t/od06oomQhAmwma3I=; b=nGz4ePYBVVWlyFU38peyFDck+D
+	dnzasvPHdk+4YZZybKRMjdjZ0VRcYWA9c3vzZmqGcYSUve3N1LIcI863lIFlha5E/l/X/tQwmRtD6
+	x+5tvciWtHJLND8dqS9Js67IIyEg8cL79ZrT2/lDNWkvSGRcTSduLovR+zl6B3Le1rPEO6JNo+FWK
+	SokJWnuV5D0zOHRuPHsQ/gYt04PKQn4IN+g7uoOhVn03WJ6SuRk1zqIS3/Su6r4PAp4mEo4/ptB6A
+	w+9KTXDxW3uWSiQLknh5+i8L94T12a6olDxd127lhlTUhif34TGLc4B4o6a/TPxBfNWP+cAmcJvrT
+	D025mlmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qbsRX-00G90a-3C;
-	Fri, 01 Sep 2023 00:55:24 +0000
-Received: from repl.esden.net ([176.9.151.34])
+	id 1qbshM-00GCkc-0D;
+	Fri, 01 Sep 2023 01:11:44 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qbsRU-00G8yD-08
+	id 1qbshH-00GCgr-1f
 	for linux-mtd@lists.infradead.org;
-	Fri, 01 Sep 2023 00:55:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=esden.net;
-	s=202007170; h=To:Date:Message-Id:Subject:Mime-Version:
-	Content-Transfer-Encoding:Content-Type:From:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=FzZq8J7y1++a8GOHENrGDS3sEA4GxOjLepFplSCgJEE=; b=vsMGtDQ2EArOEnbxiVTK9Q4ko4
-	nZMDN49Ws5zbcPK1N828kW8s/K7BUng6KAd44U+XG3Ok07PzoAmsSVSB7yL6xWejmB6Hh9J6DXD7Y
-	/CoT6JDomDTeglDxUBmUFcXdW5Rx+tW0jAFFn2dneEOZD3YUkLa/dD1oloiCyY0W7OK8itfTHbszT
-	fYs8BVJClW1a1BCGQVkJITavdVb0ttxMmwfyLVVGavrDE5VND9AuAI/pC1sL3pvvv7VdhIFUe9Pq2
-	a+zXnNnfkDhZzY1mV2Wm1Pd/te4RTNMZ0bzbHHp8hl/AEiFzPrZ6eEKvgdbGxpippNBND5dMPNm0l
-	mvxyDWFg==;
-Received: from c-73-240-60-215.hsd1.or.comcast.net ([73.240.60.215] helo=smtpclient.apple)
-	by repl.esden.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <piotr@esden.net>)
-	id 1qbsRP-009uzb-1l
-	for linux-mtd@lists.infradead.org;
-	Fri, 01 Sep 2023 02:55:15 +0200
-From: Piotr Esden-Tempski <piotr@esden.net>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: [PATCH] flashcp: Add write last option.
-Message-Id: <BF77DED8-F817-4BDE-A668-4F8AD46A2836@esden.net>
-Date: Thu, 31 Aug 2023 17:55:03 -0700
-To: linux-mtd@lists.infradead.org
-X-Mailer: Apple Mail (2.3731.600.7)
+	Fri, 01 Sep 2023 01:11:42 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RcKgt4KVxzrS8m;
+	Fri,  1 Sep 2023 09:09:46 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 1 Sep 2023 09:11:27 +0800
+Subject: Re: [PATCH] ubi: Reject device with erasesize 0
+To: Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, Yu Hao <yhao016@ucr.edu>
+References: <20230831111100.26862-1-jack@suse.cz>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <742eaa4e-3b74-5dc5-cf0a-71940b945133@huawei.com>
+Date: Fri, 1 Sep 2023 09:11:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20230831111100.26862-1-jack@suse.cz>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230831_175520_130952_51BB54D6 
-X-CRM114-Status: GOOD (  17.36  )
+X-CRM114-CacheID: sfid-20230831_181139_905925_B0CCC386 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,163 +63,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This option is useful for power fail resilient bootloader updates, for
-systems that check only the partition header for validity before
-attempting to load the bootloader. For example zynq.
-
-Postponing the write of a specified amount of bytes at the beginning of
-a bootloader makes sure a written bootloader slot is not considered
-valid until all the data is written.
----
- misc-utils/flashcp.c | 69 +++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 59 insertions(+), 10 deletions(-)
-
-diff --git a/misc-utils/flashcp.c b/misc-utils/flashcp.c
-index e1be292..9c48637 100644
---- a/misc-utils/flashcp.c
-+++ b/misc-utils/flashcp.c
-@@ -64,6 +64,7 @@
- #define FLAG_DEVICE		0x08
- #define FLAG_ERASE_ALL	0x10
- #define FLAG_PARTITION	0x20
-+#define FLAG_WR_LAST	0x40
- 
- /* error levels */
- #define LOG_NORMAL	1
-@@ -104,13 +105,14 @@ static NORETURN void showusage(bool error)
- 			"       %1$s -h | --help\n"
- 			"       %1$s -V | --version\n"
- 			"\n"
--			"   -h | --help      Show this help message\n"
--			"   -v | --verbose   Show progress reports\n"
--			"   -p | --partition Only copy different block from file to device\n"
--			"   -A | --erase-all Erases the whole device regardless of the image size\n"
--			"   -V | --version   Show version information and exit\n"
--			"   <filename>       File which you want to copy to flash\n"
--			"   <device>         Flash device node or 'mtd:<name>' to write to (e.g. /dev/mtd0, /dev/mtd1, mtd:data, etc.)\n"
-+			"   -h | --help           Show this help message\n"
-+			"   -v | --verbose        Show progress reports\n"
-+			"   -p | --partition      Only copy different block from file to device\n"
-+			"   -A | --erase-all      Erases the whole device regardless of the image size\n"
-+			"   -l | --wr-last=bytes  Write the first [bytes] last\n"
-+			"   -V | --version        Show version information and exit\n"
-+			"   <filename>            File which you want to copy to flash\n"
-+			"   <device>              Flash device node or 'mtd:<name>' to write to (e.g. /dev/mtd0, /dev/mtd1, mtd:data, etc.)\n"
- 			"\n",
- 			PROGRAM_NAME);
- 
-@@ -219,7 +221,9 @@ int main (int argc,char *argv[])
- 	struct mtd_info_user mtd;
- 	struct erase_info_user erase;
- 	struct stat filestat;
--	unsigned char *src,*dest;
-+	unsigned char *src,*dest,*wrlast_buf;
-+	unsigned long long wrlast_len = 0;
-+	int error = 0;
- 
- 	/*********************
- 	 * parse cmd-line
-@@ -227,12 +231,13 @@ int main (int argc,char *argv[])
- 
- 	for (;;) {
- 		int option_index = 0;
--		static const char *short_options = "hvpAV";
-+		static const char *short_options = "hvpAl:V";
- 		static const struct option long_options[] = {
- 			{"help", no_argument, 0, 'h'},
- 			{"verbose", no_argument, 0, 'v'},
- 			{"partition", no_argument, 0, 'p'},
- 			{"erase-all", no_argument, 0, 'A'},
-+			{"wr-last", required_argument, 0, 'l'},
- 			{"version", no_argument, 0, 'V'},
- 			{0, 0, 0, 0},
- 		};
-@@ -260,6 +265,10 @@ int main (int argc,char *argv[])
- 				flags |= FLAG_ERASE_ALL;
- 				DEBUG("Got FLAG_ERASE_ALL\n");
- 				break;
-+			case 'l':
-+				flags |= FLAG_WR_LAST;
-+				wrlast_len = simple_strtoll(optarg, &error);
-+				break;
- 			case 'V':
- 				common_print_version();
- 				exit(EXIT_SUCCESS);
-@@ -288,6 +297,10 @@ int main (int argc,char *argv[])
- 	if (flags & FLAG_PARTITION && flags & FLAG_ERASE_ALL)
- 		log_failure("Option --partition does not support --erase-all\n");
- 
-+	if (flags & FLAG_PARTITION && flags & FLAG_WR_LAST) {
-+		log_failure("Option --partition does not support --wr-last\n");
-+	}
-+
- 	atexit (cleanup);
- 
- 	/* get some info about the flash device */
-@@ -364,10 +377,40 @@ int main (int argc,char *argv[])
- 	 * write the entire file to flash *
- 	 **********************************/
- 
--	log_verbose ("Writing data: 0k/%lluk (0%%)",KB ((unsigned long long)filestat.st_size));
- 	size = filestat.st_size;
- 	i = mtd.erasesize;
- 	written = 0;
-+
-+	if ((flags & FLAG_WR_LAST) && (filestat.st_size > wrlast_len)) {
-+		if (wrlast_len > mtd.erasesize)
-+			log_failure("The wrlast (%lluk) is larger than erasesize (%lluk)\n", KB (wrlast_len), KB ((unsigned long long)mtd.erasesize));
-+
-+		if (size < mtd.erasesize) i = size;
-+
-+		log_verbose ("Reading %lluk of data to write last.\n", KB ((unsigned long long)wrlast_len));
-+		wrlast_buf = malloc(wrlast_len);
-+		if (!wrlast_buf)
-+			log_failure("Malloc failed");
-+		safe_read (fil_fd, filename, wrlast_buf, wrlast_len);
-+		safe_lseek(dev_fd, wrlast_len, SEEK_SET, device);
-+		written += wrlast_len;
-+		size -= wrlast_len;
-+		i -= wrlast_len;
-+
-+		log_verbose ("Writing remaining erase block data: %dk/%lluk (%llu%%)\n",
-+				KB (written + i),
-+				KB ((unsigned long long)filestat.st_size),
-+				PERCENTAGE ((unsigned long long)written + i, (unsigned long long)filestat.st_size));
-+		safe_read (fil_fd, filename, src, i);
-+		safe_write(dev_fd, src, i, written, (unsigned long long)filestat.st_size, device);
-+
-+		written += i;
-+		size -= i;
-+		i = mtd.erasesize;
-+	} else {
-+		log_verbose ("Writing data: 0k/%lluk (0%%)",KB ((unsigned long long)filestat.st_size));
-+	}
-+
- 	while (size)
- 	{
- 		if (size < mtd.erasesize) i = size;
-@@ -390,6 +433,12 @@ int main (int argc,char *argv[])
- 			KB ((unsigned long long)filestat.st_size));
- 	DEBUG("Wrote %d / %lluk bytes\n",written,(unsigned long long)filestat.st_size);
- 
-+	if ((flags & FLAG_WR_LAST) && (filestat.st_size > wrlast_len)) {
-+		log_verbose ("Writing %lluk of the write last data.\n", KB ((unsigned long long)wrlast_len));
-+		safe_rewind (dev_fd, device);
-+		safe_write(dev_fd, wrlast_buf, wrlast_len, 0, wrlast_len, device);
-+	}
-+
- 	/**********************************
- 	 * verify that flash == file data *
- 	 **********************************/
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy84LzMxIDE5OjExLCBKYW4gS2FyYSDQtLXAOgpIaSBKYW4sCj4gSW4gcHJpbmNpcGxl
+IE1URCBkZXZpY2Ugd2l0aCBlcmFzZXNpemUgMCBjYW4gZXhpc3QgYW5kIGl0IGlzIHBvc3NpYmxl
+IHRvCj4gY3JlYXRlIHRoZW0gZS5nLiB2aWEgS1ZNLiBJZiB0aGF0IGhhcHBlbnMgVUJJIGxheWVy
+IGN1cnJlbnRseSBjcmFzaGVzCj4gd2l0aDoKPiAKPiB1Ymk3OiBhdHRhY2hpbmcgbXRkMTQ3Cj4g
+ZGl2aWRlIGVycm9yOiAwMDAwIFsjMV0gUFJFRU1QVCBTTVAgS0FTQU4KPiBDUFU6IDAgUElEOiAy
+MDAyMyBDb21tOiBzeXotZXhlY3V0b3IuMCBOb3QgdGFpbnRlZCA2LjIuMCAjNgo+IEhhcmR3YXJl
+IG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TCj4gMS4x
+My4wLTF1YnVudHUxLjEgMDQvMDEvMjAxNAo+IFJJUDogMDAxMDptdGRfZGl2X2J5X2ViIGluY2x1
+ZGUvbGludXgvbXRkL210ZC5oOjU4MCBbaW5saW5lXQo+IFJJUDogMDAxMDppb19pbml0IGRyaXZl
+cnMvbXRkL3ViaS9idWlsZC5jOjYyMCBbaW5saW5lXQo+IFJJUDogMDAxMDp1YmlfYXR0YWNoX210
+ZF9kZXYrMHg3N2YvMHgyZmUwIGRyaXZlcnMvbXRkL3ViaS9idWlsZC5jOjk1NQo+IENvZGU6IGZj
+IGZmIGRmIDQ4IGMxIGVhIDAzIDBmIGI2IDE0IDAyIDRjIDg5IGYwIDgzIGUwIDA3IDgzIGMwIDAz
+IDM4Cj4gZDAgN2MgMDggODQgZDIgMGYgODUgMWYgMjUgMDAgMDAgNDEgOGIgNGMgMjQgMTAgNDgg
+ODkgZDggMzEgZDIgPDQ4PiBmNwo+IGYxIDQ4IDg5IGMzIGU4IGI2IGYzIDFiIGZjIDQ4IDhkIDg1
+IDQwIDE3IDAwIDAwIDQ4IDg5IGMyIDQ4Cj4gUlNQOiAwMDE4OmZmZmZjOTAwMGJlMGZkMzAgRUZM
+QUdTOiAwMDAxMDI0Ngo+IFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAwMDAwMDAwMDAw
+MDAgUkNYOiAwMDAwMDAwMDAwMDAwMDAwCj4gUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJTSTogZmZm
+Zjg4ODA0N2E0OWQ0MCBSREk6IDAwMDAwMDAwMDAwMDAwMDIKPiBSQlA6IGZmZmY4ODgwMjRlMWMw
+MDAgUjA4OiAwMDAwMDAwMDAwMDAwMDE2IFIwOTogZmZmZmY1MjAwMTdjMWY0Nwo+IFIxMDogZmZm
+ZmM5MDAwYmUwZmEzNyBSMTE6IGZmZmZmNTIwMDE3YzFmNDYgUjEyOiBmZmZmODg4MDY1NDVhMDAw
+Cj4gUjEzOiAwMDAwMDAwMDAwMDAwMDAwIFIxNDogZmZmZjg4ODA2NTQ1YTAxMCBSMTU6IDAwMDAw
+MDAwMDAwMDAwMDcKPiBGUzogIDAwMDA3ZmQ0NWU4NWM3MDAoMDAwMCkgR1M6ZmZmZjg4ODAyY2Ew
+MDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwCj4gQ1M6ICAwMDEwIERTOiAwMDAwIEVT
+OiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwo+IENSMjogMDAwMDdmNjRhZWVmNTNhNCBDUjM6
+IDAwMDAwMDAwNGYzOWEwMDAgQ1I0OiAwMDAwMDAwMDAwMzUwZWYwCj4gQ2FsbCBUcmFjZToKPiAg
+IDxUQVNLPgo+ICAgY3RybF9jZGV2X2lvY3RsKzB4MzAzLzB4M2EwIGRyaXZlcnMvbXRkL3ViaS9j
+ZGV2LmM6MTA0Mwo+ICAgdmZzX2lvY3RsIGZzL2lvY3RsLmM6NTEgW2lubGluZV0KPiAgIF9fZG9f
+c3lzX2lvY3RsIGZzL2lvY3RsLmM6ODcwIFtpbmxpbmVdCj4gICBfX3NlX3N5c19pb2N0bCBmcy9p
+b2N0bC5jOjg1NiBbaW5saW5lXQo+ICAgX194NjRfc3lzX2lvY3RsKzB4MTk4LzB4MjEwIGZzL2lv
+Y3RsLmM6ODU2Cj4gICBkb19zeXNjYWxsX3g2NCBhcmNoL3g4Ni9lbnRyeS9jb21tb24uYzo1MCBb
+aW5saW5lXQo+ICAgZG9fc3lzY2FsbF82NCsweDM1LzB4YjAgYXJjaC94ODYvZW50cnkvY29tbW9u
+LmM6ODAKPiAgIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDYzLzB4Y2QKPiAKPiBI
+YW5kbGUgc3VjaCBkZXZpY2VzIGdyYWNlZnVsbHkgYW5kIGp1c3QgcmVqZWN0IGF0dGFjaGluZyBV
+QkkgdG8gdGhlbQo+IGluc3RlYWQgb2YgY3Jhc2hpbmcuCj4gCj4gUmVwb3J0ZWQtYnk6IFl1IEhh
+byA8eWhhbzAxNkB1Y3IuZWR1Pgo+IExpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9D
+QStVQmN0RHNIUnBrTEc1cHBkaXVWOE1zbjREeC1aSjJ4RHJ4ZmE0OFZNYjdaRSt4QkFAbWFpbC5n
+bWFpbC5jb20KPiBTaWduZWQtb2ZmLWJ5OiBKYW4gS2FyYSA8amFja0BzdXNlLmN6Pgo+IC0tLQo+
+ICAgZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMgfCAzICsrKwo+ICAgMSBmaWxlIGNoYW5nZWQsIDMg
+aW5zZXJ0aW9ucygrKQo+IAo+IEl0IGRvZXNuJ3Qgc2VlbSB0aGUgZGlzY3Vzc2lvbiBsaW5rZWQg
+YWJvdmUgY29uY2x1ZGVkIGluIGEgcGF0Y2guIFNvIGlzCj4gYW55dGhpbmcgd3Jvbmcgd2l0aCB0
+aGUgdHJpdmlhbCBhcHByb2FjaCBoZXJlIHNvIHRoYXQgd2UgY2FuIGNsb3NlIHRoZSBpc3N1ZT8K
+ClRoZXJlIHdhcyBhIHBhdGNoLCBzZWUgCmh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJv
+amVjdC9saW51eC1tdGQvcGF0Y2gvMjAyMzA0MjMxMTEwNDEuNjg0Mjk3LTEtY2hlbmd6aGloYW8x
+QGh1YXdlaS5jb20vCgoKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMg
+Yi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+IGluZGV4IDhiOTFhNTVlYzBkMi4uNjg0MjczZTEz
+ZWZiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jCj4gKysrIGIvZHJpdmVy
+cy9tdGQvdWJpL2J1aWxkLmMKPiBAQCAtNjEzLDYgKzYxMyw5IEBAIHN0YXRpYyBpbnQgaW9faW5p
+dChzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgbWF4X2JlYl9wZXIxMDI0KQo+ICAgCWlmICh1
+YmktPnZpZF9oZHJfb2Zmc2V0IDwgMCkKPiAgIAkJcmV0dXJuIC1FSU5WQUw7Cj4gICAKPiArCWlm
+ICh1YmktPm10ZC0+ZXJhc2VzaXplID09IDApCj4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4gKwo+ICAg
+CS8qCj4gICAJICogTm90ZSwgaW4gdGhpcyBpbXBsZW1lbnRhdGlvbiB3ZSBzdXBwb3J0IE1URCBk
+ZXZpY2VzIHdpdGggMHg3RkZGRkZGRgo+ICAgCSAqIHBoeXNpY2FsIGVyYXNlYmxvY2tzIG1heGlt
+dW0uCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
