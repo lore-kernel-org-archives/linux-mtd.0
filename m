@@ -4,75 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58E5CC71153
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 Sep 2023 10:33:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C613C71153
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 Sep 2023 19:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=R6j3qPaeVi/wavt2223Bm8Darx2aSISVm2mp+qKOA2g=; b=Hx4BlQ9bRQ5q0D
-	d/oBEBepYGAGYoy5/vCmWnYj67NrmwuZuWjHhXW6gZPG6xiAlNVnL8z86r4UtlOBAbcW1mFGsY2pd
-	WqmoR3yLzhkeZVCiMOqCVDTECqY1b2R5bjSb4ROWnCdfTBJJP38P4Riwq6baqj7Zro/4z9u+JVbcX
-	XzrScIUR4aJPVq0QylhMHKqMoXvP6EBlPk9Mv6SGWrcw8in5Bswd/EMtnNvIGuG6KvVlvgSYnmK91
-	ehZ8k9H7noZz5BIhMHf7I5zCXrF3PWz5WI1KjLiXcU+G1pw6AjT9KcNywJIF3UoCnooqauxRr0R79
-	JitWZeZe7ZvzGRyb8JNg==;
+	List-Owner; bh=XJ4PSVhPykBs+9f57Zpn7Q7+X03lsMlDVtYQprb8HwI=; b=ws15HG5/nQM/yh
+	fX6Y9DFU89TvYMb2MKKULoR4ogk4brTthRX2RWTHUHLvfE0q4ToNCJsiIIlQh7FWhifC0X1pUI5Pc
+	AUwq+CgnQLLwDW+9o9CTJU2MHWqfBzPDSSqFwZpc/7jKb3LxadlhYC2YR/6iJeghx3FEN18WiZfPh
+	MX1UBBlUWrxBD6vxMMeX9C8QwSrUswJOj4cqsEVhn2OxvdXcNwCVXNfX1on6d+o+Ne4N6hp1Px8a1
+	sjNteLymgr1FluRoADh9rgKw6Zll2TaoU5aW1+Mq4HDcIz0h0R9y26rZDLGelKPTQ+5ZEmT7dujrj
+	lyZXoedDjeKLiTol52tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qcNw9-001HSI-22;
-	Sat, 02 Sep 2023 10:33:05 +0000
-Received: from mail-il1-x130.google.com ([2607:f8b0:4864:20::130])
+	id 1qcVr3-001hjO-2v;
+	Sat, 02 Sep 2023 19:00:21 +0000
+Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qcNw4-001HRh-1v
+	id 1qcVr0-001hiG-3C
 	for linux-mtd@lists.infradead.org;
-	Sat, 02 Sep 2023 10:33:02 +0000
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34baf19955cso9455965ab.2
-        for <linux-mtd@lists.infradead.org>; Sat, 02 Sep 2023 03:32:57 -0700 (PDT)
+	Sat, 02 Sep 2023 19:00:20 +0000
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so2235886a12.0
+        for <linux-mtd@lists.infradead.org>; Sat, 02 Sep 2023 12:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693650777; x=1694255577; darn=lists.infradead.org;
+        d=linux-foundation.org; s=google; t=1693681214; x=1694286014; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5OnI434n9NeNnDKmiNIVPrhxOf7YFyuDkJUxLVMdSiA=;
-        b=bMcBOdpFSdQVMrQEp6kW/6GVvmR6jKeJ+/SBPlRei/5uX5X/B2AmzFYwdXo8B2j4RP
-         ZCkSdUVQbE058dxXVX74QFG94wdCDSXAxXUBZ0NxEfvR4s3/m3Je5PsiqE4zjJ74WW10
-         WQn94H6zfamUhoV0VGMjPHV5hgLwuvFgRi8lCeGNrFtQWO8dt+mq3H1YTNJdOMHsYEoJ
-         pI2aRrqt59cboDjEgWWR7YY4KhyFgs+FtPGbXDoTWdBZTAYh7YXfLof71MOu86v27/IL
-         cqnxqiCswT4fcECozXoh6fZmesKHzcQHDRL/tBaAnTISYEvK2Uv+caJvjYNy8bIl2eoZ
-         UAeg==
+        bh=GJG2v/tBrKXJAeh8f1wAGpImo/b6UiTOWlNfcbJr5Tk=;
+        b=Lbqk0gDveKeOK02YqMcpL3cf0JyikcKgt320GeRznYHAUhtJLhNUzK6EHH39fVQAse
+         9VfXnBnquxZKhessPubaq0vaaJho3kjCg6YH5Zt8DoIldnlDSRAnUl8k73yV7xizOowA
+         6v73bDrz5wZs6qPmNxZ1WR984hOIp7Spj1oDY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693650777; x=1694255577;
+        d=1e100.net; s=20221208; t=1693681214; x=1694286014;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5OnI434n9NeNnDKmiNIVPrhxOf7YFyuDkJUxLVMdSiA=;
-        b=Ogv0MkvQZ2/RSxe0uGecoU8lw0I3lejOPjPbTbf7te4a4aYRmyOcv8ouB/gXa6dUEZ
-         UfunsJVE+ntXhXOokHCFbxXg+D0eL2eM0RzRnqzIEgg8FyDKd8KnBqC6lWe+esBpKgJY
-         Gmo9qdSTV0WTjrjJPC4bTcoZpyTtlTrai2jeg8N5hDmEnXckmYKOBpYYzlmCjnL9yvMO
-         9KZJ92GR+6zzyn23s9At8XmRIAQ27K3WCDRHgWIMSy+MchK1pDaxodx0AsNeP7XCRzPC
-         EZ95B0BixAbV0d8jTEUp+ok4W/6UM+XCo9p5fTgHhtzM1MCUF7bLex0qc55ZBWdTcJz3
-         w9qw==
-X-Gm-Message-State: AOJu0YyYCTabJvMlaDQUmiyj7JIZ8Q4auBVjUipqTnLaZ9C8snt6gZNY
-	yis2sP71T3mixOnahj2pj0DRLAm1f11yPP5DBTo=
-X-Google-Smtp-Source: AGHT+IH4PP5dWsT0jG0ti38U73JafvHzDWIElKwhl5OhOObG91+aQOEOROQHRtidpsNLL6+FiaYmWkl/VyHq61KoV5I=
-X-Received: by 2002:a92:cb0e:0:b0:34c:e6e6:80d5 with SMTP id
- s14-20020a92cb0e000000b0034ce6e680d5mr6122660ilo.26.1693650777195; Sat, 02
- Sep 2023 03:32:57 -0700 (PDT)
+        bh=GJG2v/tBrKXJAeh8f1wAGpImo/b6UiTOWlNfcbJr5Tk=;
+        b=XI+oi7vcPUV9Re2/r8LpEqtQ0WDC3pKvyHXmbDaGyyOwamea6Ca0quL0e/do8Vo1Y6
+         MhF1Fp7XMFd9vvr6HKox+9OMrzpUodZhbAr5zrt5xYADNA1v5zrxO3ILZTokszLOjy5w
+         4FDtnj7ZN2KNmPCNCQCCQJ7jt8c5DfUEikgYP/Za/4/++tJpnRdlCwZxFsrarZglGSru
+         mBU6hpbwpVQNMsJb0qoXWBdrAW9Urr4lYCZm8h6X+ZjNTsA4dzazye4+Jc2sdsk2Jk2Y
+         0wJ/sMf9k7uKNI0/AmiwDYOnbsSlpSqyOURkz1QNobmCchxzIBzW+n8P7i+RtTs/S87R
+         pxSA==
+X-Gm-Message-State: AOJu0YwdCBe0W4anrvbBPRlZ/HhPFD5HnzyUk8oZFlrksgIII5jd1Twm
+	aQDCZfT/Z48zZHTxSvqVlFae4SihpPgJApbvTLtIK3Vu
+X-Google-Smtp-Source: AGHT+IGUyrFU1Ot48VmXU/MIuGJrkRmYnwvM8t19ovltJiiitAyrlCxL/5IpwOrdOK3GwHlgWZVPkg==
+X-Received: by 2002:a17:907:1c86:b0:9a5:b2d8:e925 with SMTP id nb6-20020a1709071c8600b009a5b2d8e925mr10765476ejc.33.1693681213718;
+        Sat, 02 Sep 2023 12:00:13 -0700 (PDT)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id n18-20020a170906119200b009a219ecbaf1sm3717040eja.85.2023.09.02.12.00.12
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Sep 2023 12:00:13 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4c0so343071a12.0
+        for <linux-mtd@lists.infradead.org>; Sat, 02 Sep 2023 12:00:12 -0700 (PDT)
+X-Received: by 2002:a05:6402:34d0:b0:51d:b184:efd with SMTP id
+ w16-20020a05640234d000b0051db1840efdmr10020929edc.20.1693681212581; Sat, 02
+ Sep 2023 12:00:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901133641.60817-1-dii@itb.spb.ru>
-In-Reply-To: <20230901133641.60817-1-dii@itb.spb.ru>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Sat, 2 Sep 2023 12:32:45 +0200
-Message-ID: <CAOiHx==_azyuNzVEvYrGQmDxb2TYPW=2bFjyRjGoxWX-pGb7OA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: tests: remove useless checks
-To: Dembskiy Igor <dii@itb.spb.ru>
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>, Boris Brezillon <bbrezillon@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Akinobu Mita <akinobu.mita@gmail.com>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <20230901184136.73b2833e@xps-13>
+In-Reply-To: <20230901184136.73b2833e@xps-13>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 2 Sep 2023 11:59:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
+Message-ID: <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
+Subject: Re: [GIT PULL] mtd: Changes for v6.6-rc1
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, 
+	Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, 
+	Pratyush Yadav <pratyush@kernel.org>, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230902_033300_654620_7149D2FF 
-X-CRM114-Status: GOOD (  14.85  )
+X-CRM114-CacheID: sfid-20230902_120019_040780_DD340E7D 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,45 +96,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Fri, 1 Sept 2023 at 15:39, Dembskiy Igor <dii@itb.spb.ru> wrote:
+On Fri, 1 Sept 2023 at 09:42, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 >
-> Return value of mtdtest_scan_for_bad_() is always 0. So it causes senseless
+> Core MTD changes:
+> * Use refcount to prevent corruption
+> * Call external _get and _put in right order
+> * Fix use-after-free in mtd release
+> * Explicitly include correct DT includes
+> * Clean refcounting with MTD_PARTITIONED_MASTER
+> * mtdblock: make warning messages ratelimited
+> * dt-bindings: Add SEAMA partition bindings
 
-Your function name got cut off.
+Ok, so the above list isa fairly reasonable, but then:
 
-> checks in some functions such as mtd_subpagetest_init().
+> MTD device driver changes:
+> * spear_smi: Use helper function devm_clk_get_enabled()
+> * maps: fix -Wvoid-pointer-to-enum-cast warning
+> * docg3: Remove unnecessary (void*) conversions
+> * physmap-core, spear_smi, st_spi_fsm, lpddr2_nvm, lantiq-flash, plat-ram:
+>   - Use devm_platform_get_and_ioremap_resource()
+[...]
 
-Then maybe it should return void?
+This is not a "summary of changes". The above is basically just a
+re-organized shortlog.
 
-> Fixes: 084db4b020c7 ("mtd: tests: introduce helper functions")
-> Signed-off-by: Dembskiy Igor <dii@itb.spb.ru>
-> ---
->  drivers/mtd/tests/oobtest.c     | 2 --
->  drivers/mtd/tests/pagetest.c    | 2 --
->  drivers/mtd/tests/readtest.c    | 2 --
->  drivers/mtd/tests/speedtest.c   | 3 +--
->  drivers/mtd/tests/stresstest.c  | 2 --
->  drivers/mtd/tests/subpagetest.c | 2 --
->  drivers/mtd/tests/torturetest.c | 2 --
->  7 files changed, 1 insertion(+), 14 deletions(-)
->
-> diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-> index 13fed398937e..976f40a5656e 100644
-> --- a/drivers/mtd/tests/oobtest.c
-> +++ b/drivers/mtd/tests/oobtest.c
-> @@ -399,8 +399,6 @@ static int __init mtd_oobtest_init(void)
->         pr_info("test 1 of 5\n");
->
->         err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
-> -       if (err)
-> -               goto out;
+What I want a merge message to be is to be an _overview_ of what the
+merge brings in, and it's why I ask peopel to summarize what they have
+worked on in the pull request.
 
-That's not mtdtest_scan_for_bad_eraseblocks().
+But when the "summary" is just a list of every single detail, it's no
+longer a summary. It doesn't give an overview of what has changed.
+It's not useful to an outsider as a way to see "this is what the merge
+brings in".
 
-Regards,
-Jonas
+End result: I might as well just use "git shortlog", and it would
+probably be about as readable as this is. In fact, I get the strong
+feeling that this was auto-generated from something very much akin to
+"git shortlog", just edited to combine multiple commits that just did
+the same thing to several drivers.
+
+Please - this is meant for *humans*. If it is just another form of
+"git shortlog", then the automated version is *better*, because I can
+use "git shortlog" to look at one particular driver (or a particular
+set of drivers), so having a static version of "git shortlog" that has
+been slightly munged to another format is actually _inferior_.
+
+No, what the merge message should be is a general overview of "this is
+the big picture". Not just a list of every single change, just by
+sub-area.
+
+For example, you list "Use devm_platform_get_and_ioremap_resource" not
+just for individual drivers (nobody cares!), you do it *twice*,
+because you've split up MTD drivers from raw NAND controller drivers.
+
+And then you separately list "Use helper function
+devm_clk_get_optional_enabled" from that list too, _and_ you then list
+"Use devm_platform_ioremap_resource_byname()" for the brcm nand
+driver.
+
+Not to mention individually lising "Fix alignment with open
+parenthesis" and "Fix the spacing" and "Fix wrong indentation" and
+"Fix a typo" for the Qcom driver.
+
+See why I'm frustrated? This has been going on for some time, but it's
+gett9ing *worse*. This is absolutely ridiculous. I could try to make a
+summary of it all, but honestly, now it feels like just complete
+wasted time.
+
+So I pulled this, looked at the "summary" in the fag, and decided that
+it's just not worth it, and unpulled it.
+
+Please give me a *summary* of what has changed. A list of *important&
+things. Not a list of pointless typo fixes.
+
+               Linus
 
 ______________________________________________________
 Linux MTD discussion mailing list
