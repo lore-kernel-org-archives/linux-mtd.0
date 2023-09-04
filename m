@@ -4,68 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63656C83F2C
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Sep 2023 14:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 868A8C83F3F
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Sep 2023 14:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wAjwXks9kDJbqHz4BZSSclkz6qA7FztJe5t9LEJpfaQ=; b=jA2z9jFczRamfY
-	HYTYrIaJqHgIFSiVBH7B7XreLXcsdQDPaXQqoOMtfFBTNkIdC+WT9ssVdFwysXyeNhc9XJSe5dKI0
-	3nrxrJeP/zj4gBnVq0GumUaggH+jH+8CpODmhEKUXQ6bUbacRnNZoAKtR5QF5dPW6Z3RQ+dJiYPNe
-	yd5wihZYrQ/Va6V/7hgI3P4DSchu7SRLV8t6vXPbo/XSq3VCfnuS9FCsQgNU26cnCPagIgJDlfefp
-	UcNYGjdRJPWMdnDJn9QhUzcp/thXrwphD3PdF/IFtKof8jD0v0qbnGRjcBY7+tQqIMnZSusCppFRH
-	vZjrF0HD0FpPUbfxW2qg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=pUNzROh72egkms9XbPOUDZgOJwmGL0kvY6yfRZ4hjok=; b=Sfy1I10z8XB00Jj6VzwEVLoeJn
+	KyOxSckdkivELjVpKOc8eujDuvin7pYUUY3x8DR7mq6IXDoQ73kmGPIgvkoDNZDiuFKCSSlzBGQez
+	1DsK/mzpakXanrTEKupq8BytSIAnSQVHFqgjHxXCNWIuQDLkLDHbU5Kty//olHWmNdYSl/6WJUeNL
+	W3Mxkptx+r3HIaFVlKDs069eewEwg7OYb39HD68D3iTPmXfPOtFwkdaqEJ+ISf4zVw15D14XWix6e
+	vUWnMmT+aDHCYaKfX4ffCIhooU9iPEOqAmtCEtz93JMuqWgTyUlE6uNjD4LAmv5INGvKqouBWs6tB
+	GoeokYsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdAcb-004H7U-0R;
-	Mon, 04 Sep 2023 14:32:09 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1qdAyZ-004Izs-06;
+	Mon, 04 Sep 2023 14:54:51 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdAcY-004H6c-1C
+	id 1qdAyW-004IzS-1T
 	for linux-mtd@lists.infradead.org;
-	Mon, 04 Sep 2023 14:32:07 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2082060004;
-	Mon,  4 Sep 2023 14:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1693837918;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W3BueW+5ouWvJdqGn30lncsv3tQGn2v6ujqAYNE8/yQ=;
-	b=B8zsWGfaRq+NOXojK+ZQW9UC5UkQP+7AMKTkP44ekYibvMe8O0rKxFED0FyK0QngteUilU
-	M1L/aPpI2YzaxJVrTJx4qog1Li4fyXycnvBg1ky9JL8pBJUuamU0ySrWuR37Wjt4kne19F
-	XHqC6Y1aXFPMlauWCFk8Y71VhAd11FuIP0ULlX/D47pTkaiTeZ48UBNdf5gKfBL+6a+x2p
-	OM3M7S9rPrGvTXiuwKJCVCmvafJK+WM+isK3sBN6XGMdfZKEcCZ0tbICwWLHhpDVFIf33s
-	MevfU36nI3nbJWLBnHbHVjeRPtmhapP8mUrPwZOtSlJ876DORsFVWRcr6/DB1g==
-Date: Mon, 4 Sep 2023 16:31:56 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <kernel@sberdevices.ru>
-Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
-Message-ID: <20230904163156.4bdb8c06@xps-13>
-In-Reply-To: <90a53eda-bbeb-dffa-0f90-6fd229f555e6@sberdevices.ru>
-References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
-	<20230822122534.872646-3-mmkurbanov@sberdevices.ru>
-	<20230822153556.630e65b9@xps-13>
-	<01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
-	<20230823104143.760cc5bc@xps-13>
-	<f873d775-cda9-302d-a651-0113c7c7dc84@sberdevices.ru>
-	<20230823133956.0a505a20@xps-13>
-	<ccf3099f-0e10-a87c-be83-4a414f01dca7@sberdevices.ru>
-	<90a53eda-bbeb-dffa-0f90-6fd229f555e6@sberdevices.ru>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Mon, 04 Sep 2023 14:54:49 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5256D60C88;
+	Mon,  4 Sep 2023 14:54:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF74C433C7;
+	Mon,  4 Sep 2023 14:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693839284;
+	bh=6YiWLWZhRQojhusQvrksldKf/NJ2HtePQPILfFdZTxY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=X4+/LmsTgugqaS+D3wJ37wOyQMHwlUq6EQQHYPbRGTPCKFOVco4LEyHU37cqG8Va9
+	 Yya9tEVdzKPPlVDW6mQH0ASDoXYy1nfU8kHS1VXI5lEEMnhfK5YQNIdv4jzFou9nlB
+	 OQkT4xM7u3wbnwLapZHiII8f3iHBMRdznLZg8pkRTQ9M6gLGQ7NHRy1oqlt+qKFGTh
+	 jMKSxTM2lvRQcX5KJMJNxAQoWABv7b0/iG390II1BdCIwXLeJkcPdUIiXe2eHDxTu/
+	 FJnqkI3lvV9a3EIBKdspOiLRWPb70Ef7lJZQrUPdxLCgRC/IeHO+GYFVLjevwZoRIT
+	 IpVJ6e481Oebw==
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Date: Mon, 04 Sep 2023 16:54:40 +0200
+From: Michael Walle <mwalle@kernel.org>
+To: liao jaime <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, JaimeLiao
+ <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v3 2/5] mtd: spi-nor: core: Hook manufacture by checking
+ first byte ID
+In-Reply-To: <CAAQoYRk5y_jJqKt-CBQ8vyOi7ppGbestzaCgFbw1fjetk07+ug@mail.gmail.com>
+References: <20230804095409.278419-1-jaimeliao.tw@gmail.com>
+ <20230804095409.278419-3-jaimeliao.tw@gmail.com>
+ <70e42ee5e4c5aba05ac896cb94956f25@kernel.org>
+ <CAAQoYR=JQVd3iqfCYKjvkbFSGVWJRX1xFni6CsNht9prhuQ1EA@mail.gmail.com>
+ <92234e4c5aca657a966d7c4d9d5f219a@kernel.org>
+ <CAAQoYRnpGmo4Li5fJoRWq6_C4cF+OdzbuvQKtiGDJL1HcChXvA@mail.gmail.com>
+ <ab8e506ea941749b07f0a93565e731c0@kernel.org>
+ <CAAQoYRnJTXGEYbhS1HkBC2p5QtPPFZdACw4zdE5aYoBpeGwefg@mail.gmail.com>
+ <CAAQoYRk5y_jJqKt-CBQ8vyOi7ppGbestzaCgFbw1fjetk07+ug@mail.gmail.com>
+Message-ID: <639c112dd978e8b6489f158c6c8858b4@kernel.org>
+X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230904_073206_574661_5AD4AD5E 
-X-CRM114-Status: GOOD (  22.14  )
+X-CRM114-CacheID: sfid-20230904_075448_561210_06888D36 
+X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,43 +81,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFydGluLAoKbW1rdXJiYW5vdkBzYmVyZGV2aWNlcy5ydSB3cm90ZSBvbiBNb24sIDQgU2Vw
-IDIwMjMgMTc6MjA6NTkgKzAzMDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiAyNC4wOC4yMDIzIDEy
-OjM1LCBNYXJ0aW4gS3VyYmFub3Ygd3JvdGU6Cj4gPiAKPiA+IAo+ID4gT24gMjMuMDguMjAyMyAx
-NDozOSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+PiBIaSBNYXJ0aW4sCj4gPj4KPiA+PiBtbWt1
-cmJhbm92QHNiZXJkZXZpY2VzLnJ1IHdyb3RlIG9uIFdlZCwgMjMgQXVnIDIwMjMgMTQ6MzM6NTcg
-KzAzMDA6Cj4gPj4KPiA+Pj4gSGkgTWlxdWVsLAo+ID4+Pgo+ID4+PiBPbiAyMy4wOC4yMDIzIDEx
-OjQxLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4+Pj4gSGkgTWFydGluLAo+ID4+Pj4KPiA+Pj4+
-IEkgZG9uJ3QgdGhpbmsgdGhlIGZvdXIgYnl0ZXMgaGF2ZSBhbnkgImJhZCBibG9jayBzcGVjaWZp
-YyIgbWVhbmluZy4gSW4KPiA+Pj4+IHByYWN0aWNlLCB0aGUgZGF0YXNoZWV0IHN0YXRlczoKPiA+
-Pj4+Cj4gPj4+PiAJVmFsdWUgcHJvZ3JhbW1lZCBmb3IgYmFkIGJsb2NrIGF0IHRoZSBmaXJzdCBi
-eXRlIG9mIHNwYXJlCj4gPj4+PiAJYXJlYTogMDBoCj4gPj4+Pgo+ID4+Pj4gU28gb25seSB0aGUg
-Zmlyc3QgYnl0ZSBpcyB1c2VkIHRvIG1hcmsgdGhlIGJsb2NrIGJhZCwgdGhlIHJlc3QgaXMKPiA+
-Pj4+IHByb2JhYmx5IG1hcmtlZCAicmVzZXJ2ZWQiIGZvciBzaW1wbGljaXR5LiBJIGJlbGlldmUg
-d2Ugc2hvdWxkIGtlZXAgdGhlCj4gPj4+PiBjdXJyZW50IGxheW91dCBiZWNhdXNlIGl0IHdvdWxk
-IG90aGVyd2lzZSBicmVhayB1c2VycyBmb3Igbm8gcmVhbAo+ID4+Pj4gcmVhc29uLiAgCj4gPj4+
-Cj4gPj4+IEkgYWdyZWUgd2l0aCB5b3UgdGhhdCB0aGlzIGNhbiBicmVhayB0aGUgd29yayBvZiB1
-c2VycyB3aG8gdXNlIE9PQi4KPiA+Pj4gSG93ZXZlciwgSSBiZWxpZXZlIGl0IHdvdWxkIGJlIG1v
-cmUgYXBwcm9wcmlhdGUgdG8gdXNlIGFuIG9mZnNldCBvZiA0LAo+ID4+PiBhcyB0aGUgbWljcm9u
-IGNoaXAgY2FuIHVzZSBhbGwgNCBieXRlcyBmb3IgYWRkaXRpb25hbCBkYXRhIGFib3V0IHRoZQo+
-ID4+PiBiYWQgYmxvY2suIFNvLCB0aGVyZSBpcyBhIG5vbi16ZXJvIHByb2JhYmlsaXR5IG9mIGxv
-c2luZyBPT0IgZGF0YSBpbgo+ID4+PiB0aGUgcmVzZXJ2ZWQgYXJlYSAoMiBieXRlcykgd2hlbiB0
-aGUgaGFyZHdhcmUgY2hpcCBhdHRlbXB0cyB0byBtYXJrCj4gPj4+IHRoZSBibG9jayBhcyBiYWQu
-Cj4gPj4KPiA+PiBJcyB0aGlzIHJlYWxseSBhIHByb2Nlc3MgdGhlIGNoaXAgY2FuIGRvPyBBcmVu
-J3QgYmFkIGJsb2NrcyBmYWN0b3J5Cj4gPj4gbWFya2VkIG9ubHk/Cj4gPiAKPiA+IEFjdHVhbGx5
-LCB0aGVyZSBpcyBteSB1bmRlcnN0YW5kaW5nLCBJ4oCZbSBub3Qgc3VyZSBleGFjdGx5Lgo+IAo+
-IEkgdGVzdGVkIHdpdGggYW4gb2Zmc2V0IG9mIDIsIG5vIHJlYWQvd3JpdGUgZXJyb3JzIHdlcmUg
-ZGV0ZWN0ZWQKPiAoaW5jbHVkaW5nIHJlYWQvd3JpdGUgdG8gT09CKS4gQnV0IEkgZG9uJ3QgaGF2
-ZSBhIGZsYXNoIGNoaXAgd2l0aAo+IGZhY3RvcnkgYmFkIGJsb2NrcyB5ZXQsIHdoZW4gSSBmaW5k
-IHN1Y2ggYSBmbGFzaCwgSSB3aWxsIHJlcG9ydCB0aGUKPiByZXN1bHRzLgoKT2suCgo+IERvIEkg
-bmVlZCB0byBzZW5kIHRoZSB2MyBvZiB0aGUgcGF0Y2ggd2l0aCBvbmx5IGZpcnN0IGNvbW1pdCAo
-ImNvcnJlY3QKPiBiaXRtYXNrIGZvciBlY2Mgc3RhdHVzIik/CgpZZXMgcGxlYXNlLCB3aXRoIEZy
-aWVkZXIncyBjb21tZW50cyBmaXhlZC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hi,
+
+>> Most of information could get by parsing SFDP.
+>> We hope that highest protocol(8D-8D-8D) could used without adding IDs.
+>> Because of octal_dtr function is still reply on mafacturer hook 
+>> function.
+>> So that vendor discovery could make up deficiency.
+> 
+> For this part, have any ideas?
+> We hope that we could do something for reducing reliability of ID 
+> table.
+> It will be good if new flashes could get all features without comparing 
+> flash id
+> on ID tables.
+
+Ahh, that was the use case for that. I suggest you look into the SCCR 
+SFDP
+tables. You should get everything from the 23rd DWORD. At least the 
+Application
+note you've sent me, shows these values are populated and by a brief 
+look
+it seems to match your hand written code in patch 1. Which means you 
+don't
+need any code in macronix.c. Instead you should extend the SCCR parser.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
