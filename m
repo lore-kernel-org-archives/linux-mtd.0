@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC510C71153
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Sep 2023 09:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 573C8C83F33
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Sep 2023 09:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B1UBXR5vJLvbVSOj1oCMdtxkkm+DsvXVxp3iU/IvXh8=; b=ZT/F6vBI7Ne7Vf
-	CEtCPmhtFgZwQ5+T9yV+JkPbfELprEjfmFD3pnRftulhOmMnUk8gN4qE1LXqFt644ajOtmf6AHwee
-	9wCZDOAnl+KPsfULH+s6j9L6nqEM/g1pj2RruFQ6DqlNxSMe9az/bSyn+xNITh6VJJruiE278q6p9
-	kG2jKg2zpzigI4kpJa4H1XZ/OG/vlfeVFgY4yVPkSMz9/V1W5HMlEF1VVJ3h7LIzfX3vCwZajDZqS
-	voGVeOcpEbZVWDoy6hpfa7Tcn1jObVhtQjObmA2RlUGtoFN77fPE5MvU91gQXgSRTDVtFoAmvOgLP
-	uiy2JOZqYTtlrJR/V4AQ==;
+	List-Owner; bh=xBsPamEClbGOWd/ObWHpq0Yxi2lvYBI8jidYWi/mSsw=; b=BCzIC+1BBDINKV
+	agx9bV9zel/uDH4OXq9WwxK+mobMCGEaFu9opEGPVs2SWiImMc2E3ngNePDi7oVAM/Lhhpvd+MCiD
+	4HjnU5qMsCzgTL/n3tl3utmj/M0Yewcn4YhOXGk3fo0V7WMV75Zg2lP3bH051SP0chR09A8d0Ph4u
+	r0Zv8d7H4zigbGibdLdUcax0J0fkMb1todoWKoby8Bk9z7ARjdUkFdNdSHQCRe1t3ZNr6hYhIxsDR
+	FboXj4sWN3JzvWI3UB7UGd160EvS9kPJKGxUfKukDYKWKl9S1NU6TQe0o7+R4C7DShqvuqJvW5+fy
+	HJllj/jhX772b1sb8ZgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qd6FQ-003iSQ-1W;
-	Mon, 04 Sep 2023 09:51:56 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1qd6L3-003jkv-0z;
+	Mon, 04 Sep 2023 09:57:45 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qd6FN-003iS1-20
+	id 1qd6Kz-003jiz-0M
 	for linux-mtd@lists.infradead.org;
-	Mon, 04 Sep 2023 09:51:55 +0000
+	Mon, 04 Sep 2023 09:57:43 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id C4EA7CE0E30;
-	Mon,  4 Sep 2023 09:51:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B855FC433C8;
-	Mon,  4 Sep 2023 09:51:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2128260110;
+	Mon,  4 Sep 2023 09:57:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2861AC433CA;
+	Mon,  4 Sep 2023 09:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693821110;
-	bh=u+xgETcg23UcZvAsSNoTKQTpoQDzWhh5CjfKLhaLfCA=;
+	s=k20201202; t=1693821459;
+	bh=3nBALREBe4uYOQysxhL3FnVqTkdR7jMiX68zU5wvxQ8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GrBGNC0GUAEP92SVXDSYgvIeyQhEWu5ohv1UZxcq2j4jmPnZMVKVXd7PcLbrec+YC
-	 YwtxwrDnv2HUbxAauD5LP+iZpv1hgd3J7v5N5AFier00fzuLYjkXSyalNCln662qcL
-	 MOkKZFmfbFH61oxgNm/1PDUalOPIF/dG8en4lktLAOJKNet2WlaOi4SDB1WMRo8c1E
-	 Fx1ryvNUFvNi9qlIPKbaeTXq/1cJbp6vtXGsOglG9wRy2wFIevByTxjIps/B3VRZZs
-	 ZTGcqJO6bRRRPVV2zC3wt54/lylE+o7sVECKL3QKI1/oWONjJaYkFRkcM0vOKzehKT
-	 ynVVLBmYA4BCQ==
-Date: Mon, 4 Sep 2023 11:51:40 +0200
+	b=pEztgc4TUkd2yfcHxcboc+zDXAcA4KHCmIGSB/gsRgCo9DGA1rLyRBmfivPzAjnOB
+	 KKw5j1sjO7veroFTPAfq4w/Dw21tYljOg8WM+sB6xZikYv2ILFdOD928dMMu6jaMTA
+	 hsFmv7Cbjvf4C2EEf3kIjrkFy7uHmWrX1TbMwxUdVWRcMpkNca5fPpStkr+O9O9AVs
+	 oGtWlPEvUt+phBNKXuy5CCjefBQ9+fHhCcNVb2HuJp7/pDdC8MPGp01mLBBiMVtugi
+	 LQHGEf2o9T+0sCa9DBGt1latLMv6pIa/RLJn+fTPda2hnB4Yrxv5cYlj5KyxA/vFa0
+	 BGrzmLYXagYqw==
+Date: Mon, 4 Sep 2023 11:57:30 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Hao Xu <hao.xu@linux.dev>
 Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -67,16 +67,16 @@ Cc: io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
 	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
 	Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Message-ID: <20230904-trennen-gewettert-0b2dc5ba60bc@brauner>
+Subject: Re: [PATCH v6 00/11] io_uring getdents
+Message-ID: <20230904-butterbrot-aufraffen-db483c53eab5@brauner>
 References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230827132835.1373581-8-hao.xu@linux.dev>
+In-Reply-To: <20230827132835.1373581-1-hao.xu@linux.dev>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230904_025154_025443_7C13E527 
-X-CRM114-Status: GOOD (  15.52  )
+X-CRM114-CacheID: sfid-20230904_025741_196554_1C4AE5FD 
+X-CRM114-Status: UNSURE (   8.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,69 +93,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> Add a boolean parameter for file_accessed() to support nowait semantics.
-> Currently it is true only with io_uring as its initial caller.
-> 
-> Signed-off-by: Hao Xu <howeyxu@tencent.com>
-> ---
->  arch/s390/hypfs/inode.c | 2 +-
->  block/fops.c            | 2 +-
->  fs/btrfs/file.c         | 2 +-
->  fs/btrfs/inode.c        | 2 +-
->  fs/coda/dir.c           | 4 ++--
->  fs/ext2/file.c          | 4 ++--
->  fs/ext4/file.c          | 6 +++---
->  fs/f2fs/file.c          | 4 ++--
->  fs/fuse/dax.c           | 2 +-
->  fs/fuse/file.c          | 4 ++--
->  fs/gfs2/file.c          | 2 +-
->  fs/hugetlbfs/inode.c    | 2 +-
->  fs/nilfs2/file.c        | 2 +-
->  fs/orangefs/file.c      | 2 +-
->  fs/orangefs/inode.c     | 2 +-
->  fs/pipe.c               | 2 +-
->  fs/ramfs/file-nommu.c   | 2 +-
->  fs/readdir.c            | 2 +-
->  fs/smb/client/cifsfs.c  | 2 +-
->  fs/splice.c             | 2 +-
->  fs/ubifs/file.c         | 2 +-
->  fs/udf/file.c           | 2 +-
->  fs/xfs/xfs_file.c       | 6 +++---
->  fs/zonefs/file.c        | 4 ++--
->  include/linux/fs.h      | 5 +++--
->  mm/filemap.c            | 8 ++++----
->  mm/shmem.c              | 6 +++---
->  27 files changed, 43 insertions(+), 42 deletions(-)
-> 
-> diff --git a/arch/s390/hypfs/inode.c b/arch/s390/hypfs/inode.c
-> index ee919bfc8186..55f562027c4f 100644
-> --- a/arch/s390/hypfs/inode.c
-> +++ b/arch/s390/hypfs/inode.c
-> @@ -157,7 +157,7 @@ static ssize_t hypfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  	if (!count)
->  		return -EFAULT;
->  	iocb->ki_pos = pos + count;
-> -	file_accessed(file);
-> +	file_accessed(file, false);
+On Sun, Aug 27, 2023 at 09:28:24PM +0800, Hao Xu wrote:
 
-Why? If all you do is skip atime update anyway then just add something
-like:
+For the future it would be helpful to hold of on sending larger series
+that like this until a stable tag is out.
 
-bool file_needs_atime(struct file *file)
-{
-       return !(file->f_flags & O_NOATIME) &&
-              atime_needs_update(&file->f_path, d_inode(path->dentry));
-}
-
-and then
-
-if (file_needs_atime(file) && IOURING_WANTS_ASYNC)
-	return -EAGAIN;
-
-instead of touching all this code.
+Right now this series is generating a bunch of merge conflicts because
+of all the changes to relevant codepaths that got merged. So either we
+have to resolve them to see whether things still make sense within the
+context of all the changed code or risk that stuff we comment is outdated.
 
 ______________________________________________________
 Linux MTD discussion mailing list
