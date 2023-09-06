@@ -4,82 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 047DDEB8FAD
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 06:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A81CEB8FAD
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 06:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aGmpBepXSLcbc2nPqaQXZwR3AM3NzHgqcbeQ4NXV8AE=; b=aCLNjPfH+oBiQc
-	zGg2/Tin05KHiGE6TemNFK4GPlVfJB52sNWIzR4iri7A0V+il3tus1PZzQftarwdqRO3nA+u6tVHu
-	pTjWZ2LnTLmn8yOM9R8NcWuPLK7at3a+e/rKUT75MuZoYRf7h/9w06Nql2glhMPcKbVQCnNYQzl9u
-	avxd7F4IfX+WiYj8CpfcEUv+DIis+AMgDnpkv9gtAslm0iSkmImCXkAT7Rt2mCSiUwjwISHBCFmQO
-	rI+PXdemKpgca/gdbsLRnR0ie1KUwWnVyihpdP1wBQ/0zHQjUz1axkwYTlMM71/b16CJTNCBu7cwX
-	BgmlYuR/59sc6Hw88o3A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=w7nvXbRqjglt6F8H+KflgxmbYonHWUerxLppD8qQAK0=; b=tOfumJbE5YmjciMjlqqazfII0Z
+	vSu9Ce0/7fmWi0l6tyjmtGFSlA4rL48b3U2xXjPX2iZkoFHZtpc89tJq/Rkj4oEAL7ffB/eDIhawT
+	tLe7DvmDsLv4gjFylLC6NnbSXf2ut5t/79SCK59hhgyPIsDr/DSGy7zo7vCTdMy6FPf2d+gEjsvoH
+	i6vBLJtSelbhbz7/i/EtXaU/RC3aXDFvywh0K5a0KMjboEhf4vfdJVcSxYslR9WX3pTIxJSGwwiAw
+	uiu4wgasptDPqQEv9ymdeLsGf+TuGVRQMzJYkFIHKuV83XuNPYVPJ6E7j3aZ5sUE++3SPdh+pdLZA
+	7pFBa34g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdlm1-007LLX-0w;
-	Wed, 06 Sep 2023 06:12:21 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1qdmOv-007PRP-0r;
+	Wed, 06 Sep 2023 06:52:33 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdlly-007LKM-1H
+	id 1qdmOs-007PQk-1e
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Sep 2023 06:12:20 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401b3ea0656so30574775e9.0
-        for <linux-mtd@lists.infradead.org>; Tue, 05 Sep 2023 23:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693980734; x=1694585534; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h94JAIHyqIQXwlFMVI95h36aEWO8zTCPUM5D+TVtu0g=;
-        b=hXcwjeuvHs8PCgbhwAsG/IdjuZ+4fMBU9YuB7OA8YPOu4myfjTCNOxnN7NGSybEI96
-         ylU157H9rWGbsL4w7OjRYbMOd62amTBN6sdSIVx9iE07b5DJBDv8UiEI8eX6cHpgAg8r
-         inxFIwR1PrSeRB1R/eyANckartIObBYNgah7Q+B7wrR6Dq/A76wHuQOQ/6D4TED1aeKN
-         uhdf2dyZFJFiJwhpaydO61c7/fORc5XIT7yzUJHheDa/Dn+M00eMCdsFV/lIFGRX5WA5
-         UveHNb5nD9LxXhNRdaSxCbAL9sAxI7HxGs8CrIRzghhtW8d5TWW1s219g8IcIMNgKWDk
-         So8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693980734; x=1694585534;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h94JAIHyqIQXwlFMVI95h36aEWO8zTCPUM5D+TVtu0g=;
-        b=itzEY1R3bgQ+LRMxVHqcT8qiVBYzvJ+gjfno1ZJ5w37OwNubANVXgKVyaucKGMORJR
-         dh4KPOJysON4bC2zhsNN/Mw1tsEoiSK4Y6tBpeLDtHnUMwXo7CuHF/EL+4WR6ibkcoWR
-         5KPYvAFxXZvQ3aCx5+FxZG8oJHDMjnhd2vZ3JoeyyK8BGpikiC/CrRNmYZXUmu4yTJxz
-         +fWqpNoLozBaJEWeF+v8jV0II119VtN2HoNjer6c+MCKD2rjJJZYmO1bgPP69LoH8FQW
-         I863L5fo+t0zX5Uo0jevmk7X/A1n9vrQXn/rbUd23VImUei57qxUTa2aQyxr0e9299LU
-         7ySQ==
-X-Gm-Message-State: AOJu0YziY6GPomFNImPyELvuNzdVMFbotSMfgcJAHA1AIIYhlrYVY3nV
-	MZetkoo/1SeQcw2daYDrrrDggg==
-X-Google-Smtp-Source: AGHT+IGVvTfP4UQKN/H3MG8p5oeiXQme+JMYKYt/haFIYwn19+NNGA9kOcyL8bJXtlHO6ls1g2sYOQ==
-X-Received: by 2002:a05:600c:a388:b0:3fe:173e:4a34 with SMTP id hn8-20020a05600ca38800b003fe173e4a34mr1449277wmb.40.1693980734582;
-        Tue, 05 Sep 2023 23:12:14 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id f7-20020a1c6a07000000b003fe407ca05bsm21957172wmc.37.2023.09.05.23.12.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 23:12:14 -0700 (PDT)
-Message-ID: <4cbc9c03-7b47-48e9-8a91-f08c44284579@linaro.org>
-Date: Wed, 6 Sep 2023 07:12:12 +0100
+	Wed, 06 Sep 2023 06:52:31 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id D5F18CE13BB;
+	Wed,  6 Sep 2023 06:52:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89AEBC433C8;
+	Wed,  6 Sep 2023 06:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693983146;
+	bh=0NziAyuGDsV9zXfsHJVohBzLH3NbghzsK2C3zeEmOlU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gIHMpLZ2j2JcyfddgSOW5mPefsoYHmmBV43KCrjcOWquBPojSBHPQee3eeGAPahP9
+	 gqKT9O7KVc+VEScR9cfZ+wWoDiXyD9jn/ROjG42hfdIsU1JqWHBUyaqsZ6Xgt1ZJ8H
+	 ph/HRjSm34hOC8X5JdCWj/fEUkD6XKayu+278+/d3af931gfuR0BWBw+yYc+FqJBWc
+	 6Gx37ZeZmwHRZLGmyIbekyy37tnTddyoonhAzAiwaTdFWh0jqFh63nATiSeqjg0GjM
+	 brSt+mWDh5KDR1Pcvvt63i8SFbEtwX7QnuEwWku8dtVz8YcIjSRpQti9cAH6k6a+Y9
+	 gfWf7jvR0pYFQ==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/41] mtd: spi-nor: move the .id and .id_len into an
- own structure
-Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Date: Wed, 06 Sep 2023 08:52:22 +0200
+From: Michael Walle <mwalle@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 10/41] mtd: spi-nor: make sector_size optional
+In-Reply-To: <21cd9421-52e6-432a-b612-a8bb9c48f98b@linaro.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-13-291a0f39f8d8@kernel.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-13-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-10-291a0f39f8d8@kernel.org>
+ <21cd9421-52e6-432a-b612-a8bb9c48f98b@linaro.org>
+Message-ID: <8ce4677710a5a19677ab86aaa41a70ab@kernel.org>
+X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230905_231218_454554_80C1455B 
-X-CRM114-Status: GOOD (  32.39  )
+X-CRM114-CacheID: sfid-20230905_235230_734107_684803B8 
+X-CRM114-Status: UNSURE (   8.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,207 +75,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 8/22/23 08:09, Michael Walle wrote:
-> Create a new structure to hold a flash ID and its length. The goal is to
-> have a new macro SNOR_ID() which can have a flexible id length. This way
-> we can get rid of all the individual INFOx() macros.
+>>  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+>>  	.size = (_sector_size) * (_n_sectors),				\
+>> -	.sector_size = (_sector_size),					\
+>> +	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
 > 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> ---
->  drivers/mtd/spi-nor/core.c      |  6 +++---
->  drivers/mtd/spi-nor/core.h      | 33 ++++++++++++++++++++++++---------
->  drivers/mtd/spi-nor/micron-st.c |  4 ++--
->  drivers/mtd/spi-nor/spansion.c  |  4 ++--
->  drivers/mtd/spi-nor/sysfs.c     |  6 +++---
->  drivers/mtd/spi-nor/winbond.c   |  1 -
->  6 files changed, 34 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4ba1778eda4b..80c340c7863a 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2028,8 +2028,8 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
->  	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
->  		for (j = 0; j < manufacturers[i]->nparts; j++) {
->  			part = &manufacturers[i]->parts[j];
-> -			if (part->id_len &&
-> -			    !memcmp(part->id, id, part->id_len)) {
-> +			if (part->id &&
-> +			    !memcmp(part->id->bytes, id, part->id->len)) {
->  				nor->manufacturer = manufacturers[i];
->  				return part;
->  			}
-> @@ -3370,7 +3370,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
->  	 * If caller has specified name of flash model that can normally be
->  	 * detected using JEDEC, let's verify it.
->  	 */
-> -	if (name && info->id_len) {
-> +	if (name && info->id) {
->  		const struct flash_info *jinfo;
->  
->  		jinfo = spi_nor_detect(nor);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index c42b65623da7..81535f31907f 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -446,12 +446,22 @@ struct spi_nor_fixups {
->  	int (*late_init)(struct spi_nor *nor);
->  };
->  
-> +/**
-> + * struct spi_nor_id - SPI NOR flash ID.
-> + *
-> + * @bytes: the flash's ID bytes. The first three bytes are the JEDIC ID.
+> why do you clear the sector_size?
 
-typo, JEDIC. But are there 3 bytes of ID specified by JEDEC? I remeber
-there's only the MFR ID specified, the rest are flash specific, which
-are not mentioned by JEDEC.
+Because that is also a preparation for the large conversion, where the
+default value of 64k is dropped. And to be able to verify (because you
+can't really review these conversion patches) the ro segments are the
+same, this patch already set it to zero if the INFO entry has the
+default size.
 
-> + * @len:   the number of bytes of ID.
-> + */
-> +struct spi_nor_id {
-> +	const u8 *bytes;
-> +	u8 len;
-> +};
-> +
->  /**
->   * struct flash_info - SPI NOR flash_info entry.
-> + * @id:   pointer to struct spi_nor_id or NULL, which means "no ID" (mostly
-> + *        older chips).
->   * @name: the name of the flash.
-> - * @id:             the flash's ID bytes. The first three bytes are the
-> - *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly older chips).
-> - * @id_len:         the number of bytes of ID.
->   * @size:           the size of the flash in bytes.
->   * @sector_size:    (optional) the size listed here is what works with
->   *                  SPINOR_OP_SE, which isn't necessarily called a "sector" by
-> @@ -510,8 +520,7 @@ struct spi_nor_fixups {
->   */
->  struct flash_info {
->  	char *name;
-> -	u8 id[SPI_NOR_MAX_ID_LEN];
-> -	u8 id_len;
-> +	const struct spi_nor_id *id;
->  	size_t size;
->  	unsigned sector_size;
->  	u16 page_size;
-> @@ -554,12 +563,18 @@ struct flash_info {
->  #define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
->  
->  #define SPI_NOR_ID(_jedec_id, _ext_id)					\
-> -	.id = { SPI_NOR_ID_3ITEMS(_jedec_id), SPI_NOR_ID_2ITEMS(_ext_id) }, \
-> -	.id_len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))
-> +	.id = &(const struct spi_nor_id){				\
-> +		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
-> +				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
-> +		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
-> +	}
->  
->  #define SPI_NOR_ID6(_jedec_id, _ext_id)					\
-> -	.id = { SPI_NOR_ID_3ITEMS(_jedec_id), SPI_NOR_ID_3ITEMS(_ext_id) }, \
-> -	.id_len = 6
-> +	.id = &(const struct spi_nor_id){				\
-> +		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
-> +				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
-> +		.len = 6,						\
-> +	}
->  
->  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
->  	.size = (_sector_size) * (_n_sectors),				\
-> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-> index 5406a3af2ce0..229c951efcce 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -78,7 +78,7 @@ static int micron_st_nor_octal_dtr_en(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> @@ -114,7 +114,7 @@ static int micron_st_nor_octal_dtr_dis(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index e6468569f178..d7012ab3de2c 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -228,7 +228,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> @@ -272,7 +272,7 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
->  		return ret;
->  	}
->  
-> -	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
->  		return -EINVAL;
->  
->  	return 0;
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> index c09bb832b3b9..2dfdc555a69f 100644
-> --- a/drivers/mtd/spi-nor/sysfs.c
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -35,8 +35,8 @@ static ssize_t jedec_id_show(struct device *dev,
->  	struct spi_device *spi = to_spi_device(dev);
->  	struct spi_mem *spimem = spi_get_drvdata(spi);
->  	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
-> -	const u8 *id = nor->info->id_len ? nor->info->id : nor->id;
-> -	u8 id_len = nor->info->id_len ?: SPI_NOR_MAX_ID_LEN;
-> +	const u8 *id = nor->info->id ? nor->info->id->bytes : nor->id;
-> +	u8 id_len = nor->info->id ? nor->info->id->len : SPI_NOR_MAX_ID_LEN;
->  
->  	return sysfs_emit(buf, "%*phN\n", id_len, id);
->  }
-> @@ -78,7 +78,7 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
->  
->  	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
->  		return 0;
-> -	if (attr == &dev_attr_jedec_id.attr && !nor->info->id_len && !nor->id)
-> +	if (attr == &dev_attr_jedec_id.attr && !nor->info->id && !nor->id)
->  		return 0;
->  
->  	return 0444;
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index c21fed842762..7873cc394f07 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -121,7 +121,6 @@ static const struct flash_info winbond_nor_parts[] = {
->  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
->  		NO_SFDP_FLAGS(SECT_4K) },
->  	{ "w25q128", INFO(0xef4018, 0, 0, 0)
-> -		PARSE_SFDP
+I'll amend the commit message.
 
-this is a leftover that should be squashed in a previous commit.
-
-I'm fine with the overal idea, but please fix the comment about the 3
-bytes of jedec id.
-
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
->  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> 
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
