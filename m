@@ -4,57 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA0BCEB8FA5
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 07:22:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BCB1EB8FAD
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 07:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Yf1a8l5PIQ/TMFcMLfUODOAMVGoVWtgpAYhqhMOpg1A=; b=dCuqpQIAFEnq9BhiF+thjX+Vy7
-	CM09zsxn8m59rrvbUUrhnortANK4zbeBeZBzrv4OzxQojm6Iw6ESH8C8o35yIpVrnQAV5q9xy6b/z
-	tcrXPmw1xnPi4g9cmJ+Cn3pyaeHZGP5xphFv9U1BlEvb4WCYzI27Oyzqt/NC+1qaJNQngBLePJqVn
-	hnBr2aMeYs5mR7aprXsmaTw5yjSj38FfX6kv3DXjNsPOqD85GntL4aHvEWzqjW8Jng6vKQFy9JzO/
-	7+i3xzKhnczlzlzAhjfDYqIlt+PHJ8z6i9vnNTkXy+z5HUUEkdouKyhrBZuvzZ96Uryi1ctpqHiTB
-	gxkBzjXw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zzuEcQH3YC4hzsh0Ut2EPfLjdfalcGpQprx681IRsOA=; b=iS2g1fwbQXV2Pi
+	kf0nUGNw3DJPA+AhRj8k7dQrFbQDRYZinVKyv2bCC5baBtWGJFw2KshorZ6X229SZQyf7+zpCxVNk
+	iPl4efH3yWamyiE3xNhn+EFtB0Y/kne/eZjaRC2xAMVO86R8gEtPJ/Bvvk0SX2lBREoGTJwk0w9WY
+	6vrAtpf/FfWlLczwduSaC/4B0+MJpt1NxodWlHW1i5Odd9i0p35sqzRODRJx4+lOtbEXh+RP1WoXR
+	xVsa8q8Zb6dZj1hRg4NIKMRdgtJJe1exFc5Gthz7l2nyoshyAjZu2KrW33G6G3cqmBS5+lu3CozW4
+	F/X9OWWxjNU0HNnyhiwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdmrU-007Tqq-1G;
-	Wed, 06 Sep 2023 07:22:04 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1qdmut-007UUL-1X;
+	Wed, 06 Sep 2023 07:25:35 +0000
+Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdmrQ-007ToP-09
+	id 1qdmuq-007UTb-1s
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Sep 2023 07:22:02 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RgYdr4JL2zTlP8
-	for <linux-mtd@lists.infradead.org>; Wed,  6 Sep 2023 15:19:12 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 6 Sep 2023 15:21:49 +0800
-Subject: Re: Can't find correct configuration
-To: Leon Pollak <leon.pollak@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
-References: <CAM===sRg0v6_1xDjv7BxRFLMQTsj3z8-C_uO5Jh3ZDdWk_mEsA@mail.gmail.com>
- <dd4b7c09-64cf-4041-4dad-cd3d43340f98@huawei.com>
- <52ba4755-ade0-4b4a-f4a2-13160bb6129b@huawei.com>
- <CAM===sQ+-2A=R_Rn4iiLyaVsBh0Y1Dp8QDeT2fevEiWCfLtmnw@mail.gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <212e499d-324a-d553-2a2c-35bec47195db@huawei.com>
-Date: Wed, 6 Sep 2023 15:21:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Wed, 06 Sep 2023 07:25:33 +0000
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so52314741fa.2
+        for <linux-mtd@lists.infradead.org>; Wed, 06 Sep 2023 00:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693985131; x=1694589931; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mUAOYZdXRcgmDE4GJOIyJRjMyBBPbYoHip/KFygnL6I=;
+        b=b3FSP5B1m2v+VsJgh8lau4wE5Sche/kmJmDo3R/v6OnCuoVHP9d+33CWPi+XU+6DgQ
+         aXVI9iNpewbnlb2lLadfXF+f8ZzHgfhbyZzxPqTtEIc3wxPXf7feD5XrczCE0wR+NVV6
+         pgz1kooaOxBlZhZ/ZptnUiPCLjL7IDmwRujc1XN0/CuVojzrBkpNjL/x5jwT7uiBRxak
+         Xq9eKGpW0nfz/KmIKkH+oB4w4h7EFwzdEg9AHSMYucbQQwTuiwmBzshz4srmFhEgKa6V
+         odxTP3fcULqoJFKcqI5adlnKp7WHfm7WOf3lEXGSq8bNCmNlohTj1RPUYajWn5vm2ew4
+         GX7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693985131; x=1694589931;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mUAOYZdXRcgmDE4GJOIyJRjMyBBPbYoHip/KFygnL6I=;
+        b=LopofLDdFxV3DyzqdOcd4VkLm8y6dFJ5K2vMDYhKRmUqxBD5OLr84diNoMvRCWtXGI
+         4XGS6LzqBG8E2cKRfu4G8dIbFgaoFPwYZEjR0Ahas68THXjUnyPHnUSbpXnqFmPeQJHH
+         T6HuTUCMIMhseocJuzZDsMX3SRkogY/Am7fAJltcXeVjctFaNvvSiv55LPscguIQnVpr
+         ATtAdxGqqF3XMmqU4yFu3w2s3+bPq1CfZQKYG1+NIk1D8oHaWv8d7y6meHnESaS59RRh
+         0e7OpizRyIY+pEuBFWQIdw+25DcFj7dp9v217l74e0/p307FviitcMR8wwnVA4PrxgVB
+         6wNA==
+X-Gm-Message-State: AOJu0YzV03Zw+Z+ZriSE+ai96LpdubU6gK55kPSkAvny7u+ZYqAtDm0n
+	vZ+51zkuH2fObub/mvvlBs9YGw==
+X-Google-Smtp-Source: AGHT+IGkbZGflpIW5BJD/uJXYniQZ1XaQe3cfHAUvuH3jHWmBuLCMVyCFN4J0k3Fj5x5wa+Nspf96g==
+X-Received: by 2002:a2e:9016:0:b0:2b7:11f8:27d with SMTP id h22-20020a2e9016000000b002b711f8027dmr1422317ljg.7.1693985130776;
+        Wed, 06 Sep 2023 00:25:30 -0700 (PDT)
+Received: from [192.168.0.173] ([79.115.63.137])
+        by smtp.gmail.com with ESMTPSA id l8-20020a05600c1d0800b003fef6881350sm19682389wms.25.2023.09.06.00.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Sep 2023 00:25:30 -0700 (PDT)
+Message-ID: <fdd524be-c339-09b1-e306-8002ee851b31@linaro.org>
+Date: Wed, 6 Sep 2023 10:25:28 +0300
 MIME-Version: 1.0
-In-Reply-To: <CAM===sQ+-2A=R_Rn4iiLyaVsBh0Y1Dp8QDeT2fevEiWCfLtmnw@mail.gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 14/41] mtd: spi-nor: rename .otp_org to .otp and make
+ it a pointer
+To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-14-291a0f39f8d8@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-14-291a0f39f8d8@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230906_002200_439751_04C75CA0 
-X-CRM114-Status: GOOD (  16.71  )
+X-CRM114-CacheID: sfid-20230906_002532_639108_4EDE80A6 
+X-CRM114-Status: GOOD (  18.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,97 +92,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjMvOS82IDE0OjU3LCBMZW9uIFBvbGxhayDlhpnpgZM6Cj4gVGhvdXNhbmRzIG9mIHRo
-YW5rcywgWmhpaGFvIENoZW5nISEhCj4gSXQgd29ya2VkIGV4YWN0bHkgYXMgeW91IHdyb3RlLgo+
-IFRoZSBvbmx5IHF1ZXN0aW9uIHJlbWFpbmVkIGlzOgo+IE15IHBhcnRpdGlvbiBzaXplIGlzIDI0
-OE1pQi4KPiBJIHRob3VnaHQgdGhhdCBsZWF2aW5nIDhNaUIgInNwYXJlJyB3aWxsIGJlIHVzZWQg
-anVzdCBmb3IgdGhlc2UKPiByZXNlcnZlZCBQRUJzLCBidXQgbm93IEkgdW5kZXJzdGFuZCB0aGlz
-IHdhcyBpbmNvcnJlY3QuCj4gU28sIG1heSBJIHV0aWxpemUgdGhlc2UgOE1pQiBiYWNrIG9yIHdp
-bGwgdGhleSBzdGlsbCBiZSB1c2VkIGJ5IFVCSQo+IGZvciBzb21ldGhpbmc/Cj4gCgpJIGJlbGll
-dmUgeW91IGhhdmUgdHdvIG10ZCBkZXZpY2VzLCAyNDhNKG10ZDAgZm9yIHViaSkgYW5kIDhNKHJl
-c2VydmVkLCAKd29uJ3QgYmUgYWNjZXNzZWQgYnkgVUJJKSBub3cuIFBsZWFzZSBkb24ndCBzcGxp
-dCB0aGUgMjU2TSBpbnRvIHR3byBtdGQgCmRldmljZXMgaWYgeW91IG9ubHkgbmVlZCAxIFVCSSBk
-ZXZpY2UsIGp1c3QgZm9ybWF0IHRoZSB3aG9sZSBmbGFzaCgyNTZNKSAKaW50byBVQkksIGFuZCBV
-QkkgaXRzZWxmIHdpbGwgaGFuZGxlIGl0cyByZXNlcnZhdGlvbiB3aXRob3V0IHVzZXIgCmludGVy
-dmVuaW5nLgoKPiBPbiBXZWQsIDYgU2VwdCAyMDIzIGF0IDA1OjUwLCBaaGloYW8gQ2hlbmcgPGNo
-ZW5nemhpaGFvMUBodWF3ZWkuY29tPiB3cm90ZToKPj4KPj4g5ZyoIDIwMjMvOS82IDEwOjQyLCBa
-aGloYW8gQ2hlbmcg5YaZ6YGTOgo+Pj4g5ZyoIDIwMjMvOS81IDIyOjQ1LCBMZW9uIFBvbGxhayDl
-hpnpgZM6Cj4+PiBIaQo+Pj4+IEhlbGxvLCBhbGwuCj4+Pj4gSSB3aWxsIGJlIHZlcnkgdmVyeSB0
-aGFua2Z1bCBmb3IgdGhlIGhlbHAgdG8gZmluZCB0aGUgY29ycmVjdAo+Pj4+IGNvbmZpZ3VyYXRp
-b24gZm9yIG15IE5BTkQuCj4+Pj4gSSBwYXNzZWQgdGhyb3VnaCBhIGxvdCBvZiBtYWlscyBpbiB0
-aGUgbGlzdHMgYW5kIGdvb2dsZSBhbmQgQ2hhdEdQVCAtCj4+Pj4gbm8gc3VjY2Vzcy4KPj4+PiBJ
-IGhhdmUgMjU2TUIgTkFORCBhbmQgMjQ4TUIgcGFydGl0aW9uIGZvciBVQklGUy4gSSBydW46Cj4+
-Pj4gbWtmcy51YmlmcyAtdiAtciByb290ZnMgLUYgLW0gMjA0OCAtZSAxMjY5NzYgLWMgMTk4MSAt
-byAuL3ViaWZzLmltZwo+Pj4+IHViaW5pemUgLXYgLW8gcm9vdGZzLmltZyAtbSAyMDQ4IC1wIDEy
-OEtpQiAtcyA1MTIgLU8gMjA0OCB1YmluaXplLmNmZwo+Pj4+IC0tLS0tCj4+Pj4gYW5kIHViaW5p
-emUuY2ZnIGxvb2tzIGxpa2U6Cj4+Pj4gW3ViaWZzXQo+Pj4+IG1vZGU9dWJpCj4+Pj4gaW1hZ2U9
-Li91Ymlmcy5pbWcKPj4+PiB2b2xfaWQ9MAo+Pj4+IHZvbF9zaXplPTI0ME1pQgo+Pj4+IHZvbF90
-eXBlPWR5bmFtaWMKPj4+PiB2b2xfbmFtZT11Ymlfcm9vdGZzCj4+Pj4gdm9sX2FsaWdubWVudD0x
-Cj4+Pj4gdm9sX2ZsYWdzPWF1dG9yZXNpemUKPj4+PiAtLS0tLS0KPj4+PiBLZXJuZWwgY29uZmln
-dXJhdGlvbiAgd2FzIHdpdGggQ09ORklHX01URF9VQklfQkVCX0xJTUlUPTIwLgo+Pj4+IGFuZCBo
-ZXJlIGlzIHRoZSBrZXJuZWwgbG9nOgo+Pj4+IFsgICAgMi42OTU2NTldIHViaTA6IGF0dGFjaGlu
-ZyBtdGQ0Cj4+Pj4gWyAgICAzLjM3MjM0M10gdWJpMDogc2Nhbm5pbmcgaXMgZmluaXNoZWQKPj4+
-PiBbICAgIDMuMzgzMDY2XSB1YmkwIHdhcm5pbmc6IHViaV9lYmFfaW5pdDogY2Fubm90IHJlc2Vy
-dmUgZW5vdWdoIFBFQnMKPj4+PiBmb3IgYmFkIFBFQiBoYW5kbGluZywgcmVzZXJ2ZWQgNCwgbmVl
-ZCA0MAo+Pj4+IFsgICAgMy40MDQzMjBdIHViaTA6IHZvbHVtZSAwICgidWJpX3Jvb3RmcyIpIHJl
-LXNpemVkIGZyb20gMTk4MiB0bwo+Pj4+IDE5ODIgTEVCcwo+Pj4+IFsgICAgMy40MTE2NjddIHVi
-aTA6IGF0dGFjaGVkIG10ZDQgKG5hbWUgIkZTIiwgc2l6ZSAyNDggTWlCKQo+Pj4+IFsgICAgMy40
-MTcwOTVdIHViaTA6IFBFQiBzaXplOiAxMzEwNzIgYnl0ZXMgKDEyOCBLaUIpLCBMRUIgc2l6ZToK
-Pj4+PiAxMjY5NzYgYnl0ZXMKPj4+PiBbICAgIDMuNDI0MDA2XSB1YmkwOiBtaW4uL21heC4gSS9P
-IHVuaXQgc2l6ZXM6IDIwNDgvMjA0OCwgc3ViLXBhZ2UKPj4+PiBzaXplIDUxMgo+Pj4+IFsgICAg
-My40MzA3NDBdIHViaTA6IFZJRCBoZWFkZXIgb2Zmc2V0OiAyMDQ4IChhbGlnbmVkIDIwNDgpLCBk
-YXRhCj4+Pj4gb2Zmc2V0OiA0MDk2Cj4+Pj4gWyAgICAzLjQzNzczNF0gdWJpMDogZ29vZCBQRUJz
-OiAxOTkwLCBiYWQgUEVCczogMCwgY29ycnVwdGVkIFBFQnM6IDAKPj4+PiBbICAgIDMuNDQzODYw
-XSB1YmkwOiB1c2VyIHZvbHVtZTogMSwgaW50ZXJuYWwgdm9sdW1lczogMSwgbWF4LiB2b2x1bWVz
-Cj4+Pj4gY291bnQ6IDEyOAo+Pj4+IFsgICAgMy40NTExMTddIHViaTA6IG1heC9tZWFuIGVyYXNl
-IGNvdW50ZXI6IDEvMCwgV0wgdGhyZXNob2xkOiA0MDk2LAo+Pj4+IGltYWdlIHNlcXVlbmNlIG51
-bWJlcjogMTU5MDU3MDA3Mwo+Pj4+IFsgICAgMy40NjAyOTVdIHViaTA6IGF2YWlsYWJsZSBQRUJz
-OiAwLCB0b3RhbCByZXNlcnZlZCBQRUJzOiAxOTkwLAo+Pj4+IFBFQnMgcmVzZXJ2ZWQgZm9yIGJh
-ZCBQRUIgaGFuZGxpbmc6IDQKPj4+PiBbICAgIDMuNDY5NTc1XSB1YmkwOiBiYWNrZ3JvdW5kIHRo
-cmVhZCAidWJpX2JndDBkIiBzdGFydGVkLCBQSUQgMTMxCj4+Pj4gWyAgICA0LjY0ODcxOF0gVUJJ
-RlMgKHViaTA6MCk6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3QwXzAiCj4+Pj4gc3RhcnRl
-ZCwgUElEIDEzNgo+Pj4+IFsgICAgNC42NzY2NDBdIFVCSUZTICh1YmkwOjApOiBzdGFydCBmaXhp
-bmcgdXAgZnJlZSBzcGFjZQo+Pj4+IFsgICAxMC4yNTAwOTldIFVCSUZTICh1YmkwOjApOiBmcmVl
-IHNwYWNlIGZpeHVwIGNvbXBsZXRlCj4+Pj4gWyAgIDEwLjI2OTA0Nl0gVUJJRlMgKHViaTA6MCk6
-IFVCSUZTOiBtb3VudGVkIFVCSSBkZXZpY2UgMCwgdm9sdW1lIDAsCj4+Pj4gbmFtZSAidWJpX3Jv
-b3RmcyIKPj4+PiBbICAgMTAuMjc2ODMwXSBVQklGUyAodWJpMDowKTogTEVCIHNpemU6IDEyNjk3
-NiBieXRlcyAoMTI0IEtpQiksCj4+Pj4gbWluLi9tYXguIEkvTyB1bml0IHNpemVzOiAyMDQ4IGJ5
-dGVzLzIwNDggYnl0ZXMKPj4+PiBbICAgMTAuMjg2Nzk0XSBVQklGUyAodWJpMDowKTogRlMgc2l6
-ZTogMjUwMTQyNzIwIGJ5dGVzICgyMzggTWlCLCAxOTcwCj4+Pj4gTEVCcyksIGpvdXJuYWwgc2l6
-ZSA5MDIzNDg4IGJ5dGVzICg4IE1pQiwgNzIgTEVCcykKPj4+PiBbICAgMTAuMjk3NTQwXSBVQklG
-UyAodWJpMDowKTogcmVzZXJ2ZWQgZm9yIHJvb3Q6IDAgYnl0ZXMgKDAgS2lCKQo+Pj4+IFsgICAx
-MC4zMDM0MDZdIFVCSUZTICh1YmkwOjApOiBtZWRpYSBmb3JtYXQ6IHc0L3IwIChsYXRlc3QgaXMg
-dzUvcjApLAo+Pj4+IFVVSUQgQTE0RDU4NkEtMzJFMi00NUQ3LUEwN0UtQkRDNDcyRkRGMzFELCBz
-bWFsbCBMUFQgbW9kZWwKPj4+Pgo+Pj4+IE15IHF1ZXN0aW9uIGlzOiB3aHkgZG9lcyB0aGlzIHdh
-cm5pbmcgYWJvdXQgcmVzZXJ2ZWQgNCwgbmVlZGVkIDQwCj4+Pj4gYXBwZWFyPyBIb3cgY2FuIEkg
-c29sdmUgdGhpcz8KPj4+Pgo+Pj4KPj4+IFNvbHV0aW9uOiBNb2RpZnkgdWJpbml6ZS5jZmcsICB2
-b2xfc2l6ZT0yNDBNaUIgLT4gdm9sX3NpemU9MjM1TWlCCj4+Pgo+Pj4gV2h5IGRvZXMgdGhpcyB3
-YXJuaW5nIGFib3V0IHJlc2VydmVkIDQsIG5lZWRlZCA0MCBhcHBlYXI/Cj4+PiBUaGUgY291bnQg
-b2YgYmFkIFBFQnMgcmVzZXJ2ZWQgYnkgVUJJIGlzOiB0b3RhbF9wZWJzKG5hbmQgY2hpcCkgKgo+
-Pj4gQ09ORklHX01URF9VQklfQkVCX0xJTUlULzEwMjQgPSAyMDQ4ICogIDIwIC8gMTAyNCA9IDQw
-Cj4+PiBXaGVuIGZhc3RtYXAgaXMgbm90IGVuYWJsZWQsIHRoZSBjb3VudCBvZiBpbnRlcm5hbCBQ
-RUJzIHJlc2VydmVkIGJ5IFVCSQo+Pj4gaXM6IFVCSV9MQVlPVVRfVk9MVU1FX0VCU1syXSArIFdM
-X1JFU0VSVkVEX1BFQlNbMV0gKwo+Pj4gRUJBX1JFU0VSVkVEX1BFQlNbMV0gPSA0Cj4+Pgo+Pj4g
-VG90YWwgUEVCcyBmb3IgVUJJIGlzIDE5OTAoZ29vZCBQRUJzOiAxOTkwKSwgdGhlIG1heCBjb3Vu
-dCBvZiB1c2VyCj4+PiB2b2x1bWUgUEVCcyBpcyAxOTkwIC0gNDAgLSA0ID0gMTk0Ngo+Pj4KPj4+
-IEluIHViaW5pemUuY2ZnLCB2b2xfc2l6ZT0yNDBNaUIsIHRoZSBjb3VudCBvZiB1c2VyIHZvbHVt
-ZSBQRUJzIGlzKHNlZQo+Pj4gdWJpbml6ZS5jIGluIG10ZHVpdGxzKTogdmlfc2l6ZSArIChsZWJf
-c2l6ZSAtIDEpIC8gbGViX3NpemUKPj4+IHZpX3NpemUgPSAyNDBNID0gMjQwICogMTAyNCAqIDEw
-MjQKPj4+IGxlYl9zaXplID0gMTI4SyAtIDJLKGVjKSAtIDJLKHZpZCkgPSAxMjQgKiAxMDI0Cj4+
-PiByZXN1bHQgPSAxOTgyCj4+Pgo+Pj4gU28gdGhlcmUgYXJlIDE5OTAgLSAxOTgyIC0gNCA9IDQg
-UEVCcyByZXNlcnZlZCBmb3IgYmFkIFBFQiBoYW5kbGluZywKPj4+IHdoaWNoIGlzIGxlc3MgdGhh
-biA0MC4KPj4+Cj4+PiBXaGVuIHdlIHNldCAgdm9sX3NpemU9MjM1TWlCLCB0aGUgY291bnQgb2Yg
-dXNlciB2b2x1bWUgUEVCcyBpczogKDIzNSAqCj4+PiAxMDI0ICogMTAyNCArIDEyNCAqIDEwMjQg
-LSAxKSAvICgxMjQgKiAxMDI0KSA9IDE5NDEKPj4+IDE5OTAgLSA0IC0gNDAgPSAxOTQ2LCBmaW5h
-bGx5IG1heWJlIHRoZXJlIGlzIG1lc3NhZ2UgZnJvbSBrZXJuZWwgbGlrZQo+Pj4gIigidWJpX3Jv
-b3RmcyIpIHJlLXNpemVkIGZyb20gMTk0MSB0byAxOTQ2IExFQnMiLgo+Pgo+PiBBY3V0YWxseSwg
-dGhlICd2b2xfc2l6ZScgaW4gdWJpbml6ZS5jZmcgbWVhbnMgdGhlIHNpemUgb2YgZGF0YSBvbgo+
-PiB2b2x1bWUoZXhjbHVkZSB2aWQvZWMpLCBub3QgdGhlIHNpemUgb2Ygdm9sdW1lKGluY2x1ZGUg
-dmlkL2VjKS4KPj4KPiAKPiAuCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+
+On 22.08.2023 10:09, Michael Walle wrote:
+> Move the OTP ops out of the flash_info structure. Besides of saving some
+> space, there will be a new macro SNOR_OTP() which can be used to set the
+> ops:
+>   .otp = SNOR_OTP(...),
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+> ---
+>  drivers/mtd/spi-nor/core.c | 2 +-
+>  drivers/mtd/spi-nor/core.h | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 80c340c7863a..1c443fe568cf 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2978,7 +2978,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+>  	struct device_node *np = spi_nor_get_flash_node(nor);
+>  
+>  	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+> -	params->otp.org = &info->otp_org;
+> +	params->otp.org = info->otp;
+>  
+>  	/* Default to 16-bit Write Status (01h) Command */
+>  	nor->flags |= SNOR_F_HAS_16BIT_SR;
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 81535f31907f..c22f5cf65a58 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -555,7 +555,7 @@ struct flash_info {
+>  
+>  	u8 mfr_flags;
+>  
+> -	const struct spi_nor_otp_organization otp_org;
+> +	const struct spi_nor_otp_organization *otp;
+>  	const struct spi_nor_fixups *fixups;
+>  };
+>  
+> @@ -605,7 +605,7 @@ struct flash_info {
+>  		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+>  
+>  #define OTP_INFO(_len, _n_regions, _base, _offset)			\
+> -		.otp_org = {						\
+> +		.otp = &(const struct spi_nor_otp_organization){	\
+>  			.len = (_len),					\
+>  			.base = (_base),				\
+>  			.offset = (_offset),				\
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
