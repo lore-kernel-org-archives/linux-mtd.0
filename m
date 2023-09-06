@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00117EB8FAF
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 07:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B34F0EB8FB5
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 07:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iqB46KeBpCFuMgMlBx7ASbSaGeSsizB14zqWF5p5NxI=; b=eBuzpFPBLvdm1c
-	1qEpWkz48MKTKmNwM2nfaJAxEI7vO9BfQoOEr/2vyZdYB/L1Ec+t058cGNCQTg3FNgzgxflUzbdEn
-	bjMcXeCL69nSmMK3IbcM2D/UEGu7tRVXIhw8QUKofe9GD4KV2mtAF7S9a07Hk9BbLMC5x3MREBAKI
-	UXQ7SSsOG5my3rEfqf/ZOYoi0yr1zt87DjEtXc44Lpt69qmSHCVLO0UVUU+VuTsr/93kQ336z+gCe
-	x0URuCltSA6BBkLHbj6rDSNc4RVgbX4a8vQ//sN+kLSwkSELWjxI4cgAviXk/6+s1aVZFKyJvTakN
-	1I7+/Im9N0cK/otgyUmg==;
+	List-Owner; bh=nlRvvBUFRrUl/v5LIl9OjqZS0zJLmoPHYevs2qUhk/0=; b=kyOFVXdDZ4rntr
+	7gD1t+h20NRtcqfpq5aWyeJSu7jiOMQRaNUCTXEsopSRhw3v4wMQQH20S3nuk7ZdKqA6vWSjp08fw
+	j0NmSMrltV5VV97gHvtcQ6kywdYbycHTxkwSlPSsZnaMNYhz7bXHIJ1FSmof8+0FkCaTtT79xD8B8
+	T/KavY4TfZ9U5kXUd9Wwtuthglw8jTXovq8mHoI5uwZjoRyyhwurjfBH/l0FfL5VG4XMy0vwuuKWH
+	abJpOWeGBjmtIKOqrm4x2HqmlCNOGaa/J8kkxOcOmPKQWs/nPgW+bdUh/I3CrM0yBFJc7ueTxISc4
+	wdtA8/pr3DhVF5KnbTtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdn8z-007XYD-1v;
-	Wed, 06 Sep 2023 07:40:09 +0000
-Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
+	id 1qdn9E-007XbZ-1x;
+	Wed, 06 Sep 2023 07:40:24 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdn8w-007XVb-0Y
+	id 1qdn9B-007Xa6-1O
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Sep 2023 07:40:07 +0000
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52a3ff5f0abso4744648a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 06 Sep 2023 00:40:00 -0700 (PDT)
+	Wed, 06 Sep 2023 07:40:22 +0000
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99357737980so509604066b.2
+        for <linux-mtd@lists.infradead.org>; Wed, 06 Sep 2023 00:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693985999; x=1694590799; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1693986017; x=1694590817; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=orvUtnN2ovbrorDPALco13qgAyfYNfZYZYYlqBkdr5o=;
-        b=ft5ZgOocWQbpzNh8gefAz/G9S0MQ5no56AIFp7nilT0VKJqJ9GQYRJ+0KFVz4MVLGs
-         8KKRKLTd0AYQeGwqrM/wbW49I+qCZ0aT4afYpo/fmBfuJKldHq/gObUx/WlcNORCdwao
-         CuYH+3RSUtYcwRtOVhS/qsbkD4+VD1tbR/plIaRbhQ9m0qtt6OO+ffayJuY5JHIDx32f
-         EwYhI2NCBdzA4SjPbOYXzUVZ+wAnmi3gFNoETWGa6P+rg9VOyur9JJxGA2dzaGquwqSZ
-         Lx/zMlMFnWIV5k+Rxs+idMDRXGlNbExP3LRe1WnUAU8yW1YIWYOIXK1TyVz4RLJFcHgJ
-         hJYw==
+        bh=BuUCTpEsoTeM3wxxff5fzdirFgNIUQLOysT5sVaJC10=;
+        b=PL9DBr6HABZhkz+Wub2UcNM6SAx18NDS4OGbdjcoVLki8HY/Nqk1xXf3FYGl9th7hh
+         XMOsKhWtwIv0ayrSLhhYftqXtpU0CBmrIipqAxsbgsXfI5HYvB/7B2JIhEkpCRWF0i7+
+         dQzdBLW0yEG3PaHaWuQVK8IDQFY9aVlCVZAbMxBOTE8Jzr0tXHwind4N2tgrI/wpLMJ1
+         rGe+hKRB3LKk0iRyy8VaRYIN1imbLhXQcK2n3YJy7TrSGCfEmJpyI+gt67UOTBR+XqsI
+         c691QFPXkIUkNHd+VobAqajb8Uh/6MXsVSU6JAnTZQT9/YhGaQLkWuBLdxcDzWX5DGW6
+         T7hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693985999; x=1694590799;
+        d=1e100.net; s=20221208; t=1693986017; x=1694590817;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=orvUtnN2ovbrorDPALco13qgAyfYNfZYZYYlqBkdr5o=;
-        b=HAJyIs/ysp0EmsRLDCjoae9QCd0/zaFLC42omsYqpLEAPix8d22OSJThwzix136Nrg
-         nRH444OPfknqYjHzlKGKBPNy4Sl4pLrPFZcv+ode/xz6nNefKYiSuYVfZ93xomFB/jNY
-         +xPIJ2xxwjVHhoEIy7G/LI6g5FXTIJDTMCbJ45O4QTXWsQQXupAMk+GIttUx6TgBZMAS
-         AhgnPRLC+oBviLpLbfv0OKiFTNq5KdBwD4XMZyvbI3a/XhRQqNIU3CNv6idZPAdxN/mN
-         9HndRE5YxEqCx+CIp7jWRIV+kww5Io+pVk4RCbf8DRZ9HoX+gBAzePx2lcmHltpnK6a/
-         dLZA==
-X-Gm-Message-State: AOJu0YxeLQzirKfxZ5+90qx8NjCs8JaL6AD/UY2MHNgqj9Ux2YrCRrg7
-	NkznpEkEN0iDSfBd6GLtfs652w==
-X-Google-Smtp-Source: AGHT+IHiQSnCMmZF2IYo0dQojmRNvIMHTjIHbz8K7G0CiRy1PCg/A0xcmeRnekZzhuBTvgBwx/GFqg==
-X-Received: by 2002:a17:907:a056:b0:9a6:4f23:9d8f with SMTP id gz22-20020a170907a05600b009a64f239d8fmr1555676ejc.47.1693985999381;
-        Wed, 06 Sep 2023 00:39:59 -0700 (PDT)
+        bh=BuUCTpEsoTeM3wxxff5fzdirFgNIUQLOysT5sVaJC10=;
+        b=C2gelzbqqnzonBpjj6xRaaNe/78rlHSVxR8q2ORvzYA2ZNnBcBxNdpwg8avJ5PeA3i
+         aEoOT0KbhI5zD7fiygvL8U+pKI5772RzjsSt659BaubEvYSDU99IieeMjaSbYtcM1rBQ
+         oCbT/bm8gsxGAiqbpoJId+8/KjT9nN2MKS10/tXp4dUqUGDO3HWtpTjsid/urbhyK91w
+         3Pq2gbkCHtuR0kxsde6/+AkBPvRKCGmVzB0AVbvHjbGx/U9CojDHac/MjGgfteFWl2vU
+         DQjJLmp/W1TVfNGYcZH6+xYHhyIF0USxdaCbvfQXJfPfK9jAlIdWLgbNNp2cT1n/XxE5
+         Cm2Q==
+X-Gm-Message-State: AOJu0YxUdU1XJDHCuJrDvDol0G5rMQQ9Yexlutq2gw313f8VzHMoMKVs
+	bsNszLVVDimDYDJueUQt3FmBYw==
+X-Google-Smtp-Source: AGHT+IEUUsYk4gKEVGbyn0dBc48Ky0YgYjurPjh7f7S6Xm6VHVgPPVg5dQMVtVEmokxNpsVShQ/I7Q==
+X-Received: by 2002:a17:906:530c:b0:9a5:e440:38dd with SMTP id h12-20020a170906530c00b009a5e44038ddmr1682445ejo.45.1693986017572;
+        Wed, 06 Sep 2023 00:40:17 -0700 (PDT)
 Received: from [192.168.0.173] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id c11-20020a170906924b00b009929ab17be0sm8607665ejx.162.2023.09.06.00.39.58
+        by smtp.gmail.com with ESMTPSA id rp24-20020a170906d97800b009a5c98fd82asm8526472ejb.81.2023.09.06.00.40.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 00:39:58 -0700 (PDT)
-Message-ID: <47dbbc77-6ff4-2a5e-213e-f909ee90805f@linaro.org>
-Date: Wed, 6 Sep 2023 10:39:57 +0300
+        Wed, 06 Sep 2023 00:40:17 -0700 (PDT)
+Message-ID: <5f7142ae-08db-41f9-d8ab-ed19e7afb9d5@linaro.org>
+Date: Wed, 6 Sep 2023 10:40:15 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 40/41] mtd: spi-nor: atmel: drop duplicate entry
+Subject: Re: [PATCH v2 41/41] mtd: spi-nor: core: get rid of the INFOx()
+ macros
 Content-Language: en-US
 To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-40-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-41-291a0f39f8d8@kernel.org>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-40-291a0f39f8d8@kernel.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-41-291a0f39f8d8@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230906_004006_252320_6338015C 
-X-CRM114-Status: GOOD (  18.12  )
+X-CRM114-CacheID: sfid-20230906_004021_473411_3FB33EFE 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,42 +100,94 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 22.08.2023 10:09, Michael Walle wrote:
-> The Atmel AT26DF321 and AT25DF321 have the same ID. Both were just
-> discovered by reading their IDs, that is, there is no probing by name.
-> Thus only the first one in the list was ever probed. The AT25DF is the
-> newer series. Drop the older one.
+> Now that all flash_info tables are converted to the new format, remove
+> the old INFOx() macros.
 > 
 > Signed-off-by: Michael Walle <mwalle@kernel.org>
-
-keep the first entry, to have the name backward compatible. It's not a
-hard rule to have the name backward compatible, but if we can, let's
-keep it.
 
 
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 > ---
->  drivers/mtd/spi-nor/atmel.c | 7 -------
->  1 file changed, 7 deletions(-)
+>  drivers/mtd/spi-nor/core.h | 65 ----------------------------------------------
+>  1 file changed, 65 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-> index 18e904962d0e..95f0e139284e 100644
-> --- a/drivers/mtd/spi-nor/atmel.c
-> +++ b/drivers/mtd/spi-nor/atmel.c
-> @@ -206,13 +206,6 @@ static const struct flash_info atmel_nor_parts[] = {
->  		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
->  		.no_sfdp_flags = SECT_4K,
->  		.fixups = &atmel_nor_global_protection_fixups
-> -	}, {
-> -		.id = SNOR_ID(0x1f, 0x47, 0x00),
-> -		.name = "at26df321",
-> -		.size = SZ_4M,
-> -		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-> -		.no_sfdp_flags = SECT_4K,
-> -		.fixups = &atmel_nor_global_protection_fixups
->  	}, {
->  		.id = SNOR_ID(0x1f, 0x47, 0x01),
->  		.name = "at25df321a",
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 420e5ca2cfe1..1febb4a3c59b 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -573,71 +573,6 @@ struct flash_info {
+>  		.n_regions = (_n_regions),				\
+>  	})
+>  
+> -#define SPI_NOR_ID_2ITEMS(_id) ((_id) >> 8) & 0xff, (_id) & 0xff
+> -#define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
+> -
+> -#define SPI_NOR_ID(_jedec_id, _ext_id)					\
+> -	.id = &(const struct spi_nor_id){				\
+> -		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
+> -				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
+> -		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
+> -	}
+> -
+> -#define SPI_NOR_ID6(_jedec_id, _ext_id)					\
+> -	.id = &(const struct spi_nor_id){				\
+> -		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
+> -				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
+> -		.len = 6,						\
+> -	}
+> -
+> -#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+> -	.size = (_sector_size) * (_n_sectors),				\
+> -	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
+> -	.n_banks = (_n_banks)
+> -
+> -/* Used when the "_ext_id" is two bytes at most */
+> -#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+> -	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+> -
+> -#define INFO0(_sector_size, _n_sectors)					\
+> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+> -
+> -#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
+> -	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
+> -
+> -#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+> -	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
+> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+> -
+> -#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+> -		.size = (_sector_size) * (_n_sectors),			\
+> -		.sector_size = (_sector_size),				\
+> -		.page_size = (_page_size),				\
+> -		.addr_nbytes = (_addr_nbytes),				\
+> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+> -
+> -#define OTP_INFO(_len, _n_regions, _base, _offset)			\
+> -		.otp = &(const struct spi_nor_otp_organization){	\
+> -			.len = (_len),					\
+> -			.base = (_base),				\
+> -			.offset = (_offset),				\
+> -			.n_regions = (_n_regions),			\
+> -		},
+> -
+> -#define FLAGS(_flags)							\
+> -		.flags = (_flags),					\
+> -
+> -#define NO_SFDP_FLAGS(_no_sfdp_flags)					\
+> -		.no_sfdp_flags = (_no_sfdp_flags),			\
+> -
+> -#define FIXUP_FLAGS(_fixup_flags)					\
+> -		.fixup_flags = (_fixup_flags),				\
+> -
+> -#define MFR_FLAGS(_mfr_flags)						\
+> -		.mfr_flags = (_mfr_flags),				\
+> -
+>  /**
+>   * struct spi_nor_manufacturer - SPI NOR manufacturer object
+>   * @name: manufacturer name
 > 
 
 ______________________________________________________
