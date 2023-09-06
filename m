@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B34F0EB8FB5
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 07:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52962EB8FAF
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Sep 2023 07:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nlRvvBUFRrUl/v5LIl9OjqZS0zJLmoPHYevs2qUhk/0=; b=kyOFVXdDZ4rntr
-	7gD1t+h20NRtcqfpq5aWyeJSu7jiOMQRaNUCTXEsopSRhw3v4wMQQH20S3nuk7ZdKqA6vWSjp08fw
-	j0NmSMrltV5VV97gHvtcQ6kywdYbycHTxkwSlPSsZnaMNYhz7bXHIJ1FSmof8+0FkCaTtT79xD8B8
-	T/KavY4TfZ9U5kXUd9Wwtuthglw8jTXovq8mHoI5uwZjoRyyhwurjfBH/l0FfL5VG4XMy0vwuuKWH
-	abJpOWeGBjmtIKOqrm4x2HqmlCNOGaa/J8kkxOcOmPKQWs/nPgW+bdUh/I3CrM0yBFJc7ueTxISc4
-	wdtA8/pr3DhVF5KnbTtA==;
+	List-Owner; bh=2IotbFXCzrqeeVRdb0GbP04+VGNiDlTCh/3p+ctI8vY=; b=Yk8+rZlSeGc/76
+	FEeyfoS2wwdC/VdaWNHdlGwL1q9auqqVzkhZFRRaRbwrX6lpr4ID64ZD36gvA74l1XECppyrawClm
+	prj9D0deefmcVsSqC+QHUpxh3tAKIRS/IfMhsq01+pK/UxZxYDVrGJ6nmlLCr59N2GhFXxmBgD1qv
+	DzPz62JZ7D42zdc/Mdud7aQ5y1kh+TZs8Cj6vxtW/XuWlztibQefNHJtGrj1tK5g+Xps3QKhXXndC
+	smXJyXZUAcv2awYjklhO5inQcUBpMiS8Qr10yEHQeHULYLSJ1j3xtcPKPlNTp+RaI8ygjtSTkbb7G
+	4ZEWlKx0UPEUMHkz180w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdn9E-007XbZ-1x;
-	Wed, 06 Sep 2023 07:40:24 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1qdnC5-007YDg-1W;
+	Wed, 06 Sep 2023 07:43:21 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qdn9B-007Xa6-1O
+	id 1qdnC1-007YCa-2h
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Sep 2023 07:40:22 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99357737980so509604066b.2
-        for <linux-mtd@lists.infradead.org>; Wed, 06 Sep 2023 00:40:18 -0700 (PDT)
+	Wed, 06 Sep 2023 07:43:19 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a645e54806so443712766b.0
+        for <linux-mtd@lists.infradead.org>; Wed, 06 Sep 2023 00:43:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693986017; x=1694590817; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1693986196; x=1694590996; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BuUCTpEsoTeM3wxxff5fzdirFgNIUQLOysT5sVaJC10=;
-        b=PL9DBr6HABZhkz+Wub2UcNM6SAx18NDS4OGbdjcoVLki8HY/Nqk1xXf3FYGl9th7hh
-         XMOsKhWtwIv0ayrSLhhYftqXtpU0CBmrIipqAxsbgsXfI5HYvB/7B2JIhEkpCRWF0i7+
-         dQzdBLW0yEG3PaHaWuQVK8IDQFY9aVlCVZAbMxBOTE8Jzr0tXHwind4N2tgrI/wpLMJ1
-         rGe+hKRB3LKk0iRyy8VaRYIN1imbLhXQcK2n3YJy7TrSGCfEmJpyI+gt67UOTBR+XqsI
-         c691QFPXkIUkNHd+VobAqajb8Uh/6MXsVSU6JAnTZQT9/YhGaQLkWuBLdxcDzWX5DGW6
-         T7hw==
+        bh=7c2BDsoYBazb4ISVLs01WogwNBRf2oRcEB6Brsaem24=;
+        b=O3WUbT5fcfEj7eDLYTezlL43F8XMqqPnFeKaODxmDMqR+KrYAw7ehb595Kt5OrobNR
+         VJgcZTIx95+kXIIgVX/qZT+yl4I9onzi7ycmfAeudl8x1TAUXMrSdC/dublkw4eXIaLV
+         Rj2b761EA9IxtphZ2dn9BrtW39aBl8t1fjZd6QE/Eolyx2+vk5PQ8vEyTUD6ti+dZ454
+         Wt+e8Zn0zcWNLiqlyn4qLUzxueh52HBFMbD7fvk9yC4p49kk3axtL3Pz/apQb+tw2k7B
+         gIGIVDYTKYH4ZOakSgIul4R000OsSyfeuFykaiB/2WUJFFUf9kztM4YyBRXAurdBOmeD
+         rVtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693986017; x=1694590817;
+        d=1e100.net; s=20221208; t=1693986196; x=1694590996;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BuUCTpEsoTeM3wxxff5fzdirFgNIUQLOysT5sVaJC10=;
-        b=C2gelzbqqnzonBpjj6xRaaNe/78rlHSVxR8q2ORvzYA2ZNnBcBxNdpwg8avJ5PeA3i
-         aEoOT0KbhI5zD7fiygvL8U+pKI5772RzjsSt659BaubEvYSDU99IieeMjaSbYtcM1rBQ
-         oCbT/bm8gsxGAiqbpoJId+8/KjT9nN2MKS10/tXp4dUqUGDO3HWtpTjsid/urbhyK91w
-         3Pq2gbkCHtuR0kxsde6/+AkBPvRKCGmVzB0AVbvHjbGx/U9CojDHac/MjGgfteFWl2vU
-         DQjJLmp/W1TVfNGYcZH6+xYHhyIF0USxdaCbvfQXJfPfK9jAlIdWLgbNNp2cT1n/XxE5
-         Cm2Q==
-X-Gm-Message-State: AOJu0YxUdU1XJDHCuJrDvDol0G5rMQQ9Yexlutq2gw313f8VzHMoMKVs
-	bsNszLVVDimDYDJueUQt3FmBYw==
-X-Google-Smtp-Source: AGHT+IEUUsYk4gKEVGbyn0dBc48Ky0YgYjurPjh7f7S6Xm6VHVgPPVg5dQMVtVEmokxNpsVShQ/I7Q==
-X-Received: by 2002:a17:906:530c:b0:9a5:e440:38dd with SMTP id h12-20020a170906530c00b009a5e44038ddmr1682445ejo.45.1693986017572;
-        Wed, 06 Sep 2023 00:40:17 -0700 (PDT)
+        bh=7c2BDsoYBazb4ISVLs01WogwNBRf2oRcEB6Brsaem24=;
+        b=lN16fugehb0CtsQ/5Xwh7eVwBH5dOuCCT8yOXzHS7EjB+CZeK1wK0+vBMyel70p+JI
+         xRTStGPWmz2M4FHbXZZty5QScNaDB66Jo6K+ustyBPxVVvVFK5UDN6F3/9aDXx25Lna9
+         ih+B5vkHVjp61Zb5OdzJHXpvsn2GWAT6ldCM4G8wlj/029riZGHmhdXh7s9W+AiEFOwc
+         Ik1M3rRuGofCEaxsNUWZzkbgFMhdoxNXKFxJxZ+VKn53n3+w7F+dqB2m4AKJGZQIv/en
+         G+z4VZDP0X0qFvOF4wqo3R/cGQDXqPxSJdHpZ+MD0tK+0dziqBcSy5eR9/8W90FiGIcu
+         d/TA==
+X-Gm-Message-State: AOJu0YwUTOOEwO36bOWbdGGmmlOpOMZK4ksrxoVlcmkTbLEgqsYduayy
+	m/LmHjeTeUNouVuWe9BRx7ssCQ==
+X-Google-Smtp-Source: AGHT+IEkG1mCGUFejPHYpjZoGgZXtpiwV95wQ7nB10DJ2L1nsBt50yGnVRZ/jfFG8Doa0xYf9mmgcA==
+X-Received: by 2002:a17:907:d1c:b0:9a1:e58d:73b8 with SMTP id gn28-20020a1709070d1c00b009a1e58d73b8mr1895924ejc.72.1693986195951;
+        Wed, 06 Sep 2023 00:43:15 -0700 (PDT)
 Received: from [192.168.0.173] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id rp24-20020a170906d97800b009a5c98fd82asm8526472ejb.81.2023.09.06.00.40.16
+        by smtp.gmail.com with ESMTPSA id x18-20020a170906805200b0099cf9bf4c98sm8600667ejw.8.2023.09.06.00.43.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Sep 2023 00:40:17 -0700 (PDT)
-Message-ID: <5f7142ae-08db-41f9-d8ab-ed19e7afb9d5@linaro.org>
-Date: Wed, 6 Sep 2023 10:40:15 +0300
+        Wed, 06 Sep 2023 00:43:15 -0700 (PDT)
+Message-ID: <0df0be29-8ad7-c319-475f-c22ce57efa3e@linaro.org>
+Date: Wed, 6 Sep 2023 10:43:13 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 41/41] mtd: spi-nor: core: get rid of the INFOx()
- macros
+Subject: Re: [PATCH v2 00/41] mtd: spi-nor: clean the flash_info database up
 Content-Language: en-US
 To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-41-291a0f39f8d8@kernel.org>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-41-291a0f39f8d8@kernel.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230906_004021_473411_3FB33EFE 
-X-CRM114-Status: GOOD (  14.97  )
+X-CRM114-CacheID: sfid-20230906_004317_882527_81BB0E2D 
+X-CRM114-Status: UNSURE (   8.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,98 +96,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+That's wonderful work, Michael, thanks!
 
+Please specify in the cover letter the flashes with which you tested the
+series, we need some sanity checks.
 
-On 22.08.2023 10:09, Michael Walle wrote:
-> Now that all flash_info tables are converted to the new format, remove
-> the old INFOx() macros.
-> 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
+Apart of that, please address the small comments and resend, I'd like to
+have this integrated at -rc1 so that we give time to users to spot bugs
+and to still have reasonable amount of time to fix them, if any.
 
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
-> ---
->  drivers/mtd/spi-nor/core.h | 65 ----------------------------------------------
->  1 file changed, 65 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 420e5ca2cfe1..1febb4a3c59b 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -573,71 +573,6 @@ struct flash_info {
->  		.n_regions = (_n_regions),				\
->  	})
->  
-> -#define SPI_NOR_ID_2ITEMS(_id) ((_id) >> 8) & 0xff, (_id) & 0xff
-> -#define SPI_NOR_ID_3ITEMS(_id) ((_id) >> 16) & 0xff, SPI_NOR_ID_2ITEMS(_id)
-> -
-> -#define SPI_NOR_ID(_jedec_id, _ext_id)					\
-> -	.id = &(const struct spi_nor_id){				\
-> -		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
-> -				       SPI_NOR_ID_2ITEMS(_ext_id) },	\
-> -		.len = !(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0)),	\
-> -	}
-> -
-> -#define SPI_NOR_ID6(_jedec_id, _ext_id)					\
-> -	.id = &(const struct spi_nor_id){				\
-> -		.bytes = (const u8[]){ SPI_NOR_ID_3ITEMS(_jedec_id),	\
-> -				       SPI_NOR_ID_3ITEMS(_ext_id) },	\
-> -		.len = 6,						\
-> -	}
-> -
-> -#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
-> -	.size = (_sector_size) * (_n_sectors),				\
-> -	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
-> -	.n_banks = (_n_banks)
-> -
-> -/* Used when the "_ext_id" is two bytes at most */
-> -#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
-> -	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
-> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
-> -
-> -#define INFO0(_sector_size, _n_sectors)					\
-> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
-> -
-> -#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
-> -	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
-> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
-> -
-> -#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
-> -	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
-> -	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
-> -
-> -#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
-> -		.size = (_sector_size) * (_n_sectors),			\
-> -		.sector_size = (_sector_size),				\
-> -		.page_size = (_page_size),				\
-> -		.addr_nbytes = (_addr_nbytes),				\
-> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
-> -
-> -#define OTP_INFO(_len, _n_regions, _base, _offset)			\
-> -		.otp = &(const struct spi_nor_otp_organization){	\
-> -			.len = (_len),					\
-> -			.base = (_base),				\
-> -			.offset = (_offset),				\
-> -			.n_regions = (_n_regions),			\
-> -		},
-> -
-> -#define FLAGS(_flags)							\
-> -		.flags = (_flags),					\
-> -
-> -#define NO_SFDP_FLAGS(_no_sfdp_flags)					\
-> -		.no_sfdp_flags = (_no_sfdp_flags),			\
-> -
-> -#define FIXUP_FLAGS(_fixup_flags)					\
-> -		.fixup_flags = (_fixup_flags),				\
-> -
-> -#define MFR_FLAGS(_mfr_flags)						\
-> -		.mfr_flags = (_mfr_flags),				\
-> -
->  /**
->   * struct spi_nor_manufacturer - SPI NOR manufacturer object
->   * @name: manufacturer name
-> 
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
