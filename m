@@ -4,66 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C58A0EE14D0
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 08:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9873DEE14D0
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 09:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UuQMJcsa1b3NDtlzOdDvateps9pseaQQIWY+7s9zJ00=; b=EL+Dn6lxf0BrQTteUhsB85ttaU
-	UA/Cn9Omkhitdfk7OI17p+/fTFeN1z6pvtyjfo9g9Kxeaec10hZuG8w2vagtWVJUjI7+9Z+fnWzzG
-	RpKFqOCWXwSTRwO2Txrwav853tK1cNfeKAljswXqNKSbziGC3ZW9+3lxwJwaxPK3EhE+cPO7Uyzzu
-	ZsU7rWEGarMNsFfe5TngE8EtGvFPp37jm6QJHhl42+M7SAvfrPqY6fgewkD27l8aFor5x3NHi0877
-	ydJHBf0KtkTwOBU2QpQk6GXDRyG+JklPrSL3+nlEcFzs5rChXNWc0gI2+J7y5RbaAgEZCHbYrH5ya
-	hNq465Vg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=TIws9rt+STOp/yBEvY5h8m5c9kTyU6bOJGFj5qxUY4A=; b=xk4IkWHLfvcmuE
+	D11Y8J9RZ7Sk9uMUpm50SBkiAjWdsVobJvJNSeYTLlpJzK/5JE0NjJN12r1hfK3fYWRoJfNaB9jtr
+	NoA50+EPW/z/5Pm4kF+Whe07Qe03TPMTvidG6/j5Vva5bqtCbGwbYl7s6PLD5yc2s0M2c8KLPPhg3
+	NugMEaLqsL39h4d1k/9o6xNqCb9Q/o1hqKW4vNipjZmiFWcwAgAQ85oHSfx2Nj7SBV3ocUCBSjZSA
+	VGVNyB5zzgq0gT5IJqJfWX+WSJyVeRYsfGJmq0UUIK3WY41rC8afe9M9EkNtLvi3/4Fn2u7UNOztD
+	7t9TeDYEebS2SU4hX3MA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeAA4-00BZHY-3D;
-	Thu, 07 Sep 2023 08:14:49 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1qeBL9-00Bgbb-0Z;
+	Thu, 07 Sep 2023 09:30:19 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeAA2-00BZH0-1Y
+	id 1qeBL6-00Bgb7-1L
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Sep 2023 08:14:47 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id E3EA2B81A2B;
-	Thu,  7 Sep 2023 08:14:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1454CC43395;
-	Thu,  7 Sep 2023 08:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694074483;
-	bh=OCuI7TmziokJl+2qmcXoAZYq+Z4TxTENE+xPQbRlpe4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=T+8XOhDhwD7p0xPIzG3ezpJZO97yux9KetgNiwIoOGm87MpiCf5Mi/aw0sL9tq3yV
-	 qkTttaL7MqnqKlnlhPb0f+NdQpmdYDoyhR7PYaPa7dOUbNZumdKvoXhNwzuwN0UEdv
-	 FprJGaBHgR4k2rjWLIPoXZ/UVtuDOb8VBv+YD8zaLH/L6CaggHv0Lv9tVTMKl9sW9T
-	 xMqiJEpmVH8L/YHNfsHOa+nI6pFUL3AQyZouS9Tr3ItVOfPsShvO4qrvHEt9mqUqrj
-	 P6vdX70Us2dFsxQvxBa+KOi+i03OrOcF2yJS/QXN+3GaRdJc03cO38cLVpba4i1qGL
-	 DZ8Zz5N8sFmtg==
+	Thu, 07 Sep 2023 09:30:17 +0000
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3877vFIA025118;
+	Thu, 7 Sep 2023 09:30:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=QrXJz4dJUffrNRYdAEDIG6I7uPRmEn2DD6U7u8sQw3Y=;
+ b=TaljCKOETUsJTUT8JjtzUvAIBVCtn6ukEZL6p6pTKnJ951pmi94A/4QZFhinCoP9fwAG
+ 6O4TcKYIUJF6nZsjWFpzBFptEKFPjH+6YERL8qXDMimzXonQHt6kBqRR1RG70vpIPC0t
+ YmSEDBqWDF4WMiIbrk0pw+DKVNif2rBGRn8vOVA6zjYtAsvOoVC2FyBE0XLjKsgtAiy+
+ RrmPZshFLmKxRw/OiCslpes+1CYXjn3JE/U0eTvqLkSaPRqOM1PBVYV2ZrT9gamom8uP
+ 8e33N3YaeqIdPzMnCC816eOO2FLrbrfkigJcKDiXSI/cqexN30JXdT7meQZoFCisK2q0 Vg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy4bqgwpq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Sep 2023 09:30:03 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3879U2OT000540
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Sep 2023 09:30:02 GMT
+Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 7 Sep 2023 02:29:56 -0700
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To: <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        Bibek Kumar Patro
+	<quic_bibekkum@quicinc.com>
+Subject: [PATCH] mtd: nand: qcom: Fix the node for nand unmap resource
+Date: Thu, 7 Sep 2023 14:58:54 +0530
+Message-ID: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Date: Thu, 07 Sep 2023 10:14:39 +0200
-From: Michael Walle <mwalle@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 39/41] mtd: spi-nor: winbond: sort flash_info entries
-In-Reply-To: <eec52fd8-663d-7e56-3627-2b33259027b6@linaro.org>
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-39-291a0f39f8d8@kernel.org>
- <eec52fd8-663d-7e56-3627-2b33259027b6@linaro.org>
-Message-ID: <c55604322b8b5bb74ce293885599810c@kernel.org>
-X-Sender: mwalle@kernel.org
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4Yjc-YFMK1Ei4hh2M2tQ6aWzZMEBs6LC
+X-Proofpoint-ORIG-GUID: 4Yjc-YFMK1Ei4hh2M2tQ6aWzZMEBs6LC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-07_01,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309070083
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230907_011446_663556_CB2412DF 
-X-CRM114-Status: UNSURE (   5.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230907_023016_468288_5FE31570 
+X-CRM114-Status: GOOD (  17.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,20 +92,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> I'm fine with the sorting by ID.
-> 
-> 
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+While unmapping the nand resource in case of err_core_clk
+the dev node being passed is res_start instead of nand->dma_base
+(where the iova returned from map operation is stored) causing
+failure in unmap operation. Hence modifying the unmap operation
+to pass the nand->base_dma instead of res_start.
 
-Also here, should I convert this to an Acked-by: for all the
-sorting patches?
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--michael
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index f583022755a2..e085a0f588eb 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -3322,7 +3322,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ err_aon_clk:
+ 	clk_disable_unprepare(nandc->core_clk);
+ err_core_clk:
+-	dma_unmap_resource(dev, res->start, resource_size(res),
++	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
+ 			   DMA_BIDIRECTIONAL, 0);
+ 	dev_err(&pdev->dev, "DEBUG: probe failed for nandc module\n");
+ 	return ret;
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
