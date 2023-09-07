@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D930EE14D3
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 06:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCFFBEE14D4
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 08:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tx2qqV8wTjMHmvZ06OCuuDzoFSL6jeOEcf92WPdFEEg=; b=wn6O7foazys23q61xrpEOVOqPQ
-	elMiIi+3SohHSIRcFFochyk9GOnlG5SstDXNPhrZeNwMMkJbltLI4KOKeBgt/fFf4hbonNXvi8VZ6
-	v3R+8xSV+O1ptY9TSGmoJhugVfSI3Jn+5EaMqae5srSjW62E7MBghzxfulMUcifc3hsLGr6W3BuvL
-	jscsut1l+0bU3cyV1cKS3AnQTPpDrAW8/fdoit4XqhkS1zZqKPAoPGF6SaEv5wjmpoaHyw7Fx6Fu/
-	zgvyB/5sHDNZdxiuHMsvrwFcRfhZxe6GKx2oVmZ043KpO8I+U0ORXumauT1a8BY6mbXnqRhB8Vn/U
-	Y1QB+Byg==;
+	bh=tqcl6elreCac0UmfzucoX2PZR9PD5WtVpHJwnnCMMb8=; b=DX2wLN7Ksa36lgAAReMGuGsweu
+	msmqkueuKP4JTXwMUVEuOg9kCF+aw7vDPhZUnNIORix/OwtpDqaGOYlF0qvOttXqzHdBgEAREMacf
+	Y0cIwaaiaoAPA4ZpT4sY82WF0WzIK3K8ApXp8TdZCAuLjPAl3JDh/M5VGBmpK+TjwUe+gb4M3CLnW
+	gaXl64xs6o7QPNd2pLUXZpiBJU4L3zItH7Y+1+1vdcBycEfqiAF64zpaXg8JJkgLSfpcS4rY/R3Bh
+	FccqxaQWwAYgxpU3fNUfwp10WQku7VpoGc61yUnAoxJT2qM7lWdlO3+4kIiE7KEo17eNUjGTxXGKT
+	GPuAhzJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qe8vU-00BTVD-2B;
-	Thu, 07 Sep 2023 06:55:40 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qeA9H-00BZAv-39;
+	Thu, 07 Sep 2023 08:13:59 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qe8vQ-00BTUa-2P
+	id 1qeA9F-00BZAB-1g
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Sep 2023 06:55:37 +0000
+	Thu, 07 Sep 2023 08:13:58 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7C39E611E7;
-	Thu,  7 Sep 2023 06:55:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCE8C433CC;
-	Thu,  7 Sep 2023 06:55:33 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id B6565CE191A;
+	Thu,  7 Sep 2023 08:13:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86021C4339A;
+	Thu,  7 Sep 2023 08:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694069734;
-	bh=mjcPEuc/gz0ex7VoEhNdmXz/LJ1yG2hyB4GVOCktz/w=;
+	s=k20201202; t=1694074434;
+	bh=oTcxoO3zSCDpXZafwrXHiI751ZzS6JBBCs2MekhQSC8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Of4n82yUjLpH0jr9GO+SkTaPM7UepX+lFfRpXy3ptxIL1iU+qS67KTyqOjHhgWyQS
-	 Gg4GWfztbuDocJ6yV1JBWphktEYR0DsdGrw0+/UWuIPVzLQSc0P/1bcYofAvpW2b28
-	 +C+A09bBFmNvfZy6N+SACzkykc7LSUYx5sFiJ0TgeuAHb/UN2PCWYndkK6jvIBo5cm
-	 mIyGk7j6uj6PB4YuPO6hoZ2R6LLfuX2ebGhNgQZ6CvdItCLjjt99MrhYXWeIqrzf6t
-	 OCgwfuuiQDUDaxJZhlXIcq/09cfyrCLRxJOKjgVxqbSA0Eqi8NQbPAIl8okGViXj4d
-	 OiVBbyOkwnC6Q==
+	b=h7mM4Ku4a+8i8f8+p7KrSkBXuMm25TcVgXN5MWs7i559RWnwuBGSGkpLFA2dvMUjE
+	 EyU35V6rD/KMjA3rxcdIxYrUeFVsEsvAJR88zFtzU27vE/j0mJQ3jaothsbR8onimL
+	 th3Rf/UcwcwZUxrqCBeOh54sVQLP/e4qX2Anjhq6z91gc4pA1OdlY05pxExtkEC/Ad
+	 aa8dUP+9eZw8Is5jgdZ+TEAlLfj9PNkvKywL6/VUhuSNB5yvzJm06CpiNNqvGNDXkt
+	 tdCWq73INCZ45RFNP7xxiGpOO8dJytoDlv17J/+LVk5T4sH9zWg8loKqO3QMyVHji+
+	 blaw4TA9+b+Lw==
 MIME-Version: 1.0
-Date: Thu, 07 Sep 2023 08:55:31 +0200
+Date: Thu, 07 Sep 2023 10:13:50 +0200
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>
 Cc: Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 11/41] mtd: spi-nor: drop .parse_sfdp
-In-Reply-To: <530942be-4175-43d5-a111-c433be7eff72@linaro.org>
+Subject: Re: [PATCH v2 17/41] mtd: spi-nor: atmel: convert flash_info to new
+ format
+In-Reply-To: <aba618e2-ad74-d716-c8d7-e77588b22509@linaro.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-11-291a0f39f8d8@kernel.org>
- <530942be-4175-43d5-a111-c433be7eff72@linaro.org>
-Message-ID: <b843818e776a33d58db8b969270a5cda@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-17-291a0f39f8d8@kernel.org>
+ <aba618e2-ad74-d716-c8d7-e77588b22509@linaro.org>
+Message-ID: <4a25955300a53a36a842f4e8bd3a2e1a@kernel.org>
 X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230906_235536_845169_DB594F9C 
-X-CRM114-Status: UNSURE (   6.29  )
+X-CRM114-CacheID: sfid-20230907_011357_738406_2A0DB9DA 
+X-CRM114-Status: UNSURE (   9.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,14 +81,26 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> the condition looks broken. the method returns bool, but here you 
-> return
-> size_t probably. And when size is zero one shall parse sfdp, not the
-> other way around.
+>> +	{
+>> +		.id = SNOR_ID(0x1f, 0x66, 0x01),
+>> +		.name = "at25fs010",
 > 
-> maybe return (nor->info->size == 0)?
+> nitpick, we shall respect the order of the members declared in
+> flash_info struct.
 
-Yeah, good catch.
+As mentioned in my first reply, you're fine with keeping the id
+first? After this series, we can swap the name and id members in
+struct flash_info.
+
+For all the other members, they should be used consistently. So
+we could also swap the members in flash_info.
+
+> And I'll let you double check if the conversion is accurate :D.
+> 
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+So I'll convert that one in an Acked-by: for all the conversion
+patches?
 
 -michael
 
