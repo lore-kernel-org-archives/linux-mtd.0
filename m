@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9873DEE14D0
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 09:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ADB0EE14D6
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 09:42:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TIws9rt+STOp/yBEvY5h8m5c9kTyU6bOJGFj5qxUY4A=; b=xk4IkWHLfvcmuE
-	D11Y8J9RZ7Sk9uMUpm50SBkiAjWdsVobJvJNSeYTLlpJzK/5JE0NjJN12r1hfK3fYWRoJfNaB9jtr
-	NoA50+EPW/z/5Pm4kF+Whe07Qe03TPMTvidG6/j5Vva5bqtCbGwbYl7s6PLD5yc2s0M2c8KLPPhg3
-	NugMEaLqsL39h4d1k/9o6xNqCb9Q/o1hqKW4vNipjZmiFWcwAgAQ85oHSfx2Nj7SBV3ocUCBSjZSA
-	VGVNyB5zzgq0gT5IJqJfWX+WSJyVeRYsfGJmq0UUIK3WY41rC8afe9M9EkNtLvi3/4Fn2u7UNOztD
-	7t9TeDYEebS2SU4hX3MA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9sBGGIM79pNFQWSDjRMGt8Q+Sj5mRukYprDv3KxNJ+U=; b=zEWz2M+rMr1Ful
+	yh5S19yzKjsQZbCwmnmFkfdEqsJBOW9tmud33bfpq358S3aRqeTJZaXOhE6ZagoyynDwQyvLzAFJr
+	fhFsUUN286s21lmaBVZ7UHZI0L+LFmXkiWSjS2eode+hrNXs69/GWO6H9N5MjCtylDt+m6THwSJ6U
+	evjBHXt+rrT1MFhaQlvmZGZS1ZQ7nPXLiMQJDWYd19PnvGj/6zl8Tw/Gguhbw3Z/gXIqNgjXUvf4T
+	xgW06zoWd1thn1ZHL1De6A7FVTV+MoBnImQvGv8npXPjW/9s35kYYitpL5CFXCApvTHdcK4cQtMn8
+	nKa4t81h2IEdQYlmeyNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeBL9-00Bgbb-0Z;
-	Thu, 07 Sep 2023 09:30:19 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qeBX0-00Bhgr-19;
+	Thu, 07 Sep 2023 09:42:34 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeBL6-00Bgb7-1L
+	id 1qeBWx-00Bhfl-0r
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Sep 2023 09:30:17 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3877vFIA025118;
-	Thu, 7 Sep 2023 09:30:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=QrXJz4dJUffrNRYdAEDIG6I7uPRmEn2DD6U7u8sQw3Y=;
- b=TaljCKOETUsJTUT8JjtzUvAIBVCtn6ukEZL6p6pTKnJ951pmi94A/4QZFhinCoP9fwAG
- 6O4TcKYIUJF6nZsjWFpzBFptEKFPjH+6YERL8qXDMimzXonQHt6kBqRR1RG70vpIPC0t
- YmSEDBqWDF4WMiIbrk0pw+DKVNif2rBGRn8vOVA6zjYtAsvOoVC2FyBE0XLjKsgtAiy+
- RrmPZshFLmKxRw/OiCslpes+1CYXjn3JE/U0eTvqLkSaPRqOM1PBVYV2ZrT9gamom8uP
- 8e33N3YaeqIdPzMnCC816eOO2FLrbrfkigJcKDiXSI/cqexN30JXdT7meQZoFCisK2q0 Vg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sy4bqgwpq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Sep 2023 09:30:03 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3879U2OT000540
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Sep 2023 09:30:02 GMT
-Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 7 Sep 2023 02:29:56 -0700
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-To: <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        Bibek Kumar Patro
-	<quic_bibekkum@quicinc.com>
-Subject: [PATCH] mtd: nand: qcom: Fix the node for nand unmap resource
-Date: Thu, 7 Sep 2023 14:58:54 +0530
-Message-ID: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	Thu, 07 Sep 2023 09:42:32 +0000
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so1487441a12.1
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 02:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694079748; x=1694684548; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YfkJbCdeOUfHZ70y4Xael3OQcTcqcvMqx0FyDVsxA4Y=;
+        b=El9/56R92CyWu/wDITmY2GfiqZfnneFh6AGnDWbocmX9O/eUlB2Au0XSX14mmv5aFJ
+         j+c8vZvKIfbNufPu6tlxvDC2aNoRLL5JZvK7EhnYCsXpTG7Xh6EDMblrhY9vtiV8yI0X
+         VjM+8HNSvlcp3g1NPWDFHl9DgmTvxeRpHawpQ4QAtsd42G8svaw4d8ACnGaZhqzFbT+s
+         WPGllN9sd3vCaeIT2jroOpmmUjNpDD/eF5ncG/0Jvc0QYQ5sHWZqrIDWva23nlV1yZLy
+         cPuxLiNbs+jDuWwkczZffZAq0ORiU89DvJUxZQGnSnk+o1BlWegK351vO7iPb7svcPRU
+         VBCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694079748; x=1694684548;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YfkJbCdeOUfHZ70y4Xael3OQcTcqcvMqx0FyDVsxA4Y=;
+        b=HtXEhb9oX3Pz+JLvzIm4b64wWylmLTcytqOJgdmxzy1iJpRFPUF6xh4MV9Qq5Zlq6x
+         36uGTAjY1R4wvz6mG64hzw2uzHOKi1mumNxKkRZZvoj4adppcAuvNUP8AhY9sHsxS/DJ
+         rtG1aV10U4LNTRoQhqW9KyVv8mkkBe/LNQKGKHirlkfVg2nJm1B/1Si2pNcDtzClrrBJ
+         nc02jkx4Y+IuFjmswAJxygIoChCavuYj2zShDElfK1+KrTf8BjLxUd8FcLUbRthnrH5N
+         8+iXA+7LAU+n2pql83kstJ7IbaIgl+SlssDAdp9ARocN+fM+ffK9/Es2Uuzq4nORzTD7
+         dEAw==
+X-Gm-Message-State: AOJu0YzdWaQ8/v7WowUw43kKHlfHcNE/cnuLGMTnopVjp1DX2/CNEgAa
+	VbPBOIVy4KtUNQ/L2MOd4EiRS2EzuSzuZU04xvw=
+X-Google-Smtp-Source: AGHT+IF3/YOkQHh6iMB40RPRVRL0HRRZ4Y+jDkR5ITBBzwgK62VXBvIb91GwhZZs1hsBJmkqPk78aA==
+X-Received: by 2002:a05:6402:51cb:b0:525:4696:336d with SMTP id r11-20020a05640251cb00b005254696336dmr2818621edd.8.1694079748067;
+        Thu, 07 Sep 2023 02:42:28 -0700 (PDT)
+Received: from [192.168.0.107] ([79.115.63.137])
+        by smtp.gmail.com with ESMTPSA id w26-20020a056402071a00b0051e0be09297sm9465226edx.53.2023.09.07.02.42.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 02:42:27 -0700 (PDT)
+Message-ID: <747e5633-e3b7-48a9-8a1b-1c1985451314@linaro.org>
+Date: Thu, 7 Sep 2023 10:42:25 +0100
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4Yjc-YFMK1Ei4hh2M2tQ6aWzZMEBs6LC
-X-Proofpoint-ORIG-GUID: 4Yjc-YFMK1Ei4hh2M2tQ6aWzZMEBs6LC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-07_01,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 suspectscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309070083
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 39/41] mtd: spi-nor: winbond: sort flash_info entries
+Content-Language: en-US
+To: Michael Walle <mwalle@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-39-291a0f39f8d8@kernel.org>
+ <eec52fd8-663d-7e56-3627-2b33259027b6@linaro.org>
+ <c55604322b8b5bb74ce293885599810c@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <c55604322b8b5bb74ce293885599810c@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230907_023016_468288_5FE31570 
-X-CRM114-Status: GOOD (  17.16  )
+X-CRM114-CacheID: sfid-20230907_024231_329009_B6D8907D 
+X-CRM114-Status: UNSURE (   7.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,33 +99,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While unmapping the nand resource in case of err_core_clk
-the dev node being passed is res_start instead of nand->dma_base
-(where the iova returned from map operation is stored) causing
-failure in unmap operation. Hence modifying the unmap operation
-to pass the nand->base_dma instead of res_start.
 
-Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index f583022755a2..e085a0f588eb 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -3322,7 +3322,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
- err_aon_clk:
- 	clk_disable_unprepare(nandc->core_clk);
- err_core_clk:
--	dma_unmap_resource(dev, res->start, resource_size(res),
-+	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
- 			   DMA_BIDIRECTIONAL, 0);
- 	dev_err(&pdev->dev, "DEBUG: probe failed for nandc module\n");
- 	return ret;
--- 
-2.17.1
-
+On 9/7/23 09:14, Michael Walle wrote:
+>> I'm fine with the sorting by ID.
+>>
+>>
+>> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> 
+> Also here, should I convert this to an Acked-by: for all the
+> sorting patches?
+> 
+no, I'll add/drop my tags when applying. Haven't skimmed over the
+others, I'll take a second look.
 
 ______________________________________________________
 Linux MTD discussion mailing list
