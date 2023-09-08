@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A031EE57D5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64D84EE57D8
 	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 06:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,59 +12,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kG+eurvyL/T2uU5eLnZEGWyDCYdBI7nEZRVU5USJreY=; b=jrug8HiH6GA56h
-	icjzuK89orPh4LI8rk+JinNFAUQDB3LcgPBLiPl0rC9PSyJ1HhZFNcqmoRjt6cXR4a6zSNnSbaAhT
-	M14DOJR1AXd3MPcH1NkXoYqgqohVbYfMNaoVPjKumZhfHac7XoyL6Cy8laF33ZP8cYkBJ6EJNK6FG
-	UmIaIN051hAS8WmZu0yh7nffDulYAGshU+TM4QuKflM32lZXTCIWEFcBhEHlf8cK41OR6jVzBlaNU
-	oNIHMlmJyRbqgRNvk5hAT+SQGzGMQZXfP7M9xWzCvuTIuPa+/hvHkEJ5TwFXauMKmWWXERXOGZplX
-	BopAefob0HW9rGFEL3oA==;
+	List-Owner; bh=YP1PtVoMbFDI+a34gv/fK18HO5i/haOFhWJPIWE7Z4w=; b=GBDzX1qzEaYMv0
+	4kefzHxqxz1y5IPfdX+IA3ccD+Si2E6jtjkblaJEFhH4Vi00CwIcQqVtFMz6nE7h/gDm3Mc4e5Ux0
+	b6GmCvdgHPzBBi17NcfkLraZ19nr9K6s+IGPuMNCxNZIOGMCfKnqpOBu53Iz1evJ6AP5vdhJsCncQ
+	MFaqc5hxHUn0h8Z9+mFvnR+K++AHyu4SimTb5tmmKPFhNV6PF1Z1gVPob+G6ntiLx9U+0mnTxdp9M
+	3YDVdFoRElxCOv34iEiqzTDq12pEee9mcCAJHsneM7Isesxl1huiGWFZQsXWxTMp0lmOnU1YpfQo0
+	5nDvNWBDKoTwTYpggy3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeVD3-00DBIt-2d;
-	Fri, 08 Sep 2023 06:43:17 +0000
-Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
+	id 1qeVD6-00DBJp-1C;
+	Fri, 08 Sep 2023 06:43:20 +0000
+Received: from mail-ot1-x32d.google.com ([2607:f8b0:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeVCy-00DBGM-1A
+	id 1qeVD1-00DBH6-0H
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 06:43:14 +0000
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-573ccec985dso1300700a12.2
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 23:43:10 -0700 (PDT)
+	Fri, 08 Sep 2023 06:43:17 +0000
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bcb5df95c5so1336632a34.1
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 23:43:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694155390; x=1694760190; darn=lists.infradead.org;
+        d=gmail.com; s=20221208; t=1694155392; x=1694760192; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Eby1PoaloBESLJImDfgmBJFqOV0ivhypXV8zrNm7FsY=;
-        b=hXJ74mH74pv8sRpg+/m76pfzSTdVku1VyfdsbCJjUaPUi5TU4W+1uc3B0boIih1l6i
-         dICr9FE0rWVOxIZPOh+ID1nTMVnam8vtVC4UqDcAkcboqarhBBDEp/17TZ3hhwedi1Wb
-         Aftv0gwnGd+sv33vFH7AWvNRHm/SOb0FuR4MgbjoXO8rmi6gEuHusJlMoNSR0Jf1k0Q5
-         OMo/rG9vfdaXU3Z7PYIe2OZ10G+POxhjHFopL5JRh9l0v3xQCIqO9tkqzDCiduezyO1H
-         SCGfCnnqHehe6ctCk9GZ8vUfJ9ItHAZSy0VhDwFF/TgBB+3pLn6WaELdNUudcOs2TmqI
-         Odwg==
+        bh=mBEIX7C7WruW4+G0Rg3cggmXWLwA6fsJBLH+luweMoM=;
+        b=o9rt4hGilniAlsd6GL8+pDWh2QKmsSRuG2VKJ37eBq/cEvXtiO5p5RVVhMCa74oNhp
+         LS+dYx7zP5/TZhtBMc3C5kLwM3K/Cimy+SizQSBi7kZcM8Vg2CiA1f5OhubMln1Qxkil
+         TROXOlxyhmWzR9AAI5NtoT6RwtiAyqUraKuvkOTSkVUNGM/I3Fu8GwwAHnhaLhCGi+Jw
+         BhZBWk6gKNM6Rtc8eR07RC5ImcASWYaz5XEz7PNpUGnxRTLoBvjSjImarZclnj99PnUa
+         Nshx828dObDEaUNC8fH3/eckKaReUeC4rOchHYmrsm3eCF8h6c5nTGwquhOZR7fulFdQ
+         eZPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694155390; x=1694760190;
+        d=1e100.net; s=20230601; t=1694155392; x=1694760192;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Eby1PoaloBESLJImDfgmBJFqOV0ivhypXV8zrNm7FsY=;
-        b=IayKiYBLuDz9XIh9y90LwYTSGiYiPGQrs4NtFyBQYe8HeLwM0MAn7HyDrO1EoS9Jxk
-         7/ANAXtk31mjOx5Em1sJuxG5e1SKkPg5Ou+H2qebUFq67k2CehTV2wojHNxm/HhcSEgz
-         51n7NAn0HCsWQZ72zF0s8HnI7FG9/dp4+V0c2/1j7Rz7FoqtTD34hp2BAEGPoNx92nbV
-         ijKz9BKMBDxaB8pgKXxjPJHZvZ3HcggJM3HBa4JLZQPJ6yINEKh2wKdb6zKKzA78FTu0
-         tCykito3fxWMcYhOjK+LgQwvG3h3Ev5nNHMmzDG+HoAuyqprLiYYIQbdGuFs43gXARr5
-         Us0A==
-X-Gm-Message-State: AOJu0YysaT3wD6uoRDKhc5brEEK5B2WfT/B3ExBr/FkMl+hovWwQgL2D
-	+2pGUDoMtxzI45/DetLH8cGgSsCKYn0=
-X-Google-Smtp-Source: AGHT+IF+QtHKUpaFKyYRgiBALoq7QeOyUUXn3ET7LnPHoeg6rVPR+GNx6WAVa4NPgYrTqjIpeTUViA==
-X-Received: by 2002:a05:6a20:549b:b0:134:5c75:3d23 with SMTP id i27-20020a056a20549b00b001345c753d23mr2143953pzk.18.1694155390187;
-        Thu, 07 Sep 2023 23:43:10 -0700 (PDT)
+        bh=mBEIX7C7WruW4+G0Rg3cggmXWLwA6fsJBLH+luweMoM=;
+        b=s0EuntHzvwxAE9lmCQwBU8B/rUQVo70qL0G32xIOsrmATJj5/QO4k1sEzLiw8kxZqa
+         3zocPypg+6lZNUcZh2PJt8+Fyge065Pwrg5qX+EX24qGJzEIEvkas2WkHS3hgN7pX859
+         m73ZCu0Yhq736rDiAbyo4zATU0sIGRLg5GGE9EEfPpuAxheoaF80sBCjh8uL36Y3fhkV
+         tvFUizfC9ZRid9LDwdrodD3Y2qJEiMg4rDB68/MmQ1jrNtO6sNnoCO/QT2ljAovCqxoI
+         KJGfi065DDmxp1GRSR4ZphLKdR8M/4/Ow/kQ1dppKILTZhJj0KKTiq/AY6DuGHM0htQw
+         +cAA==
+X-Gm-Message-State: AOJu0YyagPluG/XDDCKlfXmw/0CvwBKHv0anbWAmjyPiHKa5/TSCKr7E
+	oap5fQCjqo12cKgHYRzqBTDUjnguwuA=
+X-Google-Smtp-Source: AGHT+IHTCqURMdvVn1BvflPHOXm/miTwWvBQUQDW+wsB/uzO0yI+qzV410EO31n7dj1QivfwXarisA==
+X-Received: by 2002:a05:6830:1d6a:b0:6bf:5b30:5b69 with SMTP id l10-20020a0568301d6a00b006bf5b305b69mr1610317oti.17.1694155392258;
+        Thu, 07 Sep 2023 23:43:12 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id jh2-20020a170903328200b001bc35b14c99sm802768plb.212.2023.09.07.23.43.09
+        by smtp.gmail.com with ESMTPSA id t20-20020aa79394000000b0064d47cd116esm678627pfe.161.2023.09.07.23.43.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 23:43:09 -0700 (PDT)
+        Thu, 07 Sep 2023 23:43:11 -0700 (PDT)
 Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id DD33780E2B;
-	Fri,  8 Sep 2023 14:45:06 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id 0E46480E5C;
+	Fri,  8 Sep 2023 14:45:08 +0800 (CST)
 From: Jaime Liao <jaimeliao.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	tudor.ambarus@linaro.org,
@@ -73,16 +73,17 @@ To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: leoyu@mxic.com.tw,
 	jaimeliao@mxic.com.tw
-Subject: [PATCH v4 1/6] mtd: spi-nor: Add manufacturer read id function
-Date: Fri,  8 Sep 2023 14:42:59 +0800
-Message-Id: <20230908064304.27757-2-jaimeliao.tw@gmail.com>
+Subject: [PATCH v4 3/6] mtd: spi-nor: add support for Macronix Octal flash
+Date: Fri,  8 Sep 2023 14:43:01 +0800
+Message-Id: <20230908064304.27757-4-jaimeliao.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
 References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230907_234312_405458_B92A0350 
-X-CRM114-Status: GOOD (  19.40  )
+X-CRM114-CacheID: sfid-20230907_234315_153064_6B96D8BE 
+X-CRM114-Status: UNSURE (   5.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,134 +102,458 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Add manufacturer read id function because of some flash
-may change data format when read id in octal dtr mode.
+Adding Macronix Octal flash for Octal DTR support.
+
+The octaflash series can be divided into the following types:
+
+MX25 series : Serial NOR Flash.
+MX66 series : Serial NOR Flash with stacked die.(Size larger than 1Gb)
+LM/UM series : Up to 250MHz clock frequency with both DTR/STR operation.
+LW/UW series : Support simultaneous Read-while-Write operation in multiple
+               bank architecture. Read-while-write feature which means read
+               data one bank while another bank is programing or erasing.
+
+MX25LM : 3.0V Octal I/O
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8729/MX25LM51245G,%203V,%20512Mb,%20v1.1.pdf
+
+MX25UM : 1.8V Octal I/O
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8967/MX25UM51245G,%201.8V,%20512Mb,%20v1.5.pdf
+
+MX66LM : 3.0V Octal I/O with stacked die
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8748/MX66LM1G45G,%203V,%201Gb,%20v1.1.pdf
+
+MX66UM : 1.8V Octal I/O with stacked die
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8711/MX66UM1G45G,%201.8V,%201Gb,%20v1.1.pdf
+
+MX25LW : 3.0V Octal I/O with Read-while-Write
+MX25UW : 1.8V Octal I/O with Read-while-Write
+MX66LW : 3.0V Octal I/O with Read-while-Write and stack die
+MX66UW : 1.8V Octal I/O with Read-while-Write and stack die
+
+About LW/UW series, please contact us freely if you have any
+questions. For adding Octal NOR Flash IDs, we have validated
+each Flash on plateform zynq-picozed.
+
+As below are the SFDP table dump.
+
+zynq> cat jedec_id
+c2943c
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66uw2g345gx0
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff7f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200e2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043061f0021dcffff
+zynq> md5sum sfdp
+839ad44d1e758bea30bd9917ba763ba6  sfdp
+
+zynq> cat jedec_id
+c2853b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66lm1g45g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87690100821200e2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+7b46113b529d58a6335531a10f14a76e  sfdp
+
+zynq> cat jedec_id
+c2853a
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lm51245g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200e2cc02674430b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+214868617d74e6bfb2c45444d5d6fff0  sfdp
+
+zynq> cat jedec_id
+c2863a
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lw51245g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff000000000000000000000000
+00000000e5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+bb32ccaca6814f3104b985ac91bd65ac  sfdp
+
+zynq> cat jedec_id
+c28539
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lm25645g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+ec258f831ac737454c7eb9f6a8a4495a  sfdp
+
+zynq> cat jedec_id
+c2843c
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66uw2g345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff7f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200e2cc04674630b030b0f4bdd55c
+000000ff101000200000147c00007c234800000000007777000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000000001445988043061f0021dcffff
+zynq> md5sum sfdp
+00447475e039e67c256a8d75d5885ae8  sfdp
+
+zynq> cat jedec_id
+c2803b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66um1g45g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200e2cc02674430b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a000014359c8043060f0021dcffff
+zynq> md5sum sfdp
+eea09d64679e64f627402b39a177e356  sfdp
+
+zynq> cat jedec_id
+c2813b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66uw1g45g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+b89a53266007fce06ba7cc4c0956f917  sfdp
+
+zynq> cat jedec_id
+c2843a
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw51345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+cdccbfad3c384e77f3a5f7847b57b148  sfdp
+
+zynq> cat jedec_id
+c28039
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25um25645g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200d2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a000014359c8043060f0021dcffff
+zynq> md5sum sfdp
+d652779f17770dc833cd96262cb2a620  sfdp
+
+zynq> cat jedec_id
+c28139
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw25645g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200d2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+e43ab2dbcbcf99cebc74964c5dcf3ee2  sfdp
+
+zynq> cat jedec_id
+c28339
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25um25345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+040900001445988043060f0021dcffff
+zynq> md5sum sfdp
+950e623745a002e1747008592e6dbdf9  sfdp
+
+zynq> cat jedec_id
+c28439
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw25345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200d2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+f7712440f8ce0adb538dfa0c10579c79  sfdp
+
+zynq> cat jedec_id
+c28138
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw12845g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff000000000000000000000000
+00000000e5208affffffff0700ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200c9cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+9eacff90d7aa7cf737b970e0f2a7f2c6  sfdp
+
+zynq> cat jedec_id
+c28438
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw12345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0700ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200c9cc04674630b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+a3eb609c08894c84270ad06efc03766c  sfdp
+
+zynq> cat jedec_id
+c28137
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw6445g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0300ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200c4cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+b09aeedb0cfd0f77adc7e08592d295a9  sfdp
+
+zynq> cat jedec_id
+c28437
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw6345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0300ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200c4cc04674630b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+c6fb57b8fdd4c35b5f0dacc4a1f7d4f4  sfdp
 
 Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/core.c     | 30 ++++++++++++++++++++++++++++--
- drivers/mtd/spi-nor/core.h     |  6 ++++++
- drivers/mtd/spi-nor/macronix.c | 18 ++++++++++++++++++
- 3 files changed, 52 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/macronix.c | 45 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 1b0c6770c14e..7ee624b16e17 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -408,7 +408,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
- }
- 
- /**
-- * spi_nor_read_id() - Read the JEDEC ID.
-+ * spi_nor_default_read_id() - Read the JEDEC ID.
-  * @nor:	pointer to 'struct spi_nor'.
-  * @naddr:	number of address bytes to send. Can be zero if the operation
-  *		does not need to send an address.
-@@ -420,7 +420,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-+int spi_nor_default_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
- 		    enum spi_nor_protocol proto)
- {
- 	int ret;
-@@ -438,6 +438,32 @@ int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
- 	return ret;
- }
- 
-+/**
-+ * spi_nor_read_id() - Read ID by manufacturer read id function.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @naddr:	number of address bytes to send. Can be zero if the operation
-+ *		does not need to send an address.
-+ * @ndummy:	number of dummy bytes to send after an opcode or address. Can
-+ *		be zero if the operation does not require dummy bytes.
-+ * @id:		pointer to a DMA-able buffer where the value of the JEDEC ID
-+ *		will be written.
-+ * @proto:	the SPI protocol for register operation.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-+		    enum spi_nor_protocol proto)
-+{
-+	int ret;
-+
-+	if (nor->manufacturer && nor->manufacturer->fixups && nor->manufacturer->fixups->read_id)
-+		ret = nor->manufacturer->fixups->read_id(nor, naddr, ndummy, id, proto);
-+	else
-+		ret = spi_nor_default_read_id(nor, naddr, ndummy, id, proto);
-+
-+	return ret;
-+}
-+
- /**
-  * spi_nor_read_sr() - Read the Status Register.
-  * @nor:	pointer to 'struct spi_nor'.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 9217379b9cfe..92cbc2d3f7fe 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -424,6 +424,8 @@ struct spi_nor_flash_parameter {
-  * @late_init: used to initialize flash parameters that are not declared in the
-  *             JESD216 SFDP standard, or where SFDP tables not defined at all.
-  *             Will replace the default_init() hook.
-+ * @read_id:   used to read id which may change format after enter into
-+	       octal dtr mode.
-  *
-  * Those hooks can be used to tweak the SPI NOR configuration when the SFDP
-  * table is broken or not available.
-@@ -435,6 +437,8 @@ struct spi_nor_fixups {
- 			 const struct sfdp_bfpt *bfpt);
- 	int (*post_sfdp)(struct spi_nor *nor);
- 	int (*late_init)(struct spi_nor *nor);
-+	int (*read_id)(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-+		       enum spi_nor_protocol reg_proto);
- };
- 
- /**
-@@ -667,6 +671,8 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
- int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
- int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
- int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
-+int spi_nor_default_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-+			    enum spi_nor_protocol reg_proto);
- int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
- 		    enum spi_nor_protocol reg_proto);
- int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
 diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index eb149e517c1f..8ab47691dfbb 100644
+index 28c49c98503a..1ccea31ae64a 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -118,9 +118,27 @@ static int macronix_nor_late_init(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int macronix_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-+				enum spi_nor_protocol proto)
-+{
-+	int i, ret;
-+
-+	ret = spi_nor_default_read_id(nor, naddr, ndummy, id, proto);
-+	/* Retrieve odd array and re-sort id because of read id format will be A-A-B-B-C-C
-+	 * after enter into octal dtr mode for Macronix flashes.
-+	 */
-+	if (proto == SNOR_PROTO_8_8_8_DTR) {
-+		for (i = 0; i < nor->info->id_len; i++)
-+			id[i] = id[i*2];
-+	}
-+
-+	return ret;
-+}
-+
- static const struct spi_nor_fixups macronix_nor_fixups = {
- 	.default_init = macronix_nor_default_init,
- 	.late_init = macronix_nor_late_init,
-+	.read_id = macronix_nor_read_id,
+@@ -121,6 +121,51 @@ static const struct flash_info macronix_nor_parts[] = {
+ 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
++	{ "mx66uw2g345gx0", INFOB(0xc2943c, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx66lm1g45g", INFOB(0xc2853b, 0, 0, 0, 4)
++		PARSE_SFDP },
++	{ "mx25lm51245g", INFOB(0xc2853a, 0, 0, 0, 4)
++		PARSE_SFDP },
++	{ "mx25lw51245g", INFOB(0xc2863a, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25lm25645g", INFOB(0xc28539, 0, 0, 0, 4)
++		PARSE_SFDP },
++	{ "mx66uw2g345g", INFOB(0xc2843c, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx66um1g45g", INFOB(0xc2803b, 0, 0, 0, 4)
++		PARSE_SFDP },
++	{ "mx66uw1g45g", INFOB(0xc2813b, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25uw51345g", INFOB(0xc2843a, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25um25645g", INFO(0xc28039, 0, 0, 0)
++		PARSE_SFDP },
++	{ "mx25uw25645g", INFO(0xc28139, 0, 0, 0)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25um25345g", INFO(0xc28339, 0, 0, 0)
++		PARSE_SFDP },
++	{ "mx25uw25345g", INFOB(0xc28439, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25uw12845g", INFOB(0xc28138, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25uw12345g", INFOB(0xc28438, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25uw6445g", INFOB(0xc28137, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
++	{ "mx25uw6345g", INFOB(0xc28437, 0, 0, 0, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW) },
  };
  
- const struct spi_nor_manufacturer spi_nor_macronix = {
+ static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
 -- 
 2.25.1
 
