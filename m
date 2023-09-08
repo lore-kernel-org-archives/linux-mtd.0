@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F73EEE57F2
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBAD6EE57F1
 	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:16:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,45 +12,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MfKYd3hC3xOEqSZCUvlIa4AWOe37r+rLBrBEH+TQ2fw=; b=VkIGyhcQFcWGn7
-	geMsRUMeSMppPipPVOqFk1CHTvY8cbluNszJy3qHOrX11mEUCXZQnx662Mo6mw243lO54zktdbdEI
-	ST5Db6RLyxVauDCJ3glU7YDCAM50ZTJIveVTKEV0gBVQEy0W82SsJmsQKygZrUhDOWT+1RQ/ucn7z
-	NziZhKgWrrrVzcjc2iKyXLrZGJAx3ykfN1QgxRnq6HtCaPzP+3/cxk9ikgj1b5C09WMcsbdgrLhun
-	rP/KxtJFWcxF2zSRnmMlnlYyj71M7rF6EbooXbLq2FDVmq0csGarCq+UOa43awi/6/+i3fm7Fece+
-	F1wQbhToejjkC2pcyz3w==;
+	List-Owner; bh=a71BzMm/T0L61pDm9sm1weNSxpXcWKgrUBYDMrITm+A=; b=NXW4A+x1epjJhI
+	Oi+vIPnRnHfJ+Pj4AtM5AL4X5aHB6FjXd62Aeza1RdHOtyd6k7UAocPfOVDoGzMp++/5yLyns0AjN
+	xeM1HybgFEZKvJ7o0cGwDFFiT+PlbEWQmr3g3kHwYZ1mlFa2EIKb+zFxbkdtbb5OefbvNWtZGYQGi
+	qOP58njv0bjhdmgk/CzMDox61slo4e1n2kw9OXfAzZ3GS6VVOS9UYrPs4LIJjR7CdmvCy8HWs1FFK
+	4K2boFn2GYVhcLM2vDbxcSFQ8GjH3qL7R1iJyYxZD0JqfKctZn26cXU42IPZvvyk3gc4Y+II8fFYz
+	4K3I9oFGGW62gVOEuFNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXi-00DSvH-0l;
+	id 1qeYXi-00DSvp-2h;
 	Fri, 08 Sep 2023 10:16:50 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXf-00DSrp-0g
+	id 1qeYXf-00DSsO-0g
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:16:48 +0000
+	Fri, 08 Sep 2023 10:16:49 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CFF26614AC;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E9FD261495;
+	Fri,  8 Sep 2023 10:16:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17310C433C8;
 	Fri,  8 Sep 2023 10:16:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD80C433BF;
-	Fri,  8 Sep 2023 10:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694168203;
-	bh=T89/S72zev0zM3PT2bX1H7LCoqUelnfRBWMuWQbSpiM=;
+	s=k20201202; t=1694168205;
+	bh=i7IwE3IgFuci+19/4hwRoKd0nBEmz/YybaSCIKK2Y2Q=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=YKajqh5qmxfm8nRsoN1FgIipGx2iCrFppuPf/DxZbAcBhVeGaRwjzX3AEBBYenNkK
-	 aZDaYugUFP92MQHjOgRzov2uSRTEtW/pZwydnMsgLPXR199a5Yyq1p1+5PlAB8g73E
-	 gcYvVwud1LI1T0ShgGsKVXFnsJBdO5Owzg36ThikTtsBY9zPsjeQ/qPLEPB2LA4kfa
-	 5k0eJTORSdtQuKKj6wK9H4RIhp4N1fIqHlfbPnP4CPOYR/dLwH9DHwQSURQfM7ijrx
-	 zPlpThaNzWV6JF2/gigpA/zvk3NaepHd63gDIW2aQwYmf9gCC8SevQSSuE1wAnYTtD
-	 66COMI8oRimUg==
+	b=YQJbCgUPtjgiKzmtkxayLl+MVDOtnXg7+jQ3k2cdkXOxgVQLbDsw90nTGmYf2/N+a
+	 F7rByecwDDtmrYWfPd4J8PWAMH4jN1HyLku80aasxP7XNLcmmfUkdf30YMgZbTwPMI
+	 4NFX6/o0aEU6XSLsvSe4dzC7RJ8eq4tG91Z0A/u0kBWmuLE9gJu8r5RnuGFU46f8me
+	 gzutKoIq8zXZUqiajLW43En3DH8aJQs7+U2chYbWfxDKp1Xs6v1TUQyWOauF6RkJbh
+	 BG3RHXckPsYupMWLQLJYZ5tCiO5qkh5cTEWaP1SeMQaIoPn0xXXp2GC1/Jokp5O+tJ
+	 cgaGaofso/hdg==
 From: Michael Walle <mwalle@kernel.org>
-Date: Fri, 08 Sep 2023 12:16:25 +0200
-Subject: [PATCH v3 07/41] mtd: spi-nor: store .n_banks in struct
- spi_nor_flash_parameter
+Date: Fri, 08 Sep 2023 12:16:26 +0200
+Subject: [PATCH v3 08/41] mtd: spi-nor: default .n_banks to 1
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-7-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-8-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -61,8 +60,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_031647_349858_665BAD32 
-X-CRM114-Status: GOOD (  15.33  )
+X-CRM114-CacheID: sfid-20230908_031647_349358_39604CCE 
+X-CRM114-Status: GOOD (  17.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,71 +78,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-First, fixups might want to replace the n_banks parameter, thus we need
-it in the (writable) parameter struct. Secondly, this way we can have a
-default in the core and just skip setting the n_banks in the flash_info
-database. Most of the flashes doesn't have more than one bank.
+If .n_banks is not set in the flash_info database, the default value
+should be 1. This way, we don't have to always set the .n_banks
+parameter in flash_info.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c | 7 ++++---
- drivers/mtd/spi-nor/core.h | 2 ++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/core.c   | 3 +--
+ drivers/mtd/spi-nor/core.h   | 8 ++++----
+ drivers/mtd/spi-nor/xilinx.c | 1 -
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index d27ad1295ee0..e27f1323fa0b 100644
+index e27f1323fa0b..68baf6032639 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2862,7 +2862,7 @@ static void spi_nor_init_flags(struct spi_nor *nor)
- 	if (flags & NO_CHIP_ERASE)
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+@@ -2017,7 +2017,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
  
--	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
-+	if (flags & SPI_NOR_RWW && nor->params->n_banks > 1 &&
- 	    !nor->controller_ops)
- 		nor->flags |= SNOR_F_RWW;
- }
-@@ -2926,8 +2926,8 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
- 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
- 		spi_nor_init_default_locking_ops(nor);
+ static const struct flash_info spi_nor_generic_flash = {
+ 	.name = "spi-nor-generic",
+-	.n_banks = 1,
+ 	.parse_sfdp = true,
+ };
  
--	if (nor->info->n_banks > 1)
--		params->bank_size = div64_u64(params->size, nor->info->n_banks);
-+	if (params->n_banks > 1)
-+		params->bank_size = div64_u64(params->size, params->n_banks);
- 
- 	return 0;
- }
-@@ -2997,6 +2997,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+@@ -2997,7 +2996,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
  	params->size = info->size;
  	params->bank_size = params->size;
  	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
-+	params->n_banks = info->n_banks;
+-	params->n_banks = info->n_banks;
++	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
  
  	if (!(info->flags & SPI_NOR_NO_FR)) {
  		/* Default to Fast Read for DT and non-DT platform devices. */
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 25bc18197614..2fc999f2787c 100644
+index 2fc999f2787c..8627d0b95be6 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -358,6 +358,7 @@ struct spi_nor_otp {
-  *			in octal DTR mode.
-  * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
-  *			command in octal DTR mode.
-+ * @n_banks:		number of banks.
-  * @n_dice:		number of dice in the flash memory.
-  * @vreg_offset:	volatile register offset for each die.
-  * @hwcaps:		describes the read and page program hardware
-@@ -394,6 +395,7 @@ struct spi_nor_flash_parameter {
- 	u8				addr_mode_nbytes;
- 	u8				rdsr_dummy;
- 	u8				rdsr_addr_nbytes;
-+	u8				n_banks;
- 	u8				n_dice;
- 	u32				*vreg_offset;
+@@ -15,6 +15,7 @@
+  * have the page size defined within their SFDP tables.
+  */
+ #define SPI_NOR_DEFAULT_PAGE_SIZE 256
++#define SPI_NOR_DEFAULT_N_BANKS 1
  
+ /* Standard SPI NOR flash operations. */
+ #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
+@@ -453,7 +454,7 @@ struct spi_nor_fixups {
+  * @size:           the size of the flash in bytes.
+  * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
+  *                  isn't necessarily called a "sector" by the vendor.
+- * @n_banks:        the number of banks.
++ * @n_banks:        (optional) the number of banks. Defaults to 1.
+  * @page_size:      (optional) the flash's page size. Defaults to 256.
+  * @addr_nbytes:    number of address bytes to send.
+  *
+@@ -570,7 +571,7 @@ struct flash_info {
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+ 	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+ 
+ #define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
+ 	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+@@ -578,13 +579,12 @@ struct flash_info {
+ 
+ #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+ 	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+ 
+ #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+ 		.size = (_sector_size) * (_n_sectors),			\
+ 		.sector_size = (_sector_size),				\
+ 		.page_size = (_page_size),				\
+-		.n_banks = 1,						\
+ 		.addr_nbytes = (_addr_nbytes),				\
+ 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+ 
+diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+index 284e2e4970ab..8d4539e32dfe 100644
+--- a/drivers/mtd/spi-nor/xilinx.c
++++ b/drivers/mtd/spi-nor/xilinx.c
+@@ -26,7 +26,6 @@
+ 		.size = 8 * (_page_size) * (_n_sectors),		\
+ 		.sector_size = (8 * (_page_size)),			\
+ 		.page_size = (_page_size),				\
+-		.n_banks = 1,						\
+ 		.flags = SPI_NOR_NO_FR
+ 
+ /* Xilinx S3AN share MFR with Atmel SPI NOR */
 
 -- 
 2.39.2
