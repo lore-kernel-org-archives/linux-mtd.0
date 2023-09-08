@@ -4,85 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35F17EE14D0
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Sep 2023 09:46:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCBABEC875F
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 00:30:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hIG46Za6Br++zhw85YV0u/HwfUpdXy7z63Eu2ig1jko=; b=3wM+2FzMovUUcY
-	lcausZ8PWaMnd7AEVTMw42FudV7xWXbh/mpmDZub5Pg95HDHVfA1sT4+Wzl/x/wAgubQAVRm4dk/K
-	+jJdve/J+Eak+wmImnF3x42F0Tdcle8eB5ECcWTgcOZ8FtTHXektVI59Dx1ZLB6+q8GMkM3G28ggO
-	wFZqfaQSOc2Dc5zXI4fM4C6kd3nPpUugH4tPBN5gH3j/YFMwROEyws72mT97Kvl8S09FkUpVyamVr
-	c5wufm+iKBKi5p9hsmNbg/uYhZsSdIrglwQcQzk2huLyhG1f3aW0Ii4t7ZUHHSaYQ8PhQyOSMTWuO
-	wNDLattHA9o+ZL6TKDzw==;
+	List-Owner; bh=M53HRlVfah1W679HG0U9xTTWkbNW8nqPlcV7BEovTfw=; b=1/Plp1yxJkANUL
+	PvCgaPcTjUw9MzE8cc7BF1uUuub71rD+1nioXt++aPL5Y6vUEWnlYepVoqrzTTFJ0vucRyPwTmiM8
+	5KjVZ0TbKULvjsD4RrrcPblwpQOZBaJWMGW/+bLW6uNJ/V1jTlawlEaHn00160dq1g5EUHqts+hS0
+	wcpIuihWMhJobMduhComGmZOoLgEzCxFpEFjaUPkNoZjyXe9+u/4PlduCzxAX2gRsuRpht+/Y2Hdv
+	XlWKAc3e9PZOYzvP3xFU0b/jQFTnxFf40zjwSeBMeQrhwREcPeCsUs3i4C08bB1RGFdjG8Ow9OaPX
+	qN89iVr2UkpjhGJtRl0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeBaR-00Bi6C-2K;
-	Thu, 07 Sep 2023 09:46:07 +0000
-Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
+	id 1qePOP-00CqeS-13;
+	Fri, 08 Sep 2023 00:30:37 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeBaP-00Bi5D-0R
+	id 1qePOM-00CqbA-1f
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Sep 2023 09:46:06 +0000
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bf5bf33bcdso5610191fa.0
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 02:46:03 -0700 (PDT)
+	Fri, 08 Sep 2023 00:30:35 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so319222366b.0
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 17:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694079962; x=1694684762; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1694133021; x=1694737821; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QvypY1QvOnO1QpwUl4niGa+iAzfXQOe8HmG4CVoVLg4=;
-        b=tntLxhAz3NbqSgvYGnAZvwhoonSmBPjIIcdCMSPk/jWFL079t2as8PeAPilW7tIkZ4
-         tONlc4wMw6zx49qC36BIopzCmzjXeUNsRmIwylNlepg1UVxlI5uDeD3Ym5vjvzqJeRGC
-         /ZkHd2CmWY0h604qxtmP8Vutr/KHuQPJeF/otYswB7xRVRdGZRt1xezJK30QEMgATJh5
-         KOWRq9tW4fIclr9B4sBGEL5yaVJy5IgKX+C1kXt92LJX2SnhZpl/KGP12KpJtel8B11U
-         tra8nh6HpGDK1p0Q1yKSWvgts2GhYHze53FWVE6XPRRWIUi2fhnw5JHcDtWR7w8LQMlQ
-         nSfw==
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=AclparNhffDJEsS4hICwxtJHQpnSffO1EMayO68QxYc0QSozGZo9SWMTY+H5JyuYUY
+         lOPpBRaUwK7y82+mw463BB5mQqKArIPuGFSN+scAFMDvrlcaNwbiL3rbk0A4Rl+mgeEo
+         84s5ovkmiS1stA6cjQL4MYYfAGX56BrUh+ocId/I3kjY3SenNdLHYtJ5+Pr3WacRhMtE
+         R34NGkBdD2hGzBQYG9BRg8kQNO78Rjqm0SeL9NuqXG34/1lRYYe3UG6jeU2HcXMZcNfV
+         vWVW8ZgsVrtRStyDk08cMzTJvTxpkZcrqayXksTpXphu3kXfr2GxMv8p9zordv7u3Tuc
+         SAwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694079962; x=1694684762;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1694133021; x=1694737821;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QvypY1QvOnO1QpwUl4niGa+iAzfXQOe8HmG4CVoVLg4=;
-        b=a28Il7N3updHheN5YidBOV7DhnWMSARsLmRBcpJwxl5cTVoAuJLhydU8Xe5Ns/rIMR
-         0vlXvfGRydcI6+gGINif7V2le3hnm/EXGk0+DsAs+Bvz00io8XmzJatM6dcC/Z4EM1fZ
-         DcZE5U0E6ysMwiw6GKoVeGpBNQ6iY49NOQOkK9cp3Kdx1/gAtX3yDJZ3xnc76JbFUOgp
-         gYfpJjWjgeaWeercmPiTqJmBYuZBh9njXquw4bX6vHNYSM8AwFXvPdPUr0n0LeO+fz0I
-         130JeY3uaK8579S5WvmkfHXqVgvzSCVSQEOpSrfXaPcvNLfz2hUyQwqXS5Lt4QIEmvm9
-         GDbg==
-X-Gm-Message-State: AOJu0Yw+r5Y7/CqtMLBHj5Ubm1EAsbP35xsJtrQLlc6n2+4hLbv3zfUe
-	3vWsJpIa+6Lputzmvn9W1cB1ow==
-X-Google-Smtp-Source: AGHT+IGva/E5JZtevG6ujo6b6PECKPAbrIbpmfBsxECwWywCO2LQ9gYoz4P3195aEYeblt4HJCGTvw==
-X-Received: by 2002:a05:651c:21b:b0:2b9:e230:25ce with SMTP id y27-20020a05651c021b00b002b9e23025cemr4389569ljn.12.1694079961945;
-        Thu, 07 Sep 2023 02:46:01 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id f8-20020a1709067f8800b009a1a5a7ebacsm9991110ejr.201.2023.09.07.02.46.00
+        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
+        b=WJ3j8Qoyrjx8AepkG8Zd7EtRmY13laJI8Ib4sX/nLc+tunUc3lHQqo+FjxNbkDnOt5
+         +WrqH7Krqa6eqE7Mq7tdOWP9sh7ygvtGQQAvMYzeeky6/xpCSzdVu5sF3oxyfpAHFE67
+         bBHBzl+uVsbiQpzHqx2gc89FMZu3/dRS4z+7afln3nz45fSvBVAN1K5hRmcwqr1pmuOm
+         trmUHjIL7YLBqhplTgMAXI1GhWVECD1aAe+F03bw5mlFeykq2vp1ybNn9zjHDuC84NS7
+         rAxWlXNtWj++RQmPpNVXFV0TBfr+EOGVOarD/mXpbeKiexr29M2a65Eo6rC//2FABA+T
+         vBbA==
+X-Gm-Message-State: AOJu0YxHgTkZbp+oBSqaFvQMvQkpL407F5S0rTqtJ5xuKiYw4g9YbTum
+	uDfG8lLXoWylNcfdJUfbBWI=
+X-Google-Smtp-Source: AGHT+IHUmcSd3yGn0Yc+fxHKH36GJLlYUzap6qvtcfMqwZgOcAgDOYhbcm3dJF4+eYZ9U6PvPuYQ6g==
+X-Received: by 2002:a17:907:6e87:b0:9a1:c69c:9388 with SMTP id sh7-20020a1709076e8700b009a1c69c9388mr4152809ejc.37.1694133021412;
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.141.16])
+        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm280974ejb.86.2023.09.07.17.30.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 02:46:01 -0700 (PDT)
-Message-ID: <f9e60fe4-b7aa-4a13-b1b9-f4d3d429eb62@linaro.org>
-Date: Thu, 7 Sep 2023 10:45:59 +0100
+        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
+Message-ID: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
+Date: Fri, 8 Sep 2023 01:29:55 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 17/41] mtd: spi-nor: atmel: convert flash_info to new
- format
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+To: Dave Chinner <david@fromorbit.com>, Hao Xu <hao.xu@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>, Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Stefan Roesch <shr@fb.com>,
+ Clay Harris <bugs@claycon.org>, "Darrick J . Wong" <djwong@kernel.org>,
+ linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+ ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-unionfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+ devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+ samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+ Wanpeng Li <wanpengli@tencent.com>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+ <ZPUJHAKzxvXiEDYA@dread.disaster.area>
 Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-17-291a0f39f8d8@kernel.org>
- <aba618e2-ad74-d716-c8d7-e77588b22509@linaro.org>
- <4a25955300a53a36a842f4e8bd3a2e1a@kernel.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <4a25955300a53a36a842f4e8bd3a2e1a@kernel.org>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230907_024605_193704_D72B551A 
-X-CRM114-Status: GOOD (  12.51  )
+X-CRM114-CacheID: sfid-20230907_173034_552912_00406F32 
+X-CRM114-Status: GOOD (  18.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,26 +108,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiA5LzcvMjMgMDk6MTMsIE1pY2hhZWwgV2FsbGUgd3JvdGU6Cj4+PiArwqDCoMKgIHsKPj4+
-ICvCoMKgwqDCoMKgwqDCoCAuaWQgPSBTTk9SX0lEKDB4MWYsIDB4NjYsIDB4MDEpLAo+Pj4gK8Kg
-wqDCoMKgwqDCoMKgIC5uYW1lID0gImF0MjVmczAxMCIsCj4+Cj4+IG5pdHBpY2ssIHdlIHNoYWxs
-IHJlc3BlY3QgdGhlIG9yZGVyIG9mIHRoZSBtZW1iZXJzIGRlY2xhcmVkIGluCj4+IGZsYXNoX2lu
-Zm8gc3RydWN0Lgo+IAo+IEFzIG1lbnRpb25lZCBpbiBteSBmaXJzdCByZXBseSwgeW91J3JlIGZp
-bmUgd2l0aCBrZWVwaW5nIHRoZSBpZAo+IGZpcnN0PyBBZnRlciB0aGlzIHNlcmllcywgd2UgY2Fu
-IHN3YXAgdGhlIG5hbWUgYW5kIGlkIG1lbWJlcnMgaW4KPiBzdHJ1Y3QgZmxhc2hfaW5mby4KPiAK
-PiBGb3IgYWxsIHRoZSBvdGhlciBtZW1iZXJzLCB0aGV5IHNob3VsZCBiZSB1c2VkIGNvbnNpc3Rl
-bnRseS4gU28KPiB3ZSBjb3VsZCBhbHNvIHN3YXAgdGhlIG1lbWJlcnMgaW4gZmxhc2hfaW5mby4K
-CkknbSBvaywgc291bmRzIGdvb2QuCj4gCj4+IEFuZCBJJ2xsIGxldCB5b3UgZG91YmxlIGNoZWNr
-IGlmIHRoZSBjb252ZXJzaW9uIGlzIGFjY3VyYXRlIDpELgo+Pgo+PiBSZXZpZXdlZC1ieTogVHVk
-b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPgo+IAo+IFNvIEknbGwgY29udmVy
-dCB0aGF0IG9uZSBpbiBhbiBBY2tlZC1ieTogZm9yIGFsbCB0aGUgY29udmVyc2lvbgo+IHBhdGNo
-ZXM/Cj4gCgpObywgSSdsbCBhZGQgdGhlbSBhZnRlcndhcmRzLCBJJ2QgbGlrZSB0byBjaGVjayB3
-aGF0IEkgc2tpcHBlZCBvbiBmaXJzdApyZXZpZXcuCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+On 9/3/23 23:30, Dave Chinner wrote:
+> On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+>> On 8/29/23 19:53, Matthew Wilcox wrote:
+>>> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+>>>> On 8/28/23 05:32, Matthew Wilcox wrote:
+>>>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+>>>>>> From: Hao Xu <howeyxu@tencent.com>
+>>>>>>
+>>>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
+>>>>>> Currently it is true only with io_uring as its initial caller.
+>>>>>
+>>>>> So why do we need to do this as part of this series?  Apparently it
+>>>>> hasn't caused any problems for filemap_read().
+>>>>>
+>>>>
+>>>> We need this parameter to indicate if nowait semantics should be enforced in
+>>>> touch_atime(), There are locks and maybe IOs in it.
+>>>
+>>> That's not my point.  We currently call file_accessed() and
+>>> touch_atime() for nowait reads and nowait writes.  You haven't done
+>>> anything to fix those.
+>>>
+>>> I suspect you can trim this patchset down significantly by avoiding
+>>> fixing the file_accessed() problem.  And then come back with a later
+>>> patchset that fixes it for all nowait i/o.  Or do a separate prep series
+>>
+>> I'm ok to do that.
+>>
+>>> first that fixes it for the existing nowait users, and then a second
+>>> series to do all the directory stuff.
+>>>
+>>> I'd do the first thing.  Just ignore the problem.  Directory atime
+>>> updates cause I/O so rarely that you can afford to ignore it.  Almost
+>>> everyone uses relatime or nodiratime.
+>>
+>> Hi Matthew,
+>> The previous discussion shows this does cause issues in real
+>> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+>>
+> 
+> Then separate it out into it's own patch set so we can have a
+> discussion on the merits of requiring using noatime, relatime or
+> lazytime for really latency sensitive IO applications. Changing code
+> is not always the right solution...
+
+Separation sounds reasonable, but it can hardly be said that only
+latency sensitive apps would care about >1s nowait/async submission
+delays. Presumably, btrfs can improve on that, but it still looks
+like it's perfectly legit for filesystems do heavy stuff in
+timestamping like waiting for IO. Right?
+
+-- 
+Pavel Begunkov
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
