@@ -4,99 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCBABEC875F
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 00:30:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3C84EE57D5
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 06:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M53HRlVfah1W679HG0U9xTTWkbNW8nqPlcV7BEovTfw=; b=1/Plp1yxJkANUL
-	PvCgaPcTjUw9MzE8cc7BF1uUuub71rD+1nioXt++aPL5Y6vUEWnlYepVoqrzTTFJ0vucRyPwTmiM8
-	5KjVZ0TbKULvjsD4RrrcPblwpQOZBaJWMGW/+bLW6uNJ/V1jTlawlEaHn00160dq1g5EUHqts+hS0
-	wcpIuihWMhJobMduhComGmZOoLgEzCxFpEFjaUPkNoZjyXe9+u/4PlduCzxAX2gRsuRpht+/Y2Hdv
-	XlWKAc3e9PZOYzvP3xFU0b/jQFTnxFf40zjwSeBMeQrhwREcPeCsUs3i4C08bB1RGFdjG8Ow9OaPX
-	qN89iVr2UkpjhGJtRl0A==;
+	List-Owner; bh=MaDlm1oZwt9+N/FM/OzI5lEiC2GhEwiWDXxBaNrfHck=; b=l7225ckdpkO3YF
+	+ke6so1DNspvbhj8Emw8/GeI1b12uxkq500jNZzH78R7LDwmtmHjg5Rw0vWmJunvq96oqMOmyKT8Y
+	rjj4aUYO4VJfAIVbPjBBBzXI+yD3rG4Iu7EF7Ie6mCdFYfO99Uwb6/kov7hz4FQRCOuU0jbDYmNOT
+	SmqtWXckpzCMzmvzqdOcwtFiAb/vjhHReThucMYz4fDckpwDfxufzQdklBo/DYgPs5xqZCU324hCs
+	RMye5lFYPiT7M5q4Yh+avsISUaJPYDNfDH0KSKgiW8WgA6g6m3/INm424h1NZV678h+T6dxDmhN9r
+	0RoH312x3P6N8mtgz3Ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qePOP-00CqeS-13;
-	Fri, 08 Sep 2023 00:30:37 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1qeVD8-00DBKN-0m;
+	Fri, 08 Sep 2023 06:43:22 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qePOM-00CqbA-1f
+	id 1qeVD3-00DBHa-2J
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 00:30:35 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so319222366b.0
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 17:30:22 -0700 (PDT)
+	Fri, 08 Sep 2023 06:43:19 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a440a8a20so1634729b3a.3
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 23:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694133021; x=1694737821; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
-        b=AclparNhffDJEsS4hICwxtJHQpnSffO1EMayO68QxYc0QSozGZo9SWMTY+H5JyuYUY
-         lOPpBRaUwK7y82+mw463BB5mQqKArIPuGFSN+scAFMDvrlcaNwbiL3rbk0A4Rl+mgeEo
-         84s5ovkmiS1stA6cjQL4MYYfAGX56BrUh+ocId/I3kjY3SenNdLHYtJ5+Pr3WacRhMtE
-         R34NGkBdD2hGzBQYG9BRg8kQNO78Rjqm0SeL9NuqXG34/1lRYYe3UG6jeU2HcXMZcNfV
-         vWVW8ZgsVrtRStyDk08cMzTJvTxpkZcrqayXksTpXphu3kXfr2GxMv8p9zordv7u3Tuc
-         SAwA==
+        d=gmail.com; s=20221208; t=1694155393; x=1694760193; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ItrCPx39u1/xI38sWQM2nBZglN8/qhe6e+Zp89R6dwc=;
+        b=IaXWm47ZkHfRJpdz2le7TCMklgU4hacknfBKRZL9/FaHdTsni1x5sgm1qlXrytICjn
+         ySjCALJO8s8Rl1pgRrmejJck/ds4GrmqgzCcRpk+Tx49iuU9rNHbolYT8A4By36miWx7
+         YusY7XbsVZGdqJCcdEjXbRIEC3c1E+0iVbw0Y1JCOpgaXObNaoFUsX+chCbDuiMNZPYE
+         887VmwpuT22KLzx2IUjQsOpGpXqPyzqTUnSD8O6vJchguY225zjODL6xVKwvOIgmpaAS
+         xgxRWvfsCK3jmBSyDtr9P/bl2v+J1qIAnM4aCoWAexYabAAcfQN1lvq9zdbM8t/LfIDq
+         teRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694133021; x=1694737821;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rWH+VGW4ynUEnqVgfK8Uo5vbTneevGaezyT5mB/sqg4=;
-        b=WJ3j8Qoyrjx8AepkG8Zd7EtRmY13laJI8Ib4sX/nLc+tunUc3lHQqo+FjxNbkDnOt5
-         +WrqH7Krqa6eqE7Mq7tdOWP9sh7ygvtGQQAvMYzeeky6/xpCSzdVu5sF3oxyfpAHFE67
-         bBHBzl+uVsbiQpzHqx2gc89FMZu3/dRS4z+7afln3nz45fSvBVAN1K5hRmcwqr1pmuOm
-         trmUHjIL7YLBqhplTgMAXI1GhWVECD1aAe+F03bw5mlFeykq2vp1ybNn9zjHDuC84NS7
-         rAxWlXNtWj++RQmPpNVXFV0TBfr+EOGVOarD/mXpbeKiexr29M2a65Eo6rC//2FABA+T
-         vBbA==
-X-Gm-Message-State: AOJu0YxHgTkZbp+oBSqaFvQMvQkpL407F5S0rTqtJ5xuKiYw4g9YbTum
-	uDfG8lLXoWylNcfdJUfbBWI=
-X-Google-Smtp-Source: AGHT+IHUmcSd3yGn0Yc+fxHKH36GJLlYUzap6qvtcfMqwZgOcAgDOYhbcm3dJF4+eYZ9U6PvPuYQ6g==
-X-Received: by 2002:a17:907:6e87:b0:9a1:c69c:9388 with SMTP id sh7-20020a1709076e8700b009a1c69c9388mr4152809ejc.37.1694133021412;
-        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
-Received: from [192.168.8.100] ([148.252.141.16])
-        by smtp.gmail.com with ESMTPSA id lz24-20020a170906fb1800b009932337747esm280974ejb.86.2023.09.07.17.30.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Sep 2023 17:30:21 -0700 (PDT)
-Message-ID: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
-Date: Fri, 8 Sep 2023 01:29:55 +0100
+        d=1e100.net; s=20230601; t=1694155393; x=1694760193;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ItrCPx39u1/xI38sWQM2nBZglN8/qhe6e+Zp89R6dwc=;
+        b=gMZQ30F5auMVguEfVoYF3eZwRmDUIK4ahjSzWSdWVtC0l1likRwzxtd2Vy53gDVGBa
+         hSFea5SyWl78Ry1mm7BENs/a6WvPLt6pa160w6kYiMal/zCe67fnQPC1+0D3jCNfAoFT
+         UgzAcUOEzqXL4cR2e3o0hmv+eOn/8o80wm6wD/EAf5KCYLUhmUxUVVnCQI5zavfU/uUJ
+         MhN2mTG4f9uwYWkLwz+oTuxfC8aKOyMNjlSqi80oW++KPa4ifr7SCKgkVUBQKKNzqpFq
+         GaEJvWkAHnU0xTAQ4wsj1cg0CYDKiLSnXnoGGwcAE/qTqPb6WRaQz3gZPoZl05rtyWqA
+         DRGQ==
+X-Gm-Message-State: AOJu0YxukybIK1e1CRhwFiIxVz/4HB6B1HdrsWS5a2JZpbxpy2uGEbkg
+	kJBBS4wcwTZFMKjK+sikBz08KUwgPOE=
+X-Google-Smtp-Source: AGHT+IFFbuhloBS/ZraftE4bm8W7CGDb13O3hc+5CQc2+ij4k+X/JvnJOaJ9U0i8qQTi72T+zqY+wQ==
+X-Received: by 2002:a05:6a20:2584:b0:14c:d494:77c5 with SMTP id k4-20020a056a20258400b0014cd49477c5mr2155871pzd.13.1694155393205;
+        Thu, 07 Sep 2023 23:43:13 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id w24-20020aa78598000000b0064378c52398sm681847pfn.25.2023.09.07.23.43.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 23:43:12 -0700 (PDT)
+Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
+	by twhmp6px (Postfix) with ESMTPS id 6039880E29;
+	Fri,  8 Sep 2023 14:45:09 +0800 (CST)
+From: Jaime Liao <jaimeliao.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com
+Cc: leoyu@mxic.com.tw,
+	jaimeliao@mxic.com.tw
+Subject: [PATCH v4 6/6] mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order from BFPT
+Date: Fri,  8 Sep 2023 14:43:04 +0800
+Message-Id: <20230908064304.27757-7-jaimeliao.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-To: Dave Chinner <david@fromorbit.com>, Hao Xu <hao.xu@linux.dev>
-Cc: Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
- Jens Axboe <axboe@kernel.dk>, Dominique Martinet <asmadeus@codewreck.org>,
- Christian Brauner <brauner@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Stefan Roesch <shr@fb.com>,
- Clay Harris <bugs@claycon.org>, "Darrick J . Wong" <djwong@kernel.org>,
- linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
- ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-unionfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
- codalist@coda.cs.cmu.edu, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
- devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
- Wanpeng Li <wanpengli@tencent.com>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
- <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
- <ZO3cI+DkotHQo3md@casper.infradead.org>
- <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
- <ZPUJHAKzxvXiEDYA@dread.disaster.area>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230907_173034_552912_00406F32 
-X-CRM114-Status: GOOD (  18.96  )
+X-CRM114-CacheID: sfid-20230907_234317_757976_870DC6CD 
+X-CRM114-Status: GOOD (  11.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,64 +94,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/3/23 23:30, Dave Chinner wrote:
-> On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
->> On 8/29/23 19:53, Matthew Wilcox wrote:
->>> On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
->>>> On 8/28/23 05:32, Matthew Wilcox wrote:
->>>>> On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
->>>>>> From: Hao Xu <howeyxu@tencent.com>
->>>>>>
->>>>>> Add a boolean parameter for file_accessed() to support nowait semantics.
->>>>>> Currently it is true only with io_uring as its initial caller.
->>>>>
->>>>> So why do we need to do this as part of this series?  Apparently it
->>>>> hasn't caused any problems for filemap_read().
->>>>>
->>>>
->>>> We need this parameter to indicate if nowait semantics should be enforced in
->>>> touch_atime(), There are locks and maybe IOs in it.
->>>
->>> That's not my point.  We currently call file_accessed() and
->>> touch_atime() for nowait reads and nowait writes.  You haven't done
->>> anything to fix those.
->>>
->>> I suspect you can trim this patchset down significantly by avoiding
->>> fixing the file_accessed() problem.  And then come back with a later
->>> patchset that fixes it for all nowait i/o.  Or do a separate prep series
->>
->> I'm ok to do that.
->>
->>> first that fixes it for the existing nowait users, and then a second
->>> series to do all the directory stuff.
->>>
->>> I'd do the first thing.  Just ignore the problem.  Directory atime
->>> updates cause I/O so rarely that you can afford to ignore it.  Almost
->>> everyone uses relatime or nodiratime.
->>
->> Hi Matthew,
->> The previous discussion shows this does cause issues in real
->> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
->>
-> 
-> Then separate it out into it's own patch set so we can have a
-> discussion on the merits of requiring using noatime, relatime or
-> lazytime for really latency sensitive IO applications. Changing code
-> is not always the right solution...
+From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Separation sounds reasonable, but it can hardly be said that only
-latency sensitive apps would care about >1s nowait/async submission
-delays. Presumably, btrfs can improve on that, but it still looks
-like it's perfectly legit for filesystems do heavy stuff in
-timestamping like waiting for IO. Right?
+Parse BFPT in order to retrieve the byte order in 8D-8D-8D mode.
 
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+---
+ drivers/mtd/spi-nor/sfdp.c | 4 ++++
+ drivers/mtd/spi-nor/sfdp.h | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index b3b11dfed789..2241207556bf 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -650,6 +650,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	/* Byte order in 8D-8D-8D mode */
++	if (bfpt.dwords[SFDP_DWORD(18)] & BFPT_DWORD18_BYTE_ORDER_SWAPPED)
++		nor->flags |= SNOR_F_DTR_SWAB16;
++
+ 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+ }
+ 
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index 6eb99e1cdd61..eba760941d43 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -123,6 +123,7 @@ struct sfdp_bfpt {
+ #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
+ #define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
+ #define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
++#define BFPT_DWORD18_BYTE_ORDER_SWAPPED		BIT(31) /* Byte order of 16-bit words in 8D-8D-8D mode */
+ 
+ struct sfdp_parameter_header {
+ 	u8		id_lsb;
 -- 
-Pavel Begunkov
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
