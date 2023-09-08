@@ -4,84 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23CDAEE57EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:23:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9B73EE57FB
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 11:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+JW44N9egUGZTZ1nvg65knNQHA/7v7+0dVtyhmpvhmA=; b=1iLUDzYH1aMfyD
-	wWNUY1dL/3W8egf+DtxZ1sxJhfKVggr/Czu1SxTvxt/5p71k1kNmoxqkxRnyCYyYP6pKiz6GSS0EH
-	zBsT0OWgPDBzm5AMmoJqjIsvV3tWlJ0n2YVNeHLpW4TeXTVrvTtGgWmCuBD8+iO8qeSWH5d89dvaX
-	fcis7uDy8LyB9/QAdC2C08hK16v3c9M6uTEw4wovpwCaS2sqlIZQmAX+zF6ARTO3mby6FxHWWuTZy
-	b+RLui4dpD8YxPHnfza7YxmmNSBWyaHmQXtLJ+bWrdAIaM8DLIeN4jQ78uC1hFKKXjpZb37Z/FYvT
-	i+GX95bGEPBsdqfhFggw==;
+	List-Owner; bh=yuW4hL58RDwzfkhLY13LcCeob4gkITmwv/NaaOqj+8Q=; b=RdrR68tMa8vGl0
+	4exmeAY+PpwKycoGjDgMadPqTctDIfTUEBb7eltPi/yoiEIQuA0whF4ep7OBGw57jvnckjR8UWmoR
+	ElpYsrYNOvnGR1BS64JzO7vSmdUv2eVbiPZoiI3ZnoERuF+Wi4rfDjjsX4pp3oGmVKGJD8ubyI7rZ
+	O+nfSjI5akxHeLTJAWd57IaXc8Id8r0Z+ZCxF7yKNgWlaZhHZgEI8a/YLNrV/fz9v+DCV40WdmfPo
+	8spa6deoCsr2sjNAIo1gMMSio+7VHkdgzz8cp3lpxE9tmIij4Uk6ITKHS8LYfkqcQdh8gWS/51I3f
+	UiOrxe1JtlG/t5Xbd0Hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYdg-00DXWS-29;
-	Fri, 08 Sep 2023 10:23:00 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qeZht-00DgDc-0a;
+	Fri, 08 Sep 2023 11:31:25 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYdd-00DXRU-0L
+	id 1qeYY8-00DTL7-2V
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:22:58 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3889kc3U027822;
-	Fri, 8 Sep 2023 10:22:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=9nZFEAV0AeHreRBRxKAyau56XXjNe94bEf0a+siu2Bk=;
- b=WGpGfZwZupSgW4T17hiV2WY0vpVOB9JZMXb96PQMhHr57qryniaIV4QpsvWhdRXVIpM1
- bKpKkNcxVOGosRxG05LpUTsWLM2WYYmu0p1qKiKw/dVF0unxJmoJfmAuy6zJp7udta5p
- hIJsklH0fQbwUOYsSP4lodguCy4VpXJMpayohxeX7Oiksm6prDIvby/mZPMLgESM0au3
- nUEsOWOlYm+IuScRyv2dKBboUHjscggjx5kluuOMfNsFLaiyWpheVfG5Lwy9ENYAGmiJ
- puEtS2MQrNqnmt3o+zkDsQJacujKkGZvA+xSSHhHUJasAeAU+4hA/q+7brEV1w91c49Y Kw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3syfj2jb3y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Sep 2023 10:22:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 388AMlh8003373
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Sep 2023 10:22:47 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 8 Sep 2023 03:22:42 -0700
-Date: Fri, 8 Sep 2023 15:52:39 +0530
-From: Pavan Kondeti <quic_pkondeti@quicinc.com>
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-CC: <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_charante@quicinc.com>,
-        <quic_kaushalk@quicinc.com>
-Subject: Re: [PATCH] mtd: nand: qcom: Fix the node for nand unmap resource
-Message-ID: <ff77c3ce-d635-4501-8348-5b7adff9a16c@quicinc.com>
-References: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
+	Fri, 08 Sep 2023 10:17:21 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D7FAF614A4;
+	Fri,  8 Sep 2023 10:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0794CC43391;
+	Fri,  8 Sep 2023 10:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694168235;
+	bh=pG2FdGd2bZ50xpBr1ZIaO+fF4bmW9tYC4LsRjQC4xQA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=STicWmLv7g3D+Mkn6PXX7F3isoqBQJY4vugZUQ6V4DD78LcyI0U///6ZZzVbt04Hp
+	 1VPKN7w8BA60yHQHKAGhquU49/Ks04f5FRaKO/xBkwOMxQXoakpG3ccRpwlDUZ8CG5
+	 a9KAm7dTW9bYvpEH1QrWbVorP5oft5JcR8eKvuB1nRjj4KAU6FfebiLj9pfyf2dwE5
+	 x8z8U3oEfGuZ/AmgtUqNHRqp3KIcHFCFIcjqnCQFjy1W1n76vfWRUrgqcAYW8u2WXw
+	 DlBS/LD/tZhdjWp6W4apRqFC7mew1dnJ1vUdHA8slC/lB6vLHh9PTBW3d/IN21aihe
+	 3VEz6UAdmT+lw==
+From: Michael Walle <mwalle@kernel.org>
+Date: Fri, 08 Sep 2023 12:16:40 +0200
+Subject: [PATCH v3 22/41] mtd: spi-nor: intel: convert flash_info to new
+ format
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DYbq0Ijztn-nkGYiY9lrL4ApwxS6FMud
-X-Proofpoint-GUID: DYbq0Ijztn-nkGYiY9lrL4ApwxS6FMud
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-08_07,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 impostorscore=0 spamscore=0 bulkscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309080095
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-22-e60548861b10@kernel.org>
+References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ Michael Walle <mwalle@kernel.org>
+X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_032257_155089_97A7C67A 
-X-CRM114-Status: GOOD (  20.91  )
+X-CRM114-CacheID: sfid-20230908_031716_888360_6B37EA72 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,51 +79,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 07, 2023 at 02:58:54PM +0530, Bibek Kumar Patro wrote:
-> While unmapping the nand resource in case of err_core_clk
-> the dev node being passed is res_start instead of nand->dma_base
+The INFOx() macros are going away. Convert the flash_info database to
+the new format.
 
-It is not not dev not but addr argument.
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+---
+ drivers/mtd/spi-nor/intel.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-> (where the iova returned from map operation is stored) causing
-> failure in unmap operation. Hence modifying the unmap operation
-> to pass the nand->base_dma instead of res_start.
-> 
+diff --git a/drivers/mtd/spi-nor/intel.c b/drivers/mtd/spi-nor/intel.c
+index aba62759a02e..f647359fee7a 100644
+--- a/drivers/mtd/spi-nor/intel.c
++++ b/drivers/mtd/spi-nor/intel.c
+@@ -9,12 +9,22 @@
+ #include "core.h"
+ 
+ static const struct flash_info intel_nor_parts[] = {
+-	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE) },
+-	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE) },
+-	{ "640s33b",  INFO(0x898913, 0, 64 * 1024, 128)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE) },
++	{
++		.id = SNOR_ID(0x89, 0x89, 0x11),
++		.name = "160s33b",
++		.size = SZ_2M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
++	}, {
++		.id = SNOR_ID(0x89, 0x89, 0x12),
++		.name = "320s33b",
++		.size = SZ_4M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
++	}, {
++		.id = SNOR_ID(0x89, 0x89, 0x13),
++		.name = "640s33b",
++		.size = SZ_8M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
++	}
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_intel = {
 
-Pls simplify this commit description. I think, it was a simple copy/paste
-mistake. I would write
+-- 
+2.39.2
 
-"Fix addr argument to dma_unmap_resource() in the error path of probe.
-The addr argument should be dma address not physical address."
-
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index f583022755a2..e085a0f588eb 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -3322,7 +3322,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
->  err_aon_clk:
->  	clk_disable_unprepare(nandc->core_clk);
->  err_core_clk:
-> -	dma_unmap_resource(dev, res->start, resource_size(res),
-> +	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
->  			   DMA_BIDIRECTIONAL, 0);
->  	dev_err(&pdev->dev, "DEBUG: probe failed for nandc module\n");
->  	return ret;
-
-Since you are fixing a bug introduced by a previous commit, you should
-add Fixes tag like below. Refer to Documentation [1].
-
-Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
-
-[1] https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
-
-Thanks,
-Pavan
 
 ______________________________________________________
 Linux MTD discussion mailing list
