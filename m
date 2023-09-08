@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9E4EE57F1
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47BDAEE57EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:17:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=leUg85bnpwdczsx+8CC+2H6IJlPVHKpcierLuDXiAEs=; b=lMShGwBdMBmlh+
-	dF5kw4x7fausllPKmirw7HsK1OBqQT1c37xWfhHuATdvwu1m4BegF1KPNbmewJoPgFTABB2KfsxFX
-	sKrYjalYjSwrXNFgk2tilnLaPfxc7bNXnZAuZiM53sSQfBZ9sZxFBYHJNj80CAya3T4cfo16v6CcS
-	JpQdJ7kMqq530mwIgSzXxtqSEcUOprMzBUru8DqkuMQTEE18UkOoHXVtSG6HYcISkQm3Vex//xzBk
-	rk5TXHpSSI2AC/xyPiYZwu/jMQ59uIqmi5MbByDiP9fZNfmzo6wDXHUvMgi9w1Pxbw/znleFh0ISv
-	FmSBlxfB89/cSFnPa6Aw==;
+	List-Owner; bh=uLa5Vo6bTAwz5SA75BlvxFIVVHoZwu5z9lwBzUxszvc=; b=48NPToY4egbyNt
+	CQLDqgMJv3AMtLiNMQmnYUYpSXx8OEAyZ1mDh/XP0HMV1UNIWGzaNE4qsEubH9RxMybFTF8L2b/LN
+	Qb0WMN9xS4wLnniJrUJAajuNwhkYarhwtNm1kHWCyaLFA+A8h+jSkgNQ3lk0R1DEA5x9YnrpPVRPo
+	WmvmAT5KYNt9msXKicMxDFjjisvGb+YFw/11TLGtQX6tlEark8whaB43gqEcxCYBHPzPEdfiM6BK6
+	vIIU15XXapxjGyCfI//PaJ4ed649PgQ0Cymm3FyLjZ76PKARF7uh/WyQeZtAIv457ANbMkxUarfG+
+	mBTzvakmeKkhvAiaVkLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXo-00DSzT-0d;
-	Fri, 08 Sep 2023 10:16:56 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1qeYXr-00DT22-0U;
+	Fri, 08 Sep 2023 10:16:59 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXk-00DSwZ-2F
+	id 1qeYXl-00DSxR-3A
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:16:54 +0000
+	Fri, 08 Sep 2023 10:16:56 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 3D87CB82038;
-	Fri,  8 Sep 2023 10:16:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37855C433CB;
-	Fri,  8 Sep 2023 10:16:46 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 91260B81DCA;
+	Fri,  8 Sep 2023 10:16:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8332FC116A2;
+	Fri,  8 Sep 2023 10:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694168207;
-	bh=aVw1plMaA1T6kfJ7vhGuu6xOZHiBLnfDGXiBmfum/Cc=;
+	s=k20201202; t=1694168212;
+	bh=ZPuAK4DDyKzLiS9cze38Ik1gYbTeoP6GtR1IzrQdthA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=jl5RuvoZyuUEEy+1JWa6GcwTML+nX4N3xLEebul2PzupnpmCF1uX2cLmHWTzwVlwG
-	 uz0S0xKGdw+f06NSOFDSF7XpXbCkoFZNx/TmTY7sNG2IlzVCd8D/t/P6zrY7R+Af07
-	 /Zgd26KNkgWA65iL9R6QaFG5SPjpiTLzl6DSu1zCcpXFTbCcEtlal53vl1KgwnzTSe
-	 jAChksgUNgUN5pEtigpMAgvGLznxZMfLKZ2FSqvA3ydY9+gTfjKWJC8UUEEs5Reb+9
-	 dH6JP0/UWUnrnjRHSh9QlViGewG8lWOnnTeBN5Mc/kha3mkNtgfYHUQO2ilrbIumuQ
-	 U6dCDA8omrt9w==
+	b=U4dozjJp1bnKqCp4fIwWDCArlug5F4QR2dUA91hjI3FVuN1foGkgkXcMyNZGGm/OQ
+	 UamxZWKKFAmOwPdONgb+VuTO1kWfOA9tacudb4Q6IeIjRFiN6ndtb0ShcVCTbjVQRC
+	 oROdHuF1gwCAHLgKZBHLKDPJsuKD9p7qy5K+vW6SVFY+dN0CMPVOfVrVoSVqp6XSyu
+	 mljZq9tIetKVdAB9SAq29dBE71W0ieN1fG1UbL+zC4JMZ120lxenvqmCD5N+0sx/iL
+	 FcH+lZG5iR272rMis6HGr0Yp3gycVH8kry9DDt/8jSqvzXX5bPXpjxGU0eONSAf5vc
+	 sPgXqbkjvN4XQ==
 From: Michael Walle <mwalle@kernel.org>
-Date: Fri, 08 Sep 2023 12:16:27 +0200
-Subject: [PATCH v3 09/41] mtd: spi-nor: push 4k SE handling into
- spi_nor_select_uniform_erase()
+Date: Fri, 08 Sep 2023 12:16:29 +0200
+Subject: [PATCH v3 11/41] mtd: spi-nor: drop .parse_sfdp
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-9-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-11-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -61,8 +60,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_031653_010557_4D313CEA 
-X-CRM114-Status: GOOD (  20.74  )
+X-CRM114-CacheID: sfid-20230908_031654_312045_D03D9963 
+X-CRM114-Status: GOOD (  22.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,102 +78,278 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-4k sector erase sizes are only a thing with uniform erase types. Push
-the "we want 4k erase sizes" handling into spi_nor_select_uniform_erase().
+Drop the size parameter to indicate we need to do SFDP, we can do that
+because it is guaranteed that the size will be set by SFDP and because
+PARSE_SFDP forced the SFDP parsing it must be overwritten.
 
-One might wonder why the former sector_size isn't used anymore. It is
-because we either search for the largest erase size or if selected
-through kconfig, the 4k erase size. Now, why is that correct? For this,
-we have to differentiate between (1) flashes with SFDP and (2) without
-SFDP. For (1), we just set one (or two if SECT_4K is set) erase types
-and wanted_size is exactly one of these.
-
-For (2) things are a bit more complicated. For flashes which we don't
-have in our flash_info database, the generic driver is used and
-sector_size was already 0, which in turn selected the largest erase
-size. For flashes which had SFDP and an entry in flash_info, sector_size
-was always the largest sector and thus the largest erase type.
+There is a (very tiny) chance that this might break block protection
+support: we now rely on the SFDP reported size of the flash for the
+BP calculation. OTOH, if the flash reports its size wrong, we are
+in bigger trouble than just having the BP calculation wrong.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+v3:
+ - fix logic in spi_nor_needs_sfdp()
+ - reword commit message
+---
+ drivers/mtd/spi-nor/core.c       |  3 +--
+ drivers/mtd/spi-nor/core.h       | 23 ++++++++++++++++-------
+ drivers/mtd/spi-nor/eon.c        |  3 +--
+ drivers/mtd/spi-nor/gigadevice.c |  3 +--
+ drivers/mtd/spi-nor/issi.c       |  4 +---
+ drivers/mtd/spi-nor/macronix.c   |  1 -
+ drivers/mtd/spi-nor/spansion.c   | 12 ------------
+ drivers/mtd/spi-nor/sst.c        |  1 -
+ drivers/mtd/spi-nor/winbond.c    |  8 ++------
+ 9 files changed, 22 insertions(+), 36 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 68baf6032639..c84be791341e 100644
+index 368851ff9f40..4ba1778eda4b 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2512,13 +2512,6 @@ static int spi_nor_select_pp(struct spi_nor *nor,
- /**
-  * spi_nor_select_uniform_erase() - select optimum uniform erase type
-  * @map:		the erase map of the SPI NOR
-- * @wanted_size:	the erase type size to search for. Contains the value of
-- *			info->sector_size, the "small sector" size in case
-- *			CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is defined or 0 if
-- *			there is no information about the sector size. The
-- *			latter is the case if the flash parameters are parsed
-- *			solely by SFDP, then the largest supported erase type
-- *			is selected.
+@@ -2017,7 +2017,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 
+ static const struct flash_info spi_nor_generic_flash = {
+ 	.name = "spi-nor-generic",
+-	.parse_sfdp = true,
+ };
+ 
+ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
+@@ -3069,7 +3068,7 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 
+ 	spi_nor_init_default_params(nor);
+ 
+-	if (nor->info->parse_sfdp) {
++	if (spi_nor_needs_sfdp(nor)) {
+ 		ret = spi_nor_parse_sfdp(nor);
+ 		if (ret) {
+ 			dev_err(nor->dev, "BFPT parsing failed. Please consider using SPI_NOR_SKIP_SFDP when declaring the flash\n");
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index fba3ea8536a5..5f7cfdf1e834 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -460,9 +460,6 @@ struct spi_nor_fixups {
+  * @page_size:      (optional) the flash's page size. Defaults to 256.
+  * @addr_nbytes:    number of address bytes to send.
   *
-  * Once the optimum uniform sector erase command is found, disable all the
-  * other.
-@@ -2526,13 +2519,16 @@ static int spi_nor_select_pp(struct spi_nor *nor,
-  * Return: pointer to erase type on success, NULL otherwise.
-  */
- static const struct spi_nor_erase_type *
--spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
--			     const u32 wanted_size)
-+spi_nor_select_uniform_erase(struct spi_nor_erase_map *map)
- {
- 	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
- 	int i;
- 	u8 uniform_erase_type = map->uniform_erase_type;
+- * @parse_sfdp:     true when flash supports SFDP tables. The false value has no
+- *                  meaning. If one wants to skip the SFDP tables, one should
+- *                  instead use the SPI_NOR_SKIP_SFDP sfdp_flag.
+  * @flags:          flags that indicate support that is not defined by the
+  *                  JESD216 standard in its SFDP tables. Flag meanings:
+  *   SPI_NOR_HAS_LOCK:        flash supports lock/unlock via SR
+@@ -521,7 +518,6 @@ struct flash_info {
+ 	u8 n_banks;
+ 	u8 addr_nbytes;
  
-+	/*
-+	 * Search for the biggest erase size, except for when compiled
-+	 * to use 4k erases.
-+	 */
- 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
- 		if (!(uniform_erase_type & BIT(i)))
- 			continue;
-@@ -2544,10 +2540,11 @@ spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
- 			continue;
+-	bool parse_sfdp;
+ 	u16 flags;
+ #define SPI_NOR_HAS_LOCK		BIT(0)
+ #define SPI_NOR_HAS_TB			BIT(1)
+@@ -598,9 +594,6 @@ struct flash_info {
+ 			.n_regions = (_n_regions),			\
+ 		},
  
- 		/*
--		 * If the current erase size is the one, stop here:
-+		 * If the current erase size is the 4k one, stop here,
- 		 * we have found the right uniform Sector Erase command.
- 		 */
--		if (tested_erase->size == wanted_size) {
-+		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_4K_SECTORS) &&
-+		    tested_erase->size == SZ_4K) {
- 			erase = tested_erase;
- 			break;
- 		}
-@@ -2575,7 +2572,6 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	struct spi_nor_erase_map *map = &nor->params->erase_map;
- 	const struct spi_nor_erase_type *erase = NULL;
- 	struct mtd_info *mtd = &nor->mtd;
--	u32 wanted_size = nor->info->sector_size;
- 	int i;
- 
- 	/*
-@@ -2586,13 +2582,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	 * manage the SPI flash memory as uniform with a single erase sector
- 	 * size, when possible.
- 	 */
--#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
--	/* prefer "small sector" erase if possible */
--	wanted_size = 4096u;
--#endif
+-#define PARSE_SFDP							\
+-	.parse_sfdp = true,						\
 -
- 	if (spi_nor_has_uniform_erase(nor)) {
--		erase = spi_nor_select_uniform_erase(map, wanted_size);
-+		erase = spi_nor_select_uniform_erase(map);
- 		if (!erase)
- 			return -EINVAL;
- 		nor->erase_opcode = erase->opcode;
+ #define FLAGS(_flags)							\
+ 		.flags = (_flags),					\
+ 
+@@ -740,6 +733,22 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+ 	return container_of(mtd, struct spi_nor, mtd);
+ }
+ 
++/**
++ * spi_nor_needs_sfdp() - returns true if SFDP parsing is used for this flash.
++ *
++ * Return: true if SFDP parsing is needed
++ */
++static inline bool spi_nor_needs_sfdp(const struct spi_nor *nor)
++{
++	/*
++	 * The flash size is one property parsed by the SFDP. We use it as an
++	 * indicator whether we need SFDP parsing for a particular flash. I.e.
++	 * non-legacy flash entries in flash_info will have a size of zero iff
++	 * SFDP should be used.
++	 */
++	return !nor->info->size;
++}
++
+ #ifdef CONFIG_DEBUG_FS
+ void spi_nor_debugfs_register(struct spi_nor *nor);
+ void spi_nor_debugfs_shutdown(void);
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index 50a11053711f..434aaf155856 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
+@@ -25,8 +25,7 @@ static const struct flash_info eon_nor_parts[] = {
+ 	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
+-	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512)
+-		PARSE_SFDP },
++	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  0) },
+ 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ };
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index d57ddaf1525b..7cf142c75529 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -62,8 +62,7 @@ static const struct flash_info gigadevice_nor_parts[] = {
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
+-	{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512)
+-		PARSE_SFDP
++	{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 0)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &gd25q256_fixups },
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index accdf7aa2bfd..9d22b799ce94 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -62,8 +62,7 @@ static const struct flash_info issi_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+-	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512)
+-		PARSE_SFDP
++	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 0)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &is25lp256_fixups },
+ 	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64)
+@@ -73,7 +72,6 @@ static const struct flash_info issi_nor_parts[] = {
+ 	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25wp256", INFO(0x9d7019, 0, 0, 0)
+-		PARSE_SFDP
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		FLAGS(SPI_NOR_QUAD_PP)
+ 		.fixups = &is25lp256_fixups },
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index eb149e517c1f..0f3bd3ed8eff 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -83,7 +83,6 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+ 	{ "mx25uw51245g", INFOB(0xc2813a, 0, 0, 0, 4)
+-		PARSE_SFDP
+ 		FLAGS(SPI_NOR_RWW) },
+ 	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 709822fced86..e6468569f178 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -849,59 +849,47 @@ static const struct flash_info spansion_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+ 	{ "s25fs256t",  INFO6(0x342b19, 0x0f0890, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25fs256t_fixups },
+ 	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "s25hl02gt",  INFO6(0x342a1c, 0x0f0090, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		FLAGS(NO_CHIP_ERASE)
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "s25hs02gt",  INFO6(0x342b1c, 0x0f0090, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		FLAGS(NO_CHIP_ERASE)
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
+ 		FLAGS(SPI_NOR_NO_ERASE) },
+ 	{ "s28hl512t",   INFO(0x345a1a,      0, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+ 	{ "s28hl01gt",   INFO(0x345a1b,      0, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+ 	{ "s28hs512t",   INFO(0x345b1a,      0, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+ 	{ "s28hs01gt",   INFO(0x345b1b,      0, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+ 	{ "s28hs02gt",   INFO(0x345b1c,      0, 0, 0)
+-		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+index 197d2c1101ed..57df68eab6aa 100644
+--- a/drivers/mtd/spi-nor/sst.c
++++ b/drivers/mtd/spi-nor/sst.c
+@@ -115,7 +115,6 @@ static const struct flash_info sst_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+-		PARSE_SFDP
+ 		.fixups = &sst26vf_nor_fixups },
+ 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index cd99c9a1c568..7873cc394f07 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -121,13 +121,11 @@ static const struct flash_info winbond_nor_parts[] = {
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 0, 0)
+-		PARSE_SFDP
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		.fixups = &w25q256_fixups },
+-	{ "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512)
+-		PARSE_SFDP },
++	{ "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 0) },
+ 	{ "w25q256jw", INFO(0xef6019, 0, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
+@@ -135,10 +133,8 @@ static const struct flash_info winbond_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ |
+ 			      SPI_NOR_DUAL_READ) },
+ 	{ "w25q512nwq", INFO(0xef6020, 0, 0, 0)
+-		PARSE_SFDP
+ 		OTP_INFO(256, 3, 0x1000, 0x1000) },
+-	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024)
+-		PARSE_SFDP
++	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 0)
+ 		OTP_INFO(256, 3, 0x1000, 0x1000) },
+ 	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
 
 -- 
 2.39.2
