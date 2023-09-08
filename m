@@ -4,52 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE245EE57EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9E4EE57F1
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:17:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3jspzkAKCu472BA/GBoMhImITU3dWFYlAFVvfpT990k=; b=vRYbbcrHhZuKxx
-	W7pryOkOwOePKdr/bC9IEG+gOwx9Qi7me5E6a/FhMGZHARo+IoeNuK23iZ7xKoY7+VM2TKZHe+lPV
-	l25tRrRBCAJbKpauV1jxRa3DwQYQ8Ry5SHwrPKXdwvH8+yGTTGpw3a7u0jBMJRp+RbYI+PAppfgHa
-	lLRbDDD5VI25Q6ZyVSEd0XU4AYDIe6ScUbvli0EqUvA0Esmgvru5zqky0HeZdxby1EBtZDnMGFH/q
-	gZORa6nEOHdhdtSzlxfA5cnNtOM/t5bayv3TUC0pzlamaCesPEVH3RJuCvX2jti28zX35QtYKAnVp
-	K3iVcUViTFBHpcXw/+Ng==;
+	List-Owner; bh=leUg85bnpwdczsx+8CC+2H6IJlPVHKpcierLuDXiAEs=; b=lMShGwBdMBmlh+
+	dF5kw4x7fausllPKmirw7HsK1OBqQT1c37xWfhHuATdvwu1m4BegF1KPNbmewJoPgFTABB2KfsxFX
+	sKrYjalYjSwrXNFgk2tilnLaPfxc7bNXnZAuZiM53sSQfBZ9sZxFBYHJNj80CAya3T4cfo16v6CcS
+	JpQdJ7kMqq530mwIgSzXxtqSEcUOprMzBUru8DqkuMQTEE18UkOoHXVtSG6HYcISkQm3Vex//xzBk
+	rk5TXHpSSI2AC/xyPiYZwu/jMQ59uIqmi5MbByDiP9fZNfmzo6wDXHUvMgi9w1Pxbw/znleFh0ISv
+	FmSBlxfB89/cSFnPa6Aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXn-00DSz8-1r;
-	Fri, 08 Sep 2023 10:16:55 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qeYXo-00DSzT-0d;
+	Fri, 08 Sep 2023 10:16:56 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXk-00DSwW-08
+	id 1qeYXk-00DSwZ-2F
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:16:53 +0000
+	Fri, 08 Sep 2023 10:16:54 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 89BC660FB6;
+	by ams.source.kernel.org (Postfix) with ESMTPS id 3D87CB82038;
 	Fri,  8 Sep 2023 10:16:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62BFCC43140;
-	Fri,  8 Sep 2023 10:16:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37855C433CB;
+	Fri,  8 Sep 2023 10:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694168210;
-	bh=obEE0PltRWo52Y6XdLVQQxVUAeQ132MCMloDi8oHkFU=;
+	s=k20201202; t=1694168207;
+	bh=aVw1plMaA1T6kfJ7vhGuu6xOZHiBLnfDGXiBmfum/Cc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=MLp/orumaIqabJemvX1XVUBf+h+3kDW5YjCa4Vkv05QAtbH4Q2NKZs/aYOO7slYhs
-	 gMBLkuZufHdtjTL5aSN0M3DGLxD8qQixRwF9HSMUkE+ULa5IsaM06sJwb0cOwoV6x+
-	 k4DwY6aNCvJhlX/M46c0qnNM/W2+q6vUCu0O5IzDL2K+eAe2IJjLWTrRJ4RIu6h9Me
-	 UU64vOCZy3VPGCEMJ9fOoioQ+OiSeGs9c62a8Rihz389mqB/YE7XMZwoEaO/bSN0ky
-	 dbLOLZ+kfl+NYL1yGRzbU+lWOv85qd0WqFugR+W/yshck0sbjD3v/2pY/U7FCAZnq9
-	 /RZ3xnvJm1vZA==
+	b=jl5RuvoZyuUEEy+1JWa6GcwTML+nX4N3xLEebul2PzupnpmCF1uX2cLmHWTzwVlwG
+	 uz0S0xKGdw+f06NSOFDSF7XpXbCkoFZNx/TmTY7sNG2IlzVCd8D/t/P6zrY7R+Af07
+	 /Zgd26KNkgWA65iL9R6QaFG5SPjpiTLzl6DSu1zCcpXFTbCcEtlal53vl1KgwnzTSe
+	 jAChksgUNgUN5pEtigpMAgvGLznxZMfLKZ2FSqvA3ydY9+gTfjKWJC8UUEEs5Reb+9
+	 dH6JP0/UWUnrnjRHSh9QlViGewG8lWOnnTeBN5Mc/kha3mkNtgfYHUQO2ilrbIumuQ
+	 U6dCDA8omrt9w==
 From: Michael Walle <mwalle@kernel.org>
-Date: Fri, 08 Sep 2023 12:16:28 +0200
-Subject: [PATCH v3 10/41] mtd: spi-nor: make sector_size optional
+Date: Fri, 08 Sep 2023 12:16:27 +0200
+Subject: [PATCH v3 09/41] mtd: spi-nor: push 4k SE handling into
+ spi_nor_select_uniform_erase()
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-10-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-9-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -60,8 +61,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_031652_165447_896AFC61 
-X-CRM114-Status: GOOD (  19.26  )
+X-CRM114-CacheID: sfid-20230908_031653_010557_4D313CEA 
+X-CRM114-Status: GOOD (  20.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,95 +79,102 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most of the (old, non-SFDP) flashes use a sector size of 64k. Make that
-a default value so it can be optional in the flash_info database.
+4k sector erase sizes are only a thing with uniform erase types. Push
+the "we want 4k erase sizes" handling into spi_nor_select_uniform_erase().
 
-As a preparation for conversion to the new database format, set the
-sector size to zero if the default value is used. This way, the actual
-change is happening with this patch ant not with a later conversion
-patch.
+One might wonder why the former sector_size isn't used anymore. It is
+because we either search for the largest erase size or if selected
+through kconfig, the 4k erase size. Now, why is that correct? For this,
+we have to differentiate between (1) flashes with SFDP and (2) without
+SFDP. For (1), we just set one (or two if SECT_4K is set) erase types
+and wanted_size is exactly one of these.
+
+For (2) things are a bit more complicated. For flashes which we don't
+have in our flash_info database, the generic driver is used and
+sector_size was already 0, which in turn selected the largest erase
+size. For flashes which had SFDP and an entry in flash_info, sector_size
+was always the largest sector and thus the largest erase type.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c | 6 ++++--
- drivers/mtd/spi-nor/core.h | 8 +++++---
- drivers/mtd/spi-nor/swp.c  | 6 +++++-
- 3 files changed, 14 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/core.c | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index c84be791341e..368851ff9f40 100644
+index 68baf6032639..c84be791341e 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2756,7 +2756,8 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_nor_erase_map *map = &params->erase_map;
--	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
-+	const struct flash_info *info = nor->info;
-+	const u8 no_sfdp_flags = info->no_sfdp_flags;
- 	u8 i, erase_mask;
- 
- 	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
-@@ -2810,7 +2811,8 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
- 		i++;
- 	}
- 	erase_mask |= BIT(i);
--	spi_nor_set_erase_type(&map->erase_type[i], nor->info->sector_size,
-+	spi_nor_set_erase_type(&map->erase_type[i],
-+			       info->sector_size ?: SPI_NOR_DEFAULT_SECTOR_SIZE,
- 			       SPINOR_OP_SE);
- 	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
- }
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 8627d0b95be6..fba3ea8536a5 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -16,6 +16,7 @@
+@@ -2512,13 +2512,6 @@ static int spi_nor_select_pp(struct spi_nor *nor,
+ /**
+  * spi_nor_select_uniform_erase() - select optimum uniform erase type
+  * @map:		the erase map of the SPI NOR
+- * @wanted_size:	the erase type size to search for. Contains the value of
+- *			info->sector_size, the "small sector" size in case
+- *			CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is defined or 0 if
+- *			there is no information about the sector size. The
+- *			latter is the case if the flash parameters are parsed
+- *			solely by SFDP, then the largest supported erase type
+- *			is selected.
+  *
+  * Once the optimum uniform sector erase command is found, disable all the
+  * other.
+@@ -2526,13 +2519,16 @@ static int spi_nor_select_pp(struct spi_nor *nor,
+  * Return: pointer to erase type on success, NULL otherwise.
   */
- #define SPI_NOR_DEFAULT_PAGE_SIZE 256
- #define SPI_NOR_DEFAULT_N_BANKS 1
-+#define SPI_NOR_DEFAULT_SECTOR_SIZE SZ_64K
- 
- /* Standard SPI NOR flash operations. */
- #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
-@@ -452,8 +453,9 @@ struct spi_nor_fixups {
-  *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly older chips).
-  * @id_len:         the number of bytes of ID.
-  * @size:           the size of the flash in bytes.
-- * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
-- *                  isn't necessarily called a "sector" by the vendor.
-+ * @sector_size:    (optional) the size listed here is what works with
-+ *                  SPINOR_OP_SE, which isn't necessarily called a "sector" by
-+ *                  the vendor. Defaults to 64k.
-  * @n_banks:        (optional) the number of banks. Defaults to 1.
-  * @page_size:      (optional) the flash's page size. Defaults to 256.
-  * @addr_nbytes:    number of address bytes to send.
-@@ -565,7 +567,7 @@ struct flash_info {
- 
- #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
- 	.size = (_sector_size) * (_n_sectors),				\
--	.sector_size = (_sector_size),					\
-+	.sector_size = (_sector_size == SZ_64K) ? 0 : (_sector_size),	\
- 	.n_banks = (_n_banks)
- 
- /* Used when the "_ext_id" is two bytes at most */
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 40bf52867095..585813310ee1 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -34,7 +34,11 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
- static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+ static const struct spi_nor_erase_type *
+-spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
+-			     const u32 wanted_size)
++spi_nor_select_uniform_erase(struct spi_nor_erase_map *map)
  {
- 	unsigned int bp_slots, bp_slots_needed;
--	unsigned int sector_size = nor->info->sector_size;
-+	/*
-+	 * sector_size will eventually be replaced with the max erase size of
-+	 * the flash. For now, we need to have that ugly default.
-+	 */
-+	unsigned int sector_size = nor->info->sector_size ?: SPI_NOR_DEFAULT_SECTOR_SIZE;
- 	u64 n_sectors = div_u64(nor->params->size, sector_size);
- 	u8 mask = spi_nor_get_sr_bp_mask(nor);
+ 	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
+ 	int i;
+ 	u8 uniform_erase_type = map->uniform_erase_type;
  
++	/*
++	 * Search for the biggest erase size, except for when compiled
++	 * to use 4k erases.
++	 */
+ 	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+ 		if (!(uniform_erase_type & BIT(i)))
+ 			continue;
+@@ -2544,10 +2540,11 @@ spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
+ 			continue;
+ 
+ 		/*
+-		 * If the current erase size is the one, stop here:
++		 * If the current erase size is the 4k one, stop here,
+ 		 * we have found the right uniform Sector Erase command.
+ 		 */
+-		if (tested_erase->size == wanted_size) {
++		if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_4K_SECTORS) &&
++		    tested_erase->size == SZ_4K) {
+ 			erase = tested_erase;
+ 			break;
+ 		}
+@@ -2575,7 +2572,6 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	struct spi_nor_erase_map *map = &nor->params->erase_map;
+ 	const struct spi_nor_erase_type *erase = NULL;
+ 	struct mtd_info *mtd = &nor->mtd;
+-	u32 wanted_size = nor->info->sector_size;
+ 	int i;
+ 
+ 	/*
+@@ -2586,13 +2582,8 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	 * manage the SPI flash memory as uniform with a single erase sector
+ 	 * size, when possible.
+ 	 */
+-#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
+-	/* prefer "small sector" erase if possible */
+-	wanted_size = 4096u;
+-#endif
+-
+ 	if (spi_nor_has_uniform_erase(nor)) {
+-		erase = spi_nor_select_uniform_erase(map, wanted_size);
++		erase = spi_nor_select_uniform_erase(map);
+ 		if (!erase)
+ 			return -EINVAL;
+ 		nor->erase_opcode = erase->opcode;
 
 -- 
 2.39.2
