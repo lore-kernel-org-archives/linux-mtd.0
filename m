@@ -4,68 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE11BEE57F0
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A640EEE57EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q3o8pJ8fthIzpxwwTBu8PRtNZjF4sXxJke+inleCgMM=; b=QcNbA/R5Qnz/Dn
-	xBb8Ws0UmKnqRHE59+oHbrCGkpvMttXQzdIMZAVrNmTGZQlgj44GAm8lui52JoaeHq6+C/giJ8c9X
-	IsSOk/XR2tvtkrPJBVus2BeVOsY5wEZa+Jo8ytrNRwhC8QMPqiB4fiJs034ES/rIMFLA+lwO7mDEW
-	q3uSXfCRQdGvuy6fj8kGmSJUBA2dC97KBobYWuxBdY2cWkf3ZNgygbNt0HuOGm2wXaJbp/LLAcKVs
-	xOzgExOBqJoABKn/ilbRr5sNgYpiTW0yg9V7K71OK+qr6v7neOKamaNdhCV4Jy6+GxbxeBikeuiDc
-	HPvRe0gwH8wiYWOahiqw==;
+	List-Owner; bh=Cei1EY5NuKyCheM+g1l51EJSVeapepye8VoccB8o1zA=; b=VZ2wCmsoR0YW5b
+	XB/7gbH93jXnEdU7xDq/mk6OaHbB0PTnR02xNSkVeZdO2wNXKYSKYOHmbGyIquvFzV/gDYeR2zBTY
+	Wem5RyKT0bKAcZcjGttgjRBmw5GAivdsQWbp9AOunckNOggrnCQxlhR6gOp/kKMiciN9ei/rIHfVB
+	zs1fdP1lIsA5Kumb1LILWntef74GaOrDUZEdJSqLsNC8y+2YaufVihGQJCDmDQkzv2BUwMsy9EHEk
+	V3SEYYw41MzDGHrxkAXh3aVm6rBiVRtzG2fTQH0Y161BmKqCMTS2t+OEcSD6xHaYNsDefAgFC5+XE
+	iI842o+KOWH+hpFEHIdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYYd-00DTpd-1P;
-	Fri, 08 Sep 2023 10:17:47 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qeYYh-00DTtI-0F;
+	Fri, 08 Sep 2023 10:17:51 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYYQ-00DTdh-3D
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 08 Sep 2023 10:17:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=Hd9ZXu1ms8L+1PnQEpSruTOjEzoJjMZRue4helCgH8g=; b=O9U8BM8C7Hk9/elolIODRvwxZN
-	ex/Xv7vwzO+cc6klbotWV5SGaYdUCY4x8tPIF5JammrJIsq6Q1MmA0W5zsTMsAgH5iulapzIIjNVH
-	WIxDHllCSIlszXEVVjtpD4Chqmun66F7h3B762PVQ7MBYUBZFXreCb4dVO1N7lYOKHsQ7wSVUr+6L
-	mVOd1YxmyRkSG/whYrIAX4ygtOkeOFHHHcE3m3F/keylrv0yF0RIka006yDSErw8uzfWa9FhyXQcc
-	4P3C55ahpgwB4yj0jyQYfOWCEUz/V/mzkOKBkr28uWWOC0llyQAxyKn9+fDBfRp2lz1NwzyXtAy7Z
-	uV03+3hA==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYYJ-002R09-38
+	id 1qeYYD-00DTQ4-1q
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:17:33 +0000
+	Fri, 08 Sep 2023 10:17:38 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 91941614AC;
-	Fri,  8 Sep 2023 10:17:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A927CC433AB;
-	Fri,  8 Sep 2023 10:17:24 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8909861377;
+	Fri,  8 Sep 2023 10:17:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478F4C433B7;
+	Fri,  8 Sep 2023 10:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694168246;
-	bh=FnqvsVEt1dn/8eNY7lxm1PrsElAnzNiLYIyWKyfbLlM=;
+	s=k20201202; t=1694168240;
+	bh=oMgc1/5JxnhtyDALEk/TOuQOpIC5QJP7tEpRGwFyIfU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=PfOHdxLRuyqF4IMhUuLmd2Fm1iCkHei5B6lUDIoc0QQu7BmrP8jmoRxL1PdDFk7Bx
-	 889oYgru8+d90rDg7QFLMjskP6xtFeMOiIizFT0N8nM4zCtbWRRuAkHxadcX92acea
-	 inqqeVPeZV1zIRAeBlZ75tAP7Cnfh77oxIxdE1OGPYKQ/okbsTRUMj+q7n0zGHyy5Z
-	 dxqwboxmRSLIszCjKqC1hxFhm0GI+AW2sVu9mLtn4VIkm/eObMo+aRhJLVafO86mPF
-	 e3CBciuqwbtULwEtVeNEHazTYGpIQBLeMfaWTQD3QKlq6xjzL5jYsjMHEYERedmZf9
-	 jOJ2UXLaelsNQ==
+	b=GuDeBOyv98pWFWDmCAe4dveLmkU3/nD5oXK2ao6rfcDBNoxDds8H2chjytOULgpHW
+	 urve5+ecbjHbsrwvmfeO95b9LACIOXDcQnlfbyjLvs5Pb+WsTiXh94v55UfqPkjYnw
+	 Z9/lgvBQr3eUv//Q3v3UnH0fKbDVaZJBrWK3dIzGsG7+0i5leIdVKpW/1MBWJDxBIp
+	 FURaa3VT6RfdsWYcw/5W+AQV7CMDB7DBW7nV/+GG7pkZG4c6THCiD/tiPRHEfwxiJf
+	 e9xxJClaJ1ewYfR1DgoXElpxdMDj9EDyiUna+Z3gjuHiT7/7Erlnrxe/Qww3pYdLq9
+	 s/bkgDP7xfkjA==
 From: Michael Walle <mwalle@kernel.org>
-Date: Fri, 08 Sep 2023 12:16:45 +0200
-Subject: [PATCH v3 27/41] mtd: spi-nor: sst: convert flash_info to new
+Date: Fri, 08 Sep 2023 12:16:42 +0200
+Subject: [PATCH v3 24/41] mtd: spi-nor: macronix: convert flash_info to new
  format
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-27-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-24-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -76,8 +61,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_111730_345534_1BD8A6E6 
-X-CRM114-Status: GOOD (  12.45  )
+X-CRM114-CacheID: sfid-20230908_031721_729407_F65B6585 
+X-CRM114-Status: GOOD (  11.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,182 +84,238 @@ the new format.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/sst.c | 162 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 104 insertions(+), 58 deletions(-)
+ drivers/mtd/spi-nor/macronix.c | 218 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 150 insertions(+), 68 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index 1e06c6841a18..77b271abd342 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -61,64 +61,110 @@ static const struct spi_nor_fixups sst26vf_nor_fixups = {
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index b21e688fe056..0508a207e9df 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -33,74 +33,156 @@ static const struct spi_nor_fixups mx25l25635_fixups = {
  };
  
- static const struct flash_info sst_nor_parts[] = {
--	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP |
--		      SPI_NOR_SWP_IS_VOLATILE)
+ static const struct flash_info macronix_nor_parts[] = {
+-	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25wf020",  INFO(0xbf2503, 0, 64 * 1024,  4)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25wf020a", INFO(0x621612, 0, 64 * 1024,  4)
--		FLAGS(SPI_NOR_HAS_LOCK)
+-	{ "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8)
--		FLAGS(SPI_NOR_HAS_LOCK)
+-	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8)
 -		NO_SFDP_FLAGS(SECT_4K) },
--	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		NO_SFDP_FLAGS(SECT_4K)
--		MFR_FLAGS(SST_WRITE) },
--	{ "sst26wf016b", INFO(0xbf2651, 0, 64 * 1024, 32)
+-	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16) },
+-	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64)
 -		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
 -			      SPI_NOR_QUAD_READ) },
--	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
--	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
--		.fixups = &sst26vf_nor_fixups },
--	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+-	{ "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256) },
+-	{ "mx25r1635f",  INFO(0xc22815, 0, 64 * 1024,  32)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "mx25r3235f",  INFO(0xc22816, 0, 64 * 1024,  64)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512)
+-		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		.fixups = &mx25l25635_fixups },
+-	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512)
+-		NO_SFDP_FLAGS(SECT_4K)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+-	{ "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024)
 -		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--		.fixups = &sst26vf_nor_fixups },
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+-	{ "mx25uw51245g", INFOB(0xc2813a, 0, 0, 0, 4)
+-		FLAGS(SPI_NOR_RWW) },
+-	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512) },
+-	{ "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024)
+-		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+-	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+-	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048)
+-		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
+-	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
 +	{
-+		.id = SNOR_ID(0xbf, 0x25, 0x8d),
-+		.name = "sst25vf040b",
-+		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x8e),
-+		.name = "sst25vf080b",
-+		.size = SZ_1M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x41),
-+		.name = "sst25vf016b",
-+		.size = SZ_2M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x4a),
-+		.name = "sst25vf032b",
-+		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x4b),
-+		.name = "sst25vf064c",
-+		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x01),
-+		.name = "sst25wf512",
++		.id = SNOR_ID(0xc2, 0x20, 0x10),
++		.name = "mx25l512e",
 +		.size = SZ_64K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
 +		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
 +	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x02),
-+		.name = "sst25wf010",
-+		.size = SZ_128K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x03),
-+		.name = "sst25wf020",
++		.id = SNOR_ID(0xc2, 0x20, 0x12),
++		.name = "mx25l2005a",
 +		.size = SZ_256K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0x62, 0x16, 0x12),
-+		.name = "sst25wf020a",
-+		.size = SZ_256K,
-+		.flags = SPI_NOR_HAS_LOCK,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0x62, 0x16, 0x13),
-+		.name = "sst25wf040b",
++		.id = SNOR_ID(0xc2, 0x20, 0x13),
++		.name = "mx25l4005a",
 +		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x04),
-+		.name = "sst25wf040",
-+		.size = SZ_512K,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x25, 0x05),
-+		.name = "sst25wf080",
++		.id = SNOR_ID(0xc2, 0x20, 0x14),
++		.name = "mx25l8005",
 +		.size = SZ_1M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x15),
++		.name = "mx25l1606e",
++		.size = SZ_2M,
 +		.no_sfdp_flags = SECT_4K,
-+		.mfr_flags = SST_WRITE,
 +	}, {
-+		.id = SNOR_ID(0xbf, 0x26, 0x51),
-+		.name = "sst26wf016b",
-+		.size = SZ_2M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.id = SNOR_ID(0xc2, 0x20, 0x16),
++		.name = "mx25l3205d",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0xbf, 0x26, 0x41),
-+		.name = "sst26vf016b",
-+		.size = SZ_2M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
++		.id = SNOR_ID(0xc2, 0x9e, 0x16),
++		.name = "mx25l3255e",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0xbf, 0x26, 0x42),
-+		.name = "sst26vf032b",
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+		.fixups = &sst26vf_nor_fixups,
-+	}, {
-+		.id = SNOR_ID(0xbf, 0x26, 0x43),
-+		.name = "sst26vf064b",
++		.id = SNOR_ID(0xc2, 0x20, 0x17),
++		.name = "mx25l6405d",
 +		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x32),
++		.name = "mx25u2033e",
++		.size = SZ_256K,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x36),
++		.name = "mx25u3235f",
++		.size = SZ_4M,
 +		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+		.fixups = &sst26vf_nor_fixups,
-+	}
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x33),
++		.name = "mx25u4035",
++		.size = SZ_512K,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x34),
++		.name = "mx25u8035",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x37),
++		.name = "mx25u6435f",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x18),
++		.name = "mx25l12805d",
++		.size = SZ_16M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x26, 0x18),
++		.name = "mx25l12855e",
++		.size = SZ_16M,
++	}, {
++		.id = SNOR_ID(0xc2, 0x28, 0x15),
++		.name = "mx25r1635f",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x28, 0x16),
++		.name = "mx25r3235f",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x38),
++		.name = "mx25u12835f",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x19),
++		.name = "mx25l25635e",
++		.size = SZ_32M,
++		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixups = &mx25l25635_fixups
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x39),
++		.name = "mx25u25635f",
++		.size = SZ_32M,
++		.no_sfdp_flags = SECT_4K,
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x3a),
++		.name = "mx25u51245g",
++		.size = SZ_64M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0xc2, 0x81, 0x3a),
++		.name = "mx25uw51245g",
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x23, 0x14),
++		.name = "mx25v8035f",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x26, 0x19),
++		.name = "mx25l25655e",
++		.size = SZ_32M,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x1a),
++		.name = "mx66l51235f",
++		.size = SZ_64M,
++		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x3a),
++		.name = "mx66u51235f",
++		.size = SZ_64M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x1b),
++		.name = "mx66l1g45g",
++		.size = SZ_128M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x26, 0x1b),
++		.name = "mx66l1g55g",
++		.size = SZ_128M,
++		.no_sfdp_flags = SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x3c),
++		.name = "mx66u2g45g",
++		.size = SZ_256M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	},
  };
  
- static int sst_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static void macronix_nor_default_init(struct spi_nor *nor)
 
 -- 
 2.39.2
