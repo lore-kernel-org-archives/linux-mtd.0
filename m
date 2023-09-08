@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB1EEE57EB
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14B4CEE57FD
 	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 11:31:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,45 +12,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=otmoIA586fGJCgc1tO3ilQytAXsdUyHNVfSWTveSXaE=; b=I2XfeAO+gmuLJU
-	khig2w2SK9NiPIPd2gm4D9WrcykgK8nQf/gdC8SIq8pvndpQPU6u7/km/WOTzNhpWO7ByGHWsHP9+
-	TqwrVjhaz9Iqx+iZfWVsb3awvr1TE8ZPdUWtNmN2xGECLcJIC7483QpWyghzfjigM0+4Ot38ZRSra
-	msTKz9pqfTIzPYysbW5MnI7TW1xrGMaJe+mmF5y0Ipc00xfCMxH6G1iyG6WK1KOd6tf2uPRrq+Ema
-	VUzqtHBsrk6wj7aNv4kvSM16P9x9TStOumVgDgN3Wnm8DgKvz26oH7w5ewojLw0gZhN+0UBjRTWa4
-	5PKp8dV4eApWb7lC49Ag==;
+	List-Owner; bh=3yLbk2HIOnUUcyr6uOmA8S3yQBuakmmgYU1y3FRyMOo=; b=kRFMwV+ilWx0c1
+	xTQsmBuuEfpGvLNr/5SbxV71+ciA3rmiTWL1NA+R8qmvUbl4ywwJ+JUBDoIrqLgDNj219pS8pcYZW
+	4TBdj/lBKOARms4cdoljueiBq6RKJB1wFOHKgT3I5znvT11vhUYUGpOuiN2Jl8r1Fys8tJgQtJnJO
+	o0Oe/FMK//oPmcRzwjg7Qd5vFKUy2BcGtUDKNm5A4AzkDwSTNT+MWPCwehi+cktOExX6UIW/nH+dr
+	82F0K/IGadX155/Pz06ps/kSzUE9HFqqWV1wkcUN+crKrwd+YEbrYTYFY2/zatgJ7Iu75O0bprqfr
+	owio8phZWbbjOL0RDS/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeZht-00DgDl-2I;
-	Fri, 08 Sep 2023 11:31:25 +0000
+	id 1qeZhw-00DgEv-1H;
+	Fri, 08 Sep 2023 11:31:28 +0000
 Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYY9-00DTKs-0J
+	id 1qeYYH-00DTTy-0d
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:17:21 +0000
+	Fri, 08 Sep 2023 10:17:49 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 5D492B82025;
-	Fri,  8 Sep 2023 10:17:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB9D2C4163D;
-	Fri,  8 Sep 2023 10:17:11 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 7D8ACB80861;
+	Fri,  8 Sep 2023 10:17:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68A31C43395;
+	Fri,  8 Sep 2023 10:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694168233;
-	bh=Wbw26ozDm2yZuCOCpEEf+tY0cT7CvfziJiMaObcpSys=;
+	s=k20201202; t=1694168242;
+	bh=jKxDZT+qryyIWW++zQGnQdmrNqAzQRffxtMJjsy7a/M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ZBhrwSywgzsx2D58S2HqmVhaPbw2FC6M4UuKsNpz/Kw6uTCI7v+lgnwOAZbzXEPQe
-	 KvOpvTP2LD9DF0Yswvmz+7F16YPVeEurvIzUz9mo0Qvde+KoAB3xxP02oVGUjDX2I1
-	 E3I+o70rnZ0FSPWKcFFcXh+mYzut6OCKj9sg5zo/rDWV3xsFrYeU3J3cjKW0TbR2fz
-	 eSmoEzC1p3r5N9QRARIWQWcSu0C8MsmECiPXYQGhc34iIL1LCSB/8zHIABqN9124am
-	 KJlhBC6te0yJFuWPlJinIk0F0QmRJr5OlBSzXsrszxQgmEdSXWyztUvXVMD0wTXOXP
-	 UvwW8Lh4J98UQ==
+	b=uPAIGWzjnxYIbPgTU4zZQxRg4tSxMpTwZKao22AS3w6OvB5CUZNoiolop7OJiZNg+
+	 duiFsHE4F+foTIKUBhRlGdyYjuC1qIsj98o7qhijJGAbQ9wZWm4P1L5Fa9xX9hmCHU
+	 1+2YzcxU/leQE+Hk2arurAyJ0dFmu/T1kRdFT/v22Cq54XyM519jXeIhchZegT12EL
+	 koVyUguFTyASdSBkXVo1nk6n52OS+YlbVAuttx037kCI2jD5X5pi6bSxhIN034CXiE
+	 VOzOQoleHqKlD31FVtFxZpMESAX4JCSi1wrI4VkBGwOVG+lf7Qd8ClGNCV4Z8TgW6g
+	 xjG98Z7mpDkAQ==
 From: Michael Walle <mwalle@kernel.org>
-Date: Fri, 08 Sep 2023 12:16:39 +0200
-Subject: [PATCH v3 21/41] mtd: spi-nor: gigadevice: convert flash_info to
+Date: Fri, 08 Sep 2023 12:16:43 +0200
+Subject: [PATCH v3 25/41] mtd: spi-nor: micron-st: convert flash_info to
  new format
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-21-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-25-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -61,8 +61,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_031717_458285_B0FF29CA 
-X-CRM114-Status: GOOD (  11.81  )
+X-CRM114-CacheID: sfid-20230908_031725_546071_D154D595 
+X-CRM114-Status: GOOD (  11.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,101 +84,430 @@ the new format.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/gigadevice.c | 81 ++++++++++++++++++++++++----------------
- 1 file changed, 49 insertions(+), 32 deletions(-)
+ drivers/mtd/spi-nor/micron-st.c | 405 ++++++++++++++++++++++++++--------------
+ 1 file changed, 268 insertions(+), 137 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 7cf142c75529..0d22cd99715b 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -34,38 +34,55 @@ static const struct spi_nor_fixups gd25q256_fixups = {
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 229c951efcce..720fd2fbd0ad 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -159,148 +159,279 @@ static const struct spi_nor_fixups mt35xu512aba_fixups = {
  };
  
- static const struct flash_info gigadevice_nor_parts[] = {
--	{ "gd25q16", INFO(0xc84015, 0, 64 * 1024,  32)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25lq32", INFO(0xc86016, 0, 64 * 1024, 64)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25lq64c", INFO(0xc86017, 0, 64 * 1024, 128)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25lq128d", INFO(0xc86018, 0, 64 * 1024, 256)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
--	{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 0)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+ static const struct flash_info micron_nor_parts[] = {
+-	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ |
+-			   SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE)
+-		MFR_FLAGS(USE_FSR)
+-		.fixups = &mt35xu512aba_fixups
+-	},
+-	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ)
 -		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
--		.fixups = &gd25q256_fixups },
+-		MFR_FLAGS(USE_FSR)
 +	{
-+		.id = SNOR_ID(0xc8, 0x40, 0x15),
-+		.name = "gd25q16",
-+		.size = SZ_2M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.id = SNOR_ID(0x2c, 0x5b, 0x1a),
++		.name = "mt35xu512aba",
++		.sector_size = SZ_128K,
++		.size = SZ_64M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ |
++				 SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP,
++		.mfr_flags = USE_FSR,
++		.fixup_flags = SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE,
++		.fixups = &mt35xu512aba_fixups,
 +	}, {
-+		.id = SNOR_ID(0xc8, 0x40, 0x16),
-+		.name = "gd25q32",
-+		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x60, 0x16),
-+		.name = "gd25lq32",
-+		.size = SZ_4M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x40, 0x17),
-+		.name = "gd25q64",
-+		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x60, 0x17),
-+		.name = "gd25lq64c",
-+		.size = SZ_8M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x60, 0x18),
-+		.name = "gd25lq128d",
-+		.size = SZ_16M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x40, 0x18),
-+		.name = "gd25q128",
-+		.size = SZ_16M,
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	}, {
-+		.id = SNOR_ID(0xc8, 0x40, 0x19),
-+		.name = "gd25q256",
-+		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6,
-+		.fixups = &gd25q256_fixups,
++		.id = SNOR_ID(0x2c, 0x5b, 0x1c),
++		.name = "mt35xu02g",
++		.sector_size = SZ_128K,
++		.size = SZ_256M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_READ,
++		.mfr_flags = USE_FSR,
 +		.fixup_flags = SPI_NOR_4B_OPCODES,
-+	},
+ 	},
  };
  
- const struct spi_nor_manufacturer spi_nor_gigadevice = {
+ static const struct flash_info st_nor_parts[] = {
+-	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64)
+-		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
+-	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64)
+-		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
+-	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
+-	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+-		      SPI_NOR_BP3_SR_BIT6)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+-		      SPI_NOR_BP3_SR_BIT6)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "mt25qu256a",  INFO6(0x20bb19, 0x104400, 64 * 1024,  512)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+-		      SPI_NOR_BP3_SR_BIT6)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "mt25ql512a",  INFO6(0x20ba20, 0x104400, 64 * 1024, 1024)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+-		      SPI_NOR_BP3_SR_BIT6)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
++	{
++		.id = SNOR_ID(0x20, 0xbb, 0x15),
++		.name = "n25q016a",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x16),
++		.name = "n25q032",
++		.size = SZ_4M,
++		.no_sfdp_flags = SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x16),
++		.name = "n25q032a",
++		.size = SZ_4M,
++		.no_sfdp_flags = SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x17),
++		.name = "n25q064",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x17),
++		.name = "n25q064a",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x18),
++		.name = "n25q128a11",
++		.size = SZ_16M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++			 SPI_NOR_BP3_SR_BIT6,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x18),
++		.name = "n25q128a13",
++		.size = SZ_16M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++			 SPI_NOR_BP3_SR_BIT6,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x19, 0x10, 0x44, 0x00),
++		.name = "mt25ql256a",
++		.size = SZ_32M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x19),
++		.name = "n25q256a",
++		.size = SZ_32M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x19, 0x10, 0x44, 0x00),
++		.name = "mt25qu256a",
++		.size = SZ_32M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++			 SPI_NOR_BP3_SR_BIT6,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x19),
++		.name = "n25q256ax1",
++		.size = SZ_32M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x20, 0x10, 0x44, 0x00),
++		.name = "mt25ql512a",
++		.size = SZ_64M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x20),
++		.name = "n25q512ax3",
++		.size = SZ_64M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++			 SPI_NOR_BP3_SR_BIT6,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
++		.name = "mt25qu512a",
++		.size = SZ_64M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x20),
++		.name = "n25q512a",
++		.size = SZ_64M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++			 SPI_NOR_BP3_SR_BIT6,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x21),
++		.name = "n25q00",
++		.size = SZ_128M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++			 SPI_NOR_BP3_SR_BIT6 | NO_CHIP_ERASE,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x21),
++		.name = "n25q00a",
++		.size = SZ_128M,
++		.flags = NO_CHIP_ERASE,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xba, 0x22),
++		.name = "mt25ql02g",
++		.size = SZ_256M,
++		.flags = NO_CHIP_ERASE,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x22),
++		.name = "mt25qu02g",
++		.size = SZ_256M,
++		.flags = NO_CHIP_ERASE,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x10),
++		.name = "m25p05",
++		.sector_size = SZ_32K,
++		.size = SZ_64K,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x11),
++		.name = "m25p10",
++		.sector_size = SZ_32K,
++		.size = SZ_128K,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x12),
++		.name = "m25p20",
++		.size = SZ_256K,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x13),
++		.name = "m25p40",
++		.size = SZ_512K,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x14),
++		.name = "m25p80",
++		.size = SZ_1M,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x15),
++		.name = "m25p16",
++		.size = SZ_2M,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x16),
++		.name = "m25p32",
++		.size = SZ_4M,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x17),
++		.name = "m25p64",
++		.size = SZ_8M,
++	}, {
++		.id = SNOR_ID(0x20, 0x20, 0x18),
++		.name = "m25p128",
++		.sector_size = SZ_256K,
++		.size = SZ_16M,
++	}, {
++		.name = "m25p05-nonjedec",
++		.sector_size = SZ_32K,
++		.size = SZ_64K,
++	}, {
++		.name = "m25p10-nonjedec",
++		.sector_size = SZ_32K,
++		.size = SZ_128K,
++	}, {
++		.name = "m25p20-nonjedec",
++		.size = SZ_256K,
++	}, {
++		.name = "m25p40-nonjedec",
++		.size = SZ_512K,
++	}, {
++		.name = "m25p80-nonjedec",
++		.size = SZ_1M,
++	}, {
++		.name = "m25p16-nonjedec",
++		.size = SZ_2M,
++	}, {
++		.name = "m25p32-nonjedec",
++		.size = SZ_4M,
++	}, {
++		.name = "m25p64-nonjedec",
++		.size = SZ_8M,
++	}, {
++		.name = "m25p128-nonjedec",
++		.sector_size = SZ_256K,
++		.size = SZ_16M,
++	}, {
++		.id = SNOR_ID(0x20, 0x40, 0x11),
++		.name = "m45pe10",
++		.size = SZ_128K,
++	}, {
++		.id = SNOR_ID(0x20, 0x40, 0x14),
++		.name = "m45pe80",
++		.size = SZ_1M,
++	}, {
++		.id = SNOR_ID(0x20, 0x40, 0x15),
++		.name = "m45pe16",
++		.size = SZ_2M,
++	}, {
++		.id = SNOR_ID(0x20, 0x80, 0x12),
++		.name = "m25pe20",
++		.size = SZ_256K,
++	}, {
++		.id = SNOR_ID(0x20, 0x80, 0x14),
++		.name = "m25pe80",
++		.size = SZ_1M,
++	}, {
++		.id = SNOR_ID(0x20, 0x80, 0x15),
++		.name = "m25pe16",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0x20, 0x71, 0x15),
++		.name = "m25px16",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0x20, 0x71, 0x16),
++		.name = "m25px32",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0x20, 0x73, 0x16),
++		.name = "m25px32-s0",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0x20, 0x63, 0x16),
++		.name = "m25px32-s1",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0x20, 0x71, 0x17),
++		.name = "m25px64",
++		.size = SZ_8M,
++	}, {
++		.id = SNOR_ID(0x20, 0x71, 0x14),
++		.name = "m25px80",
++		.size = SZ_1M,
+ 	},
+-	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+-		      SPI_NOR_BP3_SR_BIT6)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048)
+-		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+-		      SPI_NOR_BP3_SR_BIT6 | NO_CHIP_ERASE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048)
+-		FLAGS(NO_CHIP_ERASE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096)
+-		FLAGS(NO_CHIP_ERASE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096)
+-		FLAGS(NO_CHIP_ERASE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_FSR)
+-	},
+-
+-	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2) },
+-	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4) },
+-	{ "m25p20",  INFO(0x202012,  0,  64 * 1024,   4) },
+-	{ "m25p40",  INFO(0x202013,  0,  64 * 1024,   8) },
+-	{ "m25p80",  INFO(0x202014,  0,  64 * 1024,  16) },
+-	{ "m25p16",  INFO(0x202015,  0,  64 * 1024,  32) },
+-	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64) },
+-	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128) },
+-	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64) },
+-
+-	{ "m25p05-nonjedec",  INFO0( 32 * 1024,   2) },
+-	{ "m25p10-nonjedec",  INFO0( 32 * 1024,   4) },
+-	{ "m25p20-nonjedec",  INFO0( 64 * 1024,   4) },
+-	{ "m25p40-nonjedec",  INFO0( 64 * 1024,   8) },
+-	{ "m25p80-nonjedec",  INFO0( 64 * 1024,  16) },
+-	{ "m25p16-nonjedec",  INFO0( 64 * 1024,  32) },
+-	{ "m25p32-nonjedec",  INFO0( 64 * 1024,  64) },
+-	{ "m25p64-nonjedec",  INFO0( 64 * 1024, 128) },
+-	{ "m25p128-nonjedec", INFO0(256 * 1024,  64) },
+-
+-	{ "m45pe10", INFO(0x204011,  0, 64 * 1024,    2) },
+-	{ "m45pe80", INFO(0x204014,  0, 64 * 1024,   16) },
+-	{ "m45pe16", INFO(0x204015,  0, 64 * 1024,   32) },
+-
+-	{ "m25pe20", INFO(0x208012,  0, 64 * 1024,  4) },
+-	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16) },
+-	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-
+-	{ "m25px16",    INFO(0x207115,  0, 64 * 1024, 32)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "m25px32",    INFO(0x207116,  0, 64 * 1024, 64)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "m25px32-s0", INFO(0x207316,  0, 64 * 1024, 64)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "m25px32-s1", INFO(0x206316,  0, 64 * 1024, 64)
+-		NO_SFDP_FLAGS(SECT_4K) },
+-	{ "m25px64",    INFO(0x207117,  0, 64 * 1024, 128) },
+-	{ "m25px80",    INFO(0x207114,  0, 64 * 1024, 16) },
+ };
+ 
+ /**
 
 -- 
 2.39.2
