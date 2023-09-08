@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2F73EE57CA
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 06:43:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD1BBEE57D7
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 06:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9fM0CcDFyh97fGQJ7fUwt7lJw/eAq9RNol2xqgmCVMQ=; b=Hp1XVa82Uw51jE
-	040yt5YLpEbu2sMUdhpVpHZwm+b4JxwwuVh7YBjrEdhbtqG6+wp1r4csOZxzpbmwuv5F2x4VhIYr2
-	hMlz+F4RHBFd/CeRY2br2PnK8RyFyN34OKSoH8CPZQHeBE0TZ4Uwjqm/xhZ7Lh0rBCKHnViQ7jvio
-	p4O1I5LA9zVK7D/DhNZhIB9T38X9qq3Q3xCZQXkMP7RUEcD0DgxT10dHlwxLFgBq3BXf0tYOsq5Vw
-	SOFUzzPdeL7KvLyfqukpV0pMaX0TithKvDVO5teTAcK8GFuROuHISz/PDkgNdR0keUQgZMDO4EMqP
-	4s+/sABgLcYztdxlyBag==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hZWqIl9mQq3UJxBD3HzF3WnJLoxkBwIoJ3ddreXVsEM=; b=u44SPGbDOQaG+o
+	DHV7YSMbHSwVeqiNu7sF9RThP+MHVZdQvoy5RoZNT7KcxnF4r2qB30pcnf6dqAMy34y+sPVoIOHDE
+	YyQ3OS/ig8cK26mLn++6Fc4shB+jOUJsmdrLFRPjMXkMxvk78B1k2c8zc+Z69txOEL7hfAqWoSAan
+	EWNRSm7IdpND+Cbibr0ZG+dxCKKuzGPl7X0oKONM87Hi/K7LMO9+/VW90zrKK8SzpCTdWpg2w94uF
+	7S/1f8pdRzKJHph9xEv8qFuWEIAQjpCFg2vv21AQJbKSOS6HLxmsbF/rDH+NFwe18VFQE062faFM1
+	CFhUZio8knisOKV5xjFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeVD0-00DBHy-3D;
-	Fri, 08 Sep 2023 06:43:15 +0000
-Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
+	id 1qeVD6-00DBK0-30;
+	Fri, 08 Sep 2023 06:43:20 +0000
+Received: from mail-oa1-x2b.google.com ([2001:4860:4864:20::2b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeVCy-00DBGL-0v
+	id 1qeVD2-00DBHN-1e
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 06:43:13 +0000
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c0bae4da38so12296295ad.0
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 23:43:10 -0700 (PDT)
+	Fri, 08 Sep 2023 06:43:17 +0000
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1a1fa977667so1420030fac.1
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Sep 2023 23:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694155389; x=1694760189; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFF39j+W4+8TquG8eo0yF0sn0AE1QIr3KEYXx/KzDFI=;
-        b=JQJcUSz5ELTXMXXGm7dpZFz+WyuPNwVLaE78T8QM7xfQPfymY9LyzwCoF4Wnrj3ny9
-         B5jDT0nH836gtGfOU8Rq8bOY+xkhXfKhgj+YCAgarXDmR5vvKjKwlmjfcb6mS8jVgqB3
-         x+c+VPxZFNc8fQWRQoxJ55miIU5IoAkz4/80lzULNCs5WdFsHdSGSMWqzI0w0QdJBtdu
-         dnqQGIcLfXNHAecnGQqokPKPRafyk77pWk42J0JY8B8IVkx3+YQbY0Z0ExubqjkSpMgS
-         jn3gSSKOjp/p8ON4vIXYjkpVqdaxe/fmUraXHtHij7fIxwh7PGnMS1NE5DNmCX0Vj/Rm
-         i2HQ==
+        d=gmail.com; s=20221208; t=1694155393; x=1694760193; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z1BImkcIGdw9QjAovIeu02YeNVehzWJ4PFHHdOqnnyM=;
+        b=e4o8tBuJCtuC2GIOgwVyeRckZRpfdkwaTqFgwo/O1rA0gwato9wB0q4+DvsSORf0Ss
+         celsctzgYGb0qT7k6LNPur4iahoNyhjr6my/taraAnjZv1isTMLJAcoPKSl6wsE9SaRd
+         sAPEvPkeorU67cHKQJ3eg8kBkZQ35xNCMcoguHPvAC0Yf13q2rZsl47h1kq3Wkdhsb1+
+         FE6ry/Y4bEJGS71pCqnU6utOGxYTSpuwyNtzth2H+TSSMIAvAdEcMyzvbV42GR2pXGLI
+         lZYcGUGaqX5ZhAuzbqKpNTehD/Ggsz9NtmWVrUCU9UeKL0Za8xMFZbpziwM5oxaffsT/
+         DVNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694155389; x=1694760189;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FFF39j+W4+8TquG8eo0yF0sn0AE1QIr3KEYXx/KzDFI=;
-        b=O7tTgX41nUlmzFsnv3Ur0OeifzuaECkQYhMBTf2DKDF9h/kyt/c2cJ1k++J0SQQiie
-         2uNuLcYcymofAphO8pb6Zj0N1gqul1SCNa91Zr/VnojhIbNm6Dl8YmDe+hk112cZtNYT
-         ncvMD1Mohm4OlBC95DAm4wh9FZ0bs6BbF+2DHc8X/OJzAfwKYhOhcpK9DmLcnIIp46jb
-         s10fPjXagzVbg+/e+u8jxusy3s2Rm8KbIrz+CuY0evyrn0YMUPBKLcLKJwjpb/gKpFzt
-         QtFD0FdNcRhjaeX618t4iM4206uGtbqumo/2SYVSB25e6iyMF4+lNyH39txpVzeR25gJ
-         Kimw==
-X-Gm-Message-State: AOJu0YwcTbmfZ+xghzsxmAPhWqTp7GF+BjO6rBCq00t7xsap67UM91Sq
-	dl1AZKeznyqM9xrbh/bSWB4=
-X-Google-Smtp-Source: AGHT+IG/3kefXMCJQQKlFUbqfh+XWCSGKibvCF+MvHF/JdIGdOnyuOa80hua70tqVxiCEljAMdDWww==
-X-Received: by 2002:a17:903:18b:b0:1b5:522a:1578 with SMTP id z11-20020a170903018b00b001b5522a1578mr6195601plg.29.1694155389410;
-        Thu, 07 Sep 2023 23:43:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694155393; x=1694760193;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z1BImkcIGdw9QjAovIeu02YeNVehzWJ4PFHHdOqnnyM=;
+        b=ZbfiZutB7KoIeoMn79fvZvmeu/wpuH0D5qhQMnseIaDrfp48lDe64B0OF+TSzgi9hc
+         H2UAR49Z7LskjZHsBY00xvH4r635stu1vW4SLL6EYnhhqNvFdXs1IHrtL1DT5zzsvi9j
+         qXG8TIRlnRBf+GuP/TxH1etlVU1XxiiMhYk7LMAdywUWvSzOjmDZjdLMPcKKqY2lla/j
+         1XVFkS88KPjZsA01/6Ne901HBXZZIn8xLBDhQCg2mBnz/Ixncq8IJM+51daJMg3WqfDo
+         wlrrPPry3Q/mpw+LTLdpPG3mdPTJFKIH+mBa29t+lyy+WL8s0T/dVP6Be8DRmn0j8lUe
+         gqtw==
+X-Gm-Message-State: AOJu0YxR6hKXe88mr8OSS3/brelzTmuza7q5vygIBHlQ08DIxN9O/OeS
+	cEUqOQjCEetTQI0qVptTYq0=
+X-Google-Smtp-Source: AGHT+IEz4AO1PYfuq/NH2WB8g9OISCeLyIzuU7F8oi/8Ge1ws+2G5UKncChp0BMeYDZ2EQzMQJGYbA==
+X-Received: by 2002:a05:6871:85:b0:1bb:8333:ab8a with SMTP id u5-20020a056871008500b001bb8333ab8amr2346516oaa.4.1694155392979;
+        Thu, 07 Sep 2023 23:43:12 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id c17-20020a170903235100b001b9d335223csm817429plh.26.2023.09.07.23.43.08
+        by smtp.gmail.com with ESMTPSA id k4-20020a637b44000000b00563e1ef0491sm558956pgn.8.2023.09.07.23.43.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 23:43:08 -0700 (PDT)
+        Thu, 07 Sep 2023 23:43:12 -0700 (PDT)
 Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id 1A35680E29;
-	Fri,  8 Sep 2023 14:45:06 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id ECCB281870;
+	Fri,  8 Sep 2023 14:45:08 +0800 (CST)
 From: Jaime Liao <jaimeliao.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	tudor.ambarus@linaro.org,
@@ -72,15 +73,16 @@ To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: leoyu@mxic.com.tw,
 	jaimeliao@mxic.com.tw
-Subject: [PATCH v4 0/6] Add octal DTR support for Macronix flash
-Date: Fri,  8 Sep 2023 14:42:58 +0800
-Message-Id: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+Subject: [PATCH v4 5/6] mtd: spi-nor: core: Allow specifying the byte order in DTR mode
+Date: Fri,  8 Sep 2023 14:43:03 +0800
+Message-Id: <20230908064304.27757-6-jaimeliao.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230907_234312_319945_3B1BAE2A 
-X-CRM114-Status: UNSURE (   8.73  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230907_234316_550454_55D23B4F 
+X-CRM114-Status: GOOD (  13.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,41 +101,65 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Add method for manufacturer read id function.
-Add method for Macronix Octal DTR Eable/Disable.
-Merge Tudor's patch "Allow specifying the byte order in DTR mode"
+Macronix swaps bytes on a 16-bit boundary when configured in Octal DTR.
+The byte order of 16-bit words is swapped when read or written in 8D-8D-8D
+mode compared to STR modes. Allow operations to specify the byte order in
+DTR mode, so that controllers can swap the bytes back at run-time to
+address the flash's endianness requirements, if they are capable. If the
+controllers are not capable of swapping the bytes, the protocol is
+downgrade via spi_nor_spimem_adjust_hwcaps(). When available, the swapping
+of the bytes is always done regardless if it's a data or register access,
+so that we comply with the JESD216 requirements: "Byte order of 16-bit
+words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
 
-v4:
-  Add patch for adding manufacturer read id function.
-  remove patch "hook manufacturer by checking first byte id"
+Merge Tudor's patch and add modifications for suiting newer version
+of Linux kernel.
 
-v3:
-  Add patch for hook manufacturer by comparing ID 1st byte.
-  Add patches for specifying the byte order in DTR mode by merging
-  Tudor's patch.
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+---
+ drivers/mtd/spi-nor/core.c | 8 ++++++++
+ drivers/mtd/spi-nor/core.h | 1 +
+ 2 files changed, 9 insertions(+)
 
-v2:
-  Following exsting rules to re-create Macronix specify Octal DTR method.
-  change signature to jaimeliao@mxic.com.tw
-  Clear sector size information in flash INFO.
-
-JaimeLiao (6):
-  mtd: spi-nor: Add manufacturer read id function
-  mtd: spi-nor: add Octal DTR support for Macronix flash
-  mtd: spi-nor: add support for Macronix Octal flash
-  spi: spi-mem: Allow specifying the byte order in DTR mode
-  mtd: spi-nor: core: Allow specifying the byte order in DTR mode
-  mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order from BFPT
-
- drivers/mtd/spi-nor/core.c     |  38 +++++++-
- drivers/mtd/spi-nor/core.h     |   7 ++
- drivers/mtd/spi-nor/macronix.c | 160 +++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/sfdp.c     |   4 +
- drivers/mtd/spi-nor/sfdp.h     |   1 +
- drivers/spi/spi-mem.c          |   4 +
- include/linux/spi/spi-mem.h    |   6 ++
- 7 files changed, 218 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 7ee624b16e17..83e7b7ff89ee 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -70,6 +70,13 @@ static u8 spi_nor_get_cmd_ext(const struct spi_nor *nor,
+ 	}
+ }
+ 
++static inline bool spi_nor_is_octal_dtr_swab16(const struct spi_nor *nor,
++						enum spi_nor_protocol proto)
++{
++	return (proto == SNOR_PROTO_8_8_8_DTR) &&
++		(nor->flags & SNOR_F_DTR_SWAB16);
++}
++
+ /**
+  * spi_nor_spimem_setup_op() - Set up common properties of a spi-mem op.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -105,6 +112,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 		op->addr.dtr = true;
+ 		op->dummy.dtr = true;
+ 		op->data.dtr = true;
++		op->data.dtr_swab16 = spi_nor_is_octal_dtr_swab16(nor, proto);
+ 
+ 		/* 2 bytes per clock cycle in DTR mode. */
+ 		op->dummy.nbytes *= 2;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 92cbc2d3f7fe..7ff4c96fe21e 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -133,6 +133,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_RWW		= BIT(14),
+ 	SNOR_F_ECC		= BIT(15),
+ 	SNOR_F_NO_WP		= BIT(16),
++	SNOR_F_DTR_SWAB16       = BIT(17),
+ };
+ 
+ struct spi_nor_read_command {
 -- 
 2.25.1
 
