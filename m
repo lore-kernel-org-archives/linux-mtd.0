@@ -4,52 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CFBEEE57F1
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FC2AEE57EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Sep 2023 10:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oPD8jvsJLyJLLV+qLx0GUI1HeAlhJZ+rwWmnMSdE2bI=; b=rAScuiGulE/z2x
-	uS+l6Jk4GQnde9UyBtEwpWbvEH25cApHNVuBibwmoFFArPjnIjyiyYWp8pgkYXMHQnulIqR7oYg7D
-	uBzIHEylytplMnFsU36blf/1rUF5+YbYH6ZEdHvQBM49xwhchCmYaz0KVsGeuT3Yr8rsnVHLJT6qR
-	HMsL1GBETojJa2hF5zDfAadoFfV0VP4bWW8WoGMfRxOJfF05qfoHsbZRC47y/5k4KmAXyNVvrnIhW
-	KBgJ2Mj1dxvc2fg08ZI0ivKNn7tx0yPpZPL3emOkr2wQgOvZbzvmySOO/jmJ9leIh1ilo6epwwOJx
-	+IIa95THmGSigEpod4Dw==;
+	List-Owner; bh=9s/h+tt8W0vuSC11hix6Ateia6t0tlG9tSwsFYyQ5e8=; b=rdt0K9mNYshTbB
+	FgeipOQcnycVUbQeeltIxFhONPhkp45nJrgZkTuvPZTfpEgEati99fFtmIXUUOtJ0G4OoIafE7DtL
+	jQdZmvhS1ShRmcZIYkFGFR6eG5LLTjRVS2YSDHOAJlcejSYaRNSsxbHl/n3+P5NlLuPd5Q6RbPNTl
+	dSIcSld9MMU6xliIrnw4u+0pMmolokSAeA833KOpY7tDBBNb6VVZ40SEILFUL+SyxNZt1VuibKPK/
+	o7B+JJabaQjD6QRE5bPqXRr7Fa7ae8Dt+jy7fSmO/0O9DNJKSl23ktQYjG6agi5tES2cxdBXIPNW+
+	FVHMzSkGd84G1bxrb2Ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXa-00DSqz-1M;
-	Fri, 08 Sep 2023 10:16:42 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qeYXb-00DSrQ-2F;
+	Fri, 08 Sep 2023 10:16:43 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qeYXY-00DSpm-08
+	id 1qeYXY-00DSpn-2U
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Sep 2023 10:16:41 +0000
+	Fri, 08 Sep 2023 10:16:42 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8805B61499;
+	by ams.source.kernel.org (Postfix) with ESMTPS id 627E6B81F50;
 	Fri,  8 Sep 2023 10:16:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3269C433CC;
-	Fri,  8 Sep 2023 10:16:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824EEC433CD;
+	Fri,  8 Sep 2023 10:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694168199;
-	bh=FEz+x044HaJXIEP12prthCCwYdEPCM16pe3GigXUbHQ=;
+	s=k20201202; t=1694168197;
+	bh=lcpDq0H9ggD7EJQL+rHqYJynDJl6I9MlMvuqVhqa+Cc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=JCOPQ9gcZMk4ozxWiA6kCSjxYrzGS/SvPIumplKcZ22KjBYEAv2wU/hzF3OLo2nZg
-	 5faV8jVMK4l2BUAfv12wZGWCijcvYDHl5IFZuTWy/JLAl3GozLMwhyfCX2t0syw3mP
-	 CRj+IVE+IhFvHk3Du5oUMItSoJOcXpmK3EHad9CEFUDXfdmYp+A9+DFYRWAzCrOh3T
-	 zHmVsauGl7gj2qYOuSsGVtWIBKhyly0ttxKDItLCanI42P7fR6SZyBxHMHAiM7fSBW
-	 zKTHinHC9nB9ww5bF9b+cUrB2raqwNSFEt2z9UOMa0fbl/o3WSl2YbhnkGMAnOHLR4
-	 8lRtzudFGh34A==
+	b=kruitFOlAS2BZNbzxqA8xz4XJkka8peHpMj4Mq7AXFWRZgMLy3mQp3wiSDWwSJdz/
+	 OSAtAJUgrhEd73TZWSTcd40VW84k0ZIGTiewX6IXkTAk+/Nc4SEEhkRJ8lyONYCSzl
+	 5OzgGshb9idDittPIXZWJ5XeggbNCBkMe95Rc//Odkgstu1XbArtkBKScEm/XgmbJ2
+	 Zz+60euOY6ewK9asVtsSlt9PtQ2wr2cJy6EVRRMxxWanc49FHyW9EBR8+aLULeYigj
+	 myvuXepRfms3JX1AMlJtf0H5h3E2s/C/PXHI98JbAlYXEE17TaMdXK2sksOGmbvjMu
+	 dzSiURL4kCj/w==
 From: Michael Walle <mwalle@kernel.org>
-Date: Fri, 08 Sep 2023 12:16:23 +0200
-Subject: [PATCH v3 05/41] mtd: spi-nor: convert .n_sectors to .size
+Date: Fri, 08 Sep 2023 12:16:22 +0200
+Subject: [PATCH v3 04/41] mtd: spi-nor: xilinx: remove addr_nbytes from
+ S3AN_INFO()
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v3-5-e60548861b10@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v3-4-e60548861b10@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -60,8 +61,9 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230908_031640_158365_A61B19DF 
-X-CRM114-Status: GOOD (  19.65  )
+X-CRM114-CacheID: sfid-20230908_031640_954300_A6645251 
+X-CRM114-Status: UNSURE (   9.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,130 +80,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-.n_sectors is rarely used. In fact it is only used in swp.c and to
-calculate the flash size in the core. The use in swp.c might be
-converted to use the (largest) flash erase size. For now, we just
-locally calculate the sector size.
-
-Simplify the flash_info database and set the size of the flash directly.
-This also let us use the SZ_x macros.
+The default value of addr_nbytes is already 3. Drop it.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c   | 2 +-
- drivers/mtd/spi-nor/core.h   | 8 ++++----
- drivers/mtd/spi-nor/swp.c    | 9 +++++----
- drivers/mtd/spi-nor/xilinx.c | 4 ++--
- 4 files changed, 12 insertions(+), 11 deletions(-)
+ drivers/mtd/spi-nor/xilinx.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 286155002cdc..f4cc2eafcc5e 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2999,7 +2999,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
- 
- 	/* Set SPI NOR sizes. */
- 	params->writesize = 1;
--	params->size = (u64)info->sector_size * info->n_sectors;
-+	params->size = info->size;
- 	params->bank_size = params->size;
- 	params->page_size = info->page_size;
- 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index dfc20a3296fb..12c35409493b 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -443,9 +443,9 @@ struct spi_nor_fixups {
-  * @id:             the flash's ID bytes. The first three bytes are the
-  *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly older chips).
-  * @id_len:         the number of bytes of ID.
-+ * @size:           the size of the flash in bytes.
-  * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
-  *                  isn't necessarily called a "sector" by the vendor.
-- * @n_sectors:      the number of sectors.
-  * @n_banks:        the number of banks.
-  * @page_size:      the flash's page size.
-  * @addr_nbytes:    number of address bytes to send.
-@@ -505,8 +505,8 @@ struct flash_info {
- 	char *name;
- 	u8 id[SPI_NOR_MAX_ID_LEN];
- 	u8 id_len;
-+	size_t size;
- 	unsigned sector_size;
--	u16 n_sectors;
- 	u16 page_size;
- 	u8 n_banks;
- 	u8 addr_nbytes;
-@@ -556,8 +556,8 @@ struct flash_info {
- 	.id_len = 6
- 
- #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
-+	.size = (_sector_size) * (_n_sectors),				\
- 	.sector_size = (_sector_size),					\
--	.n_sectors = (_n_sectors),					\
- 	.page_size = 256,						\
- 	.n_banks = (_n_banks)
- 
-@@ -575,8 +575,8 @@ struct flash_info {
- 	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
- 
- #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
-+		.size = (_sector_size) * (_n_sectors),			\
- 		.sector_size = (_sector_size),				\
--		.n_sectors = (_n_sectors),				\
- 		.page_size = (_page_size),				\
- 		.n_banks = 1,						\
- 		.addr_nbytes = (_addr_nbytes),				\
-diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-index 5ab9d5324860..40bf52867095 100644
---- a/drivers/mtd/spi-nor/swp.c
-+++ b/drivers/mtd/spi-nor/swp.c
-@@ -34,17 +34,18 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor *nor)
- static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
- {
- 	unsigned int bp_slots, bp_slots_needed;
-+	unsigned int sector_size = nor->info->sector_size;
-+	u64 n_sectors = div_u64(nor->params->size, sector_size);
- 	u8 mask = spi_nor_get_sr_bp_mask(nor);
- 
- 	/* Reserved one for "protect none" and one for "protect all". */
- 	bp_slots = (1 << hweight8(mask)) - 2;
--	bp_slots_needed = ilog2(nor->info->n_sectors);
-+	bp_slots_needed = ilog2(n_sectors);
- 
- 	if (bp_slots_needed > bp_slots)
--		return nor->info->sector_size <<
--			(bp_slots_needed - bp_slots);
-+		return sector_size << (bp_slots_needed - bp_slots);
- 	else
--		return nor->info->sector_size;
-+		return sector_size;
- }
- 
- static void spi_nor_get_locked_range_sr(struct spi_nor *nor, u8 sr, loff_t *ofs,
 diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 34267591282c..284e2e4970ab 100644
+index de5189c38432..34267591282c 100644
 --- a/drivers/mtd/spi-nor/xilinx.c
 +++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -23,8 +23,8 @@
- 
- #define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
- 		SPI_NOR_ID(_jedec_id, 0),				\
-+		.size = 8 * (_page_size) * (_n_sectors),		\
- 		.sector_size = (8 * (_page_size)),			\
--		.n_sectors = (_n_sectors),				\
+@@ -27,7 +27,6 @@
+ 		.n_sectors = (_n_sectors),				\
  		.page_size = (_page_size),				\
  		.n_banks = 1,						\
+-		.addr_nbytes = 3,					\
  		.flags = SPI_NOR_NO_FR
-@@ -138,7 +138,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
- 		page_size = (nor->params->page_size == 264) ? 256 : 512;
- 		nor->params->page_size = page_size;
- 		nor->mtd.writebufsize = page_size;
--		nor->params->size = 8 * page_size * nor->info->n_sectors;
-+		nor->params->size = nor->info->size;
- 		nor->mtd.erasesize = 8 * page_size;
- 	} else {
- 		/* Flash in Default addressing mode */
+ 
+ /* Xilinx S3AN share MFR with Atmel SPI NOR */
 
 -- 
 2.39.2
