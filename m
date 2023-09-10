@@ -4,74 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19FCAEE7FF4
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Sep 2023 12:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B32FC71153
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Sep 2023 22:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6Ioh6cE9KuWTFF2a3PNWH1MqgFduSLFn6IqEvBiY548=; b=An3fysFrJz+uow
-	JxvT5PMaQJm0djkWqA6edtWppZaqa0L+0IZrY0e0VWuFDiR4RTWtvqt+OwLZa0lLk6OCzk4djjv4K
-	XnALvqTsXYbOtjkpSlpUNr0ghmNjz8yraIbXUgPvkpniLFGTGUPTS3t3zoN9IamWIo+vkk/U35v+g
-	muSb9L2OeRREHCGAEdP3Lf9NZgu57JURS/ic4uPpDVlMnJKzFbsgH90UBNCVKC29NgGCcNyENS1R7
-	JHTHekel0EBYxk5zDLGw/Uf2YT1GN25keBimkEbmaIcmYcbpFRanuwNT9nNNWefUHibaFjVxUrFgC
-	5FslwmUSmfw2oNUj7MOA==;
+	List-Owner; bh=Z1IJoC1tzi+K95YlNShk3VuAav2+iKLhN9IGnmMvtxM=; b=vDwlVylBjo0iai
+	yvUFocYTnL1zYDXylYRoldCRuOtteWVAG2jM5ch4swXsIZuXzrxwU9jbqaSZRuy1P3rLCbImVyCnp
+	sIbtoOA5rHLN2IJ2FDRwbhDq+9MBHYw4VSXlw1poVL+MY16ha/Mh3uqgbfuH6o2XozPAA88Z7jF8U
+	nIrVvb93AytxJ4C0COroeLZWly4+YRQAM6Nm7Wvtb+FZbaXuMio4XRZfiB9NTLtUXEXMxWqu31QgL
+	2WMdPXLL0zwT+z6PPLlJiB0CXfBWQ9DsNQmWIOd5cYLYGNc4Et3duiVChG7ah8++y+xaH7HOK40/X
+	rQ0TBd4zA7noajIYPDwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfJoA-00GbLb-0D;
-	Sun, 10 Sep 2023 12:44:58 +0000
-Received: from mgamail.intel.com ([134.134.136.31])
+	id 1qfSUn-00GvqD-0D;
+	Sun, 10 Sep 2023 22:01:33 +0000
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfJo7-00Gb8g-2v
+	id 1qfSUj-00Gvpe-1G
 	for linux-mtd@lists.infradead.org;
-	Sun, 10 Sep 2023 12:44:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694349895; x=1725885895;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hWnHGnqZVQiXBBnD/WTGH559CIzGPBdXyiOJTE5ldgQ=;
-  b=FmCxJanPz88bxG9ACuBG51r5j1k8C7d2NIRDCZL1rMF5d0RyKIw0InPP
-   5rhKd2gTDIBpHvLfw7w4H0jmYmNKry+/klqHnNVvJSg+b3KW1QiQ62zHn
-   rz8nxBhhTvgSuvL/SNCQ/IN3WXcRWyN+egKKrmjXhjPuJj7c7smN4Ogin
-   RPfG5vk1YE8pbu+prPyhZjwXSp+1YdR/p2fnXrphjrOa/4RWUyFmQTpZx
-   UnhQ8GWkAobXJWyXOYVHRsca5E/fpcXrwfbsT8No9UkFiEbdUHKBldD0A
-   VHGkpRHPsez/m1WCc5h9YMLnmXusVYtzhMyG4Q2kvzwX2yhB5KCW2xl3/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441907139"
-X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
-   d="scan'208";a="441907139"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1073815150"
-X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
-   d="scan'208";a="1073815150"
-Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:52 -0700
-From: Alexander Usyskin <alexander.usyskin@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
-	Vitaly Lubart <vitaly.lubart@intel.com>,
-	linux-mtd@lists.infradead.org,
-	intel-gfx@lists.freedesktop.org
-Subject: [PATCH 10/10] drm/i915/spi: add support for access mode
-Date: Sun, 10 Sep 2023 15:39:49 +0300
-Message-Id: <20230910123949.1251964-11-alexander.usyskin@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230910123949.1251964-1-alexander.usyskin@intel.com>
-References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
+	Sun, 10 Sep 2023 22:01:30 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a440a8a20so3655666b3a.3
+        for <linux-mtd@lists.infradead.org>; Sun, 10 Sep 2023 15:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694383288; x=1694988088; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EyybjuBSw2AsBAibBPVqGccWs6P0JtTeGBB0Kwx90Dw=;
+        b=bFLSyKHRJkDwkXQIDjXzBAuKQ1MwI1Lgd+FwgmuLr9SEGsPQPMG6eHUqqx4e3PTC45
+         IPJo7JPapPmypq+2CqKHNb2Gno/r4QAQ/bSR+qNowoAUFqLX60O9gTzVYHBPxxkWnzKW
+         zy283ex5aHK+iBgPKxN0sdkLWMxubrJS+bU3bdkBMLGNB+NLmM7T6tAFLG6PQfp80e40
+         r4J3asCiU8jPbnHMLzGaGvBYHF9/RZ2l8RALjL0Cco+YGwNT88HQ28vzZTso4LPFaCfI
+         d5EHojkNI4ktnbldGI38qSkcknnIrqsks0u6ctVuFvh00+uaUDjtBf64SSN1//xtlynk
+         6nEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694383288; x=1694988088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EyybjuBSw2AsBAibBPVqGccWs6P0JtTeGBB0Kwx90Dw=;
+        b=ryw7NkKpxR8SsoX4RtI+GIjjSnXmTWgumoRFTfJiAokFvTf13VyhcuxboQVxmXKWR9
+         BzBv+qk67W7vz/Paf10zL4G92QHUXIUxmkfmMQYDTM6lqP4BUT72CTDHVbmLXNGlg+tv
+         9nbQGCMlWbYcBvduhhdx4y3uRrzlMRJP5BjyqhzMa9dyDNYYISgxbfwJq/pcX+/wDeek
+         fgvUF6QeBXAIK04N47zpsASWdB0jyASZM0ZWWPLI5yovXKH03QX1HhQfO/6aRf5Sg7VS
+         s5R6ZDlL7bd9uDaLaYXkZKqSLOtjZbUTg0+7I4g4q37VKCRp70NqJ7e1/4Bt2yhKDaKV
+         DMjA==
+X-Gm-Message-State: AOJu0YwgKQZA6WVeEMqncPMcH/zNQoAhe+fML0rqjb8VPH8+v3elbYbt
+	i+GCG9bLkA0DbvkBH8NJIBNYig==
+X-Google-Smtp-Source: AGHT+IHSYFPf3w2qdTZr9bikkzuSsvPYQjYYZyW+Zfc616rQWXs3Eeo2BzwinmhhOfJVOtnHj1lBTA==
+X-Received: by 2002:a05:6a00:1a0c:b0:68c:57c7:1eb0 with SMTP id g12-20020a056a001a0c00b0068c57c71eb0mr9371853pfv.11.1694383287795;
+        Sun, 10 Sep 2023 15:01:27 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id u10-20020a62ed0a000000b0068a3dd6c1dasm4403641pfh.142.2023.09.10.15.01.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Sep 2023 15:01:27 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1qfSUe-00DWBA-0u;
+	Mon, 11 Sep 2023 08:01:24 +1000
+Date: Mon, 11 Sep 2023 08:01:24 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Hao Xu <hao.xu@linux.dev>, Matthew Wilcox <willy@infradead.org>,
+	io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+	ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+	Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <ZP48tAg2iS0UzKQf@dread.disaster.area>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
+ <ZOvA5DJDZN0FRymp@casper.infradead.org>
+ <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
+ <ZO3cI+DkotHQo3md@casper.infradead.org>
+ <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+ <ZPUJHAKzxvXiEDYA@dread.disaster.area>
+ <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <6489b8cb-7d54-1e29-f192-a3449ed87fa1@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230910_054456_024964_B3439DFA 
-X-CRM114-Status: GOOD (  16.72  )
+X-CRM114-CacheID: sfid-20230910_150129_456769_67954912 
+X-CRM114-Status: GOOD (  34.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,112 +119,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Check SPI access mode from GSC FW status registers
-and overwrite access status read from SPI descriptor, if needed.
+On Fri, Sep 08, 2023 at 01:29:55AM +0100, Pavel Begunkov wrote:
+> On 9/3/23 23:30, Dave Chinner wrote:
+> > On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
+> > > On 8/29/23 19:53, Matthew Wilcox wrote:
+> > > > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
+> > > > > On 8/28/23 05:32, Matthew Wilcox wrote:
+> > > > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+> > > > > > > From: Hao Xu <howeyxu@tencent.com>
+> > > > > > > 
+> > > > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
+> > > > > > > Currently it is true only with io_uring as its initial caller.
+> > > > > > 
+> > > > > > So why do we need to do this as part of this series?  Apparently it
+> > > > > > hasn't caused any problems for filemap_read().
+> > > > > > 
+> > > > > 
+> > > > > We need this parameter to indicate if nowait semantics should be enforced in
+> > > > > touch_atime(), There are locks and maybe IOs in it.
+> > > > 
+> > > > That's not my point.  We currently call file_accessed() and
+> > > > touch_atime() for nowait reads and nowait writes.  You haven't done
+> > > > anything to fix those.
+> > > > 
+> > > > I suspect you can trim this patchset down significantly by avoiding
+> > > > fixing the file_accessed() problem.  And then come back with a later
+> > > > patchset that fixes it for all nowait i/o.  Or do a separate prep series
+> > > 
+> > > I'm ok to do that.
+> > > 
+> > > > first that fixes it for the existing nowait users, and then a second
+> > > > series to do all the directory stuff.
+> > > > 
+> > > > I'd do the first thing.  Just ignore the problem.  Directory atime
+> > > > updates cause I/O so rarely that you can afford to ignore it.  Almost
+> > > > everyone uses relatime or nodiratime.
+> > > 
+> > > Hi Matthew,
+> > > The previous discussion shows this does cause issues in real
+> > > producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
+> > > 
+> > 
+> > Then separate it out into it's own patch set so we can have a
+> > discussion on the merits of requiring using noatime, relatime or
+> > lazytime for really latency sensitive IO applications. Changing code
+> > is not always the right solution...
+> 
+> Separation sounds reasonable, but it can hardly be said that only
+> latency sensitive apps would care about >1s nowait/async submission
+> delays. Presumably, btrfs can improve on that, but it still looks
+> like it's perfectly legit for filesystems do heavy stuff in
+> timestamping like waiting for IO. Right?
 
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
----
- drivers/gpu/drm/i915/spi/intel_spi.c     | 25 ++++++++++++++++++++++++
- drivers/gpu/drm/i915/spi/intel_spi.h     |  1 +
- drivers/gpu/drm/i915/spi/intel_spi_drv.c |  6 +++---
- 3 files changed, 29 insertions(+), 3 deletions(-)
+Yes, it is, no-one is denying that. And some filesystems are worse
+than others, but none of that means it has to be fixed so getdents
+can be converted to NOWAIT semantics.
 
-diff --git a/drivers/gpu/drm/i915/spi/intel_spi.c b/drivers/gpu/drm/i915/spi/intel_spi.c
-index c697ca226e34..aac01898169f 100644
---- a/drivers/gpu/drm/i915/spi/intel_spi.c
-+++ b/drivers/gpu/drm/i915/spi/intel_spi.c
-@@ -9,6 +9,7 @@
- #include "spi/intel_spi.h"
- 
- #define GEN12_GUNIT_SPI_SIZE 0x80
-+#define HECI_FW_STATUS_2_SPI_ACCESS_MODE BIT(3)
- 
- static const struct i915_spi_region regions[I915_SPI_REGIONS] = {
- 	[0] = { .name = "DESCRIPTOR", },
-@@ -21,6 +22,29 @@ static void i915_spi_release_dev(struct device *dev)
- {
- }
- 
-+static bool i915_spi_writeable_override(struct drm_i915_private *dev_priv)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
-+	resource_size_t base;
-+	bool writeable_override;
-+
-+	if (IS_DG1(dev_priv)) {
-+		base = DG1_GSC_HECI2_BASE;
-+	} else if (IS_DG2(dev_priv)) {
-+		base = DG2_GSC_HECI2_BASE;
-+	} else {
-+		dev_err(&pdev->dev, "Unknown platform\n");
-+		return true;
-+	}
-+
-+	writeable_override =
-+		!(intel_uncore_read(&dev_priv->uncore, HECI_FWSTS(base, 2)) &
-+		  HECI_FW_STATUS_2_SPI_ACCESS_MODE);
-+	if (writeable_override)
-+		dev_info(&pdev->dev, "SPI access overridden by jumper\n");
-+	return writeable_override;
-+}
-+
- void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
- {
- 	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
-@@ -31,6 +55,7 @@ void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
- 	if (!IS_DGFX(dev_priv))
- 		return;
- 
-+	spi->writeable_override = i915_spi_writeable_override(dev_priv);
- 	spi->bar.parent = &pdev->resource[0];
- 	spi->bar.start = GEN12_GUNIT_SPI_BASE + pdev->resource[0].start;
- 	spi->bar.end = spi->bar.start + GEN12_GUNIT_SPI_SIZE - 1;
-diff --git a/drivers/gpu/drm/i915/spi/intel_spi.h b/drivers/gpu/drm/i915/spi/intel_spi.h
-index 1ecf1a8581b4..83588fae8c5e 100644
---- a/drivers/gpu/drm/i915/spi/intel_spi.h
-+++ b/drivers/gpu/drm/i915/spi/intel_spi.h
-@@ -18,6 +18,7 @@ struct i915_spi_region {
- struct intel_spi {
- 	struct auxiliary_device aux_dev;
- 	struct drm_i915_private *i915;
-+	bool writeable_override;
- 	struct resource bar;
- 	const struct i915_spi_region *regions;
- };
-diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-index 6b514b137fd0..75b6939ea93d 100644
---- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-+++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -681,7 +681,7 @@ static void i915_spi_put_device(struct mtd_info *mtd)
- }
- 
- static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
--			     unsigned int nparts)
-+			     unsigned int nparts, bool writeable_override)
- {
- 	unsigned int i;
- 	unsigned int n;
-@@ -714,7 +714,7 @@ static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
- 		parts[n].name = spi->regions[i].name;
- 		parts[n].offset  = spi->regions[i].offset;
- 		parts[n].size = spi->regions[i].size;
--		if (!spi->regions[i].is_writable)
-+		if (!spi->regions[i].is_writable && !writeable_override)
- 			parts[n].mask_flags = MTD_WRITEABLE;
- 		n++;
- 	}
-@@ -801,7 +801,7 @@ static int i915_spi_probe(struct auxiliary_device *aux_dev,
- 		goto err;
- 	}
- 
--	ret = i915_spi_init_mtd(spi, device, ret);
-+	ret = i915_spi_init_mtd(spi, device, ret, ispi->writeable_override);
- 	if (ret) {
- 		dev_err(device, "i915-spi failed init mtd %d\n", ret);
- 		goto err;
+ie. this patchset is about the getdents NOWAIT machinery, and
+fiddling around with timestamps has much, much wider scope than just
+NOWAIT getdents machinery. We'll have this discussion about NOWAIT
+timestamp updates when a RFC is proposed to address the wider
+problem of how timestamp updates should behave in NOWAIT context.
+
+-Dave.
 -- 
-2.34.1
-
+Dave Chinner
+david@fromorbit.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
