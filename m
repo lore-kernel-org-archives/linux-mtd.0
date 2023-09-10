@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F553EE14D8
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Sep 2023 12:45:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19FCAEE7FF4
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Sep 2023 12:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rOWyTAYO/rAJCFa9cV63baxwGajB7/R6/mk94votnsc=; b=iJdl9jdhk4Vgr/
-	n8g3lVnfAN5aJ8L/rCdrut3QUMFo5pC2o4jFb8Ir+b7LjTMdjUWNMFcyQuQ6nu5NCPUTZ5mnH655Y
-	wd6iXjNVYlsF6kLHKkXztXrYUC3bEU1xMVjE99ml+zrRmSDpX/mDjanaPQBgHbTZqeG+TaLAMqz1L
-	xIX84Jx12bOWKhqKobgWjeE/sNGDgFcMlHClcR+3IMbG0WNB2G0lVt12rcou/2PrMyJJBIkFuE0wM
-	wOruAF9EQeoPq/i57VWNfwS996sTg0ERYfpQ6SRhy1m65DApeAiCwM99zB02yKh+gjPlckYNARRs5
-	95En5BlUxeyqqCs9WbkQ==;
+	List-Owner; bh=6Ioh6cE9KuWTFF2a3PNWH1MqgFduSLFn6IqEvBiY548=; b=An3fysFrJz+uow
+	JxvT5PMaQJm0djkWqA6edtWppZaqa0L+0IZrY0e0VWuFDiR4RTWtvqt+OwLZa0lLk6OCzk4djjv4K
+	XnALvqTsXYbOtjkpSlpUNr0ghmNjz8yraIbXUgPvkpniLFGTGUPTS3t3zoN9IamWIo+vkk/U35v+g
+	muSb9L2OeRREHCGAEdP3Lf9NZgu57JURS/ic4uPpDVlMnJKzFbsgH90UBNCVKC29NgGCcNyENS1R7
+	JHTHekel0EBYxk5zDLGw/Uf2YT1GN25keBimkEbmaIcmYcbpFRanuwNT9nNNWefUHibaFjVxUrFgC
+	5FslwmUSmfw2oNUj7MOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfJo8-00GbKU-1K;
-	Sun, 10 Sep 2023 12:44:56 +0000
+	id 1qfJoA-00GbLb-0D;
+	Sun, 10 Sep 2023 12:44:58 +0000
 Received: from mgamail.intel.com ([134.134.136.31])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfJo5-00Gb8g-1U
+	id 1qfJo7-00Gb8g-2v
 	for linux-mtd@lists.infradead.org;
-	Sun, 10 Sep 2023 12:44:54 +0000
+	Sun, 10 Sep 2023 12:44:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694349893; x=1725885893;
+  t=1694349895; x=1725885895;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0dBk/4fMArENbWUjH92PyfYG5dAy2flmPQHcoRC5pw4=;
-  b=anUuJ6pnrQDBJ7sir2Z+PCj2X3pf/Kf/2RmXsmiaH8w1O41d9S8mRxNh
-   Y8tgmFx1/4nsG/HBx0UKA8jiCziE6VbdiaovcdEBALAZFdDDjR2T3AGg/
-   Mgs9bNHbUKK4pV2idoEHmz30+wxrjwOmblLdjKB5FCXSEL1/q5MxKaJTN
-   MvR5jMOVAp9Q5Q666VaDf3BzByXBrZ2Gvk/24BjZ6RLs+7JuYbYBK2XcZ
-   PuS9cf7XknQ1M+rxJE1g91tfGKSMw0ci+5MnZlbFMCUx9Za/eD9z/TwM4
-   obGZUwtybtiv+u176g7FsAct0UCwWb2HiIezCwHqjzxA+vfO3uAbUzWjn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441907132"
+  bh=hWnHGnqZVQiXBBnD/WTGH559CIzGPBdXyiOJTE5ldgQ=;
+  b=FmCxJanPz88bxG9ACuBG51r5j1k8C7d2NIRDCZL1rMF5d0RyKIw0InPP
+   5rhKd2gTDIBpHvLfw7w4H0jmYmNKry+/klqHnNVvJSg+b3KW1QiQ62zHn
+   rz8nxBhhTvgSuvL/SNCQ/IN3WXcRWyN+egKKrmjXhjPuJj7c7smN4Ogin
+   RPfG5vk1YE8pbu+prPyhZjwXSp+1YdR/p2fnXrphjrOa/4RWUyFmQTpZx
+   UnhQ8GWkAobXJWyXOYVHRsca5E/fpcXrwfbsT8No9UkFiEbdUHKBldD0A
+   VHGkpRHPsez/m1WCc5h9YMLnmXusVYtzhMyG4Q2kvzwX2yhB5KCW2xl3/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441907139"
 X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
-   d="scan'208";a="441907132"
+   d="scan'208";a="441907139"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:52 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1073815139"
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1073815150"
 X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
-   d="scan'208";a="1073815139"
+   d="scan'208";a="1073815150"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:50 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:52 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -61,18 +61,17 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
 	Vitaly Lubart <vitaly.lubart@intel.com>,
 	linux-mtd@lists.infradead.org,
-	intel-gfx@lists.freedesktop.org,
-	Lucas De Marchi <lucas.demarchi@intel.com>
-Subject: [PATCH 09/10] drm/i915/spi: wake card on operations
-Date: Sun, 10 Sep 2023 15:39:48 +0300
-Message-Id: <20230910123949.1251964-10-alexander.usyskin@intel.com>
+	intel-gfx@lists.freedesktop.org
+Subject: [PATCH 10/10] drm/i915/spi: add support for access mode
+Date: Sun, 10 Sep 2023 15:39:49 +0300
+Message-Id: <20230910123949.1251964-11-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230910123949.1251964-1-alexander.usyskin@intel.com>
 References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230910_054453_597593_433DB198 
-X-CRM114-Status: GOOD (  13.47  )
+X-CRM114-CacheID: sfid-20230910_054456_024964_B3439DFA 
+X-CRM114-Status: GOOD (  16.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,143 +88,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable runtime PM in spi driver to notify i915 that
-whole card should be kept awake while spi operations are
-performed through this driver.
+Check SPI access mode from GSC FW status registers
+and overwrite access status read from SPI descriptor, if needed.
 
-CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/gpu/drm/i915/spi/intel_spi_drv.c | 44 ++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ drivers/gpu/drm/i915/spi/intel_spi.c     | 25 ++++++++++++++++++++++++
+ drivers/gpu/drm/i915/spi/intel_spi.h     |  1 +
+ drivers/gpu/drm/i915/spi/intel_spi_drv.c |  6 +++---
+ 3 files changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-index 22b804ebadc0..6b514b137fd0 100644
---- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-+++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -13,12 +13,15 @@
- #include <linux/sizes.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/delay.h>
-+#include <linux/pm_runtime.h>
+diff --git a/drivers/gpu/drm/i915/spi/intel_spi.c b/drivers/gpu/drm/i915/spi/intel_spi.c
+index c697ca226e34..aac01898169f 100644
+--- a/drivers/gpu/drm/i915/spi/intel_spi.c
++++ b/drivers/gpu/drm/i915/spi/intel_spi.c
+@@ -9,6 +9,7 @@
  #include "spi/intel_spi.h"
- #include "i915_reg_defs.h"
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
+ #define GEN12_GUNIT_SPI_SIZE 0x80
++#define HECI_FW_STATUS_2_SPI_ACCESS_MODE BIT(3)
  
-+#define I915_SPI_RPM_TIMEOUT 500
-+
- struct i915_spi {
- 	struct kref refcnt;
- 	struct mtd_info mtd;
-@@ -473,6 +476,12 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
- 	total_len = info->len;
- 	addr = info->addr;
- 
-+	ret = pm_runtime_resume_and_get(mtd->dev.parent);
-+	if (ret < 0) {
-+		dev_err(&mtd->dev, "rpm: get failed %d\n", ret);
-+		return ret;
-+	}
-+
- 	mutex_lock(&spi->lock);
- 
- 	while (total_len > 0) {
-@@ -514,6 +523,8 @@ static int i915_spi_erase(struct mtd_info *mtd, struct erase_info *info)
- 
- out:
- 	mutex_unlock(&spi->lock);
-+	pm_runtime_mark_last_busy(mtd->dev.parent);
-+	pm_runtime_put_autosuspend(mtd->dev.parent);
- 	return ret;
+ static const struct i915_spi_region regions[I915_SPI_REGIONS] = {
+ 	[0] = { .name = "DESCRIPTOR", },
+@@ -21,6 +22,29 @@ static void i915_spi_release_dev(struct device *dev)
+ {
  }
  
-@@ -547,6 +558,12 @@ static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (len > spi->regions[idx].size - from)
- 		len = spi->regions[idx].size - from;
- 
-+	ret = pm_runtime_resume_and_get(mtd->dev.parent);
-+	if (ret < 0) {
-+		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
-+		return ret;
++static bool i915_spi_writeable_override(struct drm_i915_private *dev_priv)
++{
++	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
++	resource_size_t base;
++	bool writeable_override;
++
++	if (IS_DG1(dev_priv)) {
++		base = DG1_GSC_HECI2_BASE;
++	} else if (IS_DG2(dev_priv)) {
++		base = DG2_GSC_HECI2_BASE;
++	} else {
++		dev_err(&pdev->dev, "Unknown platform\n");
++		return true;
 +	}
 +
- 	mutex_lock(&spi->lock);
- 
- 	ret = spi_read(spi, region, from, len, buf);
-@@ -559,6 +576,8 @@ static int i915_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	*retlen = ret;
- 
- 	mutex_unlock(&spi->lock);
-+	pm_runtime_mark_last_busy(mtd->dev.parent);
-+	pm_runtime_put_autosuspend(mtd->dev.parent);
- 	return 0;
- }
- 
-@@ -592,6 +611,12 @@ static int i915_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	if (len > spi->regions[idx].size - to)
- 		len = spi->regions[idx].size - to;
- 
-+	ret = pm_runtime_resume_and_get(mtd->dev.parent);
-+	if (ret < 0) {
-+		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
-+		return ret;
-+	}
++	writeable_override =
++		!(intel_uncore_read(&dev_priv->uncore, HECI_FWSTS(base, 2)) &
++		  HECI_FW_STATUS_2_SPI_ACCESS_MODE);
++	if (writeable_override)
++		dev_info(&pdev->dev, "SPI access overridden by jumper\n");
++	return writeable_override;
++}
 +
- 	mutex_lock(&spi->lock);
- 
- 	ret = spi_write(spi, region, to, len, buf);
-@@ -604,6 +629,8 @@ static int i915_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	*retlen = ret;
- 
- 	mutex_unlock(&spi->lock);
-+	pm_runtime_mark_last_busy(mtd->dev.parent);
-+	pm_runtime_put_autosuspend(mtd->dev.parent);
- 	return 0;
- }
- 
-@@ -749,6 +776,17 @@ static int i915_spi_probe(struct auxiliary_device *aux_dev,
- 		}
- 	}
- 
-+	pm_runtime_enable(device);
-+
-+	pm_runtime_set_autosuspend_delay(device, I915_SPI_RPM_TIMEOUT);
-+	pm_runtime_use_autosuspend(device);
-+
-+	ret = pm_runtime_resume_and_get(device);
-+	if (ret < 0) {
-+		dev_err(device, "rpm: get failed %d\n", ret);
-+		goto err_norpm;
-+	}
-+
- 	spi->base = devm_ioremap_resource(device, &ispi->bar);
- 	if (IS_ERR(spi->base)) {
- 		dev_err(device, "mmio not mapped\n");
-@@ -773,9 +811,13 @@ static int i915_spi_probe(struct auxiliary_device *aux_dev,
- 
- 	dev_dbg(device, "i915-spi is bound\n");
- 
-+	pm_runtime_put(device);
- 	return 0;
- 
- err:
-+	pm_runtime_put(device);
-+err_norpm:
-+	pm_runtime_disable(device);
- 	kref_put(&spi->refcnt, i915_spi_release);
- 	return ret;
- }
-@@ -787,6 +829,8 @@ static void i915_spi_remove(struct auxiliary_device *aux_dev)
- 	if (!spi)
+ void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
+@@ -31,6 +55,7 @@ void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
+ 	if (!IS_DGFX(dev_priv))
  		return;
  
-+	pm_runtime_disable(&aux_dev->dev);
-+
- 	mtd_device_unregister(&spi->mtd);
++	spi->writeable_override = i915_spi_writeable_override(dev_priv);
+ 	spi->bar.parent = &pdev->resource[0];
+ 	spi->bar.start = GEN12_GUNIT_SPI_BASE + pdev->resource[0].start;
+ 	spi->bar.end = spi->bar.start + GEN12_GUNIT_SPI_SIZE - 1;
+diff --git a/drivers/gpu/drm/i915/spi/intel_spi.h b/drivers/gpu/drm/i915/spi/intel_spi.h
+index 1ecf1a8581b4..83588fae8c5e 100644
+--- a/drivers/gpu/drm/i915/spi/intel_spi.h
++++ b/drivers/gpu/drm/i915/spi/intel_spi.h
+@@ -18,6 +18,7 @@ struct i915_spi_region {
+ struct intel_spi {
+ 	struct auxiliary_device aux_dev;
+ 	struct drm_i915_private *i915;
++	bool writeable_override;
+ 	struct resource bar;
+ 	const struct i915_spi_region *regions;
+ };
+diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
+index 6b514b137fd0..75b6939ea93d 100644
+--- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
++++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
+@@ -681,7 +681,7 @@ static void i915_spi_put_device(struct mtd_info *mtd)
+ }
  
- 	dev_set_drvdata(&aux_dev->dev, NULL);
+ static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
+-			     unsigned int nparts)
++			     unsigned int nparts, bool writeable_override)
+ {
+ 	unsigned int i;
+ 	unsigned int n;
+@@ -714,7 +714,7 @@ static int i915_spi_init_mtd(struct i915_spi *spi, struct device *device,
+ 		parts[n].name = spi->regions[i].name;
+ 		parts[n].offset  = spi->regions[i].offset;
+ 		parts[n].size = spi->regions[i].size;
+-		if (!spi->regions[i].is_writable)
++		if (!spi->regions[i].is_writable && !writeable_override)
+ 			parts[n].mask_flags = MTD_WRITEABLE;
+ 		n++;
+ 	}
+@@ -801,7 +801,7 @@ static int i915_spi_probe(struct auxiliary_device *aux_dev,
+ 		goto err;
+ 	}
+ 
+-	ret = i915_spi_init_mtd(spi, device, ret);
++	ret = i915_spi_init_mtd(spi, device, ret, ispi->writeable_override);
+ 	if (ret) {
+ 		dev_err(device, "i915-spi failed init mtd %d\n", ret);
+ 		goto err;
 -- 
 2.34.1
 
