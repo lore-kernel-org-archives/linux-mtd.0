@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A547EE57CD
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Sep 2023 12:44:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11F40EEB58F
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Sep 2023 12:44:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LsHVFcoQ2JmziwUcO06z0l681yN0Ks3SwiHarBn3+D0=; b=spSenfw7aBFqlE
-	GJbvKzyQESBxbUkN7oOpM2tcBQagmvhR6xSZt7JeGshHBwa5E2FvDxcdrYfh1jwkqZt3XDrwMC9kq
-	P5mKFch4iLGXxCrklfMZH9C/YAbplZGlafzxhZ1z8DeO2zjJ0T810piUoQkCWX3zlSb1PH8s/5ENy
-	Knd1hgOoTBjmRG85gkwxfrhXraigZUV9dKD8/cDgoOUxkEWZ7bOh7YGzLWBVYo+kQxv9yyB8jlI3U
-	QAh2lVXqK5ph4m1jGh+AnZ/oKxgXUVsI24c2ckfJQmoE6te+pXGFQQEIamZBB9B/GREHK3ap2BVSc
-	19Ow3GFxYSW5l1e20BxA==;
+	List-Owner; bh=dU9GsVixQckGIt6B/6UFDff4JhhVBYtsoB7IV9onsb0=; b=RDEqz1oQIdbzto
+	UnRpbKBF8uhqlSLZYSE1hZ+ZUDJJvbkbiilypvTIwKRuIVzSEazvxASNvDaqlV/trfWMeNeWriLR+
+	W3pdb8eFv3qyxC1ZQtAFyh/b3TxCmpGSNYUIQztTrlBpo8xnKcSdaG4it9bQ257Ko75Gs8acjTR8y
+	LEEv0eEdJrnM0KeMvAUxCWIZ6bqent//4u9cI8Id55Pj6aCJjO0G564VHpArzikf6b4LcWaeu9rfd
+	Bws1ZFSsdedqgyZBz28AC0db9ctnkWweXNLTmaGGxUtsix3a6rmYVvbpR5s3pde8AqgLtj762r/86
+	g2H5np06Uu0tJ5ms+i3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfJnv-00GbDG-30;
-	Sun, 10 Sep 2023 12:44:43 +0000
+	id 1qfJnk-00Gb8h-1l;
+	Sun, 10 Sep 2023 12:44:32 +0000
 Received: from mgamail.intel.com ([134.134.136.31])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfJnt-00Gb8g-1o
+	id 1qfJnh-00Gb7b-2n
 	for linux-mtd@lists.infradead.org;
-	Sun, 10 Sep 2023 12:44:43 +0000
+	Sun, 10 Sep 2023 12:44:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694349881; x=1725885881;
+  t=1694349869; x=1725885869;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=F5H4V20KEDXQap4ETYwsfIVnJWKphA4PGpqQO38aEQ4=;
-  b=ETqzoaPua/93N4lXzQwcqy5YOTJpb2bzv+f1Fr+8ukdr4Z9cbQyGw6KB
-   aGnOl/oV08T+gkX/f8HnrVdEc+CQlqC07kSTidtYJdeKAXJmHpkIkU8I3
-   IVyQIgeNePLCXlUWFY8nDBsSlb61Aa4HgePCZCYHtawj55164jc488wx3
-   NBhQM9FSohoYoxFz2NqrmTB7uzveWKzkBt7yJKTS6KeB/X0tKauqd49kd
-   WJyiUbU2t34C827q+gPtxUzcvEcWp8cG3lbLpsnp/oEKb5QZXR3tdHtdF
-   CkQKZBHkHVhWoGt8TztC3Avr6H+UE6EbnTBceMIV7BVjB6ZFFF4ERiUgh
+  bh=b+WVuxJ/7+WYK1mZRK+a0uoxf1QizTn6DptWsCSQOcs=;
+  b=hJLMWRxQYOAKl2pn2CjNQBvvuADFDzGMY3W0sheu3yx2sA+bim7PIR03
+   r/Buz6wIQMItScDRcOnxyg5aVMa6OtSAC4RkYMQdNNyXLkZuKfCD25Sun
+   zf+q4LdMooh1N3VZRZY7cmRGKcgem1s3DJ+r8kyjmu6TBR8uH0vCCkBJQ
+   uKDOpiADy5l1SDbx4iKoZ8JJLWxnzO9JkJhX0O8DYmqL4G/bKjPNCl4QY
+   k/X2j+aQQA9JxhweUcltLqxCMxZg6OsQn0RAozTA/ydpJgHEI3qE1E58E
+   Cn5SWAma9Hssc8FRdnzIIEZ62FlpB3jBDaLzAWfFKfbZ3tZBIQIxTpBIP
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441907106"
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="441907080"
 X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
-   d="scan'208";a="441907106"
+   d="scan'208";a="441907080"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:41 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1073815049"
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1073814990"
 X-IronPort-AV: E=Sophos;i="6.02,241,1688454000"; 
-   d="scan'208";a="1073815049"
+   d="scan'208";a="1073814990"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:38 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 05:44:25 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -62,18 +62,19 @@ Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
 	Vitaly Lubart <vitaly.lubart@intel.com>,
 	linux-mtd@lists.infradead.org,
 	intel-gfx@lists.freedesktop.org,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Lucas De Marchi <lucas.demarchi@intel.com>
-Subject: [PATCH 05/10] drm/i915/spi: implement spi access functions
-Date: Sun, 10 Sep 2023 15:39:44 +0300
-Message-Id: <20230910123949.1251964-6-alexander.usyskin@intel.com>
+	Jani Nikula <jani.nikula@intel.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH 01/10] drm/i915/spi: add spi device for discrete graphics
+Date: Sun, 10 Sep 2023 15:39:40 +0300
+Message-Id: <20230910123949.1251964-2-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230910123949.1251964-1-alexander.usyskin@intel.com>
 References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230910_054441_662456_9DC53066 
-X-CRM114-Status: GOOD (  17.54  )
+X-CRM114-CacheID: sfid-20230910_054430_028516_A138B822 
+X-CRM114-Status: GOOD (  21.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,243 +91,213 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tomas Winkler <tomas.winkler@intel.com>
+From: Jani Nikula <jani.nikula@intel.com>
 
-Implement spi_read() spi_erase() spi_write() functions.
+Enable access to internal spi on DGFX devices via a child device.
+The spi child device is exposed via auxiliary bus.
 
-CC: Lucas De Marchi <lucas.demarchi@intel.com>
 CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Vitaly Lubart <vitaly.lubart@intel.com>
 ---
- drivers/gpu/drm/i915/spi/intel_spi_drv.c | 199 +++++++++++++++++++++++
- 1 file changed, 199 insertions(+)
+ drivers/gpu/drm/i915/Makefile        |  3 ++
+ drivers/gpu/drm/i915/i915_driver.c   |  7 +++
+ drivers/gpu/drm/i915/i915_drv.h      |  4 ++
+ drivers/gpu/drm/i915/i915_reg.h      |  1 +
+ drivers/gpu/drm/i915/spi/intel_spi.c | 68 ++++++++++++++++++++++++++++
+ drivers/gpu/drm/i915/spi/intel_spi.h | 26 +++++++++++
+ 6 files changed, 109 insertions(+)
+ create mode 100644 drivers/gpu/drm/i915/spi/intel_spi.c
+ create mode 100644 drivers/gpu/drm/i915/spi/intel_spi.h
 
-diff --git a/drivers/gpu/drm/i915/spi/intel_spi_drv.c b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-index f32ea05f4f64..e3b78128ba76 100644
---- a/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-+++ b/drivers/gpu/drm/i915/spi/intel_spi_drv.c
-@@ -10,6 +10,9 @@
- #include <linux/io.h>
- #include <linux/device.h>
- #include <linux/slab.h>
-+#include <linux/sizes.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/delay.h>
- #include "spi/intel_spi.h"
+diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+index 79f65eff6bb2..f16870ad2615 100644
+--- a/drivers/gpu/drm/i915/Makefile
++++ b/drivers/gpu/drm/i915/Makefile
+@@ -222,6 +222,9 @@ i915-y += \
+ # graphics system controller (GSC) support
+ i915-y += gt/intel_gsc.o
  
- struct i915_spi {
-@@ -84,6 +87,33 @@ static inline u32 spi_read32(struct i915_spi *spi, u32 address)
- 	return ioread32(base + SPI_TRIGGER_REG);
- }
++# graphics spi device (DGFX) support
++i915-y += spi/intel_spi.o
++
+ # graphics hardware monitoring (HWMON) support
+ i915-$(CONFIG_HWMON) += i915_hwmon.o
  
-+static inline u64 spi_read64(struct i915_spi *spi, u32 address)
-+{
-+	void __iomem *base = spi->base;
-+
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	return readq(base + SPI_TRIGGER_REG);
-+}
-+
-+static void spi_write32(struct i915_spi *spi, u32 address, u32 data)
-+{
-+	void __iomem *base = spi->base;
-+
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	iowrite32(data, base + SPI_TRIGGER_REG);
-+}
-+
-+static void spi_write64(struct i915_spi *spi, u32 address, u64 data)
-+{
-+	void __iomem *base = spi->base;
-+
-+	iowrite32(address, base + SPI_ADDRESS_REG);
-+
-+	writeq(data, base + SPI_TRIGGER_REG);
-+}
-+
- static int spi_get_access_map(struct i915_spi *spi)
- {
- 	u32 flmap1;
-@@ -140,6 +170,175 @@ static int i915_spi_is_valid(struct i915_spi *spi)
- 	return 0;
- }
+diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
+index f8dbee7a5af7..aeeb34a8dde2 100644
+--- a/drivers/gpu/drm/i915/i915_driver.c
++++ b/drivers/gpu/drm/i915/i915_driver.c
+@@ -80,6 +80,8 @@
+ #include "soc/intel_dram.h"
+ #include "soc/intel_gmch.h"
  
-+__maybe_unused
-+static unsigned int spi_get_region(const struct i915_spi *spi, loff_t from)
++#include "spi/intel_spi.h"
++
+ #include "i915_debugfs.h"
+ #include "i915_driver.h"
+ #include "i915_drm_client.h"
+@@ -666,6 +668,8 @@ static void i915_driver_unregister(struct drm_i915_private *dev_priv)
+ 
+ 	i915_hwmon_unregister(dev_priv);
+ 
++	intel_spi_fini(&dev_priv->spi);
++
+ 	i915_perf_unregister(dev_priv);
+ 	i915_pmu_unregister(dev_priv);
+ 
+@@ -1133,6 +1137,9 @@ static int i915_drm_suspend_late(struct drm_device *dev, bool hibernation)
+ 
+ 	i915_gem_suspend_late(dev_priv);
+ 
++
++	intel_spi_init(&dev_priv->spi, dev_priv);
++
+ 	for_each_gt(gt, dev_priv, i)
+ 		intel_uncore_suspend(gt->uncore);
+ 
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 87ffc477c3b1..abc601200cb4 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -51,6 +51,8 @@
+ 
+ #include "soc/intel_pch.h"
+ 
++#include "spi/intel_spi.h"
++
+ #include "i915_drm_client.h"
+ #include "i915_gem.h"
+ #include "i915_gpu_error.h"
+@@ -315,6 +317,8 @@ struct drm_i915_private {
+ 
+ 	struct i915_perf perf;
+ 
++	struct intel_spi spi;
++
+ 	struct i915_hwmon *hwmon;
+ 
+ 	/* Abstract the submission mechanism (legacy ringbuffer or execlists) away */
+diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
+index e00e4d569ba9..0f8b01495b77 100644
+--- a/drivers/gpu/drm/i915/i915_reg.h
++++ b/drivers/gpu/drm/i915/i915_reg.h
+@@ -930,6 +930,7 @@
+ #define DG2_GSC_HECI2_BASE	0x00374000
+ #define MTL_GSC_HECI1_BASE	0x00116000
+ #define MTL_GSC_HECI2_BASE	0x00117000
++#define GEN12_GUNIT_SPI_BASE	0x00102040
+ 
+ #define HECI_H_CSR(base)	_MMIO((base) + 0x4)
+ #define   HECI_H_CSR_IE		REG_BIT(0)
+diff --git a/drivers/gpu/drm/i915/spi/intel_spi.c b/drivers/gpu/drm/i915/spi/intel_spi.c
+new file mode 100644
+index 000000000000..9eb5ab6bc4b9
+--- /dev/null
++++ b/drivers/gpu/drm/i915/spi/intel_spi.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: MIT
++/*
++ * Copyright(c) 2019-2022, Intel Corporation. All rights reserved.
++ */
++
++#include <linux/irq.h>
++#include "i915_reg.h"
++#include "i915_drv.h"
++#include "spi/intel_spi.h"
++
++#define GEN12_GUNIT_SPI_SIZE 0x80
++
++static void i915_spi_release_dev(struct device *dev)
 +{
-+	unsigned int i;
-+
-+	for (i = 0; i < spi->nregions; i++) {
-+		if ((spi->regions[i].offset + spi->regions[i].size - 1) > from &&
-+		    spi->regions[i].offset <= from &&
-+		    spi->regions[i].size != 0)
-+			break;
-+	}
-+
-+	return i;
 +}
 +
-+static ssize_t spi_rewrite_partial(struct i915_spi *spi, loff_t to,
-+			       loff_t offset, size_t len, const u32 *newdata)
++void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
 +{
-+	u32 data = spi_read32(spi, to);
++	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
++	struct auxiliary_device *aux_dev = &spi->aux_dev;
++	int ret;
 +
-+	if (spi_error(spi))
-+		return -EIO;
++	/* Only the DGFX devices have internal SPI */
++	if (!IS_DGFX(dev_priv))
++		return;
 +
-+	memcpy((u8 *)&data + offset, newdata, len);
++	spi->bar.parent = &pdev->resource[0];
++	spi->bar.start = GEN12_GUNIT_SPI_BASE + pdev->resource[0].start;
++	spi->bar.end = spi->bar.start + GEN12_GUNIT_SPI_SIZE - 1;
++	spi->bar.flags = IORESOURCE_MEM;
++	spi->bar.desc = IORES_DESC_NONE;
 +
-+	spi_write32(spi, to, data);
-+	if (spi_error(spi))
-+		return -EIO;
++	aux_dev->name = "spi";
++	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
++		       PCI_DEVID(pdev->bus->number, pdev->devfn);
++	aux_dev->dev.parent = &pdev->dev;
++	aux_dev->dev.release = i915_spi_release_dev;
 +
-+	return len;
++	ret = auxiliary_device_init(aux_dev);
++	if (ret) {
++		dev_err(&pdev->dev, "i915-spi aux init failed %d\n", ret);
++		return;
++	}
++
++	ret = auxiliary_device_add(aux_dev);
++	if (ret) {
++		dev_err(&pdev->dev, "i915-spi aux add failed %d\n", ret);
++		auxiliary_device_uninit(aux_dev);
++		return;
++	}
++
++	spi->i915 = dev_priv;
 +}
 +
-+__maybe_unused
-+static ssize_t spi_write(struct i915_spi *spi, u8 region,
-+			 loff_t to, size_t len, const unsigned char *buf)
++void intel_spi_fini(struct intel_spi *spi)
 +{
-+	size_t i;
-+	size_t len8;
-+	size_t len4;
-+	size_t to4;
-+	size_t to_shift;
-+	size_t len_s = len;
-+	ssize_t ret;
++	struct pci_dev *pdev;
 +
-+	spi_set_region_id(spi, region);
++	if (!spi->i915)
++		return;
 +
-+	to4 = ALIGN_DOWN(to, sizeof(u32));
-+	to_shift = min(sizeof(u32) - ((size_t)to - to4), len);
-+	if (to - to4) {
-+		ret = spi_rewrite_partial(spi, to4, to - to4, to_shift,
-+					  (uint32_t *)&buf[0]);
-+		if (ret < 0)
-+			return ret;
++	pdev = to_pci_dev(spi->i915->drm.dev);
 +
-+		buf += to_shift;
-+		to += to_shift;
-+		len_s -= to_shift;
-+	}
++	dev_dbg(&pdev->dev, "removing i915-spi cell\n");
 +
-+	len8 = ALIGN_DOWN(len_s, sizeof(u64));
-+	for (i = 0; i < len8; i += sizeof(u64)) {
-+		u64 data;
-+
-+		memcpy(&data, &buf[i], sizeof(u64));
-+		spi_write64(spi, to + i, data);
-+		if (spi_error(spi))
-+			return -EIO;
-+	}
-+
-+	len4 = len_s - len8;
-+	if (len4 >= sizeof(u32)) {
-+		u32 data;
-+
-+		memcpy(&data, &buf[i], sizeof(u32));
-+		spi_write32(spi, to + i, data);
-+		if (spi_error(spi))
-+			return -EIO;
-+		i += sizeof(u32);
-+		len4 -= sizeof(u32);
-+	}
-+
-+	if (len4 > 0) {
-+		ret = spi_rewrite_partial(spi, to + i, 0, len4,
-+					  (uint32_t *)&buf[i]);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return len;
++	auxiliary_device_delete(&spi->aux_dev);
++	auxiliary_device_uninit(&spi->aux_dev);
 +}
+diff --git a/drivers/gpu/drm/i915/spi/intel_spi.h b/drivers/gpu/drm/i915/spi/intel_spi.h
+new file mode 100644
+index 000000000000..a58bf79dcbc9
+--- /dev/null
++++ b/drivers/gpu/drm/i915/spi/intel_spi.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: MIT */
++/*
++ * Copyright(c) 2019-2022, Intel Corporation. All rights reserved.
++ */
 +
-+__maybe_unused
-+static ssize_t spi_read(struct i915_spi *spi, u8 region,
-+			loff_t from, size_t len, unsigned char *buf)
-+{
-+	size_t i;
-+	size_t len8;
-+	size_t len4;
-+	size_t from4;
-+	size_t from_shift;
-+	size_t len_s = len;
++#ifndef __INTEL_SPI_DEV_H__
++#define __INTEL_SPI_DEV_H__
 +
-+	spi_set_region_id(spi, region);
++#include <linux/auxiliary_bus.h>
 +
-+	from4 = ALIGN_DOWN(from, sizeof(u32));
-+	from_shift = min(sizeof(u32) - ((size_t)from - from4), len);
++struct drm_i915_private;
 +
-+	if (from - from4) {
-+		u32 data = spi_read32(spi, from4);
++struct intel_spi {
++	struct auxiliary_device aux_dev;
++	struct drm_i915_private *i915;
++	struct resource bar;
++};
 +
-+		if (spi_error(spi))
-+			return -EIO;
-+		memcpy(&buf[0], (u8 *)&data + (from - from4), from_shift);
-+		len_s -= from_shift;
-+		buf += from_shift;
-+		from += from_shift;
-+	}
++#define auxiliary_dev_to_intel_spi_dev(auxiliary_dev) \
++	container_of(auxiliary_dev, struct intel_spi, aux_dev)
 +
-+	len8 = ALIGN_DOWN(len_s, sizeof(u64));
-+	for (i = 0; i < len8; i += sizeof(u64)) {
-+		u64 data = spi_read64(spi, from + i);
++void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *i915);
 +
-+		if (spi_error(spi))
-+			return -EIO;
++void intel_spi_fini(struct intel_spi *spi);
 +
-+		memcpy(&buf[i], &data, sizeof(data));
-+	}
-+
-+	len4 = len_s - len8;
-+	if (len4 >= sizeof(u32)) {
-+		u32 data = spi_read32(spi, from + i);
-+
-+		if (spi_error(spi))
-+			return -EIO;
-+		memcpy(&buf[i], &data, sizeof(data));
-+		i += sizeof(u32);
-+		len4 -= sizeof(u32);
-+	}
-+
-+	if (len4 > 0) {
-+		u32 data = spi_read32(spi, from + i);
-+
-+		if (spi_error(spi))
-+			return -EIO;
-+		memcpy(&buf[i], &data, len4);
-+	}
-+
-+	return len;
-+}
-+
-+__maybe_unused
-+static ssize_t
-+spi_erase(struct i915_spi *spi, u8 region, loff_t from, u64 len, u64 *fail_addr)
-+{
-+	u64 i;
-+	const u32 block = 0x10;
-+	void __iomem *base = spi->base;
-+
-+	for (i = 0; i < len; i += SZ_4K) {
-+		iowrite32(from + i, base + SPI_ADDRESS_REG);
-+		iowrite32(region << 24 | block, base + SPI_ERASE_REG);
-+		/* Since the writes are via sguint
-+		 * we cannot do back to back erases.
-+		 */
-+		msleep(50);
-+	}
-+	return len;
-+}
-+
- static int i915_spi_init(struct i915_spi *spi, struct device *device)
- {
- 	int ret;
++#endif /* __INTEL_SPI_DEV_H__ */
 -- 
 2.34.1
 
