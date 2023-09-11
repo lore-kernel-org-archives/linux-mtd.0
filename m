@@ -4,63 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4683EE57DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 15:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ECCCEE7FF4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 15:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2dwVTf3/terw/r5Nk5PP4gHclB52k3oCXD4SR9TwX10=; b=AfbpuI/R9vES3h
-	9hRjDMNrREjNOGDI1RNIPqARjOlae3AYm83nufPXG1UsG5m08VJYc4nO7qngkVfFuFgJocKLvl1+y
-	PsF/YKSQdf0JH6kL5KLHGISodkvmRdBgngy5U1GaQwlblrp9PLsRr1K8noGpxgCS5lcY00wXmgVlV
-	5wa22D4SCwIR+oTOOzuhwCnXaYct/1hhpmn17cCipOimMbTFZecyjRtrTBREKLJOeOxTHQCSnRK55
-	llhyKGuA18Ft+ZBUqYP9Bcz+EWrPUaw7ZYISMqC3KPVuTjfFIZ6laGGb1GlMgFNQQraq4bOb094n8
-	oUHUxfAhVKXfX1NpeRfQ==;
+	List-Owner; bh=p5jKTAtmGVlRiIBS6kcDIqrl7KgJ3lAStbhlelVNAow=; b=QaxVaq6icwpw+1
+	GPTZAJpHNIvK7uVCkaRmRPfC/5DJGUDRmC4YCEQLKj7JuaYzZxBgUshf9n/J7gz7jDi8oXHOUK0jY
+	H2ZEXu1gHkA3LmRMxdspIVMLYjnQRccMeHsuujlNN6izR7VzPGujtixpSlZMflFIr5u7ohXYoD3S2
+	dWmbyk67N4sk+1Si58xb4wTddmfb2gDDCbhVEtfOid/i2YQgZnH6yo3bU7esjOjjVnIjq3ehPgjNq
+	znp2rPrhdv+uO4YiflCLjcgEA0bDKm9mReYKG8gTe5CYoovhvpnzp0/+wVt6yGyNJybXt9BpO/lDa
+	ud4c9fLketB+gyuiIkjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfj34-000v1p-1F;
-	Mon, 11 Sep 2023 15:42:02 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1qfj2v-000v0k-20;
+	Mon, 11 Sep 2023 15:41:53 +0000
+Received: from mgamail.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfj30-000v18-2k
+	id 1qfj2s-000uze-28
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Sep 2023 15:42:00 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BF6F6E0018;
-	Mon, 11 Sep 2023 15:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1694446915;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8eGFlRAiKwz7g/fasY8Jk6HfMvuOa7JI1wixiyPB1o0=;
-	b=kr2EVhvMPtWMwb5y+Kvze/QsqQazMWGPWzFvc5PrkpprxXZfVN3kthJ9G9iHjOAx3BuS6Z
-	wA4IUI8fg/NmFxbGJ1cmQoXP4ReVJp+NKp3ii5ILXwKto5dFoCjC5KiQ18HfSwcTltQ7oN
-	1B+sZIAQHqL9yxkPnTL2xU3gH7nFjDWNsKjNWs1q6sA1NSlKtXXTvNYxy0z1eLM5TIhZdP
-	E3k8wrl6yxNiNr6zgiXmLRj7WMkm+r+00R6w0hVYKCsdat0maMi0xBkkRSIjib5oP8T8Y5
-	bPQHCa/IGCq2UNjzUN3qTju1uxSdXewX/xr/KFLR3+NvRrN2WTBBg2IrA42QYg==
-Date: Mon, 11 Sep 2023 17:40:39 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc: <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
- <quic_charnte@quicinc.com>, <quic_kaushalk@quicinc.com>,
- <quic_pkondeti@quicinc.com>
-Subject: Re: [PATCH v2] mtd: nand: qcom: Fix the node for nand unmap
- resource
-Message-ID: <20230911174039.63f6e835@xps-13>
-In-Reply-To: <20230911133026.29868-1-quic_bibekkum@quicinc.com>
-References: <20230911133026.29868-1-quic_bibekkum@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Mon, 11 Sep 2023 15:41:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694446910; x=1725982910;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=6W9idaRnJKAddi7Iu6iBf1emm6+cGQuWKTdySZJmups=;
+  b=KY728PLqRzJ63Zp9b//lia7Bi8BJAxkLzXudoM/IGgWLCNhY3dqb4GZ3
+   Q51XdqukAFYm6p1Cc2ZBlapsx3a8QxWW+ML4lG8vOP25/5ukBVaiROOcW
+   wPa6nZu1dkhC6q8rsosvCeitcSDIrLHL150wvuapkuu1gW6WLON8H8a60
+   kQj7hC0LVXAR72tZPIH9JLpQ1P6tqerfRgmJptCNVDQ8xXQAU86qIh7Y3
+   HCWkjBthl6nEDU9lwUegY47Y5munvvz2nyJu0hB4kaTV/AqEwuxYY1caq
+   w85JLc/78CNJh8SgKWKXxcqsiJoNO4BLmjWm7k3YX0dqHFrUmtmjhm+/j
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357555306"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="357555306"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:41:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736810066"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="736810066"
+Received: from kschuele-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.119])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:41:30 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Alexander Usyskin <alexander.usyskin@intel.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>, Vitaly Lubart
+ <vitaly.lubart@intel.com>, linux-mtd@lists.infradead.org,
+ intel-gfx@lists.freedesktop.org, Lucas De Marchi
+ <lucas.demarchi@intel.com>, Tomas Winkler <tomas.winkler@intel.com>
+Subject: Re: [PATCH 01/10] drm/i915/spi: add spi device for discrete graphics
+In-Reply-To: <20230910123949.1251964-2-alexander.usyskin@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
+ <20230910123949.1251964-2-alexander.usyskin@intel.com>
+Date: Mon, 11 Sep 2023 18:41:27 +0300
+Message-ID: <87msxsemzc.fsf@intel.com>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_084159_173967_324AC527 
-X-CRM114-Status: GOOD (  14.58  )
+X-CRM114-CacheID: sfid-20230911_084150_714444_BEDBDF23 
+X-CRM114-Status: GOOD (  24.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,38 +82,231 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQmliZWssCgpxdWljX2JpYmVra3VtQHF1aWNpbmMuY29tIHdyb3RlIG9uIE1vbiwgMTEgU2Vw
-IDIwMjMgMTk6MDA6MjYgKzA1MzA6CgpUaGUgdGl0bGUgcHJlZml4IHNob3VsZCBiZSBzL25hbmQv
-cmF3bmFuZC4KClRoZSB0aXRsZSBpdHNlbGYgaXMgdW5jbGVhciAiZml4IHRoZSBub2RlIiBkb2Vz
-IG5vdCBtZWFuIGFueXRoaW5nIHRvIG1lLgoKPiBGaXggYWRkciBhcmd1bWVudCB0byBkbWFfdW5t
-YXBfcmVzb3VyY2UoKSBpbiB0aGUgZXJyb3IgcGF0aCBvZiBwcm9iZS4KCiAgICAgIF4KTm8gYWJi
-cmV2aWF0aW9uIHVubGVzcyB5b3UgYXJlIHF1b3RpbmcgdGhlIGNvZGUgZGlyZWN0bHkuCgogICAg
-ICAgICAgICAgICAgICAgIG9mPyAgICAgICAgICAgICAgICAgICAgICAgICAgICBwcm9iZSBlcnJv
-ciBwYXRoCgo+IFRoZSBhZGRyIGFyZ3VtZW50IHNob3VsZCBiZSBkbWEgYWRkcmVzcyBpbnN0ZWFk
-IG9mIHBoeXNpY2FsIGFkZHJlc3MuCiAgICAgIF4gICAgICAgICAgICAgICAgICAgICAgXiAgICAg
-ICAgICAgICAgICAgICAgICBeCiAgICAgIGRpdHRvICAgICAgICAgICAgICAgICAgdGhlPyAgICAg
-ICAgICAgICAgICAgICB0aGU/Cgo+IAo+IEZpeGVzOiA3MzMwZmM1MDVhZjQgKCJtdGQ6IHJhd25h
-bmQ6IHFjb206IHN0b3AgdXNpbmcgcGh5c190b19kbWEoKSIpCj4gU2lnbmVkLW9mZi1ieTogQmli
-ZWsgS3VtYXIgUGF0cm8gPHF1aWNfYmliZWtrdW1AcXVpY2luYy5jb20+Cj4gLS0tCj4gdjI6IElu
-Y29ycG9yYXRlZCBjb21tZW50cyBmcm9tIFBhdmFuL01hbmkuCj4gCj4gdjE6IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2FsbC8yMDIzMDkwNzA5Mjg1NC4xMTQwOC0xLXF1aWNfYmliZWtrdW1AcXVp
-Y2luYy5jb20vCj4gCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyB8IDIgKy0K
-PiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+IGluZGV4IDY0NDk5YzFiMzYwMy4uYjA3OTYwNWM4NGQz
-IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+ICsrKyBi
-L2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+IEBAIC0zNDQ0LDcgKzM0NDQsNyBA
-QCBzdGF0aWMgaW50IHFjb21fbmFuZGNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
-dikKPiAgZXJyX2Fvbl9jbGs6Cj4gIAljbGtfZGlzYWJsZV91bnByZXBhcmUobmFuZGMtPmNvcmVf
-Y2xrKTsKPiAgZXJyX2NvcmVfY2xrOgo+IC0JZG1hX3VubWFwX3Jlc291cmNlKGRldiwgcmVzLT5z
-dGFydCwgcmVzb3VyY2Vfc2l6ZShyZXMpLAo+ICsJZG1hX3VubWFwX3Jlc291cmNlKGRldiwgbmFu
-ZGMtPmJhc2VfZG1hLCByZXNvdXJjZV9zaXplKHJlcyksCj4gIAkJCSAgIERNQV9CSURJUkVDVElP
-TkFMLCAwKTsKPiAgCXJldHVybiByZXQ7Cj4gIH0KPiAtLQo+IDIuMTcuMQo+IAoKClRoYW5rcywK
-TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Sun, 10 Sep 2023, Alexander Usyskin <alexander.usyskin@intel.com> wrote:
+> From: Jani Nikula <jani.nikula@intel.com>
+
+I'm almost certain I did not write this patch originally. The authorship
+may have been changed accidentally along the way, but it's not mine.
+
+BR,
+Jani.
+
+
+>
+> Enable access to internal spi on DGFX devices via a child device.
+> The spi child device is exposed via auxiliary bus.
+>
+> CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> CC: Lucas De Marchi <lucas.demarchi@intel.com>
+> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> ---
+>  drivers/gpu/drm/i915/Makefile        |  3 ++
+>  drivers/gpu/drm/i915/i915_driver.c   |  7 +++
+>  drivers/gpu/drm/i915/i915_drv.h      |  4 ++
+>  drivers/gpu/drm/i915/i915_reg.h      |  1 +
+>  drivers/gpu/drm/i915/spi/intel_spi.c | 68 ++++++++++++++++++++++++++++
+>  drivers/gpu/drm/i915/spi/intel_spi.h | 26 +++++++++++
+>  6 files changed, 109 insertions(+)
+>  create mode 100644 drivers/gpu/drm/i915/spi/intel_spi.c
+>  create mode 100644 drivers/gpu/drm/i915/spi/intel_spi.h
+>
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index 79f65eff6bb2..f16870ad2615 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -222,6 +222,9 @@ i915-y += \
+>  # graphics system controller (GSC) support
+>  i915-y += gt/intel_gsc.o
+>  
+> +# graphics spi device (DGFX) support
+> +i915-y += spi/intel_spi.o
+> +
+>  # graphics hardware monitoring (HWMON) support
+>  i915-$(CONFIG_HWMON) += i915_hwmon.o
+>  
+> diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
+> index f8dbee7a5af7..aeeb34a8dde2 100644
+> --- a/drivers/gpu/drm/i915/i915_driver.c
+> +++ b/drivers/gpu/drm/i915/i915_driver.c
+> @@ -80,6 +80,8 @@
+>  #include "soc/intel_dram.h"
+>  #include "soc/intel_gmch.h"
+>  
+> +#include "spi/intel_spi.h"
+> +
+>  #include "i915_debugfs.h"
+>  #include "i915_driver.h"
+>  #include "i915_drm_client.h"
+> @@ -666,6 +668,8 @@ static void i915_driver_unregister(struct drm_i915_private *dev_priv)
+>  
+>  	i915_hwmon_unregister(dev_priv);
+>  
+> +	intel_spi_fini(&dev_priv->spi);
+> +
+>  	i915_perf_unregister(dev_priv);
+>  	i915_pmu_unregister(dev_priv);
+>  
+> @@ -1133,6 +1137,9 @@ static int i915_drm_suspend_late(struct drm_device *dev, bool hibernation)
+>  
+>  	i915_gem_suspend_late(dev_priv);
+>  
+> +
+> +	intel_spi_init(&dev_priv->spi, dev_priv);
+> +
+>  	for_each_gt(gt, dev_priv, i)
+>  		intel_uncore_suspend(gt->uncore);
+>  
+> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+> index 87ffc477c3b1..abc601200cb4 100644
+> --- a/drivers/gpu/drm/i915/i915_drv.h
+> +++ b/drivers/gpu/drm/i915/i915_drv.h
+> @@ -51,6 +51,8 @@
+>  
+>  #include "soc/intel_pch.h"
+>  
+> +#include "spi/intel_spi.h"
+> +
+>  #include "i915_drm_client.h"
+>  #include "i915_gem.h"
+>  #include "i915_gpu_error.h"
+> @@ -315,6 +317,8 @@ struct drm_i915_private {
+>  
+>  	struct i915_perf perf;
+>  
+> +	struct intel_spi spi;
+> +
+>  	struct i915_hwmon *hwmon;
+>  
+>  	/* Abstract the submission mechanism (legacy ringbuffer or execlists) away */
+> diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
+> index e00e4d569ba9..0f8b01495b77 100644
+> --- a/drivers/gpu/drm/i915/i915_reg.h
+> +++ b/drivers/gpu/drm/i915/i915_reg.h
+> @@ -930,6 +930,7 @@
+>  #define DG2_GSC_HECI2_BASE	0x00374000
+>  #define MTL_GSC_HECI1_BASE	0x00116000
+>  #define MTL_GSC_HECI2_BASE	0x00117000
+> +#define GEN12_GUNIT_SPI_BASE	0x00102040
+>  
+>  #define HECI_H_CSR(base)	_MMIO((base) + 0x4)
+>  #define   HECI_H_CSR_IE		REG_BIT(0)
+> diff --git a/drivers/gpu/drm/i915/spi/intel_spi.c b/drivers/gpu/drm/i915/spi/intel_spi.c
+> new file mode 100644
+> index 000000000000..9eb5ab6bc4b9
+> --- /dev/null
+> +++ b/drivers/gpu/drm/i915/spi/intel_spi.c
+> @@ -0,0 +1,68 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright(c) 2019-2022, Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/irq.h>
+> +#include "i915_reg.h"
+> +#include "i915_drv.h"
+> +#include "spi/intel_spi.h"
+> +
+> +#define GEN12_GUNIT_SPI_SIZE 0x80
+> +
+> +static void i915_spi_release_dev(struct device *dev)
+> +{
+> +}
+> +
+> +void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *dev_priv)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
+> +	struct auxiliary_device *aux_dev = &spi->aux_dev;
+> +	int ret;
+> +
+> +	/* Only the DGFX devices have internal SPI */
+> +	if (!IS_DGFX(dev_priv))
+> +		return;
+> +
+> +	spi->bar.parent = &pdev->resource[0];
+> +	spi->bar.start = GEN12_GUNIT_SPI_BASE + pdev->resource[0].start;
+> +	spi->bar.end = spi->bar.start + GEN12_GUNIT_SPI_SIZE - 1;
+> +	spi->bar.flags = IORESOURCE_MEM;
+> +	spi->bar.desc = IORES_DESC_NONE;
+> +
+> +	aux_dev->name = "spi";
+> +	aux_dev->id = (pci_domain_nr(pdev->bus) << 16) |
+> +		       PCI_DEVID(pdev->bus->number, pdev->devfn);
+> +	aux_dev->dev.parent = &pdev->dev;
+> +	aux_dev->dev.release = i915_spi_release_dev;
+> +
+> +	ret = auxiliary_device_init(aux_dev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "i915-spi aux init failed %d\n", ret);
+> +		return;
+> +	}
+> +
+> +	ret = auxiliary_device_add(aux_dev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "i915-spi aux add failed %d\n", ret);
+> +		auxiliary_device_uninit(aux_dev);
+> +		return;
+> +	}
+> +
+> +	spi->i915 = dev_priv;
+> +}
+> +
+> +void intel_spi_fini(struct intel_spi *spi)
+> +{
+> +	struct pci_dev *pdev;
+> +
+> +	if (!spi->i915)
+> +		return;
+> +
+> +	pdev = to_pci_dev(spi->i915->drm.dev);
+> +
+> +	dev_dbg(&pdev->dev, "removing i915-spi cell\n");
+> +
+> +	auxiliary_device_delete(&spi->aux_dev);
+> +	auxiliary_device_uninit(&spi->aux_dev);
+> +}
+> diff --git a/drivers/gpu/drm/i915/spi/intel_spi.h b/drivers/gpu/drm/i915/spi/intel_spi.h
+> new file mode 100644
+> index 000000000000..a58bf79dcbc9
+> --- /dev/null
+> +++ b/drivers/gpu/drm/i915/spi/intel_spi.h
+> @@ -0,0 +1,26 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright(c) 2019-2022, Intel Corporation. All rights reserved.
+> + */
+> +
+> +#ifndef __INTEL_SPI_DEV_H__
+> +#define __INTEL_SPI_DEV_H__
+> +
+> +#include <linux/auxiliary_bus.h>
+> +
+> +struct drm_i915_private;
+> +
+> +struct intel_spi {
+> +	struct auxiliary_device aux_dev;
+> +	struct drm_i915_private *i915;
+> +	struct resource bar;
+> +};
+> +
+> +#define auxiliary_dev_to_intel_spi_dev(auxiliary_dev) \
+> +	container_of(auxiliary_dev, struct intel_spi, aux_dev)
+> +
+> +void intel_spi_init(struct intel_spi *spi, struct drm_i915_private *i915);
+> +
+> +void intel_spi_fini(struct intel_spi *spi);
+> +
+> +#endif /* __INTEL_SPI_DEV_H__ */
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
