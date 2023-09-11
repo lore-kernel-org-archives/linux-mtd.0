@@ -4,67 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 935A9EE7FF4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 16:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3ECFC71153
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 19:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RW11Mw03DiEgdkhxyLjmXX/fJZclU53QrVXf3wJapyA=; b=el6oQ+MKgu86zF
-	Ijoa+g4nSS32pk3WrBrrxmYVelG7aesjAJWjekTfc4BksaHKWRRBQ6e+7S9YoRnVQATlnpuCiR7mV
-	OiWyjeoGSHxwSdr4YxYO/g2tD05C3mtID+hYUDDir4EuMGtfrdN3hA1IJ5GozahibjjcUBefjH6QY
-	3uCcIaTM79cPJjd0i6YRbbbLE24EeqBke6SHBOTQxHq5YJyGvkrtWNoIdhgKm9xN5QK0Wh7rc5TJl
-	63ofZQv4atKH0odN5lO5ZTJL4WCdP/N9oOQNTK9jG7RprawSO6IHRuPi6aSKegSXnQ6OYzkj1IaH3
-	FcBLzG/4eL8WWUM2EpEA==;
+	List-Owner; bh=xcnYfwuJcQ1/1ZWDOSxcH+3mIZBgFa8XSCp8M3tTO9k=; b=oChG782Hn46BL2
+	Nst/316cvdHcleWQeoCdQD6qQBjAKj3IKQEXkuKt744NbW4c7WFINIwNn3Gxxga0Rg55D64mfobn5
+	STrlOJSbgWnKVSVkpLuaCXfdsxtVdGoAiPveNPQh+zdeQ2C23WOKXvz1ZrSbuaWdxdjqyY0WPTndc
+	VHOSJYJu7G1sO66p6bbIy4lnUP63QDLOKASCN1G7mE4OUmhK1MeI/1CnaJwX0DHl+Gmwx74DiGBUP
+	6o9bnBIcDeGU9Tl0Rs8kAjE7x/9Bq5iTn7e0XHLyHUAk/tuJ7kwGw5gjdJlLkPgK7ny6OAbjPii9S
+	I6roFPxcQdUIs3RpT6mA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfjLz-000xpZ-1f;
-	Mon, 11 Sep 2023 16:01:35 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1qfmAp-001AB0-0P;
+	Mon, 11 Sep 2023 19:02:15 +0000
+Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfjLw-000xoV-2R
+	id 1qfmAm-001AAH-06
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Sep 2023 16:01:34 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 075FAE0013;
-	Mon, 11 Sep 2023 16:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1694448090;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sT3sIEgnDAPmbMmKAxi4DaIOxp4PPYZ7A94TCO0dIuo=;
-	b=ThG5mr0cHWyhgG4lKLmP54mpyWzMKVUbvyH+GzhbI9IYmq2/obfQjzUvpyS/SO254F8UxB
-	/DbpU2qz8IaM4kTOZahiYEBJ5r7OF2QFVUga9xbMvnVj4WRm9O6LkCqHlIMhmJRLYWg/YT
-	FJDTzYc1GoesqLDa6su7pMF1CaSmIfzdg5IFzi2N4LDWqU10OwiSxD0fBmkm74eMA/W60s
-	YCL6SpZXilKpplgMT5pW2fRdS2TvfvbDDhIREg90XPyGR6GS3fPjemoHzpiAQESv8Yy7Sq
-	sWRqQOtlazITMpWflHaAHWPfKldvAzXBqLVwPJ17cbrpNbZtFTm9YEAGbQngSw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Yi Yang <yiyang13@huawei.com>,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: martin.blumenstingl@googlemail.com,
-	heiko@sntech.de,
-	jernej.skrabec@gmail.com,
-	nicolas.ferre@microchip.com,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: omap2: Fix check 0 for platform_get_irq()
-Date: Mon, 11 Sep 2023 18:00:29 +0200
-Message-Id: <20230911160029.764619-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230821084622.218442-1-yiyang13@huawei.com>
-References: 
+	Mon, 11 Sep 2023 19:02:13 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1qfmAg-0000w8-1z;
+	Mon, 11 Sep 2023 19:02:06 +0000
+Date: Mon, 11 Sep 2023 20:01:57 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: linux-mtd@lists.infradead.org
+Cc: Zhihao Cheng <chengzhihao1@huawei.com>, Rob Herring <robh@kernel.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/8] dt-bindings: mtd: add basic bindings for UBI
+Message-ID: <ZP9kJYHMFwZ8GFnA@makrotopia.org>
+References: <cover.1691717480.git.daniel@makrotopia.org>
+ <a640bb10e6fbaeef96efdb9e8b666ca39e993589.1691717480.git.daniel@makrotopia.org>
+ <169263908218.2000617.16931192155432403196.robh@kernel.org>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c29cc4a95fa84c2c1dc8b1b990365a86a5458070'
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <169263908218.2000617.16931192155432403196.robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_090132_942668_56BB198E 
-X-CRM114-Status: UNSURE (   6.01  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230911_120212_065856_9DFD0237 
+X-CRM114-Status: GOOD (  10.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,17 +71,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2023-08-21 at 08:46:22 UTC, Yi Yang wrote:
-> Refer to commit a85a6c86c25b ("driver core: platform: Clarify that IRQ
-> 0 is invalid"). Do not check 0 for platform_get_irq(), because
-> platform_get_irq() never return zero, and use the return error code of
-> platform_get_irq() instead of -ENODEV.
+On Mon, Aug 21, 2023 at 12:31:22PM -0500, Rob Herring wrote:
+> On Fri, 11 Aug 2023 02:36:37 +0100, Daniel Golle wrote:
+> > Add basic bindings for UBI devices and volumes.
+> > 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > 
-> Signed-off-by: Yi Yang <yiyang13@huawei.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Patch 3 - 7 have previously been discussed on the mailing list, patch
+1 and 2 have been reviewed by Rob, patch 8 ("mtd: ubi: provide NVMEM
+layer over UBI volumes") still needs review.
 
-Miquel
+Is there anything I can do from my end to have this series moving
+forward?
+
+Patchwork: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=368347
+
+
+Thank you for your advise!
+
+
+Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
