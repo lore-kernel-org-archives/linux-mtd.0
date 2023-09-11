@@ -4,89 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DACBEE7FF4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 10:36:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B133AEE7FF4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 12:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YZLoAGO31FVOknoFPmP+UzZK+5zF/DPjR4nMnQ9DWOU=; b=H7YAiIcfExTJOE
-	LDg7Gqzd2vLvPbfdZcv3nT+9pwnsLuK5fupdbaSK3dFANz+miSBBa+znyL9YvIPEF2cHWi82UrIdY
-	km6kywu85oXxJp/lAEUYTYPihDWhkjEvuJFY6PVfyP5BuxOhwHRD0rz0mv4uj/KE+syYm5idZh+Ig
-	sAp7nc2bwF2bUq9eJSzKpWbfZHOUTaFj5Sg1VeEHFQYv5FpO2u1sukKCmAEEE+WujaYAExlLgmuIC
-	DplH8DB7luk30Cmtm0NO78/slphDISMFbjgcBuf/SFbvHkpXHamHlUO+nMZkik9oxt5wD02apBbQa
-	sd5fSfQd8PyiAhGnywrg==;
+	List-Owner; bh=mZjEf48XEQz08X6AgSTB1lFYUSiH0T4fzbogZ8jLIV0=; b=HAwBjIDUm8XnjQ
+	ZKGobS8rfc20h/y0DunwBPumOeJUaZZC+4joj6YPiHcCE/9SHbqwLaCyNB8ozbdY/dyDW0GzesYKg
+	AvWaoxFWsoAuc0nfZfDuWGn5k37mcs0V4DLeL54u/bnt16Fqyi9bKh5sJZR51fm0HbW4iWBxAN3NB
+	SRlD4Kro83AyoYAFFiJB37ohbuOo0SHhYIAZLef24MO+hQRubr5b8c1MPdU375/4lhH4Eak5RFuyM
+	JdOh284GLsbkJAyZVhXvoZq2c3F5Y3ZWpQfqRqz8WecGgpoKk4QWCPIV46x8qPnrWVuT8UOHDClgs
+	uj/OyxQegQNzD+OO0LBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfeHc-000Gbx-0V;
-	Mon, 11 Sep 2023 10:36:44 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1qfgJa-000VlC-0c;
+	Mon, 11 Sep 2023 12:46:54 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfeHZ-000GXg-1b
+	id 1qfgJV-000Vki-2u
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Sep 2023 10:36:43 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 04A5E12000F;
-	Mon, 11 Sep 2023 13:36:37 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 04A5E12000F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1694428597;
-	bh=xZXkJdTIbSykxSL3kxqxR0usaF3vKuC+qdgbFYHvxYk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=roQOTFKgbM6v0ed7lyi1eluGNIl21d7ZLv9GkCdq4P8rxcaqNvPZ8PEAjEQNA27+s
-	 PkIguazeqlAcu3/2URHLUCzCD4w4jhNQlnxrhhGnoXdSE34uop0MQUbiISbHLwrxx8
-	 h0OVd/Ej00c27XjWZE1V3umWrLKc0GTg2Qwv0tz9lH4eN3kI0iTIgqRYeCQgDzGm8M
-	 Z4jd7xQ8HD7AMdHhnoBr3Gf4luMzLRl44DcoijvH77iB73CS28WfePUyigqBUc7WiS
-	 fLxSKgDAnyeRn4i7pTW0I3dsqHi+ivu+Qmm/PjsV/5lyXQWLAgVVhtneRuAe3T6ZP6
-	 kpuM6d/ObbvJg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 11 Sep 2023 13:36:36 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 11 Sep 2023 13:36:36 +0300
-Message-ID: <7ab06111-5208-77b2-0f09-0751de23ae66@salutedevices.com>
-Date: Mon, 11 Sep 2023 13:30:00 +0300
+	Mon, 11 Sep 2023 12:46:51 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B9AHUG027134;
+	Mon, 11 Sep 2023 12:46:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=F2GqWFAwwo6RJV4S/9uYLYRwfMTagSoppG6D6MLjYww=;
+ b=ZfCKNloy/JB5eSY+bMKm0AlzOxyDu7aecCh3pbc+SLooIKHqUQXJywgXDdeuX2iXfngi
+ FyUQMJQm2wiTpavDYhmsajlCY+NYUh5ZjsHyxFu8mbImuybR9RUvyYwEiJ1DWDCX9GEX
+ UEraAOqxgy7nNIVJxFA8LSyP8aOVOrz57wLMMoMvDeTGbJoIapf9U04qzA92fqfQmFoL
+ Dm+XL5XHPsUQbUFdS29/wMpaAVyRlzt/11xgqpVRv4jEeabbNSsLo1BarsVtQlN/fGxE
+ uNIAiCOtAmTei22mr4MJHoByO345hq8eK1c07C+ozos1ccK0HbmzXM4IjhYGRlQhhlg/ HQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0h3ducse-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Sep 2023 12:46:34 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BCkXw5014435
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Sep 2023 12:46:33 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 11 Sep
+ 2023 05:46:28 -0700
+Message-ID: <7a69b1e7-7b08-433b-b201-f36ce93c7761@quicinc.com>
+Date: Mon, 11 Sep 2023 18:16:19 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v1] mtd: rawnand: remove 'nand_exit_status_op()' prototype
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: nand: qcom: Fix the node for nand unmap resource
 Content-Language: en-US
-To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Johan Jonker <jbx6244@gmail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179766 [Sep 11 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/11 06:02:00 #21866861
-X-KSMG-AntiVirus-Status: Clean, skipped
+To: Manivannan Sadhasivam <mani@kernel.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>
+References: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
+ <20230909060327.GA5847@thinkpad>
+From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <20230909060327.GA5847@thinkpad>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8meB8A5DaHBM3mmj4I2wkeBP_UI2314i
+X-Proofpoint-ORIG-GUID: 8meB8A5DaHBM3mmj4I2wkeBP_UI2314i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309110115
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_033641_890809_A8B8050C 
-X-CRM114-Status: GOOD (  13.99  )
+X-CRM114-CacheID: sfid-20230911_054650_092769_773AD35B 
+X-CRM114-Status: GOOD (  21.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,36 +95,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Please, ping
 
-Thanks, Arseniy
 
-On 23.08.2023 13:52, Arseniy Krasnov wrote:
-> This function is exported and its prototype is already placed in
-> include/linux/mtd/rawnand.h.
+On 9/9/2023 11:33 AM, Manivannan Sadhasivam wrote:
+> On Thu, Sep 07, 2023 at 02:58:54PM +0530, Bibek Kumar Patro wrote:
+>> While unmapping the nand resource in case of err_core_clk
+>> the dev node being passed is res_start instead of nand->dma_base
+>> (where the iova returned from map operation is stored) causing
+>> failure in unmap operation. Hence modifying the unmap operation
+>> to pass the nand->base_dma instead of res_start.
+>>
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>> ---
+>>   drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index f583022755a2..e085a0f588eb 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -3322,7 +3322,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+>>   err_aon_clk:
+>>   	clk_disable_unprepare(nandc->core_clk);
+>>   err_core_clk:
+>> -	dma_unmap_resource(dev, res->start, resource_size(res),
+>> +	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
+>>   			   DMA_BIDIRECTIONAL, 0);
+>>   	dev_err(&pdev->dev, "DEBUG: probe failed for nandc module\n");
 > 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> ---
->  drivers/mtd/nand/raw/internals.h | 1 -
->  1 file changed, 1 deletion(-)
+> This error indicates that you are sending the patch against downstream tree.
+> That's not appropriate. Please send your patches against mainline/mtd-next
+> instead and also validate properly.
 > 
-> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
-> index e9932da18bdd..b7162ced9efa 100644
-> --- a/drivers/mtd/nand/raw/internals.h
-> +++ b/drivers/mtd/nand/raw/internals.h
-> @@ -106,7 +106,6 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
->  			       int oob_required, int page);
->  int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
->  				int oob_required, int page);
-> -int nand_exit_status_op(struct nand_chip *chip);
->  int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
->  			    unsigned int len);
->  void nand_decode_ext_id(struct nand_chip *chip);
+> - Mani
+
+This patch is created against upstream tree only,
+These debug prints got added from a conflicting patch
+created for debugging.
+apologies for this mistake. Will revise this and send
+a new patch set.
+
+regards,
+Bibek
+
+
+> 
+>>   	return ret;
+>> -- 
+>> 2.17.1
+>>
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
