@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDC8AEE57DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 15:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FFB4EE7FF4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 15:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6Vknat1CcmOQNIPx3yCeH4PhrDQTjznK22rzlHcALXU=; b=dQsGHT8bvxmR8s
-	GE8/vinJri7uEH+q+GWi1+d0TGxnwZD+YTaXccmcB+aUpkg8KTewMraPy74KMYH3AeTzSSeYYdp8m
-	2+EUlGjGptJU4mQV1QQhkU6psH1XvzGJazZPAIZ/HH3yj9IuIj11QV71TPPpXM3idSCXW6VdEBYJa
-	InZnaDP0Aj6DlUoTLeBlx/s2vMGVCswCXBbj2fuiK0tJlUdCoUzv6fK/Ogsd9BL+woeMRooXaqh9I
-	qGxpB1v1SZLfJMQOym2aX9ehh675xN1aQDTJ6+4jYSccBCXUE1xAz6BCnfZFlZD7Dd5URJ3EUhJPY
-	THnH733rIUc7EiGiJb5Q==;
+	List-Owner; bh=220AFL8fhf43WPPwngXENiIF5mmQSd+LBxKID+3ozcs=; b=JFOmo5MXRpBq0l
+	qIHqbw+J5FCRH0kK1BIjD8WP8l6VKctMd6yAuVrazOMEO0dJp+K3/1zkCuNpsg3318cY10UNlcue0
+	EsW61e5k10ZILFpFHVI+ywLV24UHjgUkTpgGx4BBwhr8P0Bz/MfGWEfazyb593q+aUlrSXL816QzV
+	I6MYOgtGGtEeX5GNTLS5twsBUl36tVICslIY4hcgBu09ff0Y9WfAoqfSk9VrkxRQ6R+U+GnK2a8AS
+	oTCOyyXqlT8JYkQJsJ6mKnBRTY8nx18GGBtb6R5ivUnXwTODX2zfNKqH6y7syIf2fmfxeUPwbJIyM
+	H/uafjAzoiXHGAPmS9Dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfjDT-000wPV-02;
-	Mon, 11 Sep 2023 15:52:47 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1qfjEa-000wYy-2R;
+	Mon, 11 Sep 2023 15:53:56 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfjDP-000wOX-26
+	id 1qfjEX-000wWt-37
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Sep 2023 15:52:45 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 06016E0005;
-	Mon, 11 Sep 2023 15:51:43 +0000 (UTC)
+	Mon, 11 Sep 2023 15:53:55 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 77D13C0007;
+	Mon, 11 Sep 2023 15:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1694447559;
+	t=1694447629;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8nIczPiFsqVxkWM9qeLl1vaCZnfIjagPpomfaOAgj2w=;
-	b=Tt1iexBr9Kgu3zHZwCf+vi3jtB1z8LwFFO0cz8SM4KHYnGgzYIJnhjjikMZeUupdqgSiUI
-	uoGnAyfuAZwB8PuuGNeAODFm8uev/2Vwb52UTBONFpq68/cQ9ydDv0uELBvMbtAKbnxUIK
-	6CwK4HXnx57QqWkJSrbIvjLSwf2dIb9+qkdkU5gYuWr9mE2Ph9THHD9GRIZ0NBQcN4P0Zn
-	IKZOx/UisCEppM92GdNfz690Z5b5Y0uKh1EFi8LcbOoovP8igG5ZK03jdqaMiJOAHozB1T
-	R3q/BrTCh196vpuJWx+IHmLWVWpM4t2j3mdhHw6Tq67eeYA/KX5rsDKHm1rpYQ==
+	bh=u2f5lbfZPYd8C2pVuPX+yj1FqH0A7MGZvRTckaUi4Rc=;
+	b=M4pzQvXTevYM8Jyj3rqfQ4VlmWwhARWFptZoycJ54P9aP/0WBHlObqVso2spX20+1N2rHo
+	hV8YHTm2LDl6Lf5p8G92CdK/E9QBI6fHFAH1bXgNtsuyPIcgeWYC9w5p2kXeNa1LGmsDMR
+	8CsqvB8dUeQes2ieiuHt9zcOV7ibpk4kWbyR/vzqWnJNd1hcbTiTEe5PZ6nRfZG+ZXq28K
+	L9qnynyeuea9KHiFdJbN3yILswMbmitVqhP7Z1/SWNbeYCgmZfOOKo/GUXwckZiUrfFYqZ
+	wzsvsQqvZuHPiKdUl1AZ3/VAnYc1s3Cv16Hiv7hFZ1k1WAyYRAQC5AyQu5mTrw==
+Date: Mon, 11 Sep 2023 17:52:47 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Martin Kurbanov <mmkurbanov@sberdevices.ru>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	kernel@sberdevices.ru,
-	Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: Re: [PATCH v3] mtd: spinand: micron: correct bitmask for ecc status
-Date: Mon, 11 Sep 2023 17:51:43 +0200
-Message-Id: <20230911155143.610920-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230905145637.139068-1-mmkurbanov@sberdevices.ru>
-References: 
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Michal Simek
+ <michal.simek@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] mtd: rawnand: arasan: Ensure program page
+ operations are successful
+Message-ID: <20230911175247.44c1d894@xps-13>
+In-Reply-To: <20230717194221.229778-2-miquel.raynal@bootlin.com>
+References: <20230717194221.229778-1-miquel.raynal@bootlin.com>
+	<20230717194221.229778-2-miquel.raynal@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'9836a987860e33943945d4b257729a4f94eae576'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_085243_848001_EA615FAC 
-X-CRM114-Status: UNSURE (   5.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230911_085354_138063_A0A91765 
+X-CRM114-Status: GOOD (  16.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,22 +73,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2023-09-05 at 14:56:37 UTC, Martin Kurbanov wrote:
-> Valid bitmask is 0x70 in the status register.
-> 
-> Fixes: a508e8875e13 ("mtd: spinand: Add initial support for Micron MT29F2G01ABAGD")
-> Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-> Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFsLAoKbWlxdWVsLnJheW5hbEBib290bGluLmNvbSB3cm90ZSBvbiBNb24sIDE3IEp1
+bCAyMDIzIDIxOjQyOjIwICswMjAwOgoKPiBUaGUgTkFORCBjb3JlIGNvbXBsaWVzIHdpdGggdGhl
+IE9ORkkgc3BlY2lmaWNhdGlvbiwgd2hpY2ggaXRzZWxmCj4gbWVudGlvbnMgdGhhdCBhZnRlciBh
+bnkgcHJvZ3JhbSBvciBlcmFzZSBvcGVyYXRpb24sIGEgc3RhdHVzIGNoZWNrCj4gc2hvdWxkIGJl
+IHBlcmZvcm1lZCB0byBzZWUgd2hldGhlciB0aGUgb3BlcmF0aW9uIHdhcyBmaW5pc2hlZCAqYW5k
+Kgo+IHN1Y2Nlc3NmdWwuCj4gCj4gVGhlIE5BTkQgY29yZSBvZmZlcnMgaGVscGVycyB0byBmaW5p
+c2ggYSBwYWdlIHdyaXRlIChzZW5kaW5nIHRoZQo+ICJQQUdFIFBST0ciIGNvbW1hbmQsIHdhaXRp
+bmcgZm9yIHRoZSBOQU5EIGNoaXAgdG8gYmUgcmVhZHkgYWdhaW4sIGFuZAo+IGNoZWNraW5nIHRo
+ZSBvcGVyYXRpb24gc3RhdHVzKS4gQnV0IGluIHNvbWUgY2FzZXMsIGFkdmFuY2VkIGNvbnRyb2xs
+ZXIKPiBkcml2ZXJzIG1pZ2h0IHdhbnQgdG8gb3B0aW1pemUgdGhpcyBhbmQgY3JhZnQgdGhlaXIg
+b3duIHBhZ2Ugd3JpdGUKPiBoZWxwZXIgdG8gbGV2ZXJhZ2UgYWRkaXRpb25hbCBoYXJkd2FyZSBj
+YXBhYmlsaXRpZXMsIHRodXMgbm90IGFsd2F5cwo+IHVzaW5nIHRoZSBjb3JlIGZhY2lsaXRpZXMu
+Cj4gCj4gU29tZSBkcml2ZXJzLCBsaWtlIHRoaXMgb25lLCBkbyBub3QgdXNlIHRoZSBjb3JlIGhl
+bHBlciB0byBmaW5pc2ggYSBwYWdlCj4gd3JpdGUgYmVjYXVzZSB0aGUgZmluYWwgY3ljbGVzIGFy
+ZSBhdXRvbWF0aWNhbGx5IG1hbmFnZWQgYnkgdGhlCj4gaGFyZHdhcmUuIEluIHRoaXMgY2FzZSwg
+dGhlIGFkZGl0aW9uYWwgY2FyZSBtdXN0IGJlIHRha2VuIHRvIG1hbnVhbGx5Cj4gcGVyZm9ybSB0
+aGUgZmluYWwgc3RhdHVzIGNoZWNrLgo+IAo+IExldCdzIHJlYWQgdGhlIE5BTkQgY2hpcCBzdGF0
+dXMgYXQgdGhlIGVuZCBvZiB0aGUgcGFnZSB3cml0ZSBoZWxwZXIgYW5kCj4gcmV0dXJuIC1FSU8g
+dXBvbiBlcnJvci4KPgo+IENjOiBNaWNoYWwgU2ltZWsgPG1pY2hhbC5zaW1la0BhbWQuY29tPgo+
+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnCj4gRml4ZXM6IDg4ZmZlZjFiNjVjZiAoIm10ZDog
+cmF3bmFuZDogYXJhc2FuOiBTdXBwb3J0IHRoZSBoYXJkd2FyZSBCQ0ggRUNDIGVuZ2luZSIpCj4g
+U2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4K
+PiAKPiAtLS0KPiAKPiBIZWxsbyBNaWNoYWwsCj4gCj4gSSBoYXZlIG5vdCB0ZXN0ZWQgdGhpcywg
+YnV0IGJhc2VkIG9uIGEgcmVwb3J0IG9uIGFub3RoZXIgZHJpdmVyLCBJCj4gYmVsaWV2ZSB0aGUg
+c3RhdHVzIGNoZWNrIGlzIGFsc28gbWlzc2luZyBoZXJlIGFuZCBjb3VsZCBzb21ldGltZXMKPiBs
+ZWFkIHRvIHVubm90aWNlZCBwYXJ0aWFsIHdyaXRlcy4KPiAKPiBQbGVhc2UgdGVzdCBvbiB5b3Vy
+IHNpZGUgdGhhdCBldmVyeXRoaW5nIHN0aWxsIHdvcmtzIGFuZCBsZXQgbWUKPiBrbm93IGhvdyBp
+dCBnb2VzLgoKQW55IG5ld3MgZnJvbSB0aGUgdGVzdGluZyB0ZWFtIGFib3V0IHBhdGNoZXMgMi8z
+IGFuZCAzLzM/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
