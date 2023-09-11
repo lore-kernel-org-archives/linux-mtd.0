@@ -4,97 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53F10EE7FF4
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 09:47:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DACBEE7FF4
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Sep 2023 10:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J6oTDuUBozt8Zj713/u08r2WuKU3/preP+1loeXY2zA=; b=LqFovvLssSdbi9
-	CKqXecjOJ7E6hs5f4I/g4pRbIcuTa88d0h9r0dJeS5aNbFQJ4vQv5x1720R0BBILkaSiLYRynOs2D
-	KEif3zQGa/9lLdy9ZbkKNpCz2OhFh9zVLEdBjWJdDTgpSHPK+v7AEs9x+Pc4Q0bLjq2iPmprtqrEz
-	oXCH9Oo2Pk+zTzZuCbVvk2Q7nR461yJGU27FMrLKAK8T/a88Wb4zIRuFcrN2yN+PexURemn6Ijn5x
-	SOG/02TwS4GzPfUwqQ9+KVyRmfxuJ35gvhYkGInkEfSlmtbi5l/7mGdmeIvE+4HUIRVcirx1eMfo1
-	gHFvctSQM2wJKoCdl27Q==;
+	List-Owner; bh=YZLoAGO31FVOknoFPmP+UzZK+5zF/DPjR4nMnQ9DWOU=; b=H7YAiIcfExTJOE
+	LDg7Gqzd2vLvPbfdZcv3nT+9pwnsLuK5fupdbaSK3dFANz+miSBBa+znyL9YvIPEF2cHWi82UrIdY
+	km6kywu85oXxJp/lAEUYTYPihDWhkjEvuJFY6PVfyP5BuxOhwHRD0rz0mv4uj/KE+syYm5idZh+Ig
+	sAp7nc2bwF2bUq9eJSzKpWbfZHOUTaFj5Sg1VeEHFQYv5FpO2u1sukKCmAEEE+WujaYAExlLgmuIC
+	DplH8DB7luk30Cmtm0NO78/slphDISMFbjgcBuf/SFbvHkpXHamHlUO+nMZkik9oxt5wD02apBbQa
+	sd5fSfQd8PyiAhGnywrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfdVr-0003Ki-23;
-	Mon, 11 Sep 2023 09:47:23 +0000
-Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
+	id 1qfeHc-000Gbx-0V;
+	Mon, 11 Sep 2023 10:36:44 +0000
+Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfdVo-0003Fw-0h
+	id 1qfeHZ-000GXg-1b
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Sep 2023 09:47:22 +0000
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2684e225a6cso580086a91.1
-        for <linux-mtd@lists.infradead.org>; Mon, 11 Sep 2023 02:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425634; x=1695030434; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4NJRoYJvtB3JAQ6HjBpWzHn90j4fvohvXnELHULg3ZY=;
-        b=fmbSGH4E1evBjVE2CeG/+0g6c8qP9OZ/7eARborLut4cNe6eMwv6i8EEqmOlr7cvvJ
-         CDX2gaXM2gak8XbF/ghoHGK8+HdJsq5b17oG4T06thukcrvwVudZrw10dGMDj4EdAHw0
-         btHRb+g9D5qsoNTD688H8inu/QYHsGEhRQRqxaKem/x8XZgRaQFMHJ7K4BHViy8VTqiF
-         B0WlaSpbbxQTbDt1GPvdFdxmS3Abmxw9Ug0Qz2oBmK9krf6I3zru8u3qhdFwMGxVg68J
-         KE6EGq/j2S60ws7VPOTdS+Dx8BPQIJ3s5n00oKJokvelH/HKMQ37bGSRPjYFoUODj878
-         rbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425634; x=1695030434;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4NJRoYJvtB3JAQ6HjBpWzHn90j4fvohvXnELHULg3ZY=;
-        b=vfrthp26TbXPrpWTclqOe1vGcLHB2gmGwL7+dthVDL0BreNUG0aDK5/mqXaSrY7hyb
-         hStEWm4wAa8lghHS34jtZSnE0FQIW6L3TFMnO+APs2GXz475G0enk9uZuRbRLpIpjmSl
-         DJFA/NAuwCXg4/4iKXwWZNbTQIJ/5+8yZCOMMfJQ1/qlsI3a/JyqkCPkTGlCb3HKoba/
-         1XyZtLt1TPCcYDOv8LFOowyXKk1eIPqtadzaBO3V9u7iEK5KiHG83UQ0o8D9l3PzMO6x
-         19snOVakQhjAXzTBcO8ZgmQrhD2TpUam6BchYf+yn2T9s92nwGyS3gcUZq4B/HNnqCuR
-         gD6Q==
-X-Gm-Message-State: AOJu0Yy8j5p0gr0P2+ReEFi9iW6hkqub2DIPT641Mt8p+Pr6Vi8/EdsH
-	zxdk0TV3iNiiES/Le+O8NK0rnw==
-X-Google-Smtp-Source: AGHT+IHGrhLYQcHrSOL/A0AfShLW1GL1aOG0gH1s0a/WptYINVPGtQZkcxOK/Zv27+cAk2ggUFIjmg==
-X-Received: by 2002:a17:90a:9bc4:b0:273:e4a7:ce72 with SMTP id b4-20020a17090a9bc400b00273e4a7ce72mr6446431pjw.3.1694425634193;
-        Mon, 11 Sep 2023 02:47:14 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.47.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:47:13 -0700 (PDT)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: akpm@linux-foundation.org,
-	david@fromorbit.com,
-	tkhai@ya.ru,
-	vbabka@suse.cz,
-	roman.gushchin@linux.dev,
-	djwong@kernel.org,
-	brauner@kernel.org,
-	paulmck@kernel.org,
-	tytso@mit.edu,
-	steven.price@arm.com,
-	cel@kernel.org,
-	senozhatsky@chromium.org,
-	yujie.liu@intel.com,
-	gregkh@linuxfoundation.org,
-	muchun.song@linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v6 14/45] ubifs: dynamically allocate the ubifs-slab shrinker
-Date: Mon, 11 Sep 2023 17:44:13 +0800
-Message-Id: <20230911094444.68966-15-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
-References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
+	Mon, 11 Sep 2023 10:36:43 +0000
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 04A5E12000F;
+	Mon, 11 Sep 2023 13:36:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 04A5E12000F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1694428597;
+	bh=xZXkJdTIbSykxSL3kxqxR0usaF3vKuC+qdgbFYHvxYk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=roQOTFKgbM6v0ed7lyi1eluGNIl21d7ZLv9GkCdq4P8rxcaqNvPZ8PEAjEQNA27+s
+	 PkIguazeqlAcu3/2URHLUCzCD4w4jhNQlnxrhhGnoXdSE34uop0MQUbiISbHLwrxx8
+	 h0OVd/Ej00c27XjWZE1V3umWrLKc0GTg2Qwv0tz9lH4eN3kI0iTIgqRYeCQgDzGm8M
+	 Z4jd7xQ8HD7AMdHhnoBr3Gf4luMzLRl44DcoijvH77iB73CS28WfePUyigqBUc7WiS
+	 fLxSKgDAnyeRn4i7pTW0I3dsqHi+ivu+Qmm/PjsV/5lyXQWLAgVVhtneRuAe3T6ZP6
+	 kpuM6d/ObbvJg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 11 Sep 2023 13:36:36 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 11 Sep 2023 13:36:36 +0300
+Message-ID: <7ab06111-5208-77b2-0f09-0751de23ae66@salutedevices.com>
+Date: Mon, 11 Sep 2023 13:30:00 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v1] mtd: rawnand: remove 'nand_exit_status_op()' prototype
+Content-Language: en-US
+To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Johan Jonker <jbx6244@gmail.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179766 [Sep 11 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/11 06:02:00 #21866861
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_024720_280174_5621BA75 
-X-CRM114-Status: GOOD (  13.45  )
+X-CRM114-CacheID: sfid-20230911_033641_890809_A8B8050C 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,81 +103,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use new APIs to dynamically allocate the ubifs-slab shrinker.
+Please, ping
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-CC: Richard Weinberger <richard@nod.at>
-CC: linux-mtd@lists.infradead.org
----
- fs/ubifs/super.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+Thanks, Arseniy
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b08fb28d16b5..96f6a9118207 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -54,11 +54,7 @@ module_param_cb(default_version, &ubifs_default_version_ops, &ubifs_default_vers
- static struct kmem_cache *ubifs_inode_slab;
- 
- /* UBIFS TNC shrinker description */
--static struct shrinker ubifs_shrinker_info = {
--	.scan_objects = ubifs_shrink_scan,
--	.count_objects = ubifs_shrink_count,
--	.seeks = DEFAULT_SEEKS,
--};
-+static struct shrinker *ubifs_shrinker_info;
- 
- /**
-  * validate_inode - validate inode.
-@@ -2373,7 +2369,7 @@ static void inode_slab_ctor(void *obj)
- 
- static int __init ubifs_init(void)
- {
--	int err;
-+	int err = -ENOMEM;
- 
- 	BUILD_BUG_ON(sizeof(struct ubifs_ch) != 24);
- 
-@@ -2439,10 +2435,15 @@ static int __init ubifs_init(void)
- 	if (!ubifs_inode_slab)
- 		return -ENOMEM;
- 
--	err = register_shrinker(&ubifs_shrinker_info, "ubifs-slab");
--	if (err)
-+	ubifs_shrinker_info = shrinker_alloc(0, "ubifs-slab");
-+	if (!ubifs_shrinker_info)
- 		goto out_slab;
- 
-+	ubifs_shrinker_info->count_objects = ubifs_shrink_count;
-+	ubifs_shrinker_info->scan_objects = ubifs_shrink_scan;
-+
-+	shrinker_register(ubifs_shrinker_info);
-+
- 	err = ubifs_compressors_init();
- 	if (err)
- 		goto out_shrinker;
-@@ -2467,7 +2468,7 @@ static int __init ubifs_init(void)
- 	dbg_debugfs_exit();
- 	ubifs_compressors_exit();
- out_shrinker:
--	unregister_shrinker(&ubifs_shrinker_info);
-+	shrinker_free(ubifs_shrinker_info);
- out_slab:
- 	kmem_cache_destroy(ubifs_inode_slab);
- 	return err;
-@@ -2483,7 +2484,7 @@ static void __exit ubifs_exit(void)
- 	dbg_debugfs_exit();
- 	ubifs_sysfs_exit();
- 	ubifs_compressors_exit();
--	unregister_shrinker(&ubifs_shrinker_info);
-+	shrinker_free(ubifs_shrinker_info);
- 
- 	/*
- 	 * Make sure all delayed rcu free inodes are flushed before we
--- 
-2.30.2
-
+On 23.08.2023 13:52, Arseniy Krasnov wrote:
+> This function is exported and its prototype is already placed in
+> include/linux/mtd/rawnand.h.
+> 
+> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> ---
+>  drivers/mtd/nand/raw/internals.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+> index e9932da18bdd..b7162ced9efa 100644
+> --- a/drivers/mtd/nand/raw/internals.h
+> +++ b/drivers/mtd/nand/raw/internals.h
+> @@ -106,7 +106,6 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
+>  			       int oob_required, int page);
+>  int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
+>  				int oob_required, int page);
+> -int nand_exit_status_op(struct nand_chip *chip);
+>  int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
+>  			    unsigned int len);
+>  void nand_decode_ext_id(struct nand_chip *chip);
 
 ______________________________________________________
 Linux MTD discussion mailing list
