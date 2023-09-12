@@ -4,74 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 658A2CA0ECA
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Sep 2023 12:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B786CA0ECA
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Sep 2023 12:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=N+/GRTz2RzoG5Tdk84BkTWLMg+ZDKKgZPq/zly3bNkY=; b=zt3fGhlRqBGFFpMyTqsO338JrQ
-	i/RQIFgz1FP9ctmCFe+CIOl7C+oyPL3NqawD7ORNminxQzCXm1autFUOyTAdF1ksFrrRgakF51Rh7
-	+q2cyW7HkmPBL9K7xS9/q9u2GB56o2HcpQvi7C+LMBAfFV93kjUZDU05aVxZ/51RK26SG53SFZ+sw
-	QnFkHCdb1C6HrkVNADDOYN/OEyDoGyfczxWl3LfzEzeXqfi9uyXyjYw14i6SWfZrDNfU/GG03qNUo
-	nv8gl0WDhABNUaUv+fGS1zX/mulTJbD5BbPEeCcG82JpLWXf03157ibnBc3kHTXJsTrmRlqem6wId
-	Phcs5y6Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ISDC0C1eMfzm+rZyXxZ2Amjwr1XRlk3Mf53Biw13zMg=; b=BX+siYLbIiAP+W
+	dF+hhZLtRciYuytmclrl7WjIQdeTrtphhAqqtBY+yUO87ZHoWVXsqmVHWwgB1uH39wf5Tjq5m/hhp
+	a7vlqfcMhadluoHBBbjYNfc2Z48kdtuDC95APUeySJlJBdeTQ0TOfeRx5P/BEf0Rk2eDdN6n9jpp6
+	scZwMNpfSGvoA4BGX97UECVhDzaIvxUKRLaJb5Xd6j7cFrMw6j7roRzczBqFWWvmkkAjkQhj50ZxR
+	huB8s2nU4jKvUcABPkFlSqkVeArZ2Krta8ECuTe+kBnW/zZ56+E2qIKpOWp+P8NNxaeKwEx7ZJds2
+	QaGptDPntknvQ4jcSwmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qg2Hv-003J3y-0R;
-	Tue, 12 Sep 2023 12:14:39 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qg2Vk-003Kqi-1n;
+	Tue, 12 Sep 2023 12:28:56 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qg2Ht-003J3V-1V
+	id 1qg2Vh-003Kpt-0k
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Sep 2023 12:14:38 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BF61060D29;
-	Tue, 12 Sep 2023 12:14:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B434C433C7;
-	Tue, 12 Sep 2023 12:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694520876;
-	bh=XkmC7wK5Cc/UAqB4TBuSfa6MYKHMEOm7EQvizmgqOAw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cVwai/lZtzmhpP30W6mex7F/Nfm+WrGAkueHjspW5LDRArScWMNMZNn7+V7ykhMPg
-	 1dPtNAnZDtVQV7TFxILZ1H0MsBUDZzciBv16NI4o1jkOHRJYlNN5YzH4DXBUL2pGj3
-	 9lMPgpMUaCrciKUL9lebhyyKD8MGIiVaZQl89YdtCSSYwx/xNIH+lMffDRucHZUD/W
-	 pzkqcFfKpXgKxTO6WZeDkCNLVkQmTKqe+zS9U/t6cw3xkLaRaghx39pf72eIcLAMaU
-	 v/k3JZohIaLYH7wns1+pqiVKHteNrHhhD/OeA/fkbmntvx9g9whmguxwYSw6Q82rud
-	 05XGxDZtr2rQw==
-Date: Tue, 12 Sep 2023 13:14:29 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-	"Lubart, Vitaly" <vitaly.lubart@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH 00/10] drm/i915/spi: spi access for discrete graphics
-Message-ID: <0d60a78b-0305-4cb3-babe-4eefe5001b29@sirena.org.uk>
-References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
- <20230911094233.326fd936@xps-13>
- <CY5PR11MB63667FBB6AF5B4331419BDAAEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
+	Tue, 12 Sep 2023 12:28:54 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8726E2000A;
+	Tue, 12 Sep 2023 12:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1694521729;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6w4eE727ahcXyxO0B8znMsuiPT1RLt1MBCIFRc4fPgg=;
+	b=jC/r0aqRQO/YPCJ8STlSaOY/dw4Vx09EJUWrU8X0QarVh46T7R2kyaqz+mdIXe2ucdLx8Q
+	+7lSNpDrkMAYoQHely2wZKOF09lu6WINOQFz2TsjyJ/wf72PQepBKoyoY2Kwf9Dnic23UZ
+	K81+HS27EPt/QMfNxuTQ+Ex2OBVjuNGP2O47bgrY8G1AufFPpRS/dVTjzU/n3Xvd9/jyTP
+	y2hj2+keElhyWHi+iERfeNCxbHNdVxSob5YxwUqmHMv0htPqUgjLYbtO6kUfhCIz0XBI8x
+	qXDxP5iDkGCcAlPQy18rUefZUWlR/i2k85i564hN8QA7Cg7GPb4PS1tX+FQGog==
+Date: Tue, 12 Sep 2023 14:28:47 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc: <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+ <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
+ <quic_pkondeti@quicinc.com>
+Subject: Re: [PATCH v4] mtd: rawnand: qcom: Unmap the right resource upon
+ probe failure
+Message-ID: <20230912142847.4610c0a0@xps-13>
+In-Reply-To: <20230912115903.1007-1-quic_bibekkum@quicinc.com>
+References: <20230912115903.1007-1-quic_bibekkum@quicinc.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CY5PR11MB63667FBB6AF5B4331419BDAAEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
-X-Cookie: Victory uber allies!
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230912_051437_542908_51C56B88 
-X-CRM114-Status: GOOD (  11.24  )
+X-CRM114-CacheID: sfid-20230912_052853_408855_A2B4BBFD 
+X-CRM114-Status: GOOD (  15.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,58 +72,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8738728142250601982=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============8738728142250601982==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="uKDrHREIXSOB633X"
-Content-Disposition: inline
-
-
---uKDrHREIXSOB633X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Sep 12, 2023 at 10:50:22AM +0000, Usyskin, Alexander wrote:
-
-> The spi controller on discreet graphics card is not visible to user-space.
-> Spi access flows are supported by another hardware module and relevant registers are
-> available on graphics device memory bar.
-
-No SPI controllers are directly visible to userspace, some SPI devices
-are selectively exposed but that needs to be explicitly requested and is
-generally discouraged.
-
---uKDrHREIXSOB633X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUAViIACgkQJNaLcl1U
-h9BBwQf9HEhBAYTf1p6rEEjFlaLKxvrdg4ZwS0HnCh7FR7EL1va8yFb1PT8hrn3e
-e8q3vfqaz1J5L8wUITwS9oyKzKiwfwwDCxXipW9y0+TSjhFEme5/ravNtEvpXN+M
-2hqbmCjp53gDQiz5KKj6F4XsfSHrmLrmCQ+4/qfj1CigXHnxOWuqKJ35tX9y+oDA
-4tngywE43hiLIPNTrVFnocrYzviXWoAMpKjESJiXaD/uRQrLUyOi5cLKb9BJgBaG
-PqETDDh+9R+G3Rvaa8vrr3UqbU0NxZtm/7FPKW1eTUm7/ferGcyMn2LCUH2G1jdj
-u69lmZ5Yhy0LiLVvrL3Ol49IzrUkdQ==
-=/F96
------END PGP SIGNATURE-----
-
---uKDrHREIXSOB633X--
-
-
---===============8738728142250601982==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8738728142250601982==--
-
+SGkgQmliZWssCgpxdWljX2JpYmVra3VtQHF1aWNpbmMuY29tIHdyb3RlIG9uIFR1ZSwgMTIgU2Vw
+IDIwMjMgMTc6Mjk6MDMgKzA1MzA6Cgo+IFdlIGN1cnJlbnRseSBwcm92aWRlIHRoZSBwaHlzaWNh
+bCBhZGRyZXNzIG9mIHRoZSBETUEgcmVnaW9uCj4gcmF0aGVyIHRoYW4gdGhlIG91dHB1dCBvZiBk
+bWFfbWFwX3Jlc291cmNlKCkgd2hpY2ggaXMgb2J2aW91c2x5IHdyb25nLgo+IAo+IEZpeGVzOiA3
+MzMwZmM1MDVhZjQgKCJtdGQ6IHJhd25hbmQ6IHFjb206IHN0b3AgdXNpbmcgcGh5c190b19kbWEo
+KSIpCgpDYzogc3RhYmxlPwoKPiBTaWduZWQtb2ZmLWJ5OiBCaWJlayBLdW1hciBQYXRybyA8cXVp
+Y19iaWJla2t1bUBxdWljaW5jLmNvbT4KPiAtLS0KPiB2NDogSW5jb3Jwb3JhdGVkIHN1Z2dlc3Rp
+b24gZnJvbSBNaXF1ZWwKPiAgICAgLSBNb2RpZmllZCB0aXRsZSBhbmQgY29tbWl0IGRlc2NyaXB0
+aW9uLgo+IAo+IHYzOiBJbmNvcnBvcmF0ZWQgY29tbWVudHMgZnJvbSBNaXF1ZWwKPiAgICAgLSBN
+b2RpZmllZCB0aGUgY29tbWl0IG1lc3NhZ2UgYW5kIHRpdGxlIGFzIHBlciBzdWdnZXN0aW9ucy4K
+PiAgICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjMwOTEyMTAxODE0Ljc3NDgtMS1x
+dWljX2JpYmVra3VtQHF1aWNpbmMuY29tLwo+IAo+IHYyOiBJbmNvcnBvcmF0ZWQgY29tbWVudHMg
+ZnJvbSBQYXZhbi9NYW5pLgo+ICAgICBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA5
+MTExMzMwMjYuMjk4NjgtMS1xdWljX2JpYmVra3VtQHF1aWNpbmMuY29tLwo+IAo+IHYxOiBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA5MDcwOTI4NTQuMTE0MDgtMS1xdWljX2JpYmVr
+a3VtQHF1aWNpbmMuY29tLwo+IAo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMg
+fCAyICstCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+
+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgYi9kcml2
+ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPiBpbmRleCA2NDQ5OWMxYjM2MDMuLmIwNzk2
+MDVjODRkMyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMK
+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPiBAQCAtMzQ0NCw3ICsz
+NDQ0LDcgQEAgc3RhdGljIGludCBxY29tX25hbmRjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UgKnBkZXYpCj4gIGVycl9hb25fY2xrOgo+ICAJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKG5hbmRj
+LT5jb3JlX2Nsayk7Cj4gIGVycl9jb3JlX2NsazoKPiAtCWRtYV91bm1hcF9yZXNvdXJjZShkZXYs
+IHJlcy0+c3RhcnQsIHJlc291cmNlX3NpemUocmVzKSwKPiArCWRtYV91bm1hcF9yZXNvdXJjZShk
+ZXYsIG5hbmRjLT5iYXNlX2RtYSwgcmVzb3VyY2Vfc2l6ZShyZXMpLAo+ICAJCQkgICBETUFfQklE
+SVJFQ1RJT05BTCwgMCk7Cj4gIAlyZXR1cm4gcmV0Owo+ICB9Cj4gLS0KPiAyLjE3LjEKPiAKCgpU
+aGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
