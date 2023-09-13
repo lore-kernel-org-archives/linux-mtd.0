@@ -4,88 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C6C9EDEC50
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Sep 2023 13:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A6B4EDEC6C
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Sep 2023 14:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tgTxm6j7w3VHPQvzvSKJSfq1EJPyb3KeA1DA71Wmom0=; b=YMBp3yPdKXqp+X
-	S55AX6oYhkUeQiTL7a5e+H+0jZ0xGaixupbLXveEivWFclV+2XN+8/htVmc/sB+lBxTHQjHIoOhZ5
-	9HMv2gwb75Xs4BpfltU+6TnaTm6iDeMbROVFluaTlnm2a8FW4epo9CBTy2P7Wkh7SPiYFPsCawZU0
-	QiOoPiaLIFbUQklndhPwNfjpP3Trd1QMgAWMZLRbw//rgV8L3O6hyRbYtvDvn2cVq2tSVXT3Rl1wp
-	CPoxm5wgJhAkwl3wCiL2d/qTar/VgT7gVTcwU4TOYJqBAKIYBwcg8peqNfnTGsj7PWsIMZvpV45uk
-	+iwYbifJjeTnJqU33wNA==;
+	List-Owner; bh=edVJ0otRAqyrJh/+Px5scVTtUNbcv5WNhx9sHvnJ1J8=; b=K/f0VJovFzeUOz
+	fQ5cBDntU5KqKDD++39CjRxkRaUlX9RMWUEbrh5e+eB998dWc84klRYwt9NiX6yWfjJvfNgayZNlh
+	8dUpo8o+WGd9t11OygompR+1fRjms9L9qQUTPdD1b7uBJR+jTNvkxnYQUOQzEQhL1o6uAJJJ2CfHR
+	M58G8U+S6V66qUMTOcuu7t2JYVyTCcU6l4nw+GMVbb0Kt2jIjYLAdcLdu/M91dy/f7xCUMuXB9nVs
+	RtIS0rfQxdTSidNAqJC0rJysqUoWQ/YT1glN3+Bw2VQ9t2aGb6J/JYfNZiTOIUMeYfpwHCdPuWUbz
+	0WTfUAYMekicoL3gIwTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgPdU-005wp2-2q;
-	Wed, 13 Sep 2023 13:10:29 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1qgRCl-0069dx-02;
+	Wed, 13 Sep 2023 14:50:59 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgPdR-005wo3-0k
+	id 1qgRCh-0069dP-1s
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Sep 2023 13:10:26 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401da71b85eso73885495e9.1
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2023 06:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694610622; x=1695215422; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lhylJXVHu1y/JGAQAiQbLZVjvUVFnXfhI4SjrH0o0KY=;
-        b=BrXT6HP4oSYD+jIMmHXnFWunJAGzJeBx/dtE0q07RUiw47w2wJr9yJl2x9YzKxhYZf
-         Fr7Ok0PUnidxbL/sSC00vczaon0fgMzx0ihDQAvN6KY8KF+AuMGLtep3veuMwy3UFJdv
-         74/jGC8EfS+WnS6smKboWhaZv/29XdL6vG+8tWaAALuUji2H8Csp6MU3cUWwfHGP3dr+
-         TDUFafpx77OzdcFVvm7atsYfEGD3IVrrjut2z4836Q2LyfwTP5p6/AdEx3aIrJjCh+WB
-         7O8A3G3RAe04rfy5TIQ7+58yUmbYmZc5cqYIejYnjtUUrXuvjADntIJEtrAYJ8U37Kci
-         8Mlg==
+	Wed, 13 Sep 2023 14:50:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1694616653;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=48dU2hQLagIX9Pt08ex4VtPwEkzu69KnmACTk65vyqM=;
+	b=SmPunnbk63JOIeDlEFY4SyMEudQEApGoa9etxptuCXALxxDchcouYiMHLipQe5mXz7rBoh
+	oTtbGbz45x0WFDh/4iHsHppG5UiXj3VBS3jfsCltq4lbm5P8vmCIrvPTntsTAtlwM3I8v+
+	5mySHhLeq5+E+7eipkYfOxM7DvQQ/yU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-170-3T_a8ae5N8qligy-G9YK5w-1; Wed, 13 Sep 2023 10:50:52 -0400
+X-MC-Unique: 3T_a8ae5N8qligy-G9YK5w-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9ad8ab8bc9fso131855066b.0
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2023 07:50:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694610622; x=1695215422;
+        d=1e100.net; s=20230601; t=1694616651; x=1695221451;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lhylJXVHu1y/JGAQAiQbLZVjvUVFnXfhI4SjrH0o0KY=;
-        b=SbrIDVZRNEUe8+Mm8bTPCwvfpsu+Utl8VkT35q6UJMpu6VU6rgdLWkQyL9wFGprJQT
-         BrbcVsl2NlJ7j5PsFyiKatFz4WZuwAKFGRb2CsXUri2uf+pvhGSIxvPqzHOxJlDU/vF6
-         KDZ+mZgWH22R/Rkjd85u24/jxjGf5JVxzJXmYleNoFRh//jwrGtUthR/A62QGvhrPyZa
-         tS+B5OZZBYCTndqGAVvfGXwvvoQ/ic0kqKtSCuVNbW5c5NfdSVXIgHDZwcWlAETpQo+6
-         HSBBcjHZePgJmeTezDR0iLvige1MSZ9dSSDsgXekmjmPp81ObSEojEU/d3aWHzkxCoWe
-         DOeQ==
-X-Gm-Message-State: AOJu0YzsJllYLw+TQRO4PL6qFAk82Bu/92i4pV9D/YkNFS/m4lvvrbnq
-	aB5HRnsK3Rmi2XeOGhgqDXhDuQ==
-X-Google-Smtp-Source: AGHT+IHiJzJhe1Xrs12iA0t2UFcejF5aY0fuGShabimjAwKWm+vmmwmawqlnxHfAfdo7W9D+0o04pg==
-X-Received: by 2002:a1c:4c1a:0:b0:400:57d1:4915 with SMTP id z26-20020a1c4c1a000000b0040057d14915mr2173211wmf.37.1694610622229;
-        Wed, 13 Sep 2023 06:10:22 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id z12-20020a1c4c0c000000b003fee6e170f9sm1972778wmf.45.2023.09.13.06.10.20
+        bh=48dU2hQLagIX9Pt08ex4VtPwEkzu69KnmACTk65vyqM=;
+        b=A1MnwqNivk5lla0YIkEt8/PdJIC+Um+FZDFCnvwqKcjLEUCUWlHZE8YsqaWfNGeTSQ
+         Z1IW1yHOMI/rvzKTPFmnG99RjSKJFsJHQy48N2t6dIMNHj9OEnyOpGWNs/Wzza/k/qd9
+         f/MvbB7gzZEtn+dlIwYCZxwukPctnDm3+9A58cFXlteMOQ0j1DJNTboRjDN7eR6t46wq
+         xsZVXR+1RF+0AcMjoDAjvvNGW60YYgswhpQHClKSyyfZtqPyqTdmEdW5TiuOM5nh4kH9
+         EHvAJ2aT/Whb/7HTSUFY0uu5IE7N5LLDBGcxMXvsZ5x8vsNf1Za14DpgEt7vv+ae8s7G
+         Do9Q==
+X-Gm-Message-State: AOJu0YydoZXZ+qU0fVlXXkUkQ5cs7I7CFTszPETkJqxwUOE+YRD8jeyc
+	lo++VtVc80CRx2YBXpRjreD1YL/NURDBfBV7bVsMmGN/DOdDy+w5/XL8vnEZOKsFFk0OZh79R/n
+	wQd+vHhesYkcyUIQVYBlkHRDKGg==
+X-Received: by 2002:a17:906:74c7:b0:9aa:1020:8c39 with SMTP id z7-20020a17090674c700b009aa10208c39mr2278141ejl.18.1694616650916;
+        Wed, 13 Sep 2023 07:50:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGhdz7s3zxkxrAka/iFct75EEOhxMraFKGaGoggnTBpq6sAIlALbnFygNuVs1AGvDyAjsOScA==
+X-Received: by 2002:a17:906:74c7:b0:9aa:1020:8c39 with SMTP id z7-20020a17090674c700b009aa10208c39mr2278116ejl.18.1694616650569;
+        Wed, 13 Sep 2023 07:50:50 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id n3-20020a17090695c300b0099bc8bd9066sm8613848ejy.150.2023.09.13.07.50.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 06:10:21 -0700 (PDT)
-Message-ID: <9486b1f0-9c5f-4c2e-9032-18efc4a63b24@linaro.org>
-Date: Wed, 13 Sep 2023 14:10:20 +0100
+        Wed, 13 Sep 2023 07:50:50 -0700 (PDT)
+Message-ID: <5cff2031-e25f-4222-4d1f-b0b7d87b355b@redhat.com>
+Date: Wed, 13 Sep 2023 16:50:49 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/8] dt-bindings: mtd: add basic bindings for UBI
-Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>, Rob Herring <robh@kernel.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Randy Dunlap <rdunlap@infradead.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/5] platform/x86: int3472/discrete: use
+ gpiod_set_active_low()
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+ Linus Walleij <linus.walleij@linaro.org>, Andy Shevchenko <andy@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Paul Cercueil <paul@crapouillou.net>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org
-References: <cover.1691717480.git.daniel@makrotopia.org>
- <a640bb10e6fbaeef96efdb9e8b666ca39e993589.1691717480.git.daniel@makrotopia.org>
- <169263908218.2000617.16931192155432403196.robh@kernel.org>
- <ZP9kJYHMFwZ8GFnA@makrotopia.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ZP9kJYHMFwZ8GFnA@makrotopia.org>
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Daniel Scally <djrscally@gmail.com>, Mark Gross <markgross@kernel.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230913115001.23183-1-brgl@bgdev.pl>
+ <20230913115001.23183-5-brgl@bgdev.pl>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230913115001.23183-5-brgl@bgdev.pl>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US, nl
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230913_061025_318115_602FBCB0 
-X-CRM114-Status: UNSURE (   7.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230913_075055_738180_17D477E8 
+X-CRM114-Status: GOOD (  16.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,17 +113,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+Hi,
 
-On 9/11/23 20:01, Daniel Golle wrote:
-> Is there anything I can do from my end to have this series moving forward?
+On 9/13/23 13:50, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Use the new polarity setter instead of the more cumbersome toggle
+> function.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/platform/x86/intel/int3472/clk_and_regulator.c | 2 +-
+>  drivers/platform/x86/intel/int3472/led.c               | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/int3472/clk_and_regulator.c b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+> index ef4b3141efcd..31e520838b95 100644
+> --- a/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+> +++ b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+> @@ -183,7 +183,7 @@ int skl_int3472_register_gpio_clock(struct int3472_discrete_device *int3472,
+>  	}
+>  
+>  	if (polarity == GPIO_ACTIVE_LOW)
+> -		gpiod_toggle_active_low(int3472->clock.ena_gpio);
+> +		gpiod_set_active_low(int3472->clock.ena_gpio);
+>  
+>  	/* Ensure the pin is in output mode and non-active state */
+>  	gpiod_direction_output(int3472->clock.ena_gpio, 0);
+> diff --git a/drivers/platform/x86/intel/int3472/led.c b/drivers/platform/x86/intel/int3472/led.c
+> index bca1ce7d0d0c..46c9c569df5e 100644
+> --- a/drivers/platform/x86/intel/int3472/led.c
+> +++ b/drivers/platform/x86/intel/int3472/led.c
+> @@ -32,7 +32,7 @@ int skl_int3472_register_pled(struct int3472_discrete_device *int3472,
+>  				     "getting privacy LED GPIO\n");
+>  
+>  	if (polarity == GPIO_ACTIVE_LOW)
+> -		gpiod_toggle_active_low(int3472->pled.gpio);
+> +		gpiod_set_active_low(int3472->pled.gpio);
+>  
+>  	/* Ensure the pin is in output mode and non-active state */
+>  	gpiod_direction_output(int3472->pled.gpio, 0);
 
-You could review other UBI submissions to reduce the review load on
-Richard. I guess the queue of UBI pending patches is at:
-https://patchwork.ozlabs.org/project/linux-mtd/list/?series=&submitter=&state=&q=ubi&archive=&delegate=
 
-Cheers,
-ta
+Thanks. I agree that the new API is much better:
+
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+
+Feel free to merge this through the GPIO tree.
+
+Regards,
+
+Hans
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
