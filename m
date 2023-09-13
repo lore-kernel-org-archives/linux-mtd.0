@@ -4,90 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC6B9CA5503
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Sep 2023 07:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21267EDEC46
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Sep 2023 11:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pGqULjMfu8mjqBJeAA7GH9TG0J8msBcX8rks5flCesM=; b=vg+vSQdXy10smn
-	L+tNZwtW3sOVW+4+DXphP86KE+B2YPlQ7RqkFr5yPm3asptRxyxWHKD2Pq9zckPExuifoFd4/I6L4
-	nrE7D1qTysDDGHcV2erzswbwc18HogtsyiSkcsvNZbrABbB6mL0pcgJpqvdmnWOY99bSd8FfST9VS
-	NUInpmjik6reAHY9CfKkgmhfUw7t007xUf5qFe0KzjZtcNH1FHMI6mbpmxB81XTXhB86JgWv8VuOQ
-	aLZzkCTwkl7KHV0xoe+C2FJyzYCvujjKoX9BgpDiVNiIMCK+R4RWtebOA8C5s5aVcwhAsLamZG0rw
-	n7F1PMYWJLtTSYhWOHyw==;
+	List-Owner; bh=P72YnbHG277V28NmKzgEKK0LlAUPoVLvCPTcL5fKXi0=; b=A3xTs8N+TfgEuj
+	VetKGe1/xXNwJdLxkL9ig87HYoMeYftGr2vQUWOMGQ/PxP2PTcaSyjAZytu4McTRNjF86WYx/gONg
+	p78lJqoXYI5r52DYSJ3mo5SliW4Dj5gpD8Q34nXoXtYRswUZ1AhQ5z9D+0XN1ld4tMjfMvmYTAUB5
+	krj/E1xtElBLFSLMNfj06BhkFK5BsSG5HBJvb3va2w1ishfvId2oEiC+Cn510PXqiKlO0Kg2HyYn+
+	IeeJxzHldDl3tl33MMbMJcA32ZMJhJ98UiBLchzGLMC+oJrW4ZXodDVMCwwq3HTYUzcCyGkZKSyos
+	ghbmtZ+UUiGg5oOzpPnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgJzo-004tig-0s;
-	Wed, 13 Sep 2023 07:09:08 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1qgOO2-005mWx-1a;
+	Wed, 13 Sep 2023 11:50:26 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgJzl-004ths-1j
+	id 1qgONy-005mTD-0S
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Sep 2023 07:09:06 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38D6eLGe012023;
-	Wed, 13 Sep 2023 07:09:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=nbXt39d+Uly5Prlmsw8HTG2GrjIJiHnSfcz+v/XS12Y=;
- b=kz2Y1XsrHUeKwbroTWpqOpdNA3x3b/ZH3U9AvnMuCHan6iv5oenKawH8KBoIz4uV2oUj
- QLn07+Iz+zb4gS9p0GwDi5zRlPsEtqtjEDhuDfJRTGWncbRffvRvOJEWQHvV6u/SCyCU
- LeKJtiorHK6bUzmy4nu9TXG23fAmlW0ktGyxEvAK4JcWVId1i90MdnrxXOVKCxSM0mQ2
- WSYV+1DrzZYSs5cz4BgB6NBKFr/Qyqv8ZDnyu/B0TUCTjtOICWgrzPOsaUkfcRQeyEaA
- 5/aRKVVvlovQ2nGMQhtBhEPvqa5hiXmsAw1kI3Z05VybNQ5n+30RI8HAbS54atXwb7TL UA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y8q0x58-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Sep 2023 07:09:00 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38D78xbK028098
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Sep 2023 07:08:59 GMT
-Received: from [10.214.227.50] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 13 Sep
- 2023 00:08:53 -0700
-Message-ID: <6e1ab09c-6eb0-4e70-a97d-2b96f095d7a7@quicinc.com>
-Date: Wed, 13 Sep 2023 12:38:48 +0530
+	Wed, 13 Sep 2023 11:50:23 +0000
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso5430845e9.0
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2023 04:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694605820; x=1695210620; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZfIOoxhDAqFwndjqT4NZlTiK/Oyr/4kFj6yAfQvO5X0=;
+        b=JgrKBtTuqUSmEwBGpw6sFEn3zm9ldo/H3BxMvd0X100l7LlYeYgjKl9vRZ0OkBg7fM
+         7a3SJvRUe1HCz8m1Gi7bid9afH1wRUKRqSmidObGxNljCMsvf402/eebk2333XTxZa7Y
+         qlag+Ykzak43G801B9gI8h89vYRsh7POx+p9f3TALTnRFWgNYQj7vxQhmx1yuHr3tvsg
+         4Lyo9ShSv9PeJpZ2B1Dvpv5xshUmbwwhQo0QtDJy6yAUpOBeZle5o+c6WVtGcTKiIUTT
+         KKY3FSnb2jnxKBR7IOrpbXv42xfPhKDB20UlOE1zZd9pKVd1Xad3gH6PwsJdS+UNp9/d
+         Eztw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694605820; x=1695210620;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZfIOoxhDAqFwndjqT4NZlTiK/Oyr/4kFj6yAfQvO5X0=;
+        b=wDpJE6Dn8CDoxquUHmBV1QXCKFr1C/hHAF/NlKrCdYZCH3TBuAWbLiPeyHR7sChE95
+         1r3SLNVCo1Y/SHaD9LFz8zi4W29Zxc/MjgrHZ0JpQavC2LQLvfpQ+IYUp/lsxchDCEer
+         TEsudPd6jHqekxbd8Oob/0WSPS+ILlXf+ls4/Jdt0PxBUlUf7TUbnG4F3vSqd2wv5hbT
+         dhWvlMiC70h8WgRQoM/PoB2yON5chl/oCE5lQgsxjH0VQVNyWKI9gB8OoCADQfm93kg/
+         Ld51NPw6qmfVvAvYsmFaa5TLBhvLethZJ8NgVWIfzYOnOhuII94Vx2PImtSUL+K0bLv1
+         2wZA==
+X-Gm-Message-State: AOJu0Yy2QYtVN01MH70dwW88tYFl1DOLc1QmRqit6aOHpJF7Pj0YKw6O
+	eX01FeZjJwbNQYE3nmDTi3wWQQ==
+X-Google-Smtp-Source: AGHT+IG+tXi5eOBKUfSbBaQCtatc0omt4sm58mllw94JLePpeq53xP2hYKGlGG+xCKfpc+HJfdMuUQ==
+X-Received: by 2002:a5d:5b18:0:b0:31f:cc46:3db9 with SMTP id bx24-20020a5d5b18000000b0031fcc463db9mr1114110wrb.26.1694605820092;
+        Wed, 13 Sep 2023 04:50:20 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:3b50:bca5:a754:7463])
+        by smtp.gmail.com with ESMTPSA id j14-20020adfd20e000000b0031fc4c31d77sm1932689wrh.88.2023.09.13.04.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 04:50:19 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Andy Shevchenko <andy@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Harvey Hunt <harveyhuntnexus@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Daniel Scally <djrscally@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 2/5] mtd: rawnand: ingenic: use gpiod_set_active_high()
+Date: Wed, 13 Sep 2023 13:49:58 +0200
+Message-Id: <20230913115001.23183-3-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230913115001.23183-1-brgl@bgdev.pl>
+References: <20230913115001.23183-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] mtd: rawnand: qcom: Unmap the right resource upon
- probe failure
-Content-Language: en-US
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_charante@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_pkondeti@quicinc.com>
-References: <20230912115903.1007-1-quic_bibekkum@quicinc.com>
- <20230912142847.4610c0a0@xps-13>
- <5e80e600-b523-476a-81bd-93d2c517b7b6@quicinc.com>
- <20230912143726.GE6404@thinkpad>
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <20230912143726.GE6404@thinkpad>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: rOdNNTYoqFsrUD7Y6yU-GG5R_MU-Q-A7
-X-Proofpoint-GUID: rOdNNTYoqFsrUD7Y6yU-GG5R_MU-Q-A7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
- adultscore=0 phishscore=0 suspectscore=0 mlxlogscore=588 bulkscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130059
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230913_000905_688635_B457B804 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20230913_045022_214763_279FCD3A 
+X-CRM114-Status: GOOD (  11.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,42 +103,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
+Use the new, less cumbersome interface for setting the GPIO as
+active-high that doesn't require first checking the current state.
 
-On 9/12/2023 8:07 PM, Manivannan Sadhasivam wrote:
-> On Tue, Sep 12, 2023 at 08:02:07PM +0530, Bibek Kumar Patro wrote:
->>
->>
->> On 9/12/2023 5:58 PM, Miquel Raynal wrote:
->>>> We currently provide the physical address of the DMA region
->>>> rather than the output of dma_map_resource() which is obviously wrong.
->>>>
->>>> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
->>> Cc: stable?
->> Cc: stable@vger.kernel.org
-> 
-> You need to send another version adding the CC tag.
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Sure Mani, sent a new patch with cc tag. Addressed in v5 patchset.
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+index 6748226b8bd1..c055133c45fe 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+@@ -388,9 +388,8 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
+ 	 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
+ 	 * helper, and be consistent with what other drivers do.
+ 	 */
+-	if (of_machine_is_compatible("qi,lb60") &&
+-	    gpiod_is_active_low(nand->busy_gpio))
+-		gpiod_toggle_active_low(nand->busy_gpio);
++	if (of_machine_is_compatible("qi,lb60"))
++		gpiod_set_active_high(nand->busy_gpio);
+ 
+ 	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
+ 
+-- 
+2.39.2
 
-> 
-> With the tag added,
-> 
-> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-> 
-
-Added in v5 patch.
-
-> - Mani
-> 
-
-Thanks & regards,
-Bibek
 
 ______________________________________________________
 Linux MTD discussion mailing list
