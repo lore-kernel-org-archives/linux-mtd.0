@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0155EDEC4A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6916EDEC48
 	for <linux-mtd@archiver.kernel.org>; Wed, 13 Sep 2023 11:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,56 +12,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hS54qmF4Z4ixfx48pOLBe27LftP2f4YrcXN+UGAHnPE=; b=mknhr96Glcklaa
-	hTk3VlZv0zwzQ8JCDPVjBxJSnGSYXr91M36Js3F80EtkAXlAVjuxXRbWi66esM8Rr6gC69DutLf5m
-	Dp6/MiWA4kdK5rn1TK0aMn81Sdt8JSNzhZAsf8SLVpt72PspSo5S3kccwdNGl8CNp7P4n2lgcpkTE
-	5Q49Q1llMBs2hl80W0eRxIVyVijeFABH+xFZmIS9b6EyBZtMAd9vpTiReMfdjuB6t/0OBuUWAMWQ4
-	21Li5Fu/e6biC5yEXqSTHHvmhQcSguXrR9mdDLd7bh3icbbLpJWJAT3AUG4IvUE7Z0BCLDHVgT55g
-	0khJcLmt3JkmGCEujZRQ==;
+	List-Owner; bh=9wY9chJBZlF7g4xGrwId7QNHnlLp0zKzMM8sWo1lJ9Y=; b=AtP/OO9iABuJ8w
+	pLDG7563ylx5aM87S/n2YulA/vLXT6ZKRunznwHbolBhsr1iT+YDtB8wcrS+8hZQIoBD2Bmjs+TPf
+	UxMw7PK2ULPuYVb9zQ4wiUmh3vgdfKxkRvM/q3n0CcrH0wdQcXWX4hcl/z9/sGh2QUWj4lpLBHf9I
+	Y66X3Y18cCqFzC91LRgo3lmSUvZF2T9h1Sx3Qa69oxcBFhrtEaEWEvBp1V98rmCVBV4YEORJJvC2k
+	SW4ZaTVgO1Xam/EZry87eadf1M/O3ufFgBF97WcSbiJASGXtXb2XXLGzjJhG0g0J6iEIgOXT49KeC
+	sdkmQlOPVt3zJb7nvJ/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgOO3-005mXG-1d;
-	Wed, 13 Sep 2023 11:50:27 +0000
-Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
+	id 1qgOO6-005mYN-0m;
+	Wed, 13 Sep 2023 11:50:30 +0000
+Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qgONz-005mTd-10
+	id 1qgOO1-005mV1-18
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Sep 2023 11:50:24 +0000
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31f7638be6eso5938926f8f.3
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2023 04:50:22 -0700 (PDT)
+	Wed, 13 Sep 2023 11:50:26 +0000
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31dca134c83so6775562f8f.3
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Sep 2023 04:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694605821; x=1695210621; darn=lists.infradead.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694605823; x=1695210623; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9VygHWUUTxJcwgk20gKLWHe+YEMHPQx8FheNmwIckcQ=;
-        b=loxJOOd2HYI/sVJmERlqRt9qRDiCUu0pbW8N1eBnb66RUl0iwgLeDUPowBD2DYWAhI
-         cxPwsLZ90aR9arnsFlA6eRVC/b+V4J50hnbmuHD1I/6jA2C68vmUiWGYatDEbGIYtSr4
-         QtFJZ5f1/Mrj5F6wzg+YLLR7rQAwdEjEhnAFdo17aCcKc90Jzw59DYzYtM2+TlKuOB76
-         D/NmB/AinlwJ/+X0ce2ewCVajVAzA8V0C5m6TsqK/KXFE4xd2Co/xsgpJOK84I6u9dGa
-         hD2CCj09Z5jjZ68gtVFGv+VPRxLBZ0WlMMbvCDZHtgapSE1CLc2YlfSgL0L1ppVN4eZq
-         vpWw==
+        bh=Qakrc9HB1O5Iu/mhnl/aqGs6dWn+CSwn3hlAKhsYM7Q=;
+        b=zFuIUh2EEeYJMLnZsJv3+aR2Vm7jNO3aFQsgI4pwxZvze/4zlBiL56n3AKBpf/6ipY
+         WYxd32keoM9A17jMYIX+fAL7kOKCCbXBuVmIprwqKG0yugmEs5mzWPHT+fTE9hhYcjdG
+         8eFnf3FwfKsRO9q8uPJueXpx7tCPfaLvo+ozhQijsPiX4kSbD4CNICrApoOlC1RQTH8L
+         jnQ519AF3rS1wNtYRlTLcYd8BgZdDQkGqKIPtIPo/C2MZDs0Ya5/7ZcX6mCfDin9osWD
+         Cj/WUtiZvH5EyttUGBIavmvfjerez9pwQZxhLQ3JWXmpY37DtsMZmzNxVuZ8T4Jfriy/
+         9DwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694605821; x=1695210621;
+        d=1e100.net; s=20230601; t=1694605823; x=1695210623;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9VygHWUUTxJcwgk20gKLWHe+YEMHPQx8FheNmwIckcQ=;
-        b=NUB7D5af3+l3mffuacwA/mvOTmrmJeL2tcIjGPaKsOCEYy2lrzpjHIF0g3ZF6/MmzZ
-         emw7LpVMrnfV35s+FdXAEcZtfMEZRelWZHeC/1mUli/fNzWh+f6/djS4/mj4hUnDLinx
-         qquQKJEdZsVphBt0VqjvCd5jt4LXNLgOwPqS0XQSJ2hHcZlzYnWqPdTVOiyApBqWBNWB
-         f5HYq5KqV6sEEfNfOBhhzrzB5ue99bx52s9gpIQC4nhyUO4G8M6HreqbX/OYEAj90vqX
-         KW9WRcCQDAexjRVild3X6ILdKf6PcduKKnxmEG58syqcd0r0YA3wFOuuQtiHBmI1JCGH
-         IUSg==
-X-Gm-Message-State: AOJu0YybdGrpJPsOrdTxX4+SLuwxZx3cK9B4/HCO/svLebwFCNPXcY0R
-	R+dRfa9O5buUHLcMN0DNj51phw==
-X-Google-Smtp-Source: AGHT+IE8/xUMx2CxEG3cqDJgSjbSA2NWMS00vPEgINZ0yvChOcoxgNUbEbPflHzcyEJln62XxJ5Bpg==
-X-Received: by 2002:a5d:5957:0:b0:314:12c:4322 with SMTP id e23-20020a5d5957000000b00314012c4322mr1948005wri.4.1694605821222;
-        Wed, 13 Sep 2023 04:50:21 -0700 (PDT)
+        bh=Qakrc9HB1O5Iu/mhnl/aqGs6dWn+CSwn3hlAKhsYM7Q=;
+        b=e5lgU7xBifxxTKz5qrk28s79SIjQBps1CpWg2tV/avYJkZbib+rPG8DzWa3yaMwd/p
+         pbGyenDODx6e0hS4LlcP01WEur9afjNq2/DL3MYCLU2c22eyiaJX+UQ4hFGvr1MWJz1C
+         wFSQHvZKj3Qav7JaP5FFxOBOy3MLABgkhP3KF4J4yBy/ZRUS2/MMvlxWdr0dfmyFMjAA
+         YU5UM/SpwgkfmDf0TGE5dPVsXFZ2FpgPRwArpjN+qo8M6Mmba5OCFv2t3eir3WdUj/6N
+         K6SKzAqAHSGb6p0jwFlCIxG39yDe1H623xvtatbO/R1iQFKdgTZe0HxvyLf4uyadd4mO
+         siEg==
+X-Gm-Message-State: AOJu0YypBrtAh+gttNEkPSddGErK/un16RPoA8iXRx3MET6d1oQwOxSH
+	NTYmjA2xrGKXiaEeKfqB9U3/GQ==
+X-Google-Smtp-Source: AGHT+IHSaGvQEu7p/aPUxTrIpzTkMdMiNylYl6uXXTnV4TP4nHCU3quUTmCv138dyfMb7wv/N8jbvw==
+X-Received: by 2002:a5d:56ca:0:b0:311:1dba:ca65 with SMTP id m10-20020a5d56ca000000b003111dbaca65mr1878093wrw.51.1694605823533;
+        Wed, 13 Sep 2023 04:50:23 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:3b50:bca5:a754:7463])
-        by smtp.gmail.com with ESMTPSA id j14-20020adfd20e000000b0031fc4c31d77sm1932689wrh.88.2023.09.13.04.50.20
+        by smtp.gmail.com with ESMTPSA id j14-20020adfd20e000000b0031fc4c31d77sm1932689wrh.88.2023.09.13.04.50.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 04:50:20 -0700 (PDT)
+        Wed, 13 Sep 2023 04:50:23 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Linus Walleij <linus.walleij@linaro.org>,
 	Andy Shevchenko <andy@kernel.org>,
@@ -82,16 +82,16 @@ Cc: linux-gpio@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	platform-driver-x86@vger.kernel.org,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 3/5] mmc: slot-gpio: use gpiod_set_active_[low|high]()
-Date: Wed, 13 Sep 2023 13:49:59 +0200
-Message-Id: <20230913115001.23183-4-brgl@bgdev.pl>
+Subject: [PATCH 5/5] gpiolib: remove gpiod_toggle_active_low()
+Date: Wed, 13 Sep 2023 13:50:01 +0200
+Message-Id: <20230913115001.23183-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230913115001.23183-1-brgl@bgdev.pl>
 References: <20230913115001.23183-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230913_045023_397952_07584551 
-X-CRM114-Status: GOOD (  11.51  )
+X-CRM114-CacheID: sfid-20230913_045025_401067_9EAF4ED7 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,44 +110,62 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-We have new, less cumbersome and clearer interfaces for controlling GPIO
-polarity. Use them in the MMC code.
+With all users now having switched to gpiod_set_active_[low|high](), we
+can now remove gpiod_toggle_active_low().
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/mmc/core/slot-gpio.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/gpio/gpiolib.c        | 11 -----------
+ include/linux/gpio/consumer.h |  7 -------
+ 2 files changed, 18 deletions(-)
 
-diff --git a/drivers/mmc/core/slot-gpio.c b/drivers/mmc/core/slot-gpio.c
-index 2a2d949a9344..a6fea6559a5e 100644
---- a/drivers/mmc/core/slot-gpio.c
-+++ b/drivers/mmc/core/slot-gpio.c
-@@ -204,12 +204,11 @@ int mmc_gpiod_request_cd(struct mmc_host *host, const char *con_id,
- 	}
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 131965814a7c..14b84bad93ea 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2714,17 +2714,6 @@ int gpiod_is_active_low(const struct gpio_desc *desc)
+ }
+ EXPORT_SYMBOL_GPL(gpiod_is_active_low);
  
- 	/* override forces default (active-low) polarity ... */
--	if (override_active_level && !gpiod_is_active_low(desc))
--		gpiod_toggle_active_low(desc);
+-/**
+- * gpiod_toggle_active_low - toggle whether a GPIO is active-low or not
+- * @desc: the gpio descriptor to change
+- */
+-void gpiod_toggle_active_low(struct gpio_desc *desc)
+-{
+-	VALIDATE_DESC_VOID(desc);
+-	change_bit(FLAG_ACTIVE_LOW, &desc->flags);
+-}
+-EXPORT_SYMBOL_GPL(gpiod_toggle_active_low);
 -
-+	if (override_active_level)
-+		gpiod_set_active_low(desc);
- 	/* ... or active-high */
--	if (host->caps2 & MMC_CAP2_CD_ACTIVE_HIGH)
--		gpiod_toggle_active_low(desc);
-+	else if (host->caps2 & MMC_CAP2_CD_ACTIVE_HIGH)
-+		gpiod_set_active_high(desc);
+ /**
+  * gpiod_set_active_low() - set the GPIO as active-low
+  * @desc: the GPIO descriptor to set the active-low setting for
+diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
+index ddbf0d8e4a75..395e1a67c4c8 100644
+--- a/include/linux/gpio/consumer.h
++++ b/include/linux/gpio/consumer.h
+@@ -159,7 +159,6 @@ int gpiod_set_raw_array_value_cansleep(unsigned int array_size,
  
- 	ctx->cd_gpio = desc;
+ int gpiod_set_config(struct gpio_desc *desc, unsigned long config);
+ int gpiod_set_debounce(struct gpio_desc *desc, unsigned int debounce);
+-void gpiod_toggle_active_low(struct gpio_desc *desc);
+ void gpiod_set_active_low(struct gpio_desc *desc);
+ void gpiod_set_active_high(struct gpio_desc *desc);
  
-@@ -256,7 +255,7 @@ int mmc_gpiod_request_ro(struct mmc_host *host, const char *con_id,
- 	}
+@@ -495,12 +494,6 @@ static inline int gpiod_set_debounce(struct gpio_desc *desc, unsigned int deboun
+ 	return -ENOSYS;
+ }
  
- 	if (host->caps2 & MMC_CAP2_RO_ACTIVE_HIGH)
--		gpiod_toggle_active_low(desc);
-+		gpiod_set_active_high(desc);
- 
- 	ctx->ro_gpio = desc;
- 
+-static inline void gpiod_toggle_active_low(struct gpio_desc *desc)
+-{
+-	/* GPIO can never have been requested */
+-	WARN_ON(desc);
+-}
+-
+ static inline void gpiod_set_active_low(struct gpio_desc *desc
+ {
+ 	/* GPIO can never have been requested */
 -- 
 2.39.2
 
