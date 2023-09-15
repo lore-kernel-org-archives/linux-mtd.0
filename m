@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E195CEED61A
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Sep 2023 18:46:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9BF5EEEC01
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Sep 2023 19:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NP6eHhlTvn+zzs2tWd20sJXhf0p/pj6uwKorJr4FMpc=; b=KZEFL7sqe3LFev7tvFdpRRfy62
-	aJrThSLai0GQyylBM6HFPlnOfafYMvVX6Or/kzeDngqbPv0aIftE1zusCDY3d68buZwISnZL8M/55
-	DJyya6Den7f13haCfCGbpFM9+eDXaN+YlckQQOwMuJAgrxdQHdHQ1P1Rt0GhViYHaCgveuAioH2A+
-	II23kpV2IZ5qxZwEIj/LsKljtySB5ej18B/qY5yMVBAZqUH4iRMaNARz+zn2OK0oRK7ULe54oWMbf
-	U+f51u6yYa2G1FQ0kME4X8bJzRiXtu2YBnk3suOjEaRUo/Cjzyd0ZOAZ4NIlylmDI4B7z4MuckFv1
-	eDtNVocg==;
+	bh=8cysl8ptsDIwGAt5oUg4hPUm/fvqRQgQoPeV+PfCSFw=; b=tuVA53AVlHpXPEEik9hnw5BuU5
+	lpdzeErrOi9OiKhVH7rq+twQOG5NsO2Q9cFFzQSRl3UgxcgJDCUrXnR/hYHS3j8DvLAYJDwORetJ6
+	oOqjx8Q0SfwW25QFenQdEMIyyeBXSlgjhMhb2sgmddoIGhBg2I/yoKRywOnJOb4UYsPWEuusrj2Z1
+	az63I5ZIozR66mckk0/VCFOPicsXbQrQ4Yhx+ejjJ4NnlH8KYers9/UAdI+tjZKCmH8N+nv6aQV9H
+	misqC/1iWidhWDDqdAbF41Vx2sQo5vhOC9uovAx4KRz3QtiYzpIujTv8e1pz2ZOa5MXDSq7hgmFob
+	CbnKif5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qhDpI-00BDdl-1C;
-	Fri, 15 Sep 2023 18:46:00 +0000
-Received: from mail-qv1-xf2e.google.com ([2607:f8b0:4864:20::f2e])
+	id 1qhEOE-00BFvg-2w;
+	Fri, 15 Sep 2023 19:22:06 +0000
+Received: from mail-oi1-x22c.google.com ([2607:f8b0:4864:20::22c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qhDpF-00BDd5-2u
+	id 1qhEOB-00BFv6-13
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Sep 2023 18:45:59 +0000
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-65637c04014so3897266d6.3
-        for <linux-mtd@lists.infradead.org>; Fri, 15 Sep 2023 11:45:55 -0700 (PDT)
+	Fri, 15 Sep 2023 19:22:05 +0000
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3aa1446066aso1514104b6e.1
+        for <linux-mtd@lists.infradead.org>; Fri, 15 Sep 2023 12:21:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1694803555; x=1695408355; darn=lists.infradead.org;
+        d=broadcom.com; s=google; t=1694805717; x=1695410517; darn=lists.infradead.org;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=ptZcQSatw38dy9Kz8Pha35/Mt68Q4/AzpTWrj+ggH5c=;
-        b=Sh0dZTAYqPZbP1Klph2fGUKAswbJ+keU/h20x8sZnFjiWvs1iGrMtYV5Zg8aC6yqKM
-         Stp/VHq/1fRL8BqMbBsciQtUx2YktmgXp3UtIwInLQYTGnHY2wvSoloU+qC7Z0enfZzD
-         +SIz8QexYfhpQYRI3JJgbMr7Sucfj9ggF5re0=
+        bh=Wh0YyIGqUCnC7ZySDNkCewXRYmk2uQhwzyvLD+wn6OE=;
+        b=J8cpBkXEZRA4Ev8mEzSpW+RaLiIjOjuh+/1cONxUN0jD+w7YYsnbdEqHgIRWt8k0QE
+         1dYyUh+toiqadEAiYcAx5hYh3ROEA0mgPFSFS8sAAtHCVWgiBiJrPN2P5DOHD1ZVwONb
+         ZpwnFBtdF5IeKfYd8SLHdKZ3Q1b+yE3uCxChY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694803555; x=1695408355;
+        d=1e100.net; s=20230601; t=1694805717; x=1695410517;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ptZcQSatw38dy9Kz8Pha35/Mt68Q4/AzpTWrj+ggH5c=;
-        b=O1Rlqu/hTG+6bqvTN9ATR182lLDclzQIcdHWATYhtB7hcMTjI32PJCb4L3LG5sXO2A
-         7a+kFAPAnAHLdzxoRoZfaYb5SK3RI0fdoyPVTWM9uFYlel1kDN+0uDw70Q1VIxC8SshP
-         Eia47DOrs9kLxRO1/UHYRca6T1+o1jKMOJ/EVOVNkdh9LkX2wB5HIVTaiIsJtTlSSgFr
-         bYwTuHgJYA1kIg9ZXxaNhDWhmVg6GhSLsCpSru3A7f2KHj8PNA9xGc/3/DajZXB78fEQ
-         dEzprH5wcgKmwZYfvs/BbGXvJKbJJHPNP5LnRAz+0n3EOa2xfyTb5tnDivQYitp3XxRi
-         1Qdw==
-X-Gm-Message-State: AOJu0YzG8z71UIGu1z+p2wPWIAozN5PX1Zo0UPgU/6YYb1VtrhPiYr/w
-	f1EuS6pjHnshWYYqcHJ0kpOe+Q==
-X-Google-Smtp-Source: AGHT+IFDQTC+Ntu4JYzUsFT9YGjC9JYsfYXv/7lhyYyDhziP8AWTQQS7fqVdSbxMr+SJiJK8kYytIw==
-X-Received: by 2002:a0c:f0cd:0:b0:64b:f784:d267 with SMTP id d13-20020a0cf0cd000000b0064bf784d267mr2675099qvl.11.1694803554764;
-        Fri, 15 Sep 2023 11:45:54 -0700 (PDT)
+        bh=Wh0YyIGqUCnC7ZySDNkCewXRYmk2uQhwzyvLD+wn6OE=;
+        b=KUwaTc786PERi/PyJBq6Tb4tME4Y8GRTIoSUbbytUTAVIvIvTAkuJft6OiYaqxnN7f
+         BV4ZThaFDKZxtFiAYgYMoQM8W+mFAEpMTX4r+en1edNeOGtsAPwpmEDbJ90sOe5oYkHc
+         WcjgdZjclsp8LE/IHUQAmcl2/CMlxDIJV4+R+7y2hIDT3rwll7KgKONGiKjfqelNgEfL
+         h3Vdm4X/RVgXfZFlHvy01W+0vB+AG7uCFavmqHwNxidn/5whQrX/TYmP+glCEjLZhBZY
+         gvVRp/xsKfkq0jJx3RBpgS/lIbxiwdAGCNcvPcdPX7L1kLvVO4CBjsgvTE0bMUpLN+Wx
+         TX9Q==
+X-Gm-Message-State: AOJu0YygNZOncA4uV9pej/Y5jgp7DhwPvFcXxVVvAEIzQ5yfs9Z5Zl7P
+	PM+wsErRV4VE9rXhJ/+Tepj/Dg==
+X-Google-Smtp-Source: AGHT+IHAZE+6wUEtpCV6ps4M7vHlVO2DrMenf0glPzephKvfesaKTEQ27xjsVmRIQik6qfxc/e/fBQ==
+X-Received: by 2002:a54:4008:0:b0:3a7:2690:94e0 with SMTP id x8-20020a544008000000b003a7269094e0mr2695273oie.4.1694805717370;
+        Fri, 15 Sep 2023 12:21:57 -0700 (PDT)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id x18-20020a0cb212000000b0063fbfbde4adsm1464948qvd.129.2023.09.15.11.45.52
+        by smtp.gmail.com with ESMTPSA id p7-20020ac87407000000b00401e04c66fesm1355108qtq.37.2023.09.15.12.21.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Sep 2023 11:45:54 -0700 (PDT)
+        Fri, 15 Sep 2023 12:21:56 -0700 (PDT)
 Subject: Re: [PATCH] mtd: rawnand: brcmnand: Initial exec_op implementation
 To: dregan@mail.com, bcm-kernel-feedback-list@broadcom.com,
  linux-mtd@lists.infradead.org
@@ -68,15 +68,15 @@ Cc: f.fainelli@gmail.com, rafal@milecki.pl, joel.peshkin@broadcom.com,
  bbrezillon@kernel.org, kdasu.kdev@gmail.com
 References: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
 From: William Zhang <william.zhang@broadcom.com>
-Message-ID: <1438f7f0-7a96-f8e5-8d0b-12f0b1fb6d94@broadcom.com>
-Date: Fri, 15 Sep 2023 11:45:51 -0700
+Message-ID: <1ad972e4-044d-4fe0-c001-b5f9565c8198@broadcom.com>
+Date: Fri, 15 Sep 2023 12:21:54 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.4.0
 MIME-Version: 1.0
 In-Reply-To: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230915_114557_984141_A0E37F2B 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20230915_122203_802341_167F197E 
+X-CRM114-Status: GOOD (  12.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,19 +88,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4553996262926304801=="
+Content-Type: multipart/mixed; boundary="===============4930086911009046933=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4553996262926304801==
+--===============4930086911009046933==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000dc264506056a33b7"
+	boundary="000000000000c401ce06056ab4f8"
 
---000000000000dc264506056a33b7
+--000000000000c401ce06056ab4f8
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-
 
 
 On 09/12/2023 07:24 PM, dregan@mail.com wrote:
@@ -111,10 +110,10 @@ On 09/12/2023 07:24 PM, dregan@mail.com wrote:
 > ---
 >   drivers/mtd/nand/raw/brcmnand/brcmnand.c | 384 ++++++++++-------------
 >   1 file changed, 161 insertions(+), 223 deletions(-)
-
+> 
 Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
---000000000000dc264506056a33b7
+--000000000000c401ce06056ab4f8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -185,19 +184,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBlX1HSZ2GC5a5jiw7Gz7qyG7J+O
-ncj3bss/tG/iVAkmMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDkxNTE4NDU1NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPUC4bxtV6tHKTUPSO/A4jBTsCHs
+SPlwc/781MortW89MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDkxNTE5MjE1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBBiylHdvJAoD2ffBxlNDuOt9GKe2S/2vt078GY1QpXcaXw
-y1gIwuPBhtoB2AZ4scJIZIF+9wrlREwMTCSfS+gVOzLk45yD3p5c0Ke2sPy54dQDM40yq9eKxrlv
-SWAFyEoMF2HEg6z6rrp+8iZz8cNH9xh98KQwPI4IAmcmKecmIAys4WvHam45UJBAqwpRW1igNri7
-ZLnRQcgSAhKgmNUQPot7d5qVsEsRh/RFyXrsocHytKPuzO2Vct00yPJHB1drInmNWsNOaSRxBcWW
-RRHkqF3Py1hb0jkIQ3pzZ9ktCqQywPYy1Fz6Cvstc3+P9NPPvv2Y5rY1PR5D2zkAzVhw
---000000000000dc264506056a33b7--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQA8RS84QAlH+vfKxJdRxTDvz3LedQIFsziITx3WoHnwAlAJ
+/VgYOSyr0Jp2YRU8q8T7cA2iMsMk7V4pqTqqRxjYQuVYdWmljVb5G8yz1lgSmGs+6F7+fiu3F7bI
+/9qQmZsp9OhIHJUzON2bCrHXKkHUtvJp4sP7ESDIRlmp3JJRRc8M11QEZNm7z/pLC6SmSOZUIhvR
+ozVW5hL+su5wYkd1D8CFIkn42JSfogM53RUzuUvb5srYj2NTJne0/ltjoTUnskRHSKg0gOVC/a9g
+G7Unen2y/SiiRWRyMMe+m30g4oe9Ni2RAQKzAf8aYqfot3lgd8rGOT2cDW7P7P44KylN
+--000000000000c401ce06056ab4f8--
 
 
---===============4553996262926304801==
+--===============4930086911009046933==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -207,5 +206,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============4553996262926304801==--
+--===============4930086911009046933==--
 
