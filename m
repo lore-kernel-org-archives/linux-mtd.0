@@ -4,66 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7C3AEE6428
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Sep 2023 07:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 814CBEE643D
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Sep 2023 08:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VavF3Td4b3FipMcyyUodC4DTOFiOtle5pbmC1aLpJSI=; b=KRNQ3u4O5vtb2ngQEmxb9xP0aX
-	taP6EotZjLmAOu7dr1a0IwXuIXwJ217AFTtPHKKZAa7UG+9Yg5MpoaMXhbl2qkZm2N8i3+KuXokJ/
-	bG7cgKNamwT5KEvMiCfwQMR5yAioymEV7fZXbfDH0+MfpTVFCCb+xOhw9buoFuPDMRJsdY0ClOw4S
-	IKHrttfBzheKoVi3kE+yHmdzVi5hKHaXxb5hQB1fN/+tIfAN9vK1O9OYDmun217iPdRfKY/MnSYCn
-	Paf/f2WeY5QrBnxVcz96DUlngNl+btb9U9+i5hFB3zUWn3UZJNDDEW5HERr4GbYtpMfAbwE7HSInb
-	uiRNvhdA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VV6yjKFUXL0iJ2+GTdOwhUpJItRsZOblICC/ojZLclY=; b=Af4XNwFMzb2PO5
+	1iiTJYrKBCwZJvDHB42fME/va7UgKSN6aYp0lZXZRNPflPJP3bCUY7zAaECS5+maX1d/3w765U4v7
+	CyqicJRvFR7nRhDDrhZEIW7Vn/Jwl+KvxN0/1Tv3cdHNRRcKTFZYt7BvLcmzgdeyw32dJQM6lwVsb
+	R2CZWa6+XkJS7XdyelzrLgCUQWftgfyPHxPjh31+0cNsa2fsJysHBGG2VsNj4oLnWLH5MbeH7U/e7
+	sN/0Qa/X9uLcD2XOTffw2cFLwMhxhByFBRXVZklidFj8VpL7J97MUAriHTEWgw7XY3qmrSTgmPkx2
+	9fsuqYHLd8Vzao7V6z9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qh3Fg-00A2aF-0q;
-	Fri, 15 Sep 2023 07:28:32 +0000
-Received: from 4.mo561.mail-out.ovh.net ([178.33.46.10])
+	id 1qh3w2-00A6wN-17;
+	Fri, 15 Sep 2023 08:12:18 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qh3Fb-00A2Y4-1s
+	id 1qh3vx-00A6sC-1e
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Sep 2023 07:28:30 +0000
-Received: from director3.ghost.mail-out.ovh.net (unknown [10.108.20.85])
-	by mo561.mail-out.ovh.net (Postfix) with ESMTP id A927826BD2
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Sep 2023 07:28:21 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-kmpnv (unknown [10.110.171.251])
-	by director3.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 863E91FEBC;
-	Fri, 15 Sep 2023 07:28:20 +0000 (UTC)
-Received: from RCM-web7.webmail.mail.ovh.net ([151.80.29.19])
-	by ghost-submission-6684bf9d7b-kmpnv with ESMTPSA
-	id 3NYNH5QHBGUBRAAAnwAMdg
-	(envelope-from <rafal@milecki.pl>); Fri, 15 Sep 2023 07:28:20 +0000
+	Fri, 15 Sep 2023 08:12:16 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id F2CEEB82C12;
+	Fri, 15 Sep 2023 08:12:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 95208C116B6;
+	Fri, 15 Sep 2023 08:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694765529;
+	bh=utFKRANVZtGYY99+KusTYx9mpahz1bWeq2+B2mYmxpM=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=u7ZZ04P7NNTjEy8db3yxq5WykW9nfMARDsEitw+zFsilwyg8MYEDZbwKDaW4Bk+ri
+	 XqhAjg7PY1jEK0KLVU7WXOJ5xBgubUpGkaw9q6z7NVdts6NpA1SOa1zMcxUDNPgW/6
+	 m/i7SBY8kISDewEMb+rnrRXGYGYcjJ79+yKZ/mLnJDcQX3QMNX1oH1bf9Qo2DNA67h
+	 on8CxbhTyXZ+dTr3DtwDxwTvABbB0KhAv/tyPPbcpRDgrFS41PUBywxCzFisNbt4jN
+	 dy+OCJvVVMKiUtsA3pphKIq7lxH1DbsXePkokz7tWENq0wp1GCWiKZxjuJVy7KJTac
+	 5NTy/Ntu3prUg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80F06EE6441;
+	Fri, 15 Sep 2023 08:12:09 +0000 (UTC)
+From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
+Date: Fri, 15 Sep 2023 11:11:07 +0300
+Subject: [PATCH v4 25/42] dt-bindings: mtd: Add ts7200 nand-controller
 MIME-Version: 1.0
-Date: Fri, 15 Sep 2023 09:28:20 +0200
-From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To: Scott Branden <scott.branden@broadcom.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, =?UTF-8?Q?Rafa=C5=82_Mi?=
- =?UTF-8?Q?=C5=82ecki?= <zajec5@gmail.com>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, Florian
- Fainelli <florian.fainelli@broadcom.com>
-Subject: Re: [PATCH] nvmem: brcm_nvram: store a copy of NVRAM content
-In-Reply-To: <CA+Jzhd+HLoUDifQQ5vF7m66X3rsk1Bk2yx_0h6eSzaUwXVa72w@mail.gmail.com>
-References: <20230914064922.3986-1-zajec5@gmail.com>
- <28fad55f-1253-deb2-9615-b32746129664@gmail.com>
- <CA+Jzhd+HLoUDifQQ5vF7m66X3rsk1Bk2yx_0h6eSzaUwXVa72w@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <24ab9df46703695cfa7402695a5dc5a2@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 31.11.218.106
-X-Webmail-UserID: rafal@milecki.pl
-X-Ovh-Tracer-Id: 546342932523559692
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudejuddguddulecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgffhueeihfeitdettdehfefhieefffevkedvgeetteekteejtdeivddvhffgffffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudehuddrkedtrddvledrudelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehiedupdhmohguvgepshhmthhpohhuth
+Message-Id: <20230915-ep93xx-v4-25-a1d779dcec10@maquefel.me>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>
+X-Mailer: b4 0.13-dev-e3e53
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=1566;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=IfQ7ikafYC6qmbgOyIMlAODFiCL8J32QWAN5Sndb1Ws=; =?utf-8?q?b=3DKaTFkGwz3oEV?=
+ =?utf-8?q?HEI9B1pnun7uUIDGnyAaIH/H9lGIdSqVH+IVMzloMbWB73DlhMDTNWPAQKB8a7rD?=
+ 901KLWh4C1KZQD8QIUfHTgMIv59JPcicvlvEQPf6ecIckD/hYbp4
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230915_002827_914031_89DFC229 
-X-CRM114-Status: GOOD (  17.78  )
+X-CRM114-CacheID: sfid-20230915_011213_835572_8F47F79F 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,47 +88,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: nikita.shubin@maquefel.me
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjAyMy0wOS0xNCAyMzozMCwgU2NvdHQgQnJhbmRlbiB3cm90ZToKPiBPbiBUaHUsIFNlcCAx
-NCwgMjAyMyBhdCAyOjI24oCvUE0gRmxvcmlhbiBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5j
-b20+IAo+IHdyb3RlOgo+PiAKPj4gT24gOS8xMy8yMyAyMzo0OSwgUmFmYcWCIE1pxYJlY2tpIHdy
-b3RlOgo+PiA+IEZyb206IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPj4gPgo+
-PiA+IFRoaXMgZHJpdmVyIHVzZXMgTU1JTyBhY2Nlc3MgZm9yIHJlYWRpbmcgTlZSQU0gZnJvbSBh
-IGZsYXNoIGRldmljZS4KPj4gPiBVbmRlcm5lYXRoIHRoZXJlIGlzIGEgZmxhc2ggY29udHJvbGxl
-ciB0aGF0IHJlYWRzIGRhdGEgYW5kIHByb3ZpZGVzCj4+ID4gbWFwcGluZyB3aW5kb3cuCj4+ID4K
-Pj4gPiBVc2luZyBNTUlPIGludGVyZmFjZSBhZmZlY3RzIGNvbnRyb2xsZXIgY29uZmlndXJhdGlv
-biBhbmQgbWF5IGJyZWFrIHJlYWwKPj4gPiBjb250cm9sbGVyIGRyaXZlci4gSXQgd2FzIHJlcG9y
-dGVkIGJ5IG11bHRpcGxlIHVzZXJzIG9mIGRldmljZXMgd2l0aAo+PiA+IE5WUkFNIHN0b3JlZCBv
-biBOQU5ELgo+PiA+Cj4+ID4gTW9kaWZ5IGRyaXZlciB0byByZWFkICYgY2FjaGUgYWxsIE5WUkFN
-IGNvbnRlbnQgZHVyaW5nIGluaXQgYW5kIHVzZSB0aGF0Cj4+ID4gY29weSB0byBwcm92aWRlIE5W
-TUVNIGRhdGEgd2hlbiByZXF1ZXN0ZWQuCj4+ID4KPj4gPiBMaW5rOiBodHRwczovL2xvcmUua2Vy
-bmVsLm9yZy9saW51eC1tdGQvQ0FDbmE2cndmM185UVZqWWNNKzg0N2JpVFg9SzBFb1dYdVhjU01r
-Sk8xVnlfNXZtVnFBQG1haWwuZ21haWwuY29tLwo+PiA+IENjOiBBcsSxbsOnIMOcTkFMIDxhcmlu
-Yy51bmFsQGFyaW5jOS5jb20+Cj4+ID4gQ2M6IEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFp
-bmVsbGlAYnJvYWRjb20uY29tPgo+PiA+IENjOiBTY290dCBCcmFuZGVuIDxzY290dC5icmFuZGVu
-QGJyb2FkY29tLmNvbT4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJhZmFs
-QG1pbGVja2kucGw+Cj4+ID4gLS0tCj4+IFtzbmlwXQo+PiA+IC0gICAgIHByaXYtPmJhc2UgPSBk
-ZXZtX3BsYXRmb3JtX2dldF9hbmRfaW9yZW1hcF9yZXNvdXJjZShwZGV2LCAwLCAmcmVzKTsKPj4g
-PiAtICAgICBpZiAoSVNfRVJSKHByaXYtPmJhc2UpKQo+PiA+IC0gICAgICAgICAgICAgcmV0dXJu
-IFBUUl9FUlIocHJpdi0+YmFzZSk7Cj4+ID4gKyAgICAgYmFzZSA9IGRldm1fcGxhdGZvcm1fZ2V0
-X2FuZF9pb3JlbWFwX3Jlc291cmNlKHBkZXYsIDAsICZyZXMpOwo+PiA+ICsgICAgIGlmIChJU19F
-UlIoYmFzZSkpCj4+ID4gKyAgICAgICAgICAgICByZXR1cm4gUFRSX0VSUihiYXNlKTsKPj4gPiAr
-Cj4+ID4gKyAgICAgcHJpdi0+c2l6ZSA9IHJlc291cmNlX3NpemUocmVzKTsKPj4gPiArCj4+ID4g
-KyAgICAgcHJpdi0+ZGF0YSA9IGRldm1fa3phbGxvYyhkZXYsIHByaXYtPnNpemUsIEdGUF9LRVJO
-RUwpOwo+PiAKPj4gVGhlc2UgY2FuIGNvbmNlaXZhYmx5IHF1aXRlIGJpZyBkYXRhIHN0cnVjdHVy
-ZXMsIGhvdyBhYm91dCB1c2luZyAKPj4ga3ZtYWxsb2MoKT8KPiBXaHkgZG8gd2UgZXZlbiBuZWVk
-IHRvIGV4cG9zZSBNTUlPIGludGVyZmFjZSB0byBOQU5EIHRob3VnaD8gIFdoeSBub3QKPiBhbHdh
-eXMgZ28gdGhyb3VnaCB0aGUgY29udHJvbGxlciBkcml2ZXIuICBJIGRvbid0IHNlZSBob3cgdGhl
-IE1NSU8KPiBhY2Nlc3Mgd291bGQgYmUgdXNlZCBnaXZlbiBiYWQgYmxvY2tzIGFyZW4ndCBoYW5k
-bGVkPwoKV2UgbmVlZCB0byByZWFkIE5WTVJBTSAqZWFybHkqIGZvciBib290aW5nIHB1cnBvc2Vz
-LiBTb21lIHZlbmRvcnMgc3RvcmUKdGhlcmUgaW5mb3JtYXRpb24gYWJvdXQgdXNlZCBmaXJtd2Fy
-ZSBpbiBjYXNlIG9mIGhhdmluZyBtYWluIG9uZSBhbmQKZmFsbGJhY2sgb25lLiBUaGF0IGluZm8g
-aXMgcmVxdWlyZWQgZm9yIHBhcnRpdGlvbmluZyB3aGljaCBoYXBwZW5zCmR1cmluZyBtdGQgaW5p
-dGlhbGl6YXRpb24gYmVmb3JlIHdlIGhhdmUgTkFORCBkcml2ZXIgZnVsbHkgaW5pdGlhbGl6ZWQu
-CgotLSAKUmFmYcWCIE1pxYJlY2tpCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+Add YAML bindings for ts7200 NAND Controller.
+
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ .../devicetree/bindings/mtd/technologic,nand.yaml  | 45 ++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/technologic,nand.yaml b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+new file mode 100644
+index 000000000000..f9d87c46094b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/technologic,nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Technologic Systems NAND controller
++
++maintainers:
++  - Nikita Shubin <nikita.shubin@maquefel.me>
++
++allOf:
++  - $ref: nand-controller.yaml
++
++properties:
++  compatible:
++    oneOf:
++      - const: technologic,ts7200-nand
++      - items:
++          - enum:
++              - technologic,ts7300-nand
++              - technologic,ts7260-nand
++              - technologic,ts7250-nand
++          - const: technologic,ts7200-nand
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    nand-controller@60000000 {
++        compatible = "technologic,ts7200-nand";
++        reg = <0x60000000 0x8000000>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++        nand@0 {
++           reg = <0>;
++        };
++    };
+
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
