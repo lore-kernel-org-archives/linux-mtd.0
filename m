@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC6FACD54B5
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 11:18:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0B8FCD54B5
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 11:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2EOxkapVZgKF+jOuhwZYbr1AGs6Xr9HtUDVXYnZCPmg=; b=mgYnsgTPqQYivxf9ikHj0YvzcR
-	xDGWu6wsTLV82Vw3hC7JZLWaBWOkWonDi+ioh4xOcctIRsGfK1D+xSKHjRx0+XfwgAO9INB/NAFex
-	z4eN9lRLSfGH828IsYfPyaygDw0ANomEsqI7OgkVG/nrs8apPq6jbXlzWZ1rAVsQEtrBoxoqsm5Aj
-	ttgqqcPgqJoDVG0S1L9QopEPhHYUzvug2hTSJYREanfgmxICK3MTBwWw8D8Nb6zWQ4EvhYEyni4wh
-	1hpBcrGStab7FqIov4E/Pd7A0CbOdL+Et265eGYYyEvkJ1ivrf4CFLUk87NgQQZEO7+kAFXAaQzTN
-	D2qy+1eg==;
+	bh=7A3o70yZSTb7SPxqKTmEegGUhp/buG5UJqG8+xpsYkM=; b=K/ut5wlwQR237amq58Fb6Vx1cZ
+	1mKaIZYAYWg4980K49x9yold06kjV3HVxwrU7z4jqgw8eY4+KtZ9Qpvf7O2KfGQTr/byEU2Q+HoTZ
+	h9AG1MBYd2n5i05HR400Ya3cYYkIHhwRFtmNDLd3qwuVHCtTlpHhHk/dg9NeOL/94zv1Vw7tOvo87
+	tG+Qu54EoCTlLsdKQ6LuLLJx+7q/VCZW1j8wAhSQfsKaxAhvWK2HoHnZg+uV9p+dwoAhs1tHApT9q
+	fYJboCZuRlrn3ZTI5FhiHt+PzixjqYHHnbt5IcPp6fA0K9U1CJhUdZNAzU7MeaNKD1SrCHaHzOzF+
+	uxLJWL8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiYkE-000Gh0-1Z;
-	Tue, 19 Sep 2023 11:18:18 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1qiYwo-000IGQ-2Q;
+	Tue, 19 Sep 2023 11:31:18 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiYkA-000Gg3-0v
+	id 1qiYwm-000IG3-1V
 	for linux-mtd@lists.infradead.org;
-	Tue, 19 Sep 2023 11:18:16 +0000
+	Tue, 19 Sep 2023 11:31:17 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 0A5A7CE1287;
-	Tue, 19 Sep 2023 11:18:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7467C433C7;
-	Tue, 19 Sep 2023 11:18:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0A8286159C;
+	Tue, 19 Sep 2023 11:31:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EFB5C433C8;
+	Tue, 19 Sep 2023 11:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695122290;
-	bh=FBr/duLnMLUp4OEqEvn7ySuq3D9P7mkz4j8Di64T388=;
+	s=k20201202; t=1695123074;
+	bh=5ru64uTo5hwHfPq+Yd9EZrxiNaBgze2zLhEfszCpNks=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CDQ8604phgwnal+8wn8eyt7s6Q6m8OeIUl2WjSIrDoLL+6JEDIC1xnTHkZvlwovYH
-	 hMB3VMQfp0OY1e9LAR7fWwVhMfo1GjtUAf24Uoob96jVXdJLFwpCQgjUNHPY7mgye2
-	 k6ah0F/2cT6Xs2MRlcZRpToJgyD/yC7DJTwu4x8yPCosuEDC+A2qS+WF1XgCiSzzF/
-	 D2UCPh4+rZYTxuKtenAB5SBNs7GMM3EH01faF6msjeVo7Qe7wNn+ad9alGlRXgudTR
-	 bmM23Ub5MY3pAQ79s2pzOCpY4DY4LZwhY5ck3ERnyzLnDt6EEAE603CT+3T0TbCscH
-	 VLUs3IbjuBszw==
+	b=LAGgnB3BNs4lvtH8Yw6xVsRZpHrBq36ruK9GIGsoX4J4lgqZGh6iZP7HDGjIsBDKm
+	 unyQeXKZyBAmYthMTXvUOmeR9S4qPRUcnEduQBNVsCVHHqIum5P22K2qivM2j+Dc2d
+	 o9Uv/ebSLQtp1qRnsksRcU2FxEM2UWi1CT6G6srYgY+JvpOij8JfVkHlqWZZvnqEsl
+	 kZslLoqs6jiciZ4j+JncoXNuci3gDt8uTPYVemFA24KzX6CiRK4KEmrDdM+/DzCeM4
+	 DrGUy8bWZ5pXNs3r145iG/ThXrrJnCU9800t1k58Oh6hvTofuB0mKmUYRezuL90OJu
+	 kfyGOd6GFjyUw==
 MIME-Version: 1.0
-Date: Tue, 19 Sep 2023 13:18:05 +0200
+Date: Tue, 19 Sep 2023 13:31:10 +0200
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>
 Cc: Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 05/41] mtd: spi-nor: convert .n_sectors to .size
-In-Reply-To: <80641a1c-d922-22cc-edd4-76d475e1aac8@linaro.org>
+Subject: Re: [PATCH v3 10/41] mtd: spi-nor: make sector_size optional
+In-Reply-To: <417fb0fa-e774-c744-8641-7618347a8d1a@linaro.org>
 References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
- <20230807-mtd-flash-info-db-rework-v3-5-e60548861b10@kernel.org>
- <80641a1c-d922-22cc-edd4-76d475e1aac8@linaro.org>
-Message-ID: <beccab49f4c7dd1ac403d5e88a348724@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v3-10-e60548861b10@kernel.org>
+ <417fb0fa-e774-c744-8641-7618347a8d1a@linaro.org>
+Message-ID: <4ec7192b6bfaf956e1b8e747e5fd07e7@kernel.org>
 X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_041814_700085_8812905A 
-X-CRM114-Status: GOOD (  26.25  )
+X-CRM114-CacheID: sfid-20230919_043116_609120_9CB4EAB3 
+X-CRM114-Status: GOOD (  21.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,122 +79,80 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2023-09-19 11:24, schrieb Tudor Ambarus:
+Am 2023-09-19 11:25, schrieb Tudor Ambarus:
 > On 08.09.2023 13:16, Michael Walle wrote:
->> .n_sectors is rarely used. In fact it is only used in swp.c and to
->> calculate the flash size in the core. The use in swp.c might be
->> converted to use the (largest) flash erase size. For now, we just
->> locally calculate the sector size.
+>> Most of the (old, non-SFDP) flashes use a sector size of 64k. Make 
+>> that
+>> a default value so it can be optional in the flash_info database.
 >> 
->> Simplify the flash_info database and set the size of the flash 
->> directly.
->> This also let us use the SZ_x macros.
+>> As a preparation for conversion to the new database format, set the
+>> sector size to zero if the default value is used. This way, the actual
+>> change is happening with this patch ant not with a later conversion
+>> patch.
 >> 
 >> Signed-off-by: Michael Walle <mwalle@kernel.org>
 >> ---
->>  drivers/mtd/spi-nor/core.c   | 2 +-
->>  drivers/mtd/spi-nor/core.h   | 8 ++++----
->>  drivers/mtd/spi-nor/swp.c    | 9 +++++----
->>  drivers/mtd/spi-nor/xilinx.c | 4 ++--
->>  4 files changed, 12 insertions(+), 11 deletions(-)
+>>  drivers/mtd/spi-nor/core.c | 6 ++++--
+>>  drivers/mtd/spi-nor/core.h | 8 +++++---
+>>  drivers/mtd/spi-nor/swp.c  | 6 +++++-
+>>  3 files changed, 14 insertions(+), 6 deletions(-)
 >> 
 >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 286155002cdc..f4cc2eafcc5e 100644
+>> index c84be791341e..368851ff9f40 100644
 >> --- a/drivers/mtd/spi-nor/core.c
 >> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -2999,7 +2999,7 @@ static void spi_nor_init_default_params(struct 
+>> @@ -2756,7 +2756,8 @@ static void spi_nor_no_sfdp_init_params(struct 
 >> spi_nor *nor)
->> 
->>  	/* Set SPI NOR sizes. */
->>  	params->writesize = 1;
->> -	params->size = (u64)info->sector_size * info->n_sectors;
->> +	params->size = info->size;
->>  	params->bank_size = params->size;
->>  	params->page_size = info->page_size;
->> 
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index dfc20a3296fb..12c35409493b 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -443,9 +443,9 @@ struct spi_nor_fixups {
->>   * @id:             the flash's ID bytes. The first three bytes are 
->> the
->>   *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly 
->> older chips).
->>   * @id_len:         the number of bytes of ID.
->> + * @size:           the size of the flash in bytes.
->>   * @sector_size:    the size listed here is what works with 
->> SPINOR_OP_SE, which
->>   *                  isn't necessarily called a "sector" by the 
->> vendor.
->> - * @n_sectors:      the number of sectors.
->>   * @n_banks:        the number of banks.
->>   * @page_size:      the flash's page size.
->>   * @addr_nbytes:    number of address bytes to send.
->> @@ -505,8 +505,8 @@ struct flash_info {
->>  	char *name;
->>  	u8 id[SPI_NOR_MAX_ID_LEN];
->>  	u8 id_len;
->> +	size_t size;
->>  	unsigned sector_size;
->> -	u16 n_sectors;
->>  	u16 page_size;
->>  	u8 n_banks;
->>  	u8 addr_nbytes;
->> @@ -556,8 +556,8 @@ struct flash_info {
->>  	.id_len = 6
->> 
->>  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
->> +	.size = (_sector_size) * (_n_sectors),				\
->>  	.sector_size = (_sector_size),					\
->> -	.n_sectors = (_n_sectors),					\
->>  	.page_size = 256,						\
->>  	.n_banks = (_n_banks)
->> 
->> @@ -575,8 +575,8 @@ struct flash_info {
->>  	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
->> 
->>  #define CAT25_INFO(_sector_size, _n_sectors, _page_size, 
->> _addr_nbytes)	\
->> +		.size = (_sector_size) * (_n_sectors),			\
->>  		.sector_size = (_sector_size),				\
->> -		.n_sectors = (_n_sectors),				\
->>  		.page_size = (_page_size),				\
->>  		.n_banks = 1,						\
->>  		.addr_nbytes = (_addr_nbytes),				\
->> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
->> index 5ab9d5324860..40bf52867095 100644
->> --- a/drivers/mtd/spi-nor/swp.c
->> +++ b/drivers/mtd/spi-nor/swp.c
->> @@ -34,17 +34,18 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor 
->> *nor)
->>  static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
 >>  {
->>  	unsigned int bp_slots, bp_slots_needed;
->> +	unsigned int sector_size = nor->info->sector_size;
+>>  	struct spi_nor_flash_parameter *params = nor->params;
+>>  	struct spi_nor_erase_map *map = &params->erase_map;
+>> -	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
+>> +	const struct flash_info *info = nor->info;
+>> +	const u8 no_sfdp_flags = info->no_sfdp_flags;
+>>  	u8 i, erase_mask;
+>> 
+>>  	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
+>> @@ -2810,7 +2811,8 @@ static void spi_nor_no_sfdp_init_params(struct 
+>> spi_nor *nor)
+>>  		i++;
+>>  	}
+>>  	erase_mask |= BIT(i);
+>> -	spi_nor_set_erase_type(&map->erase_type[i], nor->info->sector_size,
+>> +	spi_nor_set_erase_type(&map->erase_type[i],
+>> +			       info->sector_size ?: SPI_NOR_DEFAULT_SECTOR_SIZE,
+>>  			       SPINOR_OP_SE);
 > 
-> this should use nor->params instead, but we can do it later on.
+> all these info->sector_size checks can be removed if we use
+> params->sector_size. I'll do it after applying the series.
 
-I didn't do that because there is no need to change sector_size. We
-have erase maps, which are already part of the params. So that should
-be changed. Just in the non-SFDP case we infer the erase map from
-sector_size.
+See previous reply, there will be just this check. The one in swp.c
+will go away. I don't have a strong opinion. I just didn't want to
+have redundant information.
 
-> New
-> flash additions must specify the sector size, otherwise we get a
-> division by zero below. I see you introduce a default value in patch 
-> 10,
-> which will guard us.
+Speaking of.. there is a check missing in
 
-Yes the assumption is that - for now - if locking is supported, we
-need a nor->info->sector_size.
+--snip--
+diff --git a/drivers/mtd/spi-nor/spansion.c 
+b/drivers/mtd/spi-nor/spansion.c
+index fd2652aa6c1e..e4c725000964 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -1053,7 +1053,8 @@ static int spansion_nor_late_init(struct spi_nor 
+*nor)
+  		nor->flags |= SNOR_F_4B_OPCODES;
+  		/* No small sector erase for 4-byte command set */
+  		nor->erase_opcode = SPINOR_OP_SE;
+-		nor->mtd.erasesize = nor->info->sector_size;
++		nor->mtd.erasesize = nor->info->sector_size ?:
++				     SPI_NOR_DEFAULT_SECTOR_SIZE;
+  	}
 
-> I assume  you checked that there's no flash that
-> specifies BP and sector size of zero up to patch 9 inclusively,
-> otherwise we'll break bisect-ability. Let me know if yes, and I'll
-> update the commit message when applying.
+  	if (mfr_flags & (USE_CLSR | USE_CLPEF)) {
+--snip--
 
-Yes. The assumption above was already a requirement.
+Is it possible to amend this patch while you apply it? A later patch
+should probably fixup the erase_map instead of setting the erase_opcode
+and erasesize itself.
 
 -michael
 
