@@ -4,80 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6213CE79A9
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 16:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11B2FCE79A8
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 16:31:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pXPhUWLv/JCzchBJjVQXUCjtowhgWiqApVH977bnZiM=; b=FMD+D0ncBgYB6Z
-	HdWuG2PiPv8Lh5WM3vrAAu6id0shsLWk4EX7e7e46WX18k+vrkvKixWlUTMe7X0ajnv0OTtBkHtrc
-	fu7z1VRLTErI61zRhobDmEMSkcNsyw0PxzSi9KoyLFxxI/SRCnsDEqY+YGlLXESCqO77BFZuZZK6l
-	1gOZM3tIK+U5kQFZatd+oqyYHVxnuViouEZeqR1hSwlJnbj0zZQPEb/+OQKfNuYOg50IgcmxVQqiR
-	z/4+ToXwf+BRBq96tMB1A7c9+6FrcyCZdX3lRQpgOmlpKIaKqyRIjE42d4fOb8Go1Mb+DM+5f63bu
-	iNMuDdUX9V1I2bIhixUQ==;
+	List-Owner; bh=ANafUecChVhiXCzdZo070dJAyYOMIZhSlq6cwPyTzKU=; b=0oKLXf4q5sY5iB
+	/AfYwgRHYb9b+a+YCrTxsBjBpvgt/36vzvYPZsm5cJDLIplizJqS3k3n5H6SKjNdbfnXY2gsWB3Dn
+	EyzCD4kKza77l+Bh0PP4xXva+Ft/5ZXfkzBjVBJnEgCfbtHIjA5174jMYR9KNa1C8GIgFndgPJ0J0
+	gTIqo0VShTKNQZEf6m8PS3mfEqL3DSFgmwpdzVdeL2EU83tEGszGSD1NCd1AMj+vTPYVZuhAWs1to
+	8zxAMc2h9xUihtqStFhyKLLQnJOb/DB8WSBW2q6dlrMet49NxgkEhpwumLvu2G122y4nHjbPBHhjm
+	JGkh2cCUHQqJVt3ssrLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qidKx-000psn-2t;
-	Tue, 19 Sep 2023 16:12:31 +0000
-Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
+	id 1qiddD-000rku-2E;
+	Tue, 19 Sep 2023 16:31:23 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qidKu-000prr-0c
-	for linux-mtd@lists.infradead.org;
-	Tue, 19 Sep 2023 16:12:29 +0000
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-532c3b4b55eso988883a12.0
-        for <linux-mtd@lists.infradead.org>; Tue, 19 Sep 2023 09:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695139945; x=1695744745; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2W38CXjFimuUk344mBPsm35p6+nVhboQggc89jf+vgg=;
-        b=JJXhwWzldtYCYf5ADq0MyxQrm6TJdtE5hxrq6mIJQ0RFgn6TvDrblwhXOVc9ZHzArx
-         kigaHKXdNT8dy3GYHylJl/qqQsiTTkS3ln4wdusZq5FTOFZZXFlNUvqsPqvSxJ5kA8vz
-         uFm+rE7wlDfhdwogDYb2mZk59bztOELip26Um9IA7r2jFSl3Etw7+I1ACa+BAh13UGSf
-         euHhslllqOIdnE4S2EK0VYyBQlca5qnspuUauNs5SeJ4OLWkPK1dxjWqhwUgmgomXZF5
-         xlxmWEf/NwCfzUO5KLfeHlTobeE8N4zHDVOQtfJYDHZjQqD2giQJuiUXENOAvvLj3L13
-         SOJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695139945; x=1695744745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2W38CXjFimuUk344mBPsm35p6+nVhboQggc89jf+vgg=;
-        b=pcwgs19zzeuOz6TanmD8EUW8G+qZ9kZHS038d3qW7r3DAhsnS+Z0wfQUGyoODLON+a
-         oe3owCL9mXVU75dUSHE5je8eWr+SJoQ142tvJv+HZ/wXhNrA2iygIlNi/UYDqGr9YGIK
-         0pJJhABlNpxKsmcjfu2Ub58k7akVUQo9Qb53IXqrmkiC9XN0TN1jBnCfPoz9YWSsP9I/
-         r5aW3CdBMKYasF4xVs+b0ngjdH7Ccd2ZViffvY4vTyRKzK7evHnVrrrO1ux+Q1H5gqis
-         R2AbVedeuuA/UpAiqKx1Zp4j5QKz64P1JZGu/W6ukVEKngrhYK9kUxZdypNLZGKdtuoD
-         Miag==
-X-Gm-Message-State: AOJu0YwAulkACuqtVn0de+63u8tL+dTGQ2uLYAuO3kIj+mAR+gAsji8d
-	LBceU8tXKy/iGOzw/kIQtZZrLg==
-X-Google-Smtp-Source: AGHT+IEgICnrUOfTdBjga4HXzzAlrzXcKnDGFHfmp2FVXBZ1kFHupppnYd4zaPlaSJeMPbr2HFmBug==
-X-Received: by 2002:a05:6402:4498:b0:532:c6d7:b93c with SMTP id er24-20020a056402449800b00532c6d7b93cmr1663344edb.5.1695139945348;
-        Tue, 19 Sep 2023 09:12:25 -0700 (PDT)
-Received: from [172.20.101.114] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id e20-20020a056402149400b0052e1783ab25sm7648500edv.70.2023.09.19.09.12.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 09:12:24 -0700 (PDT)
-Message-ID: <8d72820d-bbaa-abc8-4448-87f0f054c381@linaro.org>
-Date: Tue, 19 Sep 2023 19:12:24 +0300
+	id 1qiddA-000rj0-2o;
+	Tue, 19 Sep 2023 16:31:22 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 8CD0BCE139A;
+	Tue, 19 Sep 2023 16:31:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A27C433CD;
+	Tue, 19 Sep 2023 16:31:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695141076;
+	bh=2YOWI6/JAFOB4t8+Jl1G0UAU2WJNOEKR+ozWrF+wCHw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=NSgO9mQ/kogScKOyruXs27QKGb28KeH5iN8518jdQIxYZ9Zq8W5Yeb8HJpLNbIZ40
+	 EQDdGtIWCMRwCZr+hkVhSKagEDB2fBTdAzDnNexBTyvRGH8+mWpGC7k4O3oOthSODy
+	 kLPJh5RYmd+l51ixbejRXP63ZyU1UyglaFGETEGRw2BGftvafb/kUzhWZeRY/B1ibo
+	 Wti21rW2JgdQmcow8/EHQlT7uWQR0pPH/ecD4lkrfORAvjqUH6xcDxBDFUTwISNY24
+	 GBmtqEOt9wCW1B2y4/2rn4A5SVB2ofaAjm8Z64p+ka1gu4ZTZ9u3KdunqSf9K8+AlP
+	 OJGP0iADrktsQ==
+Message-ID: <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+From: Jeff Layton <jlayton@kernel.org>
+To: Bruno Haible <bruno@clisp.org>, Jan Kara <jack@suse.cz>, Xi Ruoyao
+	 <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+ <brauner@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar
+ Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>, David Howells
+ <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Chris Mason
+ <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
+ <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov
+ <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+ Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, Chao Yu
+ <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,  Jeffle Xu
+ <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong
+ Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Theodore Ts'o
+ <tytso@mit.edu>,  Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim
+ <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Miklos
+ Szeredi <miklos@szeredi.hu>, Bo b Peterson <rpeterso@redhat.com>, Andreas
+ Gruenbacher <agruenba@redhat.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, Trond Myklebust
+ <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh
+ <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi
+ <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin
+ Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>,
+ Kees Cook <keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>, 
+ Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>,
+ Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N
+ <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, Sergey Senozhatsky
+ <senozhatsky@chromium.org>, Richard Weinberger <richard@nod.at>, Hans de
+ Goede <hdegoede@redhat.com>, Hugh Dickins <hughd@google.com>,  Andrew
+ Morton <akpm@linux-foundation.org>, Amir Goldstein <l@gmail.com>, "Darrick
+ J. Wong" <djwong@kernel.org>,  Benjamin Coddington <bcodding@redhat.com>,
+ linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ v9fs@lists.linux.dev,  linux-afs@lists.infradead.org,
+ linux-btrfs@vger.kernel.org,  ceph-devel@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+ linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, 
+ linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+ ocfs2-devel@lists.linux.dev,  devel@lists.orangefs.org,
+ linux-cifs@vger.kernel.org,  samba-technical@lists.samba.org,
+ linux-mtd@lists.infradead.org,  linux-mm@kvack.org,
+ linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date: Tue, 19 Sep 2023 12:31:08 -0400
+In-Reply-To: <4511209.uG2h0Jr0uP@nimes>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+	 <20230919110457.7fnmzo4nqsi43yqq@quack3>
+	 <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+	 <4511209.uG2h0Jr0uP@nimes>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] mtd: spi-nor: atmel: add at25ff321a entry
-Content-Language: en-US
-To: nicolas.ferre@microchip.com, miquel.raynal@bootlin.com,
- linux-mtd@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230908151400.164470-1-nicolas.ferre@microchip.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230908151400.164470-1-nicolas.ferre@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_091228_233335_6F0B302F 
-X-CRM114-Status: GOOD (  27.35  )
+X-CRM114-CacheID: sfid-20230919_093121_316652_21D37E76 
+X-CRM114-Status: GOOD (  24.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,108 +117,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 08.09.2023 18:14, nicolas.ferre@microchip.com wrote:
-> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Tue, 2023-09-19 at 16:52 +0200, Bruno Haible wrote:
+> Jeff Layton wrote:
+> > I'm not sure what we can do for this test. The nap() function is making
+> > an assumption that the timestamp granularity will be constant, and that
+> > isn't necessarily the case now.
 > 
-> Add the at25ff321a 4MB SPI flash which is able to provide
-> SFDP informations.
-> Datasheet: https://www.renesas.com/us/en/document/dst/at25ff321a-datasheet
+> This is only of secondary importance, because the scenario by Jan Kara
+> shows a much more fundamental breakage:
 > 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> ---
-> Hi,
+> > > The ultimate problem is that a sequence like:
+> > > 
+> > > write(f1)
+> > > stat(f2)
+> > > write(f2)
+> > > stat(f2)
+> > > write(f1)
+> > > stat(f1)
+> > > 
+> > > can result in f1 timestamp to be (slightly) lower than the final f2
+> > > timestamp because the second write to f1 didn't bother updating the
+> > > timestamp. That can indeed be a bit confusing to programs if they compare
+> > > timestamps between two files. Jeff?
+> > > 
+> > 
+> > Basically yes.
 > 
-
-Hi!
-
-> This flash is present on the MikoE flash 10 Click board and was tested on
-> sama7g5-ek at spi frequency of 80 MHz:
+> f1 was last written to *after* f2 was last written to. If the timestamp of f1
+> is then lower than the timestamp of f2, timestamps are fundamentally broken.
 > 
-> Here is the test I ran:
-> root@sama7g5ek-sd:~# dd if=/dev/urandom of=./spi_test bs=1M count=3 
-> 3+0 records in
-> 3+0 records out
-> 3145728 bytes (3.1 MB, 3.0 MiB) copied, 0.932896 s, 3.4 MB/s
-> root@sama7g5ek-sd:~# mtd_debug write /dev/mtd0 0 3145728 spi_test 
-> Copied 3145728 bytes from spi_test to address 0x00000000 in flash
-> root@sama7g5ek-sd:~# mtd_debug erase /dev/mtd0 0 3145728 
-> Erased 3145728 bytes from address 0x00000000 in flash
-> root@sama7g5ek-sd:~# mtd_debug read /dev/mtd0 0 3145728 spi_read 
-> Copied 3145728 bytes from address 0x00000000 in flash to spi_read
-> root@sama7g5ek-sd:~# hexdump spi_read 
-> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-> *
-> 0300000
-> root@sama7g5ek-sd:~# mtd_debug write /dev/mtd0 0 3145728 spi_test 
->  Copied 3145728 bytes from spi_test to address 0x00000000 in flash
-> root@sama7g5ek-sd:~# mtd_debug read /dev/mtd0 0 3145728 spi_read 
-> Copied 3145728 bytes from address 0x00000000 in flash to spi_read
-> root@sama7g5ek-sd:~# sha1sum spi_test spi_read 
-> 06d5459972d51a2ff4270e612270c6519e797a0b  spi_test
-> 06d5459972d51a2ff4270e612270c6519e797a0b  spi_read
-> 
-> Here are the data from sysfs:
-> 
-> root@sama7g5ek-sd:~#  cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> at25ff321a
-> root@sama7g5ek-sd:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> 1f4708
-> root@sama7g5ek-sd:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> atmel
-> root@sama7g5ek-sd:~# hexdump -C /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 00000000  53 46 44 50 06 01 00 ff  00 06 01 10 10 00 00 ff  |SFDP............|
-> 00000010  e5 20 e1 ff ff ff ff 01  40 eb 08 6b 08 3b 00 ff  |. ......@..k.;..|
-> 00000020  ee ff ff ff ff ff 00 ff  ff ff 00 ff 0c 20 0f 52  |............. .R|
-> 00000030  10 d8 00 ff 50 2a 2a 01  82 ff 9c d2 64 c1 08 46  |....P**.....d..F|
-> 00000040  7a 75 7a 75 f7 c4 d5 5c  00 06 51 ff 88 30 00 00  |zuzu...\..Q..0..|
-> 00000050
-> root@sama7g5ek-sd:~# md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> d540f07cbfb7c9c19654c453b561b311  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> Many things in user-space depend on timestamps, such as build system
+> centered around 'make', but also 'find ... -newer ...'.
 > 
 
-Wonderful, thanks Nicolas!
 
-> Best regards,
->   Nicolas
-> 
->  drivers/mtd/spi-nor/atmel.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-> index 58968c1e7d2f..c94d52951481 100644
-> --- a/drivers/mtd/spi-nor/atmel.c
-> +++ b/drivers/mtd/spi-nor/atmel.c
-> @@ -184,6 +184,10 @@ static const struct flash_info atmel_nor_parts[] = {
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
->  		NO_SFDP_FLAGS(SECT_4K)
->  		.fixups = &atmel_nor_global_protection_fixups },
-> +	{ "at25ff321a", INFO(0x1f4708, 0, 64 * 1024,  64)
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-> +		PARSE_SFDP
-> +		.fixups = &atmel_nor_global_protection_fixups },
+What does breakage with make look like in this situation? The "fuzz"
+here is going to be on the order of a jiffy. The typical case for make
+timestamp comparisons is comparing source files vs. a build target. If
+those are being written nearly simultaneously, then that could be an
+issue, but is that a typical behavior? It seems like it would be hard to
+rely on that anyway, esp. given filesystems like NFS that can do lazy
+writeback.
 
-We have recently changed how the flash entries are defined. Would you
-please try the following changes instead?
+One of the operating principles with this series is that timestamps can
+be of varying granularity between different files. Note that Linux
+already violates this assumption when you're working across filesystems
+of different types.
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 95f0e139284e..44218716d81e 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -213,6 +213,12 @@ static const struct flash_info atmel_nor_parts[] = {
-                .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-                .no_sfdp_flags = SECT_4K,
-                .fixups = &atmel_nor_global_protection_fixups
-+       }, {
-+               .id = SNOR_ID(0x1f, 0x47, 0x08),
-+               .name = "at25ff321a",
-+               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
-+               .fixups = &atmel_nor_global_protection_fixups
-+       }, {
-        }, {
-                .id = SNOR_ID(0x1f, 0x48, 0x00),
-                .name = "at25df641",
+As to potential fixes if this is a real problem:
+
+I don't really want to put this behind a mount or mkfs option (a'la
+relatime, etc.), but that is one possibility.
+
+I wonder if it would be feasible to just advance the coarse-grained
+current_time whenever we end up updating a ctime with a fine-grained
+timestamp? It might produce some inode write amplification. Files that
+were written within the same jiffy could see more inode transactions
+logged, but that still might not be _too_ awful.
+
+I'll keep thinking about it for now.
+-- 
+Jeff Layton <jlayton@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
