@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B513ECD54B5
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 11:35:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1856CD54AF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 11:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VhEHkZtJq97PLGMTxREw0Msadst0+hI+LtujsAUdN04=; b=Tn7LqGKWBUY7kK
-	3ZO7lMcXsb+Za30q7swN+rcyK4i0g5hlZjq2A1PDtIqshqK6cjHI6GTeOVtvjuJsFCRsv6AMRZdBI
-	NRBHJtQPx3dN6KyK689gGb6v3kwGxso8spR0RtSa5YLBaVD9oqbfh/Xm66O+jZW4Y1IlHQ96iHcrC
-	BV92B23dS1DhKzCZ2aEclxgu1iNBLEqTyqaJk23AS52Q29kvguUx2jgfElRmWoLI9/r0HqCCODwm9
-	NEZhMy9wrrU4GAwRIMyJYDY8AF1YTG1hSKj4SDDWVKX1DaxR4rNWhcXj+U9Rw0MhocPf3BybtFxNu
-	sXoNjhQXc24f9og43C2w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JH4yXdpZ23g6LzxPHXHbePwzSxk/GtXvySuWKEfCpNE=; b=IFFH7OeVdLD19EsczjQ/qqAqKe
+	Nbo7RQ0bXXnj62f9J8tDQtUgVjS4sSmXuGgk0VzA2ArFWXbJePtz7V9qpuHGJ4JzCxxinqqdTwE8a
+	DYf2Tadfz1+gTZwoXS1gRtjA1OZG+jDExWzZ1CaxcF0uIGoqszsMZ8T09j0K+ZP07da1rRNao/ph0
+	tdGYPF7328iPHmXpboAcUHJC9eCrG5ZF7+f8fL25prN/Ov/pK9TTjh/5MExmX5FqSdbPl+oDY5ox7
+	MDUF9yrkfWnrIBXcZV80X5n92q4FK+kI6annab5UCJnFD/ZEwB8QDWXjQWJOqo7B5jluax3InBGft
+	fLeNwh7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiZ0N-000InU-2Z;
-	Tue, 19 Sep 2023 11:34:59 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1qiZ0d-000IqJ-2T;
+	Tue, 19 Sep 2023 11:35:15 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiZ0K-000Ilq-1S
+	id 1qiZ0a-000Ipm-2x
 	for linux-mtd@lists.infradead.org;
-	Tue, 19 Sep 2023 11:34:57 +0000
-From: Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1695123293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=K2A2PAUnE9j4r0bvfMULyyO54Q1ghBSOYLvBI7DnlD0=;
-	b=yxqFG7Z+B++kL3d0+j8S6CBXJsy0Fl3Z3Qp3xVy1gcpHYB2A9czAOt8CMO4AlCCdAKrh2l
-	JzXNWQqNYpHNmxHIrVgTzwwJmQY9rFJjRiuR8ZNX1KllzIealcP4re8xyD6va9bZuMy/Zx
-	WGK8/pZH9fFWN7m9CAB0zMuNiPwlFG32FxRNQ7QFJe4uqcAKXCQO2rJ1Hq7WW1bPqWfdoy
-	l2keHyrd0XwozNNW2LkunnQMeTX1Pkv/zQquGb6VhitkKv40R1plVr/Aut50IoJWVTGb9D
-	vZy5SeRQXlY6FRTsarTT+v0c0MGjbe1GgmA2GklAMEWB2FBCTYN4rsP06HOwNQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1695123293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=K2A2PAUnE9j4r0bvfMULyyO54Q1ghBSOYLvBI7DnlD0=;
-	b=daifXY8/6UqNcZCv3usko3EDxMPUhJXqWDt7X5SoZ0tZU3zfH3rMkCCRLzX2svl0QMJF/f
-	D+uEPfkmWr0szRDQ==
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org
-Cc: linus.walleij@linaro.org,
-	b.spranger@linutronix.de,
-	shivamurthy.shastri@linutronix.de,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: map_ram: prevent use of point and unpoint when NO_XIP is set
-Date: Tue, 19 Sep 2023 13:33:20 +0200
-Message-Id: <20230919113320.16953-1-shivamurthy.shastri@linutronix.de>
+	Tue, 19 Sep 2023 11:35:14 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3662F615BF;
+	Tue, 19 Sep 2023 11:35:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD3FDC433C8;
+	Tue, 19 Sep 2023 11:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695123311;
+	bh=0pBI6sCAihdhsv5bY7X6wkSaJqwGGZtkQFy4U3+xUmA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=d491L4obeamS0W93OSoeKFnBCfZRNzreahdHnE54X8Lr3w59o2daKP85/Ahtkp58o
+	 999HWfKsfrIAP5hyYvIkEiYbanrTYdbfnZdYuCL3GNtVF2ZFzqTi1HWTLCFIpqc/fK
+	 pg6GxNRPPpFj/YZzLgIw8c1WaC6tZpozW6BlDLh93IpieVhJa3Xdsv6R1xK1l+hXvH
+	 xC4B7wDTMGSLV5+/Txw8XbKUc659V25O4pyyZoIurrlIUcASje50mnoOqYfUiVBsaY
+	 md46I2QFY1j0po8dQCd6mcGrGpR6CDZ2B0eGRUIrfjt46vyISt7zWRHGxTT53nJlVg
+	 YhziABWBUy+NQ==
 MIME-Version: 1.0
+Date: Tue, 19 Sep 2023 13:35:07 +0200
+From: Michael Walle <mwalle@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 00/41] mtd: spi-nor: clean the flash_info database up
+In-Reply-To: <11380d64-09dd-352a-a6bf-3b8be332ec1c@linaro.org>
+References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+ <11380d64-09dd-352a-a6bf-3b8be332ec1c@linaro.org>
+Message-ID: <996b67b91708b7858f76c35fb953e448@kernel.org>
+X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_043456_626932_E1E6FBF8 
-X-CRM114-Status: GOOD (  10.22  )
+X-CRM114-CacheID: sfid-20230919_043512_998902_C073BB5A 
+X-CRM114-Status: UNSURE (   8.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,52 +74,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When the DT property no-unaligned-direct-access is set, map->phys is set
-to NO_XIP. With this property set, the flash should not be exposed
-directly to MTD users, since it cannot be mapped.
+Am 2023-09-19 11:39, schrieb Tudor Ambarus:
+> On 08.09.2023 13:16, Michael Walle wrote:
+>>  - w25q32dw/layerscape spi
+>>  - w25q32dw (with empty size and empty no_sfdp_flags)/layerscape spi
+>>  - w25q16dw/mediatek spi
+> 
+> all looks good, Michael, thanks for specifying the tests done.
+> I'll queue the patches with or without the small comments addressed,
+> just waiting for a couple of hours to get a response from you.
 
-map_ram() exposes the flash direct access unconditionally which leads to
-access errors (when the bus width does not match the RAM width).
+Thanks, there is one small piece missing, see my reply in patch 10.
+It would be great if you can amend that.
 
-Therefore do not set point and unpoint when NO_XIP is set.
-
-Signed-off-by: Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>
-Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
----
- drivers/mtd/chips/map_ram.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
-index e8dd6496927e..f9d3e32ef8e9 100644
---- a/drivers/mtd/chips/map_ram.c
-+++ b/drivers/mtd/chips/map_ram.c
-@@ -70,12 +70,16 @@ static struct mtd_info *map_ram_probe(struct map_info *map)
- 	mtd->_read = mapram_read;
- 	mtd->_write = mapram_write;
- 	mtd->_panic_write = mapram_write;
--	mtd->_point = mapram_point;
- 	mtd->_sync = mapram_nop;
--	mtd->_unpoint = mapram_unpoint;
- 	mtd->flags = MTD_CAP_RAM;
- 	mtd->writesize = 1;
- 
-+	/* Disable direct access when NO_XIP is set */
-+	if (map->phys != NO_XIP) {
-+		mtd->_point = mapram_point;
-+		mtd->_unpoint = mapram_unpoint;
-+	}
-+
- 	mtd->erasesize = PAGE_SIZE;
-  	while(mtd->size & (mtd->erasesize - 1))
- 		mtd->erasesize >>= 1;
--- 
-2.34.1
-
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
