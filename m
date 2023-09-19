@@ -4,88 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE2BECD5BCD
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 14:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72B8BCE79A9
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 15:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EMxnHPNdlt4+nP1cY3mxXZUiX0pxkmUAXcPor4hnjx8=; b=30MBqUXTwZg9dN
-	9hVeNo7koHGjaVerIyvinlFU5R8+O7bdDFER8H3RRBVP/jJ6d7s0R5dsnGif5OtdEiDVdGHSgBAHW
-	gLD8J3vCNlnGyhDHfEO0JEMZShZSsQfXF7nobS9lryzjqA5q5SYr9RXmiTRSW/GlRLnanMKsQ01Le
-	kpHAMollTiq+r3xZIwTuWw7ydjUr5jFs5t34PvQPTF9yWma61t/95s9KJx7eicVcbAOu2MK9xERHb
-	FrZ+mt0uANBGBCXCCRrTYymXO3SX+h9FILP7w+qwwibMb11Z2F0V8/IS50MLqKVgg4eDJboMwB8LI
-	Kx8DOXe3qXxFzPXZTEqg==;
+	List-Owner; bh=fEQc/BHpU7BZNGA8BY3b9fZzyJFayUX2fxmEpx4Y6Gs=; b=CWqDSOtpHI3lle
+	E8eZrcPz0hs6buQiJCqi7s6BKribsjKAZiggR288hQL/UiRlzsF9+cqIAfZYsUBV/piHUb9ILGz1u
+	b+qdbxmsKMMSxV0eAoUz6P1Huxfn5Bwe3tEDa0GcFCxk5BJ6WebzWaojzu9unu2D+3YCddBZrrWwC
+	hLzvzIGA3s0u3sCt7f5lJI0GuYvbD4oCoRBqVtLrJmkd5C/F/xH+zlEnqWT74BZ0DKYNjJxgVp2Td
+	aDMzVfEGTgeAwokkz86XvoqZBnCrm/za160xFVKmNgr9DAFKltw7snZZfoRK7NrezDuiBL0ki88VH
+	4okNxlNgP/bJSjRi0TTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qic6a-000hmZ-02;
-	Tue, 19 Sep 2023 14:53:36 +0000
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101])
+	id 1qid6Z-000o8z-2G;
+	Tue, 19 Sep 2023 15:57:39 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qic6W-000hlg-1R;
-	Tue, 19 Sep 2023 14:53:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1695135168; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=iOvNoGriAVw4BG/07a1J6uIof3CWb+6UsSmEBYX+mFyDD9f2QO4Sb9TEKH4ddRJIDy
-    pL+qoqUJA0hBoE4nJJQRUmYRrrCYvLF6ta+aYD7VbDg0ud+mbgJHzWwSRqXYR5ZREvcs
-    bl3KKbXR7cnsa+lCIA964mIiyg1OT/LsO/TF2FrHwu1Ap2D5rIzbspE4N+uifzZgFcIK
-    COMHkjp45ZLpdYvm1mHL/fgF/qpLr3Ss8m6HAe7Z0ayLnnzziqQ/Ve8M0mIoGjiKEXXY
-    DzKttOOMKEMKTf6HNofA3SeC0Zyw1CwjchqneHb1ZprMNvSTC6ly89m2hqISShU8ipWO
-    EoEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695135168;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Hu6LWTHD7s/0PwwSBsDsZf9tkhzretwdfBCU6cYVdik=;
-    b=jLy0h5BgGkHaTuA6saeMjLcT80O5PDMj8jn0r6tSDDpygqUl+dbmUNK2KZLi3xz36v
-    g0+h6MTV2CZKqKfHLAeBYtTJJfvMQrteqrXMAf+YEKI8sPuGyydwMrWtQLIaLuExR1iT
-    ivinSDlU9SKzh7cBAAZFAkm4tFYdkD+gAIJ/khpzKYjHS8eYquYbVcwEhmMPjRUSjsJ/
-    Xyda/51K4Z+JTv/CxPginA4cOQbB24NRa8A0ACkAg1iZdOLa3LuXWw69p/BQlbcrdUmk
-    nDOjL6QI487/iHR7CcqqZHUX3CmeaRWIDTDq0lKjlF6JLf9u9E5GwBe5L4elNs6OFPWg
-    /tRQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695135168;
-    s=strato-dkim-0002; d=clisp.org;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Hu6LWTHD7s/0PwwSBsDsZf9tkhzretwdfBCU6cYVdik=;
-    b=fF6//tlGfuaCILPTjW2UXofB8L0JRFiT0ta9GyxmLu/FCo/hW37Kx4K05nm1mWYfZd
-    LVW6K8LTlLgwmAHdMNxTGjWLvM3CbMfnEWs6XpLmGxN35UXtfOopJrDhxPXSoAv1kAxk
-    txGd6del5ZFz9i7f7QmOOLqULJAgk04E9Inurihh9CTKZ9nagVqkvJz+ZGC16HPzXO5N
-    KF+SLwTHn+5drhMusrxLnm/2lhWMaPiVmqnEAm59XcYvwyI3nPVqmk8IusuR43iOH+6V
-    azBsyi4ii6sFUL9a23eRkIBKS8HR3R5rirmTCU7G2fe+DZ6pQ7h6YLvKUiFekj0YaORo
-    pC6w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695135168;
-    s=strato-dkim-0003; d=clisp.org;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Hu6LWTHD7s/0PwwSBsDsZf9tkhzretwdfBCU6cYVdik=;
-    b=6cNjscvMV8QarA/cY83EMrQy954wQIS4PLL+CFn8BrFaSsprhsBVWfpxU4X6tTSJkc
-    jxMNKxkGefZPdprJTABg==
-X-RZG-AUTH: ":Ln4Re0+Ic/6oZXR1YgKryK8brlshOcZlIWs+iCP5vnk6shH0WWb0LN8XZoH94zq68+3cfpPCifIiwFsCkzyDtyDTaOz6CkM="
-Received: from nimes.localnet
-    by smtp.strato.de (RZmta 49.8.2 AUTH)
-    with ESMTPSA id m03934z8JEqhhDO
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 19 Sep 2023 16:52:43 +0200 (CEST)
-From: Bruno Haible <bruno@clisp.org>
-To: Jan Kara <jack@suse.cz>, Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>, Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Amir Goldstein <amir73il@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>, Benjamin Coddington <bcodding@redhat.com>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-mtd@lists.infradead.org, linux-mm@kvack.org, linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, bug-gnulib@gnu.org, Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Date: Tue, 19 Sep 2023 16:52:43 +0200
-Message-ID: <4511209.uG2h0Jr0uP@nimes>
-In-Reply-To: <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org> <20230919110457.7fnmzo4nqsi43yqq@quack3> <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+	id 1qid6W-000o8Q-2Q
+	for linux-mtd@lists.infradead.org;
+	Tue, 19 Sep 2023 15:57:38 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9adb9fa7200so1197951666b.0
+        for <linux-mtd@lists.infradead.org>; Tue, 19 Sep 2023 08:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695139054; x=1695743854; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IKGEdd9joz9wrUZ2JRmffjhMh4fTSLb3Ojl1LyplXW8=;
+        b=LqZLRqWBJg+i5ySEQ7WfZxJWFMpN4W9w5JACjN/4/RHArNqFBnPCW4ICFQN+hWnmcd
+         7xagAi6CSsvDGtlK8jY2czDHfeZKYcG9M2ZEJb0j7q0DcoQww3M+5j/LtdosNgWznysb
+         pbmuTaAb+6x35kDVGZ87i0E6EgahF85m62+xMLLbJssUh8D/z/pp3nYbBd62FRDB/aAj
+         kQbyLxy90V4MnG3KFkFigPJuXRD8exdps4yruUdORaUR6s2vaOSfqeTDg1YchqImwUcm
+         hKnszaIP3KEB89ha6qiFrmrOQ4d91oqhnC4yZrRnGh0R9lR/SBKcGBPDWOnvjJzpeCH9
+         dmCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695139054; x=1695743854;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IKGEdd9joz9wrUZ2JRmffjhMh4fTSLb3Ojl1LyplXW8=;
+        b=Bhc6PmRjN5ictZgUKC5mMqwwwK37lbMJD2DqtgBSlzgz/ls3U2qOSgmaM9E+KIVDhW
+         tSCZhWghklwd4b5YMNcmDzC/BKjbPc1pdiuPjmTqyU6MdWodns7PfWMxBPUMifwGQ71s
+         aeBkRx/XJus+qi5Jmz6fT3CsxKTGf4BMDogEhzddbQKQ1q5GESfAs7RfBWt6nlyN+rQP
+         g7R8MnWoYy/FrfGIwDRd4xt9rzk4YqFoANeL9CXhaD23PYXFaS/lXyUSamMqu9vVau+k
+         B/NtQqNKmhPz5obtVcRLTfvWGHwy4w51rizKQP4XGjN0KTG5Z8+nCbdKjunydtjtWugU
+         Z2oQ==
+X-Gm-Message-State: AOJu0Yx11+ftA6Uwhkwy/nkhH6rzBhperOQafRVCi1g+XqTleO+qnUeW
+	6I9mchjshGVJ/HrILhlurYALgQ==
+X-Google-Smtp-Source: AGHT+IEdb1FOFYFSHJmx8fdRbtk9F7+CCZLypla3cI36pyOaiY0dieAc0udjJGO081OjUgD/+8RA1g==
+X-Received: by 2002:a17:906:73d5:b0:9a1:b144:30f4 with SMTP id n21-20020a17090673d500b009a1b14430f4mr170754ejl.14.1695139054600;
+        Tue, 19 Sep 2023 08:57:34 -0700 (PDT)
+Received: from [172.20.101.114] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
+        by smtp.gmail.com with ESMTPSA id u26-20020a170906c41a00b00989828a42e8sm8034584ejz.154.2023.09.19.08.57.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Sep 2023 08:57:34 -0700 (PDT)
+Message-ID: <ad085fb3-8c71-2af1-db40-990213e9288d@linaro.org>
+Date: Tue, 19 Sep 2023 18:57:30 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 20/41] mtd: spi-nor: everspin: convert flash_info to
+ new format
+To: Michael Walle <mwalle@kernel.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v3-20-e60548861b10@kernel.org>
+ <647d3775-a71d-a880-6d4d-3eb5a89ec9d6@linaro.org>
+ <e7a48b040541f783773d9d0039816633@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <e7a48b040541f783773d9d0039816633@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_075332_654785_FCBFBB9C 
-X-CRM114-Status: GOOD (  13.98  )
+X-CRM114-CacheID: sfid-20230919_085736_827465_0BA5FDFE 
+X-CRM114-Status: GOOD (  13.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,47 +95,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Jeff Layton wrote:
-> I'm not sure what we can do for this test. The nap() function is making
-> an assumption that the timestamp granularity will be constant, and that
-> isn't necessarily the case now.
-
-This is only of secondary importance, because the scenario by Jan Kara
-shows a much more fundamental breakage:
-
-> > The ultimate problem is that a sequence like:
-> > 
-> > write(f1)
-> > stat(f2)
-> > write(f2)
-> > stat(f2)
-> > write(f1)
-> > stat(f1)
-> >
-> > can result in f1 timestamp to be (slightly) lower than the final f2
-> > timestamp because the second write to f1 didn't bother updating the
-> > timestamp. That can indeed be a bit confusing to programs if they compare
-> > timestamps between two files. Jeff?
-> > 
-> 
-> Basically yes.
-
-f1 was last written to *after* f2 was last written to. If the timestamp of f1
-is then lower than the timestamp of f2, timestamps are fundamentally broken.
-
-Many things in user-space depend on timestamps, such as build system
-centered around 'make', but also 'find ... -newer ...'.
-
-Bruno
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAxOS4wOS4yMDIzIDE0OjMzLCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEFtIDIwMjMtMDkt
+MTkgMTE6MjQsIHNjaHJpZWIgVHVkb3IgQW1iYXJ1czoKPj4gT24gMDguMDkuMjAyMyAxMzoxNiwg
+TWljaGFlbCBXYWxsZSB3cm90ZToKPj4+IFRoZSBJTkZPeCgpIG1hY3JvcyBhcmUgZ29pbmcgYXdh
+eS4gQ29udmVydCB0aGUgZmxhc2hfaW5mbyBkYXRhYmFzZSB0bwo+Pj4gdGhlIG5ldyBmb3JtYXQu
+Cj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogTWljaGFlbCBXYWxsZSA8bXdhbGxlQGtlcm5lbC5vcmc+
+Cj4+PiAtLS0KPj4+IMKgZHJpdmVycy9tdGQvc3BpLW5vci9ldmVyc3Bpbi5jIHwgMzMgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKystLS0tCj4+PiDCoDEgZmlsZSBjaGFuZ2VkLCAyOSBpbnNl
+cnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210
+ZC9zcGktbm9yL2V2ZXJzcGluLmMKPj4+IGIvZHJpdmVycy9tdGQvc3BpLW5vci9ldmVyc3Bpbi5j
+Cj4+PiBpbmRleCBkMDJjMzJmMmY3YWQuLjQ2Nzc2YmMxMGIyNyAxMDA2NDQKPj4+IC0tLSBhL2Ry
+aXZlcnMvbXRkL3NwaS1ub3IvZXZlcnNwaW4uYwo+Pj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9ldmVyc3Bpbi5jCj4+PiBAQCAtOSwxMCArOSwzNSBAQAo+Pj4gwqAjaW5jbHVkZSAiY29yZS5o
+Igo+Pj4KPj4+IMKgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIGV2ZXJzcGluX25vcl9w
+YXJ0c1tdID0gewo+Pj4gLcKgwqDCoCB7ICJtcjI1aDEyOCIsIENBVDI1X0lORk8oMTYgKiAxMDI0
+LCAxLCAyNTYsIDIpIH0sCj4+PiAtwqDCoMKgIHsgIm1yMjVoMjU2IiwgQ0FUMjVfSU5GTygzMiAq
+IDEwMjQsIDEsIDI1NiwgMikgfSwKPj4+IC3CoMKgwqAgeyAibXIyNWgxMCIswqAgQ0FUMjVfSU5G
+TygxMjggKiAxMDI0LCAxLCAyNTYsIDMpIH0sCj4+PiAtwqDCoMKgIHsgIm1yMjVoNDAiLMKgIENB
+VDI1X0lORk8oNTEyICogMTAyNCwgMSwgMjU2LCAzKSB9LAo+Pj4gK8KgwqDCoCB7Cj4+PiArwqDC
+oMKgwqDCoMKgwqAgLm5hbWUgPSAibXIyNWgxMjgiLAo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5zaXpl
+ID0gU1pfMTZLLAo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5zZWN0b3Jfc2l6ZSA9IFNaXzE2SywKPj4+
+ICvCoMKgwqDCoMKgwqDCoCAucGFnZV9zaXplID0gMjU2LAo+Pgo+PiBwYWdlIHNpemUgZGVmYXVs
+dHMgdG8gMjU2LCBpc24ndCBpdD8gQ2FuIHdlIGdldCByaWQgb2YgdGhlIHBhZ2Vfc2l6ZQo+PiBh
+c3NpZ25tZW50cz8KPiAKPiBZZXMhCj4gCj4+Cj4+PiArwqDCoMKgwqDCoMKgwqAgLmFkZHJfbmJ5
+dGVzID0gMiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuZmxhZ3MgPSBTUElfTk9SX05PX0VSQVNFIHwg
+U1BJX05PUl9OT19GUiwKPj4+ICvCoMKgwqAgfSwgewo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5uYW1l
+ID0gIm1yMjVoMjU2IiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuc2l6ZSA9IFNaXzMySywKPj4+ICvC
+oMKgwqDCoMKgwqDCoCAuc2VjdG9yX3NpemUgPSBTWl8zMkssCj4+PiArwqDCoMKgwqDCoMKgwqAg
+LnBhZ2Vfc2l6ZSA9IDI1NiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuYWRkcl9uYnl0ZXMgPSAyLAo+
+Pj4gK8KgwqDCoMKgwqDCoMKgIC5mbGFncyA9IFNQSV9OT1JfTk9fRVJBU0UgfCBTUElfTk9SX05P
+X0ZSLAo+Pj4gK8KgwqDCoCB9LCB7Cj4+PiArwqDCoMKgwqDCoMKgwqAgLm5hbWUgPSAibXIyNWgx
+MCIsCj4+PiArwqDCoMKgwqDCoMKgwqAgLnNpemUgPSBTWl8xMjhLLAo+Pj4gK8KgwqDCoMKgwqDC
+oMKgIC5zZWN0b3Jfc2l6ZSA9IFNaXzEyOEssCj4+PiArwqDCoMKgwqDCoMKgwqAgLnBhZ2Vfc2l6
+ZSA9IDI1NiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuYWRkcl9uYnl0ZXMgPSAzLAo+IAo+IGFsc28g
+ImFkZHJfbmJ5dGVzID0gMyIgaXMgdGhlIGRlZmF1bHQuCgpvaywgdXBkYXRpbmcgbm93LgoKPiAK
+PiAtbWljaGFlbAo+IAo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5mbGFncyA9IFNQSV9OT1JfTk9fRVJB
+U0UgfCBTUElfTk9SX05PX0ZSLAo+Pj4gK8KgwqDCoCB9LCB7Cj4+PiArwqDCoMKgwqDCoMKgwqAg
+Lm5hbWUgPSAibXIyNWg0MCIsCj4+PiArwqDCoMKgwqDCoMKgwqAgLnNpemUgPSBTWl81MTJLLAo+
+Pj4gK8KgwqDCoMKgwqDCoMKgIC5zZWN0b3Jfc2l6ZSA9IFNaXzUxMkssCj4+PiArwqDCoMKgwqDC
+oMKgwqAgLnBhZ2Vfc2l6ZSA9IDI1NiwKPj4+ICvCoMKgwqDCoMKgwqDCoCAuYWRkcl9uYnl0ZXMg
+PSAzLAo+Pj4gK8KgwqDCoMKgwqDCoMKgIC5mbGFncyA9IFNQSV9OT1JfTk9fRVJBU0UgfCBTUElf
+Tk9SX05PX0ZSLAo+Pj4gK8KgwqDCoCB9Cj4+PiDCoH07Cj4+Pgo+Pj4gwqBjb25zdCBzdHJ1Y3Qg
+c3BpX25vcl9tYW51ZmFjdHVyZXIgc3BpX25vcl9ldmVyc3BpbiA9IHsKPj4+CgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
