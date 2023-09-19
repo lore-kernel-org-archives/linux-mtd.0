@@ -4,82 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51C02CD54AB
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 09:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADEC4CD54B2
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Sep 2023 11:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i1+gAs6Wyp3d+jQhR0dfUNGgLtqJoqLBlF9z/TYsx/w=; b=bPx58j+xyrsYyT
-	SVZmSD8bkkcII7LwFztkuMeB6GSU8d1cclN1rHW83SEzosEl7kp+7aiVCZ3qS15FEVdZHT6Rt4gm2
-	X8F038DrNtMQYpm/lenYKuIb4AlFsbub2dokJ5+LD1KNA//iWv7Y3ahvchZdbVYtYAai//bjXrBVF
-	hL/ipf8EaehciWUaXXrGLxkYlkjpmiNZeXG+q9NqrkhVxH11fa8UNHiHAqcjpguwUvromnGLd5yP6
-	y46FGSBGGSahnwYt0Qp6L4wBXD9u2aeKeKdVoTQpG9oAYC68Furs567VU7apuTXoyoaq+JzWKz4k0
-	9buGtg0lm+32XJ5hoAAQ==;
+	List-Owner; bh=tDghDrVlGyaUUxuaB0s8AaKIHBH18U4H9fQBjFYvWP8=; b=d3ekjyoTOoazzS
+	OS6OYGl3D42sYIE2mPyJWGIWiFBnS5yl0XHb4ZjOw0gxeyK2O42DOI/GtLWsKzrdGmp4vJFe16PBG
+	rAsvKlflXUAOBv+8vmdxR2Tev/zJTVAIGPHuepfxMdZJdFW555xJgt7WG37UGF+4WHOzZ9e2uQcye
+	hD0wqED4FQ8/F0T7bjpYi6y59252jKRJ9aujuE4Ik7uflSfkrC7z2kFtSiBBdET0ZWMug5gBX/nUt
+	36Dmjl12kLzwBBT4MpcyxvLb/+o1XHBR3i+s/N3UxKjDRDTUWfOFKHPjbck2AmzWUrj0HK8bdickB
+	Cru1ZkFqrYPrZTuuoZxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiXCl-00HW3A-0e;
-	Tue, 19 Sep 2023 09:39:39 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1qiYXV-000EAt-1h;
+	Tue, 19 Sep 2023 11:05:09 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiXCh-00HW2g-2X
-	for linux-mtd@lists.infradead.org;
-	Tue, 19 Sep 2023 09:39:37 +0000
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-532aaba8747so1138904a12.3
-        for <linux-mtd@lists.infradead.org>; Tue, 19 Sep 2023 02:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695116372; x=1695721172; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dhbUlueLwG/r1Ec1jRuM74oRQ8GVWOc98/czczQGIIE=;
-        b=Q7VqoT1Cbi43+Rklht39lLGppeV1z27nyoYXdWTL0SxutkEpbEr2iqC/w1zGv7Ayep
-         kNhPsFUgbAHaQhtPeUbituBIufxbm2NmfCRaZxw8hMP0UePUeRI7EwlHg37fPr0tO4/N
-         dFIRfFkZrFay7WwgK1yEgbTo/gymrNtfX/ua7gwYFQ0RwimAVMPiHtMNeYR9oe2TXpMR
-         /Kf5RFh8u1qyONJxz0whuBrb1gGq+g/nrbwvoAL2HVil6koXgCtAUICxgFFDCqLqBXmt
-         YpfhjV01phRRXB9Qy+rmTgMS332Nv00bsNP0iZd1H4opizstKNKcM7WnXIx0xOX3yWW0
-         ZEXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695116372; x=1695721172;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhbUlueLwG/r1Ec1jRuM74oRQ8GVWOc98/czczQGIIE=;
-        b=iv7E7av8XjQhdCF5HG7AMAx8uhuLnpV7yJt6+GImumxS06juoGdl0R1/6mdjLrT+6E
-         jEOt0UtrlSX4xjVUJfCPqFY+qIhXXdSUp3Rle0rCDCoSZnHkZqIhzjToJQCm7CDHfJT9
-         8Z2MN5D39edhOVnnExSWdhcaN9x5wQd1vF2xMSJgDIcQRFF0dDTz+v7RTvV8CrZhIhml
-         xEEbFT480Q7Lndic4DO2mHp1OvMv9k6XGreh0ITYdhFdDdpk0hzZOWYIcqNG89sZivUP
-         /KlTmsnuaO7IkuyOD3mfRlKsRW5b3KOnK3biZQ+99/MIeszRnWb7lPA/MdgEkAUMiet0
-         Jorw==
-X-Gm-Message-State: AOJu0YyJKLIBM/dFYyUC0WPV59ASl5OoScDTtiDv3J/MoMmWPiH8yyUn
-	vJwwRzJNTf6aICejdqFnoHpfUQ==
-X-Google-Smtp-Source: AGHT+IEloqdlvufW6mI6LmUIXNtWYxF9AGR9eR0sjhvD9WKKkHWY8/+nTQOaU4W8KPXLI/2FvFrX6g==
-X-Received: by 2002:a17:907:6087:b0:9a5:cf6f:3efc with SMTP id ht7-20020a170907608700b009a5cf6f3efcmr8477878ejc.77.1695116371999;
-        Tue, 19 Sep 2023 02:39:31 -0700 (PDT)
-Received: from [172.20.101.114] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id rp26-20020a170906d97a00b009ad829ed144sm7490622ejb.130.2023.09.19.02.39.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 02:39:31 -0700 (PDT)
-Message-ID: <11380d64-09dd-352a-a6bf-3b8be332ec1c@linaro.org>
-Date: Tue, 19 Sep 2023 12:39:30 +0300
+	id 1qiYXS-000E6z-30;
+	Tue, 19 Sep 2023 11:05:08 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5342D1FE31;
+	Tue, 19 Sep 2023 11:04:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1695121498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2a6e2yyPMgqeI3y+2Rnc2fZeeo+kgiK2m70Hco9fnr4=;
+	b=cJr+PwvUYyZH2t3upcBw0eryf4DE/LlFfn7Ufm2eAWd1VY02qygFmTzBIaJahVSz94O4Vb
+	yGqIOI0jCW0Ip0Sk2rToBmP3VAYVKS3al3oLycPIe7d7v/sSOaNYyizpxk5ZIrSJFN93/P
+	SUBM4OkiK17iPKtzTKMO612fqmtdvLg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1695121498;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2a6e2yyPMgqeI3y+2Rnc2fZeeo+kgiK2m70Hco9fnr4=;
+	b=meYxUUYPlIj0HPS4xS8OLRDZWnsHTMsdExQo9ACa74+dnEYe0U3v8eAO6qjvM08RQNmwM8
+	rVywJglnBJnDHgDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A0D613A49;
+	Tue, 19 Sep 2023 11:04:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id wCZPAFqACWVOYAAAMHmgww
+	(envelope-from <jack@suse.cz>); Tue, 19 Sep 2023 11:04:58 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 11C86A0759; Tue, 19 Sep 2023 13:04:57 +0200 (CEST)
+Date: Tue, 19 Sep 2023 13:04:57 +0200
+From: Jan Kara <jack@suse.cz>
+To: Xi Ruoyao <xry111@linuxfromscratch.org>
+Cc: Jeff Layton <jlayton@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bob Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+	Jan Kara <jack@suse.cz>, bug-gnulib@gnu.org
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+Message-ID: <20230919110457.7fnmzo4nqsi43yqq@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230807-mgctime-v7-12-d1dec143a704@kernel.org>
+ <bf0524debb976627693e12ad23690094e4514303.camel@linuxfromscratch.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 00/41] mtd: spi-nor: clean the flash_info database up
-Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230807-mtd-flash-info-db-rework-v3-0-e60548861b10@kernel.org>
+Content-Disposition: inline
+In-Reply-To: <bf0524debb976627693e12ad23690094e4514303.camel@linuxfromscratch.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_023935_851876_BA0BEE85 
-X-CRM114-Status: UNSURE (   8.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230919_040507_130242_4F05E4D8 
+X-CRM114-Status: GOOD (  27.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,24 +146,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue 19-09-23 15:05:24, Xi Ruoyao wrote:
+> On Mon, 2023-08-07 at 15:38 -0400, Jeff Layton wrote:
+> > Enable multigrain timestamps, which should ensure that there is an
+> > apparent change to the timestamp whenever it has been written after
+> > being actively observed via getattr.
+> > =
+
+> > For ext4, we only need to enable the FS_MGTIME flag.
+> =
+
+> Hi Jeff,
+> =
+
+> This patch causes a gnulib test failure:
+> =
+
+> $ ~/sources/lfs/grep-3.11/gnulib-tests/test-stat-time
+> test-stat-time.c:141: assertion 'statinfo[0].st_mtime < statinfo[2].st_mt=
+ime || (statinfo[0].st_mtime =3D=3D statinfo[2].st_mtime && (get_stat_mtime=
+_ns (&statinfo[0]) < get_stat_mtime_ns (&statinfo[2])))' failed
+> Aborted (core dumped)
+> =
+
+> The source code of the test:
+> https://git.savannah.gnu.org/cgit/gnulib.git/tree/tests/test-stat-time.c
+> =
+
+> Is this an expected change?
+
+Kind of yes. The test first tries to estimate filesystem timestamp
+granularity in nap() function - due to this patch, the detected granularity
+will likely be 1 ns so effectively all the test calls will happen
+immediately one after another. But we don't bother setting the timestamps
+with more than 1 jiffy (usually 4 ms) precision unless we think someone is
+watching. So as a result timestamps of all stamp1 and stamp2 files are
+going to be equal which makes the test fail.
+
+The ultimate problem is that a sequence like:
+
+write(f1)
+stat(f2)
+write(f2)
+stat(f2)
+write(f1)
+stat(f1)
+
+can result in f1 timestamp to be (slightly) lower than the final f2
+timestamp because the second write to f1 didn't bother updating the
+timestamp. That can indeed be a bit confusing to programs if they compare
+timestamps between two files. Jeff?
+
+								Honza
 
 
-On 08.09.2023 13:16, Michael Walle wrote:
->  - w25q32dw/layerscape spi
->  - w25q32dw (with empty size and empty no_sfdp_flags)/layerscape spi
->  - w25q16dw/mediatek spi
+> > Acked-by: Theodore Ts'o <tytso@mit.edu>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > =A0fs/ext4/super.c | 2 +-
+> > =A01 file changed, 1 insertion(+), 1 deletion(-)
+> > =
 
-all looks good, Michael, thanks for specifying the tests done.
-I'll queue the patches with or without the small comments addressed,
-just waiting for a couple of hours to get a response from you.
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index b54c70e1a74e..cb1ff47af156 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -7279,7 +7279,7 @@ static struct file_system_type ext4_fs_type =3D {
+> > =A0	.init_fs_context	=3D ext4_init_fs_context,
+> > =A0	.parameters		=3D ext4_param_specs,
+> > =A0	.kill_sb		=3D kill_block_super,
+> > -	.fs_flags		=3D FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+> > +	.fs_flags		=3D FS_REQUIRES_DEV | FS_ALLOW_IDMAP |
+> > FS_MGTIME,
+> > =A0};
+> > =A0MODULE_ALIAS_FS("ext4");
+> > =A0
+> > =
 
-Cheers,
-ta
+> =
+
+-- =
+
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
