@@ -4,157 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B92ACE79AB
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 07:55:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FAC4CE79AB
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 08:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J7RH4TUHpkVlV1fDbi7LIg8udt8lff3MPXJsgipff2c=; b=nU9BmxaC8SpFN9
-	15NFiCZIrZDp56hknLpJytc61m8ZZHmv9naN7QOX/z4cS4EdP1Zc7nMxglcfj6deju+RvfbZWf+Xc
-	czRq56B36oeI5RHIisBN8RFFax9heInsJ14sIJPCC71381gvE/SYAV77Fwxa7yOLIGS3i9XBXj/yo
-	j+PybK1CLxTnk4gBMUUvQNiLjbV7w6Pb6O/nBCXy3Sd5JNE3mHBkA4nw2kvqUMCRs0nKAxpA/fwy4
-	JvEF1gW16ieUCW9ODnItJp3G2kuUuvnuNSLWiUJ4FPeLGLrtVocbIXi6jq/tghlbvFk6fZOEnKDrj
-	8gLB6vEQUkfIIOx+Gnxg==;
+	List-Owner; bh=9Zjxjh7eTBmxuPcaUp4jzuZpnpMTEoAUS8ENCEhFEBs=; b=F0Q7fBlg3YOddL
+	wUVJGyHNL52QJ/4Yi0jbIDwsBtXnXmNk6TwoO+fjreVVqpJmJB1FOpL1cfV3ljg71SlEbXidGtAeT
+	x36EzNqnBOMuXZy1EUEyUatVjrBV8FiTKVrizsjXrTYKx/0TL/nqUXM150isELwQnkghXGhaLZoxN
+	H5pe5UvNo/gWHcdqZphIXmy8vFqcwvjafnWStDcc/HjPl1EGTUfdA4LaM1ldvqaqEdW240F94w6SA
+	PR+Q2VLCRcVmaIpf9px6AH/KAcDMV9IWfYZbJRhY+vd2eA7B2rF4DsjXXO0Wh8ki+D/Vy6N/RRCuU
+	kPdcoSAiq40acOsTAK5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qis3R-002CVH-0i;
-	Wed, 20 Sep 2023 07:55:25 +0000
-Received: from mail-dm6nam04on2062f.outbound.protection.outlook.com ([2a01:111:f400:7e8b::62f] helo=NAM04-DM6-obe.outbound.protection.outlook.com)
+	id 1qismX-002JWO-2o;
+	Wed, 20 Sep 2023 08:42:01 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qis3M-002CT4-2n
-	for linux-mtd@lists.infradead.org;
-	Wed, 20 Sep 2023 07:55:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a390mP6KM+J7J4EXjse22CSveINeBF6Dm4/XNyDBh7dF9lRzXRIa2DCzP5jsuo0VTSEZ+KJGjCVqaGQhyoJThDVOiFEvDA3Simr6LZR0wK1ktXPfOR0nHx5qy0xgZCJZDUZkoqP5MKNX6X5LmM8oVRg9jsVniIY+ptt4qf480gjWKWoZZ28tVzor/o9zKON4GV2R3UwzvBavLLJucOVeq/6H9AMIY3Y/iQKHfPi9gs95lYqnuhVWYX5QXM8z48Oi4bhlIhOH3ZR6p5Lumk6yn1T3jNWfGDJ8Gg6icL8/JZi6Em2l5aYI8daMnBlbCZLDVJ9Lnk9IwcEJHobbZQPe0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5l+FNtEGOnm1jQv7ANV4mE3MijUbOa97DfAH+2PHkZM=;
- b=SzzBDyLQIq/uPIABc+/kxOeloiGponZepyEvt8TqRcGRk9BlS1Hhnl0gMUt2/2X3UoZTYn1puwRHexc6MlsLOP9APolwNEZdHrMpWhzm/L1btbPNwbG4BU2teopDnUfI2uAOCKGY2hdjIFJFHOBfItrrSFTYl0nZosvp876y62Be/0AVrswvB83+xwSZDjuXehk9SCGmbrh92wLELVBPTYFzVbs2sJWX1ja2ZcKqGmIHh4YgDdn8PZuEiJGBKxWcQOb9PJGQxfo1rZu7zSb95s1+8bsxvbG+8ZuiewJR5Vx+LaN/TWkDcYaTOmUPqsmZqBL1cGbkM9h0bhEhIllYNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=bootlin.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5l+FNtEGOnm1jQv7ANV4mE3MijUbOa97DfAH+2PHkZM=;
- b=XYi6tDvPIrWTrw+DD3sMBGyskL76U+2imvzn9HWT1ixKFyCo4eleB/sqQPv7mctvFkw4Q9HyQb3cYgbtzpKOHiSXLSN922O9VLLFJ31vDQhl3frb3SHA8xe8i/4iWtgd5BhpNUiK9u9o6gYAfgFflZHRcFHXXOQzvOdUi7S8wEk=
-Received: from DM6PR11CA0023.namprd11.prod.outlook.com (2603:10b6:5:190::36)
- by BL3PR12MB6524.namprd12.prod.outlook.com (2603:10b6:208:38c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Wed, 20 Sep
- 2023 07:55:09 +0000
-Received: from DS1PEPF0001709B.namprd05.prod.outlook.com
- (2603:10b6:5:190:cafe::51) by DM6PR11CA0023.outlook.office365.com
- (2603:10b6:5:190::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.29 via Frontend
- Transport; Wed, 20 Sep 2023 07:55:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF0001709B.mail.protection.outlook.com (10.167.18.105) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.20 via Frontend Transport; Wed, 20 Sep 2023 07:55:09 +0000
-Received: from [192.168.137.2] (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 20 Sep
- 2023 02:55:06 -0500
-Message-ID: <d8404c2a-7683-44f8-aee3-fb94d3ef45f3@amd.com>
-Date: Wed, 20 Sep 2023 09:55:04 +0200
+	id 1qismS-002JSj-1U;
+	Wed, 20 Sep 2023 08:41:59 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 4BC92CE193B;
+	Wed, 20 Sep 2023 08:41:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F97CC433C8;
+	Wed, 20 Sep 2023 08:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695199310;
+	bh=qGh90UNcKG/Be9UhcsQucQmAlzzaN0ybdDwui9BIyYs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BFXFNGFoQU2CKw9WyfGOIqib6ndJAqnLiG0gf5coXTntD9bzGoDVbWnIjqFY5yw7w
+	 /iL0Uod2MFZ8DEr6puUf1sJCredMIGJpWb79vtbE1ushIQwYZMxYIi/wrGi9Fb08X3
+	 lSA57r158BOH8f+EL6t2kjQEmID+gvoToIjnVUls1kcLXlPyD1YnLKMqHSQHxJwNle
+	 vpfc8azuJlJ8vyz4F1Ic7z+BrOBPimV2UU0lRBnSM6gAhS5GK9UYFCZFWZn+W0Rcg0
+	 ZifyAdzqTfctk3qOLSOZL59aCo+mxjvM+Qd6lemjUSliLN+1OQBJgtNIB7A++8sTra
+	 7xjjm3n+ayagw==
+Date: Wed, 20 Sep 2023 10:41:30 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Bruno Haible <bruno@clisp.org>, Jan Kara <jack@suse.cz>,
+	Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bo b Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Amir Goldstein <l@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+Message-ID: <20230920-leerung-krokodil-52ec6cb44707@brauner>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230919110457.7fnmzo4nqsi43yqq@quack3>
+ <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+ <4511209.uG2h0Jr0uP@nimes>
+ <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mtd: rawnand: arasan: Ensure program page operations
- are successful
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
-	<pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>, Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>, <stable@vger.kernel.org>
-References: <20230717194221.229778-1-miquel.raynal@bootlin.com>
- <20230717194221.229778-2-miquel.raynal@bootlin.com>
- <20230911175247.44c1d894@xps-13>
- <cf1a0b96-0f1e-4a6d-960b-93185faf27ba@amd.com>
- <20230912161752.581019bc@xps-13>
-From: Michal Simek <michal.simek@amd.com>
-Autocrypt: addr=michal.simek@amd.com; keydata=
- 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
- 3i3l5DA=
-In-Reply-To: <20230912161752.581019bc@xps-13>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0001709B:EE_|BL3PR12MB6524:EE_
-X-MS-Office365-Filtering-Correlation-Id: 89bbcfa1-10a7-4691-f08c-08dbb9aee952
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v/QBmniiqfICh/XHJq2jXqJS05lLjDdj5OUttYtTzcdX0WTwv6vlHO60k736Ztie8WyTa50JgcRVxC4+cBowNOMNQhy7kLe+xtcUx7KF6PIx3uRu++xa5xXuYgraKUS2ibz5xF3ur10uHowJComFDtavIBvtn2CD/kEHLCPF/nHOovTnHhyAQrqnU5SQmViTT+5uNmkLrNruJEFiyWI8zxNNzJMDLVwdq3dyvQgiOzd3DyyF44lmn9i3IGr6ndaZ8FRUlYqER10DRAZZubgHLLpaCfoYKPFDJRamrSIL3Ia0qQxGh7na2ktgeoDhy1aXzR7IaE8Ynyr5Wu02hrgiRcHbEjQfeRLFvo61icErxwpJ2xXw0Kxi7/0NOWeg2HXJ+z/ICpznnnTtjvwOd8Di5DtO36ai3jmiOUhnHECqZyPfaDhh8RGkNJry9CdcxnwaqKHnvyHp+zgaop4Z8h2wPtg+RCrG0vI1+cl3iiliZxqZbHfXiNoXl1nPISnf18hqsL10KnwLYRn+XtaR6kcuvnM71+Bi0JUTV5ZIQXOUQczVLeou1xtbO4fObDdEKLQ6RN038jX/QqkpaNBO+wfDLovVw9sSG5wCyI8TXiTHzYSZXUjcz/+PgmxRpuYeYM7auMeS6ghXSzdWRHnlM8WNRUTKyLPzbQz2WRjzlLX1nuIuPb4g1qraIz9f9LNzN2EndPofFPzCWUBEmIi9sfZ7Yh0qBliClVMw/ImlZ1hXhThanR3FRbEoW7ELh6f5PjHZ3qtxafbj/Jpgt63X8qEhQiRaw0TJSzKVdRw8CPxinVCJ+rSlNKh/N/IJ2Gpi/Gb7
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(396003)(136003)(451199024)(186009)(82310400011)(1800799009)(46966006)(40470700004)(36840700001)(478600001)(41300700001)(40480700001)(83380400001)(44832011)(5660300002)(2906002)(70206006)(316002)(70586007)(16576012)(54906003)(6916009)(8936002)(8676002)(4326008)(31686004)(53546011)(66899024)(2616005)(40460700003)(26005)(16526019)(426003)(336012)(47076005)(36860700001)(36756003)(356005)(81166007)(31696002)(86362001)(82740400003)(43740500002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2023 07:55:09.1782
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89bbcfa1-10a7-4691-f08c-08dbb9aee952
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF0001709B.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6524
+Content-Disposition: inline
+In-Reply-To: <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_005520_985513_C069F486 
-X-CRM114-Status: GOOD (  22.30  )
+X-CRM114-CacheID: sfid-20230920_014156_841500_1136C2D0 
+X-CRM114-Status: GOOD (  39.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,193 +128,203 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On 9/12/23 16:17, Miquel Raynal wrote:
-> Hi Michal,
+> > f1 was last written to *after* f2 was last written to. If the timestamp of f1
+> > is then lower than the timestamp of f2, timestamps are fundamentally broken.
+> > 
+> > Many things in user-space depend on timestamps, such as build system
+> > centered around 'make', but also 'find ... -newer ...'.
+> > 
 > 
-> michal.simek@amd.com wrote on Tue, 12 Sep 2023 15:55:23 +0200:
 > 
->> Hi Miquel,
->>
->> On 9/11/23 17:52, Miquel Raynal wrote:
->>> Hi Michal,
->>>
->>> miquel.raynal@bootlin.com wrote on Mon, 17 Jul 2023 21:42:20 +0200:
->>>    
->>>> The NAND core complies with the ONFI specification, which itself
->>>> mentions that after any program or erase operation, a status check
->>>> should be performed to see whether the operation was finished *and*
->>>> successful.
->>>>
->>>> The NAND core offers helpers to finish a page write (sending the
->>>> "PAGE PROG" command, waiting for the NAND chip to be ready again, and
->>>> checking the operation status). But in some cases, advanced controller
->>>> drivers might want to optimize this and craft their own page write
->>>> helper to leverage additional hardware capabilities, thus not always
->>>> using the core facilities.
->>>>
->>>> Some drivers, like this one, do not use the core helper to finish a page
->>>> write because the final cycles are automatically managed by the
->>>> hardware. In this case, the additional care must be taken to manually
->>>> perform the final status check.
->>>>
->>>> Let's read the NAND chip status at the end of the page write helper and
->>>> return -EIO upon error.
->>>>
->>>> Cc: Michal Simek <michal.simek@amd.com>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 88ffef1b65cf ("mtd: rawnand: arasan: Support the hardware BCH ECC engine")
->>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>>>
->>>> ---
->>>>
->>>> Hello Michal,
->>>>
->>>> I have not tested this, but based on a report on another driver, I
->>>> believe the status check is also missing here and could sometimes
->>>> lead to unnoticed partial writes.
->>>>
->>>> Please test on your side that everything still works and let me
->>>> know how it goes.
->>>
->>> Any news from the testing team about patches 2/3 and 3/3?
->>
->> I asked Amit to test and he didn't get back to me even I asked for it couple of times.
+> What does breakage with make look like in this situation? The "fuzz"
+> here is going to be on the order of a jiffy. The typical case for make
+> timestamp comparisons is comparing source files vs. a build target. If
+> those are being written nearly simultaneously, then that could be an
+> issue, but is that a typical behavior? It seems like it would be hard to
+> rely on that anyway, esp. given filesystems like NFS that can do lazy
+> writeback.
 > 
-> Ok.
+> One of the operating principles with this series is that timestamps can
+> be of varying granularity between different files. Note that Linux
+> already violates this assumption when you're working across filesystems
+> of different types.
 > 
->> Can you please tell me how to test it? I will setup HW myself and test it and get back to you.
+> As to potential fixes if this is a real problem:
 > 
-> I believe setting up the board to use the hardware BCH engine and
-> performing basic erase/write/read testing with a known file and check
-> it still behaves correctly would work. You can also run
+> I don't really want to put this behind a mount or mkfs option (a'la
+> relatime, etc.), but that is one possibility.
 > 
-> 	nandbiterrs -i /dev/mtdx
-> 
-> as a second step and verify there is no difference with and without the
-> patch and finally check the impact:
-> 
-> 	flash_speed -d -c 10 /dev/mtdx
-> 	(be careful: this is a destructive operation)
+> I wonder if it would be feasible to just advance the coarse-grained
+> current_time whenever we end up updating a ctime with a fine-grained
+> timestamp? It might produce some inode write amplification. Files that
 
-I run this myself.
+Less than ideal imho.
 
-pl353 test log before the patch.
+If this risks breaking existing workloads by enabling it unconditionally
+and there isn't a clear way to detect and handle these situations
+without risk of regression then we should move this behind a mount
+option.
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 10000000 00020000 "pl35x-nand-controller"
-# nandbiterrs -i /dev/mtd0
-incremental biterrors test
-Successfully corrected 0 bit errors per subpage
-Inserted biterror @ 0/5
-Read reported 1 corrected bit errors
-Successfully corrected 1 bit errors per subpage
-Inserted biterror @ 0/2
-Failed to recover 1 bitflips
-Read error after 2 bit errors per page
-#  flash_speed -d -c 10 /dev/mtd0
-scanning for bad eraseblocks
-scanned 10 eraseblocks, 0 are bad
-testing eraseblock write speed
-eraseblock write speed is 4555 KiB/s
-testing eraseblock read speed
-eraseblock read speed is 5765 KiB/s
-testing page write speed
-page write speed is 4383 KiB/s
-testing page read speed
-page read speed is 5614 KiB/s
-testing 2 page write speed
-2 page write speed is 4444 KiB/s
-testing 2 page read speed
-2 page read speed is 5688 KiB/s
-Testing erase speed
-erase speed is 320000 KiB/s
-Testing 2x multi-block erase speed
-2x multi-block erase speed is 320000 KiB/s
-Testing 4x multi-block erase speed
-4x multi-block erase speed is 320000 KiB/s
-Testing 8x multi-block erase speed
-8x multi-block erase speed is 320000 KiB/s
-Testing 16x multi-block erase speed
-16x multi-block erase speed is 320000 KiB/s
-Testing 32x multi-block erase speed
-32x multi-block erase speed is 320000 KiB/s
-Testing 64x multi-block erase speed
-64x multi-block erase speed is 320000 KiB/s
-finished
-# dmesg | grep nand
-[    2.876719] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-[    2.883130] nand: Micron MT29F2G08ABAEAWP
-[    2.887230] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB 
-size: 64
-#
+So how about the following:
 
+From cb14add421967f6e374eb77c36cc4a0526b10d17 Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Wed, 20 Sep 2023 10:00:08 +0200
+Subject: [PATCH] vfs: move multi-grain timestamps behind a mount option
 
-When applied
+While we initially thought we can do this unconditionally it turns out
+that this might break existing workloads that rely on timestamps in very
+specific ways and we always knew this was a possibility. Move
+multi-grain timestamps behind a vfs mount option.
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 10000000 00020000 "pl35x-nand-controller"
-# nandbiterrs -i /dev/mtd0
-incremental biterrors test
-Successfully corrected 0 bit errors per subpage
-Inserted biterror @ 0/5
-Read reported 1 corrected bit errors
-Successfully corrected 1 bit errors per subpage
-Inserted biterror @ 0/2
-Failed to recover 1 bitflips
-Read error after 2 bit errors per page
-# flash_speed -d -c 10 /dev/mtd0
-scanning for bad eraseblocks
-scanned 10 eraseblocks, 0 are bad
-testing eraseblock write speed
-eraseblock write speed is 4522 KiB/s
-testing eraseblock read speed
-eraseblock read speed is 5765 KiB/s
-testing page write speed
-page write speed is 4383 KiB/s
-testing page read speed
-page read speed is 5638 KiB/s
-testing 2 page write speed
-2 page write speed is 4444 KiB/s
-testing 2 page read speed
-2 page read speed is 5714 KiB/s
-Testing erase speed
-erase speed is 320000 KiB/s
-Testing 2x multi-block erase speed
-2x multi-block erase speed is 320000 KiB/s
-Testing 4x multi-block erase speed
-4x multi-block erase speed is 320000 KiB/s
-Testing 8x multi-block erase speed
-8x multi-block erase speed is 320000 KiB/s
-Testing 16x multi-block erase speed
-16x multi-block erase speed is 320000 KiB/s
-Testing 32x multi-block erase speed
-32x multi-block erase speed is 320000 KiB/s
-Testing 64x multi-block erase speed
-64x multi-block erase speed is 320000 KiB/s
-finished
-# dmesg | grep nand
-[    2.896206] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-[    2.902648] nand: Micron MT29F2G08ABAEAWP
-[    2.906667] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB 
-size: 64
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ fs/fs_context.c     | 18 ++++++++++++++++++
+ fs/inode.c          |  4 ++--
+ fs/proc_namespace.c |  1 +
+ fs/stat.c           |  2 +-
+ include/linux/fs.h  |  4 +++-
+ 5 files changed, 25 insertions(+), 4 deletions(-)
 
-Behavior is the same. Speed is changing on every run.
+diff --git a/fs/fs_context.c b/fs/fs_context.c
+index a0ad7a0c4680..dd4dade0bb9e 100644
+--- a/fs/fs_context.c
++++ b/fs/fs_context.c
+@@ -44,6 +44,7 @@ static const struct constant_table common_set_sb_flag[] = {
+ 	{ "mand",	SB_MANDLOCK },
+ 	{ "ro",		SB_RDONLY },
+ 	{ "sync",	SB_SYNCHRONOUS },
++	{ "mgtime",	SB_MGTIME },
+ 	{ },
+ };
+ 
+@@ -52,18 +53,32 @@ static const struct constant_table common_clear_sb_flag[] = {
+ 	{ "nolazytime",	SB_LAZYTIME },
+ 	{ "nomand",	SB_MANDLOCK },
+ 	{ "rw",		SB_RDONLY },
++	{ "nomgtime",	SB_MGTIME },
+ 	{ },
+ };
+ 
++static inline int check_mgtime(unsigned int token, const struct fs_context *fc)
++{
++	if (token != SB_MGTIME)
++		return 0;
++	if (!(fc->fs_type->fs_flags & FS_MGTIME))
++		return invalf(fc, "Filesystem doesn't support multi-grain timestamps");
++	return 0;
++}
++
+ /*
+  * Check for a common mount option that manipulates s_flags.
+  */
+ static int vfs_parse_sb_flag(struct fs_context *fc, const char *key)
+ {
+ 	unsigned int token;
++	int ret;
+ 
+ 	token = lookup_constant(common_set_sb_flag, key, 0);
+ 	if (token) {
++		ret = check_mgtime(token, fc);
++		if (ret)
++			return ret;
+ 		fc->sb_flags |= token;
+ 		fc->sb_flags_mask |= token;
+ 		return 0;
+@@ -71,6 +86,9 @@ static int vfs_parse_sb_flag(struct fs_context *fc, const char *key)
+ 
+ 	token = lookup_constant(common_clear_sb_flag, key, 0);
+ 	if (token) {
++		ret = check_mgtime(token, fc);
++		if (ret)
++			return ret;
+ 		fc->sb_flags &= ~token;
+ 		fc->sb_flags_mask |= token;
+ 		return 0;
+diff --git a/fs/inode.c b/fs/inode.c
+index 54237f4242ff..fd1a2390aaa3 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -2141,7 +2141,7 @@ EXPORT_SYMBOL(current_mgtime);
+ 
+ static struct timespec64 current_ctime(struct inode *inode)
+ {
+-	if (is_mgtime(inode))
++	if (IS_MGTIME(inode))
+ 		return current_mgtime(inode);
+ 	return current_time(inode);
+ }
+@@ -2588,7 +2588,7 @@ struct timespec64 inode_set_ctime_current(struct inode *inode)
+ 		now = current_time(inode);
+ 
+ 		/* Just copy it into place if it's not multigrain */
+-		if (!is_mgtime(inode)) {
++		if (!IS_MGTIME(inode)) {
+ 			inode_set_ctime_to_ts(inode, now);
+ 			return now;
+ 		}
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index 250eb5bf7b52..08f5bf4d2c6c 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -49,6 +49,7 @@ static int show_sb_opts(struct seq_file *m, struct super_block *sb)
+ 		{ SB_DIRSYNC, ",dirsync" },
+ 		{ SB_MANDLOCK, ",mand" },
+ 		{ SB_LAZYTIME, ",lazytime" },
++		{ SB_MGTIME, ",mgtime" },
+ 		{ 0, NULL }
+ 	};
+ 	const struct proc_fs_opts *fs_infop;
+diff --git a/fs/stat.c b/fs/stat.c
+index 6e60389d6a15..2f18dd5de18b 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -90,7 +90,7 @@ void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
+ 	stat->size = i_size_read(inode);
+ 	stat->atime = inode->i_atime;
+ 
+-	if (is_mgtime(inode)) {
++	if (IS_MGTIME(inode)) {
+ 		fill_mg_cmtime(stat, request_mask, inode);
+ 	} else {
+ 		stat->mtime = inode->i_mtime;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4aeb3fa11927..03e415fb3a7c 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1114,6 +1114,7 @@ extern int send_sigurg(struct fown_struct *fown);
+ #define SB_NODEV        BIT(2)	/* Disallow access to device special files */
+ #define SB_NOEXEC       BIT(3)	/* Disallow program execution */
+ #define SB_SYNCHRONOUS  BIT(4)	/* Writes are synced at once */
++#define SB_MGTIME	BIT(5)	/* Use multi-grain timestamps */
+ #define SB_MANDLOCK     BIT(6)	/* Allow mandatory locks on an FS */
+ #define SB_DIRSYNC      BIT(7)	/* Directory modifications are synchronous */
+ #define SB_NOATIME      BIT(10)	/* Do not update access times. */
+@@ -2105,6 +2106,7 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
+ 					((inode)->i_flags & (S_SYNC|S_DIRSYNC)))
+ #define IS_MANDLOCK(inode)	__IS_FLG(inode, SB_MANDLOCK)
+ #define IS_NOATIME(inode)	__IS_FLG(inode, SB_RDONLY|SB_NOATIME)
++#define IS_MGTIME(inode)	__IS_FLG(inode, SB_MGTIME)
+ #define IS_I_VERSION(inode)	__IS_FLG(inode, SB_I_VERSION)
+ 
+ #define IS_NOQUOTA(inode)	((inode)->i_flags & S_NOQUOTA)
+@@ -2366,7 +2368,7 @@ struct file_system_type {
+  */
+ static inline bool is_mgtime(const struct inode *inode)
+ {
+-	return inode->i_sb->s_type->fs_flags & FS_MGTIME;
++	return inode->i_sb->s_flags & SB_MGTIME;
+ }
+ 
+ extern struct dentry *mount_bdev(struct file_system_type *fs_type,
+-- 
+2.34.1
 
-
-I don't have zynqmp board here but will try to get data asap.
-
-
-Thanks,
-Michal
 
 ______________________________________________________
 Linux MTD discussion mailing list
