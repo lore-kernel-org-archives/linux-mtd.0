@@ -4,82 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D371CE79CE
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 12:48:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBB94CE79CF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 12:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HhSwxBAzBgp2RbTBV1N5cPxo7bRT0K0SBGjw9g4NhQ8=; b=P85diettyKufjc
-	UygVG5qDDYhThMvwFFN8kl5XZJiwvnA4xWwBxGf232XWh+oETkPy13k74OWUPfUUHDDB32vrV7rlD
-	uGhUI8WUufgQD+4kaQV9/rbTvNh4RLIbPuDJFMg8yA5LqOLg185CfLmt0gHAXgE40YX9pQ9YYR+Mh
-	el537B02yO1nIFx4zPmoObhIMcTNw1AdLJI9lPmGDnDkr16MEWRxEA55GWxBDJb42dQZJ2BcXaGsj
-	VJyiEeDQl2ngOxv/p8twJDkT6eJvpeIMS6rooqc6cj5Z4WiXV6zgZFBnf6D2b+09+hlCLySzu8W+7
-	2BiWOPit+qRE/Leew+5w==;
+	List-Owner; bh=5a1+HTGxiSdEW9w7saZxGLSES+I/FPpkq0LQHwxrxpc=; b=nK0WBxNPYobTDl
+	928WPiKi/EANitWi2nCSG/k++MlCjUHdckr53Qc8+XzN+hQeZR8DrTXPyGsusMbZaAnXvkHafpoXl
+	gXLe2TapHlX9oyDxd8nxCo4YucdYN5F0MklOuqBgTAkuKvWrej+GGGkAIG5RdFMaef625oYSWl5lJ
+	0phP+HhkvSiSq34hNhYtv747jEa7x8aDx5i+0LPArApsg77b1WA7yGGhPy4vdfPW4Xsr+fmdaK7PL
+	SqnxnHDYvRLRTnE7/4RkZFv2jX6CgI2mkhFfMmANJPdYTv5wmxoFY9Tm9zPRQbAhiU9yAHYXAEuL8
+	Rb0PdcXsqtqCl5HpDzGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiwcV-003594-0G;
-	Wed, 20 Sep 2023 12:47:55 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1qiwd7-0035Er-2L;
+	Wed, 20 Sep 2023 12:48:33 +0000
+Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiwcR-00358Z-2e
-	for linux-mtd@lists.infradead.org;
-	Wed, 20 Sep 2023 12:47:53 +0000
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bdcade7fbso880306866b.1
-        for <linux-mtd@lists.infradead.org>; Wed, 20 Sep 2023 05:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695214068; x=1695818868; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+uRr3JXyL9s22kon0Uac7wqWymwTeAG9z/GQzxzNFU8=;
-        b=onzbfvgjGRu2YnQK0oRx6LHLK1OpiEClGaWOUchdzs/d5rrqnydB1PeGuM9jn1/Sjw
-         q67vZxu449yjMQB/3LktPMrQYuZED7NY9v38okU7agUx2F+ebJCvu7hEoarWYCny3rtq
-         TclGxt1s6ysuCmXqHKwaIUuQ3rZmcoHF6CsRvPo3H5r18gTaF52/qYqpOqr4i6Nco4LE
-         NMI/3u8x2VGKJggRixlBvCBLxhyXG+eO7DCw/rIKw/ZgHHxJxpNKyHReHjU+Q6U/PWSt
-         oOSZiYobDMI42qj7POtfISBPk5+V57O8xBEPtMl6XoO9ZUPEvApUSAuy/g24fKvVTmO/
-         m7cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695214068; x=1695818868;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+uRr3JXyL9s22kon0Uac7wqWymwTeAG9z/GQzxzNFU8=;
-        b=GjOZNfoqNGCdlpoEpQsYQIpJWD1dooGaBbN6sseVOG8I0QPnndxdhG89CuDlC8e31k
-         OMxXhRRRMlK1sC0qpcOwHNHkBaPrj5x84o6Qh+6231p7iQ6ilFEgT/B6y+HVJtCmKa9u
-         e51DSiaBS60aGnedxYHDJ36g77iD0UbnCBF5C4qxE1JonX2ZhpSwhTyACd+DlfLbOWuo
-         Lg1kJVogLJE/SaamPb1ESZAICcwuu/JqxSmXJecSKs1NM1UhoEW4KMPtj9DPBojnqwIs
-         9ofgaMcfnyMRvHbwg3slduMQ9FTo7/uCW9dOF/NsgKi7Go0TZDMLABRD2eelaMuVQNXj
-         /i2A==
-X-Gm-Message-State: AOJu0YxfXsDEAntReQwND5uF8aipip+rOve9ouiaG5VIe15z38rF/Fhy
-	Es9Kl6dFtnMK1sEYGdkqsxMGGg==
-X-Google-Smtp-Source: AGHT+IExo5ufA+wAxd43Jlseyai3XhbKJQSRw+ulpw1qjZL+SexY3HNFf3jUDiNM7QUqZmgHFffypg==
-X-Received: by 2002:a17:907:7714:b0:9ad:e2c5:7f73 with SMTP id kw20-20020a170907771400b009ade2c57f73mr2129915ejc.27.1695214068015;
-        Wed, 20 Sep 2023 05:47:48 -0700 (PDT)
-Received: from [172.20.101.114] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id kt26-20020a170906aada00b0098f99048053sm9518105ejb.148.2023.09.20.05.47.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 05:47:47 -0700 (PDT)
-Message-ID: <c5f7072e-d723-7c02-c37f-51ad0ace59e5@linaro.org>
-Date: Wed, 20 Sep 2023 15:47:46 +0300
+	id 1qiwd4-0035Be-0X;
+	Wed, 20 Sep 2023 12:48:32 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6FD471F854;
+	Wed, 20 Sep 2023 12:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1695214104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=S4Cb2+aB7mfyt7b8CnMGxNhCI32rhMMOyFzUtOYeWkI=;
+	b=F7mgIbanJ66gmiZEnO9W56nZWxHlxkK7s6FOoSjoypnC5mKMR7KN4k+DpGXfgaj5VjGrIN
+	M0WZKpREOaiHCVlfxV6kRat3Qsi7lPO5Z2V/s3ZDJoLypj4Zm8y+7h34PJ3ugAMCBOih8J
+	+FrYu16LwC7uAnxqkcIerKEtN0dDPrI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1695214104;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=S4Cb2+aB7mfyt7b8CnMGxNhCI32rhMMOyFzUtOYeWkI=;
+	b=ekUr1ejuvPyxJth9da/nEkPHSmqGtFGO/4Uu+iGJvWuLB6F/9QQ+xqsl4Q0KgC4KgxQtPa
+	Leco5xPA1ZhiWrBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5150913A64;
+	Wed, 20 Sep 2023 12:48:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 4Cc/ExjqCmXZZgAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 12:48:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CD6D5A077D; Wed, 20 Sep 2023 14:48:23 +0200 (CEST)
+Date: Wed, 20 Sep 2023 14:48:23 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>,
+	Bruno Haible <bruno@clisp.org>,
+	Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bo b Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Amir Goldstein <l@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
+Message-ID: <20230920124823.ghl6crb5sh4x2pmt@quack3>
+References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
+ <20230919110457.7fnmzo4nqsi43yqq@quack3>
+ <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
+ <4511209.uG2h0Jr0uP@nimes>
+ <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
+ <20230920-leerung-krokodil-52ec6cb44707@brauner>
+ <20230920101731.ym6pahcvkl57guto@quack3>
+ <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 4/6] spi: spi-mem: Allow specifying the byte order in
- DTR mode
-Content-Language: en-US
-To: Jaime Liao <jaimeliao.tw@gmail.com>, linux-mtd@lists.infradead.org,
- pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com
-Cc: leoyu@mxic.com.tw, jaimeliao@mxic.com.tw
-References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
- <20230908064304.27757-5-jaimeliao.tw@gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230908064304.27757-5-jaimeliao.tw@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_054751_868246_86450562 
-X-CRM114-Status: GOOD (  16.97  )
+X-CRM114-CacheID: sfid-20230920_054830_356039_BAB2CF67 
+X-CRM114-Status: GOOD (  24.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,39 +153,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 08.09.2023 09:43, Jaime Liao wrote:
-> From: JaimeLiao <jaimeliao@mxic.com.tw>
+On Wed 20-09-23 06:35:18, Jeff Layton wrote:
+> On Wed, 2023-09-20 at 12:17 +0200, Jan Kara wrote:
+> > If I were a sysadmin, I'd rather opt for something like
+> > finegrained timestamps + lazytime (if I needed the finegrained timestamps
+> > functionality). That should avoid the IO overhead of finegrained timestamps
+> > as well and I'd know I can have problems with timestamps only after a
+> > system crash.
 > 
-> There are NOR flashes (Macronix) that swap the bytes on a 16-bit
-> boundary when configured in Octal DTR mode. The byte order of
-> 16-bit words is swapped when read or written in Octal Double
-> Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
-> modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
-> 8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
-> Swapping the bytes may introduce some endianness problems. It can
-> affect the boot sequence if the entire boot sequence is not handled
-> in either 8D-8D-8D mode or 1-1-1 mode. So we must swap the bytes
-> back to have the same byte order as in STR modes. Fortunately there
-> are controllers that could swap the bytes back at runtime,
-> addressing the flash's endiannesses requirements. Provide a way for
-> the upper layers to specify the byte order in Octal DTR mode.
+> > I've just got another idea how we could solve the problem: Couldn't we
+> > always just report coarsegrained timestamp to userspace and provide access
+> > to finegrained value only to NFS which should know what it's doing?
+> > 
 > 
+> I think that'd be hard. First of all, where would we store the second
+> timestamp? We can't just truncate the fine-grained ones to come up with
+> a coarse-grained one. It might also be confusing having nfsd and local
+> filesystems present different attributes.
 
-Jaime,
+So what I had in mind (and I definitely miss all the NFS intricacies so the
+idea may be bogus) was that inode->i_ctime would be maintained exactly as
+is now. There will be new (kernel internal at least for now) STATX flag
+STATX_MULTIGRAIN_TS. fill_mg_cmtime() will return timestamp truncated to
+sb->s_time_gran unless STATX_MULTIGRAIN_TS is set. Hence unless you set
+STATX_MULTIGRAIN_TS, there is no difference in the returned timestamps
+compared to the state before multigrain timestamps were introduced. With
+STATX_MULTIGRAIN_TS we return full precision timestamp as stored in the
+inode. Then NFS in fh_fill_pre_attrs() and fh_fill_post_attrs() needs to
+make sure STATX_MULTIGRAIN_TS is set when calling vfs_getattr() to get
+multigrain time.
 
-would you please remind me how this works? Does these flashes always
-swap the bytes? Is there a flash configuration register where you can
-specify whether to swap the bytes or not?
+I agree nfsd may now be presenting slightly different timestamps than user
+is able to see with stat(2) directly on the filesystem. But is that a
+problem? Essentially it is a similar solution as the mgtime mount option
+but now sysadmin doesn't have to decide on filesystem mount how to report
+timestamps but the stat caller knowingly opts into possibly inconsistent
+(among files) but high precision timestamps. And in the particular NFS
+usecase where stat is called all the time anyway, timestamps will likely
+even be consistent among files.
 
-If it's not configurable I'm thinking of introducing a hook that allows
-flashes to program the spi controller to swap the bytes and if the spi
-controller does not support byte swapping, to just return an error and
-fallback to 8-8-8/1-1-1 mode. We can't break the bootchain.
-
-Cheers,
-ta
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
