@@ -4,136 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCA2FCE79DE
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 14:54:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F11FCE79DE
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 15:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CC3Jd6OZNoD2UuN3Fxp9jV3hBENYSvZCdsYsi8MLZAA=; b=1xIi60xwrXuSgE
-	/SqlhxFTJRY11oJJ+tVxpqxdpxJmxZUFD9n5T2GWsDA1N4O+IM9PEA8GFm68xEyxhlC6mSQv7R0I9
-	N+d2FYPxjk9WaCLcpPlzHaAsMa/ttCKEp7x39XksVY5X9EBzWNsFq9k+41WzfLRyZRpACLxcvdYs0
-	61gxYgLbnK/+kENc4cPKyogYRizxspsSmDZ8kxlW8DQPNdqk9IytcuZV2O2OqYd/5+2v4kEj065PB
-	To4jbxvDGy+zh6KGu8Ef43fNSnNccwKMz2XCuybHcHsMs62zH9Xk8jnITu8NRL2a0q1qe5p/x2sKg
-	RGWz3FupxCrorLUt9Ong==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:
+	Message-ID:Cc:To:From:Date:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=Nfyo8qXST6lDO0W/pVqLiT/XbRMj5qFdM2Ifwk//wDw=; b=pRI
+	mcx0LHeZ8iwvgmo3UGsyESp1JeTeAivG7yRHM0uD9nkjkXgT8xsZs+PziIV2Ghvpj7e4wIYCjkqdi
+	UFI4AwWPIsi4j1/B6dMjSlsBHU0+0TIkEWi8a3wZoNS5PTtC1caCWKNtynVIrih8F2IQJ4LACDcCn
+	kpRDPXdx+UvavZtY5Wzw0eJKFHk2iBMfgux/EklqB1lMbyoUHhy4H7M8gLwL/jlE9vVHN6a+hGoo8
+	q9utW666xfDDTKCK0rgyfhqeCmbmfI65qcHCoy965JF6Qzk7IvWhVzUUwEr4qR8xOKSJ4OodwnLcN
+	juQdaFiRrOb/TiicGgtxot6edGndpUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiyaN-003Qdm-29;
-	Wed, 20 Sep 2023 14:53:51 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1qiypH-003SkK-27;
+	Wed, 20 Sep 2023 15:09:15 +0000
+Received: from mail.robart.cc ([81.10.172.252] helo=srv-mta-01.robart.cc)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiyaJ-003QaJ-1r;
-	Wed, 20 Sep 2023 14:53:49 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 7F51AB81DCF;
-	Wed, 20 Sep 2023 14:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10CFC433C7;
-	Wed, 20 Sep 2023 14:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695221624;
-	bh=pv/mshlnOGkJ5ebR+d6AqRiPt7G4UklH+5Y/YwatjVw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hUm3CDqBbqdWl1gTcXLfMGrJ4YfO3wokaDGaQDO3xOEWDbllQ4Mfpj/KueremMgA5
-	 pBL/JzWz4+0hsTX69O5jnf1yRuwKeufAxYGRi9hiZ4ho9usSCqwyLkEScujErQvTLd
-	 pH8R4MxKr1CGxSHyPru+0iqA3gh7pydF57H5YT0p+7Rd0zhQBTnYL0en9hUyWFooe+
-	 Mdfj3r0q5YN+5TWuL0JXteBwUKeABbsXdunQnhbthSc1EwQj0hbuY8ac5vX7VekjTf
-	 fGOHz5omQ2+B/RCVrXr9woAH7FyctwMygMiv3giawQBEFR5HdvJ9UunmoJQb2brq0N
-	 41leRmH4Vm1Jg==
-Date: Wed, 20 Sep 2023 16:53:26 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Chuck Lever III <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>
-Cc: Bruno Haible <bruno@clisp.org>, Xi Ruoyao <xry111@linuxfromscratch.org>,
-	"bug-gnulib@gnu.org" <bug-gnulib@gnu.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	"coda@cs.cmu.edu" <coda@cs.cmu.edu>, Tyler Hicks <code@tyhicks.com>,
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Bo b Peterson <rpeterso@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Richard Weinberger <richard@nod.at>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Amir Goldstein <l@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>,
-	Benjamin Coddington <bcodding@redhat.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"v9fs@lists.linux.dev" <v9fs@lists.linux.dev>,
-	"linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-	"codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>,
-	"ecryptfs@vger.kernel.org" <ecryptfs@vger.kernel.org>,
-	"linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-	Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-	"ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-	"ocfs2-devel@lists.linux.dev" <ocfs2-devel@lists.linux.dev>,
-	"devel@lists.orangefs.org" <devel@lists.orangefs.org>,
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-	"samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-	"linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920-keine-eile-c9755b5825db@brauner>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
- <20230920101731.ym6pahcvkl57guto@quack3>
- <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
- <20230920-raser-teehaus-029cafd5a6e4@brauner>
- <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
+	id 1qiypD-003SjO-0v
+	for linux-mtd@lists.infradead.org;
+	Wed, 20 Sep 2023 15:09:13 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by srv-mta-01.robart.cc (Postfix) with ESMTP id 2F7F71C068F;
+	Wed, 20 Sep 2023 17:09:05 +0200 (CEST)
+Received: from srv-mta-01.robart.cc ([127.0.0.1])
+	by localhost (srv-mta-01.robart.cc [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id egkub_bOREIn; Wed, 20 Sep 2023 17:09:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by srv-mta-01.robart.cc (Postfix) with ESMTP id F36B41C06FF;
+	Wed, 20 Sep 2023 17:09:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 srv-mta-01.robart.cc F36B41C06FF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=robart.cc;
+	s=B016B336-104E-11EA-8E2D-E36DD02BB770; t=1695222545;
+	bh=UPkH2hzsNMoa65MD1CU+liwk9AkcIWSLTYPXYqu/r5s=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=MR8d0mKDF8lXJPWCNvJbS/D7irqmPf9utVFr4Wnjyzthkp52D/hanpwClKbc3Hic4
+	 Vfc6w6mXOsp+enOYwPgoDsMPMQZVi0m8NlLxmcENo9+z/j7Z8eCNWhobZO54pwuZ+3
+	 6dGR9Tf+mLZCpY7IEE6yYZSsxgX1cuDvOYPqc5P6K1w1vfrt3XxEsYIIjfkoy3U5up
+	 cYr2QsWo9TR4dnpt9JDW3KW6a+j7QvCPsS8YMqR+RbCmAdtpdDZpPz7EIzYXkVsxa7
+	 gTxjFx85K9mU6Zcoo6SVQhiQQcLv3reRgO9T8HYdFmtddUuBC5Dqlb0xnoija3c4qv
+	 czZSSUj8yaeeA==
+X-Virus-Scanned: amavisd-new at srv-mta-01.robart.cc
+Received: from srv-mta-01.robart.cc ([127.0.0.1])
+	by localhost (srv-mta-01.robart.cc [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0csNhcIjSssZ; Wed, 20 Sep 2023 17:09:04 +0200 (CEST)
+Received: from srv-mda-01.robart.cc (srv-mda-01.intern.robart.cc [10.0.10.21])
+	by srv-mta-01.robart.cc (Postfix) with ESMTP id C56D81C068F;
+	Wed, 20 Sep 2023 17:09:04 +0200 (CEST)
+Date: Wed, 20 Sep 2023 17:09:04 +0200 (CEST)
+From: Roland Ruckerbauer <roland.ruckerbauer@robart.cc>
+To: linux-mtd@lists.infradead.org
+Cc: Manuel Dipolt <manuel.dipolt@robart.cc>
+Message-ID: <1638777819.2925845.1695222544742.JavaMail.zimbra@robart.cc>
+Subject: ubifs: absurdly large directory inode size (possibly race condition
+ / underflow)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <57C103E1-1AD2-4D86-926C-481BC6BDB191@oracle.com>
+X-Originating-IP: [10.0.20.3]
+X-Mailer: Zimbra 9.0.0_GA_4509 (ZimbraWebClient - FF118 (Linux)/9.0.0_GA_4509)
+Thread-Index: 6F6NUdTYnD1e/Th5jijTCoaEdN6Vsw==
+Thread-Topic: ubifs: absurdly large directory inode size (possibly race condition / underflow)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_075347_966865_03A51AC5 
-X-CRM114-Status: GOOD (  12.41  )
+X-CRM114-CacheID: sfid-20230920_080911_983858_489A1AE1 
+X-CRM114-Status: GOOD (  13.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,32 +80,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: Roland Ruckerbauer <roland.ruckerbauer@robart.cc>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> You could put it behind an EXPERIMENTAL Kconfig option so that the
-> code stays in and can be used by the brave or foolish while it is
-> still being refined.
+Greetings, 
 
-Given that the discussion has now fully gone back to the drawing board
-and this is a regression the honest thing to do is to revert the five
-patches that introduce the infrastructure:
+I have observed some strange behavior in a UBIFS filesystem, and I wanted to ask if this is known, or unexpected.
+For reference, I am using latest upstream 4.19 kernel on an embedded system, with the filesystem in question being encrypted with fscrypt.
 
-ffb6cf19e063 ("fs: add infrastructure for multigrain timestamps")
-d48c33972916 ("tmpfs: add support for multigrain timestamps")
-e44df2664746 ("xfs: switch to multigrain timestamps")
-0269b585868e ("ext4: switch to multigrain timestamps")
-50e9ceef1d4f ("btrfs: convert to multigrain timestamps")
+When I stat the directory in question it shows the following: 
 
-The conversion to helpers and cleanups are sane and should stay and can
-be used for any solution that gets built on top of it.
+File: ./datastorage
+  Size: 18446744073709550408    Blocks: 0          IO Block: 4096   directory
+Device: 27h/39d Inode: 1168        Links: 2
+Access: (0755/drwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2023-09-19 13:30:21.000000000
+Modify: 2023-09-20 14:44:09.000000000
+Change: 2023-09-20 14:44:09.000000000
 
-I'd appreciate a look at the branch here:
-git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.ctime.revert
+As you can see, the size of the directory inode is absurdly large. Its actually quite close to 2^64, which makes me think there is some kind of
+race / underflow happening in regards to the stored inode size metadata. 
 
-survives xfstests.
+Apart from this observation, the filesystem in question seems to be healthy, no errors, also no unexpected errors from the applications using it.
+As far as I am aware, the problem only manifests itself as corrupted metadata, when calling e.g. stat.
+When I move around the folder on the same filesystem, the problem persists. When any files are added / deleted from the directory, it changes the
+directory size, but its still corrupted and close to the same value. A reboot of the system shows that this corruption is indeed persistent on the
+filesystem.
+
+This began to happen daily (but did happen before), since I did a small code change to an application running on the system.
+
+Here is some pseudocode which I suspect might be related to the problem. Obviously I removed a lot of the error handling etc... to make it more clear.
+In essence I refactored some code to be more atomic with its changes to files.
+
+--------------------------------------------------------------------------------------------------------
+// Open the file for writing, but make it an anon inode to prevent having incomplete
+// files in the filesystem when e.g. crashing
+int fd = open(path, O_WRONLY | O_CLOEXEC | O_TMPFILE, 0644);
+
+...
+
+write(fd, buffer, buffer_len);
+
+...
+
+// Unfortunately we need to unlink the destination first, because AT_LINK_REPLACE is not available
+// This is not atomic, so in theory someone can re-create the file after its deleted here.
+// I think its ok to let the write fail in this case.
+unlink(path);
+
+linkat(AT_FDCWD, old_path, AT_FDCWD, path.c_str(), AT_SYMLINK_FOLLOW);
+
+close(fd);
+--------------------------------------------------------------------------------------------------------
+
+
+Is someone aware of a problem like this? I did not find anything similar to this particular problem, despite searching for some time. Even for
+other filesystems, not just ubifs. I have expected this to work without issues, its not some rare patter to use O_TMPFILE like this. After
+all the linkat() and open() manpages both mention this approach.
+
+Could it be that the unlink() followed by the linkat() is somehow resulting in a race condition in the kernel?
+
+Best regards,
+Roland Ruckerbauer
 
 ______________________________________________________
 Linux MTD discussion mailing list
