@@ -4,141 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B58C04AAB
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 15:45:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82A86C04AA7
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 15:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ds6IwBE2gKOF8hC8KgUrZyKi3YNHS091DomzYXRYamo=; b=pRE9SoasF4foDo
-	/yNQIyCVo2fgMPDHSapBV5wr40GnNPlSFu1w+Sx/bJZpwKoJl2oLhj+LuebghXxMjrMMVcqILeht6
-	k4PKQJiFfPLaLPqfFf6dl8rOFDIuRxHxc61+6JiFUk8qEBVnNY5bFHUd0aLSeNviK2WSGOGaN77yj
-	bfxoCguuotRZdzT3bw5tFG6Bv2eCfPnJhf+SFjUd6tPdw1b/HXj4nDbWIdwS2gKxTTW8Rfsw4QI3l
-	f9E0r9lq00J2t2d6Mbw8iIhmHBaBISpwmHPZYHwZ+NEdhHhyJffn162xG2VDcHlWyjt6HGO1rYQ9S
-	+ltQLlyyqMgwzfpVF91g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0CNGbRf8EEqeIkGgZWFzaUpNoCIyWxIxU0RvwGqKcqw=; b=lk85lsYvYJX54TKzqIEGfln41a
+	Jnl7mAx93OcWJqdECk1189yEelFUKyx2ibZG6J5ElxASAZOV7PEyxVc0VfWFL2xcUiju9tl8TrxU8
+	kidAqU9GNKbnjdaDNiYwHaRJWR8v+p2+O84xntQ7KQjjvdFxjc2Tl5OgmYa9WZLor/hBkwxuoscwh
+	5dfbqgCyZfFo7rr59D2lXCazfD//ShJUSs8tgpPmWcerV29ElSm7/snWsdpqND5SQobB/qz2fKgsz
+	pNcl2UF3ltDw4couS9ruj6ZLX8kIRLWURytKEthhhpE70JTdQ4zVGxmhcYBENR0mpcoOKlFx1h7oz
+	DzdMtvtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qizOb-003XXb-0v;
-	Wed, 20 Sep 2023 15:45:45 +0000
-Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
+	id 1qizXO-003Z0C-0v;
+	Wed, 20 Sep 2023 15:54:50 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qizOW-003XU4-16;
-	Wed, 20 Sep 2023 15:45:42 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	id 1qizXL-003YxV-00
+	for linux-mtd@lists.infradead.org;
+	Wed, 20 Sep 2023 15:54:49 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B4BF420267;
-	Wed, 20 Sep 2023 15:45:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1695224727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gw0GfkzEv5qjhmPaYmrLrmVLcBgiouetaUVK1NJf9SE=;
-	b=gDmHlI6XIITA9cWR7273bMWfTaFm79ZWCKV9DUbgwsMsYlQtttv7ABQywrVa7BRoFxk5Vs
-	fY8Ytovd+JgcWaHYYF/cazBOkeQAnuEbAgfy+zWX2EEn3UHUxNv8SLgNC/S16/CAgBAqvG
-	jDzYA0P8qRNq8WfC9VqpMNAjW8ajDQM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1695224727;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gw0GfkzEv5qjhmPaYmrLrmVLcBgiouetaUVK1NJf9SE=;
-	b=486eKcFxONt6Xlrpd7pWWA685BmUhAvAAZoUWjfk3k5wgXtMAG8bbabr8rPv7UJw6UUY7B
-	IV+4KbXuBo0SdmBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 98F9E132C7;
-	Wed, 20 Sep 2023 15:45:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id Nk9PJZcTC2VGTwAAMHmgww
-	(envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 15:45:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 33A59A077D; Wed, 20 Sep 2023 17:45:27 +0200 (CEST)
-Date: Wed, 20 Sep 2023 17:45:27 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>,
-	Bruno Haible <bruno@clisp.org>,
-	Xi Ruoyao <xry111@linuxfromscratch.org>, bug-gnulib@gnu.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Bo b Peterson <rpeterso@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	by sin.source.kernel.org (Postfix) with ESMTPS id C4108CE1B88;
+	Wed, 20 Sep 2023 15:54:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 820D5C433CA;
+	Wed, 20 Sep 2023 15:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695225271;
+	bh=Un0FVDI+pR+zb834Z9EX7gYghzxvVrZStdbLa2Osbuc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ys46WLJBGUnm/y7RAH9tLK6IpJC5KOCHm1tvYoV6rWypLiUX6gtwYL+/kRoD03t2X
+	 G3IyDR/q8lYQshWtf2gcClk2EgKeiEzZnOIHoy5HIqtYH8htf/k8gXutXxytxZOPwO
+	 qPevV3+UKU+i2zho1lohdpsqCnbvdm2ObKf8FKdrLgm37UAZQ0/5FbNgBpBRWAhru0
+	 taCY5RfN0e/52pNRjaIhFRws5dGDYo1fTW14hmyTD2OMS8oG9995hVuDucCj70sSgM
+	 H/MNKB6XoIgb1u8cAgxOWzKIIZCJFE2NU4DWPLwhok0+NdoKInS/84J+YhZRwkv/H2
+	 AR/YFUb6vFitg==
+Date: Wed, 20 Sep 2023 16:54:24 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Amir Goldstein <l@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>,
-	Benjamin Coddington <bcodding@redhat.com>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 12/13] ext4: switch to multigrain timestamps
-Message-ID: <20230920154527.pkwot4nu2nzrnamd@quack3>
-References: <20230807-mgctime-v7-0-d1dec143a704@kernel.org>
- <20230919110457.7fnmzo4nqsi43yqq@quack3>
- <1f29102c09c60661758c5376018eac43f774c462.camel@kernel.org>
- <4511209.uG2h0Jr0uP@nimes>
- <08b5c6fd3b08b87fa564bb562d89381dd4e05b6a.camel@kernel.org>
- <20230920-leerung-krokodil-52ec6cb44707@brauner>
- <20230920101731.ym6pahcvkl57guto@quack3>
- <317d84b1b909b6c6519a2406fcb302ce22dafa41.camel@kernel.org>
- <20230920124823.ghl6crb5sh4x2pmt@quack3>
- <ca82af4d6a72d7f83223c0ddd74fd9f7bcfa96b1.camel@kernel.org>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+	"Lubart, Vitaly" <vitaly.lubart@intel.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"Winkler, Tomas" <tomas.winkler@intel.com>
+Subject: Re: [PATCH 00/10] drm/i915/spi: spi access for discrete graphics
+Message-ID: <1b93fffe-5aac-42f3-9bbe-a307758673cf@sirena.org.uk>
+References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
+ <20230911094233.326fd936@xps-13>
+ <CY5PR11MB63667FBB6AF5B4331419BDAAEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <0d60a78b-0305-4cb3-babe-4eefe5001b29@sirena.org.uk>
+ <CY5PR11MB63667AB9958A23970B4B0D3EEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <20230912152102.0dfe7558@xps-13>
+ <ee4a85be-aa87-4c40-916c-0a796688ad6f@sirena.org.uk>
+ <CY5PR11MB6366427A8DD52D9B8B54F25DEDF9A@CY5PR11MB6366.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ca82af4d6a72d7f83223c0ddd74fd9f7bcfa96b1.camel@kernel.org>
+In-Reply-To: <CY5PR11MB6366427A8DD52D9B8B54F25DEDF9A@CY5PR11MB6366.namprd11.prod.outlook.com>
+X-Cookie: Even a hawk is an eagle among crows.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_084540_523650_AF6FE2C4 
-X-CRM114-Status: GOOD (  47.34  )
+X-CRM114-CacheID: sfid-20230920_085447_411239_011F69EA 
+X-CRM114-Status: GOOD (  14.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,108 +89,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4666694884048107704=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 20-09-23 10:12:03, Jeff Layton wrote:
-> On Wed, 2023-09-20 at 14:48 +0200, Jan Kara wrote:
-> > On Wed 20-09-23 06:35:18, Jeff Layton wrote:
-> > > On Wed, 2023-09-20 at 12:17 +0200, Jan Kara wrote:
-> > > > If I were a sysadmin, I'd rather opt for something like
-> > > > finegrained timestamps + lazytime (if I needed the finegrained timestamps
-> > > > functionality). That should avoid the IO overhead of finegrained timestamps
-> > > > as well and I'd know I can have problems with timestamps only after a
-> > > > system crash.
-> > > 
-> > > > I've just got another idea how we could solve the problem: Couldn't we
-> > > > always just report coarsegrained timestamp to userspace and provide access
-> > > > to finegrained value only to NFS which should know what it's doing?
-> > > > 
-> > > 
-> > > I think that'd be hard. First of all, where would we store the second
-> > > timestamp? We can't just truncate the fine-grained ones to come up with
-> > > a coarse-grained one. It might also be confusing having nfsd and local
-> > > filesystems present different attributes.
-> > 
-> > So what I had in mind (and I definitely miss all the NFS intricacies so the
-> > idea may be bogus) was that inode->i_ctime would be maintained exactly as
-> > is now. There will be new (kernel internal at least for now) STATX flag
-> > STATX_MULTIGRAIN_TS. fill_mg_cmtime() will return timestamp truncated to
-> > sb->s_time_gran unless STATX_MULTIGRAIN_TS is set. Hence unless you set
-> > STATX_MULTIGRAIN_TS, there is no difference in the returned timestamps
-> > compared to the state before multigrain timestamps were introduced. With
-> > STATX_MULTIGRAIN_TS we return full precision timestamp as stored in the
-> > inode. Then NFS in fh_fill_pre_attrs() and fh_fill_post_attrs() needs to
-> > make sure STATX_MULTIGRAIN_TS is set when calling vfs_getattr() to get
-> > multigrain time.
-> 
-> > I agree nfsd may now be presenting slightly different timestamps than user
-> > is able to see with stat(2) directly on the filesystem. But is that a
-> > problem? Essentially it is a similar solution as the mgtime mount option
-> > but now sysadmin doesn't have to decide on filesystem mount how to report
-> > timestamps but the stat caller knowingly opts into possibly inconsistent
-> > (among files) but high precision timestamps. And in the particular NFS
-> > usecase where stat is called all the time anyway, timestamps will likely
-> > even be consistent among files.
-> > 
-> 
-> I like this idea...
-> 
-> Would we also need to raise sb->s_time_gran to something corresponding
-> to HZ on these filesystems?
 
-I was actually confused a bit about how timestamp_truncate() works. The
-jiffie granularity is just direct consequence of current_time() using
-ktime_get_coarse_real_ts64() and not of timestamp_truncate().
-sb->s_time_gran seems to be more about the on-disk format so it doesn't
-seem like a great idea to touch it. So probably we can just truncate
-timestamps in generic_fillattr() to HZ granularity unconditionally.
+--===============4666694884048107704==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="S5LRfe/7bXumGJ72"
+Content-Disposition: inline
 
-> If we truncate the timestamps at a granularity corresponding to HZ before
-> presenting them via statx and the like then that should work around the
-> problem with programs that compare timestamps between inodes.
 
-Exactly.
+--S5LRfe/7bXumGJ72
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> With NFSv4, when a filesystem doesn't report a STATX_CHANGE_COOKIE, nfsd
-> will fake one up using the ctime. It's fine for that to use a full fine-
-> grained timestamp since we don't expect to be able to compare that value
-> with one of a different inode.
+On Wed, Sep 20, 2023 at 01:52:07PM +0000, Usyskin, Alexander wrote:
 
-Yes.
+> I've tried to register spi controller with a spi-mem ops, but I can't find a way to connect to mtd subsystem.
+> I took spi-intel as example, which connects to spi-nor but it relies on JDEC ID of flash to configure itself.
 
-> I think we'd want nfsd to present the mtime/ctime values as truncated,
-> just like we would with a local fs. We could hit the same problem of an
-> earlier-looking timestamp with NFS if we try to present the actual fine-
-> grained values to the clients. IOW, I'm convinced that we need to avoid
-> this behavior in most situations.
+You should use the normal SPI device registration interfaces to register
+whatever devices are connected to the SPI controller.  What in concrete
+terms have you tried to do here and in what way did it not work?
 
-I wasn't sure if there's a way to do this within NFS - i.e., if the value
-communicated via NFSv3 protocol (I know v4 has a special change cookie
-field for it) that gets used for detecting need to revalidate file contents
-isn't the one presented to client's userspace as ctime. If there's a way to
-do this then great, I'm all for presenting truncated timestamps even for
-NFS.
+> We have predefined set of operations unrelated to flash behind the controller.
 
-> If we do this, then we technically don't need the mount option either.
+This sounds like there's some sort of MFD rather than or as well as a
+flash chip, or possibly multiple SPI devices?
 
-Yes, that was my hope.
+--S5LRfe/7bXumGJ72
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> We could still add it though, and have it govern whether fill_mg_cmtime
-> truncates the timestamps before storing them in the kstat.
+-----BEGIN PGP SIGNATURE-----
 
-Well, if we decide these timestamps are useful for userspace as well, I'd
-rather make that a userspace visible STATX flag than a mount option. So
-applications aware of the pitfalls can get high precision timestamps
-without possibly breaking unaware applications.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmULFa8ACgkQJNaLcl1U
+h9Ajuwf9FgmMqJxORVwccT0TdWZIXUkQ+yPI1Nk3vA22gKIqtlEa6vj6YaVuGUTR
+LLFmvUSM3R/t/chkXl4i1uZu3bj9Vz6Pdvbxs4PKsR60F1UnDaqVduo86pygsV/0
+rDpApJLpQM6GjRUUcX1EtYinSfIKp0GquXFPiPQA/hk4+zxCqSLsvkHECeYVwLon
+QSKRy++dCliGQnNOKtSWwNk5LBCe7izGHMvcvjXhgbUGKRyFNgMWBEt3NDEQSN5b
+QIVDTUvwiii1Ld1k7RS/XW2JtsOOyur+D7zEp15aSpNLfFu/KDWtWyNfML0/RNDg
+cwuyRhv2LYsvj4MPCQWsExVCT1sO5w==
+=j5mK
+-----END PGP SIGNATURE-----
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--S5LRfe/7bXumGJ72--
+
+
+--===============4666694884048107704==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4666694884048107704==--
+
