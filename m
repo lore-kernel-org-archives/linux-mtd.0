@@ -4,80 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82A86C04AA7
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 15:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86E1AC04AA7
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Sep 2023 16:17:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0CNGbRf8EEqeIkGgZWFzaUpNoCIyWxIxU0RvwGqKcqw=; b=lk85lsYvYJX54TKzqIEGfln41a
-	Jnl7mAx93OcWJqdECk1189yEelFUKyx2ibZG6J5ElxASAZOV7PEyxVc0VfWFL2xcUiju9tl8TrxU8
-	kidAqU9GNKbnjdaDNiYwHaRJWR8v+p2+O84xntQ7KQjjvdFxjc2Tl5OgmYa9WZLor/hBkwxuoscwh
-	5dfbqgCyZfFo7rr59D2lXCazfD//ShJUSs8tgpPmWcerV29ElSm7/snWsdpqND5SQobB/qz2fKgsz
-	pNcl2UF3ltDw4couS9ruj6ZLX8kIRLWURytKEthhhpE70JTdQ4zVGxmhcYBENR0mpcoOKlFx1h7oz
-	DzdMtvtA==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sOO2PoYpNM35bYUaDqgyKdQhVB0MKi3H41ucsAZMXcw=; b=t/ZUMTpeV3MP1C
+	LK6HGjcJ2kUY50LTS4bUE1btVxtrJyS3+7taehpq6/6BL/q6y7jP6wdXa1wbVR4YvhZm1c3s87aen
+	bOvLFuyqtvMOu6R04+DgvNUBrS32Rg2ZSatCpqNUintVgsag+YmEp/g7JAiSzrNf7+RLfSWIQarEO
+	e4AbOr2WbwHzDN34/DMUZ/j9we9mSKAxcYX3QFmE006Akw0kJtPusp83QeyST16WfHTEY6/SDd3/D
+	wSUfYXNSvx+fscSAwDI70TLbl1gYLls5SC+rH5F9qCSoR7eYgymtKob3oQCHfpYKtLjTtNjnt6zhg
+	fzADYbHfcWJ/ofn0cx4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qizXO-003Z0C-0v;
-	Wed, 20 Sep 2023 15:54:50 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1qiztX-003bt1-0B;
+	Wed, 20 Sep 2023 16:17:43 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qizXL-003YxV-00
-	for linux-mtd@lists.infradead.org;
-	Wed, 20 Sep 2023 15:54:49 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id C4108CE1B88;
-	Wed, 20 Sep 2023 15:54:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 820D5C433CA;
-	Wed, 20 Sep 2023 15:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695225271;
-	bh=Un0FVDI+pR+zb834Z9EX7gYghzxvVrZStdbLa2Osbuc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ys46WLJBGUnm/y7RAH9tLK6IpJC5KOCHm1tvYoV6rWypLiUX6gtwYL+/kRoD03t2X
-	 G3IyDR/q8lYQshWtf2gcClk2EgKeiEzZnOIHoy5HIqtYH8htf/k8gXutXxytxZOPwO
-	 qPevV3+UKU+i2zho1lohdpsqCnbvdm2ObKf8FKdrLgm37UAZQ0/5FbNgBpBRWAhru0
-	 taCY5RfN0e/52pNRjaIhFRws5dGDYo1fTW14hmyTD2OMS8oG9995hVuDucCj70sSgM
-	 H/MNKB6XoIgb1u8cAgxOWzKIIZCJFE2NU4DWPLwhok0+NdoKInS/84J+YhZRwkv/H2
-	 AR/YFUb6vFitg==
-Date: Wed, 20 Sep 2023 16:54:24 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-	"Lubart, Vitaly" <vitaly.lubart@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-	"Winkler, Tomas" <tomas.winkler@intel.com>
-Subject: Re: [PATCH 00/10] drm/i915/spi: spi access for discrete graphics
-Message-ID: <1b93fffe-5aac-42f3-9bbe-a307758673cf@sirena.org.uk>
-References: <20230910123949.1251964-1-alexander.usyskin@intel.com>
- <20230911094233.326fd936@xps-13>
- <CY5PR11MB63667FBB6AF5B4331419BDAAEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
- <0d60a78b-0305-4cb3-babe-4eefe5001b29@sirena.org.uk>
- <CY5PR11MB63667AB9958A23970B4B0D3EEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
- <20230912152102.0dfe7558@xps-13>
- <ee4a85be-aa87-4c40-916c-0a796688ad6f@sirena.org.uk>
- <CY5PR11MB6366427A8DD52D9B8B54F25DEDF9A@CY5PR11MB6366.namprd11.prod.outlook.com>
+	id 1qiztT-003bs0-0O;
+	Wed, 20 Sep 2023 16:17:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695226660; x=1726762660;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oOoaB1KS0Eiipp5IcFf75B/P4E+oA/gb1k22OBoC38o=;
+  b=ck27bFnAFK8wFvdPRscmFImPC67rKDRByhPcN22P3JnXgqFbp8C8Mcao
+   ZpvoqQFqtrWCvUuwas9QYMIBmNC5L5ziPFtt+707rEMUa0RvlI52sadKL
+   UcnKpDG2j+gvdKWTfsDRakFmnoTNiHlsK23KycfCG4zrdYRUDH1GwkNBp
+   eaukE+6kFVfVWVqN32ZiFeHS7T5NzrFVaPFCxJ/X/jOEY3A1Cqt9g6qLl
+   BP7ijC3vB64R71H6+QOynIr3A7zaJSdWb+1Sz7hXLfkQ3s+feCmmZQt7n
+   D4ou+Wyfnr/sznBf3Slt+5gq1h9/hq9yH6opTOUqhe30r6I/mvQO4qDfq
+   Q==;
+X-CSE-ConnectionGUID: kv4cb7CyT2KXaEGqaQkOVg==
+X-CSE-MsgGUID: JH7tRU/ATMaibGX1tMOLYQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,162,1694761200"; 
+   d="scan'208";a="236244815"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Sep 2023 09:17:35 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 20 Sep 2023 09:16:53 -0700
+Received: from [10.171.246.35] (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Wed, 20 Sep 2023 09:16:51 -0700
+Message-ID: <4c9b0dff-6350-376b-60ac-c36f98378a51@microchip.com>
+Date: Wed, 20 Sep 2023 18:16:33 +0200
 MIME-Version: 1.0
-In-Reply-To: <CY5PR11MB6366427A8DD52D9B8B54F25DEDF9A@CY5PR11MB6366.namprd11.prod.outlook.com>
-X-Cookie: Even a hawk is an eagle among crows.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] mtd: spi-nor: atmel: add at25ff321a entry
+Content-Language: en-US, fr-FR
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, <miquel.raynal@bootlin.com>,
+	<linux-mtd@lists.infradead.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230908151400.164470-1-nicolas.ferre@microchip.com>
+ <8d72820d-bbaa-abc8-4448-87f0f054c381@linaro.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <8d72820d-bbaa-abc8-4448-87f0f054c381@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_085447_411239_011F69EA 
-X-CRM114-Status: GOOD (  14.64  )
+X-CRM114-CacheID: sfid-20230920_091739_293525_E322B4F8 
+X-CRM114-Status: GOOD (  21.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,62 +83,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4666694884048107704=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 19/09/2023 at 18:12, Tudor Ambarus wrote:
+> On 08.09.2023 18:14, nicolas.ferre@microchip.com wrote:
+>> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+>>
+>> Add the at25ff321a 4MB SPI flash which is able to provide
+>> SFDP informations.
+>> Datasheet: https://www.renesas.com/us/en/document/dst/at25ff321a-datasheet
+>>
+>> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+>> ---
 
---===============4666694884048107704==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="S5LRfe/7bXumGJ72"
-Content-Disposition: inline
+[..]
 
+>>   drivers/mtd/spi-nor/atmel.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+>> index 58968c1e7d2f..c94d52951481 100644
+>> --- a/drivers/mtd/spi-nor/atmel.c
+>> +++ b/drivers/mtd/spi-nor/atmel.c
+>> @@ -184,6 +184,10 @@ static const struct flash_info atmel_nor_parts[] = {
+>>                FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+>>                NO_SFDP_FLAGS(SECT_4K)
+>>                .fixups = &atmel_nor_global_protection_fixups },
+>> +     { "at25ff321a", INFO(0x1f4708, 0, 64 * 1024,  64)
+>> +             FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+>> +             PARSE_SFDP
+>> +             .fixups = &atmel_nor_global_protection_fixups },
+> 
+> We have recently changed how the flash entries are defined. Would you
+> please try the following changes instead?
+> 
+> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+> index 95f0e139284e..44218716d81e 100644
+> --- a/drivers/mtd/spi-nor/atmel.c
+> +++ b/drivers/mtd/spi-nor/atmel.c
+> @@ -213,6 +213,12 @@ static const struct flash_info atmel_nor_parts[] = {
+>                  .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+>                  .no_sfdp_flags = SECT_4K,
+>                  .fixups = &atmel_nor_global_protection_fixups
+> +       }, {
+> +               .id = SNOR_ID(0x1f, 0x47, 0x08),
+> +               .name = "at25ff321a",
+> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
 
---S5LRfe/7bXumGJ72
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Here, I added:
 
-On Wed, Sep 20, 2023 at 01:52:07PM +0000, Usyskin, Alexander wrote:
+                .no_sfdp_flags = SECT_4K,
 
-> I've tried to register spi controller with a spi-mem ops, but I can't find a way to connect to mtd subsystem.
-> I took spi-intel as example, which connects to spi-nor but it relies on JDEC ID of flash to configure itself.
+to match the other devices of the family... I checked on the datasheet, 
+4K sectors are okay, but I don't know exactly if this is eligible to the 
+"no_sfdb_flags" property... forgive me, I didn't check further knowing 
+that you might have better view on this than me ;-)
 
-You should use the normal SPI device registration interfaces to register
-whatever devices are connected to the SPI controller.  What in concrete
-terms have you tried to do here and in what way did it not work?
+> +               .fixups = &atmel_nor_global_protection_fixups
+> +       }, {
+>          }, {
+>                  .id = SNOR_ID(0x1f, 0x48, 0x00),
+>                  .name = "at25df641",
 
-> We have predefined set of operations unrelated to flash behind the controller.
+That works perfectly well (I can re-post the test results as my previous 
+patch if needed): do you want me to send the updated patch with your 
+Suggested-by tag or you can send yours, tell me what you prefer.
 
-This sounds like there's some sort of MFD rather than or as well as a
-flash chip, or possibly multiple SPI devices?
+Thanks for the heads-up on this update that I hadn't noticed. Best regards,
+   Nicolas
 
---S5LRfe/7bXumGJ72
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmULFa8ACgkQJNaLcl1U
-h9Ajuwf9FgmMqJxORVwccT0TdWZIXUkQ+yPI1Nk3vA22gKIqtlEa6vj6YaVuGUTR
-LLFmvUSM3R/t/chkXl4i1uZu3bj9Vz6Pdvbxs4PKsR60F1UnDaqVduo86pygsV/0
-rDpApJLpQM6GjRUUcX1EtYinSfIKp0GquXFPiPQA/hk4+zxCqSLsvkHECeYVwLon
-QSKRy++dCliGQnNOKtSWwNk5LBCe7izGHMvcvjXhgbUGKRyFNgMWBEt3NDEQSN5b
-QIVDTUvwiii1Ld1k7RS/XW2JtsOOyur+D7zEp15aSpNLfFu/KDWtWyNfML0/RNDg
-cwuyRhv2LYsvj4MPCQWsExVCT1sO5w==
-=j5mK
------END PGP SIGNATURE-----
-
---S5LRfe/7bXumGJ72--
-
-
---===============4666694884048107704==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4666694884048107704==--
-
