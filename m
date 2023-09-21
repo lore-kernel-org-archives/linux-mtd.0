@@ -4,81 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEF57E71094
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 17:02:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 900EDE7D0A2
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 18:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=82cZwREun6KN9oNTOUgPRLQGV3sJavussqc60U6sL9o=; b=fmvuOHjUDERBn+
-	LTIl+g8r+v2NjNo06fIn9ZjNqEEGDQpgAp97Q0EZ8xy8u2FMNJ+6/X++i4BFZglXE968iwyg/XJSN
-	J4aYpqG4gnVyygRp1q3qwlwegtG6a7rK18HjX4GaXQbqSaYcW8vvxP2ZNciWjm+c3ltUwOeJ2ga1T
-	qtMHjuFwgBpsmgCAFAhQgdvTSY7yI8yldW2yHMyE0bI0Td+7ZWE7ZVqvywTCii+k7VsYt0FHLloXU
-	o0GzS40siUoPI+o22ghciZ1B47bG5PYW9iRPT/GombLaZTyvdRfnWiCsDR3iHY4PIVlj24iil1vco
-	pzIcAcLJoZqv605klVAA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=GPI2R+2UiihWAan7MICAlnFIpKQuOMhcTOVt1lGuV1U=; b=iWF7HnNnnMJ4RT
+	SUiYC3VhQo+TIAaR8IVWoy7yqMHcggrKkHEFxBei5Z+AvbsESHsBTwq0DGlBJgmfnAcl6mc7pf0i3
+	TqoT3YOXbiRDj4usaFvmNBahJqVMoT/YEx9DLx1+xaxR6vUMHjLrjmh/Dby/jAUip8OrUgZHBLVXZ
+	O/zwskP+B2aoeJKUxgQPZke+HPlLKOyUO+0Hp2xnd14njERIFiGFMbmECQfSnm6vRUCzOlE48dKta
+	stfQU9XnX3vZCcwHoLVAqd4TE7iyWc8ySgCvUVRM7d+Rl1DAx2jul9Asuq0vDQcG6tIHGLnVLTSvw
+	BelWDto1d6mUTMaZSQtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjN3n-006a6x-0U;
-	Thu, 21 Sep 2023 17:01:51 +0000
-Received: from mail-yw1-f171.google.com ([209.85.128.171])
+	id 1qjOg5-006qwV-2d;
+	Thu, 21 Sep 2023 18:45:29 +0000
+Received: from mail-io1-xd34.google.com ([2607:f8b0:4864:20::d34])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjN3k-006a5n-0x
+	id 1qjOg2-006qvT-1R
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Sep 2023 17:01:49 +0000
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-58dce1f42d6so33388357b3.0
-        for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2023 10:01:46 -0700 (PDT)
+	Thu, 21 Sep 2023 18:45:28 +0000
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-792979d4cb5so52561339f.2
+        for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2023 11:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695321925; x=1695926725; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DnKiy3ihwgd/VOoqSanohGN5ffhK+cZ/VpjdYKJUjf8=;
+        b=YaVAkSt9NDht5icfgsSkb7PmBx+a3IxuEBvYlt0ryJ+vB5I4PHNTj9zOmhDZgYbPet
+         q6VCXwiA0Q57Pm6lzdJgtKLCVtIWY5aZwjm4hnvAJW1Ir593K8haFZr8iZzuatDUJ9nN
+         /dgTTOp/d0qvMKMh6g9QR9EUI9i7Oa9+uI9Lo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695315706; x=1695920506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VRwAkZSLNnOXU3DV95HgEKiIM/TzYZSIhKT8pNNff1w=;
-        b=M1oUKudqj6aaseNz8Pp0CDYo0HmNj2L1jvv/2FEqkcHtf4oj2rR5O0YzrrpzxIvL4C
-         P9hdE5vz4b/xsppyC97hoYQonhVzwUV4+4fGe7FTvvfRXV9vTVnXCGY1rqpKlGXXLwSU
-         MEgULd2z6kDv8/dn0CweW6ZHCzypKn1uV7t+o11hyKFN3RvyWAmlRIsB/7f/Fqv0GdYp
-         bJfiMCGSyuXU8wci3SaBW8XerDV+qqsilYhxWMlw6gUD163cQkZAqNCIo03P/RnrAfR/
-         hHyYJxQkjfxfuaE06vYh8+ovvexKYvtcl7X5loelhgflRW+Nren1rnOklTJI3nZMNSaw
-         rsGw==
-X-Gm-Message-State: AOJu0YxExHunoV41I++6tSD1O0cWRaNR7Po2qmRR0YYoXS6fVq3k2S2d
-	bjFu6GSqPsQ87t82BP/A7Dnbd+KY+kn+4XHV
-X-Google-Smtp-Source: AGHT+IF6Yy0nGI6jMBK76Tsq1JQ3hoPh6wL2zYWIQZy3SS5rCo16ttKcO7qUp6s0GPt9g/95BBzfww==
-X-Received: by 2002:a81:6d8d:0:b0:56f:fd0a:588d with SMTP id i135-20020a816d8d000000b0056ffd0a588dmr162160ywc.8.1695315705689;
-        Thu, 21 Sep 2023 10:01:45 -0700 (PDT)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id c7-20020a0dc107000000b0058e37788bf7sm422007ywd.72.2023.09.21.10.01.45
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 10:01:45 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-59e6ebdf949so16958927b3.0
-        for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2023 10:01:45 -0700 (PDT)
-X-Received: by 2002:a0d:e2c4:0:b0:59b:b9fe:1838 with SMTP id
- l187-20020a0de2c4000000b0059bb9fe1838mr164509ywe.1.1695315704940; Thu, 21 Sep
- 2023 10:01:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695321925; x=1695926725;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DnKiy3ihwgd/VOoqSanohGN5ffhK+cZ/VpjdYKJUjf8=;
+        b=tWRCcxGnmXUYDMsx/Q0K+jir6TMC7Z3KsdVs1OEGiwhQvkGwTPAcwAPIKO0L7ZGbut
+         PY0FzHiczTQlxtHdOGTIC96lFsWDUoEhwDG9liqpSypIlSa7iLLHJVXUJHWn/lbKSQ0X
+         fZcok4SRSxfvrOytL4DjWgglHgnwHSU0AtbvY4ZpmL0goxeHw4EPQhVXnWMac/hHhI+m
+         AJTFbMjFVfc6hGxWmZPUGcPdnxwCF9yVDbQ1Gs3I7IEp03g9OMWWnYGU9pgKT1+JH7nt
+         DuPCd5D2oZBQEcesLfksd0MHFkMsvBGE0qefJ4bUca0/kUMxDpRD6YLxOKdgkhfdV2oG
+         eIGA==
+X-Gm-Message-State: AOJu0YyufsXfP8Ir2l3N51BQsC9wc+004zZxVnsTQts4eNxHWBI7x4sG
+	0btR4SvDeJEE7dKWxqyQY9mlyg==
+X-Google-Smtp-Source: AGHT+IFLx+QxNqVoEsIFpwCXXYW/u8hYUS5LzSu0VrhuBFkVi/scOpz5E7kCyC+9y88eBDeWXVQ/9A==
+X-Received: by 2002:a6b:7303:0:b0:787:34d:f223 with SMTP id e3-20020a6b7303000000b00787034df223mr7074088ioh.11.1695321924839;
+        Thu, 21 Sep 2023 11:45:24 -0700 (PDT)
+Received: from kea.bld.corp.google.com ([2620:15c:183:200:a636:e615:ea83:bc42])
+        by smtp.gmail.com with ESMTPSA id d26-20020a02a49a000000b004290fd3a68dsm511017jam.1.2023.09.21.11.45.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 11:45:24 -0700 (PDT)
+From: Simon Glass <sjg@chromium.org>
+To: devicetree@vger.kernel.org
+Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
+	linux-mtd@lists.infradead.org,
+	Tom Rini <trini@konsulko.com>,
+	Rob Herring <robh@kernel.org>,
+	Simon Glass <sjg@chromium.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Dhruva Gole <d-gole@ti.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Richard Weinberger <richard@nod.at>,
+	Rob Herring <robh+dt@kernel.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: mtd: Add a schema for binman
+Date: Thu, 21 Sep 2023 12:45:14 -0600
+Message-ID: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-References: <363186079b4269891073f620e3e2353cf7d2559a.1669988238.git.geert+renesas@glider.be>
- <1503a3857107e3a4f34e0c7fb5dada39@walle.cc> <CAMuHMdXN+HJb=zGeG=3t=Pie9cVpnBLYuEb_qX6=oSxG8eTkAw@mail.gmail.com>
- <20221205163306.GB2012644-robh@kernel.org> <CAMuHMdUcrh26MNYuiqiC0_FMkeHtq1YnJrZKHEV_WQm5Dgzoaw@mail.gmail.com>
- <ee03d150-51cf-4e12-ae2c-9475a192fb6c@linaro.org> <CAMuHMdW_-0f8DOmEzYb28XABqU3oFL4KXf9M-qKVyyrE_Lo+jQ@mail.gmail.com>
- <d4d998cff934328f58cec767f93a59b5@walle.cc>
-In-Reply-To: <d4d998cff934328f58cec767f93a59b5@walle.cc>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 21 Sep 2023 19:01:31 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUK=HvvjeTDefzX9sbY-vaRFVixcSvKVqDPgBpGVt2dQA@mail.gmail.com>
-Message-ID: <CAMuHMdUK=HvvjeTDefzX9sbY-vaRFVixcSvKVqDPgBpGVt2dQA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document support for
- more MT25QU parts
-To: Michael Walle <michael@walle.cc>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_100148_335591_3D552E4B 
-X-CRM114-Status: GOOD (  27.49  )
+X-CRM114-CacheID: sfid-20230921_114526_519408_9BADE06A 
+X-CRM114-Status: GOOD (  23.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,42 +93,191 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwKCk9uIFRodSwgU2VwIDIxLCAyMDIzIGF0IDY6MDHigK9QTSBNaWNoYWVsIFdh
-bGxlIDxtaWNoYWVsQHdhbGxlLmNjPiB3cm90ZToKPiA+PiBXZSB3b24ndCBicmVhayBjb21wYXRp
-YmlsaXR5IHdpdGggb2xkZXIgRFRCcyBpZiB3ZSB1c2UgYSBsaXN0IG9mCj4gPj4gY29tcGF0aWJs
-ZXMuIEZpcnN0IHRoZSB2ZW5kb3Igc3BlY2lmaWMgb25lIHdoaWNoIHdpbGwgdXNlIHNvbWUgcXVp
-cmtzLAo+ID4+IGFuZCBpZiB0aGF0J3Mgbm90IGF2YWlsYWJsZSwgaGF2ZSBhcyBzZWNvbmQgdGhl
-IGdlbmVyaWMgamVkZWMsc3BpLW5vcgo+ID4+IHRvCj4gPj4gZmFsbGJhY2sgdG8uCj4gPgo+ID4g
-U3VyZSwgeW91IHNob3VsZCB1c2UgYSBsaXN0Lgo+ID4KPiA+IEJ1dCB0aGUgY3VycmVudCByZWNv
-bW1lbmRlZCBwcmFjdGljZSBpcyB0byBub3QgaGF2ZSBhIGxpc3QsCj4gPiBidXQganVzdCAiamVk
-ZWMsc3BpLW5vciIgKHVzaW5nIGEgbGlzdCB3aXRoIGEgbmV3IEZMQVNIIHBhcnQgbmFtZQo+ID4g
-Y2F1c2VzIGNoZWNrcGF0Y2ggYW5kIGR0YnNfY2hlY2sgd2FybmluZ3MpLiBIZW5jZSBpZiB5b3Ug
-Zm9sbG93IHRoYXQKPiA+IHJlY29tbWVuZGF0aW9uLCB5b3Ugd2lsbCBydW4gaW50byBjb21wYXRp
-YmlsaXR5IGlzc3VlcyB3aXRoIG9sZGVyIERUQnMKPiA+IHdoZW4geW91IGRpc2NvdmVyIHRoZSBx
-dWlyayBsYXRlciwgYW5kIGRlY2lkZSB0byBhZGQgaXQgdG8gdGhlIGxpc3QuCj4KPiBUaGUgU1BJ
-IE5PUiBmbGFzaGVzIHNob3VsZCBiZSBhdXRvIGRpc2NvdmVyYWJsZS4gV2h5IGRvIHlvdSBuZWVk
-IGEKPiBjb21wYXRpYmxlIHN0cmluZz8gUXVpcmtzIGNhbiBiZSBhZGRlZCB0byB0aGUgZmxhc2hf
-aW5mbyBkYXRhYmFzZS4KClRoaXMgYXNzdW1lcyB5b3UgZG9uJ3QgbmVlZCB0aGUgcXVpcmsgYmVm
-b3JlIHlvdSBjYW4gaWRlbnRpZnkgdGhlIHBhcnQuCkknbSBub3Qgc3VyZSB0aGF0IGlzIGFsd2F5
-cyB0aGUgY2FzZS4KClRoZXJlJ3MgYSBzaW1pbGFyIGlzc3VlIHdpdGggRXRoZXJuZXQgUEhZcyBv
-biB0aGUgTURJTyBidXMsIHdoaWNoIGlzCndoeSB0aGV5IGFyZSBnYWluaW5nIHByb3BlciBjb21w
-YXRpYmxlIHZhbHVlcyBpbiBtYW55IGJvYXJkIERUUyBmaWxlcy4KCj4gQWxzbyBub3RlLCB0aGF0
-IG9uZSByZWFzb24gKm5vdCogdG8gYWRkIGEgcGFydGljdWxhciBmbGFzaCBjb21wYXRpYmxlCj4g
-aXMgdGhhdCB0aGV5IGFyZSB1c3VhbGx5IGludGVyY2hhbmdlYWJsZSBhbmQgT0VNcyBkbyBzby4g
-U28gYSB3aGVyZQo+IHRvZGF5IGEgYm9hcmQgbWlnaHQgaGF2ZSBhIG1hY3Jvbml4IGZsYXNoLCB0
-b21vcnJvdyB0aGF0IGJvYXJkIG1pZ2h0Cj4gaGF2ZSBhIGdpZ2FkZXZpY2Ugb25lIGZvciBleGFt
-cGxlLgoKWWVhaCwgdGhhdCdzIGluZGVlZCBoYXBwZW5pbmcsIGFuZCBpdCdzIGFscmVhZHkgYW4g
-aXNzdWUuCgpHcntvZXRqZSxlZXRpbmd9cywKCiAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0
-CgotLSAKR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBMaW51eCBiZXlvbmQg
-aWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwgY29udmVyc2F0aW9ucyB3
-aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNrZXIuIEJ1dAp3aGVuIEkn
-bSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dyYW1tZXIiIG9yIHNvbWV0
-aGluZyBsaWtlIHRoYXQuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLS0gTGludXMg
-VG9ydmFsZHMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Binman[1] is a tool for creating firmware images. It allows you to
+combine various binaries and place them in an output file.
+
+Binman uses a DT schema to describe an image, in enough detail that
+it can be automatically built from component parts, disassembled,
+replaced, listed, etc.
+
+Images are typically stored in flash, which is why this binding is
+targeted at mtd. Previous discussion is at [2] [3].
+
+[1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
+[2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
+[3] https://www.spinics.net/lists/devicetree/msg626149.html
+
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
+
+ .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
+ .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
+ .../bindings/mtd/partitions/partitions.yaml   |  1 +
+ MAINTAINERS                                   |  5 ++
+ 4 files changed, 117 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+new file mode 100644
+index 00000000000000..c792d5a37b700a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Google LLC
++
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Binman firmware layout
++
++maintainers:
++  - Simon Glass <sjg@chromium.org>
++
++description: |
++  The binman node provides a layout for firmware, used when packaging firmware
++  from multiple projects. For now it just supports a very simple set of
++  features, as a starting point for discussion.
++
++  Documentation for Binman is available at:
++
++  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
++
++  with the current image-description format at:
++
++  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
++
++properties:
++  compatible:
++    const: u-boot,binman
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    firmware {
++      binman {
++        compatible = "u-boot,binman";
++
++        u-boot {
++          size = <0xa0000>;
++        };
++
++        atf-bl31 {
++          offset = <0x100000>;
++        };
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+new file mode 100644
+index 00000000000000..8003eb4f1a994f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Google LLC
++
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/binman/entry.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Binman entry
++
++maintainers:
++  - Simon Glass <sjg@chromium.org>
++
++description: |
++  The entry node specifies a single entry in the firmware.
++
++  Entries have a specific type, such as "u-boot" or "atf-bl31". If the type
++  is missing, the name is used as the type.
++
++  Note: This definition is intended to be hierarchical, so that entries can
++  appear in other entries. Schema for that is TBD.
++
++properties:
++  $nodename:
++    pattern: "^[-a-z]+(-[0-9]+)?$"
++
++  type:
++    $ref: /schemas/types.yaml#/definitions/string
++
++  offset:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Provides the offset of this entry from the start of its parent section.
++      If this is omitted, Binman will determine this by packing the enclosing
++      section according to alignment rules, etc.
++
++  size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Provides the size of this entry in bytes. If this is omitted, Binman will
++      use the content size, along with any alignment information, to determine
++      the size of the entry.
++
++additionalProperties: false
++
++examples:
++  - |
++    firmware {
++      binman {
++        compatible = "u-boot,binman";
++
++        u-boot {
++          size = <0xa0000>;
++        };
++
++        second-area {
++          type = "atf-bl31";
++          offset = <0x100000>;
++        };
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+index 1dda2c80747bd7..849fd15d085ccc 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+@@ -15,6 +15,7 @@ maintainers:
+ 
+ oneOf:
+   - $ref: arm,arm-firmware-suite.yaml
++  - $ref: binman.yaml
+   - $ref: brcm,bcm4908-partitions.yaml
+   - $ref: brcm,bcm947xx-cfe-partitions.yaml
+   - $ref: fixed-partitions.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a4c30221eb305d..ebcbfb4292e8dc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3505,6 +3505,11 @@ F:	Documentation/filesystems/bfs.rst
+ F:	fs/bfs/
+ F:	include/uapi/linux/bfs_fs.h
+ 
++BINMAN
++M:	Simon Glass <sjg@chromium.org>
++S:	Supported
++F:	Documentation/devicetree/bindings/mtd/partitions/binman*
++
+ BITMAP API
+ M:	Yury Norov <yury.norov@gmail.com>
+ R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+-- 
+2.42.0.515.g380fc7ccd1-goog
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
