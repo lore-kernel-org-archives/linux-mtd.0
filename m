@@ -4,103 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 458CAE7108F
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 15:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F243BE71092
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 16:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lxfJir87X1kcCMKn3tA36cj1ZDhr7wXt8eNj7fE/2ss=; b=EOzRYILVyU44nG
-	YqKwNPz3zOWaamiDho3FwvsKzUEcNhG5POrVqnYA1JvdvFMFJDJAIqQkh4lmZz/Waky5xgx1hce52
-	vFTuJZySf4fz1A0njPlFxxOqNyi5vqPR7IGHW+MRhq0En041kEmSdGviDPfZKQ5TcrQv9n4tpIx3y
-	0+1faGJYeUruRcw1xgWxLtGMbemcGK7SKvUbEX7fENbF8l6McVEw/E+eat58IsRVdBxix93dBlwae
-	dqH9eyoXsh2fMhvcShVIzP/cteoVJ1edHebUJDiawJEVtlxPAO+VQldCn0Mc4iGTX1crN2DFxkVwI
-	eg84yVdL3oUoHr9tKePw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IS0pUUeu4jE7JAF0RjhpsvvvfjHz5LNcqQXODe3i37w=; b=Mpl3lcB4dAdnpH/VvN1HlYyJec
+	+ifMjvnQEgOFuG8FWPI0t4xO0tb7PqFZPWqfM6xFHoTHUocQLpropOVy6TOg2gpOPvMZRYLLl9M0C
+	Zf4EDsJ36cBNCP7yw6BBK4qUQO2CpL7HIEyWF8gc11yFmHsXdikWY/CFrbw640CCA+vNeUJdTzRSJ
+	uytwFsdjNh6Renqe3djdTotbd2iJWiRWnyAIhI/ms8zKFGdkIi9EyWlYpvelRI5zhUQkI8UimPhws
+	MsA8QNExTCefhIiCDyH16GjYQ6JURt0tApaVAoLpiv648fTATiDpTxgFw9SoUlNB9O+SMTMN0xOWZ
+	HUsGx6Xw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjLsX-006RMQ-1h;
-	Thu, 21 Sep 2023 15:46:09 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qjM7j-006SrJ-09;
+	Thu, 21 Sep 2023 16:01:51 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjKme-006Iyw-24
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 21 Sep 2023 14:36:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=BRjD71BxaHKeKUao5JkBY66AYjHKMR6kgB3U+BDfPis=; b=adjMKA/qqiAf73rBDpk3l5IkRG
-	pEKQ+S/Xr3rEU5ZeMN1kp51MIxZtORHveqcf0kqzcNuV8FyN/oRM4NLuq3Iua6z+qHfmYstK0Q4kC
-	3xRIX0WHdS7Ndha2TwcTcpq1gs+0sa1hhcCnsVHzhhWAYmdsTFWacATrngpvfoKFKJAhVqGUoWZ07
-	q7buKnXJS7rCSISwjacHae0juoE0hPs89uk+t26bX4y4oR2/5q3SdKpdXbH13B9LphGBxptwKPQ9A
-	+2shJ/XucOE8v3iEeXphYs5IjrRpj6yI+HoXULUXzcgQCUO9HHYGoyLll6QrQX+owcg6K8vAlOkef
-	1Xzv7fug==;
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjKma-00FRu3-0F
+	id 1qjM7f-006Sq0-3D
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Sep 2023 14:35:59 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so132819766b.3
-        for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2023 07:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695306953; x=1695911753; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BRjD71BxaHKeKUao5JkBY66AYjHKMR6kgB3U+BDfPis=;
-        b=qRL2M47zmhQ0l6j+l3rl1HtCda0LS849L0+BETabnyZULRCFMfYxQ3WLNTmd7WktoD
-         PlVaIyuINe5ag8GbQwshmJfpVnT5G19LBm6r0GzOH3nprwnXCns94550U0FPWhSzs6vO
-         ZR6IWQxiTrMjsdeSFUzRV1kp4OG+3pjdPuOf+qkPEbEP2MNSutJGNBhS6fq01tVTTyUm
-         yelUHabD/nZRYef8IBbNjv+j8JKJ36ZqX5T85iclZaEqCJVqhHn+Z3Bz/cN+Be2FFfAV
-         r6RB50Ws0cQpTU/SHLq95EXr2E3NBuYuCMAl/ORl6JEjgsKhwPy+HNpsHVZUX05QNRNk
-         tSPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695306953; x=1695911753;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BRjD71BxaHKeKUao5JkBY66AYjHKMR6kgB3U+BDfPis=;
-        b=GWKPH7U6MwT/5oxLMV65BVyQ3Z1/oXakjcBjNitnUUz/24GM2oWw09IfCPCSs0vrwf
-         0ljutvWwAERQhhSuknKl4Dz3BvhMN6fzB8c6BulRQh5kIk0rgRXr2DRnpqonhvFccvrb
-         DWIQjkjAGBrDJfFf/XO41Fguzl4YfS+J1Y6mF/oDQ53v/V4zJLhqzN0nXWCe+plLPdoB
-         gpKuMEo6VzrvDOWz0lneOTJ+0TW4zS2vcU8uKndouj/KdosWyolOUqVYgGErXfRZhxYp
-         ZMqzKKAkZliF05vKhTlqX/doQxtYHnRa+d/yMvfbxCScrepPRi9ABcwGATYk2bblhgx5
-         twPQ==
-X-Gm-Message-State: AOJu0Yx/70jS1HtyGv+mE3syapVbh+EXO+guI5IyxI0HU8P4JEJ2HsCH
-	wwb+rnLRVbLeZcqWmLBzbIlxbOTl5yZ0hqifDVj2Ig==
-X-Google-Smtp-Source: AGHT+IG20+78STBi2PpMkzT53VyFCQlg3f49O0y4ik5lHqELKdgTjzje3z/jrKlwq+zFG+cbW++8sA==
-X-Received: by 2002:a17:906:10a:b0:9ae:6355:afe9 with SMTP id 10-20020a170906010a00b009ae6355afe9mr2017506eje.52.1695306953057;
-        Thu, 21 Sep 2023 07:35:53 -0700 (PDT)
-Received: from [172.20.34.61] (static-212-193-78-212.thenetworkfactory.nl. [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id cb8-20020a170906a44800b00988dbbd1f7esm1118264ejb.213.2023.09.21.07.35.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Sep 2023 07:35:52 -0700 (PDT)
-Message-ID: <4425afd4-c38c-4f27-96a6-9833fe2401b4@linaro.org>
-Date: Thu, 21 Sep 2023 15:35:51 +0100
+	Thu, 21 Sep 2023 16:01:49 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id D1E68EB7;
+	Thu, 21 Sep 2023 18:01:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1695312101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x+jXaho0ZIi9BmaRxov9GWSa018Ii/NEh3JmcH5ERxw=;
+	b=qVyNtZ5S6BtOrh3RjVNbJiLuOOkn+zfCRAkBZlicq2gMlcAB0BFZZS5+HRIUy8ERhSunHl
+	yq+Q8qXwUYyE+gU5vWBjpDItpp14+6Kw2u7OKKeHd1b4QY9VA2cLr/ftGySxI376w0C0JS
+	GO57lYZJjfW45ZgV0QrADEcowxA2r8DV9bKICzSM/vr6mVWSkadgnqWDR0VGFZXEVVlyqp
+	1qBgcZTEmUrd4Dziqxd7QBj9PI3Ms9xa60BvH40HLlVh/TJEgLjF9nIYZOiWf71kXmDQpK
+	iLv79GMv0NUL9Q2zIMyMO4ZGPGd52Fxa1qqNJjV+Lr5c5/cRg9iETzGyQMT/1A==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>,
- "pratyush@kernel.org" <pratyush@kernel.org>,
- "michael@walle.cc" <michael@walle.cc>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>
-References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
- <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
- <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
- <084ed945-7674-280f-5866-9238473a294d@leica-geosystems.com>
- <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
-In-Reply-To: <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
+Date: Thu, 21 Sep 2023 18:01:41 +0200
+From: Michael Walle <michael@walle.cc>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Rob Herring <robh@kernel.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document support for
+ more MT25QU parts
+In-Reply-To: <CAMuHMdW_-0f8DOmEzYb28XABqU3oFL4KXf9M-qKVyyrE_Lo+jQ@mail.gmail.com>
+References: <363186079b4269891073f620e3e2353cf7d2559a.1669988238.git.geert+renesas@glider.be>
+ <1503a3857107e3a4f34e0c7fb5dada39@walle.cc>
+ <CAMuHMdXN+HJb=zGeG=3t=Pie9cVpnBLYuEb_qX6=oSxG8eTkAw@mail.gmail.com>
+ <20221205163306.GB2012644-robh@kernel.org>
+ <CAMuHMdUcrh26MNYuiqiC0_FMkeHtq1YnJrZKHEV_WQm5Dgzoaw@mail.gmail.com>
+ <ee03d150-51cf-4e12-ae2c-9475a192fb6c@linaro.org>
+ <CAMuHMdW_-0f8DOmEzYb28XABqU3oFL4KXf9M-qKVyyrE_Lo+jQ@mail.gmail.com>
+Message-ID: <d4d998cff934328f58cec767f93a59b5@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_153557_711832_2B2B7AFC 
-X-CRM114-Status: GOOD (  14.08  )
+X-CRM114-CacheID: sfid-20230921_090148_228708_B3C08700 
+X-CRM114-Status: GOOD (  11.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,63 +82,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Geert,
 
+>> We won't break compatibility with older DTBs if we use a list of
+>> compatibles. First the vendor specific one which will use some quirks,
+>> and if that's not available, have as second the generic jedec,spi-nor 
+>> to
+>> fallback to.
+> 
+> Sure, you should use a list.
+> 
+> But the current recommended practice is to not have a list,
+> but just "jedec,spi-nor" (using a list with a new FLASH part name
+> causes checkpatch and dtbs_check warnings). Hence if you follow that
+> recommendation, you will run into compatibility issues with older DTBs
+> when you discover the quirk later, and decide to add it to the list.
 
-On 9/21/23 15:31, Tudor Ambarus wrote:
-cut
-> 
-> So the first commit will look like:
-> diff --git a/drivers/mtd/spi-nor/micron-st.c
-> b/drivers/mtd/spi-nor/micron-st.c
-> index 4afcfc57c896..a8da1f18e335 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -405,9 +405,6 @@ static const struct flash_info st_nor_parts[] = {
->         }, {
->                 .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
->                 .name = "mt25qu512a",
-> -               .size = SZ_64M,
-> -               .no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ |
-> SPI_NOR_QUAD_READ,
-> -               .fixup_flags = SPI_NOR_4B_OPCODES,
+The SPI NOR flashes should be auto discoverable. Why do you need a
+compatible string? Quirks can be added to the flash_info database.
 
-since we removed the 4b-opcodes flag here,
->                 .mfr_flags = USE_FSR,
->         }, {
->                 .id = SNOR_ID(0x20, 0xbb, 0x20),
-> 
-> and the second one will add just the BP support, something like:
-> diff --git a/drivers/mtd/spi-nor/micron-st.c
-> b/drivers/mtd/spi-nor/micron-st.c
-> index a8da1f18e335..fdafbfa0f936 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -405,6 +405,8 @@ static const struct flash_info st_nor_parts[] = {
->         }, {
->                 .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
->                 .name = "mt25qu512a",
-> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
-> SPI_NOR_4BIT_BP |
-> +                        SPI_NOR_BP3_SR_BIT6,
->                 .mfr_flags = USE_FSR,
->         }, {
->                 .id = SNOR_ID(0x20, 0xbb, 0x20),
-> 
-> Of course, I expect you to run again the mtd_debug tests and also verify
-> the locking. Thanks!
+Also note, that one reason *not* to add a particular flash compatible
+is that they are usually interchangeable and OEMs do so. So a where
+today a board might have a macronix flash, tomorrow that board might
+have a gigadevice one for example.
 
-would also be good if you can also verify that 4BAIT SFDP table is
-present and you still use the 4B opcodes after the change.
-
-> 
-> Cheers,
-> ta
-> 
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
