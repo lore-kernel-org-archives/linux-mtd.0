@@ -4,53 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA29ACD4938
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 02:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2D88CD4938
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 02:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iRqxxdPHrpXKzm9s3Y9RdTZ02dJ9zkwir512kp6b1EU=; b=ve4fO3B2tHLrlv
-	4eJsNVp3RE/juZL19gCBtdGfa+MZhiqYVWAtxjA+LezjUXcSZp/aMCPpUTf1SHyoZNIJvfAeQVrfr
-	CINJ9LKDKHixJyZrexIomvAiq0Ki6uStrEVqV9dra3273nncB6vtJhljw73FWqm4uUzPy7FakgrcA
-	43VesTEOLH54W4PgbLCbpEsbYayQ9rJasnsKdLL/NR3Vo1lti2Zyu/ABUxIYkLMjxggAYvFRCPfYb
-	0vjsR4PUAV2BBeNkuDRFayP7oQzvnfXzKA6JPxOcIjll8WVo5/xiLKPCmtS1ody7fk5aaPy4Fw487
-	KGnFgutsvQQ5btSDfMCg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=sKL6DyFuphboOTihS9F8lt2ktzN0HFcuS8/ogz5+SNY=; b=FA2N7vnpUs+lJeWFjWIhvVMGqK
+	PVnYR5F/mqCmm0ufIEw0AFirpZgwzT7MAiXkb0mB4mlDovpdxqjYGNjq2LHmM/mjDE0Xk1lHS7PpP
+	l+rwxgP64NRTNp7XVaH32cgmT/es0OoTELk0UEdc+NY07XZZv1yBv51TigtZeYd3soJon38Shqd/T
+	FhxbxKc+akiyqK7zTrgXoWEYpI4xKjFJr4/pxYNS4oW8GsHTHBQiCUNP37eHVVovbuoFEzvtjhJ5A
+	1aehQW2GGXUC5YWTbj/ftahmx5XPPbsg0wpUGtl6nL8Em5ssjXl7e1rWpOhG144VqctgogW136GJc
+	CYac0pLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qj95E-004j5Q-2w;
-	Thu, 21 Sep 2023 02:06:24 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1qj9b4-004nU5-0L;
+	Thu, 21 Sep 2023 02:39:18 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qj95B-004j2y-1I
+	id 1qj9b0-004nRg-1v
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Sep 2023 02:06:23 +0000
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RrdvG3dRgzNnk6;
-	Thu, 21 Sep 2023 10:02:18 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 21 Sep
- 2023 10:06:04 +0800
-From: ZhaoLong Wang <wangzhaolong1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<chaitanya.kulkarni@wdc.com>, <axboe@kernel.dk>
+	Thu, 21 Sep 2023 02:39:16 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RrfgD37yrz15NR2;
+	Thu, 21 Sep 2023 10:36:56 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 21 Sep 2023 10:39:02 +0800
+Subject: Re: [PATCH -next] ubi: block: Fix use-after-free in ubiblock_cleanup
+To: ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
+	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>, <chaitanya.kulkarni@wdc.com>,
+	<axboe@kernel.dk>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH -next] ubi: block: Fix use-after-free in ubiblock_cleanup
-Date: Thu, 21 Sep 2023 10:01:42 +0800
-Message-ID: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	<yi.zhang@huawei.com>
+References: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <dce695b6-a4ca-82d6-a4c4-02342b4d57f0@huawei.com>
+Date: Thu, 21 Sep 2023 10:39:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500009.china.huawei.com (7.185.36.225)
+In-Reply-To: <20230921020142.2562687-1-wangzhaolong1@huawei.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_190621_790933_FCEAED57 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20230920_193914_986008_58FB284C 
+X-CRM114-Status: GOOD (  17.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,118 +66,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The following BUG is reported when a ubiblock is removed:
-
- ==================================================================
- BUG: KASAN: slab-use-after-free in ubiblock_cleanup+0x88/0xa0 [ubi]
- Read of size 4 at addr ffff88810c8f3804 by task ubiblock/1716
-
- CPU: 5 PID: 1716 Comm: ubiblock Not tainted 6.6.0-rc2+ #135
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
- Call Trace:
-  <TASK>
-  dump_stack_lvl+0x37/0x50
-  print_report+0xd0/0x620
-  kasan_report+0xb6/0xf0
-  ubiblock_cleanup+0x88/0xa0 [ubi]
-  ubiblock_remove+0x121/0x190 [ubi]
-  vol_cdev_ioctl+0x355/0x630 [ubi]
-  __x64_sys_ioctl+0xc7/0x100
-  do_syscall_64+0x3f/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
- RIP: 0033:0x7f08d7445577
- Code: b3 66 90 48 8b 05 11 89 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 8
- RSP: 002b:00007ffde05a3018 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
- RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f08d7445577
- RDX: 0000000000000000 RSI: 0000000000004f08 RDI: 0000000000000003
- RBP: 0000000000816010 R08: 00000000008163a7 R09: 0000000000000000
- R10: 0000000000000003 R11: 0000000000000206 R12: 0000000000000003
- R13: 00007ffde05a3130 R14: 0000000000000000 R15: 0000000000000000
-  </TASK>
-
- Allocated by task 1715:
-  kasan_save_stack+0x22/0x50
-  kasan_set_track+0x25/0x30
-  __kasan_kmalloc+0x7f/0x90
-  __alloc_disk_node+0x40/0x2b0
-  __blk_mq_alloc_disk+0x3e/0xb0
-  ubiblock_create+0x2ba/0x620 [ubi]
-  vol_cdev_ioctl+0x581/0x630 [ubi]
-  __x64_sys_ioctl+0xc7/0x100
-  do_syscall_64+0x3f/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
- Freed by task 0:
-  kasan_save_stack+0x22/0x50
-  kasan_set_track+0x25/0x30
-  kasan_save_free_info+0x2b/0x50
-  __kasan_slab_free+0x10e/0x190
-  __kmem_cache_free+0x96/0x220
-  bdev_free_inode+0xa4/0xf0
-  rcu_core+0x496/0xec0
-  __do_softirq+0xeb/0x384
-
- The buggy address belongs to the object at ffff88810c8f3800
-  which belongs to the cache kmalloc-1k of size 1024
- The buggy address is located 4 bytes inside of
-  freed 1024-byte region [ffff88810c8f3800, ffff88810c8f3c00)
-
- The buggy address belongs to the physical page:
- page:00000000d03de848 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10c8f0
- head:00000000d03de848 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
- flags: 0x200000000000840(slab|head|node=0|zone=2)
- page_type: 0xffffffff()
- raw: 0200000000000840 ffff888100042dc0 ffffea0004244400 dead000000000002
- raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
- page dumped because: kasan: bad access detected
-
- Memory state around the buggy address:
-  ffff88810c8f3700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88810c8f3780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- >ffff88810c8f3800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                    ^
-  ffff88810c8f3880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88810c8f3900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ==================================================================
-
-Fix it by using a local variable to record the gendisk ID.
-
-Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
----
- drivers/mtd/ubi/block.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 437c5b83ffe5..309a42aeaa4c 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -447,13 +447,15 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- static void ubiblock_cleanup(struct ubiblock *dev)
- {
-+	int id = dev->gd->first_minor;
-+
- 	/* Stop new requests to arrive */
- 	del_gendisk(dev->gd);
- 	/* Finally destroy the blk queue */
- 	dev_info(disk_to_dev(dev->gd), "released");
- 	put_disk(dev->gd);
- 	blk_mq_free_tag_set(&dev->tag_set);
--	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
-+	idr_remove(&ubiblock_minor_idr, id);
- }
- 
- int ubiblock_remove(struct ubi_volume_info *vi)
--- 
-2.31.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy85LzIxIDEwOjAxLCBaaGFvTG9uZyBXYW5nINC0tcA6Cj4gVGhlIGZvbGxvd2luZyBC
+VUcgaXMgcmVwb3J0ZWQgd2hlbiBhIHViaWJsb2NrIGlzIHJlbW92ZWQ6Cj4gCj4gICA9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0KPiAgIEJVRzogS0FTQU46IHNsYWItdXNlLWFmdGVyLWZyZWUgaW4gdWJpYmxvY2tfY2xlYW51
+cCsweDg4LzB4YTAgW3ViaV0KPiAgIFJlYWQgb2Ygc2l6ZSA0IGF0IGFkZHIgZmZmZjg4ODEwYzhm
+MzgwNCBieSB0YXNrIHViaWJsb2NrLzE3MTYKPiAKPiAgIENQVTogNSBQSUQ6IDE3MTYgQ29tbTog
+dWJpYmxvY2sgTm90IHRhaW50ZWQgNi42LjAtcmMyKyAjMTM1Cj4gICBIYXJkd2FyZSBuYW1lOiBR
+RU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwgQklPUyA/LTIwMTkwNzI3XzA3
+MzgzNi1idWlsZHZtLXBwYzY0bGUtMTYucHBjLmZlZG9yYXByb2plY3Qub3JnLTMuZmMzMSAwNC8w
+MS8yMDE0Cj4gICBDYWxsIFRyYWNlOgo+ICAgIDxUQVNLPgo+ICAgIGR1bXBfc3RhY2tfbHZsKzB4
+MzcvMHg1MAo+ICAgIHByaW50X3JlcG9ydCsweGQwLzB4NjIwCj4gICAga2FzYW5fcmVwb3J0KzB4
+YjYvMHhmMAo+ICAgIHViaWJsb2NrX2NsZWFudXArMHg4OC8weGEwIFt1YmldCj4gICAgdWJpYmxv
+Y2tfcmVtb3ZlKzB4MTIxLzB4MTkwIFt1YmldCj4gICAgdm9sX2NkZXZfaW9jdGwrMHgzNTUvMHg2
+MzAgW3ViaV0KPiAgICBfX3g2NF9zeXNfaW9jdGwrMHhjNy8weDEwMAo+ICAgIGRvX3N5c2NhbGxf
+NjQrMHgzZi8weDkwCj4gICAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NmUvMHhk
+OAo+ICAgUklQOiAwMDMzOjB4N2YwOGQ3NDQ1NTc3Cj4gICBDb2RlOiBiMyA2NiA5MCA0OCA4YiAw
+NSAxMSA4OSAyYyAwMCA2NCBjNyAwMCAyNiAwMCAwMCAwMCA0OCBjNyBjMCBmZiBmZiBmZiBmZiBj
+MyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCBiOCAxMCAwMCAwMCAwMCAwZiAwNSA8NDg+
+IDNkIDAxIGYwIGZmIGZmIDczIDAxIGMzIDQ4IDhiIDBkIGUxIDgKPiAgIFJTUDogMDAyYjowMDAw
+N2ZmZGUwNWEzMDE4IEVGTEFHUzogMDAwMDAyMDYgT1JJR19SQVg6IDAwMDAwMDAwMDAwMDAwMTAK
+PiAgIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDAwMDAwZmZmZmZmZmYgUkNYOiAwMDAw
+N2YwOGQ3NDQ1NTc3Cj4gICBSRFg6IDAwMDAwMDAwMDAwMDAwMDAgUlNJOiAwMDAwMDAwMDAwMDA0
+ZjA4IFJESTogMDAwMDAwMDAwMDAwMDAwMwo+ICAgUkJQOiAwMDAwMDAwMDAwODE2MDEwIFIwODog
+MDAwMDAwMDAwMDgxNjNhNyBSMDk6IDAwMDAwMDAwMDAwMDAwMDAKPiAgIFIxMDogMDAwMDAwMDAw
+MDAwMDAwMyBSMTE6IDAwMDAwMDAwMDAwMDAyMDYgUjEyOiAwMDAwMDAwMDAwMDAwMDAzCj4gICBS
+MTM6IDAwMDA3ZmZkZTA1YTMxMzAgUjE0OiAwMDAwMDAwMDAwMDAwMDAwIFIxNTogMDAwMDAwMDAw
+MDAwMDAwMAo+ICAgIDwvVEFTSz4KPiAKPiAgIEFsbG9jYXRlZCBieSB0YXNrIDE3MTU6Cj4gICAg
+a2FzYW5fc2F2ZV9zdGFjaysweDIyLzB4NTAKPiAgICBrYXNhbl9zZXRfdHJhY2srMHgyNS8weDMw
+Cj4gICAgX19rYXNhbl9rbWFsbG9jKzB4N2YvMHg5MAo+ICAgIF9fYWxsb2NfZGlza19ub2RlKzB4
+NDAvMHgyYjAKPiAgICBfX2Jsa19tcV9hbGxvY19kaXNrKzB4M2UvMHhiMAo+ICAgIHViaWJsb2Nr
+X2NyZWF0ZSsweDJiYS8weDYyMCBbdWJpXQo+ICAgIHZvbF9jZGV2X2lvY3RsKzB4NTgxLzB4NjMw
+IFt1YmldCj4gICAgX194NjRfc3lzX2lvY3RsKzB4YzcvMHgxMDAKPiAgICBkb19zeXNjYWxsXzY0
+KzB4M2YvMHg5MAo+ICAgIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDZlLzB4ZDgK
+PiAKPiAgIEZyZWVkIGJ5IHRhc2sgMDoKPiAgICBrYXNhbl9zYXZlX3N0YWNrKzB4MjIvMHg1MAo+
+ICAgIGthc2FuX3NldF90cmFjaysweDI1LzB4MzAKPiAgICBrYXNhbl9zYXZlX2ZyZWVfaW5mbysw
+eDJiLzB4NTAKPiAgICBfX2thc2FuX3NsYWJfZnJlZSsweDEwZS8weDE5MAo+ICAgIF9fa21lbV9j
+YWNoZV9mcmVlKzB4OTYvMHgyMjAKPiAgICBiZGV2X2ZyZWVfaW5vZGUrMHhhNC8weGYwCj4gICAg
+cmN1X2NvcmUrMHg0OTYvMHhlYzAKPiAgICBfX2RvX3NvZnRpcnErMHhlYi8weDM4NAo+IAo+ICAg
+VGhlIGJ1Z2d5IGFkZHJlc3MgYmVsb25ncyB0byB0aGUgb2JqZWN0IGF0IGZmZmY4ODgxMGM4ZjM4
+MDAKPiAgICB3aGljaCBiZWxvbmdzIHRvIHRoZSBjYWNoZSBrbWFsbG9jLTFrIG9mIHNpemUgMTAy
+NAo+ICAgVGhlIGJ1Z2d5IGFkZHJlc3MgaXMgbG9jYXRlZCA0IGJ5dGVzIGluc2lkZSBvZgo+ICAg
+IGZyZWVkIDEwMjQtYnl0ZSByZWdpb24gW2ZmZmY4ODgxMGM4ZjM4MDAsIGZmZmY4ODgxMGM4ZjNj
+MDApCj4gCj4gICBUaGUgYnVnZ3kgYWRkcmVzcyBiZWxvbmdzIHRvIHRoZSBwaHlzaWNhbCBwYWdl
+Ogo+ICAgcGFnZTowMDAwMDAwMGQwM2RlODQ4IHJlZmNvdW50OjEgbWFwY291bnQ6MCBtYXBwaW5n
+OjAwMDAwMDAwMDAwMDAwMDAgaW5kZXg6MHgwIHBmbjoweDEwYzhmMAo+ICAgaGVhZDowMDAwMDAw
+MGQwM2RlODQ4IG9yZGVyOjMgZW50aXJlX21hcGNvdW50OjAgbnJfcGFnZXNfbWFwcGVkOjAgcGlu
+Y291bnQ6MAo+ICAgZmxhZ3M6IDB4MjAwMDAwMDAwMDAwODQwKHNsYWJ8aGVhZHxub2RlPTB8em9u
+ZT0yKQo+ICAgcGFnZV90eXBlOiAweGZmZmZmZmZmKCkKPiAgIHJhdzogMDIwMDAwMDAwMDAwMDg0
+MCBmZmZmODg4MTAwMDQyZGMwIGZmZmZlYTAwMDQyNDQ0MDAgZGVhZDAwMDAwMDAwMDAwMgo+ICAg
+cmF3OiAwMDAwMDAwMDAwMDAwMDAwIDAwMDAwMDAwODAxMDAwMTAgMDAwMDAwMDFmZmZmZmZmZiAw
+MDAwMDAwMDAwMDAwMDAwCj4gICBwYWdlIGR1bXBlZCBiZWNhdXNlOiBrYXNhbjogYmFkIGFjY2Vz
+cyBkZXRlY3RlZAo+IAo+ICAgTWVtb3J5IHN0YXRlIGFyb3VuZCB0aGUgYnVnZ3kgYWRkcmVzczoK
+PiAgICBmZmZmODg4MTBjOGYzNzAwOiBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBmYyBm
+YyBmYyBmYyBmYyBmYwo+ICAgIGZmZmY4ODgxMGM4ZjM3ODA6IGZjIGZjIGZjIGZjIGZjIGZjIGZj
+IGZjIGZjIGZjIGZjIGZjIGZjIGZjIGZjIGZjCj4gICA+ZmZmZjg4ODEwYzhmMzgwMDogZmEgZmIg
+ZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIKPiAgICAgICAgICAgICAg
+ICAgICAgICBeCj4gICAgZmZmZjg4ODEwYzhmMzg4MDogZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIg
+ZmIgZmIgZmIgZmIgZmIgZmIgZmIgZmIKPiAgICBmZmZmODg4MTBjOGYzOTAwOiBmYiBmYiBmYiBm
+YiBmYiBmYiBmYiBmYiBmYiBmYiBmYiBmYiBmYiBmYiBmYiBmYgo+ICAgPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4gCj4g
+Rml4IGl0IGJ5IHVzaW5nIGEgbG9jYWwgdmFyaWFibGUgdG8gcmVjb3JkIHRoZSBnZW5kaXNrIElE
+Lgo+IAo+IEZpeGVzOiA3NzU2N2IyNWFiOWYgKCJ1Ymk6IHVzZSBibGtfbXFfYWxsb2NfZGlzayBh
+bmQgYmxrX2NsZWFudXBfZGlzayIpCj4gU2lnbmVkLW9mZi1ieTogWmhhb0xvbmcgV2FuZyA8d2Fu
+Z3poYW9sb25nMUBodWF3ZWkuY29tPgo+IC0tLQo+ICAgZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMg
+fCA0ICsrKy0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24o
+LSkKPiAKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29t
+PgoKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMgYi9kcml2ZXJzL210ZC91
+YmkvYmxvY2suYwo+IGluZGV4IDQzN2M1YjgzZmZlNS4uMzA5YTQyYWVhYTRjIDEwMDY0NAo+IC0t
+LSBhL2RyaXZlcnMvbXRkL3ViaS9ibG9jay5jCj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2Jsb2Nr
+LmMKPiBAQCAtNDQ3LDEzICs0NDcsMTUgQEAgaW50IHViaWJsb2NrX2NyZWF0ZShzdHJ1Y3QgdWJp
+X3ZvbHVtZV9pbmZvICp2aSkKPiAgIAo+ICAgc3RhdGljIHZvaWQgdWJpYmxvY2tfY2xlYW51cChz
+dHJ1Y3QgdWJpYmxvY2sgKmRldikKPiAgIHsKPiArCWludCBpZCA9IGRldi0+Z2QtPmZpcnN0X21p
+bm9yOwo+ICsKPiAgIAkvKiBTdG9wIG5ldyByZXF1ZXN0cyB0byBhcnJpdmUgKi8KPiAgIAlkZWxf
+Z2VuZGlzayhkZXYtPmdkKTsKPiAgIAkvKiBGaW5hbGx5IGRlc3Ryb3kgdGhlIGJsayBxdWV1ZSAq
+Lwo+ICAgCWRldl9pbmZvKGRpc2tfdG9fZGV2KGRldi0+Z2QpLCAicmVsZWFzZWQiKTsKPiAgIAlw
+dXRfZGlzayhkZXYtPmdkKTsKPiAgIAlibGtfbXFfZnJlZV90YWdfc2V0KCZkZXYtPnRhZ19zZXQp
+Owo+IC0JaWRyX3JlbW92ZSgmdWJpYmxvY2tfbWlub3JfaWRyLCBkZXYtPmdkLT5maXJzdF9taW5v
+cik7Cj4gKwlpZHJfcmVtb3ZlKCZ1YmlibG9ja19taW5vcl9pZHIsIGlkKTsKPiAgIH0KPiAgIAo+
+ICAgaW50IHViaWJsb2NrX3JlbW92ZShzdHJ1Y3QgdWJpX3ZvbHVtZV9pbmZvICp2aSkKPiAKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
