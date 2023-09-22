@@ -4,63 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75D0BE6FE2F
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 14:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 251A0E6FE36
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 14:18:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+V24U6xg09sFwMqNAv7R02Q9z4pgn8Z+6mEl5AHz3QQ=; b=t/LJjtl5vEX23K
-	KIrfFwZjXMiGAHQob/xkeg6YbUykT/goikvhbNSIHlFaN1zAEnGScBLY63z7PshSUmb09H/rheN5K
-	GUWqsZdNgoRW8MQV/O4m6RMCQoXLaCh+DhFUuIDOrz2dVK3uaH/XkIYPZFnRVJ8tsHYuzMqwxT2Dz
-	hhunxaQFh1qoZKQbSZPLTR4sMoIeW22Eibu7jC6FhoGMMyQHKsLGLbtZxCgYxMfib5qru79XzHlfn
-	YaM/Ubj6Wx52LENA/MjBBZZ6TiV/A7JC22xCDTrl8JIsFYEOMQqATZLvI76ouZtJLZQc3y2iZO9v0
-	zU5viRLay52CMKlHUGsQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hGUKlyzyxUP0aIXa15IKnEYsuogLRZEB+IsjtnBmEcw=; b=SjrAO/A9stAxCQ
+	qwr3IQCvA91icGZekJFH7UBmbWtoHnwAe9jYDNJPbIlouP+q0WVkb/YqVL6RFRGQcqyTsR9r0YyWg
+	hX4+RCCoEcqLxcsBRLtSbUX/GKR8f1v0k1J6TZ2zgpBnLQb7YNvOMDARzWl2F/qlOWpv/R/RsNGb/
+	7jhzXg/T5o9jpv6LTaBuoHFwLj+tl8x9asqEwo6wEUkTxb8vh/QG1r812yVbU7H9khffTQtLEyW3+
+	nNpBWWYBnix3sofzzKk1Lf7EuMN0NnghKQ4LpO99qi+im+QUJMiot2fpdLUXN0Awsr6XMHD3jfOh2
+	b7LJoWrKYGpcr0ZZX/aA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjglU-009AaH-0G;
-	Fri, 22 Sep 2023 14:04:16 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1qjgys-009BW2-2D;
+	Fri, 22 Sep 2023 14:18:06 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjglQ-009AZD-1r
+	id 1qjgyo-009BUf-2l
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Sep 2023 14:04:14 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C79AD24000A;
-	Fri, 22 Sep 2023 14:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695391445;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pExq5EY/86tUqekvDpJYB6m3SynqP56IDF4E/AB4Z5k=;
-	b=CStiiwB68UhFaWNyJvW23wdDSD3ddwH74WFVgCG8U6545bJhHiRYjRaS4ZcEqiDpvQPYIH
-	tMrGKNyuwQ8Xx+2UbGKbJUnn0wbXn/KylVZzA9nXKFW4/4AjzqDJ38ccV4/agKr4NNPBRF
-	/LsM+yKlMcGtAU7+nrXZfUbEfdd+HqnDMlyLvex/uEw1bb+V1WCPlSfvmxJrH5AcVYyxOa
-	+MiK5TE1w+uMP1GTp+A7Hmss0wDLYiMb3f6sQ1Zbi28zQkXidzbls8tZnliF73aYRQ31IA
-	qaUP8cNWZlvj0TzysxwcUVKXgZUO/nFKSg9S61fFAuAB0hWZweEWKz4yFZhqzA==
-Date: Fri, 22 Sep 2023 16:04:00 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Cc: Martin =?UTF-8?B?SHVuZGViw7hsbA==?= <martin@geanix.com>,
- =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, JaimeLiao
- <jaimeliao.tw@gmail.com>, kernel@pengutronix.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Alexander
- Shiyan <eagle.alexander923@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: check nand support for cache reads
-Message-ID: <20230922160400.034ee828@xps-13>
-In-Reply-To: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
-References: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Fri, 22 Sep 2023 14:18:05 +0000
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=localhost)
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <r.czerwinski@pengutronix.de>)
+	id 1qjgyP-0007bx-Fs; Fri, 22 Sep 2023 16:17:52 +0200
+From: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+To: =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
+	=?UTF-8?q?M=C3=A5ns=20Rullg=C3=A5rd?= <mans@mansr.com>,
+	Alexander Shiyan <eagle.alexander923@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	JaimeLiao <jaimeliao.tw@gmail.com>
+Cc: kernel@pengutronix.de,
+	Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+	stable@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: rawnand: Ensure the nand chip supports cached reads
+Date: Fri, 22 Sep 2023 16:17:16 +0200
+Message-ID: <20230922141717.35977-1-r.czerwinski@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: r.czerwinski@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_070412_885512_CAB34EC2 
-X-CRM114-Status: GOOD (  20.94  )
+X-CRM114-CacheID: sfid-20230922_071802_916229_30F05E45 
+X-CRM114-Status: GOOD (  17.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,50 +68,141 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm91dmVuLAoKVGhhbmtzIGEgbG90IGZvciB0aGUgaW52ZXN0aWdhdGlvbiBhbmQgdGhlIHBh
-dGNoIQoKci5jemVyd2luc2tpQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIEZyaSwgMjIgU2VwIDIw
-MjMgMTI6MDE6MTMgKzAyMDA6CgpXb3VsZCB5b3UgbWluZCBjaGFuZ2luZyB0aGUgdGl0bGUgdG8K
-Im10ZDogcmF3bmFuZDogRW5zdXJlIHRoZSBuYW5kIGNoaXAgc3VwcG9ydHMgY2FjaGVkIHJlYWRz
-IgoKPiBCb3RoIHRoZSBKRURFQyBhbmQgT05GSSBzcGVjaWZpY2F0aW9uIHNheSB0aGF0IHJlYWQg
-Y2FjaGUgc2VxdWVudGlhbAo+IHN1cHBvcnQgaXMgYW4gb3B0aW9uYWwgY29tbWFuZC4KCkkgY2xl
-YXJseSBvdmVybG9va2VkIHRoYXQgcGFydCwganVzdCBjaGVja2luZyB0aGUgc2V0L2dldF9mZWF0
-dXJlcygpCmVudHJpZXMgYXMgdXN1YWwsIGdvb2QgY2F0Y2guCgo+IFRoaXMgbWVhbnMgdGhhdCB3
-ZSBub3Qgb25seSBuZWVkIHRvCj4gY2hlY2sgd2hldGhlciB0aGUgaW5kaXZpZHVhbCBjb250cm9s
-bGVyIGltcGxlbWVudHMgdGhlIGNvbW1hbmQsIHdlIGFsc28KClRoZSBjb250cm9sbGVyIGl0c2Vs
-ZiBkb2VzIG5vdCBpbXBsZW1lbnQgdGhlIGNvbW1hbmQsIGJ1dCBtYXkgb3IgbWF5Cm5vdCBzdXBw
-b3J0IGl0IChjYW4geW91IHBsZWFzZSB1cGRhdGUgdGhlIHNlbnRlbmNlPykuCgo+IG5lZWQgdG8g
-Y2hlY2sgdGhlIHBhcmFtZXRlciBwYWdlcyBmb3IgYm90aCBPTkZJIGFuZCBKRURFQyBOQU5EIGZs
-YXNoZXMKPiBiZWZvcmUgZW5hYmxpbmcgc2VxdWVudGlhbCBjYWNoZSByZWFkcy4KPiAKPiBUaGlz
-IGZpeGVzIHN1cHBvcnQgZm9yIE5BTkQgZmxhc2hlcyB3aGljaCBkb24ndCBzdXBwb3J0IGVuYWJs
-aW5nIGNhY2hlCj4gcmVhZHMsIGkuZS4gU2Ftc3VuZyBLOUY0RzA4VTBGIG9yIFRvc2hpYmEgVEM1
-OE5WRzBTM0hUQTAwLgo+IAo+IFNlcXVlbnRpYWwgY2FjaGUgcmVhZHMgYXJlIG5vIG9ubHkgYXZh
-aWxhYmxlIGZvciBPTkZJIGFuZCBKRURFQyBkZXZpY2VzLAo+IGlmIGluZGl2aWR1YWwgdmVuZG9y
-cyBpbXBsZW1lbnQgdGhpcywgaXQgbmVlZHMgdG8gYmUgZW5hYmxlZCBwZXIgdmVuZG9yLgoKQWdy
-ZWVkLgoKPiBUZXN0ZWQgb24gaS5NWDZRIHdpdGggYSBTYW1zdW5nIE5BTkQgZmxhc2ggY2hpcCB0
-aGF0IGRvZXNuJ3Qgc3VwcG9ydAo+IHNlcXVlbnRpYWwgcmVhZHMuCj4gCj4gRml4ZXM6IDAwM2Zl
-NGI5NTQ1YiAoIm10ZDogcmF3bmFuZDogU3VwcG9ydCBmb3Igc2VxdWVudGlhbCBjYWNoZSByZWFk
-cyIpCj4gCgpQbGVhc2UgcmVtb3ZlIHRoaXMgZW1wdHkgbGluZSBhbmQgaW5zdGVhZCBhZGQ6CgpD
-Yzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwoKPiBTaWduZWQtb2ZmLWJ5OiBSb3V2ZW4gQ3plcndp
-bnNraSA8ci5jemVyd2luc2tpQHBlbmd1dHJvbml4LmRlPgo+IC0tLQo+IEBNYXJ0aW4sIE3DpW5z
-Ogo+IEkgd291bGQgYXBwcmVjaWF0ZSBpZiB5b3UgY291bGQgdGVzdCB0aGlzIG9uIHlvdXIgaGFy
-ZHdhcmUuCgpUaGF0IHdvdWxkIG1lIG11Y2ggYXBwcmVjaWF0ZWQhCgpJIGFsc28gYWRkZWQgQWxl
-eGFuZGVyIHdobyBhbHNvIGhhZCB0cm91YmxlcyB3aXRoIHRoaXMgcGF0Y2hzZXQsIGNvdWxkCnlv
-dSBjaGVjayBvbiB5b3VyIHNldHVwIGlmIHRoYXQgc29sdmVzIHRoZSBpc3N1ZT8KCj4gQE1pZ3Vl
-bDoKPiBJIGRpZG4ndCBoYXZlIHRoZSB0aW1lIHRvIHRlc3QgdGhpcyBvbiBPTkZJL0pFREVDIGRl
-dmljZXMgd2l0aCBzdXBwb3J0Cj4geWV0LCBJJ2QgYmUgZmluZSBpZiB5b3UgaG9sZCBvZmYgbWVy
-Z2luZyB0aGlzLgoKT2YgY291cnNlLiBJIHdhcyBhYm91dCB0byBzZW5kIGEgcmV2ZXJ0IGJ1dCB0
-aGF0IGxvb2tzIGEgcHJvbWlzaW5nIGZpeCwKbGV0J3Mgc2VlIGhvdyBpdCBnb2VzLgoKPiAKPiAg
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgIHwgMyArKysKPiAgZHJpdmVycy9tdGQv
-bmFuZC9yYXcvbmFuZF9qZWRlYy5jIHwgMyArKysKPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
-ZF9vbmZpLmMgIHwgMyArKysKPiAgaW5jbHVkZS9saW51eC9tdGQvamVkZWMuaCAgICAgICAgIHwg
-MyArKysKPiAgaW5jbHVkZS9saW51eC9tdGQvb25maS5oICAgICAgICAgIHwgMSArCj4gIGluY2x1
-ZGUvbGludXgvbXRkL3Jhd25hbmQuaCAgICAgICB8IDEgKwo+ICA2IGZpbGVzIGNoYW5nZWQsIDE0
-IGluc2VydGlvbnMoKykKPiAKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+Both the JEDEC and ONFI specification say that read cache sequential
+support is an optional command. This means that we not only need to
+check whether the individual controller supports the command, we also
+need to check the parameter pages for both ONFI and JEDEC NAND flashes
+before enabling sequential cache reads.
+
+This fixes support for NAND flashes which don't support enabling cache
+reads, i.e. Samsung K9F4G08U0F or Toshiba TC58NVG0S3HTA00.
+
+Sequential cache reads are now only available for ONFI and JEDEC
+devices, if individual vendors implement this, it needs to be enabled
+per vendor.
+
+Tested on i.MX6Q with a Samsung NAND flash chip that doesn't support
+sequential reads.
+
+Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
+Cc: stable@vger.kernel.org
+Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+---
+v2:
+- change title as suggested by Miquel
+- adjust controller sentence from implement to support
+- fix missing true assignement for flashes
+- add CC stable instead of empty line
+- add documentation comment for new supports_read_cache bool inside
+  nand parameter struct
+
+ drivers/mtd/nand/raw/nand_base.c  | 3 +++
+ drivers/mtd/nand/raw/nand_jedec.c | 3 +++
+ drivers/mtd/nand/raw/nand_onfi.c  | 3 +++
+ include/linux/mtd/jedec.h         | 3 +++
+ include/linux/mtd/onfi.h          | 1 +
+ include/linux/mtd/rawnand.h       | 2 ++
+ 6 files changed, 15 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d4b55155aeae..1fcac403cee6 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5110,6 +5110,9 @@ static void rawnand_check_cont_read_support(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
++	if (!chip->parameters.supports_read_cache)
++		return;
++
+ 	if (chip->read_retries)
+ 		return;
+ 
+diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
+index 836757717660..b3cc8f360529 100644
+--- a/drivers/mtd/nand/raw/nand_jedec.c
++++ b/drivers/mtd/nand/raw/nand_jedec.c
+@@ -94,6 +94,9 @@ int nand_jedec_detect(struct nand_chip *chip)
+ 		goto free_jedec_param_page;
+ 	}
+ 
++	if (p->opt_cmd[0] & JEDEC_OPT_CMD_READ_CACHE)
++		chip->parameters.supports_read_cache = true;
++
+ 	memorg->pagesize = le32_to_cpu(p->byte_per_page);
+ 	mtd->writesize = memorg->pagesize;
+ 
+diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
+index f15ef90aec8c..861975e44b55 100644
+--- a/drivers/mtd/nand/raw/nand_onfi.c
++++ b/drivers/mtd/nand/raw/nand_onfi.c
+@@ -303,6 +303,9 @@ int nand_onfi_detect(struct nand_chip *chip)
+ 			   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+ 	}
+ 
++	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_READ_CACHE)
++		chip->parameters.supports_read_cache = true;
++
+ 	onfi = kzalloc(sizeof(*onfi), GFP_KERNEL);
+ 	if (!onfi) {
+ 		ret = -ENOMEM;
+diff --git a/include/linux/mtd/jedec.h b/include/linux/mtd/jedec.h
+index 0b6b59f7cfbd..56047a4e54c9 100644
+--- a/include/linux/mtd/jedec.h
++++ b/include/linux/mtd/jedec.h
+@@ -21,6 +21,9 @@ struct jedec_ecc_info {
+ /* JEDEC features */
+ #define JEDEC_FEATURE_16_BIT_BUS	(1 << 0)
+ 
++/* JEDEC Optional Commands */
++#define JEDEC_OPT_CMD_READ_CACHE	BIT(1)
++
+ struct nand_jedec_params {
+ 	/* rev info and features block */
+ 	/* 'J' 'E' 'S' 'D'  */
+diff --git a/include/linux/mtd/onfi.h b/include/linux/mtd/onfi.h
+index a7376f9beddf..55ab2e4d62f9 100644
+--- a/include/linux/mtd/onfi.h
++++ b/include/linux/mtd/onfi.h
+@@ -55,6 +55,7 @@
+ #define ONFI_SUBFEATURE_PARAM_LEN	4
+ 
+ /* ONFI optional commands SET/GET FEATURES supported? */
++#define ONFI_OPT_CMD_READ_CACHE		BIT(1)
+ #define ONFI_OPT_CMD_SET_GET_FEATURES	BIT(2)
+ 
+ struct nand_onfi_params {
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 90a141ba2a5a..c29ace15a053 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -225,6 +225,7 @@ struct gpio_desc;
+  * struct nand_parameters - NAND generic parameters from the parameter page
+  * @model: Model name
+  * @supports_set_get_features: The NAND chip supports setting/getting features
++ * @supports_read_cache: The NAND chip supports read cache operations
+  * @set_feature_list: Bitmap of features that can be set
+  * @get_feature_list: Bitmap of features that can be get
+  * @onfi: ONFI specific parameters
+@@ -233,6 +234,7 @@ struct nand_parameters {
+ 	/* Generic parameters */
+ 	const char *model;
+ 	bool supports_set_get_features;
++	bool supports_read_cache;
+ 	DECLARE_BITMAP(set_feature_list, ONFI_FEATURE_NUMBER);
+ 	DECLARE_BITMAP(get_feature_list, ONFI_FEATURE_NUMBER);
+ 
+
+base-commit: 42dc814987c1feb6410904e58cfd4c36c4146150
+-- 
+2.42.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
