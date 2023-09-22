@@ -4,84 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 900EDE7D0A2
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Sep 2023 18:45:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C9AEE7D0CF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 06:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GPI2R+2UiihWAan7MICAlnFIpKQuOMhcTOVt1lGuV1U=; b=iWF7HnNnnMJ4RT
-	SUiYC3VhQo+TIAaR8IVWoy7yqMHcggrKkHEFxBei5Z+AvbsESHsBTwq0DGlBJgmfnAcl6mc7pf0i3
-	TqoT3YOXbiRDj4usaFvmNBahJqVMoT/YEx9DLx1+xaxR6vUMHjLrjmh/Dby/jAUip8OrUgZHBLVXZ
-	O/zwskP+B2aoeJKUxgQPZke+HPlLKOyUO+0Hp2xnd14njERIFiGFMbmECQfSnm6vRUCzOlE48dKta
-	stfQU9XnX3vZCcwHoLVAqd4TE7iyWc8ySgCvUVRM7d+Rl1DAx2jul9Asuq0vDQcG6tIHGLnVLTSvw
-	BelWDto1d6mUTMaZSQtg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qD5uXSOW1W/MV32A+0glpx1LzT6WUBUSHvoSDl/YzeQ=; b=a35Hy+6Je+QixF
+	rkE3NrjxqMFrGkx1UPdDWB5lNTKnPfRvSaEiC718mCFtXAaEhJ4ZqBHEHPHDXgG32UwNzuJClE0S5
+	HR1nInLRdtPEEU7X5DbMYCbR9Lt89QnZogopQ1WbGc32TXMRwFQok5NRgTExtZWcAm+J/LkCkBfM3
+	grzMpcummCxAz3DY+ATfJyRAhxP1Lfiw0KDnUWZVC+xr32Hb+68iDlZq6wLSl85K6SecCBC2a9gMp
+	NZfRZZy1qGoOdpIHE5XHZhqZvOp6xFRnIUaveXHHiER1QiIqoYjQPA3Y6azgeMVln3Aa5pkN+Ppob
+	kzCtrTFknjmXkU2HWsow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjOg5-006qwV-2d;
-	Thu, 21 Sep 2023 18:45:29 +0000
-Received: from mail-io1-xd34.google.com ([2607:f8b0:4864:20::d34])
+	id 1qjZSG-0081dN-0u;
+	Fri, 22 Sep 2023 06:15:56 +0000
+Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjOg2-006qvT-1R
+	id 1qjZSC-0081al-17
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Sep 2023 18:45:28 +0000
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-792979d4cb5so52561339f.2
-        for <linux-mtd@lists.infradead.org>; Thu, 21 Sep 2023 11:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695321925; x=1695926725; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnKiy3ihwgd/VOoqSanohGN5ffhK+cZ/VpjdYKJUjf8=;
-        b=YaVAkSt9NDht5icfgsSkb7PmBx+a3IxuEBvYlt0ryJ+vB5I4PHNTj9zOmhDZgYbPet
-         q6VCXwiA0Q57Pm6lzdJgtKLCVtIWY5aZwjm4hnvAJW1Ir593K8haFZr8iZzuatDUJ9nN
-         /dgTTOp/d0qvMKMh6g9QR9EUI9i7Oa9+uI9Lo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695321925; x=1695926725;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DnKiy3ihwgd/VOoqSanohGN5ffhK+cZ/VpjdYKJUjf8=;
-        b=tWRCcxGnmXUYDMsx/Q0K+jir6TMC7Z3KsdVs1OEGiwhQvkGwTPAcwAPIKO0L7ZGbut
-         PY0FzHiczTQlxtHdOGTIC96lFsWDUoEhwDG9liqpSypIlSa7iLLHJVXUJHWn/lbKSQ0X
-         fZcok4SRSxfvrOytL4DjWgglHgnwHSU0AtbvY4ZpmL0goxeHw4EPQhVXnWMac/hHhI+m
-         AJTFbMjFVfc6hGxWmZPUGcPdnxwCF9yVDbQ1Gs3I7IEp03g9OMWWnYGU9pgKT1+JH7nt
-         DuPCd5D2oZBQEcesLfksd0MHFkMsvBGE0qefJ4bUca0/kUMxDpRD6YLxOKdgkhfdV2oG
-         eIGA==
-X-Gm-Message-State: AOJu0YyufsXfP8Ir2l3N51BQsC9wc+004zZxVnsTQts4eNxHWBI7x4sG
-	0btR4SvDeJEE7dKWxqyQY9mlyg==
-X-Google-Smtp-Source: AGHT+IFLx+QxNqVoEsIFpwCXXYW/u8hYUS5LzSu0VrhuBFkVi/scOpz5E7kCyC+9y88eBDeWXVQ/9A==
-X-Received: by 2002:a6b:7303:0:b0:787:34d:f223 with SMTP id e3-20020a6b7303000000b00787034df223mr7074088ioh.11.1695321924839;
-        Thu, 21 Sep 2023 11:45:24 -0700 (PDT)
-Received: from kea.bld.corp.google.com ([2620:15c:183:200:a636:e615:ea83:bc42])
-        by smtp.gmail.com with ESMTPSA id d26-20020a02a49a000000b004290fd3a68dsm511017jam.1.2023.09.21.11.45.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 11:45:24 -0700 (PDT)
-From: Simon Glass <sjg@chromium.org>
-To: devicetree@vger.kernel.org
-Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
-	linux-mtd@lists.infradead.org,
-	Tom Rini <trini@konsulko.com>,
-	Rob Herring <robh@kernel.org>,
-	Simon Glass <sjg@chromium.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dhruva Gole <d-gole@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Fri, 22 Sep 2023 06:15:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:in-reply-to:references:mime-version:content-transfer-encoding;
+	 s=k1; bh=BTlcmFnnfxEfNUisgi/VE1hSD2DIqTeGV9pSI5JKow0=; b=N7OCC2
+	yEDAZZBCJomsG+N7CW92pSkN0zXqQa+hKpd0yENypzbHd92rvRbmHB2DTvhSS1S+
+	fWaxLWYyVXd8SRun71cQwd++pqYdggI5rvLT7oAe8kv/4toA0tQkcpGbBV9h59uf
+	Sof4gkRIZSemZJs+2zKA/oT7JWTyECdJZ+mmUrDLGsvjsaeF8k5JKqHRKpUlWNtt
+	wq2RcBxmrbH7bpbxWzC3Hmz4Wfb7hXNtyaLYjvbqhvtr6yu8jR29xJW/1vUkjrxI
+	m1odKgtZEPAJCBLj/fJLsTIZxL6WVCZ5HiDuAIYh3xrQGXmXi9Dy+otjhqSzzdwD
+	xsshjicSVtlBAE3w==
+Received: (qmail 1269071 invoked from network); 22 Sep 2023 08:15:41 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 08:15:41 +0200
+X-UD-Smtp-Session: l3s3148p1@E3mxiewF9JkujntX
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-mips@vger.kernel.org
+Cc: Jonas Gorski <jonas.gorski@gmail.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Russell King <linux@armlinux.org.uk>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
 	Richard Weinberger <richard@nod.at>,
-	Rob Herring <robh+dt@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: mtd: Add a schema for binman
-Date: Thu, 21 Sep 2023 12:45:14 -0600
-Message-ID: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v2 2/6] mtd: parsers: ar7: remove support
+Date: Fri, 22 Sep 2023 08:15:23 +0200
+Message-Id: <20230922061530.3121-3-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_114526_519408_9BADE06A 
-X-CRM114-Status: GOOD (  23.89  )
+X-CRM114-CacheID: sfid-20230921_231552_677872_2587C14C 
+X-CRM114-Status: GOOD (  10.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,184 +78,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Binman[1] is a tool for creating firmware images. It allows you to
-combine various binaries and place them in an output file.
+AR7 is going to be removed from the Kernel, so remove its support for
+MTD.
 
-Binman uses a DT schema to describe an image, in enough detail that
-it can be automatically built from component parts, disassembled,
-replaced, listed, etc.
-
-Images are typically stored in flash, which is why this binding is
-targeted at mtd. Previous discussion is at [2] [3].
-
-[1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
-[2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
-[3] https://www.spinics.net/lists/devicetree/msg626149.html
-
-Signed-off-by: Simon Glass <sjg@chromium.org>
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
+Changes since v1:
+* added ack
 
- .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
- .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 4 files changed, 117 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+ arch/arm/configs/pxa_defconfig |   1 -
+ drivers/mtd/parsers/Kconfig    |   5 --
+ drivers/mtd/parsers/Makefile   |   1 -
+ drivers/mtd/parsers/ar7part.c  | 129 ---------------------------------
+ 4 files changed, 136 deletions(-)
+ delete mode 100644 drivers/mtd/parsers/ar7part.c
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-new file mode 100644
-index 00000000000000..c792d5a37b700a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman firmware layout
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. For now it just supports a very simple set of
-+  features, as a starting point for discussion.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-+
-+properties:
-+  compatible:
-+    const: u-boot,binman
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    firmware {
-+      binman {
-+        compatible = "u-boot,binman";
-+
-+        u-boot {
-+          size = <0xa0000>;
-+        };
-+
-+        atf-bl31 {
-+          offset = <0x100000>;
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-new file mode 100644
-index 00000000000000..8003eb4f1a994f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman/entry.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman entry
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description: |
-+  The entry node specifies a single entry in the firmware.
-+
-+  Entries have a specific type, such as "u-boot" or "atf-bl31". If the type
-+  is missing, the name is used as the type.
-+
-+  Note: This definition is intended to be hierarchical, so that entries can
-+  appear in other entries. Schema for that is TBD.
-+
-+properties:
-+  $nodename:
-+    pattern: "^[-a-z]+(-[0-9]+)?$"
-+
-+  type:
-+    $ref: /schemas/types.yaml#/definitions/string
-+
-+  offset:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Provides the offset of this entry from the start of its parent section.
-+      If this is omitted, Binman will determine this by packing the enclosing
-+      section according to alignment rules, etc.
-+
-+  size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Provides the size of this entry in bytes. If this is omitted, Binman will
-+      use the content size, along with any alignment information, to determine
-+      the size of the entry.
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    firmware {
-+      binman {
-+        compatible = "u-boot,binman";
-+
-+        u-boot {
-+          size = <0xa0000>;
-+        };
-+
-+        second-area {
-+          type = "atf-bl31";
-+          offset = <0x100000>;
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747bd7..849fd15d085ccc 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
- 
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a4c30221eb305d..ebcbfb4292e8dc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3505,6 +3505,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-+
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
+index 23c131b0854b..9e81b1849e4c 100644
+--- a/arch/arm/configs/pxa_defconfig
++++ b/arch/arm/configs/pxa_defconfig
+@@ -100,7 +100,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_CONNECTOR=y
+ CONFIG_MTD=y
+-CONFIG_MTD_AR7_PARTS=m
+ CONFIG_MTD_CMDLINE_PARTS=m
+ CONFIG_MTD_OF_PARTS=m
+ CONFIG_MTD_AFS_PARTS=m
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+index 60738edcd5d5..da03ab6efe04 100644
+--- a/drivers/mtd/parsers/Kconfig
++++ b/drivers/mtd/parsers/Kconfig
+@@ -1,9 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-config MTD_AR7_PARTS
+-	tristate "TI AR7 partitioning parser"
+-	help
+-	  TI AR7 partitioning parser support
+-
+ config MTD_BCM47XX_PARTS
+ 	tristate "BCM47XX partitioning parser"
+ 	depends on BCM47XX || ARCH_BCM_5301X
+diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+index 0e70b621a1d8..9b00c62b837a 100644
+--- a/drivers/mtd/parsers/Makefile
++++ b/drivers/mtd/parsers/Makefile
+@@ -1,5 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_MTD_AR7_PARTS)		+= ar7part.o
+ obj-$(CONFIG_MTD_BCM47XX_PARTS)		+= bcm47xxpart.o
+ obj-$(CONFIG_MTD_BCM63XX_PARTS)		+= bcm63xxpart.o
+ obj-$(CONFIG_MTD_BRCM_U_BOOT)		+= brcm_u-boot.o
+diff --git a/drivers/mtd/parsers/ar7part.c b/drivers/mtd/parsers/ar7part.c
+deleted file mode 100644
+index 8cd683711ac6..000000000000
 -- 
-2.42.0.515.g380fc7ccd1-goog
+2.35.1
 
 
 ______________________________________________________
