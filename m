@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBC33E6FE46
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 14:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C416E6FE42
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 14:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kagF+LF1X0s2VSfkyKJ4zlRIKXhctM+NPSQgZWWvWPQ=; b=s+Flsnz/SOR5yY
-	AgzSUgsJC8End3QEm4MRjE7lZHQUpoxmtaF2o9Gp48Fxrkz+fubqy6356TjGJvZtiTTDH7iHSW++c
-	aeWMJUiD6CiTm9L5Rj9Ku2M+RA7xfzZO3ktL59Pr0BQ6mpIyt+hiysLIeK5K/zUYXOiVgy0nufp/h
-	Yc3uhmBLzGLhetVuPk4Usuvt4M1gPmc0MlO8DrAjeYdhTJfOHhZaJ+rCNSinpO0O23zsNm34adalL
-	PaUaBI906Uw+4zBB3MFOPL6Cn4emshmbujfEbS6ywvJ19BeFkvZf0rXYdS+EV6/vWu5QtvP+mETSx
-	LoCuH2o2WhgNyY9oihog==;
+	List-Owner; bh=eoklTmstnZTP64IIcVanHbQ1cEdB9CePIIojsTuUFaU=; b=4S13N+gs/N/M1N
+	wJCHEh0JDVoxxRLuIq0KQU95EGIeUM2MagJYRQAao6tqA/QsjOuxFKWLJfE0rthdalXO7iz2Egg37
+	veSbqNnVhrgQ0rA1Gn7J1eNrlj2nQ+EkFgaDihHbpN+EP3Id/AIuqDqyUMilZFPkwbDqNTpLgoYuq
+	nCEMSDYmZvakx9T14/0j5GzP7P7OwnyQKj2BxwwK+bhLbA2sQJ8wjsYobr0C2xd+TBpoFCqJmJezJ
+	VBB7so0D92D6msNvudDnMiOnK0wK3iNNlbJcmMYdyVBezSYfzWNvAub12qEcyItxGRg9hoKKsZ4vM
+	4tCpuWN5C4tceMeyadpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjhV1-009FEz-1Y;
-	Fri, 22 Sep 2023 14:51:19 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1qjhV5-009FFs-0T;
+	Fri, 22 Sep 2023 14:51:23 +0000
+Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjhUy-009FEA-1C
+	id 1qjhV1-009FEL-2B
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Sep 2023 14:51:18 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B3957E0003;
-	Fri, 22 Sep 2023 14:51:09 +0000 (UTC)
+	Fri, 22 Sep 2023 14:51:21 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D4AD84000C;
+	Fri, 22 Sep 2023 14:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695394271;
+	t=1695394275;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u4bMcSqfVOcLKjBh3MpHcTy2ewquY/v0eZ6t5YcYSsU=;
-	b=aeUW8/R7sdrtUu5bKQ8tM0mSms8cN/RJt/US1tLdgOeJ8VqkZmv1ABIrObo1nhXqnyb8w2
-	luF8XvJcx8yhvaZl6pJv4GqW1WA/B+R49WG4e1g7djUry4lVoAyqICvIiiWZ3hfjB91HZp
-	i8gTSsFL0QECUrxUORXzVtr+tcQGjSgiCcLwXn7xfisfOFsqB0UbuN344Fa8E7KnX8HeXo
-	aHQ/x9DcLz1Wwpp8GcKK+9u7kvnMVkKaKTdtYvt+Tn/ug500Bfuzo1QH1eFP8zVkT6Bzdo
-	zpImVtFxJquP2fTyN8z7VSiZf8i0b/QuWGMENXdFIFcQ8WwhB8oQ8cXXxYDTzw==
+	bh=6wQX2ktdkqFIuYrPhSh4pRo+ygkcZ8kR2Ky+CjNE0P0=;
+	b=Wr85+tU+J3U/0x0nUCpDXOCwzzBOmg3xw+HhtOh9/ntsNmDwpNjDBJiBHtjnp2ohPH5p+n
+	cezjFJ9DhguYo6iMeHOufrPueJm1s9MqdW3x4T9fZ5JjBrAwH/TX0uUG18Le1C2FiDwt0s
+	plmXrrXSFHRgmxuhJU4Lzxl/RkCM0UOEAhT76ROxxgAXXT4Jul5sbcmLudgbIIDgB8HRCY
+	1wZdMaUYDru3jbzgpT6LokedvTwbEqZ1lukZqmw5+i8GUcJqQMo2C9lbPnwriW8HaFRPhH
+	HiBbX6pSGFedGRKnYBacnz8/P9c676e3789WETtj8GptG91cBlKCrCvhIx5U6A==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bibek Kumar Patro <quic_bibekkum@quicinc.com>,
-	mani@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@quicinc.com,
-	quic_charante@quicinc.com,
-	quic_kaushalk@quicinc.com,
-	quic_pkondeti@quicinc.com,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Michal Simek <michal.simek@amd.com>,
 	stable@vger.kernel.org
-Subject: Re: [PATCH v5] mtd: rawnand: qcom: Unmap the right resource upon probe failure
-Date: Fri, 22 Sep 2023 16:51:09 +0200
-Message-Id: <20230922145109.578247-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 3/3] mtd: rawnand: pl353: Ensure program page operations are successful
+Date: Fri, 22 Sep 2023 16:51:13 +0200
+Message-Id: <20230922145113.578275-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230913070702.12707-1-quic_bibekkum@quicinc.com>
+In-Reply-To: <20230717194221.229778-3-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'5279f4a9eed3ee7d222b76511ea7a22c89e7eefd'
+X-linux-mtd-patch-commit: b'9777cc13fd2c3212618904636354be60835e10bb'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_075116_708416_B8FEE4E3 
-X-CRM114-Status: UNSURE (   5.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230922_075119_854764_EF60B4D6 
+X-CRM114-Status: GOOD (  13.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,16 +81,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-09-13 at 07:07:02 UTC, Bibek Kumar Patro wrote:
-> We currently provide the physical address of the DMA region
-> rather than the output of dma_map_resource() which is obviously wrong.
+On Mon, 2023-07-17 at 19:42:21 UTC, Miquel Raynal wrote:
+> The NAND core complies with the ONFI specification, which itself
+> mentions that after any program or erase operation, a status check
+> should be performed to see whether the operation was finished *and*
+> successful.
 > 
-> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
+> The NAND core offers helpers to finish a page write (sending the
+> "PAGE PROG" command, waiting for the NAND chip to be ready again, and
+> checking the operation status). But in some cases, advanced controller
+> drivers might want to optimize this and craft their own page write
+> helper to leverage additional hardware capabilities, thus not always
+> using the core facilities.
+> 
+> Some drivers, like this one, do not use the core helper to finish a page
+> write because the final cycles are automatically managed by the
+> hardware. In this case, the additional care must be taken to manually
+> perform the final status check.
+> 
+> Let's read the NAND chip status at the end of the page write helper and
+> return -EIO upon error.
+> 
+> Cc: Michal Simek <michal.simek@amd.com>
 > Cc: stable@vger.kernel.org
-> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> Fixes: 08d8c62164a3 ("mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller")
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes.
 
 Miquel
 
