@@ -4,86 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20BD6E81A60
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 19:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA2C1CE7AB8
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 19:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8EZyhuvj6t8/0iSDErf7JXCkd7pGHup+BXYRqh5yNZ8=; b=r5W3d6NybnX1or
-	5mNZtsgCfjurYIj9IDvP9Z9UB5lCciBiTZxQqeY2bFAmQChu3v9uDImijxsydE/8Etmg1R+Xp2nKW
-	Z+nZK9qMGgWP4/7uy3nbn4quxijt8TWSDb8RQRlSuI+znSJedZhu7fc1H/T2wAXtQVVXl6HoZJTZo
-	/80Iezm5NiL0ES/PziBtpH3xfGXQU/sXkjmnc3Oj1YaLeSYTjOUMk9AF4oAGF0+bua2nToUHvzET2
-	ID+OEhs5mfN9z1zJ3Di+wZePDuq6lTedLjt5cTpO1eam1TUg5fBmJ9jrBz5UqFuruKz0luyRitnbF
-	k9tdCrxtT+cpBokhHA4w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Df/vKtcdjdCI348pqDXR/PWZnY0dYTFDRyFvO9QB29M=; b=uSLCI7XnqrkKG4
+	p0viHbFFIAN3WxLhv1+s+IsE0exq429eGUAt86gFuqRKrWZuPEZEegRxcAEZ2aufbsQfcJQ9oLPRb
+	Rheu3bQoRBBB+tE/+6k82rEbbL9u8yj3GnKKmw0Dvw8L/lN4EeSH8CKdO+IFPyFVF5TapKR+X/+Kl
+	BBIvKMeQ8cAW3MbYASCjzAzIpj1/agnbdxGXijw9h6Ij2f4VOaoyu0iWVhYxluajD9o1oQ+PiZp12
+	WEeJmwX0AVn+b0o3NfjufJqM82B1i9IdNey/sKBgTeSo0/dy1PA57Wjuw86r2gAcCd02BBf9ZrMYB
+	E40c4VMl+VH7RTmH9aBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjlv8-009igl-2N;
-	Fri, 22 Sep 2023 19:34:34 +0000
-Received: from mail-io1-xd36.google.com ([2607:f8b0:4864:20::d36])
+	id 1qjm3e-009jE6-2U;
+	Fri, 22 Sep 2023 19:43:22 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjlv4-009ifq-3D
+	id 1qjm3a-009jDO-21
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Sep 2023 19:34:33 +0000
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-792717ef3c9so103860539f.3
-        for <linux-mtd@lists.infradead.org>; Fri, 22 Sep 2023 12:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695411267; x=1696016067; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ze0feaJyolx52nnGDHZNRW/aGemuWEpJCRuOORda2U0=;
-        b=Xkt3brSh5//fptgCtlQjenXl8jYmvA/PB1pH3FckNz/+/vp7wX7+16o0XX7PQe2y2P
-         L9YmODvnLTffr1P9PDOEWqvU0EANptSzjGwkx11TKwe3Kt7QeK2M9rPdRzsI+NOtO3Wi
-         89IqPrWrD5Bb1L7XymkkUQaY6WAMD2DAzXcOU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695411267; x=1696016067;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ze0feaJyolx52nnGDHZNRW/aGemuWEpJCRuOORda2U0=;
-        b=uuAXFulwOaGTTJePxXGhTo++NRANwwy+FqTZ935Y/1WXmTGhkWcvhFp8D0HYVVTw8x
-         a4wagaef+L4n/u+Vgr88Uw2v1CJ7rwAfNkQZgDOqz9LPgQmupmXl/spS99iCqpzaGZeO
-         5cO0Nl4zrEBRDPNBYihQt6GUMRUgP0t/kyhBW6eswp0VCcbgvb0gYE4UTdoGA6178KBh
-         aIUG8G4k3tKtKovdsS0lecw2X4BlPaKrbPNe2WGUtSL+1LpC5Ouht6jcffxNNx2YZWLs
-         tua5ad7eXr+MYTZgMQgulkW6hZkfOzDbkN5HHFVNGrVt1pW8l1tHm4EdqSrFi5tXnqX1
-         AM2Q==
-X-Gm-Message-State: AOJu0YxmbUPouBz1Gs2IUvaCNcXPjJaEY9BbeYyxZ3R+EMK/RWirj1lH
-	wXQs3WtqqICag3Bs7V9lUxUgWg==
-X-Google-Smtp-Source: AGHT+IGxZot43frUtwqoFHunoT9jM8YXOXehO/Ug9V1olGsIhmVx1qXPa4/rswQ+JFb2BcqsJkZNgQ==
-X-Received: by 2002:a5d:930b:0:b0:790:f866:d717 with SMTP id l11-20020a5d930b000000b00790f866d717mr342505ion.10.1695411266990;
-        Fri, 22 Sep 2023 12:34:26 -0700 (PDT)
-Received: from kea.bld.corp.google.com ([2620:15c:183:200:9fd8:298f:4748:f9a])
-        by smtp.gmail.com with ESMTPSA id b18-20020a029a12000000b0042b1297468esm1149594jal.51.2023.09.22.12.34.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 12:34:26 -0700 (PDT)
-From: Simon Glass <sjg@chromium.org>
-To: devicetree@vger.kernel.org
-Cc: Tom Rini <trini@konsulko.com>,
-	linux-mtd@lists.infradead.org,
-	U-Boot Mailing List <u-boot@lists.denx.de>,
-	Rob Herring <robh@kernel.org>,
-	Simon Glass <sjg@chromium.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dhruva Gole <d-gole@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Pratyush Yadav <ptyadav@amazon.de>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Richard Weinberger <richard@nod.at>,
-	Rob Herring <robh+dt@kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: mtd: Add a schema for binman
-Date: Fri, 22 Sep 2023 13:34:15 -0600
-Message-ID: <20230922193417.1697379-1-sjg@chromium.org>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+	Fri, 22 Sep 2023 19:43:21 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 0F604B82429
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Sep 2023 19:43:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 683BBC433C7
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Sep 2023 19:43:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695411796;
+	bh=A4YRRXIxZfuP4hSCrSlSbxBU3yaGfiOmZNf7I2N3gEk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=mkhJijmgNzhzaiyJy0L2fdcWOoEyj7Xb33pKZQ6HWXtj/a62OqvRUfPfk+LozuoHA
+	 NAgz4bgZL0CeqyJD1vwf5rHLS5s5aIfQ6YwmqelUxJS6M4bK9P7MRK08C/UsZt++C0
+	 eOwNKWmFQRiA+TRVLMEEKtcomCfNqy6j+zap1dQDSsZjIAOHnkGZJXUdiRw+ryVj4o
+	 mYfYA7kowAq2XV/5PZ+TxWvb6jMVp1W2e6hYxLK1zdxDnvdXuKO0xIoCq5Wzq8z8kO
+	 wh/KJvjWxITTbXdDv/xgVvyUw6cFPcjoAJHKTHhT/k7x0INUdX5EskofeFXUMQm4R1
+	 jHIVHY2r5CQCA==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50307759b65so4682235e87.0
+        for <linux-mtd@lists.infradead.org>; Fri, 22 Sep 2023 12:43:16 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwTY3hez5ktYq2NlUnVhRoCLZFCCOshOSXefK39+YvBW6Efw9AJ
+	gAJRwjjItqEodPwNe1AudNsYh67yPYo4cujPSg==
+X-Google-Smtp-Source: AGHT+IHykPmoXWd5RfRa0OjFcxDuEZz0rP2JzY8ueouRM4ujoevuhdbvkTcM0rnlltiKoj8kM26YvC0aFr03f+Nlwzs=
+X-Received: by 2002:a05:6512:3e1f:b0:500:daf6:3898 with SMTP id
+ i31-20020a0565123e1f00b00500daf63898mr566690lfv.26.1695411794619; Fri, 22 Sep
+ 2023 12:43:14 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+ <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
+ <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
+ <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
+In-Reply-To: <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 22 Sep 2023 14:43:02 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
+Message-ID: <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
+To: Simon Glass <sjg@chromium.org>
+Cc: devicetree@vger.kernel.org, U-Boot Mailing List <u-boot@lists.denx.de>, 
+	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
+	Conor Dooley <conor+dt@kernel.org>, Dhruva Gole <d-gole@ti.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_123431_487209_412E1411 
-X-CRM114-Status: GOOD (  21.56  )
+X-CRM114-CacheID: sfid-20230922_124318_966125_6C5F9E56 
+X-CRM114-Status: GOOD (  40.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,311 +82,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Binman[1] is a tool for creating firmware images. It allows you to
-combine various binaries and place them in an output file.
-
-Binman uses a DT schema to describe an image, in enough detail that
-it can be automatically built from component parts, disassembled,
-replaced, listed, etc.
-
-Images are typically stored in flash, which is why this binding is
-targeted at mtd. Previous discussion is at [2] [3].
-
-This is only a starting point, an attempt to align on the best way to
-add this to the schema.
-
-[1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
-[2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
-[3] https://www.spinics.net/lists/devicetree/msg626149.html
-
-Signed-off-by: Simon Glass <sjg@chromium.org>
----
-
-Changes in v2:
-- Use "binman" for compatible instead of "u-boot,binman"
-- Significantly rework the patch
-- Use make dt_binding_check DT_SCHEMA_FILES=Documentation/../partitions
-
- .../bindings/mtd/partitions/binman.yaml       | 59 ++++++++++++++++++
- .../mtd/partitions/binman/atf-bl31.yaml       | 43 +++++++++++++
- .../bindings/mtd/partitions/binman/entry.yaml | 62 +++++++++++++++++++
- .../mtd/partitions/binman/u-boot.yaml         | 43 +++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 6 files changed, 213 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/atf-bl31.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/u-boot.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-new file mode 100644
-index 000000000000..31accab37055
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman firmware layout
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+select: false
-+
-+description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. For now it just supports a very simple set of
-+  features, as a starting point for discussion.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-+
-+properties:
-+  reg:
-+    description: partition's offset and size within the flash
-+    maxItems: 1
-+
-+  compatible:
-+    const: binman
-+
-+  "#address-cells":
-+    enum: [ 1, 2 ]
-+
-+  "#size-cells":
-+    enum: [ 1, 2 ]
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    binman {
-+        compatible = "binman";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@100000 {
-+            compatible = "brcm,bcm4908-firmware";
-+            reg = <0x100000 0xf00000>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/atf-bl31.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/atf-bl31.yaml
-new file mode 100644
-index 000000000000..7d28e7e1d01d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman/atf-bl31.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman/atf-bl31.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ARM Trusted Firmware BL31
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description:
-+  Holds a BL31 binary file from the ARM Trusted Firmware project.
-+
-+allOf:
-+  - $ref: entry.yaml#
-+
-+properties:
-+  compatible:
-+    const: binman,atf-bl31
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    binman {
-+        compatible = "binman";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+            reg = <0x0 0xa0000>;
-+            compatible = "binman,entry";
-+        };
-+
-+        partition@100000 {
-+            reg = <0x100000 0x200000>;
-+            compatible = "binman,atf-bl31";
-+            compression = "lz4";
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-new file mode 100644
-index 000000000000..9991c83aa0cf
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman/entry.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman entry
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description: |
-+  This node specifies a single, generic entry in the firmware.
-+
-+  Entries have a specific type, indicated by the compatible string.
-+
-+properties:
-+  reg:
-+    description: partition's offset and size within the flash
-+    maxItems: 1
-+
-+  compression:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description:
-+      Compression algorithm to use, chosen from a list of well-known algorithms.
-+      The contents are compressed using this algorithm.
-+
-+    enum:
-+      - none
-+      - bzip2
-+      - gzip
-+      - lzop
-+      - lz4
-+      - lzma
-+      - xz
-+      - zstd
-+
-+required:
-+  - compatible
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    binman {
-+        compatible = "binman";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+            reg = <0x0 0xa0000>;
-+            compatible = "binman,entry";
-+        };
-+
-+        partition@100000 {
-+            reg = <0x100000 0x200000>;
-+            compatible = "binman,entry";
-+            compression = "lz4";
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/u-boot.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/u-boot.yaml
-new file mode 100644
-index 000000000000..e5f3583f746c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman/u-boot.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman/u-boot.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: U-Boot
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description:
-+  Holds a binary file (u-boot.bin) from the U-Boot project.
-+
-+allOf:
-+  - $ref: entry.yaml#
-+
-+properties:
-+  compatible:
-+    const: binman,u-boot
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    binman {
-+        compatible = "binman";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+            reg = <0x0 0xa0000>;
-+            compatible = "binman,u-boot";
-+        };
-+
-+        partition@100000 {
-+            reg = <0x100000 0x200000>;
-+            compatible = "binman,atf-bl31";
-+            compression = "lz4";
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..849fd15d085c 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
- 
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a4c30221eb30..ebcbfb4292e8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3505,6 +3505,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-+
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
--- 
-2.42.0.515.g380fc7ccd1-goog
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBTZXAgMjIsIDIwMjMgYXQgMToxMuKAr1BNIFNpbW9uIEdsYXNzIDxzamdAY2hyb21p
+dW0ub3JnPiB3cm90ZToKPgo+IEhpIFJvYiwKPgo+IE9uIEZyaSwgMjIgU2VwdCAyMDIzIGF0IDEx
+OjQ2LCBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3JnPiB3cm90ZToKPiA+Cj4gPiBPbiBGcmks
+IFNlcCAyMiwgMjAyMyBhdCAxMTowMToxOEFNIC0wNjAwLCBTaW1vbiBHbGFzcyB3cm90ZToKPiA+
+ID4gSGkgUm9iLAo+ID4gPgo+ID4gPiBPbiBGcmksIDIyIFNlcHQgMjAyMyBhdCAxMDowMCwgUm9i
+IEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4gd3JvdGU6Cj4gPiA+ID4KPiA+ID4gPiBPbiBUaHUs
+IFNlcCAyMSwgMjAyMyBhdCAxOjQ14oCvUE0gU2ltb24gR2xhc3MgPHNqZ0BjaHJvbWl1bS5vcmc+
+IHdyb3RlOgo+ID4gPiA+ID4KPiA+ID4gPiA+IEJpbm1hblsxXSBpcyBhIHRvb2wgZm9yIGNyZWF0
+aW5nIGZpcm13YXJlIGltYWdlcy4gSXQgYWxsb3dzIHlvdSB0bwo+ID4gPiA+ID4gY29tYmluZSB2
+YXJpb3VzIGJpbmFyaWVzIGFuZCBwbGFjZSB0aGVtIGluIGFuIG91dHB1dCBmaWxlLgo+ID4gPiA+
+ID4KPiA+ID4gPiA+IEJpbm1hbiB1c2VzIGEgRFQgc2NoZW1hIHRvIGRlc2NyaWJlIGFuIGltYWdl
+LCBpbiBlbm91Z2ggZGV0YWlsIHRoYXQKPiA+ID4gPiA+IGl0IGNhbiBiZSBhdXRvbWF0aWNhbGx5
+IGJ1aWx0IGZyb20gY29tcG9uZW50IHBhcnRzLCBkaXNhc3NlbWJsZWQsCj4gPiA+ID4gPiByZXBs
+YWNlZCwgbGlzdGVkLCBldGMuCj4gPiA+ID4gPgo+ID4gPiA+ID4gSW1hZ2VzIGFyZSB0eXBpY2Fs
+bHkgc3RvcmVkIGluIGZsYXNoLCB3aGljaCBpcyB3aHkgdGhpcyBiaW5kaW5nIGlzCj4gPiA+ID4g
+PiB0YXJnZXRlZCBhdCBtdGQuIFByZXZpb3VzIGRpc2N1c3Npb24gaXMgYXQgWzJdIFszXS4KPiA+
+ID4gPiA+Cj4gPiA+ID4gPiBbMV0gaHR0cHM6Ly91LWJvb3QucmVhZHRoZWRvY3MuaW8vZW4vc3Rh
+YmxlL2RldmVsb3AvcGFja2FnZS9iaW5tYW4uaHRtbAo+ID4gPiA+ID4gWzJdIGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL3UtYm9vdC8yMDIzMDgyMTE4MDIyMC4yNzI0MDgwLTMtc2pnQGNocm9taXVt
+Lm9yZy8KPiA+ID4gPiA+IFszXSBodHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9kZXZpY2V0
+cmVlL21zZzYyNjE0OS5odG1sCj4gPiA+ID4KPiA+ID4gPiBZb3UgbWlzc2VkOgo+ID4gPiA+Cj4g
+PiA+ID4gaHR0cHM6Ly9naXRodWIuY29tL2RldmljZXRyZWUtb3JnL2R0LXNjaGVtYS9wdWxsLzEx
+MAo+ID4gPiA+Cj4gPiA+ID4gd2hlcmUgSSBzYWlkOiBXZSBjZXJ0YWlubHkgc2hvdWxkbid0IGR1
+cGxpY2F0ZSB0aGUgZXhpc3RpbmcgcGFydGl0aW9ucwo+ID4gPiA+IGJpbmRpbmdzLiBXaGF0J3Mg
+bWlzc2luZyBmcm9tIHRoZW0gKEkgYXNzdW1lIHdlJ3JlIG1vc3RseSB0YWxraW5nCj4gPiA+ID4g
+YWJvdXQgImZpeGVkLXBhcnRpdGlvbnMiIHdoaWNoIGhhcyBiZWVuIGFyb3VuZCBmb3JldmVyIEkg
+dGhpbmsgKGJlZm9yZQo+ID4gPiA+IG1lKSk/Cj4gPiA+ID4KPiA+ID4gPiBUbyByZXBlYXQsIHVu
+bGVzcyB0aGVyZSBpcyBzb21lIHJlYXNvbiBiaW5tYW4gcGFydGl0aW9ucyBjb25mbGljdCB3aXRo
+Cj4gPiA+ID4gZml4ZWQtcGFydGl0aW9ucywgeW91IG5lZWQgdG8gc3RhcnQgdGhlcmUgYW5kIGV4
+dGVuZCBpdC4gRnJvbSB3aGF0J3MKPiA+ID4gPiBwb3N0ZWQgaGVyZSwgaXQgbmVpdGhlciBjb25m
+bGljdHMgbm9yIG5lZWRzIGV4dGVuZGluZy4KPiA+ID4KPiA+ID4gSSB0aGluayBhdCB0aGlzIHBv
+aW50IEkgYW0ganVzdCBob3BlbGVzc2x5IGNvbmZ1c2VkLiBIYXZlIHlvdSB0YWtlbiBhCj4gPiA+
+IGxvb2sgYXQgdGhlIGJpbm1hbiBzY2hlbWE/IFsxXQo+ID4KPiA+IFdoeSBkbyBJIG5lZWQgdG8/
+IFRoYXQncyB1c2VkIGZvciBzb21lIHRvb2wgYW5kIGhhcyBub3RoaW5nIHRvIGRvIHdpdGggYQo+
+ID4gZGV2aWNlJ3MgRFRCLiBIb3dldmVyLCBJIHRob3VnaHQgc29tZXdoZXJlIGluIHRoaXMgZGlz
+Y3Vzc2lvbiB5b3Ugc2hvd2VkCj4gPiBpdCB1bmRlciBhIGZsYXNoIGRldmljZSBub2RlLgo+Cj4g
+WWVzLCB0aGF0IGlzIHRoZSBpbnRlbnQgKHVuZGVyIGEgZmxhc2ggbm9kZSkuCj4KPiA+IFRoZW4g
+SSBjYXJlIGJlY2F1c2UgdGhlbiBpdCBvdmVybGFwcyB3aXRoCj4gPiB3aGF0IHdlIGFscmVhZHkg
+aGF2ZSBmb3IgcGFydGl0aW9ucy4gSWYgSSBtaXN1bmRlcnN0b29kIHRoYXQsIHRoZW4ganVzdAo+
+ID4gcHV0IHlvdXIgc2NoZW1hIHdpdGggeW91ciB0b29sLiBPbmx5IHVzZXJzIG9mIHRoZSB0b29s
+IHNob3VsZCBjYXJlIGFib3V0Cj4gPiB0aGUgdG9vbCdzIHNjaGVtYS4KPgo+IE9LLiBJIGJlbGll
+dmUgdGhhdCBiaW5tYW4gd2lsbCBmaXQgaW50byBib3RoIGNhbXBzLCBzaW5jZSBpdHMgaW5wdXQg
+aXMKPiBub3QgbmVjZXNzYXJpbHkgZnVsbHkgZm9ybWVkLiBFLmcuIGlmIHlvdSBkb24ndCBzcGVj
+aWZ5IHRoZSBvZmZzZXQgb2YKPiBhbiBlbnRyeSwgdGhlbiBpdCB3aWxsIGJlIHBhY2tlZCBhdXRv
+bWF0aWNhbGx5LiBCdXQgdGhlIG91dHB1dCBpcwo+IGZ1bGx5IGZvcm1lZCwgaW4gdGhhdCBCaW5t
+YW4gbm93IGtub3dzIHRoZSBvZmZzZXQgc28gY2FuIHdyaXRlIGl0IHRvCj4gdGhlIERULgoKSSBz
+dXBwb3NlIGl0IGNvdWxkIHRha2UgaXRzIG93biBmb3JtYXQgYXMgaW5wdXQgYW5kIHRoZW4gd3Jp
+dGUgb3V0CnNvbWV0aGluZyBkaWZmZXJlbnQgZm9yIHRoZSAib24gdGhlIGRldmljZSIgZm9ybWF0
+IChpLmUuCmZpeGVkLXBhcnRpdGlvbnMpLiBBdCBsZWFzdCBmb3IgdGhlIGR5bmFtaWMgb2Zmc2V0
+cywgd2UgbWF5IG5lZWQKc29tZXRoaW5nIGFsbG93ZWQgZm9yIGJpbm1hbiBpbnB1dCwgYnV0IG5v
+dCBhbGxvd2VkIG9uIGRldmljZS4gSW4KZ2VuZXJhbCwgdGhlcmUgaXMgc3VwcG9ydCBmb3IgcGFy
+dGl0aW9ucyB3aXRob3V0IGFkZHJlc3Nlcy9vZmZzZXRzLApidXQgb25seSBmb3IgcGFydGl0aW9u
+cyB0aGF0IGhhdmUgc29tZSBvdGhlciB3YXkgdG8gZmlndXJlIHRoYXQgb3V0CihvbiBkaXNrIHBh
+cnRpdGlvbiBpbmZvKS4KClRoZXJlJ3MgYWxzbyB0aGUgaW1hZ2UgZmlsZW5hbWUgd2hpY2ggZG9l
+c24ndCByZWFsbHkgYmVsb25nIGluIHRoZSBvbgpkZXZpY2UgcGFydGl0aW9ucy4gU28gbWF5YmUg
+dGhlIGlucHV0IGFuZCBvdXRwdXQgc2NoZW1hcyBzaG91bGQgYmUKc2VwYXJhdGUuCgo+ID4gPiBJ
+IHNhdyB0aGlzIGZpbGUsIHdoaWNoIHNlZW1zIHRvIGV4dGVuZCBhIHBhcnRpdGlvbi4KPiA+ID4K
+PiA+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2Jy
+Y20sYmNtNDkwOC1wYXJ0aXRpb25zLnlhbWwKPiA+Cj4gPiBJSVJDLCB0aGF0J3MgYSBkaWZmZXJl
+bnQgdHlwZSB3aGVyZSBwYXJ0aXRpb24gbG9jYXRpb25zIGFyZSBzdG9yZWQgaW4KPiA+IHRoZSBm
+bGFzaCwgc28gd2UgZG9uJ3QgbmVlZCBsb2NhdGlvbiBhbmQgc2l6ZSBpbiBEVC4KPgo+IE9LLgo+
+Cj4gPgo+ID4gPgo+ID4gPiBJIHdhcyBhc3N1bWluZyB0aGF0IEkgc2hvdWxkIGNyZWF0ZSBhIHRv
+cC1sZXZlbCBjb21wYXRpYmxlID0gImJpbm1hbiIKPiA+ID4gbm9kZSwgd2l0aCBzdWJub2RlcyBs
+aWtlIGNvbXBhdGlibGUgPSAiYmlubWFuLGJsMzEtYXRmIiwgZm9yIGV4YW1wbGUuCj4gPiA+IEkg
+c2hvdWxkIHVzZSB0aGUgY29tcGF0aWJsZSBzdHJpbmcgdG8gaW5kaWNhdGUgdGhlIGNvbnRlbnRz
+LCByaWdodD8KPiA+Cj4gPiBZZXMgZm9yIHN1Ym5vZGVzLCBhbmQgd2UgYWxyZWFkeSBoYXZlIHNv
+bWUgc29tZXdoYXQgc3RhbmRhcmQgb25lcyBmb3IKPiA+ICJ1LWJvb3QiIGFuZCAidS1ib290LWVu
+diIuIFRob3VnaCBoaXN0b3JpY2FsbHksICJsYWJlbCIgd2FzIHVzZWQuCj4KPiBCaW5tYW4gaGFz
+IGNvbW1vbiBwcm9wZXJ0aWVzIGZvciBhbGwgZW50cmllcywgaW5jbHVkaW5nICJjb21wcmVzcyIK
+PiB3aGljaCBzZXRzIHRoZSBjb21wcmVzc2lvbiBhbGdvcml0aG0uCgpJIHNlZSBubyBpc3N1ZSB3
+aXRoIGFkZGluZyB0aGF0LiBJdCBzZWVtcyB1c2VmdWwgYW5kIHNvbWV0aGluZyBtaXNzaW5nCmlu
+IHRoZSBleGlzdGluZyBwYXJ0aXRpb24gc2NoZW1hcy4KCj4gU28gcGVyaGFwcyBJIHNob3VsZCBz
+dGFydCBieSBkZWZpbmluZyBhIG5ldyBiaW5tYW4sYmwzMS1hdGYgd2hpY2ggaGFzCj4gY29tbW9u
+IHByb3BlcnRpZXMgZnJvbSBhbiAiYmlubWFuLGVudHJ5IiBkZWZpbml0aW9uPwoKSSBkb24ndCB1
+bmRlcnN0YW5kIHRoZSBiaW5tYW4gcHJlZml4LiBUaGUgY29udGVudHMgYXJlIEFURiAob3IgVEYt
+QQpub3cpLiBXaG8gd3JvdGUgaXQgdG8gdGhlIGZsYXNoIGltYWdlIGlzIG5vdCByZWxldmFudC4K
+CldlIGFscmVhZHkgaGF2ZSBzb21lIGNvbXBhdGlibGVzIGluIHVzZS4gV2Ugc2hvdWxkIHJldXNl
+IHRoZW0gaWYKcG9zc2libGUuIE5vdCBzdXJlIGFib3V0IFRGLUEgdGhvdWdoLgoKUm9iCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
