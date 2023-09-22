@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 002F1E6FE46
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 14:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 934D9E6FE42
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 14:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W9GX9FcJvo0Eo+9BvFUACBJlIsO3pM4DkbTfitm2J6o=; b=pElOl4gqcVMWBM
-	041qMxwu8DK726pIpo9Ci/sXQIzuqxVKm3UUNY9e874iae3zHv+uVk1qGzelIndMAiUPaJuo3PUtK
-	crnMiqZfj/95qW/X8VrqOiJ4hQkDk4MEdS2i9lmoBla7TTv3Ez1/wrBtg/JUGk41MewYMedeGgpf8
-	xqrCWiRjizXf3VgvPQtac1Y0Cev/XKUAGTx/v+C0LroGVIt6NZ9Mx3+hKHQuAqy/rp9mjb1k5l+5c
-	Xs/MIcfgymuXaYKnp2VMtjnoG2Eo+xK8LrCiQBjhvdQQhamQRGlllBymGPiahOPla3dab1SU2J0Ko
-	voZuzvkapUVfzGF8qsng==;
+	List-Owner; bh=qk4kQbYlYlTjhCo52xDs/YdL+8B3AnoyW/5lqa9mRw4=; b=EqTu6IzR/uq+3s
+	BkNwIkne/zpgYusAOYIHNXwAug9X7+rSmO9MzvHWIMkMhFuN5MjHJQtVIChL8U2yhRsGvqfaxcLFu
+	/tfNYo0LQhDBCR/jCAMW+/PMgYn/PwnXyCLKikoYU4XuVKDwe50b5iBqlPNSaYZ3jFzjE62zMx1zu
+	DJIEDNG1Jrx700R0P0x6km6mrdKC//oICFrra0MlVu+x5G7CXvfufeO30+BO25Yo0NCwW8SVrVT9b
+	83ZSdvpkfMK/Zqa4JeNj7le0YOGY69RgW5c7YJoUEhvaOVqwiSKSu4uKnZbv6z8d+5m5Zz1xAHHPy
+	tBsrYVb5yBpbiYxYaHYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjhV7-009FGC-2R;
-	Fri, 22 Sep 2023 14:51:25 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1qjhVD-009FHz-1U;
+	Fri, 22 Sep 2023 14:51:31 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjhV2-009FF0-2S
+	id 1qjhV9-009FFy-04
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Sep 2023 14:51:22 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C78E4FF80C;
-	Fri, 22 Sep 2023 14:51:17 +0000 (UTC)
+	Fri, 22 Sep 2023 14:51:29 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B41AA6000B;
+	Fri, 22 Sep 2023 14:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695394279;
+	t=1695394282;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XdFA1MU2iB96iiBSQaJClbeQXcL5rEOl1Obs0685Gkw=;
-	b=R0n4aHueLSJWCWFCIRcYg1FeAt0+36MUlzxpXgHCUYOYhiET21h5IL8KIGhvSM51kMNcZ5
-	MrmeKpTd1NoJIxzplBMosV8xAQaHnAfLS7ikNeDtBvmOYEeF4F1K12YCRyQVttZxwy9uDJ
-	fZ8+qIGtkXzBKyOBl/1JYkQL6FyPYZbHMWVW7V4mOcicvI3RtKSxMgXQKFP+5jnF9NupdX
-	OGVy/t0XczBmUXrqsAWTwyC61iCESXc/2EIWSl/ZD6YxWgVasywzkeUUYAB2HuC6iXpGu5
-	tE/eE/fkqZOcEu9jQCPolZi0SsdKov/QK7kFngaclc4GLFhviJAPt+PKaouYTA==
+	bh=XoRUll6CaorBhs0khbfmRz9BF9/JTkYhq0xhHzZ3EUM=;
+	b=ex4JyoMjQ1GB/sXvlDYbkr5R/96btL6C1gZgOnfYfsrwAh92b5cF40Go53MegJ5I0xwv3/
+	hO9PNGlRcP2zlAYmdNI9HO7XnD+GSCliVsIRQ9nC+210FkZh1FA188FXxEBBawpkPOgm2r
+	BaQHPgYtGGyXu7hIAcZcIGT1Ow9nkUHejkz8tuCXNWIvk2sxYGkeyo/WwBy0x9ZZ5IfTPR
+	qxWOsWrayM8AMV+tdnaZ5Tu8FiccEe2VLAs4XE8B1h4CJgVRI0wHuhcEx+B7+hOuUMB6mr
+	8K8veM4IEAATv7QzSvfwuhpDfIr1iVqWB1nIS5jDCuoHfi87g2X+eXTGf+K/iA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
+To: Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
 	linux-mtd@lists.infradead.org
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] mtd: rawnand: arasan: Ensure program page operations are successful
-Date: Fri, 22 Sep 2023 16:51:17 +0200
-Message-Id: <20230922145117.578303-1-miquel.raynal@bootlin.com>
+Cc: linus.walleij@linaro.org,
+	b.spranger@linutronix.de,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: map_ram: prevent use of point and unpoint when NO_XIP is set
+Date: Fri, 22 Sep 2023 16:51:21 +0200
+Message-Id: <20230922145121.578332-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230717194221.229778-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20230919113320.16953-1-shivamurthy.shastri@linutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'3a4a893dbb19e229db3b753f0462520b561dee98'
+X-linux-mtd-patch-commit: b'3cff177fc2793a362d784c912f536e69a755925e'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_075120_932401_BD11598D 
-X-CRM114-Status: GOOD (  12.89  )
+X-CRM114-CacheID: sfid-20230922_075127_193905_C6C30659 
+X-CRM114-Status: UNSURE (   8.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,34 +80,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2023-07-17 at 19:42:20 UTC, Miquel Raynal wrote:
-> The NAND core complies with the ONFI specification, which itself
-> mentions that after any program or erase operation, a status check
-> should be performed to see whether the operation was finished *and*
-> successful.
+On Tue, 2023-09-19 at 11:33:20 UTC, Shivamurthy Shastri wrote:
+> When the DT property no-unaligned-direct-access is set, map->phys is set
+> to NO_XIP. With this property set, the flash should not be exposed
+> directly to MTD users, since it cannot be mapped.
 > 
-> The NAND core offers helpers to finish a page write (sending the
-> "PAGE PROG" command, waiting for the NAND chip to be ready again, and
-> checking the operation status). But in some cases, advanced controller
-> drivers might want to optimize this and craft their own page write
-> helper to leverage additional hardware capabilities, thus not always
-> using the core facilities.
+> map_ram() exposes the flash direct access unconditionally which leads to
+> access errors (when the bus width does not match the RAM width).
 > 
-> Some drivers, like this one, do not use the core helper to finish a page
-> write because the final cycles are automatically managed by the
-> hardware. In this case, the additional care must be taken to manually
-> perform the final status check.
+> Therefore do not set point and unpoint when NO_XIP is set.
 > 
-> Let's read the NAND chip status at the end of the page write helper and
-> return -EIO upon error.
-> 
-> Cc: Michal Simek <michal.simek@amd.com>
-> Cc: stable@vger.kernel.org
-> Fixes: 88ffef1b65cf ("mtd: rawnand: arasan: Support the hardware BCH ECC engine")
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Acked-by: Michal Smek <michal.simek@amd.com>
+> Signed-off-by: Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>
+> Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
 
