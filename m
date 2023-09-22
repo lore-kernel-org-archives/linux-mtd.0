@@ -4,60 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB4A2E7D0CE
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 06:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA089E7D0D6
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Sep 2023 07:02:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Pix/hrl7Gnyr8WLjWzRGY1IC68H8/gwiCC3bBKmDOcs=; b=IhhWuo3pKFlccn
-	jG8NJJIS778EJEHkQyvHut7qKIwjoCy8BMVDKOqlejEbuaTol4xLUSlHGfgxb+fcVjCAq2LhikgXa
-	BkeBufnmw/zeoVa1zpNlLXgdzFCbCyBTxtfeWkO6KC9Jc2D7UC2FhZZIZFBmVhlwv2bJlHvtbPxVi
-	zL9k9IGftevWu96V8zkb6UXpmKoqsCq41SI0hN9f1iNGQNj5IG52GaEmQUWvDaHswIdAzKOzwNY4W
-	LCKgBBr9K5+r2N1mk1BlCy7wCcbTr//EvZM3Ev498HyQ83Tmnbla4n+bC4ZjjVRMEG73n9e3G4ore
-	1/ZpEHiXjenq4yz9/CuQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=QGzFPte2McJL6SQV/AIUTwDOU9905A4r+njQm4rhzOM=; b=am0Tzq7Eopl2Xw
+	jJRwgRcezWYtD9uQ0TNqpTBp22orzt6mvgaHBWI5FwSlI9eR8fE7QosZkVeYcyJUuiBXnsZo4uup/
+	Tdfsy7XhvS0HbHHQq2O51XFLMTJRx9fCwgotb1acRdSrhhtkrSEo4JkNGSsVDe6ClQl7H5R6K66Zd
+	T1nY7H9AAz3Nz/WxejqaXwhf9dhiH/jn1tsVla96SYPQ+4Lf1e6JAKcNJz/n3FV5tviAuFjK3+JQd
+	iP+FWUypuw63pcYEb/Xr8rrAquSlnYxUGyB1vm9D5gQ06o0e1xbK6HM8sKo0abF1QnD5zPP2UyWCw
+	774LU8gMrzCrIttq2wpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjZSG-0081dj-2y;
-	Fri, 22 Sep 2023 06:15:56 +0000
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+	id 1qjaAw-0087LX-04;
+	Fri, 22 Sep 2023 07:02:06 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjZSB-0081ah-1I
+	id 1qjaAs-0087KV-0T
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Sep 2023 06:15:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:mime-version:content-transfer-encoding; s=k1; bh=RMnnVl4Ql662w9
-	OZiZW5LKuXonrd4+xLFQeCaWKnYkw=; b=Gp0ZeSxfOZ6uc1qoJJALavCNtjrzhf
-	7Jk3hL22FXDCdzjM0KHFgEs8t4QZiYf/5p/Z4C+YLfffoFwHezrTQmxSEd9vP97n
-	ad7+EvOuhu5Y7eAh4SnHGi9CS6UTIe5jL+sCqNSbmejEkpod8tjBn6sxA9I83Xsa
-	rgfjZeNUNFtQ7JJGvBiO5eORynTrDWCRmwBnV5kyNa/9Pl3BQrFjHOf7tXZwkr4E
-	pleJeU235eenle7hff/L3pobiF/bC8XdrEmjwA1cmxgge++XkT1j9MXv2irkFSpP
-	PsKyBHAOV5XmBE3gjIepBn6AcLgiZZ8R7J2SgG4UUE/ysOJglb4Xp9Fg==
-Received: (qmail 1268966 invoked from network); 22 Sep 2023 08:15:39 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2023 08:15:39 +0200
-X-UD-Smtp-Session: l3s3148p1@OqhriewF5pkujntX
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: linux-mips@vger.kernel.org
-Cc: Jonas Gorski <jonas.gorski@gmail.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-serial@vger.kernel.org,
-	linux-watchdog@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v2 0/6] remove AR7 platform and associated drivers
-Date: Fri, 22 Sep 2023 08:15:21 +0200
-Message-Id: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.35.1
+	Fri, 22 Sep 2023 07:02:03 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-991c786369cso226675866b.1
+        for <linux-mtd@lists.infradead.org>; Fri, 22 Sep 2023 00:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695366119; x=1695970919; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2jMuggZZvKYcFUdy/dK+81rshpboXDd4s3uqzGI3A5Y=;
+        b=LBE4aOZAPzgQmAlt08O5Wd4zoiQd31yChFy2LQza6oxKNc0L67gtTMWuBL0HlHPZpd
+         aYKChW3opkrR1Kqf/vQiczJuXpU6JrX5SmwEYv0rTygu+QnxIjHw3eaFawcQXU6/oBsc
+         r1vvmAqmPvHi93dpsoVx3VR+zLUG7I+THIdxc2v0slLzfqhnEhkWFyxhuE02If1vaKvM
+         ZBcveGELhgonVFdrRYWZ1JajQpxAuj6IRiMhFwOd5XXU/Xp2NXHNfc41DqBhX04yvJo+
+         1F/nvzF8bgYeVa3SNfkYCfQGmqD1lIOYLM+iCgOxAGJJlXmscL0WpvP4+qbDetCHrZKG
+         iYbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695366119; x=1695970919;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2jMuggZZvKYcFUdy/dK+81rshpboXDd4s3uqzGI3A5Y=;
+        b=XEj1vUlV81ABYOa4f6dSjs8yd6jAsWC8flR/4Qq7Ky9pir2z0Pqu+nnDulJ7xrslzB
+         Vbv6BYllYooJ2LuvOK0LQTVwY1+DJOBA5Dxrd34qe6OunmfH1t9GFduGraEvQVn9cve/
+         wQkrnVw7AaseUBYFz9Z1eRAEsbG4CqahQPl6mc3wmT+m0axOwqe+Re1L6dzxqgJNHHag
+         SQBzbBIf+yqy00raYZ+hSxsADhqLjop/O2nDw6dO+jA6CexRZdNhR8wNHVcwEUY04qKC
+         IltEVMxITQZy7rj1KDHLnD9W3Y407Uu0IJq/Fq69GliePVRzMGy/BJD66cbi00TKXVcN
+         sm1g==
+X-Gm-Message-State: AOJu0Yzp26vyOLk9houGA8BNZSjxTR3bq60GYGJg1YbHxe2cw6/csnYG
+	q8fLHuxMaFj8R9ua6K2sZam/XQ==
+X-Google-Smtp-Source: AGHT+IG0i7UDbq0G1Fggapv+viejE9QTHLY0IXIcvKnvjvzePXoImlcw3a294mo0jaA03y9ttLUk9Q==
+X-Received: by 2002:a17:906:519c:b0:9ae:5be8:ff90 with SMTP id y28-20020a170906519c00b009ae5be8ff90mr3193946ejk.68.1695366119042;
+        Fri, 22 Sep 2023 00:01:59 -0700 (PDT)
+Received: from [10.41.192.245] ([77.241.232.19])
+        by smtp.gmail.com with ESMTPSA id k20-20020a170906681400b0099bd046170fsm2220195ejr.104.2023.09.22.00.01.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Sep 2023 00:01:58 -0700 (PDT)
+Message-ID: <da77e965-2893-097a-b438-85787c43dcb0@linaro.org>
+Date: Fri, 22 Sep 2023 09:01:41 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
+Content-Language: en-US
+To: Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org
+Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
+ linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
+ Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Dhruva Gole <d-gole@ti.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org
+References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_231551_733888_B32088AD 
-X-CRM114-Status: GOOD (  13.21  )
+X-CRM114-CacheID: sfid-20230922_000202_205116_85EEF92B 
+X-CRM114-Status: GOOD (  30.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,108 +101,151 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Changes since v1:
-* kept uapi define for for serial port type
-* added acks
+On 21/09/2023 20:45, Simon Glass wrote:
+> Binman[1] is a tool for creating firmware images. It allows you to
+> combine various binaries and place them in an output file.
+> 
+> Binman uses a DT schema to describe an image, in enough detail that
+> it can be automatically built from component parts, disassembled,
+> replaced, listed, etc.
+> 
+> Images are typically stored in flash, which is why this binding is
+> targeted at mtd. Previous discussion is at [2] [3].
+> 
+> [1] https://u-boot.readthedocs.io/en/stable/develop/package/binman.html
+> [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-sjg@chromium.org/
+> [3] https://www.spinics.net/lists/devicetree/msg626149.html
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+> 
+>  .../bindings/mtd/partitions/binman.yaml       | 50 +++++++++++++++
+>  .../bindings/mtd/partitions/binman/entry.yaml | 61 +++++++++++++++++++
+>  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+>  MAINTAINERS                                   |  5 ++
+>  4 files changed, 117 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> new file mode 100644
+> index 00000000000000..c792d5a37b700a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2023 Google LLC
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Binman firmware layout
+> +
+> +maintainers:
+> +  - Simon Glass <sjg@chromium.org>
+> +
+> +description: |
+> +  The binman node provides a layout for firmware, used when packaging firmware
+> +  from multiple projects. For now it just supports a very simple set of
+> +  features, as a starting point for discussion.
+> +
+> +  Documentation for Binman is available at:
+> +
+> +  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
+> +
+> +  with the current image-description format at:
+> +
+> +  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
+> +
+> +properties:
+> +  compatible:
+> +    const: u-boot,binman
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    firmware {
+> +      binman {
+> +        compatible = "u-boot,binman";
+> +
+> +        u-boot {
 
-Still valid cover letter from v1:
-
-When trying to get rid of the obsolete VLYNQ bus, Jonas and Florian
-pointed out that its only user, the AR7 platform can probaly go entirely
-[1]. This series does exactly that. Even OpenWRT has removed support
-because these devices are "stuck with 3.18" [2].
-
-It removes the drivers first, because watchdog and network include
-platform specific headers. Once the drivers are gone, we remove the
-platform. The patches are based on 6.6-rc2 and created with
-"--irreversible-delete" to save some space.
-
-My suggestion is that everything is merged via the MIPS tree in one go,
-so we don't have broken drivers because of missing platform headers. But
-maybe there are reasons for a two-cycle removal with the drivers first
-and the platform later?
-
-Looking forward to comments.
-
-Happy hacking,
-
-   Wolfram
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
 
 
-[1] https://lore.kernel.org/r/3395161f-2543-46f0-83d9-b918800305e1@gmail.com
-[2] https://openwrt.org/docs/techref/targets/ar7
+> +          size = <0xa0000>;
+> +        };
+> +
+> +        atf-bl31 {
+> +          offset = <0x100000>;
+> +        };
+> +      };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+> new file mode 100644
+> index 00000000000000..8003eb4f1a994f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman/entry.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2023 Google LLC
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/binman/entry.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Binman entry
+> +
+> +maintainers:
+> +  - Simon Glass <sjg@chromium.org>
+> +
+> +description: |
+> +  The entry node specifies a single entry in the firmware.
+> +
+> +  Entries have a specific type, such as "u-boot" or "atf-bl31". If the type
+> +  is missing, the name is used as the type.
+> +
+> +  Note: This definition is intended to be hierarchical, so that entries can
+> +  appear in other entries. Schema for that is TBD.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^[-a-z]+(-[0-9]+)?$"
+
+Why do you need this?
+
+> +
+> +  type:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +
+> +  offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      Provides the offset of this entry from the start of its parent section.
+> +      If this is omitted, Binman will determine this by packing the enclosing
+> +      section according to alignment rules, etc.
+> +
+> +  size:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      Provides the size of this entry in bytes. If this is omitted, Binman will
+> +      use the content size, along with any alignment information, to determine
+> +      the size of the entry.
+> +
 
 
-Wolfram Sang (6):
-  serial: 8250: remove AR7 support
-  mtd: parsers: ar7: remove support
-  vlynq: remove bus driver
-  watchdog: ar7_wdt: remove driver to prepare for platform removal
-  net: cpmac: remove driver to prepare for platform removal
-  MIPS: AR7: remove platform
-
- MAINTAINERS                             |   13 -
- arch/arm/configs/pxa_defconfig          |    1 -
- arch/mips/Kbuild.platforms              |    1 -
- arch/mips/Kconfig                       |   22 -
- arch/mips/ar7/Makefile                  |   11 -
- arch/mips/ar7/Platform                  |    5 -
- arch/mips/ar7/clock.c                   |  439 --------
- arch/mips/ar7/gpio.c                    |  332 ------
- arch/mips/ar7/irq.c                     |  165 ---
- arch/mips/ar7/memory.c                  |   51 -
- arch/mips/ar7/platform.c                |  722 -------------
- arch/mips/ar7/prom.c                    |  256 -----
- arch/mips/ar7/setup.c                   |   93 --
- arch/mips/ar7/time.c                    |   31 -
- arch/mips/boot/compressed/uart-16550.c  |    5 -
- arch/mips/configs/ar7_defconfig         |  119 ---
- arch/mips/include/asm/mach-ar7/ar7.h    |  191 ----
- arch/mips/include/asm/mach-ar7/irq.h    |   16 -
- arch/mips/include/asm/mach-ar7/prom.h   |   12 -
- arch/mips/include/asm/mach-ar7/spaces.h |   22 -
- drivers/Kconfig                         |    2 -
- drivers/Makefile                        |    1 -
- drivers/mtd/parsers/Kconfig             |    5 -
- drivers/mtd/parsers/Makefile            |    1 -
- drivers/mtd/parsers/ar7part.c           |  129 ---
- drivers/net/ethernet/ti/Kconfig         |    9 +-
- drivers/net/ethernet/ti/Makefile        |    1 -
- drivers/net/ethernet/ti/cpmac.c         | 1251 -----------------------
- drivers/tty/serial/8250/8250_port.c     |    7 -
- drivers/vlynq/Kconfig                   |   21 -
- drivers/vlynq/Makefile                  |    6 -
- drivers/vlynq/vlynq.c                   |  799 ---------------
- drivers/watchdog/Kconfig                |    6 -
- drivers/watchdog/Makefile               |    1 -
- drivers/watchdog/ar7_wdt.c              |  315 ------
- include/linux/vlynq.h                   |  149 ---
- 36 files changed, 1 insertion(+), 5209 deletions(-)
- delete mode 100644 arch/mips/ar7/Makefile
- delete mode 100644 arch/mips/ar7/Platform
- delete mode 100644 arch/mips/ar7/clock.c
- delete mode 100644 arch/mips/ar7/gpio.c
- delete mode 100644 arch/mips/ar7/irq.c
- delete mode 100644 arch/mips/ar7/memory.c
- delete mode 100644 arch/mips/ar7/platform.c
- delete mode 100644 arch/mips/ar7/prom.c
- delete mode 100644 arch/mips/ar7/setup.c
- delete mode 100644 arch/mips/ar7/time.c
- delete mode 100644 arch/mips/configs/ar7_defconfig
- delete mode 100644 arch/mips/include/asm/mach-ar7/ar7.h
- delete mode 100644 arch/mips/include/asm/mach-ar7/irq.h
- delete mode 100644 arch/mips/include/asm/mach-ar7/prom.h
- delete mode 100644 arch/mips/include/asm/mach-ar7/spaces.h
- delete mode 100644 drivers/mtd/parsers/ar7part.c
- delete mode 100644 drivers/net/ethernet/ti/cpmac.c
- delete mode 100644 drivers/vlynq/Kconfig
- delete mode 100644 drivers/vlynq/Makefile
- delete mode 100644 drivers/vlynq/vlynq.c
- delete mode 100644 drivers/watchdog/ar7_wdt.c
- delete mode 100644 include/linux/vlynq.h
-
--- 
-2.35.1
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
