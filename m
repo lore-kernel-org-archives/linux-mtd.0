@@ -4,104 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 309E8E7E62E
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Sep 2023 12:14:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA7A6E7E62F
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Sep 2023 12:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TUUcfH3RLzAnqlGDHHNO8eMBZtd5XzG8AyHmydxwzTU=; b=A/74jeDCq+vOlG
-	/QveMxhEyaozkc/GacjRN5ozXSdJYZKlZxbyEwBDW7zeKhqJCRPYUJc2rsj5LkRkmFkoDuJmB8sc5
-	bB4W4covqVFD7HHfOan3pZ/BHPa2CuFhB7Oj1nMyDKxoqGlvky7i/82ROFlcZsIWG04/c1cajGB7v
-	2+hOv1lfClvRmZW7DnQB7huuWUHVhk+SDUBqKkPT4rTDBqCYz8Hl3sRQhrv4TJF/gvZ2KdVfJ/TE1
-	Hnl64RxaPQn6HrdIsZG/I27b4Tz+vVf9OtJo/XOr5IIRnsyK44C2J4kQHhCm4tZi96i9ma57+Gg7W
-	GM9LWkAYZ7UA8FMXLfZg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mySbZ22Yke0JH7SJ+e+aDH/uwHo1m1VlPz8VeYAeRyQ=; b=Nhdt+GBr6fctOr
+	stQ+q4vQ9oo3dw9A6QDEqVR+kczHLv4p0sZVs0/sQGyGLue3yj6deYJpDHPeLIXthalTmiF4qg5Fx
+	FaWL426laWYx2SX87NLxn06Icbqr58p3UUPt6VVeNc5V+uP6j21xlSXNFaYI+u/cq40N1QXPILwqt
+	OMnD5atYmltki/99NGdqSkCZhI/K+IlHsRzSE1KfigWraByrTUOcbXG+Wp22aCrEPmsxnTRLqDXGS
+	8Wh+b4izB0alntxN9hJ2eBB4wIZwXKII+ccYQOwE14Zc0maTVo6zG2maJIwcO/RUowEG7MoielzrA
+	938UFnzVJMecRzfXZIhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ql6x9-00GL92-2n;
-	Tue, 26 Sep 2023 12:14:11 +0000
-Received: from mail-dm6nam12on20604.outbound.protection.outlook.com ([2a01:111:f400:fe59::604] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
+	id 1ql7fB-00GPrI-02;
+	Tue, 26 Sep 2023 12:59:41 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ql6x7-00GL8b-3C
-	for linux-mtd@lists.infradead.org;
-	Tue, 26 Sep 2023 12:14:11 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P2cIpreUlBh4WKOIlVda53niYlBay0RKCxZ+VjKRRov7X+GWsQx6vdfPoBupMVecbcSogvPexSiFnZBrU/3bmOlDsuNlaCXgwmOQSy7MYKssWBlBAGeoQ/ekOnOuxdiIY5+nHEMhwrt7yIyqb6ODC4r/3H77Ihe3zQE8efwSJFqaUPvcQzq/k0U2V15YrihHlGrtSWsjXx4Ly4hWWp3ka78Vdb2LTTO+o4Bb35wz8FwSysgEZuinDHQ4qHvyqnfN5c9yOA3fjIymTf1/+HZqFsWLHhZ4R0m6wrR0AH3wHQW6hl6xu215zCxKK40U2hWyojA4aaA6/3IMKuWUzrIwJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JfszOCIyKig4gfMdxp1fH3WfZ1UYJ562Uac8fG+a9Xg=;
- b=kyv7gE8yg2eoeHDrzyoorqkRvmsopNHEMcuwbSlVqQ11HkoeWCgj8kaKknpVB6ixE7qdVFf66lYTG107+bjVadCk2Q9AUiZ06iinrZP2LpyGQKeKHbvUSasPEh7dzliIzfLz1zUc6KxJrCasjsrNl8vW6TdOIykq3YB8vMykT8T1nJfOBILL00vyFRXNvmmSqTaPKsVI//y8kR3R5i7j9+jrcFBFDFhFI+Vj8UvCzajKyjhbiYAQmB2BtR+6zIOinDe6NheLn6X8BB2K02iExwtpheZqT5zbfIVMA3wONYl8ix2AhWJsLEuRxaalbVs94jC3vTsRwAIpRsXTScWtxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=bootlin.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JfszOCIyKig4gfMdxp1fH3WfZ1UYJ562Uac8fG+a9Xg=;
- b=wzUPb2CcX/L03B86fV2cV3EIUt76ijD5or5H/mX3FQgEMGGAFGtcSTUuzmLTpt8obPLK3Kx/NxERbMfyOSng6t0zdRNyT464X2FjL0PsdxRzbBdZetwfGdEPl6SW1IpzYXXEuS/4+Rx/M7OZzkWwUX/dIkR7LXJyn/P/fxjLIBE=
-Received: from CY8PR22CA0017.namprd22.prod.outlook.com (2603:10b6:930:45::20)
- by SN7PR12MB6931.namprd12.prod.outlook.com (2603:10b6:806:261::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Tue, 26 Sep
- 2023 12:14:03 +0000
-Received: from CY4PEPF0000EDD4.namprd03.prod.outlook.com
- (2603:10b6:930:45:cafe::36) by CY8PR22CA0017.outlook.office365.com
- (2603:10b6:930:45::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.35 via Frontend
- Transport; Tue, 26 Sep 2023 12:14:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000EDD4.mail.protection.outlook.com (10.167.241.208) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Tue, 26 Sep 2023 12:14:03 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 26 Sep
- 2023 07:14:02 -0500
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Tue, 26 Sep 2023 07:14:00 -0500
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC: <git@amd.com>, <michal.simek@amd.com>, <richard@nod.at>,
-	<boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
-	<akumarma@amd.com>, <amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH] mtd: rawnand: arasan: Check for bitflips in page data & its ECC data
-Date: Tue, 26 Sep 2023 17:43:52 +0530
-Message-ID: <20230926121352.2250115-1-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.25.1
+	id 1ql7f7-00GPqL-2H;
+	Tue, 26 Sep 2023 12:59:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695733178; x=1727269178;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gJEq3xCM+MN4CppR6YpkUVhhtT2FeWs1oJ6vU52TkJI=;
+  b=0wvVeT3T2B5CVFQNuckgKU4PfAslteJ3gguCi7HSU3QvXRGGafqtf1PO
+   qP8DVfTXAY++0OezIPC4799fKNp6m+mBjIKlBEjNf45zJIbuydbqecui5
+   uvepF/oUn/3HroHRPih9CAceJnpAMKXDVKJpyn06iIjAjG8rMs7V37V+I
+   BnOrXKhXcfXY9C5Vbrxtwtcex8iaf5kpaKtzukkcHNOX9+SPlZeJZmd7W
+   K0F9NVMUVMK5Qs4N/tDYtK3DRP7MK+Y/M5qXoj+RI1DmpE+Y5nIKy5EW7
+   l3TXm5B1bHIMRpqa2kxwRjaw3Sug/a1VAi1uJJ9vwCZgr2MooiShizPDo
+   w==;
+X-CSE-ConnectionGUID: ePx/Q2eXSludVcr6gQ8L0Q==
+X-CSE-MsgGUID: zzeJAxAeTh++T8AVlpcvXQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="6658672"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Sep 2023 05:59:37 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 26 Sep 2023 05:59:29 -0700
+Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Tue, 26 Sep 2023 05:59:28 -0700
+Message-ID: <925723a2-dc2d-9949-5b8f-4351b49d2f4b@microchip.com>
+Date: Tue, 26 Sep 2023 14:59:08 +0200
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD4:EE_|SN7PR12MB6931:EE_
-X-MS-Office365-Filtering-Correlation-Id: 176f3fb2-bd7f-404c-dade-08dbbe8a131b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iELQFNZRXj/sDWgWbTIQr5FqhLCh8PYyfgTNDrMZF91a95L9EmQXPGsRHAm9NFv1b0f5s/3uDDBT5YtfRY3A/UutwEvfoTmyd4sbdWJ54aTInAMy20N8zhrMOf42dJoMUNwGUktu5i9Iq3+gBdYiVc5LuLHFxw6OmKH8IFVnA1Ipuqz9qY0qhSa70VMCDs0f3Mcp7qoiZrg75LhPDKul9bS2vIMIuy45r81fv0/b1YNOPGkOUgi9pgr2eVCY66G+ZdirKaoHQIQYWxC0uApJIcXt4yg6yDvkT3IhsSISJjBA+ZDcw9AAsuPV9207MtR9ZYhulUwaq1DmyzULMTlJ8SSbvzHQezRZhwTiDhMI421yGGqXQGciil8uCl4n+kaZX/z21tTEY+gteVSw4Jx+1f7a/vrJy4K/AZuA9EqHNjZEDp+Ks9ktDE3nZsZs4YVzDD+i8wdIIcfWnwXWnNV3ngFdXs6EdYKVMpytDNn6KspLUKm8Zl/ZtPYBd2cFEAytjiQkRO/ZKRkhsvDs4WqXqy2lcj8sRmKLMyfDzaAnIcoXRGQFrS5NmqMSsjP3fpa2X+L/R+SrJDtBReigQ4DZ7OyFMPfsmuXEU5/yQz8dLzzdNMurnvk+FELBqwOlkiHvbOpKptRp+iqMwhCLpy82kDJiGc7RI7TFixewDq72crCkufgC04vuMyRTgkOgaeYdra7iUlf5o39RQ0VrwM8WGIMQztAgr2tk1kE00gDe5F43uKqh3m/eUxgDRB2cSamucBqoKQuy4WJmLWVwHKz8lw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(186009)(1800799009)(82310400011)(451199024)(40470700004)(46966006)(36840700001)(2616005)(356005)(8936002)(81166007)(26005)(82740400003)(2906002)(1076003)(40460700003)(8676002)(36860700001)(336012)(4326008)(426003)(36756003)(83380400001)(47076005)(5660300002)(86362001)(478600001)(110136005)(40480700001)(316002)(70586007)(54906003)(6666004)(70206006)(41300700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 12:14:03.7320
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 176f3fb2-bd7f-404c-dade-08dbbe8a131b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD4.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6931
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] mtd: spi-nor: atmel: add at25ff321a entry
+Content-Language: en-US, fr-FR
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, <miquel.raynal@bootlin.com>,
+	<linux-mtd@lists.infradead.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230908151400.164470-1-nicolas.ferre@microchip.com>
+ <8d72820d-bbaa-abc8-4448-87f0f054c381@linaro.org>
+ <4c9b0dff-6350-376b-60ac-c36f98378a51@microchip.com>
+ <306a6aa0-c608-418a-a591-6f8aa95817fb@linaro.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <306a6aa0-c608-418a-a591-6f8aa95817fb@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230926_051410_050083_86B5DBAE 
-X-CRM114-Status: GOOD (  13.73  )
+X-CRM114-CacheID: sfid-20230926_055937_749704_C45022DD 
+X-CRM114-Status: GOOD (  25.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,42 +85,128 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During page read in HW-ECC mode the driver checks for bitflips to confirm
-that the page is erased one or not, currently this check is only for page
-data and not for ECC data of that page. Due to this, in case of ECC
-corruption, the driver considers some of the page data as erased page data
-and overwrites the valid data with 0xFF. Update the driver to include the
-ECC bitflips check along with page data while checking for erased ECC data
-chunk.
+On 21/09/2023 at 09:14, Tudor Ambarus wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On 9/20/23 17:16, Nicolas Ferre wrote:
+>> On 19/09/2023 at 18:12, Tudor Ambarus wrote:
+>>> On 08.09.2023 18:14, nicolas.ferre@microchip.com wrote:
+>>>> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+>>>>
+>>>> Add the at25ff321a 4MB SPI flash which is able to provide
+>>>> SFDP informations.
+>>>> Datasheet:
+>>>> https://www.renesas.com/us/en/document/dst/at25ff321a-datasheet
+>>>>
+>>>> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+>>>> ---
+>>
+>> [..]
+>>
+>>>>    drivers/mtd/spi-nor/atmel.c | 4 ++++
+>>>>    1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+>>>> index 58968c1e7d2f..c94d52951481 100644
+>>>> --- a/drivers/mtd/spi-nor/atmel.c
+>>>> +++ b/drivers/mtd/spi-nor/atmel.c
+>>>> @@ -184,6 +184,10 @@ static const struct flash_info atmel_nor_parts[]
+>>>> = {
+>>>>                 FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+>>>>                 NO_SFDP_FLAGS(SECT_4K)
+>>>>                 .fixups = &atmel_nor_global_protection_fixups },
+>>>> +     { "at25ff321a", INFO(0x1f4708, 0, 64 * 1024,  64)
+>>>> +             FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+>>>> +             PARSE_SFDP
+>>>> +             .fixups = &atmel_nor_global_protection_fixups },
+>>>
+>>> We have recently changed how the flash entries are defined. Would you
+>>> please try the following changes instead?
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+>>> index 95f0e139284e..44218716d81e 100644
+>>> --- a/drivers/mtd/spi-nor/atmel.c
+>>> +++ b/drivers/mtd/spi-nor/atmel.c
+>>> @@ -213,6 +213,12 @@ static const struct flash_info atmel_nor_parts[] = {
+>>>                   .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+>>>                   .no_sfdp_flags = SECT_4K,
+>>>                   .fixups = &atmel_nor_global_protection_fixups
+>>> +       }, {
+>>> +               .id = SNOR_ID(0x1f, 0x47, 0x08),
+>>> +               .name = "at25ff321a",
+>>> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE,
+>>
+>> Here, I added:
+>>
+>>                 .no_sfdp_flags = SECT_4K,
+>>
+>> to match the other devices of the family... I checked on the datasheet,
+>> 4K sectors are okay, but I don't know exactly if this is eligible to the
+>> "no_sfdb_flags" property... forgive me, I didn't check further knowing
+>> that you might have better view on this than me ;-)
+> 
+> yeah, no worries. You should not specify 4k here, as it should already
+> be set when parsing SFDP. You can use mtdinfo /dev/mtdx to check what
+> erase size gets set. In the core we set the maximum supported erase size
+> for speed considerations and making ubifs happy, so you'll probably see
+> 64k when checking with mtdinfo. But you can try 4k erases as well by
+> setting MTD_SPI_NOR_USE_4K_SECTORS.
 
-Fixes: 88ffef1b65cf ("mtd: rawnand: arasan: Support the hardware BCH ECC engine")
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
----
-BRANCH: nand/next
----
- drivers/mtd/nand/raw/arasan-nand-controller.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Absolutely, here is what I'm experiencing:
+# no_sfdp_flags not set / linux-next / sama5d27 wlsom1 ek
+# CONFIG_MTD_SPI_NOR_USE_4K_SECTORS=y
+root@sama5d27-wlsom1-ek-sd:~# mtdinfo /dev/mtd0
+mtd0
+Name:                           spi0.1
+Type:                           nor
+Eraseblock size:                4096 bytes, 4.0 KiB
+Amount of eraseblocks:          1024 (4194304 bytes, 4.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:0
+Bad blocks are allowed:         false
+Device is writable:             true
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 4621ec549cc7..547cc82b5d80 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -481,7 +481,7 @@ static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
- 		}
- 
- 		bf = nand_check_erased_ecc_chunk(raw_buf, chip->ecc.size,
--						 NULL, 0, NULL, 0,
-+						 anand->hw_ecc, chip->ecc.bytes, NULL, 0,
- 						 chip->ecc.strength);
- 		if (bf > 0) {
- 			mtd->ecc_stats.corrected += bf;
--- 
-2.25.1
+# no_sfdp_flags not set / linux-next / sama5d27 wlsom1 ek
+# # CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is not set
+root@sama5d27-wlsom1-ek-sd:~# mtdinfo /dev/mtd0
+mtd0
+Name:                           spi0.1
+Type:                           nor
+Eraseblock size:                65536 bytes, 64.0 KiB
+Amount of eraseblocks:          64 (4194304 bytes, 4.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:0
+Bad blocks are allowed:         false
+Device is writable:             true
+
+>>> +               .fixups = &atmel_nor_global_protection_fixups
+>>> +       }, {
+>>>           }, {
+>>>                   .id = SNOR_ID(0x1f, 0x48, 0x00),
+>>>                   .name = "at25df641",
+>>
+>> That works perfectly well (I can re-post the test results as my previous
+>> patch if needed): do you want me to send the updated patch with your
+>> Suggested-by tag or you can send yours, tell me what you prefer.
+> 
+> Send a new patch please, it was just a suggestion to speed the things up.
+
+Sure, I'm on it ;-)
+
+>> Thanks for the heads-up on this update that I hadn't noticed. Best regards,
+>>    Nicolas
+>>
+> you're welcome! Cheers!
+
+Best regards,
+  Nicolas
 
 
 ______________________________________________________
