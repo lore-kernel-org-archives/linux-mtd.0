@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8859E7D249
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Sep 2023 07:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 684CEE7D26B
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Sep 2023 09:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EjS0kJrePSnpSpAGrqt3DFo2sBofzhTvJ83Z7GykUvk=; b=gID/1l62VybTDp
-	F9LdEZOAnhJiU/m2Yf7Mmw9w1oIpDhJTSXZm1F0YFAYNB4lphvF/T1oGk/iPMqMUpcPb8c+FuN0E1
-	W/jqRIZONv/phA2S3dLyvks1a2UI6QEi97h92TDGAuVjMt2GXNu7p39PWilKPDKe8LyjzQU3kT4r1
-	sDX8b4owd7HJdda/KGVHes92HIAoVgkFIkn3veSmgBhUCnDaxexqILt2ao8tugkNHHjHnHtQbZml5
-	1NOehVUaayhsJwShEQlR7DJ9Tdgc6MMS+5GsYHjkLus0GJtlAXWoA5aMolcuD0RSCwxrlfAceZXt4
-	CV9+q53PLOmoVqWPl7Yg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vU4jX7mL8spmD/uEzWEC835MI7ZcYhWn/mOIrQal5u4=; b=VjUvxbpHCeJ3Hc
+	dDFcdCi3mbexhQVUeZSkuxQ+4pIuA8aLFpAdq98zp8gjH0i8KLtGNu9mVSPoDWA/thQJo8oCWDLp4
+	/BZ/CzYT3QGYrBG4BYNgSbOx/QzZvL/yfsddaf53E5s31w+DFTZma9AQi/2nZ9or/LV6YmhxgHTWK
+	2hpjAf3WVQoORNDH0WY0H7MLPesBoUjcO1bhzNbtglaiFKhIQka2xfXEXJ88M1C+aVHhUmVsFIA/6
+	FwzrwIPcxboglGEXmqndKbOVWUE5w2flJam0OmfpkF44VecNsr602Rkk9ipUo7ONBUMPMGtZoJRAS
+	XpBANzRyNqxRjvK495+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ql2o5-00Foni-1A;
-	Tue, 26 Sep 2023 07:48:33 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1ql41l-00Fvp6-1U;
+	Tue, 26 Sep 2023 09:06:45 +0000
+Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ql2o0-00Fom5-0q
+	id 1ql41i-00FvnZ-25
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 Sep 2023 07:48:30 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 62FF41BF208;
-	Tue, 26 Sep 2023 07:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695714501;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WByilfXcf9fwVRPpSMAIkhXNNnHM8fT1soPbMgZimUo=;
-	b=UByeNvtFKGUJFu1r0cCVg4+6yFQMDRx3wfWvVNZdgBJ5aAZyYTFHXVNk8YXzQ+gqfyu7Vj
-	LwFeBNk0hjpd+S5kuzcJpVl07s4zPh+5PF9MXJAj2J7Cwa6C5nYzJzLTuzC2dwd3i2QCPm
-	uVHFHh9cTFsd1d1qCeS5kRLHIQgpfDahPO/iUmIvFY9drBLH156TnaLMrfj4GgaTWhwSR9
-	WKswhTyRPBo685G0NmpdIpmxjid0SysKvF7C/Q3nj76ii+vo7WnUVse1GiqN4XO3Uomjp/
-	x/3dlWrMw2mvxxabewSs/TLI1FpSmlooHgTCL1cYJWL49xPmAS7MJGXg3zof7A==
-Date: Tue, 26 Sep 2023 09:48:15 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Simon Glass <sjg@chromium.org>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, U-Boot
- Mailing List <u-boot@lists.denx.de>, linux-mtd@lists.infradead.org, Tom
- Rini <trini@konsulko.com>, Conor Dooley <conor+dt@kernel.org>, Dhruva Gole
- <d-gole@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-Message-ID: <20230926094815.5802e184@xps-13>
-In-Reply-To: <CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com>
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-	<CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
-	<CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
-	<20230922174649.GA3320366-robh@kernel.org>
-	<CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
-	<CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
-	<CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
-	<20230925092122.0b615f25@xps-13>
-	<CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
-	<20230925164736.5efbf4c0@xps-13>
-	<CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
-	<20230925172447.43dcef88@xps-13>
-	<CAPnjgZ20c9FsYVjSrQ9qbFy9Y67BqDP2zxMyATx===PFhO69Ew@mail.gmail.com>
-	<CAL_JsqJfjHqtTB2qfLmNxmQtn1rZewNyNe+Knu_Z4UCdPoPhSQ@mail.gmail.com>
-	<CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Tue, 26 Sep 2023 09:06:44 +0000
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405524e6740so61666715e9.1
+        for <linux-mtd@lists.infradead.org>; Tue, 26 Sep 2023 02:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695719192; x=1696323992; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AYPORNOx4NuRhf6WfJUJoSr5UgLUFNvcuKhQTL+JrnY=;
+        b=TLIJ2T9cUtaBH3iTEoKA0jNQXFDXvQrM36OpB4slEyHbfn54/oePN5Pc400bGjCRGJ
+         5buhriTliOC5xxaR2jIiOWMxkcB4hhyb9cvzb32nECPQb9LnmYySWj7aODQpC6OPgLvQ
+         roprqmcgqBy8gfCa8efjdQIB6NBUcCtD1QYkcOjHM6vtGLf0jfR2CohWzkNGripvWfZ4
+         iUrBE+fjA84HRphIzg6vspxlyxJ5Ws9fmK/Cf2ScV5Aq3UfUh03a+htRQbkFJWL5NBIw
+         pOVM2DrHk+igv9lY6UdVOCSpt8Zni+Qc8MhBvpyYfqtlhNKXDJkMzXOwpDYrRl9Ug45f
+         TBYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695719192; x=1696323992;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AYPORNOx4NuRhf6WfJUJoSr5UgLUFNvcuKhQTL+JrnY=;
+        b=MN5Li0nYe+79z+UxJSCGMsCORRdC4OExAOmoPHMbqP+LaYZIaLNi3RfZsBE+7sstmy
+         TrptZwbTP4LY3siqM56V1buFD3zQT1tbatQbcLBegaNzZNnWRWjPn89cJocAHgFDalXF
+         RxTNzUhX8L2/kb4AyPMUKHrwpteJy0LCm2bsnAMwx2VM5V9+0xYkFeMeMi5fHMGJOjZt
+         nEfO+oCdQyg6IfwkNqhYOV2dg+aGmy89H6G/3jmTaR1sC9wGtKAOuC2oDf43TulLBLcO
+         rqcGBnCeNGsgUp8I2qrJzFKdBBEuF1ZpzU5FOH5mDDdMbiG//pyDkmdN5BNP4z+Cxyoq
+         VvBg==
+X-Gm-Message-State: AOJu0Yz0o5Z7A0KqkhWMTCAyL4QAy1Lug+49SaraMOzoyC+MnXYGyOge
+	J7efNeQlJ3QoJXDhHwqCyVP1kA==
+X-Google-Smtp-Source: AGHT+IHECvSMOxEXPR/Wch2K8u8yhXgBh2SGThdb3d5Y/uoLHNyMF9X2ZGAX1MvecWbgmJnLQpviVw==
+X-Received: by 2002:a05:600c:2050:b0:401:906b:7e9d with SMTP id p16-20020a05600c205000b00401906b7e9dmr8005516wmg.18.1695719191864;
+        Tue, 26 Sep 2023 02:06:31 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:686:c497:30b1:d2b9])
+        by smtp.gmail.com with ESMTPSA id 14-20020a05600c230e00b00402f7b50517sm14686841wmo.40.2023.09.26.02.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 02:06:31 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Harvey Hunt <harveyhuntnexus@gmail.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [RFT PATCH] mtd: rawnand: ingenic: move the GPIO quirk to gpiolib-of.c
+Date: Tue, 26 Sep 2023 11:06:23 +0200
+Message-Id: <20230926090623.35595-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230926_004828_590760_51E23A3E 
-X-CRM114-Status: GOOD (  46.22  )
+X-CRM114-CacheID: sfid-20230926_020642_682716_B023B0E8 
+X-CRM114-Status: GOOD (  15.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,98 +94,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgo+ID4gPiA+ID4gVGhlc2UgYXJlIGZpcm13YXJlIGJpbmRpbmdzLCBhcyBpbmRpY2F0
-ZWQsIGJ1dCBJCj4gPiA+ID4gPiB0b29rIHRoZW0gb3V0IG9mIHRoZSAvZmlybXdhcmUgbm9kZSBz
-aW5jZSB0aGF0IGlzIGZvciBhIGRpZmZlcmVudAo+ID4gPiA+ID4gcHVycG9zZS4gUm9iIHN1Z2dl
-c3RlZCB0aGF0IHBhcnRpdGlvbnMgd2FzIGEgZ29vZCBwbGFjZS4gV2UgaGF2ZSBmd3VwZAo+ID4g
-PiA+ID4gdXNpbmcgRFQgdG8gaG9sZCB0aGUgZmlybXdhcmUtdXBkYXRlIGluZm9ybWF0aW9uLCBz
-byBJIGV4cGVjdCBpdCB3aWxsCj4gPiA+ID4gPiBtb3ZlIHRvIHVzZSB0aGVzZSBiaW5kaW5ncyB0
-b28uICAKPiA+ID4gPgo+ID4gPiA+IEkgd291bGQgZGVmaW5pdGVseSB1c2UgZml4ZWQgcGFydGl0
-aW9ucyBhcyB0aGF0J3Mgd2hhdCB5b3UgbmVlZCB0aGVuOgo+ID4gPiA+IHJlZ2lzdGVyaW5nIHdo
-ZXJlIGV2ZXJ5dGhpbmcgc3RhcnRzIGFuZCBlbmRzLiBJZiB5b3UgaGF2ZSAiaW4tYmFuZCIKPiA+
-ID4gPiBtZXRhIGRhdGEgeW91IG1pZ2h0IHJlcXVpcmUgYSBjb21wYXRpYmxlLCBidXQgSSBkb24n
-dCB0aGluayB5b3UKPiA+ID4gPiBkbywgaW4gdGhpcyBjYXNlIHlvdSBzaG91bGQgcHJvYmFibHkg
-Y2FycnkgdGhlIGNvbnRlbnQgdGhyb3VnaCBhIGxhYmVsCj4gPiA+ID4gKHdoaWNoIHdpbGwgYmVj
-b21lIHRoZSBwYXJ0aXRpb24gbmFtZSkgYW5kIHdlIGNhbiBkaXNjdXNzIGFkZGl0aW9uYWwKPiA+
-ID4gPiBwcm9wZXJ0aWVzIGlmIG5lZWRlZC4gIAo+ID4gPgo+ID4gPiBJIGJlbGlldmUgSSBhbSBn
-b2luZyB0byBuZWVkIGEgY29tcGF0aWJsZSBzdHJpbmcgYXQgdGhlICdwYXJ0aXRpb25zJwo+ID4g
-PiBsZXZlbCB0byBpbmRpY2F0ZSB0aGF0IHRoaXMgaXMgdGhlIGJpbm1hbiBzY2hlbWUuIEJ1dCB3
-ZSBjYW4gbGVhdmUKPiA+ID4gdGhhdCB1bnRpbCBsYXRlci4gIAo+ID4KPiA+IFBlcmhhcHM6Cj4g
-Pgo+ID4gY29tcGF0aWJsZSA9ICJiaW5tYW4iLCAiZml4ZWQtcGFydGl0aW9ucyI7Cj4gPgo+ID4g
-VGhvdWdoIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgYmlubWFuIGNvdWxkbid0IGp1c3QgdW5kZXJz
-dGFuZCB3aGF0Cj4gPiAiZml4ZWQtcGFydGl0aW9ucyIgbWVhbnMgcmF0aGVyIHRoYW4gImJpbm1h
-biIuICAKPiAKPiBXZWxsIHNvIGxvbmcgYXMgd2UgZG9uJ3QgYWRkIGFueSBiaW5tYW4gdGhpbmdz
-IGluIGhlcmUsIHlvdSBhcmUgcmlnaHQuCj4gCj4gQnV0IHRoZSBldmVudHVhbCBnb2FsIGlzIHBh
-cml0eSB3aXRoIGN1cnJlbnQgQmlubWFuIGZ1bmN0aW9uYWxpdHksCj4gd2hpY2ggd3JpdGVzIHRo
-ZSBlbnRpcmUgKGF1Z21lbnRlZCkgZGVzY3JpcHRpb24gdG8gdGhlIERULCBhbGxvd2luZwo+IHRv
-b2xzIHRvIHJlYnVpbGQgLyByZXBhY2sgLyByZXBsYWNlIHBpZWNlcyBsYXRlciwgbWFpbnRhaW5p
-bmcgdGhlIHNhbWUKPiBhbGlnbm1lbnQgY29uc3RyYWludHMsIGV0Yy4gSSBhbSBhc3N1bWluZyB0
-aGF0IHByb3BlcnRpZXMgbGlrZSAnYWxpZ24KPiA9IDwxNj4nIHdvdWxkIG5vdCBmaXQgd2l0aCBm
-aXhlZC1wYXJ0aXRpb25zLiAKCkkgYW0gcGVyc29uYWxseSBub3QgYm90aGVyZWQgYnkgdGhpcyBr
-aW5kIG9mIHByb3BlcnRpZXMuIEJ1dCBpZiB3ZSBwbGFuCm9uIGFkZGluZyB0b28gbXVjaCBwcm9w
-ZXJ0aWVzLCBJIHdpbGwgYWR2aXNlIHRvIGluZGVlZCB1c2UgYW5vdGhlciBuYW1lCnRoYW4gZml4
-ZWQtcGFydGl0aW9ucyAob3IgYWRkIHRoZSAiYmlubWFuIiBzZWNvbmRhcnkgY29tcGF0aWJsZSkK
-b3RoZXJ3aXNlIGl0J3MgZ29ubmEgYmUgaGFyZCB0byBzdXBwb3J0IGluIHRoZSBjb2RlIHdoaWxl
-IHN0aWxsCnJlc3RyYWluaW5nIGFzIG11Y2ggYXMgd2UgY2FuIHRoZSBvdGhlciBwYXJ0aXRpb24g
-c2NoZW1hLgoKPiBCdXQgaWYgd2UgZG9uJ3QgcHJlc2VydmUKPiB0aGVzZSBwcm9wZXJ0aWVzIHRo
-ZW4gQmlubWFuIGNhbm5vdCBkbyByZXBhY2tpbmcgcmVsaWFibHkuIFBlcmhhcHMgZm9yCj4gbm93
-IEkgY291bGQgcHV0IHRoZSBhdWdtZW50ZWQgRFQgaW4gaXRzIG93biBzZWN0aW9uIHNvbWV3aGVy
-ZSwgYnV0IEkKPiBhbSBqdXN0IG5vdCBzdXJlIGlmIHRoYXQgd2lsbCB3b3JrIGluIGEgcmVhbCBz
-eXN0ZW0uIEUuZy4gd2l0aCBWQkUgdGhlCj4gZ29hbCBpcyB0byB1c2UgdGhlIERUIHRvIGZpZ3Vy
-ZSBvdXQgaG93IHRvIGFjY2VzcyB0aGUgZmlybXdhcmUsIHVwZGF0ZQo+IGl0LCBldGMuCj4gCj4g
-SXMgaXQgbm90IHBvc3NpYmxlIHRvIGhhdmUgbXkgb3duIG5vZGUgd2l0aCB3aGF0ZXZlciB0aGlu
-Z3MgQmlubWFuCj4gbmVlZHMgaW4gaXQgKHN1YmplY3QgdG8gcmV2aWV3IG9mIGNvdXJzZSk/IGku
-ZS4gY291bGQgd2UgZGlzY3VzcyBob3cKPiB0byBlbmNvZGUgaXQsIGJ1dCBhcmd1ZSBsZXNzIGFi
-b3V0IHdoZXRoZXIgdGhpbmdzIGFyZSBuZWVkZWQ/IEkKPiBraW5kLW9mIGZlZWwgSSBrbm93IHdo
-YXQgaXMgbmVlZGVkLCBzaW5jZSBJIHdyb3RlIHRoZSB0b29sLgo+IAo+ID4KPiA+ICAKPiA+ID4g
-U28geW91IGFyZSBzdWdnZXN0aW5nICdsYWJlbCcgZm9yIHRoZSBjb250ZW50cy4gUm9iIHN1Z2dl
-c3RlZAo+ID4gPiAnY29tcGF0aWJsZScgWzFdLCBzbyB3aGF0IHNob3VsZCBJIGRvPyAgCj4gPgo+
-ID4gImxhYmVsIiBpcyBmb3IgY29uc3VtcHRpb24gYnkgaHVtYW5zLCBub3QgdG9vbHMvc29mdHdh
-cmUuIENvbXBhdGlibGUKPiA+IHZhbHVlcyBhcmUgZG9jdW1lbnRlZCwgbGFiZWwgdmFsdWVzIGFy
-ZSBub3QuIFRob3VnaCB0aGUgcGFydGl0aW9uCj4gPiBzdHVmZiBzdGFydGVkIG91dCB1c2luZyBs
-YWJlbCBsb25nIGFnbyBhbmQgaXQncyBldm9sdmVkIHRvIHByZWZlcnJpbmcKPiA+IGNvbXBhdGli
-bGUuICAKPiAKPiBPSyBzbyB3ZSBhcmUgYWdyZWVkIHRoYXQgd2UgYXJlIGdvaW5nIHdpdGggJ2Nv
-bXBhdGlibGUnLgoKU3RpbGwgc3Ryb25nbHkgZGlzYWdyZWUgaGVyZS4KCk15IHVuZGVyc3RhbmRp
-bmcgaXMgdGhhdCBhIGNvbXBhdGlibGUgY2FycmllcyBob3cgdGhlIGNvbnRlbnQgaXMKb3JnYW5p
-emVkLCBhbmQgaG93IHRoaXMgbWF5YmUgc3BlY2lmaWMgKGxpa2UgeW91IGhhdmUgaW4tYmFuZCBt
-ZXRhIGRhdGEKZGF0YSB0aGF0IG5lZWRzIHRvIGJlIHBhcnNlZCBpbiBhIHNwZWNpZmljIHdheSBv
-ciBpbiB5b3VyIGNhc2UKYWRkaXRpb25hbCBzcGVjaWZpYyBwcm9wZXJ0aWVzIGluIHRoZSBEVCB3
-aGljaCBnaXZlIG1vcmUgY29udGV4dCBhYm91dApob3cgdGhlIGRhdGEgaXMgc3RvcmVkKS4gQnV0
-IHRoZSByZWFsIGNvbnRlbnQgb2YgdGhlIHBhcnRpdGlvbiwgaWUuIGlmCml0IGNvbnRhaW5zIGEg
-ZmlybXdhcmUsIHRoZSBrZXJuZWwgb3Igc29tZSB1c2VyIGRhdGEgZG9lcyBub3QgYmVsb25nIHRv
-CnRoZSBjb21wYXRpYmxlLgoKSS5lOgotIFRoZSBmaXJzdCBieXRlIG9mIG15IHBhcnRpdGlvbiBn
-aXZlcyB0aGUgY29tcHJlc3Npb24gYWxnb3JpdGhtOgogIC0+IGNvbXBhdGlibGUgPSAiY29tcHJl
-c3NlZC1wYXJ0aXRpb24tZm9vIjsKICAgICBvcgogIC0+IGNvbXBhdGlibGUgPSAiZml4ZWQtcGFy
-dGl0aW9ucyIgKyBjb21wcmVzc2lvbi1hbGdvcml0aG0gPSAiZm9vIjsKLSBUaGUgcGFydGl0aW9u
-IGNvbnRhaW5zIGEgcGljdHVyZSBvZiBteSBkb2c6CiAgLT4gbGFiZWwgPSAibXkgZG9nIGlzIGJl
-YXV0aWZ1bCIKICBidXQgY2VydGFpbmx5IG5vdAogIC0+IGNvbXBhdGlibGUgPSAibXktZG9nIjsK
-CkkgZG9uJ3Qgc2VlIHdoeSwgZm9yIHRoZSBiaW5tYW4gc2NoZW1hLCB3ZSBjb3VsZCBub3QgY29u
-c3RyYWluIHRoZQpsYWJlbHM/Cgo+ID4gPiBXaXRoIHRoaXMgc2NoZW1hLCB3b3VsZCBldmVyeSBu
-b2RlIGJlIGNhbGxlZCAncGFydGl0aW9uQC4uLicgb3IgaXMKPiA+ID4gdGhlcmUgZmxleGliaWxp
-dHkgdG8gdXNlIG90aGVyIG5hbWVzPyAgCj4gPgo+ID4gVGhlIHByZWZlcmVuY2UgaXMgdG8gdXNl
-IGdlbmVyaWMgbmFtZXMuIERvIHlvdSBtZWFuIHdpdGhvdXQgYQo+ID4gdW5pdC1hZGRyZXNzIG9y
-IGRpZmZlcmVudCBmcm9tICJwYXJ0aXRpb24iPyBUaGUgbmVlZCBmb3IgdGhlIGlucHV0Cj4gPiBz
-aWRlIG9mIGJpbm1hbiB0byBoYXZlIGR5bmFtaWMgYWRkcmVzc2VzIHNlZW1zIGxpa2UgdGhlIGJp
-Z2dlc3QgaXNzdWUuCj4gPiBUaGF0J3MgYWxsb3dlZCBpbiBvdGhlciBjYXNlcyB3aXRoICJwYXJ0
-aXRpb24tTiIgb3IgInBhcnRpdGlvbi1mb28iCj4gPiBJSVJDLiBJIGRvbid0IHRoaW5rIHdlIHdh
-bnQgdG8gYWxsb3cgdGhhdCBmb3IgImZpeGVkLXBhcnRpdGlvbnMiIGF0Cj4gPiBsZWFzdCBpbiB0
-aGUgRFRCIChpLmUuIHRoZSBvdXRwdXQgc2lkZSBvZiBiaW5tYW4pLiAgCj4gCj4gT0sgSSBzdXBw
-b3NlIHRoaXMgaXMgdGhlIHByb2JsZW0gd2l0aCBzdGFydGluZyBzbWFsbC4gSSB3YXMgaG9waW5n
-IHRvCj4gYnVpbGQgdXAgdGhlIHNjaGVtYSBwaWVjZSBieSBwaWVjZSBidXQgbm93IEkgYW0gd29u
-ZGVyaW5nIHdoZXRoZXIKPiBldmVyeSBsaXR0bGUgZGV0YWlsIHdpbGwgZ2V0IHJlZGlyZWN0ZWQg
-YW5kIEknbGwgZW5kIHVwIHdpdGggc29tZXRoaW5nCj4gdGhhdCBCaW5tYW4gY2Fubm90IHVzZS4K
-PiAKPiBTbyBmYXIgYWxsIEkgaGF2ZSBpcyB0aGF0IEkgY2FuIGFkZCBhICdjb21wcmVzcycgcHJv
-cGVydHkgYW5kIGEKPiAnY29tcGF0aWJsZScgd2hpY2ggZGVzY3JpYmVzIHRoZSBjb250ZW50cy4g
-SSBzdXBwb3NlIGl0IGlzIGEgc3RhcnQuCgpJIGd1ZXNzIGRlZmluaW5nIGFsbCB5b3UgbmVlZCBp
-biBvbmUgZ28gd291bGQgYmUgYmV0dGVyLiBBdCBsZWFzdApzaG93aW5nIGEgZnVsbCBhbmQgdHlw
-aWNhbCBleGFtcGxlIG1pZ2h0IGhlbHAuIEJ1dCBzb21lIGl0ZW1zIGxpa2UKZW5jb2RpbmcgaWYg
-eW91IGhhdmUgVEYtQSBvciBVLUJvb3QgaW4gdGhlIGNvbXBhdGlibGUsIEknbSBmYXIgZnJvbQpj
-b252aW5jZWQuLi4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+We have a special place for OF polarity quirks in gpiolib-of.c. Let's
+move this over there so that it doesn't pollute the driver.
+
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+This is an alternative to the previous patch that instead of replacing
+one active-low setter with another, just moves the quirk over to
+gpiolib-of.c
+
+ drivers/gpio/gpiolib-of.c                       |  9 +++++++++
+ drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 12 ------------
+ 2 files changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
+index 5515f32cf19b..58c0bbe9d569 100644
+--- a/drivers/gpio/gpiolib-of.c
++++ b/drivers/gpio/gpiolib-of.c
+@@ -192,6 +192,15 @@ static void of_gpio_try_fixup_polarity(const struct device_node *np,
+ 		 */
+ 		{ "himax,hx8357",	"gpios-reset",	false },
+ 		{ "himax,hx8369",	"gpios-reset",	false },
++		/*
++		 * The rb-gpios semantics was undocumented and qi,lb60 (along with
++		 * the ingenic driver) got it wrong. The active state encodes the
++		 * NAND ready state, which is high level. Since there's no signal
++		 * inverter on this board, it should be active-high. Let's fix that
++		 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
++		 * helper, and be consistent with what other drivers do.
++		 */
++		{ "qi,lb60",		"rb-gpios",	true },
+ #endif
+ 	};
+ 	unsigned int i;
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+index 6748226b8bd1..c816dc137245 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
+@@ -380,18 +380,6 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
+ 		return ret;
+ 	}
+ 
+-	/*
+-	 * The rb-gpios semantics was undocumented and qi,lb60 (along with
+-	 * the ingenic driver) got it wrong. The active state encodes the
+-	 * NAND ready state, which is high level. Since there's no signal
+-	 * inverter on this board, it should be active-high. Let's fix that
+-	 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
+-	 * helper, and be consistent with what other drivers do.
+-	 */
+-	if (of_machine_is_compatible("qi,lb60") &&
+-	    gpiod_is_active_low(nand->busy_gpio))
+-		gpiod_toggle_active_low(nand->busy_gpio);
+-
+ 	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
+ 
+ 	if (IS_ERR(nand->wp_gpio)) {
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
