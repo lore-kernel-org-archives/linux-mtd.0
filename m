@@ -4,103 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74C19E80AAF
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 14:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12BA0E80AB8
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 14:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
-	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gut5lY38sffHE0WrZ0Z1tetZSU1BJMTrW9NXcYcLEtg=; b=gRnu4dzvAWqlv0
-	rb+iR09r0RJSz9aDbrptSh518HZ9nnvaSAhC0PU6B9WLbqFm7kjy91q0iUNzWdJiMwJC2GFSK+XYN
-	GQWaNBlLegXcPD55+s+ER0txSyLJmUMK4535agjMIcxth7Drc7VtUVIIvVx1GNWwIf6CIxKCy2+DD
-	CxvUqxl5k/A3SMwnSscIxFI63oQzHevrxxf8X2i//wEVzMLfgqAWECUInrOZuQP7CLm8yam163AYl
-	WIMLOjxP5dYG5EyHQgXuKQX8oPNLS2FApOvIONeI5AGiDPcGRxgvaLWkz9C/Ssjn8TtcIjbEMSTiR
-	gk6GZ6mCAI68yKnTNBCQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tC3kP7kA/XnYyw+WHquuVS3LZtI28k4vgBHdnkcuPYE=; b=JyapENRKEBM//Btm4Lq5DKPuGZ
+	mmxt+7PA1OTzL1HiVdIQpsFYEkDKVNpc9meQGh371UlmLnHU5e4+RgmvMLYKj79HzVSPI+QqQHcyb
+	t0ciittR9DvRqGu8qZQURibDQXPJSdu9iy7hqUPSVOJFWxJxPJ8+FY2v7hkifZLPV/ZESo5Y53R1f
+	N/si/UKuEpYryrFkwtLFAf+vr7bYWvlW24TZ6rwpOZ2IN6KPqc0Gh19gy5CnH4t/Az0hK3Jzdgs7g
+	8Wfd+D23vJLQxiKQFSZTn9OcdOO8f0NPkk2M96cpPZWJWPCK722KpkRV77otqeJv3/Nt5iatYfbN6
+	32Yy0/tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlVOD-0017Yv-1B;
-	Wed, 27 Sep 2023 14:19:45 +0000
-Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
+	id 1qlVfa-0019FN-1I;
+	Wed, 27 Sep 2023 14:37:42 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlVOA-0017WU-37
+	id 1qlVfX-0019EQ-2x
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Sep 2023 14:19:44 +0000
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bfe9447645so40486411fa.0
-        for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2023 07:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695824379; x=1696429179; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Wwk46okUDVQfnnelgDDAXJI2PyNHcNwKe3ka13udWbU=;
-        b=oNj82EpmRdLE+QjKVOLuZR3vpuxzBH+4CbUwaz/yEBDapZXM4kEYJnCdA5686CfDFq
-         N6jfNemW0ASOwPTE26lHpU5LjorohE1shQI8ARmKJmhFfT67qJ1U4AHnD/YS1SmjzRiq
-         q8A23w2qv8+uTnH50qgQe9hqgp5zNYmMd1SDM2mJTE4VjCA7i5bvC8OANjzX40/aC2SD
-         zxBFkGjWWvmYDCnVpzFipv55jHcL17jFfNj6YF37OhIoyjWyn7J82GLwuQJwgQz9D/WH
-         f9mhGofND9ZDtefUwhwfyYX8YWjS3P/E9cWuTUY8JASIKXzr0yI0YMfC+K1sIYpxWMHe
-         jhhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695824379; x=1696429179;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wwk46okUDVQfnnelgDDAXJI2PyNHcNwKe3ka13udWbU=;
-        b=M2ekYoLyxdFeOM7Gj2+D6m/Rxx/PBkYUV85Ef1+hcn4IxpW1LKhOpSvOYl4FswhHuK
-         2+uWCQuBUD87zf6mux/zIa7Rld1msfUL7c5JAhgfxHrnYb3dXFDW8DfoeNRbgy/VQg3T
-         P5di/P3VA/kpWqNwkzW7pEI1YHRVArfCheeN8XDUs/6GL4Hu3wKrszuethCzFck419aK
-         egesTxHKdDLklGPdCUYKn9L9gOVCRQa2RuzfpqxsAPQ2ghj6sKiqX5XhLZAt52sboHJn
-         ufauPtAOtXsDPS6cQrG4QEw2FozPJq4cMxt1mMjlewDLfHIM+NgkcUfsCmjlUt1Kfnhq
-         XGGg==
-X-Gm-Message-State: AOJu0YzPVPs2tJAv6wpBQjKuJNxuDRDsTxKOSp4bFBZ0QlHwu4zq+iQU
-	t540F33KPA3cwLQBeagFOBOeZg==
-X-Google-Smtp-Source: AGHT+IExVCqrFIxKzo43T8FMa/9T5rz6/xdccYRyI4cqxFk27k3RqgKqbk6x0v1Y5TMyg8NtKFdEkg==
-X-Received: by 2002:a05:651c:3cf:b0:2b6:cd7f:5ea8 with SMTP id f15-20020a05651c03cf00b002b6cd7f5ea8mr1801740ljp.1.1695824378667;
-        Wed, 27 Sep 2023 07:19:38 -0700 (PDT)
-Received: from [172.20.13.88] ([45.147.210.162])
-        by smtp.gmail.com with ESMTPSA id mh2-20020a170906eb8200b00992b2c55c67sm9370253ejb.156.2023.09.27.07.19.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 07:19:37 -0700 (PDT)
-Message-ID: <9cc59d88-4b77-4e56-ae54-737baca1d435@kernel.dk>
-Date: Wed, 27 Sep 2023 08:19:36 -0600
+	Wed, 27 Sep 2023 14:37:41 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 933F961883;
+	Wed, 27 Sep 2023 14:37:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA2F5C433C8;
+	Wed, 27 Sep 2023 14:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695825458;
+	bh=qWF+NqYelJaQpG877EqA8MHQS8RmOQ1ooBg3CABBt3o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ASpyUfAFsBsIzxXjNqewgstlIRbwyJjkIJiEF7OUVKitEcngP9KaeVNwNY5gf5nhj
+	 tkX8wRjXneezmd7BiMz2YQDOXZ5j2YeQx/E9nkkcwPn3Z1TZWxbj6j/WVkBAhbWOwI
+	 VsutCdQHi4mbSjrfUxulmvA+/dIbycDiPqQ/sZgC/7qqq4SmfuWYs6wPQ9sLuHgUE1
+	 AR4tEZm75LEaETW0KTsvKg6ik2z4WX0vK1Lf90MC6SA59zbXee+yKe4F9affzCol9+
+	 n+4ZvVMMoTkpCMeERjAAzDKg62pIzRBlTzI/y0gTiRQzziqL2co+Ucw9+LfAR648qH
+	 gHH6z2zXcwWBg==
+Date: Wed, 27 Sep 2023 16:37:35 +0200
+From: Mark Brown <broonie@kernel.org>
+To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+Cc: "Winkler, Tomas" <tomas.winkler@intel.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	"Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+	"Lubart, Vitaly" <vitaly.lubart@intel.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH 00/10] drm/i915/spi: spi access for discrete graphics
+Message-ID: <ZRQ+LzIoD+J0BzVp@finisterre.sirena.org.uk>
+References: <CY5PR11MB63667FBB6AF5B4331419BDAAEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <0d60a78b-0305-4cb3-babe-4eefe5001b29@sirena.org.uk>
+ <CY5PR11MB63667AB9958A23970B4B0D3EEDF1A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <20230912152102.0dfe7558@xps-13>
+ <ee4a85be-aa87-4c40-916c-0a796688ad6f@sirena.org.uk>
+ <CY5PR11MB6366427A8DD52D9B8B54F25DEDF9A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <1b93fffe-5aac-42f3-9bbe-a307758673cf@sirena.org.uk>
+ <MN2PR11MB40938110726F81D8CE305FB8E5F9A@MN2PR11MB4093.namprd11.prod.outlook.com>
+ <0682443d-5219-4aa2-a932-ee3e04c0760e@sirena.org.uk>
+ <CY5PR11MB63661B36FFAE9455504DACD6EDC2A@CY5PR11MB6366.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v4 0/29] block: Make blkdev_get_by_*() return handle
-To: Jan Kara <jack@suse.cz>
-Cc: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- Jan Kara <jack@suse.cz>, Alasdair Kergon <agk@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, Anna Schumaker <anna@kernel.org>,
- Chao Yu <chao@kernel.org>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, "Darrick J. Wong" <djwong@kernel.org>,
- Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
- dm-devel@redhat.com, drbd-dev@lists.linbit.com, Gao Xiang
- <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, jfs-discussion@lists.sourceforge.net,
- Joern Engel <joern@lazybastard.org>, Joseph Qi
- <joseph.qi@linux.alibaba.com>, Kent Overstreet <kent.overstreet@gmail.com>,
- linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-xfs@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
- Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
- ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
- Sergey Senozhatsky <senozhatsky@chromium.org>, Song Liu <song@kernel.org>,
- Sven Schnelle <svens@linux.ibm.com>, target-devel@vger.kernel.org,
- Ted Tso <tytso@mit.edu>, Trond Myklebust <trond.myklebust@hammerspace.com>,
- xen-devel@lists.xenproject.org
-References: <20230818123232.2269-1-jack@suse.cz>
-Content-Language: en-US
-In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
+In-Reply-To: <CY5PR11MB63661B36FFAE9455504DACD6EDC2A@CY5PR11MB6366.namprd11.prod.outlook.com>
+X-Cookie: Save energy:  Drive a smaller shell.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230927_071943_007399_422BE45C 
-X-CRM114-Status: GOOD (  17.78  )
+X-CRM114-CacheID: sfid-20230927_073740_059451_2BD2A4CD 
+X-CRM114-Status: GOOD (  13.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,45 +88,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8546810985886968230=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 27, 2023 at 3:34?AM Jan Kara <jack@suse.cz> wrote:
->
-> Hello,
->
-> this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
 
-v4?
+--===============8546810985886968230==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="frZJ4uuKAPwyznhl"
+Content-Disposition: inline
 
-> calls returning bdev_handle which is then passed to blkdev_put() [1]. This
-> makes the get and put calls for bdevs more obviously matching and allows us to
-> propagate context from get to put without having to modify all the users
-> (again!). In particular I need to propagate used open flags to blkdev_put() to
-> be able count writeable opens and add support for blocking writes to mounted
-> block devices. I'll send that series separately.
->
-> The series is based on Btrfs tree's for-next branch [2] as of today as the
-> series depends on Christoph's changes to btrfs device handling.  Patches have
-> passed some reasonable testing - I've tested block changes, md, dm, bcache,
-> xfs, btrfs, ext4, swap. More testing or review is always welcome. Thanks! I've
-> pushed out the full branch to:
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
->
-> to ease review / testing. Christian, can you pull the patches to your tree
-> to get some exposure in linux-next as well? Thanks!
 
-For the block bits:
+--frZJ4uuKAPwyznhl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Jens Axboe <axboe@kernel.dk>
+On Wed, Sep 27, 2023 at 02:11:47PM +0000, Usyskin, Alexander wrote:
 
--- 
-Jens Axboe
+> There is a Discreet Graphic device with embedded SPI (controller & flash).
+> The embedded SPI is not visible to OS.
+> There is another HW in the chip that gates access to the controller and
+> exposes registers for:
+> region select; read and write (4 and 8 bytes); erase (4K); error register=
+;=20
 
+So assuming that's flash region select it sounds like this is a MTD
+controller and the fact that there's SPI isn't really relevant at all
+=66rom a programming model point of view and it should probably be
+described as a MTD controller of some kind.  Does that sound about
+right?
+
+--frZJ4uuKAPwyznhl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUUPigACgkQJNaLcl1U
+h9Dztwf/dI2/2yh2ohlcjPRhimWVWsphQDwpbvDH73EC98Z0A1pqnhMEQNvjGP1z
+XD16vP3s84PqWGtNhBdn9NNcK0+smsWDEUwQE+16+MQFhuAHvGl24h2WwsmBZ+8l
+NtOcREhYq4nNrg0dQ70xDkb6pCecfEN79R6719yk8ryVOMBGa6LmSr3nKlcGeKCa
+POiJS/5kcGr2rgi+2suhkSH56OEUsLbKFjOncZN0NPKCmlnf/kieirZTG9XfajjH
+W988zzdRAe++RpgHFYFz2pZqGQ648IaexM2Weje2WGYKPKJslmyYaEf+Ru1hV8sE
+VyA1NsixeALMQhIttr1yaAB8xzCTig==
+=KXto
+-----END PGP SIGNATURE-----
+
+--frZJ4uuKAPwyznhl--
+
+
+--===============8546810985886968230==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8546810985886968230==--
+
