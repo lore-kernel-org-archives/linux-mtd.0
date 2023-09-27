@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB284E82CA1
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 15:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA0DE82CA5
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 15:27:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:References:In-Reply-To:
 	Subject:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ghC6YcMFu7R8/cEWMP/z04P5v/UnZ1GKIFfLT8uGwg4=; b=2pAXncv/KVjHVX
-	CtdTEpoptO7FoN/0rUr6IfITpovirLyRTVYl2L7NBnuY7Im60mAdeDwXhrm7Oa+W8FGHsiHkAS6/9
-	mjJOvXnG8bIuuc/D6j90tHT+A9np1zTSKAG+03KcMF/65eUNdyN7VsGrk732DXmmAD+85wKGWhGO6
-	/l3mBXuKqdERF0irX4/bNBqbhFC6x0WElmwmctmOXwFmWmKXC/cl2IvDq+VtrU3Y7iPn8VR105gtZ
-	Z+rvpmtjKY1ad7gmNOK2rQ951hPwh+8zzQQT2R80dvf+NL0T0fvwhKYWFSgnyqleoYW/GN8BuRHpI
-	VTEh4wZjurMlWesYS27A==;
+	List-Owner; bh=Gs0VIk64PQqeh/KO6LRcxDw5hWVriROkJd8TQETilVQ=; b=ilLLBi8Ll3yFLv
+	wfy2/DMBD2rq7CnEv4R9zRf+6qclkP8Wx4SxX15Up26zWBzYKpJaqlUkT2pctiC6WZJ3IdEt+wyhn
+	iVa2eGfqLBf9lbLZ4FB0uTjISGfVO1lS1PvgQfSK1wg1BR1l9/haP/nZlxGoR06g+Ipd/uxErT3x0
+	OBt5MFtCei+6fUE4vLYzf7XdpUBF8dOmw5SqXqsrH+6NGArdkUUgwWBASiVhIuwwFTKeFFgXhM2G5
+	HKNxYI/QSmlUAdZIN2mz5YiniqpGj7Sszm3P82kykn1ulqp1iw7Rm5xLomN175NJ6OI+U3TA9BA0y
+	eO695h//+bsJDvKcNYpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlWRd-001Ey3-00;
-	Wed, 27 Sep 2023 15:27:21 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1qlWRg-001F05-2Q;
+	Wed, 27 Sep 2023 15:27:24 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlWRa-001Eve-1M
+	id 1qlWRe-001Exw-0U
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Sep 2023 15:27:19 +0000
+	Wed, 27 Sep 2023 15:27:23 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 977B3B81800;
-	Wed, 27 Sep 2023 15:27:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FF6C433CC;
-	Wed, 27 Sep 2023 15:27:15 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 658B7CE1AA0;
+	Wed, 27 Sep 2023 15:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EDCCC433C8;
+	Wed, 27 Sep 2023 15:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695828436;
-	bh=rgo0WOp6LMa4GMgPHGGp872nNuKcGbXX9EO3lb6/LaQ=;
+	s=k20201202; t=1695828439;
+	bh=RUPpmHbb4kJSl2c/HLftS0eFYan82W2JMeZx9U6odFM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
-	b=L4Od6E8W4nshRKxo9Igf6yldurSD5EY0RvFkIqhnOwOGTvjq0hAgzp+STNsGJaRDU
-	 d9nl0J1soonyMx8/Uqy4dQTlexdtknnFv/z3byV5odGXHKAd7Yuxr4D1HJWY5VqtrK
-	 8syzuO7TwlW/nQfOU9PwPmPNFqTV4+czK9RYxDcyNefwbG8WBoowM9UG2oR2QxlEaA
-	 cTbHgk5W9tRV0xVNVzDtdOQbAIhuN/X5pdd4Accy5z44iItY+hh2NzyYmyIl/Def5A
-	 UUEhYMt92RtaUPtufKjGDqNjGP8IWeY9XIKuNxD58814yeRZJiF2a0ITP2iTyDYm7e
-	 uT3jfQ87AIOTw==
-Message-ID: <2b5dd78d308c007dfaf01eaf59fe8ec4.mripard@kernel.org>
-Date: Wed, 27 Sep 2023 07:20:12 +0000
+	b=m2uFvcH/Sh7Py6hPDqCl2ffQkF+wpMQrL3cz00UjOU+0iKN/p4fNZIC2Y55QwFQHV
+	 zkfHk7a2B5jDM8lwiD9pw+X9tFd/AX8qZOHDj53UJZV+4pIzucP8wfGGkjiH43QaX5
+	 2WSgIk0bAQDEkHMOE8J/xKMz8jI5nBBU7Ipz37yvJEPlQNwfcLQG1eXJXrevm8eZL6
+	 B6r00VOqDYFG/4PcVC7wWrKnUm+PWTY1bYnW42OxnCDS5TBCNEEQkoa8ZRcibqEstF
+	 jOtkcmdYkRIfR9OYa3mwTY4NylxErIjUzKvAHLe4QkSodXP/HOwKm4uJ9X6UtzDWLc
+	 4V+TSgiYhW+jA==
+Message-ID: <c16e9f00a14f232b2408ddcb5f8e6f1b.mripard@kernel.org>
+Date: Wed, 27 Sep 2023 07:20:30 +0000
 From: "Maxime Ripard" <mripard@kernel.org>
 To: "Miquel Raynal" <miquel.raynal@bootlin.com>
 Subject: Re: [PATCH v2 00/17] Prevent NAND chip unevaluated properties
@@ -65,8 +65,8 @@ Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, "Alexandre
  Murugan" <vadivel.muruganx.ramuthevar@linux.intel.com>, "Vignesh
  Raghavendra" <vigneshr@ti.com>, "Xiangsheng Hou" <xiangsheng.hou@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230927_082718_615410_4F1A0392 
-X-CRM114-Status: UNSURE (   6.94  )
+X-CRM114-CacheID: sfid-20230927_082722_400905_E3B7A484 
+X-CRM114-Status: UNSURE (   6.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -94,9 +94,6 @@ On Tue, 6 Jun 2023 19:52:29 +0200, Miquel Raynal wrote:
 > 
 > [ ... ]
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
-Tested-by: Maxime Ripard <mripard@kernel.org>
 
 Thanks!
 Maxime
