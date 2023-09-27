@@ -4,84 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C83E810A8
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 08:48:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03021E810CD
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 09:35:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qYsPQY7rBU+ugzkox0fh7yU9TOFIQok9CDrRsnUPSic=; b=lUyiY2S+l5OaZG
-	5DSX5mRwxvwYakaNgHu0yhmZRK0RddhDstwG5Z9q2C0DPWkVlPihI4JyKMaXpjBGW3Rhg1LQyXqLr
-	Fv5ZZnqyp2dajdGRxWTmyaLP1aYF65Jv9Ybmwl4or0sUZdMBbKL5Iz+uVpxIqWnJBk4rCjTGeS4Ob
-	xP9oFfojiWYHq5Kd3NFSEVXbL/3x253e1U3tNpT63AJPV/957Apx2EIHle5KSnTTSV5U8rfJhQxVn
-	EUPiqL9jtDpHmoRWtrUYvYRkEAIjmAOBG2U+a+Lq1561o9c3euubLq044tpSVMggJneHkV1ygz4Do
-	35NytUGPEGp83Ffq/99g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YrJIVzwwFPAK3ccdFgJlRot2hWWWs8EuvSniC4HJ/EY=; b=g7STIY1IRdETfg
+	vCzAJqWkj8h7VGZHNzyN5hCJZXVCZKnBBNSL8oI+eePes0APFxp+gH33EgK5QQvvkfhNB8V63GkEK
+	Qybux/7DYsvgDg5U0OLhi7/tq9qk+YECWwYFNSQkPnDJHdN1LKNgWVwvYiQEO/Gwz5HprTvI5Kdc1
+	MQVgNgenGV3Jdmop8BQCzILEEG68GIh8ciW98qR8VYW98cWaR/dvu0VD4toQoVv4vth+FrgiT7cMT
+	RyDCaIqQKB02sZoYS0EivM2GTjdUgPhhMgcdau/I8VTwFQCpqm9QcIQLdVelg9I38ZrVtNMt9+zuE
+	bWGT8z6XGyA9yUtxygqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlQD5-000NRa-0g;
-	Wed, 27 Sep 2023 08:47:55 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1qlQwY-000UDw-01;
+	Wed, 27 Sep 2023 09:34:54 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlQD1-000NPt-1Z
-	for linux-mtd@lists.infradead.org;
-	Wed, 27 Sep 2023 08:47:52 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso1344974366b.2
-        for <linux-mtd@lists.infradead.org>; Wed, 27 Sep 2023 01:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695804468; x=1696409268; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gG+aXkNbfbxBluGasKx11ard4exS0JS35Im9h3EpZhA=;
-        b=tpvago9rM6zjJf5jCpK2EHsD+T2sodX0LKquj9FIAfD6cysXyUm4hjv2ZNnafk5ZsY
-         UG+fHUCynM7ul3Kv5ZOGNr4Q954Fs2aQez/LNO1oUIycnSV1LSZAmhoGz0wU/E7xkDTh
-         acgkbj7bhcihiFte8E1DiSSaMImOMJvDbmuVqnZDWflhiDbk07/d31VhOkiQyLcPRbna
-         JNE9YC0POmpJaPvjZmpWjPym584SHbsNH2CsUvualLe7ffEIF8xY6j92ls5pg+QM+kHt
-         wAOGRYxuoqwGIFyQthDy2T2cwyh5Izg1547qfXimdTp9+pVRjWkYqCaXr5u9RqDrNHVL
-         6bow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804468; x=1696409268;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gG+aXkNbfbxBluGasKx11ard4exS0JS35Im9h3EpZhA=;
-        b=BrfOjkQYhCMipVfXvy1oKHqRloliX83mmx9iq4zDpjaVAokD4EOtUHYzHh2GKyZZn7
-         tiVHM8ujkqnbfaMvfXcMme3hZTAOZwEpyQ+UbD79S4Cjh4vG271zu9Bh4iVWOPDALtxX
-         WiAYY72DY4UZZukDx9/6siO1C3eZR6IZG0qbzUTJr79cP8FA+pExAGK+sZHoJi6Di7BZ
-         e6h6kU8enhCwl03x8Vpz1nugyh9VepMIierE8hZPunIvacMY9zzRRxTerPBXtBx2Gf4G
-         xWWwWc13smFDkYkLUt3ef5+rKpIhb4ClXwOAsAwheWmVwUtxeZUUG7e1clFt2fs8O+tL
-         EkTQ==
-X-Gm-Message-State: AOJu0YzOUj5ufjnqzdjsd1uNiJeXYm/d0ni5NHPnTn+SiEICSLIH/aC1
-	fcr+h18BPvcGnexq5lhOz4vDpw==
-X-Google-Smtp-Source: AGHT+IGfbYjgsqnjDdB+1ueCcIXEFM9gahUF8DxTN/prspZwTFUzdbaBaRYAhTpkpvSrHO+dtO6XYg==
-X-Received: by 2002:a17:906:2189:b0:9ae:7681:f62a with SMTP id 9-20020a170906218900b009ae7681f62amr1095215eju.44.1695804468278;
-        Wed, 27 Sep 2023 01:47:48 -0700 (PDT)
-Received: from 1.. ([79.115.63.123])
-        by smtp.gmail.com with ESMTPSA id lv23-20020a170906bc9700b0099d798a6bb5sm8988021ejb.67.2023.09.27.01.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 01:47:47 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: miquel.raynal@bootlin.com,
+	id 1qlQwR-000U3t-16;
+	Wed, 27 Sep 2023 09:34:51 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 967601FD5E;
+	Wed, 27 Sep 2023 09:34:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1695807283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8yq/EWr5xgyIq2expGTOm/a8E50tdoL6jyUvlCURtkA=;
+	b=AFBlD5DhZEt1NESHiYyz8SkegLzofp7eJ1WULrYqvNawr6FwYRs8YvfnxMMuueLH4oaPAr
+	4/E8CfUtgD9JCSYdgqDNPTGf3WDqWggCkDqswdM4bg88sfMPDeWHH5NIlB2Bfj+JpMt9FG
+	ZcOWlzLEUXG/bpJ8Kbaqy4vRi+qRmpA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1695807283;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8yq/EWr5xgyIq2expGTOm/a8E50tdoL6jyUvlCURtkA=;
+	b=mg4W9cwL1b35dhDAXFy+IpXoqDtwwHWZKy46oqV5YDeY2A866tqG4ZHrqCDezVtTxVLjRN
+	B2SqzI+xFxiJavDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 779CF13A74;
+	Wed, 27 Sep 2023 09:34:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id YqW3HDP3E2X+EgAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 27 Sep 2023 09:34:43 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DAA33A07C9; Wed, 27 Sep 2023 11:34:42 +0200 (CEST)
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: <linux-fsdevel@vger.kernel.org>,
+	<linux-block@vger.kernel.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Jan Kara <jack@suse.cz>,
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com,
+	drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
+	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mm@kvack.org,
 	linux-mtd@lists.infradead.org,
-	nicolas.ferre@microchip.com
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: atmel: add at25ff321a entry
-Date: Wed, 27 Sep 2023 11:47:44 +0300
-Message-Id: <169580425755.36479.12426920554100135654.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926131655.51224-1-nicolas.ferre@microchip.com>
-References: <20230926131655.51224-1-nicolas.ferre@microchip.com>
+	linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com,
+	reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org,
+	Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: [PATCH v4 0/29] block: Make blkdev_get_by_*() return handle
+Date: Wed, 27 Sep 2023 11:34:06 +0200
+Message-ID: <20230818123232.2269-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=558; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=KW1K6AmNfX80IsnR9xpUdUv6VGG97t5DOKpqmZ7gNtg=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlE+wuqZPbqnRe2nbZAzVsbQm+067KrUdralogc /U169CXCrqJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZRPsLgAKCRBLVU9HpY0U 6QvoCACSUw+04JAcr1Q/YGxqO2jKfbnmEB0GRWZjOqQnb+wovxPsnLphKeT7iLDNCgctgcFSdO+ erxbJ/HNDLdx62Ud7LLWN02rmD4OTHPI3nXhYVBrxnUV+cF79QzhWZd3Btx59PKwILLrdiQnIom U7j4Nr+k0jIsvZcZXi4bDNKSoBn7MS7+QjQ/J5aXZgPYg58HoI3bg/XAI1FXGUC9p4JcYEorpl2 an4XzrDarr66EPcBGxHZMOmwWspTHzqktJy+zJ9aAMKnTO921N6LJjKFPG30JttyPGzz2zpCbse 4F2/94ATMDbCHnur6Ai9LNk2kmu7EN8nSAjMhzIFTwz4Nl5u
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3761; i=jack@suse.cz; h=from:subject:message-id; bh=szriGynEGZ/XhMNms+k06ASpRGig2ulDzrbrydRWx/Q=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBlE/cIrHCVKGuvNFZzgT9xiRfuRKr6Es2Qs4om7G7p jp8k2rmJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZRP3CAAKCRCcnaoHP2RA2XGWB/ 4+O+K19fPnUyIouL+A+izJvDBxQbTCWLdn5TEMu5YdIMbi0dvnwAfknt+NWIhJaTQX2oqlgt3Z+UIT peMYb+jQZabj8X4xHMMy3Sfq64tRwodJHlZby5Ux9AfTZe49zDp4M4B3yxQqarEhmz6e4FJUGDaSej vcJmLz6AuSnYuAh4QK/3jCXQrEElZRTjarZjfbunWocM/2dQ7CB+rOSwKJcRMoDpqntU8QyArxca4l q6I2pBMNjnYMgjtG+ABGSBtTrj87TuJSTB3V8qtI38sfCYjMVVEoQiJKuUm1GMh2sPOFelwVMXMCJH mKs8UbSjcFd3wsbJXc8EOKLxzYparl
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230927_014751_520140_9FCC553A 
-X-CRM114-Status: UNSURE (   7.26  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230927_023447_545545_C160429B 
+X-CRM114-Status: GOOD (  15.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,29 +133,101 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+Message-ID: <20230927093406.Wj9vhUFFL3wuMxLEehx8CG3cKGi_ZMqoZdEM-5y_k6U@z>
 
-On Tue, 26 Sep 2023 15:16:55 +0200, nicolas.ferre@microchip.com wrote:
-> Add the at25ff321a 4MB SPI flash which is able to provide
-> SFDP informations.
+Hello,
 
-s/informations/information
+this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
+calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+makes the get and put calls for bdevs more obviously matching and allows us to
+propagate context from get to put without having to modify all the users
+(again!). In particular I need to propagate used open flags to blkdev_put() to
+be able count writeable opens and add support for blocking writes to mounted
+block devices. I'll send that series separately.
 
-> Datasheet: https://www.renesas.com/us/en/document/dst/at25ff321a-datasheet
+The series is based on Btrfs tree's for-next branch [2] as of today as the
+series depends on Christoph's changes to btrfs device handling.  Patches have
+passed some reasonable testing - I've tested block changes, md, dm, bcache,
+xfs, btrfs, ext4, swap. More testing or review is always welcome. Thanks! I've
+pushed out the full branch to:
 
-s/Datasheet/Link
+git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
 
-> 
-> 
+to ease review / testing. Christian, can you pull the patches to your tree
+to get some exposure in linux-next as well? Thanks!
 
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
+Changes since v3:
+* Rebased on top on btrfs tree
 
-[1/1] mtd: spi-nor: atmel: add at25ff321a entry
-      https://git.kernel.org/mtd/c/8f407eda173f
+Changes since v2:
+* Rebased on top of current vfs tree
+* Added some acks
+* Reflected minor nits from Christoph
+* Added missing conversion of blkdev_put() calls in cramfs and erofs
+* Fixed possible leak of bdev handle in xfs if logdev is the same as fs dev
 
-Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+Changes since v1:
+* Rebased on top of current vfs tree
+* Renamed final functions to bdev_open_by_*() and bdev_release()
+* Fixed detection of exclusive open in blkdev_ioctl() and blkdev_fallocate()
+* Fixed swap conversion to properly reinitialize swap_info->bdev_handle
+* Fixed xfs conversion to not oops with rtdev without logdev
+* Couple other minor fixups
+
+								Honza
+
+[1] https://lore.kernel.org/all/ZJGNsVDhZx0Xgs2H@infradead.org
+[2] git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+
+CC: Alasdair Kergon <agk@redhat.com>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Anna Schumaker <anna@kernel.org>
+CC: Chao Yu <chao@kernel.org>
+CC: Christian Borntraeger <borntraeger@linux.ibm.com>
+CC: Coly Li <colyli@suse.de
+CC: "Darrick J. Wong" <djwong@kernel.org>
+CC: Dave Kleikamp <shaggy@kernel.org>
+CC: David Sterba <dsterba@suse.com>
+CC: dm-devel@redhat.com
+CC: drbd-dev@lists.linbit.com
+CC: Gao Xiang <xiang@kernel.org>
+CC: Jack Wang <jinpu.wang@ionos.com>
+CC: Jaegeuk Kim <jaegeuk@kernel.org>
+CC: jfs-discussion@lists.sourceforge.net
+CC: Joern Engel <joern@lazybastard.org>
+CC: Joseph Qi <joseph.qi@linux.alibaba.com>
+CC: Kent Overstreet <kent.overstreet@gmail.com>
+CC: linux-bcache@vger.kernel.org
+CC: linux-btrfs@vger.kernel.org
+CC: linux-erofs@lists.ozlabs.org
+CC: <linux-ext4@vger.kernel.org>
+CC: linux-f2fs-devel@lists.sourceforge.net
+CC: linux-mm@kvack.org
+CC: linux-mtd@lists.infradead.org
+CC: linux-nfs@vger.kernel.org
+CC: linux-nilfs@vger.kernel.org
+CC: linux-nvme@lists.infradead.org
+CC: linux-pm@vger.kernel.org
+CC: linux-raid@vger.kernel.org
+CC: linux-s390@vger.kernel.org
+CC: linux-scsi@vger.kernel.org
+CC: linux-xfs@vger.kernel.org
+CC: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+CC: Mike Snitzer <snitzer@kernel.org>
+CC: Minchan Kim <minchan@kernel.org>
+CC: ocfs2-devel@oss.oracle.com
+CC: reiserfs-devel@vger.kernel.org
+CC: Sergey Senozhatsky <senozhatsky@chromium.org>
+CC: Song Liu <song@kernel.org>
+CC: Sven Schnelle <svens@linux.ibm.com>
+CC: target-devel@vger.kernel.org
+CC: Ted Tso <tytso@mit.edu>
+CC: Trond Myklebust <trond.myklebust@hammerspace.com>
+CC: xen-devel@lists.xenproject.org
+
+Previous versions:
+Link: http://lore.kernel.org/r/20230629165206.383-1-jack@suse.cz # v1
+Link: http://lore.kernel.org/r/20230810171429.31759-1-jack@suse.cz # v2
 
 ______________________________________________________
 Linux MTD discussion mailing list
