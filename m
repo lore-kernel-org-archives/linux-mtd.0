@@ -4,71 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1923E82CA1
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 15:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DC30E82CAF
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Sep 2023 16:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8VXwRIVbpF74CxxdsvxNPh/xEIFPohURBI7cQntE5wk=; b=QEf/D0nOATMvBU8Aw79/XQlhkn
-	/F3keNqFB26yBQe/+ohRccylx8FaKzIMu8iNMqunDH2bpH7bMkmsggzNDc89t1uujUhXJNu9lEJaS
-	7gCX70elOzYz+cZk6g6m6lCxHvpgJfWslxMlMKzu2LXAWX3QaRj8cRlh/YZ8lqfl3EJ0GQQLpkRgl
-	zgMv1BIoiFNkGgcs3E7ZIYeRk4G+zfxJcPyBa+nNviqx7gSpHrbD09Fq8M1rNT/HmV1t92V1THlNj
-	N8EU95Gxcb7axgEOpyV7uLyG2+/3tjp00yebttQn9wArKUkLgxniL6pcU3Ya9qmwq4V97YISeZXHq
-	eyzBwp1A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SRrgAeq69YbPKYBo3Fax8pA+Y6zcJzzJ0vBkfSr0orQ=; b=Qf1NHNqW4/VajQ
+	c4XRpP0o3oAn2rZ9Xr1jEexvNrWljp/35SplRv1gIrxSBLf46YOIuLMn7q5fFVhxG+UolV2is08Bb
+	oXRXSq5XMspITpTQC4w6VZCFSxNmONpKCjfm7trsRxUqNvsZRtrJ4MCejivi+3adpeMMMK0Pz/+P5
+	SEtKnEfrGXsXxeEDI9WH+qJxuBrjeRpchDyUGo2CdGRjGNok4QMkNXYm/HX+eyX2h3f88wFxenOI/
+	3kXJiR+lbd9rJK0VJIZFnNGvCdXG2rW/ftyhDUaqdQcKEo0w5V1qz93GXVGZMNxANmjI4QqtKzAMY
+	hmHrrG6z7ANPyRodEK9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlWZa-001G7N-1Q;
-	Wed, 27 Sep 2023 15:35:34 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qlXIC-001Q9m-1Q;
+	Wed, 27 Sep 2023 16:21:40 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlWZY-001G6U-0F
-	for linux-mtd@lists.infradead.org;
-	Wed, 27 Sep 2023 15:35:33 +0000
+	id 1qlXI9-001Q7N-1J;
+	Wed, 27 Sep 2023 16:21:39 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2DDA26190B;
-	Wed, 27 Sep 2023 15:35:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53614C433C9;
-	Wed, 27 Sep 2023 15:35:30 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 89EFFCE1A9C;
+	Wed, 27 Sep 2023 16:21:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3E3C433C7;
+	Wed, 27 Sep 2023 16:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695828930;
-	bh=37kBTb9YjXxjlMIh+0Q1RNuR2TQo6vk32qz35NjOF/8=;
+	s=k20201202; t=1695831690;
+	bh=5fVqTod0fsU3D85/NgpH5eX11yWtVW2s8jme29QI3SA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E0j3K5uJdXc0EKvk80mUbQi+BDLCAgx203Htw+2xLooqambR20sjwmZzHKhX/MGRQ
-	 rES0R5mS88bOMzEdVGjriDwzdxxHwuh5o5kxrN/IHPmyivO9nuQ4EXQOaU7oFFzija
-	 suPsoH0HVNxgtrYAfwyWQ+97rms/iVqqmKSbeZhFRw/P6Ib0VObaVi0beGE2xK8f6G
-	 p5NiUyHpe+wtTtSwpHm5BpDQyoHCI6XN9yGbdJi4ftQKWLLpJ1TYfMuJ4a1jaZkJrG
-	 /6gWUNBNN85OSkz3JemqPGFXpb/yPxKglYqIUtydqmawjmzHIE/abd1cFLXoW8h6VZ
-	 ox6UfBV0xVZBA==
-Date: Wed, 27 Sep 2023 17:35:28 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Brian Norris <computersforpeace@gmail.com>, 
-	Chen-Yu Tsai <wens@csie.org>, Chris Packham <Chris.Packham@alliedtelesis.co.nz>, 
-	Christophe Kerello <christophe.kerello@foss.st.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Kamal Dasu <kdasu.kdev@gmail.com>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Liang Yang <liang.yang@amlogic.com>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Michael Walle <michael@walle.cc>, Paul Cercueil <paul@crapouillou.net>, 
-	Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>, 
-	Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-Subject: Re: [PATCH v2 00/17] Prevent NAND chip unevaluated properties
-Message-ID: <s7gfoex2esucv5i43e7rfmkf3i63ullvh7kpylberuqiiimobw@p2slzyepmo5r>
-References: <20230606175246.190465-1-miquel.raynal@bootlin.com>
- <2b5dd78d308c007dfaf01eaf59fe8ec4.mripard@kernel.org>
+	b=K+SdxwDZhx8uxbb5abeHgPolVgmwSiIBL6/AzX/eEpmg7s5Jd1TwEPpueT17Z+y1i
+	 r/3aJFhGZoIRaqB+ADboLRaAQZpJm6SMvyfu5jpdUX9fmjLLqHrtdJHSnoHaBHBoNB
+	 1Ras0NDOeGzjZ5rjoNJ7hj3RFSgjPFHQeOCu0doiR1ZFlmc7Dtn7+Tg4yFYE5HRxY7
+	 FflbgLOEB1zCas3wjtrhbqXfzlZd6DZqKcBXDoRDLeETsNHRLxD2cXgjOH7guvx0ma
+	 AufPlRnLwdi+pMqoWiBGk6SGa+Snjtz53w/pXkwTjOc2fDnSaUxFN105snuKm+T14u
+	 FBsBAdYo6oMFA==
+Date: Wed, 27 Sep 2023 18:21:19 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
+	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v4 0/29] block: Make blkdev_get_by_*() return handle
+Message-ID: <20230927-prahlen-reintreten-93706074e58d@brauner>
+References: <20230818123232.2269-1-jack@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <2b5dd78d308c007dfaf01eaf59fe8ec4.mripard@kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230927_083532_161256_2012C60C 
-X-CRM114-Status: GOOD (  16.15  )
+X-CRM114-CacheID: sfid-20230927_092137_782579_3CC279D7 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,63 +95,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0633681105218990478=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Wed, 27 Sep 2023 11:34:07 +0200, Jan Kara wrote:
+> Create struct bdev_handle that contains all parameters that need to be
+> passed to blkdev_put() and provide bdev_open_* functions that return
+> this structure instead of plain bdev pointer. This will eventually allow
+> us to pass one more argument to blkdev_put() (renamed to bdev_release())
+> without too much hassle.
+> 
+> 
+> [...]
 
---===============0633681105218990478==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ouxkrnlofymraaa5"
-Content-Disposition: inline
+> to ease review / testing. Christian, can you pull the patches to your tree
+> to get some exposure in linux-next as well? Thanks!
 
+Yep. So I did it slighly differently. I pulled in the btrfs prereqs and
+then applied your series on top of it so we get all the Link: tags right.
+I'm running tests right now. Please double-check.
 
---ouxkrnlofymraaa5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+---
 
-On Wed, Sep 27, 2023 at 07:20:12AM +0000, Maxime Ripard wrote:
-> On Tue, 6 Jun 2023 19:52:29 +0200, Miquel Raynal wrote:
-> > As discussed with Krzysztof and Chris, it seems like each NAND
-> > controller binding should actually restrain the properties allowed in
-> > the NAND chip node with its own "unevaluatedProperties: false". This
-> > only works if we reference a yaml schema which contains all the possible
-> > properties *in the NAND chip node*. Indeed, the NAND controller yaml
-> >=20
-> > [ ... ]
->=20
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Reviewed-by: Maxime Ripard <mripard@kernel.org>
-> Tested-by: Maxime Ripard <mripard@kernel.org>
+Applied to the vfs.super branch of the vfs/vfs.git tree.
+Patches in the vfs.super branch should appear in linux-next soon.
 
-Erm, sorry for the noise, I ended up sending those by mistake...
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Maxime
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
---ouxkrnlofymraaa5
-Content-Type: application/pgp-signature; name="signature.asc"
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
------BEGIN PGP SIGNATURE-----
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.super
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZRRLwAAKCRDj7w1vZxhR
-xX4JAQDyiGBGb794KYUAGZDbfAs7W7wE1aIS/OcN8jgKLIZO7AEAilipuu235Nxg
-wZFOlLb2C+X+xU14jHSRogTkVbn9zgU=
-=2ukJ
------END PGP SIGNATURE-----
-
---ouxkrnlofymraaa5--
-
-
---===============0633681105218990478==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[01/29] block: Provide bdev_open_* functions
+       https://git.kernel.org/vfs/vfs/c/b7c828aa0b3c
+[02/29] block: Use bdev_open_by_dev() in blkdev_open()
+        https://git.kernel.org/vfs/vfs/c/d4e36f27b45a
+[03/29] block: Use bdev_open_by_dev() in disk_scan_partitions() and blkdev_bszset()
+        https://git.kernel.org/vfs/vfs/c/5f9bd6764c7a
+[04/29] drdb: Convert to use bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/0220ca8e443d
+[05/29] pktcdvd: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/7af10b889789
+[06/29] rnbd-srv: Convert to use bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/3d27892a4be7
+[07/29] xen/blkback: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/26afb0ed10b3
+[08/29] zram: Convert to use bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/efc8e3f4c6dc
+[09/29] bcache: Convert to bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/dc893f51d24a
+[10/29] dm: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/80c2267c6d07
+[11/29] md: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/15db36126ca6
+[12/29] mtd: block2mtd: Convert to bdev_open_by_dev/path()
+        https://git.kernel.org/vfs/vfs/c/4c27234bf3ce
+[13/29] nvmet: Convert to bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/70cffddcc300
+[14/29] s390/dasd: Convert to bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/5581d03457f8
+[15/29] scsi: target: Convert to bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/43de7d844d47
+[16/29] PM: hibernate: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/105ea4a2fd18
+[17/29] PM: hibernate: Drop unused snapshot_test argument
+        https://git.kernel.org/vfs/vfs/c/b589a66e3688
+[18/29] mm/swap: Convert to use bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/615af8e29233
+[19/29] fs: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/5173192bcfe6
+[20/29] btrfs: Convert to bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/8cf64782764f
+[21/29] erofs: Convert to use bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/4d41880bf249
+[22/29] ext4: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/f7507612395e
+[23/29] f2fs: Convert to bdev_open_by_dev/path()
+        https://git.kernel.org/vfs/vfs/c/d9ff8e3b6498
+[24/29] jfs: Convert to bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/459dc6376338
+[25/29] nfs/blocklayout: Convert to use bdev_open_by_dev/path()
+        https://git.kernel.org/vfs/vfs/c/5b1df9a40929
+[26/29] ocfs2: Convert to use bdev_open_by_dev()
+        https://git.kernel.org/vfs/vfs/c/b6b95acbd943
+[27/29] reiserfs: Convert to bdev_open_by_dev/path()
+        https://git.kernel.org/vfs/vfs/c/7e3615ff6119
+[28/29] xfs: Convert to bdev_open_by_path()
+        https://git.kernel.org/vfs/vfs/c/176ccb99e207
+[29/29] block: Remove blkdev_get_by_*() functions
+        https://git.kernel.org/vfs/vfs/c/953863a5a2ff
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============0633681105218990478==--
-
