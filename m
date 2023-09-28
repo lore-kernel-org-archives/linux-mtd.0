@@ -4,112 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D83BE732C0
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Sep 2023 11:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 215BFE732C0
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Sep 2023 11:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ai9+Q/loi3myzOirSKg3TnnIJrtfOXYcTXBBKqytGqo=; b=0u0/9anF+jZoww
-	6p1He41DX6OsxeG2yQn1j8zcrJNiPtaZn18C8kXNAjm5V861q0MFoMdHxlvLpo0ZGNmpqi2hjZI4Z
-	jXecyX0t7+w+7j/W3lSPhvcfleojK5hSNy42ALtqRlSyTMYvQqjLFbzxl/Nu4N18a43MeFcktT5Oi
-	kuSHfWE6935U+c63X6nMNxSqd9wN9CzCEcwUw/upXcjMNdHUmfPW/vj6yWDD2OIEVmhbdqzzc/OIJ
-	m8J3/QgAE27iV/rY+bgNy/0lvyazTEvv/yjRG5Af9a8ryVmNQIh6bNtejqCh5NilaVAy/ZJIyRNVZ
-	lYMzu8CrKxN4ZEt5nDSQ==;
+	List-Owner; bh=HlSOsPCom2cnx5o0ePv763BLTaLCOVoQTHsYz936ako=; b=4qzA+wKElka3Q8
+	ttBgmKKyXrGo3RDz01RFvCMfgYTMJQmvt/ogNNHuEyP98oFNjmg2zYhxSEG5RhTgi2ikLFpbqkNsF
+	IryZy62qFazJ0P/aKv6cM1bbjMr5bQcskxYngfIRmKpTiH4m5nrZZADaWhyhI+tkbV9sIVpPtLulL
+	hhBuDBNGdV2jtsBz/UsbUiYQ9dtg94OBtVHYNsuKzGvNbkh8fgQJqmcLFYjZdon4vBfQUMR6TyBlg
+	3JBDHSnBzwFrU33ApUnTLVVJ6+Xs0HqNt1BpwzTq+nAXyJ0QZE9BUd+udLWsp59GY218u6Q0y5VYy
+	vrZTLuCa8H/ivg/0tLZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qloo5-0032s8-2r;
-	Thu, 28 Sep 2023 11:03:46 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qlopc-0033mx-1M;
+	Thu, 28 Sep 2023 11:05:20 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qloo3-0032ps-0w;
-	Thu, 28 Sep 2023 11:03:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=4WjQgRNMdW3j3sfcIHlzIOpBIEpILEBwQl2Kii/SrPo=; b=l/GtdJbWLIn8zEi/dmhkqj9lvP
-	3g+F++twSk/Dj1iCY5+UAqd61rULO/Az20Ci3xJ1xL8eez4rraKGP12hBGbjFa7YmEk2cTJkKp1Yt
-	+eYlb9R5YfOGt5YSmk24cHQ/+y/cjLFNXhx31QkuFcMJC4ZWy0752y6tdcBhmYT1pkba5X+muCwne
-	yUBRMqr3OOS3CbzNKkXjHHxIkoucR/z2pBDyvt0Ys7b3qlOWHSb3vee01Iui8rcm29dolA3FXK6w/
-	YO7eHCM6dgXffL66MnPGqMnF0L+MdkSEhaQBAtWvviuDWG+EPEv5Fv9h7VythnTET8gOcGBN5ASZ5
-	2z36QalQ==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qlonw-004x03-2i;
-	Thu, 28 Sep 2023 11:03:42 +0000
+	id 1qlopR-0033f1-2W
+	for linux-mtd@lists.infradead.org;
+	Thu, 28 Sep 2023 11:05:17 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C8B4E61348;
-	Thu, 28 Sep 2023 11:03:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBF2CC433CD;
-	Thu, 28 Sep 2023 11:03:16 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 0DD8EB81BB9;
+	Thu, 28 Sep 2023 11:05:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE9BC433C7;
+	Thu, 28 Sep 2023 11:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695899012;
-	bh=2HU082C0O+wshN8razE9iX9Rxehg6mRJCvsU5n9rFmw=;
+	s=k20201202; t=1695899107;
+	bh=H0o2l6yZgbuV+AHtD4UZSzh1xRcgDyq1popfRqn5BpY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cgJqBVdgRTRGPcB9AYO9nuxbQNU/aRFlsoq2/9IfdhTUxto7jaIgTs2iK3Hh6VNmI
-	 PQNGXum64iBmE5gmxTB5fzhsNqjzKt2sLpABU1iY4QR3sLG/3TAi2tRkz3bK5NdR2Q
-	 5J/x2S1ciuMIVP8CxOGFxyla+hxGROy5UoKNIuzR78QFdYK0UlmPcZ7xnSW65TY0z1
-	 d09jqnFZdRWx08/ZfFzae3DcpVgwGYgcj94ylvD+5VeIqKKaZOw2/kkGfhLURz1SoJ
-	 LecijjrtKtsZor5I1BxBnr+8zBdASh0oRnrtfNreKI0opyGPJWi1hjF5WHyNrggNrR
-	 Xz99F3TmopI2w==
+	b=lRPGkEbLGP0ZilgxwHKoK5aa3Diu6rGwzQIj4aLFkIQjfUt+EgtEy1nJXYP/627YU
+	 ICEyhlyn0yeIxNQphxQSK88BktMCjTMQAg2uX0JZS4eeWeIuKYUOzW6rI77YSgVm9Y
+	 Jxl0oMN+olO4Gr3qaW+oMVTT/vUEumTwP96IeqGlhkdyQTYdlXrxwMCqPc7wgXFTMF
+	 3IDKvaFuLOaICQho3lWkxJjsy81ss0wr6kOIOmzgllwv/h4OkF5m0tEFC8MVMQiWDb
+	 RqCfzmWaH2s6A7gTKcfqTsFrtHS7SCH0wKnJ8kl/DJJ65E6MAnHSt5dne/AUwqfNSX
+	 eeEf4W3OXyuBQ==
 From: Jeff Layton <jlayton@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, David Sterba <dsterba@suse.cz>, Amir Goldstein <amir73il@gmail.com>, Theodore Ts'o <tytso@mit.edu>, Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Mattia Dongili <malattia@linux.it>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Brad Warrum <bwarrum@linux.ibm.com>, Ritu Agarwal <rituagar@linux.ibm.com>, Hans de Goede <hdegoede@redhat.com>, =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Mark Gross <markgross@kernel.org>, Jiri Slaby <jirislaby@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Christoph Hellwig <hch@infradead.org>, Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>, David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Anton Altaparmakov <anton@tuxera.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, Phillip Lougher <phillip@squashfs.org.uk>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Evgeniy Dushistov <dushistov@mail.ru>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-afs@lists.infradead.org,
-	autofs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	linux-efi@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org
-Subject: [PATCH 01/87] fs: new accessor methods for atime and mtime
-Date: Thu, 28 Sep 2023 07:03:00 -0400
-Message-ID: <20230928110300.32891-2-jlayton@kernel.org>
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH 46/87] fs/jffs2: convert to new inode {a,m}time accessors
+Date: Thu, 28 Sep 2023 07:02:55 -0400
+Message-ID: <20230928110413.33032-45-jlayton@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928110300.32891-1-jlayton@kernel.org>
+In-Reply-To: <20230928110413.33032-1-jlayton@kernel.org>
 References: <20230928110300.32891-1-jlayton@kernel.org>
+ <20230928110413.33032-1-jlayton@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230928_120338_613939_F96498C7 
-X-CRM114-Status: GOOD (  17.44  )
+X-CRM114-CacheID: sfid-20230928_040510_366821_CF32EAE8 
+X-CRM114-Status: GOOD (  13.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,94 +75,205 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Recently, we converted the ctime accesses in the kernel to use new
-accessor functions. Linus recently pointed out though that if we add
-accessors for the atime and mtime, then that would allow us to
-seamlessly change how these timestamps are stored in the inode.
-
-Add new accessor functions for the atime and mtime that mirror the
-accessors for the ctime.
-
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- fs/libfs.c         | 13 +++++++++++++
- include/linux/fs.h | 42 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 55 insertions(+)
+ fs/jffs2/dir.c      | 35 ++++++++++++++++++++---------------
+ fs/jffs2/file.c     |  4 ++--
+ fs/jffs2/fs.c       | 20 ++++++++++----------
+ fs/jffs2/os-linux.h |  4 ++--
+ 4 files changed, 34 insertions(+), 29 deletions(-)
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 37f2d34ee090..f5cdc7f7f5b5 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1912,3 +1912,16 @@ ssize_t direct_write_fallback(struct kiocb *iocb, struct iov_iter *iter,
- 	return direct_written + buffered_written;
- }
- EXPORT_SYMBOL_GPL(direct_write_fallback);
-+
-+/**
-+ * simple_inode_init_ts - initialize the timestamps for a new inode
-+ * @inode: inode to be initialized
-+ *
-+ * When a new inode is created, most filesystems set the timestamps to the
-+ * current time. Add a helper to do this.
-+ */
-+struct timespec64 simple_inode_init_ts(struct inode *inode);
-+{
-+	return inode->i_atime = inode->i_mtime = inode_set_ctime_current(inode);
-+}
-+EXPORT_SYMBOL(simple_inode_init_ts);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index b528f063e8ff..12d247b82aa0 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1553,6 +1553,48 @@ static inline struct timespec64 inode_set_ctime(struct inode *inode,
- 	return inode_set_ctime_to_ts(inode, ts);
- }
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index 091ab0eaabbe..2b2938970da3 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -204,8 +204,8 @@ static int jffs2_create(struct mnt_idmap *idmap, struct inode *dir_i,
+ 	if (ret)
+ 		goto fail;
  
-+static inline struct timespec64 inode_get_atime(const struct inode *inode)
-+{
-+	return inode->i_atime;
-+}
-+
-+static inline struct timespec64 inode_set_atime_to_ts(struct inode *inode,
-+						      struct timespec64 ts)
-+{
-+	inode->i_atime = ts;
-+	return ts;
-+}
-+
-+static inline struct timespec64 inode_set_atime(struct inode *inode,
-+						time64_t sec, long nsec)
-+{
-+	struct timespec64 ts = { .tv_sec  = sec,
-+				 .tv_nsec = nsec };
-+	return inode_set_atime_to_ts(inode, ts);
-+}
-+
-+static inline struct timespec64 inode_get_mtime(const struct inode *inode)
-+{
-+	return inode->i_mtime;
-+}
-+
-+static inline struct timespec64 inode_set_mtime_to_ts(struct inode *inode,
-+						      struct timespec64 ts)
-+{
-+	inode->i_mtime = ts;
-+	return ts;
-+}
-+
-+static inline struct timespec64 inode_set_mtime(struct inode *inode,
-+						time64_t sec, long nsec)
-+{
-+	struct timespec64 ts = { .tv_sec  = sec,
-+				 .tv_nsec = nsec };
-+	return inode_set_mtime_to_ts(inode, ts);
-+}
-+
-+struct timespec64 simple_inode_init_ts(struct inode *inode);
-+
- /*
-  * Snapshotting support.
-  */
+-	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+-					       ITIME(je32_to_cpu(ri->ctime)));
++	inode_set_mtime_to_ts(dir_i,
++			      inode_set_ctime_to_ts(dir_i, ITIME(je32_to_cpu(ri->ctime))));
+ 
+ 	jffs2_free_raw_inode(ri);
+ 
+@@ -238,7 +238,8 @@ static int jffs2_unlink(struct inode *dir_i, struct dentry *dentry)
+ 	if (dead_f->inocache)
+ 		set_nlink(d_inode(dentry), dead_f->inocache->pino_nlink);
+ 	if (!ret)
+-		dir_i->i_mtime = inode_set_ctime_to_ts(dir_i, ITIME(now));
++		inode_set_mtime_to_ts(dir_i,
++				      inode_set_ctime_to_ts(dir_i, ITIME(now)));
+ 	return ret;
+ }
+ /***********************************************************************/
+@@ -272,7 +273,8 @@ static int jffs2_link (struct dentry *old_dentry, struct inode *dir_i, struct de
+ 		set_nlink(d_inode(old_dentry), ++f->inocache->pino_nlink);
+ 		mutex_unlock(&f->sem);
+ 		d_instantiate(dentry, d_inode(old_dentry));
+-		dir_i->i_mtime = inode_set_ctime_to_ts(dir_i, ITIME(now));
++		inode_set_mtime_to_ts(dir_i,
++				      inode_set_ctime_to_ts(dir_i, ITIME(now)));
+ 		ihold(d_inode(old_dentry));
+ 	}
+ 	return ret;
+@@ -423,8 +425,8 @@ static int jffs2_symlink (struct mnt_idmap *idmap, struct inode *dir_i,
+ 		goto fail;
+ 	}
+ 
+-	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+-					       ITIME(je32_to_cpu(rd->mctime)));
++	inode_set_mtime_to_ts(dir_i,
++			      inode_set_ctime_to_ts(dir_i, ITIME(je32_to_cpu(rd->mctime))));
+ 
+ 	jffs2_free_raw_dirent(rd);
+ 
+@@ -568,8 +570,8 @@ static int jffs2_mkdir (struct mnt_idmap *idmap, struct inode *dir_i,
+ 		goto fail;
+ 	}
+ 
+-	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+-					       ITIME(je32_to_cpu(rd->mctime)));
++	inode_set_mtime_to_ts(dir_i,
++			      inode_set_ctime_to_ts(dir_i, ITIME(je32_to_cpu(rd->mctime))));
+ 	inc_nlink(dir_i);
+ 
+ 	jffs2_free_raw_dirent(rd);
+@@ -610,7 +612,8 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+ 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
+ 			      dentry->d_name.len, f, now);
+ 	if (!ret) {
+-		dir_i->i_mtime = inode_set_ctime_to_ts(dir_i, ITIME(now));
++		inode_set_mtime_to_ts(dir_i,
++				      inode_set_ctime_to_ts(dir_i, ITIME(now)));
+ 		clear_nlink(d_inode(dentry));
+ 		drop_nlink(dir_i);
+ 	}
+@@ -746,8 +749,8 @@ static int jffs2_mknod (struct mnt_idmap *idmap, struct inode *dir_i,
+ 		goto fail;
+ 	}
+ 
+-	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+-					       ITIME(je32_to_cpu(rd->mctime)));
++	inode_set_mtime_to_ts(dir_i,
++			      inode_set_ctime_to_ts(dir_i, ITIME(je32_to_cpu(rd->mctime))));
+ 
+ 	jffs2_free_raw_dirent(rd);
+ 
+@@ -868,16 +871,18 @@ static int jffs2_rename (struct mnt_idmap *idmap,
+ 		 * caller won't do it on its own since we are returning an error.
+ 		 */
+ 		d_invalidate(new_dentry);
+-		new_dir_i->i_mtime = inode_set_ctime_to_ts(new_dir_i,
+-							   ITIME(now));
++		inode_set_mtime_to_ts(new_dir_i,
++				      inode_set_ctime_to_ts(new_dir_i, ITIME(now)));
+ 		return ret;
+ 	}
+ 
+ 	if (d_is_dir(old_dentry))
+ 		drop_nlink(old_dir_i);
+ 
+-	old_dir_i->i_mtime = inode_set_ctime_to_ts(old_dir_i, ITIME(now));
+-	new_dir_i->i_mtime = inode_set_ctime_to_ts(new_dir_i, ITIME(now));
++	inode_set_mtime_to_ts(old_dir_i,
++			      inode_set_ctime_to_ts(old_dir_i, ITIME(now)));
++	inode_set_mtime_to_ts(new_dir_i,
++			      inode_set_ctime_to_ts(new_dir_i, ITIME(now)));
+ 
+ 	return 0;
+ }
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 11c66793960e..62ea76da7fdf 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -317,8 +317,8 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
+ 			inode->i_size = pos + writtenlen;
+ 			inode->i_blocks = (inode->i_size + 511) >> 9;
+ 
+-			inode->i_mtime = inode_set_ctime_to_ts(inode,
+-							       ITIME(je32_to_cpu(ri->ctime)));
++			inode_set_mtime_to_ts(inode,
++					      inode_set_ctime_to_ts(inode, ITIME(je32_to_cpu(ri->ctime))));
+ 		}
+ 	}
+ 
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 0403efab4089..d175cccb7c55 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -113,8 +113,8 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+ 
+ 
+ 	ri->isize = cpu_to_je32((ivalid & ATTR_SIZE)?iattr->ia_size:inode->i_size);
+-	ri->atime = cpu_to_je32(I_SEC((ivalid & ATTR_ATIME)?iattr->ia_atime:inode->i_atime));
+-	ri->mtime = cpu_to_je32(I_SEC((ivalid & ATTR_MTIME)?iattr->ia_mtime:inode->i_mtime));
++	ri->atime = cpu_to_je32(I_SEC((ivalid & ATTR_ATIME)?iattr->ia_atime:inode_get_atime(inode)));
++	ri->mtime = cpu_to_je32(I_SEC((ivalid & ATTR_MTIME)?iattr->ia_mtime:inode_get_mtime(inode)));
+ 	ri->ctime = cpu_to_je32(I_SEC((ivalid & ATTR_CTIME)?iattr->ia_ctime:inode_get_ctime(inode)));
+ 
+ 	ri->offset = cpu_to_je32(0);
+@@ -147,9 +147,9 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+ 		return PTR_ERR(new_metadata);
+ 	}
+ 	/* It worked. Update the inode */
+-	inode->i_atime = ITIME(je32_to_cpu(ri->atime));
++	inode_set_atime_to_ts(inode, ITIME(je32_to_cpu(ri->atime)));
+ 	inode_set_ctime_to_ts(inode, ITIME(je32_to_cpu(ri->ctime)));
+-	inode->i_mtime = ITIME(je32_to_cpu(ri->mtime));
++	inode_set_mtime_to_ts(inode, ITIME(je32_to_cpu(ri->mtime)));
+ 	inode->i_mode = jemode_to_cpu(ri->mode);
+ 	i_uid_write(inode, je16_to_cpu(ri->uid));
+ 	i_gid_write(inode, je16_to_cpu(ri->gid));
+@@ -282,8 +282,8 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 	i_uid_write(inode, je16_to_cpu(latest_node.uid));
+ 	i_gid_write(inode, je16_to_cpu(latest_node.gid));
+ 	inode->i_size = je32_to_cpu(latest_node.isize);
+-	inode->i_atime = ITIME(je32_to_cpu(latest_node.atime));
+-	inode->i_mtime = ITIME(je32_to_cpu(latest_node.mtime));
++	inode_set_atime_to_ts(inode, ITIME(je32_to_cpu(latest_node.atime)));
++	inode_set_mtime_to_ts(inode, ITIME(je32_to_cpu(latest_node.mtime)));
+ 	inode_set_ctime_to_ts(inode, ITIME(je32_to_cpu(latest_node.ctime)));
+ 
+ 	set_nlink(inode, f->inocache->pino_nlink);
+@@ -386,8 +386,8 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
+ 	iattr.ia_mode = inode->i_mode;
+ 	iattr.ia_uid = inode->i_uid;
+ 	iattr.ia_gid = inode->i_gid;
+-	iattr.ia_atime = inode->i_atime;
+-	iattr.ia_mtime = inode->i_mtime;
++	iattr.ia_atime = inode_get_atime(inode);
++	iattr.ia_mtime = inode_get_mtime(inode);
+ 	iattr.ia_ctime = inode_get_ctime(inode);
+ 
+ 	jffs2_do_setattr(inode, &iattr);
+@@ -475,8 +475,8 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
+ 	inode->i_mode = jemode_to_cpu(ri->mode);
+ 	i_gid_write(inode, je16_to_cpu(ri->gid));
+ 	i_uid_write(inode, je16_to_cpu(ri->uid));
+-	inode->i_atime = inode->i_mtime = inode_set_ctime_current(inode);
+-	ri->atime = ri->mtime = ri->ctime = cpu_to_je32(I_SEC(inode->i_mtime));
++	simple_inode_init_ts(inode);
++	ri->atime = ri->mtime = ri->ctime = cpu_to_je32(I_SEC(inode_get_mtime(inode)));
+ 
+ 	inode->i_blocks = 0;
+ 	inode->i_size = 0;
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index 50727a1ff931..86ab014a349c 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -36,8 +36,8 @@ struct kvec;
+ #define JFFS2_NOW() JFFS2_CLAMP_TIME(ktime_get_real_seconds())
+ #define I_SEC(tv) JFFS2_CLAMP_TIME((tv).tv_sec)
+ #define JFFS2_F_I_CTIME(f) I_SEC(inode_get_ctime(OFNI_EDONI_2SFFJ(f)))
+-#define JFFS2_F_I_MTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_mtime)
+-#define JFFS2_F_I_ATIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_atime)
++#define JFFS2_F_I_MTIME(f) I_SEC(inode_get_mtime(OFNI_EDONI_2SFFJ(f)))
++#define JFFS2_F_I_ATIME(f) I_SEC(inode_get_atime(OFNI_EDONI_2SFFJ(f)))
+ #define sleep_on_spinunlock(wq, s)				\
+ 	do {							\
+ 		DECLARE_WAITQUEUE(__wait, current);		\
 -- 
 2.41.0
 
