@@ -4,79 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F0D5E728CA
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Sep 2023 17:00:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39CA1E728DE
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Sep 2023 19:48:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:Date:Subject:Cc:
+	To:From:Message-ID:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B+mqCb6ZQ3ifDOTjcSr0QpCdAUaS5gEol+Q4rZU8+co=; b=SWKt+pq2w4OxVj
-	jBDf9YyAvOhQ5+D1DV8FlfzFArgAtiqn3qxAhNoZ0RtJqGd5Cdluu7U1w/wiS/jyjAoCi6wa26nfL
-	hEhAJjPKhSYsdrLKDYmaBU/uQYB1a1mEqMWWxns8OEOo2Z1DaQ6gxlMiqqAo48yLoAoNh34utstsz
-	D9ggaYavCcniZQd9/XZtJITSW9F5BOXk9ygJWYC2+WxIpOazmKkj9s2YdYyG2gHqop7E4M7fMOEYG
-	Hcze9hJiRC0xghS9Odd6tpdBPQCJXgg6YQc83bARqhLEqFFFc4JIvnnE3m16OKwnN52C7/RKMEqL7
-	3dDkdvaHAXziQ1j1OK4Q==;
+	List-Owner; bh=fshv9f3aDKF2Mz5hqpZVtXamor42dOWTCpOYDyn/Mz0=; b=ORdZ5lFo6T4+ka
+	BxDSKwH0pB+Tf2CaezolhaLPgx4TL+uspMTOxIoVmHOZCiyl6MUnCSl90rPykGxhGzOXAQB7K/e9Q
+	QPjQFLJB+CqfFwyCwMXr9s1SMF5CwtVL7bchLQPgf1ruox1WaTGAfMynlJIIRmKD8F9AZziTNcl4y
+	FJwwAcs3SxtBTvoFus5djXLtRGc3hc2kjhRslJDP2ppX+fCd/0PnPrPA8HdHvxf8/MLRYTTk/Uq/q
+	KJdjMhcgCR3eolQlg8eb3b8rDyktC0A7Uk5QS0KIbPMsnXWNQtd74AytCNhaBDdxDTHzqv6RbJNpo
+	TetsRL7Lx16GAgSDBX0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmGqx-008JtE-0L;
-	Fri, 29 Sep 2023 17:00:35 +0000
-Received: from mgamail.intel.com ([134.134.136.24])
+	id 1qmJSu-008VVl-0I;
+	Fri, 29 Sep 2023 19:47:56 +0000
+Received: from mout.gmx.com ([74.208.4.201])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmGqt-008JsY-1q
+	id 1qmJSr-008VVO-00
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Sep 2023 17:00:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696006831; x=1727542831;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vTPDHd04Yq+AmECJeKw05gjgTnYbHmBH7SKpEl716vQ=;
-  b=VankpghlOYqHA2nSQ2qHtLFv6OwU2hXeR5yZ4qNPQUx2ftbN4Z+AU/cu
-   6jywM5wzGLjQIrwgIAH2LZbupkul58do5zQk8S7BzQfSx7TIf4vFVlu1c
-   HbRWzL7XKkX4XYto2ZObO3UNG8PXsKrq2DL1KZpxxAm7bnxfrY/UXo3kY
-   gVQG1W/fTeE7Siz/OghQC5QPeCpvyU8bQzEf4wUr+iWsyW4xSNgoFB1j/
-   FoEGS9bgEvAiUz6p2U0vnRg2CP7UIoAx03P0P0g4USTLeyTTDoxPdTxqP
-   2Wxx6SbjzP7mzjQjaxkaitExAVnGkCDRmvFFDRlpV7APSzhTew3MTeXLD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385163685"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="385163685"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 10:00:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="893478770"
-X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="893478770"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2023 09:59:09 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qmGqi-000353-17;
-	Fri, 29 Sep 2023 17:00:20 +0000
-Date: Sat, 30 Sep 2023 01:00:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-	Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
-	=?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	JaimeLiao <jaimeliao.tw@gmail.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	kernel@pengutronix.de,
-	Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: check nand support for cache reads
-Message-ID: <202309300033.zf83jfBL-lkp@intel.com>
-References: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
+	Fri, 29 Sep 2023 19:47:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com; s=s1089575;
+ t=1696016842; x=1696621642; i=dregan@mail.com;
+ bh=Jlos3tlfYE9B3yhgpknJUrE2pdwYBCK8bYQG2yHM944=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=aaWDs9bUMTOPM+k3KZjLDC2zjvToS1eKa8XbD/cy/GWYgZ2918ql2PAohTnTllhe2NjmdrDUVZ7
+ AmLN1PMQbxhavJsJXRvcjdfWb2cqaOfbl3A75fU3sS0NYwq+TQzTS/dc3nWaxQHMvGfIWHzwIk1sA
+ Cw1sy8TwPlQu7Fh0xB5fI3y4jxbdXYTYL/RzNQr2++KwSxS/V4cVNlxtGPWt45AHiGJlqltbG8y8w
+ dODdCLPSsfnGHETrhOHc0snYGPacOU2VudpvcEWICJu959Mp0LPm2ijWmWhfmFetA1VpugTX5L/tY
+ edeHEPz6eTsLZyBox5jAwySJ0oz5QyXudlHA==
+X-UI-Sender-Class: f2cb72be-343f-493d-8ec3-b1efb8d6185a
+Received: from [192.19.223.252] ([192.19.223.252]) by web-mail.mail.com
+ (3c-app-mailcom-lxa02.server.lan [10.76.45.3]) (via HTTP); Fri, 29 Sep 2023
+ 21:47:22 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
+Message-ID: <trinity-ad65aa5d-e930-4f11-ac86-e18f90f5092c-1696016842791@3c-app-mailcom-lxa02>
+From: dregan@mail.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
+ f.fainelli@gmail.com, rafal@milecki.pl, joel.peshkin@broadcom.com,
+ computersforpeace@gmail.com, dan.beygelman@broadcom.com,
+ william.zhang@broadcom.com, frieder.schrempf@kontron.de,
+ linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+ bbrezillon@kernel.org, kdasu.kdev@gmail.com, dregan@mail.com
+Subject: Re: [PATCH] mtd: rawnand: brcmnand: Initial exec_op implementation
+Date: Fri, 29 Sep 2023 21:47:22 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20230922162424.4a7b27ec@xps-13>
+References: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
+ <20230922162424.4a7b27ec@xps-13>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:jrM5WFjZq+ilSg5SB/v7wLI2nIEdKiveSGTWnhGaXmLDCwzbAJpI2s9znskC+3xi1WJ1+
+ WpDRHHzzU62GRhW03W22WFIKFL/4CfIovdqIfOhpyLSiYTEGWpl4lpZElMgUqGllzU2vzUxWZ9/I
+ vRO4L/tBnhqoYXasnBWlNUALHJeAbwz6BtcrTsBpU2+31e2hjJyZMB7tOmaYZdLkV3rkg3j9v9Yn
+ soAj8KwbDpv1jOVfNITZLAdHoU4ON0X5jG9rAnfg+qP6orLFgW1GpV7bEBq6EGDXFzNnCZN377uv
+ Tk=
+UI-OutboundReport: notjunk:1;M01:P0:zEsNFi7nluQ=;rlFTruRKwD1eEbMJ7OYvcUSMy7j
+ vfM3Dau/7Yc8spr7MyGMoChgVrCJLGFjCpex8+xXkUEN8jNoZckN5604B5di604RPxE0lmkCq
+ LoiyQHkup1WJTQh4ih6oMrnmmf4svrN0o4TOTu/YexcuEyNX8B8Td9RYoXCWZ6lh5tC66mFPL
+ OgzFZMkqZGDPjAR/JWBI93oTEvuni3L0fQu6mFX4q3pNhFNY/h0V86LowUXY4fdd1pKVi7E2S
+ 34ebuZh+nQ1kFjCKZyLvgyTD9I76Sj3cGXoHNX6Wm07wTYVhsB360bVAEVEHufhEimnZL6HKw
+ k9ZCsg5NQEVcgPXVfvz4dHULSQQZR3KoO5futWwOEvrJStUJ2VzDi+SA0L+HZtNe9iQ4RIt6/
+ nEWBytx1VYIstAQVDNoWWHbDmuZiFhQjcO1/IV/gKsMvaZn6nXvsrd0Rx9ltId8KirrUNPc3z
+ GffpeVGjaD8ryLCpc893wUBB6nxxLEpwmgheILmQ55qGzWCDQxJAcHY6mmZAQHKT3bqNZ3H2l
+ YxnNuuUj0aFbDfWZ6xksEuQ6BCOEejnkobRAAKmM/IWANff4b3aZrRAf376niyvrVXQrOBb7P
+ n1L7C+vxxxNYyxOluxnThlNyVJA7bzQutO/irO81R3SJan7LlXc6djJ+l4hK7C16osobwg0oU
+ WvyQ3WhYunCEsi3WBYDhxpfGickechXjTx/SJFXk2lCbL5J3caJIwKYy0ewVM0FHoqVfbWs+y
+ 2wX8e0FvUq5vdu0IRN7w/2vd2+/cv+VJIiHBMnEmid/+YNVBIB5EZdCRua3u/xeL/HEh4jmhL
+ A/06JwUeqyhJ4oPhPExA1Gnw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230929_100031_676658_DEA47117 
-X-CRM114-Status: GOOD (  22.86  )
+X-CRM114-CacheID: sfid-20230929_124753_301885_AEE17801 
+X-CRM114-Status: GOOD (  31.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,222 +91,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rouven,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc3 next-20230929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Rouven-Czerwinski/mtd-rawnand-check-nand-support-for-cache-reads/20230922-180317
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230922100116.145090-1-r.czerwinski%40pengutronix.de
-patch subject: [PATCH] mtd: rawnand: check nand support for cache reads
-config: mips-qi_lb60_defconfig (https://download.01.org/0day-ci/archive/20230930/202309300033.zf83jfBL-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309300033.zf83jfBL-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309300033.zf83jfBL-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/nand/raw/nand_onfi.c:307:20: warning: expression result unused [-Wunused-value]
-     307 |                 chip->parameters.supports_read_cache;
-         |                 ~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~~~~~~~~
-   1 warning generated.
---
->> drivers/mtd/nand/raw/nand_jedec.c:98:20: warning: expression result unused [-Wunused-value]
-      98 |                 chip->parameters.supports_read_cache;
-         |                 ~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~~~~~~~~
-   1 warning generated.
-
-
-vim +307 drivers/mtd/nand/raw/nand_onfi.c
-
-   140	
-   141	/*
-   142	 * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-   143	 */
-   144	int nand_onfi_detect(struct nand_chip *chip)
-   145	{
-   146		struct nand_device *base = &chip->base;
-   147		struct mtd_info *mtd = nand_to_mtd(chip);
-   148		struct nand_memory_organization *memorg;
-   149		struct nand_onfi_params *p = NULL, *pbuf;
-   150		struct onfi_params *onfi;
-   151		bool use_datain = false;
-   152		int onfi_version = 0;
-   153		char id[4];
-   154		int i, ret, val;
-   155		u16 crc;
-   156	
-   157		memorg = nanddev_get_memorg(&chip->base);
-   158	
-   159		/* Try ONFI for unknown chip or LP */
-   160		ret = nand_readid_op(chip, 0x20, id, sizeof(id));
-   161		if (ret || strncmp(id, "ONFI", 4))
-   162			return 0;
-   163	
-   164		/* ONFI chip: allocate a buffer to hold its parameter page */
-   165		pbuf = kzalloc((sizeof(*pbuf) * ONFI_PARAM_PAGES), GFP_KERNEL);
-   166		if (!pbuf)
-   167			return -ENOMEM;
-   168	
-   169		if (!nand_has_exec_op(chip) || chip->controller->supported_op.data_only_read)
-   170			use_datain = true;
-   171	
-   172		for (i = 0; i < ONFI_PARAM_PAGES; i++) {
-   173			if (!i)
-   174				ret = nand_read_param_page_op(chip, 0, &pbuf[i],
-   175							      sizeof(*pbuf));
-   176			else if (use_datain)
-   177				ret = nand_read_data_op(chip, &pbuf[i], sizeof(*pbuf),
-   178							true, false);
-   179			else
-   180				ret = nand_change_read_column_op(chip, sizeof(*pbuf) * i,
-   181								 &pbuf[i], sizeof(*pbuf),
-   182								 true);
-   183			if (ret) {
-   184				ret = 0;
-   185				goto free_onfi_param_page;
-   186			}
-   187	
-   188			crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)&pbuf[i], 254);
-   189			if (crc == le16_to_cpu(pbuf[i].crc)) {
-   190				p = &pbuf[i];
-   191				break;
-   192			}
-   193		}
-   194	
-   195		if (i == ONFI_PARAM_PAGES) {
-   196			const void *srcbufs[ONFI_PARAM_PAGES];
-   197			unsigned int j;
-   198	
-   199			for (j = 0; j < ONFI_PARAM_PAGES; j++)
-   200				srcbufs[j] = pbuf + j;
-   201	
-   202			pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
-   203			nand_bit_wise_majority(srcbufs, ONFI_PARAM_PAGES, pbuf,
-   204					       sizeof(*pbuf));
-   205	
-   206			crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)pbuf, 254);
-   207			if (crc != le16_to_cpu(pbuf->crc)) {
-   208				pr_err("ONFI parameter recovery failed, aborting\n");
-   209				goto free_onfi_param_page;
-   210			}
-   211			p = pbuf;
-   212		}
-   213	
-   214		if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
-   215		    chip->manufacturer.desc->ops->fixup_onfi_param_page)
-   216			chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
-   217	
-   218		/* Check version */
-   219		val = le16_to_cpu(p->revision);
-   220		if (val & ONFI_VERSION_2_3)
-   221			onfi_version = 23;
-   222		else if (val & ONFI_VERSION_2_2)
-   223			onfi_version = 22;
-   224		else if (val & ONFI_VERSION_2_1)
-   225			onfi_version = 21;
-   226		else if (val & ONFI_VERSION_2_0)
-   227			onfi_version = 20;
-   228		else if (val & ONFI_VERSION_1_0)
-   229			onfi_version = 10;
-   230	
-   231		if (!onfi_version) {
-   232			pr_info("unsupported ONFI version: %d\n", val);
-   233			goto free_onfi_param_page;
-   234		}
-   235	
-   236		sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-   237		sanitize_string(p->model, sizeof(p->model));
-   238		chip->parameters.model = kstrdup(p->model, GFP_KERNEL);
-   239		if (!chip->parameters.model) {
-   240			ret = -ENOMEM;
-   241			goto free_onfi_param_page;
-   242		}
-   243	
-   244		memorg->pagesize = le32_to_cpu(p->byte_per_page);
-   245		mtd->writesize = memorg->pagesize;
-   246	
-   247		/*
-   248		 * pages_per_block and blocks_per_lun may not be a power-of-2 size
-   249		 * (don't ask me who thought of this...). MTD assumes that these
-   250		 * dimensions will be power-of-2, so just truncate the remaining area.
-   251		 */
-   252		memorg->pages_per_eraseblock =
-   253				1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
-   254		mtd->erasesize = memorg->pages_per_eraseblock * memorg->pagesize;
-   255	
-   256		memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
-   257		mtd->oobsize = memorg->oobsize;
-   258	
-   259		memorg->luns_per_target = p->lun_count;
-   260		memorg->planes_per_lun = 1 << p->interleaved_bits;
-   261	
-   262		/* See erasesize comment */
-   263		memorg->eraseblocks_per_lun =
-   264			1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
-   265		memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
-   266		memorg->bits_per_cell = p->bits_per_cell;
-   267	
-   268		if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
-   269			chip->options |= NAND_BUSWIDTH_16;
-   270	
-   271		if (p->ecc_bits != 0xff) {
-   272			struct nand_ecc_props requirements = {
-   273				.strength = p->ecc_bits,
-   274				.step_size = 512,
-   275			};
-   276	
-   277			nanddev_set_ecc_requirements(base, &requirements);
-   278		} else if (onfi_version >= 21 &&
-   279			(le16_to_cpu(p->features) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
-   280	
-   281			/*
-   282			 * The nand_flash_detect_ext_param_page() uses the
-   283			 * Change Read Column command which maybe not supported
-   284			 * by the chip->legacy.cmdfunc. So try to update the
-   285			 * chip->legacy.cmdfunc now. We do not replace user supplied
-   286			 * command function.
-   287			 */
-   288			nand_legacy_adjust_cmdfunc(chip);
-   289	
-   290			/* The Extended Parameter Page is supported since ONFI 2.1. */
-   291			if (nand_flash_detect_ext_param_page(chip, p))
-   292				pr_warn("Failed to detect ONFI extended param page\n");
-   293		} else {
-   294			pr_warn("Could not retrieve ONFI ECC requirements\n");
-   295		}
-   296	
-   297		/* Save some parameters from the parameter page for future use */
-   298		if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES) {
-   299			chip->parameters.supports_set_get_features = true;
-   300			bitmap_set(chip->parameters.get_feature_list,
-   301				   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
-   302			bitmap_set(chip->parameters.set_feature_list,
-   303				   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
-   304		}
-   305	
-   306		if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_READ_CACHE)
- > 307			chip->parameters.supports_read_cache;
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhhbmsgeW91IE1pcXVlbCwgY29tbWVudHMgYmVsb3c6Cgo+IFNlbnQ6IEZyaWRheSwgU2VwdGVt
+YmVyIDIyLCAyMDIzIGF0IDc6MjQgQU0KPiBGcm9tOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5y
+YXluYWxAYm9vdGxpbi5jb20+Cj4gVG86IGRyZWdhbkBtYWlsLmNvbQo+IENjOiBiY20ta2VybmVs
+LWZlZWRiYWNrLWxpc3RAYnJvYWRjb20uY29tLCBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9y
+ZywgZi5mYWluZWxsaUBnbWFpbC5jb20sIHJhZmFsQG1pbGVja2kucGwsIGpvZWwucGVzaGtpbkBi
+cm9hZGNvbS5jb20sIGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbSwgZGFuLmJleWdlbG1hbkBi
+cm9hZGNvbS5jb20sIHdpbGxpYW0uemhhbmdAYnJvYWRjb20uY29tLCBmcmllZGVyLnNjaHJlbXBm
+QGtvbnRyb24uZGUsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcsIHZpZ25lc2hyQHRpLmNv
+bSwgcmljaGFyZEBub2QuYXQsIGJicmV6aWxsb25Aa2VybmVsLm9yZywga2Rhc3Uua2RldkBnbWFp
+bC5jb20KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtdGQ6IHJhd25hbmQ6IGJyY21uYW5kOiBJbml0
+aWFsIGV4ZWNfb3AgaW1wbGVtZW50YXRpb24KPgo+IEhlbGxvLAo+IAo+IGRyZWdhbkBtYWlsLmNv
+bSB3cm90ZSBvbiBXZWQsIDEzIFNlcCAyMDIzIDA0OjI0OjQxICswMjAwOgo+IAo+ID4gSW5pdGlh
+bCBleGVjX29wIGltcGxlbWVudGF0aW9uIGZvciBCcm9hZGNvbSBTVEIsIEJyb2FkYmFuZCBhbmQg
+aVByb2MgU29DCj4gPiBUaGlzIGFkZHMgZXhlY19vcCBhbmQgcmVtb3ZlcyB0aGUgbGVnYWN5IGlu
+dGVyZmFjZS4KPiAKPiBUaGFua3MgYSBsb3QgZm9yIHRoZSBjb252ZXJzaW9uLCBhIGZldyBjb21t
+ZW50cyBiZWxvdy4KPiAKCi4uLgoKPiA+ICtzdGF0aWMgdm9pZCBicmNtbmFuZF9leGVjX2luc3Ry
+KHN0cnVjdCBicmNtbmFuZF9ob3N0ICpob3N0LAo+ID4gKwkJCQljb25zdCBzdHJ1Y3QgbmFuZF9v
+cF9pbnN0ciAqaW5zdHIsCj4gPiArCQkJCWJvb2wgbGFzdF9vcCkKPiA+ICt7Cj4gPiArCXN0cnVj
+dCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsID0gaG9zdC0+Y3RybDsKPiA+ICsJdW5zaWduZWQg
+aW50IGk7Cj4gPiArCWNvbnN0IHU4ICpvdXQ7Cj4gPiArCXU4ICppbjsKPiA+ICsKPiA+ICsJYmNt
+bmFuZF9jdHJsX3BvbGxfc3RhdHVzKGN0cmwsIE5BTkRfQ1RSTF9SRFksIE5BTkRfQ1RSTF9SRFks
+IDApOwo+ID4gKwo+ID4gKwlzd2l0Y2ggKGluc3RyLT50eXBlKSB7Cj4gPiArCWNhc2UgTkFORF9P
+UF9DTURfSU5TVFI6Cj4gPiArCQlicmNtbmFuZF9sb3dfbGV2ZWxfb3AoaG9zdCwgTExfT1BfQ01E
+LAo+ID4gKwkJCQkgICAgICBpbnN0ci0+Y3R4LmNtZC5vcGNvZGUsIGxhc3Rfb3ApOwo+ID4gKwkJ
+YnJlYWs7Cj4gPiArCj4gPiArCWNhc2UgTkFORF9PUF9BRERSX0lOU1RSOgo+ID4gKwkJZm9yIChp
+ID0gMDsgaSA8IGluc3RyLT5jdHguYWRkci5uYWRkcnM7IGkrKykKPiA+ICsJCQlicmNtbmFuZF9s
+b3dfbGV2ZWxfb3AoaG9zdCwgTExfT1BfQUREUiwKPiA+ICsJCQkJCSAgICAgIGluc3RyLT5jdHgu
+YWRkci5hZGRyc1tpXSwKPiA+ICsJCQkJCSAgICAgIGxhc3Rfb3ApOwo+ID4gKwkJYnJlYWs7Cj4g
+PiArCj4gPiArCWNhc2UgTkFORF9PUF9EQVRBX0lOX0lOU1RSOgo+ID4gKwkJaW4gPSBpbnN0ci0+
+Y3R4LmRhdGEuYnVmLmluOwo+ID4gKwkJZm9yIChpID0gMDsgaSA8IGluc3RyLT5jdHguZGF0YS5s
+ZW47IGkrKykgewo+ID4gKwkJCWJyY21uYW5kX2xvd19sZXZlbF9vcChob3N0LCBMTF9PUF9SRCwg
+MCwgbGFzdF9vcCk7Cj4gPiArCQkJaW5baV0gPSBicmNtbmFuZF9yZWFkX3JlZyhob3N0LT5jdHJs
+LAo+ID4gKwkJCQkJCSAgQlJDTU5BTkRfTExfUkRBVEEpOwo+ID4gKwkJfQo+ID4gKwkJYnJlYWs7
+Cj4gPiArCj4gPiArCWNhc2UgTkFORF9PUF9EQVRBX09VVF9JTlNUUjoKPiA+ICsJCW91dCA9IGlu
+c3RyLT5jdHguZGF0YS5idWYub3V0Owo+ID4gKwkJZm9yIChpID0gMDsgaSA8IGluc3RyLT5jdHgu
+ZGF0YS5sZW47IGkrKykKPiA+ICsJCQlicmNtbmFuZF9sb3dfbGV2ZWxfb3AoaG9zdCwgTExfT1Bf
+V1IsIG91dFtpXSwgbGFzdF9vcCk7Cj4gPiArCQlicmVhazsKPiA+ICsKPiA+ICsJZGVmYXVsdDoK
+PiAKPiBTaG91bGQgcHJvYmFibHkgcmV0dXJuIGFuIGVycm9yLgo+IAoKV2lsbCBkby4KCj4gPiAr
+CQlicmVhazsKPiA+ICsJfQo+ID4gK30KPiA+ICsKPiA+ICtzdGF0aWMgaW50IGJyY21uYW5kX3Bh
+cnNlcl9leGVjX21hdGNoZWRfb3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKPiA+ICsJCQkJCSBj
+b25zdCBzdHJ1Y3QgbmFuZF9zdWJvcCAqc3Vib3ApCj4gPiArewo+ID4gKwlzdHJ1Y3QgYnJjbW5h
+bmRfaG9zdCAqaG9zdCA9IG5hbmRfZ2V0X2NvbnRyb2xsZXJfZGF0YShjaGlwKTsKPiA+ICsJc3Ry
+dWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3RvX210ZChjaGlwKTsKPiA+ICsJY29uc3Qgc3RydWN0
+IG5hbmRfb3BfaW5zdHIgKmluc3RyID0gJnN1Ym9wLT5pbnN0cnNbMF07Cj4gPiArCXVuc2lnbmVk
+IGludCBpOwo+ID4gKwlpbnQgcmV0ID0gMDsKPiA+ICsKPiA+ICsJc3RhdGljIGludCBlcmFzZTsg
+Lyogd2lsbCBpbml0aWFsaXplIHRvIHplcm8gKi8KPiA+ICsJc3RhdGljIGludCBzdGF0dXM7IC8q
+IHdpbGwgaW5pdGlhbGl6ZSB0byB6ZXJvICovCj4gCj4gTG9va3MgcmVhbGx5IHN1c3BpY2lvdXMs
+IEkgYmVsaWV2ZSB5b3Ugc2hvdWxkIHJld29yayB5b3VyCj4gaW1wbGVtZW50YXRpb24gdG8gYXZv
+aWQgc3RhdGljIHZhcmlhYmxlcyBoZXJlLgo+IAoKV2lsbCBtb3ZlIHRoZXNlIGZsYWdzIGludG8g
+b3VyIGxvY2FsIHN0cnVjdHVyZS4KCj4gPiArCj4gPiArCWZvciAoaSA9IDA7IGkgPCBzdWJvcC0+
+bmluc3RyczsgaSsrKSB7Cj4gPiArCQlpbnN0ciA9ICZzdWJvcC0+aW5zdHJzW2ldOwo+ID4gKwo+
+ID4gKwkJaWYgKChpbnN0ci0+dHlwZSA9PSBOQU5EX09QX0NNRF9JTlNUUikgJiYKPiA+ICsJCQko
+aW5zdHItPmN0eC5jbWQub3Bjb2RlID09IE5BTkRfQ01EX1NUQVRVUykpCj4gPiArCQkJc3RhdHVz
+ID0gMTsKPiA+ICsJCWVsc2UgaWYgKHN0YXR1cyAmJiAoaW5zdHItPnR5cGUgPT0gTkFORF9PUF9E
+QVRBX0lOX0lOU1RSKSkgewo+ID4gKwkJCS8qCj4gPiArCQkJICogbmVlZCB0byBmYWtlIHRoZSBu
+YW5kIGRldmljZSB3cml0ZSBwcm90ZWN0IGJlY2F1c2UgbmFuZF9iYXNlIGRvZXMgYQo+ID4gKwkJ
+CSAqIG5hbmRfY2hlY2tfd3Agd2hpY2ggY2FsbHMgbmFuZF9zdGF0dXNfb3AgTkFORF9DTURfU1RB
+VFVTIHdoaWNoIGNoZWNrcwo+ID4gKwkJCSAqIHRoYXQgdGhlIG5hbmQgaXMgbm90IHdyaXRlIHBy
+b3RlY3RlZCBiZWZvcmUgYW4gb3BlcmF0aW9uIHN0YXJ0cy4KPiA+ICsJCQkgKiBUaGUgcHJvYmxl
+bSB3aXRoIHRoaXMgaXMgaXQncyBkb25lIG91dHNpZGUgZXhlY19vcCBzbyB0aGUgbmFuZCBpcwo+
+ID4gKwkJCSAqIHdyaXRlIHByb3RlY3RlZCBhbmQgdGhpcyBjaGVjayB3aWxsIGZhaWwgdW50aWwg
+dGhlIHdyaXRlIG9yIGVyYXNlCj4gPiArCQkJICogb3Igd3JpdGUgYmFjayBvcGVyYXRpb24gYWN0
+dWFsbHkgaGFwcGVucyB3aGVyZSB3ZSB0dXJuIG9mZiB3cC4KPiA+ICsJCQkgKi8KPiAKPiBJZiB0
+aGVyZSBpcyBhIHByb2JsZW0gd2l0aCB0aGUgY29yZSBpdCBuZWVkcyB0byBiZSBoYW5kbGVkIGlu
+IHRoZSBjb3JlLAo+IG5vdCB3b3JrYXJvdW5kZWQgaGVyZS4gVGhlIHdob2xlIGxvZ2ljIHdpdGgg
+dGhlIHN0YXR1cyBwcm9wZXJ0eSBzZWVtcwo+IHJlYWxseSB3cm9uZy4KPiAKCkknbSB0cnlpbmcg
+dG8gY2hhbmdlIG91ciBjdXJyZW50IGNvZGUgZnVuY3Rpb25hbGl0eSBhcyBsaXR0bGUgYXMKcG9z
+c2libGUgYnkgaGF2aW5nIHRoaXMgZnVuY3Rpb24gaW4gdGhlIHNhbWUgd2F5IGFzIGl0IGFsd2F5
+cyBoYXMKYW5kIEkgZG8gbm90IHdhbnQgdG8gbWFrZSBjaGFuZ2VzIHRvbyBtdWNoIG91dHNpZGUg
+dGhlIHNjb3BlCm9mIHRoaXMgZXhlY19vcCBjaGFuZ2UuCgo+ID4gKwkJCXU4ICppbjsKPiA+ICsK
+PiA+ICsJCQlzdGF0dXMgPSAwOwo+ID4gKwo+ID4gKwkJCWluc3RyID0gJnN1Ym9wLT5pbnN0cnNb
+aV07Cj4gPiArCQkJaW4gPSBpbnN0ci0+Y3R4LmRhdGEuYnVmLmluOwo+ID4gKwkJCWluWzBdID0g
+YnJjbW5hbmRfc3RhdHVzKGhvc3QpIHwgTkFORF9TVEFUVVNfV1A7IC8qIGhpZGUgV1Agc3RhdHVz
+ICovCj4gPiArCQl9IGVsc2UgeyAvKiBvdGhlcndpc2UgcGFzcyB0byBsb3cgbGV2ZWwgaW1wbGVt
+ZW50YXRpb24gKi8KPiA+ICsJCQlpZiAoKGluc3RyLT50eXBlID09IE5BTkRfT1BfQ01EX0lOU1RS
+KSAmJgo+ID4gKwkJCQkoaW5zdHItPmN0eC5jbWQub3Bjb2RlID09IE5BTkRfQ01EX1JFU0VUKSkg
+ewo+ID4gKwkJCQllcmFzZSA9IDA7Cj4gPiArCQkJCXN0YXR1cyA9IDA7Cj4gPiArCQkJfQo+ID4g
+Kwo+ID4gKwkJCWlmIChlcmFzZSkgewo+ID4gKwkJCQllcmFzZSA9IDA7Cj4gPiArCQkJCWJyY21u
+YW5kX3dwKG10ZCwgMSk7Cj4gPiArCQkJfQo+ID4gKwo+ID4gKwkJCWlmICgoaW5zdHItPnR5cGUg
+PT0gTkFORF9PUF9DTURfSU5TVFIpICYmCj4gPiArCQkJCShpbnN0ci0+Y3R4LmNtZC5vcGNvZGUg
+PT0gTkFORF9DTURfRVJBU0UxKSkKPiA+ICsJCQkJYnJjbW5hbmRfd3AobXRkLCAwKTsKPiA+ICsK
+PiA+ICsJCQlpZiAoKGluc3RyLT50eXBlID09IE5BTkRfT1BfQ01EX0lOU1RSKSAmJgo+ID4gKwkJ
+CQkoaW5zdHItPmN0eC5jbWQub3Bjb2RlID09IE5BTkRfQ01EX0VSQVNFMikpCj4gPiArCQkJCWVy
+YXNlID0gMTsKPiA+ICsKPiA+ICsJCQlicmNtbmFuZF9leGVjX2luc3RyKGhvc3QsIGluc3RyLCBp
+ID09IChzdWJvcC0+bmluc3RycyAtIDEpKTsKPiA+ICsJCX0KPiA+ICsJfQo+ID4gKwo+ID4gKwly
+ZXR1cm4gcmV0Owo+ID4gK30KPiA+ICsKPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG5hbmRfb3Bf
+cGFyc2VyIGJyY21uYW5kX29wX3BhcnNlciA9IE5BTkRfT1BfUEFSU0VSKAo+ID4gKwkvKiBmYWxz
+ZSBtZWFucyB0aGUgZWxlbWVudCBNVVNUIG1hdGNoLAo+ID4gKwkgKiB0cnVlIG1lYW5zIGl0IGRv
+ZXMgbm90IGhhdmUgdG8gbWF0Y2gsIGNhdGNoIGFsbCBwYXR0ZXJucwo+ID4gKwkgKi8KPiAKPiBJ
+IGJlbGlldmUgdGhlIGNvbW1lbnQgaXMgbm90IHJlYWxseSB1c2VmdWwgaGVyZT8KPiAKCldpbGwg
+cmVtb3ZlLgoKLi4uCgo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCj4gCgpUaGFua3MhCgotRGF2ZQoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
+bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
