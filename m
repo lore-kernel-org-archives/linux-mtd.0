@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FF25E71D40
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Sep 2023 14:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF7AE728C5
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Sep 2023 16:29:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NhrlFiKM4K3bP9HeLrcXekE5V8ebZ03fi3vaZHeX2Ig=; b=BfiLDudnNoallx
-	9lawf49TTyxqNgf8+/0UdpLbGFnvy5mrHSCZCAEayQew2UYT7qHzffvfjdC9HjivFHU1ywu+hz6SI
-	G5S5Qq+nWAd1FUkzlE9aMxYXwevuerMPj9uhK7dB9Jk2uqoHxlfkG/DK5/8IJI//NH/Pl9x7RZDDk
-	wHdTizTyFVJbYLs/z5PX0RKGzKw23MkXcGqe6SbNfkKwml983aa0C64KJic8rge2Z9/vhSmFMfNY0
-	hS3EaClOE+TSNukn9doFbnnfmVhws2HIlWPuaOZNiHAeJyoYGFMe5s4FUEa8Wg+XJGwgmg6xkW3rq
-	hhqEhqZxj4K6dYc1dZhQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OYZA1D6G7rgN9ny3Q2uhMKOQpE+6kuQYvbTfynreLHg=; b=eH1Oyh0EVrJm2z
+	R9Co7GRGa0AcbPc1+16OTTukfN4zCQSVc37GQ+rK8ejMVExQzxXEipi3nTHY2e6llmwuI+XMlAp0X
+	cUR1f+w+O22BAjZGR6PyyUf1LXt0lyDUBrHAs6SYI/fqSj6Sw2LlwyjHYvsZSu2YkzvrmYda/1fUr
+	66SPpqNGkDXhXlEnV0IgzVgh2cYB/hS5ECy4LEaDsV3H0IYAXbCR2jx1RD2+D/vJD2GNN/G2M+5Zg
+	wHBTVi7+oYsL2P6ss6jOXXnDvPIzpW5kmyDWUkWSuSMdOJpNtFuLu0HARKVhytfPEj/nRcs4YGdTJ
+	UBWuU5gM/KWd1DDAEVnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmEpm-0086TI-0I;
-	Fri, 29 Sep 2023 14:51:14 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1qmGMA-008IEJ-0A;
+	Fri, 29 Sep 2023 16:28:46 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmEpc-0086S3-1b
+	id 1qmGM6-008IDG-2F
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Sep 2023 14:51:10 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 8D11812000D;
-	Fri, 29 Sep 2023 17:50:47 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8D11812000D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1695999047;
-	bh=M/QssKuK81ff2bXIf5giRDIn4a4XRpqPj6u9hV8eVvY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Ml1eL0925sezq/FS9Ehqvn1EFuskIYcSTM3elNUuNWsmtIRjbb1YQW6K5h09HF4Gz
-	 FFzlzycM3dvWJ2l+bwGwQZNjoUVbEE4dM+jQ2Q1eJBRhR6ZSgnBHBAAuZQkKh7rwvm
-	 jPoyPXg+VRn3xhEKFrxjZo7dXwIMQ1HZxXa+SBZ1FTTeK1hpl9+K8djF91+6jviLVD
-	 k1TD9VvM0Xt9ZuEeFSDRo9J0NuzDOeGKBHZ8aNKTqEsbd5pKS7YCdsUGPXPux1jt8v
-	 9P9H5mnmpdYJaxYx0LjZ8qmN6DJaHfVLdYLdBiemcBV62kCcA0lvWEO1fcyoxmjQk+
-	 6dEUE9DAsRaRA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 29 Sep 2023 17:50:46 +0300 (MSK)
-Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 29 Sep 2023 17:50:46 +0300
-From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mario Kicherer
-	<dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>, Dhruva Gole
-	<d-gole@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<kernel@sberdevices.ru>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v1] mtd: spinand: add support for FORESEE F35SQA002G
-Date: Fri, 29 Sep 2023 17:49:34 +0300
-Message-ID: <20230929144934.192649-1-mmkurbanov@salutedevices.com>
-X-Mailer: git-send-email 2.40.0
+	Fri, 29 Sep 2023 16:28:44 +0000
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50337b43ee6so23201089e87.3
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2023 09:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1696004921; x=1696609721; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
+        b=a9HEHtR9/bJQEn6bVklilSJZtwJ3xbB8VnfxgCpV+i9FpwM8RIkuUmB8ylPhWsTnhh
+         FfEmBNXD+dpSbTRLOtf/eNIMF4Q7gm9vZPZWWTm9g5x5HtNRVQa7+vki9j2+djl4/7TX
+         1lRnWbRrMLxBehj6PtXDFoXiFye64zaVNgeWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696004921; x=1696609721;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
+        b=Saa2CW4gk7gcVd2GQmxrAwarIgsr8LBaOyQOaI3qiym/H9gXBqCBtp42SLuUSbDqzy
+         ygEsSkQ2dSW6NTvpCtrcev4FeY7x1oHmGLRjSs+zcDIjj6LY4a1q9mfnVt8YlYQ/HZV5
+         y5sPVyvU4ZZcy5KJykB82bwxZ/A3TbSPiHZDcMdpYOp9BNc6Vx+pY9PlG2kAOW/l0rYS
+         CEc4vJm6fJV9Wovsnhs8J8/qhMXl1HexzYvFvCce53yzMVYMKlv4E+WnVhP557Ua5qoA
+         7P3hJi/M15dnGIiFOrkjfEs3Z2sm3xx76NQpuu6KqCbsJc9HKPGWLxh3omjHgLkjyoIi
+         Hvuw==
+X-Gm-Message-State: AOJu0YzZqvhotLe0EuJmr06c/Yu14lehSeIKynEQ3W3z6MZC8bA3hso7
+	+lUSfa639/B25xIay5Vmc0oYXV8a0HQFIJgyU2vqHskhNbo=
+X-Google-Smtp-Source: AGHT+IEdUKWyaaENbhHAObDlhYgcZpu3O2O/Y6uQWqcijAk3leSOWcHSHwYoeuMv0TPFLgBgSTrkpQ==
+X-Received: by 2002:a19:385a:0:b0:500:a2d3:3e65 with SMTP id d26-20020a19385a000000b00500a2d33e65mr3583999lfj.23.1696004921035;
+        Fri, 29 Sep 2023 09:28:41 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id b26-20020ac247fa000000b00504230b7ae9sm3560268lfp.148.2023.09.29.09.28.40
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 09:28:40 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2bffc55af02so224624191fa.2
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2023 09:28:40 -0700 (PDT)
+X-Received: by 2002:a17:907:2722:b0:9a1:cdf1:ba3 with SMTP id
+ d2-20020a170907272200b009a1cdf10ba3mr4628345ejl.27.1696004552316; Fri, 29 Sep
+ 2023 09:22:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180242 [Sep 29 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;www.longsys.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/09/29 10:46:00
-X-KSMG-LinksScanning: Clean, bases: 2023/09/29 10:46:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/29 12:58:00 #22007106
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org>
+ <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
+ <20230928171943.GK11439@frogsfrogsfrogs> <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
+ <20230928212656.GC189345@mit.edu> <CAHk-=wjTynK9BdGbi+8eShU77nkPvipFwRxEd1TSBrw2+LiuDg@mail.gmail.com>
+ <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
+In-Reply-To: <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 29 Sep 2023 09:22:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
+Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.cz>, "Eric W. Biederman" <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Mattia Dongili <malattia@linux.it>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Brad Warrum <bwarrum@linux.ibm.com>, Ritu Agarwal <rituagar@linux.ibm.com>, Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Mark Gross <markgross@kernel.org>, Jiri Slaby <jirislaby@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>, "Rafael J . Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>, Jeffle Xu <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Christoph Hellwig <hch@infradead.org>, Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>, David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Anton Altaparmakov <anton@tuxera.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Phillip Lougher <phillip@squashfs.org.uk>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Evgeniy Dushistov <dushistov@mail.ru>, Chandan Babu R <chandan.babu@oracle.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org, linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@telemann.coda.cs.cmu.edu, linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, selinux@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230929_075104_898164_0CA6E14D 
-X-CRM114-Status: GOOD (  22.69  )
+X-CRM114-CacheID: sfid-20230929_092842_775409_F856613C 
+X-CRM114-Status: GOOD (  19.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,163 +98,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for FORESEE F35SQA002G SPI NAND.
-Datasheet:
-  https://www.longsys.com/uploads/LM-00006FORESEEF35SQA002GDatasheet_1650183701.pdf
+On Thu, 28 Sept 2023 at 20:50, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> OTOH, it is perfectly fine if the vfs wants to stop providing sub 100ns
+> services to filesystems. It's just going to be the fs problem and the
+> preserved pre-historic/fine-grained time on existing files would only
+> need to be provided in getattr(). It does not need to be in __i_mtime.
 
-Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
----
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   1 +
- drivers/mtd/nand/spi/foresee.c | 101 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   1 +
- 4 files changed, 104 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/foresee.c
+Hmm. That sounds technically sane, but for one thing: if the aim is to try to do
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index cd8b66bf7740..19cc77288ebb 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o alliancememory.o ato.o esmt.o gigadevice.o macronix.o
-+spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
- spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 393ff37f0d23..849ccfedbc72 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -940,6 +940,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&alliancememory_spinand_manufacturer,
- 	&ato_spinand_manufacturer,
- 	&esmt_c8_spinand_manufacturer,
-+	&foresee_spinand_manufacturer,
- 	&gigadevice_spinand_manufacturer,
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/foresee.c b/drivers/mtd/nand/spi/foresee.c
-new file mode 100644
-index 000000000000..55d4ff1f091a
---- /dev/null
-+++ b/drivers/mtd/nand/spi/foresee.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2023, SberDevices. All Rights Reserved.
-+ *
-+ * Author: Martin Kurbanov <mmkurbanov@salutedevices.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_FORESEE		0xCD
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int f35sqa002g_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *region)
-+{
-+	return -ERANGE;
-+}
-+
-+static int f35sqa002g_ooblayout_free(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *region)
-+{
-+	/* XXX: It is not possible to partially write to this OOB area, as both
-+	 * the main and OOB areas are protected by ECC. The user needs to
-+	 * program both the main area and OOB area at one programming time,
-+	 * so that the ECC parity code can be calculated properly.
-+	 */
-+
-+	if (section)
-+		return -ERANGE;
-+
-+	/* Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = 62;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops f35sqa002g_ooblayout = {
-+	.ecc = f35sqa002g_ooblayout_ecc,
-+	.free = f35sqa002g_ooblayout_free,
-+};
-+
-+static int f35sqa002g_ecc_get_status(struct spinand_device *spinand, u8 status)
-+{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_HAS_BITFLIPS:
-+		return nanddev_get_ecc_conf(nand)->strength;
-+
-+	default:
-+		break;
-+	}
-+
-+	/* More than 1-bit error was detected in one or more sectors and
-+	 * cannot be corrected.
-+	 */
-+	return -EBADMSG;
-+}
-+
-+static const struct spinand_info foresee_spinand_table[] = {
-+	SPINAND_INFO("F35SQA002G",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x72, 0x72),
-+		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&f35sqa002g_ooblayout,
-+				     f35sqa002g_ecc_get_status)),
-+};
-+
-+static const struct spinand_manufacturer_ops foresee_spinand_manuf_ops = {
-+};
-+
-+const struct spinand_manufacturer foresee_spinand_manufacturer = {
-+	.id = SPINAND_MFR_FORESEE,
-+	.name = "FORESEE",
-+	.chips = foresee_spinand_table,
-+	.nchips = ARRAY_SIZE(foresee_spinand_table),
-+	.ops = &foresee_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 3e285c09d16d..badb4c1ac079 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -263,6 +263,7 @@ struct spinand_manufacturer {
- extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
- extern const struct spinand_manufacturer ato_spinand_manufacturer;
- extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
-+extern const struct spinand_manufacturer foresee_spinand_manufacturer;
- extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
--- 
-2.40.0
+ (a) atomic timestamp access
 
+ (b) shrink the inode
+
+then having the filesystem maintain its own timestamp for fine-grained
+data will break both of those goals.
+
+Yes, we'd make 'struct inode' smaller if we pack the times into one
+64-bit entity, but if btrfs responds by adding mtime fields to "struct
+btrfs_inode", we lost the size advantage and only made things worse.
+
+And if ->getattr() then reads those fields without locking (and we
+definitely don't want locking in that path), then we lost the
+atomicity thing too.
+
+So no. A "but the filesystem can maintain finer granularity" model is
+not acceptable, I think.
+
+If we do require nanoseconds for compatibility, what we could possibly
+do is say "we guarantee nanosecond values for *legacy* dates", and say
+that future dates use 100ns resolution. We'd define "legacy dates" to
+be the traditional 32-bit signed time_t.
+
+So with a 64-bit fstime_t, we'd have the "legacy format":
+
+ - top 32 bits are seconds, bottom 32 bits are ns
+
+which gives us that ns format.
+
+Then, because only 30 bits are needed for nanosecond resolution, we
+use the top two bits of that ns field as flags. '00' means that legacy
+format, and '01' would mean "we're not doing nanosecond resolution,
+we're doing 64ns resolution, and the low 6 bits of the ns field are
+actually bits 32-37 of the seconds field".
+
+That still gives us some extensibility (unless the multi-grain code
+still wants to use the other top bit), and it gives us 40 bits of
+seconds, which is quite a lot.
+
+And all the conversion functions will be simple bit field
+manipulations, so there are no expensive ops here.
+
+Anyway, I agree with the "let's introduce the accessor functions
+first, we can do the 'pack into one word' decisions later".
+
+                Linus
 
 ______________________________________________________
 Linux MTD discussion mailing list
