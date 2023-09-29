@@ -4,84 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF7AE728C5
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Sep 2023 16:29:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F0D5E728CA
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Sep 2023 17:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OYZA1D6G7rgN9ny3Q2uhMKOQpE+6kuQYvbTfynreLHg=; b=eH1Oyh0EVrJm2z
-	R9Co7GRGa0AcbPc1+16OTTukfN4zCQSVc37GQ+rK8ejMVExQzxXEipi3nTHY2e6llmwuI+XMlAp0X
-	cUR1f+w+O22BAjZGR6PyyUf1LXt0lyDUBrHAs6SYI/fqSj6Sw2LlwyjHYvsZSu2YkzvrmYda/1fUr
-	66SPpqNGkDXhXlEnV0IgzVgh2cYB/hS5ECy4LEaDsV3H0IYAXbCR2jx1RD2+D/vJD2GNN/G2M+5Zg
-	wHBTVi7+oYsL2P6ss6jOXXnDvPIzpW5kmyDWUkWSuSMdOJpNtFuLu0HARKVhytfPEj/nRcs4YGdTJ
-	UBWuU5gM/KWd1DDAEVnA==;
+	List-Owner; bh=B+mqCb6ZQ3ifDOTjcSr0QpCdAUaS5gEol+Q4rZU8+co=; b=SWKt+pq2w4OxVj
+	jBDf9YyAvOhQ5+D1DV8FlfzFArgAtiqn3qxAhNoZ0RtJqGd5Cdluu7U1w/wiS/jyjAoCi6wa26nfL
+	hEhAJjPKhSYsdrLKDYmaBU/uQYB1a1mEqMWWxns8OEOo2Z1DaQ6gxlMiqqAo48yLoAoNh34utstsz
+	D9ggaYavCcniZQd9/XZtJITSW9F5BOXk9ygJWYC2+WxIpOazmKkj9s2YdYyG2gHqop7E4M7fMOEYG
+	Hcze9hJiRC0xghS9Odd6tpdBPQCJXgg6YQc83bARqhLEqFFFc4JIvnnE3m16OKwnN52C7/RKMEqL7
+	3dDkdvaHAXziQ1j1OK4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmGMA-008IEJ-0A;
-	Fri, 29 Sep 2023 16:28:46 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1qmGqx-008JtE-0L;
+	Fri, 29 Sep 2023 17:00:35 +0000
+Received: from mgamail.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmGM6-008IDG-2F
+	id 1qmGqt-008JsY-1q
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Sep 2023 16:28:44 +0000
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50337b43ee6so23201089e87.3
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2023 09:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696004921; x=1696609721; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
-        b=a9HEHtR9/bJQEn6bVklilSJZtwJ3xbB8VnfxgCpV+i9FpwM8RIkuUmB8ylPhWsTnhh
-         FfEmBNXD+dpSbTRLOtf/eNIMF4Q7gm9vZPZWWTm9g5x5HtNRVQa7+vki9j2+djl4/7TX
-         1lRnWbRrMLxBehj6PtXDFoXiFye64zaVNgeWo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696004921; x=1696609721;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
-        b=Saa2CW4gk7gcVd2GQmxrAwarIgsr8LBaOyQOaI3qiym/H9gXBqCBtp42SLuUSbDqzy
-         ygEsSkQ2dSW6NTvpCtrcev4FeY7x1oHmGLRjSs+zcDIjj6LY4a1q9mfnVt8YlYQ/HZV5
-         y5sPVyvU4ZZcy5KJykB82bwxZ/A3TbSPiHZDcMdpYOp9BNc6Vx+pY9PlG2kAOW/l0rYS
-         CEc4vJm6fJV9Wovsnhs8J8/qhMXl1HexzYvFvCce53yzMVYMKlv4E+WnVhP557Ua5qoA
-         7P3hJi/M15dnGIiFOrkjfEs3Z2sm3xx76NQpuu6KqCbsJc9HKPGWLxh3omjHgLkjyoIi
-         Hvuw==
-X-Gm-Message-State: AOJu0YzZqvhotLe0EuJmr06c/Yu14lehSeIKynEQ3W3z6MZC8bA3hso7
-	+lUSfa639/B25xIay5Vmc0oYXV8a0HQFIJgyU2vqHskhNbo=
-X-Google-Smtp-Source: AGHT+IEdUKWyaaENbhHAObDlhYgcZpu3O2O/Y6uQWqcijAk3leSOWcHSHwYoeuMv0TPFLgBgSTrkpQ==
-X-Received: by 2002:a19:385a:0:b0:500:a2d3:3e65 with SMTP id d26-20020a19385a000000b00500a2d33e65mr3583999lfj.23.1696004921035;
-        Fri, 29 Sep 2023 09:28:41 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id b26-20020ac247fa000000b00504230b7ae9sm3560268lfp.148.2023.09.29.09.28.40
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 09:28:40 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2bffc55af02so224624191fa.2
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2023 09:28:40 -0700 (PDT)
-X-Received: by 2002:a17:907:2722:b0:9a1:cdf1:ba3 with SMTP id
- d2-20020a170907272200b009a1cdf10ba3mr4628345ejl.27.1696004552316; Fri, 29 Sep
- 2023 09:22:32 -0700 (PDT)
+	Fri, 29 Sep 2023 17:00:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696006831; x=1727542831;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vTPDHd04Yq+AmECJeKw05gjgTnYbHmBH7SKpEl716vQ=;
+  b=VankpghlOYqHA2nSQ2qHtLFv6OwU2hXeR5yZ4qNPQUx2ftbN4Z+AU/cu
+   6jywM5wzGLjQIrwgIAH2LZbupkul58do5zQk8S7BzQfSx7TIf4vFVlu1c
+   HbRWzL7XKkX4XYto2ZObO3UNG8PXsKrq2DL1KZpxxAm7bnxfrY/UXo3kY
+   gVQG1W/fTeE7Siz/OghQC5QPeCpvyU8bQzEf4wUr+iWsyW4xSNgoFB1j/
+   FoEGS9bgEvAiUz6p2U0vnRg2CP7UIoAx03P0P0g4USTLeyTTDoxPdTxqP
+   2Wxx6SbjzP7mzjQjaxkaitExAVnGkCDRmvFFDRlpV7APSzhTew3MTeXLD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385163685"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="385163685"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 10:00:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="893478770"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="893478770"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Sep 2023 09:59:09 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qmGqi-000353-17;
+	Fri, 29 Sep 2023 17:00:20 +0000
+Date: Sat, 30 Sep 2023 01:00:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+	Martin =?iso-8859-1?Q?Hundeb=F8ll?= <martin@geanix.com>,
+	=?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	JaimeLiao <jaimeliao.tw@gmail.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	kernel@pengutronix.de,
+	Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: check nand support for cache reads
+Message-ID: <202309300033.zf83jfBL-lkp@intel.com>
+References: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
 MIME-Version: 1.0
-References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org>
- <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
- <20230928171943.GK11439@frogsfrogsfrogs> <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
- <20230928212656.GC189345@mit.edu> <CAHk-=wjTynK9BdGbi+8eShU77nkPvipFwRxEd1TSBrw2+LiuDg@mail.gmail.com>
- <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
-In-Reply-To: <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 29 Sep 2023 09:22:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
-Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.cz>, "Eric W. Biederman" <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Mattia Dongili <malattia@linux.it>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Brad Warrum <bwarrum@linux.ibm.com>, Ritu Agarwal <rituagar@linux.ibm.com>, Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Mark Gross <markgross@kernel.org>, Jiri Slaby <jirislaby@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>, "Rafael J . Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>, Jeffle Xu <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Christoph Hellwig <hch@infradead.org>, Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>, David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Anton Altaparmakov <anton@tuxera.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Phillip Lougher <phillip@squashfs.org.uk>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Evgeniy Dushistov <dushistov@mail.ru>, Chandan Babu R <chandan.babu@oracle.com>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org, linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@telemann.coda.cs.cmu.edu, linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Content-Disposition: inline
+In-Reply-To: <20230922100116.145090-1-r.czerwinski@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230929_092842_775409_F856613C 
-X-CRM114-Status: GOOD (  19.54  )
+X-CRM114-CacheID: sfid-20230929_100031_676658_DEA47117 
+X-CRM114-Status: GOOD (  22.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,61 +93,216 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 28 Sept 2023 at 20:50, Amir Goldstein <amir73il@gmail.com> wrote:
->
-> OTOH, it is perfectly fine if the vfs wants to stop providing sub 100ns
-> services to filesystems. It's just going to be the fs problem and the
-> preserved pre-historic/fine-grained time on existing files would only
-> need to be provided in getattr(). It does not need to be in __i_mtime.
+Hi Rouven,
 
-Hmm. That sounds technically sane, but for one thing: if the aim is to try to do
+kernel test robot noticed the following build warnings:
 
- (a) atomic timestamp access
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.6-rc3 next-20230929]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
- (b) shrink the inode
+url:    https://github.com/intel-lab-lkp/linux/commits/Rouven-Czerwinski/mtd-rawnand-check-nand-support-for-cache-reads/20230922-180317
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230922100116.145090-1-r.czerwinski%40pengutronix.de
+patch subject: [PATCH] mtd: rawnand: check nand support for cache reads
+config: mips-qi_lb60_defconfig (https://download.01.org/0day-ci/archive/20230930/202309300033.zf83jfBL-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309300033.zf83jfBL-lkp@intel.com/reproduce)
 
-then having the filesystem maintain its own timestamp for fine-grained
-data will break both of those goals.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309300033.zf83jfBL-lkp@intel.com/
 
-Yes, we'd make 'struct inode' smaller if we pack the times into one
-64-bit entity, but if btrfs responds by adding mtime fields to "struct
-btrfs_inode", we lost the size advantage and only made things worse.
+All warnings (new ones prefixed by >>):
 
-And if ->getattr() then reads those fields without locking (and we
-definitely don't want locking in that path), then we lost the
-atomicity thing too.
+>> drivers/mtd/nand/raw/nand_onfi.c:307:20: warning: expression result unused [-Wunused-value]
+     307 |                 chip->parameters.supports_read_cache;
+         |                 ~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~~~~~~~~
+   1 warning generated.
+--
+>> drivers/mtd/nand/raw/nand_jedec.c:98:20: warning: expression result unused [-Wunused-value]
+      98 |                 chip->parameters.supports_read_cache;
+         |                 ~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~~~~~~~~
+   1 warning generated.
 
-So no. A "but the filesystem can maintain finer granularity" model is
-not acceptable, I think.
 
-If we do require nanoseconds for compatibility, what we could possibly
-do is say "we guarantee nanosecond values for *legacy* dates", and say
-that future dates use 100ns resolution. We'd define "legacy dates" to
-be the traditional 32-bit signed time_t.
+vim +307 drivers/mtd/nand/raw/nand_onfi.c
 
-So with a 64-bit fstime_t, we'd have the "legacy format":
+   140	
+   141	/*
+   142	 * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+   143	 */
+   144	int nand_onfi_detect(struct nand_chip *chip)
+   145	{
+   146		struct nand_device *base = &chip->base;
+   147		struct mtd_info *mtd = nand_to_mtd(chip);
+   148		struct nand_memory_organization *memorg;
+   149		struct nand_onfi_params *p = NULL, *pbuf;
+   150		struct onfi_params *onfi;
+   151		bool use_datain = false;
+   152		int onfi_version = 0;
+   153		char id[4];
+   154		int i, ret, val;
+   155		u16 crc;
+   156	
+   157		memorg = nanddev_get_memorg(&chip->base);
+   158	
+   159		/* Try ONFI for unknown chip or LP */
+   160		ret = nand_readid_op(chip, 0x20, id, sizeof(id));
+   161		if (ret || strncmp(id, "ONFI", 4))
+   162			return 0;
+   163	
+   164		/* ONFI chip: allocate a buffer to hold its parameter page */
+   165		pbuf = kzalloc((sizeof(*pbuf) * ONFI_PARAM_PAGES), GFP_KERNEL);
+   166		if (!pbuf)
+   167			return -ENOMEM;
+   168	
+   169		if (!nand_has_exec_op(chip) || chip->controller->supported_op.data_only_read)
+   170			use_datain = true;
+   171	
+   172		for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+   173			if (!i)
+   174				ret = nand_read_param_page_op(chip, 0, &pbuf[i],
+   175							      sizeof(*pbuf));
+   176			else if (use_datain)
+   177				ret = nand_read_data_op(chip, &pbuf[i], sizeof(*pbuf),
+   178							true, false);
+   179			else
+   180				ret = nand_change_read_column_op(chip, sizeof(*pbuf) * i,
+   181								 &pbuf[i], sizeof(*pbuf),
+   182								 true);
+   183			if (ret) {
+   184				ret = 0;
+   185				goto free_onfi_param_page;
+   186			}
+   187	
+   188			crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)&pbuf[i], 254);
+   189			if (crc == le16_to_cpu(pbuf[i].crc)) {
+   190				p = &pbuf[i];
+   191				break;
+   192			}
+   193		}
+   194	
+   195		if (i == ONFI_PARAM_PAGES) {
+   196			const void *srcbufs[ONFI_PARAM_PAGES];
+   197			unsigned int j;
+   198	
+   199			for (j = 0; j < ONFI_PARAM_PAGES; j++)
+   200				srcbufs[j] = pbuf + j;
+   201	
+   202			pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
+   203			nand_bit_wise_majority(srcbufs, ONFI_PARAM_PAGES, pbuf,
+   204					       sizeof(*pbuf));
+   205	
+   206			crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)pbuf, 254);
+   207			if (crc != le16_to_cpu(pbuf->crc)) {
+   208				pr_err("ONFI parameter recovery failed, aborting\n");
+   209				goto free_onfi_param_page;
+   210			}
+   211			p = pbuf;
+   212		}
+   213	
+   214		if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
+   215		    chip->manufacturer.desc->ops->fixup_onfi_param_page)
+   216			chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
+   217	
+   218		/* Check version */
+   219		val = le16_to_cpu(p->revision);
+   220		if (val & ONFI_VERSION_2_3)
+   221			onfi_version = 23;
+   222		else if (val & ONFI_VERSION_2_2)
+   223			onfi_version = 22;
+   224		else if (val & ONFI_VERSION_2_1)
+   225			onfi_version = 21;
+   226		else if (val & ONFI_VERSION_2_0)
+   227			onfi_version = 20;
+   228		else if (val & ONFI_VERSION_1_0)
+   229			onfi_version = 10;
+   230	
+   231		if (!onfi_version) {
+   232			pr_info("unsupported ONFI version: %d\n", val);
+   233			goto free_onfi_param_page;
+   234		}
+   235	
+   236		sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+   237		sanitize_string(p->model, sizeof(p->model));
+   238		chip->parameters.model = kstrdup(p->model, GFP_KERNEL);
+   239		if (!chip->parameters.model) {
+   240			ret = -ENOMEM;
+   241			goto free_onfi_param_page;
+   242		}
+   243	
+   244		memorg->pagesize = le32_to_cpu(p->byte_per_page);
+   245		mtd->writesize = memorg->pagesize;
+   246	
+   247		/*
+   248		 * pages_per_block and blocks_per_lun may not be a power-of-2 size
+   249		 * (don't ask me who thought of this...). MTD assumes that these
+   250		 * dimensions will be power-of-2, so just truncate the remaining area.
+   251		 */
+   252		memorg->pages_per_eraseblock =
+   253				1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+   254		mtd->erasesize = memorg->pages_per_eraseblock * memorg->pagesize;
+   255	
+   256		memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+   257		mtd->oobsize = memorg->oobsize;
+   258	
+   259		memorg->luns_per_target = p->lun_count;
+   260		memorg->planes_per_lun = 1 << p->interleaved_bits;
+   261	
+   262		/* See erasesize comment */
+   263		memorg->eraseblocks_per_lun =
+   264			1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
+   265		memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
+   266		memorg->bits_per_cell = p->bits_per_cell;
+   267	
+   268		if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
+   269			chip->options |= NAND_BUSWIDTH_16;
+   270	
+   271		if (p->ecc_bits != 0xff) {
+   272			struct nand_ecc_props requirements = {
+   273				.strength = p->ecc_bits,
+   274				.step_size = 512,
+   275			};
+   276	
+   277			nanddev_set_ecc_requirements(base, &requirements);
+   278		} else if (onfi_version >= 21 &&
+   279			(le16_to_cpu(p->features) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
+   280	
+   281			/*
+   282			 * The nand_flash_detect_ext_param_page() uses the
+   283			 * Change Read Column command which maybe not supported
+   284			 * by the chip->legacy.cmdfunc. So try to update the
+   285			 * chip->legacy.cmdfunc now. We do not replace user supplied
+   286			 * command function.
+   287			 */
+   288			nand_legacy_adjust_cmdfunc(chip);
+   289	
+   290			/* The Extended Parameter Page is supported since ONFI 2.1. */
+   291			if (nand_flash_detect_ext_param_page(chip, p))
+   292				pr_warn("Failed to detect ONFI extended param page\n");
+   293		} else {
+   294			pr_warn("Could not retrieve ONFI ECC requirements\n");
+   295		}
+   296	
+   297		/* Save some parameters from the parameter page for future use */
+   298		if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES) {
+   299			chip->parameters.supports_set_get_features = true;
+   300			bitmap_set(chip->parameters.get_feature_list,
+   301				   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+   302			bitmap_set(chip->parameters.set_feature_list,
+   303				   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+   304		}
+   305	
+   306		if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_READ_CACHE)
+ > 307			chip->parameters.supports_read_cache;
 
- - top 32 bits are seconds, bottom 32 bits are ns
-
-which gives us that ns format.
-
-Then, because only 30 bits are needed for nanosecond resolution, we
-use the top two bits of that ns field as flags. '00' means that legacy
-format, and '01' would mean "we're not doing nanosecond resolution,
-we're doing 64ns resolution, and the low 6 bits of the ns field are
-actually bits 32-37 of the seconds field".
-
-That still gives us some extensibility (unless the multi-grain code
-still wants to use the other top bit), and it gives us 40 bits of
-seconds, which is quite a lot.
-
-And all the conversion functions will be simple bit field
-manipulations, so there are no expensive ops here.
-
-Anyway, I agree with the "let's introduce the accessor functions
-first, we can do the 'pack into one word' decisions later".
-
-                Linus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
