@@ -4,82 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B889CE7734F
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Sep 2023 05:02:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39420E77376
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Sep 2023 14:51:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QRQuIEtncuJoCeyis0BS2IGa7tCn7c+8SgdmgowYmCA=; b=GUVDqM5wBoOwho
-	KMGLE4y4b/UB57/AxQOJHpAREPUnDGdacKZuwGXZJYNbTcVnkFes8pyewtIVjUT/UqEAXeeOjYIjq
-	ZdSz2RHQHHToypZoQ6Qkxcd/SBA7TYnA5kctwOfurjldCRi3ZZJ5fXzp/EcVb9+TEZm+p/g52IeX9
-	MKAQQvZZupPRwb9oNPIHHYPynJvqFt1MRkWyzWne7Rh/YsIpwnR7CcXOOqI6wnXYubPc+kdgd8AIn
-	fYCyIQhA0PKUq4cmQ2W4v7UxuDggKKWYYPDALd+njLbxLVMRGlkjHwmqCIRS3nM1Rs2I/em1OJn6d
-	JxACiZ/uVFOjtaEmbs9w==;
+	List-Owner; bh=xkucAF7KQr8ssYTtfi3uU2uOgbCxOtNo7Jx0JxVSQhc=; b=EbneDjfdZQVMUx
+	jLkL5LkfkUcQQ/p3OYwxUlgbF7X+ITTseelLpwxW1q5nuUNXcqdAWGwMUQHKQD5kKmB78kqvzP7FB
+	jbdfjhK7zKET8svaZjly0bi8rVTx9YcxcakLcRgv/WUtcfmtpMaTy5QzEgZotqAlUSRx8jhkmGQjr
+	zlIi0lkIWTRKvuyHq9MXwpYAfcDXRBTIV5dxYclmA8q+B0utk00GHAPGJ2BNmSi97PyfugsDAkOto
+	GfCmP/z3NpcUM7k53PBoxvyx4u+uVVe+TFNFQ6MVSWL4Z3a7IcYJdvs7a00ZahN0joAhudJ+PhYYR
+	rXQbng+quXK0KgM3tSmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmS7U-008yOr-1o;
-	Sat, 30 Sep 2023 05:02:24 +0000
-Received: from mail-pg1-x534.google.com ([2607:f8b0:4864:20::534])
+	id 1qmbJ7-009hYb-20;
+	Sat, 30 Sep 2023 14:51:01 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmS7R-008yNp-33
-	for linux-mtd@lists.infradead.org;
-	Sat, 30 Sep 2023 05:02:23 +0000
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-577fb90bb76so8247088a12.2
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Sep 2023 22:02:21 -0700 (PDT)
+	id 1qmbJ3-009hX5-36;
+	Sat, 30 Sep 2023 14:50:59 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50567477b29so3457772e87.3;
+        Sat, 30 Sep 2023 07:50:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696050141; x=1696654941; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696085453; x=1696690253; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XFRp7G+qDWZEQApnHi6mmaUctO5D9NgBjXm6s7XGppI=;
-        b=Lv6aNP8RoSYIS2mt7+Jy/Pys1XmiolnTNsQAbJgdcLikq78Sx8RgIAxQrfYXvdUswq
-         AN+qOwAHn8TkzxCXLV6hbOusbXfr5LpoRFPzi62hjQlX4a3aCtd6QTV7TV0R0VP9gaXt
-         tpihNys2+XF0eITReNkaCPkcuLeslhpGpIT001smhL6aeZjG0+AElIsnXsSI1s7aF7+I
-         fNmM2hnBKW1qBegwZGBUX0QWSJ1rOegg0zFLfPlW5eyeto/RNpoZ2qiDDvBWq5udZTOp
-         eCaYGLAhUxm07FbeGPOiz3eb8GqaeUeP+yyZWiprD1C/zMaLGNXbYQV50YMtstjOvk6A
-         HlVg==
+        bh=laSU2ptF5dJtGJTOfsu2vTDoKsI4bo31YwsLIpMZHsY=;
+        b=TFKIXGu6K43EkzQn8DItlQcsICmijMXX3gq/XLFyjaEgYc2e+Nth/Ko6RscsAIA/T7
+         Q5t9kLTfy9zBxobNkSNkeB8dfbQTqtMeUx4PpQbtpq+MuE0vBOC0kKcIMkR6Tn1/OP/f
+         ub8yK04gBHuo+7su2tm/+i1l9lm611xptDyQpB9J7WZlDf4oqgFLVbP80oGXbnKjuGf7
+         wknkZ132510X/fAeBbp2F5En70D1RE6A+dRzTCj1Lhqm66QM7zsV/HQn9v0enWFTY+JT
+         MrAjmM8NbDIdh/BAO8OuBboBZ5OcYyiSkup9iENMwAjvckhCDl8OwIcflh7cwZr3pzO/
+         D5Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696050141; x=1696654941;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696085453; x=1696690253;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XFRp7G+qDWZEQApnHi6mmaUctO5D9NgBjXm6s7XGppI=;
-        b=BtvEhyfLQgw7x1G2ROt+Svlf4J5VUZLwKk69BmFdN6+aemrV8fXhzXM2Q+Seq0+Lop
-         NDvz3mUj5CCJqBRxdbVih0VZyk0Vqeuuren0zVNVBfy2Gsh0+mm47CAeX5q52xZFC+vM
-         AAwF1pMoMSTlgLqNxkJ6ZXeGPSGIRagBjdYnMEAtdTGGJWR3l0eXcW/TbGDeQorMErxc
-         9gYIeH5nGFY3ThE152R0fz7reoUjmvfFgMvYe453m/3cnzVKZWc6BAkQZCPDF47ecHRz
-         PJH3XoLdbabVk2L2F82bFTHnc4kji+dKwvBZG8vAqgV+n0n2cviOMklTa6YkLzLiMP8m
-         dioQ==
-X-Gm-Message-State: AOJu0YwCqfu5bzQwYhJARfqmRCxdBncFR/q7xwttJzgZcMLCF7XVz7iU
-	UKQy+OgrphJ/R9Mn/LTq1JI=
-X-Google-Smtp-Source: AGHT+IGpIQVcwPvUll8zQVvM7975BEjZofvows5C/41pz1gJI60bATTCFwi9O1QmSqWVIMqSSvJEIQ==
-X-Received: by 2002:a05:6a21:998a:b0:14c:84e6:1ab4 with SMTP id ve10-20020a056a21998a00b0014c84e61ab4mr7099900pzb.33.1696050140965;
-        Fri, 29 Sep 2023 22:02:20 -0700 (PDT)
-Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id y10-20020a17090322ca00b001c322a41188sm392136plg.117.2023.09.29.22.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 22:02:20 -0700 (PDT)
-From: Wedson Almeida Filho <wedsonaf@gmail.com>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Wedson Almeida Filho <walmeida@microsoft.com>,
-	Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 25/29] ubifs: move ubifs_xattr_handlers to .rodata
-Date: Sat, 30 Sep 2023 02:00:29 -0300
-Message-Id: <20230930050033.41174-26-wedsonaf@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230930050033.41174-1-wedsonaf@gmail.com>
-References: <20230930050033.41174-1-wedsonaf@gmail.com>
+        bh=laSU2ptF5dJtGJTOfsu2vTDoKsI4bo31YwsLIpMZHsY=;
+        b=ksywcGIihM6ERaxMremnygU/ZtkOUvcbyEqP1g+e+u5SqRJQctUgJPOoLoMQC6yk+A
+         7TaM/EazVcR3yOCNRtLlhdQCoM1r/aZg8xWaZdfrdpyBjZjUgeRwOq0TmC/aY5vSETZ+
+         Huqs8QGgboAj4DfeABrJ3cVlIxPvAiwfbwN5sD5WyYjJokkkBjzwJDfWCco/9GglZ4y+
+         xPnycDPV9L8m23h0p2kHm9SmwlNa+10JHQ5MYmpxN2qrA54a31fmIF4VlcE8XFzT4TF6
+         a89rjw+VCytAWgZiSl3NeL8zrEwxUxhH9Fu29RYX5EWnwlZSyNA6KKDLW7DpTvjADGN/
+         rPhA==
+X-Gm-Message-State: AOJu0YxrJ97lSONIT1J1JcTb0Q9ibbO3jtOjWtfasgcFqIC0mooHR4nZ
+	BV2jJjhNErUKeDG/DDZu6sX7y1oFR+eZGq0OHHQ=
+X-Google-Smtp-Source: AGHT+IFKxuEfsWI2Hoye015VefDxXDDWWovJHhYR0GsRnul5m9+uvo7GWv6zNWozBrWHqGB+PwbJIGFbA8W5CapoIHU=
+X-Received: by 2002:a05:6512:124a:b0:503:5cd:998b with SMTP id
+ fb10-20020a056512124a00b0050305cd998bmr7557694lfb.28.1696085453195; Sat, 30
+ Sep 2023 07:50:53 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org>
+ <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
+ <20230928171943.GK11439@frogsfrogsfrogs> <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
+ <636661.1695969129@warthog.procyon.org.uk>
+In-Reply-To: <636661.1695969129@warthog.procyon.org.uk>
+From: Steve French <smfrench@gmail.com>
+Date: Sat, 30 Sep 2023 09:50:41 -0500
+Message-ID: <CAH2r5ms14hPaz=Ex2a=Dj0Hz3XxYLRKFj_rHHekznTbNJ_wABQ@mail.gmail.com>
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
+To: David Howells <dhowells@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, "Rafael J . Wysocki" <rafael@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, Anders Larsen <al@alarsen.net>, Carlos Llamas <cmllamas@google.com>, Andrii Nakryiko <andrii@kernel.org>, Mattia Dongili <malattia@linux.it>, Hugh Dickins <hughd@google.com>, John Johansen <john.johansen@canonical.com>, Yonghong Song <yonghong.song@linux.dev>, Alexander Gordeev <agordeev@linux.ibm.com>, Christoph Hellwig <hch@lst.de>, Mike Marshall <hubcap@omnibond.com>, Paulo Alcantara <pc@manguebit.com>, linux-xfs@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, James Morris <jmorris@namei.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, Christian Borntraeger <borntraeger@linux.ibm.com>, devel@lists.orangefs.org, Shyam Prasad N <sprasad@microsoft.com>, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Eric Van Hensbergen <ericvh@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anton Altaparmakov <anton@tuxera.com>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, Chuck Lever <chuck.lever@oracle.com>, Sven Schnelle <svens@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>, Jan Kara <jack@suse.com>, Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, linux-trace-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, Dave Kleikamp <shaggy@kernel.org>, linux-mm@kvack.org, Joel Fernandes <joel@joelfernandes.org>, Eric Dumazet <edumazet@google.com>, Stanislav Fomichev <sdf@google.com>, linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org, Paul Moore <paul@paul-moore.com>, Leon Romanovsky <leon@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Luis Chamberlain <mcgrof@kernel.org>, codalist@coda.cs.cmu.edu, Iurii Zaikin <yzaikin@google.com>, Namjae Jeon <linkinjeon@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, Todd Kjos <tkjos@android.com>, Vasily Gorbik <gor@linux.ibm.com>, selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, reiserfs-devel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>, Yue Hu <huyue2@coolpad.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Martijn Coenen <maco@android.com>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Hao Luo <haoluo@google.com>, Tony Luck <tony.luck@intel.com>, "Theodore Ts'o" <tytso@mit.edu>, Nicolas Pitre <nico@fluxnic.net>, linux-ntfs-dev@lists.sourceforge.net, Muchun Song <muchun.song@linux.dev>, linux-f2fs-devel@lists.sourceforge.net, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, gfs2@lists.linux.dev, "Eric W. Biederman" <ebiederm@xmission.com>, Anna Schumaker <anna@kernel.org>, Brad Warrum <bwarrum@linux.ibm.com>, Mike Kravetz <mike.kravetz@oracle.com>, linux-efi@vger.kernel.org, Martin Brandenburg <martin@omnibond.com>, ocfs2-devel@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>, platform-driver-x86@vger.kernel.org, Chris Mason <clm@fb.com>, linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>, Jiri Slaby <jirislaby@kernel.org>, linux-afs@lists.infradead.org, Ian Kent <raven@themaw.net>, Naohiro Aota <naohiro.aota@wdc.com>, Daniel Borkmann <daniel@iogearbox.net>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, linux-rdma@vger.kernel.org, coda@cs.cmu.edu, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Ilya Dryomov <idryomov@gmail.com>, Paolo Abeni <pabeni@redhat.com>, "Serge E. Hallyn" <serge@hallyn.com>, Christian Schoenebeck <linux_oss@crudebyte.com>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, autofs@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, Mark Gross <markgross@kernel.org>, 
+ Damien Le Moal <dlemoal@kernel.org>, Eric Paris <eparis@parisplace.org>, ceph-devel@vger.kernel.org, Gao Xiang <xiang@kernel.org>, Jan Harkes <jaharkes@cs.cmu.edu>, linux-nfs@vger.kernel.org, linux-ext4@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>, Song Liu <song@kernel.org>, samba-technical@lists.samba.org, Steve French <sfrench@samba.org>, Jeremy Kerr <jk@ozlabs.org>, Netdev <netdev@vger.kernel.org>, Bob Peterson <rpeterso@redhat.com>, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, ntfs3@lists.linux.dev, linux-erofs@lists.ozlabs.org, "David S . Miller" <davem@davemloft.net>, Chandan Babu R <chandan.babu@oracle.com>, jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>, Neil Brown <neilb@suse.de>, Dominique Martinet <asmadeus@codewreck.org>, Amir Goldstein <amir73il@gmail.com>, Bob Copeland <me@bobcopeland.com>, KP Singh <kpsingh@kernel.org>, linux-unionfs@vger.kernel.org, Joseph Qi <joseph.qi@linux.alibaba.com>, Andreas Dilger <adilger.kernel@dilger.ca>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Ard Biesheuvel <ardb@kernel.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Andreas Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>, Mark Fasheh <mark@fasheh.com>, Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>, linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, Salah Triki <salah.triki@gmail.com>, Evgeniy Dushistov <dushistov@mail.ru>, linux-cifs@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, Chao Yu <chao@kernel.org>, apparmor@lists.ubuntu.com, Josef Bacik <josef@toxicpanda.com>, Tom Talpey <tom@talpey.com>, Hans de Goede <hdegoede@redhat.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Johannes Thumshirn <jth@kernel.org>, Ritu Agarwal <rituagar@linux.ibm.com>, Luis de Bethencourt <luisbg@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, v9fs@lists.linux.dev, David Sterba <dsterba@suse.cz>, linux-security-module@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>, Phillip Lougher <phillip@squashfs.org.uk>, Johannes Berg <johannes@sipsolutions.net>, Sungjong Seo <sj1557.seo@samsung.com>, David Woodhouse <dwmw2@infradead.org>, linux-karma-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org, Joel Becker <jlbec@evilplan.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230929_220221_984693_95D9E9AA 
-X-CRM114-Status: GOOD (  13.23  )
+X-CRM114-CacheID: sfid-20230930_075058_004805_7B5752AE 
+X-CRM114-Status: GOOD (  16.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,54 +85,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Wedson Almeida Filho <walmeida@microsoft.com>
-
-This makes it harder for accidental or malicious changes to
-ubifs_xattr_handlers at runtime.
-
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
----
- fs/ubifs/ubifs.h | 2 +-
- fs/ubifs/xattr.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 4c36044140e7..8a9a66255e7e 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -2043,7 +2043,7 @@ ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
- 			size_t size);
- 
- #ifdef CONFIG_UBIFS_FS_XATTR
--extern const struct xattr_handler *ubifs_xattr_handlers[];
-+extern const struct xattr_handler * const ubifs_xattr_handlers[];
- ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size);
- void ubifs_evict_xattr_inode(struct ubifs_info *c, ino_t xattr_inum);
- int ubifs_purge_xattrs(struct inode *host);
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 349228dd1191..5e17e9591e6e 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -735,7 +735,7 @@ static const struct xattr_handler ubifs_security_xattr_handler = {
- };
- #endif
- 
--const struct xattr_handler *ubifs_xattr_handlers[] = {
-+const struct xattr_handler * const ubifs_xattr_handlers[] = {
- 	&ubifs_user_xattr_handler,
- 	&ubifs_trusted_xattr_handler,
- #ifdef CONFIG_UBIFS_FS_SECURITY
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBTZXAgMjksIDIwMjMgYXQgMzowNuKAr0FNIERhdmlkIEhvd2VsbHMgdmlhIHNhbWJh
+LXRlY2huaWNhbAo8c2FtYmEtdGVjaG5pY2FsQGxpc3RzLnNhbWJhLm9yZz4gd3JvdGU6Cj4KPgo+
+IEplZmYgTGF5dG9uIDxqbGF5dG9uQGtlcm5lbC5vcmc+IHdyb3RlOgo+Cj4gPiBDb3JyZWN0LiBX
+ZSdkIGxvc2Ugc29tZSBmaWRlbGl0eSBpbiBjdXJyZW50bHkgc3RvcmVkIHRpbWVzdGFtcHMsIGJ1
+dCBhcwo+ID4gTGludXMgYW5kIFRlZCBwb2ludGVkIG91dCwgYW55dGhpbmcgYmVsb3cgfjEwMG5z
+IGdyYW51bGFyaXR5IGlzCj4gPiBlZmZlY3RpdmVseSBqdXN0IG5vaXNlLCBhcyB0aGF0J3MgdGhl
+IGZsb29yIG92ZXJoZWFkIGZvciBjYWxsaW5nIGludG8KPiA+IHRoZSBrZXJuZWwuIEl0J3MgaGFy
+ZCB0byBhcmd1ZSB0aGF0IGFueSBhcHBsaWNhdGlvbiBuZWVkcyB0aGF0IHNvcnQgb2YKPiA+IHRp
+bWVzdGFtcCByZXNvbHV0aW9uLCBhdCBsZWFzdCB3aXRoIGNvbnRlbXBvcmFyeSBoYXJkd2FyZS4K
+Pgo+IEFsYmVpdCB3aXRoIHRoZSBkYW5nZXIgb2YgbWFraW5nIFN0ZXZlIEZyZW5jaCB2ZXJ5IGhh
+cHB5Oy0pLCB3b3VsZCBpdCBtYWtlCj4gc2Vuc2UgdG8gc3dpdGNoIGludGVybmFsbHkgdG8gTWlj
+cm9zb2Z0LXN0eWxlIDY0LWJpdCB0aW1lc3RhbXBzIHdpdGggdGhlaXIKPiAxMDBucyBncmFudWxh
+cml0eT8KCjEwMG5zIGdyYW51bGFyaXR5IGRvZXMgc2VlbSB0byBtYWtlIHNlbnNlIGFuZCBJSVJD
+IHdhcyB1c2VkIGJ5IHZhcmlvdXMKRENFIHN0YW5kYXJkcyBpbiB0aGUgOTBzIGFuZCAyMDAwcyAo
+bm90IGp1c3QgdXNlZCBmb3IgU01CMi9TTUIzIHByb3RvY29sIGFuZAp2YXJpb3VzIFdpbmRvd3Mg
+ZmlsZXN5c3RlbXMpCgoKLS0gClRoYW5rcywKClN0ZXZlCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
