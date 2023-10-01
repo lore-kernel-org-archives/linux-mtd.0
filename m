@@ -4,72 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5887E748E9
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 Oct 2023 07:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 694D4E748ED
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 Oct 2023 07:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mKCY0ZPLkbisTU20hdg6/HND45+sAMfyZXr6PAkNjiY=; b=xRlFKMaAO6pAOq
-	oIRfTlGMsjPKzceDdvbyWw0S9NfIfkFPq36V3H9nBclCojtF2owNJcqKyV+pcxoyO4CtaTWBOKj4R
-	+bU/5g4U60r2HQhkFGTUDeTgR3TmOmjqdEd1dg5RS3mEokA+e/iY4SCwSVqvQjl5YZ4bSnS5bgRh1
-	sraTq862ax2YL5G/iKDZCCo4qPDUl5Fe+P82zG8XfuL0Ps97YV3RhTb7ed69UYCpGttnhU2ldR5SI
-	2MO0essnUvrDpKQ62vdPtYu79ZeUOVZORGY4rX0KU3O+p3eat4G+HT+EVEgTirTE1cU0UdhmMTXrA
-	PeWuNIOcZP4Tu1jEFNOg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=aV2k1woYoXCQ7zvgP/5xuxcUsjF/MtOPWFyn/paRLtg=; b=aXbyQV2ouA1tFO
+	AU9P7r2O2AwJuwpr9BQ4Igx3Ox7xjQas9cJvlzo/vg5biGl7HShrmcELUNwD4EghoQ4JCQHAEHoM3
+	IOo2jQ7zhcWmruEu9gaBXJRKdteRSHHttoDTPV+H5g0egE71rFZdUPbee+97A9DxyM/UwKXoxdPkX
+	2ZZHgl5ZnH2fWdZ9wfhq8vmIRag3iqgN+CtxP1l/JftNLuZEr0OOevySqD93HLRQEOX34hxu1yF3o
+	LO01HMoZwGww3zf7WIY6Pljc6FhRVC82OEAhsQKHbZdx52EbdZQewmbnXA1tgmPhyBf0iqovA0tlE
+	wjdHY+WFn4F+Y+mloPWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmr7m-00AiFU-1w;
-	Sun, 01 Oct 2023 07:44:22 +0000
-Received: from smtp-18.smtpout.orange.fr ([80.12.242.18] helo=smtp.smtpout.orange.fr)
+	id 1qmrCu-00AiVW-1P;
+	Sun, 01 Oct 2023 07:49:40 +0000
+Received: from omta34.uswest2.a.cloudfilter.net ([35.89.44.33])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qmr7i-00AiEA-0A
+	id 1qmrCr-00AiU5-0G
 	for linux-mtd@lists.infradead.org;
-	Sun, 01 Oct 2023 07:44:21 +0000
-Received: from pop-os.home ([86.243.2.178])
-	by smtp.orange.fr with ESMTPA
-	id mr7WqrKgVBuYSmr7WqgwKV; Sun, 01 Oct 2023 09:44:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1696146249;
-	bh=Lh4Gb5zv5Lb8ZWaUBSVtVqXkD3aAwWj7aSRzIFudknA=;
-	h=From:To:Cc:Subject:Date;
-	b=tARfd9pL5l6goRYfpkXD4TKuCYNR9qfYDZclZw2NvhvzAI+6L1i/4samAyFBMaPqA
-	 keFShjXpLMdUxQJLMBQE9F0nMNs8RC+WNlUr4mhQ3RCNAtmmjGRFMhembtafGCGiwN
-	 IzUX2Xav5NVCBinR1CnJxRnvNoivk6mwZP9xCIRORrRXCiw62bIPTYwn9sV7/F1VWl
-	 uWiknbsaq/hJbJ9U2dV5iufGtW1YI6XsfsaXEzrOrBB+sDkpa8zCh4uXtmS/kuJ6Lf
-	 QPjOrtfjXWuYsTC1xHnwSC15nQZBrmP0Xwc8fDzvKhuA3h0OAti6wtH5cjNLen9CrV
-	 rx8jRh5pe69xQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 01 Oct 2023 09:44:09 +0200
-X-ME-IP: 86.243.2.178
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-hardening@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] mtd: rawnand: rockchip: Use struct_size()
-Date: Sun,  1 Oct 2023 09:44:04 +0200
-Message-Id: <481721c2c7fe570b4027dbe231d523961c953d5a.1696146232.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+	Sun, 01 Oct 2023 07:49:38 +0000
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+	by cmsmtp with ESMTP
+	id mm6Fq4RtWnGhUmrCeqZ39C; Sun, 01 Oct 2023 07:49:24 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id mrCdq4tQoSfdJmrCeqXtT1; Sun, 01 Oct 2023 07:49:24 +0000
+X-Authority-Analysis: v=2.4 cv=R+0QpPdX c=1 sm=1 tr=0 ts=65192484
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=cLZyiMI5l2q1nrJyhZUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ctbPsvlFsKyDYeo7FjRggIA8ffQtTboXoPN4rM9I5Ak=; b=U+nXmy3Z6LSZdtXmnO3XiLegSK
+	kdboceARJMpolXbgZGHt1Q1rWpezLjLdiErLTqBd2mzmn3CC3IbiBpOMxWiqAp8bsn6hZ20xwEYBI
+	3nwEETsTZoe9O9rniIN+IWKzHpl3uvm4f6T0BV3wfu+YALy2zdzRmSwi5nc+7o4GMS0g/FPpTwSUb
+	IYlNt64qP9L7Gn0FIRsijCjALoZmQyXHc1aaYEqI6njCWnSOl6psjMYnltkCeJTa/zQbEvJom0JQc
+	1LC6bqtPcC1cw6RW9r3MiztBpSwz4HVLA+8hCMQfbgLgTlPca2HgkSyZTzIgfyiyO7aVtZg3b38T+
+	otR7PGDQ==;
+Received: from [94.239.20.48] (port=43776 helo=[192.168.1.98])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1qmrCb-002Jj3-1w;
+	Sun, 01 Oct 2023 02:49:21 -0500
+Message-ID: <1bcde585-f740-8959-6e2e-19793795b60e@embeddedor.com>
+Date: Sun, 1 Oct 2023 09:49:16 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] mtd: rawnand: rockchip: Use struct_size()
+Content-Language: en-US
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Heiko Stuebner <heiko@sntech.de>, Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-hardening@vger.kernel.org,
+ llvm@lists.linux.dev
+References: <481721c2c7fe570b4027dbe231d523961c953d5a.1696146232.git.christophe.jaillet@wanadoo.fr>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <481721c2c7fe570b4027dbe231d523961c953d5a.1696146232.git.christophe.jaillet@wanadoo.fr>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - lists.infradead.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qmrCb-002Jj3-1w
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:43776
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 18
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfIKZRHY4bV3yqvGH7iSXICKBI8o/tQmxoCnyOkqq3yFYtWmzHB69JO7wm6BHLIeUAEjEztp+v4bnpb/7D70Jfn89V+YGdSr/5QOecQ8Ore3PHJNkTBUU
+ 3rmk6SgqdOtUPEQFHD+pCSWTXtLdo3gySuC6BRgBUIeh9kBD/dm5kctyoXlwdnJkSviOuI4S/lK02+y2qR3nx+gw5G69TFQ3vM8gqrDlUA1B1fII53gnxYpo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231001_004418_222574_849CF1BF 
-X-CRM114-Status: GOOD (  11.82  )
+X-CRM114-CacheID: sfid-20231001_004937_167278_22DEAE20 
+X-CRM114-Status: GOOD (  19.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,65 +112,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use struct_size() instead of hand writing it.
-This is less verbose and more robust.
 
-While at it, prepare for the coming implementation by GCC and Clang of the
-__counted_by attribute. Flexible array members annotated with __counted_by
-can have their accesses bounds-checked at run-time checking via
-CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
-strcpy/memcpy-family functions).
 
-Also remove a useless comment about the position of a flex-array in a
-structure.
+On 10/1/23 09:44, Christophe JAILLET wrote:
+> Use struct_size() instead of hand writing it.
+> This is less verbose and more robust.
+> 
+> While at it, prepare for the coming implementation by GCC and Clang of the
+> __counted_by attribute. Flexible array members annotated with __counted_by
+> can have their accesses bounds-checked at run-time checking via
+> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+> strcpy/memcpy-family functions).
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is part of a work done in parallel of what is currently worked
-on by Kees Cook.
+Again, I'd prefer this as two separate patches.
 
-My patches are only related to corner cases that do NOT match the
-semantic of his Coccinelle script[1].
+> 
+> Also remove a useless comment about the position of a flex-array in a
+> structure.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-In this case, struct_size() was not used to compute the size needed for the
-structure and its flex array.
+In any case:
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
----
- drivers/mtd/nand/raw/rockchip-nand-controller.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-index 5bc90ffa721f..596cf9a78274 100644
---- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
-+++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-@@ -158,8 +158,7 @@ struct rk_nfc_nand_chip {
- 	u32 timing;
- 
- 	u8 nsels;
--	u8 sels[];
--	/* Nothing after this field. */
-+	u8 sels[] __counted_by(nsels);
- };
- 
- struct rk_nfc {
-@@ -1119,7 +1118,7 @@ static int rk_nfc_nand_chip_init(struct device *dev, struct rk_nfc *nfc,
- 		return -EINVAL;
- 	}
- 
--	rknand = devm_kzalloc(dev, sizeof(*rknand) + nsels * sizeof(u8),
-+	rknand = devm_kzalloc(dev, struct_size(rknand, sels, nsels),
- 			      GFP_KERNEL);
- 	if (!rknand)
- 		return -ENOMEM;
+Thanks
 -- 
-2.34.1
+Gustavo
 
+> ---
+> This patch is part of a work done in parallel of what is currently worked
+> on by Kees Cook.
+> 
+> My patches are only related to corner cases that do NOT match the
+> semantic of his Coccinelle script[1].
+> 
+> In this case, struct_size() was not used to compute the size needed for the
+> structure and its flex array.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> ---
+>   drivers/mtd/nand/raw/rockchip-nand-controller.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+> index 5bc90ffa721f..596cf9a78274 100644
+> --- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
+> +++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+> @@ -158,8 +158,7 @@ struct rk_nfc_nand_chip {
+>   	u32 timing;
+>   
+>   	u8 nsels;
+> -	u8 sels[];
+> -	/* Nothing after this field. */
+> +	u8 sels[] __counted_by(nsels);
+>   };
+>   
+>   struct rk_nfc {
+> @@ -1119,7 +1118,7 @@ static int rk_nfc_nand_chip_init(struct device *dev, struct rk_nfc *nfc,
+>   		return -EINVAL;
+>   	}
+>   
+> -	rknand = devm_kzalloc(dev, sizeof(*rknand) + nsels * sizeof(u8),
+> +	rknand = devm_kzalloc(dev, struct_size(rknand, sels, nsels),
+>   			      GFP_KERNEL);
+>   	if (!rknand)
+>   		return -ENOMEM;
 
 ______________________________________________________
 Linux MTD discussion mailing list
