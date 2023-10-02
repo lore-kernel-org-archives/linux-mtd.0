@@ -4,69 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48E0FE7849A
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Oct 2023 14:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A401E784AC
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Oct 2023 14:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=61beShAK/fVcvReIWXAs8vQjqTOJug3ULqo5G1X99Ik=; b=evNIJfX1DWEoQl
-	P+uXKbJXgWXFj1xu/6WizMfZlmvQehf7Jv26li87cE4HVLvYrG2YQlTfU8VY3BzjTY6sPD5pml5T3
-	Z+sYDd5miLb+gSdZvBOjfd1Cd+xKtlquYlHlYxnUIwFF8UqYErg4xGkOWuvMgilB3VgU22JveBqcV
-	Xr+wodZc9TA/pWRAdnx0JiVdvtIeVDKkuAjnMt3lUAbcNf+YyWGA1xrWBRYHwHp+Fz4qCMpfOjqqV
-	djM4WAG7Cs4A9SyBAql3sgZwFgq/Lyno96lLpVoouwKrujsP/MMuNVu2GS+VwCKTUjcPOOAiHD5er
-	V1SunVR1NmG9AcKIx9Tw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3fmZwZNQYVyLPGmpg6zjN/Q4X1j6PLvDoyszldbh3Ok=; b=M31E8/XsYEAVDp
+	equptCkUBYXuOMPx4KW/cERfUHv58+u7pN4aFJ81enfEJpp+RuHe9BEgEUN4Y0vAQBY2d8rSswXP7
+	bPxNfeXL00fGQ5U+bs818oOnIxSwKgGCYsncHKeT/qRV237tQZwe28e9PFem/NSERgU0/AdQbXUNL
+	bsKzXLhUkljgUNNXvJ/H38w3SDQtfmpeW90VSc1Fys57CKwlodTrMSyw4YB8EvdCbvvtVnFrSoFyQ
+	DCAI9sA5DOrOypJi+ybabeBpFaGRScWINuGqwVSX+cBai2UP1qVtUdlihYUJm5NzW5jUz+4E1maFq
+	/Ab3g1LO+skvfCS4VPQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnJXT-00CpyB-1s;
-	Mon, 02 Oct 2023 14:04:47 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1qnJYl-00CqBe-0e;
+	Mon, 02 Oct 2023 14:06:07 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qnJXR-00CpxJ-1m
+	id 1qnJYh-00CqAE-0b
 	for linux-mtd@lists.infradead.org;
-	Mon, 02 Oct 2023 14:04:46 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 7DD48CE1034;
-	Mon,  2 Oct 2023 14:04:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6914EC433CA;
-	Mon,  2 Oct 2023 14:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696255482;
-	bh=LIDCsNC0XaBYNVpWKokDJhLXTwTQcHbH42cgxyB26VY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rz/7ZbpQoN0mLuLNqLCOU/2N8auM9xb2OthgI61ALF4xwxTiGjC367HeDdbLQk96U
-	 8JYWXF/qMlTBQOc+ESuO1lIPybv4SNn+L7IV09JIw/JIDfIHS4vWpgUTWgtroTYBYp
-	 JU+tJt4ne8CAJoQbZsgJF0/V7fFDA14B3VFi76n1aXS4+vDscg3Lwdb14zwL5lQZBZ
-	 jw+ElpcILSVazG+JXzC2pL2TY7BNEChi5RhEznwGEFK6jAradej4mKr1YIWl9g7c/B
-	 fcOFisShI2KOfdlHBiUkOtsf8ZoIuOqiv755N1Hb0ortWOX3dAyNE5uJgsmdMPD2Lq
-	 Kz3au9nw7/59A==
-Date: Mon, 2 Oct 2023 15:04:37 +0100
-From: Lee Jones <lee@kernel.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: chengzhihao1 <chengzhihao1@huawei.com>, Yu Hao <yhao016@ucr.edu>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: BUG: divide error in ubi_attach_mtd_dev
-Message-ID: <20231002140437.GA8453@google.com>
-References: <CA+UBctD_w=75wChmePZHp7KsBSNPWYGDBtzHPRPPtaFoqhGvXA@mail.gmail.com>
- <977347543.226888.1682011999468.JavaMail.zimbra@nod.at>
- <CA+UBctA4fSbSdooQ9q9fwNuaHb_PnkfFuqJ7Q5vii-3-uCiUjw@mail.gmail.com>
- <412779912.228444.1682023015809.JavaMail.zimbra@nod.at>
- <ed510d18-47f1-7f46-03dd-84e043cab6d9@huawei.com>
- <1366603418.245114.1682236940160.JavaMail.zimbra@nod.at>
- <951e4cf7-a0ea-b3ec-931d-e6a394ddc2ab@huawei.com>
- <20231002101117.GA175828@google.com>
- <43988304.25483.1696242486225.JavaMail.zimbra@nod.at>
+	Mon, 02 Oct 2023 14:06:06 +0000
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id DAAF9100003;
+	Mon,  2 Oct 2023 17:05:56 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DAAF9100003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1696255556;
+	bh=MNlYRa+jIaae9kqRqbvFh4mWZqaZAg+7xMe40M/Y+6M=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=ZBEnR21RZwF9sCxvyM6Ap/SO604x7NTgwzsr1fLnyEgQ4b5aRiCtsQBhsuXeyMDLU
+	 HlF9p8zF0XwFia4HWiNxBkAmOUxQjfuwAltMJ9LhOnb3TkzZZaXLXaFoCSDpBYyAlh
+	 cYD08/NA+RUwEre9QAXC4BQg+JkcUtLAjYdswGC50EEyV5m/l3U+iNQkIJ6v+6F8eA
+	 nXqxW2XxwLWWJwwA6MhaU9iSHFegcB/6IUQ8ZySauy51lDwGM7kBL3osvl87uQlfIJ
+	 xCOJmnTpFtyubnlyrf3ZhynG2kiXkwQhp1CxDbnR+g2sUDsP30XHo7yCMkgFYhfFH9
+	 YpSDJvDHSqNew==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon,  2 Oct 2023 17:05:56 +0300 (MSK)
+Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 2 Oct 2023 17:05:56 +0300
+From: Martin Kurbanov <mmkurbanov@salutedevices.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mario Kicherer
+	<dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>, Dhruva Gole
+	<d-gole@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@sberdevices.ru>, Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v2] mtd: spinand: add support for FORESEE F35SQA002G
+Date: Mon, 2 Oct 2023 17:04:58 +0300
+Message-ID: <20231002140458.147605-1-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <43988304.25483.1696242486225.JavaMail.zimbra@nod.at>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180282 [Oct 02 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, www.longsys.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/10/02 11:51:00
+X-KSMG-LinksScanning: Clean, bases: 2023/10/02 11:51:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/02 12:04:00 #22024008
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231002_070445_760517_5C018FF8 
-X-CRM114-Status: GOOD (  16.98  )
+X-CRM114-CacheID: sfid-20231002_070603_941885_5080998E 
+X-CRM114-Status: GOOD (  20.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,26 +95,169 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAwMiBPY3QgMjAyMywgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgoKPiAtLS0tLSBV
-cnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gPiBWb246ICJMZWUgSm9uZXMiIDxsZWVAa2VybmVs
-Lm9yZz4KPiA+IEZvciBiZXR0ZXIgb3Igd29yc2UsIHNvbWVvbmUgaGFzIGFwcGxpZWQgdG8gaGF2
-ZSB0aGlzIHJlcG9ydCBhc3NvY2lhdGVkCj4gPiB3aXRoIGEgQ1ZFIHdoaWNoIG1lYW5zIGEgYnVu
-Y2ggb2YgY29tcGFuaWVzIGFuZCBpbmRpdmlkdWFscyBhcmUgZ29pbmcgdG8KPiA+IGJlIHRyYWNr
-aW5nIGl0Lgo+ID4gCj4gPiBXaGF0IGlzIHRoZSBjdXJyZW50IHN0YXR1cyBwbGVhc2U/Cj4gCj4g
-SSB3YXMgYWJvdXQgdG8gYW5zd2VyIHRoYXQgdGhlIHBhdGNoIGlzIHVwc3RyZWFtLCBidXQgaXQn
-cyBvbmx5IGluIGxpbnV4LW5leHQuIDotUwo+IEFmdGVyIGx1bmNoIEknbGwgaW1tZWRpYXRlbHkg
-c2VuZCBhIFBSLiBJIG1lc3NlZCB1cCBkdWUgdG8gdG9vIG11Y2ggdHJhdmVsaW5nCj4gdGhlIGxh
-c3QgbW9udGhzLgo+ICAKPiA+IElzIHRoaXMgZGVlbWVkIHRvIGJlIGEgcmVhbCBpc3N1ZT8KPiAK
-PiBJIGRvbid0IHRoaW5rIHNvLiBPbmx5IHRoZSByZWFsIHJvb3QgY2FuIGluc3RhbGwgbmV3IE1U
-RCBkZXZpY2VzIGFuZCBydW4gVUJJIGF0dGFjaC4KPiAKPiA+IERpZCB0aGUgcmVwb3J0IGN1bG1p
-bmF0ZSBpbiBhIHBvc3RlZCBwYXRjaD8KPiAKPiBZZXMuIEFzIEkgc2FpZCBhIHBhdGNoIGlzIGlu
-IG5leHQuCgpFeGNlbGxlbnQsIHRoYW5rcy4KCkknZCBsaWtlIHRvIHRyYWNrIGl0LiAgV2hhdCdz
-IHRoZSBzdWJqZWN0IHBsZWFzZT8KCi0tIApMZWUgSm9uZXMgW+adjueQvOaWr10KCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+Add support for FORESEE F35SQA002G SPI NAND.
+Datasheet:
+  https://www.longsys.com/uploads/LM-00006FORESEEF35SQA002GDatasheet_1650183701.pdf
+
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+---
+Changes v2 since v1 at [1]:
+  - Drop unneeded comment.
+
+Links:
+  [1] https://lore.kernel.org/all/20230929144934.192649-1-mmkurbanov@salutedevices.com/
+
+ drivers/mtd/nand/spi/Makefile  |  2 +-
+ drivers/mtd/nand/spi/core.c    |  1 +
+ drivers/mtd/nand/spi/foresee.c | 95 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |  1 +
+ 4 files changed, 98 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/foresee.c
+
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index cd8b66bf7740..19cc77288ebb 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o alliancememory.o ato.o esmt.o gigadevice.o macronix.o
++spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
+ spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 393ff37f0d23..849ccfedbc72 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -940,6 +940,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&alliancememory_spinand_manufacturer,
+ 	&ato_spinand_manufacturer,
+ 	&esmt_c8_spinand_manufacturer,
++	&foresee_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/foresee.c b/drivers/mtd/nand/spi/foresee.c
+new file mode 100644
+index 000000000000..e0d2d9257045
+--- /dev/null
++++ b/drivers/mtd/nand/spi/foresee.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2023, SberDevices. All Rights Reserved.
++ *
++ * Author: Martin Kurbanov <mmkurbanov@salutedevices.com>
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_FORESEE		0xCD
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int f35sqa002g_ooblayout_ecc(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *region)
++{
++	return -ERANGE;
++}
++
++static int f35sqa002g_ooblayout_free(struct mtd_info *mtd, int section,
++				     struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	/* Reserve 2 bytes for the BBM. */
++	region->offset = 2;
++	region->length = 62;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops f35sqa002g_ooblayout = {
++	.ecc = f35sqa002g_ooblayout_ecc,
++	.free = f35sqa002g_ooblayout_free,
++};
++
++static int f35sqa002g_ecc_get_status(struct spinand_device *spinand, u8 status)
++{
++	struct nand_device *nand = spinand_to_nand(spinand);
++
++	switch (status & STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_HAS_BITFLIPS:
++		return nanddev_get_ecc_conf(nand)->strength;
++
++	default:
++		break;
++	}
++
++	/* More than 1-bit error was detected in one or more sectors and
++	 * cannot be corrected.
++	 */
++	return -EBADMSG;
++}
++
++static const struct spinand_info foresee_spinand_table[] = {
++	SPINAND_INFO("F35SQA002G",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x72, 0x72),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&f35sqa002g_ooblayout,
++				     f35sqa002g_ecc_get_status)),
++};
++
++static const struct spinand_manufacturer_ops foresee_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer foresee_spinand_manufacturer = {
++	.id = SPINAND_MFR_FORESEE,
++	.name = "FORESEE",
++	.chips = foresee_spinand_table,
++	.nchips = ARRAY_SIZE(foresee_spinand_table),
++	.ops = &foresee_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 3e285c09d16d..badb4c1ac079 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -263,6 +263,7 @@ struct spinand_manufacturer {
+ extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
+ extern const struct spinand_manufacturer ato_spinand_manufacturer;
+ extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
++extern const struct spinand_manufacturer foresee_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+-- 
+2.40.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
