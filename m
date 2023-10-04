@@ -4,86 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9C67E8FDCA
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Oct 2023 04:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79FAAE8FDCB
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 Oct 2023 06:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z2PKu6k7jSyFQFHAeukEm7d3Evy11V0ciVCqPKmPrQ0=; b=dEx3JG6L9mNK7TrvMiyCFgonNH
-	at9s99+IeYt5ZcJH/hnC2wddTYxnMbLhmDY3ihtJTPgHw9kUdFFj1HfpYTlDZB2uuPWzHq2RTwedf
-	ROzyINX52+pa2JvzRmZG8AS2kZully/g3uzgYkCm6ixM/nXXOYQXUmn2YXJqP2gJy+O6gGszY6zx2
-	RVw5J1BSAUaXsy0n63pWxNLkrQzUzoI+rv8Yk+49LO02q8UBczKq15j5KIHp4a6f6rQQYKReKP/8Q
-	PKWL6eK7h1/Lx64KrWgAKec+ByQnoj2vRcPJd65buY6npHmjmGpGh8ubzbr/DdH3iIIA2iFAwmJFs
-	4iKWFiVA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oaYM81bHsjGzMF7gy9HnKhRl8Yi7XAHvxGC55nQJl90=; b=ucnC9rCoiHTekZ
+	+vq9NVSjUTDfPit6/53GlEFk/UhgmGHxsAt90v6Kkri9XM3knvhDpsX/PXomqlzSY4zFW7wmW+D2D
+	ZOMmf+fi5/QglpFcELiLJKZ98qoxa38icXdY6MX/Q4OMIf1HcGVQ4BThKIEWGCwBr+wqNgVR30Fu6
+	TB0xV3KGbj+/T8BYNsZqnxLYELHhfB0Et6jMH8qDtG9P0Q5Nloz0BxUaW2f+pgBTKljoxEhSUJwKc
+	MOFw/PZwprFqvlH6ZEgosHdcLV7253/M7LlP05HIdDShB6u/rqqr+KKkElhcTAAtghBRr76scJGdg
+	e895zFkOLJfPL9bjUCOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qntnB-00GENX-2q;
-	Wed, 04 Oct 2023 04:47:25 +0000
-Received: from mail-qt1-x830.google.com ([2607:f8b0:4864:20::830])
+	id 1qnv9y-00GN1t-2f;
+	Wed, 04 Oct 2023 06:15:02 +0000
+Received: from mgamail.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qntn8-00GEMQ-1Y
+	id 1qnv9u-00GN03-2Y
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Oct 2023 04:47:24 +0000
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-419787a43ebso11269071cf.1
-        for <linux-mtd@lists.infradead.org>; Tue, 03 Oct 2023 21:47:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1696394840; x=1696999640; darn=lists.infradead.org;
-        h=in-reply-to:mime-version:user-agent:date:message-id:from:references
-         :cc:to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=e6DM/Fv1b64Cr7dnfb1iqgpgk+tekI7w7hhW1zyi1no=;
-        b=OanWcSBfvVILLgeI16fi3PSYjFus0QHCNgELJXpQ+DCYRfXRle5c7dvJZSCtJN4/Ui
-         u7iOQGNmRtC9PugQyEMilEuFKN1Qp4C3o7tdCAI6n+sb5f4CS89AOy+ak+aDPbSaXyKN
-         40sUQFSdYEOt23nBWv0/Ih1o1enH0hMjJETVk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696394840; x=1696999640;
-        h=in-reply-to:mime-version:user-agent:date:message-id:from:references
-         :cc:to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e6DM/Fv1b64Cr7dnfb1iqgpgk+tekI7w7hhW1zyi1no=;
-        b=bFiY/dXDbBv4SBuiFYnDuVXiAKEp6PPC1KD84ye7iDx7EA2poKVOkb09pmh/6Pl+PK
-         j5KxWk/Sm9sL7fGL6tTW+pyEd7L7CAjUwwRGocviVjmOWm3NwdP3toLgihKTdy/0vWxo
-         jWz7aO8VxsYGq2wQWA5ZBZK24Kv5rm9V9rjxz5OFNxFaGpeHrAQh47L8xMe7wDTbLjG7
-         ZruvWoXL1+x6nIkFC6f/KcaUdft/d2/lSJ/TRROZriNZLnrpHFtsslBXmb4blzj47zhF
-         2MUHjdZhZdV3w+p/2YbasXVwZwwPxLfAQWQe1xD3xvKqa2YwTm0YLQpJlUPN7NE72FoS
-         p3pg==
-X-Gm-Message-State: AOJu0YzZECuX+UadfbNRJjhu4jE22CxPj9hNB4l5HtE6stjh3PC7Qz/i
-	R0pSnof2//uqkqIDdSy7QVLViQ==
-X-Google-Smtp-Source: AGHT+IEfxh/MUU+/sPh24mEqm3MyAu/uRU/I9xHRQb7biB699/Cw7jxUwAgo5BHUSDQiVlSIGrv/tQ==
-X-Received: by 2002:a0c:e48c:0:b0:65a:e57b:b511 with SMTP id n12-20020a0ce48c000000b0065ae57bb511mr1244878qvl.7.1696394839931;
-        Tue, 03 Oct 2023 21:47:19 -0700 (PDT)
-Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id t2-20020a0cde02000000b0065b0d2f9121sm1030575qvk.68.2023.10.03.21.47.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Oct 2023 21:47:18 -0700 (PDT)
-Subject: Re: [PATCH v2] mtd: rawnand: brcmnand: Initial exec_op implementation
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: dregan@mail.com, bcm-kernel-feedback-list@broadcom.com,
- linux-mtd@lists.infradead.org, f.fainelli@gmail.com, rafal@milecki.pl,
- joel.peshkin@broadcom.com, computersforpeace@gmail.com,
- dan.beygelman@broadcom.com, frieder.schrempf@kontron.de,
- linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- bbrezillon@kernel.org, kdasu.kdev@gmail.com
-References: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
- <20230922162424.4a7b27ec@xps-13>
- <trinity-06dd34f4-ab26-4c60-bcf8-f986f1d08058-1696039055941@3c-app-mailcom-lxa04>
- <20231002143527.4ccf254a@xps-13>
- <04350e70-6ef0-4998-664f-20b96b63b0f4@broadcom.com>
- <20231003112819.53707d54@xps-13>
- <37416f2e-f150-cc8f-76bd-3d54f9e25d08@broadcom.com>
- <20231004005525.3f406823@xps-13>
-From: William Zhang <william.zhang@broadcom.com>
-Message-ID: <0f6bd61c-19ed-8153-1763-eef2498726c7@broadcom.com>
-Date: Tue, 3 Oct 2023 21:47:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.4.0
+	Wed, 04 Oct 2023 06:15:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696400098; x=1727936098;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=g3qhwjm1v949ji/360/hMlwzoSwFbjiqduhc4qJAhGM=;
+  b=VodNGw2cuOAfq9nJCFipHUTLGTgw2uqi4P4jnxAPMAc0ZCAif6zMnopJ
+   xgNa/iTI+AmaC//S3MY2l9kTluzvc3mOJialuKiPATLvusKvsfDZYCnam
+   o0+MnoBYbCowbm1pT2ODixtwn8LFgSNJJHhfKVmuQCdbgajkO+zgH+KH6
+   rHc4cOuj+BmkO4MaE2NbKVSQeFCSdbWEyDUJEuZv4sdLB7OcyOYzBqAou
+   Dp6FjUgO9X8heXdSGfseekxlr3I+y/YmjVYpf8IfwJoQttveH0rmZY/7r
+   maxVmEQzPiAtNhH6cnKB3egdQT6AzliizTvrxsLFjfwqD3j9Q5a73YBJn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="368128162"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="368128162"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 23:14:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="744807083"
+X-IronPort-AV: E=Sophos;i="6.03,199,1694761200"; 
+   d="scan'208";a="744807083"
+Received: from unknown (HELO localhost.localdomain) ([10.226.216.116])
+  by orsmga007.jf.intel.com with ESMTP; 03 Oct 2023 23:14:51 -0700
+From: niravkumar.l.rabara@intel.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: mtd: cadence: convert cadence-nand-controller.txt to yaml
+Date: Wed,  4 Oct 2023 14:12:14 +0800
+Message-Id: <20231004061214.17176-1-niravkumar.l.rabara@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20231004005525.3f406823@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231003_214722_574268_DE1E6385 
-X-CRM114-Status: GOOD (  38.94  )
+X-CRM114-CacheID: sfid-20231003_231458_930363_5EA28360 
+X-CRM114-Status: GOOD (  18.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,243 +81,165 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1490503612881306079=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1490503612881306079==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000da53e70606dcb3ed"
+From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 
---000000000000da53e70606dcb3ed
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Convert cadence-nand-controller.txt to yaml format.
 
+Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+---
+ .../devicetree/bindings/mtd/cadence,nand.yaml | 73 +++++++++++++++++++
+ .../bindings/mtd/cadence-nand-controller.txt  | 53 --------------
+ 2 files changed, 73 insertions(+), 53 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
 
+diff --git a/Documentation/devicetree/bindings/mtd/cadence,nand.yaml b/Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+new file mode 100644
+index 000000000000..781812ac702f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/cadence,nand.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/cadence,nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cadence NAND controller
++
++maintainers:
++  - Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
++
++allOf:
++  - $ref: nand-controller.yaml
++
++properties:
++  compatible:
++    items:
++      - const: cdns,hp-nfc
++
++  reg:
++    items:
++      - description: Address and length of the controller register set
++      - description: Address and length of the Slave DMA data port
++
++  reg-names:
++    items:
++      - const: reg
++      - const: sdma
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  dmas:
++    maxItems: 1
++
++  cdns,board-delay-ps:
++    description: |
++      Estimated Board delay. The value includes the total round trip
++      delay for the signals and is used for deciding on values associated
++      with data read capture. The example formula for SDR mode is the
++      following.
++      board delay = RE#PAD delay + PCB trace to device + PCB trace from device
++      + DQ PAD delay
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++      nand-controller@10b80000 {
++        compatible = "cdns,hp-nfc";
++        reg = <0x10b80000 0x10000>,
++            <0x10840000 0x10000>;
++        reg-names = "reg", "sdma";
++        #address-cells = <1>;
++        #size-cells = <0>;
++        interrupts = <0 97 4>;
++        clocks = <&nf_clk>;
++        cdns,board-delay-ps = <4830>;
++
++        nand@0 {
++            reg = <0>;
++        };
++      };
+diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+deleted file mode 100644
+index d2eada5044b2..000000000000
+--- a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
++++ /dev/null
+@@ -1,53 +0,0 @@
+-* Cadence NAND controller
+-
+-Required properties:
+-  - compatible : "cdns,hp-nfc"
+-  - reg : Contains two entries, each of which is a tuple consisting of a
+-	  physical address and length. The first entry is the address and
+-	  length of the controller register set. The second entry is the
+-	  address and length of the Slave DMA data port.
+-  - reg-names: should contain "reg" and "sdma"
+-  - #address-cells: should be 1. The cell encodes the chip select connection.
+-  - #size-cells : should be 0.
+-  - interrupts : The interrupt number.
+-  - clocks: phandle of the controller core clock (nf_clk).
+-
+-Optional properties:
+-  - dmas: shall reference DMA channel associated to the NAND controller
+-  - cdns,board-delay-ps : Estimated Board delay. The value includes the total
+-    round trip delay for the signals and is used for deciding on values
+-    associated with data read capture. The example formula for SDR mode is
+-    the following:
+-    board delay = RE#PAD delay + PCB trace to device + PCB trace from device
+-    + DQ PAD delay
+-
+-Child nodes represent the available NAND chips.
+-
+-Required properties of NAND chips:
+-  - reg: shall contain the native Chip Select ids from 0 to max supported by
+-    the cadence nand flash controller
+-
+-See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
+-generic bindings.
+-
+-Example:
+-
+-nand_controller: nand-controller@60000000 {
+-	  compatible = "cdns,hp-nfc";
+-	  #address-cells = <1>;
+-	  #size-cells = <0>;
+-	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
+-	  reg-names = "reg", "sdma";
+-	  clocks = <&nf_clk>;
+-	  cdns,board-delay-ps = <4830>;
+-	  interrupts = <2 0>;
+-	  nand@0 {
+-	      reg = <0>;
+-	      label = "nand-1";
+-	  };
+-	  nand@1 {
+-	      reg = <1>;
+-	      label = "nand-2";
+-	  };
+-
+-};
+-- 
+2.25.1
 
-On 10/03/2023 03:55 PM, Miquel Raynal wrote:
-> Hi William,
-> 
-> william.zhang@broadcom.com wrote on Tue, 3 Oct 2023 11:46:25 -0700:
-> 
->> Hi Miquel,
->>
->> On 10/03/2023 02:28 AM, Miquel Raynal wrote:
->>> Hi William,
->>>
->>> william.zhang@broadcom.com wrote on Mon, 2 Oct 2023 12:57:01 -0700:
->>>    
->>>> Hi Miquel,
->>>>
->>>> On 10/02/2023 05:35 AM, Miquel Raynal wrote:
->>>>> Hi David,
->>>>>
->>>>> dregan@mail.com wrote on Sat, 30 Sep 2023 03:57:35 +0200:
->>>>>     >>>> Initial exec_op implementation for Broadcom STB, Broadband and iProc SoC
->>>>>> This adds exec_op and removes the legacy interface.
->>>>>>
->>>>>> Signed-off-by: David Regan <dregan@mail.com>
->>>>>> Reviewed-by: William Zhang <william.zhang@broadcom.com>
->>>>>>
->>>>>> ---
->>>>>>    >>>
->>>>> ...
->>>>>     >>>> +static int brcmnand_parser_exec_matched_op(struct nand_chip *chip,
->>>>>> +					 const struct nand_subop *subop)
->>>>>> +{
->>>>>> +	struct brcmnand_host *host = nand_get_controller_data(chip);
->>>>>> +	struct brcmnand_controller *ctrl = host->ctrl;
->>>>>> +	struct mtd_info *mtd = nand_to_mtd(chip);
->>>>>> +	const struct nand_op_instr *instr = &subop->instrs[0];
->>>>>> +	unsigned int i;
->>>>>> +	int ret = 0;
->>>>>> +
->>>>>> +	for (i = 0; i < subop->ninstrs; i++) {
->>>>>> +		instr = &subop->instrs[i];
->>>>>> +
->>>>>> +		if ((instr->type == NAND_OP_CMD_INSTR) &&
->>>>>> +			(instr->ctx.cmd.opcode == NAND_CMD_STATUS))
->>>>>> +			ctrl->status_cmd = 1;
->>>>>> +		else if (ctrl->status_cmd && (instr->type == NAND_OP_DATA_IN_INSTR)) {
->>>>>> +			/*
->>>>>> +			 * need to fake the nand device write protect because nand_base does a
->>>>>> +			 * nand_check_wp which calls nand_status_op NAND_CMD_STATUS which checks
->>>>>> +			 * that the nand is not write protected before an operation starts.
->>>>>> +			 * The problem with this is it's done outside exec_op so the nand is
->>>>>> +			 * write protected and this check will fail until the write or erase
->>>>>> +			 * or write back operation actually happens where we turn off wp.
->>>>>> +			 */
->>>>>> +			u8 *in;
->>>>>> +
->>>>>> +			ctrl->status_cmd = 0;
->>>>>> +
->>>>>> +			instr = &subop->instrs[i];
->>>>>> +			in = instr->ctx.data.buf.in;
->>>>>> +			in[0] = brcmnand_status(host) | NAND_STATUS_WP; /* hide WP status */
->>>>>
->>>>> I don't understand why you are faking the WP bit. If it's set,
->>>>> brcmnand_status() should return it and you should not care about it. If
->>>>> it's not however, can you please give me the path used when we have
->>>>> this issue? Either we need to modify the core or we need to provide
->>>>> additional helpers in this driver to circumvent the faulty path.
->>>>
->>>> The reason we have to hide wp status for status command is because
->>>> nand_base calls nand_check_wp at the very beginning of write and erase
->>>> function. This applies to both exec_op path and legacy path. With
->>>> Broadcom nand controller and most of our board design using the WP pin
->>>> and have it asserted by default, the nand_check_wp function will fail
->>>> and write/erase aborts.  This workaround has been there before this
->>>> exec_op patch.
->>>>
->>>> I agree it is ugly and better to be addressed in the nand base code. And
->>>> I understand Broadcom's WP approach may sound a bit over cautious but we
->>>> want to make sure no spurious erase/write can happen under any
->>>> circumstance except software explicitly want to write and erase.  WP is
->>>> standard nand chip pin and I think most the nand controller has that
->>>> that pin in the design too but it is possible it is not used and
->>>> bootloader can de-assert the pin and have a always-writable nand flash
->>>> for linux. So maybe we can add nand controller dts option "nand-use-wp".
->>>> If this property exist and set to 1,  wp control is in use and nand
->>>> driver need to control the pin on/ff as needed when doing write and
->>>> erase function. Also nand base code should not call nand_check_wp when
->>>> wp is in use. Then we can remove the faking WP status workaround.
->>>>   
->>>>>     >>>> +		} else if (instr->type == NAND_OP_WAITRDY_INSTR) {
->>>>>> +			ret = bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
->>>>>> +			if (ctrl->wp_cmd) {
->>>>>> +				ctrl->wp_cmd = 0;
->>>>>> +				brcmnand_wp(mtd, 1);
->>>>>
->>>>> This ideally should disappear.
->>>>>     >> Maybe we can have the destructive operation patch from Borris.
->>>> Controller driver still need to assert/deassert the pin if it uses nand
->>>> wp feature but at least it does not need to guess the op code.
->>>
->>> Ah, yeah, I get it.
->>>
->>> Please be my guest, you can revive this patch series (might need light
->>> tweaking, nothing big) and also take inspiration from it if necessary:
->>> https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669f0f172d58717
->>> https://github.com/bbrezillon/linux/commit/4ec6f8d8d83f5aaca5d1877f02d48da96d41fcba
->>> https://github.com/bbrezillon/linux/commit/11b4acffd761c4928652d7028d19fcd6f45e4696
->>>    
->> Sure we will incorporate the destructive operation patch and provide a
->> new revision.
->>
->> The WP status workaround will stay at least for this change. If you
->> think my suggestion using a dts setting above is okay, we can provide a
->> patch for that as well.  Or if you have any other idea or suggestion,
->> we'd like to hear too.
-> 
-> I thought this was not needed as Boris initial conversion did not need
-> it. The goal is to get rid of this workaround.
-> Boris' initial patch did remove that workaround but it will break the
-board that uses WP pin because the nand_check_wp run before the exec_op 
-and status returned is write-protected in the erase and write function.
-I explained that above and you can see the code here:
-https://elixir.bootlin.com/linux/v6.6-rc4/source/drivers/mtd/nand/raw/nand_base.c#L4599
-
-I agree with your goal to remove this workaround and we have suggested
-one possible fix but we are also open to any other solution.
-
-
-> Thanks,
-> Miquèl
-> 
-
---000000000000da53e70606dcb3ed
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
-6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
-xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
-VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
-/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
-0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
-urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICawndTqWQWwAuPkvwqeAJ25fwGf
-zwebWDynOEgu3ccMMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MTAwNDA0NDcyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAaWbKWJjMpLt51ypr/g2sH4I/lhQb0d4evXQeXu9vkttXs
-8L/umJLqz+I6nepl9cV+08VkN2b08m9UYMB5iYpKpvASG4+BQI9OFSKs7o/+lYcdKqiI89vC9l6Y
-EUXRChIpbjLiuP2AkoU5myZbjiL3nPWXaxNppjlBpA+7k3LpQ5nnJMRv/mAE++LmrCo8mmZgx+Wz
-8le0K6i1J8Vy1+yIOV47UQArAEzeKnnf6me+gKnkGL7YlmTe1afwK4YlxbQPKI9cfsfbu4l063hy
-Cys6jkmKwHLqbcsEx3Fg+nVVO84Bt7YJuXAWeYZk6JXrzTV2tsqEbP5fR2qCPGVU19bI
---000000000000da53e70606dcb3ed--
-
-
---===============1490503612881306079==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1490503612881306079==--
-
