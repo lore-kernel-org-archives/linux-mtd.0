@@ -4,76 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42A00E9370C
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 13:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17E17E93710
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 13:52:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RCEzI6jjVStCyJdFIVigINNlNypd8PDqH4lRwij53cs=; b=MRrJzjx/l5qeqL
-	0gA0XQ1vDFMLea9pZ1Kucny4nGu0OPaeIrdonlQw3Tha8v4ThpcjEa5T3vayR80nALxTkoQWCi+jJ
-	SsBTqZiSBZk/TCbI69vzcMJ9p2D+5Oym1SjUSH8HGL1ZaMKoXfk2bHpWuneFtTWEBoqkagtN0giX2
-	zDxbOcNDavmlgP4BRo79L/pj+HD7JZlMUVhfz2RGcDd38Cxw/oLlPg3aS43tcft0zVRf/vHH9imrp
-	8nDDKrAM8j+IQDyD2upXETrPvYueT3n7PWPpE3jz03aRjpwjmz/SSm4zdWq5HtN/vN3Vl16qAeJF4
-	4RAcjuoS9O2MZoMGmR6Q==;
+	List-Owner; bh=zIv33z9iDGe6E1M2pPRvCrra49PEPRhFZF5WELMgav4=; b=gVZUQDOvfv0PFS
+	pkRMh7veMdpFif1KcZmsE7ra3r+nyCuxbks6tXtJlhtGN6+fhNwMiPvvCzMSGqYuH4NkpCIp/nem6
+	dep5OZSWHE39AsVlhPrQA+9tqmee+q+YZIAfvu+XIphb6+oPGVI+T77IAxHk2HkdtizxbjQ1vMUYM
+	fhlfFTfHLcMWccZvcDTrCgjt1tiNmKcJoBXI1yAHvIbhfViwOZhVWBK5k9Y9Vq4omE8C/O/274dCv
+	jbeIWx/8NaLWDKarS3if54RuyJ2OmiOx79Edutu3LbainP/JG9jKIs1R8u/BPI2xQI9pjGdpXPpti
+	TGf5Fzfxyi94qDFZtYJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoOPF-003OnW-0Y;
-	Thu, 05 Oct 2023 13:28:45 +0000
-Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
+	id 1qoOlj-003cyU-1v;
+	Thu, 05 Oct 2023 13:51:59 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoOP8-003OfF-1O
+	id 1qoOlg-003cxE-0g
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Oct 2023 13:28:43 +0000
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ad8a822508so193009166b.0
-        for <linux-mtd@lists.infradead.org>; Thu, 05 Oct 2023 06:28:35 -0700 (PDT)
+	Thu, 05 Oct 2023 13:51:58 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9adca291f99so176896866b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 05 Oct 2023 06:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696512514; x=1697117314; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uttje9H76CjAHqDi0nb3p+4z8+RlBcA4fdin0GblyOs=;
-        b=iY2STM0Bmi3rxnNNAG+W6faYEYK6/PokkyJhEdpVlxAssSwKYsSn0xgD386uTVR+FW
-         uk0F+jTzjV7sNrjXI7Hr1DIzcxgI+o37Sz/F1sNLDnTnqRFPJ+X8a/qHZt4UTxRR1G73
-         AOl9yobQfBJOF9RONykeRlIf6MMSfFRdo1ElQ=
+        d=linaro.org; s=google; t=1696513912; x=1697118712; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xqy329Cogar5edR2RI7RX06cxB/7bukXjjsqcrAyui4=;
+        b=ox435EJuPlHe1yxQc/GG7Fe1EgtTKm6myft1UtMG6mAjC2F6s46Ps6Bbbcu4ReRUPS
+         B8jGpxgBSvTVzpy0IZBc8IAmXoKMIuMXK5PJcylOTzZEMkiQTm+Xf7o+IuMu0zI87Bh2
+         EeT8QSq981jad2xvoKlqp8V3dcPK/uVXNl1ifa1q4PtTJlwCXJSXIo5CZXPfZuLcZVY4
+         URM8dPyWh+Tqr8kHNPr6w5uCbxZpX1/ouGW+ftjAl5WMI+suxVdhiYSlYnmDM9suFqBP
+         XquduWbZQ8a9EIEp5FHj6AKteyzGJf6qY7TqcIj1MVAnVabU4EX1YpyoUfQk8qzrUfVp
+         CBIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696512514; x=1697117314;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uttje9H76CjAHqDi0nb3p+4z8+RlBcA4fdin0GblyOs=;
-        b=WMXtI9bW95q9EdlYnM0S2pqyZgnD2FpWvcg40r07s7IWtXlmHLcRj699duDyQAwnJA
-         3EPeZGpCdO9++kAK192qKQzRn37/GwKB1yvEUfRMNXVSKcEJxsHD0VfMK7lLEPAl2OMA
-         PODChNnZ+sKYsNgHbxAyyE7oLrrEtdtlnkoP2WJEOY+LMrjw2MLedxP5sf1FUW/OSEs2
-         TCD9de4nEzlQy3wG4r+ndWmn9P52TBqgnF15cfIqj/hG+84SziFP3CK0yuS1MpyPztqV
-         Q0ny66O9BVN7ulpQmYR2GxFqKc2agbpaGK6hLNmCOq5NbvDhJtLiEkFeAonl6nS5PNk3
-         GCzg==
-X-Gm-Message-State: AOJu0Yxhe2zByBd1Dor3BP+KbRFvsMF2Q8Mci1nIZL8keeanDVwrlMb1
-	1PsD5ozp3G1Dh7JpGdqhfLZMutcWRk1eItDjaVf3EA==
-X-Google-Smtp-Source: AGHT+IGEm5wF2Q+BhWlWTvL7ZYsdruoCPmp9Uy47bElz9kCchf+LdIy88b0VQuw88Imfh5qH6nm1g3tJn7WJrqlN0EQ=
-X-Received: by 2002:a17:906:224c:b0:9ae:3c2f:5a99 with SMTP id
- 12-20020a170906224c00b009ae3c2f5a99mr5697789ejr.51.1696512513425; Thu, 05 Oct
- 2023 06:28:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696513912; x=1697118712;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xqy329Cogar5edR2RI7RX06cxB/7bukXjjsqcrAyui4=;
+        b=kxnVb/phWvseQBgFYJ7ahrB7TSIBvZ2Mo/MNYsp7I5YkUHOnxSlH20jyRP1/sKGLaE
+         9CZ3ld+zN6uhSBadaRJ0ovYKzdotk6PX7/Ozyte18fvdyaNbFtnNjjWkOwlA3W4tLv5y
+         D76QHla96/M98TkxSGptkoozqskBxu738ZmBDG24baOKKLPA8539qxsBmek5J7qrP4P3
+         5qYung2eWfHwFfEGnXLs2G9oBW+46pxJrolMzipqfXryRHBvFvPedHiMC7TZATTVpy6L
+         tkltoLDSIFSYAWlxQQrEsH7Khwsj7F4P/LpzdaL/HXPp8V+18kAJnZja+0if1KloxRDv
+         TJdg==
+X-Gm-Message-State: AOJu0Yxj7tOyEJS3d2vJL5jfGC+JEEy9Vl1QLZvVE5zG+0MJmpNMNxXW
+	ZktJ0ksuY/6uU3wPCCsTIaMl1A==
+X-Google-Smtp-Source: AGHT+IEpUwrkNTiPZ8CpjrfNNTFs5Y6qhkeIF2v42KiS866I2/Kgz/6z8spn/gMS2JdxT3QQsGx+Cw==
+X-Received: by 2002:a17:906:308b:b0:9b6:550c:71cb with SMTP id 11-20020a170906308b00b009b6550c71cbmr4400036ejv.52.1696513912297;
+        Thu, 05 Oct 2023 06:51:52 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.123])
+        by smtp.gmail.com with ESMTPSA id m15-20020a1709066d0f00b00982a352f078sm1213209ejr.124.2023.10.05.06.51.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 06:51:51 -0700 (PDT)
+Message-ID: <2d7271b3-dd60-44bb-9700-f6a5295ea873@linaro.org>
+Date: Thu, 5 Oct 2023 14:51:50 +0100
 MIME-Version: 1.0
-References: <20231004093620.2b1d6917@xps-13> <20231004113458.531124-1-mwalle@kernel.org>
- <CAPnjgZ2hWE6Sc=rg55W=-r-TnoWP7Y5gSpn41kwoyja-AMVw+w@mail.gmail.com>
- <9e588e3ec8c0c321a2861723d0d42b9a@kernel.org> <CAPnjgZ20ezipPWAj6bUM9_oCTcX1XzuLqQ7b7-nKjXf1t4p9-Q@mail.gmail.com>
- <a581ef73fa09c6ffeb83a1c1780053bd@kernel.org>
-In-Reply-To: <a581ef73fa09c6ffeb83a1c1780053bd@kernel.org>
-From: Simon Glass <sjg@chromium.org>
-Date: Thu, 5 Oct 2023 07:28:15 -0600
-Message-ID: <CAPnjgZ2PnKD5m0EgTdEAf-gcK3wuBZvWw_AO2iehb1dmfdoz3A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
-To: Michael Walle <mwalle@kernel.org>
-Cc: miquel.raynal@bootlin.com, conor+dt@kernel.org, devicetree@vger.kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, ptyadav@amazon.de, rafal@milecki.pl, 
-	richard@nod.at, robh+dt@kernel.org, robh@kernel.org, trini@konsulko.com, 
-	u-boot@lists.denx.de, vigneshr@ti.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
+To: SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>,
+ "pratyush@kernel.org" <pratyush@kernel.org>,
+ "michael@walle.cc" <michael@walle.cc>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>
+References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
+ <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
+ <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
+ <084ed945-7674-280f-5866-9238473a294d@leica-geosystems.com>
+ <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
+ <a24d7b3b-4077-9dbe-49ae-96f595b42223@leica-geosystems.com>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <a24d7b3b-4077-9dbe-49ae-96f595b42223@leica-geosystems.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231005_062838_631486_3BCF002D 
-X-CRM114-Status: GOOD (  59.56  )
+X-CRM114-CacheID: sfid-20231005_065156_256725_B5A16924 
+X-CRM114-Status: GOOD (  18.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,219 +103,126 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
 
-On Thu, 5 Oct 2023 at 02:54, Michael Walle <mwalle@kernel.org> wrote:
->
-> Hi,
->
-> >> >> >> Add a compatible string for binman, so we can extend fixed-partitions
-> >> >> >> in various ways.
-> >> >> >
-> >> >> > I've been thinking at the proper way to describe the binman partitions.
-> >> >> > I am wondering if we should really extend the fixed-partitions
-> >> >> > schema. This description is really basic and kind of supposed to remain
-> >> >> > like that. Instead, I wonder if we should not just keep the binman
-> >> >> > compatible alone, like many others already. This way it would be very clear
-> >> >> > what is expected and allowed in both cases. I am thinking about
-> >> >> > something like that:
-> >> >> >
-> >> >> >       Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
-> >> >> >
-> >> >> > this file is also referenced there (but this patch does the same, which
-> >> >> > is what I'd expect):
-> >> >> >
-> >> >> >       Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> >> >> >
-> >> >> > I'll let the binding maintainers judge whether they think it's
-> >> >> > relevant, it's not a strong opposition.
-> >> >>
-> >> >> What is the overall goal here? To replace the current binman node
-> >> >> which is
-> >> >> usually contained in the -u-boot.dtsi files? If one is using binman to
-> >> >> create an image, is it expected that one needs to adapt the DT in
-> >> >> linux?
-> >> >> Or will it still be a seperate -u-boot.dtsi? > Because in the latter
-> >> >> case
-> >> >> I see that there will be conflicts because you have to overwrite the
-> >> >> flash node. Or will it be a seperate node with all the information
-> >> >> duplicated?
-> >> >
-> >> > The goal is simply to have a full binding for firmware layout, such
-> >> > that firmware images can be created, examined and updated. The
-> >> > -u-boot.dtsi files are a stopgap while we sort out a real binding.
-> >> > They should eventually go away.
-> >>
-> >> You haven't answered whether this node should be a seperate binman
-> >> node - or if you'll reuse the existing flash (partitions) node(s) and
-> >> add any missing property there. If it's the latter, I don't think
-> >> compatible = "binman", "fixed-partitions"; is correct.
-> >
-> > My intent is to make it compatible, so wouldn't it make sense to have
-> > binman as the first compatible, then falling back to fixed-partitions
-> > as the second?
->
-> As far as I know, the compatibles should get more specific with each
-> string.
 
-That's the opposite to what I understood.
+On 10/5/23 10:21, SHUKLA Mamta Ramendra wrote:
 
-> But "binman" seems to be used as a kind of tag which could be
-> added to any compatible under the flash node. What if one wants to build
-> an image which isn't compatible = "fixed-partitions"? E.g.
-> "linksys,ns-partitions", will it then have
-> compatible = "binman", "linksys,ns-partitions"?
+cut
 
-I suppose so.
+>>
+>> and the second one will add just the BP support, something like:
+>> diff --git a/drivers/mtd/spi-nor/micron-st.c
+>> b/drivers/mtd/spi-nor/micron-st.c
+>> index a8da1f18e335..fdafbfa0f936 100644
+>> --- a/drivers/mtd/spi-nor/micron-st.c
+>> +++ b/drivers/mtd/spi-nor/micron-st.c
+>> @@ -405,6 +405,8 @@ static const struct flash_info st_nor_parts[] = {
+>>          }, {
+>>                  .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
+>>                  .name = "mt25qu512a",
+>> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>> SPI_NOR_4BIT_BP |
+>> +                        SPI_NOR_BP3_SR_BIT6,
+>>                  .mfr_flags = USE_FSR,
+>>          }, {
+>>                  .id = SNOR_ID(0x20, 0xbb, 0x20),
+>>
+>> Of course, I expect you to run again the mtd_debug tests and also verify
+>> the locking. Thanks!
+> 
+> I applied both changes as mentioned above i.e
+> 1] Switch to SFDP and 2] Using BP Flags.
+> 
+> Case 1: Use BP Flags and Switch to SFDP
+> With both these changes, the lock/unlock doesn't work.
+> 
+> ## x86-64-smarc-evk-uwd0j0007 # uname -r
+> 6.6.0-rc2
+> 
+> # flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x4000000
+> Lock status: unlocked
+> Return code: 0
+> # flash_lock -l /dev/mtd0
+> flash_lock: error!: could not lock device: /dev/mtd0
+> 
+>              error 5 (Input/output error)
+> 
+> 
+> I suspected this is because of miscalculation of BP bits, like the 
+> possibility mentioned here: 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=spi-nor/next&id=3ea3f0ac242c86c0275d347ab8c92bf1eb854b49 
+> 
+> 
+> But further checked size, it is correct:
+> 
+>   # mtd_debug info /dev/mtd0
+> mtd.type = MTD_NORFLASH
+> mtd.flags = MTD_CAP_NORFLASH
+> mtd.size = 67108864 (64M)
+> mtd.erasesize = 4096 (4K)
+> mtd.writesize = 1
+> mtd.oobsize = 0
+> regions = 0
+> 
+> And rest of read/write functions work as expected.
+> 
+> Any suggestions about this?
+> 
+> Case 2: Just added BP flags, rest of the size, mfr_flags, fixup flags 
+> kept as it is.
 
->
->
-> >> >> Maybe (a more complete) example would be helpful.
-> >> >
-> >> > Can you please be a bit more specific? What is missing from the
-> >> > example?
-> >>
-> >> Like a complete (stripped) DTS. Right now I just see how the
-> >> individual
-> >> node looks like. But with a complete example DTS, my question from
-> >> above
-> >> would have been answered.
->
-> So to give an example myself, please correct it if it's wrong. From
-> our board (kontron-sl28):
->
-> &fspi {
->          status = "okay";
->
->          flash@0 {
->                  compatible = "jedec,spi-nor";
->                  m25p,fast-read;
->                  spi-max-frequency = <133000000>;
->                  reg = <0>;
->                  /* The following setting enables 1-1-2 (CMD-ADDR-DATA)
-> mode */
->                  spi-rx-bus-width = <2>; /* 2 SPI Rx lines */
->                  spi-tx-bus-width = <1>; /* 1 SPI Tx line */
->
->                  partitions {
->                          compatible = "fixed-partitions";
->                          #address-cells = <1>;
->                          #size-cells = <1>;
->
->                          partition@0 {
->                                  reg = <0x000000 0x010000>;
->                                  label = "rcw";
->                                  read-only;
->                          };
->
->                          partition@10000 {
->                                  reg = <0x010000 0x1d0000>;
->                                  label = "failsafe bootloader";
->                                  read-only;
->                          };
->
->                          partition@200000 {
->                                  reg = <0x200000 0x010000>;
->                                  label = "configuration store";
->                          };
->
->                          partition@210000 {
->                                  reg = <0x210000 0x1d0000>;
->                                  label = "bootloader";
->                          };
->
->                          partition@3e0000 {
->                                  reg = <0x3e0000 0x020000>;
->                                  label = "bootloader environment";
->                          };
->                  };
->          };
-> };
->
-> In u-boot we use binman, see
-> arch/arm/dts/fsl-ls1028a-kontron-sl28-u-boot.dtsi
-> in the u-boot repository.
->
-> Now to use the new method, am I expected to adapt the dts in the
-> linux kernel? As far as I understand that is the case. So that node
-> from above would look something like the following:
->
-> &fspi {
->          status = "okay";
->
->          flash@0 {
->                  compatible = "jedec,spi-nor";
->                  m25p,fast-read;
->                  spi-max-frequency = <133000000>;
->                  reg = <0>;
->                  /* The following setting enables 1-1-2 (CMD-ADDR-DATA)
-> mode */
->                  spi-rx-bus-width = <2>; /* 2 SPI Rx lines */
->                  spi-tx-bus-width = <1>; /* 1 SPI Tx line */
->
->                  partitions {
->                          compatible = "binman", "fixed-partitions";
->                          #address-cells = <1>;
->                          #size-cells = <1>;
-> [..]
->                          partition@210000 {
->                                  reg = <0x210000 0x1d0000>;
->                                  label = "u-boot"; /* or "u-boot+atf" ?
-> */
->                          };
->
->                          partition@3e0000 {
->                                  reg = <0x3e0000 0x020000>;
->                                  label = "bootloader environment";
->                          };
->                  };
->          };
-> };
->
-> I'm still not sure why that compatible is needed. Also I'd need to
-> change
-> the label which might break user space apps looking for that specific
-> name.
->
-> Also, our board might have u-boot/spl or u-boot/spl/bl31/bl32, right now
-> that's something which depends on an u-boot configuration variable,
-> which
-> then enables or disables binman nodes in the -u-boot.dtsi. So in linux
-> we only have that "bootloader" partition, but there might be either
-> u-boot+spl or u-boot+spl+bl31+bl32.
->
-> Honestly, I'm really not sure this should go into a device tree.
+would you please detail what exact definitions you used in case 2? Send
+us the diff please.
 
-I think we might be getting a bit ahead of ourselves here. I thought
-that the decision was that the label should indicate the contents. If
-you have multiple things in a partition then it would become a
-'section' in Binman's terminology. Either the label programmatically
-describes what is inside or it doesn't. We can't have it both ways.
-What do you suggest?
+Cheers,
+ta
 
-At present it seems you have the image described in two places - one
-is the binman node and the other is the partitions node. I would like
-to unify these.
-
-What does user space do with the partition labels?
-
->
-> >> What if a board uses eMMC to store the firmware binaries? Will that
-> >> then
-> >> be a subnode to the eMMC device?
-> >
-> > I thought there was a way to link the partition nodes and the device
-> > using a property, without having the partition info as a subnode of
-> > the device. But I may have imagined it as I cannot find it now. So
-> > yes, it will be a subnode of the eMMC device.
->
-> Not sure if that will fly.
-
-I can't find it anyway. There is somelike like that in
-simple-framebuffer with the 'display' property.
-
-Regards,
-SImon
+> Lock/unlock works.
+> 
+> ## x86-64-smarc-evk-uwd0j0007 # uname -r
+> 6.6.0-rc2
+> 
+> # flash_lock -i /dev/mtd0
+> Start: 0
+> Len: 0x4000000
+> Lock status: unlocked
+> Return code: 0
+> 
+> # flash_lock -l /dev/mtd0
+> # flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x4000000
+> Lock status: locked
+> Return code: 1
+> 
+> ## x86-64-smarc-evk-uwd0j0007 # mtd_debug erase /dev/mtd0 0 1048576
+> [  413.472411] spi-nor spi-PRP0001:00: Erase operation failed.
+> [  413.478084] spi-nor spi-PRP0001:00: Attempted to modify a protected 
+> sector.
+> MEMERASE: Input/output error
+> 
+> # flash_lock -u /dev/mtd0
+> # flash_lock -i /dev/mtd0
+> Device: /dev/mtd0
+> Start: 0
+> Len: 0x4000000
+> Lock status: unlocked
+> Return code: 0
+> 
+> ## x86-64-smarc-evk-uwd0j0007 #  mtd_debug erase /dev/mtd0 0 1048576
+> Erased 1048576 bytes from address 0x00000000 in flash
+> 
+> 
+> Further I tested on stable 6.5.5 Kernel with old way of Flash Info 
+> Format and which has forced PARSE_SFDP Flag, no issues with lock/unlock.
+> 
+> 
+> ---
+> Mamta
 
 ______________________________________________________
 Linux MTD discussion mailing list
