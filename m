@@ -4,80 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65586E8FDC6
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 10:02:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 139A6E8FDC8
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 10:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zWMINoRdFn62EdAWK2JO3qWKVS6smLrOmsl7trW6nbc=; b=ORthfdqrM4pNQY
-	pu31mkSfHIiP1itMoFZjIah4MHrs0NyL8yHvHSWeHfi4gfEqh4zA9pzzUvYoM0RFy3UR5xr3EN4dK
-	vGy4bZsGEcNqqyGpAhH1L2Z9ktbXdCqFd+18HJTkwRhhCw+rYv9iiwaX2LoX/RJu5t+tcj9x1qCnC
-	r3PawXZY8i5qOR6Rl7ue8z3MxPQz1CWiGJDEHId2EypsOpPnUUhEP+Hv0ke6nutWxtjTm1gm72r2l
-	aWuOPOP94ba8lROUCeRvk/VnuNxQkQM7bAPPK6RBxs5uP0zMkjE1d3C3C9a4TdG52N1xP7bwXqoxT
-	VIiWjnrp84Bp5Ve2Qa5Q==;
+	List-Owner; bh=12bvNYRA+G2gv0xQdi2WR5aiUM0S9ExdVoM4sxJhXzo=; b=Vw1yKmmuJLKnlO
+	GOS/hHVhoJ1G4R74b+y5WKmAMKecXEzR4NJmtu/fc5ar3K6cMmMmD4bSyymQhbaDWT9X+OhZJuV+0
+	fq7pcy2KjOjEVAh4XkLkJQHhN4Br4IvwN1GV8vmb0RdlLrj01msPNIFYrzojpx9AUFVMZ/QFqG+Ie
+	yww+yJR46wXCW6zheF8FnJpLJr2wN4BZNFNy3E2feG9KuQ0ZypOAuKl4cyDlD6cZLAlcFwQ9mBTGA
+	Wjpfa71Dt3gXCZr+BBPeHu2iNtmEyepnGlRRiSyfKOtSPfd/yKWN7723STuxI904LnCSeuCGJmg1e
+	1qTsRBlxF+r7RUyo0CaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoLBL-001qVD-0L;
-	Thu, 05 Oct 2023 10:02:11 +0000
-Received: from gloria.sntech.de ([185.11.138.130])
+	id 1qoLR6-001sdu-19;
+	Thu, 05 Oct 2023 10:18:28 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoLBH-001qTb-2a;
-	Thu, 05 Oct 2023 10:02:09 +0000
-Received: from i53875a3c.versanet.de ([83.135.90.60] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1qoLAi-0004BA-Lx; Thu, 05 Oct 2023 12:01:32 +0200
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
- Alyssa Rosenzweig <alyssa@rosenzweig.io>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Vincent Shih <vincent.sunplus@gmail.com>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Christian Marangi <ansuelsmth@gmail.com>, Anson Huang <Anson.Huang@nxp.com>,
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
- Lala Lin <lala.lin@mediatek.com>, Komal Bajaj <quic_kbajaj@quicinc.com>,
- Kumar Thella <sthella@codeaurora.org>,
- Keiji Hayashibara <hayashibara.keiji@socionext.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, asahi@lists.linux.dev,
- linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-rtc@vger.kernel.org, linux-mediatek@lists.infradead.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2] dt-bindings: nvmem: move deprecated cells binding to its own
- file
-Date: Thu, 05 Oct 2023 12:01:30 +0200
-Message-ID: <2829805.88bMQJbFj6@diego>
-In-Reply-To: <20231003064018.7502-1-zajec5@gmail.com>
-References: <20231003064018.7502-1-zajec5@gmail.com>
+	id 1qoLR1-001sdR-2l
+	for linux-mtd@lists.infradead.org;
+	Thu, 05 Oct 2023 10:18:26 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 9BF3FB82256;
+	Thu,  5 Oct 2023 10:18:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7386C197C4;
+	Thu,  5 Oct 2023 10:18:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696501099;
+	bh=cgJYumWvU7ZR9IX6zbsjriqldWc8o7P02AFXbgO2728=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=qBur7v2domoKt0HCH7n7GXv6ZcAlFuzMPTi69owysMiEpmrD7gNWzH1MZciOIqyTb
+	 dW+c1f3eHqd0z+uPDq4mJdG4K00szarv0txIeZ14eQHr6uI6Dy04aIHEmYb5+GqmIE
+	 ANPHUkMhqsayLdA1Q0mh+LpRc1uUfGQwCW+KsXPE18yfKzzyna4EcOUIkcBhdFIuor
+	 tkPG2+YQfGGYQuG6VNveLHfKb8/1g/XXkyMBIw5RUPmKef0CnkWwgFQaT6FUiel6sW
+	 84fP/81TKA+s17wry+JWS7Gd8rSG+ypax6exTMKZ3rrYYJ20e0xXnbLSeSHx2qFnvD
+	 LCJThiS1DvL0g==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Jaime Liao <jaimeliao.tw@gmail.com>,  linux-mtd@lists.infradead.org,
+  pratyush@kernel.org,  michael@walle.cc,  miquel.raynal@bootlin.com,
+  leoyu@mxic.com.tw,  jaimeliao@mxic.com.tw
+Subject: Re: [PATCH v4 2/6] mtd: spi-nor: add Octal DTR support for Macronix
+ flash
+In-Reply-To: <911a6f0e-73bd-aa24-1b03-dd38bef1deba@linaro.org> (Tudor
+	Ambarus's message of "Wed, 20 Sep 2023 15:37:06 +0300")
+References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+	<20230908064304.27757-3-jaimeliao.tw@gmail.com>
+	<911a6f0e-73bd-aa24-1b03-dd38bef1deba@linaro.org>
+Date: Thu, 05 Oct 2023 12:18:16 +0200
+Message-ID: <mafs07co1pe3b.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231005_030207_846478_6114A84D 
-X-CRM114-Status: GOOD (  15.45  )
+X-CRM114-CacheID: sfid-20231005_031824_190154_49093E6E 
+X-CRM114-Status: GOOD (  25.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,41 +72,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gRGllbnN0YWcsIDMuIE9rdG9iZXIgMjAyMywgMDg6NDA6MTggQ0VTVCBzY2hyaWViIFJhZmHF
-giBNacWCZWNraToKPiBGcm9tOiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4g
-Cj4gU3VwcG9ydCBmb3Igb2xkIE5WTUVNIGZpeGVkIGNlbGxzIHdhcyBkZXByZWNhdGVkIGluIGZh
-dm91ciBvZgo+ICJmaXhlZC1sYXlvdXQiLiBJdCdzIHN0aWxsIHBhcnQgb2YgdGhlIG52bWVtLnlh
-bWwgdGhvdWdoIGFuZCBtYXkgYmUKPiB1bmtub3dpbmdseSB1c2VkIGJ5IG5ldyBiaW5kaW5ncyBh
-ZGRlZCB3aXRob3V0IG11Y2ggb2YgYW5hbHl6ZS4KPiAKPiBUbyBtYWtlIGl0IG1vcmUgZGlmZmlj
-dWx0IHRvIGFjY2lkZW50YWxseSBzdXBwb3J0IG9sZCBzeW50YXggbW92ZSBpdHMKPiBiaW5kaW5n
-IHRvIHNlcGFyYXRlZCBmaWxlIHdpdGggImRlcHJlY2F0ZWQiIGluIGl0cyBuYW1lLgo+IAo+IFNp
-Z25lZC1vZmYtYnk6IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPiAtLS0KPiBW
-MjogRml4IHBhdGggdG8gbnZtZW0tZGVwcmVjYXRlZC1jZWxscy55YW1sIGluIGFtbG9naWMsbWVz
-b242LXJ0Yy55YW1sCj4gCgo+ICAuLi4vYmluZGluZ3MvbnZtZW0vcm9ja2NoaXAsb3RwLnlhbWwg
-ICAgICAgICAgfCAgMSArCj4gIC4uLi9iaW5kaW5ncy9udm1lbS9yb2NrY2hpcC1lZnVzZS55YW1s
-ICAgICAgICB8ICAxICsKCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9udm1lbS9yb2NrY2hpcCxvdHAueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9udm1lbS9yb2NrY2hpcCxvdHAueWFtbAo+IGluZGV4IDljNmVmZjc4ODkyOC4u
-YTQ0ZDQ0YjMyODA5IDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9udm1lbS9yb2NrY2hpcCxvdHAueWFtbAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9udm1lbS9yb2NrY2hpcCxvdHAueWFtbAo+IEBAIC00OSw2ICs0OSw3IEBA
-IHJlcXVpcmVkOgo+ICAKPiAgYWxsT2Y6Cj4gICAgLSAkcmVmOiBudm1lbS55YW1sIwo+ICsgIC0g
-JHJlZjogbnZtZW0tZGVwcmVjYXRlZC1jZWxscy55YW1sIwo+ICAKPiAgICAtIGlmOgo+ICAgICAg
-ICBwcm9wZXJ0aWVzOgo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbnZtZW0vcm9ja2NoaXAtZWZ1c2UueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9udm1lbS9yb2NrY2hpcC1lZnVzZS55YW1sCj4gaW5kZXggYzU0MDNlMTQ5MDgw
-Li5iODBmZDhkMWFlNWIgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL252bWVtL3JvY2tjaGlwLWVmdXNlLnlhbWwKPiArKysgYi9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbnZtZW0vcm9ja2NoaXAtZWZ1c2UueWFtbAo+IEBAIC0xMSw2ICsx
-MSw3IEBAIG1haW50YWluZXJzOgo+ICAKPiAgYWxsT2Y6Cj4gICAgLSAkcmVmOiBudm1lbS55YW1s
-Iwo+ICsgIC0gJHJlZjogbnZtZW0tZGVwcmVjYXRlZC1jZWxscy55YW1sIwo+ICAKPiAgcHJvcGVy
-dGllczoKPiAgICBjb21wYXRpYmxlOgoKRm9yIFJvY2tjaGlwIE9UUCBhbmQgRWZ1c2UgYmluZG5n
-czoKQWNrZWQtYnk6IEhlaWtvIFN0dWVibmVyIDxoZWlrb0BzbnRlY2guZGU+CgoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed, Sep 20 2023, Tudor Ambarus wrote:
+
+> Hi, Jaime,
+>
+> On 08.09.2023 09:43, Jaime Liao wrote:
+>> From: JaimeLiao <jaimeliao@mxic.com.tw>
+>> 
+>> Create Macronix specify method for enable Octal DTR mode and
+>> set 20 dummy cycles to allow running at the maximum supported
+>> frequency for Macronix Octal flash.
+>
+> You didn't answer my question. What happens when you specify 20 dummy
+> cycles, thus you configure the dummy cycles for the maximum flash speed,
+> but you program the flash to work on 1 MHz for example. Do you still
+> have reliable results?
+
+I don't know about this particular flash, but in the past, I have tried
+doing this with Spansion and Micron flashes, and they work fine on lower
+frequencies even with the maximum dummy cycles set.
+
+When you think about it, the only reason higher frequencies put a
+restriction on minimum dummy cycles is because the flash actually has a
+restriction on _time_. As time for each cycle gets shorter with higher
+frequencies, you need more cycles to wait the same amount of time. Dummy
+cycles are just a way to ensure you wait more than the minimum amount of
+time needed to get the flash ready to transmit data.
+
+So I see no reason for a flash to break because it waited _longer_ than
+the minimum time.
+
+>> 
+>> Use number of dummy cycles which is parse by SFDP then convert
+>> it to bit pattern and set in CR2 register.
+>
+> What we should do instead is to determine the flash speed at which the
+> flash is operated and then to set the correct number of dummy cycles
+> according to what the flash requires. There should be a table somewhere
+> in the datasheet that specify a required number of dummy cycles for a
+> particular frequency, isn't it? Yeah, see "9-3-1. Dummy Cycle and
+> Frequency Table (MHz)" of the mx66lm1g45g datasheet.
+
+Right, most flashes do give such a table, though I don't remember any
+more if SFDP has something like this as well.
+
+I remember thinking the same thing when I was adding support for Octal
+DTR in SPI NOR. The problem is that SPI NOR currently has no way of
+knowing what exact speed the flash will be operated at.
+
+It can look at nor->spimem->spi->max_speed_hz (I am not sure it should
+do this directly) which comes from the "spi-max-frequency" DT property,
+but that is only the maximum. This can be a good starting point to
+decide the maximum number of cycles you would need.
+
+But that is only the maximum. The controller does not guarantee using
+the maximum speed. It can use something slower as well. And currently
+there is no way for the controller to report that speed back to SPI MEM
+or SPI NOR. So if we want to waste the least amount of dummy cycles, we
+would need to teach the controller drivers to report back the exact
+speed it is going to driver the flash at.
+
+I am not sure this might be worth the trouble though. We should first
+quantify how much throughput/latency we stand to gain from doing this.
+But I do think looking at "spi-max-frequency" is fairly simple and
+should be a good enough start.
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
