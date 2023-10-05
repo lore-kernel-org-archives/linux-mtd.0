@@ -4,89 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17E17E93710
-	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 13:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 879B3E92702
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 14:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zIv33z9iDGe6E1M2pPRvCrra49PEPRhFZF5WELMgav4=; b=gVZUQDOvfv0PFS
-	pkRMh7veMdpFif1KcZmsE7ra3r+nyCuxbks6tXtJlhtGN6+fhNwMiPvvCzMSGqYuH4NkpCIp/nem6
-	dep5OZSWHE39AsVlhPrQA+9tqmee+q+YZIAfvu+XIphb6+oPGVI+T77IAxHk2HkdtizxbjQ1vMUYM
-	fhlfFTfHLcMWccZvcDTrCgjt1tiNmKcJoBXI1yAHvIbhfViwOZhVWBK5k9Y9Vq4omE8C/O/274dCv
-	jbeIWx/8NaLWDKarS3if54RuyJ2OmiOx79Edutu3LbainP/JG9jKIs1R8u/BPI2xQI9pjGdpXPpti
-	TGf5Fzfxyi94qDFZtYJA==;
+	List-Owner; bh=/36DFmLG1GyX5VADnyUlzKZ6w23l++AmURhd+DfRJcc=; b=3whTVgPBGG5dCt
+	K3B5pwQ7f+77tKCqZZ/HDqRvD3nLIy14mtwlApSn1pgJ/V6LY0COAhE1VLprukmr1+MzEdja/Doh9
+	cSDEHhTrjhiRkxJmoYCcKu86NTL/x79wa5iRgs9r5vP16Rbi6NgR4Lx8TYodW+jSjzxtJkVT6vfQk
+	zmdBYuKndQZSyIYksDxi7yGxzfxzT2GTNwD5O3E9DOShdrsbyh2EcqB1Y/+h3w+irq4IoEUm5vblA
+	ubqWBf+HXRbPddvquLTstUl9uW4btXbxOpvI1g+eeNQ/0TJ4BbjPbuBohCAq7RS5rmOyifJycNxU5
+	l/6pFa1PYW+D5VnIrk8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoOlj-003cyU-1v;
-	Thu, 05 Oct 2023 13:51:59 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1qoP4j-003g5S-1t;
+	Thu, 05 Oct 2023 14:11:37 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qoOlg-003cxE-0g
+	id 1qoP4g-003g3s-2c
 	for linux-mtd@lists.infradead.org;
-	Thu, 05 Oct 2023 13:51:58 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9adca291f99so176896866b.2
-        for <linux-mtd@lists.infradead.org>; Thu, 05 Oct 2023 06:51:53 -0700 (PDT)
+	Thu, 05 Oct 2023 14:11:36 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b6559cbd74so196610266b.1
+        for <linux-mtd@lists.infradead.org>; Thu, 05 Oct 2023 07:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696513912; x=1697118712; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1696515092; x=1697119892; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xqy329Cogar5edR2RI7RX06cxB/7bukXjjsqcrAyui4=;
-        b=ox435EJuPlHe1yxQc/GG7Fe1EgtTKm6myft1UtMG6mAjC2F6s46Ps6Bbbcu4ReRUPS
-         B8jGpxgBSvTVzpy0IZBc8IAmXoKMIuMXK5PJcylOTzZEMkiQTm+Xf7o+IuMu0zI87Bh2
-         EeT8QSq981jad2xvoKlqp8V3dcPK/uVXNl1ifa1q4PtTJlwCXJSXIo5CZXPfZuLcZVY4
-         URM8dPyWh+Tqr8kHNPr6w5uCbxZpX1/ouGW+ftjAl5WMI+suxVdhiYSlYnmDM9suFqBP
-         XquduWbZQ8a9EIEp5FHj6AKteyzGJf6qY7TqcIj1MVAnVabU4EX1YpyoUfQk8qzrUfVp
-         CBIQ==
+        bh=dfyCZicpPduaIx/4ZNTvtfLRdO9R8uKzkarzy6IJm4c=;
+        b=fyoSJbirD2yRpZ59os2pLKcFfM/13kFvH5LsYOSllvHk80+XwHptB4OnapmHwqJVuE
+         jdoYY4Vfg7uvriZnTGSqsSgXDi+OaMxnsONDShevkdlY7RgoB++ZcSxv6kyaKRskizta
+         l97J7hW2L98f4NMf7dBnx2af8903LZGLNhGp7BV4dF0oo01goeffemvTViN9jegjnLmp
+         vyO3OU2HXiFx40p0HNYOqMdxmsHAcPWZkJnA8tR9TWQn3V9+CWIuX5JeOZrbaOxrigM0
+         b1H5KZ9mYNBcAnrlF8aA4elG7Nof58XQcvYA4Px3myviJ83Lm809MAYEqffzWaLCQPZS
+         YsLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696513912; x=1697118712;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696515092; x=1697119892;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xqy329Cogar5edR2RI7RX06cxB/7bukXjjsqcrAyui4=;
-        b=kxnVb/phWvseQBgFYJ7ahrB7TSIBvZ2Mo/MNYsp7I5YkUHOnxSlH20jyRP1/sKGLaE
-         9CZ3ld+zN6uhSBadaRJ0ovYKzdotk6PX7/Ozyte18fvdyaNbFtnNjjWkOwlA3W4tLv5y
-         D76QHla96/M98TkxSGptkoozqskBxu738ZmBDG24baOKKLPA8539qxsBmek5J7qrP4P3
-         5qYung2eWfHwFfEGnXLs2G9oBW+46pxJrolMzipqfXryRHBvFvPedHiMC7TZATTVpy6L
-         tkltoLDSIFSYAWlxQQrEsH7Khwsj7F4P/LpzdaL/HXPp8V+18kAJnZja+0if1KloxRDv
-         TJdg==
-X-Gm-Message-State: AOJu0Yxj7tOyEJS3d2vJL5jfGC+JEEy9Vl1QLZvVE5zG+0MJmpNMNxXW
-	ZktJ0ksuY/6uU3wPCCsTIaMl1A==
-X-Google-Smtp-Source: AGHT+IEpUwrkNTiPZ8CpjrfNNTFs5Y6qhkeIF2v42KiS866I2/Kgz/6z8spn/gMS2JdxT3QQsGx+Cw==
-X-Received: by 2002:a17:906:308b:b0:9b6:550c:71cb with SMTP id 11-20020a170906308b00b009b6550c71cbmr4400036ejv.52.1696513912297;
-        Thu, 05 Oct 2023 06:51:52 -0700 (PDT)
+        bh=dfyCZicpPduaIx/4ZNTvtfLRdO9R8uKzkarzy6IJm4c=;
+        b=gu4wE+VbM3DyNmadbMUkHl5NZ6spIfUIRwYEL0mPh8MXJvNbhWGUq6cP+b9OonWrhL
+         VJCSYHppfeZWrQSO3b0gp8D5jYow7wI9EEFVHWWBbOPBiAzeHanyR+w2w99tFjSXZSh4
+         uCtzLPxgucagaRr4Pfw7PobogifobE1/FQr2BFd5BCdNdtbnG7lJr2X3XisZQwd2D054
+         G1Vsk2iEBNvu4vtoYCLbf5gw3Pi510GgnKub2jU3lxowmG+RDP6iZnXywvk2H8luZYet
+         Lz+FbtWiu/Omt5UqLmCd6H+D3GP+uUWcXmoekDoS8Q1JMIDiJHkDbDa7qfgWjal5xpGZ
+         AYRw==
+X-Gm-Message-State: AOJu0Ywb3MN9P637p789GpZvaNENoKpxJ29YF+WK4ZTNwZZUGDSavxys
+	ZEp/pMuxpV/dpqGihVXzVMI6rw==
+X-Google-Smtp-Source: AGHT+IED3P0nhBEdVfCNGxW2rOuewtYM1y/1GYFce7OMG9W1wQ0DevjNF0SEsnhghT77fD5h29wY6w==
+X-Received: by 2002:a17:907:7818:b0:9a1:ddb9:6546 with SMTP id la24-20020a170907781800b009a1ddb96546mr4735298ejc.61.1696515092304;
+        Thu, 05 Oct 2023 07:11:32 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.123])
-        by smtp.gmail.com with ESMTPSA id m15-20020a1709066d0f00b00982a352f078sm1213209ejr.124.2023.10.05.06.51.51
+        by smtp.gmail.com with ESMTPSA id s10-20020a170906354a00b0099bd1ce18fesm1296034eja.10.2023.10.05.07.11.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 06:51:51 -0700 (PDT)
-Message-ID: <2d7271b3-dd60-44bb-9700-f6a5295ea873@linaro.org>
-Date: Thu, 5 Oct 2023 14:51:50 +0100
+        Thu, 05 Oct 2023 07:11:31 -0700 (PDT)
+Message-ID: <b705c36c-1d76-45a4-ab8e-dacdcb844509@linaro.org>
+Date: Thu, 5 Oct 2023 15:11:30 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
-To: SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>,
- "pratyush@kernel.org" <pratyush@kernel.org>,
- "michael@walle.cc" <michael@walle.cc>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>
-References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
- <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
- <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
- <084ed945-7674-280f-5866-9238473a294d@leica-geosystems.com>
- <17989610-d069-40e2-9b4d-7ca6bdf2497e@linaro.org>
- <a24d7b3b-4077-9dbe-49ae-96f595b42223@leica-geosystems.com>
+Subject: Re: [PATCH v4 1/6] mtd: spi-nor: Add manufacturer read id function
 Content-Language: en-US
+To: Michael Walle <michael@walle.cc>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Jaime Liao
+ <jaimeliao.tw@gmail.com>, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, leoyu@mxic.com.tw, jaimeliao@mxic.com.tw
+References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+ <20230908064304.27757-2-jaimeliao.tw@gmail.com>
+ <b998ea18-8ce9-83b0-f42f-18e5ea08175b@linaro.org>
+ <mafs034yppc28.fsf@kernel.org> <f60995d3d02d7639204c2c16abf9bfd7@walle.cc>
+ <54e5662f-baf4-4660-9fc4-7959d2405120@linaro.org>
+ <29bb3d952b9f49961da5e01cf86f9c4f@walle.cc>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <a24d7b3b-4077-9dbe-49ae-96f595b42223@leica-geosystems.com>
+In-Reply-To: <29bb3d952b9f49961da5e01cf86f9c4f@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231005_065156_256725_B5A16924 
-X-CRM114-Status: GOOD (  18.88  )
+X-CRM114-CacheID: sfid-20231005_071134_859604_58AD3375 
+X-CRM114-Status: GOOD (  22.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,132 +94,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 10/5/23 10:21, SHUKLA Mamta Ramendra wrote:
-
-cut
-
->>
->> and the second one will add just the BP support, something like:
->> diff --git a/drivers/mtd/spi-nor/micron-st.c
->> b/drivers/mtd/spi-nor/micron-st.c
->> index a8da1f18e335..fdafbfa0f936 100644
->> --- a/drivers/mtd/spi-nor/micron-st.c
->> +++ b/drivers/mtd/spi-nor/micron-st.c
->> @@ -405,6 +405,8 @@ static const struct flash_info st_nor_parts[] = {
->>          }, {
->>                  .id = SNOR_ID(0x20, 0xbb, 0x20, 0x10, 0x44, 0x00),
->>                  .name = "mt25qu512a",
->> +               .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
->> SPI_NOR_4BIT_BP |
->> +                        SPI_NOR_BP3_SR_BIT6,
->>                  .mfr_flags = USE_FSR,
->>          }, {
->>                  .id = SNOR_ID(0x20, 0xbb, 0x20),
->>
->> Of course, I expect you to run again the mtd_debug tests and also verify
->> the locking. Thanks!
-> 
-> I applied both changes as mentioned above i.e
-> 1] Switch to SFDP and 2] Using BP Flags.
-> 
-> Case 1: Use BP Flags and Switch to SFDP
-> With both these changes, the lock/unlock doesn't work.
-> 
-> ## x86-64-smarc-evk-uwd0j0007 # uname -r
-> 6.6.0-rc2
-> 
-> # flash_lock -i /dev/mtd0
-> Device: /dev/mtd0
-> Start: 0
-> Len: 0x4000000
-> Lock status: unlocked
-> Return code: 0
-> # flash_lock -l /dev/mtd0
-> flash_lock: error!: could not lock device: /dev/mtd0
-> 
->              error 5 (Input/output error)
-> 
-> 
-> I suspected this is because of miscalculation of BP bits, like the 
-> possibility mentioned here: 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=spi-nor/next&id=3ea3f0ac242c86c0275d347ab8c92bf1eb854b49 
-> 
-> 
-> But further checked size, it is correct:
-> 
->   # mtd_debug info /dev/mtd0
-> mtd.type = MTD_NORFLASH
-> mtd.flags = MTD_CAP_NORFLASH
-> mtd.size = 67108864 (64M)
-> mtd.erasesize = 4096 (4K)
-> mtd.writesize = 1
-> mtd.oobsize = 0
-> regions = 0
-> 
-> And rest of read/write functions work as expected.
-> 
-> Any suggestions about this?
-> 
-> Case 2: Just added BP flags, rest of the size, mfr_flags, fixup flags 
-> kept as it is.
-
-would you please detail what exact definitions you used in case 2? Send
-us the diff please.
-
-Cheers,
-ta
-
-> Lock/unlock works.
-> 
-> ## x86-64-smarc-evk-uwd0j0007 # uname -r
-> 6.6.0-rc2
-> 
-> # flash_lock -i /dev/mtd0
-> Start: 0
-> Len: 0x4000000
-> Lock status: unlocked
-> Return code: 0
-> 
-> # flash_lock -l /dev/mtd0
-> # flash_lock -i /dev/mtd0
-> Device: /dev/mtd0
-> Start: 0
-> Len: 0x4000000
-> Lock status: locked
-> Return code: 1
-> 
-> ## x86-64-smarc-evk-uwd0j0007 # mtd_debug erase /dev/mtd0 0 1048576
-> [  413.472411] spi-nor spi-PRP0001:00: Erase operation failed.
-> [  413.478084] spi-nor spi-PRP0001:00: Attempted to modify a protected 
-> sector.
-> MEMERASE: Input/output error
-> 
-> # flash_lock -u /dev/mtd0
-> # flash_lock -i /dev/mtd0
-> Device: /dev/mtd0
-> Start: 0
-> Len: 0x4000000
-> Lock status: unlocked
-> Return code: 0
-> 
-> ## x86-64-smarc-evk-uwd0j0007 #  mtd_debug erase /dev/mtd0 0 1048576
-> Erased 1048576 bytes from address 0x00000000 in flash
-> 
-> 
-> Further I tested on stable 6.5.5 Kernel with old way of Flash Info 
-> Format and which has forced PARSE_SFDP Flag, no issues with lock/unlock.
-> 
-> 
-> ---
-> Mamta
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAxMC81LzIzIDE0OjI3LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEFtIDIwMjMtMTAtMDUg
+MTU6MTksIHNjaHJpZWIgVHVkb3IgQW1iYXJ1czoKPj4gT24gMTAvNS8yMyAxMjo0MywgTWljaGFl
+bCBXYWxsZSB3cm90ZToKPj4+IEhpLAo+Pj4KPj4gaGV5Cj4+Cj4+Pj4+IEkgc2VlIHRoaXMgZmxh
+c2ggc3VwcG9ydHMgMS0xLTEsIDgtOC04LCBhbmQgOGQtOGQtOGQsIHRoZXJlIGFyZSBubwo+Pj4+
+PiBtaXhlZAo+Pj4+PiBtb2RlcyBzdXBwb3J0ZWQsIHRodXMgYSA4ZC04ZC04cyBtb2RlIHNlZW1z
+IGp1c3QgbGlrZSBhIGhhcmR3YXJlCj4+Pj4+IGJ1ZyB0bwo+Pj4+PiBtZS4gU28gbXkgcHJvcG9z
+YWwgaXMgdG8gbGVhdmUgdGhlIGNvcmUgYXdheSBhbmQgdG8gaGFuZGxlIHRoZSByZWFkIGlkCj4+
+Pj4+IGhhY2sganVzdCBpbiB0aGUgbWFjcm9uaXggZHJpdmVyLgo+Pj4+Cj4+Pj4gKzEKPj4+Cj4+
+PiBJJ3ZlIGxvb2tlZCBhdCB0aGUgeHNwaSBzcGVjLiBUaGVyZSBpcyBubyBSRElEIHNwZWNpZmll
+ZC4gU28gSSdkIGFyZ3VlLAo+Pj4gdGhlIG9ubHkgcHNldWRvIHN0YW5kYXJkIGlzIHRoYXQgUkRJ
+RCB3YXMgb25seSBldmVyIHVzZWQgd2l0aCAxczFzMXMuCj4+PiBCdXQKPj4+IHdlIGFkZGVkIHNw
+aV9ub3JfcmVhZF9pZCgpIHdpdGggcGFyYW1ldGVycyBzdWl0ZWQgZm9yIHRoZSAidW51c3VhbCIK
+Pj4+IDhkOGQ4ZAo+Pj4gY2FzZSB3aXRoIGFkZGl0aW9uYWwgYWRkcmVzcyBhbmQgZHVtbXkgY3lj
+bGVzLiBKdXN0IGZvciBjaGVja2luZyB3aGV0aGVyCj4+PiB0aGUKPj4+IG9jdGFsLWR0ciBzd2l0
+Y2ggd2FzIHN1Y2Nlc3NmdWwuIFRoZXJlZm9yZSwgd2UndmUgYWxyZWFkeSBhZGRlZAo+Pj4gcGFy
+YW1ldGVycyB0bwo+Pj4gc3BpX25vcl9yZWFkX2lkKCkgd2hpY2ggYXJlIG5vdCBzdGFuZGFyZC4g
+VGhlbiB3ZSBjYW4ganVzdCBhZGQgb25lIG1vcmUuCj4+PiBJdCdzCj4+PiBqdXN0IGhvdyBtYWNy
+b25peCBpcyBkb2luZyBpdC4gQWdhaW4gdGhlcmUgaXMgbm8gc3RhbmRhcmQuCj4+PiBJZiB3ZSdk
+IG9ubHkgcHV0IHN0YW5kYXJkIChvciBmb3IgdGhlIDlGIHBzZXVkbyBzdGFuZGFyZCkgdGhpbmdz
+IGluIHRoZQo+Pj4gY29yZSwKPj4+IHRoZW4gc3BpX25vcl9yZWFkX2lkKCkgd291bGQgbmVlZCB0
+byBjaGVjayB3aGV0aGVyIHRoZSBmbGFzaCBpcyBpbgo+Pj4gMXMxczFzCj4+PiBtb2RlLiBBbmQg
+bm8gSSB3b3VsZG4ndCBwcmVmZXIgdGhhdCA7KQo+Pj4KPj4KPj4gSWYgd2UgcmVhbGx5IHdhbnQg
+dG8gYmUgY2F0aG9saWMsIHdlIHNob3VsZCBzd2l0Y2ggdG8gOGQtOGQtOHMgbW9kZSBhbmQKPj4g
+dGhlbiBpc3N1ZSB0aGUgcmVhZCBpZCBhbmQgdGhlIGNvcmUgd2lsbCBoYW5kbGUgdGhlIHJlYWRp
+ZCBjb3JyZWN0bHkuCj4+IEJ1dCB0aGVyZSBpcyBubyBzdWNoIGEgdGhpbmcsIGJlY2F1c2UgbWFj
+cm9uaXggY29uc2lkZXJzIHRoYXQgaXQgaXMgaW4KPj4gOGQtOGQtOGQgbW9kZSBhdCB0aGUgdGlt
+ZSBvZiBpc3N1aW5nIDhkLThkLThzIHJlYWQgaWQuIFRoYXQncyB3aHkgSSBzYXkKPj4gaXQncyBh
+IGJ1ZyBvbiB0aGVpciBzaWRlLiBUaGUgY29yZSBpcyBtZWFudCB0byBiZSBnZW5lcmljLCBJIGRv
+bid0IHdhbnQKPj4gdG8gcG9sbHV0ZSB0aGUgY29yZSB3aXRoIG1hbnVmYWN0dXJlciBzcGVjaWZp
+YyBmaXhlcy4KPiAKPiBUaGVuIHdoeSBkb2VzIHNwaV9ub3JfcmVhZF9pZCgpIGhhdmUgdGhlIGZv
+bGxvd2luZyBwYXJhbWV0ZXJzOgo+IAo+IMKgKiBAbmFkZHI6wqDCoMKgwqDCoCBudW1iZXIgb2Yg
+YWRkcmVzcyBieXRlcyB0byBzZW5kLiBDYW4gYmUgemVybyBpZiB0aGUKPiBvcGVyYXRpb24KPiDC
+oCrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkb2VzIG5vdCBuZWVkIHRvIHNlbmQgYW4gYWRk
+cmVzcy4KPiDCoCogQG5kdW1teTrCoMKgwqDCoCBudW1iZXIgb2YgZHVtbXkgYnl0ZXMgdG8gc2Vu
+ZCBhZnRlciBhbiBvcGNvZGUgb3IKPiBhZGRyZXNzLiBDYW4KPiDCoCrCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBiZSB6ZXJvIGlmIHRoZSBvcGVyYXRpb24gZG9lcyBub3QgcmVxdWlyZSBkdW1t
+eSBieXRlcy4KPiDCoCogQHByb3RvOsKgwqDCoMKgwqAgdGhlIFNQSSBwcm90b2NvbCBmb3IgcmVn
+aXN0ZXIgb3BlcmF0aW9uLgo+IAo+IFRoZXkgYXJlbid0IHN0YW5kYXJkIGVpdGhlci4gSXQncyBq
+dXN0IHRoZSB3YXkgc3BhbnNpb24gYW5kIG1pY3Jvbgo+IHRyYW5zZmVycwo+IHRoZSBJRCB2aWEg
+UkRJRCBpbiBvY3RhbCBEVFIgbW9kZS4gQW5kIG5vdyB0aGVyZSdzIG1hY3Jvbml4IHdobyBkb2Vz
+IGl0Cj4gc2xpZ2h0bHkKPiBkaWZmZXJlbnQuIEJ1dCAqbmVpdGhlciogb2YgdGhlbSBhcmUgc3Rh
+bmRhcmQuIFdoeSBzaG91bGQgb25lIGJlIGluIHRoZQo+IGNvcmUgYW5kCj4gb25lIHNob3VsZG4n
+dC4KPiAKPiBzcGlfbm9yX3JlYWRfaWQoKSBzaG91bGQganVzdCBoYW5kbGUgcHJvdG8gPT0gU05P
+Ul9QUk9UT184RF84RF84Uy4KClllcywgaXQgc2hvdWxkLCBidXQgbXggaXMgaW4gOGQtOGQtOGQg
+YXQgdGhlIHRpbWUgaXQgaXNzdWVzIHRoZSByZWFkIGlkLAp0aHVzIGl0IHBhc3NlcyB0aGUgY29y
+ZSBwcm90byA9PSBTTk9SX1BST1RPXzhEXzhEXzhELCBpc24ndCBpdD8gSWYgeW91CmNhcmUgYWJv
+dXQgdGhpcywgcGxlYXNlIHNlbmQgYSBwYXRjaCBhZGRyZXNzaW5nIGl0LCBpdCdzIGJldHRlciB0
+byB0YWxrCm9uIGNvZGUuIEkgZG9uJ3Qgc2VlIHlldCBob3cgeW91IHdpbGwgaGFuZGxlIGl0LCBi
+dXQgSSdtIG9wZW4gdG8gcmV2aWV3CnNvbWUgY29kZS4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
