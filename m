@@ -4,64 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39F91E936EB
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 Oct 2023 22:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9EE7E936F8
+	for <linux-mtd@archiver.kernel.org>; Thu,  5 Oct 2023 02:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FHR5H2LYt+rKEkuidhzDC+5lOELkgUZRamOJDgETg5I=; b=Q9MpCzyM0orSPY
-	e1+66Ti59v+y9FguslYAzpJr9qditbIw4GQtxU6BDNJIl/aG9hnrdG4Udyy+EYcmnSAi+Alq1TQTa
-	PTbAVpfuvVJk9YKPy/W3ZDQfD7hrUIKipZN8x6OujfrrEE5Xolp4TUJN67QL90xEEZQSuJYBmYqjw
-	hbndzYsSodUZTscMu1vSfQNG5Gi+cqcCRG+UoJ2H76lFIObMjZGYoNeQP6WMCiT2TjtzFfDSdyvMu
-	cP1GcGzm/9NwJJyQUFMqpje8MtO8mO2IjjPfBKMSgQRZXuaQMRjBpF0WT16Crp0SSFQrH9NcaarTw
-	dl7KDAjAW8DtEC3QH7Tw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=26BD4V9EeNgK7gRiSB14VwiutwNStbsb1/CjT5kh6+U=; b=qsSiGqxB5lSQnF
+	YY4UWQ8CzVmZtInFDUHiXI+aZA3DiH/sgzgjUiS+OZz1GlQokm5COYkHTgytf4odyBeC/ALRSY8oO
+	N+hwvEeGZ0w/kPFFEBKBQY8PE3ZUke3JCitkF3SQpki15rf5+1FbF0BPxBWDpRzm9DwEXvhwCnD2R
+	+ZD/PCeKK+ug7GzWNfFZRhkUbGdgZtISaQ50z/gwYFKIN7z3ZB6ueF9BXbYSRuFj/1VwcbFY9bR7x
+	BK0n9nQc1jeZZxCYF72YXuYNEvilE1rcS1O4sJx1s2oiVOlZCEVBLISltmkXfefLBMuN/NBca2nwr
+	b1bfHCIA43vkxdLJQCfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qo9z6-000y4m-1e;
-	Wed, 04 Oct 2023 22:04:48 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1qoEER-001FWt-38;
+	Thu, 05 Oct 2023 02:36:55 +0000
+Received: from mgamail.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qo9z3-000y3d-1s
+	id 1qoEEP-001FVv-1b
 	for linux-mtd@lists.infradead.org;
-	Wed, 04 Oct 2023 22:04:47 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 54369E0006;
-	Wed,  4 Oct 2023 22:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1696457081;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=9ONukwliW8afod/uqqOCJF3W294VpFny5l+bXSFF2Ac=;
-	b=I4Gy56FNjUtiehwUUxOkR9l/FMBhS8k6o4d9n7dSkDqVwog+3VDuwO3uSESc43p9xnYvrg
-	t8bvG98qGnDVSWjSokJ9JQtEhdIT/r9L7VunsuuRGBDViYJhV0mTXvhOZs0JFe6Al38Zk2
-	k6mBuVf4Ehs36GBfWZQXX6dSAFbaIFmS54aMD1Spl5uyFX+fN/Cmjlnwm+FCbvvPcmjo/J
-	MtHfaH2aTO8BnDXUuPUZuVwpl7qpv4Z+fBLsXn6EkIULvauToema0jT4K/PL5NFUa2L3f1
-	39rXnIQSFGvfHzhfmugBIpkBwc4rN8GHTbBCyc875+IE/4pJIK5tOTmuTpK4cw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
+	Thu, 05 Oct 2023 02:36:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696473413; x=1728009413;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wCzJ4bq/A7WYAVJAq/Zir4st/tGC6jlHLq+4zYE7yrk=;
+  b=SIvG7mEygioevSpv/EQt1lo+r9KB1Ygy6g2W5fGFQrm9VNxGOzm7QMbL
+   tURU7l9F6pwdYT++OU6Ty/XZbjXBCYNr3Vlqeobokzqk7xF//7iqylaQ2
+   /a8Gj+zd1bG2qYhmB98SQwBo1J5zq7bF+KQO8yGejL3z2JZcMUfouItMW
+   UWoKii50EaiL4z/Yj44cl4JPGY5YBxgY4u5SN8Y0qT/dPw8TgoLfhbLk/
+   SCbX4bPD7IZU8RQkDBKwy4g31hNddXLyFR6SmX2etIEXKORe+SNK0QD+p
+   fsqQQWycjNDP0f7XoKAwcg8QLv9rO89mxCbsU/wYAKwEdcKqnyXaaCOYO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383282008"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="383282008"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 19:36:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="842194633"
+X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
+   d="scan'208";a="842194633"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Oct 2023 19:36:40 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qoEE9-000KtU-1S;
+	Thu, 05 Oct 2023 02:36:37 +0000
+Date: Thu, 5 Oct 2023 10:35:55 +0800
+From: kernel test robot <lkp@intel.com>
+To: niravkumar.l.rabara@intel.com,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Robert Marko <robert.marko@sartura.hr>,
-	Luka Perkov <luka.perkov@sartura.hr>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: Ensure NVMEM layouts get their of_node
-Date: Thu,  5 Oct 2023 00:04:37 +0200
-Message-Id: <20231004220437.405959-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: cadence: convert
+ cadence-nand-controller.txt to yaml
+Message-ID: <202310051014.XuwY3fGK-lkp@intel.com>
+References: <20231004061214.17176-1-niravkumar.l.rabara@intel.com>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20231004061214.17176-1-niravkumar.l.rabara@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231004_150445_914464_E92F8012 
-X-CRM114-Status: GOOD (  10.94  )
+X-CRM114-CacheID: sfid-20231004_193653_637463_DB3E319A 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,49 +92,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-All the nvmem-layouts logic expects an of_node to be available. When mtd
-started registering nvmem devices, the exact exposure was not yet
-decided and thus the no_of_node field was set to 1 to avoid exposing
-"too much". This has been lowered since we want children nodes of mtd
-devices with the "nvmem-cells" compatible to be actually registered in
-NVMEM. This is now also the case of the nvmem-layout containers.
+Hi,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/mtdcore.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 061745acb9a7..60b670c42be5 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -543,6 +543,13 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
- 	return retlen == bytes ? 0 : -EIO;
- }
- 
-+static bool mtd_contains_nvmem_layout(struct mtd_info *mtd)
-+{
-+	/* of_find_node_by_name() calls of_node_put() on the starting node */
-+	of_node_get(mtd->dev.of_node);
-+	return of_find_node_by_name(mtd->dev.of_node, "nvmem-layout");
-+}
-+
- static int mtd_nvmem_add(struct mtd_info *mtd)
- {
- 	struct device_node *node = mtd_get_of_node(mtd);
-@@ -559,7 +566,8 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	config.read_only = true;
- 	config.root_only = true;
- 	config.ignore_wp = true;
--	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
-+	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells") ||
-+			    !mtd_contains_nvmem_layout(mtd);
- 	config.priv = mtd;
- 
- 	mtd->nvmem = nvmem_register(&config);
+[auto build test WARNING on mtd/mtd/next]
+[also build test WARNING on mtd/mtd/fixes robh/for-next linus/master v6.6-rc4 next-20231004]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/niravkumar-l-rabara-intel-com/dt-bindings-mtd-cadence-convert-cadence-nand-controller-txt-to-yaml/20231004-141601
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
+patch link:    https://lore.kernel.org/r/20231004061214.17176-1-niravkumar.l.rabara%40intel.com
+patch subject: [PATCH] dt-bindings: mtd: cadence: convert cadence-nand-controller.txt to yaml
+reproduce: (https://download.01.org/0day-ci/archive/20231005/202310051014.XuwY3fGK-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310051014.XuwY3fGK-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
