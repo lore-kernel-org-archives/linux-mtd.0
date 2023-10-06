@@ -4,63 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8CDBE92FF8
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Oct 2023 08:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57A38E92FF9
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Oct 2023 08:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=W/wPX47/0knPaO9tuSMe8EgPiGs3moTpHddKksfgJrA=; b=VMARFBmdb8owPo3P3h1QlmbEOF
-	x/UlnhEVot+5xQ5XcnnNpMuPOjaj6ogjia+nLwrT8ljIL+GDSIDOJZKk2mWCWEg8o0dmH6VijjRlL
-	Y0jubPYJGiv5AekKZ57UVUWhPBy8rKbvxpu2kU9YWp7qdbPD6ptM6mazZ5L5QS/k58qZZINjQ+ZH1
-	A5wpPn+6XwEPA4IEIvjTHie6xxcjlSwswX4siJP+O5L5lilUDV7SnMyTCF0YLayni33uGyUyzgp9n
-	k2zWHLeYWqI0D7OTu/jJ1xaONa5G2uUvigGCcf4DxHY8tEYcQuddQ2uw6p6oI7kXji8Nu2ghDF7Dg
-	Z1/Q+Y3Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=f5Y1oCeAwadng4o0ri68wHU2dXaA9dkMlKRllJrNtm0=; b=ZACms9d6PzSHLd
+	emVC4hAnpoVrOAOZBgjPY5v0TCXh2ICcGSt5KZvcOfWBTleIWKfWlURhIwrwh07mdFPzZFnBEq0LT
+	S4df/jVVGgj2UvfBNqXeCsDSZWazGq0052SU73XSkNgO+JWpMkjQsMq7Zff5Q8rncGT/tyj5QJ/fA
+	ytU8ZPXR0uQrqMIBZDsFDhd4vR3dQxRSL214Ee+8czwaYnTGrGRp1ID5axaQBoME+3RHnackhOcNw
+	auE++7mqlczMFKjZEHJYj8eKLDXYs07zph0lfS+VOajlqrCL0MaLnKKv4+rPrxgYssGtUFGti2wzl
+	I1B3XBIlEhB7qb30/q1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qog7Q-005HAj-2o;
-	Fri, 06 Oct 2023 08:23:32 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qog7N-005H9Z-27
+	id 1qog8w-005HX7-0N;
+	Fri, 06 Oct 2023 08:25:06 +0000
+Received: from elvis.franken.de ([193.175.24.41])
+	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1qog8r-005HOf-2d
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Oct 2023 08:23:31 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id D06ABEA6;
-	Fri,  6 Oct 2023 10:23:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1696580605;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oLg79HnG703mEZIT/6RKZmJQhfrMvBoAbDPYGd1rZpE=;
-	b=hdqIf9ZnUpXpY7WJs2VukggaKcwVhVGQBz3kNEG00/ULgVV2vZ1+31MsBK5KpUGgHso+cP
-	uaGBGC8yymlaP2/Hgd/esjRTpZP6W9A4t2BF6DVxPsxJ4Mf43a8kHhh7L0kWXQQH3FUOv1
-	tuvagAkFht8Hw1hnP2uCimL5kdVYQsoCD2eoN4opGioH7mhgK+pBWGeNgwW4k/gjApxNr4
-	Px6C7eNNcvCd2No8SuZ1jhG7I3tM6hoFKtZ6sGvrF0Aro+bUVsELYDbx1Vlc15PlQq/PQF
-	L4HmyoYx4swTiv6wrZXcRFVK67Vza1Seao0ObtgHbUCVmGZHCUCI038oNoQ9BA==
+	Fri, 06 Oct 2023 08:25:04 +0000
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1qog8g-0002lb-00; Fri, 06 Oct 2023 10:24:50 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 5C3C2C0243; Fri,  6 Oct 2023 10:21:28 +0200 (CEST)
+Date: Fri, 6 Oct 2023 10:21:28 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] mips: dts: ingenic: Remove unneeded probe-type properties
+Message-ID: <ZR/DiLuMVK6CUYIQ@alpha.franken.de>
+References: <75d57f5e6dd25d5e8eff1260d289e905bb5cfad2.1693408196.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Date: Fri, 06 Oct 2023 10:23:25 +0200
-From: Michael Walle <michael@walle.cc>
-To: Angelo Dureghello <angelo@kernel-space.org>
-Cc: linux-mtd@lists.infradead.org, pratyush@kernel.org,
- tudor.ambarus@linaro.org
-Subject: Re: EM016LXQAB313CS1T
-In-Reply-To: <3608d2fa-5097-bd94-5dac-9fea9d45654a@kernel-space.org>
-References: <6e5e4221-9abf-e572-304d-1150ebd15ab9@kernel-space.org>
- <fbff7dde1b2d6c85650fe16560ce38a7@walle.cc>
- <3608d2fa-5097-bd94-5dac-9fea9d45654a@kernel-space.org>
-Message-ID: <d5d2237190b6048c3d690bd9eafc5cef@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <75d57f5e6dd25d5e8eff1260d289e905bb5cfad2.1693408196.git.geert+renesas@glider.be>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231006_012329_846538_D3F04D6E 
-X-CRM114-Status: GOOD (  13.62  )
+X-CRM114-CacheID: sfid-20231006_012502_004299_80421A80 
+X-CRM114-Status: GOOD (  15.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,43 +56,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
->>> as far as you know,
->>> is there some development ongoing for the EM016LXQAB313CS1T
->>> mram ?
->> 
->> No, in fact, we'd like to get rid of these MRAM devices as they don't
->> have anything to do with NOR flashes - or move them over to the at25
->> driver.
->> 
->> Now I see that this part is rather new, supports faster modes and
->> even DTR, emulates erase op codes, etc. But they are lacking SFDP 
->> support..
->> 
->> You might get away with adding an entry to the database with it's ID.
->> But please *don't* use the SPI_NOR_NO_ERASE.
->> 
->> I'm curious, do you have a board with that chip? If so, why don't you
->> use a cheaper NOR flash? Genuine question.
->> 
+On Wed, Aug 30, 2023 at 05:11:55PM +0200, Geert Uytterhoeven wrote:
+> The "probe-type" property was only needed when used with the
+> (long obsolete) "direct-mapped" compatible value.
 > 
-> thanks a lot for the clarifications, i am working on a custom
-> hardware that should mount this chip, not sure it can be
-> changed at this phase.
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  arch/mips/boot/dts/ingenic/jz4725b.dtsi | 1 -
+>  arch/mips/boot/dts/ingenic/jz4770.dtsi  | 1 -
+>  2 files changed, 2 deletions(-)
 > 
-> Supposing i can have it working by the spi-nor driver,
-> is it possible to see the device as memory mapped to be
-> accessed from userspace ?
+> diff --git a/arch/mips/boot/dts/ingenic/jz4725b.dtsi b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+> index acbbe8c4664c110e..c5c5a094c37d2e08 100644
+> --- a/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+> +++ b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+> @@ -366,7 +366,6 @@ bch: ecc-controller@130d0000 {
+>  
+>  	rom: memory@1fc00000 {
+>  		compatible = "mtd-rom";
+> -		probe-type = "map_rom";
+>  		reg = <0x1fc00000 0x2000>;
+>  
+>  		bank-width = <4>;
+> diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+> index 9c0099919db7aba9..504e895e916e57bf 100644
+> --- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
+> +++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+> @@ -461,7 +461,6 @@ usb_otg: usb@13440000 {
+>  
+>  	rom: memory@1fc00000 {
+>  		compatible = "mtd-rom";
+> -		probe-type = "map_rom";
+>  		reg = <0x1fc00000 0x2000>;
+>  
+>  		bank-width = <4>;
+> -- 
+> 2.34.1
+> 
 
-You'll get the ususal MTD device /dev/mtdN.
+applied to mips-next.
 
--michael
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
 ______________________________________________________
 Linux MTD discussion mailing list
