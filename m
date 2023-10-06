@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E695EE81E10
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Oct 2023 15:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9806E81E17
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Oct 2023 16:11:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hWq76zdtiGi6JfO0Z7puk8he20jJS70XW7BczzPBFCM=; b=bo4ZY93rQefncx
-	AnxFire/3/iq7ZfFrEda6QpW+qQyKEaTiqNFInsTVI4OhCTLOOKD3Ej/uBze9YaV9v0zf6qNhXfV3
-	z98XfCtuHIzDuLN91NmP+tPsuG187oDIWx1B+uADY7wiLFUK+7+9DXg18xjexHi6vOuzkQ67xlOky
-	QHSboSzUmAHBPp+rMdslGb5nOkGKKfx7Q4DkXq93PIm42Euxe+S8DsluAfV5esW1dKHc6Fu3sTRgC
-	/ZJ8YY7TwgpQy4UCb4YZNVQrEfbyJeNIROLRliiwNVj21D+iX49oHxNZIj5Q1Y+knxTDpzToeppqf
-	axet9dDWGvbDDkx84H9g==;
+	List-Owner; bh=GmpfUhDSp8ldqIE2xRHQ6JT3GLLzSAfra4KBkge1aWc=; b=4xVzJoaD+x73WY
+	PHCPbkjpDqyyFskOEfwAiwZDpAwgIYQhbXH5Pndm8yOtPtksK7/qEMfI0jBWionELygaLqwte4JiI
+	SbiO0ISox8FZ2ZWVMuiHMvQdg7lOPTr6Uz85qnfpcdbmByjFTHqKoBuez3+Toy6ZGfjIgl5bHox0E
+	3MOUvxNbIQL0EG5kdfSUnlfwHC3EIrDOIGPz3fpW0OugCk0NN0237iv/ctwu8gpJxDx6r80hrbUVX
+	MiMk0ndXHBBx9U09BcF58yJ0mbTZO/E++Mvf8k+e0T8numLAqhKdegPj2IkLnFk7YlIYus2IsIQBO
+	yudDegbecyzPYofbnDNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qomxb-0066jp-0m;
-	Fri, 06 Oct 2023 15:41:51 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1qonQ9-0069OZ-1a;
+	Fri, 06 Oct 2023 16:11:21 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qomxY-0066iK-0X
+	id 1qonQ6-0069NG-2q
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Oct 2023 15:41:50 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 754BCFF80A;
-	Fri,  6 Oct 2023 15:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1696606899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wWgixyze7ly2jxAoSChg1RnG0qY3wYNYv8+NFu8WJl0=;
-	b=IKJou9RkycVWCcf7n+d7yoYGr1piTPjh9K5pok60FzRAqerD29qvCVjAUYl1Ss6XmakocD
-	LLa3wX7a14toQNvGnFtHPw8G1BLisvCMJ0DWOQoOqefhyP7BYiF7S7kn4ZS5m+cgQve3Op
-	2xLQVE7YPmPCCUzHBWldvxcTuU1/I5cYWIkF+eBkDqxa/hyNxoSX3Ui7dQnwyT9ZrHlS8K
-	JMuaCJz7VCGiklbJ2OqqMUVs+fIAX1GEsjtA9pQ1OOjX9MQVhHwPL6Uh1ZuqE04m9QZKOC
-	SnW4mDUvnxzfzF70eQNtvHv67cJFnxAiqnL2FYBs3g9kERyjNxCNDNN3WkT1Sw==
-Date: Fri, 6 Oct 2023 17:41:37 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: JaimeLiao <jaimeliao.tw@gmail.com>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
- <u.kleine-koenig@pengutronix.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v1 1/1] mtd: rawnand: Remove unused of_gpio.h inclusion
-Message-ID: <20231006174137.2e745cb4@xps-13>
-In-Reply-To: <ZSAkUMnXw4SbS2pC@smile.fi.intel.com>
-References: <20230615164210.25515-1-andriy.shevchenko@linux.intel.com>
-	<CAFBinCAJ5m+NTVry56=0AYMYr9xiM9KS7F837Hqb=ptOG_u54g@mail.gmail.com>
-	<ZKvW0yzxU1ktDALd@smile.fi.intel.com>
-	<ZSAkUMnXw4SbS2pC@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Fri, 06 Oct 2023 16:11:20 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8C0D361242;
+	Fri,  6 Oct 2023 16:11:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A9BC433C7;
+	Fri,  6 Oct 2023 16:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696608676;
+	bh=2E1MNctTSxoG5VE50oJM9yMY/dfSLIM7MkC8uY5n6I8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ndf7M6I2Ha7XUsr7BbDTNhDj9gLpk/Iui5kN6/CI4DaL7NubEIq2KjsGCtRLhiBBw
+	 JCCJ+sJpzASxFIRjx1xBGpWYjcBxJEa8RxYiWPbzuN1jNQQJpLxmYwIj5b5lTWmY5m
+	 NYeU1AIPn0Fa8GZitrh4ihWmaaCagI0N9FjMcCf+JYqzjbN5X0kcmpGoewd9ppxw3F
+	 +9D+uOGyJeaZT4JKaU+LezQ/Mci/Yy99M0NC899FUn473ikndsKYOoG9Ow2WXSRzGJ
+	 +T1m1tm19vjw5DsACRmWo5GMxyDJWd0xidAsGiZfNT0bJWNUd4oX4CNB5xonhPgWJw
+	 WrkAcKEk28Hsw==
+Received: (nullmailer pid 4016330 invoked by uid 1000);
+	Fri, 06 Oct 2023 16:11:13 -0000
+Date: Fri, 6 Oct 2023 11:11:13 -0500
+From: Rob Herring <robh@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Simon Glass <sjg@chromium.org>, miquel.raynal@bootlin.com, conor+dt@kernel.org, devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, ptyadav@amazon.de, rafal@milecki.pl, richard@nod.at, trini@konsulko.com, u-boot@lists.denx.de, vigneshr@ti.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman
+ compatible
+Message-ID: <20231006161113.GA3983739-robh@kernel.org>
+References: <20231004093620.2b1d6917@xps-13>
+ <20231004113458.531124-1-mwalle@kernel.org>
+ <CAPnjgZ2hWE6Sc=rg55W=-r-TnoWP7Y5gSpn41kwoyja-AMVw+w@mail.gmail.com>
+ <9e588e3ec8c0c321a2861723d0d42b9a@kernel.org>
+ <CAPnjgZ20ezipPWAj6bUM9_oCTcX1XzuLqQ7b7-nKjXf1t4p9-Q@mail.gmail.com>
+ <a581ef73fa09c6ffeb83a1c1780053bd@kernel.org>
+ <CAPnjgZ2PnKD5m0EgTdEAf-gcK3wuBZvWw_AO2iehb1dmfdoz3A@mail.gmail.com>
+ <27d37d4c7cf353d99737a1e7a450f9f7@kernel.org>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <27d37d4c7cf353d99737a1e7a450f9f7@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231006_084148_373473_0D2933FF 
-X-CRM114-Status: GOOD (  14.37  )
+X-CRM114-CacheID: sfid-20231006_091119_009071_5C896C41 
+X-CRM114-Status: GOOD (  39.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,27 +76,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQW5keSwKCmFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbSB3cm90ZSBvbiBGcmks
-IDYgT2N0IDIwMjMgMTg6MTQ6MjQKKzAzMDA6Cgo+ICtDYzogR1BJTyBtYWludGFpbmVycwo+IAo+
-IE9uIE1vbiwgSnVsIDEwLCAyMDIzIGF0IDAxOjAwOjUxUE0gKzAzMDAsIEFuZHkgU2hldmNoZW5r
-byB3cm90ZToKPiA+IE9uIEZyaSwgSnVuIDE2LCAyMDIzIGF0IDEyOjEwOjUyQU0gKzAyMDAsIE1h
-cnRpbiBCbHVtZW5zdGluZ2wgd3JvdGU6ICAKPiA+ID4gT24gVGh1LCBKdW4gMTUsIDIwMjMgYXQg
-Njo0MuKAr1BNIEFuZHkgU2hldmNoZW5rbwo+ID4gPiA8YW5kcml5LnNoZXZjaGVua29AbGludXgu
-aW50ZWwuY29tPiB3cm90ZTogIAo+ID4gPiA+Cj4gPiA+ID4gVGhlIG9mX2dwaW8uaCBpcyBub3Qg
-YW5kIHNob3VsZG4ndCBiZSB1c2VkIGluIHRoZSBkcml2ZXJzLiBSZW1vdmUgaXQuCj4gPiA+ID4K
-PiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtv
-QGxpbnV4LmludGVsLmNvbT4gIAo+ID4gPiBBY2tlZC1ieTogTWFydGluIEJsdW1lbnN0aW5nbCA8
-bWFydGluLmJsdW1lbnN0aW5nbEBnb29nbGVtYWlsLmNvbT4gIAo+ID4gCj4gPiBUaGFuayB5b3Uh
-Cj4gPiAKPiA+IENhbiBpdCBiZSBhcHBsaWVkIG5vdz8gIAo+IAo+IFNvLCB0aGlzIGlzIHN0aWxs
-IG5vdCBhcHBsaWVkLCBkb2VzIGl0IG1lYW4gd2UgbmVlZCB0byBnbyB2aWEgR1BJTyB0cmVlCj4g
-d2l0aCBpdD8KCkkgcmVtZW1iZXIgeW91ciBwaW5nIGFuZCBhbHNvIGFuc3dlcmluZyBpdCwgYnV0
-IEkgY2Fubm90IGZpbmQgaXQuIExldAptZSBsb29rIGludG8gdGhpcy4gSW4gYW55IGNhc2UsIGFw
-b2xvZ2llcyBmb3IgdGhhdC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+On Fri, Oct 06, 2023 at 10:37:41AM +0200, Michael Walle wrote:
+> Hi,
+> 
+> > > I'm still not sure why that compatible is needed. Also I'd need to
+> > > change
+> > > the label which might break user space apps looking for that specific
+> > > name.
+> > > 
+> > > Also, our board might have u-boot/spl or u-boot/spl/bl31/bl32, right
+> > > now
+> > > that's something which depends on an u-boot configuration variable,
+> > > which
+> > > then enables or disables binman nodes in the -u-boot.dtsi. So in linux
+> > > we only have that "bootloader" partition, but there might be either
+> > > u-boot+spl or u-boot+spl+bl31+bl32.
+> > > 
+> > > Honestly, I'm really not sure this should go into a device tree.
+> > 
+> > I think we might be getting a bit ahead of ourselves here. I thought
+> > that the decision was that the label should indicate the contents.
+> > If you have multiple things in a partition then it would become a
+> > 'section' in Binman's terminology. Either the label programmatically
+> > describes what is inside or it doesn't. We can't have it both ways.
+> > What do you suggest?
+> 
+> As Rob pointed out earlier, it's just a user-facing string. I'm a bit
+> reluctant to use it programatically.
+
+In general, yes, but the partition stuff has long (and still) uses 
+label. As long as the values the tools understand are documented (which 
+we don't normally do for label), I don't care so much. That's my 
+opinion as long as this is shared with fixed-partitions. If it is not 
+and there's little reason to use label, then absolutely, I think 
+'compatible' makes more sense. 
+
+> Taking my example again, the string "bootloader" is sufficient for a
+> user. He doesn't care if it's u-boot with spl or u-boot with tfa, or
+> even coreboot. It just says, "in this partition is the bootloader".
+> If you have an "bootloader" image you can flash it there.
+
+These days, there's generally not just 1 bootloader in the boot flow. 
+Maybe there's 1 image, maybe not. Being more specific is hardly ever a 
+bad thing. Only when the number of specific things becomes multiple 10s 
+or 100s of them does it become a problem.
+
+
+> If it has a label "u-boot" and I want to switch to coreboot, will
+> it have to change to "coreboot"? I really don't think this is practical,
+> you are really putting software configuration into the device tree.
+
+On the input side (to binman), yes it is config, but on the output side 
+(to the running system) we are saying what's there.
+
+
+> > At present it seems you have the image described in two places - one
+> > is the binman node and the other is the partitions node. I would like
+> > to unify these.
+> 
+> And I'm not sure that will work for all the corner cases :/
+> 
+> If you keep the binman section seperate from the flash partition
+> definition you don't have any of these problems, although there is
+> some redundancy:
+>  - you only have compatible = "binman", "fixed-partition", no further
+>    compatibles are required
+>  - you don't have any conflicts with the current partition descriptions
+>  - you could even use the labels, because binman is the (only?) user
+> 
+> But of course you need to find a place where to put your node.
+
+And remove it. We don't need 2 sources of truth in the DTB.
+
+Rob
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
