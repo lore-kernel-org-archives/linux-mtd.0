@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 581FFE92FF8
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Oct 2023 08:38:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86050E92FF9
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Oct 2023 08:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CFshC8MONJvClN4xW2iB/9k2liZiT651e+cW3DKdjxA=; b=p6Lqk9hxxWN0GwTKGelderMhvc
-	tGi4TXUK68gzu+1ElbQsRVCtvoLMVQR8JKevzahbQmwSIaOmK+lIj8aTUtPxUm4I3SKWcT6ynTxUu
-	k/2YzrzeWoylfXyuWSP1nA+mDDfm53FI/PLOZ+4kECyJ+ZnIrLJYB3/QvHBAAiWpUdgQEMOaVy3mV
-	cGN6s+uFoKIFb3yQUfNQ/We3fSEUVPeog8qpTnk5FR5xPaSfh6XvdMvmoD2uZR9gH+kpzcVk5MhZ4
-	UUpmHevO0xWhqKVMBWeXe0/SV4H9AdgSXzhWu3XjQ937BF2rrdxqAyjZX7og8xBrIfB3Ii5j9+WlS
-	D+gX0PNg==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=V8h/zZOkohqZNeJC5JJP5bqWdtSBUZ493alUK3guPug=; b=0LfSnG3Zp/r0Ek
+	T3dgEnystFrrnX4Judn/+MsV0UJxCQWhNs/wtAovX71b91UOcQsPvLIvm+ldeMa8q7ZHdu2Uvj2cP
+	WQ+gA8n9YQeX9xMAVz3YyxlNWc0gIwITA03UIhDxK9c7RRIcV9nblML0w04DR9Jrv9T2EjrK8+TLy
+	3iEu9BBE1jmR3+4XV8PqSZbJ/+uHL6Ee92gd0yKeMVopI1eFjLPfJEKVmNQZXblyYUS3N+aleirvA
+	yHJh/vVwkgMJIfg8htHOeWO2Gw+6wEAf+zFI76PBS36tH6IKR1wwbFrykYabY8s4dlV+ge70W8Bdy
+	fRppld5j7Ve3gr+CMemg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qogLJ-005ImL-2I;
-	Fri, 06 Oct 2023 08:37:53 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1qoge5-005Kkh-1Z;
+	Fri, 06 Oct 2023 08:57:17 +0000
+Received: from 4.mo575.mail-out.ovh.net ([46.105.59.63])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qogLG-005Iku-04
+	id 1qoge1-005Kjb-1X
 	for linux-mtd@lists.infradead.org;
-	Fri, 06 Oct 2023 08:37:52 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id F2B48B8272A;
-	Fri,  6 Oct 2023 08:37:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23CC7C433C7;
-	Fri,  6 Oct 2023 08:37:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696581467;
-	bh=FgJYm01/N7btQ6Qz+G8RgkTRmDSNcZ+Y3gfxNpLK3Tg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iH3wJagTAe22K+Ho9b7VGPb4l4lwixmsS4OrGinVrtNjm56X8TWlcag3S4Pe0akve
-	 GMwvi2ADg93Sb0+A/dIQFcv+QWfjRof7It7afH70n+Zc/SHU1tNrI8cv4O0YPv/S5Y
-	 vfBrwcAP5o2I7/khzmM5esD2aO+XNle5mqK0pUMIRf+SGmzDAOaPpS8Al/gmwrbsB8
-	 LNJVySamIQ6vTUofquyw5J+5/NzthSkN0pXcO0zTj3QY1SMC3Xom7VwBa2rWa2uFN2
-	 QBLgX31TpeS0lfMQ116AnrP4EKQ3wHQqMVZq+YCz5kpLXJLsze3Rqin2tnaPlq8BEr
-	 QcqJ5gPkLtD/A==
+	Fri, 06 Oct 2023 08:57:16 +0000
+Received: from director8.ghost.mail-out.ovh.net (unknown [10.109.143.183])
+	by mo575.mail-out.ovh.net (Postfix) with ESMTP id 342E72B18C
+	for <linux-mtd@lists.infradead.org>; Fri,  6 Oct 2023 08:56:44 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-sjltm (unknown [10.108.4.142])
+	by director8.ghost.mail-out.ovh.net (Postfix) with ESMTPS id A6FD21FFEB;
+	Fri,  6 Oct 2023 08:56:06 +0000 (UTC)
+Received: from milecki.pl ([37.59.142.95])
+	by ghost-submission-6684bf9d7b-sjltm with ESMTPSA
+	id p7moHqbLH2WiZgAAtb1txw
+	(envelope-from <rafal@milecki.pl>); Fri, 06 Oct 2023 08:56:06 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-95G0012bd9b646-870e-4c40-a2c0-065502643ead,
+                    6C3A962D5FB84EDB42FF21950F28EC7FA4520884) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 31.11.218.106
+Message-ID: <9a902653-7a67-4dbb-a522-1592dcdcada8@milecki.pl>
+Date: Fri, 6 Oct 2023 10:56:04 +0200
 MIME-Version: 1.0
-Date: Fri, 06 Oct 2023 10:37:41 +0200
-From: Michael Walle <mwalle@kernel.org>
-To: Simon Glass <sjg@chromium.org>
-Cc: miquel.raynal@bootlin.com, conor+dt@kernel.org,
- devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ptyadav@amazon.de, rafal@milecki.pl, richard@nod.at, robh+dt@kernel.org,
- robh@kernel.org, trini@konsulko.com, u-boot@lists.denx.de, vigneshr@ti.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman
- compatible
-In-Reply-To: <CAPnjgZ2PnKD5m0EgTdEAf-gcK3wuBZvWw_AO2iehb1dmfdoz3A@mail.gmail.com>
-References: <20231004093620.2b1d6917@xps-13>
- <20231004113458.531124-1-mwalle@kernel.org>
- <CAPnjgZ2hWE6Sc=rg55W=-r-TnoWP7Y5gSpn41kwoyja-AMVw+w@mail.gmail.com>
- <9e588e3ec8c0c321a2861723d0d42b9a@kernel.org>
- <CAPnjgZ20ezipPWAj6bUM9_oCTcX1XzuLqQ7b7-nKjXf1t4p9-Q@mail.gmail.com>
- <a581ef73fa09c6ffeb83a1c1780053bd@kernel.org>
- <CAPnjgZ2PnKD5m0EgTdEAf-gcK3wuBZvWw_AO2iehb1dmfdoz3A@mail.gmail.com>
-Message-ID: <27d37d4c7cf353d99737a1e7a450f9f7@kernel.org>
-X-Sender: mwalle@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: Ensure NVMEM layouts get their of_node
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Robert Marko <robert.marko@sartura.hr>, Luka Perkov <luka.perkov@sartura.hr>
+References: <20231004220437.405959-1-miquel.raynal@bootlin.com>
+Content-Language: en-US
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+In-Reply-To: <20231004220437.405959-1-miquel.raynal@bootlin.com>
+X-Ovh-Tracer-Id: 14675260861028608942
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeeigddtlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgfeugfeljefgvdefhfegjeehjedthfehgeeuvdeukedugffhledthfeutefhhfdtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpfeejrdehledrudegvddrleehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231006_013750_385800_CD4363F2 
-X-CRM114-Status: GOOD (  30.10  )
+X-CRM114-CacheID: sfid-20231006_015713_823623_B8D44D69 
+X-CRM114-Status: GOOD (  20.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,80 +80,59 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Miquel,
 
->> I'm still not sure why that compatible is needed. Also I'd need to
->> change
->> the label which might break user space apps looking for that specific
->> name.
->> 
->> Also, our board might have u-boot/spl or u-boot/spl/bl31/bl32, right 
->> now
->> that's something which depends on an u-boot configuration variable,
->> which
->> then enables or disables binman nodes in the -u-boot.dtsi. So in linux
->> we only have that "bootloader" partition, but there might be either
->> u-boot+spl or u-boot+spl+bl31+bl32.
->> 
->> Honestly, I'm really not sure this should go into a device tree.
+On 5.10.2023 00:04, Miquel Raynal wrote:
+> All the nvmem-layouts logic expects an of_node to be available. When mtd
+> started registering nvmem devices, the exact exposure was not yet
+> decided and thus the no_of_node field was set to 1 to avoid exposing
+> "too much". This has been lowered since we want children nodes of mtd
+> devices with the "nvmem-cells" compatible to be actually registered in
+> NVMEM. This is now also the case of the nvmem-layout containers.
 > 
-> I think we might be getting a bit ahead of ourselves here. I thought
-> that the decision was that the label should indicate the contents.
-> If you have multiple things in a partition then it would become a
-> 'section' in Binman's terminology. Either the label programmatically
-> describes what is inside or it doesn't. We can't have it both ways.
-> What do you suggest?
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-As Rob pointed out earlier, it's just a user-facing string. I'm a bit
-reluctant to use it programatically.
-Taking my example again, the string "bootloader" is sufficient for a
-user. He doesn't care if it's u-boot with spl or u-boot with tfa, or
-even coreboot. It just says, "in this partition is the bootloader".
-If you have an "bootloader" image you can flash it there.
+I already sent a patch for that and it goes even further by completely
+dropping "no_of_node" which isn't needed anymore. See:
+[PATCH] Revert "nvmem: add new config option"
+https://lore.kernel.org/lkml/ba3c419a-6511-480a-b5f2-6c418f9c02e7@gmail.com/t/
 
-If it has a label "u-boot" and I want to switch to coreboot, will
-it have to change to "coreboot"? I really don't think this is practical,
-you are really putting software configuration into the device tree.
+It's waiting for over 2 months already and just recently I re-asked
+Srini to queue it so hopefully it won't miss another merge window.
 
-> At present it seems you have the image described in two places - one
-> is the binman node and the other is the partitions node. I would like
-> to unify these.
 
-And I'm not sure that will work for all the corner cases :/
-
-If you keep the binman section seperate from the flash partition
-definition you don't have any of these problems, although there is
-some redundancy:
-  - you only have compatible = "binman", "fixed-partition", no further
-    compatibles are required
-  - you don't have any conflicts with the current partition descriptions
-  - you could even use the labels, because binman is the (only?) user
-
-But of course you need to find a place where to put your node.
-
-> What does user space do with the partition labels?
-
-I'm not sure. Also I'm not sure if it really matters, I just wanted to
-point out, that you'll force users to change it.
-
--michael
-
->> >> What if a board uses eMMC to store the firmware binaries? Will that
->> >> then
->> >> be a subnode to the eMMC device?
->> >
->> > I thought there was a way to link the partition nodes and the device
->> > using a property, without having the partition info as a subnode of
->> > the device. But I may have imagined it as I cannot find it now. So
->> > yes, it will be a subnode of the eMMC device.
->> 
->> Not sure if that will fly.
+> ---
+>   drivers/mtd/mtdcore.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> I can't find it anyway. There is somelike like that in
-> simple-framebuffer with the 'display' property.
-> 
-> Regards,
-> SImon
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 061745acb9a7..60b670c42be5 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -543,6 +543,13 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
+>   	return retlen == bytes ? 0 : -EIO;
+>   }
+>   
+> +static bool mtd_contains_nvmem_layout(struct mtd_info *mtd)
+> +{
+> +	/* of_find_node_by_name() calls of_node_put() on the starting node */
+> +	of_node_get(mtd->dev.of_node);
+> +	return of_find_node_by_name(mtd->dev.of_node, "nvmem-layout");
+> +}
+> +
+>   static int mtd_nvmem_add(struct mtd_info *mtd)
+>   {
+>   	struct device_node *node = mtd_get_of_node(mtd);
+> @@ -559,7 +566,8 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+>   	config.read_only = true;
+>   	config.root_only = true;
+>   	config.ignore_wp = true;
+> -	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+> +	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells") ||
+> +			    !mtd_contains_nvmem_layout(mtd);
+>   	config.priv = mtd;
+>   
+>   	mtd->nvmem = nvmem_register(&config);
 
 ______________________________________________________
 Linux MTD discussion mailing list
