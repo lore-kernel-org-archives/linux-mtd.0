@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89E45E95A8E
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Oct 2023 10:31:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9884CE95A8E
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Oct 2023 12:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KXq6gBdhn8xNwm/ifSfhtp8DeYyhGWHKB0gPIZ/sAlc=; b=mGpM2SkOYVbXPCBohAajwdOR2M
-	trJXppluOGyPHcBEwtOY3nyVBfniRUprUCdJYPzJ40TRTgeSdP/dWl1Q1gkcS4wmuzg36Y3ad25Q2
-	EMuFSRUebmu/ATOdjsuCqXazFAv3ataOp4KB6TJBe3IN5BZcsADSnbPEGVD+i7ePWgYaX+uPDOE9Q
-	yCgf1Y+JEqS3rVyrTnW29J/VKBjfdIYRh5NgdJateZ439NDVFGIpNbCvsPz8qYCraCWjysjx/FV7t
-	GoJ5KIsjyfZQ5gGs3e/kiJvlIUf3FgorvWq9B2TgLbqhQVI2vMfx3RbKdcQ9OE3xmVAz7wTLR/NOP
-	gmcodp7A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Fc9emZfkB96z9kywF4e4d1JnFnNuQjTk/4prwiBTn80=; b=LPRABOAYu1MVbF
+	+GAs+AHtT9pX1Ub/CioSmArtsufG+TylE9Jz1l/5is4IsyUug+pVJy4V1DGaV2XeArlb5LFGVZt33
+	4iumiS9wFdgR1qk/oRRMV0Ih0cAFKBa8VF8abOMr2YXXLoHDaQtUvxU26JOJ7uYkOmde/+ckgDWn0
+	1sp1rN8JTpCQbYh2ah7UtQvgzPeRXZMrOKy3H/oe/hJLf3UPMu0jG4Kbflu7Bx+6JXLBWmaUVN2+W
+	L+icV5sCBd2ZyQrIoX3Lt1iEmOrEj/nrRuk/TzM1uxywtFcpOUAutoH/ijF1cgdytOFBp7nnbMK+J
+	wcKKFYK5vKP5q6ClTryg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qpnXL-00ADed-2z;
-	Mon, 09 Oct 2023 10:30:55 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1qppeQ-00AibT-0h;
+	Mon, 09 Oct 2023 12:46:22 +0000
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qpnXG-00ADdg-33
+	id 1qppeM-00Aiai-2v
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Oct 2023 10:30:53 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1qpnX6-00029v-Pt; Mon, 09 Oct 2023 12:30:40 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1qpnX4-000OLd-4m; Mon, 09 Oct 2023 12:30:38 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1qpnX3-00C8Mz-RZ; Mon, 09 Oct 2023 12:30:37 +0200
-Date: Mon, 9 Oct 2023 12:30:37 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kbuild@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-mtd@lists.infradead.org,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>
+	Mon, 09 Oct 2023 12:46:20 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 464A51C0003;
+	Mon,  9 Oct 2023 12:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1696855574;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7Q066ZPCeTQl4OjuzYK2I3npDxEu3BEi0dRV7tfy/7E=;
+	b=mJJhnmBmUJ+qr4E/zJLlgC+ow2VGssAKIjSwLC57tAVfpQaLJ/2dTw2XrsMrFlhu9DrK98
+	6/eBmQR/i+Aya0dfv5DeK4ZO4CmTQSCr3dsndhmPNuWirP3Ru4aiyU1xwCICZ6ofeBNBzo
+	yorzlFgxgardXGff7OzlBCxdXKW/DSi41ue3NoNYSdpK6oiKe7YQ+aUbSzggYX1mq8fI3c
+	KuUIlKnrqWqwjEMywJQywZ+DJNoreUK7M3AKOmjfMal2XZWwMkl5qa5CID8Zj7QmY1tqmM
+	Plj6qgq7J7LJ6thGgrctBxMDqcV7vmb1j+BoFtvE53UtTHIf1MmiJ+QyPZ0XNw==
+Date: Mon, 9 Oct 2023 14:46:10 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, Masahiro Yamada <masahiroy@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kbuild@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-mtd@lists.infradead.org, Pengutronix Kernel Team
+ <kernel@pengutronix.de>, Andrew Morton <akpm@linux-foundation.org>, Vignesh
+ Raghavendra <vigneshr@ti.com>
 Subject: Re: [PATCH 01/20] mtd: rawnand: txx9ndfmc: Mark driver struct with
  __refdata to prevent section mismatch warning
-Message-ID: <20231009103037.j44gkzqv7cpn4zpu@pengutronix.de>
+Message-ID: <20231009144610.4ff82afa@xps-13>
+In-Reply-To: <20231009103037.j44gkzqv7cpn4zpu@pengutronix.de>
 References: <20231008200143.196369-1-u.kleine-koenig@pengutronix.de>
- <20231008200143.196369-2-u.kleine-koenig@pengutronix.de>
- <CAK7LNASB2HhO6iWNnG-tAzs9wu9mV2PLRf-brnNGkSJj+W23Vw@mail.gmail.com>
- <e38b8a8e-5bd6-41e2-87a1-3b2d23b68bc0@app.fastmail.com>
+	<20231008200143.196369-2-u.kleine-koenig@pengutronix.de>
+	<CAK7LNASB2HhO6iWNnG-tAzs9wu9mV2PLRf-brnNGkSJj+W23Vw@mail.gmail.com>
+	<e38b8a8e-5bd6-41e2-87a1-3b2d23b68bc0@app.fastmail.com>
+	<20231009103037.j44gkzqv7cpn4zpu@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <e38b8a8e-5bd6-41e2-87a1-3b2d23b68bc0@app.fastmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231009_033050_986328_69C0D04B 
-X-CRM114-Status: GOOD (  29.22  )
+X-CRM114-CacheID: sfid-20231009_054619_263489_AD9119B9 
+X-CRM114-Status: GOOD (  33.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,104 +78,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5318577639634316164=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============5318577639634316164==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eyfmrlif4aeodefl"
-Content-Disposition: inline
-
-
---eyfmrlif4aeodefl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-[Changed email address for David Woodhouse from intel to infradead]
-
-On Mon, Oct 09, 2023 at 10:43:46AM +0200, Arnd Bergmann wrote:
-> On Mon, Oct 9, 2023, at 09:22, Masahiro Yamada wrote:
-> > On Mon, Oct 9, 2023 at 5:02=E2=80=AFAM Uwe Kleine-K=C3=B6nig <u.kleine-=
-koenig@pengutronix.de> wrote:
-> >>
-> >> As described in the added code comment, a reference to .exit.text is ok
-> >> for drivers registered via module_platform_driver_probe(). Make this
-> >> explicit to prevent a section mismatch warning with
->=20
-> >
-> > We have thousands of module_platform_drivers.
-> > I would be scared if they started to add __refdata.
-> >
-> > I am not sure if this is the right direction.
->=20
-> For a normal module_platform_driver(), this would indeed be
-> wrong, but as Uwe said above there is a special case for
-> module_platform_driver_probe(), which implicitly sets the
-> drv->driver.suppress_bind_attrs=3Dtrue flag.
->=20
-> > In my understanding of the current DT overlay,
-> > there is no way to create/remove a platform device dynamically.
-> > I do not know if that will happen in the future.
->=20
-> For drivers without suppress_bind_attrs, you can manually
-> unbind the device from a driver, which in case of a loadable
-> module ends up calling the .remove callback (this is fine),
-> but in a built-in driver this would use a NULL pointer for
-> .remove and cause unexpected behavior.
-
-only a slight correction: As not having a remove callback can be fine
-and platform_remove() only calls .remove (or .remove_new) when non-NULL
-we're not hitting a NULL pointer dereference in the presence of
-
-	.remove =3D __exit_p(somefunc),
-
-But a problem can arise later if some resource isn't properly freed and
-so it might be used at a later point in time which then most likely
-oopses.
-
-I didn't double check Arnd's list, but otherwise I agree to his
-analysis.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---eyfmrlif4aeodefl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUj1kwACgkQj4D7WH0S
-/k6PWAf/U6JPgHawgWRjbbvmzteonFhuvNF2GMdSZ9xtW5chIxo+H2g0Zwvic4hx
-2ZwF3ewJ9ZtSeMq2JZXlC8WV0RwE+zYoig5IDtf/73kVGS48oFPf7u7bppOaVWAG
-5pCoCYa9p2c3BcXP21362rCufNKiqSNxVpuETfbIWaUYqCV8T+/5mKweFEuJ2TT1
-3gauZoDBNKTNFUvZ3eV1u2m8dFWiqbvLeR1YfS6neIpup2caScqNxsTx+cT2rAJu
-4+HimdiMvjB0oKI8gHOvdbYtbWLp6fM1olaiAYen0Gi7TtBXqKhPrY8OrkCayNOj
-t5xetLTIRPMyd5H1jwQzvHCQTGUy+A==
-=jxi7
------END PGP SIGNATURE-----
-
---eyfmrlif4aeodefl--
-
-
---===============5318577639634316164==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5318577639634316164==--
-
+SGVsbG8sCgp1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGUgd3JvdGUgb24gTW9uLCA5IE9j
+dCAyMDIzIDEyOjMwOjM3ICswMjAwOgoKPiBIZWxsbywKPiAKPiBbQ2hhbmdlZCBlbWFpbCBhZGRy
+ZXNzIGZvciBEYXZpZCBXb29kaG91c2UgZnJvbSBpbnRlbCB0byBpbmZyYWRlYWRdCj4gCj4gT24g
+TW9uLCBPY3QgMDksIDIwMjMgYXQgMTA6NDM6NDZBTSArMDIwMCwgQXJuZCBCZXJnbWFubiB3cm90
+ZToKPiA+IE9uIE1vbiwgT2N0IDksIDIwMjMsIGF0IDA5OjIyLCBNYXNhaGlybyBZYW1hZGEgd3Jv
+dGU6ICAKPiA+ID4gT24gTW9uLCBPY3QgOSwgMjAyMyBhdCA1OjAy4oCvQU0gVXdlIEtsZWluZS1L
+w7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6ICAKPiA+ID4+Cj4g
+PiA+PiBBcyBkZXNjcmliZWQgaW4gdGhlIGFkZGVkIGNvZGUgY29tbWVudCwgYSByZWZlcmVuY2Ug
+dG8gLmV4aXQudGV4dCBpcyBvawo+ID4gPj4gZm9yIGRyaXZlcnMgcmVnaXN0ZXJlZCB2aWEgbW9k
+dWxlX3BsYXRmb3JtX2RyaXZlcl9wcm9iZSgpLiBNYWtlIHRoaXMKPiA+ID4+IGV4cGxpY2l0IHRv
+IHByZXZlbnQgYSBzZWN0aW9uIG1pc21hdGNoIHdhcm5pbmcgd2l0aCAgCj4gPiAgIAo+ID4gPgo+
+ID4gPiBXZSBoYXZlIHRob3VzYW5kcyBvZiBtb2R1bGVfcGxhdGZvcm1fZHJpdmVycy4KPiA+ID4g
+SSB3b3VsZCBiZSBzY2FyZWQgaWYgdGhleSBzdGFydGVkIHRvIGFkZCBfX3JlZmRhdGEuCj4gPiA+
+Cj4gPiA+IEkgYW0gbm90IHN1cmUgaWYgdGhpcyBpcyB0aGUgcmlnaHQgZGlyZWN0aW9uLiAgCj4g
+PiAKPiA+IEZvciBhIG5vcm1hbCBtb2R1bGVfcGxhdGZvcm1fZHJpdmVyKCksIHRoaXMgd291bGQg
+aW5kZWVkIGJlCj4gPiB3cm9uZywgYnV0IGFzIFV3ZSBzYWlkIGFib3ZlIHRoZXJlIGlzIGEgc3Bl
+Y2lhbCBjYXNlIGZvcgo+ID4gbW9kdWxlX3BsYXRmb3JtX2RyaXZlcl9wcm9iZSgpLCB3aGljaCBp
+bXBsaWNpdGx5IHNldHMgdGhlCj4gPiBkcnYtPmRyaXZlci5zdXBwcmVzc19iaW5kX2F0dHJzPXRy
+dWUgZmxhZy4KPiA+ICAgCj4gPiA+IEluIG15IHVuZGVyc3RhbmRpbmcgb2YgdGhlIGN1cnJlbnQg
+RFQgb3ZlcmxheSwKPiA+ID4gdGhlcmUgaXMgbm8gd2F5IHRvIGNyZWF0ZS9yZW1vdmUgYSBwbGF0
+Zm9ybSBkZXZpY2UgZHluYW1pY2FsbHkuCj4gPiA+IEkgZG8gbm90IGtub3cgaWYgdGhhdCB3aWxs
+IGhhcHBlbiBpbiB0aGUgZnV0dXJlLiAgCj4gPiAKPiA+IEZvciBkcml2ZXJzIHdpdGhvdXQgc3Vw
+cHJlc3NfYmluZF9hdHRycywgeW91IGNhbiBtYW51YWxseQo+ID4gdW5iaW5kIHRoZSBkZXZpY2Ug
+ZnJvbSBhIGRyaXZlciwgd2hpY2ggaW4gY2FzZSBvZiBhIGxvYWRhYmxlCj4gPiBtb2R1bGUgZW5k
+cyB1cCBjYWxsaW5nIHRoZSAucmVtb3ZlIGNhbGxiYWNrICh0aGlzIGlzIGZpbmUpLAo+ID4gYnV0
+IGluIGEgYnVpbHQtaW4gZHJpdmVyIHRoaXMgd291bGQgdXNlIGEgTlVMTCBwb2ludGVyIGZvcgo+
+ID4gLnJlbW92ZSBhbmQgY2F1c2UgdW5leHBlY3RlZCBiZWhhdmlvci4gIAo+IAo+IG9ubHkgYSBz
+bGlnaHQgY29ycmVjdGlvbjogQXMgbm90IGhhdmluZyBhIHJlbW92ZSBjYWxsYmFjayBjYW4gYmUg
+ZmluZQo+IGFuZCBwbGF0Zm9ybV9yZW1vdmUoKSBvbmx5IGNhbGxzIC5yZW1vdmUgKG9yIC5yZW1v
+dmVfbmV3KSB3aGVuIG5vbi1OVUxMCj4gd2UncmUgbm90IGhpdHRpbmcgYSBOVUxMIHBvaW50ZXIg
+ZGVyZWZlcmVuY2UgaW4gdGhlIHByZXNlbmNlIG9mCj4gCj4gCS5yZW1vdmUgPSBfX2V4aXRfcChz
+b21lZnVuYyksCj4gCj4gQnV0IGEgcHJvYmxlbSBjYW4gYXJpc2UgbGF0ZXIgaWYgc29tZSByZXNv
+dXJjZSBpc24ndCBwcm9wZXJseSBmcmVlZCBhbmQKPiBzbyBpdCBtaWdodCBiZSB1c2VkIGF0IGEg
+bGF0ZXIgcG9pbnQgaW4gdGltZSB3aGljaCB0aGVuIG1vc3QgbGlrZWx5Cj4gb29wc2VzLgo+IAo+
+IEkgZGlkbid0IGRvdWJsZSBjaGVjayBBcm5kJ3MgbGlzdCwgYnV0IG90aGVyd2lzZSBJIGFncmVl
+IHRvIGhpcwo+IGFuYWx5c2lzLgoKQ2FuIHdlIGluc3RlYWQgcXVlc3Rpb24gdGhlIHVzZSBvZiBt
+b2R1bGVfcGxhdGZvcm1fZHJpdmVyX3Byb2JlKCk/CkkgZG9uJ3QgaGF2ZSB0aGUgaGlzdG9yeSBp
+biBtaW5kLCBidXQgd2h5IG5vdCBqdXN0IHN3aXRjaCB0byByZWd1bGFyCm1vZHVsZV9wbGF0Zm9y
+bV9kcml2ZXIoKSByZWdpc3RyYXRpb24gaW5zdGVhZD8gSXQgc2VlbXMgbGlrZSB0aGUKb3JpZ2lu
+YWwgYXV0aG9ycyBqdXN0IGRpZCBub3QgY2FyZSBhYm91dCB0aGUgcmVtb3ZlIHBhdGggYW5kIHdl
+cmUKaGFwcHkgdG8gc2tpcCBpdHMgaW1wbGVtZW50YXRpb24uCgpPbiBtdGQgZGV2aWNlcyBvbmUg
+Y2FuIGFyZ3VlIHRoYXQgdGhlIGZsYXNoIHVuZGVybHlpbmcgc3RvcmVzIHRoZQpyb290ZnMgYW5k
+IHRodXMgY2Fubm90IGJlIHJlbW92ZWQsIGJ1dCBJIGJlbGlldmUgdG9kYXkgdGhpcyBpcyBhCnF1
+ZXN0aW9uYWJsZSAoc29mdHdhcmUpIGRlc2lnbi4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
