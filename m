@@ -4,71 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55447E95A95
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Oct 2023 13:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10EA5CD6101
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Oct 2023 16:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3Xqg2uJ8uUnS2ITI16c3NAUf2HttO/0M9V5ibuqPmHA=; b=TkedbTFWhR4Rsz
-	Te4NfcIv2sAWzEPqtFT8Tas3OdzaLKimQkoaSioXzzPAX5vH2VsWF7Od2yTGEScSK3fYMnNWuvtqz
-	haxpdoxNyWHSzkiUv6ewRTcpbosB22uRQCY/hrm6a47pY4jDK1HRL4R4sShPVyZx8KV2Bz7bVOU97
-	g+0S4ROEMsJJFPperibr7OXv5MAtpxviXcViychr2Zt1IxCz3EvzreUpu8mEF17bWjPq5wIVArxlY
-	/Vs6MX0ZqUasOGMjY+8pryA2AdGPn9NkV6IE5T/+VVtXNXYgRsogsf5KCf8TPUICdE8HnO8hHjnX2
-	teCzx0JjBa0Yjpz0vWUA==;
+	List-Owner; bh=S8+IjSxzsJAJJGhnb7LkSwdVtsbwrdr0gq+FKs58I1g=; b=LpoG1ddzBGVF+s
+	G2JmMzbIYXhDQVpVr4haqkanCGniZLC74TzmwcEti4QxRsZobhnRahB5OLEpMepALWOBnk8xhLDqe
+	kviqB79bJvdZrvzxVFh4rghRWmhoAFO+F4pY56Sup/4I/JxKosJTar7kN666r+DoisHOEDfEfz3qV
+	WnNwcZ/85XjevkAttgBTsMTL1pHkaGjvQi+1pxHl7yJ/GvBdiGkRQCwjmiJNWfCZQ+jrIFASU38du
+	7rSR3kq/A+UxevTi6nDaz7BkL1T8kbjqEAfYuVVN9bbJgiqjlpzbZmRIeemjdYnbwWTd7yKWO/yd7
+	urIHSAUuREb/NvbCekdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qpqSF-00Ap8g-2m;
-	Mon, 09 Oct 2023 13:37:51 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1qpsq1-00B8uV-3D;
+	Mon, 09 Oct 2023 16:10:34 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qpqSC-00Ap7X-1n
-	for linux-mtd@lists.infradead.org;
-	Mon, 09 Oct 2023 13:37:50 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7BC651C0006;
-	Mon,  9 Oct 2023 13:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1696858665;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RkCQZu/Nd/vuyAyFTi/s+rMXbY5uaNGrEiZfBlkZy44=;
-	b=Afj/PbQ9pWRNc10VdrvsO5jkIXl2QMdCRq06etXr+5cT/qasr+QemFcU5kOJnSuG2H694A
-	6Qm9Yt5uEr8ggwpWR1E8DSzywTapQS9Hqgev8fCwNu1DK1OntXHjVIElPJTQ2emt5da3Ir
-	wboupFF9YmgWQ8ycWt+uL1peuqv5EqKOyZ6M9AO6H4X0hJPDHeJCmXSm7BL42ZaTWQF8gt
-	Cj4xkw0cJGQt06SruD8RLw+CASFdGHrY6jgxnDQRe4QHGFQe5VpC3oH5J/BLdhkBKH07jm
-	3U8YrldUisz379uew+qCOqvVXAtNJpO0Q1mQfyGdloIpFjDpyFiGOYeaSAIejw==
-Date: Mon, 9 Oct 2023 15:37:41 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>,
- "Masahiro Yamada" <masahiroy@kernel.org>, "David Woodhouse"
- <dwmw2@infradead.org>, linux-kbuild@vger.kernel.org, "Richard Weinberger"
- <richard@nod.at>, "Atsushi Nemoto" <anemo@mba.ocn.ne.jp>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
- "Pengutronix Kernel Team" <kernel@pengutronix.de>, "Andrew Morton"
- <akpm@linux-foundation.org>, "Vignesh Raghavendra" <vigneshr@ti.com>
-Subject: Re: [PATCH 01/20] mtd: rawnand: txx9ndfmc: Mark driver struct with
- __refdata to prevent section mismatch warning
-Message-ID: <20231009153741.5b04a137@xps-13>
-In-Reply-To: <55a03e14-7a92-4cf0-82d4-5cbde64d69db@app.fastmail.com>
-References: <20231008200143.196369-1-u.kleine-koenig@pengutronix.de>
-	<20231008200143.196369-2-u.kleine-koenig@pengutronix.de>
-	<CAK7LNASB2HhO6iWNnG-tAzs9wu9mV2PLRf-brnNGkSJj+W23Vw@mail.gmail.com>
-	<e38b8a8e-5bd6-41e2-87a1-3b2d23b68bc0@app.fastmail.com>
-	<20231009103037.j44gkzqv7cpn4zpu@pengutronix.de>
-	<20231009144610.4ff82afa@xps-13>
-	<55a03e14-7a92-4cf0-82d4-5cbde64d69db@app.fastmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1qpspv-00B8qU-2n;
+	Mon, 09 Oct 2023 16:10:31 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 8AAB4CE149F;
+	Mon,  9 Oct 2023 16:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A92FFC433C8;
+	Mon,  9 Oct 2023 16:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696867824;
+	bh=keW4wOj90e6SAzWHDhiijPY7xlKn91ViUXq7+ZBy/qA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=uXLBAcbtT3qSJRhL/8M371BpeA1C5ljwEOv35PPhR9AAXbskswQIJClC2lj7Rj5gp
+	 Wf8DMgzdk7F1Im4JpcUlzudlx2J7u7qAkCKVl53l50QCMlVywy97j4Z/z6YC81cPOB
+	 ZEhm/bd89ThwJczgLVLfYGYQSRgf/gJFEhHLWwuJMYiWS6kKeieI6gsrdpEaduSXjN
+	 MyDpNqeyNgkjuA9pNpJc3RCwGGB/UZ94Td6pVCF9naF2MzsC97YBscCdHyiZxAMM7J
+	 TNVG7+Kfo/TbzJEmvAHe6SdjHTFA0oLVhgfu0YPY0D5YqFYWH70KP0wz8Tk3JvnzVy
+	 Fp4FzyfzRg4Qw==
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>, David Sterba <dsterba@suse.cz>, Amir Goldstein <amir73il@gmail.com>, Theodore Ts'o <tytso@mit.edu>, Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, arve@android.com, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Mattia Dongili <malattia@linux.it>, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Brad Warrum <bwarrum@linux.ibm.com>, Ritu Agarwal <rituagar@linux.ibm.com>, Hans de Goede <hdegoede@redhat.com>, ilpo.jarvinen@linux.intel.com, Mark Gross <markgross@kernel.org>, Jiri Slaby <jirislaby@kernel.org>, Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Christoph Hellwig <hch@infradead.org>, Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Mike Kravetz <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>, David Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, Anton Altaparmakov <anton@tuxera.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>, Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, Phillip Lougher <phillip@squashfs.org.uk>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Evgeniy Dushistov <dushistov@mail.ru>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>, Kent Overstreet <kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org, linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-bcachefs@vger.kernel.org
+Subject: Re: [PATCH v2 00/89] fs: new accessor methods for inode atime and mtime
+Date: Mon,  9 Oct 2023 18:09:31 +0200
+Message-Id: <20231009-charmant-locken-893b11849e84@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231004185221.80802-1-jlayton@kernel.org>
+References: 
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10941; i=brauner@kernel.org; h=from:subject:message-id; bh=IjD9jhCYjdIJ9vPkYDocQbsMoCTgovwgHUWkZ/3GCzk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSqqLYye23auu+81JbW5Y9by59u2veoRtMoSybRa4ps7qMV 1SnPO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTAG4yFyPDct4beVfC7N9kTeGsyQvesc LrVB9X8d5HrqtS30c2lc/vYPgrs2DPvYLs+5rO5WFr0n0CStp+xH9eLnqRR9iW68ZB+QY+AA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231009_063748_885415_7C919C86 
-X-CRM114-Status: GOOD (  21.59  )
+X-CRM114-CacheID: sfid-20231009_091028_245270_CB429788 
+X-CRM114-Status: GOOD (  23.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,44 +68,226 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQXJuZCwKCmFybmRAYXJuZGIuZGUgd3JvdGUgb24gTW9uLCAwOSBPY3QgMjAyMyAxNTowMTox
-NyArMDIwMDoKCj4gT24gTW9uLCBPY3QgOSwgMjAyMywgYXQgMTQ6NDYsIE1pcXVlbCBSYXluYWwg
-d3JvdGU6Cj4gPj4gT24gTW9uLCBPY3QgMDksIDIwMjMgYXQgMTA6NDM6NDZBTSArMDIwMCwgQXJu
-ZCBCZXJnbWFubiB3cm90ZTogIAo+ID4+ID4gT24gTW9uLCBPY3QgOSwgMjAyMywgYXQgMDk6MjIs
-IE1hc2FoaXJvIFlhbWFkYSB3cm90ZTogICAgCj4gPj4gPiA+IE9uIE1vbiwgT2N0IDksIDIwMjMg
-YXQgNTowMuKAr0FNIFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9u
-aXguZGU+ID4gQ2FuIHdlIGluc3RlYWQgcXVlc3Rpb24gdGhlIHVzZSBvZiBtb2R1bGVfcGxhdGZv
-cm1fZHJpdmVyX3Byb2JlKCk/ICAKPiA+IEkgZG9uJ3QgaGF2ZSB0aGUgaGlzdG9yeSBpbiBtaW5k
-LCBidXQgd2h5IG5vdCBqdXN0IHN3aXRjaCB0byByZWd1bGFyCj4gPiBtb2R1bGVfcGxhdGZvcm1f
-ZHJpdmVyKCkgcmVnaXN0cmF0aW9uIGluc3RlYWQ/IEl0IHNlZW1zIGxpa2UgdGhlCj4gPiBvcmln
-aW5hbCBhdXRob3JzIGp1c3QgZGlkIG5vdCBjYXJlIGFib3V0IHRoZSByZW1vdmUgcGF0aCBhbmQg
-d2VyZQo+ID4gaGFwcHkgdG8gc2tpcCBpdHMgaW1wbGVtZW50YXRpb24uCj4gPgo+ID4gT24gbXRk
-IGRldmljZXMgb25lIGNhbiBhcmd1ZSB0aGF0IHRoZSBmbGFzaCB1bmRlcmx5aW5nIHN0b3JlcyB0
-aGUKPiA+IHJvb3RmcyBhbmQgdGh1cyBjYW5ub3QgYmUgcmVtb3ZlZCwgYnV0IEkgYmVsaWV2ZSB0
-b2RheSB0aGlzIGlzIGEKPiA+IHF1ZXN0aW9uYWJsZSAoc29mdHdhcmUpIGRlc2lnbi4gIAo+IAo+
-IEl0IHdhcyBjaGFuZ2VkIHRvIG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoKSBpbiBjb21t
-aXQKPiAzYTJhMTNmYTkwMmQyICgibXRkOiB0eHg5bmRmbWM6IHVzZSBtb2R1bGVfcGxhdGZvcm1f
-ZHJpdmVyX3Byb2JlKCkiKQo+IHdpdGggYSBzaG9ydCBjaGFuZ2Vsb2cgdGV4dDoKPiAKPiBjb21t
-aXQgM2EyYTEzZmE5MDJkMjMyYTFlNTY1ODI2NDdhZWQ2Y2IyNTkxMzQ5Ygo+IEF1dGhvcjogSmlu
-Z29vIEhhbiA8amcxLmhhbkBzYW1zdW5nLmNvbT4KPiBEYXRlOiAgIFR1ZSBNYXIgNSAxMzozMToy
-NCAyMDEzICswOTAwCj4gCj4gICAgIG10ZDogdHh4OW5kZm1jOiB1c2UgbW9kdWxlX3BsYXRmb3Jt
-X2RyaXZlcl9wcm9iZSgpCj4gICAgIAo+ICAgICBUaGlzIHBhdGNoIHVzZXMgbW9kdWxlX3BsYXRm
-b3JtX2RyaXZlcl9wcm9iZSgpIG1hY3JvIHdoaWNoIG1ha2VzCj4gICAgIHRoZSBjb2RlIHNtYWxs
-ZXIgYW5kIHNpbXBsZXIuCj4gICAgIAo+ICAgICBTaWduZWQtb2ZmLWJ5OiBKaW5nb28gSGFuIDxq
-ZzEuaGFuQHNhbXN1bmcuY29tPgo+ICAgICBTaWduZWQtb2ZmLWJ5OiBBcnRlbSBCaXR5dXRza2l5
-IDxhcnRlbS5iaXR5dXRza2l5QGxpbnV4LmludGVsLmNvbT4KPiAgICAgU2lnbmVkLW9mZi1ieTog
-RGF2aWQgV29vZGhvdXNlIDxEYXZpZC5Xb29kaG91c2VAaW50ZWwuY29tPgo+IAo+IEluc3RlYWQg
-b2YganVzdCBzaW1wbGlmeWluZyB0aGUgY29kZSwgSSB0aGluayB0aGF0IHdhcyBhY3R1YWxseQo+
-IGEgYnVnZml4IGJlY2F1c2UgaXQgcHJldmVudGVkIGJvdGggdGhlIHByb2JlIGFuZCByZW1vdmUg
-Y2FsbGJhY2tzCj4gZnJvbSBnZXR0aW5nIGNhbGxlZCBhZnRlciBnZXR0aW5nIGRyb3BwZWQgKGRl
-ZmVycmVkIHByb2JlIG9yCj4gdW5iaW5kL3JlYmluZCkuIFVzaW5nIG1vZHVsZV9wbGF0Zm9ybV9k
-cml2ZXIoKSBpcyBwcm9iYWJseQo+IGV2ZW4gYmV0dGVyIGhlcmUsIGJ1dCB0aGVuIHdlIG5lZWQg
-dG8gcmVtb3ZlIGJvdGggdGhlIF9faW5pdAo+IGFuZCBfX2V4aXQgYW5ub3RhdGlvbnMuCgpBZ3Jl
-ZWQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed, Oct 04, 2023 at 02:52:21PM -0400, Jeff Layton wrote:
+> v2:
+> - bugfix in mtime handling
+> - incorporate _sec and _nsec accessor functions (Chuck Lever)
+> - move i_generation to plug hole after changing timestamps (Amir Goldstein)
+> 
+> While working on the multigrain timestamp changes, Linus suggested
+> adding some similar wrappers for accessing the atime and mtime that we
+> have for the ctime. With that, we could then move to using discrete
+> integers instead of struct timespec64 in struct inode and shrink it.
+> 
+> This patch implements this. Linus suggested using macros for the new
+> accessors, but the existing ctime wrappers were static inlines and since
+> there are only 3 different timestamps, I didn't see that trying to
+> fiddle with macros would gain us anything (other than less verbosity in
+> fs.h).
+> 
+> [...]
+
+This was applied on top of -next but vfs.ctime is now based on v6.6-rc3
+as stable tag otherwise this is too much of a moving target with other
+stuff in -next. Anything that had to be dropped and requires fixups
+should just be explained in the pr. The sooner this sees some -next, the
+better, I think.
+
+---
+
+Applied to the vfs.ctime branch of the vfs/vfs.git tree.
+Patches in the vfs.ctime branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.ctime
+
+[01/86] fs: new accessor methods for atime and mtime
+        https://git.kernel.org/vfs/vfs/c/22f45fee808d
+[02/86] fs: convert core infrastructure to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/6ac95fb71485
+[03/86] spufs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/9953073d5f20
+[04/86] hypfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/1d64bfe22112
+[05/86] android: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a8a74b6b4f2c
+[06/86] char: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/671ffa0775a7
+[07/86] qib: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/ebd5458f3b52
+[08/86] ibmasm: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/1d4257d57a41
+[09/86] misc: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/d4bf8378b9cb
+[10/86] x86: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/070601b1e496
+[11/86] tty: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/5c9f26b87bed
+[12/86] function: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/092f46404245
+[13/86] legacy: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/5c51d80e51d0
+[14/86] usb: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/4707a33afd6f
+[15/86] 9p: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/20fc454b4493
+[16/86] adfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/3e8d59046f6d
+[17/86] affs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/60d4d0d37086
+[18/86] afs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/6471772aa6fe
+[19/86] autofs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/3eaad981548b
+[20/86] befs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/21d0433caf69
+[21/86] bfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/06e502c123a6
+[22/86] btrfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/f62049d7838d
+[23/86] ceph: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/ac7750d84e38
+[24/86] coda: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/5c4bf2507baa
+[25/86] configfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/3b930e187f16
+[26/86] cramfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/bb0bf9d3bda8
+[27/86] debugfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/7dc950e659d6
+[28/86] devpts: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a1eb5c26d5a1
+[29/86] efivarfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/17b5652aa824
+[30/86] efs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a3cfbea29e7d
+[31/86] erofs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/2beccde96d66
+[32/86] exfat: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/522f3c42c9e7
+[33/86] ext2: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/07be81fce412
+[34/86] ext4: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/2ff285d78c4d
+[35/86] f2fs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/c495130561ae
+[36/86] fat: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/e57260ae3226
+[37/86] freevxfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a83513cd029e
+[38/86] fuse: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/5f1e57582b4e
+[39/86] gfs2: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a5f1a9296668
+[40/86] hfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/7ee8d53576e9
+[41/86] hfsplus: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/2179ad3569f6
+[42/86] hostfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/c3e1be490207
+[43/86] hpfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/e08a2ea26b41
+[44/86] hugetlbfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a9701db0ca64
+[45/86] isofs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/362d327da07e
+[46/86] jffs2: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/36a8a5a63218
+[47/86] jfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/acd529413de5
+[48/86] kernfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/05acde68936b
+[49/86] minix: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/34c1ca111ec1
+[50/86] nfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/77e808456854
+[51/86] nfsd: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/a800ed7ebbbf
+[52/86] nilfs2: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/4ddc9518c2fa
+[53/86] ntfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/0d15c2118b1a
+[54/86] ntfs3: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/82f8d5fde753
+[55/86] ocfs2: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/45251ebaca70
+[56/86] omfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/e7c1ff814326
+[57/86] openpromfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/cb62db1d3c61
+[58/86] orangefs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/68e257a49aed
+[59/86] overlayfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/d482d98dc1bd
+[60/86] proc: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/8c8afe8a25fa
+[61/86] pstore: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/b0be548328a2
+[62/86] qnx4: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/c28589f2d838
+[63/86] qnx6: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/ae0f3d29e728
+[64/86] ramfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/6315fd97a8fc
+[65/86] reiserfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/8eceb9b75a5b
+[66/86] romfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/6d3dd456da31
+[67/86] client: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/b14d4c14f51b
+[68/86] server: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/bec3d7ffcecd
+[69/86] squashfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/d7d5ff75af52
+[70/86] sysv: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/39f012d8743e
+[71/86] tracefs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/22ada3856de8
+[72/86] ubifs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/af8b66e1d4b7
+[73/86] udf: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/1da45142f95a
+[74/86] ufs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/41c46d3bb9b3
+[75/86] vboxsf: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/cc36ec7935eb
+[76/86] xfs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/ee3be90b2ba7
+[77/86] zonefs: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/8c798cc16b17
+[78/86] linux: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/dd53b64b6f51
+[79/86] ipc: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/f132b3723b71
+[80/86] bpf: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/448a018f67a3
+[81/86] mm: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/b6f5b3d5ffc9
+[82/86] sunrpc: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/fc9db028b8d7
+[83/86] apparmor: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/794ef2a745ec
+[84/86] selinux: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/3d57ee3686d7
+[85/86] security: convert to new timestamp accessors
+        https://git.kernel.org/vfs/vfs/c/71f6d9ebaf43
+[86/86] fs: rename inode i_atime and i_mtime fields
+        https://git.kernel.org/vfs/vfs/c/fea0e8fc7829
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
