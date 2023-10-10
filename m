@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8DFFCD68E4
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 Oct 2023 02:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10A57CD68E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Oct 2023 02:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:Subject:To:From:Message-ID:
 	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=zITl6uvWICwwIs4Qb2t/0EbnmdVpWbfEzl+PEbzT/hA=; b=Vz3
-	LNyPRnYS0v/rNQqmGkjXXDEIOc8kWbtOdKJEOpRKEHXcyg9lXbsp4Gu34GpUh2RGHZiERcKj6sXnk
-	bB1i1IaxTCar/Cc54JyEN2C2gw6M9PUuTuqWB/IFIQjmF9ccRvsuQBe6wf2h5tw1F2c8mP3k3Jgmh
-	fHymiTWF88yWoaZsy+1dXKGDhfNDILExIoVALEMZIMpwDuWY7BdriIPQ65VRZ7spKtTqNzLIBwXE6
-	x9ctnmumgfilQ3qGeTdqRjLmxI23Tqi3rxlbLd1ItHqQoiGVDifyvSrtAPCriKPdOX1l9UwW23WiQ
-	IWvw2eD7tTgX6lfyLTGqCXYTdHVKUUw==;
+	References:List-Owner; bh=VhoBy5uJl+uhRYwp4CXmOzloaR+3ANxUiTV+ZUswMCg=; b=cz2
+	1hFsqOx1LMs3PS7snSPtlU1PlVrKxzCyrETYXScehdSK5iqoDuxyR5ODCkQtDqD4+agRPTPrFID8u
+	hbonavzWvIMfHLBvUwlIzI2fwRPDDMQhekwfmukzAs8d4m6kqVkqy0RNMb4ko5HVzn0jrT8w2lqwW
+	cStREFlGEtDaWjOGpFDniiUcNkB2m7W1eITb+ElwdhUnuCBw8ThYlT0jhTmNBxEfFbpRrC5cNvTf3
+	OLB3QmJWE8FVmehRw0Mjq3PBVDxV/R6zxABiRbEHo6tQfsrYs/lKLQtsZvjsO/HA23y3Cb+/cbtSM
+	LzYXwPtIcvTh4h30+GWXx5bpYE7p4bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qq2lb-00C9KP-2a;
-	Tue, 10 Oct 2023 02:46:39 +0000
+	id 1qq2mu-00C9Uc-1J;
+	Tue, 10 Oct 2023 02:48:00 +0000
 Received: from mout.gmx.com ([74.208.4.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qq2lY-00C9Iq-0I
+	id 1qq2mr-00C9Ts-2p
 	for linux-mtd@lists.infradead.org;
-	Tue, 10 Oct 2023 02:46:37 +0000
+	Tue, 10 Oct 2023 02:47:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com; s=s1089575;
- t=1696905960; x=1697510760; i=dregan@mail.com;
- bh=DNMOlZ7oUikNT3ulMiEDM6mF9jRFj6PFg+JtLK0heS4=;
+ t=1696906059; x=1697510859; i=dregan@mail.com;
+ bh=k7OqscskxPrOo4+D54irAaRmzQ2jaPkCPJPV67w8ubQ=;
  h=X-UI-Sender-Class:From:To:Subject:Date;
- b=hiVkl7IgN/oY20W4OxNcdViEI9Z8HuMk0b4D9BtshyFSgBQI7Zy6jrsHT0h9hSoaKfRduZVZheG
- lsVDgOYEpRN/CVhuhsAShY2vBlt8CHKrgNo5GGCBCVsA3vDPwmFUA78Da7j4WOgFFOeOe/eMKp66C
- mh3TQ1tmY4JEHkcbvZQkDWkYFIqxsi2GpwOx1CqFRTsMB5wroh0A4sUBgVFXPC6LND1lyJJTffAeq
- g3dbIpW5IwVu2hxpafy6dAi4AQoVF0vBqUYuLBtSfZcEhw6dK5sIAqNcPJcdU2/HCwDcU1U5I/aTD
- Qf30jEYlNVsF7PLfu24IuzHsaYaXGrez+EFg==
+ b=jvQPhBPUumwuib/AqS8Hi3W+DBwRamQ3yZsHaiGW/xwaDgxKzNzWStxPeUccRq2g1cPskebYvas
+ iiwGwak5J+MgIuS6UnLePNICqrtZBYo37qbKAtClOKOF+WdNSupXPA3gmmIe/oGOE05fKrFb1+vtQ
+ xSeAkStRrEVlQNiOtE0DUZ8qr5YZt8Km4DCIxMO2VRZSwFNgBRQ7udLxdUuBdbiir3E4Asyx0Pnem
+ XR5/WpqGf2S8O9of05uDkLI18rQAnqOxGMYsNA5kVLEtB68pOBydMk6HAtD3HDdA3x8v5XE6xaHAr
+ 5+PEEQr+Dp6JYsG3e2fSxXi8y30WvVumF9Sg==
 X-UI-Sender-Class: f2cb72be-343f-493d-8ec3-b1efb8d6185a
 Received: from [184.189.122.102] ([184.189.122.102]) by web-mail.mail.com
  (3c-app-mailcom-lxa01.server.lan [10.76.45.2]) (via HTTP); Tue, 10 Oct 2023
- 04:46:00 +0200
+ 04:47:39 +0200
 MIME-Version: 1.0
-Message-ID: <trinity-003579bf-615b-47b8-b1a9-f0d37f650f45-1696905960546@3c-app-mailcom-lxa01>
+Message-ID: <trinity-a3c12bff-7281-45c4-a849-bd5ffbfcf2b4-1696906059694@3c-app-mailcom-lxa01>
 From: dregan@mail.com
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
@@ -52,32 +52,32 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  bbrezillon@kernel.org, kdasu.kdev@gmail.com, dregan@mail.com, JaimeLiao
  <jaimeliao.tw@gmail.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Adam
  Borowski <kilobyte@angband.pl>
-Subject: [PATCH 1/3] mtd: rawnand: Add destructive operation
-Date: Tue, 10 Oct 2023 04:46:00 +0200
+Subject: [PATCH 2/3] mtd: rawnand: NAND controller write protect
+Date: Tue, 10 Oct 2023 04:47:39 +0200
 Importance: normal
 Sensitivity: Normal
 X-Priority: 3
-X-Provags-ID: V03:K1:trm6hrX9P39LJUr3Vsk6GccP8SSdKruyT1iyLkyih4gJ9Gjzh2InIRG6vCcQWrdfD26pA
- 426FttqH3FOeYCZeLYvTOfLdYQ7Ajb9buJ9IYQemi4+/aZiW2HHOKXXZvWSg6IneVg2OPtPhrTSW
- jgRwWj/hJhNRZt9+lo5M4mnfPD/VAli4+iJnD7LZYyuJCuiqXeRBwaTn3NNgEO/V1wtIyGAP3OTJ
- E2rS/dDYnYRbQVecrZfmzMdS9RtQP8SVE+UvbnFEQkA6vQ2u+FzocBHcRtUSn10MMgTe6nNe9z2T
- XA=
-UI-OutboundReport: notjunk:1;M01:P0:+/Wgof06lQk=;rvSIkMaACs2zqVnEcVdnm3JZCFZ
- ubJ7ihs5WfZ+4FkAbj4P5+0efZXnKmXTmaJXYAabgOh3Jjb5w0ZuiieqqeVS8Y0tgAsicIkqZ
- g5+qovWRUkxs/+lauvbrzoQXXaTmXo6yZCkKGQ/Y3fTjvqghd86mfMZ+LeUwys2HcYsFv/WzZ
- L4hjrAfdSFH2QJXE0GDc4bWxLBcRxXheujL9nSATbC1nJsLGaHqlv7z8jshhNt+DGUOgtEZH0
- sUamZj7gILAbSj37NcsilVG4JYHh2RWEqtOjqnlnJHRlmeJ2O2cbEhrESgjp5prpk60IvLSv/
- hGEB8JusoFMzyw28cbIs3iEhbU2NRm+RHIJfsqaFuCyr3CIbJa/O2Qwf+MaG7BVxcHl7oxHjV
- cLAwXPkb/9Wiejp+TXU9QCwFOBwwfitpKbfwooWFd9Gb8BZsrRPSxLInM74fZLXvFMrZbgfMx
- hvucSX7KF7loOqvDT3QHTu8t+lVn6NnMWpiVxL42e1qYjdGy4SpJ+VgRELVnJj9ohf6ZuKITC
- t0sxhO2P3LH5e9FXqzPMMMtiM+L/qousBq7xE1YvuSQvueO225yO+Rg04ML/UyY7Zd/9Hx3Sk
- CphoqSQCa2LsiR6gKeqMNPxQQ8m3x4pD+r40clxddrDzH6nb9Bd9SoJzy6CFTa1Xv/aYLgsMW
- soSLoUTbtvahalYDdbRH6FD3IKs3Pd60PETLJAPDCET8wysQmBG53mQc1WG82ERVBhzgpS/0C
- AGcaAYkKBUDo0THf1GJYEatuPm0kXn4ch0fqThiYIDi006bs1GUeGCEeMfnalB4mddLHXJAEw
- 3UAGruMtndsXslha6J9bi+zsH5p22lkQMpVhXF8t7vpiM=
+X-Provags-ID: V03:K1:msmnoa+Epd1H0xSJZWc4Swr3TK28VeQIWDmRo6RQqJ7sWT0OjaE1/SlnZhNtjEmF48u3F
+ jgiMveJcxtSVJv/di2kTmueBk0BuXEhBf6I4YCIU3hk3qX9FCEhrGWWxLFuqzRXenN9NB6XBJI3n
+ 9E3Njr/uCtcmZpiXjeewRwucYc3VRqFcqkF07KTvt/wx7ujF/w3uFkBq+fN640ZqhU1AgIcQdNyk
+ WRdyBUjtpsMWqPkar6FwarV3KaYbySqTlrbXYFrpoUqp5L0V2OT99AaIYrwD/X1U81AHkJSmamcL
+ +8=
+UI-OutboundReport: notjunk:1;M01:P0:v6RCWC3oYbY=;mNCIm4raBVCls1i07tPwFs9VMJb
+ +x9zh0bd3oXbM0+iomXbR1YLbchfy+GwaA9RnXL41yWHgkDyDbUAKrbJx2Ahi+HXytQS67hdJ
+ ewY5KjHhMY54a6pDOiTZHq5UiOlYP+sdALz3RxTeq/1SCpH2le+Jn7S2JJHpBHUuHlRcR4FuL
+ 8/y3F5bdkyn8Flz91BNsg6FmQRWhlHWfttZvqOS4LK+ZW2dnE2rYX3wx8VE5aNGAYYMlmOCNb
+ o14qyF4g7uUcvCtVVI5DcZY1shr0asMrjs8D3IJN/ExNmE6fUAeZyaPVy6sUPklMoc0juNlzF
+ EzvhLoaD9V2fGef90RuNdOsRTasKso8O7vhXtntO5HThxuLBHjerJp98g8eqEmSD1G4tWdyJ3
+ wblcT3o8dizMgctWT+m8v/bxQC9zfWek7zyMWYdvwIByUhbqSYSN00cU52tcsMgCe5P0VctvP
+ dmA7UJjI/ZFoDE9ale+BmZyyuKg7Yfzbtd6HJyoMnMEi5oNf/yw9xeuxJ7TVfTPe44R6mrqtB
+ en0gzcGMphK8GLjIvwQuY5j2jAAZpupD1GOWKDNKB/2f6kWFGrGhONzCxbDu9iu19qVsTes+f
+ A9x0XgjSK1TjKQYGm29GpCedqlcsXnuYiJMzSvF7taNNrj2KqGYn46uZP7v8RTbUShoE2Fec6
+ RbjFhRwP/t4OM5hHuVU5LNhm13MOV1AgsSyrryglJrvXFwIgWLGqJB9h8mczwWDwzytIc1N5I
+ 5DhxEqBjvL0BpR6khI69rTWJlMqVsS6NN9h6UHuVIfsNQGQzC5691kEq2DxrYw6rxPAD/S5/U
+ 9lGAAz6iqmynp3ZvtgJzs1Lg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231009_194636_379088_9038E303 
-X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-CacheID: sfid-20231009_194757_985631_1D15982B 
+X-CRM114-Status: UNSURE (   9.26  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,72 +95,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Erase and program operations need the write protect (wp) pin to be
-de-asserted to take effect. Add the concept of destructive
-operation and pass the information to exec_op() so controllers know
-when they should de-assert this pin without having to decode
-the command opcode. Based on changes proposed by Boris Brezillon.
-
-https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669f0f172d58717
+Allow NAND controller to be responsible for write protect pin
+handling during fast path and exec_op destructive operation
+when controller_wp flag is set.
 
 Signed-off-by: David Regan <dregan@mail.com>
 
 ---
- drivers/mtd/nand/raw/nand_base.c | 6 ++++--
- include/linux/mtd/rawnand.h      | 9 +++++++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 4 ++++
+ include/linux/mtd/rawnand.h      | 2 ++
+ 2 files changed, 6 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d4b55155aeae..47cc2c35153b 100644
+index 47cc2c35153b..38ed0ced5b8e 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1494,7 +1494,8 @@ static int nand_exec_prog_page_op(struct nand_chip *chip, unsigned int page,
- 			    NAND_COMMON_TIMING_NS(conf, tWB_max)),
- 		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tPROG_max), 0),
- 	};
--	struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
-+	struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
-+							      instrs);
- 	int naddrs = nand_fill_column_cycles(chip, addrs, offset_in_page);
+@@ -367,6 +367,10 @@ static int nand_check_wp(struct nand_chip *chip)
+ 	if (chip->options & NAND_BROKEN_XD)
+ 		return 0;
 
- 	if (naddrs < 0)
-@@ -1917,7 +1918,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
- 			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
- 					 0),
- 		};
--		struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
-+		struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
-+								      instrs);
-
- 		if (chip->options & NAND_ROW_ADDR_3)
- 			instrs[1].ctx.addr.naddrs++;
++	/* controller responsible for NAND write protect */
++	if (chip->controller->controller_wp)
++		return 0;
++
+ 	/* Check the WP bit */
+ 	ret = nand_status_op(chip, &status);
+ 	if (ret)
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 90a141ba2a5a..31aceda8616c 100644
+index 31aceda8616c..f03b9d7f48b8 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1008,6 +1008,7 @@ struct nand_op_parser {
+@@ -1111,6 +1111,7 @@ struct nand_controller_ops {
+  *			the bus without restarting an entire read operation nor
+  *			changing the column.
+  * @supported_op.cont_read: The controller supports sequential cache reads.
++ * @controller_wp:	controller responsible for NAND write protect.
   */
- struct nand_operation {
- 	unsigned int cs;
-+	bool deassert_wp;
- 	const struct nand_op_instr *instrs;
- 	unsigned int ninstrs;
+ struct nand_controller {
+ 	struct mutex lock;
+@@ -1119,6 +1120,7 @@ struct nand_controller {
+ 		unsigned int data_only_read: 1;
+ 		unsigned int cont_read: 1;
+ 	} supported_op;
++	bool controller_wp;
  };
-@@ -1019,6 +1020,14 @@ struct nand_operation {
- 		.ninstrs = ARRAY_SIZE(_instrs),			\
- 	}
 
-+#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
-+	{							\
-+		.cs = _cs,					\
-+		.deassert_wp = true,				\
-+		.instrs = _instrs,				\
-+		.ninstrs = ARRAY_SIZE(_instrs),			\
-+	}
-+
- int nand_op_parser_exec_op(struct nand_chip *chip,
- 			   const struct nand_op_parser *parser,
- 			   const struct nand_operation *op, bool check_only);
+ static inline void nand_controller_init(struct nand_controller *nfc)
 --
 2.37.3
 
