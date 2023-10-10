@@ -4,85 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 827FCC2BA1B
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Oct 2023 22:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8DFFCD68E4
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 Oct 2023 02:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1XQ67HWgyFqnXw3DoBkSKFXOJFbZVTTg7YVSfhS2zpI=; b=KFmHrwyA6QkUy4
-	Nvun/AXoXBkiQ1iBm4VuwXPC8GgP6MSZZBzxtKrlGW/VK9RqIg7RsAZCLJIGmu+rxT8xgwiZ+MigE
-	s6UzszLrZPTkyN5WijDo30TJgdsT/lWlZhj4jyOxWW+rHWwbN+10iFlmvhbJNAyRmZkaxV9VzR9n1
-	5gSgzPJwNX+ZXkgAQoCNerUfk86v8q41O+vqCbbhei72bicqXKFjMJ/4r8CkFuiC47qNjT8y4aZyb
-	t5as0SYmt1AtRloB+XEjd5OZwC8nnCQPFpCRONJVL/JljXTgZkmG4TqF2j74fpIfeyl68UO1Mjx99
-	3H5jbWuwYm3kvTUXzn/w==;
+	List-Archive:List-Unsubscribe:List-Id:Date:Subject:To:From:Message-ID:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=zITl6uvWICwwIs4Qb2t/0EbnmdVpWbfEzl+PEbzT/hA=; b=Vz3
+	LNyPRnYS0v/rNQqmGkjXXDEIOc8kWbtOdKJEOpRKEHXcyg9lXbsp4Gu34GpUh2RGHZiERcKj6sXnk
+	bB1i1IaxTCar/Cc54JyEN2C2gw6M9PUuTuqWB/IFIQjmF9ccRvsuQBe6wf2h5tw1F2c8mP3k3Jgmh
+	fHymiTWF88yWoaZsy+1dXKGDhfNDILExIoVALEMZIMpwDuWY7BdriIPQ65VRZ7spKtTqNzLIBwXE6
+	x9ctnmumgfilQ3qGeTdqRjLmxI23Tqi3rxlbLd1ItHqQoiGVDifyvSrtAPCriKPdOX1l9UwW23WiQ
+	IWvw2eD7tTgX6lfyLTGqCXYTdHVKUUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qpyMn-00BiPH-1o;
-	Mon, 09 Oct 2023 22:04:45 +0000
-Received: from mail-il1-x136.google.com ([2607:f8b0:4864:20::136])
+	id 1qq2lb-00C9KP-2a;
+	Tue, 10 Oct 2023 02:46:39 +0000
+Received: from mout.gmx.com ([74.208.4.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qpyMj-00BiN6-2d
+	id 1qq2lY-00C9Iq-0I
 	for linux-mtd@lists.infradead.org;
-	Mon, 09 Oct 2023 22:04:43 +0000
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-351574aca7bso16847375ab.3
-        for <linux-mtd@lists.infradead.org>; Mon, 09 Oct 2023 15:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696889080; x=1697493880; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y9yY9Pt5Z+lcy2ZFBIazS1/xG4eT3Pf+M3kQNkzl3b8=;
-        b=UW0FGc+4ZuEjxiSsPLCSpF0qk0CLvaBpbFNTAU3/NejULw4PHXRGjfwyTILooaN5S0
-         xT0v5T76rXCAZXFKWxJP3h5Ex8EqWiHUdM7WPd+1yi8jcNMe2xvUwNGZeIt/QSMNOohJ
-         zYnTGQTdGGnb5ECfK9ZDWyxZ03WTU9oeJtIfY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696889080; x=1697493880;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y9yY9Pt5Z+lcy2ZFBIazS1/xG4eT3Pf+M3kQNkzl3b8=;
-        b=ADHxPrlIXULYPw2GUvcTzKymcHMxsxTeRYjPWD/mWrX8BjALN8xLFzu+HK0JtQBNYL
-         fMdi2A8f61YYNakEMaoOS+6bDPEqMYtTKkJSZ+XKlnouqHx1edNVIfE/p3s9MqLRL1zH
-         egB4ICSMVdOdzHyiMo2lAf/4nbenB7opNLkznn1KiidcWQotAXSxkIpLIt7Bv78b4vEk
-         GbJcC1lyOeeuuYVfvoE65k/22S/HfUUOqP+GwttfXddZrLHh56t+T6BK6Jm2IM64ggHN
-         kNkSzBR13yp5/zg8SSXAaGalOpXPsDLDN5ueqF4O/IG/sbKn/Kne4KOQCp2FDrxTx/cW
-         reGw==
-X-Gm-Message-State: AOJu0YyJp2gaFcBU+dD0zPoVgTWY2lC+MRYJzm/PbFTHg4ensr+5gjKD
-	oWTphaJ9PbMyOuXq/7dYt+2Dhw==
-X-Google-Smtp-Source: AGHT+IHMwP21W95ioWGQ6VOzQP6LMsWXCq8+TyNwoBR7DWbu8eIaeSo0UsHUkY1Q1hFP6Dc4enAPYw==
-X-Received: by 2002:a05:6e02:1a2e:b0:351:4f0c:b95d with SMTP id g14-20020a056e021a2e00b003514f0cb95dmr20621874ile.22.1696889079842;
-        Mon, 09 Oct 2023 15:04:39 -0700 (PDT)
-Received: from kea.bld.corp.google.com ([2620:15c:183:200:138c:cf57:c18d:20f5])
-        by smtp.gmail.com with ESMTPSA id o3-20020a92d4c3000000b0034cd2c0afe8sm3164063ilm.56.2023.10.09.15.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 15:04:39 -0700 (PDT)
-From: Simon Glass <sjg@chromium.org>
-To: devicetree@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michael Walle <mwalle@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	U-Boot Mailing List <u-boot@lists.denx.de>,
-	Tom Rini <trini@konsulko.com>,
-	Simon Glass <sjg@chromium.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dhruva Gole <d-gole@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Richard Weinberger <richard@nod.at>,
-	Rob Herring <robh+dt@kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/3] dt-bindings: mtd: partitions: Add binman compatible
-Date: Mon,  9 Oct 2023 16:04:13 -0600
-Message-ID: <20231009220436.2164245-1-sjg@chromium.org>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+	Tue, 10 Oct 2023 02:46:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com; s=s1089575;
+ t=1696905960; x=1697510760; i=dregan@mail.com;
+ bh=DNMOlZ7oUikNT3ulMiEDM6mF9jRFj6PFg+JtLK0heS4=;
+ h=X-UI-Sender-Class:From:To:Subject:Date;
+ b=hiVkl7IgN/oY20W4OxNcdViEI9Z8HuMk0b4D9BtshyFSgBQI7Zy6jrsHT0h9hSoaKfRduZVZheG
+ lsVDgOYEpRN/CVhuhsAShY2vBlt8CHKrgNo5GGCBCVsA3vDPwmFUA78Da7j4WOgFFOeOe/eMKp66C
+ mh3TQ1tmY4JEHkcbvZQkDWkYFIqxsi2GpwOx1CqFRTsMB5wroh0A4sUBgVFXPC6LND1lyJJTffAeq
+ g3dbIpW5IwVu2hxpafy6dAi4AQoVF0vBqUYuLBtSfZcEhw6dK5sIAqNcPJcdU2/HCwDcU1U5I/aTD
+ Qf30jEYlNVsF7PLfu24IuzHsaYaXGrez+EFg==
+X-UI-Sender-Class: f2cb72be-343f-493d-8ec3-b1efb8d6185a
+Received: from [184.189.122.102] ([184.189.122.102]) by web-mail.mail.com
+ (3c-app-mailcom-lxa01.server.lan [10.76.45.2]) (via HTTP); Tue, 10 Oct 2023
+ 04:46:00 +0200
 MIME-Version: 1.0
+Message-ID: <trinity-003579bf-615b-47b8-b1a9-f0d37f650f45-1696905960546@3c-app-mailcom-lxa01>
+From: dregan@mail.com
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
+ f.fainelli@gmail.com, rafal@milecki.pl, joel.peshkin@broadcom.com,
+ computersforpeace@gmail.com, dan.beygelman@broadcom.com,
+ william.zhang@broadcom.com, frieder.schrempf@kontron.de,
+ linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+ bbrezillon@kernel.org, kdasu.kdev@gmail.com, dregan@mail.com, JaimeLiao
+ <jaimeliao.tw@gmail.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Adam
+ Borowski <kilobyte@angband.pl>
+Subject: [PATCH 1/3] mtd: rawnand: Add destructive operation
+Date: Tue, 10 Oct 2023 04:46:00 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:trm6hrX9P39LJUr3Vsk6GccP8SSdKruyT1iyLkyih4gJ9Gjzh2InIRG6vCcQWrdfD26pA
+ 426FttqH3FOeYCZeLYvTOfLdYQ7Ajb9buJ9IYQemi4+/aZiW2HHOKXXZvWSg6IneVg2OPtPhrTSW
+ jgRwWj/hJhNRZt9+lo5M4mnfPD/VAli4+iJnD7LZYyuJCuiqXeRBwaTn3NNgEO/V1wtIyGAP3OTJ
+ E2rS/dDYnYRbQVecrZfmzMdS9RtQP8SVE+UvbnFEQkA6vQ2u+FzocBHcRtUSn10MMgTe6nNe9z2T
+ XA=
+UI-OutboundReport: notjunk:1;M01:P0:+/Wgof06lQk=;rvSIkMaACs2zqVnEcVdnm3JZCFZ
+ ubJ7ihs5WfZ+4FkAbj4P5+0efZXnKmXTmaJXYAabgOh3Jjb5w0ZuiieqqeVS8Y0tgAsicIkqZ
+ g5+qovWRUkxs/+lauvbrzoQXXaTmXo6yZCkKGQ/Y3fTjvqghd86mfMZ+LeUwys2HcYsFv/WzZ
+ L4hjrAfdSFH2QJXE0GDc4bWxLBcRxXheujL9nSATbC1nJsLGaHqlv7z8jshhNt+DGUOgtEZH0
+ sUamZj7gILAbSj37NcsilVG4JYHh2RWEqtOjqnlnJHRlmeJ2O2cbEhrESgjp5prpk60IvLSv/
+ hGEB8JusoFMzyw28cbIs3iEhbU2NRm+RHIJfsqaFuCyr3CIbJa/O2Qwf+MaG7BVxcHl7oxHjV
+ cLAwXPkb/9Wiejp+TXU9QCwFOBwwfitpKbfwooWFd9Gb8BZsrRPSxLInM74fZLXvFMrZbgfMx
+ hvucSX7KF7loOqvDT3QHTu8t+lVn6NnMWpiVxL42e1qYjdGy4SpJ+VgRELVnJj9ohf6ZuKITC
+ t0sxhO2P3LH5e9FXqzPMMMtiM+L/qousBq7xE1YvuSQvueO225yO+Rg04ML/UyY7Zd/9Hx3Sk
+ CphoqSQCa2LsiR6gKeqMNPxQQ8m3x4pD+r40clxddrDzH6nb9Bd9SoJzy6CFTa1Xv/aYLgsMW
+ soSLoUTbtvahalYDdbRH6FD3IKs3Pd60PETLJAPDCET8wysQmBG53mQc1WG82ERVBhzgpS/0C
+ AGcaAYkKBUDo0THf1GJYEatuPm0kXn4ch0fqThiYIDi006bs1GUeGCEeMfnalB4mddLHXJAEw
+ 3UAGruMtndsXslha6J9bi+zsH5p22lkQMpVhXF8t7vpiM=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231009_150441_868759_C97EE82F 
-X-CRM114-Status: GOOD (  19.20  )
+X-CRM114-CacheID: sfid-20231009_194636_379088_9038E303 
+X-CRM114-Status: UNSURE (   8.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,130 +95,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a compatible string for binman, so we can extend fixed-partitions
-in various ways.
+Erase and program operations need the write protect (wp) pin to be
+de-asserted to take effect. Add the concept of destructive
+operation and pass the information to exec_op() so controllers know
+when they should de-assert this pin without having to decode
+the command opcode. Based on changes proposed by Boris Brezillon.
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
+https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669f0f172d58717
+
+Signed-off-by: David Regan <dregan@mail.com>
+
 ---
+ drivers/mtd/nand/raw/nand_base.c | 6 ++++--
+ include/linux/mtd/rawnand.h      | 9 +++++++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-Changes in v4:
-- Change subject line
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d4b55155aeae..47cc2c35153b 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1494,7 +1494,8 @@ static int nand_exec_prog_page_op(struct nand_chip *chip, unsigned int page,
+ 			    NAND_COMMON_TIMING_NS(conf, tWB_max)),
+ 		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tPROG_max), 0),
+ 	};
+-	struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
++	struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
++							      instrs);
+ 	int naddrs = nand_fill_column_cycles(chip, addrs, offset_in_page);
 
-Changes in v3:
-- Drop fixed-partition additional compatible string
-- Drop fixed-partitions from the example
-- Mention use of compatible instead of label
+ 	if (naddrs < 0)
+@@ -1917,7 +1918,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+ 			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
+ 					 0),
+ 		};
+-		struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
++		struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
++								      instrs);
 
-Changes in v2:
-- Drop mention of 'enhanced features' in fixed-partitions.yaml
-- Mention Binman input and output properties
-- Use plain partition@xxx for the node name
+ 		if (chip->options & NAND_ROW_ADDR_3)
+ 			instrs[1].ctx.addr.naddrs++;
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 90a141ba2a5a..31aceda8616c 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1008,6 +1008,7 @@ struct nand_op_parser {
+  */
+ struct nand_operation {
+ 	unsigned int cs;
++	bool deassert_wp;
+ 	const struct nand_op_instr *instrs;
+ 	unsigned int ninstrs;
+ };
+@@ -1019,6 +1020,14 @@ struct nand_operation {
+ 		.ninstrs = ARRAY_SIZE(_instrs),			\
+ 	}
 
- .../bindings/mtd/partitions/binman.yaml       | 63 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 3 files changed, 69 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
++#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
++	{							\
++		.cs = _cs,					\
++		.deassert_wp = true,				\
++		.instrs = _instrs,				\
++		.ninstrs = ARRAY_SIZE(_instrs),			\
++	}
++
+ int nand_op_parser_exec_op(struct nand_chip *chip,
+ 			   const struct nand_op_parser *parser,
+ 			   const struct nand_operation *op, bool check_only);
+--
+2.37.3
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-new file mode 100644
-index 000000000000..7d6c8bd738f5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman firmware layout
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+select: false
-+
-+description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. It is based on fixed-partitions, with some
-+  extensions, but uses 'compatible' to indicate the contents of the node, to
-+  avoid perturbing or confusing existing installations which use 'label' for a
-+  particular purpose.
-+
-+  Binman supports properties used as inputs to the firmware-packaging process,
-+  such as those which control alignment of partitions. This binding addresses
-+  these 'input' properties. For example, it is common for the 'reg' property
-+  (an 'output' property) to be set by Binman, based on the alignment requested
-+  in the input.
-+
-+  Once processing is complete, input properties have mostly served their
-+  purpose, at least until the firmware is repacked later, e.g. due to a
-+  firmware update. The 'fixed-partitions' binding should provide enough
-+  information to read the firmware at runtime, including decompression if
-+  needed.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-+
-+allOf:
-+  - $ref: /schemas/mtd/partitions/fixed-partitions.yaml#
-+
-+properties:
-+  compatible:
-+    const: binman
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    partitions {
-+        compatible = "binman";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@100000 {
-+            label = "u-boot";
-+            reg = <0x100000 0xf00000>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..849fd15d085c 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
- 
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c934244acc31..ebc8158fe67d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3536,6 +3536,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-+
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
--- 
-2.42.0.609.gbb76f46606-goog
 
 
 ______________________________________________________
