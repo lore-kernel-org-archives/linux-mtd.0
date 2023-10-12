@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4B0CCDB46E
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 10:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13DD6CDB46E
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 10:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zGzGK2WNALZY1F8SZizWDU2qjfLNsLq8CHKs1OjjCEI=; b=wNUWV42NTLslzD
-	+OIMjXPkEbks0vT9UNwx9USkhw0RpyfVvvegpl+H7zzJb1Qn4AqTWwiislSlxiUkquK7QXMfCnoqp
-	sVgCvEEvOoRo3MMZfxLxuB+ccf7H9y5LAZxhlvO+lD7YfSp0p/h3Rpe0my6hm7+HsFWx4oz/22HeC
-	GjIeSLvG1lfFFew2hI7Bkd2htpOYH6pZkfOpa0AXvrrnvV55lpyNt62+I75bIbbFcltf9n1MImoQu
-	2PeIT67F744Bvoiz9dWAsBmx88HmQNkkNUK8GrgTmN9BU9G/ZzLUzchDzwxZl+cWBxyBMFOsUU1X3
-	gJTVnzCd4vxZ6p6ZzYOw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ySY4cJ6k0xCnWxZeeztZdCgNhWOLgM3o/8/KCyPiCE8=; b=ykOiLrz5Vcrjr2
+	+2akNjtTxlE0P0PELYNDfpu1N+f3MdZ6V8Tev7f+zAjjekTo1TGhL4/bTStbTCpYXMtX+hAyGrqgm
+	sDsFLSXxexnmuGjKn1nN3L66rqJVyDLvhgnpUtfhEcFFhOqwgAGXEX9vCoXVy7QurcXexgFId8yBc
+	5Bhf8N5VQKWknBt6hQMgkZf4ScyYJxl4fCWJ5p38UefpgHydYt9bb4TJwSBzl7bU3vvlirc74Drod
+	3MDnl4m7cd0OL0Hy7Ppgv6GJqAFK0VJapNuMYbW70xNnARCxy8Ab9AnezmzjxV1Mb+CNWvEEmHbZn
+	B/ca4cfGL6U3oTmsK3cA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqsaK-000WCB-35;
-	Thu, 12 Oct 2023 10:06:28 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqsaI-000WAt-1Z
+	id 1qqsro-000epm-0V;
+	Thu, 12 Oct 2023 10:24:32 +0000
+Received: from m12.mail.163.com ([220.181.12.215])
+	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1qqsrj-000eo6-21
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Oct 2023 10:06:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id DF80ACE2789;
-	Thu, 12 Oct 2023 10:06:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30472C433C8;
-	Thu, 12 Oct 2023 10:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697105182;
-	bh=s/sZcf7nbHGgtGqnIcOjvr3LFAA8WfuaI+wbvCv/HyI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=kZGe/FHAs9+4LTHdzHXm0+1PGY7i3nPHVD57gn6TDSc2Bb1npF2C35wRQ82wFC6m4
-	 7cQS8FtUVc68v7i/MR/EnMNBVHJOfb3bW5ZLNE1D3PrsSEnCFZmXaUB1/34FQ25f7B
-	 RzP7ryErVzHM4X7ovAsfcAlKeVNY4I9tF+a/6BvhNvc8jYH0ryJAXftTtgTnjJKZqU
-	 eELZXoaLMm9NIhfJy0mnyc1l3bRdW9vMs0b8/eQ3DDxXe0xECnvDSe13tTTM09Fs7G
-	 Fg5/qSG+nXV82eAvhnlXrU1MMKRzS4srhjnwPWmrNuwCd308hN8AYAz+SiLiVqJZuD
-	 TExicGO5tUv8A==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>,  tudor.ambarus@linaro.org,
-  pratyush@kernel.org,  miquel.raynal@bootlin.com,  richard@nod.at,
-  vigneshr@ti.com,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  quic_srichara@quicinc.com,
-  quic_varada@quicinc.com
-Subject: Re: [PATCH] mtd: spi-nor: Ensure operation completion before shutdown
-In-Reply-To: <bb12db1205a5d1bfbee341d23defe0be@walle.cc> (Michael Walle's
-	message of "Thu, 12 Oct 2023 11:11:09 +0200")
-References: <20231012055148.2445303-1-quic_mdalam@quicinc.com>
-	<bb12db1205a5d1bfbee341d23defe0be@walle.cc>
-Date: Thu, 12 Oct 2023 12:06:19 +0200
-Message-ID: <mafs034ygm9yc.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Thu, 12 Oct 2023 10:24:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=36jk6
+	CeO4wFJivet1w1wQFl1FwitYQOJSxAYUuV6ZJQ=; b=iD36WltUFX4fdaPMrnnV0
+	V3daiykuiju6j12G6iz/3MWWpaMydLNm0N7qEHaDmmXwg0kQQWEtfnAP48N6jnBW
+	fSwwLFzCKzd+B+lrd3CEoufplwMn0sdAv+PUGzrpBGIcxxsZV5U5J9xdqnqecLX3
+	KiQF1puTCjxgddxloUI88M=
+Received: from localhost.localdomain (unknown [119.123.76.99])
+	by zwqz-smtp-mta-g4-2 (Coremail) with SMTP id _____wDHzzJOySdlnIxuAQ--.19284S4;
+	Thu, 12 Oct 2023 18:24:15 +0800 (CST)
+From: Bruce Suen <bruce_suen@163.com>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	bruce.sun@xtxtech.com,
+	Bruce Suen <bruce_suen@163.com>
+Subject: [PATCH V2] mtd: spinand: Add support for XTX XT26xxxDxxxxx
+Date: Thu, 12 Oct 2023 06:24:12 -0400
+Message-Id: <20231012102412.10581-1-bruce_suen@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-CM-TRANSID: _____wDHzzJOySdlnIxuAQ--.19284S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtw17Kry3Xr4rCrWxtF13Arb_yoWxJFW5p3
+	s8tF98Gr48Ga1xu3WIqayDArn8Xwn2krW7uw1j9F1YvFyFk3sIvFW7Cry7Cr1DJ3y8Jayf
+	Cw4UKry7Ww4YyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pi_MaUUUUUU=
+X-Originating-IP: [119.123.76.99]
+X-CM-SenderInfo: 5euxuvpbvxv0i6rwjhhfrp/1tbiWRIHKFWB1KTtuwAAsW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231012_030626_718486_669F94B8 
-X-CRM114-Status: UNSURE (   9.42  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231012_032428_073555_9AFD1B3C 
+X-CRM114-Status: GOOD (  11.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,27 +74,195 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Oct 12 2023, Michael Walle wrote:
+Add Support XTX Technology XT26G01DXXXXX, XT26G11DXXXXX, XT26Q01DXXXXX,
+XT26G02DXXXXX, XT26G12DXXXXX, XT26Q02DXXXXX, XT26G04DXXXXX, and
+XT26Q04DXXXXX SPI NAND.
 
-> Hi,
->
-> Am 2023-10-12 07:51, schrieb Md Sadre Alam:
->> Ensure that there are no pending spi operation inprogress
->> when system halts.
->
-> What operation might be in progress here? Did you encounter some problems?
-> Please explain it in more detail in the commit message.
+These are 3V/1.8V 1G/2G/4Gbit serial SLC NAND flash device with on-die
+ECC(8bit strength per 512bytes).
 
-+1
+Datasheet Links:
+- http://www.xtxtech.com/download/?AId=458
+- http://www.xtxtech.com/download/?AId=495
 
-Ideally we should never reach this function with a pending operation. I
-think we should do a proper wait in the place we did the operation that
-needs waiting rather than here. That would make sure operations other
-than shutdown, like reads, also work properly.
+Signed-off-by: Bruce Suen <bruce_suen@163.com>
+---
+v1->v2:
+ - reserve 2 bytes for BBM
+ - use FIELD_GET() nand macros to get ecc status
+---
+ drivers/mtd/nand/spi/xtx.c | 134 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 134 insertions(+)
 
+diff --git a/drivers/mtd/nand/spi/xtx.c b/drivers/mtd/nand/spi/xtx.c
+index 3911520f7..702dd5ef8 100644
+--- a/drivers/mtd/nand/spi/xtx.c
++++ b/drivers/mtd/nand/spi/xtx.c
+@@ -4,6 +4,7 @@
+  * Felix Matouschek <felix@matouschek.org>
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/mtd/spinand.h>
+@@ -15,6 +16,12 @@
+ #define XT26G0XA_STATUS_ECC_8_CORRECTED	(3 << 4)
+ #define XT26G0XA_STATUS_ECC_UNCOR_ERROR	(2 << 4)
+ 
++#define XT26XXXD_STATUS_ECC3_ECC2_MASK	    GENMASK(7, 6)
++#define XT26XXXD_STATUS_ECC_NO_DETECTED     (0)
++#define XT26XXXD_STATUS_ECC_1_7_CORRECTED   (1)
++#define XT26XXXD_STATUS_ECC_8_CORRECTED     (3)
++#define XT26XXXD_STATUS_ECC_UNCOR_ERROR     (2)
++
+ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+@@ -84,6 +91,53 @@ static int xt26g0xa_ecc_get_status(struct spinand_device *spinand,
+ 	return status >> 2;
+ }
+ 
++static int xt26xxxd_ooblayout_ecc(struct mtd_info *mtd, int section,
++				  struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	region->offset = mtd->oobsize / 2;
++	region->length = mtd->oobsize / 2;
++
++	return 0;
++}
++
++static int xt26xxxd_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	region->offset = 2;
++	region->length = mtd->oobsize / 2 - 2;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops xt26xxxd_ooblayout = {
++	.ecc = xt26xxxd_ooblayout_ecc,
++	.free = xt26xxxd_ooblayout_free,
++};
++
++static int xt26xxxd_ecc_get_status(struct spinand_device *spinand,
++				   u8 status)
++{
++	switch (FIELD_GET(STATUS_ECC_MASK, status)) {
++	case XT26XXXD_STATUS_ECC_NO_DETECTED:
++		return 0;
++	case XT26XXXD_STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++	case XT26XXXD_STATUS_ECC_1_7_CORRECTED:
++		return 4 + FIELD_GET(XT26XXXD_STATUS_ECC3_ECC2_MASK, status);
++	case XT26XXXD_STATUS_ECC_8_CORRECTED:
++		return 8;
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
+ static const struct spinand_info xtx_spinand_table[] = {
+ 	SPINAND_INFO("XT26G01A",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xE1),
+@@ -115,6 +169,86 @@ static const struct spinand_info xtx_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&xt26g0xa_ooblayout,
+ 				     xt26g0xa_ecc_get_status)),
++	SPINAND_INFO("XT26G01D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x31),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26G11D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x34),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26Q01D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51),
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26G02D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x32),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26G12D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x35),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26Q02D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x52),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26G04D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x33),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
++	SPINAND_INFO("XT26Q04D",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x53),
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&xt26xxxd_ooblayout,
++				     xt26xxxd_ecc_get_status)),
+ };
+ 
+ static const struct spinand_manufacturer_ops xtx_spinand_manuf_ops = {
 -- 
-Regards,
-Pratyush Yadav
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
