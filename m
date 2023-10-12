@@ -4,88 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 339BBCDB482
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 05:52:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A46B5CDB46E
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 06:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=t1LncLhGJnCsK/jI2mgWCs4uVzc+pyxC7uEV++/sTnQ=; b=BQQLzsmg7aZFc5
-	cweMl4PxlfaHshh7VzF1wKwwtSBkWkEjUh2bZVaA5SJPjLdcbmBi5+4YmdNjFKOWNb/kF1dN4V4PY
-	A/7b2yEjSOGNRgl4JsN7gwSn9Bfp1tTcqC8Z1GabiI9iWt8FLmIoJvmhNDLjP6aqFlkfGj3TfzoM1
-	muaL4oPPFSIud2oaUvTYOeOGfL6BRVOkfKADwxQuUDToD89vdPEcL36/p3AHXLFTm8+D3vW+j61fB
-	Btldes7ebjp2lBGc0u2eK4Fwb1T/W1A61xLadmwv4htUoHDz41+cUroUdAmU2DxC4eiMy1nmiLt6y
-	n+A473aMQ/AjMyo9MNVA==;
+	List-Owner; bh=dXdWCzbwbahfMxywfawsRWQm9coQOlIZQ7SUOEYTQrc=; b=e8/GsNhpsG7Jm9
+	ooP7xMKNz/mLpO/fHFC6XqtdDEJQtj8/gLLlR4IDW8EIE3885wGWS5gOIdexKg88GbRTvxXzLyHHL
+	OHaCajNwlivE9ozyeX1Jy4E4Hj2jPE2Ad1EBdDZY/sBr7oU+A5fSwB77IdVDFoU5TAFfy+0wEIJOk
+	w0Deap5U8bLRdyAKxhHKOQjheHPi43+Wr11Yt9QoWZmnPu7bJNz4//PoVxZ+MGwV9IAFSUZGdloLI
+	/3/JdadhE0O4eocAPrU16ByhgUDWv45q0EiYCATmi9g/XxkL6wdTiXuxlq1ke1bzymEj91oo8Ly7Q
+	mJy7spEeNhdCZkiCgddQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqocH-00HUVs-2u;
-	Thu, 12 Oct 2023 05:52:13 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qqpP7-00HZYl-10;
+	Thu, 12 Oct 2023 06:42:41 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqocD-00HUUn-2e
+	id 1qqpP4-00HZY6-0x
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Oct 2023 05:52:12 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C3tN9U029359;
-	Thu, 12 Oct 2023 05:51:57 GMT
+	Thu, 12 Oct 2023 06:42:39 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C6P4tj013234;
+	Thu, 12 Oct 2023 06:42:20 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=qcppdkim1; bh=iLOCYuFvToEXWyeuR0V8GCWiuhk3vAizBPUCQ5xahXM=;
- b=SqD58/68G3dpgIliEWraaA7vG1gs7AMdtOvEALKYiFT49hRR1D9bk28wp++xiD0yGT4O
- mP/MDZifrM+FG6/tuMu7tCYwe8y5pArZQrMtgcwKbAxX+gLwLXfrTh24i91UCdI7FUW3
- s2RGJd88Mql1ikIkBcxoPaF/kokTHkwm35rC0hiiD8eUIsSn8pjxUhlsrMCtVWfZzh8a
- 7CkUXrQtN5iQKkXh0UxXrmA9LrIUW9jxfU53l8UqcRFJVufsC0G4JESIcO1G7m5ba20h
- m/9P76qUZYNSAhRdEKLk0LINzcLp6cNmKc2nEROV0O2py78mFAEhlQWjDU+JEhwECB0Y VA== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnstytfaw-1
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=t+WoBM0MjsmtUKWbbU/ZptCtQbJ0t63RthiJOJYVP+4=;
+ b=U2NdZ8MvppQSd3bqLPrrF7V7a2X6O09RKGCkOdkIT9AsbIAuwRKRf36K0NY4vhZgdxm9
+ wpz30/cZ7qTBIdtamV8JqaGN6IxQpVAdLYVVH2wWTMa7fx5yMxi6OeLxNfMb23WvOIYw
+ 5tigXx+b5dYg2mk6sBhok3vQ1c0sBccNYmmnOLvc/xndx6BfTLLd/1tSFcz/EP/eFaJi
+ llhLuAPoqT7O3NNN1/U9c1ONF6YIYtH5M8pfYPGlKaEwyQMJU7AKPtSjyFi13JWWKWM0
+ afvaTnQIg5XjetR/yzUg9ygELEfgquYWS1NITLDtF0/ru+oIiz3gwWGZRMc30llL9MK4 pg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp5xr8n35-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 05:51:57 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 39C5md07023136;
-	Thu, 12 Oct 2023 05:51:52 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3tk0dksk0c-1
+	Thu, 12 Oct 2023 06:42:20 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C6gJbC010993
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 05:51:52 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39C5pqnB025355;
-	Thu, 12 Oct 2023 05:51:52 GMT
-Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 39C5pqEg025354
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 05:51:52 +0000
-Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
-	id 409B0412D9; Thu, 12 Oct 2023 11:21:51 +0530 (+0530)
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com,
-        Md Sadre Alam <quic_mdalam@quicinc.com>
-Subject: [PATCH] mtd: spi-nor: Ensure operation completion before shutdown
-Date: Thu, 12 Oct 2023 11:21:48 +0530
-Message-Id: <20231012055148.2445303-1-quic_mdalam@quicinc.com>
+	Thu, 12 Oct 2023 06:42:19 GMT
+Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 11 Oct 2023 23:42:15 -0700
+From: Sridharan S N <quic_sridsn@quicinc.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <frieder.schrempf@kontron.de>, <mikhail.kshevetskiy@iopsys.eu>,
+        <olivier.maignial@hotmail.fr>, <quic_sridsn@quicinc.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Md Sadre Alam <quic_mdalam@quicinc.com>
+Subject: [PATCH] mtd: spinand: winbond: add support for serial NAND flash
+Date: Thu, 12 Oct 2023 12:11:34 +0530
+Message-ID: <20231012064134.4068621-1-quic_sridsn@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-QCInternal: smtphost
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: VgoyhuabBfVMOAxOj4MsziCZBct1asUr
-X-Proofpoint-GUID: VgoyhuabBfVMOAxOj4MsziCZBct1asUr
+X-Proofpoint-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
+X-Proofpoint-ORIG-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 mlxlogscore=728 lowpriorityscore=0 clxscore=1011
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120049
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 clxscore=1011
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310120057
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231011_225209_914287_6E639F9D 
-X-CRM114-Status: GOOD (  12.39  )
+X-CRM114-CacheID: sfid-20231011_234238_456176_44A7241E 
+X-CRM114-Status: GOOD (  13.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,28 +96,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ensure that there are no pending spi operation inprogress
-when system halts.
+Add support for W25N01JW, W25N02JWZEIF, W25N512GW,
+W25N02KWZEIR and W25N01GWZEIG.
 
+W25N02KWZEIR has 8b/512b on-die ECC capability and other
+four has 4b/512b on-die ECC capability.
+
+Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
 Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 ---
- drivers/mtd/spi-nor/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/nand/spi/winbond.c | 45 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 1c443fe568cf..adc4d2c68695 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3690,6 +3690,9 @@ static void spi_nor_shutdown(struct spi_mem *spimem)
- {
- 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index f507e3759301..1a473021cca5 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -169,6 +169,51 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N01JW",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N02JWZEIF",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbf, 0x22),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 2, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N512GW",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x20),
++		     NAND_MEMORG(1, 2048, 64, 64, 512, 10, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N02KWZEIR",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x22),
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++	SPINAND_INFO("W25N01GWZEIG",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x21),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
+ };
  
-+	/* Ensure no pending spi operation in progress */
-+	spi_nor_wait_till_ready(nor);
-+
- 	spi_nor_restore(nor);
- }
- 
+ static int winbond_spinand_init(struct spinand_device *spinand)
 -- 
 2.34.1
 
