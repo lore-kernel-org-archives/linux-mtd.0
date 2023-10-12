@@ -4,115 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1216BCDB47E
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 08:41:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6076CDB46E
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 08:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2oYIxI2ZnT+AMXz3QnulicIqB9NPCGyvd0LY411hoLI=; b=xA9A9cfh68Kj4p
-	BmkVTlzG3YPbsmJzLBDOnFMAPS+Qow9gQUKf16gBskldVpApXSkTIRZLC71AyLVWyew9+vVfVFvOS
-	bN8togZnl+pevuQghp6aPGJV773cvnyEwJfmrAMk1GyhWJt5/t5xmWCw0uM1BNnOyoHVL8maYHj3j
-	kbeYra/sUEcqxClFTxpJfWFGQOJjiDVwe4oIZNVl6Dy9kiEKGFT9BPS30QviNS63Ga2NvF9tDS5N4
-	Q3yjZWJI6hgzaB26Fvu0oF3Nvmljq7VKEax8hzVPE05kZ16w185WM2xYZHNNmsH7NkxMLLJNoWDMB
-	BR2O7tDWZHzqDkzeY5+w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=IXR7ZLd9jLhzelbz+ofCnLgVChcDiZti6K7o5HIN7pg=; b=MBMplCuGC9RncG
+	zy4su2ZV1PNfTx0p42HidwNeDpnOhXKSRFTaJT+ANjmaeaser5PGGr5UsNS40pgBSJ0LIJsF7Nj9A
+	R6hqS7SFnHHsZq55z6OE+gtftn6dbqMQsaF8ioKhJwS1wuFJC0J/S6zYaxZP80GwrckdEXT753cQS
+	EkW3Ssr99GdTtMj3mRbaBGvgXneo9fC7Ked/cc/GhjiraEPwcY9JNooEQMxB/+qrayRVzrjqN8LeF
+	yOhC28ixOkO6s5D9MexqU7db/EAUlI3vCd8MJDHGG6BSn+5NHHxx2ka2WIJo31XuWfLuJs6VL0jSM
+	lf3hvUqEFmLY/0nBhOkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqrFz-000DHU-0R;
-	Thu, 12 Oct 2023 08:41:23 +0000
-Received: from mail-sy4aus01acsn2080b.outbound.protection.outlook.com ([2a01:111:f403:7005::80b] helo=AUS01-SY4-obe.outbound.protection.outlook.com)
+	id 1qqrXn-000HzB-2t;
+	Thu, 12 Oct 2023 08:59:47 +0000
+Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqrFv-000DBd-1Y
+	id 1qqrXl-000Hxb-2H
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Oct 2023 08:41:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=deidcrqxypQdy+yFK3tHUtKKyNXNRsnr+LRmBMDfmST4WvJRhFueOTvwO1HqXlb1VQj18Q5wGE57q9YfndTMtPX4iwZPbxweacLMIatBFSms1VvMwgWCY0PcGGjozaTtr1vie3H+nMyrIgwYgqlNeZDcTvKnzZW74k1NJwWG0nQJy7rXhBeRGb5xYaW2UWCXP7CA9QBIgPxWUTk3F4kqpNIcuZbcaKUd62yk1h7kDm59fM4Ql8MNT3uosoh18q+a7O8wbHlny0Y9yrcHzTznQ3l/L1msg1FzMvOSCSMaUYAVXNr0O9bZVkoTxjladwGt90j5ypH2dka2BreCddgszg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=thUJW3OEno0Q4wW6cMW1DgsYT31uh13J0vUTBxX0d7I=;
- b=I2ee5bxBEotXQ9ygCJhlDPYXZrHduomMbCmv80inpVUWd7Nq2wObqUJSUs+QSwTJA//FkmAmgiCiGr9W+bu3EALSkqbOauk8tRVcH3php3sZ7AUpM0RttIm4d4UrCR4AzvGigkPF/8bMsLDgjtYPXxzsaOKAXZ9IzCFr5ZVPLu3F7lDhgnP2tzoIJZfHWX3NsOEEXAqYKL6sd6ytPENxa5laJLAeFP4/gmzORjtHPV1wCG93wybr5E4f+3LJjnVTPwtV7N6KfXiDL8tgD7swyNKq8KmZeJy+3x6lrsjt3rhT/GFTNJt38tUACOh08HzKB+GK11eG6y0RuvHrWalesw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=thUJW3OEno0Q4wW6cMW1DgsYT31uh13J0vUTBxX0d7I=;
- b=YTMksxYNthuFtOZTaS4kmL3k5qF2qorM3pz85snpWUuXjQ5mbCMetGxVNO+2g/61heA0P9WSivRIitgt7+1IwhIyT31h8wlS24eEfPCICsGcRLCqyrzCxtnX20Y766MBuzeJcrkrNN6XDFIGwWPwjrMUqfWj5z9uvqUzvNVgl5QYfNiLhHDDQMZGOd3saBVxgG5/BM6NRDJXCBSaE2GwQhSbO/Su362yDD//xBt+WDvF44tL1/81jF9j+2jtHaWoFnT9UFPZAfdzOZCG6husnVCrfPq+G8vTdyU/RtZbLt9sPkS1X01B6Cuq4wZBhTtsM2W2fVntbg9DbNHFhrbyQw==
-Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:159::11)
- by SY7P282MB4738.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:276::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
- 2023 08:41:09 +0000
-Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
- ([fe80::f57c:b29f:dc13:f936]) by MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
- ([fe80::f57c:b29f:dc13:f936%2]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 08:41:09 +0000
-From: Wang Ryder <rydercoding@hotmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: nandsim: to support bigger oob size than 128
-Thread-Topic: nandsim: to support bigger oob size than 128
-Thread-Index: AQHZ/OYujrnnDRvWvECTMUcJjarWaw==
-Date: Thu, 12 Oct 2023 08:41:09 +0000
-Message-ID: <MEYP282MB3164228AA0FC01BA425F0F54BFD3A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-tmn: [K1+S73fzQNvSuIEJSaGi43PFj4aYkL/n]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MEYP282MB3164:EE_|SY7P282MB4738:EE_
-x-ms-office365-filtering-correlation-id: 6bf791f3-c7a6-4a7c-f4bb-08dbcafefba3
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dBm6CAHvwngV3mTw69BjnQJggDd6j/+eVfQFPgdO1NZbl0OD+cBbvab+UsySpIpWKxiZJdcu1rJriY8WHjSLH+EOkA/v2JYTLE2i4lwuQYfuJ54GGzIPdwVRFefDjjCFGn1kBGmMsQd678hTdWewnTUJIUV7c6eBUTzcaRFDWdT8YAdVcpmmSABtfgOHFaKTlkb6Ng65HaaN3JxeN6uLab5nMbUCtrz7uiM36NzR0pGqqMCgINAYxNUQOnp3zpKdwibjO3v9yaAQs7d0P/7/j9MtGC23U+847V1WiU7T2Rn15VbeP/FJJV8rdZEvOAw0EbSx7wU/K29wD9FqtUH/6jeZv11bD9OUaov4JM3GyYXZaZb4RfgpXzBAdXhVDIRCqEQjXevgTI21Bf5UAKAYqRwFwf+HesqgFi/0OX/UMZDJFkfvrnp5fA4gBb+kcZPq2xwVfbOwHIhMTNY4u00bGMs3S7WW53/NdA7kVE+NUI2wVYbOeHkUgNoT6OOtYxCBgFfo7mHw0HKMmOP5Hmuu5G0KelV4yjd2iZrZwzXVir8vLNEaxLJhngc7W8i+czFi
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?WGdGZ3lENm5qc09OMmZhYzN0WEprUENlQ3VwbXpXdW1ydGpKMGJoZmxackhz?=
- =?gb2312?B?ZG55ejBWT3IxdUhORXF5WHhaSnFTQkZ1UFRQektUay85YjJFaFVCRzRVV3Zx?=
- =?gb2312?B?K1NrSXFqZ2tXSy9wNHZZMW9HbnhFaGlmaThERDBJNG1zVitKRVZPVk5OTEVQ?=
- =?gb2312?B?K3RIMmYwVWRZamdwb2Fnb1U3ZnpwanE2dHJnbksrVy9Gb05XeUdoMmNpN0hB?=
- =?gb2312?B?cG9CWDJLTTZkKytONElpTW14TWJ5bk5zRlVyZlhkWXlMdUtyMUw0SGkzZnJD?=
- =?gb2312?B?aEd5b1RiaEJ2dkpWY1dzQzFvdnh0Y3lWOUwrM1F2RnhvV2hDTHFxT284M29s?=
- =?gb2312?B?WFVGc3I2TS9LR0RLNVFmdzM1VU5pZkdnWG4wZWtQVlFLc05MMWJxOVNvYVYr?=
- =?gb2312?B?a1lvTVhLTlJ3d0dsZy9PeGR2dmdNclNBUEtFSzc3eUpHWXNaWW9SalI3NWxD?=
- =?gb2312?B?SXl0ZWFRNUM2dVc4MXprT1Jtd1JyUDNYaWRpLzloS28yNmx0VHpBR0RSQStT?=
- =?gb2312?B?Vm5DU0RNcysyeHF0VDlHRTIxcW9pN3BqUXRhajdRdi9NT0crV2dZUkdVeVcw?=
- =?gb2312?B?em1zUHZsVm5JenFkaE9YTmcwMHd2eXQrWE1ETlh4RUM4M0dRcmF6MUhWckl5?=
- =?gb2312?B?NlpKWmllKzlqOVpSUkZFL1dGQmQ4S1NsSkNqWG1lNFNTVjB3NytSUk9TYnla?=
- =?gb2312?B?WHNKRXZJb2N6Q0pMYjdQMVFIWmorLzhMdUt5VnNibTdEOUdnSGo2SFNWdUp5?=
- =?gb2312?B?MTRpV084eGRLSHhVRnhsS0hMM1VnYnZ5R3p5ZVpFUUpmRjFKQkszc3QxSkVV?=
- =?gb2312?B?OHkvMnJMbEh1YklYNXBFSkhEN2FmdGlKRC9HMjZLbVZqdFYxUXl2SWljcVBp?=
- =?gb2312?B?SFQ2aXB3eVN2ZG1MUmRWSzI0bk5Eby9ITC9JUEZHdDlvUStKa3RBdUdxV3h1?=
- =?gb2312?B?amZZZlprdFUzN2x6ZEhaTEQxZTNVWkJ5bEcwbG9wTldleitGYnhPT2lTYjJv?=
- =?gb2312?B?MVFZdWxPek9qWTFDWW9OMHlDQXdUdmkwZ29NQlNmUWVKSTAyNzExelB5a041?=
- =?gb2312?B?R2dmY1VjNFVxVGRYRkpyalIzNDAxdWY4QW9xUHJPSSs2MFQ3b2g5SGVIWldQ?=
- =?gb2312?B?eXRFK2RVTEVnTTV5WUFlV3hXSHE4ek43ZUxhSnZDQjIyNG56bk9OY08xSzJB?=
- =?gb2312?B?bkpUOWExV2JENFR5QndmMFpEZkh1T21EUDZYbmRnSktVeXpCeTBwM1RVNTF5?=
- =?gb2312?B?bkUxRG4rZU9TZFAwUktBWjA5UzNUbHhqb1JxODdHRlNUQktvTVc4bUNLRUl4?=
- =?gb2312?B?WllGdUI1djI0d0IyVnNqQW85UFVDVlM3dnN5T1hBb09PdzJEVmRtWHhubmdB?=
- =?gb2312?B?dkp0U005cVVBS052ZHlLaEJBM1Y0aDc3YWMvKzROV0lZV0lXNDhweGVubHp3?=
- =?gb2312?B?SWJhNzdQR2lSd2h0VmhhbHVUd3ZUcXhpanpDRWNqVmNOa0syd3pVT0tYUyth?=
- =?gb2312?B?a1ZMZWF0U3ZtMEpHSCtMNUM0ZGpablBBUGdsKzIxU0NVOUc3VU5RbjJEVmU4?=
- =?gb2312?B?elViNTMyZEhUazBUOVpzU2hJdlhuQ2ordzZxVk9ibTdGbnM4Sk5sQlBkVm50?=
- =?gb2312?B?OWxIYWprYnoyQTdBZlFIWWxQVmhHL2c9PQ==?=
+	Thu, 12 Oct 2023 08:59:47 +0000
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2774874c3daso557775a91.1
+        for <linux-mtd@lists.infradead.org>; Thu, 12 Oct 2023 01:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697101184; x=1697705984; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=o9uprgBW+dbegmp74vVfmKth4R26Cfc4fh6n1LeLCa0=;
+        b=m7v05IP5l8IOjFf33N4sqQDlIf35w4zQlniyQjguQbFOC+/EWoXb7vqx2AtsFGsmrG
+         R/djx2KHm540aZoswLLSiAtPM6QQFZlaznco/GuAnDJPn1drjZcPqAb/CFhCyb6mXowv
+         DNawKpbaBNrDgQMR1m5heorjdT4w19RGZLl/rAZHlXVQgqTL0kvophtsPGjJhQ56IPqJ
+         nK/Bt9C54f8VKOeWNGmrauz3LmbqV75bU0mZqfPm4qUwaKtFKZamF9s+5xAyebr9jyBT
+         GPCPyJu9gKHR2A9sqFgK7oOx8q7qt4tdtt68S0YCoxYfPVqnM2FaqU9s4W9K7RweNfT1
+         y9EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697101184; x=1697705984;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o9uprgBW+dbegmp74vVfmKth4R26Cfc4fh6n1LeLCa0=;
+        b=DmJpAWXSK9hW/uswxJdj7c/0VTQSf49qQ7sP8y+4dBoenBirnbUFweEJUyB5t++Ofn
+         cy4xun6Rq9MP8woxztGVEkTwnJclmb5zu8G0asdVv5rv5YsSPALh3rjD4YSS+saZ5PMb
+         2MlAHyLcoavjAg2IaB96zI8Mt8FmbuX0+2easAtJPsp08RloaxQB5Ho5lK0th7HCoYHd
+         IFc4RzJmMeZIWDxJjffz9LHU7Vaioa4RUndNSYkmT6fnZkX3MsGH9ZZ2LqDkA9qr5YTK
+         b+MgTjemqBZ1ytip6ZMk8cHhGD3rSAhC7F7oMy131va14kTXJdf2B/3fuyoMCtyj6xUu
+         sr3w==
+X-Gm-Message-State: AOJu0YzZ+7YcY9rlPwQpcEr8dGNIteMaQrpq1W6P1sikIWLH3GXX7+Wn
+	h6oDgWZaHsHY5zIsGaT6QKvsGW8mG4okaT6MDaU=
+X-Google-Smtp-Source: AGHT+IFjb+Sys6kLuU/BwD3ZipuHy22imoPZEUnVCtD/GUMjcCBKiuA60fYhtCCx2u/fbMDUUYstUccdc8xcgzqNgR8=
+X-Received: by 2002:a17:90a:1196:b0:262:f449:4497 with SMTP id
+ e22-20020a17090a119600b00262f4494497mr21978334pja.2.1697101183569; Thu, 12
+ Oct 2023 01:59:43 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bf791f3-c7a6-4a7c-f4bb-08dbcafefba3
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 08:41:09.5317
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY7P282MB4738
+References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+ <20230908064304.27757-2-jaimeliao.tw@gmail.com> <b998ea18-8ce9-83b0-f42f-18e5ea08175b@linaro.org>
+ <mafs034yppc28.fsf@kernel.org> <f60995d3d02d7639204c2c16abf9bfd7@walle.cc>
+ <54e5662f-baf4-4660-9fc4-7959d2405120@linaro.org> <29bb3d952b9f49961da5e01cf86f9c4f@walle.cc>
+ <b705c36c-1d76-45a4-ab8e-dacdcb844509@linaro.org> <cdd8fb4d9261892345588388a5de262f@walle.cc>
+In-Reply-To: <cdd8fb4d9261892345588388a5de262f@walle.cc>
+From: liao jaime <jaimeliao.tw@gmail.com>
+Date: Thu, 12 Oct 2023 16:59:21 +0800
+Message-ID: <CAAQoYRn9C2biQXfcJYK3SKQcGVZc3ibvP6q5pbk8v78CS+gWVA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] mtd: spi-nor: Add manufacturer read id function
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
+	jaimeliao@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231012_014119_545484_9E3644E1 
-X-CRM114-Status: UNSURE (   5.08  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231012_015945_751117_13B53CD1 
+X-CRM114-Status: GOOD (  39.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,12 +92,125 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It looks nandsim can only support max 128 bytes of oob size. By my testing, kernel error log will be printed as "No oob scheme defined for oobsize 256", if oob size is just 256.
+Hi,
 
-Since more and more recent NAND chips have 256 or more oob size, will there be any dev plan to support bigger oob size for nandsim?
+>
+> Hi,
+>
+> >>>>>> I see this flash supports 1-1-1, 8-8-8, and 8d-8d-8d, there are no
+> >>>>>> mixed
+> >>>>>> modes supported, thus a 8d-8d-8s mode seems just like a hardware
+> >>>>>> bug to
+> >>>>>> me. So my proposal is to leave the core away and to handle the
+> >>>>>> read id
+> >>>>>> hack just in the macronix driver.
+> >>>>>
+> >>>>> +1
+> >>>>
+> >>>> I've looked at the xspi spec. There is no RDID specified. So I'd
+> >>>> argue,
+> >>>> the only pseudo standard is that RDID was only ever used with
+> >>>> 1s1s1s.
+> >>>> But
+> >>>> we added spi_nor_read_id() with parameters suited for the "unusual"
+> >>>> 8d8d8d
+> >>>> case with additional address and dummy cycles. Just for checking
+> >>>> whether
+> >>>> the
+> >>>> octal-dtr switch was successful. Therefore, we've already added
+> >>>> parameters to
+> >>>> spi_nor_read_id() which are not standard. Then we can just add one
+> >>>> more.
+> >>>> It's
+> >>>> just how macronix is doing it. Again there is no standard.
+> >>>> If we'd only put standard (or for the 9F pseudo standard) things in
+> >>>> the
+> >>>> core,
+> >>>> then spi_nor_read_id() would need to check whether the flash is in
+> >>>> 1s1s1s
+> >>>> mode. And no I wouldn't prefer that ;)
+> >>>>
+> >>>
+> >>> If we really want to be catholic, we should switch to 8d-8d-8s mode
+> >>> and
+> >>> then issue the read id and the core will handle the readid correctly.
+> >>> But there is no such a thing, because macronix considers that it is
+> >>> in
+> >>> 8d-8d-8d mode at the time of issuing 8d-8d-8s read id. That's why I
+> >>> say
+> >>> it's a bug on their side. The core is meant to be generic, I don't
+> >>> want
+> >>> to pollute the core with manufacturer specific fixes.
+> >>
+> >> Then why does spi_nor_read_id() have the following parameters:
+> >>
+> >>  * @naddr:      number of address bytes to send. Can be zero if the
+> >> operation
+> >>  *              does not need to send an address.
+> >>  * @ndummy:     number of dummy bytes to send after an opcode or
+> >> address. Can
+> >>  *              be zero if the operation does not require dummy bytes.
+> >>  * @proto:      the SPI protocol for register operation.
+> >>
+> >> They aren't standard either. It's just the way spansion and micron
+> >> transfers
+> >> the ID via RDID in octal DTR mode. And now there's macronix who does
+> >> it
+> >> slightly
+> >> different. But *neither* of them are standard. Why should one be in
+> >> the
+> >> core and
+> >> one shouldn't.
+> >>
+> >> spi_nor_read_id() should just handle proto == SNOR_PROTO_8D_8D_8S.
+> >
+> > Yes, it should, but mx is in 8d-8d-8d at the time it issues the read
+> > id,
+> > thus it passes the core proto == SNOR_PROTO_8D_8D_8D, isn't it?
+>
+> The flash device is in octal dtr mode, which means it will expect the
+> opcode in octal dtr mode. But the data phase mode depends on the opcode
+> (and theoretically, the address phase, too). If you use the
+> (non-standard) RDID on this flash command has to be executed as 8d8d8s.
+>
+> > If you
+> > care about this, please send a patch addressing it, it's better to talk
+> > on code. I don't see yet how you will handle it, but I'm open to review
+> > some code.
+>
+> I really don't have time right now. But something along:
+>
+> spi_nor_read_id(.., proto) {
+>    bool emulated_8d8d8s;
+>
+>    op = assemble_op(.., proto);
+>
+>    /* Emulate 8d8d8s if the controller doesn't support it */
+>    if (!spi_mem_supports_op(op) && proto == 8d8d8s) {
+>       op = assemble_op(.., 8d8d8d);
+>       emulated_8d8d8s = true;
+>    }
+>    execute_op()
+>    if (emulated_8d8d8s) {
+>       /* discard every other byte of the response */
+>    }
+> }
+After checking with Macronix designer, a-a-b-b-c-c is the data arrangement for
+read id operation of flash in 8D-8D-8D.
+Flash transfer data while DQS raising and falling edge exactlly.
+It is not a hardware bug or 8D-8D-8S.
+So that I think we only need a method for specific comparison after
+read id in 8d-8d-8d.
 
-Thanks,
-Ryder
+>
+> Later (or even now), that could be moved down the callstack into
+> the spimem core.
+>
+> -michael
+
+Thanks
+Jaime
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
