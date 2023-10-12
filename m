@@ -4,82 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A46B5CDB46E
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 06:42:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D432CDB46E
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 07:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dXdWCzbwbahfMxywfawsRWQm9coQOlIZQ7SUOEYTQrc=; b=e8/GsNhpsG7Jm9
-	ooP7xMKNz/mLpO/fHFC6XqtdDEJQtj8/gLLlR4IDW8EIE3885wGWS5gOIdexKg88GbRTvxXzLyHHL
-	OHaCajNwlivE9ozyeX1Jy4E4Hj2jPE2Ad1EBdDZY/sBr7oU+A5fSwB77IdVDFoU5TAFfy+0wEIJOk
-	w0Deap5U8bLRdyAKxhHKOQjheHPi43+Wr11Yt9QoWZmnPu7bJNz4//PoVxZ+MGwV9IAFSUZGdloLI
-	/3/JdadhE0O4eocAPrU16ByhgUDWv45q0EiYCATmi9g/XxkL6wdTiXuxlq1ke1bzymEj91oo8Ly7Q
-	mJy7spEeNhdCZkiCgddQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2dQODBEwzpRVvveJuDroQX/36tluLIhskOmaYoeWVkA=; b=PuZq7M6l8PD16Q
+	mdq923bQPXpkVQ/8gBHWsaImH+KKN4mPFiZL4xNAtNexEnZn4dUrKDtO1Eyrpyef8cpl9T0HuLOAm
+	yeqHcmlmVzglcPQj+3iUql+VyaNwNNp4Zdd+1A8qMNfik75cPxlS9r7NyAsphz6q+OjFZkvbJWtU7
+	0T/kyN/jCOnIvJ4dGtFzV1PexL/ZFWxAtL+82dzlyjfp7MhZy3wPvf+mSiP88PZ71kbF4YiHnPeDM
+	FcTGGJ2koLiKjjo0+vb9kgQzwpZsJ/dMDRvN4StoREPmHkndJmGy2DUaSw8LiL/qhwHAlCxJWPWBL
+	9Ns7EXDV/PsiB/buwi6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqpP7-00HZYl-10;
-	Thu, 12 Oct 2023 06:42:41 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1qqpmV-0000iJ-2z;
+	Thu, 12 Oct 2023 07:06:51 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qqpP4-00HZY6-0x
+	id 1qqpmR-0000gB-1E
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Oct 2023 06:42:39 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39C6P4tj013234;
-	Thu, 12 Oct 2023 06:42:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=t+WoBM0MjsmtUKWbbU/ZptCtQbJ0t63RthiJOJYVP+4=;
- b=U2NdZ8MvppQSd3bqLPrrF7V7a2X6O09RKGCkOdkIT9AsbIAuwRKRf36K0NY4vhZgdxm9
- wpz30/cZ7qTBIdtamV8JqaGN6IxQpVAdLYVVH2wWTMa7fx5yMxi6OeLxNfMb23WvOIYw
- 5tigXx+b5dYg2mk6sBhok3vQ1c0sBccNYmmnOLvc/xndx6BfTLLd/1tSFcz/EP/eFaJi
- llhLuAPoqT7O3NNN1/U9c1ONF6YIYtH5M8pfYPGlKaEwyQMJU7AKPtSjyFi13JWWKWM0
- afvaTnQIg5XjetR/yzUg9ygELEfgquYWS1NITLDtF0/ru+oIiz3gwWGZRMc30llL9MK4 pg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tp5xr8n35-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 06:42:20 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39C6gJbC010993
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Oct 2023 06:42:19 GMT
-Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 11 Oct 2023 23:42:15 -0700
-From: Sridharan S N <quic_sridsn@quicinc.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <frieder.schrempf@kontron.de>, <mikhail.kshevetskiy@iopsys.eu>,
-        <olivier.maignial@hotmail.fr>, <quic_sridsn@quicinc.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: Md Sadre Alam <quic_mdalam@quicinc.com>
-Subject: [PATCH] mtd: spinand: winbond: add support for serial NAND flash
-Date: Thu, 12 Oct 2023 12:11:34 +0530
-Message-ID: <20231012064134.4068621-1-quic_sridsn@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	Thu, 12 Oct 2023 07:06:50 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 371E2C0006;
+	Thu, 12 Oct 2023 07:06:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1697094401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PH/KaqunIddnQRtT02HmdgMfQves6qwGIOzjnE0JjkQ=;
+	b=FY+XPJB0L80Aagv0MN6fhAmApIxZB8hFxLsalUUhwZSX/+eYco92ieOuldtUV5uBd03oSR
+	tL2UOTYRO0TTOCM/KBUoZila36yX4DLoyyzU49IPzaWdJmzlsET1kugCv3bqPM/jV4OHZB
+	f9dMF2zZnzmbLQKefKbOHf2EJ+aOBD+5DOKRFbDW9WVbjvKEWVJ/iKYro6+Y2i8O7CcNI0
+	L+WSyWpKICsf/EC1S1EisvmDGEM5PmI7gT5Mk1FVKl298Dzx+zTbUBqmD9hHVWtcNHuhCg
+	fGPy1fnVBOkFzV88YoHU+ggrvfyVuli+1kkvZdgGqgZglUpxGTD8aHotui5MPA==
+Date: Thu, 12 Oct 2023 09:06:38 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: dregan@mail.com
+Cc: bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
+ f.fainelli@gmail.com, rafal@milecki.pl, joel.peshkin@broadcom.com,
+ computersforpeace@gmail.com, dan.beygelman@broadcom.com,
+ william.zhang@broadcom.com, frieder.schrempf@kontron.de,
+ linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+ bbrezillon@kernel.org, kdasu.kdev@gmail.com, JaimeLiao
+ <jaimeliao.tw@gmail.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Adam
+ Borowski <kilobyte@angband.pl>
+Subject: Re: [PATCH v2 1/4] mtd: rawnand: Add destructive operation
+Message-ID: <20231012090638.1e093fe6@xps-13>
+In-Reply-To: <trinity-d4b16b4a-e223-4daf-8a3e-4aaa7fc6c9cb-1697071235519@3c-app-mailcom-lxa05>
+References: <trinity-d4b16b4a-e223-4daf-8a3e-4aaa7fc6c9cb-1697071235519@3c-app-mailcom-lxa05>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
-X-Proofpoint-ORIG-GUID: iSuO3CduG71q1Vl-z8VvQn2sIxt39qvF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_02,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 clxscore=1011
- priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310120057
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231011_234238_456176_44A7241E 
-X-CRM114-Status: GOOD (  13.22  )
+X-CRM114-CacheID: sfid-20231012_000647_870694_02FC7169 
+X-CRM114-Status: GOOD (  19.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,83 +74,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for W25N01JW, W25N02JWZEIF, W25N512GW,
-W25N02KWZEIR and W25N01GWZEIG.
-
-W25N02KWZEIR has 8b/512b on-die ECC capability and other
-four has 4b/512b on-die ECC capability.
-
-Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
- drivers/mtd/nand/spi/winbond.c | 45 ++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index f507e3759301..1a473021cca5 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -169,6 +169,51 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N01JW",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbc, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N02JWZEIF",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xbf, 0x22),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 2, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N512GW",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x20),
-+		     NAND_MEMORG(1, 2048, 64, 64, 512, 10, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N02KWZEIR",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x22),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N01GWZEIG",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xba, 0x21),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
- };
- 
- static int winbond_spinand_init(struct spinand_device *spinand)
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpkcmVnYW5AbWFpbC5jb20gd3JvdGUgb24gVGh1LCAxMiBPY3QgMjAyMyAwMjo0MDoz
+NSArMDIwMDoKClRoZSBhdXRob3Igc2hvdWxkIGJlIEJvcmlzIGFzIHdlbGwgKGdpdCBjb21taXQg
+LS1hbWVuZCAtLWF1dGhvcj0uLi4pCgo+IEVyYXNlIGFuZCBwcm9ncmFtIG9wZXJhdGlvbnMgbmVl
+ZCB0aGUgd3JpdGUgcHJvdGVjdCAod3ApIHBpbiB0byBiZQo+IGRlLWFzc2VydGVkIHRvIHRha2Ug
+ZWZmZWN0LiBBZGQgdGhlIGNvbmNlcHQgb2YgZGVzdHJ1Y3RpdmUKPiBvcGVyYXRpb24gYW5kIHBh
+c3MgdGhlIGluZm9ybWF0aW9uIHRvIGV4ZWNfb3AoKSBzbyBjb250cm9sbGVycyBrbm93Cj4gd2hl
+biB0aGV5IHNob3VsZCBkZS1hc3NlcnQgdGhpcyBwaW4gd2l0aG91dCBoYXZpbmcgdG8gZGVjb2Rl
+Cj4gdGhlIGNvbW1hbmQgb3Bjb2RlLgo+IAo+IENyZWF0ZWQgYnkgQm9yaXMgQnJlemlsbG9uLgoK
+VGhpcyBjYW4gZ28gYXdheS4KCj4gCj4gaHR0cHM6Ly9naXRodWIuY29tL2JicmV6aWxsb24vbGlu
+dXgvY29tbWl0L2U2MTJlMWYyYzY5YTMzYWM1ZjJjOTFkMTM2NjlmMGYxNzJkNTg3MTcKClRoaXMg
+YXMgd2VsbC4KCj4gU2lnbmVkLW9mZi1ieTogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxs
+b25AY29sbGFib3JhLmNvbT4KClBsZWFzZSB1c2UgQm9yaXMnIGtlcm5lbC5vcmcgZS1tYWlsIGZv
+ciB0aGUgYXV0aG9yc2hpcCBhbmQgU29CCgo+IFNpZ25lZC1vZmYtYnk6IERhdmlkIFJlZ2FuIDxk
+cmVnYW5AbWFpbC5jb20+Cj4gCj4gLS0tCj4gCj4gQ2hhbmdlcyBpbiB2MjogZ2F2ZSBjcmVkaXQg
+dG8gQm9yaXMgQnJlemlsbG9uCj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFz
+ZS5jIHwgNiArKysrLS0KPiAgaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oICAgICAgfCA5ICsr
+KysrKysrKwo+ICAyIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
+KC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jIGIv
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiBpbmRleCBkNGI1NTE1NWFlYWUuLjQ3
+Y2MyYzM1MTUzYiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2Uu
+Ywo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gQEAgLTE0OTQsNyAr
+MTQ5NCw4IEBAIHN0YXRpYyBpbnQgbmFuZF9leGVjX3Byb2dfcGFnZV9vcChzdHJ1Y3QgbmFuZF9j
+aGlwICpjaGlwLCB1bnNpZ25lZCBpbnQgcGFnZSwKPiAgCQkJICAgIE5BTkRfQ09NTU9OX1RJTUlO
+R19OUyhjb25mLCB0V0JfbWF4KSksCj4gIAkJTkFORF9PUF9XQUlUX1JEWShOQU5EX0NPTU1PTl9U
+SU1JTkdfTVMoY29uZiwgdFBST0dfbWF4KSwgMCksCj4gIAl9Owo+IC0Jc3RydWN0IG5hbmRfb3Bl
+cmF0aW9uIG9wID0gTkFORF9PUEVSQVRJT04oY2hpcC0+Y3VyX2NzLCBpbnN0cnMpOwo+ICsJc3Ry
+dWN0IG5hbmRfb3BlcmF0aW9uIG9wID0gTkFORF9ERVNUUlVDVElWRV9PUEVSQVRJT04oY2hpcC0+
+Y3VyX2NzLAo+ICsJCQkJCQkJICAgICAgaW5zdHJzKTsKPiAgCWludCBuYWRkcnMgPSBuYW5kX2Zp
+bGxfY29sdW1uX2N5Y2xlcyhjaGlwLCBhZGRycywgb2Zmc2V0X2luX3BhZ2UpOwo+IAo+ICAJaWYg
+KG5hZGRycyA8IDApCj4gQEAgLTE5MTcsNyArMTkxOCw4IEBAIGludCBuYW5kX2VyYXNlX29wKHN0
+cnVjdCBuYW5kX2NoaXAgKmNoaXAsIHVuc2lnbmVkIGludCBlcmFzZWJsb2NrKQo+ICAJCQlOQU5E
+X09QX1dBSVRfUkRZKE5BTkRfQ09NTU9OX1RJTUlOR19NUyhjb25mLCB0QkVSU19tYXgpLAo+ICAJ
+CQkJCSAwKSwKPiAgCQl9Owo+IC0JCXN0cnVjdCBuYW5kX29wZXJhdGlvbiBvcCA9IE5BTkRfT1BF
+UkFUSU9OKGNoaXAtPmN1cl9jcywgaW5zdHJzKTsKPiArCQlzdHJ1Y3QgbmFuZF9vcGVyYXRpb24g
+b3AgPSBOQU5EX0RFU1RSVUNUSVZFX09QRVJBVElPTihjaGlwLT5jdXJfY3MsCj4gKwkJCQkJCQkJ
+ICAgICAgaW5zdHJzKTsKPiAKPiAgCQlpZiAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfUk9XX0FERFJf
+MykKPiAgCQkJaW5zdHJzWzFdLmN0eC5hZGRyLm5hZGRycysrOwo+IGRpZmYgLS1naXQgYS9pbmNs
+dWRlL2xpbnV4L210ZC9yYXduYW5kLmggYi9pbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmgKPiBp
+bmRleCA5MGExNDFiYTJhNWEuLjMxYWNlZGE4NjE2YyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xp
+bnV4L210ZC9yYXduYW5kLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmgKPiBA
+QCAtMTAwOCw2ICsxMDA4LDcgQEAgc3RydWN0IG5hbmRfb3BfcGFyc2VyIHsKPiAgICovCj4gIHN0
+cnVjdCBuYW5kX29wZXJhdGlvbiB7Cj4gIAl1bnNpZ25lZCBpbnQgY3M7Cj4gKwlib29sIGRlYXNz
+ZXJ0X3dwOwo+ICAJY29uc3Qgc3RydWN0IG5hbmRfb3BfaW5zdHIgKmluc3RyczsKPiAgCXVuc2ln
+bmVkIGludCBuaW5zdHJzOwo+ICB9Owo+IEBAIC0xMDE5LDYgKzEwMjAsMTQgQEAgc3RydWN0IG5h
+bmRfb3BlcmF0aW9uIHsKPiAgCQkubmluc3RycyA9IEFSUkFZX1NJWkUoX2luc3RycyksCQkJXAo+
+ICAJfQo+IAo+ICsjZGVmaW5lIE5BTkRfREVTVFJVQ1RJVkVfT1BFUkFUSU9OKF9jcywgX2luc3Ry
+cykJCVwKPiArCXsJCQkJCQkJXAo+ICsJCS5jcyA9IF9jcywJCQkJCVwKPiArCQkuZGVhc3NlcnRf
+d3AgPSB0cnVlLAkJCQlcCj4gKwkJLmluc3RycyA9IF9pbnN0cnMsCQkJCVwKPiArCQkubmluc3Ry
+cyA9IEFSUkFZX1NJWkUoX2luc3RycyksCQkJXAo+ICsJfQo+ICsKPiAgaW50IG5hbmRfb3BfcGFy
+c2VyX2V4ZWNfb3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKPiAgCQkJICAgY29uc3Qgc3RydWN0
+IG5hbmRfb3BfcGFyc2VyICpwYXJzZXIsCj4gIAkJCSAgIGNvbnN0IHN0cnVjdCBuYW5kX29wZXJh
+dGlvbiAqb3AsIGJvb2wgY2hlY2tfb25seSk7Cj4gLS0KPiAyLjM3LjMKPiAKPiAKCgpUaGFua3Ms
+Ck1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
