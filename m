@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 993EECDB474
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Oct 2023 21:29:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD2E8CDB47E
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Oct 2023 08:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:Date:Subject:Cc:
-	To:From:Message-ID:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qwLhi5l3HVluJbTSXu5PeEOIL5pJWTzTgZOZamzSFzs=; b=Doai+xzqmycRqa
-	qseYpMPjxRYqvqOO65f4CcIejCFSOjjXo9nCVlcjuppmWpCaARYJchFyFC9atM6gbd70UnZ5NvWCX
-	Wkdq240l86iyF1zNfpuDERmkAYhaBLdzxGDLCHW0uOPzriq21EotlMR5WlkEZ0+qIJiJ2BIwANBmc
-	dVU3UnmqNbgM+wnibRIDaXEjAVJFayHXQdN7HYSFYMnn21RlxCXH2CR5i2Ydzms+bbdQ7+hpJS4Cr
-	5HXwxlIfh23MnfoKLe81KoLpr5Ldc75riUYr1BRAt5F+VzibaNi+YQ60U7j3S7lVy3rnvwd508gPn
-	U39oBGgE0tfT+992TzWA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=EK3msnmhP3VJQui9k9cJr7+Fkz27so6te4bfvc/0ZEI=; b=pdWk3inS501Cy7AJgp/uejcqJn
+	FN8MOWgxFud0OinL34RamyxArNv/2PqJj1Nn/uJCMiCczJCAgIurLb1VkD2SvcQQmSc4snWqTU61n
+	PihO3kT6jy33DYQpDnrvQdjSO3WaEk7X0/hWUZFCJYHsVflojqDhp/HWCr2A2DRRWN2uXW1wqUFip
+	Q9ie73gz0d908NmDYIY1pbZ0MEIhIGoPXHZPOd0RqY6iq2RbAjPoIZ7Q7e+HEBPvzx064PG8wsME8
+	/RuZwubumIGwQrzRbtaobpM56gMXtigbaz6o0kITGXpDVvOln9MrX7PfOKiQEJeVPb1esScOHyAEh
+	5/hF1sVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qr3F7-001tsm-2Y;
-	Thu, 12 Oct 2023 21:29:17 +0000
-Received: from mout.gmx.com ([74.208.4.200])
+	id 1qrDC4-002mtW-1N;
+	Fri, 13 Oct 2023 08:06:48 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qr3F5-001tsG-0H
+	id 1qrDC0-002mso-0N
 	for linux-mtd@lists.infradead.org;
-	Thu, 12 Oct 2023 21:29:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.com; s=s1089575;
- t=1697146139; x=1697750939; i=dregan@mail.com;
- bh=Mvuu94i8xtEMjbYMXPQkVcVcctpYOoVTda+pB5qWWlg=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=HXFnwgzvBvCIOsIiDKIy0qmA0xw8cDm1PbHjsQKVKwIQQDlQekD9tTPjbLn2gQz60Zfmr4PeGDr
- 1cyUlFpcR5MbDQvbpwqiC3ZQFwCT9djV5E/6KCfZpv5SiCMeQTb7Jc+vP/ygfHYEaQ5atL9YSERXa
- CuoQYMHsRtgyVzs9MJ4dd+i86W3v4VFv2OCsg31DTdheW5Tb65Misoxp0ZwmNuGrK43stCOE8Gfn8
- e5yngY3eS4KKG9zuHpPRmHFta5+afwPATICM4jHnXXmdYo9kNJk2AKY8xudQngmquGstZVQo4Fzad
- 0Z5M2p9XicIr7ee6ItH5LdbMd/J9pu54+WCw==
-X-UI-Sender-Class: f2cb72be-343f-493d-8ec3-b1efb8d6185a
-Received: from [192.19.223.252] ([192.19.223.252]) by web-mail.mail.com
- (3c-app-mailcom-lxa06.server.lan [10.76.45.7]) (via HTTP); Thu, 12 Oct 2023
- 23:28:59 +0200
+	Fri, 13 Oct 2023 08:06:45 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 7BAA2A55;
+	Fri, 13 Oct 2023 10:06:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1697184398;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VJsgeF+AvnMMxwurqQkL1tA1Qkpzq5o+y3Vn4KqwoGg=;
+	b=hd3Kljog8bJJ3SnaVGnm1MFYEXTXSLqoiUmyrhTDY83OKccbFFMeXNIBTcjYKnxBVW5VtC
+	Jm89WCmgn/Lk4sjotxAzPkjEJ7quLF6hehZ9UOaqbMcboogC8/qRW6G7aomTiIDpp1i7gB
+	SCA5cv4Fsl5zGpsaukMMEoXbCJ2w4qawA0e/X4EiXDfL3+Gje3dPi0Aa7v9YfslLqFJ4UA
+	dL5V0EImtYuDAhXbs/E4LpZUZTo+p7ZlIVWqcxqP9NJFgzAOGHQ02PuzCGjAaqUIjl+Wdo
+	btERmJ5O8SHXRXX4u1ATFaUpg++Ei1f9qZSGD0IhpwiePx6i1Deo8LPBf3gF2w==
 MIME-Version: 1.0
-Message-ID: <trinity-5a1ca451-0d23-42d3-978e-ccc0036ff827-1697146139044@3c-app-mailcom-lxa06>
-From: dregan@mail.com
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
- f.fainelli@gmail.com, rafal@milecki.pl, joel.peshkin@broadcom.com,
- computersforpeace@gmail.com, dan.beygelman@broadcom.com,
- william.zhang@broadcom.com, frieder.schrempf@kontron.de,
- linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
- bbrezillon@kernel.org, kdasu.kdev@gmail.com, JaimeLiao
- <jaimeliao.tw@gmail.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Adam
- Borowski <kilobyte@angband.pl>
-Subject: Re: [PATCH v2 4/4] mtd: rawnand: brcmnand: exec_op implementation
-Date: Thu, 12 Oct 2023 23:28:59 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20231012091821.278170ed@xps-13>
-References: <trinity-826f99ef-9889-499b-b68a-fbfd72e913a0-1697071357070@3c-app-mailcom-lxa05>
- <20231012091821.278170ed@xps-13>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:J+NN3g4M719bV24RhmectePAWqvtpJnpZUwDklqiEV9n1ViKzr4NSXs/+aAR27bSX7ZaL
- 7JWequ6nvXoR9dQsSL293vzenOKzZHsaAOSwU0mJBCkILoJX5cRx8tY13MrMdN/h6fMVRrmRpm3+
- wmkJ4F1QAt9wuzwnJwNaMUrJV4EDR/p0Bo7VLfvUYF7kJjWoANTSJqlbWwmTw/ktOqIp6j/FZnJ3
- kKImRnWHxIfmwU8ZMd8z8OoTOZ9+qQltZTpasZRtUXNU5Hzg1Yfm6uyYIE1oFYdzwQWzJ0hCDZtR
- yA=
-UI-OutboundReport: notjunk:1;M01:P0:3Tr72pA0IJk=;/RXVzeF4vnQU640Ca/2fkoioVPV
- cHiF5U2RHwHs0u6JnOyqgwBxn+A8Sav/qMcZZfcPIDMFiOs8+sJKLl14W3UutOSMt0BgQv+oa
- W+O9fx43qUuSxjOAM4Aw1ipkawsBPZeR4fr4esUdciUcQMxJHe6+BnV9leU9qJ198YzrR9jzH
- PAwukqGSpH4o5dYrWXPEalII5rjUBO4mYv3x0MVC/TIQraAUSgBu1z47hqdlCX5gpSo753lXm
- HZFz4Rz3nUM/4s/usDT1yYIv2aYqd1FgJqlChWl24UT82ENiswBnlMawzO3wvbz1LJP41C9hn
- hMRECQRelP47kX8rsuvG3gUdnsjpo1Eqqp+momsyJmI1sY+HTkUtpJeeWSP+GYf69Ct/D2oxV
- PYa/0XNmPpANXAXgsXfv4VBDyJDHilJ6aLnlouCyDIhyOnLREPycYlGyCZC9j+vPrGI8GTvay
- l7Ut2nx7L0xXFMwUjKYH/eEceew2ZYYbh8J6GRCRXNdGOJUVcf/kWnefdoV8QEF47fGwDgRBo
- Wp67hdByrCeJ92lOtP8CgJL6M3EfpbNAa7PtkJwJ/DzROqeORSa2c9O4ScSNlSIauP832J8ds
- U56mzxeHTSS09QlrDNrlxdnCPceyJ0MVoE/uSBV72AiDkQ8cuTVy8jvA+utI09gHbsxH2OagR
- e7QzOwpqeO4ogMzWgGG8pyLFLrF9/uh9o1bfTRt57adARZMXzneSOtrmXitSDMLOB0Wk+btOh
- 1JDU5gEQhv3o3RAJfV7RhOduey8x4V2Id8Ct5IZVkbX5hzHdJKuH9nvjxPVXnzLd9s2uSs/kI
- 1w5G4mdI+zHyUzRc6dw0GVsg==
+Date: Fri, 13 Oct 2023 10:06:38 +0200
+From: Michael Walle <michael@walle.cc>
+To: liao jaime <jaimeliao.tw@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, leoyu@mxic.com.tw, jaimeliao@mxic.com.tw
+Subject: Re: [PATCH v4 1/6] mtd: spi-nor: Add manufacturer read id function
+In-Reply-To: <CAAQoYRn51R3Ok1KEbdRVvwEoU+A4DEK8h2f7jCvn-cotmzFx8A@mail.gmail.com>
+References: <20230908064304.27757-1-jaimeliao.tw@gmail.com>
+ <20230908064304.27757-2-jaimeliao.tw@gmail.com>
+ <b998ea18-8ce9-83b0-f42f-18e5ea08175b@linaro.org>
+ <mafs034yppc28.fsf@kernel.org> <f60995d3d02d7639204c2c16abf9bfd7@walle.cc>
+ <54e5662f-baf4-4660-9fc4-7959d2405120@linaro.org>
+ <29bb3d952b9f49961da5e01cf86f9c4f@walle.cc>
+ <b705c36c-1d76-45a4-ab8e-dacdcb844509@linaro.org>
+ <cdd8fb4d9261892345588388a5de262f@walle.cc>
+ <CAAQoYRn9C2biQXfcJYK3SKQcGVZc3ibvP6q5pbk8v78CS+gWVA@mail.gmail.com>
+ <5fcf12b6fdb2afbeb6fd1f0c22e691c7@walle.cc>
+ <CAAQoYRn51R3Ok1KEbdRVvwEoU+A4DEK8h2f7jCvn-cotmzFx8A@mail.gmail.com>
+Message-ID: <8ec055f3a5bb69e6d72d4f4c5c7946bf@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231012_142915_196098_1ED0BB73 
-X-CRM114-Status: GOOD (  19.09  )
+X-CRM114-CacheID: sfid-20231013_010644_307347_2F436D3D 
+X-CRM114-Status: UNSURE (   9.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,60 +82,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdcOobCwKCj4KPiBIZWxsbywKPiAKPiBkcmVnYW5AbWFpbC5jb20gd3JvdGUgb24gVGh1
-LCAxMiBPY3QgMjAyMyAwMjo0MjozNyArMDIwMDoKPiAKCi4uLgoKPiA+ICsKPiA+ICtpbnQgYnJj
-bW5hbmRfZXhlY19vcF9pc19zdGF0dXMoY29uc3Qgc3RydWN0IG5hbmRfb3BlcmF0aW9uICpvcCkK
-PiA+ICt7Cj4gPiArCWlmICgob3AtPmluc3Ryc1swXS50eXBlID09IE5BTkRfT1BfQ01EX0lOU1RS
-KSAmJgo+ID4gKwkJKG9wLT5pbnN0cnNbMF0uY3R4LmNtZC5vcGNvZGUgPT0gTkFORF9DTURfU1RB
-VFVTKSAmJgo+ID4gKwkJKG9wLT5uaW5zdHJzID4gMSkgJiYKPiA+ICsJCShvcC0+aW5zdHJzWzFd
-LnR5cGUgPT0gTkFORF9PUF9EQVRBX0lOX0lOU1RSKSkKPiAKPiBZb3UgbmVlZCB0byBzdGFydCBj
-aGVja2luZyBpZiBvcC0+bmluc3RycyA9PSAyLCBubz8KCldpbGwgZml4LgoKPiAKPiA+ICsJCXJl
-dHVybiAxOwo+ID4gKwo+ID4gKwlyZXR1cm4gMDsKPiA+ICt9Cj4gPiArCj4gPiAraW50IGJyY21u
-YW5kX2V4ZWNfb3BfaXNfcmVzZXQoY29uc3Qgc3RydWN0IG5hbmRfb3BlcmF0aW9uICpvcCkKPiA+
-ICt7Cj4gPiArCWlmICgob3AtPmluc3Ryc1swXS50eXBlID09IE5BTkRfT1BfQ01EX0lOU1RSKSAm
-Jgo+ID4gKwkJKG9wLT5pbnN0cnNbMF0uY3R4LmNtZC5vcGNvZGUgPT0gTkFORF9DTURfUkVTRVQp
-KQo+IAo+IFBsZWFzZSBjaGVjayBuaW5zdHJzIGFzIHdlbGwgKGZpcnN0KS4KCldpbGwgZG8uCgo+
-IAo+ID4gKwkJcmV0dXJuIDE7Cj4gPiArCj4gPiArCXJldHVybiAwOwo+ID4gK30KPiA+ICsKPiA+
-ICtzdGF0aWMgaW50IGJyY21uYW5kX2V4ZWNfb3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKPiA+
-ICsJCQkgICAgY29uc3Qgc3RydWN0IG5hbmRfb3BlcmF0aW9uICpvcCwKPiA+ICsJCQkgICAgYm9v
-bCBjaGVja19vbmx5KQo+ID4gK3sKPiA+ICsJc3RydWN0IGJyY21uYW5kX2hvc3QgKmhvc3QgPSBu
-YW5kX2dldF9jb250cm9sbGVyX2RhdGEoY2hpcCk7Cj4gPiArCXN0cnVjdCBtdGRfaW5mbyAqbXRk
-ID0gbmFuZF90b19tdGQoY2hpcCk7Cj4gPiArCWNvbnN0IHN0cnVjdCBuYW5kX29wX2luc3RyICpp
-bnN0ciA9ICZvcC0+aW5zdHJzWzBdOwo+ID4gKwl1OCAqc3RhdHVzOwo+ID4gKwl1bnNpZ25lZCBp
-bnQgaTsKPiA+ICsJaW50IHJldCA9IDA7Cj4gPiArCj4gPiArCWlmIChjaGVja19vbmx5KQo+ID4g
-KwkJcmV0dXJuIDA7Cj4gPiArCj4gPiArCWlmIChicmNtbmFuZF9leGVjX29wX2lzX3N0YXR1cyhv
-cCkpIHsKPiA+ICsJCXN0YXR1cyA9IG9wLT5pbnN0cnNbMV0uY3R4LmRhdGEuYnVmLmluOwo+ID4g
-KwkJKnN0YXR1cyA9IGJyY21uYW5kX3N0YXR1cyhob3N0KTsKPiA+ICsKPiA+ICsJCXJldHVybiAw
-Owo+ID4gKwl9Cj4gPiArCj4gPiArCWlmIChvcC0+ZGVhc3NlcnRfd3ApCj4gPiArCQlicmNtbmFu
-ZF93cChtdGQsIDApOwo+ID4gKwo+ID4gKwlmb3IgKGkgPSAwOyBpIDwgb3AtPm5pbnN0cnM7IGkr
-Kykgewo+ID4gKwkJaW5zdHIgPSAmb3AtPmluc3Ryc1tpXTsKPiA+ICsKPiA+ICsJCWlmIChpbnN0
-ci0+dHlwZSA9PSBOQU5EX09QX1dBSVRSRFlfSU5TVFIpIHsKPiA+ICsJCQlyZXQgPSBiY21uYW5k
-X2N0cmxfcG9sbF9zdGF0dXMoaG9zdCwgTkFORF9DVFJMX1JEWSwgTkFORF9DVFJMX1JEWSwgMCk7
-Cj4gCj4gV2h5IGRvbid0IHlvdSBoYW5kbGUgdGhpcyBpbiBicmNtbmFuZF9leGVjX2luc3RyKCkg
-PyBJdCB3b3VsZCBsb29rIG11Y2gKPiBuaWNlci4gRXZlbiBpZiB0aGlzIGRvZXMgbm90IGludm9s
-dmUgYW55IGFkZGl0aW9uYWwgImN5Y2xlIiBvbiB0aGUgTkFORAo+IGJ1cywgaXQgc3RpbGwgaXMg
-YW4gaW5zdHJ1Y3Rpb24gb2YgdGhlIGN1cnJlbnQgb3BlcmF0aW9uLgoKR29vZCBpZGVhLgoKPiAK
-PiA+ICsJCQlpZiAocmV0KQo+ID4gKwkJCQlicmVhazsKPiA+ICsJCX0gZWxzZSB7IC8qIG90aGVy
-d2lzZSBwYXNzIHRvIGxvdyBsZXZlbCBpbXBsZW1lbnRhdGlvbiAqLwo+ID4gKwkJCXJldCA9IGJy
-Y21uYW5kX2V4ZWNfaW5zdHIoaG9zdCwgaW5zdHIsIGkgPT0gKG9wLT5uaW5zdHJzIC0gMSkpOwo+
-IAo+IFdoYXQncyB0aGUgcG9pbnQgb2YgdGhpcyBpID09IG9wLT5uaW5zdHJzIC0gMSBjaGVjaz8K
-PiAKCkl0J3MgdG8gbGV0IHRoZSBjb250cm9sbGVyIGtub3cgd2UgYXJlIGlzc3VpbmcgdGhlIGxh
-c3QgY29tbWFuZAppbiBhIHNlcmllcyBvZiBjb21tYW5kcy4gSSBtYXkgbmVlZCB0byByZXdvcmsg
-dGhpcyBhcyB0byBtb3ZpbmcKd2FpdHJkeSBpbnRvIGJyY21uYW5kX2V4ZWNfaW5zdHIKCgo+ID4g
-KwkJCWlmIChyZXQpCj4gPiArCQkJCWJyZWFrOwo+ID4gKwkJfQo+ID4gKwl9Cj4gPiArCj4gPiAr
-CWlmIChvcC0+ZGVhc3NlcnRfd3ApCj4gPiArCQlicmNtbmFuZF93cChtdGQsIDEpOwo+ID4gKwo+
-ID4gKwlpZiAoYnJjbW5hbmRfZXhlY19vcF9pc19yZXNldChvcCkpIHsKPiA+ICsJCWJyY21uYW5k
-X3N0YXR1cyhob3N0KTsKPiA+ICsJCWJyY21uYW5kX3dwKG10ZCwgMSk7Cj4gCj4gVGhpcyBzaG91
-bGQgYmUgZG9uZSByaWdodCBhZnRlciB0aGUgc3RhdHVzIGNoZWNrLCBubz8KPiAKPiBBbnl3YXks
-IEknbSBub3Qgc3VyZSBJIHVuZGVyc3RhbmQgdGhpcy4gV2h5IGRvIHlvdSByZWFkIHRoZSBzdGF0
-dXMgYW5kCj4gYXNzZXJ0IFdQPwoKSSByZWFkIHRoZSBzdGF0dXMgdG8gZmlsbCB0aGUgY2FjaGVk
-IHN0YXR1cywgYW5kIHJlc2V0IHRoZSBXUCB0bwppdCdzIGRlZmF1bHQgc3RhdGUuCgouLi4KCj4g
-VGhhbmtzLAo+IE1pcXXDqGwKPgoKVGhhbmtzIQoKLURhdmUKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+Hi,
+
+>> > After checking with Macronix designer, a-a-b-b-c-c is the data
+>> > arrangement for
+>> > read id operation of flash in 8D-8D-8D.
+>> 
+>> Could you please point to any specification? I doubt there is one
+>> and every vendor will do it slightly differently. I mean we already
+>> have some flashes which (apparently) reply to RDID in 8d8d8d.
+>> 
+>> For example, see the Semper flash datasheet:
+>> https://www.infineon.com/dgdl/Infineon-S28HS256T_S28HS512T_S28HS01GT_S28HL256T_S28HL512T_S28HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Octal_Interface-DataSheet-v03_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee6bca96f97&da=t
+>> 
+>> Have a look at Table 78 (or search for RDIDN_4_0) and Figure 28.
+> For Figure 28 in this datasheet, I think it means that data latch
+> while DS raising and falling edge.
+> The data arrangement of read id follow the 9.2(Manufacturer and Device 
+> ID).
+> As below are the data arrangement for vendors.
+> For Infineon, a-b-c-d-e-f
+> For Micron, a-b-c-d-e-f
+> For Macronix, a-a-b-b-c-c
+
+So there is no standard among vendors, infineon as well as micron is
+using 8d8d8d and macronix is using 8d8d8s. And - please correct me if
+I'm wrong - the data strobe signal is optional.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
