@@ -4,69 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5546CCDB47E
-	for <linux-mtd@archiver.kernel.org>; Sun, 15 Oct 2023 19:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0247DCDB47E
+	for <linux-mtd@archiver.kernel.org>; Sun, 15 Oct 2023 21:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=cG46k20sb3zxxT4woRprgwu1SSB0rrwXY9Fo1P2nbPw=; b=bCmQK1N4Z+gcwHIUxTIC5dj7u7
-	EnxdeBC0bCdM3ZL9GtaZKZvhFo+WSWlkw6WJZA8y0PLNe9TM49i62Zlh+nGRsWryRQfGTT0SD7KkU
-	jeTExd1NjWJ4Be1VlPU/fwr+kgCMBKP9kUx/sHwXAS9RkbmYlqAVR1etPHa9LxUL3XT7+HOxGCEyU
-	4l8Jn8Krk34zydAtZ+q8oK9ORvl8kmA6+bNBU78SKVDXYmuWrzGgJttlZYV8pe08X1DCYNm7uvvra
-	JGa80bgVNSWnHt5rTL3FXx+pzGT745MSXSienthuG5KmrRSsWB237xNfrBATQhV+/Vs109m8dCnsU
-	xLswE/oA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=upl+d9aLfemIC04U3PFsbKx7wWlclGgoHGaaO8Fhopk=; b=w4Jsdp1JBsB5t1
+	itjgiolx6y6mBru1klY4cS/4eMh+FBu+7mzcwyHFxLjvAWmrvCs8bCa9Tdtb73BiKE2rvN8MdMU5I
+	+f9mi0FcwqI/i+OwF67DOcHvwCx18aNDtGMD16uH8hhupVClmq7CJsE1FvT3ejoqz1wHOZwfh17Wo
+	L9wtubro4zt+tones/pY+gqPJPzW+v3x2lwjg9lbRofUvdWEqA7CRX9DRyFYlzXxkapKCzRwSnSax
+	D42BvVPQhdv/P6aoExNLyYn5QMdl0ravK4bmRN2e9U6KZhIFFf75Jqu94dTfW44iPj+Bbx4VgBY35
+	QoWtp9O3LZvdeQKsXX7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qs6sZ-007cWn-0K;
-	Sun, 15 Oct 2023 19:34:23 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1qs8VE-007ip2-2E;
+	Sun, 15 Oct 2023 21:18:24 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qs6sS-007cVi-1L;
-	Sun, 15 Oct 2023 19:34:18 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 840C6622F589;
-	Sun, 15 Oct 2023 21:34:09 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id Lylr3PuAgrRB; Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 6CF8062348B3;
-	Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id l11TOmD_pnae; Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 32CA0622F589;
-	Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
-Date: Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: chengzhihao1 <chengzhihao1@huawei.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	mcoquelin stm32 <mcoquelin.stm32@gmail.com>, 
-	alexandre torgue <alexandre.torgue@foss.st.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-stm32 <linux-stm32@st-md-mailman.stormreply.com>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>
-Message-ID: <935504729.4822.1697398448017.JavaMail.zimbra@nod.at>
-In-Reply-To: <ee01780b-f5ef-26c8-f632-3bc56cd46b96@huawei.com>
-References: <20230828063845.3142561-1-chengzhihao1@huawei.com> <ee01780b-f5ef-26c8-f632-3bc56cd46b96@huawei.com>
-Subject: Re: [PATCH v2 00/12] ubi: fastmap: Fix a series of wear leveling
- problems
+	id 1qs8V7-007in5-0c;
+	Sun, 15 Oct 2023 21:18:19 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 80B0EC0004;
+	Sun, 15 Oct 2023 21:18:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1697404689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QyLwk8RWeHwb+iTYV4j14/CAsO9UnmgTLhIoR7pcM84=;
+	b=G5I8ztJvdFI8tTwSCy0AWY+6MRhNlKLte1yNV4fIGQl6O23J6Xdoh0CefROrNByOpZhwE7
+	P/dmdthsO5WAs8rqcbBfrDUN9cugU7l4OxjWmfddhyL0LuZ/a6CfmZiXNmu06TC7W2khE9
+	NDZu0i9NIxBjr696iBip4sRRM3d0VMBYV0oc5glex8E5b5g9pnVjfW5fIkCPQERxPzL1Jd
+	mjqglreUfQeV1UDlGgRG/+b2MG2/c1Vo/UDOnu2p9/qVGfq8Q3Iz2g50VMtUD0J76grZyh
+	DkuCxT22BotwyKZelbq33dd3q4OFLHJ92smEnKVwc5a4qUfDVLMQmLsddUpmAw==
+Date: Sun, 15 Oct 2023 23:17:56 +0200
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Hartley Sweeten <hsweeten@visionengravers.com>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Lukasz Majewski <lukma@denx.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+	netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+	linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>
+Subject: Re: (subset) [PATCH v4 00/42] ep93xx device tree conversion
+Message-ID: <169740466288.180093.13375010968334465004.b4-ty@bootlin.com>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: fastmap: Fix a series of wear leveling problems
-Thread-Index: ppJEmSkjOitdzNt7LeKwxHqbtGToow==
+Content-Disposition: inline
+In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231015_123416_789945_620E13C7 
-X-CRM114-Status: UNSURE (   8.73  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231015_141817_549199_B15B8EC1 
+X-CRM114-Status: GOOD (  13.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,46 +108,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
-ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Piwg
-Ik1pcXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwgIlZpZ25lc2ggUmFn
-aGF2ZW5kcmEiIDx2aWduZXNockB0aS5jb20+LAo+ICJtY29xdWVsaW4gc3RtMzIiIDxtY29xdWVs
-aW4uc3RtMzJAZ21haWwuY29tPiwgImFsZXhhbmRyZSB0b3JndWUiIDxhbGV4YW5kcmUudG9yZ3Vl
-QGZvc3Muc3QuY29tPgo+IENDOiAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVh
-ZC5vcmc+LCAibGludXgtc3RtMzIiIDxsaW51eC1zdG0zMkBzdC1tZC1tYWlsbWFuLnN0b3JtcmVw
-bHkuY29tPiwKPiAibGludXgtYXJtLWtlcm5lbCIgPGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5m
-cmFkZWFkLm9yZz4sICJCYWdhcyBTYW5qYXlhIiA8YmFnYXNkb3RtZUBnbWFpbC5jb20+Cj4gR2Vz
-ZW5kZXQ6IERvbm5lcnN0YWcsIDEyLiBPa3RvYmVyIDIwMjMgMDQ6NTc6NTIKPiBCZXRyZWZmOiBS
-ZTogW1BBVENIIHYyIDAwLzEyXSB1Ymk6IGZhc3RtYXA6IEZpeCBhIHNlcmllcyBvZiB3ZWFyIGxl
-dmVsaW5nIHByb2JsZW1zCgo+IOWcqCAyMDIzLzgvMjggMTQ6MzgsIFpoaWhhbyBDaGVuZyDlhpnp
-gZM6Cj4+IFRoaXMgc2VyaWVzIG9mIHBhdGNoZXMgZml4IHRocmVlIHByb2JsZW1zOgo+PiAxLiBJ
-bmNvbnNpc3RlbnQgZXJhc2UgY291bnRlciBmcm9tIHdsIGVudHJ5IGFuZCBkaXNrLCBmb3IgcGF0
-Y2hlcyAxfjQuCj4+IDIuIFNhbWUgUEVCIGlzIGFsd2F5cyByZXN1ZWQgZm9yIGZhc3RtYXAgZGF0
-YSwgZm9yIHBhdGNoZXMgNX45Lgo+PiAzLiBGaXJzdCA2NCBQRUJzIGhhdmUgbGFyZ2UgZXJhc2Ug
-Y291bnRlciB0aGFuIG90aGVycywgZm9yIHBhdGNoZXMgMTB+MTIuCj4+IAo+PiBCZXNpZGVzLCBw
-YXRjaGVzIDQvNSBicmluZyBhbiBpbXByb3ZlbWVudCBvZiB0aGUgVUJJIHNlcnZpY2UgbGlmZS4K
-Pj4gCj4+IFJlZ3Jlc3Npb24gdGVzdHMgYXJlIGluIFtMaW5rXS4KPj4gCj4+IExpbms6IGh0dHBz
-Oi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MjE3Nzg3Lgo+PiAKPj4gdjEt
-PnYyOgo+PiAgICBQYXRjaCA2OiBDaGFuZ2Ugd2FpdCBjb25kaXRpb24gaW4gd2FpdF9mcmVlX3Bl
-YnNfZm9yX3Bvb2woKSwgdGhlcmUgYXJlCj4+IAkgICB0d28gc2l0dWF0aW9ucyB0aGF0IGNhdXNl
-IHdhaXRpbmcgaW5maW5hdGVseToKPj4gCSAgIDEuIF9fZXJhc2Vfd29ya2VyIHNjaGVkdWxlcyBp
-dHNlbGYgaWYgLUVCVVNZIHJldHVybmVkIHdoZW4KPj4gCSAgICAgIHNodXR0aW5nIGRvd24gc3lz
-dGVtLgo+PiAJICAgMi4gVGhlICdtaW5fZXhwZWN0X2ZyZWUnIGNhbm5vdCBiZSBzYXRpc2ZpZWQg
-d2hlbiBiYWQgYmxvY2sKPj4gCSAgICAgIG9jY3VycyBhbmQgdWJpIGJlY29tZXMgcm8oVGhlIGVy
-YXNlZCBQRUIgc2hvdWxkIGJlIHRoZQo+PiAgICAgICAgICAgICAgICBsYXN0IG9uZSBvZiAnbWlu
-X2V4cGVjdF9mcmVlJywgYnV0IGl0IGJlY29tZXMgYmFkIGluCj4+IAkgICAgICBfX2VyYXNlX3dv
-cmtlcikuCj4+ICAgUFM6IEFmdGVyIHJlLXRlc3RpbmcsIHRoZSB0ZXN0aW5nIHJlc3VsdHMgaW4g
-W0xpbmtdIGlzIG5vdCBhZmZlY3RlZC4KPj4gCj4gCj4gSGksIFJpY2hhcmQuIEkgaG9wZSB5b3Ug
-Y2FuIHRha2Ugc29tZSB0aW1lKHdoZW4geW91IGhhdmUgZnJlZSB0aW1lKSB0bwo+IGhhdmUgYSBn
-bGFuY2Ugb2YgdGhpcyBzZXJpZXMgb2YgcGF0Y2hlcywgSSBoYXZlIG1hZGUgc29tZSB0ZXN0cyBv
-bgo+IHZpcnR1YWwgbWFjaGluZSBmb3IgMisgbW9udGhzKGFuZCBoYWxmIG1vbnRoIGZvciBwaHlz
-aWNhbCBuYW5kIGZsYXNoKSwKPiBzbyBmYXIgdWJpIHdvcmtzIGZpbmUgd2l0aCBwYXRjaGVzIGFw
-cGxpZWQuCgpJIGRpZG4ndCBmb3JnZXQuIDotKQoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+On Fri, 15 Sep 2023 11:10:42 +0300, Nikita Shubin wrote:
+> This series aims to convert ep93xx from platform to full device tree support.
+> 
+> The main goal is to receive ACK's to take it via Arnd's arm-soc branch.
+> 
+> Major changes:
+> - drop newline at the end from each YAML files
+> - rename dma and clk bindings headers to match first compatible
+> - shrink SoC exported functions number to only 2
+> - dropped some ep93xx_pata fixes from these series
+> - dropped m48t86 stuff from these series
+> 
+> [...]
+
+Applied, thanks!
+
+[13/42] dt-bindings: rtc: Add Cirrus EP93xx
+        commit: 207bddd97881913bcb8bef84737c0971e712fbee
+[14/42] rtc: ep93xx: add DT support for Cirrus EP93xx
+        commit: 1d70f9fe5f1c8fbd5d838223b8aec27c69a7e609
+
+Best regards,
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
