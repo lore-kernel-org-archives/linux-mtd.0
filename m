@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D038CDB474
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 Oct 2023 12:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5546CCDB47E
+	for <linux-mtd@archiver.kernel.org>; Sun, 15 Oct 2023 19:34:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8nwH4M4aon0ZHbwgg+zQdUGlD0p6LP6hbVBEvhvjz30=; b=M7mHZZbJZ0XjY2
-	N8dTN6piDU9q3NaenmUieVr7CyYQ7/4A82Q512TycUhWkYD8QmY1ob1oEOmktHXyVGoBneha0L9E/
-	/4Qa5P/27wuhHx5u5h1nq2lRo8RbYg42D+QQd8jnYIBrbEbi3ng9ybuF3CVbdzdznbAFp9oGptmpU
-	4CQMirPGPqbpPldtXH2Ejay8LWasH+9rsMzXXUwPgxQ2eAoWJs/L+yXnhEGRozog64CfnEIeD5kwb
-	xYA/+BqBfH6RuixKSe/YtnIKg4TxJX2OWSjiKEFgqErSynVfOBefrDZZGYuT/koLYD97O1zKdKOG4
-	qwb1G+0CPENVF6PXWxmw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=cG46k20sb3zxxT4woRprgwu1SSB0rrwXY9Fo1P2nbPw=; b=bCmQK1N4Z+gcwHIUxTIC5dj7u7
+	EnxdeBC0bCdM3ZL9GtaZKZvhFo+WSWlkw6WJZA8y0PLNe9TM49i62Zlh+nGRsWryRQfGTT0SD7KkU
+	jeTExd1NjWJ4Be1VlPU/fwr+kgCMBKP9kUx/sHwXAS9RkbmYlqAVR1etPHa9LxUL3XT7+HOxGCEyU
+	4l8Jn8Krk34zydAtZ+q8oK9ORvl8kmA6+bNBU78SKVDXYmuWrzGgJttlZYV8pe08X1DCYNm7uvvra
+	JGa80bgVNSWnHt5rTL3FXx+pzGT745MSXSienthuG5KmrRSsWB237xNfrBATQhV+/Vs109m8dCnsU
+	xLswE/oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qrdQf-005JVl-0X;
-	Sat, 14 Oct 2023 12:07:37 +0000
-Received: from mgamail.intel.com ([134.134.136.65])
+	id 1qs6sZ-007cWn-0K;
+	Sun, 15 Oct 2023 19:34:23 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qrdQa-005JV3-0S
-	for linux-mtd@lists.infradead.org;
-	Sat, 14 Oct 2023 12:07:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697285252; x=1728821252;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TPUAKcvpY63K63QVha7oINqOiBDJBRMTvW/Gw4SWYfs=;
-  b=RdD0bkQCqDDkNYbc1TuyImzD9fjmTuRstDJGabyjHC6fOvCykcwbsENC
-   C3J+3p6BqSn1POhiKTcZmP20JfNtYDjzhaHzmfzMb8eWEemB6p1RhXXE1
-   pv3jVwY1tO0jr2uuyFuo/E+DpIqj+eREvSvjvnv/Bx26PMK+udMjvPXsR
-   HmZVoi7QBvFu6kIs2XfCoZpGi4ZDpP5qlUMahjOnZ4QbL0Z34Mo20Htqx
-   0WZ79hxGbXc9+OFP3ZxlN8qd5sBisL1+YLfGyeyCpmlkC2qKGypGgl1s3
-   1rHFSObN9fza5f9f2rIhpsH0Jkn911fvfeqYigLQwBIFpahIaWUXi9hb3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="389181314"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="389181314"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2023 05:07:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10862"; a="825361804"
-X-IronPort-AV: E=Sophos;i="6.03,224,1694761200"; 
-   d="scan'208";a="825361804"
-Received: from unknown (HELO localhost.localdomain) ([10.226.216.116])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Oct 2023 05:07:26 -0700
-From: niravkumar.l.rabara@intel.com
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: mtd: cadence: convert cadence-nand-controller.txt to yaml
-Date: Sat, 14 Oct 2023 20:04:36 +0800
-Message-Id: <20231014120436.1515339-1-niravkumar.l.rabara@intel.com>
-X-Mailer: git-send-email 2.25.1
+	id 1qs6sS-007cVi-1L;
+	Sun, 15 Oct 2023 19:34:18 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 840C6622F589;
+	Sun, 15 Oct 2023 21:34:09 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id Lylr3PuAgrRB; Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 6CF8062348B3;
+	Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id l11TOmD_pnae; Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 32CA0622F589;
+	Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
+Date: Sun, 15 Oct 2023 21:34:08 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: chengzhihao1 <chengzhihao1@huawei.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	mcoquelin stm32 <mcoquelin.stm32@gmail.com>, 
+	alexandre torgue <alexandre.torgue@foss.st.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-stm32 <linux-stm32@st-md-mailman.stormreply.com>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>
+Message-ID: <935504729.4822.1697398448017.JavaMail.zimbra@nod.at>
+In-Reply-To: <ee01780b-f5ef-26c8-f632-3bc56cd46b96@huawei.com>
+References: <20230828063845.3142561-1-chengzhihao1@huawei.com> <ee01780b-f5ef-26c8-f632-3bc56cd46b96@huawei.com>
+Subject: Re: [PATCH v2 00/12] ubi: fastmap: Fix a series of wear leveling
+ problems
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: fastmap: Fix a series of wear leveling problems
+Thread-Index: ppJEmSkjOitdzNt7LeKwxHqbtGToow==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231014_050732_275352_01CAC92D 
-X-CRM114-Status: GOOD (  22.15  )
+X-CRM114-CacheID: sfid-20231015_123416_789945_620E13C7 
+X-CRM114-Status: UNSURE (   8.73  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,192 +78,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-
-Convert cadence-nand-controller.txt to yaml format.
-Update cadence-nand-controller.txt to cdns,hp-nfc.yaml in MAINTAINER file.
-
-Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
----
-
-Changes in v3:
-- Changed file name to cdns,hp-nfc.yaml to match with compatible.
-- Update description, fixed alignment, and used defines for interrupt
-  flag as per review comments in v2.
-
-Changes in v2:
-- Update name cadence-nand-controller.txt to cadence,nand.yaml in MAINTAINER
-  file to resolve the warning.
-
- .../bindings/mtd/cadence-nand-controller.txt  | 53 -------------
- .../devicetree/bindings/mtd/cdns,hp-nfc.yaml  | 75 +++++++++++++++++++
- MAINTAINERS                                   |  2 +-
- 3 files changed, 76 insertions(+), 54 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt b/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-deleted file mode 100644
-index d2eada5044b2..000000000000
---- a/Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-+++ /dev/null
-@@ -1,53 +0,0 @@
--* Cadence NAND controller
--
--Required properties:
--  - compatible : "cdns,hp-nfc"
--  - reg : Contains two entries, each of which is a tuple consisting of a
--	  physical address and length. The first entry is the address and
--	  length of the controller register set. The second entry is the
--	  address and length of the Slave DMA data port.
--  - reg-names: should contain "reg" and "sdma"
--  - #address-cells: should be 1. The cell encodes the chip select connection.
--  - #size-cells : should be 0.
--  - interrupts : The interrupt number.
--  - clocks: phandle of the controller core clock (nf_clk).
--
--Optional properties:
--  - dmas: shall reference DMA channel associated to the NAND controller
--  - cdns,board-delay-ps : Estimated Board delay. The value includes the total
--    round trip delay for the signals and is used for deciding on values
--    associated with data read capture. The example formula for SDR mode is
--    the following:
--    board delay = RE#PAD delay + PCB trace to device + PCB trace from device
--    + DQ PAD delay
--
--Child nodes represent the available NAND chips.
--
--Required properties of NAND chips:
--  - reg: shall contain the native Chip Select ids from 0 to max supported by
--    the cadence nand flash controller
--
--See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
--generic bindings.
--
--Example:
--
--nand_controller: nand-controller@60000000 {
--	  compatible = "cdns,hp-nfc";
--	  #address-cells = <1>;
--	  #size-cells = <0>;
--	  reg = <0x60000000 0x10000>, <0x80000000 0x10000>;
--	  reg-names = "reg", "sdma";
--	  clocks = <&nf_clk>;
--	  cdns,board-delay-ps = <4830>;
--	  interrupts = <2 0>;
--	  nand@0 {
--	      reg = <0>;
--	      label = "nand-1";
--	  };
--	  nand@1 {
--	      reg = <1>;
--	      label = "nand-2";
--	  };
--
--};
-diff --git a/Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml b/Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
-new file mode 100644
-index 000000000000..402930995bd7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/cdns,hp-nfc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cadence NAND controller
-+
-+maintainers:
-+  - Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-+
-+allOf:
-+  - $ref: nand-controller.yaml
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: cdns,hp-nfc
-+
-+  reg:
-+    items:
-+      - description: Controller register set
-+      - description: Slave DMA data port register set
-+
-+  reg-names:
-+    items:
-+      - const: reg
-+      - const: sdma
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  cdns,board-delay-ps:
-+    description: |
-+      Estimated Board delay. The value includes the total round trip
-+      delay for the signals and is used for deciding on values associated
-+      with data read capture. The example formula for SDR mode is the
-+      following.
-+      board delay = RE#PAD delay + PCB trace to device + PCB trace from device
-+      + DQ PAD delay
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    nand-controller@10b80000 {
-+        compatible = "cdns,hp-nfc";
-+        reg = <0x10b80000 0x10000>,
-+              <0x10840000 0x10000>;
-+        reg-names = "reg", "sdma";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&nf_clk>;
-+        cdns,board-delay-ps = <4830>;
-+
-+        nand@0 {
-+            reg = <0>;
-+        };
-+      };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..226efb6352e2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4474,7 +4474,7 @@ F:	drivers/media/platform/cadence/cdns-csi2*
- CADENCE NAND DRIVER
- L:	linux-mtd@lists.infradead.org
- S:	Orphan
--F:	Documentation/devicetree/bindings/mtd/cadence-nand-controller.txt
-+F:	Documentation/devicetree/bindings/mtd/cdns,hp-nfc.yaml
- F:	drivers/mtd/nand/raw/cadence-nand-controller.c
- 
- CADENCE USB3 DRD IP DRIVER
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
+ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Piwg
+Ik1pcXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwgIlZpZ25lc2ggUmFn
+aGF2ZW5kcmEiIDx2aWduZXNockB0aS5jb20+LAo+ICJtY29xdWVsaW4gc3RtMzIiIDxtY29xdWVs
+aW4uc3RtMzJAZ21haWwuY29tPiwgImFsZXhhbmRyZSB0b3JndWUiIDxhbGV4YW5kcmUudG9yZ3Vl
+QGZvc3Muc3QuY29tPgo+IENDOiAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVh
+ZC5vcmc+LCAibGludXgtc3RtMzIiIDxsaW51eC1zdG0zMkBzdC1tZC1tYWlsbWFuLnN0b3JtcmVw
+bHkuY29tPiwKPiAibGludXgtYXJtLWtlcm5lbCIgPGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5m
+cmFkZWFkLm9yZz4sICJCYWdhcyBTYW5qYXlhIiA8YmFnYXNkb3RtZUBnbWFpbC5jb20+Cj4gR2Vz
+ZW5kZXQ6IERvbm5lcnN0YWcsIDEyLiBPa3RvYmVyIDIwMjMgMDQ6NTc6NTIKPiBCZXRyZWZmOiBS
+ZTogW1BBVENIIHYyIDAwLzEyXSB1Ymk6IGZhc3RtYXA6IEZpeCBhIHNlcmllcyBvZiB3ZWFyIGxl
+dmVsaW5nIHByb2JsZW1zCgo+IOWcqCAyMDIzLzgvMjggMTQ6MzgsIFpoaWhhbyBDaGVuZyDlhpnp
+gZM6Cj4+IFRoaXMgc2VyaWVzIG9mIHBhdGNoZXMgZml4IHRocmVlIHByb2JsZW1zOgo+PiAxLiBJ
+bmNvbnNpc3RlbnQgZXJhc2UgY291bnRlciBmcm9tIHdsIGVudHJ5IGFuZCBkaXNrLCBmb3IgcGF0
+Y2hlcyAxfjQuCj4+IDIuIFNhbWUgUEVCIGlzIGFsd2F5cyByZXN1ZWQgZm9yIGZhc3RtYXAgZGF0
+YSwgZm9yIHBhdGNoZXMgNX45Lgo+PiAzLiBGaXJzdCA2NCBQRUJzIGhhdmUgbGFyZ2UgZXJhc2Ug
+Y291bnRlciB0aGFuIG90aGVycywgZm9yIHBhdGNoZXMgMTB+MTIuCj4+IAo+PiBCZXNpZGVzLCBw
+YXRjaGVzIDQvNSBicmluZyBhbiBpbXByb3ZlbWVudCBvZiB0aGUgVUJJIHNlcnZpY2UgbGlmZS4K
+Pj4gCj4+IFJlZ3Jlc3Npb24gdGVzdHMgYXJlIGluIFtMaW5rXS4KPj4gCj4+IExpbms6IGh0dHBz
+Oi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MjE3Nzg3Lgo+PiAKPj4gdjEt
+PnYyOgo+PiAgICBQYXRjaCA2OiBDaGFuZ2Ugd2FpdCBjb25kaXRpb24gaW4gd2FpdF9mcmVlX3Bl
+YnNfZm9yX3Bvb2woKSwgdGhlcmUgYXJlCj4+IAkgICB0d28gc2l0dWF0aW9ucyB0aGF0IGNhdXNl
+IHdhaXRpbmcgaW5maW5hdGVseToKPj4gCSAgIDEuIF9fZXJhc2Vfd29ya2VyIHNjaGVkdWxlcyBp
+dHNlbGYgaWYgLUVCVVNZIHJldHVybmVkIHdoZW4KPj4gCSAgICAgIHNodXR0aW5nIGRvd24gc3lz
+dGVtLgo+PiAJICAgMi4gVGhlICdtaW5fZXhwZWN0X2ZyZWUnIGNhbm5vdCBiZSBzYXRpc2ZpZWQg
+d2hlbiBiYWQgYmxvY2sKPj4gCSAgICAgIG9jY3VycyBhbmQgdWJpIGJlY29tZXMgcm8oVGhlIGVy
+YXNlZCBQRUIgc2hvdWxkIGJlIHRoZQo+PiAgICAgICAgICAgICAgICBsYXN0IG9uZSBvZiAnbWlu
+X2V4cGVjdF9mcmVlJywgYnV0IGl0IGJlY29tZXMgYmFkIGluCj4+IAkgICAgICBfX2VyYXNlX3dv
+cmtlcikuCj4+ICAgUFM6IEFmdGVyIHJlLXRlc3RpbmcsIHRoZSB0ZXN0aW5nIHJlc3VsdHMgaW4g
+W0xpbmtdIGlzIG5vdCBhZmZlY3RlZC4KPj4gCj4gCj4gSGksIFJpY2hhcmQuIEkgaG9wZSB5b3Ug
+Y2FuIHRha2Ugc29tZSB0aW1lKHdoZW4geW91IGhhdmUgZnJlZSB0aW1lKSB0bwo+IGhhdmUgYSBn
+bGFuY2Ugb2YgdGhpcyBzZXJpZXMgb2YgcGF0Y2hlcywgSSBoYXZlIG1hZGUgc29tZSB0ZXN0cyBv
+bgo+IHZpcnR1YWwgbWFjaGluZSBmb3IgMisgbW9udGhzKGFuZCBoYWxmIG1vbnRoIGZvciBwaHlz
+aWNhbCBuYW5kIGZsYXNoKSwKPiBzbyBmYXIgdWJpIHdvcmtzIGZpbmUgd2l0aCBwYXRjaGVzIGFw
+cGxpZWQuCgpJIGRpZG4ndCBmb3JnZXQuIDotKQoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
