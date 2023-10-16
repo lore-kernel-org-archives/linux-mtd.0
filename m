@@ -4,78 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 011E0CDB465
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 10:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F5C0CDB465
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 10:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QOtrcet30guTsuN0n4tLn9pwgk4LrOFcah9yomdebuc=; b=RoDQBCoOgDvuBE
-	HeqIbGalDxOfA9EYY21lJ0sRK4J+LaQMfScK+/uOP0sFlo+7Q+A+xzVMjQWgEa79N2ZPVm2579jvP
-	qC4dxhEVVYaK//jaxZloL6ohdxmdjt3+5BQuGbn3bSnkKtaTfOLn2Spjda3TqrI6khzvnWlqyPcn7
-	QBBlX+b+UZ/nPEcrOXGfy0BEx4qbrdLBotHQYGEsnmKzo1p+mgLnHYmaiE7e9h6EoGuZfD7WOHUr7
-	0pFUTsfkk+FqhoQTRug3g7X8FdrHOw8tkYf+w28T/9SdzC7fIveQK8laX16xtwjmLQEbXsUUh3Vog
-	srUt0LEP9inzHPNNtA5A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=v1O7prGnjNJsPIfApcWWoiUBr0w42vjaNy35Ikjfbyo=; b=XF6zECWuXHDVqL
+	G7VIy7LpgjL+KHOaQLxuGaswy7bLZtZu9KV41hKxgWkCJThsffX8pA5dEoMELW+GgfRNbr+08VsAx
+	PrkSGiYve4KnRYnopFENFWwG3lYxYamFakrA13R+kKPud6vfYPC1BdjB1dq1XZkTC3/GSfj8hN4T7
+	VlQM8/UyE/ERAbhufPcktXYe+Ap34CMZhDsZ/4N2NNNaN9SVoMEu2lrbDd018PXqpdQ9VakQJfZtm
+	yqYV9ZTal2Y8MC/B0mgfrY2nOsAqrIcQJjM3Ak78HGk1aWQ5sE2OS1amuStmZxd8HWwVeJGGEv1zI
+	cUcUVolbm/9Rfa6ckuxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsKrb-009JHA-2d;
-	Mon, 16 Oct 2023 10:30:19 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1qsKxH-009L9N-2Y;
+	Mon, 16 Oct 2023 10:36:11 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJuM-0090VL-2g
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 16 Oct 2023 09:29:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=7dA5sh24deOx0xdOnjh0uuUzAi9UNkjie+0RJuqI+ik=; b=KNfndwWQmnQ/E32qC6yrjkRFZB
-	R+qgUdZDKVjkzneKCF6970pQUXa7LZBL7APV1HcjRzjCuX2TgOfi7CM2j2+NwWByM4mB/Nw9YD4UP
-	yyjt2RWskb+zuLIl8kw2WP12PmI2UOZxSLCvmSFgyUyPzUSemRweHuBjzmS2YXtpmfCeSWzgl9oF/
-	6CBlpJBKbdTKm8JzZkDL2/0euUN+ogXDf2ECG34cjkTQnrGQHA5cYIcq6SWgOFbgrX+1UBeTHKH5U
-	RbDV3fqDsHC40zZRSz25MVpBOUPF86G+jyCqN7eMUiTnUiovq47ZNwVbLY6nyMc7MU9x7yC76nKD8
-	9Mk23UbQ==;
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
-	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1qsJuG-005EL3-Um
-	for linux-mtd@lists.infradead.org; Mon, 16 Oct 2023 09:29:05 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 50FF640007;
-	Mon, 16 Oct 2023 09:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1697448530;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7dA5sh24deOx0xdOnjh0uuUzAi9UNkjie+0RJuqI+ik=;
-	b=fumOJkWJBJ5n3piRcioYzM8QsSxLLpXCO374wFUxQHYv/ORwbL0xVOD4qyLKrMlh8zMfQA
-	sOrUdTuaNL+nl8VuUuixe+XjpvwvXk1p4u0vI7lG3zD2Xyf8iUZhblsDFhU6qx9DrzdOU4
-	vXe7PPOAK9VSzO4f2kMpHL+to3UBBp8iyRuvacBHvQ5LDC44IY4+PiPEw04FNOkpxF4+RO
-	3jBEiVysVUQyhtsLLjbk7hyXLwrSiAkDn7ksDHCLvADJ1pTjSg8bsb01GW5edcKPC097w3
-	OOiod2EAYf+EIVEn6hOkELAyvXmwNLtoK3GDziwZbfYPKrjYWGrjgZBPEXCrcQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bruce Suen <bruce_suen@163.com>,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	richard@nod.at,
-	vigneshr@ti.com,
-	bruce.sun@xtxtech.com
-Subject: Re: [PATCH V2] mtd: spinand: Add support for XTX XT26xxxDxxxxx
-Date: Mon, 16 Oct 2023 11:28:48 +0200
-Message-Id: <20231016092848.289002-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231012102412.10581-1-bruce_suen@163.com>
-References: 
+	id 1qsKxE-009L8P-2I
+	for linux-mtd@lists.infradead.org;
+	Mon, 16 Oct 2023 10:36:10 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1qsKx7-0004Zt-9V; Mon, 16 Oct 2023 12:36:01 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1qsKx4-0023qp-VB; Mon, 16 Oct 2023 12:35:58 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1qsKx4-00H9F0-Ki; Mon, 16 Oct 2023 12:35:58 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Yangtao Li <frank.li@vivo.com>,
+	Rob Herring <robh@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	kernel@pengutronix.de,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] mtd: rawnand: sh_flctl: Convert to module_platform_driver()
+Date: Mon, 16 Oct 2023 12:35:41 +0200
+Message-ID: <20231016103540.1566865-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'd656610ea702f243ac8534637cbbe06b24418b4b'
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1239; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=Kp/Zi8HJnfZLJ9cul2M0kezcrmdfNTy0nBofqKKfv8c=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlLRH9OMlYdZvDTva32anyYuKXoQC7vCObg/gTh YA7/jeh7lKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZS0R/QAKCRCPgPtYfRL+ TgiRCAC2OEZp8THAYP6Xlj7Fd/BzQ/5wTxLVNPBLZQbIArnMXSq1tfuS7i+Rxfh4eSiZH64tdGA 6LM6EZoSWhSr2yc1pjFO/19jNGudKQSbDbryPtMxc8rSStNgVk9FwdSJAMWZ9oh27bUaY9hRTw8 b7QWjSr+VAiOneQVOzuFqABKnoEtd+y58yI61wXcq2QINHwUKn3zxCEauEA3JwMsml0e0/+UamJ PQj7hedjwgWiURMQIbw3Mx98utHwe/avRw0BX+/pJ5DDTc8Dr6UnBu5f0SP4AmfC4HjeCRubI1x K4gxnz8A+wKEO/mQLjvw4v+Ju7lcISjc3xMVNshVfZQ3pZ/3
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231016_102901_021438_61A58CD2 
-X-CRM114-Status: UNSURE (   5.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231016_033608_749016_540E435C 
+X-CRM114-Status: GOOD (  13.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,29 +77,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2023-10-12 at 10:24:12 UTC, Bruce Suen wrote:
-> Add Support XTX Technology XT26G01DXXXXX, XT26G11DXXXXX, XT26Q01DXXXXX,
-> XT26G02DXXXXX, XT26G12DXXXXX, XT26Q02DXXXXX, XT26G04DXXXXX, and
-> XT26Q04DXXXXX SPI NAND.
-> 
-> These are 3V/1.8V 1G/2G/4Gbit serial SLC NAND flash device with on-die
-> ECC(8bit strength per 512bytes).
-> 
-> Datasheet Links:
-> - http://www.xtxtech.com/download/?AId=458
-> - http://www.xtxtech.com/download/?AId=495
-> 
-> Signed-off-by: Bruce Suen <bruce_suen@163.com>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlIGRyaXZlciBkb2Vzbid0IGJlbmVmaXQgZnJvbSB0aGUgYWR2YW50YWdlcyB0aGF0Cm1vZHVs
+ZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoKSBhbGxvd3MgKGkuZS4gcHV0dGluZyB0aGUgcHJvYmUg
+ZnVuY3Rpb24KaW4gLmluaXQudGV4dCBhbmQgdGhlIC5yZW1vdmUgZnVuY3Rpb24gaW50byAuZXhp
+dC50ZXh0KS4KU28gdXNlIG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoKSBpbnN0ZWFkIHdoaWNoIGFs
+bG93cyB0byBiaW5kIHRoZSBkcml2ZXIKYWxzbyBhZnRlciBib290aW5nIChvciBtb2R1bGUgbG9h
+ZGluZykgYW5kIHVuYmluZGluZyB2aWEgc3lzZnMuCgpTaWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5l
+LUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlPgotLS0KIGRyaXZlcnMvbXRk
+L25hbmQvcmF3L3NoX2ZsY3RsLmMgfCAzICsrLQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
+cygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3No
+X2ZsY3RsLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zaF9mbGN0bC5jCmluZGV4IDNlNWRmNzVj
+YmM5OC4uMmE4MTY0ZWZiMjczIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zaF9m
+bGN0bC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3NoX2ZsY3RsLmMKQEAgLTEyMTUsNiAr
+MTIxNSw3IEBAIHN0YXRpYyB2b2lkIGZsY3RsX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNl
+ICpwZGV2KQogfQogCiBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBmbGN0bF9kcml2ZXIg
+PSB7CisJLnByb2JlCQk9IGZsY3RsX3Byb2JlLAogCS5yZW1vdmVfbmV3CT0gZmxjdGxfcmVtb3Zl
+LAogCS5kcml2ZXIgPSB7CiAJCS5uYW1lCT0gInNoX2ZsY3RsIiwKQEAgLTEyMjIsNyArMTIyMyw3
+IEBAIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIGZsY3RsX2RyaXZlciA9IHsKIAl9LAog
+fTsKIAotbW9kdWxlX3BsYXRmb3JtX2RyaXZlcl9wcm9iZShmbGN0bF9kcml2ZXIsIGZsY3RsX3By
+b2JlKTsKK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoZmxjdGxfZHJpdmVyKTsKIAogTU9EVUxFX0xJ
+Q0VOU0UoIkdQTCB2MiIpOwogTU9EVUxFX0FVVEhPUigiWW9zaGloaXJvIFNoaW1vZGEiKTsKCmJh
+c2UtY29tbWl0OiA0ZDA1MTViMjM1ZGVjNzg5NTc4ZDEzNWE1ZGI1ODZiMjVjNTg3MGNiCi0tIAoy
+LjQyLjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
