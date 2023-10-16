@@ -4,81 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 001B2CDB465
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 09:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C149BCDB474
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 09:28:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SE3XiczHEDvwETM0gBDF8OlVXMFbc6N4cS0/PTKXB/8=; b=tqQwhLJOsTI9Zp
-	rUwl44rB91bPzPgqlAMERSu9vgecHlRRmO3OOUsA7kPRBgVpJS63EjEoyqVtAOsU3zkoXpOCtfi+1
-	oh85Ud9ejz1nwwZ7wxk75uvaZBt/BWm9XTYOw/PK40l+4dCOsD94g2i+AopFGKOsbvNGyeqtvJJFC
-	/6H3YbjXXpZilpI4ow25dmXf1DiaK3zXVo9d3tHqxY5MB0Yn8l2eigZTxGHqDdHMfObz6kX17gRTk
-	dsmM/5VVn6C33nT3ckGZapZ/rbqomVM/HWOVZosIIfHVQXL9TazeP0EnsB3078GnDsxQ6TZK6Gpts
-	JcyQS2jzFgGKz/ek1HeQ==;
+	List-Owner; bh=WuhqSRO4jDam0lu/AeNKRVsW63jlobdFt2eq1rxIryY=; b=25F8lx2s7PJcmc
+	RiOFR5HXftuq+8XhSqEO0DtPR2pWBLN2pWMGzO3wBU9HbD2Z+qWVACvMt6RAZXIHTYuBwU4i5ty8v
+	1k98wqdX14Sn6cwAP6AH2cMOemrHeoVCm7xIEa/RzlRQfsKp1XpL2JnyLeTvgWhdVcX+CxfGgJExL
+	paQUSLDH/I2c0tuqKuLdgNWR9jRHDzBWLEtW345C1548EUhpo6ryiYE4FH1/mvmHKl+Ctc6uBmQHK
+	SJrQw6ltH0E8CJZ0Fqh6iENXQUlPEmbQOuh3AUv2McayjT1l7GpRSH+GzY+sIHdKVnW+xr/skKSRk
+	6GTTTj97Kru9uvAFjxnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJtn-00907M-1s;
-	Mon, 16 Oct 2023 09:28:31 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qsJu8-0090MO-20;
+	Mon, 16 Oct 2023 09:28:52 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJtm-009065-0S
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 16 Oct 2023 09:28:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=X2vTXS9z/qGFxHJeZoZ7o4gX8+e15zVoYHUEVOsd3YM=; b=iLnX6Bc+U6yHiulht+zQ0nGYh2
-	LU4FgVdElzvuYM/D3vfCbcyUf5TWRl+t5hK/M6gHhfICK24R3+wHxg5HAiWo1Fd7Y6DorOTbFpts1
-	NpZJjGvaaqtr1BGOBInU4qCCeHL1y77e0o1rzxlxR36c1lr28ropWzpA+mXn8ATi75oZHzSBnaoGo
-	JS24jxCQ0CvpHBwjgx6Jii5cTOybyXbKHGUMjbhRi6thXiZOUy8jhM26vDBD7gKYhGDOuF94tICuk
-	vJHWpU10EjF6MHYicY48cD/jZ8cus1aqLoSmt7t4jH0qB3++5RD9yNt3bYgC5y/msuq0i4AMWJXZr
-	7dDUMDKg==;
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJtV-005rbE-2K
+	id 1qsJty-0090FK-2f
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Oct 2023 09:28:28 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6A2DFFF815;
-	Mon, 16 Oct 2023 09:28:09 +0000 (UTC)
+	Mon, 16 Oct 2023 09:28:50 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 63B2E2000A;
+	Mon, 16 Oct 2023 09:28:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1697448490;
+	t=1697448521;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=X2vTXS9z/qGFxHJeZoZ7o4gX8+e15zVoYHUEVOsd3YM=;
-	b=VwLjZW8W+xCvUJbjl0mYtroJALq0cFvN0Jlo1pFJryyxRCy6SXfxVqE905mpGhANuTkVba
-	ccSDm8WHxRSoP5RI1eK3jd1D6GH2NmgWeqpBGRATgsYIxwfJsS+F3A1gxxZl/8QasNoh9p
-	PAI+kiQp8RfC4+nXaRTzG+Zt3d3uyTr2A+3XhTs7WOsn5f2qRb0LU8gGQtqKcNYdKzUM0Z
-	8lFTzTOenF06Zb1G1OIbIwBN9F4dZS+CA3L0cnh2Ew7WPRAIXWafjBmGSH9tSogcvgr3RR
-	RJ6orMigjKeP8/pd66X2rucrfPwqWo2igHdopOxTiO4NRDjdRVVl1hXuBrp8AA==
+	bh=cB9YyJFPekauMqmT5IAfFQ+DrU/FcfXGDjW4V8YqQOQ=;
+	b=ZmUG2+xx/8stKeIvalFYCjLGa0Vx4XxQo+/vbnIEaF4Nzqkq22FzfVZmpnt+OrwOkiV1QJ
+	C24m9desM9hQpy+4l0VxMvxZjQFcmFO3tPOAQql+AOGWznNldzthNENtHf6aqUmn5lvTzl
+	l/Z8sgAlWza+RiV5TaqDdAtp8wBUreQ9hfgmv2TTT5NHtN3ASy4TFuAKLgODrAuaTAhoz0
+	eiStWnLxYCrGxKxyJ2HmbKNfA5UYOGLV+TxZ/40uWu+HtQLaiVBYtd5vR78BKpNkCGr4fI
+	QuapSCnWa7Zh2GE85q1Gka7v0rLX3F8gYCxK+GDo2iPcwJXmnp4FvL8pAmUJDg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Yangtao Li <frank.li@vivo.com>,
-	Rob Herring <robh@kernel.org>,
-	Li Zetao <lizetao1@huawei.com>,
+To: Simon Glass <sjg@chromium.org>,
+	devicetree@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org,
-	kernel@pengutronix.de
-Subject: Re: [PATCH 07/20] mtd: spear_smi: Convert to platform remove callback returning void
-Date: Mon, 16 Oct 2023 11:28:08 +0200
-Message-Id: <20231016092808.288708-1-miquel.raynal@bootlin.com>
+	U-Boot Mailing List <u-boot@lists.denx.de>,
+	Rob Herring <robh@kernel.org>,
+	Tom Rini <trini@konsulko.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Nick Terrell <terrelln@fb.com>,
+	=?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Richard Weinberger <richard@nod.at>,
+	Rob Herring <robh+dt@kernel.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: mtd: fixed-partitions: Add compression property
+Date: Mon, 16 Oct 2023 11:28:36 +0200
+Message-Id: <20231016092836.288939-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231008200143.196369-8-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230927180545.3522628-1-sjg@chromium.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'3401446fa40d621d067e3bbf9c8805325c9a21a6'
+X-linux-mtd-patch-commit: b'8baba8d52ff5081e8c3c383132af269ba8e2f458'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231016_102815_599013_2FD84F5B 
-X-CRM114-Status: GOOD (  11.06  )
+X-CRM114-CacheID: sfid-20231016_022843_014787_55D8F3A5 
+X-CRM114-Status: UNSURE (   6.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,27 +82,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU3VuLCAyMDIzLTEwLTA4IGF0IDIwOjAxOjMwIFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
-Sz1DMz1CNm5pZz89IHdyb3RlOgo+IFRoZSAucmVtb3ZlKCkgY2FsbGJhY2sgZm9yIGEgcGxhdGZv
-cm0gZHJpdmVyIHJldHVybnMgYW4gaW50IHdoaWNoIG1ha2VzCj4gbWFueSBkcml2ZXIgYXV0aG9y
-cyB3cm9uZ2x5IGFzc3VtZSBpdCdzIHBvc3NpYmxlIHRvIGRvIGVycm9yIGhhbmRsaW5nIGJ5Cj4g
-cmV0dXJuaW5nIGFuIGVycm9yIGNvZGUuIEhvd2V2ZXIgdGhlIHZhbHVlIHJldHVybmVkIGlzIGln
-bm9yZWQgKGFwYXJ0Cj4gZnJvbSBlbWl0dGluZyBhIHdhcm5pbmcpIGFuZCB0aGlzIHR5cGljYWxs
-eSByZXN1bHRzIGluIHJlc291cmNlIGxlYWtzLgo+IAo+IFRvIGltcHJvdmUgaGVyZSB0aGVyZSBp
-cyBhIHF1ZXN0IHRvIG1ha2UgdGhlIHJlbW92ZSBjYWxsYmFjayByZXR1cm4KPiB2b2lkLiBJbiB0
-aGUgZmlyc3Qgc3RlcCBvZiB0aGlzIHF1ZXN0IGFsbCBkcml2ZXJzIGFyZSBjb252ZXJ0ZWQgdG8K
-PiAucmVtb3ZlX25ldygpLCB3aGljaCBhbHJlYWR5IHJldHVybnMgdm9pZC4gRXZlbnR1YWxseSBh
-ZnRlciBhbGwgZHJpdmVycwo+IGFyZSBjb252ZXJ0ZWQsIC5yZW1vdmVfbmV3KCkgd2lsbCBiZSBy
-ZW5hbWVkIHRvIC5yZW1vdmUoKS4KPiAKPiBUcml2aWFsbHkgY29udmVydCB0aGlzIGRyaXZlciBm
-cm9tIGFsd2F5cyByZXR1cm5pbmcgemVybyBpbiB0aGUgcmVtb3ZlCj4gY2FsbGJhY2sgdG8gdGhl
-IHZvaWQgcmV0dXJuaW5nIHZhcmlhbnQuCj4gCj4gU2lnbmVkLW9mZi1ieTogVXdlIEtsZWluZS1L
-w7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KCkFwcGxpZWQgdG8gaHR0cHM6
-Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBt
-dGQvbmV4dCwgdGhhbmtzLgoKTWlxdWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, 2023-09-27 at 18:05:43 UTC, Simon Glass wrote:
+> Sometimes the contents of a partition are compressed. Add a property to
+> express this and define the algorithm used.
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
