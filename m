@@ -4,43 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3082DCDB474
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 09:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3143CDB482
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 09:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zIAb7rvIgRTX6lYj7rWA0VAnB4Rvt2osFLNUBi/hz1g=; b=LQOz8oT0y7LDel
-	lwY660TxewAgPy7Cp8MC8L7b+cDf1ilRNPIqW0dZXM/e45ZyxCZrgGEph7v70s/095j0TvvWSN3RV
-	xKe1xm9oCf7zG4PIVAwAfwKpjuXMY2wHDY5L9G8yQVyldbrCUQMwCSWT3pfX7Xnkqpt7AF89PDphf
-	5fpcd1zxoy9JhyKNR7H2v9fnYATqh2VUhleyqVhSeoV40vrjtbb3Q2N8FABu4Z0Kt6X2iRicRh1e5
-	+g1nG27xK5oq5jFdTz/1iMFsJg5QQofzYu8dVKknTnpYHZs/Jo4DGbbgswwuaDfVkLl3jS2bHHgXW
-	DA64mLjjn2B2fOnEtiHA==;
+	List-Owner; bh=dzHzU/vuRJiaMqnec7dlRhtFPoVw1LZueUvyPwCTaVo=; b=Aagtd1npPbPXbm
+	lPaYnZR9kRclDY7mNMVWOWGEBzG1KMAYgBEykOYwvqQtSexvSr1kuhF1VkLPrv+xqAaUn1+Iq323a
+	vbhXS/fasTMqEFTlQyMu/5trqjJzdDxw+xsvptV0h+deM2ucY50/ivlPUUZDVtIVsze+TpKzyJZJX
+	dJgjOhrVz9gmU32oSBBOkLiG+Za/NFylWLEeBGLJ0jiYxk/6uM1JHIzN5gdSxg+OsgLdBv7GveloF
+	+7U5keua2/aMAcyIt+XtMYg0SxR6x0DWutzLhOTsjepYxeBjS3dymk/JtF2GtMDCl5fpE2itAg4Se
+	e+ooxq7E4QGB1OVZq3Ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJt9-008zeV-38;
-	Mon, 16 Oct 2023 09:27:51 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1qsJtQ-008zqX-2j;
+	Mon, 16 Oct 2023 09:28:08 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJt3-008zWS-0W
+	id 1qsJtO-008zo3-1a
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 16 Oct 2023 09:28:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=GFVGG5jaMY/KzkmzX89K7tGA0hpHaaLK1Z/PWL6KAVg=; b=SnWy6mHF1a3f1c8WKA/288wcv8
+	LLjaqr1j6cho5hJ7idiv3RQPwBFy88F/i8/4HKlYK9QThA1bmeaBeWWCya4ws1NN+u3L23GG5Eern
+	lQp97DTcfHcd/1JEHQJ0lZp8DnZKjlYCfJH1XjfomT0Lm3COQ0sGF5Rj2v9J/jEqoLM3izow1zmiX
+	IkhuYk2CUJBMj7KKf2jFbtUafoTnJhsRGJEZQAyETiUSctMIo73FcRd4R32NTwIycDQftCqABSqhp
+	o6RfNW45DOwpzO8V9Wt9QvAkXloR+lVkhGsjxTP/hg1rNZJvw2RrP3shIpfiHNlEMveYdLfp+MpI9
+	ot6IHP6g==;
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qsJtC-005rWS-0j
 	for linux-mtd@lists.infradead.org;
-	Mon, 16 Oct 2023 09:27:49 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 81ECD40004;
-	Mon, 16 Oct 2023 09:27:39 +0000 (UTC)
+	Mon, 16 Oct 2023 09:28:04 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 39315FF809;
+	Mon, 16 Oct 2023 09:27:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1697448460;
+	t=1697448465;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aKz+rAnWa1UOT2K47tnl9bcW/fCJFEmvv3OsVeQtj2Y=;
-	b=eDVT+Yf0ZBtnc/9eqAd677XpEygEp00mz44uteP9SY8l5HCUECcpOqvAJcY/QbyqKb10xx
-	DD3Y38JJyXK9AXbXkzR+KxmXcsyUFeW7l2xCFX/cT5gW2ENXOLQ2ECIOT+BD9dbVmG4+yO
-	NEo4qm0AQMHEywan8B5Rh/23YKEw50ucKY/8r+6LNkPTlwvfircnEDhcMoVz3IzoNte4RM
-	P7YTLS3ozy4qkx5PO0LALbX+VULlYOFVxFLgzzHYRmE09ZUaPYJqHEXbwastLsN/QcHCXo
-	ESRofGuUVaq5xreQJWDh2MjRxoH1M/WvgWRaInm/16z6Bqh/zYpo2SUbnAQEPw==
+	bh=GFVGG5jaMY/KzkmzX89K7tGA0hpHaaLK1Z/PWL6KAVg=;
+	b=A4gQeIvVqlKLrENk7g2X6VamStdiD1pObaL+Bz6VPR8PTFQpbAdrm3HcDu44VBvkjGZt2d
+	4fZyl97OsRkW2yJ2cRjyljImN3PearPssnvzvn5WMPJQYsMLw6GTZlBXwMnQ1Qhkd5FG33
+	qYpyRXQ/MW1WRii1beHtI/H0HfuZkf/KWgiX88l8j8+QkoRxX7bnx1SUHBQe3XpwMVRgXy
+	2ISKcG7/ChMZag7+vUlndlR0UAmBFywoCndC9JqYsbzAc/aKIFdx8tWOZM2qsTHOb+2YYS
+	MrYkQAv7HluWozw6/oL4a2GRzDj5VGVOnS38aqQ+g+12QbMW/+R8avzlNLzkUA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -49,19 +64,19 @@ To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 Cc: Yangtao Li <frank.li@vivo.com>,
 	linux-mtd@lists.infradead.org,
 	kernel@pengutronix.de
-Subject: Re: [PATCH 14/20] mtd: maps: plat-ram: Convert to platform remove callback returning void
-Date: Mon, 16 Oct 2023 11:27:38 +0200
-Message-Id: <20231016092738.288483-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 13/20] mtd: maps: physmap-core: Convert to platform remove callback returning void
+Date: Mon, 16 Oct 2023 11:27:43 +0200
+Message-Id: <20231016092743.288511-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231008200143.196369-15-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20231008200143.196369-14-u.kleine-koenig@pengutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'677edf775512ef05f9dcba2f9245f50b250d68d8'
+X-linux-mtd-patch-commit: b'b1dbe19b358ca9c36f370137ea6d15e6ae6cfd9e'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231016_022745_582127_D61A05DD 
-X-CRM114-Status: GOOD (  11.11  )
+X-CRM114-CacheID: sfid-20231016_102756_146089_04D84876 
+X-CRM114-Status: GOOD (  11.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,7 +93,7 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU3VuLCAyMDIzLTEwLTA4IGF0IDIwOjAxOjM3IFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
+T24gU3VuLCAyMDIzLTEwLTA4IGF0IDIwOjAxOjM2IFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
 Sz1DMz1CNm5pZz89IHdyb3RlOgo+IFRoZSAucmVtb3ZlKCkgY2FsbGJhY2sgZm9yIGEgcGxhdGZv
 cm0gZHJpdmVyIHJldHVybnMgYW4gaW50IHdoaWNoIG1ha2VzCj4gbWFueSBkcml2ZXIgYXV0aG9y
 cyB3cm9uZ2x5IGFzc3VtZSBpdCdzIHBvc3NpYmxlIHRvIGRvIGVycm9yIGhhbmRsaW5nIGJ5Cj4g
