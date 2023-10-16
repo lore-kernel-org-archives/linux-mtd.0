@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2241CDB474
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 09:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0D43CDB465
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Oct 2023 09:27:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8MSDOv10u803rNy7RcRni8dnQHsubbHqVhM4GaIspiw=; b=iOlHIVym12FX/0
-	NVFFSfT9U4AaSebN7Lwp3uFMO9RUgHjIumOfjApAy+4e5U/zBYfsVdp50YBGS0O4Sf/IK5LMbKj8z
-	7ObhP1iNXevgQncdZNFdyD5wN0LckIrHbel38qFsISdcExjpL2Hm805OZoL+h6JeVcMuS46TQ4OZ9
-	hfJJNIAWWyD5GOgSngrsSogTyPGVNR0NCOTYH6dX4TfGJtRne9Kzb4q4UyZm08Nm9DpLU9u/9cQkA
-	701K3Geq5JqkgAOsa+noo2tp0+Aw01E2r5oo1o/NGmR3QAkNcENik+l3gUShL5vDQjelUTulvuyWW
-	qShcCV7Itgkbew1Yd90A==;
+	List-Owner; bh=nM2rQ/hgw0czrdUodvYa9alQDg7U1MYJlC5+QYLcSKc=; b=GwwniCGlqfoSrj
+	wX8ol1qr7/ghy7k1NuCjmHxbiK15jj/vqkqI6qNFkln629DE7k4HCMGYnI7itNmaqihrPJTedbX5Z
+	tIE1n5a4FdvI7/d9CP/UGR5fPWgQFicTAXSuj8wBZHHEiTNZfjkLl9d6f1MAhLSeAoP84NqHykbxF
+	GISpxMuU/9bKavEe+1NbUjsjf6FtfRbqM1S927gt7TN+pCy/auNiYWP6XtlJIVeJxBWhw79Mb7xxc
+	6CFCJnx4zso0XJ4kdad8Hap713Zw4mXKd1ZGsNzKy+YjnR67EtHARnRFp+DVR8Ds3r84pzDmh9eQE
+	DJwQ+RUdpOQ9JBx86o2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJsh-008zN0-19;
-	Mon, 16 Oct 2023 09:27:23 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1qsJsn-008zPI-0O;
+	Mon, 16 Oct 2023 09:27:29 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsJse-008zKa-0P;
-	Mon, 16 Oct 2023 09:27:21 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4110960004;
-	Mon, 16 Oct 2023 09:27:13 +0000 (UTC)
+	id 1qsJsj-008zMK-2E
+	for linux-mtd@lists.infradead.org;
+	Mon, 16 Oct 2023 09:27:28 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CC9A1C000A;
+	Mon, 16 Oct 2023 09:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1697448436;
+	t=1697448441;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YpJ0/TPGFDEnJfI3XvakRYBViQe227Z7pzR0pVb9P8c=;
-	b=LBB3egv2vQ6wav6PY7DEidWQjdz3ehR3twvKIt3kW3TkXG0VjfBe9C4yTfn1sA9kGW6Gd5
-	Vl0KbUgpm15BYosHHO4eIERshHwDD31eFM4kME3RxZL5f+gbBmF6LHFFuL0t55EYsqNFuC
-	6eAJdZDaD9H7GwlQxjeA33zBy1d8dbonMxzt0GVepFxmirbTZJFngLFg2Uop8Tlk8RuE3h
-	xOAXelQeU1wpy4GVoAlrLauHVuiStfNBp0xyvnjAVdWgFR9KuBLcamaeGKGIGsl2xOUjs8
-	/Q3TyCCNY1XgynAAhyDpUZm1wPm0onZ1S+DZIMEnZlmFUx3kQ9S1Hitd0CyJhg==
+	bh=Q9RMDvWOv59xOiyquQoLgRTUZcbBH+1Vo2yJ+d2tDnQ=;
+	b=BH0qgY+Q66TmLtTWqqwd9GVZUievr4AIic7fPN+Ofmzf6Rd5Ba17XlO5R75dDWHuMHEbJT
+	e6gyPcbLui7sgyJVRKKAh9Vw8+XTviBDLlPFUidQApQy8FMTyyM481n3EyCuEIkZsxBHmM
+	Pbgw5VL2WdSiAM6pobBrRnhiQur06NPUXSweY0lMQUlCxryq5UX0qausfl3CX+98IuKKxq
+	cDsb/epDWaYOBKKfigNWFuPmutJht8y20lenHLt5X48BIfHFvCx1gcNpP3uO/sXiOdoKEk
+	UoD4rhSyWgyEwSXaRuYC2bT2ibo7da6SpaG/nwGIHH+iOm6J0W8UEbun7WJmmA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Vladimir Zapolskiy <vz@mleia.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <michael@walle.cc>,
-	linux-arm-kernel@lists.infradead.org,
 	linux-mtd@lists.infradead.org,
 	kernel@pengutronix.de
-Subject: Re: [PATCH 20/20] mtd: spi-nor: nxp-spifi: Convert to platform remove callback returning void
-Date: Mon, 16 Oct 2023 11:27:12 +0200
-Message-Id: <20231016092712.288316-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 19/20] mtd: spi-nor: hisi-sfc: Convert to platform remove callback returning void
+Date: Mon, 16 Oct 2023 11:27:18 +0200
+Message-Id: <20231016092719.288344-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231008200143.196369-21-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20231008200143.196369-20-u.kleine-koenig@pengutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'3ee355dbc78d3dcb7f17a8b3c8eaaa38c54499b7'
+X-linux-mtd-patch-commit: b'ac2bc659822e844d21361623c5964c5cddd01c60'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231016_022720_298411_AF6BACA0 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20231016_022725_881513_0D0CA182 
+X-CRM114-Status: GOOD (  11.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,7 +80,7 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU3VuLCAyMDIzLTEwLTA4IGF0IDIwOjAxOjQzIFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
+T24gU3VuLCAyMDIzLTEwLTA4IGF0IDIwOjAxOjQyIFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
 Sz1DMz1CNm5pZz89IHdyb3RlOgo+IFRoZSAucmVtb3ZlKCkgY2FsbGJhY2sgZm9yIGEgcGxhdGZv
 cm0gZHJpdmVyIHJldHVybnMgYW4gaW50IHdoaWNoIG1ha2VzCj4gbWFueSBkcml2ZXIgYXV0aG9y
 cyB3cm9uZ2x5IGFzc3VtZSBpdCdzIHBvc3NpYmxlIHRvIGRvIGVycm9yIGhhbmRsaW5nIGJ5Cj4g
