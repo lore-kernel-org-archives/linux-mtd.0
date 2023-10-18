@@ -4,83 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22056CDB482
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Oct 2023 04:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FD57CDB47E
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Oct 2023 06:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nGWALgWKe/XfUVnFMQV03nuZJsYHr2BGX9OlSsT40K8=; b=kWA7ocFQTbo2RS
-	iPFcpU4G2AxOr81lmspV1MVJRU/fUjlbXyfUWfhG+Up/sR5GJMUb7UXur0E5xK1ftqH/MvBWcLqQp
-	HaiWfKMicNCiPICha5rKIcHnJcQJMPhEmiilFLnYqfR3P5d8nJ9nD1mVbRnsTo9ExxX19vXwO5L+G
-	JsYRsmSsshxBswX/20TVAEMBHGFN2SDjdA1BsnZckHXh/Jai9wODPsMdBVbicSAcPIdGWXn+6oIKR
-	rT2ORo1+qw6D40+nDY9WYnIHKYTUd2JSwiCpeeEuzux1Xtj4oshhwptHWhHUiXv+vY2IWk0XUiAPL
-	+MIFvDqd2EouLsc97FOQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=bs0CtxebMgHqf+rlZknAgHWYFzjqwJ50V9bapSgub3k=; b=KI0+9nw13RS5mb
+	WLoCdWMde9Krog7ubTHsXsZDtR/hRt0iNw0wOl7ixnO/wxsf4GvMG8hROh2sopNISBx7rA/AymslU
+	0gTUOR1a8FCK4UvhfL5e5jsevjhREBE/mL3ZCwGyWkmKk+pTsXxTE4ZSNqiXdsr/wl94tlTTfSgaQ
+	1SKwrVAOar4uBIEzait0SDqj4HnbmXjipIXRmoqcDuq8C8C6mZGUFmH0TFKrO09fji8IWwN4lIY2n
+	Az3DQPRfHFTWS+uUtreOG6QTUl3oHHDAVzgU6bI7vQAjr5CboEib54TFAmj1YxXSked8UPiQdJoNe
+	1iIlbTMNB8z9RmyGl62g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsyWF-00DmY7-0e;
-	Wed, 18 Oct 2023 04:50:55 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1qszp2-00Dse9-12;
+	Wed, 18 Oct 2023 06:14:24 +0000
+Received: from mail-sy4aus01olkn20831.outbound.protection.outlook.com ([2a01:111:f403:7005::831] helo=AUS01-SY4-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsyWC-00DmXe-0d
+	id 1qszoz-00Dsdr-3C
 	for linux-mtd@lists.infradead.org;
-	Wed, 18 Oct 2023 04:50:53 +0000
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso10932541a12.1
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2023 21:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697604649; x=1698209449; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VJTgecuO9IlcEiPhpF1l4nKhffuqUxUpzxSxXR6k2WI=;
-        b=v1RO7tZfhdtkNW+0dc+OCBi0y/lpBMKJMA8UbDQxetiiVMD+xKSnvi2QdbMJgYK7Kk
-         rqT7wYqjSjzroZ/rra+yIxdocTlJ3w/ptsGlserI/3XsMlvdCN97SQLeBBaQA1KcHYE/
-         rY6MSvG4kigwsultjBIMUmjEYd6BnbpBy3ojkfHscBHT8jim7dam3QumXTXceRN0QDGi
-         nTnFnlFwY3+bXQ++Ou08wLUB2FITNsouoKNBPAcXKvmvNRO6Myb+iHgLFfaOxuauKE4P
-         qYq4QeVZIxXuGid7y5NaQ7qod/1i0VogidcaSfVujgBNdhPGLNSLSWtjdZLOAv5B28tf
-         NSDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697604649; x=1698209449;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VJTgecuO9IlcEiPhpF1l4nKhffuqUxUpzxSxXR6k2WI=;
-        b=Xr7OUOYjOO/nSYKBLClD3PDmCRsWTwry3dw2/K8c2nKdiXrFnuEWj15XWeo6mDAIju
-         iaM+hZx34D3y6G7ZLCQtgDqzNGwyFUbaJ2oXDvHf/U9ZVw0HNqCTggkki+cq7CEpUBJC
-         0fBWz6h3D0Pl7yuXry+RuJsQY4JhiI91/WgxzlAJHnQFCeTsJpddW0AxI6JPCYfaVNtL
-         eFMidJeAkI2xGUhJXEaLBuZhgj8BEqHDJtETlwr8g7zbNuSr/1gbjR75Y1dhugJvgBii
-         +oHvxWq0oujSpOW1EgIkyGWckSwPvX63PpUkbJT78a8jpksecGe1f6+gjFxnv1+5k0BL
-         jFYw==
-X-Gm-Message-State: AOJu0YxcoJt1+ZUfXT6kUM1h5rC+imwRj6oRKkulhOAVHhhmDAeSTe/S
-	U+nl9izmC26Qz5erOGVcZZ8evw==
-X-Google-Smtp-Source: AGHT+IGjPZ9tpAlShZ0QPpySXzyhCBr1xtf1fcfhMo9RW3fvI+GuhFJT9QRkEKU0ndTsgjkMEHz3gg==
-X-Received: by 2002:a05:6402:50cc:b0:530:77e6:849f with SMTP id h12-20020a05640250cc00b0053077e6849fmr3496073edb.27.1697604648893;
-        Tue, 17 Oct 2023 21:50:48 -0700 (PDT)
-Received: from 1.. ([213.233.104.181])
-        by smtp.gmail.com with ESMTPSA id n30-20020a5099de000000b0053e469f6505sm2196878edb.26.2023.10.17.21.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 21:50:48 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: michael@walle.cc,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: pratyush@kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Mamta Shukla <mamta.shukla@leica-geosystems.com>
-Subject: Re: [PATCH v4 1/2] mtd: spi-nor: micron-st: enable lock/unlock for mt25qu512a
-Date: Wed, 18 Oct 2023 07:50:44 +0300
-Message-Id: <169760461825.6371.1786952858220503854.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231017074711.12167-1-tudor.ambarus@linaro.org>
-References: <20231017074711.12167-1-tudor.ambarus@linaro.org>
+	Wed, 18 Oct 2023 06:14:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OMr6IAUnzfMo5pI0GGlZl9ldrbMBllD4+BYt6MkJvAIJyLDzRc5Sqlk/61B8iMt4x0uiXyO0SDHHL7e+iUMO4OTiHfxQMXzIKrV5lgr2JCRP24lp2EZn4nHJucvtG6QELLjObJWpjWbCBDhHnuosB6Gpjn+iWTFJKgda1KIM2xfLlYPg8mujggUgVcQhYtRweJBMtd/1AYuFbmZ258tgF9qJlDtHLjUI5rFukvLu+uj8VU3EXVWjPXzeOFtBwithCYsYym2l7Gl1NyWgCO0HiGjZyW7UYjvDknevvnAlhyRwwVJ0K8Sb5uoQ8A1hM7Pl+wkDUUA10gkfXH1dKbQA8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/GMudZsfxO0sJeRYjiTO12n0MasPQg1bebUbVlORF0A=;
+ b=SXzlNo0UVF8lGEiuMy36clm/SuIW68c9hXfSMJcUr5jz4eFGHvyxcwa2JGKx1CxYwbLi5A/F4cfN/sL3pIwXMg2OFLL8RMl+v5qS501aP8rHs4agPtt9Ywe1qsEOYhCFaE/c8VeiX78DGGrTtyTe6/2d2QoPIclDHRKV/lmQjVloNNU5vIi8/FCIX5KimL/jVxmZxSI4siXEjwaENLHTDoQO2KyTB75PEEo6OyW8D2oPD3sYe3zVm1AIwocSrsSApcvBxlT7iRqxFtiYLvDylJqwtfKcgjc4c2jPmtpy8y6F1r4Jg/R8i0Hbee47Ny9zM48Dm52wzFHi7KYQiorAOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/GMudZsfxO0sJeRYjiTO12n0MasPQg1bebUbVlORF0A=;
+ b=WVUQI+lBQgil6Yjkg3I2g6rkJCeIAMByejUs92s+5EXjpWV/SeM2V59sphTex0fDXiCocAFjsmh11hb2dmEfckCz8Hdbr0DPeyYqbZKphUZfMtFfDTHCZoPnA19EbILTWB9BkoNNBTJwqvPElYruL9TpESK5h0c3L30tlURPESBZPHnsIKsXQS2Cdu66MtU/CWWcQdilqaGeYynhW31/T9Jl/QxQbTWi/9WikC4jdyLObMpomud798C68KDwZEVBfqLutwgSPoU6Tuzk65kkns4rc+UGA+7QgUPHKBRm+0XUU4KrgVpne/UmBxgTNsL8gVc7HHaNVD0OeSHwuk4qpg==
+Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:159::11)
+ by SY8P282MB4291.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:257::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Wed, 18 Oct
+ 2023 05:59:08 +0000
+Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::b729:fb11:fe5a:5366]) by MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::b729:fb11:fe5a:5366%6]) with mapi id 15.20.6886.034; Wed, 18 Oct 2023
+ 05:59:07 +0000
+From: Ryder Wang <rydercoding@hotmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: ubi: some invalid code in the function scan_peb
+Thread-Topic: ubi: some invalid code in the function scan_peb
+Thread-Index: AQHaAYgTG91tdv/8dkayS7JsgFhh8A==
+Date: Wed, 18 Oct 2023 05:59:07 +0000
+Message-ID: <MEYP282MB3164B8C92CD51ACC0897F0F2BFD5A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-tmn: [pbHmvSU5aQ1lqh6xhD7p3swHbCf1VQXEI67yOCQ89fk=]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MEYP282MB3164:EE_|SY8P282MB4291:EE_
+x-ms-office365-filtering-correlation-id: 380a6737-af70-4db7-3c52-08dbcf9f579b
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: n5EbUQvQm2atRjV7A24+AkrdamY+3Oh3Un6lnCOULYPqOKXYdTre1RqTQYj3Gzxr7lyPvWTTzSvJR3Trnk8AULe3dvTDK4a/2UtVbUa+GtAiub2uANY+Skomd9QQI4N4cP8g90zYqz2DERJNPhRp9tWYdAGQM9pfZIXkKkyvB+QXw9E3p1ZY4dtmrA0gY/r1M9UldG4axhriHzLiTgQiJOnP5HRJphZZmkY2LbMZ/5bODHcCEJXHbD3FEm58zkB4x+knxdxV1ohVIvDVSzhyLCtyk3mgxMYqoyU6jlI1iyf8G1txn3HFtRmjNY9BiBt3tAu6F5u4ynIF5PkHoab61/tDCrvVCUlp+lg98xk9+vkqJGhxRkD3UkdWQ9viT0TIcDxD/chYiN58lZVRf/bIr/ef3cHm3DwoGB6dXnEnCggBnk3V/Ag/sIFinaurrIJFmTMLDPFL4ZRGt5QIfdA/FRpv2xjXRnM3XlxERl/war3q8aC+VneIGvhuYVO27i+JUemMTNrrZLHAisrS673+AsKGhUCLw/egoP07s/IBAJpyjWRjgILprnsUZXJb8NTI
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?qosNVv+UMx58q/7HOKCSjaqUVKLD+CtTN4Ajqsgb1zlxHASjIYVB2JbJeD?=
+ =?iso-8859-1?Q?c4isGfFJUd0Nn4usgUq2hGwQV7m672XaJInK5DepbfYbw+Zit/s6l2t+KK?=
+ =?iso-8859-1?Q?BGszt7ZY4Jz/6LAZe6DlkZ+eFxukloj9LSk0gmtHI6t2kkpcqTwyKHaxOB?=
+ =?iso-8859-1?Q?GAh5Do9gSJssrFxpGrHpNeb2VSgHWBSY9tlX2X+g93TEnD9OURFdAGoeTu?=
+ =?iso-8859-1?Q?F1BHS043hLRFOfzRFItzrOVBr8GkSIeORlWYCF7zqRkFaSXRENLphZQeTV?=
+ =?iso-8859-1?Q?9jkSlK79Rh7f46KromDMsexvMEE1CHcRR3kU31Imkac1e90vqndyhUvMgZ?=
+ =?iso-8859-1?Q?oELVJX6RgP8GzAWRRaerohz/zDq982o0AtH+kDVRCE6+UJJh5q8iuMSJqU?=
+ =?iso-8859-1?Q?2SSO3sHKi8TL90Nq0rG80xybGuAac/aIfttc55xyewhtf4QKWGWmp5WIhQ?=
+ =?iso-8859-1?Q?BVdnAi9qFU1t6hVWsMD7dqEtAk+CzNKkd3uJ1+pRFNhreWnsrwWNJj2p3n?=
+ =?iso-8859-1?Q?9PkngDrPvWpvSUeS572YeG4fHVxH5snOf3ooPbhQrPycSxKfJZzmhVjRZR?=
+ =?iso-8859-1?Q?pgl250j3P41KCOGGQ/HtcoKSuO7rrUoCZYQ2YDIpTKeDn+L+5Z9j6isdWe?=
+ =?iso-8859-1?Q?vo3L/4yviLu0xoy9R9DmBry1k6P+w5OtuJyOJCXzUgIIqz67HfWn1b1/LH?=
+ =?iso-8859-1?Q?IB7iQ8IMCpfGyH0ldXG4phDErh8O854AmWyeiovQPPgQfymkmKJxk5cSXP?=
+ =?iso-8859-1?Q?a3f2K30MguKvF2g2VrRc/UzVY2WO49lSnNe+oPxXhnV1eOr/Mc385BrlSN?=
+ =?iso-8859-1?Q?95yy2kzbIxpegPQ/FMhgSoqgJcQefmpEH84135KLcWzbYUHDqQKC8i7Rt7?=
+ =?iso-8859-1?Q?YRWjYpvqQKxWVstFdaF60cPZaJZo9b5Fm9T3fD734wllGGvjGhbA9MWzQR?=
+ =?iso-8859-1?Q?x1Hly2oxFcFmWpCmDHIdnUY8IOQasl7HzqIuRe/iXgPgEGM16+jzAOK3ci?=
+ =?iso-8859-1?Q?fkbE3XDL83hvdGpSkgHHltAgGA4uD/JWpKdkUxz8fVkrfkEsj3ZuJTD9jI?=
+ =?iso-8859-1?Q?oqdkxEMCL8EMSOqWt4abzDoR06LJfnet6Y/JkqZz0VpEEnol8ttkr955ed?=
+ =?iso-8859-1?Q?cHCmhX09xpzDmipIesKepqVPtSMQPdPsemDB4dMqxk81IMq278bwRDl1tR?=
+ =?iso-8859-1?Q?vlsxj+3tlpbwPywAIZLy8I7KmGh4mcksI0FlyVhvCS+a0CNaKxKFk8GjH0?=
+ =?iso-8859-1?Q?Yl/Y/7KJ64VEXM6lau8g=3D=3D?=
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=620; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=4Fa79AGkAfQS2RZS3SU5DMBGknFdIGFh+yLgsIhDUqo=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlL2QhQML57IIx5rz4mOWlvdIvFXMR81sXg9IoH QRIeZY0xSSJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZS9kIQAKCRBLVU9HpY0U 6bRJCACYL8lhh1R/Aij6phFer7+gwBjqMQkfg7oa5Ym/dcZaymlmbh+k45ldRFvuTWs9Ir5ucaE pwyNWMeYoWu0PpUUn2TV8e16j/cPgngkpSuEcFGC6PhZS+Y8kDF88cS4sO+y7tqqdnAbcnH8lr0 PusnqogpAlRByC18InUI+kv1elwABndLpIBXbMwK+FZXpaUeLk12zai6QyqmLkwmR8XCu7LJ3H2 YjriO2QbJsKXE0U2jXGoIbTEuwfIOKITn3RaznJxoAvPRnRF2xA7hbfwCSRzTA8Dq/GySveklwd 2JWbJCgW9AGhp6ksa56iqjKa8BN/sLzrAUsQbhXGDa0yc6fs
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 380a6737-af70-4db7-3c52-08dbcf9f579b
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2023 05:59:07.9122
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY8P282MB4291
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231017_215052_281348_9EDF8FD8 
-X-CRM114-Status: UNSURE (   6.70  )
+X-CRM114-CacheID: sfid-20231017_231422_058609_BE9D5CCA 
+X-CRM114-Status: UNSURE (   6.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,30 +118,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 17 Oct 2023 10:47:10 +0300, Tudor Ambarus wrote:
-> mt25qu512a supports locking/unlocking through the SR BP bits. Enable
-> locking support. Tested with mtd-utils- flash_lock/flash_unlock on
-> MT25QU512ABB8E12.
-> 
-> 
+I just find some dead code in the function=A0scan_peb in drvier/mtd/ubi/att=
+ach.c.
 
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
+In the function scan_peb, it calls validate_ec_hdr which calls validate_ec_=
+hdr. If ubi version or erase count is incorrect, it will report -EINVAL and=
+ abort the function scan_peb. However, ubi version or erase count will be c=
+hecked again in scan_peb and such check code will never find the errors bec=
+ause such errors should have been detected by validate_ec_hdr (aborting).
 
-[1/2] mtd: spi-nor: micron-st: enable lock/unlock for mt25qu512a
-      https://git.kernel.org/mtd/c/a2a3e5430e7b
-[2/2] mtd: spi-nor: micron-st: use SFDP table for mt25qu512a
-      https://git.kernel.org/mtd/c/6823a8383420
-
-Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
-
+Thanks,
+Ryder
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
