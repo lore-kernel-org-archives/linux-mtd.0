@@ -4,79 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C77FCDB474
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Oct 2023 21:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CBA1CDB482
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 Oct 2023 01:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lX90GjcGyl1qcIKQqef0n91iCumWyoMqsLON3vyYY1g=; b=vVc06wTzBFZjfi
-	IR8rA5Qsevyxa8AyWldMU32w2Kjqnj73Ko5++G/eDAXFKsIXfm5vA7bMEg1ITbntrgM2JOxDYCP/5
-	byeECJlsBUd8VO04Bg+ak73LTmu73zkLVM9aevhZcyILh7jBD3OkFtfrsG044MjaDJI66xZS48/Zh
-	isBy9ey8fEjPJ1/wrye1S5dRuRhXr8PKs1Mf5fkgOCdFSZ0amI9BfoApRP6lDcyDJmkDkidW8iOxa
-	Ruut1a0oLvAC8kMm6a1H+Nks9/1HelWCNYb9xzSOjkDuprEy05M7FJk9h3W6TeFcsbPFUhwe+arIR
-	u6/gXdNyiCRPhPkxmwtg==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=WVi5xMeN8ZzGXI0Ip5S4VxZEUjyg9VjOFfM2xkUho0c=; b=sBw
+	gxVI+s2grEpfJPX6sRkOdWQkIpYAaurrxGieQ+LbHZTrZlHzVBthAnadpqHx5unJSlZ6lXUWCm1xD
+	fcpThso7PvxK7c1SUJ71/LeaZ5We45OJDtyclRQDK1NhNvPzE5REhA10sOA7NYJb92/9mTXjo2Dgx
+	iNQ7MrbQVPU9LU25JVS0m6iJ6xcZ/XkTgvFwWcFSDsI4gil+/JhH6EolNbr084/CVY4v2dq7PMlTJ
+	i8qL3xaINiEoxqSW/6BB+fcJOVDCa3au194nT5EGNMc3d4eeZ3/rDFYdMfUwc3NX0tMtKiz8IH7KQ
+	Kmkmn8Cv+OK4tm1mmhwLD7cGOcXhn2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsrxi-00DKIE-1J;
-	Tue, 17 Oct 2023 21:50:50 +0000
-Received: from mgamail.intel.com ([192.55.52.88])
+	id 1qsvF7-00DX3a-2m;
+	Wed, 18 Oct 2023 01:21:01 +0000
+Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qsrxe-00DKHU-2J
+	id 1qsvF4-00DX2l-1J
 	for linux-mtd@lists.infradead.org;
-	Tue, 17 Oct 2023 21:50:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697579446; x=1729115446;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hUOW2jdFFCD231zLnFnj1kgtb5ru8K9Mpcdi+Gs/Tzs=;
-  b=N9GAWDPEWbuTXPjKicXaoYQUcB5Frbev5ks1vqhsoR0Dwy/222tjqZXY
-   fIlfgDkugJVfS5dGl7HeAcG8hDg5neZYhzR89JE0vo1BrdqH0u+SAApMG
-   H38GQ39jycd3QaxKR9hyFvrucOFOycV8iDOdsNRvnp0GMyheL1XSmuq2f
-   v0/vmVniyYA3M9byUbcEvW4ofuWTWKOI23xOchl37wrFXXiIKQOZ+wqUU
-   ek8kdzBOy2tFKkjM2lwbmf3syxw/5qGFFy1n+XSD683wHSssseho4dgRf
-   bhFgMDP9slMArDptsAT1ZCLyU2tlV6KpQwCqy4J4+YSutaspHCj8N9k0m
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="416985500"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="416985500"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 14:50:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="872757749"
-X-IronPort-AV: E=Sophos;i="6.03,233,1694761200"; 
-   d="scan'208";a="872757749"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Oct 2023 14:50:35 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qsrxQ-000A7r-2K;
-	Tue, 17 Oct 2023 21:50:32 +0000
-Date: Wed, 18 Oct 2023 05:49:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: dregan@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-	linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-	rafal@milecki.pl, joel.peshkin@broadcom.com,
-	computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-	william.zhang@broadcom.com, frieder.schrempf@kontron.de,
-	linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
-	bbrezillon@kernel.org, kdasu.kdev@gmail.com,
-	JaimeLiao <jaimeliao.tw@gmail.com>,
-	Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-	Adam Borowski <kilobyte@angband.pl>
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v3 4/4] mtd: rawnand: brcmnand: exec_op implementation
-Message-ID: <202310180553.Zfa2ryoa-lkp@intel.com>
-References: <20231017201417.129872-4-dregan@broadcom.com>
+	Wed, 18 Oct 2023 01:20:59 +0000
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so75338871fa.1
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2023 18:20:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697592052; x=1698196852; darn=lists.infradead.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w9bsZxjzCPh+j9mOqAEjdN74J0YCo7pjjZD9ZpCkphM=;
+        b=QxAkhORsNFdphz4237XkWtZDxh5dCzIyPCLBpr/L5T0hjo8cPR7xlZ3n/5cxkW9Fvm
+         HatzrVNJL2U5OpwWSwtLyvownfT8OecV5eKwAOHmqmYdOja4x1aNTMz2wdAVuUFxiSww
+         s+pxkjHJglb2xejuB+9W0MGTwmrwQxQKacXQ1p7F9nFwHUMIDHod0T85Txv/XsErhwrY
+         nDa861vUTqiE++EKO8mxijkQPj3z2Qq5fLxkJZhUY6HkzfCUdOO7KKj8W+m2IyjVagvy
+         2/9sxWXCdlwmM7O3SmrmLKCaBPD/ZBZh6oLcDS5BWSJABEzFUUADbX4J/cks/c2CtQzO
+         G3Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697592052; x=1698196852;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w9bsZxjzCPh+j9mOqAEjdN74J0YCo7pjjZD9ZpCkphM=;
+        b=U/E+5j7gre9C6ZPTYHzbwu86XwmqeKpOQBxstJnL4FgHxw5f5ydJ0f+AdDcQEw71py
+         ljG2uKNZhN0NOKgiS0QjvaC58q6Ntrps13YX5PB0RCrg6n3kyPHL5wJxGXxznRl6NuX3
+         jOVUy7nKdl6DHrSenJxpD4smC19OLxXD3oo4VuBCK///Cf1saHZZ+HUKr/E+Uklx70F8
+         nCHVPKw0iK0yuKfrRHlnyoMG6xSidysKf/QouodSWenhGFxsCRG8TyZ/OdU7c+fT7pvW
+         XRp/QulnSOpgiP2JH0JDbaYWydAWlQSWToJTbMZo+ThXsAw7+IXHIPb/inM+wAFJPLIf
+         1m3w==
+X-Gm-Message-State: AOJu0YwlsCB3GRpPhk+xX6J4rna4LGpWrZo2cjia8IZqdy4p+Vd3XRQ9
+	Aw/lUwmyHWxwFADOz7ipxrW4BAwRHp7VF/eu4ejuGl/FfFU=
+X-Google-Smtp-Source: AGHT+IGNHw/fCX8xVSNKnY4IFoE7QOUwm6WpXGyagawKD5RX0i/z68Rb1TKNSVVZgashP/LkbfolBd3V4LhFYr8ve+g=
+X-Received: by 2002:a05:651c:314:b0:2bc:f252:6cc4 with SMTP id
+ a20-20020a05651c031400b002bcf2526cc4mr2578249ljp.10.1697592051819; Tue, 17
+ Oct 2023 18:20:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231017201417.129872-4-dregan@broadcom.com>
+From: Charles Manning <cdhmanning@gmail.com>
+Date: Wed, 18 Oct 2023 14:20:39 +1300
+Message-ID: <CAE21AQqTPJqy9QdFkK+QTgK7bbU3XUQZJcZeJXg1a8Hhs1VouA@mail.gmail.com>
+Subject: Should spi-nand wok with SPI on Zynq?
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231017_145046_799943_3ED186B3 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20231017_182058_442258_0D070178 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,67 +82,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi All
 
-kernel test robot noticed the following build warnings:
+I am trying to use spi-nand an a Zynq via an spi port (NB not qspi)
 
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on linus/master v6.6-rc6 next-20231017]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I have tried both 5.15 and 6.1.5 as supported on the XIlinx linux tree,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/dregan-broadcom-com/mtd-rawnand-NAND-controller-write-protect/20231018-042758
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20231017201417.129872-4-dregan%40broadcom.com
-patch subject: [PATCH v3 4/4] mtd: rawnand: brcmnand: exec_op implementation
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231018/202310180553.Zfa2ryoa-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231018/202310180553.Zfa2ryoa-lkp@intel.com/reproduce)
+The device tree node is:
+        spi@e0007000 {
+            compatible = "xlnx,zynq-spi-r1p6";
+            reg = <0xe0007000 0x1000>;
+            status = "okay";
+            interrupt-parent = <0x04>;
+            interrupts = <0x00 0x31 0x04>;
+            clocks = <0x01 0x1a 0x01 0x23>;
+            clock-names = "ref_clk\0pclk";
+            #address-cells = <0x01>;
+            #size-cells = <0x00>;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310180553.Zfa2ryoa-lkp@intel.com/
+            nandflash@0 {
+                compatible = "spi-nand";
+                reg = <0x00>;
+                spi-max-frequency = <0x989680>;
 
-All warnings (new ones prefixed by >>):
+                partitions {
+                    compatible = "fixed-partitions";
+                    #address-cells = <0x02>;
+                    #size-cells = <0x02>;
 
->> drivers/mtd/nand/raw/brcmnand/brcmnand.c:2393:5: warning: no previous prototype for 'brcmnand_exec_op_is_status' [-Wmissing-prototypes]
-    2393 | int brcmnand_exec_op_is_status(const struct nand_operation *op)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/mtd/nand/raw/brcmnand/brcmnand.c:2404:5: warning: no previous prototype for 'brcmnand_exec_op_is_reset' [-Wmissing-prototypes]
-    2404 | int brcmnand_exec_op_is_reset(const struct nand_operation *op)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+                    partition@0 {
+                        label = "small";
+                        reg = <0x00 0x00 0x00 0x800000>;
+                    };
+                };
+            };
+        };
 
 
-vim +/brcmnand_exec_op_is_status +2393 drivers/mtd/nand/raw/brcmnand/brcmnand.c
+The boot up recognises the device fine:
 
-  2392	
-> 2393	int brcmnand_exec_op_is_status(const struct nand_operation *op)
-  2394	{
-  2395		if ((op->ninstrs == 2) &&
-  2396			(op->instrs[0].type == NAND_OP_CMD_INSTR) &&
-  2397			(op->instrs[0].ctx.cmd.opcode == NAND_CMD_STATUS) &&
-  2398			(op->instrs[1].type == NAND_OP_DATA_IN_INSTR))
-  2399			return 1;
-  2400	
-  2401		return 0;
-  2402	}
-  2403	
-> 2404	int brcmnand_exec_op_is_reset(const struct nand_operation *op)
-  2405	{
-  2406		if ((op->ninstrs == 1) &&
-  2407			(op->instrs[0].type == NAND_OP_CMD_INSTR) &&
-  2408			(op->instrs[0].ctx.cmd.opcode == NAND_CMD_RESET))
-  2409			return 1;
-  2410	
-  2411		return 0;
-  2412	}
-  2413	
+spi-nand spi0.0: Micron SPI NAND was found.
+spi-nand spi0.0: 128 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
+1 fixed-partitions partitions found on MTD device spi0.0
+Creating 1 MTD partitions on "spi0.0":
+0x000000000000-0x000000800000 : "small"
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+But all the blocks are bad.
+
+# nanddump -c /dev/mtd0
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 62
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 128
+Dumping data starting at 0x00000000 and ending at 0x00800000...
+libmtd: error!: cannot read 2048 bytes from mtd0 (eraseblock 0, offset 0)
+        error 110 (Connection timed out)
+nanddump: error!: mtd_read
+
+When I attach a logic analyser I can see that when the CPU issues a
+request for status, the expected traffic is on the bus, with the
+status being 0x00, but the spi_mem_status() is not giving back a valid
+status (I'm betting 0xff) and the -110 return value indicating a time
+out.
+
+In spi_mem_poll_status() the ret == -ENOTSUPP) code is being executed.
+
+        if (ret == -EOPNOTSUPP) {
+                if (!spi_mem_supports_op(mem, op))
+                        return ret;
+
+                if (initial_delay_us < 10)
+                        udelay(initial_delay_us);
+                else
+                        usleep_range((initial_delay_us >> 2) + 1,
+                                     initial_delay_us);
+
+                ret = read_poll_timeout(spi_mem_read_status, read_status_ret,
+                                        (read_status_ret || ((status)
+& mask) == match),
+                                        polling_delay_us, timeout_ms *
+1000, false, mem,
+                                        op, &status);
+   +          pr_info("mem op status status 0x%x ret %d\n", status, ret);
+
+                if (read_status_ret)
+                        return read_status_ret;
+        }
+
+That gives me :
+mem op status status 0xff ret -110
+
+This suggests to me that something isn't working properly in the
+spi-mem is using the underlying driver.
+
+Any suggestions/pointers would be welcome.
+
+Thanks
+
+Charles
 
 ______________________________________________________
 Linux MTD discussion mailing list
