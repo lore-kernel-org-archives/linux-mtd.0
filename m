@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 248BDCDB465
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF22CDB483
 	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 07:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WLtvOuTJCqA6F5D7dINl5i66pgGxMo1F0SaTpRMqWsA=; b=3p4kv+4MdsA9dO
-	OShKlvWRdVmbxi6FNZCfDVMn3K5EH2rGfyU2WS8FCqaG7DaVtCRXNiT7/9C+mdfNICJODm8It61em
-	2zm5Sk8FVj1X3gE6LJWBzdQN6InV8kGckproTiSpz4QsgoumfRWBmazMcpYYWN839wn9N6U/w1e5g
-	gjpj/lTxWy5B5jZ/VNOec9e7G2/foiCZcn6YJKGFPV3Trp8lryhOU1H/tDRdEIYAVNFcDD0jtsxDF
-	c4VuuB4Y3p/b0sYmCcS2crnLIqLtJXLU0/rkcO2NgmA9gOE6ngDyA+QvVD+TN0f8PQ4r4nTTPrxFv
-	IFELmfUmctDxuBb+ttzg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=G5q9be3/u0VHzlN7B2zrXnXyGOqEbDt1EZNfH8aTUkA=; b=38FJuzwarg01wT
+	dgsSm0/6hGcTHZWlkGtIfHaVYpl4uWRjkcSwi+7WBsttzVTdTXjFVfM9F7Ox3U2s+eOmEbjAryg9O
+	PKNht8Hb0NMfwTssAXcHNXIWDzBgKiqIgP+Xsh4XlS33psRd0Xy/11dhpS9vAf1YvTWxL01Z0k8H1
+	VK34THy0IGGK4sw6YXPOFRYbX+mlo9JTOrpDxGKVMKcknlXpvmNKqEyIjHx7RChhjc5rI0bG5Z4T7
+	aCGK8qzdhIfwk/ZNC3pimB46RNVKQ73/mHjLdPBLIXMLPPuqHqXNcuNYzNcnxhb0dv6lY+kX2F0ke
+	RZVAEkfmCKglpTSQt9aQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtNcT-00GcWN-04;
-	Thu, 19 Oct 2023 07:39:01 +0000
+	id 1qtNcX-00GcYg-1V;
+	Thu, 19 Oct 2023 07:39:05 +0000
 Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtNcO-00GcTn-1x
+	id 1qtNcU-00GcTo-1z
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Oct 2023 07:38:58 +0000
+	Thu, 19 Oct 2023 07:39:04 +0000
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 90779120009;
-	Thu, 19 Oct 2023 10:38:47 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 90779120009
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 3BBC012000D;
+	Thu, 19 Oct 2023 10:38:48 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3BBC012000D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1697701127;
-	bh=qHjagzBNZKS0ba9ZInkR/Ivhhk92bbpsh29/iG18+hQ=;
+	s=mail; t=1697701128;
+	bh=8EUTHmA8KnT2ITQYRQVP7dMugb9aOlZWZtyYH44SnBU=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=XxpYGcDJc+HSvMqApotEG9nODqofEAVEDU0s/+s+2xDHnTt+0yuAUJAb9NvbGZJAo
-	 YNteXy8I1h3cJNE5/V1CkhHivhC7nXjYD/lf52rreWoLhlCGCtBUS26E+oGRBfDE2m
-	 azqe5fa68YAQri5RVa//rVlaEJSlSQi9SMKmbKVeOig1QsX+uCxkRdqj8z0M3rZBp9
-	 SW7CE12j1DwfXxiUi02zUKZR9xAHzlB8kwmmTT66k3vXfHh3+hvwz3FDZ48KKrkd7s
-	 l5hrIgd+sISkBUCnjetWHDWZVU90jPKfN3qWtLMf+UrkENNiUScXinrHswanMsNvOb
-	 tkkx2MYkdZ0qQ==
+	b=RJqzeRRENG7CfJEsIsI0BPnh5KtG1+wukdYnK7byqgLTlFaupDaqKma3G7URgTM9C
+	 wCmSQJvYf3YEb+FY7krEBmJIz53ud6CA0apGGhJABXEYd8FB9B2vq3LFfR9XDtv9mT
+	 WxJ/D+b6Qyp2rRRQAUPQLG1OIvF79Nkf+D47uGn9v4R+1astZEwtOansqJLyNXsTu0
+	 7b3158RxtGXZ3eIfk+fUr/xKzFimL2q4evzH6uNbTsa0dkN09akJv1RZHrsMoacf0T
+	 dq1R9L1MYZaP1hLFDtgEQEAkjS4L/FqL8nzl7MVE9GaxldL0dMnKDj2bgSo7BzNOQd
+	 7fXkG7gx4Md+Q==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 19 Oct 2023 10:38:47 +0300 (MSK)
+	Thu, 19 Oct 2023 10:38:48 +0300 (MSK)
 Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -56,10 +56,12 @@ To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
 	<dchinner@redhat.com>, Yu Zhe <yuzhe@nfschina.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
 	<kernel@sberdevices.ru>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v1 0/2] jffs2: make cleanmarker support option
-Date: Thu, 19 Oct 2023 10:38:36 +0300
-Message-ID: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
+Subject: [PATCH v1 2/2] jffs2: make cleanmarker support option
+Date: Thu, 19 Oct 2023 10:38:38 +0300
+Message-ID: <20231019073838.17586-3-mmkurbanov@salutedevices.com>
 X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
+References: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
 MIME-Version: 1.0
 X-Originating-IP: [100.64.160.123]
 X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
@@ -81,8 +83,8 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/19 05:18:00 #22229383
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231019_003857_205265_C0393F54 
-X-CRM114-Status: GOOD (  14.39  )
+X-CRM114-CacheID: sfid-20231019_003903_005009_C400D4CD 
+X-CRM114-Status: GOOD (  19.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,7 +101,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patchset support for disable cleanmarker option. This is useful on
+This patch support for disable cleanmarker option. This is useful on
 some NAND devices which entire OOB area is protected by ECC. Problem
 fires when JFFS2 driver writes cleanmarker to some page and later it
 tries to write to this page - write will be done successfully, but after
@@ -107,17 +109,48 @@ that such page becomes unreadable due to invalid ECC codes. This occurs
 because the second write necessitates an update to ECC, but it is
 impossible to do it correctly without block erase.
 
-Martin Kurbanov (2):
-  jffs2: introduce jffs2_nandflash()
-  jffs2: make cleanmarker support option
-
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+---
  fs/jffs2/Kconfig    | 10 ++++++++++
- fs/jffs2/erase.c    |  2 +-
- fs/jffs2/fs.c       |  4 ++--
- fs/jffs2/os-linux.h |  7 ++++++-
- fs/jffs2/scan.c     |  2 +-
- 5 files changed, 20 insertions(+), 5 deletions(-)
+ fs/jffs2/os-linux.h |  4 +++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
+diff --git a/fs/jffs2/Kconfig b/fs/jffs2/Kconfig
+index 7c96bc107218..8a66941d1e93 100644
+--- a/fs/jffs2/Kconfig
++++ b/fs/jffs2/Kconfig
+@@ -29,6 +29,16 @@ config JFFS2_FS_DEBUG
+ 	  If reporting bugs, please try to have available a full dump of the
+ 	  messages at debug level 1 while the misbehaviour was occurring.
+ 
++config JFFS2_FS_NOCLEANMARKER
++	bool "Disable cleanmarkers JFFS2 feature"
++	depends on JFFS2_FS_WRITEBUFFER
++	depends on MTD_NAND || MTD_SPI_NAND
++	default n
++	help
++	  Do not write 'CLEANMARKER' nodes to the beginning of each erase block.
++	  This option can be useful on NAND flash where there is no free
++	  space in the OOB area or the entire OOB area is protected by ECC.
++
+ config JFFS2_FS_WRITEBUFFER
+ 	bool "JFFS2 write-buffering support"
+ 	depends on JFFS2_FS
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index c604f639a00f..ea42964d8118 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -109,7 +109,9 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
+ #define jffs2_can_mark_obsolete(c) (c->mtd->flags & (MTD_BIT_WRITEABLE))
+ #endif
+ 
+-#define jffs2_cleanmarker_oob(c) (c->mtd->type == MTD_NANDFLASH)
++#define jffs2_cleanmarker_oob(c)			\
++	(!IS_ENABLED(CONFIG_JFFS2_FS_NOCLEANMARKER) &&	\
++	((c)->mtd->type == MTD_NANDFLASH))
+ 
+ #define jffs2_wbuf_dirty(c) (!!(c)->wbuf_len)
+ 
 -- 
 2.40.0
 
