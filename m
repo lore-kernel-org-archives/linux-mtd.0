@@ -4,65 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F684CDB465
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 08:12:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C880ECDB465
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 08:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=RP1rIdMJZLjUnEl2Q4AyvB3uC5vxlwfZ9Sa9dY5+iMs=; b=YOiwIqUZP2tpkUvFZ2n7IwFQHQ
-	aEJrYTweJq2VU1w8+dhIWmOhHbmqLkAACrXaVfY5mtkGrKKf/OS+uQhcQbDbC9Xhm7AI+MI/ilkXT
-	Q4TR+B25VpMHRaOauqlCfE3PIbdfiHTlkwxIaADwa1O0Ogz2h2xBfxqOjZDcMm7TaFQlZDQWX0Vhj
-	un/aI1AfHU5fBFfDIKLEVf9TEAEXD/OnBuud7PP2Z9DN3XYpKiSfhcuJc8VCEMoS/OTjZL0nBlj1X
-	4DqDw78mooPSWR0nWZcSUsutR9kugAtOIO6p0MSuqyJrcT+VigxGYuA26CmVTPmEQ2xs4dZAg2Y5A
-	tcRtcLmw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=c0RRV7//fHSbznGC956ScMQhjwymmWSSF8vK5RMHOgQ=; b=EEdH6EocW7tN5s
+	HIsSlk6z0a3x75f1iSCt3VGQ1FmN3aT6u8qeNdItY5JJbeD2gRArzuoRG6R4ROhpD20cdpyVLqfYt
+	3QezDAvcYrD1GW3JaBs6yMmRok7KOHRmrg8I+/OsNreryv/2rDf8NcHIaUmqCedHIS5DWAI/BG6O6
+	4VokPiT9bq3xitrw5xmE5BVnY+L9XYTtGU9nnC5s3HgEcNb7Za/Ot1RD7Pb+VLMojXUCq82llgAkV
+	mziVSUOHPDvjMqdk0Adby1J3Gfi2mecW1Z86VhYzJcoWyabpHcoucL6C5Rvsl/Zq6YpkNZ1CKP+fs
+	hzCbVs+dZqcbCZeuOymQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtO8u-00GgOC-1h;
-	Thu, 19 Oct 2023 08:12:32 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtO8q-00GgM9-1e
-	for linux-mtd@lists.infradead.org;
-	Thu, 19 Oct 2023 08:12:30 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 9939063DCAB8;
-	Thu, 19 Oct 2023 10:12:15 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id I3-K0hwykdNu; Thu, 19 Oct 2023 10:12:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 0466E63DCAAB;
-	Thu, 19 Oct 2023 10:12:15 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gzzgvJ53A6kM; Thu, 19 Oct 2023 10:12:14 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id CF8A863DCAA7;
-	Thu, 19 Oct 2023 10:12:14 +0200 (CEST)
-Date: Thu, 19 Oct 2023 10:12:14 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, 
-	Christian Brauner <brauner@kernel.org>, 
-	Dave Chinner <dchinner@redhat.com>, Yu Zhe <yuzhe@nfschina.com>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, kernel@sberdevices.ru
-Message-ID: <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
-In-Reply-To: <20231019073838.17586-3-mmkurbanov@salutedevices.com>
-References: <20231019073838.17586-1-mmkurbanov@salutedevices.com> <20231019073838.17586-3-mmkurbanov@salutedevices.com>
-Subject: Re: [PATCH v1 2/2] jffs2: make cleanmarker support option
+	id 1qtOld-00Glrt-33;
+	Thu, 19 Oct 2023 08:52:33 +0000
+Received: from elvis.franken.de ([193.175.24.41])
+	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1qtOlY-00GlpF-23;
+	Thu, 19 Oct 2023 08:52:31 +0000
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1qtOlP-0004JJ-00; Thu, 19 Oct 2023 10:52:19 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 81227C0198; Thu, 19 Oct 2023 10:50:05 +0200 (CEST)
+Date: Thu, 19 Oct 2023 10:50:05 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] remove AR7 platform and associated drivers
+Message-ID: <ZTDtvR732kzchtxF@alpha.franken.de>
+References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: jffs2: make cleanmarker support option
-Thread-Index: aAf02iCoSu5LqB4Vzhuut+cQ9jdF6w==
+Content-Disposition: inline
+In-Reply-To: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231019_011228_724227_07FBB471 
-X-CRM114-Status: GOOD (  10.57  )
+X-CRM114-CacheID: sfid-20231019_015229_093646_0D4197EC 
+X-CRM114-Status: GOOD (  22.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,27 +58,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TWFydGluLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1hcnRpbiBL
-dXJiYW5vdiIgPG1ta3VyYmFub3ZAc2FsdXRlZGV2aWNlcy5jb20+Cj4gVGhpcyBwYXRjaCBzdXBw
-b3J0IGZvciBkaXNhYmxlIGNsZWFubWFya2VyIG9wdGlvbi4gVGhpcyBpcyB1c2VmdWwgb24KPiBz
-b21lIE5BTkQgZGV2aWNlcyB3aGljaCBlbnRpcmUgT09CIGFyZWEgaXMgcHJvdGVjdGVkIGJ5IEVD
-Qy4gUHJvYmxlbQo+IGZpcmVzIHdoZW4gSkZGUzIgZHJpdmVyIHdyaXRlcyBjbGVhbm1hcmtlciB0
-byBzb21lIHBhZ2UgYW5kIGxhdGVyIGl0Cj4gdHJpZXMgdG8gd3JpdGUgdG8gdGhpcyBwYWdlIC0g
-d3JpdGUgd2lsbCBiZSBkb25lIHN1Y2Nlc3NmdWxseSwgYnV0IGFmdGVyCj4gdGhhdCBzdWNoIHBh
-Z2UgYmVjb21lcyB1bnJlYWRhYmxlIGR1ZSB0byBpbnZhbGlkIEVDQyBjb2Rlcy4gVGhpcyBvY2N1
-cnMKPiBiZWNhdXNlIHRoZSBzZWNvbmQgd3JpdGUgbmVjZXNzaXRhdGVzIGFuIHVwZGF0ZSB0byBF
-Q0MsIGJ1dCBpdCBpcwo+IGltcG9zc2libGUgdG8gZG8gaXQgY29ycmVjdGx5IHdpdGhvdXQgYmxv
-Y2sgZXJhc2UuCgpIbW0sIEkgbWlzcyBhbiBleHBsYW5hdGlvbiB3aHkgdGhpcyBjaGFuZ2UgaXMg
-Y29ycmVjdCBhbmQgc2FmZS4KWW91IGV4cGxhaW4gd2h5IHRoZSBPT0IgYXJlYSBjYW4ndCBiZSB1
-c2VkLCBva2F5LiBCdXQgeW91IG5lZWQgdG8KYWRkIG1vcmUgZGV0YWlscyBvbiB3aHkgeW91IGNo
-YW5nZSBpcyBzYWZlIGluIHRlcm1zIG9mIGZpbGVzeXN0ZW0KY29uc2lzdGVuY3kuCgpCZXNpZGUg
-b2YgdGhhdCwgSSBkb24ndCB0aGluayB0aGlzIHNob3VsZCBiZSBrZXJuZWwgY29uZmlnIG9wdGlv
-bi4KV2h5IG5vdCBhIG1vdW50IG9wdGlvbj8KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, Sep 22, 2023 at 08:15:21AM +0200, Wolfram Sang wrote:
+> Changes since v1:
+> * kept uapi define for for serial port type
+> * added acks
+> 
+> Still valid cover letter from v1:
+> 
+> When trying to get rid of the obsolete VLYNQ bus, Jonas and Florian
+> pointed out that its only user, the AR7 platform can probaly go entirely
+> [1]. This series does exactly that. Even OpenWRT has removed support
+> because these devices are "stuck with 3.18" [2].
+> 
+> It removes the drivers first, because watchdog and network include
+> platform specific headers. Once the drivers are gone, we remove the
+> platform. The patches are based on 6.6-rc2 and created with
+> "--irreversible-delete" to save some space.
+> 
+> My suggestion is that everything is merged via the MIPS tree in one go,
+> so we don't have broken drivers because of missing platform headers. But
+> maybe there are reasons for a two-cycle removal with the drivers first
+> and the platform later?
+> 
+> Looking forward to comments.
+> 
+> Happy hacking,
+> 
+>    Wolfram
+> 
+> 
+> [1] https://lore.kernel.org/r/3395161f-2543-46f0-83d9-b918800305e1@gmail.com
+> [2] https://openwrt.org/docs/techref/targets/ar7
+> 
+> 
+> Wolfram Sang (6):
+>   serial: 8250: remove AR7 support
+>   mtd: parsers: ar7: remove support
+>   vlynq: remove bus driver
+>   watchdog: ar7_wdt: remove driver to prepare for platform removal
+>   net: cpmac: remove driver to prepare for platform removal
+>   MIPS: AR7: remove platform
+> 
+>  MAINTAINERS                             |   13 -
+>  arch/arm/configs/pxa_defconfig          |    1 -
+>  arch/mips/Kbuild.platforms              |    1 -
+>  arch/mips/Kconfig                       |   22 -
+>  arch/mips/ar7/Makefile                  |   11 -
+>  arch/mips/ar7/Platform                  |    5 -
+>  arch/mips/ar7/clock.c                   |  439 --------
+>  arch/mips/ar7/gpio.c                    |  332 ------
+>  arch/mips/ar7/irq.c                     |  165 ---
+>  arch/mips/ar7/memory.c                  |   51 -
+>  arch/mips/ar7/platform.c                |  722 -------------
+>  arch/mips/ar7/prom.c                    |  256 -----
+>  arch/mips/ar7/setup.c                   |   93 --
+>  arch/mips/ar7/time.c                    |   31 -
+>  arch/mips/boot/compressed/uart-16550.c  |    5 -
+>  arch/mips/configs/ar7_defconfig         |  119 ---
+>  arch/mips/include/asm/mach-ar7/ar7.h    |  191 ----
+>  arch/mips/include/asm/mach-ar7/irq.h    |   16 -
+>  arch/mips/include/asm/mach-ar7/prom.h   |   12 -
+>  arch/mips/include/asm/mach-ar7/spaces.h |   22 -
+>  drivers/Kconfig                         |    2 -
+>  drivers/Makefile                        |    1 -
+>  drivers/mtd/parsers/Kconfig             |    5 -
+>  drivers/mtd/parsers/Makefile            |    1 -
+>  drivers/mtd/parsers/ar7part.c           |  129 ---
+>  drivers/net/ethernet/ti/Kconfig         |    9 +-
+>  drivers/net/ethernet/ti/Makefile        |    1 -
+>  drivers/net/ethernet/ti/cpmac.c         | 1251 -----------------------
+>  drivers/tty/serial/8250/8250_port.c     |    7 -
+>  drivers/vlynq/Kconfig                   |   21 -
+>  drivers/vlynq/Makefile                  |    6 -
+>  drivers/vlynq/vlynq.c                   |  799 ---------------
+>  drivers/watchdog/Kconfig                |    6 -
+>  drivers/watchdog/Makefile               |    1 -
+>  drivers/watchdog/ar7_wdt.c              |  315 ------
+>  include/linux/vlynq.h                   |  149 ---
+>  36 files changed, 1 insertion(+), 5209 deletions(-)
+>  delete mode 100644 arch/mips/ar7/Makefile
+>  delete mode 100644 arch/mips/ar7/Platform
+>  delete mode 100644 arch/mips/ar7/clock.c
+>  delete mode 100644 arch/mips/ar7/gpio.c
+>  delete mode 100644 arch/mips/ar7/irq.c
+>  delete mode 100644 arch/mips/ar7/memory.c
+>  delete mode 100644 arch/mips/ar7/platform.c
+>  delete mode 100644 arch/mips/ar7/prom.c
+>  delete mode 100644 arch/mips/ar7/setup.c
+>  delete mode 100644 arch/mips/ar7/time.c
+>  delete mode 100644 arch/mips/configs/ar7_defconfig
+>  delete mode 100644 arch/mips/include/asm/mach-ar7/ar7.h
+>  delete mode 100644 arch/mips/include/asm/mach-ar7/irq.h
+>  delete mode 100644 arch/mips/include/asm/mach-ar7/prom.h
+>  delete mode 100644 arch/mips/include/asm/mach-ar7/spaces.h
+>  delete mode 100644 drivers/mtd/parsers/ar7part.c
+>  delete mode 100644 drivers/net/ethernet/ti/cpmac.c
+>  delete mode 100644 drivers/vlynq/Kconfig
+>  delete mode 100644 drivers/vlynq/Makefile
+>  delete mode 100644 drivers/vlynq/vlynq.c
+>  delete mode 100644 drivers/watchdog/ar7_wdt.c
+>  delete mode 100644 include/linux/vlynq.h
+
+applied to mips-next, minus patch 5, which is already applied to net-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
