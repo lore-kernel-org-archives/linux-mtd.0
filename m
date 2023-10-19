@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B717CDB47E
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 01:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EC4ECDB47E
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 01:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kVaAcbxhLvDgtK4GgtvZHlcqH/gmPckSIK7aUTqFvcg=; b=nCThsfnHC0cIwb
-	sSz4Z6LwgudNusy0hAd7jzZUOQRED7ef3waVfUqw+xEcpFmSXD8wNAi5LcBc/g/GAqHhP97VRryRC
-	GBkBRF97TCcyE1hZdu3KS66ES1FN9vkwQ5sarUVou+2sLIkrYiQzrqmMWmjSV6Mj4qtFfp7XBUhU/
-	lCSORyz/7FIXtH4FfGp0bs/lhnpazT+3KH21NmS20JdmLJtvrWGgVwrYo6T/BYsU2mTF2K9a5rpxg
-	kKvuiofKxYoj+0jqgHjWV3qXWwsFbP2QVbo1xl9Ej93lvum9Pt9z2nWTTDwz6M5UU8Yr1LxYW+RVW
-	EHZRv5sjgpiZdxYgdOTA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=K0FJ8/kunwHW2XXK7QtGeYJOAzCsjlgcElXvaMW0zJQ=; b=IrpfAnI3KYVq+pBO3sJMfeFWqa
+	qIPkfD14n3amyidlvMMOi9Bjt9hNlTpf32gQAW0BReDOJ1QNBY+INO9CGQwIU6Mh+NT4Gm0uJJXsl
+	hp9DyMQ85kyGxuKpozbDTstCYyqA+jkBcuprO/O1koqsgVrVcLkXGjEwYjR4z50ZjNgLCnt3t2bob
+	Z6ZIKTbiv8MkQ2VbOPzwS99vo9Yw/TzWPOBq/H2mJbaVKezG9id5OISUGW4G+aCxn9qUySqaD8qU2
+	U8bmI4dRd7tkZb1So9A06QGzSXM4tRnEAXZD1W09Ix1+wBI7/qwceKLiUsbSAo8ZugXgdx7hRVpee
+	Ypi8iThg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtHeK-00G30j-2N;
-	Thu, 19 Oct 2023 01:16:32 +0000
-Received: from mail.ozlabs.org ([2404:9400:2221:ea00::3] helo=gandalf.ozlabs.org)
+	id 1qtHlD-00G3hu-0z;
+	Thu, 19 Oct 2023 01:23:39 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtHeE-00G2xb-2h
-	for linux-mtd@lists.infradead.org;
-	Thu, 19 Oct 2023 01:16:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1697678180;
-	bh=WTKHc8k9e1k6oAAPlUBGsSr/qDu6nL0+e9yR3HjsIXg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ny8MUdWrEpt3TzloqlcGQqFJYCMsZ4sf0+wb6FT6ZSNOiyOm4g2stVOaUGv5kOHVX
-	 92Rq1E1i/BHe8Sxu5IW58UUUa8AUzvhLIXp1SMrBpNdrnf8UueVkh3sqovpG+KmROQ
-	 IkGfQEeZIHn6VpeGAW41aiyZt+Babb9/fsj1T2WKXg0FI9Oe+0xlV548QbuyTphxKK
-	 qhADApyQs+K5LuznQnTIdQCdqkFWFh7dnptAXppmIeuQUg9P6B1ary1lmHWejIkFh2
-	 MT2eBMBvUEyoKDwuJDEv2teZMFTqO4MMZcGha0lMacLiwco9hPCP7ctYzJqFeyOpfx
-	 rEd4K9jxJJM1g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9qYF6B7Hz4xZm;
-	Thu, 19 Oct 2023 12:16:17 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Yi Yang <yiyang13@huawei.com>, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, u.kleine-koenig@pengutronix.de,
- tudor.ambarus@linaro.org, robh@kernel.org
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] mtd: powernv_flash: check return value of devm_kasprintf()
-In-Reply-To: <20231018092728.315071-1-yiyang13@huawei.com>
-References: <20231018092728.315071-1-yiyang13@huawei.com>
-Date: Thu, 19 Oct 2023 12:16:17 +1100
-Message-ID: <874jin76ou.fsf@mail.lhotse>
+	id 1qtHl4-00G3go-1M;
+	Thu, 19 Oct 2023 01:23:36 +0000
+Received: from kwepemm000014.china.huawei.com (unknown [172.30.72.54])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S9qd53xVFzRsMj;
+	Thu, 19 Oct 2023 09:19:37 +0800 (CST)
+Received: from [10.67.110.164] (10.67.110.164) by
+ kwepemm000014.china.huawei.com (7.193.23.6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 19 Oct 2023 09:23:18 +0800
+Subject: Re: [PATCH] mtd: rawnand: meson: check return value of
+ devm_kasprintf()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <liang.yang@amlogic.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<neil.armstrong@linaro.org>, <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>
+References: <20231018092047.314860-1-yiyang13@huawei.com>
+ <20231018141936.42b5ec6b@xps-13>
+From: "yiyang (D)" <yiyang13@huawei.com>
+Message-ID: <6b2016de-c278-c459-f0a8-e96b97ed52ef@huawei.com>
+Date: Thu, 19 Oct 2023 09:23:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20231018141936.42b5ec6b@xps-13>
+X-Originating-IP: [10.67.110.164]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000014.china.huawei.com (7.193.23.6)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231018_181627_083025_54DD0317 
-X-CRM114-Status: GOOD (  14.81  )
+X-CRM114-CacheID: sfid-20231018_182330_659030_932DB085 
+X-CRM114-Status: GOOD (  14.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,45 +67,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Yi Yang <yiyang13@huawei.com> writes:
-> The devm_kasprintf() returns a pointer to dynamically allocated memory.
-> that will return NULL when allocate failed.
-> Fix it by check return value of devm_kasprintf().
->
-> Fixes: acfe63ec1c59 ("mtd: Convert to using %pOFn instead of device_node.name")
-> Signed-off-by: Yi Yang <yiyang13@huawei.com>
-> ---
->  drivers/mtd/devices/powernv_flash.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-> index 66044f4f5bad..b305e555ddbf 100644
-> --- a/drivers/mtd/devices/powernv_flash.c
-> +++ b/drivers/mtd/devices/powernv_flash.c
-> @@ -207,6 +207,10 @@ static int powernv_flash_set_driver_info(struct device *dev,
->  	 * get them
->  	 */
->  	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%pOFP", dev->of_node);
-> +	if (mtd->name) {
-
-That seems like the wrong check?
-
-cheers
-
-> +		dev_err(dev, "failed to allocate mtd->name\n");
-> +		return -ENOMEM;
-> +	}
->  	mtd->type = MTD_NORFLASH;
->  	mtd->flags = MTD_WRITEABLE;
->  	mtd->size = size;
-> -- 
-> 2.25.1
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjAyMy8xMC8xOCAyMDoxOSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSBZaSwKPiAKPiB5
+aXlhbmcxM0BodWF3ZWkuY29tIHdyb3RlIG9uIFdlZCwgMTggT2N0IDIwMjMgMDk6MjA6NDcgKzAw
+MDA6Cj4gCj4+IFRoZSBkZXZtX2thc3ByaW50ZigpIHJldHVybnMgYSBwb2ludGVyIHRvIGR5bmFt
+aWNhbGx5IGFsbG9jYXRlZCBtZW1vcnkuCj4+IHRoYXQgd2lsbCByZXR1cm4gTlVMTCB3aGVuIGFs
+bG9jYXRlIGZhaWxlZC4KPiAKPiBNYXkgSSBwcm9wb3NlIHJld29yZGluZyBvZiB0aGUgY29tbWl0
+IGxvZz8KPiAiCj4gZGV2bV9rYXNwcmludGYoKSByZXR1cm5zIGEgcG9pbnRlciB0byBkeW5hbWlj
+YWxseSBhbGxvY2F0ZWQgbWVtb3J5Cj4gd2hpY2ggY2FuIGJlIE5VTEwgdXBvbiBmYWlsdXJlLiBF
+bnN1cmUgdGhlIGFsbG9jYXRpb24gd2FzIHN1Y2Nlc3NmdWwgYnkKPiBjaGVja2luZyB0aGUgcG9p
+bnRlciB2YWxpZGl0eS4KPiAiCj4gClRoYW5rcyBmb3IgeW91ciBhZHZpY2UsIEknbGwgbWFrZSBj
+aGFuZ2VzIGluIHYyIHBhdGNoLgoKPj4gRml4IGl0IGJ5IGNoZWNrIHJldHVybiB2YWx1ZSBvZiBk
+ZXZtX2thc3ByaW50ZigpLgo+Pgo+PiBGaXhlczogMWU0ZDNiYTY2ODg4ICgibXRkOiByYXduYW5k
+OiBtZXNvbjogZml4IHRoZSBjbG9jayIpCj4+IFNpZ25lZC1vZmYtYnk6IFlpIFlhbmcgPHlpeWFu
+ZzEzQGh1YXdlaS5jb20+Cj4+IC0tLQo+PiAgIGRyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25h
+bmQuYyB8IDUgKysrKysKPj4gICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspCj4+Cj4+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgYi9kcml2ZXJz
+L210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPj4gaW5kZXggMzc4ZjI4Y2U2YTc0Li4yYzZhZTc4
+MWJiMGMgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYwo+
+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPj4gQEAgLTExMzQsNiAr
+MTEzNCwxMSBAQCBzdGF0aWMgaW50IG1lc29uX25mY19jbGtfaW5pdChzdHJ1Y3QgbWVzb25fbmZj
+ICpuZmMpCj4+ICAgCWluaXQubmFtZSA9IGRldm1fa2FzcHJpbnRmKG5mYy0+ZGV2LAo+PiAgIAkJ
+CQkgICBHRlBfS0VSTkVMLCAiJXMjZGl2IiwKPj4gICAJCQkJICAgZGV2X25hbWUobmZjLT5kZXYp
+KTsKPj4gKwlpZiAoaW5pdC5uYW1lKSB7Cj4+ICsJCWRldl9lcnIobmZjLT5kZXYsICJmYWlsZWQg
+dG8gYWxsb2NhdGUgaW5pdC5uYW1lXG4iKTsKPiAKPiBObyBuZWVkIGZvciBlcnJvciBtZXNzYWdl
+cyB1cG9uIG1lbW9yeSBhbGxvY2F0aW9uIGZhaWx1cmVzLgo+IAo+PiArCQlyZXR1cm4gLUVOT01F
+TTsKPj4gKwl9Cj4+ICsKPj4gICAJaW5pdC5vcHMgPSAmY2xrX2RpdmlkZXJfb3BzOwo+PiAgIAlu
+ZmNfZGl2aWRlcl9wYXJlbnRfZGF0YVswXS5md19uYW1lID0gImRldmljZSI7Cj4+ICAgCWluaXQu
+cGFyZW50X2RhdGEgPSBuZmNfZGl2aWRlcl9wYXJlbnRfZGF0YTsKPiAKPiBUaGVzZSBjb21tZW50
+cyBhcmUgYWxzbyBhcHBsaWNhYmxlIHRvIHlvdXIgdHdvIG90aGVyIHBhdGNoZXMuCj4gCj4gVGhh
+bmtzLAo+IE1pcXXDqGwKPiAuCj4gCgpUaGFua3MsCllpIHlhbmcKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
