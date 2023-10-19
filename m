@@ -4,80 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EBEECDB465
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 06:46:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEE68CDB465
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 06:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cW3Y/wLa4h6bhrAwkCbxhBiVEf6z+sMKK8477MJMRZk=; b=mnhBa7kPAnDvo5
-	oMY8L3+uuHlIEG3Sm/c7hySsMyE02mqpXUdfCGLMwe6YTejLEWdON1g/S7PG+4Ic6xIq2kUJCjlSe
-	1IrdI3neSF1HPyuF6ZRE4G19EJJ3DR10oZuQNXsO1kV3ysSGm3wzRT2SLhJMAzF9Yxj1Jv5606eyQ
-	gT9sxYJqg/DkHiXc+44Cle582k5Dl/68Z3zuaJIxEk+5B9TfgbhKBwI8tuM2imbqJIne4ukHJwJJL
-	yqA+mRYUu3mcALgpNTfKLqmhbZmiNI7gkI2Vy++MyzXY19pGORQQ3cHRiV2HilpA5muqHnkK/C+zF
-	0IG0C8Ql0qwTgB6XVoaw==;
+	List-Owner; bh=4/Jy9W6M7bEaZ4wbpsPCoOVGp4UvllzewdzuFcAyzKk=; b=VoJEk8adWjnEfC
+	rBNTZ4WUlsRq5pn2A7acRnq7YlOBqyKxPHAbF+OelRTR7jZCphPRpY1jWfso7XbMqmjHvZ3jhcxEJ
+	zCjNHC3/8Hrn8ZHcppl/ndN5HoQR6gfyIdJr0Ywy6Mi4otWnu87+FObc6iKlSQip1BTCkLR7FudAQ
+	8VtUHz0uLKnRMvxQ/y/FI2UkTTArPlQmhxIy4lObukIZiUOXDZX12aajPFwmqjDNoTHOBTs3BkMNa
+	UoCGp5vxDynTdpUTlNIwIslTF42YORwAmuZmTyILj4yOAbyU6i7KjNag3zgS2HmrJuEz/52XHIaWp
+	PtB+/DNrnkDL7jUlkFMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtMn5-00GX0m-0D;
-	Thu, 19 Oct 2023 06:45:55 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1qtMxy-00GXvP-1i;
+	Thu, 19 Oct 2023 06:57:10 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtMn1-00GX0H-2r
+	id 1qtMxu-00GXsR-34
 	for linux-mtd@lists.infradead.org;
-	Thu, 19 Oct 2023 06:45:54 +0000
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so5757680a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2023 23:45:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697697950; x=1698302750; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=VnD+4+o/AktznkdSPALDpojy3+u5FZvAU0rtTI4+TYE=;
-        b=lnZYxmpX6xMBGymj6WTwVKFxHFPAPrNDpYJ4NIn8HDqaQ/SIUjHItq3TTMDn9qWrZZ
-         bJUFLUgWMho5eqBU3FyKQQ4J1RIXP7ei25l1ExSEClsS9kwKva8ymqAXevGdaM3iyLP/
-         Pp29Ln5K4gvy3BILSj1KL8xWpFJs8uQuKem1hT+7k4Cwav6JH0C/9F9tzDs4IfXJJO3r
-         Q7SYcyoXN6mAhmVQ5T/dzk847LgoUJXbt489v/C+Y8e29JMkPtPcVKt0JEKyU5PmK7vH
-         8x2MOea5O8hf0rF88y7LqL4kIDlG5WB632Hd2Qmj9y+PJowCc/LmZG2ifGVyg7BYOaDS
-         eh+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697697950; x=1698302750;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VnD+4+o/AktznkdSPALDpojy3+u5FZvAU0rtTI4+TYE=;
-        b=hHQMSNGBcOLUU0I/sO0cTtsSLtNeFDWtVGXmQrlyeFHW/DSgtMeRiKO6cZevG1dLsO
-         AaG+q51oBrmIuy/AbAtTR8kACtFvZe0+THosErICWJIh7+7syWGukP3LNBXc8K4hhf/A
-         kHZ5odO8Xq3et7xf0nEbiVaXq1dAa/tUrdnyHFf86vtao5q9+Tdp8/GHPquT7iHYaofO
-         Ki7C4XEYWq3VHGqXr9DlhcFhzS2TYbC01qKpFmWLdP38/ezu6UPPi0JsimN5eglummbJ
-         MgtOJKk8+HadIb/1uMhs8hVgp3g4CYiZNMLMfl/oec0o4cH6YL3wht4rcFBkVOEkiSMh
-         K3mg==
-X-Gm-Message-State: AOJu0YznCqQ5wYdzpNbLK8gjPJJu6fWqGq7M5sNrlWU8sY6CN6LGgRKI
-	0PAbjPpZNxzFmf628SiBpv0=
-X-Google-Smtp-Source: AGHT+IE1WPyhscv9usKnV6Tvcm7NkIcFn9ykGqFUpUm5bk7HtzJmvn92SJo6z7jtF5q3VfnCewsPhw==
-X-Received: by 2002:a17:90a:94c2:b0:27d:2b81:5798 with SMTP id j2-20020a17090a94c200b0027d2b815798mr1179229pjw.48.1697697950140;
-        Wed, 18 Oct 2023 23:45:50 -0700 (PDT)
-Received: from localhost (211-75-139-217.hinet-ip.hinet.net. [211.75.139.217])
-        by smtp.gmail.com with ESMTPSA id t8-20020a17090ae50800b0026b46ad94c9sm879353pjy.24.2023.10.18.23.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Oct 2023 23:45:49 -0700 (PDT)
-From: AceLan Kao <acelan.kao@canonical.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: Lower the priority of the software reset failure message
-Date: Thu, 19 Oct 2023 14:45:47 +0800
-Message-Id: <20231019064547.348446-1-acelan.kao@canonical.com>
-X-Mailer: git-send-email 2.34.1
+	Thu, 19 Oct 2023 06:57:09 +0000
+Received: from kwepemm000014.china.huawei.com (unknown [172.30.72.54])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S9z0g0fcGzvPww;
+	Thu, 19 Oct 2023 14:52:03 +0800 (CST)
+Received: from huawei.com (10.67.174.78) by kwepemm000014.china.huawei.com
+ (7.193.23.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 19 Oct
+ 2023 14:56:48 +0800
+From: Yi Yang <yiyang13@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<martin.blumenstingl@googlemail.com>, <u.kleine-koenig@pengutronix.de>,
+	<philmd@linaro.org>, <paul@crapouillou.net>,
+	<vadivel.muruganx.ramuthevar@linux.intel.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3] mtd: rawnand: intel: check return value of devm_kasprintf()
+Date: Thu, 19 Oct 2023 06:55:37 +0000
+Message-ID: <20231019065537.318391-1-yiyang13@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+X-Originating-IP: [10.67.174.78]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000014.china.huawei.com (7.193.23.6)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231018_234551_947453_28F86F0B 
-X-CRM114-Status: GOOD (  10.86  )
+X-CRM114-CacheID: sfid-20231018_235707_217039_E9DCA4C0 
+X-CRM114-Status: GOOD (  10.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,41 +68,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful by
+checking the pointer validity.
 
-Not all SPI drivers support soft reset enable and soft reset commands.
-This failure is expected and not critical. Thus, we avoid reporting it
-to regular users to prevent potential confusion regarding power-off issues.
-
-Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
+Signed-off-by: Yi Yang <yiyang13@huawei.com>
 ---
- drivers/mtd/spi-nor/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v2:Change commit log, and fix error check code.
+v3:No need for error messages upon memory allocation failures.
+---
+ drivers/mtd/nand/raw/intel-nand-controller.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 1b0c6770c14e..7bca8ffcd756 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3252,7 +3252,7 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index cb5d88f42297..f0ad2308f6d5 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -619,6 +619,11 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	ebu_host->cs_num = cs;
  
- 	ret = spi_mem_exec_op(nor->spimem, &op);
- 	if (ret) {
--		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		dev_info(nor->dev, "Software reset failed: %d\n", ret);
- 		return;
+ 	resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", cs);
++	if (!resname) {
++		ret = -ENOMEM;
++		goto err_of_node_put;
++	}
++
+ 	ebu_host->cs[cs].chipaddr = devm_platform_ioremap_resource_byname(pdev,
+ 									  resname);
+ 	if (IS_ERR(ebu_host->cs[cs].chipaddr)) {
+@@ -649,6 +654,11 @@ static int ebu_nand_probe(struct platform_device *pdev)
  	}
  
-@@ -3262,7 +3262,7 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
- 
- 	ret = spi_mem_exec_op(nor->spimem, &op);
- 	if (ret) {
--		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		dev_info(nor->dev, "Software reset failed: %d\n", ret);
- 		return;
- 	}
- 
+ 	resname = devm_kasprintf(dev, GFP_KERNEL, "addr_sel%d", cs);
++	if (!resname) {
++		ret = -ENOMEM;
++		goto err_cleanup_dma;
++	}
++
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, resname);
+ 	if (!res) {
+ 		ret = -EINVAL;
 -- 
-2.34.1
+2.25.1
 
 
 ______________________________________________________
