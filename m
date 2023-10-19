@@ -4,109 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D420CDB47E
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Oct 2023 21:34:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B717CDB47E
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Oct 2023 01:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b3Gbtowzx5j7VxbDTkecyQT34ciYlO3vQIacmCb8mZc=; b=TFrIyQc8UB2PHs
-	kpKSikkySAD5Clg4QiJqY3NIKReOQG4wbQx3lnt+QYLtMBpdeO1F/YCCP8IeCvmo3VGV7KNnMOOrN
-	JSzYag4+1IOFfpuu2KHZ4098GsbVYS0ii0HvFhjHlgsuWnT0HL6FrnjzbSDoi6TU2oOMUd4dbnyNQ
-	oPyRkVsWY5eTQYz0XACKkK6nOjZsHMYi9LQ0kHTQYXX5ekkeBK49KJLW4DT3zTWo9IzSUDMmzS9OZ
-	FnEvZaP2VDgQ08oxXG1TpsJMCWHSSzdhgpbxbnONa5uL9wvuNW/4RVe4JL6EHcBjEYWUBkKO/1oov
-	O6UChKidYIuOZR31yKYQ==;
+	List-Owner; bh=kVaAcbxhLvDgtK4GgtvZHlcqH/gmPckSIK7aUTqFvcg=; b=nCThsfnHC0cIwb
+	sSz4Z6LwgudNusy0hAd7jzZUOQRED7ef3waVfUqw+xEcpFmSXD8wNAi5LcBc/g/GAqHhP97VRryRC
+	GBkBRF97TCcyE1hZdu3KS66ES1FN9vkwQ5sarUVou+2sLIkrYiQzrqmMWmjSV6Mj4qtFfp7XBUhU/
+	lCSORyz/7FIXtH4FfGp0bs/lhnpazT+3KH21NmS20JdmLJtvrWGgVwrYo6T/BYsU2mTF2K9a5rpxg
+	kKvuiofKxYoj+0jqgHjWV3qXWwsFbP2QVbo1xl9Ej93lvum9Pt9z2nWTTDwz6M5UU8Yr1LxYW+RVW
+	EHZRv5sjgpiZdxYgdOTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtEBh-00FkFc-2p;
-	Wed, 18 Oct 2023 21:34:45 +0000
-Received: from mail-dm6nam10on20622.outbound.protection.outlook.com ([2a01:111:f400:7e88::622] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
+	id 1qtHeK-00G30j-2N;
+	Thu, 19 Oct 2023 01:16:32 +0000
+Received: from mail.ozlabs.org ([2404:9400:2221:ea00::3] helo=gandalf.ozlabs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtEBM-00FjzT-1g;
-	Wed, 18 Oct 2023 21:34:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eYBd0bXsLAUh6/00o1PaNB2jnAtcfoFi+NM/nZnB0UgX78u+LiJnNvbOKxW1Av3MQtQjaEZf1dEb0SS1j/jAucZTSXR/XFPgy1l6lbdmpaGBdYOPjASwc5Mv/nlnlime8z8Kh+ifvy07u8VWrruvPJ2C0d/2J9ywFE1mGbIoZthzG5iLYCuuFzdKD9ACcrp+YT2Ztn2lZL2iRf9KgYHxkZIkhBOg2qLcauJR1ibL/XRZU6Gyr/3amobM6GaA58tsQ97sYeyGZRviQytb+izfflbc03GqvMUNjILn8Lq8jlX3zViR7mjLJMSFL6eJJkFRElujcX+a7xZ3g34zPMJajA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uctAgBsWbg4zjYa/iQFFs5zeaRx7Y3UIWC12hEqotVg=;
- b=MbPUlpegn2pGKMKxJ94TBgu7V2W+LAbrYxWnvH3C19zB9Fc41pMm9CcFtx9nRWZKCm4m9Lu/Vvt2PK6jt2c387FTith2IZkSGLIxWJu8EMTpmXSTX5yLVg7Td5z7ICIyVfcB1NjkNhe5/Byyj08FuAcAYoDpaDFcDnSr1PGb41wI+fBKli/sULFn0Ynf8NqiVX4qXCaQVHOVUxgwytW/HpFzidQ8ovROQKzb3805+oVvQduzgalG3V2rwo1rfOqdPcVZUqJQvwEYExZOBU67atw9Sw1+dMRR3BO55WodC0B5m6Gq0MfWgFRv5AfiNF/jKJIGqz8cDX0hUTRmX0DXfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uctAgBsWbg4zjYa/iQFFs5zeaRx7Y3UIWC12hEqotVg=;
- b=xBncc1rNMmFIVmjy+HGZLMRdpFQ8dO86/9vn3ieQ4Quz+k0PdeejiZahVo2gkzqkpzB26LlXGSOK+ZtNsKaEn+Zz0KK2Os4jWlUcZgBi8ze2xYxtgJadC1E+wvMFmAAfWpx8kyaVNnfM6QzmlZgVNTcLohrlOekvQbHww804XPc=
-Received: from BLAPR03CA0176.namprd03.prod.outlook.com (2603:10b6:208:32f::26)
- by LV8PR12MB9357.namprd12.prod.outlook.com (2603:10b6:408:1ff::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Wed, 18 Oct
- 2023 21:34:19 +0000
-Received: from BL6PEPF0001AB71.namprd02.prod.outlook.com
- (2603:10b6:208:32f:cafe::eb) by BLAPR03CA0176.outlook.office365.com
- (2603:10b6:208:32f::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21 via Frontend
- Transport; Wed, 18 Oct 2023 21:34:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB71.mail.protection.outlook.com (10.167.242.164) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Wed, 18 Oct 2023 21:34:19 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 18 Oct
- 2023 16:34:18 -0500
-Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27
- via Frontend Transport; Wed, 18 Oct 2023 16:34:13 -0500
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <michal.simek@amd.com>,
-	<linux-arm-kernel@lists.infradead.org>, <git@amd.com>,
-	<amitrkcian2002@gmail.com>, <akumarma@amd.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v9 8/8] spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
-Date: Thu, 19 Oct 2023 03:03:28 +0530
-Message-ID: <20231018213328.40131-9-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231018213328.40131-1-amit.kumar-mahapatra@amd.com>
-References: <20231018213328.40131-1-amit.kumar-mahapatra@amd.com>
+	id 1qtHeE-00G2xb-2h
+	for linux-mtd@lists.infradead.org;
+	Thu, 19 Oct 2023 01:16:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1697678180;
+	bh=WTKHc8k9e1k6oAAPlUBGsSr/qDu6nL0+e9yR3HjsIXg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ny8MUdWrEpt3TzloqlcGQqFJYCMsZ4sf0+wb6FT6ZSNOiyOm4g2stVOaUGv5kOHVX
+	 92Rq1E1i/BHe8Sxu5IW58UUUa8AUzvhLIXp1SMrBpNdrnf8UueVkh3sqovpG+KmROQ
+	 IkGfQEeZIHn6VpeGAW41aiyZt+Babb9/fsj1T2WKXg0FI9Oe+0xlV548QbuyTphxKK
+	 qhADApyQs+K5LuznQnTIdQCdqkFWFh7dnptAXppmIeuQUg9P6B1ary1lmHWejIkFh2
+	 MT2eBMBvUEyoKDwuJDEv2teZMFTqO4MMZcGha0lMacLiwco9hPCP7ctYzJqFeyOpfx
+	 rEd4K9jxJJM1g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4S9qYF6B7Hz4xZm;
+	Thu, 19 Oct 2023 12:16:17 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Yi Yang <yiyang13@huawei.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, u.kleine-koenig@pengutronix.de,
+ tudor.ambarus@linaro.org, robh@kernel.org
+Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] mtd: powernv_flash: check return value of devm_kasprintf()
+In-Reply-To: <20231018092728.315071-1-yiyang13@huawei.com>
+References: <20231018092728.315071-1-yiyang13@huawei.com>
+Date: Thu, 19 Oct 2023 12:16:17 +1100
+Message-ID: <874jin76ou.fsf@mail.lhotse>
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB71:EE_|LV8PR12MB9357:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0c7efdd-1b94-4586-2c21-08dbd021fc92
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UmW/UqYMuwWXs6RIQ7gcJL7PKqM+WHl2uwNHZvXXL4cC/sLX3a5yzzTINL3hLIawYuzT7B1Yf/PMenLOnhWITE7HI6pUXWaL9vjBhWCywZq//ZSN+7a8/K4t8b+/aBCI+xIt8l+trOuYwipuXOTsJI8AcFbfATSp66NYehrMK87gDvzF/r1uYyKG/synIpU4zRvYyLYE8fD4m7lDir24n6pAdZ+FZoSZQCvWniJqNxeGXiFsnbRdJpM84Ba7zFNbpEw1+BpYlPT7rp7fG1p3+QFp+Rw3+jupGfc6zH0bZSvhJy1fT51T4YN2f7rEKCRCJaDaGWf07ZixS/TmU7C80kraAyOAWq812E84g0CjI/J9PY7uPhU8D5/gtiSyUB/wXE04ZIuBiizvCZk/MJ17kq0OtIEyiKk5q0xPscE7kPLYUrd3Q8Pps4/gVyq7Y8hDCW5RZQz/Pn4k95g3eZX4Cp9FqDBSfXO9fegHoxumJJ4neSzMSQsbvhJPi3oqUr5FCez9HMDL2LTkNAoZFW+Gx5aLZV4XGJzrL8KgYWH/08k6QdZalIt7ofLp1cOEUy2RZ2bXKnpT2yb24GWkA06/se8cdcqcFqW7bUljJGVqD8rZt5vHLN6OMEBv2ffhO+eW7bCFT53E6ahoSZsCiH7g8mUQZoMwMQwHWoa/SIbzlfnIVm6y/sRm8UjxZynLAJIZPvdi+kHkJlacfyGwH7Hj+49hHIgF8WQQM28fbCNiLwBVesbJNUcwhAPhFbgo8+/biXElpV9omRJ/dnPn8tP3EA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(82310400011)(64100799003)(1800799009)(186009)(451199024)(40470700004)(36840700001)(46966006)(7416002)(40480700001)(86362001)(2906002)(4326008)(54906003)(110136005)(8676002)(70586007)(8936002)(70206006)(41300700001)(40460700003)(5660300002)(36756003)(316002)(26005)(356005)(1076003)(2616005)(81166007)(83380400001)(82740400003)(426003)(336012)(6666004)(36860700001)(47076005)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Oct 2023 21:34:19.2368
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0c7efdd-1b94-4586-2c21-08dbd021fc92
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB71.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9357
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231018_143424_562863_DA2516D3 
-X-CRM114-Status: GOOD (  20.02  )
+X-CRM114-CacheID: sfid-20231018_181627_083025_54DD0317 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,110 +74,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During probe GQSPI driver sets SPI_CONTROLLER_MULTI_CS bit in ctlr->flags
-for notifying SPI core about multi CS capability of the controller.
-In parallel mode the controller can either split the data between both the
-flash or can send the same data to both the flashes, this is determined by
-the STRIPE bit. While sending commands to the flashes the GQSPI driver
-send the same command to both the flashes by resetting the STRIPE bit, but
-while writing/reading data to & from the flash the GQSPI driver splits the
-data evenly between both the flashes by setting the STRIPE bit.
+Yi Yang <yiyang13@huawei.com> writes:
+> The devm_kasprintf() returns a pointer to dynamically allocated memory.
+> that will return NULL when allocate failed.
+> Fix it by check return value of devm_kasprintf().
+>
+> Fixes: acfe63ec1c59 ("mtd: Convert to using %pOFn instead of device_node.name")
+> Signed-off-by: Yi Yang <yiyang13@huawei.com>
+> ---
+>  drivers/mtd/devices/powernv_flash.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+> index 66044f4f5bad..b305e555ddbf 100644
+> --- a/drivers/mtd/devices/powernv_flash.c
+> +++ b/drivers/mtd/devices/powernv_flash.c
+> @@ -207,6 +207,10 @@ static int powernv_flash_set_driver_info(struct device *dev,
+>  	 * get them
+>  	 */
+>  	mtd->name = devm_kasprintf(dev, GFP_KERNEL, "%pOFP", dev->of_node);
+> +	if (mtd->name) {
 
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
----
- drivers/spi/spi-zynqmp-gqspi.c | 39 +++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+That seems like the wrong check?
 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index c5d12ddd4ab3..61e91d59014b 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -21,6 +21,7 @@
- #include <linux/spinlock.h>
- #include <linux/workqueue.h>
- #include <linux/spi/spi-mem.h>
-+#include <linux/mtd/spi-nor.h>
- 
- /* Generic QSPI register offsets */
- #define GQSPI_CONFIG_OFST		0x00000100
-@@ -190,6 +191,7 @@ struct qspi_platform_data {
-  * @op_lock:		Operational lock
-  * @speed_hz:          Current SPI bus clock speed in hz
-  * @has_tapdelay:	Used for tapdelay register available in qspi
-+ * @is_parallel:		Used for multi CS support
-  */
- struct zynqmp_qspi {
- 	struct spi_controller *ctlr;
-@@ -212,8 +214,33 @@ struct zynqmp_qspi {
- 	struct mutex op_lock;
- 	u32 speed_hz;
- 	bool has_tapdelay;
-+	bool is_parallel;
- };
- 
-+/**
-+ * zynqmp_gqspi_update_stripe - For GQSPI controller data stripe capabilities
-+ * @op:	Pointer to mem ops
-+ * Return:      Status of the data stripe
-+ *
-+ * Returns true if data stripe need to be enabled, else returns false
-+ */
-+bool zynqmp_gqspi_update_stripe(const struct spi_mem_op *op)
-+{
-+	if (op->cmd.opcode ==  SPINOR_OP_BE_4K ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K ||
-+	    op->cmd.opcode ==  SPINOR_OP_CHIP_ERASE ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE_4B ||
-+	    op->cmd.opcode == SPINOR_OP_BE_4K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_WRSR ||
-+	    op->cmd.opcode ==  SPINOR_OP_BRWR ||
-+	    (op->cmd.opcode ==  SPINOR_OP_WRSR2 && !op->addr.nbytes))
-+		return false;
-+
-+	return true;
-+}
-+
- /**
-  * zynqmp_gqspi_read - For GQSPI controller read operation
-  * @xqspi:	Pointer to the zynqmp_qspi structure
-@@ -468,7 +495,14 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 
- 	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
- 
--	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
-+	if ((qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) &&
-+	    (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS)) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_BOTH,
-+					 GQSPI_SELECT_FLASH_BUS_BOTH);
-+		if (!xqspi->is_parallel)
-+			xqspi->is_parallel = true;
-+	} else if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
- 		zynqmp_gqspi_selectslave(xqspi,
- 					 GQSPI_SELECT_FLASH_CS_UPPER,
- 					 GQSPI_SELECT_FLASH_BUS_LOWER);
-@@ -1137,6 +1171,8 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 	}
- 
- 	if (op->data.nbytes) {
-+		if (xqspi->is_parallel && zynqmp_gqspi_update_stripe(op))
-+			genfifoentry |= GQSPI_GENFIFO_STRIPE;
- 		reinit_completion(&xqspi->data_completion);
- 		if (op->data.dir == SPI_MEM_DATA_OUT) {
- 			xqspi->txbuf = (u8 *)op->data.buf.out;
-@@ -1332,6 +1368,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
- 	ctlr->dev.of_node = np;
- 	ctlr->auto_runtime_pm = true;
-+	ctlr->flags |= SPI_CONTROLLER_MULTI_CS;
- 
- 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
- 	if (ret) {
--- 
-2.17.1
+cheers
 
+> +		dev_err(dev, "failed to allocate mtd->name\n");
+> +		return -ENOMEM;
+> +	}
+>  	mtd->type = MTD_NORFLASH;
+>  	mtd->flags = MTD_WRITEABLE;
+>  	mtd->size = size;
+> -- 
+> 2.25.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
