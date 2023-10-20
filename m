@@ -4,52 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23028C001DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Oct 2023 01:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AFFAC001DF
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Oct 2023 02:28:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3vXcbTn1ZcCNMpuyOxWKFJAWtZXD38J+fd12gBN7M1c=; b=i2nsMAqzJtbo03
-	QrlerPNMFa5oHk94HfFMIgnwMJrKxJ/pZlfJurwWuAYAaEalUjt9L/yED7idYHQVJ5EGYhD4+D+Fj
-	/vtxC6mcVbhXWt8esfZuVV78aalFXziXdtJ3iLlgWgO59RRhH4SxVX7eBzBQ1B6DWjmPDb0kTeZnh
-	oPFbF980RzqVJAseOg+ekspnRNB0W6APq7wcc6kKcwXi/YZjI9SqPGhuFI9/yJtEBx/2/dSGGkzgQ
-	404KQoOuaJ6xJllcgk/unXz+PiWQLzclkNMbErBgmWi/hLqtDKzBj77M1si0qKVrUJ0s6juORJvIj
-	n6NR1j3QpBYVV1QXmNIQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=pJ0o7pJcG9cnfg7mK1cJ9zUB6mnYOVOCYHrbEEZOdlE=; b=S1k3VOLIbRYWYBEn3PxJXYSMdB
+	Fsd/BvBAnuATeITwHbpGpHCaaDdSRt4aO+MsF5CSYSPRmIf1VO+gK+gjHfYBdwFkS0t4SV9a9VCwW
+	8P1anK2HCJf8VLJdsJTKgtSYtYHbgazjLmdAd4iKgw2/Z3txUuGbQ7kZSAC4QaP3YkuctqsTQNJFt
+	jvXkJzLNX5C3PMcyS713mAfOr4Q5TkbpG47Mt0GX6frTOh8DB7UmNOxCd9ecyLT57JgcvoH0X4qvg
+	gW5jQ3Un0N76nmGTM6XO9/EETYvGLGQAFyegSn66SncTfghQUUgQfHUXHRjYVr4v79xiLUaV5FAWO
+	bRnIxJeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qteNl-000zSm-26;
-	Fri, 20 Oct 2023 01:32:57 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1qtfFY-0011mL-1p;
+	Fri, 20 Oct 2023 02:28:32 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qteNe-000zR0-2C
+	id 1qtfFU-0011lD-0Y
 	for linux-mtd@lists.infradead.org;
-	Fri, 20 Oct 2023 01:32:55 +0000
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SBRmp2R1BzLpBL;
-	Fri, 20 Oct 2023 09:28:26 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+	Fri, 20 Oct 2023 02:28:30 +0000
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.54])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SBT0C5RDSzvQCn;
+	Fri, 20 Oct 2023 10:23:23 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 20 Oct 2023 09:32:33 +0800
-From: Xiaoming Ni <nixiaoming@huawei.com>
-To: <dwmw2@infradead.org>, <richard@nod.at>
-CC: <nixiaoming@huawei.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <liucheng32@huawei.com>
-Subject: [PATCH] jffs2: Simplify code to remove invalid branches
-Date: Fri, 20 Oct 2023 09:18:42 +0800
-Message-ID: <20231020011842.14881-1-nixiaoming@huawei.com>
-X-Mailer: git-send-email 2.27.0
+ 15.1.2507.31; Fri, 20 Oct 2023 10:28:09 +0800
+Subject: Re: [PATCH v2] ubi: gluebi: Fix NULL pointer dereference caused by
+ ftl notifier
+To: Richard Weinberger <richard@nod.at>, ZhaoLong Wang
+	<wangzhaolong1@huawei.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, <dpervushin@embeddedalley.com>, Artem Bityutskiy
+	<Artem.Bityutskiy@nokia.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>, yi zhang <yi.zhang@huawei.com>,
+	yangerkun <yangerkun@huawei.com>
+References: <20231018121618.778385-1-wangzhaolong1@huawei.com>
+ <1381458025.20897.1697747248632.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <891e554b-c133-6378-3a65-836fc9147e54@huawei.com>
+Date: Fri, 20 Oct 2023 10:27:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.67.189.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500006.china.huawei.com (7.192.105.130)
+In-Reply-To: <1381458025.20897.1697747248632.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231019_183251_389849_CDC92DFE 
-X-CRM114-Status: GOOD (  18.07  )
+X-CRM114-CacheID: sfid-20231019_192828_675875_EA2D7D24 
+X-CRM114-Status: GOOD (  18.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,347 +70,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since commit 2f785402f39b9 ("[JFFS2] Reduce visibility of raw_node_ref to
- upper layers of JFFS2 code."), jffs2_scan_dirty_space() returns only 0.
-Therefore, we can simplify the code, change the function prototype to void,
- and delete the code for judging the return value.
-
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
----
- fs/jffs2/nodelist.c |  6 ++--
- fs/jffs2/nodelist.h |  2 +-
- fs/jffs2/scan.c     | 76 +++++++++++++++------------------------------
- fs/jffs2/summary.c  |  6 ++--
- 4 files changed, 31 insertions(+), 59 deletions(-)
-
-diff --git a/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
-index b86c78d178c6..72cefffe205f 100644
---- a/fs/jffs2/nodelist.c
-+++ b/fs/jffs2/nodelist.c
-@@ -659,11 +659,11 @@ struct jffs2_raw_node_ref *jffs2_link_node_ref(struct jffs2_sb_info *c,
- }
- 
- /* No locking, no reservation of 'ref'. Do not use on a live file system */
--int jffs2_scan_dirty_space(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb,
-+void jffs2_scan_dirty_space(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb,
- 			   uint32_t size)
- {
- 	if (!size)
--		return 0;
-+		return;
- 	if (unlikely(size > jeb->free_size)) {
- 		pr_crit("Dirty space 0x%x larger then free_size 0x%x (wasted 0x%x)\n",
- 			size, jeb->free_size, jeb->wasted_size);
-@@ -685,7 +685,7 @@ int jffs2_scan_dirty_space(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
- 		jffs2_link_node_ref(c, jeb, ofs, size, NULL);
- 	}
- 
--	return 0;
-+	return;
- }
- 
- /* Calculate totlen from surrounding nodes or eraseblock */
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index 2e98fa277dab..63541ac7e783 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -462,7 +462,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c);
- void jffs2_rotate_lists(struct jffs2_sb_info *c);
- struct jffs2_inode_cache *jffs2_scan_make_ino_cache(struct jffs2_sb_info *c, uint32_t ino);
- int jffs2_scan_classify_jeb(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb);
--int jffs2_scan_dirty_space(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb, uint32_t size);
-+void jffs2_scan_dirty_space(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb, uint32_t size);
- 
- /* build.c */
- int jffs2_do_mount_fs(struct jffs2_sb_info *c);
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 29671e33a171..1e8803a498f9 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -72,8 +72,7 @@ static int file_dirty(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
- 
- 	if ((ret = jffs2_prealloc_raw_node_refs(c, jeb, 1)))
- 		return ret;
--	if ((ret = jffs2_scan_dirty_space(c, jeb, jeb->free_size)))
--		return ret;
-+	jffs2_scan_dirty_space(c, jeb, jeb->free_size);
- 	/* Turned wasted size into dirty, since we apparently 
- 	   think it's recoverable now. */
- 	jeb->dirty_size += jeb->wasted_size;
-@@ -333,14 +332,12 @@ static int jffs2_scan_xattr_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
- {
- 	struct jffs2_xattr_datum *xd;
- 	uint32_t xid, version, totlen, crc;
--	int err;
- 
- 	crc = crc32(0, rx, sizeof(struct jffs2_raw_xattr) - 4);
- 	if (crc != je32_to_cpu(rx->node_crc)) {
- 		JFFS2_WARNING("node CRC failed at %#08x, read=%#08x, calc=%#08x\n",
- 			      ofs, je32_to_cpu(rx->node_crc), crc);
--		if ((err = jffs2_scan_dirty_space(c, jeb, je32_to_cpu(rx->totlen))))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, je32_to_cpu(rx->totlen));
- 		return 0;
- 	}
- 
-@@ -352,8 +349,7 @@ static int jffs2_scan_xattr_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
- 	if (totlen != je32_to_cpu(rx->totlen)) {
- 		JFFS2_WARNING("node length mismatch at %#08x, read=%u, calc=%u\n",
- 			      ofs, je32_to_cpu(rx->totlen), totlen);
--		if ((err = jffs2_scan_dirty_space(c, jeb, je32_to_cpu(rx->totlen))))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, je32_to_cpu(rx->totlen));
- 		return 0;
- 	}
- 
-@@ -389,14 +385,12 @@ static int jffs2_scan_xref_node(struct jffs2_sb_info *c, struct jffs2_eraseblock
- {
- 	struct jffs2_xattr_ref *ref;
- 	uint32_t crc;
--	int err;
- 
- 	crc = crc32(0, rr, sizeof(*rr) - 4);
- 	if (crc != je32_to_cpu(rr->node_crc)) {
- 		JFFS2_WARNING("node CRC failed at %#08x, read=%#08x, calc=%#08x\n",
- 			      ofs, je32_to_cpu(rr->node_crc), crc);
--		if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rr->totlen)))))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rr->totlen)));
- 		return 0;
- 	}
- 
-@@ -404,8 +398,7 @@ static int jffs2_scan_xref_node(struct jffs2_sb_info *c, struct jffs2_eraseblock
- 		JFFS2_WARNING("node length mismatch at %#08x, read=%u, calc=%zd\n",
- 			      ofs, je32_to_cpu(rr->totlen),
- 			      PAD(sizeof(struct jffs2_raw_xref)));
--		if ((err = jffs2_scan_dirty_space(c, jeb, je32_to_cpu(rr->totlen))))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, je32_to_cpu(rr->totlen));
- 		return 0;
- 	}
- 
-@@ -600,8 +593,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 			  jeb->offset + ofs);
- 		if ((err = jffs2_prealloc_raw_node_refs(c, jeb, 1)))
- 			return err;
--		if ((err = jffs2_scan_dirty_space(c, jeb, ofs)))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, ofs);
- 	}
- 
- 	/* Now ofs is a complete physical flash offset as it always was... */
-@@ -631,8 +623,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 		if (ofs == prevofs) {
- 			pr_warn("ofs 0x%08x has already been seen. Skipping\n",
- 				ofs);
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
-@@ -643,8 +634,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 				  sizeof(struct jffs2_unknown_node),
- 				  jeb->offset, c->sector_size, ofs,
- 				  sizeof(*node));
--			if ((err = jffs2_scan_dirty_space(c, jeb, (jeb->offset + c->sector_size)-ofs)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, (jeb->offset + c->sector_size)-ofs);
- 			break;
- 		}
- 
-@@ -676,8 +666,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 				if (unlikely(*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff)) {
- 					pr_warn("Empty flash at 0x%08x ends at 0x%08x\n",
- 						empty_start, ofs);
--					if ((err = jffs2_scan_dirty_space(c, jeb, ofs-empty_start)))
--						return err;
-+					jffs2_scan_dirty_space(c, jeb, ofs-empty_start);
- 					goto scan_more;
- 				}
- 
-@@ -724,23 +713,20 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 		if (ofs == jeb->offset && je16_to_cpu(node->magic) == KSAMTIB_CIGAM_2SFFJ) {
- 			pr_warn("Magic bitmask is backwards at offset 0x%08x. Wrong endian filesystem?\n",
- 				ofs);
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
- 		if (je16_to_cpu(node->magic) == JFFS2_DIRTY_BITMASK) {
- 			jffs2_dbg(1, "Dirty bitmask at 0x%08x\n", ofs);
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
- 		if (je16_to_cpu(node->magic) == JFFS2_OLD_MAGIC_BITMASK) {
- 			pr_warn("Old JFFS2 bitmask found at 0x%08x\n", ofs);
- 			pr_warn("You cannot use older JFFS2 filesystems with newer kernels\n");
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
-@@ -750,8 +736,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 				     __func__,
- 				     JFFS2_MAGIC_BITMASK, ofs,
- 				     je16_to_cpu(node->magic));
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
-@@ -769,8 +754,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 				     je32_to_cpu(node->totlen),
- 				     je32_to_cpu(node->hdr_crc),
- 				     hdr_crc);
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
-@@ -780,8 +764,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 			pr_warn("Node at 0x%08x with length 0x%08x would run over the end of the erase block\n",
- 				ofs, je32_to_cpu(node->totlen));
- 			pr_warn("Perhaps the file system was created with the wrong erase size?\n");
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, 4);
- 			ofs += 4;
- 			continue;
- 		}
-@@ -790,8 +773,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 			/* Wheee. This is an obsoleted node */
- 			jffs2_dbg(2, "Node at 0x%08x is obsolete. Skipping\n",
- 				  ofs);
--			if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)))))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)));
- 			ofs += PAD(je32_to_cpu(node->totlen));
- 			continue;
- 		}
-@@ -874,14 +856,12 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 				pr_notice("CLEANMARKER node found at 0x%08x has totlen 0x%x != normal 0x%x\n",
- 					  ofs, je32_to_cpu(node->totlen),
- 					  c->cleanmarker_size);
--				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)))))
--					return err;
-+				jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)));
- 				ofs += PAD(sizeof(struct jffs2_unknown_node));
- 			} else if (jeb->first_node) {
- 				pr_notice("CLEANMARKER node found at 0x%08x, not first node in block (0x%08x)\n",
- 					  ofs, jeb->offset);
--				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)))))
--					return err;
-+				jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)));
- 				ofs += PAD(sizeof(struct jffs2_unknown_node));
- 			} else {
- 				jffs2_link_node_ref(c, jeb, ofs | REF_NORMAL, c->cleanmarker_size, NULL);
-@@ -893,8 +873,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 		case JFFS2_NODETYPE_PADDING:
- 			if (jffs2_sum_active())
- 				jffs2_sum_add_padding_mem(s, je32_to_cpu(node->totlen));
--			if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)))))
--				return err;
-+			jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)));
- 			ofs += PAD(je32_to_cpu(node->totlen));
- 			break;
- 
-@@ -906,8 +885,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 				c->flags |= JFFS2_SB_FLAG_RO;
- 				if (!(jffs2_is_readonly(c)))
- 					return -EROFS;
--				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)))))
--					return err;
-+				jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)));
- 				ofs += PAD(je32_to_cpu(node->totlen));
- 				break;
- 
-@@ -919,8 +897,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 			case JFFS2_FEATURE_RWCOMPAT_DELETE:
- 				jffs2_dbg(1, "Unknown but compatible feature node (0x%04x) found at offset 0x%08x\n",
- 					  je16_to_cpu(node->nodetype), ofs);
--				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)))))
--					return err;
-+				jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(node->totlen)));
- 				ofs += PAD(je32_to_cpu(node->totlen));
- 				break;
- 
-@@ -1014,8 +991,8 @@ static int jffs2_scan_inode_node(struct jffs2_sb_info *c, struct jffs2_erasebloc
- 		 * We believe totlen because the CRC on the node
- 		 * _header_ was OK, just the node itself failed.
- 		 */
--		return jffs2_scan_dirty_space(c, jeb,
--					      PAD(je32_to_cpu(ri->totlen)));
-+		jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(ri->totlen)));
-+		return 0;
- 	}
- 
- 	ic = jffs2_get_ino_cache(c, ino);
-@@ -1049,7 +1026,6 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 	struct jffs2_inode_cache *ic;
- 	uint32_t checkedlen;
- 	uint32_t crc;
--	int err;
- 
- 	jffs2_dbg(1, "%s(): Node at 0x%08x\n", __func__, ofs);
- 
-@@ -1061,8 +1037,7 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 		pr_notice("%s(): Node CRC failed on node at 0x%08x: Read 0x%08x, calculated 0x%08x\n",
- 			  __func__, ofs, je32_to_cpu(rd->node_crc), crc);
- 		/* We believe totlen because the CRC on the node _header_ was OK, just the node itself failed. */
--		if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)))))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)));
- 		return 0;
- 	}
- 
-@@ -1090,8 +1065,7 @@ static int jffs2_scan_dirent_node(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 		jffs2_free_full_dirent(fd);
- 		/* FIXME: Why do we believe totlen? */
- 		/* We believe totlen because the CRC on the node _header_ was OK, just the name failed. */
--		if ((err = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)))))
--			return err;
-+		jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(rd->totlen)));
- 		return 0;
- 	}
- 	ic = jffs2_scan_make_ino_cache(c, je32_to_cpu(rd->pino));
-diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-index 4fe64519870f..d95fb03bebe5 100644
---- a/fs/jffs2/summary.c
-+++ b/fs/jffs2/summary.c
-@@ -624,13 +624,11 @@ int jffs2_sum_scan_sumnode(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
- 		if (je32_to_cpu(summary->cln_mkr) != c->cleanmarker_size) {
- 			dbg_summary("CLEANMARKER node has totlen 0x%x != normal 0x%x\n",
- 				je32_to_cpu(summary->cln_mkr), c->cleanmarker_size);
--			if ((ret = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(summary->cln_mkr)))))
--				return ret;
-+			jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(summary->cln_mkr)));
- 		} else if (jeb->first_node) {
- 			dbg_summary("CLEANMARKER node not first node in block "
- 					"(0x%08x)\n", jeb->offset);
--			if ((ret = jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(summary->cln_mkr)))))
--				return ret;
-+			jffs2_scan_dirty_space(c, jeb, PAD(je32_to_cpu(summary->cln_mkr)));
- 		} else {
- 			jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL,
- 					    je32_to_cpu(summary->cln_mkr), NULL);
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjMvMTAvMjAgNDoyNywgUmljaGFyZCBXZWluYmVyZ2VyIOWGmemBkzoKPiAtLS0tLSBV
+cnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4+IFZvbjogIlpoYW9Mb25nIFdhbmciIDx3YW5nemhh
+b2xvbmcxQGh1YXdlaS5jb20+Cj4+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0PiwgIk1p
+cXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwgIlZpZ25lc2ggUmFnaGF2
+ZW5kcmEiIDx2aWduZXNockB0aS5jb20+LAo+PiBkcGVydnVzaGluQGVtYmVkZGVkYWxsZXkuY29t
+LCAiQXJ0ZW0gQml0eXV0c2tpeSIgPEFydGVtLkJpdHl1dHNraXlAbm9raWEuY29tPgo+PiBDQzog
+ImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPiwgImxpbnV4LWtlcm5l
+bCIgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+LCAiY2hlbmd6aGloYW8xIgo+PiA8Y2hl
+bmd6aGloYW8xQGh1YXdlaS5jb20+LCAiWmhhb0xvbmcgV2FuZyIgPHdhbmd6aGFvbG9uZzFAaHVh
+d2VpLmNvbT4sICJ5aSB6aGFuZyIgPHlpLnpoYW5nQGh1YXdlaS5jb20+LCAieWFuZ2Vya3VuIgo+
+PiA8eWFuZ2Vya3VuQGh1YXdlaS5jb20+Cj4+IEdlc2VuZGV0OiBNaXR0d29jaCwgMTguIE9rdG9i
+ZXIgMjAyMyAxNDoxNjoxOAo+PiBCZXRyZWZmOiBbUEFUQ0ggdjJdIHViaTogZ2x1ZWJpOiBGaXgg
+TlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGNhdXNlZCBieSBmdGwgbm90aWZpZXIKPiAKPj4gSWYg
+Ym90aCBmbHQua28gYW5kIGdsdWViaS5rbyBhcmUgbG9hZGVkLCB0aGUgbm90aWllciBvZiBmdGwK
+Pj4gdHJpZ2dlcnMgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIHdoZW4gdHJ5aW5nIHRvIGFjY2Vz
+cwo+PiDigJhnbHVlYmktPmRlc2PigJkgaW4gZ2x1ZWJpX3JlYWQoKS4KPj4KPj4gdWJpX2dsdWVi
+aV9pbml0Cj4+ICAgdWJpX3JlZ2lzdGVyX3ZvbHVtZV9ub3RpZmllcgo+PiAgICAgdWJpX2VudW1l
+cmF0ZV92b2x1bWVzCj4+ICAgICAgIHViaV9ub3RpZnlfYWxsCj4+ICAgICAgICAgZ2x1ZWJpX25v
+dGlmeSAgICBuYi0+bm90aWZpZXJfY2FsbCgpCj4+ICAgICAgICAgICBnbHVlYmlfY3JlYXRlCj4+
+ICAgICAgICAgICAgIG10ZF9kZXZpY2VfcmVnaXN0ZXIKPj4gICAgICAgICAgICAgICBtdGRfZGV2
+aWNlX3BhcnNlX3JlZ2lzdGVyCj4+ICAgICAgICAgICAgICAgICBhZGRfbXRkX2RldmljZQo+PiAg
+ICAgICAgICAgICAgICAgICBibGt0cmFuc19ub3RpZnlfYWRkICAgbm90LT5hZGQoKQo+PiAgICAg
+ICAgICAgICAgICAgICAgIGZ0bF9hZGRfbXRkICAgICAgICAgdHItPmFkZF9tdGQoKQo+PiAgICAg
+ICAgICAgICAgICAgICAgICAgc2Nhbl9oZWFkZXIKPj4gICAgICAgICAgICAgICAgICAgICAgICAg
+bXRkX3JlYWQKPj4gICAgICAgICAgICAgICAgICAgICAgICAgICBtdGRfcmVhZAo+PiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgbXRkX3JlYWRfb29iCj4+ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGdsdWViaV9yZWFkICAgbXRkLT5yZWFkKCkKPj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBnbHVlYmktPmRlc2MgLSBOVUxMCj4+Cj4+IERldGFpbGVkIHJlcHJvZHVj
+dGlvbiBpbmZvcm1hdGlvbiBhdmFpbGFibGUgYXQgdGhlIGxpbmtbMV0sCj4+Cj4+IEluIHRoZSBu
+b3JtYWwgY2FzZSwgb2J0YWluIGdsdWViaS0+ZGVzYyBpbiB0aGUgZ2x1ZWJpX2dldF9kZXZpY2Uo
+KSwKPj4gYW5kIGFjY2Vzc2VzIGdsdWViaS0+ZGVzYyBpbiB0aGUgZ2x1ZWJpX3JlYWQoKS4gSG93
+ZXZlciwKPj4gZ2x1ZWJpX2dldF9kZXZpY2UoKSBpcyBub3QgZXhlY3V0ZWQgaW4gYWR2YW5jZSBp
+biB0aGUKPj4gZnRsX2FkZF9tdGQoKSBwcm9jZXNzLCB3aGljaCBsZWFkcyB0byBOVUxMIHBvaW50
+ZXIgZGVyZWZlcmVuY2UuCj4+Cj4+IFRoZSB2YWx1ZSBvZiBnbHVlYmktPmRlc2MgbWF5IGFsc28g
+YmUgYSBuZWdhdGl2ZSBlcnJvciBjb2RlLCB3aGljaAo+PiB0cmlnZ2VycyB0aGUgcGFnZSBmYXVs
+dCBlcnJvci4KPj4KPj4gVGhpcyBwYXRjaCBoYXMgdGhlIGZvbGxvd2luZyBtb2RpZmljYXRpb25z
+Ogo+Pgo+PiAxLiBEbyBub3QgYXNzaWduIGdsdWViaS0+ZGVzYyB0byB0aGUgZXJyb3IgY29kZS4g
+VXNlIHRoZSBOVUxMIGluc3RlYWQuCj4+Cj4+IDIuIEFsd2F5cyBjaGVjayB0aGUgdmFsaWRpdHkg
+b2YgZ2x1ZWJpLT5kZXNjIGluIGdsdWViaV9yZWFkKCkgSWYgdGhlCj4+ICAgIGdsdWViaS0+ZGVz
+YyBpcyBOVUxMLCB0cnkgdG8gZ2V0IE1URCBkZXZpY2UuCj4+Cj4+IFN1Y2ggYSBtb2RpZmljYXRp
+b24gY3VycmVudGx5IHdvcmtzIGJlY2F1c2UgdGhlIG11dGV4ICJtdGRfdGFibGVfbXV0ZXgiCj4+
+IGlzIGhlbGQgb24gYWxsIG5lY2Vzc2FyeSBwYXRocywgaW5jbHVkaW5nIHRoZSBmdGxfYWRkX210
+ZCgpIGNhbGwgcGF0aCwKPj4gb3BlbiBhbmQgY2xvc2UgcGF0aHMuIFRoZXJlZm9yZSwgbWFueSBy
+YWNlIGNvbmRpdGlvbiBjYW4gYmUgYXZvaWRlZC4KPiAKPiBJIHNlZSB0aGUgcHJvYmxlbSwgYnV0
+IEknbSBub3QgcmVhbGx5IHNhdGlzZmllZCBieSB0aGUgc29sdXRpb24uCj4gQWRkaW5nIHRoaXMg
+aGFjayB0byBnbHVlYmlfcmVhZCgpIGlzIG5vdCBuaWNlIGF0IGFsbC4KClllcywgaXQncyBqc3V0
+IGEgd29ya2Fyb3VuZC4gQXQgdGhlIGJlZ2luaW5nLCBJIHByZWZlciB0aGF0IGluY3JlYXNpbmcg
+CnZvbHVtZSByZWZjbnQgKGJ5IHViaV9vcGVuX3ZvbHVtZSkgaW4gZ2x1ZWJpX2NyZWF0ZSBhbmQg
+cmVsZWFzaW5nIHZvbHVtZSAKcmVmY250IGluIGdsdWViaV9yZW1vdmUuIEl0IGxvb2tzIG1vcmUg
+cmVhc29uYWJsZSB0aGF0IGhvbGRpbmcgYSByZWZjbnQgCm9mIFVCSSB2b2x1bWUgd2hlbiBnbHVl
+YmkgaXMgYWxpdmUuIEFmdGVyIGxvb2tpbmcgdGhyb3VnaCB0aGUgY29kZSwgdGhlIApjcmVhdGlv
+bi9kZXN0cm95aW5nIG9mIGdsdWViaSBpcyB0cmlnZ2VyZWQgYnkgdm9sdW1lIAphY3Rpb25zKFVC
+SV9WT0xVTUVfQURERUQvVUJJX1ZPTFVNRV9SRU1PVkVEKSwgd2hpY2ggbWVhbnMgdGhhdDoKMS4g
+Z2x1ZWJpX3JlbW92ZSBpcyBkZXBlbmRlZCBvbiBVQklfVk9MVU1FX1JFTU9WRUQodHJpZ2dlcmVk
+IGJ5IAp1YmlfcmVtb3ZlX3ZvbHVtZSkKMi4gdWJpX3JlbW92ZV92b2x1bWUgd29uJ3QgYmUgZXhl
+Y3V0ZWQgdW50aWwgdGhlIHJlZmNudCBvZiB2b2x1bWUgCmJlY29tZXMgMChyZWxlYXNlZCBieSBn
+bHVlYmlfcmVtb3ZlKQoKSWYgd2UgYWRkIG5ldyBpb2N0bHMgdG8gY29udHJvbCBjcmVhdGlvbi9k
+ZXN0cm95aW5nIG9mIGdsdWViaSwgdGhlbiAKZ2x1ZWJpIG10ZCB3b24ndCBiZSBhdXRvbWF0aWNh
+bGx5IGNyZWF0ZWQgd2hlbiBVQkkgdm9sdW1lIGlzIGFkZGVkLiBJJ20gCm5vdCBjZXJ0YWluIHdo
+ZXRoZXIgdGhpcyBjaGFuZ2Ugd2lsbCBlZmZlY3QgZXhpc3Rpbmcgc3RhcnR1cCBwcm9jZXNzIAp0
+aGF0IGRlcGVuZHMgb24gZ2x1ZWJpLgoKPiAKPiBJcyB0aGVyZSBhIHN0cm9uZyByZWFzb24gd2h5
+IGhhdmUgdG8gZGVmZXIgdWJpX29wZW5fdm9sdW1lKCkgdG8KPiBnbHVlYmlfZ2V0X2RldmljZSgp
+Pwo+IAo+IE1pcXVlbCwgd2hhdCBkbyB5b3UgdGhpbms/Cj4gCj4gVGhhbmtzLAo+IC8vcmljaGFy
+ZAo+IAo+IC4KPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
