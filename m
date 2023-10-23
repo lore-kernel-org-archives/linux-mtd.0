@@ -4,90 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3420CC001E0
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Oct 2023 14:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28C8BC25B46
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Oct 2023 17:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BAOKlNrPnCx+2M4xthJWLMdiaN+VSQV7tVuXad09lNg=; b=LIhuzb9VijnPv8
-	XP3CrACpVeaerTnGrNRboYIAaSQoVIyuhpjKRTJiOBk1QbCSJKN5HMgMhV7EmJdmZ3nj735HpW9nA
-	TqI3NvadP6UpRj9S9HPbpPG2PQxIlJjo5qDo/uNJfMh6hDxViJEBmCv096ndGun8HCw03sAVcp2Go
-	+04wq/kI2uUnJ47A8ZcvyPyoS+eMfyUXwLcC9DDyrS7gwF1TNsZldpcT0WoupZCIW1tPyl8IgeCit
-	wlqcdz0lym9xaziCJUE7rgzT/bCGtHH4/YWVWd7si/6Nw6FiKQhoi51yZ01r8OYzdnXp0sMquMdrR
-	gGTynpmIulrccZQVZgXQ==;
+	List-Owner; bh=ht8zciP5qETMuZ+HK0BfOrOrgoJZgXXirW7OkzonPRk=; b=RXYORao9eK8gHn
+	n7d6q3R/wphVCs1wLZcJOWSsBeEEXCCeWie9mxPaKK+bnNGVlY6OSrGsv27iPJmlkYckdt3UQoFKh
+	p+7mACFHfQSFPJ28l/jJlqoDayQWsJaZIiQ9bqCTD64UanEwbFVhhBGTUBBKM+MpQR/QYJskiQKH3
+	KNKALQ72ovrnd6XKTTTDtvZJXXZc7vhsjGYJYt/dKsT4KaKNd4ir91b/ljQe1Pse9ORWc0wN28QKa
+	CFcFugsqQAzT/cmbND3Q4ZndSX2NXmnzF4EktK9vIOtQ5R8QSzZlOvSBbWoNKzRCo4zVmsMw3d4FJ
+	FiSjIjfkbuIOYkRz6cJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1quwKO-007dHw-2q;
-	Mon, 23 Oct 2023 14:54:48 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1quyW5-007u91-2Z;
+	Mon, 23 Oct 2023 17:15:01 +0000
+Received: from lpdvacalvio01.broadcom.com ([192.19.166.228] helo=relay.smtp-ext.broadcom.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1quwKK-007dGX-1J
+	id 1quyW3-007u7q-0H
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Oct 2023 14:54:46 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 7B2DE120005;
-	Mon, 23 Oct 2023 17:54:34 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7B2DE120005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1698072874;
-	bh=xOCUtAXX6+TUytIqANgyBYP5UyxgzoCas0tmcIMHWrU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=KdtIlp3kcbU6tFd1fXLXPH4TD7crI4X98cmKMRMBTvTJZj6anIpI0+gjWKe10UmqE
-	 /llSw9ox6ddLGfRLA2V1JWhgoZziCJlk7MGa1mtTxHEIFrIsYWcR/mzen5hx7X9VvS
-	 PCdSEpfrF0m8TXmleHBFxPfaydbek6mDdpiqU4xsgVgbEaoehBXpSMSPdgEWU1V67T
-	 YCzNtiug2JUam9xkpsBR9kDtxXlvNDpLAFzciMp2ixJIg+7ejTheXzi4hOY4E4iBHY
-	 hqc8EDSM2L14FmJzmjuD1BpfwOhtCEYDY+rRSko8I4tbomhGou87yuOlImexFiCMjJ
-	 //6cxudualiEg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 23 Oct 2023 17:54:34 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 23 Oct 2023 17:54:33 +0300
-Message-ID: <3951ac21-a0a4-47b5-be94-edb0140c69a5@salutedevices.com>
-Date: Mon, 23 Oct 2023 17:54:29 +0300
+	Mon, 23 Oct 2023 17:15:00 +0000
+Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 6C831C0070BB;
+	Mon, 23 Oct 2023 10:14:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 6C831C0070BB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1698081298;
+	bh=a2hqiY6Qekk9mAIPXaQG+LhooV2+mDpVnQWIKZr0zN8=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=X5OC5BT6FdP3hKL974YGYiLj9tPPOJYcfB7coPvW/m06Gok50BmQo4sVP9hGYIIeR
+	 aS6qW3HMxzPykCMWmfSV7grUzS9ajFcrlKcgHL8AWzx4pE9YGNhwP/dSzSofX5UeTc
+	 wGcKiCHLotS2tngoFYvmXXs+vjI2VQYgAuVIW/gw=
+Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.75.138.105])
+	by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 6058D18728D;
+	Mon, 23 Oct 2023 10:14:58 -0700 (PDT)
+From: dregan@broadcom.com
+To: dregan@broadcom.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	linux-mtd@lists.infradead.org,
+	f.fainelli@gmail.com,
+	rafal@milecki.pl,
+	joel.peshkin@broadcom.com,
+	computersforpeace@gmail.com,
+	dan.beygelman@broadcom.com,
+	william.zhang@broadcom.com,
+	frieder.schrempf@kontron.de,
+	linux-kernel@vger.kernel.org,
+	vigneshr@ti.com,
+	richard@nod.at,
+	bbrezillon@kernel.org,
+	kdasu.kdev@gmail.com,
+	JaimeLiao <jaimeliao.tw@gmail.com>,
+	Adam Borowski <kilobyte@angband.pl>
+Subject: [PATCH v4 2/4] mtd: rawnand: NAND controller write protect
+Date: Mon, 23 Oct 2023 10:14:42 -0700
+Message-Id: <20231023171444.322311-2-dregan@broadcom.com>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20231023171444.322311-1-dregan@broadcom.com>
+References: <20231023171444.322311-1-dregan@broadcom.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] jffs2: make cleanmarker support option
-To: Richard Weinberger <richard@nod.at>
-CC: David Woodhouse <dwmw2@infradead.org>, Christian Brauner
-	<brauner@kernel.org>, Dave Chinner <dchinner@redhat.com>, Yu Zhe
-	<yuzhe@nfschina.com>, linux-kernel <linux-kernel@vger.kernel.org>, linux-mtd
-	<linux-mtd@lists.infradead.org>, <kernel@sberdevices.ru>
-References: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
- <20231019073838.17586-3-mmkurbanov@salutedevices.com>
- <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
-Content-Language: en-US
-From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-In-Reply-To: <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180810 [Oct 23 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 542 542 3d23828e213bab96daa5e52f9cef518f74e40214, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/23 12:16:00 #22264656
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231023_075444_794646_9B93668B 
-X-CRM114-Status: GOOD (  15.67  )
+X-CRM114-CacheID: sfid-20231023_101459_135435_CDFD0BBB 
+X-CRM114-Status: GOOD (  12.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,35 +85,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Richard,
+From: David Regan <dregan@broadcom.com>
 
-On 19.10.2023 11:12, Richard Weinberger wrote:
->> This patch support for disable cleanmarker option. This is useful on
->> some NAND devices which entire OOB area is protected by ECC. Problem
->> fires when JFFS2 driver writes cleanmarker to some page and later it
->> tries to write to this page - write will be done successfully, but after
->> that such page becomes unreadable due to invalid ECC codes. This occurs
->> because the second write necessitates an update to ECC, but it is
->> impossible to do it correctly without block erase.
-> Hmm, I miss an explanation why this change is correct and safe.
-> You explain why the OOB area can't be used, okay. But you need to
-> add more details on why you change is safe in terms of filesystem
-> consistency.
+Allow NAND controller to be responsible for write protect pin
+handling during fast path and exec_op destructive operation
+when controller_wp flag is set.
+
+Signed-off-by: David Regan <dregan@broadcom.com>
+---
+Changes in v4: none
+
+Changes in v3: update comments
+
+Changes in v2: none
+---
+ drivers/mtd/nand/raw/nand_base.c | 4 ++++
+ include/linux/mtd/rawnand.h      | 2 ++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 47cc2c35153b..38ed0ced5b8e 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -367,6 +367,10 @@ static int nand_check_wp(struct nand_chip *chip)
+ 	if (chip->options & NAND_BROKEN_XD)
+ 		return 0;
  
-If you disable the cleanmarker, the found clean block (filled with 0xff)
-will be erased again (see fs/jffs2/scan.c#L162).
-In my opinion, it is better to perform the block erasure again than to
-not work with such a nand flash at all.
-
-
-> Beside of that, I don't think this should be kernel config option.
-> Why not a mount option?
-
-Agreed
-
++	/* controller responsible for NAND write protect */
++	if (chip->controller->controller_wp)
++		return 0;
++
+ 	/* Check the WP bit */
+ 	ret = nand_status_op(chip, &status);
+ 	if (ret)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 31aceda8616c..fcad94aa0515 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1111,6 +1111,7 @@ struct nand_controller_ops {
+  *			the bus without restarting an entire read operation nor
+  *			changing the column.
+  * @supported_op.cont_read: The controller supports sequential cache reads.
++ * @controller_wp:	the controller is in charge of handling the WP pin.
+  */
+ struct nand_controller {
+ 	struct mutex lock;
+@@ -1119,6 +1120,7 @@ struct nand_controller {
+ 		unsigned int data_only_read: 1;
+ 		unsigned int cont_read: 1;
+ 	} supported_op;
++	bool controller_wp;
+ };
+ 
+ static inline void nand_controller_init(struct nand_controller *nfc)
 -- 
-Best Regards,
-Martin Kurbanov
+2.37.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
