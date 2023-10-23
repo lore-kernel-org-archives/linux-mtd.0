@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6062CC25B45
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F218C25B48
 	for <linux-mtd@archiver.kernel.org>; Mon, 23 Oct 2023 17:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kgFulkIpQaGq5Hlgc30PDpN5vYqDuuhXljSptMu55e0=; b=V9dfE7AWQLT2DB
-	2oWXKgNb/WkmhzJGCAPsgQA6Z9LoJ8jpkT9tSRT/8QFLat8FGO+9jiSp43hy8nr0wPyCm1VOlXSKC
-	4bOwIn3ySca6xwZDFZLko4mnaMhF+nC1Eu1eL5Q1UiBCrLuNyY5v8LxYTZlQnkZnx+P4U/vVDBLKv
-	8W0Pg0IEeKdMG+3rvlbwqIYNOOR99BGIoL6xBDQ15mK/MuHNLX3Uw5BjcCPT21kGg1x9fRRPmlnbH
-	1Gv+t+hi74YZz45E6YTvH8jpO1L0se3phalT/kAchX5k3DifOAsAV9Dd6JQCJOHs7YQpPppELJTSL
-	Zl6eXu93GEhYUK0pZOeQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=38umt83QjXstZnhYhDm1HJrfcemcwq6eReqkTIPQdpQ=; b=oLpKtxGNpA3wOP
+	FFmXCzzosMErotAPAGCP8UDiVb8r2NASRWLNfnqqYg1WuM4A9zdrlmFXxpNO1HLk3JMBrwtJs113u
+	iRydOduuiUNe2fralq4L1KfjtfpwioGgBHIKewuZKFsxRqnHLpSwJH2KWYaX4qlaLDgvv6EhAP+cL
+	cJoqoNlT8KLBhDj7t6T9/6lJaU3yfDS3Lf4QbJpaIHh7dI/s81Ew0/0R10XILj+QLmVv8PxtrhgW4
+	A5Om2J/gbLxrFl4Mp9ohZ28aWYdIBD/tkOXwdsT1r2Kp3AcvVt0OxXo/ZaWIONCliqCdw1pu/Rgeb
+	2ldxSLk8Xiq7W+oUBJdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1quyWA-007uBE-1D;
-	Mon, 23 Oct 2023 17:15:06 +0000
+	id 1quyW5-007u8d-0U;
+	Mon, 23 Oct 2023 17:15:01 +0000
 Received: from lpdvsmtp09.broadcom.com ([192.19.166.228] helo=relay.smtp-ext.broadcom.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1quyW7-007u9k-1Z
+	id 1quyW1-007u6S-0j
 	for linux-mtd@lists.infradead.org;
-	Mon, 23 Oct 2023 17:15:04 +0000
+	Mon, 23 Oct 2023 17:14:59 +0000
 Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 39FC8C007598;
-	Mon, 23 Oct 2023 10:15:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 39FC8C007598
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 331A8C004ECC;
+	Mon, 23 Oct 2023 10:14:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 331A8C004ECC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1698081303;
-	bh=GqmnpEMfWio14hWw5HE21rvGs1KEhArEROd+g4C5LJQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=fPWjOQnXMgc7FnhgtU6PcVX6xnuWAr2bRDbqpCrJn2llOiuXduQ/BrXixEd+xRZzG
-	 PO6qaDYSVoBGiJiSaCXf0GdgV6s6Hn7wa9Cp+K9tdAhUZQlDY2i5ramaIp+PDc2D3k
-	 TvoexMkZsijjs4/aEVO3LOmORqdOMcy13NqrAYJY=
+	s=dkimrelay; t=1698081293;
+	bh=a3Dt7syR5zhVX9KM9JkJeWq0PAXWyXzBW8y0XTgiNwU=;
+	h=From:To:Subject:Date:From;
+	b=DPVYds28HnXXIauHOisI/aEi8mllIbZTggVLW3bpsf3ReN6fF7twHLK+Is+jhgyrB
+	 n7mc65MfS1MinLEjZ3vHe9T29KM5ru70EXq+1c27gZYZcccW1R55VFMHL8+234GbSv
+	 jd+r3bhvzvUIIcnIkqs9WH41jajCiakGJ+0bR/Y8=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.75.138.105])
-	by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 2DA8B18728D;
-	Mon, 23 Oct 2023 10:15:03 -0700 (PDT)
+	by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 2E2B018728D;
+	Mon, 23 Oct 2023 10:14:53 -0700 (PDT)
 From: dregan@broadcom.com
 To: dregan@broadcom.com,
 	bcm-kernel-feedback-list@broadcom.com,
@@ -59,16 +59,14 @@ To: dregan@broadcom.com,
 	kdasu.kdev@gmail.com,
 	JaimeLiao <jaimeliao.tw@gmail.com>,
 	Adam Borowski <kilobyte@angband.pl>
-Subject: [PATCH v4 3/4] mtd: rawnand: brcmnand: pass host struct to bcmnand_ctrl_poll_status
-Date: Mon, 23 Oct 2023 10:14:43 -0700
-Message-Id: <20231023171444.322311-3-dregan@broadcom.com>
+Subject: [PATCH v4 1/4] mtd: rawnand: Add destructive operation
+Date: Mon, 23 Oct 2023 10:14:41 -0700
+Message-Id: <20231023171444.322311-1-dregan@broadcom.com>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20231023171444.322311-1-dregan@broadcom.com>
-References: <20231023171444.322311-1-dregan@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231023_101503_563312_AF8E2126 
-X-CRM114-Status: GOOD (  14.83  )
+X-CRM114-CacheID: sfid-20231023_101457_667992_1B2C963A 
+X-CRM114-Status: GOOD (  12.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,85 +83,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: David Regan <dregan@broadcom.com>
+From: Boris Brezillon <bbrezillon@kernel.org>
 
-Pass host struct to bcmnand_ctrl_poll_status instead of ctrl struct
-since real time status requires host, and ctrl is a member of host.
-Real time status is required for low level commands vs cached status
-since the NAND controller will not do an automatic status read at the
-end of a low level command as it would with a high level command.
+Erase and program operations need the write protect (wp) pin to be
+de-asserted to take effect. Add the concept of destructive
+operation and pass the information to exec_op() so controllers know
+when they should de-assert this pin without having to decode
+the command opcode.
 
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
 Signed-off-by: David Regan <dregan@broadcom.com>
 ---
 Changes in v4: none
 
-Changes in v3: none
+Changes in v3: updated comments and email address
 
-Changes in v2: added this patch in series
+Changes in v2: gave credit to Boris Brezillon
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 6 ++++--
+ include/linux/mtd/rawnand.h      | 9 +++++++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 440bef477930..8d429eb3b72a 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1061,10 +1061,11 @@ enum {
- 	CS_SELECT_AUTO_DEVICE_ID_CFG		= BIT(30),
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d4b55155aeae..47cc2c35153b 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1494,7 +1494,8 @@ static int nand_exec_prog_page_op(struct nand_chip *chip, unsigned int page,
+ 			    NAND_COMMON_TIMING_NS(conf, tWB_max)),
+ 		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tPROG_max), 0),
+ 	};
+-	struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
++	struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
++							      instrs);
+ 	int naddrs = nand_fill_column_cycles(chip, addrs, offset_in_page);
+ 
+ 	if (naddrs < 0)
+@@ -1917,7 +1918,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+ 			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
+ 					 0),
+ 		};
+-		struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
++		struct nand_operation op = NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
++								      instrs);
+ 
+ 		if (chip->options & NAND_ROW_ADDR_3)
+ 			instrs[1].ctx.addr.naddrs++;
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 90a141ba2a5a..31aceda8616c 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1008,6 +1008,7 @@ struct nand_op_parser {
+  */
+ struct nand_operation {
+ 	unsigned int cs;
++	bool deassert_wp;
+ 	const struct nand_op_instr *instrs;
+ 	unsigned int ninstrs;
  };
+@@ -1019,6 +1020,14 @@ struct nand_operation {
+ 		.ninstrs = ARRAY_SIZE(_instrs),			\
+ 	}
  
--static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
-+static int bcmnand_ctrl_poll_status(struct brcmnand_host *host,
- 				    u32 mask, u32 expected_val,
- 				    unsigned long timeout_ms)
- {
-+	struct brcmnand_controller *ctrl = host->ctrl;
- 	unsigned long limit;
- 	u32 val;
- 
-@@ -1379,7 +1380,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
- 		 * make sure ctrl/flash ready before and after
- 		 * changing state of #WP pin
- 		 */
--		ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY |
-+		ret = bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY |
- 					       NAND_STATUS_READY,
- 					       NAND_CTRL_RDY |
- 					       NAND_STATUS_READY, 0);
-@@ -1389,7 +1390,7 @@ static void brcmnand_wp(struct mtd_info *mtd, int wp)
- 		brcmnand_set_wp(ctrl, wp);
- 		nand_status_op(chip, NULL);
- 		/* NAND_STATUS_WP 0x00 = protected, 0x80 = not protected */
--		ret = bcmnand_ctrl_poll_status(ctrl,
-+		ret = bcmnand_ctrl_poll_status(host,
- 					       NAND_CTRL_RDY |
- 					       NAND_STATUS_READY |
- 					       NAND_STATUS_WP,
-@@ -1629,13 +1630,13 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
- 	 */
- 	if (oops_in_progress) {
- 		if (ctrl->cmd_pending &&
--			bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0))
-+			bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_RDY, 0))
- 			return;
- 	} else
- 		BUG_ON(ctrl->cmd_pending != 0);
- 	ctrl->cmd_pending = cmd;
- 
--	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
-+	ret = bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
- 	WARN_ON(ret);
- 
- 	mb(); /* flush previous writes */
-@@ -1664,7 +1665,7 @@ static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- 	if (mtd->oops_panic_write || ctrl->irq < 0) {
- 		/* switch to interrupt polling and PIO mode */
- 		disable_ctrl_irqs(ctrl);
--		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
-+		sts = bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY,
- 					       NAND_CTRL_RDY, 0);
- 		err = sts < 0;
- 	} else {
++#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
++	{							\
++		.cs = _cs,					\
++		.deassert_wp = true,				\
++		.instrs = _instrs,				\
++		.ninstrs = ARRAY_SIZE(_instrs),			\
++	}
++
+ int nand_op_parser_exec_op(struct nand_chip *chip,
+ 			   const struct nand_op_parser *parser,
+ 			   const struct nand_operation *op, bool check_only);
 -- 
 2.37.3
 
