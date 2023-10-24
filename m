@@ -4,69 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B71D6C00A8F
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Oct 2023 16:17:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CF8CC00A8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Oct 2023 16:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3hECCXzE+bZ1k/GK6XUlKRRQDmd7lVG9cxNHtEFcKe4=; b=QtOlSj3U5RDQsv
-	p3u1YmVMCaLNfHP1WF1xl7oHdyD29RBD3jhsYOyVYEo7UmI9ibLCkxQTIA3LmMT3k3ecyDD6oQtIL
-	xnIqEN1PnwQR+pyS47cKVdnSxZLmWYnlTA8+H+k/boQhDhJKcyAQiontAA86ksNYWrYEc97YM7JSj
-	DWAuIJ5LBB7/nqpvY1wtNIVmt+rWxLex5y3300Hz7hAqvMl+sAEcnhc848PMO+OsftfO1E74WCQrl
-	TKzaeVSwUE799/wBU+7tXmUY6sxJdttgDm1ylcRH7bnmohWDsFH4OPq5ZDsbsF4oL9WncPrwxcbQl
-	M15/tt/acZgc3K5WQzxQ==;
+	List-Owner; bh=Db3x0/lw307sBt3GnkRENOHMwQC22PmfT6k2rwhF0dA=; b=cd4zPh4nCKL2Bd
+	ouUyTnZ5QQ0XtK/hL5NNFOp/SWufrzbrqxbSM9HWENw/DSULWm72G40NX1V39U6HYDwAHtfug9IYV
+	LTJj6xopjeJy8J7AjwrxLXCLP8N/IBkTmS0rg0LYg6EtF72Byj9VP8/Lf7ECrTxBmMq+dQnwKGF3D
+	Wnd9L+RSAjV3HHV9BUKUIjTpAjhkJNW4Y1sfPGb8Y0XU7j20vtevyprHnx+R05nR0Wi2Sp8aIwj0k
+	FUwVz4f6G5cm+HUBLkxnRGr+01DQSx7NB351JDnENGSD3lRcFhPZkKVJXBvM6RoVgZP+dW/f+ZmN9
+	i78EI4VJk2ykhg4UW0mA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvK5M-00ARTH-1d;
-	Tue, 24 Oct 2023 16:16:52 +0000
-Received: from mail-ot1-f47.google.com ([209.85.210.47])
+	id 1qvK9M-00AS73-03;
+	Tue, 24 Oct 2023 16:21:00 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvK5I-00ARSS-1J
+	id 1qvK9G-00ARzj-0M
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Oct 2023 16:16:49 +0000
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ce29d1db6eso2644819a34.1
-        for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2023 09:16:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698164206; x=1698769006;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	Tue, 24 Oct 2023 16:20:55 +0000
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-58962bf3f89so240512a12.0
+        for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2023 09:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698164451; x=1698769251; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RXPrvqhlemMI7g9xIhmWAAMr6+6qbQ1ZU0REA78QcHI=;
-        b=CnUIG/+/q4oKXuAeACWtYb432/fUpvFPq3m12BMxWy/kSf5XnTqTa2jtLcQNgMrfOH
-         53gfC8nENPrQMxFsByS3GnMewEkVEal0K7WfLWvtXUXEHQhHCXLmj0NQ2NeNx6xGOlsx
-         ZLjEq3XkG4Ou3Zn7LWcpjqPcr0Q9R9C50HYJeHWZCgfTr6KM943WWeX7+NtVv5+9GVlw
-         +05tJse9rwiFd8WCxd4IHL+8SUZNEftTmbrRxw25YNy3BXcSO8CsIzMJ+V3yz29r4nif
-         M9cIkM45+d9UgT6wYl5lj4wSfX/dIfE0zl3bqM+POeH/Y5sJCUh4XlVDsvLUkjJyvLLq
-         xNbg==
-X-Gm-Message-State: AOJu0Yya+DLyVDwBcS5JnNyqn3FsON+qIPFw044foLwUcD2kecJmBUbe
-	dAQ3tHydh+SCn/yxNBwDmw==
-X-Google-Smtp-Source: AGHT+IHcKt9w7bZiBt4/3rwDVdR83Ok9yFwzHM6Yw+yCPtpOKiwL2Yodvx6SUVggzi+iygsVFKZgpg==
-X-Received: by 2002:a05:6808:1306:b0:3b2:e379:c11d with SMTP id y6-20020a056808130600b003b2e379c11dmr10337541oiv.22.1698164206547;
-        Tue, 24 Oct 2023 09:16:46 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id k2-20020a544702000000b003b2f2724c48sm1975040oik.11.2023.10.24.09.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 09:16:45 -0700 (PDT)
-Received: (nullmailer pid 4031785 invoked by uid 1000);
-	Tue, 24 Oct 2023 16:16:44 -0000
-Date: Tue, 24 Oct 2023 11:16:44 -0500
-From: Rob Herring <robh@kernel.org>
-To: Simon Glass <sjg@chromium.org>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, Tom Rini <trini@konsulko.com>, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: binman-partition: Add binman
- compatibles
-Message-ID: <20231024161644.GB3707756-robh@kernel.org>
-References: <20231009220436.2164245-1-sjg@chromium.org>
- <20231009220436.2164245-2-sjg@chromium.org>
+        bh=YsRJQiFxbxGOm8RZglwhZ4Xmss7Cw8PVrqOjVSH3hyM=;
+        b=YfGo6b5dsnA0+UMhr/ZvdvHZaOrsCueMz34jeYywesKSuumySroihkMF3yExyYmOUI
+         Ic0xrXfr1YXR/YCXQ9xOPyI5o0uhBfazqqypIFzeGlzXp546a4azggKklahPSyN+1SOX
+         YS02L4FdK6SsqWzxEfwto/nd99DrqZCqhBgmYxNd+xl8pAQXS+4e5zsFqBDi74PjqqSr
+         a0FQHQv5pDTK9j7YcTrHhoSmHH/cd+zYmCzIct6XXIxzh5gEqUoX/47WjqprmOVkIkCv
+         z67EMpwJS8TQTJJWvlVvr1hHsY46+NtOZZy16vtqk9/adVL5mMVmpIjkk/9/FMIrCn/x
+         +Mxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698164451; x=1698769251;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YsRJQiFxbxGOm8RZglwhZ4Xmss7Cw8PVrqOjVSH3hyM=;
+        b=cdEv47aKjletFYddWGkDFgiW9L046+NolFbc2zZJfvdbQNGaC5VXL1eXvqYetmRphY
+         tUdKp5pk4yra794Sw0yqj2iGLA1RvyF+7RHHjIMEVKPebBNyps9fn87Kj6+LhcVRwZsS
+         vYBYp94VdGUcMvM1Mf4jQzqB1nwR0xae+YZTtYhScs30dyx5plykCkDQSu4kCEVhc56H
+         ZRSQL+QpfiTo/OtjaA1+Phfbr6cSbLt/RRhq/ARWJwim998G8vMnFjepp9xLYffk9x4q
+         pAP5h0MuBOhoYCQLVeoHlRmhZ8D4gY6SgbnwJExBHSunbsQH3yxfRgkGG9MkJU2chhyr
+         hryQ==
+X-Gm-Message-State: AOJu0YwzvYrP04/4dg09Bu+RT/L7aIkjME415mabYf1BeY9thNnXYhql
+	DtyRyxQ3lb5J0Tq5o8tXnuCQOHKcZ8Q0txYtPxQ=
+X-Google-Smtp-Source: AGHT+IHbwuH1pArNU5KjylMKO985Xmr8aHT1UI8LRl8oCKCY1OLAHW5Q1u9E5MiU2ejKH+3/6aNG+MPWjWRM0ni5es8=
+X-Received: by 2002:a17:90b:4d88:b0:27d:3b8:a08a with SMTP id
+ oj8-20020a17090b4d8800b0027d03b8a08amr14190459pjb.1.1698164450809; Tue, 24
+ Oct 2023 09:20:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231009220436.2164245-2-sjg@chromium.org>
+References: <20231023213800.2599704-1-festevam@gmail.com> <6183891066787b6c24df11e0d601ed26@walle.cc>
+ <CAOMZO5BNcFZcLsi+0Qx5zxwTHqzrnUsGgb0AMptAtY4Kj9Apmg@mail.gmail.com>
+ <1ac379836d4e1e3f7bec565ba7c9bc49@walle.cc> <CAOMZO5BfEsB2vv__F7kkMo9Q-oHD5PiCmaK-ruU-ds9XabUc4Q@mail.gmail.com>
+ <4faa5d37-ddf8-4edd-bb0e-a192d16df488@linaro.org>
+In-Reply-To: <4faa5d37-ddf8-4edd-bb0e-a192d16df488@linaro.org>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 24 Oct 2023 13:20:37 -0300
+Message-ID: <CAOMZO5AOfVAcap74kBH8qbf53LKWXN60ML32t1nBG8OOoUPkjQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add support for mt25qu01g
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Michael Walle <michael@walle.cc>, pratyush@kernel.org, miquel.raynal@bootlin.com, 
+	richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
+	Fabio Estevam <festevam@denx.de>, tkuw584924@gmail.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231024_091648_444697_190290E2 
-X-CRM114-Status: GOOD (  24.40  )
+X-CRM114-CacheID: sfid-20231024_092054_150486_07A01832 
+X-CRM114-Status: UNSURE (   6.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,117 +88,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 09, 2023 at 04:04:14PM -0600, Simon Glass wrote:
-> Add two compatible for binman entries, as a starting point for the
-> schema.
-> 
-> Note that, after discussion on v2, we decided to keep the existing
-> meaning of label so as not to require changes to existing userspace
-> software when moving to use binman nodes to specify the firmware
-> layout.
-> 
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
-> 
-> Changes in v4:
-> - Correct selection of multiple compatible strings
-> 
-> Changes in v3:
-> - Drop fixed-partitions from the example
-> - Use compatible instead of label
-> 
-> Changes in v2:
-> - Use plain partition@xxx for the node name
-> 
->  .../mtd/partitions/binman-partition.yaml      | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-> new file mode 100644
-> index 000000000000..35a320359ec1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-> @@ -0,0 +1,49 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Google LLC
-> +
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/binman-partition.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binman partition
-> +
-> +maintainers:
-> +  - Simon Glass <sjg@chromium.org>
-> +
-> +select: false
-
-So this schema is never used. 'select: false' is only useful if 
-something else if referencing the schema.
-
-> +
-> +description: |
-> +  This corresponds to a binman 'entry'. It is a single partition which holds
-> +  data of a defined type.
-> +
-> +allOf:
-> +  - $ref: /schemas/mtd/partitions/partition.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: binman,entry     # generic binman entry
-
-'binman' is not a vendor. You could add it if you think that's useful. 
-Probably not with only 1 case...
-
-> +      - items:
-> +          - const: u-boot       # u-boot.bin from U-Boot project
-> +          - const: atf-bl31     # bl31.bin or bl31.elf from TF-A project
-
-Probably should use the new 'tfa' rather than old 'atf'. Is this the 
-only binary for TFA? The naming seems inconsistent in that every image 
-goes in (or can go in) a bl?? section. Why does TFA have it but u-boot 
-doesn't? Perhaps BL?? is orthogonal to defining what is in each 
-partition. Perhaps someone more familar with all this than I am can 
-comment.
-
-Once you actually test this, you'll find you are specifying:
-
-compatible = "u-boot", "atf-bl31";
-
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    partitions {
-> +        compatible = "binman";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        partition@100000 {
-> +            compatible = "u-boot";
-> +            reg = <0x100000 0xf00000>;
-> +        };
-> +
-> +        partition@200000 {
-> +            compatible = "atf-bl31";
-> +            reg = <0x200000 0x100000>;
-> +        };
-> +    };
-> -- 
-> 2.42.0.609.gbb76f46606-goog
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBPY3QgMjQsIDIwMjMgYXQgMTI6NTPigK9QTSBUdWRvciBBbWJhcnVzIDx0dWRvci5h
+bWJhcnVzQGxpbmFyby5vcmc+IHdyb3RlOgoKPiBkcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYywg
+c2VhcmNoIGZvciBuX2RpY2UuIHNwaV9ub3JfcGFyc2Vfc2Njcl9tYygpCgpPbiBteSB0ZXN0cywg
+c3BpX25vcl9wYXJzZV9zY2NyX21jKCkgbmV2ZXIgZ2V0cyBjYWxsZWQuCgpJbiB0aGUgJ3N3aXRj
+aCAoU0ZEUF9QQVJBTV9IRUFERVJfSUQocGFyYW1faGVhZGVyKSknIHRoZSBmb2xsb3dpbmcKY2Fz
+ZSBpcyByZWFjaGVkLgoKY2FzZSBTRkRQXzRCQUlUX0lEOgplcnIgPSBzcGlfbm9yX3BhcnNlXzRi
+YWl0KG5vciwgcGFyYW1faGVhZGVyKTsKYnJlYWs7CgpzbyBzcGlfbm9yX3BhcnNlX3NjY3JfbWMo
+KSBkb2VzIG5vdCBydW4uCgpXaGF0IHNob3VsZCBiZSBkb25lIHRvIGdldCBzcGlfbm9yX3BhcnNl
+X3NjY3JfbWMoKSBjYWxsZWQ/CgpUaGFua3MKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
