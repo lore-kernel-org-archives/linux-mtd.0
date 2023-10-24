@@ -4,76 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 844EAC00A8F
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Oct 2023 13:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC447C00A8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Oct 2023 13:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Axk0399Z1bZZSW7MA80FWeR8alUH/hVbKr81qQDAQfI=; b=ELkOovIFaUV1ty
-	VyPeLErBTmN+yS0/9eI4qp/jUqhCV5CJaM0MvK+Kp/4YLH3+ADU5WQ2lHUlRjYlp2xbyem9CboTTH
-	fltKjNXNpKrYit+p0P1s7XYuC2iQi9gcnOJ1d6q2Ld0AJvSktasAsOvvogQ2K/shImFekw4s4+PTO
-	cubFGFY8FOIkNjZAC/w7usDm10WfdIdH10GG+usa81ENbOsBP9LWy/9LlxYaMgWUfpMH/i+jVVSv6
-	M4W7L8g/odKTslZCTrZkSx+eKZN3RS2mvcGbp6uJaFREOYn3fH7izSuN6SyKxuIuTIEVGOPHCrUtb
-	gKn9Hg8EcUuQepfUu7BA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mQgMwiCVg9hYFwfT39rxexbpTXhRPhcp/tuflWiuG/Y=; b=0I70l9LM4tEWj9
+	0+0ReEIepTjse2IF4MWgXYmSb0LphaWzmIpwXHq0fZgx/Zj6LEzQd+2TEoNg9ueoHqfJLP08mt1VP
+	zm/blPvQJo5iwczif/hx7zs272oSYNtyqHc9qdniW0O0+FmWkbxNc0N9K7m8erdyG6ZJJnhGGGyhK
+	NnfuSBKOVy+drzOCwnOfY2UtndvPxyLESOYaF5Un6zA2tNSf95archSKehGHno0tBIidzxh7gR6U8
+	Z0ko9/XxrvTSMmnRlhbA6/z9aRjMmHn8NyR6cS1IQAESrs6TCEpZ5tj3z+wjQ+jRc6j9HHkhgWRt1
+	dJB5SgPYq7zyTvi7K2YQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvHuJ-00A3GV-1S;
-	Tue, 24 Oct 2023 13:57:19 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1qvHvi-00A3Ws-19;
+	Tue, 24 Oct 2023 13:58:46 +0000
+Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvHuH-00A3Fc-1c
+	id 1qvHve-00A3VN-2t
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Oct 2023 13:57:18 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bcdfcde944so1074553b3a.1
-        for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2023 06:57:16 -0700 (PDT)
+	Tue, 24 Oct 2023 13:58:45 +0000
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6bcdfcde944so1074903b3a.1
+        for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2023 06:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698155836; x=1698760636; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UzCyhOIKDXe0/b6oeJdHaO+qjcTlpDN6XzOpBnH1lGc=;
-        b=ghabbct4NSQFJFZSfDSvawokvuEXYxKfcRsvbOPFkqZm11MSRPgcPaFB9qg5HHSl8g
-         X2yWCiOB3liejAhIL/EWWwZkrtR5xv22DvTs53T/92PgzCdnutf3o5A1jM/sRICsNDf6
-         vGITtrgGM3ZMBR8M/s39QfqPjRuoSubaOvEApXPboKENakLjtCRzQmyCpGXGnxqK2T20
-         5MGAjpPgMa8FM9U9JFOf+Mx+6C02xmvUpvCP3giJXTPTeCZevw7gFxgiH0snC7/4Z6qZ
-         CNCMkGpZ3kQeeO/9sAhif4CE+YKBfPJV05LJe9P9gXf+R1N/TCccTCo65Mxy/fc+AgyJ
-         9Xow==
+        d=gmail.com; s=20230601; t=1698155921; x=1698760721; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=K5dsx7BQZN18RlvTf4X3QrSDwPEBhSHCc1U95Z0Gous=;
+        b=dM8JfccqkrePOuRHMn14NPNPByzqaTfIRMA9zGzAuHvjoWG6iSrXC/QWO98IgsNhzx
+         ng74OrFQ9B3gqhBz79lrFyyJWLoI34FsZuAa7WaYywSeQtBneW8+zxJXHyaIIvZlLziv
+         /Op8Luh2Xfw+LuKit5TVTt6b+MGENhMQ7Krw6omwAD/AsGLRTPobqc52ANbNXK99bIEZ
+         VdvXQdoi9u5Kdxcj5SarpW+1oHG1dxI9U0Qez7bLDJfEiHRw2Vu0cUOJpQZ9wAmWVkT5
+         8b6gdNbrYY4kV6B5JIYpq0HiOQ1899+ogo1yUwAI1O6MRvzsc1NM5mFNqKdrVQDAaS7/
+         Z1eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698155836; x=1698760636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UzCyhOIKDXe0/b6oeJdHaO+qjcTlpDN6XzOpBnH1lGc=;
-        b=Y8wlTfzq9JMn2FnMPAlAQZXU4oL53KZNBjwLQMOQrFqcMk4BviPUyk4vRkZW8jWv+P
-         1ehtlFdQlerpe1TgURY0e5mJDC8lKQ0HoOP90SfsVSAcYUEFihZpW71r9qecT1Tgehpt
-         wtuKigP2RozhUN31HFSuRqJ5jyTgCgROTRra9OeVeSaaK03HU0+jOhgEnJ7Ch4qhxG7g
-         ibLoUw4E0IJf5xG81RyoFPz3QLgMHFbJ8k7Ow/gvU1M/kWq9LxxMV+eISxXr92GtATky
-         e3cVvRi2s4Gz4GcqmoPfn5z0DUjiHD4O/66tjjd6ssLsibl2kZUXsFTFtRG1xXBw1v/E
-         +KqQ==
-X-Gm-Message-State: AOJu0YxeZjSUQj+jbQA7omcolF9n4kTNYt/WyvkCqJz3woMWg4wivMmu
-	joJihdEwcnFBELgQawqi01MNv46hIwiyTdOYlRs=
-X-Google-Smtp-Source: AGHT+IFWrE5MMoCx8goBf0CxfLQ8mzDUd1Z+/OmQDua/oopquA3i2yNiJXGKe5e0G7xZ8YuyCLMneSeQ7yTsr8WS474=
-X-Received: by 2002:a05:6a00:212a:b0:6b5:523e:9e9 with SMTP id
- n10-20020a056a00212a00b006b5523e09e9mr11884914pfj.3.1698155835904; Tue, 24
- Oct 2023 06:57:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231023213800.2599704-1-festevam@gmail.com> <eb48c493-f585-4acf-83cd-e2466e1a4d40@linaro.org>
-In-Reply-To: <eb48c493-f585-4acf-83cd-e2466e1a4d40@linaro.org>
+        d=1e100.net; s=20230601; t=1698155921; x=1698760721;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K5dsx7BQZN18RlvTf4X3QrSDwPEBhSHCc1U95Z0Gous=;
+        b=Wq3N6b6TgEwl+uv8ZMRhevdbcTQE42gE1hDIL5sMk1BfCHQHofT+jzdrRIfKBqW0DL
+         2tf4wZgygOEObl3iwLqJAL3+TV1FIWLP91se5eFyxgLI4y8lkG1/deFlmypCqW0tHG8B
+         kR8lS5pIkKi0A9VHTq58af1adGnAJspxBIbLTMKhpJDeoz6OGfUJEdcsaYhN7D7TiJhZ
+         eguRS+q05SmVQcErgnghUDHHppn5L2ob3jdiAqvCUo+x/R2onPfrRMn68H/vNEx5DYbw
+         InbToumzzjNSuWmQRo3EX8TSzqF1rbi6/Fdv7MvxpOnC2NBTsPKbAFCKot2ik2pbEjWK
+         zQvQ==
+X-Gm-Message-State: AOJu0YyKf36P5eGBQhiszQ7E9fDoCArSK/ea3bNerYWG1E9I6BvA6qM9
+	R0dKibHhHjxVxBPiFUwRVhI=
+X-Google-Smtp-Source: AGHT+IHL4SAtbZdxCl4HtbIiGqczk0FpJuem/kXlcpf6SsOLjQ+HM/ISjFH80ObWjuCAuytygMkajw==
+X-Received: by 2002:a05:6a21:33a4:b0:163:c167:964a with SMTP id yy36-20020a056a2133a400b00163c167964amr15777806pzb.1.1698155921401;
+        Tue, 24 Oct 2023 06:58:41 -0700 (PDT)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:ff6c:45f7:d802:5f5c])
+        by smtp.gmail.com with ESMTPSA id fa36-20020a056a002d2400b00690d1269691sm7673686pfb.22.2023.10.24.06.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 06:58:40 -0700 (PDT)
 From: Fabio Estevam <festevam@gmail.com>
-Date: Tue, 24 Oct 2023 10:57:03 -0300
-Message-ID: <CAOMZO5Cy2BGoMVpPzeAAJ8j-QN-fEDmShZE+bbsSqon1Xf6DvA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add support for mt25qu01g
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: michael@walle.cc, pratyush@kernel.org, miquel.raynal@bootlin.com, 
-	richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
+To: michael@walle.cc
+Cc: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	tkuw584924@gmail.com,
 	Fabio Estevam <festevam@denx.de>
+Subject: [PATCH v2] mtd: spi-nor: micron-st: Add support for mt25qu01g
+Date: Tue, 24 Oct 2023 10:58:26 -0300
+Message-Id: <20231024135826.2729088-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231024_065717_542202_65040044 
-X-CRM114-Status: UNSURE (   9.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231024_065842_934457_0D8BE453 
+X-CRM114-Status: GOOD (  10.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,16 +90,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgpPbiBUdWUsIE9jdCAyNCwgMjAyMyBhdCAzOjAx4oCvQU0gVHVkb3IgQW1iYXJ1
-cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiB3cm90ZToKCj4gSSBzZWUgdGhpcyBpcyBhIGR1
-YWwgZGllIGRldmljZS4gRG8gYm90aCBkaWVzIHdvcmsgY29ycmVjdGx5IHdpdGggdGhlCj4gY3Vy
-cmVudCBzb2Z0d2FyZT8KCkkgYW0gcnVubmluZyBsaW51eC1uZXh0ICAyMDIzMTAyMy4gSXMgdGhl
-cmUgYSB3YXkgdG8gZXhlcmNpc2UgYm90aApkaWVzIHRvIGNvbmZpcm0/CgpUaGFua3MKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Fabio Estevam <festevam@denx.de>
+
+Add support for the MT25QU01G 128MB Micron Serial NOR Flash Memory
+model.
+
+Datasheet:
+https://www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-b/mt25q_qlkt_u_01g_bbb_0.pdf
+
+Tested on a i.MX8MP based board:
+
+ # dmesg | grep spi-nor
+spi-nor spi0.0: mt25qu01g (131072 Kbytes)
+
+ # cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 08000000 00001000 "30bb0000.spi"
+
+~# cat /sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/jedec_id
+20bb21104400
+
+~# cat /sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/manufacturer
+st
+
+~# cat /sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/partname
+mt25qu01g
+
+~# xxd -p  /sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
+53464450060101ff00060110300000ff84000102800000ffffffffffffff
+ffffffffffffffffffffffffffffffffffffe520fbffffffff3f29eb276b
+273b27bbffffffffffff27bbffff29eb0c2010d80f520000244a99008b8e
+03e1ac0127387a757a75fbbdd55c4a0f82ff81bd3d36ffffffffffffffff
+ffffffffffffffffffe7ffff21dcffff
+
+~# md5sum  /sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
+9d28d1b11de8b15ba9152644219d9a78 /sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
+
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+---
+Changes since v1:
+- Removed .size field. (Michael)
+- Removed .no_sfdp_flags field (Michael)
+- Shared sfdp dump. (Michael)
+- Still kept NO_CHIP_ERASE, otherwise flash_erase returns immediately
+and don't erase the flash.
+
+ drivers/mtd/spi-nor/micron-st.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 8920547c12bf..8d4d3f6f9390 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -429,6 +429,11 @@ static const struct flash_info st_nor_parts[] = {
+ 			 SPI_NOR_BP3_SR_BIT6,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
+ 		.mfr_flags = USE_FSR,
++	}, {
++		.id = SNOR_ID(0x20, 0xbb, 0x21, 0x10, 0x44, 0x00),
++		.name = "mt25qu01g",
++		.flags = NO_CHIP_ERASE,
++		.mfr_flags = USE_FSR,
+ 	}, {
+ 		.id = SNOR_ID(0x20, 0xbb, 0x21),
+ 		.name = "n25q00a",
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
