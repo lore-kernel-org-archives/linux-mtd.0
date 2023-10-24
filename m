@@ -4,81 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70AB1C07545
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Oct 2023 06:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1716EC00A8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Oct 2023 07:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eeMCMqiiIKLIcSXcxTRIiYKhxzPOxxcGgfnGw14mNV0=; b=hzQQZ8aUbiAu/o
-	fUmgxa0CgbUv5pMtf4jt+856tQ39zeQelSP4l+6Rij2JJqoWkr2n7dPngxpcZDishEPWsV93AJiWY
-	KMeqlSIjUYl00bH9vrZ9m4XMQji6k4PtJGnloWw6AD4v48NF1dwkcWT7Psz938TE6uXPhSiNFiKj7
-	+1eWHlGxORrPDVN1sDsbl7K4OP1BTzHmqQ8APxUGz5ZA9Gy85phUDVg1Ee9pHYnhbQELIhiDsSHiW
-	NQmhu2cl9Io1wgEJjsL0SFTYSqlv5ZPCViqeI/g3KvR+ifi59zJJpX74JLgjtbOLtoERn/TWg0J24
-	s2OvvITROd1C69ul+jEw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1EvRyz7So2PG2uGfIG49Czz6LasSBt3HUcys8rNOf/o=; b=hlbWD5jUHkWkhq
+	B1WVP8SEJjgG+ie8KQb5hz+L2LWMJe67fiomcb+5BF2nh771R33z7yeFW69/kUkJQNxU29IkpZPxo
+	oarhw1eo+rTfmSYJB3FehEWow//+u/0kbl1muTOvJSroAShdyNmriJVEocIMTAIiNuP4Bv5q7CdED
+	qWDHWKYe/cP0YlbDAqrLIv4mrhaPacmFcPJhfMaQ9T5PxWlYPF8nxcq7LidI4YVe39wVdf4kiRoI2
+	QWda8fqnGr7LDXBE1dNS1EzHvUhLgjqMdYO4D+uOm+MugrGIlUqr7u1IF7hP6n8+4Bfl+4b+9qLqK
+	3axoCDct1aOAhuyI7iQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvAUD-008wGi-0b;
-	Tue, 24 Oct 2023 06:01:53 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1qvC4h-0096ct-2z;
+	Tue, 24 Oct 2023 07:43:39 +0000
+Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvAU9-008wFQ-1d
+	id 1qvC4f-0096cF-0B
 	for linux-mtd@lists.infradead.org;
-	Tue, 24 Oct 2023 06:01:51 +0000
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9c2a0725825so600748966b.2
-        for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2023 23:01:47 -0700 (PDT)
+	Tue, 24 Oct 2023 07:43:38 +0000
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-564b6276941so3279981a12.3
+        for <linux-mtd@lists.infradead.org>; Tue, 24 Oct 2023 00:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698127306; x=1698732106; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xoaMNj/aKsBMokn9N8BEd5LlZSQdlahP3q0h2tDpraU=;
-        b=yzxARIFH+Ktbiisov2jlDjnZSQrhUEdjvH17z+cncWDPGkn4BJ0XwX2TvcehwewgRw
-         XYPIhIrJFm9r+AKPDZuwSJLixVNh9KecZbWe4Hbmbf8ggfMt6ZwbADIq+wp83sWX77Er
-         eBnvfI4+R1TyjozVvq3B8rE+gl4/Sn9tl90dt1Xluk0lvyM5/05Spc/lVwI0HDUAvh//
-         6NP35oYWxoyFqGIiWrsyhIlajIbxAZndoX5mYk2uZad0AvrcGnujFxKC1ijZKvbOrVLT
-         CaIVR7VaYj6gwfZBEyp8VaUaTjojN1XJQoM/jFxUK0OhyX7H47eT7++F43NGoae5Fnng
-         xBGg==
+        d=gmail.com; s=20230601; t=1698133415; x=1698738215; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dp4zribyxkaMmeYlAPKMl/TvSUWz72GegqaBX3+CYe8=;
+        b=gLzgNXHnnp5GCdjZQzh188Py+0JyYw+xEW7CEwufIt0HSBazSTN2OBsg+iwSjRgTJ/
+         WMlIabzTJ3aSivCrKv/yvr2pLH1Tv4t389H/y7HBn89gGidaNhLQJIGsO2jMBOUnMP22
+         AQ1hY9YmzHD+Kzi58k+FBR8uXg9gc/0XCuJ4ONIubCz9y8j7dmLeDZGq+k0qBr7xchrm
+         kcpPwuLXWHuaInMVgGRaQVrU3a2KBl1NDpeyaqAqVJzKj978zy+4sGWKqP+zzxzeHeSY
+         KVBZGnv6Vx9oyzCUSsgQv0mIABgsS9J4NfEbdVPdcTxZl7GvbPYZNg2Z//2eiIFmDEu9
+         gxGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698127306; x=1698732106;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xoaMNj/aKsBMokn9N8BEd5LlZSQdlahP3q0h2tDpraU=;
-        b=IsFZSCrZH1p8UgSbcd9vYRZothkGGn7K0rlEJMp8Bg9K216H6FVbOyKkvwYonOP5zM
-         owv68KrdYIgwnA61NKOMqOEHNj+/dv6Tv7Yb4qPQg/8/eBOCrPBISp7+3nuqXI44YBwA
-         Zo1bHMBYuOxXNmEkL++ujAOXi64dglk/BmHzdBnIB7VFxUGUQj2+eo78w3h/Zu/RaKmP
-         ZC1ob+ZY+u+iQ38klrwkXdXEh9hp0D91NhNSxP9YU4h1OxzfOeHPmU2U2+JYKxGGrET3
-         pdROCHqYLwIRHCnmTrF1mRg61N7hoZlGa+DG9VnG8uxMKhGVrmGcpR6rn27NHRkasCmx
-         +f/g==
-X-Gm-Message-State: AOJu0YxS0yeIKlD7jq8wlGHmzEyAoj/DzMtP89afZwbcnXx5rLA2Ih6P
-	syuC6E66jtxyQOyo0d3M95jsWw==
-X-Google-Smtp-Source: AGHT+IHAsOQgflKaoP2v7XXbQ37O5Lus4k0e3RL7+CR2u0QgIkFvHpTXXnrXnqfbpoGlc4IQm0vcog==
-X-Received: by 2002:a17:907:841:b0:9c5:158e:f61e with SMTP id ww1-20020a170907084100b009c5158ef61emr8871213ejb.34.1698127306503;
-        Mon, 23 Oct 2023 23:01:46 -0700 (PDT)
-Received: from [192.168.2.173] ([79.115.63.76])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170906218a00b009c0c511bd62sm7627056eju.197.2023.10.23.23.01.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 23:01:46 -0700 (PDT)
-Message-ID: <eb48c493-f585-4acf-83cd-e2466e1a4d40@linaro.org>
-Date: Tue, 24 Oct 2023 09:01:43 +0300
+        d=1e100.net; s=20230601; t=1698133415; x=1698738215;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Dp4zribyxkaMmeYlAPKMl/TvSUWz72GegqaBX3+CYe8=;
+        b=YtuDTSezQ5ZC9h5xHfm5aEeenjkPLULNcETmwUxMA5Un3iVV9o+6GQNwTR398teEcf
+         P9LwzUUyOZ+wbFdMGzJFhCTZdFmUVCznwuA1C0ZDPsJbBcAqWseJddrO+hjdzcf3tRav
+         7gNZVh/P5w6JckXXuF8LtP0h2SfMny95amTwojK3droH8WUpmVYmGimlWeGkB8fz3u6i
+         +Q2aD+rnxFd7dAir3vqgnANn0wIT+GT/Cady5UkQhKPgRBwMV9eEbquSjhNVPUlJF4hh
+         e2lskg03sYsd3ewjf/CCg1N8uxgVbwR3Yv59HYcuSMo1w/j7LYkcGChcNQyHdZvVuvQZ
+         nAWA==
+X-Gm-Message-State: AOJu0YyW85hafLFRJ0SzZr9GVXXMNM4JhI5Kp4+ahyE5wCOMYEEDqdgo
+	dgJje+ch+hUHFRHF0A4v6vk=
+X-Google-Smtp-Source: AGHT+IETmKMrh83Ma+B4CDqx2Id4sNL93hgxEC8dc2nBxKXN1JyKY8pu9/MBw5gAqcQqL+K9MBY2tw==
+X-Received: by 2002:a17:902:c411:b0:1cb:e412:c3fd with SMTP id k17-20020a170902c41100b001cbe412c3fdmr1692265plk.63.1698133415155;
+        Tue, 24 Oct 2023 00:43:35 -0700 (PDT)
+Received: from localhost (220-135-95-34.hinet-ip.hinet.net. [220.135.95.34])
+        by smtp.gmail.com with ESMTPSA id h7-20020a170902f7c700b001b8a3e2c241sm7032169plw.14.2023.10.24.00.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 00:43:34 -0700 (PDT)
+From: AceLan Kao <acelan.kao@canonical.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: Improve reporting for software reset failures
+Date: Tue, 24 Oct 2023 15:43:32 +0800
+Message-Id: <20231024074332.462741-1-acelan.kao@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add support for mt25qu01g
-Content-Language: en-US
-To: Fabio Estevam <festevam@gmail.com>, michael@walle.cc
-Cc: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- Fabio Estevam <festevam@denx.de>
-References: <20231023213800.2599704-1-festevam@gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20231023213800.2599704-1-festevam@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231023_230149_553587_FF66BB82 
-X-CRM114-Status: UNSURE (   7.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231024_004337_113586_96D89A03 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,25 +94,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 
+When the software reset command isn't supported, we now report it as an
+informational message(dev_info) instead of a warning(dev_warn). 
+This adjustment helps avoid unnecessary alarm and confusion regarding
+software reset capabilities.
 
-On 24.10.2023 00:38, Fabio Estevam wrote:
-> From: Fabio Estevam <festevam@denx.de>
-> 
-> Add support for the MT25QU01G 128MB Micron Serial NOR Flash Memory
-> model.
->     
-> Datasheet:
-> https://www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-b/mt25q_qlkt_u_01g_bbb_0.pdf
-> 
+v2. only lower the priority for the not supported failure
 
-Hi, Fabio,
+Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+---
+ drivers/mtd/spi-nor/core.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-I see this is a dual die device. Do both dies work correctly with the
-current software?
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 1b0c6770c14e..76920dbc568b 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3252,7 +3252,10 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 
+ 	ret = spi_mem_exec_op(nor->spimem, &op);
+ 	if (ret) {
+-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
++		if (ret == -ENOTSUPP)
++			dev_info(nor->dev, "Software reset enable command doesn't support: %d\n", ret);
++		else
++			dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+ 		return;
+ 	}
+ 
+@@ -3262,7 +3265,10 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+ 
+ 	ret = spi_mem_exec_op(nor->spimem, &op);
+ 	if (ret) {
+-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
++		if (ret == -ENOTSUPP)
++			dev_info(nor->dev, "Software reset command doesn't support: %d\n", ret);
++		else
++			dev_warn(nor->dev, "Software reset failed: %d\n", ret);
+ 		return;
+ 	}
+ 
+-- 
+2.34.1
 
-Cheers,
-ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
