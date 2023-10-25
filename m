@@ -4,66 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E9A4C0032E
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 12:33:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 053CFC25B6F
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 14:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UwnQgFMUIxn5Tsae6BeZdFhdEw0VPky+Zzg83f0SaEU=; b=vRkKn5lML0sFtq
-	iHp+R/Cm8ClVszrU0yx393cx3BWPcT7UeXYy24SOEmeQC8kkRvYBfZ7NMamUniWvdJSTxdzynu7Kv
-	NyV1y5PIkRwiWux3i018zGuogiyIsNLf2DmSrFxFaQ66aR6IKNNlnDhTFZbAfaPGRnoE1fj3cSzdl
-	IojdFutZXpMI+PdxJpSTHkM1hkrh62lfrjyClexh2Pa3e8CDWtQLB1YfVLulIT3YHY/5S4ttq4koF
-	htKdaz40LeyORUUvmDlL08SQb3yFip8FH/fuJKFxM9Cb4vLRQG3Yl1zPupKGVzNB0Rpy4qVESZfuu
-	2B/jIfJDv6QA26dusONw==;
+	List-Owner; bh=7To09MrRdOUkaoK2G3Ed6v9iyo6UbYyKTQBDdMf4dFM=; b=r+1UvKhZ6tajhY
+	p9q+c4+my+nUG6T4E/Bd3Il/G82Fl6tsVP5xWjpbTe/kyTusxW8LCtHZXEvG+zPiSfu6qHyR4ncXU
+	Vn2l8nW8WGArj75tQqsZ7mM/GbregWX/Oyz1Z/mZOOttxDM46Yk57C3n5DjvGMjnIG5TbesNb2s2L
+	EsuFIj68vBB8VdTBz/QCLgRWmUoFONm5nDlyZVlhVQ3c9VvY6r5wSuw8Q5L7kPnmiYBKrLWHBwc4Y
+	k6aTQDIG9TyVKS68FVqvhCNCRzqigtnOdrHqJIrPurMNdk9BtC/r0m4GoqRJwLYU7yujn64trT2Ta
+	Ez1XE/xok9/V7kSt935w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvd4O-00CJhF-1m;
-	Wed, 25 Oct 2023 12:33:08 +0000
-Received: from mail-oi1-f178.google.com ([209.85.167.178])
+	id 1qvfGZ-00CZ4U-0h;
+	Wed, 25 Oct 2023 14:53:51 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvd4L-00CJgr-0R
+	id 1qvfGV-00CZ1x-0O
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Oct 2023 12:33:06 +0000
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3b2e72fe47fso3736590b6e.1
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Oct 2023 05:33:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698237184; x=1698841984;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8CPemYXBUDg57/WVb4vOz03sRB1TRQWESGKykqWrHzg=;
-        b=HD3AuM/USDPigEKnjyXPHRrK1aSvn38+ZXa7XUpMgMCDIJaSrOGwYgu9Sjl11etnxA
-         XBE3KhLXKPRTca5iykbsODKSurh6LhnMla3xEzlFmIeALryKfqwXiws4ppJqWqpCXufU
-         GiJJpZiA8KuT+kdr5E0pgPbcsqM+RLV5zD1PCvavSStUZC1v9GmTH1wTIwIEhLzJ5GaN
-         SM7C+VNYyJYhVCPlE/KdnsegT5PVDCBowXq/gGk/L9fDkho3qN4Ip5RjXcgbjtuKiQZt
-         sqBO/j3deRly3MXYkbgAuMZSWzw9zpCSjlsnxwpmPZmR605kMSrFBKRiNuuhqOSqAJNR
-         biLA==
-X-Gm-Message-State: AOJu0YznhxQPmo/Qg8GWcFGoXlwb8UZUxFInK6tgtewLpdivktWCDX94
-	wHokzsT/LThjif+c884mKw==
-X-Google-Smtp-Source: AGHT+IGFRmvPp4komL3PmPB+n4EaJxfBNyiGvm6AYFq8mhHjHNqEKyiOmK8UKYdLkHWzvM0ogmXGug==
-X-Received: by 2002:a54:4581:0:b0:3a8:ccf0:103f with SMTP id z1-20020a544581000000b003a8ccf0103fmr16717681oib.3.1698237184122;
-        Wed, 25 Oct 2023 05:33:04 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id n12-20020aca240c000000b003afe584ed4fsm2356547oic.42.2023.10.25.05.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 05:33:03 -0700 (PDT)
-Received: (nullmailer pid 3559498 invoked by uid 1000);
-	Wed, 25 Oct 2023 12:33:02 -0000
+	Wed, 25 Oct 2023 14:53:49 +0000
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 0253F100048;
+	Wed, 25 Oct 2023 17:53:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0253F100048
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1698245617;
+	bh=AKaXrVnp5wObDD8weP6QzDDT60hIJPj/Pzxc3A40cz8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=Qm8uRIch39gETLUoMno1qEfgwedy3+8mk3kU5F4msvXFeOpYwHtMFY9Ot4JIO0h5O
+	 RN5val+8Az8zAGmAXgIuLlV8sb5reovLSeRDHDpwxOxvqOGgkGzpIIqqYFBeHzkqn3
+	 DHP+m6cNuirFUF87ymPQeHBLers7sZxE3opDCSS3dpfjp17R5cfTdq3hJ4XyTO2SHb
+	 GsE/WLgoILy9LlLNaUKhZ8YJ+iXI1ZOIhyBvDUozULMOv6DLmYY/jXqSkVGJolVUqY
+	 1ZGKnfTL3QGJJJGkBtb/DVW4dgPl+eEv21YyosRCMliKvEyDOtOutzEMEs8NMk5/EO
+	 Z37rWMTm5jYAg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 25 Oct 2023 17:53:36 +0300 (MSK)
+Received: from [192.168.1.146] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 25 Oct 2023 17:53:36 +0300
+Message-ID: <06a5aebc-b90d-4c0b-b496-921e14452f9d@salutedevices.com>
+Date: Wed, 25 Oct 2023 17:53:35 +0300
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Edward Chow <equu@openmail.cc>
-Cc: linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20231025052937.830813-1-equu@openmail.cc>
-References: <20231025052937.830813-1-equu@openmail.cc>
-Message-Id: <169823714202.3554834.10341623302238023195.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: mtd-partitions: Export special values
-Date: Wed, 25 Oct 2023 07:33:02 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] jffs2: make cleanmarker support option
+To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+CC: Christian Brauner <brauner@kernel.org>, Dave Chinner
+	<dchinner@redhat.com>, Yu Zhe <yuzhe@nfschina.com>, linux-kernel
+	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+	<kernel@sberdevices.ru>
+References: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
+ <20231019073838.17586-3-mmkurbanov@salutedevices.com>
+ <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
+ <3951ac21-a0a4-47b5-be94-edb0140c69a5@salutedevices.com>
+ <cb1456a3fa874772a531c4885f0d204041ecf5bf.camel@infradead.org>
+Content-Language: en-US
+From: Martin Kurbanov <mmkurbanov@salutedevices.com>
+In-Reply-To: <cb1456a3fa874772a531c4885f0d204041ecf5bf.camel@infradead.org>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180891 [Oct 25 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/25 13:08:00 #22292805
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231025_053305_173164_6AD268BE 
-X-CRM114-Status: GOOD (  21.85  )
+X-CRM114-CacheID: sfid-20231025_075347_848646_08A79F68 
+X-CRM114-Status: GOOD (  22.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,79 +101,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Wed, 25 Oct 2023 13:29:37 +0800, Edward Chow wrote:
-> There are special "offset" and "size" values defined and documented in
-> linux/mtd/partitions.h:
-> 
-> // consume as much as possible, leaving size after the end of partition.
-> 
-> // the partition will start at the next erase block.
-> 
-> // the partition will start where the previous one ended.
-> 
-> (Though not explicitly, they are compared against variables in uint64_t
-> in drivers/mtd/mtdpart.c, so they had better be considered as such.)
-> 
-> // the partition will extend to the end of the master MTD device.
-> 
-> These special values could be used to define partitions automatically
-> fitting to the size of the master MTD device at runtime.
-> 
-> However, these values used not to be exported to dt-bindings, thus
-> seldom used before, since they might have been only used in numeric form,
-> such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
-> 
-> Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
-> values, so 2-cell addressed should be defined to use special offset values,
-> such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
-> linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
-> 
-> Signed-off-by: Edward Chow <equu@openmail.cc>
-> ---
->  .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
->  MAINTAINERS                                   |  2 ++
->  include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
->  3 files changed, 46 insertions(+)
->  create mode 100644 include/dt-bindings/mtd/partitions.h
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.example.dts:225.24-25 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231025052937.830813-1-equu@openmail.cc
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRGF2aWQsIFRoYW5rIHlvdSBmb3IgcmVwbHkuCgpPbiAyMy4xMC4yMDIzIDIwOjU1LCBEYXZp
+ZCBXb29kaG91c2Ugd3JvdGU6Cj4gT24gTW9uLCAyMDIzLTEwLTIzIGF0IDE3OjU0ICswMzAwLCBN
+YXJ0aW4gS3VyYmFub3Ygd3JvdGU6Cj4+IEhlbGxvIFJpY2hhcmQsCj4+Cj4+IE9uIDE5LjEwLjIw
+MjMgMTE6MTIsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4+PiBUaGlzIHBhdGNoIHN1cHBv
+cnQgZm9yIGRpc2FibGUgY2xlYW5tYXJrZXIgb3B0aW9uLiBUaGlzIGlzIHVzZWZ1bCBvbgo+Pj4+
+IHNvbWUgTkFORCBkZXZpY2VzIHdoaWNoIGVudGlyZSBPT0IgYXJlYSBpcyBwcm90ZWN0ZWQgYnkg
+RUNDLiBQcm9ibGVtCj4+Pj4gZmlyZXMgd2hlbiBKRkZTMiBkcml2ZXIgd3JpdGVzIGNsZWFubWFy
+a2VyIHRvIHNvbWUgcGFnZSBhbmQgbGF0ZXIgaXQKPj4+PiB0cmllcyB0byB3cml0ZSB0byB0aGlz
+IHBhZ2UgLSB3cml0ZSB3aWxsIGJlIGRvbmUgc3VjY2Vzc2Z1bGx5LCBidXQgYWZ0ZXIKPj4+PiB0
+aGF0IHN1Y2ggcGFnZSBiZWNvbWVzIHVucmVhZGFibGUgZHVlIHRvIGludmFsaWQgRUNDIGNvZGVz
+LiBUaGlzIG9jY3Vycwo+Pj4+IGJlY2F1c2UgdGhlIHNlY29uZCB3cml0ZSBuZWNlc3NpdGF0ZXMg
+YW4gdXBkYXRlIHRvIEVDQywgYnV0IGl0IGlzCj4+Pj4gaW1wb3NzaWJsZSB0byBkbyBpdCBjb3Jy
+ZWN0bHkgd2l0aG91dCBibG9jayBlcmFzZS4KPj4+IEhtbSwgSSBtaXNzIGFuIGV4cGxhbmF0aW9u
+IHdoeSB0aGlzIGNoYW5nZSBpcyBjb3JyZWN0IGFuZCBzYWZlLgo+Pj4gWW91IGV4cGxhaW4gd2h5
+IHRoZSBPT0IgYXJlYSBjYW4ndCBiZSB1c2VkLCBva2F5LiBCdXQgeW91IG5lZWQgdG8KPj4+IGFk
+ZCBtb3JlIGRldGFpbHMgb24gd2h5IHlvdSBjaGFuZ2UgaXMgc2FmZSBpbiB0ZXJtcyBvZiBmaWxl
+c3lzdGVtCj4+PiBjb25zaXN0ZW5jeS4KPj4gwqAKPj4gSWYgeW91IGRpc2FibGUgdGhlIGNsZWFu
+bWFya2VyLCB0aGUgZm91bmQgY2xlYW4gYmxvY2sgKGZpbGxlZCB3aXRoIDB4ZmYpCj4+IHdpbGwg
+YmUgZXJhc2VkIGFnYWluIChzZWUgZnMvamZmczIvc2Nhbi5jI0wxNjIpLgo+PiBJbiBteSBvcGlu
+aW9uLCBpdCBpcyBiZXR0ZXIgdG8gcGVyZm9ybSB0aGUgYmxvY2sgZXJhc3VyZSBhZ2FpbiB0aGFu
+IHRvCj4+IG5vdCB3b3JrIHdpdGggc3VjaCBhIG5hbmQgZmxhc2ggYXQgYWxsLgo+IAo+IEVyYXNp
+bmcgYWxsIHVudXNlZCBibG9ja3Mgb3ZlciBhbmQgb3ZlciBhZ2FpbiBvbiBldmVyeSByZWJvb3Qv
+cmVtb3VudAo+IGlzIGdvaW5nIHRvIGRlc3Ryb3kgeW91ciBmbGFzaCBxdWl0ZSBxdWlja2x5LCBz
+dXJlbHk/Cj4gCj4gSSB0aGluayB5b3UgbmVlZCB0byBjb21lIHVwIHdpdGggYSB3YXkgdG8gbG9n
+IHRoZSBjbGVhbiBibG9ja3MgKG9yCj4gZXJhc2UgcmVxdWVzdHMpIGluIHRoZSBKRkZTMiBsb2cg
+aXRzZWxmLgo+IAo+IFBlcmhhcHMgYSAnYmxvY2sgZXJhc2UgbG9nJyBub2RlIHR5cGUsIHdoaWNo
+IGp1c3QgY29udGFpbnMgYSB2ZXJzaW9uIwo+IGFuZCBhIGxpc3Qgb2YgYmxvY2tzIHdoaWNoIGFy
+ZSBjdXJyZW50bHkgYmVpbmcgZXJhc2VkLiBZb3Ugd3JpdGUgaXQgb3V0Cj4gYmVmb3JlIGRvaW5n
+IGFueSBlcmFzZSBvcGVyYXRpb24uIEFuZCB0aGVuIGF0ICpzb21lKiBwb2ludCBhZnRlciB0aGUK
+PiBlcmFzZSBjb21wbGV0ZXMgKGl0IGRvZXNuJ3QgbmVlZCB0byBiZSBpbW1lZGlhdGUpIHlvdSB3
+cml0ZSBvdXQgYSBuZXcKPiBvbmUgKHdoaWNoIG1heSBiZSBlbXB0eSwgb3IgbWF5IGxpc3QgbmV3
+IGJsb2NrcyB3aGljaCBhcmUgYWJvdXQgdG8gYmUKPiBlcmFzZWQpLgo+IAo+IE9uIG1vdW50LCB3
+ZSBqdXN0IG5lZWQgdG8gcmUtZXJhc2UgYW55IGJsb2NrcyB3aGljaCBhcmUgaW5kaWNhdGVkIGFz
+Cj4gYmVpbmcgZXJhc2VkIGluIHRoZSBsYXRlc3QgZXJhc2UgbG9nIG5vZGUuCgpXaGF0IGlmIHdl
+IGRvbid0IGVyYXNlIHRoZSBmcmVlIGJsb2NrcyBkdXJpbmcgbW91bnRpbmcsIGJ1dCBpbnN0ZWFk
+CmVyYXNlIHRoZW0gd2hlbiBhIGNsZWFuIGJsb2NrIGlzIG5lZWRlZCAoYmVmb3JlIHdyaXRpbmcp
+PwoKLS0gCkJlc3QgUmVnYXJkcywKTWFydGluIEt1cmJhbm92CgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
