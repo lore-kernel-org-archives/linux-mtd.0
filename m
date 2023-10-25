@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C40C0032E
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 21:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DF5C0032E
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 21:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FLfZ5tn4MgCDS6aaT2VKVHdzW7EodZzbO+lI1zzDZ2I=; b=bbUhBFHNeNO5jF
-	8RdzIovGhzMcMbs3ZOH00cvzn6SMTgforE/o1jdYoExCUtgLZGmnp+Xwm+OFs/SBbGMFjZMVs14pR
-	49+U4bm+0RGCLuffMkjFucsstTG3MgcV+ePD7uUJ5pndOs/ZiSkm4mHKW/vPaEnvPJ2PCENxy15ZJ
-	w5A+o8I6BaalX+hQ6lOJF3h9mgfvdfR3yDawwbNfmAOj2t9y/0oKCfFtTobbNxsAImvF+u9+7t1+7
-	udETWHwnruNkAosf7iXPozGAxe0KWDdbLTHNIXARJ4Z99WsUqmUl1U2fpJdUBhabllppRbZutXDSy
-	b6yATvsACPJQAgijln5Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=N5h0Q8/eKBQpgwx3CdnucgNdCcuf7z1LfP3qeCKlXto=; b=UbQ5aqM3ArqkJ3
+	Anx72llW8sfEzVgXsf2dxM4hNXR3QOqGWiRmpoOH2BdgJbzTUAmofXYwG24ZNi/moChMQDI1Ymha9
+	jbFusgi9Xz9nySFvE0/4QCdeQIf+ZU3R4uPeIXJyCRmnRo6RRZS8Hgbm1Zg+wjuW/AuluKwgUVydA
+	IK9Ahzbk/RRvKQfuJM5nf2/8t7ll/qETKY098gR0L3+LxsiC42AQABP0Nil7DynS3hO4jzkN/PK73
+	5FJmf9sR0arBHQv2Izb8qao8cUwGJxpWvGFMCgXUYwIaEQ3tTlxNiLzXzBkAeA1cd5+wp+lMBMN5Q
+	S2lrK8UsP8FNPIcjtiwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvl5Y-00D8wT-36;
-	Wed, 25 Oct 2023 21:06:52 +0000
-Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
+	id 1qvl5f-00D8yj-2A;
+	Wed, 25 Oct 2023 21:06:59 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvl5V-00D8w6-1A
+	id 1qvl5c-00D8wh-3D
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Oct 2023 21:06:51 +0000
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1ca215cc713so979145ad.3
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Oct 2023 14:06:48 -0700 (PDT)
+	Wed, 25 Oct 2023 21:06:58 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ca816f868fso1037985ad.1
+        for <linux-mtd@lists.infradead.org>; Wed, 25 Oct 2023 14:06:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698268008; x=1698872808; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WnXMZq3u2P4hkyafsQIarDOhM2i0PYXnQvhdzNae9NQ=;
-        b=bJkLs4Z5Y5v72to+kA8IuNmkyVip4Txn5pR6X77UcnN1A/19R22H6T4ZLGYF7Hn7YK
-         NBLnSvytWPjNy4eujd/HOzdtUK5whZhdo1ARlRkKIUl8IjpIhoYelqnoySt/H1DhVWJ2
-         tqoRBFC+qbec3MSgsGEIhFc8+/6YS4b3oAI9U=
+        d=chromium.org; s=google; t=1698268013; x=1698872813; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pF/ordmyMYgWe1Uu/l3iCAlozeYeU+RXukpZaUtD30Y=;
+        b=jK6e/QEPtaqfX+fdmbQeZV9VKUXf866P5DfyXgkxZPeWn4gHNoN6CfT3cBCoduiWMJ
+         KykluDShgLzFSvpn2vWiq6ezUuhAqegcAKhPy31F7KgB/2C75vg+oEquiLekYhb1W7SW
+         j0/vaYgtN/8L1JMHB87vL2fNE41lNQk/QXFnQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698268008; x=1698872808;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WnXMZq3u2P4hkyafsQIarDOhM2i0PYXnQvhdzNae9NQ=;
-        b=gQQBi02SGZtEVPbRf2pN2HCtqwv+FMFP3rof25N5qoqb3+CpEHzProVAtSYI86pKLx
-         FDsPbhMc4a4oEJxNj6V3V07Jbj/v36js4/I5A+RiSDBtm4/shmdht+SInxEnSSQtd/Eq
-         epYrmy4PQZO+HsYKS8lohIRTpJufddUEXILxWmbZep0FG8xGYEJj4JFNDvSfG/+lni86
-         yY4Sqnq0HMUTROhx1iKOove/zz22KWI1KMX5i2DZ0RAto47y1lJqGsd0EHAWuV/dJjCA
-         px2JSz44x4IvWYthV1WBDyEuf33Ed3KmQCBcGzA+QW1+Tx4IrpxNti5jftSBkLxrBjDB
-         9KhQ==
-X-Gm-Message-State: AOJu0YzPysj7cRlx3VI1XC5SHOtiRf8PNQGsIhvtChy7tv2XmrS16sKF
-	2ysWHG5WPPcQlo+54uvvIDjnSQ==
-X-Google-Smtp-Source: AGHT+IH4aVVDtY2IJieLds6qeSo6hYbAInLL16xsPZo6LgCZwA6yQaSh6ZRcocjYXRXKbHbLy6unzw==
-X-Received: by 2002:a17:902:ce91:b0:1ca:3d53:2867 with SMTP id f17-20020a170902ce9100b001ca3d532867mr15084532plg.15.1698268007804;
-        Wed, 25 Oct 2023 14:06:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698268013; x=1698872813;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pF/ordmyMYgWe1Uu/l3iCAlozeYeU+RXukpZaUtD30Y=;
+        b=m5UW0lnJNpKkYu9NDESGbdHT5qT7B8b7+3/eaFpSRZymN3upg22Gm9JNzOls0SL1WW
+         TNGWgLflUotFw1od7Elzsex+joETboLkGiSGkZs7g7Jwt3edKGjPwZnOrX5+bWi19xsi
+         rhbEr0hFjYQAaphpE6HT4h6Z4/BPiGNjQSeZioVqYqsn64STk4x778/NKdugyWx+vxtG
+         Ak2lAUGiypDa0pq7dr8rHoJZpXJOkVvEHp9ys712kABhAIa6cLB/FYJcWUydLZVSlecQ
+         5JAMl3RGRLxyt2Bs59EpfP4tTCJvnltc7v9N5gZqZ3vMk5CiJA2z6AGr7NO1Djw719k3
+         xlTQ==
+X-Gm-Message-State: AOJu0Yx/K8IhvdBY0p4j/wyPEy0lO+f+FWoQwhSUnmFb7Zn7gMO+5wNN
+	A/jKbEeQClRfZBLMNOdiplOFhQ==
+X-Google-Smtp-Source: AGHT+IEYJE06QosRYGT0A1ENbZcTTEfgZ/obEURE1Bi+knZeZm3lfZ+35MZQ58edxdw31TbPoPLpDg==
+X-Received: by 2002:a17:903:2342:b0:1c9:dff6:58f2 with SMTP id c2-20020a170903234200b001c9dff658f2mr16108624plh.59.1698268013528;
+        Wed, 25 Oct 2023 14:06:53 -0700 (PDT)
 Received: from sjg1.roam.corp.google.com ([202.144.206.130])
-        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001bc5dc0cd75sm9689447plb.180.2023.10.25.14.06.41
+        by smtp.gmail.com with ESMTPSA id ix4-20020a170902f80400b001bc5dc0cd75sm9689447plb.180.2023.10.25.14.06.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 14:06:47 -0700 (PDT)
+        Wed, 25 Oct 2023 14:06:53 -0700 (PDT)
 From: Simon Glass <sjg@chromium.org>
 To: devicetree@vger.kernel.org
 Cc: Michael Walle <mwalle@kernel.org>,
@@ -68,22 +69,21 @@ Cc: Michael Walle <mwalle@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Simon Glass <sjg@chromium.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Dhruva Gole <d-gole@ti.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Pratyush Yadav <ptyadav@amazon.de>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
 	Richard Weinberger <richard@nod.at>,
 	Rob Herring <robh+dt@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
-Date: Thu, 26 Oct 2023 10:06:10 +1300
-Message-ID: <20231025210616.3201502-1-sjg@chromium.org>
+Subject: [PATCH v6 2/3] dt-bindings: mtd: binman-partition: Add binman compatibles
+Date: Thu, 26 Oct 2023 10:06:11 +1300
+Message-ID: <20231025210616.3201502-2-sjg@chromium.org>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+In-Reply-To: <20231025210616.3201502-1-sjg@chromium.org>
+References: <20231025210616.3201502-1-sjg@chromium.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231025_140649_434947_ACA8A579 
-X-CRM114-Status: GOOD (  19.86  )
+X-CRM114-CacheID: sfid-20231025_140657_031971_6529BB3F 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,8 +100,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a compatible string for binman, so we can extend fixed-partitions
-in various ways.
+Add two compatible for binman entries, as a starting point for the
+schema.
+
+Note that, after discussion on v2, we decided to keep the existing
+meaning of label so as not to require changes to existing userspace
+software when moving to use binman nodes to specify the firmware
+layout.
 
 Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
@@ -109,88 +114,65 @@ Signed-off-by: Simon Glass <sjg@chromium.org>
 (no changes since v5)
 
 Changes in v5:
-- Add #address/size-cells and parternProperties
-- Drop $ref to fixed-partitions.yaml
-- Drop 'select: false'
+- Add mention of why 'binman' is the vendor
+- Drop  'select: false'
+- Tidy up the compatible setings
+- Use 'tfa-bl31' instead of 'atf-bl31'
 
 Changes in v4:
-- Change subject line
+- Correct selection of multiple compatible strings
 
 Changes in v3:
-- Drop fixed-partition additional compatible string
 - Drop fixed-partitions from the example
-- Mention use of compatible instead of label
+- Use compatible instead of label
 
 Changes in v2:
-- Drop mention of 'enhanced features' in fixed-partitions.yaml
-- Mention Binman input and output properties
 - Use plain partition@xxx for the node name
 
- .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 3 files changed, 74 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+ .../mtd/partitions/binman-partition.yaml      | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
 new file mode 100644
-index 000000000000..329217550a98
+index 000000000000..83222ac9aa78
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,68 @@
++++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+@@ -0,0 +1,54 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +# Copyright 2023 Google LLC
 +
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
++$id: http://devicetree.org/schemas/mtd/partitions/binman-partition.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Binman firmware layout
++title: Binman partition
 +
 +maintainers:
 +  - Simon Glass <sjg@chromium.org>
 +
 +description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. It is based on fixed-partitions, with some
-+  extensions, but uses 'compatible' to indicate the contents of the node, to
-+  avoid perturbing or confusing existing installations which use 'label' for a
-+  particular purpose.
++  This corresponds to a binman 'entry'. It is a single partition which holds
++  data of a defined type.
 +
-+  Binman supports properties used as inputs to the firmware-packaging process,
-+  such as those which control alignment of partitions. This binding addresses
-+  these 'input' properties. For example, it is common for the 'reg' property
-+  (an 'output' property) to be set by Binman, based on the alignment requested
-+  in the input.
++  The vendor is specified as binman since there are quite a number
++  of binman-specific entry types, such as section, fill and files,
++  to be added later.
 +
-+  Once processing is complete, input properties have mostly served their
-+  purpose, at least until the firmware is repacked later, e.g. due to a
-+  firmware update. The 'fixed-partitions' binding should provide enough
-+  information to read the firmware at runtime, including decompression if
-+  needed.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
++allOf:
++  - $ref: /schemas/mtd/partitions/partition.yaml#
 +
 +properties:
 +  compatible:
-+    const: binman
++    enum:
++      - binman,entry # generic binman entry
++      - u-boot       # u-boot.bin from U-Boot project
++      - tfa-bl31     # bl31.bin or bl31.elf from TF-A project
 +
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+patternProperties:
-+  "^partition(-.+|@[0-9a-f]+)$":
-+    $ref: partition.yaml
++  reg:
++    minItems: 1
++    maxItems: 2
 +
 +additionalProperties: false
 +
@@ -202,38 +184,15 @@ index 000000000000..329217550a98
 +        #size-cells = <1>;
 +
 +        partition@100000 {
-+            label = "u-boot";
++            compatible = "u-boot";
 +            reg = <0x100000 0xf00000>;
 +        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..849fd15d085c 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
- 
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2d13bbd69adb..b9441eec979a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3542,6 +3542,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
 +
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++        partition@200000 {
++            compatible = "tfa-bl31";
++            reg = <0x200000 0x100000>;
++        };
++    };
 -- 
 2.42.0.758.gaed0368e0e-goog
 
