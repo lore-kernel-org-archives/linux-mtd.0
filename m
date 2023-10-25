@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3922DC25B6B
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 05:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD233C0032E
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 07:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GeE2ck1Z2OlYyVARMAHDJcv2sYaDHSVqjtyUkcNzRds=; b=w4UqMKA5DohUSR
-	pFxX0sanoy7Ek8LHU2MhnCUJro2LcmwSxsE0A+By24kBMdAYLIK9rJOxlvPtUqsNjq0LseUza69iE
-	idR8PM07lIsHJLAbh+L6W876d/hkeKhhdIrqYkbhxooefimKWjQT49hlDUZ8TASFxXHOYf4wJ3EtE
-	o3ylyiSZua70jSZzkbOC++DMBmvd9/2pnvr03pbpEZjbJc9O7nytbrclH5II4CLqeotY8BDMbQ7xT
-	Iz7YZTisP7FuPoCn1RVtGbKwyMynclEoDgUsjbinxJ9geq8lYYRz7iF5O3iHwr3U6lRVzvsTlxztt
-	I89D9/pTBa99NDBI2ndg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=YRi3RCfY/IPPlO1nFYgQVV8kyCV82lOpPCwSYS4qsIg=; b=IcM8yz9yVdBtm+
+	tcSr5ml45OB/XI5nOjsRDDyXttaE+yPIvPwMxAi/bXEi1nb4Stykxg0NVAda+iIw50UT8WofXAMSO
+	P+mo9CCxubF2KwXUxoth+tIGaNwK2s9NXozPsDb9IJB7Dk0J025fmY917+c85/UsJ8EBOAVfzeELE
+	iMp5H/Xqtnz6VG0k93dW1vWDDBjXgkdvWiM1Xhu+bdbV4TYBMD5n1YOx3fSdtmLS4ks/UKzHt12OV
+	i97TK6M68MnLRhuLTJo+MN9smFkdORk4LVCVU4ZhJshQtIavd0HTjGF2LYqKADUzy/dtyX/Rh0KtB
+	DoGTqhjKXLSmr0dDKo1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvWT0-00BPvn-0h;
-	Wed, 25 Oct 2023 05:30:06 +0000
-Received: from smtp161.vfemail.net ([146.59.185.161])
+	id 1qvYWX-00BbSJ-1F;
+	Wed, 25 Oct 2023 07:41:53 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvWSw-00BPub-2y
+	id 1qvYWS-00BbQz-2s
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Oct 2023 05:30:04 +0000
-Received: (qmail 19221 invoked from network); 25 Oct 2023 05:29:55 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 25 Oct 2023 05:29:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=openmail.cc; h=from:to:cc
-	:subject:date:message-id:mime-version:content-transfer-encoding;
-	 s=2018; bh=z3I7BxJWkJGWMcauhe7x+lldOe3CDXrLlKAqfautbjk=; b=Cj0w
-	JoiKI2SfVe60Psj61dy+q52zcpnQMkdZP67tcjvidMl6y4aVKYAxOW9ExxIhthqS
-	15sVmRPwMBR84z2XcNUVvQqdEyyp9sFp+j0qboyt7AAZE+D8/KT0vEQxB9QjsgpH
-	x40Gly4ZsBpym5DXJCFTEPOtAY8Q2S0TY5UftTo=
-Received: (qmail 25396 invoked from network); 25 Oct 2023 05:29:55 -0000
-Received: by simscan 1.4.0 ppid: 25167, pid: 25355, t: 1.2316s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (ZXF1dUBvcGVubWFpbC5jYw==@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 25 Oct 2023 05:29:54 -0000
-From: Edward Chow <equu@openmail.cc>
-To: Rob Herring <robh+dt@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Edward Chow <equu@openmail.cc>
-Subject: [PATCH] dt-bindings: mtd-partitions: Export special values
-Date: Wed, 25 Oct 2023 13:29:37 +0800
-Message-ID: <20231025052937.830813-1-equu@openmail.cc>
-X-Mailer: git-send-email 2.42.0
+	Wed, 25 Oct 2023 07:41:51 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66F98FF805;
+	Wed, 25 Oct 2023 07:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1698219703;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rczZnqmf2oJWEm+utFuMjU8M9oOjD9zBSJMHjBMd3Yg=;
+	b=SQ6wcvydOl+EbbCwlao/yg42LxLjOgNbvxFhi1TAviQhp47LC+0zS1vX0CVsm8mP0q/mhm
+	e8YkylyHcVOA8MNDtAQipZYZDEmkE8Q2bRortE8oBpkKvYTa6fQJzdsofbtW6129c6QNZI
+	kaMSnJaC/ff6Zip4gRnTBTTtlNqgQdOK8SY0SH6asFFhz15bMtmcDNCjaA37WgwmD+RdYd
+	iU/8ZEKKA9I9NHaDOvhXx69pgRtqPoawGDQ1inilN/UMnDViiP+zx88OvSoGUQke9oomCo
+	JLe7dzVSd6Awjvcbo+EN35gF7KcZBRpKKKgcth3OOWlqk14qxuqrnnzD0jtc0g==
+Date: Wed, 25 Oct 2023 09:41:40 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Edward Chow <equu@openmail.cc>
+Cc: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd-partitions: Export special values
+Message-ID: <20231025094140.3da9ad71@xps-13>
+In-Reply-To: <20231025052937.830813-1-equu@openmail.cc>
+References: <20231025052937.830813-1-equu@openmail.cc>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231024_223003_291339_A8D33C22 
-X-CRM114-Status: GOOD (  17.14  )
+X-CRM114-CacheID: sfid-20231025_004149_227767_B9CBFAB2 
+X-CRM114-Status: GOOD (  33.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,123 +70,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are special "offset" and "size" values defined and documented in
-linux/mtd/partitions.h:
-
-// consume as much as possible, leaving size after the end of partition.
-
-// the partition will start at the next erase block.
-
-// the partition will start where the previous one ended.
-
-(Though not explicitly, they are compared against variables in uint64_t
-in drivers/mtd/mtdpart.c, so they had better be considered as such.)
-
-// the partition will extend to the end of the master MTD device.
-
-These special values could be used to define partitions automatically
-fitting to the size of the master MTD device at runtime.
-
-However, these values used not to be exported to dt-bindings, thus
-seldom used before, since they might have been only used in numeric form,
-such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
-
-Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
-values, so 2-cell addressed should be defined to use special offset values,
-such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
-linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
-
-Signed-off-by: Edward Chow <equu@openmail.cc>
----
- .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
- MAINTAINERS                                   |  2 ++
- include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
- 3 files changed, 46 insertions(+)
- create mode 100644 include/dt-bindings/mtd/partitions.h
-
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-index 331e564f29dc..a939fb52ef76 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-@@ -164,3 +164,32 @@ examples:
-             read-only;
-         };
-     };
-+
-+  - |
-+    partitions {
-+        compatible = "fixed-partitions";
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+            label = "bootloader";
-+            reg = <0 0x000000 0x020000>;
-+            read-only;
-+        };
-+
-+        firmware@1 {
-+            label = "firmware";
-+            /* From the end of the last partition, occupying as mush
-+             * as possible, retaining 0x010000 after it,
-+             * "MTDPART_OFS_SPECIAL MTDPART_OFS_NXTBLK" similar to
-+             * this, but always beginning at erase block boundary. */
-+            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN 0x010000>;
-+        };
-+
-+        calibration@2 {
-+            compatible = "fixed-partitions";
-+            label = "calibration";
-+            /* Appending to the last partition, occupying 0x010000 */
-+            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_APPEND 0x010000>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 668d1e24452d..7d6beadc8b36 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13771,9 +13771,11 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
- F:	Documentation/devicetree/bindings/mtd/
- F:	drivers/mtd/
-+F:	include/dt-bindings/mtd/
- F:	include/linux/mtd/
- F:	include/uapi/mtd/
- 
-+
- MEMSENSING MICROSYSTEMS MSA311 DRIVER
- M:	Dmitry Rokosov <ddrokosov@sberdevices.ru>
- L:	linux-iio@vger.kernel.org
-diff --git a/include/dt-bindings/mtd/partitions.h b/include/dt-bindings/mtd/partitions.h
-new file mode 100644
-index 000000000000..456a54a1259a
---- /dev/null
-+++ b/include/dt-bindings/mtd/partitions.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Device Tree constants identical to those in include/linux/mtd/partitions.h
-+ */
-+
-+#ifndef _DT_BINDINGS_MTD_PARTITIONS_H
-+#define _DT_BINDINGS_MTD_PARTITIONS_H
-+
-+#define MTDPART_OFS_SPECIAL	(-1)
-+#define MTDPART_OFS_RETAIN	(-3)
-+#define MTDPART_OFS_NXTBLK	(-2)
-+#define MTDPART_OFS_APPEND	(-1)
-+#define MTDPART_SIZ_FULL	(0)
-+
-+#endif
--- 
-2.42.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRWR3YXJkLAoKVGhhbmtzIGZvciB0aGUgcHJvcG9zYWwhCgplcXV1QG9wZW5tYWlsLmNjIHdy
+b3RlIG9uIFdlZCwgMjUgT2N0IDIwMjMgMTM6Mjk6MzcgKzA4MDA6Cgo+IFRoZXJlIGFyZSBzcGVj
+aWFsICJvZmZzZXQiIGFuZCAic2l6ZSIgdmFsdWVzIGRlZmluZWQgYW5kIGRvY3VtZW50ZWQgaW4K
+PiBsaW51eC9tdGQvcGFydGl0aW9ucy5oOgo+IAo+IC8vIGNvbnN1bWUgYXMgbXVjaCBhcyBwb3Nz
+aWJsZSwgbGVhdmluZyBzaXplIGFmdGVyIHRoZSBlbmQgb2YgcGFydGl0aW9uLgo+IAo+IC8vIHRo
+ZSBwYXJ0aXRpb24gd2lsbCBzdGFydCBhdCB0aGUgbmV4dCBlcmFzZSBibG9jay4KPiAKPiAvLyB0
+aGUgcGFydGl0aW9uIHdpbGwgc3RhcnQgd2hlcmUgdGhlIHByZXZpb3VzIG9uZSBlbmRlZC4KPiAK
+PiAoVGhvdWdoIG5vdCBleHBsaWNpdGx5LCB0aGV5IGFyZSBjb21wYXJlZCBhZ2FpbnN0IHZhcmlh
+YmxlcyBpbiB1aW50NjRfdAo+IGluIGRyaXZlcnMvbXRkL210ZHBhcnQuYywgc28gdGhleSBoYWQg
+YmV0dGVyIGJlIGNvbnNpZGVyZWQgYXMgc3VjaC4pCj4gCj4gLy8gdGhlIHBhcnRpdGlvbiB3aWxs
+IGV4dGVuZCB0byB0aGUgZW5kIG9mIHRoZSBtYXN0ZXIgTVREIGRldmljZS4KPiAKPiBUaGVzZSBz
+cGVjaWFsIHZhbHVlcyBjb3VsZCBiZSB1c2VkIHRvIGRlZmluZSBwYXJ0aXRpb25zIGF1dG9tYXRp
+Y2FsbHkKPiBmaXR0aW5nIHRvIHRoZSBzaXplIG9mIHRoZSBtYXN0ZXIgTVREIGRldmljZSBhdCBy
+dW50aW1lLgo+IAo+IEhvd2V2ZXIsIHRoZXNlIHZhbHVlcyB1c2VkIG5vdCB0byBiZSBleHBvcnRl
+ZCB0byBkdC1iaW5kaW5ncywgdGh1cwo+IHNlbGRvbSB1c2VkIGJlZm9yZSwgc2luY2UgdGhleSBt
+aWdodCBoYXZlIGJlZW4gb25seSB1c2VkIGluIG51bWVyaWMgZm9ybSwKPiBzdWNoIGFzICIoLTEp
+ICgtMykiIGZvciBNVERQQVJUX09GU19SRVRBSU4uCj4gCj4gTm93LCB0aGV5IGFyZSBleHBvcnRl
+ZCBpbiBkdC1iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy5oIGFzIDMyLWJpdCBjZWxsCj4gdmFsdWVz
+LCBzbyAyLWNlbGwgYWRkcmVzc2VkIHNob3VsZCBiZSBkZWZpbmVkIHRvIHVzZSBzcGVjaWFsIG9m
+ZnNldCB2YWx1ZXMsCj4gc3VjaCBhcyAiTVREUEFSVF9PRlNfU1BFQ0lBTCBNVERQQVJUX09GU19S
+RVRBSU4iIGZvciBNVERQQVJUX09GU19SRVRBSU4gaW4KPiBsaW51eC9tdGQvcGFydGl0aW9ucy5o
+LiBBbiBleGFtcGxlIGlzIGFkZGVkIHRvIGZpeGVkLXBhcnRpdGlvbnMueWFtbC4KCkkgZG9uJ3Qg
+dGhpbmsgdGhpcyBoYXMgZXZlciBiZWVuIHVzZWQgaW4gRFQsIGl0IGNvbWVzIGZyb20gYSBwcmV2
+aW91cwplcmEgd2hlcmUgZXZlcnl0aGluZyB3YXMgZGVjbGFyZWQgaW4gbWFjaGluZSBjb2RlIGFu
+ZCB3YXMgbmV2ZXIKaW50ZW5kZWQgdG8gYmUgcGFydCBvZiB0aGUgb2ZmaWNpYWwgYmluZGluZ3Mu
+CgpXZSd2ZSBiZWVuIHRyeWluZyB0byBjbGFyaWZ5IHRoZSBwYXJ0aXRpb25zIGJpbmRpbmcgdG8g
+bWFrZSB0aGVtIGNsZWFuCmFuZCBlYXNpbHkgdXNhYmxlIGFuZCBJIGJlbGlldmUgdGhpcyBjb21l
+cyBmcm9tIG9sZCB0aW1lcyBhbmQgaXMKd2F5IHRvbyBsZWdhY3kgYW5kIGJhY2t3YXJkcyB0byBi
+ZSBleHBvc2VkLgoKVHlwaWNhbGx5LCB0aGlzIGNvbWVzIGZyb20gdGltZXMgd2hlcmUgdGhlIHN0
+b3JhZ2UgZGV2aWNlcyB3ZXJlIHNvCnNtYWxsIHRoYXQgYW4gZXJhc2UgYmxvY2sgYm91bmRhcnkg
+d291bGQgYmUgd2F5IHRvbyBiaWcgYW5kIG9uZSB3b3VsZAp3YW50IHRvIHN0b3JlIGRpZmZlcmVu
+dCAicGFydGl0aW9ucyIgaW4gYSBzaW5nbGUgYmxvY2suIEl0IGlzIGNsb3NlIHRvCmltcG9zc2li
+bGUgdG8gZmluZCBzdWNoIGRldmljZXMgdG9kYXkgc28gSSBkb24ndCB0aGluayBpdCByZWFsbHkK
+bWF0dGVycyBhbmQsIGFzIGEgZ2VuZXJhbCBhZHZpY2UsIHNob3VsZCBub3QgYmUgdXNlZCBhbnlt
+b3JlLgoKPiBTaWduZWQtb2ZmLWJ5OiBFZHdhcmQgQ2hvdyA8ZXF1dUBvcGVubWFpbC5jYz4KPiAt
+LS0KPiAgLi4uL210ZC9wYXJ0aXRpb25zL2ZpeGVkLXBhcnRpdGlvbnMueWFtbCAgICAgIHwgMjkg
+KysrKysrKysrKysrKysrKysrKwo+ICBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgMiArKwo+ICBpbmNsdWRlL2R0LWJpbmRpbmdzL210ZC9wYXJ0aXRpb25z
+LmggICAgICAgICAgfCAxNSArKysrKysrKysrCj4gIDMgZmlsZXMgY2hhbmdlZCwgNDYgaW5zZXJ0
+aW9ucygrKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kdC1iaW5kaW5ncy9tdGQvcGFy
+dGl0aW9ucy5oCj4gCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwgYi9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvZml4ZWQtcGFydGl0aW9ucy55YW1s
+Cj4gaW5kZXggMzMxZTU2NGYyOWRjLi5hOTM5ZmI1MmVmNzYgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2ZpeGVkLXBhcnRpdGlv
+bnMueWFtbAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFy
+dGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKPiBAQCAtMTY0LDMgKzE2NCwzMiBAQCBleGFt
+cGxlczoKPiAgICAgICAgICAgICAgcmVhZC1vbmx5Owo+ICAgICAgICAgIH07Cj4gICAgICB9Owo+
+ICsKPiArICAtIHwKPiArICAgIHBhcnRpdGlvbnMgewo+ICsgICAgICAgIGNvbXBhdGlibGUgPSAi
+Zml4ZWQtcGFydGl0aW9ucyI7Cj4gKyAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8Mj47Cj4gKyAg
+ICAgICAgI3NpemUtY2VsbHMgPSA8MT47Cj4gKwo+ICsgICAgICAgIHBhcnRpdGlvbkAwIHsKPiAr
+ICAgICAgICAgICAgbGFiZWwgPSAiYm9vdGxvYWRlciI7Cj4gKyAgICAgICAgICAgIHJlZyA9IDww
+IDB4MDAwMDAwIDB4MDIwMDAwPjsKPiArICAgICAgICAgICAgcmVhZC1vbmx5Owo+ICsgICAgICAg
+IH07Cj4gKwo+ICsgICAgICAgIGZpcm13YXJlQDEgewo+ICsgICAgICAgICAgICBsYWJlbCA9ICJm
+aXJtd2FyZSI7Cj4gKyAgICAgICAgICAgIC8qIEZyb20gdGhlIGVuZCBvZiB0aGUgbGFzdCBwYXJ0
+aXRpb24sIG9jY3VweWluZyBhcyBtdXNoCj4gKyAgICAgICAgICAgICAqIGFzIHBvc3NpYmxlLCBy
+ZXRhaW5pbmcgMHgwMTAwMDAgYWZ0ZXIgaXQsCj4gKyAgICAgICAgICAgICAqICJNVERQQVJUX09G
+U19TUEVDSUFMIE1URFBBUlRfT0ZTX05YVEJMSyIgc2ltaWxhciB0bwo+ICsgICAgICAgICAgICAg
+KiB0aGlzLCBidXQgYWx3YXlzIGJlZ2lubmluZyBhdCBlcmFzZSBibG9jayBib3VuZGFyeS4gKi8K
+PiArICAgICAgICAgICAgcmVnID0gPE1URFBBUlRfT0ZTX1NQRUNJQUwgTVREUEFSVF9PRlNfUkVU
+QUlOIDB4MDEwMDAwPjsKPiArICAgICAgICB9Owo+ICsKPiArICAgICAgICBjYWxpYnJhdGlvbkAy
+IHsKPiArICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJmaXhlZC1wYXJ0aXRpb25zIjsKPiArICAg
+ICAgICAgICAgbGFiZWwgPSAiY2FsaWJyYXRpb24iOwo+ICsgICAgICAgICAgICAvKiBBcHBlbmRp
+bmcgdG8gdGhlIGxhc3QgcGFydGl0aW9uLCBvY2N1cHlpbmcgMHgwMTAwMDAgKi8KPiArICAgICAg
+ICAgICAgcmVnID0gPE1URFBBUlRfT0ZTX1NQRUNJQUwgTVREUEFSVF9PRlNfQVBQRU5EIDB4MDEw
+MDAwPjsKPiArICAgICAgICB9Owo+ICsgICAgfTsKPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5FUlMg
+Yi9NQUlOVEFJTkVSUwo+IGluZGV4IDY2OGQxZTI0NDUyZC4uN2Q2YmVhZGM4YjM2IDEwMDY0NAo+
+IC0tLSBhL01BSU5UQUlORVJTCj4gKysrIGIvTUFJTlRBSU5FUlMKPiBAQCAtMTM3NzEsOSArMTM3
+NzEsMTEgQEAgVDoJZ2l0IGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
+L2dpdC9tdGQvbGludXguZ2l0IG10ZC9maXhlcwo+ICBUOglnaXQgZ2l0Oi8vZ2l0Lmtlcm5lbC5v
+cmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210ZC9saW51eC5naXQgbXRkL25leHQKPiAgRjoJ
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC8KPiAgRjoJZHJpdmVycy9tdGQv
+Cj4gK0Y6CWluY2x1ZGUvZHQtYmluZGluZ3MvbXRkLwo+ICBGOglpbmNsdWRlL2xpbnV4L210ZC8K
+PiAgRjoJaW5jbHVkZS91YXBpL210ZC8KClRoaXMgaXMgYSBuaWNlIGFkZGl0aW9uIGJ1dCB0b3Rh
+bGx5IHVucmVsYXRlZCwgcGxlYXNlIG1ha2UgYSBzZXBhcmF0ZWQKcGF0Y2guCgo+ICAKPiArCj4g
+IE1FTVNFTlNJTkcgTUlDUk9TWVNURU1TIE1TQTMxMSBEUklWRVIKPiAgTToJRG1pdHJ5IFJva29z
+b3YgPGRkcm9rb3NvdkBzYmVyZGV2aWNlcy5ydT4KPiAgTDoJbGludXgtaWlvQHZnZXIua2VybmVs
+Lm9yZwo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2R0LWJpbmRpbmdzL210ZC9wYXJ0aXRpb25zLmgg
+Yi9pbmNsdWRlL2R0LWJpbmRpbmdzL210ZC9wYXJ0aXRpb25zLmgKPiBuZXcgZmlsZSBtb2RlIDEw
+MDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uNDU2YTU0YTEyNTlhCj4gLS0tIC9kZXYvbnVsbAo+
+ICsrKyBiL2luY2x1ZGUvZHQtYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMuaAo+IEBAIC0wLDAgKzEs
+MTUgQEAKPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seSAqLwo+ICsv
+Kgo+ICsgKiBEZXZpY2UgVHJlZSBjb25zdGFudHMgaWRlbnRpY2FsIHRvIHRob3NlIGluIGluY2x1
+ZGUvbGludXgvbXRkL3BhcnRpdGlvbnMuaAo+ICsgKi8KPiArCj4gKyNpZm5kZWYgX0RUX0JJTkRJ
+TkdTX01URF9QQVJUSVRJT05TX0gKPiArI2RlZmluZSBfRFRfQklORElOR1NfTVREX1BBUlRJVElP
+TlNfSAo+ICsKPiArI2RlZmluZSBNVERQQVJUX09GU19TUEVDSUFMCSgtMSkKClRoaXMgb25lIGRv
+ZXMgbm90IGV4aXN0LCBtYXliZSAtMSBpcyBoYXJkY29kZWQgaW4gdGhlIGNvZGUgYW5kIGRlZmlu
+aW5nCml0IGNsb3NlIHRvIHRoZSBleGlzdGluZyBkZWZpbml0aW9ucyAobm90IHNoYXJlZCB3aXRo
+IHRoZSBiaW5kaW5ncykKbWFrZSBzZW5zZSwgYnV0IHRoYXQgaXMgYSBkaWZmZXJlbnQgcGF0Y2gu
+Cgo+ICsjZGVmaW5lIE1URFBBUlRfT0ZTX1JFVEFJTgkoLTMpCj4gKyNkZWZpbmUgTVREUEFSVF9P
+RlNfTlhUQkxLCSgtMikKPiArI2RlZmluZSBNVERQQVJUX09GU19BUFBFTkQJKC0xKQo+ICsjZGVm
+aW5lIE1URFBBUlRfU0laX0ZVTEwJKDApCgpKdXN0IGFzIGFuIEZZSSwgSSB3b3VsZCBoYXZlIGV4
+cGVjdGVkIHRoZSBleGlzdGluZyBkZWZpbml0aW9ucyB0byBiZQpkcm9wcGVkIGlmIHdlIHdlcmUg
+dG8gdGFrZSB0aGUgcGF0Y2guCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
