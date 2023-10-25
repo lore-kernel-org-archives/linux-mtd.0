@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C99A6C07545
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 12:12:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E9A4C0032E
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Oct 2023 12:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
 	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wkz+eRLrLEFRjB0B7M+dUBw4RK+HyEAgGhAOKBaKipk=; b=GlmjPZDH5KAArd
-	9GcOfgxK+461a7b1//+7ecdIWtpVKRZnKLwsmuCcZvHAW7o2DBwhkpsWF3n6vRUP4FaqlnoPqFoAB
-	2ZJ+eqCl9tdx29IqvKApGdhOWegzwKChVUvxKXnN/BxbayrcZJeX0SqHNAeNNL74GZFOq0G2k6mp7
-	NQVp5gOHLSlY7RMv5tvRUp/D1JY6mwXZ0EGK0g67eTUT2DihM+1l1PWuRMcihfE6DkOw1UJz0EYgK
-	0jpb2LDWBi7ygWqEhU6QRCwKeNOwnDEWfxHLH74OOQtYOBm9fW/v2hqPkf76Eqp26kPXtbOKHY4+C
-	EbdmeZd8LErBVbL8dbhQ==;
+	List-Owner; bh=UwnQgFMUIxn5Tsae6BeZdFhdEw0VPky+Zzg83f0SaEU=; b=vRkKn5lML0sFtq
+	iHp+R/Cm8ClVszrU0yx393cx3BWPcT7UeXYy24SOEmeQC8kkRvYBfZ7NMamUniWvdJSTxdzynu7Kv
+	NyV1y5PIkRwiWux3i018zGuogiyIsNLf2DmSrFxFaQ66aR6IKNNlnDhTFZbAfaPGRnoE1fj3cSzdl
+	IojdFutZXpMI+PdxJpSTHkM1hkrh62lfrjyClexh2Pa3e8CDWtQLB1YfVLulIT3YHY/5S4ttq4koF
+	htKdaz40LeyORUUvmDlL08SQb3yFip8FH/fuJKFxM9Cb4vLRQG3Yl1zPupKGVzNB0Rpy4qVESZfuu
+	2B/jIfJDv6QA26dusONw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvcjr-00CGwD-1g;
-	Wed, 25 Oct 2023 12:11:55 +0000
-Received: from mail-oa1-f42.google.com ([209.85.160.42])
+	id 1qvd4O-00CJhF-1m;
+	Wed, 25 Oct 2023 12:33:08 +0000
+Received: from mail-oi1-f178.google.com ([209.85.167.178])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvcjn-00CGuc-1y
+	id 1qvd4L-00CJgr-0R
 	for linux-mtd@lists.infradead.org;
-	Wed, 25 Oct 2023 12:11:53 +0000
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-1d544a4a2f2so3632474fac.3
-        for <linux-mtd@lists.infradead.org>; Wed, 25 Oct 2023 05:11:49 -0700 (PDT)
+	Wed, 25 Oct 2023 12:33:06 +0000
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3b2e72fe47fso3736590b6e.1
+        for <linux-mtd@lists.infradead.org>; Wed, 25 Oct 2023 05:33:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698235909; x=1698840709;
+        d=1e100.net; s=20230601; t=1698237184; x=1698841984;
         h=date:subject:message-id:references:in-reply-to:cc:to:from
          :mime-version:content-transfer-encoding:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=HCPxgs4NDh+ho3+ibefi5n2+RrXmyVlZVu+Q51te2v4=;
-        b=XtuvQP5eGLTaYglCkxmDfMrpFoeXbBOLrmj6eyHdrVbkHZ8nb9EpmSEj/zljUxNNk0
-         zK0ojIVKFaXX08acZ/Ze2ro4h5vytu2NjMK7dmSpbnkHF1WvhMnFy0PMPKpqxaMzKJK9
-         dj5OOxPO8izEEBCK+vf9a277Uwz573ZD0g+9urPbTU7BdmlUDHbtdtl0zFlkWi39kztV
-         LgaiQTSb2WqCw0j1U9J90rq6RaaGDCQMf1NPRm89xM3ahDV0Whd7JEoRw7BIbrbHOWyl
-         +dWgFRhzHSXA9CrMieWmrXXnD57Y7qhASs7Atmj9bXySiPgAY3Ti1N92MAJrGfGT50Hm
-         l1Kg==
-X-Gm-Message-State: AOJu0YxBOMV1pzolKN39f4alpjb48P6zOkBfmbSmXBfk9wUfj11z61PZ
-	xQRPj+d4Jo6iYjviMoOLeg==
-X-Google-Smtp-Source: AGHT+IHK4CWlhFUcrr2tQOB6IBVUM5SaULgdBfzfqNt/82aSi0iQDTiGIhgrsbRNKvEcKAMBHVkAfA==
-X-Received: by 2002:a05:6871:78a:b0:1e9:d25d:3cb0 with SMTP id o10-20020a056871078a00b001e9d25d3cb0mr18681753oap.21.1698235908781;
-        Wed, 25 Oct 2023 05:11:48 -0700 (PDT)
+        bh=8CPemYXBUDg57/WVb4vOz03sRB1TRQWESGKykqWrHzg=;
+        b=HD3AuM/USDPigEKnjyXPHRrK1aSvn38+ZXa7XUpMgMCDIJaSrOGwYgu9Sjl11etnxA
+         XBE3KhLXKPRTca5iykbsODKSurh6LhnMla3xEzlFmIeALryKfqwXiws4ppJqWqpCXufU
+         GiJJpZiA8KuT+kdr5E0pgPbcsqM+RLV5zD1PCvavSStUZC1v9GmTH1wTIwIEhLzJ5GaN
+         SM7C+VNYyJYhVCPlE/KdnsegT5PVDCBowXq/gGk/L9fDkho3qN4Ip5RjXcgbjtuKiQZt
+         sqBO/j3deRly3MXYkbgAuMZSWzw9zpCSjlsnxwpmPZmR605kMSrFBKRiNuuhqOSqAJNR
+         biLA==
+X-Gm-Message-State: AOJu0YznhxQPmo/Qg8GWcFGoXlwb8UZUxFInK6tgtewLpdivktWCDX94
+	wHokzsT/LThjif+c884mKw==
+X-Google-Smtp-Source: AGHT+IGFRmvPp4komL3PmPB+n4EaJxfBNyiGvm6AYFq8mhHjHNqEKyiOmK8UKYdLkHWzvM0ogmXGug==
+X-Received: by 2002:a54:4581:0:b0:3a8:ccf0:103f with SMTP id z1-20020a544581000000b003a8ccf0103fmr16717681oib.3.1698237184122;
+        Wed, 25 Oct 2023 05:33:04 -0700 (PDT)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id nd25-20020a056871441900b001dcfaba6d22sm2620513oab.46.2023.10.25.05.11.47
+        by smtp.gmail.com with ESMTPSA id n12-20020aca240c000000b003afe584ed4fsm2356547oic.42.2023.10.25.05.33.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 05:11:48 -0700 (PDT)
-Received: (nullmailer pid 3367369 invoked by uid 1000);
-	Wed, 25 Oct 2023 12:11:47 -0000
+        Wed, 25 Oct 2023 05:33:03 -0700 (PDT)
+Received: (nullmailer pid 3559498 invoked by uid 1000);
+	Wed, 25 Oct 2023 12:33:02 -0000
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Simon Glass <sjg@chromium.org>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, U-Boot Mailing List <u-boot@lists.denx.de>, linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, Richard Weinberger <richard@nod.at>
-In-Reply-To: <20231024213940.3590507-2-sjg@chromium.org>
-References: <20231024213940.3590507-1-sjg@chromium.org>
- <20231024213940.3590507-2-sjg@chromium.org>
-Message-Id: <169818808080.999988.12536383382799868342.robh@kernel.org>
-Subject: Re: [PATCH v5 2/3] dt-bindings: mtd: binman-partition: Add binman
- compatibles
-Date: Wed, 25 Oct 2023 07:11:47 -0500
+To: Edward Chow <equu@openmail.cc>
+Cc: linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20231025052937.830813-1-equu@openmail.cc>
+References: <20231025052937.830813-1-equu@openmail.cc>
+Message-Id: <169823714202.3554834.10341623302238023195.robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: mtd-partitions: Export special values
+Date: Wed, 25 Oct 2023 07:33:02 -0500
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231025_051151_648751_94A27947 
-X-CRM114-Status: GOOD (  18.37  )
+X-CRM114-CacheID: sfid-20231025_053305_173164_6AD268BE 
+X-CRM114-Status: GOOD (  21.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,37 +81,40 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-On Wed, 25 Oct 2023 10:39:17 +1300, Simon Glass wrote:
-> Add two compatible for binman entries, as a starting point for the
-> schema.
+On Wed, 25 Oct 2023 13:29:37 +0800, Edward Chow wrote:
+> There are special "offset" and "size" values defined and documented in
+> linux/mtd/partitions.h:
 > 
-> Note that, after discussion on v2, we decided to keep the existing
-> meaning of label so as not to require changes to existing userspace
-> software when moving to use binman nodes to specify the firmware
-> layout.
+> // consume as much as possible, leaving size after the end of partition.
 > 
-> Signed-off-by: Simon Glass <sjg@chromium.org>
+> // the partition will start at the next erase block.
+> 
+> // the partition will start where the previous one ended.
+> 
+> (Though not explicitly, they are compared against variables in uint64_t
+> in drivers/mtd/mtdpart.c, so they had better be considered as such.)
+> 
+> // the partition will extend to the end of the master MTD device.
+> 
+> These special values could be used to define partitions automatically
+> fitting to the size of the master MTD device at runtime.
+> 
+> However, these values used not to be exported to dt-bindings, thus
+> seldom used before, since they might have been only used in numeric form,
+> such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
+> 
+> Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
+> values, so 2-cell addressed should be defined to use special offset values,
+> such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
+> linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
+> 
+> Signed-off-by: Edward Chow <equu@openmail.cc>
 > ---
-> 
-> Changes in v5:
-> - Add mention of why 'binman' is the vendor
-> - Drop  'select: false'
-> - Tidy up the compatible setings
-> - Use 'tfa-bl31' instead of 'atf-bl31'
-> 
-> Changes in v4:
-> - Correct selection of multiple compatible strings
-> 
-> Changes in v3:
-> - Drop fixed-partitions from the example
-> - Use compatible instead of label
-> 
-> Changes in v2:
-> - Use plain partition@xxx for the node name
-> 
->  .../mtd/partitions/binman-partition.yaml      | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+>  .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 ++
+>  include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
+>  3 files changed, 46 insertions(+)
+>  create mode 100644 include/dt-bindings/mtd/partitions.h
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -122,16 +123,16 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml: properties:compatible: [{'enum': ['binman,entry', 'u-boot', 'tfa-bl31']}] is not of type 'object', 'boolean'
-	from schema $id: http://json-schema.org/draft-07/schema#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml: properties:compatible: [{'enum': ['binman,entry', 'u-boot', 'tfa-bl31']}] is not of type 'object', 'boolean'
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-Documentation/devicetree/bindings/mtd/partitions/binman-partition.example.dtb: /example-0/partitions/partition@100000: failed to match any schema with compatible: ['u-boot']
-Documentation/devicetree/bindings/mtd/partitions/binman-partition.example.dtb: /example-0/partitions/partition@200000: failed to match any schema with compatible: ['tfa-bl31']
+Error: Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.example.dts:225.24-25 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231024213940.3590507-2-sjg@chromium.org
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231025052937.830813-1-equu@openmail.cc
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
