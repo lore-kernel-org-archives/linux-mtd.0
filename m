@@ -4,64 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8104EC25B67
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Oct 2023 15:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DFC9C25B67
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Oct 2023 15:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AHei5AIvhjediIqPASrSjICk02aZJ4cntfAO6b6lNfg=; b=hpyGj8W84Di19s
-	7/sjML9rrhaPke2Nr0VVhSU/FHLDB4mfMoq1POO1FSSEjaSKmQiMmPxZVSeFdvulTgV8R93zzlRVJ
-	Y3wtfehz2KsaXO0r6eGm2SSeVIr1/ZQrExupL7xGiBhNcvc0/Sj7eFHlX1+c7hsdUzzcT5pUDDbZU
-	eUYDM+nCHbBnTBrDbWe1baYEaL0h8Q5wrrC63YxrmKfNg+N3Jynb4AQ2Zte0IVPXu5aD3FSSDPH5F
-	mD/w0hsjVE1PxjZB428HZGCrGIVZXoX+y0PHB+jrYSecA1fB22SJgkIEcW9FWFPy2mgXzh57eneiB
-	bxCigLZCpb29gxw6uq2w==;
+	List-Owner; bh=nq+2CLZphgH8bfFIbMoXjkdYRjazWknjAJmDfEDu5zQ=; b=UVMIcXNXPW2RoX
+	uUcWP0EMkKqgfV0n/QVDGP4PNOaiLHYLkJRHcYWOJ679YkgFeSfq8TWxgJbwloYsoiJEMW2aX9V+O
+	Xn4Ltd8bCBGIX07zsM+Hn6njabDjMH0jkv1+ILul14C6bcK7YboGWye9hcV79nhlt6FkmkVFj3uMN
+	Dn2mPkhFfEzgfoMjfnjoBSO1s69F2XQXsRBnVWPP+n5Qx4OkFNZgjdXcffx4fzn8bBhmVmKQA+oKM
+	/FLQhXyASY8hcNdvSJeInOneyYDWxCQUfrpV4NuotAQ8GO/q0dii0tHDMchZO12D0doMKuaPNr2Eu
+	/CpnUP9HHiFHyPrB2KbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qw1sY-00ElBR-1c;
-	Thu, 26 Oct 2023 15:02:34 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qw2DN-00EnN9-0t;
+	Thu, 26 Oct 2023 15:24:05 +0000
+Received: from mout.gmx.net ([212.227.15.18])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qw1sV-00ElB4-2U
+	id 1qw2DK-00EnLa-0e
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Oct 2023 15:02:33 +0000
-Received: from [127.0.0.1] (unknown [154.135.84.71])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id B3A986FB;
-	Thu, 26 Oct 2023 17:02:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1698332546;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GIq7VKze7/YNlHMTHO1501ppnVinYDbNtzevWz67otA=;
-	b=mwnfwqBdp+eT/hf0Iro83+z7Ih6IJQ+4AipPLZq9fCEfdSLFl3IcdCH3GKmN08MRc7tEyH
-	D6k1GbUg197kRFHWWFZxbKngq9yCqQ1g+TageTzc2LUHrMN+UUdNZRVoXsKuB8uCf5MWul
-	T1prrv7QW1+Bzibu+6xgYJigWV9Sgt3RXVAcNHvb33J8pYFv7i7LtIwaB5zuOPGeNIREIn
-	Th1HNvaQ0ZIPChyUBWyveZmgGjvN+vYzi8wfbw0WuUkFSX3WqrdBa7kRHOUM03DNDQkpWR
-	iTbvF3Qhr0WcVpzij52oioK3rtNnAPh55T/VLTCkpNBEIsmASMXrVySB98oNww==
-Date: Thu, 26 Oct 2023 18:02:20 +0300
-From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <pratyush@kernel.org>, AceLan Kao <acelan.kao@canonical.com>
-CC: Tudor Ambarus <tudor.ambarus@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4=5D_mtd=3A_spi-nor=3A_Improve_?= =?US-ASCII?Q?reporting_for_software_reset_failures?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <mafs0fs1xmrit.fsf@kernel.org>
-References: <20231026012017.518610-1-acelan.kao@canonical.com> <mafs0fs1xmrit.fsf@kernel.org>
-Message-ID: <8D87B330-8FA1-46BE-949E-5A8DFB8AACF3@walle.cc>
+	Thu, 26 Oct 2023 15:24:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1698333835; x=1698938635; i=estl@gmx.net;
+	bh=r1iP9dd5b2jv9LDWP7GApzM3qBAtB031NBx6H4WJIhc=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=fyYI1W9Oc5Dgp/JLCYx4TwSwASLh+YIc9N9DFGJ2jtpkiZWOaNFVlvUjuojauz/4
+	 GpdGXW6O1VcWpuCmUI2v5T4lkm+4k6gDQBssjKz1upg4qZcqdqvRmQ51dexAp8fIq
+	 PDyKLsKtCSa2D+pmNmDzCYzQ2mKjSyXcN/GrTE8cqUykHaEJ0UvTMH4P8kfUs65EW
+	 kSPRaJVT4A5dQxKuyxGXFXkIr8t5648TyLgktDjnEu5x3O/u7oUjABxwitdfbCnMQ
+	 sEKg//jcp7UVcD1byJ/g1sAcoI9uW6eINV/XYWPi9H7YZKtdiMPo759Int8CbUYSR
+	 1uaL3YB55Vfd24zCnQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([77.246.119.226]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MBm1e-1qmAr83m6G-00CEYy; Thu, 26 Oct 2023 17:23:54 +0200
+From: Eberhard Stoll <estl@gmx.net>
+To: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Eberhard Stoll <eberhard.stoll@kontron.de>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	Olivier Maignial <olivier.maignial@hotmail.fr>
+Subject: [PATCH 3/4] mtd: spinand: winbond: Add rx sample delay for W25N02KV
+Date: Thu, 26 Oct 2023 17:23:04 +0200
+Message-Id: <20231026152316.2729575-4-estl@gmx.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231026152316.2729575-1-estl@gmx.net>
+References: <20231026152316.2729575-1-estl@gmx.net>
 MIME-Version: 1.0
+X-Provags-ID: V03:K1:qm3+qc73Q0d80VwPrFMC83h5AQZ8g3IptaI4EvmqqgEU2Q7lfO8
+ G+kRCWG2eJD1c/iumZEjS6hUJnBOOyFvBm9w5N7XX3MwWx5xKhfcBu0j5+p9b4GcFKjnPnE
+ Wzoq+KHSbFZix7Bt03NNM9orfgpAX72C7zLtoaLO4qB1wnjIKjLLieEu8G2LwRo0blSDUlz
+ 21etO6tuCVelWpB6l9IBw==
+UI-OutboundReport: notjunk:1;M01:P0:DcYq5BOIkhw=;kN1FsiKQrrH87SmU9yWD44Pjp+Y
+ okYva25ZFWAkFn4fHz1azeio9Xu9owYEA4r5kQsVtUt65n2nrV0lleE7jkZDolGi68V75KQgR
+ gnr2LktX1dBEywFjacggnjCVVP+kC0kFFdYoLSP+KPNHbK3OnMemiK2yLo2cAPGkh52jr07x/
+ oEfmtLvnZ5ZcrTPLY3baLaERnSd+XfthUdogGpJ2wp95/0ib5qX0HWVMXL6tcRYsnndibQe1C
+ ezOsyg+EPnQFtgvyvEaFrJRqivhJuuGPjtHQwk/hk4b4JOdrkx0N45OG0FhWyqpcQYW+K8+mF
+ 3n/ePuxHqWa/+7PHkAplpw1dV+ymjygR/q5HAHMOe6SDALo53wc/YRHgRSzZVwV28WnzIl61d
+ Ghy620iSSTOsU4Ms5wqG3rxEjxmQDkfdXuCYWw/VrsoifFoxz+GRMdr14ua2WKpsE7Rm4+W6u
+ HbEI//FNlCt/Pus2Q/A9jKM1vQyq5bc/NcMxJTQB3vqhf1f7X7pavO9D+BBHe2tjS/bbhcsfm
+ w2p7j6IBmt8sWE+qKxzcaVAkP+JiGf66RGDfrQaowLHhjvV6iwQsukONQiuvQ3Z0uS3tTgOvt
+ y3WuvR+2WOeIRAI3GSd0vvTCNtA15PKcR8y6lp9lqWE36uTddpnRdqeXVYpJuhg3toa2ffS3k
+ lKYqF67SbpQllVSvC2uInF4cbLeaMh3f5Fy0ELM8taixcpDNIn4FnwlgddfoHgCWFIf+bcSqt
+ 5OFYKR7VwpqWgdUT6vDP9MIbTJiUXBCRcZbFNqkx9S3P/71e8gATzSekYKyxI33s5S0DwwYGz
+ lGmigVjsNguCJGd2taMMs2xjWr/KSNeaIMXonWBmOk08DKijb1zVhGmFHPCUF1/03HBQg85BQ
+ V6a9gTjeeMu1c9K4BXvU4r1dW4IkvIyp7zukFrHkmgkg0/bA6njQAz274WbMfC6TGYxFq0AZ5
+ nbngCN7SiT8TK+FEU0jdLSQa3Ck=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231026_080231_962047_9EC97FFB 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20231026_082402_756489_C2BDA27C 
+X-CRM114-Status: UNSURE (   9.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,39 +97,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 26. Oktober 2023 16:39:54 OESZ schrieb Pratyush Yadav <pratyush@kernel.org>:
->On Thu, Oct 26 2023, AceLan Kao wrote:
->
->> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
->>
->> When the software reset command isn't supported, we now report it
->> as an informational message(dev_info) instead of a warning(dev_warn).
->> This adjustment helps avoid unnecessary alarm and confusion regarding
->> software reset capabilities.
->
->I still think the soft reset command deserves a warn, and not an info.
->Because it _is_ a bad thing if you need to soft reset and are unable to
->do so. Your bootloader (or linux if you rmmod and modprobe again) might
->not be able to detect the flash mode and operate it properly. 
+From: Eberhard Stoll <eberhard.stoll@kontron.de>
 
-agreed.. but.. 
+Add tCLQV (Clock Low to Output Valid) parameter for Winbond W25N02KV
+SPI NAND chip.
 
->I think we should just not unconditionally run this and instead only
->call it when the flash reset is not connected -- that is only call this
->under a check for SNOR_F_BROKEN_RESET, like we do for 4-byte addressing
->mode.
+Signed-off-by: Eberhard Stoll <eberhard.stoll@kontron.de>
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+ drivers/mtd/nand/spi/winbond.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-.. keep in mind that this is a restriction of the flash controller. the Intel one seems to be the only affected one (for now) and it's doing a reset (according to mika) on its own. 
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index f507e3759301..c0b05f5cbf1b 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -168,7 +168,8 @@ static const struct spinand_info winbond_spinand_table[] = {
+ 					      &write_cache_variants,
+ 					      &update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
++		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status),
++		     SPINAND_RX_SAMPLE_DELAY(7)),
+ };
 
-snor_broken_reset is a property of the flash. 
-
-
->I don't have a strong opposition to this patch but I do think it is
->fixing the problem in the wrong place.
-
-if the flash controller doesn't let you issue a soft reset (or does so on its own), what's the fix?
-
--michael 
+ static int winbond_spinand_init(struct spinand_device *spinand)
+--
+2.25.1
 
 
 ______________________________________________________
