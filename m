@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9D42C25B48
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Oct 2023 06:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BBEDC25B6B
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Oct 2023 06:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zhz8O+Y65zYNT3WvVTKS80h2AxCmdUNvJFNVkWpe9KM=; b=woFX//aq+HmTNU
-	+kT4ZTUmP//2yMbGadt8xPpXQogFQLS7M9v1sQgZH1eqipbI8v5x2JL//9JdY6x8JAonD3WM3GKj3
-	dUROCTN9cG5768MUnZfTS8caxhXUeZWe960BKeMe3kl+tR9YuVSufwMj0RDiiqU0MCGK9jDRp6+c9
-	hFleAXa2AwCi/qIIfkoKvAh4ryMcbfsIh/WvjHPYM99BFy/KhH3MpRB1eS7gzpri/K66KR4Vu792e
-	wR0J7u5lhMkeaS6FahERtG1c7QnRYGsDmqDJmueLQ/wokpnB+CtNLuHH+uKEu4AwbUFHp76EsTBVr
-	uu8hIvusI4i/XD5yQFkA==;
+	List-Owner; bh=pN5MhfhwwfLM2vILeBroqLO0DwSXc2oYV32GYWdQ3Ng=; b=P6huSm7pUhOWtT
+	K81fPWSQIoOa8mISFnYz0Ff/vIZ10e6S0cwqI6cxbAZj8iC8uFVUsPCsJ1e/OrLWAh4Y5q1WBFcLE
+	o4iR80/t661AupRSv3q9/8fSQtujKvmCE/d9U+S3plWOTNFJT9GblOAQaG6E1/XzavTNjxQk9uKz4
+	potuYL5Xbyx/0bCQArvx2m7slmz22ckjH1nkq2oy2DYy/3Jl4tDEOazC6DFEAIIBBD6UwIW1a4hCM
+	SlF3Awj9+iY1b3Ug3W2JoTKoKmNEfTpc24XIOoPGuO7F/nnGmjs013LjJVTVR4Pabc9gEqchDDuX1
+	aA5oR8aG/M6ly1V5cV/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvtqm-00Dm4D-2b;
-	Thu, 26 Oct 2023 06:28:12 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qvtvp-00DmJN-1c;
+	Thu, 26 Oct 2023 06:33:25 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvtqj-00Dm3e-1v
+	id 1qvtvm-00DmIe-3B
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Oct 2023 06:28:11 +0000
+	Thu, 26 Oct 2023 06:33:24 +0000
 Received: from [127.0.0.1] (unknown [154.134.133.58])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E67FC6FB;
-	Thu, 26 Oct 2023 08:28:02 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 36086433;
+	Thu, 26 Oct 2023 08:33:17 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1698301683;
+	t=1698301997;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IKIJ9pz/6EelcsD3a+FNse1RgjHqReUk/N6IeQ8agD0=;
-	b=QjfTdqrrPXwyDOeS0DcSV0WIao1R/jbdIkBMLxnP/rfGfwoj05rWZojGmqROIJv1nuBv4b
-	NalHvOgdtYzNI3YudfDrOWe9Icl5d5gXL+G5+QAMQGvksC4f+2vFkA+3ApDkeyI7aNR/O8
-	PaMIO5oSLmp1mgFA8ZIB0BmciV79cPC9GkzmNxD/w8wtolIiAwp5VNaZ0IZuKs6ZlwqAvJ
-	88TYAG+eBUcZA6nRayAq9AH+lYRYDjlE55M0uGwCtousTPH2vBrWej5CorUSILFfmi6Fob
-	slJzISECcy04LenBRnCEGoYPfSZ2p1lrucEHDtLwjMswblcEwXlcvXxRIIOKug==
-Date: Thu, 26 Oct 2023 09:28:01 +0300
+	bh=PeGnC9IrmBw8mkTv+WnctTkOWIrVsIUoyRfcpROHfpc=;
+	b=SDV+O0fcak4dgCioSUXvAv1krSwaxM0UPF/lImAiBuA+EslSs+a3TM0eokwHIeyCjv6yo/
+	nT6VE6AxOThS2xIMajU8/cCTHqfITQo1QTi1KXiNxRtkYW/6tiT6j5ax83dt0/MSXtP+1p
+	LxsuK0TQMO8+q2yfNWbZtwF8owZBfWuDMO2kCB9sk+G4veEzTVm/d65EAs44y1RJ5p0eRT
+	4cz0bJAzM0FCskh2E8vvJkRCjDvfDg1CUAXtdqvJyyj/U7W0xErcJji4bhMswfH9zk0uRk
+	XhXHsm/eAbK30j39hoJkh0Y/+9ErdEPOTbtV0iX9YsEvUdbv8y6hp0KwSJkjDA==
+Date: Thu, 26 Oct 2023 09:33:14 +0300
 From: Michael Walle <michael@walle.cc>
-To: AceLan Kao <acelan.kao@canonical.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v4=5D_mtd=3A_spi-nor=3A_Improve_?= =?US-ASCII?Q?reporting_for_software_reset_failures?=
+To: Fabio Estevam <festevam@gmail.com>, Tudor Ambarus <tudor.ambarus@linaro.org>
+CC: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ Fabio Estevam <festevam@denx.de>, tkuw584924@gmail.com
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add support for mt25qu01g
 User-Agent: K-9 Mail for Android
-In-Reply-To: <20231026012017.518610-1-acelan.kao@canonical.com>
-References: <20231026012017.518610-1-acelan.kao@canonical.com>
-Message-ID: <F56F4D7D-1264-41E1-9CE7-5DA410A22D73@walle.cc>
+In-Reply-To: <CAOMZO5Ba8bo1zAt1-cSieWOKDWYpvSuOqp2RT5ZOGYLE8DHS0w@mail.gmail.com>
+References: <20231023213800.2599704-1-festevam@gmail.com> <6183891066787b6c24df11e0d601ed26@walle.cc> <CAOMZO5BNcFZcLsi+0Qx5zxwTHqzrnUsGgb0AMptAtY4Kj9Apmg@mail.gmail.com> <1ac379836d4e1e3f7bec565ba7c9bc49@walle.cc> <CAOMZO5BfEsB2vv__F7kkMo9Q-oHD5PiCmaK-ruU-ds9XabUc4Q@mail.gmail.com> <4faa5d37-ddf8-4edd-bb0e-a192d16df488@linaro.org> <CAOMZO5AOfVAcap74kBH8qbf53LKWXN60ML32t1nBG8OOoUPkjQ@mail.gmail.com> <4e2de38da5a3e492eac522b9a68141c7@walle.cc> <CAOMZO5A98YSykYr+ddJ=v93isw=4jK_KhBLadSDTuBmn_WbqOQ@mail.gmail.com> <47aec8ad-3a30-4d97-9e3a-870df02f5ad7@linaro.org> <CAOMZO5A0Oi1L20o_D9oT-mRXp-n8pAHkC1-AzhwvQ6jVB+UzxQ@mail.gmail.com> <CAOMZO5Ba8bo1zAt1-cSieWOKDWYpvSuOqp2RT5ZOGYLE8DHS0w@mail.gmail.com>
+Message-ID: <935957F7-0B54-4EA1-9505-3790B5AFF4FC@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231025_232809_884031_D3308D2A 
-X-CRM114-Status: UNSURE (   9.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231025_233323_175094_02BA1B45 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,65 +71,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 26. Oktober 2023 04:20:17 OESZ schrieb AceLan Kao <acelan.kao@canonical.com>:
->From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
->
->When the software reset command isn't supported, we now report it
->as an informational message(dev_info) instead of a warning(dev_warn).
->This adjustment helps avoid unnecessary alarm and confusion regarding
->software reset capabilities.
->
->Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
-
-NAK. You surely missed my comments on the previous version. 
-
--michael
-
->---
->v2. only lower the priority for the not supported failure
->v3. replace ENOTSUPP with EOPNOTSUPP and check the first command only
->v4. move the version information below the '---' line
->---
-> drivers/mtd/spi-nor/core.c | 5 ++++-
-> drivers/spi/spi-mem.c      | 2 +-
-> 2 files changed, 5 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->index 1b0c6770c14e..42e52af76289 100644
->--- a/drivers/mtd/spi-nor/core.c
->+++ b/drivers/mtd/spi-nor/core.c
->@@ -3252,7 +3252,10 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
-> 
-> 	ret = spi_mem_exec_op(nor->spimem, &op);
-> 	if (ret) {
->-		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
->+		if (ret == -EOPNOTSUPP)
->+			dev_info(nor->dev, "Software reset enable command doesn't support: %d\n", ret);
->+		else
->+			dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-> 		return;
-> 	}
-> 
->diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
->index edd7430d4c05..93b77ac0b798 100644
->--- a/drivers/spi/spi-mem.c
->+++ b/drivers/spi/spi-mem.c
->@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
-> 		return ret;
-> 
-> 	if (!spi_mem_internal_supports_op(mem, op))
->-		return -ENOTSUPP;
->+		return -EOPNOTSUPP;
-> 
-> 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
-> 		ret = spi_mem_access_start(mem);
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gMjUuIE9rdG9iZXIgMjAyMyAyMDozNTo0MCBPRVNaIHNjaHJpZWIgRmFiaW8gRXN0ZXZhbSA8
+ZmVzdGV2YW1AZ21haWwuY29tPjoKPkhpIFR1ZG9yLAo+Cj5PbiBXZWQsIE9jdCAyNSwgMjAyMyBh
+dCA4OjU24oCvQU0gRmFiaW8gRXN0ZXZhbSA8ZmVzdGV2YW1AZ21haWwuY29tPiB3cm90ZToKPgo+
+PiBJbiB0aGUgbWVhbnRpbWUsIGNvdWxkIHlvdSBwbGVhc2UgY29uc2lkZXIgdGhlIHYyIHByb3Bv
+c2FsPwo+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1tdGQvMjAyMzEwMjQxMzU4MjYu
+MjcyOTA4OC0xLWZlc3RldmFtQGdtYWlsLmNvbS9ULyN1Cj4+Cj4+IG10MjVxdTAxZyBpcyB2ZXJ5
+IHNpbWlsYXIgdG8gdGhlIGFscmVhZHkgc3VwcG9ydGVkIG10MjVxdTAyZy4KPj4KPj4gSW4gdjIs
+IHRoZSAuc2l6ZSBhbmQgLm5vX3NmZHBfZmxhZyBmaWVsZHMgd2VyZSByZW1vdmVkLCB3aGljaCBp
+cyBhbgo+PiBpbXByb3ZlbWVudCBvdmVyIG10MjVxdTAyZy4KPj4KPj4gT25seSBOT19DSElQX0VS
+QVNFIHN0aWxsIG5lZWRzIHRvIGJlIHBhc3NlZCwgYnV0IHRoYXQgY2FuIGJlIHJlbW92ZWQKPj4g
+bGF0ZXIgd2hlbiB0aGUKPj4gbXQyNXF1MDFnX3Bvc3Rfc2ZkcF9maXh1cCgpIGlzIGltcGxlbWVu
+dGVkLgo+Pgo+PiBEb2VzIHRoaXMgc291bmQgcmVhc29uYWJsZT8KPgo+SSBoYXZlIGFsc28gdHJp
+ZWQgYWRkaW5nIGEgbXQyNXF1MDFnX3Bvc3Rfc2ZkcF9maXh1cCgpLgo+Cj5UaGUgY2hhbmdlcyBi
+ZWxvdyBzaG91bGQgYmUgc3BsaXQgaW50byAzIGRpZmZlcmVudCBwYXRjaGVzLCBidXQganVzdAo+
+d2FudGVkIHRvIHNoYXJlIHRoZW0gd2l0aCB5b3UgZm9yIGZlZWRiYWNrLgoKVHdvIHBhdGNoZXMu
+IG5vPyBvbmUgZm9yIHRoZSBubyBjaGlwIGVyYXNlIGZsYWcgYW5kIG9uZSBmb3IgYWRkaW5nIHRo
+ZSBmbGFzaC4gCgpBbmQgSSdkIHByZWZlciB0aGlzIHZlcnNpb24uIAoKPmRpZmYgLS1naXQgYS9k
+cml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCj5p
+bmRleCAxYzQ0M2ZlNTY4Y2YuLmY4NWVhNTc1MzRiYSAxMDA2NDQKPi0tLSBhL2RyaXZlcnMvbXRk
+L3NwaS1ub3IvY29yZS5jCj4rKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwo+QEAgLTI4
+NTAsNyArMjg1MCw3IEBAIHN0YXRpYyB2b2lkIHNwaV9ub3JfaW5pdF9mbGFncyhzdHJ1Y3Qgc3Bp
+X25vciAqbm9yKQo+ICAgICAgICAgICAgICAgICAgICAgICAgbm9yLT5mbGFncyB8PSBTTk9SX0Zf
+SEFTX1NSX0JQM19CSVQ2Owo+ICAgICAgICB9Cj4KPi0gICAgICAgaWYgKGZsYWdzICYgTk9fQ0hJ
+UF9FUkFTRSkKPisgICAgICAgaWYgKGZsYWdzICYgTk9fQ0hJUF9FUkFTRSB8fCBub3ItPnBhcmFt
+cy0+bl9kaWNlID4gMSkKPiAgICAgICAgICAgICAgICBub3ItPmZsYWdzIHw9IFNOT1JfRl9OT19P
+UF9DSElQX0VSQVNFOwo+Cj4gICAgICAgIGlmIChmbGFncyAmIFNQSV9OT1JfUldXICYmIG5vci0+
+cGFyYW1zLT5uX2JhbmtzID4gMSAmJgo+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+bWljcm9uLXN0LmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jCj5pbmRleCA4OTIw
+NTQ3YzEyYmYuLjIxZmVmNDM5ZDVmMSAxMDA2NDQKPi0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+bWljcm9uLXN0LmMKPisrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWljcm9uLXN0LmMKPkBAIC0x
+OTIsNiArMTkyLDIwIEBAIHN0YXRpYyBzdHJ1Y3Qgc3BpX25vcl9maXh1cHMgbXQyNXF1NTEyYV9m
+aXh1cHMgPSB7Cj4gICAgICAgIC5wb3N0X2JmcHQgPSBtdDI1cXU1MTJhX3Bvc3RfYmZwdF9maXh1
+cCwKPiB9Owo+Cj4rc3RhdGljIGludCBtdDI1cXUwMWdfcG9zdF9zZmRwX2ZpeHVwKHN0cnVjdCBz
+cGlfbm9yICpub3IpCj4rewo+KyAgICAgICBzdHJ1Y3Qgc3BpX25vcl9mbGFzaF9wYXJhbWV0ZXIg
+KnBhcmFtcyA9IG5vci0+cGFyYW1zOwo+Kwo+KyAgICAgICAvKiBNVDI1UVUwMUcgZG9lcyBub3Qg
+ZGVmaW5lIHRoZSBTQ0NSIGVudHJ5LCBzbyBwYXNzIG5fZGljZQo+bWFudWFsbHkuICAqLwo+KyAg
+ICAgICBwYXJhbXMtPm5fZGljZSA9IDI7Cj4rCj4rICAgICAgIHJldHVybiAwOwo+K30KPisKPitz
+dGF0aWMgc3RydWN0IHNwaV9ub3JfZml4dXBzIG10MjVxdTAxZ19maXh1cHMgPSB7Cj4rICAgICAg
+IC5wb3N0X3NmZHAgPSBtdDI1cXUwMWdfcG9zdF9zZmRwX2ZpeHVwLAo+K307Cj4rCj4gc3RhdGlj
+IGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHN0X25vcl9wYXJ0c1tdID0gewo+ICAgICAgICB7Cj4g
+ICAgICAgICAgICAgICAgLm5hbWUgPSAibTI1cDA1LW5vbmplZGVjIiwKPkBAIC00MjksNiArNDQz
+LDExIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyBzdF9ub3JfcGFydHNbXSA9IHsK
+PiAgICAgICAgICAgICAgICAgICAgICAgICBTUElfTk9SX0JQM19TUl9CSVQ2LAo+ICAgICAgICAg
+ICAgICAgIC5ub19zZmRwX2ZsYWdzID0gU0VDVF80SyB8IFNQSV9OT1JfUVVBRF9SRUFELAo+ICAg
+ICAgICAgICAgICAgIC5tZnJfZmxhZ3MgPSBVU0VfRlNSLAo+KyAgICAgICB9LCB7Cj4rICAgICAg
+ICAgICAgICAgLmlkID0gU05PUl9JRCgweDIwLCAweGJiLCAweDIxLCAweDEwLCAweDQ0LCAweDAw
+KSwKPisgICAgICAgICAgICAgICAubmFtZSA9ICJtdDI1cXUwMWciLAo+KyAgICAgICAgICAgICAg
+IC5tZnJfZmxhZ3MgPSBVU0VfRlNSLAoKb3V0IG9mIGN1cmlvc2l0eS4gZG9lcyBpdCBhbHNvIHdv
+cmsgd2l0aG91dCBVU0VfRlNSPyBJJ20gbm90IGltcGx5aW5nIHRvIHJlbW92ZSBpdCwganVzdCB3
+YW50IHRvIGdldCBhIGZlZWxpbmcgaWYgdGhpcyAKbmVlZGVkIGF0IGFsbC4gCgotbWljaGFlbAoK
+PisgICAgICAgICAgICAgICAuZml4dXBzID0gJm10MjVxdTAxZ19maXh1cHMKPiAgICAgICAgfSwg
+ewo+ICAgICAgICAgICAgICAgIC5pZCA9IFNOT1JfSUQoMHgyMCwgMHhiYiwgMHgyMSksCj4gICAg
+ICAgICAgICAgICAgLm5hbWUgPSAibjI1cTAwYSIsCj4KPlBsZWFzZSBsZXQgbWUga25vdyB3aGF0
+IGlzIHlvdXIgcHJlZmVyZW5jZS4KPgo+VGhhbmtzCgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
