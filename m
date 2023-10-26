@@ -4,84 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B482CC25B6B
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Oct 2023 15:24:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0355AC25B67
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Oct 2023 15:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WTesvbSSv46QRfXwREj8+uaCI+xPRGadQGBVrT0KwIE=; b=LaX+jMci9SlTgM
-	wTBuXGrMbhN+s4APSYYl3w7PCnxwCJGnYJXgh0M2ZaHbM70NRdXpxa7lFRs63pneikcJFWeltrr7X
-	1NH/z9KIY37nBmykLyjMcfsaefHG2Z5tdTD/Rcvq+ZOndF4kNwiv3xBiWfgIM5uL1fZ8Qp0ApIc9j
-	zum0x3s9BiIw7wyYN1YAz9le2Il+uzpW9b19WxsUcqUE/34DRePKMv1YdNofOsizFuabRgDl/7HMz
-	Ztm02lnMJuL5GIJYUQUnxv4xd/gOfapaX5YmyJRaPortg7xn4q6bUgmAXJ+ZdiYo04xNpkAgDsoN4
-	BoJuoUwAnmgNdIfhyoiA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7OPeid60Rik5kbi2ml03i6Gpaghig/ju5rItN5klEso=; b=E8zFcNKJz78HDN
+	Djh0WILI2Ky9IV+W1RK11zdEbI4IFsFpa8Ve+vaR0qichMP3uv5ZUfK6R2Qrq9hTiT57ivhP2n8/n
+	Q7N2asGacMgCzf2wnWvxupaytlhV6DswBOIpecbJEmixrJYZX3pcbHYXmbWoaWx86/z8+NnnxhM/Z
+	8jvkKAL4f8dc749hosbQQp+YZQDgvo3iJ6ybbGfTZjIyPJ5FZVDp0Dn3d8yqc3KXy/lhIq1YUtYmQ
+	YnO2N7V/DxUpYmdO2Nv3RupXrh3ELGIzWb97SfBIgvOK96/ELfdEr3VPbrv/ih3w1aHrk5K5Uz4/j
+	3R48mDv28PMMFyQ8p6fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qw2DN-00EnNL-2l;
-	Thu, 26 Oct 2023 15:24:05 +0000
+	id 1qw2DX-00EnQp-2B;
+	Thu, 26 Oct 2023 15:24:15 +0000
 Received: from mout.gmx.net ([212.227.15.18])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qw2DK-00EnKr-0U
+	id 1qw2DU-00EnOf-0S
 	for linux-mtd@lists.infradead.org;
-	Thu, 26 Oct 2023 15:24:04 +0000
+	Thu, 26 Oct 2023 15:24:13 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1698333831; x=1698938631; i=estl@gmx.net;
-	bh=SWTSfYAJ6wjPq94D3WZ59HwtQ06vUm4Q2LB7f5lEL+M=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=Hq+oYA1A4I4B8RJ8Qblzlf7M8EW+HW5HaZJYlZpwbJaCqtciQeFBVJE1W0Aqyb0C
-	 5sHj3gTP9t5S2aN8VbEs3mEZTu+Idom1bYp67ECkEYvyYQFqQzlWrl3Rr20RSYMY+
-	 ztAqu82w77h9/J93Bi47rJD7u3jr/65W+Qwg0rNLrUchQUlL5K5/s6t1a/PM34jVt
-	 f6d0O9+9Gm2NbsYo5BJPG6EYnimPDhnhuJr/hG6NLgsjb0girLZH5mgeChn6gxbq7
-	 1i033FJIcwR6lendHroDPXFimOjhfQjifashQInhRtiBnDKbVWyd4jyTu+vAVIMmX
-	 1zwr4joFgf3fbbSOFw==
+	s=s31663417; t=1698333819; x=1698938619; i=estl@gmx.net;
+	bh=J/MP/ggMBeFOk1GH4VqYwPDUgDoYGPXDLvvW2d6zvWY=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=EtiCsGtTj19bk/cnvYowLI0Bvyr4mSCFUVgyeom4i/Xw4VywLd910M4r6CuGginW
+	 4fN4pF4v7M3FqYSxaOHmaEJ7VxTy2qFzbPoOOOnHadm+olq1fy8+bmOQOntKVPilg
+	 K4QdzcyV+2R2egjU1JFvVuZXdgDEpVOocWJ/5P9GnwTUPR/JQGbV/RK7GgpeVnNUY
+	 5sGVj4B2MeYOd7BUdztK/y/9qMVkocsDYTwIohkQQ55Hh036oGsFmr3rlxxlt7TLl
+	 nRoMsl/gQiV/fF4PuyHQn8qP4e2NTgFZQJg1eoFAkdXHMPEK36Fu/UPtlxbl57owy
+	 KQSdnEQ6qarqhd5/aw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from localhost.localdomain ([77.246.119.226]) by mail.gmx.net
  (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1M9Wys-1qskQV0yTU-005ZfM; Thu, 26 Oct 2023 17:23:51 +0200
+ 1MSKyI-1r2kHT08sq-00SexA; Thu, 26 Oct 2023 17:23:39 +0200
 From: Eberhard Stoll <estl@gmx.net>
-To: linux-kernel@vger.kernel.org,
+To: Han Xu <han.xu@nxp.com>,
+	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Eberhard Stoll <eberhard.stoll@kontron.de>,
-	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	=?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Chuanhong Guo <gch981213@gmail.com>,
+	Dhruva Gole <d-gole@ti.com>,
+	Dmitry Rokosov <ddrokosov@sberdevices.ru>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krishna Yarlagadda <kyarlagadda@nvidia.com>,
 	Mario Kicherer <dev@kicherer.org>,
-	Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Subject: [PATCH 2/4] mtd: spinand: Add support for clock to rx delay setting
-Date: Thu, 26 Oct 2023 17:23:03 +0200
-Message-Id: <20231026152316.2729575-3-estl@gmx.net>
+	Martin Kurbanov <mmkurbanov@sberdevices.ru>,
+	Olivier Maignial <olivier.maignial@hotmail.fr>,
+	Rob Herring <robh@kernel.org>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	William Zhang <william.zhang@broadcom.com>,
+	Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH 0/4] Add tCLQV parameter to tweak SPI timings
+Date: Thu, 26 Oct 2023 17:23:01 +0200
+Message-Id: <20231026152316.2729575-1-estl@gmx.net>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231026152316.2729575-1-estl@gmx.net>
-References: <20231026152316.2729575-1-estl@gmx.net>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:fEubDti3aDbWQ3NePpK//inzhLn2La+uc+hDR3Cl0ol3T/Mk1wb
- jcAB5EmgHOJKnIEq/zMCqNuV3qpoNPkzOyIJu5qanQGoY1ua/xiB2LMxI09pOZPEn0NTLWK
- p2hq59e4uLShkHDH0a1QW6WBV+RAcmIqE24zkuG4vdcIkqpXAlvXpTl8XFZvkLqPJSEuvoR
- ptA4GN6zN+ds26T6j3wtw==
-UI-OutboundReport: notjunk:1;M01:P0:WecwLtkKLQc=;XuITYkWd5CcgSFoGdVhSqEemhnG
- boarAIRBxF0Wd3bgiAB7N7W3pBtkMxZ2YPxaa7wC3WKv8+VRFCtQxa2dEsJ6R/uKncQbRLhdP
- OFbFkVZeeZ3w/X7oqujToEvjvkBqQDj79H9EIVWPKR261xIjU3pY9j1BygVNH4yR+rJLrjcWx
- K1QbBy/NR+EBlvIK+oe+mGadp+oexIUyB0PObzjWw+PBGX97nWj5f1HLRhaoCcvreUpBAbE0i
- GbUq/g3f5OJFRnMv5Nt1ogj6GUnYE+H3Dx1bqHzguHQyQ+j6wR/sNTHmIcSjbcali5fFMSHXy
- 1fA13a0OxpxvcSzDk0eSgft5rnipdEttQsZIwRKzP13bpEGnXfw8gurJEmr1jiGe+/NCA7ryE
- 7wyjdsShI2c87RF7R9JXLS5S0FLpxtQZIr92D2vQxMfOUh3/DuZuD/GNXFebxWex5WzqBCHCM
- HoqWClOthAeNbkT5CktKkiequA3gCABhWIOekZiEW0AtwQhXLOkZR9wVPcniehIKpmOlpqWOI
- 2HPBAtCe0Z777rtnXBIwPQr4Jd49vBA+WRBiFHjm6YEU6czpEDcJdWAuWaR9IBLZhTjPPtAvE
- PObjKOw9AzYASA2NgtXyTYsztCyQxdLJm9wwGazCkjs3Eb0iolFwcMqA6/gpSuUsWq/6GCWcS
- V91T+jP8+6E8+aBCVgPoBHlIRZVBXyNEKvsrCcu1uhRY3m3WyK5hsEkD8OPBFNAJ+iVc6rFQZ
- fjo4SVO72M9zW/1z1O6YCNnUztHUPf+hj0wAvEX+hnY9QtMG9LPoIkdgb80TfY63mxJiaYXFv
- P4OOucVbBIQqgI9DUORmDPQnwQaGhZTibtQ9MQX0bwBJWsoEBUywp9q7OD4JhOWTAGGp0PRjX
- WOyq4nIP4HuALfEhJ07q+5xF1nTp9255HpwFbX28Z2EDPGDwe2YBn7Iub4Bm2BpRJQhQf6pnS
- TiFwbw==
+X-Provags-ID: V03:K1:O7+W+0kTktx9+dspKsYqJeT5/Cn+VqewNKP9rukwDbjeCopCyXI
+ gcCAOXQe3ddnyLBHvqWbVm4dV+vLK0b7iO/wWLnX5bSs9o+lokV0OQkwBg+pgHV0NumcTh3
+ x2lBsvjdKV7dxHyQnKyy9Tgy/3J9a/Pxrnpvbs/QJZaRfbDGShIqiU59i3GerZok15/JONv
+ 7aL7C5q+4dYax28d5qbyw==
+UI-OutboundReport: notjunk:1;M01:P0:Cv2ssFvhnOM=;/r5PLEm2khhBqpGeCl9qm+cb4Kb
+ 7O5abRSiXpAdhXZf4l4qsfRMO1bXWFXHjul/9D773HImmIv1sSf9dybqZh0m7HEQop4AvSfhX
+ q3JFKr1kzKLSCOdeLuuwWUHCiIYpiVDscX7qwv4lF0/N5iFt6Aj5oC7aIMOfBUyx/S6vI2RFA
+ GvKG5J6KC3swhveY1RjTXf77Gvdn6GSa7E+6r5lVwBE7yaSjoicO0lbLnijOcILexSyOsSlzB
+ Ht/5QZkuji6dhoo21cdNPSOnqm02E5r9PNIgybBdpFXzgn/ok4hjdQH3uc6dFQpGqCoUPlPaF
+ ZQtiYPmKzWjcOxp+qbrNPX2KpAamMmsRxJs/0s0q+soBC7t+SsMnoHCvc2ntdw0mbT446eUBJ
+ PSaG5PjEHJcNe+OeA4UBZW7PmYrNbrJzUpQTLru7eWeyny+bmpdbLqrPKKhEl4mYPLWvWCGXV
+ pCTBsCQdMOwOgizhWTwQ3j1WSMN0Vz5RAaktlZcWv91mw8aNFUnniKNOlqz+PX6ZCFMSxzZA8
+ 4auLNuq+bwlwCCb9htUINzQ6vt17dJ8Lf5G4mWcNWsceSxWL0V+fbX8rngp8zfuug9t5xlyoF
+ TCywDrxkzSbTFihzkoAWxqfVF6bAxH83ybgejN5OT304OaUy/DHC1bKgXkPeyOxD+OQ8Pj0GN
+ xghiH6m3E/2SL41JZ1UMoxuhxxhX1sEMlFWF1Wyumbljdtl+nimrDYtxRE1FQNyTA8K8oeuXs
+ +wFBN8mOps3KUj1OH15DfbVrvmUmzLNjuG7QWswigL/81obHPsiyWrvvnEIxsqKg1l0RsN0op
+ o+isqk+HrTC8RlsSwcGAp1MhCUUBlRLFNs4LMA1pPDVjYNjkf9lxX4dpsfUXInmWrOpFc9ez7
+ rsYsAsUJKUii7ODkOurjSur+CAYQaRbPpC4/2TNUkrCz+qy1dzv1ZdvZ6SiFm/N02uA/HyVV9
+ ZJ3/i4MB4G02lRMCzXV1UdmpPmU=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231026_082402_756533_868BD1D9 
-X-CRM114-Status: GOOD (  10.87  )
+X-CRM114-CacheID: sfid-20231026_082412_472574_F21BFA7B 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,62 +116,50 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Eberhard Stoll <eberhard.stoll@kontron.de>
 
-Add the configuration parameter to set the spi clock to receive
-data delay parameter for SPI NAND devices.
+Hi All,
 
-This parameter is often referenced as tCLQV in SPI NAND device
-data sheets.
+this patch series adds parameters to tweak SPI timings for some
+(Q)SPI devices. For example it optimizes the support for the operation
+of a Winbond W25N02KV SPI NAND chip on NXP i.mx6 ul(l) devices.
 
-Signed-off-by: Eberhard Stoll <eberhard.stoll@kontron.de>
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
- drivers/mtd/nand/spi/core.c | 2 ++
- include/linux/mtd/spinand.h | 5 +++++
- 2 files changed, 7 insertions(+)
+The Winbond W25N02KV SPI NAND has the characteristic to introduce a
+delay between spi clock and the masters spi receive data (called tCLQV
+value in data sheet).
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 393ff37f0d23..e546b0d1f76f 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1113,6 +1113,8 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 					       info->op_variants.update_cache);
- 		spinand->op_templates.update_cache = op;
+This chip can operate with a maximum SPI clock of 104MHz. Disregarding
+the requred tCLQV value of 7ns for this chip reduces the possible spi
+clock to approx. 70MHz. To support the full bandwith of this chip, the
+tCLQV parameter has to be supported in SPI framework and SPI controller
+and the SPI NAND chip needs this parameter in the device configuration
+data.
 
-+		spinand->spimem->spi->rx_sample_delay_ns = table[i].rx_sample_delay_ns;
-+
- 		return 0;
- 	}
+Also other devices can improve their operating SPI clock performance
+with this setting if they also has significant tCLQV values and the SPI
+controller will support it.
 
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 3e285c09d16d..fe34d5259c97 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -326,6 +326,7 @@ struct spinand_ondie_ecc_conf {
-  * @model: model name
-  * @devid: device ID
-  * @flags: OR-ing of the SPINAND_XXX flags
-+ * @rx_sample_delay_ns: clock to rx data delay timing (tCLQV)
-  * @memorg: memory organization
-  * @eccreq: ECC requirements
-  * @eccinfo: on-die ECC info
-@@ -343,6 +344,7 @@ struct spinand_info {
- 	const char *model;
- 	struct spinand_devid devid;
- 	u32 flags;
-+	u32 rx_sample_delay_ns;
- 	struct nand_memory_organization memorg;
- 	struct nand_ecc_props eccreq;
- 	struct spinand_ecc_info eccinfo;
-@@ -378,6 +380,9 @@ struct spinand_info {
- #define SPINAND_SELECT_TARGET(__func)					\
- 	.select_target = __func,
+This patch series adds support the tCLQV parameter in:
 
-+#define SPINAND_RX_SAMPLE_DELAY(__delay)				\
-+	.rx_sample_delay_ns = __delay,
-+
- #define SPINAND_INFO(__model, __id, __memorg, __eccreq, __op_variants,	\
- 		     __flags, ...)					\
- 	{								\
+- SPI framework
+- SPI NAND framework
+- NXP i.mx6 QSPI controller
+- Winbond W25N02KV SPI NAND device
+
+
+Eberhard Stoll (4):
+  spi: Add parameter for clock to rx delay
+  mtd: spinand: Add support for clock to rx delay setting
+  mtd: spinand: winbond: Add rx sample delay for W25N02KV
+  spi: spi-fsl-qspi: Add support for rx data sample point adjustment
+
+ drivers/mtd/nand/spi/core.c    |  2 +
+ drivers/mtd/nand/spi/winbond.c |  3 +-
+ drivers/spi/spi-fsl-qspi.c     | 80 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |  5 +++
+ include/linux/spi/spi.h        |  3 ++
+ 5 files changed, 92 insertions(+), 1 deletion(-)
+
+
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
 --
 2.25.1
 
