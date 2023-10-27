@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82EB3C25B48
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Oct 2023 17:47:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F952C25B48
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Oct 2023 17:47:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lmFYjjovW2v+mb4IgngWwEPn6x/fw2oyAVQDCXudwKw=; b=m/RYHCRXvB9BC4
-	Ojlrwjp58ltw59hAwtSisnc0G1vSDpghj2o5qZ93eY9Zu1Oz1STeyCy8Nws6UzPD3xSLvuBs0hVxr
-	tLdiRldXV/cnW4unEo0Jigk0jhd8CJAQbcNGE1DyutC3GmB95QKEtPC6CsDJ/3xpIipIz6qsjLiLE
-	xRQ3DbSzthOim06lgTLucA2KOQipYtRb6DhLcEd2Cw6io+Piz5+N28WXm+913CdEckC01XZ7rSzo4
-	itWUKNzeHoB+DtunTos6Y3iDD+wxzS2ihIBsaObruGnqcYdcgkpnQ2iWQZxFGp5POw2T9hXYUEePH
-	fPPWhww6gLYZJFH/hpag==;
+	List-Owner; bh=Gv1el4qcNqKnIAWpmT3v3CoSZZRojVkgeYQpcG9HUSc=; b=a3ELLtyw5uLotO
+	6Lm0dGMdY/Pn+76VkcxYfr+XYPBz7lM59yJemdy3mBCQ0b+vcRjdm2zsMtZxKTHAFqwaTJch4Ml8x
+	vcxJyygFKrbgCIKrbqO5bLtUjooHgmiy4zJZXmyoMn8yq72PkTBsvfr2bOLsytz3tTemdotXOYDyB
+	1Z+BuNJBIFfEgRxvY5Y90yqb/raWK/3t0DnjCELnWtLbbKj5kDACR2hzlTUQAGV4/4drYK2Hntx3F
+	rTV19cYwpHdT35HEtioq/m1DK8l1LgrHD5uPmDnNrVdYR7RaJGpNNw0bDON+CPLCqLcNfa5a3T3TF
+	/t2Z/yQoi5VeWJKrVECg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwQvk-00Gr4S-0b;
-	Fri, 27 Oct 2023 17:47:32 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1qwQvq-00Gr6x-0U;
+	Fri, 27 Oct 2023 17:47:38 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwQvg-00Gr1d-1F
+	id 1qwQvm-00Gr3Z-02
 	for linux-mtd@lists.infradead.org;
-	Fri, 27 Oct 2023 17:47:30 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5233060002;
-	Fri, 27 Oct 2023 17:47:22 +0000 (UTC)
+	Fri, 27 Oct 2023 17:47:35 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 827EBC0003;
+	Fri, 27 Oct 2023 17:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1698428844;
+	t=1698428849;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rew8nUrg+Y3I6B78QJRTyIL0Jm0DzVRXhKLA77enCDA=;
-	b=ofw1zK3o64qa8wGqVd4OeSBIL9E7wkNDedjhG6A5dhMscuiSNURP2XNTmlez+qG8LO4NnM
-	M3B80Cl5l7NusGU4B/dvAb1KgqMo29yPffrf6AwUAW49kzWWjWoLQAQwI03DxYzI2Y363e
-	DVRlKnY1bf0mQETQrfaY210eShXse43H+TDTOqAqTo2tJKCxFVHo2TCiO0nQ19TucqOFRb
-	cVJkdDrrbCw/acFii21rrvNqBL4FXOkZRP5GIEagXPBspUbntqAo/lOk2DKsSbfqoY8G1w
-	PWuB0sYTVUPpmz20kzLhcrrlU33MaMHtjF27+l3WYP64BmPcP11C0XXMGP+kmQ==
+	bh=oOYLIEH/QzZ5fqFZlQHboq/fqbBoEl5Gd1L6uPe1G4Q=;
+	b=cj9ay+OwoXZRjNtuQsPMhxV31LZebUNaPTTmItRtqF6fxa8wQe3+6efwHhiE0fWb1AGR7G
+	JwyGplCFWUTKspEaOxScdyZxDapMoop6Fj7wczPMtHLrJ18WusVb2b0j7mUYkL9t/ZJy9E
+	UHYu1Wu/zOdkSaLftJG3a9dkzaLyl+vSu2L2h6pD9iQg+DPhgcFiD1XCY5b5UNjCDnEghC
+	ywqVfzN3hJccOsTqwRf0RbsQAOwfhoYOQxngnxq/AmRRxTV5Yfs9iRsBdElFZnbNBDBLYm
+	XZvLtGNGceLBJpiJ8Xw1SXiEDhYNK6fBXwdC59zrzQzFTvXM2QaYcgibJ4k5tw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Yi Yang <yiyang13@huawei.com>,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	martin.blumenstingl@googlemail.com,
-	u.kleine-koenig@pengutronix.de,
-	philmd@linaro.org,
-	paul@crapouillou.net,
-	vadivel.muruganx.ramuthevar@linux.intel.com
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3] mtd: rawnand: intel: check return value of devm_kasprintf()
-Date: Fri, 27 Oct 2023 19:47:21 +0200
-Message-Id: <20231027174721.370030-1-miquel.raynal@bootlin.com>
+To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Yangtao Li <frank.li@vivo.com>,
+	Rob Herring <robh@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	kernel@pengutronix.de,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] mtd: rawnand: sh_flctl: Convert to module_platform_driver()
+Date: Fri, 27 Oct 2023 19:47:26 +0200
+Message-Id: <20231027174726.370059-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231019065537.318391-1-yiyang13@huawei.com>
+In-Reply-To: <20231016103540.1566865-2-u.kleine-koenig@pengutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'74ac5b5e2375f1e8ef797ac7770887e9969f2516'
+X-linux-mtd-patch-commit: b'60ec53ace2cb8a6f5678af1ea614f8582e32c081'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231027_104728_561994_DBB914D5 
-X-CRM114-Status: UNSURE (   6.48  )
+X-CRM114-CacheID: sfid-20231027_104734_209569_03332CCE 
+X-CRM114-Status: UNSURE (   9.12  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,23 +79,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2023-10-19 at 06:55:37 UTC, Yi Yang wrote:
-> devm_kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure. Ensure the allocation was successful by
-> checking the pointer validity.
-> 
-> Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
-> Signed-off-by: Yi Yang <yiyang13@huawei.com>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAyMDIzLTEwLTE2IGF0IDEwOjM1OjQxIFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
+Sz1DMz1CNm5pZz89IHdyb3RlOgo+IFRoZSBkcml2ZXIgZG9lc24ndCBiZW5lZml0IGZyb20gdGhl
+IGFkdmFudGFnZXMgdGhhdAo+IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoKSBhbGxvd3Mg
+KGkuZS4gcHV0dGluZyB0aGUgcHJvYmUgZnVuY3Rpb24KPiBpbiAuaW5pdC50ZXh0IGFuZCB0aGUg
+LnJlbW92ZSBmdW5jdGlvbiBpbnRvIC5leGl0LnRleHQpLgo+IFNvIHVzZSBtb2R1bGVfcGxhdGZv
+cm1fZHJpdmVyKCkgaW5zdGVhZCB3aGljaCBhbGxvd3MgdG8gYmluZCB0aGUgZHJpdmVyCj4gYWxz
+byBhZnRlciBib290aW5nIChvciBtb2R1bGUgbG9hZGluZykgYW5kIHVuYmluZGluZyB2aWEgc3lz
+ZnMuCj4gCj4gU2lnbmVkLW9mZi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
+Z0BwZW5ndXRyb25peC5kZT4KCkFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBuYW5kL25leHQsIHRoYW5rcy4KCk1p
+cXVlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
