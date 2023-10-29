@@ -4,56 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31301C4332F
-	for <linux-mtd@archiver.kernel.org>; Sun, 29 Oct 2023 05:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8C98C4332F
+	for <linux-mtd@archiver.kernel.org>; Sun, 29 Oct 2023 07:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1iUrZYJAN/DzeOXesH51FDTJN7JudTrw7zt3/rY4k/s=; b=xYPQuYna5HeoYN
-	43cWhxwPtlgBaxOdLSGv/fPeDJGt8hfGHd+10eS46PVW2Bf+WNjtcq1Spft6mdw938OZ+/ewpbpMs
-	kTqrN4CSCpknGY23uuURbgGp57pFkfHZJz9z1KHSW0vmEpbmCspOpfzkpHl2VCtoVUVC52cQRtiax
-	KH64/WMw39s1tl+xFfCPL+Dv/1dIjG1nvZ9h9gwnYJl6LSXeok58UCJP9Go3g6istrXJolvy3VKBk
-	CuXtcA/xzWwg1zX/lWfiOvSD+3nCb/L03FlYvtK0fR1U043AEnIj9M13cX0SepxBX0Kh/LA4R02tT
-	spNWzPfC5BMdVvNFvyHw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lGx7URyxYSUbXB8PurHKXxNAkkQ9NHrbQjpgKM3lDvM=; b=mOrj+K8Y+VMnA9
+	41gfQs+cHAj0IKR8Q9EFR8jomYCYaBxntLY92lzxnEqYyYrR3bp1tVdnWxN6W7/LuQw3pl00Pj4u3
+	6vfhdSoHVOWTc0OAYtxDnzd+FZVvvVdj9BaKWDyNWUaOb2KT5MxAHJgrqcHBU8sZqeHdHwT8XXisD
+	7LtetD3AYd0QlTwkS3Ydn9VuCoXUjikolEwt9BSMOc5tK9HCugF96jTyyqHHI0LlbI0tFXKEYNVvX
+	Jib7kFKSW5R5e2NOGIVITtAx5LbOooQLANui4211cJlyXYUbP8mkELZhA4f3x7PC296ngYflS23z/
+	LQFbvd5F9EgPOfKDLhUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwxyA-001CJZ-24;
-	Sun, 29 Oct 2023 05:04:14 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1qx05y-001IeW-3C;
+	Sun, 29 Oct 2023 07:20:27 +0000
+Received: from mail-m25478.xmail.ntesmail.com ([103.129.254.78])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qwxy5-001CJ3-3D
+	id 1qx05u-001Ido-0K
 	for linux-mtd@lists.infradead.org;
-	Sun, 29 Oct 2023 05:04:11 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 2FA37B8094F;
-	Sun, 29 Oct 2023 05:04:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C751C433C7;
-	Sun, 29 Oct 2023 05:04:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698555845;
-	bh=Bd85Pl0HxDFyn+Xmq89TAE0x2+xo8OOJv3Wbz88xxEA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Mw1IfVQZiMp5BpDGgUt/tVQwmrsRmtydrP/mY+CD9xI+TnspAOs6HHsaKEdBaB97W
-	 Mzm57m4NaWDKJRdDI0Rh65r96MWyM0gFobkYFXPQfYKefodqAvJW9v8saGakPoAakL
-	 oFnyVVCqNetSd5falmLFuPW7gD/04tSmozJvE319Wqono21d9mEXhBC0nI5QdQW29Z
-	 q6ddAZvkQIiRDqk5JN6tsoRD1uuBxbbDgiBH/3vHXKCUx3rXjyzAyttUET8QsqfdJw
-	 fobRnFp1Qwd7gxrvtbgFwk/9+lq1hqCjrRkzUzt3mzFe+/KKsTa2Y7qR+0D2r6W3Cd
-	 0q67pUFqmu5yQ==
-From: Eric Biggers <ebiggers@kernel.org>
-To: Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org
-Cc: linux-crypto@vger.kernel.org
-Subject: [PATCH] ubifs: use crypto_shash_tfm_digest() in ubifs_hmac_wkm()
-Date: Sat, 28 Oct 2023 22:03:55 -0700
-Message-ID: <20231029050355.154989-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.42.0
+	Sun, 29 Oct 2023 07:20:24 +0000
+Received: from localhost.localdomain (unknown [58.61.140.248])
+	by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 37C2F800084;
+	Sun, 29 Oct 2023 15:20:11 +0800 (CST)
+From: Chukun Pan <amadeus@jmu.edu.cn>
+To: miquel.raynal@bootlin.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	richard@nod.at,
+	vigneshr@ti.com,
+	Chukun Pan <amadeus@jmu.edu.cn>
+Subject: Re: [PATCH 1/1] mtd: rawnand: add support for TH58NYG3S0HBAI4 NAND flash
+Date: Sun, 29 Oct 2023 15:20:05 +0800
+Message-Id: <20231029072005.6097-1-amadeus@jmu.edu.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231023095451.65c4c0ec@xps-13>
+References: <20231023095451.65c4c0ec@xps-13>
 MIME-Version: 1.0
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDT0oaVkNCGkNKGEpPGExLTFUTARMWGhIXJBQOD1
+	lXWRgSC1lBWU5DVU1KVUpPS1VJT0NZV1kWGg8SFR0UWUFZT0tIVUpKS0hKQ1VKS0tVS1kG
+X-HM-Tid: 0a8b7a4df592b03akuuu37c2f800084
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ohw6Mhw*SDw9ISlIPhpWOBMa
+	CCkwFBpVSlVKTUJDTk1PS0pJS05KVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWU5D
+	VU1KVUpPS1VJT0NZV1kIAVlBSkpMTjcG
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231028_220410_178070_9B5FD936 
-X-CRM114-Status: GOOD (  12.43  )
+X-CRM114-CacheID: sfid-20231029_002022_341790_78068857 
+X-CRM114-Status: UNSURE (   5.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,70 +72,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Miquel,
 
-Simplify ubifs_hmac_wkm() by using crypto_shash_tfm_digest() instead of
-an alloc+init+update+final sequence.  This should also improve
-performance.
+> Any way you can detect this and fix the parameter page at run time
+> instead?
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ubifs/auth.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+Sorry but I don't know, I know very little about this.
 
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index e564d5ff8781..4add4a4f0720 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -501,42 +501,27 @@ int __ubifs_shash_copy_state(const struct ubifs_info *c, struct shash_desc *src,
-  *
-  * This function creates a HMAC of a well known message. This is used
-  * to check if the provided key is suitable to authenticate a UBIFS
-  * image. This is only a convenience to the user to provide a better
-  * error message when the wrong key is provided.
-  *
-  * This function returns 0 for success or a negative error code otherwise.
-  */
- int ubifs_hmac_wkm(struct ubifs_info *c, u8 *hmac)
- {
--	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
--	int err;
- 	const char well_known_message[] = "UBIFS";
- 
- 	if (!ubifs_authenticated(c))
- 		return 0;
- 
--	shash->tfm = c->hmac_tfm;
--
--	err = crypto_shash_init(shash);
--	if (err)
--		return err;
--
--	err = crypto_shash_update(shash, well_known_message,
--				  sizeof(well_known_message) - 1);
--	if (err < 0)
--		return err;
--
--	err = crypto_shash_final(shash, hmac);
--	if (err)
--		return err;
--	return 0;
-+	return crypto_shash_tfm_digest(c->hmac_tfm, well_known_message,
-+				       sizeof(well_known_message) - 1, hmac);
- }
- 
- /*
-  * ubifs_hmac_zero - test if a HMAC is zero
-  * @c: UBIFS file-system description object
-  * @hmac: the HMAC to test
-  *
-  * This function tests if a HMAC is zero and returns true if it is
-  * and false otherwise.
-  */
+Thanks,
+Chukun
 
-base-commit: 2af9b20dbb39f6ebf9b9b6c090271594627d818e
 -- 
-2.42.0
+2.25.1
 
 
 ______________________________________________________
