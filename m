@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03EF1C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 17:11:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BB35C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 17:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CsOcsQiiiA4AAyAboWvz8dmqio29I+Pt858szpz7w/U=; b=pFxPIy/QTih0wl
-	ffNorhOgCeJAqT5UlevLTZsvWcRJWjsFvNygB8y/VL5YpVj2uai0RUtqIPm1LYKod39YZ0qd5azJo
-	MntXFAonCIHjfE91Yt2JgpgepKfKgNFPhciZfYiLWomvYG814SJ1SgrdBF9EHNNIpS0q/eE8yqLFL
-	1RS7/4yAgC7QtOLoPqCVTp8442Ua2K7og1E0sYYnktR/v62dEZd5UZePsCb+hCO20uvGOsHG50jbd
-	13VNupuUh/xfkQIfl114e6uEZSE6L/DrWUbSjgHZFn4p5a3cV5IannhMvwefIH3yOf0craBwHLDtb
-	yW7EAzF6odOxfaZ5EpqQ==;
+	List-Owner; bh=yUi32ijIN4iaWcxy/Ix2WNJK4g8D2Y4VV5ho7qn9dYY=; b=PuJ8bcNSDU82tU
+	cAi3720A9m8+YZ7iVgINfAeKBVoI78plAk/5eyl1uMV0ejyRCPUp8kvWypEh70eGSGFErZetcGw23
+	qyUrwOHA7tpgiTvL5DjYjhBVtpQmsG9h69g0FiC6lpMC7eqsUbix7ufCmoZ2aBSL9nGTqoyLUbm7H
+	/tRZycFgVbeNh62f5jEGiK1z2I6PltZctusKvtgAErnRWMq53EqghMAirnENkPjHKZlJzMsRpmp/L
+	DPRyrV7q84O0aVAI4BB8aU/30DfUbw/iFAWq7c72xY7e3GKTFM6MPVtJqnNW3VvV+bX6QMbGJmYWg
+	HfShNhjVRR3zNQv3Smhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxsGs-005ouI-2B;
-	Tue, 31 Oct 2023 17:11:18 +0000
-Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
+	id 1qxsHh-005p2P-22;
+	Tue, 31 Oct 2023 17:12:09 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxsGp-005otX-0H
+	id 1qxsHe-005p1b-35
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Oct 2023 17:11:16 +0000
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9c603e2354fso5072666b.1
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Oct 2023 10:11:12 -0700 (PDT)
+	Tue, 31 Oct 2023 17:12:08 +0000
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-991c786369cso942159566b.1
+        for <linux-mtd@lists.infradead.org>; Tue, 31 Oct 2023 10:12:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698772271; x=1699377071; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1698772323; x=1699377123; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uqSOgBlMAL0p4luVZj/K6kb8seEHM+WZo7c0FNWQQTQ=;
-        b=ooyk6oI3ZT6xhDG9s/doEUFEgbxTQ7nicCybqVsHM/2r3/gIL5zhzA+YY7+eE55I2J
-         otxz/ngZDqsfFhMysj4fL9K4tlBuXL9Jaqj51GVpHj5Z5WCRG3LEJNySiRUKcKdcF9Li
-         yURVK5uAfmOrmj+95AO2jmEEF+tDA26xivk77Q/UfMp6GRIA11x0sn541F+1bpZpZp5l
-         Kbhrrqa1Cu4+qtLTavbhLOXILA+k+BwcxbNsAjv29itAQKI9DKBOhyCf9sMEekywR4HW
-         YxwFmx8Pmj1lrWaQ9zYV/hSu7khRq7ybL0hshBqcftsfaab9ybBwyR6rsKDUYTsxexgJ
-         Ee0w==
+        bh=3gy2DoXe7zvEWgTN6cmYSFYz8OjUKBBawRLe2BiuPrI=;
+        b=tCBZGxRtRoDeBb3tqX2lTgBbbVMoLWwL/y0MfpUl+LaBb5s2/xWnCs0lCYKq92xQZg
+         skLpXYqGevxmorGoxKlr7AKwqDeXhzdJ+WmJn4rQbK59QECiruQV1xQAkI5tGIXUaXAH
+         8CeVvnmJnSzd7Nz7MhW623I969Gt/hTgS5ksC/P5z2Xil3ES8o+Kfh8TpXTiHXMmUz93
+         hQCpikgt1krI6fOfYf3/55OIBHmBW3v1XI/NyUr/FTjtMjY+glNA87oJaBuSHSJ3GAv9
+         pt5Krht869aMDu2pPOBQiuxDLYuXATUKm1he4VUn51wkimF0jiHU/sLTcmZRVlFEFJLW
+         47KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698772271; x=1699377071;
+        d=1e100.net; s=20230601; t=1698772323; x=1699377123;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uqSOgBlMAL0p4luVZj/K6kb8seEHM+WZo7c0FNWQQTQ=;
-        b=dupTt58jGUgrqN4Ball06jEA0dpCIDH8sIUYIDBZVOgLD6vdWTfiVIIC6K1RWqYLaL
-         ytjLx8YNDvvN2SIdXN9KuzYEmgcFl4sf0yAtm0AkukMLRq3F8zJ7tdNrXqegaYktP1B+
-         7Sjj38j8HYFGMZCA5DxQYTUP4qlt/bom3IilRbC0PhjN/1LfibUxoHiQjWqguXp6ucjF
-         /2xe6WFivn7VZ+CCMCQpi0wz6i/htXvYubhY8LVo5LdHzhh23UoK1IrsPouKQ/yelDSe
-         dNHQoeFJe52R33oKfENBP3nM7IVJRTQw6JxRFnu0w9I6VlH4dAph7TbLN4ZQNC1RFNXv
-         HDdw==
-X-Gm-Message-State: AOJu0YyTvbnHp/QyowlA6Y4011BtoJQmLl8dTbW6afER7Y/dlIabWuEM
-	jy0WYhsAp1skWVkZdDm1rmDcMQ==
-X-Google-Smtp-Source: AGHT+IGPHvjQZdLx0skQOwgx1vhUZ3Q8/68RlhfDkl0id4LPnPh7EfNpx3PmhRPkfvwXsXvFFBXa/g==
-X-Received: by 2002:a17:906:d9d0:b0:9ae:6648:9b53 with SMTP id qk16-20020a170906d9d000b009ae66489b53mr240679ejb.23.1698772271133;
-        Tue, 31 Oct 2023 10:11:11 -0700 (PDT)
+        bh=3gy2DoXe7zvEWgTN6cmYSFYz8OjUKBBawRLe2BiuPrI=;
+        b=cp3MKAx34URE/ZdlUFocc9SThM+pCuDdiS/3OYGq1qszRKVnDYGwkfygkO1H0qNONf
+         9mmuGJ/3Qgvtf0JrjuZ/by1olpEy4bGuTSbeGQ+/vqQE5C7cn5Tl/lfH/d6xhwhtZdxj
+         HkPH05aVnsDW88NLxJ6RF6AT+F+8lK0sPGg2ifv3n1C9B4o9OIzHuwCiT6s2Lqhm/ccj
+         CbCQmPNYRBk4VJKdDtuvWYovP3Cwt7Wjwk+Exm8LxShv8MzD1IUlJEPss/veHJSzjLHF
+         yVWBSq//gXFWZcUtBOZbgZtSO8nFhB0/LhoiUIwYwog7rhgLm7gkcBjKuOCeZOMiOrMf
+         Dd8w==
+X-Gm-Message-State: AOJu0YzAE1ry7OKBdUlWLNhPQXCEUcAZEgs1irU6kVejOLB2N+RsCmH2
+	Kp0hZeSmbffSArxZyeCJS2Bq+g==
+X-Google-Smtp-Source: AGHT+IGEL4ucCTHZwLV51PO1qj/dTChkWJAA2ttTP0kXd0AtrR7VSrTuRrEgYvu0TJHdYWdsSFjY6A==
+X-Received: by 2002:a17:907:2d87:b0:9c4:b8c9:1bf2 with SMTP id gt7-20020a1709072d8700b009c4b8c91bf2mr12238581ejc.60.1698772323126;
+        Tue, 31 Oct 2023 10:12:03 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id pj17-20020a170906d79100b0099bc8bd9066sm1268384ejb.150.2023.10.31.10.11.09
+        by smtp.gmail.com with ESMTPSA id pj17-20020a170906d79100b0099bc8bd9066sm1268384ejb.150.2023.10.31.10.12.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 10:11:10 -0700 (PDT)
-Message-ID: <b9af01d2-1a86-4b41-9bd6-3bf7a0dde1c0@linaro.org>
-Date: Tue, 31 Oct 2023 18:11:08 +0100
+        Tue, 31 Oct 2023 10:12:02 -0700 (PDT)
+Message-ID: <47cf6dd2-dcfa-468b-9bcb-3af32f6d9c4b@linaro.org>
+Date: Tue, 31 Oct 2023 18:12:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine
- Driver
+Subject: Re: [RFC PATCH 2/5] arm64: dts: qcom: ipq9574: Add ecc engine support
 Content-Language: en-US
 To: Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
  andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
@@ -78,7 +77,7 @@ To: Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
  quic_srichara@quicinc.com, qpic_varada@quicinc.com
 References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-2-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-3-quic_mdalam@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,10 +123,10 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231031120307.1600689-2-quic_mdalam@quicinc.com>
+In-Reply-To: <20231031120307.1600689-3-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231031_101115_145153_E6C03F65 
-X-CRM114-Status: GOOD (  16.04  )
+X-CRM114-CacheID: sfid-20231031_101206_996969_8B353CAE 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,73 +144,30 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 31/10/2023 13:03, Md Sadre Alam wrote:
-
-Eh? Empty?
-
 > Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 > Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
 > ---
->  drivers/mtd/nand/Kconfig    |   7 ++
->  drivers/mtd/nand/Makefile   |   1 +
->  drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 206 insertions(+)
->  create mode 100644 drivers/mtd/nand/ecc-qcom.c
+>  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> index 5f83ee42a719..b44acb1fac74 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> @@ -336,6 +336,11 @@ sdhc_1: mmc@7804000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		bch: qpic_ecc {
+> +			compatible = "qcom,ipq9574-ecc";
 
-...
+NAK. There are so many wrong things with it... Let's start with missing
+checkpatch. Then with unndeeded label. Then with not allowed underscores
+in node names.
+Finally:
+> +			status = "ok";
 
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(qcom_ecc_config);
-> +
-> +void qcom_ecc_enable(struct qcom_ecc *ecc)
-> +{
-> +	ecc->use_ecc = true;
-> +}
-> +EXPORT_SYMBOL(qcom_ecc_enable);
-
-Drop this and all other exports. Nothing here explains the need for them.
-
-> +
-> +void qcom_ecc_disable(struct qcom_ecc *ecc)
-> +{
-> +	ecc->use_ecc = false;
-> +}
-> +EXPORT_SYMBOL(qcom_ecc_disable);
-> +
-> +static const struct of_device_id qpic_ecc_dt_match[] = {
-> +	{
-> +		.compatible = "qcom,ipq9574-ecc",
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
-Checkpatch is preerquisite. Don't send patches which have obvious issues
-pointed out by checkpatch. It's a waste of reviewers time.
-
-> +	},
-> +	{},
-> +};
-> +
-> +static int qpic_ecc_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct qpic_ecc *ecc;
-> +	u32 max_eccdata_size;
-> +
-> +	ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
-> +	if (!ecc)
-> +		return -ENOMEM;
-> +
-> +	ecc->caps = of_device_get_match_data(dev);
-> +
-> +	ecc->dev = dev;
-> +	platform_set_drvdata(pdev, ecc);
-> +	dev_info(dev, "probed\n");
-
-No, no such messages.
+Drop.
 
 
 
