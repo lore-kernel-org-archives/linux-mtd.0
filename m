@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB024C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 15:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36D2BC4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 15:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iNlNUBv8BwJLMvlocUSu86Hiu0z8fj2tXMXwv8oUSEo=; b=JgSnzHlAqqTrJC
-	Z2f3jW68ShKrxghKCaabCOXM/6GeZ+XcznKYWTrWkQ+/QIYJfr1rENxBYsduAEPGcu1bESm/osfLy
-	bkHpA3/V1+lGvk7bbeONL+7ouPK1YyhIGt7EVYCrzQMJIB6coo3rIQ4s/c6aWl+ODsTIK/iiepyJZ
-	56loS/O0QR7DOj5uWgW9kRYbeayx/r/GCgQkBBqX1F2QCoiJ1K1Si+4kjIqZEA7uMEHdEV9guw0Hg
-	f7aSsscabNOkMzi1dM/Gsa49HHqhxixqCIty03FwIrxIp1TqhrH1RssvM4APFObOFJyBV2BC2hLy/
-	RUMusiskrywjiemI/41g==;
+	List-Owner; bh=gyQ2r1WWIYxVXBP7K7otaBuoURDxEmpRcfBnxeKm9P0=; b=dSKv98AExQJQ2m
+	HhLQ8/glFAetEJE/0J5iLviZ9c/iEZn2XQmpc/fMFGANUE5I4FdvJ7BDhZopIvgx8GbNxs35XIch0
+	t58rUsYUBlVmQCMFmRKGTgyzRJc7blIGHEpV5MmpXlaEqerUA7njd38ZD1Z4CQHirzohX0KiDq0pL
+	994DQ1LMdP1FPiMppvvAaSB6Z1b5z145gbZgZOJnQ0bShfn/IkDJmVktoP2oPlo/3rlvcas8XpSkR
+	L/svqBEVjeNOWsS4C3uvpEKixTIIgWXfPZ2QzigfPwU7MNqMxEd+D2XxmyfR16lG2POA10sYketMu
+	xHyfeHZFnlZ0Z+2s54CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxqaX-005WTD-2G;
-	Tue, 31 Oct 2023 15:23:29 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1qxqeI-005Wih-0t;
+	Tue, 31 Oct 2023 15:27:22 +0000
+Received: from mail-lf1-x131.google.com ([2a00:1450:4864:20::131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxqaV-005WSk-0O
+	id 1qxqeF-005WiK-16
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Oct 2023 15:23:28 +0000
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507a55302e0so8224481e87.0
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Oct 2023 08:23:24 -0700 (PDT)
+	Tue, 31 Oct 2023 15:27:20 +0000
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507ad511315so8405106e87.0
+        for <linux-mtd@lists.infradead.org>; Tue, 31 Oct 2023 08:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698765803; x=1699370603; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1698766037; x=1699370837; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ATYS9nanviadzb566KV+seOqWKaS5f1isvxWfQD8QqA=;
-        b=uXKJtVez/f3a48wiKTGuxxax6z4XtCYLwe5TYRtz4VgJKfYm4KvDT24nstIqFU5gto
-         q75PdYxN2EW4d2eVpqeI89DaNC/eZ4e7H845voLprF4xiJ1M4rPNdxwONhA5gNIAvlYQ
-         jInrOghXbyTQV0jqpmc/+mgA3qXxdNEMOWEVd2dgyvrnVI+Wv6hBDDOUkf6z8KJZmuTp
-         45GDh74wZoOxjSMsHfu0tk2VSkwTmTGezuxt67dPQBTgIEDXe+rrmCERyw2lz2o/ESwB
-         JZHLr9IIX44bRcE3C1i6PjMdXo1iRnxrjyYHHjtMeIOr/RGCY7ek2AYvc8I/cY1fBLOb
-         dEEw==
+        bh=mh5G9tVVf1JRV0Miwwbk1Eyiy5gIebT90d4LTmK9Wrk=;
+        b=csA8xcmx3I1ZKvyR2BhnA2mBq/bMI74taOClW6/ARizi2rGPUs9F43lOFzg+j2D7j3
+         nqY4KRMA7BuhtbkA6sJy4J6nvRbMIRF9xEDjBuzP8hrUtHDudxVzHPy7Odul/sSRXXIe
+         vEyqJX7K7JHMmf8UfdOmyjfQv7DiaWoJuur1rqrowtdDJ31sePwn7o4heKl2t6E1MK+J
+         2ztB7o6tV+4nfbR4pqf+UK6OUs8V1y4PjPY/2NGEoweNwbMW6EILtdUgkcE7HjavpEeD
+         xBPe7yhMSKpE5ekXcUxgvLCMRtcyZeVF32Oxzd6WvGAN7paWO7Aowe03bd5Z2daFIYuX
+         2l7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698765803; x=1699370603;
+        d=1e100.net; s=20230601; t=1698766037; x=1699370837;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ATYS9nanviadzb566KV+seOqWKaS5f1isvxWfQD8QqA=;
-        b=JEh29kGSZhBVd6GaIHIVZixcW/elhzHbkbdeVzWkx1gjaOxPhISgjYyPQR/vjQWbD1
-         etzGQC9bHPkB62jPgli6qBNfEKiBLI+Sod19u56EtAvJxfDcWvSjfbXrNNO1PcFbW5pF
-         YPQuxf49FjUD8iyYcjWPUC00lSseV/eZchxs1hxt5tVBpemQS0wmJ+h6Nype7dsZ1erd
-         oiA1BKQa5ADcZl/tMxpP7wxwHIGNbPKldOOTACzf3gpKuPuZWm8fi2aVGLkvHS3Z+gLK
-         KmVzf0fymdVck8Ha3rWrvz3by3176ieQk/8TzuEKInrwo0xwMJgj+3LsaRwnTZFc0x6L
-         e5Kw==
-X-Gm-Message-State: AOJu0Yxlb9QjSq1Rz7YKTWo+3lP1Wg/n2F/Kbw/FabqanNyqnOpuLwVk
-	8wk6iSUlX9P4tPPBwoUoItmKug==
-X-Google-Smtp-Source: AGHT+IGb7omjnf0GkAFWUjhV7orO4W8kGX5+o4ozOOQdo5MzuuZDwFymNSCMD7ksBcg5ZYsq4MNoCw==
-X-Received: by 2002:ac2:4546:0:b0:507:9fe7:f321 with SMTP id j6-20020ac24546000000b005079fe7f321mr9092874lfm.54.1698765802622;
-        Tue, 31 Oct 2023 08:23:22 -0700 (PDT)
+        bh=mh5G9tVVf1JRV0Miwwbk1Eyiy5gIebT90d4LTmK9Wrk=;
+        b=p1mTnagTgNCOIK4i8RotMCQOXU63s71x2sRHVvUpqrn681H01isIbhv/VOjcXbYhFn
+         fB1xYDxMN4h3OyK9Gr2mlOGBBIoWAWCYYNPw9m40TabXTf7+HWpxtosf/+fLW2xb74TD
+         b/EhAO5My1fKBG6XYbcogGj+16ftN4hmpjCIWTY9nVgW+ZywNHMdpiMTl0AZK5JQoq3e
+         +37QOz1hZUFrlIZCIqwtxV8YSw/XGNkT1kTDbT9+0XjVnh7qKhoiI3a2bB+A4QdjkhBj
+         G0RI8ffFsPXTQvZ6Z8zmZI6jeiSc3P2v7Ge0mAOxY5UHArcOiwl3LY9gFnHKce7rnSha
+         F+Bw==
+X-Gm-Message-State: AOJu0YyS7RFZ55UY+Nu+N/SUOfy58XRpQunFvMMYBHDnjtUUIcY1vdbj
+	fM4N7hLA2S2Q5yv2/s+BccbpHg==
+X-Google-Smtp-Source: AGHT+IE4pC3t7FwqoQD0BIaIDI2MyHaowR4Ik+vtDtozLojI3EFuqYMFMD/+gJ/POw2/NQahzE9vSQ==
+X-Received: by 2002:a05:6512:1110:b0:507:9608:4a87 with SMTP id l16-20020a056512111000b0050796084a87mr10317659lfg.56.1698766036843;
+        Tue, 31 Oct 2023 08:27:16 -0700 (PDT)
 Received: from [192.168.143.96] (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.91])
-        by smtp.gmail.com with ESMTPSA id v17-20020ac25591000000b00503189d8b8csm233610lfg.198.2023.10.31.08.23.20
+        by smtp.gmail.com with ESMTPSA id q16-20020ac25110000000b005057fe45833sm236371lfb.227.2023.10.31.08.27.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 08:23:22 -0700 (PDT)
-Message-ID: <873c1b14-5b7c-4fb1-8f09-6344a4bf901b@linaro.org>
-Date: Tue, 31 Oct 2023 16:23:19 +0100
+        Tue, 31 Oct 2023 08:27:16 -0700 (PDT)
+Message-ID: <8be3b4f4-f3d1-41c8-bd4a-90adf1a02ea6@linaro.org>
+Date: Tue, 31 Oct 2023 16:27:13 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/5] arm64: dts: qcom: ipq9574: Add ecc engine support
+Subject: Re: [RFC PATCH 5/5] arm64: dts: qcom: ipq9574: Add support for SPI
+ nand
 Content-Language: en-US
 To: Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
  andersson@kernel.org, robh+dt@kernel.org, conor+dt@kernel.org,
@@ -76,7 +77,7 @@ To: Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org, quic_srichara@quicinc.com, qpic_varada@quicinc.com
 References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-6-quic_mdalam@quicinc.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -113,10 +114,10 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+In-Reply-To: <20231031120307.1600689-6-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231031_082327_191052_285BD03A 
-X-CRM114-Status: GOOD (  13.65  )
+X-CRM114-CacheID: sfid-20231031_082719_389217_B0D086BA 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,48 +135,163 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 31.10.2023 13:03, Md Sadre Alam wrote:
+> Add support for QPIC SPI NAND for IPQ9574
+> 
 > Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 > Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
 > ---
-Hello,
-
-you're missing:
-
-- dt-bindings (make dtbs_check is unhappy)
-- a commit message
-- Co-developed-by for Sricharan
-
-
-status should read "okay" instead, but in this case it's unnecessary
-as you're defining the node and lack of the status property also means
-that device is enabled
-
-however
-
-this ECC engine seems to be a part of the NAND controller, so it's
-unlikely that the DT maintainers will agree for it to have a separate
-node
-
-Konrad
->  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
+>  arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts | 56 ++++++++++-----------
+>  arch/arm64/boot/dts/qcom/ipq9574.dtsi       | 30 ++++++++++-
+>  2 files changed, 57 insertions(+), 29 deletions(-)
 > 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
+> index 1bb8d96c9a82..5e4200edb873 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
+> @@ -15,48 +15,48 @@ / {
+>  	compatible = "qcom,ipq9574-ap-al02-c7", "qcom,ipq9574";
+>  };
+>  
+> -&sdhc_1 {
+> -	pinctrl-0 = <&sdc_default_state>;
+> -	pinctrl-names = "default";
+> -	mmc-ddr-1_8v;
+> -	mmc-hs200-1_8v;
+> -	mmc-hs400-1_8v;
+> -	mmc-hs400-enhanced-strobe;
+> -	max-frequency = <384000000>;
+> -	bus-width = <8>;
+> -	status = "okay";
+> -};
+How is removing SDHCI related to adding support for SPI NAND flash?
+You must explain your changes in the commit message.
+
+> -
+>  &tlmm {
+> -	sdc_default_state: sdc-default-state {
+> -		clk-pins {
+> +	qspi_nand_pins: qspi_nand_pins {
+node names (between : and {) must not include underscores, use
+hyphens instead
+
+> +		spi_clock {
+>  			pins = "gpio5";
+> -			function = "sdc_clk";
+> +			function = "qspi_clk";
+>  			drive-strength = <8>;
+>  			bias-disable;
+>  		};
+>  
+> -		cmd-pins {
+> +		qspi_cs {
+>  			pins = "gpio4";
+> -			function = "sdc_cmd";
+> +			function = "qspi_cs";
+>  			drive-strength = <8>;
+>  			bias-pull-up;
+>  		};
+>  
+> -		data-pins {
+> -			pins = "gpio0", "gpio1", "gpio2",
+> -			       "gpio3", "gpio6", "gpio7",
+> -			       "gpio8", "gpio9";
+> -			function = "sdc_data";
+> +		qspi_data {
+> +			pins = "gpio0", "gpio1", "gpio2";
+> +			function = "qspi_data";
+>  			drive-strength = <8>;
+>  			bias-pull-up;
+>  		};
+>  
+> -		rclk-pins {
+> -			pins = "gpio10";
+> -			function = "sdc_rclk";
+> -			drive-strength = <8>;
+> -			bias-pull-down;
+> -		};
+> +	};
+> +};
+> +
+> +&qpic_bam {
+> +	status = "okay";
+> +};
+> +
+> +&qpic_nand {
+> +	status = "okay";
+status should come last
+> +	pinctrl-0 = <&qspi_nand_pins>;
+> +	pinctrl-names = "default";
+> +	spi_nand: spi_nand@0 {
+no underscores in node names
+missing newline between properties and subnodes
+
+> +		compatible = "spi-nand";
+> +		nand-ecc-engine = <&qpic_nand>;
+> +		reg = <0>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		nand-ecc-strength = <4>;
+> +		nand-ecc-step-size = <512>;
+> +		spi-max-frequency = <8000000>;
+>  	};
+>  };
 > diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> index 5f83ee42a719..b44acb1fac74 100644
+> index b44acb1fac74..f9c21373f5e6 100644
 > --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
 > +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> @@ -336,6 +336,11 @@ sdhc_1: mmc@7804000 {
+> @@ -336,10 +336,38 @@ sdhc_1: mmc@7804000 {
 >  			status = "disabled";
 >  		};
 >  
-> +		bch: qpic_ecc {
-> +			compatible = "qcom,ipq9574-ecc";
-> +			status = "ok";
-> +		}
+> +		qpic_bam: dma@7984000 {
+> +			compatible = "qcom,bam-v1.7.0";
+> +			reg = <0x7984000 0x1c000>;
+> +			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&gcc GCC_QPIC_AHB_CLK>;
+> +			clock-names = "bam_clk";
+> +			#dma-cells = <1>;
+> +			qcom,ee = <0>;
+> +			status = "disabled";
+> +		};
+You're modifying the SoC and board devicetrees in one go, this won't fly
+
 > +
->  		blsp_dma: dma-controller@7884000 {
->  			compatible = "qcom,bam-v1.7.0";
->  			reg = <0x07884000 0x2b000>;
+> +		qpic_nand: spi@79b0000 {
+> +			compatible = "qcom,ipq9574-nand";
+> +			reg = <0x79b0000 0x10000>;
+
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+these two properties usually go below status, at the end
+
+> +			clocks = <&gcc GCC_QPIC_CLK>,
+> +			<&gcc GCC_QPIC_AHB_CLK>,
+> +			<&gcc GCC_QPIC_IO_MACRO_CLK>;
+Indentation here is messy
+
+> +			clock-names = "core", "aon", "io_macro";
+one per line, please
+
+> +			dmas = <&qpic_bam 0>,
+> +				<&qpic_bam 1>,
+> +				<&qpic_bam 2>;
+ditto
+
+> +			dma-names = "tx", "rx", "cmd";
+ditto
+
+> +			nand-ecc-engine = <&bch>;
+> +			status = "disabled";
+> +		};
+> +
+>  		bch: qpic_ecc {
+>  			compatible = "qcom,ipq9574-ecc";
+>  			status = "ok";
+> -		}
+> +		};
+This means the previous dt patch would not compile
+
+Konrad
 
 ______________________________________________________
 Linux MTD discussion mailing list
