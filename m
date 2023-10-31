@@ -4,62 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2DE8C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 10:13:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 290D1C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 12:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iwIgX/gc9M4w6iJSyTeFavi6FTpLTG6h0HIlNnUQRxk=; b=LIO+zraA++AaWc
-	rtwM4x7X+VJtE1oWTaNZ+vjTZVhakY7YYFy1EEQD/cy6t1wr0+4YMhiiGxHDxMD7j25NvI4Ji9jb9
-	A78ZbkWmLJPotwuJMfaHTfQPZf25anWfwATCwkzgR17MMigFaTTx9jmSmWz76N7R3wCYj1NMgY8o0
-	DRotFowbNVjqv/FHcU4VJjTA+7PcXbMm8Bt3hBqxrnmEe89OIG+8dzWX30Ffj4nZKQTJbZFO8dWn9
-	hL34FAvGnT0GSuFL1KYv7i3U8Hr2GgIUi+LCTqBwws4p5u/V/alP1PfGzMZKH0/7tsrriG/3zT/Q0
-	wbeDnpVq4qOkxUF6KLOw==;
+	List-Owner; bh=r2FG5PRL0XaEyB+fjS2a9klq+N1G1lo0USUrS0PEE54=; b=lJogSsRizJWaTP
+	tem/+Lj9FUJOyASKZHfquk2MKOfePcPcV8iTmgfAAYYtu7DXoagjx6oe+TebWl79wPwWYFjSWHaSZ
+	5OcBgJ7V8bPEqH+a41B/eAcicPPlpMIt2ehbfC6Knf8ZslEchzvzKwlIANiyxBW7JSlYvYuFSARZS
+	tqpRb5h/dUO5YbK74fHyM189l0KB/4trsx4x4blkCgEPWy2PNQyLZ7Cffl8ReTRdzRotVlBwoOytn
+	S0Y439abTkwyE9zbHarqmMpoWZOkjT1xutswb3dXKB+D4WXKHJUD+D4zHQZ7G0I4GzjeksKGsdWUR
+	PZ8Bp4yBC7lkD/yass7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxlkR-004xBT-17;
-	Tue, 31 Oct 2023 10:13:23 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qxnT2-005Es4-0u;
+	Tue, 31 Oct 2023 12:03:32 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxlkN-004x8E-2C
+	id 1qxnSy-005Epw-1m
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Oct 2023 10:13:21 +0000
-Received: from [127.0.0.1] (unknown [154.135.136.126])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 367A63C3;
-	Tue, 31 Oct 2023 11:13:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1698747192;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PUR6spnQ6honamQNHeG0kSEtO5wSkdiaZI8tPI2AjCs=;
-	b=iaQ3RW4I+iP5z+Z7XyhsOReLTbZ4DIh+6eTsYzL2+oTtfz2U7XGs3nfIY1kexs0uQWn8m8
-	XqhIjvxmTKC0lNyF4rehIBUDEDK1W3OZQ4MqvcjKjyge5yNCbC3p6hmINvV38KK6Vsd8hc
-	l0ExtnLnayVUzaKGDHeDMaoU+efKz0bClmumKCoxxd7vIbDfV+VQK8Ls4mst5sqYz2JACw
-	7mFEZOgWIAsEv+PLzFcQHfbP0rPrVwy+ifsbcyfQ/osKr9sVdm3GrVlfutuhTJrS5vS0mw
-	uUp5LGkCYORnvBt6/ABsZI3rU6IBIaX/EHVF3yMdHMTCE2Th/aHmPuo2lmCI/w==
-Date: Fri, 27 Oct 2023 22:03:22 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, Fabio Estevam <festevam@gmail.com>
-CC: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org, tkuw584924@gmail.com,
- Fabio Estevam <festevam@denx.de>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: Set the erase flag for multi-die
-User-Agent: K-9 Mail for Android
-In-Reply-To: <44a19b4d-2bda-4088-b0b6-a60b3598621f@linaro.org>
-References: <20231026112312.3217502-1-festevam@gmail.com> <44a19b4d-2bda-4088-b0b6-a60b3598621f@linaro.org>
-Message-ID: <3B565C8F-F5A5-4B20-A05E-9AF6484DDC52@walle.cc>
+	Tue, 31 Oct 2023 12:03:30 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39VBo1qO031040;
+	Tue, 31 Oct 2023 12:03:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=AuA+t3/r+JWkHJYnQkTl6/U/0J6YgPnNxPXKN17FIh8=;
+ b=eUQ3E53H8zHWCLYUq67ehRCwxTDm17SfNL6iWxzPoR2gTvF7PWEd2+ZvfnaM2RgqLVjY
+ Y0zujWxAoZSi0lcKi4Eeh9AKt4QwHcQIOgbvTlP0k8qil32nLq3uDA0hKpvNV8BCPYtB
+ YA9VyHApdN1on2GhltGwtcW3Qih+QGOkIuf5MJLK3PwdKmaKm63C80uu+ZeSRrzDC8OA
+ t+p5uOdRDZ6tBicmVXz/+AHAXsOcLeTysnVK+aQkbHkpjUT09SthVm+nmBGnj3gpl97h
+ VsZCq0+jGd9mlHU1xVkg2CLtPEJ73rf6E4lxWc4S24lFK1ujBPaof4yMYe6jhOPfvwQL 7w== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u2dey2thn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 31 Oct 2023 12:03:13 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 39VC3AH9005259;
+	Tue, 31 Oct 2023 12:03:10 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3u0uckvvp4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 31 Oct 2023 12:03:10 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39VC3AjF005252;
+	Tue, 31 Oct 2023 12:03:10 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 39VC3AnZ005251
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 31 Oct 2023 12:03:10 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+	id 9B6D64162D; Tue, 31 Oct 2023 17:33:09 +0530 (+0530)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, quic_srichara@quicinc.com,
+        qpic_varada@quicinc.com
+Cc: quic_mdalam@quicinc.com
+Subject: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine Driver
+Date: Tue, 31 Oct 2023 17:33:03 +0530
+Message-Id: <20231031120307.1600689-2-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LA_jYFVdTJG1wQuJR_Athd-pxEwgUZVJ
+X-Proofpoint-GUID: LA_jYFVdTJG1wQuJR_Athd-pxEwgUZVJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-31_01,2023-10-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2310310094
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231031_031320_192888_D6A2AEC8 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20231031_050328_703845_94EDC163 
+X-CRM114-Status: GOOD (  26.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,21 +109,252 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
->> Instead of manually passing the .flags = NO_CHIP_ERASE in the case
->> of multi-die SPI NOR flash, retrieve the information about the number of
->> dies directly from SFDP and set the SNOR_F_NO_OP_CHIP_ERASE flag in the
->> multi-die case.
->
->We don't have enough data from manufacturers to make such an assumption.
->And since this is not backed up by a standard, I'd like to stick to the
->.flags = NO_CHIP_ERASE for now
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+---
+ drivers/mtd/nand/Kconfig    |   7 ++
+ drivers/mtd/nand/Makefile   |   1 +
+ drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 206 insertions(+)
+ create mode 100644 drivers/mtd/nand/ecc-qcom.c
 
-mh. we have two flashes which are multi die ones. as far as I remember. i checked the semper flash and it didn't support chip erase. also.. chip erase isn't a standard either and not backed by SFDP, correct? We shouldn't use it in the first place. So we might have a chance to fix that for multi die chips now. 
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 5b0c2c95f10c..333cec8187c8 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -61,6 +61,13 @@ config MTD_NAND_ECC_MEDIATEK
+ 	help
+ 	  This enables support for the hardware ECC engine from Mediatek.
+ 
++config MTD_NAND_ECC_QCOM
++	tristate "Qualcomm hardware ECC engine"
++	depends on ARCH_QCOM
++	select MTD_NAND_ECC
++	help
++	  This enables support for the hardware ECC engine from Qualcomm.
++
+ endmenu
+ 
+ endmenu
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 19e1291ac4d5..c73b8a3456ec 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -3,6 +3,7 @@
+ nandcore-objs := core.o bbt.o
+ obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
+ obj-$(CONFIG_MTD_NAND_ECC_MEDIATEK) += ecc-mtk.o
++obj-$(CONFIG_MTD_NAND_ECC_QCOM) += ecc-qcom.o qpic_common.o
+ 
+ obj-y	+= onenand/
+ obj-y	+= raw/
+diff --git a/drivers/mtd/nand/ecc-qcom.c b/drivers/mtd/nand/ecc-qcom.c
+new file mode 100644
+index 000000000000..a85423ed368a
+--- /dev/null
++++ b/drivers/mtd/nand/ecc-qcom.c
+@@ -0,0 +1,198 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
++/*
++ * QCOM ECC Engine  Driver.
++ * Copyright (C) 2023  Qualcomm Inc.
++ * Authors:	Md sadre Alam		<quic_mdalam@quicinc.com>
++ *		Sricharan R		<quic_srichara@quicinc.com>
++ */
++
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++#include <linux/interrupt.h>
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/iopoll.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/mutex.h>
++#include <linux/mtd/nand-qpic-common.h>
++
++
++
++/* ECC modes supported by the controller */
++#define ECC_NONE        BIT(0)
++#define ECC_RS_4BIT     BIT(1)
++#define ECC_BCH_4BIT    BIT(2)
++#define ECC_BCH_8BIT    BIT(3)
++
++struct qpic_ecc_caps {
++	u32 err_mask;
++	u32 err_shift;
++	const u8 *ecc_strength;
++	const u32 *ecc_regs;
++	u8 num_ecc_strength;
++	u8 ecc_mode_shift;
++	u32 parity_bits;
++	int pg_irq_sel;
++};
++
++
++struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
++{
++	return container_of(chip, struct qcom_nand_host, chip);
++}
++EXPORT_SYMBOL(to_qcom_nand_host);
++
++struct qcom_nand_controller *
++get_qcom_nand_controller(struct nand_chip *chip)
++{
++	return container_of(chip->controller, struct qcom_nand_controller,
++			    controller);
++}
++EXPORT_SYMBOL(get_qcom_nand_controller);
++
++static struct qpic_ecc *qpic_ecc_get(struct device_node *np)
++{
++	struct platform_device *pdev;
++	struct qpic_ecc *ecc;
++
++	pdev = of_find_device_by_node(np);
++	if (!pdev)
++		return ERR_PTR(-EPROBE_DEFER);
++
++	ecc = platform_get_drvdata(pdev);
++	if (!ecc) {
++		put_device(&pdev->dev);
++		return ERR_PTR(-EPROBE_DEFER);
++	}
++
++	return ecc;
++}
++
++struct qpic_ecc *of_qpic_ecc_get(struct device_node *of_node)
++{
++	struct qpic_ecc *ecc = NULL;
++	struct device_node *np;
++
++	np = of_parse_phandle(of_node, "nand-ecc-engine", 0);
++	/* for backward compatibility */
++	if (!np)
++		np = of_parse_phandle(of_node, "ecc-engine", 0);
++	if (np) {
++		ecc = qpic_ecc_get(np);
++		of_node_put(np);
++	}
++
++	return ecc;
++}
++EXPORT_SYMBOL(of_qpic_ecc_get);
++
++int qcom_ecc_config(struct qpic_ecc  *ecc, int ecc_strength,
++			bool wide_bus)
++{
++	ecc->ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT);
++
++	if (ecc_strength >= 8) {
++		/* 8 bit ECC defaults to BCH ECC on all platforms */
++		ecc->bch_enabled = true;
++		ecc->ecc_mode = 1;
++
++		if (wide_bus) {
++			ecc->ecc_bytes_hw = 14;
++			ecc->spare_bytes = 0;
++			ecc->bbm_size = 2;
++		} else {
++			ecc->ecc_bytes_hw = 13;
++			ecc->spare_bytes = 2;
++			ecc->bbm_size = 1;
++		}
++	} else {
++		/*
++		 * if the controller supports BCH for 4 bit ECC, the controller
++		 * uses lesser bytes for ECC. If RS is used, the ECC bytes is
++		 * always 10 bytes
++		 */
++		if (ecc->ecc_modes & ECC_BCH_4BIT) {
++			/* BCH */
++			ecc->bch_enabled = true;
++			ecc->ecc_mode = 0;
++			if (wide_bus) {
++				ecc->ecc_bytes_hw = 8;
++				ecc->spare_bytes = 2;
++				ecc->bbm_size = 2;
++			} else {
++				ecc->ecc_bytes_hw = 7;
++				ecc->spare_bytes = 4;
++				ecc->bbm_size = 1;
++			}
++		} else {
++			/* RS */
++			ecc->ecc_bytes_hw = 10;
++			if (wide_bus) {
++				ecc->spare_bytes = 0;
++				ecc->bbm_size = 2;
++			} else {
++				ecc->spare_bytes = 1;
++				ecc->bbm_size = 1;
++			}
++		}
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(qcom_ecc_config);
++
++void qcom_ecc_enable(struct qcom_ecc *ecc)
++{
++	ecc->use_ecc = true;
++}
++EXPORT_SYMBOL(qcom_ecc_enable);
++
++void qcom_ecc_disable(struct qcom_ecc *ecc)
++{
++	ecc->use_ecc = false;
++}
++EXPORT_SYMBOL(qcom_ecc_disable);
++
++static const struct of_device_id qpic_ecc_dt_match[] = {
++	{
++		.compatible = "qcom,ipq9574-ecc",
++	},
++	{},
++};
++
++static int qpic_ecc_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct qpic_ecc *ecc;
++	u32 max_eccdata_size;
++
++	ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
++	if (!ecc)
++		return -ENOMEM;
++
++	ecc->caps = of_device_get_match_data(dev);
++
++	ecc->dev = dev;
++	platform_set_drvdata(pdev, ecc);
++	dev_info(dev, "probed\n");
++
++	return 0;
++}
++
++
++MODULE_DEVICE_TABLE(of, qpic_ecc_dt_match);
++
++static struct platform_driver qpic_ecc_driver = {
++	.probe  = qpic_ecc_probe,
++	.driver = {
++		.name  = "qpic-ecc",
++		.of_match_table = qpic_ecc_dt_match,
++	},
++};
++
++module_platform_driver(qpic_ecc_driver);
++
++MODULE_AUTHOR("Md Sadre Alam <quic_mdalam@quicinc.com>");
++MODULE_DESCRIPTION("QPIC Nand ECC Driver");
++MODULE_LICENSE("Dual MIT/GPL");
+-- 
+2.34.1
 
-So as long as there isn't a multi die flash which supports 
-chip erase, I'd like to keep the additional flags as minimal as possible. for the best case scenario it would just work out of the box with just SFDP, which is impossible if we need that no_chip_erase flag.
-
--michael 
 
 ______________________________________________________
 Linux MTD discussion mailing list
