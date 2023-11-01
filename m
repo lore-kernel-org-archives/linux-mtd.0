@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6C6EC4332F
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Nov 2023 09:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E189FC4332F
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Nov 2023 12:30:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Mvh+QlnT5GEqGgMRhDoeNVbYMZlZXJFHnBQOmdXGJdk=; b=l/h9jeR1v3105d
-	mjGQK2O1jyB5HwCvAmpuFtWQeD5loxmwoZrwE80b7GVTw6+rVDM+eXE/FTV1v8irav4mO1dH9BOmN
-	3z6HqwLDrmAr02dOFWvnWjr0ImCF6wUufP92pE812k3QDskDb551fVfctKSYvq4k8qcBPXa9oECME
-	TOCyuuDYMAydESlHTQpGqTn25aSfxKyb8Si1OJPmj0+dx+DCYH1caLbu3KIDznbi7f89cKGJHuyoN
-	jG25SWtM8gnyDDlqlciqL/HZL1Jwg0AHv04rWf5NGXMm0rhwVc/MR8fNBzHVcW+eiHcp/eupuEY4B
-	GNzJXP3/WTj8Stj6cjUw==;
+	List-Owner; bh=EMQJLU9TmYwccDcXoVgkZoRh2sj1+S1ZhCsswOZdhhA=; b=0tZePoefsOWahP
+	D7r1Y78+5SmdBR73tKLegDS6+8ZsWZWCa9M6HX7vF1EDXZXwh9cViUh3TYbMWx2RIP2tCtWurD3Mh
+	kQHUeVyt4eH2PM/xpNBTXLFkZdWmyo8zf+urU3XGqOMe6YxyXslL71fS948tXmH25qXoaoisJh8R7
+	qGBERG/1f/Kpre0RyB8oBi6DG/kHZOoWaERe/UR5MR/WD56i+R9GHjX0JU/ImDrtSiMEj/MaIFFMc
+	7tEgjHaPBvUlgYXU8E6zSPrniebGolv6QjsxebLrzsUY1GtmdNBeg/TooOsYyCSxu40o5+0EeRhyk
+	Tljn8cUZ1UfW7DP7T6sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qy7pp-006z8K-1w;
-	Wed, 01 Nov 2023 09:48:25 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1qyAMj-007UJL-01;
+	Wed, 01 Nov 2023 12:30:33 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qy7pj-006z7H-2s
+	id 1qy9yP-007Kz7-3A
 	for linux-mtd@lists.infradead.org;
-	Wed, 01 Nov 2023 09:48:23 +0000
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so10850265a12.0
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Nov 2023 02:48:18 -0700 (PDT)
+	Wed, 01 Nov 2023 12:05:29 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53e2dc8fa02so11647932a12.2
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Nov 2023 05:05:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698832097; x=1699436897; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
+        d=linaro.org; s=google; t=1698840324; x=1699445124; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EwpSxBowZ7fGgTf3vasiRlH8Hfcy741d3f9oW1eMJEE=;
-        b=l5pPioBuBMHyAQivwBuSwQhyaEfk47mwH6TQ+xZiI2PZOYQawihzNjnttWyZuJ6Q64
-         VrWZVvQX+0tXdZoz6E4sbHvS7s/zH0PdrCZrk7R0HaaTxzvK3TKEku0bPvrZObRS7c0y
-         H/vX5qvVzSUwX15HZ9yVL8+Se2VzB9OHKFjIH0WTh0+7lFmC+Y9TgvdAI/3+AJ4tKVBM
-         4235wznHsJXuUDvNHhiL1klrj1/2s2qCWskAC2C4cxUA7q4uQHQvSZUFOfWjQR0djt5O
-         i+reTpwRxxR+mNAr/YSfNhpG9sc56ZkaTwcwv6OicNxHhhSAUDjA0wabqC62SQePoAiM
-         6UUA==
+        bh=GLdMG+eAaC/L0rL41QBqFEOhOYsSYOCLyTBBIBvPEsg=;
+        b=X4x7SWii2Ggc8TnJyWFr/v18scwVgaBg/246zCAEHKN4RHvqJV4WcXwZAFULFjQf88
+         CeXpD1srwQcsYyJHl0nYJz6EVcM4c+vZZlQHi4AFWixyz8nOZWstZCK8L3FdBzhZxTdz
+         7nf2Pp8avUe+YZ9TX90OErw1zsEqaWuN67UXITlTrTngA8tdzLNl/CCjHTsSFIAXi5/S
+         q5trPhymqgq7OYlQMuHLbxC/FAIOfgempL2ER2Znpx4UEUFFxQO/HgRE+TTgHvFoxzxA
+         Lf6NoloFxIVgu45b2AlSGWGk02Tc92z39d0Yc0q1/BFDUnV+kRDFIbJ6+G7JfL61017X
+         o0XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698832097; x=1699436897;
-        h=content-transfer-encoding:in-reply-to:content-language:from
+        d=1e100.net; s=20230601; t=1698840324; x=1699445124;
+        h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EwpSxBowZ7fGgTf3vasiRlH8Hfcy741d3f9oW1eMJEE=;
-        b=dingFG85SYMGlt99TCoXQQMiRayydYk6eJS39b23Q5Bl+lUuWv/iJi4gGvjS80vlGU
-         jhro9mcY2NH/HJXibR+mFCP+eDw4H6530P6xWHhSp2eVdSafNpPMYVXGIBP0JRTJ1RlU
-         +JQPjn7I6HIytn7/A1f4v1hWKWK0SFF4K/ezrWPv76/eA2Gcq0WNCXmX1rt0XUc9jwh/
-         KVsN0DXWpQ8bzGuqhnCq+wyfn0dujAztUsAzcHYxcHb9rQXrg6alPTRCnvNNTNGnXMaW
-         jY4glkr4d5c2gAZmwIqzDiqB7tXwn5rNLUTAlJnct3tGKESNLMcWjiBeJOYxW3dekktb
-         PV4g==
-X-Gm-Message-State: AOJu0Yz95tOYMe2VWE9PeVbCdV/CV/WGpNMmppV351lAU/cEH2ekuRP6
-	2R+TLLH+1zTG0UbaHb4QKs7J/g==
-X-Google-Smtp-Source: AGHT+IHWHu+1kpm3VXUP25guEhk8Zwb/PiCC/IG/qeo267vyupbLEbkI+PrLJ7ynCYV0aG/9Y14GXA==
-X-Received: by 2002:a17:906:d797:b0:9c7:58cd:b57 with SMTP id pj23-20020a170906d79700b009c758cd0b57mr1118476ejb.37.1698832097430;
-        Wed, 01 Nov 2023 02:48:17 -0700 (PDT)
-Received: from [192.168.2.173] ([79.115.63.76])
-        by smtp.gmail.com with ESMTPSA id j18-20020a508a92000000b0054351b5a768sm865329edj.82.2023.11.01.02.48.16
+        bh=GLdMG+eAaC/L0rL41QBqFEOhOYsSYOCLyTBBIBvPEsg=;
+        b=ZIHprNuYIf9OFG/y9U7GG4bl+m6fl+yb98jZQ72VL8vP0Gw6aNYIzVk/LAA7kpnMkW
+         c8k6KtnPPNdhLSAPWe3BSmMa3e+y4d3OeKil/NLb8OOh7a8lqnIz5gPx6A6xb4GGWS8F
+         EA2VSLm4t/4MfUgeThoOkzC+LMqZRw6c1ncdgjJz1cNd8iG2+9girQpQrpROD4GW9FRM
+         Nc9E0Cy32BP+OreF/b5hTKBtfV61XMkJQQrBceSnKf0xyTNnzHpzTn/zBorqG/dRDY0b
+         k4byJqmoIvbNf94FlHCvXDcRKHh9vmzCCJMX2T+PTnLYVH4cX4Csa/628Kev2ckXui40
+         Alxg==
+X-Gm-Message-State: AOJu0YwZQiaOhlHIy3mbwiwpcLUGSDLVHzXStf8JckPYM6dhI74Oyn2y
+	JaUcZcbFMOlKgkwbmMFALKh2sg==
+X-Google-Smtp-Source: AGHT+IGaEKuOrjZAVHPe0zmLZiOAUxMt8455glAeFN37T3AlzJmEFUvA1PtT6atMLiSpjPFYSrYNww==
+X-Received: by 2002:a17:907:7247:b0:9bd:bbc1:1c65 with SMTP id ds7-20020a170907724700b009bdbbc11c65mr1746388ejc.13.1698840323517;
+        Wed, 01 Nov 2023 05:05:23 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.76])
+        by smtp.gmail.com with ESMTPSA id bq20-20020a170906d0d400b0099d798a6bb5sm2318978ejb.67.2023.11.01.05.05.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Nov 2023 02:48:17 -0700 (PDT)
-Message-ID: <05fb3eac-0f1f-44f4-83b8-6ac5914c73c4@linaro.org>
-Date: Wed, 1 Nov 2023 11:48:15 +0200
+        Wed, 01 Nov 2023 05:05:23 -0700 (PDT)
+Message-ID: <fe6ccf43-7b71-4db6-a8de-9b33474d5a3c@linaro.org>
+Date: Wed, 1 Nov 2023 12:05:21 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 2/6] mtd: spi-nor: add erase die (chip) capability
@@ -72,12 +72,12 @@ Cc: miquel.raynal@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, bacem.daassi@infineon.com
 References: <20231101094325.95851-1-tudor.ambarus@linaro.org>
  <20231101094325.95851-3-tudor.ambarus@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
 Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 In-Reply-To: <20231101094325.95851-3-tudor.ambarus@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231101_024819_953998_48494D18 
-X-CRM114-Status: GOOD (  28.28  )
+X-CRM114-CacheID: sfid-20231101_050526_019304_46A51396 
+X-CRM114-Status: GOOD (  27.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,7 +96,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 01.11.2023 11:43, Tudor Ambarus wrote:
+On 11/1/23 09:43, Tudor Ambarus wrote:
 > JESD216 defines a chip as a die, one and the other are the same thing.
 > JESD216 clarifies that the chip erase time defined in BFPT dword(11)
 > applies separately to each die for multi-die devices in which the dice
@@ -174,22 +174,9 @@ On 01.11.2023 11:43, Tudor Ambarus wrote:
 > -	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
 > +	/* chip (die) erase? */
 > +	if ((len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) || die_erase) {
->  		unsigned long timeout;
->  
->  		ret = spi_nor_lock_device(nor);
-> @@ -2902,6 +2915,9 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
->  			return ret;
->  	}
->  
-> +	if (nor->params->chip_erase_opcode)
 
-oops, here I wanted to check for null, when null, set the default.
-Takahiro and Fabio, would you please update when/if testing?
-
-	if (!nor->params->chip_erase_opcode)
-
-
-Thanks!
+and here I should have iterated over all dices, whereas now I erase just
+one die :).
 
 ______________________________________________________
 Linux MTD discussion mailing list
