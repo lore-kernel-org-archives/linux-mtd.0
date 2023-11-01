@@ -4,130 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C88C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Oct 2023 17:17:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5233C4332F
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Nov 2023 09:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qdDyAyzzt3Ap19M9zdjMcS8H/VRva9Hs4EwYvoBDqiE=; b=RqWxYZq3DlDDGB
-	f2Qakrg0m228p2TWF0ljjVPnrcmxfGNBAz6F/Psdf9juTtVL3o730NWSWspIsNv+OTXVrhiK+F9ei
-	EonF4/pr+/efQAJYEdQAUxPA1FnUr9weK+Nugna7lzZBEc2Q350Yw09faZhR7GHgREu3Sd1DUMJ54
-	/BAI2AKC4Sus5tCZ3qhAVkHcc2vmEdDapSSyBdN5EFW3Jv0uE6voC03vuEf8R8d9rSb9VcW23GoMT
-	PHQro894MP16E+HGzUHN9I3rWLtjKOjh8cqahdIhDGlS5uyHr/6cfCY8gvkJab8jJqrwd058VALq+
-	Uf5T49eDbR2OUmvvgC5g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=u/XC7DwGT6s7yHxQaPKVU+i3v0OIHEa/+t4rfVnCJ54=; b=r1CoxglosmtPDi
+	O07xvAVsljhPG+3n5DHzuSRkQjprYFlnYGTw2hOT6YwBVFlJ/ETXJt+LhurRJenZrPI1c0AOQZKEe
+	9yXUa1fsfQttsB/QES+VYIPHjeImk1kA03o02d73knK75mN+UNFGIuQoUgTdc+Y0DqiZ1LKMacThe
+	HNJHmi22Us9XXSh1f3q5mw3Da916OKGZigwlrxC7BEak9d2X54/Th2jb5ritYfaxzsmHwZ0XZc3wa
+	bpAiHtiy3a04gA8bqpiycqyF8UgCiEOmsWSmtWCewBmezBr7qkOIvehAtLSU9sBOGOfRsaVcqNHAp
+	gARC1nzNebva58Po/APQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxsMa-005piq-1y;
-	Tue, 31 Oct 2023 17:17:12 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1qy7lD-006y9O-2x;
+	Wed, 01 Nov 2023 09:43:39 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qxsMX-005phI-2u
+	id 1qy7l8-006y6Y-0L
 	for linux-mtd@lists.infradead.org;
-	Tue, 31 Oct 2023 17:17:11 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so160925e9.1
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Oct 2023 10:17:06 -0700 (PDT)
+	Wed, 01 Nov 2023 09:43:37 +0000
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9adb9fa7200so140683566b.0
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Nov 2023 02:43:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698772626; x=1699377426; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H1FS6T6JcOn8zGVyFOJ/mVRDweHgiixRXGwY1HImzFA=;
-        b=F+uU7a4bMfs6rPYwtUkuLdSuYBZHsf+q0FPOG+qJD14pB/7HURrgiflzj+9NK0723y
-         2s9I5SO8tKHGUqHtfgmEwl6bzzB6cRRsAKTHc3abtxjn96Uayx6BvY8kafsJWpQcBSVu
-         29C7qsqdETuEuj170nT/w11qqp2X/rQLxx+wXo00e0rkx9uibTkcnW1tMi0q4OMaBnIm
-         PymyHNbR/K2RG3qrJ6eb7VcZcH72N62oQrUmED1/3KYAf/JZ1xFM5ZfLCQWpdcqI3Src
-         KIbscEa9YGekgJUM8kbZIFrRR6k1fa7RP6XCsGt8CcO5s4/vZ8435HWYA2J/jra3SRq9
-         hDiQ==
+        d=linaro.org; s=google; t=1698831810; x=1699436610; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TP3JT7V1ZBm7nu6F9v4TXclyTCPwXiPtChsKdde8Zq0=;
+        b=gI7+o5tWpsMufh0ERNRam8Vy9OqTifCj1DOPWmLXg+Y05SFj3Ir4sOYgbRsvGkfuWn
+         mDREMTfLce08eDCJHmrAS3w8lDSPTwPNS0ROrw1O2USh8jR3JB3anxnp8H1NhwMbjUqC
+         itHveJREistVLPCIhHP2RPqmAIwA1XvFK6oeWNBi6lqRdtLC6uGmM/5IWvLZHFbO1N7Y
+         30kZIFFz5F2IwDX/p4Sa/SlVbC2xUTrFKN7tWoED7FyKqEyPfkjakLid7DW0gTwINgD+
+         l6qHiJd+qlM42AOqKhXZei2DJU+e0Fy2ZJhTt1ZCEYdPCIO9wzc+jgsRCM9xLDaVHzZT
+         Fh9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698772626; x=1699377426;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H1FS6T6JcOn8zGVyFOJ/mVRDweHgiixRXGwY1HImzFA=;
-        b=pK6WAVSEyQBB7UfzEWtRpaUc/BHgbwhk+6lIoGvwuoLKh7sBuSWKaLh/8XzIPJ7yVX
-         oYGyBhcwypZ3kqsH6ZpFkXSRmbpPMJhKzEeVcj1wKXyb1QDIUw57oR/EC5mJaVqbAWYP
-         e0B7+Oni7CjsfkvaXmjaEczJjkoHdH4azO8ATyLSo93xUWSPaGbzmpc0NWCPE8yBBXC6
-         3OxXMLfI3ByRCRjZK2lAwmgQUztstb4RZyecLWup37XLSZbzcV6/2DdGsbNKJEBiIux0
-         orBPFWg1aRVU2hAGxhr5dwOFaJjmL+GLMYeHRk5AGR1Jq1vkAKdRWO2xY26IwfpILuSw
-         7OhQ==
-X-Gm-Message-State: AOJu0YwjNz9sAR50AIYTcDLJZsci4dAWFBAC4EvayVkuxxJCJVV3B1Gt
-	gMMQePDEoZ/16IecXd6ClI3nnw==
-X-Google-Smtp-Source: AGHT+IF/bWL98PTDWUCakM20W/GD3Sh4u8HG0zteoaBtvt3R3loTGpifO7TwcA4W2Tiz6MzOo8v42g==
-X-Received: by 2002:a05:600c:3b96:b0:405:409e:1fcb with SMTP id n22-20020a05600c3b9600b00405409e1fcbmr3933421wms.5.1698772625688;
-        Tue, 31 Oct 2023 10:17:05 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id t3-20020a5d49c3000000b0032dc2110d01sm1940289wrs.61.2023.10.31.10.17.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Oct 2023 10:17:04 -0700 (PDT)
-Message-ID: <43fec656-8fda-49ad-a117-1ada0c2b7a79@linaro.org>
-Date: Tue, 31 Oct 2023 18:17:01 +0100
+        d=1e100.net; s=20230601; t=1698831810; x=1699436610;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TP3JT7V1ZBm7nu6F9v4TXclyTCPwXiPtChsKdde8Zq0=;
+        b=PJBo5JLyf+ekjFiqQi06EsRrHS84GRbxnqY+Okc5WpLQ9qD9ZPD2WZFcYjHYNdEoqj
+         H95TIXg/2+RTOQP/ACmXe/gyd8As3y++fMMDQNcOWSPHjCT+y09KzkUGhwl7bR81zdEB
+         EHXNDyUrlgVuK/0PPOSZGyexywOIuRwwCSz2BgK1qLXUXvYad79Q5lS8u/Z/pAjM/4+v
+         nncJ2+KqP+X0wp3ys8gRMlmQz1ZKGzdqlHeirJ2RLbSCnxBKDClnfgTC0h/Q5jRXqp9S
+         rGikMPmDkGJMcAbSZW1gg9ocfnWqoPKfqU4dc3/LfP0W7LlahmA7U88PPJGneykRAUgf
+         puGA==
+X-Gm-Message-State: AOJu0YxmQnVnI3i/lep4VFU2Jqk4kfkToI/4wCQbXiR1KrK3n6R3pvg2
+	Kz5XS0YqPkwbpQIQDKvz0o9bxbUc2LDm0cyYQT8=
+X-Google-Smtp-Source: AGHT+IEUzcI0BCWjlWuT86CV7htMD5jHkLSQGWIKqDLDr9OK6mVz7kosZmwRaeOlzAojrEypTVMVLw==
+X-Received: by 2002:a17:907:72d0:b0:9a9:f042:deb9 with SMTP id du16-20020a17090772d000b009a9f042deb9mr1567941ejc.19.1698831810084;
+        Wed, 01 Nov 2023 02:43:30 -0700 (PDT)
+Received: from 1.. ([79.115.63.76])
+        by smtp.gmail.com with ESMTPSA id gq23-20020a170906e25700b0099e12a49c8fsm2206415ejb.173.2023.11.01.02.43.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 02:43:29 -0700 (PDT)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: michael@walle.cc,
+	festevam@denx.de,
+	takahiro.kuwano@infineon.com
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	bacem.daassi@infineon.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 0/6] mtd: spi-nor: introduce die erase
+Date: Wed,  1 Nov 2023 11:43:19 +0200
+Message-Id: <20231101094325.95851-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/5] arm64: dts: qcom: ipq9574: Add support for SPI
- nand
-Content-Language: en-US
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, agross@kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
- conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- broonie@kernel.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- quic_srichara@quicinc.com, qpic_varada@quicinc.com
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-6-quic_mdalam@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231031120307.1600689-6-quic_mdalam@quicinc.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1203; i=tudor.ambarus@linaro.org; h=from:subject; bh=r0vLJEoC/vE1Xl8/Y3tVJBH/QybCEGnthZ4EstXtUXE=; b=owGbwMvMwMXoHervvrRX5CXjabUkhlQn2T1rE65M4ZykKXjV+WzOk0M6j9YXuh498XCnm9x1Y QNuMWmXTkZjFgZGLgZZMUUWWSetU+f5TuTGyf67DzOIlQlkCgMXpwBM5BEDB0Prmq2tvUe3RH6b Nb+92yMu5W215d290pPMpYMf8lzksDM/7h1fOH/P3UXub5htg59eds9QD4pO2O682Yl1VYJGkoO T2cfepfKJdcpunBnialp/Tpa2Ck1l3fPTTuTEvQOfhKNu/Zti9ks5pJqR/1dM86b3F0vuCtgcyb KasiLOmvclT09BB0//oa9LDllq5P8zrynr2eQvlOzYMvf3T6dPdi5Fjjt7ti1XYc+2Tp0zm7lc5 bmPoWpZ9ZuW1P1CF87FxPNm736n1Fhbcq/hqpvOYpamiyuYE5WFA5243+1YFiLarHDxvbJeWu/7 z5zKnX1SpU0XrjGKzrNOY+yfb6K85aZfk0Ig+z6JaR8B
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231031_101709_942176_EA5B1361 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20231101_024334_182538_23074F30 
+X-CRM114-Status: UNSURE (   9.99  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,85 +98,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 31/10/2023 13:03, Md Sadre Alam wrote:
-> Add support for QPIC SPI NAND for IPQ9574
-> 
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts | 56 ++++++++++-----------
->  arch/arm64/boot/dts/qcom/ipq9574.dtsi       | 30 ++++++++++-
->  2 files changed, 57 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> index 1bb8d96c9a82..5e4200edb873 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> @@ -15,48 +15,48 @@ / {
->  	compatible = "qcom,ipq9574-ap-al02-c7", "qcom,ipq9574";
->  };
->  
-> -&sdhc_1 {
-> -	pinctrl-0 = <&sdc_default_state>;
-> -	pinctrl-names = "default";
-> -	mmc-ddr-1_8v;
-> -	mmc-hs200-1_8v;
-> -	mmc-hs400-1_8v;
-> -	mmc-hs400-enhanced-strobe;
-> -	max-frequency = <384000000>;
-> -	bus-width = <8>;
-> -	status = "okay";
+The patch set is just compiled tested as I don't have a multi die flash
+at hand. Takahiro and Fabio, please test the series and let me know if
+it works on your side.
 
-Why? This is not explained in commit msg.
+This will be followed by the removal of SNOR_F_NO_OP_CHIP_ERASE and
+implicitly of the old xilinx SPI NOR driver, but let's take it all in
+small bites.
 
-> -};
-> -
->  &tlmm {
-> -	sdc_default_state: sdc-default-state {
-> -		clk-pins {
-> +	qspi_nand_pins: qspi_nand_pins {
-> +		spi_clock {
->  			pins = "gpio5";
-> -			function = "sdc_clk";
-> +			function = "qspi_clk";
+Fabio Estevam (1):
+  mtd: spi-nor: micron-st: Add support for mt25qu01g
 
-Why?
+Tudor Ambarus (5):
+  mtd: spi-nor: use kernel sized types instead of c99 types
+  mtd: spi-nor: add erase die (chip) capability
+  mtd: spi-nor: spansion: enable die erase for multi die flashes
+  mtd: spi-nor: micron-st: use die erase for multi die flashes
+  mtd: spi-nor: remove NO_CHIP_ERASE flag
 
->  			drive-strength = <8>;
->  			bias-disable;
->  		};
->  
-> -		cmd-pins {
-> +		qspi_cs {
+ drivers/mtd/spi-nor/atmel.c     | 16 +++++------
+ drivers/mtd/spi-nor/core.c      | 30 ++++++++++++++-------
+ drivers/mtd/spi-nor/core.h      | 20 +++++++-------
+ drivers/mtd/spi-nor/debugfs.c   |  2 +-
+ drivers/mtd/spi-nor/micron-st.c | 47 ++++++++++++++++++++++++++++++---
+ drivers/mtd/spi-nor/spansion.c  |  4 +--
+ drivers/mtd/spi-nor/sst.c       |  6 ++---
+ drivers/mtd/spi-nor/swp.c       | 25 +++++++++---------
+ 8 files changed, 99 insertions(+), 51 deletions(-)
 
-No, come one. Code was good and you replace it to incorrect one. Please
-stop bringing more issues to fix.
-
->  			pins = "gpio4";
-> -			function = "sdc_cmd";
-> +			function = "qspi_cs";
->  			drive-strength = <8>;
->  			bias-pull-up;
->  		};
->  
-
-...
-
-> +
->  		bch: qpic_ecc {
->  			compatible = "qcom,ipq9574-ecc";
->  			status = "ok";
-> -		}
-> +		};
-
-This is the saddest part of the entire patchset...
-
->  
->  		blsp_dma: dma-controller@7884000 {
->  			compatible = "qcom,bam-v1.7.0";
-
-Best regards,
-Krzysztof
+-- 
+2.34.1
 
 
 ______________________________________________________
