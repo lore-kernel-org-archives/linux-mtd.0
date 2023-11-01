@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5233C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 060D8C4167B
 	for <linux-mtd@archiver.kernel.org>; Wed,  1 Nov 2023 09:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=u/XC7DwGT6s7yHxQaPKVU+i3v0OIHEa/+t4rfVnCJ54=; b=r1CoxglosmtPDi
-	O07xvAVsljhPG+3n5DHzuSRkQjprYFlnYGTw2hOT6YwBVFlJ/ETXJt+LhurRJenZrPI1c0AOQZKEe
-	9yXUa1fsfQttsB/QES+VYIPHjeImk1kA03o02d73knK75mN+UNFGIuQoUgTdc+Y0DqiZ1LKMacThe
-	HNJHmi22Us9XXSh1f3q5mw3Da916OKGZigwlrxC7BEak9d2X54/Th2jb5ritYfaxzsmHwZ0XZc3wa
-	bpAiHtiy3a04gA8bqpiycqyF8UgCiEOmsWSmtWCewBmezBr7qkOIvehAtLSU9sBOGOfRsaVcqNHAp
-	gARC1nzNebva58Po/APQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OUTUVcCoz6gJK82V22uTZcEwX5rCCq7EJLn6FQRXQmQ=; b=Knf4oLnhUDp4hr
+	ZwOl0zf1Q4BCuaDs65X1+jFeWdH+KB24ittWnD0VS9khNLkyqDXTKWvxBzYUk+mMGH7Id1o0KRAPm
+	oeTSeqCCIJQyRQ777yOguHDbEfXnjra/+OlZ3TpuprvsrGhMr9k/xB2MDc9McGjCsiTz9RM02tzaH
+	jxEsvwfdLe0KRlhVJaL2JuDQgPv7v6qRio2sS8Rtiv/rU4rQKfzcQ0PW15wOrTQ1t357zyUlsg4WM
+	ZkbRtPfGQ2MLqpGn7AcxhGMqnnPgGSIj74nG+WFYyKSU2HGw079705qL0RHSXIRuoR8z1oNl63b+y
+	mJcaqjiBitgZb8aEgDdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qy7lD-006y9O-2x;
-	Wed, 01 Nov 2023 09:43:39 +0000
+	id 1qy7lE-006y9u-1X;
+	Wed, 01 Nov 2023 09:43:40 +0000
 Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qy7l8-006y6Y-0L
+	id 1qy7l8-006y6g-0d
 	for linux-mtd@lists.infradead.org;
 	Wed, 01 Nov 2023 09:43:37 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9adb9fa7200so140683566b.0
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Nov 2023 02:43:31 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9c3aec5f326so136887566b.1
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Nov 2023 02:43:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698831810; x=1699436610; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TP3JT7V1ZBm7nu6F9v4TXclyTCPwXiPtChsKdde8Zq0=;
-        b=gI7+o5tWpsMufh0ERNRam8Vy9OqTifCj1DOPWmLXg+Y05SFj3Ir4sOYgbRsvGkfuWn
-         mDREMTfLce08eDCJHmrAS3w8lDSPTwPNS0ROrw1O2USh8jR3JB3anxnp8H1NhwMbjUqC
-         itHveJREistVLPCIhHP2RPqmAIwA1XvFK6oeWNBi6lqRdtLC6uGmM/5IWvLZHFbO1N7Y
-         30kZIFFz5F2IwDX/p4Sa/SlVbC2xUTrFKN7tWoED7FyKqEyPfkjakLid7DW0gTwINgD+
-         l6qHiJd+qlM42AOqKhXZei2DJU+e0Fy2ZJhTt1ZCEYdPCIO9wzc+jgsRCM9xLDaVHzZT
-         Fh9Q==
+        d=linaro.org; s=google; t=1698831813; x=1699436613; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HkPPHb9qC7W6kxjffeC/m/sVPn9YkCUQKbt5PruPSUw=;
+        b=Ss1xfrnbDJ/4arc9AFb5Og0oL9E7iMhTjjB6KpgGKhjzFfxB6W/xtGWEhyJHibcKtk
+         ypzog+nJyQY8pzQo8tTiblnn4OBOPJs49BU2ISL4s6T8b5RlNnsILKM8K3KDetHeCN85
+         jmJBTV4OdOEbAlN+MN6clo/tkXoea+M4Sws8rVC0Hlu/NWGYaa36aZuGQKG3pXVk6Nse
+         hAvadMebcfwgDtTbnXAKtBRirR5kpHORKxgWmcG7GZGDeZDfHy+b/quqKWTMwAZhzbVy
+         shlH2xQlnl3eox1VFy+/jSF4v2iBWkatV1dx+VKsMbYRIWNgC6XMCOytwFyvNd09ft7L
+         24Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698831810; x=1699436610;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TP3JT7V1ZBm7nu6F9v4TXclyTCPwXiPtChsKdde8Zq0=;
-        b=PJBo5JLyf+ekjFiqQi06EsRrHS84GRbxnqY+Okc5WpLQ9qD9ZPD2WZFcYjHYNdEoqj
-         H95TIXg/2+RTOQP/ACmXe/gyd8As3y++fMMDQNcOWSPHjCT+y09KzkUGhwl7bR81zdEB
-         EHXNDyUrlgVuK/0PPOSZGyexywOIuRwwCSz2BgK1qLXUXvYad79Q5lS8u/Z/pAjM/4+v
-         nncJ2+KqP+X0wp3ys8gRMlmQz1ZKGzdqlHeirJ2RLbSCnxBKDClnfgTC0h/Q5jRXqp9S
-         rGikMPmDkGJMcAbSZW1gg9ocfnWqoPKfqU4dc3/LfP0W7LlahmA7U88PPJGneykRAUgf
-         puGA==
-X-Gm-Message-State: AOJu0YxmQnVnI3i/lep4VFU2Jqk4kfkToI/4wCQbXiR1KrK3n6R3pvg2
-	Kz5XS0YqPkwbpQIQDKvz0o9bxbUc2LDm0cyYQT8=
-X-Google-Smtp-Source: AGHT+IEUzcI0BCWjlWuT86CV7htMD5jHkLSQGWIKqDLDr9OK6mVz7kosZmwRaeOlzAojrEypTVMVLw==
-X-Received: by 2002:a17:907:72d0:b0:9a9:f042:deb9 with SMTP id du16-20020a17090772d000b009a9f042deb9mr1567941ejc.19.1698831810084;
-        Wed, 01 Nov 2023 02:43:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698831813; x=1699436613;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HkPPHb9qC7W6kxjffeC/m/sVPn9YkCUQKbt5PruPSUw=;
+        b=seBJLFh3igp4hbw1X8g4dbt1s6FTl1hTRqhYf7JXsJKs+NvZ9VXCSgsKLujxM0uLug
+         GhUccGYVshJtj3XnU6DxYVQD1XFYosHLHpWl1XokyexRn1MlcO/nfpydLwzKv5SRm/fV
+         4ZqscGsDsh4jWEIrTL1B1n6uM3APomIMWb5cNzp63kKh0alEDV+wG7y+xeSbWH4D3Uza
+         P9F7zcbhlUQ1ms421qA07LViOhGuByoAPWKUZKSVDtfKlVxT0th/bncYyVZwrbhcqCVg
+         QRHwAIV6Gsn8phYyWv5OA5VMYwlgwJA4VANVqKUp2xLDZLtO/4fRK5tgbXP1xSmcOAxJ
+         z+pg==
+X-Gm-Message-State: AOJu0Yyy62DPhL903ipfhGFMypDXtXN5B4Dpd0S4Ze9H/GhXRhoQICz4
+	x0KZPPDFyUmV5gu7A0G9UVjzMAtb/YnHCtRyOMA=
+X-Google-Smtp-Source: AGHT+IEH4LEoiXVQ0c3/6OSVEP6L58mMC3j7lpyLCC+hIa+qOFDB2YsCAmCGWZcygG1a79/RDpCAsQ==
+X-Received: by 2002:a17:907:948e:b0:9bd:a66a:a22 with SMTP id dm14-20020a170907948e00b009bda66a0a22mr1508558ejc.15.1698831812998;
+        Wed, 01 Nov 2023 02:43:32 -0700 (PDT)
 Received: from 1.. ([79.115.63.76])
-        by smtp.gmail.com with ESMTPSA id gq23-20020a170906e25700b0099e12a49c8fsm2206415ejb.173.2023.11.01.02.43.28
+        by smtp.gmail.com with ESMTPSA id gq23-20020a170906e25700b0099e12a49c8fsm2206415ejb.173.2023.11.01.02.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 02:43:29 -0700 (PDT)
+        Wed, 01 Nov 2023 02:43:32 -0700 (PDT)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: michael@walle.cc,
 	festevam@denx.de,
@@ -71,17 +72,18 @@ Cc: miquel.raynal@bootlin.com,
 	linux-arm-kernel@lists.infradead.org,
 	bacem.daassi@infineon.com,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 0/6] mtd: spi-nor: introduce die erase
-Date: Wed,  1 Nov 2023 11:43:19 +0200
-Message-Id: <20231101094325.95851-1-tudor.ambarus@linaro.org>
+Subject: [PATCH 2/6] mtd: spi-nor: add erase die (chip) capability
+Date: Wed,  1 Nov 2023 11:43:21 +0200
+Message-Id: <20231101094325.95851-3-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231101094325.95851-1-tudor.ambarus@linaro.org>
+References: <20231101094325.95851-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1203; i=tudor.ambarus@linaro.org; h=from:subject; bh=r0vLJEoC/vE1Xl8/Y3tVJBH/QybCEGnthZ4EstXtUXE=; b=owGbwMvMwMXoHervvrRX5CXjabUkhlQn2T1rE65M4ZykKXjV+WzOk0M6j9YXuh498XCnm9x1Y QNuMWmXTkZjFgZGLgZZMUUWWSetU+f5TuTGyf67DzOIlQlkCgMXpwBM5BEDB0Prmq2tvUe3RH6b Nb+92yMu5W215d290pPMpYMf8lzksDM/7h1fOH/P3UXub5htg59eds9QD4pO2O682Yl1VYJGkoO T2cfepfKJdcpunBnialp/Tpa2Ck1l3fPTTuTEvQOfhKNu/Zti9ks5pJqR/1dM86b3F0vuCtgcyb KasiLOmvclT09BB0//oa9LDllq5P8zrynr2eQvlOzYMvf3T6dPdi5Fjjt7ti1XYc+2Tp0zm7lc5 bmPoWpZ9ZuW1P1CF87FxPNm736n1Fhbcq/hqpvOYpamiyuYE5WFA5243+1YFiLarHDxvbJeWu/7 z5zKnX1SpU0XrjGKzrNOY+yfb6K85aZfk0Ig+z6JaR8B
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5146; i=tudor.ambarus@linaro.org; h=from:subject; bh=Vdvn69AuH1lKrPLL0SQfY8OgpwWgJLdtiv1I6TtDpjQ=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlQh29T9f6MfbIADNw05TejWO4kITgxbmTLTwOd 8Lh2Al34EiJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZUIdvQAKCRBLVU9HpY0U 6b+gB/9abmmSwFI+8tk2zdf9oQIrAQVQmfoW7m302eZEjKfn93VWLISHkFKnknxyZqpFSQdeuTy F7enEKpTGXoBjOgENvUPpg1USwEmPA2+X7omZO8lFNfmi+MAnCjtXeWcS5y4Rkn/aL837fH85GU IG5uGzCS1ILktc48N6y3b2K3xD0UKX+yftmo8qacJE1xjD1kaMjx/4sb4smJ7xMEDAaAzgMugU0 T7/wnHYKWkGDmwN2UPEZ53WhP5RdtB6rUfOSrugo/+vED1lMbIphVMj1rR+NzVBu1UoDRkjXa6F 9L4jzwxX7JQrURBLeAzQN/7HSIi/h/c0ULQXYTFTsorwUt//
 X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231101_024334_182538_23074F30 
-X-CRM114-Status: UNSURE (   9.99  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231101_024334_244456_BC28EBE9 
+X-CRM114-Status: GOOD (  21.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,34 +100,140 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The patch set is just compiled tested as I don't have a multi die flash
-at hand. Takahiro and Fabio, please test the series and let me know if
-it works on your side.
+JESD216 defines a chip as a die, one and the other are the same thing.
+JESD216 clarifies that the chip erase time defined in BFPT dword(11)
+applies separately to each die for multi-die devices in which the dice
+are individually accessed. Based on this, update the
+spi_nor_erase_chip() method to support multi-die devices.
 
-This will be followed by the removal of SNOR_F_NO_OP_CHIP_ERASE and
-implicitly of the old xilinx SPI NOR driver, but let's take it all in
-small bites.
+For now, benefit of the die erase when addr and len are aligned with die
+size. This could be improved however for the uniform and non-uniform
+erases cases to use the die erase when possible. For example if one
+requests that an erase of a 2 die device starting from the last 64KB of
+the first die to the end of the flash size, we could use just 2
+commands, a 64KB erase and a die erase. This improvement is left as an
+exercise for the reader, as I don't have multi die flashes at hand.
 
-Fabio Estevam (1):
-  mtd: spi-nor: micron-st: Add support for mt25qu01g
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/spi-nor/core.c    | 22 +++++++++++++++++++---
+ drivers/mtd/spi-nor/core.h    |  6 ++++--
+ drivers/mtd/spi-nor/debugfs.c |  2 +-
+ 3 files changed, 24 insertions(+), 6 deletions(-)
 
-Tudor Ambarus (5):
-  mtd: spi-nor: use kernel sized types instead of c99 types
-  mtd: spi-nor: add erase die (chip) capability
-  mtd: spi-nor: spansion: enable die erase for multi die flashes
-  mtd: spi-nor: micron-st: use die erase for multi die flashes
-  mtd: spi-nor: remove NO_CHIP_ERASE flag
-
- drivers/mtd/spi-nor/atmel.c     | 16 +++++------
- drivers/mtd/spi-nor/core.c      | 30 ++++++++++++++-------
- drivers/mtd/spi-nor/core.h      | 20 +++++++-------
- drivers/mtd/spi-nor/debugfs.c   |  2 +-
- drivers/mtd/spi-nor/micron-st.c | 47 ++++++++++++++++++++++++++++++---
- drivers/mtd/spi-nor/spansion.c  |  4 +--
- drivers/mtd/spi-nor/sst.c       |  6 ++---
- drivers/mtd/spi-nor/swp.c       | 25 +++++++++---------
- 8 files changed, 99 insertions(+), 51 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 25a64c65717d..360fce7ffe82 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1067,17 +1067,21 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
+  */
+ static int spi_nor_erase_chip(struct spi_nor *nor)
+ {
++	u8 opcode = nor->params->chip_erase_opcode;
+ 	int ret;
+ 
+ 	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd.size >> 10));
+ 
+ 	if (nor->spimem) {
+-		struct spi_mem_op op = SPI_NOR_CHIP_ERASE_OP;
++		struct spi_mem_op op = SPI_NOR_CHIP_ERASE_OP(opcode);
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
++		if (opcode != SPINOR_OP_CHIP_ERASE)
++			return -EOPNOTSUPP;
++
+ 		ret = spi_nor_controller_ops_write_reg(nor,
+ 						       SPINOR_OP_CHIP_ERASE,
+ 						       NULL, 0);
+@@ -1799,7 +1803,10 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
+ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	u8 n_dice = nor->params->n_dice;
++	bool die_erase = false;
+ 	u32 addr, len, rem;
++	size_t die_size;
+ 	int ret;
+ 
+ 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+@@ -1814,12 +1821,18 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	addr = instr->addr;
+ 	len = instr->len;
+ 
++	if (n_dice) {
++		die_size = div_u64(mtd->size, n_dice);
++		if (len == die_size && (addr & (die_size - 1)))
++			die_erase = true;
++	}
++
+ 	ret = spi_nor_prep_and_lock_pe(nor, instr->addr, instr->len);
+ 	if (ret)
+ 		return ret;
+ 
+-	/* whole-chip erase? */
+-	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
++	/* chip (die) erase? */
++	if ((len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) || die_erase) {
+ 		unsigned long timeout;
+ 
+ 		ret = spi_nor_lock_device(nor);
+@@ -2902,6 +2915,9 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
+ 			return ret;
+ 	}
+ 
++	if (nor->params->chip_erase_opcode)
++		nor->params->chip_erase_opcode = SPINOR_OP_CHIP_ERASE;
++
+ 	/* Default method kept for backward compatibility. */
+ 	if (!params->set_4byte_addr_mode)
+ 		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index a456042379ee..f681a139772f 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -85,8 +85,8 @@
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_NO_DATA)
+ 
+-#define SPI_NOR_CHIP_ERASE_OP						\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CHIP_ERASE, 0),		\
++#define SPI_NOR_CHIP_ERASE_OP(opcode)					\
++	SPI_MEM_OP(SPI_MEM_OP_CMD((opcode), 0),				\
+ 		   SPI_MEM_OP_NO_ADDR,					\
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_NO_DATA)
+@@ -362,6 +362,7 @@ struct spi_nor_otp {
+  *			command in octal DTR mode.
+  * @n_banks:		number of banks.
+  * @n_dice:		number of dice in the flash memory.
++ * @chip_erase_opcode:	chip (die) erase opcode. Shouldn't be set for single die devices.
+  * @vreg_offset:	volatile register offset for each die.
+  * @hwcaps:		describes the read and page program hardware
+  *			capabilities.
+@@ -399,6 +400,7 @@ struct spi_nor_flash_parameter {
+ 	u8				rdsr_addr_nbytes;
+ 	u8				n_banks;
+ 	u8				n_dice;
++	u8				chip_erase_opcode;
+ 	u32				*vreg_offset;
+ 
+ 	struct spi_nor_hwcaps		hwcaps;
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index 6e163cb5b478..f242a18e46fc 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -138,7 +138,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+ 
+ 	if (!(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
+ 		string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
+-		seq_printf(s, " %02x (%s)\n", SPINOR_OP_CHIP_ERASE, buf);
++		seq_printf(s, " %02x (%s)\n", nor->params->chip_erase_opcode, buf);
+ 	}
+ 
+ 	seq_puts(s, "\nsector map\n");
 -- 
 2.34.1
 
