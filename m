@@ -4,85 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52767C4167D
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Nov 2023 17:36:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25209C0018A
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Nov 2023 17:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7mM4bdy9lYriQaJDpCzYSxE6+9/9x5P+GYv9QCbIPN8=; b=a02XEueaXH8qYB
-	M7VjxI79lLxrbxS+fGB1IWrxuzXOXGWfgC4lzFrBzA+fU35D13dTVrqWWCpNBpCEQ7+QKA4Fj6YRP
-	NEdVub9TW070H5PnGaR1baLrk+q5m0xrOuH4SMcGkbTW4jnwPsVAn7tLztRfHO+DqVG7b6gBKuFQo
-	LojjJYN8V7pi1CDLw8L1Lvp2XGYtSniy1k9znsdsRMYgcCYDiWLQDlpGfHNRfISkGe4OH+ACAZCwj
-	stC6K0K3hTMK/yLE+z/AaKDfoTGFLmaBaXiqMD4hFZyo4sfc4GU6HwfrLKcmyHIFrJXhfdqhUyfTb
-	EYOkh0N5DSdMeOFJrb9g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jpDOUdurOhX4k0SnmA5x7ShBS9j24xaLMRoCgNLra2o=; b=aAxOxSJxuyk72rsqlMJq6dziMm
+	PSoZkpphaEVUkCEdr9dDAI4Zx4JNDeTKICcMp+SMV2RsSW4VQiCVn9s/gUlvRRLDxoKlmCl2pVR1C
+	qLkudmgbt82j1k4PDU7SdA82YF7qpseDCVBYZzKmaNIqSUo+AQC3y1zziut1GicJo0m+1sSdRyq8g
+	fsEcsAlapmkQ0hm8aLM71oRPzpGLNLSqEU1bN9mPVDrWr6/6gJBTaTQMykbX4zKVe74FCrhcA/Y44
+	w36a31Un/3q6QE13A46Z51vqAfGo1/P3epMKmSD+6KgbjxI1JWdt7P7JG/QbSAtsgNOoKfMDxxU0k
+	nbgd85fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qybcL-009zFe-1q;
-	Thu, 02 Nov 2023 17:36:29 +0000
-Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
+	id 1qybgm-00A04N-2N;
+	Thu, 02 Nov 2023 17:41:04 +0000
+Received: from phobos.denx.de ([85.214.62.61])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qybcF-009zEf-1S
-	for linux-mtd@lists.infradead.org;
-	Thu, 02 Nov 2023 17:36:27 +0000
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9cf83c044b7so179874766b.1
-        for <linux-mtd@lists.infradead.org>; Thu, 02 Nov 2023 10:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698946578; x=1699551378; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xAzSBZRGcx+yJgUisNsjNux6eYk5/mGGKZouPPlzhAg=;
-        b=RS/4eBnBgULWSm42qaGCl8ZoZYHcaqnML8SAOtXZFpLG9SWY1k1wMgjDqYKLTb2Ij5
-         /XXKdSrefJ9cnjlWZIh+OVUwjtBCOZEWL+RLEa3kLMxPYzKnNWCjohBYitQ7NVP5T3ac
-         2C4a+m+56zEVoByrFFEs4H7frAbHl4amx8sKEb+EBEi+rj+u8gvjT0kEmCMMnELnGMqp
-         G6UJerKKAtGjnrDsywsL2vOGsKRRizMUZuG2p2iol0/UL1IpWEyi+fNeuMP+ow3VWpJg
-         akgeerPSyrko9zQxveHcPCiMWsrkUB22rT1ME/ViwyDBJe6HZWj9n3z11E2M0XYRs2SH
-         4v3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698946578; x=1699551378;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xAzSBZRGcx+yJgUisNsjNux6eYk5/mGGKZouPPlzhAg=;
-        b=WTweAeLH6JEWgAT8aJ0wumKH3xd7sc3FQV46YwhipOKlUkEr3wYwxEHRrdLRZ3ec5j
-         iZZLQDkXBBiLhiIoB39KY6b/3t8GVxvhHgyhckSSLVpUMShrnJdzbZeJfX87NohSs3Td
-         Lk/yukG40g74tfoGLICTgZtOeZ08EKWrrYQP6Qyc5mEuRPj5AkAbuJ65CZk0uK+CvoYV
-         LOHfH5OE4cyLQCn5HOYQIB54zUZBHUSEzcltfdg1UodY9AzVU5HDSRh7s4C+AU9zxQa4
-         m2gPi6sznuFlqIfR9RDm0vLTYfF/bZ/d/lHslqhrUDpBl4w8yCe6sfswAE0doWGrD36i
-         K19Q==
-X-Gm-Message-State: AOJu0YyMWzxfqBtyhfX/fJrVpqHAMal1CqiRdnOAqsej5kpYmR+NVdG9
-	lo2sPPJcJuhPCXr8MpRe53pasQ==
-X-Google-Smtp-Source: AGHT+IEQ3UF7/RHYMTb7CQS1NuAxCgZz4wsDJeJrmpi41w+vmfWq/Lr2sqIOzYXpZ1KSMwvbAAU87A==
-X-Received: by 2002:a17:907:8b8f:b0:9db:caac:2995 with SMTP id tb15-20020a1709078b8f00b009dbcaac2995mr1812978ejc.41.1698946578452;
-        Thu, 02 Nov 2023 10:36:18 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.76])
-        by smtp.gmail.com with ESMTPSA id j20-20020a170906051400b009b947f81c4asm1383733eja.155.2023.11.02.10.36.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 10:36:18 -0700 (PDT)
-Message-ID: <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
-Date: Thu, 2 Nov 2023 17:36:16 +0000
+	id 1qybgg-00A02G-1u;
+	Thu, 02 Nov 2023 17:41:02 +0000
+Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: festevam@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 642B7874A1;
+	Thu,  2 Nov 2023 18:40:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1698946857;
+	bh=i7R5v5WQde8X9TsmTK8PNHF6FpcmL4CYEwRniS7ec70=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RBo74GW4KXzxcB3wO91qZeSj/AVlYsZ0qQ/DUz0No/tUU7bValfpp3A0mX0OP8clI
+	 uD5PxU/KTtFTP0S/8z1eT+9xIy7Sm8P1bCqmfgPM1+9XYQS6zw3wTQWnXO73neSEQ1
+	 y4FttrMxP+HQtHkpKOtPA3ICVsLgDdkQh/5meh381XKQQfDVgOQtXi7gCuQLZGHaDv
+	 fu1xfRw9DKjbwhR+ZGN5BLwCvx140g1w+uaFkZo+LPWAK8jV5o7Yv+GgGlh8MFkrL6
+	 hiU7B/oNtyX7y2tZ+dne2u0fJnC0ZY74TX86TDJZkC4ItDVfcQvoz8I1wH/5kEWUz/
+	 B5BE7bXitnXEw==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
-To: Fabio Estevam <festevam@denx.de>
+Date: Thu, 02 Nov 2023 14:40:56 -0300
+From: Fabio Estevam <festevam@denx.de>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
 Cc: michael@walle.cc, takahiro.kuwano@infineon.com, pratyush@kernel.org,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  bacem.daassi@infineon.com, miquel.raynal@bootlin.com, richard@nod.at
+Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
+In-Reply-To: <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
 References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
  <20231101145853.524045-3-tudor.ambarus@linaro.org>
  <7fc95ddf-c860-49b9-93de-ef32b9383e42@linaro.org>
  <216d99d671caa2465519fcc3360c5001@denx.de>
  <e3901646-c918-426f-b219-e1670dc1e854@linaro.org>
  <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
+ <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
+Message-ID: <632457ed6b022856496537bdf8a738ba@denx.de>
+X-Sender: festevam@denx.de
+User-Agent: Roundcube Webmail/1.3.6
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231102_103623_488022_0DB8DBD6 
-X-CRM114-Status: GOOD (  18.67  )
+X-CRM114-CacheID: sfid-20231102_104058_851168_E6CA87FF 
+X-CRM114-Status: UNSURE (   7.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,54 +78,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Tudor,
 
+On 02/11/2023 14:36, Tudor Ambarus wrote:
 
-On 11/2/23 16:43, Fabio Estevam wrote:
-> Hi Tudor,
+>> SR is the same before and after the chip erase operation.
+> 
+> what value did it have?
 
-Hi, Fabio,
+[   35.726305] spi-nor spi0.0: ***** SR before erase: 0x2
+[   35.731543] spi-nor spi0.0: ***** SR after erase: 0x2
 
-> 
-> On 01/11/2023 14:27, Tudor Ambarus wrote:
-> 
->> Thanks, Fabio. I can't tell what's happening and it's getting late here.
->> Die erase does not execute if either of the status register BP bits are
->> set to 1 (some sectors are locked), but that shouldn't be the case I
->> guess as you could erase the entire flash before. So maybe dump SR/FSR
-> 
-> Correct, I could erase the entire flash before.
-> 
->> before and after the chip erase op. Other idea is to dump the spi_mem_op
-> 
-> SR is the same before and after the chip erase operation.
+If you have some debug patch to dump more information about this issue,
+I will be glad to run it here.
 
-what value did it have?
+Thanks for your help.
 
-> 
-> I haven't dumped FSR as I didn't find an easy way to do it from the core.
-> 
->> fields, after spi_nor_spimem_setup_op() is called, maybe I got something
->> wrong there, but on a short look it seems fine.
->>
->> I'll re-read this tomorrow. Cheers,
-> 
-> Not sure if it helps to give some ideas, but there was an old submission
-> for die erase support:
-> > http://www.infradead.org/pipermail/linux-mtd/2016-October/069960.html
-> 
-> http://www.infradead.org/pipermail/linux-mtd/2016-October/069961.html
-> 
-> http://www.infradead.org/pipermail/linux-mtd/2016-October/069959.html
-> 
-
-yeah, nothing special here. It reminds me that I could have updated the
-uniform and non-uniform erases to use the die erase when possible, but I
-was too lazy to do it.
 
 ______________________________________________________
 Linux MTD discussion mailing list
