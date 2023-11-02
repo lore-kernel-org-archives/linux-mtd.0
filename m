@@ -4,79 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3712C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Nov 2023 21:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D789CC4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Nov 2023 22:03:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LJ5DSvyDw1HqFGdX0XFymtwl2k6MI+lDhaOvXzKrdSE=; b=O1wSTrvr1ZYKn8+ZCRaY8YAqZ2
-	sC84+MZl1Y1VvuBaM6WLoARCb+TEdCCygT/z7o2UH76iXTBFjdHLKyMcXyA/nBjSPgLfQmJnDB2iq
-	Y0YAvo33PE99pZJu+O3ngxqHZ86AnC0ai5MnCvgU/Ou1My6OtYkILTrH2SQJFmPC+gxP7+1J4emk/
-	JP4uiMti4QonzCLFCIEJ2+SwmUl4rjrGSqiEn1t6KglqVnbvG2MjID/Yfvq6HCf76uxIYGTnNDf5J
-	eB++plwt2Y9RJBQnZ0s++S3IoPrK8nvvR44YXmgldzoFBCohjwFLKclADBkMmgFUHNOXjj3jvju9/
-	q+IEHGNg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=pyvLblC+a7O+wEncHeKA0ws3UeZt6bFt0gm5uhiwhqE=; b=XVqEfhpq+3cuT+
+	ivO+cW8Ig3aVHx+fo5o8dWqawrmK7EaA3VooKBTLf5n2FBQITO/7ju/GADuhTLvszzw37Rp5D1htr
+	EzMTXn9L1t8yehuVYiq8HX+isvpIKfglsxTS0wGzA0Mai1lUzokk0M/w9xKenOcfUpaHpKYtL49pv
+	Bfk1Tulj1mtS8QIJT3jH2X6vJMRlQe7S2no5lvhE0WIrOamfwZxKtqILBc4k9kkKiOB5Sv5qWysg9
+	S4NxvtP22b838F/vaPexHadvKGF4KY55XFL1fTweogF4DJBdkAbl7CY0muNgB3tSJeYOByGt8gXsl
+	tYXbdHS9cXzQzl40VJtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyfT2-00AKUB-10;
-	Thu, 02 Nov 2023 21:43:08 +0000
-Received: from phobos.denx.de ([85.214.62.61])
+	id 1qyfmP-00ALkO-14;
+	Thu, 02 Nov 2023 22:03:09 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyfSw-00AKSS-0M;
-	Thu, 02 Nov 2023 21:43:06 +0000
-Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: festevam@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 0575F870AC;
-	Thu,  2 Nov 2023 22:42:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1698961378;
-	bh=q+Tbai9YO0Sr8+CE3PM7FvYN61mrc/i9cERa25SrijI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rkN3QqsHVujJvN6E0uvcTUeWE5eZ/fZnA9Pcxxqp94ovwC6crBv8bgrweTZkGxDu/
-	 n5zJtwJ9QY6mHJhywBfZPE47UFIMiQT15mTStW2y5Gwn8fZ8a3Q7Vn6X7TXaU+Ppnc
-	 YjhwbytadPyTga6GXYN0Q4fCrwrMOON75+G1lRvzNuK+dPAkVEsEGO3yy4QB8ZvaLV
-	 LqHt2e/IXU8w+3lf8ZALH7kv9k7w/70hY1HaaMfyyMUV8aTy4+CYaEC2TvqLRZgYh0
-	 HCZZWbB9QdUJsw0oS3hfPnqE4L/LO7uzoX4o1xoIEbRqALavNUzUsn1oSLw9re2Q0u
-	 6V/mlmvmHvBGg==
+	id 1qyfmL-00ALiO-1a
+	for linux-mtd@lists.infradead.org;
+	Thu, 02 Nov 2023 22:03:07 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1qyfmF-0007aH-As; Thu, 02 Nov 2023 23:02:59 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1qyfmE-006AFR-TQ; Thu, 02 Nov 2023 23:02:58 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1qyfmE-00BwFP-KL; Thu, 02 Nov 2023 23:02:58 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org,
+	kernel@pengutronix.de
+Subject: [PATCH 3/4] mtd: rawnand: txx9ndfmc: Drop if block with always false condition
+Date: Thu,  2 Nov 2023 23:02:50 +0100
+Message-ID: <20231102220246.3336154-9-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231102220246.3336154-6-u.kleine-koenig@pengutronix.de>
+References: <20231102220246.3336154-6-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Date: Thu, 02 Nov 2023 18:42:57 -0300
-From: Fabio Estevam <festevam@denx.de>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, michael@walle.cc,
- pratyush@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, bacem.daassi@infineon.com,
- miquel.raynal@bootlin.com, richard@nod.at
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
-In-Reply-To: <c3f2b8a6-8b23-4a33-948e-62ff64db9a2f@linaro.org>
-References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
- <20231101145853.524045-3-tudor.ambarus@linaro.org>
- <7fc95ddf-c860-49b9-93de-ef32b9383e42@linaro.org>
- <216d99d671caa2465519fcc3360c5001@denx.de>
- <e3901646-c918-426f-b219-e1670dc1e854@linaro.org>
- <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
- <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
- <632457ed6b022856496537bdf8a738ba@denx.de>
- <aa123456-7ec9-4bdc-a521-66c9582d5d45@linaro.org>
- <c26f6623-2d58-43ed-95bb-957870890a02@linaro.org>
- <6f1aa670-b3f7-4ea3-bc80-773a57e46c36@linaro.org>
- <968ba4c249926e986b02440ad0421e98@denx.de>
- <f2141a88-13d4-47b8-8382-5df8cc1bc42b@linaro.org>
- <cf0e4284f2e3193ddd57b715196ca202@denx.de>
- <25ca1a4c-683c-4b6d-938b-07323b211815@linaro.org>
- <c3f2b8a6-8b23-4a33-948e-62ff64db9a2f@linaro.org>
-Message-ID: <5872f7233bc0dc4669aa1324f3ae3cf0@denx.de>
-X-Sender: festevam@denx.de
-User-Agent: Roundcube Webmail/1.3.6
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+X-Developer-Signature: v=1; a=openpgp-sha256; l=954; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=EOT4tuoYaMGSiz+JGI2Ssxi6EmaUfL7o6Fw82PZD52g=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlRByKou9+xizm8HLMJz+dsQRL5X61f16Uo+229 qPCQTPU0FiJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZUQcigAKCRCPgPtYfRL+ TmCCB/sGljuBzeR6FWB628pi2wpEKzOdYYmsNGi4QxjG0kOsKm+HMRq2ofdo0rFw3vi4oQLZedk 420WRmMonLnPenyUT6beBJTF07Dw+YBiiTuKnfgZchrv3YAIdI2kW5c7pm5jz5Hdadli2vTBR+D 8ml2eIIsS5aY1p1PayEft9xw3LSr4pEiBG3Sa4+R7KlcjbNYZfEjERaCNhKvklJriRH2fnh0Am6 NrQOkwFagzqX/AmaxmI/dyX0odxdFCbsTDAAKegUo3rIXhdVcFDHxgrpxqIwH0Wi9sss1NmQyyy 63fcRzLRyV8wO8W7OTvxb1uIX7qUikdit0XvCfKwdBKBK3jZ
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231102_144302_371373_5BAF75E0 
-X-CRM114-Status: UNSURE (   9.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231102_150305_550855_F92DAB30 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,49 +73,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/11/2023 15:56, Tudor Ambarus wrote:
-
-> Let's try something else:
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 5584bf9cbfd1..a0af7a7eb727 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1074,7 +1074,7 @@ static int spi_nor_erase_die(struct spi_nor *nor,
-> loff_t addr, size_t die_size)
-> 
->         if (nor->spimem) {
->                 struct spi_mem_op op =
-> -                       
-> SPI_NOR_DIE_ERASE_OP(nor->params->die_erase_opcode,
-> +                       SPI_NOR_DIE_ERASE_OP(nor->erase_opcode,
->                                              nor->addr_nbytes, addr,
-> multi_die);
-> 
->                 spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> 
-> I expect that with this the first sector from each die will be erased.
-
-You are right. This is exactly what happens with this change:
-
-First die:
-
-~# hexdump  /dev/mtd0
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0010000 9231 efb8 d664 d77b 231c 3522 d7e8 4f6e
-
-Second die:
-
-~# hexdump -s 0x4000000 /dev/mtd0
-4000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-4010000 0418 0518 60a0 9214 2411 2004 c144 9e2b
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+dHh4OW5kZm1jX3JlbW92ZSgpIGlzIG9ubHkgY2FsbGVkIGFmdGVyIHR4eDluZGZtY19wcm9iZSgp
+IGNvbXBsZXRlZApzdWNjZXNzZnVsbHkuIEluIHRoaXMgY2FzZSBwbGF0Zm9ybV9zZXRfZHJ2ZGF0
+YSgpIHdhcyBjYWxsZWQgd2l0aCBhCm5vbi1OVUxMIGFyZ3VtZW50IGFuZCBzbyBwbGF0Zm9ybV9n
+ZXRfZHJ2ZGF0YSgpIHdvbid0IHJldHVybiBOVUxMLgoKU2ltcGxpZnkgYnkgcmVtb3ZpbmcgdGhl
+IGlmIGJsb2NrIHdpdGggdGhlIGFsd2F5cyBmYWxzZSBjb25kaXRpb24uCgpTaWduZWQtb2ZmLWJ5
+OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlPgotLS0K
+IGRyaXZlcnMvbXRkL25hbmQvcmF3L3R4eDluZGZtYy5jIHwgMiAtLQogMSBmaWxlIGNoYW5nZWQs
+IDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvdHh4OW5k
+Zm1jLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy90eHg5bmRmbWMuYwppbmRleCA5ZDZjNjJmNzNi
+YjcuLmZkY2RmYmVhMGNiZCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvdHh4OW5k
+Zm1jLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvdHh4OW5kZm1jLmMKQEAgLTM3NCw4ICsz
+NzQsNiBAQCBzdGF0aWMgaW50IHR4eDluZGZtY19yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
+ZSAqZGV2KQogCXN0cnVjdCB0eHg5bmRmbWNfZHJ2ZGF0YSAqZHJ2ZGF0YSA9IHBsYXRmb3JtX2dl
+dF9kcnZkYXRhKGRldik7CiAJaW50IHJldCwgaTsKIAotCWlmICghZHJ2ZGF0YSkKLQkJcmV0dXJu
+IDA7CiAJZm9yIChpID0gMDsgaSA8IE1BWF9UWFg5TkRGTUNfREVWOyBpKyspIHsKIAkJc3RydWN0
+IG10ZF9pbmZvICptdGQgPSBkcnZkYXRhLT5tdGRzW2ldOwogCQlzdHJ1Y3QgbmFuZF9jaGlwICpj
+aGlwOwotLSAKMi40Mi4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
