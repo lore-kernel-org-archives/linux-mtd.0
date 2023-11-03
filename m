@@ -4,57 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4357CC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 14:16:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F00CC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 14:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TM8/30GvqFUMQrnUQNmdLELdDb/k/gHFb++gurqfTYo=; b=uVXzxv25QtoyMHBEqeDes/VHta
-	QnjhBkSiY3nbKXT9a43opptin/x3QHTqfpV8kmzRI96B1lVvH4ooI7qd8iG+ePbQCJHQwBmkYLWmG
-	daeuul9n9apuEqesj659ajBdNlw6iJ34D4Ogd3jPdjVqhZQL3KMfaMdu7/xPoxUhu5XvG3NC9Pdnn
-	9TbLoTR9frIYpwgy1D06s+TpwZlBSw0Nxm/Xf5OhsaSV5FEdwadksuDaK0IkMvNzOclDXx2VfPpyY
-	Geq6yPSJslkCQD4JsSTfzoh10NT1t3OTMMCiMudj2LtzdcgY+w/ZUdCj6RFpjXIMzJPCzxx+Zcrun
-	0AeHZu1Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Ta8+1d+OrGJQ4nOQB+JF0poPmRROfE1PORPxPa7P5Is=; b=WCV58glGmvAR/e
+	0X42TP8BLV2E6IAX39+36vke6nsCCuB0p4qAySYD7nGhreJtzhzjerszqIUYWh0Hli5f57K9QzA47
+	Hgc9rsyuBkXILaIkUUSf9PsnU6s2sb2N5jkspPhodzmH6Je0HuGbmJSC48+D6pCYwcAfAP8IZiUcI
+	+5G9pV2iOlKcn07cPO4q1ZWIWalXaBtEAJaNu/UWIXkdtnK8fJuU5SXodf2ebQy45nOPwtQtrpnn+
+	huWwvpzjizuNxQt4bYnYvcDqqVyUK/+aJG5AXcZyVQrOwcjDwP+uQHgpT1BgOsq+dEw8aZ363vTYS
+	bCDXKTs4L691QR7smOAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyuyj-00BYlJ-1C;
-	Fri, 03 Nov 2023 14:16:53 +0000
-Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	id 1qyvIy-00Bb1V-2p;
+	Fri, 03 Nov 2023 14:37:48 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyuyd-00BYhe-0a;
-	Fri, 03 Nov 2023 14:16:51 +0000
-Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: festevam@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id C956A8715F;
-	Fri,  3 Nov 2023 15:16:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1699021004;
-	bh=1Ui78Z0QryBc5/nyUGeQqQ16vGuEzXyaOA+NprPq3yo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fTbghmUCj9EAVG9/qDIRrMHN8AgplJn9b0273XpCSR5zXuhrN1/3tKHddzMFT3O+5
-	 W6fY1EiMDbGFRJrLw3FCpa9oLKc+fPDs6TIGn7T9sAQlFesHpScfg1OyXSYTRb5woK
-	 31LGY8ipOjcqlS9PKTKQpWlpJ9KC+oclk29Z+69X53hPsD4q3XMkQZmJ/qXV7l/91f
-	 DMCwzp01h6aCtVJDSnfbnylxtWlero+ZNqqWk81+pWje975potdnHujj/kVYTg2rzk
-	 ieTfXhZAVdZ/wQ4PpfTL2r3Vhhdq/Qt/lP5NzZn0OAcpPZKHnKbG2w003vMmAVm8Sa
-	 dBMKtVHCMz74A==
+	id 1qyvIt-00Baz2-0B
+	for linux-mtd@lists.infradead.org;
+	Fri, 03 Nov 2023 14:37:46 +0000
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9d2e7726d5bso327450766b.0
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Nov 2023 07:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699022257; x=1699627057; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6f26d3UvfXYl+Ewth8xadKQxaGl527f0g8DuDjKaQ9c=;
+        b=Dl9zMWU2fJqzTEgLv1Jn603/3Ad3cIuYyErMN9zI0r9uLe1/PckNORv0nsTcNLiZqB
+         gBLV5cD9KXSkUB2cpsVW5aIzZhLyR2OGvQ1fKw5W66hOjl/HB5q7wSJNX1HmZFZeZ7Gv
+         iiYsgTGjzdr5i2YSKPCIXJNfPAXT68QR8BgYhU1wW8jJMCsZ2SKuhjApSOyfEsC+HByq
+         8t/c9j5dFOysiTwiOgUzMM6sq6eMBhu9M30j/5G1T8SLF3lz1KTcvAjRShpEHH0mQOE3
+         uyz9q7tGuSLtvbJv03qMHlb0PiCsplH+MgydXX5bbb/ELLqRfveGN6hurU3gvygJjB/m
+         PmKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699022257; x=1699627057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6f26d3UvfXYl+Ewth8xadKQxaGl527f0g8DuDjKaQ9c=;
+        b=IEuRwpEuKcj+b3iCujKa8rV7UF0JJxv3xAfQhYNOv9mV50V++RzLSzwoD2xZCboonB
+         gaYDMI8jCgN2MjKRkDNUzKU58hIkCk5FQwXLMUpxoYb3abg85/yeenm2QYNKwuX7cz1l
+         BjHaos6J/t7Pcfc+gRtcJBlhNc5DhLmSbXbjckq9YPsW/ZD2JSh5OHI5UATWVtuEUshN
+         dbpNaU/RatxrrlMoFlAE+U1M3CQu/TO6cGuKkdqs2lwo3JnWLbDZzeZe+yqPbR43SCGU
+         ffAnTlOPxZr+onMzXBsxC8CZ7Apvr5lhsSGqMqFIEkjrd6xKK5INsZyCHDK/6tVQj2RI
+         ZS2w==
+X-Gm-Message-State: AOJu0YyYgnYj5UpyZSc4vn70LpFBaOcau3IbvgdDWYeM2bGQBhrH0zru
+	0Qy4vdpXRpHY+ONYtidcTQAj8A==
+X-Google-Smtp-Source: AGHT+IGCu7JPpF6JB8hNYPZLxrGKcoDEhOPljWzTQDwyS562awQX/nxdreZP3Xtc3UI6zhOgbF/8vg==
+X-Received: by 2002:a17:907:9612:b0:9d4:2042:775b with SMTP id gb18-20020a170907961200b009d42042775bmr7596011ejc.30.1699022257534;
+        Fri, 03 Nov 2023 07:37:37 -0700 (PDT)
+Received: from [192.168.2.173] ([79.115.63.76])
+        by smtp.gmail.com with ESMTPSA id gs10-20020a170906f18a00b009b65b2be80bsm974229ejb.76.2023.11.03.07.37.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 07:37:37 -0700 (PDT)
+Message-ID: <5b3b8de5-b2fc-4c8f-a2d7-662748ce9213@linaro.org>
+Date: Fri, 3 Nov 2023 16:37:35 +0200
 MIME-Version: 1.0
-Date: Fri, 03 Nov 2023 11:16:44 -0300
-From: Fabio Estevam <festevam@denx.de>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
+Content-Language: en-US
+To: Fabio Estevam <festevam@denx.de>
 Cc: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, michael@walle.cc,
  pratyush@kernel.org, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, bacem.daassi@infineon.com,
  miquel.raynal@bootlin.com, richard@nod.at
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
-In-Reply-To: <a3ccb98e-b8bd-4ea3-98c4-df429602a7ef@linaro.org>
 References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
- <216d99d671caa2465519fcc3360c5001@denx.de>
- <e3901646-c918-426f-b219-e1670dc1e854@linaro.org>
  <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
  <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
  <632457ed6b022856496537bdf8a738ba@denx.de>
@@ -73,15 +92,12 @@ References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
  <b5c1d4d7-1583-4469-a604-dcf5bb3f96a4@linaro.org>
  <9004acceea77d2f06aaff0ca5f916cd7@denx.de>
  <a3ccb98e-b8bd-4ea3-98c4-df429602a7ef@linaro.org>
-Message-ID: <c533a2af60f27d21c9c703b6cb34ff77@denx.de>
-X-Sender: festevam@denx.de
-User-Agent: Roundcube Webmail/1.3.6
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+ <c533a2af60f27d21c9c703b6cb34ff77@denx.de>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <c533a2af60f27d21c9c703b6cb34ff77@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231103_071647_605056_0F349287 
-X-CRM114-Status: UNSURE (   7.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231103_073743_100139_1E0E06A7 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,57 +109,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 03/11/2023 10:48, Tudor Ambarus wrote:
-
-> Yep, it's strange, we'll have to check what's happening. I found my
-> n25q00 flash, on my side all its 4 dice are erased in 5 sec.  SFDP
-> defines how long the erase die should take, see BFPT dword 11. You can
-> start with that.
-
-Where does BFPT dword 11 reside inside SFDP?
-
-~# hexdump -C 
-/sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
-00000000  53 46 44 50 06 01 01 ff  00 06 01 10 30 00 00 ff  
-|SFDP........0...|
-00000010  84 00 01 02 80 00 00 ff  ff ff ff ff ff ff ff ff  
-|................|
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
-|................|
-00000030  e5 20 fb ff ff ff ff 3f  29 eb 27 6b 27 3b 27 bb  |. 
-.....?).'k';'.|
-00000040  ff ff ff ff ff ff 27 bb  ff ff 29 eb 0c 20 10 d8  
-|......'...).. ..|
-00000050  0f 52 00 00 24 4a 99 00  8b 8e 03 e1 ac 01 27 38  
-|.R..$J........'8|
-00000060  7a 75 7a 75 fb bd d5 5c  4a 0f 82 ff 81 bd 3d 36  
-|zuzu...\J.....=6|
-00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
-|................|
-00000080  ff e7 ff ff 21 dc ff ff                           |....!...|
-00000088
-
-Do we need a fixup to tell the erase die to be faster?
-
-I haven't found the 'BFPT' term in the JEDEC spec.
-
-> real	0m5.485s
-> user	0m0.000s
-> sys	0m5.461s
-
-Before erasing, did the flash contain 128MB of random data on your test?
-
-On my tests, when the flash contains 128MB of random data, the first 
-erase
-takes 4 minutes. Subsequent erases take only 2 seconds.
-
-Thanks
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAwMy4xMS4yMDIzIDE2OjE2LCBGYWJpbyBFc3RldmFtIHdyb3RlOgo+IE9uIDAzLzExLzIw
+MjMgMTA6NDgsIFR1ZG9yIEFtYmFydXMgd3JvdGU6Cj4gCj4+IFllcCwgaXQncyBzdHJhbmdlLCB3
+ZSdsbCBoYXZlIHRvIGNoZWNrIHdoYXQncyBoYXBwZW5pbmcuIEkgZm91bmQgbXkKPj4gbjI1cTAw
+IGZsYXNoLCBvbiBteSBzaWRlIGFsbCBpdHMgNCBkaWNlIGFyZSBlcmFzZWQgaW4gNSBzZWMuwqAg
+U0ZEUAo+PiBkZWZpbmVzIGhvdyBsb25nIHRoZSBlcmFzZSBkaWUgc2hvdWxkIHRha2UsIHNlZSBC
+RlBUIGR3b3JkIDExLiBZb3UgY2FuCj4+IHN0YXJ0IHdpdGggdGhhdC4KPiAKPiBXaGVyZSBkb2Vz
+IEJGUFQgZHdvcmQgMTEgcmVzaWRlIGluc2lkZSBTRkRQPwoKQkZQVCBzdGFuZHMgZm9yIEJhc2lj
+IEZsYXNoIFBhcmFtZXRlciBUYWJsZS4gQkZQVCBpcyB0aGUgZmlyc3QgdGFibGUgb2YKU0ZEUC4g
+UGxlYXNlIGNvbXBhcmUgdGhlIHN0YW5kYXJkIHdpdGggdGhlIGR1bXAuIFdlIGhhdmVuJ3Qgd3Jp
+dHRlbiB5ZXQKYW4gdXRpbGl0eSB0byBkZWNvZGUgdGhlIFNGRFAgZGF0YS4KPiAKPiB+IyBoZXhk
+dW1wIC1DCj4gL3N5cy9kZXZpY2VzL3BsYXRmb3JtL3NvY0AwLzMwODAwMDAwLmJ1cy8zMGJiMDAw
+MC5zcGkvc3BpX21hc3Rlci9zcGkwL3NwaTAuMC9zcGktbm9yL3NmZHAKPiAwMDAwMDAwMMKgIDUz
+IDQ2IDQ0IDUwIDA2IDAxIDAxIGZmwqAgMDAgMDYgMDEgMTAgMzAgMDAgMDAgZmbCoAo+IHxTRkRQ
+Li4uLi4uLi4wLi4ufAo+IDAwMDAwMDEwwqAgODQgMDAgMDEgMDIgODAgMDAgMDAgZmbCoCBmZiBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZsKgCj4gfC4uLi4uLi4uLi4uLi4uLi58Cj4gMDAwMDAwMjDCoCBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZsKgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmwqAKPiB8Li4u
+Li4uLi4uLi4uLi4uLnwKPiAwMDAwMDAzMMKgIGU1IDIwIGZiIGZmIGZmIGZmIGZmIDNmwqAgMjkg
+ZWIgMjcgNmIgMjcgM2IgMjcgYmLCoCB8Lgo+IC4uLi4uPykuJ2snOycufAo+IDAwMDAwMDQwwqAg
+ZmYgZmYgZmYgZmYgZmYgZmYgMjcgYmLCoCBmZiBmZiAyOSBlYiAwYyAyMCAxMCBkOMKgCj4gfC4u
+Li4uLicuLi4pLi4gLi58Cj4gMDAwMDAwNTDCoCAwZiA1MiAwMCAwMCAyNCA0YSA5OSAwMMKgIDhi
+IDhlIDAzIGUxIGFjIDAxIDI3IDM4wqAKPiB8LlIuLiRKLi4uLi4uLi4nOHwKPiAwMDAwMDA2MMKg
+IDdhIDc1IDdhIDc1IGZiIGJkIGQ1IDVjwqAgNGEgMGYgODIgZmYgODEgYmQgM2QgMzbCoAo+IHx6
+dXp1Li4uXEouLi4uLj02fAo+IDAwMDAwMDcwwqAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmbCoCBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZsKgCj4gfC4uLi4uLi4uLi4uLi4uLi58Cj4gMDAwMDAwODDC
+oCBmZiBlNyBmZiBmZiAyMSBkYyBmZiBmZsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgfC4uLi4hLi4ufAo+IDAwMDAwMDg4Cj4gCj4gRG8gd2UgbmVl
+ZCBhIGZpeHVwIHRvIHRlbGwgdGhlIGVyYXNlIGRpZSB0byBiZSBmYXN0ZXI/Cgpuby4gV2UgY2Fu
+IHJldHJpZXZlIHRoZSBlcmFzZSB0aW1lIGZyb20gQkZQVCBhbmQgdXNlIGl0IHRvIG5hcnJvdyB0
+aGUKd2FpdCB0aW1lLgo+IAo+IEkgaGF2ZW4ndCBmb3VuZCB0aGUgJ0JGUFQnIHRlcm0gaW4gdGhl
+IEpFREVDIHNwZWMuCj4gCj4+IHJlYWzCoMKgwqAgMG01LjQ4NXMKPj4gdXNlcsKgwqDCoCAwbTAu
+MDAwcwo+PiBzeXPCoMKgwqAgMG01LjQ2MXMKPiAKPiBCZWZvcmUgZXJhc2luZywgZGlkIHRoZSBm
+bGFzaCBjb250YWluIDEyOE1CIG9mIHJhbmRvbSBkYXRhIG9uIHlvdXIgdGVzdD8KCm5vdCBldmVy
+eXdoZXJlCgo+IAo+IE9uIG15IHRlc3RzLCB3aGVuIHRoZSBmbGFzaCBjb250YWlucyAxMjhNQiBv
+ZiByYW5kb20gZGF0YSwgdGhlIGZpcnN0IGVyYXNlCj4gdGFrZXMgNCBtaW51dGVzLiBTdWJzZXF1
+ZW50IGVyYXNlcyB0YWtlIG9ubHkgMiBzZWNvbmRzLgo+IAoKSSBjb25maXJtIEkgc2VlIHRoZSBz
+YW1lIGJlaGF2aW9yIG9uIG4yNXEwMCBmbGFzaC4KRXJhc2VkIDEzNDIxNzcyOCBieXRlcyBmcm9t
+IGFkZHJlc3MgMHgwMDAwMDAwMCBpbiBmbGFzaAoKcmVhbAkzbTQ5LjA4MnMKdXNlcgkwbTAuMDAw
+cwpzeXMJM200OC40ODVzCgpJJ2xsIGNvbnRpbnVlIHRvIGludmVzdGlnYXRlIHRoaXMgYXQgYSBi
+ZXN0IGVmZm9ydCByYXRlLCBleHBlY3QgZm9yIHNvbWUKZGVsYXlzLCBJJ20gaGFuZGxpbmcgU1BJ
+IE5PUiBtb3N0bHkgaW4gbXkgc3BhcmUgdGltZS4gSGFwcHkgdG8gZ3VpZGUgeW91CnRob3VnaC4g
+WW91IG1heSBqb2luICNtdGQgaXJjIGNoYW5uZWwgZm9yIHNob3J0IHF1ZXN0aW9ucywgc2VlIHdo
+ZXJlIGl0CmlzIGluIHRoZSBNQUlOVEFJTkVSUyBmaWxlLgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
