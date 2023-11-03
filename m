@@ -4,96 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76BE5C4167B
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 13:24:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E225C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 13:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s++/RQ4C8xYvzk4qFBtftO+6P9J937Wg3KNFQpKWGCQ=; b=KyBS3niTTB43OY
-	teTotmii4OK6aYK3zr7WVLTrW1oGodixiHYvFO8wNzD0ho3qFW5pT8DG9AGd3dbPSm1vkj3TMZsUW
-	9JMkmHDYgZF5dqxVMTrCoLANx+Ve2yFDTYPV0jxjbTrElO1oUBddGUC123XXR0fdOypuK2mhkN17t
-	ybKY5JleaqbObRE70+rGJGfzO2Hgzf2uPk7RZ+yQeFXoD0M3kyZDUhaMDIAk3ijPaAFOsFkloUCK4
-	OD51mfiWi506A4NCJgVLNfDFI/a/Uae4qyoNd1Op717i8XSsaz/k+zJjxt6UgPQpOAM4aXYAKBa8u
-	3vXCuUtp5bxriG5pD4aQ==;
+	List-Owner; bh=hlsCB5vGIvCdmV5joZ7n1ZI7v3hIL08OwbRJz9tpK0A=; b=HUzi2LmdbcAwr4
+	x9WqYOeZnKCA40gTK9kWt/T6tLhpzLWQXaZw6ySbnzatgb2XNjnG49nCELCcMDxonhinVGXD9268t
+	3mNWc0gaLzCIkm+5dI2NAdy+ji0ALvGgJnNaOPt9+EhQTDc1I72DDvVqB+Kw1WOYWuniPZJn/F9Eq
+	M7szqIZok2R3Tb/yjCTeFwxmsu1jfXMF8w6xvKM9SFDFEbAd0oENMY0X9CFrok/CxjlE/fn0QxNKX
+	X0Ib8TTKSR2oS7zuR0muSTEivarsY9JzplBEWBw7EWo44dYTX/9/MiO9O2LO3qwFsUjdCUISm2V5D
+	mhq8jiMpBEjUGveSKnOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyu9k-00BTf8-1p;
-	Fri, 03 Nov 2023 13:24:12 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qyuCI-00BTyq-02;
+	Fri, 03 Nov 2023 13:26:50 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyu9e-00BTe5-1w
+	id 1qyuCC-00BTxd-2k
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Nov 2023 13:24:11 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3Bumsn000971;
-	Fri, 3 Nov 2023 13:23:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=BXRh8XjjR22c6SWsyXduhIg6ETGYP+wKqm6uE98Zfhg=;
- b=UWhaPc+WrKZaG0wngW56TD907NbHdKAn6A+WdpXe/KaE2p3X/KS20LOksyfpij06PpRP
- XuA61cchGv/qw/1HITrzaPacGoi7QpMYQsMEYLMLKWYGC1lk8quFY89+B4wrNibL0DaH
- F1On3sLoBqsrrcBeehjGv360IveKjyhXg+NCDbRLkYPxsaOVUasu9/mKCYp7TRZiDVqm
- YNcykYLjdcDqImqcXCTLdVr8uci53kq+MhsObNa6JArhpLffadFwIsOkVgTGcEF8oSv6
- kISlIlKM3KoiO4FwmIc3X/4FV/LWncgw4A54feCMhdf3q/LH0RuwMsj5uwI/uFiYkE23 QA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4r00h660-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 Nov 2023 13:23:56 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3DNtDR020775
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 Nov 2023 13:23:55 GMT
-Received: from [10.201.203.219] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 06:23:49 -0700
-Message-ID: <4b911907-44b9-c164-9648-3d399e557672@quicinc.com>
-Date: Fri, 3 Nov 2023 18:53:46 +0530
+	Fri, 03 Nov 2023 13:26:48 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so1294752a12.2
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Nov 2023 06:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699018002; x=1699622802; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a3GUVlnvfHajw8gZI2o3qHP4/4Yejup/D3Fqlx+hPKA=;
+        b=S6yeqRkva5EwirjQc0cyhygnjDlG1o/TLGKlH7BrtEZ5Ef8QhGTdLWI7G9PRi2BHET
+         WnINlz3q8jGCXv9WK+fgskMWWJsNnWlQtvFjSt/d3MddUrDCkxz3AqRhKtefC+/6Jfg9
+         Rl/vW5SdgfVfdKmVHefieIY8BDFZZpPHFp4XZ+IXPzs3zjlhKQ7Yq/qDFvzvDfibookf
+         VIC4qawkvvNsZEN7ClefYuh7G3DcpQf9l3/9Lsc1KT9LMOM7mIKwCHLfKmtd/pm4D9z0
+         YoI/kFo0sNd8UqZAQXXLv9U/AT0Xm83QUZe/X3VER0+fOy69b+GHMGTzwpsgNvoZNCq7
+         cX2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699018002; x=1699622802;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a3GUVlnvfHajw8gZI2o3qHP4/4Yejup/D3Fqlx+hPKA=;
+        b=QvtrNo7B8Aj0+HpL+VGxdLYN4Zo8Zuuo8OqmNwgU3UlDGiuERQeddA6+7eVmV10KG3
+         gRMmGI2fP4/09b+4I3LsC6WAVRmCPm5N0LJ6IeT51ighxuRqLL9RUalsK5yL2R7TMoH9
+         Ri/el+ejCdJ0zVkWz5DQLwpt9J610OPO3rRGVK1kWLRMZJH3AmFsvAiN7uVwhshoMFHn
+         n3Ba1sEyp5nrSN2JRGuiKqLuAua3hNbrA4YA/1yvZwIJ8MrJjiWQBZEq/bJWnAywd9kd
+         WvDINZNO8xnBUvlaxTmruPzDTlEiVduT7D3VGwKK2r/09PcdHdGO21Gc/Q4Z16afZ0Gs
+         /zTg==
+X-Gm-Message-State: AOJu0YwuSXVMtrLj20uvNpyeojErnbH7hymBuZzcEmlKhn7Ra8QotpqK
+	I87TFm2LulldA726ECiu/SAe+g==
+X-Google-Smtp-Source: AGHT+IF/Q5m2JEh3RjWfyacLriPQGk4I0SEfi64NUVLU+ujM6P6UjtJVX6wtzbGwwSDCBEsqhKtFOw==
+X-Received: by 2002:a17:907:987:b0:9ae:54c3:c627 with SMTP id bf7-20020a170907098700b009ae54c3c627mr7126053ejc.71.1699018002375;
+        Fri, 03 Nov 2023 06:26:42 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.76])
+        by smtp.gmail.com with ESMTPSA id lf22-20020a170906ae5600b009b957d5237asm902674ejb.80.2023.11.03.06.26.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 06:26:41 -0700 (PDT)
+Message-ID: <b5c1d4d7-1583-4469-a604-dcf5bb3f96a4@linaro.org>
+Date: Fri, 3 Nov 2023 13:26:40 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine
- Driver
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-spi@vger.kernel.org>, <quic_srichara@quicinc.com>,
-        <qpic_varada@quicinc.com>
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-2-quic_mdalam@quicinc.com>
- <b9af01d2-1a86-4b41-9bd6-3bf7a0dde1c0@linaro.org>
- <553c1373-c9a0-b2af-2286-058824e31bad@quicinc.com>
- <CAA8EJpp-xsP1x==a5DH8pKpy7XH75UF-L8ewKWmeL8ePtxUq-A@mail.gmail.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <CAA8EJpp-xsP1x==a5DH8pKpy7XH75UF-L8ewKWmeL8ePtxUq-A@mail.gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: yB9V2oOg36eNJzFEQMzSvY3DRh3BJmo2
-X-Proofpoint-GUID: yB9V2oOg36eNJzFEQMzSvY3DRh3BJmo2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1011 impostorscore=0 spamscore=0 bulkscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030112
+To: Fabio Estevam <festevam@denx.de>
+Cc: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, michael@walle.cc,
+ pratyush@kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, bacem.daassi@infineon.com,
+ miquel.raynal@bootlin.com, richard@nod.at
+References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
+ <20231101145853.524045-3-tudor.ambarus@linaro.org>
+ <7fc95ddf-c860-49b9-93de-ef32b9383e42@linaro.org>
+ <216d99d671caa2465519fcc3360c5001@denx.de>
+ <e3901646-c918-426f-b219-e1670dc1e854@linaro.org>
+ <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
+ <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
+ <632457ed6b022856496537bdf8a738ba@denx.de>
+ <aa123456-7ec9-4bdc-a521-66c9582d5d45@linaro.org>
+ <c26f6623-2d58-43ed-95bb-957870890a02@linaro.org>
+ <6f1aa670-b3f7-4ea3-bc80-773a57e46c36@linaro.org>
+ <968ba4c249926e986b02440ad0421e98@denx.de>
+ <f2141a88-13d4-47b8-8382-5df8cc1bc42b@linaro.org>
+ <cf0e4284f2e3193ddd57b715196ca202@denx.de>
+ <25ca1a4c-683c-4b6d-938b-07323b211815@linaro.org>
+ <c3f2b8a6-8b23-4a33-948e-62ff64db9a2f@linaro.org>
+ <5872f7233bc0dc4669aa1324f3ae3cf0@denx.de>
+ <95c16eb0-a785-4a8d-bb42-c5a09b034d0a@linaro.org>
+ <e665266fc1565f9d346c95215df39f12@denx.de>
+ <085ba0f9780b1f8b34bc9e1037fec5e7@denx.de>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <085ba0f9780b1f8b34bc9e1037fec5e7@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231103_062406_757370_BEB99161 
-X-CRM114-Status: GOOD (  24.83  )
+X-CRM114-CacheID: sfid-20231103_062644_921217_97FEDE7D 
+X-CRM114-Status: GOOD (  14.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,133 +109,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 11/3/2023 6:03 PM, Dmitry Baryshkov wrote:
-> On Fri, 3 Nov 2023 at 14:25, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
->>
->>
->>
->> On 10/31/2023 10:41 PM, Krzysztof Kozlowski wrote:
->>> On 31/10/2023 13:03, Md Sadre Alam wrote:
->>>
->>> Eh? Empty?
->>
->> QPIC controller has the ecc pipelined so will keep the ecc support
->> inlined in both raw nand and serial nand driver.
->>
->> Droping this driver since device node was NAK-ed
->> https://www.spinics.net/lists/linux-arm-msm/msg177596.html
-> 
-> It seems, we have to repeat the same thing again and again:
-> 
-> It was not the device node that was NAKed. It was the patch that was
-> NAKed. Please read the emails carefully.
-> 
-> And next time please perform dtbs_check, dt_binding_check and
-> checkpatch before sending the patch.
-> 
-> It is perfectly fine to ask questions 'like we are getting we are
-> getting this and that issues with the bindings, please advise'. It is
-> not fine to skip that step completely.
-
-Sorry in V1 will run all basic checks.
-
-Based on below feedback [1] and NAK on the device node patch
-got idea of having separate device node for ECC is not acceptable.
-Could you please help to clarify that.
-
-Since ECC block is inlined with QPIC controller so is the below
-device node acceptable ?
-
-    bch: qpic_ecc {
-                           compatible = "qcom,ipq9574-ecc";
-                           status = "ok";
-                   };
-
-  [1] https://www.spinics.net/lists/linux-arm-msm/msg177525.html
-
-> 
->>>
->>>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->>>> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
->>>> ---
->>>>    drivers/mtd/nand/Kconfig    |   7 ++
->>>>    drivers/mtd/nand/Makefile   |   1 +
->>>>    drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
->>>>    3 files changed, 206 insertions(+)
->>>>    create mode 100644 drivers/mtd/nand/ecc-qcom.c
->>>>
->>>
->>> ...
->>>
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +EXPORT_SYMBOL(qcom_ecc_config);
->>>> +
->>>> +void qcom_ecc_enable(struct qcom_ecc *ecc)
->>>> +{
->>>> +    ecc->use_ecc = true;
->>>> +}
->>>> +EXPORT_SYMBOL(qcom_ecc_enable);
->>>
->>> Drop this and all other exports. Nothing here explains the need for them.
->>>
->>>> +
->>>> +void qcom_ecc_disable(struct qcom_ecc *ecc)
->>>> +{
->>>> +    ecc->use_ecc = false;
->>>> +}
->>>> +EXPORT_SYMBOL(qcom_ecc_disable);
->>>> +
->>>> +static const struct of_device_id qpic_ecc_dt_match[] = {
->>>> +    {
->>>> +            .compatible = "qcom,ipq9574-ecc",
->>>
->>> Please run scripts/checkpatch.pl and fix reported warnings. Some
->>> warnings can be ignored, but the code here looks like it needs a fix.
->>> Feel free to get in touch if the warning is not clear.
->>>
->>> Checkpatch is preerquisite. Don't send patches which have obvious issues
->>> pointed out by checkpatch. It's a waste of reviewers time.
->>>
->>>> +    },
->>>> +    {},
->>>> +};
->>>> +
->>>> +static int qpic_ecc_probe(struct platform_device *pdev)
->>>> +{
->>>> +    struct device *dev = &pdev->dev;
->>>> +    struct qpic_ecc *ecc;
->>>> +    u32 max_eccdata_size;
->>>> +
->>>> +    ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
->>>> +    if (!ecc)
->>>> +            return -ENOMEM;
->>>> +
->>>> +    ecc->caps = of_device_get_match_data(dev);
->>>> +
->>>> +    ecc->dev = dev;
->>>> +    platform_set_drvdata(pdev, ecc);
->>>> +    dev_info(dev, "probed\n");
->>>
->>> No, no such messages.
->>>
->>>
->>>
->>> Best regards,
->>> Krzysztof
->>>
-> 
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAxMS8zLzIzIDEyOjUzLCBGYWJpbyBFc3RldmFtIHdyb3RlOgo+IE9uIDAzLzExLzIwMjMg
+MDk6MzAsIEZhYmlvIEVzdGV2YW0gd3JvdGU6Cj4gCj4+IFRoZSBwcm9ibGVtIEkgc2VlIGlzIHRo
+YXQgdGhlIGVyYXNlIG9wZXJhdGlvbiB3YXMgc3VwZXIgc2xvdy4KPj4KPj4gUGxlYXNlIHNlZSB0
+aGUgdGltZXN0YW1wcyB0byBnZXQgYW4gaWRlYS4KPj4KPj4gSXMgdGhpcyBzbG93LWVyYXNlIGJl
+aGF2aW9yIGV4cGVjdGVkPyBQbGVhc2Ugbm90ZSB0aGF0IHRoZQoKTm8uCgo+PiBTUEkgY29udHJv
+bGxlciBvbiB0aGUgaS5NWDhNUCBkb2VzIG5vdCBoYXZlIERNQSBzdXBwb3J0IGF0IHRoZSBtb21l
+bnQuCgpXZSBkb24ndCB1c2UgRE1BIGZvciBlcmFzZXMsIGl0IGRvZXNuJ3QgbWF0dGVyIHdoZXRo
+ZXIgeW91IHVzZSBETUEgb3Igbm90LgoKPiAKPiBNZWFzdXJpbmcgdGhlIHRpbWUgaXQgdGFrZXMg
+dG8gZXJhc2UgdGhlIHdob2xlIGZsYXNoOgo+IAo+IHJvb3RAbWNkZTMwMDBhOn4jIHRpbWUgZmxh
+c2hfZXJhc2UgL2Rldi9tdGQwIDAgMAo+IEVyYXNpbmcgMTMxMDcyIEtpYnl0ZSBAIDAgLS3CoCAw
+IFsgMTUwMi44NTc2ODddIHNwaS1ub3Igc3BpMC4wOiAqKioqKgo+IG5vci0+cmVnX3Byb3RvID0g
+MHgwMDAxMDEwMQo+ICUgY29tcGxldGUgWyAxNTAyLjg2NjM1NF0gc3BpLW5vciBzcGkwLjA6ICoq
+KioqCj4gWyAxNTAyLjg3MDYzMV0gc3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmNtZC5uYnl0ZXMg
+PSAweDAxCj4gWyAxNTAyLjg3NTg5MV0gc3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmNtZC5idXN3
+aWR0aCA9IDB4MDEKPiBbIDE1MDIuODgxMzExXSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuY21k
+Lm9wY29kZSA9IDB4YzQKPiBbIDE1MDIuODg2NTU5XSBzcGktbm9yIHNwaTAuMDogKioqKioKPiBb
+IDE1MDIuODg5ODg4XSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuYWRkci5uYnl0ZXMgPSAweDA0
+Cj4gWyAxNTAyLjg5NTIyMF0gc3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmFkZHIuYnVzd2lkdGgg
+PSAweDAxCj4gWyAxNTAyLjkwMDcyNF0gc3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmFkZHIuYnVz
+d2lkdGggPSAweDAKPiBbIDE1MDIuOTA2MTQxXSBzcGktbm9yIHNwaTAuMDogKioqKioKPiBbIDE1
+MDIuOTA5NDc0XSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuZHVtbXkubmJ5dGVzID0gMHgwMAo+
+IFsgMTUwMi45MTQ4OTldIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5kdW1teS5idXN3aWR0aCA9
+IDB4MDAKPiBbIDE1MDIuOTIwNDg5XSBzcGktbm9yIHNwaTAuMDogKioqKioKPiBbIDE1MDIuOTIz
+ODIzXSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuZGF0YS5idXN3aWR0aCA9IDB4MDAKPiBbIDE1
+MDIuOTI5MzIzXSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuZGF0YS5uYnl0ZXMgPSAwCj4gWyAx
+NjIwLjMyOTY3M10gc3BpLW5vciBzcGkwLjA6ICoqKioqIG5vci0+cmVnX3Byb3RvID0gMHgwMDAx
+MDEwMQo+IFsgMTYyMC4zMzU1MzhdIHNwaS1ub3Igc3BpMC4wOiAqKioqKgo+IFsgMTYyMC4zMzg4
+NjldIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5jbWQubmJ5dGVzID0gMHgwMQo+IFsgMTYyMC4z
+NDQxMjddIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5jbWQuYnVzd2lkdGggPSAweDAxCj4gWyAx
+NjIwLjM0OTU0M10gc3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmNtZC5vcGNvZGUgPSAweGM0Cj4g
+WyAxNjIwLjM1NDc5MV0gc3BpLW5vciBzcGkwLjA6ICoqKioqCj4gWyAxNjIwLjM1ODEyM10gc3Bp
+LW5vciBzcGkwLjA6ICoqKioqIG9wLmFkZHIubmJ5dGVzID0gMHgwNAo+IFsgMTYyMC4zNjM0NTJd
+IHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5hZGRyLmJ1c3dpZHRoID0gMHgwMQo+IFsgMTYyMC4z
+Njg5NTNdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5hZGRyLmJ1c3dpZHRoID0gMHg0MDAwMDAw
+Cj4gWyAxNjIwLjM3NDg5MF0gc3BpLW5vciBzcGkwLjA6ICoqKioqCj4gWyAxNjIwLjM3ODIyOV0g
+c3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmR1bW15Lm5ieXRlcyA9IDB4MDAKPiBbIDE2MjAuMzgz
+NjQ2XSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuZHVtbXkuYnVzd2lkdGggPSAweDAwCj4gWyAx
+NjIwLjM4OTIzNF0gc3BpLW5vciBzcGkwLjA6ICoqKioqCj4gWyAxNjIwLjM5MjU2Nl0gc3BpLW5v
+ciBzcGkwLjA6ICoqKioqIG9wLmRhdGEuYnVzd2lkdGggPSAweDAwCj4gWyAxNjIwLjM5ODA2OF0g
+c3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmRhdGEubmJ5dGVzID0gMAo+IEVyYXNpbmcgMTMxMDcy
+IEtpYnl0ZSBAIDAgLS0gMTAwICUgY29tcGxldGUKPiAKPiByZWFswqDCoMKgIDNtNTYuNzk1cwo+
+IHVzZXLCoMKgwqAgMG0wLjAwMXMKPiBzeXPCoMKgwqAgM20xNS44NDBzCj4gCj4gT3JpZ2luYWxs
+eSwgSSB3YXMgYWxzbyBnZXR0aW5nIGFyb3VuZCA0IG1pbnV0ZXMgdG8gZXJhc2UgdGhlIHdob2xl
+IGZsYXNoLAo+IHNvIHRoZSBlcmFzZS1kaWUgcGVyZm9ybWFuY2UgaXMgY29tcGFyYWJsZSB0byB0
+aGUgZXJhc2Ugb25lIHNlY3RvciBhdCB0aW1lLgo+IAoKV2hpY2ggdmVyc2lvbiBvZiBtdGQtdXRp
+bHMgYXJlIHlvdSB1c2luZz8gSSBndWVzcyB0aGUgZmxhc2gtZXJhc2UKdXRpbGl0eSBpcyB3cml0
+dGVuIGluIGEgYmFkIHdheS4gUGxlYXNlIHVzZSB0aGUgZm9sbG93aW5nIHdoaWxlIEkgY2hlY2sK
+d2hhdCBmbGFzaF9lcmFzZSBpcyBkb2luZzoKCnRpbWUgbXRkX2RlYnVnIGVyYXNlIC9kZXYvbXRk
+MCAwIDEzNDIxNzcyOAoKdGEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
