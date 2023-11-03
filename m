@@ -4,80 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D9ABC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 12:33:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C74DFC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 12:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0zhGeBmAHHPhkoanDL6LyaRzYmwnPphL1tO40v1Uuic=; b=x7n1dbFYO5dt/v
-	Gv2oW07uoIKheLqGwNN8YscLAeS2dLoBJJ7N2EAjgnWOTFtCweOEup4BMkx9UBj9fbhPLk8bMhC4M
-	JCDEGVirBM6MmBslEn1sH+E19lQmdjdy+0zlhJ52xUNu/eEL9QDkyiZv+m3OKkzKCFFn4ME55IpFh
-	JQWwaiDI+qcmPO2OL96zBqjCvr0TApcW+8gbPAhnjRZg0HvJqP92W8ZlkNWrRdwcgBiwB9O1d5v1M
-	RwaaJSxIBHDgZoxF1cQCUug9QKKB47wmUksMyy8tgBeK9AkgAnui/W1b3MayrShb9Xs5LhIWTxEQm
-	LA3KyRFM1SCu5b7rJWBg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UHlOI9ncrSq+afABi7UP4LVOdyNviOs3auGXOTUode4=; b=a19RFnU0/UIXgRiBPmDyZdsTOY
+	4yPs7oY7NF/D8C9VY84TKJblomOHwSstkEsxlEnOasq9j6YwdIu2wPFWy5nasdyd7l7lliDpX6tBu
+	jXq9OSryiUPiLNHiN8qqfWdXmjB5ycCRRZ2evUwdw1qZAi6RRAt4gwOwawTrjSpvObmX8VbWt3oLT
+	YsdgE3JBkB4ZOMFdvlY2hcWvw/1mOlE5u7SYgfIChmSXLcWajJ4PjVD5nOmp+b9eESYK/3f4oAErz
+	AKCuC46TkHJxIZ0cqQMsmjQoTfLzGlIX/wWaT0vHFIYqjqBZff2H2VuxOa7zKl0J+sSoogJgT0liA
+	3sjLQwRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qytMZ-00BPeL-0v;
-	Fri, 03 Nov 2023 12:33:23 +0000
-Received: from mail-yb1-xb34.google.com ([2607:f8b0:4864:20::b34])
+	id 1qytaL-00BQgE-0r;
+	Fri, 03 Nov 2023 12:47:37 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qytMT-00BPcT-1r
+	id 1qytaI-00BQfc-27
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 Nov 2023 12:33:21 +0000
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso1942719276.3
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Nov 2023 05:33:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699014791; x=1699619591; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0KSdt9VlChlmft/PeayCtTjiy1+VOgZbmeLdttQHlx4=;
-        b=n+HX4EbxZaHlQOAgXwSKR3sAl9UxyaPw4eMuekfMrEYWi9ztH6c49ZzmfCTZORX5WI
-         XN89wF2yGr6riG/2gdW+MaCrVcRAvr8hW+miFzdLNaOwoc0QnO4SrrUYQ2qowmYRYGe3
-         xOeCfAwC1XoSalshlSOopLbegVavSjDK5/JVhILh/brVbnkUAdUHsqX7jKbcYt+6P6+R
-         wveL9f0MQgYTgGRwizZHZ04dJkTZAPHWnfCO0YZwrUnMqsHEBXsiHi85eCR5T35Jvuj7
-         nByEao4fOCWU0c0grzu7qNlJlKNvFMoNzCtHazexjHUfez7lG8nFRv+Qa4iWi0aGkJeU
-         uoqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699014791; x=1699619591;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0KSdt9VlChlmft/PeayCtTjiy1+VOgZbmeLdttQHlx4=;
-        b=bmDNKMtcXf0r6dKjJGyrZFVkIeWHPcO5TC3H21bNECm0oAiVsMy8BRDQAfZOMmVTkC
-         aHnOilaGRJ05oIqZqqskzsztBFFAqYqYH3GkceoYlAgZK+WesNNg9sMsgWf0TMM1rWYA
-         3wdyLVA1xufpZVpa2ypcdPWqR/a/869bONdjh/bBDXOLaCI6tDODsaYwuI3RZ0LruKhh
-         TmDG66EXVHQYxmVCT/KDlNiE/tSr/piSWrxHl+mFntLGrlulfwEI3VrNjht55H7rhxrj
-         ongo2+AZG/iXq5VKPp1QC0foq10sfzHgbHhFhKBVdUzQ88kNNXWicp2G0X+Dz1MSrjDd
-         CXrQ==
-X-Gm-Message-State: AOJu0YziU6Twcfx4mKa8CopAVgmx1jbwQWRre8zAv8ZJdLnXnv77D8Nt
-	4p/j3ygByL6NFLNaNuzw75GTI/s5YlvUmNpWWF68RQ==
-X-Google-Smtp-Source: AGHT+IEXP9Sio/dbsgBAJ9ZHE9EMw/w5GSOc9qOrt8FkvsM79cuDJRSXMr28R4x61MRT2ytqfIU9jf6RzHnPqpMk19A=
-X-Received: by 2002:a25:37c6:0:b0:d9c:2b72:4fa5 with SMTP id
- e189-20020a2537c6000000b00d9c2b724fa5mr15696344yba.48.1699014791460; Fri, 03
- Nov 2023 05:33:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-2-quic_mdalam@quicinc.com> <b9af01d2-1a86-4b41-9bd6-3bf7a0dde1c0@linaro.org>
- <553c1373-c9a0-b2af-2286-058824e31bad@quicinc.com>
-In-Reply-To: <553c1373-c9a0-b2af-2286-058824e31bad@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 3 Nov 2023 14:33:00 +0200
-Message-ID: <CAA8EJpp-xsP1x==a5DH8pKpy7XH75UF-L8ewKWmeL8ePtxUq-A@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine Driver
+	Fri, 03 Nov 2023 12:47:35 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 10DA3CE16C1;
+	Fri,  3 Nov 2023 12:47:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0C26C433C7;
+	Fri,  3 Nov 2023 12:47:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699015652;
+	bh=YO66OvhP/VVHPNNy7Ei4mXR0Rw9gNOGEAcE5AmCI8wY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D3+lSdzOQRk80PA8gPgTD8xYIKG2lrOnNFtRDeVdlBfG63Aers/mg7I4t8mFTPi9Q
+	 CW1HnBwAVo9YkCAyWfuj/1gSvy5Xb/zEBmaJzP6A6SIjAvsnT+EbIILp50AteGyo+J
+	 x7Kjygt9tYFgMSXS0lLD3fzQ9mHYTi1SNtuZIuUCs2OP3DCiJjG+mPcYG9rpLITvil
+	 hg5/Q+j/yEl+kcDXT3r9WGsxD9dr5KHWeMNcgxx16JsodFE5M1EQF3B3sSZLXJXFQv
+	 3O40cmAJcRVf+aArbfvdPfkqLBpWosdJOdPeiABcl8HwXMDHfEFAFTA0DRnv0batA5
+	 Q2uePOM2ZK9bA==
+Date: Fri, 3 Nov 2023 12:47:25 +0000
+From: Mark Brown <broonie@kernel.org>
 To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, agross@kernel.org, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, robh+dt@kernel.org, conor+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, miquel.raynal@bootlin.com, richard@nod.at, 
-	vigneshr@ti.com, broonie@kernel.org, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, 
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	robh+dt@kernel.org, conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
 	quic_srichara@quicinc.com, qpic_varada@quicinc.com
+Subject: Re: [RFC PATCH 4/5] spi: qpic: Add support for qpic spi nand driver
+Message-ID: <b35b4184-d456-46f3-9268-8f0af2fbb4eb@sirena.org.uk>
+References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-5-quic_mdalam@quicinc.com>
+ <a1270a88-49a9-4bdb-89a9-ce6929f2294d@sirena.org.uk>
+ <2b9e943a-198e-7999-b898-e7b2498a9ffa@quicinc.com>
+MIME-Version: 1.0
+In-Reply-To: <2b9e943a-198e-7999-b898-e7b2498a9ffa@quicinc.com>
+X-Cookie: He's dead, Jim.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231103_053317_622368_A46F99F1 
-X-CRM114-Status: GOOD (  27.41  )
+X-CRM114-CacheID: sfid-20231103_054734_872421_EE354F7B 
+X-CRM114-Status: GOOD (  15.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,116 +75,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4740708485021015848=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 3 Nov 2023 at 14:25, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
->
->
->
-> On 10/31/2023 10:41 PM, Krzysztof Kozlowski wrote:
-> > On 31/10/2023 13:03, Md Sadre Alam wrote:
-> >
-> > Eh? Empty?
->
-> QPIC controller has the ecc pipelined so will keep the ecc support
-> inlined in both raw nand and serial nand driver.
->
-> Droping this driver since device node was NAK-ed
-> https://www.spinics.net/lists/linux-arm-msm/msg177596.html
 
-It seems, we have to repeat the same thing again and again:
-
-It was not the device node that was NAKed. It was the patch that was
-NAKed. Please read the emails carefully.
-
-And next time please perform dtbs_check, dt_binding_check and
-checkpatch before sending the patch.
-
-It is perfectly fine to ask questions 'like we are getting we are
-getting this and that issues with the bindings, please advise'. It is
-not fine to skip that step completely.
-
-> >
-> >> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> >> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-> >> ---
-> >>   drivers/mtd/nand/Kconfig    |   7 ++
-> >>   drivers/mtd/nand/Makefile   |   1 +
-> >>   drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
-> >>   3 files changed, 206 insertions(+)
-> >>   create mode 100644 drivers/mtd/nand/ecc-qcom.c
-> >>
-> >
-> > ...
-> >
-> >> +
-> >> +    return 0;
-> >> +}
-> >> +EXPORT_SYMBOL(qcom_ecc_config);
-> >> +
-> >> +void qcom_ecc_enable(struct qcom_ecc *ecc)
-> >> +{
-> >> +    ecc->use_ecc = true;
-> >> +}
-> >> +EXPORT_SYMBOL(qcom_ecc_enable);
-> >
-> > Drop this and all other exports. Nothing here explains the need for them.
-> >
-> >> +
-> >> +void qcom_ecc_disable(struct qcom_ecc *ecc)
-> >> +{
-> >> +    ecc->use_ecc = false;
-> >> +}
-> >> +EXPORT_SYMBOL(qcom_ecc_disable);
-> >> +
-> >> +static const struct of_device_id qpic_ecc_dt_match[] = {
-> >> +    {
-> >> +            .compatible = "qcom,ipq9574-ecc",
-> >
-> > Please run scripts/checkpatch.pl and fix reported warnings. Some
-> > warnings can be ignored, but the code here looks like it needs a fix.
-> > Feel free to get in touch if the warning is not clear.
-> >
-> > Checkpatch is preerquisite. Don't send patches which have obvious issues
-> > pointed out by checkpatch. It's a waste of reviewers time.
-> >
-> >> +    },
-> >> +    {},
-> >> +};
-> >> +
-> >> +static int qpic_ecc_probe(struct platform_device *pdev)
-> >> +{
-> >> +    struct device *dev = &pdev->dev;
-> >> +    struct qpic_ecc *ecc;
-> >> +    u32 max_eccdata_size;
-> >> +
-> >> +    ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
-> >> +    if (!ecc)
-> >> +            return -ENOMEM;
-> >> +
-> >> +    ecc->caps = of_device_get_match_data(dev);
-> >> +
-> >> +    ecc->dev = dev;
-> >> +    platform_set_drvdata(pdev, ecc);
-> >> +    dev_info(dev, "probed\n");
-> >
-> > No, no such messages.
-> >
-> >
-> >
-> > Best regards,
-> > Krzysztof
-> >
+--===============4740708485021015848==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Op0au9/l1MW2X+EM"
+Content-Disposition: inline
 
 
+--Op0au9/l1MW2X+EM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-With best wishes
-Dmitry
+On Fri, Nov 03, 2023 at 04:50:54PM +0530, Md Sadre Alam wrote:
+> On 10/31/2023 7:53 PM, Mark Brown wrote:
+> > On Tue, Oct 31, 2023 at 05:33:06PM +0530, Md Sadre Alam wrote:
+
+> > > +	ret = submit_descs(snandc);
+> > > +	if (ret)
+> > > +		dev_err(snandc->dev, "failure in sbumitting spiinit descriptor\n");
+> > > +
+> > > +	free_descs(snandc);
+
+> > This seems to be doing a bit more than I would expect an init function
+> > to, and it's very surprising to see the descriptors freed immediately
+> > after something called a submit (which suggests that the descriptors are
+> > still in flight).
+
+> Our controller supports only bam mode , that means for writing/reading even
+> single register we have to use bam.
+> submit_descs() is synchronous so I/O is complete when it returns.
+> Hence freeing the descriptor after it.
+
+That seems like the BAM API is very confusing and error prone.
+
+--Op0au9/l1MW2X+EM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVE69wACgkQJNaLcl1U
+h9Dkugf/VsaUo4k4Z3jLIBAgzXGrzjlRrTxTxJyGu9jDAXZeMeTn2A2E+PgfGf5D
+5ZxgLrmrSJLMsRGWIRe8MqKiyThyN2rOC/er/oJE8n4SZ+FicSBXPCdR6TPUKCsf
+M5Rl4Vhq+rBRkArWp/Y5luoG9/pDCs5mhGbY1SKkaR06RvftMV7MHgWodxyn7U5G
+iexZwY9I3IzkpkB85edqNl0Vh89vvsjPKptH8WZOuc+mF1dRZGc5dkXwgHAScxKr
+I5dAQky8hSXYoMsialzHArWpIWjdmuMELn9CKMTLpQvwc7pUWkqIi4GGB1TuYWMB
+LiPTinFMPGc2XD8XqtWCHNbTvA9BfQ==
+=xTC+
+-----END PGP SIGNATURE-----
+
+--Op0au9/l1MW2X+EM--
+
+
+--===============4740708485021015848==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4740708485021015848==--
+
