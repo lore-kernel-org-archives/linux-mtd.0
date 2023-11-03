@@ -4,93 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABBCBC0018A
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 12:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C91CC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Nov 2023 12:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sd3ZDmYozUSU0M/GvzI4ZJ/boEKAjHfRZrNp0vTjuTY=; b=JW+Id/p8H74+xPRNvuGp7PuyuV
-	clADRbN+zMDVHdESxLeNa9DUBjcaUzTdjoPC3yE3jl/BruqIHHHbCqLp3zQjhoKeotHv3kMfe2Wn1
-	HG91ggo0W+psl8xUgzEQqP9vsC7aYSdv6d0nc4irR+IzaIrNqxoIjMKseq+POkxTJrdayXFqnpXW0
-	BOjqa/FxQ6tkK2Z9G3fFtOjywWZX4NrTr/wRN3lZ8aTm9KmXzn6jkRT9jR22MFE1/SJDi+fJ7y+G+
-	R5Z+V6fL0ISHVNTZqduSLBrqV150zsUlrwuM6hRNgds0qWp0EhQC4aHb18SH+jJy2Rw+U0zY5/2wK
-	aN7TgOSQ==;
+	bh=EO84ktl5rux8W0gQK+MhsrMlicj+YpV9iUVIWovc0x4=; b=LgqIP0ZwGYP8Kt4aRv9AW1x9Us
+	DtdMcupPtyE8kknvM3tXikfWsADMZtcHsHoQ5lbSmnkPGYtdETSvAdcUQfcpM9rXX/NkXTj/g1aAN
+	HU1KBT2zJZ8UEcSN4tChOOmhw5Ec6fYCgVL+Y8Z7tin2fjMtuQxMWxF4q0vRTZ3UBiNXh13HuPdYC
+	M7f7lr52uOZXj7YNGKD0h12pf04ROFGsCq7KUZ9myMyJ5mz4hOF5T36rPrjI1cr3laFVsyD3sVc2p
+	qXc5ouvf/gLSfmkzkZcuHJfrhZ8QDrUS7OLL1NYWDu+YVilzzTagdMudaki5zvejMY48qBp6ketJw
+	Tl64LAJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qytEQ-00BOld-1Q;
-	Fri, 03 Nov 2023 12:24:58 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1qytJt-00BPIB-1m;
+	Fri, 03 Nov 2023 12:30:37 +0000
+Received: from phobos.denx.de ([85.214.62.61])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qytEJ-00BOlG-2D
-	for linux-mtd@lists.infradead.org;
-	Fri, 03 Nov 2023 12:24:56 +0000
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3C9oVD018300;
-	Fri, 3 Nov 2023 12:24:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3iX5zSAME6yEJ7E/80TetCkqNTN9mTZI1MihvK+yZBs=;
- b=jrpaY5m3+AAP8ph0OfMrxvOP2Os6AL8538lJfH/ssxlVtdtdp34kGYFX+5Ch/GPOiAmL
- y39/DTPv/zXiwTaOjwBMBbExjQvp9CAOvhgOWM4rtFuhn4cUsdallNXw71s6D35c/tqA
- 741DRJ8967/5/z3/oMSTp5vr8BbKQl4qDSXEKT4qj71O/MU+WjCmMMIv0U/+SJbVaUpW
- oZc9/UpG3dxCffqQqyMaWOMHuQqIrMwOl7Snsvun1cpXdMWYV5m4CNVHsU6Ks4P0VwRc
- fvbWq0pKyx4JjnsfwB66nH1behpO+f0VENVEVDUEM8cSUwmwZa6CGD8H9lrr9tyq4X8h KA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u47d5337n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 Nov 2023 12:24:42 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3COfW5031421
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 Nov 2023 12:24:41 GMT
-Received: from [10.201.203.219] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 05:24:35 -0700
-Message-ID: <553c1373-c9a0-b2af-2286-058824e31bad@quicinc.com>
-Date: Fri, 3 Nov 2023 17:54:32 +0530
+	id 1qytJn-00BPHA-26;
+	Fri, 03 Nov 2023 12:30:35 +0000
+Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: festevam@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 14BD587105;
+	Fri,  3 Nov 2023 13:30:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1699014627;
+	bh=ZCGeLRC56ppC3WmAwZPSDkOuCsWY5YtyKFL5uayBo38=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Rv+lU+QaXP/q+CFIlOuzY6JvvcxGCvHXWWepDOrn2oKTGPRFSHG8Jc9MXlF9rYdY7
+	 kgYSP5u8V/BaI5Z3LPsXrAkAuWKk+CPkwoTgvXhoqLbvjgmXKLXnUO5gSfj6vBHolB
+	 KAtfQdtw+yeC51umo5/mshVFv72ytd0wT2KWwvjmZdcn879APoQA5Wura3iVLV6tNN
+	 WS4tvsIpw2i7GHmZoSSYLsdpu/N73X9JwBz9WhFUBaXzm/xVMKMLBL/CqY3iMEPpmU
+	 7K1lTr6cvOg+64/ML8P3HlV+SMn5pQCySGt4JW+EaVY8mJMdxFujtgVt96WKsStjZJ
+	 DB1Dzf4Wc1X9w==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine
- Driver
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-spi@vger.kernel.org>, <quic_srichara@quicinc.com>,
-        <qpic_varada@quicinc.com>
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-2-quic_mdalam@quicinc.com>
- <b9af01d2-1a86-4b41-9bd6-3bf7a0dde1c0@linaro.org>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <b9af01d2-1a86-4b41-9bd6-3bf7a0dde1c0@linaro.org>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gAmE5KsgDX63mYcZ97cBJ87Lcdo6qxmx
-X-Proofpoint-ORIG-GUID: gAmE5KsgDX63mYcZ97cBJ87Lcdo6qxmx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030103
+Date: Fri, 03 Nov 2023 09:30:27 -0300
+From: Fabio Estevam <festevam@denx.de>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, michael@walle.cc,
+ pratyush@kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, bacem.daassi@infineon.com,
+ miquel.raynal@bootlin.com, richard@nod.at
+Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
+In-Reply-To: <95c16eb0-a785-4a8d-bb42-c5a09b034d0a@linaro.org>
+References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
+ <20231101145853.524045-3-tudor.ambarus@linaro.org>
+ <7fc95ddf-c860-49b9-93de-ef32b9383e42@linaro.org>
+ <216d99d671caa2465519fcc3360c5001@denx.de>
+ <e3901646-c918-426f-b219-e1670dc1e854@linaro.org>
+ <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
+ <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
+ <632457ed6b022856496537bdf8a738ba@denx.de>
+ <aa123456-7ec9-4bdc-a521-66c9582d5d45@linaro.org>
+ <c26f6623-2d58-43ed-95bb-957870890a02@linaro.org>
+ <6f1aa670-b3f7-4ea3-bc80-773a57e46c36@linaro.org>
+ <968ba4c249926e986b02440ad0421e98@denx.de>
+ <f2141a88-13d4-47b8-8382-5df8cc1bc42b@linaro.org>
+ <cf0e4284f2e3193ddd57b715196ca202@denx.de>
+ <25ca1a4c-683c-4b6d-938b-07323b211815@linaro.org>
+ <c3f2b8a6-8b23-4a33-948e-62ff64db9a2f@linaro.org>
+ <5872f7233bc0dc4669aa1324f3ae3cf0@denx.de>
+ <95c16eb0-a785-4a8d-bb42-c5a09b034d0a@linaro.org>
+Message-ID: <e665266fc1565f9d346c95215df39f12@denx.de>
+X-Sender: festevam@denx.de
+User-Agent: Roundcube Webmail/1.3.6
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231103_052451_842854_CE1EA22B 
-X-CRM114-Status: GOOD (  21.73  )
+X-CRM114-CacheID: sfid-20231103_053032_172948_528CAB39 
+X-CRM114-Status: UNSURE (   9.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,89 +95,68 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Tudor,
 
+On 03/11/2023 08:47, Tudor Ambarus wrote:
 
-On 10/31/2023 10:41 PM, Krzysztof Kozlowski wrote:
-> On 31/10/2023 13:03, Md Sadre Alam wrote:
+> I think I know what happens with your flash. Please try the debug patch
+> from https://github.com/ambarus/linux-0day.git
+> spi-nor/next-die-erase-v2-debug.
 > 
-> Eh? Empty?
+> I assume your flash works in 3-byte mode. The die erase cmd needs an
+> extended register in 3-byte mode otherwise is ignored. Please try the
+> patch and let me know if it works.
 
-QPIC controller has the ecc pipelined so will keep the ecc support
-inlined in both raw nand and serial nand driver.
+Progress: with this one, I see that the whole flash was erased:
 
-Droping this driver since device node was NAK-ed
-https://www.spinics.net/lists/linux-arm-msm/msg177596.html
-> 
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
->> ---
->>   drivers/mtd/nand/Kconfig    |   7 ++
->>   drivers/mtd/nand/Makefile   |   1 +
->>   drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
->>   3 files changed, 206 insertions(+)
->>   create mode 100644 drivers/mtd/nand/ecc-qcom.c
->>
-> 
-> ...
-> 
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL(qcom_ecc_config);
->> +
->> +void qcom_ecc_enable(struct qcom_ecc *ecc)
->> +{
->> +	ecc->use_ecc = true;
->> +}
->> +EXPORT_SYMBOL(qcom_ecc_enable);
-> 
-> Drop this and all other exports. Nothing here explains the need for them.
-> 
->> +
->> +void qcom_ecc_disable(struct qcom_ecc *ecc)
->> +{
->> +	ecc->use_ecc = false;
->> +}
->> +EXPORT_SYMBOL(qcom_ecc_disable);
->> +
->> +static const struct of_device_id qpic_ecc_dt_match[] = {
->> +	{
->> +		.compatible = "qcom,ipq9574-ecc",
-> 
-> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> warnings can be ignored, but the code here looks like it needs a fix.
-> Feel free to get in touch if the warning is not clear.
-> 
-> Checkpatch is preerquisite. Don't send patches which have obvious issues
-> pointed out by checkpatch. It's a waste of reviewers time.
-> 
->> +	},
->> +	{},
->> +};
->> +
->> +static int qpic_ecc_probe(struct platform_device *pdev)
->> +{
->> +	struct device *dev = &pdev->dev;
->> +	struct qpic_ecc *ecc;
->> +	u32 max_eccdata_size;
->> +
->> +	ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
->> +	if (!ecc)
->> +		return -ENOMEM;
->> +
->> +	ecc->caps = of_device_get_match_data(dev);
->> +
->> +	ecc->dev = dev;
->> +	platform_set_drvdata(pdev, ecc);
->> +	dev_info(dev, "probed\n");
-> 
-> No, no such messages.
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+~# flash_erase /dev/mtd0 0 0
+Erasing 131072 Kibyte @ 0 --  0 [   39.865773] spi-nor spi0.0: ***** 
+nor->reg_proto = 0x00010101
+% complete [   39.874441] spi-nor spi0.0: *****
+[   39.878712] spi-nor spi0.0: ***** op.cmd.nbytes = 0x01
+[   39.883983] spi-nor spi0.0: ***** op.cmd.buswidth = 0x01
+[   39.889402] spi-nor spi0.0: ***** op.cmd.opcode = 0xc4
+[   39.894648] spi-nor spi0.0: *****
+[   39.897979] spi-nor spi0.0: ***** op.addr.nbytes = 0x04
+[   39.903309] spi-nor spi0.0: ***** op.addr.buswidth = 0x01
+[   39.908810] spi-nor spi0.0: ***** op.addr.buswidth = 0x0
+[   39.914226] spi-nor spi0.0: *****
+[   39.917558] spi-nor spi0.0: ***** op.dummy.nbytes = 0x00
+[   39.922981] spi-nor spi0.0: ***** op.dummy.buswidth = 0x00
+[   39.928570] spi-nor spi0.0: *****
+[   39.931905] spi-nor spi0.0: ***** op.data.buswidth = 0x00
+[   39.937403] spi-nor spi0.0: ***** op.data.nbytes = 0
+
+[  157.398677] spi-nor spi0.0: ***** nor->reg_proto = 0x00010101
+[  157.404543] spi-nor spi0.0: *****
+[  157.407878] spi-nor spi0.0: ***** op.cmd.nbytes = 0x01
+[  157.413133] spi-nor spi0.0: ***** op.cmd.buswidth = 0x01
+[  157.418549] spi-nor spi0.0: ***** op.cmd.opcode = 0xc4
+[  157.423799] spi-nor spi0.0: *****
+[  157.427130] spi-nor spi0.0: ***** op.addr.nbytes = 0x04
+[  157.432461] spi-nor spi0.0: ***** op.addr.buswidth = 0x01
+[  157.437963] spi-nor spi0.0: ***** op.addr.buswidth = 0x4000000
+[  157.443900] spi-nor spi0.0: *****
+[  157.447229] spi-nor spi0.0: ***** op.dummy.nbytes = 0x00
+[  157.452648] spi-nor spi0.0: ***** op.dummy.buswidth = 0x00
+[  157.458239] spi-nor spi0.0: *****
+[  157.461558] spi-nor spi0.0: ***** op.data.buswidth = 0x00
+[  157.467066] spi-nor spi0.0: ***** op.data.nbytes = 0
+Erasing 131072 Kibyte @ 0 -- 100 % complete
+
+~# hexdump /dev/mtd0
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+8000000
+
+The problem I see is that the erase operation was super slow.
+
+Please see the timestamps to get an idea.
+
+Is this slow-erase behavior expected? Please note that the
+SPI controller on the i.MX8MP does not have DMA support at the moment.
+
+Thanks!
 
 ______________________________________________________
 Linux MTD discussion mailing list
