@@ -4,101 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C66C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Nov 2023 14:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF2ACC4332F
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Nov 2023 09:24:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J3fiM4oOcDMJO6Q/qvGDOEEZemeH/ZvwT4KRtmEtcO0=; b=1cx2fszJVGjXIJ
-	K4WEvh9moBbd4rXm2ODOAuS0NaoQ8CHrZ5OZv06oc13l+z862YNFldpGd40631OBqzUQKxCHFrTrs
-	epcQf4ppwevO0HyXM6CgWD7kDehhDirR0vhNnm6l3xlXpSVC06BiN1d+IBoDc1x1XpL0lNwKTUd9M
-	q60esdaUmALaEr2BafTXpwvcOAVYVhiAFEZ9/cQyVOpqymu9zliRjaCygEeWWyL7horgiCX4GYcJ2
-	Uo4/0OV/WbEgdC+HlTHtuSuiiOID091zBUSampWtc/wnpvkHN0QorfD+Z7tgHBcNv6I2GbISYVRAx
-	X6baO4XftgV3zV2+9JaA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mEIWMO1FhN3091nQbMwDRh/+RZtHL2v046Jt3L5HRE4=; b=MCbBm4Co30Yb06
+	ZCDH23/3OqIDBIhla8jHV6cVDDU2dCpFgncBCMxEAqbOUv5hpW2K0LK8BGLQ7yQmn/LuDTqhRNK/y
+	nhIQAHW622KmmT1SfgGNTdXeToPDpeKFEFPErY6qpbZCjXIKPUKGTJJGg4bjPRnSgR8LAwM+Hn3fO
+	Zv4Hkb9oPMxaSGUhAzYUKBQWbpz7i0xWReelISniyw9SUiuCkUh9u9cmO71b8pLDYQQvM6mTdF6/T
+	feuhr/IbzoKHllI5JZXBIz0DyRwKAoyk8JfsZv4yDvn5EV6sWNC9SYlz5gHv0B9U5PYgp+/sJYX4P
+	CsSsgc6FpQl/cqX8pYkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r012E-00GvEb-1o;
-	Mon, 06 Nov 2023 14:57:02 +0000
-Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
+	id 1r0IJs-000v8u-1O;
+	Tue, 07 Nov 2023 09:24:24 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r012C-00GvD4-0u
+	id 1r0IJp-000v7u-05
 	for linux-mtd@lists.infradead.org;
-	Mon, 06 Nov 2023 14:57:01 +0000
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so63819771fa.3
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Nov 2023 06:56:54 -0800 (PST)
+	Tue, 07 Nov 2023 09:24:22 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc30bf9e22so43088305ad.1
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Nov 2023 01:24:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699282613; x=1699887413; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N5ElBJmoDa2KyWiRWqcqXPBjLvImYVOsdvelSuO+b2k=;
-        b=jJVWpG2Imy2cpmU9byRmYXru2OvjNEPa39UoH6PSfJ/y2XY4J8pf8EFHxbds3Fouuh
-         d9skNBqjHfC9pMHx9EfzVHkWoXxtoEkQ2FisTuPBNIUA4nqxNHc4BdoKsalf9GX5TvgD
-         NMgugG1WMKn1aP/vwtPtSczJNM+qi15WN0nUPdwSNuoaBFHLCvSDDGXT1t4SpVd4ZQj3
-         VKlIxpvWFjlS4AKLwcCnw2u39rkE4Bg4TADHsEd3nAR2Gaxh4DuGAXHs9kggN2ScGypi
-         zt3wd5j4ZkIMAGOWOFJgyzKTOyLH/M6FwxZ+hJC9R99eiJCCt6TMnm8Ub8Ij5jikPWq8
-         94Lg==
+        d=gmail.com; s=20230601; t=1699349059; x=1699953859; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9Gk5UeChrR6t8la1Nkn5HkFVZi5wlSIa0tTrdZqEkQ=;
+        b=anPtLW+YUSllzu2546bsrGX1+cRWXBi0J0sZuCDfGaIT4GiVFrLmnzXRWg4pL7dpjh
+         Zc+N0mRJB3QuhdhKb87JnJ8zjQB/lTS3XweoS+MAYdaVDwpAMNj2ksSQrgbXulu0zH6C
+         1cvN8DKJwE4+I8Lu8sYObbuK8FDSRtMsWp5zoBtb6wU7Cw6cdyPXWc1maQuh/5UXO6pi
+         0zk+6CUf7M7+Qk+1akzBRqlshi4LFTsrc9OzdOrA3+nmAstK4y+Ph+bjbQUgM587L81/
+         L9VJZ+H8kkfZEpqhH1PjF/+Fo6R24jUV/UfmqrEIyTKGituFN+0irPXWDZWpi0CGNzug
+         vWUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699282613; x=1699887413;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N5ElBJmoDa2KyWiRWqcqXPBjLvImYVOsdvelSuO+b2k=;
-        b=Sf5G1UYAbrS6ytQI2L31r4+OYvVTz5rKpNCLzS/QuR+LJvd86O48CCubnvEdEu3pti
-         b7dHdBYqRsdb13MfnXiualFT+ZsDiJVtOdLYmu3YdyAJWW+G/ekR8hyq/xsfph6Jue1G
-         P41qIOwPS5EYqSAq2PhWgdAMODL79HYK9Ve1Yir+7vv4RI+QuTkqhiD/wpqLDajp4rtf
-         bN4bcfCh9PP9x4nEU8t9RDx5a9i0uM+lC6hdM+EvpyTCm54AKvC5cJUJhoclEtpQkbRl
-         M+pxlE3e6RVCuozGUI6lV+ktAj8T/r5KKQWUXImbDU+ee0SI0Jjlkhot5F9F/DauHftI
-         6BjA==
-X-Gm-Message-State: AOJu0YzPIl82XAgNVnI8kfVsdYC7T3Rwgzq0fg8a4/6eFRagsP8qy7Rk
-	ghSv39joxUFmmXMXXRiX4XqzDA==
-X-Google-Smtp-Source: AGHT+IFy5hrlyMqZcdrYuUSBz+9xuopgyx3dPjoNQKi3Z2qqXE1OY+MDdhor1c7CzTkPKKR3CvR3ww==
-X-Received: by 2002:a2e:9952:0:b0:2c0:9bd:c6f with SMTP id r18-20020a2e9952000000b002c009bd0c6fmr24688804ljj.41.1699282613179;
-        Mon, 06 Nov 2023 06:56:53 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.12])
-        by smtp.gmail.com with ESMTPSA id u6-20020a05600c210600b003fe23b10fdfsm12176156wml.36.2023.11.06.06.56.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 06:56:52 -0800 (PST)
-Message-ID: <cc342337-1f74-4720-885a-c75664f66a1a@linaro.org>
-Date: Mon, 6 Nov 2023 14:56:50 +0000
+        d=1e100.net; s=20230601; t=1699349059; x=1699953859;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F9Gk5UeChrR6t8la1Nkn5HkFVZi5wlSIa0tTrdZqEkQ=;
+        b=CZHLCsm9g+E3OrJWkSpZMIar2pMnxIPtcc8LJNgpDlfsJPY+wpe0417C3vydR27EqO
+         BOT/jXDAEA0Qpyt/MxagsceHXDJnp5KS8YkOvHXmgLUiG4w+utMBQBxMMpJUc/yP7FvB
+         HFd4rcwj17lBJygF5cc6e3pzASfq63o9HjmKrRTrgTfmn/i+chXLTV6vfvu9l+7XQPvL
+         LWlmfd3JMmbJ8zZeH0rFWxxpzVWTiJxTDQ6BpJilPDOdOQrohOsg1o93PYGvUvgkilgF
+         4I4EYelFzY60BvbSeToU4hTOEJsfa0nY4fYek2oqUzZdZEthZpj51MrzGSRNl8xL1iQn
+         DBRA==
+X-Gm-Message-State: AOJu0YyS4iX9zuStBCOLu1bQErDpy1Ql87vlP/V9yPPE/3DlFzWqGb4s
+	oz6uholepihqyz3HjLu2q7HaGEnUOzM=
+X-Google-Smtp-Source: AGHT+IH1hb0HycLsj9wuvtKeetctcvFK8uNPP2SRMQdejp2MHWZXQzuC9u/IJSVBmg3DkPiyRaTxhA==
+X-Received: by 2002:a17:903:2350:b0:1cc:436f:70c2 with SMTP id c16-20020a170903235000b001cc436f70c2mr3781020plh.9.1699349058905;
+        Tue, 07 Nov 2023 01:24:18 -0800 (PST)
+Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id b2-20020a170902bd4200b001cc0f6028b8sm7148598plx.106.2023.11.07.01.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 01:24:18 -0800 (PST)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@linaro.org,
+	david.oberhollenzer@sigma-star.at,
+	tkuw584924@gmail.com,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH] mtd-utils: flash_erase: Add an option for JFFS2 cleanmarker size
+Date: Tue,  7 Nov 2023 18:23:57 +0900
+Message-Id: <20231107092357.26360-1-Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Fabio Estevam <festevam@denx.de>,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, pratyush@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- bacem.daassi@infineon.com, miquel.raynal@bootlin.com, richard@nod.at
-References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
- <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
- <632457ed6b022856496537bdf8a738ba@denx.de>
- <aa123456-7ec9-4bdc-a521-66c9582d5d45@linaro.org>
- <c26f6623-2d58-43ed-95bb-957870890a02@linaro.org>
- <6f1aa670-b3f7-4ea3-bc80-773a57e46c36@linaro.org>
- <968ba4c249926e986b02440ad0421e98@denx.de>
- <f2141a88-13d4-47b8-8382-5df8cc1bc42b@linaro.org>
- <cf0e4284f2e3193ddd57b715196ca202@denx.de>
- <25ca1a4c-683c-4b6d-938b-07323b211815@linaro.org>
- <c3f2b8a6-8b23-4a33-948e-62ff64db9a2f@linaro.org>
- <5872f7233bc0dc4669aa1324f3ae3cf0@denx.de>
- <95c16eb0-a785-4a8d-bb42-c5a09b034d0a@linaro.org>
- <e665266fc1565f9d346c95215df39f12@denx.de>
- <085ba0f9780b1f8b34bc9e1037fec5e7@denx.de>
- <b5c1d4d7-1583-4469-a604-dcf5bb3f96a4@linaro.org>
- <9004acceea77d2f06aaff0ca5f916cd7@denx.de>
- <a3ccb98e-b8bd-4ea3-98c4-df429602a7ef@linaro.org>
- <ea846bc8c214836c40c06fd875aee575@walle.cc>
- <5c048899-f8ef-43bc-a488-daf4c157f34c@linaro.org>
-In-Reply-To: <5c048899-f8ef-43bc-a488-daf4c157f34c@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231106_065700_326316_C83E59BC 
-X-CRM114-Status: UNSURE (   5.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231107_012421_060974_B92E807F 
+X-CRM114-Status: GOOD (  14.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,11 +93,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
+JFFS2 supports buffer mode for ECC'd NOR Flash that cleanmarker size
+is rounded up to mtd->writesize, while the '-j' option in flash_erase
+utility uses fixed 12 bytes. That makes flash program ops unaligned to
+mtd->writesize and causes program error or disables ECC.
 
-On 11/6/23 14:23, Tudor Ambarus wrote:
-> it had some contents, but not different than 0xff
-*not all different*
+The mkfs.jffs2 utility supports '-c' option that allows users to specify
+cleanmarker size. This patch implements '-c' option in the flash_erase
+that can be used along with '-j' option.
+
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+---
+ misc-utils/flash_erase.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
+
+diff --git a/misc-utils/flash_erase.c b/misc-utils/flash_erase.c
+index 000f94a..c6f6f66 100644
+--- a/misc-utils/flash_erase.c
++++ b/misc-utils/flash_erase.c
+@@ -64,13 +64,14 @@ static void display_help (void)
+ 			"Erase blocks of the specified MTD device.\n"
+ 			"Specify a count of 0 to erase to end of device.\n"
+ 			"\n"
+-			"  -j, --jffs2       format the device for jffs2\n"
+-			"  -N, --noskipbad   don't skip bad blocks\n"
+-			"  -u, --unlock      unlock sectors before erasing\n"
+-			"  -q, --quiet       do not display progress messages\n"
+-			"      --silent      same as --quiet\n"
+-			"      --help        display this help and exit\n"
+-			"      --version     output version information and exit\n",
++			"  -j, --jffs2             format the device for jffs2\n"
++			"  -c, --cleanmarker=SIZE  size of jffs2 cleanmarker (default 12)\n"
++			"  -N, --noskipbad         don't skip bad blocks\n"
++			"  -u, --unlock            unlock sectors before erasing\n"
++			"  -q, --quiet             do not display progress messages\n"
++			"      --silent            same as --quiet\n"
++			"      --help              display this help and exit\n"
++			"      --version           output version information and exit\n",
+ 			"\n"
+ 			"  MTD_DEVICE  MTD device node or 'mtd:<name>'\n"
+ 			PROGRAM_NAME);
+@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
+ {
+ 	libmtd_t mtd_desc;
+ 	struct mtd_dev_info mtd;
+-	int fd, cmlen = 8;
++	int fd, cmlen = 8, cmsize = sizeof(cleanmarker);
+ 	unsigned long long start;
+ 	unsigned int eb, eb_start, eb_cnt;
+ 	bool isNAND, erase_chip = false;
+@@ -127,11 +128,12 @@ int main(int argc, char *argv[])
+ 	 */
+ 	for (;;) {
+ 		int option_index = 0;
+-		static const char *short_options = "jNquVh";
++		static const char *short_options = "jc:NquVh";
+ 		static const struct option long_options[] = {
+ 			{"help", no_argument, 0, 'h'},
+ 			{"version", no_argument, 0, 'V'},
+ 			{"jffs2", no_argument, 0, 'j'},
++			{"cleanmarker", required_argument, 0, 'c'},
+ 			{"noskipbad", no_argument, 0, 'N'},
+ 			{"quiet", no_argument, 0, 'q'},
+ 			{"silent", no_argument, 0, 'q'},
+@@ -155,6 +157,9 @@ int main(int argc, char *argv[])
+ 		case 'j':
+ 			jffs2 = 1;
+ 			break;
++		case 'c':
++			cmsize = atoi(optarg);
++			break;
+ 		case 'N':
+ 			noskipbad = 1;
+ 			break;
+@@ -207,6 +212,10 @@ int main(int argc, char *argv[])
+ 
+ 	if (jffs2 && mtd.type == MTD_MLCNANDFLASH)
+ 		return errmsg("JFFS2 cannot support MLC NAND.");
++	if (jffs2 && cmsize < sizeof(cleanmarker))
++		return errmsg("cleanmarker size must be >= 12");
++	if (jffs2 && cmsize >= mtd.eb_size)
++		return errmsg("cleanmarker size must be < eraseblock size");
+ 
+ 	eb_start = start / mtd.eb_size;
+ 
+@@ -216,7 +225,7 @@ int main(int argc, char *argv[])
+ 		cleanmarker.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
+ 		cleanmarker.nodetype = cpu_to_je16 (JFFS2_NODETYPE_CLEANMARKER);
+ 		if (!isNAND) {
+-			cleanmarker.totlen = cpu_to_je32(sizeof(cleanmarker));
++			cleanmarker.totlen = cpu_to_je32(cmsize);
+ 		} else {
+ 			cleanmarker.totlen = cpu_to_je32(8);
+ 			cmlen = min(mtd.oobavail, 8);
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
