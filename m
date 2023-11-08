@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 759E9C05022
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CDE3C4167B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aOh/oklFE8LGzut3+zrWdp2WRU456fqY91kqg7ZugAw=; b=rLBNgq8XDJDgfw
-	lNaHS84JhhUA2iqkyQoWTpPyR3kO3h+fsKCbt8mIBtvwSjS2xduoP92uj1rgoQKa8RFoNaoct7uy9
-	Ux+wuhJqfVizQx+xhUbAmSgX+F76ygIdE3ctOt98NqtEnZg0N7p+7SU6NxWHSDAhO1P6WdlcVLHA1
-	rHpKUFwhzlf2aFcA4ysb1bbJcG6FISxKeuji62jkS7dIgK5es4pQ2BfKpNBCeMuTyQYM8Nn8EtfvI
-	7sdeK30bCDDYgaDkclqxshh6YRGNKT+MtLH7CyPzFYft7h5QrmHVa1u8HtPEdyhc/0FWYWvHug2IK
-	LF208tG3pfdYDsM9hmow==;
+	List-Owner; bh=DA+RzpKZPd0Bbo7YwTiJuK/NZU0UPuPrPns+1pAJMl8=; b=X7OOtHsw49X3um
+	I42moM9u9cV6c0Gy0Pom0aNBQwyAVzX6x3TmiiI+Ki4oVMjgA+oD+fP6VH18r3LMlvcX41aIQqTko
+	befiVLx8QbEmbm1lmDEfBGkcoFTCj+Uo5rdkzncqm+PDsxF8VD5EpSWikoKntIGEy7vpFh1daex79
+	7S+rndgmfuzymOHsc3Rrrj0snPVYLQsxA6Iaj97bGInfIZR+NAsDsqoiB6hrz/mU4BRvwln0hv5dv
+	5qYId+ZiGsOLD2EYxZwFdkOgApo+7cpO8ed98rQkrGR8H7iRuluw6lK7AvWOgzytx2l4D0dMU1bBH
+	PWfenw3wP3wzJP+PUfaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iAD-003pNB-16;
-	Wed, 08 Nov 2023 13:00:09 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1r0iAQ-003pWs-1f;
+	Wed, 08 Nov 2023 13:00:22 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iA7-003pJH-0m;
-	Wed, 08 Nov 2023 13:00:05 +0000
+	id 1r0iAL-003pTF-0O;
+	Wed, 08 Nov 2023 13:00:19 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2D151615BA;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 782B661594;
+	Wed,  8 Nov 2023 13:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76C0EC433AD;
 	Wed,  8 Nov 2023 13:00:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A176C433D9;
-	Wed,  8 Nov 2023 12:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699448402;
-	bh=lWSNAkUa9zp9KaZHQMU5GW4zFS42gSKCMng8P6T4A2I=;
+	s=k20201202; t=1699448416;
+	bh=ZBKce+BclKJuPvfrGVaMlCG97KikRMQHFUuD4JaMpbQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U6dgTgqdrhjCu/me4BW5zxGXxjkr3PVJ1avxPAZ6so0kvLG8+yeKS1POYYVMevcff
-	 ej2TK9Qha2L8Mi7XQdRSl+xglVkhgvVrVNZW+ORQMvL9bwQhn8LizVhhMSOgSPns7u
-	 JJyzzo+WsONP/YGaENuw0woNnreq3zT9OSDFf0LY703y2te6yNDmw7EQyq7guOhrXC
-	 ObIXRkM7LuyUPJ5UZPajzeSUMzXsZ/oTNFS2AJ66D/lUMhyNIjeaTtoFkQGGCIJgxj
-	 RCicg9Ci7MtSk8h1rZwozbVS6sb/U0v0rjiKUe13d/py/jMXF9uCJB9/QPCiHgI0di
-	 LaebSIFDWfJMQ==
+	b=B+f+/ny3qeJrR82O1C3PdnsXhEckmoDYhsV1vM5jFM7YlOprDL7q1wVovHZzO0od3
+	 499YY5TVYKzHq9eBMv3aYUirkmP6OZPe1fJ2h/Mg+S2sNhq4zXAR2Gwx7MoYvCVASU
+	 /bLoMQIPrglEOLJeGr4JPh3PDHW2NWOAViM8Pb8hdageFlq4VTahBUzddj3pHyTr52
+	 iGfe3Ul3olMGEGMt0WgZTqlKADqJR5tv399+1fcxttnnTSaKPF7rdZ2LT+sZV1AiC9
+	 bLfJaYESDDX5QTyMltr33GK7z00KWyXS8Ric8qjmd34KzH2arXpPmz9opQe/7smFnY
+	 iNa78T2aQ5d2g==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
@@ -112,16 +112,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	dri-devel@lists.freedesktop.org,
 	linux-bcachefs@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 04/22] [RESEND] time: make sysfs_get_uname() function visible in header
-Date: Wed,  8 Nov 2023 13:58:25 +0100
-Message-Id: <20231108125843.3806765-5-arnd@kernel.org>
+Subject: [PATCH 05/22] [RESEND] parport: gsc: mark init function static
+Date: Wed,  8 Nov 2023 13:58:26 +0100
+Message-Id: <20231108125843.3806765-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_050003_370981_495A75B1 
-X-CRM114-Status: GOOD (  14.31  )
+X-CRM114-CacheID: sfid-20231108_050017_253805_C4DE94C9 
+X-CRM114-Status: GOOD (  14.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,38 +140,30 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This function is defined globally in clocksource.c and used conditionally
-in clockevent.c, which the declaration hidden when clockevent support
-is disabled. This causes a harmless warning in the definition:
+This is only used locally, so mark it static to avoid a warning:
 
-kernel/time/clocksource.c:1324:9: warning: no previous prototype for 'sysfs_get_uname' [-Wmissing-prototypes]
- 1324 | ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt)
+drivers/parport/parport_gsc.c:395:5: error: no previous prototype for 'parport_gsc_init' [-Werror=missing-prototypes]
 
-Move the declaration out of the #ifdef so it is always visible.
-
+Acked-by: Helge Deller <deller@gmx.de>
+Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- kernel/time/tick-internal.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/parport/parport_gsc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
-index 649f2b48e8f0..481b7ab65e2c 100644
---- a/kernel/time/tick-internal.h
-+++ b/kernel/time/tick-internal.h
-@@ -56,7 +56,6 @@ extern int clockevents_program_event(struct clock_event_device *dev,
- 				     ktime_t expires, bool force);
- extern void clockevents_handle_noop(struct clock_event_device *dev);
- extern int __clockevents_update_freq(struct clock_event_device *dev, u32 freq);
--extern ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt);
+diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
+index 5e4475254bd0..c7e18382dc01 100644
+--- a/drivers/parport/parport_gsc.c
++++ b/drivers/parport/parport_gsc.c
+@@ -392,7 +392,7 @@ static struct parisc_driver parport_driver __refdata = {
+ 	.remove		= __exit_p(parport_remove_chip),
+ };
  
- /* Broadcasting support */
- # ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
-@@ -197,3 +196,5 @@ void hrtimers_resume_local(void);
- #else
- #define JIFFIES_SHIFT	8
- #endif
-+
-+extern ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt);
+-int parport_gsc_init(void)
++static int parport_gsc_init(void)
+ {
+ 	return register_parisc_driver(&parport_driver);
+ }
 -- 
 2.39.2
 
