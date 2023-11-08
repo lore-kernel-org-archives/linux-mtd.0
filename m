@@ -4,145 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA333C4332F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 10:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45221C4167B
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 12:59:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8PDzdDo8ABH7g2aO6sM1Q2S3zVetvXN+3E7QIZ9NUY8=; b=F4+KGK/N6Ihwcq
-	3ohtGagahmZEAJ4aX+uh2dRtZZG5omu+9fhgmQQZhZTBZf95iBIna/h34YWHycvdUa456QOhtqxps
-	r0xFciYP66jqmtzzT7ulQBeCYsfsYX/8jhsK0u7txW4BcwijNR/UzR/Lec1B+Ltx+UvJJxdCqQKFI
-	mdncXr1WLyuKspTZz3Si7hG9ITPDNpS3pagsRHiX15Y6ajrrsjCw7nDf8EINCwwyZ4FSkwqXscQJx
-	qwpOIKbf3nqdETFn3GuzwdoCMYjNdNqhnIFTGlec3dNefN0x7S2SxeT4VefPGMEAdcPLhLrNcHeju
-	RvaxCOClUBm+Vr1l8M5Q==;
+	List-Owner; bh=k+qygoanyRnrFK0ozO0ZmuHJvgOq1nvcLZGc/Y5XQ+Y=; b=zEbNQ+Jea3Elf3
+	IIAv25PZEQdFPBBpcQNTFYMOG6CxqkCU25TkRzoTzOA5JK4MT9cRHgQfm1T+VzNZYstkIzzDfL4OP
+	HOb1CjhPhtpO8GxTwQzUACYoaxmfTt7NzpJul+TWHUbvOCzS9qv1/YBF1cDBY1NLyIRV4XVWWkXYu
+	YBpQpzvuPbtJlhP7LOdDgGuUXGa4zY8Hrt/1iq5rTL3ep5o1AgAGo498LR+JXZUPsxJWFQcDR94LD
+	Gwk+w5QuU5krfanUUyQ+lI8bNhNdPxDrnpz8zsAro7JtpYKd7EGHvR+Bsq8L5isNUX1gxpnrZKzk5
+	oxTCQi2RdVAMoNnXQNNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0gFt-003VXY-2e;
-	Wed, 08 Nov 2023 10:57:53 +0000
-Received: from mail-os0jpn01on20701.outbound.protection.outlook.com ([2a01:111:f403:201a::701] helo=JPN01-OS0-obe.outbound.protection.outlook.com)
+	id 1r0i9U-003oxD-2b;
+	Wed, 08 Nov 2023 12:59:24 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0gFp-003VX9-0B
-	for linux-mtd@lists.infradead.org;
-	Wed, 08 Nov 2023 10:57:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TEFw6RfgBj4MGvYn4t8cTkf+IFmXGfWCPMesXUGx3KbhU3UYTv2GNqj2qa0oEnHRY2ljg7oj/jo0ln/GjIgVtI17Hg7OTEk51YsqPSmWgsOO/WnzAmvbhIQk26E2tKIJhPOBZvBaVE9ZieG6Y27CX8ZqOAr2YXkwqyC63yhvfxM6kkMWscpf+lce0S45/StpYC1jsVuiZ3CsIMOe0xO7qpQtwur549SCViZF3wDAvAdJ6RKkvxlN12zvG76vyp+KrjTKZcV2rfg1naDaes7DTs4XA2/9ZW927FbjHE70Ureeey+pgZd7MIXovAv3hPGhLMG21erUpfxg03rXO8Wo4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3ZXcvjCovY+0hUBK5CYTV5QlDkJ5qKCBehRYLbSsjZQ=;
- b=nXi/NG1gD+/eePq95FLMXlClxNgj+yR0BjCxGQEpUG3qzMdxslWlxONoAzKuflTZuc/RFvVfLv0ijSB4nPGz1LYomSmXfIzq6G8OcNOJyvlSWzd9clGr2fC26gkJWblTLEAxhGB++tLdpLzRQcoUW1NGqaEb4cwrYluQ/+RjF3v0NMpUuX6iecrZicRx3XfXZDBQVnKUUk0uTHk4lf3r1RXtbUfGyKbzUdJQ5XcQvxgxo28UExOVYj0guJCnKeQMPEEUUyRnXfYoyKs82QGQwN0TEDSrTOLZbz/VfVLWOxs4MohFKgfDfVf5/O1o6qnyZ4qzER2Z1kZawRdLkETfQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3ZXcvjCovY+0hUBK5CYTV5QlDkJ5qKCBehRYLbSsjZQ=;
- b=oMUrAEHJfO0/0JjbzeQMVnxWusouWAkTdtVeVRlm4qg4Ve6sJwvq49mEC4IzkqUAUtRShm6PBjawXccITT5mHNLDBAgmreu1ZoIiG39zgNUEh8gMLxbZjtHqGZJJiOkZFGcPpchWNwkA0lPVp3LaqTOtm9qTbBFE6XahHz/8eO0=
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- (2603:1096:400:3c0::10) by TY3PR01MB11921.jpnprd01.prod.outlook.com
- (2603:1096:400:409::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Wed, 8 Nov
- 2023 10:57:31 +0000
-Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6cb:4ed9:b0be:36c0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
- ([fe80::6cb:4ed9:b0be:36c0%7]) with mapi id 15.20.6954.027; Wed, 8 Nov 2023
- 10:57:31 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Michael Walle <michael@walle.cc>
-CC: Geert Uytterhoeven <geert@linux-m68k.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>, Prabhakar Mahadev Lad
-	<prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
-	<tudor.ambarus@linaro.org>, Mark Brown <broonie@kernel.org>, MTD Maling List
-	<linux-mtd@lists.infradead.org>, linux-spi <linux-spi@vger.kernel.org>, Rob
- Herring <robh+dt@kernel.org>
-Subject: RE: [PATCH] memory: renesas-rpc-if: Fix IO state based on flash type
-Thread-Topic: [PATCH] memory: renesas-rpc-if: Fix IO state based on flash type
-Thread-Index: AQHZ21J3se5Zb26g9EyYNYpYnGOcfLAC8SaAgAAAdzCAFx0SAIAAB1IAgAAG7YCAAAE7gIAAAjsAgAADP4CAAAIPYIAABtiAgAAZoYCAAAzWMIAABSAAgAAFC3CAAAfDAIAABFoAgFZEibA=
-Date: Wed, 8 Nov 2023 10:57:31 +0000
-Message-ID: <TYCPR01MB112697B3735BCA12924895A2C86A8A@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-References: <20230830145835.296690-1-biju.das.jz@bp.renesas.com>
- <CAMuHMdV1qvypo1XmHBXV5Q1SHEhksMN3SxgweYxPu+=ZeDmg1A@mail.gmail.com>
- <TYCPR01MB5933571F06789BFF27A8FCC786E6A@TYCPR01MB5933.jpnprd01.prod.outlook.com>
- <502336e9-2455-f3f6-57d1-807bc4b71f7f@linaro.org>
- <CAMuHMdWO8EdbxXetmc9-2jhZWeX1b_J74O0exo1Q85X9Gbc_SA@mail.gmail.com>
- <20230914105937.4af00bf2@xps-13>
- <CAMuHMdX8Vg2M2K3U_sbAtVk+6VDvL+GNYtbs5FTTRZzRvVGPCQ@mail.gmail.com>
- <20230914111200.6e6832ca@xps-13>
- <CAMuHMdVryt5bTk8HeFMS3NU-4EpQdU3Tf6LiGmGQQ5bVD-Emsg@mail.gmail.com>
- <OS0PR01MB5922B4BF11D1954DFBE2976F86F7A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <CAMuHMdUA23VxkK-8CebyqiF=Oe81QZgpEmWmMrMGVd_+BXfsLA@mail.gmail.com>
- <737c6865703b8e294601d86a911691da@walle.cc>
- <OS0PR01MB5922A4F16DE8923373AA5DD886F7A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <41a960b2a039ab88cb8a6ed6ed21e067@walle.cc>
- <OS0PR01MB5922AED5B1490E251669F45186F7A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <9bf6cf6f104145080d38c8658000c24b@walle.cc>
- <030c666c5284bcbd20f6d09caa8f077f@walle.cc>
-In-Reply-To: <030c666c5284bcbd20f6d09caa8f077f@walle.cc>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|TY3PR01MB11921:EE_
-x-ms-office365-filtering-correlation-id: ccc743fc-2acf-4eb8-fe5e-08dbe0498186
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ac7WLy9y/zpRejoLZKjltE/GeY2wh+Il8PDPSCj9BPpgJC6rdiTRwNK33umyuReuX27vZJnM2jP7DO7s8PfiH5VLHSTFcF0oKlki/FIsdv2WoeFb4OE0XRMh0+LF9x61m0LqC10MAbbhve7xrL2D6IFMO1hIzkUceSJKvk01dPkPpgZr1tnKn14twBlAo3GJR11X/OI1Hj4INgJcSZ5RT3wCCEDS1QFOlweIKY1a/nDx6DgqYYB3la+vULgRy7dMyEsYWIZ6t+i+INcBGwuOyGgfEP1ZeGXZkjKIIIi3lFdsk70SWUlgWU8lnflu4UV0uOOTuHM90kcSV2DewyT4cAQjd5xiK5BgfKMwP0cBwXrccBEqQghYIuv63cbjP6PbIZNowVTUQrjDV/pJ4EBIio4piNyJdtnl45E67Qe1wTUr8tXPjmwl8g/IY8V75VuEis+qELkHf5h32m0q3rBKV1DbW3upl6XmcYZaZGyRgMka9KEhLqVFbD4yzskH+bKmSyEkK076VS9WmPukRiqHVQf1IfVab9RrEbH/BI4LDHLWBojL5oASVq4ErzjXWAT9cPIcWsyfmjT9yUJB/N1KxZ65JBFt1iFM5NItJKyykkelZJy7wEJp5zfyTJhZHINd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(366004)(346002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(7696005)(83380400001)(9686003)(71200400001)(26005)(6506007)(66556008)(76116006)(478600001)(316002)(6916009)(66446008)(55016003)(66946007)(64756008)(52536014)(4326008)(38100700002)(8676002)(8936002)(54906003)(2906002)(41300700001)(33656002)(5660300002)(86362001)(7416002)(122000001)(66476007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lPN82Dj5K29u9Ht9H2LPdm+kNmZpxkg2tZWOqiRLFKyv/5SaTyJAS8aK/wQm?=
- =?us-ascii?Q?mpr3SiH3duyfsVFCByG1gklz/hHXGMurC8SD5N70/z+LNrfq8DL1ykmTj7MB?=
- =?us-ascii?Q?VcWe1IH355e8ClTMbrnBFw2brRDsmY9Oc+uMs0iIobpeY5UI2BNSxlNSCai7?=
- =?us-ascii?Q?FoWAvzrMN3HnT2VCuWJ8ZZZPE7iQfnxT+y4l6rnb8KKQhk2cAdSptfYfqDiA?=
- =?us-ascii?Q?MQ08VqWDXLdOchiq7bxh+N9IIZHVG9DYtmwad0r7B9KEuGBCRhqWdc/UVXIs?=
- =?us-ascii?Q?zD8PVyhuo/yKNLJwN5D3nNlxpVeiMyQzKg4zxwNVuFGHX65IZANxmGXi69vp?=
- =?us-ascii?Q?e5C8c33OObHjX2S14wDVxNbgU6+7cXO5TaCcMywlNs27QhyanTp/3lvuf7Ku?=
- =?us-ascii?Q?xiAQEY3B+FRKhgtJlXoFo4SZDUc7ZfqAJRxWam58yLBKy877aW7HL1IqKPT8?=
- =?us-ascii?Q?dxd3PI6fSnrtqhW1zvqV5xqC0aM/DszOMWGJOOAYu9NNw3qq6G8fCjxa/Ms1?=
- =?us-ascii?Q?7dkf5Lk+iH8uJqswCRIxQSiR61ovrlm4wZ0yWTZekT67sVKz1yojMQZgjQFt?=
- =?us-ascii?Q?edXQkMZi1RRPDnTPin3lQEq/vgbcFFgLHD40f4CCZcy4miFMrZlhssDwSf7Y?=
- =?us-ascii?Q?s5SdZfnFml0+hw5hFAWfWrxHX13EbAAmg/lDN8xY7nrcNcAWX3fDX8/ynhYv?=
- =?us-ascii?Q?peyeIDAKveyBYI/ibe4/HoV1b03kw6LF5Vz/+81JwysWyqlZuxyXk7H6s8wJ?=
- =?us-ascii?Q?HMadLgTAgl4hed/qaK2p3qO86LHfO3uaB+OGiDSw1gkTNTze5wO4DLN398tZ?=
- =?us-ascii?Q?OeEIkayPiMRmd0SLDZZSS5EJBHgJXYq3gUIII8BIXFMJrAYx3ve/pC0GQhvq?=
- =?us-ascii?Q?BaeoXDXlRpHqoVDeNDUQCE6Q4lTLM8Pdq4cjne+9Y7cN7LYUsqnXniWBDJDT?=
- =?us-ascii?Q?V6BQMKxzYmm7VPDDo+k5mezO30jpAsWiol2ebiddNZ5cKRtCcPEru+SWykc6?=
- =?us-ascii?Q?Fmj7u4fkK0vJgrLqZU5+Vg2iLrCSEed5SX91qFaOJnzDPKiHKDBGqNwKy8bD?=
- =?us-ascii?Q?700Q9kQOuWV4EwnTI85463t/D7tYUXXyNDZ4VKb85dwusIyv3AhfpdUWDMsi?=
- =?us-ascii?Q?iwIAovyUIjryF2cSpHNlkHzh5Do/lYCXwLrWg9oJvWP659+SnfxkGqZL7bCq?=
- =?us-ascii?Q?vxYygHy2J31+2hFXgqHGYkwSZl3YSluKovyKin+4IKZ/RRM59OKYYQr8E0wD?=
- =?us-ascii?Q?+huFySSAW+E9LhpENIgYvXiArxP/V/Myk3sF0XeKnpPaJONLtXx0xSCNdSYE?=
- =?us-ascii?Q?D1k7cXGkGBJzWNimSRmNIDHNLol+KpVRRtfCYaaXBpxH9dEMYJMdqmKQxZB/?=
- =?us-ascii?Q?qcj2cGYi59XtlgOgfmboBeCX9TEKs9PT4A4qqMXWwi7cqRhd0iQWH61ZodJb?=
- =?us-ascii?Q?bOIRzY6W6LW5iWT5+1ncnU2ZvfZ2Ntpr3EOBWi85nEgRx6746hw5hMSDNTs4?=
- =?us-ascii?Q?Wy/wKyABDOhsYVtKUOLvtmTxyy/zRrGfuWWnkpgdGZh80/lja1zIdAl2R856?=
- =?us-ascii?Q?SGuEAWGHd0fvNCc1daeQPoXgnaG1sNO9R4mxLhd2fVH25+sj1lZifM517BkT?=
- =?us-ascii?Q?hg=3D=3D?=
+	id 1r0i9Q-003oun-28;
+	Wed, 08 Nov 2023 12:59:21 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id EAAE66159E;
+	Wed,  8 Nov 2023 12:59:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3926BC43397;
+	Wed,  8 Nov 2023 12:59:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699448359;
+	bh=PTPvyroKGj+bJmSOqebpW9CjBUzzYiO7xPn/MeixGLs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=eo+O+Ra7srTu+On3QQnq/N++K7ym/+DV18SMdaTrABGNUzrRLwQC0fZWUwnUmP2m9
+	 03GGSOOxBDpUh1SnKnHfQIRAM5JbcK3dblElozw2pHDIUs0OgSd7V25PtKOnpfKd5B
+	 ts/1MWesnyRTSvykInN6RylsMn3Tkva9Cp2A8nEiGeBxvFfiZgNMM7wUQmT2YKB6MD
+	 rgiEGRUKVtpOWlIW6JzYkBpGb4XYcwzO9cqV/KKgvWkGi2Bu37oOsVO4jE2FAuzTNH
+	 7cV9H3GFgEuYrRFUrqTlVL41RvYWtBCTXikkZVsjPVybwJ/SSzdZZMBt7cobfVGWGY
+	 okzJnlFcKtiAA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Geoff Levand <geoff@infradead.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	x86@kernel.org,
+	Helge Deller <deller@gmx.de>,
+	Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Timur Tabi <timur@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	Kees Cook <keescook@chromium.org>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 01/22] [RESEND^2] ida: make 'ida_dump' static
+Date: Wed,  8 Nov 2023 13:58:22 +0100
+Message-Id: <20231108125843.3806765-2-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
+References: <20231108125843.3806765-1-arnd@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccc743fc-2acf-4eb8-fe5e-08dbe0498186
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2023 10:57:31.3073
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bFgrt8TVjQLGEyoSYzbYzsHG1K94wy1V6hHabPEPMtraEO+TdPGFV90tAh8lNyTRviR0C1jnaH04W8TiqS/4oOBjkcGeWnw047r+Vijjk7s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB11921
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_025749_405670_5F8CEB06 
-X-CRM114-Status: GOOD (  16.60  )
+X-CRM114-CacheID: sfid-20231108_045920_781133_AA6ED03D 
+X-CRM114-Status: GOOD (  14.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -159,34 +138,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael Walle,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks for the feedback.
+There is no global declaration for ida_dump() and no other
+callers, so make it static to avoid this warning:
 
-> Subject: Re: [PATCH] memory: renesas-rpc-if: Fix IO state based on flash
-> type
-> 
-> 
-> >> For eg: here Adesto flash requires HI-Z for IO3 pin and Micron flash
-> >> requires setting "1" for IO3 pin for 4-bit mode to work.
-> >
-> > That is odd. You'd need to ask Micron, but I assume it is because
-> > IO3 is shared with hold# and reset#. And there is a note "For pin
-> > configurations that share the DQ3 pin with RESET#, the RESET#
-> > functionality is disabled in QIO-SPI mode". So I guess the reason why
-> > they asking for a '1' is because they don't want to reset the flash.
-> > I'm pretty sure, we don't really support this in linux, so you'd
-> > probably want to disable that feature, i.e. see Table 7, bit 4. You
-> > could also come around this by enabling a pull-up on that line
-> > (assuming the SPI controller 'drives' HiZ during command phase).
-> 
-> Oh and I forgot. You probably can do some kind of fixup (where you set
-> this bit) for this flash in drivers/mtd/spi-nor/micron.c.
+lib/test_ida.c:16:6: error: no previous prototype for 'ida_dump'
 
-Ok will send an RFC patch.
+Fixes: 8ab8ba38d488 ("ida: Start new test_ida module")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ lib/test_ida.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-Biju
+diff --git a/lib/test_ida.c b/lib/test_ida.c
+index b06880625961..f946c80ced8b 100644
+--- a/lib/test_ida.c
++++ b/lib/test_ida.c
+@@ -13,7 +13,7 @@ static unsigned int tests_run;
+ static unsigned int tests_passed;
+ 
+ #ifdef __KERNEL__
+-void ida_dump(struct ida *ida) { }
++static void ida_dump(struct ida *ida) { }
+ #endif
+ #define IDA_BUG_ON(ida, x) do {						\
+ 	tests_run++;							\
+-- 
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
