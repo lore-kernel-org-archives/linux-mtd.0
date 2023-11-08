@@ -4,88 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F998C4167B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 14:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64DB5C4167D
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 15:07:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j0NCbJo5ZMTYAY5MCvSqoOnwEDkrx/PhiDNeU39YKC4=; b=azMtntO0NoiC8h
-	aJ3ymUJlYjA8x8PSqXETsiBC/LJmu1Mn7+cCskGnE482RSyPkQ0XNrKLA5CB2T9dABznSK2dM/YIn
-	Rjzv5/YmK/5h/XZxxT7NsAnPiGp9QN/hZRo3Z2+CpSPv6upDDR8TVO5pp35ux6i0kOG91x5DdSwlt
-	QB4sIeeLgoW/OqRkmE8a8TH72Ukmn12a/xme44Ybdn3gYGAEyzOnyWUSBovQReiMyoN14Z6nsk+SC
-	zZpzk8Pb1nHbEkgLUgXKK58Yt27i6vMoS54uQLtE3+0w4lj9OHQFqvsa38hFyvHCP9shd8TBMis+V
-	OFWzR0QTUwE0/0kTeoyg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ME5gouWX8S6ptkkzMPUL5+poSdzqiRIz23vR8Ldokwg=; b=L9QzhetIPNj/9i
+	b2qZggjfa1iHVQw4cwIQVIDzcVcziyN8smeVfO577/tUMHVvujMAnJdFpEzzDZ4vP1otgnfDjweUR
+	VwkRRdjxawo6taoznGBecQNKv2zGlaMzNlpDvBAEDAOAPfK4OVq9f+s9fNWuQK2LTYfK2yNp7Y/LT
+	Vac0ureFlyYOwhw/IShJ7Wl242UEGFKcnXhJ+JGvk7Fcl9hDo9i8OJektdfq2UyWLA8FWCgHCYDNT
+	bTPGD6DY9KW4L+inbKlzLC/xWIpAe7LDdusgD4XvVEkqLxmoc4Bcu+16eagXG9Z4yGVbWGMpNMh71
+	WMEAM0/YTQNXmMKAXjww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0jdJ-0041Ut-3D;
-	Wed, 08 Nov 2023 14:34:18 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1r0k9Y-0049Hx-3D;
+	Wed, 08 Nov 2023 15:07:37 +0000
+Received: from mail-am6eur05on20622.outbound.protection.outlook.com ([2a01:111:f400:7e1b::622] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0jdA-0041JY-36
+	id 1r0k9W-0049HG-20
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 Nov 2023 14:34:11 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507975d34e8so10034084e87.1
-        for <linux-mtd@lists.infradead.org>; Wed, 08 Nov 2023 06:34:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699454045; x=1700058845; darn=lists.infradead.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=78GU8j4+SoSSNRmxCZnZFjlRCHFt/xGux/FgF9FARuk=;
-        b=F2s4A21L5NTjqS+turOFtU0nEBbokfJ0FQ3j0O/vBQKIRuEhGYLwlscOKwR+s0VJEL
-         hX/Tk3vMAdKY/PCe9HzzdFGVVQk4strb9eAvqgS+NKG+jFI0b/XwM5xwIAwiZ54+pthR
-         rQWBYsZje9isCrh+0sWMZjUpR86VYGTfvdKAPCgIoIYS5UgemvPmBC5opGmQSF0jwHX6
-         CK/+Pyp399ATd7YkZTPUrc23IOR0Ie03cvUA5iE9in8ddGFz406z6PHUBSTvOiosJX4a
-         py88ckYytqteVC/KexjlInl7QpbMONGSTnYJUfEI0VYTPJuTGDjYyhGAhzoP3Qb1AYwt
-         y8vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699454045; x=1700058845;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=78GU8j4+SoSSNRmxCZnZFjlRCHFt/xGux/FgF9FARuk=;
-        b=AOUpDuwjtuJh+LGyOoLVKRTfu+4enUIJcNNFuMRgV4NbK/2vOdFOqL5EjMqdfGdPUZ
-         eEMGimzmrXU04bA4OU9lfWJUpbxY0A0EokV39Boh3fBOwdVznEqqqgAbWNLLH6WAQbEW
-         3WmWUBmBFZQszTvfPF4zgWdhtOcyAXEePRk2IELlI5QSKHpmRdXDlZPGxE0IgJGTaUdC
-         p1eu+5mvd52WTEgG26T9r1m8qBLeDNPGElQFhyWTzfK3ksFIv0tKI3SEcwzEhOvih4YE
-         t7ee26bxnlLAciXKqGNfaM8IrgzRNADUFYiiSQGXv42UJvxHxoC4JlxuHgLCCbdpuisV
-         R2LQ==
-X-Gm-Message-State: AOJu0Yy6oKnC3UCFG53GT5epkXH4TgM1v5xnp368v0LrSH1SUPOD4MI4
-	dugw7usOnrxdwEY6g4xD7HB1xw==
-X-Google-Smtp-Source: AGHT+IH6IcpUsu8l3iZ6cm3VeKSRvHVjWLm4/aWcEw/O+09FccupiAh8GMMm2qcpdhgkIocbk45f1A==
-X-Received: by 2002:a19:9110:0:b0:507:b935:9f5f with SMTP id t16-20020a199110000000b00507b9359f5fmr1441210lfd.24.1699454044974;
-        Wed, 08 Nov 2023 06:34:04 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id q10-20020ac24a6a000000b00507a3b8b007sm686773lfp.110.2023.11.08.06.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 06:34:04 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 08 Nov 2023 15:33:54 +0100
-Subject: [PATCH 6/6] mtd: rawnand: gpio: Rename file
+	Wed, 08 Nov 2023 15:07:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dH7k+bWyzjMWBNWWlLaCkh1Htd/XSfgrt1Sk8xJBAWT7tStBkFI6++MpMttWIV4stxWG1LcRs+a3RqB2ca2yfSXzlmpvjpvK3Fs2+P6Q6cAHGxxUWKuLcSyrxEnifizwJCK4k2vqjc7M8mu+b0ZFc/u9R9jHD8fryT8pOHq9DfHe5EJrO2tpsBDeyTnPQV+8krHLCpNdJRU5zyUHYRPBYpvlXrJ2S73uUN4To9o00vM4Zt/3EuXCCc/xBMzmRzvSPCU6fedHDSNfzVNEBhrJDzjEhteAFzbzhb5FGFMxKK+MFK6rL6mU9Drg0SdPLch7r8bXmpIeM1GpEgMYqNJ6Pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RnFIeWFVjD9MzIxm4tk5N/GodF6qN4x9pPgXueCfqJQ=;
+ b=iTH702YgRJ/xVOLrDaft2gk4axD91kTWFTlKFky50zasByhLZEbq21UcIA73ZVn+tsWaWDHKWUy4qj9f5KIh1WeVnUO3QjqYfqRoobtzfDOkgOZDEyQ6+lFNxLyHytu45iLn8Si1iJaHOdPc8xzpUHfGhGbaWPgfikgDA2tHoPGtuyEzt7uVgDvqidVmMpm3Y+kDgemYPzBlfIReOvk1w6smZ72Oq5gKp1tqg/h12e8/PbGgXJKyxCOQX2m7EoTeR4pmqUd9k88WHd+4Ij4H8zPDbKzKo15Bu70eLQ+sN1s4PK2M9UvfQksRnF/NzUojDzsaSpiJLUbeYOhKw8Skgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RnFIeWFVjD9MzIxm4tk5N/GodF6qN4x9pPgXueCfqJQ=;
+ b=dX5znQqDWK5ROmBC1cyr+Rbi86iK1kPkRAqLsN4rEU/APbCeK16hwRuMBGACZs3RAnigyOj0O/Q9TPoUGzVoiWtAHFWY/4preNcPcyHR68aBamGrwbaJo2uDmzKP45YxsF1EQuTP1mlNtMyuE/H04zF2whclV1LDGfOLn4RhQSY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com (2603:10a6:150:22::11)
+ by VI1PR04MB6797.eurprd04.prod.outlook.com (2603:10a6:803:13e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Wed, 8 Nov
+ 2023 15:07:23 +0000
+Received: from GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::f582:d694:c655:89bf]) by GV1PR04MB9071.eurprd04.prod.outlook.com
+ ([fe80::f582:d694:c655:89bf%3]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
+ 15:07:22 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Stefan Roese <sr@denx.de>,
+	Boris Brezillon <bbrezillon@kernel.org>
+Cc: Han Xu <han.xu@nxp.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spinand: gigadevice: Fix the get ecc status issue
+Date: Wed,  8 Nov 2023 09:07:01 -0600
+Message-Id: <20231108150701.593912-1-han.xu@nxp.com>
+X-Mailer: git-send-email 2.34.1
+X-ClientProxiedBy: BYAPR08CA0048.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::25) To GV1PR04MB9071.eurprd04.prod.outlook.com
+ (2603:10a6:150:22::11)
 MIME-Version: 1.0
-Message-Id: <20231108-fix-mips-nand-v1-6-5fc5586d04de@linaro.org>
-References: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
-In-Reply-To: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>, 
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Tony Lindgren <tony@atomide.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Ben Dooks <ben.dooks@codethink.co.uk>
-Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR04MB9071:EE_|VI1PR04MB6797:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b92f437-4615-47a7-9e32-08dbe06c68f6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OUzimJ9GauYAFO3zx/k0pe/zBRPa8s7786E08oMHjRaxFFr6wo9k8dgoFYMy7AYKbjIHWarzeGPOgLf4ADbZX7RyrQWa5shmW1UXZP/aL1NZoMRcUvIhysdoqhjFrK4ySN7cxu92CbKb0B1l57H08KerDSvdBHJsex8N89HlBWYs8lTEgFhcyk3Fo3yBdIIu2UCl96NMvJfbXw35CBGuBwX9T1u+BQvCJes2keuu6ULd0xqoTWyDLPiboeau6sNexSJmOxpslur6S7hHvnaLG8wLoR4F5Jz8SjyoBTX0qi0c65+Dil6rnwofINy51Gc8TF2cDBDj/bRKyDC89dqarC6AncdeBuUYVK1NUoWNuF0Mnsl5N/uhtvjv7UVzOPJjtIBXf15ylgMn4qS8wcVfdB83WrKe7gHktr6BWH2WM4mUrIFPDxmofyUNRQNHXVmt2v5k1s7oDn0pinxRQWEpSWaPcvB53MBcUN465r3itlmP3TFXAxpTQVpQiB8FRLxd29NJPTPviP8R7zIRkiGBfDkCAi3SJbNuZirIFWMZpHqHmABiAp0YaBTTGHfUHZQQBM6PYcOPRKgPzxFAqLV8kFhNYdsR/UZzten/Pgw+5hAwVBGguM3USLohFCgsjWaO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR04MB9071.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(346002)(39860400002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6506007)(6512007)(478600001)(2616005)(52116002)(6486002)(6666004)(36756003)(38100700002)(86362001)(44832011)(66946007)(66476007)(66556008)(41300700001)(83380400001)(2906002)(1076003)(26005)(316002)(5660300002)(38350700005)(8676002)(4326008)(8936002)(110136005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9p1c22B0W4Kpo5NKzbhIRA/ZJE05kplvHFkiDTjeqbGQAolcc7xWajPapfHg?=
+ =?us-ascii?Q?7Yzza6h/SSIeGAwcvezvPJyicHPZRqI2WfvjxzESlSrvtNczo7dxqtQarI/a?=
+ =?us-ascii?Q?ElETxdwz5L/Ao5IBngc85JxOt4jx9t3VwAlTNZhnAO7r3tuEZ/WsThoAoJRd?=
+ =?us-ascii?Q?/pNJfdhs2jZ36H6o0ANfQ4zFZUd2Re1KlxOAH9RR6mySQux55k7gbKxtQUEF?=
+ =?us-ascii?Q?arPkKbgVL2SK+CpjdM/+TgbLZXw/q18hib3j2okP/w9K4J8SZEeaWQDHBRPF?=
+ =?us-ascii?Q?VnvuiR+CbpunroQ9MhNMVCOL50esIOmdfJh+FH6siJQ1kfmKdV/L65fH7iYE?=
+ =?us-ascii?Q?3S73DTzDWdYarFEv+6teupPpLHDPN5DMAOx2hEt3ozWV6rrghpfC5No+pUqn?=
+ =?us-ascii?Q?OLXL7+tfypOmzF3OSD1Dq0wmu//1pwFSLm0KlmqekXGxEJ2VqGfjwAi2B6ko?=
+ =?us-ascii?Q?VFGJpu80ASEN5innwXbsCqaW+IhwZ76lUi2vc5hj7o2Lxrm6JO2Za7HCIMaM?=
+ =?us-ascii?Q?fFRfm0mYOnFQTTQ+YqPSbavKnjax3SGecxif7+MVJfI7KXiK13BNkyJSSHD1?=
+ =?us-ascii?Q?V5PBTIzEcrVcebm+Q9NfUePzoMe3iM+xQDbsg2etTSMmYBkIvb52y6qnHgU/?=
+ =?us-ascii?Q?+isj7zC7Dic+MIV4XV8p9T5j/yM5rAuTNO6dKOd0JZlBMpKpjzUzQqt3NfAP?=
+ =?us-ascii?Q?sxnFyqc/8EuqaU+iCCv4vNV/r0Y/YtCT/eUtW+wXbu25y+goTInd+VsLhli0?=
+ =?us-ascii?Q?9qqoAMrpBC06WAl9vceiqMxHq9flqv1qCN6iz28x7KMXDecGPzeCyH8wqmTF?=
+ =?us-ascii?Q?btdeFvJBQCKQLdi0srro+vQUxAbOCXkf2jEFhvR8BrHs49Mr/fn6e6z7qJ60?=
+ =?us-ascii?Q?DX93ecZiAOFbRd3My7vxrrwsXpKIroYzPch07YLZjOVqmjGKdiAd60cAOzd/?=
+ =?us-ascii?Q?hcM6qV0JItHWab8Y2NTdUOwGpne5UkQBObR8g8Q+YnBXD9leqqWPoxi4OntI?=
+ =?us-ascii?Q?HZKtlLFUDAPmryJF7ELLp5q8VqDHxdm6dTlHKbqvVx4SBsucovu7nfvilzo1?=
+ =?us-ascii?Q?Uf3MOufR9SuNXwcpxlbAud2HoZX/GTvTK/RvO03/jEWInR3lnmRjpoHZ77fs?=
+ =?us-ascii?Q?oLWAOBuSS74aJF5lZBv4j9HKJA6LXz8Z12jm1zCVq4OA1cUm5Qq5nvyNBECC?=
+ =?us-ascii?Q?2QrXpUmGOMTq/oGmGQLAe7C7jtOHVQsvymACqZm8QBs+9iXh2rZg7o+Oh5oH?=
+ =?us-ascii?Q?8g5GA6nvYruCmUOWR/L4JpN5r3PEOHemnwbJ2m8ysq2e4o4m1uYxsWtdwJ7Z?=
+ =?us-ascii?Q?gBivbfHG7vx9+9jAKdfS3ePnK4403KiAqzcS52unDN+VJ6L0qc/f6GNpiIWj?=
+ =?us-ascii?Q?7o7cKCez4jVn6npwjRgNH3QzTiuyq6fF5PP1vV0OvfrQN7O/dQiI93UowBaT?=
+ =?us-ascii?Q?cWAz63Ju0gnC+c9lGg+slKN40LlBHGlbaSJnH11zGnRlRXK4JxiR1KYmp++H?=
+ =?us-ascii?Q?TGNbR86uFan/9aaysSJOdZg/2HXr9h0x5M2oel1SuF571ESbhcnrtg/nO+nn?=
+ =?us-ascii?Q?oRPOkNGq19cqRYvskR8=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b92f437-4615-47a7-9e32-08dbe06c68f6
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR04MB9071.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 15:07:22.7625
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H8T0SQC0mUEgarT49EFbMzj2CIUHu/N0zi2KdFm0gykvTGWvtJKKzjnHumihZ31+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6797
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_063409_022437_525B281E 
-X-CRM114-Status: GOOD (  13.95  )
+X-CRM114-CacheID: sfid-20231108_070734_683069_7159FC11 
+X-CRM114-Status: GOOD (  14.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,40 +135,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The implementation of the GPIO NAND controller is just "gpio"
-with the usecase for NAND implied from the folder nand/raw.
+Some GigaDevice ecc_get_status functions use on-stack buffer for
+spi_mem_op causes spi_mem_check_op failing, fix the issue by using
+spinand scratchbuf.
 
-This is not so great when the module gets the name "gpio.ko".
-Rename the implementation to nand-gpio.c so the module is
-named nand-gpio.ko which is more reasonable.
-
-We put "nand" first instead of "gpio" because the order is
-usually <subsystem>-<driver>.c, cf ls drivers/gpio/
-
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: c40c7a990a46 ("mtd: spinand: Add support for GigaDevice GD5F1GQ4UExxG")
+Signed-off-by: Han Xu <han.xu@nxp.com>
 ---
- drivers/mtd/nand/raw/Makefile                | 2 +-
- drivers/mtd/nand/raw/{gpio.c => nand-gpio.c} | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/spi/gigadevice.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 25120a4afada..f0e377332812 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -18,7 +18,7 @@ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
- obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel/
--obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
-+obj-$(CONFIG_MTD_NAND_GPIO)		+= nand-gpio.o
- omap2_nand-objs := omap2.o
- obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
- obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
-diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/nand-gpio.c
-similarity index 100%
-rename from drivers/mtd/nand/raw/gpio.c
-rename to drivers/mtd/nand/raw/nand-gpio.c
-
+diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
+index 987710e09441..6023cba748bb 100644
+--- a/drivers/mtd/nand/spi/gigadevice.c
++++ b/drivers/mtd/nand/spi/gigadevice.c
+@@ -186,7 +186,7 @@ static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
+ {
+ 	u8 status2;
+ 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(GD5FXGQXXEXXG_REG_STATUS2,
+-						      &status2);
++						      spinand->scratchbuf);
+ 	int ret;
+ 
+ 	switch (status & STATUS_ECC_MASK) {
+@@ -207,6 +207,7 @@ static int gd5fxgq4uexxg_ecc_get_status(struct spinand_device *spinand,
+ 		 * report the maximum of 4 in this case
+ 		 */
+ 		/* bits sorted this way (3...0): ECCS1,ECCS0,ECCSE1,ECCSE0 */
++		status2 = *(spinand->scratchbuf);
+ 		return ((status & STATUS_ECC_MASK) >> 2) |
+ 			((status2 & STATUS_ECC_MASK) >> 4);
+ 
+@@ -228,7 +229,7 @@ static int gd5fxgq5xexxg_ecc_get_status(struct spinand_device *spinand,
+ {
+ 	u8 status2;
+ 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(GD5FXGQXXEXXG_REG_STATUS2,
+-						      &status2);
++						      spinand->scratchbuf);
+ 	int ret;
+ 
+ 	switch (status & STATUS_ECC_MASK) {
+@@ -248,6 +249,7 @@ static int gd5fxgq5xexxg_ecc_get_status(struct spinand_device *spinand,
+ 		 * 1 ... 4 bits are flipped (and corrected)
+ 		 */
+ 		/* bits sorted this way (1...0): ECCSE1, ECCSE0 */
++		status2 = *(spinand->scratchbuf);
+ 		return ((status2 & STATUS_ECC_MASK) >> 4) + 1;
+ 
+ 	case STATUS_ECC_UNCOR_ERROR:
 -- 
 2.34.1
 
