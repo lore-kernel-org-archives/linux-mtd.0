@@ -4,57 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D7D2C4167D
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A743C04E88
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:03:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ri1oLDGph8h7GgytoSSlCIaIr0gD4yb/sEBdR4x11Xg=; b=ulTNUUJJtOmRv8
-	GFjelwCgZbh/xYkjbSNASY2xuGpXBO2YKGHhWoyWivGh/OBRS6wF4e7QxnFj0E+lhPx6+xEK5WWZO
-	FKyMliCXDPQ4JNS4Awv/hbmIZXsvJRm2Q6LieCgOgyWnoA3NYQBO1dM4A2cLOHC1mGFZ4GrU8vrwg
-	27KH2sMkWaW4Nwr58DLTMWQHKIsI9Yt8BwNENbw6i5yfYu5P7SxDvD3G+63VVtc3OajoI4AVGrJ2b
-	lHDKflQAmYm59D7w4unApoy0WT1DGNmuKiJ3bq5D7WQVWR8sYh0LmMnIbgcdYAfuXtk4alkaka94x
-	V/8EHYpaF50TzznTIgBQ==;
+	List-Owner; bh=rsboVUxu1BevnMwm8nP35ECQ8CP3gNhaZcJMaHJ5P8o=; b=A3GpwwyuQKG4BY
+	Esga+sYf9V0p4JDmwrqcE1FEnKL1RGeJxuQrW0v50mfEJw0NmNThYXFTBd2bN3zvrNdaIThXz5z5U
+	VH7BGLpb9QZYVKwvEC+MXWN25OBhmH0h1mvpVLu8m5UrkGL7/s7TBBT4nGxiqZCufM1Htn+bi9KeT
+	NrmA4I989PsQuUlB90vpnwk5+8yEnZqlkZnn6f9wUiNYWIWLK58p/RNh6pbPPQUtonOkcAbpP65vo
+	9FlMQzEN7RKbc0e3ajzIqKMByquNRreztR5B2qZKXqV30aO0g8RqUM1EGXh73ugKBwnC55uP0AmRp
+	XsvPzCyqHd70W3OI1l2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iDE-003rt7-0l;
-	Wed, 08 Nov 2023 13:03:16 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1r0iDb-003sCQ-1i;
+	Wed, 08 Nov 2023 13:03:39 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iDB-003rqr-2A;
-	Wed, 08 Nov 2023 13:03:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=n8VbDfB1THuS40zTwMT1gS25/+RJvBHGREisAcNOM9Y=; b=eC0d++MQFnLuWveaSyshCGZv7h
-	/9Zf8tWFCohWoEvtLr+kv7jCDXUwztWiDVB2KcCTrqW9mO23NYPNcLIm1HJqk+wMJ74FIk6TsRymL
-	Ezq++ibyqu8U4HITWnb6kx7UyS3plDa8mIoT2Dtzu4sOVuI1+yGb1hWkO2BBOrHqGzi7Jq5CJg76H
-	yeOZ6b7GLU0jAH2+J4GYogcs2LJy88hWNJCL9vEfbhsLuBzexFbqgbzDgw+6oN3gFi3W4ytsPxsPb
-	IlLwmggxGyOO6N/R0a1wlFj/pv6Wlu2hiplA2J5AZL58nDWdl7HEkEqaTsBY8uMAuW2k851FZYaCY
-	BBvsH+VA==;
-Received: from ams.source.kernel.org ([145.40.68.75])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iD8-00DUkF-0t;
-	Wed, 08 Nov 2023 13:03:12 +0000
+	id 1r0iDS-003s3q-2i;
+	Wed, 08 Nov 2023 13:03:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id F2379B81C63;
-	Wed,  8 Nov 2023 13:02:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDF2DC433B7;
-	Wed,  8 Nov 2023 13:02:44 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 4AD94CE109D;
+	Wed,  8 Nov 2023 13:03:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC83DC433C7;
+	Wed,  8 Nov 2023 13:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699448578;
-	bh=IRNty8bJM+niG8y7TBztVYxFiP9MOAPlR8MjQa49+Bw=;
+	s=k20201202; t=1699448606;
+	bh=XewRPhT99Y03FufuA1LV3jWgAM7RX4SOby0kMRaZJ00=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tmkBSJz3VYamotMcUSRYyVTJpKvyfH4SHq0C7FsCwyVNJ4KSrjVdqRD1v6Vxxe82p
-	 MDc+Ta93r+CP7Di/Lj3tgf4btUtVcvWpA5v1wYl+QZ79Q5M8Wxv+Nw37+wWUZQ0Ko+
-	 HwJSB2Gx0RTGQ5mb+Isxh4TM28m0294JSbD9RIqZp4BVElmbGaNHuRy/I5r+moeoP1
-	 jCPaRo+RI83CtzxivdPD9wuzUbwRYtugqoZQvm3FEgnbzPIOJkizQnk58xDA/6Fp2d
-	 /ZO83W53G1V8AJ7fPeSVog3x78qsVn62ZKg1xrU4i9wzYrO9YJLHj3O6H5fDNPp6Ge
-	 1WoDxE5NsDvGw==
+	b=F6AhSnx+JWlw/8aCyGuswz0ZSYRQQSqJRkHGnHr5S62t5ovgeEl+lS12mVwd0pI3v
+	 Y+zAfCc5Nwlj0WYsOzdr9Eq32HI2RaGNa5FoSbN540gr3uvPV1TZcTv+GlOu0j4OlX
+	 qQTuDh0rNCJDIvSp4M8ZAM1Uva7F1HAj0lc/VmGLlwkw4IOfnudYpGOw5ziVke/2C2
+	 EkqHoTH8HohJ7VesdbcjVmGBhmSwgBIKuUYp0yqIOB51SEVlTxt8dhwKGCxaiCszkk
+	 BDDHzx12psT4hLvJdj1i+E8GUr/I3O6cE0KFRK815kGRZDuoEtduHrZrokFoYKTJqo
+	 JHKLDDVnaInUA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
@@ -126,16 +112,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	dri-devel@lists.freedesktop.org,
 	linux-bcachefs@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 16/22] bcachefs: mark bch2_target_to_text_sb() static
-Date: Wed,  8 Nov 2023 13:58:37 +0100
-Message-Id: <20231108125843.3806765-17-arnd@kernel.org>
+Subject: [PATCH 18/22] powerpc: pasemi: mark pas_shutdown() static
+Date: Wed,  8 Nov 2023 13:58:39 +0100
+Message-Id: <20231108125843.3806765-19-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_130310_488384_3DA163FD 
-X-CRM114-Status: GOOD (  14.70  )
+X-CRM114-CacheID: sfid-20231108_050331_290807_A73D8F3B 
+X-CRM114-Status: GOOD (  15.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,32 +140,30 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-bch2_target_to_text_sb() is only called in the file it is defined in,
-and it has no extern prototype:
+Allmodconfig builds show a warning about one function that is accidentally
+marked global:
 
-fs/bcachefs/disk_groups.c:583:6: error: no previous prototype for 'bch2_target_to_text_sb' [-Werror=missing-prototypes]
+arch/powerpc/platforms/pasemi/setup.c:67:6: error: no previous prototype for 'pas_shutdown' [-Werror=missing-prototypes]
 
-Mark it static to avoid the warning and have the code better optimized.
-
-Fixes: bf0d9e89de2e ("bcachefs: Split apart bch2_target_to_text(), bch2_target_to_text_sb()")
+Fixes: 656fdf3ad8e0 ("powerpc/pasemi: Add Nemo board device init code.")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/bcachefs/disk_groups.c | 2 +-
+ arch/powerpc/platforms/pasemi/setup.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
-index d613695abf9f..1f334124055b 100644
---- a/fs/bcachefs/disk_groups.c
-+++ b/fs/bcachefs/disk_groups.c
-@@ -580,7 +580,7 @@ void bch2_target_to_text(struct printbuf *out, struct bch_fs *c, unsigned v)
- 	}
+diff --git a/arch/powerpc/platforms/pasemi/setup.c b/arch/powerpc/platforms/pasemi/setup.c
+index ef985ba2bf21..0761d98e5be3 100644
+--- a/arch/powerpc/platforms/pasemi/setup.c
++++ b/arch/powerpc/platforms/pasemi/setup.c
+@@ -64,7 +64,7 @@ static void __noreturn pas_restart(char *cmd)
  }
  
--void bch2_target_to_text_sb(struct printbuf *out, struct bch_sb *sb, unsigned v)
-+static void bch2_target_to_text_sb(struct printbuf *out, struct bch_sb *sb, unsigned v)
+ #ifdef CONFIG_PPC_PASEMI_NEMO
+-void pas_shutdown(void)
++static void pas_shutdown(void)
  {
- 	struct target t = target_decode(v);
- 
+ 	/* Set the PLD bit that makes the SB600 think the power button is being pressed */
+ 	void __iomem *pld_map = ioremap(0xf5000000,4096);
 -- 
 2.39.2
 
