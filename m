@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A743C04E88
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93075C4167D
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rsboVUxu1BevnMwm8nP35ECQ8CP3gNhaZcJMaHJ5P8o=; b=A3GpwwyuQKG4BY
-	Esga+sYf9V0p4JDmwrqcE1FEnKL1RGeJxuQrW0v50mfEJw0NmNThYXFTBd2bN3zvrNdaIThXz5z5U
-	VH7BGLpb9QZYVKwvEC+MXWN25OBhmH0h1mvpVLu8m5UrkGL7/s7TBBT4nGxiqZCufM1Htn+bi9KeT
-	NrmA4I989PsQuUlB90vpnwk5+8yEnZqlkZnn6f9wUiNYWIWLK58p/RNh6pbPPQUtonOkcAbpP65vo
-	9FlMQzEN7RKbc0e3ajzIqKMByquNRreztR5B2qZKXqV30aO0g8RqUM1EGXh73ugKBwnC55uP0AmRp
-	XsvPzCyqHd70W3OI1l2Q==;
+	List-Owner; bh=NCOr0zM5jVpHvWhxBhLhG+vsUjZbBKzIXRHBx0wUEbs=; b=Sr8pJZWRLt/toL
+	lE6OicYGyX6vsDNew3Rek0LsrLhA/EjmPqJ2MMVFJPWru/sidLBZlNT+8K2eNudNwxGUztEYPV/8e
+	MHhXReodHPRRtqYfMfG9g1jTiEO4AO/GJHDxtBzk3stXVWLU9BtJBdjKBXO6deakL4id9ElGTciMn
+	NgUHBq26tt6PuRloHaxY8AXJx5gt5gszQ46s/SePOHqB1CVezI6i+e6/ftMH+ZC3k1NGGxRiso3NB
+	jJXn4HUY/q2lHa2U8VDJQCoGJlvvAI89BiUiUPEVCPIdz6G6hsAhxG2ILlpZTVFtjamEKCDpiHRuY
+	U9S61hEiu31QsNlngjsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iDb-003sCQ-1i;
-	Wed, 08 Nov 2023 13:03:39 +0000
+	id 1r0iDn-003sLj-0A;
+	Wed, 08 Nov 2023 13:03:51 +0000
 Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iDS-003s3q-2i;
-	Wed, 08 Nov 2023 13:03:35 +0000
+	id 1r0iDg-003sFW-3A;
+	Wed, 08 Nov 2023 13:03:48 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4AD94CE109D;
-	Wed,  8 Nov 2023 13:03:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC83DC433C7;
-	Wed,  8 Nov 2023 13:03:12 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 58272CE10D3;
+	Wed,  8 Nov 2023 13:03:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7383C433CD;
+	Wed,  8 Nov 2023 13:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699448606;
-	bh=XewRPhT99Y03FufuA1LV3jWgAM7RX4SOby0kMRaZJ00=;
+	s=k20201202; t=1699448620;
+	bh=bnImJ/ObQ6B/nPGCBESa5sKS25GC8i0wwxIop7YcLiQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F6AhSnx+JWlw/8aCyGuswz0ZSYRQQSqJRkHGnHr5S62t5ovgeEl+lS12mVwd0pI3v
-	 Y+zAfCc5Nwlj0WYsOzdr9Eq32HI2RaGNa5FoSbN540gr3uvPV1TZcTv+GlOu0j4OlX
-	 qQTuDh0rNCJDIvSp4M8ZAM1Uva7F1HAj0lc/VmGLlwkw4IOfnudYpGOw5ziVke/2C2
-	 EkqHoTH8HohJ7VesdbcjVmGBhmSwgBIKuUYp0yqIOB51SEVlTxt8dhwKGCxaiCszkk
-	 BDDHzx12psT4hLvJdj1i+E8GUr/I3O6cE0KFRK815kGRZDuoEtduHrZrokFoYKTJqo
-	 JHKLDDVnaInUA==
+	b=fB+20slfPiqKAzspVuOp7lysgQWfK95LP/RKlxiC8AEKx8BhFN4kkk4QP6uLjjcZa
+	 wj1ifWdy+iqHN8jUfTP7LMVixMNQzf+PdxJ5aRFwn8+sF8x5oxrMJ+cw7Tf1SY6evs
+	 aTHloPIblEvwjvbG5tJspyjJPZMcOELbwuprmNsKC8br0ev0EeD+X5Pv+YyMMBcX7a
+	 fT29jHc3T0fxWzZcbGd7mitVkS7vZsG9opCG70PpS8kj6ljhs3UbNxZWIByHhdYChg
+	 /Twm4eSdr3h6kTuBlQTn9xPE9UHRMNkG+6odLROmc+7rhVe0JD5IS0bLdAqqjskcMv
+	 HeN+BJ0kN316g==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
@@ -112,16 +112,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	dri-devel@lists.freedesktop.org,
 	linux-bcachefs@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 18/22] powerpc: pasemi: mark pas_shutdown() static
-Date: Wed,  8 Nov 2023 13:58:39 +0100
-Message-Id: <20231108125843.3806765-19-arnd@kernel.org>
+Subject: [PATCH 19/22] powerpc: powermac: mark smp_psurge_{give,take}_timebase static
+Date: Wed,  8 Nov 2023 13:58:40 +0100
+Message-Id: <20231108125843.3806765-20-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_050331_290807_A73D8F3B 
-X-CRM114-Status: GOOD (  15.46  )
+X-CRM114-CacheID: sfid-20231108_050345_373979_5506BE0C 
+X-CRM114-Status: GOOD (  15.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,30 +140,43 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Allmodconfig builds show a warning about one function that is accidentally
-marked global:
+These functions are only called locally and should be static like the
+other corresponding functions are:
 
-arch/powerpc/platforms/pasemi/setup.c:67:6: error: no previous prototype for 'pas_shutdown' [-Werror=missing-prototypes]
+arch/powerpc/platforms/powermac/smp.c:416:13: error: no previous prototype for 'smp_psurge_take_timebase' [-Werror=missing-prototypes]
+  416 | void __init smp_psurge_take_timebase(void)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/platforms/powermac/smp.c:432:13: error: no previous prototype for 'smp_psurge_give_timebase' [-Werror=missing-prototypes]
+  432 | void __init smp_psurge_give_timebase(void)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 656fdf3ad8e0 ("powerpc/pasemi: Add Nemo board device init code.")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/powerpc/platforms/pasemi/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/powermac/smp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pasemi/setup.c b/arch/powerpc/platforms/pasemi/setup.c
-index ef985ba2bf21..0761d98e5be3 100644
---- a/arch/powerpc/platforms/pasemi/setup.c
-+++ b/arch/powerpc/platforms/pasemi/setup.c
-@@ -64,7 +64,7 @@ static void __noreturn pas_restart(char *cmd)
+diff --git a/arch/powerpc/platforms/powermac/smp.c b/arch/powerpc/platforms/powermac/smp.c
+index c83d1e14077e..15644be31990 100644
+--- a/arch/powerpc/platforms/powermac/smp.c
++++ b/arch/powerpc/platforms/powermac/smp.c
+@@ -413,7 +413,7 @@ static void __init smp_psurge_setup_cpu(int cpu_nr)
+ 		printk(KERN_ERR "Couldn't get primary IPI interrupt");
  }
  
- #ifdef CONFIG_PPC_PASEMI_NEMO
--void pas_shutdown(void)
-+static void pas_shutdown(void)
+-void __init smp_psurge_take_timebase(void)
++static void __init smp_psurge_take_timebase(void)
  {
- 	/* Set the PLD bit that makes the SB600 think the power button is being pressed */
- 	void __iomem *pld_map = ioremap(0xf5000000,4096);
+ 	if (psurge_type != PSURGE_DUAL)
+ 		return;
+@@ -429,7 +429,7 @@ void __init smp_psurge_take_timebase(void)
+ 	set_dec(tb_ticks_per_jiffy/2);
+ }
+ 
+-void __init smp_psurge_give_timebase(void)
++static void __init smp_psurge_give_timebase(void)
+ {
+ 	/* Nothing to do here */
+ }
 -- 
 2.39.2
 
