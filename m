@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20295C4167D
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7067DC4167D
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F5/belx2xbGsXmO+nT5hdMSmwOfgq1o2FOewneknNUc=; b=ZmI9V8mCxkMbwu
-	EhHgrGwS98XBvujj8IntJLsFh4x2jq3koQiUfsqc/HjTWAKaRfLjbk5wd38SyK2fmwpTpXLvfu6d7
-	+khbQto7PdSN42HvF6MVvvAV4TsEZdOkpfFJoEMp96NMxDZ53njhAJwaOmSXLFPxsWfSOi+t+JJF9
-	0/jtJtrZ4Vy2XTfkbBnxUYekKTFbl8cJYzkHJj9Ru23XzNAlFp25saQcI30C7qpZa2F1FXNg06Sp2
-	4RiOn2GuU/zs7G2ilWoMdT0d2lRVFZxw/kvRX1bhDYDlek/XIFD9i5tf817xSnfnEgh0cuvU+/z1O
-	Q+eUw6Q31Qznk9IY1t8w==;
+	List-Owner; bh=vkkCzWCHwSNxac9+txc1Op0UaEgPJ38NIVYZV1yk3FY=; b=Sv+D5rC8dQn+Cu
+	e1KqcKfUNjRNgSbiPa2BhIZ2artfic9aSJ5R6mcD9We2bIHCkNZTMoTu6nC+LL/oAmnH62KXHF75q
+	LybzkqcUtdB40H+Fl/n1uzr3HDQuT6Tn9KqaVHImxnayIbHECvECE6OkS2ae3EoeJBazXXrlOR3JZ
+	I/sg27Q0I5lQM8X8hUlEsqwqqVCJJkXFATjsVof035mxTr/kiC2/zUykOcHnqxbQnHfSurJs7T03c
+	aVGOHQCGaNZXVU60VJBSt0nOwF06gcF4p5UYr/CDrn+fNdVtdl+XHMxN4b/qz6oXRK2Rbs/HpKduF
+	B2uFoJA25TMjdePizD0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iBu-003qcL-2s;
-	Wed, 08 Nov 2023 13:01:54 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1r0iC9-003qrP-0B;
+	Wed, 08 Nov 2023 13:02:09 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iBp-003qYE-36;
-	Wed, 08 Nov 2023 13:01:52 +0000
+	id 1r0iC3-003qjn-0C;
+	Wed, 08 Nov 2023 13:02:06 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 42B5CB81C5E;
-	Wed,  8 Nov 2023 13:01:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3EAC433C8;
-	Wed,  8 Nov 2023 13:01:33 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2C74B615BB;
+	Wed,  8 Nov 2023 13:02:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E8D6C433AD;
+	Wed,  8 Nov 2023 13:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699448507;
-	bh=e+QnAKFOR6wNf8AU7caaDk1G44zPUvTIPn9eqgvKtVI=;
+	s=k20201202; t=1699448521;
+	bh=P3J0BM+Ztj1RDywy9VBJzXOtZYn62giSRkEPqVP9Q5s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kO32INjV4cycAjhgsoiS/RTxNc9orDpYCk0+4tO1+Gt7qOwlHokDC691On3AEseRz
-	 yvvl3zTgVmsU4g0YVZaPw04fP+l56az3y5afylAuLQHL9pIQUNqDJKA/O5oXB2GOE9
-	 kpTcKOXyRU8YRPtt7PmtoecXVPG0n6OLKr1MBZnj5Lgdm9FThiDsgfc7354TFlTL23
-	 x4CyaJL3qAHmnf7+elMxEoKG20yxElbtDB+BUoKG6yoDK+xe+uwUqwQsziTDjj5y4A
-	 IK/HwA9zBREWFPvH+XiApEACEGXb9lNAvDnPf1BVZeZvwi5m/tlIWU87hjbxo2nAjR
-	 LT7tJIi+z+jFg==
+	b=burlYIIjmswCo6kZvxA/AuJo2RuSbSUh4JxXaXm/BrFLoO6sD0WbSTWokcncffA5Y
+	 wo67CWy7N7wOACKbAjL4Sl4DOEFPrDKMgY2Vmh/5oPq1FFSPn3MesPrDFyK3fFfF+h
+	 dk6lEsIi5AaEvBWjsExxnfkOCp+Y/j0YDMjCGWeZk4t0/cvy4o2fX7tRgRNSb6Qelx
+	 p79OIkjot7Y52dQukaAiknMAc45DLBU2iLS+jxn81hgrHM+MMiDtBc6mW7+a/wwob/
+	 jEghvumy9S0waHmg1Pwvnhj3TUenjvtSujPtQ86XOHtjGfPo5Pk2jGRwf2OtkS3O5k
+	 /rNYAvRDuqPvA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
@@ -112,16 +112,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	dri-devel@lists.freedesktop.org,
 	linux-bcachefs@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 11/22] x86: sta2x11: include header for sta2x11_get_instance() prototype
-Date: Wed,  8 Nov 2023 13:58:32 +0100
-Message-Id: <20231108125843.3806765-12-arnd@kernel.org>
+Subject: [PATCH 12/22] csky: fix arch_jump_label_transform_static override
+Date: Wed,  8 Nov 2023 13:58:33 +0100
+Message-Id: <20231108125843.3806765-13-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_050150_292670_6CCF6FCC 
-X-CRM114-Status: GOOD (  12.64  )
+X-CRM114-CacheID: sfid-20231108_050203_252464_5E9D6E34 
+X-CRM114-Status: GOOD (  13.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,31 +140,37 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-sta2x11_get_instance() is a global function declared in asm/sta2x11.h,
-but this header is not included before the definition, causing a warning:
+The arch_jump_label_transform_static() function in csky was originally meant to
+override the generic __weak function, but that got changed to an #ifndef check.
 
-arch/x86/pci/sta2x11-fixup.c:95:26: error: no previous prototype for 'sta2x11_get_instance' [-Werror=missing-prototypes]
+This showed up as a missing-prototype warning:
+arch/csky/kernel/jump_label.c:43:6: error: no previous prototype for 'arch_jump_label_transform_static' [-Werror=missing-prototypes]
 
-Add the missing #include.
+Change the method to use the new method of having a #define and a prototype
+for the global function.
 
-Fixes: 83125a3a189e ("x86, platform: Initial support for sta2x11 I/O hub")
+Fixes: 7e6b9db27de9 ("jump_label: make initial NOP patching the special case")
+Fixes: 4e8bb4ba5a55 ("csky: Add jump-label implementation")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/pci/sta2x11-fixup.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/csky/include/asm/jump_label.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
-index 7368afc03998..8c8ddc4dcc08 100644
---- a/arch/x86/pci/sta2x11-fixup.c
-+++ b/arch/x86/pci/sta2x11-fixup.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-map-ops.h>
- #include <linux/swiotlb.h>
- #include <asm/iommu.h>
-+#include <asm/sta2x11.h>
+diff --git a/arch/csky/include/asm/jump_label.h b/arch/csky/include/asm/jump_label.h
+index d488ba6084bc..98a3f4b168bd 100644
+--- a/arch/csky/include/asm/jump_label.h
++++ b/arch/csky/include/asm/jump_label.h
+@@ -43,5 +43,10 @@ static __always_inline bool arch_static_branch_jump(struct static_key *key,
+ 	return true;
+ }
  
- #define STA2X11_SWIOTLB_SIZE (4*1024*1024)
- 
++enum jump_label_type;
++void arch_jump_label_transform_static(struct jump_entry *entry,
++				      enum jump_label_type type);
++#define arch_jump_label_transform_static arch_jump_label_transform_static
++
+ #endif  /* __ASSEMBLY__ */
+ #endif	/* __ASM_CSKY_JUMP_LABEL_H */
 -- 
 2.39.2
 
