@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A326EC0018C
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 14:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1943DC4167D
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 14:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JewQfMg18iW7SotwY98QCYGmHS4RhBJkiZUImfsMlkM=; b=jWyLAtlr1iZU0z
-	DJZCgXt5r+EHqY6omegxfIQqK+8FOPjprB8qWEv9Uj7FZWTpI4MhvJVTGr9WyOSGpkoSgpujs9PnJ
-	O8YQ1jS2DmxE3byPu0h+S/ju7T0cSsPdTkqyQlR/FFi8Oy4YEmHwcPUA0ksOuZR+47A0D2iInTKGd
-	Ycn3g4uFDp+UExOh87WGtg+g60K+c0Thu8uqQEuZWxIagEirfi7AH79SYXph2QyCRreFFa19yE47t
-	/FisCjkkQopqWKxenUxVnFIpiVGyv+xwtjpbGFj7Wh5SCvC318+JZOHtN1RBXpRFuyhdSpNUeuw0x
-	DQ2lyHdWyH0OfGjsZTCw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=iUlH/gZSlqdtXTtqkR/XDp5SfjvvIUO+bn2iTbsTJ+0=; b=YezSQadDPLHc4N
+	F+jkuqjBS5B1jdfsmDL3zDgM5ZDPOigq2nrf4aTnRI6/OSxa6Zn0aUIAn6PG5yHcD0D9xIJjnyHRn
+	gnfQ5AHNtOPI1xLNG/SKXz/8luIEuoD2SNSpLMFDkQFPxDueiy7443z8qkjW6h0NOVDReHLMyC18+
+	c2AcQl3kHLZKfQKPgwmSBAIfH0i9To/jxjS2DJX0wNrve7FQL/eCqlC+8thAnn488wJDwKCIUZHUq
+	wFVrDlzEGBMv3oQSdhyzmd6EVKXl/yKZkRgrsFZ6pmCIiaM7z4TVMxMeU4/tYGM8aBVTvjl/hYNGE
+	G56JPLT6Q9oIo0hjyl8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0jd7-0041JF-0A;
-	Wed, 08 Nov 2023 14:34:05 +0000
-Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
+	id 1r0jd9-0041Kt-3B;
+	Wed, 08 Nov 2023 14:34:08 +0000
+Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0jd3-0041GR-2I
+	id 1r0jd4-0041GW-2O
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 Nov 2023 14:34:03 +0000
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso9463785e87.1
-        for <linux-mtd@lists.infradead.org>; Wed, 08 Nov 2023 06:33:58 -0800 (PST)
+	Wed, 08 Nov 2023 14:34:05 +0000
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507d1cc0538so9436570e87.2
+        for <linux-mtd@lists.infradead.org>; Wed, 08 Nov 2023 06:34:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699454037; x=1700058837; darn=lists.infradead.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YcULZ9PGcbiz4pOSYdWqK1KBS4j8l5GIDZ+NaSWycPw=;
-        b=aw9Jws80Avxf+2tnZxApMXskPkP5bfB0nBPHiUvQUVRDKKWf3qgNdBr7dXWEVkRl8d
-         ZM8h/xEfmhXnntajj4sWQKRWKNKYhzv6xukeEzBU24ez2Vm1DPiJmD3x4d3Uyu2/oght
-         aI0al1quTkjqF0XcXoP0DdjDR8+bOBwmmxltfXweMIxgW4c/McLr5Wi5jnhos/AVIDMl
-         CIClqTPP+ZepdRSOcyjprPRBYgk4e5is4Zq9IiWvpJUODgcrKz8uDCe7De115N96gamn
-         NNsXgjpqZVY3hBltpPINh/1xRpBM1XOGhjsTXCk4GUkikfM9A7uQKmRi0VxKWJai1TyW
-         8OWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699454037; x=1700058837;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1699454040; x=1700058840; darn=lists.infradead.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YcULZ9PGcbiz4pOSYdWqK1KBS4j8l5GIDZ+NaSWycPw=;
-        b=WbxUYFPGq61MhC7gy+T6hKca3B3Su+GYi5y8NoyIt3sS0MIL5y/of1D2xNtertsyzd
-         SIK/7F2ouktk/ol3iDYMqi7RpaYZmS5+MFzDGk+Jm8bJWgVRompZaA9Xh3dyktcuMtjV
-         Ih10Kr6hPoR3IvmhtJs5waR0hOb+oUbeLZh6AVdt8lJ+hZlfNxeF6mEfvO+O5ozPgt7W
-         gY+I1JOoZG7y9oqg0zp1IMqo1Pj7goIohDsGiT6E1inxgHshu5oxPgeuoltnD/Xo7qJy
-         fHWK/NVRRWl5tl+HXYhfwD26qTW7wnonk18dgKK8O70t2/L6b/V5x/0ad33H2pHW2Ulk
-         2i8A==
-X-Gm-Message-State: AOJu0YypNhCceLaVOgn4No3CFyj78RkqHl6GX7eeckpso5kld6EhNdz0
-	Gi1zOSe4ckrGLoUu7h2UpiWoSg==
-X-Google-Smtp-Source: AGHT+IHfdWgUd7peX98jM5hIRx+rFXqSbrGst/IoGRVbU4s1SKmlHEwnM062t9jx1mAFjSR1p5D80Q==
-X-Received: by 2002:a05:6512:31d0:b0:509:2b81:fc40 with SMTP id j16-20020a05651231d000b005092b81fc40mr1835669lfe.9.1699454037158;
-        Wed, 08 Nov 2023 06:33:57 -0800 (PST)
+        bh=+oAJ5h0iCYT/XiQuEoEbc72vTkOvqIZdMfvjIyq8PY0=;
+        b=e5Dxz8BenraJ2mPsnZny1/aRTuhXCPPmD3l9gHTu3ZF/eFvdrlxPJrn3b+atNiKxWP
+         vs7eUQpr87aReNLKF4muU1/367KVEs7Dd8qaXc6YlsX6FGWeJVF5h5Nby+x4Uw/9ZCg3
+         7FHusQLjLmvheylL6dK8uTRc5YOmL60K2ngx1Fj1HXHxcpV1f1C01jmt24E6/MHD9C1+
+         TCAvxq5eIIAX/1+GBebGJYk7R2dR40+KGwy3qMvoK+4ORCuzLL0NTKPK9ACtDvA5IEQX
+         riQKSLGbbCgVhBdJgSwzux6xsGcri9nLtBFmV0ghoj3pGBiZKI/MaIOET50O9psxG54n
+         BaCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699454040; x=1700058840;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+oAJ5h0iCYT/XiQuEoEbc72vTkOvqIZdMfvjIyq8PY0=;
+        b=bSH6xTdWw2gNVK6rtc9sbRCmMUsOKW20mtNqmqLZaYy8eOOg9l2tmQ8hLoPvTQgS1w
+         H6D4ZgTg47VPEhQcA4E3q7iioh8Ta6V2J3pDDSLE1xAs/hdRxNZysWMXFFQ375jwmSJP
+         NQ9X30jfuYn/nhQlTQXvdsSn+FE0oEyaBRqzSpJ5wrZD96JO0mXkXQhzaS1+kNf8z/u3
+         bK/imfzqjJxhxTPIVVQsmidSuUDp2Wwz4wyj7n8GsKa1lmi5KCn/reuUP8/tMWyw8OFZ
+         EwpYypa4OB6p6pHE1jfF4YdxpaSrF6IfqbuRQ01xynYL7ru02MeDSLkfzeT+jziHMFMz
+         Pj0w==
+X-Gm-Message-State: AOJu0YzZm6OuFba79WhaIDNBiWdH/tNlm7HoROPs0wimaywsqGAplA8P
+	d0kt75cwRSAY0cq4D8K/4ZEh8w==
+X-Google-Smtp-Source: AGHT+IGSpoq6bysGssnDl5wEZaN1gk2Q3WjefhpADT75fAnEikYjHNfsLUVEUxLoA08b+0hSPIrNHA==
+X-Received: by 2002:a05:6512:b8d:b0:509:46ff:6e57 with SMTP id b13-20020a0565120b8d00b0050946ff6e57mr1807100lfv.8.1699454038182;
+        Wed, 08 Nov 2023 06:33:58 -0800 (PST)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id q10-20020ac24a6a000000b00507a3b8b007sm686773lfp.110.2023.11.08.06.33.56
+        by smtp.gmail.com with ESMTPSA id q10-20020ac24a6a000000b00507a3b8b007sm686773lfp.110.2023.11.08.06.33.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 06:33:56 -0800 (PST)
+        Wed, 08 Nov 2023 06:33:57 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 0/6] Fix polarity and bindings for GPIO-based NAND drivers
-Date: Wed, 08 Nov 2023 15:33:48 +0100
-Message-Id: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
+Date: Wed, 08 Nov 2023 15:33:49 +0100
+Subject: [PATCH 1/6] mtd: rawnand: ams-delta/gpio: Unify polarity
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAEycS2UC/x2MQQqAIBAAvyJ7bkGtoPpKdDBdaw+ZKEQg/j3pO
- DAzBTIlpgyLKJDo4cx3aKA6AfY04SBk1xi01L1SckTPL14cMwYTHNpZ0e4m6c3goTUxURP+37r
- V+gEN+7w/XwAAAA==
+Message-Id: <20231108-fix-mips-nand-v1-1-5fc5586d04de@linaro.org>
+References: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
+In-Reply-To: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
 To: Aaro Koskinen <aaro.koskinen@iki.fi>, 
  Janusz Krzysztofik <jmkrzyszt@gmail.com>, Tony Lindgren <tony@atomide.com>, 
  Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -81,12 +81,11 @@ To: Aaro Koskinen <aaro.koskinen@iki.fi>,
 Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
  devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Howard Harte <hharte@magicandroidapps.com>
+ Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_063401_765381_BA13F1C1 
-X-CRM114-Status: GOOD (  14.80  )
+X-CRM114-CacheID: sfid-20231108_063402_782560_63C86F09 
+X-CRM114-Status: GOOD (  28.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,52 +102,314 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The AMD Delta and generic GPIO-based NAND drivers are using GPIO lines
-extensively to communicate with a raw NAND flash.
+The AMD Delta and GPIO RAW NAND drivers share the same platform
+data file and pass GPIO descriptors for the same type of signals
+from a board file.
 
-Some confusion has crept into the naming leading to the two drivers using
-inversed semantics differently for pins with the same name.
+Fix the following problems:
 
-Fix the situation by naming the pins consistently without any inversion
-names (such as nce for a negative active chip enable).
+- NCE (negative active chip enable) should be just CE (chip enable)
+  and flagged as active low. Rename it in both drivers to just "CE".
 
-Fix up all in-tree users.
+- NWP (negative active write protect) should be just WP (write protect)
+  and flagged as active low. Rename it in both drivers to just "WP".
 
-Next rewrite the device tree bindings in YAML schema, and fix up the
-single in-tree DTS file (MIPS) to use the new bindings where each signal
-is specified explicitly instead of an array with some "blanks" for unused
-lines.
+- NRE (negative active read enable) should be just RE (read enable)
+  and flagged as active low. Rename it in the AMD Delta driver to "RE".
+  The GPIO driver does not have this.
 
-Last clean up the GPIO NAND driver to drop use of board file provided
-data as no boards using this remain, and use device properties removing
-the explicit reliance on device tree.
+- NWE (negative active write enable) should be just WE (write enable)
+  and flagged as active low. Rename it in the AMD Delta driver to "WE".
+  The GPIO driver does not have this.
+
+- The generic GPIO NAND driver is not expecting the GPIO polarity on
+  CE and WP to be correct and will instead invert the polarity in
+  the usage of the lines (such as setting the CE GPIO descriptor to
+  0 to activate the chip enable). Fix this by altering the semantics
+  in the generic GPIO driver to assume it is flagged active low
+  properly where the GPIO line is defined.
+
+- Fix up the arch/arm/mach-omap1/board-ams-delta.c to use the
+  non-prefixed line names. (The polarity is right in this board.)
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-Linus Walleij (6):
-      mtd: rawnand: ams-delta/gpio: Unify polarity
-      dt-bindings: mtd: Rewrite gpio-control-nand in schema
-      MIPS: NI 169445: Fix NAND GPIOs
-      mtd: rawnand: gpio: Use device properties
-      mtd: rawnand: gpio: Support standard nand width
-      mtd: rawnand: gpio: Rename file
+ arch/arm/mach-omap1/board-ams-delta.c |  8 ++---
+ drivers/mtd/nand/raw/ams-delta.c      | 60 +++++++++++++++++------------------
+ drivers/mtd/nand/raw/gpio.c           | 40 +++++++++++------------
+ 3 files changed, 54 insertions(+), 54 deletions(-)
 
- .../devicetree/bindings/mtd/gpio-control-nand.txt  |  47 ------
- .../devicetree/bindings/mtd/gpio-control-nand.yaml | 168 +++++++++++++++++++++
- Documentation/devicetree/bindings/mtd/mtd.yaml     |   2 +-
- arch/arm/mach-omap1/board-ams-delta.c              |   8 +-
- arch/mips/boot/dts/ni/169445.dts                   |  13 +-
- drivers/mtd/nand/raw/Makefile                      |   2 +-
- drivers/mtd/nand/raw/ams-delta.c                   |  60 ++++----
- drivers/mtd/nand/raw/{gpio.c => nand-gpio.c}       | 120 +++++----------
- 8 files changed, 251 insertions(+), 169 deletions(-)
----
-base-commit: be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
-change-id: 20231105-fix-mips-nand-c91ebd80fa4f
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 0daf6c5b5c1c..3a6ab4e27e3e 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -336,13 +336,13 @@ static struct gpiod_lookup_table ams_delta_nand_gpio_table = {
+ 	.table = {
+ 		GPIO_LOOKUP(OMAP_GPIO_LABEL, AMS_DELTA_GPIO_PIN_NAND_RB, "rdy",
+ 			    0),
+-		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NCE, "nce",
++		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NCE, "ce",
+ 			    GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NRE, "nre",
++		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NRE, "re",
+ 			    GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NWP, "nwp",
++		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NWP, "wp",
+ 			    GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NWE, "nwe",
++		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NWE, "we",
+ 			    GPIO_ACTIVE_LOW),
+ 		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_ALE, "ale", 0),
+ 		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_CLE, "cle", 0),
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index 919816a7aca7..ab3c8d3da41d 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -33,10 +33,10 @@ struct gpio_nand {
+ 	struct nand_controller	base;
+ 	struct nand_chip	nand_chip;
+ 	struct gpio_desc	*gpiod_rdy;
+-	struct gpio_desc	*gpiod_nce;
+-	struct gpio_desc	*gpiod_nre;
+-	struct gpio_desc	*gpiod_nwp;
+-	struct gpio_desc	*gpiod_nwe;
++	struct gpio_desc	*gpiod_ce;
++	struct gpio_desc	*gpiod_re;
++	struct gpio_desc	*gpiod_wp;
++	struct gpio_desc	*gpiod_we;
+ 	struct gpio_desc	*gpiod_ale;
+ 	struct gpio_desc	*gpiod_cle;
+ 	struct gpio_descs	*data_gpiods;
+@@ -49,9 +49,9 @@ struct gpio_nand {
+ 
+ static void gpio_nand_write_commit(struct gpio_nand *priv)
+ {
+-	gpiod_set_value(priv->gpiod_nwe, 1);
++	gpiod_set_value(priv->gpiod_we, 1);
+ 	ndelay(priv->tWP);
+-	gpiod_set_value(priv->gpiod_nwe, 0);
++	gpiod_set_value(priv->gpiod_we, 0);
+ }
+ 
+ static void gpio_nand_io_write(struct gpio_nand *priv, u8 byte)
+@@ -86,13 +86,13 @@ static u8 gpio_nand_io_read(struct gpio_nand *priv)
+ 	struct gpio_descs *data_gpiods = priv->data_gpiods;
+ 	DECLARE_BITMAP(values, BITS_PER_TYPE(res)) = { 0, };
+ 
+-	gpiod_set_value(priv->gpiod_nre, 1);
++	gpiod_set_value(priv->gpiod_re, 1);
+ 	ndelay(priv->tRP);
+ 
+ 	gpiod_get_raw_array_value(data_gpiods->ndescs, data_gpiods->desc,
+ 				  data_gpiods->info, values);
+ 
+-	gpiod_set_value(priv->gpiod_nre, 0);
++	gpiod_set_value(priv->gpiod_re, 0);
+ 
+ 	res = values[0];
+ 	return res;
+@@ -133,7 +133,7 @@ static void gpio_nand_read_buf(struct gpio_nand *priv, u8 *buf, int len)
+ 
+ static void gpio_nand_ctrl_cs(struct gpio_nand *priv, bool assert)
+ {
+-	gpiod_set_value(priv->gpiod_nce, assert);
++	gpiod_set_value(priv->gpiod_ce, assert);
+ }
+ 
+ static int gpio_nand_exec_op(struct nand_chip *this,
+@@ -204,7 +204,7 @@ static int gpio_nand_setup_interface(struct nand_chip *this, int csline,
+ 	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+ 		return 0;
+ 
+-	if (priv->gpiod_nre) {
++	if (priv->gpiod_re) {
+ 		priv->tRP = DIV_ROUND_UP(sdr->tRP_min, 1000);
+ 		dev_dbg(dev, "using %u ns read pulse width\n", priv->tRP);
+ 	}
+@@ -273,35 +273,35 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, priv);
+ 
+ 	/* Set chip enabled but write protected */
+-	priv->gpiod_nwp = devm_gpiod_get_optional(&pdev->dev, "nwp",
++	priv->gpiod_wp = devm_gpiod_get_optional(&pdev->dev, "wp",
+ 						  GPIOD_OUT_HIGH);
+-	if (IS_ERR(priv->gpiod_nwp)) {
+-		err = PTR_ERR(priv->gpiod_nwp);
+-		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
++	if (IS_ERR(priv->gpiod_wp)) {
++		err = PTR_ERR(priv->gpiod_wp);
++		dev_err(&pdev->dev, "WP GPIO request failed (%d)\n", err);
+ 		return err;
+ 	}
+ 
+-	priv->gpiod_nce = devm_gpiod_get_optional(&pdev->dev, "nce",
++	priv->gpiod_ce = devm_gpiod_get_optional(&pdev->dev, "ce",
+ 						  GPIOD_OUT_LOW);
+-	if (IS_ERR(priv->gpiod_nce)) {
+-		err = PTR_ERR(priv->gpiod_nce);
+-		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
++	if (IS_ERR(priv->gpiod_ce)) {
++		err = PTR_ERR(priv->gpiod_ce);
++		dev_err(&pdev->dev, "CE GPIO request failed (%d)\n", err);
+ 		return err;
+ 	}
+ 
+-	priv->gpiod_nre = devm_gpiod_get_optional(&pdev->dev, "nre",
++	priv->gpiod_re = devm_gpiod_get_optional(&pdev->dev, "re",
+ 						  GPIOD_OUT_LOW);
+-	if (IS_ERR(priv->gpiod_nre)) {
+-		err = PTR_ERR(priv->gpiod_nre);
+-		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
++	if (IS_ERR(priv->gpiod_re)) {
++		err = PTR_ERR(priv->gpiod_re);
++		dev_err(&pdev->dev, "RE GPIO request failed (%d)\n", err);
+ 		return err;
+ 	}
+ 
+-	priv->gpiod_nwe = devm_gpiod_get_optional(&pdev->dev, "nwe",
++	priv->gpiod_we = devm_gpiod_get_optional(&pdev->dev, "we",
+ 						  GPIOD_OUT_LOW);
+-	if (IS_ERR(priv->gpiod_nwe)) {
+-		err = PTR_ERR(priv->gpiod_nwe);
+-		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
++	if (IS_ERR(priv->gpiod_we)) {
++		err = PTR_ERR(priv->gpiod_we);
++		dev_err(&pdev->dev, "WE GPIO request failed (%d)\n", err);
+ 		return err;
+ 	}
+ 
+@@ -328,9 +328,9 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 	if (priv->data_gpiods) {
+-		if (!priv->gpiod_nwe) {
++		if (!priv->gpiod_we) {
+ 			dev_err(&pdev->dev,
+-				"mandatory NWE pin not provided by platform\n");
++				"mandatory WE pin not provided by platform\n");
+ 			return -ENODEV;
+ 		}
+ 
+@@ -367,7 +367,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	 * chip detection/initialization.
+ 	 */
+ 	/* Release write protection */
+-	gpiod_set_value(priv->gpiod_nwp, 0);
++	gpiod_set_value(priv->gpiod_wp, 0);
+ 
+ 	/*
+ 	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
+@@ -404,7 +404,7 @@ static void gpio_nand_remove(struct platform_device *pdev)
+ 	int ret;
+ 
+ 	/* Apply write protection */
+-	gpiod_set_value(priv->gpiod_nwp, 1);
++	gpiod_set_value(priv->gpiod_wp, 1);
+ 
+ 	/* Unregister device */
+ 	ret = mtd_device_unregister(mtd);
+diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
+index d6cc2cb65214..df6facf0ec9a 100644
+--- a/drivers/mtd/nand/raw/gpio.c
++++ b/drivers/mtd/nand/raw/gpio.c
+@@ -33,11 +33,11 @@ struct gpiomtd {
+ 	void __iomem		*io_sync;
+ 	struct nand_chip	nand_chip;
+ 	struct gpio_nand_platdata plat;
+-	struct gpio_desc *nce; /* Optional chip enable */
++	struct gpio_desc *ce; /* Optional chip enable */
+ 	struct gpio_desc *cle;
+ 	struct gpio_desc *ale;
+ 	struct gpio_desc *rdy;
+-	struct gpio_desc *nwp; /* Optional write protection */
++	struct gpio_desc *wp; /* Optional write protection */
+ };
+ 
+ static inline struct gpiomtd *gpio_nand_getpriv(struct mtd_info *mtd)
+@@ -146,7 +146,7 @@ static int gpio_nand_exec_op(struct nand_chip *chip,
+ 		return 0;
+ 
+ 	gpio_nand_dosync(gpiomtd);
+-	gpiod_set_value(gpiomtd->nce, 0);
++	gpiod_set_value(gpiomtd->ce, 1);
+ 	for (i = 0; i < op->ninstrs; i++) {
+ 		ret = gpio_nand_exec_instr(chip, &op->instrs[i]);
+ 		if (ret)
+@@ -156,7 +156,7 @@ static int gpio_nand_exec_op(struct nand_chip *chip,
+ 			ndelay(op->instrs[i].delay_ns);
+ 	}
+ 	gpio_nand_dosync(gpiomtd);
+-	gpiod_set_value(gpiomtd->nce, 1);
++	gpiod_set_value(gpiomtd->ce, 0);
+ 
+ 	return ret;
+ }
+@@ -276,10 +276,10 @@ static void gpio_nand_remove(struct platform_device *pdev)
+ 	nand_cleanup(chip);
+ 
+ 	/* Enable write protection and disable the chip */
+-	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
+-		gpiod_set_value(gpiomtd->nwp, 0);
+-	if (gpiomtd->nce && !IS_ERR(gpiomtd->nce))
+-		gpiod_set_value(gpiomtd->nce, 0);
++	if (gpiomtd->wp && !IS_ERR(gpiomtd->wp))
++		gpiod_set_value(gpiomtd->wp, 1);
++	if (gpiomtd->ce && !IS_ERR(gpiomtd->ce))
++		gpiod_set_value(gpiomtd->ce, 0);
+ }
+ 
+ static int gpio_nand_probe(struct platform_device *pdev)
+@@ -316,14 +316,14 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	/* Just enable the chip */
+-	gpiomtd->nce = devm_gpiod_get_optional(dev, "nce", GPIOD_OUT_HIGH);
+-	if (IS_ERR(gpiomtd->nce))
+-		return PTR_ERR(gpiomtd->nce);
++	gpiomtd->ce = devm_gpiod_get_optional(dev, "ce", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiomtd->ce))
++		return PTR_ERR(gpiomtd->ce);
+ 
+ 	/* We disable write protection once we know probe() will succeed */
+-	gpiomtd->nwp = devm_gpiod_get_optional(dev, "nwp", GPIOD_OUT_LOW);
+-	if (IS_ERR(gpiomtd->nwp)) {
+-		ret = PTR_ERR(gpiomtd->nwp);
++	gpiomtd->wp = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiomtd->wp)) {
++		ret = PTR_ERR(gpiomtd->wp);
+ 		goto out_ce;
+ 	}
+ 
+@@ -358,8 +358,8 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, gpiomtd);
+ 
+ 	/* Disable write protection, if wired up */
+-	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
+-		gpiod_direction_output(gpiomtd->nwp, 1);
++	if (gpiomtd->wp && !IS_ERR(gpiomtd->wp))
++		gpiod_direction_output(gpiomtd->wp, 0);
+ 
+ 	/*
+ 	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
+@@ -381,11 +381,11 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		return 0;
+ 
+ err_wp:
+-	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
+-		gpiod_set_value(gpiomtd->nwp, 0);
++	if (gpiomtd->wp && !IS_ERR(gpiomtd->wp))
++		gpiod_set_value(gpiomtd->wp, 1);
+ out_ce:
+-	if (gpiomtd->nce && !IS_ERR(gpiomtd->nce))
+-		gpiod_set_value(gpiomtd->nce, 0);
++	if (gpiomtd->ce && !IS_ERR(gpiomtd->ce))
++		gpiod_set_value(gpiomtd->ce, 0);
+ 
+ 	return ret;
+ }
 
-Best regards,
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.34.1
 
 
 ______________________________________________________
