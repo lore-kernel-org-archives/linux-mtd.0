@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65D68C4167B
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 13:04:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4A88C4332F
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 14:15:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iKNhp9XjmHCf6Pq4ZUh7ZVRoVTT4EfBKlFAyiia7ZUc=; b=VObSxJlnsLLzlS
-	Pq+4BiD/8qyjL5TCjwy8vJi65ECclGCcF99A0Ino4tVkhpx05yEHU2dlkYvWyVqVx4emJThLpXAMO
-	wXCOGR4BzONYoCrl4HIMhzteBtXYy2CTEPIecK8GeA7oQtpjUVA0r/7HlWpuql4ME1cv/pvtMYIBO
-	a7iTaLKyTl39QU/Op9RoGPv9XWCAAFP/h0xi1CuisdKp5A2DGPHL2rVkDAKW+8SZx74ZV8OiVoWRJ
-	QV3IHNATEiVvYSjU8WDBXmILAtITTEyZyIYUqt1Fwnlg6Nv7NmPuDPk9jJp/pIKUHEoxYwl/K68tw
-	DHJQLQun9WVj0niQ/ZHA==;
+	List-Owner; bh=H7t87aUx1GvSxlOVK3QlKK0PNJEZSoejDXxt8q/xfzw=; b=YHiIvqEcVHcjUF
+	NtEgCA3CjVZ80+tbAr+EyNXb3RWeNBtrcfebC46p8kIMcJY/Ec4m2CPsY87ZrqtxJCyNyuh+R7ctH
+	oFp5NZxSk0wqo78WNwQqgH+KVv6YY6TmDSgrO59lwmniZTZeeAn17x4XS33BRTgBFmjdCuMtN0mEa
+	VSS+I3Vsui5WCsV8i9UV6k9H+ndyI5bKuzUP5tMth9GtKPRMq4z7ZwhR5rAKDiMenukWct3RrEZlV
+	RwmCraFLZLhI/k4ndRiIOQYVZd72C9+Tl6ypsesifiZ8ZB0s0kYGzbIKI2d/GPa8/hf2ofBdWegMK
+	OBaf/OpRct/0rsE3r9qQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iEU-003sz0-1d;
-	Wed, 08 Nov 2023 13:04:34 +0000
+	id 1r0jLE-003zIH-0S;
+	Wed, 08 Nov 2023 14:15:36 +0000
 Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0iEL-003sqF-25;
-	Wed, 08 Nov 2023 13:04:30 +0000
+	id 1r0iDC-003rrC-2N;
+	Wed, 08 Nov 2023 13:03:19 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id EF897B81C6B;
-	Wed,  8 Nov 2023 13:04:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9689C433C9;
-	Wed,  8 Nov 2023 13:04:08 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 10F00B81C66;
+	Wed,  8 Nov 2023 13:03:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA9AC433C9;
+	Wed,  8 Nov 2023 13:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699448663;
-	bh=kegMIl+DMnSqVAHEcD2O4VmQR89XR3LaLbspvw04Tng=;
+	s=k20201202; t=1699448592;
+	bh=8u/is9yGIjCKvKH616JPDZxQp4kevRf+hbF66shzciw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eNsPlZDJtmEkAPMbBG5R4qhHte1qNJj5hivdXnhMnQEYxjWoPW4joiDtxOU68W74A
-	 xYdGgBhCICOT3rUTOeUYm0Hc/0LeKHn3J/Gekc8+KTnNnPXVjHuBsHwOaN69BFuuvL
-	 wN1TtfsrekXIsK010uWdjCGU5Ld5U7BPhDH+yIeFwi0DnKAb/YUl2oaW2yuZulDgnz
-	 pUDyk70EhXQiruCjugsUuCxET23RnQ3wREunYYRXMrJO64AqO0M74uvMADhK6JM0RJ
-	 aJLD9+iPedZDT4sOV2VEhIsUeQxuPkYhEBdNhQp3p2/UHNMVvYSvjwsw+1CsJtL+wm
-	 Cl+RPNk7mv6uQ==
+	b=rEbp+ATJ8TL9tb/LlyZhDPrzGSoac6GqEtllIoknZuh3HS0PBjJ7Uq/p/fm1nXndd
+	 5z95k+15Z7EVhKI2k5WFN6+zT6Dcx9LlXxtd8jGTglWA4ZtuBnSsS18mrcef8iCZsu
+	 ZdGdKwnX74k42PjMs3bX54mFIVVH+UaUx6HnTk2bpX6YvZuyIqNVw1i69bKcDM+kx8
+	 0QhbxPOnkVCFn+1IoJLaaDxqLtMx+o9VlbUNRag9/FUeK+64zJfYk6BL3buGhjE4FE
+	 mVN9tNfFpgp0GOm3gK9WgCB6E7ONWa5a1WiaxBVRuDniK5TMae0M2X3SRFJE7qtIKk
+	 B7Fo7+w6HCt9A==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org,
@@ -111,22 +111,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-fbdev@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
 	linux-bcachefs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 22/22] Makefile.extrawarn: turn on missing-prototypes globally
-Date: Wed,  8 Nov 2023 13:58:43 +0100
-Message-Id: <20231108125843.3806765-23-arnd@kernel.org>
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
+Date: Wed,  8 Nov 2023 13:58:38 +0100
+Message-Id: <20231108125843.3806765-18-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_050425_975067_5D282453 
-X-CRM114-Status: GOOD (  19.07  )
+X-CRM114-CacheID: sfid-20231108_050315_112581_09C5DB3A 
+X-CRM114-Status: GOOD (  14.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,71 +140,64 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Over the years we went from > 1000 of warnings to under 100 earlier
-this year, and I sent patches to address all the ones that I saw with
-compile testing randcom configs on arm64, arm and x86 kernels. This is a
-really useful warning, as it catches real bugs when there are mismatched
-prototypes. In particular with kernel control flow integrity enabled,
-those are no longer allowed.
+Allmodconfig kernels produce a missing-prototypes warning:
 
-I have done extensive testing to ensure that there are no new build
-errors or warnings on any configuration of x86, arm and arm64 builds.
-I also made sure that at least the both the normal defconfig and an
-allmodconfig build is clean for arc, csky, loongarch, m68k, microblaze,
-openrisc, parisc, powerpc, riscv, s390, and xtensa, with the respective
-maintainers doing most of the patches.
+arch/powerpc/platforms/ps3/gelic_udbg.c:239:6: error: no previous prototype for 'udbg_shutdown_ps3gelic' [-Werror=missing-prototypes]
 
-At this point, there are five architectures with a number of known
-regressions: alpha, nios2, mips, sh and sparc. In the previous version
-of this patch, I had turned off the missing prototype warnings for the 15
-architectures that still had issues, but since there are only five left,
-I think we can leave the rest to the maintainers (Cc'd here) as well.
+Move the declaration from a local header to asm/ps3.h where it can be
+seen from both the caller and the definition.
 
-Cc: Richard Henderson <richard.henderson@linaro.org>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Link: https://lore.kernel.org/lkml/20230810141947.1236730-1-arnd@kernel.org/
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- scripts/Makefile.extrawarn | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/include/asm/ps3.h               | 6 ++++++
+ arch/powerpc/platforms/ps3/gelic_udbg.c      | 1 +
+ drivers/net/ethernet/toshiba/ps3_gelic_net.h | 6 ------
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 2fe6f2828d37..c9725685aa76 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -17,6 +17,8 @@ KBUILD_CFLAGS += -Wno-format-security
- KBUILD_CFLAGS += -Wno-trigraphs
- KBUILD_CFLAGS += $(call cc-disable-warning,frame-address,)
- KBUILD_CFLAGS += $(call cc-disable-warning, address-of-packed-member)
-+KBUILD_CFLAGS += -Wmissing-declarations
-+KBUILD_CFLAGS += -Wmissing-prototypes
+diff --git a/arch/powerpc/include/asm/ps3.h b/arch/powerpc/include/asm/ps3.h
+index a5f36546a052..d13d8fdc3411 100644
+--- a/arch/powerpc/include/asm/ps3.h
++++ b/arch/powerpc/include/asm/ps3.h
+@@ -514,4 +514,10 @@ u64 ps3_get_spe_id(void *arg);
  
- ifneq ($(CONFIG_FRAME_WARN),0)
- KBUILD_CFLAGS += -Wframe-larger-than=$(CONFIG_FRAME_WARN)
-@@ -95,10 +97,8 @@ export KBUILD_EXTRA_WARN
- ifneq ($(findstring 1, $(KBUILD_EXTRA_WARN)),)
+ void ps3_early_mm_init(void);
  
- KBUILD_CFLAGS += -Wextra -Wunused -Wno-unused-parameter
--KBUILD_CFLAGS += -Wmissing-declarations
- KBUILD_CFLAGS += $(call cc-option, -Wrestrict)
- KBUILD_CFLAGS += -Wmissing-format-attribute
--KBUILD_CFLAGS += -Wmissing-prototypes
- KBUILD_CFLAGS += -Wold-style-definition
- KBUILD_CFLAGS += -Wmissing-include-dirs
- KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
++#ifdef CONFIG_PPC_EARLY_DEBUG_PS3GELIC
++void udbg_shutdown_ps3gelic(void);
++#else
++static inline void udbg_shutdown_ps3gelic(void) {}
++#endif
++
+ #endif
+diff --git a/arch/powerpc/platforms/ps3/gelic_udbg.c b/arch/powerpc/platforms/ps3/gelic_udbg.c
+index 6b298010fd84..a5202c18c236 100644
+--- a/arch/powerpc/platforms/ps3/gelic_udbg.c
++++ b/arch/powerpc/platforms/ps3/gelic_udbg.c
+@@ -14,6 +14,7 @@
+ #include <linux/ip.h>
+ #include <linux/udp.h>
+ 
++#include <asm/ps3.h>
+ #include <asm/io.h>
+ #include <asm/udbg.h>
+ #include <asm/lv1call.h>
+diff --git a/drivers/net/ethernet/toshiba/ps3_gelic_net.h b/drivers/net/ethernet/toshiba/ps3_gelic_net.h
+index 0d98defb011e..0ec7412febc7 100644
+--- a/drivers/net/ethernet/toshiba/ps3_gelic_net.h
++++ b/drivers/net/ethernet/toshiba/ps3_gelic_net.h
+@@ -346,12 +346,6 @@ static inline void *port_priv(struct gelic_port *port)
+ 	return port->priv;
+ }
+ 
+-#ifdef CONFIG_PPC_EARLY_DEBUG_PS3GELIC
+-void udbg_shutdown_ps3gelic(void);
+-#else
+-static inline void udbg_shutdown_ps3gelic(void) {}
+-#endif
+-
+ int gelic_card_set_irq_mask(struct gelic_card *card, u64 mask);
+ /* shared netdev ops */
+ void gelic_card_up(struct gelic_card *card);
 -- 
 2.39.2
 
