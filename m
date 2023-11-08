@@ -4,82 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8895AC4332F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 21:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30F44C4332F
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Nov 2023 23:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
+	Message-Id:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Bgh/L8Vz88Su4RJCXw8Sy5Lz4+vFpjeM6qLTtPJQCKo=; b=YX9HShU2D3C70K
-	Ieu5ta9P3TMtE3dsMr71ThpjsReFx07kbOao11GYkVeVYu1CJ8o/G0Ha3ciDlVAVZPw0KRBSkoa+Q
-	JqU6RQgNKKJ3ihRuc8ldUtHO6L5ybsdSHnpKOg10QX4CMqhgEnubPhqOL4bsXMDXaoZP7LS70SeyM
-	rLkwlo9DLdWwJzg6HOWH+IVEP+qG9WkutEy8Ia4rrDFxdq7ac/eGZY3KxDftCNcXn1rpOYCGYPbZb
-	iiD5P5EKRQqooEoidsJS8d2TzlLjHpN5Q9bS6sPpmqVZ197kwqhGGtbLU6VSgDKVtBBAI1RE+zN4Z
-	TRdElyBc59mH/szxWCyw==;
+	List-Owner; bh=GYQYbkon5/QtuyWfaCpgjRB5+xWwNXRXHaFYuQYedf8=; b=eFHRdgnqEr2Btu
+	HplYQ+EagpJgdYu5HJ3TkayLZx5uGdR3KOyeGsO5e/6+th0N4hV7mM5sKgLfIZpo5OvM4JVYdLYKL
+	Yuv78o2v/AvoDjtB86zRVJ+1Nf/wMixOIk7uOdnCQwDpPhB0xq9jP+AruN/D3OKmBLbbou0US7qAm
+	Bg3zRnvFhiPCUgLv5cFScfyd64iiIBMCNsQ/o0Zn2BfZFT/ZoyWw1Qf3GGC71jwUkBZIrpXud8+Aq
+	mmZU/0TNx0RI9kyFblQWBMftQVJCL+MJLRokbXdCt8ilXgYjZkrdyyzME58wFv+SrjV9FGXeX627Z
+	kzEiu2WaWS3E2JGaohiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0qMd-004nga-3D;
-	Wed, 08 Nov 2023 21:45:32 +0000
-Received: from mail-yw1-x1129.google.com ([2607:f8b0:4864:20::1129])
+	id 1r0rqc-004vTt-2i;
+	Wed, 08 Nov 2023 23:20:34 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0qMb-004nf9-1C
-	for linux-mtd@lists.infradead.org;
-	Wed, 08 Nov 2023 21:45:30 +0000
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59b5484fbe6so2335367b3.1
-        for <linux-mtd@lists.infradead.org>; Wed, 08 Nov 2023 13:45:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699479924; x=1700084724; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uNZCsb+J0tCXIr/CtNET2AcsXu2SaYf1CY84TShlm6Q=;
-        b=wD+sGZx3fsmcAo5sQcCfmpRpOCuevyxx3UlZju53guCtSY/L7eQXEeChzCjUHJwGvM
-         q72UHc+9wQ2M4uFOekxV1Y/bjhbEHSPtfFuz+ep8fILMzRkqfAdhZ90Ob6zOJ9nplXLx
-         2IxURva4v1NscQ3y0zpCDX7anlIT1VQftL2NVRqZMKgrgqZTEy0yulfvmvNh2inu0Xof
-         oQA2Uch35XJWOTBalHgZ2hNVKOyRy2ROrNaWvrPvNVKoYCkOMG/oxbgopefuy4GYvGrd
-         pZBr1HxCJzacHCVn2Kzjcuu1bvsnlUPGDu1rbi4LnYv10L1s4/em3wxHjxHhcyj7y3N3
-         Aw5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699479924; x=1700084724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uNZCsb+J0tCXIr/CtNET2AcsXu2SaYf1CY84TShlm6Q=;
-        b=ZPxFUEQvpV7vuN+cn2jqYPIJI7JVN/bi3rygxdyj91umkMfRZYcs9etCKtlycoKlWF
-         BESkOUCEto4UIwkHIsxMMoOl/dRS5EtubRoBK6xognqzKNWXJlEG9Gam4T7LlSKXe52j
-         fOI+NAexKWVAl8+j0Pkk1y9B5EQ/VOYgZaJMFbRdOaJevdjKa2zghfWNAnYwoMzcCwm5
-         CkDhquhE8cd5ArKImkNTuUmWF+XaPNJRqUCjmeBQn+tKuDeHm+5h04wBMsdcq7g3CdDJ
-         PValBE0Q+vF6Ht4Fd712lBSrbzU7A22zx/QQnwekCrDuw8tTzOVf4rXACOhK7pz1VdCm
-         t5vw==
-X-Gm-Message-State: AOJu0Yy0zLRRijDEEI91HcyKkTS3RGnjksER7G9bBsbCqdevIki1KopO
-	aWgKINCUsO8DdL3liud4Y0JNLuj/M2/P1ORAYUeBmA==
-X-Google-Smtp-Source: AGHT+IFY9jFZdG7cvJAasqldeYVJV1lp20ykF6CM/T97HTYZUi8l1zfwxOIgQ7l5PF/miWNeoGVOLOXt0F0G6C0TYx8=
-X-Received: by 2002:a81:6cd6:0:b0:5a7:f002:4fe4 with SMTP id
- h205-20020a816cd6000000b005a7f0024fe4mr3127115ywc.23.1699479924475; Wed, 08
- Nov 2023 13:45:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
- <20231108-fix-mips-nand-v1-2-5fc5586d04de@linaro.org> <20231108191125.GA2754195-robh@kernel.org>
-In-Reply-To: <20231108191125.GA2754195-robh@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 8 Nov 2023 22:45:11 +0100
-Message-ID: <CACRpkdZx9icF7s5HoS2r40Wuj4sPbEZPiaPsD9GZ94J4LKY5+g@mail.gmail.com>
-Subject: Re: [PATCH 2/6] dt-bindings: mtd: Rewrite gpio-control-nand in schema
-To: Rob Herring <robh@kernel.org>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
-	Tony Lindgren <tony@atomide.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Ben Dooks <ben.dooks@codethink.co.uk>, 
-	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-mips@vger.kernel.org, 
-	Howard Harte <hharte@magicandroidapps.com>
+	id 1r0rqX-004vSA-0b;
+	Wed, 08 Nov 2023 23:20:31 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 0D67FB81EB2;
+	Wed,  8 Nov 2023 23:20:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FB6AC433C8;
+	Wed,  8 Nov 2023 23:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699485626;
+	bh=PYJW4QGKn9tJvNiaagWV7uxmfj3dj1vHSKjkB8gGQNU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BzFtaBogfySwWTla2NJeVqR4PuaYoyopTLM2Vi9KPqLDdx3zZhWzGVJP/DnI0doAr
+	 DCysq9OUVMln4AwlnrEJVkGy7f+Qm12tVyciJjWeul+4uzovgGCKk2sMAtDMAjSHQk
+	 VewIlU9Taz4GP2QauTMdLCa7SvSTilwhfOh7tff1Ga+FrRKGb/HdT6qnkIpQd6cOAM
+	 O/27XvUeKFXk5bmEslLGwZ3jtw7QVPeQvIoDsIh/p8JjCWRipxoFk8lN/qC5a7ewR/
+	 H/tawx3cjSx2H40w4euTMdD4AcO2ZafY4Qwdj7yo9jdfRTzsx4bJpJ6lI9DE3yX0ny
+	 IuIsDgsRCUzJQ==
+Date: Thu, 9 Nov 2023 08:20:09 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, Arnd
+ Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta
+ <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
+ <chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek
+ <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh
+ Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Geoff Levand <geoff@infradead.org>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>, John Paul
+ Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller"
+ <davem@davemloft.net>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, x86@kernel.org, Helge
+ Deller <deller@gmx.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse
+ <dwmw2@infradead.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S
+ Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook
+ <keescook@chromium.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>,
+ Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Nathan Chancellor <nathan@kernel.org>, Nick
+ Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>,
+ Al Viro <viro@zeniv.linux.org.uk>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
+ <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 03/22] [RESEND] kprobes: unify
+ kprobes_exceptions_nofify() prototypes
+Message-Id: <20231109082009.a34621399a98181ee6cde60b@kernel.org>
+In-Reply-To: <20231108125843.3806765-4-arnd@kernel.org>
+References: <20231108125843.3806765-1-arnd@kernel.org>
+	<20231108125843.3806765-4-arnd@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231108_134529_409288_94EB25CF 
-X-CRM114-Status: GOOD (  15.31  )
+X-CRM114-CacheID: sfid-20231108_152029_517086_D0E7DBBE 
+X-CRM114-Status: GOOD (  24.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,25 +104,185 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBOb3YgOCwgMjAyMyBhdCA4OjEx4oCvUE0gUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVs
-Lm9yZz4gd3JvdGU6Cj4gT24gV2VkLCBOb3YgMDgsIDIwMjMgYXQgMDM6MzM6NTBQTSArMDEwMCwg
-TGludXMgV2FsbGVpaiB3cm90ZToKCj4gPiBUaGlzIGNyZWF0ZXMgYSBzY2hlbWEgZm9yIEdQSU8g
-Y29udHJvbGxlZCBOQU5ELiBUaGUgdHh0Cj4gPiBzY2hlbWEgd2FzIG9sZCBhbmQgd3JvbmcuCj4g
-Pgo+ID4gTWFyayB0aGUgb2xkIHdheSBvZiBwYXNzaW5nIEdQSU9zIGluIGEgbG9uZyBhcnJheSBh
-cwo+ID4gZGVwcmVjYXRlZCBhbmQgZW5jb3VyYWdlIHBlci1waW4gR1BJTyBhc3NpZ25tZW50cyB3
-aXRoCj4gPiB0aGUgbmFtZWQgbm5uLWdwaW9zIHBoYW5kbGVzLgo+Cj4gV2UgaGF2ZSAxIHVzZXIg
-dXBzdHJlYW0gd2l0aCBvbmx5IGEgc2luZ2xlIGNvbW1pdCBhZGRpbmcgaXQgaW4gMjAxNy4KPiBU
-aGlzIGRvZXNuJ3Qgc2VlbSBsaWtlIHNvbWV0aGluZyB0aGF0J3MgZ29pbmcgdG8gZ2FpbiBuZXcg
-dXNlcnMgZWl0aGVyLgo+IElzIGl0IHJlYWxseSB3b3J0aCBtb2Rlcm5pemluZyB0aGlzIGJpbmRp
-bmc/CgpUaGUgd2hvbGUgb3JkZWFsIHdhcyBhY3R1YWxseSBwcm9tcHRlZCBieSB0aGUgZW1lcmdl
-bmNlIG9mIGEKbmV3IHVzZXIgd2hvIHdhbnRzIHRvIGFkZCBhIGRldmljZSB0cmVlIGZvciBhIG5l
-dyBkZXZpY2UuClNvIEkgZG9uJ3Qgd2FudCB0byBhZGQgbmV3IHVzZXJzIGZvciB0aGUgb2xkIGJp
-bmRpbmdzLgoKWW91cnMsCkxpbnVzIFdhbGxlaWoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On Wed,  8 Nov 2023 13:58:24 +0100
+Arnd Bergmann <arnd@kernel.org> wrote:
+
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Most architectures that support kprobes declare this function in their
+> own asm/kprobes.h header and provide an override, but some are missing
+> the prototype, which causes a warning for the __weak stub implementation:
+> 
+> kernel/kprobes.c:1865:12: error: no previous prototype for 'kprobe_exceptions_notify' [-Werror=missing-prototypes]
+>  1865 | int __weak kprobe_exceptions_notify(struct notifier_block *self,
+> 
+> Move the prototype into linux/kprobes.h so it is visible to all
+> the definitions.
+
+Thanks, let me pick this to linux-trace tree.
+
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arc/include/asm/kprobes.h     | 3 ---
+>  arch/arm/include/asm/kprobes.h     | 2 --
+>  arch/arm64/include/asm/kprobes.h   | 2 --
+>  arch/mips/include/asm/kprobes.h    | 2 --
+>  arch/powerpc/include/asm/kprobes.h | 2 --
+>  arch/s390/include/asm/kprobes.h    | 2 --
+>  arch/sh/include/asm/kprobes.h      | 2 --
+>  arch/sparc/include/asm/kprobes.h   | 2 --
+>  arch/x86/include/asm/kprobes.h     | 2 --
+>  include/linux/kprobes.h            | 4 ++++
+>  10 files changed, 4 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/arc/include/asm/kprobes.h b/arch/arc/include/asm/kprobes.h
+> index de1566e32cb8..68e8301c0df2 100644
+> --- a/arch/arc/include/asm/kprobes.h
+> +++ b/arch/arc/include/asm/kprobes.h
+> @@ -32,9 +32,6 @@ struct kprobe;
+>  
+>  void arch_remove_kprobe(struct kprobe *p);
+>  
+> -int kprobe_exceptions_notify(struct notifier_block *self,
+> -			     unsigned long val, void *data);
+> -
+>  struct prev_kprobe {
+>  	struct kprobe *kp;
+>  	unsigned long status;
+> diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
+> index e26a278d301a..5b8dbf1b0be4 100644
+> --- a/arch/arm/include/asm/kprobes.h
+> +++ b/arch/arm/include/asm/kprobes.h
+> @@ -40,8 +40,6 @@ struct kprobe_ctlblk {
+>  
+>  void arch_remove_kprobe(struct kprobe *);
+>  int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
+> -int kprobe_exceptions_notify(struct notifier_block *self,
+> -			     unsigned long val, void *data);
+>  
+>  /* optinsn template addresses */
+>  extern __visible kprobe_opcode_t optprobe_template_entry[];
+> diff --git a/arch/arm64/include/asm/kprobes.h b/arch/arm64/include/asm/kprobes.h
+> index 05cd82eeca13..be7a3680dadf 100644
+> --- a/arch/arm64/include/asm/kprobes.h
+> +++ b/arch/arm64/include/asm/kprobes.h
+> @@ -37,8 +37,6 @@ struct kprobe_ctlblk {
+>  
+>  void arch_remove_kprobe(struct kprobe *);
+>  int kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr);
+> -int kprobe_exceptions_notify(struct notifier_block *self,
+> -			     unsigned long val, void *data);
+>  void __kretprobe_trampoline(void);
+>  void __kprobes *trampoline_probe_handler(struct pt_regs *regs);
+>  
+> diff --git a/arch/mips/include/asm/kprobes.h b/arch/mips/include/asm/kprobes.h
+> index 68b1e5d458cf..bc27d99c9436 100644
+> --- a/arch/mips/include/asm/kprobes.h
+> +++ b/arch/mips/include/asm/kprobes.h
+> @@ -71,8 +71,6 @@ struct kprobe_ctlblk {
+>  	struct prev_kprobe prev_kprobe;
+>  };
+>  
+> -extern int kprobe_exceptions_notify(struct notifier_block *self,
+> -				    unsigned long val, void *data);
+>  
+>  #endif /* CONFIG_KPROBES */
+>  #endif /* _ASM_KPROBES_H */
+> diff --git a/arch/powerpc/include/asm/kprobes.h b/arch/powerpc/include/asm/kprobes.h
+> index c8e4b4fd4e33..4525a9c68260 100644
+> --- a/arch/powerpc/include/asm/kprobes.h
+> +++ b/arch/powerpc/include/asm/kprobes.h
+> @@ -84,8 +84,6 @@ struct arch_optimized_insn {
+>  	kprobe_opcode_t *insn;
+>  };
+>  
+> -extern int kprobe_exceptions_notify(struct notifier_block *self,
+> -					unsigned long val, void *data);
+>  extern int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
+>  extern int kprobe_handler(struct pt_regs *regs);
+>  extern int kprobe_post_handler(struct pt_regs *regs);
+> diff --git a/arch/s390/include/asm/kprobes.h b/arch/s390/include/asm/kprobes.h
+> index 21b9e5290c04..01f1682a73b7 100644
+> --- a/arch/s390/include/asm/kprobes.h
+> +++ b/arch/s390/include/asm/kprobes.h
+> @@ -73,8 +73,6 @@ struct kprobe_ctlblk {
+>  void arch_remove_kprobe(struct kprobe *p);
+>  
+>  int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
+> -int kprobe_exceptions_notify(struct notifier_block *self,
+> -	unsigned long val, void *data);
+>  
+>  #define flush_insn_slot(p)	do { } while (0)
+>  
+> diff --git a/arch/sh/include/asm/kprobes.h b/arch/sh/include/asm/kprobes.h
+> index eeba83e0a7d2..65d4c3316a5b 100644
+> --- a/arch/sh/include/asm/kprobes.h
+> +++ b/arch/sh/include/asm/kprobes.h
+> @@ -46,8 +46,6 @@ struct kprobe_ctlblk {
+>  };
+>  
+>  extern int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
+> -extern int kprobe_exceptions_notify(struct notifier_block *self,
+> -				    unsigned long val, void *data);
+>  extern int kprobe_handle_illslot(unsigned long pc);
+>  #else
+>  
+> diff --git a/arch/sparc/include/asm/kprobes.h b/arch/sparc/include/asm/kprobes.h
+> index 06c2bc767ef7..aec742cd898f 100644
+> --- a/arch/sparc/include/asm/kprobes.h
+> +++ b/arch/sparc/include/asm/kprobes.h
+> @@ -47,8 +47,6 @@ struct kprobe_ctlblk {
+>  	struct prev_kprobe prev_kprobe;
+>  };
+>  
+> -int kprobe_exceptions_notify(struct notifier_block *self,
+> -			     unsigned long val, void *data);
+>  int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
+>  asmlinkage void __kprobes kprobe_trap(unsigned long trap_level,
+>  				      struct pt_regs *regs);
+> diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
+> index a2e9317aad49..5939694dfb28 100644
+> --- a/arch/x86/include/asm/kprobes.h
+> +++ b/arch/x86/include/asm/kprobes.h
+> @@ -113,8 +113,6 @@ struct kprobe_ctlblk {
+>  };
+>  
+>  extern int kprobe_fault_handler(struct pt_regs *regs, int trapnr);
+> -extern int kprobe_exceptions_notify(struct notifier_block *self,
+> -				    unsigned long val, void *data);
+>  extern int kprobe_int3_handler(struct pt_regs *regs);
+>  
+>  #else
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> index 365eb092e9c4..ab1da3142b06 100644
+> --- a/include/linux/kprobes.h
+> +++ b/include/linux/kprobes.h
+> @@ -445,6 +445,10 @@ int kprobe_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
+>  
+>  int arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+>  			    char *type, char *sym);
+> +
+> +int kprobe_exceptions_notify(struct notifier_block *self,
+> +			     unsigned long val, void *data);
+> +
+>  #else /* !CONFIG_KPROBES: */
+>  
+>  static inline int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+> -- 
+> 2.39.2
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
