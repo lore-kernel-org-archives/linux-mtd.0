@@ -4,183 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63EF5C4167B
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 10:49:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44711C4167D
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 10:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h2ZLiAaCtOq8KgM6tjJ054nzncwTHmDIxKD33TmizLw=; b=rVlodOQwPR6bSE
-	xzTM9fSijJaRdcbFUP4NEN1cIHkHBVkvj0vhfAdWp5oGnq8WyI2eNEeX+Hbe16A9tA5sO9jgfJQ2A
-	rXkzwceG3eCr8VHSLrv2/1fawF8N2E+2EfD1AQrfA15/jPp74VoqvKcz3iCPTzzcOEcA5fuxzVf4l
-	O9e5IuD84hJRCb7OfEcwN+JC5JAQLizEOQ6BIDg8/B7hWZD3zqYW3PJmdXDRJ0MkLxNCzjHUfr5Xi
-	er3IeP1PDE3hbbT50i6jsnZUbdh1iZpmTp1gBF9cKwrpnSB9MbFXElO2DHTmt8AMhq7JPhKPExxfL
-	CnQo0Wbcr3mQ6jpNTVYQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=gpiIcBPl4htoOLNNwhJ281112hcxCcq+nkLdclHALRY=; b=DQ05gvWJKsvzWQ595vGka2zEDb
+	nhxF3glFns1d/RPEfmIkd74Y+kw0dO8ioaNsHkE1vsdy7UZCVOyWTyeA3Jp/yoFWblQXeOq48UlQE
+	HtkP3Zm1Q5dMdRYZbdxuYdyMrGuatnurYh91W3TCXuWOby+PjFLtIOqQrvbVeEWYlbUv/Qy6E7i4v
+	nh1MoU9b44CM3Z7/ieHlrqu+ugyWzHcVFsI0wJolPd30gAbNEjGbMuitzeNfgGufpdHgp/mRE3sNe
+	0/25O7z2GjGPuE3JTL9AuchPAP4Vh0NqSpnbX3HCgbCvbD+ATKL8UJ20XmRqFZVO/6DWVEhn/6Mva
+	cZn4hN/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r12bC-005zBF-1u;
-	Thu, 09 Nov 2023 10:49:22 +0000
-Received: from mail-mr2fra01on20625.outbound.protection.outlook.com ([2a01:111:f400:7e19::625] helo=FRA01-MR2-obe.outbound.protection.outlook.com)
+	id 1r12iU-0060Bn-0M;
+	Thu, 09 Nov 2023 10:56:54 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r12b7-005z7a-1v;
-	Thu, 09 Nov 2023 10:49:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EZ7uSBK7ZwE979jzB3fK8op36DePZ8X1E7bE9ApxJvN+iaWyX+PVHjh8Z6EX4Kg1vGrBLFrcusZlABzR7KaUGEzazz11ECS8kXCfEB++DdlQSYxBEsO6JnqIwK99k3kXI6OeiGYnbnD6/rQzol1eA+yckTewP7p1yDjax6eod2JC6/jW4v5f3Ko8rHpLmp4p65mb30JKUC5nyoEP5dOhGvdMQ/k+AlHmx5FFJFqTEB9wMGNUOQICU9ebH1zkv8Fn7PeuGYEx2LBO+MU8y1F+YLxwD6sYX1PmR6DOzf0u/UXeXzMDCfYUIwsvdRhs3hF51mkjiyqzxVFwdTsNpMfPrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VZeEr09GfIpEasVIGUYzEoTn1k0DFHr19PyFskwYXn0=;
- b=c7KoivpAmShRI8FvMWucqnT8wOoNtDpi8xDxmZg8icUGAg0yjjmYCkR5/c15if5bxR/YhyATRXNJguOLhSu2F/PymVP46JBateXl7UlLueT9fK+u3IGymRMrxsjS2wfGhKd+pZBiRqkCbXRMnnDl0LCO4MiZ2V0IPrPnhRORYghxhtSidP2JJUE1Ca1sqpic1qnaKIXiczKRmyA4oj6b2A2rfoRHd9e3CTXxmTaMeFlcOon1M7Py/P6GgzS9p8UKHE1sS94IBEBS2Zc8MfaJ3C4B33ntTFB6OgNL/G4/RcXIRKxC6dRCsdmsOeaRoBZ9aLPbdaiSP2hejDOCrM8M6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VZeEr09GfIpEasVIGUYzEoTn1k0DFHr19PyFskwYXn0=;
- b=kPVSqhGW8bi6mrkD6KvADo2Crn+67Zxsx5Ji7uZXts1vdFIRsfJgcl7zGlGyPGIoTcQODgGOIlrJHblMzQkLoHNz9fGy2C2SOwxetmBvVpkCDMjdqFsimBWgDN6o4Qyoy7rt2EfgserZhXz1sxHZ0u+I0gg1oFZIr4jKJTpfwG3RPW7XkWwlBQKxW61HGBoQ9hIRu9Hla1RVds4jmoi5PQH1mE1s+55P6eou6zqi7czdEriphwWB7SXGyQQUM7m7IRZWmmXbJTYi8eKodn3sKchBnDo2QKBjUcTxe5SoxiJGe5iX9BuMj+T7PmhqdLMzDWjE76DG6eAo0kQlbgKfIA==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB1969.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.7; Thu, 9 Nov
- 2023 10:49:05 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::5bfe:e2f2:6d89:8d97]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::5bfe:e2f2:6d89:8d97%3]) with mapi id 15.20.7002.007; Thu, 9 Nov 2023
- 10:49:05 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Arnd
- Bergmann <arnd@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro
- Yamada <masahiroy@kernel.org>, "linux-kbuild@vger.kernel.org"
-	<linux-kbuild@vger.kernel.org>
-CC: Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven Rostedt
-	<rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, guoren <guoren@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
-	<chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek
-	<monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh
- Nguyen <dinguyen@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Geoff
- Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>, Heiko
- Carstens <hca@linux.ibm.com>, John Paul Adrian Glaubitz
-	<glaubitz@physik.fu-berlin.de>, "David S . Miller" <davem@davemloft.net>,
-	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, "x86@kernel.org" <x86@kernel.org>, Helge Deller
-	<deller@gmx.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse
-	<dwmw2@infradead.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S
- Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook
-	<keescook@chromium.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Juri
- Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
-	<ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, Alexander Viro
-	<viro@zeniv.linux.org.uk>, =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?=
-	<u.kleine-koenig@pengutronix.de>, "linux-alpha@vger.kernel.org"
-	<linux-alpha@vger.kernel.org>, "linux-snps-arc@lists.infradead.org"
-	<linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-trace-kernel@vger.kernel.org"
-	<linux-trace-kernel@vger.kernel.org>, "linux-csky@vger.kernel.org"
-	<linux-csky@vger.kernel.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>, "linux-mips@vger.kernel.org"
-	<linux-mips@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org"
-	<linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org"
-	<sparclinux@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
-Thread-Topic: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
-Thread-Index: AQHaEkPkiwEWo83izEmVhjzNZW4UOLBwvvwAgAASbACAAPZYAIAACG2A
-Date: Thu, 9 Nov 2023 10:49:05 +0000
-Message-ID: <886df4e4-9fc2-ca52-e7e9-53688e6e821a@csgroup.eu>
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-16-arnd@kernel.org>
- <ecedb0f1-9543-35c6-18bd-723e6bf21173@csgroup.eu>
- <d94de5b8-db92-4055-9484-f2666973c02a@app.fastmail.com>
- <87o7g3qlf5.fsf@mail.lhotse>
-In-Reply-To: <87o7g3qlf5.fsf@mail.lhotse>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB1969:EE_
-x-ms-office365-filtering-correlation-id: ac1fda33-9198-4fc0-64f7-08dbe1117e45
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rzF1s3u6I6xSWkqcjCUYWmstHyEG6eNcLOVsNAY+YGNLl8sdpdanCbuzNPx81RakqvZ0mP8ZbuREeQOVibBAeHNdHW5jusghFCeooT+BBckFnP6QakRSvU+WWcKGGGD6/7Mw3YhlDJiMFLEQbtAb2sRKGkOg8eLqP4Hekl+E+2VvqpnRY+gPX2vt+EbV8aCL+G6RCqdSKR8KJbjWdePyPBukRF+AfUZ4kBu9PE48MUT1VyNwJ5s3oOSxekDGSR9S8dVSSw7ySqElO5+utoSgoICgyW4Uj5fNSgFn0aGJYRDjnDNaRjyYxHv19+Vb8aPW6hjqLnXqVEu7ipmcfYPGrshBvaOgy6nMdYop1BUYjJjk1VbSY7Ci76pgJwUo5+XKGSrmXbmFbJHeEst0NbBLl3Afo8H0aV3FZ1dGvkapT3zI4f4QHI6H4lBQGVwQ3lMXogWAzXjpXwU2+LvvrY5C7D2MAScSZbG2HQ1U9ARbWh/qvFZz6nSj0bH8jzSTwwrWDbSKbx59amVq1M7VxlpDbVXUtKxGmPMpaJemOMUcI23KkEiekLnOXkGAKtuMxbCqTpQ/GdXzjv/GCsSIW5YxT33Ox967zaBHOvQ7s1wYh2FZnLyuug+Xqhst+fPuBjnhw6vNvpNly9VyPtVzE+KsXUjVAgePKCjRMQ3SpCTnxLk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(346002)(39860400002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(26005)(6506007)(71200400001)(2616005)(6512007)(7406005)(83380400001)(44832011)(41300700001)(8936002)(5660300002)(8676002)(4326008)(7416002)(7366002)(966005)(6486002)(2906002)(478600001)(316002)(91956017)(110136005)(54906003)(66476007)(66946007)(66446008)(66556008)(64756008)(76116006)(86362001)(122000001)(38100700002)(31696002)(36756003)(38070700009)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dTVSbWNYZ0dibC9WMXRlc2QyN0pWbDhIcjF5RHVnTkpjbEM3TFA3NzdQWXkr?=
- =?utf-8?B?WkwyODJyU01hUWdRTVVEakNJWWlzVXJRaS9UV1IrbWc5aHloaUxkVTd2NFRX?=
- =?utf-8?B?TXJVSExWbWl2UUY5dmZqejJTa3RPYlBuSm55Q1JaTFgvdlVRaldjZ2ZjNGVY?=
- =?utf-8?B?ZFhmVEQ2ODl2cUdmdmF6WXJ6cmJWNDBNeHhBKy9jeE0xdk5YYkkrS2lzVHJs?=
- =?utf-8?B?TEI1VGErYlRJeUxnWUNoemtPVG5ORjAyNCtmWGN2ZStCdnE5bmhleHh2RzhY?=
- =?utf-8?B?VFBoK1FmcExFeDlGWlhyLzBBcUg5Z3B0Y1JmendWVlpvak1HeEZRaTk0ZWx1?=
- =?utf-8?B?QjkzMGtZQ0Q0YmYra0pKWWExdisrVGVLMUNWMzZ5d0hjTndHMU85RFA3eVdG?=
- =?utf-8?B?a3NIQXd2cUpDc2VTSDdzRk15WG5wZFZiSVV4SEl0dk04NDFSVlQ5ZU8xbExR?=
- =?utf-8?B?alo3UmNqWFZQWHMvSE9YWEZHY2F4QVkxQjVOUitaU3hqWnl3T0RHUS9QZlho?=
- =?utf-8?B?RjZlUDY1Wk5MTXNzVXVMTG1LSjRYeU0zUWZ2cEZoSXUxWXp5dEtkT3czcUFp?=
- =?utf-8?B?c2hpaGoyVkVTbnNZUXdzRS81bXRRem5PSmNmSWovc0RWbVYvTXN0emZva28v?=
- =?utf-8?B?ZUZoaXZqL1hOZGpjd0J3ZEI0STA0MFphR2luUjUzTjhOaEdOVGF5VlFYbVVO?=
- =?utf-8?B?dFRmRGRMYjNDL0dJYXQxRUhiT2V2RDF2cU9NQ3BCZkkyN1lqOURFT0JURkpu?=
- =?utf-8?B?UEtKdnZQU3J0YVAyOWtSZEpHUER6MWVQK0RqbnNnSE9POFlHZG0vV0FOcFFr?=
- =?utf-8?B?YmZYZXlvZ3d0UUFEN0pqY0JaODZ4d1gxZGQrUWtRd3p3dVFqSTFWWmdOT3Za?=
- =?utf-8?B?MXYyY0RSMnFTTkFZT2RiNjZRZmhSbHgxUk1mUy8yZ3hKZWNhQW9FYXdyRDdC?=
- =?utf-8?B?WU8xNFBVRzU0WEkyWXNHVDhsdFlsT3dhQlY2WHRvSnAvQm1vaVpsRElBM2dX?=
- =?utf-8?B?NUp1UEJxaUt2ZzdiSFVHQ2F6Nmd1U2trWGFXRU1rdjZNcHF3UmpjSjR0WitS?=
- =?utf-8?B?Vi9FTDhsMWhyQXYrNjdrQkFRTTJORHdZOHZrZVdJQkM4dE5MMmFyTUZSczVU?=
- =?utf-8?B?RUxXTDE5aW8rTzBWZHkxRndlZVN3QVpxUlVhVllOdWJETFRFSysyLzZRMUxV?=
- =?utf-8?B?OEFaMUZaOUxSSzZtNU41S0l5Y1RveHhneTRLblhrRnZPTkg5LzZtK0FVZ2wy?=
- =?utf-8?B?UGVwcWJ3a3hpRGppSk00eGl1aVpGcUt5YkNHdDdJVGh5T2xyN2VDNVpRV1pj?=
- =?utf-8?B?N1dMM2Y3SWVIWHo1Z0dmekFUUVVVSlZ6QlBLMHNUQmtIWXMwdUFkMlpIMWd4?=
- =?utf-8?B?UUJvN3NZU1kzYm1NZVlJTkpxbTR2YXRCQjJHWWREOU11SE9NV1lnTzhCRGh0?=
- =?utf-8?B?eGJISmVDYS8ydnpJQlo0VlF2OHB6TGpEemRPdVppbkZWNmx0emQ1d3kwVmkx?=
- =?utf-8?B?blFKWm5sZkN5alFRbGNoKzlyaHJwb1FMeGxtQ25hNFVzcExuUXpib0FNN2tV?=
- =?utf-8?B?L2tvSktRYURZby9GbW5yTWdnQ2VLekxQb1N0OEkwY1ZpU1NJOWVUN1lubkhT?=
- =?utf-8?B?TmhxcFp4YzRuenpnaFh0VkIwNzZMYkdJcHUvVVM2UXNQcUVOY1laMERPbzdB?=
- =?utf-8?B?M3QvOWtJVktSazMyVnVha3RhTVdzU1A5WFlIdW9jRm8vR1JVa3d5TDU1b3FR?=
- =?utf-8?B?Z0kxNUoxVVRMeXdxZE92OXREaU51K0Z0dlNhVWt1RWtyTmZoVEJ6eldTa1ho?=
- =?utf-8?B?Und0SElyUHNUSy9RYUtQTTMzclBDRUNzMFViRVVZa1NTZzd2cnljZ3BDRzJ4?=
- =?utf-8?B?QU5HeHVGeG4vQ1pMMS8wODY2ZG5xcGtVQU5kcUVhOWY5ZzNVejhaMXFDenVh?=
- =?utf-8?B?dVBqRWJCSGRib3V5MlNwTnQyUzgyRVZScnRVbGxoWWFaYjVKWWkxakRQWVE5?=
- =?utf-8?B?cnRrV0ltS1kwWlhCS05TTVdGMjZEM2JuMTREcURiaEw3aXQvRU43d1BWTzYz?=
- =?utf-8?B?dytnTFg0Qkc0b1MzeVNlOTZrSHdvaUpucDRaMFdyWmh2aVdMeWtxV0c3am1N?=
- =?utf-8?B?amVaNFk5YzZYb0dORUdLM1NPMVl2NUp0TVBXVEFDZm1PV2twa0Fad2lPTnF3?=
- =?utf-8?B?Q3c9PQ==?=
-Content-ID: <46B1EF2D4572EA4EA79E2124E418290F@FRAP264.PROD.OUTLOOK.COM>
+	id 1r12iR-0060Aw-1J
+	for linux-mtd@lists.infradead.org;
+	Thu, 09 Nov 2023 10:56:53 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id B05CA3D5;
+	Thu,  9 Nov 2023 11:56:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1699527406;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lkYMEi9z1AjiGREcvVrdAbNNB3OU3WdHnR6KqvlMljQ=;
+	b=grAGzuV2AuyNfQRQappwyoX4KVhLzIR3bZ8s+T/jMKZda052fs0tidxamkCKzcbyO2S8aD
+	euDE0g9Olk/ci/LzsausVg0dTodWuK447lx9wMfOVl/vWLsw+dRKFwqT234ZADj4sWgcF5
+	rg/5lW+yI9jRpd8ssM8Mlp5CkE3YPDaR1tv4P8dcgDQK3QF/dpH425j3AnzNVBG+5b4cpX
+	N8sRh6VHg5kGC67oCzSMhjRLY7N5mSp+BoAXdaVaAQ+IwJXhM/8VbEevc/tbxpKeDT+jU2
+	DHbKwHp9BE4nOtNFGwmV4zf0EhXo/SPUWCaI+siCnjIKlb5Ufs3yRpVRXoxH5g==
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac1fda33-9198-4fc0-64f7-08dbe1117e45
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2023 10:49:05.1707
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: efi3su8U19IpISCtzqcsjICNgjz75G9Tly+DZj0APujcF6WpcmoiZF5LxSkKOGbeIlECstL7kjafJArBSDBELmA5O7g65q5wc7HL2lNnxJA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB1969
+Date: Thu, 09 Nov 2023 11:56:46 +0100
+From: Michael Walle <michael@walle.cc>
+To: AceLan Kao <acelan.kao@canonical.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika
+ Westerberg <mika.westerberg@linux.intel.com>, Dhruva Gole <d-gole@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] spi: Replace -ENOTSUPP with -EOPNOTSUPP in op
+ checking
+In-Reply-To: <20231108094303.46303-1-acelan.kao@canonical.com>
+References: <20231108094303.46303-1-acelan.kao@canonical.com>
+Message-ID: <30509dedc61b0590b322e2860abbd109@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231109_024917_792736_E356BF64 
-X-CRM114-Status: GOOD (  22.21  )
+X-CRM114-CacheID: sfid-20231109_025651_597952_D9CED64C 
+X-CRM114-Status: GOOD (  20.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -192,52 +74,181 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DQoNCkxlIDA5LzExLzIwMjMgw6AgMTE6MTgsIE1pY2hhZWwgRWxsZXJtYW4gYSDDqWNyaXTCoDoN
-Cj4gIkFybmQgQmVyZ21hbm4iIDxhcm5kQGFybmRiLmRlPiB3cml0ZXM6DQo+PiBPbiBXZWQsIE5v
-diA4LCAyMDIzLCBhdCAxOTozMSwgQ2hyaXN0b3BoZSBMZXJveSB3cm90ZToNCj4+PiBMZSAwOC8x
-MS8yMDIzIMOgIDEzOjU4LCBBcm5kIEJlcmdtYW5uIGEgw6ljcml0wqA6DQo+Pg0KPj4+IHBvd2Vy
-cGMgaGFzIGZ1bmN0aW9ucyBkb2luZyBtb3JlIG9yIGxlc3MgdGhlIHNhbWUsIHRoZXkgYXJlIGNh
-bGxlZA0KPj4+IF9fY19rZXJuZWxfY2xvY2tfZ2V0dGltZSgpIGFuZCBhbGlrZSB3aXRoIHRoZWly
-IHByb3RvdHlwZXMgc2l0aW5nIGluDQo+Pj4gYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL3Zkc28v
-Z2V0dGltZW9mZGF5LmgNCj4+Pg0KPj4+IFNob3VsZCB0aG9zZSBwcm90b3R5cGVzIGJlIG1vdmVk
-IHRvIGluY2x1ZGUvdmRzby9nZXR0aW1lLmggdG9vIGFuZA0KPj4+IGV2ZW50dWFsbHkgcmVuYW1l
-ZCwgb3IgYXJlIHRoZXkgY29uc2lkZXJlZCB0b28gcG93ZXJwYyBzcGVjaWZpYyA/DQo+Pg0KPj4g
-SSBkb24ndCBhY3R1YWxseSBrbm93LCBteSBpbml0aWFsIGludGVycHJldGF0aW9uIHdhcyB0aGF0
-DQo+PiB0aGVzZSBmdW5jdGlvbiBuYW1lcyBhcmUgcGFydCBvZiB0aGUgdXNlciBBQkkgZm9yIHRo
-ZSB2ZHNvLA0KPj4gYnV0IEkgbmV2ZXIgbG9va2VkIGNsb3NlbHkgZW5vdWdoIGF0IGhvdyB2ZHNv
-IHdvcmtzIHRvDQo+PiBiZSBzdXJlIHdoYXQgdGhlIGFjdHVhbCBBQkkgaXMuDQo+IA0KPiBBRkFJ
-SyB0aGUgQUJJIGlzIGp1c3QgdGhlIHN5bWJvbHMgd2UgZXhwb3J0LCBhcyBkZWZpbmVkIGluIHRo
-ZSBsaW5rZXINCj4gc2NyaXB0Og0KPiANCj4gLyoNCj4gICAqIFRoaXMgY29udHJvbHMgd2hhdCBz
-eW1ib2xzIHdlIGV4cG9ydCBmcm9tIHRoZSBEU08uDQo+ICAgKi8NCj4gVkVSU0lPTg0KPiB7DQo+
-IAlWRFNPX1ZFUlNJT05fU1RSSU5HIHsNCj4gCWdsb2JhbDoNCj4gCQlfX2tlcm5lbF9nZXRfc3lz
-Y2FsbF9tYXA7DQo+IAkJX19rZXJuZWxfZ2V0dGltZW9mZGF5Ow0KPiAJCV9fa2VybmVsX2Nsb2Nr
-X2dldHRpbWU7DQo+IAkJX19rZXJuZWxfY2xvY2tfZ2V0cmVzOw0KPiAJCV9fa2VybmVsX2dldF90
-YmZyZXE7DQo+IAkJX19rZXJuZWxfc3luY19kaWNhY2hlOw0KPiAJCV9fa2VybmVsX3NpZ3RyYW1w
-X3J0NjQ7DQo+IAkJX19rZXJuZWxfZ2V0Y3B1Ow0KPiAJCV9fa2VybmVsX3RpbWU7DQo+IA0KPiBo
-dHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9s
-aW51eC5naXQvdHJlZS9hcmNoL3Bvd2VycGMva2VybmVsL3Zkc28vdmRzbzY0Lmxkcy5TP2g9djYu
-NiYjbjExNw0KPiANCj4+IElmIF9fY19rZXJuZWxfY2xvY2tfZ2V0dGltZSgpIGV0YyBhcmUgbm90
-IHBhcnQgb2YgdGhlIHVzZXItZmFjaW5nDQo+PiBBQkksIEkgdGhpbmsgcmVuYW1pbmcgdGhlbSBm
-b3IgY29uc2lzdGVuY3kgd2l0aCB0aGUgb3RoZXINCj4+IGFyY2hpdGVjdHVyZXMgd291bGQgYmUg
-YmVzdC4NCj4gDQo+IFRoZSBfX2Mgc3ltYm9scyBhcmUgbm90IHBhcnQgb2YgdGhlIEFCSSwgc28g
-d2UgY291bGQgcmVuYW1lIHRoZW0uDQo+IA0KPiBBdCB0aGUgbW9tZW50IHRob3VnaCB0aGV5IGRv
-bid0IGhhdmUgdGhlIHNhbWUgcHJvdG90eXBlIGFzIHRoZSBnZW5lcmljDQo+IHZlcnNpb25zLCBi
-ZWNhdXNlIHdlIGZpbmQgdGhlIFZEU08gZGF0YSBpbiBhc20gYW5kIHBhc3MgaXQgdG8gdGhlIEMN
-Cj4gZnVuY3Rpb25zLCBlZzoNCj4gDQo+IGludCBfX2Nfa2VybmVsX2dldHRpbWVvZmRheShzdHJ1
-Y3QgX19rZXJuZWxfb2xkX3RpbWV2YWwgKnR2LCBzdHJ1Y3QgdGltZXpvbmUgKnR6LA0KPiAJCQkg
-ICAgY29uc3Qgc3RydWN0IHZkc29fZGF0YSAqdmQpOw0KPiANCj4gSSB0aGluayB3ZSBjYW4gcmV3
-b3JrIHRoYXQgdGhvdWdoLCBieSBpbXBsZW1lbnRpbmcNCj4gX19hcmNoX2dldF92ZHNvX2RhdGEo
-KSBhbmQgZ2V0dGluZyB0aGUgdmRzb19kYXRhIGluIEMuIFRoZW4gd2UnZCBiZSBhYmxlDQo+IHRv
-IHNoYXJlIHRoZSBwcm90b3R5cGVzLg0KDQpJIHRoaW5rIGl0IHdvdWxkIG5vdCBhIGJlZW4gZ29v
-ZCBpZGVhLCBpdCB3b3VsZCBiZSBsZXNzIHBlcmZvcm1hbnQsIGZvciANCmV4cGxhbmF0aW9uIHNl
-ZSBjb21taXQgDQpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
-dC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lz9pZD1lODc2ZjBiNjlkYzk5M2U4NmNhNzc5NWU2
-M2U5ODM4NWFhOWE3ZWYzDQoNCkNocmlzdG9waGUNCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Hi,
+
+Am 2023-11-08 10:43, schrieb AceLan Kao:
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> 
+> No functional changes are introduced by this patch; it's a code cleanup
+> to use the correct error code.
+
+This error code might be returned to userspace (I guess?).
+
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> 
+> ---
+> v5. distinguish -EOPNOTSUPP from -ENOTSUPP
+> ---
+>  drivers/mtd/nand/spi/core.c | 2 +-
+>  drivers/spi/atmel-quadspi.c | 2 +-
+>  drivers/spi/spi-ath79.c     | 2 +-
+>  drivers/spi/spi-bcm-qspi.c  | 2 +-
+>  drivers/spi/spi-mem.c       | 6 +++---
+>  drivers/spi/spi-npcm-fiu.c  | 2 +-
+>  drivers/spi/spi-ti-qspi.c   | 4 ++--
+>  drivers/spi/spi-wpcm-fiu.c  | 2 +-
+
+This is missing a user in spi-nor/core.c (in
+spi_nor_set_4byte_addr_mode()).
+
+-michael
+
+>  8 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 393ff37f0d23..d1df5cd401cf 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -973,7 +973,7 @@ static int spinand_manufacturer_match(struct 
+> spinand_device *spinand,
+>  		spinand->manufacturer = manufacturer;
+>  		return 0;
+>  	}
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+>  }
+> 
+>  static int spinand_id_detect(struct spinand_device *spinand)
+> diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+> index 3d1252566134..370c4d1572ed 100644
+> --- a/drivers/spi/atmel-quadspi.c
+> +++ b/drivers/spi/atmel-quadspi.c
+> @@ -272,7 +272,7 @@ static int atmel_qspi_find_mode(const struct 
+> spi_mem_op *op)
+>  		if (atmel_qspi_is_compatible(op, &atmel_qspi_modes[i]))
+>  			return i;
+> 
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+>  }
+> 
+>  static bool atmel_qspi_supports_op(struct spi_mem *mem,
+> diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
+> index c9f1d1e1dcf7..b7ada981464a 100644
+> --- a/drivers/spi/spi-ath79.c
+> +++ b/drivers/spi/spi-ath79.c
+> @@ -146,7 +146,7 @@ static int ath79_exec_mem_op(struct spi_mem *mem,
+>  	/* Only use for fast-read op. */
+>  	if (op->cmd.opcode != 0x0b || op->data.dir != SPI_MEM_DATA_IN ||
+>  	    op->addr.nbytes != 3 || op->dummy.nbytes != 1)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	/* disable GPIO mode */
+>  	ath79_spi_wr(sp, AR71XX_SPI_REG_FS, 0);
+> diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+> index ef08fcac2f6d..d96222e6d7d2 100644
+> --- a/drivers/spi/spi-bcm-qspi.c
+> +++ b/drivers/spi/spi-bcm-qspi.c
+> @@ -1199,7 +1199,7 @@ static int bcm_qspi_exec_mem_op(struct spi_mem 
+> *mem,
+> 
+>  	if (!op->data.nbytes || !op->addr.nbytes || op->addr.nbytes > 4 ||
+>  	    op->data.dir != SPI_MEM_DATA_IN)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	buf = op->data.buf.in;
+>  	addr = op->addr.val;
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index edd7430d4c05..2dc8ceb85374 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const 
+> struct spi_mem_op *op)
+>  		return ret;
+> 
+>  	if (!spi_mem_internal_supports_op(mem, op))
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && 
+> !spi_get_csgpiod(mem->spi, 0)) {
+>  		ret = spi_mem_access_start(mem);
+> @@ -339,7 +339,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const 
+> struct spi_mem_op *op)
+>  		 * read path) and expect the core to use the regular SPI
+>  		 * interface in other cases.
+>  		 */
+> -		if (!ret || ret != -ENOTSUPP)
+> +		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
+>  			return ret;
+>  	}
+> 
+> @@ -559,7 +559,7 @@ spi_mem_dirmap_create(struct spi_mem *mem,
+>  	if (ret) {
+>  		desc->nodirmap = true;
+>  		if (!spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
+> -			ret = -ENOTSUPP;
+> +			ret = -EOPNOTSUPP;
+>  		else
+>  			ret = 0;
+>  	}
+> diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
+> index 03db9f016a11..f3bb8bbc192f 100644
+> --- a/drivers/spi/spi-npcm-fiu.c
+> +++ b/drivers/spi/spi-npcm-fiu.c
+> @@ -556,7 +556,7 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, 
+> const struct spi_mem_op *op)
+>  		op->data.nbytes);
+> 
+>  	if (fiu->spix_mode || op->addr.nbytes > 4)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	if (fiu->clkrate != chip->clkrate) {
+>  		ret = clk_set_rate(fiu->clk, chip->clkrate);
+> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+> index 4c81516b67db..0877dc5058a1 100644
+> --- a/drivers/spi/spi-ti-qspi.c
+> +++ b/drivers/spi/spi-ti-qspi.c
+> @@ -613,12 +613,12 @@ static int ti_qspi_exec_mem_op(struct spi_mem 
+> *mem,
+>  	/* Only optimize read path. */
+>  	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
+>  	    !op->addr.nbytes || op->addr.nbytes > 4)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	/* Address exceeds MMIO window size, fall back to regular mode. */
+>  	from = op->addr.val;
+>  	if (from + op->data.nbytes > qspi->mmap_size)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	mutex_lock(&qspi->list_lock);
+> 
+> diff --git a/drivers/spi/spi-wpcm-fiu.c b/drivers/spi/spi-wpcm-fiu.c
+> index 852ffe013d32..d76f7b5a9b97 100644
+> --- a/drivers/spi/spi-wpcm-fiu.c
+> +++ b/drivers/spi/spi-wpcm-fiu.c
+> @@ -361,7 +361,7 @@ static int wpcm_fiu_exec_op(struct spi_mem *mem, 
+> const struct spi_mem_op *op)
+> 
+>  	wpcm_fiu_stall_host(fiu, false);
+> 
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+>  }
+> 
+>  static int wpcm_fiu_adjust_op_size(struct spi_mem *mem, struct 
+> spi_mem_op *op)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
