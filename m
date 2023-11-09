@@ -4,82 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4EE7C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 09:09:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B656C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 09:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wUUHfUYk2dWWGYNf/VxWimZ9WnVfY2UGCZVBUyTZPS4=; b=hSkeYu5nHP0zEDcPUwFTscf7+e
-	7xaMyI8uNrKiXyhPR+CtL8ZgGLAdsv5lBV1BjZYmP3MzWVj2SF8vBTInWmNClqn0yu58K8xJVqsSu
-	QiJpnLI0qGaZ8Zvit/s+QFOVavrT1T+8MvslZHavICYPvUoP/R2joftwwoS92SBabuDiLsFBwI3U9
-	ppR79L+dsLUB27VXr/iUnmrGqROFSZD9/rAZACkD3/1KuS5L7713Fz64v5XW8o8Mtf/yrWv0hMnp6
-	8oPVO/jl49FngUfBM6G3slJYvIsXtg9PCouhqweU6kUPul9W0d5DDB8NmGS4gkUch1oLymRBIt6+b
-	Z0RrGxoQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=WOZcYraySTpW+wslhR/mJpUYqCkv5cB5rkTMlffyuhQ=; b=osnNpPWcliwUlp
+	vtxICgYT/d0i4jOsu7Fe1aCW5rE1VgeL7eF4Y0n+mWfeFVevaKhJ+GPSvH0DJQi/Z0mj9Zl6KoGgu
+	SB5DicpOUiOkaUAr46ln8ogq/UPIPStq+81cf1o/B8OHRvFkCwuh5e/37wTPa7CIlA34pvKV5Jawl
+	AZ+A+Afqm4J+IsgcKeqMO+0m9bVEKV1FKQL7C+dhhFuCsoQr7m3/wih9/SqsYk3GMYF+nplD8DSYs
+	ggTqVZ2+zn4Tj7YyoRAmTIc5adM8vLiRBnLhQRGipSkB7T1oBA5noO+duc/mY4YsRedS5MKHylAdw
+	LxX9CKiTHjl5C+KS/dmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r112G-005jfk-04;
-	Thu, 09 Nov 2023 09:09:12 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1r11AD-005kqs-0S;
+	Thu, 09 Nov 2023 09:17:25 +0000
+Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r112B-005jf9-1H;
-	Thu, 09 Nov 2023 09:09:09 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	id 1r11A7-005kor-2V;
+	Thu, 09 Nov 2023 09:17:22 +0000
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id B0F5A12000B;
+	Thu,  9 Nov 2023 12:17:11 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B0F5A12000B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1699521431;
+	bh=bbSo/m0vSYcjPbzBQwrGodEysAY5jSopZaaAaAbrRcw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=c0+ygr3yMenLOk+knqeJ0iLTt/zEwohclNi9i8s7p6MROGBuQoWjFzFxvaiFDz2CS
+	 40YDX6OUWtFTX3F/azVR/AfepUrMx9YAHf5OWnDmsYtjhsgxEGiH059xB12CT3vzME
+	 XKWtvhTjxx2RQJsU7x1HbSUiSiWYMo7Nkdup7aHhBm7wn56Ha0wz/c0lkWGi+bR0mT
+	 Ec2nVMTkiHD092DA/brJ6i7Ei21jR/HRF/8YMyPUze45Vs0wHdOl1RWJ3/+vcXdFMT
+	 Gbv7wxLupG9M0dUB/UxDyNk4QSOQoPGLQlI2a92LdAhndiuN6/kNu4AtICb+ncM8ZY
+	 Hk2D1Sl3f1vjw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id AD6A44FB;
-	Thu,  9 Nov 2023 10:09:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1699520944;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GtIXywlfVKm7bVDnpBEfWNYPf9HcwlumnONLTlTxMNo=;
-	b=mRnn3BQCc9cyNUotylRmWMZ3T2xJJyMPFDOa6mf1fAE66vLkp2CcIXzUEZgBiarA7Ww+nX
-	bn037hyNpZNFG7D92XGXYQA7yX7Y1rpN4RO3W7Gw27wMVA7SY3Y7QBUyzbD4kUHY7WDXRq
-	wxfzQ7laC7S/QcW+hHZ840aHnY6VQxvR+ez6fMbasjdeAYy7IiM8tP7s/WFhxEqbiu4r0w
-	gDnQNtMvvQKwlPbETtqRRzzpWDnR88WTHUyRc2RI50+mEHPdh0+9jPidbPNOdQcC/Zt7x2
-	G3ekYQlotK2g7XwpX6uxbmaZriB5Bv1TioHwPk2pXEmRKFxMjaNjjxvBHjFvBA==
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu,  9 Nov 2023 12:17:10 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Thu, 9 Nov 2023 12:17:09 +0300
+Message-ID: <98c5a6ef-3865-9254-0af7-2d041a64d368@salutedevices.com>
+Date: Thu, 9 Nov 2023 12:09:34 +0300
 MIME-Version: 1.0
-Date: Thu, 09 Nov 2023 10:09:04 +0100
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Fabio Estevam <festevam@denx.de>, Takahiro Kuwano
- <Takahiro.Kuwano@infineon.com>, pratyush@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- bacem.daassi@infineon.com, miquel.raynal@bootlin.com, richard@nod.at
-Subject: Re: [PATCH v2 2/6] mtd: spi-nor: add erase die (chip) capability
-In-Reply-To: <5c048899-f8ef-43bc-a488-daf4c157f34c@linaro.org>
-References: <20231101145853.524045-1-tudor.ambarus@linaro.org>
- <5c48f93a9dd9b2bdc1874dd4eebbf5bb@denx.de>
- <a7bee4f0-8591-411a-a105-0284df22c464@linaro.org>
- <632457ed6b022856496537bdf8a738ba@denx.de>
- <aa123456-7ec9-4bdc-a521-66c9582d5d45@linaro.org>
- <c26f6623-2d58-43ed-95bb-957870890a02@linaro.org>
- <6f1aa670-b3f7-4ea3-bc80-773a57e46c36@linaro.org>
- <968ba4c249926e986b02440ad0421e98@denx.de>
- <f2141a88-13d4-47b8-8382-5df8cc1bc42b@linaro.org>
- <cf0e4284f2e3193ddd57b715196ca202@denx.de>
- <25ca1a4c-683c-4b6d-938b-07323b211815@linaro.org>
- <c3f2b8a6-8b23-4a33-948e-62ff64db9a2f@linaro.org>
- <5872f7233bc0dc4669aa1324f3ae3cf0@denx.de>
- <95c16eb0-a785-4a8d-bb42-c5a09b034d0a@linaro.org>
- <e665266fc1565f9d346c95215df39f12@denx.de>
- <085ba0f9780b1f8b34bc9e1037fec5e7@denx.de>
- <b5c1d4d7-1583-4469-a604-dcf5bb3f96a4@linaro.org>
- <9004acceea77d2f06aaff0ca5f916cd7@denx.de>
- <a3ccb98e-b8bd-4ea3-98c4-df429602a7ef@linaro.org>
- <ea846bc8c214836c40c06fd875aee575@walle.cc>
- <5c048899-f8ef-43bc-a488-daf4c157f34c@linaro.org>
-Message-ID: <68510dcd915488fce08170aec52b2c01@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v1] mtd: rawnand: meson: handle OOB buffer according OOB
+ layout
+To: Viacheslav Bocharov <adeep@lexina.in>, Liang Yang
+	<liang.yang@amlogic.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20231109053953.3863664-1-avkrasnov@salutedevices.com>
+ <5a82e3b96c94b45821707eb5d392384e1a026c2e.camel@lexina.in>
+Content-Language: en-US
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <5a82e3b96c94b45821707eb5d392384e1a026c2e.camel@lexina.in>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181232 [Nov 09 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/09 07:10:00 #22435383
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231109_010908_227266_D0E7C466 
-X-CRM114-Status: GOOD (  22.16  )
+X-CRM114-CacheID: sfid-20231109_011720_168257_3E7A7699 
+X-CRM114-Status: GOOD (  22.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,105 +103,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gMjAyMy0xMS0wNiAxNToyMywgc2NocmllYiBUdWRvciBBbWJhcnVzOgo+IE9uIDExLzYvMjMg
-MDk6MzQsIE1pY2hhZWwgV2FsbGUgd3JvdGU6Cj4+IEFtIDIwMjMtMTEtMDMgMTQ6NDgsIHNjaHJp
-ZWIgVHVkb3IgQW1iYXJ1czoKPj4+IE9uIDAzLjExLjIwMjMgMTU6MzcsIEZhYmlvIEVzdGV2YW0g
-d3JvdGU6Cj4+Pj4gT24gMDMvMTEvMjAyMyAxMDoyNiwgVHVkb3IgQW1iYXJ1cyB3cm90ZToKPj4+
-PiAKPj4+Pj4gV2hpY2ggdmVyc2lvbiBvZiBtdGQtdXRpbHMgYXJlIHlvdSB1c2luZz8gSSBndWVz
-cyB0aGUgZmxhc2gtZXJhc2UKPj4+PiAKPj4+PiBtdGQtdXRpbHMgMi4xLjUKPj4+PiAKPj4+Pj4g
-dXRpbGl0eSBpcyB3cml0dGVuIGluIGEgYmFkIHdheS4gUGxlYXNlIHVzZSB0aGUgZm9sbG93aW5n
-IHdoaWxlIEkgCj4+Pj4+IGNoZWNrCj4+Pj4+IHdoYXQgZmxhc2hfZXJhc2UgaXMgZG9pbmc6Cj4+
-Pj4+IAo+Pj4+PiB0aW1lIG10ZF9kZWJ1ZyBlcmFzZSAvZGV2L210ZDAgMCAxMzQyMTc3MjgKPj4+
-PiAKPj4+PiAibXRkX2RlYnVnIGVyYXNlIiBnaXZlcyB0aGUgc2FtZSB0aW1lIGFzIHdlbGw6Cj4+
-Pj4gCj4+Pj4gcm9vdEBtY2RlMzAwMGE6fiMgdGltZSBtdGRfZGVidWcgZXJhc2UgL2Rldi9tdGQw
-IDAgMTM0MjE3NzI4Cj4+Pj4gWyA0MzIyLjExNDk2N10gc3BpLW5vciBzcGkwLjA6ICoqKioqIG5v
-ci0+cmVnX3Byb3RvID0gMHgwMDAxMDEwMQo+Pj4+IFsgNDMyMi4xMjA4NjFdIHNwaS1ub3Igc3Bp
-MC4wOiAqKioqKgo+Pj4+IFsgNDMyMi4xMjQyMTBdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5j
-bWQubmJ5dGVzID0gMHgwMQo+Pj4+IFsgNDMyMi4xMjk0NzhdIHNwaS1ub3Igc3BpMC4wOiAqKioq
-KiBvcC5jbWQuYnVzd2lkdGggPSAweDAxCj4+Pj4gWyA0MzIyLjEzNDkwM10gc3BpLW5vciBzcGkw
-LjA6ICoqKioqIG9wLmNtZC5vcGNvZGUgPSAweGM0Cj4+Pj4gWyA0MzIyLjE0MDE1NF0gc3BpLW5v
-ciBzcGkwLjA6ICoqKioqCj4+Pj4gWyA0MzIyLjE0MzQ5MV0gc3BpLW5vciBzcGkwLjA6ICoqKioq
-IG9wLmFkZHIubmJ5dGVzID0gMHgwNAo+Pj4+IFsgNDMyMi4xNDg4MzFdIHNwaS1ub3Igc3BpMC4w
-OiAqKioqKiBvcC5hZGRyLmJ1c3dpZHRoID0gMHgwMQo+Pj4+IFsgNDMyMi4xNTQzNDFdIHNwaS1u
-b3Igc3BpMC4wOiAqKioqKiBvcC5hZGRyLmJ1c3dpZHRoID0gMHgwCj4+Pj4gWyA0MzIyLjE1OTc2
-MV0gc3BpLW5vciBzcGkwLjA6ICoqKioqCj4+Pj4gWyA0MzIyLjE2MzA5OF0gc3BpLW5vciBzcGkw
-LjA6ICoqKioqIG9wLmR1bW15Lm5ieXRlcyA9IDB4MDAKPj4+PiBbIDQzMjIuMTY4NTI0XSBzcGkt
-bm9yIHNwaTAuMDogKioqKiogb3AuZHVtbXkuYnVzd2lkdGggPSAweDAwCj4+Pj4gWyA0MzIyLjE3
-NDExOF0gc3BpLW5vciBzcGkwLjA6ICoqKioqCj4+Pj4gWyA0MzIyLjE3NzQzOV0gc3BpLW5vciBz
-cGkwLjA6ICoqKioqIG9wLmRhdGEuYnVzd2lkdGggPSAweDAwCj4+Pj4gWyA0MzIyLjE4Mjk0OF0g
-c3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmRhdGEubmJ5dGVzID0gMAo+Pj4+IFsgNDQzOS45NjYw
-NjBdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBub3ItPnJlZ19wcm90byA9IDB4MDAwMTAxMDEKPj4+
-PiBbIDQ0MzkuOTcxOTIwXSBzcGktbm9yIHNwaTAuMDogKioqKioKPj4+PiBbIDQ0MzkuOTc1MjUy
-XSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuY21kLm5ieXRlcyA9IDB4MDEKPj4+PiBbIDQ0Mzku
-OTgwNTExXSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuY21kLmJ1c3dpZHRoID0gMHgwMQo+Pj4+
-IFsgNDQzOS45ODU5MjhdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5jbWQub3Bjb2RlID0gMHhj
-NAo+Pj4+IFsgNDQzOS45OTExNzRdIHNwaS1ub3Igc3BpMC4wOiAqKioqKgo+Pj4+IFsgNDQzOS45
-OTQ1MDRdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5hZGRyLm5ieXRlcyA9IDB4MDQKPj4+PiBb
-IDQ0MzkuOTk5ODM0XSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuYWRkci5idXN3aWR0aCA9IDB4
-MDEKPj4+PiBbIDQ0NDAuMDA1MzM1XSBzcGktbm9yIHNwaTAuMDogKioqKiogb3AuYWRkci5idXN3
-aWR0aCA9IDB4NDAwMDAwMAo+Pj4+IFsgNDQ0MC4wMTEyNzJdIHNwaS1ub3Igc3BpMC4wOiAqKioq
-Kgo+Pj4+IFsgNDQ0MC4wMTQ2MDRdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5kdW1teS5uYnl0
-ZXMgPSAweDAwCj4+Pj4gWyA0NDQwLjAyMDAxOF0gc3BpLW5vciBzcGkwLjA6ICoqKioqIG9wLmR1
-bW15LmJ1c3dpZHRoID0gMHgwMAo+Pj4+IFsgNDQ0MC4wMjU2MDZdIHNwaS1ub3Igc3BpMC4wOiAq
-KioqKgo+Pj4+IFsgNDQ0MC4wMjg5MzddIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBvcC5kYXRhLmJ1
-c3dpZHRoID0gMHgwMAo+Pj4+IFsgNDQ0MC4wMzQ0MzhdIHNwaS1ub3Igc3BpMC4wOiAqKioqKiBv
-cC5kYXRhLm5ieXRlcyA9IDAKPj4+PiBFcmFzZWQgMTM0MjE3NzI4IGJ5dGVzIGZyb20gYWRkcmVz
-cyAweDAwMDAwMDAwIGluIGZsYXNoCj4+Pj4gCj4+Pj4gcmVhbMKgwqDCoCAzbTU3LjM4NHMKPj4+
-PiB1c2VywqDCoMKgIDBtMC4wMDVzCj4+Pj4gc3lzwqDCoMKgIDNtMzUuMjExcwo+Pj4+IAo+Pj4g
-Cj4+PiBZZXAsIGl0J3Mgc3RyYW5nZSwgd2UnbGwgaGF2ZSB0byBjaGVjayB3aGF0J3MgaGFwcGVu
-aW5nLiBJIGZvdW5kIG15Cj4+PiBuMjVxMDAgZmxhc2gsIG9uIG15IHNpZGUgYWxsIGl0cyA0IGRp
-Y2UgYXJlIGVyYXNlZCBpbiA1IHNlYy7CoCBTRkRQCj4+PiBkZWZpbmVzIGhvdyBsb25nIHRoZSBl
-cmFzZSBkaWUgc2hvdWxkIHRha2UsIHNlZSBCRlBUIGR3b3JkIDExLiBZb3UgCj4+PiBjYW4KPj4+
-IHN0YXJ0IHdpdGggdGhhdC4KPj4gCj4+IEhhZCB0aGUgZmxhc2ggc29tZSBjb250ZW50cyBvciB3
-YXMgaXQgYWxsLWZmPyBNYXliZSB0aGUgTWljcm9uIGZsYXNoIAo+PiB3aWxsCj4+IGNoZWNrIGlm
-IGFsbCBieXRlcyBhcmUgb25lIGFuZCB3aWxsIHNraXAgdGhlIGVyYXNlLgo+IAo+IGl0IGhhZCBz
-b21lIGNvbnRlbnRzLCBidXQgbm90IGRpZmZlcmVudCB0aGFuIDB4ZmYKPj4gCj4+IERpZS9DaGlw
-IGVyYXNlcyB3aWxsIHRha2UgbXVjaCBsb25nZXIgbW9zdCBvZiB0aGUgdGltZSBhbmQgYXJlIAo+
-PiBjb21wYXJhYmxlCj4+IHRvIGluZGl2aWR1YWwgc2VjdG9yIGVyYXNlcyAoYXMgRmFiaW8gYWxz
-byBmb3VuZCBvdXQpLiBZb3UnbGwgcHJvYmFibHkKPj4ganVzdCBzYXZlIHRoZSBvdmVyaGVhZCBv
-ZiB0aGUgaW5kaXZ1ZGFsIGNvbW1hbmRzLgo+IAo+IFRoZXJlIGlzIGEgc3BlZWQgYmVuZWZpdCBp
-biB1c2luZyBkaWUgZXJhc2UgaW5zdGVhZCBvZiBpbmRpdmlkdWFsIAo+IHNlY3Rvcgo+IGVyYXNl
-cy4KPj4gCj4+IEkndmUgbG9va2VkIGF0IHRoZSBOMjVRMDBBQSBkYXRhc2hlZXQgYW5kIHRoZSBl
-cmFzZSB0aW1lIHRoZXJlIGlzIDE1M3MKPj4gKHR5cCkgZm9yICpvbmUqIGRpZS4KPj4gCj4gCj4g
-eW91IG1lYW4gbXQyNXEuIFRhYmxlIDQ5IGluCj4gaHR0cHM6Ly93d3cubWljcm9uLmNvbS8tL21l
-ZGlhL2NsaWVudC9nbG9iYWwvZG9jdW1lbnRzL3Byb2R1Y3RzL2RhdGEtc2hlZXQvbm9yLWZsYXNo
-L3NlcmlhbC1ub3IvbXQyNXEvZGllLXJldi1iL210MjVxX3Fsa3RfdV8wMWdfYmJiXzAucGRmCj4g
-Cj4gCj4gRWFjaCBkaWUgaGFzIDY0TUIuIEEgZGllIGlzIGNvbXBvc2VkIG9mIGVpdGhlciAxNjM4
-NCA0S0Igc2VjdG9ycyBvciAKPiAyMDQ4Cj4gc2VjdG9ycyBvZiAzMktCLgo+IAo+IDRLQiB0eXBp
-Y2FsIGVyYXNlIHRpbWUgaXMgMC4wNXMsIHRodXMgYSBkaWUgd2lsbCBiZSBlcmFzZWQgaW4gODE5
-LjJzLgo+IDMyS0IgdHlwaWNhbCBlcmFzZSB0aW1lIGlzIDAuMXMsIHRodXMgYSBkaWUgd2lsbCBi
-ZSBlcmFzZWQgaW4gMjA0LjhzLgo+IGRpZSBlcmFzZSB0eXBpY2FsIGVyYXNlIHRpbWUgaXMgMTUz
-cy4KPiAKPiA0SyBtYXggZXJhc2UgdGltZSBpcyAwLjRzLCB0aHVzIGEgZGllIHdpbGwgYmUgZXJh
-c2VkIGluIDY1NTMuNnMKPiAzMktCIG1heCBlcmFzZSB0aW1lIGlzIDEsIHRodXMgYSBkaWUgd2ls
-bCBiZSBlcmFzZWQgaW4gMjA0OHMuCj4gZGllIGVyYXNlIG1heCB0aW1lIGlzIDQ2MHMuCj4gCj4g
-c28geW91IG1pZ2h0IHNheSB0aGF0IDMyS0IgdHlwaWNhbCBlcmFzZSB0aW1lIG1pZ2h0IGJlIGNv
-bXBhcmFibGUgdG8gYQo+IGRpZSBlcmFzZSBjb21tYW5kIHdoZW4gZXJhc2luZyBhbiBlbnRpcmUg
-ZGllIHdpdGggMzJLQiBlcmFzZXMsIGJ1dCBldmVuCj4gc28sIGl0IHNob3VsZCBiZSBwcmVmZXJh
-YmxlIHRvIHVzZSBkaWUgZXJhc2UgY21kLiBJbnN0ZWFkIG9mIHNlbmRpbmcgYQo+IHdyaXRlIGVu
-YWJsZSBmb2xsb3dlZCBieSBhIHNlY3RvciBlcmFzZSBjb21tYW5kIGZvciBlYWNoIHNlY3Rvciwg
-eW91Cj4gY291bGQgaW5zdGVhZCB1c2UgYSBzaW5nbGUgd3JpdGUgZW5hYmxlIGZvbGxvd2VkIGJ5
-IGEgc2luZ2xlIGRpZSBlcmFzZQo+IGNvbW1hbmQuCgpJIHdhcyBqdXN0IGltcGx5aW5nIHRoYXQg
-eW91ciA1cyBjaGlwIGVyYXNlIHRpbWUgc291bmRlZCB1bmxpa2VseS4KCkknbSBhbHNvIHN0aWxs
-IHVuZGVjaWRlZCBvbiB0aGUgdXNlIG9mIGEgY2hpcC9kaWUgZXJhc2UgY29tbWFuZC4gSG93Cm9m
-dGVuIGlzIGEgZmxhc2ggZXJhc2VkIGVudGlyZWx5PyBJIGRvbid0IHRoaW5rIHZlcnkgb2Z0ZW4s
-IG1heWJlIGR1cmluZwpib2FyZCBtYW51ZmFjdHVyaW5nLiBBbmQgaXMgdGhhdCB3b3J0aCB0aGUg
-KG1haW50ZW5hbmNlKSBlZmZvcnRzPwoKQW55d2F5LCBJIHdvbid0IHN0YW5kIGluIHRoZSB3YXkg
-aWYgeW91IGluc2lzdC4KCk5vYm9keSBjb21tZW50ZWQgb24gdGhhdCBzbyBmYXI6IFRoZSBqZWRl
-YyBzcGVjIGRvZXNuJ3Qgc2F5IGFueXRoaW5nCmFib3V0IHRoZSBjaGlwL2RpZSBlcmFzZSBjb21t
-YW5kLCByaWdodD8gVGhlcmUgaXMgYSBmbGFnIHdoaWNoCmluZGljYXRlcyB3ZXRoZXIgdGhlIGNo
-aXAgaGFzIG9uZSAoaW4gOGQ4ZDhkIG1vZGUpIGFuZCB0aGVyZSBpcyBhIGZpZWxkCmZvciBpdHMg
-ZXJhc2UgdGltZSwgYnV0IG5vdCAqd2hhdCogdGhlIGFjdHVhbCBjb21tYW5kIGlzLiBTdWNoIGEg
-cGl0eSwKZXNwLiBiZWNhdXNlIHRoZSBkaWUgZXJhc2Ugbm93IGRpZmZlcnMgYW1vbmcgdmVuZG9y
-cy4uIHdoZXJlYXMgdGhlIGNoaXAKZXJhc2UgY29tbWFuZCBzZWVtcyB0byBiZSBjb21tb24gYW1v
-bmcgdmVuZG9ycy4KCkJ0dy4gaWYgd2Ugd2FudCB0byBzcGVlZCB0aGUgZXJhc2UgdXAgd2Ugc2hv
-dWxkIG1ha2UgdXNlIG9mIHRoZSBlcmFzZQpyZWdpb25zLiBBRkFJSywgYXQgdGhlIG1vbWVudCB3
-ZSBkbyAoc2xvdykgNGsgZXJhc2VzIG1vc3Qgb2YgdGhlIHRpbWUKYmVjYXVzZSBkaXN0cm9zIGhh
-dmUgdGhpcyBrZXJuZWwgb3B0aW9uIGVuYWJsZWQuCgotbWljaGFlbAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hello, thanks for review!
+
+On 09.11.2023 11:06, Viacheslav Bocharov wrote:
+> Hi!
+> 
+> On Thu, 2023-11-09 at 08:39 +0300, Arseniy Krasnov wrote:
+>> In case of MTD_OPS_AUTO_OOB mode, MTD/NAND layer fills/reads OOB buffer
+>> according current OOB layout so we need to follow it in the driver.
+>>
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> ---
+>>  drivers/mtd/nand/raw/meson_nand.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+>> index 561d46d860b7..0d4d358152d7 100644
+>> --- a/drivers/mtd/nand/raw/meson_nand.c
+>> +++ b/drivers/mtd/nand/raw/meson_nand.c
+>> @@ -510,7 +510,7 @@ static void meson_nfc_set_user_byte(struct nand_chip *nand, u8 *oob_buf)
+>>  	__le64 *info;
+>>  	int i, count;
+>>  
+>> -	for (i = 0, count = 0; i < nand->ecc.steps; i++, count += 2) {
+>> +	for (i = 0, count = 0; i < nand->ecc.steps; i++, count += (2 + nand->ecc.bytes)) {
+>>  		info = &meson_chip->info_buf[i];
+>>  		*info |= oob_buf[count];
+>>  		*info |= oob_buf[count + 1] << 8;
+> Seems something wrong with your logic here.
+> I think this code should most likely look like this:
+> 
+> for (i = 0, count = 0; i < nand->ecc.steps; i++, count += nand->ecc.bytes) {
+>     info = &meson_chip->info_buf[i];
+>     *info |= oob_buf[count];
+>     if (nand->ecc.bytes > 1)
+>       *info |= oob_buf[count + 1] << 8;
+> }
+
+For 64 bytes OOB and 512 bytes ECC this driver reports free areas as:
+
+AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+AA AA BB BB BB BB BB BB BB BB BB BB BB BB BB BB
+
+where AA is free byte(user byte), BB - ECC codes. So to access user bytes
+we need bytes 0,1,16,17,32,33,48,49. nand->ecc.bytes == 14, so 'count' is
+increased at 16 every iteration, so i guess this is correct.
+
+WDYT?
+
+Thanks, Arseniy
+
+> 
+> 
+>> @@ -523,7 +523,7 @@ static void meson_nfc_get_user_byte(struct nand_chip *nand, u8 *oob_buf)
+>>  	__le64 *info;
+>>  	int i, count;
+>>  
+>> -	for (i = 0, count = 0; i < nand->ecc.steps; i++, count += 2) {
+>> +	for (i = 0, count = 0; i < nand->ecc.steps; i++, count += (2 + nand->ecc.bytes)) {
+>>  		info = &meson_chip->info_buf[i];
+>>  		oob_buf[count] = *info;
+>>  		oob_buf[count + 1] = *info >> 8;
+> And there:
+> 
+> for (i = 0, count = 0; i < nand->ecc.steps; i++, count += nand->ecc.bytes) {
+>     info = &meson_chip->info_buf[i];
+>     oob_buf[count] = *info;
+>     if (nand->ecc.bytes > 1)
+>         oob_buf[count + 1] = *info >> 8;
+> }
+> 
+> 
+> This is more similar to the behavior of similar functions in the proprietary U-Boot.
+> 
+> --
+> Viacheslav Bocharov
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
