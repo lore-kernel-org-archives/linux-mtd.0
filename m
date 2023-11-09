@@ -4,114 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07FA7C4167D
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 12:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05980C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 12:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/yApRfeN3VhSmz3Vh6Jw7d7shWObTtav6fxfjECojZ0=; b=j4C0b6pUN5ziHf
-	cGQag3BclQNWzhZMSgFZ5limznKLQ/v3ZXkrrxu0n/Aoq+mQ5hLwBexQU/NWuJvOFk4dGMWmNQdW6
-	OBPkl3gFR1fuIERfam2ZPblLL9cFf6dr8A8pVlgr7iJDMvs8ovcoN0M4vJjdh9QSNVKVbY74h0xwz
-	QLRxYmhBSzRgqHYTmjHalQHkAEVv89bLx0Zmzjb3wLy0ah8itOPzFE+6j/7gc96xk1Led+nlGIryf
-	spXTe4kNkhJmHBLDb35EwMMpXhyET3PyzRnnPTaf+hfNZ0tor8XAbsYeV6l00swY3PD5+bDgQyvBp
-	KlKCbd/ZL3uYwvbHY8dg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=laKK3GWgUcXBEQTU0Xu5p1TleKCChM3AOjxvI8J1Lyo=; b=JDUg75fDbyQYPPJTpzlBPUGqUU
+	rGEvzWpLRgIM+bxAawYQK/w6lcHfHloWLMw+1tQ5AgMizRFutSEni84YVRrI62skAYGG+7qW5IChk
+	GFhyczkJldUBrkQcA0oC5UCFi4zb//7S9UhdD7d1NtsdRyRyre42ePHsLCb/nZENfqvFL5MBWqvV2
+	tk54gzWxwRFs6/oq9NrUYaqxPewuyKr1jQtsFjy1yK347aoqwwXVuD6v9xbvEx3XiuQWanRu5gz6N
+	mFf9SGH8GX+UW6HZcg39TcK0xY4iva5O7Ggs2/MQhOCe+41k1i88Mp3LsOZrYDpuNxjfNO71hRTSh
+	svkb8DtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r144R-006J53-19;
-	Thu, 09 Nov 2023 12:23:39 +0000
-Received: from gandalf.ozlabs.org ([150.107.74.76])
+	id 1r14L7-006Kpx-09;
+	Thu, 09 Nov 2023 12:40:53 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r144M-006J33-0z;
-	Thu, 09 Nov 2023 12:23:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1699532610;
-	bh=R2IIgl4ZRFgwipCQ4ZBWquxZCbtnLxeQT8yMzVcSClk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=JOE+Y96nQb0g0fD7YjgIsTtXOrsQ0zdJ9Xit6bae239vdgrtE8Xe20tGEjOEwp6b5
-	 bBGasTtN2qhciM6Vxj5gO1APMLHXfhhNabxTTxDpDoDz6AXcIv0hdu9+rRXuZNmSj3
-	 PriUuPEOny5OCaNxYhuQeMYyhW0D7Uuip11fA5kii4KmxM9zaRV2MnEviCDpMHy6zq
-	 fUfZ9elCA6bj44/a3P1CQqNaCruTVzrNA2B2UxDQEd/EBpaSM5DHluHgXy74J1JLYp
-	 rlgnpTfcT5fdD0htnPYkbVFENF7DqxPzxI5N3NUPYBgm/lUlPDoiySV3dJVovZ01Br
-	 M0UtCQNJ+RaEQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	id 1r14L4-006KpR-1y
+	for linux-mtd@lists.infradead.org;
+	Thu, 09 Nov 2023 12:40:52 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4SR1MD6jtmz4wd2;
-	Thu,  9 Nov 2023 23:23:20 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>, Arnd Bergmann
- <arnd@arndb.de>, Arnd
- Bergmann <arnd@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro
- Yamada <masahiroy@kernel.org>, "linux-kbuild@vger.kernel.org"
- <linux-kbuild@vger.kernel.org>
-Cc: Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, guoren <guoren@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Huacai Chen
- <chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Michal Simek
- <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh
- Nguyen <dinguyen@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Geoff
- Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>, Heiko
- Carstens <hca@linux.ibm.com>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, "David S . Miller" <davem@davemloft.net>,
- Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo
- Molnar <mingo@redhat.com>, "x86@kernel.org" <x86@kernel.org>, Helge Deller
- <deller@gmx.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse
- <dwmw2@infradead.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil
- S
- Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook
- <keescook@chromium.org>, Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Juri
- Lelli <juri.lelli@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Nathan Chancellor <nathan@kernel.org>, Nick
- Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, "linux-alpha@vger.kernel.org"
- <linux-alpha@vger.kernel.org>, "linux-snps-arc@lists.infradead.org"
- <linux-snps-arc@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
- "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Netdev
- <netdev@vger.kernel.org>, "linux-parisc@vger.kernel.org"
- <linux-parisc@vger.kernel.org>, "linux-usb@vger.kernel.org"
- <linux-usb@vger.kernel.org>, "linux-fbdev@vger.kernel.org"
- <linux-fbdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
- <dri-devel@lists.freedesktop.org>, "linux-bcachefs@vger.kernel.org"
- <linux-bcachefs@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
-In-Reply-To: <886df4e4-9fc2-ca52-e7e9-53688e6e821a@csgroup.eu>
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-16-arnd@kernel.org>
- <ecedb0f1-9543-35c6-18bd-723e6bf21173@csgroup.eu>
- <d94de5b8-db92-4055-9484-f2666973c02a@app.fastmail.com>
- <87o7g3qlf5.fsf@mail.lhotse>
- <886df4e4-9fc2-ca52-e7e9-53688e6e821a@csgroup.eu>
-Date: Thu, 09 Nov 2023 23:23:20 +1100
-Message-ID: <87il6bqfnr.fsf@mail.lhotse>
+	by mail.3ffe.de (Postfix) with ESMTPSA id D094DA4F;
+	Thu,  9 Nov 2023 13:40:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1699533647;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=us8JU723OGPkM9WyUVcLpBm59Vu0CUzHWU3voNw+RjQ=;
+	b=ShN06e2/jEw6J4tVMT73HJEyfJJOgt0u2MyIF+HUvpqqascR3rowWUl6d57kZ6VrqDc7bh
+	QFHeY4VDOy9iAdNRCyV1Gbep1nqP9x+H+o34lVrEwgGRyNK4x6ArOR89c6VBAuCdo1QMNF
+	Sq1wFFObdt5YCfSV9sz6FslLzkUSNj5dbCVJnx/SA+MCteGVpDTSqfxsUX+HqQmA6YeJV9
+	kcV5iT22JeWoGxP1iHjPlqhCdaCYBCQkIsjTHopRd51svDVrC2qwY8a3Ktr+ovlMMTCu37
+	PgeMO80Mb4z3fJ4sISc2Ama1w7XQvjoiRfZ5BCHDH1EzByOj2d5DF53xKAbIyg==
 MIME-Version: 1.0
+Date: Thu, 09 Nov 2023 13:40:47 +0100
+From: Michael Walle <michael@walle.cc>
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ "biju.das.au" <biju.das.au@gmail.com>, linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH RFC 0/4] Add set_iofv() callback
+In-Reply-To: <TYVPR01MB11279575676708170F3B3270D86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
+References: <20231108171149.258656-1-biju.das.jz@bp.renesas.com>
+ <877590a5e3f8c32ec0a032385049a563@walle.cc>
+ <TYVPR01MB11279E535835F2998335F770A86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
+ <b9831be88008b9f9960d1d79cd0e5a3a@walle.cc>
+ <TYVPR01MB11279575676708170F3B3270D86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
+Message-ID: <f88759f98e865e68da5481fcbb969c47@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231109_042334_629165_AB6EA76B 
-X-CRM114-Status: GOOD (  17.21  )
+X-CRM114-CacheID: sfid-20231109_044050_797983_106C2702 
+X-CRM114-Status: GOOD (  42.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,55 +78,139 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Q2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cml0ZXM6Cj4g
-TGUgMDkvMTEvMjAyMyDDoCAxMToxOCwgTWljaGFlbCBFbGxlcm1hbiBhIMOpY3JpdMKgOgo+PiAi
-QXJuZCBCZXJnbWFubiIgPGFybmRAYXJuZGIuZGU+IHdyaXRlczoKPj4+IE9uIFdlZCwgTm92IDgs
-IDIwMjMsIGF0IDE5OjMxLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOgo+Pj4+IExlIDA4LzExLzIw
-MjMgw6AgMTM6NTgsIEFybmQgQmVyZ21hbm4gYSDDqWNyaXTCoDoKPj4+Cj4+Pj4gcG93ZXJwYyBo
-YXMgZnVuY3Rpb25zIGRvaW5nIG1vcmUgb3IgbGVzcyB0aGUgc2FtZSwgdGhleSBhcmUgY2FsbGVk
-Cj4+Pj4gX19jX2tlcm5lbF9jbG9ja19nZXR0aW1lKCkgYW5kIGFsaWtlIHdpdGggdGhlaXIgcHJv
-dG90eXBlcyBzaXRpbmcgaW4KPj4+PiBhcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vdmRzby9nZXR0
-aW1lb2ZkYXkuaAo+Pj4+Cj4+Pj4gU2hvdWxkIHRob3NlIHByb3RvdHlwZXMgYmUgbW92ZWQgdG8g
-aW5jbHVkZS92ZHNvL2dldHRpbWUuaCB0b28gYW5kCj4+Pj4gZXZlbnR1YWxseSByZW5hbWVkLCBv
-ciBhcmUgdGhleSBjb25zaWRlcmVkIHRvbyBwb3dlcnBjIHNwZWNpZmljID8KPj4+Cj4+PiBJIGRv
-bid0IGFjdHVhbGx5IGtub3csIG15IGluaXRpYWwgaW50ZXJwcmV0YXRpb24gd2FzIHRoYXQKPj4+
-IHRoZXNlIGZ1bmN0aW9uIG5hbWVzIGFyZSBwYXJ0IG9mIHRoZSB1c2VyIEFCSSBmb3IgdGhlIHZk
-c28sCj4+PiBidXQgSSBuZXZlciBsb29rZWQgY2xvc2VseSBlbm91Z2ggYXQgaG93IHZkc28gd29y
-a3MgdG8KPj4+IGJlIHN1cmUgd2hhdCB0aGUgYWN0dWFsIEFCSSBpcy4KPj4gCj4+IEFGQUlLIHRo
-ZSBBQkkgaXMganVzdCB0aGUgc3ltYm9scyB3ZSBleHBvcnQsIGFzIGRlZmluZWQgaW4gdGhlIGxp
-bmtlcgo+PiBzY3JpcHQ6Cj4+IAo+PiAvKgo+PiAgICogVGhpcyBjb250cm9scyB3aGF0IHN5bWJv
-bHMgd2UgZXhwb3J0IGZyb20gdGhlIERTTy4KPj4gICAqLwo+PiBWRVJTSU9OCj4+IHsKPj4gCVZE
-U09fVkVSU0lPTl9TVFJJTkcgewo+PiAJZ2xvYmFsOgo+PiAJCV9fa2VybmVsX2dldF9zeXNjYWxs
-X21hcDsKPj4gCQlfX2tlcm5lbF9nZXR0aW1lb2ZkYXk7Cj4+IAkJX19rZXJuZWxfY2xvY2tfZ2V0
-dGltZTsKPj4gCQlfX2tlcm5lbF9jbG9ja19nZXRyZXM7Cj4+IAkJX19rZXJuZWxfZ2V0X3RiZnJl
-cTsKPj4gCQlfX2tlcm5lbF9zeW5jX2RpY2FjaGU7Cj4+IAkJX19rZXJuZWxfc2lndHJhbXBfcnQ2
-NDsKPj4gCQlfX2tlcm5lbF9nZXRjcHU7Cj4+IAkJX19rZXJuZWxfdGltZTsKPj4gCj4+IGh0dHBz
-Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
-LmdpdC90cmVlL2FyY2gvcG93ZXJwYy9rZXJuZWwvdmRzby92ZHNvNjQubGRzLlM/aD12Ni42JiNu
-MTE3Cj4+IAo+Pj4gSWYgX19jX2tlcm5lbF9jbG9ja19nZXR0aW1lKCkgZXRjIGFyZSBub3QgcGFy
-dCBvZiB0aGUgdXNlci1mYWNpbmcKPj4+IEFCSSwgSSB0aGluayByZW5hbWluZyB0aGVtIGZvciBj
-b25zaXN0ZW5jeSB3aXRoIHRoZSBvdGhlcgo+Pj4gYXJjaGl0ZWN0dXJlcyB3b3VsZCBiZSBiZXN0
-Lgo+PiAKPj4gVGhlIF9fYyBzeW1ib2xzIGFyZSBub3QgcGFydCBvZiB0aGUgQUJJLCBzbyB3ZSBj
-b3VsZCByZW5hbWUgdGhlbS4KPj4gCj4+IEF0IHRoZSBtb21lbnQgdGhvdWdoIHRoZXkgZG9uJ3Qg
-aGF2ZSB0aGUgc2FtZSBwcm90b3R5cGUgYXMgdGhlIGdlbmVyaWMKPj4gdmVyc2lvbnMsIGJlY2F1
-c2Ugd2UgZmluZCB0aGUgVkRTTyBkYXRhIGluIGFzbSBhbmQgcGFzcyBpdCB0byB0aGUgQwo+PiBm
-dW5jdGlvbnMsIGVnOgo+PiAKPj4gaW50IF9fY19rZXJuZWxfZ2V0dGltZW9mZGF5KHN0cnVjdCBf
-X2tlcm5lbF9vbGRfdGltZXZhbCAqdHYsIHN0cnVjdCB0aW1lem9uZSAqdHosCj4+IAkJCSAgICBj
-b25zdCBzdHJ1Y3QgdmRzb19kYXRhICp2ZCk7Cj4+IAo+PiBJIHRoaW5rIHdlIGNhbiByZXdvcmsg
-dGhhdCB0aG91Z2gsIGJ5IGltcGxlbWVudGluZwo+PiBfX2FyY2hfZ2V0X3Zkc29fZGF0YSgpIGFu
-ZCBnZXR0aW5nIHRoZSB2ZHNvX2RhdGEgaW4gQy4gVGhlbiB3ZSdkIGJlIGFibGUKPj4gdG8gc2hh
-cmUgdGhlIHByb3RvdHlwZXMuCj4KPiBJIHRoaW5rIGl0IHdvdWxkIG5vdCBhIGJlZW4gZ29vZCBp
-ZGVhLCBpdCB3b3VsZCBiZSBsZXNzIHBlcmZvcm1hbnQsIGZvciAKPiBleHBsYW5hdGlvbiBzZWUg
-Y29tbWl0IAo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvP2lkPWU4NzZmMGI2OWRjOTkzZTg2Y2E3Nzk1ZTYz
-ZTk4Mzg1YWE5YTdlZjMKCkFoIHRoYW5rcy4gSSB3YXMgd29uZGVyaW5nIHdoeSB5b3UgaGFkIGRv
-bmUgaXQgaW4gYXNtLgoKSXQncyBhIHBpdHkgYnV0IHlvdSdyZSByaWdodCB0aGF0J3MgcHJvYmFi
-bHkgYSBtZWFzdXJhYmxlIHBlcmZvcm1hbmNlCmhpdCBmb3Igc29tZSBvZiB0aG9zZSBjYWxscy4K
-CmNoZWVycwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Biju,
+
+>> >> > As per section 8.14 on the AT25QL128A hardware manual[1],
+>> >> > IO0..IO3 must be set to Hi-Z state for this flash for fast read
+>> >> > quad IO.
+>> >> > Snippet from HW manual section 8.14:
+>> >> > The upper nibble of the Mode(M7-4) controls the length of the next
+>> >> > FAST Read Quad IO instruction through the inclusion or exclusion of
+>> >> > the first byte instruction code. The lower nibble bits of the
+>> >> > Mode(M3-0) are don't care. However, the IO pins must be
+>> >> > high-impedance before the falling edge of the first data out clock.
+>> >>
+>> >> I'm still not sure what you are trying to fix here. For any quad I/O
+>> >> mode, the pins of the controller must be in hiZ during the data phase
+>> >> on a read operation. Otherwise the flash couldn't send any data,
+>> >> there would be two drivers for one signal. So being in hiZ state
+>> >> should be the default and shouldn't depend on any connected flash.
+>> >
+>> > OK, I will make hiZ state as the default.
+>> 
+>> I still think this iofv setting is the wrong approach, though. Do you 
+>> have
+>> a link to the spi controller datasheet where I can look up what the
+>> controller is doing.
+> 
+> Please find the below link.
+> 
+> https://www.renesas.com/eu/en/products/microcontrollers-microprocessors/rz-mpus/rzg2l-general-purpose-microprocessors-dual-core-arm-cortex-a55-12-ghz-cpus-and-single-core-arm-cortex-m33#overview
+
+Thanks.
+
+>> This seem to be a general problem with what we are sending during the
+>> command phase and I'm curious why there wasn't more reports on non 
+>> working
+>> micron flashes for now.
+> 
+> 1-bit mode, we don't have any issue. Once we switch to 4-bit mode we 
+> have this
+> issue with micron MT25QU512A flash and we need to set the correct IO 
+> fixed values.
+> 
+> Maybe others are testing with 1-bit mode and not testing the full 
+> capability of the flash.
+> 
+>> 
+>> >> You've mentioned the micron flash which needs a '1' on its hold/reset
+>> >> pin.
+>> >> I would have expected a fixup for this flash, not for the flash which
+>> >> behaves normal.
+>> >
+>> > I will drop fixup for Renesas AT25QL128A  and will add fixup for
+>> > micron flash.
+>> 
+>> btw, what will happen if you always use the {3,3,3,1} setting? I guess 
+>> the
+>> atmel flash will also work? because HiZ should mean "don't care"
+>> from
+>> the point of view of the flash.
+> 
+> With atmel flash if use {3,3,3,1} setting, I get below error.
+> 
+> root@smarc-rzg2ul:/cip-test-scripts# ./rpcif_t_001.sh
+> [  144.078854] spi-nor spi1.0: spi-nor-generic (16384 Kbytes)
+> [  144.120468] 2 fixed-partitions partitions found on MTD device spi1.0
+> [  144.126982] Creating 2 MTD partitions on "spi1.0":
+> [  144.133004] 0x000000000000-0x000000200000 : "boot"
+> [  144.141879] 0x000000200000-0x000001000000 : "user"
+> [  358.476963] jffs2: notice: (230) read_dnode: node CRC failed on 
+> dnode at 0xdfe084: read 0x336ebbbc, calculated 0x961503c7
+> [  358.488509] jffs2: notice: (230) read_dnode: node CRC failed on 
+> dnode at 0xdfd118: read 0xff6a5df6, calculated 0x786a5df6
+> [  358.502963] jffs2: notice: (230) read_dnode: node CRC failed on 
+> dnode at 0xdfa2d4: read 0x1fc99948, calculated 0xbab22133
+> [  358.515357] jffs2: notice: (230) read_dnode: node CRC failed on 
+> dnode at 0xdf9368: read 0xffd184a7, calculated 0x3d184a7
+> [  358.528175] jffs2: notice: (230) read_dnode: node CRC failed on 
+> dnode at 0xdf6524: read 0x5deb2462, calculated 0xf8909c19
+
+Strange. Can't make any sense of this at the moment.
+
+>> > With iofv settings {3,3,3,3} (all pins on Hi-Z state) with Micron
+>> > flash
+>> > ----------------------------------------------------------------------
+>> > -
+>> >
+>> > ./rpcif_t_001.sh
+>> > [   37.950986] spi-nor spi1.0: unrecognized JEDEC id bytes: ff ff ff ff
+>> > ff ff
+>> 
+>> As mentioned earlier, I suspect that HiZ on IO3 means low and the 
+>> flash
+>> will be in reset. Could you perhaps verify that by probing IO3?
+>> I know that other flashes will *either* support RESET#/HOLD# or quad 
+>> mode.
+>> Thus I was saying, that we probably wont support that and the easiest 
+>> fix
+>> should be to disable this behavior for the atmel flash (there was nv
+>> setting).
+> 
+> The fix up is invoked only for quad mode, I believe it is safe to add 
+> fixup for micron flash
+> As it is the one deviating from normal according to you, rather than 
+> adding fixup
+> for generic flash like ATMEL flash(Now Renesas flash)
+
+Could you please try setting bit 4 in the Nonvolatile Configuration
+Register (Table 7) and see if the problem goes away?
+
+Also could you have a look at the schematics, does the IO3/RESET#
+have a pull-up? If not, who is in control of driving the correct
+value here? If it has a pull-up, I'm puzzled why you need any
+other setting than HiZ.
+
+The correct fix would be to the information about the missing
+IO state in the "struct spi_mem_op". That is, what should be the
+default values of all the IO lines which are unused. For example
+if we have a 1s1s4s transaction, what should be the state of IO0,
+IO2 and IO3 during the command and address phase. If we have a
+1s2s2s, what should be the state of IO0 during the command phase
+etc.
+
+That can then be used within your driver to set the corresponding
+IOFV values (for each spi-mem op).
+
+But I'm not sure if other SPI controllers will support that, though.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
