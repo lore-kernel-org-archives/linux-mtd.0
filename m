@@ -4,69 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05980C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 12:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FCFFC4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Nov 2023 14:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=laKK3GWgUcXBEQTU0Xu5p1TleKCChM3AOjxvI8J1Lyo=; b=JDUg75fDbyQYPPJTpzlBPUGqUU
-	rGEvzWpLRgIM+bxAawYQK/w6lcHfHloWLMw+1tQ5AgMizRFutSEni84YVRrI62skAYGG+7qW5IChk
-	GFhyczkJldUBrkQcA0oC5UCFi4zb//7S9UhdD7d1NtsdRyRyre42ePHsLCb/nZENfqvFL5MBWqvV2
-	tk54gzWxwRFs6/oq9NrUYaqxPewuyKr1jQtsFjy1yK347aoqwwXVuD6v9xbvEx3XiuQWanRu5gz6N
-	mFf9SGH8GX+UW6HZcg39TcK0xY4iva5O7Ggs2/MQhOCe+41k1i88Mp3LsOZrYDpuNxjfNO71hRTSh
-	svkb8DtA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lPX5UfhKaGyI4+d0jFCvoNQXQSkWtGtvbclLcvnQPp0=; b=roA8MbdGcGy98A
+	1vLsa/gtUlBcHqVfHn301dZkae1gpKbG4DE2yakKdGusmsgvPw+ORJd8mKBab+87iILCfalDFfx8o
+	vTho+TeFbLQuBcGUUeKvl846g/0wdBV8na6UPbUOm2gB8Y3BBjgoB8qon6D+Sn6aYvlkvUU5ZvffK
+	dUNkOKAmbYF8Brpk6oM4Gwob/PIsy5bD6BODuMSokictfqyGrBTBr4NF6uS4FytqmkoE2T8Ba1aO5
+	KDVax1f2d/J446IUr49qhbsCTwqYijh/Vd+5cEeeEqFvSltE4PzINjIidUvYKDGVBKrxDgzy2yuui
+	9Ltx0eR6xQezG5tTVZww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r14L7-006Kpx-09;
-	Thu, 09 Nov 2023 12:40:53 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1r15nM-006TFH-1T;
+	Thu, 09 Nov 2023 14:14:08 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r14L4-006KpR-1y
+	id 1r15nJ-006TEP-0J
 	for linux-mtd@lists.infradead.org;
-	Thu, 09 Nov 2023 12:40:52 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id D094DA4F;
-	Thu,  9 Nov 2023 13:40:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1699533647;
+	Thu, 09 Nov 2023 14:14:07 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E1B51E0003;
+	Thu,  9 Nov 2023 14:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1699539240;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=us8JU723OGPkM9WyUVcLpBm59Vu0CUzHWU3voNw+RjQ=;
-	b=ShN06e2/jEw6J4tVMT73HJEyfJJOgt0u2MyIF+HUvpqqascR3rowWUl6d57kZ6VrqDc7bh
-	QFHeY4VDOy9iAdNRCyV1Gbep1nqP9x+H+o34lVrEwgGRyNK4x6ArOR89c6VBAuCdo1QMNF
-	Sq1wFFObdt5YCfSV9sz6FslLzkUSNj5dbCVJnx/SA+MCteGVpDTSqfxsUX+HqQmA6YeJV9
-	kcV5iT22JeWoGxP1iHjPlqhCdaCYBCQkIsjTHopRd51svDVrC2qwY8a3Ktr+ovlMMTCu37
-	PgeMO80Mb4z3fJ4sISc2Ama1w7XQvjoiRfZ5BCHDH1EzByOj2d5DF53xKAbIyg==
+	bh=Qxm/5mIfRsxeyzSt8NALmOKub+GTULiMjcItdgB3J6U=;
+	b=fwXd3LQVsPUcG4IDyN191ylVxwA25bvFsywKsaFaIVCH5kbX9rKCwmaADhDLBJ9tJVtQa4
+	zmbAyCe5J/xA6HKpmUR8l517BqRDxsc1KdDZ9Gk1WPjU0PCrSv3C5VrwW5UQnCqSJ+8qr+
+	mgGEZYBVPzqs/LWMuUHBO2MFk+C3xkwSgtxoTdEO8knhxsAm7AVe3k5vt+zn68cpXShrPb
+	5YigGmNjRjdB2zAWGil5Lyi6lHjbq+c/UkYujKGoipvgO3cuJ6dtYBAE97k0+dSJE/2kG+
+	1KC2QA9F23NHfDC7EiT9oQNSs2NzefhouCASbrviQQ5SRQAGw+SAw0djjjlGRw==
+Date: Thu, 9 Nov 2023 15:13:56 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: JaimeLiao <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, richard@nod.at, jaimeliao@mxic.com.tw,
+ angyanyu13@gmail.com
+Subject: Re: [PATCH v3 1/5] Add clk wizard and mxic host controller driver
+Message-ID: <20231109151356.6199d4b7@xps-13>
+In-Reply-To: <20231109112500.4966-2-jaimeliao@mxic.com.tw>
+References: <20231109112500.4966-1-jaimeliao@mxic.com.tw>
+	<20231109112500.4966-2-jaimeliao@mxic.com.tw>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Date: Thu, 09 Nov 2023 13:40:47 +0100
-From: Michael Walle <michael@walle.cc>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- "biju.das.au" <biju.das.au@gmail.com>, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH RFC 0/4] Add set_iofv() callback
-In-Reply-To: <TYVPR01MB11279575676708170F3B3270D86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
-References: <20231108171149.258656-1-biju.das.jz@bp.renesas.com>
- <877590a5e3f8c32ec0a032385049a563@walle.cc>
- <TYVPR01MB11279E535835F2998335F770A86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
- <b9831be88008b9f9960d1d79cd0e5a3a@walle.cc>
- <TYVPR01MB11279575676708170F3B3270D86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
-Message-ID: <f88759f98e865e68da5481fcbb969c47@walle.cc>
-X-Sender: michael@walle.cc
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231109_044050_797983_106C2702 
-X-CRM114-Status: GOOD (  42.06  )
+X-CRM114-CacheID: sfid-20231109_061405_574529_07622C0A 
+X-CRM114-Status: GOOD (  22.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,139 +69,163 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Biju,
-
->> >> > As per section 8.14 on the AT25QL128A hardware manual[1],
->> >> > IO0..IO3 must be set to Hi-Z state for this flash for fast read
->> >> > quad IO.
->> >> > Snippet from HW manual section 8.14:
->> >> > The upper nibble of the Mode(M7-4) controls the length of the next
->> >> > FAST Read Quad IO instruction through the inclusion or exclusion of
->> >> > the first byte instruction code. The lower nibble bits of the
->> >> > Mode(M3-0) are don't care. However, the IO pins must be
->> >> > high-impedance before the falling edge of the first data out clock.
->> >>
->> >> I'm still not sure what you are trying to fix here. For any quad I/O
->> >> mode, the pins of the controller must be in hiZ during the data phase
->> >> on a read operation. Otherwise the flash couldn't send any data,
->> >> there would be two drivers for one signal. So being in hiZ state
->> >> should be the default and shouldn't depend on any connected flash.
->> >
->> > OK, I will make hiZ state as the default.
->> 
->> I still think this iofv setting is the wrong approach, though. Do you 
->> have
->> a link to the spi controller datasheet where I can look up what the
->> controller is doing.
-> 
-> Please find the below link.
-> 
-> https://www.renesas.com/eu/en/products/microcontrollers-microprocessors/rz-mpus/rzg2l-general-purpose-microprocessors-dual-core-arm-cortex-a55-12-ghz-cpus-and-single-core-arm-cortex-m33#overview
-
-Thanks.
-
->> This seem to be a general problem with what we are sending during the
->> command phase and I'm curious why there wasn't more reports on non 
->> working
->> micron flashes for now.
-> 
-> 1-bit mode, we don't have any issue. Once we switch to 4-bit mode we 
-> have this
-> issue with micron MT25QU512A flash and we need to set the correct IO 
-> fixed values.
-> 
-> Maybe others are testing with 1-bit mode and not testing the full 
-> capability of the flash.
-> 
->> 
->> >> You've mentioned the micron flash which needs a '1' on its hold/reset
->> >> pin.
->> >> I would have expected a fixup for this flash, not for the flash which
->> >> behaves normal.
->> >
->> > I will drop fixup for Renesas AT25QL128A  and will add fixup for
->> > micron flash.
->> 
->> btw, what will happen if you always use the {3,3,3,1} setting? I guess 
->> the
->> atmel flash will also work? because HiZ should mean "don't care"
->> from
->> the point of view of the flash.
-> 
-> With atmel flash if use {3,3,3,1} setting, I get below error.
-> 
-> root@smarc-rzg2ul:/cip-test-scripts# ./rpcif_t_001.sh
-> [  144.078854] spi-nor spi1.0: spi-nor-generic (16384 Kbytes)
-> [  144.120468] 2 fixed-partitions partitions found on MTD device spi1.0
-> [  144.126982] Creating 2 MTD partitions on "spi1.0":
-> [  144.133004] 0x000000000000-0x000000200000 : "boot"
-> [  144.141879] 0x000000200000-0x000001000000 : "user"
-> [  358.476963] jffs2: notice: (230) read_dnode: node CRC failed on 
-> dnode at 0xdfe084: read 0x336ebbbc, calculated 0x961503c7
-> [  358.488509] jffs2: notice: (230) read_dnode: node CRC failed on 
-> dnode at 0xdfd118: read 0xff6a5df6, calculated 0x786a5df6
-> [  358.502963] jffs2: notice: (230) read_dnode: node CRC failed on 
-> dnode at 0xdfa2d4: read 0x1fc99948, calculated 0xbab22133
-> [  358.515357] jffs2: notice: (230) read_dnode: node CRC failed on 
-> dnode at 0xdf9368: read 0xffd184a7, calculated 0x3d184a7
-> [  358.528175] jffs2: notice: (230) read_dnode: node CRC failed on 
-> dnode at 0xdf6524: read 0x5deb2462, calculated 0xf8909c19
-
-Strange. Can't make any sense of this at the moment.
-
->> > With iofv settings {3,3,3,3} (all pins on Hi-Z state) with Micron
->> > flash
->> > ----------------------------------------------------------------------
->> > -
->> >
->> > ./rpcif_t_001.sh
->> > [   37.950986] spi-nor spi1.0: unrecognized JEDEC id bytes: ff ff ff ff
->> > ff ff
->> 
->> As mentioned earlier, I suspect that HiZ on IO3 means low and the 
->> flash
->> will be in reset. Could you perhaps verify that by probing IO3?
->> I know that other flashes will *either* support RESET#/HOLD# or quad 
->> mode.
->> Thus I was saying, that we probably wont support that and the easiest 
->> fix
->> should be to disable this behavior for the atmel flash (there was nv
->> setting).
-> 
-> The fix up is invoked only for quad mode, I believe it is safe to add 
-> fixup for micron flash
-> As it is the one deviating from normal according to you, rather than 
-> adding fixup
-> for generic flash like ATMEL flash(Now Renesas flash)
-
-Could you please try setting bit 4 in the Nonvolatile Configuration
-Register (Table 7) and see if the problem goes away?
-
-Also could you have a look at the schematics, does the IO3/RESET#
-have a pull-up? If not, who is in control of driving the correct
-value here? If it has a pull-up, I'm puzzled why you need any
-other setting than HiZ.
-
-The correct fix would be to the information about the missing
-IO state in the "struct spi_mem_op". That is, what should be the
-default values of all the IO lines which are unused. For example
-if we have a 1s1s4s transaction, what should be the state of IO0,
-IO2 and IO3 during the command and address phase. If we have a
-1s2s2s, what should be the state of IO0 during the command phase
-etc.
-
-That can then be used within your driver to set the corresponding
-IOFV values (for each spi-mem op).
-
-But I'm not sure if other SPI controllers will support that, though.
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSmFpbWUsCgpqYWltZWxpYW8udHdAZ21haWwuY29tIHdyb3RlIG9uIFRodSwgIDkgTm92IDIw
+MjMgMTk6MjQ6NTYgKzA4MDA6Cgo+IFNpZ25lZC1vZmYtYnk6IEphaW1lTGlhbyA8amFpbWVsaWFv
+QG14aWMuY29tLnR3PgoKWW91IG5lZWQgdG8gc3BsaXQgdGhpcyBwYXRjaCBhbmQgY3JlYXRlIGEg
+ZGVkaWNhdGVkIHNlcmllcyB3aXRoIGl0LgoKT25lIHBhdGNoIGZvciB0aGUgY2xvY2sgd2l6YXJk
+LgpPbmUgcGF0Y2ggKG9yIG1vcmUpIGZvciB0aGUgRFQgY2hhbmdlcy4KUG9zc2libHkgYSBiaW5k
+aW5nIHBhdGNoLgoKWy4uLl0KCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3NwaS1teGljLmMg
+Yi9kcml2ZXJzL3NwaS9zcGktbXhpYy5jCj4gaW5kZXggNjBjOWYzMDQ4YWM5Li4yOGMzMjRkNzIw
+MGEgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLW14aWMuYwo+ICsrKyBiL2RyaXZlcnMv
+c3BpL3NwaS1teGljLmMKPiBAQCAtMzIzLDcgKzMyMyw3IEBAIHN0YXRpYyB1MzIgbXhpY19zcGlf
+bWVtX3ByZXBfb3BfY2ZnKGNvbnN0IHN0cnVjdCBzcGlfbWVtX29wICpvcCwKPiAgCQkgICAgICAg
+KG9wLT5hZGRyLmR0ciA/IE9QX0FERFJfRERSIDogMCk7Cj4gIAo+ICAJaWYgKG9wLT5kdW1teS5u
+Ynl0ZXMpCj4gLQkJY2ZnIHw9IE9QX0RVTU1ZX0NZQyhvcC0+ZHVtbXkubmJ5dGVzKTsKPiArCQlj
+ZmcgfD0gT1BfRFVNTVlfQ1lDKChvcC0+ZHVtbXkubmJ5dGVzKSAqIChvcC0+ZGF0YS5idXN3aWR0
+aCkpOwo+ICAKPiAgCS8qIERpcmVjdCBtYXBwaW5nIGRhdGEubmJ5dGVzIGZpZWxkIGlzIG5vdCBw
+b3B1bGF0ZWQgKi8KPiAgCWlmIChkYXRhX2xlbikgewo+IEBAIC0zOTAsNyArMzkwLDcgQEAgc3Rh
+dGljIGludCBteGljX3NwaV9kYXRhX3hmZXIoc3RydWN0IG14aWNfc3BpICpteGljLCBjb25zdCB2
+b2lkICp0eGJ1ZiwKPiAgc3RhdGljIHNzaXplX3QgbXhpY19zcGlfbWVtX2Rpcm1hcF9yZWFkKHN0
+cnVjdCBzcGlfbWVtX2Rpcm1hcF9kZXNjICpkZXNjLAo+ICAJCQkJCXU2NCBvZmZzLCBzaXplX3Qg
+bGVuLCB2b2lkICpidWYpCj4gIHsKPiAtCXN0cnVjdCBteGljX3NwaSAqbXhpYyA9IHNwaV9jb250
+cm9sbGVyX2dldF9kZXZkYXRhKGRlc2MtPm1lbS0+c3BpLT5jb250cm9sbGVyKTsKPiArCXN0cnVj
+dCBteGljX3NwaSAqbXhpYyA9IHNwaV9tYXN0ZXJfZ2V0X2RldmRhdGEoZGVzYy0+bWVtLT5zcGkt
+Pm1hc3Rlcik7CgpUaGlzIGFuZCBhbGwgY2hhbmdlcyBiZWxvdyBtYWtlIG5vIHNlbnNlIGFuZCBz
+aG91bGQgYmUgZHJvcHBlZC4KCj4gIAlpbnQgcmV0Owo+ICAJdTMyIHN0czsKPiAgCj4gQEAgLTQz
+NCw3ICs0MzQsNyBAQCBzdGF0aWMgc3NpemVfdCBteGljX3NwaV9tZW1fZGlybWFwX3dyaXRlKHN0
+cnVjdCBzcGlfbWVtX2Rpcm1hcF9kZXNjICpkZXNjLAo+ICAJCQkJCSB1NjQgb2Zmcywgc2l6ZV90
+IGxlbiwKPiAgCQkJCQkgY29uc3Qgdm9pZCAqYnVmKQo+ICB7Cj4gLQlzdHJ1Y3QgbXhpY19zcGkg
+Km14aWMgPSBzcGlfY29udHJvbGxlcl9nZXRfZGV2ZGF0YShkZXNjLT5tZW0tPnNwaS0+Y29udHJv
+bGxlcik7Cj4gKwlzdHJ1Y3QgbXhpY19zcGkgKm14aWMgPSBzcGlfbWFzdGVyX2dldF9kZXZkYXRh
+KGRlc2MtPm1lbS0+c3BpLT5tYXN0ZXIpOwo+ICAJdTMyIHN0czsKPiAgCWludCByZXQ7Cj4gIAo+
+IEBAIC00ODEsOSArNDgxLDkgQEAgc3RhdGljIGJvb2wgbXhpY19zcGlfbWVtX3N1cHBvcnRzX29w
+KHN0cnVjdCBzcGlfbWVtICptZW0sCj4gIAkgICAgb3AtPmR1bW15LmJ1c3dpZHRoID4gOCB8fCBv
+cC0+Y21kLmJ1c3dpZHRoID4gOCkKPiAgCQlyZXR1cm4gZmFsc2U7Cj4gIAo+IC0JaWYgKG9wLT5k
+YXRhLm5ieXRlcyAmJiBvcC0+ZHVtbXkubmJ5dGVzICYmCj4gLQkgICAgb3AtPmRhdGEuYnVzd2lk
+dGggIT0gb3AtPmR1bW15LmJ1c3dpZHRoKQo+IC0JCXJldHVybiBmYWxzZTsKPiArCS8vaWYgKG9w
+LT5kYXRhLm5ieXRlcyAmJiBvcC0+ZHVtbXkubmJ5dGVzICYmCj4gKwkvLyAgICBvcC0+ZGF0YS5i
+dXN3aWR0aCAhPSBvcC0+ZHVtbXkuYnVzd2lkdGgpCj4gKwkvLwlyZXR1cm4gZmFsc2U7Cj4gIAo+
+ICAJaWYgKG9wLT5hZGRyLm5ieXRlcyA+IDcpCj4gIAkJcmV0dXJuIGZhbHNlOwo+IEBAIC00OTMs
+NyArNDkzLDcgQEAgc3RhdGljIGJvb2wgbXhpY19zcGlfbWVtX3N1cHBvcnRzX29wKHN0cnVjdCBz
+cGlfbWVtICptZW0sCj4gIAo+ICBzdGF0aWMgaW50IG14aWNfc3BpX21lbV9kaXJtYXBfY3JlYXRl
+KHN0cnVjdCBzcGlfbWVtX2Rpcm1hcF9kZXNjICpkZXNjKQo+ICB7Cj4gLQlzdHJ1Y3QgbXhpY19z
+cGkgKm14aWMgPSBzcGlfY29udHJvbGxlcl9nZXRfZGV2ZGF0YShkZXNjLT5tZW0tPnNwaS0+Y29u
+dHJvbGxlcik7Cj4gKwlzdHJ1Y3QgbXhpY19zcGkgKm14aWMgPSBzcGlfbWFzdGVyX2dldF9kZXZk
+YXRhKGRlc2MtPm1lbS0+c3BpLT5tYXN0ZXIpOwo+ICAKPiAgCWlmICghbXhpYy0+bGluZWFyLm1h
+cCkKPiAgCQlyZXR1cm4gLUVJTlZBTDsKPiBAQCAtNTEwLDcgKzUxMCw3IEBAIHN0YXRpYyBpbnQg
+bXhpY19zcGlfbWVtX2Rpcm1hcF9jcmVhdGUoc3RydWN0IHNwaV9tZW1fZGlybWFwX2Rlc2MgKmRl
+c2MpCj4gIHN0YXRpYyBpbnQgbXhpY19zcGlfbWVtX2V4ZWNfb3Aoc3RydWN0IHNwaV9tZW0gKm1l
+bSwKPiAgCQkJCWNvbnN0IHN0cnVjdCBzcGlfbWVtX29wICpvcCkKPiAgewo+IC0Jc3RydWN0IG14
+aWNfc3BpICpteGljID0gc3BpX2NvbnRyb2xsZXJfZ2V0X2RldmRhdGEobWVtLT5zcGktPmNvbnRy
+b2xsZXIpOwo+ICsJc3RydWN0IG14aWNfc3BpICpteGljID0gc3BpX21hc3Rlcl9nZXRfZGV2ZGF0
+YShtZW0tPnNwaS0+bWFzdGVyKTsKPiAgCWludCBpLCByZXQ7Cj4gIAl1OCBhZGRyWzhdLCBjbWRb
+Ml07Cj4gIAo+IEBAIC01NDMsNyArNTQzLDcgQEAgc3RhdGljIGludCBteGljX3NwaV9tZW1fZXhl
+Y19vcChzdHJ1Y3Qgc3BpX21lbSAqbWVtLAo+ICAJaWYgKHJldCkKPiAgCQlnb3RvIG91dDsKPiAg
+Cj4gLQlyZXQgPSBteGljX3NwaV9kYXRhX3hmZXIobXhpYywgTlVMTCwgTlVMTCwgb3AtPmR1bW15
+Lm5ieXRlcyk7Cj4gKwlyZXQgPSBteGljX3NwaV9kYXRhX3hmZXIobXhpYywgTlVMTCwgTlVMTCwg
+KG9wLT5kdW1teS5uYnl0ZXMpICogKG9wLT5kYXRhLmJ1c3dpZHRoKSk7Cj4gIAlpZiAocmV0KQo+
+ICAJCWdvdG8gb3V0Owo+ICAKPiBAQCAtNTY1LDkgKzU2NSw5IEBAIHN0YXRpYyBpbnQgbXhpY19z
+cGlfbWVtX2V4ZWNfb3Aoc3RydWN0IHNwaV9tZW0gKm1lbSwKPiAgc3RhdGljIGNvbnN0IHN0cnVj
+dCBzcGlfY29udHJvbGxlcl9tZW1fb3BzIG14aWNfc3BpX21lbV9vcHMgPSB7Cj4gIAkuc3VwcG9y
+dHNfb3AgPSBteGljX3NwaV9tZW1fc3VwcG9ydHNfb3AsCj4gIAkuZXhlY19vcCA9IG14aWNfc3Bp
+X21lbV9leGVjX29wLAo+IC0JLmRpcm1hcF9jcmVhdGUgPSBteGljX3NwaV9tZW1fZGlybWFwX2Ny
+ZWF0ZSwKPiAtCS5kaXJtYXBfcmVhZCA9IG14aWNfc3BpX21lbV9kaXJtYXBfcmVhZCwKPiAtCS5k
+aXJtYXBfd3JpdGUgPSBteGljX3NwaV9tZW1fZGlybWFwX3dyaXRlLAo+ICsJLy8uZGlybWFwX2Ny
+ZWF0ZSA9IG14aWNfc3BpX21lbV9kaXJtYXBfY3JlYXRlLAo+ICsJLy8uZGlybWFwX3JlYWQgPSBt
+eGljX3NwaV9tZW1fZGlybWFwX3JlYWQsCj4gKwkvLy5kaXJtYXBfd3JpdGUgPSBteGljX3NwaV9t
+ZW1fZGlybWFwX3dyaXRlLAo+ICB9Owo+ICAKPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfY29u
+dHJvbGxlcl9tZW1fY2FwcyBteGljX3NwaV9tZW1fY2FwcyA9IHsKPiBAQCAtNTc3LDcgKzU3Nyw3
+IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpX2NvbnRyb2xsZXJfbWVtX2NhcHMgbXhpY19zcGlf
+bWVtX2NhcHMgPSB7Cj4gIAo+ICBzdGF0aWMgdm9pZCBteGljX3NwaV9zZXRfY3Moc3RydWN0IHNw
+aV9kZXZpY2UgKnNwaSwgYm9vbCBsdmwpCj4gIHsKPiAtCXN0cnVjdCBteGljX3NwaSAqbXhpYyA9
+IHNwaV9jb250cm9sbGVyX2dldF9kZXZkYXRhKHNwaS0+Y29udHJvbGxlcik7Cj4gKwlzdHJ1Y3Qg
+bXhpY19zcGkgKm14aWMgPSBzcGlfbWFzdGVyX2dldF9kZXZkYXRhKHNwaS0+bWFzdGVyKTsKPiAg
+Cj4gIAlpZiAoIWx2bCkgewo+ICAJCXdyaXRlbChyZWFkbChteGljLT5yZWdzICsgSENfQ0ZHKSB8
+IEhDX0NGR19NQU5fQ1NfRU4sCj4gQEAgLTU5MiwxMSArNTkyLDExIEBAIHN0YXRpYyB2b2lkIG14
+aWNfc3BpX3NldF9jcyhzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpLCBib29sIGx2bCkKPiAgCX0KPiAg
+fQo+ICAKPiAtc3RhdGljIGludCBteGljX3NwaV90cmFuc2Zlcl9vbmUoc3RydWN0IHNwaV9jb250
+cm9sbGVyICpob3N0LAo+ICtzdGF0aWMgaW50IG14aWNfc3BpX3RyYW5zZmVyX29uZShzdHJ1Y3Qg
+c3BpX21hc3RlciAqbWFzdGVyLAo+ICAJCQkJIHN0cnVjdCBzcGlfZGV2aWNlICpzcGksCj4gIAkJ
+CQkgc3RydWN0IHNwaV90cmFuc2ZlciAqdCkKPiAgewo+IC0Jc3RydWN0IG14aWNfc3BpICpteGlj
+ID0gc3BpX2NvbnRyb2xsZXJfZ2V0X2RldmRhdGEoaG9zdCk7Cj4gKwlzdHJ1Y3QgbXhpY19zcGkg
+Km14aWMgPSBzcGlfbWFzdGVyX2dldF9kZXZkYXRhKG1hc3Rlcik7Cj4gIAl1bnNpZ25lZCBpbnQg
+YnVzdyA9IE9QX0JVU1dfMTsKPiAgCWludCByZXQ7Cj4gIAo+IEBAIC02MzIsNyArNjMyLDcgQEAg
+c3RhdGljIGludCBteGljX3NwaV90cmFuc2Zlcl9vbmUoc3RydWN0IHNwaV9jb250cm9sbGVyICpo
+b3N0LAo+ICAJaWYgKHJldCkKPiAgCQlyZXR1cm4gcmV0Owo+ICAKPiAtCXNwaV9maW5hbGl6ZV9j
+dXJyZW50X3RyYW5zZmVyKGhvc3QpOwo+ICsJc3BpX2ZpbmFsaXplX2N1cnJlbnRfdHJhbnNmZXIo
+bWFzdGVyKTsKPiAgCj4gIAlyZXR1cm4gMDsKPiAgfQo+IEBAIC03MTMsOCArNzEzLDggQEAgc3Rh
+dGljIGludCBteGljX3NwaV9tZW1fZWNjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBk
+ZXYsCj4gIAo+ICBzdGF0aWMgaW50IF9fbWF5YmVfdW51c2VkIG14aWNfc3BpX3J1bnRpbWVfc3Vz
+cGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCj4gIHsKPiAtCXN0cnVjdCBzcGlfY29udHJvbGxlciAq
+aG9zdCA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOwo+IC0Jc3RydWN0IG14aWNfc3BpICpteGljID0g
+c3BpX2NvbnRyb2xsZXJfZ2V0X2RldmRhdGEoaG9zdCk7Cj4gKwlzdHJ1Y3Qgc3BpX21hc3RlciAq
+bWFzdGVyID0gZGV2X2dldF9kcnZkYXRhKGRldik7Cj4gKwlzdHJ1Y3QgbXhpY19zcGkgKm14aWMg
+PSBzcGlfbWFzdGVyX2dldF9kZXZkYXRhKG1hc3Rlcik7Cj4gIAo+ICAJbXhpY19zcGlfY2xrX2Rp
+c2FibGUobXhpYyk7Cj4gIAljbGtfZGlzYWJsZV91bnByZXBhcmUobXhpYy0+cHNfY2xrKTsKPiBA
+QCAtNzI0LDggKzcyNCw4IEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgbXhpY19zcGlfcnVu
+dGltZV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiAgCj4gIHN0YXRpYyBpbnQgX19tYXli
+ZV91bnVzZWQgbXhpY19zcGlfcnVudGltZV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQo+ICB7
+Cj4gLQlzdHJ1Y3Qgc3BpX2NvbnRyb2xsZXIgKmhvc3QgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsK
+PiAtCXN0cnVjdCBteGljX3NwaSAqbXhpYyA9IHNwaV9jb250cm9sbGVyX2dldF9kZXZkYXRhKGhv
+c3QpOwo+ICsJc3RydWN0IHNwaV9tYXN0ZXIgKm1hc3RlciA9IGRldl9nZXRfZHJ2ZGF0YShkZXYp
+Owo+ICsJc3RydWN0IG14aWNfc3BpICpteGljID0gc3BpX21hc3Rlcl9nZXRfZGV2ZGF0YShtYXN0
+ZXIpOwo+ICAJaW50IHJldDsKPiAgCj4gIAlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUobXhpYy0+
+cHNfY2xrKTsKPiBAQCAtNzQ0LDIxICs3NDQsMjEgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBkZXZf
+cG1fb3BzIG14aWNfc3BpX2Rldl9wbV9vcHMgPSB7Cj4gIAo+ICBzdGF0aWMgaW50IG14aWNfc3Bp
+X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIHsKPiAtCXN0cnVjdCBzcGlf
+Y29udHJvbGxlciAqaG9zdDsKPiArCXN0cnVjdCBzcGlfbWFzdGVyICptYXN0ZXI7Cj4gIAlzdHJ1
+Y3QgcmVzb3VyY2UgKnJlczsKPiAgCXN0cnVjdCBteGljX3NwaSAqbXhpYzsKPiAgCWludCByZXQ7
+Cj4gIAo+IC0JaG9zdCA9IGRldm1fc3BpX2FsbG9jX2hvc3QoJnBkZXYtPmRldiwgc2l6ZW9mKHN0
+cnVjdCBteGljX3NwaSkpOwo+IC0JaWYgKCFob3N0KQo+ICsJbWFzdGVyID0gZGV2bV9zcGlfYWxs
+b2NfbWFzdGVyKCZwZGV2LT5kZXYsIHNpemVvZihzdHJ1Y3QgbXhpY19zcGkpKTsKPiArCWlmICgh
+bWFzdGVyKQo+ICAJCXJldHVybiAtRU5PTUVNOwo+ICAKPiAtCXBsYXRmb3JtX3NldF9kcnZkYXRh
+KHBkZXYsIGhvc3QpOwo+ICsJcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgbWFzdGVyKTsKPiAg
+Cj4gLQlteGljID0gc3BpX2NvbnRyb2xsZXJfZ2V0X2RldmRhdGEoaG9zdCk7Cj4gKwlteGljID0g
+c3BpX21hc3Rlcl9nZXRfZGV2ZGF0YShtYXN0ZXIpOwo+ICAJbXhpYy0+ZGV2ID0gJnBkZXYtPmRl
+djsKPiAgCj4gLQlob3N0LT5kZXYub2Zfbm9kZSA9IHBkZXYtPmRldi5vZl9ub2RlOwo+ICsJbWFz
+dGVyLT5kZXYub2Zfbm9kZSA9IHBkZXYtPmRldi5vZl9ub2RlOwo+ICAKPiAgCW14aWMtPnBzX2Ns
+ayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAicHNfY2xrIik7Cj4gIAlpZiAoSVNfRVJSKG14
+aWMtPnBzX2NsaykpCj4gQEAgLTc4NiwxOSArNzg2LDE5IEBAIHN0YXRpYyBpbnQgbXhpY19zcGlf
+cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgCX0KPiAgCj4gIAlwbV9ydW50
+aW1lX2VuYWJsZSgmcGRldi0+ZGV2KTsKPiAtCWhvc3QtPmF1dG9fcnVudGltZV9wbSA9IHRydWU7
+Cj4gKwltYXN0ZXItPmF1dG9fcnVudGltZV9wbSA9IHRydWU7Cj4gIAo+IC0JaG9zdC0+bnVtX2No
+aXBzZWxlY3QgPSAxOwo+IC0JaG9zdC0+bWVtX29wcyA9ICZteGljX3NwaV9tZW1fb3BzOwo+IC0J
+aG9zdC0+bWVtX2NhcHMgPSAmbXhpY19zcGlfbWVtX2NhcHM7Cj4gKwltYXN0ZXItPm51bV9jaGlw
+c2VsZWN0ID0gMTsKPiArCW1hc3Rlci0+bWVtX29wcyA9ICZteGljX3NwaV9tZW1fb3BzOwo+ICsJ
+bWFzdGVyLT5tZW1fY2FwcyA9ICZteGljX3NwaV9tZW1fY2FwczsKPiAgCj4gLQlob3N0LT5zZXRf
+Y3MgPSBteGljX3NwaV9zZXRfY3M7Cj4gLQlob3N0LT50cmFuc2Zlcl9vbmUgPSBteGljX3NwaV90
+cmFuc2Zlcl9vbmU7Cj4gLQlob3N0LT5iaXRzX3Blcl93b3JkX21hc2sgPSBTUElfQlBXX01BU0so
+OCk7Cj4gLQlob3N0LT5tb2RlX2JpdHMgPSBTUElfQ1BPTCB8IFNQSV9DUEhBIHwKPiAtCQkJICBT
+UElfUlhfRFVBTCB8IFNQSV9UWF9EVUFMIHwKPiAtCQkJICBTUElfUlhfUVVBRCB8IFNQSV9UWF9R
+VUFEIHwKPiAtCQkJICBTUElfUlhfT0NUQUwgfCBTUElfVFhfT0NUQUw7Cj4gKwltYXN0ZXItPnNl
+dF9jcyA9IG14aWNfc3BpX3NldF9jczsKPiArCW1hc3Rlci0+dHJhbnNmZXJfb25lID0gbXhpY19z
+cGlfdHJhbnNmZXJfb25lOwo+ICsJbWFzdGVyLT5iaXRzX3Blcl93b3JkX21hc2sgPSBTUElfQlBX
+X01BU0soOCk7Cj4gKwltYXN0ZXItPm1vZGVfYml0cyA9IFNQSV9DUE9MIHwgU1BJX0NQSEEgfAo+
+ICsJCQlTUElfUlhfRFVBTCB8IFNQSV9UWF9EVUFMIHwKPiArCQkJU1BJX1JYX1FVQUQgfCBTUElf
+VFhfUVVBRCB8Cj4gKwkJCVNQSV9SWF9PQ1RBTCB8IFNQSV9UWF9PQ1RBTDsKPiAgCj4gIAlteGlj
+X3NwaV9od19pbml0KG14aWMpOwo+ICAKPiBAQCAtODA4LDkgKzgwOCw5IEBAIHN0YXRpYyBpbnQg
+bXhpY19zcGlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgCQlyZXR1cm4g
+cmV0Owo+ICAJfQo+ICAKPiAtCXJldCA9IHNwaV9yZWdpc3Rlcl9jb250cm9sbGVyKGhvc3QpOwo+
+ICsJcmV0ID0gc3BpX3JlZ2lzdGVyX21hc3RlcihtYXN0ZXIpOwo+ICAJaWYgKHJldCkgewo+IC0J
+CWRldl9lcnIoJnBkZXYtPmRldiwgInNwaV9yZWdpc3Rlcl9jb250cm9sbGVyIGZhaWxlZFxuIik7
+Cj4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAic3BpX3JlZ2lzdGVyX21hc3RlciBmYWlsZWRcbiIp
+Owo+ICAJCXBtX3J1bnRpbWVfZGlzYWJsZSgmcGRldi0+ZGV2KTsKPiAgCQlteGljX3NwaV9tZW1f
+ZWNjX3JlbW92ZShteGljKTsKPiAgCX0KPiBAQCAtODIwLDEyICs4MjAsMTIgQEAgc3RhdGljIGlu
+dCBteGljX3NwaV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ICAKPiAgc3Rh
+dGljIHZvaWQgbXhpY19zcGlfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4g
+IHsKPiAtCXN0cnVjdCBzcGlfY29udHJvbGxlciAqaG9zdCA9IHBsYXRmb3JtX2dldF9kcnZkYXRh
+KHBkZXYpOwo+IC0Jc3RydWN0IG14aWNfc3BpICpteGljID0gc3BpX2NvbnRyb2xsZXJfZ2V0X2Rl
+dmRhdGEoaG9zdCk7Cj4gKwlzdHJ1Y3Qgc3BpX21hc3RlciAqbWFzdGVyID0gcGxhdGZvcm1fZ2V0
+X2RydmRhdGEocGRldik7Cj4gKwlzdHJ1Y3QgbXhpY19zcGkgKm14aWMgPSBzcGlfbWFzdGVyX2dl
+dF9kZXZkYXRhKG1hc3Rlcik7Cj4gIAo+ICAJcG1fcnVudGltZV9kaXNhYmxlKCZwZGV2LT5kZXYp
+Owo+ICAJbXhpY19zcGlfbWVtX2VjY19yZW1vdmUobXhpYyk7Cj4gLQlzcGlfdW5yZWdpc3Rlcl9j
+b250cm9sbGVyKGhvc3QpOwo+ICsJc3BpX3VucmVnaXN0ZXJfbWFzdGVyKG1hc3Rlcik7Cj4gIH0K
+PiAgCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG14aWNfc3BpX29mX2lkc1td
+ID0gewoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
