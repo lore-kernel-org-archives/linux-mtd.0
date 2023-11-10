@@ -4,90 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E28C2C4167B
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Nov 2023 10:17:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6DF4C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Nov 2023 10:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d8P6PE6sCYP+PUEGh0V9HT0zRMvAaDZ+wGqtqtjfqLo=; b=IIA6Vuhk2ZTbIP
-	atorK7SORJq2h4Rjd758RC2i7f4aQHIIl+OUijf9B4YedaQnG7v8g/5QiKg46RgX46epzPQGji15q
-	Gr3NCoheg+SsKwMIir7TcHX1r/loJx7LJKoWCv/aRM6HXKyfzOVLBCTQ9oQ3/pTqYcs29GMiqEpS1
-	OMJKByeVh2HaHnb/wy0cJHgmmht8Rdf3T0iMGjRqQiZrqZlHgwaGxAz73GbUUUSk8e3cwEwpaV1jT
-	4hna02OnpLw7VLcprtbm0CZAuCdQLUqjOLUU/taTVsiW705z29kELWsLGu5LqZhkpyJLgQCa9Qjji
-	PKirgiN6IbXItgCrJEug==;
+	List-Owner; bh=zVtWGfnzE6BqH8xAE2QC8oPaLBQERtpqVjT+Q8JRENA=; b=kf5nH67K0plrbu
+	3lX4rQsvPx+WCRS6Ql1LIR+ZO+ulq8NndQ/655QFiyAJ5ZAcOUl7VemWAkOfK9O70uMV7niHGqaeq
+	/yOo99JSJfri9uyr2Mu4gnF6TGvpB9pdzoQSra0xKGfgX/9dpXv7RPlKq+7CkHPnrJehHRDvZPgOd
+	x0zRIAqvYFn31L0i6JeNKedZJ4y1OMZr4J1nycfbGsxdcXiuWRDjgzPL5LoCQrv4hkwi7fD/zUULU
+	kn+1itOBl/oe7G1owwtj2cpyPXogWYQ7sra/l+oUmE+zm2Tqj4Rt09QJpPu6IOm2RUoQBa5Ky9q2+
+	iWNWeT1BSS+wHVFvJxjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1OZi-008HDf-2z;
-	Fri, 10 Nov 2023 10:17:18 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1OZe-008HCC-0g;
-	Fri, 10 Nov 2023 10:17:16 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DC7712FC;
-	Fri, 10 Nov 2023 02:17:56 -0800 (PST)
-Received: from [192.168.4.21] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EC783F6C4;
-	Fri, 10 Nov 2023 02:16:58 -0800 (PST)
-Message-ID: <8288a2e5-afa3-462a-9470-0b010e4bc5bc@arm.com>
-Date: Fri, 10 Nov 2023 10:16:46 +0000
+	id 1r1OfM-008IIz-2e;
+	Fri, 10 Nov 2023 10:23:08 +0000
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1r1OfJ-008IG0-1j
+	for linux-mtd@lists.infradead.org;
+	Fri, 10 Nov 2023 10:23:07 +0000
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com [209.85.219.200])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5D92940C54
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Nov 2023 10:22:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1699611779;
+	bh=fZJ7ihL+H/aiHG4LFfNsLqbqzJLeVxJjVV1iBLHcmVo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=WpQXeg61a7Gz/s15smL2lpYSDgPSFDQTiuLKeZpqGHajhtxgaiFgX1KNZXWED4SqS
+	 0A5K9V0IiBz/THSHuHSQCJcQlvuGesCP442cEaV6Q8VFqlvPXJdZ/Sfp5kIY/3hnEX
+	 kfgwjsENZJSsos5KiMLlN3BqrYwDSvIUqdDLFtQYYHfLrH7V1JuPCdVEQxbM7U8VJ+
+	 +yP6+s6SMi5xIXQ6JAHUQSabib+3tgfVMi3i4TdEH9xYZ/ZHrTntE72gof9vX2YfUo
+	 8kaVUkEuiRVWCW3XVrrefxK4e0exyU61r/wwmkdvRqHePeJCl0K8qTklZ632adPe0O
+	 w/UXas6yD0HXg==
+Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-da1aa98ec19so2372576276.2
+        for <linux-mtd@lists.infradead.org>; Fri, 10 Nov 2023 02:22:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699611778; x=1700216578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fZJ7ihL+H/aiHG4LFfNsLqbqzJLeVxJjVV1iBLHcmVo=;
+        b=a8eEDXRm7TNcfC6w/zvI3oJdx4Dd8RxfRXpmBrMCrGVoV9X+mPhjPSNRqT6U2NsFky
+         v62mXO+wBITqYoG+U4mJJpv3NLW2n7x6+2NRDcngs4lXZn/DHlZDR0uhF+9wLLCUfDBc
+         5CsOXxIL2fXKkMR50xqPQgnXSDnlY/jDyUQNvaHBnT2SZyIGDYwg/BlEZXQQduSDR2o/
+         jcJsiVT575LGlaO+VKodbKM7d5EbHMScb+ZykuFDeh/LHDL5VUPBfnYy0x76L6B0OyhJ
+         JicI+U+dzG1ozFL1h7xyjHpkwOKGagQG9XL2yB1ObRPhsVNwCd7Tc+R7DsKOTcUiOY2u
+         sHdA==
+X-Gm-Message-State: AOJu0Yy9V2yTW8B96MNRAR5yLjWeQx8qRe827wUnBDZN9R4aWIpKv8Ez
+	x/KmS4k7JWuTB31xCR+7eH7xmdQ07h05NE9eGd3z7y/13URHO2cN6op0iMMxckSTVLwU0yEhQb8
+	VG+sJ0SYGA8/9Cp8uc0ERiVXcT4t477tXVW83ekmLBKyXeqeI3pSj2eRdO6w=
+X-Received: by 2002:a25:680d:0:b0:d9a:bddd:f714 with SMTP id d13-20020a25680d000000b00d9abdddf714mr7635724ybc.9.1699611778114;
+        Fri, 10 Nov 2023 02:22:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGkKJkczeQZ47oF8/S4UM4zzdUAIJr51XuUDWp6l7tpCgZL7uAW0Thvva0hGqz87HubMlEp0HtnqeOO3B2pxro=
+X-Received: by 2002:a25:680d:0:b0:d9a:bddd:f714 with SMTP id
+ d13-20020a25680d000000b00d9abdddf714mr7635709ybc.9.1699611777746; Fri, 10 Nov
+ 2023 02:22:57 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
-To: Arnd Bergmann <arnd@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Guo Ren <guoren@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- Greg Ungerer <gerg@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Geoff Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "David S. Miller" <davem@davemloft.net>, Andy Lutomirski <luto@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- x86@kernel.org, Helge Deller <deller@gmx.de>,
- Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Timur Tabi <timur@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>,
- David Woodhouse <dwmw2@infradead.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
- Kees Cook <keescook@chromium.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Nicolas Schier <nicolas@fjasle.eu>, Al Viro <viro@zeniv.linux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, netdev@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-bcachefs@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-16-arnd@kernel.org>
-Content-Language: en-US
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-In-Reply-To: <20231108125843.3806765-16-arnd@kernel.org>
+References: <20231108094303.46303-1-acelan.kao@canonical.com> <30509dedc61b0590b322e2860abbd109@walle.cc>
+In-Reply-To: <30509dedc61b0590b322e2860abbd109@walle.cc>
+From: AceLan Kao <acelan.kao@canonical.com>
+Date: Fri, 10 Nov 2023 18:22:46 +0800
+Message-ID: <CAFv23Qm7DdBEg2V0NTKh8DyHEgjcESRctkHfHSJ3CJnKJuHqKA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] spi: Replace -ENOTSUPP with -EOPNOTSUPP in op checking
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, 
+	Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_021714_369379_981E542D 
-X-CRM114-Status: GOOD (  28.79  )
+X-CRM114-CacheID: sfid-20231110_022306_003939_BB97540E 
+X-CRM114-Status: GOOD (  27.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,312 +93,127 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Arnd,
-
-On 11/8/23 12:58, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The VDSO functions are defined as globals in the kernel sources but intended
-> to be called from userspace, so there is no need to declare them in a kernel
-> side header.
-> 
-> Without a prototype, this now causes warnings such as
-> 
-> arch/mips/vdso/vgettimeofday.c:14:5: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
-> arch/mips/vdso/vgettimeofday.c:28:5: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
-> arch/mips/vdso/vgettimeofday.c:36:5: error: no previous prototype for '__vdso_clock_getres' [-Werror=missing-prototypes]
-> arch/mips/vdso/vgettimeofday.c:42:5: error: no previous prototype for '__vdso_clock_gettime64' [-Werror=missing-prototypes]
-> arch/sparc/vdso/vclock_gettime.c:254:1: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
-> arch/sparc/vdso/vclock_gettime.c:282:1: error: no previous prototype for '__vdso_clock_gettime_stick' [-Werror=missing-prototypes]
-> arch/sparc/vdso/vclock_gettime.c:307:1: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
-> arch/sparc/vdso/vclock_gettime.c:343:1: error: no previous prototype for '__vdso_gettimeofday_stick' [-Werror=missing-prototypes]
-> 
-> Most architectures have already added workarounds for these by adding
-> declarations somewhere, but since these are all compatible, we should
-> really just have one copy, with an #ifdef check for the 32-bit vs
-> 64-bit variant and use that everywhere.
-> 
-
-I agree, it is a good idea to have a single header for this purpose.
-
-> Unfortunately, the sparc version is currently incompatible since
-> that never added support for __vdso_clock_gettime64() in 32-bit
-> userland. For the moment, I'm leaving this one out, as I can't
-> easily test it and it requires a larger rework.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-
-> ---
->  arch/arm/include/asm/vdso.h              |  5 -----
->  arch/arm/vdso/vgettimeofday.c            |  1 +
->  arch/arm64/kernel/vdso32/vgettimeofday.c |  1 +
->  arch/csky/kernel/vdso/vgettimeofday.c    | 11 +----------
->  arch/loongarch/vdso/vgettimeofday.c      |  7 +------
->  arch/mips/vdso/vgettimeofday.c           |  1 +
->  arch/riscv/kernel/vdso/vgettimeofday.c   |  7 +------
->  arch/x86/entry/vdso/vclock_gettime.c     | 10 +---------
->  arch/x86/include/asm/vdso/gettimeofday.h |  2 --
->  arch/x86/um/vdso/um_vdso.c               |  1 +
->  include/vdso/gettime.h                   | 23 +++++++++++++++++++++++
->  11 files changed, 31 insertions(+), 38 deletions(-)
->  create mode 100644 include/vdso/gettime.h
-> 
-> diff --git a/arch/arm/include/asm/vdso.h b/arch/arm/include/asm/vdso.h
-> index 422c3afa806a..5b85889f82ee 100644
-> --- a/arch/arm/include/asm/vdso.h
-> +++ b/arch/arm/include/asm/vdso.h
-> @@ -24,11 +24,6 @@ static inline void arm_install_vdso(struct mm_struct *mm, unsigned long addr)
->  
->  #endif /* CONFIG_VDSO */
->  
-> -int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts);
-> -int __vdso_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts);
-> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
-> -int __vdso_clock_getres(clockid_t clock_id, struct old_timespec32 *res);
-> -
->  #endif /* __ASSEMBLY__ */
->  
->  #endif /* __KERNEL__ */
-> diff --git a/arch/arm/vdso/vgettimeofday.c b/arch/arm/vdso/vgettimeofday.c
-> index a003beacac76..3554aa35f1ba 100644
-> --- a/arch/arm/vdso/vgettimeofday.c
-> +++ b/arch/arm/vdso/vgettimeofday.c
-> @@ -8,6 +8,7 @@
->  #include <linux/types.h>
->  #include <asm/vdso.h>
->  #include <asm/unwind.h>
-> +#include <vdso/gettime.h>
->  
->  int __vdso_clock_gettime(clockid_t clock,
->  			 struct old_timespec32 *ts)
-> diff --git a/arch/arm64/kernel/vdso32/vgettimeofday.c b/arch/arm64/kernel/vdso32/vgettimeofday.c
-> index 5acff29c5991..e23c7f4ef26b 100644
-> --- a/arch/arm64/kernel/vdso32/vgettimeofday.c
-> +++ b/arch/arm64/kernel/vdso32/vgettimeofday.c
-> @@ -5,6 +5,7 @@
->   * Copyright (C) 2018 ARM Limited
->   *
->   */
-> +#include <vdso/gettime.h>
->  
->  int __vdso_clock_gettime(clockid_t clock,
->  			 struct old_timespec32 *ts)
-> diff --git a/arch/csky/kernel/vdso/vgettimeofday.c b/arch/csky/kernel/vdso/vgettimeofday.c
-> index c4831145eed5..55af30e83752 100644
-> --- a/arch/csky/kernel/vdso/vgettimeofday.c
-> +++ b/arch/csky/kernel/vdso/vgettimeofday.c
-> @@ -2,36 +2,27 @@
->  
->  #include <linux/time.h>
->  #include <linux/types.h>
-> +#include <vdso/gettime.h>
->  
->  extern
-> -int __vdso_clock_gettime(clockid_t clock,
-> -			 struct old_timespec32 *ts);
->  int __vdso_clock_gettime(clockid_t clock,
->  			 struct old_timespec32 *ts)
->  {
->  	return __cvdso_clock_gettime32(clock, ts);
->  }
->  
-> -int __vdso_clock_gettime64(clockid_t clock,
-> -			   struct __kernel_timespec *ts);
->  int __vdso_clock_gettime64(clockid_t clock,
->  			   struct __kernel_timespec *ts)
->  {
->  	return __cvdso_clock_gettime(clock, ts);
->  }
->  
-> -extern
-> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
-> -			struct timezone *tz);
->  int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
->  			struct timezone *tz)
->  {
->  	return __cvdso_gettimeofday(tv, tz);
->  }
->  
-> -extern
-> -int __vdso_clock_getres(clockid_t clock_id,
-> -			struct old_timespec32 *res);
->  int __vdso_clock_getres(clockid_t clock_id,
->  			struct old_timespec32 *res)
->  {
-> diff --git a/arch/loongarch/vdso/vgettimeofday.c b/arch/loongarch/vdso/vgettimeofday.c
-> index 8f22863bd7ea..0885c1f3a89d 100644
-> --- a/arch/loongarch/vdso/vgettimeofday.c
-> +++ b/arch/loongarch/vdso/vgettimeofday.c
-> @@ -5,23 +5,18 @@
->   * Copyright (C) 2020-2022 Loongson Technology Corporation Limited
->   */
->  #include <linux/types.h>
-> +#include <vdso/gettime.h>
->  
-> -extern
-> -int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
->  int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts)
->  {
->  	return __cvdso_clock_gettime(clock, ts);
->  }
->  
-> -extern
-> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
->  int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
->  {
->  	return __cvdso_gettimeofday(tv, tz);
->  }
->  
-> -extern
-> -int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res);
->  int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res)
->  {
->  	return __cvdso_clock_getres(clock_id, res);
-> diff --git a/arch/mips/vdso/vgettimeofday.c b/arch/mips/vdso/vgettimeofday.c
-> index 6b83b6376a4b..604afea3f336 100644
-> --- a/arch/mips/vdso/vgettimeofday.c
-> +++ b/arch/mips/vdso/vgettimeofday.c
-> @@ -9,6 +9,7 @@
->   */
->  #include <linux/time.h>
->  #include <linux/types.h>
-> +#include <vdso/gettime.h>
->  
->  #if _MIPS_SIM != _MIPS_SIM_ABI64
->  int __vdso_clock_gettime(clockid_t clock,
-> diff --git a/arch/riscv/kernel/vdso/vgettimeofday.c b/arch/riscv/kernel/vdso/vgettimeofday.c
-> index cc0d80699c31..b35057802584 100644
-> --- a/arch/riscv/kernel/vdso/vgettimeofday.c
-> +++ b/arch/riscv/kernel/vdso/vgettimeofday.c
-> @@ -8,23 +8,18 @@
->  
->  #include <linux/time.h>
->  #include <linux/types.h>
-> +#include <vdso/gettime.h>
->  
-> -extern
-> -int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
->  int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts)
->  {
->  	return __cvdso_clock_gettime(clock, ts);
->  }
->  
-> -extern
-> -int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
->  int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
->  {
->  	return __cvdso_gettimeofday(tv, tz);
->  }
->  
-> -extern
-> -int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res);
->  int __vdso_clock_getres(clockid_t clock_id, struct __kernel_timespec *res)
->  {
->  	return __cvdso_clock_getres(clock_id, res);
-> diff --git a/arch/x86/entry/vdso/vclock_gettime.c b/arch/x86/entry/vdso/vclock_gettime.c
-> index 7d70935b6758..0debc194bd78 100644
-> --- a/arch/x86/entry/vdso/vclock_gettime.c
-> +++ b/arch/x86/entry/vdso/vclock_gettime.c
-> @@ -11,12 +11,10 @@
->  #include <linux/time.h>
->  #include <linux/kernel.h>
->  #include <linux/types.h>
-> +#include <vdso/gettime.h>
->  
->  #include "../../../../lib/vdso/gettimeofday.c"
->  
-> -extern int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
-> -extern __kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
-> -
->  int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz)
->  {
->  	return __cvdso_gettimeofday(tv, tz);
-> @@ -35,9 +33,6 @@ __kernel_old_time_t time(__kernel_old_time_t *t)	__attribute__((weak, alias("__v
->  
->  #if defined(CONFIG_X86_64) && !defined(BUILD_VDSO32_64)
->  /* both 64-bit and x32 use these */
-> -extern int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
-> -extern int __vdso_clock_getres(clockid_t clock, struct __kernel_timespec *res);
-> -
->  int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts)
->  {
->  	return __cvdso_clock_gettime(clock, ts);
-> @@ -56,9 +51,6 @@ int clock_getres(clockid_t, struct __kernel_timespec *)
->  
->  #else
->  /* i386 only */
-> -extern int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts);
-> -extern int __vdso_clock_getres(clockid_t clock, struct old_timespec32 *res);
-> -
->  int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts)
->  {
->  	return __cvdso_clock_gettime32(clock, ts);
-> diff --git a/arch/x86/include/asm/vdso/gettimeofday.h b/arch/x86/include/asm/vdso/gettimeofday.h
-> index c81858d903dc..a46edb0e0cf7 100644
-> --- a/arch/x86/include/asm/vdso/gettimeofday.h
-> +++ b/arch/x86/include/asm/vdso/gettimeofday.h
-> @@ -337,8 +337,6 @@ u64 vdso_calc_delta(u64 cycles, u64 last, u64 mask, u32 mult)
->  }
->  #define vdso_calc_delta vdso_calc_delta
->  
-> -int __vdso_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts);
-> -
->  #endif /* !__ASSEMBLY__ */
->  
->  #endif /* __ASM_VDSO_GETTIMEOFDAY_H */
-> diff --git a/arch/x86/um/vdso/um_vdso.c b/arch/x86/um/vdso/um_vdso.c
-> index ff0f3b4b6c45..63768dd347ce 100644
-> --- a/arch/x86/um/vdso/um_vdso.c
-> +++ b/arch/x86/um/vdso/um_vdso.c
-> @@ -12,6 +12,7 @@
->  #include <linux/time.h>
->  #include <linux/getcpu.h>
->  #include <asm/unistd.h>
-> +#include <vdso/gettime.h>
->  
->  int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
->  {
-> diff --git a/include/vdso/gettime.h b/include/vdso/gettime.h
-> new file mode 100644
-> index 000000000000..c50d152e7b3e
-> --- /dev/null
-> +++ b/include/vdso/gettime.h
-> @@ -0,0 +1,23 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _VDSO_GETTIME_H
-> +#define _VDSO_GETTIME_H
-> +
-> +#include <linux/types.h>
-> +
-> +struct __kernel_timespec;
-> +struct timezone;
-> +
-> +#if !defined(CONFIG_64BIT) || defined(BUILD_VDSO32_64)
-> +struct old_timespec32;
-> +int __vdso_clock_getres(clockid_t clock, struct old_timespec32 *res);
-> +int __vdso_clock_gettime(clockid_t clock, struct old_timespec32 *ts);
-> +#else
-> +int __vdso_clock_getres(clockid_t clock, struct __kernel_timespec *res);
-> +int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
-> +#endif
-> +
-> +__kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
-> +int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
-> +int __vdso_clock_gettime64(clockid_t clock, struct __kernel_timespec *ts);
-> +
-> +#endif
-
--- 
-Regards,
-Vincenzo
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKCk1pY2hhZWwgV2FsbGUgPG1pY2hhZWxAd2FsbGUuY2M+IOaWvCAyMDIz5bm0
+MTHmnIg55pelIOmAseWbmyDkuIvljYg2OjU25a+r6YGT77yaCj4KPiBIaSwKPgo+IEFtIDIwMjMt
+MTEtMDggMTA6NDMsIHNjaHJpZWIgQWNlTGFuIEthbzoKPiA+IEZyb206ICJDaGlhLUxpbiBLYW8g
+KEFjZUxhbikiIDxhY2VsYW4ua2FvQGNhbm9uaWNhbC5jb20+Cj4gPgo+ID4gTm8gZnVuY3Rpb25h
+bCBjaGFuZ2VzIGFyZSBpbnRyb2R1Y2VkIGJ5IHRoaXMgcGF0Y2g7IGl0J3MgYSBjb2RlIGNsZWFu
+dXAKPiA+IHRvIHVzZSB0aGUgY29ycmVjdCBlcnJvciBjb2RlLgo+Cj4gVGhpcyBlcnJvciBjb2Rl
+IG1pZ2h0IGJlIHJldHVybmVkIHRvIHVzZXJzcGFjZSAoSSBndWVzcz8pLgoKSXQncyBub3QgbGlr
+ZWx5IHRoZSB2YWx1ZSB3aWxsIGJlIHJldHVybmVkIHRvIHVzZXJzcGFjZS4KSSBkaWRuJ3QgZmlu
+ZCBhIHBhdGggdGhhdCB0aGUgdmFsdWUgd2lsbCBnbyB0byB1c2Vwc2FjZS4KPgo+ID4gU2lnbmVk
+LW9mZi1ieTogQ2hpYS1MaW4gS2FvIChBY2VMYW4pIDxhY2VsYW4ua2FvQGNhbm9uaWNhbC5jb20+
+Cj4gPgo+ID4gLS0tCj4gPiB2NS4gZGlzdGluZ3Vpc2ggLUVPUE5PVFNVUFAgZnJvbSAtRU5PVFNV
+UFAKPiA+IC0tLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyB8IDIgKy0KPiA+ICBk
+cml2ZXJzL3NwaS9hdG1lbC1xdWFkc3BpLmMgfCAyICstCj4gPiAgZHJpdmVycy9zcGkvc3BpLWF0
+aDc5LmMgICAgIHwgMiArLQo+ID4gIGRyaXZlcnMvc3BpL3NwaS1iY20tcXNwaS5jICB8IDIgKy0K
+PiA+ICBkcml2ZXJzL3NwaS9zcGktbWVtLmMgICAgICAgfCA2ICsrKy0tLQo+ID4gIGRyaXZlcnMv
+c3BpL3NwaS1ucGNtLWZpdS5jICB8IDIgKy0KPiA+ICBkcml2ZXJzL3NwaS9zcGktdGktcXNwaS5j
+ICAgfCA0ICsrLS0KPiA+ICBkcml2ZXJzL3NwaS9zcGktd3BjbS1maXUuYyAgfCAyICstCj4KPiBU
+aGlzIGlzIG1pc3NpbmcgYSB1c2VyIGluIHNwaS1ub3IvY29yZS5jIChpbgo+IHNwaV9ub3Jfc2V0
+XzRieXRlX2FkZHJfbW9kZSgpKS4KUmlnaHQsIHdlIHNob3VsZCBjaGFuZ2UgdGhlIGNoZWNrIHRv
+IC1FT1BOT1RTVVBQCj4KPiAtbWljaGFlbAo+Cj4gPiAgOCBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNl
+cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCj4gPiBpbmRl
+eCAzOTNmZjM3ZjBkMjMuLmQxZGY1Y2Q0MDFjZiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRk
+L25hbmQvc3BpL2NvcmUuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jCj4g
+PiBAQCAtOTczLDcgKzk3Myw3IEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9tYW51ZmFjdHVyZXJfbWF0
+Y2goc3RydWN0Cj4gPiBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiA+ICAgICAgICAgICAgICAg
+c3BpbmFuZC0+bWFudWZhY3R1cmVyID0gbWFudWZhY3R1cmVyOwo+ID4gICAgICAgICAgICAgICBy
+ZXR1cm4gMDsKPiA+ICAgICAgIH0KPiA+IC0gICAgIHJldHVybiAtRU5PVFNVUFA7Cj4gPiArICAg
+ICByZXR1cm4gLUVPUE5PVFNVUFA7Cj4gPiAgfQo+ID4KPiA+ICBzdGF0aWMgaW50IHNwaW5hbmRf
+aWRfZGV0ZWN0KHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKPiA+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL3NwaS9hdG1lbC1xdWFkc3BpLmMgYi9kcml2ZXJzL3NwaS9hdG1lbC1xdWFkc3Bp
+LmMKPiA+IGluZGV4IDNkMTI1MjU2NjEzNC4uMzcwYzRkMTU3MmVkIDEwMDY0NAo+ID4gLS0tIGEv
+ZHJpdmVycy9zcGkvYXRtZWwtcXVhZHNwaS5jCj4gPiArKysgYi9kcml2ZXJzL3NwaS9hdG1lbC1x
+dWFkc3BpLmMKPiA+IEBAIC0yNzIsNyArMjcyLDcgQEAgc3RhdGljIGludCBhdG1lbF9xc3BpX2Zp
+bmRfbW9kZShjb25zdCBzdHJ1Y3QKPiA+IHNwaV9tZW1fb3AgKm9wKQo+ID4gICAgICAgICAgICAg
+ICBpZiAoYXRtZWxfcXNwaV9pc19jb21wYXRpYmxlKG9wLCAmYXRtZWxfcXNwaV9tb2Rlc1tpXSkp
+Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGk7Cj4gPgo+ID4gLSAgICAgcmV0dXJu
+IC1FTk9UU1VQUDsKPiA+ICsgICAgIHJldHVybiAtRU9QTk9UU1VQUDsKPiA+ICB9Cj4gPgo+ID4g
+IHN0YXRpYyBib29sIGF0bWVsX3FzcGlfc3VwcG9ydHNfb3Aoc3RydWN0IHNwaV9tZW0gKm1lbSwK
+PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktYXRoNzkuYyBiL2RyaXZlcnMvc3BpL3Nw
+aS1hdGg3OS5jCj4gPiBpbmRleCBjOWYxZDFlMWRjZjcuLmI3YWRhOTgxNDY0YSAxMDA2NDQKPiA+
+IC0tLSBhL2RyaXZlcnMvc3BpL3NwaS1hdGg3OS5jCj4gPiArKysgYi9kcml2ZXJzL3NwaS9zcGkt
+YXRoNzkuYwo+ID4gQEAgLTE0Niw3ICsxNDYsNyBAQCBzdGF0aWMgaW50IGF0aDc5X2V4ZWNfbWVt
+X29wKHN0cnVjdCBzcGlfbWVtICptZW0sCj4gPiAgICAgICAvKiBPbmx5IHVzZSBmb3IgZmFzdC1y
+ZWFkIG9wLiAqLwo+ID4gICAgICAgaWYgKG9wLT5jbWQub3Bjb2RlICE9IDB4MGIgfHwgb3AtPmRh
+dGEuZGlyICE9IFNQSV9NRU1fREFUQV9JTiB8fAo+ID4gICAgICAgICAgIG9wLT5hZGRyLm5ieXRl
+cyAhPSAzIHx8IG9wLT5kdW1teS5uYnl0ZXMgIT0gMSkKPiA+IC0gICAgICAgICAgICAgcmV0dXJu
+IC1FTk9UU1VQUDsKPiA+ICsgICAgICAgICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOwo+ID4KPiA+
+ICAgICAgIC8qIGRpc2FibGUgR1BJTyBtb2RlICovCj4gPiAgICAgICBhdGg3OV9zcGlfd3Ioc3As
+IEFSNzFYWF9TUElfUkVHX0ZTLCAwKTsKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGkt
+YmNtLXFzcGkuYyBiL2RyaXZlcnMvc3BpL3NwaS1iY20tcXNwaS5jCj4gPiBpbmRleCBlZjA4ZmNh
+YzJmNmQuLmQ5NjIyMmU2ZDdkMiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvc3BpL3NwaS1iY20t
+cXNwaS5jCj4gPiArKysgYi9kcml2ZXJzL3NwaS9zcGktYmNtLXFzcGkuYwo+ID4gQEAgLTExOTks
+NyArMTE5OSw3IEBAIHN0YXRpYyBpbnQgYmNtX3FzcGlfZXhlY19tZW1fb3Aoc3RydWN0IHNwaV9t
+ZW0KPiA+ICptZW0sCj4gPgo+ID4gICAgICAgaWYgKCFvcC0+ZGF0YS5uYnl0ZXMgfHwgIW9wLT5h
+ZGRyLm5ieXRlcyB8fCBvcC0+YWRkci5uYnl0ZXMgPiA0IHx8Cj4gPiAgICAgICAgICAgb3AtPmRh
+dGEuZGlyICE9IFNQSV9NRU1fREFUQV9JTikKPiA+IC0gICAgICAgICAgICAgcmV0dXJuIC1FTk9U
+U1VQUDsKPiA+ICsgICAgICAgICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOwo+ID4KPiA+ICAgICAg
+IGJ1ZiA9IG9wLT5kYXRhLmJ1Zi5pbjsKPiA+ICAgICAgIGFkZHIgPSBvcC0+YWRkci52YWw7Cj4g
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zcGkvc3BpLW1lbS5jIGIvZHJpdmVycy9zcGkvc3BpLW1l
+bS5jCj4gPiBpbmRleCBlZGQ3NDMwZDRjMDUuLjJkYzhjZWI4NTM3NCAxMDA2NDQKPiA+IC0tLSBh
+L2RyaXZlcnMvc3BpL3NwaS1tZW0uYwo+ID4gKysrIGIvZHJpdmVycy9zcGkvc3BpLW1lbS5jCj4g
+PiBAQCAtMzIzLDcgKzMyMyw3IEBAIGludCBzcGlfbWVtX2V4ZWNfb3Aoc3RydWN0IHNwaV9tZW0g
+Km1lbSwgY29uc3QKPiA+IHN0cnVjdCBzcGlfbWVtX29wICpvcCkKPiA+ICAgICAgICAgICAgICAg
+cmV0dXJuIHJldDsKPiA+Cj4gPiAgICAgICBpZiAoIXNwaV9tZW1faW50ZXJuYWxfc3VwcG9ydHNf
+b3AobWVtLCBvcCkpCj4gPiAtICAgICAgICAgICAgIHJldHVybiAtRU5PVFNVUFA7Cj4gPiArICAg
+ICAgICAgICAgIHJldHVybiAtRU9QTk9UU1VQUDsKPiA+Cj4gPiAgICAgICBpZiAoY3Rsci0+bWVt
+X29wcyAmJiBjdGxyLT5tZW1fb3BzLT5leGVjX29wICYmCj4gPiAhc3BpX2dldF9jc2dwaW9kKG1l
+bS0+c3BpLCAwKSkgewo+ID4gICAgICAgICAgICAgICByZXQgPSBzcGlfbWVtX2FjY2Vzc19zdGFy
+dChtZW0pOwo+ID4gQEAgLTMzOSw3ICszMzksNyBAQCBpbnQgc3BpX21lbV9leGVjX29wKHN0cnVj
+dCBzcGlfbWVtICptZW0sIGNvbnN0Cj4gPiBzdHJ1Y3Qgc3BpX21lbV9vcCAqb3ApCj4gPiAgICAg
+ICAgICAgICAgICAqIHJlYWQgcGF0aCkgYW5kIGV4cGVjdCB0aGUgY29yZSB0byB1c2UgdGhlIHJl
+Z3VsYXIgU1BJCj4gPiAgICAgICAgICAgICAgICAqIGludGVyZmFjZSBpbiBvdGhlciBjYXNlcy4K
+PiA+ICAgICAgICAgICAgICAgICovCj4gPiAtICAgICAgICAgICAgIGlmICghcmV0IHx8IHJldCAh
+PSAtRU5PVFNVUFApCj4gPiArICAgICAgICAgICAgIGlmICghcmV0IHx8IHJldCAhPSAtRU5PVFNV
+UFAgfHwgcmV0ICE9IC1FT1BOT1RTVVBQKQo+ID4gICAgICAgICAgICAgICAgICAgICAgIHJldHVy
+biByZXQ7Cj4gPiAgICAgICB9Cj4gPgo+ID4gQEAgLTU1OSw3ICs1NTksNyBAQCBzcGlfbWVtX2Rp
+cm1hcF9jcmVhdGUoc3RydWN0IHNwaV9tZW0gKm1lbSwKPiA+ICAgICAgIGlmIChyZXQpIHsKPiA+
+ICAgICAgICAgICAgICAgZGVzYy0+bm9kaXJtYXAgPSB0cnVlOwo+ID4gICAgICAgICAgICAgICBp
+ZiAoIXNwaV9tZW1fc3VwcG9ydHNfb3AoZGVzYy0+bWVtLCAmZGVzYy0+aW5mby5vcF90bXBsKSkK
+PiA+IC0gICAgICAgICAgICAgICAgICAgICByZXQgPSAtRU5PVFNVUFA7Cj4gPiArICAgICAgICAg
+ICAgICAgICAgICAgcmV0ID0gLUVPUE5PVFNVUFA7Cj4gPiAgICAgICAgICAgICAgIGVsc2UKPiA+
+ICAgICAgICAgICAgICAgICAgICAgICByZXQgPSAwOwo+ID4gICAgICAgfQo+ID4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvc3BpL3NwaS1ucGNtLWZpdS5jIGIvZHJpdmVycy9zcGkvc3BpLW5wY20tZml1
+LmMKPiA+IGluZGV4IDAzZGI5ZjAxNmExMS4uZjNiYjhiYmMxOTJmIDEwMDY0NAo+ID4gLS0tIGEv
+ZHJpdmVycy9zcGkvc3BpLW5wY20tZml1LmMKPiA+ICsrKyBiL2RyaXZlcnMvc3BpL3NwaS1ucGNt
+LWZpdS5jCj4gPiBAQCAtNTU2LDcgKzU1Niw3IEBAIHN0YXRpYyBpbnQgbnBjbV9maXVfZXhlY19v
+cChzdHJ1Y3Qgc3BpX21lbSAqbWVtLAo+ID4gY29uc3Qgc3RydWN0IHNwaV9tZW1fb3AgKm9wKQo+
+ID4gICAgICAgICAgICAgICBvcC0+ZGF0YS5uYnl0ZXMpOwo+ID4KPiA+ICAgICAgIGlmIChmaXUt
+PnNwaXhfbW9kZSB8fCBvcC0+YWRkci5uYnl0ZXMgPiA0KQo+ID4gLSAgICAgICAgICAgICByZXR1
+cm4gLUVOT1RTVVBQOwo+ID4gKyAgICAgICAgICAgICByZXR1cm4gLUVPUE5PVFNVUFA7Cj4gPgo+
+ID4gICAgICAgaWYgKGZpdS0+Y2xrcmF0ZSAhPSBjaGlwLT5jbGtyYXRlKSB7Cj4gPiAgICAgICAg
+ICAgICAgIHJldCA9IGNsa19zZXRfcmF0ZShmaXUtPmNsaywgY2hpcC0+Y2xrcmF0ZSk7Cj4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9zcGkvc3BpLXRpLXFzcGkuYyBiL2RyaXZlcnMvc3BpL3NwaS10
+aS1xc3BpLmMKPiA+IGluZGV4IDRjODE1MTZiNjdkYi4uMDg3N2RjNTA1OGExIDEwMDY0NAo+ID4g
+LS0tIGEvZHJpdmVycy9zcGkvc3BpLXRpLXFzcGkuYwo+ID4gKysrIGIvZHJpdmVycy9zcGkvc3Bp
+LXRpLXFzcGkuYwo+ID4gQEAgLTYxMywxMiArNjEzLDEyIEBAIHN0YXRpYyBpbnQgdGlfcXNwaV9l
+eGVjX21lbV9vcChzdHJ1Y3Qgc3BpX21lbQo+ID4gKm1lbSwKPiA+ICAgICAgIC8qIE9ubHkgb3B0
+aW1pemUgcmVhZCBwYXRoLiAqLwo+ID4gICAgICAgaWYgKCFvcC0+ZGF0YS5uYnl0ZXMgfHwgb3At
+PmRhdGEuZGlyICE9IFNQSV9NRU1fREFUQV9JTiB8fAo+ID4gICAgICAgICAgICFvcC0+YWRkci5u
+Ynl0ZXMgfHwgb3AtPmFkZHIubmJ5dGVzID4gNCkKPiA+IC0gICAgICAgICAgICAgcmV0dXJuIC1F
+Tk9UU1VQUDsKPiA+ICsgICAgICAgICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOwo+ID4KPiA+ICAg
+ICAgIC8qIEFkZHJlc3MgZXhjZWVkcyBNTUlPIHdpbmRvdyBzaXplLCBmYWxsIGJhY2sgdG8gcmVn
+dWxhciBtb2RlLiAqLwo+ID4gICAgICAgZnJvbSA9IG9wLT5hZGRyLnZhbDsKPiA+ICAgICAgIGlm
+IChmcm9tICsgb3AtPmRhdGEubmJ5dGVzID4gcXNwaS0+bW1hcF9zaXplKQo+ID4gLSAgICAgICAg
+ICAgICByZXR1cm4gLUVOT1RTVVBQOwo+ID4gKyAgICAgICAgICAgICByZXR1cm4gLUVPUE5PVFNV
+UFA7Cj4gPgo+ID4gICAgICAgbXV0ZXhfbG9jaygmcXNwaS0+bGlzdF9sb2NrKTsKPiA+Cj4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9zcGkvc3BpLXdwY20tZml1LmMgYi9kcml2ZXJzL3NwaS9zcGkt
+d3BjbS1maXUuYwo+ID4gaW5kZXggODUyZmZlMDEzZDMyLi5kNzZmN2I1YTliOTcgMTAwNjQ0Cj4g
+PiAtLS0gYS9kcml2ZXJzL3NwaS9zcGktd3BjbS1maXUuYwo+ID4gKysrIGIvZHJpdmVycy9zcGkv
+c3BpLXdwY20tZml1LmMKPiA+IEBAIC0zNjEsNyArMzYxLDcgQEAgc3RhdGljIGludCB3cGNtX2Zp
+dV9leGVjX29wKHN0cnVjdCBzcGlfbWVtICptZW0sCj4gPiBjb25zdCBzdHJ1Y3Qgc3BpX21lbV9v
+cCAqb3ApCj4gPgo+ID4gICAgICAgd3BjbV9maXVfc3RhbGxfaG9zdChmaXUsIGZhbHNlKTsKPiA+
+Cj4gPiAtICAgICByZXR1cm4gLUVOT1RTVVBQOwo+ID4gKyAgICAgcmV0dXJuIC1FT1BOT1RTVVBQ
+Owo+ID4gIH0KPiA+Cj4gPiAgc3RhdGljIGludCB3cGNtX2ZpdV9hZGp1c3Rfb3Bfc2l6ZShzdHJ1
+Y3Qgc3BpX21lbSAqbWVtLCBzdHJ1Y3QKPiA+IHNwaV9tZW1fb3AgKm9wKQoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
