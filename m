@@ -4,99 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7955C4332F
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Nov 2023 04:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1165EC4332F
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Nov 2023 10:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=59q9Bb/c9Z1K8JnqthI30EnZ6xmd8QvUgmdAAyqontM=; b=tORSWR1bUo9zID
-	EokS8JGNZtkGov7dR08+F+kHSNQ05uoUpzZCd6ThderQYUbCfwX5K/LpAT+mafaibqSOmv/kL0jEo
-	zHbClPEE446tT+93ijb09hcPFjtfx+tKrb/ko0mPp8hIJWq4maQCuDd6X2hQAE+ZXj5j0rupI93wC
-	dfhDvJ6buOjWYNH9vzNJGXp8mzL3S3VnXC0keeBSRncNIP41OExT7dgK+i4WovTg9zeIPD0HM2L+c
-	p/jAcQSQ5QfEcMJwYuYkRbasZ+FlLMoO1EKCQAQVa1cmHNE0q1R9XcNVclRTOqEC81qEJ9lUm75sW
-	cAadeGqI90syIq/VX2zg==;
+	List-Owner; bh=OKs4RIxXQ8Y33C1Qlt59MeXKQTjRvKdSw630Xp5evpU=; b=v8daf6Kd1zp1P0
+	MXG2zK2H8KElStFXYvobWEHbRqqVHjSDsuHKYd2WqSeMmMc3b2cYLV5nd0rsqwz/4jwKl1U8uvKL2
+	4XYzpdypP7xfEbx20TgHzkzUSvxrjcTXsTVNLTDpBWP33drWZiwYCWwHLIGijZoMoyQmNXKqU/Wal
+	8nU+W45IZ8ZJtAkHVlSThLrJ1iZCxE3oLgsuMYQIUdTpdUFOOvcWlQplgDFGeXwK3+ux+7ovgUXkm
+	Pkxwmm24qWUhgyOVaJ0x095/bXCsTDB+nPX/Ru740snMptZXDfoR7saiRyBzRhUweInFvhHbi8Jud
+	pmT1ThC35/mbPHC8BV0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r21zX-00BerK-0z;
-	Sun, 12 Nov 2023 04:22:35 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1r27Vq-00BxK2-0T;
+	Sun, 12 Nov 2023 10:16:18 +0000
+Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r21zQ-00Beqf-2f;
-	Sun, 12 Nov 2023 04:22:30 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0D65B60C02;
-	Sun, 12 Nov 2023 04:22:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BC1EC433AB;
-	Sun, 12 Nov 2023 04:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699762947;
-	bh=FJL4JNEf9Nr1DoflQgnKi0tfP9lyYuVjCmmad2iv8TA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=T9IHCfRSJCCiMNO/B2lnKhTDg7vzSLaSof7ydAGyTQokfwHc0UzVrA9vy+3S4mFHO
-	 Mpc/gtpML1wYUcpX2bPDBy9pPY5QgOuHgc/QzsPUa8mOygZ56/qPbpHlwwajazH46U
-	 1n3ZTA/MJFWE7HGwSGp8kR738Ey0K/PgQf5/mwzV91s5bTFFTjRfOkgcW5rDr+NefW
-	 70g/doUyhEQMNRVBFV9M32HHKhYl3CB4VPe3qN0mLdZDr/+kodq44fJDaQC3vcGEqX
-	 U3rqX7e9UEtc3XjfnoI7xoUubZMR0tX2Ciz3rIWEnZ55X4l4ocVhndGYJ7soDuUgJ2
-	 X1txJX8483BHg==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c5071165d5so12180191fa.0;
-        Sat, 11 Nov 2023 20:22:27 -0800 (PST)
-X-Gm-Message-State: AOJu0YwEmCWHuiYPjlP+mwUTkCeNr+4ZEY+dP7DsZlnrkJWy5/PxCMJF
-	7U9mRlGWMyM5uN8HpsM3Q7Iq9LBq4ufMT2GCP6s=
-X-Google-Smtp-Source: AGHT+IGKtBb4zpepnAgJWTPQf4OFL8Yxg0IypTLD7L38xtqORdph/fQnU2/w9oi/MfemCZAy/+rZ76w/2ug+y+JaBNQ=
-X-Received: by 2002:a05:6402:3d9:b0:53f:731a:e513 with SMTP id
- t25-20020a05640203d900b0053f731ae513mr2174574edw.25.1699762924720; Sat, 11
- Nov 2023 20:22:04 -0800 (PST)
+	id 1r27Vj-00BxIm-1n;
+	Sun, 12 Nov 2023 10:16:14 +0000
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 47DD1120005;
+	Sun, 12 Nov 2023 13:16:02 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 47DD1120005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1699784162;
+	bh=QkAL75FeAUEzLTDdv3OVdvwrABVU5Bl7zMHv1p+MboI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=RyWW0/UunW5czFJ/lL0WsWtvLt/aHe5bUK2kg0FgDmANfZhfgsB4rI7cPMKU5jIge
+	 QumpByB9u3OZJNKAqdIBO6AHjR6hPZ3NdPPmsOwGRKZO2aTm15R5WLPPLoeBabd8Wq
+	 eBtUd5RJRSI6l9sS3E6wMT7Xts10w6DdL6c2M+os8b0qKqBgPWr0+tpx2A6xG+sOnL
+	 XKQMx9qpki6X6G9VAKkjAlqoED0MyfNVXEyBrRqbGXbWJF4xUFp/wHAnky10s2ieTx
+	 W4RF4lhO/yL/EzuM16e72QS98n8wLuiSmmYJhdnKQXBFehpnVilIHfmMIMCz/wjsBr
+	 K197cFhoblTmQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sun, 12 Nov 2023 13:16:02 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Sun, 12 Nov 2023 13:16:01 +0300
+Message-ID: <2d3a1d7c-7bf2-f8af-6019-85f07fee491e@salutedevices.com>
+Date: Sun, 12 Nov 2023 13:08:20 +0300
 MIME-Version: 1.0
-References: <20231108125843.3806765-1-arnd@kernel.org> <20231108125843.3806765-13-arnd@kernel.org>
-In-Reply-To: <20231108125843.3806765-13-arnd@kernel.org>
-From: Guo Ren <guoren@kernel.org>
-Date: Sat, 11 Nov 2023 23:21:53 -0500
-X-Gmail-Original-Message-ID: <CAJF2gTSEziwKn+f6DfZXRuzW1SXaWraKL2HdXMRkEOGyuHq3MQ@mail.gmail.com>
-Message-ID: <CAJF2gTSEziwKn+f6DfZXRuzW1SXaWraKL2HdXMRkEOGyuHq3MQ@mail.gmail.com>
-Subject: Re: [PATCH 12/22] csky: fix arch_jump_label_transform_static override
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Geoff Levand <geoff@infradead.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
-	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	x86@kernel.org, Helge Deller <deller@gmx.de>, 
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Timur Tabi <timur@kernel.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, David Woodhouse <dwmw2@infradead.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, Kees Cook <keescook@chromium.org>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Al Viro <viro@zeniv.linux.org.uk>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
-	linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-bcachefs@vger.kernel.org, linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v1] mtd: rawnand: meson: initialize clock register
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20231109054037.3864802-1-avkrasnov@salutedevices.com>
+Content-Language: en-US
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20231109054037.3864802-1-avkrasnov@salutedevices.com>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181295 [Nov 10 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/12 05:48:00 #22442901
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231111_202228_951613_DDB98135 
-X-CRM114-Status: GOOD (  19.50  )
+X-CRM114-CacheID: sfid-20231112_021612_279143_643183BF 
+X-CRM114-Status: GOOD (  17.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,39 +100,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBOb3YgOCwgMjAyMyBhdCA4OjAy4oCvQU0gQXJuZCBCZXJnbWFubiA8YXJuZEBrZXJu
-ZWwub3JnPiB3cm90ZToKPgo+IEZyb206IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4K
-PiBUaGUgYXJjaF9qdW1wX2xhYmVsX3RyYW5zZm9ybV9zdGF0aWMoKSBmdW5jdGlvbiBpbiBjc2t5
-IHdhcyBvcmlnaW5hbGx5IG1lYW50IHRvCj4gb3ZlcnJpZGUgdGhlIGdlbmVyaWMgX193ZWFrIGZ1
-bmN0aW9uLCBidXQgdGhhdCBnb3QgY2hhbmdlZCB0byBhbiAjaWZuZGVmIGNoZWNrLgo+Cj4gVGhp
-cyBzaG93ZWQgdXAgYXMgYSBtaXNzaW5nLXByb3RvdHlwZSB3YXJuaW5nOgo+IGFyY2gvY3NreS9r
-ZXJuZWwvanVtcF9sYWJlbC5jOjQzOjY6IGVycm9yOiBubyBwcmV2aW91cyBwcm90b3R5cGUgZm9y
-ICdhcmNoX2p1bXBfbGFiZWxfdHJhbnNmb3JtX3N0YXRpYycgWy1XZXJyb3I9bWlzc2luZy1wcm90
-b3R5cGVzXQo+Cj4gQ2hhbmdlIHRoZSBtZXRob2QgdG8gdXNlIHRoZSBuZXcgbWV0aG9kIG9mIGhh
-dmluZyBhICNkZWZpbmUgYW5kIGEgcHJvdG90eXBlCj4gZm9yIHRoZSBnbG9iYWwgZnVuY3Rpb24u
-Cj4KPiBGaXhlczogN2U2YjlkYjI3ZGU5ICgianVtcF9sYWJlbDogbWFrZSBpbml0aWFsIE5PUCBw
-YXRjaGluZyB0aGUgc3BlY2lhbCBjYXNlIikKPiBGaXhlczogNGU4YmI0YmE1YTU1ICgiY3NreTog
-QWRkIGp1bXAtbGFiZWwgaW1wbGVtZW50YXRpb24iKQo+IFNpZ25lZC1vZmYtYnk6IEFybmQgQmVy
-Z21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gLS0tCj4gIGFyY2gvY3NreS9pbmNsdWRlL2FzbS9qdW1w
-X2xhYmVsLmggfCA1ICsrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykKPgo+
-IGRpZmYgLS1naXQgYS9hcmNoL2Nza3kvaW5jbHVkZS9hc20vanVtcF9sYWJlbC5oIGIvYXJjaC9j
-c2t5L2luY2x1ZGUvYXNtL2p1bXBfbGFiZWwuaAo+IGluZGV4IGQ0ODhiYTYwODRiYy4uOThhM2Y0
-YjE2OGJkIDEwMDY0NAo+IC0tLSBhL2FyY2gvY3NreS9pbmNsdWRlL2FzbS9qdW1wX2xhYmVsLmgK
-PiArKysgYi9hcmNoL2Nza3kvaW5jbHVkZS9hc20vanVtcF9sYWJlbC5oCj4gQEAgLTQzLDUgKzQz
-LDEwIEBAIHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgYm9vbCBhcmNoX3N0YXRpY19icmFuY2hfanVt
-cChzdHJ1Y3Qgc3RhdGljX2tleSAqa2V5LAo+ICAgICAgICAgcmV0dXJuIHRydWU7Cj4gIH0KPgo+
-ICtlbnVtIGp1bXBfbGFiZWxfdHlwZTsKPiArdm9pZCBhcmNoX2p1bXBfbGFiZWxfdHJhbnNmb3Jt
-X3N0YXRpYyhzdHJ1Y3QganVtcF9lbnRyeSAqZW50cnksCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBlbnVtIGp1bXBfbGFiZWxfdHlwZSB0eXBlKTsKPiArI2RlZmluZSBh
-cmNoX2p1bXBfbGFiZWxfdHJhbnNmb3JtX3N0YXRpYyBhcmNoX2p1bXBfbGFiZWxfdHJhbnNmb3Jt
-X3N0YXRpYwo+ICsKPiAgI2VuZGlmICAvKiBfX0FTU0VNQkxZX18gKi8KPiAgI2VuZGlmIC8qIF9f
-QVNNX0NTS1lfSlVNUF9MQUJFTF9IICovCj4gLS0KPiAyLjM5LjIKPgo+ClRoYW5rIHlvdSEKUmV2
-aWV3ZWQtYnk6IEd1byBSZW4gPGd1b3JlbkBrZXJuZWwub3JnPgoKLS0gCkJlc3QgUmVnYXJkcwog
-R3VvIFJlbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+
+On 09.11.2023 08:40, Arseniy Krasnov wrote:
+> Clock register must be also initialized during controller probing. If
+> this is not performed (for example by bootloader before) - controller
+> will not work.
+> 
+> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> ---
+>  drivers/mtd/nand/raw/meson_nand.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> index 0d4d358152d7..4e7fa943928c 100644
+> --- a/drivers/mtd/nand/raw/meson_nand.c
+> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> @@ -91,6 +91,8 @@
+>  
+>  /* eMMC clock register, misc control */
+>  #define CLK_SELECT_NAND		BIT(31)
+> +#define CLK_ALWAYS_ON_NAND      BIT(24)
+> +#define CLK_ENABLE_VALUE        0x245
+                                   ^^^^^^
+
+Hi,
+
+@Liang, it will be great, if You'll give some details about this magic value. I get it
+from vendor's driver and it makes NAND controller alive, but I don't have any docs.
+
+Thanks, Arseniy
+
+>  
+>  #define NFC_CLK_CYCLE		6
+>  
+> @@ -1152,7 +1154,7 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>  		return PTR_ERR(nfc->nand_clk);
+>  
+>  	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
+> -	writel(CLK_SELECT_NAND | readl(nfc->reg_clk),
+> +	writel(CLK_ALWAYS_ON_NAND | CLK_SELECT_NAND | CLK_ENABLE_VALUE,
+>  	       nfc->reg_clk);
+>  
+>  	ret = clk_prepare_enable(nfc->core_clk);
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
