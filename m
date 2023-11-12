@@ -4,91 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1165EC4332F
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Nov 2023 10:16:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFBFFC4332F
+	for <linux-mtd@archiver.kernel.org>; Sun, 12 Nov 2023 15:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OKs4RIxXQ8Y33C1Qlt59MeXKQTjRvKdSw630Xp5evpU=; b=v8daf6Kd1zp1P0
-	MXG2zK2H8KElStFXYvobWEHbRqqVHjSDsuHKYd2WqSeMmMc3b2cYLV5nd0rsqwz/4jwKl1U8uvKL2
-	4XYzpdypP7xfEbx20TgHzkzUSvxrjcTXsTVNLTDpBWP33drWZiwYCWwHLIGijZoMoyQmNXKqU/Wal
-	8nU+W45IZ8ZJtAkHVlSThLrJ1iZCxE3oLgsuMYQIUdTpdUFOOvcWlQplgDFGeXwK3+ux+7ovgUXkm
-	Pkxwmm24qWUhgyOVaJ0x095/bXCsTDB+nPX/Ru740snMptZXDfoR7saiRyBzRhUweInFvhHbi8Jud
-	pmT1ThC35/mbPHC8BV0g==;
+	List-Owner; bh=OjYZrRwPSCwGjVV9DO4pF582rbWj10LDqtg7Rser4wY=; b=lc7FGGFxUXMqFb
+	glRakc5tE7QP+flOrit9bybU/ypLD5PTHNHbD7yoqxnM1+GlrOzqeYU90KcbTD3mlH/5bKAVNoHRG
+	T5juZMYTvaK6ULQQjeF0FJJ9E2mJ78AbPnCEwJPrUymb4Q08ZPzS7PzRkI5qV9RnE6ISEYSChm4J5
+	1JSC/VKs98MuPMOWgZfJ3dRxuSorNyBs9bagx7mXyrBngM4Y/7rGE/9AHCchH7Dt28kdl3WFqkBPT
+	4KvowW9AhM4zo0Jk7tXOKvBwUQJpKRU9lGkRZmeJl7e530YPEY00RHfkWMnomXXxyO5ABbe34WevB
+	4/aOp/Q2sr9FkrMIUtVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r27Vq-00BxK2-0T;
-	Sun, 12 Nov 2023 10:16:18 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1r2C6A-00CUzV-2Q;
+	Sun, 12 Nov 2023 15:10:06 +0000
+Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r27Vj-00BxIm-1n;
-	Sun, 12 Nov 2023 10:16:14 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 47DD1120005;
-	Sun, 12 Nov 2023 13:16:02 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 47DD1120005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1699784162;
-	bh=QkAL75FeAUEzLTDdv3OVdvwrABVU5Bl7zMHv1p+MboI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=RyWW0/UunW5czFJ/lL0WsWtvLt/aHe5bUK2kg0FgDmANfZhfgsB4rI7cPMKU5jIge
-	 QumpByB9u3OZJNKAqdIBO6AHjR6hPZ3NdPPmsOwGRKZO2aTm15R5WLPPLoeBabd8Wq
-	 eBtUd5RJRSI6l9sS3E6wMT7Xts10w6DdL6c2M+os8b0qKqBgPWr0+tpx2A6xG+sOnL
-	 XKQMx9qpki6X6G9VAKkjAlqoED0MyfNVXEyBrRqbGXbWJF4xUFp/wHAnky10s2ieTx
-	 W4RF4lhO/yL/EzuM16e72QS98n8wLuiSmmYJhdnKQXBFehpnVilIHfmMIMCz/wjsBr
-	 K197cFhoblTmQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sun, 12 Nov 2023 13:16:02 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Sun, 12 Nov 2023 13:16:01 +0300
-Message-ID: <2d3a1d7c-7bf2-f8af-6019-85f07fee491e@salutedevices.com>
-Date: Sun, 12 Nov 2023 13:08:20 +0300
+	id 1r2C66-00CUyw-1R
+	for linux-mtd@lists.infradead.org;
+	Sun, 12 Nov 2023 15:10:03 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1r2C5t-0006fq-0O;
+	Sun, 12 Nov 2023 15:09:49 +0000
+Date: Sun, 12 Nov 2023 15:09:42 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	devicetree <devicetree@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 5/8] mtd: ubi: attach MTD partition from device-tree
+Message-ID: <ZVDqtn1uuWrSLXNq@makrotopia.org>
+References: <cover.1691717480.git.daniel@makrotopia.org>
+ <df8cfc16a0047c1041a8f8d0069c6312bb83da0d.1691717480.git.daniel@makrotopia.org>
+ <226381209.31782.1696362327615.JavaMail.zimbra@nod.at>
+ <1863543078.49676.1696538801349.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v1] mtd: rawnand: meson: initialize clock register
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20231109054037.3864802-1-avkrasnov@salutedevices.com>
-Content-Language: en-US
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20231109054037.3864802-1-avkrasnov@salutedevices.com>
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181295 [Nov 10 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/12 05:48:00 #22442901
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Disposition: inline
+In-Reply-To: <1863543078.49676.1696538801349.JavaMail.zimbra@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231112_021612_279143_643183BF 
-X-CRM114-Status: GOOD (  17.77  )
+X-CRM114-CacheID: sfid-20231112_071002_491354_BDF4BFEF 
+X-CRM114-Status: GOOD (  24.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,54 +68,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Richard,
+
+thank you for the review and sorry for my late reply to it.
+
+On Thu, Oct 05, 2023 at 10:46:41PM +0200, Richard Weinberger wrote:
+> ----- Urspr=FCngliche Mail -----
+> > Von: "richard" <richard@nod.at>
+> > ----- Urspr=FCngliche Mail -----
+> >> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> >> index e0618bbde3613..99b5f502c9dbc 100644
+> >> --- a/drivers/mtd/ubi/block.c
+> >> +++ b/drivers/mtd/ubi/block.c
+> >> @@ -470,7 +470,7 @@ int ubiblock_remove(struct ubi_volume_info *vi, bo=
+ol force)
+> >> 	}
+> >> =
+
+> >> 	/* Found a device, let's lock it so we can check if it's busy */
+> >> -	mutex_lock(&dev->dev_mutex);
+> >> +	mutex_lock_nested(&dev->dev_mutex, SINGLE_DEPTH_NESTING);
+> > =
+
+> > The usage of mutex_lock_nested() in this patch looks fishy.
+> > Can you please elaborate a bit more why all these mutexes can be taken =
+twice?
+> > (Any why not more often).
+> =
+
+> I think I figured myself.
+> ubiblock_ops->open() and ->release() are both called with disk->open_mute=
+x held.
+> ubiblock_open() and ubiblock_release() take dev->dev_mutex.
+> So, the locking order is open_mutex, followed by dev_mutex.
+> =
+
+> On the other hand, ubiblock_remove() is called via UBI notify.
+> It takes first dev_mutex and then calls del_gendisk() which will trigger =
+ubiblock_ops->release()
+> under disk->open_mutex but takes dev_mutex again.
+> So, we this not only takes a lock twice but also in reverse order.
+> mutex_lock_nested() might silence lockdep but I'm not sure whether this i=
+s safe at all.
+
+I agree that the locking here is not trivial.
+Taking the same lock twice is that SINGLE_DEPTH_NESTING is intended
+for and resolves running into a deadlock otherwise.
+I'm not sure if the changed order of acquiring dev_mutex and open_mutex
+present a problem.
+
+The detach-by-notification case is anyway quite exotic and I only see
+quite synthetic paths to actually get there (such as hotplug removal
+of the SPI controller providing access to SPI-NAND flash, which is how
+I was testing this...). To make things easier and more aligned with
+the original goal (being to attach a UBI device from DT, early enough
+to allow its use as NVMEM provider by other drivers) I suggest to for
+now only handle attachment by MTD notification (if linux,ubi compatible
+is present in DT) and keep handling detachment the way it is now.
+
+This will (just like it is already now) result in "zombie" UBI devices
+being present after their MTD device has already been removed. Accessing
+them creates loud kernel warnings at best.
+
+Let me know if keeing detachment the way it is and only implementing
+attaching from MTD notification and device tree compatible would be ok
+with you.
+
+Thank you!
 
 
-On 09.11.2023 08:40, Arseniy Krasnov wrote:
-> Clock register must be also initialized during controller probing. If
-> this is not performed (for example by bootloader before) - controller
-> will not work.
-> 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  drivers/mtd/nand/raw/meson_nand.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> index 0d4d358152d7..4e7fa943928c 100644
-> --- a/drivers/mtd/nand/raw/meson_nand.c
-> +++ b/drivers/mtd/nand/raw/meson_nand.c
-> @@ -91,6 +91,8 @@
->  
->  /* eMMC clock register, misc control */
->  #define CLK_SELECT_NAND		BIT(31)
-> +#define CLK_ALWAYS_ON_NAND      BIT(24)
-> +#define CLK_ENABLE_VALUE        0x245
-                                   ^^^^^^
+Best regards
 
-Hi,
 
-@Liang, it will be great, if You'll give some details about this magic value. I get it
-from vendor's driver and it makes NAND controller alive, but I don't have any docs.
-
-Thanks, Arseniy
-
->  
->  #define NFC_CLK_CYCLE		6
->  
-> @@ -1152,7 +1154,7 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
->  		return PTR_ERR(nfc->nand_clk);
->  
->  	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
-> -	writel(CLK_SELECT_NAND | readl(nfc->reg_clk),
-> +	writel(CLK_ALWAYS_ON_NAND | CLK_SELECT_NAND | CLK_ENABLE_VALUE,
->  	       nfc->reg_clk);
->  
->  	ret = clk_prepare_enable(nfc->core_clk);
+Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
