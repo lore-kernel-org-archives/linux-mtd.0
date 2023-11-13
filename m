@@ -4,65 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3CF8C4167D
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Nov 2023 13:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7237C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Nov 2023 14:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jxF+d8/oOF7frVIvHwWqmTtvqyAWdU8tSKyAmSjnseI=; b=cZq/wHaxzOUylc
-	v93SMf5Nk443Cxos06fkQvZUZysT3gBfQgxXU5FXP83S2xHnUFEHGKEE1dN6qCGM2qmAv+ViQWRX7
-	L07QAHQjlIVFGZNOThbz3nLUrvgpjDu22bm6nZ6JGuEagprBIJL+7zLMDsUuh4XFkIxPowoKyjspT
-	OQCB6M0T0+9n5E4haFu7viA2t0h6Q7Fk2Xgd152fZpA6O6DbTaA2Dkp7G57A4P10CPpkvN5TeZCzs
-	B+6v3c2tb6vBWBVcCLBRVEdtwrR7OsFw3wuannXcfb2z/Xoy7REK1kfKB1y/ZUYa0nvcDWyNDurR1
-	jsG15sjW6zVcgott+cRg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+tlU2qByYwDBlODGkHZ7ZOvdKshEoEYlfEyTWLhaLqc=; b=o1ZRCNyva8MMBgF7KmPkcTPi6d
+	RtxZagGeABG9RKMaxgyZLBlXQp+Lx/qAk6qWR3t3R4LG7iqsYLDdDX1M2KIlCNjpGcW1QXv5g+2tP
+	INUsjJc/VoSzOLDZP4u0nXFGPH+yPm9xl0a05PgYNFpTGf14hxtUDsPqRMlrs8+npy0TaD3k64217
+	0ZDInKcUsepZ81f1X+g80BLp6lKkRGPMb/xAUznSX3cNgoEjZgkHTE3paVQFc5LH7MSmeakk2RFyC
+	BK5yNMuRIeItsUCJhe+gWVpPies2OLqDUMpz9d87sq1hCLf6Rz3S+0msPN+paxlzBgx1ny28qtzhC
+	T0A3S/4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2XFG-00E4ur-2j;
-	Mon, 13 Nov 2023 13:44:54 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1r2XYE-00E6Ua-1L;
+	Mon, 13 Nov 2023 14:04:30 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2XFD-00E4tI-3D
+	id 1r2XYB-00E6UE-0b
 	for linux-mtd@lists.infradead.org;
-	Mon, 13 Nov 2023 13:44:54 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 808C460003;
-	Mon, 13 Nov 2023 13:44:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1699883085;
+	Mon, 13 Nov 2023 14:04:29 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 6AD90A4D;
+	Mon, 13 Nov 2023 15:04:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1699884261;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NkZZif+50w5P/OD5QUdP1KwY7V0XEjdY3TvKJRJlyIM=;
-	b=VDqjUNvbbuVTYLH6UjMNpo6TVRXdyZNTlP+JE2TOFPvMF/tYKVFjW8dKUiqCNunoddOgqW
-	EadJvyzcP1bOpOi9uagBeYZ6WYAvbjdfb9YqmwGiioIrnxKFGMBaJ3Jqb3pUUaA4tm33sd
-	wjD9HLzTEId+Gqh18+RGsGlq1EY2jR+zzUUhrRAb4sC1j65u4SKgVbQW7IKSnXxiqCaT16
-	/jMTZFOHBIkSwQrFCS9qPOiEE245EEa9VGkwEcAx1+Lh3z6LXAHqoxukkbJ6rzgEUkaYTh
-	meBBnIT4GTZVUazP23ziMRJI19hojoajzWmoFu1i4XJrLvaLVbsu/RjjItjkMw==
-Date: Mon, 13 Nov 2023 14:44:41 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ronald Monthero <debug.penguin32@gmail.com>
-Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
- martin.blumenstingl@googlemail.com, paul@crapouillou.net, robh@kernel.org,
- u.kleine-koenig@pengutronix.de, AVKrasnov@sberdevices.ru,
- r.czerwinski@pengutronix.de, andriy.shevchenko@linux.intel.com,
- jaimeliao.tw@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Philippe =?UTF-8?B?TWF0aGlldS1EYXVkw6k=?=
- <philmd@linaro.org>
-Subject: Re: [PATCH] mtd:nand: Increment IFC_TIMEOUT_MSECS for nand
- controller response
-Message-ID: <20231113144441.6e798d8b@xps-13>
-In-Reply-To: <20231113131634.614467-1-debug.penguin32@gmail.com>
-References: <20231113131634.614467-1-debug.penguin32@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	bh=yUzEw4TxH12VVyyaawGL2bUmESkOGHRb0hTdIzQjJqQ=;
+	b=oymTYKSQXytO264g/g5zxuqMpJcNTAn1JwPKrIuok68U2TpRJyGSoGlkQx1PQmofFc0V3N
+	oioQ0kfonF+F5eCOIIQnbDXrhF/DaKwb2f3H4X8PveLz3Cwi11WqJLMTF9Pk0Wq0fF++o+
+	F8awPy7/CTvibNZ+K2PIdUmsTtzTZi0H/gQW6wx+iwagofw3SsSR6zQtKrLKIAD7CjgsD/
+	Qh7eIqmPS8OEUygwps6N/LBztcU0HOWKfSRiJwt8S93AR5bRCEHDLcPgvyQLCYDNwdCF3J
+	mixl6zy35Q+aYjj3mBw8/XKoRSmZy8eSgfZGCJEiPOkJD2GUAvACSWFX9bIq4Q==
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Date: Mon, 13 Nov 2023 15:04:21 +0100
+From: Michael Walle <michael@walle.cc>
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ "biju.das.au" <biju.das.au@gmail.com>, linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH RFC 0/4] Add set_iofv() callback
+In-Reply-To: <TYCPR01MB1126988E1A0741B99DB8DE59C86ADA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+References: <20231108171149.258656-1-biju.das.jz@bp.renesas.com>
+ <877590a5e3f8c32ec0a032385049a563@walle.cc>
+ <TYVPR01MB11279E535835F2998335F770A86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
+ <b9831be88008b9f9960d1d79cd0e5a3a@walle.cc>
+ <TYVPR01MB11279575676708170F3B3270D86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
+ <f88759f98e865e68da5481fcbb969c47@walle.cc>
+ <TYCPR01MB112699263B2EC0EC229746D3786AFA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <dcfa2cab21fc85bb9b2b0c1ceb754a1a@walle.cc>
+ <TYCPR01MB11269C639CB7AA480E388360B86AEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <TYCPR01MB1126988E1A0741B99DB8DE59C86ADA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Message-ID: <3a9184e1e91689757a5b680e699ce02d@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231113_054452_303788_4A8E1929 
-X-CRM114-Status: GOOD (  24.97  )
+X-CRM114-CacheID: sfid-20231113_060427_572991_072A2A08 
+X-CRM114-Status: GOOD (  33.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,124 +83,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9uYWxkLAoKVGhhbmtzIGZvciB0aGUgcGF0Y2gsIGhlcmUgYXJlIGEgY291cGxlIG9mIGNv
-bW1lbnRzIEknZCBsaWtlIHlvdSB0bwphZGRyZXNzIGJlZm9yZSB0YWtpbmcgdGhlIGZpeC4KCmRl
-YnVnLnBlbmd1aW4zMkBnbWFpbC5jb20gd3JvdGUgb24gTW9uLCAxMyBOb3YgMjAyMyAyMzoxNjoy
-OCArMTAwMDoKClRoZSB0aXRsZSBwcmVmaXggbmVlZHMgdG8gYmUgYWxpZ25lZCB3aXRoIHRvZGF5
-J3MgcG9saWN5LCB5b3UgY2FuIGNoZWNrCml0IHdpdGggZ2l0IGxvZyAtLW9uZWxpbmUgLS0gPHlv
-dXIgZmlsZT4uCgo+IFRoZSBuYW5kIGNvbnRyb2xsZXIgbm90IHJlc3BvbmRpbmcgc2NlbmFyaW8g
-b2NjdXJzIGNhdXNpbmcgYmxvY2tlZCB0YXNrcwo+IGFuZCByY3VfcHJlbXB0IHdhcm5pbmdzIG9m
-IHN0YWxsIG9uIGNwdXMuIEluY3JlbWVudGluZyB0aGUKPiBJRkNfVElNRU9VVF9NU0VDUyBhcHBl
-YXJzIHRvIHNvbHZlIHRoZSBuYW5kIGNvbnRyb2xsZXIgbm90IHJlc3BvbmRpbmcKPiBpc3N1ZS4K
-Ckkgd291bGQgcmVwaHJhc2UgYSBiaXQgdGhpcyBwYXJhZ3JhcGggd2l0aCBtb3JlIGNvbmZpZGVu
-Y2UuIFVuZGVyIGhlYXZ5CmxvYWQgaXQgaXMgbGlrZWx5IHRoYXQgdGhlIGNvbnRyb2xsZXIgaXMg
-ZG9uZSB3aXRoIGl0cyBvd24gdGFzayBidXQgdGhlCnRocmVhZCB1bmxvY2tpbmcgdGhlIHdhaXQg
-bG9vayBpcyBuZXZlciBzY2hlZHVsZWQgKG9yIG5vdCBpbiB0aW1lKQpyZXN1bHRpbmcgaW4gc3Vj
-aCBraW5kIG9mIGVycm9yLiBNYXliZSB0aGVyZSBpcyBzb21ldGhpbmcgZWxzZSB3cm9uZyBpbgp0
-aGUgY29kZSB3aGljaCBzdGFsbHMgdGhlIENQVSBpbiB0aGlzIGNhc2UsIChoZW5jZSB0aGUgZmly
-c3QgbWVzc2FnZSkuCgpFbmxhcmdpbmcgdGhlIHRpbWVvdXQgdG8gMXMgaW4gdGhpcyBjYXNlIGlz
-IGZpbmUsIGJ1dCBtYXliZSB0aGVyZSBpcwpzdGlsbCBzb21ldGhpbmcgd3JvbmcgYXNpZGUuCgo+
-ICoqIElEXzUzMSBtYWluL3NtcmN1OiBJTkZPOiByY3VfcHJlZW1wdCBkZXRlY3RlZCBzdGFsbHMg
-b24gQ1BVcy90YXNrczoKPiByY3U6ICAgIFRhc2tzIGJsb2NrZWQgb24gbGV2ZWwtMCByY3Vfbm9k
-ZSAoQ1BVcyAwLTEpOiBQMTE2LzI6Yi4ubAo+ICAgICAgICAgKGRldGVjdGVkIGJ5IDEsIHQ9MjEw
-MiBqaWZmaWVzLCBnPTEyNjUzLCBxPTUxOCkKPiB0YXNrOmlycS8zMS1hcm0taXJxMSBzdGF0ZTpE
-IHN0YWNrOiAwIHBpZDogIDExNiBwcGlkOiAyIGZsYWdzOjB4MDAwMDAwMDAKPiBbPDgwNjRiOTdm
-Pl0gKF9fc2NoZWR1bGUpIGZyb20gWzw4MDY0YmIwMT5dIChzY2hlZHVsZSsweDhkLzB4YzIpCj4g
-Wzw4MDY0YmIwMT5dIChzY2hlZHVsZSkgZnJvbSBbPDgwNjRmYTY1Pl0gKHNjaGVkdWxlX3RpbWVv
-dXQrMHg2ZC8weGEwKQo+IFs8ODA2NGZhNjU+XSAoc2NoZWR1bGVfdGltZW91dCkgZnJvbSBbPDgw
-NGJhMzUzPl0gKGZzbF9pZmNfcnVuX2NvbW1hbmQrMHg2Zi8weDE3OCkKPiBbPDgwNGJhMzUzPl0g
-KGZzbF9pZmNfcnVuX2NvbW1hbmQpIGZyb20gWzw4MDRiYTcyZj5dIChmc2xfaWZjX2NtZGZ1bmMr
-MHgyMDMvMHgyYjgpCj4gWzw4MDRiYTcyZj5dIChmc2xfaWZjX2NtZGZ1bmMpIGZyb20gWzw4MDRi
-MTM1Zj5dIChuYW5kX3N0YXR1c19vcCsweGFmLzB4ZTApCj4gWzw4MDRiMTM1Zj5dIChuYW5kX3N0
-YXR1c19vcCkgZnJvbSBbPDgwNGIxM2IzPl0gKG5hbmRfY2hlY2tfd3ArMHgyMy8weDQ4KQo+IFs8
-ODA0YjEzYjM+XSAobmFuZF9jaGVja193cCkgZnJvbSBbPDgwNGIyMzFkPl0gKG5hbmRfZG9fd3Jp
-dGVfb3BzKzB4OTkvMHgyYjgpCj4gWzw4MDRiMjMxZD5dIChuYW5kX2RvX3dyaXRlX29wcykgZnJv
-bSBbPDgwNGI1MzU1Pl0gKG5hbmRfd3JpdGVfb29iKzB4M2IvMHg0YSkKPiBbPDgwNGI1MzU1Pl0g
-KG5hbmRfd3JpdGVfb29iKSBmcm9tIFs8ODA0YTM1ODU+XSAobXRkX3dyaXRlKzB4NDEvMHg1YykK
-PiBbPDgwNGEzNTg1Pl0gKG10ZF93cml0ZSkgZnJvbSBbPDgwNGMxZDQ3Pl0gKHViaV9pb193cml0
-ZSsweDE3Zi8weDIyYykKPiBbPDgwNGMxZDQ3Pl0gKHViaV9pb193cml0ZSkgZnJvbSBbPDgwNGMw
-NDdiPl0gKHViaV9lYmFfd3JpdGVfbGViKzB4NWIvMHgxZDApCj4gWzw4MDRjMDQ3Yj5dICh1Ymlf
-ZWJhX3dyaXRlX2xlYikgZnJvbSBbPDgwNGJmNjJkPl0gKHViaV9sZWJfd3JpdGUrMHg3NS8weDkw
-KQo+IFs8ODA0YmY2MmQ+XSAodWJpX2xlYl93cml0ZSkgZnJvbSBbPDgwMzc0NWI3Pl0gKHViaWZz
-X2xlYl93cml0ZSsweDRiLzB4OGMpCj4gWzw4MDM3NDViNz5dICh1Ymlmc19sZWJfd3JpdGUpIGZy
-b20gWzw4MDM3NGJiYj5dICh1Ymlmc193YnVmX3N5bmNfbm9sb2NrKzB4MTBmLzB4MWE0KQo+IFs8
-ODAzNzRiYmI+XSAodWJpZnNfd2J1Zl9zeW5jX25vbG9jaykgZnJvbSBbPDgwMzZjNmRkPl0gKHVi
-aWZzX2pubF91cGRhdGUrMHgxZTkvMHgzNmMpCj4gWzw4MDM2YzZkZD5dICh1Ymlmc19qbmxfdXBk
-YXRlKSBmcm9tIFs8ODAzNzA5MzM+XSAodWJpZnNfY3JlYXRlKzB4YjMvMHgxMzApCj4gWzw4MDM3
-MDkzMz5dICh1Ymlmc19jcmVhdGUpIGZyb20gWzw4MDJjZjBjNz5dIChsb29rdXBfb3BlbisweDE3
-My8weDFjNCkKPiBbPDgwMmNmMGM3Pl0gKGxvb2t1cF9vcGVuKSBmcm9tIFs8ODAyY2Y4YTM+XSAo
-b3Blbl9sYXN0X2xvb2t1cHMrMHhkNy8weDE2YykKPiBbPDgwMmNmOGEzPl0gKG9wZW5fbGFzdF9s
-b29rdXBzKSBmcm9tIFs8ODAyZDA4ZTU+XSAocGF0aF9vcGVuYXQrMHg5MS8weDEwNCkKPiBbPDgw
-MmQwOGU1Pl0gKHBhdGhfb3BlbmF0KSBmcm9tIFs8ODAyZDA5ODk+XSAoZG9fZmlscF9vcGVuKzB4
-MzEvMHg3NCkKPiBbPDgwMmQwOTg5Pl0gKGRvX2ZpbHBfb3BlbikgZnJvbSBbPDgwMmM0ZmIzPl0g
-KGZpbGVfb3Blbl9uYW1lKzB4MzMvMHg0OCkKPiBbPDgwMmM0ZmIzPl0gKGZpbGVfb3Blbl9uYW1l
-KSBmcm9tIFs8ODAyYzRmZTk+XSAoZmlscF9vcGVuKzB4MjEvMHgyZSkKPiBbPDgwMmM0ZmU5Pl0g
-KGZpbHBfb3BlbikgZnJvbSBbPDgwNDkwYmQzPl0gKGlycTFfaGFuZGxlcisweDUzLzB4YTQpCj4g
-Wzw4MDQ5MGJkMz5dIChpcnExX2hhbmRsZXIpIGZyb20gWzw4MDI0N2RkNz5dIChpcnFfZm9yY2Vk
-X3RocmVhZF9mbisweDFmLzB4NGMpCj4gWzw4MDI0N2RkNz5dIChpcnFfZm9yY2VkX3RocmVhZF9m
-bikgZnJvbSBbPDgwMjQ3Y2Q5Pl0gKGlycV90aHJlYWQrMHg4OS8weDExNCkKPiBbPDgwMjQ3Y2Q5
-Pl0gKGlycV90aHJlYWQpIGZyb20gWzw4MDIyY2E2Nz5dIChrdGhyZWFkKzB4Y2YvMHhlNCkKPiBb
-PDgwMjJjYTY3Pl0gKGt0aHJlYWQpIGZyb20gWzw4MDIwMDE0OT5dIChyZXRfZnJvbV9mb3JrKzB4
-MTEvMHgyOCkKPiBFeGNlcHRpb24gc3RhY2soMHg4MjJiYmZiMCB0byAweDgyMmJiZmY4KQo+IGJm
-YTA6ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDAwMDAwMDAwIDAwMDAwMDAw
-IDAwMDAwMDAwIDAwMDAwMDAwCj4gYmZjMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKPiBiZmUwOiAwMDAwMDAw
-MCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAwMDAwMDAwMAo+IAo+IGZzbCxp
-ZmMtbmFuZCA3ZTgwMDAwMC5uYW5kOiBDb250cm9sbGVyIGlzIG5vdCByZXNwb25kaW5nCj4gSURf
-NTMxIG1haW4vc21wX2ZzbS5jOjE4ODQgPGlucmN1OiByY3VfcHJlZW1wdCBkZXRlY3RlZCBzdGFs
-bHMgb24gQ1BVczoKPiByY3U6ICAgIFRhc2tzIGJsb2NrZWQgb24gbGV2ZWwtMCByY3Vfbm9kZSAo
-Q1BVcyAwLTEpOiBQMTE2LzI6Yi4ubAo+ICAgICAgICAgKGRldGVjdGVkIGJ5IDEsIHQ9MjEwMiBq
-aWZmaWVzLCBnPTc3MjksIHE9NzU0KQo+IHRhc2s6aXJxLzMxLWFybS1pcnExIHN0YXRlOkQgc3Rh
-Y2s6IDAgcGlkOiAgMTE2IHBwaWQ6IDIgZmxhZ3M6MHgwMDAwMDAwMAo+IFs8ODA2NGI5N2Y+XSAo
-X19zY2hlZHVsZSkgZnJvbSBbPDgwNjRiYjAxPl0gKHNjaGVkdWxlKzB4OGQvMHhjMikKPiBbPDgw
-NjRiYjAxPl0gKHNjaGVkdWxlKSBmcm9tIFs8ODA2NGRhY2Q+XSAocnRfbXV0ZXhfc2xvd2xvY2tf
-YmxvY2suY29uKQo+IFs8ODA2NGRhY2Q+XSAocnRfbXV0ZXhfc2xvd2xvY2tfYmxvY2suY29uc3Rw
-cm9wLjApIGZyb20gWzw4MDY0ZGI1Nz5dIAo+IFs8ODA2NGRiNTc+XSAoX19ydF9tdXRleF9zbG93
-bG9jay5jb25zdHByb3AuMCkgZnJvbSBbPDgwNjRkYmY3Pl0gCj4gWzw4MDY0ZGJmNz5dIChydF9t
-dXRleF9zbG93bG9jay5jb25zdHByb3AuMCkgZnJvbSBbPDgwNGIyMDQ3Pl0gCj4gWzw4MDRiMjA0
-Nz5dIChuYW5kX2dldF9kZXZpY2UpIGZyb20gWzw4MDRiNTMzNT5dIChuYW5kX3dyaXRlX29vYisw
-eDFiLzB4NGEpCj4gWzw4MDRiNTMzNT5dIChuYW5kX3dyaXRlX29vYikgZnJvbSBbPDgwNGEzNTg1
-Pl0gKG10ZF93cml0ZSsweDQxLzB4NWMpCj4gWzw4MDRhMzU4NT5dIChtdGRfd3JpdGUpIGZyb20g
-Wzw4MDRjMWQ0Nz5dICh1YmlfaW9fd3JpdGUrMHgxN2YvMHgyMmMpCj4gWzw4MDRjMWQ0Nz5dICh1
-YmlfaW9fd3JpdGUpIGZyb20gWzw4MDRjMDQ3Yj5dICh1YmlfZWJhX3dyaXRlX2xlYisweDViLzB4
-MWQwKQo+IFs8ODA0YzA0N2I+XSAodWJpX2ViYV93cml0ZV9sZWIpIGZyb20gWzw4MDRiZjYyZD5d
-ICh1YmlfbGViX3dyaXRlKzB4NzUvMHg5MCkKPiBbPDgwNGJmNjJkPl0gKHViaV9sZWJfd3JpdGUp
-IGZyb20gWzw4MDM3NDViNz5dICh1Ymlmc19sZWJfd3JpdGUrMHg0Yi8weDhjKQo+IFs8ODAzNzQ1
-Yjc+XSAodWJpZnNfbGViX3dyaXRlKSBmcm9tIFs8ODAzNzRiYmI+XSAodWJpZnNfd2J1Zl9zeW5j
-X25vbG9jaysweDEwZi8weDFhNCkKPiBbPDgwMzc0YmJiPl0gKHViaWZzX3didWZfc3luY19ub2xv
-Y2spIGZyb20gWzw4MDM2YzZkZD5dICh1Ymlmc19qbmxfdXBkYXRlKzB4MWU5LzB4MzZjKQoKWW91
-IGNhbiB0cmltIGRvd24gdGhlIHRyYWNlcyB0byBvbmx5IHNob3cgdGhlIGludGVyZXN0aW5nIHBh
-cnQuCgpIZXJlIHlvdSBuZWVkIGEgRml4ZXM6IGFuZCBDYzogc3RhYmxlIHRhZy4KCj4gU2lnbmVk
-LW9mZi1ieTogUm9uYWxkIE1vbnRoZXJvIDxkZWJ1Zy5wZW5ndWluMzJAZ21haWwuY29tPgo+IC0t
-LQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYyB8IDIgKy0KPiAgZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgICAgfCA1ICsrKystCj4gIDIgZmlsZXMgY2hhbmdl
-ZCwgNSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Zz
-bF9pZmNfbmFuZC5jCj4gaW5kZXggMjBiYjFlMGNiNWViLi40MmY4ZWE0NmI2YTggMTAwNjQ0Cj4g
-LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNsX2lmY19uYW5kLmMKPiArKysgYi9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYwo+IEBAIC0yMSw3ICsyMSw3IEBACj4gIAo+ICAj
-ZGVmaW5lIEVSUl9CWVRFCQkweEZGIC8qIFZhbHVlIHJldHVybmVkIGZvciByZWFkCj4gIAkJCQkJ
-Ynl0ZXMgd2hlbiByZWFkIGZhaWxlZAkqLwo+IC0jZGVmaW5lIElGQ19USU1FT1VUX01TRUNTCTUw
-MCAgLyogTWF4aW11bSBudW1iZXIgb2YgbVNlY3MgdG8gd2FpdAo+ICsjZGVmaW5lIElGQ19USU1F
-T1VUX01TRUNTCTEwMDAgIC8qIE1heGltdW0gbnVtYmVyIG9mIG1TZWNzIHRvIHdhaXQKPiAgCQkJ
-CQlmb3IgSUZDIE5BTkQgTWFjaGluZQkqLwo+ICAKPiAgc3RydWN0IGZzbF9pZmNfY3RybDsKPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210
-ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+IGluZGV4IDllMjRiZWRmZmQ4OS4uMDViNTJlZDQxZjRj
-IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gKysrIGIv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiBAQCAtMzYzLDggKzM2MywxMSBAQCBz
-dGF0aWMgaW50IG5hbmRfY2hlY2tfd3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCWludCBy
-ZXQ7Cj4gIAo+ICAJLyogQnJva2VuIHhEIGNhcmRzIHJlcG9ydCBXUCBkZXNwaXRlIGJlaW5nIHdy
-aXRhYmxlICovCj4gLQlpZiAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfQlJPS0VOX1hEKQo+ICsJaWYg
-KGNoaXAtPm9wdGlvbnMgJiBOQU5EX0JST0tFTl9YRCkgewo+ICsJCXByX2luZm8oIm5hbmRfY2hp
-cC0+b3B0aW9ucyBpbmRpY2F0ZXMgTkFORF9CUk9LRU5fWEQgJWRcbiIsCj4gKwkJCShjaGlwLT5v
-cHRpb25zICYgTkFORF9CUk9LRU5fWEQpKTsKPiAgCQlyZXR1cm4gMDsKPiArCX0KClRoaXMgaXMg
-YW4gdW5yZWxhdGVkIGRlYnVnIG1lc3NhZ2UgYW5kIHNob3VsZCBiZSBkcm9wcGVkLgoKPiAgCj4g
-IAkvKiBDaGVjayB0aGUgV1AgYml0ICovCj4gIAlyZXQgPSBuYW5kX3N0YXR1c19vcChjaGlwLCAm
-c3RhdHVzKTsKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Am 2023-11-11 13:26, schrieb Biju Das:
+> Hi Michael Walle,
+> 
+>> Subject: RE: [PATCH RFC 0/4] Add set_iofv() callback
+>> 
+> 
+>> 
+>> > Subject: Re: [PATCH RFC 0/4] Add set_iofv() callback
+>> >
+>> > Hi Biju,
+>> >
+>> > >> >> Thus I was saying, that we probably wont support that and the
+>> > >> >> easiest fix should be to disable this behavior for the atmel
+>> > >> >> flash (there was nv setting).
+>> > >> >
+>> > >> > The fix up is invoked only for quad mode, I believe it is safe to
+>> > >> > add fixup for micron flash As it is the one deviating from normal
+>> > >> > according to you, rather than adding fixup for generic flash like
+>> > >> > ATMEL flash(Now Renesas flash)
+>> > >>
+>> > >> Could you please try setting bit 4 in the Nonvolatile Configuration
+>> > >> Register (Table 7) and see if the problem goes away?
+>> > >
+>> > > You mean, if it works, we need to disable reset for all the boards,
+>> > > maybe at bootloader level??
+>> >
+>> > Not necessarily. First, just to confirm that it is actually the reset
+>> > circuit. You can also compare the part numbers of the flash. There is
+>> > a flash with IO3/RESET# and IO3/HOLD# (and a flash with a dedicated
+>> > reset pin).
+>> 
+>> Part is MT25QU512ABB8E12-0SIT, As per the schematic, flash has a 
+>> dedicated
+>> RESET# with 10K pullup connected to SoC QSPI_RESET pin.
+>> 
+>> DQ0, DQ1, W#/DQ2 and DQ3 lines on the flash are connected without any
+>> pullups to the SoC QSPI0_{0..3} pins.
+>> 
+>> >
+>> > If that's the case, it looks like a hardware bug on your board. You
+>> > left the reset pin floating. So you'd also not be able to boot from
+>> > the NOR flash, right?
+>> 
+>> I am booting from NOR flash. BootRom code reads SPI flash and executes
+>> BL2.
+>> BL2 loads BL33 and U-boot from NOR flash. If this is the case, do you
+>> think it is a Hw bug on the board?
+>> 
+>> >
+>> > > OK, I will check that. Currently I have read that register and it is
+>> > > showing a value Of 0xffbb. I need to do write operation. Before that
+>> > > how do we recover flash, if something goes wrong during writing for
+>> > > NV register?
+>> >
+>> > You should always be able to write that register from the bootloader.
+>> > Maybe also through raw commands (like sspi in uboot).
+>> 
+>> Thanks for the pointer, I haven't explored the uboot path.
+> 
+> I have disabled RESET# bit in the Nonvolatile Configuration
+> Register (Table 7) and borad doesn't boot any more.
+> 
+> By default that bit is set.
+> 
+> [    2.530291] ###### Before write Read cmd=b5 val=ff
+> [    2.530431] ###### write cmd=b1 val=ef
+> [    2.535518] ###### Read cmd=b5 val=ef
+> 
+> 
+> NOTICE:  BL2: Built : 14:59:28, Nov 10 2023
+> ERROR:   BL2: Failed to load image id 3 (-2)
+> NOTICE:  BL2: v2.9(release):v2.5/rzg2l-1.00-3883-gc314a391c
+> NOTICE:  BL2: Built : 14:59:28, Nov 10 2023
+> ERROR:   BL2: Failed to load image id 3 (-2)
+> NOTICE:  BL2: v2.9(release):v2.5/rzg2l-1.00-3883-gc314a391c
+> 
+> What is your thoughts on this? How do we proceed now?
+
+I guessed you fixed this? Because.. if you boot from NOR the BL2
+should come from the NOR flash too, correct? And that is actually
+working.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
