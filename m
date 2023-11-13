@@ -4,89 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 041DCC4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Nov 2023 13:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3CF8C4167D
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Nov 2023 13:45:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qOFbV7QZLk/AiFgZHbWEb+hgHswpv2sRKkCc/GzKDkA=; b=Ta0QcUccih1wEs
-	iLUbCwQGohoblenaFh9FrYWPUH1WDgQl2nOqaZcKow1iPiIpFVjbkN2VucU/POLX3PESqnd9XUpBE
-	U/PXaZCuGwPc3UHrIlVNxe69rg81tPhXvUkzwK6G/ey4EySKxdLpqxF63AMSoi98xESqmQ/VU5P+g
-	m1/bMUfNcxXET1IzLTT9hzMsObLJdWtv6AUFGkVoPapTEGyW5h0P9RLkkroHmKqrNuNfQZ5Kcics2
-	YttbkrCedYUmbwGjCYNNA2zErNqBiGd1t6vwPSxXI8UbxJVQRzpNwTDeLMOkYBk7+HEfhp5jKNwD9
-	sK/SaZpO12fiULtQhh/g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jxF+d8/oOF7frVIvHwWqmTtvqyAWdU8tSKyAmSjnseI=; b=cZq/wHaxzOUylc
+	v93SMf5Nk443Cxos06fkQvZUZysT3gBfQgxXU5FXP83S2xHnUFEHGKEE1dN6qCGM2qmAv+ViQWRX7
+	L07QAHQjlIVFGZNOThbz3nLUrvgpjDu22bm6nZ6JGuEagprBIJL+7zLMDsUuh4XFkIxPowoKyjspT
+	OQCB6M0T0+9n5E4haFu7viA2t0h6Q7Fk2Xgd152fZpA6O6DbTaA2Dkp7G57A4P10CPpkvN5TeZCzs
+	B+6v3c2tb6vBWBVcCLBRVEdtwrR7OsFw3wuannXcfb2z/Xoy7REK1kfKB1y/ZUYa0nvcDWyNDurR1
+	jsG15sjW6zVcgott+cRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2Wp3-00E28g-0J;
-	Mon, 13 Nov 2023 13:17:49 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1r2XFG-00E4ur-2j;
+	Mon, 13 Nov 2023 13:44:54 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2Wox-00E27j-0b
+	id 1r2XFD-00E4tI-3D
 	for linux-mtd@lists.infradead.org;
-	Mon, 13 Nov 2023 13:17:47 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc3bb32b5dso38454105ad.3
-        for <linux-mtd@lists.infradead.org>; Mon, 13 Nov 2023 05:17:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699881459; x=1700486259; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BENlKbuFPKHXVOXGwxTOg37z6FdtT5c5MFKpNXhyfZY=;
-        b=ZG2mR5gRCMUVkeosXMo31H1d4YosSm5SlL1FZx+vXQ2Hs5i6kK3cE9kzzl/lmlxvAu
-         5X96JjO8S8O5dHt4HCLtvxAMzSwr91jZOvp2q0M5DX0mnJudVKXrTeoBP+BWGYAcubDt
-         tPwqGy+9XzA+DOnZohPMca8ap1TzJDyi6xh51+HcVp2Qo08VC7dYJJjthNxQXhTnTtpJ
-         3MlHisGjP6KdfZG5kV3yREusnnzoisMrnGL4mB7N4j5ppe7c+KZlCu69ISnmTDRSjEWR
-         hWpLf9jCu6thGYBkxmjh3THTW3ZsDte/ov9PIt/O3Mkg6IjtNKMZ8r7azwxMerAA1olg
-         I8VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699881459; x=1700486259;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BENlKbuFPKHXVOXGwxTOg37z6FdtT5c5MFKpNXhyfZY=;
-        b=t104LIP4cKkl2arwWvTv18A2YdEu2x+ZcTlEHCCSRTYuBtFu6Js6LGaaJ7FExpAV54
-         Qwa/e/BKNNm6ES9eTffIgJRo+j5u4jH39/1QpZlsx+yfPntDI8BkDis2K1tdSBePGcGx
-         w4e7G05tPFSM7y7TKqCWEX8+4wGJOQYHN4ufILHNtyiHuj9WK+b9LJ8XwjV0iWieLSxS
-         NZ9ZyMZKpYOI3VEIA5+HyyOlfNf/AtYGl3WGMF778KTnlXOpJYihQs6duETb8p0cLKrR
-         53Onl397HzrYHOPzMxKbTIPvIvuaLy3muLzM7F9NrX1+Gl9vu9Pk9F3i0CvnvXHqRn2H
-         BzcA==
-X-Gm-Message-State: AOJu0Yw2hPO3QOZoW+FsfC/gL0nOYlIBPLpAaZwbwbjBOubrf+KF7EFo
-	yh9dFwmQBhlml1V8bUtTTf8=
-X-Google-Smtp-Source: AGHT+IHqm4pW1ifICU5+1F7FEK25e8uswN0H7HrMr7MU2H/FOdlpI4jqngLLlc2SDiSyEOdRJVj0sg==
-X-Received: by 2002:a17:903:2289:b0:1cc:665d:f822 with SMTP id b9-20020a170903228900b001cc665df822mr9071037plh.32.1699881458663;
-        Mon, 13 Nov 2023 05:17:38 -0800 (PST)
-Received: from localhost.localdomain ([149.167.148.33])
-        by smtp.gmail.com with ESMTPSA id z18-20020a170903019200b001bb97e51ab4sm4020621plg.98.2023.11.13.05.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 05:17:38 -0800 (PST)
-From: Ronald Monthero <debug.penguin32@gmail.com>
-To: 
-Cc: richard@nod.at,
-	vigneshr@ti.com,
-	heiko@sntech.de,
-	martin.blumenstingl@googlemail.com,
-	paul@crapouillou.net,
-	robh@kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	debug.penguin32@gmail.com,
-	AVKrasnov@sberdevices.ru,
-	r.czerwinski@pengutronix.de,
-	andriy.shevchenko@linux.intel.com,
-	jaimeliao.tw@gmail.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Subject: [PATCH] mtd:nand: Increment IFC_TIMEOUT_MSECS for nand controller response
-Date: Mon, 13 Nov 2023 23:16:28 +1000
-Message-Id: <20231113131634.614467-1-debug.penguin32@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	Mon, 13 Nov 2023 13:44:54 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 808C460003;
+	Mon, 13 Nov 2023 13:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1699883085;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NkZZif+50w5P/OD5QUdP1KwY7V0XEjdY3TvKJRJlyIM=;
+	b=VDqjUNvbbuVTYLH6UjMNpo6TVRXdyZNTlP+JE2TOFPvMF/tYKVFjW8dKUiqCNunoddOgqW
+	EadJvyzcP1bOpOi9uagBeYZ6WYAvbjdfb9YqmwGiioIrnxKFGMBaJ3Jqb3pUUaA4tm33sd
+	wjD9HLzTEId+Gqh18+RGsGlq1EY2jR+zzUUhrRAb4sC1j65u4SKgVbQW7IKSnXxiqCaT16
+	/jMTZFOHBIkSwQrFCS9qPOiEE245EEa9VGkwEcAx1+Lh3z6LXAHqoxukkbJ6rzgEUkaYTh
+	meBBnIT4GTZVUazP23ziMRJI19hojoajzWmoFu1i4XJrLvaLVbsu/RjjItjkMw==
+Date: Mon, 13 Nov 2023 14:44:41 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Ronald Monthero <debug.penguin32@gmail.com>
+Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
+ martin.blumenstingl@googlemail.com, paul@crapouillou.net, robh@kernel.org,
+ u.kleine-koenig@pengutronix.de, AVKrasnov@sberdevices.ru,
+ r.czerwinski@pengutronix.de, andriy.shevchenko@linux.intel.com,
+ jaimeliao.tw@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Philippe =?UTF-8?B?TWF0aGlldS1EYXVkw6k=?=
+ <philmd@linaro.org>
+Subject: Re: [PATCH] mtd:nand: Increment IFC_TIMEOUT_MSECS for nand
+ controller response
+Message-ID: <20231113144441.6e798d8b@xps-13>
+In-Reply-To: <20231113131634.614467-1-debug.penguin32@gmail.com>
+References: <20231113131634.614467-1-debug.penguin32@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231113_051743_229712_35686C6D 
-X-CRM114-Status: GOOD (  14.02  )
+X-CRM114-CacheID: sfid-20231113_054452_303788_4A8E1929 
+X-CRM114-Status: GOOD (  24.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,111 +74,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The nand controller not responding scenario occurs causing blocked tasks
-and rcu_prempt warnings of stall on cpus. Incrementing the
-IFC_TIMEOUT_MSECS appears to solve the nand controller not responding
-issue.
-
-** ID_531 main/smrcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu:    Tasks blocked on level-0 rcu_node (CPUs 0-1): P116/2:b..l
-        (detected by 1, t=2102 jiffies, g=12653, q=518)
-task:irq/31-arm-irq1 state:D stack: 0 pid:  116 ppid: 2 flags:0x00000000
-[<8064b97f>] (__schedule) from [<8064bb01>] (schedule+0x8d/0xc2)
-[<8064bb01>] (schedule) from [<8064fa65>] (schedule_timeout+0x6d/0xa0)
-[<8064fa65>] (schedule_timeout) from [<804ba353>] (fsl_ifc_run_command+0x6f/0x178)
-[<804ba353>] (fsl_ifc_run_command) from [<804ba72f>] (fsl_ifc_cmdfunc+0x203/0x2b8)
-[<804ba72f>] (fsl_ifc_cmdfunc) from [<804b135f>] (nand_status_op+0xaf/0xe0)
-[<804b135f>] (nand_status_op) from [<804b13b3>] (nand_check_wp+0x23/0x48)
-[<804b13b3>] (nand_check_wp) from [<804b231d>] (nand_do_write_ops+0x99/0x2b8)
-[<804b231d>] (nand_do_write_ops) from [<804b5355>] (nand_write_oob+0x3b/0x4a)
-[<804b5355>] (nand_write_oob) from [<804a3585>] (mtd_write+0x41/0x5c)
-[<804a3585>] (mtd_write) from [<804c1d47>] (ubi_io_write+0x17f/0x22c)
-[<804c1d47>] (ubi_io_write) from [<804c047b>] (ubi_eba_write_leb+0x5b/0x1d0)
-[<804c047b>] (ubi_eba_write_leb) from [<804bf62d>] (ubi_leb_write+0x75/0x90)
-[<804bf62d>] (ubi_leb_write) from [<803745b7>] (ubifs_leb_write+0x4b/0x8c)
-[<803745b7>] (ubifs_leb_write) from [<80374bbb>] (ubifs_wbuf_sync_nolock+0x10f/0x1a4)
-[<80374bbb>] (ubifs_wbuf_sync_nolock) from [<8036c6dd>] (ubifs_jnl_update+0x1e9/0x36c)
-[<8036c6dd>] (ubifs_jnl_update) from [<80370933>] (ubifs_create+0xb3/0x130)
-[<80370933>] (ubifs_create) from [<802cf0c7>] (lookup_open+0x173/0x1c4)
-[<802cf0c7>] (lookup_open) from [<802cf8a3>] (open_last_lookups+0xd7/0x16c)
-[<802cf8a3>] (open_last_lookups) from [<802d08e5>] (path_openat+0x91/0x104)
-[<802d08e5>] (path_openat) from [<802d0989>] (do_filp_open+0x31/0x74)
-[<802d0989>] (do_filp_open) from [<802c4fb3>] (file_open_name+0x33/0x48)
-[<802c4fb3>] (file_open_name) from [<802c4fe9>] (filp_open+0x21/0x2e)
-[<802c4fe9>] (filp_open) from [<80490bd3>] (irq1_handler+0x53/0xa4)
-[<80490bd3>] (irq1_handler) from [<80247dd7>] (irq_forced_thread_fn+0x1f/0x4c)
-[<80247dd7>] (irq_forced_thread_fn) from [<80247cd9>] (irq_thread+0x89/0x114)
-[<80247cd9>] (irq_thread) from [<8022ca67>] (kthread+0xcf/0xe4)
-[<8022ca67>] (kthread) from [<80200149>] (ret_from_fork+0x11/0x28)
-Exception stack(0x822bbfb0 to 0x822bbff8)
-bfa0:                                     00000000 00000000 00000000 00000000
-bfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-
-fsl,ifc-nand 7e800000.nand: Controller is not responding
-ID_531 main/smp_fsm.c:1884 <inrcu: rcu_preempt detected stalls on CPUs:
-rcu:    Tasks blocked on level-0 rcu_node (CPUs 0-1): P116/2:b..l
-        (detected by 1, t=2102 jiffies, g=7729, q=754)
-task:irq/31-arm-irq1 state:D stack: 0 pid:  116 ppid: 2 flags:0x00000000
-[<8064b97f>] (__schedule) from [<8064bb01>] (schedule+0x8d/0xc2)
-[<8064bb01>] (schedule) from [<8064dacd>] (rt_mutex_slowlock_block.con)
-[<8064dacd>] (rt_mutex_slowlock_block.constprop.0) from [<8064db57>] 
-[<8064db57>] (__rt_mutex_slowlock.constprop.0) from [<8064dbf7>] 
-[<8064dbf7>] (rt_mutex_slowlock.constprop.0) from [<804b2047>] 
-[<804b2047>] (nand_get_device) from [<804b5335>] (nand_write_oob+0x1b/0x4a)
-[<804b5335>] (nand_write_oob) from [<804a3585>] (mtd_write+0x41/0x5c)
-[<804a3585>] (mtd_write) from [<804c1d47>] (ubi_io_write+0x17f/0x22c)
-[<804c1d47>] (ubi_io_write) from [<804c047b>] (ubi_eba_write_leb+0x5b/0x1d0)
-[<804c047b>] (ubi_eba_write_leb) from [<804bf62d>] (ubi_leb_write+0x75/0x90)
-[<804bf62d>] (ubi_leb_write) from [<803745b7>] (ubifs_leb_write+0x4b/0x8c)
-[<803745b7>] (ubifs_leb_write) from [<80374bbb>] (ubifs_wbuf_sync_nolock+0x10f/0x1a4)
-[<80374bbb>] (ubifs_wbuf_sync_nolock) from [<8036c6dd>] (ubifs_jnl_update+0x1e9/0x36c)
-
-Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
----
- drivers/mtd/nand/raw/fsl_ifc_nand.c | 2 +-
- drivers/mtd/nand/raw/nand_base.c    | 5 ++++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 20bb1e0cb5eb..42f8ea46b6a8 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -21,7 +21,7 @@
- 
- #define ERR_BYTE		0xFF /* Value returned for read
- 					bytes when read failed	*/
--#define IFC_TIMEOUT_MSECS	500  /* Maximum number of mSecs to wait
-+#define IFC_TIMEOUT_MSECS	1000  /* Maximum number of mSecs to wait
- 					for IFC NAND Machine	*/
- 
- struct fsl_ifc_ctrl;
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 9e24bedffd89..05b52ed41f4c 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -363,8 +363,11 @@ static int nand_check_wp(struct nand_chip *chip)
- 	int ret;
- 
- 	/* Broken xD cards report WP despite being writable */
--	if (chip->options & NAND_BROKEN_XD)
-+	if (chip->options & NAND_BROKEN_XD) {
-+		pr_info("nand_chip->options indicates NAND_BROKEN_XD %d\n",
-+			(chip->options & NAND_BROKEN_XD));
- 		return 0;
-+	}
- 
- 	/* Check the WP bit */
- 	ret = nand_status_op(chip, &status);
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9uYWxkLAoKVGhhbmtzIGZvciB0aGUgcGF0Y2gsIGhlcmUgYXJlIGEgY291cGxlIG9mIGNv
+bW1lbnRzIEknZCBsaWtlIHlvdSB0bwphZGRyZXNzIGJlZm9yZSB0YWtpbmcgdGhlIGZpeC4KCmRl
+YnVnLnBlbmd1aW4zMkBnbWFpbC5jb20gd3JvdGUgb24gTW9uLCAxMyBOb3YgMjAyMyAyMzoxNjoy
+OCArMTAwMDoKClRoZSB0aXRsZSBwcmVmaXggbmVlZHMgdG8gYmUgYWxpZ25lZCB3aXRoIHRvZGF5
+J3MgcG9saWN5LCB5b3UgY2FuIGNoZWNrCml0IHdpdGggZ2l0IGxvZyAtLW9uZWxpbmUgLS0gPHlv
+dXIgZmlsZT4uCgo+IFRoZSBuYW5kIGNvbnRyb2xsZXIgbm90IHJlc3BvbmRpbmcgc2NlbmFyaW8g
+b2NjdXJzIGNhdXNpbmcgYmxvY2tlZCB0YXNrcwo+IGFuZCByY3VfcHJlbXB0IHdhcm5pbmdzIG9m
+IHN0YWxsIG9uIGNwdXMuIEluY3JlbWVudGluZyB0aGUKPiBJRkNfVElNRU9VVF9NU0VDUyBhcHBl
+YXJzIHRvIHNvbHZlIHRoZSBuYW5kIGNvbnRyb2xsZXIgbm90IHJlc3BvbmRpbmcKPiBpc3N1ZS4K
+Ckkgd291bGQgcmVwaHJhc2UgYSBiaXQgdGhpcyBwYXJhZ3JhcGggd2l0aCBtb3JlIGNvbmZpZGVu
+Y2UuIFVuZGVyIGhlYXZ5CmxvYWQgaXQgaXMgbGlrZWx5IHRoYXQgdGhlIGNvbnRyb2xsZXIgaXMg
+ZG9uZSB3aXRoIGl0cyBvd24gdGFzayBidXQgdGhlCnRocmVhZCB1bmxvY2tpbmcgdGhlIHdhaXQg
+bG9vayBpcyBuZXZlciBzY2hlZHVsZWQgKG9yIG5vdCBpbiB0aW1lKQpyZXN1bHRpbmcgaW4gc3Vj
+aCBraW5kIG9mIGVycm9yLiBNYXliZSB0aGVyZSBpcyBzb21ldGhpbmcgZWxzZSB3cm9uZyBpbgp0
+aGUgY29kZSB3aGljaCBzdGFsbHMgdGhlIENQVSBpbiB0aGlzIGNhc2UsIChoZW5jZSB0aGUgZmly
+c3QgbWVzc2FnZSkuCgpFbmxhcmdpbmcgdGhlIHRpbWVvdXQgdG8gMXMgaW4gdGhpcyBjYXNlIGlz
+IGZpbmUsIGJ1dCBtYXliZSB0aGVyZSBpcwpzdGlsbCBzb21ldGhpbmcgd3JvbmcgYXNpZGUuCgo+
+ICoqIElEXzUzMSBtYWluL3NtcmN1OiBJTkZPOiByY3VfcHJlZW1wdCBkZXRlY3RlZCBzdGFsbHMg
+b24gQ1BVcy90YXNrczoKPiByY3U6ICAgIFRhc2tzIGJsb2NrZWQgb24gbGV2ZWwtMCByY3Vfbm9k
+ZSAoQ1BVcyAwLTEpOiBQMTE2LzI6Yi4ubAo+ICAgICAgICAgKGRldGVjdGVkIGJ5IDEsIHQ9MjEw
+MiBqaWZmaWVzLCBnPTEyNjUzLCBxPTUxOCkKPiB0YXNrOmlycS8zMS1hcm0taXJxMSBzdGF0ZTpE
+IHN0YWNrOiAwIHBpZDogIDExNiBwcGlkOiAyIGZsYWdzOjB4MDAwMDAwMDAKPiBbPDgwNjRiOTdm
+Pl0gKF9fc2NoZWR1bGUpIGZyb20gWzw4MDY0YmIwMT5dIChzY2hlZHVsZSsweDhkLzB4YzIpCj4g
+Wzw4MDY0YmIwMT5dIChzY2hlZHVsZSkgZnJvbSBbPDgwNjRmYTY1Pl0gKHNjaGVkdWxlX3RpbWVv
+dXQrMHg2ZC8weGEwKQo+IFs8ODA2NGZhNjU+XSAoc2NoZWR1bGVfdGltZW91dCkgZnJvbSBbPDgw
+NGJhMzUzPl0gKGZzbF9pZmNfcnVuX2NvbW1hbmQrMHg2Zi8weDE3OCkKPiBbPDgwNGJhMzUzPl0g
+KGZzbF9pZmNfcnVuX2NvbW1hbmQpIGZyb20gWzw4MDRiYTcyZj5dIChmc2xfaWZjX2NtZGZ1bmMr
+MHgyMDMvMHgyYjgpCj4gWzw4MDRiYTcyZj5dIChmc2xfaWZjX2NtZGZ1bmMpIGZyb20gWzw4MDRi
+MTM1Zj5dIChuYW5kX3N0YXR1c19vcCsweGFmLzB4ZTApCj4gWzw4MDRiMTM1Zj5dIChuYW5kX3N0
+YXR1c19vcCkgZnJvbSBbPDgwNGIxM2IzPl0gKG5hbmRfY2hlY2tfd3ArMHgyMy8weDQ4KQo+IFs8
+ODA0YjEzYjM+XSAobmFuZF9jaGVja193cCkgZnJvbSBbPDgwNGIyMzFkPl0gKG5hbmRfZG9fd3Jp
+dGVfb3BzKzB4OTkvMHgyYjgpCj4gWzw4MDRiMjMxZD5dIChuYW5kX2RvX3dyaXRlX29wcykgZnJv
+bSBbPDgwNGI1MzU1Pl0gKG5hbmRfd3JpdGVfb29iKzB4M2IvMHg0YSkKPiBbPDgwNGI1MzU1Pl0g
+KG5hbmRfd3JpdGVfb29iKSBmcm9tIFs8ODA0YTM1ODU+XSAobXRkX3dyaXRlKzB4NDEvMHg1YykK
+PiBbPDgwNGEzNTg1Pl0gKG10ZF93cml0ZSkgZnJvbSBbPDgwNGMxZDQ3Pl0gKHViaV9pb193cml0
+ZSsweDE3Zi8weDIyYykKPiBbPDgwNGMxZDQ3Pl0gKHViaV9pb193cml0ZSkgZnJvbSBbPDgwNGMw
+NDdiPl0gKHViaV9lYmFfd3JpdGVfbGViKzB4NWIvMHgxZDApCj4gWzw4MDRjMDQ3Yj5dICh1Ymlf
+ZWJhX3dyaXRlX2xlYikgZnJvbSBbPDgwNGJmNjJkPl0gKHViaV9sZWJfd3JpdGUrMHg3NS8weDkw
+KQo+IFs8ODA0YmY2MmQ+XSAodWJpX2xlYl93cml0ZSkgZnJvbSBbPDgwMzc0NWI3Pl0gKHViaWZz
+X2xlYl93cml0ZSsweDRiLzB4OGMpCj4gWzw4MDM3NDViNz5dICh1Ymlmc19sZWJfd3JpdGUpIGZy
+b20gWzw4MDM3NGJiYj5dICh1Ymlmc193YnVmX3N5bmNfbm9sb2NrKzB4MTBmLzB4MWE0KQo+IFs8
+ODAzNzRiYmI+XSAodWJpZnNfd2J1Zl9zeW5jX25vbG9jaykgZnJvbSBbPDgwMzZjNmRkPl0gKHVi
+aWZzX2pubF91cGRhdGUrMHgxZTkvMHgzNmMpCj4gWzw4MDM2YzZkZD5dICh1Ymlmc19qbmxfdXBk
+YXRlKSBmcm9tIFs8ODAzNzA5MzM+XSAodWJpZnNfY3JlYXRlKzB4YjMvMHgxMzApCj4gWzw4MDM3
+MDkzMz5dICh1Ymlmc19jcmVhdGUpIGZyb20gWzw4MDJjZjBjNz5dIChsb29rdXBfb3BlbisweDE3
+My8weDFjNCkKPiBbPDgwMmNmMGM3Pl0gKGxvb2t1cF9vcGVuKSBmcm9tIFs8ODAyY2Y4YTM+XSAo
+b3Blbl9sYXN0X2xvb2t1cHMrMHhkNy8weDE2YykKPiBbPDgwMmNmOGEzPl0gKG9wZW5fbGFzdF9s
+b29rdXBzKSBmcm9tIFs8ODAyZDA4ZTU+XSAocGF0aF9vcGVuYXQrMHg5MS8weDEwNCkKPiBbPDgw
+MmQwOGU1Pl0gKHBhdGhfb3BlbmF0KSBmcm9tIFs8ODAyZDA5ODk+XSAoZG9fZmlscF9vcGVuKzB4
+MzEvMHg3NCkKPiBbPDgwMmQwOTg5Pl0gKGRvX2ZpbHBfb3BlbikgZnJvbSBbPDgwMmM0ZmIzPl0g
+KGZpbGVfb3Blbl9uYW1lKzB4MzMvMHg0OCkKPiBbPDgwMmM0ZmIzPl0gKGZpbGVfb3Blbl9uYW1l
+KSBmcm9tIFs8ODAyYzRmZTk+XSAoZmlscF9vcGVuKzB4MjEvMHgyZSkKPiBbPDgwMmM0ZmU5Pl0g
+KGZpbHBfb3BlbikgZnJvbSBbPDgwNDkwYmQzPl0gKGlycTFfaGFuZGxlcisweDUzLzB4YTQpCj4g
+Wzw4MDQ5MGJkMz5dIChpcnExX2hhbmRsZXIpIGZyb20gWzw4MDI0N2RkNz5dIChpcnFfZm9yY2Vk
+X3RocmVhZF9mbisweDFmLzB4NGMpCj4gWzw4MDI0N2RkNz5dIChpcnFfZm9yY2VkX3RocmVhZF9m
+bikgZnJvbSBbPDgwMjQ3Y2Q5Pl0gKGlycV90aHJlYWQrMHg4OS8weDExNCkKPiBbPDgwMjQ3Y2Q5
+Pl0gKGlycV90aHJlYWQpIGZyb20gWzw4MDIyY2E2Nz5dIChrdGhyZWFkKzB4Y2YvMHhlNCkKPiBb
+PDgwMjJjYTY3Pl0gKGt0aHJlYWQpIGZyb20gWzw4MDIwMDE0OT5dIChyZXRfZnJvbV9mb3JrKzB4
+MTEvMHgyOCkKPiBFeGNlcHRpb24gc3RhY2soMHg4MjJiYmZiMCB0byAweDgyMmJiZmY4KQo+IGJm
+YTA6ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDAwMDAwMDAwIDAwMDAwMDAw
+IDAwMDAwMDAwIDAwMDAwMDAwCj4gYmZjMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
+MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAKPiBiZmUwOiAwMDAwMDAw
+MCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAwMDAwMDAwMAo+IAo+IGZzbCxp
+ZmMtbmFuZCA3ZTgwMDAwMC5uYW5kOiBDb250cm9sbGVyIGlzIG5vdCByZXNwb25kaW5nCj4gSURf
+NTMxIG1haW4vc21wX2ZzbS5jOjE4ODQgPGlucmN1OiByY3VfcHJlZW1wdCBkZXRlY3RlZCBzdGFs
+bHMgb24gQ1BVczoKPiByY3U6ICAgIFRhc2tzIGJsb2NrZWQgb24gbGV2ZWwtMCByY3Vfbm9kZSAo
+Q1BVcyAwLTEpOiBQMTE2LzI6Yi4ubAo+ICAgICAgICAgKGRldGVjdGVkIGJ5IDEsIHQ9MjEwMiBq
+aWZmaWVzLCBnPTc3MjksIHE9NzU0KQo+IHRhc2s6aXJxLzMxLWFybS1pcnExIHN0YXRlOkQgc3Rh
+Y2s6IDAgcGlkOiAgMTE2IHBwaWQ6IDIgZmxhZ3M6MHgwMDAwMDAwMAo+IFs8ODA2NGI5N2Y+XSAo
+X19zY2hlZHVsZSkgZnJvbSBbPDgwNjRiYjAxPl0gKHNjaGVkdWxlKzB4OGQvMHhjMikKPiBbPDgw
+NjRiYjAxPl0gKHNjaGVkdWxlKSBmcm9tIFs8ODA2NGRhY2Q+XSAocnRfbXV0ZXhfc2xvd2xvY2tf
+YmxvY2suY29uKQo+IFs8ODA2NGRhY2Q+XSAocnRfbXV0ZXhfc2xvd2xvY2tfYmxvY2suY29uc3Rw
+cm9wLjApIGZyb20gWzw4MDY0ZGI1Nz5dIAo+IFs8ODA2NGRiNTc+XSAoX19ydF9tdXRleF9zbG93
+bG9jay5jb25zdHByb3AuMCkgZnJvbSBbPDgwNjRkYmY3Pl0gCj4gWzw4MDY0ZGJmNz5dIChydF9t
+dXRleF9zbG93bG9jay5jb25zdHByb3AuMCkgZnJvbSBbPDgwNGIyMDQ3Pl0gCj4gWzw4MDRiMjA0
+Nz5dIChuYW5kX2dldF9kZXZpY2UpIGZyb20gWzw4MDRiNTMzNT5dIChuYW5kX3dyaXRlX29vYisw
+eDFiLzB4NGEpCj4gWzw4MDRiNTMzNT5dIChuYW5kX3dyaXRlX29vYikgZnJvbSBbPDgwNGEzNTg1
+Pl0gKG10ZF93cml0ZSsweDQxLzB4NWMpCj4gWzw4MDRhMzU4NT5dIChtdGRfd3JpdGUpIGZyb20g
+Wzw4MDRjMWQ0Nz5dICh1YmlfaW9fd3JpdGUrMHgxN2YvMHgyMmMpCj4gWzw4MDRjMWQ0Nz5dICh1
+YmlfaW9fd3JpdGUpIGZyb20gWzw4MDRjMDQ3Yj5dICh1YmlfZWJhX3dyaXRlX2xlYisweDViLzB4
+MWQwKQo+IFs8ODA0YzA0N2I+XSAodWJpX2ViYV93cml0ZV9sZWIpIGZyb20gWzw4MDRiZjYyZD5d
+ICh1YmlfbGViX3dyaXRlKzB4NzUvMHg5MCkKPiBbPDgwNGJmNjJkPl0gKHViaV9sZWJfd3JpdGUp
+IGZyb20gWzw4MDM3NDViNz5dICh1Ymlmc19sZWJfd3JpdGUrMHg0Yi8weDhjKQo+IFs8ODAzNzQ1
+Yjc+XSAodWJpZnNfbGViX3dyaXRlKSBmcm9tIFs8ODAzNzRiYmI+XSAodWJpZnNfd2J1Zl9zeW5j
+X25vbG9jaysweDEwZi8weDFhNCkKPiBbPDgwMzc0YmJiPl0gKHViaWZzX3didWZfc3luY19ub2xv
+Y2spIGZyb20gWzw4MDM2YzZkZD5dICh1Ymlmc19qbmxfdXBkYXRlKzB4MWU5LzB4MzZjKQoKWW91
+IGNhbiB0cmltIGRvd24gdGhlIHRyYWNlcyB0byBvbmx5IHNob3cgdGhlIGludGVyZXN0aW5nIHBh
+cnQuCgpIZXJlIHlvdSBuZWVkIGEgRml4ZXM6IGFuZCBDYzogc3RhYmxlIHRhZy4KCj4gU2lnbmVk
+LW9mZi1ieTogUm9uYWxkIE1vbnRoZXJvIDxkZWJ1Zy5wZW5ndWluMzJAZ21haWwuY29tPgo+IC0t
+LQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYyB8IDIgKy0KPiAgZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgICAgfCA1ICsrKystCj4gIDIgZmlsZXMgY2hhbmdl
+ZCwgNSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Zz
+bF9pZmNfbmFuZC5jCj4gaW5kZXggMjBiYjFlMGNiNWViLi40MmY4ZWE0NmI2YTggMTAwNjQ0Cj4g
+LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNsX2lmY19uYW5kLmMKPiArKysgYi9kcml2ZXJz
+L210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYwo+IEBAIC0yMSw3ICsyMSw3IEBACj4gIAo+ICAj
+ZGVmaW5lIEVSUl9CWVRFCQkweEZGIC8qIFZhbHVlIHJldHVybmVkIGZvciByZWFkCj4gIAkJCQkJ
+Ynl0ZXMgd2hlbiByZWFkIGZhaWxlZAkqLwo+IC0jZGVmaW5lIElGQ19USU1FT1VUX01TRUNTCTUw
+MCAgLyogTWF4aW11bSBudW1iZXIgb2YgbVNlY3MgdG8gd2FpdAo+ICsjZGVmaW5lIElGQ19USU1F
+T1VUX01TRUNTCTEwMDAgIC8qIE1heGltdW0gbnVtYmVyIG9mIG1TZWNzIHRvIHdhaXQKPiAgCQkJ
+CQlmb3IgSUZDIE5BTkQgTWFjaGluZQkqLwo+ICAKPiAgc3RydWN0IGZzbF9pZmNfY3RybDsKPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+IGluZGV4IDllMjRiZWRmZmQ4OS4uMDViNTJlZDQxZjRj
+IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gKysrIGIv
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiBAQCAtMzYzLDggKzM2MywxMSBAQCBz
+dGF0aWMgaW50IG5hbmRfY2hlY2tfd3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCWludCBy
+ZXQ7Cj4gIAo+ICAJLyogQnJva2VuIHhEIGNhcmRzIHJlcG9ydCBXUCBkZXNwaXRlIGJlaW5nIHdy
+aXRhYmxlICovCj4gLQlpZiAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfQlJPS0VOX1hEKQo+ICsJaWYg
+KGNoaXAtPm9wdGlvbnMgJiBOQU5EX0JST0tFTl9YRCkgewo+ICsJCXByX2luZm8oIm5hbmRfY2hp
+cC0+b3B0aW9ucyBpbmRpY2F0ZXMgTkFORF9CUk9LRU5fWEQgJWRcbiIsCj4gKwkJCShjaGlwLT5v
+cHRpb25zICYgTkFORF9CUk9LRU5fWEQpKTsKPiAgCQlyZXR1cm4gMDsKPiArCX0KClRoaXMgaXMg
+YW4gdW5yZWxhdGVkIGRlYnVnIG1lc3NhZ2UgYW5kIHNob3VsZCBiZSBkcm9wcGVkLgoKPiAgCj4g
+IAkvKiBDaGVjayB0aGUgV1AgYml0ICovCj4gIAlyZXQgPSBuYW5kX3N0YXR1c19vcChjaGlwLCAm
+c3RhdHVzKTsKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
