@@ -4,80 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18597C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Nov 2023 10:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5D53C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Nov 2023 12:30:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5VqOoMoPysFiDJjiCqTtBErxhgNTkL88L9t0pAhWGjU=; b=ss6kNKipg57YIaDrvBBdxigha6
-	vi9UFhQTsnZCQdy4lu4X3/mBHH2zLVxKV2LULDoDPkiUzC6PDNjjyGXHA8kXWxnixYG4DusBdLCl2
-	jAUYgMtGM9o0rjoTE09bmdP4F+OmnG0hX6opL8Vl0woiMwO96UgC/rtPVFANoLeUUoBL/SDuBTEYq
-	51pRCjFa3kRCjWXt3lgSSCK9O3REXtl7vgSi9d8/y9qBy1kW33TNpj9D7LdFk1DWQQd0iESFfSWYQ
-	/PTauN95BDKWvrPNAz0GVmUfz07DnTe8UB8Ii45cQpSAxGDyB6rUxYYu/aGe6q8OVsQUaGSH3Eb3G
-	qu5g1KUg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Qs8fkJfi5yDQS46Imw8F5hiUbKqar5Kjzhu1RelgdsI=; b=sdcaNqzzyPLr/k
+	kHccN25ZehsnhMqEpHIeR/k9v+9O/ryLxXuENrG/LApxuFTEYzSU6czfZfwpSmVZoGMlcOxxYW7UB
+	L4NMvLc7W5mDuO3Cto9EVaOfqU+jrfCfDOElpKCa6kJmv2WyPJHDOURlu9QLv8orhg6oT0Q/x4jS2
+	nUugaawtsRZb5jf44VzF2CmZCXynTSxEN46Ah+yu8R/UOzWqYxUtRA5zi+79U/BC/12iYLiRHzOlQ
+	tBFI7xtIzm63L6tzniiWIT+CEDouaACeNKMrqhMSQzrMgTc52c+JPNqVIsL2MFyACdU0EYrKmkNQN
+	wo8Zb+Oskzpiqzj7e4rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2qIi-00FY1c-1D;
-	Tue, 14 Nov 2023 10:05:44 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1r2sYt-00Ftpr-0A;
+	Tue, 14 Nov 2023 12:30:35 +0000
+Received: from mail-m49197.qiye.163.com ([45.254.49.197])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2qIf-00FY0k-2e
+	id 1r2sYo-00Ftoj-2Y
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 Nov 2023 10:05:43 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id C395817E;
-	Tue, 14 Nov 2023 11:05:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1699956338;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cc+AlxmF73YQgRQPbI8MrMzhdobkgpHXHYUEe3HGxPc=;
-	b=bBRzJIUao/6Bnt+uUZ/0mvrYgqndWz2GpBqkzcnNantM5qjetIXnMpZBa6BKSJTNBpcbGD
-	rHSALi5FS95sBk6SR9XGmqbfWv4JVU/TWIOBA5K9gvjA/4NVYaHeUCMkpOhC+MmG8+0sX1
-	Z+X/Zh2Dzje26Q4W/xOIRGg6tWtT7yTdvzAk9Q6LgGrLVcIodK43DWFPpKGsrTOeSJB704
-	z4QFviLAdeqY0lukjTAeSGJM/RgHswgoiUljBqXgrFhhuTP+0PgM58WSP91pNlcJ3cmMlw
-	i4LM5SXc7jr5i418iEn6fdIrcbDNMwbQpTGO/+jEKt6WRhmc7ckF+6RVAnG/AQ==
+	Tue, 14 Nov 2023 12:30:33 +0000
+Received: from Vostro-3710.lan (unknown [58.61.140.31])
+	by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 2EB4A80010C;
+	Tue, 14 Nov 2023 20:30:18 +0800 (CST)
+From: Chukun Pan <amadeus@jmu.edu.cn>
+To: miquel.raynal@bootlin.com
+Cc: amadeus@jmu.edu.cn,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	richard@nod.at,
+	vigneshr@ti.com
+Subject: Re: [PATCH 1/1] mtd: rawnand: add support for TH58NYG3S0HBAI4 NAND flash
+Date: Tue, 14 Nov 2023 20:30:08 +0800
+Message-Id: <20231114123008.185071-1-amadeus@jmu.edu.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231029144840.484facee@xps-13>
+References: <20231029144840.484facee@xps-13>
 MIME-Version: 1.0
-Date: Tue, 14 Nov 2023 11:05:38 +0100
-From: Michael Walle <michael@walle.cc>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- "biju.das.au" <biju.das.au@gmail.com>, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH RFC 0/4] Add set_iofv() callback
-In-Reply-To: <TYVPR01MB112799D6CB8A0BCD1A20F406186B3A@TYVPR01MB11279.jpnprd01.prod.outlook.com>
-References: <20231108171149.258656-1-biju.das.jz@bp.renesas.com>
- <877590a5e3f8c32ec0a032385049a563@walle.cc>
- <TYVPR01MB11279E535835F2998335F770A86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
- <b9831be88008b9f9960d1d79cd0e5a3a@walle.cc>
- <TYVPR01MB11279575676708170F3B3270D86AFA@TYVPR01MB11279.jpnprd01.prod.outlook.com>
- <f88759f98e865e68da5481fcbb969c47@walle.cc>
- <TYCPR01MB112699263B2EC0EC229746D3786AFA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <dcfa2cab21fc85bb9b2b0c1ceb754a1a@walle.cc>
- <TYCPR01MB11269C639CB7AA480E388360B86AEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <TYCPR01MB1126988E1A0741B99DB8DE59C86ADA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <3a9184e1e91689757a5b680e699ce02d@walle.cc>
- <TYVPR01MB11279DF8A78E6C15CB0E6209E86B3A@TYVPR01MB11279.jpnprd01.prod.outlook.com>
- <c0928bb386aa3d8ad8d1966fa5060efa@walle.cc>
- <TYVPR01MB112794AD059F78FEE41FAE03686B3A@TYVPR01MB11279.jpnprd01.prod.outlook.com>
- <b3a322973f8969713a732587c73ca215@walle.cc>
- <TYVPR01MB112799D6CB8A0BCD1A20F406186B3A@TYVPR01MB11279.jpnprd01.prod.outlook.com>
-Message-ID: <c9b0cffbb1566a7d38f2251ac7c8883a@walle.cc>
-X-Sender: michael@walle.cc
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaHh9IVkhMQkJPS09MTR5MTFUTARMWGhIXJBQOD1
+	lXWRgSC1lBWU5DVU1KVUpPS1VISllXWRYaDxIVHRRZQVlPS0hVSkxKT05PVUpLS1VKQktLWQY+
+X-HM-Tid: 0a8bcdcfa0fbb03akuuu2eb4a80010c
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MS46Pww6GDwrLU9DPjlLMRVL
+	MzNPCRJVSlVKTUJCQk1OS0pDQk9CVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWU5D
+	VU1KVUpPS1VISllXWQgBWUFKT0hCNwY+
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231114_020542_008658_CD46A98C 
-X-CRM114-Status: GOOD (  10.44  )
+X-CRM114-CacheID: sfid-20231114_043031_018130_B86AE42F 
+X-CRM114-Status: UNSURE (   6.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,31 +67,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Biju,
+Hi Miquel,
 
->> But that really begs the question why the Atmel flash isn't
->> working with that setting. I suspect some problems during the turn 
->> around
->> of the direction of IO3.
->> You'd really have to probe with an oscilloscope though.
-> 
-> OK, but as per [1], 8.14, IO3 must be HiZ for Atmel flash.
+> It's more like a request than a question. Please fix the parameter page
+> at run time by registering a ->.fixup_onfi_param_page() hook in
+> Toshiba's nand_manufacturer_ops structure.
 
-Sure, but the question is *why*? The flash shouldn't drive IO3
-during the command phase. Also, because it might be in HiZ it
-cannot read the state (as it is undefined at this point). So
-what is going wrong here?
+Sorry for the late reply. This flash is not ONFI compliant NAND,
+so onfi fixup can't work. Datasheet available at:
+https://europe.kioxia.com/content/dam/kioxia/newidr/productinfo/datasheet/201910/DST_TH58NYG3S0HBAI4-TDE_EN_31565.pdf
 
-As mentioned, I suspect something is going wrong during the
-change of direction of the IO3 line. Either the SoC is driving
-it for too long, or the flash is driving it too early?
+Thanks,
+Chukun
 
--michael
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
