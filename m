@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37E0AC54E76
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Nov 2023 17:29:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99E01C072A2
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Nov 2023 08:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=x2fwr8EmVj67QiH9R9HwaCZNNNLpyURO6SvsnWzVcQk=; b=0FAhfo7QRJEC5E
-	ft4XmRlfyrPGZHNxQ/NUgM/2fFswRdwL8kOllOheoSdRFnmdjwqQrVACb5zvBZFcS06A50IK18n5D
-	RtbXv6Cy8jpHmAs915CpmdsWYcQ5rZ9fUqb1kOIF9l1Ee/zTT9nFlIfEcagoE2s3zTfGP5vSZ6TUD
-	0+r0LNOjBG07nfNKoUOW+YIX/ZKzO3aU3H1PYjV3r+mHOJ1rrLKU32chLfihE9f4gng4S5RgaLCC0
-	S6oFbRQpcR5/BRSJSHcWVS38woNNqNfVzu9FZIH6s9IeOQVBq37L3HRYASR/rkmJrApSOnJZx8EVf
-	oXDcXR9rJD7rmaY2xykA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hhnkuSw35hDSXL9P017py3T9ry1vM+v350cWHMzjO60=; b=e5njroSFu3OsAg
+	dEtJkvn/gIHvSQyZ52NQUsoNmT8x2qtPJ40lzdad4qK52fkQsOAR8FGxHc1scIinWXo82Gifn/iZx
+	yTerO2eMvrs96qxdBL7ay30pl+uk4MqDvHgSRvx8wPVtLHoAGZMXcd4MQktkFi4fcCk5NPL+3iprZ
+	bNylgaqyqilS+mw1SRwx7GOJJJIFuebpF06sDhKlMl+uQKA2iz5t/pMpcq1dU3sN0sZmTK7jIsFqk
+	hRwcNLdCFjxpo1lR1HHcyMYS76uKW2nOT3sB9Ae1m3vebkKy3ydb9FQkfIhYSqFQ8/YagCYfVaUWO
+	aFl2OBfDF4nYkMrIuOSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r3gAv-0048Em-0d;
-	Thu, 16 Nov 2023 17:29:09 +0000
-Received: from mail-io1-xd32.google.com ([2607:f8b0:4864:20::d32])
+	id 1r3uNc-005xG2-1p;
+	Fri, 17 Nov 2023 08:39:12 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r3gAs-0048D1-3C
+	id 1r3uNW-005xD4-1f
 	for linux-mtd@lists.infradead.org;
-	Thu, 16 Nov 2023 17:29:08 +0000
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a69a1b51baso56272339f.1
-        for <linux-mtd@lists.infradead.org>; Thu, 16 Nov 2023 09:29:05 -0800 (PST)
+	Fri, 17 Nov 2023 08:39:09 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6c33ab26dddso1645176b3a.0
+        for <linux-mtd@lists.infradead.org>; Fri, 17 Nov 2023 00:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700155744; x=1700760544; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zObDJyyApj+o5rWei7TBUNVUgsvLA6WxzS7aiu366ig=;
-        b=KlL8GqUb3LpapzbTslsTxZ932lVmxM3P+W4UQemG/N0dSrxpSSPhDgdCPzpHipGYSY
-         DeIQ2dKpdfcDEOCN6d2TBd8to56rYGQYdTh551qG3BtYvKNAwSV3fEkfDn6aOVmyNg4b
-         Hrx7pJeuXyd3+BTUx5F1UeIUDuQe8urM+OmRs=
+        d=gmail.com; s=20230601; t=1700210344; x=1700815144; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KfpKKuiLaDnTxZ3V8+t73YhNE4SmRDuTqTI9yMXDTb4=;
+        b=YsiCkewzBjqT0MZ49nTYgOOvjBSZSGGYpOmy9kgCggtQy5ucYtLXIyetBZbjwF/J+v
+         /Xn3Dxv98LMdnINUxsDU1ne53WQJpUv0vWmmT8oPodhPZlceBfQ5KF5ZDQwxfBgtoFpZ
+         AS5r/RevglzQOseD2BrO26n5F3/29p/PGHnbCvPEr21pi0fg/nEAnnHknaIY6DQy8/bd
+         JiER7Kscdc42rVJKZReqxitMcHT1lvuB44fVoeBDjEMS92h+4LlXR9c5mLAv5y9QbvPt
+         6y2+vNiNiQQEDuMSrE+/ZfyFfgSHBDArGkKy/DvmnTjECj3paVK6YypL9VbPim0vqnE2
+         bohQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700155744; x=1700760544;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zObDJyyApj+o5rWei7TBUNVUgsvLA6WxzS7aiu366ig=;
-        b=UQgOqHj81IOmlRDMkO9PqtjW482r650I6NCL8+XDg1ArB8E7pOE/9kzE8Xc1B+A176
-         FRGvL4jRbWsMaDWI9Xa/eV4O8WiUzRSCk94LuMAbyQuHTYv4rZPR+jZGCD2unCACHnol
-         +7TLJj0WCtLF6CawRnxZLctv8rdnuy142ebhbWGk7SQ3i2sFlGafcoD8n8yxqXh7qHsR
-         VDhwAsEel41lRU381Nm379+qtVHhHgTW9CZhZFcX0b0Bk3lKPdqVbqpfco/dzGEOfMPI
-         3rFGiPZ8ZbyGVHsaY2aib4YsCXGMhd3I6Dlz6whWPBDMUuTZJjKash54NclLtQ6iX9y/
-         fItw==
-X-Gm-Message-State: AOJu0Ywz8RteYlYSypovvf01mbhsiCsdONgJ2cSTT/VcBpBiNL1PkjhO
-	fK/k10rOoOD8WJMnqwRWLX+OYA==
-X-Google-Smtp-Source: AGHT+IFKMAplsaghNOXgzwni6uGRMOHHyXUUMlwafzZxgoUtmTxDO5K7s6Rv6XR8ipAkr/swrYO73A==
-X-Received: by 2002:a05:6e02:1a0b:b0:359:3294:91a9 with SMTP id s11-20020a056e021a0b00b00359329491a9mr2835390ild.14.1700155744300;
-        Thu, 16 Nov 2023 09:29:04 -0800 (PST)
-Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
-        by smtp.gmail.com with ESMTPSA id o8-20020a056e02092800b0035ab8cc4a4bsm1914348ilt.17.2023.11.16.09.29.03
+        d=1e100.net; s=20230601; t=1700210344; x=1700815144;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KfpKKuiLaDnTxZ3V8+t73YhNE4SmRDuTqTI9yMXDTb4=;
+        b=cx794IA45RjqH9U5Q71jHYO0ZI35aO45ZzlIjBN0IQCmFtGVFs8aTG4z2bT9DlKuKn
+         cTFTakV8qE4odIBamrBgNV6pbk23qaZzlLA/170jCLW7TfO5ep4llc/b1X+kvrYFOAtQ
+         9bTCTnXZH1RzpMEoaCmjZ3GoiC/bO5ATy2dTwdmAOoa1vImogUTKXw4cXfcijO8qrTpd
+         +ZcvILAb59aRe6SSKZjk1C11YvtKgXfvFhugsgAtnAteqaUIsgbJh3JuMJ8VWkWjpKI1
+         RTL/qI/M2kiIiP6zaT9bR2Ci1KiFV6zmkw+jhPOzUFBHzw8bxW7QsjFBgT02az+j3AOe
+         EkeA==
+X-Gm-Message-State: AOJu0YzkPOkaMGH2z5M/CELVKNTAPHc5fgiMRbqZuUiuYm9ObMCfd86U
+	Q97a8DXx2J7bJDdffnIjsto=
+X-Google-Smtp-Source: AGHT+IFEMvVF8V2EY3J4DlqyYt5K0XjJITHBRg/OoN/AcWSPe6NmLAZnz6CVAYqqFY1WUzjxTKf3Mw==
+X-Received: by 2002:aa7:8807:0:b0:692:af9c:d96a with SMTP id c7-20020aa78807000000b00692af9cd96amr14545437pfo.5.1700210343677;
+        Fri, 17 Nov 2023 00:39:03 -0800 (PST)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id l23-20020a63ba57000000b005bdf596164fsm783178pgu.94.2023.11.17.00.39.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 09:29:04 -0800 (PST)
-From: Simon Glass <sjg@chromium.org>
-To: devicetree@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-mtd@lists.infradead.org,
-	Tom Rini <trini@konsulko.com>,
-	Rob Herring <robh@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	U-Boot Mailing List <u-boot@lists.denx.de>,
-	Simon Glass <sjg@chromium.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Pratyush Yadav <ptyadav@amazon.de>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Richard Weinberger <richard@nod.at>,
-	Rob Herring <robh+dt@kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
-Date: Thu, 16 Nov 2023 10:28:50 -0700
-Message-ID: <20231116172859.393744-1-sjg@chromium.org>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+        Fri, 17 Nov 2023 00:39:03 -0800 (PST)
+Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
+	by twhmp6px (Postfix) with ESMTPS id D5EDE8050E;
+	Fri, 17 Nov 2023 16:39:02 +0800 (CST)
+From: Jaime Liao <jaimeliao.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com
+Cc: leoyu@mxic.com.tw,
+	jaimeliao@mxic.com.tw
+Subject: [PATCH v5 6/6] mtd: spi-nor: add support for Macronix Octal flash
+Date: Fri, 17 Nov 2023 16:38:53 +0800
+Message-Id: <20231117083853.33329-7-jaimeliao.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231117083853.33329-1-jaimeliao.tw@gmail.com>
+References: <20231117083853.33329-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231116_092907_056882_70BF12C1 
-X-CRM114-Status: GOOD (  19.04  )
+X-CRM114-CacheID: sfid-20231117_003906_611254_AB4D20B4 
+X-CRM114-Status: GOOD (  10.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,142 +99,280 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a compatible string for binman, so we can extend fixed-partitions
-in various ways.
+From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
+Adding Macronix Octal flash for Octal DTR support.
+
+The octaflash series can be divided into the following types:
+
+MX25 series : Serial NOR Flash.
+MX66 series : Serial NOR Flash with stacked die.(Size larger than 1Gb)
+LM/UM series : Up to 250MHz clock frequency with both DTR/STR operation.
+LW/UW series : Support simultaneous Read-while-Write operation in multiple
+               bank architecture. Read-while-write feature which means read
+               data one bank while another bank is programing or erasing.
+
+MX25LM : 3.0V Octal I/O
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8729/MX25LM51245G,%203V,%20512Mb,%20v1.1.pdf
+
+MX25UM : 1.8V Octal I/O
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8967/MX25UM51245G,%201.8V,%20512Mb,%20v1.5.pdf
+
+MX66LM : 3.0V Octal I/O with stacked die
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8748/MX66LM1G45G,%203V,%201Gb,%20v1.1.pdf
+
+MX66UM : 1.8V Octal I/O with stacked die
+ -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8711/MX66UM1G45G,%201.8V,%201Gb,%20v1.1.pdf
+
+MX25LW : 3.0V Octal I/O with Read-while-Write
+MX25UW : 1.8V Octal I/O with Read-while-Write
+MX66LW : 3.0V Octal I/O with Read-while-Write and stack die
+MX66UW : 1.8V Octal I/O with Read-while-Write and stack die
+
+As below are the SFDP table dump.
+
+zynq> cat jedec_id
+c28339
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25um25345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+040900001445988043060f0021dcffff
+zynq> md5sum sfdp
+950e623745a002e1747008592e6dbdf9  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c28039
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25um25645g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200d2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a000014359c8043060f0021dcffff
+zynq> md5sum sfdp
+d652779f17770dc833cd96262cb2a620  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c28539
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lm25645g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+ec258f831ac737454c7eb9f6a8a4495a  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2803a
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25um51245g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a000014359c8043060f0021dcffff
+zynq> md5sum sfdp
+75d81c1eb2fd2767634f1d0dfbb3be35  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 67108864 (64M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2853a
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lm51245g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200e2cc02674430b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+214868617d74e6bfb2c45444d5d6fff0  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 67108864 (64M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2803b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66um1g45g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200e2cc02674430b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a000014359c8043060f0021dcffff
+zynq> md5sum sfdp
+eea09d64679e64f627402b39a177e356  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 134217728 (128M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2853b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66lm1g45g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87690100821200e2cc02673830b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+7b46113b529d58a6335531a10f14a76e  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 134217728 (128M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 ---
+ drivers/mtd/spi-nor/macronix.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-(no changes since v5)
-
-Changes in v5:
-- Add #address/size-cells and parternProperties
-- Drop $ref to fixed-partitions.yaml
-- Drop 'select: false'
-
-Changes in v4:
-- Change subject line
-
-Changes in v3:
-- Drop fixed-partition additional compatible string
-- Drop fixed-partitions from the example
-- Mention use of compatible instead of label
-
-Changes in v2:
-- Drop mention of 'enhanced features' in fixed-partitions.yaml
-- Mention Binman input and output properties
-- Use plain partition@xxx for the node name
-
- .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 3 files changed, 74 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-new file mode 100644
-index 000000000000..329217550a98
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
-+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Binman firmware layout
-+
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. It is based on fixed-partitions, with some
-+  extensions, but uses 'compatible' to indicate the contents of the node, to
-+  avoid perturbing or confusing existing installations which use 'label' for a
-+  particular purpose.
-+
-+  Binman supports properties used as inputs to the firmware-packaging process,
-+  such as those which control alignment of partitions. This binding addresses
-+  these 'input' properties. For example, it is common for the 'reg' property
-+  (an 'output' property) to be set by Binman, based on the alignment requested
-+  in the input.
-+
-+  Once processing is complete, input properties have mostly served their
-+  purpose, at least until the firmware is repacked later, e.g. due to a
-+  firmware update. The 'fixed-partitions' binding should provide enough
-+  information to read the firmware at runtime, including decompression if
-+  needed.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-+
-+properties:
-+  compatible:
-+    const: binman
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+patternProperties:
-+  "^partition(-.+|@[0-9a-f]+)$":
-+    $ref: partition.yaml
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    partitions {
-+        compatible = "binman";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@100000 {
-+            label = "u-boot";
-+            reg = <0x100000 0xf00000>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..849fd15d085c 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 48e570c04ad9..2115a25b21ce 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -260,6 +260,27 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.name = "mx66uw2g345gx0",
+ 		.n_banks = 4,
+ 		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x83, 0x39),
++		.name = "mx25um25345g",
++	}, {
++		.id = SNOR_ID(0xc2, 0x80, 0x39),
++		.name = "mx25um25645g",
++	}, {
++		.id = SNOR_ID(0xc2, 0x85, 0x39),
++		.name = "mx25lm25645g",
++	}, {
++		.id = SNOR_ID(0xc2, 0x80, 0x3a),
++		.name = "mx25um51245g",
++	}, {
++		.id = SNOR_ID(0xc2, 0x85, 0x3a),
++		.name = "mx25lm51245g",
++	}, {
++		.id = SNOR_ID(0xc2, 0x80, 0x3b),
++		.name = "mx66um1g45g",
++	}, {
++		.id = SNOR_ID(0xc2, 0x85, 0x3b),
++		.name = "mx66lm1g45g",
+ 	}
+ };
  
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b294edaf5698..8704eefe6e2a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3550,6 +3550,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-+
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 -- 
-2.43.0.rc0.421.g78406f8d94-goog
+2.25.1
 
 
 ______________________________________________________
