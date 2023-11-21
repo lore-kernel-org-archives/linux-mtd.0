@@ -4,84 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB900C61D92
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Nov 2023 12:53:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F6A2C61D92
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Nov 2023 13:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=beb29Mx3u/2Qa1ebPS2PDT2K3f/I/FziBrAB4Jx6ffY=; b=BJhYsn1fig4FqH
-	28Pnk7FlVHyr7Yo0sdycIsgnJOL8XAmbml3dt8ozttJJGvp3edFgWmJNTu82n0Bpgmh83FylfPK4C
-	CU8SsAoD8DjEqFf8zsXMZYhuFKwI5jK54eGqbJreETJW1+eWdczKiSWDdYCEHj4Vse+klvojLwFyI
-	zKcVK+IItYU1iIHfLKQKsX0UgMPfYmN6UAudPLbUxaXVzHrpYWScH81ZTfrhKZbJXTTDWwZhiXbvT
-	kW9IU7utLU13LsTg9cZnL/cHY5RtWl/Buk0juJJYPnQBdZf/QQNUTKc+4Z88Nu4pRO3h71Kboby/W
-	t/lQsNxSVucdpPRO2zZQ==;
+	List-Owner; bh=Ad84sc0w+Z2lsbfqnlibBcpW9xcTEYUmNxKh/LWZtLA=; b=ykq2gHv16OAOCQ
+	Zg5XcZHJ1gJVO05YhIo2sS5QQUl7nsPNkuTWnEBIgMYr18Zyc39/ostKWJbHNNI4zLX5pL7lGANaV
+	ykZhZnEInBi/qM/tlJ/9OL7RGhS1E9bzAbEjubfyt1BgOeL72+3v2wPLavQUSYwyi8YGD0NJuAyZ6
+	FyV6ra9M8ikbJTtqDvUij1Kw8eZZXflBBWT8fIni9tIs9LEDqOptOoM910Tc+g3p4qA6jnUlS4bh0
+	N0WNCLhHOuSbu2dxV9+8fUzky/2ZHT4Y3pZbALk4E1yCs6/AXm0w8OyXYtVaUKi0t/Iu1B0757J9m
+	/TK2rfgMtH1v34K5JDyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5QFy-00GleU-1i;
-	Tue, 21 Nov 2023 12:53:34 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1r5QYj-00GnNl-1N;
+	Tue, 21 Nov 2023 13:12:57 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5QFv-00GlbL-1i
+	id 1r5QYh-00GnNH-0k
 	for linux-mtd@lists.infradead.org;
-	Tue, 21 Nov 2023 12:53:32 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so7618708a12.1
-        for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2023 04:53:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700571204; x=1701176004; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ydfV3QLSawHwlLHCWd/XNWDer+rCulq5TXwrRTbDPHs=;
-        b=nZVfwFlKtmF00Zzi9Hhc6Y1xtXZfFxwa10NIJE4llc1iZCU0kSaX3bpnBklrpnRHxg
-         AGknd/RNHNT5/et46Db34XNxxYMVSOgfvfaT1RuB2WMSGBJaf28wYdSo2egIM9rorXw4
-         OVjdrgvu0K5VR+Yx6OYptEgFOg2cH3gn3FvEPTAxXXhWsyLpUYxHYCjy2AOfoC3uDYJd
-         HHfLQH0+WOpw4AVTBwv4ChTMDtdnIrRbxu4bAR8SfyUkSck7hSg6n5xZj85/FJOT11N8
-         dZmyxD7tBNxMR4Rnl5qec/ILMEInEEKDlEme4iuSM1TGdt6kZqLQALGUa9pdba41to1v
-         2zdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700571204; x=1701176004;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ydfV3QLSawHwlLHCWd/XNWDer+rCulq5TXwrRTbDPHs=;
-        b=M/hI2X6l3Z+6JraEb5Cl5mHlDNahzqnYXMW2IsqsJgbVNsMsjjEdwgGyg8Dgyzd3EG
-         xMc+38DlEK4mBa9hOSiDVXKqRx+B1QhKAaDE75O5R/M4sw6kiA09co8LCQPNyR3+AES2
-         EpsrVsZXW0p4UnzaJsTDG8r1lhGMbWMrIfDxyhMHoqKDrSq1cowJoTQsbj/mcW5g8h5e
-         +idliTltI4pcQ691Xt1xz6EbVjC0MHSOCTRWkObHGPB7xU5CeTE/wIQ01jkD0UPvvVio
-         +H5ShJJVRpU7jv8LkA5tZGYpEKL1ydwZ2l23wa4VjUrBiupPYvp4cJTtqg7R7+uL+3F1
-         ITVg==
-X-Gm-Message-State: AOJu0YzeSpfx32OOREdrXzuQEpMzgYi68NaBFoyy+cOQ9Xvj735r4WyI
-	J8njLE6ISQxQT4e5NqG8mMrGpA==
-X-Google-Smtp-Source: AGHT+IF80+iu4FqHVnddK6Ny09Q68ePeCeZXwIFeSRKI8zi4MVpVjidbPWO654V/Rz97P67qG9Y8rg==
-X-Received: by 2002:aa7:c40f:0:b0:543:5899:263a with SMTP id j15-20020aa7c40f000000b005435899263amr1675770edq.12.1700571203763;
-        Tue, 21 Nov 2023 04:53:23 -0800 (PST)
-Received: from 1.. ([79.115.63.75])
-        by smtp.gmail.com with ESMTPSA id l13-20020aa7cacd000000b005486f7f654dsm3748144edt.7.2023.11.21.04.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 04:53:23 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Michael Walle <michael@walle.cc>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	linux-mtd@lists.infradead.org
+	Tue, 21 Nov 2023 13:12:56 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id F3874B821CB;
+	Tue, 21 Nov 2023 13:12:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D1CC433C8;
+	Tue, 21 Nov 2023 13:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700572372;
+	bh=w+KuSoXz8VgiygUzSpg5nY9w2kQX+9gSp6q4pa7y6gI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=GvcLGCuZg5BeO/tEh1VSVQb03ISqEa+Oi36+d0umzvVzY+KGMgNDQfJgZTV6WeLNU
+	 jUxdgPHcRnmGwkGkR4v6p82cDq6WjyGYXwBRw0d53sRjDGa7KFcSfkACO7zlC59YeA
+	 +wWRljjn1q2sHMAxKIv6p+cQ/txQBVq4u8bi5+QEZ+OaA8VffPSjRlzPatfxBG7dj7
+	 CyusWIqooV3HatE6+4qJUWUJK5CmO70a0qSfEcNMDEbQLUYyeLCd4RFtXPrIDqm83r
+	 mdqyD3JtO5y5FiVL7GeVzVWNnIc5cEWq1fVnpu4dbUKWB6eQis+qQwkC4QLKqEPlj7
+	 zZoXFZ+nTwgMw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] MAINTAINERS: spi-nor: add myself as maintainer
-Date: Tue, 21 Nov 2023 14:53:19 +0200
-Message-Id: <170057114435.4569.9815407324870348078.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231121122134.1952738-1-michael@walle.cc>
+In-Reply-To: <20231121122134.1952738-1-michael@walle.cc> (Michael Walle's
+	message of "Tue, 21 Nov 2023 13:21:34 +0100")
 References: <20231121122134.1952738-1-michael@walle.cc>
+Date: Tue, 21 Nov 2023 14:12:49 +0100
+Message-ID: <mafs0msv7s10u.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=455; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=xDTBtNWQ9s6N3/JlP9LF5XSGNDUqzZO5gzJrunwoO+A=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlXKg9zouPt9NVpk6/lnqPXJUaHS8KxffXLrzxD zYeR6fJVF6JATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZVyoPQAKCRBLVU9HpY0U 6RSnCACXF52fu0uon4cCCJ9H3Md95CgZv0TuO/3TKWLEmND6thubepRTywhV0/V97xl6PcxwXDo COuBTFx4LnVuPCN/TmPdV1eFS4z/AMEAavWH7HF1kR5LlhR1Fsk+3K9bg0MZt7lM40gY78whFfq 2HUTjktyEpHGOu41qmCkVmG0vv8b5Nj7XNwJ/kjC09UAjRLl+mL8dP1bmRG9b+VZAfHjmwIyzu4 ZAUoNLidOUNnUFOclziIsl/+iwkQSArP12B9hl9kRFx44LLTX1hFZHT4cO+61lWN6eDbVXQpneB E86bSvhg2PCh+v2a95JdDzj355gNJvLQtDBSDp6aw2Swgv18
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231121_045331_565670_7E222FE0 
-X-CRM114-Status: UNSURE (   7.58  )
+X-CRM114-CacheID: sfid-20231121_051255_571940_3F30E658 
+X-CRM114-Status: UNSURE (   6.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,22 +76,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 21 Nov 2023 13:21:34 +0100, Michael Walle wrote:
+On Tue, Nov 21 2023, Michael Walle wrote:
+
 > After being a reviewer for a while, add myself as a maintainer for the
 > spi-nor subsystem.
-> 
-> 
-Congrats and good luck!
+>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
+Thanks for all your work on SPI NOR :-)
 
-[1/1] MAINTAINERS: spi-nor: add myself as maintainer
-      https://git.kernel.org/mtd/c/4137f324cb29
+Acked-by: Pratyush Yadav <pratyush@kernel.org>
 
-Cheers,
 -- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
