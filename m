@@ -4,76 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B56C5ACB3
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Nov 2023 09:53:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9654AC61D93
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Nov 2023 11:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ng9aMSrohmMiWGdSLnLtaPehW6mL360pZ7VjXoCCxX8=; b=HpTvy631yi5PkC
-	orTzuZNq9rEpHxyduTgJAc5isIitl+XJdsserKtHbxJMoDq7pBDu2Gt5iJH4Yl5SaaHXlagEDIPf4
-	OEjPDcBkeM+Ul+pgnsgDcjbmzEskSDNvGNokARRuGqiuz6Xt5+vPrtVKnxUYBQP7HIqmcMVKAd2Vg
-	UtzKMDEpJIWp+jHdFNS5uXHkkWqq0zxGhSMf5D9lyJUKz6n+cdsH0KjJ9N9fiwCQlhvQ6OYh5j2gM
-	caRvV+EfgMSs0UuAd9fpWRsOlBLLLbrIfvpcO687CsYp2Fxoq/3g2XyoHA/63IDH6N6lJd0mksPv8
-	lgVz+0PfwoTIC5YGqyfw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:To:Subject:From:MIME-Version:Date:Message-ID:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=I4Q3X/d0qJzJADpFKg4CCkDr3Hmi+baRgOhVAP4imMY=; b=PcX6xGi5VP7kSZ
+	JdovI+ydIbiORWT7AE4yxuLtXtPuEgW1WaFe804pOuUDEIQGB9Qv0YYLNkgZw7WudtCoRzBd1aBsZ
+	QqC4BriM6n22VT+02o7aAfeF+XxDLUR7/Jat5Cnz4j5egUIaLeXWF0iPVUePq8B1jjgqlTRtZWPYQ
+	r3WEQfKI4YbVjRL7jHlLwsOhwerwzTCBNsJY4HgAhJaVsce7XSK+wEnKh2wc6TQsBwr2PQUynHXyr
+	fZcZpXA0xm7Pjg+Yy5ssyWaztJW7HOyK37TJ1QaOqyz3A371ij0msf1We2FbyUivlpT7IkIB6nVSp
+	pYrVrH+j2nxKBy+e6TUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5NRX-00GBiK-2N;
-	Tue, 21 Nov 2023 09:53:19 +0000
-Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
+	id 1r5PM9-00Gcfk-2N;
+	Tue, 21 Nov 2023 11:55:53 +0000
+Received: from mickerik.phytec.de ([91.26.50.163])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5NRV-00GBhr-00
+	id 1r5PM6-00Gcbi-2Q
 	for linux-mtd@lists.infradead.org;
-	Tue, 21 Nov 2023 09:53:18 +0000
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-285196556fcso1721847a91.0
-        for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2023 01:53:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700560394; x=1701165194; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z9bV+eQoXG+2qkZ8xOcHJWc3hRyfcdOFQlUGsKNZZ88=;
-        b=TU0wSVfMgdxUFNUKtZnaSUAq+F5yFMVV+HLiAmEUlSrqebEik9NU6r0cJEqrItnMWv
-         N6XOaes7jLfpRAv8PXOjyIOgyQI8NOFeeDm3xxh16rd0X6EU/8me575tA8fsj9rktoK2
-         nuRwBK2+cx94Z8GVPRLz0flVB+NQ263cyZvwHczjak1R8566nJdTueTFLOmkNncKipbH
-         sLa0et9NyLIPkXK/JP04rar+rx6YpfOvXyKpQGvfcn4TouBiaEJFhw8jG38Zy3nzHB7p
-         8tmO63Ma/i+qzW1phDX1UUG1qol0P25R7vuK9K08KB/pqGjH+QEAFSFcK6ktkLX3K26P
-         yRlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700560394; x=1701165194;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z9bV+eQoXG+2qkZ8xOcHJWc3hRyfcdOFQlUGsKNZZ88=;
-        b=WDfcP4mDtAQk0qsIWW8hgYkoJD4QZy0VzIhdpoTYqXIdY7Hgsi2M2aqgh6qW8wTJgZ
-         ZGVBoDVL3/awUiBBFwp0+VnhPpYpeT6zwPBBWMV4ZVTj4rLFtHSHr3JeqPpF2MQoB7Au
-         UnbUG3Nj6x7MiVFP0My7GbF4F038U/REjqhbmeC1OJHzFVm9exYfkYzmROtTsroNQFSD
-         3GlEqhoEp2Y5nUZutWfsB894k4AhIhFU7DYwnAPl4Ngh4h4f7slzPyHQq+C+HVvbmVdg
-         zyAqsEzZSO8x0wrYCjEIjgtW7SZpacPyF/+u2ibSu3iKw5E1Au74pEwqTwvx6rdGGg5Z
-         BF1Q==
-X-Gm-Message-State: AOJu0YzXUYbDpLu63bhRNpoDVSQqIorMMYc9t9NFAkSejxhb0IBuioBx
-	A/q84w9DPmYHbc4wxZQ+UzjDmuHk7URcaYWQ8fE=
-X-Google-Smtp-Source: AGHT+IFMTJ18tJIhg7ab7NgSyidp4zdPZA6hKZ6ibUWFvYM6j7+wK1Yn+41Q1ezrpaEjU/l8qlwi+4k9lI6jWWob/mE=
-X-Received: by 2002:a17:90b:314e:b0:285:3444:94e1 with SMTP id
- ip14-20020a17090b314e00b00285344494e1mr3402353pjb.35.1700560394054; Tue, 21
- Nov 2023 01:53:14 -0800 (PST)
+	Tue, 21 Nov 2023 11:55:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+	q=dns/txt; i=@phytec.de; t=1700567744; x=1703159744;
+	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=QFHzlqh0Z2pgkauDxjEPBqHbAYeBCGexTkEaonY9wcY=;
+	b=OKoEEUCCPo7smLdGJAp5wykRz9pXIQGa4fGRDlbza6gxAWTQaUK/gsMpgxNlwDjR
+	ddnoYcp2Z9oKItGjGcdelElVCL+WQMEmzEPyEY0g0A1yX7MgvTMPSwTz3wxbc+Md
+	ObekBfUdz7TlhEOQPnlPH645VJHn6rSB1AlKtMmxHyI=;
+X-AuditID: ac14000a-fadff7000000290d-13-655c9ac0f61b
+Received: from florix.phytec.de (Unknown_Domain [172.25.0.13])
+	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 83.6C.10509.0CA9C556; Tue, 21 Nov 2023 12:55:44 +0100 (CET)
+Received: from [172.25.39.28] (172.25.0.11) by Florix.phytec.de (172.25.0.13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Tue, 21 Nov
+ 2023 12:55:43 +0100
+Message-ID: <72fe016c-b997-4587-b13a-78e4325a66d6@phytec.de>
+Date: Tue, 21 Nov 2023 12:55:43 +0100
 MIME-Version: 1.0
-References: <20231117083853.33329-1-jaimeliao.tw@gmail.com>
- <20231117083853.33329-4-jaimeliao.tw@gmail.com> <156569dc0b92a7bfbef59a10e6f42224@walle.cc>
-In-Reply-To: <156569dc0b92a7bfbef59a10e6f42224@walle.cc>
-From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Tue, 21 Nov 2023 17:53:02 +0800
-Message-ID: <CAAQoYRnC=h--3=3uAT63yLc+0QdsW4-X2HAAhNJ4J-2P_zgo7w@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] mtd: spi-nor: core: Allow specifying the byte
- order in DTR mode
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org, 
-	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
-	jaimeliao@mxic.com.tw
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Wadim Egorov <w.egorov@phytec.de>
+Subject: flashcp fails with SFDP rev D on a Micron MT35XU512ABA flash
+To: <linux-mtd@lists.infradead.org>, <upstream@lists.phytec.de>
+X-Originating-IP: [172.25.0.11]
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Florix.phytec.de
+ (172.25.0.13)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHLMWRmVeSWpSXmKPExsWyRpKBV/fArJhUg80LeS12Ny1jt+h+p+7A
+	5LF5Sb1Hf3cLawBTFJdNSmpOZllqkb5dAlfG1Fd7mQr+sFe82LifpYFxM1sXIyeHhICJxILr
+	95i7GLk4hAQWM0ksP9vKDuHcZZT4sWYtE0gVr4CNxPQ7V1hAbBYBVYkLf3cyQ8QFJU7OfAIW
+	FxWQl7h/awY7iM0sIC5x68l8sF42AXWJOxu+sYLYwgKuEv3XD4P1igjYS3z8uoUVot5CYvGb
+	g1C98hLNW2eD1QgB2S8uLWeBuFReYtq518wQdqhE55/7LBMYBWYhOWMWktWzkIydhWTsAkaW
+	VYxCuZnJ2alFmdl6BRmVJanJeimpmxhBYSrCwLWDsW+OxyFGJg7GQ4wSHMxKIrxb2GNShXhT
+	EiurUovy44tKc1KLDzFKc7AoifOu7ghOFRJITyxJzU5NLUgtgskycXBKNTB6pIhcF2dcp60Y
+	nxB+53+rWVj367WhpgKntDPMFi3fydXDpmO09s31bVkX9vHmfLVdV/hOvt747uUasbqFVpsS
+	+xpCpI3sV7kJpdzrF58bWMx6orzg78NTe58ncEg9FtF5/EOleIOPc8XHG/+fiusz1N3y4efL
+	PbbyXDGLuOesWI5zff8bU5RYijMSDbWYi4oTAdf7CctBAgAA
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231121_015317_057453_6FCDB6C9 
-X-CRM114-Status: GOOD (  10.69  )
+X-CRM114-CacheID: sfid-20231121_035551_247573_22DE1C59 
+X-CRM114-Status: UNSURE (   8.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,35 +82,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael
-
->
-> Hi,
->
-> > +static inline bool spi_nor_is_octal_dtr_swab16(const struct spi_nor
-> > *nor,
-> > +                                             enum spi_nor_protocol proto)
-> > +{
-> > +     return (proto == SNOR_PROTO_8_8_8_DTR) &&
-> > +             (nor->flags & SNOR_F_DTR_SWAB16);
-> > +}
->
-> I think you can keep this code, but SNOR_F_DTR_SWAB16 only makes sense
-> for
-> SNOR_PROTO_8_8_8_DTR, because this is the only protocol where one clock
-> cycle transfers more than 8 bit. Are there any other use cases?
-No, as I know 8_8_8_DTR swapped byte only.
-
->
-> -michael
-Thanks
-Jaime
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpJIG5vdGljZWQgdGhhdCBmbGFzaGNwIGZhaWxzIHRvIHZlcmlmeSBkYXRhIG9uIGZs
+YXNoIGRldmljZXMgaW1wbGVtZW50aW5nCm5ld2VyIFNGRFAgcmV2aXNpb25zIChEKS4gSW50ZXJl
+c3RpbmdseSwgdGhlIHNhbWUgc2V0dXAgd29ya3MgcHJvcGVybHkgb24KYW4gb2xkZXIgYmF0Y2gg
+b2YgZGV2aWNlcy4KCiQgZmxhc2hjcCBmaWxlIC9kZXYvbXRkMApGaWxlIGRvZXMgbm90IHNlZW0g
+dG8gbWF0Y2ggZmxhc2ggZGF0YS4gRmlyc3QgbWlzbWF0Y2ggYXQgCjB4MDAwMDAwMDAtMHgwMDAw
+MDBkMAoKQWxsIGRhdGEgZ2V0cyBzdWNjZXNzZnVsbHkgd3JpdHRlbiBpbnRvIHRoZSBkZXZpY2Uu
+IE9ubHkgdGhlIHZlcmlmeSBzdGVwIApzZWVtcwp0byBmYWlsLgoKQWZ0ZXIgYSBiaXQgb2YgZGVi
+dWdnaW5nLCBJIG9ic2VydmVkIHRoYXQgYSBwYXJ0aWFsIHJlYWRvdXQgb2YgU0ZEUCBpbgpzcGlf
+bm9yX3BhcnNlX2JmcHQoKSAtPiBzcGlfbm9yX3JlYWRfc2ZkcF9kbWFfdW5zYWZlKCkgd2l0aCBh
+ZGRyPTB4MzAKYW5kIGxlbj0weDUwIHRyaWdnZXJzIHRoZSBpc3N1ZS4KQnV0IHdoZW4gSSByZXJl
+YWQgdGhlIGZ1bGwgU0ZEUCBibG9jayBmcm9tIGFkZHI9MCBpbnN0ZWFkLCB0aGUgZXJyb3IgCmRp
+c2FwcGVhcnMuCgpJcyBpdCBwb3NzaWJsZSB0aGF0IHdlIG1heSBiZSBvdmVybG9va2luZyB0aGUg
+aGFuZGxpbmcgb2YgYSBjb3JuZXIgY2FzZSBmb3IKU0ZEUCByZWFkcyBvbiBNaWNyb24gZmxhc2hl
+cz8gQW55IGd1aWRhbmNlIG9uIHdoZXJlIEkgc2hvdWxkIGxvb2sgYXQgd291bGQKYmUgdmVyeSBo
+ZWxwZnVsLgoKTGluayB0byBhIHNob3J0IGxvZyBvZiBib3RoIGRldmljZXMgaW5jbHVkaW5nIGlu
+Zm9zIGFib3V0IG10ZC11dGlscwphbmQga2VybmVsIHZlcnNpb24gYWxvbmcgd2l0aCBhIGR1bXAg
+b2YgdGhlIFNGRFAuCgogwqAgaHR0cHM6Ly9wYXN0ZWJpbi51YnVudHUuY29tL3AvWll5M1JSODhU
+UQoKUmVnYXJkcywKV2FkaW0KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
