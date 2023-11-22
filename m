@@ -4,78 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46DAEC61D9C
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Nov 2023 09:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 093E3C61D9C
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Nov 2023 10:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8Y5w0WCAJHzohuGy5DWUTRPBDvkCboui34oSjqODTU0=; b=S9P1E4Qzk6cLUN
-	/fb8VoHC4lEhgXkFqz3DZe2bxLG2gsESFcM0JoMigL3DKxyTBnzYkoW5LMCakZCwQ3Aznk4rQBooR
-	c9D6ECXbZ+Afr6B6/nv/iGAnwPnTq87LzYgJlLwZB5XkOKF7R4Hlig1WKi4BbH5FcYRzCoklkSfnK
-	KNzFfK63wn8vM822CdaxhkRfi8JiTF1HMtL9YTWmfQBdAkt5Z2bDWkLO2ohR77SUnosxJxtJetU9Q
-	BzAoVScHFVPuCQdnYRwdq3PyWrjT2zD0bnhn5c4WxedoKRQMzUd0XgJie9U83Jq4l9GJzZ+SC+f5W
-	1oahG2g9Yh592QfhFj4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=sdQ12jEYBLLeF7tK7PXsvdZhI6A87Ra7E3W0YDRezSI=; b=H+6nUF2HfrM9R0Z9bPNtzKRgrr
+	kBs9f+ffqM3NowQqWJDGlMIObsekPgvKJ+U/CzWzeE0V+2I7C6BJ2XVGSQlvPRboq9VZJt9fmkX+G
+	Ik5qjbwW9hY9Wx6ceurDPdK+38HNdx8o+9LG+m9fi6GmVX2wr88CDZADG32XC8tQR9oXLR/qM1kex
+	JqQBlOTkzh44EbJ9R3H0M4jWi/Eqlfp+EL+jlsQIKbQV+MMQxcmw7FJdxTM+/dJAdSpQl/VAECwaZ
+	7T78fjAqMp/mZAsucDY6gU4NrPMkqIg/vCW1DZSgD2PlH6FKdkm6ugHDce9P/6oKAqgEwXVfyLjV+
+	/jiNYxqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5j6w-00188i-1o;
-	Wed, 22 Nov 2023 09:01:30 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1r5kHa-001PKS-2s;
+	Wed, 22 Nov 2023 10:16:34 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5j6m-00181X-1V
+	id 1r5kHW-001PGy-0W
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Nov 2023 09:01:24 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 54D73CE1ED8;
-	Wed, 22 Nov 2023 09:01:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D8AAC116B8;
-	Wed, 22 Nov 2023 09:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700643675;
-	bh=G/92Fyik9ZEG9Ia4K2MpcDmebbH4UrnGn0gTsblETcw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=gp37j4ySjZ2nROfohyFX99pvvctV4ajMtJIDc8JFoQUzJYmSjPd/vOkGCpwcP+Stz
-	 Hw31QKhKvnR/rIn8S3UNrws4rccSlPw6vXPViLRfXOmSWXzuJQspUn0dmXP/V1g0OF
-	 w4zoqHfMXU5ghE6v8Tg2GY4eWIixYmaYWE/ygXQIsRuTTNmoiZFJ4Xxv0JUx8COiU5
-	 dzOKCYvk/MEefnZYVY9NnibOlM8c2YKHvCjIR4E7Qn+8RDTXzof9N4dANaaaqFwT8h
-	 G+zpviOw7Uuh03L2FZSoRQ6dfkqL3D51cCDyVQo9SJbWoj+kfBxmo/6q0oHCyMBsFG
-	 HYuLOxKKFwpUw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8EFC61D9B;
-	Wed, 22 Nov 2023 09:01:15 +0000 (UTC)
-From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Wed, 22 Nov 2023 11:59:57 +0300
-Subject: [PATCH v5 19/39] mtd: rawnand: add support for ts72xx
+	Wed, 22 Nov 2023 10:16:33 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 30A62A52;
+	Wed, 22 Nov 2023 11:16:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1700648181;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9LoPouXhGJdNXpu6rtht7dwoCca7P8qVla5ahHm/CIc=;
+	b=jsaJPPaeP3hYng/PQ1NgB2nEFmeAS/lJR09SG1C7UsbzD1aUNta8zBSddNU++inVKhh2WM
+	hB3MRYvfBs5LGcqpGFj7TZwzm9gapTmewFHVoF+ooT2uQjRCnL74pkJ7lAXczL8LP7tCZ1
+	isAXnJjnAecF2jElfZBMYagV93U6Ew9FXR7GkkK5hLmVFCFXwRzjxnRqKwG3ZIWHCZA5Au
+	JcqEaiHP53KBgZS/f8YRJ0lRLrJb26Z6AHs4I0XjZa/PNIXcGlosjqL5Or+MBvaXuhb0wW
+	vOmfX9d+9koBgB2gabnVXdji4jTLLWU3uj9Kls2GXy+DHerh0EC7U5Z7XBd0Lw==
 MIME-Version: 1.0
-Message-Id: <20231122-ep93xx-v5-19-d59a76d5df29@maquefel.me>
-References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
-In-Reply-To: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Daniel Golle <daniel@makrotopia.org>, Jean Delvare <jdelvare@suse.de>, 
- Christophe Kerello <christophe.kerello@foss.st.com>, 
- Nikita Shubin <nikita.shubin@maquefel.me>, 
- Chris Packham <chris.packham@alliedtelesis.co.nz>, 
- Johan Jonker <jbx6244@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- Alexander Sverdlin <alexander.sverdlin@gmail.com>
-X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700643671; l=7984;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=hX/vzBW4b1IaHG1baYjmAzlrxJar1QXbuiRvXtZq29o=; =?utf-8?q?b=3DkGXx813+7qG0?=
- =?utf-8?q?wG7SkQ6Ve0x9tewkgtSUNmIO0EIlI5KPmX2vyLf4T52GOYGREjICnqvqrhcH7/YR?=
- +WocKIExD3uUwz23IyfJEcoLghYdgBlT3Rt0dYyHIJv7bQgr7xmZ
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Date: Wed, 22 Nov 2023 11:16:20 +0100
+From: Michael Walle <michael@walle.cc>
+To: liao jaime <jaimeliao.tw@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
+ jaimeliao@mxic.com.tw
+Subject: Re: [PATCH v5 6/6] mtd: spi-nor: add support for Macronix Octal flash
+In-Reply-To: <CAAQoYRnYVsyQD6iSP7nugxa9F7xUGZ49FNExf_SyyxjVdq3AvQ@mail.gmail.com>
+References: <20231117083853.33329-1-jaimeliao.tw@gmail.com>
+ <20231117083853.33329-7-jaimeliao.tw@gmail.com>
+ <8eba400c77127b0df74d2a336561a49d@walle.cc>
+ <CAAQoYRkw5hUONJ32sGKxgv5XtO24Vc6=KojankTG73u5E7jPBw@mail.gmail.com>
+ <844becc9c6fde66c4d60a621b5462998@walle.cc>
+ <fb66cdb7-e89e-47a0-96ef-022a512ceebb@linaro.org>
+ <CAAQoYRnYVsyQD6iSP7nugxa9F7xUGZ49FNExf_SyyxjVdq3AvQ@mail.gmail.com>
+Message-ID: <2f03527627a638bc8c295810926693b2@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231122_010120_989430_43068904 
-X-CRM114-Status: GOOD (  24.30  )
+X-CRM114-CacheID: sfid-20231122_021630_453175_C7E05992 
+X-CRM114-Status: GOOD (  15.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,286 +77,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: nikita.shubin@maquefel.me
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Hi,
 
-Technologic Systems has it's own nand controller implementation in CPLD.
+>> >>> and sometimes incorrect. Therefore, at least drop it and just list the
+>> >>> IDs.
+>> >> Could I know patch 6/6 only or patch 5/6 should remove name as well?
+>> >
+>> > I'd say yes. Tudor? Pratyush? New flash additions without names?
+>> 
+>> Why do you need a flash addition in the first place? Haven't we agreed
+>> that we'll apply the vendor fixup based on the manufacturer ID?
+>> 
+>> Anyway, flash additions without names is fine by me.
+>> 
+>> Cheers,
+>> ta
+>> >
+>> > As, mentioned last time, for OF we might introduce an of_compatible
+>> > (thats then ABI) - or - we can use the numeric ID in the device tree,
+>> > as it's already used for PHY IDs or PCI IDs.
+>> >
+>> > Jaime, could you try to use
+>> >
+>> > /* Apply vendor fixups */
+>> > { .id = SNOR_ID(0xc2) }
+> I have validate some flash without "name" and looks good.
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- drivers/mtd/nand/raw/Kconfig                       |   7 +
- drivers/mtd/nand/raw/Makefile                      |   1 +
- drivers/mtd/nand/raw/technologic-nand-controller.c | 223 +++++++++++++++++++++
- 3 files changed, 231 insertions(+)
+Great :)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index cbf8ae85e1ae..3937c10dea1c 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -449,6 +449,13 @@ config MTD_NAND_RENESAS
- 	  Enables support for the NAND controller found on Renesas R-Car
- 	  Gen3 and RZ/N1 SoC families.
- 
-+config MTD_NAND_TS72XX
-+	tristate "ts72xx NAND controller"
-+	depends on ARCH_EP93XX && HAS_IOMEM
-+	help
-+	  Enables support for NAND controller on ts72xx SBCs.
-+	  This is a legacy driver based on gen_nand.
-+
- comment "Misc"
- 
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 25120a4afada..d0b0e6b83568 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
- obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
- obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
- obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
-+obj-$(CONFIG_MTD_NAND_TS72XX)           += technologic-nand-controller.o
- obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
-diff --git a/drivers/mtd/nand/raw/technologic-nand-controller.c b/drivers/mtd/nand/raw/technologic-nand-controller.c
-new file mode 100644
-index 000000000000..0b4c5c2dee0b
---- /dev/null
-+++ b/drivers/mtd/nand/raw/technologic-nand-controller.c
-@@ -0,0 +1,223 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Technologic Systems TS72xx NAND controller driver
-+ *
-+ * Copyright (C) 2023 Nikita Shubin <nikita.shubin@maquefel.me>
-+ *
-+ * Derived from: plat_nand.c
-+ *  Author: Vitaly Wool <vitalywool@gmail.com>
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/platnand.h>
-+
-+#define TS72XX_NAND_CONTROL_ADDR_LINE	BIT(22)	/* 0xN0400000 */
-+#define TS72XX_NAND_BUSY_ADDR_LINE	BIT(23)	/* 0xN0800000 */
-+
-+#define TS72XX_NAND_ALE			BIT(0)
-+#define TS72XX_NAND_CLE			BIT(1)
-+#define TS72XX_NAND_NCE			BIT(2)
-+
-+#define TS72XX_NAND_CTRL_CLE		(TS72XX_NAND_NCE | TS72XX_NAND_CLE)
-+#define TS72XX_NAND_CTRL_ALE		(TS72XX_NAND_NCE | TS72XX_NAND_ALE)
-+
-+struct ts72xx_nand_data {
-+	struct nand_controller	controller;
-+	struct nand_chip	chip;
-+	void __iomem		*base;
-+	void __iomem		*ctrl;
-+	void __iomem		*busy;
-+};
-+
-+static inline struct ts72xx_nand_data *chip_to_ts72xx(struct nand_chip *chip)
-+{
-+	return container_of(chip, struct ts72xx_nand_data, chip);
-+}
-+
-+static int ts72xx_nand_attach_chip(struct nand_chip *chip)
-+{
-+	switch (chip->ecc.engine_type) {
-+	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-+			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		break;
-+	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-+		return -EINVAL;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static void ts72xx_nand_ctrl(struct nand_chip *chip, u8 value)
-+{
-+	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
-+	unsigned char bits = ioread8(data->ctrl) & ~GENMASK(2, 0);
-+
-+	iowrite8(bits | value, data->ctrl);
-+}
-+
-+static int ts72xx_nand_exec_instr(struct nand_chip *chip,
-+				const struct nand_op_instr *instr)
-+{
-+	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
-+	unsigned int i, timeout_us;
-+	u32 status;
-+	int ret;
-+
-+	switch (instr->type) {
-+	case NAND_OP_CMD_INSTR:
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_CLE);
-+		iowrite8(instr->ctx.cmd.opcode, data->base);
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
-+		break;
-+
-+	case NAND_OP_ADDR_INSTR:
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_ALE);
-+		for (i = 0; i < instr->ctx.addr.naddrs; i++)
-+			iowrite8(instr->ctx.addr.addrs[i], data->base);
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
-+		break;
-+
-+	case NAND_OP_DATA_IN_INSTR:
-+		ioread8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+
-+	case NAND_OP_DATA_OUT_INSTR:
-+		iowrite8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+
-+	case NAND_OP_WAITRDY_INSTR:
-+		timeout_us = instr->ctx.waitrdy.timeout_ms * 1000;
-+		ret = readb_poll_timeout(data->busy, status, status & BIT(5), 0, timeout_us);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	}
-+
-+	if (instr->delay_ns)
-+		ndelay(instr->delay_ns);
-+
-+	return 0;
-+}
-+
-+static int ts72xx_nand_exec_op(struct nand_chip *chip,
-+			       const struct nand_operation *op, bool check_only)
-+{
-+	unsigned int i;
-+	int ret;
-+
-+	if (check_only)
-+		return 0;
-+
-+	for (i = 0; i < op->ninstrs; i++) {
-+		ret = ts72xx_nand_exec_instr(chip, &op->instrs[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_controller_ops ts72xx_nand_ops = {
-+	.attach_chip = ts72xx_nand_attach_chip,
-+	.exec_op = ts72xx_nand_exec_op,
-+};
-+
-+static int ts72xx_nand_probe(struct platform_device *pdev)
-+{
-+	struct ts72xx_nand_data *data;
-+	struct fwnode_handle *child;
-+	struct mtd_info *mtd;
-+	int err;
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	nand_controller_init(&data->controller);
-+	data->controller.ops = &ts72xx_nand_ops;
-+	data->chip.controller = &data->controller;
-+
-+	data->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(data->base))
-+		return PTR_ERR(data->base);
-+	data->ctrl = data->base + TS72XX_NAND_CONTROL_ADDR_LINE;
-+	data->busy = data->base + TS72XX_NAND_BUSY_ADDR_LINE;
-+
-+	child = fwnode_get_next_child_node(dev_fwnode(&pdev->dev), NULL);
-+	if (!child)
-+		return dev_err_probe(&pdev->dev, -ENXIO,
-+				"ts72xx controller node should have exactly one child\n");
-+
-+	nand_set_flash_node(&data->chip, to_of_node(child));
-+	mtd = nand_to_mtd(&data->chip);
-+	mtd->dev.parent = &pdev->dev;
-+	platform_set_drvdata(pdev, data);
-+
-+	/*
-+	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-+	 * Set ->engine_type before registering the NAND devices in order to
-+	 * provide a driver specific default value.
-+	 */
-+	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-+
-+	/* Scan to find existence of the device */
-+	err = nand_scan(&data->chip, 1);
-+	if (err)
-+		goto err_handle_put;
-+
-+	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	if (err)
-+		goto err_clean_nand;
-+
-+	return 0;
-+
-+err_clean_nand:
-+	nand_cleanup(&data->chip);
-+err_handle_put:
-+	fwnode_handle_put(child);
-+	return err;
-+}
-+
-+static void ts72xx_nand_remove(struct platform_device *pdev)
-+{
-+	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
-+	struct nand_chip *chip = &data->chip;
-+	int ret;
-+
-+	ret = mtd_device_unregister(nand_to_mtd(chip));
-+	WARN_ON(ret);
-+	nand_cleanup(chip);
-+}
-+
-+static const struct of_device_id ts72xx_id_table[] = {
-+	{ .compatible = "technologic,ts7200-nand" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ts72xx_id_table);
-+
-+static struct platform_driver ts72xx_nand_driver = {
-+	.driver = {
-+		.name = "ts72xx-nand",
-+		.of_match_table = ts72xx_id_table,
-+	},
-+	.probe = ts72xx_nand_probe,
-+	.remove_new = ts72xx_nand_remove,
-+};
-+module_platform_driver(ts72xx_nand_driver);
-+
-+MODULE_AUTHOR("Nikita Shubin <nikita.shubin@maquefel.me>");
-+MODULE_DESCRIPTION("Technologic Systems TS72xx NAND controller driver");
-+MODULE_LICENSE("GPL");
+> But I got some log with (null) like below:
+> 
+> SPI-NOR SPI0.0: (null) (32768 Kbytes)
 
--- 
-2.41.0
+dev_info(dev, "%s (%lld Kbytes)\n", info->name ?: "",
+          (long long)mtd->size >> 10);
 
+Maybe we should print the vendor and the name and
+both are optional? I don't have a strong opinion here
+as long as it's not "(null)" because that looks like
+a bug.
+
+> and
+> 
+> zynq> cat jedec_id
+> c2943c
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> (null)
+
+There is spi_nor_sysfs_is_visible() you can hide this property the
+same was as the manufacturer property is hidden.
+
+Also, please update
+Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor in this case:
+
+  The attribute is optional. User space shouldn't rely on it to
+  be present or even correct. Instead, user space should read the
+  jedec_id attribute.
+
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
