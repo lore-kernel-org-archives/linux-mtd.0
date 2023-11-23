@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B300C624B4
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Nov 2023 11:05:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB3B3C61D85
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Nov 2023 11:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D4nIcfw43dZyPcnOfkogSP0eB1BQpQGY3ensqFu0ltE=; b=Qa7mSHWtJha7jl
-	yNLHklL6UM/04U/iyiw1LeP7W7Bt3aQrRjTSEK/yvpNezTMJHAWOQLCJDvfPokZmiQymtH0GJAnhr
-	j9YWIpw4H9h08w/HHTejVCjAB5TN2ASZOQr4DVw8gk5GhuEv/q94uT/SmnVLBvRvA39+HrftWssyi
-	NZPYtIj7pyjxWC9/6qGxSoNcJO7lT83UydQB6AxDsPGImMI092uo2zEqUB3qHBkJX4lU/m75MDB9S
-	/w+z1IjQfPW/ZRkWp2gyFy8cLbUBTK/01+3LAeeTD04lU8AwZFlQT9t1CWiaA9c2yBV23gg8D4nQ+
-	N5y0/hesKN4rNcv44O+w==;
+	List-Owner; bh=tBdpkjPrHOnuWKpQuygpruD0Rf9kH7F7QCmev8cL3eU=; b=XCkvDbZpuIh1Qx
+	X0J6M2e+wuHRAtbQVTd8FMVYSEh/H7nhqK0zjKNzAWh2d80H5N2PbgdcTtAFAyd5ZNlMNjtJXEF/g
+	DLg5oHfkLLJW+dCV0oPXgZBbhcOBMxc6Drcd4DQbZssy7Slcjep/c41bAle0iLczUC4lul7uwpQJE
+	2XrahlQEEMIWvETp8YwTjfHXuytzhAWJvxscEVm12i0OnkkHXs7q1KlrvPcaEnHwQZbdGwEaSHpL3
+	3TN1fE4maTlEi/ssZ4vm5CEH+kYQzNYAveJyVfXvniH4YlK8Wmgg9IpaK+uMnT2qHvAudGdi/SO3Q
+	bw/jVlAJrwxNKsT1wPGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r67Wf-004SjH-0J;
-	Thu, 23 Nov 2023 11:05:41 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1r67Wk-004Smv-3C;
+	Thu, 23 Nov 2023 11:05:47 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r67Wb-004ShW-26
+	id 1r67Wh-004SkX-1w
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Nov 2023 11:05:39 +0000
+	Thu, 23 Nov 2023 11:05:45 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id A4582CE2754;
+	by ams.source.kernel.org (Postfix) with ESMTP id 186D6B82B67;
+	Thu, 23 Nov 2023 11:05:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CE8AC433C9;
 	Thu, 23 Nov 2023 11:05:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB220C433D9;
-	Thu, 23 Nov 2023 11:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700737534;
-	bh=lp+rEggxgbuHN1BPGYgpeRufkP5k9akySuiKFW/Pyuo=;
+	s=k20201202; t=1700737541;
+	bh=tQoPadTOpEfcWFltgm4ylsWb6Qh7U5RzNAmqeA9wbms=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bp72z2ZYfxFgUAViqgqthrZ1n/G7s220umdBTqhNPpOWDzVmZqOG7Ddmr+XT6+7z4
-	 Gz3HgSoUmx1tvsdGJhVZ+4xWIUm+F07UIf+HzuZqTiusqThvyILWdgfo39uCwPppu6
-	 cUD0tMyRtrmcZKYLJO2vHQuI9MrS5R7/3S5RjH6Yu8ZdxOM4qzrBppe22kufQzaDSB
-	 DSth/LrC/07UaI/iVo3dd5j+Aijmgiybw27x91endbEgxLHU0BLdaY/xbdwSLZT03U
-	 iqWMnnQ8i8djzeYPImFi2FXWlSgPezJJCuKZyzuiVSpo6mqr0s8jCqEcVQGeMdNjTm
-	 6FOgf1zP9yQTw==
+	b=b4qyrx9uuOYtARoBjjr3USSBbEXBVLT5+2YQt8UDuwSWOOjf/oxUtL6+Qaqgn1lHY
+	 U1iMAw+0oevXiM45qg8DWQRguuekx5nG/LH4T/UrhEC9jYaJLhnCSes0KEHDGJepMW
+	 EZa2UdrCcQC7mzu1KF1jgmLnI5rAwETjdiH0Pqww7458j+MaIjCDMCNfxUjRlNQ/f2
+	 8QTqlMhE7BjvuWSLJEVDbQdNeHo+BAi/qGOnoD8MmIyKDc7pbImozDFyxKcmWK29M/
+	 8PW4kzF/3W9218KayKV8Z84KdQ6I+BiL/C/tm2vM4TkwgwH7TMj15madZX6mZcV3O9
+	 R96xC7kcdciaA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -73,18 +73,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-sh@vger.kernel.org,
 	linux-usb@vger.kernel.org,
 	sparclinux@vger.kernel.org,
-	x86@kernel.org,
-	Zhihao Cheng <chengzhihao1@huawei.com>
-Subject: [PATCH v3 2/6] jffs2: mark __jffs2_dbg_superblock_counts() static
-Date: Thu, 23 Nov 2023 12:05:02 +0100
-Message-Id: <20231123110506.707903-3-arnd@kernel.org>
+	x86@kernel.org
+Subject: [PATCH v3 3/6] sched: fair: move unused stub functions to header
+Date: Thu, 23 Nov 2023 12:05:03 +0100
+Message-Id: <20231123110506.707903-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231123110506.707903-1-arnd@kernel.org>
 References: <20231123110506.707903-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231123_030537_918651_5381E3A9 
-X-CRM114-Status: GOOD (  13.23  )
+X-CRM114-CacheID: sfid-20231123_030543_902495_54E2E866 
+X-CRM114-Status: GOOD (  15.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,32 +102,80 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This function is only called locally and does not need to be
-global. Since there is no external prototype, gcc warns about
-the non-static definition:
+These four functions have a normal definition for CONFIG_FAIR_GROUP_SCHED,
+and empty one that is only referenced when FAIR_GROUP_SCHED is disabled
+but CGROUP_SCHED is still enabled. If both are turned off, the functions
+are still defined but the misisng prototype causes a W=1 warning:
 
-fs/jffs2/debug.c:160:6: error: no previous prototype for '__jffs2_dbg_superblock_counts' [-Werror=missing-prototypes]
+kernel/sched/fair.c:12544:6: error: no previous prototype for 'free_fair_sched_group'
+kernel/sched/fair.c:12546:5: error: no previous prototype for 'alloc_fair_sched_group'
+kernel/sched/fair.c:12553:6: error: no previous prototype for 'online_fair_sched_group'
+kernel/sched/fair.c:12555:6: error: no previous prototype for 'unregister_fair_sched_group'
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Move the alternatives into the header as static inline functions with
+the correct combination of #ifdef checks to avoid the warning without
+adding even more complexity.
+
+[A different patch with the same description got applied by accident
+ and was later reverted, but the original patch is still missing]
+
+Fixes: 7aa55f2a5902 ("sched/fair: Move unused stub functions to header")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/jffs2/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c  | 13 -------------
+ kernel/sched/sched.h | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/fs/jffs2/debug.c b/fs/jffs2/debug.c
-index 9d26b1b9fc01..0925caab23c4 100644
---- a/fs/jffs2/debug.c
-+++ b/fs/jffs2/debug.c
-@@ -157,7 +157,7 @@ __jffs2_dbg_prewrite_paranoia_check(struct jffs2_sb_info *c,
- 	kfree(buf);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 07f555857698..cb68d71c81bc 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -13040,19 +13040,6 @@ int sched_group_set_idle(struct task_group *tg, long idle)
+ 	return 0;
  }
  
--void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
-+static void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
- {
- 	struct jffs2_eraseblock *jeb;
- 	uint32_t free = 0, dirty = 0, used = 0, wasted = 0,
+-#else /* CONFIG_FAIR_GROUP_SCHED */
+-
+-void free_fair_sched_group(struct task_group *tg) { }
+-
+-int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+-{
+-	return 1;
+-}
+-
+-void online_fair_sched_group(struct task_group *tg) { }
+-
+-void unregister_fair_sched_group(struct task_group *tg) { }
+-
+ #endif /* CONFIG_FAIR_GROUP_SCHED */
+ 
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 8a70d51ffa33..eb7e07a1abcc 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -461,10 +461,21 @@ static inline int walk_tg_tree(tg_visitor down, tg_visitor up, void *data)
+ 
+ extern int tg_nop(struct task_group *tg, void *data);
+ 
++#ifdef CONFIG_FAIR_GROUP_SCHED
+ extern void free_fair_sched_group(struct task_group *tg);
+ extern int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent);
+ extern void online_fair_sched_group(struct task_group *tg);
+ extern void unregister_fair_sched_group(struct task_group *tg);
++#else
++static inline void free_fair_sched_group(struct task_group *tg) { }
++static inline int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
++{
++       return 1;
++}
++static inline void online_fair_sched_group(struct task_group *tg) { }
++static inline void unregister_fair_sched_group(struct task_group *tg) { }
++#endif
++
+ extern void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
+ 			struct sched_entity *se, int cpu,
+ 			struct sched_entity *parent);
 -- 
 2.39.2
 
