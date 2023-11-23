@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A52E2C61D85
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Nov 2023 11:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9409AC5AD4C
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Nov 2023 11:06:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F5/belx2xbGsXmO+nT5hdMSmwOfgq1o2FOewneknNUc=; b=1iahdn5PLwO7BE
-	1JQh7X7FxFY66pwEB9Kr+Evc6OMrmAbqsCGNKZtv8FqSyLBblmqjI0RhNU8qIA8JbR/CltwixIcme
-	TwqlF7DbS3mxkUU/cWIe6nYqOXdusMjYb5+H2H4RM4BXaqU5qlpQY3FyvSkmPAFyugf0bevGfSdlx
-	tCjsUg1bCuePx1DVhh1g55VezaWDT+caT2ePdTX5YEzSjOvCvVnLhXdeLoneC2JwM48zq0MRnaE4q
-	4HjI3IrdJ+jiyzECVTK5dMH37mENMqobS5gB/hjSXlj9x1GvVoHoecrfYkbhkTrLPE/daSCLZBObv
-	3zEW+vDHDRiTr0wshlDw==;
+	List-Owner; bh=7CJoNT7lO01MYaYdfVMkya++rNzn+0yKi7fr0jQzHTo=; b=ZtuY2De2lfNNEz
+	DkCwvzowpiU+NWf2Xz/fOzq9icv595CiLN79/2UaUgJZ25NxlcJtGmdKEdCbAtoJg1T8Fa9IsNl4N
+	WAgdLBM5hwUdBxUxOluau5Ym7BmPMR2lLxd3DsS8RPiS5o5/sV4C5qWfLM1gVvUnnwjkPrrtatC+9
+	xaRZT/apoMFEhNqI1EyimtjwQp8ZLQY6RgBUS8ef5+B6HzXhdP9NqiiOhFokUKK0q6DWU9hZAVnH8
+	do/kjXScEgJ4vWo7BEeWQKmfN04CYBdvxzxiLWTvxLUTEj3gDdywrmoM6rzPU+N/LzQ2Nml1n/b2T
+	hkmCZ+O0H+meWIMdTU5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r67Wp-004Sq7-1v;
-	Thu, 23 Nov 2023 11:05:51 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1r67Wx-004Sv5-1R;
+	Thu, 23 Nov 2023 11:05:59 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r67Wm-004Sns-2L
+	id 1r67Wu-004Ssz-1P
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Nov 2023 11:05:49 +0000
+	Thu, 23 Nov 2023 11:05:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2595B61FCB;
+	by ams.source.kernel.org (Postfix) with ESMTP id 18F5DB82B6A;
+	Thu, 23 Nov 2023 11:05:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8CFC433C9;
 	Thu, 23 Nov 2023 11:05:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDFCC433CD;
-	Thu, 23 Nov 2023 11:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700737548;
-	bh=e+QnAKFOR6wNf8AU7caaDk1G44zPUvTIPn9eqgvKtVI=;
+	s=k20201202; t=1700737554;
+	bh=5+tWyKAC++2Xnrgn3NdMaK+q0ya4fE8D9fGwVpiP1Ao=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PspJpNl8eiPdZ9teU9sgGRq0899Z4qRquTRTMB3ArIInHB3Up/Nd1jNAK52qGJfw6
-	 VwcSqNBj6wKq0fD5yXgSW27a59XD7QLOvPbuIspPpPRBkcfND/tpUKYcFGCF7v8Zsa
-	 dgDyTwQGndIV8yWAWF26tuIPGfQKRXj1NO3DcnqV310BwDabCzlQwn1lCiuBVbFjHA
-	 Z86z4PLYiZf9MHHOZgmqB8KbDB4rO/oWM3+PqBPki4n8eLgoRQ6LCVS7VPSNlti2tC
-	 3KF5z4FbFLm2GWjTZYrI/5XmCiH2J5bKlvwiwgrOPc4LVeIRCaHUi1/MBiIDKhPy5d
-	 Oiwg9eBSopTGQ==
+	b=iXbiFiobNLe2JxXPcmWo8nLzQzuJ0EtGXlolJinYPcK8B4Od9jeB6dYYWU2PW8lSJ
+	 BTfn/20C6mIUm6KnKVQeLfRm+HqiNXQ8oCH9vNKLmuW7UOodeeKs53SgxP43UUPoSe
+	 8Iz6MqbaJhXWowQn+jh8OjVf/qnu4NDtJWRpJlKqOzlWU4zMZ7zPLYmi1YEI0g4oEC
+	 XVRgDyaGG2thEMkLswRlGbobUzOJ3FHm0aivGz6nvO4BDbcezPzh9l/PpE9NdLMX96
+	 ywX7Dm1pTI5o9GhFTua14j7NbMXLxSj4wAD9bpq5ApXsxQVxQDfxgKt3Zza62nnT5P
+	 sQ1jMRTTLFHGg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -74,16 +74,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-usb@vger.kernel.org,
 	sparclinux@vger.kernel.org,
 	x86@kernel.org
-Subject: [PATCH v3 4/6] x86: sta2x11: include header for sta2x11_get_instance() prototype
-Date: Thu, 23 Nov 2023 12:05:04 +0100
-Message-Id: <20231123110506.707903-5-arnd@kernel.org>
+Subject: [PATCH v3 5/6] usb: fsl-mph-dr-of: mark fsl_usb2_mpc5121_init() static
+Date: Thu, 23 Nov 2023 12:05:05 +0100
+Message-Id: <20231123110506.707903-6-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231123110506.707903-1-arnd@kernel.org>
 References: <20231123110506.707903-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231123_030548_807474_AA8C7E47 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20231123_030556_644300_1663C946 
+X-CRM114-Status: GOOD (  13.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,31 +102,30 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-sta2x11_get_instance() is a global function declared in asm/sta2x11.h,
-but this header is not included before the definition, causing a warning:
+This function is only called locally and should always have been static:
 
-arch/x86/pci/sta2x11-fixup.c:95:26: error: no previous prototype for 'sta2x11_get_instance' [-Werror=missing-prototypes]
+drivers/usb/host/fsl-mph-dr-of.c:291:5: error: no previous prototype for 'fsl_usb2_mpc5121_init' [-Werror=missing-prototypes]
 
-Add the missing #include.
-
-Fixes: 83125a3a189e ("x86, platform: Initial support for sta2x11 I/O hub")
+Fixes: 230f7ede6c2f ("USB: add USB EHCI support for MPC5121 SoC")
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/pci/sta2x11-fixup.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/host/fsl-mph-dr-of.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
-index 7368afc03998..8c8ddc4dcc08 100644
---- a/arch/x86/pci/sta2x11-fixup.c
-+++ b/arch/x86/pci/sta2x11-fixup.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-map-ops.h>
- #include <linux/swiotlb.h>
- #include <asm/iommu.h>
-+#include <asm/sta2x11.h>
+diff --git a/drivers/usb/host/fsl-mph-dr-of.c b/drivers/usb/host/fsl-mph-dr-of.c
+index 8508d37a2aff..6cdc3d805c32 100644
+--- a/drivers/usb/host/fsl-mph-dr-of.c
++++ b/drivers/usb/host/fsl-mph-dr-of.c
+@@ -288,7 +288,7 @@ static void fsl_usb2_mph_dr_of_remove(struct platform_device *ofdev)
+ #define PHYCTRL_LSFE		(1 << 1)	/* Line State Filter Enable */
+ #define PHYCTRL_PXE		(1 << 0)	/* PHY oscillator enable */
  
- #define STA2X11_SWIOTLB_SIZE (4*1024*1024)
- 
+-int fsl_usb2_mpc5121_init(struct platform_device *pdev)
++static int fsl_usb2_mpc5121_init(struct platform_device *pdev)
+ {
+ 	struct fsl_usb2_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 	struct clk *clk;
 -- 
 2.39.2
 
