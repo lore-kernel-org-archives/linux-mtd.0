@@ -4,103 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DB63C61D85
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Nov 2023 05:47:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97EFBC61D85
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Nov 2023 11:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=L0jAnNkZhTb7sQ4KRpnI9OUlEgVmI+Dek64rcIFTrzI=; b=sq+hDNPg3nMH3Q
-	twhW0en9qXkDjRtbimybtU5wIqRnAEB9SDE6RgFBGMmnqMY1IM52CUE6bOSKzGQ0zuuTSn9Ti0kXd
-	USQFXaA4gKBi8J6bcHa4jFeu0G09IXYFCdnE4Cq+NgvPgs/vs6+MY4qlfG5ubVjyTmnFJ8cor4IVx
-	Wbyco61P47Mnb/WRdL0BOjYKgHrB+Z7hVJLDODBHeVFRvuVIo1311Gb6gIjF/PJXCoEaWQookgKSS
-	eXKbjbxe052P1OtfrnokGP8lqLn9oo+WahwDPfAgx8hYsiwmmGGLwrkZDv/vIvTeOf+BluEHHY/T1
-	+eqJpdoOfBu0ID1HN6Pw==;
+	List-Owner; bh=bxyL+Tm+JQSAcVxd+Hg1Y+NBhl+wFI9igcqC3JO3Xbo=; b=idGlAZQUezys4n
+	RS+H45KGiDuPiq+O9WMGNdLx52jjkYQVaV7e1+rI+hp5leulz7dvj3HuDAGozWVF62OmnrbwxmLJC
+	8Jp+nK0Q3nr9c2cLcsE3wjs9sA6fJPVwp4HVS26RUswrNppal3mcMshKRSu+z8hk9OQ13q1AwFgDH
+	u5BENvVVBy4KNhagVZYwCN+JOCad4stuFZ4JYwaP17SKe6HQqthmkG7Q3Jl74wOj43RZuXj5eH2i+
+	e/pSWBDkH+Ye2NitGLNHx5hfOn3rYyPch5pUUwGn0yGgEJL3tdSAAbT26V1hssnmae+mc27FDiySb
+	YPpracLiye44seQR4xMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r62Yu-003q1p-0V;
-	Thu, 23 Nov 2023 05:47:40 +0000
-Received: from mail-dm3nam02on2061a.outbound.protection.outlook.com ([2a01:111:f400:7e83::61a] helo=NAM02-DM3-obe.outbound.protection.outlook.com)
+	id 1r67WT-004Sei-22;
+	Thu, 23 Nov 2023 11:05:29 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r62Yp-003q0M-2L
+	id 1r67WQ-004Scq-1m
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Nov 2023 05:47:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JbollVL2HIJsRkqSUcXtJ0pITFSAwb0l1yE1Bo1OIx5P4OH9J8jbaMVFTuJxdSTO1waEuZFTnAKWN3RNW1tc+Cd38r9F7IdAEy10C54t3V5hcI4Yky4ZDFTObpfgrXfL98TXNDXBaGzitHQAToq4m6MCYoY988O+RpwlDdrbPg0salsxIAtSiKqaxPycz09XDqyiM23ip83qcqtptJEZzIJmfPcno9KWGm0OJiEU37yLMiBvQrfnMsWpcOJi/tlxpCG7AJxBK5YZFbGSGtMnEl28mNqwdGmL8q8I5UX5sskY82KvzI+QI1Ze4aWI0fnsu9CT6fUwKhL+xyzkVHA64A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7vHx19q+lNz/N56Mp5DQQhar9EClXjS2M1nbIUI5Wew=;
- b=Pq4e3uQJttr5c9CnqO041BHFRR7eHbn5vSDl2Rq072eG2fcUFTt+rymd2KGlYXsRxBGYb9H9q2dIIc9XtI7X/PbsEICPeGzVNIsXx356pTsyYLi4KNEh5tbf1kKwWz1GmpjZqoGxw4KEu6t+nvZgqRe/71X8EczYARV2cCq2VyCGg7K/jiSrCw1zhk/G6oZObNRz2ulk+wcpktHQsb+UD09xtM0s6e591HKPF0sC/zPIankXxhkS1ipkcca5fuQiiu8L60ipAtFkcz3PT8RSOzwFImL8zHvpM1ApqsenE+uucrYgKAjW8xFS3KOrmM9FAmA+/TCASi4mQRV6fvbvAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7vHx19q+lNz/N56Mp5DQQhar9EClXjS2M1nbIUI5Wew=;
- b=0zpWShs1PX5HMjoI9cx9mrvyR8Oo6zAYSEOxjITuj6f1nBIe6k2L+uFxUOHjeAR0HavT91fEiIsmDHj2iA5HIXv4jEd4It93SV3In6aaeyqg24CZZTIEz7Tb5P/cDNSaVDUCskgPLVG8cvCoEuWzVp57awTSrZIC/25vGf1MBZU=
-Received: from SA0PR11CA0023.namprd11.prod.outlook.com (2603:10b6:806:d3::28)
- by CY5PR12MB6478.namprd12.prod.outlook.com (2603:10b6:930:35::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
- 2023 05:47:21 +0000
-Received: from SN1PEPF0002BA50.namprd03.prod.outlook.com
- (2603:10b6:806:d3:cafe::94) by SA0PR11CA0023.outlook.office365.com
- (2603:10b6:806:d3::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19 via Frontend
- Transport; Thu, 23 Nov 2023 05:47:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA50.mail.protection.outlook.com (10.167.242.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.12 via Frontend Transport; Thu, 23 Nov 2023 05:47:21 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
- 2023 23:47:20 -0600
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Wed, 22 Nov 2023 23:47:17 -0600
-From: Srikanth Boyapally <srikanth.boyapally@amd.com>
-To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <michael@walle.cc>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<git@amd.com>, Srikanth Boyapally <srikanth.boyapally@amd.com>
-Subject: [PATCH] mtd: spi-nor: issi: Add support for is25lp02g
-Date: Thu, 23 Nov 2023 11:17:13 +0530
-Message-ID: <20231123054713.361101-1-srikanth.boyapally@amd.com>
-X-Mailer: git-send-email 2.25.1
+	Thu, 23 Nov 2023 11:05:28 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 79F28CE274E;
+	Thu, 23 Nov 2023 11:05:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C85C433C7;
+	Thu, 23 Nov 2023 11:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700737521;
+	bh=kmSnZk3RczC2wW7hFftznkdHr9ZkDg70PDOUA+ZVjaE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=M9YhBGVoZhY2hbzM62ATfyVt/7tQ/oQ/qZpdbJ2qea36LpolKDbmowhX0AC5g7lLk
+	 sieaJZf1+aJIe6RlnZFwpUWbe/PNidPyvX1032SN/Lwqzuba5orpijIZqVQRxHnO8W
+	 LRftkoW7bXxIrXatQbuFQGzAdw2elNRJIxC3rIjn2qQVQcfC9JkzCiX6xGNFCITeE3
+	 AOg4JIWtddSPTOo6FzQGoFztM6o4Hy4i/nts34VgnTPpGB8h4PDw8YDdN3d0w6RELS
+	 lnxhloqHqGtyXUCmF3Imyl4OpgK7uvUX4NtIedFziLAPEYOAuGarmedGM1FejKTB+G
+	 xC85zbozSZrPA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rich Felker <dalias@libc.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Richard Weinberger <richard@nod.at>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	linux-arch@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-sh@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v3 0/6] Treewide: enable -Wmissing-prototypes
+Date: Thu, 23 Nov 2023 12:05:00 +0100
+Message-Id: <20231123110506.707903-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA50:EE_|CY5PR12MB6478:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2bcf368c-e96f-451a-fa9e-08dbebe7a95b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Mfm6ZewH3FLnyghqH4kg1kcV0T1hxgajRjpR774D0IdDStV5o/44CqJ+Ld3JW8RLYWfUuioqY/JO3TZq4m4Px9OmpS5xqdHylMlVwq+BoLuebxewg9ZMW0BVy18Nxe43mR4nLx81TA4fWByrbASWBHLBJRY3B2ip+pgq834EeBiswTufLZAjcxE91pkHeTKc7J53HxjTsZroEUKstS5iQDwM4Fls4cujgeMO/u6Q8Xn88qhp5UPOWS/xidKLOmDUj/qVXdoYxDnqtTrZsBH2KHEfkolRSV8g3UHDoJ4m5iMVNjKZNSSPywt/T4lwAoHPF3S8yISRIvk3pBrJDkL7QfrFByHHh9O5J5H8ApttexoKQG1RgDEYUCdJCc9gViV5Mf5fB5FedVLTp2fRyflpI8g++cRT67tYFQPEl4b4eSpksdsuF0BKwnCRdHXeFGiHjREBF1Rf4gF38N0FpwwKrGoPoFl7JCBQM55ob2J2E42eTdmboQD5iIBrFoZSlDWUdXvVOXyplRIbhDg0YVh8IXmrKryKLHHE7A97hRS0wl/HvGnR1HhZC6Hg6AUnQ6LxifmU7gLaSk1M4xKSxFNeiiKZcE2ajcIqPGCyJrcMO0E2vAJVV4Ljnvjj6uVpnAlCsK6dynaKiZNL4npbbPhLEy56wi7ypwQ5jlJPwHoInX25sTI2qIE/JqYssOav7KEZsRtqqbfQqCbTnzrX6/gYNXZO4owXZuH5wwuaVxsqSvigiYGy7YSD6g3OEXZmC1/+kTh1n0oFXFGmhnO7lpe525zBMhaLrwQe4oDHUchm5Qvf5aB6mAoBv7ZXtbtG/3zNXszQZ7JzwRUyagamwqU0QA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(1800799012)(82310400011)(64100799003)(451199024)(186009)(36840700001)(40470700004)(46966006)(426003)(336012)(40480700001)(36860700001)(41300700001)(86362001)(6666004)(47076005)(2616005)(83380400001)(26005)(1076003)(478600001)(36756003)(4744005)(5660300002)(110136005)(70206006)(70586007)(54906003)(316002)(2906002)(40460700003)(82740400003)(44832011)(81166007)(8936002)(8676002)(4326008)(356005)(138113003)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 05:47:21.3626
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bcf368c-e96f-451a-fa9e-08dbebe7a95b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA50.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6478
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231122_214735_788809_70F5E083 
-X-CRM114-Status: GOOD (  10.56  )
+X-CRM114-CacheID: sfid-20231123_030527_045914_AB79A643 
+X-CRM114-Status: GOOD (  19.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,38 +98,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for issi is25lp02g.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Verified on AMD-Xilinx versal platform and executed
-mtd_debug read/write test.
+Hi Andrew,
 
-Signed-off-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
----
-BRANCH: spi-nor/next
---- 
- drivers/mtd/spi-nor/issi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+I think all other patches I have sent for -Wmissing-prototypes have made it
+into linux-next by now, these ones either got an Ack from the respective
+maintainers, or never got a reply. I just merged a few patches from my
+previous series into the asm-generic tree, these are not in linux-next
+today but should be for the next next. I also resent the powerpc patches
+to make sure they get merged soon.
 
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 18d9a00aa22e..98df64caf436 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -126,6 +126,12 @@ static const struct flash_info issi_nor_parts[] = {
- 		.flags = SPI_NOR_QUAD_PP,
- 		.fixups = &is25lp256_fixups,
- 		.fixup_flags = SPI_NOR_4B_OPCODES,
-+	}, {
-+		.id = SNOR_ID(0x9d, 0x60, 0x22),
-+		.name = "is25lp02",
-+		.size = SZ_2G,
-+		.fixup_flags = SPI_NOR_4B_OPCODES,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
- 	}
- };
- 
+Can you pick these six up into -mm for v6.8?
+
+Quoting from my description to patch 6/6:
+  "At this point, there are five architectures with a number of known
+   regressions: alpha, nios2, mips, sh and sparc. In the previous version
+   of this patch, I had turned off the missing prototype warnings for the 15
+   architectures that still had issues, but since there are only five left,
+   I think we can leave the rest to the maintainers (Cc'd here) as well."
+
+The series is also likely to cause occasional build regressions on linux-next
+as developers add new code that misses prototypes. Hopefully this should
+be resolved by the time the patches make it into a release and everyone
+gets the warnings right away.
+
+    Arnd
+
+Arnd Bergmann (6):
+  ida: make 'ida_dump' static
+  jffs2: mark __jffs2_dbg_superblock_counts() static
+  sched: fair: move unused stub functions to header
+  x86: sta2x11: include header for sta2x11_get_instance() prototype
+  usb: fsl-mph-dr-of: mark fsl_usb2_mpc5121_init() static
+  Makefile.extrawarn: turn on missing-prototypes globally
+
+ arch/x86/pci/sta2x11-fixup.c     |  1 +
+ drivers/usb/host/fsl-mph-dr-of.c |  2 +-
+ fs/jffs2/debug.c                 |  2 +-
+ kernel/sched/fair.c              | 13 -------------
+ kernel/sched/sched.h             | 11 +++++++++++
+ lib/test_ida.c                   |  2 +-
+ scripts/Makefile.extrawarn       |  4 ++--
+ 7 files changed, 17 insertions(+), 18 deletions(-)
+
 -- 
-2.25.1
+2.39.2
 
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-arch@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-sh@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: x86@kernel.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
