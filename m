@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0C48C4167B
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 17:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D541C4167B
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 17:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
 	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XkSqbZhXbSsLREEQYLkj/f0nqvjrsyzaeVrYpFpiLWs=; b=J0LfbLkh7+rE7eIIzv9Z2jZ5wI
-	iVMw8Cnl3JBMu3mLTMcd0j6ZHg8agMLmqeKihMVB3dREHL5cLi3WIYI2GRGdTGcNT40Z+2h5ivzL4
-	AyTNdZFmIbp3jg1gAXRVHWTIenaByzXanSCr3NP0prpTfmRXa+mrKgwryesRDOVEVa2exWMivinPE
-	KYkuwbyV7KMjM9GL5+/x9OlOShsRiADFC3w45U+q+vrlZubyeH2YRpFBmRwMRfHd8263YTe6KO3xP
-	oSb3J+nZ456BobajZcTloCK5Z78hj1GLVBSXNGAcgWA8nRlySlbYtRUeJVIU4EjHcyi6fIcuDB3qG
-	ZtxOiAXg==;
+	bh=oxW0aSDB0tP/byt1apnwaofNbMi3SOeAOB8bxyRDrv4=; b=i75F7GGPoAp6A5sWdkXuMClQ3v
+	WXzmWIanswW/d1wexmZIx0NWZi3e0GRbYLMn3dK+Vkykx2XE6USAQUPkS3Ipwg4Q8HCZUv1OGpuRa
+	KQOgFcJx0PGHxAjPvTyiA9kchppZybhDezEOpqqfXMCcly9AcMcWevxktGXIKa55L9Iga5nV5Fu7u
+	XP6dxj+zYyULos7YfHPKli4IfgrU73eIGR7oc/SuQ65IeL4EeH26F5JAnndsvG8ZFgpN2jaO/LGyO
+	FZsy8rvZ1zqZLkTZN/JcTrjbQVEHCmfsI4JGUir/QVmcK9BnIXYyD0MHEt2am+4p7CLcisYea9Fqh
+	vH+5dN0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6wNP-009Xep-0g;
-	Sat, 25 Nov 2023 17:23:31 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1r6wNt-009Xiv-1r;
+	Sat, 25 Nov 2023 17:24:01 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6wNM-009XeL-2f
+	id 1r6wNq-009Xi6-1r
 	for linux-mtd@lists.infradead.org;
-	Sat, 25 Nov 2023 17:23:30 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ccc9e6a38aso241731b3a.3
-        for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 09:23:26 -0800 (PST)
+	Sat, 25 Nov 2023 17:23:59 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cbe7386263so1926352b3a.2
+        for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 09:23:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700933005; x=1701537805; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1700933036; x=1701537836; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LDUTsUlCkDvcgO/1HiIFUUzS46a8U3qY3WYodL061Xc=;
-        b=jcsX9D/IpjcrkoUtXiq8nln88buvu2UyUJFMkoF48BtiBAIPkySbZ8rfebkgqCNpnM
-         WylwAxX48Ofg2DSXNG6KFOV3Z941t/pCgor9SZ89r2oMPZR3aHVUrKyeKOdN6IcraBky
-         wpUXiZQLf/KLK1io2Blf02H4Cry5MMpWZTu+BP7PG9v98FfHe20mPH4UxiaIVTegfFaG
-         ViG2Dnku8GLQSRG5cD5fM2Simgdd4Jevkwt1PH9y05t5/McOYkxZTfJiazDNo3atC6kK
-         WeAYO72Qc1kDsAsFR6UbAO06Puup3MchwdrBHx2rE1zf913LtU2FlqZnygZhjpxAKLQU
-         EUwA==
+        bh=vzsFwnTKlFweNImcDZvcUHGXmSag1w839oGhGY9efkQ=;
+        b=bYkv6lu9Rim8E+XXcAwlsXUjGaYvlJ/kRed46TxU/Tn5n1rq0t+JpuRlejKYpcfTWD
+         fLWvS841AuP4C8NOFuMskK1i8C/I9YcBxpPV18MKQczsHUWjL9pwzqVTqu4/4y28flNI
+         q+t8nab1cE6MeXLGcAIAoMzGh12EtV8+g8Se/G5uHUNohTnpp3wjuXCRJoIRS+3EbO53
+         XRh/dBmFfZOBYVROjcaVdugI5Csyy0XE7JneuGcZbNC5fx3URnvk/XL1ABv5PQYPv42W
+         zwd4kuqdlZeia5zvt/NJx1ej2NdKrhrA2j4PVmnY8dqUYGBInJBM3H3uSJl6/sxFkMm1
+         na4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700933005; x=1701537805;
+        d=1e100.net; s=20230601; t=1700933036; x=1701537836;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LDUTsUlCkDvcgO/1HiIFUUzS46a8U3qY3WYodL061Xc=;
-        b=s2NU5/uD55fb3eDgTh43B9MyYz0tWfoDGWJhKr717RhHfK3J1C1Z+JQQ43CwT1Mu0i
-         zBB4uFxd2415g8Kpyx/seyJQhaU6xEbGHpZr+tHtKGgT1kQsj5+rSwQV9QN/D5IFjf5Y
-         RSb7xcpHGgG+t8GmhSAEo6xWJqhsnqVHs/ybJgsRmoGQ0qEIpRL6dhBjAIqsDH9ZKQ+B
-         ZSrMgIz8+4UDwIJqOPG5Bz7LyWUG32LEq6FqedlPEx63j+vEX/CB4UNgH+BoH98uJXfp
-         4LAF7vtc0E60YOFDZVcoP/ht7FPKYThI0Nz7MxmmxtFfSbb7gYPw/tYQlTd6SOTQW/Hm
-         +eQQ==
-X-Gm-Message-State: AOJu0YyKeYk3RvTSX2Tk8GW3crF8sw0VpTCwYdUQE+jRJ8XRUbtbztNm
-	Ufhv5XQIlfcs0VGt25DKzyMYhhwOHF4=
-X-Google-Smtp-Source: AGHT+IHJ9YnnPv6Tk6Tt6tkzJ6FPSAgX+0xt4tyoteGeKyNLP43hr6ewFFSoozZmKAMZYgy+z7FlKg==
-X-Received: by 2002:a05:6a21:3399:b0:186:de1b:663 with SMTP id yy25-20020a056a21339900b00186de1b0663mr10083894pzb.28.1700933005483;
-        Sat, 25 Nov 2023 09:23:25 -0800 (PST)
+        bh=vzsFwnTKlFweNImcDZvcUHGXmSag1w839oGhGY9efkQ=;
+        b=lOUDvwSG3VoD4JLs8o6H/4Fp+vJ/PffDr25qI6t4Msb9HiuzyoZyRA6xuwSXr8RohG
+         ozriGalp6lb/bhzIFxDFzjDHoDYDS9K0Ce3ips/pjp2ZBCuCQNSdPLjdUMoRcOI4xQsO
+         V7xQr/32CTKbLdMSko4pT5OdklOjOCNhODS/aC6ZBheo1e/qhRhAMqqbPGHsYEXt5ySE
+         +/qON6yQwnRLR8sALE9Ly0rkzAHmSGqJhwgELeAW+62FD++mC+NzMu7PFl2AxUmsruG9
+         Xi4xJe+QozYRQ0VDH36iKdATGKy5wgCARO0LMdTqZWQM3P92VXdKfh0j9YQRtr5AjZ/J
+         P5LA==
+X-Gm-Message-State: AOJu0YyBepkVJ0I40CzRqgnvA7KFjU8BiAnm5GZErHXgIxVoa6znVt4A
+	FX8dAgvjdzAYYeUAMtzPuz4=
+X-Google-Smtp-Source: AGHT+IGzJ9k1/TLkPqkdI3S1w9XMUbKWgPqEF4xT5R9aRAPidE4RGizgkA/63W+bs0CRcF+fCM1sfA==
+X-Received: by 2002:a05:6a00:8d87:b0:6cb:64b7:a3bc with SMTP id im7-20020a056a008d8700b006cb64b7a3bcmr7686980pfb.29.1700933035642;
+        Sat, 25 Nov 2023 09:23:55 -0800 (PST)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id g6-20020aa78746000000b0068be3489b0dsm4721079pfo.172.2023.11.25.09.23.23
+        by smtp.gmail.com with ESMTPSA id g6-20020aa78746000000b0068be3489b0dsm4721079pfo.172.2023.11.25.09.23.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 09:23:24 -0800 (PST)
-Message-ID: <7497c676-1c81-4363-913b-4e26ac33e6a4@gmail.com>
-Date: Sat, 25 Nov 2023 09:23:22 -0800
+        Sat, 25 Nov 2023 09:23:55 -0800 (PST)
+Message-ID: <a2654a99-50e0-470e-a19d-3726f86b8640@gmail.com>
+Date: Sat, 25 Nov 2023 09:23:54 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/4] mtd: rawnand: brcmnand: pass host struct to
- bcmnand_ctrl_poll_status
+Subject: Re: [PATCH v5 2/4] mtd: rawnand: NAND controller write protect
 Content-Language: en-US
 To: dregan@broadcom.com, miquel.raynal@bootlin.com,
  bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
@@ -77,7 +76,7 @@ To: dregan@broadcom.com, miquel.raynal@bootlin.com,
  richard@nod.at, bbrezillon@kernel.org, kdasu.kdev@gmail.com,
  JaimeLiao <jaimeliao.tw@gmail.com>, Adam Borowski <kilobyte@angband.pl>
 References: <20231125012438.15191-1-dregan@broadcom.com>
- <20231125012438.15191-3-dregan@broadcom.com>
+ <20231125012438.15191-2-dregan@broadcom.com>
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -112,10 +111,10 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231125012438.15191-3-dregan@broadcom.com>
+In-Reply-To: <20231125012438.15191-2-dregan@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231125_092328_886326_6C0D96E5 
-X-CRM114-Status: UNSURE (   8.73  )
+X-CRM114-CacheID: sfid-20231125_092358_618592_0188C388 
+X-CRM114-Status: UNSURE (   5.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -138,11 +137,9 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 11/24/2023 5:24 PM, dregan@broadcom.com wrote:
 > From: David Regan <dregan@broadcom.com>
 > 
-> Pass host struct to bcmnand_ctrl_poll_status instead of ctrl struct
-> since real time status requires host, and ctrl is a member of host.
-> Real time status is required for low level commands vs cached status
-> since the NAND controller will not do an automatic status read at the
-> end of a low level command as it would with a high level command.
+> Allow NAND controller to be responsible for write protect pin
+> handling during fast path and exec_op destructive operation
+> when controller_wp flag is set.
 > 
 > Signed-off-by: David Regan <dregan@broadcom.com>
 
