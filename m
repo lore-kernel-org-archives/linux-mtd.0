@@ -4,113 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A21EC61D9D
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 09:23:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0F99C624B4
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 09:40:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uje0gDU8ZFuUW7xEJEROadJnsSdp5ylkB6MUO7IujmA=; b=ZAA6zbV3PTyqIV
-	+l874Ki5P7hwojwGUaMzFj0EvoW0GIyhMIEuATPCVJsXp4xaiXhy88do5+YSJlFzAH5yyC/N733Xh
-	+F8OT5VXLoohnHFiilXnJJnONi+KzolkC3UY2SnqwUbRZcfq99hqfySIKu/TdQeTKLfIrq/OHT6wM
-	LxHMujoMKmlKmhxq7nyX+/DimOMuB0BWdX7Xh6dhic4R5HMhlUWrzxuqbm2c9ppgRw6tXgaTUmKEn
-	rtr6sempfMwqx8EwlU6jU0oJtLGxLqvF22WGGxBG2MRubAzzhO+gt5mYSFadeaWFCPf5WedtDMO3S
-	o+UPjU/XK4kUSSjNFO8w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8iJ2hfPvSVIQ7u4vzAuOlDn1I4ESfQUl6ab7q0JHa9E=; b=RNAnMCiOWg3beL
+	c0Vfza7J0SuESIOLcOksMZawUhyq8CVyat7kbSHsXCrb9vZq6kLlftnDOTO/jy8vtB6qawIG+sslQ
+	t0vY5dDKUQob4sr33Q3SR1nPcK1/DJISJUfizcN0cHHDZoZ3bGFbdH89tSsw5HYR6deSnT5aiuvIX
+	CXYHaHnhcBx9Y8x72XV8e80MTMPij8R3gAWHpI9zIq4QelmO1QCMLOaJ1xqp6PliZq/XbnN1/DHnJ
+	4dkRu4ZfgfFOnwCHUNlddl5/4nLRpGcBm2DUyHAfRlfwHMSdpGlEdUgTH0OOwI9r8QUYO2ZbGCMm4
+	NbQfafaButbnwfFwFuxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6osl-008uz4-2f;
-	Sat, 25 Nov 2023 09:23:23 +0000
-Received: from mail-dm6nam11on20625.outbound.protection.outlook.com ([2a01:111:f400:7eaa::625] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
+	id 1r6p8u-008wz0-28;
+	Sat, 25 Nov 2023 09:40:04 +0000
+Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6osU-008ul9-0O;
-	Sat, 25 Nov 2023 09:23:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k+Kjjr1H5gTuiIYOVBv5n/4VIiIy94M04F9QjJyr9nV5YeqVobkawabHXXb2MQVoo2M1n+0GzRL1XZjUGocevGo5PBhtPRCxBNawgKrW+tSaEDcUYVl+XkSh33RdGW6ulAIA27NcNUpFmUF/Ruf5VnaJBjgp8j6tAQlCXuvFDdCL3S09WoURfSiESOLVg0mCnepudChe1Y/5ugSaKjnPAxUJsI2MSxvuueR9KwefpqJC/sMIErB/c6i+I/pKFNsyE1m2s5QDb2h+Wwh1h7lOdUmECf+ez6BUBa5FK6VbAH6Gb6VquuTAcTpk4a+n4EKYxbLdoWeBMV6LL2ucyySuag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xSD9XjMXnqfZVtPlC/UyYP9MYfZ2ELc1yJgiHn85INk=;
- b=DT7Mub4bYFzTR1z29Dvr8thn1pLzlqt/5aoPvnZmS+Eh4ZBTGB3EAdq8tI/b8mReWKCcsg7+cCHKcIinvZTHnI4lNGOZwkyL0zmEEf0gRTR7jg1hvBRLKeYn934U8vzg72/13nokNo7QNpmc//ctlKed1lsGNPTo7DDW4UNRt4c7OXDT6/ZckqMpg0kkFEgnn/cdiiQQIpMJ9OE3iu1NSqo4v6yB05a94yKgMPrZN23wUrZjl4ppPzK03zNenLHAOCtFn3Jk0EGn0mcer4FPrKPu7OaVSn3Dcyq6jrYIPXsifPmNeALV/lOQbrCDK+rLuEPzQUu1kZa9FuD03mt06A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xSD9XjMXnqfZVtPlC/UyYP9MYfZ2ELc1yJgiHn85INk=;
- b=MY8wx1us8K9sEu0RElkPtmA+uCrlh6FZL3oTv4rq4JH5XS+7oTMwbn2voMws0TO28EhvAT7+rDNkN3d/OcLlSmUUYEVv8sL0ZH73AAfX3F0hyHzCDgAfBq4mj/lpEgWOgw/gxqtNNpniUF8WFlWMcTXDVQV1gl1uqNO8vbUcM8M=
-Received: from BYAPR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:c0::49)
- by MW4PR12MB7014.namprd12.prod.outlook.com (2603:10b6:303:218::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.25; Sat, 25 Nov
- 2023 09:22:52 +0000
-Received: from DS1PEPF00017098.namprd05.prod.outlook.com
- (2603:10b6:a03:c0:cafe::f5) by BYAPR05CA0036.outlook.office365.com
- (2603:10b6:a03:c0::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.15 via Frontend
- Transport; Sat, 25 Nov 2023 09:22:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF00017098.mail.protection.outlook.com (10.167.18.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Sat, 25 Nov 2023 09:22:51 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
- 2023 03:22:33 -0600
-Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34
- via Frontend Transport; Sat, 25 Nov 2023 03:22:27 -0600
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<sbinding@opensource.cirrus.com>, <lee@kernel.org>,
-	<james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
-	<rf@opensource.cirrus.com>, <perex@perex.cz>, <tiwai@suse.com>
-CC: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <michal.simek@amd.com>,
-	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-	<git@amd.com>, <amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in spi-nor
-Date: Sat, 25 Nov 2023 14:51:34 +0530
-Message-ID: <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+	id 1r6p8p-008wx2-10
+	for linux-mtd@lists.infradead.org;
+	Sat, 25 Nov 2023 09:40:03 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Scmz05bKPz4f3kkH
+	for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 17:39:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 885731A0B4B
+	for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 17:39:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgA3iA7bwGFldwaOBw--.23278S4;
+	Sat, 25 Nov 2023 17:39:43 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: hch@infradead.org,
+	ming.lei@redhat.com,
+	axboe@kernel.dk,
+	roger.pau@citrix.com,
+	colyli@suse.de,
+	kent.overstreet@gmail.com,
+	joern@lazybastard.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	sth@linux.ibm.com,
+	hoeppner@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	jejb@linux.ibm.com,
+	martin.petersen@oracle.com,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	nico@fluxnic.net,
+	xiang@kernel.org,
+	chao@kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	agruenba@redhat.com,
+	jack@suse.com,
+	konishi.ryusuke@gmail.com,
+	dchinner@redhat.com,
+	linux@weissschuh.net,
+	gregkh@linuxfoundation.org,
+	min15.li@samsung.com,
+	dlemoal@kernel.org,
+	willy@infradead.org,
+	akpm@linux-foundation.org,
+	p.raghav@samsung.com,
+	hare@suse.de
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH -next] block: remove field 'bd_inode' from block_device
+Date: Sat, 25 Nov 2023 17:39:12 +0800
+Message-Id: <20231125093912.141486-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017098:EE_|MW4PR12MB7014:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d060ebe-065d-4c65-4693-08dbed98196c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7W17UDEb3PongV+r+wrBVZeND6Z7HK6499pAm9l9x1JzakXbG3GcyRuYr0m+oJiBokymfizPvq6BXFgsBQt2wLIq3phGvw7xVGjZUb+lcM5LzJpWwASOwcQlWlLknFx0xzi1C7wW283e467xS1xt29SUfOJLlqQXB5JRIKNZFcJDO8mpyYiJHOYYI05ArPoURwicFkzAyWNUPf6wE7TVuMK1uwZ42V3Pacp01CebaKIEG3JA25zlJegsuclt/SD+/Yo800oHrKkvUJazCTU4O5veny5H72L3D9o9gRPUKw/NgYdxlx3ophl7fqMoz0dTAV3g8eq5/mJQv+vWZ3w+cre5LTKwqTSF+C1Sx+fAhyRxB3tAQI9KMLUlFzVg2t5B/qP2RdahVGN8cLnkCtRxZVHTiRgNtTT+fgy5jT84dBXGkP6glCpGfAp+VPtjqx+flIrhScMHX7lyWs/px0GmlBOmIXY+ytBaLjZt+v1S5lcBhtwJSQMRmU6m5AEh4YkcfebgT9V0UGg1vc98o+tHgCkuIwdJmZ6jEJ8Nr4calLWjMrxUNoAIntKROaAHqBbsIzaN2XA/ZPhYO9mc6YnICXy1vUm2FPH7t8DlG7TL79gm9e9b18Q5g+ybeAW5Oiz/T6bDeGTlrX1SM4ycQiQVU1OZRiICmztrNdp0vmfn1ehEP+lWXF+y1rOb7Y67MPKetgIHR6e/eYWaugVpHoWYnky7LOru+kLknuCCnCVXIsFAB15LbY/pGIA0H3vP8FgPIwS5epB2GGLVMLn1Iy6pkws9P/NSP3nCCYmahglysBY=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(1800799012)(82310400011)(186009)(451199024)(64100799003)(40470700004)(36840700001)(46966006)(7416002)(4326008)(2906002)(30864003)(8676002)(8936002)(41300700001)(110136005)(26005)(426003)(1076003)(70206006)(316002)(54906003)(70586007)(36860700001)(5660300002)(336012)(2616005)(6666004)(40480700001)(83380400001)(47076005)(81166007)(82740400003)(86362001)(921008)(478600001)(356005)(36756003)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2023 09:22:51.9614
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d060ebe-065d-4c65-4693-08dbed98196c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017098.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7014
+X-CM-TRANSID: cCh0CgA3iA7bwGFldwaOBw--.23278S4
+X-Coremail-Antispam: 1UD129KBjvAXoWfurWDGr4kuw47KryDKr4kJFb_yoW5Cr1fZo
+	W3Jr13Wr1kJry3J397G3s2ya4UX39rCws3CFs8CFn0va4F9w1jk347Ga15AF1fuw1rKF1f
+	A34xAa1rXFWUAayrn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYI7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20EY4v20xva
+	j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+	x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
+	Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+	8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+	uYvjfUojjgUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231125_012306_246529_8C0BDE09 
-X-CRM114-Status: GOOD (  26.75  )
+X-CRM114-CacheID: sfid-20231125_013959_753198_6B8ED9FE 
+X-CRM114-Status: GOOD (  22.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,569 +136,815 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Each flash that is connected in stacked mode should have a separate
-parameter structure. So, the flash parameter member(*params) of the spi_nor
-structure is changed to an array (*params[2]). The array is used to store
-the parameters of each flash connected in stacked configuration.
+From: Yu Kuai <yukuai3@huawei.com>
 
-The current implementation assumes that a maximum of two flashes are
-connected in stacked mode and both the flashes are of same make but can
-differ in sizes. So, except the sizes all other flash parameters of both
-the flashes are identical.
+block_devcie is allocated from bdev_alloc() by bdev_alloc_inode(), and
+currently block_device contains a pointer that point to the address of
+inode, while such inode is allocated together:
 
-SPI-NOR is not aware of the chip_select values, for any incoming request
-SPI-NOR will decide the flash index with the help of individual flash size
-and the configuration type (single/stacked). SPI-NOR will pass on the flash
-index information to the SPI core & SPI driver by setting the appropriate
-bit in nor->spimem->spi->cs_index_mask. For example, if nth bit of
-nor->spimem->spi->cs_index_mask is set then the driver would
-assert/de-assert spi->chip_slect[n].
+bdev_alloc
+ inode = new_inode()
+  // inode is &bdev_inode->vfs_inode
+ bdev = I_BDEV(inode)
+  // bdev is &bdev_inode->bdev
+ bdev->inode = inode
 
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Add a new helper to get address of inode from bdev by add operation
+instead of memory access, which is more efficiency. Also prepare to
+add a new field 'bd_flags' in the first cacheline(64 bytes).
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/mtd/spi-nor/core.c  | 272 +++++++++++++++++++++++++++++-------
- drivers/mtd/spi-nor/core.h  |   4 +
- include/linux/mtd/spi-nor.h |  15 +-
- 3 files changed, 240 insertions(+), 51 deletions(-)
+ block/bdev.c                       | 39 +++++++++++++++++-------------
+ block/blk-zoned.c                  |  4 +--
+ block/fops.c                       |  4 +--
+ block/genhd.c                      |  8 +++---
+ block/ioctl.c                      |  8 +++---
+ block/partitions/core.c            |  9 ++++---
+ drivers/block/xen-blkback/xenbus.c |  2 +-
+ drivers/md/bcache/super.c          |  2 +-
+ drivers/mtd/devices/block2mtd.c    | 12 ++++-----
+ drivers/s390/block/dasd_ioctl.c    |  2 +-
+ drivers/scsi/scsicam.c             |  2 +-
+ fs/bcachefs/util.h                 |  2 +-
+ fs/btrfs/disk-io.c                 |  6 ++---
+ fs/btrfs/volumes.c                 |  4 +--
+ fs/btrfs/zoned.c                   |  2 +-
+ fs/buffer.c                        |  8 +++---
+ fs/cramfs/inode.c                  |  2 +-
+ fs/erofs/data.c                    |  2 +-
+ fs/ext4/dir.c                      |  2 +-
+ fs/ext4/ext4_jbd2.c                |  2 +-
+ fs/ext4/super.c                    |  8 +++---
+ fs/gfs2/glock.c                    |  2 +-
+ fs/gfs2/ops_fstype.c               |  2 +-
+ fs/jbd2/journal.c                  |  3 ++-
+ fs/jbd2/recovery.c                 |  2 +-
+ fs/nilfs2/segment.c                |  2 +-
+ include/linux/blk_types.h          | 10 ++++++--
+ include/linux/blkdev.h             |  4 +--
+ include/linux/buffer_head.h        |  4 +--
+ 29 files changed, 86 insertions(+), 73 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 93ae69b7ff83..e990be7c7eb6 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1821,13 +1821,18 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
- static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+diff --git a/block/bdev.c b/block/bdev.c
+index e4cfb7adb645..f27eb5588332 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -48,7 +48,7 @@ EXPORT_SYMBOL(I_BDEV);
+ 
+ static void bdev_write_inode(struct block_device *bdev)
  {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	u32 addr, len;
-+	struct spi_nor_flash_parameter *params;
-+	u32 addr, len, offset, cur_cs_num = 0;
- 	uint32_t rem;
+-	struct inode *inode = bdev->bd_inode;
++	struct inode *inode = bdev_inode(bdev);
  	int ret;
-+	u64 sz;
  
- 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
- 			(long long)instr->len);
- 
-+	params = spi_nor_get_params(nor, 0);
-+	sz = params->size;
-+
- 	if (spi_nor_has_uniform_erase(nor)) {
- 		div_u64_rem(instr->len, mtd->erasesize, &rem);
- 		if (rem)
-@@ -1849,23 +1854,27 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		if (ret)
- 			goto erase_err;
- 
--		ret = spi_nor_erase_chip(nor);
--		spi_nor_unlock_device(nor);
--		if (ret)
--			goto erase_err;
-+		while (cur_cs_num < nor->num_flash) {
-+			nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+			ret = spi_nor_erase_chip(nor);
-+			spi_nor_unlock_device(nor);
-+			if (ret)
-+				goto erase_err;
- 
--		/*
--		 * Scale the timeout linearly with the size of the flash, with
--		 * a minimum calibrated to an old 2MB flash. We could try to
--		 * pull these from CFI/SFDP, but these values should be good
--		 * enough for now.
--		 */
--		timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
--			      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
--			      (unsigned long)(mtd->size / SZ_2M));
--		ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
--		if (ret)
--			goto erase_err;
-+			/*
-+			 * Scale the timeout linearly with the size of the flash, with
-+			 * a minimum calibrated to an old 2MB flash. We could try to
-+			 * pull these from CFI/SFDP, but these values should be good
-+			 * enough for now.
-+			 */
-+			timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
-+				      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
-+				      (unsigned long)(params->size / SZ_2M));
-+			ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
-+			if (ret)
-+				goto erase_err;
-+			cur_cs_num++;
-+		}
- 
- 	/* REVISIT in some cases we could speed up erasing large regions
- 	 * by using SPINOR_OP_SE instead of SPINOR_OP_BE_4K.  We may have set up
-@@ -1874,12 +1883,26 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 	/* "sector"-at-a-time erase */
- 	} else if (spi_nor_has_uniform_erase(nor)) {
-+		/* Determine the flash from which the operation need to start */
-+		while ((cur_cs_num < nor->num_flash) && (addr > sz - 1)) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
-+
- 		while (len) {
- 			ret = spi_nor_lock_device(nor);
- 			if (ret)
- 				goto erase_err;
- 
--			ret = spi_nor_erase_sector(nor, addr);
-+			nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+			offset = addr;
-+			if (nor->flags & SNOR_F_HAS_STACKED) {
-+				params = spi_nor_get_params(nor, cur_cs_num);
-+				offset -= (sz - params->size);
-+			}
-+
-+			ret = spi_nor_erase_sector(nor, offset);
- 			spi_nor_unlock_device(nor);
- 			if (ret)
- 				goto erase_err;
-@@ -1890,13 +1913,45 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 			addr += mtd->erasesize;
- 			len -= mtd->erasesize;
-+
-+			/*
-+			 * Flash cross over condition in stacked mode.
-+			 */
-+			if ((nor->flags & SNOR_F_HAS_STACKED) && (addr > sz - 1)) {
-+				cur_cs_num++;
-+				params = spi_nor_get_params(nor, cur_cs_num);
-+				sz += params->size;
-+			}
- 		}
- 
- 	/* erase multiple sectors */
- 	} else {
--		ret = spi_nor_erase_multi_sectors(nor, addr, len);
--		if (ret)
--			goto erase_err;
-+		u64 erase_len = 0;
-+
-+		/* Determine the flash from which the operation need to start */
-+		while ((cur_cs_num < nor->num_flash) && (addr > sz - 1)) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
-+		/* perform multi sector erase onec per Flash*/
-+		while (len) {
-+			erase_len = (len > (sz - addr)) ? (sz - addr) : len;
-+			offset = addr;
-+			nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+			if (nor->flags & SNOR_F_HAS_STACKED) {
-+				params = spi_nor_get_params(nor, cur_cs_num);
-+				offset -= (sz - params->size);
-+			}
-+			ret = spi_nor_erase_multi_sectors(nor, offset, erase_len);
-+			if (ret)
-+				goto erase_err;
-+			len -= erase_len;
-+			addr += erase_len;
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
- 	}
- 
- 	ret = spi_nor_write_disable(nor);
-@@ -2087,9 +2142,11 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			size_t *retlen, u_char *buf)
+ 	spin_lock(&inode->i_lock);
+@@ -67,7 +67,7 @@ static void bdev_write_inode(struct block_device *bdev)
+ /* Kill _all_ buffers and pagecache , dirty or not.. */
+ static void kill_bdev(struct block_device *bdev)
  {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	struct spi_nor_flash_parameter *params;
-+	ssize_t ret, read_len, len_lock =  len;
- 	loff_t from_lock = from;
--	size_t len_lock = len;
--	ssize_t ret;
-+	u32 cur_cs_num = 0;
-+	u64 sz;
+-	struct address_space *mapping = bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(bdev)->i_mapping;
  
- 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
- 
-@@ -2097,9 +2154,23 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (ret)
- 		return ret;
- 
-+	params = spi_nor_get_params(nor, 0);
-+	sz = params->size;
-+
-+	/* Determine the flash from which the operation need to start */
-+	while ((cur_cs_num < nor->num_flash) && (from > sz - 1)) {
-+		cur_cs_num++;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		sz += params->size;
-+	}
- 	while (len) {
- 		loff_t addr = from;
- 
-+		nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+		read_len = (len > (sz - addr)) ? (sz - addr) : len;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		addr -= (sz - params->size);
-+
- 		addr = spi_nor_convert_addr(nor, addr);
- 
- 		ret = spi_nor_read_data(nor, addr, len, buf);
-@@ -2111,11 +2182,22 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		if (ret < 0)
- 			goto read_err;
- 
--		WARN_ON(ret > len);
-+		WARN_ON(ret > read_len);
- 		*retlen += ret;
- 		buf += ret;
- 		from += ret;
- 		len -= ret;
-+
-+		/*
-+		 * Flash cross over condition in stacked mode.
-+		 *
-+		 */
-+		if ((nor->flags & SNOR_F_HAS_STACKED) && (from > sz - 1)) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
-+
- 	}
- 	ret = 0;
- 
-@@ -2136,8 +2218,9 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
- 	struct spi_nor_flash_parameter *params;
- 	size_t page_offset, page_remain, i;
-+	u32 page_size, cur_cs_num = 0;
- 	ssize_t ret;
--	u32 page_size;
-+	u64 sz;
- 
- 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
- 
-@@ -2147,6 +2230,14 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 	params = spi_nor_get_params(nor, 0);
- 	page_size = params->page_size;
-+	sz = params->size;
-+
-+	/* Determine the flash from which the operation need to start */
-+	while ((cur_cs_num < nor->num_flash) && (to > sz - 1)) {
-+		cur_cs_num++;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		sz += params->size;
-+	}
- 
- 	for (i = 0; i < len; ) {
- 		ssize_t written;
-@@ -2167,6 +2258,10 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		/* the size of data remaining on the first page */
- 		page_remain = min_t(size_t, page_size - page_offset, len - i);
- 
-+		nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		addr -= (sz - params->size);
-+
- 		addr = spi_nor_convert_addr(nor, addr);
- 
- 		ret = spi_nor_lock_device(nor);
-@@ -2184,6 +2279,15 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 			goto write_err;
- 		*retlen += written;
- 		i += written;
-+
-+		/*
-+		 * Flash cross over condition in stacked mode.
-+		 */
-+		if ((nor->flags & SNOR_F_HAS_STACKED) && ((to + i) > sz - 1)) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
- 	}
- 
- write_err:
-@@ -2297,8 +2401,6 @@ int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
- static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 				   struct spi_mem_op *op)
+ 	if (mapping_empty(mapping))
+ 		return;
+@@ -79,7 +79,7 @@ static void kill_bdev(struct block_device *bdev)
+ /* Invalidate clean unused buffers and pagecache. */
+ void invalidate_bdev(struct block_device *bdev)
  {
--	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
--
- 	/*
- 	 * First test with 4 address bytes. The opcode itself might
- 	 * be a 3B addressing opcode but we don't care, because
-@@ -2307,7 +2409,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
+-	struct address_space *mapping = bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(bdev)->i_mapping;
+ 
+ 	if (mapping->nrpages) {
+ 		invalidate_bh_lrus();
+@@ -107,7 +107,7 @@ int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
+ 			goto invalidate;
+ 	}
+ 
+-	truncate_inode_pages_range(bdev->bd_inode->i_mapping, lstart, lend);
++	truncate_inode_pages_range(bdev_inode(bdev)->i_mapping, lstart, lend);
+ 	if (!(mode & BLK_OPEN_EXCL))
+ 		bd_abort_claiming(bdev, truncate_bdev_range);
+ 	return 0;
+@@ -117,7 +117,7 @@ int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
+ 	 * Someone else has handle exclusively open. Try invalidating instead.
+ 	 * The 'end' argument is inclusive so the rounding is safe.
  	 */
- 	op->addr.nbytes = 4;
- 	if (!spi_mem_supports_op(nor->spimem, op)) {
--		if (params->size > SZ_16M)
-+		if (nor->mtd.size > SZ_16M)
- 			return -EOPNOTSUPP;
- 
- 		/* If flash size <= 16MB, 3 address bytes are sufficient */
-@@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
- static int spi_nor_late_init_params(struct spi_nor *nor)
+-	return invalidate_inode_pages2_range(bdev->bd_inode->i_mapping,
++	return invalidate_inode_pages2_range(bdev_inode(bdev)->i_mapping,
+ 					     lstart >> PAGE_SHIFT,
+ 					     lend >> PAGE_SHIFT);
+ }
+@@ -125,18 +125,21 @@ int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
+ static void set_init_blocksize(struct block_device *bdev)
  {
- 	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
--	int ret;
-+	struct device_node *np = spi_nor_get_flash_node(nor);
-+	u64 flash_size[SNOR_FLASH_CNT_MAX];
-+	u32 idx = 0;
-+	int rc, ret;
+ 	unsigned int bsize = bdev_logical_block_size(bdev);
+-	loff_t size = i_size_read(bdev->bd_inode);
++	struct inode *inode = bdev_inode(bdev);
++	loff_t size = i_size_read(inode);
  
- 	if (nor->manufacturer && nor->manufacturer->fixups &&
- 	    nor->manufacturer->fixups->late_init) {
-@@ -2937,6 +3042,44 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
- 	if (params->n_banks > 1)
- 		params->bank_size = div64_u64(params->size, params->n_banks);
+ 	while (bsize < PAGE_SIZE) {
+ 		if (size & bsize)
+ 			break;
+ 		bsize <<= 1;
+ 	}
+-	bdev->bd_inode->i_blkbits = blksize_bits(bsize);
++	inode->i_blkbits = blksize_bits(bsize);
+ }
  
-+	nor->num_flash = 0;
+ int set_blocksize(struct block_device *bdev, int size)
+ {
++	struct inode *inode;
 +
-+	/*
-+	 * The flashes that are connected in stacked mode should be of same make.
-+	 * Except the flash size all other properties are identical for all the
-+	 * flashes connected in stacked mode.
-+	 * The flashes that are connected in parallel mode should be identical.
-+	 */
-+	while (idx < SNOR_FLASH_CNT_MAX) {
-+		rc = of_property_read_u64_index(np, "stacked-memories", idx, &flash_size[idx]);
-+		if (rc)
-+			break;
-+		idx++;
-+		if (!(nor->flags & SNOR_F_HAS_STACKED))
-+			nor->flags |= SNOR_F_HAS_STACKED;
-+
-+		nor->num_flash++;
-+	}
-+
-+	/*
-+	 * By default one flash device should be connected
-+	 * so, nor->num_flash is 1.
-+	 */
-+	if (!nor->num_flash)
-+		nor->num_flash = 1;
-+
-+	if (nor->flags & SNOR_F_HAS_STACKED) {
-+		for (idx = 1; idx < nor->num_flash; idx++) {
-+			params = spi_nor_get_params(nor, idx);
-+			params = devm_kzalloc(nor->dev, sizeof(*params), GFP_KERNEL);
-+			if (params) {
-+				memcpy(params, spi_nor_get_params(nor, 0), sizeof(*params));
-+				params->size = flash_size[idx];
-+				spi_nor_set_params(nor, idx, params);
-+			}
-+		}
-+	}
-+
+ 	/* Size must be a power of two, and between 512 and PAGE_SIZE */
+ 	if (size > PAGE_SIZE || size < 512 || !is_power_of_2(size))
+ 		return -EINVAL;
+@@ -146,9 +149,10 @@ int set_blocksize(struct block_device *bdev, int size)
+ 		return -EINVAL;
+ 
+ 	/* Don't change the size if it is same as current */
+-	if (bdev->bd_inode->i_blkbits != blksize_bits(size)) {
++	inode = bdev_inode(bdev);
++	if (inode->i_blkbits != blksize_bits(size)) {
+ 		sync_blockdev(bdev);
+-		bdev->bd_inode->i_blkbits = blksize_bits(size);
++		inode->i_blkbits = blksize_bits(size);
+ 		kill_bdev(bdev);
+ 	}
  	return 0;
+@@ -183,7 +187,7 @@ int sync_blockdev_nowait(struct block_device *bdev)
+ {
+ 	if (!bdev)
+ 		return 0;
+-	return filemap_flush(bdev->bd_inode->i_mapping);
++	return filemap_flush(bdev_inode(bdev)->i_mapping);
+ }
+ EXPORT_SYMBOL_GPL(sync_blockdev_nowait);
+ 
+@@ -195,13 +199,13 @@ int sync_blockdev(struct block_device *bdev)
+ {
+ 	if (!bdev)
+ 		return 0;
+-	return filemap_write_and_wait(bdev->bd_inode->i_mapping);
++	return filemap_write_and_wait(bdev_inode(bdev)->i_mapping);
+ }
+ EXPORT_SYMBOL(sync_blockdev);
+ 
+ int sync_blockdev_range(struct block_device *bdev, loff_t lstart, loff_t lend)
+ {
+-	return filemap_write_and_wait_range(bdev->bd_inode->i_mapping,
++	return filemap_write_and_wait_range(bdev_inode(bdev)->i_mapping,
+ 			lstart, lend);
+ }
+ EXPORT_SYMBOL(sync_blockdev_range);
+@@ -400,7 +404,6 @@ struct block_device *bdev_alloc(struct gendisk *disk, u8 partno)
+ 	spin_lock_init(&bdev->bd_size_lock);
+ 	mutex_init(&bdev->bd_holder_lock);
+ 	bdev->bd_partno = partno;
+-	bdev->bd_inode = inode;
+ 	bdev->bd_queue = disk->queue;
+ 	if (partno)
+ 		bdev->bd_has_submit_bio = disk->part0->bd_has_submit_bio;
+@@ -418,17 +421,19 @@ struct block_device *bdev_alloc(struct gendisk *disk, u8 partno)
+ void bdev_set_nr_sectors(struct block_device *bdev, sector_t sectors)
+ {
+ 	spin_lock(&bdev->bd_size_lock);
+-	i_size_write(bdev->bd_inode, (loff_t)sectors << SECTOR_SHIFT);
++	i_size_write(bdev_inode(bdev), (loff_t)sectors << SECTOR_SHIFT);
+ 	bdev->bd_nr_sectors = sectors;
+ 	spin_unlock(&bdev->bd_size_lock);
  }
  
-@@ -3145,16 +3288,28 @@ static int spi_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
-  */
- static int spi_nor_quad_enable(struct spi_nor *nor)
+ void bdev_add(struct block_device *bdev, dev_t dev)
  {
--	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
-+	struct spi_nor_flash_parameter *params;
-+	int err, idx;
- 
--	if (!params->quad_enable)
--		return 0;
-+	for (idx = 0; idx < nor->num_flash; idx++) {
-+		params = spi_nor_get_params(nor, idx);
-+		if (!params->quad_enable)
-+			return 0;
- 
--	if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
--	      spi_nor_get_protocol_width(nor->write_proto) == 4))
--		return 0;
-+		if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-+		      spi_nor_get_protocol_width(nor->write_proto) == 4))
-+			return 0;
-+		/*
-+		 * Set the appropriate CS index before
-+		 * issuing the command.
-+		 */
-+		nor->spimem->spi->cs_index_mask = 0x01 << idx;
- 
--	return params->quad_enable(nor);
-+		err = params->quad_enable(nor);
-+		if (err)
-+			return err;
-+	}
-+	return err;
++	struct inode *inode = bdev_inode(bdev);
++
+ 	bdev->bd_dev = dev;
+-	bdev->bd_inode->i_rdev = dev;
+-	bdev->bd_inode->i_ino = dev;
+-	insert_inode_hash(bdev->bd_inode);
++	inode->i_rdev = dev;
++	inode->i_ino = dev;
++	insert_inode_hash(inode);
  }
  
- /**
-@@ -3186,7 +3341,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ long nr_blockdev_pages(void)
+diff --git a/block/blk-zoned.c b/block/blk-zoned.c
+index 619ee41a51cc..6b91f6d45590 100644
+--- a/block/blk-zoned.c
++++ b/block/blk-zoned.c
+@@ -401,7 +401,7 @@ int blkdev_zone_mgmt_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 		op = REQ_OP_ZONE_RESET;
  
- static int spi_nor_init(struct spi_nor *nor)
+ 		/* Invalidate the page cache, including dirty pages. */
+-		filemap_invalidate_lock(bdev->bd_inode->i_mapping);
++		filemap_invalidate_lock(bdev_inode(bdev)->i_mapping);
+ 		ret = blkdev_truncate_zone_range(bdev, mode, &zrange);
+ 		if (ret)
+ 			goto fail;
+@@ -424,7 +424,7 @@ int blkdev_zone_mgmt_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 
+ fail:
+ 	if (cmd == BLKRESETZONE)
+-		filemap_invalidate_unlock(bdev->bd_inode->i_mapping);
++		filemap_invalidate_unlock(bdev_inode(bdev)->i_mapping);
+ 
+ 	return ret;
+ }
+diff --git a/block/fops.c b/block/fops.c
+index 0abaac705daf..45ee180448ed 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -605,7 +605,7 @@ static int blkdev_open(struct inode *inode, struct file *filp)
+ 	if (bdev_nowait(handle->bdev))
+ 		filp->f_mode |= FMODE_NOWAIT;
+ 
+-	filp->f_mapping = handle->bdev->bd_inode->i_mapping;
++	filp->f_mapping = bdev_inode(handle->bdev)->i_mapping;
+ 	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
+ 	filp->private_data = handle;
+ 	return 0;
+@@ -657,7 +657,7 @@ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
  {
--	int err;
-+	int err, idx;
+ 	struct file *file = iocb->ki_filp;
+ 	struct block_device *bdev = I_BDEV(file->f_mapping->host);
+-	struct inode *bd_inode = bdev->bd_inode;
++	struct inode *bd_inode = bdev_inode(bdev);
+ 	loff_t size = bdev_nr_bytes(bdev);
+ 	size_t shorted = 0;
+ 	ssize_t ret;
+diff --git a/block/genhd.c b/block/genhd.c
+index c9d06f72c587..643936a47547 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -653,7 +653,7 @@ void del_gendisk(struct gendisk *disk)
+ 	 */
+ 	mutex_lock(&disk->open_mutex);
+ 	xa_for_each(&disk->part_tbl, idx, part)
+-		remove_inode_hash(part->bd_inode);
++		remove_inode_hash(bdev_inode(part));
+ 	mutex_unlock(&disk->open_mutex);
  
- 	err = spi_nor_set_octal_dtr(nor, true);
- 	if (err) {
-@@ -3227,9 +3382,16 @@ static int spi_nor_init(struct spi_nor *nor)
+ 	/*
+@@ -742,7 +742,7 @@ void invalidate_disk(struct gendisk *disk)
+ 	struct block_device *bdev = disk->part0;
+ 
+ 	invalidate_bdev(bdev);
+-	bdev->bd_inode->i_mapping->wb_err = 0;
++	bdev_inode(bdev)->i_mapping->wb_err = 0;
+ 	set_capacity(disk, 0);
+ }
+ EXPORT_SYMBOL(invalidate_disk);
+@@ -1188,7 +1188,7 @@ static void disk_release(struct device *dev)
+ 	if (test_bit(GD_ADDED, &disk->state) && disk->fops->free_disk)
+ 		disk->fops->free_disk(disk);
+ 
+-	iput(disk->part0->bd_inode);	/* frees the disk */
++	iput(bdev_inode(disk->part0));	/* frees the disk */
+ }
+ 
+ static int block_uevent(const struct device *dev, struct kobj_uevent_env *env)
+@@ -1378,7 +1378,7 @@ struct gendisk *__alloc_disk_node(struct request_queue *q, int node_id,
+ out_destroy_part_tbl:
+ 	xa_destroy(&disk->part_tbl);
+ 	disk->part0->bd_disk = NULL;
+-	iput(disk->part0->bd_inode);
++	iput(bdev_inode(disk->part0));
+ out_free_bdi:
+ 	bdi_put(disk->bdi);
+ out_free_bioset:
+diff --git a/block/ioctl.c b/block/ioctl.c
+index 4160f4e6bd5b..185336f3d4f2 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -89,7 +89,7 @@ static int blk_ioctl_discard(struct block_device *bdev, blk_mode_t mode,
+ {
+ 	uint64_t range[2];
+ 	uint64_t start, len;
+-	struct inode *inode = bdev->bd_inode;
++	struct inode *inode = bdev_inode(bdev);
+ 	int err;
+ 
+ 	if (!(mode & BLK_OPEN_WRITE))
+@@ -143,12 +143,12 @@ static int blk_ioctl_secure_erase(struct block_device *bdev, blk_mode_t mode,
+ 	if (start + len > bdev_nr_bytes(bdev))
+ 		return -EINVAL;
+ 
+-	filemap_invalidate_lock(bdev->bd_inode->i_mapping);
++	filemap_invalidate_lock(bdev_inode(bdev)->i_mapping);
+ 	err = truncate_bdev_range(bdev, mode, start, start + len - 1);
+ 	if (!err)
+ 		err = blkdev_issue_secure_erase(bdev, start >> 9, len >> 9,
+ 						GFP_KERNEL);
+-	filemap_invalidate_unlock(bdev->bd_inode->i_mapping);
++	filemap_invalidate_unlock(bdev_inode(bdev)->i_mapping);
+ 	return err;
+ }
+ 
+@@ -158,7 +158,7 @@ static int blk_ioctl_zeroout(struct block_device *bdev, blk_mode_t mode,
+ {
+ 	uint64_t range[2];
+ 	uint64_t start, end, len;
+-	struct inode *inode = bdev->bd_inode;
++	struct inode *inode = bdev_inode(bdev);
+ 	int err;
+ 
+ 	if (!(mode & BLK_OPEN_WRITE))
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index f47ffcfdfcec..ac678c340e19 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -243,7 +243,7 @@ static const struct attribute_group *part_attr_groups[] = {
+ static void part_release(struct device *dev)
+ {
+ 	put_disk(dev_to_bdev(dev)->bd_disk);
+-	iput(dev_to_bdev(dev)->bd_inode);
++	iput(bdev_inode(dev_to_bdev(dev)));
+ }
+ 
+ static int part_uevent(const struct device *dev, struct kobj_uevent_env *env)
+@@ -483,7 +483,7 @@ int bdev_del_partition(struct gendisk *disk, int partno)
+ 	 * Just delete the partition and invalidate it.
+ 	 */
+ 
+-	remove_inode_hash(part->bd_inode);
++	remove_inode_hash(bdev_inode(part));
+ 	invalidate_bdev(part);
+ 	drop_partition(part);
+ 	ret = 0;
+@@ -669,7 +669,7 @@ int bdev_disk_changed(struct gendisk *disk, bool invalidate)
+ 		 * it cannot be looked up any more even when openers
+ 		 * still hold references.
  		 */
- 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
- 			  "enabling reset hack; may not recover from unexpected reboots\n");
--		err = spi_nor_set_4byte_addr_mode(nor, true);
--		if (err)
--			return err;
-+		for (idx = 0; idx < nor->num_flash; idx++) {
-+			/*
-+			 * Select the appropriate CS index before
-+			 * issuing the command.
-+			 */
-+			nor->spimem->spi->cs_index_mask = 0x01 << idx;
-+			err = spi_nor_set_4byte_addr_mode(nor, true);
-+			if (err)
-+				return err;
-+		}
- 	}
+-		remove_inode_hash(part->bd_inode);
++		remove_inode_hash(bdev_inode(part));
  
- 	return 0;
-@@ -3344,18 +3506,28 @@ static void spi_nor_put_device(struct mtd_info *mtd)
- static void spi_nor_restore(struct spi_nor *nor)
+ 		/*
+ 		 * If @disk->open_partitions isn't elevated but there's
+@@ -718,7 +718,8 @@ EXPORT_SYMBOL_GPL(bdev_disk_changed);
+ 
+ void *read_part_sector(struct parsed_partitions *state, sector_t n, Sector *p)
  {
- 	int ret;
-+	int idx;
+-	struct address_space *mapping = state->disk->part0->bd_inode->i_mapping;
++	struct address_space *mapping =
++			bdev_inode(state->disk->part0)->i_mapping;
+ 	struct folio *folio;
  
- 	/* restore the addressing mode */
- 	if (nor->addr_nbytes == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
- 	    nor->flags & SNOR_F_BROKEN_RESET) {
--		ret = spi_nor_set_4byte_addr_mode(nor, false);
--		if (ret)
-+		for (idx = 0; idx < nor->num_flash; idx++) {
- 			/*
--			 * Do not stop the execution in the hope that the flash
--			 * will default to the 3-byte address mode after the
--			 * software reset.
-+			 * Select the appropriate CS index before
-+			 * issuing the command.
- 			 */
--			dev_err(nor->dev, "Failed to exit 4-byte address mode, err = %d\n", ret);
-+			nor->spimem->spi->cs_index_mask = 1 << idx;
-+			ret = spi_nor_set_4byte_addr_mode(nor, false);
-+			if (ret)
-+				/*
-+				 * Do not stop the execution in the hope that the flash
-+				 * will default to the 3-byte address mode after the
-+				 * software reset.
-+				 */
-+				dev_err(nor->dev,
-+					"Failed to exit 4-byte address mode, err = %d\n",
-+					ret);
-+		}
+ 	if (n >= get_capacity(state->disk)) {
+diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+index e34219ea2b05..e11f8123d213 100644
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -105,7 +105,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
+ 		return;
+ 	}
+ 	invalidate_inode_pages2(
+-			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
++			bdev_inode(blkif->vbd.bdev_handle->bdev)->i_mapping);
+ 
+ 	for (i = 0; i < blkif->nr_rings; i++) {
+ 		ring = &blkif->rings[i];
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index bfe1685dbae5..3ab8bae049ee 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -171,7 +171,7 @@ static const char *read_super(struct cache_sb *sb, struct block_device *bdev,
+ 	struct page *page;
+ 	unsigned int i;
+ 
+-	page = read_cache_page_gfp(bdev->bd_inode->i_mapping,
++	page = read_cache_page_gfp(bdev_inode(bdev)->i_mapping,
+ 				   SB_OFFSET >> PAGE_SHIFT, GFP_KERNEL);
+ 	if (IS_ERR(page))
+ 		return "IO error";
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index aa44a23ec045..d4f7a4339a70 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -56,7 +56,7 @@ static struct page *page_read(struct address_space *mapping, pgoff_t index)
+ static int _block2mtd_erase(struct block2mtd_dev *dev, loff_t to, size_t len)
+ {
+ 	struct address_space *mapping =
+-				dev->bdev_handle->bdev->bd_inode->i_mapping;
++				bdev_inode(dev->bdev_handle->bdev)->i_mapping;
+ 	struct page *page;
+ 	pgoff_t index = to >> PAGE_SHIFT;	// page index
+ 	int pages = len >> PAGE_SHIFT;
+@@ -107,7 +107,7 @@ static int block2mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+ {
+ 	struct block2mtd_dev *dev = mtd->priv;
+ 	struct address_space *mapping =
+-				dev->bdev_handle->bdev->bd_inode->i_mapping;
++				bdev_inode(dev->bdev_handle->bdev)->i_mapping;
+ 	struct page *page;
+ 	pgoff_t index = from >> PAGE_SHIFT;
+ 	int offset = from & (PAGE_SIZE-1);
+@@ -143,7 +143,7 @@ static int _block2mtd_write(struct block2mtd_dev *dev, const u_char *buf,
+ {
+ 	struct page *page;
+ 	struct address_space *mapping =
+-				dev->bdev_handle->bdev->bd_inode->i_mapping;
++				bdev_inode(dev->bdev_handle->bdev)->i_mapping;
+ 	pgoff_t index = to >> PAGE_SHIFT;	// page index
+ 	int offset = to & ~PAGE_MASK;	// page offset
+ 	int cpylen;
+@@ -212,7 +212,7 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
+ 
+ 	if (dev->bdev_handle) {
+ 		invalidate_mapping_pages(
+-			dev->bdev_handle->bdev->bd_inode->i_mapping, 0, -1);
++			bdev_inode(dev->bdev_handle->bdev)->i_mapping, 0, -1);
+ 		bdev_release(dev->bdev_handle);
  	}
  
- 	if (nor->flags & SNOR_F_SOFT_RESET)
-@@ -3422,6 +3594,8 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
- 	struct mtd_info *mtd = &nor->mtd;
- 	struct device *dev = nor->dev;
-+	u64 total_sz = 0;
-+	int idx;
+@@ -295,7 +295,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
+ 		goto err_free_block2mtd;
+ 	}
  
- 	spi_nor_set_mtd_locking_ops(nor);
- 	spi_nor_set_mtd_otp_ops(nor);
-@@ -3440,7 +3614,11 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 		mtd->_erase = spi_nor_erase;
- 	mtd->writesize = params->writesize;
- 	mtd->writebufsize = params->page_size;
--	mtd->size = params->size;
-+	for (idx = 0; idx < nor->num_flash; idx++) {
-+		params = spi_nor_get_params(nor, idx);
-+		total_sz += params->size;
-+	}
-+	mtd->size = total_sz;
- 	mtd->_read = spi_nor_read;
- 	/* Might be already set by some SST flashes. */
- 	if (!mtd->_write)
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 93cd2fc3606d..b2997eca7551 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -18,6 +18,9 @@
- #define SPI_NOR_DEFAULT_N_BANKS 1
- #define SPI_NOR_DEFAULT_SECTOR_SIZE SZ_64K
+-	if ((long)bdev->bd_inode->i_size % erase_size) {
++	if ((long)bdev_inode(bdev)->i_size % erase_size) {
+ 		pr_err("erasesize must be a divisor of device size\n");
+ 		goto err_free_block2mtd;
+ 	}
+@@ -313,7 +313,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
  
-+/* In single configuration enable CS0 */
-+#define SPI_NOR_ENABLE_CS0     BIT(0)
-+
- /* Standard SPI NOR flash operations. */
- #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 0),			\
-@@ -140,6 +143,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_RWW		= BIT(14),
- 	SNOR_F_ECC		= BIT(15),
- 	SNOR_F_NO_WP		= BIT(16),
-+	SNOR_F_HAS_STACKED      = BIT(17),
- };
+ 	dev->mtd.name = name;
  
- struct spi_nor_read_command {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 59909e7d6f53..9d72b0bbab94 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -127,6 +127,12 @@
- #define SR2_LB3			BIT(5)	/* Security Register Lock Bit 3 */
- #define SR2_QUAD_EN_BIT7	BIT(7)
+-	dev->mtd.size = bdev->bd_inode->i_size & PAGE_MASK;
++	dev->mtd.size = bdev_inode(bdev)->i_size & PAGE_MASK;
+ 	dev->mtd.erasesize = erase_size;
+ 	dev->mtd.writesize = 1;
+ 	dev->mtd.writebufsize = PAGE_SIZE;
+diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
+index 61b9675e2a67..a34554ace310 100644
+--- a/drivers/s390/block/dasd_ioctl.c
++++ b/drivers/s390/block/dasd_ioctl.c
+@@ -221,7 +221,7 @@ dasd_format(struct dasd_block *block, struct format_data_t *fdata)
+ 	 * enabling the device later.
+ 	 */
+ 	if (fdata->start_unit == 0) {
+-		block->gdp->part0->bd_inode->i_blkbits =
++		bdev_inode(block->gdp->part0)->i_blkbits =
+ 			blksize_bits(fdata->blksize);
+ 	}
  
-+/*
-+ * Maximum number of flashes that can be connected
-+ * in stacked/parallel configuration
-+ */
-+#define	SNOR_FLASH_CNT_MAX	4
-+
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
-@@ -378,6 +384,7 @@ struct spi_nor_flash_parameter;
-  *                      hooks, or dynamically when parsing the SFDP tables.
-  * @dirmap:		pointers to struct spi_mem_dirmap_desc for reads/writes.
-  * @priv:		pointer to the private data
-+ * @num_flash		number of flashes connected in parallel or stacked mode
+diff --git a/drivers/scsi/scsicam.c b/drivers/scsi/scsicam.c
+index e2c7d8ef205f..de40a5ef7d96 100644
+--- a/drivers/scsi/scsicam.c
++++ b/drivers/scsi/scsicam.c
+@@ -32,7 +32,7 @@
   */
- struct spi_nor {
- 	struct mtd_info		mtd;
-@@ -412,13 +419,13 @@ struct spi_nor {
+ unsigned char *scsi_bios_ptable(struct block_device *dev)
+ {
+-	struct address_space *mapping = bdev_whole(dev)->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(bdev_whole(dev))->i_mapping;
+ 	unsigned char *res = NULL;
+ 	struct folio *folio;
  
- 	const struct spi_nor_controller_ops *controller_ops;
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index 2984b57b2958..fe7ccb3a3517 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -518,7 +518,7 @@ int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
  
--	struct spi_nor_flash_parameter *params;
-+	struct spi_nor_flash_parameter *params[SNOR_FLASH_CNT_MAX];
+ static inline sector_t bdev_sectors(struct block_device *bdev)
+ {
+-	return bdev->bd_inode->i_size >> 9;
++	return bdev_inode(bdev)->i_size >> 9;
+ }
  
- 	struct {
- 		struct spi_mem_dirmap_desc *rdesc;
- 		struct spi_mem_dirmap_desc *wdesc;
- 	} dirmap;
+ #define closure_bio_submit(bio, cl)					\
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 401ea09ae4b8..88b20cd4d046 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3653,7 +3653,7 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+ 	struct btrfs_super_block *super;
+ 	struct page *page;
+ 	u64 bytenr, bytenr_orig;
+-	struct address_space *mapping = bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(bdev)->i_mapping;
+ 	int ret;
+ 
+ 	bytenr_orig = btrfs_sb_offset(copy_num);
+@@ -3740,7 +3740,7 @@ static int write_dev_supers(struct btrfs_device *device,
+ 			    struct btrfs_super_block *sb, int max_mirrors)
+ {
+ 	struct btrfs_fs_info *fs_info = device->fs_info;
+-	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(device->bdev)->i_mapping;
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	int i;
+ 	int errors = 0;
+@@ -3857,7 +3857,7 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
+ 		    device->commit_total_bytes)
+ 			break;
+ 
+-		page = find_get_page(device->bdev->bd_inode->i_mapping,
++		page = find_get_page(bdev_inode(device->bdev)->i_mapping,
+ 				     bytenr >> PAGE_SHIFT);
+ 		if (!page) {
+ 			errors++;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c6f16625af51..bbf157cedab7 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1257,8 +1257,8 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	/* pull in the page with our super */
+-	page = read_cache_page_gfp(bdev->bd_inode->i_mapping, index, GFP_KERNEL);
 -
-+	u32			num_flash;
- 	void *priv;
- };
++	page = read_cache_page_gfp(bdev_inode(bdev)->i_mapping, index,
++				   GFP_KERNEL);
+ 	if (IS_ERR(page))
+ 		return ERR_CAST(page);
  
-@@ -435,13 +442,13 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
- 
- static inline struct spi_nor_flash_parameter *spi_nor_get_params(const struct spi_nor *nor, u8 idx)
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 188378ca19c7..a5f7f1458edf 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -120,7 +120,7 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+ 		return -ENOENT;
+ 	} else if (full[0] && full[1]) {
+ 		/* Compare two super blocks */
+-		struct address_space *mapping = bdev->bd_inode->i_mapping;
++		struct address_space *mapping = bdev_inode(bdev)->i_mapping;
+ 		struct page *page[BTRFS_NR_SB_LOG_ZONES];
+ 		struct btrfs_super_block *super[BTRFS_NR_SB_LOG_ZONES];
+ 		int i;
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 967f34b70aa8..bf993198f881 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -189,7 +189,7 @@ EXPORT_SYMBOL(end_buffer_write_sync);
+ static struct buffer_head *
+ __find_get_block_slow(struct block_device *bdev, sector_t block)
  {
--	return nor->params;
-+	return nor->params[idx];
+-	struct inode *bd_inode = bdev->bd_inode;
++	struct inode *bd_inode = bdev_inode(bdev);
+ 	struct address_space *bd_mapping = bd_inode->i_mapping;
+ 	struct buffer_head *ret = NULL;
+ 	pgoff_t index;
+@@ -1032,7 +1032,7 @@ static int
+ grow_dev_page(struct block_device *bdev, sector_t block,
+ 	      pgoff_t index, int size, int sizebits, gfp_t gfp)
+ {
+-	struct inode *inode = bdev->bd_inode;
++	struct inode *inode = bdev_inode(bdev);
+ 	struct folio *folio;
+ 	struct buffer_head *bh;
+ 	sector_t end_block;
+@@ -1463,7 +1463,7 @@ __bread_gfp(struct block_device *bdev, sector_t block,
+ {
+ 	struct buffer_head *bh;
+ 
+-	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
++	gfp |= mapping_gfp_constraint(bdev_inode(bdev)->i_mapping, ~__GFP_FS);
+ 
+ 	/*
+ 	 * Prefer looping in the allocator rather than here, at least that
+@@ -1696,7 +1696,7 @@ EXPORT_SYMBOL(create_empty_buffers);
+  */
+ void clean_bdev_aliases(struct block_device *bdev, sector_t block, sector_t len)
+ {
+-	struct inode *bd_inode = bdev->bd_inode;
++	struct inode *bd_inode = bdev_inode(bdev);
+ 	struct address_space *bd_mapping = bd_inode->i_mapping;
+ 	struct folio_batch fbatch;
+ 	pgoff_t index = block >> (PAGE_SHIFT - bd_inode->i_blkbits);
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 60dbfa0f8805..e9ed1e24c9e4 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -183,7 +183,7 @@ static int next_buffer;
+ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
+ 				unsigned int len)
+ {
+-	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(sb->s_bdev)->i_mapping;
+ 	struct file_ra_state ra = {};
+ 	struct page *pages[BLKS_PER_BUF];
+ 	unsigned i, blocknr, buffer;
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index 029c761670bf..85d490b3b53d 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -70,7 +70,7 @@ void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
+ 	if (erofs_is_fscache_mode(sb))
+ 		buf->inode = EROFS_SB(sb)->s_fscache->inode;
+ 	else
+-		buf->inode = sb->s_bdev->bd_inode;
++		buf->inode = bdev_inode(sb->s_bdev);
  }
  
- static inline void spi_nor_set_params(struct spi_nor *nor, u8 idx,
- 				      struct spi_nor_flash_parameter *params)
+ void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 3985f8c33f95..6e9fe408642b 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -192,7 +192,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 					(PAGE_SHIFT - inode->i_blkbits);
+ 			if (!ra_has_index(&file->f_ra, index))
+ 				page_cache_sync_readahead(
+-					sb->s_bdev->bd_inode->i_mapping,
++					bdev_inode(sb->s_bdev)->i_mapping,
+ 					&file->f_ra, file,
+ 					index, 1);
+ 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index d1a2e6624401..e0e7f71d022d 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -206,7 +206,7 @@ static void ext4_journal_abort_handle(const char *caller, unsigned int line,
+ 
+ static void ext4_check_bdev_write_error(struct super_block *sb)
  {
--	nor->params = params;
-+	nor->params[idx] = params;
+-	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(sb->s_bdev)->i_mapping;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int err;
+ 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c5fcf377ab1f..da6af2205e55 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -244,7 +244,7 @@ static struct buffer_head *__ext4_sb_bread_gfp(struct super_block *sb,
+ struct buffer_head *ext4_sb_bread(struct super_block *sb, sector_t block,
+ 				   blk_opf_t op_flags)
+ {
+-	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_inode->i_mapping,
++	gfp_t gfp = mapping_gfp_constraint(bdev_inode(sb->s_bdev)->i_mapping,
+ 			~__GFP_FS) | __GFP_MOVABLE;
+ 
+ 	return __ext4_sb_bread_gfp(sb, block, op_flags, gfp);
+@@ -253,7 +253,7 @@ struct buffer_head *ext4_sb_bread(struct super_block *sb, sector_t block,
+ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
+ 					    sector_t block)
+ {
+-	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_inode->i_mapping,
++	gfp_t gfp = mapping_gfp_constraint(bdev_inode(sb->s_bdev)->i_mapping,
+ 			~__GFP_FS);
+ 
+ 	return __ext4_sb_bread_gfp(sb, block, 0, gfp);
+@@ -502,7 +502,7 @@ static void ext4_maybe_update_superblock(struct super_block *sb)
+  */
+ static int block_device_ejected(struct super_block *sb)
+ {
+-	struct inode *bd_inode = sb->s_bdev->bd_inode;
++	struct inode *bd_inode = bdev_inode(sb->s_bdev);
+ 	struct backing_dev_info *bdi = inode_to_bdi(bd_inode);
+ 
+ 	return bdi->dev == NULL;
+@@ -5585,7 +5585,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 * used to detect the metadata async write error.
+ 	 */
+ 	spin_lock_init(&sbi->s_bdev_wb_lock);
+-	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
++	errseq_check_and_advance(&bdev_inode(sb->s_bdev)->i_mapping->wb_err,
+ 				 &sbi->s_bdev_wb_err);
+ 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+ 	ext4_orphan_cleanup(sb, es);
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index d6bf1f8c25dc..ec6394544ebb 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -1210,7 +1210,7 @@ int gfs2_glock_get(struct gfs2_sbd *sdp, u64 number,
+ 	mapping = gfs2_glock2aspace(gl);
+ 	if (mapping) {
+                 mapping->a_ops = &gfs2_meta_aops;
+-		mapping->host = s->s_bdev->bd_inode;
++		mapping->host = bdev_inode(s->s_bdev);
+ 		mapping->flags = 0;
+ 		mapping_set_gfp_mask(mapping, GFP_NOFS);
+ 		mapping->private_data = NULL;
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index b108c5d26839..dfc4735cfd54 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -114,7 +114,7 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
+ 
+ 	address_space_init_once(mapping);
+ 	mapping->a_ops = &gfs2_rgrp_aops;
+-	mapping->host = sb->s_bdev->bd_inode;
++	mapping->host = bdev_inode(sb->s_bdev);
+ 	mapping->flags = 0;
+ 	mapping_set_gfp_mask(mapping, GFP_NOFS);
+ 	mapping->private_data = NULL;
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index ed53188472f9..e2d034cc9dc0 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2003,7 +2003,8 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
+ 		byte_count = (block_stop - block_start + 1) *
+ 				journal->j_blocksize;
+ 
+-		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
++		truncate_inode_pages_range(
++				bdev_inode(journal->j_dev)->i_mapping,
+ 				byte_start, byte_stop);
+ 
+ 		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 01f744cb97a4..7774efe872e8 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -309,7 +309,7 @@ int jbd2_journal_recover(journal_t *journal)
+ 	}
+ 
+ 	wb_err = 0;
+-	mapping = journal->j_fs_dev->bd_inode->i_mapping;
++	mapping = bdev_inode(journal->j_fs_dev)->i_mapping;
+ 	errseq_check_and_advance(&mapping->wb_err, &wb_err);
+ 	err = do_one_pass(journal, &info, PASS_SCAN);
+ 	if (!err)
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 55e31cc903d1..d346f5c1aad7 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -2823,7 +2823,7 @@ int nilfs_attach_log_writer(struct super_block *sb, struct nilfs_root *root)
+ 	if (!nilfs->ns_writer)
+ 		return -ENOMEM;
+ 
+-	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
++	inode_attach_wb(bdev_inode(nilfs->ns_bdev), NULL);
+ 
+ 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
+ 	if (unlikely(err))
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index d5c5e59ddbd2..db7c2b2179c7 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -50,8 +50,7 @@ struct block_device {
+ 	bool			bd_has_submit_bio;
+ 	dev_t			bd_dev;
+ 	atomic_t		bd_openers;
+-	spinlock_t		bd_size_lock; /* for bd_inode->i_size updates */
+-	struct inode *		bd_inode;	/* will die */
++	spinlock_t		bd_size_lock; /* for inode i_size updates */
+ 	void *			bd_claiming;
+ 	void *			bd_holder;
+ 	const struct blk_holder_ops *bd_holder_ops;
+@@ -85,6 +84,13 @@ struct block_device {
+ #define bdev_kobj(_bdev) \
+ 	(&((_bdev)->bd_device.kobj))
+ 
++static inline struct inode *bdev_inode(struct block_device *bdev)
++{
++	void *inode = bdev + 1;
++
++	return inode;
++}
++
+ /*
+  * Block error status values.  See block/blk-core:blk_errors for the details.
+  * Alpha cannot write a byte atomically, so we need to use 32-bit value.
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 51fa7ffdee83..ef625ebefc7d 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -211,7 +211,7 @@ struct gendisk {
+ 
+ static inline bool disk_live(struct gendisk *disk)
+ {
+-	return !inode_unhashed(disk->part0->bd_inode);
++	return !inode_unhashed(bdev_inode(disk->part0));
  }
+ 
  /**
-  * spi_nor_scan() - scan the SPI NOR
+@@ -1339,7 +1339,7 @@ static inline unsigned int blksize_bits(unsigned int size)
+ 
+ static inline unsigned int block_size(struct block_device *bdev)
+ {
+-	return 1 << bdev->bd_inode->i_blkbits;
++	return 1 << bdev_inode(bdev)->i_blkbits;
+ }
+ 
+ int kblockd_schedule_work(struct work_struct *work);
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 5f23ee599889..da9ee62e3aa9 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -341,7 +341,7 @@ static inline struct buffer_head *getblk_unmovable(struct block_device *bdev,
+ {
+ 	gfp_t gfp;
+ 
+-	gfp = mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
++	gfp = mapping_gfp_constraint(bdev_inode(bdev)->i_mapping, ~__GFP_FS);
+ 	gfp |= __GFP_NOFAIL;
+ 
+ 	return bdev_getblk(bdev, block, size, gfp);
+@@ -352,7 +352,7 @@ static inline struct buffer_head *__getblk(struct block_device *bdev,
+ {
+ 	gfp_t gfp;
+ 
+-	gfp = mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
++	gfp = mapping_gfp_constraint(bdev_inode(bdev)->i_mapping, ~__GFP_FS);
+ 	gfp |= __GFP_MOVABLE | __GFP_NOFAIL;
+ 
+ 	return bdev_getblk(bdev, block, size, gfp);
 -- 
-2.17.1
+2.39.2
 
 
 ______________________________________________________
