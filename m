@@ -4,85 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 298CEC636D3
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 12:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39ADAC61DF4
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 12:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9ppj19Soi1ISgDcLO/HVyZBY+KcO1BwywsJtrni9fGY=; b=gNxmOYMA4dus8O
-	kC/j1QRTQvKA2KeK4Vb/6DNzFwdnIYbISI6eujGpeY07tTlnOIOIfHioaU7vDbhJCrBj9aLDlTqmX
-	9oL+plbswCLzhl/ashNkP201iN25HLkqb22vHoBlHj+Y3dR5gsgj2fObyYQrMSg3hOgFLDS8gERkX
-	QbHmDEhZqGQxwyktng8TnDefBOiKrXob2+RV670euipgzGXvAfBFlSLA/wwDSQKAu+J8Vm+YsQXrS
-	rAXeEWSwq42ec4c486Q/IDwGGCJwKfOYi2wpuThvF4FIMwXDyv4cApIEzl3Tc5plyjyItijar9OwW
-	NuB5/3bx0EmEsdWfmFkw==;
+	List-Owner; bh=s2/DRDpKhcItVq+M6zq65dWpTQofxYWp5aLHhNHJoFc=; b=wE3IkxvoGRpV6t
+	gqDs6O7BUdqaPUG+ojyLBCwLBU7nprffU65/G6GFGIn0KWZSrs2rzLNd70vytySSWoXSUuCHyM6P4
+	GKwgkBzw2kVZpoRXxW6cY00JFbjjWurcY1mjg3MzLMmwAjYP709XsOB1mu1+8Y97rchH1qdpETOWJ
+	3AN06QNNDMpcdz/doH2r+xc6z5M5z5jZEQTrczVrYzdEhZDbKFgMYRDSu8SiSyT17dAZXAJAaVKi1
+	2HLUlJyPPgII7n3h40xrqZpmy3Yg9VFWa7aCDl8P4rySlbbzRDOV3DP+1AxwWSKARAdpysNPV5TDZ
+	1Y6zflXycugOs0/tTkTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6rt8-009EhU-0a;
-	Sat, 25 Nov 2023 12:35:58 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1r6rv7-009FGb-1r;
+	Sat, 25 Nov 2023 12:38:01 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6rt4-009Efd-0M
+	id 1r6rv5-009FFu-0b
 	for linux-mtd@lists.infradead.org;
-	Sat, 25 Nov 2023 12:35:55 +0000
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a00c200782dso401308666b.1
-        for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 04:35:53 -0800 (PST)
+	Sat, 25 Nov 2023 12:38:00 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a00f67f120aso376257766b.2
+        for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 04:37:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700915752; x=1701520552; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=txTWULb3qOMaVJaVM0srxekYyIAj97clVpD1wkCUdRs=;
-        b=NNwq/D5S9U6PBOFPZ34YUL54vdSEsS94UEydcse4cV9nGXZED253SN4foStsCM/PS8
-         KKqNfkj4zlXv2ChA0JnUYLgt+r1QmNlOBXpsx7O4MH8+sTQ0F0VaqYnXZqHOWHak0IVr
-         m0H2xWq36/TKbWmsSBB7EQRreEFuQopfEWgCA+xVwjl22SWW+GEesyRDC53CJKRWlB9n
-         B/+koF1SHC4uOfPDnX9dwzENnO3oTW+YlhKcDqbfuQGfribv7Oqr2c5FQsvB9z7NY1qX
-         FC4xFHCgUpbaxp7n6ltqxDEYXDwdiedUzhbjsB/IeX2j0BjS7QUR6Ixycq9mvPUhfEfw
-         iZIw==
+        d=linaro.org; s=google; t=1700915876; x=1701520676; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SMZGUL4Fmisevm6QbqQLOWCdm9wztiPfJx/gfl7xa4A=;
+        b=ndZ8Sd0CFhWYyrJYk7I7b9hYWpispxK4idbUxetkVdQdT84sS5D7Ana23KGJ/XRREv
+         biVEVorWP9BibYT8199Rchny8/Y92mceZTbrcY/pnYleQ+FheI7MIPmWCKGEQxSooAaF
+         VBvVNuoucajWQqhePjXuvXfQjTggBJSe+mkM1zdInqKuGBCCdxks1aNerygNVRHFIuRM
+         HoNHxQw0X7eiyoTg3HlqBFEnAusO9ukXnZzhPcE5tt6EJi1S3nJG24l0ICW3JxnB8rmH
+         dPsxArC/OcN+uVSrJi9/AqfoPBbY10BW2cAhRZRGMOYFP+ni/u7l5Ft5pMAg9pHsJAzy
+         dLvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700915752; x=1701520552;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=txTWULb3qOMaVJaVM0srxekYyIAj97clVpD1wkCUdRs=;
-        b=MDYmn7KfwFgY0VmkIC+3xcuKXVhb171jkKqi4ZhL5FAj0SoFOPFI4kBDdQ14YI5zRX
-         92AG3XVlLA+pZ+Q41J5400oc8WBXqV/EL9exJ0XtSZEQj3MyNTSz89XX9lT5vOCfxwYm
-         TSQfIbG87j4wWmee8Z4ImnEtVYs9W1IVw6o+MLS2I7Ug3Ii5OmvrX0q21gngmWp/rLkP
-         oWVV+lQmLwR3t5WS0kWHpmNzjkpocDX+nt2zb0OcK+aNlF7YglPBnpTc73+5XkQuJLcF
-         GgfRRkXmcamg8fh0meakslqVsn2eJm7Eu3z95JI//MUpP32E+5FsdwDY0lid/pfhQSRy
-         qVEw==
-X-Gm-Message-State: AOJu0YwrySUMb/dfUN22RXjO1iDgmbqlMoL7g/m4eKbovy8e7poHNnf9
-	vmiqxqScpbLwsg0AQTuPF7DHYQ==
-X-Google-Smtp-Source: AGHT+IHjGaQJjZMvJEp2O+E3VbE3I7/oZ2yVxz1hpulXF7qjWb1sTM6BVp4MjQScsWOTjZslEF2t5g==
-X-Received: by 2002:a17:906:d2:b0:9e2:af56:c380 with SMTP id 18-20020a17090600d200b009e2af56c380mr4056526eji.6.1700915752219;
-        Sat, 25 Nov 2023 04:35:52 -0800 (PST)
-Received: from 1.. ([79.115.63.75])
-        by smtp.gmail.com with ESMTPSA id lv23-20020a170906bc9700b009f28db2b702sm3390163ejb.209.2023.11.25.04.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 04:35:51 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: pratyush@kernel.org,
-	michael@walle.cc,
-	fastevam@denx.de
-Cc: linux-mtd@lists.infradead.org,
-	takahiro.kuwano@infineon.com,
-	bacem.daassi@infineon.com,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v3 4/5] mtd: spi-nor: remove NO_CHIP_ERASE flag
-Date: Sat, 25 Nov 2023 14:35:28 +0200
-Message-Id: <20231125123529.55686-5-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231125123529.55686-1-tudor.ambarus@linaro.org>
-References: <20231125123529.55686-1-tudor.ambarus@linaro.org>
+        d=1e100.net; s=20230601; t=1700915876; x=1701520676;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SMZGUL4Fmisevm6QbqQLOWCdm9wztiPfJx/gfl7xa4A=;
+        b=Cv8/brRZhTgNlHfw3EKpZnUbSXbtrfQLcYbMI6iL6nFG1SVim7e1ElwiBYv55FtBbG
+         pcRqECkOBzkHM9aSzuktvUfFxbEg8lQlSk+2rO3JnIbfS/sBm0jO70q53gEXeXrDdq+/
+         dCyvhJeGTG0AAgMk2z6wlmSRkW/6ag/EyfmiC47H43FKfIXBqAI4WIRyXyD2YJPymPEf
+         y4YCMXev84wBuYbTf5Cc1YmAxbSUCCsiEpKEn4KQRh59cNP1j6xSQlF9tIOYy+LRmfNv
+         dw0K7cPYUxZ2Usa6GIkIrq5aMCgjHRjXN7gPf3mS31qY9ONSZODZRmECqv32HPYXRhIS
+         fqoQ==
+X-Gm-Message-State: AOJu0YzKz/ycwWXQ2i4qPLzQpQJctjWX9eRciiY2GLg1QAcxJjhja73e
+	XHt0fuDMSTpE/GbPe3189ZXfDQ==
+X-Google-Smtp-Source: AGHT+IETP8hpOkLt+3JK4huabCOdXODMIVCAIfoxaZFwBxT1nO5GfSR1cy/c2Mm1k2C7Kx/zxkysBw==
+X-Received: by 2002:a17:907:b9d3:b0:9fd:9616:c48e with SMTP id xa19-20020a170907b9d300b009fd9616c48emr4508401ejc.27.1700915875959;
+        Sat, 25 Nov 2023 04:37:55 -0800 (PST)
+Received: from [192.168.0.174] ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id h18-20020a1709063b5200b009fdd2c6d042sm3468612ejf.148.2023.11.25.04.37.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Nov 2023 04:37:55 -0800 (PST)
+Message-ID: <d7ce98eb-c920-413f-bbe9-059077a9dda7@linaro.org>
+Date: Sat, 25 Nov 2023 14:37:51 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1896; i=tudor.ambarus@linaro.org; h=from:subject; bh=CCp3s597dd2N34pcvWqlxQ50V8OYh2tnaQCvSzFKDOc=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlYeoRHtkHuEy/gG4P7KkUgLRNHmTbUGbxJBrYu JpjuIMIeFqJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZWHqEQAKCRBLVU9HpY0U 6U8EB/4isL9ZPOAlY3kE68x1LosSOh7Ai80yt+wDjJVDB5heW0xOuYMbkEfIwfpIYuDCHR+GYnd XgA5CiKFrqLiHwBMwRJWKYVHby+AfwdlgJ1D8m+gCeW/8a1KAeBHGDYm3Wt85AoEV+yiFFvDEV+ b+PQX+WSWDVPCX9DrygJ+S5Wy5ddhid7ZoZXrrI84jOjOgC50BUQqEiCRoMLN3GI/L6WSvCeHgp 827qSsTa2taSWG8HocFv0Q/I257SwmQzNUJxGEUPTL8drbtu6if3yd49etgNoooeQiVn/hfS7zK iDgH8EbbhaZDpYO9+qKUoKhnFSDuV2LhYd3AD6zPqPXutGN6
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/5] mtd: spi-nor: introduce die erase
+To: pratyush@kernel.org, michael@walle.cc, Fabio Estevam <festevam@denx.de>
+Cc: linux-mtd@lists.infradead.org, takahiro.kuwano@infineon.com,
+ bacem.daassi@infineon.com, linux-kernel@vger.kernel.org
+References: <20231125123529.55686-1-tudor.ambarus@linaro.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <20231125123529.55686-1-tudor.ambarus@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231125_043554_151534_B9311216 
-X-CRM114-Status: GOOD (  11.35  )
+X-CRM114-CacheID: sfid-20231125_043759_233567_AE9EAA3A 
+X-CRM114-Status: UNSURE (   3.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,58 +94,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There's no flash using it and we'd like to rely instead on SFDP data,
-thus remove it.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/core.c | 3 ---
- drivers/mtd/spi-nor/core.h | 8 +++-----
- 2 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 52e5b569ddfd..503fed90c2fa 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2888,9 +2888,6 @@ static void spi_nor_init_flags(struct spi_nor *nor)
- 			nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
- 	}
- 
--	if (flags & NO_CHIP_ERASE)
--		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
--
- 	if (flags & SPI_NOR_RWW && nor->params->n_banks > 1 &&
- 	    !nor->controller_ops)
- 		nor->flags |= SNOR_F_RWW;
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index b43ea2d49e74..29ed67725b18 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -489,7 +489,6 @@ struct spi_nor_id {
-  *                            Usually these will power-up in a write-protected
-  *                            state.
-  *   SPI_NOR_NO_ERASE:        no erase command needed.
-- *   NO_CHIP_ERASE:           chip does not support chip erase.
-  *   SPI_NOR_NO_FR:           can't do fastread.
-  *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
-  *   SPI_NOR_RWW:             flash supports reads while write.
-@@ -539,10 +538,9 @@ struct flash_info {
- #define SPI_NOR_BP3_SR_BIT6		BIT(4)
- #define SPI_NOR_SWP_IS_VOLATILE		BIT(5)
- #define SPI_NOR_NO_ERASE		BIT(6)
--#define NO_CHIP_ERASE			BIT(7)
--#define SPI_NOR_NO_FR			BIT(8)
--#define SPI_NOR_QUAD_PP			BIT(9)
--#define SPI_NOR_RWW			BIT(10)
-+#define SPI_NOR_NO_FR			BIT(7)
-+#define SPI_NOR_QUAD_PP			BIT(8)
-+#define SPI_NOR_RWW			BIT(9)
- 
- 	u8 no_sfdp_flags;
- #define SPI_NOR_SKIP_SFDP		BIT(0)
--- 
-2.34.1
-
+I made a typo on Fabio's email address. Now added correctly.
 
 ______________________________________________________
 Linux MTD discussion mailing list
