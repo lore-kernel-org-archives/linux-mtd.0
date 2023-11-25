@@ -4,131 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C0AAC61D9D
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 10:32:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5565BC61DF4
+	for <linux-mtd@archiver.kernel.org>; Sat, 25 Nov 2023 12:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eT6QB/+mvUVC/VsnAPXYIEMm/Jn74J+eF9abBf5EmLU=; b=maXUb/MfvSybf8
-	yTpkWx9UWjw9nZI5hlvzy3n+1cGPqmdouFcnL+T6Tasr9lCdmErkEA8TlOZKyXl6J04dpIlPZHAQR
-	AYet8Dg9fhNhkMjfQjaImrB0+egLWyZrGkkQ2mA/ongat6cuAOvsu3XsrTe3PSr6nd390nxhqHvKf
-	URZ+YJjiT12Z5y8njYsuOfNVPxPzBN7LElfIQTIC+/JfuS19s8hHKrS+VpFP85NLzCvdgRL3IfLZQ
-	UG1+gIcAtfZSsTfZQrKH1OdOO2epJPBbPn3tvhLRTKufUoSUITfT6a8z2Iu2av/56iHIrKxDWs2cY
-	V0f9qpoGSjKda6ACT7fA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=dfWHczSHZb2M5caU3vSFyENJ5UswpKRYfy5dM/Vj22M=; b=RYFh8juTMNY5SZ
+	Hlgz8IMWf7e03rXsp7GCyzlimN+g8O8HI9VNZo//4VHWo++O+DPI7/7DqJ3dx78Zz2XpI4632c00n
+	MEoay1gSLlSNGuV0ovFIQkLPfSpWBmklqK/KtNytdzEZ3k5QAaQUaIcmHXqmuHgnYP/JSoor3aZqI
+	jLMs0Dq5xUJAV6Q1biQLhTDfDuJhtwJF2kqatdPOAotVhpJUKGLca6sxRzD8xiEvHtQQfK9++uCap
+	zYXHzVnvl02kA2gWKHA/f5ice+qFrN/3FX/vgYCuZv8QofuC7kPisdmEGjbKUsC2mPSu3RmPxMDWJ
+	4Vs0vUF5giCZkxwyTZJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6px3-0091aX-2S;
-	Sat, 25 Nov 2023 10:31:53 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1r6rsx-009Edy-2q;
+	Sat, 25 Nov 2023 12:35:47 +0000
+Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6otJ-008vMR-03;
-	Sat, 25 Nov 2023 09:23:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=MQa9GPkrCGOp5ad8QlFuAGLTRq4s361ZkeiJ5fBIuRg=; b=kJlDJQydl4EyWBUqD9iT2LrB7D
-	GUr+wnv866x951wGSCGj5oQcfgSSPeFOXcXac0JFsmOFxowdCHTIAoh4yJj1f3GhELUn0VTz1FL7V
-	XwHheRT2A+hr3N0+Gj+udbgw5XExq/l3qX3blYQf8huPFhjf/2HuS6AQQW1nwSYH7kV7snSfasx6R
-	rpdBy2ajR1VDuHC5HqWDierlx2duMb9BeM42N9dXiJVm6FHKq5kinxKjdle3qZP+oW9xopdeCja0W
-	4HcWpOChVEliJ6eYui+f/3omBoOfRMplT7XhI/ev4rs8XIKm3tH4JtNgAsU+DYsdTQm4hzsXSFEyS
-	lKzXMK7g==;
-Received: from mail-dm6nam10on20630.outbound.protection.outlook.com ([2a01:111:f400:7e88::630] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r6ose-00EcFD-1j;
-	Sat, 25 Nov 2023 09:23:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bqz4dkzWJ14pHF61jCW8D3e0I8cZrJVqNr52rvD9EUIjT3HonW0wGa/ZZ0RKkjoXYrAvvWbwTA01+ceqReheYbgQP/5R3SybbOSzkdUHlP1FMG4nZPPpiEcs9pC5Ggi2ht7rV0mIkAM9AoBVSJzbKSzWGSgvRb9hukVEpPz76Jg1O3a4paBRR5edHaGOjBex8yfh7itRV2vRp97pXfyombtoiT5OKR4tUFHIlET1XCRJ1eV6vPJ/GOFieebV47GttxDTo47kFXCPUTdC1rtTEtt/g0ZEmYdRHfalWLcwnENw6wgJjRkc2s1D4+U09NY4440AaIT51VbR+yuElICHtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MQa9GPkrCGOp5ad8QlFuAGLTRq4s361ZkeiJ5fBIuRg=;
- b=N2v+Mi69ZQkedgx8ZK0MPtJkqdlMh1e9zUCh1hc+bcF1QP47ljckLe4nepPLZnIHkpApDPaqth9ezi9MmIUsYLpz7Bn/kxSVasv5nck1njlW2e5CsvLSH9bB4UqeSSNQLn474VxDQCYr0cXaYNXl/QLgeuBP71WNUUwPonRyCw4QeK5iKf9nW33hLABQmtfd2kXBGDRgU0TcbsLvvn9LlVxhMMBB83ee44YhfWU/yU5+yxEaQVPyao2Ci2Dnz6E6T+U9mSwOh7l8fCDt5isdGql5AYxuzMsl3kXJS81G/MoGqwD20nnOxbTnQ5gS8sxpju42Xf3P9Tl970YL2zWu5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MQa9GPkrCGOp5ad8QlFuAGLTRq4s361ZkeiJ5fBIuRg=;
- b=kNE4A3v6hjBnxhbxiCyOzlRtAGd16aLa9rnl0Ih0U9tifA/gzWgOk3zMfCTnHLSKlPS6LBlHIqZzYGz7DA0EuxvKUAFiLGylItp5KrXJnZhBeH4anbRgPBhizuz4ypm5BNH2mSHWbAUGWnZ0kZ61Z/0IbCKzUa0QvIdigzrdQJQ=
-Received: from DM6PR18CA0034.namprd18.prod.outlook.com (2603:10b6:5:15b::47)
- by IA1PR12MB7544.namprd12.prod.outlook.com (2603:10b6:208:42c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Sat, 25 Nov
- 2023 09:22:53 +0000
-Received: from DS1PEPF0001709B.namprd05.prod.outlook.com
- (2603:10b6:5:15b:cafe::50) by DM6PR18CA0034.outlook.office365.com
- (2603:10b6:5:15b::47) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20 via Frontend
- Transport; Sat, 25 Nov 2023 09:22:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF0001709B.mail.protection.outlook.com (10.167.18.105) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Sat, 25 Nov 2023 09:22:52 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
- 2023 03:22:50 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
- 2023 03:22:40 -0600
-Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34
- via Frontend Transport; Sat, 25 Nov 2023 03:22:33 -0600
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<sbinding@opensource.cirrus.com>, <lee@kernel.org>,
-	<james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
-	<rf@opensource.cirrus.com>, <perex@perex.cz>, <tiwai@suse.com>
-CC: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <michal.simek@amd.com>,
-	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-	<git@amd.com>, <amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v11 08/10] spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
-Date: Sat, 25 Nov 2023 14:51:35 +0530
-Message-ID: <20231125092137.2948-9-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+	id 1r6rsu-009EdE-3D
+	for linux-mtd@lists.infradead.org;
+	Sat, 25 Nov 2023 12:35:46 +0000
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c88750e7d1so33299291fa.3
+        for <linux-mtd@lists.infradead.org>; Sat, 25 Nov 2023 04:35:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700915740; x=1701520540; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IenxDwVtrvJhjRe1CZt0FogzHl3GObYK8Ov3yOrH4vM=;
+        b=iQTOiShb/rHaqD8XkHMpGuDDjo5fUWl447xDqKyvNH9+GwRAt2xujZS5XfVK4GIpsd
+         3VUZB8MlUPFOo2BkaNzi009chsfcttqLdeB2YiVaYRXNnWWPYlkn7mfm7zlOijq51/YN
+         qYfIogMUOZ5Ld31TZXF1C9jy6cch6XX81X8b3q7VwUBk64xFjU8wyPZaqzb2JQ7ALTPy
+         k6GHY9OBz4LA4zb1RH1/m8dqCThX8JjooFcSr8Ti5vMzv2WuBFHR8VnJ+EvJB3ZN94Y7
+         6trhnJ7ZnK71Ou6RXiQNQo2+T7xEnpp2OkDUvnpFC7rF/hpqJGyYUC5efGCLVJHKWjbb
+         tE8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700915740; x=1701520540;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IenxDwVtrvJhjRe1CZt0FogzHl3GObYK8Ov3yOrH4vM=;
+        b=hAmei2WY7FC4mkx/19XGUi0y3ctSsC7ibKHPX/Rc72J5lDyyyjx438QgsF7D1fpJo3
+         DdtCSS6HikKymbbo7BZGJ/iy5VY8LK9uv+D79T5SPjgjyAcEHN6SLIvkB63sx14+FvAj
+         DM9Qx276n8+8zsxMDYT5B3iyvwUSLNBmWtqQUdE8JGFDEa52r4kztcgyMpHD6sMOSjbL
+         67ol6eL/aPfurkrQLmXwun03YzTPpriuoYVkXezUJX0kFDsyXzMfRUTdtHt9uj6hzI+K
+         xgoeMjdwTkFJN1YMm2xlrUOon62W1hMoDRdIZVez6eCph8n88IygsY9Ym4gicPSovlC3
+         GdeQ==
+X-Gm-Message-State: AOJu0YxUktOo2MkZ+F44/Hp5ZThfTBFTaJGptmOg03zW8/ypzeghFqw/
+	9ZhzjkYPmP8BC/twLj+6EhLDtw==
+X-Google-Smtp-Source: AGHT+IHbDRK3mkmTMaNGNwc6n42l97rc56mrZFVJ2Zgg+VQJPnfN2soJxQEXezDgnPIOdB0rG9mDcg==
+X-Received: by 2002:a2e:994b:0:b0:2c8:7421:f0b4 with SMTP id r11-20020a2e994b000000b002c87421f0b4mr4334225ljj.27.1700915740482;
+        Sat, 25 Nov 2023 04:35:40 -0800 (PST)
+Received: from 1.. ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id lv23-20020a170906bc9700b009f28db2b702sm3390163ejb.209.2023.11.25.04.35.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 04:35:40 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: pratyush@kernel.org,
+	michael@walle.cc,
+	fastevam@denx.de
+Cc: linux-mtd@lists.infradead.org,
+	takahiro.kuwano@infineon.com,
+	bacem.daassi@infineon.com,
+	linux-kernel@vger.kernel.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v3 0/5] mtd: spi-nor: introduce die erase
+Date: Sat, 25 Nov 2023 14:35:24 +0200
+Message-Id: <20231125123529.55686-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0001709B:EE_|IA1PR12MB7544:EE_
-X-MS-Office365-Filtering-Correlation-Id: 55080efe-9a16-4670-e2da-08dbed9819d7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jaSXjDVcEPcid1X4J2jcBj26/+nJcgD9Ae615B1NmAl8viNyXBhUprOf8PR2RuHiGhb/rGZ1rPBxr0a6RTv4bMpuKWoF0h3FwTJM2Cb5bQ0CT5Qj4gr3KhtMi8nQd/n/dXAX8X3a50BnUAol7yFPKSZrPrlOCKlTwG/pPYSyf+fHWuq5wXNYqOwcnQ/R9mJNIv6rx5CYHbK5qUyAPBmRn5q1m0Q7BmXCqDeSH2aIzEuXn1gQMQv6IHq8sSf3WC6P5Y+RcwKyrYQShEG2S/SUx09Inzpu1OwDUJvU3EH4IGxnMUI6xVBsjj2JmOMYqvW1KUfA0BYLhDwq1p07qg0eqx/hmz6VAC3iARZi9iAJD6dyO8udSre5mfqGvj+uYbnkweaWet2ZDHDbr0PGEat9rUzjXQnAULQK5wyXmnNrLmrREHhdBCt7KYnV9w2JLus95S0ZitsApCYLNoIbQrQ1pBXyW4XD4giH/twKFHwu7Jtxz5LEns8bAi9WtarSSrIbx0UjaYPGjp+uJHRb8VN79kv65tUfzemw/X+zidDWBNcF8ppzWJ73eKpWmUqzGvGt1kjJ8MfIqgNmXypL0KKw25noE8x50DB5iRY6AtiTBActKt5NoMe4H4o5O6I/DmZd5thy0XVOr/n1zUpIpfOQ6xyOe29NV0Gw8XssLDnWSDHUuCNTVBMKg+CbTVeWHtt+c3NWWhHl53WpJmcMQBHQ5xxatLJduXCS0oiisWeXxxe+3jsiQ8y9zbwERLXbt1wHkqGICTvN69EmcljkAPBzy5hmLo/M9d/LujJgKOEsXMg=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(451199024)(1800799012)(82310400011)(186009)(64100799003)(46966006)(40470700004)(36840700001)(70206006)(54906003)(70586007)(83380400001)(8936002)(8676002)(81166007)(316002)(82740400003)(110136005)(4326008)(356005)(40480700001)(426003)(5660300002)(40460700003)(336012)(7416002)(2906002)(41300700001)(47076005)(2616005)(36860700001)(1076003)(921008)(26005)(478600001)(86362001)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2023 09:22:52.6666
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55080efe-9a16-4670-e2da-08dbed9819d7
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF0001709B.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7544
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1993; i=tudor.ambarus@linaro.org; h=from:subject; bh=ET4nej2fkYuJJH06/u65/dyHT3qeYqBPblhk2M6LCWI=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlYeoQsHuuLgw++eZrR2gX5lRXMpqhMPjGC7Axs 3i2O3dC7DyJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZWHqEAAKCRBLVU9HpY0U 6b10B/9kyec2DqmHLyLcwnNX34fGbimfAQ4jI5UXnDPE/nJg9rxb1rcFQn9OicZcLu+Ti+Ps4H7 kOVjCp9aN48lmDbFgysb71OH1VZb482V8LBOalMJ1wgWL8uI+o4xhd1iL6yF93QEIsEdc7KYyKD K+6A4x6DilnL2afQqE3vaW76C+gvgXrAHnBmV25bV65tVZ0a5u/6tUsDMKRpxUO+HypG3Y6rp2h JGXx/8mY8M+BDcJi3j280BIDLN9C40cUstjP7dhku1QqiP0FPRxjlPI3HMjgtdfl6B8zdfR68iR 6w2xhY7lh+UezCV69t0HbURKKmPmIIM8S/tiB0kSCFAJZlFH
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231125_092317_131096_8A5B0BBA 
-X-CRM114-Status: GOOD (  12.06  )
+X-CRM114-CacheID: sfid-20231125_043545_065244_2EF65D7B 
+X-CRM114-Status: GOOD (  13.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,57 +96,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-GQSPI supports two chip select CS0 & CS1. Update the driver to
-assert/de-assert the appropriate chip select as per the bits set in
-qspi->cs_index_mask.
+changes in v3:
+- fix code, thanks to Fabio's testing
+- found a n25q00 and tested on my side too
+- fixed micron's die erase support
 
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
----
- drivers/spi/spi-zynqmp-gqspi.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+Add support for die erase.
+JESD216 mentions die erase, but does not provide an opcode for it.
+Check BFPT dword 11, bits 30:24, "Chip Erase, Typical time", it says:
 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index 9a46b2478f4e..c5d12ddd4ab3 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -154,6 +154,9 @@
- #define GQSPI_FREQ_100MHZ	100000000
- #define GQSPI_FREQ_150MHZ	150000000
- 
-+#define GQSPI_SELECT_LOWER_CS  BIT(0)
-+#define GQSPI_SELECT_UPPER_CS  BIT(1)
-+
- #define SPI_AUTOSUSPEND_TIMEOUT		3000
- enum mode_type {GQSPI_MODE_IO, GQSPI_MODE_DMA};
- 
-@@ -465,15 +468,17 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 
- 	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
- 
-+	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_UPPER,
-+					 GQSPI_SELECT_FLASH_BUS_LOWER);
-+	} else if (qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_LOWER,
-+					 GQSPI_SELECT_FLASH_BUS_LOWER);
-+	}
-+	genfifoentry |= xqspi->genfifobus;
- 	if (!is_high) {
--		if (!spi_get_chipselect(qspi, 0)) {
--			xqspi->genfifobus = GQSPI_GENFIFO_BUS_LOWER;
--			xqspi->genfifocs = GQSPI_GENFIFO_CS_LOWER;
--		} else {
--			xqspi->genfifobus = GQSPI_GENFIFO_BUS_UPPER;
--			xqspi->genfifocs = GQSPI_GENFIFO_CS_UPPER;
--		}
--		genfifoentry |= xqspi->genfifobus;
- 		genfifoentry |= xqspi->genfifocs;
- 		genfifoentry |= GQSPI_GENFIFO_CS_SETUP;
- 	} else {
+"Typical time to erase one chip (die). User must poll device busy to
+determine if the operation has completed. For a device consisting of
+multiple dies, that are individually accessed, the time is for each die
+to which a chip erase command is applied."
+
+So when a flash consists of a single die, this is the erase time for the
+full chip (die) erase, and when it consists of multiple dies, it's the
+die erase time. Chip and die are the same thing.
+
+For what concerns the Micron flashes, unfortunately Micron does not
+provide a 4-byte opcode equivalent for the die erase. The SFDP 4BAIT
+table fails to consider the die erase too, the standard can be improved.
+Thus we're forced to enter in the 4 byte address mode in order to benefit
+of the die erase. This comes with some changes into the core.
+    
+Tested on n25q00. This flash defines the 4BAIT SFDP table, thus it will
+use the 4BAIT opcodes for reads, page programs or erases, with the
+exception that it will use the die erase command in the 4 byte address
+mode. 
+
+Fabio Estevam (1):
+  mtd: spi-nor: micron-st: Add support for mt25qu01g
+
+Tudor Ambarus (4):
+  mtd: spi-nor: add erase die (chip) capability
+  mtd: spi-nor: spansion: enable die erase for multi die flashes
+  mtd: spi-nor: micron-st: enable die erase for multi die flashes
+  mtd: spi-nor: remove NO_CHIP_ERASE flag
+
+ drivers/mtd/spi-nor/core.c      | 143 ++++++++++++++++++++------------
+ drivers/mtd/spi-nor/core.h      |  16 ++--
+ drivers/mtd/spi-nor/debugfs.c   |   2 +-
+ drivers/mtd/spi-nor/micron-st.c |  59 ++++++++++++-
+ drivers/mtd/spi-nor/spansion.c  |   4 +-
+ 5 files changed, 158 insertions(+), 66 deletions(-)
+
 -- 
-2.17.1
+2.34.1
 
 
 ______________________________________________________
