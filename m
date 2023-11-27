@@ -4,66 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1AEEC4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 20:26:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553B2C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 20:33:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=sNHR1IGxiVFiAYVd08BcOVkLaAeqqFlDE56ee4jbi14=; b=a03v2r3egmnXJH7lu3airF/K8p
-	5nLn3YoizcBd5khhrgkpuwOPkBhDGHDziEICbVyJwiiGfHllZzcb9oKJsevgXchWlSaOZiudz9zaC
-	rxqa/jQ1aABwPf5TtGqA9MSiSow8/aZmnIq/n1n1am0yj5SbSovzTdrJ7ms1cwnQz04Z84OT86TwM
-	TPZxasw0on64gRavxKIF/V5p+pW3zIJaEBRPSj6s7QDEbw8g5U8zuAUO1i88Wh0xxYtBNouP6b+PH
-	JRdciFW6m4j6ktMDbbeRusC1UYTZ+I+P1hZBEhLXoGO6/5RcL6QRSitMQWT4bmISo6JyOfRw+DK3O
-	PZ4JNTYA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fG9d6AuZ7DCvOSkjYG4IVr5GPBEOC0q8Im0FZg+DuMk=; b=w+EjvQkiongs66
+	5uA/nf7M2I6E6tQx9N5SXB0R5fk4RIva8B1iI7bS/SLpdZp+P3s79//40RU7LoSMAtAj/zwhwO+GA
+	Zr4RtFCTEGNO67sQYyTFrIDvbAyVI7TOsgKr11tTGauE7HN1ZI+ESN1fhnGIUguNPFe57mklsFJrX
+	wuRr2W3tymNBfX6MKVEx/l0CYG4I8frpN8CShbU0akMOkb/pPF+PpiahiAmJ78JxjNksPKS7Tor0B
+	i9wz3QexniEoc299dSssXgU5zsqSU8AH7hJkWhMaATvVwhbkeVU1d7RqAq03lfJUGzRAihRA0Jk57
+	TrVCbNf5O3HNi3fonCQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7iBF-003RJI-28;
-	Mon, 27 Nov 2023 20:26:09 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1r7iI0-003S0B-0S;
+	Mon, 27 Nov 2023 20:33:08 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7iBA-003RHV-2o
+	id 1r7iHv-003Rzb-1n
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Nov 2023 20:26:06 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 016D96413F60;
-	Mon, 27 Nov 2023 21:26:00 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id uLRVYHk-f5Lg; Mon, 27 Nov 2023 21:25:59 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 3013E6340E00;
-	Mon, 27 Nov 2023 21:25:59 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id K3yrBMph3TqV; Mon, 27 Nov 2023 21:25:59 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 0CF816413F60;
-	Mon, 27 Nov 2023 21:25:59 +0100 (CET)
-Date: Mon, 27 Nov 2023 21:25:58 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	John Crispin <john@phrozen.org>
-Message-ID: <771902199.32600.1701116758852.JavaMail.zimbra@nod.at>
-In-Reply-To: <9857609999c5b7196417474938a7a09892cd1612.1701104870.git.daniel@makrotopia.org>
-References: <9857609999c5b7196417474938a7a09892cd1612.1701104870.git.daniel@makrotopia.org>
-Subject: Re: [PATCH] ubi: don't decrease ubi->ref_count on detach error
+	Mon, 27 Nov 2023 20:33:06 +0000
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c8880fbb33so61445101fa.0
+        for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 12:33:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701117179; x=1701721979; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UNjtUZ0nhd8cS6RPbNC6joafgF/UnwDLboniFtb1u5w=;
+        b=b6ITfktA4OrfJZruJf8kXVoeimETKc6FmSbJyTT1XjHpJNgotnhkwRbOhmiK4W4eHR
+         2J1P0VOroY7siYYF/gTKJVaFabgcY9U4kugowwhkQrFT+M/6PpV1IBBVJNvweZAs8IRM
+         apPFlCZbuQ+cIRmM8CIM2WgRNks5hNb1WHC1/qWfPnNkKzK1UKUdtlXHc5vdSJxIJR0b
+         L1YdCN535tm1CzPCUJ8V9asuWZeKcHM9FSTMmAKNhnz57Fnzj94xGhFwG9HTUuxnpuZX
+         UpZob9MgGMb2D8O3dgbs8Rz49KRwe2zjVVBMvlKkhKOBj676n0tjDeB2dSA0MdSH7D0c
+         Ozhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701117179; x=1701721979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UNjtUZ0nhd8cS6RPbNC6joafgF/UnwDLboniFtb1u5w=;
+        b=sMx4bMP9zj3dLMDl5XbOgp+zs9wiJTd+zQklTRbX/CPv81QHIgxfl4xCbHZNKJuWZL
+         BGbsIZGGK3JbksO9ldCsRDwd1+ABaoPYLj/TFhfNA9SCWd0ZU+iQjQXjcsYUkpdrir+J
+         1sf2R/tRn04H+fajRC07gVtqarSntUuGFjFTBsHTVoO7SlwhuezKTnlfX3QOR/37fDmX
+         cty5qCGqJVXJqTXVbzuS1k9Nj7vLrsIVFKTd+b3JkfQVp+XLa/VgZR0AYLbpTXJYAb78
+         nn8itczzyhRTCXQ94ZlQ2pkNgTokQlorS3+XU74vVR9YD2gMKjV+U06eG78293lGOC2R
+         28LQ==
+X-Gm-Message-State: AOJu0Yx1R1Cl2GZSKyyqefxEH0gIy3MHNlKAzMUscCMUBy5OthFWLRG2
+	wRXviUSjTHG2St7G+LhQD8+U2rdfUZDRZcG/ogo=
+X-Google-Smtp-Source: AGHT+IGl0sfsaXhL6UdOe4j9cAwcv4q8XxFQkGna7sDn7f2zX5yHRWYRZAYqtBIYiOFq3uwg18M4GHiQIFIP+3yikec=
+X-Received: by 2002:a2e:bccd:0:b0:2c9:a9a7:78cc with SMTP id
+ z13-20020a2ebccd000000b002c9a9a778ccmr853592ljp.14.1701117179406; Mon, 27 Nov
+ 2023 12:32:59 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: don't decrease ubi->ref_count on detach error
-Thread-Index: chpmDIpsyDGT4mmuCnlwjJ5qLzrYdQ==
+References: <CAFLxGvxiy9ofrNkfGmu4TvZgdZhdTbZBiK4pDmL8=8kjcPWO2g@mail.gmail.com>
+ <ZWRTfaWFzgSfd9_Z@gardel-login>
+In-Reply-To: <ZWRTfaWFzgSfd9_Z@gardel-login>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 27 Nov 2023 21:32:47 +0100
+Message-ID: <CAFLxGvwJjhLEgDP73WepEbVmh9qXECaKrsarhp-hg3LMGVBn5Q@mail.gmail.com>
+Subject: Re: [systemd-devel] How to properly wait for udev?
+To: Lennart Poettering <lennart@poettering.net>
+Cc: systemd-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org, 
+	dxld@darkboxed.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231127_122605_230631_BDA927DB 
-X-CRM114-Status: GOOD (  16.50  )
+X-CRM114-CacheID: sfid-20231127_123305_259000_F20C843F 
+X-CRM114-Status: UNSURE (   6.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,42 +90,13 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkRhbmllbCBHb2xsZSIgPGRh
-bmllbEBtYWtyb3RvcGlhLm9yZz4KPiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJN
-aXF1ZWwgUmF5bmFsIiA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4sICJWaWduZXNoIFJhZ2hh
-dmVuZHJhIiA8dmlnbmVzaHJAdGkuY29tPiwKPiAiQXJ0ZW0gQml0eXV0c2tpeSIgPEFydGVtLkJp
-dHl1dHNraXlAbm9raWEuY29tPiwgImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
-YWQub3JnPiwgImxpbnV4LWtlcm5lbCIKPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4K
-PiBDQzogIkpvaG4gQ3Jpc3BpbiIgPGpvaG5AcGhyb3plbi5vcmc+Cj4gR2VzZW5kZXQ6IE1vbnRh
-ZywgMjcuIE5vdmVtYmVyIDIwMjMgMTg6MDk6MTQKPiBCZXRyZWZmOiBbUEFUQ0hdIHViaTogZG9u
-J3QgZGVjcmVhc2UgdWJpLT5yZWZfY291bnQgb24gZGV0YWNoIGVycm9yCgo+IElmIGF0dGVtcHRp
-bmcgdG8gZGV0YWNoIGEgVUJJIGRldmljZSB3aGlsZSBpdCBpcyBzdGlsbCBidXN5LCBkZXRhY2hp
-bmcKPiBpcyByZWZ1c2VkLiBIb3dldmVyLCB0aGUgcmVmZXJlbmNlIGNvdW50ZXIgaXMgc3RpbGwg
-YmVpbmcgZGVjcmVhc2VkCj4gZGVzcGl0ZSB0aGUgZXJyb3IuIFJld29yayBkZXRhY2ggZnVuY3Rp
-b24gdG8gb25seSBkZWNyZWFzZSB0aGUgcmVmY250Cj4gb25jZSBhbGwgY29uZGl0aW9ucyBmb3Ig
-ZGV0YWNobWVudCBhcmUgbWV0Lgo+IAo+IEZpeGVzOiBjZGZhNzg4YWNkMTMgKCJVQkk6IHByZXBh
-cmUgYXR0YWNoIGFuZCBkZXRhY2ggZnVuY3Rpb25zIikKPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwg
-R29sbGUgPGRhbmllbEBtYWtyb3RvcGlhLm9yZz4KCkdvb2QgY2F0Y2ghIERpZCB5b3UgZmluZCB0
-aGlzIGJ5IHJldmlldyBvciB3aGlsZSB0ZXN0aW5nPwoKPiAtLS0KPiBkcml2ZXJzL210ZC91Ymkv
-YnVpbGQuYyB8IDYgKysrLS0tCj4gMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBk
-ZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMgYi9k
-cml2ZXJzL210ZC91YmkvYnVpbGQuYwo+IGluZGV4IDdkNGZmMTE5M2RiNmYuLmY0Nzk4N2VlOWEz
-MWIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPiArKysgYi9kcml2ZXJz
-L210ZC91YmkvYnVpbGQuYwo+IEBAIC0xMDk5LDE2ICsxMDk5LDE2IEBAIGludCB1YmlfZGV0YWNo
-X210ZF9kZXYoaW50IHViaV9udW0sIGludCBhbnl3YXkpCj4gCj4gCXNwaW5fbG9jaygmdWJpX2Rl
-dmljZXNfbG9jayk7Cj4gCXB1dF9kZXZpY2UoJnViaS0+ZGV2KTsKPiAtCXViaS0+cmVmX2NvdW50
-IC09IDE7Cj4gLQlpZiAodWJpLT5yZWZfY291bnQpIHsKPiArCWlmICh1YmktPnJlZl9jb3VudCA+
-IDEpIHsKCklzIHRoZXJlIGEgc3BlY2lmaWMgcmVhc29uIHdoeSB5b3UgaGF2ZSBtb2RpZmllZCB0
-aGUgY2hlY2sgdG8gdGVzdCBvbmx5CmZvciByZWZfY291bnQgYmVpbmcgcG9zaXRpdmU/CklmIHJl
-Y19jb3VudHMgdHVybnMgbmVnYXRpdmUsIGR1ZSB0byBhIGJ1Zywgd2UgY291bGQgc3RpbGwgc3Rv
-cCBpdCBoZXJlLgoKPiAJCWlmICghYW55d2F5KSB7Cj4gCQkJc3Bpbl91bmxvY2soJnViaV9kZXZp
-Y2VzX2xvY2spOwo+IAkJCXJldHVybiAtRUJVU1k7Cj4gCQl9Cj4gCQkvKiBUaGlzIG1heSBvbmx5
-IGhhcHBlbiBpZiB0aGVyZSBpcyBhIGJ1ZyAqLwo+IAkJdWJpX2Vycih1YmksICIlcyByZWZlcmVu
-Y2UgY291bnQgJWQsIGRlc3Ryb3kgYW55d2F5IiwKPiAtCQkJdWJpLT51YmlfbmFtZSwgdWJpLT5y
-ZWZfY291bnQpOwo+ICsJCQl1YmktPnViaV9uYW1lLCB1YmktPnJlZl9jb3VudCAtIDEpOwo+IAl9
-Cj4gKwl1YmktPnJlZl9jb3VudCAtPSAxOwoKUGxlYXNlIGFkZCB0aGVyZSBhbiB1YmlfYXNlcnQo
-KSB3aGljaCB0ZXN0cyB3aGV0aGVyIHJlZl9jb3VudCBpcyByZWFsbHkgemVyby4KLi4uanVzdCB0
-byBiZSBtb3JlIGJ1bGxldCBwcm9vZi4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+T24gTW9uLCBOb3YgMjcsIDIwMjMgYXQgOToyOeKAr0FNIExlbm5hcnQgUG9ldHRlcmluZwo8bGVu
+bmFydEBwb2V0dGVyaW5nLm5ldD4gd3JvdGU6Cj4gSWYgdGhleSBjb25jZXB0dWFsbHkgc2hvdWxk
+IGJlIGNvbnNpZGVyZWQgYmxvY2sgZGV2aWNlIGVxdWl2YWxlbnRzLCB3ZQo+IG1pZ2h0IHdhbnQg
+dG8gZXh0ZW5kIHRoZSB1ZGV2IGxvZ2ljIHRvIHN1Y2ggVUJJIGRldmljZXMgdG9vLiAgUGF0Y2hl
+cwo+IHdlbGNvbWUuCgpXaHkgZG9lc24ndCB1ZGV2IGZsb2NrKCkgZXZlcnkgZGV2aWNlIGl0IGlz
+IHByb2Jpbmc/Ck9yIGFza2VkIGRpZmZlcmVudGx5LCB3aHkgaXMgdGhpcyBmZWF0dXJlIG9wdC1p
+biBpbnN0ZWFkIG9mIG9wdC1vdXQ/CgotLSAKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
