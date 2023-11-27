@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA7CEC46CA3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A818FC10DC2
 	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 06:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,30 +12,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oHYhlg+yDagf8QgaMw3M14NOqxZxVBVuBgubL4jECRA=; b=1SFwXj3FTfmapo
-	4ArxGHTIXc8l1JuI6ZACUeWLVKAup1cBxcyutaCEWOMnnDPhM3F57WvWemmyJ0OpEX7HwugDE80Hr
-	EXJAFx5wdl1nfUFhoh6fZcE/vf/WYcT2UBRBea8AbL9b9Xwx7Fi949AY/gyBdM4LmQu4I4nYh0n9o
-	FiL1s2nySx2AMHQjBXhbVbpk9a+QeDUPxIUwCUmdYh8mC54zryCh02tb4tgdAAHEIxsyAwRgRohQa
-	kCX0USOkwRM3aYP7v7RuHAdj3nHrTjqqtSo97WnJEQs5GU3KcYfIhrT/OIL4aQ5EjHUBvwfRup++G
-	O6+jCIdz49q+Usaog/Rg==;
+	List-Owner; bh=qA7rdeu9S4O0ZsskGHC5VfCdtzX9aVlpUfFaUyPFyJQ=; b=CAAFy0AlVVX7pZ
+	OeilpCZd9m8xGm8oUtDUVOSjKx7P2dKwr91CLYmfrBfuV3O+2BEJe/fe3fzi7/qRaekGAzHKTwFkF
+	7UXfFY3tSsUWsq6/RCgr2y54Ktgbupc6X89mPXHIw9gnwpPuoAKhuegkrTA4y5SGR5b3ZN6ErIfZg
+	2vM5CfryQbZpu42UAzPjupD3W5W6gP3BYdjR0/muRYjRk2M3jGALIKJjNfTUxjxtMSE2aLYdbAbeZ
+	3cKkjtS/77H3W2aRJLIdP2A5UBQOftlSnvjsThsp5jSg5pZo0ZH4dZJmxVVbre8D0ls0N4TKY/zSo
+	qZZQrV2QOgYyWVnePBQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7V0i-001Uw2-0e;
-	Mon, 27 Nov 2023 06:22:24 +0000
+	id 1r7V0g-001Ute-0L;
+	Mon, 27 Nov 2023 06:22:22 +0000
 Received: from dggsgout11.his.huawei.com ([45.249.212.51])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7V0Y-001UlU-25
+	id 1r7V0Y-001Ulh-25
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Nov 2023 06:22:18 +0000
+	Mon, 27 Nov 2023 06:22:17 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdwTv1Jv5z4f3k5Z
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdwTv2kyRz4f3mHW
 	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:21:55 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 024321A042F
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:21:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id C47001A0FE8
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:21:59 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2hB+NWRlrcU8CA--.57866S6;
-	Mon, 27 Nov 2023 14:21:57 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDX2hB+NWRlrcU8CA--.57866S7;
+	Mon, 27 Nov 2023 14:21:59 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: hch@infradead.org,
 	ming.lei@redhat.com,
@@ -93,19 +93,19 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH block/for-next v2 02/16] xen/blkback: use new helper to get inode from block_device
-Date: Mon, 27 Nov 2023 14:21:02 +0800
-Message-Id: <20231127062116.2355129-3-yukuai1@huaweicloud.com>
+Subject: [PATCH block/for-next v2 03/16] bcache: use new helper to get inode from block_device
+Date: Mon, 27 Nov 2023 14:21:03 +0800
+Message-Id: <20231127062116.2355129-4-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
 References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDX2hB+NWRlrcU8CA--.57866S6
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw17KF4DGrW3uF4UJr4DCFg_yoW3KFX_XF
-	18urW7Zrn3Crsaka45uFs3Z340kw18ur4F9a1Iva4Sq34UCFW0v392vFn5Gr47XFWUG3Z0
-	y3WxXFW7tr4xJjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: cCh0CgDX2hB+NWRlrcU8CA--.57866S7
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw1xZryrZw1UJr47Kw4kJFb_yoW3uFc_uF
+	4xZFy2g3yrKrn2vr45GwsavrWjy3WkuF4IqFW7tryavFy5Jr93Wry093W3Xr43WrsIkanx
+	CFyDGr45Aw109jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
 	0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
 	wVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
 	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
@@ -116,12 +116,12 @@ X-Coremail-Antispam: 1UD129KBjvdXoWrKw17KF4DGrW3uF4UJr4DCFg_yoW3KFX_XF
 	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2
 	Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
 	Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
-	1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHbyAU
+	1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5U
 	UUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231126_222215_231531_62605B35 
-X-CRM114-Status: UNSURE (   9.47  )
+X-CRM114-CacheID: sfid-20231126_222215_037858_88AE7E37 
+X-CRM114-Status: UNSURE (   8.87  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -146,22 +146,22 @@ Which is more efficiency, and also prepare to remove the field
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/block/xen-blkback/xenbus.c | 2 +-
+ drivers/md/bcache/super.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index e34219ea2b05..e11f8123d213 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -105,7 +105,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
- 		return;
- 	}
- 	invalidate_inode_pages2(
--			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
-+			bdev_inode(blkif->vbd.bdev_handle->bdev)->i_mapping);
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index bfe1685dbae5..3ab8bae049ee 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -171,7 +171,7 @@ static const char *read_super(struct cache_sb *sb, struct block_device *bdev,
+ 	struct page *page;
+ 	unsigned int i;
  
- 	for (i = 0; i < blkif->nr_rings; i++) {
- 		ring = &blkif->rings[i];
+-	page = read_cache_page_gfp(bdev->bd_inode->i_mapping,
++	page = read_cache_page_gfp(bdev_inode(bdev)->i_mapping,
+ 				   SB_OFFSET >> PAGE_SHIFT, GFP_KERNEL);
+ 	if (IS_ERR(page))
+ 		return "IO error";
 -- 
 2.39.2
 
