@@ -4,85 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB8BC07D5A
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 10:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C547FC4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 11:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S6+e0rbkYuw8Oc4jBlvI8JyT0JmejcH00x09gc1mLrk=; b=MFwzt0xmD4N9Ut
-	bQ41fa5xigpZjfh/wHC8ygr5UoU8uCuKGcld99LZ66La2M9U11kNptQz2MJLQrusOwYGopeqerwmO
-	4aNOjzCgcsGT+EP3bQ8ZkoA7tmrTjXlttHC/U+JlqIvGWqbjpSwn4Wc6Y22Ia2eQEULAVu6DnuVaT
-	N9KksSuwdEGMxI9zxRTcDc0ToMHJrYtcH/pxZ1SqqFRHt/viuSj8EiZHMDHtVa5RCz4oidwWR1mkA
-	o2gta667mXzAuuuOKz3wASxOrFKAcNAI7rnSrZprW06WpV86bCrhHKM8yXRdvOGLc0bR1kNEJttyx
-	eb38ZZz3ZsALuO5S/1nw==;
+	List-Owner; bh=YdK4YW8ujZnYLb1rGBYwXs5jk6RQm98CsuUB+mMQy6A=; b=luqik68ILwjdzs
+	RwvyfmFk0f5s/xVTGtZCotGh7So40Nj0kRhYRVU3wLGAcx5azYtxz3URZjY1Q8sa9OjWsE8ruXqbC
+	JPeaOlG0s0S/rNar408edtK8Ca0oXCA9luHTdUp7kYJsmjjgRq6cJvcSxJsgiUcfsV3bDtaCPNTzz
+	7SfIV1vqv8nt/Lt5LqDW4Nqk2ag2Y4thaK2td8i0XTqlmgC44B7v4vwNe0uKUgg+vP3vJOOW021b3
+	ORWTnxS1FcrAZVMfkwZYi9cvq7IW4Igsox+ipXhP+c9KOogsBLglv2Chkin4WW+W+AeD6qDDydzyJ
+	WwAHiq5wr3C9yL/9fx2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7YXF-00228N-2M;
-	Mon, 27 Nov 2023 10:08:13 +0000
-Received: from mail-oi1-x234.google.com ([2607:f8b0:4864:20::234])
+	id 1r7a7i-002Kxp-16;
+	Mon, 27 Nov 2023 11:49:58 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7YXC-002277-3B
+	id 1r7a7f-002Ksx-0Z
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Nov 2023 10:08:12 +0000
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b837d974ecso2498625b6e.2
-        for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 02:08:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701079688; x=1701684488; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vAliyeR2O2MXLT9YmjXFeOCnSHaJBvWvut6DOEGh/OU=;
-        b=X+wVEoGGR4S8DN7h05zIrRtvGUqO7o9CoOiTEZvVlzDPafJQb6e8G1NOsGakmQw0wH
-         7HkzTkRnETPTtv+ogLClB0KL4oOD8Fh4GBXM+dqnxBzbW5ofaHXbNt18Q3myXOcPDFV3
-         iP4UCfg+aL5MBp6Igse3HRuBpcz5QaEtdVbsh1M3hfiad+qcbpkis1KR4ln4ydQqJXBO
-         uN5lEemMCf3Hk/NW7Mdjxqnv1QzUvY0uTILmsYWmGNXfmhP0DqT4F0aGilr/dcmED01W
-         WhGwnJS8mg4gZ/24u4BiWDZcJB44UR2OLMKPynjW730j+B4nt7G7ztby5q7Uu/kmTyjn
-         7doA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701079688; x=1701684488;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vAliyeR2O2MXLT9YmjXFeOCnSHaJBvWvut6DOEGh/OU=;
-        b=OTarGDkeVC4JlHaEv7WqnZGXtIb+ht3hbiyCV4aUVZOj4zT344fohn+qAf+94IqmBS
-         TCjMHejPAp3GYt86qgl44xKMakCU4qaUK8cV3zhntG9mN4DZ6LFE7aT8w3PyP6fps1pq
-         YSLT8fjgTAAdsDgGAsm6nkXogxF2bIBR/Y5Eb5yT/9MWQ00/782KBDVger3U7tDigVMd
-         ZiQQFgCqVWI2gYMulkdK3bYMj9o5tt8mehSVM0jNoo7ZAT1hwaif0lagMi607avNY9zb
-         1jlgrbveDF/H6HwKdzh4AwOoXRYlQCrJYuo70RebnTjKzHDiswtMZGZTFBKhrI4qHkmp
-         C7Ig==
-X-Gm-Message-State: AOJu0YzsEWHDjjNEUDj6SZ5XZfg/0MckIdL+VKw0fcCAYEkhm1dOGAVk
-	3V9bWbPzlFsy+imeIJfYQYY=
-X-Google-Smtp-Source: AGHT+IE7I/mnxAc7ivYFEtgszizN0Tp1cJ75wpwJC1mBCa3aojtGoiwtPbItvDk47K5pY1F8Pvi/Xw==
-X-Received: by 2002:a05:6870:9e8a:b0:1f9:67db:2d51 with SMTP id pu10-20020a0568709e8a00b001f967db2d51mr15439321oab.31.1701079688461;
-        Mon, 27 Nov 2023 02:08:08 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa780c6000000b006c5da6411b9sm6851630pfn.101.2023.11.27.02.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 02:08:08 -0800 (PST)
-Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id CEC3A80527;
-	Mon, 27 Nov 2023 18:07:50 +0800 (CST)
-From: Jaime Liao <jaimeliao.tw@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com
-Cc: leoyu@mxic.com.tw,
-	jaimeliao@mxic.com.tw
-Subject: [PATCH v1 1/2] mtd: spi-nor:sysfs: hide flash name if it is not set
-Date: Mon, 27 Nov 2023 18:07:53 +0800
-Message-Id: <20231127100756.41605-2-jaimeliao.tw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	Mon, 27 Nov 2023 11:49:56 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B4AC60008;
+	Mon, 27 Nov 2023 11:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1701085791;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RnIy8k9MAB2CLvTZIM8gcwE0aBRXJQMtbfwoaOjVW44=;
+	b=Mb474ih+wVRM18EiHXIYCjN4h188S9wSPREjBRvJ5PtC/4fORROwQ3ELrT3ulSXvDN4eTK
+	PYBn/tfU2Ez9kwZ26QtoPcuT3VLz7UPnR5FmhSx9oxKOL6d1WfSNmN+ZdGGx3SLWjJorHv
+	4U/6gcAd5G0tIuArS3FLLQyylYDfeSWqSL5Ej0I5cKi+5vtFHhVVjQgBkHQ+cf8R/b9Mnx
+	Rs6jXBTyt2UDENtRtQti8Tfq6P1H0X+7BZXF2gXN1fIHSov2G540YXHxC3DeiV/ubIZ78v
+	Jhfy+Kdr0SsHgJ3vMp1YO9Zw2V4fjovCxtU+fY5qdzgg23fCJjt4naKqpQ73PA==
+Date: Mon, 27 Nov 2023 12:49:48 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Jaime Liao <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, michael@walle.cc, leoyu@mxic.com.tw,
+ jaimeliao@mxic.com.tw
+Subject: Re: [PATCH v1 0/2] Hide flash name if it is not set
+Message-ID: <20231127124948.163224cc@xps-13>
 In-Reply-To: <20231127100756.41605-1-jaimeliao.tw@gmail.com>
 References: <20231127100756.41605-1-jaimeliao.tw@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231127_020811_040962_27137DFC 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20231127_034955_522476_1E7B8F55 
+X-CRM114-Status: UNSURE (   7.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,53 +70,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: JaimeLiao <jaimeliao@mxic.com.tw>
-
-The info->name may be optional when flash ID founded in
-ID table but didn't include flash name.
-
-Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
----
- Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor | 3 +++
- drivers/mtd/spi-nor/sysfs.c                             | 2 ++
- 2 files changed, 5 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-index c800621eff95..6d7be97bf7d1 100644
---- a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-+++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-@@ -25,6 +25,9 @@ KernelVersion:	5.14
- Contact:	linux-mtd@lists.infradead.org
- Description:	(RO) Part name of the SPI NOR flash.
- 
-+		The attribute is not present if the jedec_id founded in
-+		ID table but flash name didn't include in it.
-+
- 
- What:		/sys/bus/spi/devices/.../spi-nor/sfdp
- Date:		April 2021
-diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-index 2dfdc555a69f..96064e4babf0 100644
---- a/drivers/mtd/spi-nor/sysfs.c
-+++ b/drivers/mtd/spi-nor/sysfs.c
-@@ -78,6 +78,8 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
- 
- 	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
- 		return 0;
-+	if (attr == &dev_attr_partname.attr && !nor->info->name)
-+		return 0;
- 	if (attr == &dev_attr_jedec_id.attr && !nor->info->id && !nor->id)
- 		return 0;
- 
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSmFpbWUsCgpqYWltZWxpYW8udHdAZ21haWwuY29tIHdyb3RlIG9uIE1vbiwgMjcgTm92IDIw
+MjMgMTg6MDc6NTIgKzA4MDA6Cgo+IEZyb206IEphaW1lTGlhbyA8amFpbWVsaWFvQG14aWMuY29t
+LnR3Pgo+IAo+IGhpZGUgZmxhc2ggbmFtZSBpZiBpdCBpcyBub3Qgc2V0CgpJcyB0aGlzIHJlYWxs
+eSBuZWVkZWQ/IEknbSBmaW5lIGV4cG9zaW5nIGVuIGVtcHR5IChvciAiKG51bGwpIikgbmFtZS4g
+SQpndWVzcyBpdCBzaG93cyB0byBwZW9wbGUgdGhhdCB0aGUgbmFtZSBtaWdodCBiZSBtaXNzaW5n
+IHNvbWV3aGVyZSBhbmQKbWlnaHQgcHVzaCBwZW9wbGUgdG8gZml4IHRoZSBuYW1lIGluc3RlYWQu
+CgpXaGF0J3MgeW91ciB1c2UgY2FzZT8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
