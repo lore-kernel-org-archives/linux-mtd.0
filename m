@@ -4,38 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F323C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 06:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2893C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 06:22:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lC/ZfeTdjZEIEIVVTx31BXyq1tbrdc5Zekev3xHdMbk=; b=Ia2ZqENcfTCYS1
-	7QS1lhmua4KT/IpuUfk1ZLTZ+gMQ79ht50yOKH5CqPRLibK8MEEeTf40pWIWcymO0JsatlxkM3+u+
-	da0L9D4lmE7Y3mv45LGbVe7qc96r5swLRSBDkMl3gnOXCHhb6whCqtThSa9ZUYSoPPiXcy81oOTrb
-	BKZm0Q1FBET1Mbx+FhNb2XP5zxTgtyFEwfL7zt4p/viCs7JKLaTugbTyjZUABBWy+XrqH4U67tUd8
-	bl5j6IVXRjMSkQSDwx8hWis3CrKNj9mCz4zn3XhMiXUmMGGmXCZa70VEKqlWQeNnuQslFIQUTmJ+U
-	f8SR+XWRjEvB5eklwoxw==;
+	List-Owner; bh=GvAbbqfkAPpYSLpZK47ialvmLLdTjKalVw584hf5ewY=; b=bvrkZgdGdjm3Z5
+	cL5HTu5xQ50zn0Q+rikQHF50IV2xscGQH0QyaZ1jktBRFAOD38F0jFqIVgA0r2PXBL+lnrKaedYfs
+	h1OWEhooKl3CotAAtMOPJcvyE+ffqRYWtREWKaj5KL+1QAAEkk3F6lfWexE+Z21bLRC6WJk55fnTr
+	En352TIFlyj8BxmdQI9YiTKf/Y2VMPxx697s1AK2B7kEjh8JhBsP5ZAgBt51zCkQwpOLjezDumNnT
+	IWmXVPl7sNaaG/9AmGchaqV6Hdnf4Ofl/v5MxJ/vEIlVtZ4+WRLy0zN9fL5ZSwuq9kdacLjULT7Pf
+	KsNTCsAfH0rlhq/X2KcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7V0q-001V0M-0H;
-	Mon, 27 Nov 2023 06:22:32 +0000
-Received: from [45.249.212.56] (helo=dggsgout12.his.huawei.com)
+	id 1r7V11-001V8r-09;
+	Mon, 27 Nov 2023 06:22:43 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7V0Z-001Ulk-2d
+	id 1r7V0y-001V6j-2F
+	for linux-mtd@bombadil.infradead.org;
+	Mon, 27 Nov 2023 06:22:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=1f82mQHmaqtCXfSNR7hhQiolQi5tOSZaZIf05WITjK4=; b=pr5aHAqfYdd6TDFdpVOs6QhX5M
+	HCQ4D/uVcB4TUKqoMavLPClUJYtxsMoIZoCJZWd7DJHwlWQgrfCfjyg2OuN2TKDBSmn5r706gKps5
+	j6+ZYxjR/6UyPBSOeW/CxV+EpD3uiE5UrD1oWkblRPyRWdThUXGDJmfQtpmGUo1jep6wjQbqQxN0q
+	C8liyfwZl0Zj9L3w7brbKMxnvV5yFGiVxFlZDAc1EJYH9471ce9zJPsN/ILNzbOfsC0vvg/VxzR9G
+	uBnTsEWCSdO2oZV1mZCM26yvX/zvLKgBYR3R7yFqsHHl6wxrTA1a6AFetn/8TGmDitAWPEgcMFBu7
+	HZmA/95g==;
+Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1r7V0t-00Fy0n-1P
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Nov 2023 06:22:20 +0000
+	Mon, 27 Nov 2023 06:22:38 +0000
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SdwTt0ynLz4f3kFg
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:21:54 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdwV23wxpz4f3m6s
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:22:02 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F00911A052E
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:21:55 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id EDC771A095B
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2023 14:22:06 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDX2hB+NWRlrcU8CA--.57866S5;
-	Mon, 27 Nov 2023 14:21:55 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDX2hB+NWRlrcU8CA--.57866S11;
+	Mon, 27 Nov 2023 14:22:06 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: hch@infradead.org,
 	ming.lei@redhat.com,
@@ -93,35 +108,36 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH block/for-next v2 01/16] block: add a new helper to get inode from block_device
-Date: Mon, 27 Nov 2023 14:21:01 +0800
-Message-Id: <20231127062116.2355129-2-yukuai1@huaweicloud.com>
+Subject: [PATCH block/for-next v2 07/16] bcachefs: use new helper to get inode from block_device
+Date: Mon, 27 Nov 2023 14:21:07 +0800
+Message-Id: <20231127062116.2355129-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
 References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDX2hB+NWRlrcU8CA--.57866S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF1kur1UZFWfWw45tr1rtFb_yoW8Aw4rpF
-	nxGFy5GrWDWry2gF4vvw17Zry3K3W0k3y8JrZaqw4Y9ayUtr1IgF1ktr17Ary0vrZ3KF4j
-	gF1Y9rW8urWUC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-	IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
-	xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v2
-	6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrx
-	kI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v2
-	6r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOR6z
+X-CM-TRANSID: cCh0CgDX2hB+NWRlrcU8CA--.57866S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw1xZr17AF15GFy3Gw17KFg_yoWxtrb_XF
+	1xZF47Xw4rJFn2q3Z8JrsYvr4I9w4fWrW2vFZ8AF17G3WDGFZ5XFZ5Gr98XrsrGrs7Ga4x
+	X34fJrW7uryS9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbq8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_Gc
+	Wl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
+	kIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
+	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+	W8JwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUOBTY
 	UUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231126_222216_313338_78B759C6 
-X-CRM114-Status: GOOD (  10.50  )
+X-CRM114-CacheID: sfid-20231127_062236_415798_A0161C4C 
+X-CRM114-Status: UNSURE (   8.16  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,65 +156,27 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-block_devcie is allocated from bdev_alloc() by bdev_alloc_inode(), and
-currently block_device contains a pointer that point to the address of
-inode, while such inode is allocated together:
-
-bdev_alloc
- inode = new_inode()
-  // inode is &bdev_inode->vfs_inode
- bdev = I_BDEV(inode)
-  // bdev is &bdev_inode->bdev
- bdev->inode = inode
-
-Add a new helper to get address of inode from bdev by add operation
-instead of memory access, which is more efficiency.
+Which is more efficiency, and also prepare to remove the field
+'bd_inode' from block_device.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/bdev.c              |  5 -----
- include/linux/blk_types.h | 12 ++++++++++++
- 2 files changed, 12 insertions(+), 5 deletions(-)
+ fs/bcachefs/util.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/bdev.c b/block/bdev.c
-index e4cfb7adb645..7509389095b7 100644
---- a/block/bdev.c
-+++ b/block/bdev.c
-@@ -30,11 +30,6 @@
- #include "../fs/internal.h"
- #include "blk.h"
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index 2984b57b2958..fe7ccb3a3517 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -518,7 +518,7 @@ int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
  
--struct bdev_inode {
--	struct block_device bdev;
--	struct inode vfs_inode;
--};
--
- static inline struct bdev_inode *BDEV_I(struct inode *inode)
+ static inline sector_t bdev_sectors(struct block_device *bdev)
  {
- 	return container_of(inode, struct bdev_inode, vfs_inode);
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index d5c5e59ddbd2..06de8393dcd1 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -85,6 +85,18 @@ struct block_device {
- #define bdev_kobj(_bdev) \
- 	(&((_bdev)->bd_device.kobj))
+-	return bdev->bd_inode->i_size >> 9;
++	return bdev_inode(bdev)->i_size >> 9;
+ }
  
-+struct bdev_inode {
-+	struct block_device bdev;
-+	struct inode vfs_inode;
-+};
-+
-+static inline struct inode *bdev_inode(struct block_device *bdev)
-+{
-+	struct bdev_inode *bi = container_of(bdev, struct bdev_inode, bdev);
-+
-+	return &bi->vfs_inode;
-+}
-+
- /*
-  * Block error status values.  See block/blk-core:blk_errors for the details.
-  * Alpha cannot write a byte atomically, so we need to use 32-bit value.
+ #define closure_bio_submit(bio, cl)					\
 -- 
 2.39.2
 
