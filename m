@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97E10C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 14:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CC24C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Nov 2023 14:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=85PNvrCizD2QGelDjisdq7vjPbOjDX9CwshjZN86Eyk=; b=IQ2BeUouqPcWTC
-	Xb/TM6/OMMAVZuEmoLghFNH4f75rswoJh3eQkFzuZPYY5y2wgVY7yooHniqjJUnL1VQmUM5NO453y
-	NDra6SB2j3ly07c5x7OWNHnimwNC4EfCkAX2B6+H8mK2zev4dpoe4+bx37ZsquuJbLaYvJHb2J7pq
-	XlL5vV6PPEyrhojf8YLdL4rU6WNnNF3rojzCf9XP+WCfpttcWA5ZhgTRdCvuT8WFgBrQirsQHpbsp
-	vTyi2eZhZD1g2tDuSkUzAYcSCiBU8s9iA37ubpwTznziKYXm5/VfoqYt8xB5LzSiFJFRaUv9/zWoT
-	mb+ETYchCisgILrga77Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=11Dl4a8pR8q5Nxn0oj+JJxvit1HVF1U4DOHDJRPYGvs=; b=w6WUG862yMmKFcpq3GJPj0tg+X
+	ykGUC9/J9BoadX25FnM8d46rYOGgisHkYHFciFmyj4IKVL6gji/dyd3LFi5ZuhYb5hm07+cS7f5pZ
+	+UupzdZjR5LOdnPiee0YCgBIlPGk5DfxHAOt6pCH/wtH2CIO9SB1fm/Q9eLzmYOapM/WmJaV0rmNW
+	kef2zOUIyhfbyRXlJG8ITe9/1EfzgUH0GHQq12nnDDmGrtEcWQim7m5Ql7cU2V/Sp80k9wC3p0lBn
+	tRguEsgAIzW350Po2hZq8XpkwxWydgqplORjzknVRJcP5x/sOrToSk7VsUkHN0UqPn7Fy4oOqjmx+
+	r1i2J77g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7cts-002jSb-0t;
-	Mon, 27 Nov 2023 14:47:52 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1r7d2V-002kqa-2O;
+	Mon, 27 Nov 2023 14:56:47 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7ctp-002jRv-1q
+	id 1r7d2S-002kph-1v
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Nov 2023 14:47:51 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4566640003;
-	Mon, 27 Nov 2023 14:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701096460;
+	Mon, 27 Nov 2023 14:56:45 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id F2CDD132;
+	Mon, 27 Nov 2023 15:56:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1701097000;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=d4es/s7jXNWdh0W2dp3PUo0s5Znm1ftbj1uQMoP0s20=;
-	b=CPEviVh/HK4SP/E7Jt3gUpBXwyd2LXM461WCttyrfMy+rRC3m5zQMbtEm2Iv8Z4iW2atJl
-	gUv1YJ0CRPH4QozBojXKRGPy1AwNW2J76K1uPA6Cd26NJeTDiTh1bA35v+KX4tGgEQ/8cw
-	L5H8bEZYExaaH1EddqoJlKJg/nV4NORvETiBvXUCVGb9qQLyT6lgaaYKrai9dztjp/fnHy
-	ojBJi+r9StcwYHnb3FYtJ1BVaxyqQn2l5UZzK98YDtBdjDrRC32BjJWSYrnzxBa5omBxkm
-	aqbpLirCnNgVH3+//R1y1wiBG665aIN1opUVeerd18F37B5QmfLWEiBD90UeYw==
-Date: Mon, 27 Nov 2023 15:47:37 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Michael Walle <michael@walle.cc>
+	bh=Co1syxlnPGDLe31aWb9o7hRE9YDybiOO3zM/awvsmA0=;
+	b=qBqrnY/NbjvbOVDNdw1HM30rDJnTgjGEWr8YKehwH/m1RdjsjGtTMIRAgF+KyBjIi4zd3U
+	2mTiV0tva03xKy0oy4UIiOYyd1EFv1TOwIB8ePNrpYVCcpvw4e2DYoi74EoERt2xufOTWh
+	8YhOxQRRj1Avczg45ZrYdJG14XQmh72U6yGv2PkH42ovZWu8zFJg5lI/0kkI7LngdGvP6X
+	ayxsD2YIG9pqKgdDXgh2UCRy66ID5QEX/EVWXdaICFsxo65bQjIq8xX+OOWSnI9g6BPfjo
+	okCA4m1+UwJ0/JEIL59GwiA69N+9sjUW/R2v8Wv58xYA6ctJkv6Tw+HmjgcCpA==
+MIME-Version: 1.0
+Date: Mon, 27 Nov 2023 15:56:39 +0100
+From: Michael Walle <michael@walle.cc>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Jaime Liao <jaimeliao.tw@gmail.com>, linux-mtd@lists.infradead.org,
  tudor.ambarus@linaro.org, pratyush@kernel.org, leoyu@mxic.com.tw,
  jaimeliao@mxic.com.tw
-Subject: Re: [PATCH v1 2/2] mtd: spi-nor: hide flash name when the flash
- name does not exist
-Message-ID: <20231127154737.534db375@xps-13>
-In-Reply-To: <6d362dd698095b04dd895019d3af26d0@walle.cc>
+Subject: Re: [PATCH v1 2/2] mtd: spi-nor: hide flash name when the flash name
+ does not exist
+In-Reply-To: <20231127154737.534db375@xps-13>
 References: <20231127100756.41605-1-jaimeliao.tw@gmail.com>
-	<20231127100756.41605-3-jaimeliao.tw@gmail.com>
-	<6d362dd698095b04dd895019d3af26d0@walle.cc>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+ <20231127100756.41605-3-jaimeliao.tw@gmail.com>
+ <6d362dd698095b04dd895019d3af26d0@walle.cc> <20231127154737.534db375@xps-13>
+Message-ID: <848f3b2e83d363fd69adfc947b197011@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231127_064749_924260_18D5D6D9 
-X-CRM114-Status: GOOD (  16.79  )
+X-CRM114-CacheID: sfid-20231127_065644_791326_D9E357B0 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,30 +74,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwKCm1pY2hhZWxAd2FsbGUuY2Mgd3JvdGUgb24gTW9uLCAyNyBOb3YgMjAyMyAx
-MzoyMTozNCArMDEwMDoKCj4gSGksCj4gCj4gPiAobnVsbCkgd2lsbCBwcmludCB3aGVuIGZsYXNo
-IElEIGZvdW5kZWQgaW4gSUQgdGFibGUgYnV0Cj4gPiB0aGUgZmxhc2ggbmFtZSBkaWRuJ3QgaW5j
-bHVkZSBpbiBpdC4KPiA+IAo+ID4gTWFrZSBpbmZvLT5uYW1lIG9wdGlvbmFsIGluIHRoZSBwcmlu
-dCBmb3Igc2hvd2luZyBmbGFzaCBuYW1lCj4gPiBhbmQgZmxhc2ggc2l6ZS4KPiA+IAo+ID4gU2ln
-bmVkLW9mZi1ieTogSmFpbWVMaWFvIDxqYWltZWxpYW9AbXhpYy5jb20udHc+Cj4gPiAtLS0KPiA+
-ICBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyB8IDIgKy0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-MSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPiA+IGlu
-ZGV4IDFjNDQzZmU1NjhjZi4uNzM0MDViZWQyYTVhIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9t
-dGQvc3BpLW5vci9jb3JlLmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCj4g
-PiBAQCAtMzUxOCw3ICszNTE4LDcgQEAgaW50IHNwaV9ub3Jfc2NhbihzdHJ1Y3Qgc3BpX25vciAq
-bm9yLCBjb25zdCBjaGFyID4gKm5hbWUsCj4gPiAgCS8qIE5vIG10ZF9pbmZvIGZpZWxkcyBzaG91
-bGQgYmUgdXNlZCB1cCB0byB0aGlzIHBvaW50LiAqLwo+ID4gIAlzcGlfbm9yX3NldF9tdGRfaW5m
-byhub3IpOwo+ID4gCj4gPiAtCWRldl9pbmZvKGRldiwgIiVzICglbGxkIEtieXRlcylcbiIsIGlu
-Zm8tPm5hbWUsCj4gPiArCWRldl9pbmZvKGRldiwgIiVzICglbGxkIEtieXRlcylcbiIsIGluZm8t
-Pm5hbWUgPzogIiIsICAKPiAKPiBNYXliZSBwcmludCB0aGUgamVkZWMgaWQgaWYgdGhlIG5hbWUg
-aXMgZW1wdHkuCgpXaGF0IGFib3V0IGFsd2F5cyBwcmludGluZyB0aGUgamVkZWMgaWQgaWYgbmFt
-ZXMgYXJlbid0IHJlbGlhYmxlCmVub3VnaD8KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+>> > (null) will print when flash ID founded in ID table but
+>> > the flash name didn't include in it.
+>> >
+>> > Make info->name optional in the print for showing flash name
+>> > and flash size.
+>> >
+>> > Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+>> > ---
+>> >  drivers/mtd/spi-nor/core.c | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> > index 1c443fe568cf..73405bed2a5a 100644
+>> > --- a/drivers/mtd/spi-nor/core.c
+>> > +++ b/drivers/mtd/spi-nor/core.c
+>> > @@ -3518,7 +3518,7 @@ int spi_nor_scan(struct spi_nor *nor, const char > *name,
+>> >  	/* No mtd_info fields should be used up to this point. */
+>> >  	spi_nor_set_mtd_info(nor);
+>> >
+>> > -	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+>> > +	dev_info(dev, "%s (%lld Kbytes)\n", info->name ?: "",
+>> 
+>> Maybe print the jedec id if the name is empty.
+> 
+> What about always printing the jedec id if names aren't reliable
+> enough?
+
+I'm fine with that, too. Actually I've considered that myself, but
+maybe Tudor or Pratyush want to keep the output backwards compatible.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
