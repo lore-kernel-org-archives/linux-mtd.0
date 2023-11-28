@@ -4,75 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C016EC4167B
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Nov 2023 09:25:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D80BCC4167B
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Nov 2023 09:39:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ADQoyzXQVcJkLWXL7oKbEvNU2VjhZ/o2LdWDKf9jAws=; b=d/M56OKYZrXnps
-	AhLj6/ZL7SlHMrAfl7iz+ytXupV69CEJreSt7p7wwPg0pQ/xqorbJNP9yqvopyc/cFTX2sSzqBDh8
-	JGsKbmn3wtlKK6D3HiP/GulgML5RthMAq4k4OnRrqKKMJZr5SgebFikSZGwe2zg+JkO0uJAdO8nWc
-	aftJ17jxUOxTy3qCSpHHpHvYXlqI5KDz0Lp5tKDZLbgIiPuBdZ0sv4nV7k6Xin0IoRgjxz9n0kWCb
-	3ecrSi+EkhliiJC6UrwkOON11jO0FMihPqJ66fk8j+tn+e7TFPxtp/1WOwOkFJ8WfPG8ubcyN4Pxa
-	Mo/VrLUiDNW8K0IBdMQg==;
+	List-Owner; bh=iqTsrCOT9zbPtCdmpECLTa6/UZOV1RXXabhP079XxLk=; b=F4CTnyE/hjuke0
+	RaZ2IidwtFwg+MoplhuPgkY1+OKbgAiyOzKyJss0CIpBhI4gim6DEFkPhfDTl7wnfpPDHX3UaPAeH
+	i1TZwojR4fhp8Bdjhp8zYKiameT2ePr4ynzEKInxKwqiCbeI/c1kWoCEEmXrfbs5Y7e8yQ06VFZ8g
+	cQdEmy7fq63PulTtquVTBZKyhwv6BIxgVQaovtuQkNEr9zyju0xPsZJXSoehLGftQgcsG0Fd2a0l8
+	gRxUvmKdd4WFR/Tl5X2tLUuA8uQRZmQoyHamY9afNN377n+oPSGXPtBzBOix/1oRbFHCBqaDmgHS1
+	24zpCAA1NBOffv/kcuHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7uL2-004jZe-2j;
-	Tue, 28 Nov 2023 09:25:04 +0000
-Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
+	id 1r7uYq-004laC-2O;
+	Tue, 28 Nov 2023 09:39:20 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7uKz-004jYa-2n
+	id 1r7uYn-004lZp-25
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 Nov 2023 09:25:03 +0000
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5bd6ac9833fso3147375a12.0
-        for <linux-mtd@lists.infradead.org>; Tue, 28 Nov 2023 01:25:00 -0800 (PST)
+	Tue, 28 Nov 2023 09:39:18 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-332e3664665so3143575f8f.0
+        for <linux-mtd@lists.infradead.org>; Tue, 28 Nov 2023 01:39:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701163500; x=1701768300; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WIvMM7mjQbdSWD76tI3zt2v2Np/Oon7r71veftvgKKI=;
-        b=hU8eTVKtQJvvnSo5/enJ29q0Wk1wHIWcGY0goNBe9vKobomKgAJeMAzHTmd2/Wg+9j
-         JOy6RrRv/ZAuHTZWmmTUE9TG8qZaUjS1c8VULGw0XFuJCXmuRVXjU4tWEgAQSVvX07Y1
-         CM3/ryaaiHr5jbUma37OTtMv8Yih0eanAbp+5FVayGdsn2rDn4nheM8c9jnjCkfLNJ2c
-         uWQBXWN/+JVAbxsO6o+ct1EjJKwD2xnCUYiQ15YArF7tahoZGq/sopZjbeRZCz8X90MO
-         TerrJZLWYtnZiglEbo+G6D/P1MUesTwW7pAodrhD+E9RuzPL4CT9tyCE2FxxDRVv1xpE
-         um6g==
+        d=linaro.org; s=google; t=1701164355; x=1701769155; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F35KnoNBRL3FeAGOoToZvSSFOaDEqHRjPz6QpcJHB9w=;
+        b=t58iTMPQFQlOTHcKl7jVz3ZSMKR+h3SClBDmp56CMTEScr/mA9AqxFoMzjQcHdjbci
+         SkwZM5f4qFNKZ0U73HKrfh9DrX9EuuO25jl4r0hCiwI3yIVvOiPYgf0VUMO7EjH7jJdQ
+         6Uo/TprZWrq7pEPp/UyuRnoLCOmokClCMF2iHS0k/y1I5Gf/QNHuzr6mwPf5GYM9Ax7C
+         GFqaFbrQfNfxNOibRg3dsuPx8FAoUOHotRZXW/r9zHgYHc38C8TKK/GaOo0lQt6y3XtW
+         IqWLulONSdLLG6DLZwa6yT2XA7+WHVtMi3Vljj+ssU5AeF2Naupq9PB/1+mtQpD+PkvA
+         BQsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701163500; x=1701768300;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WIvMM7mjQbdSWD76tI3zt2v2Np/Oon7r71veftvgKKI=;
-        b=Ek1CSMsb1nMOMoKGeKE7WZmJ4HgZf58wxO8tT/53ct3J1Jy2L2/MybQtZ6adnuzU6m
-         V74RjJ4Ezm5ElxF8qNTlePBK76dChvjuz92oFRLnugrD5KMIw4PrrQxjDKo1brC5DisL
-         00AV6Z8WcphhVcBhHlqLTVv/Fcc2aydTZ3fCOq809v6I/nlKFQR6yUTW4XdOWtqNXot6
-         q1n/aMuGIH48Aoi0Lx9R9JV6rp2vxahDwdaoM3WKMKNb15pspMikrlnl2bxML3aQ6Gy4
-         2AIFXS9dsYCkEFC839Hn57BB1fWVqOo6qemCHVI0IAvFTSvZxtvaqTtKxyPrvM/rKbb4
-         EQ9w==
-X-Gm-Message-State: AOJu0Yxn7DcQArqqV5zWMxzAvQlR2Ikgj3ShK6vRXAeCEEChpKakOwOs
-	oRzFT2bIoF/rfC5p2u7vC/xnd458bSR1GaHlRsY=
-X-Google-Smtp-Source: AGHT+IEGq36rOUe7b5le7iMjD2HJ/EEhduxdASKLlAWaV1gEw0963o6fSX8ebv1LJqnqSJoaTn1uwuCDLGAFBCokBtI=
-X-Received: by 2002:a05:6a20:258b:b0:18c:64e0:447b with SMTP id
- k11-20020a056a20258b00b0018c64e0447bmr10422700pzd.28.1701163499911; Tue, 28
- Nov 2023 01:24:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701164355; x=1701769155;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F35KnoNBRL3FeAGOoToZvSSFOaDEqHRjPz6QpcJHB9w=;
+        b=Z/sBA4j1v66b0cPmzsLwXkSpPsD4xgmoIQ9zFD7IhPJkiCgf3AwJH1NkyhdJDeHTg3
+         DhzWeDrepeeBydKeTY2V6pcH1ES6BFEvxI2hnzRDXVhwqT3V+jtwUtwts0z83U7+oqhp
+         grrOtoiLGsDFJjPrgDrnHrW1C/UcznFnh3MuNrdpK0TqXMu77SLhE2mIWvv9F3jnrdsK
+         uMxXeMKacB/HYv/2mYrOVT3zcV0QqxU+O6Gi1CpppwHhDsVCOALcavT2cIBu4aB8Ol9T
+         kZCL3Qfae2Ow3oSt10zOB5ZX20h7sU6wGr+IOfx8IpHTuUYwwcYTViiGmyYn5heIagmI
+         dL5A==
+X-Gm-Message-State: AOJu0YyYAToHufC+c+4lXt2ZA6jMFyPUql16rdQK+yW+s4GdHzr0KafA
+	7Xmv/2tBQrNxQuu+TzJ4Koqe1g==
+X-Google-Smtp-Source: AGHT+IEXQ9CWLukCvGCcAvDbOjjedJ0095mcnpHjjNGA+wRHrHmOcRQ67nOPBQ3Vl8R6qi5y7tkusQ==
+X-Received: by 2002:a5d:4e0d:0:b0:332:eeb1:3e7b with SMTP id p13-20020a5d4e0d000000b00332eeb13e7bmr7582956wrt.7.1701164355522;
+        Tue, 28 Nov 2023 01:39:15 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id v6-20020a5d4a46000000b003330b55b941sm1536039wrs.77.2023.11.28.01.39.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 01:39:15 -0800 (PST)
+Message-ID: <d7bb4580-00b9-4206-bbfc-bd203c21a877@linaro.org>
+Date: Tue, 28 Nov 2023 09:39:13 +0000
 MIME-Version: 1.0
-References: <20231127165908.1734951-1-tudor.ambarus@linaro.org>
- <42c96d63d1ea4f7e8f16a3c8eb0a4cf1@walle.cc> <20231128100313.3c990f69@xps-13> <18ba4126dbd9e49846344b517ad2fbdd@walle.cc>
-In-Reply-To: <18ba4126dbd9e49846344b517ad2fbdd@walle.cc>
-From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Tue, 28 Nov 2023 17:24:42 +0800
-Message-ID: <CAAQoYR=ZAEVeoCwkRmky2CHVeKGX55JijM8Q6D5msz_5iW+jtw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] mtd: spi-nor: stop printing superfluous debug info
-To: Michael Walle <michael@walle.cc>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	jaimeliao@mxic.com.tw, pratyush@kernel.org, richard@nod.at, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+To: liao jaime <jaimeliao.tw@gmail.com>, Michael Walle <michael@walle.cc>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, jaimeliao@mxic.com.tw,
+ pratyush@kernel.org, richard@nod.at, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20231127165908.1734951-1-tudor.ambarus@linaro.org>
+ <42c96d63d1ea4f7e8f16a3c8eb0a4cf1@walle.cc> <20231128100313.3c990f69@xps-13>
+ <18ba4126dbd9e49846344b517ad2fbdd@walle.cc>
+ <CAAQoYR=ZAEVeoCwkRmky2CHVeKGX55JijM8Q6D5msz_5iW+jtw@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CAAQoYR=ZAEVeoCwkRmky2CHVeKGX55JijM8Q6D5msz_5iW+jtw@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231128_012501_908319_AEE0526C 
-X-CRM114-Status: GOOD (  30.58  )
+X-CRM114-CacheID: sfid-20231128_013917_705151_ABC3E94B 
+X-CRM114-Status: UNSURE (   9.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,88 +98,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi
 
+cut
 
->
-> Hi,
->
-> >> > The mtd data can be obtain with the mtd ioctls and the SPI NOR
-> >> > flash name can be determined interrogating the sysfs entries.
-> >> > Stop polluting the kernel log.
-> >> >
-> >> > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> >> >
-> >> > ---
-> >> >  drivers/mtd/spi-nor/core.c | 19 -------------------
-> >> >  1 file changed, 19 deletions(-)
-> >> >
-> >> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> >> > index 25a64c65717d..6de76fd009d1 100644
-> >> > --- a/drivers/mtd/spi-nor/core.c
-> >> > +++ b/drivers/mtd/spi-nor/core.c
-> >> > @@ -3517,25 +3517,6 @@ int spi_nor_scan(struct spi_nor *nor, const char > *name,
-> >> >    /* No mtd_info fields should be used up to this point. */
-> >> >    spi_nor_set_mtd_info(nor);
-> >> >
-> >> > -  dev_info(dev, "%s (%lld Kbytes)\n", info->name,
-> >> > -                  (long long)mtd->size >> 10);
-> >>
-> >> I'd lower this to dev_dbg() and print the jedec id. It might come in
-> >> handy for a quick glance during bootup if debug is enabled.
-> >
-> > Ack. Although, your boot time will almost be unaffected if you don't
-> > print the info messages to the console. What takes the most time is not
-> > writing to the kernel buffer, it's to display the lines on a serial
-> > console, and dev_info() are by default discarded, you need to select a
-> > lower log level manually, and if you do that it means you're not
-> > looking for quick boot times but rather more for additional
-> > information.
->
-> Also with recent (or planned, dunno the current state) printk won't wait
-> anymore for the slowest console. I really don't have a strong opinion,
-> either dev_info(jedec_id) or dev_dbg(jedec_id). Whatever Tudor prefers.
->
-> >> > -  dev_dbg(dev,
-> >> > -          "mtd .name = %s, .size = 0x%llx (%lldMiB), "
-> >> > -          ".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
-> >> > -          mtd->name, (long long)mtd->size, (long long)(mtd->size >> 20),
-> >> > -          mtd->erasesize, mtd->erasesize / 1024, mtd->numeraseregions);
-> >> > -
-> >> > -  if (mtd->numeraseregions)
-> >> > -          for (i = 0; i < mtd->numeraseregions; i++)
-> >> > -                  dev_dbg(dev,
-> >> > -                          "mtd.eraseregions[%d] = { .offset = 0x%llx, "
-> >> > -                          ".erasesize = 0x%.8x (%uKiB), "
-> >> > -                          ".numblocks = %d }\n",
-> >> > -                          i, (long long)mtd->eraseregions[i].offset,
-> >> > -                          mtd->eraseregions[i].erasesize,
-> >> > -                          mtd->eraseregions[i].erasesize / 1024,
-> >> > -                          mtd->eraseregions[i].numblocks);
-> >> >    return 0;
-> >>
-> >> Part of this is already available through the spi-nor debugfs,
-> >> although not
-> >> the actual mtd properties. These I think, should go into the mtdcore
-> >> itself if really needed. Either through dev_dbg() or debugfs.
-> >
-> > Maybe we don't need this at all, as long as one message remains about
-> > the JEDEC ID, but keep in mind that spi-nors are commonly storing the
-> > rootfs and if your spi-nor does not boot you don't have a userspace yet
-> > and all the debugfs entries are purely useless.
->
-> Good point.
->
-> Just curious, do you know any boards which has the rootfs writable on
-> the spi-nor flash?
-I am also interested.
+>>> Maybe we don't need this at all, as long as one message remains about
+>>> the JEDEC ID, but keep in mind that spi-nors are commonly storing the
+>>> rootfs and if your spi-nor does not boot you don't have a userspace yet
+>>> and all the debugfs entries are purely useless.
+>>
+>> Good point.
+>>
+>> Just curious, do you know any boards which has the rootfs writable on
+>> the spi-nor flash?
+> I am also interested.
+> 
 
->
-> -michael
->
+Having the rootfs stored on SPI NOR is a poor design decision as you're
+better of with a NAND, which is cheaper and faster on writes. I tried in
+the past a ubifs on top of a large (64 and 128MB) SPI NOR flash. But
+they were plug-able flashes, not something that is always tied to the
+board. Microchip's sama7g5ek comes with a 128MB macronix SPI NOR flash
+populated. But there are other vendors that provide large SPI NORs if
+really needed.
 
-Thanks
-Jaime
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
