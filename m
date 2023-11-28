@@ -4,57 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC4FC4167B
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Nov 2023 02:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF0E4C4167B
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Nov 2023 05:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YOcjtk20V41ZCkVATfVAtEC/jt0A63m10TH9lzsXrGQ=; b=WmH9Bpd9Us8qXaJ2M2Vhyfm5cm
-	Wmws4ELz4IWWEHNJQcMl9X0z+6E+3DM9s7Iwsq8PcSbV/5SoSugRpveoLeX6HIPzoIkLQLosPZhYA
-	qO3AJA2NXc2rf+QJm6/gNY+quksbTgDMVjZ577aIpPj1Cjro99yDxvxsX19OrE7rrGmTc74rZK9BG
-	zAR9eh/qpL5j/tr0f9Z2Zyr0JDaT/rqhWeqvA3FRM2Mi5JCTNduS9FUOcSAGusH0JsAMaKxl8GMLO
-	/lo4UiAR+WMvO5j/klBuzIORe7H7NCqeqTxGpBK2Xpg2DGyeTX2EKSamPptJ1PiIpuAnVBnYyYU9W
-	pr1zaIbA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=k128satZ3WbESk++/wXqJbjKjldM7ugLy5HfanndeN4=; b=N2kw1I83MYtnaK
+	gvi02WPI3x+ohGzcRA5JqUfpHQzx1QAPtPgxJ1kbInc6OeXrrX4LgccfbfdZmqyPsNrwiokayLgK0
+	eUGbef52+UgYsDnAC/+frNb2ouQr+wIFZcfPqzmqB5hPzgzOBgd5qKAo59Px5wcVK4tDw8y4irv88
+	LFNGNiy+8gsm1ETrBbe9L3Q+q9zPE1ttnflNEYN+ASO+e45919bo5oCBopoP8V2y7m5EEa5AVyl18
+	UeC9sE68a+zc6lKn62T/EFzkOjq+PlVW9Oy0aZWyc8+tqS2h5+T5fyGH4odt3C1wQlqvrXu645ary
+	d2MWRHIQBw8bNt9R9e3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7nhE-003s0V-2y;
-	Tue, 28 Nov 2023 02:19:32 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7nhB-003rz1-27
-	for linux-mtd@lists.infradead.org;
-	Tue, 28 Nov 2023 02:19:31 +0000
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.55])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SfQxp1QDPzMnTd;
-	Tue, 28 Nov 2023 10:14:22 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 28 Nov 2023 10:19:11 +0800
-Subject: Re: [PATCH v2] ubi: don't decrease ubi->ref_count on detach error
-To: Daniel Golle <daniel@makrotopia.org>, Richard Weinberger <richard@nod.at>,
-	Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <771902199.32600.1701116758852.JavaMail.zimbra@nod.at>
- <8d48839a1bf928886e86de8fdc09dc0676fc187f.1701132215.git.daniel@makrotopia.org>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f55da3cf-47ca-e942-0713-1133279eab46@huawei.com>
-Date: Tue, 28 Nov 2023 10:18:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1r7qxP-004BQB-1U;
+	Tue, 28 Nov 2023 05:48:27 +0000
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r7qxI-004BPZ-2N;
+	Tue, 28 Nov 2023 05:48:20 +0000
+Date: Mon, 27 Nov 2023 21:48:20 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Christoph Hellwig <hch@infradead.org>, ming.lei@redhat.com,
+	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+	konishi.ryusuke@gmail.com, dchinner@redhat.com,
+	linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
+	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+	p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
+ inode from block_device
+Message-ID: <ZWV/JBxrrGXzY0gr@infradead.org>
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+ <20231127062116.2355129-2-yukuai1@huaweicloud.com>
+ <ZWRDeQ4K8BiYnV+X@infradead.org>
+ <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
+ <ZWTErvnMf7HiO1Wj@infradead.org>
+ <bc64da80-e9bd-84cb-f173-876623303131@huaweicloud.com>
 MIME-Version: 1.0
-In-Reply-To: <8d48839a1bf928886e86de8fdc09dc0676fc187f.1701132215.git.daniel@makrotopia.org>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231127_181929_899973_02171772 
-X-CRM114-Status: GOOD (  16.29  )
+Content-Disposition: inline
+In-Reply-To: <bc64da80-e9bd-84cb-f173-876623303131@huaweicloud.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,37 +73,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyMy8xMS8yOCA4OjQ1LCBEYW5pZWwgR29sbGUg0LS1wDoKPiBJZiBhdHRlbXB0aW5nIHRv
-IGRldGFjaCBhIFVCSSBkZXZpY2Ugd2hpbGUgaXQgaXMgc3RpbGwgYnVzeSwgZGV0YWNoaW5nCj4g
-aXMgcmVmdXNlZC4gSG93ZXZlciwgdGhlIHJlZmVyZW5jZSBjb3VudGVyIGlzIHN0aWxsIGJlaW5n
-IGRlY3JlYXNlZAo+IGRlc3BpdGUgdGhlIGVycm9yLiBSZXdvcmsgZGV0YWNoIGZ1bmN0aW9uIHRv
-IG9ubHkgZGVjcmVhc2UgdGhlIHJlZmVyZW5jZQo+IGNvdW50ZXIgb25jZSBhbGwgY29uZGl0aW9u
-cyBmb3IgZGV0YWNobWVudCBhcmUgbWV0Lgo+Cj4gRml4ZXM6IGNkZmE3ODhhY2QxMyAoIlVCSTog
-cHJlcGFyZSBhdHRhY2ggYW5kIGRldGFjaCBmdW5jdGlvbnMiKQo+IFNpZ25lZC1vZmYtYnk6IERh
-bmllbCBHb2xsZSA8ZGFuaWVsQG1ha3JvdG9waWEub3JnPgo+IC0tLQo+IHYyOiBhbHNvIGNhdGNo
-IG5lZ2F0aXZlIHJlZl9jb3VudCBhbmQgYWRkIHViaV9hc3NlcnQgYXMgc3VnZ2VzdGVkCj4KPiAg
-IGRyaXZlcnMvbXRkL3ViaS9idWlsZC5jIHwgNyArKysrLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwg
-NCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVu
-ZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cgo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L3ViaS9idWlsZC5jIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPiBpbmRleCA3ZDRmZjExOTNk
-YjZmLi4yMzE2ZjYwMTRjN2Y1IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5j
-Cj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPiBAQCAtMTA5OSwxNiArMTA5OSwxNyBA
-QCBpbnQgdWJpX2RldGFjaF9tdGRfZGV2KGludCB1YmlfbnVtLCBpbnQgYW55d2F5KQo+ICAgCj4g
-ICAJc3Bpbl9sb2NrKCZ1YmlfZGV2aWNlc19sb2NrKTsKPiAgIAlwdXRfZGV2aWNlKCZ1YmktPmRl
-dik7Cj4gLQl1YmktPnJlZl9jb3VudCAtPSAxOwo+IC0JaWYgKHViaS0+cmVmX2NvdW50KSB7Cj4g
-KwlpZiAodWJpLT5yZWZfY291bnQgIT0gMSkgewo+ICAgCQlpZiAoIWFueXdheSkgewo+ICAgCQkJ
-c3Bpbl91bmxvY2soJnViaV9kZXZpY2VzX2xvY2spOwo+ICAgCQkJcmV0dXJuIC1FQlVTWTsKPiAg
-IAkJfQo+ICAgCQkvKiBUaGlzIG1heSBvbmx5IGhhcHBlbiBpZiB0aGVyZSBpcyBhIGJ1ZyAqLwo+
-ICAgCQl1YmlfZXJyKHViaSwgIiVzIHJlZmVyZW5jZSBjb3VudCAlZCwgZGVzdHJveSBhbnl3YXki
-LAo+IC0JCQl1YmktPnViaV9uYW1lLCB1YmktPnJlZl9jb3VudCk7Cj4gKwkJCXViaS0+dWJpX25h
-bWUsIHViaS0+cmVmX2NvdW50IC0gMSk7Cj4gICAJfQo+ICsJdWJpLT5yZWZfY291bnQgLT0gMTsK
-PiArCXViaV9hc3NlcnQodWJpLT5yZWZfY291bnQgPT0gMCk7Cj4gICAJdWJpX2RldmljZXNbdWJp
-X251bV0gPSBOVUxMOwo+ICAgCXNwaW5fdW5sb2NrKCZ1YmlfZGV2aWNlc19sb2NrKTsKPiAgIAoK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, Nov 28, 2023 at 09:35:56AM +0800, Yu Kuai wrote:
+> Thanks for the advice! In case I'm understanding correctly, do you mean
+> that all other fs/drivers that is using pages versions can safely switch
+> to folio versions now?
+
+If you never allocate a high-order folio pages are identical to folios.
+So yes, we can do folio based interfaces only, and also use that as
+an opportunity to convert over the callers.
+
+> By the way, my orginal idea was trying to add a new field 'bd_flags'
+> in block_devcie, and then add a new bit so that bio_check_ro() will
+> only warn once for each partition. Now that this patchset will be quite
+> complex, I'll add a new bool field 'bd_ro_warned' to fix the above
+> problem first, and then add 'bd_flags' once this patchset is done.
+
+Yes, please do a minimal version if you can find space where the
+rmw cycles don't cause damage to neighbouring fields.  Or just leave
+the current set of warnings in if it's too hard.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
