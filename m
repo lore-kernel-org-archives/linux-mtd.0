@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A15CC4167B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1BC6C07E97
 	for <linux-mtd@archiver.kernel.org>; Wed, 29 Nov 2023 06:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oFvFf1W2WtgNYhinQLAOkG0a6gjGnr7mnyA9y73pcOY=; b=lakQS3XjcJOKsH
-	kavthqdptLwdeK/CseKxGEZvINc6+lhabioqnClbFqWatyBMNZYy5A5W4EI6MGunyVEcP4paXqGFT
-	adYr9twbtctLS1MPv9amAF7NnrezoAFJ9ShOniUwvQ/zzA3hvtaPiOKUwYQD3GjEU7Vcz8bOKPYbw
-	fFO0ZbTU3iqvUCIcZpFZyFHMxrgao23pKd8L/32hcwQJv6SitlED9ZU+4r5iN8dzrbFH0pHvAqC93
-	a1qY8g8SCKjq917HRCw6VmARVBnjjtO2WqFb9lAHqJN1bJd5jbBACv9VsfnSu4WS5Jf4J6lemtQ6h
-	WLhNxBS4HySD1bV2NMzw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1YfGJ8CYNxPAGSg83qQE0yOB9bE1l0fk3cRBne4CMlE=; b=WAZxgWSy1LIjUf
+	JHneDzWUwdwnDfh/gxl685rCdGELTfo0Fgn825LZ3VEIw2W+dPFZvPHzx7vlfehjASsHynBELKjwL
+	SqLvdF9dmrdfF0EVhTQV7cBcaOv5oKRPMHBtv7bs1gApFSh03NR5cgbbSFDusOFSWNTlqDAgB2SwY
+	lQyfJC/Mw3fHTY6ZxU94RPbnPeDo2ilh+EMol/GDgDmZh4Wz8AWj81Vz4vxv/WqdP1vgUF65Ad4iF
+	kjYLzkJPORV9SqmcVyErc3W8s++Xot6uFl91pdusdxMejCz+2KMeyZkemiWVpTeQ5mst/AMLBKWus
+	MVu44D0p42zAxpxe7qCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8EI7-007GH7-0A;
-	Wed, 29 Nov 2023 06:43:23 +0000
-Received: from mail-oi1-x22f.google.com ([2607:f8b0:4864:20::22f])
+	id 1r8EI5-007GFm-1U;
+	Wed, 29 Nov 2023 06:43:21 +0000
+Received: from mail-yw1-x1135.google.com ([2607:f8b0:4864:20::1135])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8EI2-007GFM-0y
+	id 1r8EI0-007GEy-0o
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Nov 2023 06:43:19 +0000
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b84e328327so3524582b6e.2
-        for <linux-mtd@lists.infradead.org>; Tue, 28 Nov 2023 22:43:17 -0800 (PST)
+	Wed, 29 Nov 2023 06:43:18 +0000
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d21b9a5808so8503317b3.2
+        for <linux-mtd@lists.infradead.org>; Tue, 28 Nov 2023 22:43:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701240196; x=1701844996; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i6qfrVn0277bDMh3KhTRXLaLEzam5I22VMt+zO4G1cM=;
-        b=QeadAMzBQAHnq+GQAieyOx8gRpTcwZkTjyvdB/wRXD8Tt8CFVsj9+xGYWT3KpZISMg
-         Mcv+lCTs2lv5sEpbOn3danuL8REDiuwjj1Te2dVj/4/pDfOYw9tpOnFRr1KPEtd4cLW0
-         uwWhwlXUhU4oi6qFWXFQiSJer8XHw3W7vX6SoyX+1TtJXAYHZKVetwOB7W/7pEoSQAoj
-         SdHOW26b14LXImQoI1OwtzJvyRNvShYykmTELoJc5atVAF0KFV9phiRLifMbcZ8vRh8Q
-         3LLSc/ucFv3gsVtjklw9vzZAL34a8FH8qW/F/q4aL/rhiAwiDajmbyQlmj5odxa+zHnQ
-         Kjjg==
+        d=gmail.com; s=20230601; t=1701240194; x=1701844994; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=leTlicg8iH+9lzMnCMbG39z91iwwZaX//lWfRGoWh9k=;
+        b=BVjIOyKpSn7Dp3K283+kkyuqnLtzG+DHbXVretiwHdr7OeTaCi6aOBFXV71YB2SIlF
+         0c3yb/y3NLlQE8/KdpkVhiOZsdGCIyW/x+W/oMD3hL5kLXLT2l5LsCEo0DuLfuh1tfwy
+         P/CGJYpm3ifBd6A83G5f+ygeQWbQz09yPMElAUM6AKr2vHcp1VOU+l0prVtOgswbtYuT
+         oNyboEfbWYyJCPL9fi63ndGq8FJCP0x9tYUoz/oz2i8IxXCRivu4+HnUKIfmVSNWZV3P
+         ISCfYBG7GXjRcU6EeyhWFjB7Ofz0IqU/djIzH6Rzwbf4wiPE1aL6n+6TYFLQWe5lD/5w
+         h/Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701240196; x=1701844996;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:sender:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i6qfrVn0277bDMh3KhTRXLaLEzam5I22VMt+zO4G1cM=;
-        b=rVps+yDZnLr21yATC/9ZOVxEObX65LgyiCoYPPny8jy1zIK6gw8u/3gplhFFl6CFSl
-         qYgj266GBhbijDXY0J3UJfCkxa1RHmCV1y3qAKazrwpWeO9ev6JEgB/Ze0H1nwRD71Lk
-         +hsTXgiWfxmmr8BDLnFLB1FpqmeylFC1LG1xOmJvWFdK1xeFdtc0dciYJWuO+6T9FB6G
-         Za9UYmDT8GzA4vRaowS+PUjcTfG0i5jfpf7bWUsTP5nnMMAWPyxk6NQLXoaUISJAGVsH
-         ViDxbKVaIE0Z8SqbaSWOo3tCwXVu6FXEn0XyHgHpNXFByFw1vJaOpQywqaBFxpyriH0k
-         8v0g==
-X-Gm-Message-State: AOJu0YwIHrQRhUkiDb+euus/QkHKKyLOYAV5CNSi3r7SIyH0MuN++XnM
-	Jv2y9g8+XtTGQaS4IMQbof4=
-X-Google-Smtp-Source: AGHT+IEaYdguNW0MvrtGlevAV1RSYiqQFJXUoenv/xvsoqABBLuNLSdryk2roXcEnPubcmjtlLFCzg==
-X-Received: by 2002:a05:6808:23c9:b0:3b5:ae0d:b208 with SMTP id bq9-20020a05680823c900b003b5ae0db208mr25801175oib.6.1701240196530;
-        Tue, 28 Nov 2023 22:43:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701240194; x=1701844994;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=leTlicg8iH+9lzMnCMbG39z91iwwZaX//lWfRGoWh9k=;
+        b=SJARR1lCv0Yt/Ckfk1td1+qAqe2au0WV1mPBNEu51TDoZoXfelqDc90V8wbrVac6NM
+         adMx7v7EUoReuIqsSef3GEbDr/3dy1gwDUmbsSVB7UdQl23H8TIGu5etK6296Dktayni
+         tHtUAMDwnseXCvghfIaTdRcB1mv4w6QAtIT22e9N4e3cN3ucc/2kU3tVwRWpmVUoFHWb
+         4kr2miXB1o3AepJi72v8uIwUEGBwY/xK53QYzRdDVHuWRBCZHj0grY7q7prz3l+zP6wH
+         fpnrRoO6g2isciHzEp93iXZGWZvLQYDll8bNDhsTrXUyKwa7hPSq5mYkyCps85Upb02x
+         FUvw==
+X-Gm-Message-State: AOJu0YwYZE+2M4ecPaQeVtqkcv81GDEZosT7sv4E3kj4OZDgX2VltwT3
+	aXVFBfVzq/BkCwvoEfr0wBo=
+X-Google-Smtp-Source: AGHT+IHX4v4mdEo7sPnEoaB6cWCEFm+xofDAMLk3itbzEpK5Voo03kgeIY4Od0p0FCXbLJRjZ+QcTw==
+X-Received: by 2002:a81:b614:0:b0:5cd:f107:9703 with SMTP id u20-20020a81b614000000b005cdf1079703mr17310862ywh.18.1701240194035;
+        Tue, 28 Nov 2023 22:43:14 -0800 (PST)
 Received: from localhost (220-135-95-34.hinet-ip.hinet.net. [220.135.95.34])
-        by smtp.gmail.com with ESMTPSA id x23-20020aa793b7000000b006cb638ba1aasm9877362pff.49.2023.11.28.22.43.15
+        by smtp.gmail.com with ESMTPSA id by6-20020a056a02058600b005c216d903bdsm9158857pgb.89.2023.11.28.22.43.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 22:43:16 -0800 (PST)
+        Tue, 28 Nov 2023 22:43:13 -0800 (PST)
 From: AceLan Kao <acelan.kao@canonical.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -79,16 +78,14 @@ To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Chuanhong Guo <gch981213@gmail.com>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 2/2] mtd: spi-nor: Stop reporting warning message when soft reset is not suported
-Date: Wed, 29 Nov 2023 14:43:11 +0800
-Message-Id: <20231129064311.272422-2-acelan.kao@canonical.com>
+Subject: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP with -EOPNOTSUPP
+Date: Wed, 29 Nov 2023 14:43:10 +0800
+Message-Id: <20231129064311.272422-1-acelan.kao@canonical.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129064311.272422-1-acelan.kao@canonical.com>
-References: <20231129064311.272422-1-acelan.kao@canonical.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231128_224318_360966_EF7BB3E7 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20231128_224316_309012_F9B46761 
+X-CRM114-Status: GOOD (  27.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,38 +104,215 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 
-When the software reset command isn't supported, we now stop reporting
-the warning message to avoid unnecessary warnings and potential confusion.
+This commit updates the SPI subsystem, particularly affecting "SPI MEM"
+drivers and core parts, by replacing the -ENOTSUPP error code with
+-EOPNOTSUPP.
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-Reviewed-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Acked-by: Pratyush Yadav <pratyush@kernel.org>
+The key motivations for this change are as follows:
+1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
+might return ENOTSUPP. This update aims to unify the error reporting
+within the SPI subsystem for clarity and consistency.
+
+2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
+mainly being reserved for NFS-related errors. To align with kernel coding
+standards and recommendations, this change is being made.
+
+3. By using EOPNOTSUPP, we provide more specific context to the error,
+indicating that a particular operation is not supported. This helps
+differentiate from the more generic ENOTSUPP error, allowing drivers to
+better handle and respond to different error scenarios.
+
+Risks and Considerations:
+While this change is primarily intended as a code cleanup and error code
+unification, there is a minor risk of breaking user-space applications
+that rely on specific return codes for unsupported operations. However,
+this risk is considered low, as such use-cases are unlikely to be common
+or critical. Nevertheless, developers and users should be aware of this
+change, especially if they have scripts or tools that specifically handle
+SPI error codes.
+
+This commit does not introduce any functional changes to the SPI subsystem
+or the affected drivers.
+
 Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 
 ---
-v2. only lower the priority for the not supported failure
-v3. replace ENOTSUPP with EOPNOTSUPP and check the first command only
-v4. move the version information below the '---' line
-v5. remove dev_warn if soft reset operation is not supported
+v5. distinguish -EOPNOTSUPP from -ENOTSUPP
+v6. a. spi_nor_set_4byte_addr_mode() should check -EOPNOTSUPP, all
+       callbacks of set_4byte_addr_mode() will eventually return
+       -EOPNOTSUPP if the checking failed.
+    b. Update comment to describe the reason for the patch and the
+       affected parts.
+    c. Update the kernel-doc of exec_op() in struct spi_controller_mem_ops
+v7. added comment for the return code changes may affect userspace, and
+    the risk after this change
 ---
- drivers/mtd/spi-nor/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/spi/core.c | 2 +-
+ drivers/mtd/spi-nor/core.c  | 2 +-
+ drivers/spi/atmel-quadspi.c | 2 +-
+ drivers/spi/spi-ath79.c     | 2 +-
+ drivers/spi/spi-bcm-qspi.c  | 2 +-
+ drivers/spi/spi-mem.c       | 6 +++---
+ drivers/spi/spi-npcm-fiu.c  | 2 +-
+ drivers/spi/spi-ti-qspi.c   | 4 ++--
+ drivers/spi/spi-wpcm-fiu.c  | 2 +-
+ include/linux/spi/spi-mem.h | 2 ++
+ 10 files changed, 14 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 849ccfedbc72..e0b6715e5dfe 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -974,7 +974,7 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+ 		spinand->manufacturer = manufacturer;
+ 		return 0;
+ 	}
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int spinand_id_detect(struct spinand_device *spinand)
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 87cb2047df80..96a207751cf2 100644
+index 1c443fe568cf..87cb2047df80 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -3237,7 +3237,8 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
+@@ -3146,7 +3146,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 	int ret;
  
- 	ret = spi_mem_exec_op(nor->spimem, &op);
- 	if (ret) {
--		dev_warn(nor->dev, "Software reset failed: %d\n", ret);
-+		if (ret != -EOPNOTSUPP)
-+			dev_warn(nor->dev, "Software reset failed: %d\n", ret);
- 		return;
+ 	ret = params->set_4byte_addr_mode(nor, enable);
+-	if (ret && ret != -ENOTSUPP)
++	if (ret && ret != -EOPNOTSUPP)
+ 		return ret;
+ 
+ 	if (enable) {
+diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+index 3d1252566134..370c4d1572ed 100644
+--- a/drivers/spi/atmel-quadspi.c
++++ b/drivers/spi/atmel-quadspi.c
+@@ -272,7 +272,7 @@ static int atmel_qspi_find_mode(const struct spi_mem_op *op)
+ 		if (atmel_qspi_is_compatible(op, &atmel_qspi_modes[i]))
+ 			return i;
+ 
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static bool atmel_qspi_supports_op(struct spi_mem *mem,
+diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
+index c9f1d1e1dcf7..b7ada981464a 100644
+--- a/drivers/spi/spi-ath79.c
++++ b/drivers/spi/spi-ath79.c
+@@ -146,7 +146,7 @@ static int ath79_exec_mem_op(struct spi_mem *mem,
+ 	/* Only use for fast-read op. */
+ 	if (op->cmd.opcode != 0x0b || op->data.dir != SPI_MEM_DATA_IN ||
+ 	    op->addr.nbytes != 3 || op->dummy.nbytes != 1)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* disable GPIO mode */
+ 	ath79_spi_wr(sp, AR71XX_SPI_REG_FS, 0);
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index ef08fcac2f6d..d96222e6d7d2 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1199,7 +1199,7 @@ static int bcm_qspi_exec_mem_op(struct spi_mem *mem,
+ 
+ 	if (!op->data.nbytes || !op->addr.nbytes || op->addr.nbytes > 4 ||
+ 	    op->data.dir != SPI_MEM_DATA_IN)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	buf = op->data.buf.in;
+ 	addr = op->addr.val;
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index edd7430d4c05..2dc8ceb85374 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		return ret;
+ 
+ 	if (!spi_mem_internal_supports_op(mem, op))
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
+ 		ret = spi_mem_access_start(mem);
+@@ -339,7 +339,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		 * read path) and expect the core to use the regular SPI
+ 		 * interface in other cases.
+ 		 */
+-		if (!ret || ret != -ENOTSUPP)
++		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
+ 			return ret;
  	}
  
+@@ -559,7 +559,7 @@ spi_mem_dirmap_create(struct spi_mem *mem,
+ 	if (ret) {
+ 		desc->nodirmap = true;
+ 		if (!spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
+-			ret = -ENOTSUPP;
++			ret = -EOPNOTSUPP;
+ 		else
+ 			ret = 0;
+ 	}
+diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
+index 03db9f016a11..f3bb8bbc192f 100644
+--- a/drivers/spi/spi-npcm-fiu.c
++++ b/drivers/spi/spi-npcm-fiu.c
+@@ -556,7 +556,7 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		op->data.nbytes);
+ 
+ 	if (fiu->spix_mode || op->addr.nbytes > 4)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (fiu->clkrate != chip->clkrate) {
+ 		ret = clk_set_rate(fiu->clk, chip->clkrate);
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 4c81516b67db..0877dc5058a1 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -613,12 +613,12 @@ static int ti_qspi_exec_mem_op(struct spi_mem *mem,
+ 	/* Only optimize read path. */
+ 	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
+ 	    !op->addr.nbytes || op->addr.nbytes > 4)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* Address exceeds MMIO window size, fall back to regular mode. */
+ 	from = op->addr.val;
+ 	if (from + op->data.nbytes > qspi->mmap_size)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&qspi->list_lock);
+ 
+diff --git a/drivers/spi/spi-wpcm-fiu.c b/drivers/spi/spi-wpcm-fiu.c
+index 852ffe013d32..d76f7b5a9b97 100644
+--- a/drivers/spi/spi-wpcm-fiu.c
++++ b/drivers/spi/spi-wpcm-fiu.c
+@@ -361,7 +361,7 @@ static int wpcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 
+ 	wpcm_fiu_stall_host(fiu, false);
+ 
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int wpcm_fiu_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 6b0a7dc48a4b..f866d5c8ed32 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -233,6 +233,8 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+  *		    limitations)
+  * @supports_op: check if an operation is supported by the controller
+  * @exec_op: execute a SPI memory operation
++ *           not all driver provides supports_op(), so it can return -EOPNOTSUPP
++ *           if the op is not supported by the driver/controller
+  * @get_name: get a custom name for the SPI mem device from the controller.
+  *	      This might be needed if the controller driver has been ported
+  *	      to use the SPI mem layer and a custom name is used to keep
 -- 
 2.34.1
 
