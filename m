@@ -4,98 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A86C4167B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Nov 2023 17:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3A96C4167B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Nov 2023 21:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/6waiPRf19UvDwLyVqChHeicR7q7liDxPVM2D9q1GXM=; b=uYXmwsNEvfxktv
-	80/LZYcu2oe0AeQAyyctJWLsxH8C9XdE7LjzYjfpfVa4p1p85Uxld5GUUYX6uXxlR0XhUA739zuon
-	JzHcQGyZZVnsOLhI5QTawQE2HgdgwIJbmzlc5TjM5JdnmHnoqK3U8s3sskIoG3yf5DqrOXs6Y4k3/
-	tX7rNUf1llQDACp0+AP++B2j9l4DGcVRMiqjgecT5owdBsgGxZU1/e8mkt+rEFI646q4zh3nPsgd5
-	9V4FW+J0a7MaS5bqd7qlF11TMHSj2bIC6RatVtcHor75Yu9ijgIXI7aFu7lf/bqkfZBtqFkwrai7r
-	WvtbWdAlBQ5mcIkHygrw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=y+wpHtlDiyjVwEbPKrT4HXqtf1XOfHUUZvjhh8zXOHU=; b=yufPxk08U/QR/Ix1kGlxKnEQBq
+	8JqolDffhqaa6rbz3KHnH2uxFBzEaP/K6aqUWjD9GgbiNjFPiCTVD5Qgmig5SpHOl8BKSIohXsce/
+	ptDqY5DHZLeg9hH9S3IlQgK51o73p+M5t835l5MMMXsye0jAlLZVuP3JFhQkdQNCW9m2WQ/axnWIF
+	7zpjW+7fiyIzxVF/XX6XmGe1dAmMuYUGnjlj2opJIY6vVMz3H6Ux6WP9WM4UZbvbesLyy9GCMaYq5
+	v+P8dFp/ME1aR6uGbfqyTUD7Neq/nAiizl2Zv3Rjw+pQ0VJDOfLBDpCjDapYhYBpWBUatEYBZ2a3p
+	9ab19vcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8Ocg-0092RS-32;
-	Wed, 29 Nov 2023 17:45:18 +0000
-Received: from out5-smtp.messagingengine.com ([66.111.4.29])
+	id 1r8Rxr-009J2b-0K;
+	Wed, 29 Nov 2023 21:19:23 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8Oce-0092Pn-1w
+	id 1r8Rxo-009J21-2j
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Nov 2023 17:45:18 +0000
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 09DF55C02BA;
-	Wed, 29 Nov 2023 12:45:12 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 29 Nov 2023 12:45:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1701279912; x=1701366312; bh=6G
-	7IT/Y1jFfvBeoGH3Rt7qh2CE2/hGJu4agITadubDU=; b=meC0G2VmkKl3g7OBWK
-	nh2tjz8RFuOUGlReuOKjJgg+rYbG2sHmE5vhMO+kjETfXsfAoBLtR328SaoCqwZW
-	5TLbvvgN6IUdeSJM2T0CgWVUNQf4y+lWVyewxzxuTstU6vv/AODKo6oPSGEf9Gx7
-	5/X4bb02reUNaq5Ol4Wx4QS9zlXQYq0dZru5uSkIw7zKir1d6DukCEGK38q87v33
-	JJqsV5OAZ3fun9N15vUXKnYxQtInzrnVeZ1BoSxo3McH4gQ8jCKPkcqtEPUCPchO
-	xtT2X3qSj9vseLJU7e1Y7AHLTIH6EyUF9bcvS1Lpurje3JeJ5ahmDgzuKUIZL63s
-	VCTg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1701279912; x=1701366312; bh=6G7IT/Y1jFfvB
-	eoGH3Rt7qh2CE2/hGJu4agITadubDU=; b=oXy1/rknpubOIFgpzRF9euwcOLTPI
-	pxBf3vJPXkx6q8uCe9+XdEFnH5u8n4767scv50MA1A6LJd41LtlxJZAoDLsPy0Ej
-	uYt6OdCAywUm1xK0d6lt0582kra/xhjQkJOq+tn39nJxuk8BlaGaI8vV2UkjzdGX
-	yiwWn3XhahlTTW9bSo5b+BNxFI++G2SEShYyNVl4rddfpmRzw/Hek8NZyrAjXorI
-	bgRGe29e7q/uL3uKwEb7byeNEbQ2EpoGLrKMFZ8V4DI/okyzCqm3su6dfe3VdyGm
-	ev/WypPAIEi6BdFYVS1oWaZWsyW/cqrGrpnAW/Pf1RkXCuItT4+IXEFZA==
-X-ME-Sender: <xms:pnhnZa6eymBOO4TKATClO5dvCZpdUaSKz-j9Egaw1wAD7vdD9ZMkMw>
-    <xme:pnhnZT4ANLWwTBHnYU6h1hdv8zQl2iSOHHtCn2JcQShK4_PT0042bHDeVtAnZ8BJI
-    JpzDN9Zfoxa_eX64_k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeihedguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:pnhnZZcm5NMOo61NyXDe9HZm2NEVjniWzznsFbg5Y_XoGwLmiTGbOQ>
-    <xmx:pnhnZXKE5_whbIGPhxO5YRrdjXTUg571b5XlLg_PgRrpD3V5kplkHA>
-    <xmx:pnhnZeKU7eAZcmDIcMgVnNr81YqL8-4Ko0WyYfx_8bheab0YIg9v5w>
-    <xmx:qHhnZbWljuYvYKWLg1uNigJlHcmtEwA31LHf4d-_LqFBlGqEoxoCVw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id AC574B6008D; Wed, 29 Nov 2023 12:45:10 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+	Wed, 29 Nov 2023 21:19:22 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 57706CE201A;
+	Wed, 29 Nov 2023 21:19:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61002C433C9;
+	Wed, 29 Nov 2023 21:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701292757;
+	bh=/fnIy3jD+36xv/6RVbKvsPzVZU//UMZaIm+uyGyKuVY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cJGsY37qWAKZiaCPTj8usxvNJEo9ZjhCkmSFdb3EuOQP8O3tGp/pzkc8CgKfMQexL
+	 AzgxmckMb+VGbyGPYDZBGEKN0mGNEM3oRIM+Md8q4qyDVQ9Mp+E9THhxalSeJYPVA/
+	 nyMkErvsc5Q81ne41oYTE6NmOXl1MD5mM6aQr3uhd9CPha7TtcXcyys8c0UD0bYSgD
+	 MW/pdtMIwTbu3HdmHS7t7nOKdDu3orAeP/eEsZSD4uJ1hRuWUjBMtflrftYnD3PPmP
+	 MbnpP1ow5fPamK7cxRxJQX8fD1As2jOCKtYZCSq64maE9juW70AWhPoUFeDboMvp1G
+	 a72GRv2mLlyCw==
+Date: Wed, 29 Nov 2023 21:19:11 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: AceLan Kao <acelan.kao@canonical.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+	Kamal Dasu <kamal.dasu@broadcom.com>,
+	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+	Mario Kicherer <dev@kicherer.org>,
+	Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] mtd: spi-nor: Stop reporting warning message when
+ soft reset is not suported
+Message-ID: <2e88fbd7-64ac-41a1-8368-edd430e86e6c@sirena.org.uk>
+References: <20231129064311.272422-1-acelan.kao@canonical.com>
+ <20231129064311.272422-2-acelan.kao@canonical.com>
+ <9c97e28e-fbb8-4a7f-8205-821fcbd579f6@linaro.org>
 MIME-Version: 1.0
-Message-Id: <0cb00798-6510-4456-81fd-90131b97fdb8@app.fastmail.com>
-In-Reply-To: <20231129174722.7d4e768c@xps-13>
-References: <20231127164623.1008176-1-m.felsch@pengutronix.de>
- <CAMRc=MdsEWxJLHL__zYXGEMYvvLSH99GsTRv_NTaVXt2fGtNvg@mail.gmail.com>
- <20231129174722.7d4e768c@xps-13>
-Date: Wed, 29 Nov 2023 18:44:50 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Bartosz Golaszewski" <brgl@bgdev.pl>
-Cc: "Marco Felsch" <m.felsch@pengutronix.de>,
- "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, linux-i2c@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- "Pengutronix Kernel Team" <kernel@pengutronix.de>,
- "Heiner Kallweit" <hkallweit1@gmail.com>, "Jean Delvare" <jdelvare@suse.de>
-Subject: Re: [RFC PATCH] mtd: devices: add AT24 eeprom support
+In-Reply-To: <9c97e28e-fbb8-4a7f-8205-821fcbd579f6@linaro.org>
+X-Cookie: Are you a turtle?
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231129_094517_109074_EB6CF231 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20231129_131921_091691_80FEA16D 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,33 +81,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8741460403021819940=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 29, 2023, at 17:47, Miquel Raynal wrote:
-> brgl@bgdev.pl wrote on Wed, 29 Nov 2023 10:10:28 +0100:
->> Though if I'm being honest - I would prefer a single driver with
->> backwards compatibility. Have you estimated the effort it would take
->> to abstract both nvmem and mtd?
->
-> Also agreed :-)
 
-+1
+--===============8741460403021819940==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7YWgVhkvHWbLOpD6"
+Content-Disposition: inline
 
-I think this particularly makes sense in the light the other
-at24 driver that was recently removed in commit 0113a99b8a75
-("eeprom: Remove deprecated legacy eeprom driver").
 
-The other problem with having two drivers is the need to
-arbitrate between them, e.g. when you have a machine with
-two at24 devices but want to use one of each for the two
-subsystems. This does not really work with our DT probing
-logic at the moment.
+--7YWgVhkvHWbLOpD6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-     Arnd
+On Wed, Nov 29, 2023 at 07:46:02AM +0000, Tudor Ambarus wrote:
+
+> You haven't specified who shall take these patches. Is it fine for you
+> if I take just the SPI NOR bits? If you want Mark to queue both:
+
+I can certainly take both.  I guess there's no build time dependency so
+we could each take the subsystem specific patch, though there'd be some
+bisection drift if that happens?
+
+--7YWgVhkvHWbLOpD6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVnqs4ACgkQJNaLcl1U
+h9Bfywf+IhNs9FBX4arNA6V1SfNZlB4veB+gZpxcSWRk0wMv7//dofmoZXk9dEee
+9dSuk4BjfDCsrfhbwbDY+3ieYDb2zZtxC3Zr3Rhfq8Y2e2amI5cRhc1x0XiQ60aZ
+F9l4e2NteA9xPCZx2+IiE2tZg/guvNe0r1YgNM+iB4/yamLg/guVjCxpvvHPO1Wy
+rpvn4WEUdrCEDAV7uk9dEtswP4ikWJAaWikmiZZUkto3f1pxhuU8g27GwJf5O7kI
+a+wNykTKWEGa7Y7OS1wp+KhkrGlzz/L4e2oLyI9jT7QKw02+mR5PunZLOB6BcPv4
+cljHGqo8YFG8eNl9P7dbAlsK0ZVpRQ==
+=nOsL
+-----END PGP SIGNATURE-----
+
+--7YWgVhkvHWbLOpD6--
+
+
+--===============8741460403021819940==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8741460403021819940==--
+
