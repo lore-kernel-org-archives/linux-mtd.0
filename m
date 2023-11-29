@@ -4,80 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3BB2C4167B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Nov 2023 07:05:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CE07C4167B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Nov 2023 07:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0MqPntVbY2xOAE4r2SwI8uGTfviqVT487lSwSJH8i3I=; b=pHf/3VqAFjL73A
-	+A2wETGYkJPLxA3gKSIctRW903Gic+Hmj8Gr5rqjZMBFy/p/GcuT/viGlm+sJgB9Zi6J609MoPRmT
-	GIm01bWiRrvbaDNhdeHtPKZrL45S1t+xojHif1x3Qp2z7/6nyx0OYJtPgnj5VFCF6mPap00fXH7s9
-	LL8UEnUNd8dWgxMvpbXSqPvNRVR0npwmcmN4PUut8PfL6DRM0LExKlQNpbJcZZub/bH0wqaJMvRXK
-	EqWR/geJY5gImBLpfE/mGrIr2dt3TMMMbbGVa5hrkFP95scMRcUHI+Cq3tvazjpRtrDUApx6+YNlF
-	e/b2+iOUA9iS4e2Diy1Q==;
+	List-Owner; bh=CKwqYkniu9N2v/faVGNXFtjg5fakhoEOyIxXyp5JEPw=; b=NRfIj2mdWp1vGt
+	jOsTWkeRJDQ8xfJbQhg2UctA6Bl1c+JYDLkL0/Ubrl2bU6fsg968kGPSoGvdO3hWR3b6Nez1i48zd
+	oWUbMXguybXghslw2iI7TSSpUuO1GEs2BEufIkyIcci/CI9TceDDB40/zzFl9wWH+PKtHcCgCNQKW
+	6n9m0E29ikJGLqVas6TWefZzAwLEKnIhyQXeDtjlCSWXoEQVqzCYxfKkmojSI2PC1Eth9/Bl0sWKE
+	zl1NQJKahHN8BwOYP9tVDmOvJP0RgxjCejMrQ2pUu/HJQzE1DM0gG7zRfJHDw3PLy5XktTrXjBy1E
+	QIoAaJI2GqHSlXo4KYvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8Edj-007J1x-11;
-	Wed, 29 Nov 2023 07:05:43 +0000
-Received: from mgamail.intel.com ([192.55.52.120])
+	id 1r8F9w-007Ner-2v;
+	Wed, 29 Nov 2023 07:39:00 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8Edg-007J1Z-0X
+	id 1r8F9t-007Ne4-2V
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Nov 2023 07:05:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701241540; x=1732777540;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1qmvHwfK7iTIDc/XSt6kxSJ8+uPc6tnRGIsBlPEG/V0=;
-  b=c0YPq5jAJpNJVCsukJsS9Qznx7ros5SS96vc3HwJ1usHNB2J8Al/Gkim
-   S7+z8G6qvGS6Z46GzquoweOhRelb43d2JwTZ8ssTk6OmQsdEDw7G7QGJw
-   FXFpvnJWfQW5wj48EjDvnBP/nikn8yJwYGv6+6FcH3pVX7OdBTm2R3U58
-   kY6nPdTM3hZaUfhl2snYLRen6rr89vFI5p72/S7wI7JhOhH0THBTm6u8X
-   clMihtOghQIixG7v6PgcVdC7pcxw4uCwm0K9JqNtjuGpjTjlOunu/H07b
-   46seR97xoIweGFol+++nm06IyAI9vb/pxY5o2cVqWQYvv8ngmkir0J3bQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="391977382"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="391977382"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 23:05:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="772585802"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="772585802"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Nov 2023 23:05:32 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 6B64023A; Wed, 29 Nov 2023 09:05:31 +0200 (EET)
-Date: Wed, 29 Nov 2023 09:05:31 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: AceLan Kao <acelan.kao@canonical.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Dhruva Gole <d-gole@ti.com>,
-	linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
-	Kamal Dasu <kamal.dasu@broadcom.com>,
-	Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Mario Kicherer <dev@kicherer.org>,
-	Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP
- with -EOPNOTSUPP
-Message-ID: <20231129070531.GP1074920@black.fi.intel.com>
-References: <20231129064311.272422-1-acelan.kao@canonical.com>
+	Wed, 29 Nov 2023 07:38:59 +0000
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-332e40322f0so3997420f8f.3
+        for <linux-mtd@lists.infradead.org>; Tue, 28 Nov 2023 23:38:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701243533; x=1701848333; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=q7cONzvX3DJ5N2tJbhtl/3F0xHVQGSzTxNADSagct+E=;
+        b=ozcr2NMC3ip4tEJ4w8rX+d9rbsET7CzH4cI72vBVZ8xMSImqseaOZxC82iUfVODF15
+         iUMrCqris2qJRhoaFt/Y/iZdpEjmqpeQ3n0uVPwJ1UZ/2s3ogcy+AMGCmv5HTUlppvXB
+         K2k8pqJK/o0iEWFR9ftjT+AL7+2O14rgKZgEHlgDKYdr8PY8+1U3kMFs99S3BJJ1Kacq
+         b++K1vTY7IDiIWhXo6V1J/oKMD6ZyiUVnCI09zfqN0OeUJnxywQB/JN/ZaoZymDuUccf
+         /IG+FZ+QVxtXGLBngXoFhBftqSMkHw4fcQ0hYV1XTrrgP510EIV7ZF2IvSsCe3H3bewt
+         PCKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701243533; x=1701848333;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q7cONzvX3DJ5N2tJbhtl/3F0xHVQGSzTxNADSagct+E=;
+        b=nQGHKyHVH2qpQw0JTVOY7HxOR+uwGPzDUszxfM99xh8Cd6c1zehAJmuEAZiJhCt9Qc
+         /0UMq+Qec3V064XP6G+Zs92hgkFicR2yiY9UQ6ncz6hVC5a4XVzPZonq8uhEE0xhno7N
+         uuGpREd8vlDISvQs2Wb5tdeCgCIVTcgrIulUEEXNw3k/B++S5Z92KA26BlHjPgn6G+Ch
+         gnKugdcduxj4Q6w8b+2xObGUHHvVXjnnq6UApJZyf17zw6LWZSq23CrWyoTBPwQWYztQ
+         VsIwhelAry0tBStqa0crO/93obo32mB3t8f+FwVxzF/0agDxx4ujzpwnmAnpeuNNHgCm
+         U3Eg==
+X-Gm-Message-State: AOJu0YxXRO4ZoCDP6NKtDZIYSZ3CFebMvPrUiv+V/AL6oRn/uC/srTPi
+	vXvlV9/GZJsIODIe/zmZMAvCHA==
+X-Google-Smtp-Source: AGHT+IFqgVfitjC6Sy5J82ghxl/laZe5/WVwnFlMaeybrhcaJUuv6lF2MT2VXyu3Pser2LNo37WYQg==
+X-Received: by 2002:a5d:6a42:0:b0:332:c50f:45ae with SMTP id t2-20020a5d6a42000000b00332c50f45aemr11339918wrw.44.1701243533133;
+        Tue, 28 Nov 2023 23:38:53 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id j12-20020a5d464c000000b003330aede2besm4262686wrs.93.2023.11.28.23.38.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 23:38:52 -0800 (PST)
+Message-ID: <6e81a443-4e28-48fd-9bec-224d07f1682d@linaro.org>
+Date: Wed, 29 Nov 2023 07:38:50 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP with
+ -EOPNOTSUPP
+Content-Language: en-US
+To: AceLan Kao <acelan.kao@canonical.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, Kamal Dasu <kamal.dasu@broadcom.com>,
+ =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+ Mario Kicherer <dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231129064311.272422-1-acelan.kao@canonical.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 In-Reply-To: <20231129064311.272422-1-acelan.kao@canonical.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231128_230540_241702_6776B422 
-X-CRM114-Status: GOOD (  19.41  )
+X-CRM114-CacheID: sfid-20231128_233857_844591_E1D02732 
+X-CRM114-Status: GOOD (  18.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,7 +101,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 29, 2023 at 02:43:10PM +0800, AceLan Kao wrote:
+
+
+On 11/29/23 06:43, AceLan Kao wrote:
 > From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 > 
 > This commit updates the SPI subsystem, particularly affecting "SPI MEM"
@@ -128,8 +137,10 @@ On Wed, Nov 29, 2023 at 02:43:10PM +0800, AceLan Kao wrote:
 > or the affected drivers.
 > 
 > Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> 
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+I'm fine with the low risk of breaking the MTD related user-space:
+Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
