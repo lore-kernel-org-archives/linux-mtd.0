@@ -4,91 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31379C10DC1
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Nov 2023 09:20:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D51CC4167B
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Nov 2023 10:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bvlLJugis7rmiaFwgy/pLeOgtpH7C5ZW+xRMYdmCsw8=; b=S+7eZ+I6+Z6d96
-	ZSifnkckIVzkoBwAmknyicONp6Vwg884klySwYoEvOVL56mzSWsalAIY15AQmV2ZG8ikax4K+Ejq5
-	4EEEDMC0hJrkwK9JOPayFhh/6pHBiN3bhW5mrbhNcDMyFE1ltwXmV90RxRRK4d5hMKHPOPcpaw2ZV
-	qC5qFIjfSwzVYyyzUKbY3WJ6clNEO0g1L20oXa/ymBiW7VjYfvxpAX5X3OeXJTM0tyjyxsewIFSUf
-	2j+kTkblO/+GrBoNqs0ke3SobqI3CAGLKtoey3/muDTE0b7L7RvEfn898OWOKY78OT1ow3ew5jZlt
-	uRUjqkHm+Kws3KTHKQew==;
+	List-Owner; bh=52lfuS1Uc2DMspqyWyqAU2Av+hxY7FzmRR3lPXaiidk=; b=UW0pQyZ19KE3uj
+	+DD9T2BRDwldisqlt8V2l3CpL5t39BjZkLGBV2BQoVx6+4WUsN5+c3MbFXnMLtCcJThVMvUQEHCzA
+	/1tp+PrroSAOdv1yEy0DRtL8GzjrG2ZE3q40vC3M7TJlAbmD4bjEP0C2BQxrHZj9sMpy8pbpniH0Y
+	ktJSJKxooeoYvAZCDZAHbN8OWulBX8MvL9LFZAAOdEgK1a7BabaFPy9SZ9L7egN3bIlz0dLEWFueK
+	3CxQMIdgpYl4IQQI+FZX3JeJGiQE6iy+JJDPYne1DYM02ZrYjlbzSE36OJ0NwNtrehTfEaRPNkLwb
+	bKaN0LEMzsRBHlX998rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8dDV-00AJNQ-1C;
-	Thu, 30 Nov 2023 09:20:17 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1r8ePP-00ASsQ-1M;
+	Thu, 30 Nov 2023 10:36:39 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8dDT-00AJMs-1a
+	id 1r8ePM-00ASqP-1a
 	for linux-mtd@lists.infradead.org;
-	Thu, 30 Nov 2023 09:20:16 +0000
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c9c5d30b32so8913841fa.2
-        for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2023 01:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701336012; x=1701940812; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t6b6KMY0n/M+YsXFiDbvehOF3zPBGbEVpkXj4Ck+RiQ=;
-        b=ThKKyh9VO6mWTyjfYGuQLtsj5C70Faa+SBbTVBGvJEp8OnI8w9pnKPpwb+1Dq9bH+K
-         46EJCCweqvVynlYuQLZcTjzaGGYxME5LF35mFQoAk3S/33p8w9Q+J3kUL3Sxag5Aot2l
-         PHvQZsbpmUWXaYUb7xgFg5M0ZWvqA1n3z2i+Y4Vwx2zWy6B5Q0vx3j8Fy4xnwTyvebFw
-         /GVv2LoK2M+KmrUk25+5qocn3Mn3/r5nvKd988vH8DlZkbwdzgDO6fhW+YY9QHDy9Dr4
-         PRbiLZxgQJ7k1tKjV9Rv228HYIKKuvh7Jbe+wMT8GH3eEY+NssRE7QPhZimyIUexylm+
-         Gkbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701336012; x=1701940812;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t6b6KMY0n/M+YsXFiDbvehOF3zPBGbEVpkXj4Ck+RiQ=;
-        b=FNMTbf2vxQE77q/TuitfhewgG6nr/dQGHrldYoexe1XQh4lhg/JiRMoINbmZ941u1n
-         /vDUXRV+ArRjQtDSeZfkGziLezXDNcPeMjEwVn/E5rjt23KeUDAQkGQ3sW1fDIicCFoC
-         HHeYHHuTQ2hYa8U3sQaT+FUL/qkOztZf4btKstCvrhBPJC3tbCJ/gBzfX4IXXkUc8795
-         DXRz+1+4xo73otFD1r+MNoMXfvZOh/ItzJ2D0qvlWUcmfhMRSxM0EPOXLdcJYDmEaYbP
-         p4oGgq98xP4l6XOEkwtmbVrDFVVYBgydRuq/IQMNwmDjsuxYjVdKyzKArzB09oXtlLVb
-         U92w==
-X-Gm-Message-State: AOJu0YykLk4Fk6eLLKZNxifda6eCe1/cTk5iruYHL1sz66dl3ZOCd/d/
-	VNwkaYnpqU8NnaaLO+vRIaEnIQ==
-X-Google-Smtp-Source: AGHT+IEaYhPPx9yJTn+Tt40iUWKql5jCkfrMLBxyzujYNVF6glNzpgT0IKlw+OZMcX2IHP9baN/WqA==
-X-Received: by 2002:a2e:8ed2:0:b0:2c9:c0dc:b074 with SMTP id e18-20020a2e8ed2000000b002c9c0dcb074mr3036689ljl.3.1701336012029;
-        Thu, 30 Nov 2023 01:20:12 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.75])
-        by smtp.gmail.com with ESMTPSA id z12-20020a5d44cc000000b00332c6a52040sm955607wrr.100.2023.11.30.01.20.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Nov 2023 01:20:11 -0800 (PST)
-Message-ID: <ce0800c9-513c-41f8-bb02-43b2f1d60092@linaro.org>
-Date: Thu, 30 Nov 2023 09:20:04 +0000
+	Thu, 30 Nov 2023 10:36:38 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3C87EFF815;
+	Thu, 30 Nov 2023 10:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1701340594;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tXGibL4JFLJ6Qk8J3/pSKDXmUg+l1GSINDae8lI3n6g=;
+	b=inQ84HZS9Wu7ORtl5d/GTXif5Z4xhhLYPS68duwZfTOmFpUd0vHDXC48Wls+cD6Q//B2k8
+	Vmd4Zf8bQgzr3e8YxbyX03/CPim2DjKfK/O5I701B1Ja+5eUNmHjjU997mSmnzmDooNy7k
+	lLXpBBh5+cUNRIG7rus3F9LHQRauZXajNJRkRuxgRId/eSYwUWkRyjkDwSL+p0SR7oc6qM
+	xzwD7iHQWfpaLK9VnJ0NnhmV0fUlpqRj2lvy+UL1hVgXAw481zTf9BbUzoNLMs3STM/VHS
+	gqCLVc6EhlDwxr39ViUZmF5WancLAy/n4+cJavGr0WGj4LlKy1u8Sil9+ncrBg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: dregan@broadcom.com,
+	miquel.raynal@bootlin.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	linux-mtd@lists.infradead.org,
+	f.fainelli@gmail.com,
+	rafal@milecki.pl,
+	joel.peshkin@broadcom.com,
+	computersforpeace@gmail.com,
+	dan.beygelman@broadcom.com,
+	william.zhang@broadcom.com,
+	frieder.schrempf@kontron.de,
+	linux-kernel@vger.kernel.org,
+	vigneshr@ti.com,
+	richard@nod.at,
+	bbrezillon@kernel.org,
+	kdasu.kdev@gmail.com,
+	JaimeLiao <jaimeliao.tw@gmail.com>,
+	Adam Borowski <kilobyte@angband.pl>
+Subject: Re: [PATCH v5 3/4] mtd: rawnand: brcmnand: pass host struct to bcmnand_ctrl_poll_status
+Date: Thu, 30 Nov 2023 11:36:30 +0100
+Message-Id: <20231130103631.715302-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231125012438.15191-3-dregan@broadcom.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/2] mtd: spi-nor: Stop reporting warning message when
- soft reset is not suported
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: AceLan Kao <acelan.kao@canonical.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
- Kamal Dasu <kamal.dasu@broadcom.com>,
- =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
- Mario Kicherer <dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231129064311.272422-1-acelan.kao@canonical.com>
- <20231129064311.272422-2-acelan.kao@canonical.com>
- <9c97e28e-fbb8-4a7f-8205-821fcbd579f6@linaro.org>
- <2e88fbd7-64ac-41a1-8368-edd430e86e6c@sirena.org.uk>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <2e88fbd7-64ac-41a1-8368-edd430e86e6c@sirena.org.uk>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'7d93debe84e1adc5a299a520c23d361572ab7b30'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231130_012015_538974_2850434A 
-X-CRM114-Status: GOOD (  10.28  )
+X-CRM114-CacheID: sfid-20231130_023636_671592_34558BD5 
+X-CRM114-Status: UNSURE (   8.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,19 +90,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 11/29/23 21:19, Mark Brown wrote:
-> On Wed, Nov 29, 2023 at 07:46:02AM +0000, Tudor Ambarus wrote:
+On Sat, 2023-11-25 at 01:24:37 UTC, dregan@broadcom.com wrote:
+> From: David Regan <dregan@broadcom.com>
 > 
->> You haven't specified who shall take these patches. Is it fine for you
->> if I take just the SPI NOR bits? If you want Mark to queue both:
+> Pass host struct to bcmnand_ctrl_poll_status instead of ctrl struct
+> since real time status requires host, and ctrl is a member of host.
+> Real time status is required for low level commands vs cached status
+> since the NAND controller will not do an automatic status read at the
+> end of a low level command as it would with a high level command.
 > 
-> I can certainly take both.  I guess there's no build time dependency so
-> we could each take the subsystem specific patch, though there'd be some
-> bisection drift if that happens?
+> Signed-off-by: David Regan <dregan@broadcom.com>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Right, please take both then. Thanks!
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
