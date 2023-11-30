@@ -4,75 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70798C4167B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Nov 2023 23:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA1DDC4167B
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Nov 2023 02:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dCIaAPJRa6t/wz0ncLXjDrWg51+na2uON1RRbjBWi6c=; b=GRzl9KCbt1pQNn
-	7/3xiKPP9P/kCXv/VmngtzcmZjdSLtM5tcGKUWIKC6R4G2bIy/COP8JhefRQcKpWbIKyY48GTUJtk
-	4aHMH+ZnVIgQFDn7N8fKc2keB7lExeMhaj7wA4Z8j6tvG8iewpCv3EI/uvBNGpTROzf5ABzfpjJ0U
-	h3wyH0uLYp8AprPm8UrUzk4h0DXn54K/MErqfFdd46wnJnkm+8ECEn2a5Tzf7x4LUqkhFfkkEQYDS
-	xX8uUMSotdRYjc/3FdHQjZJ/oT21EGlsH5XoIY0DKIikZuejunt7EJ0orsA7mmcoVhOlzVb5bcl5j
-	vrL5Uaw91l+pKXZDIWJw==;
+	List-Owner; bh=7V/sGICfWCIqY8FdlyKTQdkyqoQ6KxaJ2As5nAqMSKg=; b=YVpaNnqZI2aIq8
+	YAC4Y+Oq2DBMBqyvwh+0UyiomhcizLG6sK0InSTxv3O75jAhuzaGdcvPA4vkXpmzBiE6iWV7HUPLL
+	i773lDBEAatlGqZXjFqjRp+iBgdd7sp+8jhY5/4GlTYSFCc0Q4y/Ip/KGVZAf2ouAk6FmQ2pLLsXV
+	DNlBhbwpCjgHZAc6UbTDKTqJ7kGbS1em6B7ekaB6ofsFi894cbHlFirAHDyeXdmjT1JKMugNV5inT
+	Tghp4JWvKj0ZvcLPgT9ytjoLCjQ6wse6SBZ1/Yxlw+Gg3FOe4YKtbsiXC29iUcGPiSlX/6mREd8W7
+	2iaZXXl9n7gWUcGmShfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8Tt5-009V2G-2W;
-	Wed, 29 Nov 2023 23:22:35 +0000
-Received: from mail-lf1-x135.google.com ([2a00:1450:4864:20::135])
+	id 1r8WmZ-009kIy-14;
+	Thu, 30 Nov 2023 02:28:03 +0000
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r8Tt2-009UzW-2r
+	id 1r8WmW-009kH1-1l
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Nov 2023 23:22:34 +0000
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bc8a9503fso520038e87.3
-        for <linux-mtd@lists.infradead.org>; Wed, 29 Nov 2023 15:22:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701300141; x=1701904941; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2/HnZ3tBk4Rv10ctPha3htJ6jB9vSVJNy8j7jeHy+N0=;
-        b=A4GCHpxDq8pO4e7skeqAYGQ9k4qTjaUBDCeT0lyjbsjI1eDiI5evP7eYmm+CZz/485
-         Jn8bGO000dFk/p1Qo70ICia/FYZY51mDcSbT4I/zd81KMtZQLb42RJhZKkYHdSj7A76a
-         ly6j4uIQTQhn21W8kVrecu3CVDt45nh51kKac=
+	Thu, 30 Nov 2023 02:28:02 +0000
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com [209.85.219.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5D13840331
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2023 02:27:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1701311274;
+	bh=51BH6r3NTeuU80Og8+pDQ4LBdHK0XIdfBAWZqxE/rY8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=MFGT5+94azVu+ZD9jURjKAOqcrtDbJUr/osgUa3AX2upsm2sP4LsffbqDJBfDynTN
+	 zkEvRBRkq3mfeGnHqypd44Qo2ZXqtyYQ0+a3mOAC5fVMhcfPwqgSNfH9VYueJCHFXq
+	 9Q2ZT+O973eRHdkAScz06BHbLhawiFBVoSaywzRMF9Tz5MXkzwLAXIWFwt7k2SJ1C/
+	 0uuVvghkvwmtyDljphTwBqP+2UGWPiQmkPgYVnCLmMsKXp+MPTM7Gz64XWMGRSE7Oh
+	 sJRQ2ynGOmCFcfF6uWo/xuqKcA0yCfCqSqA0swpJUM2HXuEmTTZvVEk4yDp0LG3SoE
+	 0NmqWgXvpMX2w==
+Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-da03c5ae220so1421448276.1
+        for <linux-mtd@lists.infradead.org>; Wed, 29 Nov 2023 18:27:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701300141; x=1701904941;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2/HnZ3tBk4Rv10ctPha3htJ6jB9vSVJNy8j7jeHy+N0=;
-        b=Bw0FzDQOsWLLCF+IWWZNSGrv+X4YCaUzMjjdXma/FqCFF6MK2hSm+cwNypTbpRfKs4
-         u8AY1B6fRQrp7N3jGb00trOqBqjEtaUQnMNMPXlj/MFUE2uD7HhdqBKp4+JxrxfePxvk
-         /kTeKoJ6YnfArL8PEd6sZV0+MwZvJmjFbzjckd0NZGW/2KVr9NlDZ11XspvvPZv79HqF
-         nPtT8Lr6K8oqd8+8h4mkEjOYhAU8shR05njTTUYGYPnSszF3CDbS0/zQ1tW7SjTLAFwU
-         zy61rq0InctrVQACR+HaQeBWWeDdzUcNvJWCaDGQ23Ts+MwK1x6OkZgmybcmpSSuU83h
-         3LNw==
-X-Gm-Message-State: AOJu0YwycGFmyGuOHDDXgIxFLx9g9ajp1b1lZQ/2ave+tiQ6R4NgxjqD
-	L0hmDkxlKJT9rqmZ6tO1g8wanDumzImP+bXs4DhrWuGuNEY446Jkj5k=
-X-Google-Smtp-Source: AGHT+IFYwY557f0M/HBVYE3v9Lp8eNTCTg5oXoWdtSW9n3YuCd9BE+gko2nwt0HyJjEkoxBEYx0zOQD+alQIHP6FIu4=
-X-Received: by 2002:a05:6512:695:b0:509:8db5:949 with SMTP id
- t21-20020a056512069500b005098db50949mr17477580lfe.6.1701300140674; Wed, 29
- Nov 2023 15:22:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701311272; x=1701916072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=51BH6r3NTeuU80Og8+pDQ4LBdHK0XIdfBAWZqxE/rY8=;
+        b=QBmpf56CjRtmgmToKlKDcBNjhScQc0CfF1owgscZeSLIOELDWOGhN3k1oR8HsnelV0
+         a4SMLEfzqiu7PXqzEQp0gcl2X4S7jywSb3hMMFj44A4tT60hRjJaHl7GepVNWazvXCv0
+         yj/oszjwqoK1NhiYE25tta4yqQhTp8fOo9LH/Dn/hljvdM4HQ7gj57R2MGj3+JQ87ta6
+         Rf+kQmbmqJ0E3h1zeTVrYP6pYRBCujN+c3wKCBDaVRukukWLEJ4Y+90JlcyBYxiRPt6T
+         FBohPrPq2gy/NHIz4oW28iKKX4GRlnnXZTlBOT8i6AyY92ZWskv8kaeSAVevnWmmSQTd
+         X7Kw==
+X-Gm-Message-State: AOJu0YyaK140NrOi3ZmGXhjYfqoqE3wZsP0yppwRFcjw7HsZ6XfrcQVU
+	qEDHidNDBucLPFH5LdGyM4WhNwNLrZBjfRz1rC5p5GAkCK5WuBjf9TgVJ1yxGdIk2frGbiRL/0y
+	SPgrybez6fiCaxgRCrly+CE9WlX/2KCU4Pwu4GDQ2CkoVPm49OEfa8pvDw0I=
+X-Received: by 2002:a25:75d7:0:b0:db3:fa4e:5b80 with SMTP id q206-20020a2575d7000000b00db3fa4e5b80mr19047538ybc.20.1701311272348;
+        Wed, 29 Nov 2023 18:27:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFU+/+cZbTSn4ReKApKLD82OGBkDM2LrmtNnHt3yCLXIOaJ5oVUUQwfztQHQlCy4aFlUeyNvfUi8DlF3WBb+EM=
+X-Received: by 2002:a25:75d7:0:b0:db3:fa4e:5b80 with SMTP id
+ q206-20020a2575d7000000b00db3fa4e5b80mr19047524ybc.20.1701311272067; Wed, 29
+ Nov 2023 18:27:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20231116172859.393744-1-sjg@chromium.org>
-In-Reply-To: <20231116172859.393744-1-sjg@chromium.org>
-From: Simon Glass <sjg@chromium.org>
-Date: Wed, 29 Nov 2023 16:22:03 -0700
-Message-ID: <CAPnjgZ0z_oMy0kDScMjE9jYOvFJ12dxWn2CRoTpTsmw7TfARGw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
-To: devicetree@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, 
-	Tom Rini <trini@konsulko.com>, Rob Herring <robh@kernel.org>, Michael Walle <mwalle@kernel.org>, 
-	U-Boot Mailing List <u-boot@lists.denx.de>, Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+References: <20231129064311.272422-1-acelan.kao@canonical.com>
+ <20231129064311.272422-2-acelan.kao@canonical.com> <9c97e28e-fbb8-4a7f-8205-821fcbd579f6@linaro.org>
+ <2e88fbd7-64ac-41a1-8368-edd430e86e6c@sirena.org.uk>
+In-Reply-To: <2e88fbd7-64ac-41a1-8368-edd430e86e6c@sirena.org.uk>
+From: AceLan Kao <acelan.kao@canonical.com>
+Date: Thu, 30 Nov 2023 10:27:40 +0800
+Message-ID: <CAFv23Qk6Qpxu+ROou5Uzdwu_0jSF-EYZPHynUps_5GOAakuJvQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] mtd: spi-nor: Stop reporting warning message when
+ soft reset is not suported
+To: Mark Brown <broonie@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	Michael Walle <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Dhruva Gole <d-gole@ti.com>, 
+	linux-mtd@lists.infradead.org, Kamal Dasu <kamal.dasu@broadcom.com>, 
+	=?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
+	Mario Kicherer <dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231129_152232_922646_0D3015F9 
-X-CRM114-Status: GOOD (  13.32  )
+X-CRM114-CacheID: sfid-20231129_182800_927181_32275566 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,48 +100,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Thu, 16 Nov 2023 at 10:29, Simon Glass <sjg@chromium.org> wrote:
->
-> Add a compatible string for binman, so we can extend fixed-partitions
-> in various ways.
->
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
->
-> (no changes since v5)
-
-Is there any movement on this series, please?
-
->
-> Changes in v5:
-> - Add #address/size-cells and parternProperties
-> - Drop $ref to fixed-partitions.yaml
-> - Drop 'select: false'
->
-> Changes in v4:
-> - Change subject line
->
-> Changes in v3:
-> - Drop fixed-partition additional compatible string
-> - Drop fixed-partitions from the example
-> - Mention use of compatible instead of label
->
-> Changes in v2:
-> - Drop mention of 'enhanced features' in fixed-partitions.yaml
-> - Mention Binman input and output properties
-> - Use plain partition@xxx for the node name
->
-
-Regards,
-Simon
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+TWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPiDmlrwgMjAyM+W5tDEx5pyIMzDml6Ug6YCx
+5ZubIOS4iuWNiDU6MTnlr6vpgZPvvJoKPgo+IE9uIFdlZCwgTm92IDI5LCAyMDIzIGF0IDA3OjQ2
+OjAyQU0gKzAwMDAsIFR1ZG9yIEFtYmFydXMgd3JvdGU6Cj4KPiA+IFlvdSBoYXZlbid0IHNwZWNp
+ZmllZCB3aG8gc2hhbGwgdGFrZSB0aGVzZSBwYXRjaGVzLiBJcyBpdCBmaW5lIGZvciB5b3UKPiA+
+IGlmIEkgdGFrZSBqdXN0IHRoZSBTUEkgTk9SIGJpdHM/IElmIHlvdSB3YW50IE1hcmsgdG8gcXVl
+dWUgYm90aDoKPgo+IEkgY2FuIGNlcnRhaW5seSB0YWtlIGJvdGguICBJIGd1ZXNzIHRoZXJlJ3Mg
+bm8gYnVpbGQgdGltZSBkZXBlbmRlbmN5IHNvCj4gd2UgY291bGQgZWFjaCB0YWtlIHRoZSBzdWJz
+eXN0ZW0gc3BlY2lmaWMgcGF0Y2gsIHRob3VnaCB0aGVyZSdkIGJlIHNvbWUKPiBiaXNlY3Rpb24g
+ZHJpZnQgaWYgdGhhdCBoYXBwZW5zPwpIaSBNYXJrLAoKSXQnZCBiZSBiZXR0ZXIgaWYgeW91IGNv
+dWxkIHRha2UgYm90aCBvZiB0aGVtLgpUaGFua3MuCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
