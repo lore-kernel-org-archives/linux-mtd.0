@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA1DCC4167B
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Dec 2023 14:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AD93C4167B
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Dec 2023 18:16:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4xTBHEbaSK/CnzcFg+5RzLL0x8lIAXWHpH3SGf87r7o=; b=qm8IUGHtnbcPF1
-	pX2epP07zI43+zachwVR6/Sqbh1e06bx+bRw103Ycs5zgLoNpEQlLIuJ4daXB0ROUAx5GkI4rKz/B
-	I4+jiaFqvlPiEyKb+efsSFmLK24bU8Tbg5p8liA3VDdwFXWwjWibrGe4GDdlkkuCqG3W29NPEZyEB
-	x0zGiNFNDCtuzdlLSo4w/OGZnywkKJjmmkrKSrQu4wBAQUddUDU2MHTAycpUzyC9yRb2gVFazYjt8
-	YjQJ4N3jU4pwGXEc8Ia4+k3RSVtLwQ3Q5eCI30sX5Kz+y9aGngjC1rahWMayNrYEmhJcwwLdNRq68
-	tKZan6ufYmvGTge2gv3w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=QYDfFZtNcyKdW5nbHJLD181Z3FAiAe4GlQi+ki6YYMI=; b=u66JnUsXPbnCqc
+	+qVoHfoZaySwZ2HRJ5erX5Z/HWSTrcsOKgsFutHDkVc14K5GrzYAhGBu9iPka/0UgbLCageFObznM
+	lD6Bfjg0kBFoiehlje9xvr8wNByZaIJnTeJts4mvOxFcpI6GgeLT/Zx4lvWqlg/f0S2kj8V1rTBST
+	aHimIwnlvrSqwFhtawNW7QK9DW/BaxD8W4GYJQIR9Xx04tFwWVsTutEHlTU8OO16NqMQamJyMnukt
+	zx+bVFHzwvSN1shqueZp5ulqbH0ILx6ZhodH34COHGFcUbXYpCKDqshnESNkRI0MqZtsOsLCHn02+
+	8BCGmV2Ey9Xqwqwkx8Aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r94lC-00DxON-0S;
-	Fri, 01 Dec 2023 14:44:54 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1r983h-00EPcV-2O;
+	Fri, 01 Dec 2023 18:16:13 +0000
+Received: from relay.smtp-ext.broadcom.com ([192.19.144.205])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r94lA-00DxNN-0B
+	id 1r983f-00EPbR-08
 	for linux-mtd@lists.infradead.org;
-	Fri, 01 Dec 2023 14:44:53 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1r94l0-0007sC-5O; Fri, 01 Dec 2023 15:44:42 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1r94kz-00CsJd-4O; Fri, 01 Dec 2023 15:44:41 +0100
-Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1r94kz-004lis-1Q; Fri, 01 Dec 2023 15:44:41 +0100
-Date: Fri, 1 Dec 2023 15:44:41 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Fri, 01 Dec 2023 18:16:12 +0000
+Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id A6970C0000D4;
+	Fri,  1 Dec 2023 10:16:05 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com A6970C0000D4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1701454565;
+	bh=oOit/4rL2wvddJb+2fxKmDWbNk0f7jYnHz9/Hr/bK+c=;
+	h=From:To:Subject:Date:From;
+	b=C4tDQY8EKcPwDOkiiufmRVq8/AV+fmjWbbxXz9rWjYHsRquZSCpJtqNOXCJpwi7gO
+	 /LztMBDdDSpGUScW6K3X0vre14j350zSWmAK2+ukeBiZrMV67+1Jtmx/PwuKpUy0LZ
+	 GX+49kybcRVrRovdTPAh0ufSlwFx07Hbr/K6F+/8=
+Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.75.138.105])
+	by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 6C42F18728D;
+	Fri,  1 Dec 2023 10:16:05 -0800 (PST)
+From: dregan <dregan@broadcom.com>
+To: dregan <dregan@broadcom.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Jean Delvare <jdelvare@suse.de>
-Subject: Re: [RFC PATCH] mtd: devices: add AT24 eeprom support
-Message-ID: <20231201144441.imk7rrjnv2dugo7p@pengutronix.de>
-References: <20231127164623.1008176-1-m.felsch@pengutronix.de>
- <CAMRc=MdsEWxJLHL__zYXGEMYvvLSH99GsTRv_NTaVXt2fGtNvg@mail.gmail.com>
- <20231129174722.7d4e768c@xps-13>
- <0cb00798-6510-4456-81fd-90131b97fdb8@app.fastmail.com>
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH 1/1] mtd: rawnand: Add deassert_wp comment
+Date: Fri,  1 Dec 2023 10:15:42 -0800
+Message-Id: <20231201181542.421077-1-dregan@broadcom.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0cb00798-6510-4456-81fd-90131b97fdb8@app.fastmail.com>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231201_064452_116122_FD225A18 
-X-CRM114-Status: GOOD (  23.59  )
+X-CRM114-CacheID: sfid-20231201_101611_167655_423018AB 
+X-CRM114-Status: UNSURE (   8.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,47 +77,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+From: Boris Brezillon <bbrezillon@kernel.org>
 
-On 23-11-29, Arnd Bergmann wrote:
-> On Wed, Nov 29, 2023, at 17:47, Miquel Raynal wrote:
-> > brgl@bgdev.pl wrote on Wed, 29 Nov 2023 10:10:28 +0100:
-> >> Though if I'm being honest - I would prefer a single driver with
-> >> backwards compatibility. Have you estimated the effort it would take
-> >> to abstract both nvmem and mtd?
-> >
-> > Also agreed :-)
-> 
-> +1
+Add deassert_wp description comment
 
-Thank you very much for the input :) Of course having a single driver
-would be better. Before spending to much effort for this I went the
-simple way to gather some input in case of you don't like the approach
-at all. I also hoped that we could deprecate the non MTD variant later
-on. That beeinng said, MTD does not mean that we don't have access to
-NVMEM since NVMEM is already supported by MTD as well. It's just not
-under the same name and the backward/compatibility config is not set.
-Therefore it's not a drop-in replacement right now.
+Signed-off-by: Boris Brezillon <bbrezillon@kernel.org>
+Signed-off-by: David Regan <dregan@broadcom.com>
+---
+ include/linux/mtd/rawnand.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> I think this particularly makes sense in the light the other
-> at24 driver that was recently removed in commit 0113a99b8a75
-> ("eeprom: Remove deprecated legacy eeprom driver").
-> 
-> The other problem with having two drivers is the need to
-> arbitrate between them, e.g. when you have a machine with
-> two at24 devices but want to use one of each for the two
-> subsystems. This does not really work with our DT probing
-> logic at the moment.
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index fcad94aa0515..3049b05d8a20 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1001,6 +1001,8 @@ struct nand_op_parser {
+ /**
+  * struct nand_operation - NAND operation descriptor
+  * @cs: the CS line to select for this NAND operation
++ * @deassert_wp: set to true when the operation requires the WP pin to be
++ *		 de-asserted (ERASE, PROG, ...)
+  * @instrs: array of instructions to execute
+  * @ninstrs: length of the @instrs array
+  *
+-- 
+2.37.3
 
-Yes this is not possible, but I also can't imagine such use-case. You
-can use the MTD version for both since NVMEM is supported for the MTD
-version as well.
-
-Let me check how I can keep the backward compatiblity e.g. by guessing
-which in case can be error prone as well.
-
-Regards,
-  Marco
 
 ______________________________________________________
 Linux MTD discussion mailing list
