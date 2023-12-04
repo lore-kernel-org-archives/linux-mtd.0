@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0288C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Dec 2023 18:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C815C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Dec 2023 21:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xe0FI0LN72QUhkJKjsG4MIp/7AOuM7245clXFs6c2Kc=; b=JwYj2HH3DS8Ecv
-	Sy83xaVkVG6RdusCIGnDPnUFIQdREneSYmbrtffuWKlk7PW90sZsLExePAg5ZaMhWDaJZW9SLjPi4
-	eDeDWyvv0WKei9Ge0+V/CeKxAz1+jJOC20Jq5oWpJQqTITnkOBb97hhg9dSSTa3NKIGUYGYT4oBY+
-	mjFs1Dtcy5Mbu3V8BOfLY1XK07aNw6BG1tPOOqQ/dgQp5reiqe45HsShDhG0ZqGf3acAOqvn0BkWZ
-	02NfIAIcYTxEJ5y6yN22Nps7j6aFsDJmTUFQ1Yb2hTyXc6qYZfzNspe2DVsrENFkEMPI6iBh1oGx2
-	05XElUILNbvLxs9W0eKA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7QkBD6OW3NW+3E2vwjrvh2B167GDKReqDSeBRocmTXU=; b=5DTXM+VVW0QqbtrXChvyw6nLGF
+	iXSsoWY3IGbAY8qySiRA4p63obH8xTxYXAF5FAl/wHj2r6cSnwm3nCARzaf+XGlD6loFnksuohUlw
+	8f+IbDaWDz3aufdobZ5Vq1++a5eobhLVTYhGw9luccOj2ZPVUBVXBK8yA2Gymrj4oYuEIA7mdcSRe
+	6EeRsoFsEvU5TiJEg9gdJO2OwGRrPFbzTF/9HXSrWrQ0V409dZmLaj7sh4GoNIHfxLV4+9Tmy2xl1
+	G0fOqLQLoqWpfA9zjhiEQx0iC7ZcNKpRRul2zqdlmLUfJYvfZgwxI3/m5IJMGar/LrFALjkBaNPWk
+	LDrIxUPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rADwb-005Lw7-31;
-	Mon, 04 Dec 2023 18:45:25 +0000
-Received: from mail-oi1-x22a.google.com ([2607:f8b0:4864:20::22a])
+	id 1rAG2s-005cBF-26;
+	Mon, 04 Dec 2023 21:00:02 +0000
+Received: from phobos.denx.de ([85.214.62.61])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rADwX-005Lv6-0X
+	id 1rAG2p-005cAn-07
 	for linux-mtd@lists.infradead.org;
-	Mon, 04 Dec 2023 18:45:22 +0000
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b84e328327so2593631b6e.2
-        for <linux-mtd@lists.infradead.org>; Mon, 04 Dec 2023 10:45:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1701715519; x=1702320319; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3ZQ2TYb9IvGJ9cJr0Sfjf9Y5gXn8ZReq66mxvm84R40=;
-        b=Mzc6Z5rX1CU6AtjaAs8Ywly2Kyh+OoEFGYtnojWEc76AzoRQYpR2gDNWPfvFNg366W
-         LhlKphrVmhinfILYZSytl5wKEBmMjEPXBvf6EOKysyS1UqeFC/SVzgVjl+g5kIrUEncb
-         LTGC6PwjoqUPjP9ryB7IIhljh3zhAnG0S8C/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701715519; x=1702320319;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3ZQ2TYb9IvGJ9cJr0Sfjf9Y5gXn8ZReq66mxvm84R40=;
-        b=QJJobE32+2KH0spnSzfEwKgRbZPhTVFJmdwfoDQ4ImE9f3xjif4+nwefi+GznOniAq
-         23TbLXVZIWZaTiBee2zdm1tMo9OFLRLgM7LNDd8HgICNk77QkdvqLDJj8OdhkelX41Tg
-         LRENWi4n6StTS9VltM77koWx8RtaGSLkr6MvOaE78rtsQVeA9gGbINTs+B1pR0F8Rmqv
-         NnTTQnwhs4cTzxnPC5Vgof8YIteJsMWm9WVYzZK+xZovVmq4gRKYYMETKIcK/3Q/BsUW
-         VHxr9fxhEINPM8RVXvGc2pBTuoPX7D54hxElgIvVYIAzeGKktdkfbhSOwyUPN88Zvbkw
-         1IHw==
-X-Gm-Message-State: AOJu0YzWYeHjiECaG1332Nm8MUOZ1WttufVHUHKy1aWLNG/SGxag4u2b
-	9ft8GQkpKgxCuTSAjxo1/L2APsqgYJtmnGL+JU/MuA==
-X-Google-Smtp-Source: AGHT+IHnbjrHO/ytUXfYlUiWXD4cslbd6bGpOtuhb7cSU5/xPC+ebHkZEh7zchNGOtBpv91aNZ+NztI10PyBIEXukxk=
-X-Received: by 2002:a05:6808:ec8:b0:3b8:3442:8d99 with SMTP id
- q8-20020a0568080ec800b003b834428d99mr5951310oiv.20.1701715519556; Mon, 04 Dec
- 2023 10:45:19 -0800 (PST)
+	Mon, 04 Dec 2023 21:00:01 +0000
+Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: festevam@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 20F2F876DA;
+	Mon,  4 Dec 2023 21:59:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1701723595;
+	bh=SmAvWJjBSFrmv67o9Uu6ysguaUrpN+50gXjQo05+N7g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ks5JPrOJvCgScLceDnfY8bT+W8LmLLvZZ/IXiA5upfpFlWiRLdTpOkC/7Sta7Gwxf
+	 eOb50Hw873ylHu1boHUpji3k88yc55fORWAIBItop9Ly3sh2O0JqUXKiQUtR1yTe0E
+	 Mu1Q1NbeVfcsBa2DbYJwoJD5T3YMBKxMCxiH+esfnve0E3qJ5HeNx8djNGzl7FPVR3
+	 mB1/8e8x63415AJgcN3oHw2h2iBGw6rdIVrhV1yOwm4FJxLaQiRSiqorjgznZ8vuHx
+	 t0nXhBDLkGhZ1JG9Pr8T7Z0CXOKzV+ZGdQ0E6PkD6ChfUtCZhorMeHAlVv0hMS1iXU
+	 XVfUJuSXIyyjw==
 MIME-Version: 1.0
-References: <77e2f422-2a17-4235-808c-133073aefcda@moroto.mountain>
-In-Reply-To: <77e2f422-2a17-4235-808c-133073aefcda@moroto.mountain>
-From: David Regan <dregan@broadcom.com>
-Date: Mon, 4 Dec 2023 10:45:08 -0800
-Message-ID: <CAA_RMS6HDigG_42qtj1v+VOci3493n0yiQBamg8LTdoB1HYqRw@mail.gmail.com>
-Subject: Re: [bug report] mtd: rawnand: brcmnand: exec_op implementation
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: dregan@broadcom.com, linux-mtd@lists.infradead.org
+Date: Mon, 04 Dec 2023 17:59:55 -0300
+From: Fabio Estevam <festevam@denx.de>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: pratyush@kernel.org, michael@walle.cc, linux-mtd@lists.infradead.org,
+ takahiro.kuwano@infineon.com, bacem.daassi@infineon.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] mtd: spi-nor: introduce die erase
+In-Reply-To: <f9dc82f3-070a-42cd-a92d-83d031647867@linaro.org>
+References: <20231125123529.55686-1-tudor.ambarus@linaro.org>
+ <d7ce98eb-c920-413f-bbe9-059077a9dda7@linaro.org>
+ <6156a51f7eadc9594404bb0eacabe1a6@denx.de>
+ <f9dc82f3-070a-42cd-a92d-83d031647867@linaro.org>
+Message-ID: <8de7595d8f4839187fdbbe7e139016bc@denx.de>
+X-Sender: festevam@denx.de
+User-Agent: Roundcube Webmail/1.3.6
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231204_104521_204781_6633225A 
-X-CRM114-Status: GOOD (  11.72  )
+X-CRM114-CacheID: sfid-20231204_125959_447914_1F97C769 
+X-CRM114-Status: GOOD (  10.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,31 +75,246 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU3VuLCBEZWMgMywgMjAyMyBhdCAxMTo0MeKAr1BNIERhbiBDYXJwZW50ZXIgPGRhbi5jYXJw
-ZW50ZXJAbGluYXJvLm9yZz4gd3JvdGU6Cj4KPiBIZWxsbyBEYXZpZCBSZWdhbiwKPgo+IFRoZSBw
-YXRjaCAzY2M0NzE4ZmE2NDQ6ICJtdGQ6IHJhd25hbmQ6IGJyY21uYW5kOiBleGVjX29wCj4gaW1w
-bGVtZW50YXRpb24iIGZyb20gTm92IDI0LCAyMDIzIChsaW51eC1uZXh0KSwgbGVhZHMgdG8gdGhl
-Cj4gZm9sbG93aW5nIFNtYXRjaCBzdGF0aWMgY2hlY2tlciB3YXJuaW5nOgo+Cj4gZHJpdmVycy9t
-dGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYzoxNzAxIGJyY21uYW5kX3N0YXR1cygpIHdh
-cm46IHNpZ25lZG5lc3MgYnVnIHJldHVybmluZyAnKC0xMTApJwo+IGRyaXZlcnMvbXRkL25hbmQv
-cmF3L2JyY21uYW5kL2JyY21uYW5kLmM6MTcxMCBicmNtbmFuZF9yZXNldCgpIHdhcm46IHNpZ25l
-ZG5lc3MgYnVnIHJldHVybmluZyAnKC0xMTApJwo+Cj4gZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJj
-bW5hbmQvYnJjbW5hbmQuYwo+ICAgICAxNjkzIHN0YXRpYyB1OCBicmNtbmFuZF9zdGF0dXMoc3Ry
-dWN0IGJyY21uYW5kX2hvc3QgKmhvc3QpCj4gICAgIDE2OTQgewo+ICAgICAxNjk1ICAgICAgICAg
-c3RydWN0IG5hbmRfY2hpcCAqY2hpcCA9ICZob3N0LT5jaGlwOwo+ICAgICAxNjk2ICAgICAgICAg
-c3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3RvX210ZChjaGlwKTsKPiAgICAgMTY5Nwo+ICAg
-ICAxNjk4ICAgICAgICAgYnJjbW5hbmRfc2V0X2NtZF9hZGRyKG10ZCwgMCk7Cj4gICAgIDE2OTkg
-ICAgICAgICBicmNtbmFuZF9zZW5kX2NtZChob3N0LCBDTURfU1RBVFVTX1JFQUQpOwo+ICAgICAx
-NzAwCj4gLS0+IDE3MDEgICAgICAgICByZXR1cm4gYnJjbW5hbmRfd2FpdGZ1bmMoY2hpcCk7Cj4K
-PiBicmNtbmFuZF93YWl0ZnVuYygpIHJldHVybnMgbmVnYXRpdmUgZXJyb3IgY29kZXMgYnV0IHdl
-IHRydW5jYXRlIGl0IHRvCj4gYSB1OC4KPgo+ICAgICAxNzAyIH0KCkhpIERhbiwgdGhhbmsgeW91
-IGZvciBjYXRjaGluZyB0aGlzLiBJIGhhdmUgdG8gbWFrZSBzb21lIGNoYW5nZXMgdG8KdGhpcyBm
-aWxlIGFuZCB3aWxsIGFkZCBpbiBhIGZpeCBmb3IgdGhpcyBpc3N1ZS4KCj4KPiByZWdhcmRzLAo+
-IGRhbiBjYXJwZW50ZXIKCi1EYXZlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 30/11/2023 07:42, Tudor Ambarus wrote:
+
+> Thanks, will do. Would you please replicate the tests that I did in
+> patch 3/5 for mt25qu01q? You'll have to modify a bit the offsets for 
+> the
+> die and cross die tests.
+
+
+Here it goes.
+
+Can this series be applied now?
+
+:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+mt25qu01g
+
+:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+20bb21104400
+
+:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+st
+
+:~# xxd -p  
+/sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
+53464450060101ff00060110300000ff84000102800000ffffffffffffff
+ffffffffffffffffffffffffffffffffffffe520fbffffffff3f29eb276b
+273b27bbffffffffffff27bbffff29eb0c2010d80f520000244a99008b8e
+03e1ac0127387a757a75fbbdd55c4a0f82ff81bd3d36ffffffffffffffff
+ffffffffffffffffffe7ffff21dcffff
+
+:~# sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+e49dfee6eeb73c55e94c07a8c7d352dd7d8774b830a64ed1059ef6e7bc833668  
+/sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+
+:~# cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
+Supported read modes by the flash
+  1S-1S-1S
+   opcode	0x13
+   mode cycles	0
+   dummy cycles	0
+  1S-1S-2S
+   opcode	0x3c
+   mode cycles	1
+   dummy cycles	7
+  1S-2S-2S
+   opcode	0xbc
+   mode cycles	1
+   dummy cycles	7
+  2S-2S-2S
+   opcode	0xbc
+   mode cycles	1
+   dummy cycles	7
+  1S-1S-4S
+   opcode	0x6c
+   mode cycles	1
+   dummy cycles	7
+  1S-4S-4S
+   opcode	0xec
+   mode cycles	1
+   dummy cycles	9
+  4S-4S-4S
+   opcode	0xec
+   mode cycles	1
+   dummy cycles	9
+
+Supported page program modes by the flash
+  1S-1S-1S
+   opcode	0x12
+  1S-1S-4S
+   opcode	0x34
+  1S-4S-4S
+   opcode	0x3e
+
+:~# cat /sys/kernel/debug/spi-nor/spi0.0/params
+name		mt25qu01g
+id		20 bb 21 10 44 00
+size		128 MiB
+write size	1
+page size	256
+address nbytes	4
+flags		4B_OPCODES | HAS_4BAIT | HAS_16BIT_SR | SOFT_RESET
+
+opcodes
+  read		0x6c
+   dummy cycles	8
+  erase		0x21
+  program	0x12
+  8D extension	none
+
+protocols
+  read		1S-1S-4S
+  write		1S-1S-1S
+  register	1S-1S-1S
+
+erase commands
+  21 (4.00 KiB) [1]
+  dc (64.0 KiB) [3]
+  c4 (128 MiB)
+
+sector map
+  region (in hex)   | erase mask | flags
+  ------------------+------------+----------
+  00000000-07ffffff |     [ 123] |
+root@mcde3000a:~#
+
+:~# dd if=/dev/urandom of=./spi_test bs=1M count=2
+2+0 records in
+2+0 records out
+2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0303915 s, 69.0 MB/s
+
+:~# mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+:~# hexdump spi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0200000
+:~# sha256sum spi_read
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  
+spi_read
+:~# mtd_debug write /dev/mtd0 0 2097152 spi_test
+Copied 2097152 bytes from spi_test to address 0x00000000 in flash
+
+:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+:~# sha256sum spi*
+d5c15629e1fa019941cb820eff6ffd2a9008b5796bb23a67c351f42af48ce180  
+spi_read
+d5c15629e1fa019941cb820eff6ffd2a9008b5796bb23a67c351f42af48ce180  
+spi_test
+:~# mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+:~# sha256sum spi*
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  
+spi_read
+d5c15629e1fa019941cb820eff6ffd2a9008b5796bb23a67c351f42af48ce180  
+spi_test
+:~# mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 134217728 (128M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+
+real	0m0.005s
+user	0m0.001s
+sys	0m0.005s
+:~# time mtd_debug erase /dev/mtd0 0 134217728
+Erased 134217728 bytes from address 0x00000000 in flash
+
+real	0m1.768s
+user	0m0.001s
+sys	0m1.609s
+:~# echo "ta writes something into the first die" > firstdie
+:~# echo "ta writes something into the second die" > seconddie
+:~# ls -al
+total 4112
+drwx------ 2 root root    4096 Dec  4 20:36 .
+drwxr-xr-x 4 root root    4096 Mar  9  2018 ..
+-rw-r--r-- 1 root root      39 Dec  4 20:36 firstdie
+-rw-r--r-- 1 root root      40 Dec  4 20:36 seconddie
+-rw-r--r-- 1 root root 2097152 Dec  4 20:35 spi_read
+-rw-r--r-- 1 root root 2097152 Dec  4 20:32 spi_test
+:~# mtd_debug write /dev/mtd0 0 39 firstdie
+Copied 39 bytes from firstdie to address 0x00000000 in flash
+:~# mtd_debug write /dev/mtd0 67108864 40 seconddie
+Copied 40 bytes from seconddie to address 0x04000000 in flash
+:~# mtd_debug read /dev/mtd0 0 134217728 read
+Copied 134217728 bytes from address 0x00000000 in flash to read
+:~# hexdump -C read
+00000000  74 61 20 77 72 69 74 65  73 20 73 6f 6d 65 74 68  |ta writes 
+someth|
+00000010  69 6e 67 20 69 6e 74 6f  20 74 68 65 20 66 69 72  |ing into 
+the fir|
+00000020  73 74 20 64 69 65 0a ff  ff ff ff ff ff ff ff ff  |st 
+die..........|
+00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+04000000  74 61 20 77 72 69 74 65  73 20 73 6f 6d 65 74 68  |ta writes 
+someth|
+04000010  69 6e 67 20 69 6e 74 6f  20 74 68 65 20 73 65 63  |ing into 
+the sec|
+04000020  6f 6e 64 20 64 69 65 0a  ff ff ff ff ff ff ff ff  |ond 
+die.........|
+04000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+08000000
+:~# time mtd_debug erase /dev/mtd0 0 134217728
+Erased 134217728 bytes from address 0x00000000 in flash
+
+real	0m2.029s
+user	0m0.001s
+sys	0m1.853s
+
+:~# echo "ta writes a something crossing the dice" > cross-dice
+:~# mtd_debug write /dev/mtd0 67108857 40 cross-dice
+Copied 40 bytes from cross-dice to address 0x03fffff9 in flash
+
+:~# mtd_debug read /dev/mtd0 0 134217728 read
+Copied 134217728 bytes from address 0x00000000 in flash to read
+:~# hexdump -C read
+00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+03fffff0  ff ff ff ff ff ff ff ff  ff 74 61 20 77 72 69 74  |.........ta 
+writ|
+04000000  65 73 20 61 20 73 6f 6d  65 74 68 69 6e 67 20 63  |es a 
+something c|
+04000010  72 6f 73 73 69 6e 67 20  74 68 65 20 64 69 63 65  |rossing the 
+dice|
+04000020  0a ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+04000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+08000000
+:~# mtd_debug read /dev/mtd0 67108857 40 read
+Copied 40 bytes from address 0x03fffff9 in flash to read
+:~# hexdump -C read
+00000000  74 61 20 77 72 69 74 65  73 20 61 20 73 6f 6d 65  |ta writes a 
+some|
+00000010  74 68 69 6e 67 20 63 72  6f 73 73 69 6e 67 20 74  |thing 
+crossing t|
+00000020  68 65 20 64 69 63 65 0a                           |he dice.|
+00000028
+:~#
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
