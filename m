@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA695C10DC1
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Dec 2023 07:41:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D3CFC4167B
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Dec 2023 10:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AqWZC/Cs5u1KKcRjlMRrUyNwsw8yIs9qw/qCobCJCGE=; b=bpHckTmxt+Lzhn
-	laZ/04t56yiumlP7hXzPXQnteBA/P44t98sM84vyS2HpQKFio9jZzpiXMOJWVgvnW3gnbfvqg/Vwp
-	E9Gq707AJ/q2APEEniuz9Bpd8kWcteBXoFOCcHNSKzPN5nq5WN8C45F6O+dS/MVmByrsKYyghIFsU
-	pk2JEmjNzB5VpnNp9xjDRY7XiITXDur6BTT5B058Ixyway4yD7vgwjyGsNm0opo5F3kSiWsE+F1sz
-	pJ0NXJlwaCdQkmxVZzj04f6XOQDlVqPHR71M4DsDFuUaHl/ckCEF8NiAkhrePGpfRyMKphACGp9nr
-	2Z4t/92bcN/stJl4RQiQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OrqRyAM0PRyCMxltUx97wZUtEFmkd0Uh9giOBd+3fNM=; b=UWe4YdGrhQ5Ie7
+	3qeWSVCsMQklWP1pZZtH3uMpMDhKAG9VggMzoAtfGNTBoaaSKAwjaO0Ag/CJDywtE5ZfWeZObpJif
+	P4LS5DX80Un9yjPUY32kQpEXRSbyAS5WYufrIN5QZHDhGNdHCvnpEPZdyeKRtxz83LSJNF2Yn3+7Y
+	bNLnsjWLIan9Yf/nk1wnIBYi8FxbPfREX9EgDupTyqClOuvBuIV+K/8pnpMgb5QKo+HW2genxbv3w
+	fK1E6cwwl+frsj9arBw1Bmj2F+vw9GuHq5a+rdbnHf6ChxgEx39dFf9u7/JjaF0BUteYQem76R7m9
+	UPyY5JhYR6XITG7hf9yQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rA3Zu-003Ahx-1l;
-	Mon, 04 Dec 2023 07:41:18 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1rA6Z9-003aIy-35;
+	Mon, 04 Dec 2023 10:52:43 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rA3Zr-003Agr-1u
+	id 1rA6Z3-003aGO-1x
 	for linux-mtd@lists.infradead.org;
-	Mon, 04 Dec 2023 07:41:16 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b27726369so42365685e9.0
-        for <linux-mtd@lists.infradead.org>; Sun, 03 Dec 2023 23:41:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701675673; x=1702280473; darn=lists.infradead.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bHnNH52BzwSPE14G/TQHBsQrr6eg0hm0UZHUSzMbFSc=;
-        b=a0IP8MA5OaPeE7ykkNh6Ez+Pks6/AwXOwpL3Pq5p6+XYRu3W91ZxQmR+1FoJNen+VR
-         k7IbdkBoVTy48Ek+QKuGuIix8So3w+QdgxHupX06bO2raOqCHAzPKUcO4g+1hJzOSWfS
-         FoC+fQM5OaNqwbpBaXSMIieVBAsgNm8BrQT8jJBjd8GTCqKD9i8pNh9Tb9xmM1iAiNYs
-         kvjmTJfoNZPr4lwXOZI4coDyWwD4fmjHo0MyioSWJFuzN1fC7m90NOXeiGqJV0jrFJzj
-         yzLEuj70VxBTxRP8Vt8Z+2BXcPjmqsXJXnUSz8A1+NsT9EGUj9AYSawDf3JM0P3uEtQ1
-         IZqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701675673; x=1702280473;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bHnNH52BzwSPE14G/TQHBsQrr6eg0hm0UZHUSzMbFSc=;
-        b=jdvuIM3UyxOovYJ2NiLJxg5kzvzl4c1HvCfSzpYfd7XUr4oFsS9Od5kG8l4fqRWhCo
-         XMFW9Fi6VWBjKmhc/TZwQZJIOuy+fNSVAXsnqak4zwF80JthStwh0qqN09LRtLXHydM9
-         wJPY6mP084mgzxt8zm4eAyLqrFkGieQByMWjefWcmO7LyAdQd6fqbs2PQJN4vKz2e8jn
-         z9PDTEIF6PGLV4eyl0+BYySWWhtSzJONyqcJlnuXE172wFdxU9Oo7WGZPcEpMnSGGXEJ
-         ChLGadK8QOSiWZbOxDrC05Pq3DJsjVP8U8raHZ96oldDY4/zQrn+byg0Mzo9YXDtBVDP
-         O2DA==
-X-Gm-Message-State: AOJu0YwrVS6HBAAnP9FhQUneKPZtcTcg0RBYTlNoz9B/W4oz85gxqtB2
-	NzLDDwMyDC20AGjNLemQYDH6l8wlh7Eeo8zdmS4=
-X-Google-Smtp-Source: AGHT+IH564eHMOqnQQlCMJsy5LlhIWzbQjcyWeWeTasTrOwW4EAD9HyP2XrY8COqKiWaGLuX/qEggA==
-X-Received: by 2002:a05:600c:ad2:b0:40b:5e59:da96 with SMTP id c18-20020a05600c0ad200b0040b5e59da96mr2260854wmr.169.1701675672807;
-        Sun, 03 Dec 2023 23:41:12 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id bh6-20020a05600c3d0600b0040b54335d57sm9232324wmb.17.2023.12.03.23.41.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 23:41:12 -0800 (PST)
-Date: Mon, 4 Dec 2023 10:41:08 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: dregan@broadcom.com
-Cc: linux-mtd@lists.infradead.org
-Subject: [bug report] mtd: rawnand: brcmnand: exec_op implementation
-Message-ID: <77e2f422-2a17-4235-808c-133073aefcda@moroto.mountain>
+	Mon, 04 Dec 2023 10:52:42 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66B6C2000D;
+	Mon,  4 Dec 2023 10:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1701687152;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VGW0aYaSSgY7TbVn7mSy7EgFtx4MSa9KcaOfi7zh3LA=;
+	b=iv8ooXpqwTm8wRYeLHrtRDLvjizLyoyApYNVhbJn9vWZSMP9gMM4ji/koDOEB4AWp7Hcfq
+	Kvhe+28Bn2YS2xI8QgV9y5Q954Gw+wiSxRge4R1kVkkd1HfxqyyHdDoCXs5t7dRF4+YMma
+	SEF8wBl66viXznFYmTc53TT+Hk63OqhWLn7Cg/t1EgCIk4C0+FgN0RJ/i/9+fuvxDzp7DI
+	g+7zW1zQyZAzg82Ta4jymaQOPGyU6+VPPjfRhDwg7EpUwvaur+kPlIIoko47pBf5EO+CZh
+	yurS+qGrc+x0Dkz5x8DsCpF0ICc0sAgaqmynU2hAHlyhgzIrk7wFVoiI9fcuHg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: dregan <dregan@broadcom.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] mtd: rawnand: Add deassert_wp comment
+Date: Mon,  4 Dec 2023 11:52:29 +0100
+Message-Id: <20231204105229.870290-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231201212446.189491-1-dregan@broadcom.com>
+References: 
 MIME-Version: 1.0
-Content-Disposition: inline
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'578dc962ff2000ba4bf52d50717aea0819615634'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231203_234115_632410_50889458 
-X-CRM114-Status: UNSURE (   6.25  )
+X-CRM114-CacheID: sfid-20231204_025237_963120_7ABFCAAD 
+X-CRM114-Status: UNSURE (   6.05  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,33 +82,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello David Regan,
+On Fri, 2023-12-01 at 21:24:46 UTC, dregan wrote:
+> From: David Regan <dregan@broadcom.com>
+> 
+> Add deassert_wp description comment
+> 
+> Signed-off-by: David Regan <dregan@broadcom.com>
 
-The patch 3cc4718fa644: "mtd: rawnand: brcmnand: exec_op
-implementation" from Nov 24, 2023 (linux-next), leads to the
-following Smatch static checker warning:
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-drivers/mtd/nand/raw/brcmnand/brcmnand.c:1701 brcmnand_status() warn: signedness bug returning '(-110)'
-drivers/mtd/nand/raw/brcmnand/brcmnand.c:1710 brcmnand_reset() warn: signedness bug returning '(-110)'
-
-drivers/mtd/nand/raw/brcmnand/brcmnand.c
-    1693 static u8 brcmnand_status(struct brcmnand_host *host)
-    1694 {
-    1695         struct nand_chip *chip = &host->chip;
-    1696         struct mtd_info *mtd = nand_to_mtd(chip);
-    1697 
-    1698         brcmnand_set_cmd_addr(mtd, 0);
-    1699         brcmnand_send_cmd(host, CMD_STATUS_READ);
-    1700 
---> 1701         return brcmnand_waitfunc(chip);
-
-brcmnand_waitfunc() returns negative error codes but we truncate it to
-a u8.
-
-    1702 }
-
-regards,
-dan carpenter
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
