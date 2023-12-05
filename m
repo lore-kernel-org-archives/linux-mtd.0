@@ -4,110 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E7BFC4167B
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 08:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96CFDC4167B
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 09:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NsQG0T9AVNsY19xJ286yAn/8VE9kVXaU4LNQ9LmWUxw=; b=JWbnGKWHLeLIbC
-	lfJPe5hYvW4EFbI9uCwvtr4xqNHVWIh8zJQ9b33yiae/wUDELvNRVYDeTMfUnJSXTkwaOB3UHXTVq
-	MI+SVPkZXx3yZrsEtN78XhIPkdt6+dKO91UHywj6G1We0dlBNb4S1thCABMjiinZawGA0/cJO3hfS
-	lgkHuS9CET19PcZRYJoMRuFFp2c2TNDeEYTYENrazrO933zv1SE8+NUnhJFiak9LDG6TLojDbm4sl
-	ajFxKptNyOrKowX4jaf1mGsUT11YVL8nr+767HCX1LRPPSUH4KWTfsiLW9L4mSd9g9o7Au06//eop
-	iNOY0uZI3zcYTiCmFW2w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IgcJ0Kdn4ApZT6IFiGhSTpsljG+6UPDgccjxYTO5+pw=; b=GJcGUUTK4YrIrtB6BLCSkckphp
+	ubc/+uti9ylBU1EkV3WaTPv2K6a+SyC3lO2zJrpCbI+hZQSMZx7U6CzkRZnBkRVJ7Hp4Byc9bYkEc
+	X+/FcZ6upnfIRGTaMkIy1QVwxF2dMBcftqWihJp/hDUDNfTll0cd+/DN1wBpQBeHHqhxUySCb2hZO
+	quk30zcVQfHqbfRyCGmp+e1BezIT5Rk+DmlQm3rr1jUEchLFNZxBCRiVT0JqqN3Dj6OYKRPnPtnQS
+	jt/2wsvsujZplFnwOYEN9mDiF/tMYIDXeRuTf6HES456oU+7N3jw+BX5Y8HLOI+/SEbKSs/2+m6nZ
+	8PLSuItw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAQlF-006e2D-2H;
-	Tue, 05 Dec 2023 08:26:33 +0000
-Received: from mail-me3aus01olkn20826.outbound.protection.outlook.com ([2a01:111:f403:7004::826] helo=AUS01-ME3-obe.outbound.protection.outlook.com)
+	id 1rARJP-006j8E-2Q;
+	Tue, 05 Dec 2023 09:01:51 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAQlB-006e1m-2e
+	id 1rARJM-006j6v-20
 	for linux-mtd@lists.infradead.org;
-	Tue, 05 Dec 2023 08:26:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RBmdn7OT/vkxNkYdnINBc3WAAu0n6MIcKUaToVkxpea70Clb3cdp6uU6/nbDWhkQQm09RJ1opSj9QA/PAwm7D7/VXf+u4KAcS+/eZ3zwdHXNoLSghBj9iI1kGkqqrA8HZvFDBnHWtv2VtO4D1qPebqkLIFTNA5Be3riunCn9peq9uxPWzpUMZgHpQf2/WSGIhmzXvZrWdvWsoFPt0IPZugakkz3KUMeITq9Bz1C/XN4AacR9DFxqWuR+z2khUgpK7+M0gSm1vnd+Q0767v9+HRVjuQu4eH/0QdGmlJc4ob0S4AW+SJwaVxTC/+x4LtTa36yRzG+jJEv98G3wOg1WKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZDgobJEUE9udd4p/yLl8Jwh+vAI74v91wiT5FG17PlQ=;
- b=Z8mzSpSn2svl88VqJ/IcAM/hkBWiCD05vvvwFmYaon4jxv2IPjcI0fJ3wdT5U2aYxYAZwXRCmZsXxw1FCsxEIcTTd7Xz+bG+jIsUzHBMkaTQbFpyHVpMCf+Ub+m5GdJKF3mJuYcJSa+9Q6uBbMYVb6+0uu6pTkR77mdDzIBzwhWMcAnekxG4/sG0cMvGm66zavJUv3VCCdgAd2SiWLZtJQKercih/EvxiUkrR2A7gqP7KyemxCi4eZgZgI8dDmOAUPUCws2kTcCoLDFZfYKNT5O8xYRXlY/9l1+9nSMgWZjF9Qphhr4V/rZiNTztOjkyQbIFPO2HHso2OE/W2xzEHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZDgobJEUE9udd4p/yLl8Jwh+vAI74v91wiT5FG17PlQ=;
- b=hTTAPqjjo2/IeTgz7kvu6BMoF1aNTwRHRunV0Ds1sSnr828pfN5aWXYBvE1hZzpdGtMsQj2GMAaMlYhyS7hTYJ9WTNeTnRk/TMTw4lGC9f4t4GaMqORdtHdtCt7Qqh1xG0hQDkao9qeOag2AcfPGFZSQs+RO16MYhx5SgfYZ0J+/mqkWBh5XAzfqe3/xWMvDZ2b4hiaomOrfGagds1FnzO1c3BzkPk1ZMcWhTXKVNzeTkl0gdReT2lbNxijhpOlua8A84B7Tuen4rxRqEv8MQWTGKhBxZyrpawRETf6JmzaP7Clzaf5X+JhfbqWHs/vQ1FVI1aLIcf84DBZRfZkpAQ==
-Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:159::11)
- by SY5P282MB4606.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:26b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 08:11:10 +0000
-Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
- ([fe80::7233:1e6:ee78:66f]) by MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
- ([fe80::7233:1e6:ee78:66f%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 08:11:10 +0000
-From: Ryder W <rydercoding@hotmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Zhihao
- Cheng <chengzhihao1@huawei.com>, "daniel@makrotopia.org"
+	Tue, 05 Dec 2023 09:01:50 +0000
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.54])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SkvZ81rQVz1Q67l;
+	Tue,  5 Dec 2023 16:57:52 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 17:01:37 +0800
+Subject: Re: [PATCH] ubi: don't decrease ubi->ref_count on detach error
+To: Ryder W <rydercoding@hotmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "daniel@makrotopia.org"
 	<daniel@makrotopia.org>
-Subject: [PATCH] ubi: don't decrease ubi->ref_count on detach error
-Thread-Topic: [PATCH] ubi: don't decrease ubi->ref_count on detach error
-Thread-Index: AQHaJ01Smf4XGYIF/kKYwGu4alQHeg==
-Date: Tue, 5 Dec 2023 08:11:10 +0000
-Message-ID: <MEYP282MB31647F3434E6BD0178F32CDEBF85A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-tmn: [aTJwHwSwKvnkiQO9cIMlbsOZzv0Tu89dl/Y2R6mXzww=]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MEYP282MB3164:EE_|SY5P282MB4606:EE_
-x-ms-office365-filtering-correlation-id: c6c75615-9ccc-4ac5-f569-08dbf569bdb9
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KUQXKOAvtX1b26J8t73XoBKw27fatydG3T9wMreeqTfPquhLOuZjZdF4Q8pAaR44nICNN4BUQ2cGkDp1jhNURKDrdcngIy0Gq5W2wtj9U7tJ/+VtLmjKNUjezuf/3UR/dal0ZQ3AuWdH2LL6PCuHrt3xsCT0Hm/zc7/kayE1q1sxg68EHhLrPRbNfXhiKqTLHg0FyRibBcU1j9oHPuJeZpEHOpT1356vOqcZ82V8steLmZ8dEHOdlqx+owaKt5fXJO4Ps7+w08oGk3DA5/H3+GUtNKVRAkq1/FkQMaKCE+kKv1Uuse9/HCtyt8luW2WKAb7ncM9euX+o0Iy3DR2AwehyWXBLuhdQb6pCHHwdMNYWaZbsftoylVeam1hbMBExwHvXPKZRbb8DmA2zuOQphO3NzgVt9uBXzn38Ou6XXXXWi0TtATfVwFXcLsTgzcZ/hb+2kn34UQwFEHjmNbHjiW40IoSgNS5dQRX96BpPCLwFDaMR6GQ0+UJEyvuqsrNfDQgvXgV/u/Ncca1Hx19zPj9UepC65ome5i5snvcddQXcj9oBKmBYI3k1oQyKvuGJ
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?DpXxiE7Ukq4zQbdulgUmQrMwr3TrLr5Otq4eubh/uRgUGcB7I57/kxQosk?=
- =?iso-8859-1?Q?o9Gm41JzVqAVyCFlCI18zvbsblfL3CRl0v6HuAuXIH3Ol+R+cicCwFlaXD?=
- =?iso-8859-1?Q?1GoJ7msraDVCz85w+5jLRJLExIsXGkyCA9nbOlRNV33tlK5SBBgTkeZQGS?=
- =?iso-8859-1?Q?xX5lhaKaabKcu1wqZeTMzwLOYva56cmy0vnYO2kDFGYuF0u0Q8u8QLLAGN?=
- =?iso-8859-1?Q?dNLiAn/6iWExI7PN3YOT9Vu1GgpGXcihLKSkDSNFFtAm5n6JyUoz2adoqA?=
- =?iso-8859-1?Q?fatHBuP4HWy1Fuxz0+Dkvyi3RW2DZznDUDsbBAthUUeo2VwTALfNlsf2tc?=
- =?iso-8859-1?Q?LjyGfqiQWFuzKK/DYOuNdgcKRoWAUw+UyeNx6JWWQ/JQV7P0NPeQJWktcf?=
- =?iso-8859-1?Q?wd5k910zvPPPRdUtHDLKZMNG2UdBBDHcrAH81QIPcytGwMtknnCV5jP+6l?=
- =?iso-8859-1?Q?mpgZzA+N7R0bKQlP9whEcuCH7WEEGojgHRa/n7fplaHUagiB6pDg2m93z5?=
- =?iso-8859-1?Q?KKdMZQirQTneiT+oSLxIpG2OW9rhsiOzHnLifAIIJatCdlB4ld1eO8cfg/?=
- =?iso-8859-1?Q?ZpPyYL2TFqQbfMvAEn++Uj7UD2/XW+huf/dXEIaNqX6L4aqUX9zvO5dgKm?=
- =?iso-8859-1?Q?QOrgIXuCjf1oJ6UET/2uoaE7E3ZGAVE3VkvF7B+WPH2MBF+4dyL9QCrLyF?=
- =?iso-8859-1?Q?z9r/5rrtfqaGpYgKorjYeK/7rkuyst0P4dSlC0z29YY28rrNXWP73P2bSq?=
- =?iso-8859-1?Q?z6hbZe7YU66B1ER9TX5TExmJlHO8c/B23uB/awthU5bee42Fe8NC1aqfa6?=
- =?iso-8859-1?Q?0OGXbQyvCb54e9y+rXCooOZBbEXIrXm0Ljj40sx9Pl1GAk5pAIaQoIOiiL?=
- =?iso-8859-1?Q?DxK+nP7aZ226dfezsa6XiqGUeaL5F7NKcqdASnnWbaK9UndVzelP45MBVs?=
- =?iso-8859-1?Q?ZOmZtEodYwk5TCDvnpqRcSlAQAeirWifIVFayYD6Yq7+09UQDci3HROIaV?=
- =?iso-8859-1?Q?2slhQbYvY40tM6CaRuIgZvflwZJQvotjP5iqJbAsH/RowT40prriI2lc4S?=
- =?iso-8859-1?Q?XpVp9vdzAhPqCf1NhtYRrkz1mWIlwXfU60vcSfQ7fmw3GV6sNFGR7l9P5b?=
- =?iso-8859-1?Q?we6rG2i3elzfp/4JJ53HpnWXoX916a166HlPGT/1mKs/8lXFgjAdj+8ppY?=
- =?iso-8859-1?Q?Hl7WitnapP9iZhdZ+Nq3ACZ6fRh8xcKJUAqDXnoid8E+L9pLRKqpsokOa8?=
- =?iso-8859-1?Q?MGJz4w4MZq4LfE9m2asw=3D=3D?=
+References: <MEYP282MB31647F3434E6BD0178F32CDEBF85A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f7e5075e-232c-7e37-348d-71300b10dac8@huawei.com>
+Date: Tue, 5 Dec 2023 17:01:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6c75615-9ccc-4ac5-f569-08dbf569bdb9
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2023 08:11:10.5950
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY5P282MB4606
+In-Reply-To: <MEYP282MB31647F3434E6BD0178F32CDEBF85A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_002629_931681_B5AAF6C1 
-X-CRM114-Status: GOOD (  11.93  )
+X-CRM114-CacheID: sfid-20231205_010148_862225_CBFD4F2B 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,52 +64,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> > Fixes: cdfa788acd13 ("UBI: prepare attach and detach functions")
-> > Signed-off-by: Daniel Golle <daniel at makrotopia.org>
-> > ---
-> >  drivers/mtd/ubi/build.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> > index 7d4ff1193db6f..f47987ee9a31b 100644
-> > --- a/drivers/mtd/ubi/build.c
-> > +++ b/drivers/mtd/ubi/build.c
-> > @@ -1099,16 +1099,16 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
-> >  
-> >  	spin_lock(&ubi_devices_lock);
-> >  	put_device(&ubi->dev);
-> > -	ubi->ref_count -= 1;
-> > -	if (ubi->ref_count) {
-> > +	if (ubi->ref_count > 1) {
-> >  		if (!anyway) {
-> >  			spin_unlock(&ubi_devices_lock);
-> >  			return -EBUSY;
-> >  		}
-> >  		/* This may only happen if there is a bug */
-> >  		ubi_err(ubi, "%s reference count %d, destroy anyway",
-> > -			ubi->ubi_name, ubi->ref_count);
-> > +			ubi->ubi_name, ubi->ref_count - 1);
-> >  	}
-> > +	ubi->ref_count -= 1;
-> >  	ubi_devices[ubi_num] = NULL;
-> >  	spin_unlock(&ubi_devices_lock);
-
-In the last code of ubi_detach_mtd_dev, the line "ubi->ref_count -= 1" after the line "put_device(&ubi->dev)" is just to decrease ubi->ref_count, which is increased from calling put_device. I don't understand why it should be moved after the sanity check of ubi->ref_count. It may introduce some more critical bug. 
-
-
-
-
-
-
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy8xMi81IDE2OjExLCBSeWRlciBXINC0tcA6Cj4+PiBGaXhlczogY2RmYTc4OGFjZDEz
+ICgiVUJJOiBwcmVwYXJlIGF0dGFjaCBhbmQgZGV0YWNoIGZ1bmN0aW9ucyIpCj4+PiBTaWduZWQt
+b2ZmLWJ5OiBEYW5pZWwgR29sbGUgPGRhbmllbCBhdCBtYWtyb3RvcGlhLm9yZz4KPj4+IC0tLQo+
+Pj4gICBkcml2ZXJzL210ZC91YmkvYnVpbGQuYyB8IDYgKysrLS0tCj4+PiAgIDEgZmlsZSBjaGFu
+Z2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPj4+IGlu
+ZGV4IDdkNGZmMTE5M2RiNmYuLmY0Nzk4N2VlOWEzMWIgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJz
+L210ZC91YmkvYnVpbGQuYwo+Pj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPj4+IEBA
+IC0xMDk5LDE2ICsxMDk5LDE2IEBAIGludCB1YmlfZGV0YWNoX210ZF9kZXYoaW50IHViaV9udW0s
+IGludCBhbnl3YXkpCj4+PiAgIAo+Pj4gICAJc3Bpbl9sb2NrKCZ1YmlfZGV2aWNlc19sb2NrKTsK
+Pj4+ICAgCXB1dF9kZXZpY2UoJnViaS0+ZGV2KTsKPj4+IC0JdWJpLT5yZWZfY291bnQgLT0gMTsK
+Pj4+IC0JaWYgKHViaS0+cmVmX2NvdW50KSB7Cj4+PiArCWlmICh1YmktPnJlZl9jb3VudCA+IDEp
+IHsKPj4+ICAgCQlpZiAoIWFueXdheSkgewo+Pj4gICAJCQlzcGluX3VubG9jaygmdWJpX2Rldmlj
+ZXNfbG9jayk7Cj4+PiAgIAkJCXJldHVybiAtRUJVU1k7Cj4+PiAgIAkJfQo+Pj4gICAJCS8qIFRo
+aXMgbWF5IG9ubHkgaGFwcGVuIGlmIHRoZXJlIGlzIGEgYnVnICovCj4+PiAgIAkJdWJpX2Vycih1
+YmksICIlcyByZWZlcmVuY2UgY291bnQgJWQsIGRlc3Ryb3kgYW55d2F5IiwKPj4+IC0JCQl1Ymkt
+PnViaV9uYW1lLCB1YmktPnJlZl9jb3VudCk7Cj4+PiArCQkJdWJpLT51YmlfbmFtZSwgdWJpLT5y
+ZWZfY291bnQgLSAxKTsKPj4+ICAgCX0KPj4+ICsJdWJpLT5yZWZfY291bnQgLT0gMTsKPj4+ICAg
+CXViaV9kZXZpY2VzW3ViaV9udW1dID0gTlVMTDsKPj4+ICAgCXNwaW5fdW5sb2NrKCZ1YmlfZGV2
+aWNlc19sb2NrKTsKPiAKPiBJbiB0aGUgbGFzdCBjb2RlIG9mIHViaV9kZXRhY2hfbXRkX2Rldiwg
+dGhlIGxpbmUgInViaS0+cmVmX2NvdW50IC09IDEiIGFmdGVyIHRoZSBsaW5lICJwdXRfZGV2aWNl
+KCZ1YmktPmRldikiIGlzIGp1c3QgdG8gZGVjcmVhc2UgdWJpLT5yZWZfY291bnQsIHdoaWNoIGlz
+IGluY3JlYXNlZCBmcm9tIGNhbGxpbmcgcHV0X2RldmljZS4gSSBkb24ndCB1bmRlcnN0YW5kIHdo
+eSBpdCBzaG91bGQgYmUgbW92ZWQgYWZ0ZXIgdGhlIHNhbml0eSBjaGVjayBvZiB1YmktPnJlZl9j
+b3VudC4gSXQgbWF5IGludHJvZHVjZSBzb21lIG1vcmUgY3JpdGljYWwgYnVnLgo+IAo+CgpUaGFu
+a3MgZm9yIHJlbWluZGluZywgeW91IGFyZSByaWdodC4gSSB0aGluayBJIG1pc3NlZCB0aGUgY29k
+ZSBvZiAKJ3ViaS0+cmVmX2NvdW50JyBpbmNyZWFzaW5nIGluIHViaV9nZXRfZGV2aWNlLCBzbyBk
+ZWNyZWFzaW5nIHRoZSAKJ3ViaS0+cmVmX2NvdW50JyB1bmNvbmRpdGlvbmFsbHkgaXMgcmlnaHQu
+IEluIG1vc3QgY2FzZXMsIHRoZSAKJ3ViaS0+cmVmX2NvdW50JyBpcyB6ZXJvKHVubGVzcyB1Ymlm
+cyBpcyBtb3VudGVkKS4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
