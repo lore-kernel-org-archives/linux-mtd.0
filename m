@@ -4,84 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 316F1C4167B
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 17:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2686AC10F05
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 17:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9pe77gZh75V/m5Kaq4XPrq2djnTBG9TVzgM5XlYTARc=; b=D3q+9OX9a5cQQd
-	s9rmT6oCPyADipRBB5PkzRhumLGGjztCCb9FJV5kO2Igu1oZr51WLIfwR7P3RqsDRXpO8hTs5kNbl
-	u876+wHxw1FAbrl1oLCcqufLDqSOiB7PtuZnBlG+xyd6KrUm4n0Aynl7oh7qLHLA5LdyXB2mff63h
-	/ut/p3Gl7Tx0ZT2BLCywkwC3NiDH4McVWNsw7UzAoSqTUehuLUS3g2BYJI1x2mNPYaSJ+yqt/20la
-	7ymmlkPcr40SLcjJClYXeKjbi0IMp79NYn3dDtfQURsDmNNkfA5jgnBDBr0THvq8uOo4gochD8WAl
-	nwsAR3VrduIiyUQX+8Ag==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8VT0enWAaXy4vp8PS7DTx1nOUGI6pasaSFWxf3+oqUg=; b=MTQrL/rurDauis
+	tScxHZnuwslpmUrqrDpNavQleaacMP+djpVY8aGAJT+0wuZfDsGtAOmfdVZfpggg4HKtodxm59/5S
+	jqaihFEgoVTrKr3BKYhiuO5Srs1BRirZmplBeWvenR3CLi5vV2e+4WR2YkUi29lUq40yg+kAQmgDc
+	6JFoRyRhS4+b26iUxU6gwUdUUbanY57SlG2vV1lJHKzo7Hyo0QQM4tdaULoNUSw1H/YJhejgdHDuF
+	z4EEcGJ6SrUFYF/QPD2xVEnkY7WWhnMlnnzQxW/ZgU0cFopRBm/ZmgwaFXUqmzkVVat5RWevsgrlf
+	CPTkrqY8W+4EW2IUojdg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAYpz-007z2s-0I;
-	Tue, 05 Dec 2023 17:03:59 +0000
-Received: from mail-oo1-f43.google.com ([209.85.161.43])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAYpw-007z1p-06
-	for linux-mtd@lists.infradead.org;
-	Tue, 05 Dec 2023 17:03:57 +0000
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-58d9a4e9464so2495522eaf.0
-        for <linux-mtd@lists.infradead.org>; Tue, 05 Dec 2023 09:03:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701795835; x=1702400635;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Kxt6CKccKyM2aD5KqaYbJ+5NRAtsSu20TdTe87tfro=;
-        b=qg/CJGdNqsZ5JTG5e41gOb9ttZ53gdRttIjEzoFJOV0RKUeWk2sxutrrQWi0gE213n
-         zbi0TPuQVdUzRWrsEecb7R8CIPbsnDLrJp9hsRFAkrMebzePm2/FQhxhLQYWBHtm5pij
-         vvS5BxF1N4fmSl+BUAVbOobf3HK92x8lnNV79+CF8Xg93KJrqgbB8QJY6XCsK412NTFo
-         +mkywUK7KsA4ixbhR6VInbbz1hjqlNA3Vd98wMenjwKVXfhFVlTNqmSt9K9G4auPQhkD
-         OBzOoG/xnsNxYG3GnYZcRMGMe5BN91IrTbMuFbP9CNCSC9/70hSquaGJvYThjKvDpHyR
-         Ipbg==
-X-Gm-Message-State: AOJu0YxlGbkTkDzUKsnFEMOqr7Box3VAsY/L8OdcPa17PEm8mTdbsBo2
-	Sv3Fumne6Ku/QP88XRsLJQg=
-X-Google-Smtp-Source: AGHT+IHREsBDTR/fguPuUAOPGrQJFqdX7+L934/9nqEfo9v3T6jgbM8x1qOuTAd7fOfx1S8tYfwMzA==
-X-Received: by 2002:a05:6358:6f95:b0:16e:43a1:6881 with SMTP id s21-20020a0563586f9500b0016e43a16881mr2252180rwn.26.1701795834695;
-        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
-Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
-        by smtp.gmail.com with ESMTPSA id s25-20020a639259000000b00578afd8e012sm5146562pgn.92.2023.12.05.09.03.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
-Message-ID: <189fa9b2-bcc8-4839-ac04-33a29bba9aaa@acm.org>
-Date: Tue, 5 Dec 2023 09:03:48 -0800
+	id 1rAZHU-0082fJ-0R;
+	Tue, 05 Dec 2023 17:32:24 +0000
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rAZHS-0082ez-1z;
+	Tue, 05 Dec 2023 17:32:22 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
+Date: Tue,  5 Dec 2023 09:32:22 -0800
+Message-ID: <20231205173222.12575-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-Content-Language: en-US
-To: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, roger.pau@citrix.com,
- colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
- martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
- konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
- hare@suse.de, p.raghav@samsung.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
- linux-nilfs@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com,
- yangerkun@huawei.com
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231205123728.1866699-2-yukuai1@huaweicloud.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_090356_085229_8DA517EB 
-X-CRM114-Status: UNSURE (   5.79  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,22 +48,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/5/23 04:37, Yu Kuai wrote:
-> +static inline u8 block_bits(struct block_device *bdev)
-> +{
-> +	return bdev->bd_inode->i_blkbits;
-> +}
+Update the end of one sentence where a comment was truncated. (dwmw2)
 
-This function needs a name that's more descriptive.
+Fix a bunch of kernel-doc warnings:
 
-Thanks,
+nodemgmt.c:72: warning: Function parameter or member 'sumsize' not described in 'jffs2_do_reserve_space'
+nodemgmt.c:72: warning: expecting prototype for jffs2_reserve_space(). Prototype was for jffs2_do_reserve_space() instead
+nodemgmt.c:76: warning: Function parameter or member 'sumsize' not described in 'jffs2_reserve_space'
+nodemgmt.c:76: warning: No description found for return value of 'jffs2_reserve_space'
+nodemgmt.c:503: warning: Function parameter or member 'ofs' not described in 'jffs2_add_physical_node_ref'
+nodemgmt.c:503: warning: Function parameter or member 'ic' not described in 'jffs2_add_physical_node_ref'
+nodemgmt.c:503: warning: Excess function parameter 'new' description in 'jffs2_add_physical_node_ref'
+nodemgmt.c:503: warning: No description found for return value of 'jffs2_add_physical_node_ref'
 
-Bart.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/jffs2/nodemgmt.c |   24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff -- a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -49,28 +49,31 @@ static int jffs2_rp_can_write(struct jff
+ 	return 0;
+ }
+ 
++static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
++				  uint32_t *len, uint32_t sumsize);
++
+ /**
+  *	jffs2_reserve_space - request physical space to write nodes to flash
+  *	@c: superblock info
+  *	@minsize: Minimum acceptable size of allocation
+  *	@len: Returned value of allocation length
+  *	@prio: Allocation type - ALLOC_{NORMAL,DELETION}
++ *	@sumsize: summary size requested or JFFS2_SUMMARY_NOSUM_SIZE for no summary
++ *
++ *	Requests a block of physical space on the flash.
+  *
+- *	Requests a block of physical space on the flash. Returns zero for success
+- *	and puts 'len' into the appropriate place, or returns -ENOSPC or other 
+- *	error if appropriate. Doesn't return len since that's 
++ *	Returns: %0 for success	and puts 'len' into the appropriate place,
++ *	or returns -ENOSPC or other error if appropriate.
++ *	Doesn't return len since that's already returned in @len.
+  *
+- *	If it returns zero, jffs2_reserve_space() also downs the per-filesystem
++ *	If it returns %0, jffs2_reserve_space() also downs the per-filesystem
+  *	allocation semaphore, to prevent more than one allocation from being
+- *	active at any time. The semaphore is later released by jffs2_commit_allocation()
++ *	active at any time. The semaphore is later released by jffs2_commit_allocation().
+  *
+  *	jffs2_reserve_space() may trigger garbage collection in order to make room
+  *	for the requested allocation.
+  */
+ 
+-static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
+-				  uint32_t *len, uint32_t sumsize);
+-
+ int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
+ 			uint32_t *len, int prio, uint32_t sumsize)
+ {
+@@ -488,13 +491,16 @@ static int jffs2_do_reserve_space(struct
+ /**
+  *	jffs2_add_physical_node_ref - add a physical node reference to the list
+  *	@c: superblock info
+- *	@new: new node reference to add
++ *	@ofs: offset in the block
+  *	@len: length of this physical node
++ *	@ic: inode cache pointer
+  *
+  *	Should only be used to report nodes for which space has been allocated
+  *	by jffs2_reserve_space.
+  *
+  *	Must be called with the alloc_sem held.
++ *
++ *	Returns: pointer to new node on success or -errno code on error
+  */
+ 
+ struct jffs2_raw_node_ref *jffs2_add_physical_node_ref(struct jffs2_sb_info *c,
 
 ______________________________________________________
 Linux MTD discussion mailing list
