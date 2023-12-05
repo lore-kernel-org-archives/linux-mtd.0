@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0866DC10F05
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10C5DC46CA0
 	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,30 +12,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RIU6ZP44l6TXT2ta7TCaxFAC/4R0Aam3rhjshzHokRI=; b=BraQbqQdunr/tZ
-	hJJ/QHdCqaTGBxX5RCn1KSeLzde9jnlajYleKvKIa2i0Eo9LywE4jrrRZf8JpWD6ToYLEc3iXHw+C
-	CAnHY7YmdGruXgwBx53LF9053UnQm3TiVZl3ZqVKKM9Q/a0nVeeT/XMXSQ9esTC+VRcyLDPIIHEZP
-	j7fty3tDqNHsX18gJPhOBkrejhGl6crdLID//LBC9QfJmZ4koba0kNm1ZhPF3GtA9w/2pQXfVfAUk
-	wfEkTOBA0BMNsVrCnn3MFmmA5PHL0DQqdGOG+RkFs/I+p3U6zNu5uJNwcilYgspK76zrWJsDZAQsm
-	gWSKfWUlzxxQ/7Qg9n3Q==;
+	List-Owner; bh=PfIlgA89E7VJ/tkMBN68uq/l25xztDl9Nd55gQktNDg=; b=2ht7RYSWX4pnwN
+	tQeuUiv/KPU3k62QNA71leXB6XplP8zcQR1nIhtFnPjkEDULcFJUKtElyvliq+K+dZGGtp6zoZDJ9
+	njsjH2Gfqlp2SWAQ5BU+zSOiuzxjRlB5YT6AXxjNdGOdLJ8NIAdIDTd494JyvmkKC+j++v0fe0qUS
+	CgVn/vxzlSf5uuWop5Yyt/syXJbDxlXXUq1NrUNoVcmW3emTSE2DhevwUROSHmiPMNESTnOZdUd2Y
+	QMHnfdYjDsv9ca7LRJOuRgoZ+JuzE0Eh7c0u3iFMxyO8m1vIu6LHxhx+jMKV12beRLvB9sBkwvKRf
+	mwVfOqDVbKGEZSd1bJ5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhW-007OuG-1K;
-	Tue, 05 Dec 2023 12:38:58 +0000
+	id 1rAUhX-007OvK-1d;
+	Tue, 05 Dec 2023 12:38:59 +0000
 Received: from dggsgout11.his.huawei.com ([45.249.212.51])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhL-007OiS-28
+	id 1rAUhL-007Oiy-2Z
 	for linux-mtd@lists.infradead.org;
 	Tue, 05 Dec 2023 12:38:52 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sv1XC8z4f3k6f
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:39 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0St3nMJz4f3l18
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:38 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 414EF1A092C
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:40 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 3C4D11A08C7
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:43 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S9;
-	Tue, 05 Dec 2023 20:38:39 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S11;
+	Tue, 05 Dec 2023 20:38:42 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -84,17 +84,17 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH -next RFC 05/14] s390/dasd: use bdev api in dasd_format()
-Date: Tue,  5 Dec 2023 20:37:19 +0800
-Message-Id: <20231205123728.1866699-6-yukuai1@huaweicloud.com>
+Subject: [PATCH -next RFC 07/14] bcachefs: remove dead function bdev_sectors()
+Date: Tue,  5 Dec 2023 20:37:21 +0800
+Message-Id: <20231205123728.1866699-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S9
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWrKF1rWw4UAw4kXFWkWFg_yoWfWrg_Zr
-	1fGryxtr1xCr9Ikr1YvF15Zr9Y9F1kWr4Svry3KryfXFnrXFsaq3ykuFW3JrZ7JayUG3s3
-	GF9rXw10yr15WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFyrKrWkuF1fAw4fZrWUurg_yoW3Wrc_KF
+	92vF18Ww4xZF1F93ZFqr1vvr4jv34UXrW2gFn0v3W7A3WDJ395ZFZ5KrW5ZrsrW397uFy2
+	q3yxXrW7uryFkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbqkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
 	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
 	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
@@ -111,8 +111,8 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7XFWrKF1rWw4UAw4kXFWkWFg_yoWfWrg_Zr
 	2NtUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_043848_086982_F13C8522 
-X-CRM114-Status: UNSURE (   8.43  )
+X-CRM114-CacheID: sfid-20231205_043848_221181_89436D08 
+X-CRM114-Status: UNSURE (   5.46  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -132,30 +132,29 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+bdev_sectors() is not used hence remove it.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/s390/block/dasd_ioctl.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/bcachefs/util.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
-index 61b9675e2a67..bbfb958237e6 100644
---- a/drivers/s390/block/dasd_ioctl.c
-+++ b/drivers/s390/block/dasd_ioctl.c
-@@ -221,8 +221,9 @@ dasd_format(struct dasd_block *block, struct format_data_t *fdata)
- 	 * enabling the device later.
- 	 */
- 	if (fdata->start_unit == 0) {
--		block->gdp->part0->bd_inode->i_blkbits =
--			blksize_bits(fdata->blksize);
-+		rc = set_blocksize(block->gdp->part0, fdata->blksize);
-+		if (rc)
-+			return rc;
- 	}
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index b93d5f481c7e..932ca6f7a37b 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -541,11 +541,6 @@ static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
+ void bch2_bio_map(struct bio *bio, void *base, size_t);
+ int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
  
- 	rc = base->discipline->format_device(base, fdata, 1);
+-static inline sector_t bdev_sectors(struct block_device *bdev)
+-{
+-	return bdev->bd_inode->i_size >> 9;
+-}
+-
+ #define closure_bio_submit(bio, cl)					\
+ do {									\
+ 	closure_get(cl);						\
 -- 
 2.39.2
 
