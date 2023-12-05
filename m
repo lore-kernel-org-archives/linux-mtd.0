@@ -4,38 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 002A9C4167B
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5699C4167B
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zyRF58/UA3Q0nlPfaBWLGsHsaekHWwvbpL6trYjyZoY=; b=K+CpIhY3iQK9ms
-	3nvPu9Y6E35fk9iUuk6ZRiSof2SuwllcoXa83DOQxMADNGY6F+LW8WzmSNk321c8St7BtIw5Bkyv+
-	MqBfkcDvLOtxxT1jv0NRZGd0jJbsj6HQsLRsbYOv/gXAAUlvL7I/LPZH/s5sPizyrjrXWk9u5fcQm
-	dABaHYjkNlSVYaAYSO/rsNZo0+iEm7mlGbdpdkJzxf+CtAUgRPx1c51M4d+bqt7ikIqOJIQAWyHV/
-	v09L0rbqZDTe0ZeOMM/FPXanl1uKrvw7zZ8YGW3n+l0PSz50DwNvVq0B7TPGeAakddSc5BT49jFtN
-	+fDokhjt5hoaVhS0x1zQ==;
+	List-Owner; bh=cNF4ek9cqDfs89aqrXDrU5Rjd9HeeXVh1y5pBGICar0=; b=m85jySAOYSKJRF
+	9rd4nggexKWGrQQtLRZheirgac0JMKH2DxNsbc3QCx+PfZyuegtrohQ6ACTwGcUpL1/xMN/J+JffC
+	jfq6Iov24XYzjVi/lL++2UjTXc9mzfmtS2eRUdWNnT3dI54BhbzeoLnSZpm7Q+04g9BC45kYMiR70
+	kpuHeFkJ8f1df9MY7hvCK1dMOGyCMEFiIiB3wUG8FoJEtmGnfDEWzdsoeglytSwd69zRqy90BMcN8
+	o2p9qktZJ3FFm9AbVGtqqLppqgIZcRwOBJnIh8EiV7XVDeV5jd2NYrPp85U50Wsnbq27zQyozX3rz
+	NQaV07inCTxKH3R00rAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUin-007PqV-1m;
-	Tue, 05 Dec 2023 12:40:17 +0000
-Received: from dggsgout11.his.huawei.com ([45.249.212.51])
+	id 1rAUj1-007Q04-1j;
+	Tue, 05 Dec 2023 12:40:31 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUid-007Pjm-2m
-	for linux-mtd@lists.infradead.org;
-	Tue, 05 Dec 2023 12:40:16 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0VW4RTgz4f3jZL
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:40:03 +0800 (CST)
+	id 1rAUj0-007Py9-0l
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 05 Dec 2023 12:40:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=BFD0o6wL2dcW+fmeSvnwg2wREDpvsSR8UjUhOygHbdw=; b=ZPlPoW5AiYdUaAyH387DDlK7ZX
+	jREllmKM2KXWeZixn8JfByyvt2XsoTXZ3tpAoocC4JQqqRtR+/tKrFfI550lueG7rggnf3GYMs7gP
+	Kpp2o6/SEM2DpzcrQ2edYGoJ8Qc8tMPsrRa2uQPlyGxxYX8KUjjKqB16uGx9NB9uCN0RbJLskZ7iv
+	rjzAANacTIJo8JCurwCSDpRrbmu4sbrXdEAd13fYkVBKdUTTgjr/pJ0TTqasNXEFbzYGJZGA7DCPu
+	PlTWjOS4a/zY4WoOFGXu5O69w6eYl8lJNpkgLlIYnjH+XHFyl4kkK4WMf1lELW/N7pg6nroapisZl
+	3Rmwng2g==;
+Received: from [45.249.212.56] (helo=dggsgout12.his.huawei.com)
+	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rAUiv-001sGE-QC
+	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2023 12:40:28 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Vb6LlRz4f3js6
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:40:07 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A57041A0959
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:40:04 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 1912E1A0B37
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:40:10 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCnqxEiGm9lNdk8Cw--.27561S4;
-	Tue, 05 Dec 2023 20:40:04 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgA3iA4nGm9ljNo8Cw--.18416S4;
+	Tue, 05 Dec 2023 20:40:09 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -84,34 +98,34 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH -next RFC 13/14] gfs2: use bdev api
-Date: Tue,  5 Dec 2023 20:39:00 +0800
-Message-Id: <20231205123900.1866871-1-yukuai1@huaweicloud.com>
+Subject: [PATCH -next RFC 14/14] nilfs2: use bdev api in nilfs_attach_log_writer()
+Date: Tue,  5 Dec 2023 20:39:05 +0800
+Message-Id: <20231205123905.1866894-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgCnqxEiGm9lNdk8Cw--.27561S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyUZFWfCw1kJrWxJrW3GFg_yoW8Jw47pF
-	yDAF1akF4DWrnIga1kZF4rt3Wj9aykG3y0yr95Aw1YvrsrGw1ag392kF4DJF4UXa97Xws0
-	ga1ay3yakr1aqr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_
-	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
-	ZNVDUUUUU==
+X-CM-TRANSID: cCh0CgA3iA4nGm9ljNo8Cw--.18416S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAFW7ZFyrGFW3ZFyDGFg_yoW3Gwc_Zr
+	n8GryvgryFqFZ3Zw4DCrZ0yryrJ3WrKa18XryrGFyrGF40yrs5Cr1qvr4jqayUWwnrXws3
+	JwnrWr98tw15XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
+	6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
+	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfU59
+	NVDUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_044008_283369_8B3D2E11 
-X-CRM114-Status: UNSURE (   8.99  )
+X-CRM114-CacheID: sfid-20231205_124026_612638_86E4F8D8 
+X-CRM114-Status: UNSURE (   7.33  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -136,36 +150,22 @@ block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/gfs2/glock.c      | 2 +-
- fs/gfs2/ops_fstype.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/nilfs2/segment.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index f28c67181230..c66b0ed07e15 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1227,7 +1227,7 @@ int gfs2_glock_get(struct gfs2_sbd *sdp, u64 number,
- 	mapping = gfs2_glock2aspace(gl);
- 	if (mapping) {
-                 mapping->a_ops = &gfs2_meta_aops;
--		mapping->host = s->s_bdev->bd_inode;
-+		bdev_correlate_mapping(s->s_bdev, mapping);
- 		mapping->flags = 0;
- 		mapping_set_gfp_mask(mapping, GFP_NOFS);
- 		mapping->i_private_data = NULL;
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index 00ce89bdf32c..3145a56c88cb 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -114,7 +114,7 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 52995838f2de..be47a1d21889 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -2824,7 +2824,7 @@ int nilfs_attach_log_writer(struct super_block *sb, struct nilfs_root *root)
+ 	if (!nilfs->ns_writer)
+ 		return -ENOMEM;
  
- 	address_space_init_once(mapping);
- 	mapping->a_ops = &gfs2_rgrp_aops;
--	mapping->host = sb->s_bdev->bd_inode;
-+	bdev_correlate_mapping(sb->s_bdev, mapping);
- 	mapping->flags = 0;
- 	mapping_set_gfp_mask(mapping, GFP_NOFS);
- 	mapping->i_private_data = NULL;
+-	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
++	bdev_attach_wb(nilfs->ns_bdev);
+ 
+ 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
+ 	if (unlikely(err))
 -- 
 2.39.2
 
