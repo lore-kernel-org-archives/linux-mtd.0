@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99803C46CA3
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0866DC10F05
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:39:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BeXwofjwiH4t5y7TbDpdxYNXXE9dNpS1yiHyqC/x+Pc=; b=wgVQZYvNjVPuvC
-	R3gSwAbfINmty8uQHwZpR1iXr6tX2gBwu4RmLgB04Q7n/0wJDOyDBcMeLk2770qHb7CbScvfts9uc
-	G8AaLEEA+evKeRwYdkG5F9lLNr5kLA2KhzvSMKvLXp9g0r5CuF9WKpFiRKx2orYfrVoh/vKoKuV5W
-	pLVGVO9P0iLF8Kim/TWA1K7BDmQhDP3VxZSA/grsyfKuUbop9HrV55nBqxwnIyyjq0iS27s11UKzo
-	ZLHa0yTbkLUzB6FqrIfT3nMCL8QKmGY5KbYktcsmWcA5KevvH8c/dSNjgttCdqN/LZ3HlTkS0ceDi
-	OTpVUrZNGmO88P27plRw==;
+	List-Owner; bh=RIU6ZP44l6TXT2ta7TCaxFAC/4R0Aam3rhjshzHokRI=; b=BraQbqQdunr/tZ
+	hJJ/QHdCqaTGBxX5RCn1KSeLzde9jnlajYleKvKIa2i0Eo9LywE4jrrRZf8JpWD6ToYLEc3iXHw+C
+	CAnHY7YmdGruXgwBx53LF9053UnQm3TiVZl3ZqVKKM9Q/a0nVeeT/XMXSQ9esTC+VRcyLDPIIHEZP
+	j7fty3tDqNHsX18gJPhOBkrejhGl6crdLID//LBC9QfJmZ4koba0kNm1ZhPF3GtA9w/2pQXfVfAUk
+	wfEkTOBA0BMNsVrCnn3MFmmA5PHL0DQqdGOG+RkFs/I+p3U6zNu5uJNwcilYgspK76zrWJsDZAQsm
+	gWSKfWUlzxxQ/7Qg9n3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhV-007OtW-1H;
-	Tue, 05 Dec 2023 12:38:57 +0000
+	id 1rAUhW-007OuG-1K;
+	Tue, 05 Dec 2023 12:38:58 +0000
 Received: from dggsgout11.his.huawei.com ([45.249.212.51])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhL-007Oi2-0L
+	id 1rAUhL-007OiS-28
 	for linux-mtd@lists.infradead.org;
 	Tue, 05 Dec 2023 12:38:52 +0000
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sp5Cvvz4f3k6S
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:34 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sv1XC8z4f3k6f
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:39 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C23871A0308
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:35 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 414EF1A092C
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:40 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S6;
-	Tue, 05 Dec 2023 20:38:35 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S9;
+	Tue, 05 Dec 2023 20:38:39 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -84,35 +84,35 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH -next RFC 02/14] xen/blkback: use bdev api in xen_update_blkif_status()
-Date: Tue,  5 Dec 2023 20:37:16 +0800
-Message-Id: <20231205123728.1866699-3-yukuai1@huaweicloud.com>
+Subject: [PATCH -next RFC 05/14] s390/dasd: use bdev api in dasd_format()
+Date: Tue,  5 Dec 2023 20:37:19 +0800
+Message-Id: <20231205123728.1866699-6-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S6
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFW7tFW3Wr4xCFyrtrWfAFb_yoWfWFb_ZF
-	18urWxXrn7Crs0kayUuFs3Z3yv93WrurWF9ay2qFySqw1UXFWSq39FvFn5Gr47ZayUGws0
-	yF17uFW7tr4xXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-	0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2
-	Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
-	Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
-	1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUlZXOU
-	UUUU=
+X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S9
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFWrKF1rWw4UAw4kXFWkWFg_yoWfWrg_Zr
+	1fGryxtr1xCr9Ikr1YvF15Zr9Y9F1kWr4Svry3KryfXFnrXFsaq3ykuFW3JrZ7JayUG3s3
+	GF9rXw10yr15WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbqkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
+	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUl
+	2NtUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_043847_547091_11E78C08 
-X-CRM114-Status: UNSURE (   8.07  )
+X-CRM114-CacheID: sfid-20231205_043848_086982_F13C8522 
+X-CRM114-Status: UNSURE (   8.43  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -137,23 +137,25 @@ block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/block/xen-blkback/xenbus.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/s390/block/dasd_ioctl.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index e34219ea2b05..e645afa4af57 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -104,8 +104,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
- 		xenbus_dev_error(blkif->be->dev, err, "block flush");
- 		return;
+diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
+index 61b9675e2a67..bbfb958237e6 100644
+--- a/drivers/s390/block/dasd_ioctl.c
++++ b/drivers/s390/block/dasd_ioctl.c
+@@ -221,8 +221,9 @@ dasd_format(struct dasd_block *block, struct format_data_t *fdata)
+ 	 * enabling the device later.
+ 	 */
+ 	if (fdata->start_unit == 0) {
+-		block->gdp->part0->bd_inode->i_blkbits =
+-			blksize_bits(fdata->blksize);
++		rc = set_blocksize(block->gdp->part0, fdata->blksize);
++		if (rc)
++			return rc;
  	}
--	invalidate_inode_pages2(
--			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
-+	invalidate_bdev(blkif->vbd.bdev_handle->bdev);
  
- 	for (i = 0; i < blkif->nr_rings; i++) {
- 		ring = &blkif->rings[i];
+ 	rc = base->discipline->format_device(base, fdata, 1);
 -- 
 2.39.2
 
