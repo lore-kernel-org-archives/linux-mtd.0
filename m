@@ -4,53 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D79C4167B
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 002A9C4167B
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AflpbOeMwWiiuZpipxpilT8Ify4dVnxSonbDoO2EnRw=; b=fNcEIlCGU37hs/
-	eVQa0ydqQIu7gjXGRCkAQ7z7jVKrcecV7yJeLj2bmLZm8/eGa+i2bT086Ne8StiJBUbL73WmQ3dzt
-	Fdnyn7FCUfaSMJRGXJtaVmys0s/B6oy3mqn2Oet/moEEdaYamZpnRPjb6BZAAbjRUunYqbnjUFs7Q
-	ze4lSdFYlBXm+djWWryVJKV0nTysOyYN4nPjaf+zPUVmjYYV5H/Ro01tyTJzb0ZJIxNfikQs7OJNi
-	Jajgz1QaMzLgdlAHPkbPMSH6ofHCD3aaJjRewY8onamlpTpSsmbtJwu02FZpArjzGMJvF7w0+zLUJ
-	8m6FSdBpioyd+sshjyIA==;
+	List-Owner; bh=zyRF58/UA3Q0nlPfaBWLGsHsaekHWwvbpL6trYjyZoY=; b=K+CpIhY3iQK9ms
+	3nvPu9Y6E35fk9iUuk6ZRiSof2SuwllcoXa83DOQxMADNGY6F+LW8WzmSNk321c8St7BtIw5Bkyv+
+	MqBfkcDvLOtxxT1jv0NRZGd0jJbsj6HQsLRsbYOv/gXAAUlvL7I/LPZH/s5sPizyrjrXWk9u5fcQm
+	dABaHYjkNlSVYaAYSO/rsNZo0+iEm7mlGbdpdkJzxf+CtAUgRPx1c51M4d+bqt7ikIqOJIQAWyHV/
+	v09L0rbqZDTe0ZeOMM/FPXanl1uKrvw7zZ8YGW3n+l0PSz50DwNvVq0B7TPGeAakddSc5BT49jFtN
+	+fDokhjt5hoaVhS0x1zQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUiX-007Pgt-2f;
-	Tue, 05 Dec 2023 12:40:01 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUiV-007PfJ-2S
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 05 Dec 2023 12:39:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=vc/WyTZTpfdeCRK/X1dpkjdYyhRUdf0owWUIoa7GFdU=; b=mo5/s4lbUqnh09Ydq7N4UDnHhg
-	4DXLSTZr3TWbOO7R3qiI+uVRLRd+vqvLuEeep0NAvJhFcislRPtJkY3Bzk32UbainqqASvuZNaVtu
-	cXfXT1Qm+gdhZq1LtWmjx42u567Y3kywcRgpfA5BjpIsQNiD9/L1cy3mn55Pc+clbI4JA1eEyuH9o
-	KSrfTQyJf1ac5krkxfircdr39+VeOSGihPMD4kArGSVDl45yvhjCIdud4fCtDHQ3QbD29frWZYDOm
-	TJXikJp8GFaBgcUY5dTTVDfKWzf8NnMTWQkTVkbQ9y2p8x6Z9lRYCzTqTyxyGxiLIJR4HGXVU+aut
-	rHAKuO7Q==;
+	id 1rAUin-007PqV-1m;
+	Tue, 05 Dec 2023 12:40:17 +0000
 Received: from dggsgout11.his.huawei.com ([45.249.212.51])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUiQ-004krP-0w
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1rAUid-007Pjm-2m
 	for linux-mtd@lists.infradead.org;
-	Tue, 05 Dec 2023 12:39:58 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0V934PQz4f3l1y
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:39:45 +0800 (CST)
+	Tue, 05 Dec 2023 12:40:16 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0VW4RTgz4f3jZL
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:40:03 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 20DAF1A0821
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:39:50 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id A57041A0959
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:40:04 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCn9gwTGm9lgdU8Cw--.14977S4;
-	Tue, 05 Dec 2023 20:39:49 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgCnqxEiGm9lNdk8Cw--.27561S4;
+	Tue, 05 Dec 2023 20:40:04 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -99,34 +84,34 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH -next RFC 12/14] jbd2: use bdev apis
-Date: Tue,  5 Dec 2023 20:38:45 +0800
-Message-Id: <20231205123845.1866826-1-yukuai1@huaweicloud.com>
+Subject: [PATCH -next RFC 13/14] gfs2: use bdev api
+Date: Tue,  5 Dec 2023 20:39:00 +0800
+Message-Id: <20231205123900.1866871-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgCn9gwTGm9lgdU8Cw--.14977S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4DtryUur43Kr4DJr4DCFg_yoW8ZFyrpr
-	yUGas8CrZFvrW8XF1kGF4kJrWjga40vayUCFnF93Z2yw4Svr1avw18Kr13GFyYvFWFga1U
-	Xr1jyay8Kw4YgFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: cCh0CgCnqxEiGm9lNdk8Cw--.27561S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyUZFWfCw1kJrWxJrW3GFg_yoW8Jw47pF
+	yDAF1akF4DWrnIga1kZF4rt3Wj9aykG3y0yr95Aw1YvrsrGw1ag392kF4DJF4UXa97Xws0
+	ga1ay3yakr1aqr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
 	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
 	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
 	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
 	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
 	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
 	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
 	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v2
-	6r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0J
-	ULtxhUUUUU=
+	0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_
+	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
+	ZNVDUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_123955_096777_F869BABF 
-X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-CacheID: sfid-20231205_044008_283369_8B3D2E11 
+X-CRM114-Status: UNSURE (   8.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -151,55 +136,36 @@ block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/jbd2/journal.c  | 3 +--
- fs/jbd2/recovery.c | 6 ++----
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ fs/gfs2/glock.c      | 2 +-
+ fs/gfs2/ops_fstype.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index ed53188472f9..f1b5ffeaf02a 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2003,8 +2003,7 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
- 		byte_count = (block_stop - block_start + 1) *
- 				journal->j_blocksize;
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index f28c67181230..c66b0ed07e15 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -1227,7 +1227,7 @@ int gfs2_glock_get(struct gfs2_sbd *sdp, u64 number,
+ 	mapping = gfs2_glock2aspace(gl);
+ 	if (mapping) {
+                 mapping->a_ops = &gfs2_meta_aops;
+-		mapping->host = s->s_bdev->bd_inode;
++		bdev_correlate_mapping(s->s_bdev, mapping);
+ 		mapping->flags = 0;
+ 		mapping_set_gfp_mask(mapping, GFP_NOFS);
+ 		mapping->i_private_data = NULL;
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 00ce89bdf32c..3145a56c88cb 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -114,7 +114,7 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
  
--		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
--				byte_start, byte_stop);
-+		truncate_bdev_range(journal->j_dev, 0, byte_start, byte_stop);
- 
- 		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
- 			err = blkdev_issue_discard(journal->j_dev,
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 01f744cb97a4..6b6a2c4585fa 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -290,7 +290,6 @@ int jbd2_journal_recover(journal_t *journal)
- 
- 	struct recovery_info	info;
- 	errseq_t		wb_err;
--	struct address_space	*mapping;
- 
- 	memset(&info, 0, sizeof(info));
- 	sb = journal->j_superblock;
-@@ -309,8 +308,7 @@ int jbd2_journal_recover(journal_t *journal)
- 	}
- 
- 	wb_err = 0;
--	mapping = journal->j_fs_dev->bd_inode->i_mapping;
--	errseq_check_and_advance(&mapping->wb_err, &wb_err);
-+	bdev_wb_err_check_and_advance(journal->j_fs_dev, &wb_err);
- 	err = do_one_pass(journal, &info, PASS_SCAN);
- 	if (!err)
- 		err = do_one_pass(journal, &info, PASS_REVOKE);
-@@ -334,7 +332,7 @@ int jbd2_journal_recover(journal_t *journal)
- 	err2 = sync_blockdev(journal->j_fs_dev);
- 	if (!err)
- 		err = err2;
--	err2 = errseq_check_and_advance(&mapping->wb_err, &wb_err);
-+	err2 = bdev_wb_err_check_and_advance(journal->j_fs_dev, &wb_err);
- 	if (!err)
- 		err = err2;
- 	/* Make sure all replayed data is on permanent storage */
+ 	address_space_init_once(mapping);
+ 	mapping->a_ops = &gfs2_rgrp_aops;
+-	mapping->host = sb->s_bdev->bd_inode;
++	bdev_correlate_mapping(sb->s_bdev, mapping);
+ 	mapping->flags = 0;
+ 	mapping_set_gfp_mask(mapping, GFP_NOFS);
+ 	mapping->i_private_data = NULL;
 -- 
 2.39.2
 
