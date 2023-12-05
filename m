@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 996D7C10F05
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:39:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D79C4167B
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 12:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=p7tnnU0C8DPaO3D8TKxLZ3oPAWhwHtusfG8X4QAIdd4=; b=gttI8L2Gi1bsR9
-	cyFJj7YENr3LBtBVy7mEoRRLoKo1BlA/5UQV1fy3EChftafk09IPJgu7oGvBIMhpTPDzM28YcAIo9
-	mnX90MWtTZgHfavtYwKWJwch0ru0mve21KWSLdcWSkD72KLUNGSlYMB5tk2sq8LEr8SG55q29NrY1
-	o7TNUsD7oLRyBUOKOrKuwumhp/h2ZbX1vDsixjwtck5leiK1QCwUaFy5e9KhPXxoEmz8PV2so631O
-	Lp0JW3hOZryBufCu36IhScmc4Pf/KkxdtQqvp4nI40NbCylxBmRzbBshuq7EzehEWLQSrjDbv+qdK
-	DqH20H4nahCkqqW8uWCA==;
+	List-Owner; bh=AflpbOeMwWiiuZpipxpilT8Ify4dVnxSonbDoO2EnRw=; b=fNcEIlCGU37hs/
+	eVQa0ydqQIu7gjXGRCkAQ7z7jVKrcecV7yJeLj2bmLZm8/eGa+i2bT086Ne8StiJBUbL73WmQ3dzt
+	Fdnyn7FCUfaSMJRGXJtaVmys0s/B6oy3mqn2Oet/moEEdaYamZpnRPjb6BZAAbjRUunYqbnjUFs7Q
+	ze4lSdFYlBXm+djWWryVJKV0nTysOyYN4nPjaf+zPUVmjYYV5H/Ro01tyTJzb0ZJIxNfikQs7OJNi
+	Jajgz1QaMzLgdlAHPkbPMSH6ofHCD3aaJjRewY8onamlpTpSsmbtJwu02FZpArjzGMJvF7w0+zLUJ
+	8m6FSdBpioyd+sshjyIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhl-007P7r-00;
-	Tue, 05 Dec 2023 12:39:13 +0000
+	id 1rAUiX-007Pgt-2f;
+	Tue, 05 Dec 2023 12:40:01 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhi-007P3v-0T
+	id 1rAUiV-007PfJ-2S
 	for linux-mtd@bombadil.infradead.org;
-	Tue, 05 Dec 2023 12:39:10 +0000
+	Tue, 05 Dec 2023 12:39:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=Ar/ct7l6cZKYi2FB0C1hcnOT3tqlVgAYRkH3s+y4zJQ=; b=qbNA1UV9CCqG9cjR9yn1KhpCoI
-	0d5oAfeuIML+26rS9IYnWR3E1onFHww3YMCs2JiOUllERCP8h7LdIoU/aA/u1P9gEt7IB9HkAQrCt
-	XmZi5n0qG/gp9YPoiKPdAsO7LZ1oACZXo55+bWyDaQVBhqSqmvUfHUnZaKYPyRE4iJ49rHcNgvNr+
-	5Lf3Dh3cIYypXi7s0g4QVFxjc/5nEeT7Z1CX4MraZtUOv1s53SeilF1/iQ3KZRYV+RbGhGotBGLAK
-	ck6b2FUZowCODMJI4fI/DqqQIkUAxjtvHnUmpYo+AFJ3au2S4ODLhIcZJbiodVmyzmjYPjph6rzVc
-	oNaNEynA==;
+	bh=vc/WyTZTpfdeCRK/X1dpkjdYyhRUdf0owWUIoa7GFdU=; b=mo5/s4lbUqnh09Ydq7N4UDnHhg
+	4DXLSTZr3TWbOO7R3qiI+uVRLRd+vqvLuEeep0NAvJhFcislRPtJkY3Bzk32UbainqqASvuZNaVtu
+	cXfXT1Qm+gdhZq1LtWmjx42u567Y3kywcRgpfA5BjpIsQNiD9/L1cy3mn55Pc+clbI4JA1eEyuH9o
+	KSrfTQyJf1ac5krkxfircdr39+VeOSGihPMD4kArGSVDl45yvhjCIdud4fCtDHQ3QbD29frWZYDOm
+	TJXikJp8GFaBgcUY5dTTVDfKWzf8NnMTWQkTVkbQ9y2p8x6Z9lRYCzTqTyxyGxiLIJR4HGXVU+aut
+	rHAKuO7Q==;
 Received: from dggsgout11.his.huawei.com ([45.249.212.51])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAUhc-004kkE-2G
+	id 1rAUiQ-004krP-0w
 	for linux-mtd@lists.infradead.org;
-	Tue, 05 Dec 2023 12:39:08 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sw0DzLz4f3lVM
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:40 +0800 (CST)
+	Tue, 05 Dec 2023 12:39:58 +0000
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0V934PQz4f3l1y
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:39:45 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B38E51A0C80
-	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:38:44 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 20DAF1A0821
+	for <linux-mtd@lists.infradead.org>; Tue,  5 Dec 2023 20:39:50 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S12;
-	Tue, 05 Dec 2023 20:38:44 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgCn9gwTGm9lgdU8Cw--.14977S4;
+	Tue, 05 Dec 2023 20:39:49 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -99,35 +99,35 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH -next RFC 08/14] btrfs: use bdev apis
-Date: Tue,  5 Dec 2023 20:37:22 +0800
-Message-Id: <20231205123728.1866699-9-yukuai1@huaweicloud.com>
+Subject: [PATCH -next RFC 12/14] jbd2: use bdev apis
+Date: Tue,  5 Dec 2023 20:38:45 +0800
+Message-Id: <20231205123845.1866826-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S12
-X-Coremail-Antispam: 1UD129KBjvJXoW3JFW5WF1UtFWDury7AFyfXrb_yoW3Kr45pr
-	W7CF95trWUJrn8Ww4kWw4kAw1Sq3sFvay8CF9xGw4Ska45t3sYgFyvy34Fqa4Fkry8JF97
-	XF4UtFWxuF1IkF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMI
-	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E
-	14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-	4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU
-	oxhLUUUUU
+X-CM-TRANSID: cCh0CgCn9gwTGm9lgdU8Cw--.14977S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4DtryUur43Kr4DJr4DCFg_yoW8ZFyrpr
+	yUGas8CrZFvrW8XF1kGF4kJrWjga40vayUCFnF93Z2yw4Svr1avw18Kr13GFyYvFWFga1U
+	Xr1jyay8Kw4YgFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v2
+	6r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0J
+	ULtxhUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_123905_486153_17948C2E 
-X-CRM114-Status: GOOD (  19.11  )
+X-CRM114-CacheID: sfid-20231205_123955_096777_F869BABF 
+X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,265 +146,60 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-On the one hand covert to use folio while reading bdev inode, on the
-other hand prevent to access bd_inode directly.
+Avoid to access bd_inode directly, prepare to remove bd_inode from
+block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/btrfs/disk-io.c | 68 ++++++++++++++++++++--------------------------
- fs/btrfs/volumes.c | 17 ++++++------
- fs/btrfs/zoned.c   | 12 ++++----
- 3 files changed, 42 insertions(+), 55 deletions(-)
+ fs/jbd2/journal.c  | 3 +--
+ fs/jbd2/recovery.c | 6 ++----
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 9317606017e2..cfe7ea417760 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3597,28 +3597,24 @@ ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
- static void btrfs_end_super_write(struct bio *bio)
- {
- 	struct btrfs_device *device = bio->bi_private;
--	struct bio_vec *bvec;
--	struct bvec_iter_all iter_all;
--	struct page *page;
--
--	bio_for_each_segment_all(bvec, bio, iter_all) {
--		page = bvec->bv_page;
-+	struct folio_iter fi;
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index ed53188472f9..f1b5ffeaf02a 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2003,8 +2003,7 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
+ 		byte_count = (block_stop - block_start + 1) *
+ 				journal->j_blocksize;
  
-+	bio_for_each_folio_all(fi, bio) {
- 		if (bio->bi_status) {
- 			btrfs_warn_rl_in_rcu(device->fs_info,
- 				"lost page write due to IO error on %s (%d)",
- 				btrfs_dev_name(device),
- 				blk_status_to_errno(bio->bi_status));
--			ClearPageUptodate(page);
--			SetPageError(page);
-+			folio_clear_uptodate(fi.folio);
-+			folio_set_error(fi.folio);
- 			btrfs_dev_stat_inc_and_print(device,
- 						     BTRFS_DEV_STAT_WRITE_ERRS);
- 		} else {
--			SetPageUptodate(page);
-+			folio_mark_uptodate(fi.folio);
- 		}
+-		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
+-				byte_start, byte_stop);
++		truncate_bdev_range(journal->j_dev, 0, byte_start, byte_stop);
  
--		put_page(page);
--		unlock_page(page);
-+		folio_put(fi.folio);
-+		folio_unlock(fi.folio);
+ 		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
+ 			err = blkdev_issue_discard(journal->j_dev,
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 01f744cb97a4..6b6a2c4585fa 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -290,7 +290,6 @@ int jbd2_journal_recover(journal_t *journal)
+ 
+ 	struct recovery_info	info;
+ 	errseq_t		wb_err;
+-	struct address_space	*mapping;
+ 
+ 	memset(&info, 0, sizeof(info));
+ 	sb = journal->j_superblock;
+@@ -309,8 +308,7 @@ int jbd2_journal_recover(journal_t *journal)
  	}
  
- 	bio_put(bio);
-@@ -3628,9 +3624,8 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
- 						   int copy_num, bool drop_cache)
- {
- 	struct btrfs_super_block *super;
--	struct page *page;
-+	struct folio *folio;
- 	u64 bytenr, bytenr_orig;
--	struct address_space *mapping = bdev->bd_inode->i_mapping;
- 	int ret;
- 
- 	bytenr_orig = btrfs_sb_offset(copy_num);
-@@ -3651,16 +3646,15 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
- 		 * Drop the page of the primary superblock, so later read will
- 		 * always read from the device.
- 		 */
--		invalidate_inode_pages2_range(mapping,
--				bytenr >> PAGE_SHIFT,
-+		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
- 				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
- 	}
- 
--	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
--	if (IS_ERR(page))
--		return ERR_CAST(page);
-+	folio = bdev_read_folio_gfp(bdev, bytenr >> PAGE_SHIFT, GFP_NOFS);
-+	if (IS_ERR(folio))
-+		return ERR_CAST(folio);
- 
--	super = page_address(page);
-+	super = folio_address(folio);
- 	if (btrfs_super_magic(super) != BTRFS_MAGIC) {
- 		btrfs_release_disk_super(super);
- 		return ERR_PTR(-ENODATA);
-@@ -3717,7 +3711,6 @@ static int write_dev_supers(struct btrfs_device *device,
- 			    struct btrfs_super_block *sb, int max_mirrors)
- {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
--	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	int i;
- 	int errors = 0;
-@@ -3730,7 +3723,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 	shash->tfm = fs_info->csum_shash;
- 
- 	for (i = 0; i < max_mirrors; i++) {
--		struct page *page;
-+		struct folio *folio;
- 		struct bio *bio;
- 		struct btrfs_super_block *disk_super;
- 
-@@ -3755,9 +3748,10 @@ static int write_dev_supers(struct btrfs_device *device,
- 				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
- 				    sb->csum);
- 
--		page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT,
--					   GFP_NOFS);
--		if (!page) {
-+		folio = bdev_find_or_create_folio(device->bdev,
-+						  bytenr >> PAGE_SHIFT,
-+						  GFP_NOFS);
-+		if (IS_ERR(folio)) {
- 			btrfs_err(device->fs_info,
- 			    "couldn't get super block page for bytenr %llu",
- 			    bytenr);
-@@ -3766,9 +3760,9 @@ static int write_dev_supers(struct btrfs_device *device,
- 		}
- 
- 		/* Bump the refcount for wait_dev_supers() */
--		get_page(page);
-+		folio_get(folio);
- 
--		disk_super = page_address(page);
-+		disk_super = folio_address(folio);
- 		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
-@@ -3782,8 +3776,8 @@ static int write_dev_supers(struct btrfs_device *device,
- 		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
- 		bio->bi_private = device;
- 		bio->bi_end_io = btrfs_end_super_write;
--		__bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
--			       offset_in_page(bytenr));
-+		bio_add_folio_nofail(bio, folio, BTRFS_SUPER_INFO_SIZE,
-+				     offset_in_folio(folio, bytenr));
- 
- 		/*
- 		 * We FUA only the first super block.  The others we allow to
-@@ -3819,7 +3813,7 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
- 
- 	for (i = 0; i < max_mirrors; i++) {
--		struct page *page;
-+		struct folio *folio;
- 
- 		ret = btrfs_sb_log_location(device, i, READ, &bytenr);
- 		if (ret == -ENOENT) {
-@@ -3834,27 +3828,23 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		    device->commit_total_bytes)
- 			break;
- 
--		page = find_get_page(device->bdev->bd_inode->i_mapping,
--				     bytenr >> PAGE_SHIFT);
--		if (!page) {
-+		folio = bdev_get_folio(device->bdev, bytenr >> PAGE_SHIFT);
-+		if (!folio) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
- 			continue;
- 		}
- 		/* Page is submitted locked and unlocked once the IO completes */
--		wait_on_page_locked(page);
--		if (PageError(page)) {
-+		folio_wait_locked(folio);
-+		if (folio_test_error(folio)) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
- 		}
- 
--		/* Drop our reference */
--		put_page(page);
--
--		/* Drop the reference from the writing run */
--		put_page(page);
-+		/* Drop our reference and the reference from the writing run */
-+		folio_put_refs(folio, 2);
- 	}
- 
- 	/* log error, force error return */
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1cc6b5d5eb61..3930495aebd1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1230,16 +1230,16 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 
- void btrfs_release_disk_super(struct btrfs_super_block *super)
- {
--	struct page *page = virt_to_page(super);
-+	struct folio *folio = virt_to_folio(super);
- 
--	put_page(page);
-+	folio_put(folio);
- }
- 
- static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
- 						       u64 bytenr, u64 bytenr_orig)
- {
- 	struct btrfs_super_block *disk_super;
--	struct page *page;
-+	struct folio *folio;
- 	void *p;
- 	pgoff_t index;
- 
-@@ -1257,15 +1257,14 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
- 		return ERR_PTR(-EINVAL);
- 
- 	/* pull in the page with our super */
--	page = read_cache_page_gfp(bdev->bd_inode->i_mapping, index, GFP_KERNEL);
-+	folio = bdev_read_folio_gfp(bdev, index, GFP_KERNEL);
-+	if (IS_ERR(folio))
-+		return ERR_CAST(folio);
- 
--	if (IS_ERR(page))
--		return ERR_CAST(page);
--
--	p = page_address(page);
-+	p = folio_address(folio);
- 
- 	/* align our pointer to the offset of the super block */
--	disk_super = p + offset_in_page(bytenr);
-+	disk_super = p + offset_in_folio(folio, bytenr);
- 
- 	if (btrfs_super_bytenr(disk_super) != bytenr_orig ||
- 	    btrfs_super_magic(disk_super) != BTRFS_MAGIC) {
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 12066afc235c..77d5f906ff16 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -120,8 +120,6 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
- 		return -ENOENT;
- 	} else if (full[0] && full[1]) {
- 		/* Compare two super blocks */
--		struct address_space *mapping = bdev->bd_inode->i_mapping;
--		struct page *page[BTRFS_NR_SB_LOG_ZONES];
- 		struct btrfs_super_block *super[BTRFS_NR_SB_LOG_ZONES];
- 		int i;
- 
-@@ -129,15 +127,15 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
- 			u64 zone_end = (zones[i].start + zones[i].capacity) << SECTOR_SHIFT;
- 			u64 bytenr = ALIGN_DOWN(zone_end, BTRFS_SUPER_INFO_SIZE) -
- 						BTRFS_SUPER_INFO_SIZE;
--
--			page[i] = read_cache_page_gfp(mapping,
-+			struct folio *folio = bdev_read_folio_gfp(bdev,
- 					bytenr >> PAGE_SHIFT, GFP_NOFS);
--			if (IS_ERR(page[i])) {
-+
-+			if (IS_ERR(folio)) {
- 				if (i == 1)
- 					btrfs_release_disk_super(super[0]);
--				return PTR_ERR(page[i]);
-+				return PTR_ERR(folio);
- 			}
--			super[i] = page_address(page[i]);
-+			super[i] = folio_address(folio);
- 		}
- 
- 		if (btrfs_super_generation(super[0]) >
+ 	wb_err = 0;
+-	mapping = journal->j_fs_dev->bd_inode->i_mapping;
+-	errseq_check_and_advance(&mapping->wb_err, &wb_err);
++	bdev_wb_err_check_and_advance(journal->j_fs_dev, &wb_err);
+ 	err = do_one_pass(journal, &info, PASS_SCAN);
+ 	if (!err)
+ 		err = do_one_pass(journal, &info, PASS_REVOKE);
+@@ -334,7 +332,7 @@ int jbd2_journal_recover(journal_t *journal)
+ 	err2 = sync_blockdev(journal->j_fs_dev);
+ 	if (!err)
+ 		err = err2;
+-	err2 = errseq_check_and_advance(&mapping->wb_err, &wb_err);
++	err2 = bdev_wb_err_check_and_advance(journal->j_fs_dev, &wb_err);
+ 	if (!err)
+ 		err = err2;
+ 	/* Make sure all replayed data is on permanent storage */
 -- 
 2.39.2
 
