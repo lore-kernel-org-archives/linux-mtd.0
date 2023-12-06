@@ -4,55 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56BDFC4167B
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Dec 2023 01:26:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85A75C4167B
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Dec 2023 02:49:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dEsFjCT1iVAfTI8lQd/rdOVakQc0LcCHbMcNBe1M75I=; b=INdjhfxpWJl1obyXXp2nkEya4c
-	Q1LS42f5cCav9G9tmpr3yxgF09ZLCM3iITqTcl+lkQbJ/q2CETCZzeOCvTv+vZ8XW8Py9MnnWZvdT
-	sZMrFKZou3xmPfvlfQGaHBFrsI/Gd+hdKmKUiPufKo3mRj2TH9V2XvkKU6JRmwHn/x53k06rhoP9R
-	mDeaZg4yvM3ydxPgWWmJ6q8q7IU74xImxJVKGr6dj5X5GAhVGA2wp9N6H+gFsAv9ToXYPU29oZzwT
-	9wusKQmU7aTVcyqQ03A3ZA51hAyrkmoNMEN32JyU1F1HTDPMvA+Ifv/BvF9F+x19aKv7NqziUVGji
-	jfu30g6Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ci8UIFFD5LU86zc6q9iUxlrz8xAVip875+JX5QEL4rc=; b=NQmju3W7CsR+Xy
+	yBaCuaz9jQfdVKUxlDkpptwre1Ac9rHHFvwsj+tmTGTLfGKfrlrVoSJuhQRDGwy1GUsS+syqVsHgW
+	VuxB9pexCUiB1UoEBrSKxL5u6dhR8dlJSHiy65qvESxswei6IgfozdJhDeD6Xy5QhQgschiRxXKfH
+	G7OyfmJUTHs+8MxEzTbSDtH5wbDFbRKezcNPOYNtsDBwZimR9DXgSIAKISN0YUjuZLngI4sLsMsWi
+	cUwNwetJU0p3FE9g2UPIf0GtggHxh2yoQY0f7ASy8ODbR+qVE5vpLsdKhYaDnfOkxTopP+llHJ87Y
+	FTbbrg4axwKaplHvlUsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAggH-008n1d-1L;
-	Wed, 06 Dec 2023 01:26:29 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAggC-008n0i-1x
-	for linux-mtd@lists.infradead.org;
-	Wed, 06 Dec 2023 01:26:27 +0000
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.53])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SlKTr24ggzvRhL;
-	Wed,  6 Dec 2023 09:25:36 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Dec 2023 09:26:14 +0800
-Subject: Re: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
-To: Randy Dunlap <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
-CC: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
-	<richard@nod.at>, <linux-mtd@lists.infradead.org>
-References: <20231205173222.12575-1-rdunlap@infradead.org>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f0a0eb5d-7cdf-89a1-3017-2dd048d2a0e4@huawei.com>
-Date: Wed, 6 Dec 2023 09:26:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1rAhy1-008ufg-0e;
+	Wed, 06 Dec 2023 02:48:53 +0000
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rAhxy-008uek-1y;
+	Wed, 06 Dec 2023 02:48:50 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] ubifs: fix kernel-doc warnings
+Date: Tue,  5 Dec 2023 18:48:50 -0800
+Message-ID: <20231206024850.31425-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-In-Reply-To: <20231205173222.12575-1-rdunlap@infradead.org>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_172624_985064_19CF3251 
-X-CRM114-Status: GOOD (  24.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,83 +48,247 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyMy8xMi82IDE6MzIsIFJhbmR5IER1bmxhcCDQtLXAOgo+IFVwZGF0ZSB0aGUgZW5kIG9m
-IG9uZSBzZW50ZW5jZSB3aGVyZSBhIGNvbW1lbnQgd2FzIHRydW5jYXRlZC4gKGR3bXcyKQo+Cj4g
-Rml4IGEgYnVuY2ggb2Yga2VybmVsLWRvYyB3YXJuaW5nczoKPgo+IG5vZGVtZ210LmM6NzI6IHdh
-cm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ3N1bXNpemUnIG5vdCBkZXNjcmli
-ZWQgaW4gJ2pmZnMyX2RvX3Jlc2VydmVfc3BhY2UnCj4gbm9kZW1nbXQuYzo3Mjogd2FybmluZzog
-ZXhwZWN0aW5nIHByb3RvdHlwZSBmb3IgamZmczJfcmVzZXJ2ZV9zcGFjZSgpLiBQcm90b3R5cGUg
-d2FzIGZvciBqZmZzMl9kb19yZXNlcnZlX3NwYWNlKCkgaW5zdGVhZAo+IG5vZGVtZ210LmM6NzY6
-IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ3N1bXNpemUnIG5vdCBkZXNj
-cmliZWQgaW4gJ2pmZnMyX3Jlc2VydmVfc3BhY2UnCj4gbm9kZW1nbXQuYzo3Njogd2FybmluZzog
-Tm8gZGVzY3JpcHRpb24gZm91bmQgZm9yIHJldHVybiB2YWx1ZSBvZiAnamZmczJfcmVzZXJ2ZV9z
-cGFjZScKPiBub2RlbWdtdC5jOjUwMzogd2FybmluZzogRnVuY3Rpb24gcGFyYW1ldGVyIG9yIG1l
-bWJlciAnb2ZzJyBub3QgZGVzY3JpYmVkIGluICdqZmZzMl9hZGRfcGh5c2ljYWxfbm9kZV9yZWYn
-Cj4gbm9kZW1nbXQuYzo1MDM6IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIg
-J2ljJyBub3QgZGVzY3JpYmVkIGluICdqZmZzMl9hZGRfcGh5c2ljYWxfbm9kZV9yZWYnCj4gbm9k
-ZW1nbXQuYzo1MDM6IHdhcm5pbmc6IEV4Y2VzcyBmdW5jdGlvbiBwYXJhbWV0ZXIgJ25ldycgZGVz
-Y3JpcHRpb24gaW4gJ2pmZnMyX2FkZF9waHlzaWNhbF9ub2RlX3JlZicKPiBub2RlbWdtdC5jOjUw
-Mzogd2FybmluZzogTm8gZGVzY3JpcHRpb24gZm91bmQgZm9yIHJldHVybiB2YWx1ZSBvZiAnamZm
-czJfYWRkX3BoeXNpY2FsX25vZGVfcmVmJwo+Cj4gU2lnbmVkLW9mZi1ieTogUmFuZHkgRHVubGFw
-IDxyZHVubGFwQGluZnJhZGVhZC5vcmc+Cj4gQ2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5m
-cmFkZWFkLm9yZz4KPiBDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KPiBD
-YzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiAtLS0KPiAgIGZzL2pmZnMyL25vZGVt
-Z210LmMgfCAgIDI0ICsrKysrKysrKysrKysrKy0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
-IDE1IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pClJldmlld2VkLWJ5OiBaaGloYW8gQ2hl
-bmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IGRpZmYgLS0gYS9mcy9qZmZzMi9ub2RlbWdt
-dC5jIGIvZnMvamZmczIvbm9kZW1nbXQuYwo+IC0tLSBhL2ZzL2pmZnMyL25vZGVtZ210LmMKPiAr
-KysgYi9mcy9qZmZzMi9ub2RlbWdtdC5jCj4gQEAgLTQ5LDI4ICs0OSwzMSBAQCBzdGF0aWMgaW50
-IGpmZnMyX3JwX2Nhbl93cml0ZShzdHJ1Y3QgamZmCj4gICAJcmV0dXJuIDA7Cj4gICB9Cj4gICAK
-PiArc3RhdGljIGludCBqZmZzMl9kb19yZXNlcnZlX3NwYWNlKHN0cnVjdCBqZmZzMl9zYl9pbmZv
-ICpjLCAgdWludDMyX3QgbWluc2l6ZSwKPiArCQkJCSAgdWludDMyX3QgKmxlbiwgdWludDMyX3Qg
-c3Vtc2l6ZSk7Cj4gKwo+ICAgLyoqCj4gICAgKglqZmZzMl9yZXNlcnZlX3NwYWNlIC0gcmVxdWVz
-dCBwaHlzaWNhbCBzcGFjZSB0byB3cml0ZSBub2RlcyB0byBmbGFzaAo+ICAgICoJQGM6IHN1cGVy
-YmxvY2sgaW5mbwo+ICAgICoJQG1pbnNpemU6IE1pbmltdW0gYWNjZXB0YWJsZSBzaXplIG9mIGFs
-bG9jYXRpb24KPiAgICAqCUBsZW46IFJldHVybmVkIHZhbHVlIG9mIGFsbG9jYXRpb24gbGVuZ3Ro
-Cj4gICAgKglAcHJpbzogQWxsb2NhdGlvbiB0eXBlIC0gQUxMT0Nfe05PUk1BTCxERUxFVElPTn0K
-PiArICoJQHN1bXNpemU6IHN1bW1hcnkgc2l6ZSByZXF1ZXN0ZWQgb3IgSkZGUzJfU1VNTUFSWV9O
-T1NVTV9TSVpFIGZvciBubyBzdW1tYXJ5Cj4gKyAqCj4gKyAqCVJlcXVlc3RzIGEgYmxvY2sgb2Yg
-cGh5c2ljYWwgc3BhY2Ugb24gdGhlIGZsYXNoLgo+ICAgICoKPiAtICoJUmVxdWVzdHMgYSBibG9j
-ayBvZiBwaHlzaWNhbCBzcGFjZSBvbiB0aGUgZmxhc2guIFJldHVybnMgemVybyBmb3Igc3VjY2Vz
-cwo+IC0gKglhbmQgcHV0cyAnbGVuJyBpbnRvIHRoZSBhcHByb3ByaWF0ZSBwbGFjZSwgb3IgcmV0
-dXJucyAtRU5PU1BDIG9yIG90aGVyCj4gLSAqCWVycm9yIGlmIGFwcHJvcHJpYXRlLiBEb2Vzbid0
-IHJldHVybiBsZW4gc2luY2UgdGhhdCdzCj4gKyAqCVJldHVybnM6ICUwIGZvciBzdWNjZXNzCWFu
-ZCBwdXRzICdsZW4nIGludG8gdGhlIGFwcHJvcHJpYXRlIHBsYWNlLAo+ICsgKglvciByZXR1cm5z
-IC1FTk9TUEMgb3Igb3RoZXIgZXJyb3IgaWYgYXBwcm9wcmlhdGUuCj4gKyAqCURvZXNuJ3QgcmV0
-dXJuIGxlbiBzaW5jZSB0aGF0J3MgYWxyZWFkeSByZXR1cm5lZCBpbiBAbGVuLgo+ICAgICoKPiAt
-ICoJSWYgaXQgcmV0dXJucyB6ZXJvLCBqZmZzMl9yZXNlcnZlX3NwYWNlKCkgYWxzbyBkb3ducyB0
-aGUgcGVyLWZpbGVzeXN0ZW0KPiArICoJSWYgaXQgcmV0dXJucyAlMCwgamZmczJfcmVzZXJ2ZV9z
-cGFjZSgpIGFsc28gZG93bnMgdGhlIHBlci1maWxlc3lzdGVtCj4gICAgKglhbGxvY2F0aW9uIHNl
-bWFwaG9yZSwgdG8gcHJldmVudCBtb3JlIHRoYW4gb25lIGFsbG9jYXRpb24gZnJvbSBiZWluZwo+
-IC0gKglhY3RpdmUgYXQgYW55IHRpbWUuIFRoZSBzZW1hcGhvcmUgaXMgbGF0ZXIgcmVsZWFzZWQg
-YnkgamZmczJfY29tbWl0X2FsbG9jYXRpb24oKQo+ICsgKglhY3RpdmUgYXQgYW55IHRpbWUuIFRo
-ZSBzZW1hcGhvcmUgaXMgbGF0ZXIgcmVsZWFzZWQgYnkgamZmczJfY29tbWl0X2FsbG9jYXRpb24o
-KS4KPiAgICAqCj4gICAgKglqZmZzMl9yZXNlcnZlX3NwYWNlKCkgbWF5IHRyaWdnZXIgZ2FyYmFn
-ZSBjb2xsZWN0aW9uIGluIG9yZGVyIHRvIG1ha2Ugcm9vbQo+ICAgICoJZm9yIHRoZSByZXF1ZXN0
-ZWQgYWxsb2NhdGlvbi4KPiAgICAqLwo+ICAgCj4gLXN0YXRpYyBpbnQgamZmczJfZG9fcmVzZXJ2
-ZV9zcGFjZShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywgIHVpbnQzMl90IG1pbnNpemUsCj4gLQkJ
-CQkgIHVpbnQzMl90ICpsZW4sIHVpbnQzMl90IHN1bXNpemUpOwo+IC0KPiAgIGludCBqZmZzMl9y
-ZXNlcnZlX3NwYWNlKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjLCB1aW50MzJfdCBtaW5zaXplLAo+
-ICAgCQkJdWludDMyX3QgKmxlbiwgaW50IHByaW8sIHVpbnQzMl90IHN1bXNpemUpCj4gICB7Cj4g
-QEAgLTQ4OCwxMyArNDkxLDE2IEBAIHN0YXRpYyBpbnQgamZmczJfZG9fcmVzZXJ2ZV9zcGFjZShz
-dHJ1Y3QKPiAgIC8qKgo+ICAgICoJamZmczJfYWRkX3BoeXNpY2FsX25vZGVfcmVmIC0gYWRkIGEg
-cGh5c2ljYWwgbm9kZSByZWZlcmVuY2UgdG8gdGhlIGxpc3QKPiAgICAqCUBjOiBzdXBlcmJsb2Nr
-IGluZm8KPiAtICoJQG5ldzogbmV3IG5vZGUgcmVmZXJlbmNlIHRvIGFkZAo+ICsgKglAb2ZzOiBv
-ZmZzZXQgaW4gdGhlIGJsb2NrCj4gICAgKglAbGVuOiBsZW5ndGggb2YgdGhpcyBwaHlzaWNhbCBu
-b2RlCj4gKyAqCUBpYzogaW5vZGUgY2FjaGUgcG9pbnRlcgo+ICAgICoKPiAgICAqCVNob3VsZCBv
-bmx5IGJlIHVzZWQgdG8gcmVwb3J0IG5vZGVzIGZvciB3aGljaCBzcGFjZSBoYXMgYmVlbiBhbGxv
-Y2F0ZWQKPiAgICAqCWJ5IGpmZnMyX3Jlc2VydmVfc3BhY2UuCj4gICAgKgo+ICAgICoJTXVzdCBi
-ZSBjYWxsZWQgd2l0aCB0aGUgYWxsb2Nfc2VtIGhlbGQuCj4gKyAqCj4gKyAqCVJldHVybnM6IHBv
-aW50ZXIgdG8gbmV3IG5vZGUgb24gc3VjY2VzcyBvciAtZXJybm8gY29kZSBvbiBlcnJvcgo+ICAg
-ICovCj4gICAKPiAgIHN0cnVjdCBqZmZzMl9yYXdfbm9kZV9yZWYgKmpmZnMyX2FkZF9waHlzaWNh
-bF9ub2RlX3JlZihzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywKPgo+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo+IC4KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Fix kernel-doc warnings found when using "W=1".
+
+file.c:1385: warning: Excess function parameter 'time' description in 'ubifs_update_time'
+and 9 warnings like this one:
+file.c:326: warning: No description found for return value of 'allocate_budget'
+
+auth.c:30: warning: expecting prototype for ubifs_node_calc_hash(). Prototype was for __ubifs_node_calc_hash() instead
+and 11 warnings like this one:
+auth.c:30: warning: No description found for return value of '__ubifs_node_calc_hash'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202312030417.66c5PwHj-lkp@intel.com/
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+---
+This does not Close: the report kernel robot report since there is
+also a missing-prototype warning in it.
+
+ fs/ubifs/auth.c |   28 ++++++++++++++++------------
+ fs/ubifs/file.c |   30 +++++++++++++++++++++---------
+ 2 files changed, 37 insertions(+), 21 deletions(-)
+
+diff -- a/fs/ubifs/auth.c b/fs/ubifs/auth.c
+--- a/fs/ubifs/auth.c
++++ b/fs/ubifs/auth.c
+@@ -18,12 +18,12 @@
+ #include "ubifs.h"
+ 
+ /**
+- * ubifs_node_calc_hash - calculate the hash of a UBIFS node
++ * __ubifs_node_calc_hash - calculate the hash of a UBIFS node
+  * @c: UBIFS file-system description object
+  * @node: the node to calculate a hash for
+  * @hash: the returned hash
+  *
+- * Returns 0 for success or a negative error code otherwise.
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ int __ubifs_node_calc_hash(const struct ubifs_info *c, const void *node,
+ 			    u8 *hash)
+@@ -40,7 +40,7 @@ int __ubifs_node_calc_hash(const struct
+  * @hash: the node to calculate a HMAC for
+  * @hmac: the returned HMAC
+  *
+- * Returns 0 for success or a negative error code otherwise.
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ static int ubifs_hash_calc_hmac(const struct ubifs_info *c, const u8 *hash,
+ 				 u8 *hmac)
+@@ -57,7 +57,7 @@ static int ubifs_hash_calc_hmac(const st
+  * This function prepares an authentication node for writing onto flash.
+  * It creates a HMAC from the given input hash and writes it to the node.
+  *
+- * Returns 0 for success or a negative error code otherwise.
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
+ 			     struct shash_desc *inhash)
+@@ -114,7 +114,7 @@ static struct shash_desc *ubifs_get_desc
+  * __ubifs_hash_get_desc - get a descriptor suitable for hashing a node
+  * @c: UBIFS file-system description object
+  *
+- * This function returns a descriptor suitable for hashing a node. Free after use
++ * Returns: a descriptor suitable for hashing a node. Free after use
+  * with kfree.
+  */
+ struct shash_desc *__ubifs_hash_get_desc(const struct ubifs_info *c)
+@@ -156,8 +156,8 @@ void ubifs_bad_hash(const struct ubifs_i
+  * @expected: the expected hash
+  *
+  * This function calculates a hash over a node and compares it to the given hash.
+- * Returns 0 if both hashes are equal or authentication is disabled, otherwise a
+- * negative error code is returned.
++ * Returns: %0 if both hashes are equal or authentication is disabled,
++ * otherwise a negative error code is returned.
+  */
+ int __ubifs_node_check_hash(const struct ubifs_info *c, const void *node,
+ 			    const u8 *expected)
+@@ -184,7 +184,7 @@ int __ubifs_node_check_hash(const struct
+  * PKCS#7 signature. The signature is placed directly behind the superblock
+  * node in an ubifs_sig_node.
+  *
+- * Returns 0 when the signature can be successfully verified or a negative
++ * Returns: %0 when the signature can be successfully verified or a negative
+  * error code if not.
+  */
+ int ubifs_sb_verify_signature(struct ubifs_info *c,
+@@ -250,7 +250,7 @@ out_destroy:
+  * ubifs_init_authentication - initialize UBIFS authentication support
+  * @c: UBIFS file-system description object
+  *
+- * This function returns 0 for success or a negative error code otherwise.
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ int ubifs_init_authentication(struct ubifs_info *c)
+ {
+@@ -383,6 +383,8 @@ void __ubifs_exit_authentication(struct
+  * This function calculates a HMAC of a UBIFS node. The HMAC is expected to be
+  * embedded into the node, so this area is not covered by the HMAC. Also not
+  * covered is the UBIFS_NODE_MAGIC and the CRC of the node.
++ *
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ static int ubifs_node_calc_hmac(const struct ubifs_info *c, const void *node,
+ 				int len, int ofs_hmac, void *hmac)
+@@ -426,7 +428,7 @@ static int ubifs_node_calc_hmac(const st
+  * This function inserts a HMAC at offset @ofs_hmac into the node given in
+  * @node.
+  *
+- * This function returns 0 for success or a negative error code otherwise.
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ int __ubifs_node_insert_hmac(const struct ubifs_info *c, void *node, int len,
+ 			    int ofs_hmac)
+@@ -442,7 +444,9 @@ int __ubifs_node_insert_hmac(const struc
+  * @ofs_hmac: the offset in the node where the HMAC is inserted
+  *
+  * This function verifies the HMAC at offset @ofs_hmac of the node given in
+- * @node. Returns 0 if successful or a negative error code otherwise.
++ * @node.
++ *
++ * Returns: %0 if successful or a negative error code otherwise.
+  */
+ int __ubifs_node_verify_hmac(const struct ubifs_info *c, const void *node,
+ 			     int len, int ofs_hmac)
+@@ -503,7 +507,7 @@ out:
+  * image. This is only a convenience to the user to provide a better
+  * error message when the wrong key is provided.
+  *
+- * This function returns 0 for success or a negative error code otherwise.
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ int ubifs_hmac_wkm(struct ubifs_info *c, u8 *hmac)
+ {
+diff -- a/fs/ubifs/file.c b/fs/ubifs/file.c
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -318,8 +318,9 @@ static int write_begin_slow(struct addre
+  * This is a helper function for 'ubifs_write_begin()' which allocates budget
+  * for the operation. The budget is allocated differently depending on whether
+  * this is appending, whether the page is dirty or not, and so on. This
+- * function leaves the @ui->ui_mutex locked in case of appending. Returns zero
+- * in case of success and %-ENOSPC in case of failure.
++ * function leaves the @ui->ui_mutex locked in case of appending.
++ *
++ * Returns: %0 in case of success and %-ENOSPC in case of failure.
+  */
+ static int allocate_budget(struct ubifs_info *c, struct page *page,
+ 			   struct ubifs_inode *ui, int appending)
+@@ -600,7 +601,7 @@ out:
+  * @bu: bulk-read information
+  * @n: next zbranch slot
+  *
+- * This function returns %0 on success and a negative error code on failure.
++ * Returns: %0 on success and a negative error code on failure.
+  */
+ static int populate_page(struct ubifs_info *c, struct page *page,
+ 			 struct bu_info *bu, int *n)
+@@ -711,7 +712,7 @@ out_err:
+  * @bu: bulk-read information
+  * @page1: first page to read
+  *
+- * This function returns %1 if the bulk-read is done, otherwise %0 is returned.
++ * Returns: %1 if the bulk-read is done, otherwise %0 is returned.
+  */
+ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 			      struct page *page1)
+@@ -821,7 +822,9 @@ out_bu_off:
+  * Some flash media are capable of reading sequentially at faster rates. UBIFS
+  * bulk-read facility is designed to take advantage of that, by reading in one
+  * go consecutive data nodes that are also located consecutively in the same
+- * LEB. This function returns %1 if a bulk-read is done and %0 otherwise.
++ * LEB.
++ *
++ * Returns: %1 if a bulk-read is done and %0 otherwise.
+  */
+ static int ubifs_bulk_read(struct page *page)
+ {
+@@ -1109,7 +1112,9 @@ static void do_attr_changes(struct inode
+  * @attr: inode attribute changes description
+  *
+  * This function implements VFS '->setattr()' call when the inode is truncated
+- * to a smaller size. Returns zero in case of success and a negative error code
++ * to a smaller size.
++ *
++ * Returns: %0 in case of success and a negative error code
+  * in case of failure.
+  */
+ static int do_truncation(struct ubifs_info *c, struct inode *inode,
+@@ -1215,7 +1220,9 @@ out_budg:
+  * @attr: inode attribute changes description
+  *
+  * This function implements VFS '->setattr()' call for all cases except
+- * truncations to smaller size. Returns zero in case of success and a negative
++ * truncations to smaller size.
++ *
++ * Returns: %0 in case of success and a negative
+  * error code in case of failure.
+  */
+ static int do_setattr(struct ubifs_info *c, struct inode *inode,
+@@ -1360,6 +1367,8 @@ out:
+  * This helper function checks if the inode mtime/ctime should be updated or
+  * not. If current values of the time-stamps are within the UBIFS inode time
+  * granularity, they are not updated. This is an optimization.
++ *
++ * Returns: %1 if time update is needed, %0 if not
+  */
+ static inline int mctime_update_needed(const struct inode *inode,
+ 				       const struct timespec64 *now)
+@@ -1375,11 +1384,12 @@ static inline int mctime_update_needed(c
+ /**
+  * ubifs_update_time - update time of inode.
+  * @inode: inode to update
+- * @time:  timespec structure to hold the current time value
+  * @flags: time updating control flag determines updating
+  *	    which time fields of @inode
+  *
+  * This function updates time of the inode.
++ *
++ * Returns: %0 for success or a negative error code otherwise.
+  */
+ int ubifs_update_time(struct inode *inode, int flags)
+ {
+@@ -1413,7 +1423,9 @@ int ubifs_update_time(struct inode *inod
+  * @inode: inode to update
+  *
+  * This function updates mtime and ctime of the inode if it is not equivalent to
+- * current time. Returns zero in case of success and a negative error code in
++ * current time.
++ *
++ * Returns: %0 in case of success and a negative error code in
+  * case of failure.
+  */
+ static int update_mctime(struct inode *inode)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
