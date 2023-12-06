@@ -4,39 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2686AC10F05
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Dec 2023 17:32:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56BDFC4167B
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Dec 2023 01:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8VT0enWAaXy4vp8PS7DTx1nOUGI6pasaSFWxf3+oqUg=; b=MTQrL/rurDauis
-	tScxHZnuwslpmUrqrDpNavQleaacMP+djpVY8aGAJT+0wuZfDsGtAOmfdVZfpggg4HKtodxm59/5S
-	jqaihFEgoVTrKr3BKYhiuO5Srs1BRirZmplBeWvenR3CLi5vV2e+4WR2YkUi29lUq40yg+kAQmgDc
-	6JFoRyRhS4+b26iUxU6gwUdUUbanY57SlG2vV1lJHKzo7Hyo0QQM4tdaULoNUSw1H/YJhejgdHDuF
-	z4EEcGJ6SrUFYF/QPD2xVEnkY7WWhnMlnnzQxW/ZgU0cFopRBm/ZmgwaFXUqmzkVVat5RWevsgrlf
-	CPTkrqY8W+4EW2IUojdg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=dEsFjCT1iVAfTI8lQd/rdOVakQc0LcCHbMcNBe1M75I=; b=INdjhfxpWJl1obyXXp2nkEya4c
+	Q1LS42f5cCav9G9tmpr3yxgF09ZLCM3iITqTcl+lkQbJ/q2CETCZzeOCvTv+vZ8XW8Py9MnnWZvdT
+	sZMrFKZou3xmPfvlfQGaHBFrsI/Gd+hdKmKUiPufKo3mRj2TH9V2XvkKU6JRmwHn/x53k06rhoP9R
+	mDeaZg4yvM3ydxPgWWmJ6q8q7IU74xImxJVKGr6dj5X5GAhVGA2wp9N6H+gFsAv9ToXYPU29oZzwT
+	9wusKQmU7aTVcyqQ03A3ZA51hAyrkmoNMEN32JyU1F1HTDPMvA+Ifv/BvF9F+x19aKv7NqziUVGji
+	jfu30g6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAZHU-0082fJ-0R;
-	Tue, 05 Dec 2023 17:32:24 +0000
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAZHS-0082ez-1z;
-	Tue, 05 Dec 2023 17:32:22 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
-Date: Tue,  5 Dec 2023 09:32:22 -0800
-Message-ID: <20231205173222.12575-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	id 1rAggH-008n1d-1L;
+	Wed, 06 Dec 2023 01:26:29 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1rAggC-008n0i-1x
+	for linux-mtd@lists.infradead.org;
+	Wed, 06 Dec 2023 01:26:27 +0000
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.53])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SlKTr24ggzvRhL;
+	Wed,  6 Dec 2023 09:25:36 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Dec 2023 09:26:14 +0800
+Subject: Re: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
+To: Randy Dunlap <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
+CC: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
+	<richard@nod.at>, <linux-mtd@lists.infradead.org>
+References: <20231205173222.12575-1-rdunlap@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f0a0eb5d-7cdf-89a1-3017-2dd048d2a0e4@huawei.com>
+Date: Wed, 6 Dec 2023 09:26:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20231205173222.12575-1-rdunlap@infradead.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20231205_172624_985064_19CF3251 
+X-CRM114-Status: GOOD (  24.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -48,94 +64,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update the end of one sentence where a comment was truncated. (dwmw2)
-
-Fix a bunch of kernel-doc warnings:
-
-nodemgmt.c:72: warning: Function parameter or member 'sumsize' not described in 'jffs2_do_reserve_space'
-nodemgmt.c:72: warning: expecting prototype for jffs2_reserve_space(). Prototype was for jffs2_do_reserve_space() instead
-nodemgmt.c:76: warning: Function parameter or member 'sumsize' not described in 'jffs2_reserve_space'
-nodemgmt.c:76: warning: No description found for return value of 'jffs2_reserve_space'
-nodemgmt.c:503: warning: Function parameter or member 'ofs' not described in 'jffs2_add_physical_node_ref'
-nodemgmt.c:503: warning: Function parameter or member 'ic' not described in 'jffs2_add_physical_node_ref'
-nodemgmt.c:503: warning: Excess function parameter 'new' description in 'jffs2_add_physical_node_ref'
-nodemgmt.c:503: warning: No description found for return value of 'jffs2_add_physical_node_ref'
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
----
- fs/jffs2/nodemgmt.c |   24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
-
-diff -- a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
---- a/fs/jffs2/nodemgmt.c
-+++ b/fs/jffs2/nodemgmt.c
-@@ -49,28 +49,31 @@ static int jffs2_rp_can_write(struct jff
- 	return 0;
- }
- 
-+static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
-+				  uint32_t *len, uint32_t sumsize);
-+
- /**
-  *	jffs2_reserve_space - request physical space to write nodes to flash
-  *	@c: superblock info
-  *	@minsize: Minimum acceptable size of allocation
-  *	@len: Returned value of allocation length
-  *	@prio: Allocation type - ALLOC_{NORMAL,DELETION}
-+ *	@sumsize: summary size requested or JFFS2_SUMMARY_NOSUM_SIZE for no summary
-+ *
-+ *	Requests a block of physical space on the flash.
-  *
-- *	Requests a block of physical space on the flash. Returns zero for success
-- *	and puts 'len' into the appropriate place, or returns -ENOSPC or other 
-- *	error if appropriate. Doesn't return len since that's 
-+ *	Returns: %0 for success	and puts 'len' into the appropriate place,
-+ *	or returns -ENOSPC or other error if appropriate.
-+ *	Doesn't return len since that's already returned in @len.
-  *
-- *	If it returns zero, jffs2_reserve_space() also downs the per-filesystem
-+ *	If it returns %0, jffs2_reserve_space() also downs the per-filesystem
-  *	allocation semaphore, to prevent more than one allocation from being
-- *	active at any time. The semaphore is later released by jffs2_commit_allocation()
-+ *	active at any time. The semaphore is later released by jffs2_commit_allocation().
-  *
-  *	jffs2_reserve_space() may trigger garbage collection in order to make room
-  *	for the requested allocation.
-  */
- 
--static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
--				  uint32_t *len, uint32_t sumsize);
--
- int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
- 			uint32_t *len, int prio, uint32_t sumsize)
- {
-@@ -488,13 +491,16 @@ static int jffs2_do_reserve_space(struct
- /**
-  *	jffs2_add_physical_node_ref - add a physical node reference to the list
-  *	@c: superblock info
-- *	@new: new node reference to add
-+ *	@ofs: offset in the block
-  *	@len: length of this physical node
-+ *	@ic: inode cache pointer
-  *
-  *	Should only be used to report nodes for which space has been allocated
-  *	by jffs2_reserve_space.
-  *
-  *	Must be called with the alloc_sem held.
-+ *
-+ *	Returns: pointer to new node on success or -errno code on error
-  */
- 
- struct jffs2_raw_node_ref *jffs2_add_physical_node_ref(struct jffs2_sb_info *c,
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy8xMi82IDE6MzIsIFJhbmR5IER1bmxhcCDQtLXAOgo+IFVwZGF0ZSB0aGUgZW5kIG9m
+IG9uZSBzZW50ZW5jZSB3aGVyZSBhIGNvbW1lbnQgd2FzIHRydW5jYXRlZC4gKGR3bXcyKQo+Cj4g
+Rml4IGEgYnVuY2ggb2Yga2VybmVsLWRvYyB3YXJuaW5nczoKPgo+IG5vZGVtZ210LmM6NzI6IHdh
+cm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ3N1bXNpemUnIG5vdCBkZXNjcmli
+ZWQgaW4gJ2pmZnMyX2RvX3Jlc2VydmVfc3BhY2UnCj4gbm9kZW1nbXQuYzo3Mjogd2FybmluZzog
+ZXhwZWN0aW5nIHByb3RvdHlwZSBmb3IgamZmczJfcmVzZXJ2ZV9zcGFjZSgpLiBQcm90b3R5cGUg
+d2FzIGZvciBqZmZzMl9kb19yZXNlcnZlX3NwYWNlKCkgaW5zdGVhZAo+IG5vZGVtZ210LmM6NzY6
+IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ3N1bXNpemUnIG5vdCBkZXNj
+cmliZWQgaW4gJ2pmZnMyX3Jlc2VydmVfc3BhY2UnCj4gbm9kZW1nbXQuYzo3Njogd2FybmluZzog
+Tm8gZGVzY3JpcHRpb24gZm91bmQgZm9yIHJldHVybiB2YWx1ZSBvZiAnamZmczJfcmVzZXJ2ZV9z
+cGFjZScKPiBub2RlbWdtdC5jOjUwMzogd2FybmluZzogRnVuY3Rpb24gcGFyYW1ldGVyIG9yIG1l
+bWJlciAnb2ZzJyBub3QgZGVzY3JpYmVkIGluICdqZmZzMl9hZGRfcGh5c2ljYWxfbm9kZV9yZWYn
+Cj4gbm9kZW1nbXQuYzo1MDM6IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIg
+J2ljJyBub3QgZGVzY3JpYmVkIGluICdqZmZzMl9hZGRfcGh5c2ljYWxfbm9kZV9yZWYnCj4gbm9k
+ZW1nbXQuYzo1MDM6IHdhcm5pbmc6IEV4Y2VzcyBmdW5jdGlvbiBwYXJhbWV0ZXIgJ25ldycgZGVz
+Y3JpcHRpb24gaW4gJ2pmZnMyX2FkZF9waHlzaWNhbF9ub2RlX3JlZicKPiBub2RlbWdtdC5jOjUw
+Mzogd2FybmluZzogTm8gZGVzY3JpcHRpb24gZm91bmQgZm9yIHJldHVybiB2YWx1ZSBvZiAnamZm
+czJfYWRkX3BoeXNpY2FsX25vZGVfcmVmJwo+Cj4gU2lnbmVkLW9mZi1ieTogUmFuZHkgRHVubGFw
+IDxyZHVubGFwQGluZnJhZGVhZC5vcmc+Cj4gQ2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5m
+cmFkZWFkLm9yZz4KPiBDYzogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KPiBD
+YzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiAtLS0KPiAgIGZzL2pmZnMyL25vZGVt
+Z210LmMgfCAgIDI0ICsrKysrKysrKysrKysrKy0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDE1IGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pClJldmlld2VkLWJ5OiBaaGloYW8gQ2hl
+bmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IGRpZmYgLS0gYS9mcy9qZmZzMi9ub2RlbWdt
+dC5jIGIvZnMvamZmczIvbm9kZW1nbXQuYwo+IC0tLSBhL2ZzL2pmZnMyL25vZGVtZ210LmMKPiAr
+KysgYi9mcy9qZmZzMi9ub2RlbWdtdC5jCj4gQEAgLTQ5LDI4ICs0OSwzMSBAQCBzdGF0aWMgaW50
+IGpmZnMyX3JwX2Nhbl93cml0ZShzdHJ1Y3QgamZmCj4gICAJcmV0dXJuIDA7Cj4gICB9Cj4gICAK
+PiArc3RhdGljIGludCBqZmZzMl9kb19yZXNlcnZlX3NwYWNlKHN0cnVjdCBqZmZzMl9zYl9pbmZv
+ICpjLCAgdWludDMyX3QgbWluc2l6ZSwKPiArCQkJCSAgdWludDMyX3QgKmxlbiwgdWludDMyX3Qg
+c3Vtc2l6ZSk7Cj4gKwo+ICAgLyoqCj4gICAgKglqZmZzMl9yZXNlcnZlX3NwYWNlIC0gcmVxdWVz
+dCBwaHlzaWNhbCBzcGFjZSB0byB3cml0ZSBub2RlcyB0byBmbGFzaAo+ICAgICoJQGM6IHN1cGVy
+YmxvY2sgaW5mbwo+ICAgICoJQG1pbnNpemU6IE1pbmltdW0gYWNjZXB0YWJsZSBzaXplIG9mIGFs
+bG9jYXRpb24KPiAgICAqCUBsZW46IFJldHVybmVkIHZhbHVlIG9mIGFsbG9jYXRpb24gbGVuZ3Ro
+Cj4gICAgKglAcHJpbzogQWxsb2NhdGlvbiB0eXBlIC0gQUxMT0Nfe05PUk1BTCxERUxFVElPTn0K
+PiArICoJQHN1bXNpemU6IHN1bW1hcnkgc2l6ZSByZXF1ZXN0ZWQgb3IgSkZGUzJfU1VNTUFSWV9O
+T1NVTV9TSVpFIGZvciBubyBzdW1tYXJ5Cj4gKyAqCj4gKyAqCVJlcXVlc3RzIGEgYmxvY2sgb2Yg
+cGh5c2ljYWwgc3BhY2Ugb24gdGhlIGZsYXNoLgo+ICAgICoKPiAtICoJUmVxdWVzdHMgYSBibG9j
+ayBvZiBwaHlzaWNhbCBzcGFjZSBvbiB0aGUgZmxhc2guIFJldHVybnMgemVybyBmb3Igc3VjY2Vz
+cwo+IC0gKglhbmQgcHV0cyAnbGVuJyBpbnRvIHRoZSBhcHByb3ByaWF0ZSBwbGFjZSwgb3IgcmV0
+dXJucyAtRU5PU1BDIG9yIG90aGVyCj4gLSAqCWVycm9yIGlmIGFwcHJvcHJpYXRlLiBEb2Vzbid0
+IHJldHVybiBsZW4gc2luY2UgdGhhdCdzCj4gKyAqCVJldHVybnM6ICUwIGZvciBzdWNjZXNzCWFu
+ZCBwdXRzICdsZW4nIGludG8gdGhlIGFwcHJvcHJpYXRlIHBsYWNlLAo+ICsgKglvciByZXR1cm5z
+IC1FTk9TUEMgb3Igb3RoZXIgZXJyb3IgaWYgYXBwcm9wcmlhdGUuCj4gKyAqCURvZXNuJ3QgcmV0
+dXJuIGxlbiBzaW5jZSB0aGF0J3MgYWxyZWFkeSByZXR1cm5lZCBpbiBAbGVuLgo+ICAgICoKPiAt
+ICoJSWYgaXQgcmV0dXJucyB6ZXJvLCBqZmZzMl9yZXNlcnZlX3NwYWNlKCkgYWxzbyBkb3ducyB0
+aGUgcGVyLWZpbGVzeXN0ZW0KPiArICoJSWYgaXQgcmV0dXJucyAlMCwgamZmczJfcmVzZXJ2ZV9z
+cGFjZSgpIGFsc28gZG93bnMgdGhlIHBlci1maWxlc3lzdGVtCj4gICAgKglhbGxvY2F0aW9uIHNl
+bWFwaG9yZSwgdG8gcHJldmVudCBtb3JlIHRoYW4gb25lIGFsbG9jYXRpb24gZnJvbSBiZWluZwo+
+IC0gKglhY3RpdmUgYXQgYW55IHRpbWUuIFRoZSBzZW1hcGhvcmUgaXMgbGF0ZXIgcmVsZWFzZWQg
+YnkgamZmczJfY29tbWl0X2FsbG9jYXRpb24oKQo+ICsgKglhY3RpdmUgYXQgYW55IHRpbWUuIFRo
+ZSBzZW1hcGhvcmUgaXMgbGF0ZXIgcmVsZWFzZWQgYnkgamZmczJfY29tbWl0X2FsbG9jYXRpb24o
+KS4KPiAgICAqCj4gICAgKglqZmZzMl9yZXNlcnZlX3NwYWNlKCkgbWF5IHRyaWdnZXIgZ2FyYmFn
+ZSBjb2xsZWN0aW9uIGluIG9yZGVyIHRvIG1ha2Ugcm9vbQo+ICAgICoJZm9yIHRoZSByZXF1ZXN0
+ZWQgYWxsb2NhdGlvbi4KPiAgICAqLwo+ICAgCj4gLXN0YXRpYyBpbnQgamZmczJfZG9fcmVzZXJ2
+ZV9zcGFjZShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywgIHVpbnQzMl90IG1pbnNpemUsCj4gLQkJ
+CQkgIHVpbnQzMl90ICpsZW4sIHVpbnQzMl90IHN1bXNpemUpOwo+IC0KPiAgIGludCBqZmZzMl9y
+ZXNlcnZlX3NwYWNlKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjLCB1aW50MzJfdCBtaW5zaXplLAo+
+ICAgCQkJdWludDMyX3QgKmxlbiwgaW50IHByaW8sIHVpbnQzMl90IHN1bXNpemUpCj4gICB7Cj4g
+QEAgLTQ4OCwxMyArNDkxLDE2IEBAIHN0YXRpYyBpbnQgamZmczJfZG9fcmVzZXJ2ZV9zcGFjZShz
+dHJ1Y3QKPiAgIC8qKgo+ICAgICoJamZmczJfYWRkX3BoeXNpY2FsX25vZGVfcmVmIC0gYWRkIGEg
+cGh5c2ljYWwgbm9kZSByZWZlcmVuY2UgdG8gdGhlIGxpc3QKPiAgICAqCUBjOiBzdXBlcmJsb2Nr
+IGluZm8KPiAtICoJQG5ldzogbmV3IG5vZGUgcmVmZXJlbmNlIHRvIGFkZAo+ICsgKglAb2ZzOiBv
+ZmZzZXQgaW4gdGhlIGJsb2NrCj4gICAgKglAbGVuOiBsZW5ndGggb2YgdGhpcyBwaHlzaWNhbCBu
+b2RlCj4gKyAqCUBpYzogaW5vZGUgY2FjaGUgcG9pbnRlcgo+ICAgICoKPiAgICAqCVNob3VsZCBv
+bmx5IGJlIHVzZWQgdG8gcmVwb3J0IG5vZGVzIGZvciB3aGljaCBzcGFjZSBoYXMgYmVlbiBhbGxv
+Y2F0ZWQKPiAgICAqCWJ5IGpmZnMyX3Jlc2VydmVfc3BhY2UuCj4gICAgKgo+ICAgICoJTXVzdCBi
+ZSBjYWxsZWQgd2l0aCB0aGUgYWxsb2Nfc2VtIGhlbGQuCj4gKyAqCj4gKyAqCVJldHVybnM6IHBv
+aW50ZXIgdG8gbmV3IG5vZGUgb24gc3VjY2VzcyBvciAtZXJybm8gY29kZSBvbiBlcnJvcgo+ICAg
+ICovCj4gICAKPiAgIHN0cnVjdCBqZmZzMl9yYXdfbm9kZV9yZWYgKmpmZnMyX2FkZF9waHlzaWNh
+bF9ub2RlX3JlZihzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywKPgo+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo+IC4KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
