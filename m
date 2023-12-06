@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 073CFC4167B
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Dec 2023 05:54:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 578EEC4167B
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Dec 2023 05:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5zvQVQS0hW15ED0YmCan7qPxwfyh3VHv69acnEGvjQo=; b=CyBagD7nXtIihz
-	dtA7CacT2aFvTZnMM1HAEnK9h6Qtcp+TwM39iOQw6S5uegfZgTPH08SSR0355Xi1NdlAPDyK45eBj
-	HXFnEL1+JK4UzHBAC6rAX0bMFfBPyKFPcPuyKnEc2vuoxlv3ruADlBtXCV7JPO3x0QDP1Z3c4+6qX
-	ts4iDdwEb65aDee6MgUfLV5nuuwWk1rXz2yCoEs7FxQLw5G0n6s0CM+8/8OoUEcOw+Ws9iSdqtFht
-	gVXZE52+6L2WGM1hIHSoZ1ZnEpoQAznJYygmeoQvnihErPh2OvzQz5v6khA4wYbfZCvIh4bBDxpXu
-	tA3cDwAnsfwybzvJoc9g==;
+	List-Owner; bh=U/QczIh6C24ADiycgM0t5dD85RPof7nzFEAHdX41MA4=; b=Ywljcg/awyzJHJ
+	4aXabWiNTxK0OVBLkEwUENeFsbUS2qS9mc6YeK6qq4SC+ftqcNntIuaZ5XJWgkgNcLED1i/1w1OTs
+	uLGBJvcgO3BseFcIjBA+6AK9Fr7ll3KUu/ICsqkKa3hsq5eACwpplZpM3xcEAi1itc0M+hKRnoE1V
+	3fx/71gz7VT4qx9pIRIeaMgaHtmKUa4YRXatxFgnxya6RnYn8YxEFV2qLYi38qV6AUyIsxVz8Ysi7
+	HfttPU00j9yl3jotfK6fsb58lo0XMPgqgee+5qmP4J0zF5ndSmuZfqGfBRQR9rVqFQR2W0Nq3PLLb
+	i9lZqc0fbPJuPsBFn9lA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAkrZ-0098Os-3D;
-	Wed, 06 Dec 2023 05:54:26 +0000
+	id 1rAksM-0098Va-2R;
+	Wed, 06 Dec 2023 05:55:14 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAkrP-0098Oa-0t;
-	Wed, 06 Dec 2023 05:54:15 +0000
-Date: Tue, 5 Dec 2023 21:54:15 -0800
+	id 1rAksK-0098VN-1r;
+	Wed, 06 Dec 2023 05:55:12 +0000
+Date: Tue, 5 Dec 2023 21:55:12 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: Yu Kuai <yukuai1@huaweicloud.com>
 Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
@@ -46,13 +46,14 @@ Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
 	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
 	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
 	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next RFC 00/14] block: don't access bd_inode directly
- from other modules
-Message-ID: <ZXAMh02h4FAwt2FY@infradead.org>
+Subject: Re: [PATCH -next RFC 02/14] xen/blkback: use bdev api in
+ xen_update_blkif_status()
+Message-ID: <ZXAMwBD8pd48qwX/@infradead.org>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+ <20231205123728.1866699-3-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20231205123728.1866699-3-yukuai1@huaweicloud.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,15 +70,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Dec 05, 2023 at 08:37:14PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Patch 1 add some bdev apis, then follow up patches will use these apis
-> to avoid access bd_inode directly, and hopefully the field bd_inode can
-> be removed eventually(after figure out a way for fs/buffer.c).
+On Tue, Dec 05, 2023 at 08:37:16PM +0800, Yu Kuai wrote:
+> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+> index e34219ea2b05..e645afa4af57 100644
+> --- a/drivers/block/xen-blkback/xenbus.c
+> +++ b/drivers/block/xen-blkback/xenbus.c
+> @@ -104,8 +104,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
+>  		xenbus_dev_error(blkif->be->dev, err, "block flush");
+>  		return;
+>  	}
+> -	invalidate_inode_pages2(
+> -			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
+> +	invalidate_bdev(blkif->vbd.bdev_handle->bdev);
 
-What tree is this against?  It fails to apply to either Jens'
-for-6.8/block or Linus tree in the very first patch.
+blkbak is a bdev exported.   I don't think it should ever call
+invalidate_inode_pages2, through a wrapper or not.
 
 
 ______________________________________________________
