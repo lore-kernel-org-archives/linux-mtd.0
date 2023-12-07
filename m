@@ -4,75 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52E43C10F05
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 17:56:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0416EC4167B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 22:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Subject:From:To:MIME-Version:Date:Message-ID:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qkBK9Y3MnqmdMApnT6WqV3SBBmWyBPjJyIxmh9ynNIE=; b=Z/K+lR8ar106dk
-	Yvmc3b5JxJ1iRSfeu2ps+VPtYjtsQZcBrYyttYlTt+ZgdeYBQWdDh455iuvW7w1s3x6+8LcoTrxqV
-	oh/caankfx1OWdkVtT4rWlHvvXDOXgxJWf/qZuDjJjCAxXlphYi5fkHtE7/AV1lhGuXqpqtIWiPKF
-	uYsKTATQiIMnDYCKJp02kObJ4bLd5Xk3g3bm3ZDsYpSBOIjeDop9dnR61msyCpSJKgb9hB0/ADrQm
-	t5pErSFm74lNygxZLZwY6x4s0k2ArQLCdoekPF8Y7dO0F4kOEspDfsQqSTGl2jtGIocXlbwx2D7OC
-	4BTiKDaXtKBOempaNWBw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Mpj0jvxhwF1AUOPOsheaePCAvmOGV7NfHbxAcUmHmPs=; b=dvZL948PmNZUNa
+	C2hehgZwk7tl/Csz8HT905FXXNS90YMQbJfyDBvQoAgxqdzAd3c2iNlYaY3KIqYD3YsGHPSQOSJzA
+	uD7zw3s39gbAKIPW7HsHX7+mRWPzV032a+JXiBuiKFcauNB0NjBCgz4onxmd3u6viQb1vuC4oUtYB
+	YTGIJaMuSCs3xjsUGveefJAY3CD+SbhB6PPI+rG0xqiBSmZu7BvK5RRzsKIa8GFrpphRcscrije3g
+	l4AFnggto+ROFo+qBG3n4bghYdycEzpfdySlXB/P9w0wN8p3W5mu5xOzQFHyWXJh1fwv6iRwSnbH3
+	MqlEEDxtFDZ3b6aHGvjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBIbu-00DaC5-14;
-	Thu, 07 Dec 2023 17:56:30 +0000
-Received: from mail-oi1-x230.google.com ([2607:f8b0:4864:20::230])
+	id 1rBMxW-00E8wS-1l;
+	Thu, 07 Dec 2023 22:35:06 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBIbq-00DaBj-2X
-	for linux-mtd@lists.infradead.org;
-	Thu, 07 Dec 2023 17:56:27 +0000
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2e330033fso903474b6e.3
-        for <linux-mtd@lists.infradead.org>; Thu, 07 Dec 2023 09:56:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701971782; x=1702576582; darn=lists.infradead.org;
-        h=content-transfer-encoding:subject:from:content-language:to
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TEgYXp3pWhvzQfI45Aevm6IshLhjL62xRITnCLdc2bo=;
-        b=ENwu5eErKURtu3KdYfyaZqM5zikg4Rh9mxDUBu8jAN5PZNfr2cvRFTkYLkdOp45j9u
-         ey88J3I+Bzw9xuGWzcK7DViAcV1dM7/A6Uji0wkDKrVVu8hym2sNO7bH+wMl0roU9oaZ
-         G7M76XpNCvmAC56Ko57aaAXXBe5FlFUtzM42Cfo7xH73Hc1qpZVvDobu4l4BY44CuN1j
-         iFI7w+HE2QwQw3gBk6EB1xWQJ2MvElhRt4btf+qc7vP9E2BRwgeo8YDCzDdpq6pMvc4p
-         +5rSTSO1rwq77bZPD3Rj0ARgNPL1HEPfyxuv/Rl8Yyd1cufaHgRgV62nAid2+fBgd2jV
-         4/6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701971782; x=1702576582;
-        h=content-transfer-encoding:subject:from:content-language:to
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TEgYXp3pWhvzQfI45Aevm6IshLhjL62xRITnCLdc2bo=;
-        b=XRTsePuHNZ+ZmfLqsuQe3/OKtGmyP0M5cppC4kJsIESjHCBdD3hJyaiW21e2h8/gAk
-         XTiuaKY0HT+LjTfUmqRdWLYl0DeWaYb7tanHtJ5xDgM1VDHuaAenVYbgI6KWSieU3zwQ
-         wZ5QWRdUNrsFPaa4FOPn5l9uttr8wD9szTuXywO/hI5IUbZq4tfYFg54vQINqOhC6Wqh
-         KUvaY1Y6TSmIxaC/WUdkgMCFjbnJkfPwJksr7PvMVmMdlcTZ6T30RYEOdN5Gh+UBccK7
-         WFUcAhApOogAuDrPLOrc2D95Ic8mn0A4B7axBnsWGhrtTQFi9xRQJJy5UMkLO+WmPW3w
-         8FIw==
-X-Gm-Message-State: AOJu0YyZ5tGugYwCED2NiwbxQhc+H60jKFC4wCad49YIbSK8t/6TW+oi
-	kJiYw8AQ+kJuqo4cvsbmmxho6YD8RtsV4A==
-X-Google-Smtp-Source: AGHT+IHVRd+3VGIl3ydHiu+q+XMucvl27nzUS5RmL//E0Dyc+6OYMfv0oUiyMJuVLT1M37h+rcEgSg==
-X-Received: by 2002:a05:6808:204:b0:3b8:b063:6bc2 with SMTP id l4-20020a056808020400b003b8b0636bc2mr3104678oie.113.1701971782075;
-        Thu, 07 Dec 2023 09:56:22 -0800 (PST)
-Received: from [192.168.1.14] (pool-173-66-156-160.washdc.fios.verizon.net. [173.66.156.160])
-        by smtp.gmail.com with ESMTPSA id h7-20020ac85047000000b003f6ac526568sm108772qtm.39.2023.12.07.09.56.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Dec 2023 09:56:21 -0800 (PST)
-Message-ID: <cbff425d-0196-4124-99a0-f7ea8d6e6ab6@gmail.com>
-Date: Thu, 7 Dec 2023 12:56:20 -0500
+	id 1rBMxS-00E8vJ-2d;
+	Thu, 07 Dec 2023 22:35:04 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id A545BB82A96;
+	Thu,  7 Dec 2023 22:35:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B444C433C7;
+	Thu,  7 Dec 2023 22:34:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701988500;
+	bh=zov89DUbTcicayLKcWLvQaeckTRBhXiHS291tZk65GQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=NiqWv2sH+gBdS9tK/zHe2RthyctB0XEVMnr+am+VOVJRegAb1tkq6JAZFLBDzIyuV
+	 4PpgwjbUvP9cMJiut6vPLA+Jfwy44V3+xV3dt0hz4nXmFDk1wRmJC7tmlb716NB5+D
+	 TECFsCDsIBc7lgSK0o1X4twaPo/wqivtAd+HmpIxNvyNJaMMJjffoMorYh3OJ8Dafk
+	 xbXA+UL3FYEPzYdgmP7csUhuBc+/ewpy73zOMXhm+Vo+Pej9Y+dwDI0w4txa/z0OoA
+	 ZzT+Zvyuq4fRPqdlfBT0zwE9WK88mWlRFu/VhSC/PGVzJjoOo9IVfnZWR7oL+tctXu
+	 ec+KuoftjYzUg==
+From: Mark Brown <broonie@kernel.org>
+To: tudor.ambarus@linaro.org, pratyush@kernel.org, 
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
+ sbinding@opensource.cirrus.com, 
+ Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ michael@walle.cc, linux-mtd@lists.infradead.org, 
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
+ claudiu.beznea@tuxon.dev, michal.simek@amd.com, 
+ linux-arm-kernel@lists.infradead.org, git@amd.com, amitrkcian2002@gmail.com
+In-Reply-To: <20231118135446.52783-1-amit.kumar-mahapatra@amd.com>
+References: <20231118135446.52783-1-amit.kumar-mahapatra@amd.com>
+Subject: Re: (subset) [PATCH v10 0/8] spi: Add support for stacked/parallel
+ memories
+Message-Id: <170198849588.340565.18426692818757581382.b4-ty@kernel.org>
+Date: Thu, 07 Dec 2023 22:34:55 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-mtd@lists.infradead.org
-Content-Language: en-US
-From: Chuck Meade <chuckmeade@gmail.com>
-Subject: UBI scrubbing behavior when readonly
+X-Mailer: b4 0.13-dev-5c066
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_095626_846349_71993DBF 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20231207_143502_992033_5B203F47 
+X-CRM114-Status: GOOD (  12.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,26 +73,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpEb2VzIFVCSSBzY3J1YmJpbmcgKG1vdmluZyBkYXRhIHRvIG5ldyBQRUIgd2hlbiBy
-ZWFkIG9wZXJhdGlvbnMgcmVwb3J0IEVDQwpiaXRmbGlwcykgc3RpbGwgb2NjdXIgd2hlbiBhIFVC
-SUZTIG1vdW50ZWQgb24gdGhlIFVCSSB2b2x1bWUgaXMgcmVhZG9ubHksIGluCnRlcm1zIG9mIExp
-bnV4IGZpbGVzeXN0ZW0gcGVybWlzc2lvbnM/CgpJIGhhdmUgbG9va2VkIGF0IHRoZSBVQkkgc291
-cmNlIGZvciBzY3J1YmJpbmcsIGFuZCBpdCBhcHBlYXJzIHRoYXQgaXQgd2lsbCBub3QKb2NjdXIg
-d2hlbiB0aGUgVUJJIGRldmljZSAob3IgTVREIHBhcnRpdGlvbiB0byB3aGljaCB0aGUgZGV2aWNl
-IGlzIGF0dGFjaGVkKQppcyBpbiByZWFkb25seSBtb2RlLiBCdXQgd2hhdCBpZiB0aGUgVUJJIGRl
-dmljZSBpcyBpbiByZWFkL3dyaXRlIG1vZGUsIGJ1dCB0aGUKVUJJRlMgbW91bnRlZCBvbiB0aGUg
-ZGV2aWNlIGlzIGluIHJlYWRvbmx5IG1vZGU/CgpJIGFtIHRyeWluZyB0byBjcmVhdGUgYSBjb25m
-aWd1cmF0aW9uIHdoZXJlIHRoZSBVQklGUyBpcyByZWFkb25seSBhdCB0aGUgTGludXgKZmlsZXN5
-c3RlbSBwZXJtaXNzaW9ucyBsZXZlbCwgYnV0IFVCSSBzY3J1YmJpbmcgc3RpbGwgb2NjdXJzIHdo
-ZW4gcmVhZApvcGVyYXRpb25zIHJlcG9ydCBlbm91Z2ggRUNDIGJpdGZsaXBzLsKgIFNvIG5vIExp
-bnV4IHVzZXJzcGFjZSBwcm9ncmFtcyBtYXkKbW9kaWZ5IHRoZSBmaWxlc3lzdGVtIGR1ZSB0byBw
-ZXJtaXNzaW9ucywgYnV0IFVCSSBzY3J1YmJpbmcgc3RpbGwgd291bGQgb2NjdXIuCgpJcyB0aGlz
-IHBvc3NpYmxlLCBvciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nIGluIHRoZSBVQkkgc291cmNlIGNv
-ZGU/CgpUaGFua3MsCkNodWNrCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Sat, 18 Nov 2023 19:24:38 +0530, Amit Kumar Mahapatra wrote:
+> This patch is in the continuation to the discussions which happened on
+> 'commit f89504300e94 ("spi: Stacked/parallel memories bindings")' for
+> adding dt-binding support for stacked/parallel memories.
+> 
+> This patch series updated the spi-nor, spi core and the AMD-Xilinx GQSPI
+> driver to add stacked and parallel memories support.
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/8] spi: Add multi-cs memories support in SPI core
+      commit: 4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
+[6/8] spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
+      (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
