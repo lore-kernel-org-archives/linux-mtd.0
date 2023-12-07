@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0416EC4167B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 22:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D99EC10DCE
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 22:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
 	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Mpj0jvxhwF1AUOPOsheaePCAvmOGV7NfHbxAcUmHmPs=; b=dvZL948PmNZUNa
-	C2hehgZwk7tl/Csz8HT905FXXNS90YMQbJfyDBvQoAgxqdzAd3c2iNlYaY3KIqYD3YsGHPSQOSJzA
-	uD7zw3s39gbAKIPW7HsHX7+mRWPzV032a+JXiBuiKFcauNB0NjBCgz4onxmd3u6viQb1vuC4oUtYB
-	YTGIJaMuSCs3xjsUGveefJAY3CD+SbhB6PPI+rG0xqiBSmZu7BvK5RRzsKIa8GFrpphRcscrije3g
-	l4AFnggto+ROFo+qBG3n4bghYdycEzpfdySlXB/P9w0wN8p3W5mu5xOzQFHyWXJh1fwv6iRwSnbH3
-	MqlEEDxtFDZ3b6aHGvjQ==;
+	List-Owner; bh=3nZ/7XOsi3yHLO1GLENMXV4pCdyVGk9GWz6MFkdsXLU=; b=SG7W8oVsQP07Zl
+	tZrBPxnDsGNNv1rb/UEgqyAAG/AG91Df6Hv1VZK5T20kF6dtdeZawrHZ6tB+qcZBR/ViHp3fLJEwm
+	ipP723NXXoMGU+QgeR9nG5+4PeXqkF05/0ucjdXeC/jTO6L0ooPOUyF3UK2EJGTKQUsjg4vbmmY8Z
+	7ytmQsuazB3BiI/FMHCp4RKLBmIyd7mED4FmbOiv8ZZOcpDhOSY3cG+71jO72xpCbspD6HS5SJiyv
+	YR0LB63AKSWMkzT2YRTIID86zVbozXGfmIAlHUtoKtQzlVXR6H9hyJOK+q94CnbWUQ79b15ez69vG
+	tKKiv7cclBbkI1yARk0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBMxW-00E8wS-1l;
-	Thu, 07 Dec 2023 22:35:06 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1rBMxa-00E8xt-2c;
+	Thu, 07 Dec 2023 22:35:10 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBMxS-00E8vJ-2d;
-	Thu, 07 Dec 2023 22:35:04 +0000
+	id 1rBMxX-00E8wQ-1S;
+	Thu, 07 Dec 2023 22:35:08 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id A545BB82A96;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 04321620CD;
+	Thu,  7 Dec 2023 22:35:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8BDC433CA;
 	Thu,  7 Dec 2023 22:35:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B444C433C7;
-	Thu,  7 Dec 2023 22:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701988500;
-	bh=zov89DUbTcicayLKcWLvQaeckTRBhXiHS291tZk65GQ=;
+	s=k20201202; t=1701988505;
+	bh=NT7BHAqFBOhaRtrY/szkX/r9R8b3Zw9S8V4qsNXM+rg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=NiqWv2sH+gBdS9tK/zHe2RthyctB0XEVMnr+am+VOVJRegAb1tkq6JAZFLBDzIyuV
-	 4PpgwjbUvP9cMJiut6vPLA+Jfwy44V3+xV3dt0hz4nXmFDk1wRmJC7tmlb716NB5+D
-	 TECFsCDsIBc7lgSK0o1X4twaPo/wqivtAd+HmpIxNvyNJaMMJjffoMorYh3OJ8Dafk
-	 xbXA+UL3FYEPzYdgmP7csUhuBc+/ewpy73zOMXhm+Vo+Pej9Y+dwDI0w4txa/z0OoA
-	 ZzT+Zvyuq4fRPqdlfBT0zwE9WK88mWlRFu/VhSC/PGVzJjoOo9IVfnZWR7oL+tctXu
-	 ec+KuoftjYzUg==
+	b=fM7G8omPRZ7ZWXJv3Rg5R2B74Wc7o7Kd0E7svQfW9jKfF2c9SyQMkDDpP2fwOg2PS
+	 TKO6qZXBPmoGXWGrJAefouIWYDB8ffo870ddOmQLfgZp38GIQ2vwXuC+0oI7iBOh5A
+	 Dmzh3SXRzNyYbWZvBRERx2CaEge5kWXD5un3ta2VoAnw3dOgT54u79sJmF7LZRjAi4
+	 wAyE+jsMQiEYPkN4VoQz3jAoz/AqgbXL0XVNVTtIB0JtpatC8cCnYqQ03ZaxLmbyKD
+	 a6Mknh/f6Fz9KzrfxlGNr9kf9sZWMTVB1KDV+sBR/xTblGk3eIJE8dITgwEoK8w1zX
+	 AsY+ipMKgV9Qw==
 From: Mark Brown <broonie@kernel.org>
 To: tudor.ambarus@linaro.org, pratyush@kernel.org, 
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
- sbinding@opensource.cirrus.com, 
- Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+ sbinding@opensource.cirrus.com, lee@kernel.org, james.schulman@cirrus.com, 
+ david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz, 
+ tiwai@suse.com, Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
  michael@walle.cc, linux-mtd@lists.infradead.org, 
  nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
  claudiu.beznea@tuxon.dev, michal.simek@amd.com, 
- linux-arm-kernel@lists.infradead.org, git@amd.com, amitrkcian2002@gmail.com
-In-Reply-To: <20231118135446.52783-1-amit.kumar-mahapatra@amd.com>
-References: <20231118135446.52783-1-amit.kumar-mahapatra@amd.com>
-Subject: Re: (subset) [PATCH v10 0/8] spi: Add support for stacked/parallel
- memories
-Message-Id: <170198849588.340565.18426692818757581382.b4-ty@kernel.org>
-Date: Thu, 07 Dec 2023 22:34:55 +0000
+ linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, 
+ patches@opensource.cirrus.com, linux-sound@vger.kernel.org, git@amd.com, 
+ amitrkcian2002@gmail.com
+In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+Subject: Re: (subset) [PATCH v11 00/10] spi: Add support for
+ stacked/parallel memories
+Message-Id: <170198850030.340565.15742297562436442635.b4-ty@kernel.org>
+Date: Thu, 07 Dec 2023 22:35:00 +0000
 MIME-Version: 1.0
 X-Mailer: b4 0.13-dev-5c066
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_143502_992033_5B203F47 
-X-CRM114-Status: GOOD (  12.57  )
+X-CRM114-CacheID: sfid-20231207_143507_576342_3CB29F9A 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,13 +81,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 18 Nov 2023 19:24:38 +0530, Amit Kumar Mahapatra wrote:
-> This patch is in the continuation to the discussions which happened on
-> 'commit f89504300e94 ("spi: Stacked/parallel memories bindings")' for
-> adding dt-binding support for stacked/parallel memories.
-> 
+On Sat, 25 Nov 2023 14:51:27 +0530, Amit Kumar Mahapatra wrote:
 > This patch series updated the spi-nor, spi core and the AMD-Xilinx GQSPI
 > driver to add stacked and parallel memories support.
+> 
+> The first nine patches
+> https://lore.kernel.org/all/20230119185342.2093323-1-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-2-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-3-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-4-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-5-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-6-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-7-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-8-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-9-amit.kumar-mahapatra@amd.com/
+> of the previous series got applied to
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
+> for-next But the rest of the patches in the series did not get applied as
+> failure was reported for spi driver with GPIO CS, so send the remaining
+> patches in the series after rebasing it on top of for-next branch and
+> fixing the issue.
 > 
 > [...]
 
@@ -94,10 +110,10 @@ Applied to
 
 Thanks!
 
-[1/8] spi: Add multi-cs memories support in SPI core
-      commit: 4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
-[6/8] spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
-      (no commit info)
+[02/10] ALSA: hda/cs35l56: Use set/get APIs to access spi->chip_select
+        commit: f05e2f61fe88092e0d341ea27644a84e3386358d
+[03/10] spi: Add multi-cs memories support in SPI core
+        commit: 4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
