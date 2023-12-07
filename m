@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A95A6C4167B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 13:39:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0616AC4167B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 16:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lu3YR0Uya1jlufM6OpGA2hnN5cdzzi/YaoArINRMs1M=; b=qKHcfZlPGvQhlZ
-	KZr3mQGfWm+7S0ZLzuRw7BaJ4jFyA24qF3YNo6PkxYRg/2OxWXNjV51lEie1Gzt3XmU9TU3+d8rxJ
-	97+jQlCgYz+RfD97Z4+4f5A4+7vxAtZSiXhkac1sTYrukA0fAfxRx6CRM75Z7JezyfLev6eOsct6X
-	ylSBon+L/xAvTBc51p9XUIg4hHl5Ld6+mtdI1UjYHjNJZXP62OOfZazDlMUo/BmrqZ96tNF28V2E6
-	zuuSsL7pjo4+sNwllDIgu1oZoa72YNdu6B5OXB9hj0xOdLKMyhmPET0bINtxkjxW1awUKp1XxbSzz
-	y3E2ebUiqK7I6hvUO/8w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FUcNTpiM/JmTstoL3VSCAUYPec3G4hUoS0azHPbnOm0=; b=1lvCr/M5gRCcHIYgbqet10l1TO
+	cIseiTKOdSJwzsVKe1ORBNO4QOOevWNZ9gLoqVUQgvOeE9sD/MRrTMv4aYARlhR53PKqatrmVLCqq
+	jRNam88vOpJ1KAXGM6DU5al3IPthcnD8eKeq3vysIzYUdmjExxWyeYfI44864VSgnYQ4yZIpktflK
+	oMm5ZDnTs4l8y/VoXZ4Kqm2lrpbvBNDBgVNd6YDKUpEhAPXVD+ZBWqG2rv9YU93viRJlColrIfAo7
+	pDxRMu+mNPek/rdZpbr2Ehu+PbVldaaDMWqLGgw5NxRj8voz24NuWcK7YkSxUsDz2/KyDHzqTDc8R
+	hYATi38g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBEan-00CvMy-1A;
-	Thu, 07 Dec 2023 13:39:05 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1rBH7R-00DO4a-18;
+	Thu, 07 Dec 2023 16:20:57 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBEai-00CvKp-0I;
-	Thu, 07 Dec 2023 13:39:03 +0000
+	id 1rBH7O-00DO3o-1g;
+	Thu, 07 Dec 2023 16:20:55 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 76DAFB827E9;
-	Thu,  7 Dec 2023 13:38:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7E5C433C7;
-	Thu,  7 Dec 2023 13:38:52 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id F0F09B826B5;
+	Thu,  7 Dec 2023 16:20:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE46FC433B9;
+	Thu,  7 Dec 2023 16:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701956337;
-	bh=LrKFalPpX4ro1UCj+XeZRPkOqxKYC9UU2FyCF0mGy08=;
+	s=k20201202; t=1701966052;
+	bh=MBl8jX+CYsWd6FZCSkh8ink0zxCjpM93rbZyvHRV2R8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kjLPZIg8FFgsaWRJGrgM6lwAFRaMTuWNUEdoEZvWuxAYsk5rD+M9zXvKHaXN1xlrS
-	 hXU/HzHP6fXanl92P/HT69g0DluwYbE+xs8k7PpcJ2g50JRXKnct5IOFVJ0TtPo+dm
-	 pLPZxW2WmIq67oYfevuMMtKStccsxVUdN7fZqGVpgksCsyRPTkrDtHNZyG2ODFUjsw
-	 1mcvjtPeWPGKEj4DxkbdpVd4shxELDPBf+Uq9viCxEFQid8zyP1ekkbsfPmESx8jna
-	 /On7CAGQCWJntcZabaDryMMDMWorCO6m+gEZjEAQ6MIGGThmYxQ2cfF5IQHlPzG4Bh
-	 TS2sianKt7+dQ==
-Date: Thu, 7 Dec 2023 13:38:49 +0000
-From: Lee Jones <lee@kernel.org>
-To: Mark Brown <broonie@kernel.org>
+	b=OaX+Amr4+2De3B69b6K4i/wdD/KlCz19NtGb/HlW2OyVVH6jkUYW99P33NutAtN4J
+	 A0nJKfpdTQgOybcd97ybL7zLpQcpAoIfs08y/yLVszKPYo/p+7aHgn5ouMxal5zYoQ
+	 neQnIF9I8uOtFo2BAuAC+cNRUgo3VlEwViQgAwkE3Y6L8ngIELWn0jYiUvgC0Tfw/T
+	 15nM8TDyTLAx6xgL9Dl9eBYcgSLXtLh34DH8JSLBQEIAB6zRSvv4ifzuKJxcwR84Qo
+	 O6eqsr+covJ2qISwOFeGcu9CXz+wIGANUWkPYIT3T2/5srMqIVYD9zUL5gKYmw2wNS
+	 ougPA1Q+aQ0Jw==
+Date: Thu, 7 Dec 2023 16:20:43 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Lee Jones <lee@kernel.org>
 Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
 	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
 	sbinding@opensource.cirrus.com, james.schulman@cirrus.com,
@@ -56,20 +56,20 @@ Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
 	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
 	git@amd.com, amitrkcian2002@gmail.com
-Subject: [GIT PULL] Immutable branch between MFD and SPI due for the v6.8
+Subject: Re: [GIT PULL] Immutable branch between MFD and SPI due for the v6.8
  merge window
-Message-ID: <20231207133849.GB8867@google.com>
+Message-ID: <d12da7b2-f18c-4b56-85be-6d98b62d6ddd@sirena.org.uk>
 References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
  <20231125092137.2948-2-amit.kumar-mahapatra@amd.com>
  <170142465659.3329910.8527538140063947758.b4-ty@kernel.org>
  <395caa58-a8a0-4c75-85d3-4fa0f6f4a9ba@sirena.org.uk>
+ <20231207133849.GB8867@google.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <395caa58-a8a0-4c75-85d3-4fa0f6f4a9ba@sirena.org.uk>
+In-Reply-To: <20231207133849.GB8867@google.com>
+X-Cookie: Two is company, three is an orgy.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_053900_275484_1D15F315 
-X-CRM114-Status: UNSURE (   8.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231207_082054_692450_12DB0EAA 
+X-CRM114-Status: GOOD (  11.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,28 +81,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3055853275693917252=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-R29vZCBhZnRlcm5vb24gTWFyaywKCj4gSXMgdGhlcmUgYSBzaWduZWQgdGFnIGF2YWlsYWJsZSBm
-b3IgdGhpcyAtIHdpdGhvdXQgdGhpcyBjaGFuZ2UgdGhlCj4gc3Vic2VxdWVudCBTUEkgY2hhbmdl
-cyBpbnRyb2R1Y2UgYSBidWlsZCBicmVha2FnZS4KClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5j
-ZSBjb21taXQgYjg1ZWE5NWQwODY0NzFhZmI0YWQwNjIwMTJhNGQ3M2NkMzI4ZmE4NjoKCiAgTGlu
-dXggNi43LXJjMSAoMjAyMy0xMS0xMiAxNjoxOTowNyAtMDgwMCkKCmFyZSBhdmFpbGFibGUgaW4g
-dGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xp
-bnV4L2tlcm5lbC9naXQvbGVlL21mZC5naXQgaWItbWZkLXNwaS12Ni44Cgpmb3IgeW91IHRvIGZl
-dGNoIGNoYW5nZXMgdXAgdG8gNGFlMDg4NDVkYjRjMWY3NTliODM4MmJjNzUyN2FiODI0OTIzMGU3
-ZjoKCiAgbWZkOiB0cHM2NTk0OiBVc2Ugc3BpX2dldF9jaGlwc2VsZWN0KCkgQVBJIHRvIGFjY2Vz
-cyBzcGktPmNoaXBfc2VsZWN0ICgyMDIzLTEyLTA3IDEzOjM2OjI5ICswMDAwKQoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJ
-bW11dGFibGUgYnJhbmNoIGJldHdlZW4gTUZEIGFuZCBTUEkgZHVlIGZvciB0aGUgdjYuOCBtZXJn
-ZSB3aW5kb3cKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KQW1pdCBLdW1hciBNYWhhcGF0cmEgKDEpOgogICAgICBtZmQ6IHRw
-czY1OTQ6IFVzZSBzcGlfZ2V0X2NoaXBzZWxlY3QoKSBBUEkgdG8gYWNjZXNzIHNwaS0+Y2hpcF9z
-ZWxlY3QKCiBkcml2ZXJzL21mZC90cHM2NTk0LXNwaS5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQs
-IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgotLSAKTGVlIEpvbmVzIFvmnY7nkLzmlq9d
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+--===============3055853275693917252==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="H1tMbLV73SdOkctb"
+Content-Disposition: inline
+
+
+--H1tMbLV73SdOkctb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Dec 07, 2023 at 01:38:49PM +0000, Lee Jones wrote:
+> Good afternoon Mark,
+>=20
+> > Is there a signed tag available for this - without this change the
+> > subsequent SPI changes introduce a build breakage.
+>=20
+> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa=
+86:
+>=20
+>   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+>=20
+> are available in the Git repository at:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-spi-v6=
+=2E8
+>=20
+> for you to fetch changes up to 4ae08845db4c1f759b8382bc7527ab8249230e7f:
+>=20
+>   mfd: tps6594: Use spi_get_chipselect() API to access spi->chip_select (=
+2023-12-07 13:36:29 +0000)
+
+Thanks!
+
+--H1tMbLV73SdOkctb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVx8NoACgkQJNaLcl1U
+h9BXiwf+NG+nYvE91fSSJn6y9dB1oLiMaR2BUDYVTOuWkwmRWLtbTbJgJwxJfBqH
+itW5Xs7GuEJ8Rq82sl4K6ITes+jLCB1ljYdbbH4QTqo7Sm5MjdRwGQczHbe8FONG
+FTu5Oa7WGJfTQa7tTu7TOJU16Dd1YPVT4QO8Zg2D6Fvltfdh5y0vTJO9LxdA99cE
+11d/pzJGFKEojADXl3V7RFLAiJJAFpri7C730ZOZ30WRt42f18MTl7omglIGAQOE
+6YvN9sSZ57FEQuWaoIKp8IGnOukM4eqEwuwx8CqUNGfD7ag9ffo17PpytPgQosoX
+6xPrq5I2cgrNMJzC71jsMobrBpQF1w==
+=4OmM
+-----END PGP SIGNATURE-----
+
+--H1tMbLV73SdOkctb--
+
+
+--===============3055853275693917252==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3055853275693917252==--
+
