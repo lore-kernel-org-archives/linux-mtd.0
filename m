@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C2FC10F05
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 17:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BDCEC4167B
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 21:34:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iHS39xboxTIXXhoI1u5uXIoiVtOSHZ5i6d5C/TCjdcQ=; b=3o7lDpek75+3pl
-	/Hu1Df+F8+numLy1iEyFVCcKINdK/7j2QQlmR4ICvyGb1gl6WcaWaKdlUQReY52/d+j9DceS9trmd
-	0ONGdBI8pkgJgCKq2W7rhbXQtkmatq0vProIm5JXfBX0Zgpy/Ppufq5aX5/Z6bnnwRV33AoUWsxH9
-	z/UIWkbS7Nof203IBE4jKvDAm4sroCLueUtcrPqpHJZV3g/q/35BUL2mR/Jfzwo0vlnkfGSpPZiKn
-	BVKK4JUnSBIeAm5HNZrjNfvXuikuWWXPC+cjtIQm3YWKnL0Hqt2kQf3xIx0YSJEZuPgiw3/03Q9X6
-	Ap2itYL04X3b9DIGUshQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=b4yWbSlMKOyK9MTpHC1xjsRT3TGgx6j8+8caxc0/nqc=; b=mmiXRHCu0V2hiFfTbLacDFRyn7
+	XI1IXHBlLm4GixIhVntAddqIRhexEwV/AlTVMI89IU79aTx0WqdeWoZFft3ZNZYLiynQSICVse9km
+	4zqnX2HHfwxRT91o+MKCHYfs2tSqX8z7f/8T1xObUWPn/UCC57Bz5oVzG3N5n4M/MYvmO66PPklG4
+	REYtmZ0R6xo2C9w8iTZCZxYLPbfQZPw3BvbeDo31mdmI8vFznTLYsir1M3shizBq/mFxxXsphcsd1
+	iRS3Ja9AWEkv8rQdZGshTdXb5qQ9cR9GtP76ndff7kQ16KmOv+f7RxHApMyJc3L9DLthY4UjctACK
+	2tCo/nIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBewV-00GDmn-2Q;
-	Fri, 08 Dec 2023 17:47:15 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1rBiU1-00Gc4f-2D;
+	Fri, 08 Dec 2023 21:34:05 +0000
+Received: from mail-qk1-x72e.google.com ([2607:f8b0:4864:20::72e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBewS-00GDlh-18
+	id 1rBiTz-00Gc4K-0Y
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Dec 2023 17:47:13 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1d93da3eb7so283980766b.0
-        for <linux-mtd@lists.infradead.org>; Fri, 08 Dec 2023 09:47:09 -0800 (PST)
+	Fri, 08 Dec 2023 21:34:04 +0000
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77f320ca2d5so172482285a.1
+        for <linux-mtd@lists.infradead.org>; Fri, 08 Dec 2023 13:34:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702057628; x=1702662428; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hAJ1WnEzjSjmEz7f7Ppx70QG1I8gsBXxVNcDVYzxKYo=;
-        b=Hcem2jdVdbP0zRmEn4n18udWt3c7jomKigKhht2mhfw5VgqSagVgR8gGDOwpPvq7Em
-         dLfzOy7Shhi26jMK4L8wq255Dk/Y8oFXVXpucv8fOAIrkVd+HxDxzDBcfpOKYvxD4lFJ
-         QmsaaCCaS0jjTKvwhqP+/NQh98XWMyoZO03AY=
+        d=gmail.com; s=20230601; t=1702071241; x=1702676041; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DlpMJnC1BZplmAVvRMVXpE3FTrC7KjURJMZxwM6AkRc=;
+        b=CHzKLZZ8wsTETE002lgEFRklJFoeknglAJa5DCNP51B97KPtRxNBS00qlyVCNEHpYR
+         2m2fhWglvbRH52YDgUznMVC2DaSapmvvzBwPS7O+KNq3RuBRC8LWTn5Np6EL0Yd70+D8
+         5u8zrOqwqv9jXzqN99+0Y3DhytkCprJByf+b407I0aw5WYRcUkZz5rL2TRw48rI2oKgo
+         j1OsyAcdJ9nWLHFCDn1N5gPv9UTh+/et97DmoJYqktZxaF0IQCRFa+CEci14wIUX5wRS
+         1ONTEzQD9ZkJCF2nr09H2rQ1q6+WHSYsDJMcioAKJNyz53TkqSYMyJyZbRW3EbqCKhqk
+         Ejqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702057628; x=1702662428;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hAJ1WnEzjSjmEz7f7Ppx70QG1I8gsBXxVNcDVYzxKYo=;
-        b=sejjdQNbXGFY9kKAQEHohPozcdrzd4CPHp8VKMLEkhsUSGGbRpTk3RpICLRpm1Q8ml
-         gBmN2n6LlTUDs8sSVdfSWFzUykuvpznu5Wv0fn6uxftXKA0NKFf1rWNYCqlMulT9iHPx
-         fx5dNwL3lR7zMsP6yMNq/vgg0qYkxOTOj69uNQBrOWkLdCTBrVOLTW3zbHD7K1mkygoA
-         RZhZcP8ylQMFq78BpXElBptwHOPqbpkTrwXHUyQDM4DqvJ/7sFOsUGkKL4/iIlMVA3+j
-         NaUNXLFBtVe32InX6Q+Rj0kDRfpqBcbhGpWtg+rWtLPKRPfZ+l2FyNpQf4tJMFcMGLpt
-         HoKw==
-X-Gm-Message-State: AOJu0YwONg/niGV5CgMfS5uF1PWfgXxz7PRN0oGXjaEGcAaErHXPdeIa
-	Gyn/3KAk0Yp8l4Tfic/+AE+GY8cIaYF2bThjvahLpR5vLo01XYz0cYEaal+Y
-X-Google-Smtp-Source: AGHT+IHVlaS5EYXTYlrQruZM+vx0QSh6/N3o/eDY14hRk0UBFA1FHofU1ZiRsQbF3VqXkzoInBKqIDKTJzp/jsjqxTU=
-X-Received: by 2002:a17:906:68d9:b0:a19:a1ba:8cfa with SMTP id
- y25-20020a17090668d900b00a19a1ba8cfamr158447ejr.152.1702057628271; Fri, 08
- Dec 2023 09:47:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702071241; x=1702676041;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DlpMJnC1BZplmAVvRMVXpE3FTrC7KjURJMZxwM6AkRc=;
+        b=m3nAOeqLGI4vtu27NJYHhENLbIOKMDnyqUCwzGdh/QnDmD40a8i1j9W5B/HsolqfaC
+         lkdScUoLgf1CKsSPn/mUbVOguCs5wX2GZvs6/zD9khnOoSYlTWMrNdbhsSGRVeUcy4WT
+         yu9qJ89OlHoDKxnoKgtwY0Y8r9bWSGkLMvqIB74yJs3wzeD7J6VHMgOM1GJDP0+lRy7I
+         pyDrPMvhx02JBsMECa7THoZFz+C5gX+hG0NiEdEHAXrqn2F7afTu3/dG9Mzukxzwzz2M
+         kBuIWRd3MOZffrotHztYIHJSp5cWbswWXfukGXO074yI1OX9DQEhlFesKW2/BArtu2RB
+         isrw==
+X-Gm-Message-State: AOJu0YyzsxWBbtjQyexUksjULQvLWWRCtROMKO+hUEBqKMMb9ocNx4YQ
+	psy9kCrr+DAWVbh0tDHSl6o=
+X-Google-Smtp-Source: AGHT+IGHRS4xnzBNC4xFmeQTszG5t1gjwpDaXdEuRRhWHRvFocvTHezXeHMNduBd4PSbEhh6uFrFpQ==
+X-Received: by 2002:a05:620a:19a7:b0:77d:7d70:d1f5 with SMTP id bm39-20020a05620a19a700b0077d7d70d1f5mr2532793qkb.37.1702071241414;
+        Fri, 08 Dec 2023 13:34:01 -0800 (PST)
+Received: from [192.168.1.14] (pool-173-66-156-160.washdc.fios.verizon.net. [173.66.156.160])
+        by smtp.gmail.com with ESMTPSA id rr23-20020a05620a679700b0077edde498d3sm969009qkn.89.2023.12.08.13.33.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 13:34:00 -0800 (PST)
+Message-ID: <8ed37a2b-fd03-4bc6-8b74-73f570b50094@gmail.com>
+Date: Fri, 8 Dec 2023 16:33:59 -0500
 MIME-Version: 1.0
-References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
-In-Reply-To: <20231208150042.GA1278773-robh@kernel.org>
-From: Simon Glass <sjg@chromium.org>
-Date: Fri, 8 Dec 2023 10:46:51 -0700
-Message-ID: <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
-	Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: UBI scrubbing behavior when readonly
+Content-Language: en-US
+To: Zhihao Cheng <chengzhihao1@huawei.com>, linux-mtd@lists.infradead.org
+References: <cbff425d-0196-4124-99a0-f7ea8d6e6ab6@gmail.com>
+ <414d3586-0882-5bf9-a257-f819932ceae7@huawei.com>
+From: Chuck Meade <chuckmeade@gmail.com>
+In-Reply-To: <414d3586-0882-5bf9-a257-f819932ceae7@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231208_094712_407553_E75CB89D 
-X-CRM114-Status: GOOD (  28.01  )
+X-CRM114-CacheID: sfid-20231208_133403_207968_12BCBF2C 
+X-CRM114-Status: GOOD (  17.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,97 +87,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
-
-On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wrote:
-> > Add a compatible string for binman, so we can extend fixed-partitions
-> > in various ways.
-> >
-> > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > ---
-> >
-> > (no changes since v5)
-> >
-> > Changes in v5:
-> > - Add #address/size-cells and parternProperties
-> > - Drop $ref to fixed-partitions.yaml
-> > - Drop 'select: false'
-> >
-> > Changes in v4:
-> > - Change subject line
-> >
-> > Changes in v3:
-> > - Drop fixed-partition additional compatible string
-> > - Drop fixed-partitions from the example
-> > - Mention use of compatible instead of label
-> >
-> > Changes in v2:
-> > - Drop mention of 'enhanced features' in fixed-partitions.yaml
-> > - Mention Binman input and output properties
-> > - Use plain partition@xxx for the node name
-> >
-> >  .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++++++
-> >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
-> >  MAINTAINERS                                   |  5 ++
-> >  3 files changed, 74 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> > new file mode 100644
-> > index 000000000000..329217550a98
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> > @@ -0,0 +1,68 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright 2023 Google LLC
-> > +
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Binman firmware layout
-> > +
-> > +maintainers:
-> > +  - Simon Glass <sjg@chromium.org>
-> > +
-> > +description: |
-> > +  The binman node provides a layout for firmware, used when packaging firmware
-> > +  from multiple projects. It is based on fixed-partitions, with some
-> > +  extensions, but uses 'compatible' to indicate the contents of the node, to
-> > +  avoid perturbing or confusing existing installations which use 'label' for a
-> > +  particular purpose.
-> > +
-> > +  Binman supports properties used as inputs to the firmware-packaging process,
-> > +  such as those which control alignment of partitions. This binding addresses
-> > +  these 'input' properties. For example, it is common for the 'reg' property
-> > +  (an 'output' property) to be set by Binman, based on the alignment requested
-> > +  in the input.
-> > +
-> > +  Once processing is complete, input properties have mostly served their
-> > +  purpose, at least until the firmware is repacked later, e.g. due to a
-> > +  firmware update. The 'fixed-partitions' binding should provide enough
-> > +  information to read the firmware at runtime, including decompression if
-> > +  needed.
->
-> How is this going to work exactly? binman reads these nodes and then
-> writes out 'fixed-partitions' nodes. But then you've lost the binman
-> specifc parts needed for repacking.
-
-No, they are the same node. I do want the extra information to stick
-around. So long as it is compatible with fixed-partition as well, this
-should work OK.
-
-Regards,
-SImon
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTIvNy8yMyAyMTowMCwgWmhpaGFvIENoZW5nIHdyb3RlOgo+IOWcqCAyMDIzLzEyLzggMTo1
+NiwgQ2h1Y2sgTWVhZGUg5YaZ6YGTOgo+PiBIZWxsbywKPj4KPj4gRG9lcyBVQkkgc2NydWJiaW5n
+IChtb3ZpbmcgZGF0YSB0byBuZXcgUEVCIHdoZW4gcmVhZCBvcGVyYXRpb25zIHJlcG9ydCBFQ0MK
+Pj4gYml0ZmxpcHMpIHN0aWxsIG9jY3VyIHdoZW4gYSBVQklGUyBtb3VudGVkIG9uIHRoZSBVQkkg
+dm9sdW1lIGlzIHJlYWRvbmx5LCBpbgo+PiB0ZXJtcyBvZiBMaW51eCBmaWxlc3lzdGVtIHBlcm1p
+c3Npb25zPwo+Pgo+PiBJIGhhdmUgbG9va2VkIGF0IHRoZSBVQkkgc291cmNlIGZvciBzY3J1YmJp
+bmcsIGFuZCBpdCBhcHBlYXJzIHRoYXQgaXQgd2lsbCBub3QKPj4gb2NjdXIgd2hlbiB0aGUgVUJJ
+IGRldmljZSAob3IgTVREIHBhcnRpdGlvbiB0byB3aGljaCB0aGUgZGV2aWNlIGlzIGF0dGFjaGVk
+KQo+PiBpcyBpbiByZWFkb25seSBtb2RlLiBCdXQgd2hhdCBpZiB0aGUgVUJJIGRldmljZSBpcyBp
+biByZWFkL3dyaXRlIG1vZGUsIGJ1dCB0aGUKPj4gVUJJRlMgbW91bnRlZCBvbiB0aGUgZGV2aWNl
+IGlzIGluIHJlYWRvbmx5IG1vZGU/Cj4+Cj4gRG9lcyAnVUJJIHNjcnViYmluZycgbWVhbiB0aGUg
+d2Vhcl9sZXZlbGluZ193b3JrZXIoZTEgY29tZXMgZnJvbSB1YmktPnNjcnViKT8gSWYgc28sIEkg
+dGhpbmsgaXQgc3RpbGwgd29yayB3aGVuIFVCSSBpcyBydyBtb2RlIGFuZCB1YmlmcyBpcyByZWFk
+b25seS4gRm9yIGV4YW1wbGU6IHViaWZzX2xlYl9yZWFkIC0+IHViaV9sZWJfcmVhZCAtPiAKPiB1
+YmlfZWJhX3JlYWRfbGViIC0+IHViaV93bF9zY3J1Yl9wZWI6IHdsX3RyZWVfYWRkKGUsICZ1Ymkt
+PnNjcnViKcKgICYmIGVuc3VyZV93ZWFyX2xldmVsaW5nCgpVQkkgc2NydWJiaW5nIGlzIHBlcmZv
+cm1lZCB3aGVuIGEgcmVhZCBvcGVyYXRpb24gcmVwb3J0cyBFQ0MgYml0ZmxpcHMuICBVQkkgbW92
+ZXMKZGF0YSB0byBhIG5ldyBQRUIgYW5kIGVyYXNlcyB0aGUgb2xkIFBFQiB0aGF0IGhhZCB0b28g
+bWFueSBFQ0MgYml0ZmxpcHMuICBJJ20KanVzdCB0cnlpbmcgdG8gZGV0ZXJtaW5lIGlmIGl0IGNh
+biB3b3JrIHVuZGVyIGEgcmVhZG9ubHkgVUJJRlMgaWYgdGhlIFVCSSBkZXZpY2UvCnZvbHVtZSBp
+cyByZWFkL3dyaXRlLgoKVGhhbmtzIGZvciB5b3VyIHJlcGx5LiAgSXQgc291bmRzIGxpa2UgeW91
+IHRoaW5rIHRoaXMgd2lsbCB3b3JrIGFzIGRlc2lyZWQuCgo+PiBJIGFtIHRyeWluZyB0byBjcmVh
+dGUgYSBjb25maWd1cmF0aW9uIHdoZXJlIHRoZSBVQklGUyBpcyByZWFkb25seSBhdCB0aGUgTGlu
+dXgKPj4gZmlsZXN5c3RlbSBwZXJtaXNzaW9ucyBsZXZlbCwgYnV0IFVCSSBzY3J1YmJpbmcgc3Rp
+bGwgb2NjdXJzIHdoZW4gcmVhZAo+PiBvcGVyYXRpb25zIHJlcG9ydCBlbm91Z2ggRUNDIGJpdGZs
+aXBzLsKgIFNvIG5vIExpbnV4IHVzZXJzcGFjZSBwcm9ncmFtcyBtYXkKPj4gbW9kaWZ5IHRoZSBm
+aWxlc3lzdGVtIGR1ZSB0byBwZXJtaXNzaW9ucywgYnV0IFVCSSBzY3J1YmJpbmcgc3RpbGwgd291
+bGQgb2NjdXIuCj4+Cj4+IElzIHRoaXMgcG9zc2libGUsIG9yIGFtIEkgbWlzc2luZyBzb21ldGhp
+bmcgaW4gdGhlIFVCSSBzb3VyY2UgY29kZT8KPj4KPj4gVGhhbmtzLAo+PiBDaHVjawo+Pgo+Pgo+
+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+Pj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4+IGh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo+IAo+IAoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
