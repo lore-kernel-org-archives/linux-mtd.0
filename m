@@ -4,76 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19BB1C4167B
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 07:15:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F6B8C10DC1
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 07:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TuPnexnkr2JC9awomUuP5S8YvNKN+dDi0lWmKPk5FWM=; b=YKmJsNTL5kAmG9
-	Qrz3eto6IB+C4qP26F9muZCE20Tj4eieveGlDEp4VWb+Gy613+of27KnFm7cKPezuWohiYaXnfgeR
-	BGVwpRykdx5YjKlPeVaQd3cc9r5z8w9iSUUjTUdcgK+aFxrV63bUfX2ldImTbsmrsuAcBxaVfOlXx
-	QNGhPOOCHMhbFm5LJskQ1asFjQ4ucNrUU1daPsn7TaMI3QuFR96bFjjC7HQULt5Hb4xlURH+gZJ3/
-	2XDmDEsl6JNk6bMnRlFo/XoiPxbYNBCbCtId9s8z0YgaEN1bcU5evr/0AuZ3Xf/YYCUbcr//B3cmR
-	N+dSLZXkcE+X+qWWMiLA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5sIN5vx1JsCjVS61GBtYPBhcRZZTtdVErP6vFSsnoIM=; b=3Z1kdYUZfo65c5BrHci0gCZEcf
+	YQ0o1q9v0X40kh9yaE687wJUKYZJCIHEgkPlOXkpnIH9nDxiS/c4CdWQFelW6nrqiEGC426Sp+CmC
+	bQiiofBxfK1CWnC9frkkAJrajQnW3CANJ2lXKo/K0mCCWx7PhNMsk4xrtRtQXie0XBjXs3HTIl6kr
+	SkzpZwjGWAewWnVthcv6Jv4370IHdfY7CF9COOnfAaeUM9pUuDGUhlft8Cz5T0fm3ZmfU5f2blplY
+	2BBnwqdVXML5lFeBIah6zCEdPDvxqoU5/HvP9G6+0Pe+tuQ7Kn0W20g8t5LJI8LVeoJdsCaPqQ6Ma
+	h3giBkXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBV4T-00EvvU-1o;
-	Fri, 08 Dec 2023 07:14:49 +0000
-Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
+	id 1rBVJ4-00Excm-0y;
+	Fri, 08 Dec 2023 07:29:54 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBV4O-00EvuU-1v
+	id 1rBVJ1-00Exc4-2S
 	for linux-mtd@lists.infradead.org;
-	Fri, 08 Dec 2023 07:14:46 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Smj7Q4NV8z4f3lD7
-	for <linux-mtd@lists.infradead.org>; Fri,  8 Dec 2023 15:14:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 6649D1A0186
-	for <linux-mtd@lists.infradead.org>; Fri,  8 Dec 2023 15:14:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6hBVwnJltY8_DA--.36836S4;
-	Fri, 08 Dec 2023 15:14:31 +0800 (CST)
-From: linan666@huaweicloud.com
-To: richard@nod.at,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linan122@huawei.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] ubi: block: fix null-pointer-dereference in ubiblock_create()
-Date: Fri,  8 Dec 2023 15:13:17 +0800
-Message-Id: <20231208071317.1268465-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	Fri, 08 Dec 2023 07:29:53 +0000
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.56])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SmjRq5zG7zWj96;
+	Fri,  8 Dec 2023 15:28:39 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Dec 2023 15:29:36 +0800
+Subject: Re: [PATCH] ubi: block: fix null-pointer-dereference in
+ ubiblock_create()
+To: <linan666@huaweicloud.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
+	<vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linan122@huawei.com>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
+	<houtao1@huawei.com>, <yangerkun@huawei.com>
+References: <20231208071317.1268465-1-linan666@huaweicloud.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <a1e3aa71-d89e-0579-b55f-125c17b45f29@huawei.com>
+Date: Fri, 8 Dec 2023 15:29:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDn6hBVwnJltY8_DA--.36836S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF1kCw4ktr1ktr4xXry8uFg_yoWfArbE9w
-	4aqrn3WrWxCrn3C34Yyr1fuFWYyr1jgr48uF1xKwsxZFW7XFn7Gr98WF15Wa1DAFW2ka4r
-	Ca10gr1ayr40vjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbSkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
-	5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
-	AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7Cj
-	xVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-	w20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1vJmUUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+In-Reply-To: <20231208071317.1268465-1-linan666@huaweicloud.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_231444_822392_6B356AF6 
-X-CRM114-Status: UNSURE (   8.42  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231207_232951_960408_37FDFD71 
+X-CRM114-Status: GOOD (  12.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,40 +67,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Li Nan <linan122@huawei.com>
-
-If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
-ubiblock_create(), but dev->gd has not been assigned yet at this time, and
-accessing it will trigger a null-pointer-dereference issue. Fix it by put
-gd directly.
-
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/mtd/ubi/block.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 309a42aeaa4c..654bd7372cd8 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -434,7 +434,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	list_del(&dev->list);
- 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
- out_cleanup_disk:
--	put_disk(dev->gd);
-+	put_disk(gd);
- out_free_tags:
- 	blk_mq_free_tag_set(&dev->tag_set);
- out_free_dev:
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy8xMi84IDE1OjEzLCBsaW5hbjY2NkBodWF3ZWljbG91ZC5jb20g0LS1wDoKPiBGcm9t
+OiBMaSBOYW4gPGxpbmFuMTIyQGh1YXdlaS5jb20+Cj4KPiBJZiBpZHJfYWxsb2MoKSBmYWlscywg
+ZGV2LT5nZCB3aWxsIGJlIHB1dCBhZnRlciBnb3RvIG91dF9jbGVhbnVwX2Rpc2sgaW4KPiB1Ymli
+bG9ja19jcmVhdGUoKSwgYnV0IGRldi0+Z2QgaGFzIG5vdCBiZWVuIGFzc2lnbmVkIHlldCBhdCB0
+aGlzIHRpbWUsIGFuZAo+IGFjY2Vzc2luZyBpdCB3aWxsIHRyaWdnZXIgYSBudWxsLXBvaW50ZXIt
+ZGVyZWZlcmVuY2UgaXNzdWUuIEZpeCBpdCBieSBwdXQKPiBnZCBkaXJlY3RseS4KRnVuY3Rpb24g
+J3B1dF9kaXNrKCknIGNoZWNrcyBkaXNrIHdoZXRoZXIgaXMgTlVMTCwgc28gSSB0aGluayBpdCdz
+IGEgCidtZW1sZWFrJyBwcm9ibGVtLCBub3QgYSBudWxsLXB0ci1kZXJlZiBwcm9ibGVtLgo+Cj4g
+U2lnbmVkLW9mZi1ieTogTGkgTmFuIDxsaW5hbjEyMkBodWF3ZWkuY29tPgo+IC0tLQo+ICAgZHJp
+dmVycy9tdGQvdWJpL2Jsb2NrLmMgfCAyICstCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKyksIDEgZGVsZXRpb24oLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvYmxv
+Y2suYyBiL2RyaXZlcnMvbXRkL3ViaS9ibG9jay5jCj4gaW5kZXggMzA5YTQyYWVhYTRjLi42NTRi
+ZDczNzJjZDggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMKPiArKysgYi9k
+cml2ZXJzL210ZC91YmkvYmxvY2suYwo+IEBAIC00MzQsNyArNDM0LDcgQEAgaW50IHViaWJsb2Nr
+X2NyZWF0ZShzdHJ1Y3QgdWJpX3ZvbHVtZV9pbmZvICp2aSkKPiAgIAlsaXN0X2RlbCgmZGV2LT5s
+aXN0KTsKPiAgIAlpZHJfcmVtb3ZlKCZ1YmlibG9ja19taW5vcl9pZHIsIGdkLT5maXJzdF9taW5v
+cik7Cj4gICBvdXRfY2xlYW51cF9kaXNrOgo+IC0JcHV0X2Rpc2soZGV2LT5nZCk7Cj4gKwlwdXRf
+ZGlzayhnZCk7CgpGb3IgbWVtbGVhayBzb2x1dGlvbjoKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hl
+bmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgoKPiAgIG91dF9mcmVlX3RhZ3M6Cj4gICAJYmxr
+X21xX2ZyZWVfdGFnX3NldCgmZGV2LT50YWdfc2V0KTsKPiAgIG91dF9mcmVlX2RldjoKCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
