@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3756C4167B
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 17:06:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B287BC10F05
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 17:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EmvrIIT8oATIhX8Kd+JApzkZVwEs8HnfTTGtk/yuIWc=; b=CMsyN4t86BXKhW
-	gS8LEsATX82pOXiJEO05o/lib20tTQKWhsnU5+WG0vk9PmAgXx8DbQBpUt71zVF4wNnaxkVU7Z9cr
-	AcQl4aYcpNUqMOVyl3nekEdfrzwcFHmh3+XdOFzlNggSRvPOa+G8TUGCDDa3wLAUFXl6Q2y9rEuNq
-	nUdewfY7KWJSNwpGhnrW/U1ANzYmZn7PXdsUXLu1ARMdzl0KhFif9UVS9ss7a+k1ZyKD7u2JHiFVX
-	ny+020f69CJ5K9McMfOVqjCzPI04wKuMo1g995HCL75qz0InHU2/xQkx7XSd15ExxmlHLYpdI0irg
-	ZgcThhQ1vHaqVqMQR0Fg==;
+	List-Owner; bh=zthXnZPsgpMQymaZNQ/g3mHQmLbBB4vtEaE5bgHrjiA=; b=jekAHjYn2jXIU+
+	4hGO+9Vz9wjnxXAX+gwKYIPHPN/kI9yhaAm8EZlJsBxggb4DStaEFnKCxF/GMZiwXu8Wz4XljH+VJ
+	4fi5/GmcPFJUIrU5W55EblY77fuO8lRsqQeFu6qg7uDX+p4vY67wr7XuPZa1vMaphv2sS9l+4Ogw0
+	5iLanyWonVIQkDwm9H1unz9I0FkLrOhxExboXk9dRxC7jHVaP1+OooZOG9E+LOzEUwQLUKbgKvEDh
+	QqfNRC/p0CCk2WQwlI0CLp0QpS/qAaHniydDbat+XS9UyEhR+Wz8t7SjMqS3dIQmFf1AXnp8fk0R4
+	Tbq4wULkhTGIh+EN5XPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBeIQ-00G79o-2U;
-	Fri, 08 Dec 2023 17:05:50 +0000
-Received: from mail-mw2nam12on20618.outbound.protection.outlook.com ([2a01:111:f400:fe5a::618] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1rBeJ9-00G7JP-0y;
+	Fri, 08 Dec 2023 17:06:35 +0000
+Received: from mail-bn8nam11on20601.outbound.protection.outlook.com ([2a01:111:f400:7eae::601] helo=NAM11-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBeIN-00G78k-22;
-	Fri, 08 Dec 2023 17:05:49 +0000
+	id 1rBeJ7-00G7Hw-0C;
+	Fri, 08 Dec 2023 17:06:34 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U3LPzl2zRbfrY9i4qzZwl86GBAIjWDrEf3Ic7FsZwQare1vqlf/Z3wvalkVqhh5bWw7PJp9WKBxHr/IMyOHEZPNkl/J3KBtFVSnVOM1noJ5b8CymIm3cd5cO5kG5mIGHBBNoc31m8vCw81vD2NtpRFHne5QbchjiFAiDOmz+ll4YtuSTOCoEqiDWQQYG9NWaSbq73FahmTMzlACt/2h8Zie5wM9C8XZHKY8WFnvnuboRyE4vF0ngZXXvAsIwV4B/B2RtHIg2r5i038aFZNTXE1HMCh4Q9bLvHgZT2F+DNoMtnMGlHsoi5caZD+21pzR37eZ6MFUgP2u+3PxMTAw+JQ==
+ b=PUlayxfNGWb2zrmnUy9+Z8skvEYFX2JMvlOQbLZmQaFVHNd5eQtaS4eg39M8oXuye1UiNxLWvMDO+dsdbPtjlk2omNqmfq4W0Ww06bRCXfIuG+hMgnKl6FYHYq6oCPSkMbBJBHP71ld6RMEoJR4UmmA/NxhgcqPhDX+7RNaTfGOytulRiWlBLRrQZZQYpxzmfg4XkCXJ9sxFWV8Sh5/VU0QXQLcUEUgM6bnI7tunU1I1sUeNrEjYeHWJqmrvBg1nZkJSHsNcLxHBb4m7aTWOJvgx7gDv0jbdXN25thV3/8cIZFrftFTXLjfmMQZ1FR/+xr7103hP8HNTrOK2knlhGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CmL6xVwOmtW3NZf+3Op/LrLjwAeU5ciP9cUAgiLR06Q=;
- b=GFBFHeejPpPfOXPgYzh5IVqrOxHPEGQFnYhjcItPCPcHZ9n3gRmjIy3qQX9lPw5eK9rkT4KrWjjegVwCJfNG4ai6W8IJ8wXz5UnaOg2FZ7ZIaODLR5rlUd5yXQIcapMVD3mJTNUb6SWkkf7R9OMLnsCMEFWQ2p24WN/Oap3VE+Zl0LT7G9S7b1ZjFMmrTygTB579dwIfxQCbT4ArCckExt9ZPOyhU8m5WJNxNRgHPE8cc82ojwKlV+IpPhA7JhfUsGuUcq9tg0itjYO/GQkTybOVGR5FrJdHmUiP3RJoRzrGQqp/LML6UifAqHaP0H2cffKFHdJTqpj6noT629ovcw==
+ bh=e3koL2KXWeRIPSIfturxjqO3lbK0MmkVxq81KyfENJk=;
+ b=MxL6sLVNbiAtb2ADUH8b4TVgPu3s9lovmJ/s0exN8u2hpbBSYZjo/W2ayDQb6RhIQ2viB80IFmLj6rd4nLNseoVGOM7QHYI8tdrtXHp/WBKhGeUCywK6fYp2bl3kqZEzPWB/qE3doWtx/a8+Xq704Q3Pvz4bk8161iPs5KzkWtt3J7saHfjz9R7m50YbAtCkFsCj/A1Wrn01ASV2ONvjoGNYuZ6J+ISDeuUY++35Sp4lEGaygg0w9+ltywg9FlZgzAjr+Yeazyk0CzNElV/h3vMxz995Mj015qsQxicvhOFFwl4KgBAJBmt8WECx5eKwSQW4Ju02FtmelMl5073mUw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CmL6xVwOmtW3NZf+3Op/LrLjwAeU5ciP9cUAgiLR06Q=;
- b=FshwX/GR9CBK2pRwuUIRVWb37lD6qQXGtzcVkYstNww7u8Xtgz5E9tponzLntMA2byIJIRMTwn+RosBUJ/PFjBX5cJkkqgedrOcjuOdeaFYGTMe8NMW4SCyccTQyhywL5S1GvznZa7zs1hqPtx/BKTUSzmzXrNUCVIB3fDV3po4=
+ bh=e3koL2KXWeRIPSIfturxjqO3lbK0MmkVxq81KyfENJk=;
+ b=o8jkyptLx3zvhXiMh4WEvVXPKdKECw9kiPCp18fFq1CM9PRDrQ2p+GwWUvdeeg9hZqeUyYfdYbLxM6ubEa+ZlrFGQ+4uvKDHZ0vPwXSoV/KB4LxAYb9QTw5KdPivLmIiWct7HKtGTIOARxfc+ylurXZS6XgYRxUBoU63UaoRqjw=
 Received: from BN7PR12MB2802.namprd12.prod.outlook.com (2603:10b6:408:25::33)
  by DM4PR12MB8557.namprd12.prod.outlook.com (2603:10b6:8:18b::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.27; Fri, 8 Dec
- 2023 17:05:34 +0000
+ 2023 17:06:24 +0000
 Received: from BN7PR12MB2802.namprd12.prod.outlook.com
  ([fe80::2a35:852d:bc78:ed64]) by BN7PR12MB2802.namprd12.prod.outlook.com
  ([fe80::2a35:852d:bc78:ed64%7]) with mapi id 15.20.7068.028; Fri, 8 Dec 2023
- 17:05:34 +0000
+ 17:06:24 +0000
 From: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, "broonie@kernel.org"
 	<broonie@kernel.org>, "pratyush@kernel.org" <pratyush@kernel.org>,
@@ -77,13 +77,14 @@ Subject: RE: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
  spi-nor
 Thread-Topic: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
  spi-nor
-Thread-Index: AQHaH4D9pFM5xtDoeEuMNIpXuxvtzbCcYmwAgAEJ+aA=
-Date: Fri, 8 Dec 2023 17:05:34 +0000
-Message-ID: <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
+Thread-Index: AQHaH4D9pFM5xtDoeEuMNIpXuxvtzbCcYmwAgAAD2QCAA0mkcA==
+Date: Fri, 8 Dec 2023 17:06:24 +0000
+Message-ID: <BN7PR12MB2802C8279CA95FA08F8DDCF2DC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
 References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
  <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
  <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
-In-Reply-To: <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
+ <9f577482-30d9-4e1d-9469-812d323b18c6@linaro.org>
+In-Reply-To: <9f577482-30d9-4e1d-9469-812d323b18c6@linaro.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -92,65 +93,65 @@ authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: BN7PR12MB2802:EE_|DM4PR12MB8557:EE_
-x-ms-office365-filtering-correlation-id: 3f3b7867-eec3-402b-041b-08dbf80fe469
+x-ms-office365-filtering-correlation-id: 0b4e3074-7ea6-4e6e-8fd7-08dbf810021e
 x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fMK4tA5fsoJEFbTqmBqIk6HDocUMXi/QKU8PqcBiott3ktLuwRK04FuJNxr7kUnhZb2/y0nbHhN3zrCRHk5oRDkEQ/J+6nr6thT1PnCvwyu4PWVM15sjF44lJhuIAUYWFro5regdRhgty9+63S3PYl2fgjGIxvBJjf2ejvjdfbBa/lCMDaxKP6q+O7P+JVEn6pUNpObDBEgI7DpqaYLIHpfF7ry15bTsuUtSfknxVfF9qmV57rOfeYsvOfWkxZAYUX6rfK1mwgAw7Uvlf8NitbG2KpXAgDXEU9juft20G4QhRHsrm8UvqYnwOYQqpTYZnG0FexEK0axvIXtFO9xFRsGL5eo6zj6/Xir6iYzuQDWOBUVToOuvhOKYGkaz4yxFYxJ+b74gM/ZRF/AI8lwjRM49j11pTpkR2acOVSRchrCjGrcTHSFYfcGmnJ0ddEOzWMZffSFzQIdDMKHKkTzQnYz7qTOrg4X/OJCxV8iM0ldxhYOI2lJ3Wbad1nQJFn0tbmsRYjmaryrQcQ/KBIzoU6Lhd1j6QwVGMs5iakdYy0V3mqmdPGPpo9V+0H8DCResdVkfjM7JEJYBsrVMwY/DgBZAcg3CxtOarAI6iA2fdrVxUs5n5hOAZ4EhoqOT54EcxVQo9WMGobDs2lo+zTsb3YnoeMWkM1sUPO6i3EGJ4seq5tSJqhIo8wM5r29Yp5F2
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(136003)(346002)(366004)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(1800799012)(451199024)(55016003)(41300700001)(122000001)(38100700002)(2906002)(7416002)(316002)(38070700009)(921008)(5660300002)(4326008)(8676002)(8936002)(33656002)(76116006)(9686003)(53546011)(71200400001)(6506007)(7696005)(26005)(478600001)(64756008)(86362001)(54906003)(66556008)(66476007)(66946007)(66446008)(110136005)(52536014)(83380400001);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: Qnxq/xDhTRh7V6XIvdREG0WcnM43lfWw94jE5zp+32RHWqai9Lj5bExwPwSbFU5p8VNE36Aeu4HrtCa3ZUmhpHCCfgXtoqsZKXBMFhvlRXoGs5QwQQrk3kDVJfDxpLqWi0XIO48w61C2EZyVLHxy0xjyGygcbLimSREwH6M/JvuM8JCLACNE5CKr1UaZ1AXRKi6H+SuWIf9jxoY1BkmWqax3iaDO6wXRPrQz2XoqtXJ6xtbx9vMjdFyom/NhrlkxvR2/0rBUXPHarjXVyGKrVRZhufV+NE4ApLs8cwKnBK3Vyzn5126qGSznAV0NSAOGx0bEALBM2SaQ1umw4T9aF6j7XLefkbmzvcJmOodI1ISbyqqTdThcT8rW7ejJc0nVr8FgCvedVCZ3DwcQ1tDzmCjDDNPaZ5s2nxtwjB1jHf3mton7Qi/I9epgUsrg4GG2lE0NEY/2Bk7ynhgqopItj7cG9rUa2sjvXcivbY6QBlj62EDlCxj67ahQf3imcG7iSTwEwT3foHGCfybEF8IeNGloSf/TlTAnuVEFH1RGB+44/z3CDDh7W4BuogqP+RgbT7RY8rwNLV4NF3nD58MrQKjr1ZmO7NFNQY3/RjIKctUEsaH7GsoNSp1oKUvZoANv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(136003)(346002)(366004)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(55016003)(41300700001)(122000001)(38100700002)(2906002)(7416002)(316002)(38070700009)(921008)(5660300002)(4326008)(8676002)(8936002)(966005)(33656002)(76116006)(9686003)(53546011)(71200400001)(6506007)(7696005)(26005)(478600001)(64756008)(86362001)(54906003)(66556008)(66476007)(66946007)(66446008)(110136005)(52536014)(83380400001);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZjZEak5kN1V0Z1NidkpxclBPaGNILzRWakdJNVNlVHF6TmhpdHNneEh2aWVw?=
- =?utf-8?B?bERXWlIxU3pGSEN1S2cxUHpWL0FTTUtNK2dHK3ZKU09nNDdHVHczZ2kvdkV3?=
- =?utf-8?B?ODJwanFSWFMvbll4Y2kreHIzR21NMFBIN3p2Wm40SmtTUHRDQmpBOVB1SjFW?=
- =?utf-8?B?bWVnRmlNeVg5SnM1V3NPeTJVVTNvYjBkRkhabDV5VzMxU0Jnb0IxLzFiUGVI?=
- =?utf-8?B?NnljMFVQVUJUYytWaW9JV1FpYnBkVnZGYzRvT1BuZXVJWlpuQXFkbVZhejVo?=
- =?utf-8?B?azFDR0FLcDFtWGRuRmRQaUt1aGZQSVZ4SFl2bFRYc0hDU2ZhbmpxY04xblJB?=
- =?utf-8?B?RTV0R1U0QXl5TnFudHlqeTgzUlJUMGVFSklGZjFPVzlVNE5JWFNvZGJCMlgz?=
- =?utf-8?B?Z2hNOVhWMmFpOG5WTnVZNzE4cit5ZHZLZmFXRDl6dUxVYTFKUjlleDhueDZu?=
- =?utf-8?B?VUtoRDBCU05XdnZmL2gwMms5Q1FlMHpQUC9RQS9NckVnK0VZQ1c5cmVGK0li?=
- =?utf-8?B?YklqdWYrOUJza0dIVWszbXRISXpZTmZDOWk5VDBFZU96bkw2UzduanBaK0x0?=
- =?utf-8?B?VVNoZ3RFU0VoMkVMV3JHdjVMNThIcjU1emdvVGxjVFAwd0tsbjF1cFZBM29T?=
- =?utf-8?B?bGZvdXl0OUhYNkluSm5DYnRPMDNQQzlvSC9LQjEwY2M2ODFxTDltV3NKSkdR?=
- =?utf-8?B?eUp3UjlZSmx3MVJqOSs1K3ZCME5xWnVvRFQrbEo5L21Xd1F3NnlpRlh3Y0dH?=
- =?utf-8?B?QWJUYVp6UG1pUURKSkw2VjgrMmF1VllzaWdoWjhEUzFyd09hYk9iZXlFa1ls?=
- =?utf-8?B?VlpwTU1FUDhZMkhreGtZUWF3azVLTVFDZGJwNzBmWDVIdkxQaVlsOEI0OVhB?=
- =?utf-8?B?eGtuWFhNaDA4dGYwZXBuV3JscnY3c01ZbDlZUy9QV1IwYVJ5ME9DcHFtN212?=
- =?utf-8?B?blhFdm9qczZJNzJST2hmMHVnUW9SM1B6cHoycFlwdDUvc29TbTZhV1h4UlFn?=
- =?utf-8?B?d3lSRnk4OWorRFZCVGppZEtSZXQ2NE9zZFUreU1YamFEbkxWZ3ZoYXF1UWZJ?=
- =?utf-8?B?SGk5ZHFCRGJwaDZnV055eGVNd2xGajI4WDJIa3JWZ3V3MW1nM3E1dEphNFd6?=
- =?utf-8?B?QlpJK0lDWmZkd0hmc2h3aGNabEJtL1VjaURnL0J3Z0ZWSklzOHdTMlFTZzhv?=
- =?utf-8?B?M3lGMFJUZXF2cGc0TzRWNlJpV2RBSUx5Q2twZnBINVUzcEk2L2dNZ3RFV2FK?=
- =?utf-8?B?V09LQzJoc1dwdGJrVnlYVkhtQW45NjFkU1cwWjk4cjROMDNpUzF6WmtMQmZ2?=
- =?utf-8?B?Z2hvemxXSHNUZ2pkVHZzbHRxWFBSOVJ3M3JYZklnMndNN3dSamYxVW96UHJM?=
- =?utf-8?B?cHZ5bE5BNnBNY0ROaDdURDArd0VpclNWaWkzWHNGM2xkc3VjWU9zZEIyRG1s?=
- =?utf-8?B?T0R1VjNtR3QzK2t2ZitWWEJraExWbDZkT3ZlODdYTnQ3MXlzSDJTbDFrdCtz?=
- =?utf-8?B?eTRMZ21OWWd5MWFUSmlsTUZoNjM0TTY4aTFKL0hyUDZiazRZVit4ZTJTeHJ5?=
- =?utf-8?B?Rzc4bytJdk5rVnVHMy9XTUxMdzBOcnEweXZ3ak9uTWhjZXRTMkk4MjY5aXZM?=
- =?utf-8?B?YXJzL3hFSDZ0R0wyaEZPbjl1K2kzNkU4U0dESVF6UXJIZ25BOWJsOUZYLzdR?=
- =?utf-8?B?dzQrSEhsanpmYldzakVpZ1ltVnA1aEF2TTh4MlRXcmx5eGxDVVlwMVRnbEJn?=
- =?utf-8?B?a0twbXlmNXVlVDdabjN1OHJseDRFVThpOUhoSnRiQzZsYzZ3ZDNhSmdwcXEz?=
- =?utf-8?B?R1Z3VGprVDJaa1g4dndyK3poZHdmRlJnMGkwM3dpUG5vZExuTld3czh5aFpH?=
- =?utf-8?B?bmdRK2QyWGF3TVh3SG9DM0JqVmROc1JKd0VacEZFZzc2ZUZYNUNrMTR5b0pv?=
- =?utf-8?B?L21TRnAzUGkrMjRWRkVEYnZHcHVYM01CNi9MKy9LcTkwV3UzajZGQnRCYjN1?=
- =?utf-8?B?dFlOUE5ydml6OUs3KzdzaUxxdFYvSUdaOXZCdk9DdUFhQjhaYVRGbzlDVy8x?=
- =?utf-8?B?ZWZTSTRFbWo1V1RjNUdrUElGdk0rS2VJb0pPbnFKWW1lM0ZXWGxIRUNxRFVv?=
- =?utf-8?Q?yR/U=3D?=
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eUVtZVFhZ2xlRlZlNDZSaUF0K2FxZjRha2t2dkQ4MGluSHFBTkkrM2d3MDJp?=
+ =?utf-8?B?a2RRMklNdWpKelYrd0NQZ3NUVkpBMWZPOVVJVXJJQWQ0bkhFZ010TXRHd1lo?=
+ =?utf-8?B?MXVlc2FXN3p1UGtQMDFLS09Jd3RKek1YbFpjbG5ZRXVCNnFieTZBZ2NEamR5?=
+ =?utf-8?B?ZWlWN01PbXRHVUxNMG4wMVI2WEVydDhzeTNPN25OMXRzWnhpOWY2NHlZSHlX?=
+ =?utf-8?B?czliNitTZVZybDBLT3ovMTlNV1VsL24xTnhqYisvT3Rkb3lRay9CRVNtQ3Qv?=
+ =?utf-8?B?N1oySWRGYlpBdzlSZmlQKytlbTE4eG4wQnBBSnR0NmcyV1ZTWThpdWFpeTZ0?=
+ =?utf-8?B?RXdEOWlyVkI0SlY0V3FSVlJRSkNpbDZpaWx5ejdxRldQOGkyRERKa3VOMlgz?=
+ =?utf-8?B?a004YzA4SElpRGNvVmNCZDJRZDIzakN5U1dna0RMSHZZdWhCdVdKWUFZeUVv?=
+ =?utf-8?B?K0J5ZFJEbG9pVXVPNU83VERYVEdaTWYzLzhEaGJHS3JTMHRXekN4S01neXg5?=
+ =?utf-8?B?Z0x4M0Q3QWcrTlllT1NKcytnV2tsc1p2TzVuVTBOZTZGY1lzR3RwcTVoK0o4?=
+ =?utf-8?B?NndsVWEvdlZ6U3ZPekJDSXh4cmNJZkpLVk5kbmwrYUlybXUrb2tGdmRqVVNT?=
+ =?utf-8?B?TWRvaU93NFN0WHFFQ015NWhjR2tHK1pBNjl6a3lnU3pZSTU3bWF5blVyWnVa?=
+ =?utf-8?B?S2RVVytBeEM0dy9TeWJTQ0xyUGJJVG1ZYVppNHdSd0t6Z3d5T01Rb1Yyb0kx?=
+ =?utf-8?B?SmwzOVJzTjV2TW5MOXNNZS85aGtpTTJTT0xNKzhNald5cUYzSnJwWXBzREVt?=
+ =?utf-8?B?VFBWZHBYbXROWHBVeHFhM3k1RFVPWmxuSzkrNUgwL3BZVTdlcnZDOGFqbzlY?=
+ =?utf-8?B?WUFaVmsxSksvcm9pQlVOVXozNWdFMHF2cUpmbVdRMFJPZUgrU3E4QU53ZXY5?=
+ =?utf-8?B?WWRuU0JNdnU5cGYwUHpuN1lNeEpXcG4yVkQ5TmxjTnhFVGdYNmowK1pmNXdn?=
+ =?utf-8?B?QXcyOGFlLy9zTkFZaWhqdEJCVUFLenlHdzQxc2tkK29lL0V3bEszaXhKQUFt?=
+ =?utf-8?B?VkNGYXNTTTFNYU5FSnBBWUxYZGJUUXZ1VStiYXFxckJZZk0xZm9OeDEvMWU3?=
+ =?utf-8?B?YnRoTzBrUUtRTzBDRy9mQy8rQVRCWURnR0VDeGowZXJtU0lVd2ZaMUNSZ0R1?=
+ =?utf-8?B?TytLRXhOcDllS0lUNUpBa0RMcWZ5OUxsOWJmaDkvY3ZGZm0rSGg4QlF2bEdo?=
+ =?utf-8?B?TVF2Mk1Sd2laMHFJOFg4THhiUWtrdjRQNlhtQjgxV01lNmpQWkVMWURiTndD?=
+ =?utf-8?B?NHBtMHk2ci9IV1lQdS9kY1pESDdQR21SQVFmampxcG42NW5yVFMyZ3JYM1ph?=
+ =?utf-8?B?cDZLcWJVcytTZW9SdW1QNUJuTk1md00rUVpYWVhQb0pXRUgwNW03R2dGcGpT?=
+ =?utf-8?B?SzA2T2FPWUNVUEFvVzJGYmh0c3VtaEwyVWgvS24zMExvaHd6MXJrRStTUCtr?=
+ =?utf-8?B?NnU5TUE5b2FHcVk5bG5YM1pwcDRndHo1SWoxM0FNc2lMWWJpY2xyNzg5T3Qw?=
+ =?utf-8?B?biszMW9CRGFtdlJ1dnNGYTRmZU85UEh6bDZmY3ZzdzBKNlQwTE10QnBnS1I2?=
+ =?utf-8?B?bHdMNURrUU9SUWsvbFJXUmpjMjk2di9Sc3VBbEYyNVpiOVhDZFJYS3YyZmMv?=
+ =?utf-8?B?N3JncjRJSnN1YzVMRXdGRjFKVFB6eEtBMjhBWUowV1R0K2cxY3A0RWFJUzh4?=
+ =?utf-8?B?dnVFbG1vZTEySlFOQ2c1SDV2dVo2Uyt5ZWd5Y21Yb1pGQUdKbXhiNmdsQ2FJ?=
+ =?utf-8?B?eEo5bTlYVWl3NFJKQ2hsUmU0dTUvNCtRM3hFcWg0T2dneTZjTndHUVp5ZWpS?=
+ =?utf-8?B?T0FtVVlHT1Rwc2VJZHYyTmZYRkcwdk1JWnhZc0RYenlaSjRPS0ZKU2d6WWkv?=
+ =?utf-8?B?ejI4Z280OGNxWTZIdkJJT2FDVzY0SVFjQUhMR053blc1T1d6Qy9NUjh4UHFZ?=
+ =?utf-8?B?Wjh0eUo1eDNvdUorMWtHOGVZWW5Nanp5NzNzY0tJamtndmVIcW5raHdHYlkr?=
+ =?utf-8?B?ckEzenBaemVmMXpxajQvTitnczRYUUZTNHpYOG9PL04wMGhKcnE1TVgwdmV5?=
+ =?utf-8?Q?UPWI=3D?=
 MIME-Version: 1.0
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BN7PR12MB2802.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f3b7867-eec3-402b-041b-08dbf80fe469
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2023 17:05:34.3251
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4e3074-7ea6-4e6e-8fd7-08dbf810021e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2023 17:06:24.1561
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iaRprxwL+2pDF7e6PN04lhFaMSP4k7HlbYcMlkR7d8NDP2zod+iFzlaUP24BGR83iI7vQgU7Ln7rvK1zyDdwBw==
+X-MS-Exchange-CrossTenant-userprincipalname: yb0UVu5Wzw7GsFHO0S3GcT7vTiASRp0hJbS1jU6vbe6HjUu6KJdGQrJ0CHAT0MXN3Mc+6K1sOoSeGB80K+USBg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8557
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231208_090547_758372_96FC7F7E 
-X-CRM114-Status: GOOD (  33.12  )
+X-CRM114-CacheID: sfid-20231208_090633_241140_98473E8D 
+X-CRM114-Status: GOOD (  32.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -171,7 +172,7 @@ Hello Tudor,
 
 > -----Original Message-----
 > From: Tudor Ambarus <tudor.ambarus@linaro.org>
-> Sent: Wednesday, December 6, 2023 8:00 PM
+> Sent: Wednesday, December 6, 2023 8:14 PM
 > To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>;
 > broonie@kernel.org; pratyush@kernel.org; miquel.raynal@bootlin.com;
 > richard@nod.at; vigneshr@ti.com; sbinding@opensource.cirrus.com;
@@ -187,109 +188,101 @@ Hello Tudor,
 > Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support
 > in spi-nor
 > 
-> Hi, Amit,
 > 
-> On 11/25/23 09:21, Amit Kumar Mahapatra wrote:
-> > Each flash that is connected in stacked mode should have a separate
-> > parameter structure. So, the flash parameter member(*params) of the
-> > spi_nor structure is changed to an array (*params[2]). The array is
-> > used to store the parameters of each flash connected in stacked
+> 
+> On 12/6/23 14:30, Tudor Ambarus wrote:
+> > Hi, Amit,
+> >
+> > On 11/25/23 09:21, Amit Kumar Mahapatra wrote:
+> >> Each flash that is connected in stacked mode should have a separate
+> >> parameter structure. So, the flash parameter member(*params) of the
+> >> spi_nor structure is changed to an array (*params[2]). The array is
+> >> used to store the parameters of each flash connected in stacked
 > configuration.
+> >>
+> >> The current implementation assumes that a maximum of two flashes are
+> >> connected in stacked mode and both the flashes are of same make but
+> >> can differ in sizes. So, except the sizes all other flash parameters
+> >> of both the flashes are identical.
 > >
-> > The current implementation assumes that a maximum of two flashes are
-> > connected in stacked mode and both the flashes are of same make but
-> > can differ in sizes. So, except the sizes all other flash parameters
-> > of both the flashes are identical.
-> 
-> Do you plan to add support for different flashes in stacked mode? If not,
-
-No, according to the current implementation, in stacked mode, both flashes 
-must be of the same make.
-
-> wouldn't it be simpler to have just an array of flash sizes instead of
-> duplicating the entire params struct?
-
-Yes, that is accurate. In alignment with our current stacked support use case we 
-can have an array of flash sizes instead.
-The primary purpose of having an array of params struct was to facilitate 
-potential future extensions, allowing the addition of stacked support for 
-different flashes
-
-> 
+> > Do you plan to add support for different flashes in stacked mode? If
+> > not, wouldn't it be simpler to have just an array of flash sizes
+> > instead of duplicating the entire params struct?
 > >
-> > SPI-NOR is not aware of the chip_select values, for any incoming
-> > request SPI-NOR will decide the flash index with the help of
-> > individual flash size and the configuration type (single/stacked).
-> > SPI-NOR will pass on the flash index information to the SPI core & SPI
-> > driver by setting the appropriate bit in
-> > nor->spimem->spi->cs_index_mask. For example, if nth bit of
-> > nor->spimem->spi->cs_index_mask is set then the driver would
-> > assert/de-assert spi->chip_slect[n].
+> >>
+> >> SPI-NOR is not aware of the chip_select values, for any incoming
+> >> request SPI-NOR will decide the flash index with the help of
+> >> individual flash size and the configuration type (single/stacked).
+> >> SPI-NOR will pass on the flash index information to the SPI core &
+> >> SPI driver by setting the appropriate bit in
+> >> nor->spimem->spi->cs_index_mask. For example, if nth bit of
+> >> nor->spimem->spi->cs_index_mask is set then the driver would
+> >> assert/de-assert spi->chip_slect[n].
+> >>
+> >> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-
+> mahapatra@amd.com>
+> >> ---
+> >>  drivers/mtd/spi-nor/core.c  | 272 +++++++++++++++++++++++++++++-------
+> >>  drivers/mtd/spi-nor/core.h  |   4 +
+> >>  include/linux/mtd/spi-nor.h |  15 +-
+> >>  3 files changed, 240 insertions(+), 51 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index 93ae69b7ff83..e990be7c7eb6 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
 > >
-> > Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.c  | 272 +++++++++++++++++++++++++++++-------
-> >  drivers/mtd/spi-nor/core.h  |   4 +
-> >  include/linux/mtd/spi-nor.h |  15 +-
-> >  3 files changed, 240 insertions(+), 51 deletions(-)
+> > cut
 > >
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 93ae69b7ff83..e990be7c7eb6 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> 
-> cut
-> 
-> > @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
-> > spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
-> > *nor)  {
-> >  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
+> >> @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
+> >> spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
+> >> *nor)  {
+> >>  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
 > 0);
-> > -	int ret;
-> > +	struct device_node *np = spi_nor_get_flash_node(nor);
-> > +	u64 flash_size[SNOR_FLASH_CNT_MAX];
-> > +	u32 idx = 0;
-> > +	int rc, ret;
-> >
-> >  	if (nor->manufacturer && nor->manufacturer->fixups &&
-> >  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44 @@
-> > static int spi_nor_late_init_params(struct spi_nor *nor)
-> >  	if (params->n_banks > 1)
-> >  		params->bank_size = div64_u64(params->size, params-
+> >> -	int ret;
+> >> +	struct device_node *np = spi_nor_get_flash_node(nor);
+> >> +	u64 flash_size[SNOR_FLASH_CNT_MAX];
+> >> +	u32 idx = 0;
+> >> +	int rc, ret;
+> >>
+> >>  	if (nor->manufacturer && nor->manufacturer->fixups &&
+> >>  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44 @@
+> >> static int spi_nor_late_init_params(struct spi_nor *nor)
+> >>  	if (params->n_banks > 1)
+> >>  		params->bank_size = div64_u64(params->size, params-
 > >n_banks);
-> >
-> > +	nor->num_flash = 0;
-> > +
-> > +	/*
-> > +	 * The flashes that are connected in stacked mode should be of same
+> >>
+> >> +	nor->num_flash = 0;
+> >> +
+> >> +	/*
+> >> +	 * The flashes that are connected in stacked mode should be of same
 > make.
-> > +	 * Except the flash size all other properties are identical for all the
-> > +	 * flashes connected in stacked mode.
-> > +	 * The flashes that are connected in parallel mode should be identical.
-> > +	 */
-> > +	while (idx < SNOR_FLASH_CNT_MAX) {
-> > +		rc = of_property_read_u64_index(np, "stacked-memories",
+> >> +	 * Except the flash size all other properties are identical for all the
+> >> +	 * flashes connected in stacked mode.
+> >> +	 * The flashes that are connected in parallel mode should be identical.
+> >> +	 */
+> >> +	while (idx < SNOR_FLASH_CNT_MAX) {
+> >> +		rc = of_property_read_u64_index(np, "stacked-memories",
 > idx,
-> > +&flash_size[idx]);
+> >> +&flash_size[idx]);
 > 
-> This is a little late in my opinion, as we don't have any sanity check on the
-> flashes that are stacked on top of the first. We shall at least read and compare
-> the ID for all.
+> also, it's not clear to me why you read this property multiple times.
+> Have you sent a device tree patch somewhere? It will help me understand
+> what you're trying to achieve.
 
-Alright, I will incorporate a sanity check for reading and comparing the 
-ID of the stacked flash. Subsequently, I believe this stacked logic 
-should be relocated to spi_nor_get_flash_info() where we identify the 
-first flash. Please share your thoughts on this. Additionally, do you 
-anticipate that SPI-NOR should throw an error if the second or any 
-subsequent flash within the stacked connection is different? Or would you 
-prefer it to print a warning and operate in single mode (i.e., only the 
-first flash)?
+Miquel submitted the device tree patch; here is the series.
+https://lore.kernel.org/all/20220126112608.955728-1-miquel.raynal@bootlin.com/
 
 Regards,
 Amit
 > 
-> Cheers,
-> ta
+> >
+> > This is a little late in my opinion, as we don't have any sanity check
+> > on the flashes that are stacked on top of the first. We shall at least
+> > read and compare the ID for all.
+> >
+> > Cheers,
+> > ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
