@@ -4,67 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D99EC10DCE
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Dec 2023 22:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A9E3C4167B
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Dec 2023 02:01:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3nZ/7XOsi3yHLO1GLENMXV4pCdyVGk9GWz6MFkdsXLU=; b=SG7W8oVsQP07Zl
-	tZrBPxnDsGNNv1rb/UEgqyAAG/AG91Df6Hv1VZK5T20kF6dtdeZawrHZ6tB+qcZBR/ViHp3fLJEwm
-	ipP723NXXoMGU+QgeR9nG5+4PeXqkF05/0ucjdXeC/jTO6L0ooPOUyF3UK2EJGTKQUsjg4vbmmY8Z
-	7ytmQsuazB3BiI/FMHCp4RKLBmIyd7mED4FmbOiv8ZZOcpDhOSY3cG+71jO72xpCbspD6HS5SJiyv
-	YR0LB63AKSWMkzT2YRTIID86zVbozXGfmIAlHUtoKtQzlVXR6H9hyJOK+q94CnbWUQ79b15ez69vG
-	tKKiv7cclBbkI1yARk0Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=qvf2ZlILqVnoFj81DFCLeV+ePFU91gdHkCvfPlcCzn8=; b=cY0CjM1tZGi4zOJrfP6gQ1dEWl
+	O56Qu+zUfabcad+FbIwYwtZaLZi14npmw5gXJxtdBHLI5N4bkn7Q0xCYKFRdfcCr5Kp6k17yVSNfb
+	V18mxUz1ir8ExD1pYNAlV6sCJheaOYcK7OD4RTVeJe8sWz+aS33v2Q6NuntB4Jpew8JzVT1yEVReQ
+	yTbGkZqq0+KmhWgAzLcI/LAQpoO/9h55vWZ1LrHzDxbxvc4LPF5RAN46NcYRqxHIN6AFUqC7DEz8O
+	cURrFd6FFSqzwuEu2nWc7YDyOGwELuKxMrfpPjDH9zrm5jDBGXcQhl5Ccf+VCShLWp7KW3htypXf+
+	JZvkTfnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBMxa-00E8xt-2c;
-	Thu, 07 Dec 2023 22:35:10 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rBQAZ-00EVp4-1f;
+	Fri, 08 Dec 2023 02:00:47 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rBMxX-00E8wQ-1S;
-	Thu, 07 Dec 2023 22:35:08 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 04321620CD;
-	Thu,  7 Dec 2023 22:35:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8BDC433CA;
-	Thu,  7 Dec 2023 22:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701988505;
-	bh=NT7BHAqFBOhaRtrY/szkX/r9R8b3Zw9S8V4qsNXM+rg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fM7G8omPRZ7ZWXJv3Rg5R2B74Wc7o7Kd0E7svQfW9jKfF2c9SyQMkDDpP2fwOg2PS
-	 TKO6qZXBPmoGXWGrJAefouIWYDB8ffo870ddOmQLfgZp38GIQ2vwXuC+0oI7iBOh5A
-	 Dmzh3SXRzNyYbWZvBRERx2CaEge5kWXD5un3ta2VoAnw3dOgT54u79sJmF7LZRjAi4
-	 wAyE+jsMQiEYPkN4VoQz3jAoz/AqgbXL0XVNVTtIB0JtpatC8cCnYqQ03ZaxLmbyKD
-	 a6Mknh/f6Fz9KzrfxlGNr9kf9sZWMTVB1KDV+sBR/xTblGk3eIJE8dITgwEoK8w1zX
-	 AsY+ipMKgV9Qw==
-From: Mark Brown <broonie@kernel.org>
-To: tudor.ambarus@linaro.org, pratyush@kernel.org, 
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
- sbinding@opensource.cirrus.com, lee@kernel.org, james.schulman@cirrus.com, 
- david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz, 
- tiwai@suse.com, Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- michael@walle.cc, linux-mtd@lists.infradead.org, 
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
- claudiu.beznea@tuxon.dev, michal.simek@amd.com, 
- linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, 
- patches@opensource.cirrus.com, linux-sound@vger.kernel.org, git@amd.com, 
- amitrkcian2002@gmail.com
-In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
-Subject: Re: (subset) [PATCH v11 00/10] spi: Add support for
- stacked/parallel memories
-Message-Id: <170198850030.340565.15742297562436442635.b4-ty@kernel.org>
-Date: Thu, 07 Dec 2023 22:35:00 +0000
+	id 1rBQAV-00EVnq-2d
+	for linux-mtd@lists.infradead.org;
+	Fri, 08 Dec 2023 02:00:45 +0000
+Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.53])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SmZ4h2ZWyzsRtk
+	for <linux-mtd@lists.infradead.org>; Fri,  8 Dec 2023 09:56:36 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Dec 2023 10:00:26 +0800
+Subject: Re: UBI scrubbing behavior when readonly
+To: Chuck Meade <chuckmeade@gmail.com>, <linux-mtd@lists.infradead.org>
+References: <cbff425d-0196-4124-99a0-f7ea8d6e6ab6@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <414d3586-0882-5bf9-a257-f819932ceae7@huawei.com>
+Date: Fri, 8 Dec 2023 10:00:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Mailer: b4 0.13-dev-5c066
+In-Reply-To: <cbff425d-0196-4124-99a0-f7ea8d6e6ab6@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231207_143507_576342_3CB29F9A 
-X-CRM114-Status: GOOD (  16.00  )
+X-CRM114-CacheID: sfid-20231207_180044_030422_3E499FF8 
+X-CRM114-Status: GOOD (  18.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,65 +62,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 25 Nov 2023 14:51:27 +0530, Amit Kumar Mahapatra wrote:
-> This patch series updated the spi-nor, spi core and the AMD-Xilinx GQSPI
-> driver to add stacked and parallel memories support.
-> 
-> The first nine patches
-> https://lore.kernel.org/all/20230119185342.2093323-1-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-2-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-3-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-4-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-5-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-6-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-7-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-8-amit.kumar-mahapatra@amd.com/
-> https://lore.kernel.org/all/20230310173217.3429788-9-amit.kumar-mahapatra@amd.com/
-> of the previous series got applied to
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
-> for-next But the rest of the patches in the series did not get applied as
-> failure was reported for spi driver with GPIO CS, so send the remaining
-> patches in the series after rebasing it on top of for-next branch and
-> fixing the issue.
-> 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[02/10] ALSA: hda/cs35l56: Use set/get APIs to access spi->chip_select
-        commit: f05e2f61fe88092e0d341ea27644a84e3386358d
-[03/10] spi: Add multi-cs memories support in SPI core
-        commit: 4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjMvMTIvOCAxOjU2LCBDaHVjayBNZWFkZSDlhpnpgZM6Cj4gSGVsbG8sCj4KPiBEb2Vz
+IFVCSSBzY3J1YmJpbmcgKG1vdmluZyBkYXRhIHRvIG5ldyBQRUIgd2hlbiByZWFkIG9wZXJhdGlv
+bnMgcmVwb3J0IAo+IEVDQwo+IGJpdGZsaXBzKSBzdGlsbCBvY2N1ciB3aGVuIGEgVUJJRlMgbW91
+bnRlZCBvbiB0aGUgVUJJIHZvbHVtZSBpcyAKPiByZWFkb25seSwgaW4KPiB0ZXJtcyBvZiBMaW51
+eCBmaWxlc3lzdGVtIHBlcm1pc3Npb25zPwo+Cj4gSSBoYXZlIGxvb2tlZCBhdCB0aGUgVUJJIHNv
+dXJjZSBmb3Igc2NydWJiaW5nLCBhbmQgaXQgYXBwZWFycyB0aGF0IGl0IAo+IHdpbGwgbm90Cj4g
+b2NjdXIgd2hlbiB0aGUgVUJJIGRldmljZSAob3IgTVREIHBhcnRpdGlvbiB0byB3aGljaCB0aGUg
+ZGV2aWNlIGlzIAo+IGF0dGFjaGVkKQo+IGlzIGluIHJlYWRvbmx5IG1vZGUuIEJ1dCB3aGF0IGlm
+IHRoZSBVQkkgZGV2aWNlIGlzIGluIHJlYWQvd3JpdGUgbW9kZSwgCj4gYnV0IHRoZQo+IFVCSUZT
+IG1vdW50ZWQgb24gdGhlIGRldmljZSBpcyBpbiByZWFkb25seSBtb2RlPwo+CkRvZXMgJ1VCSSBz
+Y3J1YmJpbmcnIG1lYW4gdGhlIHdlYXJfbGV2ZWxpbmdfd29ya2VyKGUxIGNvbWVzIGZyb20gCnVi
+aS0+c2NydWIpPyBJZiBzbywgSSB0aGluayBpdCBzdGlsbCB3b3JrIHdoZW4gVUJJIGlzIHJ3IG1v
+ZGUgYW5kIHViaWZzIAppcyByZWFkb25seS4gRm9yIGV4YW1wbGU6IHViaWZzX2xlYl9yZWFkIC0+
+IHViaV9sZWJfcmVhZCAtPiAKdWJpX2ViYV9yZWFkX2xlYiAtPiB1Ymlfd2xfc2NydWJfcGViOiB3
+bF90cmVlX2FkZChlLCAmdWJpLT5zY3J1YinCoCAmJiAKZW5zdXJlX3dlYXJfbGV2ZWxpbmcKPiBJ
+IGFtIHRyeWluZyB0byBjcmVhdGUgYSBjb25maWd1cmF0aW9uIHdoZXJlIHRoZSBVQklGUyBpcyBy
+ZWFkb25seSBhdCAKPiB0aGUgTGludXgKPiBmaWxlc3lzdGVtIHBlcm1pc3Npb25zIGxldmVsLCBi
+dXQgVUJJIHNjcnViYmluZyBzdGlsbCBvY2N1cnMgd2hlbiByZWFkCj4gb3BlcmF0aW9ucyByZXBv
+cnQgZW5vdWdoIEVDQyBiaXRmbGlwcy7CoCBTbyBubyBMaW51eCB1c2Vyc3BhY2UgcHJvZ3JhbXMg
+Cj4gbWF5Cj4gbW9kaWZ5IHRoZSBmaWxlc3lzdGVtIGR1ZSB0byBwZXJtaXNzaW9ucywgYnV0IFVC
+SSBzY3J1YmJpbmcgc3RpbGwgCj4gd291bGQgb2NjdXIuCj4KPiBJcyB0aGlzIHBvc3NpYmxlLCBv
+ciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nIGluIHRoZSBVQkkgc291cmNlIGNvZGU/Cj4KPiBUaGFu
+a3MsCj4gQ2h1Y2sKPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4gaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCgoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
