@@ -4,118 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A757C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 14:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E2C7C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2i45tEknDzRsuknfUzJDFbwPVAxJOyUQBc3fo9pSfd8=; b=XaACCq/oVE6UYv
-	pj24lCdoUueXcUWGgjdy75kaX9pzCi987STvMMeNcnRjAE1EiilaMSgm2fRmvsMaJjl8zSv6U/lp4
-	Ex1/1IlJGLBHKLbNEG85sKZrPtqcOCVSRBalbV9te+E7N1kYAVNs3ESLYHttfyHhPStj4DsGTls2Z
-	6Q2TZ+eTG2h+0bAu1Me4wnQe/zlOAv7et0AhxDL38bssVre7rYQwSz+sP9B2+ttcXM+2vrTaVEN9f
-	mkREdHzRtWaDIkCzKO0H96qmawsRNqv50iUL2y0epNS9z2MH0EAQ5Xh0dRlZb1PxfzXjkzs4LN2CJ
-	e9qqaYqcQJdYBKZk1hug==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZTm4DKjLDruORzCjbyfFnbi248k3cKfppVrPShZiANY=; b=fdoY0dSh/qex1e
+	/26xC1SSQ0Mar4qUWZ1m9EC8FWICaMw6xx49oHMDa4rc6iyYsVagrqjctpEmLMokT26wrWmzE57qE
+	WzwUJyftgSCN0csMTzCt1ev77YRM4t1t9VN5ODXTajfaPYCPpt9ft9YPHOLcBO1wC2FqXX1iKQbY6
+	jWiX2TtgAtiFVyDliCDjOG515EFZZ+s+KJj0r/aBtc2tRq5gtUe/noyhJZ2uq3klr14aybkHKLPy1
+	kJ60lgzHt5u0nktN7Xpb2RBtVZQBEhCtS/Ul0Sj6t4VL+ACRVRpBOm+4eyZPWTwDIVQlqKjH6UgAS
+	jThbwwfs2K6dXuQBTPgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgzN-0057JF-1b;
-	Mon, 11 Dec 2023 14:10:29 +0000
-Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
+	id 1rChqh-005HbO-1X;
+	Mon, 11 Dec 2023 15:05:35 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgz2-00579B-2f
+	id 1rChqe-005HX5-0O
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 14:10:24 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpkCb567qz4f3kKB
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:10:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id DFEF01A0C58
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:10:04 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw46GHdlJ7BxDQ--.34937S4;
-	Mon, 11 Dec 2023 22:10:04 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: axboe@kernel.dk,
-	roger.pau@citrix.com,
-	colyli@suse.de,
-	kent.overstreet@gmail.com,
-	joern@lazybastard.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	sth@linux.ibm.com,
-	hoeppner@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	nico@fluxnic.net,
-	xiang@kernel.org,
-	chao@kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	agruenba@redhat.com,
-	jack@suse.com,
-	konishi.ryusuke@gmail.com,
-	willy@infradead.org,
-	akpm@linux-foundation.org,
-	p.raghav@samsung.com,
-	hare@suse.de
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 18/18] ext4: use bdev apis
-Date: Mon, 11 Dec 2023 22:08:39 +0800
-Message-Id: <20231211140839.976021-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+	Mon, 11 Dec 2023 15:05:34 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D5469FF805;
+	Mon, 11 Dec 2023 15:05:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702307127;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HJx/g1lQV6d6umo/aERsV9LKr3iz252wNrScN5BFwWo=;
+	b=Mk2XI5VI37MZLKnpUgc8NqOC+CPTGY76jvNYYnrJU926zakRhTU4aMu1xEaQZ7fhuNT6bn
+	ZS8ElGUtipdYU/E2bxOgXiFi9a0bre0sqXYC8YCgI+YDH4ope5rApBHWT2cSq8aXHNLmQJ
+	SwOfRubn/1B/f3IlDb1/tGR/Ms6RawobptHgp9MxLvTAOwzVe0VQ36vsoXxM3ks+zdEM3n
+	KdXgpB2kK/5CM/D4hcN0q/z6oB07lQ3DIy/d4Ml7MA4CvP1fGXHGSqlAMt2wEL0vES0E2h
+	Ru/FFZck/K9DQQBCxZ2607OxsvvypCvy5yh5zBo5HS0mC7bVQjS87dowL3C+ow==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Michal Simek <monstr@monstr.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] mtd: rawnand: pl353: Fix kernel doc
+Date: Mon, 11 Dec 2023 16:05:24 +0100
+Message-Id: <20231211150524.108803-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw46GHdlJ7BxDQ--.34937S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF47JryfCw48Xw1Duw48JFb_yoW5XF4fpa
-	43GFyDGr4Dury09wsrGFsrZa40kw18GFy3GryfZa42qrWaqrySkFykKF1xZF1UX3y8X348
-	XFyjkryxAr45CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-	6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUCVW8JwCI42IY6I8E87Iv67AKxVW8
-	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUe_
-	MaUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_061009_265748_FE0525FA 
-X-CRM114-Status: UNSURE (   9.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231211_070532_331501_9391C5A4 
+X-CRM114-Status: GOOD (  10.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,76 +76,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+Both the "chip" kernel doc member and description are wrong. This field
+is called "chips" and describes the list of NAND chips connected to the
+controller.
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312102130.geZ4dqyN-lkp@intel.com/
+Fixes: 08d8c62164a3 ("mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- fs/ext4/dir.c       | 6 ++----
- fs/ext4/ext4_jbd2.c | 6 +++---
- fs/ext4/super.c     | 3 +--
- 3 files changed, 6 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/pl35x-nand-controller.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index 3985f8c33f95..64e35eb6a324 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -191,10 +191,8 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 			pgoff_t index = map.m_pblk >>
- 					(PAGE_SHIFT - inode->i_blkbits);
- 			if (!ra_has_index(&file->f_ra, index))
--				page_cache_sync_readahead(
--					sb->s_bdev->bd_inode->i_mapping,
--					&file->f_ra, file,
--					index, 1);
-+				bdev_sync_readahead(sb->s_bdev, &file->f_ra,
-+						    file, index, 1);
- 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
- 			bh = ext4_bread(NULL, inode, map.m_lblk, 0);
- 			if (IS_ERR(bh)) {
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index d1a2e6624401..c1bf3a00fad9 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -206,7 +206,6 @@ static void ext4_journal_abort_handle(const char *caller, unsigned int line,
- 
- static void ext4_check_bdev_write_error(struct super_block *sb)
- {
--	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	int err;
- 
-@@ -216,9 +215,10 @@ static void ext4_check_bdev_write_error(struct super_block *sb)
- 	 * we could read old data from disk and write it out again, which
- 	 * may lead to on-disk filesystem inconsistency.
- 	 */
--	if (errseq_check(&mapping->wb_err, READ_ONCE(sbi->s_bdev_wb_err))) {
-+	if (bdev_wb_err_check(sb->s_bdev, READ_ONCE(sbi->s_bdev_wb_err))) {
- 		spin_lock(&sbi->s_bdev_wb_lock);
--		err = errseq_check_and_advance(&mapping->wb_err, &sbi->s_bdev_wb_err);
-+		err = bdev_wb_err_check_and_advance(sb->s_bdev,
-+						    &sbi->s_bdev_wb_err);
- 		spin_unlock(&sbi->s_bdev_wb_lock);
- 		if (err)
- 			ext4_error_err(sb, -err,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 3b5e2b557488..96724cae622a 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5544,8 +5544,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	 * used to detect the metadata async write error.
- 	 */
- 	spin_lock_init(&sbi->s_bdev_wb_lock);
--	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
--				 &sbi->s_bdev_wb_err);
-+	bdev_wb_err_check_and_advance(sb->s_bdev, &sbi->s_bdev_wb_err);
- 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
- 	ext4_orphan_cleanup(sb, es);
- 	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
+diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+index c506e92a3e45..1c76ee98efb7 100644
+--- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
++++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
+@@ -128,7 +128,7 @@ struct pl35x_nand {
+  * @conf_regs: SMC configuration registers for command phase
+  * @io_regs: NAND data registers for data phase
+  * @controller: Core NAND controller structure
+- * @chip: NAND chip information structure
++ * @chips: List of connected NAND chips
+  * @selected_chip: NAND chip currently selected by the controller
+  * @assigned_cs: List of assigned CS
+  * @ecc_buf: Temporary buffer to extract ECC bytes
 -- 
-2.39.2
+2.34.1
 
 
 ______________________________________________________
