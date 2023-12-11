@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57826C10F05
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 14:07:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AF24C46CA3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 14:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+LmgN0w3p9YJTEauENJ5hKuzoB9CTTr6LZpiPID+IJc=; b=bp6dnuSa5ATEOA
-	BAQMTbonBN7ReXygVvDqOIhwjleKnEL3CSUw4pwDnJx7lhyFkGHgjH2JXggIljjFfoqMhGcQjB0OQ
-	d0JHbrE7Ni08Comc7jUYstiXOVUayQwfkYjTatZzBRCP76EKIKurbsN8kxCj1iD17elS2lFsCRHYK
-	P+BPqCqkHC9OBQM273G7cA1p+DAGIo1hNhgmbQZVxY6tLnt+7Jb+EaljmG/hNrBnf1uW24W6QxkNA
-	yJObX3vaRjqEEU5Aloqcc9Y3TN/cFG2RI0h4UHHXuUG/j5Rz45wfdhAWF5Cx6j0V5vpqpoQpKEgxB
-	IUA5uTkeHpVd/JQfsyoA==;
+	List-Owner; bh=RIU6ZP44l6TXT2ta7TCaxFAC/4R0Aam3rhjshzHokRI=; b=emlGfol8JDxVDY
+	OTgnikYfXdAiQ+FgOjTcDcghKKEAOy6FHw4Jr983EPxMlSt1beeFvTAi1K2h3SRmYTeqBB0WtX+kr
+	C2QZdzuGXaFzQ1SFImmOtRsp/QL0njovCSVOzHSt/0xXL7+aj9bdzCasP+JUVu2lkS1wR07YoMgVw
+	MJ2qzymBNwwnVUuI/WKuBBEJPPDBk3CD5SuZeNxn+yDBXpbaAeX+F+0oWwMkWn4xCtmMlBRFhLace
+	UTqpXZ0wBIU5lrd8620biyL0HCy11KtlD9iGCTCCaFy/PfQl1zzJbYdXlFoivc2DiFPGmqLI6m7tX
+	IJphcrjtiR3zkTvhnHVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgwo-00562Q-0C;
-	Mon, 11 Dec 2023 14:07:50 +0000
+	id 1rCgwt-00565n-3B;
+	Mon, 11 Dec 2023 14:07:57 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgwk-00561S-0a
+	id 1rCgwn-00562S-2J
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Dec 2023 14:07:46 +0000
+	Mon, 11 Dec 2023 14:07:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=9V3ZDIUhZwmOP7Ttsogxl/KNt4TQa086tq1zlj5qIBo=; b=qalSNX1Ln1nwGG7PNTzhG8k7Vc
-	4FAe0lfyVSRl4+CLmKkVr+vLSsVQDW6z8dyJhPrxQUYJ3iEegvlFxahuko3vuKaJK60GnyHg85QZE
-	kavkRZlBUqszn+QHET4FQmm/Qp2mQ4vhvLyP8kB7adWSDR5T7HfnC8QVrIpbd9azIrPKqrVkBwE0+
-	bF6eNlVyERa/iHKSj6recqtzpEs1GjAqxTm0dpH5aYAT/vUCDEtYyVrBKy2CaVSPDHKsCZJFuDUc6
-	UkxLSWBCxBveC4ll4i+tkaEkAJ164+RVDJO2Z1iYKYzIJLs/5xODviT/qINUuTMSuXB+6BN7+X35t
-	PwDGx2bA==;
+	bh=Akh80WpQo8E43yVx7nkFp8HWVCUcpB3xXnWSa/ejS0U=; b=bwh3x/Bxq2h7slXmNyTSmMF9GK
+	bishxUVJ68X6CqnQb9G4l64wIdJquZ+Yulo9N26nNEr76edyeTHL5UzzZxUo2ExQXB94KXRRsHSaG
+	8qmMWAVhLORWCoddawddoLRC8HiJAml/U4e/oBWtAkQzx61FSErrJVMANt/2aUUMmA9CiPQopr9u1
+	8ObQMWQ9+WQnDWXqn679cDefxypHJ2vOF7aHfCyLzYM3VhSJ83m3HEIRslmXE3S17NkpMDESVprYK
+	xMckBPCx0SsGdwryIFzcaux/PVmQ1blHmY6/tvE2SpOKIA0UFruHJaro/1c754Mj9ioH9cTZXVj2x
+	0b3HAE4g==;
 Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgwf-0086Ug-0B
+	id 1rCgwg-0086Ue-2d
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 14:07:44 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Spk8Z4pDCz4f3kKp
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:26 +0800 (CST)
+	Mon, 11 Dec 2023 14:07:48 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Spk8T2mXnz4f3lVH
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:21 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D14291A0A55
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:27 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 48D7F1A09EF
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:26 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S10;
-	Mon, 11 Dec 2023 22:07:27 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S9;
+	Mon, 11 Dec 2023 22:07:25 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -102,17 +102,17 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 06/18] scsicam: use bdev api in scsi_bios_ptable()
-Date: Mon, 11 Dec 2023 22:05:40 +0800
-Message-Id: <20231211140552.973290-7-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 for-6.8/block 05/18] s390/dasd: use bdev api in dasd_format()
+Date: Mon, 11 Dec 2023 22:05:39 +0800
+Message-Id: <20231211140552.973290-6-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDn6xGTF3dlDYFxDQ--.28013S10
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWrKrykKr43Jr15KryrCrg_yoW3urb_CF
-	WS9ryxWr18KFs7Kwn8tF47Zryvvan8XF1I9FWSqa4Svr1UXrn5Kw4vvr17Zr47Gr4kJ3Z3
-	CF17XrWakrsrujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: cCh0CgDn6xGTF3dlDYFxDQ--.28013S9
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFWrKF1rWw4UAw4kXFWkWFg_yoWfWrg_Zr
+	1fGryxtr1xCr9Ikr1YvF15Zr9Y9F1kWr4Svry3KryfXFnrXFsaq3ykuFW3JrZ7JayUG3s3
+	GF9rXw10yr15WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbqkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
 	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
 	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
@@ -129,8 +129,8 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7XFWrKrykKr43Jr15KryrCrg_yoW3urb_CF
 	SdkUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_140742_455293_A0BFBCAF 
-X-CRM114-Status: UNSURE (   7.80  )
+X-CRM114-CacheID: sfid-20231211_140743_503943_C345B1BA 
+X-CRM114-Status: UNSURE (   8.28  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -155,26 +155,25 @@ block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/scsi/scsicam.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/s390/block/dasd_ioctl.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/scsicam.c b/drivers/scsi/scsicam.c
-index e2c7d8ef205f..9617d70c0ed1 100644
---- a/drivers/scsi/scsicam.c
-+++ b/drivers/scsi/scsicam.c
-@@ -32,11 +32,9 @@
-  */
- unsigned char *scsi_bios_ptable(struct block_device *dev)
- {
--	struct address_space *mapping = bdev_whole(dev)->bd_inode->i_mapping;
- 	unsigned char *res = NULL;
--	struct folio *folio;
-+	struct folio *folio = bdev_read_folio(bdev_whole(dev), 0);
+diff --git a/drivers/s390/block/dasd_ioctl.c b/drivers/s390/block/dasd_ioctl.c
+index 61b9675e2a67..bbfb958237e6 100644
+--- a/drivers/s390/block/dasd_ioctl.c
++++ b/drivers/s390/block/dasd_ioctl.c
+@@ -221,8 +221,9 @@ dasd_format(struct dasd_block *block, struct format_data_t *fdata)
+ 	 * enabling the device later.
+ 	 */
+ 	if (fdata->start_unit == 0) {
+-		block->gdp->part0->bd_inode->i_blkbits =
+-			blksize_bits(fdata->blksize);
++		rc = set_blocksize(block->gdp->part0, fdata->blksize);
++		if (rc)
++			return rc;
+ 	}
  
--	folio = read_mapping_folio(mapping, 0, NULL);
- 	if (IS_ERR(folio))
- 		return NULL;
- 
+ 	rc = base->discipline->format_device(base, fdata, 1);
 -- 
 2.39.2
 
