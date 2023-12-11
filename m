@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF31BC10F13
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91E0EC10DC3
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,45 +12,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B7gJ9bpoQLcUuB8qgmZYCJSPG+yFwI6IfR1dEkUGMys=; b=nMnxCO89Jtg9RW
-	qW6FWQOV27qCGHVGrjbUrHpojZ4uUAZ07QBAjp4Vx65QPrODp2RL3Sq0SNSb9vy28DNkZLkEBjt5T
-	4sNE18T1z2jHpUQnBAeW7dPEhDy1jTNrEQ6ifi1tf9VkTKWkvGHWwA5cU1lRG8RJ5rGM6CvL6XAoD
-	SLHAAq/f/3xht87/QqSNjgjg7wJQnPYrhEBq6JuCz7crZcGLFzA9Rj9PV51N4Qi/szJFndRIIxoxE
-	nshhnKoGt7YoutOKJPP/5gg27Jluj+3D2crVG3ye8wI53iibbQOuF2Wxc6aaGnIioO1jF79/sdgWJ
-	Vuc8OcT1jXOAAlFFs2GQ==;
+	List-Owner; bh=93DJv3dxlDKZ/C0xfVjPxWEAH9/DMMvwY61GwfcvOGc=; b=IDVVY5+SSnbu9R
+	Hhrwnt1UPMj1Ea7D3n3b8NB/NaVJeOKmLTnFOfmPbEaQD5EB/i113J6hVe6nMP6geow7XHePNqDCT
+	7l8SVPZvsT1PZjbxBD0JIeb/iwPxqGm1Bwl+LdBE/5zJ6/VAHzYYajBrlA48SZkafDNxUAbNmzFkS
+	/5KhCekz/xu15LdWBnck2NocgQj6uJ8oj789ofXphzl0irVQwFqeaYDiQauzyolteaaSkyyP+Io5T
+	N46r/aYw8zQzfLSuPVtnRDU7GtEJPsFtvwPOotCSUMyYPDnSDJU19SdzzoURyTnqH+wSa1mU5wREc
+	N8l1pzwZeMaTSLobdqAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCi0M-005Lxb-0I;
-	Mon, 11 Dec 2023 15:15:34 +0000
+	id 1rCi0L-005Lx8-0u;
+	Mon, 11 Dec 2023 15:15:33 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgwl-00561u-2j
+	id 1rCgwk-00561Q-0Q
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Dec 2023 14:07:47 +0000
+	Mon, 11 Dec 2023 14:07:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=6A1hyFolV4DwA0cn4I95Qr1kyif41MCoiCpm+Qrelpo=; b=F57xXDQ9LxaVQvVHFe9xozDz15
-	NQmgH9vakJ/TsKpSjs3PT6SR6zGY45uV85Iu6iQJXjG941bItaT6ZgOoSdQXR8jDzTprDH9437ik+
-	qZJbkrgbCGhH9Kj3bTqG+uAhbucWKeuzghTjmclYyWHbpqb4wIudhUHQyKvWsd5lKiKqqQfegezns
-	vvSrNXaE7OfknxE9mGrW7CecihBycWLgYCOOBXtz5Rns1grzWyt4J7OUPvDhSEKA8/maFSzuoo8c5
-	TCXRitz3GfPLj+NPEaUEtLGXZTnw3b2hvR4eYRBH4qFtw/1AAcRtZUt39SQ5QYliRJskUwIwvKZ8/
-	wmHudgiQ==;
+	bh=4+7kCN9DfhGt+fpU1LiUdTEm30Z3KEuKuDFGIavWuso=; b=LmpQWVc9FEHwe2aiLFl2RG3723
+	PVnt4P/6x3L2HlvLE52r+u3Y1vXqFEGQmRNPOa3lBWoCW201ZQkGCLX+/wCQ61kcWhbPreLlnq2UE
+	wvEE0XN8/qdOnFAnINNaSq+Orn7AXmBxrDAsniYRtEKaF4ty2IRyELsN8lbdmUeg8Yx/Ia09xdHM6
+	Agz3Sg0eQWHayv+1V+QbkuhW7zBLg6JYnsxYv0OxqPQPhTnVlK8boAQYcefVFoOYtZTFQTTdC9G/I
+	WB10/36XMQ4GakGMp75A9XxXs1bFVDLuXyeH9hFnPBAOgEPSPY1Ydxmz4deWKiKF3lPYNNzvCEdFT
+	H6JvxxiQ==;
 Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgwg-0086V0-0Z
+	id 1rCgwf-0086Uw-02
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 14:07:46 +0000
+	Mon, 11 Dec 2023 14:07:44 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Spk8d5hR7z4f3kKd
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:29 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Spk8X3kVMz4f3lVW
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:24 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F30341A0A07
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:30 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 6AABE1A0891
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:07:29 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S12;
-	Mon, 11 Dec 2023 22:07:30 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S11;
+	Mon, 11 Dec 2023 22:07:28 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -102,35 +102,35 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 08/18] bio: export bio_add_folio_nofail()
-Date: Mon, 11 Dec 2023 22:05:42 +0800
-Message-Id: <20231211140552.973290-9-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 for-6.8/block 07/18] bcachefs: remove dead function bdev_sectors()
+Date: Mon, 11 Dec 2023 22:05:41 +0800
+Message-Id: <20231211140552.973290-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDn6xGTF3dlDYFxDQ--.28013S12
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4rur1rtr17JFyUCF18AFb_yoW3Wrg_AF
-	n7u3W8W3Z7W3WSk3Wvkay8AFWYv34rCF4Y9FWfJF9xZF1DGFnak340yr10vrs5CFykK3y3
-	uw4DXryayw17XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbqxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+X-CM-TRANSID: cCh0CgDn6xGTF3dlDYFxDQ--.28013S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFyrKrWkuF1fAw4fZrWUurg_yoW3Wrc_KF
+	nY9F17Ww4SqF9Y93W2qr1vvr4Y93yDXrW2gFs0v3W7G3WDArZ5ZFZ5KrW5Zrsru397uFy7
+	X3yxJrW29ryFkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbqkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
 	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
 	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_Gc
-	Wl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
-	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-	kIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
-	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
-	X7UUUUU==
+	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
+	SdkUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_140742_912621_08BD7887 
-X-CRM114-Status: UNSURE (   6.99  )
+X-CRM114-CacheID: sfid-20231211_140742_520105_37280F4A 
+X-CRM114-Status: UNSURE (   5.41  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -150,27 +150,29 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Currently btrfs is using __bio_add_page() in write_dev_supers(). In order
-to convert to use folio for bdev in btrfs, export bio_add_folio_nofail()
-so that it can replace __bio_add_page().
+bdev_sectors() is not used hence remove it.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/bio.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/bcachefs/util.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/block/bio.c b/block/bio.c
-index 5eba53ca953b..a7b2bbb210ee 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1119,6 +1119,7 @@ void bio_add_folio_nofail(struct bio *bio, struct folio *folio, size_t len,
- 	WARN_ON_ONCE(off > UINT_MAX);
- 	__bio_add_page(bio, &folio->page, len, off);
- }
-+EXPORT_SYMBOL_GPL(bio_add_folio_nofail);
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index 2984b57b2958..22a0acc1704f 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -516,11 +516,6 @@ static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
+ void bch2_bio_map(struct bio *bio, void *base, size_t);
+ int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
  
- /**
-  * bio_add_folio - Attempt to add part of a folio to a bio.
+-static inline sector_t bdev_sectors(struct block_device *bdev)
+-{
+-	return bdev->bd_inode->i_size >> 9;
+-}
+-
+ #define closure_bio_submit(bio, cl)					\
+ do {									\
+ 	closure_get(cl);						\
 -- 
 2.39.2
 
