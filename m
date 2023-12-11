@@ -4,108 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12DC4C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 09:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 372A2C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 10:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hngdBL9UCn9WZO/gz7Lmk4yB7VHNbRD2swBRAF8lB5g=; b=xuQtaULH3CHKOj
-	EM4dRP9xKJ3dKsXV7c6ExmbMcuhOVqeJhpBBcCg0SYAeLVCaT+2Nnerjx/2eGaNc1GVGgqXmpWzM1
-	F8z2qnlRVM168u9RjAJModYxzCvMT7NO/wteVKWEFqPYWTsfgGm/Jvj6z9rI07PJo1gpyy08soZ+c
-	xYAbyUiuYLQWr3VldhhUSkddcukB5NcIMQXKnwSCsLhSZQuwJNiw0b/IKTXIisgnjroxktdsbokWW
-	5R1vQysqL6jUnACQ5tFIxjLVYeUIZxDk0ah2IoM/wX9qVk7ib1Y4Ta6/rrhxs15nmVGUI1mYe5Qj1
-	3uS3nRxJf38kSkBRZjiA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tBhG+UKk0FaBztNKZba1xUpL26uO49hPsMiG0SCRfOQ=; b=4ZOghmY6NR+kA1y/vcDRKrB19N
+	oyusyohwJO/sgzHLNHKngWqw84gkvVKuMB7y8JFIKdwBL2vdvEjeonnwsDBIixNJMJH4JVxOnhfxj
+	VS6YBEq2fw8X4OPKMV+wT351K7YALH6O/WPnnvz94hxus7OQMnGH9Go23Ld7nvFyZhbL+dSBDejaD
+	vlEWr4apdhDXs0o1BWYRdv77h42iSx5NPzdm55hw1eO0Lvr3SujMPNVqdO7oy00uBrOprmvbM5aWV
+	j0JiT2gUJAwNsf1R1KpW+Kd9ezYUWKMGM3QFoAKp7iMrFrAE7INRgDHtM7HbKKj7ZLzk5ft/mnuSs
+	BGLXg+lA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCchL-004UDe-0W;
-	Mon, 11 Dec 2023 09:35:35 +0000
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	id 1rCdr8-004eKe-21;
+	Mon, 11 Dec 2023 10:49:46 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCchD-004UCL-2o
+	id 1rCdqv-004e8R-16
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 09:35:33 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5510479806dso1524839a12.0
-        for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 01:35:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702287325; x=1702892125; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zPBBuiUC0h6HJxl4BMSfR4W/EGNQD+gaR8NSJwfR2Gk=;
-        b=Rx3Y6FXVVbfCEnbjVDkYGWM7Y27W0mTQlgscV7OyCvCIuCUIgp7XP3/F/jMRM7OsXg
-         H78d9Imq66t0tkYdlVmofubfkEkO+fWY7oSjnMxcZHrlUuxBIOm2cAFcMDX+sOO6sz1j
-         pwT/gxvdQZ3BPWZtRIAy5eeSI/mp2L+P87TXYXQofU3HDXwEE9adT/J4kFN9Vu3oxJTp
-         H8fupBqJ9QJDWU97WX9xjVEdnxxaHPS2drSf3rcQ4Ez5ofxolxqR/4nqNb6S/SjxhCom
-         TTYlcvCWRr7u6W86uc1glFi+O404vs9DOW80hGiGEHoWZGPNMIUYg0qHR3vv0jGuSv0a
-         JFVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702287325; x=1702892125;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPBBuiUC0h6HJxl4BMSfR4W/EGNQD+gaR8NSJwfR2Gk=;
-        b=laR9lOayGGwOiTqVLwwKa9MKvri137JkOYREAiBKNwVI96bbYeDTsEXctiB7kDn3sS
-         E0ah6cce1/C5jnD7yI9SUOlq83jNyab36HxqW4z0M3cwrsYl7betSXyPYtU+/6s+Ngq+
-         ZQgWWe8kmC6BkoYfwSpH5vYQxFnOJxeskZLqckVUwHtusbx8HaH/1j6BQ0Eic05Xa/kh
-         TeHh7F48DUo1wRzykslNMtNiUi6sM9uEDeL+ycV2FmH6kX1ADnrhhjed7yy/iXNqhZ3P
-         VeqrugK0DUxewkZdTq9J+PuaHawIZzliGj3NrJphAPIBxQoOcXlM+/oVGqPfubD0vQ+N
-         4F/Q==
-X-Gm-Message-State: AOJu0YwhTaeONCruN2f/fXtGtF4Pz+3pUOWDEgZo7q2ZntHJuy/Yqc/a
-	gvi1nK8ZEp3owJwp7i29A1QLkg==
-X-Google-Smtp-Source: AGHT+IFX69vaIMEbLW/TqLvsqwcZgbImckFRzF090TZyX4ErPch2iorzjHVHCi6wE4KnWzRGQkk4JQ==
-X-Received: by 2002:a50:d4d7:0:b0:548:4774:e59c with SMTP id e23-20020a50d4d7000000b005484774e59cmr1528899edj.35.1702287325265;
-        Mon, 11 Dec 2023 01:35:25 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.75])
-        by smtp.gmail.com with ESMTPSA id s2-20020a05640217c200b00551422c2ceasm418127edy.44.2023.12.11.01.35.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 01:35:24 -0800 (PST)
-Message-ID: <5a6f6764-6779-42b0-b6c6-3f638b85ef78@linaro.org>
-Date: Mon, 11 Dec 2023 09:35:21 +0000
+	Mon, 11 Dec 2023 10:49:38 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 6AEDE50B;
+	Mon, 11 Dec 2023 11:49:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1702291762;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KU896UuES4SZhs8TwTE8zWfawLLPT1hixbFsFsP0PxE=;
+	b=qsRaGg60lmx3b47LdrY1raft0ufmVGLtx3vCcE7SlDipEIi9WmKIee1ClbYXZAE6ww3TLp
+	LdLO48ZOPi+HJrydGvDuLCTVTX5VrHo4pFxKhHVBYHoqU9nwfnoSJE7lciIsN+GqRRj5+s
+	QaBidxew6ri2Gna2RMxbe/RQuVc8IfrvuFI+F9fw0IPB9j61buehQ6nTapQ7EeXkvnjzLZ
+	bRxbDx2NCsTg8hJI/iP92n2G+XLIu4QNJyLSmYRJI+QqV1qcJiR7EeHpEgaG9YO9pm69zO
+	6CFT4VowPt28BMQE6GQNaz8W7NN0cmuLs894P+muWW5iR/CMicEH5ZHAmttulw==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Content-Language: en-US
-To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "pratyush@kernel.org" <pratyush@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
- "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
- "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "michael@walle.cc" <michael@walle.cc>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "Simek, Michal" <michal.simek@amd.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
- <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
- <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
- <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
- <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+Date: Mon, 11 Dec 2023 11:49:22 +0100
+From: Michael Walle <michael@walle.cc>
+To: Jaime Liao <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
+ jaimeliao@mxic.com.tw
+Subject: Re: [PATCH] mtd: spi-nor: sfdp: Get the 1-1-8 protocol from BFPT
+In-Reply-To: <20231207075121.21788-1-jaimeliao.tw@gmail.com>
+References: <20231207075121.21788-1-jaimeliao.tw@gmail.com>
+Message-ID: <82372114073788a4b62ec2de163a5b10@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_013527_939763_5AFDB39D 
-X-CRM114-Status: GOOD (  30.66  )
+X-CRM114-CacheID: sfid-20231211_024933_705989_3E4E990D 
+X-CRM114-Status: GOOD (  23.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,211 +71,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
+> BFPT 17th DWORD contains the informations about 1-1-8,
 
-On 12/11/23 06:56, Mahapatra, Amit Kumar wrote:
+Ok.
+
+> The difference from Dual and Quad mode is not determined
+> by a single bit indicating support but rather by using
+> 1-byte instruction, which content is the opcode.
+
+I don't get what you try to express here.
+
+> A value of 0x00 represents not support.
+> Therefore, parse BFPT 17 DWORD instruction to determine
+> whether flash support 1-1-8, and set its dummy cycle
+> accordingly.
 > 
+> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> ---
+>  drivers/mtd/spi-nor/sfdp.c | 15 ++++++++++++++-
+>  drivers/mtd/spi-nor/sfdp.h |  3 +++
+>  2 files changed, 17 insertions(+), 1 deletion(-)
 > 
->> -----Original Message-----
->> From: Tudor Ambarus <tudor.ambarus@linaro.org>
->> Sent: Monday, December 11, 2023 9:03 AM
->> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>;
->> broonie@kernel.org; pratyush@kernel.org; miquel.raynal@bootlin.com;
->> richard@nod.at; vigneshr@ti.com; sbinding@opensource.cirrus.com;
->> lee@kernel.org; james.schulman@cirrus.com; david.rhodes@cirrus.com;
->> rf@opensource.cirrus.com; perex@perex.cz; tiwai@suse.com
->> Cc: linux-spi@vger.kernel.org; linux-kernel@vger.kernel.org;
->> michael@walle.cc; linux-mtd@lists.infradead.org;
->> nicolas.ferre@microchip.com; alexandre.belloni@bootlin.com;
->> claudiu.beznea@tuxon.dev; Simek, Michal <michal.simek@amd.com>; linux-
->> arm-kernel@lists.infradead.org; alsa-devel@alsa-project.org;
->> patches@opensource.cirrus.com; linux-sound@vger.kernel.org; git (AMD-
->> Xilinx) <git@amd.com>; amitrkcian2002@gmail.com
->> Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support
->> in spi-nor
->>
->>
->>
->> On 12/8/23 17:05, Mahapatra, Amit Kumar wrote:
->>> Hello Tudor,
->>
->> Hi!
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index b3b11dfed789..d04dbddb70d6 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -446,6 +446,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	u32 dword;
+>  	u16 half;
+>  	u8 erase_mask;
+> +	u8 dummy, opcode;
 > 
-> Hello Tudor,
+>  	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. 
+> */
+>  	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
+> @@ -516,6 +517,18 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
+>  	}
 > 
+> +	/* Make sure BFPT provide dwords more than 16 and parsing 1-1-8 
+> information */
+> +	if (bfpt_header->length > BFPT_DWORD_MAX_JESD216B) {
 
-Hi!
+Move that into the JESD216B and later parsing code and you don't
+need this condition anymore. That is below
 
->>
->>>
->>>> -----Original Message-----
->>>> From: Tudor Ambarus <tudor.ambarus@linaro.org>
->>>> Sent: Wednesday, December 6, 2023 8:00 PM
->>>> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>;
->>>> broonie@kernel.org; pratyush@kernel.org; miquel.raynal@bootlin.com;
->>>> richard@nod.at; vigneshr@ti.com; sbinding@opensource.cirrus.com;
->>>> lee@kernel.org; james.schulman@cirrus.com; david.rhodes@cirrus.com;
->>>> rf@opensource.cirrus.com; perex@perex.cz; tiwai@suse.com
->>>> Cc: linux-spi@vger.kernel.org; linux-kernel@vger.kernel.org;
->>>> michael@walle.cc; linux-mtd@lists.infradead.org;
->>>> nicolas.ferre@microchip.com; alexandre.belloni@bootlin.com;
->>>> claudiu.beznea@tuxon.dev; Simek, Michal <michal.simek@amd.com>;
->>>> linux- arm-kernel@lists.infradead.org; alsa-devel@alsa-project.org;
->>>> patches@opensource.cirrus.com; linux-sound@vger.kernel.org; git (AMD-
->>>> Xilinx) <git@amd.com>; amitrkcian2002@gmail.com
->>>> Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories
->>>> support in spi-nor
->>>>
->>>> Hi, Amit,
->>>>
->>>> On 11/25/23 09:21, Amit Kumar Mahapatra wrote:
->>>>> Each flash that is connected in stacked mode should have a separate
->>>>> parameter structure. So, the flash parameter member(*params) of the
->>>>> spi_nor structure is changed to an array (*params[2]). The array is
->>>>> used to store the parameters of each flash connected in stacked
->>>> configuration.
->>>>>
->>>>> The current implementation assumes that a maximum of two flashes are
->>>>> connected in stacked mode and both the flashes are of same make but
->>>>> can differ in sizes. So, except the sizes all other flash parameters
->>>>> of both the flashes are identical.
->>>>
->>>> Do you plan to add support for different flashes in stacked mode? If
->>>> not,
->>>
->>> No, according to the current implementation, in stacked mode, both
->>> flashes must be of the same make.
->>>
->>>> wouldn't it be simpler to have just an array of flash sizes instead
->>>> of duplicating the entire params struct?
->>>
->>> Yes, that is accurate. In alignment with our current stacked support
->>> use case we can have an array of flash sizes instead.
->>> The primary purpose of having an array of params struct was to
->>> facilitate potential future extensions, allowing the addition of
->>> stacked support for different flashes
->>>
->>
->> right. Don't do this change yet, let's decide on the overall architecture first.
+if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
+	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+
+> +		opcode = FIELD_GET(BFPT_DWORD17_RD_1_1_8_CMD, 
+> bfpt.dwords[SFDP_DWORD(17)]);
+> +		dummy = FIELD_GET(BFPT_DWORD17_RD_1_1_8_DUMMY, 
+> bfpt.dwords[SFDP_DWORD(17)]);
+> +		if (opcode) {
+
+move the dummy here and you can just declare dummy here.
+
+everything else looks sane to me.
+
+-michael
+
+> +			nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
+> +			spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_1_1_8],
+> +					  0, dummy, opcode,
+> +					  SNOR_PROTO_1_1_8);
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * Sector Erase settings. Reinitialize the uniform erase map using 
+> the
+>  	 * Erase Types defined in the bfpt table.
+> @@ -525,7 +538,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
+>  		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
+>  		u32 erasesize;
+> -		u8 opcode;
 > 
-> Sure.
->>
->>>>
->>>>>
->>>>> SPI-NOR is not aware of the chip_select values, for any incoming
->>>>> request SPI-NOR will decide the flash index with the help of
->>>>> individual flash size and the configuration type (single/stacked).
->>>>> SPI-NOR will pass on the flash index information to the SPI core &
->>>>> SPI driver by setting the appropriate bit in
->>>>> nor->spimem->spi->cs_index_mask. For example, if nth bit of
->>>>> nor->spimem->spi->cs_index_mask is set then the driver would
->>>>> assert/de-assert spi->chip_slect[n].
->>>>>
->>>>> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-
->> mahapatra@amd.com>
->>>>> ---
->>>>>  drivers/mtd/spi-nor/core.c  | 272 +++++++++++++++++++++++++++++-----
->> --
->>>>>  drivers/mtd/spi-nor/core.h  |   4 +
->>>>>  include/linux/mtd/spi-nor.h |  15 +-
->>>>>  3 files changed, 240 insertions(+), 51 deletions(-)
->>>>>
->>>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->>>>> index 93ae69b7ff83..e990be7c7eb6 100644
->>>>> --- a/drivers/mtd/spi-nor/core.c
->>>>> +++ b/drivers/mtd/spi-nor/core.c
->>>>
->>>> cut
->>>>
->>>>> @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
->>>>> spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
->>>>> *nor)  {
->>>>>  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
->>>> 0);
->>>>> -	int ret;
->>>>> +	struct device_node *np = spi_nor_get_flash_node(nor);
->>>>> +	u64 flash_size[SNOR_FLASH_CNT_MAX];
->>>>> +	u32 idx = 0;
->>>>> +	int rc, ret;
->>>>>
->>>>>  	if (nor->manufacturer && nor->manufacturer->fixups &&
->>>>>  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44 @@
->>>>> static int spi_nor_late_init_params(struct spi_nor *nor)
->>>>>  	if (params->n_banks > 1)
->>>>>  		params->bank_size = div64_u64(params->size, params-
->> n_banks);
->>>>>
->>>>> +	nor->num_flash = 0;
->>>>> +
->>>>> +	/*
->>>>> +	 * The flashes that are connected in stacked mode should be of
->>>>> +same
->>>> make.
->>>>> +	 * Except the flash size all other properties are identical for all the
->>>>> +	 * flashes connected in stacked mode.
->>>>> +	 * The flashes that are connected in parallel mode should be identical.
->>>>> +	 */
->>>>> +	while (idx < SNOR_FLASH_CNT_MAX) {
->>>>> +		rc = of_property_read_u64_index(np, "stacked-memories",
->>>> idx,
->>>>> +&flash_size[idx]);
->>>>
->>>> This is a little late in my opinion, as we don't have any sanity
->>>> check on the flashes that are stacked on top of the first. We shall
->>>> at least read and compare the ID for all.
->>>
->>> Alright, I will incorporate a sanity check for reading and comparing
->>> the ID of the stacked flash. Subsequently, I believe this stacked
->>> logic should be relocated to spi_nor_get_flash_info() where we
->>> identify the first flash. Please share your thoughts on this.
->>> Additionally, do you
->>
->> I'm wondering whether we can add a layer on top of the flash type to handle
+>  		half = bfpt.dwords[er->dword] >> er->shift;
+>  		erasesize = half & 0xff;
+> @@ -968,6 +980,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+>  		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
+>  		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
+>  		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
+> +		{ SNOR_HWCAPS_READ_1_1_8,	BIT(20) },
+>  	};
+>  	static const struct sfdp_4bait programs[] = {
+>  		{ SNOR_HWCAPS_PP,		BIT(6) },
+> diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+> index 6eb99e1cdd61..584a05f9931d 100644
+> --- a/drivers/mtd/spi-nor/sfdp.h
+> +++ b/drivers/mtd/spi-nor/sfdp.h
+> @@ -118,6 +118,9 @@ struct sfdp_bfpt {
+>  	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
+>  #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
 > 
-> When you mention "on top," are you referring to incorporating it into 
-> the MTD layer? Initially, Miquel had submitted this patch to address 
-
-I mean something above SPI MEM flashes, be it NOR, NANDs or whatever.
-Instead of treating the stacked flashes as a monolithic device and treat
-in SPI NOR some array of flashes, to have a layer above which probes the
-SPI MEM flash driver for each stacked flash. In your case SPI NOR would
-be probed twice, as you use 2 SPI NOR flashes.
-
-> stacked/parallel handling in the MTD layer.
-> https://lore.kernel.org/linux-mtd/20200114191052.0a16d116@xps13/t/
-> However, the Device Tree bindings were initially not accepted. 
-
-Okay, thanks for the pointer. I'll take a look.
-
-> Following a series of discussions, the below bindings were 
-> eventually merged.
-> https://lore.kernel.org/all/20220126112608.955728-4-miquel.raynal@bootlin.com/
-
-I saw, thanks.
-
-> 
->> the stacked/parallel modes. This way everything will become flash type
->> independent. Would it be possible to stack 2 SPI NANDs? How about a SPI
->> NOR and a SPI NAND?
->>
->> Is the datasheet of the controller public?
-> 
-> Yes, https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/Quad-SPI-Controller
-> 
-
-Wonderful, I'll take a look. I see two clocks there. Does this mean that
-the stacked flashes can be operated at different frequencies? Do you
-know if we can combine a SPI NOR with a SPI NAND in stacked configuration?
-
-I need to study this a bit. I'll try to involve Michael and Pratyush too.
-
-Cheers,
-ta
+> +#define BFPT_DWORD17_RD_1_1_8_CMD		GENMASK(31, 24)
+> +#define BFPT_DWORD17_RD_1_1_8_DUMMY		GENMASK(20, 16)
+> +
+>  #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
+>  #define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
+>  #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
 
 ______________________________________________________
 Linux MTD discussion mailing list
