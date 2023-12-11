@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0788C10DC3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C208C10DC3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rVI5IQN8WcC0gbejEHT3oO95U1/s2l1Sf4pQlvF1Pos=; b=k5oRsPyLUpBXzL
-	gUhET6IMzu5eu/q5joLXBmIEF5Q/agDNXi1xMWREqviKLD08rwbzsh1B8Sqnx7GpQ5n0zl4IsS0cf
-	AV9lcq3OY1E3C0JPRnxJCRq+4oiH2H853tBGVGyqflXSxbYTsI4p/7buILmpOyNHcWL2Bp/fAdW2u
-	91J1Jkm68ia5TKqD8oSu6J8qZFftllJ7k/c+AJtulJSFmrXLPf2qOWX8StlJefzMYU+LVbYL8+kkC
-	GnLHn5vDggafzPLdSVbLzuJQfAVR1si0Ro/Pd+Dm1UnsQtg/x/cufJM1p7Bsdw9RGlc0ZETYPscOW
-	hvfe7eqSJDwsST/1JFiA==;
+	List-Owner; bh=ax6H7IvD15QmXrD6LBLFWGTDNJyvrWK+gu0eLkR/mS8=; b=s+em8EzPg66Mmh
+	50I3eBNfAiOh9f0PwLSfLDm/hTce/p7G+BfnOiU03/N4QLVU/8EmljoVE5xlakYuRQVEDIx4wnEZn
+	aYK+NZUiv1uU4XnpjshwtutxQvAykAty26tDA0iJ694ZI2SwDnupNa+Fv/xKy9CNUSxVrpcbb9DLM
+	U0wjXerMC5wilg1SXZEbD9i7du1gC9SryQgDDGoN6QSMEqUJGFmKrYM3KevWW0cuWELrOtY20lnxh
+	WvGiqqZ20iehs8nij1qj8+OiZ7Ar23WHVLfp9botf5cXwD19J1Fq4lFKaksmJbBzxlVBXldIPAEjU
+	ozVGmaI5T3noiEskz6Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rChxx-005KUa-1Z;
-	Mon, 11 Dec 2023 15:13:05 +0000
+	id 1rChxz-005KX9-2q;
+	Mon, 11 Dec 2023 15:13:08 +0000
 Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rChxk-005KHH-1J
+	id 1rChxk-005KFv-1J
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 15:13:00 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8502AE000E;
-	Mon, 11 Dec 2023 15:12:49 +0000 (UTC)
+	Mon, 11 Dec 2023 15:13:03 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C7B6AE0006;
+	Mon, 11 Dec 2023 15:12:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702307570;
+	t=1702307568;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wZL+Ok+DrGFVb0w/xL+QP9Tdye38sT6TcArWDXMdC3U=;
-	b=VrzXpEEbYkvP/2A4q27Kd2PttMT6x1PwMMvCQt0aKPHdixEI1DtEy0lxzK9ADTPXYkihBh
-	6NhoCAEZhnnYnUQjCdL7IOKSJyQFQZqxbIt7DpWRWs4AfdGtAJ2KTKs1LPYtGyKKioiG/L
-	n9ffeTZIxeMwyZtllXsm7F+hibLap2VbD3sWlzq0WZleFDFbZO3xw2y6WHQS5PtSl6eYGF
-	GbEwrVOMDXggPEI3XQy48Wb3d+xRimJHq7C9LukbJW1ACJWz7dX+m7KJ6xA0IAsUIIktUy
-	HCwM+hv3s3lH6hoAW/xzZnTY1ZC8UB0BNAjI1ZDvcTUUzH5i/gpymCk/0/DBrQ==
+	bh=27exMqHpZla3nbyFfGXB40l8DvvyaMkXegra0K6TRzY=;
+	b=E5t7jfdU0yZKAmOSFgdr3XJOL59pux6eGaoszNC8A0npWR2u+foG+ZchJ3XAfaYZ8BzyPx
+	UTVQWoWy+FlGpqULjm4GBagvMpPIv72wahJCI9sNjoFQdPDS7vNLauHVKnLOVvetKcuCDK
+	MZV6RyLjrgzC7nZCKyRtWeJjL7BIvrlrTD4uzzc7ddTx7sZD8qoB6t+NAKDO8mZYXHkZ8V
+	D2jGIyzZyXTfTHHTWCiWdzow0n4TrvizEwEqCsJkpdsgGW7mrmtJ1qREUsKmkq/UMbSDZe
+	fhuvP5km3b8DSK5SMcrtKaHBbxu5PEB5yImOt5oZYde4NYo4obchrvIT1PsppQ==
 From: Romain Gantois <romain.gantois@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -59,17 +59,17 @@ Cc: Romain Gantois <romain.gantois@bootlin.com>,
 	linux-kernel@vger.kernel.org,
 	linux-block@vger.kernel.org,
 	linux-efi@vger.kernel.org
-Subject: [RFC PATCH 5/6] drivers: mtd: introduce GPT parser for NOR flash devices
-Date: Mon, 11 Dec 2023 16:12:41 +0100
-Message-ID: <20231211151244.289349-6-romain.gantois@bootlin.com>
+Subject: [RFC PATCH 4/6] block: partitions: efi: Move GPT-specific code to a new library
+Date: Mon, 11 Dec 2023 16:12:40 +0100
+Message-ID: <20231211151244.289349-5-romain.gantois@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231211151244.289349-1-romain.gantois@bootlin.com>
 References: <20231211151244.289349-1-romain.gantois@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: romain.gantois@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_071252_747946_A8203395 
-X-CRM114-Status: GOOD (  30.90  )
+X-CRM114-CacheID: sfid-20231211_071252_746563_8C42928E 
+X-CRM114-Status: GOOD (  33.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,180 +81,853 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TVREIGRldmljZXMgY2FuIGJlIHBhcnRpdGlvbmVkIHVzaW5nIGEgZml4ZWQgcGFydGl0aW9uaW5n
-IHNjaGVtZSBkZWZpbmVkIGluCnRoZSByZWxldmFudCBkZXZpY2UgdHJlZSBub2RlLiBEeW5hbWlj
-IHBhcnRpdGlvbmluZyBpcyBhbHNvIHBvc3NpYmxlLCB1c2luZwpNVEQgcGFyc2Vycy4gVGhleSBh
-cmUgY2FwYWJsZSBvZiBwYXJzaW5nIHBhcnRpdGlvbiB0YWJsZXMgb24gdGhlIGRldmljZSBhdApi
-b290IHRpbWUuCgpBZGQgc3VwcG9ydCBmb3IgR1BUIHBhcnNpbmcgYXQgdGhlIE1URCBsYXllci4g
-VGhlIHBhcnNlciBsb2dpYyBtYWtlcyB1c2Ugb2YKYSBjb21tb24gc2V0IG9mIEdQVCBoZWxwZXJz
-IGFuZCB0eXBlZGVmcyB0aGF0IGhhdmUgcHJldmlvdXNseSBiZWVuCmV4dHJhY3RlZCBmcm9tIHRo
-ZSBibG9jayBsYXllciBwYXJzZXIuCgpUaGUgbWFpbiBpc3N1ZSB3aXRoIEdQVCBwYXJ0aXRpb25p
-bmcgYXJlIHRoZSB1c2Vyc3BhY2UgdG9vbHMgd2hpY2ggYXJlCmFscmVhZHkgY2FwYWJsZSBvZiB3
-cml0aW5nIGEgcGFydGl0aW9uIHRhYmxlLiBOb3QgdXNpbmcgdGhlbSB3b3VsZCByZXF1aXJlCnJl
-LWludmVudGluZyB0aGUgd2hlZWwsIGJ1dCBvbiB0aGUgb3RoZXIgc2lkZSB0aGV5IGFyZSBibG9j
-ay1vcmllbnRlZCB0b29scwp3aXRoIGFic29sdXRlbHkgbm8ga25vd2xlZGdlIG9mIHRoZSBzcGVj
-aWZpY2l0aWVzIG9mIE1URCBmbGFzaGVzLiBUb29scwpzdWNoIGFzIHBhcnRlZCBvciBmZGlzayBh
-Y3QgdXBvbiBibG9jayBkZXZpY2VzIGFuZCBub3QgbXRkIGRldmljZXMsIHNvIHdlCm5lZWQgYSBi
-bG9jayBhYnN0cmFjdGlvbiBmb3Igd3JpdGluZyB0aGUgdGFibGUuIFRodXMsIHRoZSBvbmx5IHBv
-c3NpYmxlCnNvbHV0aW9uIHNvIGZhciBpcyB0aGUgdXNlIG9mIG10ZGJsb2NrIGluLWJldHdlZW4s
-IHdoaWNoIHJhaXNlcyB0d28gbWFpbgpjb25jZXJuczogdGhlIGxhY2sgb2YgYmFkLWJsb2NrIGhh
-bmRsaW5nIGFuZCB3ZWFyLWxldmVsaW5nLiBJbiBvcmRlciB0bwphdm9pZCByaXNreSBzaXR1YXRp
-b25zLCB0aGUgcGFyc2VyIHdpbGwgb25seSBwYXJzZSBOT1JzLgoKRXhhbXBsZSB1c2FnZToKCj4g
-ZWNobyAiCmRldmljZTogL2Rldi9tdGRibG9jazAKdW5pdDogc2VjdG9ycwpmaXJzdC1sYmE6IDQw
-Cmxhc3QtbGJhOiAzMjczNApzZWN0b3Itc2l6ZTogNTEyCgpzdGFydD00MCwgc2l6ZT04CnN0YXJ0
-PTQ4LCBzaXplPTgwCnN0YXJ0PTEyOCwgc2l6ZT0zMjYwMAoiIHwgc2ZkaXNrIC9kZXYvbXRkYmxv
-Y2swCgpBZnRlciByZWJvb3Rpbmc6Cj4gbHNtdGQKREVWSUNFIE1BSjpNSU4gTkFNRSAgIFRZUEUg
-U0laRQptdGQwICAgIDkwOjAgICBzcGkwLjAgbm9yICAgIDE2TQptdGQxICAgIDkwOjIgICAgICAg
-ICAgbm9yICAgICA0SwptdGQyICAgIDkwOjQgICAgICAgICAgbm9yICAgIDQwSwptdGQzICAgIDkw
-OjYgICAgICAgICAgbm9yICAxNS45TQoKU2lnbmVkLW9mZi1ieTogUm9tYWluIEdhbnRvaXMgPHJv
-bWFpbi5nYW50b2lzQGJvb3RsaW4uY29tPgotLS0KIGRyaXZlcnMvbXRkL3BhcnNlcnMvS2NvbmZp
-ZyAgfCAgMTAgKysKIGRyaXZlcnMvbXRkL3BhcnNlcnMvTWFrZWZpbGUgfCAgIDEgKwogZHJpdmVy
-cy9tdGQvcGFyc2Vycy9ncHQuYyAgICB8IDIyMiArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCAyMzMgaW5zZXJ0aW9ucygrKQogY3JlYXRlIG1vZGUg
-MTAwNjQ0IGRyaXZlcnMvbXRkL3BhcnNlcnMvZ3B0LmMKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210
-ZC9wYXJzZXJzL0tjb25maWcgYi9kcml2ZXJzL210ZC9wYXJzZXJzL0tjb25maWcKaW5kZXggZGEw
-M2FiNmVmZTA0Li4zZjM0MjIwYzZmYzMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3BhcnNlcnMv
-S2NvbmZpZworKysgYi9kcml2ZXJzL210ZC9wYXJzZXJzL0tjb25maWcKQEAgLTExOCw2ICsxMTgs
-MTYgQEAgY29uZmlnIE1URF9BRlNfUEFSVFMKIAkgIGZvciB5b3VyIHBhcnRpY3VsYXIgZGV2aWNl
-LiBJdCB3b24ndCBoYXBwZW4gYXV0b21hdGljYWxseS4gVGhlCiAJICAncGh5c21hcCcgbWFwIGRy
-aXZlciAoQ09ORklHX01URF9QSFlTTUFQKSBkb2VzIHRoaXMsIGZvciBleGFtcGxlLgogCitjb25m
-aWcgTVREX0dQVF9QQVJUUworCXRyaXN0YXRlICJHUFQgcGFydGl0aW9uIHRhYmxlIHBhcnNpbmci
-CisJc2VsZWN0IEdFTkVSSUNfTElCX0dQVAorCWhlbHAKKwkgIFRoaXMgYWxsb3cgc3BlY2lmeWlu
-ZyBNVEQgcGFydGl0aW9ucyBvbiBhIE5PUiBGbGFzaCBkZXZpY2UgdXNpbmcKKwkgIGEgZml4ZWQt
-bG9jYXRpb24gR1BUIHBhcnRpdGlvbiB0YWJsZS4gTm8gd2Vhci1sZXZlbGluZyBpcyBkb25lIGJ5
-CisJICB0aGlzIHBhcnNlciwgYW5kIGl0IGNhbm5vdCByZWNvdmVyIGZyb20gYmFkIGJsb2NrcyBp
-biBjcml0aWNhbCBHUFQKKwkgIG1ldGFkYXRhIGxvY2F0aW9ucy4gRm9yIHRoZXNlIHJlYXNvbnMs
-IE5BTkQgRmxhc2ggZGV2aWNlcyBjYW5ub3QKKwkgIG1ha2UgdXNlIG9mIHRoaXMgcGFydGl0aW9u
-IHBhcnNlci4KKwogY29uZmlnIE1URF9QQVJTRVJfVFBMSU5LX1NBRkVMT0FERVIKIAl0cmlzdGF0
-ZSAiVFAtTGluayBTYWZlbG9hZGVyIHBhcnRpdGlvbnMgcGFyc2VyIgogCWRlcGVuZHMgb24gTVRE
-ICYmIChBUkNIX0JDTV81MzAxWCB8fCBBVEg3OSB8fCBTT0NfTVQ3NjIwIHx8IFNPQ19NVDc2MjEg
-fHwgQ09NUElMRV9URVNUKQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvcGFyc2Vycy9NYWtlZmls
-ZSBiL2RyaXZlcnMvbXRkL3BhcnNlcnMvTWFrZWZpbGUKaW5kZXggOWIwMGM2MmI4MzdhLi5lYjMx
-NTg1ZjJkZDEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3BhcnNlcnMvTWFrZWZpbGUKKysrIGIv
-ZHJpdmVycy9tdGQvcGFyc2Vycy9NYWtlZmlsZQpAQCAtMTUsMyArMTUsNCBAQCBvYmotJChDT05G
-SUdfTVREX1NFUkNPTU1fUEFSVFMpCQkrPSBzY3BhcnQubwogb2JqLSQoQ09ORklHX01URF9TSEFS
-UFNMX1BBUlRTKQkJKz0gc2hhcnBzbHBhcnQubwogb2JqLSQoQ09ORklHX01URF9SRURCT09UX1BB
-UlRTKQkJKz0gcmVkYm9vdC5vCiBvYmotJChDT05GSUdfTVREX1FDT01TTUVNX1BBUlRTKQkrPSBx
-Y29tc21lbXBhcnQubworb2JqLSQoQ09ORklHX01URF9HUFRfUEFSVFMpCQkrPSBncHQubwpkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvcGFyc2Vycy9ncHQuYyBiL2RyaXZlcnMvbXRkL3BhcnNlcnMv
-Z3B0LmMKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwMDAwLi5jMmZhOTU0NWI0
-YjUKLS0tIC9kZXYvbnVsbAorKysgYi9kcml2ZXJzL210ZC9wYXJzZXJzL2dwdC5jCkBAIC0wLDAg
-KzEsMjIyIEBACisvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcgor
-LyoKKyAqIE1URCBwYXJzZXIgZm9yIEdQVCBwYXJ0aXRpb24gdGFibGVzLgorICoKKyAqIFRoaXMg
-cGFyc2VyIHN1cHBvcnRzIEdQVCBwYXJ0aXRpb24gdGFibGVzIGxvY2F0ZWQgYXQgZml4ZWQgc3Rh
-bmRhcmQgc2VjdG9ycy4KKyAqIFBhcnRpdGlvbmluZyBhIHJhdyBmbGFzaCBkZXZpY2UgaW4gdGhp
-cyBtYW5uZXIgcHJldmVudHMgd2Vhci1sZXZlbGluZyBhbmQgYmFkCisgKiBibG9jayBoYW5kbGlu
-ZyBhdCB0aGUgd2hvbGUtZGV2aWNlIGxldmVsLiBOb3RlIHRoYXQgYmFkIGJsb2NrcyBvbiBjcml0
-aWNhbAorICogR1BUIHNlY3RvcnMgd2lsbCBjb21wbGV0ZWx5IGJyZWFrIHlvdXIgcGFydGl0aW9u
-IHRhYmxlISBCZWNhdXNlIG9mIHRoaXMsIHVzZQorICogb2YgdGhpcyBwYXJzZXIgaXMgcmVzdHJp
-Y3RlZCB0byBOT1IgZmxhc2ggZGV2aWNlcywgd2hpY2ggYXJlIGxlc3Mgc3VzY2VwdGlibGUKKyAq
-IHRvIGJhZCBibG9ja3MgdGhhbiBOQU5EIGZsYXNoIGRldmljZXMuCisgKgorICogaHR0cDovL3d3
-dy51ZWZpLm9yZy9zcGVjcy8KKyAqCisgKiBBY3JvbnltczoKKyAqIFBURTogUGFydGl0aW9uIFRh
-YmxlIEVudHJ5CisgKiBMQkE6IExvZ2ljYWwgQmxvY2sgQWRkcmVzcworICoKKyAqIENvcHlyaWdo
-dCDCqSAyMDIzIEJvb3RsaW4KKyAqCisgKiBBdXRob3I6IFJvbWFpbiBHYW50b2lzIDxyb21haW4u
-Z2FudG9pc0Bib290bGluLmNvbT4KKyAqCisgKi8KKworI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0
-aXRpb25zLmg+CisjaW5jbHVkZSA8bGludXgvbXRkL210ZC5oPgorI2luY2x1ZGUgPGxpbnV4L21p
-bm1heC5oPgorI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPgorI2luY2x1ZGUgPGxpbnV4L2dwdC5o
-PgorCisvKgorICogV2UgYXNzdW1lIHRoYXQgdGhlIEdQVCBwYXJ0aXRpb24gd2FzIHdyaXR0ZW4g
-dGhyb3VnaCBhbiBtdGRibG9jayBkZXZpY2UuIFRoaXMKKyAqIHdvdWxkIG1ha2UgdGhlIExCQSBz
-aXplIDUxMi4KKyAqLworI2RlZmluZSBNVERfR1BUX0xCQV9TSVpFIDUxMgorCisvKgorICogVGhp
-cyB2YWx1ZSBpcyBwcmV0dHkgbXVjaCBhcmJpdHJhcnksIGl0J3MgaW4gdGhlIHJhbmdlIG9mIHR5
-cGljYWwgTVREIHBhcnNlcgorICogY2Fwcy4gQ3JlYXRpbmcgdG9vIG1hbnkgcGFydGl0aW9ucyBv
-biBhIHJhdyBGbGFzaCBkZXZpY2UgaXMgYSBiYWQgaWRlYQorICogYW55d2F5LgorICovCisjZGVm
-aW5lIE1URF9HUFRfTUFYX1BBUlRTIDMyCisKKyNkZWZpbmUgbXRkX2dwdF9sYmFfdG9fb2Zmc2V0
-KHgpICgoeCkgKiBNVERfR1BUX0xCQV9TSVpFKQorI2RlZmluZSBtdGRfZ3B0X2xiYV90b19zaXpl
-KHgpICAgKChzaXplX3QpKHgpICogTVREX0dQVF9MQkFfU0laRSkKKworI2RlZmluZSBNVERfR1BU
-X1BBUlROQU1FX1NJWkUgc2l6ZW9mKCgoZ3B0X2VudHJ5ICopMCktPnBhcnRpdGlvbl9uYW1lKQor
-CitzdGF0aWMgaW50IG10ZF9ncHRfcmVhZF9oZWFkZXIoc3RydWN0IG10ZF9pbmZvICptdGQsIGdw
-dF9oZWFkZXIgKmdwdCwgaW50IGxiYSwgdTY0IGxhc3RfbGJhKQoreworCWxvZmZfdCByZWFkX29m
-ZnNldCA9IG10ZF9ncHRfbGJhX3RvX29mZnNldChsYmEpOworCXNpemVfdCByZXRsZW47CisJaW50
-IHJldDsKKworCWRldl9kYmcoJm10ZC0+ZGV2LCAicmVhZGluZyBHUFQgaGVhZGVyIGF0IG9mZnNl
-dCAlbGxpXG4iLCByZWFkX29mZnNldCk7CisKKwlyZXQgPSBtdGRfcmVhZChtdGQsIHJlYWRfb2Zm
-c2V0LCBNVERfR1BUX0xCQV9TSVpFLCAmcmV0bGVuLCAodV9jaGFyICopZ3B0KTsKKwlpZiAocmV0
-KSB7CisJCWRldl9lcnIoJm10ZC0+ZGV2LCAiZmFpbGVkIHRvIHJlYWQgR1BUIGhlYWRlclxuIik7
-CisJCXJldHVybiAtRUlPOworCX0KKworCWlmIChyZXRsZW4gPCBNVERfR1BUX0xCQV9TSVpFKSB7
-CisJCWRldl9lcnIoJm10ZC0+ZGV2LCAidHJ1bmNhdGVkIHJlYWQgMHglenggZXhwZWN0ZWQgMHgl
-eFxuIiwKKwkJCXJldGxlbiwgTVREX0dQVF9MQkFfU0laRSk7CisJCXJldHVybiAtRUlPOworCX0K
-KworCXJldHVybiBncHRfdmFsaWRhdGVfaGVhZGVyKGdwdCwgbGJhLCBNVERfR1BUX0xCQV9TSVpF
-LCBsYXN0X2xiYSk7Cit9CisKK3N0YXRpYyBpbnQgbXRkX2dwdF9wYXJzZV9wYXJ0aXRpb25zKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLAorCQkJCSAgICBjb25zdCBzdHJ1Y3QgbXRkX3BhcnRpdGlvbiAq
-KnBwYXJ0cywKKwkJCQkgICAgc3RydWN0IG10ZF9wYXJ0X3BhcnNlcl9kYXRhICpkYXRhKQorewor
-CWludCByZXQgPSAwLCB2YWxpZF9wYXJ0cyA9IDAsIHBhcnRfbm87CisJdTY0IGxhc3RfbGJhID0g
-ZGl2X3U2NChtdGQtPnNpemUsIE1URF9HUFRfTEJBX1NJWkUpIC0gMVVMTDsKKwlzdHJ1Y3QgbXRk
-X3BhcnRpdGlvbiAqcGFydHMsICpwYXJ0OworCXNpemVfdCBwdGVfcmVhZF9zaXplLCByZXRsZW47
-CisJY2hhciAqbmFtZV9idWYsICpjdXJfbmFtZTsKKwlsb2ZmX3QgcHRlX3JlYWRfb2Zmc2V0Owor
-CWdwdF9oZWFkZXIgKmdwdCwgKmFncHQ7CisJZ3B0X2VudHJ5ICpwdGVzLCAqcHRlOworCXVuc2ln
-bmVkIGludCBucl9wYXJ0czsKKworCWlmIChtdGRfdHlwZV9pc19uYW5kKG10ZCkpIHsKKwkJLyog
-TkFORCBmbGFzaCBkZXZpY2VzIGFyZSB0b28gc3VzY2VwdGlibGUgdG8gYmFkIGJsb2NrcyAqLwor
-CQlkZXZfZXJyKCZtdGQtPmRldiwgIkdQVCBwYXJzaW5nIGlzIGZvcmJpZGRlbiBvbiBOQU5EIGRl
-dmljZXMhIik7CisJCXJldHVybiAtRVBFUk07CisJfQorCisJZ3B0ID0ga3phbGxvYyhNVERfR1BU
-X0xCQV9TSVpFLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWdwdCkKKwkJcmV0dXJuIC1FTk9NRU07CisK
-KwlhZ3B0ID0ga3phbGxvYyhNVERfR1BUX0xCQV9TSVpFLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWFn
-cHQpCisJCXJldHVybiAtRU5PTUVNOworCisJcmV0ID0gbXRkX2dwdF9yZWFkX2hlYWRlcihtdGQs
-IGdwdCwgR1BUX1BSSU1BUllfUEFSVElUSU9OX1RBQkxFX0xCQSwgbGFzdF9sYmEpOworCWlmIChy
-ZXQpIHsKKwkJZGV2X3dhcm4oJm10ZC0+ZGV2LAorCQkJICJpbnZhbGlkIHByaW1hcnkgR1BUIGhl
-YWRlcjogZXJyb3IgJWQsIHRyeWluZyBhbHRlcm5hdGUiLCByZXQpOworCQlyZXQgPSBtdGRfZ3B0
-X3JlYWRfaGVhZGVyKG10ZCwgZ3B0LCBsZTY0X3RvX2NwdShncHQtPmFsdGVybmF0ZV9sYmEpLCBs
-YXN0X2xiYSk7CisJCWlmIChyZXQpIHsKKwkJCWRldl9lcnIoJm10ZC0+ZGV2LCAiaW52YWxpZCBh
-bHRlcm5hdGUgR1BUIGhlYWRlcjogZXJyb3IgJWRcbiIsIHJldCk7CisJCQlnb3RvIGZyZWVfZ3B0
-OworCQl9CisJfSBlbHNlIHsKKwkJLyogQ2hlY2sgYWx0ZXJuYXRlIGhlYWRlciBhbmQgd2FybiBp
-ZiBpdCBkb2Vzbid0IG1hdGNoIHByaW1hcnkgaGVhZGVyICovCisJCWdwdF9jb21wYXJlX2FsdChn
-cHQsIGFncHQsIGxhc3RfbGJhKTsKKwl9CisKKwkvKiBUaGlzIHNob3VsZCBjb250YWluIHRoZSBQ
-VEUgYXJyYXkgKi8KKwlwdGVfcmVhZF9vZmZzZXQgPSBtdGRfZ3B0X2xiYV90b19vZmZzZXQobGU2
-NF90b19jcHUoZ3B0LT5wYXJ0aXRpb25fZW50cnlfbGJhKSk7CisJcHRlX3JlYWRfc2l6ZSA9IGdl
-dF9wdF9zaXplKGdwdCk7CisJcHRlcyA9IGt6YWxsb2MocHRlX3JlYWRfc2l6ZSwgR0ZQX0tFUk5F
-TCk7CisJaWYgKCFwdGVzKSB7CisJCXJldCA9IC1FTk9NRU07CisJCWdvdG8gZnJlZV9ncHQ7CisJ
-fQorCisJZGV2X2RiZygmbXRkLT5kZXYsICJyZWFkaW5nIFBURSBhcnJheSBvZmZzZXQgJWxsaSBz
-aXplIDB4JXp4XG4iLAorCQlwdGVfcmVhZF9vZmZzZXQsIHB0ZV9yZWFkX3NpemUpOworCisJcmV0
-ID0gbXRkX3JlYWQobXRkLCBwdGVfcmVhZF9vZmZzZXQsIHB0ZV9yZWFkX3NpemUsICZyZXRsZW4s
-ICh1X2NoYXIgKilwdGVzKTsKKwlpZiAocmV0KQorCQlnb3RvIGZyZWVfcHRlczsKKworCWlmIChy
-ZXRsZW4gPCBwdGVfcmVhZF9zaXplKSB7CisJCXJldCA9IC1FSU87CisJCWdvdG8gZnJlZV9wdGVz
-OworCX0KKworCXJldCA9IGdwdF9jaGVja19wdGVfYXJyYXlfY3JjKGdwdCwgcHRlcyk7CisJaWYg
-KHJldCkgeworCQlkZXZfZXJyKCZtdGQtPmRldiwKKwkJCSJDUkMgY2hlY2sgZmFpbGVkIGZvciBH
-UFQgUGFydGl0aW9uIFRhYmxlIEVudHJ5IGFycmF5ISBlcnJvciAlZFxuIiwgcmV0KTsKKwkJZ290
-byBmcmVlX3B0ZXM7CisJfQorCisJbnJfcGFydHMgPSBsZTMyX3RvX2NwdShncHQtPm51bV9wYXJ0
-aXRpb25fZW50cmllcyk7CisJcGFydHMgPSBrY2FsbG9jKG1pbihucl9wYXJ0cywgTVREX0dQVF9N
-QVhfUEFSVFMpLAorCQkJc2l6ZW9mKCpwYXJ0cyksCisJCQlHRlBfS0VSTkVMKTsKKwlpZiAoIXBh
-cnRzKSB7CisJCXJldCA9IC1FTk9NRU07CisJCWdvdG8gZnJlZV9wdGVzOworCX0KKworCW5hbWVf
-YnVmID0ga2NhbGxvYyhtaW4obnJfcGFydHMsIE1URF9HUFRfTUFYX1BBUlRTKSwgKE1URF9HUFRf
-UEFSVE5BTUVfU0laRSArIDEpLAorCQkJICAgR0ZQX0tFUk5FTCk7CisJaWYgKCFuYW1lX2J1Zikg
-eworCQlyZXQgPSAtRU5PTUVNOworCQlnb3RvIGZyZWVfcGFydHM7CisJfQorCisJZm9yIChwYXJ0
-X25vID0gMDsgcGFydF9ubyA8IG5yX3BhcnRzICYmIHZhbGlkX3BhcnRzIDwgTVREX0dQVF9NQVhf
-UEFSVFM7IHBhcnRfbm8rKykgeworCQlwdGUgPSAmcHRlc1twYXJ0X25vXTsKKwkJcGFydCA9ICZw
-YXJ0c1t2YWxpZF9wYXJ0c107CisJCWN1cl9uYW1lID0gJm5hbWVfYnVmW3ZhbGlkX3BhcnRzICog
-KE1URF9HUFRfUEFSVE5BTUVfU0laRSArIDEpXTsKKworCQlpZiAoIWdwdF9pc19wdGVfdmFsaWQo
-cHRlLCBsYXN0X2xiYSkpIHsKKwkJCWRldl93YXJuKCZtdGQtPmRldiwgInNraXBwaW5nIGludmFs
-aWQgcGFydGl0aW9uIGVudHJ5ICVkIVxuIiwgcGFydF9ubyk7CisJCQljb250aW51ZTsKKwkJfQor
-CisJCXBhcnQtPm9mZnNldCA9IG10ZF9ncHRfbGJhX3RvX29mZnNldChsZTY0X3RvX2NwdShwdGUt
-PnN0YXJ0aW5nX2xiYSkpOworCQlwYXJ0LT5zaXplID0gbXRkX2dwdF9sYmFfdG9fc2l6ZShsZTY0
-X3RvX2NwdShwdGUtPmVuZGluZ19sYmEpIC0KKwkJCQkJCSBsZTY0X3RvX2NwdShwdGUtPnN0YXJ0
-aW5nX2xiYSkgKyAxVUxMKTsKKwkJcGFydC0+bmFtZSA9IGN1cl9uYW1lOworCisJCS8qIHBhcnQt
-Pm5hbWUgaXMgY29uc3Qgc28gd2UgY2FuJ3QgcGFzcyBpdCBkaXJlY3RseSAqLworCQl1dGYxNl9s
-ZV90b183Yml0KHB0ZS0+cGFydGl0aW9uX25hbWUsCisJCQkJIE1URF9HUFRfUEFSVE5BTUVfU0la
-RSAvIHNpemVvZihfX2xlMTYpLAorCQkJCSBjdXJfbmFtZSk7CisJCXZhbGlkX3BhcnRzKys7CisJ
-fQorCisJaWYgKHZhbGlkX3BhcnRzID09IE1URF9HUFRfTUFYX1BBUlRTKQorCQlkZXZfd2Fybigm
-bXRkLT5kZXYsCisJCQkgInJlYWNoZWQgbWF4aW11bSBhbGxvd2VkIG51bWJlciBvZiBNVEQgcGFy
-dGl0aW9ucyAlZFxuIiwKKwkJCSBNVERfR1BUX01BWF9QQVJUUyk7CisKKwkqcHBhcnRzID0gcGFy
-dHM7CisJa2ZyZWUocHRlcyk7CisJa2ZyZWUoZ3B0KTsKKwlyZXR1cm4gdmFsaWRfcGFydHM7CisK
-K2ZyZWVfcGFydHM6CisJa2ZyZWUocGFydHMpOworZnJlZV9wdGVzOgorCWtmcmVlKHB0ZXMpOwor
-ZnJlZV9ncHQ6CisJa2ZyZWUoYWdwdCk7CisJa2ZyZWUoZ3B0KTsKKworCXJldHVybiByZXQ7Cit9
-CisKK3N0YXRpYyB2b2lkIG10ZF9ncHRfY2xlYW51cF9wYXJ0aXRpb25zKGNvbnN0IHN0cnVjdCBt
-dGRfcGFydGl0aW9uICpwcGFydHMsIGludCBucl9wYXJ0cykKK3sKKwlrZnJlZShwcGFydHMtPm5h
-bWUpOworCWtmcmVlKHBwYXJ0cyk7Cit9CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNl
-X2lkIG10ZF9ncHRfb2ZfbWF0Y2hfdGFibGVbXSA9IHsKKwl7IC5jb21wYXRpYmxlID0gImdwdCIg
-fSwKKwl7fSwKK307CitNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdGRfZ3B0X29mX21hdGNoX3Rh
-YmxlKTsKKworc3RhdGljIHN0cnVjdCBtdGRfcGFydF9wYXJzZXIgbXRkX2dwdF9wYXJzZXIgPSB7
-CisJLnBhcnNlX2ZuID0gbXRkX2dwdF9wYXJzZV9wYXJ0aXRpb25zLAorCS5jbGVhbnVwID0gbXRk
-X2dwdF9jbGVhbnVwX3BhcnRpdGlvbnMsCisJLm5hbWUgPSAiR1BUIiwKKwkub2ZfbWF0Y2hfdGFi
-bGUgPSBtdGRfZ3B0X29mX21hdGNoX3RhYmxlLAorfTsKK21vZHVsZV9tdGRfcGFydF9wYXJzZXIo
-bXRkX2dwdF9wYXJzZXIpOworCitNT0RVTEVfTElDRU5TRSgiR1BMIik7CitNT0RVTEVfQVVUSE9S
-KCJSb21haW4gR2FudG9pcyA8cm9tYWluLmdhbnRvaXNAYm9vdGxpbi5jb20+Iik7CitNT0RVTEVf
-REVTQ1JJUFRJT04oIk1URCBwYXJzZXIgZm9yIEdQVCBwYXJ0aXRpb24gdGFibGVzIik7Ci0tIAoy
-LjQzLjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The GPT parser in the block layer contains much logic that is not specific
+to block devices. Move all of this logic to a new generic GPT library so
+that future GPT parsers can make use of it.
+
+lib/gpt.c is designed as a stateless library. It mainly contains helpers
+that validate GPT metadata.
+
+The efi_crc32 function is moved out of the block layer GPT parser and into
+the generic efi header.
+
+There is no functional change.
+
+Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
+---
+ MAINTAINERS              |   1 +
+ block/partitions/Kconfig |   2 +-
+ block/partitions/efi.c   | 336 --------------------------------------
+ include/linux/efi.h      |  18 +++
+ lib/Kconfig              |   3 +
+ lib/Makefile             |   3 +
+ lib/gpt.c                | 342 +++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 368 insertions(+), 337 deletions(-)
+ create mode 100644 lib/gpt.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 22e37e2ea1ae..c01abee48b75 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9235,6 +9235,7 @@ L:	linux-efi@vger.kernel.org
+ S:	Maintained
+ F:	block/partitions/efi.c
+ F:	include/linux/gpt.h
++F:	lib/gpt.c
+ 
+ HABANALABS PCI DRIVER
+ M:	Oded Gabbay <ogabbay@kernel.org>
+diff --git a/block/partitions/Kconfig b/block/partitions/Kconfig
+index 7aff4eb81c60..c2b2618213ba 100644
+--- a/block/partitions/Kconfig
++++ b/block/partitions/Kconfig
+@@ -250,7 +250,7 @@ config KARMA_PARTITION
+ config EFI_PARTITION
+ 	bool "EFI GUID Partition support" if PARTITION_ADVANCED
+ 	default y
+-	select CRC32
++	select GENERIC_LIB_GPT
+ 	help
+ 	  Say Y here if you would like to use hard disks under Linux which
+ 	  were partitioned using EFI GPT.
+diff --git a/block/partitions/efi.c b/block/partitions/efi.c
+index 3630ebf4b997..58bcd2cbcdf8 100644
+--- a/block/partitions/efi.c
++++ b/block/partitions/efi.c
+@@ -83,7 +83,6 @@
+  *
+  ************************************************************/
+ #include <linux/kernel.h>
+-#include <linux/crc32.h>
+ #include <linux/ctype.h>
+ #include <linux/math64.h>
+ #include <linux/slab.h>
+@@ -103,24 +102,6 @@ force_gpt_fn(char *str)
+ }
+ __setup("gpt", force_gpt_fn);
+ 
+-/**
+- * efi_crc32() - EFI version of crc32 function
+- * @buf: buffer to calculate crc32 of
+- * @len: length of buf
+- *
+- * Description: Returns EFI-style CRC32 value for @buf
+- *
+- * This function uses the little endian Ethernet polynomial
+- * but seeds the function with ~0, and xor's with ~0 at the end.
+- * Note, the EFI Specification, v1.02, has a reference to
+- * Dr. Dobbs Journal, May 1994 (actually it's in May 1992).
+- */
+-static inline u32
+-efi_crc32(const void *buf, unsigned long len)
+-{
+-	return (crc32(~0L, buf, len) ^ ~0L);
+-}
+-
+ /**
+  * last_lba(): return number of last logical block of device
+  * @disk: block device
+@@ -136,91 +117,6 @@ static u64 last_lba(struct gendisk *disk)
+ 		       queue_logical_block_size(disk->queue)) - 1ULL;
+ }
+ 
+-static inline int pmbr_part_valid(gpt_mbr_record *part)
+-{
+-	if (part->os_type != EFI_PMBR_OSTYPE_EFI_GPT)
+-		goto invalid;
+-
+-	/* set to 0x00000001 (i.e., the LBA of the GPT Partition Header) */
+-	if (le32_to_cpu(part->starting_lba) != GPT_PRIMARY_PARTITION_TABLE_LBA)
+-		goto invalid;
+-
+-	return GPT_MBR_PROTECTIVE;
+-invalid:
+-	return 0;
+-}
+-
+-/**
+- * gpt_is_pmbr_valid(): test Protective MBR for validity
+- * @mbr: pointer to a legacy mbr structure
+- * @total_sectors: amount of sectors in the device
+- *
+- * Description: Checks for a valid protective or hybrid
+- * master boot record (MBR). The validity of a pMBR depends
+- * on all of the following properties:
+- *  1) MSDOS signature is in the last two bytes of the MBR
+- *  2) One partition of type 0xEE is found
+- *
+- * In addition, a hybrid MBR will have up to three additional
+- * primary partitions, which point to the same space that's
+- * marked out by up to three GPT partitions.
+- *
+- * Returns 0 upon invalid MBR, or GPT_MBR_PROTECTIVE or
+- * GPT_MBR_HYBRID depending on the device layout.
+- */
+-int gpt_is_pmbr_valid(legacy_mbr *mbr, sector_t total_sectors)
+-{
+-	uint32_t sz = 0;
+-	int i, part = 0, ret = 0; /* invalid by default */
+-
+-	if (!mbr || le16_to_cpu(mbr->signature) != MSDOS_MBR_SIGNATURE)
+-		goto done;
+-
+-	for (i = 0; i < 4; i++) {
+-		ret = pmbr_part_valid(&mbr->partition_record[i]);
+-		if (ret == GPT_MBR_PROTECTIVE) {
+-			part = i;
+-			/*
+-			 * Ok, we at least know that there's a protective MBR,
+-			 * now check if there are other partition types for
+-			 * hybrid MBR.
+-			 */
+-			goto check_hybrid;
+-		}
+-	}
+-
+-	if (ret != GPT_MBR_PROTECTIVE)
+-		goto done;
+-check_hybrid:
+-	for (i = 0; i < 4; i++)
+-		if (mbr->partition_record[i].os_type !=
+-		     EFI_PMBR_OSTYPE_EFI_GPT &&
+-		    mbr->partition_record[i].os_type != 0x00)
+-			ret = GPT_MBR_HYBRID;
+-
+-	/*
+-	 * Protective MBRs take up the lesser of the whole disk
+-	 * or 2 TiB (32bit LBA), ignoring the rest of the disk.
+-	 * Some partitioning programs, nonetheless, choose to set
+-	 * the size to the maximum 32-bit limitation, disregarding
+-	 * the disk size.
+-	 *
+-	 * Hybrid MBRs do not necessarily comply with this.
+-	 *
+-	 * Consider a bad value here to be a warning to support dd'ing
+-	 * an image from a smaller disk to a larger disk.
+-	 */
+-	if (ret == GPT_MBR_PROTECTIVE) {
+-		sz = le32_to_cpu(mbr->partition_record[part].size_in_lba);
+-		if (sz != (uint32_t)total_sectors - 1 && sz != 0xFFFFFFFF)
+-			pr_debug("GPT: mbr size in lba (%u) different than whole disk (%u).\n",
+-				 sz, min_t(uint32_t,
+-					   total_sectors - 1, 0xFFFFFFFF));
+-	}
+-done:
+-	return ret;
+-}
+-
+ /**
+  * read_lba(): Read bytes from disk, starting at given LBA
+  * @state: disk parsed partitions
+@@ -323,119 +219,6 @@ static gpt_header *alloc_read_gpt_header(struct parsed_partitions *state,
+ 	return gpt;
+ }
+ 
+-/**
+- * gpt_validate_header() - tests one GPT header for validity
+- * @gpt:      header to check
+- * @lba:      logical block address of the GPT header to test
+- * @lba_size: logical block size of the partitioned device
+- * @lastlba:  last logical block on the partitioned device
+- *
+- * Returns 0 if validation was successful.
+- */
+-int gpt_validate_header(gpt_header *gpt, u64 lba, unsigned int lba_size,
+-			u64 lastlba)
+-{
+-	u32 crc, origcrc;
+-	u64 pt_size;
+-
+-	/* Check the GUID Partition Table signature */
+-	if (le64_to_cpu(gpt->signature) != GPT_HEADER_SIGNATURE) {
+-		pr_debug("GUID Partition Table Header signature is wrong: %lld != %lld\n",
+-			 (unsigned long long)le64_to_cpu(gpt->signature),
+-			 (unsigned long long)GPT_HEADER_SIGNATURE);
+-		return -EINVAL;
+-	}
+-
+-	/* Check the GUID Partition Table header size is too big */
+-	if (le32_to_cpu(gpt->header_size) > lba_size) {
+-		pr_debug("GUID Partition Table Header size is too large: %u > %u\n",
+-			 le32_to_cpu(gpt->header_size), lba_size);
+-		return -EINVAL;
+-	}
+-
+-	/* Check the GUID Partition Table header size is too small */
+-	if (le32_to_cpu(gpt->header_size) < sizeof(gpt_header)) {
+-		pr_debug("GUID Partition Table Header size is too small: %u < %zu\n",
+-			 le32_to_cpu(gpt->header_size),
+-			 sizeof(gpt_header));
+-		return -EINVAL;
+-	}
+-
+-	/* Check the GUID Partition Table CRC */
+-	origcrc = le32_to_cpu(gpt->header_crc32);
+-	gpt->header_crc32 = 0;
+-	crc = efi_crc32((const unsigned char *)gpt, le32_to_cpu(gpt->header_size));
+-
+-	if (crc != origcrc) {
+-		pr_debug("GUID Partition Table Header CRC is wrong: %x != %x\n",
+-			 crc, origcrc);
+-		return -EINVAL;
+-	}
+-	gpt->header_crc32 = cpu_to_le32(origcrc);
+-
+-	/* Check that the my_lba entry points to the LBA that contains
+-	 * the GUID Partition Table
+-	 */
+-	if (le64_to_cpu(gpt->my_lba) != lba) {
+-		pr_debug("GPT my_lba incorrect: %lld != %lld\n",
+-			 (unsigned long long)le64_to_cpu(gpt->my_lba),
+-			 (unsigned long long)lba);
+-		return -EINVAL;
+-	}
+-
+-	/* Check the first_usable_lba and last_usable_lba are
+-	 * within the disk.
+-	 */
+-	if (le64_to_cpu(gpt->first_usable_lba) > lastlba) {
+-		pr_debug("GPT: first_usable_lba incorrect: %lld > %lld\n",
+-			 (unsigned long long)le64_to_cpu(gpt->first_usable_lba),
+-			 (unsigned long long)lastlba);
+-		return -EINVAL;
+-	}
+-	if (le64_to_cpu(gpt->last_usable_lba) > lastlba) {
+-		pr_debug("GPT: last_usable_lba incorrect: %lld > %lld\n",
+-			 (unsigned long long)le64_to_cpu(gpt->last_usable_lba),
+-			 (unsigned long long)lastlba);
+-		return -EINVAL;
+-	}
+-	if (le64_to_cpu(gpt->last_usable_lba) < le64_to_cpu(gpt->first_usable_lba)) {
+-		pr_debug("GPT: last_usable_lba incorrect: %lld > %lld\n",
+-			 (unsigned long long)le64_to_cpu(gpt->last_usable_lba),
+-			 (unsigned long long)le64_to_cpu(gpt->first_usable_lba));
+-		return -EINVAL;
+-	}
+-
+-	/* Check that sizeof_partition_entry has the correct value */
+-	if (le32_to_cpu(gpt->sizeof_partition_entry) != sizeof(gpt_entry)) {
+-		pr_debug("GUID Partition Entry Size check failed.\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Sanity check partition table size */
+-	pt_size = (u64)get_pt_size(gpt);
+-	if (pt_size > KMALLOC_MAX_SIZE) {
+-		pr_debug("GUID Partition Table is too large: %llu > %lu bytes\n",
+-			 (unsigned long long)pt_size, KMALLOC_MAX_SIZE);
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-/* Check the GUID Partition Entry Array CRC */
+-int gpt_check_pte_array_crc(gpt_header *gpt, gpt_entry *ptes)
+-{
+-	u32 crc;
+-
+-	crc = efi_crc32((const unsigned char *)ptes, get_pt_size(gpt));
+-	if (crc != le32_to_cpu(gpt->partition_entry_array_crc32)) {
+-		pr_debug("GUID Partition Entry Array CRC check failed.\n");
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * is_gpt_valid() - tests one GPT header and PTEs for validity
+  * @state: disk parsed partitions
+@@ -483,100 +266,6 @@ static int is_gpt_valid(struct parsed_partitions *state, u64 lba,
+ 	return 0;
+ }
+ 
+-/**
+- * gpt_compare_alt() - Compares the Primary and Alternate GPT headers
+- * @pgpt: primary GPT header
+- * @agpt: alternate GPT header
+- * @lastlba: last LBA number
+- *
+- * Description: Sanity checks pgpt and agpt fields and prints warnings
+- * on discrepancies. Returns error count. GPT parsers can choose to
+- * ignore this or not.
+- *
+- */
+-int gpt_compare_alt(gpt_header *pgpt, gpt_header *agpt, u64 lastlba)
+-{
+-	int error_found = 0;
+-
+-	if (!pgpt || !agpt)
+-		return -EINVAL;
+-
+-	if (le64_to_cpu(pgpt->my_lba) != le64_to_cpu(agpt->alternate_lba)) {
+-		pr_warn("GPT:Primary header LBA != Alt. header alternate_lba\n");
+-		pr_warn("GPT:%lld != %lld\n",
+-			(unsigned long long)le64_to_cpu(pgpt->my_lba),
+-			(unsigned long long)le64_to_cpu(agpt->alternate_lba));
+-		error_found++;
+-	}
+-	if (le64_to_cpu(pgpt->alternate_lba) != le64_to_cpu(agpt->my_lba)) {
+-		pr_warn("GPT:Primary header alternate_lba != Alt. header my_lba\n");
+-		pr_warn("GPT:%lld != %lld\n",
+-			(unsigned long long)le64_to_cpu(pgpt->alternate_lba),
+-			(unsigned long long)le64_to_cpu(agpt->my_lba));
+-		error_found++;
+-	}
+-	if (le64_to_cpu(pgpt->first_usable_lba) !=
+-	    le64_to_cpu(agpt->first_usable_lba)) {
+-		pr_warn("GPT:first_usable_lbas don't match.\n");
+-		pr_warn("GPT:%lld != %lld\n",
+-			(unsigned long long)le64_to_cpu(pgpt->first_usable_lba),
+-			(unsigned long long)le64_to_cpu(agpt->first_usable_lba));
+-		error_found++;
+-	}
+-	if (le64_to_cpu(pgpt->last_usable_lba) !=
+-	    le64_to_cpu(agpt->last_usable_lba)) {
+-		pr_warn("GPT:last_usable_lbas don't match.\n");
+-		pr_warn("GPT:%lld != %lld\n",
+-			(unsigned long long)le64_to_cpu(pgpt->last_usable_lba),
+-			(unsigned long long)le64_to_cpu(agpt->last_usable_lba));
+-		error_found++;
+-	}
+-	if (efi_guidcmp(pgpt->disk_guid, agpt->disk_guid)) {
+-		pr_warn("GPT:disk_guids don't match.\n");
+-		error_found++;
+-	}
+-	if (le32_to_cpu(pgpt->num_partition_entries) !=
+-	    le32_to_cpu(agpt->num_partition_entries)) {
+-		pr_warn("GPT:num_partition_entries don't match: 0x%x != 0x%x\n",
+-			le32_to_cpu(pgpt->num_partition_entries),
+-			le32_to_cpu(agpt->num_partition_entries));
+-		error_found++;
+-	}
+-	if (le32_to_cpu(pgpt->sizeof_partition_entry) !=
+-	    le32_to_cpu(agpt->sizeof_partition_entry)) {
+-		pr_warn("GPT:sizeof_partition_entry values don't match: 0x%x != 0x%x\n",
+-			le32_to_cpu(pgpt->sizeof_partition_entry),
+-			le32_to_cpu(agpt->sizeof_partition_entry));
+-		error_found++;
+-	}
+-	if (le32_to_cpu(pgpt->partition_entry_array_crc32) !=
+-	    le32_to_cpu(agpt->partition_entry_array_crc32)) {
+-		pr_warn("GPT:partition_entry_array_crc32 values don't match: 0x%x != 0x%x\n",
+-			le32_to_cpu(pgpt->partition_entry_array_crc32),
+-			le32_to_cpu(agpt->partition_entry_array_crc32));
+-		error_found++;
+-	}
+-	if (le64_to_cpu(pgpt->alternate_lba) != lastlba) {
+-		pr_warn("GPT:Primary header thinks Alt. header is not at the end of the disk.\n");
+-		pr_warn("GPT:%lld != %lld\n",
+-			(unsigned long long)le64_to_cpu(pgpt->alternate_lba),
+-			(unsigned long long)lastlba);
+-		error_found++;
+-	}
+-
+-	if (le64_to_cpu(agpt->my_lba) != lastlba) {
+-		pr_warn("GPT:Alternate GPT header not at the end of the disk.\n");
+-		pr_warn("GPT:%lld != %lld\n",
+-			(unsigned long long)le64_to_cpu(agpt->my_lba),
+-			(unsigned long long)lastlba);
+-		error_found++;
+-	}
+-
+-	if (error_found)
+-		pr_warn("GPT: Use GNU Parted to correct GPT errors.\n");
+-	return error_found;
+-}
+-
+ /**
+  * find_valid_gpt() - Search disk for valid GPT headers and PTEs
+  * @state: disk parsed partitions
+@@ -682,31 +371,6 @@ static int find_valid_gpt(struct parsed_partitions *state, gpt_header **gpt,
+ 	return 0;
+ }
+ 
+-/**
+- * utf16_le_to_7bit(): Naively converts a UTF-16LE string to 7-bit ASCII characters
+- * @in: input UTF-16LE string
+- * @size: size of the input string
+- * @out: output string ptr, should be capable to store @size+1 characters
+- *
+- * Description: Converts @size UTF16-LE symbols from @in string to 7-bit
+- * ASCII characters and stores them to @out. Adds trailing zero to @out array.
+- */
+-void utf16_le_to_7bit(const __le16 *in, unsigned int size, u8 *out)
+-{
+-	unsigned int i = 0;
+-
+-	out[size] = 0;
+-
+-	while (i < size) {
+-		u8 c = le16_to_cpu(in[i]) & 0xff;
+-
+-		if (c && !isprint(c))
+-			c = '!';
+-		out[i] = c;
+-		i++;
+-	}
+-}
+-
+ /**
+  * efi_partition - scan for GPT partitions
+  * @state: disk parsed partitions
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 9cc5bf32f6f2..c4b818f77de7 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -24,6 +24,7 @@
+ #include <linux/range.h>
+ #include <linux/reboot.h>
+ #include <linux/uuid.h>
++#include <linux/crc32.h>
+ 
+ #include <asm/page.h>
+ 
+@@ -1348,4 +1349,21 @@ bool efi_config_table_is_usable(const efi_guid_t *guid, unsigned long table)
+ 
+ umode_t efi_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n);
+ 
++/**
++ * efi_crc32() - EFI version of crc32 function
++ * @buf: buffer to calculate crc32 of
++ * @len: length of buf
++ *
++ * Description: Returns EFI-style CRC32 value for @buf
++ *
++ * This function uses the little endian Ethernet polynomial
++ * but seeds the function with ~0, and xor's with ~0 at the end.
++ * Note, the EFI Specification, v1.02, has a reference to
++ * Dr. Dobbs Journal, May 1994 (actually it's in May 1992).
++ */
++static inline u32 efi_crc32(const void *buf, unsigned long len)
++{
++	return (crc32(~0L, buf, len) ^ ~0L);
++}
++
+ #endif /* _LINUX_EFI_H */
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 3ea1c830efab..de776911944e 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -748,6 +748,9 @@ config GENERIC_LIB_ASHLDI3
+ config GENERIC_LIB_ASHRDI3
+ 	bool
+ 
++config GENERIC_LIB_GPT
++	bool
++
+ config GENERIC_LIB_LSHRDI3
+ 	bool
+ 
+diff --git a/lib/Makefile b/lib/Makefile
+index 6b09731d8e61..fba8fae70efa 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -444,3 +444,6 @@ $(obj)/$(TEST_FORTIFY_LOG): $(addprefix $(obj)/, $(TEST_FORTIFY_LOGS)) FORCE
+ ifeq ($(CONFIG_FORTIFY_SOURCE),y)
+ $(obj)/string.o: $(obj)/$(TEST_FORTIFY_LOG)
+ endif
++
++# GPT parsing routines
++obj-$(CONFIG_GENERIC_LIB_GPT) += gpt.o
+diff --git a/lib/gpt.c b/lib/gpt.c
+new file mode 100644
+index 000000000000..16303634f4fb
+--- /dev/null
++++ b/lib/gpt.c
+@@ -0,0 +1,342 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* EFI GUID Partition Table handling
++ *
++ * http://www.uefi.org/specs/
++ * http://www.intel.com/technology/efi/
++ *
++ * efi.[ch] by Matt Domsch <Matt_Domsch@dell.com>
++ *   Copyright 2000,2001,2002,2004 Dell Inc.
++ *
++ * This code was previously in block/partitions/efi.c
++ * and was moved in /lib so that other kernel subsystems
++ * could use it as a common GPT parsing library.
++ *
++ * This library should be stateless and not make any
++ * assumptions about the type of device the GPT data
++ * came from.
++ *
++ */
++
++#include <linux/gpt.h>
++#include <linux/efi.h>
++
++static inline int pmbr_part_valid(gpt_mbr_record *part)
++{
++	if (part->os_type != EFI_PMBR_OSTYPE_EFI_GPT)
++		goto invalid;
++
++	/* set to 0x00000001 (i.e., the LBA of the GPT Partition Header) */
++	if (le32_to_cpu(part->starting_lba) != GPT_PRIMARY_PARTITION_TABLE_LBA)
++		goto invalid;
++
++	return GPT_MBR_PROTECTIVE;
++invalid:
++	return 0;
++}
++
++/**
++ * gpt_is_pmbr_valid(): test Protective MBR for validity
++ * @mbr: pointer to a legacy mbr structure
++ * @total_sectors: amount of sectors in the device
++ *
++ * Description: Checks for a valid protective or hybrid
++ * master boot record (MBR). The validity of a pMBR depends
++ * on all of the following properties:
++ *  1) MSDOS signature is in the last two bytes of the MBR
++ *  2) One partition of type 0xEE is found
++ *
++ * In addition, a hybrid MBR will have up to three additional
++ * primary partitions, which point to the same space that's
++ * marked out by up to three GPT partitions.
++ *
++ * Returns 0 upon invalid MBR, or GPT_MBR_PROTECTIVE or
++ * GPT_MBR_HYBRID depending on the device layout.
++ */
++int gpt_is_pmbr_valid(legacy_mbr *mbr, sector_t total_sectors)
++{
++	int i, part = 0, ret = 0; /* invalid by default */
++	uint32_t sz = 0;
++
++	if (!mbr || le16_to_cpu(mbr->signature) != MSDOS_MBR_SIGNATURE)
++		goto done;
++
++	for (i = 0; i < 4; i++) {
++		ret = pmbr_part_valid(&mbr->partition_record[i]);
++		if (ret == GPT_MBR_PROTECTIVE) {
++			part = i;
++			/*
++			 * Ok, we at least know that there's a protective MBR,
++			 * now check if there are other partition types for
++			 * hybrid MBR.
++			 */
++			goto check_hybrid;
++		}
++	}
++
++	if (ret != GPT_MBR_PROTECTIVE)
++		goto done;
++check_hybrid:
++	for (i = 0; i < 4; i++)
++		if (mbr->partition_record[i].os_type != EFI_PMBR_OSTYPE_EFI_GPT &&
++		    mbr->partition_record[i].os_type != 0x00)
++			ret = GPT_MBR_HYBRID;
++
++	/*
++	 * Protective MBRs take up the lesser of the whole disk
++	 * or 2 TiB (32bit LBA), ignoring the rest of the disk.
++	 * Some partitioning programs, nonetheless, choose to set
++	 * the size to the maximum 32-bit limitation, disregarding
++	 * the disk size.
++	 *
++	 * Hybrid MBRs do not necessarily comply with this.
++	 *
++	 * Consider a bad value here to be a warning to support dd'ing
++	 * an image from a smaller disk to a larger disk.
++	 */
++	if (ret == GPT_MBR_PROTECTIVE) {
++		sz = le32_to_cpu(mbr->partition_record[part].size_in_lba);
++		if (sz != (uint32_t)total_sectors - 1 && sz != 0xFFFFFFFF)
++			pr_debug("GPT: mbr size in lba (%u) different than whole disk (%u).\n",
++				 sz, min_t(uint32_t,
++					   total_sectors - 1, 0xFFFFFFFF));
++	}
++done:
++	return ret;
++}
++EXPORT_SYMBOL_GPL(gpt_is_pmbr_valid);
++
++/**
++ * gpt_validate_header() - tests one GPT header for validity
++ * @gpt:      header to check
++ * @lba:      logical block address of the GPT header to test
++ * @lba_size: logical block size of the partitioned device
++ * @lastlba:  last logical block on the partitioned device
++ *
++ * Returns 0 if validation was successful.
++ */
++int gpt_validate_header(gpt_header *gpt, u64 lba, unsigned int lba_size,
++			u64 lastlba)
++{
++	u32 crc, origcrc;
++	u64 pt_size;
++
++	/* Check the GUID Partition Table signature */
++	if (le64_to_cpu(gpt->signature) != GPT_HEADER_SIGNATURE) {
++		pr_debug("GUID Partition Table Header signature is wrong: %lld != %lld\n",
++			 (unsigned long long)le64_to_cpu(gpt->signature),
++			 (unsigned long long)GPT_HEADER_SIGNATURE);
++		return -EINVAL;
++	}
++
++	/* Check the GUID Partition Table header size is too big */
++	if (le32_to_cpu(gpt->header_size) > lba_size) {
++		pr_debug("GUID Partition Table Header size is too large: %u > %u\n",
++			 le32_to_cpu(gpt->header_size), lba_size);
++		return -EINVAL;
++	}
++
++	/* Check the GUID Partition Table header size is too small */
++	if (le32_to_cpu(gpt->header_size) < sizeof(gpt_header)) {
++		pr_debug("GUID Partition Table Header size is too small: %u < %zu\n",
++			 le32_to_cpu(gpt->header_size),
++			 sizeof(gpt_header));
++		return -EINVAL;
++	}
++
++	/* Check the GUID Partition Table CRC */
++	origcrc = le32_to_cpu(gpt->header_crc32);
++	gpt->header_crc32 = 0;
++	crc = efi_crc32((const unsigned char *)gpt, le32_to_cpu(gpt->header_size));
++
++	if (crc != origcrc) {
++		pr_debug("GUID Partition Table Header CRC is wrong: %x != %x\n",
++			 crc, origcrc);
++		return -EINVAL;
++	}
++	gpt->header_crc32 = cpu_to_le32(origcrc);
++
++	/* Check that the my_lba entry points to the LBA that contains
++	 * the GUID Partition Table
++	 */
++	if (le64_to_cpu(gpt->my_lba) != lba) {
++		pr_debug("GPT my_lba incorrect: %lld != %lld\n",
++			 (unsigned long long)le64_to_cpu(gpt->my_lba),
++			 (unsigned long long)lba);
++		return -EINVAL;
++	}
++
++	/* Check the first_usable_lba and last_usable_lba are
++	 * within the disk.
++	 */
++	if (le64_to_cpu(gpt->first_usable_lba) > lastlba) {
++		pr_debug("GPT: first_usable_lba incorrect: %lld > %lld\n",
++			 (unsigned long long)le64_to_cpu(gpt->first_usable_lba),
++			 (unsigned long long)lastlba);
++		return -EINVAL;
++	}
++	if (le64_to_cpu(gpt->last_usable_lba) > lastlba) {
++		pr_debug("GPT: last_usable_lba incorrect: %lld > %lld\n",
++			 (unsigned long long)le64_to_cpu(gpt->last_usable_lba),
++			 (unsigned long long)lastlba);
++		return -EINVAL;
++	}
++	if (le64_to_cpu(gpt->last_usable_lba) < le64_to_cpu(gpt->first_usable_lba)) {
++		pr_debug("GPT: last_usable_lba incorrect: %lld > %lld\n",
++			 (unsigned long long)le64_to_cpu(gpt->last_usable_lba),
++			 (unsigned long long)le64_to_cpu(gpt->first_usable_lba));
++		return -EINVAL;
++	}
++
++	/* Check that sizeof_partition_entry has the correct value */
++	if (le32_to_cpu(gpt->sizeof_partition_entry) != sizeof(gpt_entry)) {
++		pr_debug("GUID Partition Entry Size check failed.\n");
++		return -EINVAL;
++	}
++
++	/* Sanity check partition table size */
++	pt_size = (u64)get_pt_size(gpt);
++	if (pt_size > KMALLOC_MAX_SIZE) {
++		pr_debug("GUID Partition Table is too large: %llu > %lu bytes\n",
++			 (unsigned long long)pt_size, KMALLOC_MAX_SIZE);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(gpt_validate_header);
++
++/* Check the GUID Partition Entry Array CRC */
++int gpt_check_pte_array_crc(gpt_header *gpt, gpt_entry *ptes)
++{
++	u32 crc;
++
++	crc = efi_crc32((const unsigned char *)ptes, get_pt_size(gpt));
++	if (crc != le32_to_cpu(gpt->partition_entry_array_crc32)) {
++		pr_debug("GUID Partition Entry Array CRC check failed.\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(gpt_check_pte_array_crc);
++
++/**
++ * gpt_compare_alt() - Compares the Primary and Alternate GPT headers
++ * @pgpt: primary GPT header
++ * @agpt: alternate GPT header
++ * @lastlba: last LBA number
++ *
++ * Description: Sanity checks pgpt and agpt fields and prints warnings
++ * on discrepancies. Returns error count. GPT parsers can choose to
++ * ignore this or not.
++ *
++ */
++int gpt_compare_alt(gpt_header *pgpt, gpt_header *agpt, u64 lastlba)
++{
++	int error_found = 0;
++
++	if (!pgpt || !agpt)
++		return -EINVAL;
++
++	if (le64_to_cpu(pgpt->my_lba) != le64_to_cpu(agpt->alternate_lba)) {
++		pr_warn("GPT:Primary header LBA != Alt. header alternate_lba\n");
++		pr_warn("GPT:%lld != %lld\n",
++			(unsigned long long)le64_to_cpu(pgpt->my_lba),
++			(unsigned long long)le64_to_cpu(agpt->alternate_lba));
++		error_found++;
++	}
++	if (le64_to_cpu(pgpt->alternate_lba) != le64_to_cpu(agpt->my_lba)) {
++		pr_warn("GPT:Primary header alternate_lba != Alt. header my_lba\n");
++		pr_warn("GPT:%lld != %lld\n",
++			(unsigned long long)le64_to_cpu(pgpt->alternate_lba),
++			(unsigned long long)le64_to_cpu(agpt->my_lba));
++		error_found++;
++	}
++	if (le64_to_cpu(pgpt->first_usable_lba) !=
++	    le64_to_cpu(agpt->first_usable_lba)) {
++		pr_warn("GPT:first_usable_lbas don't match.\n");
++		pr_warn("GPT:%lld != %lld\n",
++			(unsigned long long)le64_to_cpu(pgpt->first_usable_lba),
++			(unsigned long long)le64_to_cpu(agpt->first_usable_lba));
++		error_found++;
++	}
++	if (le64_to_cpu(pgpt->last_usable_lba) !=
++	    le64_to_cpu(agpt->last_usable_lba)) {
++		pr_warn("GPT:last_usable_lbas don't match.\n");
++		pr_warn("GPT:%lld != %lld\n",
++			(unsigned long long)le64_to_cpu(pgpt->last_usable_lba),
++			(unsigned long long)le64_to_cpu(agpt->last_usable_lba));
++		error_found++;
++	}
++	if (efi_guidcmp(pgpt->disk_guid, agpt->disk_guid)) {
++		pr_warn("GPT:disk_guids don't match.\n");
++		error_found++;
++	}
++	if (le32_to_cpu(pgpt->num_partition_entries) !=
++	    le32_to_cpu(agpt->num_partition_entries)) {
++		pr_warn("GPT:num_partition_entries don't match: 0x%x != 0x%x\n",
++			le32_to_cpu(pgpt->num_partition_entries),
++			le32_to_cpu(agpt->num_partition_entries));
++		error_found++;
++	}
++	if (le32_to_cpu(pgpt->sizeof_partition_entry) !=
++	    le32_to_cpu(agpt->sizeof_partition_entry)) {
++		pr_warn("GPT:sizeof_partition_entry values don't match: 0x%x != 0x%x\n",
++			le32_to_cpu(pgpt->sizeof_partition_entry),
++			le32_to_cpu(agpt->sizeof_partition_entry));
++		error_found++;
++	}
++	if (le32_to_cpu(pgpt->partition_entry_array_crc32) !=
++	    le32_to_cpu(agpt->partition_entry_array_crc32)) {
++		pr_warn("GPT:partition_entry_array_crc32 values don't match: 0x%x != 0x%x\n",
++			le32_to_cpu(pgpt->partition_entry_array_crc32),
++			le32_to_cpu(agpt->partition_entry_array_crc32));
++		error_found++;
++	}
++	if (le64_to_cpu(pgpt->alternate_lba) != lastlba) {
++		pr_warn("GPT:Primary header thinks Alt. header is not at the end of the disk.\n");
++		pr_warn("GPT:%lld != %lld\n",
++			(unsigned long long)le64_to_cpu(pgpt->alternate_lba),
++			(unsigned long long)lastlba);
++		error_found++;
++	}
++
++	if (le64_to_cpu(agpt->my_lba) != lastlba) {
++		pr_warn("GPT:Alternate GPT header not at the end of the disk.\n");
++		pr_warn("GPT:%lld != %lld\n",
++			(unsigned long long)le64_to_cpu(agpt->my_lba),
++			(unsigned long long)lastlba);
++		error_found++;
++	}
++
++	if (error_found)
++		pr_warn("GPT: Use GNU Parted to correct GPT errors.\n");
++	return error_found;
++}
++EXPORT_SYMBOL_GPL(gpt_compare_alt);
++
++/**
++ * utf16_le_to_7bit(): Naively converts a UTF-16LE string to 7-bit ASCII characters
++ * @in: input UTF-16LE string
++ * @size: size of the input string
++ * @out: output string ptr, should be capable to store @size+1 characters
++ *
++ * Description: Converts @size UTF16-LE symbols from @in string to 7-bit
++ * ASCII characters and stores them to @out. Adds trailing zero to @out array.
++ */
++void utf16_le_to_7bit(const __le16 *in, unsigned int size, u8 *out)
++{
++	unsigned int i = 0;
++
++	out[size] = 0;
++
++	while (i < size) {
++		u8 c = le16_to_cpu(in[i]) & 0xff;
++
++		if (c && !isprint(c))
++			c = '!';
++		out[i] = c;
++		i++;
++	}
++}
++EXPORT_SYMBOL_GPL(utf16_le_to_7bit);
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
