@@ -4,53 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BC0BC10F05
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 14:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39DBCC4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 14:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AflpbOeMwWiiuZpipxpilT8Ify4dVnxSonbDoO2EnRw=; b=FQeYdtVi6WBKPv
-	CIsLXrU1An8mUF68foLizX5LnyN1VuplFKuk2ZWRONIrEc7Db0Y1xIWwbjb//P9mz6idV8j8j6OB6
-	T72OTbnBSIq/xvcjZWCm2retZHdsfp+fr6j3u80eBe9Rfl0oGN4eM49guJNz47XIoSnmaTBHUvQSx
-	1EJXjed8E7iWhZ9+NGzjlkGIOTJU0ov3O1kHloqxzZYVzFM2akv95AixPNa8O1klYoo/JyHjSk1Q+
-	sRHcjFRRF6utX42vxt6++toIuWYc5y2PnA+nY6WJDt2T3+OF7l0Q7amOVLVCtCY4ARBehjvrE8H9l
-	PsJS02f57doMIQtEyFNQ==;
+	List-Owner; bh=8ehnBpZS5Rszhr6RfX0zbmK75cOXcZCrXq9w/hxxBFU=; b=RAB6/5pc5Yi9Uu
+	kcrT1/MausAr2NLi6X6ojn8nTtPyodi1WTyPOjg9ZAye7htEAGd6O6TM7qYRbq6D3ZLrA5OATAcCg
+	SoWxvP+OaoK3ua94X+d7DTbbclH5DaDBKARQsrV43a5wVSxfUgOlhmqlKcb978dxxLuK/s74aeWip
+	FbwcPWITwRtYp8Ao9CXkBCi8jEpuNDFchgrSyqm7BXIaF3Rw+V7Dg0ddvm1kUj8oQ3C2hdPZpnSZc
+	ppvnYrb8zHamPntt55+3QqZdU6PG2UTbe3X3bQfu6wMhBHPnQ7AkODQ20Go3ngY6o8vs8K5ctayEe
+	ja1asn+T/7eWknjHJo8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgyF-0056kR-2l;
-	Mon, 11 Dec 2023 14:09:19 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1rCgyL-0056oK-2x;
+	Mon, 11 Dec 2023 14:09:26 +0000
+Received: from [45.249.212.56] (helo=dggsgout12.his.huawei.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgyE-0056iq-12
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Dec 2023 14:09:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=vc/WyTZTpfdeCRK/X1dpkjdYyhRUdf0owWUIoa7GFdU=; b=GQFrruG6owHWAcoTyr6a/gd4q5
-	Vf+nHQhOzLFtHYfINETWJ6duSAOp7IUUeNFbtHA96ZsCxeWmOJr+8fwyw5rXUukT5BVAgqH2lQlY/
-	7selNQ9XD9aPxuu1R5/RYZDCDtReurSxalIkzpoUTBDKWoHCA+pEwEL7nTyFNfVZH2u4I8oCOmBab
-	297lluNyQZ7y0HsYIMsqgZeFwyET+hXAKxbnQ1EOhGKUGEEU2jwozCE1Na2Mi6NRWAJ/XqhHjzLsw
-	nngQhEeZZng9jiyULThNYHZwhp430RUmNIvTXtlZKGPTZFduVL5bUA+p+Y+N2m5wrrI+ByakYqyt7
-	1JmkcQAQ==;
-Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgyA-0086jM-1b
+	id 1rCgyH-0056kd-0Y
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 14:09:17 +0000
+	Mon, 11 Dec 2023 14:09:24 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpkBS43hmz4f3jMN
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:09:04 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SpkBh1TWGz4f3kFg
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:09:16 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 761BF1A04A7
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:09:09 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 9F2541A049F
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:09:18 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCnqxEDGHdlUaBxDQ--.22294S4;
-	Mon, 11 Dec 2023 22:09:09 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDHyhAMGHdl2qJxDQ--.24877S4;
+	Mon, 11 Dec 2023 22:09:18 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -102,17 +87,17 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 14/18] jbd2: use bdev apis
-Date: Mon, 11 Dec 2023 22:07:44 +0800
-Message-Id: <20231211140744.975145-1-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to read sb block
+Date: Mon, 11 Dec 2023 22:07:53 +0800
+Message-Id: <20231211140753.975297-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgCnqxEDGHdlUaBxDQ--.22294S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4DtryUur43Kr4DJr4DCFg_yoW8ZFyrpr
-	yUGas8CrZFvrW8XF1kGF4kJrWjga40vayUCFnF93Z2yw4Svr1avw18Kr13GFyYvFWFga1U
-	Xr1jyay8Kw4YgFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: cCh0CgDHyhAMGHdl2qJxDQ--.24877S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFyUCF4kKryrJrW3trWrXwb_yoW7Ww13pr
+	98Kay3trWDKFyaqF1xtwn8Jr13t3Z2v3W8CayfJ3s3ArWUGrn3XF9rGr129FWFyr9rXry5
+	XFW5CrWfCr1UWFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
 	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
@@ -128,9 +113,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4DtryUur43Kr4DJr4DCFg_yoW8ZFyrpr
 	ZNVDUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_140915_482918_D1ADF5FF 
-X-CRM114-Status: UNSURE (   9.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231211_060921_651249_D969F4B9 
+X-CRM114-Status: GOOD (  15.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,60 +133,165 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+Unlike __bread_gfp(), ext4 has special handing while reading sb block:
+
+1) __GFP_NOFAIL is not set, and memory allocation can fail;
+2) If buffer write failed before, set buffer uptodate and don't read
+   block from disk;
+3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
+4) If failed, return error ptr instead of NULL;
+
+This patch add a new helper __bread_gfp2() that will match above 2 and 3(
+1 will be used, and 4 will still be encapsulated by ext4), and prepare to
+prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
+in ext4.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/jbd2/journal.c  | 3 +--
- fs/jbd2/recovery.c | 6 ++----
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ fs/buffer.c                 | 68 ++++++++++++++++++++++++++-----------
+ include/linux/buffer_head.h | 18 +++++++++-
+ 2 files changed, 65 insertions(+), 21 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index ed53188472f9..f1b5ffeaf02a 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2003,8 +2003,7 @@ static int __jbd2_journal_erase(journal_t *journal, unsigned int flags)
- 		byte_count = (block_stop - block_start + 1) *
- 				journal->j_blocksize;
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 967f34b70aa8..188bd36c9fea 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1255,16 +1255,19 @@ void __bforget(struct buffer_head *bh)
+ }
+ EXPORT_SYMBOL(__bforget);
  
--		truncate_inode_pages_range(journal->j_dev->bd_inode->i_mapping,
--				byte_start, byte_stop);
-+		truncate_bdev_range(journal->j_dev, 0, byte_start, byte_stop);
+-static struct buffer_head *__bread_slow(struct buffer_head *bh)
++static struct buffer_head *__bread_slow(struct buffer_head *bh,
++					blk_opf_t op_flags,
++					bool check_write_error)
+ {
+ 	lock_buffer(bh);
+-	if (buffer_uptodate(bh)) {
++	if (buffer_uptodate(bh) ||
++	    (check_write_error && buffer_uptodate_or_error(bh))) {
+ 		unlock_buffer(bh);
+ 		return bh;
+ 	} else {
+ 		get_bh(bh);
+ 		bh->b_end_io = end_buffer_read_sync;
+-		submit_bh(REQ_OP_READ, bh);
++		submit_bh(REQ_OP_READ | op_flags, bh);
+ 		wait_on_buffer(bh);
+ 		if (buffer_uptodate(bh))
+ 			return bh;
+@@ -1445,6 +1448,31 @@ void __breadahead(struct block_device *bdev, sector_t block, unsigned size)
+ }
+ EXPORT_SYMBOL(__breadahead);
  
- 		if (flags & JBD2_JOURNAL_FLUSH_DISCARD) {
- 			err = blkdev_issue_discard(journal->j_dev,
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 01f744cb97a4..6b6a2c4585fa 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -290,7 +290,6 @@ int jbd2_journal_recover(journal_t *journal)
++static struct buffer_head *
++bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
++	  blk_opf_t op_flags, gfp_t gfp, bool check_write_error)
++{
++	struct buffer_head *bh;
++
++	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
++
++	/*
++	 * Prefer looping in the allocator rather than here, at least that
++	 * code knows what it's doing.
++	 */
++	gfp |= __GFP_NOFAIL;
++
++	bh = bdev_getblk(bdev, block, size, gfp);
++	if (unlikely(!bh))
++		return NULL;
++
++	if (buffer_uptodate(bh) ||
++	    (check_write_error && buffer_uptodate_or_error(bh)))
++		return bh;
++
++	return __bread_slow(bh, op_flags, check_write_error);
++}
++
+ /**
+  *  __bread_gfp() - reads a specified block and returns the bh
+  *  @bdev: the block_device to read from
+@@ -1458,27 +1486,27 @@ EXPORT_SYMBOL(__breadahead);
+  *  It returns NULL if the block was unreadable.
+  */
+ struct buffer_head *
+-__bread_gfp(struct block_device *bdev, sector_t block,
+-		   unsigned size, gfp_t gfp)
++__bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
++	    gfp_t gfp)
+ {
+-	struct buffer_head *bh;
+-
+-	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
+-
+-	/*
+-	 * Prefer looping in the allocator rather than here, at least that
+-	 * code knows what it's doing.
+-	 */
+-	gfp |= __GFP_NOFAIL;
+-
+-	bh = bdev_getblk(bdev, block, size, gfp);
+-
+-	if (likely(bh) && !buffer_uptodate(bh))
+-		bh = __bread_slow(bh);
+-	return bh;
++	return bread_gfp(bdev, block, size, 0, gfp, false);
+ }
+ EXPORT_SYMBOL(__bread_gfp);
  
- 	struct recovery_info	info;
- 	errseq_t		wb_err;
--	struct address_space	*mapping;
++/*
++ * This works like __bread_gfp() except:
++ * 1) If buffer write failed before, set buffer uptodate and don't read
++ * block from disk;
++ * 2) Caller can pass in additional op_flags like REQ_META;
++ */
++struct buffer_head *
++__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
++	     blk_opf_t op_flags, gfp_t gfp)
++{
++	return bread_gfp(bdev, block, size, op_flags, gfp, true);
++}
++EXPORT_SYMBOL(__bread_gfp2);
++
+ static void __invalidate_bh_lrus(struct bh_lru *b)
+ {
+ 	int i;
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 5f23ee599889..751b2744b4ae 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -171,6 +171,18 @@ static __always_inline int buffer_uptodate(const struct buffer_head *bh)
+ 	return test_bit_acquire(BH_Uptodate, &bh->b_state);
+ }
  
- 	memset(&info, 0, sizeof(info));
- 	sb = journal->j_superblock;
-@@ -309,8 +308,7 @@ int jbd2_journal_recover(journal_t *journal)
- 	}
- 
- 	wb_err = 0;
--	mapping = journal->j_fs_dev->bd_inode->i_mapping;
--	errseq_check_and_advance(&mapping->wb_err, &wb_err);
-+	bdev_wb_err_check_and_advance(journal->j_fs_dev, &wb_err);
- 	err = do_one_pass(journal, &info, PASS_SCAN);
- 	if (!err)
- 		err = do_one_pass(journal, &info, PASS_REVOKE);
-@@ -334,7 +332,7 @@ int jbd2_journal_recover(journal_t *journal)
- 	err2 = sync_blockdev(journal->j_fs_dev);
- 	if (!err)
- 		err = err2;
--	err2 = errseq_check_and_advance(&mapping->wb_err, &wb_err);
-+	err2 = bdev_wb_err_check_and_advance(journal->j_fs_dev, &wb_err);
- 	if (!err)
- 		err = err2;
- 	/* Make sure all replayed data is on permanent storage */
++static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
++{
++	/*
++	 * If the buffer has the write error flag, data was failed to write
++	 * out in the block. In this case, set buffer uptodate to prevent
++	 * reading old data.
++	 */
++	if (buffer_write_io_error(bh))
++		set_buffer_uptodate(bh);
++	return buffer_uptodate(bh);
++}
++
+ static inline unsigned long bh_offset(const struct buffer_head *bh)
+ {
+ 	return (unsigned long)(bh)->b_data & (page_size(bh->b_page) - 1);
+@@ -231,7 +243,11 @@ void __brelse(struct buffer_head *);
+ void __bforget(struct buffer_head *);
+ void __breadahead(struct block_device *, sector_t block, unsigned int size);
+ struct buffer_head *__bread_gfp(struct block_device *,
+-				sector_t block, unsigned size, gfp_t gfp);
++				sector_t block, unsigned int size, gfp_t gfp);
++struct buffer_head *__bread_gfp2(struct block_device *bdev, sector_t block,
++				 unsigned int size, blk_opf_t op_flags,
++				 gfp_t gfp);
++
+ struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
+ void free_buffer_head(struct buffer_head * bh);
+ void unlock_buffer(struct buffer_head *bh);
 -- 
 2.39.2
 
