@@ -4,41 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEF4AC4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:07:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 664AAC10DC3
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:07:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vjlKyE2AhLRDSwkdFthRfeaf4A2RKzwA3KfuHytXZ68=; b=fCrq8kO0kcW9LQ
-	EGGPr1aEveH2sgujNjFjhsM+N/xNse3wMq8D3MbTjPONKRLKyJiLlmsS7lu0AtXDdjoFzifMASSP8
-	JGxHLV3xuAAjdn1Pf/FcXxrWuBzyxxi/3y7VwUp+Mx9Va2r2rbAVYt3axedkRxK23tsw2niDCYtx7
-	f+FBgpkLG21xfl1kqnmgD27C5kHnvlZ69D0hvrzopp9yA5BoeToRR5D/JKehyahHAUBhZcCkccoeF
-	pkem7WKycr8AB8XFpbyJ9gtd6HsmVur5jg9iGwT8zzwtMNuQphUzOOzytsFu1/1CvTk9LVOeRnGLM
-	yvOYe8WrmXiCCJaZTVSQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5e7AxzjRgI9qfgmlmZzLqrOjPLFVuwvuSCGdrAd0dgw=; b=c490EMJYoZNOEo
+	/G1EDxr+fF//PqEtYxTbd/ZL1/Y7AEWJDHnbxBd2mx/2F8B14PBdPaJVfy/xr+TWvIV8GUSbbqPXw
+	97LiQrC6K3VY4y2h0AGqYixqEHN3jsW/HjEqEFW14ekCK4Tdzp6/ln0w/FrA8Sg4r0QRVWlXtF00j
+	CgBSn/sN04HX2goidjSD5xT1I/Fh6B92cwe5S903cRVBpVbzZojc6jrCLqt8S3S3dMroITg1ZVnOI
+	dInI8JxkdctVkUtTH34jzqtUh9udze2lYd03yOzjpW79oBfTfKWMmNe+BflwHm2Pt0f+B2JIpNU/T
+	kykjLIXeJ3J2MlqVxlSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rChsQ-005IQa-2A;
-	Mon, 11 Dec 2023 15:07:22 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1rChsT-005IRo-2i;
+	Mon, 11 Dec 2023 15:07:25 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rChsC-005IIm-2t;
-	Mon, 11 Dec 2023 15:07:12 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F33EDFF80A;
-	Mon, 11 Dec 2023 15:07:04 +0000 (UTC)
+	id 1rChsE-005IJf-23;
+	Mon, 11 Dec 2023 15:07:13 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A6A27FF80D;
+	Mon, 11 Dec 2023 15:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702307226;
+	t=1702307227;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=+IG8edyMhn3FE8xgdJtbiJSuCXcG/WjMqFQomY/cHok=;
-	b=lh5zGP5FO5/ZpxLd8TIhtY60UAozhTv0xXej8AGly1KO7aZvzIuxTlsm8Nh7xaKvACv0i9
-	475YA1n01wVeS4HTiJWiB6CuBzZiNiYVwfsvsOSiJfj35dcTDPQTe1PLrFM6QyTmqxDCCf
-	Mby6pALwG6HC+G2wfcx2hyKp813pwRVgU+Tq4uIo/cdwQv20kiYJQWkoBsfWsWzGTwNKr4
-	kAyOJD83tALofG7IlyEUia6XdCFI3+jxGRrt/xADzX5YVT3qxrcN7YhogEjtW27T2VHg1u
-	3a2vKZT0AjMzVSza2BvEmW+iIho+NIo4fvxlK1TeK8Ef8kdNQnkZI0Rsh7TXzA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mCpgckyHYRCqWcLrdBFdkY7ytfN/j08qDrPdaUCnFjM=;
+	b=NXtE0+6vHknV4JejSwmwtFfYY8e8PAl8atvUVbCIFhiAAGkuh57OFlS8a2lXa/Nt9mTWuC
+	5nfYSVdQNaTJQ1xhCYVAllRXSMYL5Ov0pPywSpAe3ViN393GkPsJOpPCP03kmVoWLoKXZm
+	KYyvDiS7IugU7ReUwOopHdiXUTUMy6hnf6SWOh/dFm5OXt635WXkVizTXMkEsOsJP5Ww95
+	vYO3sUf6d3UfOcNVGPPs/w/GWuGWao65AT7cvLgTlDJUvHYUF7b0PYZhJKKWs4eaJh2xDH
+	HtBvdp/5a5FAube0d/wRbUeYm5C2dSdKlSkAj3glmHf4F46/ya/KAg0Z5rYYEQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -51,17 +52,19 @@ Cc: Heiko Stuebner <heiko@sntech.de>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	<linux-arm-kernel@lists.infradead.org>,
 	Yifeng Zhao <yifeng.zhao@rock-chips.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH 1/2] mtd: rawnand: rockchip: Rename a structure
-Date: Mon, 11 Dec 2023 16:07:03 +0100
-Message-Id: <20231211150704.109138-1-miquel.raynal@bootlin.com>
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 2/2] mtd: rawnand: rockchip: Add missing title to a kernel doc comment
+Date: Mon, 11 Dec 2023 16:07:04 +0100
+Message-Id: <20231211150704.109138-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231211150704.109138-1-miquel.raynal@bootlin.com>
+References: <20231211150704.109138-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_070709_087154_911ED47E 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20231211_070710_893278_1B48E744 
+X-CRM114-Status: UNSURE (   8.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,44 +81,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Robots are unhappy with the ecc_cnt_status structure because the kernel
-doc says it should be called rk_ecc_cnt_status. In general, it is
-considered a better practice to prefix all symbols in a file with the
-same prexif, and thus it seems more relevant to rename the structure
-rather than changing the kernel doc header.
+All fields of the nfc_cfg structure are documented but the name, which
+leads to a W=1 warning. Add a title.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202312102130.geZ4dqyN-lkp@intel.com/
 Fixes: 058e0e847d54 ("mtd: rawnand: rockchip: NFC driver for RK3308, RK2928 and others")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/rockchip-nand-controller.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/rockchip-nand-controller.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-index 596cf9a78274..ab1a9e8687e0 100644
+index ab1a9e8687e0..7baaef69d70a 100644
 --- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
 +++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-@@ -98,7 +98,7 @@ enum nfc_type {
-  * @high: ECC count high bit index at register.
-  * @high_mask: mask bit
-  */
--struct ecc_cnt_status {
-+struct rk_ecc_cnt_status {
- 	u8 err_flag_bit;
- 	u8 low;
- 	u8 low_mask;
-@@ -144,8 +144,8 @@ struct nfc_cfg {
- 	u32 int_st_off;
- 	u32 oob0_off;
- 	u32 oob1_off;
--	struct ecc_cnt_status ecc0;
--	struct ecc_cnt_status ecc1;
-+	struct rk_ecc_cnt_status ecc0;
-+	struct rk_ecc_cnt_status ecc1;
+@@ -108,6 +108,7 @@ struct rk_ecc_cnt_status {
  };
  
- struct rk_nfc_nand_chip {
+ /**
++ * struct nfc_cfg: Rockchip NAND controller configuration
+  * @type: NFC version
+  * @ecc_strengths: ECC strengths
+  * @ecc_cfgs: ECC config values
 -- 
 2.34.1
 
