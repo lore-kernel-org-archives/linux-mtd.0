@@ -4,43 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CBB0C4167B
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66096C10F05
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2lqRK0oQNtciRmKFrwT5CngwrPwoYeFpZzIlsy/e7UE=; b=tF9gihkOupoqWl
-	uAhzanxcMiBVpDgQ/87R/UsuGVCcvYPyCxnRyDNh/LTkBr5rX8TN6xp06kN+gjCWQ9lIAu7qO4Qtg
-	ejd/OfyV+8Dwq72PqZBreCpfzNymqTNDFSO6wTW2Zx/0e9TRrhH4QFarGglr4QqCpw8ADKtqia2kZ
-	DO/if/NUblPrp2AWVse5Sq087ernii0VUqhdt5PtboIqS3OZhrGI8RAZR9JAAeH+6IIhxafulZIuC
-	VKM7MCUAdGMeGP5s1TsaghJV96BzRo8tIK6joPKflHYp6jyKexjfca4oG7W5rp0KW4KxbzZlxDs/U
-	jJcDsN8v4NoIfVtZ3Q1w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BdZlE0etMi1GUIGWAV9kRYRykxIxAEFLnftLKPQlaKE=; b=O3Nfl4w90S4USP
+	WYZfj+OC27U/1IOafK379ZTHlY2TzP4HN8PAQ7dAmbUld2QU5EaotkUj5cK3+yQFGrsDtmXYTIyyj
+	OngSkZQYsVuTmse7Tk0edapnNcALzMOItcUj7cl6rTD0EnIoCw9t+CGPvtYnau8MSDY0iUsObWIJM
+	ywncQyzF6hkOzKY8rlas8NBBEhFkRuw+hziU22NjLF9ukbE0ZosgLQZgF8Vn862jv9I1H8xt8gUbR
+	XWk3VF+ZdMU42JzHa3zaYWRAVhp+htws+o0iswDqtPRqLCiyjz2iHUbiEEDJRspe9YDxhsaxxpAJ/
+	rMH2vDKEloOaAkHGzXVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rChxm-005KJx-01;
-	Mon, 11 Dec 2023 15:12:54 +0000
+	id 1rChxn-005KLp-2u;
+	Mon, 11 Dec 2023 15:12:55 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rChxe-005KDW-35
+	id 1rChxe-005KD9-2o
 	for linux-mtd@lists.infradead.org;
 	Mon, 11 Dec 2023 15:12:51 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 86060E0002;
-	Mon, 11 Dec 2023 15:12:41 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 86562E0010;
+	Mon, 11 Dec 2023 15:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702307562;
+	t=1702307560;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AK2BzAx/YAHFbh+6Z+0veROK6HPT0/oAubfaxj7UV2s=;
-	b=HztDremxIKWyhs4ljQkUaZkbUnkwWn3NamgaEJlyhZLnq7OoF09J2svtlEqppxF+2rFsmS
-	FNMGnqBM38azQmBQUAq/NYb8lNmqBEBsaWeCZFspt0Xg3hYHkLJpZMgjMOBI153sp/nTF1
-	l7oUhk9myflVEYuLZh8u25rzeHSv/7yyonWorOnDUgCWHI0rwIxfjBaI3/y0y/dfcLGlYd
-	pXUqTfZ4d1pRpLAlaVvuVyf5bl2c4/bOnlI/IOwEXBbuE3gEYCubQegSqP/ILiyd2gUqCY
-	tSXqIC+Qbr/PG+7ES0+Tt0GkMzm3ENvr/yj/MKDjwUL4Is0B36EMq1qiWd7L4A==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oFE6C0z8xKaeOiZweTxKpiLysfvHtTDmjwGQsIGoKvY=;
+	b=Sm95cUORL9q+npJNEYxgVyXxreLziHzhozNYrvKqDq4fiV8Oo8G1fV1lSqxgzBpDmp0Zji
+	iDaBgZ8YljiOxQhZgGSo0MNcLS8bWk2gTpJ9FOH+oHXYBCevzl3ULB+8Gf6DGeEDXVU/K9
+	BuyBrCTzkOt1dAqmL5FvwvZW6U8wdBWuXwMAzL7rmy1gtXnAKvj6Ba37JOkGyCEoPQeQDc
+	3mT7oK3s90ZycJ4FIwSDeg4sQ1Yu7NrJnHnjju+zjuoCiN8PaOCcmreEmvaz3GmTmHXiNl
+	HV9XSwdkUB/Jggo926EdmdCEcR82GL049n4y0HwjvsJp/YTOEjXqVnoVoAhkxg==
 From: Romain Gantois <romain.gantois@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -59,17 +58,15 @@ Cc: Romain Gantois <romain.gantois@bootlin.com>,
 	linux-kernel@vger.kernel.org,
 	linux-block@vger.kernel.org,
 	linux-efi@vger.kernel.org
-Subject: [RFC PATCH 1/6] block: partitions: efi: Move efi.h header to include/linux/gpt.h
-Date: Mon, 11 Dec 2023 16:12:37 +0100
-Message-ID: <20231211151244.289349-2-romain.gantois@bootlin.com>
+Subject: [RFC PATCH 0/6] Add GPT parser to MTD layer
+Date: Mon, 11 Dec 2023 16:12:36 +0100
+Message-ID: <20231211151244.289349-1-romain.gantois@bootlin.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231211151244.289349-1-romain.gantois@bootlin.com>
-References: <20231211151244.289349-1-romain.gantois@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: romain.gantois@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_071247_272244_A8CB2EC6 
-X-CRM114-Status: GOOD (  12.37  )
+X-CRM114-CacheID: sfid-20231211_071247_186806_B2E0067F 
+X-CRM114-Status: GOOD (  18.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,76 +83,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The GPT parser located in the block layer defines all of the GPT-specific
-data structures and logic that are necessary to parse this kind of
-partition table. However, it is also specifically tailored for block
-devices.
+Hello everyone,
 
-Assuming that different GPT parsers will be implemented in other kernel
-subsystems, it is desirable to create a common set of GPT struct
-definitions, macros and helpers, so as to limit code reuse between parsers.
+MTD devices were historically partitioned using fixed partitions schemes
+defined in the kernel device tree or on the cmdline. More recently, a bunch
+of dynamic parsers have been introduced, allowing partitioning information
+to be stored in-band. However, unlike disks, parsers for MTD devices do not
+support runtime discovery of the partition format. This format is instead
+named in the device-tree using a compatible string.
 
-As a first step towards this common codebase, this commit moves the efi.h
-header, that contains GPT-specific definitions, to include/linux/gpt.h.
+The GUID Partition Table is one of the most common ways of partitioning a
+block device. As of now, there is no support in the MTD layer for parsing
+GPT tables. Indeed, use cases for layouts like GPT on raw Flash devices are
+rare, and for good reason since these partitioning schemes are sensitive to
+bad blocks in strategic locations such as LBA 2.  Moreover, they do not
+allow proper wear-leveling to be performed on the full span of the device.
 
-There is no functional change.
+However, allowing GPT to be used on MTD devices can be practical in some
+cases. In the context of an A/B OTA upgrade that can act on either NOR of
+eMMC devices, having the same partition table format for both kinds of
+devices can simplify the task of the update software.
 
-Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
----
- MAINTAINERS                                   | 3 ++-
- block/partitions/efi.c                        | 2 +-
- block/partitions/msdos.c                      | 2 +-
- block/partitions/efi.h => include/linux/gpt.h | 0
- 4 files changed, 4 insertions(+), 3 deletions(-)
- rename block/partitions/efi.h => include/linux/gpt.h (100%)
+This series adds a fully working MTD GPT parser to the kernel. Use of the
+parser is restricted to NOR flash devices, since NAND flashes are too
+susceptible to bad blocks. To ensure coherence and code-reuse between
+subsystems, I've factored device-agnostic code from the block layer GPT
+parser and moved it to a new generic library in lib/gpt.c. No functional
+change is intended in the block layer parser.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 97f51d5ec1cf..22e37e2ea1ae 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9233,7 +9233,8 @@ GUID PARTITION TABLE (GPT)
- M:	Davidlohr Bueso <dave@stgolabs.net>
- L:	linux-efi@vger.kernel.org
- S:	Maintained
--F:	block/partitions/efi.*
-+F:	block/partitions/efi.c
-+F:	include/linux/gpt.h
- 
- HABANALABS PCI DRIVER
- M:	Oded Gabbay <ogabbay@kernel.org>
-diff --git a/block/partitions/efi.c b/block/partitions/efi.c
-index 5e9be13a56a8..db50c3f2bab3 100644
---- a/block/partitions/efi.c
-+++ b/block/partitions/efi.c
-@@ -87,8 +87,8 @@
- #include <linux/ctype.h>
- #include <linux/math64.h>
- #include <linux/slab.h>
-+#include <linux/gpt.h>
- #include "check.h"
--#include "efi.h"
- 
- /* This allows a kernel command line option 'gpt' to override
-  * the test for invalid PMBR.  Not __initdata because reloading
-diff --git a/block/partitions/msdos.c b/block/partitions/msdos.c
-index b5d5c229cc3b..d0376cf27448 100644
---- a/block/partitions/msdos.c
-+++ b/block/partitions/msdos.c
-@@ -27,9 +27,9 @@
-  */
- #include <linux/msdos_fs.h>
- #include <linux/msdos_partition.h>
-+#include <linux/gpt.h>
- 
- #include "check.h"
--#include "efi.h"
- 
- /*
-  * Many architectures don't like unaligned accesses, while
-diff --git a/block/partitions/efi.h b/include/linux/gpt.h
-similarity index 100%
-rename from block/partitions/efi.h
-rename to include/linux/gpt.h
+I understand that this can seem like a strange feature for MTD devices, but
+with the restriction to NOR devices, the partition table can be fairly
+reliable. Moreover, this addition fits nicely into the MTD parser model.
+Please tell me what you think.
+
+Best Regards,
+
+Romain
+
+Romain Gantois (6):
+  block: partitions: efi: Move efi.h header to include/linux/gpt.h
+  block: partitions: efi: Fix some style issues
+  block: partitions: efi: Separate out GPT-specific code
+  block: partitions: efi: Move GPT-specific code to a new library
+  drivers: mtd: introduce GPT parser for NOR flash devices
+  dt-bindings: mtd: add GPT partition bindings
+
+ .../bindings/mtd/partitions/gpt.yaml          |  41 ++
+ .../bindings/mtd/partitions/partitions.yaml   |   1 +
+ MAINTAINERS                                   |   4 +-
+ block/partitions/Kconfig                      |   2 +-
+ block/partitions/efi.c                        | 478 +++---------------
+ block/partitions/msdos.c                      |   2 +-
+ drivers/mtd/parsers/Kconfig                   |  10 +
+ drivers/mtd/parsers/Makefile                  |   1 +
+ drivers/mtd/parsers/gpt.c                     | 222 ++++++++
+ include/linux/efi.h                           |  18 +
+ block/partitions/efi.h => include/linux/gpt.h |  72 ++-
+ lib/Kconfig                                   |   3 +
+ lib/Makefile                                  |   3 +
+ lib/gpt.c                                     | 342 +++++++++++++
+ 14 files changed, 777 insertions(+), 422 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/gpt.yaml
+ create mode 100644 drivers/mtd/parsers/gpt.c
+ rename block/partitions/efi.h => include/linux/gpt.h (61%)
+ create mode 100644 lib/gpt.c
+
 -- 
 2.43.0
 
