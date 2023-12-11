@@ -4,133 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B083CC10DC3
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 15:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC1C3C4167B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Dec 2023 16:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
+	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F1JiZdtTGEK7o3eYWMDlCpLRwzFKLrwrbUy6j3EYhWE=; b=I4JPDEMTXbwDyz
-	J1BK2YKElHAy+lveYi4OloDpZZCj8I2PGXANwMk5dRnLqFls3crZJZBx4mQA7CiP8jGlJCItRgrbV
-	ZxQasp/b6i/BGMAAzGGIRkzIVf1TVggnrq1HWxrfzmLmx2/NuF5piCj7/xuHrVqKx7KyUowDGnzDZ
-	99gPzhhAfRbFgyGz9RnoQ+LhA8D6Hr4Eu5/ZqK2p99lad/DN9VhDU9HD6QU40c2SuVHBBx6PIxFZ9
-	CFT+VHBjq5Pdm6OvnLzBZ7VgmR0TD0JO5r8ud3QwsgEJljIVHheLThiNcBWqm2Key0irAdhzJabuI
-	zVXvHMM8dAtyD+DK/sSg==;
+	List-Owner; bh=I58pNtPqLKSOpKPM/p7TTci6EgJxEtgZNoFJ4Ssi1co=; b=eDtUm5SIz3OsaU
+	J6Ro5E5hB5Yi/VRMk7BexA9tI1yB3OlXFtAuADqH/8eLShild26Zfu5KuhT6MHgNhGWmCLTNZKjDR
+	MI6nwof69eiasUsROIkB5AHJfJwcuMfaK9KtTfEKRpeJHQqDOsYPINdTZAF0PetfxE1wfIbDMUY+O
+	HMZtHMcDmzKD9v/wEhUsQLMaWomSv5kGok5FOVI92ouSpnmWPeeScoxCrbAqUdy6HPiy0y3hnIiSv
+	ueVJPKuTL9O0MU2XnFBLsrGs9c8IY3wuZTNbKkWz8ib8O5Z7m00NqRv7I8JKoipXxqt2d6GQXUqGO
+	jDs0dfvJLVabCTlplL3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCi0U-005M38-0r;
-	Mon, 11 Dec 2023 15:15:42 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1rCj2S-005lHV-1S;
+	Mon, 11 Dec 2023 16:21:48 +0000
+Received: from mail-ot1-f50.google.com ([209.85.210.50])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgy4-0056dU-2y
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 11 Dec 2023 14:09:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=6PsHpU9DjlDJS+1mbOmLsNExm/gbG0pJf23Auw7bdNI=; b=NBdoGUl6qnZqVYoFQw4lgZtS9Q
-	ULCA/AkhKrDuXnI4lwspbunNGCyjBSLZIWEyl0vBRmVVMDauh1EE0HkvGE+JAgPsLmUqcSoxSLW/+
-	AHI/5mrc0dc4gysWfD0ptKyVf+oT318y9cfkhxtpJo4dara3xRQ6ucHKNArVPeJCAir7v+xQq7MyK
-	s4OXF1IemVTsGOpiL6/c2mVyV3CGSRtKm+oxR6RzRyC1YFmzF3PV+sqrqFQJtnM3Kgt0/Kq5ZRUeU
-	8mQxJvWLIC9ykJ67+q4LEBAOLmb5aw56orQNXcSnu+sdMw8lsP0qDtXtw6xbFSr7eQZFSzImPUF21
-	lWEHXoMg==;
-Received: from dggsgout12.his.huawei.com ([45.249.212.56])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCgxz-0086hm-0G
+	id 1rCj2B-005lAr-1k
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Dec 2023 14:09:07 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SpkBJ5J88z4f3kFS
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:08:56 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2DDE01A052C
-	for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 22:08:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDHyhD4F3dlc51xDQ--.24857S4;
-	Mon, 11 Dec 2023 22:08:58 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: axboe@kernel.dk,
-	roger.pau@citrix.com,
-	colyli@suse.de,
-	kent.overstreet@gmail.com,
-	joern@lazybastard.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	sth@linux.ibm.com,
-	hoeppner@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	nico@fluxnic.net,
-	xiang@kernel.org,
-	chao@kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	agruenba@redhat.com,
-	jack@suse.com,
-	konishi.ryusuke@gmail.com,
-	willy@infradead.org,
-	akpm@linux-foundation.org,
-	p.raghav@samsung.com,
-	hare@suse.de
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 13/18] nilfs2: use bdev api in nilfs_attach_log_writer()
-Date: Mon, 11 Dec 2023 22:07:33 +0800
-Message-Id: <20231211140733.974992-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+	Mon, 11 Dec 2023 16:21:45 +0000
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6d9daa5207eso3036808a34.0
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 08:21:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702311689; x=1702916489;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=348QJQptRlElLNB1tIjm1p1XzL85PcSJzURBK+WTJok=;
+        b=E+inHCOgjfkTsk3ZP3AeAQIgXfKetxXTx/rTQSOjstTxCR0a3WAQcWwdCT0j+9hADQ
+         dchPgv92zOwWtny+cFs28U3GcYmrEOFafndE3IsVwEM1OeLHSXULPTP0jwcq0OStmcFe
+         wQJvuClCx9pLWOVGBp4RaJOU0JBmTGbRrIfLL8+5idDyOiWTr91MFlHISqgbJBhtj1jJ
+         nqxQ+dVjncSIp9kkdW6odb8BIeQ3HBDhheIrMV26Y7uF3+q+/SLMH5herM7Qzgmz3URA
+         lppVhKmgMGCehILdLsMMHT0HUttAAEK4sHbAgVJW5dlkIg9cVlXBioUDcJ1k3Qo1tXTh
+         oUFQ==
+X-Gm-Message-State: AOJu0YypMJfeH9rdhuXaSlBxWQjWg9NlgcypqX0oNBkySjfBm2q181iZ
+	zZNv4hZ8z2MUuL1fYzbdEw==
+X-Google-Smtp-Source: AGHT+IG4LPuDJKeXoC293asrqjuZQ2jvok4fn8Mx9ppkj4Ewou+tIJ9vo6O+pLBKP5opTLtBKO0hng==
+X-Received: by 2002:a05:6870:82a0:b0:1fb:75b:99a4 with SMTP id q32-20020a05687082a000b001fb075b99a4mr6481626oae.83.1702311688423;
+        Mon, 11 Dec 2023 08:21:28 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id fw25-20020a056870081900b001fadabf6626sm2507717oab.23.2023.12.11.08.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 08:21:27 -0800 (PST)
+Received: (nullmailer pid 2365869 invoked by uid 1000);
+	Mon, 11 Dec 2023 16:21:26 -0000
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDHyhD4F3dlc51xDQ--.24857S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAFW7ZFyrGFW3Ar45GFg_yoW3Gwc_Xr
-	n5JrykWrWYqFZ3uw4DurZ0yryrA3WrGa1xJry0kFyrGF4IyFs5Cr1qvr45tayUursrXwn3
-	WwnrWrZ8tr1UXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
-	6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
-	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUoL
-	0eDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+From: Rob Herring <robh@kernel.org>
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Davidlohr Bueso <dave@stgolabs.net>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Rob Herring <robh+dt@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, linux-block@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Herve Codina <herve.codina@bootlin.com>, Jens Axboe <axboe@kernel.dk>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-efi@vger.kernel.org, Richard Weinberger <richard@nod.at>
+In-Reply-To: <20231211151244.289349-7-romain.gantois@bootlin.com>
+References: <20231211151244.289349-1-romain.gantois@bootlin.com>
+ <20231211151244.289349-7-romain.gantois@bootlin.com>
+Message-Id: <170231168656.2365852.16098091734582168376.robh@kernel.org>
+Subject: Re: [RFC PATCH 6/6] dt-bindings: mtd: add GPT partition bindings
+Date: Mon, 11 Dec 2023 10:21:26 -0600
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_140903_809492_B46F1C1C 
-X-CRM114-Status: UNSURE (   7.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231211_082132_190105_FEFCEFBB 
+X-CRM114-Status: GOOD (  14.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,31 +81,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Yu Kuai <yukuai3@huawei.com>
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+On Mon, 11 Dec 2023 16:12:42 +0100, Romain Gantois wrote:
+> Allow parsing GPT layouts on MTD devices.
+> 
+> Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
+> ---
+>  .../bindings/mtd/partitions/gpt.yaml          | 41 +++++++++++++++++++
+>  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+>  2 files changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/gpt.yaml
+> 
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- fs/nilfs2/segment.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-index 55e31cc903d1..a1130e384937 100644
---- a/fs/nilfs2/segment.c
-+++ b/fs/nilfs2/segment.c
-@@ -2823,7 +2823,7 @@ int nilfs_attach_log_writer(struct super_block *sb, struct nilfs_root *root)
- 	if (!nilfs->ns_writer)
- 		return -ENOMEM;
- 
--	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
-+	bdev_attach_wb(nilfs->ns_bdev);
- 
- 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
- 	if (unlikely(err))
--- 
-2.39.2
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/mtd/partitions/gpt.yaml:11:1: [error] syntax error: could not find expected ':' (syntax)
+
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/mtd/partitions/gpt.example.dts'
+Documentation/devicetree/bindings/mtd/partitions/gpt.yaml:11:1: could not find expected ':'
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/mtd/partitions/gpt.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml:
+while scanning a simple key
+  in "<unicode string>", line 10, column 1
+could not find expected ':'
+  in "<unicode string>", line 11, column 1
+./Documentation/devicetree/bindings/mtd/partitions/gpt.yaml:11:1: could not find expected ':'
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/partitions/gpt.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231211151244.289349-7-romain.gantois@bootlin.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
 ______________________________________________________
