@@ -4,153 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F876C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 14:11:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF8EDC4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 15:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=z4mGI7c5GPi0v9XoNl63lIQnGuLN19g9iCqJcuEj6lo=; b=XxS61G6jUS4eyI
-	oVCUNK8lvI/42jpRUer+dfzpSBX7iO4BDAcUuByVqsMOkYCOl2RMaLdkw0Tip7rg6WFcattKJ8a3t
-	GLVEFv3gE9XseW3pv469IAtwWP8uWdyGZO8NxazFG5dZ+DDTe03eA2s3qF/IcvP6My060VuIxVkmI
-	gYcLSy6wfqorCIn0BzibOx83xhg1tviM+/lMjcrcBbCsVuaJwz+5M5qKsZ5+ywzKW+bJad8TlLZkw
-	b2CZ3i8KidMPJNl4lzG1qd6MHPfiM30U4RWx1Tdp9ccatx6KhYhdinZV8nz7qPOIwB31jlG72WtWx
-	rQzPvONwuMwFo9ynWxdw==;
+	List-Owner; bh=EgqjMYxCX/ZChTBqlJpQ65wMJ0cv02o7wtq6KeogSpI=; b=DPF7S4BCM3POJ4
+	A5WovwWbP9agzUf/c81m8gpduMDq17cLPY9R1s9HXqmYFb//UlYAGuOFpqgOMZDZKMLmXjKnwGuab
+	KDjZT67/8QFSF4sGt+2mYIWw1V+5xg3f/M/7IvtZwXBFDED/D/xvRa/3J46nPWhJ03aNK0Kiz3Lyj
+	eAmPWvC6uui5HhLhy3wuV4Hqc/i+u3xmY72HQ7dvZPUfkXtcxEoMaUNSbRlHqS1r5mjea/2DKoUcb
+	O4yXP8WJWfm7tdAyD3vm4Ju5c6aALBLGCCOScA9kvE4v7fFYMAm9FMOXau4BM1kHpu2wBbqTZQlGn
+	2K2V2f6TTQ1CFNNFL/MA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rD3Tk-00BsP4-1X;
-	Tue, 12 Dec 2023 14:11:20 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1rD4HS-00BzRy-0c;
+	Tue, 12 Dec 2023 15:02:42 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rD3Th-00BsNP-0I
+	id 1rD4HN-00BzR9-1A
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Dec 2023 14:11:19 +0000
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AF1351FB4F;
-	Tue, 12 Dec 2023 14:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702390271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/nbhyN5crR1w3m66kOkHUMah0FU4U4vRvr/vSaOUKo=;
-	b=B++bEOcuECOPLUS6gRl1BadE5Ojhg72LI17/Jf8so38UM+0K3tK3EM18zqdte42Rmdahip
-	pT2NLWONXbbx1wHqSpSUPrJ6SV/khTkKgkoHLhS3Je5qcEna7m+A0ImkydNS5Hp2KL7ol5
-	NGT5IsMbucBv49ZwMiTMIN/MTc8WjGg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702390271;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/nbhyN5crR1w3m66kOkHUMah0FU4U4vRvr/vSaOUKo=;
-	b=RYDemGbnXZfKi9uzTsokLLJFp3Q2IBX/Y+6xZm0LlYsd4XpI31h6ZqYPNIYrqGTAdxjsbq
-	9DRT+9hTWhL8LpBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702390271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/nbhyN5crR1w3m66kOkHUMah0FU4U4vRvr/vSaOUKo=;
-	b=B++bEOcuECOPLUS6gRl1BadE5Ojhg72LI17/Jf8so38UM+0K3tK3EM18zqdte42Rmdahip
-	pT2NLWONXbbx1wHqSpSUPrJ6SV/khTkKgkoHLhS3Je5qcEna7m+A0ImkydNS5Hp2KL7ol5
-	NGT5IsMbucBv49ZwMiTMIN/MTc8WjGg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702390271;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/nbhyN5crR1w3m66kOkHUMah0FU4U4vRvr/vSaOUKo=;
-	b=RYDemGbnXZfKi9uzTsokLLJFp3Q2IBX/Y+6xZm0LlYsd4XpI31h6ZqYPNIYrqGTAdxjsbq
-	9DRT+9hTWhL8LpBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B6A8139E9;
-	Tue, 12 Dec 2023 14:11:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id lJX+If9peGUGTgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:11:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E4786A06E5; Tue, 12 Dec 2023 15:11:10 +0100 (CET)
-Date: Tue, 12 Dec 2023 15:11:10 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-	roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-	joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-	jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-	josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
-	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-	willy@infradead.org, akpm@linux-foundation.org,
-	p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-Message-ID: <20231212141110.4pcetu5ozp3m33qc@quack3>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
- <ZXhfRdocHfrViOos@infradead.org>
+	Tue, 12 Dec 2023 15:02:39 +0000
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bf37fd2bbso7668850e87.0
+        for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2023 07:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702393355; x=1702998155; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SJSaOj/O3sNlbMjuItblJHTlzvK1I9vT1qpvbGVa2tk=;
+        b=GGAjSn8qjoD7b3gtF3hH9t/zFNoVq5t8Gt3t/bst8ucaY4E9oWXRUkBoMc/+usiGV2
+         7XM7A4VDG/TPLxrBkgyyEYVUfUvf5ZIp3kETW1Qd2/1GVzsYuxQe10lFF06tEC3dEZSY
+         p2+EGLUf6KP339ZCCebON1Dkvc4vrpF1ZqHy8xqyKlYErMhmeleKFoon9s6Kni/0s8rc
+         BADwSmOwg+P8tx991J3Wi3hVG2o2gHmAaRilJoxlmfON6paPWj2yUfrhMdhKb/7/kFB5
+         xuKXcSEwLcaxjdA54EKqIJy9qjjlpo9PzKFYFnapcyXUNSyI5Bjo88zo8LOpj3PAA3wp
+         Dy6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702393355; x=1702998155;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SJSaOj/O3sNlbMjuItblJHTlzvK1I9vT1qpvbGVa2tk=;
+        b=VNjvQSPwMqU3bXF+NEXD1qt0i1TCwievCPMDiaEeIJZX2qYUVuoqLf9rNOn+72D7BN
+         D/BZqZMB1M5aoyLJGj40f335Bo22gmMzUZwl6PxcTzY2H/8yIT8mOceXtNQrVfdmOTFp
+         R4dl93arC7osafsCajBwASTJ5V5VsI1Fypr5y6jbYydl4PUGEVjVacKvtYTMg9tCgwI3
+         CyGejw3BVEQwW/ebj5x96PWZNfybAWyjc9Fti4AxrOn3uSiUn96UjkXRJVY3yyh6JfeL
+         9oMfMrCQ8HqbjjTZsIm8NTRTnv8tQWAvu8Y9uDukJ6cI6vuk0yNeci5neqq/A/WLwx61
+         20zQ==
+X-Gm-Message-State: AOJu0YyoIPZlY5YE3fu5k7Gf2Y2EXflLakP44Dds/QablZ3Ow8njIzsg
+	bm+vf08xpWxbPka/C2yU5vIqqw==
+X-Google-Smtp-Source: AGHT+IEQrTt5tPm83DHZ6HyQKpuEeSOXvUyNiD23wBW25lvvmAykVrQcO2UewxP10LZ8abWJJdsapw==
+X-Received: by 2002:a05:6512:3a90:b0:50d:23e4:fe9c with SMTP id q16-20020a0565123a9000b0050d23e4fe9cmr3279122lfu.64.1702393354454;
+        Tue, 12 Dec 2023 07:02:34 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id v10-20020a170906564a00b009fea232316bsm6343831ejr.193.2023.12.12.07.02.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 07:02:33 -0800 (PST)
+Message-ID: <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
+Date: Tue, 12 Dec 2023 15:02:31 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ZXhfRdocHfrViOos@infradead.org>
-X-Spamd-Bar: ++++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=B++bEOcu;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RYDemGbn;
-	dmarc=none;
-	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [4.79 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 R_RATELIMIT(0.00)[to_ip_from(RLa8hd5fybgmzcyr9mhbq8ey7y)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[51];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[22.45%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[huaweicloud.com,kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from]
-X-Rspamd-Queue-Id: AF1351FB4F
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
+Content-Language: en-US
+To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "pratyush@kernel.org" <pratyush@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+ "lee@kernel.org" <lee@kernel.org>,
+ "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+ "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "michael@walle.cc" <michael@walle.cc>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+ "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
+ "Simek, Michal" <michal.simek@amd.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
+ <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
+ <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
+ <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <5a6f6764-6779-42b0-b6c6-3f638b85ef78@linaro.org>
+ <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231212_061117_278812_9B65D64B 
-X-CRM114-Status: GOOD (  16.78  )
+X-CRM114-CacheID: sfid-20231212_070237_410492_87E751D3 
+X-CRM114-Status: GOOD (  25.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -167,37 +124,144 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue 12-12-23 05:25:25, Christoph Hellwig wrote:
-> On Mon, Dec 11, 2023 at 10:07:53PM +0800, Yu Kuai wrote:
-> > +static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
-> > +{
-> > +	/*
-> > +	 * If the buffer has the write error flag, data was failed to write
-> > +	 * out in the block. In this case, set buffer uptodate to prevent
-> > +	 * reading old data.
-> > +	 */
-> > +	if (buffer_write_io_error(bh))
-> > +		set_buffer_uptodate(bh);
-> > +	return buffer_uptodate(bh);
-> > +}
+
+
+On 12/11/23 13:37, Mahapatra, Amit Kumar wrote:
+
+Hi!
+
+cut
+
+>>>>>>>  drivers/mtd/spi-nor/core.c  | 272
+>>>>>>> +++++++++++++++++++++++++++++-----
+>>>> --
+>>>>>>>  drivers/mtd/spi-nor/core.h  |   4 +
+>>>>>>>  include/linux/mtd/spi-nor.h |  15 +-
+>>>>>>>  3 files changed, 240 insertions(+), 51 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/mtd/spi-nor/core.c
+>>>>>>> b/drivers/mtd/spi-nor/core.c index 93ae69b7ff83..e990be7c7eb6
+>>>>>>> 100644
+>>>>>>> --- a/drivers/mtd/spi-nor/core.c
+>>>>>>> +++ b/drivers/mtd/spi-nor/core.c
+>>>>>>
+>>>>>> cut
+>>>>>>
+>>>>>>> @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
+>>>>>>> spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
+>>>>>>> *nor)  {
+>>>>>>>  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
+>>>>>> 0);
+>>>>>>> -	int ret;
+>>>>>>> +	struct device_node *np = spi_nor_get_flash_node(nor);
+>>>>>>> +	u64 flash_size[SNOR_FLASH_CNT_MAX];
+>>>>>>> +	u32 idx = 0;
+>>>>>>> +	int rc, ret;
+>>>>>>>
+>>>>>>>  	if (nor->manufacturer && nor->manufacturer->fixups &&
+>>>>>>>  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44
+>>>>>>> @@ static int spi_nor_late_init_params(struct spi_nor *nor)
+>>>>>>>  	if (params->n_banks > 1)
+>>>>>>>  		params->bank_size = div64_u64(params->size, params-
+>>>> n_banks);
+>>>>>>>
+>>>>>>> +	nor->num_flash = 0;
+>>>>>>> +
+>>>>>>> +	/*
+>>>>>>> +	 * The flashes that are connected in stacked mode should be
+>> of
+>>>>>>> +same
+>>>>>> make.
+>>>>>>> +	 * Except the flash size all other properties are identical for all
+>> the
+>>>>>>> +	 * flashes connected in stacked mode.
+>>>>>>> +	 * The flashes that are connected in parallel mode should be
+>> identical.
+>>>>>>> +	 */
+>>>>>>> +	while (idx < SNOR_FLASH_CNT_MAX) {
+>>>>>>> +		rc = of_property_read_u64_index(np, "stacked-
+>> memories",
+>>>>>> idx,
+>>>>>>> +&flash_size[idx]);
+>>>>>>
+>>>>>> This is a little late in my opinion, as we don't have any sanity
+>>>>>> check on the flashes that are stacked on top of the first. We shall
+>>>>>> at least read and compare the ID for all.
+>>>>>
+>>>>> Alright, I will incorporate a sanity check for reading and comparing
+>>>>> the ID of the stacked flash. Subsequently, I believe this stacked
+>>>>> logic should be relocated to spi_nor_get_flash_info() where we
+>>>>> identify the first flash. Please share your thoughts on this.
+>>>>> Additionally, do you
+>>>>
+>>>> I'm wondering whether we can add a layer on top of the flash type to
+>>>> handle
+>>>
+>>> When you mention "on top," are you referring to incorporating it into
+>>> the MTD layer? Initially, Miquel had submitted this patch to address
+>>
+>> I mean something above SPI MEM flashes, be it NOR, NANDs or whatever.
+>> Instead of treating the stacked flashes as a monolithic device and treat in SPI
+>> NOR some array of flashes, to have a layer above which probes the SPI MEM
+>> flash driver for each stacked flash. In your case SPI NOR would be probed
+>> twice, as you use 2 SPI NOR flashes.
+>>
+>>> stacked/parallel handling in the MTD layer.
+>>> https://lore.kernel.org/linux-mtd/20200114191052.0a16d116@xps13/t/
+>>> However, the Device Tree bindings were initially not accepted.
+>>
+>> Okay, thanks for the pointer. I'll take a look.
+
+haven't yet read the thread from above, but I skimmed over the AMD
+controller datasheet.
+
+>>
+>>> Following a series of discussions, the below bindings were eventually
+>>> merged.
+>>> https://lore.kernel.org/all/20220126112608.955728-4-miquel.raynal@boot
+>>> lin.com/
+>>
+>> I saw, thanks.
+>>
+>>>
+>>>> the stacked/parallel modes. This way everything will become flash
+>>>> type independent. Would it be possible to stack 2 SPI NANDs? How
+>>>> about a SPI NOR and a SPI NAND?
+>>>>
+>>>> Is the datasheet of the controller public?
+>>>
+>>> Yes,
+>>> https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/Quad-SPI-Control
+>>> ler
+>>>
+>>
+>> Wonderful, I'll take a look. I see two clocks there. Does this mean that the
+>> stacked flashes can be operated at different frequencies? Do you know if we
 > 
-> So - risking this blows up into a lot of nasty work: Why do we even
-> clear the uptodate flag on write errors?  Doing so makes not sense to
-> me as the data isn't any less uptodate just because we failed to write
-> it..
+> In stacked configuration, both flashes utilize a common clock (single 
+> clock line). In a parallel setup, the flashes share the same clock but 
+> have distinct clock lines. Please refer the diagrams in the sections 
+> below for reference.
+> https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/QSPI-Flash-Interface-Diagrams
 
-Historic reasons I'd say (buffer_write_io_error isn't *that* old - from
-2003 it seems). And yes, it would make a lot of sense to keep uptodate flag
-set and just rely on buffer_write_io_error() but it also means going
-through all buffer_uptodate() checks in filesystems and determining which
-need changing to buffer_write_io_error() which is something nobody is keen
-on doing ;)
+Thanks! Can you share with us what flashes you used for testing in the
+stacked and parallel configurations?
 
-								Honza
+>> can combine a SPI NOR with a SPI NAND in stacked configuration?
+> 
+> No, Xilinx/AMD QSPI controllers doesn't support this configuration.
+> 
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2 SPI NANDs shall work with the AMD controller, right?
+
+I skimmed over the QSPI controller datasheet and wondered why one would
+get complicated with 2 Quad Flashes when we have Octal. But then I saw
+that the same SoC can configure an Octal controller (the Octal and Quad
+controllers seems mutual exclusive) and that the Octal one can operate 2
+octal flashes in stacked mode :).
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
