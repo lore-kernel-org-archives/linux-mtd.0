@@ -4,90 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66D10C4167B
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 06:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80D9AC4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 07:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=F9hsEgEEo0STESEC6x0OBOPM2xK6+JgEj3le0hpFjSY=; b=OS2XVkmEIhnq96OyKcHddx1sXn
-	BYghWEgz2NrLGPUo5muxD7L9K/fv7GQLuGtWPOprxssfHO6MmU664Zys5cv/rXpu1GT29Unb824C+
-	4p0140bnw6cyHIn8tjEB4GvWgGuUlk8BylsghjKG1a5JXg9Ifc57Lex14iifWivdksMD0OtDeuvui
-	2fyGUZxWAJ4IfPBySxa0NIfxMscxmxhncKxEY/HTpDX1aMsi6TKKxif2xOXMgI/d+tUODdXNd9KJi
-	YTc1+RDwyU1u+F3P+XAvbciiKN6G2ghDoSkwbGm+UycKpWDqDkyOAco6fY8BePmDZkWIZSVBucqJv
-	GOh49QHA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ROUx9u4m+SY68R5d1Ts3SZVAVMQAvlFFS7DXoxXzOtg=; b=rz/fFL7qrQcoYy
+	eeciTBA42c9dXP115h4xCaedJtr3Xgwmk1QYH1PODLHPQKGkxVVMcMAMyjakHLBKXy9AWTJZmW6MR
+	hEnLU3QIt8V1YVT4I3UdB3gKvrOkuXzWUgyAFTq+I7JWaCYpn5ZA/Fi5m/HNKUrNaiP+nA1/DvM92
+	2Dy9MjP1oYs1/Dn8TsXTJtCk8Mgivs4E0qcKmQGLG45240appJgRuQMf7OYcGB4ebhwX65oxY9/60
+	ww4rZIR5pyWfKSo2+kf2729Pi4SemXaZfboECMd2Vye3FQhVfus619hiYi7JNKpXY/Xpyn62JYo5h
+	pcdx0TAGgZk36I2feEmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCwaa-00AseE-30;
-	Tue, 12 Dec 2023 06:49:56 +0000
-Received: from dggsgout12.his.huawei.com ([45.249.212.56])
+	id 1rCxRc-00AwzT-08;
+	Tue, 12 Dec 2023 07:44:44 +0000
+Received: from mail-oo1-xc2a.google.com ([2607:f8b0:4864:20::c2a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCwaX-00AsdM-1x
+	id 1rCxRZ-00AwyR-0j
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Dec 2023 06:49:55 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sq8P04Cd8z4f3jXv
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2023 14:49:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 0DFC31A0CA7
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2023 14:49:43 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCnqxGDAnhl4n6yDQ--.9546S3;
-	Tue, 12 Dec 2023 14:49:42 +0800 (CST)
-Subject: Re: [PATCH RFC v2 for-6.8/block 11/18] erofs: use bdev api
-To: Gao Xiang <hsiangkao@linux.alibaba.com>, Yu Kuai
- <yukuai1@huaweicloud.com>, axboe@kernel.dk, roger.pau@citrix.com,
- colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
- martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
- konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
- p.raghav@samsung.com, hare@suse.de
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140722.974745-1-yukuai1@huaweicloud.com>
- <1812c1bf-08b5-46a5-a633-12470e2c8f18@linux.alibaba.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7465ebce-1290-e258-13cf-146fa4fd6302@huaweicloud.com>
-Date: Tue, 12 Dec 2023 14:49:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	Tue, 12 Dec 2023 07:44:42 +0000
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58d18c224c7so2906984eaf.2
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Dec 2023 23:44:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702367079; x=1702971879; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CVyNkE7xMkhklYgaZ0S9yWEZX3/jVgffCVBej7CzE5Y=;
+        b=hB/FVJ2av5dfZz+8sWS0SjNjMaJHGpROfih8RJqyjmhRoh47ywkT5kRJD6qQ21uMnl
+         wzA2xb65zDSeuMutd9piyXstnOcprH7f7C8Iy2oinGblKrOD2UPW2I5F00ZTpFaBMmE4
+         PpLRO6uhkXKXpPDa/5xtJI/DYY7R/uzJBdOVtl7v2m4qDvUbSfmbQtikAjmFyRDNocrx
+         6rPVl3XLji+oLSWRtcUnTpXTHT48iVYLkMDSLBau5q18UOattThAtdjroxhrEeQJv3KS
+         xARPpxu+LMp2+XCLb0/VgvtOWOAB44za5PxutlP7V+t1Ah0+KOeLyqTsswCPpPk4/53a
+         BcGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702367079; x=1702971879;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CVyNkE7xMkhklYgaZ0S9yWEZX3/jVgffCVBej7CzE5Y=;
+        b=UovTpygQt14IAH029Y+oSjM0yVJfBDJlGvsz/01EKOg5uMqggZ6ZPLjg5znPtq8JLJ
+         PJw0PCHKcJqMrCyw2wOUoObfybX5so62PSTQOanz+tl2NA77PVDm7MOeJAsrkE6gUX5F
+         XMOjJXn6yUcyTDpBxNoBFlY7azh9rDqBI8lk0Y7mY+51soSJMFeMmt0hy6OKDWwxLwj1
+         VmpRvIO+EKMJOWjuUt7pxhwxPpydf14Uq4mtYOU/Z10INTqtBqM3Z0hygJg7ClLZp2N8
+         SNSNlfLPMgxO8cVumj3IRL5BtTbyS/6SYWNXYDRKXtaEx+2omORGMWzLTuaF6ETtZ2PE
+         rS/Q==
+X-Gm-Message-State: AOJu0YzXg9phxFpqJOPVztApnSTDABCcr0xQyQPoFvbQBcXyXz/+zObY
+	9a1BeKOBic8r9YTewduRhv+K7wdr+79Nvx6n4Cs=
+X-Google-Smtp-Source: AGHT+IH3g6610by3FlbXCytN2CFFIUVFkJ/OOZkmbfbgiATzWhze0MYC9FDI6oLhoPWqOqrl+f+cIcOWU3Y/VtQftJU=
+X-Received: by 2002:a05:6358:9fa4:b0:170:2f73:84b4 with SMTP id
+ fy36-20020a0563589fa400b001702f7384b4mr2724057rwb.54.1702367078881; Mon, 11
+ Dec 2023 23:44:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1812c1bf-08b5-46a5-a633-12470e2c8f18@linux.alibaba.com>
-X-CM-TRANSID: cCh0CgCnqxGDAnhl4n6yDQ--.9546S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw45Jr1kGFWxtFWfXFyUtrb_yoW5Kw4fpF
-	ykAFy8GrWrJrn5ur1xXr1UZFy5t397Ja18Cw4xX3WFvw4UJr10gFy0qr1qgF1UKr4kGr40
-	qr1Ivr97ur1UJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9a14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_WFyU
-	JVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJr
-	UvcSsGvfC2KfnxnUUI43ZEXa7VUbJ73DUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20231130083854.55221-1-jaimeliao.tw@gmail.com>
+ <20231130083854.55221-6-jaimeliao.tw@gmail.com> <eb145cfb0cf10330f5125f0c7d2224eb@walle.cc>
+ <CAAQoYRm=5smXRSRJki8MB3yOuh4UeQO4oBYG8JSG29bbyADHGA@mail.gmail.com>
+ <d42c102528ac8d4188147b6e23b18612@walle.cc> <CAAQoYRnF5zn+RH6LaQfPioOnbRADG8LXBuVpBbQvDGGYqJX1-g@mail.gmail.com>
+ <d32f9632-7d03-4a78-9bf9-622de518cb28@linaro.org> <d754407b5e7a6cbe58ac3ac4af8e1acc@walle.cc>
+In-Reply-To: <d754407b5e7a6cbe58ac3ac4af8e1acc@walle.cc>
+From: liao jaime <jaimeliao.tw@gmail.com>
+Date: Tue, 12 Dec 2023 15:44:19 +0800
+Message-ID: <CAAQoYRkJ145nTAUcy4eNeC9N4S1TVLrnRv0DnbZLWDuO4bevHA@mail.gmail.com>
+Subject: Re: [PATCH v6 5/7] spi: mxic: Add support for swapping byte
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org, 
+	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
+	jaimeliao@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231211_224953_997041_3D003C44 
-X-CRM114-Status: GOOD (  15.72  )
+X-CRM114-CacheID: sfid-20231211_234441_265367_6DBAE4DF 
+X-CRM114-Status: GOOD (  22.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,72 +87,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgrlnKggMjAyMy8xMi8xMiAxNDozNSwgR2FvIFhpYW5nIOWGmemBkzoKPiAKPiAKPiBPbiAy
-MDIzLzEyLzExIDIyOjA3LCBZdSBLdWFpIHdyb3RlOgo+PiBGcm9tOiBZdSBLdWFpIDx5dWt1YWkz
-QGh1YXdlaS5jb20+Cj4+Cj4+IEF2b2lkIHRvIGFjY2VzcyBiZF9pbm9kZSBkaXJlY3RseSwgcHJl
-cGFyZSB0byByZW1vdmUgYmRfaW5vZGUgZnJvbQo+PiBibG9ja19kZXZjaWUuCj4+Cj4+IFNpZ25l
-ZC1vZmYtYnk6IFl1IEt1YWkgPHl1a3VhaTNAaHVhd2VpLmNvbT4KPj4gLS0tCj4+IMKgIGZzL2Vy
-b2ZzL2RhdGEuY8KgwqDCoMKgIHwgMTggKysrKysrKysrKysrLS0tLS0tCj4+IMKgIGZzL2Vyb2Zz
-L2ludGVybmFsLmggfMKgIDIgKysKPj4gwqAgMiBmaWxlcyBjaGFuZ2VkLCAxNCBpbnNlcnRpb25z
-KCspLCA2IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZnMvZXJvZnMvZGF0YS5jIGIv
-ZnMvZXJvZnMvZGF0YS5jCj4+IGluZGV4IGM5OGFlZGE4YWJiMi4uOGNmMzYxODE5MGFiIDEwMDY0
-NAo+PiAtLS0gYS9mcy9lcm9mcy9kYXRhLmMKPj4gKysrIGIvZnMvZXJvZnMvZGF0YS5jCj4+IEBA
-IC0zMiw4ICszMiw3IEBAIHZvaWQgZXJvZnNfcHV0X21ldGFidWYoc3RydWN0IGVyb2ZzX2J1ZiAq
-YnVmKQo+PiDCoCB2b2lkICplcm9mc19icmVhZChzdHJ1Y3QgZXJvZnNfYnVmICpidWYsIGVyb2Zz
-X2Jsa190IGJsa2FkZHIsCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZW51bSBlcm9mc19rbWFw
-X3R5cGUgdHlwZSkKPj4gwqAgewo+PiAtwqDCoMKgIHN0cnVjdCBpbm9kZSAqaW5vZGUgPSBidWYt
-Pmlub2RlOwo+PiAtwqDCoMKgIGVyb2ZzX29mZl90IG9mZnNldCA9IChlcm9mc19vZmZfdClibGth
-ZGRyIDw8IGlub2RlLT5pX2Jsa2JpdHM7Cj4+ICvCoMKgwqAgZXJvZnNfb2ZmX3Qgb2Zmc2V0ID0g
-KGVyb2ZzX29mZl90KWJsa2FkZHIgPDwgYnVmLT5ibGtzemJpdHM7Cj4gSSdkIHN1Z2dlc3QgdGhh
-dCB1c2UgYGJ1Zi0+Ymxrc3piaXRzYCBvbmx5IGZvciBiZGV2X3JlYWRfZm9saW8oKSBzaW5jZQo+
-IGVyb2ZzX2luaXRfbWV0YWJ1ZigpIGlzIG5vdCBhbHdheXMgY2FsbGVkIGJlZm9yZSBlcm9mc19i
-cmVhZCgpIGlzIHVzZWQuCj4gCj4gRm9yIGV4YW1wbGUsIGJ1Zi0+aW5vZGUgY2FuIGJlIG9uZSBv
-ZiBkaXJlY3RvcnkgaW5vZGVzIG90aGVyIHRoYW4KPiBpbml0aWFsaXplZCBieSBlcm9mc19pbml0
-X21ldGFidWYoKS4KClRoYW5rcyBmb3IgdGhlIG5vdGljZSwgYW5kIHlvdSdyZSByaWdodCwgSSds
-bCB1cGRhdGUgY29kZSBpbiB2MzoKCnU4IGJsa3N6Yml0cyA9IGJ1Zi0+aW5vZGUgPyBpbm9kZS0+
-aV9ibGtiaXRzIDogYnVmLT5ibGtzemJpdHM7CmVyb2ZzX29mZl90IG9mZnNldCA9IChlcm9mc19v
-ZmZfdClibGthZGRyIDw8IGJsa3N6Yml0czsKCkt1YWkKPiAKPiBUaGFua3MsCj4gR2FvIFhpYW5n
-Cj4gCj4gCj4+IMKgwqDCoMKgwqAgcGdvZmZfdCBpbmRleCA9IG9mZnNldCA+PiBQQUdFX1NISUZU
-Owo+PiDCoMKgwqDCoMKgIHN0cnVjdCBwYWdlICpwYWdlID0gYnVmLT5wYWdlOwo+PiDCoMKgwqDC
-oMKgIHN0cnVjdCBmb2xpbyAqZm9saW87Cj4+IEBAIC00Myw3ICs0Miw5IEBAIHZvaWQgKmVyb2Zz
-X2JyZWFkKHN0cnVjdCBlcm9mc19idWYgKmJ1ZiwgZXJvZnNfYmxrX3QgCj4+IGJsa2FkZHIsCj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoCBlcm9mc19wdXRfbWV0YWJ1ZihidWYpOwo+PiDCoMKgwqDCoMKg
-wqDCoMKgwqAgbm9mc19mbGFnID0gbWVtYWxsb2Nfbm9mc19zYXZlKCk7Cj4+IC3CoMKgwqDCoMKg
-wqDCoCBmb2xpbyA9IHJlYWRfY2FjaGVfZm9saW8oaW5vZGUtPmlfbWFwcGluZywgaW5kZXgsIE5V
-TEwsIE5VTEwpOwo+PiArwqDCoMKgwqDCoMKgwqAgZm9saW8gPSBidWYtPmlub2RlID8KPj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVhZF9tYXBwaW5nX2ZvbGlvKGJ1Zi0+aW5vZGUtPmlfbWFw
-cGluZywgaW5kZXgsIE5VTEwpIDoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmRldl9yZWFk
-X2ZvbGlvKGJ1Zi0+YmRldiwgb2Zmc2V0KTsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIG1lbWFsbG9j
-X25vZnNfcmVzdG9yZShub2ZzX2ZsYWcpOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKElTX0VS
-Uihmb2xpbykpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBmb2xpbzsKPj4g
-QEAgLTY3LDEwICs2OCwxNSBAQCB2b2lkICplcm9mc19icmVhZChzdHJ1Y3QgZXJvZnNfYnVmICpi
-dWYsIAo+PiBlcm9mc19ibGtfdCBibGthZGRyLAo+PiDCoCB2b2lkIGVyb2ZzX2luaXRfbWV0YWJ1
-ZihzdHJ1Y3QgZXJvZnNfYnVmICpidWYsIHN0cnVjdCBzdXBlcl9ibG9jayAqc2IpCj4+IMKgIHsK
-Pj4gLcKgwqDCoCBpZiAoZXJvZnNfaXNfZnNjYWNoZV9tb2RlKHNiKSkKPj4gK8KgwqDCoCBpZiAo
-ZXJvZnNfaXNfZnNjYWNoZV9tb2RlKHNiKSkgewo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgYnVmLT5p
-bm9kZSA9IEVST0ZTX1NCKHNiKS0+c19mc2NhY2hlLT5pbm9kZTsKPj4gLcKgwqDCoCBlbHNlCj4+
-IC3CoMKgwqDCoMKgwqDCoCBidWYtPmlub2RlID0gc2ItPnNfYmRldi0+YmRfaW5vZGU7Cj4+ICvC
-oMKgwqDCoMKgwqDCoCBidWYtPmJkZXYgPSBOVUxMOwo+PiArwqDCoMKgwqDCoMKgwqAgYnVmLT5i
-bGtzemJpdHMgPSBidWYtPmlub2RlLT5pX2Jsa2JpdHM7Cj4+ICvCoMKgwqAgfSBlbHNlIHsKPj4g
-K8KgwqDCoMKgwqDCoMKgIGJ1Zi0+aW5vZGUgPSBOVUxMOwo+PiArwqDCoMKgwqDCoMKgwqAgYnVm
-LT5iZGV2ID0gc2ItPnNfYmRldjsKPj4gK8KgwqDCoMKgwqDCoMKgIGJ1Zi0+Ymxrc3piaXRzID0g
-RVJPRlNfU0Ioc2IpLT5ibGtzemJpdHM7Cj4+ICvCoMKgwqAgfQo+PiDCoCB9Cj4+IMKgIHZvaWQg
-KmVyb2ZzX3JlYWRfbWV0YWJ1ZihzdHJ1Y3QgZXJvZnNfYnVmICpidWYsIHN0cnVjdCBzdXBlcl9i
-bG9jayAqc2IsCj4+IGRpZmYgLS1naXQgYS9mcy9lcm9mcy9pbnRlcm5hbC5oIGIvZnMvZXJvZnMv
-aW50ZXJuYWwuaAo+PiBpbmRleCBiMDQwOWJhZGIwMTcuLmM5MjA2MzUxYjQ4NSAxMDA2NDQKPj4g
-LS0tIGEvZnMvZXJvZnMvaW50ZXJuYWwuaAo+PiArKysgYi9mcy9lcm9mcy9pbnRlcm5hbC5oCj4+
-IEBAIC0yMjQsOCArMjI0LDEwIEBAIGVudW0gZXJvZnNfa21hcF90eXBlIHsKPj4gwqAgc3RydWN0
-IGVyb2ZzX2J1ZiB7Cj4+IMKgwqDCoMKgwqAgc3RydWN0IGlub2RlICppbm9kZTsKPj4gK8KgwqDC
-oCBzdHJ1Y3QgYmxvY2tfZGV2aWNlICpiZGV2Owo+PiDCoMKgwqDCoMKgIHN0cnVjdCBwYWdlICpw
-YWdlOwo+PiDCoMKgwqDCoMKgIHZvaWQgKmJhc2U7Cj4+ICvCoMKgwqAgdTggYmxrc3piaXRzOwo+
-PiDCoMKgwqDCoMKgIGVudW0gZXJvZnNfa21hcF90eXBlIGttYXBfdHlwZTsKPj4gwqAgfTsKPj4g
-wqAgI2RlZmluZSBfX0VST0ZTX0JVRl9JTklUSUFMSVpFUsKgwqDCoCAoKHN0cnVjdCBlcm9mc19i
-dWYpeyAucGFnZSA9IE5VTEwgfSkKPiAuCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+Hi Michael
+
+>
+> Hi,
+>
+> > I know for sure that mchp's sama7g5 xSPI controller can swap the bytes
+> > back on the fly. What I did was to check the dtr_swab16 bool at runtime
+> > in the exec_op() method and if it was true, I had to write a
+> > configuration bit. I can't remember why I haven't posted a v2 on that
+> > series, maybe I'll do it if I find some time or I ever get bored. I
+> > have
+> > a board. Anyway, knowing that there's a board out there, sama7g5ek,
+> > that
+> > contains a macronix flash that swaps bytes and also have a controller
+> > that can swap them back, would it be acceptable to queue just the SPI
+> > NOR patches for now?
+>
+> I'm still leaning towards not putting any unused code into the kernel
+> and (maybe) increase maintenance. Or code which might need to be
+> adjusted
+> later if it will actually be used. Without a user, we won't see the
+> whole picture and - at least I - cannot judge whether that approach is
+> correct then.
+>
+> I'd say, if you ever get board, take this patch again together with the
+> user :)
+Is it necessary to prepare v7 or spi-nor patches will be accept?
+
+>
+> -michael
+
+Thanks
+Jaime
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
