@@ -4,74 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B316C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 09:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD931C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 11:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vttFHNlJZ6kMZ3kV0RKtO8YrwFcV5lTdezko+E42hdE=; b=RJBUAhAuvF0iMC
-	7m6JbZev0UVzxQUSuO9eZWdv8WZuu8b/BnBNc+aSHqmJu70bVj7LkKumjBp7TV4Te6lN3g4xiOfMe
-	Ewx71LWW0NO4HkUnMvQy0qh1LBG5P1llMzjpWL2LUrpHnMQ6rYMLEenjOO5uiVkbvAnOaitfEsnJ9
-	WSLy+0lQQ6OJNTkiPybvDPMdaz17RkWNXwKQjtUfEJR26/TOQlrZ1sFqJ9eD/O9zSE+GQkwFHTfwm
-	hkZszQswYF7icUtmu/HU7C/jvbXXQjkq/kcae9dPC8R7G8qmQ8tlC2Calctsj1UQV016DolW2U/Rh
-	5BmF89ADS3uulJrd94fA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=N1XiY9NBoWfTJ7DmF4m3/Di/yS/Acx7NqgtQgKQaoOM=; b=MxgRVIlMRLuT+1Nh50BmGixwW1
+	pa/+PuhrZOpLVOBNh8EnKLj6v/GLA8v4NnjxIv3Ey1GbAXyScplI/hZ2ij4+mF2UdEejdlnzEDdc3
+	0kLgt7nquDCjKdUC0467kxiFFdY0Vrg/LJH1YSdsY1fpl++VkWftwXuaXrRaapx159RLJ9CSfTeer
+	Ovejhq1q4mjLuW8Rre2lJxzu2N7/biVwPk4T0hU3EZcdXKx4t2VfBQd9vjHz+LsyYOmQ/rIX+91Vc
+	ZRdO+2V1ncNI0TfoaHXNC8wUdoc+KYgMOLrHR6Pk1dmRZUo2Py4QcuFaksRROhqQ3RGdDr4JOY+wU
+	Bus2IVFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCyiB-00B8CB-2j;
-	Tue, 12 Dec 2023 09:05:55 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1rD1Lo-00Baav-1R;
+	Tue, 12 Dec 2023 11:55:00 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCyi8-00B8B3-21
+	id 1rD1Ll-00BaaR-12
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Dec 2023 09:05:54 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d0bb7ff86cso47561565ad.1
-        for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2023 01:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702371949; x=1702976749; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8J3ToT2VvaAxPO3SoURCiKLrbweGhEdkkz9IvoFcDFw=;
-        b=RKCbXfHxw9DsL8RtlnioZHkcmzng2IbQKaUfKytspDq515uZhnJQ4h/xf1uQO4GmVN
-         gfN3Gi/nzKaDgZWNKoT6fUoIxeAy58kkWsR8P8E9ysmcINE0TVmosHbmJho11OFDv5WB
-         zWf7yAanNA/ET5P9uiMwLfjWr4n6IYWWNLcO7d1+/WeWfqQgIM53ge0HkIZ5eAu2TaSG
-         gBzitznXQExqwGEzC8PL/SsgEyFB3j5bTDenDbhstyposjHegzFso6OGAb6PQvwchqzG
-         s3wcJxJrxxmQn7AvSTTv1AYLVw68qM+LILab3YDfL4MDHK/v0BMd5b3eZ5RsyE2PagIv
-         yOnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702371949; x=1702976749;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8J3ToT2VvaAxPO3SoURCiKLrbweGhEdkkz9IvoFcDFw=;
-        b=kSWna3K33UPdZTL0iEgnDstqa7cErCa2hFF0fhTtXXRQKaYNpwwa6Q/q8FXzS+Tyat
-         /3rv5SuseUsgnJOcFO9aNVmHsSbjo3At5190wZPw+/vYo4NIADswcOg6cRwtyX1ujdnt
-         ZiESbD+XZPhcgz8lEcVEZP1etcrBDcXkcuYsUc4UY8pLp3LhzGcO+LD1ux4LAllrqgLq
-         wUW8fQgMwrQFsIqLAyW2DAhK7ijwDU6NhHRv2vPNPlslhnOT6oR9XOHduqMdQq7YWLFo
-         UB6hKsWTq4YEbLwDJh7MliDCe0T8U2ux3LsXtOXfYCMC7N+KaXAI8eNlKK+GmM9Yha3y
-         HuZA==
-X-Gm-Message-State: AOJu0YzYcDBW8cvvKXU5gKT6TOyzFrxvHv/3b0IOMAsdfGwQWcSb2nMD
-	cs2jOgNWfkOwvTl1xpdNpGAtz6ZTCS8EmXT2ymc=
-X-Google-Smtp-Source: AGHT+IGlbaB0drAezYggITPbdD6KESkZfGF006AAn2QqGx2yUUB7PErPRlJZVfFcoz2yQKCSVh1fweCwbqtJp79bjhQ=
-X-Received: by 2002:a17:90b:33cb:b0:286:7529:3598 with SMTP id
- lk11-20020a17090b33cb00b0028675293598mr7559037pjb.13.1702371949499; Tue, 12
- Dec 2023 01:05:49 -0800 (PST)
+	Tue, 12 Dec 2023 11:54:58 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rD1KL-0007kg-9r; Tue, 12 Dec 2023 12:53:29 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rD1KH-00FKLk-Ov; Tue, 12 Dec 2023 12:53:25 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rD1KH-001bPz-E7; Tue, 12 Dec 2023 12:53:25 +0100
+Date: Tue, 12 Dec 2023 12:53:25 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: nikita.shubin@maquefel.me
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Lukasz Majewski <lukma@denx.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+	netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v6 00/40] ep93xx device tree conversion
+Message-ID: <20231212115325.m4w6cg4ttdispkvm@pengutronix.de>
+References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
 MIME-Version: 1.0
-References: <20231207075147.21851-1-jaimeliao.tw@gmail.com> <f015ef75d6bb0a9f8edba37b40affb60@walle.cc>
-In-Reply-To: <f015ef75d6bb0a9f8edba37b40affb60@walle.cc>
-From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Tue, 12 Dec 2023 17:05:30 +0800
-Message-ID: <CAAQoYR=8b7NR8h0SHz=bp9=XHzZebDQhPUOc20b0eAF6Vd1kAw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: core: Introduce spi_nor_abort_octal_dtr()
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org, 
-	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
-	jaimeliao@mxic.com.tw
+In-Reply-To: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231212_010552_710647_D26A73C5 
-X-CRM114-Status: GOOD (  10.90  )
+X-CRM114-CacheID: sfid-20231212_035457_362120_4DF2A0EB 
+X-CRM114-Status: GOOD (  17.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,40 +106,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8629542696207449561=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael
 
->
-> > Some flashes contains 8D_8D_8D information in SFDP but did not enter
-> > octal DTR mode if conditions are not satisfied.
->
-> What exactly are these conditions? Rather than "abort" the octal mode,
-> the flash shouldn't have that capability in the first place.
-"Abort" is not a good word.
-Is it better for using "discard"?
-3 conditions should be satisfied before enable octal dtr mode.
-1. function hook in nor->params->set_octal_dtr
-2. nor->read_proto and nor->write_proto are SNOR_PROTO_8_8_8_DTR
-3. nor->flags & SNOR_F_IO_MODE_EN_VOLATILE
-Flash driver still bring 8D_8D_8D protocol instructions in 1s-1s-1s mode if
-conditions are not satisfied.
-In a case, flash ID didn't include in vendor's ID table.
-It will be "spi-nor-generic".
-8D-8D-8D information could be parsed in SFDP but nor->params->set_octal_dtr
-didn't hook vendor specific function for enabling octal dtr mode.
-So that it still bring 8D protocol in 1s-1s-1s mode and have no chance
-to select 1-1-8 protocol.
-I think it may better to re-select a suitable protocol for this case.
+--===============8629542696207449561==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="aamqyrxtxz2kjjms"
+Content-Disposition: inline
 
->
-> -michael
-Thanks
-Jaime
+
+--aamqyrxtxz2kjjms
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Tue, Dec 12, 2023 at 11:20:17AM +0300, Nikita Shubin via B4 Relay wrote:
+> No major changes since last version all changes are cometic.
+>=20
+> Following patches require attention from Stephen Boyd, as they were conve=
+rted to aux_dev as suggested:
+>=20
+> - ARM: ep93xx: add regmap aux_dev
+> - clk: ep93xx: add DT support for Cirrus EP93xx
+>=20
+> DMA related patches still require Acked or Reviewed tags.
+>=20
+> got approval LGTM from Miquel:
+> - mtd: rawnand: add support for ts72xx
+> Link: https://lore.kernel.org/lkml/20231004103911.2aa65354@xps-13/
+>=20
+> new patches:
+>=20
+> ARM: ep93xx:  Add terminator to gpiod_lookup_table
+>   - fixed terminator in gpiod_lockup_table
+>=20
+> So mostly all patches got approval.
+>=20
+> Patches should be now formated with '--histogram'
+
+You didn't mention how this should be merged. IIRC for the earlier
+rounds the idea was to merge it all together via arm-soc when all
+necessary agreement is reached. I assume that's still the case here?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--aamqyrxtxz2kjjms
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV4SbQACgkQj4D7WH0S
+/k4PhAf9FUkX+fzsz5zB6lrl7lgCvYm5ZVb3B7jDw5VKDO3L/jcpIQBnKW28hqdN
+fjyiqoG4kcqJrqfSN7RxYVHnxPmPMREuU5dkbLnXs4nakNuG6kYOLoWYRW6g7LHA
+2aJAqNPA3r1vRHwgyLaSlwVy4TxsWEJoU/Wa7pnN5VGjjyA22i9iruZRGzbsfSbG
+b4TPtncg2+HG5Z2NtBTY2w2wy/0XOTgO40vcUbW+gfh+ktRpJl5quupeZdYByknj
+l9QU3yt6tCJoKvAXYc2/jykymWajShXD0UJhcLTTYcWnQYEgfLWypFNR4YXJmJGC
+SbVz5vPzsa56pT4BPvsUI7alw9v79g==
+=T2K5
+-----END PGP SIGNATURE-----
+
+--aamqyrxtxz2kjjms--
+
+
+--===============8629542696207449561==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8629542696207449561==--
+
