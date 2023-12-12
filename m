@@ -4,124 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C097C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 13:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA001C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Dec 2023 13:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jAXmoWsSQXqtX5odLWdHl5tczcDGKqjFjzQ31HLomAw=; b=jAKFfdyVwitBU0
-	jLzlRJVcMwN27i7zulYZ2qvEkVZavIYp8tuB0DMNXmTcCZ2nZlYFa4QdGwLSU3sUFYDGTnqjBbWc/
-	aza1j81XMn85LIcrI9oFAQLUQCNxFt6/bH50MXmLeX8jFhxD8W6YLg/3e1DQ7Ml/bk5Ghdz/bNkQq
-	N1U2TNqiMu4iPk1Af3V8szFW+G0ihDsuaxeiOG9rcVnkqjScvVa5Tx6Boqs/Qvy9P35vATUG1Mwbb
-	mDd5haoRrNj+vgCZYCeiKjVU5XfDpgMI3UVTcONeKQxI/u3Zr2GvOeqZrZpMxmWnt4UNvou65oLH0
-	Y0C7lWFJiyz4NGBhZ7CQ==;
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=y4Ki1nOfKVpixQn3hVgmaEvtjSmbc4GVZpCS6QMhFP0=; b=dkXcOFh5ktCLQwGLMdjvZoE+U0
+	VrWWxaF2nfZWxoGjenfKx0xca8pkI0UO0WsGaWDcL6M7N4qyzbebK29wShbOVU+cUTyw/N+zMg1zO
+	CQnBUZN9ZvywPYfZ2CO0PZVJddZAM34dxF9b+8MUvL2H/r0uj4jLJvVsgdtb28pAeBAXlWgTX6i2K
+	XQ59MIcvK9OLmaI5gU+THR7g4ooyG1Gi3t4xcJEDX0PWgy5rkVvi3vriBj1UxyhX7aAzOfsN3HkwV
+	+DA2ozlEW14mLEZqjZcZocbHY+eMAZdXvar3SD0axPHo7tKr27I7ci62XmhagopwfKhH9exQ7ZZE9
+	Z18QaX1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rD2s2-00BoeB-2f;
-	Tue, 12 Dec 2023 13:32:22 +0000
-Received: from mout.gmx.net ([212.227.17.21])
+	id 1rD2wv-00BpMT-24;
+	Tue, 12 Dec 2023 13:37:25 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rD2rz-00Bocn-1H
+	id 1rD2ws-00BpL9-0a
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Dec 2023 13:32:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1702387923; x=1702992723; i=deller@gmx.de;
-	bh=fB8PiBcuhvGnNUkT7BldfgICp+Ldg32EiwwpyCNS/ak=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=f4Q0fog3SlvFu5iNl7pTXJ3ZdZm0IBsfKHIoV8w5EQHrnfC8/xxvI770QTNt321s
-	 kaVhVMxb2kWYSXcg9ec/ndhesTiEgMkyOwmeAnIxM/UtjAQro3QMCTSNB7QccSwiV
-	 NUqi98VR5S+7jFFmtmjCgrp6DJD5jKPRxDsIGp75FKBQTTA5Oap7s4IzkjXm8oD8O
-	 OTLLPssNvF39uLzYCqr7pBkBeZ+kGJyIj1etcWzAVZGx9fSzqJqhx4VePiu2wr1fh
-	 rk9upbAlXE2Di6PDcgABK48HGNWXpsNAHcIxo5KESDp0b15cp3DTQxQHRw4W/NgB2
-	 50G12kecqdTwe5RfUA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MtfJX-1rUSA01wzf-00vA8S; Tue, 12
- Dec 2023 14:32:03 +0100
-Message-ID: <1f800b42-03a2-452e-b2a3-912250936413@gmx.de>
-Date: Tue, 12 Dec 2023 14:32:01 +0100
+	Tue, 12 Dec 2023 13:37:23 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id EFAC7A31;
+	Tue, 12 Dec 2023 14:37:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1702388238;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g2OGLpqn9BAIlGeS4tNMxjJ8RCA/Y+BNhLEX0wxUXrw=;
+	b=L1zRTNmn/7fPZmIn9zM6MsXjyE/JxVdhFCsA88iz+Hr/dkfnGZ1aR0PiwMAQGrlH1Z8Odl
+	yWra2zFBglIjFYPbubgb04ySt0qPGBeiwJ9ovhI9mNi+qTFl3QUstCKvjjSLfHOfKsMo2y
+	12TFV+3E9hkrXa5q9iz3WLjFYQefBNlIggEOeC3XwgcBlt2mT8ZYSimZYJn0QVogD0TSzJ
+	MEAN99nI579owoVY3jUzN0IxmzPSM/JzaXZY7vwK69cVVrAMgvSvEefLT9EMzjEAW9qEkk
+	nK0v3Kg3fori663au2ZUFlijLE+5WbW2fVkFEr06MB9e41BC8WR9qqO7U+4SDA==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] fbdev: Remove support for Carillo Ranch driver
-Content-Language: en-US
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- linux-fbdev@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Lee Jones <lee@kernel.org>,
- Andy Lowe <alowe@mvista.com>, Thomas Hellstrom <thellstrom@vmware.com>,
- Alan Hourihane <alanh@fairlite.co.uk>
-References: <20231208224703.1603264-1-willy@infradead.org>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20231208224703.1603264-1-willy@infradead.org>
-X-Provags-ID: V03:K1:BRJmEkGqYOZyzRlqUk63K4rJprAmn7UmKJYRspfJse6lLB+F/6a
- EcPNNOy9Cy2C1T+QfIGy6C0EN/LuB3eMJjoS1CgQSdC3Ctk4lMhzKknxNOTuqemBvxg9hyZ
- cDabJ/1X+VGz1ECLTxLgM/9D1cVt7lQ5ZrqiL4FGsdoXVAVvJlsKu/7/6mK1llfLezjNUOF
- ITDfoLfkYy8RyH6O9/GkA==
-UI-OutboundReport: notjunk:1;M01:P0:IbC+rewAqxI=;udtC9rOmNWDsPoiiAH8R7sgC+Mq
- L7JXuUXpakhGBDH73aVpmeyslMyi552f0zVVksEElMoLz39tCEMTP2AG1RTbQ79tPpVSvMLHV
- fKpu0Ebn4GVZLZ9qI48MIXgK03DlDIPf8qJBUNdxdXRNLh0uxZ6uY0Tvg43nPhlFGpXM0Tzqi
- TR15A4cMhcvMXUPBVr9l9LRDshjWetRMG/EALyrnDx1lz6S7An+NKloyi6cMbV8Or9aulY+TT
- 2aCgj6AbDj+oKK49t90OyDCpBxZOG/zmOyBhi1hzpiKxGjccBAuIX1+FUQ8wwLz5vCyRIBE/M
- 9G0zLOa5O8gZopzacpjkuynINpNBaK/fLcdGRa3xW98fBvN6yI61u+xRZUzqUJ6ayD4ODm5Ix
- oldenz8LVQek6ot4hRyq6a3PqFecuDRMfHi4a8sg5YaNHQwq2ie6tcULdlzCOLjmqJNQy3/DQ
- 9JVe+hxJ7D8ViLK4O2ElE1UScErJnBOllByP4iahfxbUu/42FtDHzME3U3gk7gc8H5xuVfWoj
- Vnu8PIxZJbwgVjMf2brEFB9BxdabF+r4GujZz1CRR5dP0iMTylu12toc1mYc04i/nUlR8HqV7
- tXTKXxthYRF9Cl4LW54zFjB3NTyUpxFb/BDb23Oe2fa1Xn8NnHWIFC4xSeil3prA2fE0e577A
- m4YJkIPii0xjNY40uoopgDfldg0Dgg0PwoLWbcObz9GjGsvjSDYAf8z4Zr90OF/O5u5682fGC
- QuOd83vXu5oViky07240DN3/Idd2gbeozvJOycZ2Bp0avEVvBvwxdH7zY8wraQoPxMHScGk0G
- x7AeLuzwuHf1LhtZ0T3BKUN6V/3yv3m1BC6+8MG/xrcRWck6i3d7s8wTuisXsOYZyLGcxZYX5
- cdr6ve5Eg1UdkA+WcCk+7xYxy+9xRoy/yNLqI32lvib9unW9DFonQDX676C6exje4YiPaHk24
- Jl0I5wS42r5TScLrrrgvaera8Vg=
+Date: Tue, 12 Dec 2023 14:37:17 +0100
+From: Michael Walle <michael@walle.cc>
+To: liao jaime <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
+ jaimeliao@mxic.com.tw
+Subject: Re: [PATCH] mtd: spi-nor: core: Introduce spi_nor_abort_octal_dtr()
+In-Reply-To: <CAAQoYR=8b7NR8h0SHz=bp9=XHzZebDQhPUOc20b0eAF6Vd1kAw@mail.gmail.com>
+References: <20231207075147.21851-1-jaimeliao.tw@gmail.com>
+ <f015ef75d6bb0a9f8edba37b40affb60@walle.cc>
+ <CAAQoYR=8b7NR8h0SHz=bp9=XHzZebDQhPUOc20b0eAF6Vd1kAw@mail.gmail.com>
+Message-ID: <e08b45ea59a0ba96de99a42ddf7b6769@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231212_053219_724585_9855F415 
-X-CRM114-Status: GOOD (  12.13  )
+X-CRM114-CacheID: sfid-20231212_053722_368280_786206E9 
+X-CRM114-Status: GOOD (  16.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,33 +78,41 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/8/23 23:47, Matthew Wilcox (Oracle) wrote:
-> As far as anybody can tell, this product never shipped.  If it did,
-> it shipped in 2007 and nobody has access to one any more.  Remove the
-> fbdev driver and the backlight driver.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   drivers/video/backlight/Kconfig           |    7 -
->   drivers/video/backlight/Makefile          |    1 -
->   drivers/video/backlight/cr_bllcd.c        |  264 -----
->   drivers/video/fbdev/Kconfig               |   15 -
->   drivers/video/fbdev/Makefile              |    1 -
->   drivers/video/fbdev/vermilion/Makefile    |    6 -
->   drivers/video/fbdev/vermilion/cr_pll.c    |  195 ----
->   drivers/video/fbdev/vermilion/vermilion.c | 1175 ---------------------
->   drivers/video/fbdev/vermilion/vermilion.h |  245 -----
->   9 files changed, 1909 deletions(-)
->   delete mode 100644 drivers/video/backlight/cr_bllcd.c
->   delete mode 100644 drivers/video/fbdev/vermilion/Makefile
->   delete mode 100644 drivers/video/fbdev/vermilion/cr_pll.c
->   delete mode 100644 drivers/video/fbdev/vermilion/vermilion.c
->   delete mode 100644 drivers/video/fbdev/vermilion/vermilion.h
+Hi,
 
-I've applied this patch to the fbdev git tree.
-It touches the backlight tree, so I hope it's ok for backlight people?
+>> > Some flashes contains 8D_8D_8D information in SFDP but did not enter
+>> > octal DTR mode if conditions are not satisfied.
+>> 
+>> What exactly are these conditions? Rather than "abort" the octal mode,
+>> the flash shouldn't have that capability in the first place.
+> "Abort" is not a good word.
+> Is it better for using "discard"?
+> 3 conditions should be satisfied before enable octal dtr mode.
+> 1. function hook in nor->params->set_octal_dtr
+> 2. nor->read_proto and nor->write_proto are SNOR_PROTO_8_8_8_DTR
+> 3. nor->flags & SNOR_F_IO_MODE_EN_VOLATILE
+> Flash driver still bring 8D_8D_8D protocol instructions in 1s-1s-1s 
+> mode if
+> conditions are not satisfied.
+> In a case, flash ID didn't include in vendor's ID table.
+> It will be "spi-nor-generic".
+> 8D-8D-8D information could be parsed in SFDP but 
+> nor->params->set_octal_dtr
+> didn't hook vendor specific function for enabling octal dtr mode.
+> So that it still bring 8D protocol in 1s-1s-1s mode and have no chance
+> to select 1-1-8 protocol.
+> I think it may better to re-select a suitable protocol for this case.
 
-Helge
+Just that we are on the same page. You are using the spi-nor-generic
+driver, but that driver will elect the 8d8d8d protocol but that won't
+work, because we don't have a .set_octal_dtr. Therefore, the fallback
+is 1s1s1s. Correct?
+
+To me it seems, that spi_nor_select_{read,pp,erase}() will select
+the wrong commands/proto. So it should be fixed there. Probably
+shared_mask is wrong.
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
