@@ -4,78 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98DECC4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Dec 2023 09:17:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5031CC4167B
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Dec 2023 09:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K330c8MFUyB9byuCSLiZZ8WfUSfrQkoYM/t2dg3G1Yc=; b=rU3GPSTRks+ulX
-	sSQvwMjdnyZvS+w6OUdqkBOfyo/hwwahliofpWpMVFz/jXWIZkBmtFfFoRZx40iaFhvVU/Hww5yVR
-	CGtGO8bUt49OszBPA7cYDBmBteGrEs4Q6QZAR9YtufT2uqWkzXuznM/RWGVnudElQMuN0MPpmSi+t
-	p1wetX0EEkUker8folFEtEAJDyJPm4/ojzG0YICIaFkZyIqXJ8zYs9sl5FsOMcHS5Y3zN3VFWfkAe
-	s0npSTJ3lSsmYw+GDT+ufg1hmzq/dqa0diOM21rFQdn+DoVzZQq8xNYZovNyEQqzHI0rMEnzx8i6x
-	AJyM+h7h57JpJW1XL8cQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=o2rm4KVk9y4sg2zNpEXWyhHdA+dO+6Ok1rd/anPzbAc=; b=F9EZYHe3Y7aA7C
+	GkkkYjRD+T4aNxYNwnEpPbJm+JMr44LKGkf6hJPUH+9Ggg4IEetGK4pq25I5FwF7MuBs98mVTj4+/
+	T3TUPwBYhp9b9JzuNQACEvv31K/A1DamSxdl6eNh9LSbLcF4uiDJS8anaWede+h3UAywUM6020nY5
+	Iu4S7IKvGdlsCAQdThhLDzKFfmSgBhcdo2j/aueLOD6ghVWY4hvNC3dc/L4vZIfZtJu/XWAB+jcsI
+	VrbDFGCUsKRnFZm+Z75QBg4NEOf0tdKq5TBAowXR60zXrkVE1PBVcL3wgwfNwTqe3OFI95x8jz+Vi
+	9QM/ooVM0ku+GdSHS9iw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDLMk-00E7tJ-0k;
-	Wed, 13 Dec 2023 09:17:18 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1rDLXG-00E8ow-01;
+	Wed, 13 Dec 2023 09:28:10 +0000
+Received: from mail-oo1-xc2f.google.com ([2607:f8b0:4864:20::c2f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDLMh-00E7rE-0e
+	id 1rDLXC-00E8o6-25
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Dec 2023 09:17:16 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d3470496e2so10223995ad.1
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Dec 2023 01:17:11 -0800 (PST)
+	Wed, 13 Dec 2023 09:28:08 +0000
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-5913b73b53eso980795eaf.0
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Dec 2023 01:28:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702459030; x=1703063830; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6dWtH4l2sr6SInDUeH4HeJtqF5U7qc0sqpIf7I8dGXA=;
-        b=KqlsJUHiHL0+PrJly5CfQNQAG4BIlTvjyZrwWRDa+6R3nEu7A2RhFtIDfF6HL83kv9
-         sVd4LBWbCzzaqUXQBeM7JntDgJ/cNqW/Nj+Dz/1WYGUs6qPC7tzMdJqNVBiOLC5yFztr
-         3l4mdT70TQr0QAt26wjLWkWKaHEmeOPLjhFVMS66MDyiA+a0ci2KAXZcd5Tipk04ripc
-         TF4Sn8XPj69QP3mD6oANeLJ8FRBvCSPBdkVlJIMvKvV7A79UayDcs0K6STsFyyTewKo9
-         OjgI18G57Pb9gZukbOnQNuVjZBzNR+QGz+Lr3pKtaZZ1cSNjI5/+19stCmCey2kuJLG9
-         mo+g==
+        d=gmail.com; s=20230601; t=1702459685; x=1703064485; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Ud5Lm7eBSwaNvfehhx/JZXXqmmz8NLKbRLfi0ylo4g=;
+        b=Xpzw8nSocr4GgglKvV5X8AkTcWdnelcfH30eXQw02BdSSyYX3DpJybEjiabJ6zy/kK
+         CJK/LIKwPbjboUNjJCjUiMJ2xW7lacgdQu7NkzujagiemB1tX6X2zFp8eoEVfMdewjhI
+         lb3dMbA8U+m+Z8gnzOjm4i6Z9XZvyYpxdcNcATpf5eNSJ+ljGDQkCgYYKHcgQ/Ouwjd2
+         25nonvK7IV72SaFYRcmLfdJAKB/sLAVII0BXrTcXTwta/LdeCB3PUnkoJkpLbTSl+DoT
+         AdejZP98dHaLeNsDKnnqgtMYynDHFgZLWfIwBQAT4tvugySULLEFQ86szgphZE+nxdKH
+         H9UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702459030; x=1703063830;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1702459685; x=1703064485;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6dWtH4l2sr6SInDUeH4HeJtqF5U7qc0sqpIf7I8dGXA=;
-        b=OR+77jlQu80hwd3S4cdNjrSE89R3yH18AD8q1tgO17yGSub6PA8jYhW5W02u4LxoyN
-         Zz21nz8zmZGTE1Lo15MCKxyTIh7x/xddr7shIPTmjmQISIkf6vZooaRoXrwF/gKAN0Ag
-         Wv0s2pBlVnVzpgxrr36nf9RFaZkxKpxRrj1hPFHL5QpbwiGnr8DKoLrJZUwzXkpje3YD
-         GilbnjnR8Pk6K4+OB+9YdB21ydFdlhk/A/Xo/stQugV/iK8KL5EfWPCLLiPR1hTrWiZm
-         pxTr0yD9lV39F2gYXZWL0WBFQnE0mGboqEV2Z8iNxBsCg6X1JDCgUKiCAGuFrcsDrjsS
-         J1Fg==
-X-Gm-Message-State: AOJu0YyOLTTvzbxtZLIkbqvgU6G8LMHjta7T7cqUdz2IV3X6fxRlCQH0
-	n2hYRESC1jf0tPgW8JLJO5O/aCll3EVff5l6uZY=
-X-Google-Smtp-Source: AGHT+IHEtZLBXjbp8ya+8KC9CN3Yc1gsTFITOh1XQBBdC7tKLSjI7yvQq6//V70Sr7BFrW+cZbsN01kY/dFJw7seGXY=
-X-Received: by 2002:a17:90a:a392:b0:286:6cc1:781b with SMTP id
- x18-20020a17090aa39200b002866cc1781bmr6878101pjp.94.1702459030609; Wed, 13
- Dec 2023 01:17:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20231207075147.21851-1-jaimeliao.tw@gmail.com>
- <f015ef75d6bb0a9f8edba37b40affb60@walle.cc> <CAAQoYR=8b7NR8h0SHz=bp9=XHzZebDQhPUOc20b0eAF6Vd1kAw@mail.gmail.com>
- <e08b45ea59a0ba96de99a42ddf7b6769@walle.cc> <CAAQoYRmYxmD8v20_Q=YShj_xv1vsV7fXnAGPYPBSP=XJmoG2-Q@mail.gmail.com>
- <eb0667ee62c304b041f7861788ca0c7d@walle.cc> <CAAQoYRkR0Jgr96n0-h9_6HTjmSPBq-YKskFN5+e-m6HBSbCocQ@mail.gmail.com>
- <b3ce3771a751d85a76225d53cc565b70@walle.cc>
-In-Reply-To: <b3ce3771a751d85a76225d53cc565b70@walle.cc>
-From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Wed, 13 Dec 2023 17:16:51 +0800
-Message-ID: <CAAQoYRk+3PfwPeDBTOfchnzqFfnxUfTsVAtsv9=ED2aOofJekg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: core: Introduce spi_nor_abort_octal_dtr()
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org, 
-	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
+        bh=1Ud5Lm7eBSwaNvfehhx/JZXXqmmz8NLKbRLfi0ylo4g=;
+        b=GUhaVWq6VlcmywYCUUz2ZEUhx72JduloqaIxnrpshUnJ+cCsfMZ+kjhDgp9rYGa/UO
+         8XjZPJIEvU4hccxnZ1ZmTMiiI6+3Zjsv4VDZjRgP5zhpZ8f5JrIpbCI2iI7wySNKhE1X
+         6AMUEoBAEX7fFb/flxwER7SrVe4n24iJ0VU9LXWCepBR4gxm3O0k+LsePb/A3d1qjRGk
+         RdeslxyZhIkhMqq+dX4TVaXmi95ITPeTRAnOa9ERuVqq89cP3m+oVqp0AJ4qcrAfU7j6
+         ySQuQgYKvqkUkhj6wpgBXBcSrfhjSDCXCGeLrozfamF7NI1Cq9BlXO5szr4GI32XDPSe
+         7HiQ==
+X-Gm-Message-State: AOJu0YxiDGAkDrvkL1I7cf6IFWmRufGGJUpFtON7XObM1vScDfuWxL0U
+	0R7thgEaxy0W6pyeW4g1er4=
+X-Google-Smtp-Source: AGHT+IFRjKbSpVwbOLc7f7KoVOzFV65UV0G1xi+uyajE5pBvcwYI7AjSeIbPdLhH36blPjYgA+pDIQ==
+X-Received: by 2002:a05:6358:4194:b0:170:ee27:bfa1 with SMTP id w20-20020a056358419400b00170ee27bfa1mr2997535rwc.5.1702459684941;
+        Wed, 13 Dec 2023 01:28:04 -0800 (PST)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id a10-20020a170902b58a00b001d331bd4d4csm3265794pls.95.2023.12.13.01.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 01:28:04 -0800 (PST)
+Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
+	by twhmp6px (Postfix) with ESMTPS id 4C95F80152;
+	Wed, 13 Dec 2023 17:32:26 +0800 (CST)
+From: Jaime Liao <jaimeliao.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com
+Cc: leoyu@mxic.com.tw,
 	jaimeliao@mxic.com.tw
+Subject: [PATCH] mtd: spi-nor: sfdp: Get the 1-1-8 protocol from BFPT
+Date: Wed, 13 Dec 2023 17:27:53 +0800
+Message-Id: <20231213092753.58933-1-jaimeliao.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231213_011715_241256_DFF2D682 
-X-CRM114-Status: GOOD (  25.22  )
+X-CRM114-CacheID: sfid-20231213_012806_689543_21477947 
+X-CRM114-Status: GOOD (  13.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,64 +96,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael
+From: JaimeLiao <jaimeliao@mxic.com.tw>
 
+BFPT 17th DWORD contains the informations about 1-1-8,
+Parse BFPT 17 DWORD instruction to determine
+whether flash support 1-1-8, and set its dummy cycle
+accordingly.
 
->
-> Hi,
->
-> >> >> To me it seems, that spi_nor_select_{read,pp,erase}() will select
-> >> >> the wrong commands/proto. So it should be fixed there. Probably
-> >> >> shared_mask is wrong.
-> >> > Features in shared_mask have include 2 parts as below.
-> >> > 1. Flash support the feature (by parse SFDP or ID table flags)
-> >> > 2. spi host controller support the feature (In
-> >> > spi_nor_spimem_adjust_hwcaps)
-> >> >
-> >> > But I think Octal DTR is a special case because, in addition to the 2
-> >> > points
-> >> > mentioned above, there are also other conditions that need to be met.
-> >>
-> >> Correct. And btw we would have the same problem for quad_enable if we
-> >> wouldn't
-> >> have a default.
-> >>
-> >> So in spi_nor_default_setup() I'd suggest to add something along
-> >>
-> >> if (!nor->quad_enable)
-> >>    shared_mask &= ~SNOR_HWCAPS_4_4_4;
-> > I think this check is unnecessary for quad_enable.
-> > Because of "spi_nor_sr2_bit1_quad_enable" would be a default
-> > method for enabling quad mode in spi_nor_init_default_params().
->
-> Yes it is at the moment. But if a flash happen to have no
-> quad_enable we'll have a problem for whatever reason. so for the
-> sake of completeness we should mask that bit.
-Got it.
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+---
+ drivers/mtd/spi-nor/sfdp.c | 13 ++++++++++++-
+ drivers/mtd/spi-nor/sfdp.h |  3 +++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
->
-> >> /* skip octal command mode if we don't have a .octal_enable callback
-> >> */
-> >> if (!nor->octal_enable)
-> >>    shared_mask &= ~SNOR_HWCAPS_8_8_8;
-> > Sound great.
-> >
-> > Could I follow the suggestion for preparing v2 patch?
->
-> sure.
->
-> > BTW, I think discard is better than abort.
-> > What do you think?
->
-> Where do you need that word? You shouln'd need any more
-> than the code above.
-Ok.
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index b3b11dfed789..c55f39978762 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -446,6 +446,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	u32 dword;
+ 	u16 half;
+ 	u8 erase_mask;
++	u8 dummy, opcode;
+ 
+ 	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
+ 	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
+@@ -525,7 +526,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
+ 		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
+ 		u32 erasesize;
+-		u8 opcode;
+ 
+ 		half = bfpt.dwords[er->dword] >> er->shift;
+ 		erasesize = half & 0xff;
+@@ -631,6 +631,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
+ 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+ 
++	/* Parse 1-1-8 read instruction */
++	opcode = FIELD_GET(BFPT_DWORD17_RD_1_1_8_CMD, bfpt.dwords[SFDP_DWORD(17)]);
++	if (opcode) {
++		dummy = FIELD_GET(BFPT_DWORD17_RD_1_1_8_DUMMY, bfpt.dwords[SFDP_DWORD(17)]);
++		nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
++		spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_1_1_8],
++					  0, dummy, opcode,
++					  SNOR_PROTO_1_1_8);
++	}
++
+ 	/* 8D-8D-8D command extension. */
+ 	switch (bfpt.dwords[SFDP_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
+ 	case BFPT_DWORD18_CMD_EXT_REP:
+@@ -968,6 +978,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
+ 		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
+ 		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
++		{ SNOR_HWCAPS_READ_1_1_8,	BIT(20) },
+ 	};
+ 	static const struct sfdp_4bait programs[] = {
+ 		{ SNOR_HWCAPS_PP,		BIT(6) },
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index 6eb99e1cdd61..584a05f9931d 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -118,6 +118,9 @@ struct sfdp_bfpt {
+ 	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
+ #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
+ 
++#define BFPT_DWORD17_RD_1_1_8_CMD		GENMASK(31, 24)
++#define BFPT_DWORD17_RD_1_1_8_DUMMY		GENMASK(20, 16)
++
+ #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
+ #define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
+ #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
+-- 
+2.25.1
 
->
-> -michael
-
-Thanks
-Jaime
 
 ______________________________________________________
 Linux MTD discussion mailing list
