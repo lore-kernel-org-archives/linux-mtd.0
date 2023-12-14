@@ -4,85 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7863C4167B
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Dec 2023 07:34:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF2E2C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Dec 2023 07:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=o2rm4KVk9y4sg2zNpEXWyhHdA+dO+6Ok1rd/anPzbAc=; b=lbjbHr+4Mw1PmF
-	9AwVYSmA7xtBjiOknGbccyF2d44CaTwa42yUGenOvw5jpJ9TPg459byAKRu2me5vhZNEIO6lEA6gm
-	LEiydYrmMP4EC3kgWEVLX2p3UpPsNMvgG/6XvBDr8wUkw8l/8f7DA+/M/quXKZtuN6n557YK5KfJF
-	d5AaFmosxSf7a2yc3NDOPGuD41fyzT+S6A1xtp/8F2NoZVYspo2E423bXSb9PiPBQTwTmPdFFOcD6
-	fpdSbKvVn60pTC7MINf88xpPTVwaMSZ1BB+TF70W5uzPan2rJpEZnczN9NqZU78EdmfAD6kqx6UWr
-	lZfUgpwRPpjiMWcG4PUA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0b/e/N5t12X1I+7g/C3XZA9MEkXmG/58p3d0uKMChws=; b=I67vH0R6P0iYlX
+	TYaCfA0+gWJ8eMZ4cALS/ShdUrq02/MtuWQmiq7fWMM5bixp+eAiO3iOMd0gDeA3jnHxD4JsdHWuD
+	+ykV7xLADnFLk/oYbR1VBsbh3DUMxffV60bDO3jhBMEEj2V5xOfn7OfbkKKfyriwkB05Gf7mboIdA
+	Jy39Idm3kLbzS8TPcYIl/xVCY6d9RGucuq6R4VPVvLVP1m6kSvNkB0QDB6flmBjivJa0J7TmhOdPu
+	ZnvsLBUDbKBZ6x78rHH1yoa5mkdua2nn9qV+QOvIAocva5M3jY1k9kUpkQH1C1oySRN4/dbRUdsAO
+	PuQBKgRHh1gLHkTxuMAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDgER-00H8G2-0l;
-	Thu, 14 Dec 2023 07:34:07 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDgEO-00H8Ep-0R
+	id 1rDgJ9-00H9X0-0j;
+	Thu, 14 Dec 2023 07:38:59 +0000
+Received: from aliyun-cloud.icoremail.net ([47.90.88.91] helo=aliyun-sdnproxy-2.icoremail.net)
+	by bombadil.infradead.org with smtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1rDgJ5-00H9WH-1B
 	for linux-mtd@lists.infradead.org;
-	Thu, 14 Dec 2023 07:34:05 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d351cb8b82so7597495ad.3
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Dec 2023 23:33:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702539239; x=1703144039; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Ud5Lm7eBSwaNvfehhx/JZXXqmmz8NLKbRLfi0ylo4g=;
-        b=XrKTnHdWVttOGAXK0BoNuR8oOaKhZSy52TLHRhkuNWv9bpMdZXWwipPOf/PhaXKv1c
-         +m7AAfd1SoQB1SHynZPy33GFsYxc1HOrgJRAdeqNHm/hD38vZIt9RlJCdIrc8JdD5riK
-         7BwfuBBtk/Qt64WLyvnNihT22vfnow69APGT96KOT25r9a5W07ulH4EhThLu3VhDu6Wh
-         qjQhwwDFOgoB1UQ20/r3MLycNLL+85UEuEJfNjaAGNQngDIf4FK5YtK4BZ1sRk6tNxC4
-         F2eish+hEB+26U7vQadGd0bnx9Hs4KkRYXRTX+u9OXwEsOCN+fibML0ezv7iAIFpvWb7
-         /hDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702539239; x=1703144039;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Ud5Lm7eBSwaNvfehhx/JZXXqmmz8NLKbRLfi0ylo4g=;
-        b=kVUnO61wtcSigwvxSPzThaYmr/qj0apCIfUuxnk4weeC4BekywObOBLqz9eQ0CByWy
-         lUUwb6Cg+5Ix8vF46uLp79xXt6Gb6pcXkUqPcOZpTwNZVKWOnj/jwxrjGu1nRaa1bGHI
-         GvSnBO1KV6gA6GPJyU8a1P/aRgMb63NRvWjyO4XH2NFnGOyJNoEynWviOwVVtbU9bY8J
-         GP2u16CHiY3xDM/yFsU/4Frs3Jv3opm05nadYhQJKpuniBIKWQ/2BUZINT7s1CcLjsN6
-         LXl6TYSuhkzrfbhypdvY5l3f6rWNZ0Jt981bRJSjRHjpbzW35KXpVRkFMFahWcj3UANz
-         NIbQ==
-X-Gm-Message-State: AOJu0YyAihjK4GeditR39uFMMbazmvZuJxA1ULd1qoxD3sXP6kkeEG+k
-	S/eWkWUvgZoSOe6TBzwTou8=
-X-Google-Smtp-Source: AGHT+IFs5hgGEKOHMcFd8UUqPcKvr9CGXv6/Ip7ZfdKhqrffjMeAkJOzhAOp9LeSiqAkIfSULQMRvw==
-X-Received: by 2002:a17:902:d2cd:b0:1d0:80a7:2b45 with SMTP id n13-20020a170902d2cd00b001d080a72b45mr4903736plc.72.1702539239151;
-        Wed, 13 Dec 2023 23:33:59 -0800 (PST)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id l16-20020a170902f69000b001cfba46e407sm11726105plg.129.2023.12.13.23.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 23:33:58 -0800 (PST)
-Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id 19DAE8053C;
-	Thu, 14 Dec 2023 15:38:19 +0800 (CST)
-From: Jaime Liao <jaimeliao.tw@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com
-Cc: leoyu@mxic.com.tw,
-	jaimeliao@mxic.com.tw
-Subject: [PATCH v2 1/1] mtd: spi-nor: sfdp: Get the 1-1-8 protocol from BFPT
-Date: Thu, 14 Dec 2023 15:33:44 +0800
-Message-Id: <20231214073344.66644-2-jaimeliao.tw@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231214073344.66644-1-jaimeliao.tw@gmail.com>
-References: <20231214073344.66644-1-jaimeliao.tw@gmail.com>
-MIME-Version: 1.0
+	Thu, 14 Dec 2023 07:38:57 +0000
+Received: from localhost.localdomain (unknown [10.190.71.46])
+	by mail-app3 (Coremail) with SMTP id cC_KCgDHP9_8rnpl7+PcAA--.38858S4;
+	Thu, 14 Dec 2023 15:30:10 +0800 (CST)
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+To: dinghao.liu@zju.edu.cn
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: diskonchip: fix a potential double free in doc_probe
+Date: Thu, 14 Dec 2023 15:29:43 +0800
+Message-Id: <20231214072946.10285-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDHP9_8rnpl7+PcAA--.38858S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury5Kr1Dtw1UCF48CrW8Crg_yoW8JFW7pF
+	WUua42kayUJ3y09a4qvF48GFy5Jw4kGrW7GrZ3Zay7u34rurn3Gr1rCry7ZF4qqa4IqayY
+	q395ta48JF1UtrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk21xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+	87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+	8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+	Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+	aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+	4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+	rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+	CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+	z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgIIBmV4LpY5mAAGsM
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231213_233404_170005_62906632 
-X-CRM114-Status: GOOD (  14.56  )
+X-CRM114-CacheID: sfid-20231213_233855_726737_BC67F8ED 
+X-CRM114-Status: UNSURE (   8.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,85 +73,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: JaimeLiao <jaimeliao@mxic.com.tw>
+When nand_scan() fails, it has cleaned up related resources
+in its error paths. Therefore, the following nand_cleanup()
+may lead to a double-free. One possible trace is:
 
-BFPT 17th DWORD contains the informations about 1-1-8,
-Parse BFPT 17 DWORD instruction to determine
-whether flash support 1-1-8, and set its dummy cycle
-accordingly.
+doc_probe
+  |-> nand_scan
+  |     |-> nand_scan_with_ids
+  |           |-> nand_scan_tail
+  |                 |-> kfree(chip->data_buf) [First free]
+  |
+  |-> nand_cleanup
+        |-> kfree(chip->data_buf) [Double free here]
 
-Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+Fix this by removing nand_cleanup() on failure of
+nand_scan().
+
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/mtd/spi-nor/sfdp.c | 13 ++++++++++++-
- drivers/mtd/spi-nor/sfdp.h |  3 +++
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/diskonchip.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index b3b11dfed789..c55f39978762 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -446,6 +446,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	u32 dword;
- 	u16 half;
- 	u8 erase_mask;
-+	u8 dummy, opcode;
+diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
+index 5d2ddb037a9a..5243fab9face 100644
+--- a/drivers/mtd/nand/raw/diskonchip.c
++++ b/drivers/mtd/nand/raw/diskonchip.c
+@@ -1491,10 +1491,12 @@ static int __init doc_probe(unsigned long physadr)
+ 	else
+ 		numchips = doc2001_init(mtd);
  
- 	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
- 	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
-@@ -525,7 +526,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
- 		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
- 		u32 erasesize;
--		u8 opcode;
- 
- 		half = bfpt.dwords[er->dword] >> er->shift;
- 		erasesize = half & 0xff;
-@@ -631,6 +631,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
- 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
- 
-+	/* Parse 1-1-8 read instruction */
-+	opcode = FIELD_GET(BFPT_DWORD17_RD_1_1_8_CMD, bfpt.dwords[SFDP_DWORD(17)]);
-+	if (opcode) {
-+		dummy = FIELD_GET(BFPT_DWORD17_RD_1_1_8_DUMMY, bfpt.dwords[SFDP_DWORD(17)]);
-+		nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
-+		spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_1_1_8],
-+					  0, dummy, opcode,
-+					  SNOR_PROTO_1_1_8);
-+	}
+-	if ((ret = nand_scan(nand, numchips)) || (ret = doc->late_init(mtd))) {
+-		/* DBB note: i believe nand_cleanup is necessary here, as
+-		   buffers may have been allocated in nand_base.  Check with
+-		   Thomas. FIX ME! */
++	ret = nand_scan(nand, numchips);
++	if (ret)
++		goto fail;
 +
- 	/* 8D-8D-8D command extension. */
- 	switch (bfpt.dwords[SFDP_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
- 	case BFPT_DWORD18_CMD_EXT_REP:
-@@ -968,6 +978,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
- 		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
- 		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
-+		{ SNOR_HWCAPS_READ_1_1_8,	BIT(20) },
- 	};
- 	static const struct sfdp_4bait programs[] = {
- 		{ SNOR_HWCAPS_PP,		BIT(6) },
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index 6eb99e1cdd61..584a05f9931d 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -118,6 +118,9 @@ struct sfdp_bfpt {
- 	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
- #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
- 
-+#define BFPT_DWORD17_RD_1_1_8_CMD		GENMASK(31, 24)
-+#define BFPT_DWORD17_RD_1_1_8_DUMMY		GENMASK(20, 16)
-+
- #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
- #define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
- #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
++	ret = doc->late_init(mtd);
++	if (ret) {
+ 		nand_cleanup(nand);
+ 		goto fail;
+ 	}
 -- 
-2.25.1
+2.17.1
 
 
 ______________________________________________________
