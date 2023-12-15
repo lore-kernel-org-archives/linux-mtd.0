@@ -4,80 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 000A4C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Dec 2023 06:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 253D8C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Dec 2023 06:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FXpX6DZkHSybS4CP4nM32vnRwwjAaFu2lIHGFFtSGaQ=; b=ibe3+C44m+FQEG
-	lGL0VpwaroIowTw/5VtPGUno/qPCq+0VY1P2UuL2SXEzPTuHi14Toxf/RO/tvSWRClcaNT98qWSYl
-	QBm/7tIgXbhkIVIbzkB+yhRt0Vvs4iRHQWJr8hZXIlMYdIlKAul/ZmFqRRvtIStd/nFfipnmbTids
-	UTi6FoajpzHtzaeOd1RLgCrV+5nuYXLfjZXQ+giptmpOGfSY1iVrNv6Dw32b7s4VZ69e+lK9tW23p
-	IMMKb6rRZXqvK+DYhPCpI7Y0unAGTtgBZ3j9HsNFirictkNSHGKFKAiQyi3DXcKM7Oz7okjtc7bjO
-	2JgQC12jd13C9L1Era8w==;
+	List-Owner; bh=Gj4/xewl33NMxrobREpWsK7Mkk53prEDt2BwX8iZL2U=; b=hDgHBDDrCwsWbN
+	qX3TJTlsJFcMucYsBUIAJgNDc17vliUKh4GA9TnxSObato4TFfFFPf8JtxlMVkdKErv9KplWWU4Mz
+	NJ0aex1HfaWJGJPuOCtihGjPrvV4vuWxltpcnfi/tJE1NsynrgaAZkgVp3K+7x01JDUW4OWEP5J9+
+	uVH/WqUmDtat9awK7jH9tjWgjtreCypiYwmrRTdWIACeA4aLwGbWPuASJMTNBZsr5weU+6+oOdqEU
+	DqoH3y6FuTn357sxQgps5RA7TZS7boX+LtUxt5FkIUgmhwDt0FjM7u5EcBmhb1jYealdM/F4StzgJ
+	r6lzoj9wov2xXyO1pcrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE23x-002EQF-0i;
-	Fri, 15 Dec 2023 06:52:45 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1rE2Ah-002FF4-0y;
+	Fri, 15 Dec 2023 06:59:43 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE23u-002EPt-28
+	id 1rE2Ae-002FEb-0b
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Dec 2023 06:52:44 +0000
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-55114c073b8so337067a12.1
-        for <linux-mtd@lists.infradead.org>; Thu, 14 Dec 2023 22:52:40 -0800 (PST)
+	Fri, 15 Dec 2023 06:59:41 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6ceba6c4b8dso282571b3a.1
+        for <linux-mtd@lists.infradead.org>; Thu, 14 Dec 2023 22:59:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702623159; x=1703227959; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yTHfAjSRpK6NaIPS6e3HQWcJpPcz4/l2D6cbEOFhxb8=;
-        b=qOk44IndxjfkEp/l4S+eDlOCz+r5JG2BhXOZMJEuRY3ZDNXERf9XXy+ugU1hJ3wT4Z
-         C8gclWOHFx8io19ILaCz8lajQGP6GREhMtlp7yVaNjZoTi5OtxSzaooPhFYnE0qdxO+Z
-         4zk01GcodtKEOYpjHiPPK3/cfG53xa2Xlf/Gvx439QpynMhZrItC8qdK+4epeYGvdNYj
-         vTgaiiJRMyHLUrMw4nzw4kXeij2yDNVMnvIOVqrtnuKpiups0GvUqMYSv2qqaKNoVmVI
-         PxHHzqB6PFqLUXT+P4wdLTq341VUFFp/3OzWroFohzZyzLBhbyI3Vd2+G63+FgKTradP
-         fUxg==
+        d=gmail.com; s=20230601; t=1702623576; x=1703228376; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=btH6PFBcmld6bRTRbOMfMXQcD3tBM//mL+2epRiX41c=;
+        b=Zq2llBhoO9iXb6oV/ORs7ry+9mJe+k42W0k8OR/p7OIYQ6NAAfJn5fhAe3u4GbGb0I
+         LaynE2bWopi5favmtByG0FK2YL7KHGcA3NTEYWLts7pMpUXYdakUBhhiiPpB1hjyWfQf
+         7VEL96yJtS/rpxpn9erKjLAF3ATtCXpb4jJbTUGM8fAztOUcETdpMWBvpcdpdMwI3csx
+         U5nATrVsJvlzqu4cknB+L5HrqsLRbaLEVhlEWS3tzl3HXLv5DL9KoO2af0hwe0jQMPM2
+         UqdZhFKmjZ+mhoP0nonbwKi6nARPjxzEUpYg6mHHyto42BCG0ozAI3t+IvxrcjwLIz1q
+         23LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702623159; x=1703227959;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yTHfAjSRpK6NaIPS6e3HQWcJpPcz4/l2D6cbEOFhxb8=;
-        b=Zne6YOchpFzLFY6/p4amRArDEII6JFHxxlbjWKJSS3lTSyZ7FitmCE7OfMN/Gfl1ae
-         hAk7wdpCJBStTSiOVT163kN/1gb6ui/CvYzhzdWiTcEFxQFAmgFHxgrL1NmTlc9Ento9
-         /ZldSwthPwvoGMTNxhcxctuAK6rgBLptmXV9gigJh5xVZlv+ky5HE2zoL1XZLJO+j444
-         ea7NcyEscvzzcnGz7FleYdnFQ5QrPUYcx580aJU/hBTzQ1pXu10swG/0n+0kU/SwY09+
-         xDUf6j5KeLl7a6UjN4NPcMFaMJ3xe4YGd3AxCprhZQM5ae7DUDnXH7gW6lPW/KPzItET
-         /Oyg==
-X-Gm-Message-State: AOJu0YwOED4FMZLXXXaB9DbAoGY1eDvaE8ceDsUv5l0oVpGEwtVwc4oS
-	3QFIiFlX5RoIz3w/YVvKdClu1w==
-X-Google-Smtp-Source: AGHT+IGSK3JVsGJnLvAxgSDp2L8U99Pr3WXDe/LbSJxtCUy29uNzSz++TZ8dyQHicGykRJ61h6ZCIg==
-X-Received: by 2002:a17:906:2206:b0:a22:e619:d846 with SMTP id s6-20020a170906220600b00a22e619d846mr2039506ejs.42.1702623159274;
-        Thu, 14 Dec 2023 22:52:39 -0800 (PST)
-Received: from [192.168.2.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id un7-20020a170907cb8700b00a1b65249053sm10321318ejc.128.2023.12.14.22.52.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 22:52:38 -0800 (PST)
-Message-ID: <6a0cf9e4-8870-434e-8c7f-10c57b604df6@linaro.org>
-Date: Fri, 15 Dec 2023 08:52:36 +0200
+        d=1e100.net; s=20230601; t=1702623576; x=1703228376;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=btH6PFBcmld6bRTRbOMfMXQcD3tBM//mL+2epRiX41c=;
+        b=vXNdK/k8MkEaFBeWziCybFbDWJeX360kPDfIsLpGfdHtRvI96GzO6uGXrYdc7RWkT/
+         iiylcMJKNeoVi3cZ98zusjY/Kyf5T4NnCDLeLSNFXKEAcMFFuNjcoIEVdbTxNkQXyiM+
+         I3nV9PgBO4SrBFF3ReXP5I2BizbNZcboZv0EpZAF3C6/mATjVQAQ6DqbFHijYQx4Hupq
+         DNIqM655oibWeIlCLQ287OrOykK6QLy4eEQht5qsc1YL0kwt5Ae2gjzTNGN11+E7NcQA
+         a+iSz1ozhRQSTV1Rs1duyTRIwFihYMa1B3s9qfk1NZEv677/hn2pHXsf50FmAqv8gdI8
+         HojA==
+X-Gm-Message-State: AOJu0YzssgAlnMET3pPx2mUYAD3ureGbMkfLVTToyyFGwbOQ8H40zEiX
+	ArLIS/A8IFmoJpoDTSFQb6dtBO30IHs9l1h3I4e3quzv
+X-Google-Smtp-Source: AGHT+IEeQ6D4+jLNveHMtRTne4F1EAUXw13GTJDGbDdzsdMeIVnfMmqzklKdoHbpwsb9NIeccr8C0TjSVE9k/cNr9Yo=
+X-Received: by 2002:a05:6a20:f397:b0:18f:e56b:9848 with SMTP id
+ qr23-20020a056a20f39700b0018fe56b9848mr12009132pzb.13.1702623576318; Thu, 14
+ Dec 2023 22:59:36 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: macronix: add support for Macronix
- octaflash mx25uw51345g
-Content-Language: en-US
-To: haibo.chen@nxp.com, pratyush@kernel.org, michael@walle.cc,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-imx@nxp.com, han.xu@nxp.com
-References: <20231213084820.932217-1-haibo.chen@nxp.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20231213084820.932217-1-haibo.chen@nxp.com>
+References: <20231214073344.66644-1-jaimeliao.tw@gmail.com>
+ <20231214073344.66644-2-jaimeliao.tw@gmail.com> <a55b1338-d15c-4d1c-8b81-0d7a3913ec0a@linaro.org>
+In-Reply-To: <a55b1338-d15c-4d1c-8b81-0d7a3913ec0a@linaro.org>
+From: liao jaime <jaimeliao.tw@gmail.com>
+Date: Fri, 15 Dec 2023 14:59:15 +0800
+Message-ID: <CAAQoYRmCpYJNSZrriM1SbJvXGUjz=e8k8pRnB2cb-y4C=pHe8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mtd: spi-nor: sfdp: Get the 1-1-8 protocol from BFPT
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: linux-mtd@lists.infradead.org, pratyush@kernel.org, michael@walle.cc, 
+	miquel.raynal@bootlin.com, leoyu@mxic.com.tw, jaimeliao@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231214_225242_727756_A24E012C 
-X-CRM114-Status: GOOD (  21.50  )
+X-CRM114-CacheID: sfid-20231214_225940_231236_12012A2D 
+X-CRM114-Status: GOOD (  24.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,71 +88,120 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Haibo,
+Hi Tudor
 
-Please read the following before sending v2:
-https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/Documentation/driver-api/mtd/spi-nor.rst?h=spi-nor/next
 
-On 13.12.2023 10:48, haibo.chen@nxp.com wrote:
-> From: Haibo Chen <haibo.chen@nxp.com>
-> 
-> The octaflash mx25uw51345g is an xSPI compliant octal DTR flash. Here add
-> support for using it in octal DTR mode.
-> 
-> Try to verify the flash ID to check whether the flash memory in octal
-> DTR mode and SPI mode are correct. When reading ID in OCTAL DTR mode,
-> ID will appear in a repeated manner. ex: ID[0] = 0xc2, ID[1] = 0xc2,
-> ID[2] = 0x94, ID[3] = 0x94... Rearrange the order so that the ID check
-> can pass.
-> 
-> Based on the following patch:
-> https://patchwork.ozlabs.org/project/linux-mtd/patch/1621232088-12567-2-git-send-email-zhengxunli@mxic.com.tw/
+>
+> Hi, Jaime,
+>
+> Please update the commit subject to indicate that you parse 4BAIT as well.
+Got it.
 
-I would have taken the patch from above if I considered it ready to be
-integrated. Please sync with Zhengxun/Jaime and find out what's missing.
-> 
-> Signed-off-by: Zhengxun Li <zhengxunli@mxic.com.tw>
-> Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 91 ++++++++++++++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index ea6be95e75a5..8a1ce17cff3f 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -8,6 +8,11 @@
->  
-> 
-cut
+>
+> On 14.12.2023 09:33, Jaime Liao wrote:
+> > From: JaimeLiao <jaimeliao@mxic.com.tw>
+> >
+> > BFPT 17th DWORD contains the informations about 1-1-8,
+>
+> Please run checkpatch on further submissions:
+> ./scripts/checkpatch.pl --strict 000*
+> WARNING: 'informations' may be misspelled - perhaps 'information'?
+> #6:
+> BFPT 17th DWORD contains the informations about 1-1-8,
+>                              ^^^^^^^^^^^^
+>
+> total: 0 errors, 1 warnings, 0 checks, 46 lines checked
+>
+>
+> > Parse BFPT 17 DWORD instruction to determine
+> > whether flash support 1-1-8, and set its dummy cycle
+> > accordingly.
+> >
+> > Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> > ---
+> >  drivers/mtd/spi-nor/sfdp.c | 13 ++++++++++++-
+> >  drivers/mtd/spi-nor/sfdp.h |  3 +++
+> >  2 files changed, 15 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> > index b3b11dfed789..c55f39978762 100644
+> > --- a/drivers/mtd/spi-nor/sfdp.c
+> > +++ b/drivers/mtd/spi-nor/sfdp.c
+> > @@ -446,6 +446,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >       u32 dword;
+> >       u16 half;
+> >       u8 erase_mask;
+> > +     u8 dummy, opcode;
+> >
+> >       /* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
+> >       if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
+> > @@ -525,7 +526,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >       for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
+> >               const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
+> >               u32 erasesize;
+> > -             u8 opcode;
+> >
+> >               half = bfpt.dwords[er->dword] >> er->shift;
+> >               erasesize = half & 0xff;
+> > @@ -631,6 +631,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+> >       if (bfpt_header->length == BFPT_DWORD_MAX_JESD216B)
+> >               return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+> >
+> > +     /* Parse 1-1-8 read instruction */
+> > +     opcode = FIELD_GET(BFPT_DWORD17_RD_1_1_8_CMD, bfpt.dwords[SFDP_DWORD(17)]);
+> > +     if (opcode) {
+> > +             dummy = FIELD_GET(BFPT_DWORD17_RD_1_1_8_DUMMY, bfpt.dwords[SFDP_DWORD(17)]);
+> > +             nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
+> > +             spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_1_1_8],
+> > +                                       0, dummy, opcode,
+> > +                                       SNOR_PROTO_1_1_8);
+> > +     }
+>
+> You missed the mode clocks. You missed to parse 1-8-8. Please check how
+> the read settings are parsed and set in parse_bfpt() and do the same
+> here. See:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/drivers/mtd/spi-nor/sfdp.c?h=spi-nor/next#n502
+Macronix Flash didn't support 1-8-8 feature.
+So that I have no sample for validate it.
+About read setting in parse_bfpt(), that is a good way for scan and
+set for each protocol.
+But 1-1-8 support judgement is not a single bit.
+1-1-8 read instruction could determine wether 1-1-8 support or not.
 
-> +
->  static const struct flash_info macronix_nor_parts[] = {
->  	{
->  		.id = SNOR_ID(0xc2, 0x20, 0x10),
-> @@ -177,6 +261,13 @@ static const struct flash_info macronix_nor_parts[] = {
->  		.name = "mx25uw51245g",
->  		.n_banks = 4,
->  		.flags = SPI_NOR_RWW,
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x84, 0x3a),
-> +		.name = "mx25uw51345g",
+>
+> > +
+> >       /* 8D-8D-8D command extension. */
+> >       switch (bfpt.dwords[SFDP_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
+> >       case BFPT_DWORD18_CMD_EXT_REP:
+> > @@ -968,6 +978,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+> >               { SNOR_HWCAPS_READ_1_1_1_DTR,   BIT(13) },
+> >               { SNOR_HWCAPS_READ_1_2_2_DTR,   BIT(14) },
+> >               { SNOR_HWCAPS_READ_1_4_4_DTR,   BIT(15) },
+> > +             { SNOR_HWCAPS_READ_1_1_8,       BIT(20) },
+>
+> let's set 1-8-8 as well please
+>
+> >       };
+> >       static const struct sfdp_4bait programs[] = {
+> >               { SNOR_HWCAPS_PP,               BIT(6) },
+> > diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+> > index 6eb99e1cdd61..584a05f9931d 100644
+> > --- a/drivers/mtd/spi-nor/sfdp.h
+> > +++ b/drivers/mtd/spi-nor/sfdp.h
+> > @@ -118,6 +118,9 @@ struct sfdp_bfpt {
+> >       (BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
+> >  #define BFPT_DWORD16_SWRST_EN_RST            BIT(12)
+> >
+> > +#define BFPT_DWORD17_RD_1_1_8_CMD            GENMASK(31, 24)
+> > +#define BFPT_DWORD17_RD_1_1_8_DUMMY          GENMASK(20, 16)
+> > +
+> >  #define BFPT_DWORD18_CMD_EXT_MASK            GENMASK(30, 29)
+> >  #define BFPT_DWORD18_CMD_EXT_REP             (0x0UL << 29) /* Repeat */
+> >  #define BFPT_DWORD18_CMD_EXT_INV             (0x1UL << 29) /* Invert */
 
-we'll obsolete the name on new flash additions, drop it.
-> +		.size = SZ_64M,
-> +		.no_sfdp_flags = SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP,
 
-should be discovered by sfdp, isn't it?
-> +		.fixup_flags = SPI_NOR_4B_OPCODES,
-
-these too.
-> +		.fixups = &octaflash_fixups,
->  	}, {
->  		.id = SNOR_ID(0xc2, 0x9e, 0x16),
->  		.name = "mx25l3255e",
-
-Cheers,
-ta
+Thanks
+Jaime
 
 ______________________________________________________
 Linux MTD discussion mailing list
