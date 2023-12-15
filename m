@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94AD5C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Dec 2023 08:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72D44C46CA2
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Dec 2023 08:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ocVvzrgxmSRkUuTbyRVQsL1WaT0s2dxmr4QlHkqaTE8=; b=V7VhtP0C7Aa33U
-	gwL+xIo5vMDxDUxfwK7um44dllPTWiokIHCbzCjijeH3tMMCpJB7WlQESGJBIVwSASU/FcV9sQJnN
-	GLxGv1m+ebcW8kvno00GwgeQ/sL4WEHKLveYIsrJEVNuukDxnJmSt7ZiBzdjpbN/awBXjYDaTiiBe
-	dEdDvsyI9ff/V0Y2N1oY/7l0/S/WoNzBjVjdEx2nhuPmFXG+u/dOGXEPEfA5Ajk+BABjcqXbgVG1Z
-	4CMnhx7YD7ENOhvezlp/acVkvuv1YeJiPAEeM8LWghjaQfFP/XNB72jHdZxb8psIjSeLFXSteH6YR
-	PtVZgjWBVerDuJgrjXJw==;
+	List-Owner; bh=wmPSBeh2GMHVnjThpaOp6B1nf8tUqjasbeLjwY+SPBg=; b=nNz57hFEfgWovx
+	KQoz+AU+nXsMAGJt2V7KuaVYxQ1V33F2WoV84ASAXbhEGniOOSk5zm3KNRsR/cs9nQFpHLZdrcG/2
+	ElB2kAQBWNLP+3kGoAnImKXQRXKCi5+H0GheZWQbR9M/9FKFlWvhYzQB+efkRBAfyCF/cXtbkgEj5
+	pOhHu5vH8d0QdOs+pyulJWBXmXdutSdJvVgoL7Y0RUJpf0/7EEDCwSyAAhwQ8fUL5crB4CsiedH0o
+	LxVdjOm0njIj4LqsrImypMiJMU4lfnpLwNwIDt/SuIxTf2aX3QfioFbMf9VZ+eICjXEL4oiwONHi0
+	esM/p5Ycqhn9VZ/F4p+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE3SC-002Rlm-0h;
+	id 1rE3SC-002RmL-37;
 	Fri, 15 Dec 2023 08:21:52 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE3S8-002Rje-2Z
+	id 1rE3SA-002RkH-13
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Dec 2023 08:21:50 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so4269875e9.3
-        for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2023 00:21:47 -0800 (PST)
+	Fri, 15 Dec 2023 08:21:51 +0000
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c31f18274so4779985e9.0
+        for <linux-mtd@lists.infradead.org>; Fri, 15 Dec 2023 00:21:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702628506; x=1703233306; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1702628508; x=1703233308; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NqNjncwqqjJXTlOOAiExi5LnEF+/WvA2Fq4G9Cr+svw=;
-        b=eWN7c/xRR+5v7xUL/d1Gr5Qvu+BitIHRiyNojIOvRssFH5yOgJBJYC4RVbnf5QvZHb
-         6SLBV6YRm3+VjhqOzTsXC143VpcYpKJ1mKMCcr4yVmn4UvenwkG43zQ4HRHdNroX+kQ2
-         LlPiF6a9TZpoXmzZmAE8/+7Bo0+4hTYL1lvoZj0vQjvvVVAQ0VT6mrV9YeAqUJd0mRsH
-         e/eeFIe7A1OKp2KTgrKa4mexhJ2nHYZPmiODMVOAMi3qrJRvhACW2MZq1ypSvsuSvhjr
-         i1xXhB/BqWF+h1ANGlBxCuya9SpZbN+Bea+sYU5QxnU4+4yMtnj3MrlLxoCqBuHA7dT+
-         ou3Q==
+        bh=TuJawO4SusZv8/FICQYIvQK4zSxUomciGjXfeupkpPM=;
+        b=htGG4gSknCMI+Wyn4z1ZLAmHIvA0ahAPQ1VQGBNABHoZQgs3XrubeUU1+5niGMc0BR
+         AUDBa9V5z0+86ei5Nn4ZJZp4mUWIpEVoRpUWaAAvj/cLcXqIBacg/Z96pwsFUEqVNHbq
+         x+UawS+F0KsfFZSIsBqDR0ZZXUc0CFJcfphNmOKpIFC0Q96kle+AGsVea2AheAfWiO0u
+         y6s7y29BsM2tSPdy+XDttrI3XPsYR9mb4YQ+BD+v0ZSH1UKjBXSHcIMvQF+j9pMH+f/g
+         jfsxQlZcZ6lOAp4IUZ5NjIlrFXSt/bkQh85V3nTU5Mh7pWK3ZPHLzEEYy3W3sAlMb1Yk
+         VQRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702628506; x=1703233306;
+        d=1e100.net; s=20230601; t=1702628508; x=1703233308;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NqNjncwqqjJXTlOOAiExi5LnEF+/WvA2Fq4G9Cr+svw=;
-        b=L/kIYYDGvqSVRBkvq+IK2a1K+h8Oqye7+e3Q1rpY+ONt8rbkfs+lk/+65JRCx1C8MQ
-         l13ZVQN9m6ed3ICCa4ZyCZXJy0G1+qaneBxJp/lbwthBS+xupyMrKZQE/aOIwXKIm71k
-         nNdxiaLDkE8O3RzKd8PjYOMxcs5NlMQj5mwMZvgBumbglkGieXuNbJawWgfvI6hO/5Sg
-         ZqETGLtpXgViGZq5ezyd+LxMq9Vuiuv9vVDb6TnrwALuPQw9t2wmpv7TrnJuVglhfYNG
-         29gQ6HegNqPfo87bMuPdv6SI3/nQYjJ7Ks1tmotW4LaVPi+Ghq+0tlbfwnw+OSw9FdnE
-         yAdQ==
-X-Gm-Message-State: AOJu0YxzInVwQJvOtzSrmBurDB+pZWC2s5VJHBbnkQJGknkn+vkmXUjz
-	9RJEtdBj5uP6gR5bPLvwDwW8/Q==
-X-Google-Smtp-Source: AGHT+IEAprxPB8+tgE3JnpMosxNYTrH7hypu72LvvlwTtYzO4+cM2VZVHdoj8gUmTcXKKT9/DpKA0w==
-X-Received: by 2002:a05:600c:4384:b0:40b:2977:3d7a with SMTP id e4-20020a05600c438400b0040b29773d7amr6188952wmn.31.1702628506656;
-        Fri, 15 Dec 2023 00:21:46 -0800 (PST)
+        bh=TuJawO4SusZv8/FICQYIvQK4zSxUomciGjXfeupkpPM=;
+        b=KFzUSZ5Fhd3LsOmArhKkhCY91MtcoWlngpJhhJ7cqlV1Bnker69jSyYkQxDjW6Qyy6
+         /SNdLQLGVnpO99ZgRCp/CwGh8jKFKWNQqsXF1KBHkAV9noUrqmFUSvbIEi1p8AUCpgvQ
+         y+OUWvav7SfkVbrX8a00pkLbNDFEFI9gi483wkY7Pk3Yp9XFByrTf369vPs47VFisEJ2
+         qD995z6TEnWCMlE4I3ThVVH3gD0+yOfKTODMVvAniyUF6yWHkgsbfyDoYLKSOGaP+gll
+         1kyf4STGy7qnew3iHAmJ7ackm4I2BKr2CftP2X+cyaDIaWuwHpBkyfqdUm7hJWkchFUD
+         +bmg==
+X-Gm-Message-State: AOJu0YwOzUAaS9cOFVgMKuugM9/6YjD6UHkDL6+uWjpXiP4Vxgw4ns1N
+	b10YINVTEnLGk0ofh4YP7h9Fhw==
+X-Google-Smtp-Source: AGHT+IEbe2QkPEqCtjPj/fi/n5kO4uAzZ+iTCV7x1AVruE2cmQ2PU5UDSwoezU/9v/C8IO+qTKl4vg==
+X-Received: by 2002:a05:600c:292:b0:40c:260e:1bf6 with SMTP id 18-20020a05600c029200b0040c260e1bf6mr4922669wmk.192.1702628508089;
+        Fri, 15 Dec 2023 00:21:48 -0800 (PST)
 Received: from 1.. ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id p1-20020a05600c1d8100b0040b47c69d08sm30365570wms.18.2023.12.15.00.21.45
+        by smtp.gmail.com with ESMTPSA id p1-20020a05600c1d8100b0040b47c69d08sm30365570wms.18.2023.12.15.00.21.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 00:21:46 -0800 (PST)
+        Fri, 15 Dec 2023 00:21:47 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: pratyush@kernel.org,
 	michael@walle.cc,
@@ -71,18 +71,19 @@ Cc: richard@nod.at,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 3/4] mtd: spi-nor: sysfs: hide the flash name if not set
-Date: Fri, 15 Dec 2023 10:21:37 +0200
-Message-Id: <20231215082138.16063-4-tudor.ambarus@linaro.org>
+Subject: [PATCH 4/4] mtd: spi-nor: drop superfluous debug prints
+Date: Fri, 15 Dec 2023 10:21:38 +0200
+Message-Id: <20231215082138.16063-5-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231215082138.16063-1-tudor.ambarus@linaro.org>
 References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1557; i=tudor.ambarus@linaro.org; h=from:subject; bh=hQA5sORbw3xtkYv7YIEfdLni0OPdPoQur1BiyIea9wA=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlfAySzUrbRUhPFtUY+SLXVrH2ZVFiRqJ+XTJmx 6Y8ol5Q7c+JATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZXwMkgAKCRBLVU9HpY0U 6d0GB/9LEbjWhFVspZLCZOYxkhAWms2RGSpBdOGHiBozm1pTqpVVvwgUhHQOoexQ+ApAgD5n+qo QNAAdxWhNakleE9iq5tV8QmhYTzaplcyg+8RlsQbpS9fwMGwk98LmHE7Dt974gmuJNFR+IBYhIS iURU69hhL1D3pl2sjh2NaDHEgQuH4WFqIX8+0zP5WCzDyoFB8vjfwsJ99rO8kcR7fF0wwWTvXC8 YU6aEWiUELfKZkvsZwfO7Gru5IgDkqv1mUZumIF+IV/q8zpgf4phkuAwXNfNDfDaXyGWeYi00gE RW7HHx8c1LR/98xHAE3GF2eR9wF9LRM/x8dt/cPZV7u8YKWz
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1327; i=tudor.ambarus@linaro.org; h=from:subject; bh=g4bufmfMS6w03D11CI2uGLsvxqA3io9spWS2c3zko/k=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBlfAySTlx2lf9cwP4qqsgz/vxDdsVq7T1ap/JJI BpGZZFzFMiJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZXwMkgAKCRBLVU9HpY0U 6Te1B/0RAVmyu2FL3aavzo1rPOrgqcXWHparU1NyB6HBFb6+5q5BQ2Sglzlrm7fsREvIdcQni3f k/SwZgWKcJ8caUR4mZJJnTTwuV9e+Y3hPkLUNlK74SBOzxZ3UuvugVxykGAvUYjT1vhUixxKLnH p17ELt0f8QR9bxPhHZ8rn/S25uX/36CcDFIrtOK/bdvW6Sbv2q3wZPXfnNlMfZzi2e12t+ok4Mj lMkdls5z5E54mrtjOfxS+isLi1qEOaro8jjw9i4RvgZA9fl1AH5/xssRUE4oCrV7uZYivrvG/nu /e7opM8CRO2jk2kLLEp/XqNtuIuWWYgomUXVDUeeWabi/K4T
 X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231215_002148_831006_72FEF59F 
-X-CRM114-Status: GOOD (  11.81  )
+X-CRM114-CacheID: sfid-20231215_002150_365087_E22BDF7B 
+X-CRM114-Status: UNSURE (   8.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,46 +100,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: JaimeLiao <jaimeliao@mxic.com.tw>
+The mtd data hall be obtained with the mtd ioctls or with new debugs
+entries if one cares. Drop the debug prints.
 
-The flash name is not reliable as we saw flash ID collisions.
-Hide the flash name if not set.
-
-Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
-[ta: update commit subject and description]
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor | 3 +++
- drivers/mtd/spi-nor/sysfs.c                             | 2 ++
- 2 files changed, 5 insertions(+)
+ drivers/mtd/spi-nor/core.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-index c800621eff95..6d7be97bf7d1 100644
---- a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-+++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
-@@ -25,6 +25,9 @@ KernelVersion:	5.14
- Contact:	linux-mtd@lists.infradead.org
- Description:	(RO) Part name of the SPI NOR flash.
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ca5bd93d1f17..a708c3448809 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3561,22 +3561,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	dev_dbg(dev, "Manufacturer and device ID: %*phN\n",
+ 		SPI_NOR_MAX_ID_LEN, nor->id);
  
-+		The attribute is not present if the jedec_id founded in
-+		ID table but flash name didn't include in it.
-+
- 
- What:		/sys/bus/spi/devices/.../spi-nor/sfdp
- Date:		April 2021
-diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-index 2dfdc555a69f..96064e4babf0 100644
---- a/drivers/mtd/spi-nor/sysfs.c
-+++ b/drivers/mtd/spi-nor/sysfs.c
-@@ -78,6 +78,8 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
- 
- 	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
- 		return 0;
-+	if (attr == &dev_attr_partname.attr && !nor->info->name)
-+		return 0;
- 	if (attr == &dev_attr_jedec_id.attr && !nor->info->id && !nor->id)
- 		return 0;
- 
+-	dev_dbg(dev,
+-		"mtd .name = %s, .size = 0x%llx (%lldMiB), "
+-		".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
+-		mtd->name, (long long)mtd->size, (long long)(mtd->size >> 20),
+-		mtd->erasesize, mtd->erasesize / 1024, mtd->numeraseregions);
+-
+-	if (mtd->numeraseregions)
+-		for (i = 0; i < mtd->numeraseregions; i++)
+-			dev_dbg(dev,
+-				"mtd.eraseregions[%d] = { .offset = 0x%llx, "
+-				".erasesize = 0x%.8x (%uKiB), "
+-				".numblocks = %d }\n",
+-				i, (long long)mtd->eraseregions[i].offset,
+-				mtd->eraseregions[i].erasesize,
+-				mtd->eraseregions[i].erasesize / 1024,
+-				mtd->eraseregions[i].numblocks);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_scan);
 -- 
 2.34.1
 
