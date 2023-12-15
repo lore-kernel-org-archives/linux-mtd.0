@@ -4,52 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46CDCC4167B
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Dec 2023 11:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76EFAC35274
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Dec 2023 12:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=pJVmm27sg7UUwz/uE9M+khD+9qL5Mz5CMpVC+WXdrZg=; b=zlg6UxAcYomiK4
-	mXtuf2WqqOyTOf8z6afpdUkdHR0epQyQT3yGFLABjS4R4PCvBzoRSivnGNbi7/9gUbzWbgndTY8Pw
-	kiiqPIy1AyD1phdib4UyzJoZnVfB09f86qh3lUu8XGm3kjfrhXuGjqxFDGu7ewnBkMdz0mZ4L/CEa
-	0w1icCr52jCRotS173e4275DcAc8rHWinmP1Jwp6LmHmSCZcF2sLwRpXxGp/JxUbRjrNEIC1hq92M
-	lQAphOkHRM0nRYtatndEUWfN4HIwhmJlLcg/Tz6Kpk4nw0egjEuS2+xEUiLtBXADrIfUl8VdbP/Dd
-	LXijaAAudRYe4M5j5CwQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DrH5dWR9zWVaog7TDNAVgNIbh2T8xajqIPgbmy+0CEk=; b=UiwwKN4AFZT0Gk
+	C9yNjyvmVvCPSOxcRfT7RGUSsB94FPm2W3gMs9s/M+ljQXcZJktspnAAEdOzjTaCCa7KyPAr/L0fI
+	dwefeQibHTuYck34oKaMeDOyV4jK/wlYHcvQche4LAmfd3Xv4v6sr4z3hrlY+c1aOpDGryy52quZG
+	mzJ6YuenRmVxGx9IoPvx+0+e98kj7TkwcAghxaahetVfu6Hv2vBEiWja48SNcJ4YD2/Jc629EHldW
+	AlyFOHoHkDVLbd0Bf36W3768S48cUDJrdSIixPRt8W5kViiT3XhuI24O9Ld440B1XHmxTk6nvykFL
+	KXAh1vAFXYbvadLRsmqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE6gp-0037TI-0P;
-	Fri, 15 Dec 2023 11:49:11 +0000
-Received: from mail.infraroot.at ([54.37.73.54])
+	id 1rE6sx-0039oB-2I;
+	Fri, 15 Dec 2023 12:01:43 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE6gk-0037SS-16
+	id 1rE5uu-002qOx-1U
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Dec 2023 11:49:08 +0000
-Received: from workstation.fritz.box (clnet-p04-043.ikbnet.co.at [83.175.81.43])
-	by mail.infraroot.at (Postfix) with ESMTPSA id 151C23F0E7;
-	Fri, 15 Dec 2023 12:48:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.infraroot.at 151C23F0E7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infraroot.at;
-	s=default; t=1702640937;
-	bh=/h5a7HmjhkoX1bAo7H+y/gZCJO1hQ1OTIAgKd8TQeWg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=iqO/RnevluljAjirXvzMsmSQ4zdRU7BgNsykQyhhnJwu6p8YzO6XjKMlkK/9NWrak
-	 wiUKBK5sRwC9Agc0d63h9T5NYL7n9sN0h77tXvXXS3NEjxzcZDID+Z1mZJ+5xjX++1
-	 ZJx7+a0Bi6GTIyyNZpT177hER5CKQA3lCYrbSge4=
-From: David Oberhollenzer <goliath@infraroot.at>
-To: linux-mtd@lists.infradead.org
-Cc: david.oberhollenzer@sigma-star.at,
-	richard@nod.at
-Subject: [PATCH] mkfs.ubifs: fix xattr scanning for builds with selinux support
-Date: Fri, 15 Dec 2023 12:48:21 +0100
-Message-ID: <20231215114824.15236-1-goliath@infraroot.at>
-X-Mailer: git-send-email 2.42.0
+	Fri, 15 Dec 2023 10:59:42 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F2BF2C0003;
+	Fri, 15 Dec 2023 10:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702637977;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ppulf4ieaWbGeulXk2Zryw48ZtbAkelk9ZVt/rra0H0=;
+	b=E70orBVoReLl8AHERna54K4a2U8iYK1VDfFecgphZb+ciuJu+Xmn6U0LlATox9gcVNDJLu
+	sZinZELjX3w0OKVHohDtNnuF5EE8EdHjRIOwuTMEhEWLpF1Nwfaieioj3p4dYOd8DWNOya
+	NcL5bt0/+wBnOuE5cSSmEf1ABuZuv8G9tucDxfbMnr3r6H7p18p1cKXSW2Zco7AAZB5gE3
+	kBCKv0Lllu70gnlvr5W9Kkwq3FTnRhEowflq6zDmeEacVanYzV/mwbx2eaHiP8tRuJUhP+
+	wrO4YnKruhT5LJadr303HBxFyhaBzoUY5SDVm/Bqu0FOAU5OV1miZV5+4rS7jw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org
+Cc: Michal Simek <monstr@monstr.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] mtd: rawnand: pl353: Fix kernel doc
+Date: Fri, 15 Dec 2023 11:59:32 +0100
+Message-Id: <20231215105932.499338-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231211150524.108803-1-miquel.raynal@bootlin.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'199d1402229f26804c81508346b57a0e9c094bb6'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231215_034906_846024_61C5DC69 
-X-CRM114-Status: GOOD (  15.56  )
+X-CRM114-CacheID: sfid-20231215_025940_632102_9285934E 
+X-CRM114-Status: UNSURE (   7.25  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,89 +82,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mkfs.uibfs can add Selinux xattrs from a labeling file using
-libselinux to parse it. The commit that added this feature simply
-introduced a separate function, inode_add_selinux_xattr, which is
-called instead of inode_add_xattr. If no --selinux argument is
-specified for mkfs.ubifs, this is a no-op.
+On Mon, 2023-12-11 at 15:05:24 UTC, Miquel Raynal wrote:
+> Both the "chip" kernel doc member and description are wrong. This field
+> is called "chips" and describes the list of NAND chips connected to the
+> controller.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312102130.geZ4dqyN-lkp@intel.com/
+> Fixes: 08d8c62164a3 ("mtd: rawnand: pl353: Add support for the ARM PL353 SMC NAND controller")
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-The problem is, that this breaks xattr scanning for any build with
-Selinux enabled. The Selinux version is always called and it does
-not scan for xattrs on the filesystem, or dispatch to the original.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
-This commit fixes the xattr scanning behavior. We unconditionally call
-both functions (they each have no-op implementations if the feature
-is missing) and in the regular xattr scanning code, we skip selinux
-attributes, if the --selinux option was given.
-
-Fixes: f1feccec5ad8 ("mkfs.ubifs: Implement selinux labelling support")
-
-Signed-off-by: David Oberhollenzer <goliath@infraroot.at>
----
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index 15e6bdc..8f8d40b 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -56,7 +56,6 @@
- #ifdef WITH_SELINUX
- #define XATTR_NAME_SELINUX "security.selinux"
- static struct selabel_handle *sehnd;
--static char *secontext;
- #endif
- 
- /**
-@@ -1389,6 +1388,15 @@ static int inode_add_xattr(struct ubifs_ino_node *host_ino,
- 			continue;
- 		}
- 
-+#ifdef WITH_SELINUX
-+		/*
-+		  Ignore selinux attributes if we have a label file, they are
-+		  instead provided by inode_add_selinux_xattr.
-+		 */
-+		if (!strcmp(name, XATTR_NAME_SELINUX) && context && sehnd)
-+			continue;
-+#endif
-+
- 		ret = add_xattr(host_ino, st, inum, name, attrbuf, attrsize);
- 		if (ret < 0)
- 			goto out_free;
-@@ -1413,12 +1421,10 @@ static int inode_add_selinux_xattr(struct ubifs_ino_node *host_ino,
- 	char *sepath = NULL;
- 	char *name;
- 	unsigned int con_size;
-+	char *secontext;
- 
--	if (!context || !sehnd) {
--		secontext = NULL;
--		con_size = 0;
-+	if (!context || !sehnd)
- 		return 0;
--	}
- 
- 	if (path_name[strlen(root)] == '/')
- 		sepath = strdup(&path_name[strlen(root)]);
-@@ -1595,11 +1601,11 @@ static int add_inode(struct stat *st, ino_t inum, void *data,
- 	len = UBIFS_INO_NODE_SZ + data_len;
- 
- 	if (xattr_path) {
--#ifdef WITH_SELINUX
- 		ret = inode_add_selinux_xattr(ino, xattr_path, st, inum);
--#else
-+		if (ret < 0)
-+			return ret;
-+
- 		ret = inode_add_xattr(ino, xattr_path, st, inum);
--#endif
- 		if (ret < 0)
- 			return ret;
- 	}
--- 
-2.42.0
-
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
