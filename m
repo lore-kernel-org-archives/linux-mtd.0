@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01E42C46CD3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D79E2C41535
 	for <linux-mtd@archiver.kernel.org>; Sun, 17 Dec 2023 00:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,28 +12,28 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EGuQNqBdrE/HSdvY23PookuraPomYbNnkL5Hk8KE9fc=; b=3/aIbDOjo7c7zY
-	Z4Ga6ey6sRDtmE28STERNj9xIAf8M9Fq/biHeLmmNR6Ui4fMI/J//1ZUOER1yJ8UQ2XWOjsKvdCoy
-	NnJaMYTr9pEYJLOLLOu7gTHfFwywNTRGDEHOOHC/DrRtHbrsDAg2+qD5pXcEMYBFG5LZCgA+dsNb5
-	eDRFN6P/mEbLGPv316sf4DSYjLtDKBnBtpz7LWDMA2ELYfVKlznsYbj0ThECqx93jLSx7tfefqAof
-	QjH31gwFVuTJrXR7McmhTzkCN2F0PHT9SLcO/r7AxnvFJYyc3KZscS3/k3P7uEtyy/+tRfMMTqS9A
-	MbSaDvUjEaiJw06O73NQ==;
+	List-Owner; bh=Fgs8MovGi9sn0fMM+nAydAWLkZ08l+X7PudcP//y5tw=; b=qURTx1q35orHPW
+	LNakG1lRTsAjkkXMoPOxDSnBEcA5n2sG1d9FHw/g4IGzu4GmW1KMittO/HTYRyI4OL+TMC039KVle
+	6eZohazHINb49JESTn9iNLiSZ1rUhuBbIl7zqE3Vn6nDMJ5sRZgEduvGCQhlrYQWaKOFTg/rTYTbM
+	CNIcOBAkOb2VbUUhxiBsjKELbFoLZRx/LvPLtKeVV5PTW2TfEIuTf3r5Z3HqAlJsWnDsAEaPLPbCl
+	/iQEydcEivWcMMNuMq2Jb1eQhL6BVWNmMRkf7rgJBbRbWYOaWMcD4JxKjBpJOGBOtMths7HrmtjQb
+	sahkIYcG7xWsN0uK8BpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEejC-006ss4-3B;
+	id 1rEejC-006sry-1U;
 	Sun, 17 Dec 2023 00:09:54 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEej8-006srU-1f
+	id 1rEej4-006sqf-26
 	for linux-mtd@lists.infradead.org;
-	Sun, 17 Dec 2023 00:09:51 +0000
+	Sun, 17 Dec 2023 00:09:49 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rEej0-000651-2a;
-	Sun, 17 Dec 2023 00:09:44 +0000
-Date: Sun, 17 Dec 2023 00:09:41 +0000
+	id 1rEeiq-00064i-1T;
+	Sun, 17 Dec 2023 00:09:33 +0000
+Date: Sun, 17 Dec 2023 00:09:30 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -45,17 +45,15 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
 	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/7] dt-bindings: mtd: ubi-volume: allow UBI volumes to
- provide NVMEM
-Message-ID: <de0bd3647ed2560074aa3528716c203b8939fe1d.1702770711.git.daniel@makrotopia.org>
+Subject: [PATCH v5 1/7] dt-bindings: mtd: add basic bindings for UBI
+Message-ID: <a9c12b8cc183b103af421a4a350ae6ef1ec173c8.1702770711.git.daniel@makrotopia.org>
 References: <cover.1702770711.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1702770711.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231216_160950_552529_3CCEE36D 
-X-CRM114-Status: UNSURE (   7.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231216_160946_699160_9DD818FD 
+X-CRM114-Status: GOOD (  13.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,53 +70,129 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-UBI volumes may be used to contain NVMEM bits, typically device MAC
-addresses or wireless radio calibration data.
+Add basic bindings for UBI devices and volumes.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/mtd/partitions/linux,ubi.yaml  | 10 ++++++++++
- .../devicetree/bindings/mtd/partitions/ubi-volume.yaml |  5 +++++
- 2 files changed, 15 insertions(+)
+ .../bindings/mtd/partitions/linux,ubi.yaml    | 65 +++++++++++++++++++
+ .../bindings/mtd/partitions/ubi-volume.yaml   | 35 ++++++++++
+ 2 files changed, 100 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
 
 diff --git a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-index 7084a1945b310..27e1ac1f252e4 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+new file mode 100644
+index 0000000000000..7084a1945b310
+--- /dev/null
 +++ b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-@@ -59,6 +59,16 @@ examples:
-                 ubi-volume-caldata {
-                     volid = <2>;
-                     volname = "rf";
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/linux,ubi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+                    nvmem-layout {
-+                        compatible = "fixed-layout";
-+                        #address-cells = <1>;
-+                        #size-cells = <1>;
++title: Unsorted Block Images
 +
-+                        eeprom@0 {
-+                            reg = <0x0 0x1000>;
-+                        };
-+                    };
-                 };
-             };
-         };
++description: |
++  UBI ("Unsorted Block Images") is a volume management system for raw
++  flash devices which manages multiple logical volumes on a single
++  physical flash device and spreads the I/O load (i.e wear-leveling)
++  across the whole flash chip.
++
++maintainers:
++  - Daniel Golle <daniel@makrotopia.org>
++
++allOf:
++  - $ref: partition.yaml#
++
++properties:
++  compatible:
++    const: linux,ubi
++
++  volumes:
++    type: object
++    description: UBI Volumes
++
++    patternProperties:
++      "^ubi-volume-.*$":
++        $ref: /schemas/mtd/partitions/ubi-volume.yaml#
++
++    unevaluatedProperties: false
++
++required:
++  - compatible
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    partitions {
++        compatible = "fixed-partitions";
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        partition@0 {
++            reg = <0x0 0x100000>;
++            label = "bootloader";
++            read-only;
++        };
++
++        partition@100000 {
++            reg = <0x100000 0x1ff00000>;
++            label = "ubi";
++            compatible = "linux,ubi";
++
++            volumes {
++                ubi-volume-caldata {
++                    volid = <2>;
++                    volname = "rf";
++                };
++            };
++        };
++    };
 diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-index c17d0caf07d97..098da3af13a26 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+new file mode 100644
+index 0000000000000..c17d0caf07d97
+--- /dev/null
 +++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-@@ -24,6 +24,11 @@ properties:
-     description:
-       Match UBI volume ID
- 
-+  nvmem-layout:
-+    $ref: /schemas/nvmem/layouts/nvmem-layout.yaml#
-+    description:
-+      This container may reference an NVMEM layout parser.
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/ubi-volume.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- anyOf:
-   - required:
-     - volid
++title: UBI volume
++
++description: |
++  This binding describes a single UBI volume. Volumes can be matches either
++  by their ID or their name, or both.
++
++maintainers:
++  - Daniel Golle <daniel@makrotopia.org>
++
++properties:
++  volid:
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    description:
++      Match UBI volume ID
++
++  volname:
++    $ref: "/schemas/types.yaml#/definitions/string"
++    description:
++      Match UBI volume ID
++
++anyOf:
++  - required:
++    - volid
++
++  - required:
++    - volname
++
++# This is a generic file other binding inherit from and extend
++additionalProperties: true
 -- 
 2.43.0
 
