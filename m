@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D79E2C41535
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Dec 2023 00:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1E11C46CD4
+	for <linux-mtd@archiver.kernel.org>; Sun, 17 Dec 2023 00:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fgs8MovGi9sn0fMM+nAydAWLkZ08l+X7PudcP//y5tw=; b=qURTx1q35orHPW
-	LNakG1lRTsAjkkXMoPOxDSnBEcA5n2sG1d9FHw/g4IGzu4GmW1KMittO/HTYRyI4OL+TMC039KVle
-	6eZohazHINb49JESTn9iNLiSZ1rUhuBbIl7zqE3Vn6nDMJ5sRZgEduvGCQhlrYQWaKOFTg/rTYTbM
-	CNIcOBAkOb2VbUUhxiBsjKELbFoLZRx/LvPLtKeVV5PTW2TfEIuTf3r5Z3HqAlJsWnDsAEaPLPbCl
-	/iQEydcEivWcMMNuMq2Jb1eQhL6BVWNmMRkf7rgJBbRbWYOaWMcD4JxKjBpJOGBOtMths7HrmtjQb
-	sahkIYcG7xWsN0uK8BpA==;
+	List-Owner; bh=KnmWgoDOjbIb/sl3DPOQCcvMnIzpHkavsl1LfF5qVlQ=; b=pOuDQKKswUJLNQ
+	wNoHDZZe/XD9wUOkhF5YScsEmwjtEbuYxRnBKOaD8obhXbBucoGVQ4hOJxwoUirSJ9gJJz7JRms4N
+	RcpEOmXoxFjDomiYw1EAVwcSsm9gdUTbJPj9FcfZEQhwTFi5lcuTQODJL8E+y5kMsYzFqCtoZLBRb
+	CI7MA05eKkQxystU8LpnZ3hl13x3vl0ddMQKCtqArMxacM/w7X/mMdF5uGR+6115V+Qm07+z7gQZ6
+	cOJ3XTWKZ+URodduhkEcKG7rBIfAqouWoaRdM6Yj7vAOeJMW8xGlRdFCEe1kZZkhtj658ef0o7YJj
+	Y6Icit+bxd1SrvDKMF5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEejC-006sry-1U;
-	Sun, 17 Dec 2023 00:09:54 +0000
+	id 1rEejL-006stj-2O;
+	Sun, 17 Dec 2023 00:10:03 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rEej4-006sqf-26
+	id 1rEejI-006ssc-2K
 	for linux-mtd@lists.infradead.org;
-	Sun, 17 Dec 2023 00:09:49 +0000
+	Sun, 17 Dec 2023 00:10:02 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rEeiq-00064i-1T;
-	Sun, 17 Dec 2023 00:09:33 +0000
-Date: Sun, 17 Dec 2023 00:09:30 +0000
+	id 1rEejA-00065M-2W;
+	Sun, 17 Dec 2023 00:09:53 +0000
+Date: Sun, 17 Dec 2023 00:09:51 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -45,15 +45,16 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
 	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/7] dt-bindings: mtd: add basic bindings for UBI
-Message-ID: <a9c12b8cc183b103af421a4a350ae6ef1ec173c8.1702770711.git.daniel@makrotopia.org>
+Subject: [PATCH v5 3/7] mtd: ubi: block: use notifier to create ubiblock from
+ parameter
+Message-ID: <964a9482696b5c458eba90d3ed44154c9112828f.1702770711.git.daniel@makrotopia.org>
 References: <cover.1702770711.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1702770711.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231216_160946_699160_9DD818FD 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20231216_161000_924240_1BAC8A49 
+X-CRM114-Status: GOOD (  30.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,129 +71,290 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add basic bindings for UBI devices and volumes.
+Use UBI_VOLUME_ADDED notification to create ubiblock device specified
+on kernel cmdline or module parameter.
+This makes things more simple and has the advantage that ubiblock devices
+on volumes which are not present at the time the ubi module is probed
+will still be created.
 
+Suggested-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/mtd/partitions/linux,ubi.yaml    | 65 +++++++++++++++++++
- .../bindings/mtd/partitions/ubi-volume.yaml   | 35 ++++++++++
- 2 files changed, 100 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ drivers/mtd/ubi/block.c | 136 ++++++++++++++++++++--------------------
+ drivers/mtd/ubi/kapi.c  |  54 +++++++++++-----
+ drivers/mtd/ubi/ubi.h   |   1 +
+ 3 files changed, 106 insertions(+), 85 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-new file mode 100644
-index 0000000000000..7084a1945b310
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/linux,ubi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 309a42aeaa4cd..a467df5aa130a 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -65,10 +65,10 @@ struct ubiblock_pdu {
+ };
+ 
+ /* Numbers of elements set in the @ubiblock_param array */
+-static int ubiblock_devs __initdata;
++static int ubiblock_devs;
+ 
+ /* MTD devices specification parameters */
+-static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES] __initdata;
++static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES];
+ 
+ struct ubiblock {
+ 	struct ubi_volume_desc *desc;
+@@ -534,6 +534,70 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
+ 	return 0;
+ }
+ 
++static bool
++match_volume_desc(struct ubi_volume_info *vi, const char *name, int ubi_num, int vol_id)
++{
++	int err, len, cur_ubi_num, cur_vol_id;
 +
-+title: Unsorted Block Images
++	if (ubi_num == -1) {
++		/* No ubi num, name must be a vol device path */
++		err = ubi_get_num_by_path(name, &cur_ubi_num, &cur_vol_id);
++		if (err || vi->ubi_num != cur_ubi_num || vi->vol_id != cur_vol_id)
++			return false;
 +
-+description: |
-+  UBI ("Unsorted Block Images") is a volume management system for raw
-+  flash devices which manages multiple logical volumes on a single
-+  physical flash device and spreads the I/O load (i.e wear-leveling)
-+  across the whole flash chip.
++		return true;
++	}
 +
-+maintainers:
-+  - Daniel Golle <daniel@makrotopia.org>
++	if (vol_id == -1) {
++		/* Got ubi_num, but no vol_id, name must be volume name */
++		if (vi->ubi_num != ubi_num)
++			return false;
 +
-+allOf:
-+  - $ref: partition.yaml#
++		len = strnlen(name, UBI_VOL_NAME_MAX + 1);
++		if (len < 1 || vi->name_len != len)
++			return false;
 +
-+properties:
-+  compatible:
-+    const: linux,ubi
++		if (strcmp(name, vi->name))
++			return false;
 +
-+  volumes:
-+    type: object
-+    description: UBI Volumes
++		return true;
++	}
 +
-+    patternProperties:
-+      "^ubi-volume-.*$":
-+        $ref: /schemas/mtd/partitions/ubi-volume.yaml#
++	if (vi->ubi_num != ubi_num)
++		return false;
 +
-+    unevaluatedProperties: false
++	if (vi->vol_id != vol_id)
++		return false;
 +
-+required:
-+  - compatible
++	return true;
++}
 +
-+unevaluatedProperties: false
++static void
++ubiblock_create_from_param(struct ubi_volume_info *vi)
++{
++	int i, ret = 0;
++	struct ubiblock_param *p;
 +
-+examples:
-+  - |
-+    partitions {
-+        compatible = "fixed-partitions";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
++	/*
++	 * Iterate over ubiblock cmdline parameters. If a parameter matches the
++	 * newly added volume create the ubiblock device for it.
++	 */
++	for (i = 0; i < ubiblock_devs; i++) {
++		p = &ubiblock_param[i];
 +
-+        partition@0 {
-+            reg = <0x0 0x100000>;
-+            label = "bootloader";
-+            read-only;
-+        };
++		if (!match_volume_desc(vi, p->name, p->ubi_num, p->vol_id))
++			continue;
 +
-+        partition@100000 {
-+            reg = <0x100000 0x1ff00000>;
-+            label = "ubi";
-+            compatible = "linux,ubi";
++		ret = ubiblock_create(vi);
++		if (ret) {
++			pr_err(
++			       "UBI: block: can't add '%s' volume on ubi%d_%d, err=%d\n",
++			       vi->name, p->ubi_num, p->vol_id, ret);
++		}
++		break;
++	}
++}
 +
-+            volumes {
-+                ubi-volume-caldata {
-+                    volid = <2>;
-+                    volname = "rf";
-+                };
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-new file mode 100644
-index 0000000000000..c17d0caf07d97
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/ubi-volume.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+ static int ubiblock_notify(struct notifier_block *nb,
+ 			 unsigned long notification_type, void *ns_ptr)
+ {
+@@ -541,10 +605,7 @@ static int ubiblock_notify(struct notifier_block *nb,
+ 
+ 	switch (notification_type) {
+ 	case UBI_VOLUME_ADDED:
+-		/*
+-		 * We want to enforce explicit block device creation for
+-		 * volumes, so when a volume is added we do nothing.
+-		 */
++		ubiblock_create_from_param(&nt->vi);
+ 		break;
+ 	case UBI_VOLUME_REMOVED:
+ 		ubiblock_remove(&nt->vi);
+@@ -570,56 +631,6 @@ static struct notifier_block ubiblock_notifier = {
+ 	.notifier_call = ubiblock_notify,
+ };
+ 
+-static struct ubi_volume_desc * __init
+-open_volume_desc(const char *name, int ubi_num, int vol_id)
+-{
+-	if (ubi_num == -1)
+-		/* No ubi num, name must be a vol device path */
+-		return ubi_open_volume_path(name, UBI_READONLY);
+-	else if (vol_id == -1)
+-		/* No vol_id, must be vol_name */
+-		return ubi_open_volume_nm(ubi_num, name, UBI_READONLY);
+-	else
+-		return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
+-}
+-
+-static void __init ubiblock_create_from_param(void)
+-{
+-	int i, ret = 0;
+-	struct ubiblock_param *p;
+-	struct ubi_volume_desc *desc;
+-	struct ubi_volume_info vi;
+-
+-	/*
+-	 * If there is an error creating one of the ubiblocks, continue on to
+-	 * create the following ubiblocks. This helps in a circumstance where
+-	 * the kernel command-line specifies multiple block devices and some
+-	 * may be broken, but we still want the working ones to come up.
+-	 */
+-	for (i = 0; i < ubiblock_devs; i++) {
+-		p = &ubiblock_param[i];
+-
+-		desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
+-		if (IS_ERR(desc)) {
+-			pr_err(
+-			       "UBI: block: can't open volume on ubi%d_%d, err=%ld\n",
+-			       p->ubi_num, p->vol_id, PTR_ERR(desc));
+-			continue;
+-		}
+-
+-		ubi_get_volume_info(desc, &vi);
+-		ubi_close_volume(desc);
+-
+-		ret = ubiblock_create(&vi);
+-		if (ret) {
+-			pr_err(
+-			       "UBI: block: can't add '%s' volume on ubi%d_%d, err=%d\n",
+-			       vi.name, p->ubi_num, p->vol_id, ret);
+-			continue;
+-		}
+-	}
+-}
+-
+ static void ubiblock_remove_all(void)
+ {
+ 	struct ubiblock *next;
+@@ -645,18 +656,7 @@ int __init ubiblock_init(void)
+ 	if (ubiblock_major < 0)
+ 		return ubiblock_major;
+ 
+-	/*
+-	 * Attach block devices from 'block=' module param.
+-	 * Even if one block device in the param list fails to come up,
+-	 * still allow the module to load and leave any others up.
+-	 */
+-	ubiblock_create_from_param();
+-
+-	/*
+-	 * Block devices are only created upon user requests, so we ignore
+-	 * existing volumes.
+-	 */
+-	ret = ubi_register_volume_notifier(&ubiblock_notifier, 1);
++	ret = ubi_register_volume_notifier(&ubiblock_notifier, 0);
+ 	if (ret)
+ 		goto err_unreg;
+ 	return 0;
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 5db653eacbd45..fbf3a7fe2af79 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -279,6 +279,41 @@ struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
+ }
+ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
+ 
++/**
++ * ubi_get_num_by_path - get UBI device and volume number from device path
++ * @pathname: volume character device node path
++ * @ubi_num: pointer to UBI device number to be set
++ * @vol_id: pointer to UBI volume ID to be set
++ *
++ * Returns 0 on success and sets ubi_num and vol_id, returns error otherwise.
++ */
++int ubi_get_num_by_path(const char *pathname, int *ubi_num, int *vol_id)
++{
++	int error;
++	struct path path;
++	struct kstat stat;
 +
-+title: UBI volume
++	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
++	if (error)
++		return error;
 +
-+description: |
-+  This binding describes a single UBI volume. Volumes can be matches either
-+  by their ID or their name, or both.
++	error = vfs_getattr(&path, &stat, STATX_TYPE, AT_STATX_SYNC_AS_STAT);
++	path_put(&path);
++	if (error)
++		return error;
 +
-+maintainers:
-+  - Daniel Golle <daniel@makrotopia.org>
++	if (!S_ISCHR(stat.mode))
++		return -EINVAL;
 +
-+properties:
-+  volid:
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    description:
-+      Match UBI volume ID
++	*ubi_num = ubi_major2num(MAJOR(stat.rdev));
++	*vol_id = MINOR(stat.rdev) - 1;
 +
-+  volname:
-+    $ref: "/schemas/types.yaml#/definitions/string"
-+    description:
-+      Match UBI volume ID
++	if (*vol_id < 0 || *ubi_num < 0)
++		return -ENODEV;
 +
-+anyOf:
-+  - required:
-+    - volid
++	return 0;
++}
 +
-+  - required:
-+    - volname
-+
-+# This is a generic file other binding inherit from and extend
-+additionalProperties: true
+ /**
+  * ubi_open_volume_path - open UBI volume by its character device node path.
+  * @pathname: volume character device node path
+@@ -290,32 +325,17 @@ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
+ struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
+ {
+ 	int error, ubi_num, vol_id;
+-	struct path path;
+-	struct kstat stat;
+ 
+ 	dbg_gen("open volume %s, mode %d", pathname, mode);
+ 
+ 	if (!pathname || !*pathname)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
+-	if (error)
+-		return ERR_PTR(error);
+-
+-	error = vfs_getattr(&path, &stat, STATX_TYPE, AT_STATX_SYNC_AS_STAT);
+-	path_put(&path);
++	error = ubi_get_num_by_path(pathname, &ubi_num, &vol_id);
+ 	if (error)
+ 		return ERR_PTR(error);
+ 
+-	if (!S_ISCHR(stat.mode))
+-		return ERR_PTR(-EINVAL);
+-
+-	ubi_num = ubi_major2num(MAJOR(stat.rdev));
+-	vol_id = MINOR(stat.rdev) - 1;
+-
+-	if (vol_id >= 0 && ubi_num >= 0)
+-		return ubi_open_volume(ubi_num, vol_id, mode);
+-	return ERR_PTR(-ENODEV);
++	return ubi_open_volume(ubi_num, vol_id, mode);
+ }
+ EXPORT_SYMBOL_GPL(ubi_open_volume_path);
+ 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a5ec566df0d74..17b463804c979 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -962,6 +962,7 @@ void ubi_free_internal_volumes(struct ubi_device *ubi);
+ void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
+ void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			    struct ubi_volume_info *vi);
++int ubi_get_num_by_path(const char *pathname, int *ubi_num, int *vol_id);
+ /* scan.c */
+ int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
+ 		      int pnum, const struct ubi_vid_hdr *vid_hdr);
 -- 
 2.43.0
 
