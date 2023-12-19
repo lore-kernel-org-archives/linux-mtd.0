@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 092BEC35274
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Dec 2023 02:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09353C35274
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Dec 2023 02:33:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EhRtQU85Q3ZcEQd+kK9XM7qKTqMtsaQ6nFWZczlYrF0=; b=bq5bpovuU/x+24
-	UaWKOBX3jc9KjoKMWU0bfQpJiDzC5p6bUtd00Q5EgyOrCiJWbhZb8ZUGGtywjl/K2RJFDZHCAPdtL
-	SwS7AVjbCaEd73OsZ/Hsnqn4jUir8e4CpI+HoC3H+fg+kjlHY9TwAu4c5yHzyoqJuUQYU2AsMlnvP
-	BZpoKtYzEQzBJC3RoD6MbYBb/LKYC8PWav0egkls4/SpFzwtOkg2N/cHAJnHxy4w3FeaD+4tNqqzR
-	ARuOAD3VBW4kAHaQRlet8WeFgBVtCwNwYfALrQUDJv2J2awZ5gTMHfpKP7aw+z04XYzgzEFOCZEct
-	1C3p1StxpJFgqVBxGR+g==;
+	List-Owner; bh=+W56qlU4agjyAs+BGlpvTKKHPM1Uj2TrxZB2cYMiMF0=; b=b15B9QY33ewJwh
+	+oSUd3E/CztD5nJ4OJH+KsRcTneOrMZDnnAKTqEyaa2KKO+nvG9FGvUGd5ehaLqLtnBBEVl8bhw6r
+	RbjAfdfprVu0bvP61t9vhQlfZpq2uwVHWuooLX7wKVTPrZtlV3TK5o8au6+TI8O8+M0gUAXeiXxKY
+	sMdfsdFavpUs/oYglRiOwHnCEWh3htltLkbMRr8SAuhKGrViXrummTD+LPRjvL//zyTCVu8s59wNb
+	5FXBNkpIRomIi5e1rGUMwmqIQM/8hUOaCeyCuyh9Z3G171o+kV8UzD8iQHBmFBuBWi9NUeEdRTBzd
+	XtuIxJW6xYcoKu3dKUkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFPuY-00Cams-11;
-	Tue, 19 Dec 2023 02:32:46 +0000
+	id 1rFPvC-00Cb1H-0O;
+	Tue, 19 Dec 2023 02:33:26 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFPuV-00Cal7-1N
+	id 1rFPv8-00Caym-1j
 	for linux-mtd@lists.infradead.org;
-	Tue, 19 Dec 2023 02:32:45 +0000
+	Tue, 19 Dec 2023 02:33:25 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rFPuP-0008I2-0u;
-	Tue, 19 Dec 2023 02:32:38 +0000
-Date: Tue, 19 Dec 2023 02:32:35 +0000
+	id 1rFPv2-0008JA-1H;
+	Tue, 19 Dec 2023 02:33:17 +0000
+Date: Tue, 19 Dec 2023 02:33:14 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -43,16 +43,15 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 3/7] mtd: ubi: block: use notifier to create ubiblock from
- parameter
-Message-ID: <af5981d9bc41b6425e88c7389b4669bc07c27429.1702952891.git.daniel@makrotopia.org>
+Subject: [PATCH v7 4/7] mtd: ubi: attach from device tree
+Message-ID: <380712c15c1e958ed0b6af33ec551eaaa66e7abd.1702952891.git.daniel@makrotopia.org>
 References: <cover.1702952891.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1702952891.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231218_183243_626203_44C66596 
-X-CRM114-Status: GOOD (  30.59  )
+X-CRM114-CacheID: sfid-20231218_183322_581974_D286F3C5 
+X-CRM114-Status: GOOD (  22.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,290 +68,207 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use UBI_VOLUME_ADDED notification to create ubiblock device specified
-on kernel cmdline or module parameter.
-This makes thing more simple and has the advantage that ubiblock devices
-on volumes which are not present at the time the ubi module is probed
-will still be created.
+Introduce device tree compatible 'linux,ubi' and attach compatible MTD
+devices using the MTD add notifier. This is needed for a UBI device to
+be available early at boot (and not only after late_initcall), so
+volumes on them can be used eg. as NVMEM providers for other drivers.
 
-Suggested-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/mtd/ubi/block.c | 136 ++++++++++++++++++++--------------------
- drivers/mtd/ubi/kapi.c  |  54 +++++++++++-----
- drivers/mtd/ubi/ubi.h   |   1 +
- 3 files changed, 106 insertions(+), 85 deletions(-)
+ drivers/mtd/ubi/build.c | 135 ++++++++++++++++++++++++++++------------
+ 1 file changed, 96 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 309a42aeaa4cd..a467df5aa130a 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -65,10 +65,10 @@ struct ubiblock_pdu {
- };
- 
- /* Numbers of elements set in the @ubiblock_param array */
--static int ubiblock_devs __initdata;
-+static int ubiblock_devs;
- 
- /* MTD devices specification parameters */
--static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES] __initdata;
-+static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES];
- 
- struct ubiblock {
- 	struct ubi_volume_desc *desc;
-@@ -534,6 +534,70 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
- 	return 0;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 7d4ff1193db6f..8c3f763e4ddb8 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -27,6 +27,7 @@
+ #include <linux/log2.h>
+ #include <linux/kthread.h>
+ #include <linux/kernel.h>
++#include <linux/of.h>
+ #include <linux/slab.h>
+ #include <linux/major.h>
+ #include "ubi.h"
+@@ -1219,43 +1220,43 @@ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+ 	return mtd;
  }
  
-+static bool
-+match_volume_desc(struct ubi_volume_info *vi, const char *name, int ubi_num, int vol_id)
-+{
-+	int err, len, cur_ubi_num, cur_vol_id;
-+
-+	if (ubi_num == -1) {
-+		/* No ubi num, name must be a vol device path */
-+		err = ubi_get_num_by_path(name, &cur_ubi_num, &cur_vol_id);
-+		if (err || vi->ubi_num != cur_ubi_num || vi->vol_id != cur_vol_id)
-+			return false;
-+
-+		return true;
-+	}
-+
-+	if (vol_id == -1) {
-+		/* Got ubi_num, but no vol_id, name must be volume name */
-+		if (vi->ubi_num != ubi_num)
-+			return false;
-+
-+		len = strnlen(name, UBI_VOL_NAME_MAX + 1);
-+		if (len < 1 || vi->name_len != len)
-+			return false;
-+
-+		if (strcmp(name, vi->name))
-+			return false;
-+
-+		return true;
-+	}
-+
-+	if (vi->ubi_num != ubi_num)
-+		return false;
-+
-+	if (vi->vol_id != vol_id)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void
-+ubiblock_create_from_param(struct ubi_volume_info *vi)
-+{
-+	int i, ret = 0;
-+	struct ubiblock_param *p;
-+
-+	/*
-+	 * Iterate over ubiblock cmdline parameters. If a parameter matches the
-+	 * newly added volume create the ubiblock device for it.
-+	 */
-+	for (i = 0; i < ubiblock_devs; i++) {
-+		p = &ubiblock_param[i];
-+
-+		if (!match_volume_desc(vi, p->name, p->ubi_num, p->vol_id))
-+			continue;
-+
-+		ret = ubiblock_create(vi);
-+		if (ret) {
-+			pr_err(
-+			       "UBI: block: can't add '%s' volume on ubi%d_%d, err=%d\n",
-+			       vi->name, p->ubi_num, p->vol_id, ret);
-+		}
-+		break;
-+	}
-+}
-+
- static int ubiblock_notify(struct notifier_block *nb,
- 			 unsigned long notification_type, void *ns_ptr)
+-static int __init ubi_init(void)
++static void ubi_notify_add(struct mtd_info *mtd)
  {
-@@ -541,10 +605,7 @@ static int ubiblock_notify(struct notifier_block *nb,
+-	int err, i, k;
++	struct device_node *np = mtd_get_of_node(mtd);
++	int err;
  
- 	switch (notification_type) {
- 	case UBI_VOLUME_ADDED:
--		/*
--		 * We want to enforce explicit block device creation for
--		 * volumes, so when a volume is added we do nothing.
--		 */
-+		ubiblock_create_from_param(&nt->vi);
- 		break;
- 	case UBI_VOLUME_REMOVED:
- 		ubiblock_remove(&nt->vi);
-@@ -570,56 +631,6 @@ static struct notifier_block ubiblock_notifier = {
- 	.notifier_call = ubiblock_notify,
- };
+-	/* Ensure that EC and VID headers have correct size */
+-	BUILD_BUG_ON(sizeof(struct ubi_ec_hdr) != 64);
+-	BUILD_BUG_ON(sizeof(struct ubi_vid_hdr) != 64);
++	if (!of_device_is_compatible(np, "linux,ubi"))
++		return;
  
--static struct ubi_volume_desc * __init
--open_volume_desc(const char *name, int ubi_num, int vol_id)
--{
--	if (ubi_num == -1)
--		/* No ubi num, name must be a vol device path */
--		return ubi_open_volume_path(name, UBI_READONLY);
--	else if (vol_id == -1)
--		/* No vol_id, must be vol_name */
--		return ubi_open_volume_nm(ubi_num, name, UBI_READONLY);
--	else
--		return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
--}
--
--static void __init ubiblock_create_from_param(void)
--{
--	int i, ret = 0;
--	struct ubiblock_param *p;
--	struct ubi_volume_desc *desc;
--	struct ubi_volume_info vi;
--
--	/*
--	 * If there is an error creating one of the ubiblocks, continue on to
--	 * create the following ubiblocks. This helps in a circumstance where
--	 * the kernel command-line specifies multiple block devices and some
--	 * may be broken, but we still want the working ones to come up.
--	 */
--	for (i = 0; i < ubiblock_devs; i++) {
--		p = &ubiblock_param[i];
--
--		desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
--		if (IS_ERR(desc)) {
--			pr_err(
--			       "UBI: block: can't open volume on ubi%d_%d, err=%ld\n",
--			       p->ubi_num, p->vol_id, PTR_ERR(desc));
--			continue;
--		}
--
--		ubi_get_volume_info(desc, &vi);
--		ubi_close_volume(desc);
--
--		ret = ubiblock_create(&vi);
--		if (ret) {
--			pr_err(
--			       "UBI: block: can't add '%s' volume on ubi%d_%d, err=%d\n",
--			       vi.name, p->ubi_num, p->vol_id, ret);
--			continue;
--		}
+-	if (mtd_devs > UBI_MAX_DEVICES) {
+-		pr_err("UBI error: too many MTD devices, maximum is %d\n",
+-		       UBI_MAX_DEVICES);
+-		return -EINVAL;
 -	}
--}
--
- static void ubiblock_remove_all(void)
- {
- 	struct ubiblock *next;
-@@ -645,18 +656,7 @@ int __init ubiblock_init(void)
- 	if (ubiblock_major < 0)
- 		return ubiblock_major;
++	/*
++	 * we are already holding &mtd_table_mutex, but still need
++	 * to bump refcount
++	 */
++	err = __get_mtd_device(mtd);
++	if (err)
++		return;
  
--	/*
--	 * Attach block devices from 'block=' module param.
--	 * Even if one block device in the param list fails to come up,
--	 * still allow the module to load and leave any others up.
--	 */
--	ubiblock_create_from_param();
+-	/* Create base sysfs directory and sysfs files */
+-	err = class_register(&ubi_class);
++	/* called while holding mtd_table_mutex */
++	mutex_lock_nested(&ubi_devices_mutex, SINGLE_DEPTH_NESTING);
++	err = ubi_attach_mtd_dev(mtd, UBI_DEV_NUM_AUTO, 0, 0, false, false);
++	mutex_unlock(&ubi_devices_mutex);
+ 	if (err < 0)
+-		return err;
 -
--	/*
--	 * Block devices are only created upon user requests, so we ignore
--	 * existing volumes.
--	 */
--	ret = ubi_register_volume_notifier(&ubiblock_notifier, 1);
-+	ret = ubi_register_volume_notifier(&ubiblock_notifier, 0);
- 	if (ret)
- 		goto err_unreg;
- 	return 0;
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 5db653eacbd45..fbf3a7fe2af79 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -279,6 +279,41 @@ struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
- }
- EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
- 
-+/**
-+ * ubi_get_num_by_path - get UBI device and volume number from device path
-+ * @pathname: volume character device node path
-+ * @ubi_num: pointer to UBI device number to be set
-+ * @vol_id: pointer to UBI volume ID to be set
-+ *
-+ * Returns 0 on success and sets ubi_num and vol_id, returns error otherwise.
-+ */
-+int ubi_get_num_by_path(const char *pathname, int *ubi_num, int *vol_id)
-+{
-+	int error;
-+	struct path path;
-+	struct kstat stat;
-+
-+	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
-+	if (error)
-+		return error;
-+
-+	error = vfs_getattr(&path, &stat, STATX_TYPE, AT_STATX_SYNC_AS_STAT);
-+	path_put(&path);
-+	if (error)
-+		return error;
-+
-+	if (!S_ISCHR(stat.mode))
-+		return -EINVAL;
-+
-+	*ubi_num = ubi_major2num(MAJOR(stat.rdev));
-+	*vol_id = MINOR(stat.rdev) - 1;
-+
-+	if (*vol_id < 0 || *ubi_num < 0)
-+		return -ENODEV;
-+
-+	return 0;
+-	err = misc_register(&ubi_ctrl_cdev);
+-	if (err) {
+-		pr_err("UBI error: cannot register device\n");
+-		goto out;
+-	}
++		__put_mtd_device(mtd);
 +}
+ 
+-	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
+-					      sizeof(struct ubi_wl_entry),
+-					      0, 0, NULL);
+-	if (!ubi_wl_entry_slab) {
+-		err = -ENOMEM;
+-		goto out_dev_unreg;
+-	}
++static void ubi_notify_remove(struct mtd_info *mtd)
++{
++	/* do nothing for now */
++}
+ 
+-	err = ubi_debugfs_init();
+-	if (err)
+-		goto out_slab;
++static struct mtd_notifier ubi_mtd_notifier = {
++	.add = ubi_notify_add,
++	.remove = ubi_notify_remove,
++};
+ 
++static int __init ubi_init_attach(void)
++{
++	int err, i, k;
+ 
+ 	/* Attach MTD devices */
+ 	for (i = 0; i < mtd_devs; i++) {
+@@ -1304,25 +1305,79 @@ static int __init ubi_init(void)
+ 		}
+ 	}
+ 
++	return 0;
 +
- /**
-  * ubi_open_volume_path - open UBI volume by its character device node path.
-  * @pathname: volume character device node path
-@@ -290,32 +325,17 @@ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
- struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
- {
- 	int error, ubi_num, vol_id;
--	struct path path;
--	struct kstat stat;
++out_detach:
++	for (k = 0; k < i; k++)
++		if (ubi_devices[k]) {
++			mutex_lock(&ubi_devices_mutex);
++			ubi_detach_mtd_dev(ubi_devices[k]->ubi_num, 1);
++			mutex_unlock(&ubi_devices_mutex);
++		}
++	return err;
++}
++#ifndef CONFIG_MTD_UBI_MODULE
++late_initcall(ubi_init_attach);
++#endif
++
++static int __init ubi_init(void)
++{
++	int err;
++
++	/* Ensure that EC and VID headers have correct size */
++	BUILD_BUG_ON(sizeof(struct ubi_ec_hdr) != 64);
++	BUILD_BUG_ON(sizeof(struct ubi_vid_hdr) != 64);
++
++	if (mtd_devs > UBI_MAX_DEVICES) {
++		pr_err("UBI error: too many MTD devices, maximum is %d\n",
++		       UBI_MAX_DEVICES);
++		return -EINVAL;
++	}
++
++	/* Create base sysfs directory and sysfs files */
++	err = class_register(&ubi_class);
++	if (err < 0)
++		return err;
++
++	err = misc_register(&ubi_ctrl_cdev);
++	if (err) {
++		pr_err("UBI error: cannot register device\n");
++		goto out;
++	}
++
++	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
++					      sizeof(struct ubi_wl_entry),
++					      0, 0, NULL);
++	if (!ubi_wl_entry_slab) {
++		err = -ENOMEM;
++		goto out_dev_unreg;
++	}
++
++	err = ubi_debugfs_init();
++	if (err)
++		goto out_slab;
++
+ 	err = ubiblock_init();
+ 	if (err) {
+ 		pr_err("UBI error: block: cannot initialize, error %d\n", err);
  
- 	dbg_gen("open volume %s, mode %d", pathname, mode);
+ 		/* See comment above re-ubi_is_module(). */
+ 		if (ubi_is_module())
+-			goto out_detach;
++			goto out_slab;
++	}
++
++	register_mtd_user(&ubi_mtd_notifier);
++
++	if (ubi_is_module()) {
++		err = ubi_init_attach();
++		if (err)
++			goto out_mtd_notifier;
+ 	}
  
- 	if (!pathname || !*pathname)
- 		return ERR_PTR(-EINVAL);
+ 	return 0;
  
--	error = kern_path(pathname, LOOKUP_FOLLOW, &path);
--	if (error)
--		return ERR_PTR(error);
--
--	error = vfs_getattr(&path, &stat, STATX_TYPE, AT_STATX_SYNC_AS_STAT);
--	path_put(&path);
-+	error = ubi_get_num_by_path(pathname, &ubi_num, &vol_id);
- 	if (error)
- 		return ERR_PTR(error);
- 
--	if (!S_ISCHR(stat.mode))
--		return ERR_PTR(-EINVAL);
--
--	ubi_num = ubi_major2num(MAJOR(stat.rdev));
--	vol_id = MINOR(stat.rdev) - 1;
--
--	if (vol_id >= 0 && ubi_num >= 0)
--		return ubi_open_volume(ubi_num, vol_id, mode);
--	return ERR_PTR(-ENODEV);
-+	return ubi_open_volume(ubi_num, vol_id, mode);
+-out_detach:
+-	for (k = 0; k < i; k++)
+-		if (ubi_devices[k]) {
+-			mutex_lock(&ubi_devices_mutex);
+-			ubi_detach_mtd_dev(ubi_devices[k]->ubi_num, 1);
+-			mutex_unlock(&ubi_devices_mutex);
+-		}
+-	ubi_debugfs_exit();
++out_mtd_notifier:
++	unregister_mtd_user(&ubi_mtd_notifier);
+ out_slab:
+ 	kmem_cache_destroy(ubi_wl_entry_slab);
+ out_dev_unreg:
+@@ -1332,13 +1387,15 @@ static int __init ubi_init(void)
+ 	pr_err("UBI error: cannot initialize UBI, error %d\n", err);
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(ubi_open_volume_path);
+-late_initcall(ubi_init);
++device_initcall(ubi_init);
++
  
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index a5ec566df0d74..17b463804c979 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -962,6 +962,7 @@ void ubi_free_internal_volumes(struct ubi_device *ubi);
- void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
- void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
- 			    struct ubi_volume_info *vi);
-+int ubi_get_num_by_path(const char *pathname, int *ubi_num, int *vol_id);
- /* scan.c */
- int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
- 		      int pnum, const struct ubi_vid_hdr *vid_hdr);
+ static void __exit ubi_exit(void)
+ {
+ 	int i;
+ 
+ 	ubiblock_exit();
++	unregister_mtd_user(&ubi_mtd_notifier);
+ 
+ 	for (i = 0; i < UBI_MAX_DEVICES; i++)
+ 		if (ubi_devices[i]) {
 -- 
 2.43.0
 
