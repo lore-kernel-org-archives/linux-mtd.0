@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E09A7C41535
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Dec 2023 14:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01862C46CCD
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Dec 2023 14:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C3eFnRO/T9EfdVa+85y5BTJ1OVkZPv0hr54C5iz/Kfk=; b=gmo6eMj177wLh9
-	2cWooGXYneJiPdsDW9x01HDchir9GEZTXyRSycVnrVHz2o3FeJxq10+IdoIwXJauTSMgpsSw8XX7u
-	Ku43I/G+S2tZN6geZiiZQIc/FtGwphkxHyt10fXZzTWXP5NqUjfhyuxQGR5tAQthnSR7LIe8r3k3J
-	o/p8v8+2ilwOklpJJ5RjuTHQFEFPC8tS5OP9zudk/ksHl48YVRcmaw3WuzzgErcr8g1FmBqN9lgb5
-	+mMPrSwKsZEZj3Hg9hfxA0h242M8Qs4Ce4fQWUHpFo/wFpGNZozQplTqJgfjWUQr0su6BHEE0vgkk
-	ewYH7ncCJS87kq9+7TGQ==;
+	List-Owner; bh=2buwuw/C6yuxXz5kX55HtaDxs7DFk9Kp9KHE0639Xl4=; b=wIU3ZZIszvhM+E
+	d51XU8JgxDj+k+wnYconmJWvmH+hiSCVEKvqTujbdy+l9L58sdvjvh7RjNMQva3LX593cga8sZL+G
+	DvS66gpZkEp2JrGHSFI4LLrB59FoQZ82ekYC7cePvHhNwLTcXa4YhtPzaQnFuOiqyMOPlI2qZhmPX
+	dM6cSTNc9T2e8BWKdwr4UEpWwenkcRAD5doOYwcLkH+yM/87RLeqFPR9pJuAcjdRHdOvkh/1N7DiZ
+	+SmXN4WkH912Nm8AGoi1fZS/J9+EQZOsZ5+vOrBn7ZCwl0YXRjB3seEniWFZQU3zxoI8rWU/j68bo
+	GsHJkkY73NGcHidy/31A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFbDc-00EOcp-2L;
-	Tue, 19 Dec 2023 14:37:12 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1rFbL3-00EQTl-2A;
+	Tue, 19 Dec 2023 14:44:53 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFbDY-00EOYx-2r
+	id 1rFbL1-00EQP5-0X
 	for linux-mtd@lists.infradead.org;
-	Tue, 19 Dec 2023 14:37:11 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SvfPn6J2DzvSD7;
-	Tue, 19 Dec 2023 22:35:57 +0800 (CST)
-Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
-	by mail.maildlp.com (Postfix) with ESMTPS id 68B5C140390;
-	Tue, 19 Dec 2023 22:36:51 +0800 (CST)
-Received: from [10.174.178.209] (10.174.178.209) by
- dggpemd200001.china.huawei.com (7.185.36.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 19 Dec 2023 22:36:50 +0800
-Message-ID: <04b4c375-d890-9458-5d62-0a9ba74b8c68@huawei.com>
-Date: Tue, 19 Dec 2023 22:36:50 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH v3] mtd: Fix gluebi NULL pointer dereference caused by ftl
- notifier
-To: Richard Weinberger <richard@nod.at>, Miquel Raynal
-	<miquel.raynal@bootlin.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Artem Bityutskiy
-	<Artem.Bityutskiy@nokia.com>, dpervushin <dpervushin@embeddedalley.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, chengzhihao1 <chengzhihao1@huawei.com>, yi
+	Tue, 19 Dec 2023 14:44:53 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 00BB840002;
+	Tue, 19 Dec 2023 14:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702997084;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vcC1UPq/cCcwskYFv7lgPr4ovzsPPufTTXEYRTZJPi8=;
+	b=drhoG56F5u53THaINE7HgunFSjNNF7X9b6BJxp9dNLp2azlG6tks0evoML1e2Z0jdEQEGZ
+	LV7IilQ9oqIzjaXs8Ir8XtmwQAShLAQf+Ojn9ClGoMftbo58jAr+OPyzAN/oq/DwrV1ZpF
+	7LOOSNqlw0MJyZpsjo3b6qNYc78LfFilWxqUQ2hma523rQOp2mV+srpeS3M2oqsfBnCi6K
+	l7r6YqiZlfAQwylz0S2lCL77iiKhgMIaZg4lhH7//ujtuswrpAy+CUZP8ADQ/dg2O1rxga
+	ZtxJOWsTfLneD4xAAJmHwgsI51vAl8cXkUm+C8MGTl5GG43LJo0NH0XRMSBU3Q==
+Date: Tue, 19 Dec 2023 15:44:38 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: ZhaoLong Wang <wangzhaolong1@huawei.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+ dpervushin <dpervushin@embeddedalley.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>, linux-kernel
+ <linux-kernel@vger.kernel.org>, chengzhihao1 <chengzhihao1@huawei.com>, yi
  zhang <yi.zhang@huawei.com>, yangerkun <yangerkun@huawei.com>
+Subject: Re: [PATCH v3] mtd: Fix gluebi NULL pointer dereference caused by
+ ftl notifier
+Message-ID: <20231219154438.2bc1820e@xps-13>
+In-Reply-To: <04b4c375-d890-9458-5d62-0a9ba74b8c68@huawei.com>
 References: <20231027012033.50280-1-wangzhaolong1@huawei.com>
- <20231027194026.1bc32dfe@xps-13>
- <174426702.13324.1698438610904.JavaMail.zimbra@nod.at>
- <20231029145033.0ad2682a@xps-13>
- <142222867.20038.1698593973984.JavaMail.zimbra@nod.at>
-From: ZhaoLong Wang <wangzhaolong1@huawei.com>
-In-Reply-To: <142222867.20038.1698593973984.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.174.178.209]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemd200001.china.huawei.com (7.185.36.224)
+	<20231027194026.1bc32dfe@xps-13>
+	<174426702.13324.1698438610904.JavaMail.zimbra@nod.at>
+	<20231029145033.0ad2682a@xps-13>
+	<142222867.20038.1698593973984.JavaMail.zimbra@nod.at>
+	<04b4c375-d890-9458-5d62-0a9ba74b8c68@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231219_063709_132856_96DCB9D4 
-X-CRM114-Status: UNSURE (   5.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231219_064451_483523_0FACCEFB 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,19 +78,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJpZW5kbHkgcGluZy4uLgoKSSdkIGxpa2UgdG8ga25vdyB3aGF0IHRoZSBjdXJyZW50IHN0YXR1
-cyBvZiB0aGlzIHBhdGNoIGlzLiBJcyB0aGVyZSBhIApuZWVkIGZvciBmdXJ0aGVyIHByb2dyYW1t
-ZSBpbXByb3ZlbWVudHM/CgpCYXN0IHJlZ2FyZHMsClpoYW9Mb25nIFdhbmcKCgo+IC0tLS0tIFVy
-c3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4gVm9uOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5y
-YXluYWxAYm9vdGxpbi5jb20+Cj4+IEFjay4gSSdsbCBxdWV1ZSB0aGlzIG9uY2UgdGhlIGxvZyBm
-aXhlZCBhbmQgeW91ciBvZmZpY2lhbCBBY2stYnkKPj4gcmVjZWl2ZWQgZm9yIG10ZC9uZXh0IGFm
-dGVyIC1yYzEgaXMgb3V0Lgo+IAo+IEFja2VkLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hh
-cmRAbm9kLmF0Pgo+IAo+IFRoYW5rcywKPiAvL3JpY2hhcmQKPiAKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+SGkgWmhhb0xvbmcsCgp3YW5nemhhb2xvbmcxQGh1YXdlaS5jb20gd3JvdGUgb24gVHVlLCAxOSBE
+ZWMgMjAyMyAyMjozNjo1MCArMDgwMDoKCj4gRnJpZW5kbHkgcGluZy4uLgo+IAo+IEknZCBsaWtl
+IHRvIGtub3cgd2hhdCB0aGUgY3VycmVudCBzdGF0dXMgb2YgdGhpcyBwYXRjaCBpcy4gSXMgdGhl
+cmUgYSBuZWVkIGZvciBmdXJ0aGVyIHByb2dyYW1tZSBpbXByb3ZlbWVudHM/CgpFYXN5LCBzZWUg
+YmVsb3cuCgo+IAo+IEJhc3QgcmVnYXJkcywKPiBaaGFvTG9uZyBXYW5nCj4gCj4gCj4gPiAtLS0t
+LSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tICAKPiA+PiBWb246ICJNaXF1ZWwgUmF5bmFsIiA8
+bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiA+PiBBY2suIEknbGwgcXVldWUgdGhpcyBvbmNl
+IHRoZSBsb2cgZml4ZWQgYW5kIHlvdXIgb2ZmaWNpYWwgQWNrLWJ5Cj4gPj4gcmVjZWl2ZWQgZm9y
+IG10ZC9uZXh0IGFmdGVyIC1yYzEgaXMgb3V0LiAgCgpIZXJlIEkgZGVwaWN0IHR3byBjb25kaXRp
+b25zLgoKPiA+IEFja2VkLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgoK
+QW5kIGhlcmUgb25lIG9mIHRoZW0gaXMgZnVsZmlsbGVkLCB3aGljaCBtZWFucyB0aGUgb3RoZXIg
+b25lIGlzIHN0aWxsCm5vdCBBRkFJSyA6KQoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
