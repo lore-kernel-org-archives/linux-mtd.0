@@ -4,62 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7863C46CCD
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Dec 2023 12:56:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E09A7C41535
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Dec 2023 14:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BsQPfJZPkS+zdRSc6fDeOGJRjirxrtTplZS+56Cbjqs=; b=Jo7m5/rP1mlUeY
-	TbzT5o40BmbalBzskNYMFV31d8mNoQkJk0HwdKaNQ7rqqsnrDbEP4vfDkFOUHdtfG3FUEY9U4wfRf
-	kwcxYVHfQwgVD+Ze2T/KuAYMJA/asK2DW1qKgcFPctC8Dhnpaw+uzoS8QcMYKqokhMPFYeYqgKn93
-	fcsoqQaig4jg+9a7iNH6ffimr62+h+LccaTm2F1NpXIUFhs3rVTUenCgEcsmut30b2ka7LpFVo+21
-	Mh7zVZ286+/HahZfSwJ3JcQPx8zQGSob7UFJBMJa71LGX67x7rrUs+b/mtMDjsxfMv7/AO/tbIra+
-	W+i7Qq1daje3OVupT1Sw==;
+	List-Owner; bh=C3eFnRO/T9EfdVa+85y5BTJ1OVkZPv0hr54C5iz/Kfk=; b=gmo6eMj177wLh9
+	2cWooGXYneJiPdsDW9x01HDchir9GEZTXyRSycVnrVHz2o3FeJxq10+IdoIwXJauTSMgpsSw8XX7u
+	Ku43I/G+S2tZN6geZiiZQIc/FtGwphkxHyt10fXZzTWXP5NqUjfhyuxQGR5tAQthnSR7LIe8r3k3J
+	o/p8v8+2ilwOklpJJ5RjuTHQFEFPC8tS5OP9zudk/ksHl48YVRcmaw3WuzzgErcr8g1FmBqN9lgb5
+	+mMPrSwKsZEZj3Hg9hfxA0h242M8Qs4Ce4fQWUHpFo/wFpGNZozQplTqJgfjWUQr0su6BHEE0vgkk
+	ewYH7ncCJS87kq9+7TGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFZe3-00E6KN-2D;
-	Tue, 19 Dec 2023 12:56:23 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1rFbDc-00EOcp-2L;
+	Tue, 19 Dec 2023 14:37:12 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFZdx-00E6FO-1B;
-	Tue, 19 Dec 2023 12:56:20 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B05331C0002;
-	Tue, 19 Dec 2023 12:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702990575;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hfihV3HBWwPmuo9TrablG1cbbK4ITqKhYvZMqM/qu5U=;
-	b=Zzn1AVGguZ3meU4seI1CzCwf2MQp2aupVvxMymiPTRC4z+QjszmSf7uJBr7aVjxNfLV+be
-	/fk9reA8Bof/j0BGaeCImI/6gjEDWHFns5Y27/HJefdlDDv8dpSHe4bgK3H/UjAB6YLy5F
-	U/oQ+Z3+GsOEYkhaysb8hztxdO/XtKt+38tpXKffPvcgrS+R1UAvPEZ+V4W7O+iFb3HfGo
-	TVZyIW7dbdiXlqtMbCDuehuj8yH8/3hClf0t9LGNxXj46rcCrkeKFZZq9eI6DAAQX2ctvU
-	TDEzgAuAxqAw4iMTvuNFxhBrF6wjQgHWw53yqCcKjI36LztsuYfEqfcebPh75A==
-Date: Tue, 19 Dec 2023 13:56:14 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Subject: Re: [PATCH v6.8 2/2] nvmem: drop nvmem_layout_get_match_data()
-Message-ID: <20231219135614.57fd14f3@xps-13>
-In-Reply-To: <20231219120104.3422-2-zajec5@gmail.com>
-References: <20231219120104.3422-1-zajec5@gmail.com>
-	<20231219120104.3422-2-zajec5@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1rFbDY-00EOYx-2r
+	for linux-mtd@lists.infradead.org;
+	Tue, 19 Dec 2023 14:37:11 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SvfPn6J2DzvSD7;
+	Tue, 19 Dec 2023 22:35:57 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id 68B5C140390;
+	Tue, 19 Dec 2023 22:36:51 +0800 (CST)
+Received: from [10.174.178.209] (10.174.178.209) by
+ dggpemd200001.china.huawei.com (7.185.36.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Tue, 19 Dec 2023 22:36:50 +0800
+Message-ID: <04b4c375-d890-9458-5d62-0a9ba74b8c68@huawei.com>
+Date: Tue, 19 Dec 2023 22:36:50 +0800
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v3] mtd: Fix gluebi NULL pointer dereference caused by ftl
+ notifier
+To: Richard Weinberger <richard@nod.at>, Miquel Raynal
+	<miquel.raynal@bootlin.com>
+CC: Vignesh Raghavendra <vigneshr@ti.com>, Artem Bityutskiy
+	<Artem.Bityutskiy@nokia.com>, dpervushin <dpervushin@embeddedalley.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>, chengzhihao1 <chengzhihao1@huawei.com>, yi
+ zhang <yi.zhang@huawei.com>, yangerkun <yangerkun@huawei.com>
+References: <20231027012033.50280-1-wangzhaolong1@huawei.com>
+ <20231027194026.1bc32dfe@xps-13>
+ <174426702.13324.1698438610904.JavaMail.zimbra@nod.at>
+ <20231029145033.0ad2682a@xps-13>
+ <142222867.20038.1698593973984.JavaMail.zimbra@nod.at>
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+In-Reply-To: <142222867.20038.1698593973984.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.174.178.209]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231219_045617_566321_BF31F0DC 
-X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-CacheID: sfid-20231219_063709_132856_96DCB9D4 
+X-CRM114-Status: UNSURE (   5.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,19 +76,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUmFmYcWCLAoKemFqZWM1QGdtYWlsLmNvbSB3cm90ZSBvbiBUdWUsIDE5IERlYyAyMDIzIDEz
-OjAxOjA0ICswMTAwOgoKPiBGcm9tOiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+
-Cj4gCj4gVGhhbmtzIGZvciBsYXlvdXRzIHJlZmFjdG9yaW5nIHdlIG5vdyBoYXZlICJzdHJ1Y3Qg
-ZGV2aWNlIiBhc3NvY2lhdGVkCj4gd2l0aCBsYXlvdXQuIEFsc28gaXRzIE9GIHBvaW50ZXIgcG9p
-bnRzIGRpcmVjdGx5IHRvIHRoZSAibnZtZW0tbGF5b3V0Igo+IERUIG5vZGUuCj4gCj4gQWxsIGl0
-IHRha2VzIHRvIGdldCBtYXRjaCBkYXRhIGlzIGEgZ2VuZXJpYyBvZl9kZXZpY2VfZ2V0X21hdGNo
-X2RhdGEoKS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVj
-a2kucGw+CgpSZXZpZXdlZC1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGlu
-LmNvbT4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+RnJpZW5kbHkgcGluZy4uLgoKSSdkIGxpa2UgdG8ga25vdyB3aGF0IHRoZSBjdXJyZW50IHN0YXR1
+cyBvZiB0aGlzIHBhdGNoIGlzLiBJcyB0aGVyZSBhIApuZWVkIGZvciBmdXJ0aGVyIHByb2dyYW1t
+ZSBpbXByb3ZlbWVudHM/CgpCYXN0IHJlZ2FyZHMsClpoYW9Mb25nIFdhbmcKCgo+IC0tLS0tIFVy
+c3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4gVm9uOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5y
+YXluYWxAYm9vdGxpbi5jb20+Cj4+IEFjay4gSSdsbCBxdWV1ZSB0aGlzIG9uY2UgdGhlIGxvZyBm
+aXhlZCBhbmQgeW91ciBvZmZpY2lhbCBBY2stYnkKPj4gcmVjZWl2ZWQgZm9yIG10ZC9uZXh0IGFm
+dGVyIC1yYzEgaXMgb3V0Lgo+IAo+IEFja2VkLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hh
+cmRAbm9kLmF0Pgo+IAo+IFRoYW5rcywKPiAvL3JpY2hhcmQKPiAKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
