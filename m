@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4156AC46CCD
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Dec 2023 08:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5892C46CD3
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Dec 2023 08:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=//kr5QSBZcoKadbOeE6oGKfitBaA2dUiKchD6ghJ9L8=; b=LH5hsX2iiAcOZM
-	gw5TtsGedZPEDDmuK9IUrW+P5uTINExC2DoNSRofOlSNyYqsoY1D1c7VRAyod5PlLrjUUCO8ZSEU0
-	V+2AiIJaMODM4eoNM6kRmYePX5TJxpqvnhCHwxHkONzO/6LrZRFJ2m16VbBYRE/9kFvOHzDcYLYIP
-	fGm9btDYOeil2bS4RBeBYrNNGBhI2JoF4/i+kogQfvGLnmIGWC6rUeoZ7MHZMPXGOwcJj12FYnuB5
-	I5qSOa/8fu/SnWRwkjEE6TwndDgQ0e2bmIym1/zFEWy9pMfEfz7fyz1U+66iV7n7oTo0fwhyr6lmz
-	M7TI5uaBOsPNMbbBdGzw==;
+	List-Owner; bh=FeOlmXxiQosWV7hqnPjnGuIEQEUszvIkK3o3hAMWeso=; b=BAzeZP2EpQt4ut
+	ueTunK/Fz+FA38SFkuMT5gf7b9ydfxMYsZJBCCRyS6woqNsBrFXrO0IE5xLSPP1ZnwjyPNlT/XmTl
+	NnZ3wxtqepq4QntMry0yazsULcPVB6LOwMCM3CjxXa4ditoMAbS2t3C33o33+bjyMzc56JeVKBNNV
+	iyZx8GfptUHJLzEvJfo1pGyVRoqI5PGJurSNvFWPikSzt2iboahbxtIoysgjY0BuMw1+1YYqmPuiM
+	oHuK6hxx/9BLrvNownaTWW/s6kdRUs4OXY4mJIGDCVxJVFz/XJrc4YBUVBJ+CQAtPpqScB++mxm0d
+	TDJjg2wIkRF2litA4KFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFrcA-00GWqB-0p;
-	Wed, 20 Dec 2023 08:07:38 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1rFroM-00GYkT-1l;
+	Wed, 20 Dec 2023 08:20:14 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFrc4-00GWpK-2T
+	id 1rFroK-00GYjb-02
 	for linux-mtd@lists.infradead.org;
-	Wed, 20 Dec 2023 08:07:34 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-33666fb9318so3323656f8f.2
-        for <linux-mtd@lists.infradead.org>; Wed, 20 Dec 2023 00:07:30 -0800 (PST)
+	Wed, 20 Dec 2023 08:20:13 +0000
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c38de1ee4so54385085e9.0
+        for <linux-mtd@lists.infradead.org>; Wed, 20 Dec 2023 00:20:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1703059649; x=1703664449; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1703060409; x=1703665209; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=iR+XOeazmgiTdSz6NTrOHxL0FhTioIMQ8tWikHkmpUY=;
-        b=X75YEhRg1uFS3wSN2K1H4crfdEvLsLhhjeBUq2DctJHtieu4vMDFWL9S8kkVVMvoRq
-         nluZ8ZKiV30q5HRO4ROxdyQsqCiny+kz7CJuq0Z9BnhwrhgnrfygsacZkIiKJYJLjm2R
-         gYvodgrI43A1CNhDmcL8v/UiL9KgLvdFD/Wpiwonk5gZIKztq1IwuhNFRn1pXi+KWCky
-         2G8jXDPg7V/hOXqXUEz6L3L82LLVi7fSRx0MwEdjHLVXhAYYCTzb4g/ZGPkT3yM7AsVT
-         WuWVveZYfuEF8WB5KZ4vu7/+k1Yx0S1YI7i0q4Cm/wpJWwhBUhnelgwmqi4YaFYta0NR
-         Lczw==
+        bh=EGJnr28q5pVWPQ25KNnaY/E1fm/GhPUqTRzqeDud9sY=;
+        b=JoMOSdkdZalAHi1G2zH07HW8Fz27X7cwBCtQZj/+TzSvqSuvOB6AzO6C7tHbkrLDt3
+         0V/6TdjPszSAHQUc0FrA60981nhjJ94nX26PJvvIJNNM2QOyDOXeZiwdvjLB1sHdFAD4
+         LO2s/2Va3ExP3cKkumzRmgYEMfsCCOzwHLq0WvVK/eZ+yGP+35PpUCrw6oeiajN8f5gR
+         2J714aRu9rz49lITqBmwynjg/WtWUU8Zf1sFQ9aPpzqgFMYxQNMDh4wwtPBkZIW/eG6V
+         bN/n2DpwggJzGRqF6Ff7YqDgoo64N2IxAjP9A/+j+yAkBpamol93ZMXE2GUHgcVPSoPf
+         PvhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703059649; x=1703664449;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1703060409; x=1703665209;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iR+XOeazmgiTdSz6NTrOHxL0FhTioIMQ8tWikHkmpUY=;
-        b=P2j9t7sYnAp19T/jxaBBaFf08IxMlRqw2s1gWXK0KoqAwsu+3QF0OL+orxWVyUQT94
-         9at5OcqZZmJ1AupUE58ico0ztDJS60L/FsKPyFvEeV0Wynno0sW3DO9LElWTPj31Vguh
-         9QycrRo8ico7S4C/FEIYJOXrAkkoNA07o2bfI3UxsXnTI2V1nmpY8WpqyXUt4yW8bPpn
-         t6N2jD1+JoedP197Ei7yodtXVrZb1kG13xZ2TQmB1NDOkMS5kAZp5nSrsYf5u8d88fPf
-         xgbYNabsObYO6FjoOsolF3Nc5zr2PcqNk11qBZ7s4RqlfKWoZaH1S3Zyxdu5vjxjGWLI
-         0r7g==
-X-Gm-Message-State: AOJu0YzH6jNJEOqIQ0UKZvKpaCMknvZTMwREUF0fLwVD4QuQ8vEFE4/j
-	LyNXf1Zq6dxAyqKHV5lmb9amrA==
-X-Google-Smtp-Source: AGHT+IHil2kVwLxzzgO7ytKn20Fv+rStg4rhTmOPev5HlDCgy4AVU/3x68puh2qnJBSG30K7L40ycA==
-X-Received: by 2002:a05:600c:511a:b0:405:37bb:d942 with SMTP id o26-20020a05600c511a00b0040537bbd942mr9365924wms.4.1703059648962;
-        Wed, 20 Dec 2023 00:07:28 -0800 (PST)
+        bh=EGJnr28q5pVWPQ25KNnaY/E1fm/GhPUqTRzqeDud9sY=;
+        b=WxK4jmhWw3Be8N8E19fg0On3JcyprgR0joUmFG901nYyhB5HXN3V+d8U3FdfljL2k6
+         aLNt2XLt2hMM/4RoV5nj9rpMiekIpZoxgLGmqAe3YaN8yyPzNH6xV8uXENeFGKfEY2xv
+         KY2ur4MVUXKAtovHXrlnArel/pV035CUWW00ghWYgl/2BGunp9fle7v4VvGnoeG0Yqi+
+         9QejhZxHwgWkKsZyQ0j2hIdt3pohG3PRFiunFxkUMppN7ydvZWu5YwhWVUCQO1c3NZDq
+         JBDykOgkWucQxh0yjD/X8y1/nVUQLHhk1yO472sFc6G7kNEEsZbfB1OewYJxfCIVmxcP
+         tyXA==
+X-Gm-Message-State: AOJu0YxcdDDe6ZstgZEzgzGetPFyP0PuGe3QHTMNrfoKc4ARkCu4wg3r
+	0Ee06prxdUVo85Oj4nau1JGLBg==
+X-Google-Smtp-Source: AGHT+IFLromluPpGcPydFzyeICx6K7Tbn8p1voSHijG71ST4/qXGQ1Qp/rP2UoUOvJGkqJoTCZFJoQ==
+X-Received: by 2002:a7b:ce88:0:b0:40c:343b:fead with SMTP id q8-20020a7bce88000000b0040c343bfeadmr9881175wmj.79.1703060409494;
+        Wed, 20 Dec 2023 00:20:09 -0800 (PST)
 Received: from [192.168.0.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id s20-20020a05600c45d400b0040b36ad5413sm6152338wmo.46.2023.12.20.00.07.27
+        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b0040c03c3289bsm6203733wmq.37.2023.12.20.00.20.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Dec 2023 00:07:28 -0800 (PST)
-Message-ID: <b33b7841-d68e-4576-b8e5-72eab04fce2d@linaro.org>
-Date: Wed, 20 Dec 2023 10:07:25 +0200
+        Wed, 20 Dec 2023 00:20:09 -0800 (PST)
+Message-ID: <43eac7ba-1648-4e99-80b8-3132523189c7@linaro.org>
+Date: Wed, 20 Dec 2023 10:20:06 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] mtd: spi-nor: core: Discard HW capabilities if no
  enable function
+Content-Language: en-US
 To: Jaime Liao <jaimeliao.tw@gmail.com>, linux-mtd@lists.infradead.org,
  pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com
 Cc: leoyu@mxic.com.tw, jaimeliao@mxic.com.tw
 References: <20231219102103.92738-1-jaimeliao.tw@gmail.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-Content-Language: en-US
 In-Reply-To: <20231219102103.92738-1-jaimeliao.tw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231220_000732_872287_5894C5AD 
-X-CRM114-Status: GOOD (  16.01  )
+X-CRM114-CacheID: sfid-20231220_002012_056641_3A394906 
+X-CRM114-Status: GOOD (  18.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,6 +127,17 @@ On 19.12.2023 12:21, Jaime Liao wrote:
 > +
 > +	if (!params->quad_enable)
 > +		shared_mask &= ~SNOR_HWCAPS_4_4_4;
+
+and these should have been in the late init hook, and instead discard
+them from the params->hwcaps.mask.
+
+And why is this extra check needed in the first place? For octal I
+assume it's needed by macronix, where the flash is octal capable, but
+there's no octal enable method defined yet. What about the quad mode? Is
+there any flash that has no quad enable method defined but still caries
+quad mode in its hwcaps?
+
+
 > +
 >  	if (nor->spimem) {
 >  		/*
@@ -141,11 +152,6 @@ On 19.12.2023 12:21, Jaime Liao wrote:
 >  
 > +#define SNOR_HWCAPS_4_4_4	(SNOR_HWCAPS_READ_4_4_4 |	\
 > +				 SNOR_HWCAPS_PP_4_4_4)
-
-quad enable applies for 1-1-4 and 1-4-4 as well. How about changing this to:
-
-#define SNOR_HWCAPS_QUAD	(SNOR_HWCAPS_READ_QUAD |	\
-				 SNOR_HWCAPS_PP_QUAD)
 > +
 > +#define SNOR_HWCAPS_8_8_8_DTR	(SNOR_HWCAPS_READ_8_8_8_DTR |	\
 > +				 SNOR_HWCAPS_PP_8_8_8_DTR)
