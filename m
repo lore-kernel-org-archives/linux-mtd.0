@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAA70C46CCD
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:01:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61099C35274
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8ehnBpZS5Rszhr6RfX0zbmK75cOXcZCrXq9w/hxxBFU=; b=J7AZg7OlOqS/xQ
-	4yrhVZ3tOcedF3l/dYFpvMFeDVFTjyWtasdrh1EGKd5sHKqGxnO5plZzpqmwtN/c0WFlhrilNFZDB
-	ncBtISoIYCli448mWqo6jynosfVq0jv8+Vo8M++vOMdu1eRHpqSNLmCpXUqNLFC14jsCig66o9edX
-	1FGPqgA5QY5z64RoD1r6HghdUits5TfzO0yy8RXFL+vorrx+fugOHTaj3jmiTwic5ZjTk9k8wkUxF
-	Mp/qlTCJIC1kjTsk7PBR/OKjxo8OfpbVbfjzqx4rRRtXkST7bJ2N9eqkLMOA98mdt9R5sOg9i88MQ
-	dKrAu9xz7IvhtGukR6JA==;
+	List-Owner; bh=hw9piM3CRAGWejcspGpdhw1NPmscsBIHw5I9h0Gnsvo=; b=WMusd+47pSLmqC
+	PPaBd0vMcLjrp7UPffR3MRFCpSHuhvgl/DoZzYYJyySMZYKv98kXGigtvXQSuf3H6HUrnqU5XbD7y
+	DAEDkTOcClzqiDtwN3JAbwkZMRedifmDRVWkdyqhkiHO7axpkWvT8wbhKHuY0FImmR9AD66DVjC0i
+	u2Un0ua5i462GFRJqnCM5mAfRKTCJ82X4KNtUdpclO/MImVt0bgDRSl0UtJ+RsNBdnggDbtSGkPNJ
+	wzppFe7emCdXc0ex6GSg9TD7HUUKtquLb7GvgXBNYOG0giWQGm65esYBXnAXVJkXL3HKoxPR7RGV5
+	e+PXs7+OIzb1g2X2nwKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEvc-0028Ya-36;
-	Thu, 21 Dec 2023 09:01:16 +0000
+	id 1rGEvg-0028be-1a;
+	Thu, 21 Dec 2023 09:01:20 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEvb-0028W5-0I
+	id 1rGEvd-0028YI-1t
 	for linux-mtd@bombadil.infradead.org;
-	Thu, 21 Dec 2023 09:01:15 +0000
+	Thu, 21 Dec 2023 09:01:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=kjWeW2ylVJBfyye8quSWl7OIVOQuOBMQ0Z1QS8iSO/4=; b=jqAZ6dgkxISA61BEOn23K/NCig
-	+Lngia+qjpYGAaRhLIqJ7xuT0MOKdQcmKaaGniAXDC8Hj07Ewy6djP/tJL25EWvdRy3qv55SIO4WX
-	5etCV90OIj8ScELJH5mRBx08Mooifhkeeyn9LcXkoZFKmJct6Gfgomgd7kt+BGSr7HOAbUB1pAsDQ
-	3k/sIhBT3nsevqXpzXREIU38SJE5AAAmRl/znBa6mizaY5Z/yeqS9uKyCnIWTPbx8dV2EolkcQIU9
-	g/emydVfChfeOLVaDzt/0aT5PWLn7cpWNrlTkgodNmO0YTxrA8CdGcyHHQWx3ubbHUr9N3W0EPJm8
-	6ogXmTeQ==;
+	bh=9CeviE8YnHP6cFsbKbOJwFf0PTfq0UipdSeseMZpRBk=; b=HTUqiUADt+/7KPPpZ+C4LwZrG9
+	6dVewD37DTz0x5VdfgJkBbHQD5g8cY51y3PvuZVHm5fy4AXYwjUHRM2MVJ4Hi0zEinlcOcZI7QK8j
+	TcTyWuEWspe9MIs1hXExLbQcdym1B2L1EMM9lWNvjaoqpDyYpvpUfSM8urgRtkfofwc1gKdplXfL7
+	lg/kaZVdDIb6vGt2La31cVajhiC6E70S0BoUpx1HN6frTGn6XzGNm8nqY14+ZzjGMi9/CySEm3jic
+	SRN0q5y/jxKw3wfeB+mZJ5XrOJOVoe9eKmt+pB1KvtU6UxG/3qJrlQRuLqeh/8E0Phbu2AtIaowAx
+	OPL7JQ7A==;
 Received: from [45.249.212.56] (helo=dggsgout12.his.huawei.com)
 	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rGEvU-004pxe-AQ
-	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2023 09:01:13 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Swkt92gS7z4f3jXY
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:00:49 +0800 (CST)
+	id 1rGEvU-004psv-0G
+	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2023 09:01:15 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SwkrV62GQz4f3jXy
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:22 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2CDF51A0484
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:00:52 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 760201A0BE8
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:25 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCn9QvB_oNlLR7vEA--.33384S4;
-	Thu, 21 Dec 2023 17:00:51 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S12;
+	Thu, 21 Dec 2023 16:59:25 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -99,34 +99,36 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v3 for-6.8/block 14/17] buffer: add a new helper to read sb block
-Date: Thu, 21 Dec 2023 16:58:53 +0800
-Message-Id: <20231221085853.1770062-1-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v3 for-6.8/block 08/17] bio: export bio_add_folio_nofail()
+Date: Thu, 21 Dec 2023 16:57:03 +0800
+Message-Id: <20231221085712.1766333-9-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgCn9QvB_oNlLR7vEA--.33384S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3AFyUCF4kKryrJrW3trWrXwb_yoW7Ww13pr
-	98Kay3trWDKFyaqF1xtwn8Jr13t3Z2v3W8CayfJ3s3ArWUGrn3XF9rGr129FWFyr9rXry5
-	XFW5CrWfCr1UWFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_JFI_Gr1lIxAIcVC2z280aVAFwI0_
-	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
-	ZNVDUUUUU==
+X-CM-TRANSID: cCh0CgDnNw5d_oNlEQPvEA--.24929S12
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4rur1rtr17JFyUCF18AFb_yoW3Wrg_AF
+	n293W8Wan7G3WSk3Wvyay8AFZYvw1rurWY9FZ3JF9xZF1DJFnak340yr40vrn5CFykKw43
+	u3yDXryayw47JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbqxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_Gc
+	Wl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
+	kIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
+	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc4
+	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
+	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
+	X7UUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_090111_342764_E1B0555F 
-X-CRM114-Status: GOOD (  14.69  )
+X-CRM114-CacheID: sfid-20231221_090112_276154_9E5E2BB6 
+X-CRM114-Status: UNSURE (   7.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,165 +147,27 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Unlike __bread_gfp(), ext4 has special handing while reading sb block:
-
-1) __GFP_NOFAIL is not set, and memory allocation can fail;
-2) If buffer write failed before, set buffer uptodate and don't read
-   block from disk;
-3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
-4) If failed, return error ptr instead of NULL;
-
-This patch add a new helper __bread_gfp2() that will match above 2 and 3(
-1 will be used, and 4 will still be encapsulated by ext4), and prepare to
-prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
-in ext4.
+Currently btrfs is using __bio_add_page() in write_dev_supers(). In order
+to convert to use folio for bdev in btrfs, export bio_add_folio_nofail()
+so that it can replace __bio_add_page().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/buffer.c                 | 68 ++++++++++++++++++++++++++-----------
- include/linux/buffer_head.h | 18 +++++++++-
- 2 files changed, 65 insertions(+), 21 deletions(-)
+ block/bio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 967f34b70aa8..188bd36c9fea 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1255,16 +1255,19 @@ void __bforget(struct buffer_head *bh)
+diff --git a/block/bio.c b/block/bio.c
+index b9642a41f286..c7459839ca40 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1122,6 +1122,7 @@ void bio_add_folio_nofail(struct bio *bio, struct folio *folio, size_t len,
+ 	WARN_ON_ONCE(off > UINT_MAX);
+ 	__bio_add_page(bio, &folio->page, len, off);
  }
- EXPORT_SYMBOL(__bforget);
++EXPORT_SYMBOL_GPL(bio_add_folio_nofail);
  
--static struct buffer_head *__bread_slow(struct buffer_head *bh)
-+static struct buffer_head *__bread_slow(struct buffer_head *bh,
-+					blk_opf_t op_flags,
-+					bool check_write_error)
- {
- 	lock_buffer(bh);
--	if (buffer_uptodate(bh)) {
-+	if (buffer_uptodate(bh) ||
-+	    (check_write_error && buffer_uptodate_or_error(bh))) {
- 		unlock_buffer(bh);
- 		return bh;
- 	} else {
- 		get_bh(bh);
- 		bh->b_end_io = end_buffer_read_sync;
--		submit_bh(REQ_OP_READ, bh);
-+		submit_bh(REQ_OP_READ | op_flags, bh);
- 		wait_on_buffer(bh);
- 		if (buffer_uptodate(bh))
- 			return bh;
-@@ -1445,6 +1448,31 @@ void __breadahead(struct block_device *bdev, sector_t block, unsigned size)
- }
- EXPORT_SYMBOL(__breadahead);
- 
-+static struct buffer_head *
-+bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
-+	  blk_opf_t op_flags, gfp_t gfp, bool check_write_error)
-+{
-+	struct buffer_head *bh;
-+
-+	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
-+
-+	/*
-+	 * Prefer looping in the allocator rather than here, at least that
-+	 * code knows what it's doing.
-+	 */
-+	gfp |= __GFP_NOFAIL;
-+
-+	bh = bdev_getblk(bdev, block, size, gfp);
-+	if (unlikely(!bh))
-+		return NULL;
-+
-+	if (buffer_uptodate(bh) ||
-+	    (check_write_error && buffer_uptodate_or_error(bh)))
-+		return bh;
-+
-+	return __bread_slow(bh, op_flags, check_write_error);
-+}
-+
  /**
-  *  __bread_gfp() - reads a specified block and returns the bh
-  *  @bdev: the block_device to read from
-@@ -1458,27 +1486,27 @@ EXPORT_SYMBOL(__breadahead);
-  *  It returns NULL if the block was unreadable.
-  */
- struct buffer_head *
--__bread_gfp(struct block_device *bdev, sector_t block,
--		   unsigned size, gfp_t gfp)
-+__bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
-+	    gfp_t gfp)
- {
--	struct buffer_head *bh;
--
--	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
--
--	/*
--	 * Prefer looping in the allocator rather than here, at least that
--	 * code knows what it's doing.
--	 */
--	gfp |= __GFP_NOFAIL;
--
--	bh = bdev_getblk(bdev, block, size, gfp);
--
--	if (likely(bh) && !buffer_uptodate(bh))
--		bh = __bread_slow(bh);
--	return bh;
-+	return bread_gfp(bdev, block, size, 0, gfp, false);
- }
- EXPORT_SYMBOL(__bread_gfp);
- 
-+/*
-+ * This works like __bread_gfp() except:
-+ * 1) If buffer write failed before, set buffer uptodate and don't read
-+ * block from disk;
-+ * 2) Caller can pass in additional op_flags like REQ_META;
-+ */
-+struct buffer_head *
-+__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
-+	     blk_opf_t op_flags, gfp_t gfp)
-+{
-+	return bread_gfp(bdev, block, size, op_flags, gfp, true);
-+}
-+EXPORT_SYMBOL(__bread_gfp2);
-+
- static void __invalidate_bh_lrus(struct bh_lru *b)
- {
- 	int i;
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 5f23ee599889..751b2744b4ae 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -171,6 +171,18 @@ static __always_inline int buffer_uptodate(const struct buffer_head *bh)
- 	return test_bit_acquire(BH_Uptodate, &bh->b_state);
- }
- 
-+static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
-+{
-+	/*
-+	 * If the buffer has the write error flag, data was failed to write
-+	 * out in the block. In this case, set buffer uptodate to prevent
-+	 * reading old data.
-+	 */
-+	if (buffer_write_io_error(bh))
-+		set_buffer_uptodate(bh);
-+	return buffer_uptodate(bh);
-+}
-+
- static inline unsigned long bh_offset(const struct buffer_head *bh)
- {
- 	return (unsigned long)(bh)->b_data & (page_size(bh->b_page) - 1);
-@@ -231,7 +243,11 @@ void __brelse(struct buffer_head *);
- void __bforget(struct buffer_head *);
- void __breadahead(struct block_device *, sector_t block, unsigned int size);
- struct buffer_head *__bread_gfp(struct block_device *,
--				sector_t block, unsigned size, gfp_t gfp);
-+				sector_t block, unsigned int size, gfp_t gfp);
-+struct buffer_head *__bread_gfp2(struct block_device *bdev, sector_t block,
-+				 unsigned int size, blk_opf_t op_flags,
-+				 gfp_t gfp);
-+
- struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
- void free_buffer_head(struct buffer_head * bh);
- void unlock_buffer(struct buffer_head *bh);
+  * bio_add_folio - Attempt to add part of a folio to a bio.
 -- 
 2.39.2
 
