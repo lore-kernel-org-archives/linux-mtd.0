@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DD56C46CCD
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64447C4706E
 	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 08:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,30 +12,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BeXwofjwiH4t5y7TbDpdxYNXXE9dNpS1yiHyqC/x+Pc=; b=eVKwDQ8s8fD6+s
-	SysJRTmh+yUeDlZcpU/I6/0BGGvhbSZKkEd5raFyxaeFxHVr2/aDaHy81jJWS5ixBM+yDuRqrg0Pm
-	kJsECR70wWxG6Wt2XgWprhLW0ksvlY9DH0rLutKkuf40TxtWGA+cGVObE382rDbFWblE474fPHw0H
-	gzrV/wVDB6BOpnIf+IpAbqLOsLn+XfAkzz/H+P1ni3qDO192WYk1/HtH6GURMfywEPhvYCYlnf4v3
-	+gerzxtD+DTXt82ob0nEZPHWyMK70PkmQRiaRjJ4PTe20o187jZcmFRIhuENpWX4X2osEZQ1a1Luk
-	LDfL6XYdZ4Fo3pnVfEVQ==;
+	List-Owner; bh=snEAlhLWavRB3VSoCLOWSkG7gJJjff72NISej7ZQYH8=; b=z0+1SlE6J9vLxr
+	OF25WO5qSrrymiQjrPjjYuoHOamb4UqsFl2oybJwTnkM6Mw9ujbo4NS3T9m6+cJG0meVwh0mvTtSu
+	Dp3w7r8gG6lUwEwTmOL/Gk216pgC9Ql4FibyvolDZcV+VXZHMxcQojt22Do8jq+YDI14i69Utj6JU
+	YjcO7nsMCOSIgN5JdHWIKuMc4UOddwbhYQf/cAlS6zoNSSdvbthxrU6TgZn3VtzZNCJeEKZWODwWU
+	h52buOV+mhGJ+uWfzDCmXHmwWGg9lAIPo2R+wWTVjlgZptGNGoPUSsAkIFHjZ4KehIYkPNdXPy0/i
+	5eCyIWkoFH0jLjYSLyXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEtt-0027Kd-06;
-	Thu, 21 Dec 2023 08:59:29 +0000
-Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
+	id 1rGEtz-0027P2-2x;
+	Thu, 21 Dec 2023 08:59:35 +0000
+Received: from dggsgout12.his.huawei.com ([45.249.212.56])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEtp-0027HC-07
+	id 1rGEtv-0027Lc-0h
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Dec 2023 08:59:26 +0000
+	Thu, 21 Dec 2023 08:59:33 +0000
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SwkrL472Bz4f3kJq
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:14 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SwkrY5rVyz4f3kFp
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:25 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id EF1A91A08DB
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:15 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 97F7C1A0503
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:28 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S6;
-	Thu, 21 Dec 2023 16:59:15 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S14;
+	Thu, 21 Dec 2023 16:59:28 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -85,36 +85,35 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v3 for-6.8/block 02/17] xen/blkback: use bdev api in xen_update_blkif_status()
-Date: Thu, 21 Dec 2023 16:56:57 +0800
-Message-Id: <20231221085712.1766333-3-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v3 for-6.8/block 10/17] cramfs: use bdev apis in cramfs_blkdev_read()
+Date: Thu, 21 Dec 2023 16:57:05 +0800
+Message-Id: <20231221085712.1766333-11-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw5d_oNlEQPvEA--.24929S6
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFW7tFW3Wr4xCFyrtrWfAFb_yoWfWFb_ZF
-	18urWxXrn7Crs0kayUuFs3Z3yv93WrurWF9ay2qFySqw1UXFWSq39FvFn5Gr47ZayUGws0
-	yF17uFW7tr4xXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-	0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2
-	Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
-	Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
-	1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHbyAU
-	UUUU=
+X-CM-TRANSID: cCh0CgDnNw5d_oNlEQPvEA--.24929S14
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww17ur1fXryfAFyrJF4fKrg_yoW8tF4UpF
+	1akanIkr4q9ryI9ayfXr1DZF15Ga4kXF4DCFWxu3y3Z3W5Jrna9r10kry0qFW8GrZFqryv
+	9r4jkryfur15Ka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
+	xdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+	WxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUOBTY
+	UUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_005925_428517_B3FA25AA 
-X-CRM114-Status: UNSURE (   8.07  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231221_005931_636717_0990F754 
+X-CRM114-Status: GOOD (  13.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,28 +132,82 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+On the one hand covert to use folio while reading bdev inode, on the
+other hand prevent to access bd_inode directly.
+
+Also do some cleanup that there is no need for two for loop, and remove
+local array pages.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/block/xen-blkback/xenbus.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/cramfs/inode.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index e34219ea2b05..e645afa4af57 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -104,8 +104,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
- 		xenbus_dev_error(blkif->be->dev, err, "block flush");
- 		return;
- 	}
--	invalidate_inode_pages2(
--			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
-+	invalidate_bdev(blkif->vbd.bdev_handle->bdev);
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 60dbfa0f8805..fad95d683d97 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -183,9 +183,6 @@ static int next_buffer;
+ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
+ 				unsigned int len)
+ {
+-	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
+-	struct file_ra_state ra = {};
+-	struct page *pages[BLKS_PER_BUF];
+ 	unsigned i, blocknr, buffer;
+ 	unsigned long devsize;
+ 	char *data;
+@@ -214,37 +211,30 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
+ 	devsize = bdev_nr_bytes(sb->s_bdev) >> PAGE_SHIFT;
  
- 	for (i = 0; i < blkif->nr_rings; i++) {
- 		ring = &blkif->rings[i];
+ 	/* Ok, read in BLKS_PER_BUF pages completely first. */
+-	file_ra_state_init(&ra, mapping);
+-	page_cache_sync_readahead(mapping, &ra, NULL, blocknr, BLKS_PER_BUF);
+-
+-	for (i = 0; i < BLKS_PER_BUF; i++) {
+-		struct page *page = NULL;
+-
+-		if (blocknr + i < devsize) {
+-			page = read_mapping_page(mapping, blocknr + i, NULL);
+-			/* synchronous error? */
+-			if (IS_ERR(page))
+-				page = NULL;
+-		}
+-		pages[i] = page;
+-	}
++	bdev_sync_readahead(sb->s_bdev, NULL, NULL, blocknr, BLKS_PER_BUF);
+ 
+ 	buffer = next_buffer;
+ 	next_buffer = NEXT_BUFFER(buffer);
+ 	buffer_blocknr[buffer] = blocknr;
+ 	buffer_dev[buffer] = sb;
+-
+ 	data = read_buffers[buffer];
++
+ 	for (i = 0; i < BLKS_PER_BUF; i++) {
+-		struct page *page = pages[i];
++		struct folio *folio = NULL;
++
++		if (blocknr + i < devsize)
++			folio = bdev_read_folio(sb->s_bdev,
++						(blocknr + i) << PAGE_SHIFT);
+ 
+-		if (page) {
+-			memcpy_from_page(data, page, 0, PAGE_SIZE);
+-			put_page(page);
+-		} else
++		if (IS_ERR_OR_NULL(folio)) {
+ 			memset(data, 0, PAGE_SIZE);
++		} else {
++			memcpy_from_folio(data, folio, 0, PAGE_SIZE);
++			folio_put(folio);
++		}
+ 		data += PAGE_SIZE;
+ 	}
++
+ 	return read_buffers[buffer] + offset;
+ }
+ 
 -- 
 2.39.2
 
