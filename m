@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2B30C46CCD
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BAF3C46CD4
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H5jE4/jP0XfJXfwjHRwFkDEhIf4BWKX+A13bnLD+Nu4=; b=k5PYVp6aWW/oqJ
-	QnXWCE7iW7aiNoskOLEbFGsAmfrNaYtj3ecnEgSpi19e/M41gHUBQoljfEJBW62VmDkNTRi/erop6
-	fzN7i++UyWAEJCI8uPz97ntXpyZwpOEqZtUt8mhNznTgmEspkWLnHUiN4s2nFxwhUucbyLxvrP6wH
-	lefcNiHp0Ppnzgz9h9OnG88jnhCID3iKI0wrgYckzGzcl8iw5n038lcieTps40pvMwHxO5jqZRlDU
-	M9cEuc4bTRyO6gz/ZzRwC64la9/WUx7QQYT0/LT2kN8+lTQ2tKILRcUh1Y/irPfqDVxDZjg8MX57D
-	5wkLbS79ZPEGzuTBYCMw==;
+	List-Owner; bh=xGu4lman80xpgqRMHkIKTPZJxEZBSs8FeUzSC29nxN4=; b=oWb2i8QeXXsFy4
+	5DlITNi6kcPnPvyJ0lGagWRi5l7MmnwTJga5liMgfZiy4iV8nWG3ub4qQk7kJdJKDkZKVAeeLS55f
+	V3v+YknnbZvVCc7DK8Sf8LNBQn1dqZbAn0OtUIlEawv6UBZ6Y5bjwnPb7iL8C6lpWo+lZlRAUILwY
+	yL4A25+N6/PBSzxqj/6HsLclp843D+K2fnr/Lyj0ppM4kqnk7pz/qvsJ05PCPVTz08Oq82XcbPqpP
+	hKhM/HAL+M1FMzXVuAw8xnqqoo4Vc8KlB/D2kkz/Qev92SywqKzqM44Vzz2e8JwqWGeVoCa5N2TcL
+	ZEdaEkFIAIhsEBR92ySw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGF1i-002B3V-2P;
-	Thu, 21 Dec 2023 09:07:34 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1rGF1j-002B4N-1z;
+	Thu, 21 Dec 2023 09:07:35 +0000
+Received: from mail-oo1-xc33.google.com ([2607:f8b0:4864:20::c33])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGF1c-002Av1-0m
+	id 1rGF1c-002AuP-0m
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Dec 2023 09:07:30 +0000
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d409bcb0e7so858195ad.1
+	Thu, 21 Dec 2023 09:07:31 +0000
+Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-5942c83c97fso51398eaf.1
         for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 01:07:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1703149644; x=1703754444; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FpstY/5jC1i/LN5PLekCWmoTqoQ8Q07qdfpUTFYBoWw=;
-        b=RfT65SSdi6uIXfJxAJ9psqxDprDnrcQi9z93coenOWGL+nYXxcAdtyPogO2CB6s60U
-         hCmgWE0SFh9aByN1h0zSfPJCcOkyKKWFwcyltaTDksVWkzsltmpHUsrPcE9nh9TuLDsB
-         ufBebhJ7Kh7YI7/Azx7mJPQuvqlZMN9RP3bcD8YxxAdaLlNLSGrBReDe9+TWuAjkXOK2
-         rZNDYX/qQoZ6AWMP61QpWDZdY1YXV6vzU6HEABNTz10PfBVsnkqs85kkMoD7ALMnRjvw
-         NMIxgncetSbYUg05dc739puKPEd739AamR2PIlGcVWpOGCb6HzTcTRSSf31jKKLaGuf1
-         NscQ==
+        bh=rERpPgI/QWKIqy48Iyhu43oWXJc8hRQEOLLELGBG4lA=;
+        b=Qom8TUuGzgWc8MM70RpGAOiNhLqvGRLYWU8G54WOQSx7TTbN7rRSA+UmBy4lvvcK0N
+         Wk6l0OyvF4B+d2g3pyxFrfHm4f/6JZadyuOBY6UaU9Vz3Os9EO11D1Ajc83DIAtq7S1n
+         q/CFPTcefrYD4Hsf9DtC3EIPqF/GlD43p1VRtcr02gqfpTNbpSx6mL6D5ADo1nOhy+L+
+         DXIeTX/KU6xglCPA7r2AjPLEzwe1DxACOCEIzbzquQ9uo41pCctu58YJCqA/+kEps5Fc
+         mpwSuyXiNf79L4VC9pMrg5N0LYdCazC+nmPYsRThWYHLmNv60tSpnnd1I8cXxZf+cc3f
+         OgpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1703149644; x=1703754444;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FpstY/5jC1i/LN5PLekCWmoTqoQ8Q07qdfpUTFYBoWw=;
-        b=bmtjyx95LTYOUrwB99SrHy9bKfsEaur6sti2Mwi5HSsdk2ad2PVAZO+gBVlVx2snZP
-         xqGoOmuvaHLM7uDFoOQ58e688jupAz3AhT5gLWEXoBW7hWxzp+UveFD0DnaSm/vI61hk
-         94nNUxylksl0mFm3rxWQX+cFUTIkZfJiW0A+Iu2ynpRgcqphkvy1uumXyqNaeceMkG3t
-         0rhLXqpsCP1p4gdHAxSkTiLqqVZHR/m5eLTMDmveEYylPCn++WM8lCK7fPRQO6G5k3AJ
-         zkDqk2uoJe3PgfCkJkedcamxO3sqQ1URE5YYsPCFr+vkOkepKJArL5EPBw/Ylze2EQOq
-         /bsg==
-X-Gm-Message-State: AOJu0Yx0tJoGgAILw804boIjwhHBsp/+SkVSZ+rhgm1ZrYeh8WUeBMw5
-	eKkhm0iZCWOxzWULAklvSwI=
-X-Google-Smtp-Source: AGHT+IGKqRyAwxl7mpR376wSUKXVR9opUgCq5X+ltcnTpXJ2DOdgjYG/iUsqJEXkeVmA8A2p0bWpeg==
-X-Received: by 2002:a17:902:bc84:b0:1d0:c442:d784 with SMTP id bb4-20020a170902bc8400b001d0c442d784mr10676376plb.39.1703149644129;
-        Thu, 21 Dec 2023 01:07:24 -0800 (PST)
+        bh=rERpPgI/QWKIqy48Iyhu43oWXJc8hRQEOLLELGBG4lA=;
+        b=TD5OoFKKkAT3lBOzflGxwf5n++eTzyvD0zam7gxSr8KpHYLdOgdet4IdeNK7eVFJ6g
+         Ahx9JMHMP0g7I2Y1Tf5XBJbLN9lo+Ggrm2vzMzXg8Fvdrn1Tti/pZa0V+/Qj3Onz0WDj
+         siogYG17tRXds6h78jCSEwZROzpcNIJMQshQB6n4f02Ywut72DaysNLSwsO2Kkx1UG3X
+         czzh7MLWZS7hdJvxwSZ1QCMMHJVczqq2Lc6L5cKe7nFpGpk1OdA7IzdVN6kmxRG4CzaF
+         /qFpG8Zpw3wdt7dZP2NyMbBfq1JrDjGkB0ckMSYt78MywVlLH+tRWhnIURk4p48F8cZv
+         IHog==
+X-Gm-Message-State: AOJu0YxWDJkNEMETx9GVwy5L790Lhys2nc6/AY5HRskDjoWWeRz+vI4y
+	uQa/2iPWKE/Ek8MZ0cxJ8ZDinctqH+s=
+X-Google-Smtp-Source: AGHT+IFWoGsRKDgJyO3aK4NyQP5p9TFZ3r2nRV7PTT0pBT1JnRuB8H99so2MhBNUrVrtg1slvlxpGA==
+X-Received: by 2002:a05:6358:1aaa:b0:172:ae6e:bdd4 with SMTP id gm42-20020a0563581aaa00b00172ae6ebdd4mr950014rwb.7.1703149643722;
+        Thu, 21 Dec 2023 01:07:23 -0800 (PST)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id j17-20020a170902da9100b001d3b3ac2d7bsm1109059plx.245.2023.12.21.01.07.22
+        by smtp.gmail.com with ESMTPSA id f25-20020a631f19000000b0056606274e54sm1051538pgf.31.2023.12.21.01.07.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 21 Dec 2023 01:07:23 -0800 (PST)
 Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id 993828053C;
-	Thu, 21 Dec 2023 17:11:32 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id ED3FE80113;
+	Thu, 21 Dec 2023 17:11:31 +0800 (CST)
 From: Jaime Liao <jaimeliao.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	tudor.ambarus@linaro.org,
@@ -73,16 +73,16 @@ To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: leoyu@mxic.com.tw,
 	jaimeliao@mxic.com.tw
-Subject: [PATCH v7 7/7] mtd: spi-nor: add support for Macronix Octal flash
-Date: Thu, 21 Dec 2023 17:07:02 +0800
-Message-Id: <20231221090702.103027-8-jaimeliao.tw@gmail.com>
+Subject: [PATCH v7 6/7] mtd: spi-nor: add support for Macronix Octal flash with RWW feature
+Date: Thu, 21 Dec 2023 17:07:01 +0800
+Message-Id: <20231221090702.103027-7-jaimeliao.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231221090702.103027-1-jaimeliao.tw@gmail.com>
 References: <20231221090702.103027-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_010728_301393_31872689 
-X-CRM114-Status: UNSURE (   9.57  )
+X-CRM114-CacheID: sfid-20231221_010728_330523_A8341BD3 
+X-CRM114-Status: UNSURE (   5.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -133,54 +133,141 @@ MX66UW : 1.8V Octal I/O with Read-while-Write and stack die
 As below are the SFDP table dump.
 
 zynq> cat jedec_id
-c28339
+c28437
 zynq> cat manufacturer
 macronix
 zynq> cat partname
-mx25um25345g
+mx25uw6345g
 zynq> xxd -p sfdp
 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
-ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
-00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+ffffffffe5208affffffff0300ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200c4cc04674630b030b0f4bdd55c
 000000ff101000200000000000007c234800000000008888000000000000
 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
 727103b80000000090a3188200c069960000000000000000727100987271
 00b8727100990000000072710098727100f872710099727100f900000000
 00000000011501d0727106d8000086500000060100000000020001030002
 00000000060100000000000072060002000000eec0697272717100d8f7f6
-040900001445988043060f0021dcffff
+000a00001445988043060f0021dcffff
 zynq> md5sum sfdp
-950e623745a002e1747008592e6dbdf9  sfdp
+c6fb57b8fdd4c35b5f0dacc4a1f7d4f4  sfdp
 zynq> mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 33554432 (32M)
+mtd.size = 8388608 (8M)
 mtd.erasesize = 4096 (4K)
 mtd.writesize = 1
 mtd.oobsize = 0
 regions = 0
 
 zynq> cat jedec_id
-c28039
+c28137
 zynq> cat manufacturer
 macronix
 zynq> cat partname
-mx25um25645g
+mx25uw6445g
 zynq> xxd -p sfdp
 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
-ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
-00ff0c2010d800ff00ff87790100841200d2cc02673830b030b0f4bdd55c
+ffffffffe5208affffffff0300ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200c4cc04674630b030b0f4bdd55c
 000000ff101000200000000000007ca34800000000008888000000000000
 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
 727103b80000000090a3188200c069960000000000000000727100987271
 00b8727100990000000072710098727100f872710099727100f900000000
 00000000011501d0727106d8000086500000060100000000020001030002
 00000000060100000000000072060002000000eec0697272717100d8f7f6
-000a000014359c8043060f0021dcffff
+000a00001445988043060f0021dcffff
 zynq> md5sum sfdp
-d652779f17770dc833cd96262cb2a620  sfdp
+b09aeedb0cfd0f77adc7e08592d295a9  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 8388608 (8M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c28438
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw12345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0700ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200c9cc04674630b030b0f4bdd55c
+000000ff101000200000000000007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+a3eb609c08894c84270ad06efc03766c  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 16777216 (16M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c28138
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw12845g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff000000000000000000000000
+00000000e5208affffffff0700ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200c9cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+9eacff90d7aa7cf737b970e0f2a7f2c6  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 16777216 (16M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c28439
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25uw25345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200d2cc04674630b030b0f4bdd55c
+000000ff101000200000147c00007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090060500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000000000000000
+0000000000000000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043061f0021dcffff
+zynq> md5sum sfdp
+765e310356fb92fdd77b2af1c725fbcb  sfdp
 zynq> mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
@@ -191,16 +278,45 @@ mtd.oobsize = 0
 regions = 0
 
 zynq> cat jedec_id
-c28539
+c28139
 zynq> cat manufacturer
 macronix
 zynq> cat partname
-mx25lm25645g
+mx25uw25645g
 zynq> xxd -p sfdp
 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
 ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
-00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+00ff0c2010d800ff00ff897901008d1200d2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+zynq> md5sum sfdp
+e43ab2dbcbcf99cebc74964c5dcf3ee2  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c28639
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lw25645g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff897901008d1200d2cc04674630b030b0f4bdd55c
 000000ff101000200000000000007ca34800000000006666000000000000
 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
 727103b80000000090a3188200c069960000000000000000727100987271
@@ -209,7 +325,7 @@ ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
 00000000060100000000000072060002000000eec0697272717100d8f7f6
 0000000014351c0043060f0021dcffff
 zynq> md5sum sfdp
-ec258f831ac737454c7eb9f6a8a4495a  sfdp
+b5db9fe24f814b5cc6a392c4c56ed331  sfdp
 zynq> mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
@@ -220,15 +336,102 @@ mtd.oobsize = 0
 regions = 0
 
 zynq> cat jedec_id
-c2803a
+c2843a
 zynq> cat manufacturer
 macronix
 zynq> cat partname
-mx25um51245g
+mx25uw51345g
 zynq> xxd -p sfdp
 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
 ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000147c00007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090060500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000000000000000
+0000000000000000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043061f0021dcffff
+zynq> md5sum sfdp
+b3c82acb473b65117fe0c063be9d8546  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 67108864 (64M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2863a
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx25lw51245g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff000000000000000000000000
+00000000e5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000000000007ca34800000000006666000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+0000000014351c0043060f0021dcffff
+zynq> md5sum sfdp
+bb32ccaca6814f3104b985ac91bd65ac  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 67108864 (64M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2843b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66uw1g345g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+000000ff101000200000147c00007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090060500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000000000000000
+0000000000000000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043061f0021dcffff
+zynq> md5sum sfdp
+dd3ef0a8d22ee81fc5bccdcb67dee6ca  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 134217728 (128M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2813b
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66uw1g45g
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
 00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
 000000ff101000200000000000007ca34800000000008888000000000000
 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
@@ -236,67 +439,9 @@ ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
 00b8727100990000000072710098727100f872710099727100f900000000
 00000000011501d0727106d8000086500000060100000000020001030002
 00000000060100000000000072060002000000eec0697272717100d8f7f6
-000a000014359c8043060f0021dcffff
+000a00001445988043060f0021dcffff
 zynq> md5sum sfdp
-75d81c1eb2fd2767634f1d0dfbb3be35  sfdp
-zynq> mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 67108864 (64M)
-mtd.erasesize = 4096 (4K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-zynq> cat jedec_id
-c2853a
-zynq> cat manufacturer
-macronix
-zynq> cat partname
-mx25lm51245g
-zynq> xxd -p sfdp
-53464450080104fd00070114400000ff8701011c900000ff0a0001080001
-00ff05000105200100ff84000102340100ff0000000000000000ffffffff
-ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
-00ff0c2010d800ff00ff897901008d1200e2cc02674430b030b0f4bdd55c
-000000ff101000200000000000007ca34800000000006666000000000000
-00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
-727103b80000000090a3188200c069960000000000000000727100987271
-00b8727100990000000072710098727100f872710099727100f900000000
-00000000011501d0727106d8000086500000060100000000020001030002
-00000000060100000000000072060002000000eec0697272717100d8f7f6
-0000000014351c0043060f0021dcffff
-zynq> md5sum sfdp
-214868617d74e6bfb2c45444d5d6fff0  sfdp
-zynq> mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 67108864 (64M)
-mtd.erasesize = 4096 (4K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-zynq> cat jedec_id
-c2803b
-zynq> cat manufacturer
-macronix
-zynq> cat partname
-mx66um1g45g
-zynq> xxd -p sfdp
-53464450080104fd00070114400000ff8701011c900000ff0a0001080001
-00ff05000105200100ff84000102340100ff0000000000000000ffffffff
-ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
-00ff0c2010d800ff00ff897901008d1200e2cc02674430b030b0f4bdd55c
-000000ff101000200000000000007ca34800000000008888000000000000
-00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
-727103b80000000090a3188200c069960000000000000000727100987271
-00b8727100990000000072710098727100f872710099727100f900000000
-00000000011501d0727106d8000086500000060100000000020001030002
-00000000060100000000000072060002000000eec0697272717100d8f7f6
-000a000014359c8043060f0021dcffff
-zynq> md5sum sfdp
-eea09d64679e64f627402b39a177e356  sfdp
+b89a53266007fce06ba7cc4c0956f917  sfdp
 zynq> mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
@@ -307,29 +452,58 @@ mtd.oobsize = 0
 regions = 0
 
 zynq> cat jedec_id
-c2853b
+c2843c
 zynq> cat manufacturer
 macronix
 zynq> cat partname
-mx66lm1g45g
+mx66uw2g345g
 zynq> xxd -p sfdp
 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
-ffffffffe5208affffffff3f00ff00ff00ff00ffeeffffffffff00ffffff
-00ff0c2010d800ff00ff87690100821200e2cc02673830b030b0f4bdd55c
-000000ff101000200000000000007ca34800000000006666000000000000
+ffffffffe5208affffffff7f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200e2cc04674630b030b0f4bdd55c
+000000ff101000200000147c00007c234800000000007777000000000000
 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
 727103b80000000090a3188200c069960000000000000000727100987271
 00b8727100990000000072710098727100f872710099727100f900000000
 00000000011501d0727106d8000086500000060100000000020001030002
 00000000060100000000000072060002000000eec0697272717100d8f7f6
-0000000014351c0043060f0021dcffff
+000000001445988043061f0021dcffff
 zynq> md5sum sfdp
-7b46113b529d58a6335531a10f14a76e  sfdp
+00447475e039e67c256a8d75d5885ae8  sfdp
 zynq> mtd_debug info /dev/mtd0
 mtd.type = MTD_NORFLASH
 mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 134217728 (128M)
+mtd.size = 268435456 (256M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+zynq> cat jedec_id
+c2943c
+zynq> cat manufacturer
+macronix
+zynq> cat partname
+mx66uw2g345gx0
+zynq> xxd -p sfdp
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff7f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100841200e2cc04674630b030b0f4bdd55c
+000000ff101000200000087c00007c234800000000008888000000000000
+00400fd1fff30fd1fff300050090060500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000000000000000
+0000000000000000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043061f0021dcffff
+zynq> md5sum sfdp
+e6226263b999578a2f034ea969988d7f  sfdp
+zynq> mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 268435456 (256M)
 mtd.erasesize = 4096 (4K)
 mtd.writesize = 1
 mtd.oobsize = 0
@@ -337,31 +511,69 @@ regions = 0
 
 Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/macronix.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/mtd/spi-nor/macronix.c | 52 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 29bd5f0b32ec..04d4ed6c1245 100644
+index dee71776b1a8..29bd5f0b32ec 100644
 --- a/drivers/mtd/spi-nor/macronix.c
 +++ b/drivers/mtd/spi-nor/macronix.c
-@@ -252,6 +252,20 @@ static const struct flash_info macronix_nor_parts[] = {
- 		.id = SNOR_ID(0xc2, 0x94, 0x3c),
- 		.n_banks = 4,
- 		.flags = SPI_NOR_RWW,
+@@ -200,6 +200,58 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.name = "mx25l3255e",
+ 		.size = SZ_4M,
+ 		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x83, 0x39),
++		.id = SNOR_ID(0xc2, 0x84, 0x37),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x80, 0x39),
++		.id = SNOR_ID(0xc2, 0x81, 0x37),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x85, 0x39),
++		.id = SNOR_ID(0xc2, 0x84, 0x38),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x80, 0x3a),
++		.id = SNOR_ID(0xc2, 0x81, 0x38),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x85, 0x3a),
++		.id = SNOR_ID(0xc2, 0x84, 0x39),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x80, 0x3b),
++		.id = SNOR_ID(0xc2, 0x81, 0x39),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
 +	}, {
-+		.id = SNOR_ID(0xc2, 0x85, 0x3b),
++		.id = SNOR_ID(0xc2, 0x86, 0x39),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x84, 0x3a),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x86, 0x3a),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x84, 0x3b),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x81, 0x3b),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x84, 0x3c),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x94, 0x3c),
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
  	}
  };
  
