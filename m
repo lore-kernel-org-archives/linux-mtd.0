@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44339C35274
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F51FC4706C
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=e06xr4jsutLxJQs1gB1vBkPr3A7RgpI6p4eD9xZWnkw=; b=yoTl+KekF+sxL6
-	udk/HdWTvA+D5o1bl3v4tOgFkQ0mxzgHHw+Dt+xmDarmONpYS7PQoEd7sFF5ihDVaCksZgCX2vEDW
-	If++YIjSsGOOzA+36IeHL5SbVXL4YVKNZoa2owptpG7QHyOGf2MTrbelcuH3b7uDkU4eWbbxGmWtj
-	Il+H1e5DrxfgKe8SgHt/8fqUEI+PXGFuHsVTrnIzb4l3mwPmPJ+B4SxvhtTElB+1RQ2dyj4ncPlPY
-	Fm8gq/IHg65p83LxUHu6y0oDJO2xy7AsVKYWljhdE+mpa5gCdLULpvZzqJ5dD+7RacGmsiEiiZHyC
-	5rg6g3Kmmkaa9ts4D00g==;
+	List-Owner; bh=V61gb12h+Y7UYMdlWYdH90EfDhSNYIobwCheXjvbfGY=; b=uKxoH+50HwW4dE
+	28pftx13L9Qd0tIuw6VSBC9SX121uBmg0OEC+c3pGFUdGSoG2xPYX+pkjZus1WWrnsHP0l6RiG4y4
+	kOFPCt6dNYtUqNhTgrHv0Wpv0d1qKAawrQ8yhuJetNgR2N1CJzinbtohLFPP8TvjXVqo4Gb5q3gxd
+	Pi5Vvf9yqAdintXTqufANZioCYy0w1w0BxL5HCYKYwnHHXGiH5T1WTx3QrjokoQI+aCl3ykJQAA12
+	EDIUrsEDm3QBidCadJyPWbP8gAsQPVuS0g4JCtreV5C8ibU+tUQw5FlIWOeQf/Y84XCOFena0LDPd
+	sdgo8FwJgLvZX6WS+IgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGF1f-002B0K-1T;
-	Thu, 21 Dec 2023 09:07:31 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1rGF1g-002B0w-1H;
+	Thu, 21 Dec 2023 09:07:32 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGF1Y-002Asq-1d
+	id 1rGF1a-002AuQ-1C
 	for linux-mtd@lists.infradead.org;
 	Thu, 21 Dec 2023 09:07:27 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d3e2972f65so2239445ad.3
-        for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 01:07:20 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d40eec5e12so741905ad.1
+        for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 01:07:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703149640; x=1703754440; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1703149644; x=1703754444; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h1fVaQ8xpYXerpjyXRXvWiYuEY8K4e6Teiic9m4/R+I=;
-        b=LmOWXSupoY5T4yat2jV7bIyHYZSfVHphJl8GRgePiVlHjX0zYTtXdOZGBQ/VLADUIm
-         9y+T5wSNSsW7Ge1TkJrS5iikeFnKQTGMm7ekBglNFQxKOT4g+Fqa/Y+bEyPC85iefLjh
-         /9JdTZy0UYArN1RPQeirP3TdxVRzqE1AxKcAIN0PWF2orrV5YPfLEU4px4grTv4qICxR
-         jsBo2y/Y7ShDUedmSSCFgdpsOnvAfQ2qR+xoNb42prOb9ar6NMFV9MeX1WE9VdTDdXwm
-         dK9jMJbj2kXlB4HNgdiBgEgSe+7+B1udC6EpcbCKKknZV7A7ASL/0vzhMrD9/YRL2gxI
-         0Wrg==
+        bh=PBiA1ptgmn9lWkMbQ7GSe/GdzNY4x0t8DSW8lQBcT7o=;
+        b=gEsj4grx0t3kkc3SxXvCkG32HoEEMx93kh/7hB3vSupfkvED1GrthJZ0GHabTt/reH
+         pCWBydTBCkKxSjl2jwDD/A5hsRyAyPDYsY59l+eIpW5+WHNruVyhRA8zko5oO3YGV06n
+         ITJyBV0+E7OW+0woMnIE+OzANydgFkU5OUUTtd2xo3/NCdCraH4v3mKRnlobJ6e0q6qk
+         YtYpAr3Dk4sbRL3XXbBOIvV3oCJsKV9azNF350I4bV4IAtoeFKq1/y/oVAq7D0vxNsCB
+         CC/qPhzKhaINZaRiGZzEYwKCmKzIOk8Yt3Q+h4W1SHGXaCn2XCcr/G4wbBK8uSPDdsAm
+         /01w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703149640; x=1703754440;
+        d=1e100.net; s=20230601; t=1703149644; x=1703754444;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h1fVaQ8xpYXerpjyXRXvWiYuEY8K4e6Teiic9m4/R+I=;
-        b=Y1ngSgSa7wKbEZQvCllDjEckiEi8nvDB9g5nhd3phlEbAu8lm0QAguv1NC+8X/EqQv
-         Xf7M7Yw0IowNFOLdo/VM4O4bBEsz2Svldc7o8/VxuwNw0mny8SsQvoTyoiS2tODF/vU/
-         u38NCl4Rk0fv5m/Z4lyr0LMIdX76gVXS1SpQaGkdVetNsjqwvRoeFaQ3Xj7fqXVbrrr6
-         8g3D7AW9sy8gFOncnYEXUArIAnYsxjfbTeQQZc8r1TK7nUGbRNDGSXW06a3XLwHExuGr
-         T4nEMSFOBsvnwDgjnSE2X084V3g31av0ffIp4UaaLAysgZExRAPB4zFk9Vkrt9gZ2QZb
-         OUYA==
-X-Gm-Message-State: AOJu0Yx0zViZ0iF76oFXtMjCD2+d2V36vKFnYmtIFuIzULaXPT/gRmvo
-	JDB8nYNaXWgX+Af2XGMENuk=
-X-Google-Smtp-Source: AGHT+IHtwzuJL3ERmVH2DMpbPjTcKOGF19d38NgkYA6DlzgADCbQmGu1jwj8EZnWEV/SMbUBfwuPaQ==
-X-Received: by 2002:a17:902:6f02:b0:1d3:e41b:eebc with SMTP id w2-20020a1709026f0200b001d3e41beebcmr2229244plk.33.1703149640419;
-        Thu, 21 Dec 2023 01:07:20 -0800 (PST)
+        bh=PBiA1ptgmn9lWkMbQ7GSe/GdzNY4x0t8DSW8lQBcT7o=;
+        b=NUOH7sWT3I6AdxeYGzJh9cznA53SgkkS92etTysialD+CF5M6hsY9zg/sDEdH03VyQ
+         ZDwaAT7wCwusw6E/wHHOGL+wxaIEQk9NaTJohCFhMhxMLLsepMHGR2K5A/l+G/maCT5f
+         GJn/Q9QKVLqyCSwELJjPwxNLa/9xz2pRI7SPOx7lAPI2ZrM47KmFACVoPRueDO4zFC8P
+         ksROQljT6VgSw6GnuUt9cBTGcVDs03AyiZOR3BTDBJv2vB3zEQoN3uyccxrbQkKxp0z8
+         DwuBRDUCkxw7ODYD0+rgIJC3WT7l/tk4PeTLK1e6RWrITZ4gypVsUnC+nY9DN/XW2Cy5
+         49XA==
+X-Gm-Message-State: AOJu0Yz5o3fhvFyt0OlKRbuoPQduG8oOHMVQy09qaHJ/kcSrCOzjgDai
+	T063nQtozj8pPbXx+EXxdNlCrhuXe0Y=
+X-Google-Smtp-Source: AGHT+IHSb2dbaLd/cuBSqvOXzMJOObiypX+Tt1YRTrTtWH+dcTXOH4eLnVXnWdWp0PZX9Es6Ql+uww==
+X-Received: by 2002:a17:902:a383:b0:1d0:8dc3:9149 with SMTP id x3-20020a170902a38300b001d08dc39149mr18437867pla.72.1703149643777;
+        Thu, 21 Dec 2023 01:07:23 -0800 (PST)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b001d395d3df30sm1107842plj.130.2023.12.21.01.07.19
+        by smtp.gmail.com with ESMTPSA id u13-20020a17090341cd00b001d3ea8ad878sm1112902ple.290.2023.12.21.01.07.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 01:07:19 -0800 (PST)
+        Thu, 21 Dec 2023 01:07:21 -0800 (PST)
 Received: from hqs-appsw-appswa2.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id ACD438053C;
-	Thu, 21 Dec 2023 17:11:29 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id 83ACC80649;
+	Thu, 21 Dec 2023 17:11:31 +0800 (CST)
 From: Jaime Liao <jaimeliao.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	tudor.ambarus@linaro.org,
@@ -73,16 +73,16 @@ To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: leoyu@mxic.com.tw,
 	jaimeliao@mxic.com.tw
-Subject: [PATCH v7 1/7] mtd: spi-nor: add Octal DTR support for Macronix flash
-Date: Thu, 21 Dec 2023 17:06:56 +0800
-Message-Id: <20231221090702.103027-2-jaimeliao.tw@gmail.com>
+Subject: [PATCH v7 5/7] spi: mxic: Add support for swapping byte
+Date: Thu, 21 Dec 2023 17:07:00 +0800
+Message-Id: <20231221090702.103027-6-jaimeliao.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231221090702.103027-1-jaimeliao.tw@gmail.com>
 References: <20231221090702.103027-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_010724_554582_E164E698 
-X-CRM114-Status: GOOD (  20.00  )
+X-CRM114-CacheID: sfid-20231221_010726_421710_D50E6160 
+X-CRM114-Status: GOOD (  15.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,152 +101,98 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Create Macronix specify method for enable Octal DTR mode and
-set 20 dummy cycles to allow running at the maximum supported
-frequency for Macronix Octal flash.
+Some SPI-NOR flash swap the bytes on a 16-bit boundary when
+configured in Octal DTR mode. It means data format D0 D1 D2 D3
+would be swapped to D1 D0 D3 D2. So that whether controller
+support swapping bytes should be checked before enable Octal
+DTR mode. Add swap byte support on a 16-bit boundary when
+configured in Octal DTR mode for Macronix xSPI host controller
+dirver.
 
-Use number of dummy cycles which is parse by SFDP then convert
-it to bit pattern and set in CR2 register.
-Set CR2 register for enable octal DTR mode.
+According dtr_swab in operation to enable/disable Macronix
+xSPI host controller swap byte feature.
 
-Use Read ID to confirm that enabling/diabling octal DTR mode
-was successful.
+To make sure swap byte feature is working well, program data in
+1S-1S-1S mode then read back and compare read data in 8D-8D-8D
+mode.
 
-Macronix ID format is A-A-B-B-C-C in octal DTR mode.
-To ensure the successful enablement of octal DTR mode, confirm
-that the 6-byte data is entirely correct.
+This feature have been validated on byte-swap flash and
+non-byte-swap flash.
+
+Macronix xSPI host controller bit "HC_CFG_DATA_PASS" determine
+the byte swap feature disabled/enabled and swap byte feature is
+working on 8D-8D-8D mode only.
 
 Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
-Co-developed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/macronix.c | 100 +++++++++++++++++++++++++++++++++
- 1 file changed, 100 insertions(+)
+ drivers/spi/spi-mxic.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index ea6be95e75a5..dee71776b1a8 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -8,6 +8,24 @@
+diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+index 60c9f3048ac9..8dc83adaaa88 100644
+--- a/drivers/spi/spi-mxic.c
++++ b/drivers/spi/spi-mxic.c
+@@ -294,7 +294,8 @@ static void mxic_spi_hw_init(struct mxic_spi *mxic)
+ 	       mxic->regs + HC_CFG);
+ }
  
- #include "core.h"
+-static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
++static u32 mxic_spi_prep_hc_cfg(const struct spi_mem_op *op,
++				struct spi_device *spi, u32 flags)
+ {
+ 	int nio = 1;
  
-+#define SPINOR_OP_MXIC_RD_ANY_REG	0x71		/* Read volatile configuration register 2 */
-+#define SPINOR_OP_MXIC_WR_ANY_REG	0x72		/* Write volatile configuration register 2 */
-+#define SPINOR_REG_MXIC_CR2_MODE	0x00000000	/* CR2 address for setting octal DTR mode */
-+#define SPINOR_REG_MXIC_CR2_DC		0x00000300	/* CR2 address for setting dummy cycles */
-+#define SPINOR_REG_MXIC_OPI_DTR_EN	0x2		/* Enable Octal DTR */
-+#define SPINOR_REG_MXIC_SPI_EN		0x0		/* Enable SPI */
-+#define SPINOR_REG_MXIC_ADDR_BYTES	4		/* Fixed R/W volatile address bytes to 4 */
-+/* Convert dummy cycles to bit pattern */
-+#define SPINOR_REG_MXIC_DC(p) \
-+		((20 - p)/2)
+@@ -305,6 +306,13 @@ static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
+ 	else if (spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
+ 		nio = 2;
+ 
++	if (op->data.dtr) {
++		if (op->data.dtr_swab16)
++			flags &= ~HC_CFG_DATA_PASS;
++		else
++			flags |= HC_CFG_DATA_PASS;
++	}
 +
-+/* Macronix SPI NOR flash operations. */
-+#define MXIC_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MXIC_WR_ANY_REG, 0),		\
-+		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
-+
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
-@@ -185,6 +203,87 @@ static const struct flash_info macronix_nor_parts[] = {
- 	}
+ 	return flags | HC_CFG_NIO(nio) |
+ 	       HC_CFG_TYPE(spi_get_chipselect(spi, 0), HC_CFG_TYPE_SPI_NOR) |
+ 	       HC_CFG_SLV_ACT(spi_get_chipselect(spi, 0)) | HC_CFG_IDLE_SIO_LVL(1);
+@@ -397,7 +405,8 @@ static ssize_t mxic_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
+ 	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
+ 		return -EINVAL;
+ 
+-	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
++	writel(mxic_spi_prep_hc_cfg(&desc->info.op_tmpl,
++				    desc->mem->spi, 0), mxic->regs + HC_CFG);
+ 
+ 	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
+ 	       mxic->regs + LRD_CFG);
+@@ -441,7 +450,8 @@ static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
+ 	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
+ 		return -EINVAL;
+ 
+-	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
++	writel(mxic_spi_prep_hc_cfg(&desc->info.op_tmpl,
++				    desc->mem->spi, 0), mxic->regs + HC_CFG);
+ 
+ 	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
+ 	       mxic->regs + LWR_CFG);
+@@ -518,7 +528,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	if (ret)
+ 		return ret;
+ 
+-	writel(mxic_spi_prep_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN),
++	writel(mxic_spi_prep_hc_cfg(op, mem->spi, HC_CFG_MAN_CS_EN),
+ 	       mxic->regs + HC_CFG);
+ 
+ 	writel(HC_EN_BIT, mxic->regs + HC_EN);
+@@ -572,6 +582,7 @@ static const struct spi_controller_mem_ops mxic_spi_mem_ops = {
+ 
+ static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
+ 	.dtr = true,
++	.dtr_swab16 = true,
+ 	.ecc = true,
  };
  
-+static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf, i;
-+	int ret;
-+
-+	/* Use dummy cycles which is parse by SFDP and convert to bit pattern. */
-+	buf[0] = SPINOR_REG_MXIC_DC(nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].num_wait_states);
-+	op = (struct spi_mem_op)
-+		MXIC_NOR_WR_ANY_REG_OP(SPINOR_REG_MXIC_ADDR_BYTES,
-+				       SPINOR_REG_MXIC_CR2_DC, 1, buf);
-+
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	/* Set the octal and DTR enable bits. */
-+	buf[0] = SPINOR_REG_MXIC_OPI_DTR_EN;
-+	op = (struct spi_mem_op)
-+		MXIC_NOR_WR_ANY_REG_OP(SPINOR_REG_MXIC_ADDR_BYTES,
-+				       SPINOR_REG_MXIC_CR2_MODE, 1, buf);
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	/* Read flash ID to make sure the switch was successful. */
-+	ret = spi_nor_read_id(nor, 4, 4, buf, SNOR_PROTO_8_8_8_DTR);
-+	if (ret) {
-+		dev_dbg(nor->dev, "error %d reading JEDEC ID after enabling 8D-8D-8D mode\n", ret);
-+		return ret;
-+	}
-+
-+	/* Macronix SPI-NOR flash 8D-8D-8D read ID would get 6 bytes data A-A-B-B-C-C */
-+	for (i = 0; i < nor->info->id->len; i++)
-+		if (buf[i * 2] != buf[(i * 2) + 1] ||
-+		    buf[i * 2] != nor->info->id->bytes[i])
-+			return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int macronix_nor_octal_dtr_dis(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	int ret;
-+
-+	/*
-+	 * The register is 1-byte wide, but 1-byte transactions are not
-+	 * allowed in 8D-8D-8D mode. Since there is no register at the
-+	 * next location, just initialize the value to 0 and let the
-+	 * transaction go on.
-+	 */
-+	buf[0] = SPINOR_REG_MXIC_SPI_EN;
-+	buf[1] = 0x0;
-+	op = (struct spi_mem_op)
-+		MXIC_NOR_WR_ANY_REG_OP(SPINOR_REG_MXIC_ADDR_BYTES,
-+				       SPINOR_REG_MXIC_CR2_MODE, 2, buf);
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+	if (ret)
-+		return ret;
-+
-+	/* Read flash ID to make sure the switch was successful. */
-+	ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
-+	if (ret) {
-+		dev_dbg(nor->dev, "error %d reading JEDEC ID after disabling 8D-8D-8D mode\n", ret);
-+		return ret;
-+	}
-+
-+	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int macronix_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
-+{
-+	return enable ? macronix_nor_octal_dtr_en(nor) :
-+			macronix_nor_octal_dtr_dis(nor);
-+}
-+
- static void macronix_nor_default_init(struct spi_nor *nor)
- {
- 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
-@@ -194,6 +293,7 @@ static int macronix_nor_late_init(struct spi_nor *nor)
- {
- 	if (!nor->params->set_4byte_addr_mode)
- 		nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
-+	nor->params->set_octal_dtr = macronix_nor_set_octal_dtr;
- 
- 	return 0;
- }
 -- 
 2.25.1
 
