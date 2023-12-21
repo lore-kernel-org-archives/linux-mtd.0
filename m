@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48A4BC35274
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 08:59:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F518C47070
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 08:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZtbHQf7q1Y2qw5zDbaJ+vJ9b39C353VjZGUOUHm86nA=; b=zFOlYmbZ5tUAMW
-	GqO+mlLE8XI2JKsBHMKchN7FJ23YxMi/s8nLuIee4oyGdbzqeAEZliFx4QwtQ5KBssXl7yHa3Lwz1
-	Y+Y2s0HMCnkhJ2Y27yxn73kkmwPCIh4/9So87kGM2lfpurh0DRA8ehtAfS5n6BTSuZEKQR3XVvdIK
-	XztqcZ7Wwer+mhIMD8U1DsqIGHgrFC3IHXbr1BjEBq5d9+4Jg1agpCuSGpbjdfSlLsv/AupGJ4wTl
-	9tCIcJPajAK4H8X0ZACLhKrKt8LTk29qnd8FL86TjOLu/cxtcsp9CpEH9KJ6ks0IQ7D1q2MDF7BS8
-	4pmMA4oNaK46HK8ZiHIA==;
+	List-Owner; bh=QXU72YC4HXHT5WhBGULtiim1PhXse9z23jdZ23aBrpY=; b=eXv05Wl6vZ/GeB
+	A0ZUR8QPIFytu8j/1Pam7hApLxf+XjgLSfRFN0j+9bEgcmHbSXljC7n7wseTlbZX9pxH7UkNyNyLl
+	cXzjPD60wkWxxEQ8o01zrUdbpy2oSl+hQYAo2Sr4POhf+4Ae0jeTzpaYwvwbEYI+uqtwe9LgvkaLG
+	HBRF53RQ2Ux5qr4DMNDHKCizYrP7lPq1VBeuqoHW7xc8BBuxZcaLqXdecxhOdxbK0sJR/ib1nfYiC
+	YAuMhK5Sjrs8YZf68ZObfsKS+JU0VQLzo9klU5+AKi2DFnlvBTLlaADZTYVLIaSZPpIGaYqIKUF1x
+	NtS+0+XeEKHPeVe4Orjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEtz-0027Og-0x;
-	Thu, 21 Dec 2023 08:59:35 +0000
+	id 1rGEtw-0027NC-27;
+	Thu, 21 Dec 2023 08:59:32 +0000
 Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEtt-0027Ks-1z
+	id 1rGEtp-0027HD-0Y
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Dec 2023 08:59:32 +0000
+	Thu, 21 Dec 2023 08:59:28 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SwkrY4hNlz4f3kJv
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:25 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SwkrK01CMz4f3k67
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:12 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 0CA461A0BF7
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:27 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 628551A0B01
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:14 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S13;
-	Thu, 21 Dec 2023 16:59:26 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S5;
+	Thu, 21 Dec 2023 16:59:13 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -85,35 +85,35 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v3 for-6.8/block 09/17] btrfs: use bdev apis
-Date: Thu, 21 Dec 2023 16:57:04 +0800
-Message-Id: <20231221085712.1766333-10-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v3 for-6.8/block 01/17] block: add some bdev apis
+Date: Thu, 21 Dec 2023 16:56:56 +0800
+Message-Id: <20231221085712.1766333-2-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw5d_oNlEQPvEA--.24929S13
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFWUur17WF47JrWfZry7Wrg_yoWfJFyDpr
-	W7Cas5trWUJrn8Ww1kXw4kAw1Sq3sFvay8CFy3Gw4Ska45t345KF1vy34Fqa4Fkry8JFyk
-	XF4UtFWxuF1xCF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
-	xdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-	IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQ
-	SdkUUUUU=
+X-CM-TRANSID: cCh0CgDnNw5d_oNlEQPvEA--.24929S5
+X-Coremail-Antispam: 1UD129KBjvJXoW3ArWxKrWfCFW8Kw1DKFyrtFb_yoWfGFWfpF
+	WUGFy5JrWDG34IgFs2yw47ZrySgw1IyF1fJa43Jryak3yDtr9agF95KF1UArWxtrZ7Ja12
+	qFy2vFW8ur1j9FJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+	IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+	xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v2
+	6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrx
+	kI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v2
+	6r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOR6z
+	UUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_005930_035542_06DACB58 
-X-CRM114-Status: GOOD (  19.25  )
+X-CRM114-CacheID: sfid-20231221_005925_582221_449B76C7 
+X-CRM114-Status: GOOD (  22.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,271 +132,234 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-On the one hand covert to use folio while reading bdev inode, on the
-other hand prevent to access bd_inode directly.
+Those apis will be used for other modules, so that bd_inode won't be
+accessed directly from other modules.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/btrfs/disk-io.c | 71 +++++++++++++++++++++-------------------------
- fs/btrfs/volumes.c | 17 ++++++-----
- fs/btrfs/zoned.c   | 15 +++++-----
- 3 files changed, 48 insertions(+), 55 deletions(-)
+ block/bdev.c           | 148 +++++++++++++++++++++++++++++++++++++++++
+ block/blk.h            |   2 -
+ include/linux/blkdev.h |  17 +++++
+ 3 files changed, 165 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 401ea09ae4b8..a1cfdee99a81 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3620,28 +3620,24 @@ ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
- static void btrfs_end_super_write(struct bio *bio)
- {
- 	struct btrfs_device *device = bio->bi_private;
--	struct bio_vec *bvec;
--	struct bvec_iter_all iter_all;
--	struct page *page;
--
--	bio_for_each_segment_all(bvec, bio, iter_all) {
--		page = bvec->bv_page;
-+	struct folio_iter fi;
- 
-+	bio_for_each_folio_all(fi, bio) {
- 		if (bio->bi_status) {
- 			btrfs_warn_rl_in_rcu(device->fs_info,
- 				"lost page write due to IO error on %s (%d)",
- 				btrfs_dev_name(device),
- 				blk_status_to_errno(bio->bi_status));
--			ClearPageUptodate(page);
--			SetPageError(page);
-+			folio_clear_uptodate(fi.folio);
-+			folio_set_error(fi.folio);
- 			btrfs_dev_stat_inc_and_print(device,
- 						     BTRFS_DEV_STAT_WRITE_ERRS);
- 		} else {
--			SetPageUptodate(page);
-+			folio_mark_uptodate(fi.folio);
- 		}
- 
--		put_page(page);
--		unlock_page(page);
-+		folio_put(fi.folio);
-+		folio_unlock(fi.folio);
- 	}
- 
- 	bio_put(bio);
-@@ -3651,9 +3647,9 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
- 						   int copy_num, bool drop_cache)
- {
- 	struct btrfs_super_block *super;
--	struct page *page;
-+	struct folio *folio;
- 	u64 bytenr, bytenr_orig;
--	struct address_space *mapping = bdev->bd_inode->i_mapping;
-+	unsigned int nofs_flag;
- 	int ret;
- 
- 	bytenr_orig = btrfs_sb_offset(copy_num);
-@@ -3674,16 +3670,17 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
- 		 * Drop the page of the primary superblock, so later read will
- 		 * always read from the device.
- 		 */
--		invalidate_inode_pages2_range(mapping,
--				bytenr >> PAGE_SHIFT,
-+		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
- 				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
- 	}
- 
--	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
--	if (IS_ERR(page))
--		return ERR_CAST(page);
-+	nofs_flag = memalloc_nofs_save();
-+	folio = bdev_read_folio(bdev, bytenr);
-+	memalloc_nofs_restore(nofs_flag);
-+	if (IS_ERR(folio))
-+		return ERR_CAST(folio);
- 
--	super = page_address(page);
-+	super = folio_address(folio);
- 	if (btrfs_super_magic(super) != BTRFS_MAGIC) {
- 		btrfs_release_disk_super(super);
- 		return ERR_PTR(-ENODATA);
-@@ -3740,7 +3737,6 @@ static int write_dev_supers(struct btrfs_device *device,
- 			    struct btrfs_super_block *sb, int max_mirrors)
- {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
--	struct address_space *mapping = device->bdev->bd_inode->i_mapping;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	int i;
- 	int errors = 0;
-@@ -3753,7 +3749,7 @@ static int write_dev_supers(struct btrfs_device *device,
- 	shash->tfm = fs_info->csum_shash;
- 
- 	for (i = 0; i < max_mirrors; i++) {
--		struct page *page;
-+		struct folio *folio;
- 		struct bio *bio;
- 		struct btrfs_super_block *disk_super;
- 
-@@ -3778,9 +3774,10 @@ static int write_dev_supers(struct btrfs_device *device,
- 				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
- 				    sb->csum);
- 
--		page = find_or_create_page(mapping, bytenr >> PAGE_SHIFT,
--					   GFP_NOFS);
--		if (!page) {
-+		folio = bdev_get_folio(device->bdev, bytenr,
-+				       FGP_LOCK|FGP_ACCESSED|FGP_CREAT,
-+				       GFP_NOFS);
-+		if (IS_ERR(folio)) {
- 			btrfs_err(device->fs_info,
- 			    "couldn't get super block page for bytenr %llu",
- 			    bytenr);
-@@ -3789,9 +3786,9 @@ static int write_dev_supers(struct btrfs_device *device,
- 		}
- 
- 		/* Bump the refcount for wait_dev_supers() */
--		get_page(page);
-+		folio_get(folio);
- 
--		disk_super = page_address(page);
-+		disk_super = folio_address(folio);
- 		memcpy(disk_super, sb, BTRFS_SUPER_INFO_SIZE);
- 
- 		/*
-@@ -3805,8 +3802,8 @@ static int write_dev_supers(struct btrfs_device *device,
- 		bio->bi_iter.bi_sector = bytenr >> SECTOR_SHIFT;
- 		bio->bi_private = device;
- 		bio->bi_end_io = btrfs_end_super_write;
--		__bio_add_page(bio, page, BTRFS_SUPER_INFO_SIZE,
--			       offset_in_page(bytenr));
-+		bio_add_folio_nofail(bio, folio, BTRFS_SUPER_INFO_SIZE,
-+				     offset_in_folio(folio, bytenr));
- 
- 		/*
- 		 * We FUA only the first super block.  The others we allow to
-@@ -3842,7 +3839,7 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
- 
- 	for (i = 0; i < max_mirrors; i++) {
--		struct page *page;
-+		struct folio *folio;
- 
- 		ret = btrfs_sb_log_location(device, i, READ, &bytenr);
- 		if (ret == -ENOENT) {
-@@ -3857,27 +3854,23 @@ static int wait_dev_supers(struct btrfs_device *device, int max_mirrors)
- 		    device->commit_total_bytes)
- 			break;
- 
--		page = find_get_page(device->bdev->bd_inode->i_mapping,
--				     bytenr >> PAGE_SHIFT);
--		if (!page) {
-+		folio = bdev_get_folio(device->bdev, bytenr, 0, 0);
-+		if (!IS_ERR(folio)) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
- 			continue;
- 		}
- 		/* Page is submitted locked and unlocked once the IO completes */
--		wait_on_page_locked(page);
--		if (PageError(page)) {
-+		folio_wait_locked(folio);
-+		if (folio_test_error(folio)) {
- 			errors++;
- 			if (i == 0)
- 				primary_failed = true;
- 		}
- 
--		/* Drop our reference */
--		put_page(page);
--
--		/* Drop the reference from the writing run */
--		put_page(page);
-+		/* Drop our reference and the reference from the writing run */
-+		folio_put_refs(folio, 2);
- 	}
- 
- 	/* log error, force error return */
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c6f16625af51..b3538777683c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1230,16 +1230,16 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 
- void btrfs_release_disk_super(struct btrfs_super_block *super)
- {
--	struct page *page = virt_to_page(super);
-+	struct folio *folio = virt_to_folio(super);
- 
--	put_page(page);
-+	folio_put(folio);
+diff --git a/block/bdev.c b/block/bdev.c
+index 750aec178b6a..6204621c6db6 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -89,6 +89,25 @@ void invalidate_bdev(struct block_device *bdev)
  }
+ EXPORT_SYMBOL(invalidate_bdev);
  
- static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
- 						       u64 bytenr, u64 bytenr_orig)
++/**
++ * invalidate_bdev_pages - Invalidate clean unused buffers and pagecache.
++ * @bdev: the block device which holds the cache to invalidate
++ * @start: the offset 'from' which to invalidate
++ * @end: the offset 'to' which to invalidate (inclusive)
++ *
++ * This function removes pages that are clean, unmapped and unlocked,
++ * as well as shadow entries. It will not block on IO activity.
++ *
++ * If you want to remove all the pages of one block device, regardless of
++ * their use and writeback state, use truncate_bdev_range().
++ */
++void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
++			   pgoff_t end)
++{
++	invalidate_mapping_pages(bdev->bd_inode->i_mapping, start, end);
++}
++EXPORT_SYMBOL_GPL(invalidate_bdev_range);
++
+ /*
+  * Drop all buffers & page cache for given bdev range. This function bails
+  * with error if bdev has other exclusive owner (such as filesystem).
+@@ -121,6 +140,7 @@ int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
+ 					     lstart >> PAGE_SHIFT,
+ 					     lend >> PAGE_SHIFT);
+ }
++EXPORT_SYMBOL_GPL(truncate_bdev_range);
+ 
+ static void set_init_blocksize(struct block_device *bdev)
  {
- 	struct btrfs_super_block *disk_super;
--	struct page *page;
-+	struct folio *folio;
- 	void *p;
- 	pgoff_t index;
+@@ -1102,3 +1122,131 @@ void bdev_statx_dioalign(struct inode *inode, struct kstat *stat)
  
-@@ -1257,15 +1257,14 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
- 		return ERR_PTR(-EINVAL);
+ 	blkdev_put_no_open(bdev);
+ }
++
++/**
++ * bdev_read_folio - Read into block device page cache.
++ * @bdev: the block device which holds the cache to read.
++ * @pos: the offset that allocated folio will contain.
++ *
++ * Read one page into the block device page cache. If it succeeds, the folio
++ * returned will contain @pos;
++ *
++ * Return: Uptodate folio on success, ERR_PTR() on failure.
++ */
++struct folio *bdev_read_folio(struct block_device *bdev, loff_t pos)
++{
++	return mapping_read_folio_gfp(bdev->bd_inode->i_mapping,
++				      pos >> PAGE_SHIFT, GFP_KERNEL);
++}
++EXPORT_SYMBOL_GPL(bdev_read_folio);
++
++/**
++ * bdev_get_folio - Find and get a reference to a folio.
++ * @bdev: the block device which holds the address_space to search.
++ * @pos: the offset the returned folio will contain.
++ * @fgp_flags: %FGP flags modify how the folio is returned.
++ * @gfp: Memory allocation flags to use if %FGP_CREAT is specified.
++ *
++ * Looks up the page cache entry at @bdev->bd_inode->i_mapping from @pos. If
++ * this function returns a folio, it is returned with an increased refcount.
++ *
++ * Return: The found folio or an ERR_PTR() otherwise.
++ */
++struct folio *bdev_get_folio(struct block_device *bdev, loff_t pos,
++			     fgf_t fgp_flags, gfp_t gfp)
++{
++	return __filemap_get_folio(bdev->bd_inode->i_mapping, pos >> PAGE_SHIFT,
++				   fgp_flags, gfp);
++}
++EXPORT_SYMBOL_GPL(bdev_get_folio);
++
++/**
++ * bdev_wb_err_check - Has block device writeback error occurred?
++ * @bdev: the block device to check.
++ * @since: Previously-sampled @bdev->bd_inode->i_mapping->wb_err.
++ *
++ * Grab @bdev->bd_inode->i_mapping->wb_err, and see if it has changed @since
++ * the given value was sampled.
++ *
++ * Return: The latest error or 0 if it hasn't changed.
++ */
++int bdev_wb_err_check(struct block_device *bdev, errseq_t since)
++{
++	return errseq_check(&bdev->bd_inode->i_mapping->wb_err, since);
++}
++EXPORT_SYMBOL_GPL(bdev_wb_err_check);
++
++/**
++ * bdev_wb_err_check_and_advance() - Check block device writeback error and
++ * advance to current value.
++ * @bdev: the block device to check;
++ * @since: Pointer to previously-sampled @bdev->bd_inode->i_mapping->wb_err to
++ * check against and advance.
++ *
++ * Grab @bdev->bd_inode->i_mapping->wb_err, and see whether it matches the
++ * value that @since points to. If it does, then just return 0; If it doesn't,
++ * then the value has changed. Set the "seen" flag, and try to swap it into
++ * place as the new eseq value. Then, set that value as the new @since value,
++ * and return whatever the error portion is set to.
++ *
++ * Return: Negative errno if one has been stored, or 0 if no new error has
++ * occurred.
++ */
++int bdev_wb_err_check_and_advance(struct block_device *bdev, errseq_t *since)
++{
++	return errseq_check_and_advance(&bdev->bd_inode->i_mapping->wb_err,
++					since);
++}
++EXPORT_SYMBOL_GPL(bdev_wb_err_check_and_advance);
++
++/**
++ * bdev_balance_dirty_pages_ratelimited - balance dirty memory state.
++ * @bdev: the block device which was dirtied.
++ *
++ * Check the system's dirty state and will initiate writeback if needed.
++ */
++void bdev_balance_dirty_pages_ratelimited(struct block_device *bdev)
++{
++	return balance_dirty_pages_ratelimited(bdev->bd_inode->i_mapping);
++}
++EXPORT_SYMBOL_GPL(bdev_balance_dirty_pages_ratelimited);
++
++/**
++ * bdev_async_readahead - readahead for marked block device pages
++ * @bdev: the block device to read.
++ * @ra: file_ra_state which holds the readahead state.
++ * @file: Used by the filesystem for authentication.
++ * @index: Index of first page to be read.
++ * @req_count: Total number of pages being read by the caller.
++ *
++ * Read multiple pages into the block device page cache. The readahead logic may
++ * decide to piggyback more pages onto the read request if access patterns
++ * suggest it will improve performance.
++ */
++void bdev_sync_readahead(struct block_device *bdev, struct file_ra_state *ra,
++			 struct file *file, pgoff_t index,
++			 unsigned long req_count)
++{
++	struct file_ra_state tmp_ra = {};
++
++	if (!ra) {
++		ra = &tmp_ra;
++		file_ra_state_init(ra, bdev->bd_inode->i_mapping);
++	}
++	page_cache_sync_readahead(bdev->bd_inode->i_mapping, ra, file, index,
++				  req_count);
++}
++EXPORT_SYMBOL_GPL(bdev_sync_readahead);
++
++/**
++ * bdev_attach_wb - associate an block device with its wb
++ * @bdev: block device of interest
++ *
++ * If @bdev->bd_inode doesn't have its wb, associate it with the wb matching the
++ * %current.
++ */
++void bdev_attach_wb(struct block_device *bdev)
++{
++	inode_attach_wb(bdev->bd_inode, NULL);
++}
++EXPORT_SYMBOL_GPL(bdev_attach_wb);
+diff --git a/block/blk.h b/block/blk.h
+index 1ef920f72e0f..ce5fcd927eaa 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -465,8 +465,6 @@ extern struct device_attribute dev_attr_events_poll_msecs;
+ extern struct attribute_group blk_trace_attr_group;
  
- 	/* pull in the page with our super */
--	page = read_cache_page_gfp(bdev->bd_inode->i_mapping, index, GFP_KERNEL);
-+	folio = bdev_read_folio(bdev, index);
-+	if (IS_ERR(folio))
-+		return ERR_CAST(folio);
+ blk_mode_t file_to_blk_mode(struct file *file);
+-int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
+-		loff_t lstart, loff_t lend);
+ long blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
+ long compat_blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
  
--	if (IS_ERR(page))
--		return ERR_CAST(page);
--
--	p = page_address(page);
-+	p = folio_address(folio);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index bc236e77d85e..ccac7d32bb86 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -24,6 +24,7 @@
+ #include <linux/sbitmap.h>
+ #include <linux/uuid.h>
+ #include <linux/xarray.h>
++#include <linux/pagemap.h>
  
- 	/* align our pointer to the offset of the super block */
--	disk_super = p + offset_in_page(bytenr);
-+	disk_super = p + offset_in_folio(folio, bytenr);
+ struct module;
+ struct request_queue;
+@@ -1475,6 +1476,22 @@ struct block_device *blkdev_get_no_open(dev_t dev);
+ void blkdev_put_no_open(struct block_device *bdev);
  
- 	if (btrfs_super_bytenr(disk_super) != bytenr_orig ||
- 	    btrfs_super_magic(disk_super) != BTRFS_MAGIC) {
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 23c1e6b19a65..eb1a9a8b5959 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -120,8 +120,6 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
- 		return -ENOENT;
- 	} else if (full[0] && full[1]) {
- 		/* Compare two super blocks */
--		struct address_space *mapping = bdev->bd_inode->i_mapping;
--		struct page *page[BTRFS_NR_SB_LOG_ZONES];
- 		struct btrfs_super_block *super[BTRFS_NR_SB_LOG_ZONES];
- 		int i;
+ struct block_device *I_BDEV(struct inode *inode);
++void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
++			   pgoff_t end);
++int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
++		loff_t lstart, loff_t lend);
++struct folio *bdev_read_folio(struct block_device *bdev, loff_t pos);
++struct folio *bdev_get_folio(struct block_device *bdev, loff_t pos,
++			     fgf_t fgp_flags, gfp_t gfp);
++int bdev_wb_err_check(struct block_device *bdev, errseq_t since);
++int bdev_wb_err_check_and_advance(struct block_device *bdev, errseq_t *since);
++void bdev_balance_dirty_pages_ratelimited(struct block_device *bdev);
++void bdev_sync_readahead(struct block_device *bdev, struct file_ra_state *ra,
++			 struct file *file, pgoff_t index,
++			 unsigned long req_count);
++void bdev_attach_wb(struct block_device *bdev);
++void bdev_associated_mapping(struct block_device *bdev,
++			     struct address_space *mapping);
  
-@@ -129,15 +127,18 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
- 			u64 zone_end = (zones[i].start + zones[i].capacity) << SECTOR_SHIFT;
- 			u64 bytenr = ALIGN_DOWN(zone_end, BTRFS_SUPER_INFO_SIZE) -
- 						BTRFS_SUPER_INFO_SIZE;
-+			struct folio *folio;
-+			unsigned int nofs_flag;
- 
--			page[i] = read_cache_page_gfp(mapping,
--					bytenr >> PAGE_SHIFT, GFP_NOFS);
--			if (IS_ERR(page[i])) {
-+			nofs_flag = memalloc_nofs_save();
-+			folio = bdev_read_folio(bdev, bytenr);
-+			memalloc_nofs_restore(nofs_flag);
-+			if (IS_ERR(folio)) {
- 				if (i == 1)
- 					btrfs_release_disk_super(super[0]);
--				return PTR_ERR(page[i]);
-+				return PTR_ERR(folio);
- 			}
--			super[i] = page_address(page[i]);
-+			super[i] = folio_address(folio);
- 		}
- 
- 		if (btrfs_super_generation(super[0]) >
+ #ifdef CONFIG_BLOCK
+ void invalidate_bdev(struct block_device *bdev);
 -- 
 2.39.2
 
