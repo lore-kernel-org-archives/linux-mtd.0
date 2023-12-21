@@ -4,52 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61099C35274
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D23EC46CCD
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hw9piM3CRAGWejcspGpdhw1NPmscsBIHw5I9h0Gnsvo=; b=WMusd+47pSLmqC
-	PPaBd0vMcLjrp7UPffR3MRFCpSHuhvgl/DoZzYYJyySMZYKv98kXGigtvXQSuf3H6HUrnqU5XbD7y
-	DAEDkTOcClzqiDtwN3JAbwkZMRedifmDRVWkdyqhkiHO7axpkWvT8wbhKHuY0FImmR9AD66DVjC0i
-	u2Un0ua5i462GFRJqnCM5mAfRKTCJ82X4KNtUdpclO/MImVt0bgDRSl0UtJ+RsNBdnggDbtSGkPNJ
-	wzppFe7emCdXc0ex6GSg9TD7HUUKtquLb7GvgXBNYOG0giWQGm65esYBXnAXVJkXL3HKoxPR7RGV5
-	e+PXs7+OIzb1g2X2nwKA==;
+	List-Owner; bh=UL/FRPsbQq25zuJu0yQ020eeihCyIc8/hfIJTj+H214=; b=QS7f7txt5oCbTl
+	V1i/t7He6+88jsxNXM2JsLxdkTY7pv0oTnYUALGBqw9uZMvIa7s57leFJkc0jHXmSk4d2OltJct5g
+	KtlyHtK04ERrP8zlUjIp++Yscg9MYgoIbJjHbweL9ISWCipcMa20vf5+DwGYV3zQ6bew5fHbSKIGK
+	K37zgLDsROiwtCCv/3Q77Egd2txLrgnTRagWN8wXybDMriQgiVb04JAqRCG736ONhsiHcag8hxPJz
+	sRQ9ape2lsyijyTgXTHE1FV6MhPGF6hHKBHSRAQF6c0oiUVX725FwkzSW7UfR+GGrwe8NuxuKLXs1
+	Wvgb4TpxuGY8RQrIqyUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEvg-0028be-1a;
-	Thu, 21 Dec 2023 09:01:20 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rGEvi-0028dO-1k;
+	Thu, 21 Dec 2023 09:01:22 +0000
+Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEvd-0028YI-1t
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 21 Dec 2023 09:01:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=9CeviE8YnHP6cFsbKbOJwFf0PTfq0UipdSeseMZpRBk=; b=HTUqiUADt+/7KPPpZ+C4LwZrG9
-	6dVewD37DTz0x5VdfgJkBbHQD5g8cY51y3PvuZVHm5fy4AXYwjUHRM2MVJ4Hi0zEinlcOcZI7QK8j
-	TcTyWuEWspe9MIs1hXExLbQcdym1B2L1EMM9lWNvjaoqpDyYpvpUfSM8urgRtkfofwc1gKdplXfL7
-	lg/kaZVdDIb6vGt2La31cVajhiC6E70S0BoUpx1HN6frTGn6XzGNm8nqY14+ZzjGMi9/CySEm3jic
-	SRN0q5y/jxKw3wfeB+mZJ5XrOJOVoe9eKmt+pB1KvtU6UxG/3qJrlQRuLqeh/8E0Phbu2AtIaowAx
-	OPL7JQ7A==;
-Received: from [45.249.212.56] (helo=dggsgout12.his.huawei.com)
-	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rGEvU-004psv-0G
-	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2023 09:01:15 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SwkrV62GQz4f3jXy
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:22 +0800 (CST)
+	id 1rGEvb-0028WB-1y
+	for linux-mtd@lists.infradead.org;
+	Thu, 21 Dec 2023 09:01:18 +0000
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Swktb3qF2z4f3k6J
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:01:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 760201A0BE8
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 16:59:25 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id E56F91A0920
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:01:12 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDnNw5d_oNlEQPvEA--.24929S12;
-	Thu, 21 Dec 2023 16:59:25 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgCXmhDW_oNlyCPvEA--.34448S4;
+	Thu, 21 Dec 2023 17:01:12 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -99,36 +85,34 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v3 for-6.8/block 08/17] bio: export bio_add_folio_nofail()
-Date: Thu, 21 Dec 2023 16:57:03 +0800
-Message-Id: <20231221085712.1766333-9-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v3 for-6.8/block 17/17] ext4: use bdev apis
+Date: Thu, 21 Dec 2023 16:59:14 +0800
+Message-Id: <20231221085914.1772988-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDnNw5d_oNlEQPvEA--.24929S12
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4rur1rtr17JFyUCF18AFb_yoW3Wrg_AF
-	n293W8Wan7G3WSk3Wvyay8AFZYvw1rurWY9FZ3JF9xZF1DJFnak340yr40vrn5CFykKw43
-	u3yDXryayw47JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbqxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_Gc
-	Wl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
-	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-	kIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AK
-	xVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
-	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
-	X7UUUUU==
+X-CM-TRANSID: cCh0CgCXmhDW_oNlyCPvEA--.34448S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF47JryfCw48Xw1Duw48JFb_yoW5Xw4Upa
+	43GFyDGr4DZry09anrGFsrZa40kw18Ga43GryfZ3W2qrWaq34SkF95KF1xZF4UXay8Xw18
+	XFyjkryxAr45CrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_JFI_Gr1lIxAIcVC2z280aVAFwI0_
+	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
+	YLvtUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_090112_276154_9E5E2BB6 
-X-CRM114-Status: UNSURE (   7.05  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231221_010116_039667_7518947C 
+X-CRM114-Status: GOOD (  10.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,27 +131,73 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Currently btrfs is using __bio_add_page() in write_dev_supers(). In order
-to convert to use folio for bdev in btrfs, export bio_add_folio_nofail()
-so that it can replace __bio_add_page().
+Avoid to access bd_inode directly, prepare to remove bd_inode from
+block_device.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- block/bio.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/dir.c       | 6 ++----
+ fs/ext4/ext4_jbd2.c | 6 +++---
+ fs/ext4/super.c     | 3 +--
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/block/bio.c b/block/bio.c
-index b9642a41f286..c7459839ca40 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1122,6 +1122,7 @@ void bio_add_folio_nofail(struct bio *bio, struct folio *folio, size_t len,
- 	WARN_ON_ONCE(off > UINT_MAX);
- 	__bio_add_page(bio, &folio->page, len, off);
- }
-+EXPORT_SYMBOL_GPL(bio_add_folio_nofail);
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 3985f8c33f95..64e35eb6a324 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -191,10 +191,8 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 			pgoff_t index = map.m_pblk >>
+ 					(PAGE_SHIFT - inode->i_blkbits);
+ 			if (!ra_has_index(&file->f_ra, index))
+-				page_cache_sync_readahead(
+-					sb->s_bdev->bd_inode->i_mapping,
+-					&file->f_ra, file,
+-					index, 1);
++				bdev_sync_readahead(sb->s_bdev, &file->f_ra,
++						    file, index, 1);
+ 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
+ 			bh = ext4_bread(NULL, inode, map.m_lblk, 0);
+ 			if (IS_ERR(bh)) {
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index d1a2e6624401..c1bf3a00fad9 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -206,7 +206,6 @@ static void ext4_journal_abort_handle(const char *caller, unsigned int line,
  
- /**
-  * bio_add_folio - Attempt to add part of a folio to a bio.
+ static void ext4_check_bdev_write_error(struct super_block *sb)
+ {
+-	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int err;
+ 
+@@ -216,9 +215,10 @@ static void ext4_check_bdev_write_error(struct super_block *sb)
+ 	 * we could read old data from disk and write it out again, which
+ 	 * may lead to on-disk filesystem inconsistency.
+ 	 */
+-	if (errseq_check(&mapping->wb_err, READ_ONCE(sbi->s_bdev_wb_err))) {
++	if (bdev_wb_err_check(sb->s_bdev, READ_ONCE(sbi->s_bdev_wb_err))) {
+ 		spin_lock(&sbi->s_bdev_wb_lock);
+-		err = errseq_check_and_advance(&mapping->wb_err, &sbi->s_bdev_wb_err);
++		err = bdev_wb_err_check_and_advance(sb->s_bdev,
++						    &sbi->s_bdev_wb_err);
+ 		spin_unlock(&sbi->s_bdev_wb_lock);
+ 		if (err)
+ 			ext4_error_err(sb, -err,
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index a7935edbd7b1..25c3d2ac8559 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5544,8 +5544,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 * used to detect the metadata async write error.
+ 	 */
+ 	spin_lock_init(&sbi->s_bdev_wb_lock);
+-	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+-				 &sbi->s_bdev_wb_err);
++	bdev_wb_err_check_and_advance(sb->s_bdev, &sbi->s_bdev_wb_err);
+ 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+ 	ext4_orphan_cleanup(sb, es);
+ 	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
 -- 
 2.39.2
 
