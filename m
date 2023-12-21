@@ -4,38 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 982A4C35274
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAA70C46CCD
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Dec 2023 09:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W2PU1O563eFohY2VqaYc/zQI0GYPdX7UsS1ALThRD9w=; b=ev882dQB2yo56s
-	uVsddi9qqPtpybWbQ/KPEXHOqvHN4MD5MHimvZcaE37itX3Qr2bL4axjwI7zR3/tphKh+NkR1TXpS
-	4YQe6izMWTaYEVm8xS2evZ8VyyVa14UwUAxjTltbcD4SL73vx8z/VdqS4cw/Xqe9nUlpg10Ow3tKJ
-	xpI1OPGLPX2nAbecu8YL+e5W6A9QWimADC+ks+zyflVt/r5aeCtWHubM66XX72WL2XmU5L1CIIMbc
-	93SAQDVritdTpC6V/Wp+jgMvWjwB3BJ+HgjkOQz+hMYm914c9v4L2oNVCUFfkxRZOesS7irFK3PA2
-	yzMua2URxR+L/mDx4akQ==;
+	List-Owner; bh=8ehnBpZS5Rszhr6RfX0zbmK75cOXcZCrXq9w/hxxBFU=; b=J7AZg7OlOqS/xQ
+	4yrhVZ3tOcedF3l/dYFpvMFeDVFTjyWtasdrh1EGKd5sHKqGxnO5plZzpqmwtN/c0WFlhrilNFZDB
+	ncBtISoIYCli448mWqo6jynosfVq0jv8+Vo8M++vOMdu1eRHpqSNLmCpXUqNLFC14jsCig66o9edX
+	1FGPqgA5QY5z64RoD1r6HghdUits5TfzO0yy8RXFL+vorrx+fugOHTaj3jmiTwic5ZjTk9k8wkUxF
+	Mp/qlTCJIC1kjTsk7PBR/OKjxo8OfpbVbfjzqx4rRRtXkST7bJ2N9eqkLMOA98mdt9R5sOg9i88MQ
+	dKrAu9xz7IvhtGukR6JA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEva-0028Vv-0j;
-	Thu, 21 Dec 2023 09:01:14 +0000
-Received: from dggsgout12.his.huawei.com ([45.249.212.56])
+	id 1rGEvc-0028Ya-36;
+	Thu, 21 Dec 2023 09:01:16 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGEvV-0028Qw-0q
-	for linux-mtd@lists.infradead.org;
-	Thu, 21 Dec 2023 09:01:12 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SwktR6HZqz4f3kFN
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:01:03 +0800 (CST)
+	id 1rGEvb-0028W5-0I
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 21 Dec 2023 09:01:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=kjWeW2ylVJBfyye8quSWl7OIVOQuOBMQ0Z1QS8iSO/4=; b=jqAZ6dgkxISA61BEOn23K/NCig
+	+Lngia+qjpYGAaRhLIqJ7xuT0MOKdQcmKaaGniAXDC8Hj07Ewy6djP/tJL25EWvdRy3qv55SIO4WX
+	5etCV90OIj8ScELJH5mRBx08Mooifhkeeyn9LcXkoZFKmJct6Gfgomgd7kt+BGSr7HOAbUB1pAsDQ
+	3k/sIhBT3nsevqXpzXREIU38SJE5AAAmRl/znBa6mizaY5Z/yeqS9uKyCnIWTPbx8dV2EolkcQIU9
+	g/emydVfChfeOLVaDzt/0aT5PWLn7cpWNrlTkgodNmO0YTxrA8CdGcyHHQWx3ubbHUr9N3W0EPJm8
+	6ogXmTeQ==;
+Received: from [45.249.212.56] (helo=dggsgout12.his.huawei.com)
+	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rGEvU-004pxe-AQ
+	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2023 09:01:13 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Swkt92gS7z4f3jXY
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:00:49 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A8B771A07B3
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:01:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 2CDF51A0484
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Dec 2023 17:00:52 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgC3BQzQ_oNlHiLvEA--.34070S4;
-	Thu, 21 Dec 2023 17:01:06 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgCn9QvB_oNlLR7vEA--.33384S4;
+	Thu, 21 Dec 2023 17:00:51 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	roger.pau@citrix.com,
@@ -85,17 +99,17 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v3 for-6.8/block 16/17] ext4: remove block_device_ejected()
-Date: Thu, 21 Dec 2023 16:59:07 +0800
-Message-Id: <20231221085907.1772856-1-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v3 for-6.8/block 14/17] buffer: add a new helper to read sb block
+Date: Thu, 21 Dec 2023 16:58:53 +0800
+Message-Id: <20231221085853.1770062-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgC3BQzQ_oNlHiLvEA--.34070S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4UGw1xJF1fWr48KFy3urg_yoW8tF1Up3
-	yfuw1fJrW8Zr1I9ayxJr4xW3y0qa92ya40gFyI9r1Fgr1xJ340qF4ktr1Iya4YvrZ3uw1F
-	qF1UCrWxCr18CrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: cCh0CgCn9QvB_oNlLR7vEA--.33384S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFyUCF4kKryrJrW3trWrXwb_yoW7Ww13pr
+	98Kay3trWDKFyaqF1xtwn8Jr13t3Z2v3W8CayfJ3s3ArWUGrn3XF9rGr129FWFyr9rXry5
+	XFW5CrWfCr1UWFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
 	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
@@ -111,9 +125,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4UGw1xJF1fWr48KFy3urg_yoW8tF1Up3
 	ZNVDUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_010109_665383_561A2FC9 
-X-CRM114-Status: UNSURE (   9.70  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231221_090111_342764_E1B0555F 
+X-CRM114-Status: GOOD (  14.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,63 +145,165 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-block_device_ejected() is added by commit bdfe0cbd746a ("Revert
-"ext4: remove block_device_ejected"") in 2015. At that time 'bdi->wb'
-is destroyed synchronized from del_gendisk(), hence if ext4 is still
-mounted, and then mark_buffer_dirty() will reference destroyed 'wb'.
-However, such problem doesn't exist anymore:
+Unlike __bread_gfp(), ext4 has special handing while reading sb block:
 
-- commit d03f6cdc1fc4 ("block: Dynamically allocate and refcount
-backing_dev_info") switch bdi to use refcounting;
-- commit 13eec2363ef0 ("fs: Get proper reference for s_bdi"), will grab
-additional reference of bdi while mounting, so that 'bdi->wb' will not
-be destroyed until generic_shutdown_super().
+1) __GFP_NOFAIL is not set, and memory allocation can fail;
+2) If buffer write failed before, set buffer uptodate and don't read
+   block from disk;
+3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
+4) If failed, return error ptr instead of NULL;
 
-Hence remove this dead function block_device_ejected().
+This patch add a new helper __bread_gfp2() that will match above 2 and 3(
+1 will be used, and 4 will still be encapsulated by ext4), and prepare to
+prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
+in ext4.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/ext4/super.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+ fs/buffer.c                 | 68 ++++++++++++++++++++++++++-----------
+ include/linux/buffer_head.h | 18 +++++++++-
+ 2 files changed, 65 insertions(+), 21 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 3f07eaa33332..a7935edbd7b1 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -467,22 +467,6 @@ static void ext4_maybe_update_superblock(struct super_block *sb)
- 		schedule_work(&EXT4_SB(sb)->s_sb_upd_work);
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 967f34b70aa8..188bd36c9fea 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1255,16 +1255,19 @@ void __bforget(struct buffer_head *bh)
+ }
+ EXPORT_SYMBOL(__bforget);
+ 
+-static struct buffer_head *__bread_slow(struct buffer_head *bh)
++static struct buffer_head *__bread_slow(struct buffer_head *bh,
++					blk_opf_t op_flags,
++					bool check_write_error)
+ {
+ 	lock_buffer(bh);
+-	if (buffer_uptodate(bh)) {
++	if (buffer_uptodate(bh) ||
++	    (check_write_error && buffer_uptodate_or_error(bh))) {
+ 		unlock_buffer(bh);
+ 		return bh;
+ 	} else {
+ 		get_bh(bh);
+ 		bh->b_end_io = end_buffer_read_sync;
+-		submit_bh(REQ_OP_READ, bh);
++		submit_bh(REQ_OP_READ | op_flags, bh);
+ 		wait_on_buffer(bh);
+ 		if (buffer_uptodate(bh))
+ 			return bh;
+@@ -1445,6 +1448,31 @@ void __breadahead(struct block_device *bdev, sector_t block, unsigned size)
+ }
+ EXPORT_SYMBOL(__breadahead);
+ 
++static struct buffer_head *
++bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
++	  blk_opf_t op_flags, gfp_t gfp, bool check_write_error)
++{
++	struct buffer_head *bh;
++
++	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
++
++	/*
++	 * Prefer looping in the allocator rather than here, at least that
++	 * code knows what it's doing.
++	 */
++	gfp |= __GFP_NOFAIL;
++
++	bh = bdev_getblk(bdev, block, size, gfp);
++	if (unlikely(!bh))
++		return NULL;
++
++	if (buffer_uptodate(bh) ||
++	    (check_write_error && buffer_uptodate_or_error(bh)))
++		return bh;
++
++	return __bread_slow(bh, op_flags, check_write_error);
++}
++
+ /**
+  *  __bread_gfp() - reads a specified block and returns the bh
+  *  @bdev: the block_device to read from
+@@ -1458,27 +1486,27 @@ EXPORT_SYMBOL(__breadahead);
+  *  It returns NULL if the block was unreadable.
+  */
+ struct buffer_head *
+-__bread_gfp(struct block_device *bdev, sector_t block,
+-		   unsigned size, gfp_t gfp)
++__bread_gfp(struct block_device *bdev, sector_t block, unsigned int size,
++	    gfp_t gfp)
+ {
+-	struct buffer_head *bh;
+-
+-	gfp |= mapping_gfp_constraint(bdev->bd_inode->i_mapping, ~__GFP_FS);
+-
+-	/*
+-	 * Prefer looping in the allocator rather than here, at least that
+-	 * code knows what it's doing.
+-	 */
+-	gfp |= __GFP_NOFAIL;
+-
+-	bh = bdev_getblk(bdev, block, size, gfp);
+-
+-	if (likely(bh) && !buffer_uptodate(bh))
+-		bh = __bread_slow(bh);
+-	return bh;
++	return bread_gfp(bdev, block, size, 0, gfp, false);
+ }
+ EXPORT_SYMBOL(__bread_gfp);
+ 
++/*
++ * This works like __bread_gfp() except:
++ * 1) If buffer write failed before, set buffer uptodate and don't read
++ * block from disk;
++ * 2) Caller can pass in additional op_flags like REQ_META;
++ */
++struct buffer_head *
++__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
++	     blk_opf_t op_flags, gfp_t gfp)
++{
++	return bread_gfp(bdev, block, size, op_flags, gfp, true);
++}
++EXPORT_SYMBOL(__bread_gfp2);
++
+ static void __invalidate_bh_lrus(struct bh_lru *b)
+ {
+ 	int i;
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 5f23ee599889..751b2744b4ae 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -171,6 +171,18 @@ static __always_inline int buffer_uptodate(const struct buffer_head *bh)
+ 	return test_bit_acquire(BH_Uptodate, &bh->b_state);
  }
  
--/*
-- * The del_gendisk() function uninitializes the disk-specific data
-- * structures, including the bdi structure, without telling anyone
-- * else.  Once this happens, any attempt to call mark_buffer_dirty()
-- * (for example, by ext4_commit_super), will cause a kernel OOPS.
-- * This is a kludge to prevent these oops until we can put in a proper
-- * hook in del_gendisk() to inform the VFS and file system layers.
-- */
--static int block_device_ejected(struct super_block *sb)
--{
--	struct inode *bd_inode = sb->s_bdev->bd_inode;
--	struct backing_dev_info *bdi = inode_to_bdi(bd_inode);
--
--	return bdi->dev == NULL;
--}
--
- static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
++static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
++{
++	/*
++	 * If the buffer has the write error flag, data was failed to write
++	 * out in the block. In this case, set buffer uptodate to prevent
++	 * reading old data.
++	 */
++	if (buffer_write_io_error(bh))
++		set_buffer_uptodate(bh);
++	return buffer_uptodate(bh);
++}
++
+ static inline unsigned long bh_offset(const struct buffer_head *bh)
  {
- 	struct super_block		*sb = journal->j_private;
-@@ -6162,8 +6146,6 @@ static int ext4_commit_super(struct super_block *sb)
- 
- 	if (!sbh)
- 		return -EINVAL;
--	if (block_device_ejected(sb))
--		return -ENODEV;
- 
- 	ext4_update_super(sb);
- 
+ 	return (unsigned long)(bh)->b_data & (page_size(bh->b_page) - 1);
+@@ -231,7 +243,11 @@ void __brelse(struct buffer_head *);
+ void __bforget(struct buffer_head *);
+ void __breadahead(struct block_device *, sector_t block, unsigned int size);
+ struct buffer_head *__bread_gfp(struct block_device *,
+-				sector_t block, unsigned size, gfp_t gfp);
++				sector_t block, unsigned int size, gfp_t gfp);
++struct buffer_head *__bread_gfp2(struct block_device *bdev, sector_t block,
++				 unsigned int size, blk_opf_t op_flags,
++				 gfp_t gfp);
++
+ struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
+ void free_buffer_head(struct buffer_head * bh);
+ void unlock_buffer(struct buffer_head *bh);
 -- 
 2.39.2
 
