@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F3CEC41535
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Dec 2023 06:23:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AE6AC46CD4
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Dec 2023 08:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g7/7iUMJZ34CXvASOxvFQdie6Mm6oncvl6q8Ed6mGfY=; b=vJ4HKYwq/wvCXa
-	skyctwRT8eZOosGQalsd8pcrp0hYq0W+iYOmwsV+oKxSTE8HuEwvirZO0jYcTNKDCFXKoXZbXYDKI
-	z+wzDR9o2N+sjal+NJ10FOF5iBI0qrO1/9Cf7VbZC2j+RFINgU9pSSoLfGklCUBxGzFKZH5hV3xLB
-	EpzKlGZYGKxTRUvWnaG6nDDWcRrgBA1WXDuPrTpadzBUI1RC9z8Ug9dvUDU+WgUkSsLc5wZzkYo3/
-	46Oj0OkaTrmFpesoCRz/e7HyyV0ZK2nD+5SlJDw3NL0H7QdxZfagvsvykenH90AAhp2KgpKQyoZDf
-	lf5aumcSHQdcY1WbmJsA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5KA4pI3vWg6m4zPiFfW7A9hqBs2ihMiZJMZ+nsAGp+A=; b=D+moSv1HZ0wM+Zulwo61WkzWHq
+	O++BIQoH8KgzZUF7DSM13pgxTVbUTmgvqwQjtqLVmdFbn5hugg0cbL0D9w62tKTU59zDNnZPmUPPG
+	Ax7/QdHiMDSm2JXHv06lB8ARyfyfcaHQE7BnI5zv4HXXT0u9DLsEgB/HRFKqXUTAgsxKr/RxeVNyV
+	aqYT17LXh2w+xKwZ2a/lW271QMd7UWpWTo5MiwWJOAHwbtOCcjLjoUPklcDFW96B5SkdvoVTZplGX
+	dyjXJc5CIG+7p5OEZWCJ6Cxf3TTQkmdRrPABJ/F09wp5UgSYSP7FFrBtDz3eWQDgVPMj/fxcqOMi2
+	Q5lPcpiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGYw9-00546z-0a;
-	Fri, 22 Dec 2023 06:23:09 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1rGb3C-005KaG-0N;
+	Fri, 22 Dec 2023 08:38:34 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGYw6-00545X-1G
+	id 1rGb37-005KYl-2h
 	for linux-mtd@lists.infradead.org;
-	Fri, 22 Dec 2023 06:23:07 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 09338B82201;
-	Fri, 22 Dec 2023 06:23:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C74C9C433CB;
-	Fri, 22 Dec 2023 06:22:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703226180;
-	bh=/zizvjSiiPfXWF1a4DdpomnPmEmcl1/vKWWxE3HK9Q4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ty+f6nFCgO7EB3DwHUPSSnPEpZbZ1lQ6IQSOQSpWnT7XHSrb877stH1jB2DHTO8zS
-	 JuIEnOjpIsz/gwS+IsW6H0jUIUG+xAbi8fI2C2ZLMbssUG7f3SDFlfXPHPG9psRwHm
-	 zcCuRYfZASn7/Sx/j0MijC4Ajw2mQGD5E2OZsSNPFCQjBDbTPu2rkHQqL4hZQbfBnw
-	 7WIeXHVDcgg3mxF/lU3uDVUw7cabKcj5DNibQUEasvf1nttMpUwgcbRALaah8E+BB9
-	 yRb/U8AH6dbtBF+JY6zyuX/fFosUFPoh/kzsvnZ3poAOw//Dh7QN8gEhC3IiwvfM8V
-	 1r/SEP9y1xUxg==
-Date: Fri, 22 Dec 2023 00:22:56 -0600
-From: Eric Biggers <ebiggers@kernel.org>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: richard@nod.at, terrelln@fb.com, ext-adrian.hunter@nokia.com,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] ubifs: ubifs_symlink: Fix memleak of inode->i_link
- in error path
-Message-ID: <20231222062256.GA98205@quark.localdomain>
+	Fri, 22 Dec 2023 08:38:31 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SxLKW0yd2zZddK;
+	Fri, 22 Dec 2023 16:38:07 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2B3EE18001A;
+	Fri, 22 Dec 2023 16:38:15 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 22 Dec 2023 16:38:12 +0800
+Subject: Re: [PATCH 2/2] ubifs: ubifs_symlink: Fix memleak of inode->i_link in
+ error path
+To: Eric Biggers <ebiggers@kernel.org>
+CC: <richard@nod.at>, <terrelln@fb.com>, <ext-adrian.hunter@nokia.com>,
+	<linux-mtd@lists.infradead.org>
 References: <20231222025025.2940450-1-chengzhihao1@huawei.com>
  <20231222025025.2940450-3-chengzhihao1@huawei.com>
+ <20231222062256.GA98205@quark.localdomain>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <d3a5c29d-3d42-c1bb-54ba-a211f1a6e460@huawei.com>
+Date: Fri, 22 Dec 2023 16:38:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231222025025.2940450-3-chengzhihao1@huawei.com>
+In-Reply-To: <20231222062256.GA98205@quark.localdomain>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231221_222306_587218_A8640B4F 
-X-CRM114-Status: GOOD (  18.88  )
+X-CRM114-CacheID: sfid-20231222_003830_039577_4E14F8A3 
+X-CRM114-Status: UNSURE (   6.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,71 +70,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 22, 2023 at 10:50:25AM +0800, Zhihao Cheng wrote:
-> For error handling path in ubifs_symlink(), inode will be marked as
-> bad first, then iput() is invoked. If inode->i_link is initialized by
-> fscrypt_encrypt_symlink() in encryption scenario, inode->i_link won't
-> be freed by callchain ubifs_free_inode -> fscrypt_free_inode in error
-> handling path, because make_bad_inode() has changed 'inode->i_mode' as
-> 'S_IFREG'.
-> Following kmemleak is easy to be reproduced by injecting error in
-> ubifs_jnl_update() when doing symlink in encryption scenario:
->  unreferenced object 0xffff888103da3d98 (size 8):
->   comm "ln", pid 1692, jiffies 4294914701 (age 12.045s)
->   backtrace:
->    kmemdup+0x32/0x70
->    __fscrypt_encrypt_symlink+0xed/0x1c0
->    ubifs_symlink+0x210/0x300 [ubifs]
->    vfs_symlink+0x216/0x360
->    do_symlinkat+0x11a/0x190
->    do_syscall_64+0x3b/0xe0
-> There are two ways fixing it:
->  1. Remove make_bad_inode() in error handling path. We can do that
->     because ubifs_evict_inode() will do same processes for good
->     symlink inode and bad symlink inode, for inode->i_nlink checking
->     is before is_bad_inode().
->  2. Free inode->i_link before marking inode bad.
-> Method 2 is picked, it has less influence, personally, I think.
-> 
-> Fixes: 2c58d548f570 ("fscrypt: cache decrypted symlink target in ->i_link")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> ---
->  fs/ubifs/dir.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 3b13c648d490..9baf029416d4 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -1234,6 +1234,9 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
->  	dir_ui->ui_size = dir->i_size;
->  	mutex_unlock(&dir_ui->ui_mutex);
->  out_inode:
-> +	/* Free inode->i_link before inode is marked as bad. */
-> +	if (IS_ENCRYPTED(inode))
-> +		fscrypt_free_inode(inode);
->  	make_bad_inode(inode);
->  	iput(inode);
->  out_fname:
-
-fscrypt_free_inode() should be called unconditionally, because
-fscrypt_free_inode() already checks for IS_ENCRYPTED().
-
-Also, please add 'Cc: stable@vger.kernel.org' to your commit message.
-
-Also, please add linux-fscrypt@vger.kernel.org to the recipients of this patch.
-
-Anyway, thanks for catching this bug!  It's annoying that make_bad_inode()
-changes the inode's type from a symlink to a regular file; normally an inode's
-type can never change.  Your fix looks fine, though.  Thanks!
-
-- Eric
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy8xMi8yMiAxNDoyMiwgRXJpYyBCaWdnZXJzINC0tcA6Cj4gZnNjcnlwdF9mcmVlX2lu
+b2RlKCkgc2hvdWxkIGJlIGNhbGxlZCB1bmNvbmRpdGlvbmFsbHksIGJlY2F1c2UKPiBmc2NyeXB0
+X2ZyZWVfaW5vZGUoKSBhbHJlYWR5IGNoZWNrcyBmb3IgSVNfRU5DUllQVEVEKCkuCj4KPiBBbHNv
+LCBwbGVhc2UgYWRkICdDYzpzdGFibGVAdmdlci5rZXJuZWwub3JnJyB0byB5b3VyIGNvbW1pdCBt
+ZXNzYWdlLgo+Cj4gQWxzbywgcGxlYXNlIGFkZGxpbnV4LWZzY3J5cHRAdmdlci5rZXJuZWwub3Jn
+ICB0byB0aGUgcmVjaXBpZW50cyBvZiB0aGlzIHBhdGNoLgo+Cj4gQW55d2F5LCB0aGFua3MgZm9y
+IGNhdGNoaW5nIHRoaXMgYnVnISAgSXQncyBhbm5veWluZyB0aGF0IG1ha2VfYmFkX2lub2RlKCkK
+PiBjaGFuZ2VzIHRoZSBpbm9kZSdzIHR5cGUgZnJvbSBhIHN5bWxpbmsgdG8gYSByZWd1bGFyIGZp
+bGU7IG5vcm1hbGx5IGFuIGlub2RlJ3MKPiB0eXBlIGNhbiBuZXZlciBjaGFuZ2UuICBZb3VyIGZp
+eCBsb29rcyBmaW5lLCB0aG91Z2guICBUaGFua3MhCgpUaGFua3MgZm9yIHN1Z2dlc3Rpb25zLCBJ
+IHdpbGwgbW9kaWZ5IHRoZW0gaW4gdjIuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
