@@ -4,82 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29DA5C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Sat, 23 Dec 2023 09:13:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E13F1C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Sat, 23 Dec 2023 15:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0h4les26+mdoU7jM48VpuDGR7kZBydU+Pjh0MgEr7M8=; b=qMsX6b6y1ewfh7
-	UQnMZjPK7VsfFwQSW76/5zdrb0BWv0LsjDofsP6D3JF/9GTc6qUm/FvK4A8RKl8HeBtWGjrQFRqBF
-	k4FS5y5PRpzGsoKEf5Dc+SgstHctHOW727mLt1ibrgDLfjKveQzHwipAis93zEuWRbqqIQ+UVpI+c
-	0fRMisjJJWfc83GOjkbn4P8uw32lF/fK+1M4XQpPmiLE5vsQUwYIasNuynHT+0kdG7iL2xmyJg/V5
-	iPij9aC9Hhp58VC5QaVwa8Jlcx8U4saE67V6yFh0bJzLOBmf9pHZvh5NfxbWoDRmqpSPpus+t4E6d
-	wf5l/HhJwZp4+cWAVO5w==;
+	List-Owner; bh=32MS8smXpUnNIQZWwTb8NAz234+3i0tPjm3KeSsgcD8=; b=fFCToF/Tai+UxO
+	KDqUQHdra4uSBqkD8t17B2KQX0QAVuzgAIDnd+AS64o1SaXMkAojmmBiNdousdsidmUD0bA0JwCzf
+	uwb5FFkqX7ZoLiwVaZmIXZ6q1WEAHcsQPkbpTEAKzUoZjbeBpPEDLlo9edGucpKl8j3PZxSPV0bDV
+	h86R86AkVIOexeD6Dl0pL5r7QKll5KuVTzAkCiCRUhwjR20EY0m73iBIF4cMEFPBHIQwlFHyatn5A
+	jV5tMNkuO8GCJ8MElyQ1P/dQxhKjAU3X71kixcwiqoaPJNBv92ModXTZObCZu7QkqSxFMVhtoLTby
+	sUazbX71cKWtMwRTbuTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGy4M-007bSE-11;
-	Sat, 23 Dec 2023 09:13:18 +0000
-Received: from forward501b.mail.yandex.net ([2a02:6b8:c02:900:1:45:d181:d501])
+	id 1rH43L-0087FG-01;
+	Sat, 23 Dec 2023 15:36:39 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rGy4G-007bRR-2G;
-	Sat, 23 Dec 2023 09:13:15 +0000
-Received: from mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:73a3:0:640:6804:0])
-	by forward501b.mail.yandex.net (Yandex) with ESMTP id 488EE60FFE;
-	Sat, 23 Dec 2023 12:13:02 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id tCMesXBc0Os0-V3hE6yzp;
-	Sat, 23 Dec 2023 12:13:00 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
-	t=1703322780; bh=wRrzZn5duH4w8JvE1tgyoLXGclY5mY0J/Xp8ep3wT7g=;
-	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
-	b=I+mEfOTd/HhVtsgLl8P4bJlmK+xe/BHC5G4qGEcK5yI9fE4yNAbvURJYd9ebsbNPL
-	 ELVCWnXzpctwGO9/5E6Lh3j51mRZlNunB6U0Mz9Ob7UmkE2sFrGQRvIiTXfqFCBTJB
-	 6hHC1txfBTVi+nHDb1JfUThgM9rSEbD1FlaR3i6c=
-Authentication-Results: mail-nwsmtp-smtp-production-main-87.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-Message-ID: <d6e898200b96e816ea8c8c9a847307088ec5821c.camel@maquefel.me>
-Subject: Re: [PATCH v6 00/40] ep93xx device tree conversion
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Sebastian
- Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck
- <wim@linux-watchdog.org>,  Guenter Roeck <linux@roeck-us.net>, Thierry
- Reding <thierry.reding@gmail.com>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
- <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, Sergey
- Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
- linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
- devicetree@vger.kernel.org,  dmaengine@vger.kernel.org,
- linux-watchdog@vger.kernel.org,  linux-pwm@vger.kernel.org,
- linux-spi@vger.kernel.org, netdev@vger.kernel.org, 
- linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
- linux-input@vger.kernel.org, linux-sound@vger.kernel.org, Arnd Bergmann
- <arnd@arndb.de>, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Andrew Lunn
- <andrew@lunn.ch>
-Date: Sat, 23 Dec 2023 12:12:56 +0300
-In-Reply-To: <ZXnxBtqbneUMbvwq@smile.fi.intel.com>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-	 <ZXnxBtqbneUMbvwq@smile.fi.intel.com>
-User-Agent: Evolution 3.48.4 
+	id 1rH43G-0087Ep-0H
+	for linux-mtd@lists.infradead.org;
+	Sat, 23 Dec 2023 15:36:35 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 696DECE01DD;
+	Sat, 23 Dec 2023 15:36:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FDA3C433C7;
+	Sat, 23 Dec 2023 15:36:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703345790;
+	bh=Ho1EszqwI0wE1B1/PMEe80cbefmCuK5iTTKpuBzHd0I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NsOv68yv+cb3ou8kcwnUxC8c0MA2UhlsYmJxQdQa7xEJLYP/aTWReGaXvlfYHyTFA
+	 GMbpoTp5Hdmv2X43KDuzCFFeYpgaX7VocsElUwZwdD355df38wsWpAQtQBbJdjrt7+
+	 T4fXwNWYOnNkAEhc1hhTRBvQycFlvHS09VDi8DCSpeyB8aQbnH/X4o/QKxeWoh7d86
+	 1R+5AKjE7RrCj7hrK0VELBSv9MnLWVffjmEmZjxlbAZeeSyT/K/ZzJrN/yboOpsvhz
+	 +0+ktFxWt/iz1PH2fCvs+iWjL8zmDpj/Jf5vmGkzZ50LY0JDNLky6GepnoxRV46Tu4
+	 o1uDUr2dFeMSw==
+Date: Sat, 23 Dec 2023 09:36:25 -0600
+From: Eric Biggers <ebiggers@kernel.org>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: richard@nod.at, terrelln@fb.com, linux-fscrypt@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] ubifs: ubifs_symlink: Fix memleak of
+ inode->i_link in error path
+Message-ID: <20231223153625.GC901@quark.localdomain>
+References: <20231222085446.781838-1-chengzhihao1@huawei.com>
+ <20231222085446.781838-3-chengzhihao1@huawei.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20231222085446.781838-3-chengzhihao1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231223_011312_952107_0BD7541F 
-X-CRM114-Status: GOOD (  16.91  )
+X-CRM114-CacheID: sfid-20231223_073634_380590_EB52AC42 
+X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,45 +69,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gQW5keSEKCk9uIFdlZCwgMjAyMy0xMi0xMyBhdCAxOTo1OSArMDIwMCwgQW5keSBTaGV2
-Y2hlbmtvIHdyb3RlOgo+IE9uIFR1ZSwgRGVjIDEyLCAyMDIzIGF0IDExOjIwOjE3QU0gKzAzMDAs
-IE5pa2l0YSBTaHViaW4gd3JvdGU6Cj4gPiBObyBtYWpvciBjaGFuZ2VzIHNpbmNlIGxhc3QgdmVy
-c2lvbiBhbGwgY2hhbmdlcyBhcmUgY29tZXRpYy4KPiA+IAo+ID4gRm9sbG93aW5nIHBhdGNoZXMg
-cmVxdWlyZSBhdHRlbnRpb24gZnJvbSBTdGVwaGVuIEJveWQsIGFzIHRoZXkgd2VyZQo+ID4gY29u
-dmVydGVkIHRvIGF1eF9kZXYgYXMgc3VnZ2VzdGVkOgo+ID4gCj4gPiAtIEFSTTogZXA5M3h4OiBh
-ZGQgcmVnbWFwIGF1eF9kZXYKPiA+IC0gY2xrOiBlcDkzeHg6IGFkZCBEVCBzdXBwb3J0IGZvciBD
-aXJydXMgRVA5M3h4Cj4gPiAKPiA+IERNQSByZWxhdGVkIHBhdGNoZXMgc3RpbGwgcmVxdWlyZSBB
-Y2tlZCBvciBSZXZpZXdlZCB0YWdzLgo+ID4gCj4gPiBnb3QgYXBwcm92YWwgTEdUTSBmcm9tIE1p
-cXVlbDoKPiA+IC0gbXRkOiByYXduYW5kOiBhZGQgc3VwcG9ydCBmb3IgdHM3Mnh4Cj4gPiBMaW5r
-OiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjMxMDA0MTAzOTExLjJhYTY1MzU0QHhw
-cy0xMy8KPiA+IAo+ID4gbmV3IHBhdGNoZXM6Cj4gPiAKPiA+IEFSTTogZXA5M3h4OsKgIEFkZCB0
-ZXJtaW5hdG9yIHRvIGdwaW9kX2xvb2t1cF90YWJsZQo+ID4gwqAgLSBmaXhlZCB0ZXJtaW5hdG9y
-IGluIGdwaW9kX2xvY2t1cF90YWJsZQo+ID4gCj4gPiBTbyBtb3N0bHkgYWxsIHBhdGNoZXMgZ290
-IGFwcHJvdmFsLgo+ID4gCj4gPiBQYXRjaGVzIHNob3VsZCBiZSBub3cgZm9ybWF0ZWQgd2l0aCAn
-LS1oaXN0b2dyYW0nCj4gCj4gSXQgX2ZlZWxzXyBsaWtlIHNvbWUgdGFncyBtaWdodCBiZSBtaXNz
-aW5nLgo+IEluIGFueSBjYXNlIEkgc3VnZ2VzdCB0byB1c2UgYGI0YCB0b29sIHRvIHJldHJpZXZl
-IHRhZ3Mgd2hlbgo+IHByZXBhcmluZwo+IHRoZSBuZXh0IHZlcnNpb246Cj4gCj4gwqDCoMKgwqDC
-oMKgwqDCoGdpdCBjaGVja291dCAtYiB2WFggdjYuNy1yY1gKPiDCoMKgwqDCoMKgwqDCoMKgYjQg
-YW0gLXNsdCAkTVNHX0lEX09GX3YoWFgtMSkKPiDCoMKgwqDCoMKgwqDCoMKgZ2l0IGFtIC4uLgo+
-IMKgwqDCoMKgwqDCoMKgwqBnaXQgcmViYXNlIC0taW50ZXJhY3RpdmUgLi4uICMgdG8gYWRkcmVz
-cyBjb21tZW50cwo+IAoKSSBtb3ZlZCB0byBiNCBhIGZldyBpdGVyYXRpb25zIGFnbzoKCmBgYApD
-YWxjdWxhdGluZyBwYXRjaC1pZHMgZnJvbSBjb21taXRzLCB0aGlzIG1heSB0YWtlIGEgbW9tZW50
-Li4uCkNoZWNraW5nIGNoYW5nZS1pZCAiMjAyMzA2MDUtZXA5M3h4LTAxYzc2MzE3ZTJkMiIKR3Jh
-YmJpbmcgc2VhcmNoIHJlc3VsdHMgZnJvbSBsb3JlLmtlcm5lbC5vcmcKR3JhYmJpbmcgdGhyZWFk
-IGZyb20gbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIzMDQyNDEyMzUyMi4xODMwMi0xLQpuaWtpdGEu
-c2h1YmluJTQwbWFxdWVmZWwubWUvdC5tYm94Lmd6Ci0tLQpOT1RFOiBzb21lIHRyYWlsZXJzIGln
-bm9yZWQgZHVlIHRvIGZyb20vZW1haWwgbWlzbWF0Y2hlczoKICAgICEgVHJhaWxlcjogVGVzdGVk
-LWJ5OiBNaWNoYWVsIFBldGVycyA8bXBldGVyc0BlbWJlZGRlZFRTLmNvbT4KICAgICBNc2cgRnJv
-bTogS3JpcyBCYWhuc2VuIDxrcmlzQGVtYmVkZGVkVFMuY29tPgpOT1RFOiBSZXJ1biB3aXRoIC1T
-IHRvIGFwcGx5IHRoZW0gYW55d2F5Ck5vIHRyYWlsZXIgdXBkYXRlcyBmb3VuZC4KYGBgCgpJIGhh
-dmVuJ3QgZm91bmQgYW55IG1pc3NpbmcgdGFncywgdGhhdCBiNCBkaWRuJ3QgYXBwbHksIHRoZSBv
-bmVzIGFib3ZlCnJlZmVyIHRvIGEgdmVyeSBvbGQgaXRlcmF0aW9uIGFuZCB3ZXJlIGdpdmVuIHRv
-IGNvdmVyIGxldHRlciBhbmQgaQpkb24ndCBmZWVsIGxpa2UgdGhleSBuZWVkIHRvIGJlIGluY2x1
-ZGVkLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Fri, Dec 22, 2023 at 04:54:46PM +0800, Zhihao Cheng wrote:
+> For error handling path in ubifs_symlink(), inode will be marked as
+> bad first, then iput() is invoked. If inode->i_link is initialized by
+> fscrypt_encrypt_symlink() in encryption scenario, inode->i_link won't
+> be freed by callchain ubifs_free_inode -> fscrypt_free_inode in error
+> handling path, because make_bad_inode() has changed 'inode->i_mode' as
+> 'S_IFREG'.
+> Following kmemleak is easy to be reproduced by injecting error in
+> ubifs_jnl_update() when doing symlink in encryption scenario:
+>  unreferenced object 0xffff888103da3d98 (size 8):
+>   comm "ln", pid 1692, jiffies 4294914701 (age 12.045s)
+>   backtrace:
+>    kmemdup+0x32/0x70
+>    __fscrypt_encrypt_symlink+0xed/0x1c0
+>    ubifs_symlink+0x210/0x300 [ubifs]
+>    vfs_symlink+0x216/0x360
+>    do_symlinkat+0x11a/0x190
+>    do_syscall_64+0x3b/0xe0
+> There are two ways fixing it:
+>  1. Remove make_bad_inode() in error handling path. We can do that
+>     because ubifs_evict_inode() will do same processes for good
+>     symlink inode and bad symlink inode, for inode->i_nlink checking
+>     is before is_bad_inode().
+>  2. Free inode->i_link before marking inode bad.
+> Method 2 is picked, it has less influence, personally, I think.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 2c58d548f570 ("fscrypt: cache decrypted symlink target in ->i_link")
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Suggested-by: Eric Biggers <ebiggers@kernel.org>
+> ---
+>  fs/ubifs/dir.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 3b13c648d490..e413a9cf8ee3 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -1234,6 +1234,8 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+>  	dir_ui->ui_size = dir->i_size;
+>  	mutex_unlock(&dir_ui->ui_mutex);
+>  out_inode:
+> +	/* Free inode->i_link before inode is marked as bad. */
+> +	fscrypt_free_inode(inode);
+>  	make_bad_inode(inode);
+>  	iput(inode);
+>  out_fname:
+
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+
+- Eric
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
