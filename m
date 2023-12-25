@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65DC2C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Dec 2023 15:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DB71C47073
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Dec 2023 15:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TcsFgw2hodGNqa+H5mO0HwQFSqTrFOpHXkhl0VxRQ2Q=; b=x6CzC76hcL/FsO
-	hJNXc4cm9xIlOFWKeMWL9AFl/xmu+pACcKkDOIvp1b6IQYpHT/FPLhln74mUsZ7NuCqfjeedgnECM
-	c1doNglH4Ikb99/kztdfRYdPV1LYwGJborYWPdgPDWOxYKY3Rsm62QjsDGp8LirroLuTZKfCjwYWU
-	0eUV/zyPOvJ2MJ5HG1cZZNnyw+sqj/mRwa9QZY0eI7TQZxlm9Ipl49CbO/JKXZ9V1H7lkRse4Pvni
-	QouTJov33eteQPt+uP/KiUAxTiZWUOrH3uZyWmTnEbEm5ATxniOO1nmFSzmimAnCEviqG2pN5S0SE
-	J7d/QV+addiElBKpcHiw==;
+	List-Owner; bh=7SuAGCIPNePElXDBZfPLafaspg8mNiAvyAo9f2tW9n0=; b=QrCB9FQ3yd613/
+	wRpw/ReW1P8QWLLi9rCKVGpTEuawzm/WFjazDaRT2M0GVjWFQypzTgPF3cd5kLT3MILI7lFzuiciq
+	/qElKHeuHOVLtsEgQXwvqFibbFUiX5CT3u1K1Lyhxwz71CqSeE/+11RWvQ0LwNXJ1NSsPLYnvEaii
+	p/pdF22ZR/81FYnlc6+knCGI+XxkD+W4HMfWML2fApWPtC4XAIhmfy0hF13pnM+BouvluXNByzTNN
+	n05233+i0ALDk22BoRLRcrpZ/9OHS1RMfat7nAsxQZUIoUrxnOS4QzZQ9/6ZVMsNLCNwO3Xm1PpnE
+	VgJStOcNYELuSNeQTb/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHmUH-00B0Aq-0u;
-	Mon, 25 Dec 2023 15:03:25 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1rHmUJ-00B0Bo-2N;
+	Mon, 25 Dec 2023 15:03:27 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHmUD-00B08i-10
+	id 1rHmUD-00B08l-2i
 	for linux-mtd@lists.infradead.org;
-	Mon, 25 Dec 2023 15:03:23 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SzLk33TNSz1wpF1;
-	Mon, 25 Dec 2023 23:02:51 +0800 (CST)
+	Mon, 25 Dec 2023 15:03:25 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SzLf26C9Jz1FFVw;
+	Mon, 25 Dec 2023 22:59:22 +0800 (CST)
 Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
-	by mail.maildlp.com (Postfix) with ESMTPS id AEAD41400D5;
-	Mon, 25 Dec 2023 23:03:11 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 328741402CB;
+	Mon, 25 Dec 2023 23:03:12 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by dggpemd200001.china.huawei.com
  (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 25 Dec
- 2023 23:03:10 +0800
+ 2023 23:03:11 +0800
 From: ZhaoLong Wang <wangzhaolong1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
 	<yangerkun@huawei.com>
-Subject: [PATCH V6 4/5] ubi: Reserve sufficient buffer length for the input mask
-Date: Mon, 25 Dec 2023 23:00:48 +0800
-Message-ID: <20231225150049.183756-5-wangzhaolong1@huawei.com>
+Subject: [PATCH V6 5/5] mtd: Add several functions to the fail_function list
+Date: Mon, 25 Dec 2023 23:00:49 +0800
+Message-ID: <20231225150049.183756-6-wangzhaolong1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231225150049.183756-1-wangzhaolong1@huawei.com>
 References: <20231225150049.183756-1-wangzhaolong1@huawei.com>
@@ -53,9 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpemd200001.china.huawei.com (7.185.36.224)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231225_070321_514898_EC026A9D 
-X-CRM114-Status: UNSURE (   9.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231225_070322_079792_06ACE818 
+X-CRM114-Status: GOOD (  11.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,38 +71,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Because the mask received by the emulate_failures interface
-is a 32-bit unsigned integer, ensure that there is sufficient
-buffer length to receive and display this value.
+add mtd_read(), mtd_write(), mtd_erase(), mtd_block_markbad() to
+fail_function list for testing purpose
+
+- Specify the function to inject the fault
+echo mtd_read > /sys/kernel/debug/fail_function/inject
+
+- Specifies the return value of the function to inject the fault
+printf %#x -12 > /sys/kernel/debug/fail_function/mtd_read/retval
+
+- Specify other fault injection configuration parameters.
+echo -1 > /sys/kernel/debug/fail_function/times
+echo 100 > /sys/kernel/debug/fail_function/probability
+echo 15 > /sys/kernel/debug/fail_function/space
 
 Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
 Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdcore.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 007f82d71020..d57f52bd2ff3 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -332,7 +332,7 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
- 	struct dentry *dent = file->f_path.dentry;
- 	struct ubi_device *ubi;
- 	struct ubi_debug_info *d;
--	char buf[8];
-+	char buf[16];
- 	int val;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index bb0759ca12f1..e451b28840d5 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -30,6 +30,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/nvmem-provider.h>
+ #include <linux/root_dev.h>
++#include <linux/error-injection.h>
  
- 	ubi = ubi_get_device(ubi_num);
-@@ -400,7 +400,7 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
- 	struct ubi_device *ubi;
- 	struct ubi_debug_info *d;
- 	size_t buf_size;
--	char buf[8] = {0};
-+	char buf[16] = {0};
- 	int val;
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -1412,6 +1413,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_erase);
++ALLOW_ERROR_INJECTION(mtd_erase, ERRNO);
  
- 	ubi = ubi_get_device(ubi_num);
+ /*
+  * This stuff for eXecute-In-Place. phys is optional and may be set to NULL.
+@@ -1511,6 +1513,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_read);
++ALLOW_ERROR_INJECTION(mtd_read, ERRNO);
+ 
+ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	      const u_char *buf)
+@@ -1527,6 +1530,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
++ALLOW_ERROR_INJECTION(mtd_write, ERRNO);
+ 
+ /*
+  * In blackbox flight recorder like scenarios we want to make successful writes
+@@ -2347,6 +2351,7 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtd_block_markbad);
++ALLOW_ERROR_INJECTION(mtd_block_markbad, ERRNO);
+ 
+ /*
+  * default_mtd_writev - the default writev method
 -- 
 2.39.2
 
