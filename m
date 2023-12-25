@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DB71C47073
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99C64C47072
 	for <linux-mtd@archiver.kernel.org>; Mon, 25 Dec 2023 15:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7SuAGCIPNePElXDBZfPLafaspg8mNiAvyAo9f2tW9n0=; b=QrCB9FQ3yd613/
-	wRpw/ReW1P8QWLLi9rCKVGpTEuawzm/WFjazDaRT2M0GVjWFQypzTgPF3cd5kLT3MILI7lFzuiciq
-	/qElKHeuHOVLtsEgQXwvqFibbFUiX5CT3u1K1Lyhxwz71CqSeE/+11RWvQ0LwNXJ1NSsPLYnvEaii
-	p/pdF22ZR/81FYnlc6+knCGI+XxkD+W4HMfWML2fApWPtC4XAIhmfy0hF13pnM+BouvluXNByzTNN
-	n05233+i0ALDk22BoRLRcrpZ/9OHS1RMfat7nAsxQZUIoUrxnOS4QzZQ9/6ZVMsNLCNwO3Xm1PpnE
-	VgJStOcNYELuSNeQTb/w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=odZY7ReuwaZva5Rx1vcJFEQK4vQ1h8DNqycHFlWgGns=; b=U50DruPFUsNx/X
+	1f5MHUM1pdMafJV0JTszjJxIfgyKwkS4LX+I3Ae3rU2FF0peguLTuiKpB/cQk05LcHcCtzl/gfri0
+	HjO5VTTOgElr1IYnQ8M3vVlu1GTg3rWM8RlmM13QeLI0tQXQc+Bu9NjS5u9KlT0Qk2dndCZh2T8Wu
+	05LthZHIq3rLL0PUdejwu4+QpL3EHq9kjb7KC1WJMlKaYdQ6ph24hcHQSKK9PEREbPdKVWuVB/App
+	PZFvsPL1y0RnZ6S15ShobtQS1FYGBjnG8HSSVkWg76V8dt8MMSd3cjwYfjCcecThRmzzrEoBzS7hN
+	KJgV5wBOBl78XjVe9SyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHmUJ-00B0Bo-2N;
-	Mon, 25 Dec 2023 15:03:27 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHmUD-00B08l-2i
-	for linux-mtd@lists.infradead.org;
+	id 1rHmUH-00B0BK-36;
 	Mon, 25 Dec 2023 15:03:25 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SzLf26C9Jz1FFVw;
-	Mon, 25 Dec 2023 22:59:22 +0800 (CST)
+Received: from szxga03-in.huawei.com ([45.249.212.189])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1rHmUD-00B08m-0g
+	for linux-mtd@lists.infradead.org;
+	Mon, 25 Dec 2023 15:03:23 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SzLk0441qzMp2j;
+	Mon, 25 Dec 2023 23:02:48 +0800 (CST)
 Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
-	by mail.maildlp.com (Postfix) with ESMTPS id 328741402CB;
-	Mon, 25 Dec 2023 23:03:12 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 37E5018001C;
+	Mon, 25 Dec 2023 23:03:09 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by dggpemd200001.china.huawei.com
  (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 25 Dec
- 2023 23:03:11 +0800
+ 2023 23:03:08 +0800
 From: ZhaoLong Wang <wangzhaolong1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
 	<yangerkun@huawei.com>
-Subject: [PATCH V6 5/5] mtd: Add several functions to the fail_function list
-Date: Mon, 25 Dec 2023 23:00:49 +0800
-Message-ID: <20231225150049.183756-6-wangzhaolong1@huawei.com>
+Subject: [PATCH V6 0/5] 
+Date: Mon, 25 Dec 2023 23:00:44 +0800
+Message-ID: <20231225150049.183756-1-wangzhaolong1@huawei.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231225150049.183756-1-wangzhaolong1@huawei.com>
-References: <20231225150049.183756-1-wangzhaolong1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpemd200001.china.huawei.com (7.185.36.224)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231225_070322_079792_06ACE818 
-X-CRM114-Status: GOOD (  11.25  )
+X-CRM114-CacheID: sfid-20231225_070321_473252_2AC41350 
+X-CRM114-Status: GOOD (  11.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,70 +69,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-add mtd_read(), mtd_write(), mtd_erase(), mtd_block_markbad() to
-fail_function list for testing purpose
+The kernel provides a powerful fault injection framework, which
+provides rich configurable fault injection attributes during runtime.
+So it can be used to improve the fault injection capability of the 
+UBI driver.
 
-- Specify the function to inject the fault
-echo mtd_read > /sys/kernel/debug/fail_function/inject
+This series of patches refactors the existing fault injection interface
+and add some fault injection types to help testers and developers
+find potential problems in the code.
 
-- Specifies the return value of the function to inject the fault
-printf %#x -12 > /sys/kernel/debug/fail_function/mtd_read/retval
+This series of patches enhance the existing fault injection interface
+and retain the old debugfs interface, and add some fault injection types
+to help testers and developers look for potential problems in the code.
 
-- Specify other fault injection configuration parameters.
-echo -1 > /sys/kernel/debug/fail_function/times
-echo 100 > /sys/kernel/debug/fail_function/probability
-echo 15 > /sys/kernel/debug/fail_function/space
+v2:
+ - Retain the old fault injection interface.
 
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mtd/mtdcore.c | 5 +++++
- 1 file changed, 5 insertions(+)
+v3:
+ 1. Corrects the initialization of the error mask, which should start at 1.
+ 2. Change the read format of the mask value to readable hexadecimal.
+ 3. The interface definition style is consistent when when adding the new interface.
+ 4. Redundant macros are removed.
+ 5. Correct the fault injection hook position error: ubi_io_read_data -> ubi_io_write_data.
+ 6. UBI_IO_BITFLIPS is returned in ubi_io_read() in advance to prevent the 
+    return value from being overwritten.
+ 7. In the last commit, an example of the use of fail_function is given.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index bb0759ca12f1..e451b28840d5 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -30,6 +30,7 @@
- #include <linux/debugfs.h>
- #include <linux/nvmem-provider.h>
- #include <linux/root_dev.h>
-+#include <linux/error-injection.h>
+v4:
+ - Delete redundant space characters.
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-@@ -1412,6 +1413,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_erase);
-+ALLOW_ERROR_INJECTION(mtd_erase, ERRNO);
+v5:
+ - Delete the redundant semicolon of the first patch.
  
- /*
-  * This stuff for eXecute-In-Place. phys is optional and may be set to NULL.
-@@ -1511,6 +1513,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_read);
-+ALLOW_ERROR_INJECTION(mtd_read, ERRNO);
- 
- int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	      const u_char *buf)
-@@ -1527,6 +1530,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_write);
-+ALLOW_ERROR_INJECTION(mtd_write, ERRNO);
- 
- /*
-  * In blackbox flight recorder like scenarios we want to make successful writes
-@@ -2347,6 +2351,7 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mtd_block_markbad);
-+ALLOW_ERROR_INJECTION(mtd_block_markbad, ERRNO);
- 
- /*
-  * default_mtd_writev - the default writev method
+v6:
+ - Check the patch completely and fix English syntax errors.
+
+ZhaoLong Wang (5):
+  ubi: Use the fault injection framework to enhance the fault injection
+    capability
+  ubi: Split io_failures into write_failure and erase_failure
+  ubi: Add six fault injection type for testing
+  ubi: Reserve sufficient buffer length for the input mask
+  mtd: Add several functions to the fail_function list
+
+ drivers/mtd/mtdcore.c   |   5 +
+ drivers/mtd/ubi/Kconfig |   9 ++
+ drivers/mtd/ubi/debug.c | 108 ++++++++++++--
+ drivers/mtd/ubi/debug.h | 304 +++++++++++++++++++++++++++++++++++++---
+ drivers/mtd/ubi/io.c    |  86 +++++++++++-
+ drivers/mtd/ubi/ubi.h   |  45 +++---
+ 6 files changed, 498 insertions(+), 59 deletions(-)
+
 -- 
 2.39.2
 
