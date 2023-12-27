@@ -4,76 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F42BC46CD4
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Dec 2023 14:44:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 138BCC47073
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Dec 2023 14:45:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:Subject:From:To:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SURjIc5Us7k2VfUK/72gYV3WWV0ZG6KNWNfsEklzKp8=; b=Nx6ysK8fnQE5bN
-	krlUxR7nNUcCS1pXea132F54gGYVWvm+daHRbHvCazvtq8ZT4Jf4M00Uc8Ek2U0mRjR3L9r1qmBCI
-	nsIygKNwVrpWixrkGyZFRvQCuXDNlxBdXV60EAYOyfSDF5JFPt4vxW41VrB+K8Zq/KvmYWfPF6R7U
-	TkTtgCk6jrJ7wWdkKZfn9jM3Ncs36RU9KrvEVGj47U2d9NQpaimTjpXg6Ggb4gSvHw11+cLyawIrG
-	R+s5VFCayPJ5VXvSTn9wC0ZpbesWle5Bv8RPx2Rp/88HXNHeMZLo0NTtVV41uo+W5/hF3aBcHFMrJ
-	tXQIKZ/G3IVksbxJPY9w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=o41liZsEz8NPLioTTQnUwHy4Qm5fzy5c13R0Z39W+34=; b=pZw2tuNSd9C24U
+	1RgnYueluhNYZ+qIkA2LynirozMOqtC/URcyCP78hMSHnewkb2wJ0/xJvHuIVIgck+W+HxLLhCE1s
+	3+YAI0ibnfGdrdo3TnjdlSqiJvxH4Wkb+ZL7a6EaQzuCdgyH3pOJdkIlAHAOjeVwgx7G40L0jjXSM
+	oT7wpTFgjFhgC+wmk5/PaHl15OBV1AO7sd7Ux1DY0UjIPtfEqFN8HfMQ0y67U79KztQGZx7dB2c57
+	RWLlKU22QyPpIzB0Sb0CxLNvhS78XunX62L6WL9nkBmnGtCzoIwmXaDGhSR13VCJv7tjVOUjFCdJs
+	LziUnhWZ7v/SmeSJ/DsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIV8D-00EqQt-3D;
-	Wed, 27 Dec 2023 14:43:38 +0000
-Received: from mout.web.de ([212.227.15.3])
+	id 1rIVA5-00Eqlu-1d;
+	Wed, 27 Dec 2023 14:45:33 +0000
+Received: from mout.web.de ([212.227.15.14])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIV88-00EqPZ-3C
+	id 1rIVA2-00Eql0-2N
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Dec 2023 14:43:34 +0000
+	Wed, 27 Dec 2023 14:45:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703688187; x=1704292987; i=markus.elfring@web.de;
-	bh=qJhNb+kflSF1W8E0uefEQKaq7Lmn3gr9mOpVQlydGAM=;
-	h=X-UI-Sender-Class:Date:To:From:Subject:Cc;
-	b=fImLcrjOQv1M2gBUJ9+AmQ7HgWVkmqfCT+qA2E0bzmefyQ1fc0RDrY6btGR6wAmj
-	 XQDgLCeEAbUZ0XjZ3yrMtCWIxn8grVwBpOzEs+OZwzVcycVJV5pwjC247+913WwlR
-	 GjW9CNOvKox5pkXuyOP7QloxefEqcNj0GiNaiRwrAoigKZVfEwTWnY/vjPrru0hs1
-	 WZF29NqLX2V+D6dnH4ADubzW9BhoVDErIaZpZZ7SB5rVy3Dlt6AFB9Q7HFSKViH1v
-	 4jN4TlQwZgSEbblJkRnwHfL8XnDNzylPZ1bXseUINk99OmoGgvb/DcT4GNYvfzWS3
-	 UezFww1+5QauPMe2fA==
+	t=1703688317; x=1704293117; i=markus.elfring@web.de;
+	bh=t84TSl+EluuPPFuJEer5T9HrQmpz9O6xB+/yns+xpbg=;
+	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
+	 In-Reply-To;
+	b=H/m2q2Kb4PMC5SWfgWh4y4kWC1MkytkybccUGoogQu06U4j8fAwIBnZ2sg28HD28
+	 Rry7HheBp8jVcB8aTAfBgqAlYxIFLOjEil5Jyn4jynQJWHjWZ5D7mzjvypV3Zbeb2
+	 muVERTBMDAtTQ9CtIuWNCcBXbJxtBAZFJrQCp8Z6svtTKI3+cmRptxaWjEqK6sBot
+	 AVdbVW+T0lWyUDntX9U2rVd3mNrYD9O86cB8oSn76sfUfsai1LaxxCmvBz1JwNv4s
+	 sgmJb7nrkD8phbu8Fxg0n4xN5Zi8Y3hMBiLBDoK9akN5GaY1ZY0mlOsCmzc0Rgdes
+	 CrSAV/zXrqnPYeNs7Q==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MSIJA-1rgk433024-00T993; Wed, 27
- Dec 2023 15:43:07 +0100
-Message-ID: <74183091-4c8d-4c92-b3f9-cebaacb41efd@web.de>
-Date: Wed, 27 Dec 2023 15:43:06 +0100
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MDe2F-1rR0020xc7-00AbzV; Wed, 27
+ Dec 2023 15:45:17 +0100
+Message-ID: <56d92e42-db9e-4767-bcb1-9686bdf34a03@web.de>
+Date: Wed, 27 Dec 2023 15:45:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: [PATCH 1/3] mtd: ssfdc: One function call less in ssfdcr_add_mtd()
+ after error detection
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
 To: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH 0/3] mtd: ssfdc: Adjustments for ssfdcr_add_mtd()
 Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-X-Provags-ID: V03:K1:HyvYsn29WwCEI9xxdv9RQGBTPB/DqqDr8z3qCvI7bVdjZ4jHkC3
- G/wKAnFyAhII39qmEr7wJVgY8mbhx2o8NQUlZg9VZTJ+8K/W7J1cjSj15ih7EUUP8/Ef9Bw
- EJ5lrihMreoB6jRMk86Qwdu4o5BtYc4+6Rbdb79usx+U3HWsK1bKfI2khRJh/NB0dezmFc1
- SunLP6mSJ4DVppCx803NA==
-UI-OutboundReport: notjunk:1;M01:P0:1fr8eEQ0tJU=;pBK/5erE819ePtx/PcpEJfmbBdC
- 200Muo8GOIF0KMNeeBy/acJwSq4RAVKjmjqpewB5sjoLYfJ1mGaBiZfd7xHIrLKCrii8bve9z
- GQjPWrJzv5mAKEqkiq5E1w8G7K+GTF3224TeasdccPY7Op9SGXYa3wHIF2DRWPHrtjux6p5eI
- D8OUupxkvGkA7cJKTiBJyLvYy+gAfT5f7uALSKJPDeaISaAPP1YSf5dlC/k9/uZBKmeCaV58j
- hh0dlhV3SwyNlNVdFQM6oO3Nzq6+w0uIH2rbAJbEidGIzRsnHjZVXieMCGWuEZo3qW7Wv1DLB
- tFVG29Ch422AIH8ar4RdY3k0MdHuY8f7CgVY+YV18h+4O5iCqkqZolIB/zImNtbUuk93I7r/Z
- DxPUKEocaCFK3yzQ5ytc8gmua8vD6bkgccjrNEXTI4UUlhEHQ8YV82F0WZh+WnFdX+x0RrleA
- MZOUonFJnmXsVY6dLcz80YCMKB4mKkPqUCaxtxEODQjgyhLnNv/zEbsqWGHE0dzmvmfXEjXzh
- /LUd3+ngayatFTYSfrzp9vXZ+gvpnFZyRJQ1YSS7kC8lTAJFkXh3qGcYlexO24FfSb4arFyKA
- gPJKpJW29MA4uWygLgjZnXL1EbVpTtrpFo2+TfjvoLD90uKF8o89DZDTZlTPU14+L+uE6R+Fv
- T756oa1ZqbIBUtlB6wmpYBDb028VvNGjWxzjMiu2KZMKYhS50rnllD79BnPiJK6BmpYDDffTm
- dKrhlOAwjdKImggd5MDPQAgAl+L5HdDy+dI0IZ7fkJPMeMftMK9ReJFnlw8hGPiB2MPYyS9Pl
- adWtq6/Pedqu65yG7Soll2sVODuh0HyPR+MIu/u2+vUroJv8cNGi0g4vja8KI6uNaxZpAGd8h
- f7NG7z7DFxmzgV+XsCasXFSdVTeft9xP1Zw7xVdI7mNbTwixjpeUcWDT+SRE0JBzzkW3BPpw9
- +HKOPw==
+References: <74183091-4c8d-4c92-b3f9-cebaacb41efd@web.de>
+In-Reply-To: <74183091-4c8d-4c92-b3f9-cebaacb41efd@web.de>
+X-Provags-ID: V03:K1:DsSL0eMHaC2Rk2bw2q1D0zcazt2/fVc+/haL7c/aRJkCieBC1tt
+ 0AXAwa47Os+poIspl2AHdEo5Z2KI+HFZ8C+kWvuMOXzmUi04y27MTHCaZ4S63IVf3/kQf3Z
+ ae89RkE7EPfLGSuhxATXgiCcaIb7MRxaSo2mNdZwiFjvT9gfysj/3ZTtLca3OMFUHxbJkBE
+ 0DH7shC3T+uLv9aVTo7Dw==
+UI-OutboundReport: notjunk:1;M01:P0:43YQzShyX3A=;Ym3MFRhSF+BgUSwIX1xJPMjb5eg
+ OrUoJO8pr+zYBSTiBAAl7M1mwf/bpo/+kf4cCjuVBVsl/YRMGD9TNV0W4T776DTorY4brh61U
+ KYwd6aAmS8KQ6N02Ucm4EXPyAX4qprD66QosY55lm/+2S6Yo464UbbDVYPrtDWxqUDUJ39Q57
+ bc66AUAd+5hHxQaaqoKhfO2zXFJjtUAoiIDNnVzvkz3Ip+eomd3i9vvKW6kGY8Uy9Gb6x49qy
+ MYQS8cN/4ShzTEJ2+GAVbrE/y/caS6k/5+mWH3JobIXgJRy0zhCSnu0ugZmRiZhiXSapFv144
+ gvF2thSS4OiixNpQjohoLsCBC/mbjKUwuODFmhUuRIg99GU1rQFCR0rj4WwdoGTdJqW37lcVZ
+ MmP2uhpY9YMS0K6ifMVQAEOMS+LThmtvMZJLzQM9vwiAEcIBLo+cg0pqUJIsqu2lVj3o6NbHY
+ BED9msOL9wWM21z4YBe8QV1RrOXlKAgUidWGjFLG1u5nfCKa2xkxjQozsXWIxLMlCNiZZgI7J
+ yg55oNgrWQwEvLI1AjX3svQ5dYFxK1uFQD8FwcsK17HX4WEIpBD4d9U8lAtPflEgVwx0ltuJW
+ gznDq6fOUGvIRQ1gOfhLH0F04ZQSXmHGlFrRpoflaO9d6XAb1aQGPARd+diDnTko8kFeTbOZO
+ IVwoLEvvuy2dW0DYQm+G8rAJYEXiGXnAWY+PtGBROxQcVlIPEqo1R4Kko2PjP7hZrU12FsrAK
+ X6iTVqHqbRM900sJZBork0oNaiktsUPFW8ct62gnKrMU7/XSTB5UYZhmDScxQyl2Oe95csP+u
+ bsduiDeYiwJZvOCTKqWSHpKLfzuAM7DzxBEpMBYJTkKBLz16ibxjz2b+n7IvERUF4EycU1B+2
+ kSkzyfVRW+M0GNoF12PsGlEtLixSxOW0gXe+SRa3G35q9BNoCvEVRy/V/y8tWCBRivhR4u3tB
+ 2TuarK8cb68v5enFWHzhNPEB5oc=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_064333_481752_20D825AE 
-X-CRM114-Status: UNSURE (   4.77  )
+X-CRM114-CacheID: sfid-20231227_064531_056001_E9FC7C35 
+X-CRM114-Status: UNSURE (   8.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,18 +96,40 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 27 Dec 2023 15:38:42 +0100
+Date: Wed, 27 Dec 2023 13:21:52 +0100
 
-A few update suggestions were taken into account
-from static source code analysis.
+The kfree() function was called in one case by
+the ssfdcr_add_mtd() function during error handling
+even if the passed data structure member contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-Markus Elfring (3):
-  One function call less after error detection
-  Fix indentation
-  Improve a size determination
+Thus use another label.
 
- drivers/mtd/ssfdc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/mtd/ssfdc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+index 211f279a33a9..3ee8535d4515 100644
+--- a/drivers/mtd/ssfdc.c
++++ b/drivers/mtd/ssfdc.c
+@@ -332,7 +332,7 @@ static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 		kmalloc_array(ssfdc->map_len,
+ 			      sizeof(ssfdc->logic_block_map[0]), GFP_KERNEL);
+ 	if (!ssfdc->logic_block_map)
+-		goto out_err;
++		goto out_free_ssfdc;
+ 	memset(ssfdc->logic_block_map, 0xff, sizeof(ssfdc->logic_block_map[0]) *
+ 		ssfdc->map_len);
+
+@@ -350,6 +350,7 @@ static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+
+ out_err:
+ 	kfree(ssfdc->logic_block_map);
++out_free_ssfdc:
+         kfree(ssfdc);
+ }
 
 --
 2.43.0
