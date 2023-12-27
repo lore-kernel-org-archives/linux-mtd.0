@@ -4,57 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE3FDC3DA6E
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Dec 2023 01:05:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F42BC46CD4
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Dec 2023 14:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7SuAGCIPNePElXDBZfPLafaspg8mNiAvyAo9f2tW9n0=; b=qlNkKcfUomjImy
-	pe5CTb2STPJx+/eYjPUjCciTVakiJ2eK9kpJYTj4RwLSiRLKFrhQ54KN0/a8jCfs3ATcVksq+ZCJY
-	lRIW1ejLlkNtew2m5CW013NXyXQ4TCgH9vv9A5sigukSkMNhC5Q3Fx+5ozojnSE+F95D5XT6RhENU
-	raadMQV6tYbxLC1MF++vSlNdgZeDb33GgK/nNNClFzlfp3qWrNJn+9BP2u3Wkw5E5H28w6InejS5Q
-	vyreRTr2m6SF1BtNR5Qc4K9eT3rJKXF3qiFWIbKd/G/FAmtVR89cY3jJsyee8mWu0vbSetPFk6YNv
-	kbByE7+0ldmSuCh2iFNQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:Subject:From:To:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=SURjIc5Us7k2VfUK/72gYV3WWV0ZG6KNWNfsEklzKp8=; b=Nx6ysK8fnQE5bN
+	krlUxR7nNUcCS1pXea132F54gGYVWvm+daHRbHvCazvtq8ZT4Jf4M00Uc8Ek2U0mRjR3L9r1qmBCI
+	nsIygKNwVrpWixrkGyZFRvQCuXDNlxBdXV60EAYOyfSDF5JFPt4vxW41VrB+K8Zq/KvmYWfPF6R7U
+	TkTtgCk6jrJ7wWdkKZfn9jM3Ncs36RU9KrvEVGj47U2d9NQpaimTjpXg6Ggb4gSvHw11+cLyawIrG
+	R+s5VFCayPJ5VXvSTn9wC0ZpbesWle5Bv8RPx2Rp/88HXNHeMZLo0NTtVV41uo+W5/hF3aBcHFMrJ
+	tXQIKZ/G3IVksbxJPY9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHvsb-00BWzh-38;
-	Tue, 26 Dec 2023 01:05:09 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1rIV8D-00EqQt-3D;
+	Wed, 27 Dec 2023 14:43:38 +0000
+Received: from mout.web.de ([212.227.15.3])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rHvsY-00BWxm-1h
+	id 1rIV88-00EqPZ-3C
 	for linux-mtd@lists.infradead.org;
-	Tue, 26 Dec 2023 01:05:07 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Szc3251Prz1g04x;
-	Tue, 26 Dec 2023 09:03:26 +0800 (CST)
-Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0359A1A0199;
-	Tue, 26 Dec 2023 09:04:30 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by dggpemd200001.china.huawei.com
- (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Tue, 26 Dec
- 2023 09:03:31 +0800
-From: ZhaoLong Wang <wangzhaolong1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>
-Subject: [PATCH v6 5/5] mtd: Add several functions to the fail_function list
-Date: Tue, 26 Dec 2023 09:01:13 +0800
-Message-ID: <20231226010113.742079-6-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231226010113.742079-1-wangzhaolong1@huawei.com>
-References: <20231226010113.742079-1-wangzhaolong1@huawei.com>
+	Wed, 27 Dec 2023 14:43:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703688187; x=1704292987; i=markus.elfring@web.de;
+	bh=qJhNb+kflSF1W8E0uefEQKaq7Lmn3gr9mOpVQlydGAM=;
+	h=X-UI-Sender-Class:Date:To:From:Subject:Cc;
+	b=fImLcrjOQv1M2gBUJ9+AmQ7HgWVkmqfCT+qA2E0bzmefyQ1fc0RDrY6btGR6wAmj
+	 XQDgLCeEAbUZ0XjZ3yrMtCWIxn8grVwBpOzEs+OZwzVcycVJV5pwjC247+913WwlR
+	 GjW9CNOvKox5pkXuyOP7QloxefEqcNj0GiNaiRwrAoigKZVfEwTWnY/vjPrru0hs1
+	 WZF29NqLX2V+D6dnH4ADubzW9BhoVDErIaZpZZ7SB5rVy3Dlt6AFB9Q7HFSKViH1v
+	 4jN4TlQwZgSEbblJkRnwHfL8XnDNzylPZ1bXseUINk99OmoGgvb/DcT4GNYvfzWS3
+	 UezFww1+5QauPMe2fA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MSIJA-1rgk433024-00T993; Wed, 27
+ Dec 2023 15:43:07 +0100
+Message-ID: <74183091-4c8d-4c92-b3f9-cebaacb41efd@web.de>
+Date: Wed, 27 Dec 2023 15:43:06 +0100
 MIME-Version: 1.0
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemd200001.china.huawei.com (7.185.36.224)
+User-Agent: Mozilla Thunderbird
+To: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 0/3] mtd: ssfdc: Adjustments for ssfdcr_add_mtd()
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+X-Provags-ID: V03:K1:HyvYsn29WwCEI9xxdv9RQGBTPB/DqqDr8z3qCvI7bVdjZ4jHkC3
+ G/wKAnFyAhII39qmEr7wJVgY8mbhx2o8NQUlZg9VZTJ+8K/W7J1cjSj15ih7EUUP8/Ef9Bw
+ EJ5lrihMreoB6jRMk86Qwdu4o5BtYc4+6Rbdb79usx+U3HWsK1bKfI2khRJh/NB0dezmFc1
+ SunLP6mSJ4DVppCx803NA==
+UI-OutboundReport: notjunk:1;M01:P0:1fr8eEQ0tJU=;pBK/5erE819ePtx/PcpEJfmbBdC
+ 200Muo8GOIF0KMNeeBy/acJwSq4RAVKjmjqpewB5sjoLYfJ1mGaBiZfd7xHIrLKCrii8bve9z
+ GQjPWrJzv5mAKEqkiq5E1w8G7K+GTF3224TeasdccPY7Op9SGXYa3wHIF2DRWPHrtjux6p5eI
+ D8OUupxkvGkA7cJKTiBJyLvYy+gAfT5f7uALSKJPDeaISaAPP1YSf5dlC/k9/uZBKmeCaV58j
+ hh0dlhV3SwyNlNVdFQM6oO3Nzq6+w0uIH2rbAJbEidGIzRsnHjZVXieMCGWuEZo3qW7Wv1DLB
+ tFVG29Ch422AIH8ar4RdY3k0MdHuY8f7CgVY+YV18h+4O5iCqkqZolIB/zImNtbUuk93I7r/Z
+ DxPUKEocaCFK3yzQ5ytc8gmua8vD6bkgccjrNEXTI4UUlhEHQ8YV82F0WZh+WnFdX+x0RrleA
+ MZOUonFJnmXsVY6dLcz80YCMKB4mKkPqUCaxtxEODQjgyhLnNv/zEbsqWGHE0dzmvmfXEjXzh
+ /LUd3+ngayatFTYSfrzp9vXZ+gvpnFZyRJQ1YSS7kC8lTAJFkXh3qGcYlexO24FfSb4arFyKA
+ gPJKpJW29MA4uWygLgjZnXL1EbVpTtrpFo2+TfjvoLD90uKF8o89DZDTZlTPU14+L+uE6R+Fv
+ T756oa1ZqbIBUtlB6wmpYBDb028VvNGjWxzjMiu2KZMKYhS50rnllD79BnPiJK6BmpYDDffTm
+ dKrhlOAwjdKImggd5MDPQAgAl+L5HdDy+dI0IZ7fkJPMeMftMK9ReJFnlw8hGPiB2MPYyS9Pl
+ adWtq6/Pedqu65yG7Soll2sVODuh0HyPR+MIu/u2+vUroJv8cNGi0g4vja8KI6uNaxZpAGd8h
+ f7NG7z7DFxmzgV+XsCasXFSdVTeft9xP1Zw7xVdI7mNbTwixjpeUcWDT+SRE0JBzzkW3BPpw9
+ +HKOPw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231225_170506_718105_F01DBDA9 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20231227_064333_481752_20D825AE 
+X-CRM114-Status: UNSURE (   4.77  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,72 +91,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-add mtd_read(), mtd_write(), mtd_erase(), mtd_block_markbad() to
-fail_function list for testing purpose
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 27 Dec 2023 15:38:42 +0100
 
-- Specify the function to inject the fault
-echo mtd_read > /sys/kernel/debug/fail_function/inject
+A few update suggestions were taken into account
+from static source code analysis.
 
-- Specifies the return value of the function to inject the fault
-printf %#x -12 > /sys/kernel/debug/fail_function/mtd_read/retval
+Markus Elfring (3):
+  One function call less after error detection
+  Fix indentation
+  Improve a size determination
 
-- Specify other fault injection configuration parameters.
-echo -1 > /sys/kernel/debug/fail_function/times
-echo 100 > /sys/kernel/debug/fail_function/probability
-echo 15 > /sys/kernel/debug/fail_function/space
+ drivers/mtd/ssfdc.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mtd/mtdcore.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index bb0759ca12f1..e451b28840d5 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -30,6 +30,7 @@
- #include <linux/debugfs.h>
- #include <linux/nvmem-provider.h>
- #include <linux/root_dev.h>
-+#include <linux/error-injection.h>
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-@@ -1412,6 +1413,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_erase);
-+ALLOW_ERROR_INJECTION(mtd_erase, ERRNO);
- 
- /*
-  * This stuff for eXecute-In-Place. phys is optional and may be set to NULL.
-@@ -1511,6 +1513,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_read);
-+ALLOW_ERROR_INJECTION(mtd_read, ERRNO);
- 
- int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	      const u_char *buf)
-@@ -1527,6 +1530,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_write);
-+ALLOW_ERROR_INJECTION(mtd_write, ERRNO);
- 
- /*
-  * In blackbox flight recorder like scenarios we want to make successful writes
-@@ -2347,6 +2351,7 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mtd_block_markbad);
-+ALLOW_ERROR_INJECTION(mtd_block_markbad, ERRNO);
- 
- /*
-  * default_mtd_writev - the default writev method
--- 
-2.39.2
+--
+2.43.0
 
 
 ______________________________________________________
