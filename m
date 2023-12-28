@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 216A8C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9FE7C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=niI0rYRlUkTUb0AUA0952bsNHxwsqj5w7d2mBowIU44=; b=PxITyK5TSMAz0C
-	3htjidyxGexDEP32AH3+q1n8GGVxnM4wL/P0cYJUQk9GL99hkkqy0ycugxpYSvp0X0qk1LkNVG9hL
-	Qs3TJV5xygBw+mz0aYPMbTCzAoRY2ruNxJieszaQEdmuThCffLPYOdQkZ1GPhXH9dYvnfF6cjtkQz
-	H5iGuCmPJTY4f52viLy/Jnr6kRweYaRsVaLe0K0ST/bl2A4tkxJHf7IgZTyL2jZh5fCAwg27zLc9r
-	NjKzN9frvjyWj10aQOelduGi6JWPKtyRSDQYSzWIK3kHq4F7mOy/r+cq7fqyEVmYNyNeD7GG5bdrv
-	8xvwA/Ky9+ZmTZLRhVcQ==;
+	List-Owner; bh=IxUwENWp1RbxHxw9Js73dV5sR7nOr0E1zHe5G0VcLYw=; b=OHfRp9BQS8SdJN
+	NLrMlIT3YOD70BpnSYrgoMZpHbj/JaK0Y2zs+KY5Xxa3oNz3n21+2Qd1FwafCyl5zKDsQFjVLbt/L
+	8m0xwleVOA/C1Ndkov82snKwqqNFy5nyKz3zOdKAC8qRi4ezCCA+qvcAKEjmnlsgUWx/rhcGCeIUV
+	rretPSatliyqd2gY6FvlDHINJ8lE4w99Turuz68yAEdf+LOZMpgENtzLga2/Bp1gKMNADv+ljtBYZ
+	QmEFB0EQKDweW8P+4N/vIX4+mwq4lqKVnQ4b7V0eyBLjuYp0Lxu1iOpQpGGkB/w9wXKauDzHQWMsD
+	VjUMHCaI6XExWr/BR1Gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFS-00GMu1-0O;
-	Thu, 28 Dec 2023 07:56:10 +0000
+	id 1rIlFX-00GMwB-0k;
+	Thu, 28 Dec 2023 07:56:15 +0000
 Received: from 213-147-167-209.nat.highway.webapn.at ([213.147.167.209] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFP-00GMsI-1M;
-	Thu, 28 Dec 2023 07:56:08 +0000
+	id 1rIlFU-00GMtf-1k;
+	Thu, 28 Dec 2023 07:56:13 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -41,9 +41,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	nbd@other.debian.org,
 	linux-bcache@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 3/9] block: default the discard granularity to sector size
-Date: Thu, 28 Dec 2023 07:55:39 +0000
-Message-Id: <20231228075545.362768-4-hch@lst.de>
+Subject: [PATCH 4/9] ubd: use the default discard granularity
+Date: Thu, 28 Dec 2023 07:55:40 +0000
+Message-Id: <20231228075545.362768-5-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231228075545.362768-1-hch@lst.de>
 References: <20231228075545.362768-1-hch@lst.de>
@@ -64,38 +64,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Current the discard granularity defaults to 0 and must be initialized by
-any driver that wants to support discard.  Default to the sector size
-instead, which is the smallest possible value, and a very useful default.
+The discard granularity now defaults to a single sector, so don't set
+that value explicitly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-settings.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/um/drivers/ubd_kern.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index ba6e0e97118c08..d993d20dab3c6d 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -48,7 +48,7 @@ void blk_set_default_limits(struct queue_limits *lim)
- 	lim->max_discard_sectors = 0;
- 	lim->max_hw_discard_sectors = 0;
- 	lim->max_secure_erase_sectors = 0;
--	lim->discard_granularity = 0;
-+	lim->discard_granularity = 512;
- 	lim->discard_alignment = 0;
- 	lim->discard_misaligned = 0;
- 	lim->logical_block_size = lim->physical_block_size = lim->io_min = 512;
-@@ -309,6 +309,9 @@ void blk_queue_logical_block_size(struct request_queue *q, unsigned int size)
- 
- 	limits->logical_block_size = size;
- 
-+	if (limits->discard_granularity < limits->logical_block_size)
-+		limits->discard_granularity = limits->logical_block_size;
-+
- 	if (limits->physical_block_size < size)
- 		limits->physical_block_size = size;
- 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 50206feac577d5..92ee2697ff3984 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -798,7 +798,6 @@ static int ubd_open_dev(struct ubd *ubd_dev)
+ 		ubd_dev->cow.fd = err;
+ 	}
+ 	if (ubd_dev->no_trim == 0) {
+-		ubd_dev->queue->limits.discard_granularity = SECTOR_SIZE;
+ 		blk_queue_max_discard_sectors(ubd_dev->queue, UBD_MAX_REQUEST);
+ 		blk_queue_max_write_zeroes_sectors(ubd_dev->queue, UBD_MAX_REQUEST);
+ 	}
 -- 
 2.39.2
 
