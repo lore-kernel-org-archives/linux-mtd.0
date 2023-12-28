@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBE2EC46CD2
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAE85C47077
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=4NJVB70iii4/MbSA9fOprnCbek1YiAoj+SDLNjCrflo=; b=Z1jmflhQgT3des
-	g+n3aCSaxRC6zAIwClhLgzQ2P8aJcxjft15cMTrB4JsnMVJPRaAR83UwBuqaoW5GklOfLO6TXMBKo
-	hMdl6cWXf6KLR1hR0w8x3AkW8LDOvFhU+DlXfJD7MpWgNciIRVpiFZqlk0BccpG4o9ZLiO4v/IWsb
-	OvAv0ewYSDLllFgo7zENmSNTRxkPM1mhFpEde9Tz5Yv8pivT+k44uCmlaz/7WPcPZg4NYxL190jyK
-	88ovTWpYjpLgyg193xnl3JBO2ZwjKhWv5Ls+2JKiZQX38PHFLXV0xROQZ/h3xztoYrfdjJcFWNArS
-	mUwcXdMlN6nzBL8EVp4g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uNEx662dbGzVuaHeSv8uQsZmZYm9Z3jP5Z7Fw5Qm/TY=; b=Wj52OzY02Aco1k
+	liq2vwdLS7sJBJj8HI5YHxSdxkq3rDjtCJJL57VUr6TnL/V/NDG1fHUgKN3KDSM+98QzLiYySPs/r
+	zqG1XejcSzB7bsQ/LM7MTGlCoIcq6tRFFlpcL/3EkiE+efx28bwX/fFmDXuIs/nrMyOfHJu50uZGs
+	Vvmtn0qpIJE8/WE6kc+at/awzKIMlD20Eitf3YP0/ygGD7RzCdVT6k77+deJ5JpGKbmwyEREomxQZ
+	BPV5+05PB2fKRlavZ4SqquG9sq+/a6plNaqle0W/j3xRJNDIU78soqD1CRMGdlmJPywMYcASw8twO
+	JqQRL2UCc/aAVE/S5OsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfHW-00Fo39-26;
-	Thu, 28 Dec 2023 01:33:54 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1rIfHZ-00Fo3z-2I;
+	Thu, 28 Dec 2023 01:33:57 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfHQ-00Fnzp-0E
+	id 1rIfHU-00Fo27-2M
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Dec 2023 01:33:52 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T0rcL0L0Lz1Q6th;
-	Thu, 28 Dec 2023 09:33:06 +0800 (CST)
+	Thu, 28 Dec 2023 01:33:54 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rXl1Qb6z1FFnD;
+	Thu, 28 Dec 2023 09:29:59 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id CF09B18001F;
-	Thu, 28 Dec 2023 09:33:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 22D4E1A019B;
+	Thu, 28 Dec 2023 09:33:36 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:33:32 +0800
+ 2023 09:33:35 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 00/11] tests: Add new testcases for ubifs_repair
-Date: Thu, 28 Dec 2023 09:36:28 +0800
-Message-ID: <20231228013639.2827205-1-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils 05/11] tests: ubifs_repair: Add corrupt+repair+fault_inject test
+Date: Thu, 28 Dec 2023 09:36:33 +0800
+Message-ID: <20231228013639.2827205-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
+References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_173348_492702_25408E2E 
-X-CRM114-Status: UNSURE (   7.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231227_173353_133903_F1F2AAFE 
+X-CRM114-Status: GOOD (  16.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,133 +71,297 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patchset add new testcases for UBIFS repair.
-Detailed testcases are explained in tests/ubifs_repair-tests/README.txt.
+Inject memory/io fault while repairing corrupted UBIFS images.
+This testcase mainly checks whether ubifs_repair has problems (eg.
+memleak, UAF, null-ptr-def, etc.) in random error paths. Besides,
+it provides a similar way to simulate powercut during repairing,
+and checks whether ubifs_repair can fix an UBIFS image after many
+repairing rounds interrupted by kinds of errors.
 
-After testing(fs/ubifs/repair.c):
-Kernel code coverage: 90%
-kernel function coverage: 100%
-
-Zhihao Cheng (11):
-  tests: Add common libs for ubifs_repair test
-  tests: ubifs_repair: Add authentication refusing test
-  tests: ubifs_repair: Add cycle mount+repair test
-  tests: ubifs_repair: Add powercut+repair+mount test
-  tests: ubifs_repair: Add corrupt+repair+fault_inject test
-  tests: ubifs_repair: Add cycle_powercut+repair test
-  tests: ubifs_repair: Add random_corrupt+repair test
-  tests: ubifs_repair: Add corrupted images
-  tests: ubifs_repair: Add bad images repairing test
-  tests: ubifs_repair: Add run_all script
-  tests: ubifs_repair: Add README
-
- .gitignore                                         |   9 +
- Makefile.am                                        |   2 +
- configure.ac                                       |  11 +-
- tests/ubifs_repair-tests/Makemodule.am             |  52 +++
- tests/ubifs_repair-tests/README.txt                | 233 ++++++++++++++
- tests/ubifs_repair-tests/images/dentry_key.gz      | Bin 0 -> 5377 bytes
- tests/ubifs_repair-tests/images/dentry_nlen.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/images/dentry_type.gz     | Bin 0 -> 5384 bytes
- tests/ubifs_repair-tests/images/dir_lost.gz        | Bin 0 -> 5381 bytes
- tests/ubifs_repair-tests/images/good.gz            | Bin 0 -> 5251 bytes
- tests/ubifs_repair-tests/images/inode_data.gz      | Bin 0 -> 5297 bytes
- tests/ubifs_repair-tests/images/inode_mode.gz      | Bin 0 -> 5383 bytes
- tests/ubifs_repair-tests/images/inode_nlink.gz     | Bin 0 -> 5383 bytes
- tests/ubifs_repair-tests/images/inode_size.gz      | Bin 0 -> 5384 bytes
- tests/ubifs_repair-tests/images/inode_xcnt.gz      | Bin 0 -> 5388 bytes
- tests/ubifs_repair-tests/images/log.gz             | Bin 0 -> 5232 bytes
- tests/ubifs_repair-tests/images/lpt_dirty.gz       | Bin 0 -> 5360 bytes
- tests/ubifs_repair-tests/images/lpt_flags.gz       | Bin 0 -> 5361 bytes
- tests/ubifs_repair-tests/images/lpt_free.gz        | Bin 0 -> 5350 bytes
- tests/ubifs_repair-tests/images/lpt_pos.gz         | Bin 0 -> 5374 bytes
- .../images/master_highest_inum.gz                  | Bin 0 -> 5034 bytes
- tests/ubifs_repair-tests/images/master_lpt.gz      | Bin 0 -> 5035 bytes
- tests/ubifs_repair-tests/images/master_tnc.gz      | Bin 0 -> 5024 bytes
- .../ubifs_repair-tests/images/master_total_dead.gz | Bin 0 -> 5033 bytes
- .../images/master_total_dirty.gz                   | Bin 0 -> 5032 bytes
- .../ubifs_repair-tests/images/master_total_free.gz | Bin 0 -> 5030 bytes
- tests/ubifs_repair-tests/images/root_dir.gz        | Bin 0 -> 1298 bytes
- tests/ubifs_repair-tests/images/sb_fanout.gz       | Bin 0 -> 5322 bytes
- tests/ubifs_repair-tests/images/sb_fmt_version.gz  | Bin 0 -> 5326 bytes
- tests/ubifs_repair-tests/images/sb_leb_size.gz     | Bin 0 -> 5324 bytes
- tests/ubifs_repair-tests/images/sb_log_lebs.gz     | Bin 0 -> 5323 bytes
- tests/ubifs_repair-tests/images/sb_min_io_size.gz  | Bin 0 -> 5328 bytes
- .../images/soft_link_data_len.gz                   | Bin 0 -> 5389 bytes
- tests/ubifs_repair-tests/images/tnc_lv0_key.gz     | Bin 0 -> 5414 bytes
- tests/ubifs_repair-tests/images/tnc_lv0_len.gz     | Bin 0 -> 5420 bytes
- tests/ubifs_repair-tests/images/tnc_lv0_pos.gz     | Bin 0 -> 5404 bytes
- tests/ubifs_repair-tests/images/tnc_noleaf_key.gz  | Bin 0 -> 5430 bytes
- tests/ubifs_repair-tests/images/tnc_noleaf_len.gz  | Bin 0 -> 5437 bytes
- tests/ubifs_repair-tests/images/tnc_noleaf_pos.gz  | Bin 0 -> 5418 bytes
- tests/ubifs_repair-tests/images/xentry_key.gz      | Bin 0 -> 5378 bytes
- tests/ubifs_repair-tests/images/xentry_nlen.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/images/xentry_type.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/images/xinode_flags.gz    | Bin 0 -> 5384 bytes
- tests/ubifs_repair-tests/images/xinode_key.gz      | Bin 0 -> 5383 bytes
- tests/ubifs_repair-tests/images/xinode_mode.gz     | Bin 0 -> 5386 bytes
- tests/ubifs_repair-tests/lib/common.sh.in          | 347 +++++++++++++++++++++
- .../tests/authentication_refuse.sh.in              |  69 ++++
- .../cycle_corrupted_repair_fault_inject.sh.in      | 233 ++++++++++++++
- .../tests/cycle_mount_repair_check.sh.in           | 177 +++++++++++
- .../tests/cycle_powercut_mount_repair.sh.in        | 132 ++++++++
- .../tests/powercut_repair_mount.sh.in              | 138 ++++++++
- .../tests/random_corrupted_repair.sh.in            | 205 ++++++++++++
- .../tests/repair_bad_image.sh.in                   | 274 ++++++++++++++++
- .../ubifs_repair-tests/ubifs_repair_run_all.sh.in  |  59 ++++
- 54 files changed, 1940 insertions(+), 1 deletion(-)
- create mode 100644 tests/ubifs_repair-tests/Makemodule.am
- create mode 100644 tests/ubifs_repair-tests/README.txt
- create mode 100644 tests/ubifs_repair-tests/images/dentry_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/dentry_nlen.gz
- create mode 100644 tests/ubifs_repair-tests/images/dentry_type.gz
- create mode 100644 tests/ubifs_repair-tests/images/dir_lost.gz
- create mode 100644 tests/ubifs_repair-tests/images/good.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_data.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_mode.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_nlink.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_size.gz
- create mode 100644 tests/ubifs_repair-tests/images/inode_xcnt.gz
- create mode 100644 tests/ubifs_repair-tests/images/log.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_dirty.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_flags.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_free.gz
- create mode 100644 tests/ubifs_repair-tests/images/lpt_pos.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_highest_inum.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_lpt.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_tnc.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_total_dead.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_total_dirty.gz
- create mode 100644 tests/ubifs_repair-tests/images/master_total_free.gz
- create mode 100644 tests/ubifs_repair-tests/images/root_dir.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_fanout.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_fmt_version.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_leb_size.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_log_lebs.gz
- create mode 100644 tests/ubifs_repair-tests/images/sb_min_io_size.gz
- create mode 100644 tests/ubifs_repair-tests/images/soft_link_data_len.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_lv0_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_lv0_len.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_lv0_pos.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_noleaf_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_noleaf_len.gz
- create mode 100644 tests/ubifs_repair-tests/images/tnc_noleaf_pos.gz
- create mode 100644 tests/ubifs_repair-tests/images/xentry_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/xentry_nlen.gz
- create mode 100644 tests/ubifs_repair-tests/images/xentry_type.gz
- create mode 100644 tests/ubifs_repair-tests/images/xinode_flags.gz
- create mode 100644 tests/ubifs_repair-tests/images/xinode_key.gz
- create mode 100644 tests/ubifs_repair-tests/images/xinode_mode.gz
- create mode 100755 tests/ubifs_repair-tests/lib/common.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/authentication_refuse.sh.in
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ .gitignore                                         |   1 +
+ configure.ac                                       |   3 +-
+ tests/ubifs_repair-tests/Makemodule.am             |   3 +-
+ .../cycle_corrupted_repair_fault_inject.sh.in      | 233 +++++++++++++++++++++
+ 4 files changed, 238 insertions(+), 2 deletions(-)
  create mode 100755 tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/random_corrupted_repair.sh.in
- create mode 100755 tests/ubifs_repair-tests/tests/repair_bad_image.sh.in
- create mode 100755 tests/ubifs_repair-tests/ubifs_repair_run_all.sh.in
 
+diff --git a/.gitignore b/.gitignore
+index d47282c..52396e6 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -116,6 +116,7 @@ tests/ubifs_repair-tests/lib/common.sh
+ tests/ubifs_repair-tests/tests/authentication_refuse.sh
+ tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
+ tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
++tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
+ 
+ #
+ # Files generated by autotools
+diff --git a/configure.ac b/configure.ac
+index 349e4ad..31a7184 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -358,6 +358,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/ubifs_repair-tests/lib/common.sh
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh
+ 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
+-	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh])
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
++	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh])
+ 
+ AC_OUTPUT([Makefile])
+diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
+index 92f288a..0a9fb48 100644
+--- a/tests/ubifs_repair-tests/Makemodule.am
++++ b/tests/ubifs_repair-tests/Makemodule.am
+@@ -2,4 +2,5 @@ test_SCRIPTS += \
+ 	tests/ubifs_repair-tests/lib/common.sh \
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh \
+ 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
+-	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh \
++	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
+diff --git a/tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in b/tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
+new file mode 100755
+index 0000000..9752970
+--- /dev/null
++++ b/tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh.in
+@@ -0,0 +1,233 @@
++#!/bin/sh
++# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
++# Author: Zhihao Cheng <chengzhihao1@huawei.com>
++#
++# Test Description:
++# For many kinds of flash, do following things
++#  1. mount UBIFS
++#  2. fsstress && unmount
++#  3. inject corruption into UBIFS image randomly
++#  3. repair ubifs && inject kinds of errors(memory, io)
++#  4. check UBIFS mounting result
++# Running time: 10min
++
++TESTBINDIR=@TESTBINDIR@
++source $TESTBINDIR/common.sh
++
++function run_test()
++{
++	local simulator="$1";
++	local size="$2";
++	local peb_size="$3";
++	local page_size="$4";
++	local encryption=$5;
++
++	echo "======================================================================"
++	printf "%s" "$simulator: ${size}MiB PEB size ${peb_size}KiB"
++	if [ "$simulator" = "nandsim" ]; then
++		printf " %s" "page size ${page_size}KiB"
++	fi
++	printf " $encryption\n"
++
++	if [ "$simulator" = "nandsim" ]; then
++		$TESTBINDIR/load_nandsim.sh "$size" "$peb_size" "$page_size" || echo "cannot load nandsim";
++		mtdnum="$(find_mtd_device "$nandsim_patt")"
++	elif [ "$simulator" = "mtdram" ]; then
++		load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
++		mtdnum="$(find_mtd_device "$mtdram_patt")"
++	else
++		fatal "$simulator is not supported"
++	fi
++
++	flash_eraseall /dev/mtd$mtdnum
++	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert || fatal "modprobe ubi fail"
++	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
++	modprobe ubifs || fatal "modprobe ubifs fail"
++	mount_ubifs $DEV $MNT || fatal "mount ubifs fail"
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_gen_key
++		encryption_set_key $MNT
++	fi
++
++	fsstress -d $MNT -l0 -p4 -n10000 &
++
++	sleep $((RANDOM % 20))
++
++	ps -e | grep -w fsstress > /dev/null 2>&1
++	while [ $? -eq 0 ]
++	do
++		killall -9 fsstress > /dev/null 2>&1
++		sleep 1
++		ps -e | grep -w fsstress > /dev/null 2>&1
++	done
++
++	while true
++	do
++		res=`mount | grep "$MNT"`
++		if [[ "$res" == "" ]]
++		then
++			break;
++		fi
++		umount $MNT
++		sleep 0.1
++	done
++
++	# inject corruption
++	times=$((RANDOM % 10))
++	let times=$times+10
++	i=0
++	tot_peb=`cat /sys/class/ubi/ubi$UBI_NUM/total_eraseblocks`;
++
++	modprobe -r ubifs
++	modprobe -r ubi # Stop wear-leveling & erasing worker
++	while [[ $i -lt $times ]]
++	do
++		let i=$i+1;
++		peb=$((RANDOM % $tot_peb));
++		pg=`expr $peb_size \* 1024`;
++		peb_off=`expr $pg \* $peb`
++		pages=`expr $pg / $page_size`;
++		pg=`expr $pages - 2`;
++		pg=$((RANDOM % $pg));
++		pg_off=`expr $pg + 2`;
++		pg_start=`expr $pages \* $peb`;
++		pg=`expr $pg_start + $pg_off`;
++		vid_pg=`expr $pg_start + 1`;
++		dd if=/dev/mtd$mtdnum of=$TMP_FILE bs=$page_size skip=$vid_pg count=1 2>/dev/null;
++		content=`cat $TMP_FILE | grep UBI!`; # vid header magic
++		if [[ "$content" == "" ]]; then
++			# Skip free PEB, otherwise data could be overwritten in ubifs repairing process
++			continue;
++		fi
++		if [[ $((RANDOM % 2)) == 0 ]]; then
++			# Corrupts 1 page
++			dd if=/dev/urandom of=/dev/mtd$mtdnum bs=$page_size seek=$pg count=1;
++		else
++			# Erase 1 LEB, TNC points to an unmapped area
++			flash_erase /dev/mtd$mtdnum $peb_off 1
++		fi
++	done
++	rm -f $TMP_FILE 2>/dev/null
++	sync
++
++	skip=0
++	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert
++	ret=$?
++	if [[ $ret != 0 ]]
++	then
++		skip=1
++		echo "UBI layout volume is corrupted, skip"
++	fi
++
++	if [[ $skip == 0 ]]; then
++		modprobe ubifs || fatal "modprobe ubifs2 fail"
++		dmesg -c > /dev/null
++
++		round=0
++		while true;
++		do
++			injected=0
++			inject_mem=0
++			res=0
++			let round=$round+1
++
++			echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
++			if [[ $round -lt 50 ]]; then
++				injected=1
++				echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs &
++				pid=$!
++				if [[ $((RANDOM % 2)) == 0 ]]; then
++					inject_mem_err $pid
++					inject_mem=1
++				fi
++				inject_io_err
++				wait $pid
++				res=$?
++				if [[ $inject_mem == 1 ]]; then
++					cancel_mem_err
++				fi
++				cancel_io_err
++			else
++				echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
++				res=$?
++			fi
++			if [[ $res != 0 ]]
++			then
++				log=`dmesg | grep "bad node at LEB 0:"`
++				if [[ "$log" != "" ]]
++				then
++					skip=1
++					echo "SB is corrupted, skip repairing & mounting"
++					break
++				else
++					check_memleak
++					# UBI could become ro-mode
++					modprobe -r ubifs
++					modprobe -r ubi
++					modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert
++					modprobe ubifs || fatal "modprobe ubifs3 fail"
++					if [[ $injected == 0 ]]; then
++						fatal "repair fail $res"
++					fi
++				fi
++			else
++				break
++			fi
++		done
++
++		check_memleak
++
++		dmesg -c > /dev/null # repairing corrupted image could reproduce error messages
++
++		if [[ $skip == 0 ]]; then
++			enable_chkfs
++
++			mount_ubifs $DEV $MNT
++			res=$?
++			if [[ $res != 0 ]]
++			then
++				fatal "mount fail $res"
++			fi
++
++			if [[ "$encryption" == "encrypted" ]]; then
++				encryption_set_key $MNT
++			fi
++
++			du -sh $MNT > /dev/null  # Make sure all files are accessible
++			ret=$?
++			if [[ $ret != 0 ]]; then
++				fatal "Cannot access all files"
++			fi
++			# check_err_msg is not suggested in this testcase, because
++			# ubi_io_read(triggered by wear_leveling_worker -> ubi_eba_copy_leb)
++			# could print stack if ecc uncorrectable errors are detected.
++
++			umount $MNT
++			res=$?
++			if [[ $res != 0 ]]
++			then
++				fatal "unmount fail $res"
++			fi
++		fi
++
++		modprobe -r ubifs
++		modprobe -r ubi
++	fi
++	modprobe -r $simulator
++
++	echo "----------------------------------------------------------------------"
++}
++
++check_fsstress
++start_t=$(date +%s)
++echo "Do corrruption+cycle_repair_fault_injection test in kinds of flashes"
++for simulator in "mtdram" "nandsim"; do
++	for encryption in "encrypted" "noencrypted"; do
++		run_test "$simulator" "16" "16" "512" $encryption
++		run_test "$simulator" "256" "128" "2048" $encryption
++	done
++done
++end_t=$(date +%s)
++time_cost=$(( end_t - start_t ))
++echo "Success, cost $time_cost seconds"
++exit 0
 -- 
 2.13.6
 
