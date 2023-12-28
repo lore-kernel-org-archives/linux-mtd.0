@@ -4,57 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFB63C47073
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02975C47074
 	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vwARchwwXMzeswTYH7//uDWeR0RJVgP1gfUyUrCyX2I=; b=IgWWk4NM91WMq+
-	fvfuKMJUVvcLKw93qcCreUU8Wcw3PjC3QmyeSpbwDhJ6lOgO4ZLt8ue/KvjpgjZRIkVGlu6QGQ0Fk
-	Ultbayn95b26NhUJhlRDaCFzohTVQd4M5obxN5xmDixC8IW/BvgMC3Ov0fATeEBtMbZlAAi5m1cyY
-	0B8fT10BUdzdPZtTyChIRbD+fFw9cr1G9MI+5eh5ihtUzSPJRtCuYasO3FYay++V2/2rscdIQ4Wqh
-	lK+jct621QKQHdUCrU1gU5ZGXajgFHscS8JuCwTDMiuOVt1fssNPOKXKTYWKsBaPQje2OtO8WUtjJ
-	ezkGsY1HjgTiecCXar5g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=l3dXcNUuMxanxwBCpP2cc1cDDzPRtS6mA4JgK5Kxte8=; b=ixaekwG4RufNoe
+	VF6J6BthdiecAo8VEUCqaFxPggHHjgmQktQoRxY0ySSDhinLDY6lBDKWlomvchxTOQVJLx4EsrjSF
+	Y8vNO6fXxTNeklRuUF+WW/A1EgTr9NAwmU1EDJhSDh9HirIUwamAwMD3SFlugitC+8a663/Ru3Cqq
+	IAMc/Izuffx23zvNSujZRCmgpW+SAEEkRBVYZx9aY4bNxKb2gHqXvVCY8GCKs4PX2gBVEOw6SQp4n
+	sXstQ9fxSnTn0UznjBEU2Q4T5uCT7U1/PScgz7t0VG+sATgvJ/nBdywKrq4DMW4/Pn8iLWLln/RiM
+	rsIOve1oj8JoA0vrt7xw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfLs-00Fpcj-2u;
-	Thu, 28 Dec 2023 01:38:24 +0000
-Received: from szxga06-in.huawei.com ([45.249.212.32])
+	id 1rIfLt-00FpdD-2D;
+	Thu, 28 Dec 2023 01:38:25 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfLl-00FpW8-2w
+	id 1rIfLn-00FpWy-01
 	for linux-mtd@lists.infradead.org;
 	Thu, 28 Dec 2023 01:38:20 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T0rk12nN4z1vqM9;
-	Thu, 28 Dec 2023 09:38:01 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4T0rjg1yJMzMprn;
+	Thu, 28 Dec 2023 09:37:43 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 97E8D1800A8;
-	Thu, 28 Dec 2023 09:38:11 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 813261402E0;
+	Thu, 28 Dec 2023 09:38:06 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:38:10 +0800
+ 2023 09:38:05 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC 08/17] ubifs: repair: Record used LEBs
-Date: Thu, 28 Dec 2023 09:41:03 +0800
-Message-ID: <20231228014112.2836317-9-chengzhihao1@huawei.com>
+Subject: [PATCH RFC 00/17] ubifs: Add filesystem repair support
+Date: Thu, 28 Dec 2023 09:40:55 +0800
+Message-ID: <20231228014112.2836317-1-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231228014112.2836317-1-chengzhihao1@huawei.com>
-References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_173818_275807_6E6CEFB9 
-X-CRM114-Status: GOOD (  12.24  )
+X-CRM114-CacheID: sfid-20231227_173819_385162_2E63973E 
+X-CRM114-Status: UNSURE (   9.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,172 +70,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 8/13 step of repairing. Record used LEBs which may hold useful
-nodes, then left unused LEBs could be taken for storing new index tree.
-Notice, LEB that contains effective nodes on deleted trees in step 2 is
-regarded as used.
+UBIFS repair provides a way to fix inconsistent UBIFS image(which is
+corrupted by hardware exceptions or UBIFS realization bugs) and makes
+filesystem become consistent, just like fsck tools(eg. fsck.ext4,
+fsck.f2fs, fsck.fat, etc.) do.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/repair.c | 94 +++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/repair.h |  2 +
- 2 files changed, 96 insertions(+)
+About why do we need it, how it works, what it can fix or it can not
+fix, when and how to use it, see more details in
+Documentation/filesystems/ubifs/repair.rst (Patch 17).
 
-diff --git a/fs/ubifs/repair.c b/fs/ubifs/repair.c
-index cb70a14e2a54..7d97de6219fa 100644
---- a/fs/ubifs/repair.c
-+++ b/fs/ubifs/repair.c
-@@ -37,12 +37,18 @@ static int init_repair_info(struct ubifs_info *c)
- 		return -ENOMEM;
- 
- 	c->repair->scanned_files = RB_ROOT;
-+	c->repair->used_lebs = bitmap_zalloc(c->main_lebs, GFP_KERNEL);
-+	if (!c->repair->used_lebs) {
-+		kfree(c->repair);
-+		return -ENOMEM;
-+	}
- 
- 	return 0;
- }
- 
- static void destroy_repair_info(struct ubifs_info *c)
- {
-+	bitmap_free(c->repair->used_lebs);
- 	kfree(c->repair);
- }
- 
-@@ -1020,6 +1026,9 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
- 
- 		valid_ino_node = lookup_valid_ino_node(c, si, del_ino_node);
- 		if (valid_ino_node) {
-+			int lnum = del_ino_node->header.lnum;
-+
-+			set_bit(lnum - c->main_first, c->repair->used_lebs);
- 			rb_erase(&valid_ino_node->rb, &si->valid_inos);
- 			kfree(valid_ino_node);
- 		}
-@@ -1036,6 +1045,9 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
- 
- 		valid_dent_node = lookup_valid_dent_node(c, si, del_dent_node);
- 		if (valid_dent_node) {
-+			int lnum = del_dent_node->header.lnum;
-+
-+			set_bit(lnum - c->main_first, c->repair->used_lebs);
- 			rb_erase(&valid_dent_node->rb, &si->valid_dents);
- 			kfree(valid_dent_node);
- 		}
-@@ -1710,6 +1722,82 @@ static int check_and_correct_files(struct ubifs_info *c)
- 	return 0;
- }
- 
-+static char *get_file_name(struct ubifs_info *c, struct scanned_file *file)
-+{
-+	static char name[UBIFS_MAX_NLEN + 1];
-+	struct rb_node *node;
-+	struct scanned_dent_node *dent_node;
-+
-+	node = rb_first(&file->dent_nodes);
-+	if (!node) {
-+		ubifs_assert(c, file->inum == UBIFS_ROOT_INO);
-+		return "/";
-+	}
-+
-+	if (c->encrypted && !file->ino.is_xattr)
-+		/* Encrypted file name. */
-+		return "<encrypted>";
-+
-+	/* Get name from any one dentry. */
-+	dent_node = rb_entry(node, struct scanned_dent_node, rb);
-+	memcpy(name, dent_node->name, dent_node->nlen);
-+	/* @dent->name could be non '\0' terminated. */
-+	name[dent_node->nlen] = '\0';
-+	return name;
-+}
-+
-+/**
-+ * record_used_lebs - record used LEBs.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function records all used LEBs which may hold useful nodes, then left
-+ * unused LEBs could be taken for storing new index tree.
-+ */
-+static void record_used_lebs(struct ubifs_info *c)
-+{
-+	int lnum;
-+	struct rb_node *node, *n;
-+	struct scanned_file *file;
-+	struct scanned_dent_node *dent_node;
-+	struct scanned_data_node *data_node;
-+
-+	for (node = rb_first(&c->repair->scanned_files); node;
-+	     node = rb_next(node)) {
-+		cond_resched();
-+		file = rb_entry(node, struct scanned_file, rb);
-+
-+		dbg_repair("recovered file(inum:%lu name:%s type:%s), in ubi%d_%d",
-+		     file->inum, get_file_name(c, file),
-+		     file->ino.is_xattr ? "xattr" :
-+		     ubifs_get_type_name(ubifs_get_dent_type(file->ino.mode)),
-+		     c->vi.ubi_num, c->vi.vol_id);
-+
-+		lnum = file->ino.header.lnum;
-+		set_bit(lnum - c->main_first, c->repair->used_lebs);
-+
-+		if (file->trun.header.exist) {
-+			lnum = file->trun.header.lnum;
-+			set_bit(lnum - c->main_first, c->repair->used_lebs);
-+		}
-+
-+		for (n = rb_first(&file->data_nodes); n; n = rb_next(n)) {
-+			cond_resched();
-+			data_node = rb_entry(n, struct scanned_data_node, rb);
-+
-+			lnum = data_node->header.lnum;
-+			set_bit(lnum - c->main_first, c->repair->used_lebs);
-+		}
-+
-+		for (n = rb_first(&file->dent_nodes); n; n = rb_next(n)) {
-+			cond_resched();
-+			dent_node = rb_entry(n, struct scanned_dent_node, rb);
-+
-+			lnum = dent_node->header.lnum;
-+			set_bit(lnum - c->main_first, c->repair->used_lebs);
-+		}
-+	}
-+}
-+
- static int do_repair(struct ubifs_info *c)
- {
- 	int err = 0;
-@@ -1744,6 +1832,12 @@ static int do_repair(struct ubifs_info *c)
- 	/* Step 7: Check & correct files' information. */
- 	ubifs_msg(c, "Step 7: Check & correct file information");
- 	err = check_and_correct_files(c);
-+	if (err)
-+		goto out;
-+
-+	/* Step 8: Record used LEBs. */
-+	ubifs_msg(c, "Step 8: Record used LEBs");
-+	record_used_lebs(c);
- 
- out:
- 	destroy_scanned_info(c, &si);
-diff --git a/fs/ubifs/repair.h b/fs/ubifs/repair.h
-index 05bfe9a2189e..fecf437ff0f7 100644
---- a/fs/ubifs/repair.h
-+++ b/fs/ubifs/repair.h
-@@ -153,9 +153,11 @@ struct scanned_file {
- 
- /**
-  * ubifs_repair_info - per-FS repairing information.
-+ * @usen_lebs: a bitmap used for recording used lebs
-  * @scanned_files: tree of all scanned files
-  */
- struct ubifs_repair_info {
-+	unsigned long *used_lebs;
- 	struct rb_root scanned_files;
- };
- 
+Testing on UBIFS repair refers to
+https://bugzilla.kernel.org/show_bug.cgi?id=218327
+
+Whatever, we finally have a way to fix inconsistent UBFIS image instead
+of formatting UBI when UBIFS becomes inconsistent.
+
+Zhihao Cheng (17):
+  ubifs: repair: Load filesystem info from volume
+  ubifs: repair: Scan nodes from volume
+  ubifs: repair: Remove deleted nodes from valid node tree
+  ubifs: repair: Add valid nodes into file
+  ubifs: repair: Filter invalid files
+  ubifs: repair: Extract reachable directory entries tree
+  ubifs: repair: Check and correct files' information
+  ubifs: repair: Record used LEBs
+  ubifs: repair: Re-write data
+  ubifs: repair: Create new root dir if there are no scanned files
+  ubifs: repair: Build TNC
+  ubifs: Extract a helper function to create lpt
+  ubifs: repair: Build LPT
+  ubifs: repair: Clean up log and orphan area
+  ubifs: repair: Write master node
+  ubifs: Enable ubifs_repair in '/sys/kernel/debug/ubifs/repair_fs'
+  Documentation: ubifs: Add ubifs repair whitepaper
+
+ Documentation/filesystems/index.rst           |    3 +-
+ .../authentication.rst}                       |    0
+ Documentation/filesystems/ubifs/index.rst     |   11 +
+ .../filesystems/{ubifs.rst => ubifs/main.rst} |    0
+ Documentation/filesystems/ubifs/repair.rst    |  235 ++
+ MAINTAINERS                                   |    5 +-
+ fs/ubifs/Makefile                             |    2 +-
+ fs/ubifs/debug.c                              |   57 +-
+ fs/ubifs/debug.h                              |    2 +
+ fs/ubifs/journal.c                            |   39 +-
+ fs/ubifs/lpt.c                                |  140 +-
+ fs/ubifs/repair.c                             | 2651 +++++++++++++++++
+ fs/ubifs/repair.h                             |  176 ++
+ fs/ubifs/sb.c                                 |   24 +-
+ fs/ubifs/super.c                              |   10 +-
+ fs/ubifs/ubifs.h                              |  113 +-
+ 16 files changed, 3315 insertions(+), 153 deletions(-)
+ rename Documentation/filesystems/{ubifs-authentication.rst => ubifs/authentication.rst} (100%)
+ create mode 100644 Documentation/filesystems/ubifs/index.rst
+ rename Documentation/filesystems/{ubifs.rst => ubifs/main.rst} (100%)
+ create mode 100644 Documentation/filesystems/ubifs/repair.rst
+ create mode 100644 fs/ubifs/repair.c
+ create mode 100644 fs/ubifs/repair.h
+
 -- 
 2.31.1
 
