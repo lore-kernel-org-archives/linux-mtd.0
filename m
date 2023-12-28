@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02975C47074
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D50F4C46CD4
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=l3dXcNUuMxanxwBCpP2cc1cDDzPRtS6mA4JgK5Kxte8=; b=ixaekwG4RufNoe
-	VF6J6BthdiecAo8VEUCqaFxPggHHjgmQktQoRxY0ySSDhinLDY6lBDKWlomvchxTOQVJLx4EsrjSF
-	Y8vNO6fXxTNeklRuUF+WW/A1EgTr9NAwmU1EDJhSDh9HirIUwamAwMD3SFlugitC+8a663/Ru3Cqq
-	IAMc/Izuffx23zvNSujZRCmgpW+SAEEkRBVYZx9aY4bNxKb2gHqXvVCY8GCKs4PX2gBVEOw6SQp4n
-	sXstQ9fxSnTn0UznjBEU2Q4T5uCT7U1/PScgz7t0VG+sATgvJ/nBdywKrq4DMW4/Pn8iLWLln/RiM
-	rsIOve1oj8JoA0vrt7xw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=z0UJ09qHb0zelBhgz/yqACoUAgVmMSE1MxCsXeXlzpo=; b=sCy9gEWMXz01Hy
+	6V8Kvfxqw9sUCTTNvSq6rX1OaKUnRrzPfZE+6vSlfYo4Or9V8/GIJsRZ4O74X6TbMoaNcYqGtbm4M
+	jkFojp7cgbYI0usC71zbg70wjXFKAbF/+9LVmEx/CATm1g1LS87OwPEuYH6oXEv9w8ILsKEGUjzP8
+	vyfYC5Zm3E5s6ubJbOjZbDluAWdjDcaCUrNK0NOVIM2f0PprYHVqXSDSXkVlQuN4TjA9jNzgQg1bx
+	fY3hnPj36iruiQpXb+APcdh2KakWY1seCbnGhbAl16jEwtE+suXYgbOU1LCRZHBbFGFy3e9kJq+yK
+	z4qQjwH3dZsQzGUkgPnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfLt-00FpdD-2D;
-	Thu, 28 Dec 2023 01:38:25 +0000
+	id 1rIfLu-00Fpdx-1s;
+	Thu, 28 Dec 2023 01:38:26 +0000
 Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfLn-00FpWy-01
+	id 1rIfLn-00FpWw-01
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Dec 2023 01:38:20 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4T0rjg1yJMzMprn;
-	Thu, 28 Dec 2023 09:37:43 +0800 (CST)
+	Thu, 28 Dec 2023 01:38:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4T0rjl0W8tzMprS;
+	Thu, 28 Dec 2023 09:37:47 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 813261402E0;
-	Thu, 28 Dec 2023 09:38:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 50D9218001F;
+	Thu, 28 Dec 2023 09:38:10 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:38:05 +0800
+ 2023 09:38:09 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC 00/17] ubifs: Add filesystem repair support
-Date: Thu, 28 Dec 2023 09:40:55 +0800
-Message-ID: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+Subject: [PATCH RFC 06/17] ubifs: repair: Extract reachable directory entries tree
+Date: Thu, 28 Dec 2023 09:41:01 +0800
+Message-ID: <20231228014112.2836317-7-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_173819_385162_2E63973E 
-X-CRM114-Status: UNSURE (   9.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231227_173819_368205_C06127D8 
+X-CRM114-Status: GOOD (  15.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,64 +71,214 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-UBIFS repair provides a way to fix inconsistent UBIFS image(which is
-corrupted by hardware exceptions or UBIFS realization bugs) and makes
-filesystem become consistent, just like fsck tools(eg. fsck.ext4,
-fsck.f2fs, fsck.fat, etc.) do.
+This is the 6/13 step of repairing. Extract reachable directory entries
+tree. Make sure that all files can be searched from '/', unreachable
+file is deleted. So, all files can be accessible in userspace after
+reparing.
 
-About why do we need it, how it works, what it can fix or it can not
-fix, when and how to use it, see more details in
-Documentation/filesystems/ubifs/repair.rst (Patch 17).
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/ubifs/repair.c | 143 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/repair.h |   4 ++
+ 2 files changed, 147 insertions(+)
 
-Testing on UBIFS repair refers to
-https://bugzilla.kernel.org/show_bug.cgi?id=218327
-
-Whatever, we finally have a way to fix inconsistent UBFIS image instead
-of formatting UBI when UBIFS becomes inconsistent.
-
-Zhihao Cheng (17):
-  ubifs: repair: Load filesystem info from volume
-  ubifs: repair: Scan nodes from volume
-  ubifs: repair: Remove deleted nodes from valid node tree
-  ubifs: repair: Add valid nodes into file
-  ubifs: repair: Filter invalid files
-  ubifs: repair: Extract reachable directory entries tree
-  ubifs: repair: Check and correct files' information
-  ubifs: repair: Record used LEBs
-  ubifs: repair: Re-write data
-  ubifs: repair: Create new root dir if there are no scanned files
-  ubifs: repair: Build TNC
-  ubifs: Extract a helper function to create lpt
-  ubifs: repair: Build LPT
-  ubifs: repair: Clean up log and orphan area
-  ubifs: repair: Write master node
-  ubifs: Enable ubifs_repair in '/sys/kernel/debug/ubifs/repair_fs'
-  Documentation: ubifs: Add ubifs repair whitepaper
-
- Documentation/filesystems/index.rst           |    3 +-
- .../authentication.rst}                       |    0
- Documentation/filesystems/ubifs/index.rst     |   11 +
- .../filesystems/{ubifs.rst => ubifs/main.rst} |    0
- Documentation/filesystems/ubifs/repair.rst    |  235 ++
- MAINTAINERS                                   |    5 +-
- fs/ubifs/Makefile                             |    2 +-
- fs/ubifs/debug.c                              |   57 +-
- fs/ubifs/debug.h                              |    2 +
- fs/ubifs/journal.c                            |   39 +-
- fs/ubifs/lpt.c                                |  140 +-
- fs/ubifs/repair.c                             | 2651 +++++++++++++++++
- fs/ubifs/repair.h                             |  176 ++
- fs/ubifs/sb.c                                 |   24 +-
- fs/ubifs/super.c                              |   10 +-
- fs/ubifs/ubifs.h                              |  113 +-
- 16 files changed, 3315 insertions(+), 153 deletions(-)
- rename Documentation/filesystems/{ubifs-authentication.rst => ubifs/authentication.rst} (100%)
- create mode 100644 Documentation/filesystems/ubifs/index.rst
- rename Documentation/filesystems/{ubifs.rst => ubifs/main.rst} (100%)
- create mode 100644 Documentation/filesystems/ubifs/repair.rst
- create mode 100644 fs/ubifs/repair.c
- create mode 100644 fs/ubifs/repair.h
-
+diff --git a/fs/ubifs/repair.c b/fs/ubifs/repair.c
+index 5875268135ff..c9435c9aa148 100644
+--- a/fs/ubifs/repair.c
++++ b/fs/ubifs/repair.c
+@@ -628,6 +628,7 @@ static int update_file(struct ubifs_info *c, struct scanned_file *file,
+ 	{
+ 		struct scanned_dent_node *dent = (struct scanned_dent_node *)sn;
+ 
++		dent->file = file;
+ 		err = insert_file_dentry(file, dent);
+ 		break;
+ 	}
+@@ -1315,6 +1316,144 @@ static void filter_invalid_files(struct ubifs_info *c)
+ 	}
+ }
+ 
++static bool dentry_is_reachable(struct ubifs_info *c,
++				struct scanned_dent_node *dent_node,
++				struct list_head *path_list)
++{
++	struct scanned_file *parent_file = NULL;
++	struct scanned_dent_node *dn, *parent_dent;
++	struct rb_node *p;
++
++	/* Dentry has already been checked as reachable. */
++	if (dent_node->can_be_found)
++		return true;
++
++	/* Check whether the path is cyclical. */
++	list_for_each_entry(dn, path_list, list) {
++		if (dn == dent_node)
++			return false;
++	}
++	dent_node->can_be_found = true;
++	list_add(&dent_node->list, path_list);
++
++	parent_file = lookup_file(c, key_inum(c, &dent_node->key));
++	/* Parent dentry is not found, unreachable. */
++	if (!parent_file)
++		return false;
++
++	/* Parent dentry is '/', reachable. */
++	if (parent_file->inum == UBIFS_ROOT_INO)
++		return true;
++
++	/*
++	 * There are two situations here:
++	 * 1. @file is non-xattr type. Since directory type file has only
++	 *    one dentry, pick first dentry from @parent_file is okay.
++	 * 2. @file is xattr type. Since non-xattr files are checked in
++	 *    first round, so any directory entries from @parent_file must
++	 *    be reachable.
++	 */
++	p = rb_first(&parent_file->dent_nodes);
++	if (!p)
++		return false;
++	parent_dent = rb_entry(p, struct scanned_dent_node, rb);
++
++	return dentry_is_reachable(c, parent_dent, path_list);
++}
++
++/**
++ * file_is_reachable - whether the file can be found from '/'.
++ * @c: UBIFS file-system description object
++ * @file: file object
++ *
++ * This function iterates all directory entries in given @file and checks
++ * whether each dentry is reachable. All unreachable directory entries will
++ * be removed.
++ */
++static bool file_is_reachable(struct ubifs_info *c, struct scanned_file *file)
++{
++	struct rb_node *node;
++	struct scanned_dent_node *dent_node;
++
++	if (file->inum == UBIFS_ROOT_INO)
++		return true;
++
++retry:
++	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
++		LIST_HEAD(path_list);
++
++		cond_resched();
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++
++		if (dentry_is_reachable(c, dent_node, &path_list))
++			continue;
++
++		while (!list_empty(&path_list)) {
++			cond_resched();
++			dent_node = list_entry(path_list.next,
++					       struct scanned_dent_node, list);
++
++			list_del(&dent_node->list);
++			rb_erase(&dent_node->rb, &dent_node->file->dent_nodes);
++			kfree(dent_node);
++		}
++
++		/* Since dentry node is removed from rb-tree, rescan rb-tree. */
++		goto retry;
++	}
++
++	if (!rb_first(&file->dent_nodes))
++		return false;
++
++	return true;
++}
++
++/**
++ * check_dentry_tree - extract reachable directory entries.
++ * @c: UBIFS file-system description object
++ *
++ * This function iterates all directory entries and remove those
++ * unreachable ones. 'Unreachable' means that a directory entry can
++ * not be found from '/'.
++ */
++static void extract_dentry_tree(struct ubifs_info *c)
++{
++	struct rb_node *node;
++	struct scanned_file *file;
++	LIST_HEAD(unreachable);
++
++	/* Round 1: Iterate non-xattr files. */
++	for (node = rb_first(&c->repair->scanned_files); node;
++	     node = rb_next(node)) {
++		cond_resched();
++		file = rb_entry(node, struct scanned_file, rb);
++
++		if (!file->ino.is_xattr && !file_is_reachable(c, file))
++			list_add(&file->list, &unreachable);
++	}
++
++	/* Round 2: Iterate xattr files. */
++	for (node = rb_first(&c->repair->scanned_files); node;
++	     node = rb_next(node)) {
++		cond_resched();
++		file = rb_entry(node, struct scanned_file, rb);
++
++		if (file->ino.is_xattr && !file_is_reachable(c, file))
++			list_add(&file->list, &unreachable);
++	}
++
++	/* Remove unreachable files. */
++	while (!list_empty(&unreachable)) {
++		cond_resched();
++		file = list_entry(unreachable.next, struct scanned_file, list);
++
++		list_del(&file->list);
++		destroy_file_content(file);
++		rb_erase(&file->rb, &c->repair->scanned_files);
++		kfree(file);
++	}
++}
++
+ static int do_repair(struct ubifs_info *c)
+ {
+ 	int err = 0;
+@@ -1342,6 +1481,10 @@ static int do_repair(struct ubifs_info *c)
+ 	ubifs_msg(c, "Step 5: Filter invalid files");
+ 	filter_invalid_files(c);
+ 
++	/* Step 6: Extract reachable directory entries. */
++	ubifs_msg(c, "Step 5: Extract reachable files");
++	extract_dentry_tree(c);
++
+ out:
+ 	destroy_scanned_info(c, &si);
+ 	return err;
+diff --git a/fs/ubifs/repair.h b/fs/ubifs/repair.h
+index 242bff2833bd..05bfe9a2189e 100644
+--- a/fs/ubifs/repair.h
++++ b/fs/ubifs/repair.h
+@@ -14,6 +14,8 @@
+ #ifndef __UBIFS_REPAIR_H__
+ #define __UBIFS_REPAIR_H__
+ 
++struct scanned_file;
++
+ /**
+  * scanned_node - common header node.
+  * @exist: whether the node is found by scanning
+@@ -67,6 +69,7 @@ struct scanned_ino_node {
+  * @nlen: name length
+  * @name: dentry name
+  * @inum: target inode number
++ * @file: corresponding file
+  * @rb: link in the trees of:
+  *  1) valid dentry nodes or deleted dentry node
+  *  2) all scanned dentry nodes from same file
+@@ -80,6 +83,7 @@ struct scanned_dent_node {
+ 	unsigned int nlen;
+ 	char name[UBIFS_MAX_NLEN];
+ 	ino_t inum;
++	struct scanned_file *file;
+ 	struct rb_node rb;
+ 	struct list_head list;
+ };
 -- 
 2.31.1
 
