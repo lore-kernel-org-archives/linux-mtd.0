@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 540E9C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 274F3C4706F
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nL+IFv/YAz1purDoe0K0ObfLJXYCjrG94Z/ctLuiIHw=; b=nvB1b/DnQEBMvU
-	EM6ddyu/DlQrWYIUuVNmJXxGrqZ38QSzSP9VXjtHclClEBiPZ+TnppNvjgc8c3shZozQmOLb4Gv0m
-	K3x1g9znSKiH4UbuLIVShTwlpX5BnGrKgbPO4BwIp9h6KOIr9zQPGkDf6MFHcdt719ot4OunaYNoa
-	MsgLSm8qI6wjLjO5Pe9LClAr7i7MAyU7Yi7zQikh4RnCzIFS3DisCucrGiJDCWvHo+mIDXnuWqlso
-	SfnhafrER37E6UlDsSXSuLr+IB7wOEyw7C7j22z0aUfE33xfuwU+VDYeFty5CE03xy8Icx5iaEd7f
-	dCU965nLxhxYrjlQVx8g==;
+	List-Owner; bh=rB+uljcX6Hq/AViM65RAqnl670wWQeD79xNtIsba0b4=; b=zzHIJ1IbUKtYOA
+	QIQ5EDs7bWSCPZZEvc3yMWJUQaNvP2Go8JYNI37VGElGip/Z/TJ69e5htdRZYr5OfoiDI/OW5sb5x
+	/NJrNIHMcaOd4HAbPBqI03q8SLNrHCmBCoJvT9fIJXtScq/FtJXGctav5dBHacXm7c3iHYPz7B8DI
+	XR3nvX1Wx936F2g/h48PdS9nJSwIax21Lu3FzAeY1pg6stP1K0sUj6GOczjwAlmW/33RzLgBZMBar
+	NW+uE2OKa4/nT6oweZ5csOd55stHBljfBhY5CIYUID2utjmDis8UMFmnz3lYOhxwNr3FhR0SctiKx
+	pm1sqaK1tbMBojV7j2cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFl-00GN5H-1b;
-	Thu, 28 Dec 2023 07:56:29 +0000
+	id 1rIlFr-00GNAX-2U;
+	Thu, 28 Dec 2023 07:56:35 +0000
 Received: from 213-147-167-209.nat.highway.webapn.at ([213.147.167.209] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFj-00GN0p-2v;
-	Thu, 28 Dec 2023 07:56:28 +0000
+	id 1rIlFo-00GN5Y-2d;
+	Thu, 28 Dec 2023 07:56:33 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -41,9 +41,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	nbd@other.debian.org,
 	linux-bcache@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 7/9] zram: use the default discard granularity
-Date: Thu, 28 Dec 2023 07:55:43 +0000
-Message-Id: <20231228075545.362768-8-hch@lst.de>
+Subject: [PATCH 8/9] bcache: use the default discard granularity
+Date: Thu, 28 Dec 2023 07:55:44 +0000
+Message-Id: <20231228075545.362768-9-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231228075545.362768-1-hch@lst.de>
 References: <20231228075545.362768-1-hch@lst.de>
@@ -69,21 +69,21 @@ that value explicitly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/zram/zram_drv.c | 1 -
+ drivers/md/bcache/super.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index d77d3664ca0805..e1dec0483a012b 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -2227,7 +2227,6 @@ static int zram_add(void)
- 					ZRAM_LOGICAL_BLOCK_SIZE);
- 	blk_queue_io_min(zram->disk->queue, PAGE_SIZE);
- 	blk_queue_io_opt(zram->disk->queue, PAGE_SIZE);
--	zram->disk->queue->limits.discard_granularity = PAGE_SIZE;
- 	blk_queue_max_discard_sectors(zram->disk->queue, UINT_MAX);
- 
- 	/*
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index ecc1447f202a42..39ec95b8613f1f 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -954,7 +954,6 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
+ 	q->limits.max_segment_size	= UINT_MAX;
+ 	q->limits.max_segments		= BIO_MAX_VECS;
+ 	blk_queue_max_discard_sectors(q, UINT_MAX);
+-	q->limits.discard_granularity	= block_size;
+ 	q->limits.io_min		= block_size;
+ 	q->limits.logical_block_size	= block_size;
+ 	q->limits.physical_block_size	= block_size;
 -- 
 2.39.2
 
