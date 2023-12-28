@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D93D8C47074
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 216A8C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=axXnS38LrdE1IF5I+KMjaXR0hBVrm7KhE8GXMd29OeY=; b=IFIUONClz6ZLs/
-	lLKoUGzqpnp7BrkKl8uK0gt1rrY+3Ej8hjGY4QJGYxzJeAimakBEHzqv04kFakQsez3Ckpj8kD7nj
-	Zgz+0jIN0Rs9nJNW5Jq5cAxmdjYzHS3hswgV/IPOXA1bqu5wRnAiDcIwHiNZD57kxBND1x/vHQKKh
-	NFCDffHsoinClqZfXgFauPuElawpQuaASvov9d/3lRWZ5RsU+wKGv+wbEHLVDKhbfUcCT+WDvSVVN
-	6bKQojmDsAx6upqavF+F8r14XUYMBD8ass2oOiBfcrme3W5B56ARgPsmU8c4amz45JaPqCgz52Y8F
-	9h0cH/ogCtV77MXhU0wg==;
+	List-Owner; bh=niI0rYRlUkTUb0AUA0952bsNHxwsqj5w7d2mBowIU44=; b=PxITyK5TSMAz0C
+	3htjidyxGexDEP32AH3+q1n8GGVxnM4wL/P0cYJUQk9GL99hkkqy0ycugxpYSvp0X0qk1LkNVG9hL
+	Qs3TJV5xygBw+mz0aYPMbTCzAoRY2ruNxJieszaQEdmuThCffLPYOdQkZ1GPhXH9dYvnfF6cjtkQz
+	H5iGuCmPJTY4f52viLy/Jnr6kRweYaRsVaLe0K0ST/bl2A4tkxJHf7IgZTyL2jZh5fCAwg27zLc9r
+	NjKzN9frvjyWj10aQOelduGi6JWPKtyRSDQYSzWIK3kHq4F7mOy/r+cq7fqyEVmYNyNeD7GG5bdrv
+	8xvwA/Ky9+ZmTZLRhVcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFN-00GMsa-0L;
-	Thu, 28 Dec 2023 07:56:05 +0000
+	id 1rIlFS-00GMu1-0O;
+	Thu, 28 Dec 2023 07:56:10 +0000
 Received: from 213-147-167-209.nat.highway.webapn.at ([213.147.167.209] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFK-00GMr8-11;
-	Thu, 28 Dec 2023 07:56:03 +0000
+	id 1rIlFP-00GMsI-1M;
+	Thu, 28 Dec 2023 07:56:08 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -41,9 +41,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	nbd@other.debian.org,
 	linux-bcache@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 2/9] bcache: discard_granularity should not be smaller than a sector
-Date: Thu, 28 Dec 2023 07:55:38 +0000
-Message-Id: <20231228075545.362768-3-hch@lst.de>
+Subject: [PATCH 3/9] block: default the discard granularity to sector size
+Date: Thu, 28 Dec 2023 07:55:39 +0000
+Message-Id: <20231228075545.362768-4-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231228075545.362768-1-hch@lst.de>
 References: <20231228075545.362768-1-hch@lst.de>
@@ -64,29 +64,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Just like all block I/O, discards are in units of sectors.  Thus setting a
-smaller than sector size discard limit in case of > 512 byte sectors in
-bcache doesn't make sense.  Always set the discard granularity to 512
-bytes instead.
+Current the discard granularity defaults to 0 and must be initialized by
+any driver that wants to support discard.  Default to the sector size
+instead, which is the smallest possible value, and a very useful default.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/bcache/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-settings.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index bfe1685dbae574..ecc1447f202a42 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -954,7 +954,7 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
- 	q->limits.max_segment_size	= UINT_MAX;
- 	q->limits.max_segments		= BIO_MAX_VECS;
- 	blk_queue_max_discard_sectors(q, UINT_MAX);
--	q->limits.discard_granularity	= 512;
-+	q->limits.discard_granularity	= block_size;
- 	q->limits.io_min		= block_size;
- 	q->limits.logical_block_size	= block_size;
- 	q->limits.physical_block_size	= block_size;
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index ba6e0e97118c08..d993d20dab3c6d 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -48,7 +48,7 @@ void blk_set_default_limits(struct queue_limits *lim)
+ 	lim->max_discard_sectors = 0;
+ 	lim->max_hw_discard_sectors = 0;
+ 	lim->max_secure_erase_sectors = 0;
+-	lim->discard_granularity = 0;
++	lim->discard_granularity = 512;
+ 	lim->discard_alignment = 0;
+ 	lim->discard_misaligned = 0;
+ 	lim->logical_block_size = lim->physical_block_size = lim->io_min = 512;
+@@ -309,6 +309,9 @@ void blk_queue_logical_block_size(struct request_queue *q, unsigned int size)
+ 
+ 	limits->logical_block_size = size;
+ 
++	if (limits->discard_granularity < limits->logical_block_size)
++		limits->discard_granularity = limits->logical_block_size;
++
+ 	if (limits->physical_block_size < size)
+ 		limits->physical_block_size = size;
+ 
 -- 
 2.39.2
 
