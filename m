@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C634C47072
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 540E9C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 07:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=84jDlYm365Xe4IXYqLpSs7BRDtK3g948hnUQA2/s5NM=; b=Js3WaKwPxQek4n
-	pfvR8I/e8IIK0qV14wKH8CXnuW8oNreimpESOHHde0C01vdyG6WxIbWCNgnyglBArDdbmNuK0MwAj
-	wyRkGyWmY/tAqkdSt415JjNwHoqUI7Vu+dC1xXml+IYTkwPkZRfOn/Qv6yHxBkhG61UrhRjd625Iz
-	MugKFYzv1sB55xXvm2SE/8ipOaJ4dgGdyFDhzWKBP8FZzDHiaowH1u6paZ4Z/JAg+4OxGl1Qo38gi
-	SurC1pfFrUretv7czpkTxG0IkUZoZYkrtvCMEo2aQGqVuUMrf1cPzJxOcGevBScfmlH4WwV+5KiO5
-	EKy4PQy/7oYedZHWqeLg==;
+	List-Owner; bh=nL+IFv/YAz1purDoe0K0ObfLJXYCjrG94Z/ctLuiIHw=; b=nvB1b/DnQEBMvU
+	EM6ddyu/DlQrWYIUuVNmJXxGrqZ38QSzSP9VXjtHclClEBiPZ+TnppNvjgc8c3shZozQmOLb4Gv0m
+	K3x1g9znSKiH4UbuLIVShTwlpX5BnGrKgbPO4BwIp9h6KOIr9zQPGkDf6MFHcdt719ot4OunaYNoa
+	MsgLSm8qI6wjLjO5Pe9LClAr7i7MAyU7Yi7zQikh4RnCzIFS3DisCucrGiJDCWvHo+mIDXnuWqlso
+	SfnhafrER37E6UlDsSXSuLr+IB7wOEyw7C7j22z0aUfE33xfuwU+VDYeFty5CE03xy8Icx5iaEd7f
+	dCU965nLxhxYrjlQVx8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFh-00GN1k-1W;
-	Thu, 28 Dec 2023 07:56:25 +0000
+	id 1rIlFl-00GN5H-1b;
+	Thu, 28 Dec 2023 07:56:29 +0000
 Received: from 213-147-167-209.nat.highway.webapn.at ([213.147.167.209] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIlFf-00GMy0-0b;
-	Thu, 28 Dec 2023 07:56:23 +0000
+	id 1rIlFj-00GN0p-2v;
+	Thu, 28 Dec 2023 07:56:28 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -41,9 +41,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	nbd@other.debian.org,
 	linux-bcache@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 6/9] null_blk: use the default discard granularity
-Date: Thu, 28 Dec 2023 07:55:42 +0000
-Message-Id: <20231228075545.362768-7-hch@lst.de>
+Subject: [PATCH 7/9] zram: use the default discard granularity
+Date: Thu, 28 Dec 2023 07:55:43 +0000
+Message-Id: <20231228075545.362768-8-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231228075545.362768-1-hch@lst.de>
 References: <20231228075545.362768-1-hch@lst.de>
@@ -69,21 +69,21 @@ that value explicitly.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/null_blk/main.c | 1 -
+ drivers/block/zram/zram_drv.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index 13ed446b5e198e..9f7695f00c2db8 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -1880,7 +1880,6 @@ static void null_config_discard(struct nullb *nullb)
- 		return;
- 	}
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index d77d3664ca0805..e1dec0483a012b 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -2227,7 +2227,6 @@ static int zram_add(void)
+ 					ZRAM_LOGICAL_BLOCK_SIZE);
+ 	blk_queue_io_min(zram->disk->queue, PAGE_SIZE);
+ 	blk_queue_io_opt(zram->disk->queue, PAGE_SIZE);
+-	zram->disk->queue->limits.discard_granularity = PAGE_SIZE;
+ 	blk_queue_max_discard_sectors(zram->disk->queue, UINT_MAX);
  
--	nullb->q->limits.discard_granularity = nullb->dev->blocksize;
- 	blk_queue_max_discard_sectors(nullb->q, UINT_MAX >> 9);
- }
- 
+ 	/*
 -- 
 2.39.2
 
