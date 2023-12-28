@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 404B3C46CD4
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A253C47074
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:38:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DLUwaIuoNF12FvtnRGdSkGDCykDgVdC1zPcwTxURdJw=; b=xb2Z54T11c2ETW
-	8pWxmY0g/aDOKyFYF3d1BpCPjV/JzbLV7bDS6anTSlx9iK+pyzpHcpv51I2F1hBKnoJ4CAlV10Xde
-	BlLmt6+WDao6KDQ7t2CuPmfvnNmfSdoy9e5qOMehYZZFT6qTraDIgQsc4Vz6+zFzAg1DV+SkDnRmG
-	RFn/2e8o0CFVUQ64VHi0hzLjvIypRei/bqnCLeCIwvvpoh6sl7MuwbJ/0p+PzhylE22JoylsItibk
-	oPn+LPNozKqS1O7CR4mBbs7AMM3FxiYH6LeUH1QAaiyjbHmGLDHAqC+8q6+QvJQnvDxLHOwJBrr5W
-	7WHV8h0rj6jMnBGCm0wg==;
+	List-Owner; bh=7UFYE9BSUAzX7ZhuNg6BeZ/zfUfRdJRjcWJZ4UCFcTA=; b=G9vr2YdenSmClx
+	8QTOtPX8oABd3AQME0V/XaQk4ZKpGNSIB7+UF8/ZSQEdYELIo8lT0aFD3LcgF1+7YNy64nxS4zm4v
+	YPEQqdjg2Z9ijd8vz6I0pnd8hkknSm8UC58EFMIyNn1KuwvI6c7CL75jfhlL33F7+XGWv69iLZqd4
+	5HVBTjVhreoSVefKe8f5RhOVrhciUfld9PCiBM4YHG9vmyd5CxnOpVuBt3el1tt3/HFkugt3Re1qz
+	0wBEJbeTorbH8+OflUNDi25DfT70zLdm9U3p0dDqAKqq+iy5gprWPrbUyG5t6UeTXVxHtG7zrYoej
+	bznPq5i/q5VKJAfXS/zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfLl-00FpWk-29;
-	Thu, 28 Dec 2023 01:38:17 +0000
+	id 1rIfLo-00FpZ2-1L;
+	Thu, 28 Dec 2023 01:38:20 +0000
 Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfLh-00FpVP-1K
+	id 1rIfLk-00FpW0-1B
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Dec 2023 01:38:15 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rdg1m7jz1FGL4;
-	Thu, 28 Dec 2023 09:34:15 +0800 (CST)
+	Thu, 28 Dec 2023 01:38:18 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rdj5r0nz1FGMZ;
+	Thu, 28 Dec 2023 09:34:17 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2A137140120;
-	Thu, 28 Dec 2023 09:38:07 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B6AF91A0173;
+	Thu, 28 Dec 2023 09:38:09 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:38:06 +0800
+ 2023 09:38:08 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC 01/17] ubifs: repair: Load filesystem info from volume
-Date: Thu, 28 Dec 2023 09:40:56 +0800
-Message-ID: <20231228014112.2836317-2-chengzhihao1@huawei.com>
+Subject: [PATCH RFC 05/17] ubifs: repair: Filter invalid files
+Date: Thu, 28 Dec 2023 09:41:00 +0800
+Message-ID: <20231228014112.2836317-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231228014112.2836317-1-chengzhihao1@huawei.com>
 References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_173813_807707_21395EEB 
-X-CRM114-Status: GOOD (  18.03  )
+X-CRM114-CacheID: sfid-20231227_173816_771090_95146C1D 
+X-CRM114-Status: GOOD (  18.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,212 +71,392 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 1/13 step of repairing. Open UBI volume and read UBIFS super
-block, which is similar to UBIFS mounting process. If read superblock
-failed, repair is failure.
+This is the 5/13 step of repairing. Filter out invalid files and drop
+them, for example:
+ 1. Nonconsistent file type between inode node and dentry nodes
+ 2. file has no dentry nodes(excepts '/')
+ 3. Encrypted file has no xattr information
+ 4. Non regular file has data nodes
+ 5. Directory/xattr file has more than one dentries
+ 6. Xattr file has no host inode
+ ...
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/Makefile |   2 +-
- fs/ubifs/repair.c | 109 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/super.c  |  10 ++---
- fs/ubifs/ubifs.h  |   5 +++
- 4 files changed, 120 insertions(+), 6 deletions(-)
- create mode 100644 fs/ubifs/repair.c
+ fs/ubifs/journal.c |  39 ++------
+ fs/ubifs/repair.c  | 222 +++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/ubifs.h   |  26 ++++++
+ 3 files changed, 254 insertions(+), 33 deletions(-)
 
-diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
-index 314c80b24a76..88a11f85e150 100644
---- a/fs/ubifs/Makefile
-+++ b/fs/ubifs/Makefile
-@@ -5,7 +5,7 @@ ubifs-y += shrinker.o journal.o file.o dir.o super.o sb.o io.o
- ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
- ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
- ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o debug.o
--ubifs-y += misc.o sysfs.o
-+ubifs-y += misc.o sysfs.o repair.o
- ubifs-$(CONFIG_FS_ENCRYPTION) += crypto.o
- ubifs-$(CONFIG_UBIFS_FS_XATTR) += xattr.o
- ubifs-$(CONFIG_UBIFS_FS_AUTHENTICATION) += auth.o
-diff --git a/fs/ubifs/repair.c b/fs/ubifs/repair.c
-new file mode 100644
-index 000000000000..b722187de74f
---- /dev/null
-+++ b/fs/ubifs/repair.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This file is part of UBIFS.
-+ *
-+ * Copyright (C) 2023-2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
-+
-+/*
-+ * This file implements ubifs repair.
-+ */
-+
-+#include <linux/module.h>
-+#include "ubifs.h"
-+
-+int ubifs_repair(const char *dev_name)
-+{
-+	int err = 0;
-+	struct ubifs_info *c;
-+	struct ubi_volume_desc *ubi;
-+	struct super_block *fake_sb;
-+
-+	ubi = open_ubi(dev_name, UBI_READWRITE);
-+	if (IS_ERR(ubi)) {
-+		err = PTR_ERR(ubi);
-+		pr_err("cannot open dev %s, err %d\n", dev_name, err);
-+		return err;
-+	}
-+
-+	fake_sb = kzalloc(sizeof(struct super_block), GFP_KERNEL);
-+	if (!fake_sb) {
-+		err = -ENOMEM;
-+		goto close_volume;
-+	}
-+
-+	c = alloc_ubifs_info(ubi);
-+	if (!c) {
-+		err = -ENOMEM;
-+		goto free_sb;
-+	}
-+
-+	c->ubi = ubi;
-+	c->vfs_sb = fake_sb;
-+	c->max_inode_sz = key_max_inode_size(c);
-+	if (c->max_inode_sz > MAX_LFS_FILESIZE)
-+		c->max_inode_sz = MAX_LFS_FILESIZE;
-+
-+	err = init_constants_early(c);
-+	if (err)
-+		goto free_ubifs;
-+
-+	err = ubifs_debugging_init(c);
-+	if (err)
-+		goto free_ubifs;
-+
-+	if (c->ro_media) {
-+		err = -EROFS;
-+		goto free_debug;
-+	}
-+
-+	err = check_volume_empty(c);
-+	if (err)
-+		goto free_debug;
-+
-+	if (c->empty) {
-+		ubifs_err(c, "empty filesystem");
-+		err = -ENODEV;
-+		goto free_debug;
-+	}
-+
-+	c->sbuf = vmalloc(c->leb_size);
-+	if (!c->sbuf) {
-+		err = -ENOMEM;
-+		goto free_debug;
-+	}
-+
-+	/* Step 1: Load filesystem info from volume. */
-+	ubifs_msg(c, "Step 1: Load filesystem");
-+	err = ubifs_read_superblock(c);
-+	if (err)
-+		goto free_sup;
-+
-+	/* TODO: Support repairing authenticated image. */
-+	if (le32_to_cpu(c->sup_node->flags) & UBIFS_FLG_AUTHENTICATION) {
-+		ubifs_err(c, "not support authentication");
-+		err = -EOPNOTSUPP;
-+		goto free_sup;
-+	}
-+
-+	err = init_constants_sb(c);
-+	if (err)
-+		goto free_sup;
-+
-+	ubifs_msg(c, "Repair success!");
-+
-+free_sup:
-+	kfree(c->sup_node);
-+	vfree(c->sbuf);
-+free_debug:
-+	ubifs_debugging_exit(c);
-+free_ubifs:
-+	kfree(c);
-+free_sb:
-+	kfree(fake_sb);
-+close_volume:
-+	ubi_close_volume(ubi);
-+	return err;
-+}
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index eabb0f44ea3e..ad726523d491 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -506,7 +506,7 @@ static int ubifs_sync_fs(struct super_block *sb, int wait)
-  * requirements. Returns zero in case of success and a negative error code in
-  * case of failure.
-  */
--static int init_constants_early(struct ubifs_info *c)
-+int init_constants_early(struct ubifs_info *c)
- {
- 	if (c->vi.corrupted) {
- 		ubifs_warn(c, "UBI volume is corrupted - read-only mode");
-@@ -670,7 +670,7 @@ static int bud_wbuf_callback(struct ubifs_info *c, int lnum, int free, int pad)
-  * makes sure they are all right. Returns zero in case of success and a
-  * negative error code in case of failure.
-  */
--static int init_constants_sb(struct ubifs_info *c)
-+int init_constants_sb(struct ubifs_info *c)
- {
- 	int tmp, err;
- 	long long tmp64;
-@@ -934,7 +934,7 @@ static void free_buds(struct ubifs_info *c)
-  * Returns zero in case of success and a negative error code in case of
-  * failure.
-  */
--static int check_volume_empty(struct ubifs_info *c)
-+int check_volume_empty(struct ubifs_info *c)
- {
- 	int lnum, err;
- 
-@@ -2086,7 +2086,7 @@ const struct super_operations ubifs_super_operations = {
-  * returns UBI volume description object in case of success and a negative
-  * error code in case of failure.
-  */
--static struct ubi_volume_desc *open_ubi(const char *name, int mode)
-+struct ubi_volume_desc *open_ubi(const char *name, int mode)
- {
- 	struct ubi_volume_desc *ubi;
- 	int dev, vol;
-@@ -2132,7 +2132,7 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
- 	return ERR_PTR(-EINVAL);
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index f0a5538c84b0..e1d22d13bfa7 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -409,33 +409,6 @@ static void finish_reservation(struct ubifs_info *c)
+ 	up_read(&c->commit_sem);
  }
  
--static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
-+struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
- {
- 	struct ubifs_info *c;
+-/**
+- * get_dent_type - translate VFS inode mode to UBIFS directory entry type.
+- * @mode: inode mode
+- */
+-static int get_dent_type(int mode)
+-{
+-	switch (mode & S_IFMT) {
+-	case S_IFREG:
+-		return UBIFS_ITYPE_REG;
+-	case S_IFDIR:
+-		return UBIFS_ITYPE_DIR;
+-	case S_IFLNK:
+-		return UBIFS_ITYPE_LNK;
+-	case S_IFBLK:
+-		return UBIFS_ITYPE_BLK;
+-	case S_IFCHR:
+-		return UBIFS_ITYPE_CHR;
+-	case S_IFIFO:
+-		return UBIFS_ITYPE_FIFO;
+-	case S_IFSOCK:
+-		return UBIFS_ITYPE_SOCK;
+-	default:
+-		BUG();
+-	}
+-	return 0;
+-}
+-
+ /**
+  * pack_inode - pack an inode node.
+  * @c: UBIFS file-system description object
+@@ -599,7 +572,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
  
+ 	key_write(c, &dent_key, dent->key);
+ 	dent->inum = deletion ? 0 : cpu_to_le64(inode->i_ino);
+-	dent->type = get_dent_type(inode->i_mode);
++	dent->type = ubifs_get_dent_type(inode->i_mode);
+ 	dent->nlen = cpu_to_le16(fname_len(nm));
+ 	memcpy(dent->name, fname_name(nm), fname_len(nm));
+ 	dent->name[fname_len(nm)] = '\0';
+@@ -1095,7 +1068,7 @@ int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
+ 	dent1->ch.node_type = UBIFS_DENT_NODE;
+ 	dent_key_init_flash(c, &dent1->key, snd_dir->i_ino, snd_nm);
+ 	dent1->inum = cpu_to_le64(fst_inode->i_ino);
+-	dent1->type = get_dent_type(fst_inode->i_mode);
++	dent1->type = ubifs_get_dent_type(fst_inode->i_mode);
+ 	dent1->nlen = cpu_to_le16(fname_len(snd_nm));
+ 	memcpy(dent1->name, fname_name(snd_nm), fname_len(snd_nm));
+ 	dent1->name[fname_len(snd_nm)] = '\0';
+@@ -1111,7 +1084,7 @@ int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
+ 	dent2->ch.node_type = UBIFS_DENT_NODE;
+ 	dent_key_init_flash(c, &dent2->key, fst_dir->i_ino, fst_nm);
+ 	dent2->inum = cpu_to_le64(snd_inode->i_ino);
+-	dent2->type = get_dent_type(snd_inode->i_mode);
++	dent2->type = ubifs_get_dent_type(snd_inode->i_mode);
+ 	dent2->nlen = cpu_to_le16(fname_len(fst_nm));
+ 	memcpy(dent2->name, fname_name(fst_nm), fname_len(fst_nm));
+ 	dent2->name[fname_len(fst_nm)] = '\0';
+@@ -1286,7 +1259,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	dent->ch.node_type = UBIFS_DENT_NODE;
+ 	dent_key_init_flash(c, &dent->key, new_dir->i_ino, new_nm);
+ 	dent->inum = cpu_to_le64(old_inode->i_ino);
+-	dent->type = get_dent_type(old_inode->i_mode);
++	dent->type = ubifs_get_dent_type(old_inode->i_mode);
+ 	dent->nlen = cpu_to_le16(fname_len(new_nm));
+ 	memcpy(dent->name, fname_name(new_nm), fname_len(new_nm));
+ 	dent->name[fname_len(new_nm)] = '\0';
+@@ -1303,7 +1276,7 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 
+ 	if (whiteout) {
+ 		dent2->inum = cpu_to_le64(whiteout->i_ino);
+-		dent2->type = get_dent_type(whiteout->i_mode);
++		dent2->type = ubifs_get_dent_type(whiteout->i_mode);
+ 	} else {
+ 		/* Make deletion dent */
+ 		dent2->inum = 0;
+@@ -1756,7 +1729,7 @@ int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
+ 	xent_key_init(c, &xent_key, host->i_ino, nm);
+ 	key_write(c, &xent_key, xent->key);
+ 	xent->inum = 0;
+-	xent->type = get_dent_type(inode->i_mode);
++	xent->type = ubifs_get_dent_type(inode->i_mode);
+ 	xent->nlen = cpu_to_le16(fname_len(nm));
+ 	memcpy(xent->name, fname_name(nm), fname_len(nm));
+ 	xent->name[fname_len(nm)] = '\0';
+diff --git a/fs/ubifs/repair.c b/fs/ubifs/repair.c
+index 7a1732ef903f..5875268135ff 100644
+--- a/fs/ubifs/repair.c
++++ b/fs/ubifs/repair.c
+@@ -1099,6 +1099,222 @@ static int add_valid_nodes_into_file(struct ubifs_info *c,
+ 	return 0;
+ }
+ 
++/**
++ * lookup_file - lookup file according to inode number.
++ * @c: UBIFS file-system description object
++ * @inum: inode number
++ *
++ * This function lookups target file from @c->repair->scanned_files
++ * according to @inum.
++ */
++static struct scanned_file *lookup_file(struct ubifs_info *c, ino_t inum)
++{
++	struct scanned_file *file;
++	struct rb_node *p;
++
++	p = c->repair->scanned_files.rb_node;
++	while (p) {
++		file = rb_entry(p, struct scanned_file, rb);
++
++		if (inum < file->inum)
++			p = p->rb_left;
++		else if (inum > file->inum)
++			p = p->rb_right;
++		else
++			return file;
++	}
++
++	return NULL;
++}
++
++/**
++ * file_is_valid - check whether the file is valid.
++ * @c: UBIFS file-system description object
++ * @file: file object
++ *
++ * This function checks whether given @file is valid, following checks will
++ * be performed:
++ * 1. The file type comes from inode and dentries should be consistent,
++ *    inconsistent dentries will be deleted.
++ * 2. All files must have at least one dentries, except '/', '/' doesn't
++ *    have dentries. Non '/' file is invalid if it doesn't have dentries.
++ * 3. Directory type or xattr type files only have one dentry. Superfluous
++ *    dentries with lower sequence number will be deleted.
++ * 4. Non-regular file doesn't have data nodes. Data nodes are deleted for
++ *    non-regular file.
++ * 5. Xattr files should have host inode, otherwise they are invalid.
++ * 6. Encrypted files should have corresponding xattrs, otherwise they are
++ *    invalid.
++ *
++ * Returns %true is @file is valid, otherwise %false is returned.
++ */
++static bool file_is_valid(struct ubifs_info *c, struct scanned_file *file)
++{
++	int type;
++	struct rb_node *node;
++	struct scanned_dent_node *dent_node;
++	struct scanned_data_node *data_node;
++	LIST_HEAD(drop_list);
++
++	if (!file->ino.header.exist)
++		return false;
++
++	type = ubifs_get_dent_type(file->ino.mode);
++
++	/* Drop dentry nodes with inconsistent type. */
++	for (node = rb_first(&file->dent_nodes); node; node = rb_next(node)) {
++		int is_xattr = 0;
++
++		cond_resched();
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++
++		if (key_type(c, &dent_node->key) == UBIFS_XENT_KEY)
++			is_xattr = 1;
++		if (is_xattr != file->ino.is_xattr || type != dent_node->type)
++			list_add(&dent_node->list, &drop_list);
++	}
++
++	while (!list_empty(&drop_list)) {
++		cond_resched();
++		dent_node = list_entry(drop_list.next, struct scanned_dent_node,
++				       list);
++
++		list_del(&dent_node->list);
++		rb_erase(&dent_node->rb, &file->dent_nodes);
++		kfree(dent_node);
++	}
++
++	if (type != UBIFS_ITYPE_DIR && !file->ino.is_xattr)
++		goto skip_dir_and_xattr;
++
++	/*
++	 * Make sure that directory/xattr type files only have one dentry.
++	 * This work should be done in step 4, but file type could be unknown
++	 * for lacking inode information at that time, so do it here.
++	 */
++	node = rb_first(&file->dent_nodes);
++	while (node) {
++		cond_resched();
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++		node = rb_next(node);
++		if (!node)
++			break;
++
++		rb_erase(&dent_node->rb, &file->dent_nodes);
++		kfree(dent_node);
++	}
++
++skip_dir_and_xattr:
++	if (type == UBIFS_ITYPE_REG && !file->ino.is_xattr)
++		goto skip_non_reg;
++
++	/*
++	 * Make sure that non regular type files not have data/trun nodes.
++	 * This work should be done in step 4, but file type could be unknown
++	 * for lacking inode information at that time, so do it here.
++	 */
++	file->trun.header.exist = 0;
++	node = rb_first(&file->data_nodes);
++	while (node) {
++		cond_resched();
++		data_node = rb_entry(node, struct scanned_data_node, rb);
++		node = rb_next(node);
++
++		rb_erase(&data_node->rb, &file->data_nodes);
++		kfree(data_node);
++	}
++
++skip_non_reg:
++	if (file->ino.is_xattr) {
++		struct scanned_file *parent_file;
++
++		node = rb_first(&file->dent_nodes);
++		if (!node)
++			/* The xattr dentry is not found. */
++			return false;
++
++		dent_node = rb_entry(node, struct scanned_dent_node, rb);
++		parent_file = lookup_file(c, key_inum(c, &dent_node->key));
++		if (!parent_file)
++			/* Host inode is not found. */
++			return false;
++
++		if (parent_file->ino.is_encrypted) {
++			int nlen = min(dent_node->nlen,
++				   strlen(UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT));
++
++			if (!strncmp(dent_node->name,
++				     UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT, nlen))
++				parent_file->has_encrypted_info = true;
++		}
++	} else {
++		/*
++		 * Since xattr files are checked in first round, so all
++		 * non-xattr files's @has_encrypted_info fields have been
++		 * initialized.
++		 */
++		if (file->ino.is_encrypted && !file->has_encrypted_info)
++			return false;
++	}
++
++	if (!rb_first(&file->dent_nodes)) {
++		/* Non-root files must have dentries. */
++		if (file->inum != UBIFS_ROOT_INO)
++			return false;
++	} else if (file->inum == UBIFS_ROOT_INO) {
++		/* '/' has no dentries. */
++		return false;
++	}
++
++	return true;
++}
++
++/**
++ * filter_invalid_files - filter out invalid files.
++ * @c: UBIFS file-system description object
++ *
++ * This function filters out invalid files(eg. inconsistent types between
++ * inode and dentry node, or missing inode/dentry node, or encrypted inode
++ * has no encryption related xattrs, etc.).
++ */
++static void filter_invalid_files(struct ubifs_info *c)
++{
++	struct rb_node *node;
++	struct scanned_file *file;
++	LIST_HEAD(invalid_list);
++
++	/* Round 1: Iterate xattr files. */
++	for (node = rb_first(&c->repair->scanned_files); node;
++	     node = rb_next(node)) {
++		cond_resched();
++		file = rb_entry(node, struct scanned_file, rb);
++
++		if (file->ino.is_xattr && !file_is_valid(c, file))
++			list_add(&file->list, &invalid_list);
++	}
++
++	/* Round 2: Iterate non-xattr files. */
++	for (node = rb_first(&c->repair->scanned_files); node;
++	     node = rb_next(node)) {
++		cond_resched();
++		file = rb_entry(node, struct scanned_file, rb);
++
++		if (!file->ino.is_xattr && !file_is_valid(c, file))
++			list_add(&file->list, &invalid_list);
++	}
++
++	/* Remove invalid files. */
++	while (!list_empty(&invalid_list)) {
++		cond_resched();
++		file = list_entry(invalid_list.next, struct scanned_file, list);
++
++		list_del(&file->list);
++		destroy_file_content(file);
++		rb_erase(&file->rb, &c->repair->scanned_files);
++		kfree(file);
++	}
++}
++
+ static int do_repair(struct ubifs_info *c)
+ {
+ 	int err = 0;
+@@ -1119,6 +1335,12 @@ static int do_repair(struct ubifs_info *c)
+ 	/* Step 4: Add valid nodes into file. */
+ 	ubifs_msg(c, "Step 4: Add valid nodes into file");
+ 	err = add_valid_nodes_into_file(c, &si);
++	if (err)
++		goto out;
++
++	/* Step 5: Drop invalid files. */
++	ubifs_msg(c, "Step 5: Filter invalid files");
++	filter_invalid_files(c);
+ 
+ out:
+ 	destroy_scanned_info(c, &si);
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 3916dc4f30ca..a7ee8010ad66 100644
+index 014f5ea26b17..449ab220db30 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -2072,6 +2072,11 @@ static inline int ubifs_init_security(struct inode *dentry,
+@@ -1829,6 +1829,32 @@ int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
+ 			   const struct inode *inode, const struct fscrypt_name *nm);
+ int ubifs_jnl_change_xattr(struct ubifs_info *c, const struct inode *inode1,
+ 			   const struct inode *inode2);
++/**
++ * ubifs_get_dent_type - translate VFS inode mode to UBIFS directory entry type.
++ * @mode: inode mode
++ */
++static inline int ubifs_get_dent_type(int mode)
++{
++	switch (mode & S_IFMT) {
++	case S_IFREG:
++		return UBIFS_ITYPE_REG;
++	case S_IFDIR:
++		return UBIFS_ITYPE_DIR;
++	case S_IFLNK:
++		return UBIFS_ITYPE_LNK;
++	case S_IFBLK:
++		return UBIFS_ITYPE_BLK;
++	case S_IFCHR:
++		return UBIFS_ITYPE_CHR;
++	case S_IFIFO:
++		return UBIFS_ITYPE_FIFO;
++	case S_IFSOCK:
++		return UBIFS_ITYPE_SOCK;
++	default:
++		BUG();
++	}
++	return 0;
++}
  
- /* super.c */
- struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
-+int init_constants_early(struct ubifs_info *c);
-+int init_constants_sb(struct ubifs_info *c);
-+int check_volume_empty(struct ubifs_info *c);
-+struct ubi_volume_desc *open_ubi(const char *name, int mode);
-+struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi);
- 
- /* recovery.c */
- int ubifs_recover_master_node(struct ubifs_info *c);
+ /* budget.c */
+ int ubifs_budget_space(struct ubifs_info *c, struct ubifs_budget_req *req);
 -- 
 2.31.1
 
