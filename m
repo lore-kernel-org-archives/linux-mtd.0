@@ -4,59 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 425D7C46CD2
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Dec 2023 16:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFF6FC47073
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=DwU1gHmll70qr+US4qnwrlgts5AON2YkpbHO3Ula1qc=; b=1hRUloVe5dKM+a
-	Xo1XTzF9OE+BJrZVY7r6u7YsASvBKJr5/tm3fipQtzmw/wajLStARjfxK9nALMPnAwNA5XgWWcUPT
-	ymWtBi9EGZlnOThUai2agLxr8mfo/gMzmQR2PvKWoil2Pp8p2ZqYZG3DghAZB4czM6ZmENkwFXLPm
-	ANb9MBF6c3ujDaJARRdVe1GyFoXC8zCflcycxx96Q+LkatTceJlhLgAwQluR41VfnnUK+Xw+w299A
-	VpFDdrOYvMan13ItNzE8+CorSRIf1FRziPbsKyJ8uSWG60AzRXBwevgkmmpQgipgJvKw11Zn/sQ1a
-	ysmWsPvlu49DqkUGThaQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=U1/fgEsG/V8IVkYvnYyfCFbet2U1HLz5iVGgk64uSsI=; b=PZCeAvijxZZzR1
+	ilCN3TVa/hlJAVWJlB8QCiQHI5XMq+ZAr9hqx8t4w48nlynvIuEpvyCky/frA/FOmkFmWm8EtMc83
+	PqjN+P1a7PXsHhNB+wJMRcjsMEy12y+I6IWRPqhtTT3PZiOyVUhW3BPxRHc90OxmjMsJkTM03Afcl
+	SecgOZEAhkzpVv107eRGVO8+N0L65F7ppGkDHGg4nb8M+HIRQCZVUSWamwKsne6rCt0xTDLTjHWqQ
+	m4cqpAbnciI6IFuyCVxYpd6VNM2PpV9PJSsn2sp+OpKAgqRomhp9ePP03db63mKSP+3BVNb3H6Mfz
+	kBJOT4h2OUVpM16pjWwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIWxR-00F6WB-0q;
-	Wed, 27 Dec 2023 16:40:37 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1rIfHW-00Fo30-0A;
+	Thu, 28 Dec 2023 01:33:54 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIWxN-00F6VE-04
+	id 1rIfHQ-00Fnzs-0I
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Dec 2023 16:40:35 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DF4C240009;
-	Wed, 27 Dec 2023 16:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1703695226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WV2Dkh4X6V9DETcF8K3WF1QMiYnpkJSaG2LYRTpmYig=;
-	b=XHIUEj2ofv8PqSFwvq9hnXalcBEcZEYyJnwS8hG+vB9cbdwLcB8/uEYHxxxRTZAITpxOK0
-	TkpQAN/U+eY/6mQTBTar/OO+bOGS53u3mHpugJl2fIfKOP+IFiX1Rjo+U8Rzt4Cs+HMeGe
-	USFcCDSEmtkvOQ5enbywBFS02zQ7UMEcPD42jKfR1ZhpqS25ElLISZFu6gj/FBiw1RdZHy
-	/qN5W8WGaQt0lH/h+PZ2LejSfTI5EXjmsPN2VgYH6j+OS9uuFMIvqktyW8UGzKHRVhS9wW
-	d0o+l/i0j9ghAzi6bZP7N8S91KqulpbVFDp/TgeQytIGls26IgPXGVfQS5GTvA==
-Date: Wed, 27 Dec 2023 17:40:23 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra
- <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
- Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Changes for v6.8
-Message-ID: <20231227174023.346ec9fb@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Thu, 28 Dec 2023 01:33:52 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rXR3vnZz1FGHJ;
+	Thu, 28 Dec 2023 09:29:43 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id 764441A0172;
+	Thu, 28 Dec 2023 09:33:35 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
+ (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
+ 2023 09:33:34 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
+	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
+	<Tudor.Ambarus@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH mtd-utils 04/11] tests: ubifs_repair: Add powercut+repair+mount test
+Date: Thu, 28 Dec 2023 09:36:32 +0800
+Message-ID: <20231228013639.2827205-5-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
+References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_084033_342193_915EF21E 
-X-CRM114-Status: GOOD (  16.74  )
+X-CRM114-CacheID: sfid-20231227_173348_502157_A783C7F2 
+X-CRM114-Status: GOOD (  15.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,139 +66,212 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTGludXMsCgpBIGJpdCBpbiBhZHZhbmNlLCBoZXJlIGlzIHRoZSBNVEQgUFIgZm9yIHRo
-ZSBvcGVuaW5nIG1lcmdlCndpbmRvdyBmb3IgdjYuOC1yYzEuCgpUaGFua3MsCk1pcXXDqGwKClRo
-ZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgYjg1ZWE5NWQwODY0NzFhZmI0YWQwNjIw
-MTJhNGQ3M2NkMzI4ZmE4NjoKCiAgTGludXggNi43LXJjMSAoMjAyMy0xMS0xMiAxNjoxOTowNyAt
-MDgwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBnaXQ6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCB0YWdz
-L210ZC9mb3ItNi44Cgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gOThkNGZkYThmMmQ0
-YmMzZmI5Nzk1OGQyZWY0YzkwZTE2MWE2MjhmMjoKCiAgTWVyZ2UgdGFnICduYW5kL2Zvci02Ljgn
-IGludG8gbXRkL25leHQgKDIwMjMtMTItMjIgMTI6NDU6NTIgKzAxMDApCgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiogTVRE
-CgpBcGFydCBmcm9tIHByZXZlbnRpbmcgdGhlIG10ZGJsayB0byBydW4gb24gdG9wIG9mIGZ0bCBv
-ciB1YmlibGsgKHdoaWNoCm1heSBjYXVzZSBzZWN1cml0eSBpc3N1ZXMgYW5kIGhhcyBubyBtZWFu
-aW5nIGFueXdheSksIHRoZXJlIGFyZSBhIGZldwptaXNjIGZpeGVzLgoKKiBSYXcgTkFORAoKVHdv
-IG1lYW5pbmdmdWwgY2hhbmdlcyB0aGlzIHRpbWUuIFRoZSBjb252ZXJzaW9uIG9mIHRoZSBicmNt
-bmFuZCBkcml2ZXIKdG8gdGhlIC0+ZXhlY19vcCgpIEFQSSwgdGhpcyBzZXJpZXMgYnJvdWdodCBh
-ZGRpdGlvbmFsIGNoYW5nZXMgdG8gdGhlCmNvcmUgaW4gb3JkZXIgdG8gaGVscCBjb250cm9sbGVy
-IGRyaXZlcnMgdG8gaGFuZGxlIHRoZW1zZWx2ZXMgdGhlIFdQIHBpbgpkdXJpbmcgZGVzdHJ1Y3Rp
-dmUgb3BlcmF0aW9ucyB3aGVuIHJlbGV2YW50LgoKVGhlcmUgaXMgYWxzbyBhIHNlcmllcyBicmlu
-Z2luZyBpbXBvcnRhbnQgZml4ZXMgdG8gdGhlIHNlcXVlbnRpYWwgcmVhZApmZWF0dXJlLgoKQXMg
-YWx3YXlzLCB0aGVyZSBpcyBhcyB3ZWxsIGEgd2hvbGUgYnVuY2ggb2YgbWlzY2VsbGFuZW91cyBX
-PTEgZml4ZXMsCnRvZ2V0aGVyIHdpdGggYSBmZXcgcnVudGltZSBmaXhlcyAoZG91YmxlIGZyZWUs
-IHRpbWVvdXQgdmFsdWUsIE9PQgpsYXlvdXQsIG1pc3NpbmcgcmVnaXN0ZXIgaW5pdGlhbGl6YXRp
-b24pIGFuZCB0aGUgdXN1YWwgbG9hZCBvZiByZW1vdmUKY2FsbGJhY2tzIHR1cm5lZCBpbnRvIHZv
-aWQgKHdoaWNoIGxlZCB0byBzd2l0Y2ggdGhlIHR4eDluZGZtYyBkcml2ZXIgdG8KdXNlIG1vZHVs
-ZV9wbGF0Zm9ybV9kcml2ZXIoKSkuCgoqIFNQSSBOT1IKClNQSSBOT1IgY29tZXMgd2l0aCBkaWUg
-ZXJhc2Ugc3VwcG9ydCBmb3IgbXVsdGkgZGllIGZsYXNoZXMsIHdpdGggbmV3Cm9jdGFsIHByb3Rv
-Y29scyAoMS0xLTggYW5kIDEtOC04KSBwYXJzZWQgZnJvbSBTRkRQIGFuZCB3aXRoIGFuIHVwZGF0
-ZWQKZG9jdW1lbnRhdGlvbiBhYm91dCB3aGF0IHRoZSBjb250cmlidXRvcnMgc2hhbGwgY29uc2lk
-ZXIgd2hlbiBwcm9wb3NpbmcKZmxhc2ggYWRkaXRpb25zIG9yIHVwZGF0ZXMuCgpNaWNoYWVsIFdh
-bGxlIHN0ZXBwZWQgb3V0IGZyb20gdGhlIHJldmlld2VyIHJvbGUgdG8gbWFpbnRhaW5lci4KCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KQXJzZW5peSBLcmFzbm92ICgyKToKICAgICAgbXRkOiByYXduYW5kOiBtZXNvbjogaW5p
-dGlhbGl6ZSBjbG9jayByZWdpc3RlcgogICAgICBtdGQ6IHJhd25hbmQ6IG1lc29uOiBoYW5kbGUg
-T09CIGJ1ZmZlciBhY2NvcmRpbmcgT09CIGxheW91dAoKQm9yaXMgQnJlemlsbG9uICgxKToKICAg
-ICAgbXRkOiByYXduYW5kOiBBZGQgZGVzdHJ1Y3RpdmUgb3BlcmF0aW9uCgpEYXZpZCBSZWdhbiAo
-Myk6CiAgICAgIG10ZDogcmF3bmFuZDogTkFORCBjb250cm9sbGVyIHdyaXRlIHByb3RlY3QKICAg
-ICAgbXRkOiByYXduYW5kOiBicmNtbmFuZDogcGFzcyBob3N0IHN0cnVjdCB0byBiY21uYW5kX2N0
-cmxfcG9sbF9zdGF0dXMKICAgICAgbXRkOiByYXduYW5kOiBicmNtbmFuZDogZXhlY19vcCBpbXBs
-ZW1lbnRhdGlvbgoKRGluZ2hhbyBMaXUgKDEpOgogICAgICBtdGQ6IHJhd25hbmQ6IGRpc2tvbmNo
-aXA6IGZpeCBhIHBvdGVudGlhbCBkb3VibGUgZnJlZSBpbiBkb2NfcHJvYmUKCkZhYmlvIEVzdGV2
-YW0gKDEpOgogICAgICBtdGQ6IHNwaS1ub3I6IG1pY3Jvbi1zdDogQWRkIHN1cHBvcnQgZm9yIG10
-MjVxdTAxZwoKSmFpbWVMaWFvICgyKToKICAgICAgbXRkOiBzcGktbm9yOiBzeXNmczogaGlkZSB0
-aGUgZmxhc2ggbmFtZSBpZiBub3Qgc2V0CiAgICAgIG10ZDogc3BpLW5vcjogc2ZkcDogZ2V0IHRo
-ZSAxLTEtOCBhbmQgMS04LTggcHJvdG9jb2wgZnJvbSBTRkRQCgpNaWNoYWVsIFdhbGxlICgyKToK
-ICAgICAgTUFJTlRBSU5FUlM6IHNwaS1ub3I6IGFkZCBteXNlbGYgYXMgbWFpbnRhaW5lcgogICAg
-ICBNQUlOVEFJTkVSUzogY2hhbmdlIG15IG1haWwgdG8gdGhlIGtlcm5lbC5vcmcgb25lCgpNaXF1
-ZWwgUmF5bmFsICgxMSk6CiAgICAgIG10ZDogcmF3bmFuZDogcGwzNTM6IEZpeCBrZXJuZWwgZG9j
-CiAgICAgIG10ZDogcmF3bmFuZDogcm9ja2NoaXA6IFJlbmFtZSBhIHN0cnVjdHVyZQogICAgICBt
-dGQ6IHJhd25hbmQ6IHJvY2tjaGlwOiBBZGQgbWlzc2luZyB0aXRsZSB0byBhIGtlcm5lbCBkb2Mg
-Y29tbWVudAogICAgICBtdGQ6IHNzZmRjOiBSZW1vdmUgYW4gdW51c2VkIHZhcmlhYmxlCiAgICAg
-IG10ZDogbWFwczogdm11LWZsYXNoOiBGaXggdGhlIChtdGQgY29yZSkgc3dpdGNoIHRvIHJlZiBj
-b3VudGVycwogICAgICBtdGQ6IHJhd25hbmQ6IFByZXZlbnQgY3Jvc3NpbmcgTFVOIGJvdW5kYXJp
-ZXMgZHVyaW5nIHNlcXVlbnRpYWwgcmVhZHMKICAgICAgbXRkOiByYXduYW5kOiBGaXggY29yZSBp
-bnRlcmZlcmVuY2Ugd2l0aCBzZXF1ZW50aWFsIHJlYWRzCiAgICAgIG10ZDogcmF3bmFuZDogUHJl
-dmVudCBzZXF1ZW50aWFsIHJlYWRzIHdpdGggb24tZGllIEVDQyBlbmdpbmVzCiAgICAgIG10ZDog
-cmF3bmFuZDogQ2xhcmlmeSBjb25kaXRpb25zIHRvIGVuYWJsZSBjb250aW51b3VzIHJlYWRzCiAg
-ICAgIE1lcmdlIHRhZyAnc3BpLW5vci9mb3ItNi44JyBpbnRvIG10ZC9uZXh0CiAgICAgIE1lcmdl
-IHRhZyAnbmFuZC9mb3ItNi44JyBpbnRvIG10ZC9uZXh0CgpSYW5keSBEdW5sYXAgKDEpOgogICAg
-ICBtdGQ6IHJhd25hbmQ6IHMzYzI0MTA6IGZpeCBFeGNlc3Mgc3RydWN0IG1lbWJlciBkZXNjcmlw
-dGlvbiBrZXJuZWwtZG9jIHdhcm5pbmdzCgpSb25hbGQgTW9udGhlcm8gKDEpOgogICAgICBtdGQ6
-IHJhd25hbmQ6IEluY3JlbWVudCBJRkNfVElNRU9VVF9NU0VDUyBmb3IgbmFuZCBjb250cm9sbGVy
-IHJlc3BvbnNlCgpTdGVmYW4gV2FocmVuICgxKToKICAgICAgZHQtYmluZGluZ3M6IG10ZDogcGFy
-dGl0aW9uczogdS1ib290OiBGaXggdHlwbwoKVHVkb3IgQW1iYXJ1cyAoMTApOgogICAgICBtdGQ6
-IHNwaS1ub3I6IHVzZSBrZXJuZWwgc2l6ZWQgdHlwZXMgaW5zdGVhZCBvZiBjOTkgdHlwZXMKICAg
-ICAgZG9jczogbXRkOiBzcGktbm9yOiBhZGQgc2VjdGlvbnMgYWJvdXQgZmxhc2ggYWRkaXRpb25z
-IGFuZCB0ZXN0aW5nCiAgICAgIGRvY3M6IG10ZDogc3BpLW5vcjogZHJvcCBvYnNvbGV0ZSBpbmZv
-CiAgICAgIG10ZDogc3BpLW5vcjogYWRkIGVyYXNlIGRpZSAoY2hpcCkgY2FwYWJpbGl0eQogICAg
-ICBtdGQ6IHNwaS1ub3I6IHNwYW5zaW9uOiBlbmFibGUgZGllIGVyYXNlIGZvciBtdWx0aSBkaWUg
-Zmxhc2hlcwogICAgICBtdGQ6IHNwaS1ub3I6IG1pY3Jvbi1zdDogZW5hYmxlIGRpZSBlcmFzZSBm
-b3IgbXVsdGkgZGllIGZsYXNoZXMKICAgICAgbXRkOiBzcGktbm9yOiByZW1vdmUgTk9fQ0hJUF9F
-UkFTRSBmbGFnCiAgICAgIG10ZDogc3BpLW5vcjogcHJpbnQgZmxhc2ggSUQgaW5zdGVhZCBvZiBu
-YW1lCiAgICAgIG10ZDogc3BpLW5vcjogbWFyayB0aGUgZmxhc2ggbmFtZSBhcyBvYnNvbGV0ZQog
-ICAgICBtdGQ6IHNwaS1ub3I6IGRyb3Agc3VwZXJmbHVvdXMgZGVidWcgcHJpbnRzCgpVd2UgS2xl
-aW5lLUvDtm5pZyAoNCk6CiAgICAgIG10ZDogcmF3bmFuZDogYnJjbW5hbmQ6IENvbnZlcnQgdG8g
-cGxhdGZvcm0gcmVtb3ZlIGNhbGxiYWNrIHJldHVybmluZyB2b2lkCiAgICAgIG10ZDogcmF3bmFu
-ZDogdHh4OW5kZm1jOiBTd2l0Y2ggdG8gbW9kdWxlX3BsYXRmb3JtX2RyaXZlcigpCiAgICAgIG10
-ZDogcmF3bmFuZDogdHh4OW5kZm1jOiBEcm9wIGlmIGJsb2NrIHdpdGggYWx3YXlzIGZhbHNlIGNv
-bmRpdGlvbgogICAgICBtdGQ6IHJhd25hbmQ6IHR4eDluZGZtYzogQ29udmVydCB0byBwbGF0Zm9y
-bSByZW1vdmUgY2FsbGJhY2sgcmV0dXJuaW5nIHZvaWQKClpoYW9Mb25nIFdhbmcgKDEpOgogICAg
-ICBtdGQ6IEZpeCBnbHVlYmkgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGNhdXNlZCBieSBmdGwg
-bm90aWZpZXIKCiBEb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWJ1cy1zcGktZGV2aWNl
-cy1zcGktbm9yICAgICAgfCAgIDMgKwogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L210ZC9wYXJ0aXRpb25zL3UtYm9vdC55YW1sIHwgICAyICstCiBEb2N1bWVudGF0aW9uL2RyaXZl
-ci1hcGkvbXRkL3NwaS1ub3IucnN0ICAgICAgICAgICAgICAgICAgICAgfCAyNjIgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0t
-LS0tCiBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgIDggKy0tCiBkcml2ZXJzL210ZC9tYXBzL3ZtdS1mbGFzaC5jICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL210ZF9ibGtkZXZz
-LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvYnJjbW5hbmQvYmNtNjMxMzhfbmFuZC5jICAgICAgICAgICAgICAgIHwgICAy
-ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9iY202MzY4X25hbmQuYyAgICAgICAg
-ICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JjbWFfbmFu
-ZC5jICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJj
-bW5hbmQvYnJjbW5hbmQuYyAgICAgICAgICAgICAgICAgICAgIHwgNDA4ICsrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9icmNtbmFuZC9icmNtbmFuZC5oICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZl
-cnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21zdGJfbmFuZC5jICAgICAgICAgICAgICAgICB8
-ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvaXByb2NfbmFuZC5jICAgICAg
-ICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kaXNrb25jaGlwLmMg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTAgKy0tCiBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9mc2xfaWZjX25hbmQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGRyaXZl
-cnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAgOCArKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICA5OSArKysrKysrKysrKysrKysrKysrKystLS0tLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvcGwzNXgtbmFuZC1jb250cm9sbGVyLmMgICAgICAgICAgICAgICAgIHwgICAy
-ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9yb2NrY2hpcC1uYW5kLWNvbnRyb2xsZXIuYyAgICAg
-ICAgICAgICAgfCAgIDcgKy0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3MzYzI0MTAuYyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy90eHg5
-bmRmbWMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTMgKystLQogZHJpdmVycy9t
-dGQvc3BpLW5vci9hdG1lbC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE2
-ICsrLS0tCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAxNzAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0t
-LS0tLS0tCiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMjQgKysrLS0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9kZWJ1Z2ZzLmMg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210ZC9zcGkt
-bm9yL21pY3Jvbi1zdC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNTkgKysrKysr
-KysrKysrKystLQogZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgIDI5ICsrKysrKysrCiBkcml2ZXJzL210ZC9zcGktbm9yL3NmZHAu
-aCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDcgKysKIGRyaXZlcnMvbXRk
-L3NwaS1ub3Ivc3BhbnNpb24uYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNCAr
-LQogZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgICA2ICstCiBkcml2ZXJzL210ZC9zcGktbm9yL3N3cC5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgMjUgKysrKy0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9z
-eXNmcy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsKIGRyaXZlcnMv
-bXRkL3NzZmRjLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-MSAtCiBpbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmggICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgMTUgKysrKwogMzQgZmlsZXMgY2hhbmdlZCwgNzQwIGluc2VydGlvbnMoKyks
-IDQ2NCBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Inject powercut while doing fsstress on mounted UBIFS for kinds of
+flashes (eg. nand, nor).
+This testcase mainly makes sure that ubifs_repair can make UBIFS image
+be consistent on different flashes (eg. nand, nor). Because the
+min_io_size of nor flash is 1, the UBIFS image on nor flash will be
+different from nand flash after doing powercut, so we need make sure
+ubifs_repair can handle these two types of flash.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ .gitignore                                         |   1 +
+ configure.ac                                       |   3 +-
+ tests/ubifs_repair-tests/Makemodule.am             |   3 +-
+ .../tests/powercut_repair_mount.sh.in              | 138 +++++++++++++++++++++
+ 4 files changed, 143 insertions(+), 2 deletions(-)
+ create mode 100755 tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
+
+diff --git a/.gitignore b/.gitignore
+index 1a5fe7e..d47282c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -115,6 +115,7 @@ tests/ubi-tests/ubi-stress-test.sh
+ tests/ubifs_repair-tests/lib/common.sh
+ tests/ubifs_repair-tests/tests/authentication_refuse.sh
+ tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
++tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
+ 
+ #
+ # Files generated by autotools
+diff --git a/configure.ac b/configure.ac
+index 73a3853..349e4ad 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -357,6 +357,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
+ 	tests/ubi-tests/ubi-stress-test.sh
+ 	tests/ubifs_repair-tests/lib/common.sh
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh
+-	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh])
++	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh])
+ 
+ AC_OUTPUT([Makefile])
+diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
+index c2556f5..92f288a 100644
+--- a/tests/ubifs_repair-tests/Makemodule.am
++++ b/tests/ubifs_repair-tests/Makemodule.am
+@@ -1,4 +1,5 @@
+ test_SCRIPTS += \
+ 	tests/ubifs_repair-tests/lib/common.sh \
+ 	tests/ubifs_repair-tests/tests/authentication_refuse.sh \
+-	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
++	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
++	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
+diff --git a/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in b/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
+new file mode 100755
+index 0000000..a5c7da6
+--- /dev/null
++++ b/tests/ubifs_repair-tests/tests/powercut_repair_mount.sh.in
+@@ -0,0 +1,138 @@
++#!/bin/sh
++# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
++# Author: Zhihao Cheng <chengzhihao1@huawei.com>
++#
++# Test Description:
++# For many kinds of flash, do following things
++#  1. mount UBIFS
++#  2. fsstress & powercut & unmount
++#  3. repair ubifs
++#  4. check UBIFS mounting result
++# Running time: 1h
++
++TESTBINDIR=@TESTBINDIR@
++source $TESTBINDIR/common.sh
++
++function run_test()
++{
++	local simulator="$1";
++	local size="$2";
++	local peb_size="$3";
++	local page_size="$4";
++	local encryption=$5;
++
++	echo "======================================================================"
++	printf "%s" "$simulator: ${size}MiB PEB size ${peb_size}KiB"
++	if [ "$simulator" = "nandsim" ]; then
++		printf " %s" "page size ${page_size}KiB"
++	fi
++	printf " $encryption\n"
++
++	if [ "$simulator" = "nandsim" ]; then
++		$TESTBINDIR/load_nandsim.sh "$size" "$peb_size" "$page_size" || echo "cannot load nandsim";
++		mtdnum="$(find_mtd_device "$nandsim_patt")"
++	elif [ "$simulator" = "mtdram" ]; then
++		load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
++		mtdnum="$(find_mtd_device "$mtdram_patt")"
++	else
++		fatal "$simulator is not supported"
++	fi
++
++	flash_eraseall /dev/mtd$mtdnum
++	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert || fatal "modprobe ubi fail"
++	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
++	modprobe ubifs || fatal "modprobe ubifs fail"
++	mount_ubifs $DEV $MNT || fatal "mount ubifs fail"
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_gen_key
++		encryption_set_key $MNT
++	fi
++
++	fsstress -d $MNT -l0 -p4 -n10000 &
++	sleep $((RANDOM % 120))
++	powercut
++
++	ps -e | grep -w fsstress > /dev/null 2>&1
++	while [ $? -eq 0 ]
++	do
++		killall -9 fsstress > /dev/null 2>&1
++		sleep 1
++		ps -e | grep -w fsstress > /dev/null 2>&1
++	done
++
++	while true
++	do
++		res=`mount | grep "$MNT"`
++		if [[ "$res" == "" ]]
++		then
++			break;
++		fi
++		umount $MNT
++		sleep 0.1
++	done
++
++	echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
++	echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
++	res=$?
++	if [[ $res != 0 ]]
++	then
++		fatal "repair fail $res"
++	fi
++
++	check_memleak
++
++	dmesg -c > /dev/null # powercut and repairing could reproduce error messages
++
++	enable_chkfs
++
++	mount_ubifs $DEV $MNT
++	res=$?
++	if [[ $res != 0 ]]
++	then
++		fatal "mount fail $res"
++	fi
++
++	if [[ "$encryption" == "encrypted" ]]; then
++		encryption_set_key $MNT
++	fi
++
++	du -sh $MNT > /dev/null  # Make sure all files are accessible
++	ret=$?
++	if [[ $ret != 0 ]]; then
++		fatal "Cannot access all files"
++	fi
++	check_err_msg
++
++	umount $MNT
++	res=$?
++	if [[ $res != 0 ]]
++	then
++		fatal "unmount fail $res"
++	fi
++
++	check_err_msg
++
++	modprobe -r ubifs
++	modprobe -r ubi
++	modprobe -r $simulator
++
++	echo "----------------------------------------------------------------------"
++}
++
++check_fsstress
++start_t=$(date +%s)
++echo "Do powercut+repair+mount test in kinds of flashes"
++for simulator in "mtdram" "nandsim"; do
++	for encryption in "encrypted" "noencrypted"; do
++		run_test "$simulator" "16" "16" "512" $encryption
++		run_test "$simulator" "64" "16" "512" $encryption
++		run_test "$simulator" "128" "64" "2048" $encryption
++		run_test "$simulator" "256" "128" "2048" $encryption
++		run_test "$simulator" "512" "128" "2048" $encryption
++		run_test "$simulator" "1024" "512" "2048" $encryption
++	done
++done
++end_t=$(date +%s)
++time_cost=$(( end_t - start_t ))
++echo "Success, cost $time_cost seconds"
++exit 0
+-- 
+2.13.6
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
