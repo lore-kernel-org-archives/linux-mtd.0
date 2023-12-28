@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FC59C46CD2
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2E8AC47073
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xbXoFhsBzxmXSwIdTzfGW3wliMtiN/XSCamJ2Ba5PRc=; b=M6PAuS1ZOC5bIY
-	vIsLRooNEDDrCptat8LbXtPwdq2ZbCKMc1IwuhpMmf95jRNCTYnDc5kz5Dx5xyXMdV3Lk+tVS8NlP
-	SV78M1GvTI70J9OXk8ak/HEXf2LZBp0JKbImtSzOvuL6WfBq4ESgNBPOA+eE8LpxDktabt+r3S6u1
-	xDADTEPeWyiiwPdJdDIWyG062Tz/n/XhLsOEUZ819fB+VM0L7glanqXNfq3Ov5IJrtR6y9WKduJ+b
-	Y+nv6LV97AjxNyRykYFFPBSRc6ldwHMv3mUx1cI3j2dHz1Va5o7C2RMCj9EP8wV8b9ng805I60P3U
-	kSU1QcHPLR8hKFQ78+/g==;
+	List-Owner; bh=3Qk6HAhm7cszcotHjFjUD93iUscKsokbHXeB6KaanSQ=; b=rfk6SK9nb3PtXP
+	EDnb2gqioFuJU5xQuA8qUGML3xy2OQAML9X09z+iyQ3GH+81AuNdf4uzHbao+p78SfdC5QPOxUhEr
+	TwGnuiil0DLvZk3Dgz6AUOOWQOsStOE8g7qEZYrn7GpJPYIc2ceH85Ada1QVJCWzCydULIYXpv7TX
+	T+8cM453xWXqW6iArq+LCWKr10PCRNUq+Iaa7PsyJHvoJPnlC8EkaN38RUifB/LWSyzrnnJEo3HqR
+	gGCL7sF13kCRACokdedWDXOh1DsBd3jsn1H/vjBc45FXTxWKFf/ZceKoDCA/MCXSNbxyN7kiuSu74
+	RoUCxutU8rKHzxjyByvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfI3-00FoKE-1b;
-	Thu, 28 Dec 2023 01:34:27 +0000
-Received: from szxga07-in.huawei.com ([45.249.212.35])
+	id 1rIfIZ-00Foe9-0z;
+	Thu, 28 Dec 2023 01:34:59 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfI0-00FoG0-1B
+	id 1rIfIT-00FoYZ-0M
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Dec 2023 01:34:26 +0000
+	Thu, 28 Dec 2023 01:34:57 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4T0rcD4mJrz1R5Yg;
-	Thu, 28 Dec 2023 09:33:00 +0800 (CST)
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rcq2dZfz1g0nR;
+	Thu, 28 Dec 2023 09:33:31 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3BA5E1A0192;
-	Thu, 28 Dec 2023 09:34:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 66EB21A0195;
+	Thu, 28 Dec 2023 09:34:36 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:33:36 +0800
+ 2023 09:33:38 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 07/11] tests: ubifs_repair: Add random_corrupt+repair test
-Date: Thu, 28 Dec 2023 09:36:35 +0800
-Message-ID: <20231228013639.2827205-8-chengzhihao1@huawei.com>
+Subject: [PATCH mtd-utils 09/11] tests: ubifs_repair: Add bad images repairing test
+Date: Thu, 28 Dec 2023 09:36:37 +0800
+Message-ID: <20231228013639.2827205-10-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
 References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_173424_729000_E92D031D 
-X-CRM114-Status: GOOD (  15.38  )
+X-CRM114-CacheID: sfid-20231227_173453_536961_21A8ACCE 
+X-CRM114-Status: GOOD (  13.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,279 +66,225 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inject random corruption on UBIFS image by writting random data on
-kinds of mtd devices (eg. nand, nor), check the consistency of UBIFS
-after repairing.
-This testcase simulate random bad UBIFS image caused by hardware
-exceptions(eg. ecc uncorrectable, unwritten), and makes sure that
-ubifs_repair could make UBIFS be consistent after repairing UBIFS
-image.
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- .gitignore                                         |   1 +
- configure.ac                                       |   3 +-
- tests/ubifs_repair-tests/Makemodule.am             |   3 +-
- .../tests/random_corrupted_repair.sh.in            | 205 +++++++++++++++++++++
- 4 files changed, 210 insertions(+), 2 deletions(-)
- create mode 100755 tests/ubifs_repair-tests/tests/random_corrupted_repair.sh.in
-
-diff --git a/.gitignore b/.gitignore
-index 7077b8d..dbe63b7 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -118,6 +118,7 @@ tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
- tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
- tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
- tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh
-+tests/ubifs_repair-tests/tests/random_corrupted_repair.sh
- 
- #
- # Files generated by autotools
-diff --git a/configure.ac b/configure.ac
-index b3dd453..11d34bd 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -360,6 +360,7 @@ AC_CONFIG_FILES([tests/fs-tests/fs_help_all.sh
- 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh
- 	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh
- 	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh
--	tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh])
-+	tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh
-+	tests/ubifs_repair-tests/tests/random_corrupted_repair.sh])
- 
- AC_OUTPUT([Makefile])
-diff --git a/tests/ubifs_repair-tests/Makemodule.am b/tests/ubifs_repair-tests/Makemodule.am
-index 4a7f5ed..323102b 100644
---- a/tests/ubifs_repair-tests/Makemodule.am
-+++ b/tests/ubifs_repair-tests/Makemodule.am
-@@ -4,4 +4,5 @@ test_SCRIPTS += \
- 	tests/ubifs_repair-tests/tests/cycle_mount_repair_check.sh \
- 	tests/ubifs_repair-tests/tests/powercut_repair_mount.sh \
- 	tests/ubifs_repair-tests/tests/cycle_corrupted_repair_fault_inject.sh \
--	tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh
-+	tests/ubifs_repair-tests/tests/cycle_powercut_mount_repair.sh \
-+	tests/ubifs_repair-tests/tests/random_corrupted_repair.sh
-diff --git a/tests/ubifs_repair-tests/tests/random_corrupted_repair.sh.in b/tests/ubifs_repair-tests/tests/random_corrupted_repair.sh.in
-new file mode 100755
-index 0000000..61ec64e
---- /dev/null
-+++ b/tests/ubifs_repair-tests/tests/random_corrupted_repair.sh.in
-@@ -0,0 +1,205 @@
-+#!/bin/sh
-+# Copyright (c), 2023-2024, Huawei Technologies Co, Ltd.
-+# Author: Zhihao Cheng <chengzhihao1@huawei.com>
-+#
-+# Test Description:
-+# For many kinds of flash, do following things
-+#  1. mount UBIFS
-+#  2. fsstress && unmount
-+#  3. inject corruption into UBIFS image randomly
-+#  3. repair ubifs
-+#  4. check UBIFS mounting result
-+# Running time: 10h
-+
-+TESTBINDIR=@TESTBINDIR@
-+source $TESTBINDIR/common.sh
-+
-+function run_test()
-+{
-+	local simulator="$1";
-+	local size="$2";
-+	local peb_size="$3";
-+	local page_size="$4";
-+	local encryption=$5;
-+
-+	echo "======================================================================"
-+	printf "%s" "$simulator: ${size}MiB PEB size ${peb_size}KiB"
-+	if [ "$simulator" = "nandsim" ]; then
-+		printf " %s" "page size ${page_size}KiB"
-+	fi
-+	printf " $encryption\n"
-+
-+	if [ "$simulator" = "nandsim" ]; then
-+		$TESTBINDIR/load_nandsim.sh "$size" "$peb_size" "$page_size" || echo "cannot load nandsim";
-+		mtdnum="$(find_mtd_device "$nandsim_patt")"
-+	elif [ "$simulator" = "mtdram" ]; then
-+		load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
-+		mtdnum="$(find_mtd_device "$mtdram_patt")"
-+	else
-+		fatal "$simulator is not supported"
-+	fi
-+
-+	flash_eraseall /dev/mtd$mtdnum
-+	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert || fatal "modprobe ubi fail"
-+	ubimkvol -N vol_test -m -n 0 /dev/ubi$UBI_NUM || fatal "mkvol fail"
-+	modprobe ubifs || fatal "modprobe ubifs fail"
-+	mount_ubifs $DEV $MNT || fatal "mount ubifs fail"
-+	if [[ "$encryption" == "encrypted" ]]; then
-+		encryption_gen_key
-+		encryption_set_key $MNT
-+	fi
-+
-+	fsstress -d $MNT -l0 -p4 -n10000 &
-+
-+	while true;
-+	do
-+		per=`df -Th | grep ubifs | awk '{print $6}'`;
-+		if [[ ${per%?} -gt 95 ]]; then
-+			# Used > 95%
-+			break;
-+		fi
-+	done
-+
-+	ps -e | grep -w fsstress > /dev/null 2>&1
-+	while [ $? -eq 0 ]
-+	do
-+		killall -9 fsstress > /dev/null 2>&1
-+		sleep 1
-+		ps -e | grep -w fsstress > /dev/null 2>&1
-+	done
-+
-+	while true
-+	do
-+		res=`mount | grep "$MNT"`
-+		if [[ "$res" == "" ]]
-+		then
-+			break;
-+		fi
-+		umount $MNT
-+		sleep 0.1
-+	done
-+
-+	# injection
-+	times=$((RANDOM % 10))
-+	let times=$times+10
-+	i=0
-+	tot_peb=`cat /sys/class/ubi/ubi$UBI_NUM/total_eraseblocks`;
-+
-+	modprobe -r ubifs
-+	modprobe -r ubi # Stop wear-leveling & erasing worker
-+	while [[ $i -lt $times ]]
-+	do
-+		let i=$i+1;
-+		peb=$((RANDOM % $tot_peb));
-+		pg=`expr $peb_size \* 1024`;
-+		peb_off=`expr $pg \* $peb`
-+		pages=`expr $pg / $page_size`;
-+		pg=`expr $pages - 2`;
-+		pg=$((RANDOM % $pg));
-+		pg_off=`expr $pg + 2`;
-+		pg_start=`expr $pages \* $peb`;
-+		pg=`expr $pg_start + $pg_off`;
-+		vid_pg=`expr $pg_start + 1`;
-+		dd if=/dev/mtd$mtdnum of=$TMP_FILE bs=$page_size skip=$vid_pg count=1 2>/dev/null;
-+		content=`cat $TMP_FILE | grep UBI!`; # vid header magic
-+		if [[ "$content" == "" ]]; then
-+			# Skip free PEB, otherwise data could be overwritten in ubifs repairing process
-+			continue;
-+		fi
-+		if [[ $((RANDOM % 2)) == 0 ]]; then
-+			# Corrupts 1 page
-+			dd if=/dev/urandom of=/dev/mtd$mtdnum bs=$page_size seek=$pg count=1;
-+		else
-+			# Erase 1 LEB, TNC points to an unmapped area
-+			flash_erase /dev/mtd$mtdnum $peb_off 1
-+		fi
-+	done
-+	rm -f $TMP_FILE 2>/dev/null
-+	sync
-+
-+	skip=0
-+	modprobe ubi mtd="$mtdnum,$page_size,0,0,1" fm_autoconvert
-+	ret=$?
-+	if [[ $ret != 0 ]]
-+	then
-+		skip=1
-+		echo "UBI layout volume is corrupted, skip"
-+	fi
-+
-+	if [[ $skip == 0 ]]; then
-+		modprobe ubifs || fatal "modprobe ubifs2 fail"
-+		dmesg -c > /dev/null
-+		echo 'format "UBIFS DBG repair" +pflmt' > /sys/kernel/debug/dynamic_debug/control
-+		echo "$DEV" > /sys/kernel/debug/ubifs/repair_fs
-+		res=$?
-+		if [[ $res != 0 ]]
-+		then
-+			log=`dmesg | grep "bad node at LEB 0:"`
-+			if [[ "$log" != "" ]]
-+			then
-+				skip=1
-+				echo "SB is corrupted, skip repairing & mounting"
-+			else
-+				fatal "repair fail $res"
-+			fi
-+		fi
-+
-+		check_memleak
-+
-+		if [[ $skip == 0 ]]; then
-+			dmesg -c > /dev/null # repairing corrupted image could reproduce error messages
-+
-+			enable_chkfs
-+
-+			mount_ubifs $DEV $MNT
-+			res=$?
-+			if [[ $res != 0 ]]
-+			then
-+				fatal "mount fail $res"
-+			fi
-+
-+			if [[ "$encryption" == "encrypted" ]]; then
-+				encryption_set_key $MNT
-+			fi
-+
-+			du -sh $MNT > /dev/null  # Make sure all files are accessible
-+			ret=$?
-+			if [[ $ret != 0 ]]; then
-+				fatal "Cannot access all files"
-+			fi
-+			# check_err_msg is not suggested in this testcase, because
-+			# ubi_io_read(triggered by wear_leveling_worker -> ubi_eba_copy_leb)
-+			# could print stack if ecc uncorrectable errors are detected.
-+
-+			umount $MNT
-+			res=$?
-+			if [[ $res != 0 ]]
-+			then
-+				fatal "unmount fail $res"
-+			fi
-+		fi
-+		modprobe -r ubifs
-+		modprobe -r ubi
-+	fi
-+	modprobe -r $simulator
-+
-+	echo "----------------------------------------------------------------------"
-+}
-+
-+check_fsstress
-+start_t=$(date +%s)
-+echo "Do random_corrruption+repair+mount test in kinds of flashes"
-+for simulator in "mtdram" "nandsim"; do
-+	for encryption in "encrypted" "noencrypted"; do
-+		run_test "$simulator" "16" "16" "512" $encryption
-+		run_test "$simulator" "64" "16" "512" $encryption
-+		run_test "$simulator" "128" "64" "2048" $encryption
-+		run_test "$simulator" "256" "128" "2048" $encryption
-+		run_test "$simulator" "512" "128" "2048" $encryption
-+		run_test "$simulator" "1024" "512" "2048" $encryption
-+	done
-+done
-+end_t=$(date +%s)
-+time_cost=$(( end_t - start_t ))
-+echo "Success, cost $time_cost seconds"
-+exit 0
--- 
-2.13.6
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Rm9yIGtpbmRzIG9mIGluY29uc2lzdGVudCBVQklGUyBpbWFnZXMod2hpY2ggY2FuIHNpbXVsYXRl
+IGNvcnJ1cHRpb25zCmNhdXNlZCBieSBzb21lIHBvdGVudGlvbmFsIFVCSUZTIGJ1ZyksIGNoZWNr
+IHJlcGFpcmluZyByZXN1bHQuClRoaXMgdGVzdGNhc2UgbWFpbmx5IGNoZWNrcyB3aGV0aGVyIHRo
+ZSBiZWhhdmlvciBpcyBpbiBleHBlY3RlZCBhZnRlcgpyZXBhaXJpbmcgc3BlY2lmaWMgaW5jb25z
+aXN0ZW50IFVCSUZTIGltYWdlLgoKU2lnbmVkLW9mZi1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3po
+aWhhbzFAaHVhd2VpLmNvbT4KLS0tCiAuZ2l0aWdub3JlICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgMSArCiBjb25maWd1cmUuYWMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMyArLQogdGVzdHMvdWJpZnNfcmVwYWlyLXRlc3RzL01h
+a2Vtb2R1bGUuYW0gICAgICAgICAgICAgfCAgIDMgKy0KIC4uLi90ZXN0cy9yZXBhaXJfYmFkX2lt
+YWdlLnNoLmluICAgICAgICAgICAgICAgICAgIHwgMjc0ICsrKysrKysrKysrKysrKysrKysrKwog
+NCBmaWxlcyBjaGFuZ2VkLCAyNzkgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKIGNyZWF0
+ZSBtb2RlIDEwMDc1NSB0ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMvdGVzdHMvcmVwYWlyX2JhZF9p
+bWFnZS5zaC5pbgoKZGlmZiAtLWdpdCBhLy5naXRpZ25vcmUgYi8uZ2l0aWdub3JlCmluZGV4IGRi
+ZTYzYjcuLjg5YmNhNTggMTAwNjQ0Ci0tLSBhLy5naXRpZ25vcmUKKysrIGIvLmdpdGlnbm9yZQpA
+QCAtMTE5LDYgKzExOSw3IEBAIHRlc3RzL3ViaWZzX3JlcGFpci10ZXN0cy90ZXN0cy9wb3dlcmN1
+dF9yZXBhaXJfbW91bnQuc2gKIHRlc3RzL3ViaWZzX3JlcGFpci10ZXN0cy90ZXN0cy9jeWNsZV9j
+b3JydXB0ZWRfcmVwYWlyX2ZhdWx0X2luamVjdC5zaAogdGVzdHMvdWJpZnNfcmVwYWlyLXRlc3Rz
+L3Rlc3RzL2N5Y2xlX3Bvd2VyY3V0X21vdW50X3JlcGFpci5zaAogdGVzdHMvdWJpZnNfcmVwYWly
+LXRlc3RzL3Rlc3RzL3JhbmRvbV9jb3JydXB0ZWRfcmVwYWlyLnNoCit0ZXN0cy91Ymlmc19yZXBh
+aXItdGVzdHMvdGVzdHMvcmVwYWlyX2JhZF9pbWFnZS5zaAogCiAjCiAjIEZpbGVzIGdlbmVyYXRl
+ZCBieSBhdXRvdG9vbHMKZGlmZiAtLWdpdCBhL2NvbmZpZ3VyZS5hYyBiL2NvbmZpZ3VyZS5hYwpp
+bmRleCAxMWQzNGJkLi4xYzFjOTViIDEwMDY0NAotLS0gYS9jb25maWd1cmUuYWMKKysrIGIvY29u
+ZmlndXJlLmFjCkBAIC0zNjEsNiArMzYxLDcgQEAgQUNfQ09ORklHX0ZJTEVTKFt0ZXN0cy9mcy10
+ZXN0cy9mc19oZWxwX2FsbC5zaAogCXRlc3RzL3ViaWZzX3JlcGFpci10ZXN0cy90ZXN0cy9wb3dl
+cmN1dF9yZXBhaXJfbW91bnQuc2gKIAl0ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMvdGVzdHMvY3lj
+bGVfY29ycnVwdGVkX3JlcGFpcl9mYXVsdF9pbmplY3Quc2gKIAl0ZXN0cy91Ymlmc19yZXBhaXIt
+dGVzdHMvdGVzdHMvY3ljbGVfcG93ZXJjdXRfbW91bnRfcmVwYWlyLnNoCi0JdGVzdHMvdWJpZnNf
+cmVwYWlyLXRlc3RzL3Rlc3RzL3JhbmRvbV9jb3JydXB0ZWRfcmVwYWlyLnNoXSkKKwl0ZXN0cy91
+Ymlmc19yZXBhaXItdGVzdHMvdGVzdHMvcmFuZG9tX2NvcnJ1cHRlZF9yZXBhaXIuc2gKKwl0ZXN0
+cy91Ymlmc19yZXBhaXItdGVzdHMvdGVzdHMvcmVwYWlyX2JhZF9pbWFnZS5zaF0pCiAKIEFDX09V
+VFBVVChbTWFrZWZpbGVdKQpkaWZmIC0tZ2l0IGEvdGVzdHMvdWJpZnNfcmVwYWlyLXRlc3RzL01h
+a2Vtb2R1bGUuYW0gYi90ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMvTWFrZW1vZHVsZS5hbQppbmRl
+eCA2MDcwYjBjLi5mNzI4ODIzIDEwMDY0NAotLS0gYS90ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMv
+TWFrZW1vZHVsZS5hbQorKysgYi90ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMvTWFrZW1vZHVsZS5h
+bQpAQCAtNSw3ICs1LDggQEAgdGVzdF9TQ1JJUFRTICs9IFwKIAl0ZXN0cy91Ymlmc19yZXBhaXIt
+dGVzdHMvdGVzdHMvcG93ZXJjdXRfcmVwYWlyX21vdW50LnNoIFwKIAl0ZXN0cy91Ymlmc19yZXBh
+aXItdGVzdHMvdGVzdHMvY3ljbGVfY29ycnVwdGVkX3JlcGFpcl9mYXVsdF9pbmplY3Quc2ggXAog
+CXRlc3RzL3ViaWZzX3JlcGFpci10ZXN0cy90ZXN0cy9jeWNsZV9wb3dlcmN1dF9tb3VudF9yZXBh
+aXIuc2ggXAotCXRlc3RzL3ViaWZzX3JlcGFpci10ZXN0cy90ZXN0cy9yYW5kb21fY29ycnVwdGVk
+X3JlcGFpci5zaAorCXRlc3RzL3ViaWZzX3JlcGFpci10ZXN0cy90ZXN0cy9yYW5kb21fY29ycnVw
+dGVkX3JlcGFpci5zaCBcCisJdGVzdHMvdWJpZnNfcmVwYWlyLXRlc3RzL3Rlc3RzL3JlcGFpcl9i
+YWRfaW1hZ2Uuc2gKIAogdGVzdF9EQVRBICs9IFwKIAl0ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMv
+aW1hZ2VzL2dvb2QuZ3ogXApkaWZmIC0tZ2l0IGEvdGVzdHMvdWJpZnNfcmVwYWlyLXRlc3RzL3Rl
+c3RzL3JlcGFpcl9iYWRfaW1hZ2Uuc2guaW4gYi90ZXN0cy91Ymlmc19yZXBhaXItdGVzdHMvdGVz
+dHMvcmVwYWlyX2JhZF9pbWFnZS5zaC5pbgpuZXcgZmlsZSBtb2RlIDEwMDc1NQppbmRleCAwMDAw
+MDAwLi5jZTljYjcwCi0tLSAvZGV2L251bGwKKysrIGIvdGVzdHMvdWJpZnNfcmVwYWlyLXRlc3Rz
+L3Rlc3RzL3JlcGFpcl9iYWRfaW1hZ2Uuc2guaW4KQEAgLTAsMCArMSwyNzQgQEAKKyMhL2Jpbi9z
+aAorIyBDb3B5cmlnaHQgKGMpLCAyMDIzLTIwMjQsIEh1YXdlaSBUZWNobm9sb2dpZXMgQ28sIEx0
+ZC4KKyMgQXV0aG9yOiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgorIwor
+IyBUZXN0IERlc2NyaXB0aW9uOiBUZXN0cyB3aGV0aGVyIGFsbCBpbmNvbnNpc3RlbnQgVUJJRlMg
+aW1hZ2VzIGNhbiBiZSBmaXhlZAorIyBhcyBleHBlY3RlZC4KKyMgT3JpZ2luIFVCSUZTIGltYWdl
+IGNvbnRlbnQ6CisjIC8KKyMg4pSc4pSA4pSAIGNvcnJ1cHRfZmlsZSAoeGF0dHIgLSB1c2VyLmNv
+cnJ1cHQ6MTIzLCAySyBkYXRhKQorIyDilJzilIDilIAgZGlyCisjIOKUgsKgwqAg4pSc4pSA4pSA
+IGJsb2NrX2RldgorIyDilILCoMKgIOKUnOKUgOKUgCBjaGFyX2RldgorIyDilILCoMKgIOKUnOKU
+gOKUgCBkaXIKKyMg4pSCwqDCoCDilJTilIDilIAgZmlsZSAoY29udGVudDogJzEyMycpCisjIOKU
+nOKUgOKUgCBoYXJkbF9jb3JydXB0X2ZpbGUgPT4gY29ycnVwdF9maWxlCisjIOKUlOKUgOKUgCBz
+b2Z0bF9jb3JydXB0X2ZpbGUgLT4gY29ycnVwdF9maWxlCisjCisjIFJ1bm5pbmcgdGltZTogMm1p
+bgorCitURVNUQklORElSPUBURVNUQklORElSQAorc291cmNlICRURVNUQklORElSL2NvbW1vbi5z
+aAorCitDT1JSVVBUX0ZJTEU9Y29ycnVwdF9maWxlCitYQVRUUl9OQU1FPSJ1c2VyLmNvcnJ1cHQi
+CitYQVRUUl9WQUw9MTIzCitDT1JSVVBUX0ZJTEVfTUQ1PTdkMmY5NTNlOTEwMzNjNzQzYWI2YTgw
+MWQ1ZWU2ZTE1CitTT0ZUX0xJTktfRklMRT1zb2Z0bF9jb3JydXB0X2ZpbGUKK0hBUkRfTElOS19G
+SUxFPWhhcmRsX2NvcnJ1cHRfZmlsZQorRElSPWRpcgorQkxPQ0tfREVWPWJsb2NrX2RldgorQ0hB
+Ul9ERVY9Y2hhcl9kZXYKK0ZJTEU9ZmlsZQorRklMRV9NRDU9YmExZjI1MTFmYzMwNDIzYmRiYjE4
+M2ZlMzNmM2RkMGYKKworZnVuY3Rpb24gcmVwYWlyX2ltYWdlKCkKK3sKKwlsb2NhbCBpbWdfdHlw
+ZT0kMTsKKwlsb2NhbCBpbWc9JDI7CisJbG9jYWwgcmVwYWlyX2ZhaWxlZD0kMzsKKwlsb2NhbCBm
+aWxlX2V4aXN0PSQ0OworCWxvY2FsIGZpbGVfbm9jaGFuZ2U9JDUKKwlsb2NhbCBmaWxlX3hhdHRy
+X2V4aXN0PSQ2OworCWxvY2FsIGhhcmRfbGlua19leGlzdD0kNzsKKwlsb2NhbCBoYXJkX2xpbmtf
+bm9fY2hhbmdlPSQ4OworCWxvY2FsIGhhcmRfbGlua194YXR0cl9leGlzdD0kOTsKKwlsb2NhbCBz
+b2Z0X2xpbmtfZXhpc3Q9JHsxMH07CisJbG9jYWwgZGlyX2V4aXN0PSR7MTF9OworCisJZWNobyAi
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PSIKKwllY2hvICJyZXBhaXIgJGltZ190eXBlLCByZXBhaXJfZmFpbGVkOiRy
+ZXBhaXJfZmFpbGVkIGZpbGVfZXhpc3Q6JGZpbGVfZXhpc3QgZmlsZV9ub2NoYW5nZTokZmlsZV9u
+b2NoYW5nZSBmaWxlX3hhdHRyX2V4aXN0OiRmaWxlX3hhdHRyX2V4aXN0IGhhcmRfbGlua19leGlz
+dDokaGFyZF9saW5rX2V4aXN0IGhhcmRfbGlua19ub19jaGFuZ2U6JGhhcmRfbGlua19ub19jaGFu
+Z2U6aGFyZF9saW5rX3hhdHRyX2V4aXN0ICRoYXJkX2xpbmtfeGF0dHJfZXhpc3Q6c29mdF9saW5r
+X2V4aXN0OiRzb2Z0X2xpbmtfZXhpc3QgZGlyX2V4aXN0OiRkaXJfZXhpc3QiCisKKwlsb2FkX210
+ZHJhbSAxIDE2IHx8IGVjaG8gImNhbm5vdCBsb2FkIG10ZHJhbSIKKwltdGRudW09IiQoZmluZF9t
+dGRfZGV2aWNlICIkbXRkcmFtX3BhdHQiKSIKKworCWd6aXAgLWYgLWsgLWQgJFRFU1RCSU5ESVIv
+JHtpbWd9Lmd6IHx8IGZhdGFsICJnemlwIGZhaWxlZCIKKwlmbGFzaF9lcmFzZWFsbCAvZGV2L210
+ZCRtdGRudW0KKwlkZCBpZj0kVEVTVEJJTkRJUi8kaW1nIG9mPS9kZXYvbXRkJG10ZG51bSBicz0x
+TQorCXJtIC1mICRURVNUQklORElSLyRpbWcKKwltb2Rwcm9iZSB1YmkgbXRkPSIkbXRkbnVtLDAi
+IGZtX2F1dG9jb252ZXJ0IHx8IGZhdGFsICJtb2Rwcm9iZSB1YmkgZmFpbCIKKwltb2Rwcm9iZSB1
+YmlmcyB8fCBmYXRhbCAibW9kcHJvYmUgdWJpZnMgZmFpbCIKKworCWVjaG8gJ2Zvcm1hdCAiVUJJ
+RlMgREJHIHJlcGFpciIgK3BmbG10JyA+IC9zeXMva2VybmVsL2RlYnVnL2R5bmFtaWNfZGVidWcv
+Y29udHJvbAorCWVjaG8gIiRERVYiID4gL3N5cy9rZXJuZWwvZGVidWcvdWJpZnMvcmVwYWlyX2Zz
+CisJcmV0PSQ/CisJY2hlY2tfbWVtbGVhaworCWlmIFtbICRyZXQgIT0gMCBdXTsgdGhlbgorCQlp
+ZiBbWyAkcmVwYWlyX2ZhaWxlZCA9PSAwIF1dOyB0aGVuCisJCQlmYXRhbCAicmVwYWlyIGZhaWxl
+ZCwgYnV0IGV4cGVjdCBzdWNjZXNzIgorCQlmaQorCQllY2hvICJyZXBhaXIgZmFpbGVkIGlzIGV4
+cGVjdGVkLCBza2lwIgorCisJCW1vZHByb2JlIC1yIHViaWZzCisJCW1vZHByb2JlIC1yIHViaQor
+CQltb2Rwcm9iZSAtciBtdGRyYW0KKwkJZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSIKKworCQlyZXR1cm47
+CisJZWxzZQorCQlpZiBbWyAkcmVwYWlyX2ZhaWxlZCAhPSAwIF1dOyB0aGVuCisJCQlmYXRhbCAi
+cmVwYWlyIHN1Y2Nlc3MsIGJ1dCBleHBlY3QgZmFpbHVyZSIKKwkJZmkKKwlmaQorCisJZG1lc2cg
+LWMgPiAvZGV2L251bGwgIyByZXBhaXJpbmcgY291bGQgcmVwcm9kdWNlIGVycm9yIG1lc3NhZ2Vz
+CisKKwllbmFibGVfY2hrZnMKKworCW1vdW50X3ViaWZzICRERVYgJE1OVAorCXJldD0kPworCWlm
+IFtbICRyZXQgIT0gMCBdXTsgdGhlbgorCQlmYXRhbCAibW91bnQgZmFpbGVkICRyZXQiCisJZmkK
+KworCWR1IC1zaCAkTU5UID4gL2Rldi9udWxsICAjIE1ha2Ugc3VyZSBhbGwgZmlsZXMgYXJlIGFj
+Y2Vzc2libGUKKwlyZXQ9JD8KKwlpZiBbWyAkcmV0ICE9IDAgXV07IHRoZW4KKwkJZmF0YWwgImNh
+bm5vdCBhY2Nlc3MgYWxsIGZpbGVzICRyZXQiCisJZmkKKworCWlmIFtbICRmaWxlX2V4aXN0ID09
+IDEgXV07IHRoZW4KKwkJaWYgISBbIC1mICRNTlQvJENPUlJVUFRfRklMRSBdOyB0aGVuCisJCQlm
+YXRhbCAiJE1OVC8kQ09SUlVQVF9GSUxFIGlzIGxvc3QiCisJCWZpCisJZWxzZQorCQlpZiBbIC1m
+ICRNTlQvJENPUlJVUFRfRklMRSBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kQ09SUlVQVF9GSUxF
+IHNob3VsZCBub3QgZXhpc3QiCisJCWZpCisJZmkKKworCW1kNV9hZnRlcj1gbWQ1c3VtICRNTlQv
+JENPUlJVUFRfRklMRSAyPi9kZXYvbnVsbCB8IGF3ayAne3ByaW50ICQxfSdgCisJaWYgW1sgJGZp
+bGVfbm9jaGFuZ2UgPT0gMSBdXTsgdGhlbgorCQlpZiBbWyAkQ09SUlVQVF9GSUxFX01ENSAhPSAk
+bWQ1X2FmdGVyIF1dOyB0aGVuCisJCQlmYXRhbCAiY29udGVudCBjaGFuZ2VkIGZvciAkTU5ULyRD
+T1JSVVBUX0ZJTEUiCisJCWZpCisJZWxzZQorCQlpZiBbWyAkQ09SUlVQVF9GSUxFX01ENSA9PSAk
+bWQ1X2FmdGVyIF1dOyB0aGVuCisJCQlmYXRhbCAiY29udGVudCBub3QgY2hhbmdlZCBmb3IgJE1O
+VC8kQ09SUlVQVF9GSUxFIgorCQlmaQorCWZpCisKKwl4YXR0cj1gZ2V0ZmF0dHIgLW4gJFhBVFRS
+X05BTUUgJE1OVC8kQ09SUlVQVF9GSUxFIDI+L2Rldi9udWxsIHwgZ3JlcCAkWEFUVFJfTkFNRSB8
+IGF3ayAtRiAnPScgJ3sgcHJpbnQgJDIgfSdgCisJaWYgW1sgJGZpbGVfeGF0dHJfZXhpc3QgPT0g
+MSBdXTsgdGhlbgorCQlpZiAhIFtbICIkeGF0dHIiID1+ICIkWEFUVFJfVkFMIiBdXTsgdGhlbgor
+CQkJZmF0YWwgIndyb25nIHhhdHRyICR4YXR0ciBmb3IgJE1OVC8kQ09SUlVQVF9ERU5UX05BTUUi
+CisJCWZpCisJZWxzZQorCQlpZiBbWyAiJHhhdHRyIiA9fiAiJFhBVFRSX1ZBTCIgXV07IHRoZW4K
+KwkJCWZhdGFsICJ4YXR0ciAkeGF0dHIgZm9yICRNTlQvJENPUlJVUFRfREVOVF9OQU1FIHNob3Vs
+ZCBub3QgZXhpc3QiCisJCWZpCisJZmkKKworCWlmIFtbICRoYXJkX2xpbmtfZXhpc3QgPT0gMSBd
+XTsgdGhlbgorCQlpZiAhIFsgLWYgJE1OVC8kSEFSRF9MSU5LX0ZJTEUgXTsgdGhlbgorCQkJZmF0
+YWwgIiRNTlQvJEhBUkRfTElOS19GSUxFIHNob3VsZCBpcyBsb3N0IgorCQlmaQorCWVsc2UKKwkJ
+aWYgWyAtZiAkTU5ULyRIQVJEX0xJTktfRklMRSBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kSEFS
+RF9MSU5LX0ZJTEUgc2hvdWxkIG5vdCBleGlzdCIKKwkJZmkKKwlmaQorCisJbWQ1X2FmdGVyPWBt
+ZDVzdW0gJE1OVC8kSEFSRF9MSU5LX0ZJTEUgMj4vZGV2L251bGwgfCBhd2sgJ3twcmludCAkMX0n
+YAorCWlmIFtbICRoYXJkX2xpbmtfbm9fY2hhbmdlID09IDEgXV07IHRoZW4KKwkJaWYgW1sgJENP
+UlJVUFRfRklMRV9NRDUgIT0gJG1kNV9hZnRlciBdXTsgdGhlbgorCQkJZmF0YWwgImNvbnRlbnQg
+Y2hhbmdlZCBmb3IgJE1OVC8kSEFSRF9MSU5LX0ZJTEUiCisJCWZpCisJZWxzZQorCQlpZiBbWyAk
+Q09SUlVQVF9GSUxFX01ENSA9PSAkbWQ1X2FmdGVyIF1dOyB0aGVuCisJCQlmYXRhbCAiY29udGVu
+dCBub3QgY2hhbmdlZCBmb3IgJE1OVC8kSEFSRF9MSU5LX0ZJTEUiCisJCWZpCisJZmkKKworCXhh
+dHRyPWBnZXRmYXR0ciAtbiAkWEFUVFJfTkFNRSAkTU5ULyRIQVJEX0xJTktfRklMRSAyPi9kZXYv
+bnVsbCB8IGdyZXAgJFhBVFRSX05BTUUgfCBhd2sgLUYgJz0nICd7IHByaW50ICQyIH0nYAorCWlm
+IFtbICRoYXJkX2xpbmtfeGF0dHJfZXhpc3QgPT0gMSBdXTsgdGhlbgorCQlpZiAhIFtbICIkeGF0
+dHIiID1+ICIkWEFUVFJfVkFMIiBdXTsgdGhlbgorCQkJZmF0YWwgIndyb25nIHhhdHRyICR4YXR0
+ciBmb3IgJE1OVC8kSEFSRF9MSU5LX0ZJTEUiCisJCWZpCisJZWxzZQorCQlpZiBbWyAiJHhhdHRy
+IiA9fiAiJFhBVFRSX1ZBTCIgXV07IHRoZW4KKwkJCWZhdGFsICJ4YXR0ciAkeGF0dHIgZm9yICRN
+TlQvJEhBUkRfTElOS19GSUxFIHNob3VsZCBub3QgZXhpc3QiCisJCWZpCisJZmkKKworCWxpbms9
+YHN0YXQgLWMgJU4gJE1OVC8kU09GVF9MSU5LX0ZJTEUgMj4vZGV2L251bGwgfCBncmVwICRTT0ZU
+X0xJTktfRklMRSB8IGdyZXAgJENPUlJVUFRfRklMRWAKKwlpZiBbWyAkc29mdF9saW5rX2V4aXN0
+ID09IDEgXV07IHRoZW4KKwkJaWYgW1sgIiRsaW5rIiA9PSAiIiBdXTsgdGhlbgorCQkJZmF0YWwg
+IiRNTlQvJFNPRlRfTElOS19GSUxFIGlzIGxvc3QiCisJCWZpCisJZWxzZQorCQlpZiBbWyAiJGxp
+bmsiICE9ICIiIF1dOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kU09GVF9MSU5LX0ZJTEUgc2hvdWxk
+IG5vdCBleGlzdCIKKwkJZmkKKwlmaQorCisJaWYgW1sgJGRpcl9leGlzdCA9PSAxIF1dOyB0aGVu
+CisJCWlmICEgWyAtZCAkTU5ULyRESVIgXTsgdGhlbgorCQkJZmF0YWwgIiRNTlQvJERJUiBpcyBs
+b3N0IgorCQlmaQorCQlpZiAhIFsgLWQgJE1OVC8kRElSLyRESVIgXTsgdGhlbgorCQkJZmF0YWwg
+IiRNTlQvJERJUi8kRElSIGlzIGxvc3QiCisJCWZpCisJCWlmICEgWyAtZiAkTU5ULyRESVIvJEZJ
+TEUgXTsgdGhlbgorCQkJZmF0YWwgIiRNTlQvJERJUi8kRklMRSBpcyBsb3N0IgorCQlmaQorCQlm
+X21kNT1gbWQ1c3VtICRNTlQvJERJUi8kRklMRSAyPi9kZXYvbnVsbCB8IGF3ayAne3ByaW50ICQx
+fSdgCisJCWlmIFtbICRGSUxFX01ENSAhPSAkZl9tZDUgXV07IHRoZW4KKwkJCWZhdGFsICJjb250
+ZW50IGNoYW5nZWQgZm9yICRNTlQvJERJUi8kRklMRSIKKwkJZmkKKwkJaWYgISBbIC1iICRNTlQv
+JERJUi8kQkxPQ0tfREVWIF07IHRoZW4KKwkJCWZhdGFsICIkTU5ULyRESVIvJEJMT0NLX0RFViBp
+cyBsb3N0IgorCQlmaQorCQltYWpvcj1gc3RhdCAtYyAldCAkTU5ULyRESVIvJEJMT0NLX0RFVmAK
+KwkJbWlub3I9YHN0YXQgLWMgJVQgJE1OVC8kRElSLyRCTE9DS19ERVZgCisJCWlmIFtbICRtYWpv
+ciAhPSAxIF1dIHx8IFtbICRtaW5vciAhPSAyIF1dOyB0aGVuCisJCQllY2hvICJtYWpvci9taW5v
+ciBjaGFuZ2VkIGZvciAkTU5ULyRESVIvJEJMT0NLX0RFViIKKwkJZmkKKwkJaWYgISBbIC1jICRN
+TlQvJERJUi8kQ0hBUl9ERVYgXTsgdGhlbgorCQkJZmF0YWwgIiRNTlQvJERJUi8kQ0hBUl9ERVYg
+aXMgbG9zdCIKKwkJZmkKKwkJbWFqb3I9YHN0YXQgLWMgJXQgJE1OVC8kRElSLyRDSEFSX0RFVmAK
+KwkJbWlub3I9YHN0YXQgLWMgJVQgJE1OVC8kRElSLyRDSEFSX0RFVmAKKwkJaWYgW1sgJG1ham9y
+ICE9IDAgXV0gfHwgW1sgJG1pbm9yICE9IDEgXV07IHRoZW4KKwkJCWVjaG8gIm1ham9yL21pbm9y
+IGNoYW5nZWQgZm9yICRNTlQvJERJUi8kQ0hBUl9ERVYiCisJCWZpCisJZWxzZQorCQlpZiBbIC1k
+ICRNTlQvJERJUiBdOyB0aGVuCisJCQlmYXRhbCAiJE1OVC8kRElSIHNob3VsZCBub3QgZXhpc3Qi
+CisJCWZpCisJZmkKKworCXVtb3VudCAkTU5UCisJcmVzPSQ/CisJaWYgW1sgJHJlcyAhPSAwIF1d
+CisJdGhlbgorCQlmYXRhbCAidW5tb3VudCBmYWlsICRyZXMiCisJZmkKKworCWRpc2FibGVfY2hr
+ZnMKKworCWNoZWNrX2Vycl9tc2cKKworCW1vZHByb2JlIC1yIHViaWZzCisJbW9kcHJvYmUgLXIg
+dWJpCisJbW9kcHJvYmUgLXIgbXRkcmFtCisKKwllY2hvICItLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIgorfQorCitz
+dGFydF90PSQoZGF0ZSArJXMpCitlY2hvICJEbyBpbmNvbnNpc3RlbnQgVUJJRlMgaW1hZ2VzIHJl
+cGFpcmluZyB0ZXN0IgorcmVwYWlyX2ltYWdlICJnb29kIGltYWdlIiBnb29kIDAgMSAxIDEgMSAx
+IDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCBzYiBmYW5vdXQgaW1hZ2UiIHNiX2Zhbm91dCAxIDEg
+MSAxIDEgMSAxIDEgMQorcmVwYWlyX2ltYWdlICJiYWQgc2IgZm10X3ZlcnNpb24gaW1hZ2UiIHNi
+X2ZtdF92ZXJzaW9uIDEgMSAxIDEgMSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCBzYiBsZWJf
+c2l6ZSBpbWFnZSIgc2JfbGViX3NpemUgMSAxIDEgMSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAi
+YmFkIHNiIGxvZ19sZWJzIGltYWdlIiBzYl9sb2dfbGVicyAxIDEgMSAxIDEgMSAxIDEgMQorcmVw
+YWlyX2ltYWdlICJiYWQgc2IgbWluX2lvX3NpemUgaW1hZ2UiIHNiX21pbl9pb19zaXplIDEgMSAx
+IDEgMSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCBtYXN0ZXIgaGlnaGVzdF9pbnVtIGltYWdl
+IiBtYXN0ZXJfaGlnaGVzdF9pbnVtIDAgMSAxIDEgMSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJh
+ZCBtYXN0ZXIgbHB0IGltYWdlIiBtYXN0ZXJfbHB0IDAgMSAxIDEgMSAxIDEgMSAxCityZXBhaXJf
+aW1hZ2UgImJhZCBtYXN0ZXIgdG5jIGltYWdlIiBtYXN0ZXJfdG5jIDAgMSAxIDEgMSAxIDEgMSAx
+CityZXBhaXJfaW1hZ2UgImJhZCBtYXN0ZXIgdG90YWxfZGVhZCBpbWFnZSIgbWFzdGVyX3RvdGFs
+X2RlYWQgMCAxIDEgMSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIG1hc3RlciB0b3RhbF9k
+aXJ0eSBpbWFnZSIgbWFzdGVyX3RvdGFsX2RpcnR5IDAgMSAxIDEgMSAxIDEgMSAxCityZXBhaXJf
+aW1hZ2UgImJhZCBtYXN0ZXIgdG90YWxfZnJlZSBpbWFnZSIgbWFzdGVyX3RvdGFsX2ZyZWUgMCAx
+IDEgMSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIGxvZyBpbWFnZSIgbG9nIDAgMSAxIDEg
+MSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCBscHQgZGlydHkgaW1hZ2UiIGxwdF9kaXJ0eSAw
+IDEgMSAxIDEgMSAxIDEgMQorcmVwYWlyX2ltYWdlICJiYWQgbHB0IGxwdF9mbGFncyBpbWFnZSIg
+bHB0X2ZsYWdzIDAgMSAxIDEgMSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCBscHQgZnJlZSBp
+bWFnZSIgbHB0X2ZyZWUgMCAxIDEgMSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIGxwdCBw
+b3MgaW1hZ2UiIGxwdF9wb3MgMCAxIDEgMSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIHRu
+YyBsdjAga2V5IGltYWdlIiB0bmNfbHYwX2tleSAwIDEgMSAxIDEgMSAxIDEgMQorcmVwYWlyX2lt
+YWdlICJiYWQgdG5jIGx2MCBsZW4gaW1hZ2UiIHRuY19sdjBfbGVuIDAgMSAxIDEgMSAxIDEgMSAx
+CityZXBhaXJfaW1hZ2UgImJhZCB0bmMgbHYwIHBvcyBpbWFnZSIgdG5jX2x2MF9wb3MgMCAxIDEg
+MSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIHRuYyBub24tbGVhZiBrZXkgaW1hZ2UiIHRu
+Y19ub2xlYWZfa2V5IDAgMSAxIDEgMSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCB0bmMgbm9u
+LWxlYWYgbGVuIGltYWdlIiB0bmNfbm9sZWFmX2xlbiAwIDEgMSAxIDEgMSAxIDEgMQorcmVwYWly
+X2ltYWdlICJiYWQgdG5jIG5vbi1sZWFmIHBvcyBpbWFnZSIgdG5jX25vbGVhZl9wb3MgMCAxIDEg
+MSAxIDEgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIGlub2RlIGRhdGEgaW1hZ2UiIGlub2RlX2Rh
+dGEgMCAxIDAgMSAxIDAgMSAxIDEKK3JlcGFpcl9pbWFnZSAiYmFkIGlub2RlIG1vZGUgaW1hZ2Ui
+IGlub2RlX21vZGUgMCAxIDEgMSAxIDEgMSAwIDEKK3JlcGFpcl9pbWFnZSAiYmFkIGlub2RlIG5s
+aW5rIGltYWdlIiBpbm9kZV9ubGluayAwIDEgMSAxIDEgMSAxIDEgMQorcmVwYWlyX2ltYWdlICJi
+YWQgaW5vZGUgc2l6ZSBpbWFnZSIgaW5vZGVfc2l6ZSAwIDEgMSAxIDEgMSAxIDEgMQorcmVwYWly
+X2ltYWdlICJiYWQgaW5vZGUgeGF0dHJfY250IGltYWdlIiBpbm9kZV94Y250IDAgMSAxIDEgMSAx
+IDEgMSAxCityZXBhaXJfaW1hZ2UgImJhZCBzb2Z0bGluayBkYXRhX2xlbiBpbWFnZSIgc29mdF9s
+aW5rX2RhdGFfbGVuIDAgMSAxIDEgMSAxIDEgMCAxCityZXBhaXJfaW1hZ2UgImJhZCBkZW50cnkg
+a2V5IGltYWdlIiBkZW50cnlfa2V5IDAgMCAwIDAgMSAxIDEgMSAxCityZXBhaXJfaW1hZ2UgImJh
+ZCBkZW50cnkgbmxlbiBpbWFnZSIgZGVudHJ5X25sZW4gMCAwIDAgMCAxIDEgMSAxIDEKK3JlcGFp
+cl9pbWFnZSAiYmFkIGRlbnRyeSB0eXBlIGltYWdlIiBkZW50cnlfdHlwZSAwIDAgMCAwIDEgMSAx
+IDEgMQorcmVwYWlyX2ltYWdlICJiYWQgeGF0dHIgaW5vZGUgZmxhZ3MgaW1hZ2UiIHhpbm9kZV9m
+bGFncyAwIDEgMSAwIDEgMSAwIDEgMQorcmVwYWlyX2ltYWdlICJiYWQgeGF0dHIgaW5vZGUga2V5
+IGltYWdlIiB4aW5vZGVfa2V5IDAgMSAxIDAgMSAxIDAgMSAxCityZXBhaXJfaW1hZ2UgImJhZCB4
+YXR0ciBpbm9kZSBtb2RlIGltYWdlIiB4aW5vZGVfbW9kZSAwIDEgMSAwIDEgMSAwIDEgMQorcmVw
+YWlyX2ltYWdlICJiYWQgeGF0dHIgZGVudHJ5IGtleSBpbWFnZSIgeGVudHJ5X2tleSAwIDEgMSAw
+IDEgMSAwIDEgMQorcmVwYWlyX2ltYWdlICJiYWQgeGF0dHIgZGVudHJ5IG5sZW4gaW1hZ2UiIHhl
+bnRyeV9ubGVuIDAgMSAxIDAgMSAxIDAgMSAxCityZXBhaXJfaW1hZ2UgImJhZCB4YXR0ciBkZW50
+cnkgdHlwZSBpbWFnZSIgeGVudHJ5X3R5cGUgMCAxIDEgMCAxIDEgMCAxIDEKK3JlcGFpcl9pbWFn
+ZSAiYmFkIGRpciBpbWFnZSIgZGlyX2xvc3QgMCAxIDEgMSAxIDEgMSAxIDAKK3JlcGFpcl9pbWFn
+ZSAiYmFkIHJvb3QgZGlyIGltYWdlIiByb290X2RpciAwIDAgMCAwIDAgMCAwIDAgMAorZW5kX3Q9
+JChkYXRlICslcykKK3RpbWVfY29zdD0kKCggZW5kX3QgLSBzdGFydF90ICkpCitlY2hvICJTdWNj
+ZXNzLCBjb3N0ICR0aW1lX2Nvc3Qgc2Vjb25kcyIKK2V4aXQgMAotLSAKMi4xMy42CgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
