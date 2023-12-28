@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81675C46CD2
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BCF0C46CD2
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Dec 2023 01:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kRjVCeYdw2IVomKccS1yOuIx/81rxHs1p05DqaNKwe0=; b=CKzZfx2ftC3Dsg
-	Jt/Gpsl2+PoZETi8FuTGFlUt/AownrngX7dmbzu9l9U0YxTop8OHmmxFEc+g0a7iF0lxRs2sg5f2E
-	MgwRonJlXRDozZlawr3SK7JICnv4U5eSDgEre4H01CMIUvsXXArzoc9yNrFo8qooXuAGRxjc4KoAz
-	eARIxO8i+xpLFP5YJCgwqXdl1cb3Szt6629/IZpaydrOMXX1XDfpjHaTS9R1EPE74/SBuW9xqnqSh
-	lQ43ShEFdOw+spYMYPzdGNBdDNUVeiXIjmo0PLJQaTNBI7+c9TfSqVgciawNyYnVypXV/YE7wbZ4S
-	QTF4Jt+P+P9oJCy0Uftg==;
+	List-Owner; bh=HFERXz13VVHrYtMuVWkWz2yLbiIxKIwAEv2rSKJ9DEk=; b=2iIrEAwVEpYUET
+	HX9/cJL/jhZAMTx0hBz8mejApd7tDAB+IgKKPBSQWfEta6qpxTafrxG+0XJz+NnyPtZSGoMjOe9NO
+	5nqPUFZ/Lfi1WQL7sQ2I4g2jODIsJNVlM2DrkKGf1NJU91Ro02yOaTrICML7LS0L2lIvUhAIcV7Cv
+	blB0/I6STA+EmYFmmtTQHl4Qo+tAj2nM1VPj3Qt3/Vh0ipdWFoOdunZMV2YQULRb/sDDs1zGyG6xp
+	gzFBjekBnLtxGN+Q/qQv51dteTCTRHV6c/rXPBYNfzeiWX8qSj1Z4UgZhQek53QOUfebXkAX2OYoc
+	2KZl+flT/fJCkgD0oiyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfJ6-00Foyd-2c;
-	Thu, 28 Dec 2023 01:35:32 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1rIfLl-00FpWM-09;
+	Thu, 28 Dec 2023 01:38:17 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rIfIx-00Fos8-0P
+	id 1rIfLh-00FpVO-1D
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Dec 2023 01:35:30 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4T0rZT4Fp9z1FGKj;
-	Thu, 28 Dec 2023 09:31:29 +0800 (CST)
+	Thu, 28 Dec 2023 01:38:15 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4T0rjd4x1Yz1Q6xV;
+	Thu, 28 Dec 2023 09:37:41 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7F2A81A0194;
-	Thu, 28 Dec 2023 09:35:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 795BB180075;
+	Thu, 28 Dec 2023 09:38:08 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 28 Dec
- 2023 09:33:39 +0800
+ 2023 09:38:07 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <david.oberhollenzer@sigma-star.at>, <richard@nod.at>,
 	<miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
 	<Tudor.Ambarus@linaro.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH mtd-utils 11/11] tests: ubifs_repair: Add README
-Date: Thu, 28 Dec 2023 09:36:39 +0800
-Message-ID: <20231228013639.2827205-12-chengzhihao1@huawei.com>
+Subject: [PATCH RFC 03/17] ubifs: repair: Remove deleted nodes from valid node tree
+Date: Thu, 28 Dec 2023 09:40:58 +0800
+Message-ID: <20231228014112.2836317-4-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231228013639.2827205-1-chengzhihao1@huawei.com>
-References: <20231228013639.2827205-1-chengzhihao1@huawei.com>
+In-Reply-To: <20231228014112.2836317-1-chengzhihao1@huawei.com>
+References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231227_173523_523143_397E55D9 
-X-CRM114-Status: GOOD (  13.45  )
+X-CRM114-CacheID: sfid-20231227_173813_769218_D9427A64 
+X-CRM114-Status: GOOD (  13.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,256 +71,165 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add document for ubifs_repair testcases, explain all testcases and how
-to run them.
+This is the 3/13 step of repairing. Traverse nodes from del_inos and
+del_dents trees, remove inode nodes and dentry nodes with smaller sqnum
+from valid trees.
+
+This step handles deleting case, for example, file A is deleted, deleted
+inode node and deleted dentry node are written, if we ignore the deleted
+nodes, file A can be recovered after repairing because undeleted inode
+node and undeleted dentry node can be scanned. There's an exception, if
+deleted inode node and deleted dentry node are reclaimed(by gc) after
+deletion, file A is recovered. UBIFS repair cannot solve it, because the
+real existence information of nodes depends on TNC, but TNC should not
+be depended for UBIFS repair.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- tests/ubifs_repair-tests/README.txt | 233 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 233 insertions(+)
- create mode 100644 tests/ubifs_repair-tests/README.txt
+ fs/ubifs/repair.c | 120 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 120 insertions(+)
 
-diff --git a/tests/ubifs_repair-tests/README.txt b/tests/ubifs_repair-tests/README.txt
-new file mode 100644
-index 0000000..cb1ce98
---- /dev/null
-+++ b/tests/ubifs_repair-tests/README.txt
-@@ -0,0 +1,233 @@
+diff --git a/fs/ubifs/repair.c b/fs/ubifs/repair.c
+index 18920e9896bc..d932c16ec893 100644
+--- a/fs/ubifs/repair.c
++++ b/fs/ubifs/repair.c
+@@ -930,6 +930,119 @@ static int scan_nodes(struct ubifs_info *c, struct scanned_info *si)
+ 	return err;
+ }
+ 
++static struct scanned_ino_node *
++lookup_valid_ino_node(struct ubifs_info *c, struct scanned_info *si,
++		      struct scanned_ino_node *target)
++{
++	int cmp;
++	struct scanned_ino_node *ino_node;
++	struct rb_node *p;
 +
-+ ubifs_repair tests
-+ ==================
++	p = si->valid_inos.rb_node;
++	while (p) {
++		ino_node = rb_entry(p, struct scanned_ino_node, rb);
++		cmp = keys_cmp(c, &target->key, &ino_node->key);
++		if (cmp < 0) {
++			p = p->rb_left;
++		} else if (cmp > 0) {
++			p = p->rb_right;
++		} else {
++			if (target->header.sqnum > ino_node->header.sqnum)
++				return ino_node;
++			else
++				return NULL;
++		}
++	}
 +
-+ There are seven testcases for ubifs_repair on encryption/non-encryption
-+ situations:
-+   1) authentication_refuse: Currently authenticated UBIFS image is not
-+      supported for repairing, check whether ubifs_repair can refuse
-+      authenticated UBIFS image.
-+   2) random_corrupted_repair: Inject random corruption on UBIFS image
-+      by writting random data on kinds of mtd devices (eg. nand, nor),
-+      check the consistency of UBIFS after repairing.
-+      This testcase simulate random bad UBIFS image caused by hardware
-+      exceptions(eg. ecc uncorrectable, unwritten), and makes sure that
-+      ubifs_repair could make UBIFS be consistent after repairing UBIFS
-+      image.
-+   3) cycle_corrupted_repair_fault_inject: Inject memory/io fault while
-+      repairing corrupted UBIFS images.
-+      This testcase mainly checks whether ubifs_repair has problems (eg.
-+      memleak, UAF, null-ptr-def, etc.) in random error paths. Besides,
-+      it provides a similar way to simulate powercut during repairing,
-+      and checks whether ubifs_repair can fix an UBIFS image after many
-+      repairing rounds interrupted by kinds of errors.
-+   4) cycle_powercut_mount_repair: Inject powercut while doing fsstress
-+      on mounted UBIFS, check the consistency of UBIFS after repairing.
-+      This testscase mainly makes sure that ubifs_repair can make UBIFS
-+      image be consistent in common stress cases and powercut cases.
-+   5) powercut_repair_mount: Inject powercut while doing fsstress on
-+      mounted UBIFS for kinds of flashes (eg. nand, nor).
-+      This testcase mainly makes sure that ubifs_repair can make UBIFS
-+      image be consistent on different flashes (eg. nand, nor). Because
-+      the min_io_size of nor flash is 1, the UBIFS image on nor flash
-+      will be different from nand flash after doing powercut, so we need
-+      make sure ubifs_repair can handle these two types of flash.
-+   6) cycle_mount_repair_check: Do fsstress and repair ubifs image, make
-+      sure all files(and their data) are not lost after repairing.
-+      This testcase mainly checks whether ubifs_repair could corrupt
-+      filesystem content in common case.
-+   7) repair_bad_image: For kinds of inconsistent UBIFS images(which
-+      can simulate corruptions caused by some potentional UBIFS bug), check
-+      repairing result.
-+      This testcase mainly checks whether the behavior is in expected after
-+      repairing specific inconsistent UBIFS image. There is no debugfs tools
-+      (for example: debugfs[ext4], xfs_db) for UBIFS, so no way to inject
-+      precise corruption into UBIFS image, we have to prepare inconsistent
-+      UBIFS images in advance like e2fsprogs[1] does. (Goto [2] to see how to
-+      generate inconsistent UBIFS images). Here's a descriptons of the various
-+      test images:
++	return NULL;
++}
 +
-+      =========================================================================
-+            image         |     Description     |          expectancy
-+      -------------------------------------------------------------------------
-+      good                | good image contains | repair success, fs content is
-+                          | kinds of files.     | not changed.
-+      -------------------------------------------------------------------------
-+      sb_fanout           | invalid fanout in   | repair failed.
-+                          | superblock.         |
-+      -------------------------------------------------------------------------
-+      sb_fmt_version      | invalid fmt_version | repair failed.
-+                          | in superblock.      |
-+      -------------------------------------------------------------------------
-+      sb_leb_size         | invalid leb_size in | repair failed.
-+                          | superblock.         |
-+      -------------------------------------------------------------------------
-+      sb_log_lebs         | invalid log lebs in | repair failed.
-+                          | superblock.         |
-+      -------------------------------------------------------------------------
-+      sb_min_io_size      | invalid min_io_size | repair failed.
-+                          | in superblock.      |
-+      -------------------------------------------------------------------------
-+      master_highest_inum | invalid highest_inum| repair success, fs content is
-+                          | in master nodes.    | not changed.
-+      -------------------------------------------------------------------------
-+      master_lpt          | bad lpt pos in      | repair success, fs content is
-+                          | master nodes.       | not changed.
-+      -------------------------------------------------------------------------
-+      master_tnc          | bad tnc pos in      | repair success, fs content is
-+                          | master nodes.       | not changed.
-+      -------------------------------------------------------------------------
-+      master_total_dead   | bad total_dead in   | repair success, fs content is
-+                          | master nodes.       | not changed.
-+      -------------------------------------------------------------------------
-+      master_total_dirty  | bad total_dirty in  | repair success, fs content is
-+                          | master nodes.       | not changed.
-+      -------------------------------------------------------------------------
-+      master_total_free   | bad total_free in   | repair success, fs content is
-+                          | master nodes.       | not changed.
-+      -------------------------------------------------------------------------
-+      log                 | corrupted log area. | repair success, fs content is
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      lpt_dirty           | bad dirty in pnode. | repair success, fs content is
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      lpt_flags           | bad flags in pnode  | repair success, fs content is
-+                          | (eg. index).        | not changed.
-+      -------------------------------------------------------------------------
-+      lpt_free            | bad free in pnode.  | repair success, fs content is
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      lpt_pos             | bad pos in nnode.   | repair success, fs content is
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      tnc_lv0_key         | bad key in lv0      | repair success, fs content is
-+                          | znode.              | not changed.
-+      -------------------------------------------------------------------------
-+      tnc_lv0_len         | bad len in lv0      | repair success, fs content is
-+                          | znode.              | not changed.
-+      -------------------------------------------------------------------------
-+      tnc_lv0_pos         | bad pos in lv0      | repair success, fs content is
-+                          | znode.              | not changed.
-+      -------------------------------------------------------------------------
-+      tnc_noleaf_key      | bad key in non-leaf | repair success, fs content is
-+                          | znode.              | not changed.
-+      -------------------------------------------------------------------------
-+      tnc_noleaf_len      | bad len in non-leaf | repair success, fs content is
-+                          | znode.              | not changed.
-+      -------------------------------------------------------------------------
-+      tnc_noleaf_pos      | bad pos in non-leaf | repair success, fs content is
-+                          | znode.              | not changed.
-+      -------------------------------------------------------------------------
-+      inode_data          | bad data node.      | repair success, file content
-+                          |                     | is changed, other files are
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      inode_mode          | bad inode mode for  | repair success, soft link
-+                          | solf link file.     | file is dropped, other files
-+                          |                     | are not changed.
-+      -------------------------------------------------------------------------
-+      inode_nlink         | wrong nlink for     | repair success, nlink is
-+                          | file.               | corrected, fs content is not
-+                          |                     | changed.
-+      -------------------------------------------------------------------------
-+      inode_size          | wrong inode size    | repair success, inode size is
-+                          | for file.           | corrected, fs content is not
-+                          |                     | changed.
-+      -------------------------------------------------------------------------
-+      inode_xcnt          | wrong inode         | repair success, xattr_cnt is
-+                          | xattr_cnt for file. | corrected, fs content is not
-+                          |                     | changed.
-+      -------------------------------------------------------------------------
-+      soft_link_data_len  | bad inode data_len  | repair success, soft link
-+                          | for solt link file. | file is dropped, other files
-+                          |                     | are not changed.
-+      -------------------------------------------------------------------------
-+      dentry_key          | bad dentry key for  | repair success, dentry is
-+                          | file.               | removed, other files are
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      dentry_nlen         | inconsistent nlen   | repair success, dentry is
-+                          | and name in dentry  | removed, other files are
-+                          | for file.           | not changed.
-+      -------------------------------------------------------------------------
-+      dentry_type         | inconsistent type   | repair success, dentry is
-+                          | between dentry and  | removed, other files are
-+                          | inode for file.     | not changed.
-+      -------------------------------------------------------------------------
-+      xinode_flags        | lost UBIFS_XATTR_FL | repair success, xattr is
-+                          | in xattr inode      | removed, other files are
-+                          | flags for file.     | not changed.
-+      -------------------------------------------------------------------------
-+      xinode_key          | bad xattr inode key | repair success, xattr is
-+                          | for file.           | removed, other files are
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      xinode_mode         | bad xattr inode     | repair success, xattr is
-+                          | mode for file.      | removed, other files are
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      xentry_key          | bad xattr entry key | repair success, xattr is
-+                          | for file.           | removed, other files are
-+                          |                     | not changed.
-+      -------------------------------------------------------------------------
-+      xentry_nlen         | inconsistent nlen   | repair success, xattr is
-+                          | and name in xattr   | removed, other files are
-+                          | entry for file.     | not changed.
-+      -------------------------------------------------------------------------
-+      xentry_type         | inconsistent type   | repair success, xattr is
-+                          | between xattr entry | removed, other files are
-+                          | and xattr inode for | not changed.
-+                          | file.               |
-+      -------------------------------------------------------------------------
-+      dir_lost            | bad dentry for dir. | repair success, dir and files
-+                          |                     | under dir are removed, other
-+                          |                     | files are not changed.
-+      -------------------------------------------------------------------------
-+      root_dir            | bad '/'.            | repair success, create new
-+                          |                     | root dir('/').
-+      =========================================================================
++static struct scanned_dent_node *
++lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
++		       struct scanned_dent_node *target)
++{
++	int cmp, nlen;
++	struct scanned_dent_node *dent_node;
++	struct rb_node *p;
 +
-+ Dependence
-+ ----------
-+ kernel configs:
-+   CONFIG_MTD_NAND_NANDSIM=m
-+   CONFIG_MTD_MTDRAM=m
-+   CONFIG_MTD_UBI=m
-+   CONFIG_MTD_UBI_FASTMAP=y
-+   CONFIG_UBIFS_FS=m
-+   CONFIG_UBIFS_FS_XATTR=y
-+   CONFIG_UBIFS_FS_AUTHENTICATION=y
-+   CONFIG_FS_ENCRYPTION=y
-+   CONFIG_FAILSLAB=y
-+   CONFIG_FAIL_PAGE_ALLOC=y
++	p = si->valid_dents.rb_node;
++	while (p) {
++		dent_node = rb_entry(p, struct scanned_dent_node, rb);
++		cmp = keys_cmp(c, &target->key, &dent_node->key);
++		if (cmp < 0) {
++			p = p->rb_left;
++		} else if (cmp > 0) {
++			p = p->rb_right;
++		} else {
++			nlen = min(target->nlen, dent_node->nlen);
++			cmp = strncmp(target->name, dent_node->name, nlen) ? :
++				      target->nlen - dent_node->nlen;
++			if (cmp < 0) {
++				p = p->rb_left;
++			} else if (cmp > 0) {
++				p = p->rb_right;
++			} else {
++				if (target->header.sqnum >
++				    dent_node->header.sqnum)
++					return dent_node;
++				else
++					return NULL;
++			}
++		}
++	}
 +
-+   CONFIG_DEBUG_KMEMLEAK=y // optional
++	return NULL;
++}
 +
-+ tools:
-+   fsstress		[3][4]
-+   keyctl		[5]
-+   fscryptctl		[6]
-+   setfattr/getfattr	[7]
++/**
++ * remove_del_nodes - remove deleted nodes from valid node tree.
++ * @c: UBIFS file-system description object
++ * @si: records nodes and files information during scanning
++ *
++ * This function compares sqnum between deleted node and corresponding valid
++ * node, removes valid node from tree if the sqnum of deleted node is bigger.
++ * Deleted ino/dent nodes will be removed from @si->del_inos/@si->del_dents
++ * after this function finished.
++ */
++static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
++{
++	struct scanned_ino_node *del_ino_node, *valid_ino_node;
++	struct scanned_dent_node *del_dent_node, *valid_dent_node;
++	struct rb_node *this;
 +
-+ Running
-+ -------
++	this = rb_first(&si->del_inos);
++	while (this) {
++		cond_resched();
++		del_ino_node = rb_entry(this, struct scanned_ino_node, rb);
++		this = rb_next(this);
 +
-+ Please build and install mtd-utils first.
-+ Run single case:
-+   cd $INSTALL_DIR/libexec/mtd-utils
-+   ./powercut_repair_mount.sh
-+   ./random_corrupted_repair.sh
-+   ./cycle_mount_repair_check.sh
-+ Run all cases: sh $INSTALL_DIR/libexec/mtd-utils/ubifs_repair_run_all.sh
++		valid_ino_node = lookup_valid_ino_node(c, si, del_ino_node);
++		if (valid_ino_node) {
++			rb_erase(&valid_ino_node->rb, &si->valid_inos);
++			kfree(valid_ino_node);
++		}
 +
-+ References
-+ ----------
++		rb_erase(&del_ino_node->rb, &si->del_inos);
++		kfree(del_ino_node);
++	}
 +
-+ [1] https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/tree/tests/README
-+ [2] https://bugzilla.kernel.org/show_bug.cgi?id=218327
-+ [3] https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/tree/ltp/fsstress.c
-+ [4] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fsstress/fsstress.c
-+ [5] https://github.com/torvalds/linux/blob/master/security/keys/keyctl.c
-+ [6] https://github.com/google/fscryptctl
-+ [7] https://github.com/philips/attr/tree/master
++	this = rb_first(&si->del_dents);
++	while (this) {
++		cond_resched();
++		del_dent_node = rb_entry(this, struct scanned_dent_node, rb);
++		this = rb_next(this);
++
++		valid_dent_node = lookup_valid_dent_node(c, si, del_dent_node);
++		if (valid_dent_node) {
++			rb_erase(&valid_dent_node->rb, &si->valid_dents);
++			kfree(valid_dent_node);
++		}
++
++		rb_erase(&del_dent_node->rb, &si->del_dents);
++		kfree(del_dent_node);
++	}
++}
++
+ static int do_repair(struct ubifs_info *c)
+ {
+ 	int err = 0;
+@@ -940,7 +1053,14 @@ static int do_repair(struct ubifs_info *c)
+ 	/* Step 2: Scan valid/deleted nodes from volume. */
+ 	ubifs_msg(c, "Step 2: Scan nodes");
+ 	err = scan_nodes(c, &si);
++	if (err)
++		goto out;
++
++	/* Step 3: Remove deleted nodes from valid node tree. */
++	ubifs_msg(c, "Step 3: Remove deleted nodes");
++	remove_del_nodes(c, &si);
+ 
++out:
+ 	destroy_scanned_info(c, &si);
+ 	return err;
+ }
 -- 
-2.13.6
+2.31.1
 
 
 ______________________________________________________
