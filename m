@@ -4,60 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97440C46CD4
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Dec 2023 13:10:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72EC1C46CD4
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Dec 2023 13:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dEQVhsMPDhXDrkk+FD87eE638j0KsDx1ZZ2fB0n4cv8=; b=1dGnEXRwLaSXfZKiA9okYqsTmS
-	fOWoGfXizFAi8NUCJdIbBSnU34SK0aKycJXPaB0yK+PEm+VFuefBjKtlcemiBkHovU2NKZfpGXjY9
-	x3K12o0gbCZZZfOA2omxQukBxgspqBpou0lb/ckAh7mCtLkpkd1WMTm+xg5+xQdvotsm/SHAXxbhk
-	29FJU4UJFL437M2ETGlFBAbaVGkZKuFMnno0NT8OEssdW8/tIJn8wrkLSw7m76OixfT009zzJJQpj
-	XOZLfJWkBI/AKw52pfvOaZIEXTR4DCd6UYJdut0ZzsXygXGMMh7tN03JkNMVCDs7mL6fvfQajq9he
-	VuDvPHtQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:MIME-Version:Message-Id:Date:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JGSDGt76upsD49K9o6EDgPqqvYoinf0HdhusBdI1GKo=; b=BPPJOPrsnK0Vmf
+	EkD5XaHmgxl5fIPr6SxDM/iWDoTMRBRSnnYbiveyhjEjM0NJ6UCx1p10P9Q3SYzRAC6C6Hbhp8cIE
+	biesbah/p99KSD5y/l71JXwHWjqCiXYyGMKkbysPnus65kN3CkHoYbFa/gDxAhF5TBANawR50Nt8l
+	lB/e0FSuJ8bJbZKPlkNjAsKKWhvK93kjP8z3h7q8b59onZHZiXsXSLT4U4VEjLxIspAHqVkMvQorR
+	LT7fKAXBRHDs5fq4fEPVVnc5mtRrWrSIKq6KcM6TX5MGXTTxXfAvub7TuMIhRQsEPYEPExAMmeayG
+	xCH9OpbO7LsYkvyRlGfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rJCcx-000wsm-2Y;
-	Fri, 29 Dec 2023 13:10:15 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1rJDNM-0010Sb-39;
+	Fri, 29 Dec 2023 13:58:12 +0000
+Received: from mailserv1.kapsi.fi ([2001:67c:1be8::25:1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rJCcu-000wsH-0X
+	id 1rJDNI-0010Rz-1z
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Dec 2023 13:10:14 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4T1m1V3Bx3zsTgK;
-	Fri, 29 Dec 2023 21:09:34 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5A0811400E3;
-	Fri, 29 Dec 2023 21:10:03 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 29 Dec 2023 21:10:02 +0800
-Subject: Re: [PATCH RFC 00/17] ubifs: Add filesystem repair support
-To: Richard Weinberger <richard@nod.at>
-CC: david oberhollenzer <david.oberhollenzer@sigma-star.at>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Sascha Hauer <s.hauer@pengutronix.de>, Tudor
- Ambarus <Tudor.Ambarus@linaro.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
-References: <20231228014112.2836317-1-chengzhihao1@huawei.com>
- <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <13b259ca-b32f-a8d6-5e11-8bb38df72f5c@huawei.com>
-Date: Fri, 29 Dec 2023 21:09:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Fri, 29 Dec 2023 13:58:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Uuw+WxMCJEyjifVT1xr3A7m5oLTq/jZeNbIxOjUJKW8=; b=FygJJ3knaa+e6wUklrROK0OiiC
+	jW/GeqZUrKbdGa8GEl/LH3Ftf6u4d2XzgRXeSee45OfkmHzqFwhOgs33sO4C4iAWAonY5CDB9+1u8
+	JL503gQ603ipaxMVpphBercEwXJC3FOsHxwY7AkSewYTgpC2OWbis57W9SuKsz5TzHjrHwWcRX41k
+	i2DGr/3EXL97OFn0wxrRUh7aom7KzKBBDQBN3hijJf0dapLpuvBmzUpHpgmlZD4T00I9Al3n367Kk
+	VE9LeB+u5OV2xYTB6fX8/Ty38IojRQiJrrMjnmRrCd1NH83BPV4Nmtmbrne7gLFpOITZUp/o4J/xg
+	b/HUNrxg==;
+Received: from 87-95-52-44.bb.dnainternet.fi ([87.95.52.44]:39105 helo=mailserv.kapsi.fi)
+	by mailserv1.kapsi.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <maukka@ext.kapsi.fi>)
+	id 1rJDMb-000suY-0Q;
+	Fri, 29 Dec 2023 15:57:26 +0200
+Received: by mailserv.kapsi.fi (sSMTP sendmail emulation); Fri, 29 Dec 2023 15:57:17 +0200
+From: Mauri Sandberg <maukka@ext.kapsi.fi>
+To: linux-mtd@lists.infradead.org
+Cc: Mauri Sandberg <maukka@ext.kapsi.fi>
+Date: Fri, 29 Dec 2023 15:56:53 +0200
+Message-Id: <20231229135653.4764-1-maukka@ext.kapsi.fi>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <1145531757.175508.1703844362355.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-SA-Exim-Connect-IP: 87.95.52.44
+X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
+Subject: [PATCH] mkfs.ubifs: Add option to minimize the amount of LEBs
+X-SA-Exim-Version: 4.2.1 (built Wed, 06 Jul 2022 17:57:39 +0000)
+X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231229_051012_551050_47B64C81 
-X-CRM114-Status: GOOD (  28.16  )
+X-CRM114-CacheID: sfid-20231229_055809_169979_A9601E41 
+X-CRM114-Status: GOOD (  18.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,108 +72,157 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjMvMTIvMjkgMTg6MDYsIFJpY2hhcmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4gLS0tLS0g
-VXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBWb246ICJjaGVuZ3poaWhhbzEiIDxjaGVuZ3po
-aWhhbzFAaHVhd2VpLmNvbT4KPj4gQW46ICJkYXZpZCBvYmVyaG9sbGVuemVyIiA8ZGF2aWQub2Jl
-cmhvbGxlbnplckBzaWdtYS1zdGFyLmF0PiwgInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJN
-aXF1ZWwgUmF5bmFsIgo+PiA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4sICJTYXNjaGEgSGF1
-ZXIiIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPiwgIlR1ZG9yIEFtYmFydXMiIDxUdWRvci5BbWJh
-cnVzQGxpbmFyby5vcmc+Cj4+IENDOiAibGludXgta2VybmVsIiA8bGludXgta2VybmVsQHZnZXIu
-a2VybmVsLm9yZz4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4K
-Pj4gR2VzZW5kZXQ6IERvbm5lcnN0YWcsIDI4LiBEZXplbWJlciAyMDIzIDAyOjQwOjU1Cj4+IEJl
-dHJlZmY6IFtQQVRDSCBSRkMgMDAvMTddIHViaWZzOiBBZGQgZmlsZXN5c3RlbSByZXBhaXIgc3Vw
-cG9ydAo+IFRoYW5rcyBhIGxvdCBmb3Igc2hhcmluZyB0aGlzLgo+IEJlbG93IHlvdSBmaW5kIHNv
-bWUgdGhvdWdodHMgdGhhdCBjYW1lIGludG8gbXkgbWluZCB3aGlsZSBza2ltbWluZyBvdmVyIHRo
-ZQo+IHBhdGNoIHNlcmllcy4KPgo+PiBVQklGUyByZXBhaXIgcHJvdmlkZXMgYSB3YXkgdG8gZml4
-IGluY29uc2lzdGVudCBVQklGUyBpbWFnZSh3aGljaCBpcwo+PiBjb3JydXB0ZWQgYnkgaGFyZHdh
-cmUgZXhjZXB0aW9ucyBvciBVQklGUyByZWFsaXphdGlvbiBidWdzKSBhbmQgbWFrZXMKPj4gZmls
-ZXN5c3RlbSBiZWNvbWUgY29uc2lzdGVudCwganVzdCBsaWtlIGZzY2sgdG9vbHMoZWcuIGZzY2su
-ZXh0NCwKPj4gZnNjay5mMmZzLCBmc2NrLmZhdCwgZXRjLikgZG8uCj4gSSBkb24ndCBmdWxseSBh
-Z3JlZS4gVGhlIHRvb2wgbWFrZXMgVUJJRlMgbW91bnQgYWdhaW4gYnV0IHlvdSBzdGlsbCBoYXZl
-IGxvc3QgZGF0YQo+IGFuZCBsYXRlciB1c2Vyc3BhY2UgbWlnaHQgZmFpbCBiZWNhdXNlIGZpbGUg
-bm8gbG9uZ2VyIGNvbnRhaW4gd2hhdCB0aGUgYXBwbGljYXRpb24KPiBleHBlY3RlZC4KPiBTbyBt
-eSBmZWFyIGlzIHRoYXQgd2UncmUganVzdCBzaGlmdGluZyB0aGUgcHJvYmxlbSBvbmUgbGF5ZXIg
-dXAuCj4KPiBVQklGUyBuZXZlciBoYWQgYSBmc2NrIGZvciByZWFzb25zLiBVQklGUyB0cmllcyBo
-YXJkIHRvIG5vdCBiZWNvbWUgaW5jb25zaXN0ZW50LAo+IGJ5IG1haW50YWluaW5nIGEgZGF0YSBq
-b3VybmFsIGZvciBleGFtcGxlLgo+IEl0IGNhbiBmYWlsIG9mIGNvdXJzZSBieSBoYXJkd2FyZSBp
-c3N1ZXMuIGUuZy4gaWYgdGhlIHVuZGVybHlpbmcgTVREIGxvc2VzIGJpdHMsCj4gYnV0IHRoZXJl
-IGlzIG5vdGhpbmcgVUJJRlMgY2FuIGRvIGV4Y2VwdCBzb21ldGhpbmcgbGlrZSBzdG9yaW5nIGR1
-cGxpY2F0ZXMKPiBvZiBkYXRhIGxpa2UgQlRSRlMgZG9lcy4KPgo+IEFuZCBmaW5hbGx5LCB0aGUg
-YmlnZ2VzdCBwYWluIHBvaW50LCBpdCBjYW4gZmFpbCBkdWUgdG8gYnVncyBpbiBVQklGUyBpdHNl
-bGYuCj4gSW4gbXkgb3BpbmlvbiBidWdzIHNob3VsZCBnZXQgYWRkcmVzc2VkIGJ5IGltcHJvdmlu
-ZyBvdXIgdGVzdCBpbmZyYXN0cnVjdHVyZQo+IGluc3RlYWQgb2Ygd29ya2luZyBhcm91bmQuCgpJ
-IG1ha2UgVUJJRlMgcmVwYWlyIGZvciB0d28gcmVhc29uczoKCjEuIFRoZXJlIGhhdmUgYmVlbiBt
-YW55IGluY29uc2lzdGVudCBwcm9ibGVtcyBoYXBwZW5lZCBpbiBvdXIgCnByb2R1Y3RzKDQwKyBw
-ZXIgeWVhciksIGFuZCByZWFzb25zIGZvciBtb3N0IG9mIHRoZW0gYXJlIHVua25vd24sIEkgZXZl
-biAKY2FuJ3QganVkZ2UgdGhlIHByb2JsZW0gaXMgY2F1c2VkIGJ5IFVCSUZTIGJ1ZyBvciBoYXJk
-d2FyZSBleGNlcHRpb24uIApUaGUgY29uc2lzdGVudCBwcm9ibGVtcywgZm9yIGV4YW1wbGUsIFRO
-QyBwb2ludHMgdG8gYW4gZW1wdHkgc3BhY2UsIFROQyAKcG9pbnRzIHRvIGFuIHVuZXhwZWN0ZWQg
-bm9kZSwgYmFkIGtleSBvcmRlciBpbiB6bm9kZXMsIGRpcnR5IHNwYWNlIG9mIApwbm9kZSBiZWNv
-bWVzIGdyZWF0ZXIgdGhhbiBMRUIgc2l6ZSwgaHVnZSBudW1iZXIgaW4gCm1hc3Rlci0+dG90YWxf
-ZGVhZChsb29rcyBsaWtlIG92ZXJmbG93KSwgZXRjLiBJIGNhbm5vdCBzZW5kIHRoZXNlIGJhZCAK
-aW1hZ2VzIHRvIGZpbmQgaGVscCwgYmVjYXVzZSB0aGUgY29ycG9yYXRlIHBvbGljeS4gT3VyIGtl
-cm5lbCB2ZXJzaW9uIGlzIApuZXcsIGFuZCBsYXRlc3QgYnVnZml4cyBpbiBsaW51eC1tYWlubGlu
-ZSBhcmUgcGlja2VkIGluIHRpbWUuIEkgaGF2ZSAKbG9va2VkIHRob3VnaCBqb3VybmFsL3JlY292
-ZXJ5IFVCSUZTIHN1YnN5c3RlbSBkb3plbnMgb2YgdGltZXMsIHRoZSAKaW1wbGVtZW50YXRpb24g
-bG9va3MgZ29vZCwgZXhjZXB0IG9uZSBwcm9ibGVtWzJdLiBBbmQgd2UgaGF2ZSBkbyBtYW55IApw
-b3dlcmN1dC9mYXVsLWluamVjdGlvbiB0ZXN0cyBmb3IgdWJpZnMsIGFuZCBaaGFvbG9uZyBoYXMg
-cHVibGlzaGVkIG91ciAKZmF1bHQtaW5qZWN0aW9uIGltcGxlbWVudGF0aW9uIGluIFszXSwgdGhl
-IHJlc3VsdCBpcyB0aGF0IApqb3VybmFsL3JlY292ZXJ5IFVCSUZTIHN1YnN5c3RlbSBkb2VzIGxv
-b2sgc3R1cmR5LgoKMi4gSWYgdGhlcmUgZXhpc3RzIGEgZnNjayB0b29sLCB1c2VyIGhhdmUgb25l
-IG1vcmUgb3B0aW9uIHRvIGRlYWwgd2l0aCAKaW5jb25zaXN0ZW50IFVCSUZTIGltYWdlLiBVQklG
-UyBpcyBtYWlubHkgYXBwbGllZCBpbiBlbWJlZGVkIHN5c3RlbSwgCm1ha2luZyBmaWxlc3lzdGVt
-IGF2YWlsYWJsZSBpcyBtb3N0IGltcG9ydGFudCB3aGVuIGZpbGVzeXN0ZW0gYmVjb21lcyAKaW5j
-b25zaXN0ZW50IGluIHNvbWUgc2l0dWF0aW9ucy4KClsxXSAKaHR0cHM6Ly9saW51eC1tdGQuaW5m
-cmFkZWFkLm5hcmtpdmUuY29tL2JmY0h6RDBqL3ViaS11Ymlmcy1jb3JydXB0aW9ucy1kdXJpbmct
-cmFuZG9tLXBvd2VyLWN1dHMKClsyXSBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19i
-dWcuY2dpP2lkPTIxODMwOQoKWzNdIGh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVj
-dC9saW51eC1tdGQvbGlzdC8/c2VyaWVzPTM4ODAzNAoKSSdtIG5vdCBzdXJlIHdoZXRoZXIgeW91
-IHByZWZlciBhIGZzY2sgdG9vbCwgaW4gbXkgb3BpbmlvbiwgZnNjayBqdXN0IApwcm92aWRlIGEg
-d2F5IGZvciB1c2Vyc3BhY2UgdG8gZml4IGZpbGVzeXN0ZW0sIHVzZXIgY2FuIGNob29zZSBpbnZv
-a2UgaXQgCm9yIG5vdCBhY2NvcmRpbmcgdG8gdGhlIHRvb2wncyBsaW1pdGF0aW9ucyBiYXNlZCBv
-biBzcGVjaWZpYyBzaXR1YXRpb24uIApCdXQgYWNjb3JkaW5nIHRvIHlvdXIgZm9sbG93aW5nIHJl
-cGx5LCBJIGd1ZXNzIHlvdSBjYW4gYWNjZXB0IHRoYXQgVUJJRlMgCmNhbiBoYXZlIGEgZnNjaywg
-YW5kIGZzY2sgc2hvdWxkIGxldCB1c2VyIGtub3duIHdoaWNoIGZpbGUgaXMgcmVjb3ZlcmVkIApp
-bmNvbXBsZXRlLCB3aGljaCBmaWxlIGlzIG9sZCwgcmF0aGVyIHRoYW4ganVzdCBtYWtlIGZpbGVz
-eXN0ZW0gYmVjb21lIApjb25zaXN0ZW50LgoKPgo+PiBBYm91dCB3aHkgZG8gd2UgbmVlZCBpdCwg
-aG93IGl0IHdvcmtzLCB3aGF0IGl0IGNhbiBmaXggb3IgaXQgY2FuIG5vdAo+PiBmaXgsIHdoZW4g
-YW5kIGhvdyB0byB1c2UgaXQsIHNlZSBtb3JlIGRldGFpbHMgaW4KPj4gRG9jdW1lbnRhdGlvbi9m
-aWxlc3lzdGVtcy91Ymlmcy9yZXBhaXIucnN0IChQYXRjaCAxNykuCj4gVGhpcyBuZWVkcyB0byBn
-byBpbnRvIHRoZSBjb3ZlciBsZXR0ZXIuCk9LLCB0aGFua3MgZm9yIHJlbWluZGluZy4KPiAgIAo+
-PiBUZXN0aW5nIG9uIFVCSUZTIHJlcGFpciByZWZlcnMgdG8KPj4gaHR0cHM6Ly9idWd6aWxsYS5r
-ZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMTgzMjcKPj4KPj4gV2hhdGV2ZXIsIHdlIGZpbmFs
-bHkgaGF2ZSBhIHdheSB0byBmaXggaW5jb25zaXN0ZW50IFVCRklTIGltYWdlIGluc3RlYWQKPj4g
-b2YgZm9ybWF0dGluZyBVQkkgd2hlbiBVQklGUyBiZWNvbWVzIGluY29uc2lzdGVudC4KPiBGaXgg
-aW4gdGVybXMgb2YgbWFraW5nIG1vdW50IHdvcmsgYWdhaW4sIEkgZmVhcj8gQXMgSSBzYWlkLCBt
-b3N0IGxpa2VseQo+IHRoZSBwcm9ibGVtIGlzIG5vdyBvbmUgbGF5ZXIgYWJvdmUuIFVCSUZTIHRo
-aW5rcyBldmVyeXRoaW5nIGlzIGdvb2QgYnV0Cj4gdXNlcnNwYWNlIHN1ZGRlbmx5IHdpbGwgc2Vl
-IG9sZC9pbmNvbXBsZXRlIGZpbGVzLgo+Cj4gV2hhdCBJIGNhbiB0aGluayBvZiBpcyBhIHRvb2wg
-KGluIHVzZXJzcGFjZSBsaWtlIG90aGVyIGZzY2tzKSB3aGljaAo+IGNhbiByZWNvdmVyIGNlcnRh
-aW4gVUJJRlMgc3RydWN0dXJlcyBidXQgbWFrZXMgdmVyeSBjbGVhciB0byB0aGUgdXNlciB3aGF0
-Cj4gdGhlIGRhdGEgaXMgbG9zdC4gZS5nLiB0aGF0IGlub2RlIFhZIG5vdyBtaXNzZXMgc29tZSBi
-bG9ja3Mgb3IgYW4gb2xkIHZlcnNpb24KPiBvZiBzb21ldGhpbmcgd2lsbCBiZSB1c2VkLgo+IEJ1
-dCB0aGlzIGlzbCBub3RoaW5nIHlvdSBjYW4gcnVuIGJsaW5kbHkgaW4gcHJvZHVjdGlvbi4KCkxl
-dCBtZSBzZWUuCgpGaXJzdCwgd2UgaGF2ZSBhIGNvbW1vbiB2aWV3LCBmc2NrIHRvb2wgaXMgdmFs
-dWFibGUgZm9yIFVCSUZTLCBpdCBqdXN0IApwcm92aWRlIGEgd2F5IGZvciB1c2VyIGFwcGxpY2F0
-aW9uIHRvIG1ha2UgVUJJRlMgYmUgY29uc2lzdGVudCBhbmQgCmF2YWlsYWJsZS4gUmlnaHQ/CgpT
-ZWNvbmQsIHlvdSBjb25jZXJuIG9kZC9pbmNvbXBsZXRlIGZpbGVzIGFyZSByZWNvdmVyZWQganVz
-dCBsaWtlIEkgCm1ldGlvbmVkIGluIGRvY3VtZW50YXRpb24oTGltaXRhdGlvbnMgc2VjdGlvbiks
-IHdoaWNoIHN0aWxsIG1ha2UgCmFwcGxpY2F0aW9uIGZhaWxlZCBiZWNhdXNlIHRoZSByZWNvdmVy
-ZWQgZmlsZSBsb3N0IGRhdGEgb3IgZGVsZXRlZCBmaWxlIAppcyByZWNvdmVyZWQuIFNvIHlvdSBz
-dWdnZXN0ZWQgbWUgdGhhdCBtYWtlIGEgdXNlcnNwYWNlIGZzY2sgdG9vbCwgYW5kIApmc2NrIGNh
-biB0ZWxsbCB1c2VyIHdoaWNoIGZpbGUgaXMgZGF0YSBsb3N0LCB3aGljaCBmaWxlIGlzIHJlY292
-ZXJlZCAKYWZ0ZXIgZGVsZXRpb24uCgpUaGUgZGlmZmljdWx0eSBjb21lcyBmcm9tIHNlY29uZCBw
-b2ludCzCoCBob3cgZG9lcyBmc2NrIGtub3cgYSBmaWxlIGlzIApyZWNvdmVyZWQgaW5jb21wbGV0
-ZSBvciBvbGQuIFdoZXRoZXIgdGhlIG5vZGUgaXMgZXhpc3RpbmcsIGl0IGlzIGp1ZGdlZCAKYnkg
-VE5DLCBidXQgVE5DIGNvdWxkIGJlIGRhbWFnZWQgbGlrZSBJIGRlc2NpYmVkIGluIGFib3ZlLiBE
-byB5b3UgaGF2ZSAKYW55IGlkZWFzPwoKQmVzaWRlcywgd2UgZ2V0IGluY29tcGxldGUgZmlsZSBi
-ZWNhdXNlIHNvbWUgZGF0YSBub2RlcyBhcmUgY29ycnVwdGVkLCAKdGhlIGNvcnJ1cHRlZCBkYXRh
-IGlzIHByaW50ZWQgaW4gZGJnIG1zZyB3aGVuIGl0IGlzIGRyb3BwZWQuCgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+Use case for the new option would be when you want to have a
+non-mutable filesystem in a static ubifs volume and another
+volume for writable data.
+
+Currently you can find the minimal LEB count by running the
+mkfs.ubifs once with too small max_leb_cnt. This patch uses
+the already calculated minimal amount of LEBs as the max_leb_cnt
+and then proceeds to create the image as usual.
+
+Signed-off-by: Mauri Sandberg <maukka@ext.kapsi.fi>
+---
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 40 +++++++++++++++++++++--------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 8f8d40b..02ca337 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -141,6 +141,7 @@ static int do_create_inum_attr;
+ static char *context;
+ static int context_len;
+ static struct stat context_st;
++static int minimize;
+ 
+ /* The 'head' (position) which nodes are written */
+ static int head_lnum;
+@@ -163,7 +164,7 @@ static struct inum_mapping **hash_table;
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
+ 
+-static const char *optstring = "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQqaK:b:P:C:";
++static const char *optstring = "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQqaK:b:P:C:M";
+ 
+ enum {
+ 	HASH_ALGO_OPTION = CHAR_MAX + 1,
+@@ -202,6 +203,7 @@ static const struct option longopts[] = {
+ 	{"hash-algo",          1, NULL, HASH_ALGO_OPTION},
+ 	{"auth-key",           1, NULL, AUTH_KEY_OPTION},
+ 	{"auth-cert",          1, NULL, AUTH_CERT_OPTION},
++	{"minimize-lebs",      0, NULL, 'M'},
+ 	{NULL, 0, NULL, 0}
+ };
+ 
+@@ -258,6 +260,7 @@ static const char *helptext =
+ "                         for signing\n"
+ "    --auth-cert=FILE     Authentication certificate filename for signing. Unused\n"
+ "                         when certificate is provided via PKCS #11\n"
++"-M  --minimize-lebs      use minimal amount of LEBs\n"
+ "-h, --help               display this help text\n\n"
+ "Note, SIZE is specified in bytes, but it may also be specified in Kilobytes,\n"
+ "Megabytes, and Gigabytes if a KiB, MiB, or GiB suffix is used.\n\n"
+@@ -420,8 +423,11 @@ static int validate_options(void)
+ 		return err_msg("too large LEB size %d, maximum is %d",
+ 				c->leb_size, UBIFS_MAX_LEB_SZ);
+ 	if (c->max_leb_cnt < UBIFS_MIN_LEB_CNT)
+-		return err_msg("too low max. count of LEBs, minimum is %d",
+-			       UBIFS_MIN_LEB_CNT);
++		if (minimize)
++			c->max_leb_cnt = UBIFS_MIN_LEB_CNT;
++		else
++			return err_msg("too low max. count of LEBs, minimum is %d",
++				       UBIFS_MIN_LEB_CNT);
+ 	if (c->fanout < UBIFS_MIN_FANOUT)
+ 		return err_msg("too low fanout, minimum is %d",
+ 			       UBIFS_MIN_FANOUT);
+@@ -432,13 +438,13 @@ static int validate_options(void)
+ 	if (c->log_lebs < UBIFS_MIN_LOG_LEBS)
+ 		return err_msg("too few log LEBs, minimum is %d",
+ 			       UBIFS_MIN_LOG_LEBS);
+-	if (c->log_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
++	if (!minimize && c->log_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
+ 		return err_msg("too many log LEBs, maximum is %d",
+ 			       c->max_leb_cnt - UBIFS_MIN_LEB_CNT);
+ 	if (c->orph_lebs < UBIFS_MIN_ORPH_LEBS)
+ 		return err_msg("too few orphan LEBs, minimum is %d",
+ 			       UBIFS_MIN_ORPH_LEBS);
+-	if (c->orph_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
++	if (!minimize && c->orph_lebs >= c->max_leb_cnt - UBIFS_MIN_LEB_CNT)
+ 		return err_msg("too many orphan LEBs, maximum is %d",
+ 			       c->max_leb_cnt - UBIFS_MIN_LEB_CNT);
+ 	tmp = UBIFS_SB_LEBS + UBIFS_MST_LEBS + c->log_lebs + c->lpt_lebs;
+@@ -800,6 +806,9 @@ static int get_options(int argc, char**argv)
+ 		case AUTH_CERT_OPTION:
+ 			return err_msg("mkfs.ubifs was built without crypto support.");
+ #endif
++		case 'M':
++			minimize = 1;
++			break;
+ 		}
+ 	}
+ 
+@@ -847,8 +856,12 @@ static int get_options(int argc, char**argv)
+ 	if (c->leb_size == -1)
+ 		return err_msg("LEB size was not specified (use -h for help)");
+ 
+-	if (c->max_leb_cnt == -1)
+-		return err_msg("Maximum count of LEBs was not specified "
++	if (!minimize && c->max_leb_cnt == -1)
++		return err_msg("Maximum count of LEBs or --minimize-lebs was not specified "
++			       "(use -h for help)");
++
++	if (minimize && c->max_leb_cnt != -1)
++		return err_msg("You have to specify either --minimize-lebs or --max-leb-cnt "
+ 			       "(use -h for help)");
+ 
+ 	if (c->max_bud_bytes == -1) {
+@@ -876,7 +889,8 @@ static int get_options(int argc, char**argv)
+ 
+ 	if (c->log_lebs == -1) {
+ 		c->log_lebs = calc_min_log_lebs(c->max_bud_bytes);
+-		c->log_lebs += 2;
++		if (!minimize)
++			c->log_lebs += 2;
+ 	}
+ 
+ 	if (c->min_io_size < 8)
+@@ -888,7 +902,10 @@ static int get_options(int argc, char**argv)
+ 		printf("\troot:         %s\n", root);
+ 		printf("\tmin_io_size:  %d\n", c->min_io_size);
+ 		printf("\tleb_size:     %d\n", c->leb_size);
+-		printf("\tmax_leb_cnt:  %d\n", c->max_leb_cnt);
++		if (minimize)
++			printf("\tminimize:     %d\n", minimize);
++		else
++			printf("\tmax_leb_cnt:  %d\n", c->max_leb_cnt);
+ 		printf("\toutput:       %s\n", output);
+ 		printf("\tjrn_size:     %llu\n", c->max_bud_bytes);
+ 		printf("\treserved:     %llu\n", c->rp_size);
+@@ -2553,7 +2570,10 @@ static int finalize_leb_cnt(void)
+ {
+ 	c->leb_cnt = head_lnum;
+ 	if (c->leb_cnt > c->max_leb_cnt)
+-		return err_msg("max_leb_cnt too low (%d needed)", c->leb_cnt);
++		if (minimize)
++			c->max_leb_cnt = c->leb_cnt;
++		else
++			return err_msg("max_leb_cnt too low (%d needed)", c->leb_cnt);
+ 	c->main_lebs = c->leb_cnt - c->main_first;
+ 	if (verbose) {
+ 		printf("\tsuper lebs:   %d\n", UBIFS_SB_LEBS);
+
+base-commit: 9471c13faf76ff05f58d636b988bb066ad6d05fa
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
