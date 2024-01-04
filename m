@@ -4,82 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 786C9C47074
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jan 2024 11:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A78D5C47074
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jan 2024 11:29:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sDP/oZqQw/FzKZ8GGBI1DaujEC9VV6RwATPDRkU3zvU=; b=KlO4uS0OH9G3eH
-	QcGExy2p04UCR072SQnek7ytvu37jWYW94HfdvcG50PhUFqNgeqgmM3Y8AsUCJ5mOLNdLYV8F/L0P
-	CXQfG0p80fgd39tIV1LVwzHKY2+k2EbPraeaYN6RKqgPBSBkjYwOCwqJ7W3OhlZas5sVm2F7/qa6S
-	aEQPxslyl3SQrdblt+JPmUF3rtaJJOobYw0X1iOtNkmdBepZzdh1jIbvFe9tKCIoASd/VrvhnNihH
-	49Uub0J9Lyiv8LRAhWtOxb0qZYe6vOg32lz+9syU1dTxfy8EWzt36BgXonLa2W5eJ4YS5CS5Bwi2N
-	FIlhtMZ+j15pYW/+A6Qw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1HkPxWI+iQj5GDsPIbV1klJb3q3bTxPC8sMAb3UhfrA=; b=Q1nw7Y1lDoSbZ3
+	E6SgSwI+fPF0w3+Jdj+n0FAHBrzshEaseEA4v/hnNQDKnMTjPKbkDbMGExIkikXMaODbXFbYJ0TRo
+	tuaE7n+AUPsl0RuH/qNk1w4mdJdyN609Hbp3l+qhcbal2YbjoFLLVaB89LHdyV64PTsoitxxlkT2T
+	VdQFTm1e7fE9jDyJDatmcqbM6m7JHOs+BTxI7WUEggdfg6yWyOBid8TB4pwHpAnuyLg3ZndEoT3mm
+	2igxMfifp0qOD9dBsn42eOPAirKbWjKLfSlaeu/TzzvefCPDwwjH0KMZLqcZhqsKAc+jTRxTAUJUr
+	JOLGApMbf9LJ6rOSpdDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLLov-00DhxT-2Y;
-	Thu, 04 Jan 2024 11:23:29 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1rLLuK-00DlUG-0a;
+	Thu, 04 Jan 2024 11:29:04 +0000
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLLos-00DhsN-08
+	id 1rLLuF-00DlPQ-2t
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Jan 2024 11:23:28 +0000
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4047efg9020092;
-	Thu, 4 Jan 2024 11:23:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=aTyOt6+SodX6bP52NpaT44ugzzw6dI40D4PGBU1bCzU=; b=pO
-	uVTLfNeu6BowS6RRhUJkCKR35oVUAjzDehsKfpC5xwRn4Nm4P25e44WN1Msyv8la
-	dP/rWmLuKTX2rwXCIHlpIiEpSJC4g8P+LzMTNvNEjAiROLso+HM6bGpuuCLJoyyV
-	Ys7ugRSvV5XYccwls6nFB6not6lBrjhITVGlt4vgg5fH3RLp+meM0HB5EIG5Vc6D
-	rvgpyU4EFsqf3+c2tdYhEh6hO3CVgFyNpS5blV/DaIGZ69qweq5L7I6KmXrekAKO
-	apwN6ajJv8+IQvgf/OH1MEDx+ZemqkBNesSoUqXLxz4rbatKHprV4mKYbe4MilKl
-	HSiN05jqZk8QrOVHsUfA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vdra38kcq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 11:23:17 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 404BNGBI028553
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 4 Jan 2024 11:23:16 GMT
-Received: from zhenhuah-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 4 Jan 2024 03:23:13 -0800
-From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_tingweiz@quicinc.com>,
-        <quic_bjorande@quicinc.com>, Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: [PATCH] dt-bindings: mtd: Change the schema for nodename which includes "sram"
-Date: Thu, 4 Jan 2024 19:23:02 +0800
-Message-ID: <1704367382-29979-1-git-send-email-quic_zhenhuah@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	Thu, 04 Jan 2024 11:29:01 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9EE851F805;
+	Thu,  4 Jan 2024 11:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704367735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
+	b=wsQKzVwTEzNXMrID3WBUT2cACh+KzJec60Ql22fl5N5QaM5/2vK+qfg2IueeonhI3lc8Nw
+	H4SFayUpxnCxSkdcbmYEGhQVwnDAKL/rHBCVpvzBMWMnq8D8tcrV6BiP5OkgTLI5R6djXs
+	huBK7ewNueIlSgrTFcVmz95tuQULxHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704367735;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
+	b=QnmhJ6W9z9hciG62uLQwn7l6XDnoT7FgUsOy4cuGf7GKqEjXmnN5qYZJx69CAE4e0wLDCV
+	6voNpMi3rZDHXuCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704367735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
+	b=wsQKzVwTEzNXMrID3WBUT2cACh+KzJec60Ql22fl5N5QaM5/2vK+qfg2IueeonhI3lc8Nw
+	H4SFayUpxnCxSkdcbmYEGhQVwnDAKL/rHBCVpvzBMWMnq8D8tcrV6BiP5OkgTLI5R6djXs
+	huBK7ewNueIlSgrTFcVmz95tuQULxHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704367735;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
+	b=QnmhJ6W9z9hciG62uLQwn7l6XDnoT7FgUsOy4cuGf7GKqEjXmnN5qYZJx69CAE4e0wLDCV
+	6voNpMi3rZDHXuCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 89DFF13722;
+	Thu,  4 Jan 2024 11:28:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BsajIXeWlmXXBQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 11:28:55 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 273FFA07EF; Thu,  4 Jan 2024 12:28:55 +0100 (CET)
+Date: Thu, 4 Jan 2024 12:28:55 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
+	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+	p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 04/17] mtd: block2mtd: use bdev apis
+Message-ID: <20240104112855.uci45hhqaiitmsir@quack3>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-5-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FltXqd4Vq79xg_8J-GVunkFoQIhGr56X
-X-Proofpoint-ORIG-GUID: FltXqd4Vq79xg_8J-GVunkFoQIhGr56X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
- phishscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401040086
+Content-Disposition: inline
+In-Reply-To: <20231221085712.1766333-5-yukuai1@huaweicloud.com>
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Bar: +
+X-Spamd-Result: default: False [1.61 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-0.08)[63.79%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RLhr85cyeg3mfw7iggddtjdkgs)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[48];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wsQKzVwT;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QnmhJ6W9
+X-Rspamd-Queue-Id: 9EE851F805
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240104_032326_208283_B3501960 
+X-CRM114-CacheID: sfid-20240104_032900_109463_31E5979D 
 X-CRM114-Status: GOOD (  12.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -97,71 +155,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Node name which includes "sram" not only represents MTD devices, but also
-lots of sram devices(eg, qcom,imem.yaml, rules in folder sram/*).
+On Thu 21-12-23 16:56:59, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> On the one hand covert to use folio while reading bdev inode, on the
+> other hand prevent to access bd_inode directly.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+...
+> +		for (p = folio_address(folio); p < max; p++)
+>  			if (*p != -1UL) {
+> -				lock_page(page);
+> -				memset(page_address(page), 0xff, PAGE_SIZE);
+> -				set_page_dirty(page);
+> -				unlock_page(page);
+> -				balance_dirty_pages_ratelimited(mapping);
+> +				folio_lock(folio);
+> +				memset(folio_address(folio), 0xff,
+> +				       folio_size(folio));
+> +				folio_mark_dirty(folio);
+> +				folio_unlock(folio);
+> +				bdev_balance_dirty_pages_ratelimited(bdev);
 
-To avoid the conflicts, change the schema as:
- - if node name includes "sram", must select "compatible" to match
-(I have listed all "comptible" string in mtd.yaml by searching
-drivers/mtd/* to find applicable drivers)
- - if node name is nand/flash, use "nodename" to select.
+Rather then creating this bdev_balance_dirty_pages_ratelimited() just for
+MTD perhaps we can have here (and in other functions):
 
-Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
-Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
----
-Hello,
+				...
+				mapping = folio_mapping(folio);
+				folio_unlock(folio);
+				if (mapping)
+					balance_dirty_pages_ratelimited(mapping);
 
-Tested a few devicetree nodes, which confirms:
-"qcom,imem.yaml" which in sram/ not matches with mtd.yaml anymore.
-All nodes include string "sram" must have "compatible" which listed in
-mtd.yaml to be matched.
+What do you think? Because when we are working with the folios it is rather
+natural to use their mapping for dirty balancing?
 
-Current I just modify the rule for "sram" as it is definitely conflicting with
-rules in sram/*. I have not much backgrounds on nand/flash whether they may have
-similar conflicts.
-
- Documentation/devicetree/bindings/mtd/mtd.yaml | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index f322290..1704437 100644
---- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -10,10 +10,28 @@ maintainers:
-   - Miquel Raynal <miquel.raynal@bootlin.com>
-   - Richard Weinberger <richard@nod.at>
- 
--properties:
--  $nodename:
--    pattern: "^(flash|.*sram|nand)(@.*)?$"
-+select:
-+  if:
-+    properties:
-+      $nodename:
-+        pattern: "^.*sram(@.*)?$"
-+  then:
-+    properties:
-+      compatible:
-+        enum:
-+          - arm,vexpress-psram
-+          - cypress,cy7c1019dv33-10zsxi
-+          - microchip,48l640
-+          - mtd-ram
-+  else:
-+    properties:
-+      $nodename:
-+        pattern: "^(flash|nand)(@.*)?$"
- 
-+  required:
-+    - $nodename
-+
-+properties:
-   label:
-     description:
-       User-defined MTD device name. Can be used to assign user friendly
+								Honza
 -- 
-2.7.4
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
