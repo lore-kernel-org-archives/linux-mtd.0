@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F5F8C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 06:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E72EC3DA6E
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 06:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CWPJy5VSE4cGOJ46Sn6UBl9OaFRnrSaCDzfq4F0xEZI=; b=WIwLWEkss9zNZs
-	6v7IyB4qBKfw8k2XFqOy7XPX5xXl9Poz551CWHvUz9HfByHRJCIQ8nyk08vS2dmLk4maEJMUEwceC
-	xRoY/7vhViol9DVGJ9YQaiPMV8ea/ZOlT+rKXlpTEQsh7D+oK/O3tbd9+IbNEkXG/6ZiA2js5lMzB
-	MMifxvXk6Xetn8Qcx7qseaRLDagmucBNdv9XG8hD6bAQqlTHad9Y/20Zl3A8a8Ae8D4gmxyk/igJR
-	VMN9BYpXZM3COfV5Idln6vGs4TTsaIvaKvFpDG85xSuqsUye+m+jczCBxaIzbh3e59LMAON3vTLKH
-	cfabGSi4f9j9FVRj/AGQ==;
+	List-Owner; bh=z2Mg2zAOhfat2hWjo1ysJsStrlhZfQb8YhvNAvm9BqE=; b=fs6FAdc3NO0J8E
+	SjD8TlU1rxHOnsrcsvVRYvN0DlMvSgNPh8ShKAZN28Iv0z+jz54ZANZCNkojNQB9If8qP20G79DUN
+	19Tc2nJq0575ZeptV60x3DdwVFTq3n3VBeQXilz76U/mJs8ehqyZfTZsLuAPe3bc4LQJZkniQeRrn
+	4MsjqIVvQ5KBk1a4ADFaaFLC/WfGNTopPVKzU+dDxLjRw0eTKUb5/wH0dz0uGq931BBkoyKlv/eWF
+	hRgjZlBkx09BEJQ8AMw9fh22tW8l6XPEYgQxCS7STh0/I29FZ4pm7r38ACif1jzZUTMStRj70lzXq
+	wxGtXB7n9X90K78zhacg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLdNz-00G2Ll-1j;
-	Fri, 05 Jan 2024 06:08:51 +0000
+	id 1rLdPS-00G2Yp-1M;
+	Fri, 05 Jan 2024 06:10:22 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLdNq-00G2Lb-1Y;
-	Fri, 05 Jan 2024 06:08:42 +0000
-Date: Thu, 4 Jan 2024 22:08:42 -0800
+	id 1rLdPN-00G2Yc-1R;
+	Fri, 05 Jan 2024 06:10:17 +0000
+Date: Thu, 4 Jan 2024 22:10:17 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: Jan Kara <jack@suse.cz>
 Cc: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
@@ -47,15 +47,14 @@ Cc: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
 	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
 	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
 	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 02/17] xen/blkback: use bdev api in
- xen_update_blkif_status()
-Message-ID: <ZZec6mX1vz4ayRq1@infradead.org>
+Subject: Re: [PATCH RFC v3 for-6.8/block 04/17] mtd: block2mtd: use bdev apis
+Message-ID: <ZZedSYAedA05Oex2@infradead.org>
 References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085712.1766333-3-yukuai1@huaweicloud.com>
- <20240104110631.3vspsvxbbvcpdqdu@quack3>
+ <20231221085712.1766333-5-yukuai1@huaweicloud.com>
+ <20240104112855.uci45hhqaiitmsir@quack3>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240104110631.3vspsvxbbvcpdqdu@quack3>
+In-Reply-To: <20240104112855.uci45hhqaiitmsir@quack3>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,16 +71,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 04, 2024 at 12:06:31PM +0100, Jan Kara wrote:
-> This function uses invalidate_inode_pages2() while invalidate_bdev() ends
-> up using mapping_try_invalidate() and there are subtle behavioral
-> differences between these two (for example invalidate_inode_pages2() tries
-> to clean dirty pages using the ->launder_folio method). So I think you'll
-> need helper like invalidate_bdev2() for this.
+On Thu, Jan 04, 2024 at 12:28:55PM +0100, Jan Kara wrote:
+> What do you think? Because when we are working with the folios it is rather
+> natural to use their mapping for dirty balancing?
 
-That assues that the existing code actually does this intentionally,
-which seems doubtful.  But the change in behavior does not to be
-documented and explained.
+The real problem is that block2mtd pokes way to deep into block
+internals.
+
+I think the saviour here is Christians series to replace the bdev handle
+with a struct file, which will allow to use the normal file write path
+here and get rid of the entire layering volation.
 
 
 ______________________________________________________
