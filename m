@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B704C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 13:11:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19C32C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 13:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=dihJH1mxE5cCiL1L79WgMoof/m/Nv9kkMg1iS0HKOJk=; b=1Ti1VkWde2fKTrSgJ+wV1JZX+m
-	4Hs27zgYk/bkVtRSOiYYO9j4JMjX1EW4Eh9bSsjoKqWUKIkWwRRakz6/cqsTlVah+ILP/8OhRDsMY
-	sbT4Nx9uA4T9GDWqqEBjO/BseDNUEx32www8z6w9M8jgJD3FD//KlAjBZMyhDxouUQq0qfoyReGoa
-	9+kRYMJyY7GPO2k4+FS4QeAbn900XxzbudgUmX6vH3B9P7W5HAlMdUE7UEMI5FZGeLL9ivHeTAxAC
-	HzKaMtvULgz7q10fXo3zRCj4vhHxeH+3klaoCFoZU6bQe6TptnJrZgEJF0Ttj/YU5zi06DEHb2X3q
-	oZ7N7k9A==;
+	bh=o7/J5ybRziBisCJ+K2FMAgh6pIJDQM/SRLuJ9doESLE=; b=akUr/Oz4VF1mb/POlnXml5ynv3
+	YFqEulRf6majr/Vcjr6VQT87qMRu6OiOelvWHvK8+AfkExMGySOKH9P18+aMTjPAI307E+FeMdoBi
+	gSL/E3tFkcfKHL+jL3X4NWaksO/PbtlyrLA1+LfCcOHCz39JxaACS97NqXO44eyxNS7wHTlSLY1fm
+	679jZGX56WJTCB4MyKlOX4Z621dV/vaDwMxzjdG8yoVjGVDe0pooI+yVKrYu3DqvUclmYpjkEhAKP
+	pUKihGD8n0E52xhTaPmrYaO5NyPr3QATxpx8zx2AIfOHZypODBMWSSR0seqG04OL6sy5tLsEWViUd
+	/1wqeXYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLjz1-00GvrT-2h;
-	Fri, 05 Jan 2024 13:11:31 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1rLk0N-00GwEc-0y;
+	Fri, 05 Jan 2024 13:12:55 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLjyy-00GvqY-3C
+	id 1rLk0L-00GwDL-06
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Jan 2024 13:11:30 +0000
+	Fri, 05 Jan 2024 13:12:54 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 62AA7B81BF0;
-	Fri,  5 Jan 2024 13:11:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02DFAC433AD;
-	Fri,  5 Jan 2024 13:11:24 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7A0CA61A95;
+	Fri,  5 Jan 2024 13:12:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93ECDC433C7;
+	Fri,  5 Jan 2024 13:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704460286;
-	bh=EtiM//etR1fOVaO+StSdQfBUoXtwOAwKntG3tI7CDSw=;
+	s=k20201202; t=1704460372;
+	bh=EXiJloFVHaP55qrbQKP9mDMBhZJxMoX3gZIqq6pJrUQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NgN6IiBL3NPIrVa2SiHOfDSIcLXKXnB1JQQ09mja6RxLEU/zdJDmz78t9+57gMjDb
-	 oHPdENqkkjFON8sVNBiFp/TIA64K1gEVzRCArAeidL5Efv9V7S2uijaLRFQAuks3YG
-	 ZPw1t9uqIqUH33+DlLyPsENC+VWEVWuk3CKVxEJCzxaXrBmXO8GxX8F1FzRa8+jWAC
-	 akRxAQ7bjo2OSk+LWWobrQUnKKRvomUkWm8+2sm5maisPt6ucuz3LMY0M0ayoUE1rW
-	 kWKyRJltADdFienFcFWhFlxrgHlmJAmJqRCRK6OzbhjYq7aD5qfA4MJ6a6cxAuq3WT
-	 wUtzP581sraWA==
+	b=aNmD/xBme0YN6ouqlb8aXu9kPkpQLWs26ZSzwAjwNIjnhwlBlJQWYhlLuM3DvhD3G
+	 nJVivNcyzFBltA3/8dx/eO3YguoF0Q1tUDMjazBqWx+1PL7rUtLgh3ueZyp03DgmM3
+	 2g+y5o+u7nJ5asuMajPnOF1QpWCQvFIW1oGu8zEYw6F4wbwWf0un2cWcr6VFM73UPE
+	 xwFTJzUnKHOF9XRnhh8kNaAAKmpDBOTtwc+x3EJJZm/FU4gCxk3BvMBRzQ8GpMLQMJ
+	 seqRAjD7HPdMIqzUIMf2J27nZKQmPXz79V65H3kzN7TY6jS9HlnTpxoS6YEwdGWn/L
+	 Vc+ySjQ+TBRHg==
 MIME-Version: 1.0
-Date: Fri, 05 Jan 2024 14:11:22 +0100
+Date: Fri, 05 Jan 2024 14:12:48 +0100
 From: Michael Walle <mwalle@kernel.org>
 To: Jaime Liao <jaimeliao.tw@gmail.com>
 Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
  pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
  jaimeliao@mxic.com.tw
-Subject: Re: [PATCH v7 7/7] mtd: spi-nor: add support for Macronix Octal flash
-In-Reply-To: <20231221090702.103027-8-jaimeliao.tw@gmail.com>
+Subject: Re: [PATCH v7 1/7] mtd: spi-nor: add Octal DTR support for Macronix
+ flash
+In-Reply-To: <20231221090702.103027-2-jaimeliao.tw@gmail.com>
 References: <20231221090702.103027-1-jaimeliao.tw@gmail.com>
- <20231221090702.103027-8-jaimeliao.tw@gmail.com>
-Message-ID: <567aa585b1c4746cd90b003a67459b3e@kernel.org>
+ <20231221090702.103027-2-jaimeliao.tw@gmail.com>
+Message-ID: <51be5ac83c8cba2218536fe25325b8cf@kernel.org>
 X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240105_051129_178031_1FD5B46D 
-X-CRM114-Status: UNSURE (   4.13  )
+X-CRM114-CacheID: sfid-20240105_051253_109973_46E4210C 
+X-CRM114-Status: UNSURE (   7.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,27 +76,25 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x83, 0x39),
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x80, 0x39),
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x85, 0x39),
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x80, 0x3a),
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x85, 0x3a),
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x80, 0x3b),
-> +	}, {
-> +		.id = SNOR_ID(0xc2, 0x85, 0x3b),
+> Create Macronix specify method for enable Octal DTR mode and
+> set 20 dummy cycles to allow running at the maximum supported
+> frequency for Macronix Octal flash.
+> 
+> Use number of dummy cycles which is parse by SFDP then convert
+> it to bit pattern and set in CR2 register.
+> Set CR2 register for enable octal DTR mode.
+> 
+> Use Read ID to confirm that enabling/diabling octal DTR mode
+> was successful.
+> 
+> Macronix ID format is A-A-B-B-C-C in octal DTR mode.
+> To ensure the successful enablement of octal DTR mode, confirm
+> that the 6-byte data is entirely correct.
+> 
+> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> Co-developed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-Should just be:
-
-/* We need the manufacturer fixups. Keep this last. */
-{ .id = SNOR_ID(0xc2) }
-
--michael
+Acked-by: Michael Walle <mwalle@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
