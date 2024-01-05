@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB875C3DA6E
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 12:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE814C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 12:37:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8hipq9j1RU1CMZQXZ/8C5GyYqD4mfxgxp7f+0Qvs+1s=; b=Jp+ieFSNy899GfHahpsnkFoZO0
-	nrR21RiH3DgSWfDwASjeMnQO2EbIjrZwxOSQQGhDHVD4pgvJsvTFf0+SkUWa1r0IOn8Na138qf7x6
-	7au2v8vDqc/1dLZA3FDO6mlZ7w8+VRMlwhgfF9755h8zgWFyTbhtouFI0n+hkBGQJDJFEDimD9zwc
-	a75tG49W6dGLM9N65NmaFh9CgM41LI8bzWyB9RXACuBaEVJIuvFU0K4YZ56dVaHQ5iyNpfRjd6tZk
-	8GJc08aiybyOhiqwnKj+g2InA0T/W8UWppwFszlNgaaAs7qkP61h5gE7TgJ5ouWsMnAdR11C7OImO
-	/DQprvgg==;
+	bh=YyxRcCV+I6YXBvaM2P8cch+fcAVi2chTb7XMF+SUnJE=; b=aVEhktwgR82kXDQ22IQ/7me/5m
+	Dw22PCKB4gKCnu/Ev8MSbotmZ+ThWMKz9LOuUJGXH6c8ybDfToCljCMmn8Hf7CA3SdQeN0yBjwnRK
+	e9uhTMMMsF6OeeaZWMMwBdiGAdhMqxgV+pbkQS3khT5J4nAyEpTnaTuA5p+jAc/AMzCtzj4i2DBb3
+	lx0OBgc3iXjvHjUf1Jxn4KuR28yknclozOZfrCX7t7jAKIthptB00j9xSoaHE6X2j6WyfOeIDNZDM
+	NwdGEYhJYpGMxrTeu0BFZm439pUGkx/UeLizW08Rw4KBjYE2g2vvcfx+jPdueUoNFZIXaJzMECKgN
+	uh/rFpEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLjEb-00GqFM-0J;
-	Fri, 05 Jan 2024 12:23:33 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rLjSB-00Gr7P-0G;
+	Fri, 05 Jan 2024 12:37:35 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLjEY-00GqEz-1X
+	id 1rLjS7-00Gr6z-1L
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Jan 2024 12:23:31 +0000
+	Fri, 05 Jan 2024 12:37:33 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 74E5261A9F;
-	Fri,  5 Jan 2024 12:23:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24146C433C8;
-	Fri,  5 Jan 2024 12:23:26 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 615C9CE1E6E;
+	Fri,  5 Jan 2024 12:37:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D693BC433C8;
+	Fri,  5 Jan 2024 12:37:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704457409;
-	bh=u7T6Y7DWhVMRnobA9AmM4fwhwJDj+WcNQNmnKaTekQU=;
+	s=k20201202; t=1704458247;
+	bh=9zxDWJx+dy4xbL8oaZIGJXx8TDm4A80doPqJAIjCVcM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TdIe41GdHREOCSk6APQ9eoKmPL2oU20pWaPI2MkbJknxzzWIG2YfkumR1Y51nVE8x
-	 j3VYJv2HPhGafFYkDQBM+OyWbzDBNN+BNOowv5JUMUP/dxs5IzWnNPt5mDkp0Ybu/6
-	 2V+Oe6GPPfqABHjQfiWqlzkJxK2I75PZQR6RUD9TOKcKKEgJo73MlPn+X113nH/2kw
-	 J2x5jD1JvqVbUFFcC2Ee1zZvyArUgMaB4ILe1qiDBLAaS/8JD4gTvuJsFHiyurmpA0
-	 PjadoNqLDoJJbWK+o7srYYdw7z6Bv4UYbDuU2A+TpPF6Gh/ogFuZ9AHLwVXgxkeJvW
-	 XXYbBDdf6cvWQ==
+	b=JGymIIvWfz3JSFxtfkwoaZDDuA9KCnfUsxCVvCn3j54pYCyVGEIX/CbuGkqwIkV+c
+	 iGB/No0kkE7YpGy3tcyuG/GWB75qZvCPISrsI9XlORBDJsOWoiIB6vpVmu7Cf1pvs6
+	 VuPxlwSfmy/QCra/LsE7wPAgY8fqkc3qogJ2eN9gZPiim+xCvlUs4UxoJ1MKKAKX3w
+	 miiXq0UXkgm7o6xJlwztTissERWt6eUW+chw1pKMIhqNPGsqxmXv2hve/aXrvLTScL
+	 vf4uoKkIjR8wy4dMmeNfKsufmd67PnNyotzMDqjzei9Imtv+oQIibgEwePRAcETsKT
+	 xaT2q7ube6Qgg==
 MIME-Version: 1.0
-Date: Fri, 05 Jan 2024 13:23:24 +0100
+Date: Fri, 05 Jan 2024 13:37:23 +0100
 From: Michael Walle <mwalle@kernel.org>
-To: tkuw584924@gmail.com
+To: Jaime Liao <jaimeliao.tw@gmail.com>
 Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
- pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, Bacem.Daassi@infineon.com, Takahiro Kuwano
- <Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH] mtd: spi-nor: core: Set mtd->eraseregions for non-uniform
- erase map
-In-Reply-To: <20231225080349.17222-1-Takahiro.Kuwano@infineon.com>
-References: <20231225080349.17222-1-Takahiro.Kuwano@infineon.com>
-Message-ID: <740bf235110e05eae9ec7768603e6e2a@walle.cc>
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
+ jaimeliao@mxic.com.tw
+Subject: Re: [PATCH v7 5/7] spi: mxic: Add support for swapping byte
+In-Reply-To: <20231221090702.103027-6-jaimeliao.tw@gmail.com>
+References: <20231221090702.103027-1-jaimeliao.tw@gmail.com>
+ <20231221090702.103027-6-jaimeliao.tw@gmail.com>
+Message-ID: <02ff70794b9c5f361d3728b4ad4d028a@kernel.org>
 X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240105_042330_620412_77853776 
-X-CRM114-Status: GOOD (  19.40  )
+X-CRM114-CacheID: sfid-20240105_043731_820034_4EABDA30 
+X-CRM114-Status: GOOD (  22.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,109 +76,120 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-> -static void spi_nor_set_mtd_info(struct spi_nor *nor)
-> +static int spi_nor_set_mtd_eraseregions(struct spi_nor *nor)
-> +{
-> +	struct spi_nor_erase_map *map = &nor->params->erase_map;
-> +	struct spi_nor_erase_region *region = map->regions;
-> +	struct mtd_info *mtd = &nor->mtd;
-> +	struct mtd_erase_region_info *mtd_region;
-> +	u32 erase_size;
-> +	u8 erase_mask;
-> +	int n_regions, i, j;
-> +
-> +	for (i = 0; !spi_nor_region_is_last(&region[i]); i++)
-> +		;
+> Some SPI-NOR flash swap the bytes on a 16-bit boundary when
+> configured in Octal DTR mode. It means data format D0 D1 D2 D3
+> would be swapped to D1 D0 D3 D2. So that whether controller
+> support swapping bytes should be checked before enable Octal
+> DTR mode. Add swap byte support on a 16-bit boundary when
+> configured in Octal DTR mode for Macronix xSPI host controller
+> dirver.
+> 
+> According dtr_swab in operation to enable/disable Macronix
+> xSPI host controller swap byte feature.
+> 
+> To make sure swap byte feature is working well, program data in
+> 1S-1S-1S mode then read back and compare read data in 8D-8D-8D
+> mode.
+> 
+> This feature have been validated on byte-swap flash and
+> non-byte-swap flash.
+> 
+> Macronix xSPI host controller bit "HC_CFG_DATA_PASS" determine
+> the byte swap feature disabled/enabled and swap byte feature is
+> working on 8D-8D-8D mode only.
+> 
+> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> ---
+>  drivers/spi/spi-mxic.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+> index 60c9f3048ac9..8dc83adaaa88 100644
+> --- a/drivers/spi/spi-mxic.c
+> +++ b/drivers/spi/spi-mxic.c
+> @@ -294,7 +294,8 @@ static void mxic_spi_hw_init(struct mxic_spi *mxic)
+>  	       mxic->regs + HC_CFG);
+>  }
+> 
+> -static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
+> +static u32 mxic_spi_prep_hc_cfg(const struct spi_mem_op *op,
+> +				struct spi_device *spi, u32 flags)
 
-Please put that into a helper which returns the number of regions.
+Not my driver, but because it caught my eye: I wouldn't pass
+spi_mem_op. Maybe just "bool swap16"?
 
-FWIW, I really dislike the magic around encoding all sorts of stuff
-into the offset. It makes the code just hard to read.
-
-
-> +
-> +	n_regions = i + 1;
-> +	mtd_region = devm_kcalloc(nor->dev, n_regions, sizeof(*mtd_region),
-> +				  GFP_KERNEL);
-
-Who's the owner? mtd->dev or nor->dev?
-
-> +	if (!mtd_region)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < n_regions; i++) {
-> +		if (region[i].offset & SNOR_OVERLAID_REGION) {
-
-Btw. what is an overlaid region? I couldn't find any comment
-about it.
-
-> +			erase_size = region[i].size;
-> +		} else {
-> +			erase_mask = region[i].offset & SNOR_ERASE_TYPE_MASK;
-> +
-> +			for (j = SNOR_ERASE_TYPE_MAX - 1; j >= 0; j--) {
-> +				if (erase_mask & BIT(j)) {
-> +					erase_size = map->erase_type[j].size;
-> +					break;
-> +				}
-> +			}
-> +		}
-> +		mtd_region[i].erasesize = erase_size;
-> +		mtd_region[i].numblocks = div64_ul(region[i].size, erase_size);
-> +		mtd_region[i].offset = region[i].offset &
-> +				       ~SNOR_ERASE_FLAGS_MASK;
-> +	}
-> +
-> +	mtd->numeraseregions = n_regions;
-> +	mtd->eraseregions = mtd_region;
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_set_mtd_info(struct spi_nor *nor)
 >  {
->  	struct mtd_info *mtd = &nor->mtd;
->  	struct device *dev = nor->dev;
-> @@ -3439,6 +3483,11 @@ static void spi_nor_set_mtd_info(struct spi_nor 
-> *nor)
->  	mtd->_resume = spi_nor_resume;
->  	mtd->_get_device = spi_nor_get_device;
->  	mtd->_put_device = spi_nor_put_device;
-> +
-> +	if (spi_nor_has_uniform_erase(nor))
-> +		return 0;
-> +
-> +	return spi_nor_set_mtd_eraseregions(nor);
+>  	int nio = 1;
+> 
+> @@ -305,6 +306,13 @@ static u32 mxic_spi_prep_hc_cfg(struct spi_device 
+> *spi, u32 flags)
+>  	else if (spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
+>  		nio = 2;
+> 
+> +	if (op->data.dtr) {
 
-mtd->erasesize is set somewhere else, please move it into this
-function, because it will also have a special case for the
-non_uniform flashes. Maybe we'll need our own erasesize stored
-together with the opcode.
+Checking this seems to be redundant with checking dtr_swab16.
 
-Also this should be written as
+> +		if (op->data.dtr_swab16)
+> +			flags &= ~HC_CFG_DATA_PASS;
+> +		else
+> +			flags |= HC_CFG_DATA_PASS;
 
-if (!spi_nor_has_uniform_erase(nor))
-   spi_nor_set_mtd_eraseregions(nor);
+Mhh, this is strange. Given that dtr_swap16 is a new flag means
+that you are now setting the HC_CFG_DATA_PASS bit by default.
+Something to keep in mind if you have any users which already use
+8d8d8d mode nowadays.
 
-return 0;
+Also clearing the flag seems superfluous.
 
 -michael
 
->  }
+> +	}
+> +
+>  	return flags | HC_CFG_NIO(nio) |
+>  	       HC_CFG_TYPE(spi_get_chipselect(spi, 0), HC_CFG_TYPE_SPI_NOR) |
+>  	       HC_CFG_SLV_ACT(spi_get_chipselect(spi, 0)) | 
+> HC_CFG_IDLE_SIO_LVL(1);
+> @@ -397,7 +405,8 @@ static ssize_t mxic_spi_mem_dirmap_read(struct 
+> spi_mem_dirmap_desc *desc,
+>  	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
+>  		return -EINVAL;
 > 
->  static int spi_nor_hw_reset(struct spi_nor *nor)
-> @@ -3531,7 +3580,9 @@ int spi_nor_scan(struct spi_nor *nor, const char 
-> *name,
+> -	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
+> +	writel(mxic_spi_prep_hc_cfg(&desc->info.op_tmpl,
+> +				    desc->mem->spi, 0), mxic->regs + HC_CFG);
+> 
+>  	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
+>  	       mxic->regs + LRD_CFG);
+> @@ -441,7 +450,8 @@ static ssize_t mxic_spi_mem_dirmap_write(struct 
+> spi_mem_dirmap_desc *desc,
+>  	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
+>  		return -EINVAL;
+> 
+> -	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
+> +	writel(mxic_spi_prep_hc_cfg(&desc->info.op_tmpl,
+> +				    desc->mem->spi, 0), mxic->regs + HC_CFG);
+> 
+>  	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
+>  	       mxic->regs + LWR_CFG);
+> @@ -518,7 +528,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem 
+> *mem,
+>  	if (ret)
 >  		return ret;
 > 
->  	/* No mtd_info fields should be used up to this point. */
-> -	spi_nor_set_mtd_info(nor);
-> +	ret = spi_nor_set_mtd_info(nor);
-> +	if (ret)
-> +		return ret;
+> -	writel(mxic_spi_prep_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN),
+> +	writel(mxic_spi_prep_hc_cfg(op, mem->spi, HC_CFG_MAN_CS_EN),
+>  	       mxic->regs + HC_CFG);
 > 
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
+>  	writel(HC_EN_BIT, mxic->regs + HC_EN);
+> @@ -572,6 +582,7 @@ static const struct spi_controller_mem_ops 
+> mxic_spi_mem_ops = {
+> 
+>  static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
+>  	.dtr = true,
+> +	.dtr_swab16 = true,
+>  	.ecc = true,
+>  };
 
 ______________________________________________________
 Linux MTD discussion mailing list
