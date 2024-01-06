@@ -4,74 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABD8CC3DA6E
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jan 2024 15:55:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9409CC3DA6E
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Jan 2024 01:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9QrQTDtpaXSET/pTUwH3d7wdQ/x6Gt2uhqJfW/y8pqE=; b=PuiX109nfkmAey
-	C/OinjkLjnVBSYzmhOwGrZsFaqhdJLMH95+7KRdzgPlggvqj4/PmKgl3jMu5XkK20qMnfUp/7d8Zu
-	I/crXKrIveJFBxeh4iST30QnTQmT3Kyhhh6oVWnTVT8ztCjtLkN0ShdEWxIcbSfKP/Jz75JEELyZq
-	LIHkMFwzCPy6F5d885KpZKDFsmyYEJmx1XQGJ9LWpAXTr5UgjWP50tnLBwcbrEDCPuRP9TPGQCOav
-	wCB9rDQ+8kGIpiEpPk+4rklf47eL6D1639Yppp0zm4kAoZMKH1+tL6U8dELKgWOnWfNgxll/Ruvdt
-	4Kn8A00shcr1YuJOYGjw==;
+	List-Owner; bh=F21QtR3xFBfDLQkPpXyN1fYXnpStc4nVUqvCp/Bp+Wg=; b=sfNomA+LOkYKbM
+	pzib97WI/HZe0Lu8tC3RqiKLOg+mf4DBpRt1ZAWyV3p1HPTlSdl7+yHVX/KB/bKLTDMAewovtU0+0
+	2fc7tfXWKneHbvc3VEo9pzhUpXpx5V+4PEJSAJAJuuQNueU+3JNOy94lYcS6SETNSawzaX+vsronl
+	GnK6917MnPcWiL85+bv5HvQ2TgjetH3t7Z5ZOSftLqe+QmLIw5ZqkBSPFcvpdRuQvSWqwflwFVbfE
+	3Sl2skONVdLUSihMmTU1PCoY6ch3lRD8XsO8ay6/tgOmrCw93RlJ1ArpIvJsbPk0yHcygIbOfOkTN
+	af1+POAtF/sXIfTgWRwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLmXk-00HDzn-1j;
-	Fri, 05 Jan 2024 15:55:32 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1rLvYp-000Xzb-05;
+	Sat, 06 Jan 2024 01:33:15 +0000
+Received: from mail-il1-x12e.google.com ([2607:f8b0:4864:20::12e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLmXh-00HDy0-3C
+	id 1rLvYm-000XyW-1v
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Jan 2024 15:55:31 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso1901143e87.1
-        for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2024 07:55:25 -0800 (PST)
+	Sat, 06 Jan 2024 01:33:13 +0000
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-3606ee78686so1089875ab.0
+        for <linux-mtd@lists.infradead.org>; Fri, 05 Jan 2024 17:33:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704470124; x=1705074924; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hkvU2jP6F+TYCmXLML4f8jNr6z6Unk5LytAZK/GmgzY=;
-        b=OLc0Lvk0P8mS2FprA2ogrzhfb9P9BlHfrEcfhuH3B7vOyPVO8A7z4dQVDq8bSinfHk
-         zGXnGCS34LD+TS10WIUee6jFG9F2dTsyf/9NW0tNlwIcx0kqc+6BH4WEfvcTZKr+kiv4
-         lpmZ6uJQxKoo97ez04iyJw4ki/7GZBHA+E42VR5/tSIXv16AEoKYkKwId9tbP30Sk+2B
-         IZhKg9kyEsZ6uPRZ/P6X5n5apQfk1HEKs7bCvI9ASEL3LPOkzfedDw8wHlQ9wRGl1ZmX
-         GZmPXa3nnWnXtzD0z3pTXyL81Z109it8zE6rsvqZXNCgDlFZNvksIiThbtcPTZPvEvW8
-         7Dkg==
+        d=chromium.org; s=google; t=1704504780; x=1705109580; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qT3oZQlZSl6Q++CcuktscPeZvw2bExX2KYu8x/389yU=;
+        b=jrG3wQ1aQn2YQ3PyNl1lFMMSPCMfCJZTcgqsn1Y6NLV7jKs/ipMJbmP4hAwYSvnV6P
+         kRFN39YV9WL07g6iU5ykhRhszFxWEA+pGlUWiGbTKjB6NAu2TcgCc+sAaeooRI+P+LW0
+         xfv8idv0Km+ANVR02B11dtIh+o5i1WZg4LeXg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704470124; x=1705074924;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hkvU2jP6F+TYCmXLML4f8jNr6z6Unk5LytAZK/GmgzY=;
-        b=AZl1ke+6pNLVGi62oXyUv4YdZTZgvl5nvHkAPG+owU/vF3lE1ggYCWtOODI0x0wCCw
-         k1JPjNKC/ojP2kvFvKyKVy1AHQjKdk2Sb92wE+i4QPYcaSqmjKwFsec9U3KBoEABY+XQ
-         p2yS8ccS9lX+rdyffuCHh1qY/6bYdkeAhKNqAD/kLaRASVnMUXaYffLo/nFNybYCWC54
-         dbQsAbrF7aebfE97TLewDWgOD9LeHdzW0hiquPH+p2VQDNt9yTD1Tpf638CZ4H+5LbzL
-         SXiv1JrMG/o3StH7r96g9DnF/0u7Th6tHrQrXoxdOIjORLgLpBJTnSvt3HLJMwdwIJgv
-         Cndw==
-X-Gm-Message-State: AOJu0YzjNHqn+rXrp4L2FZqm6rfSvJXxYwnaAySy5dldIFCICMaUq15N
-	qqZEW2H0H7+vaPnQWyp6tsSWds0sJ+++5NHGOnQ=
-X-Google-Smtp-Source: AGHT+IHv+5fUTRxy54sAoptj93r7Tc0Y0iLJVqnR2jPYsRdXJi5cQajCPj0Gh3weNYeWfJ6GQ1ec7EXv1kaxFExX7Hc=
-X-Received: by 2002:ac2:4254:0:b0:50e:cf8:b168 with SMTP id
- m20-20020ac24254000000b0050e0cf8b168mr513895lfl.208.1704470124225; Fri, 05
- Jan 2024 07:55:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704504780; x=1705109580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qT3oZQlZSl6Q++CcuktscPeZvw2bExX2KYu8x/389yU=;
+        b=SJvF+1SYhDqFh4gr4v/EBM7J+g3iPYb6kKvgkUWR28foBk5z9XXOsGaqs63hK+VZ4i
+         l8DSBOqNzMzMOVPtuFB9mTEIcu+nfb2iX3guQxdhnpdjQktgsQ2TMh2giGnMRawBOPv6
+         7L8WplcbkA6c7oroI7VNzXG4C3Su0iOe7AFYwcCRMaAqW8ZDBGXB5srRobHmVWr6NsiT
+         quj86nMMsPFf4p904nbPp3+hT/1spi9IGqpAjsB3sP5s3Aj+CfmwhYs/0W+NNKbAFJLv
+         h9ZFRFt4vsDk+/WbmP8F9fkmY/nKZiVmwkrdsr634Zl5dSf0na6R6b6oPTvTpAfbyeOv
+         RwgA==
+X-Gm-Message-State: AOJu0YwlIW6bQfULkHtAz3Mgbd7sOK2j5WrXA8uhukGaQPoFlX3+0/Ac
+	Khb6iuTU6K+M3GPfXwzPkF/7+oD9tgRG
+X-Google-Smtp-Source: AGHT+IGbdqkCX01n0F2LxOJc20c51ndSlx6/hfXSdI3NKdAsCGkhvdsG05i+OtNt2Y/UCPH6C9phNg==
+X-Received: by 2002:a05:6e02:1c0b:b0:35d:62f2:1f45 with SMTP id l11-20020a056e021c0b00b0035d62f21f45mr533250ilh.20.1704504780792;
+        Fri, 05 Jan 2024 17:33:00 -0800 (PST)
+Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
+        by smtp.gmail.com with ESMTPSA id y17-20020a170902b49100b001cf511aa772sm2017224plr.145.2024.01.05.17.32.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 17:33:00 -0800 (PST)
+Date: Sat, 6 Jan 2024 10:32:54 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Coly Li <colyli@suse.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-um@lists.infradead.org,
+	linux-block@vger.kernel.org, nbd@other.debian.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 7/9] zram: use the default discard granularity
+Message-ID: <20240106013254.GC123449@google.com>
+References: <20231228075545.362768-1-hch@lst.de>
+ <20231228075545.362768-8-hch@lst.de>
 MIME-Version: 1.0
-References: <20231111143314.1518314-1-chentao@kylinos.cn>
-In-Reply-To: <20231111143314.1518314-1-chentao@kylinos.cn>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 5 Jan 2024 16:55:11 +0100
-Message-ID: <CAFLxGvzAncnBTEbHZ0pA-oF6n9P+wKFMugz8c+8UQKoPeBiYig@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Remove unreachable code
-To: Kunwu Chan <chentao@kylinos.cn>
-Cc: richard@nod.at, Artem.Bityutskiy@nokia.com, kunwu.chan@hotmail.com, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Disposition: inline
+In-Reply-To: <20231228075545.362768-8-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240105_075530_028044_261EC589 
-X-CRM114-Status: GOOD (  17.83  )
+X-CRM114-CacheID: sfid-20240105_173312_634938_CC26604D 
+X-CRM114-Status: UNSURE (   9.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,37 +92,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU2F0LCBOb3YgMTEsIDIwMjMgYXQgMzozM+KAr1BNIEt1bnd1IENoYW4gPGNoZW50YW9Aa3ls
-aW5vcy5jbj4gd3JvdGU6Cj4KPiBCZWNhdXNlIHRoZXJlIGlzIG5vIGJyZWFrIHN0YXRlbWVudCBp
-biB0aGUgZGVhZCBsb29wIGFib3ZlLGl0IGlzCj4gaW1wb3NzaWJsZSB0byBleGVjdXRlIHRoZSAn
-ZXJyPTAnIHN0YXRlbWVudC5EZWxldGUgdGhlIGNvZGUgdGhhdAo+IHdpbGwgbmV2ZXIgZXhlY3V0
-ZSBhbmQgaW5pdGlhbGl6ZSAnZXJyJyBhdCB0aGUgc3RhcnQgb2YgdGhlIGZ1bmN0aW9uLgo+Cj4g
-Rml4ZXM6IDZmYjMyNGE0YjBjMyAoIlVCSUZTOiBhbGxvY2F0ZSBsdGFiIGNoZWNraW5nIGJ1ZmZl
-ciBvbiBkZW1hbmQiKQo+IFNpZ25lZC1vZmYtYnk6IEt1bnd1IENoYW4gPGNoZW50YW9Aa3lsaW5v
-cy5jbj4KPiAtLS0KPiAgZnMvdWJpZnMvbHB0X2NvbW1pdC5jIHwgNSArKy0tLQo+ICAxIGZpbGUg
-Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBh
-L2ZzL3ViaWZzL2xwdF9jb21taXQuYyBiL2ZzL3ViaWZzL2xwdF9jb21taXQuYwo+IGluZGV4IGM0
-ZDA3OTMyOGI5Mi4uZDQ3NTE2MjhmZTcwIDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2xwdF9jb21t
-aXQuYwo+ICsrKyBiL2ZzL3ViaWZzL2xwdF9jb21taXQuYwo+IEBAIC0xNTg5LDggKzE1ODksOCBA
-QCBzdGF0aWMgaW50IGRiZ19pc19ub2RlX2RpcnR5KHN0cnVjdCB1Ymlmc19pbmZvICpjLCBpbnQg
-bm9kZV90eXBlLCBpbnQgbG51bSwKPiAgICovCj4gIHN0YXRpYyBpbnQgZGJnX2NoZWNrX2x0YWJf
-bG51bShzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgaW50IGxudW0pCj4gIHsKPiAtICAgICAgIGludCBl
-cnIsIGxlbiA9IGMtPmxlYl9zaXplLCBkaXJ0eSA9IDAsIG5vZGVfdHlwZSwgbm9kZV9udW0sIG5v
-ZGVfbGVuOwo+IC0gICAgICAgaW50IHJldDsKPiArICAgICAgIGludCBsZW4gPSBjLT5sZWJfc2l6
-ZSwgZGlydHkgPSAwLCBub2RlX3R5cGUsIG5vZGVfbnVtLCBub2RlX2xlbjsKPiArICAgICAgIGlu
-dCByZXQsIGVyciA9IDA7Cj4gICAgICAgICB2b2lkICpidWYsICpwOwoKTm93IGl0IGlzIHN0aWxs
-IGRlYWQgY29kZS4KQSBmZXcgbGluZXMgbGF0ZXIgZXJyIHdpbGwgYmUgdXNlZCBmb3IgdGhlIHJl
-c3VsdCBvZiB1Ymlmc19sZWJfcmVhZCgpLgpTbyB5b3UgY2FuIHJlbW92ZSB0aGUgaW5pdGlhbGl6
-YXRpb24gb2YgZXJyIGNvbXBsZXRlbHkuCgo+ICAgICAgICAgaWYgKCFkYmdfaXNfY2hrX2xwcm9w
-cyhjKSkKPiBAQCAtMTY0Niw3ICsxNjQ2LDYgQEAgc3RhdGljIGludCBkYmdfY2hlY2tfbHRhYl9s
-bnVtKHN0cnVjdCB1Ymlmc19pbmZvICpjLCBpbnQgbG51bSkKPiAgICAgICAgICAgICAgICAgbGVu
-IC09IG5vZGVfbGVuOwo+ICAgICAgICAgfQo+Cj4gLSAgICAgICBlcnIgPSAwOwo+ICBvdXQ6Cj4g
-ICAgICAgICB2ZnJlZShidWYpOwo+ICAgICAgICAgcmV0dXJuIGVycjsKPiAtLQo+IDIuMzQuMQo+
-CgoKLS0gClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On (23/12/28 07:55), Christoph Hellwig wrote:
+> 
+> The discard granularity now defaults to a single sector, so don't set
+> that value explicitly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+FWIW,
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
