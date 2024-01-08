@@ -4,76 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44FCAC47074
-	for <linux-mtd@archiver.kernel.org>; Sun,  7 Jan 2024 14:43:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D912C47074
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jan 2024 02:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=E3yzNenzR3ZBfzmZTf6+ePwRvLqbTrmMD7OS/Z5za7E=; b=rr75EsHam6ObW4
-	zRrqcWZy4P1rAGwpM7IftdRTHPBy3tksyQIP7rtVh30myZDIY5z75mFV6kNg/cVfffK4TyqZ1qqrO
-	eBNTsBtTMak9shsrZwHQZwZI8j4MsNtZgJC/7/AWIKwpsiVQZHCR+WK+vslmobVbiIB7t4wbRxU91
-	AXVENqgywQGCW6EN2ipXmPjpmdHpTnES/DQins1dVNcv5JfJWt4uJ6PhQOuUBLvW8/AkHWqXWkY4d
-	ibLbzJQb2Dci7lj2H6NGLB9RLOTrbwRiwvT4Iw8MHEooqgF3amYFEmIZdJGU7k4TBRJ0+cO5o8wTg
-	NovdzQa2m+jyKmSJ0D9A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Kojr3QVI9pUWaV0hLsc6vaaPgp8OkXMmKslPYxBlddA=; b=beIQInd30P3Y9D
+	VxtOh7Ybh5NpgnR+BqhrHmtCESFUb3prM3Qn1KIiG6nWgj1zZZSHaTIxb8EbTR1+p25g2O6XEK8B8
+	ReByZxsC16L0iWqGKU9HSC5ExiLTHO0pla5lq5TIC54pFq1LXrovePItPbeNiG8k79f/HrkGLuo+M
+	YPIPNuyDJ4YNMCyKlhdXW1sL/XbXerSU//bFFzFoS0eq/n0zM2vUUDpsAUySomJR/9YQg3h7gBkcD
+	ycNQqDlvxeKshsG2s6r5UcklMIgtcpF8qOR6BvMDTMZi/ckOP3xWCbJi5kUTDJsykl/wMTxUkylcw
+	WzqOcxfYWI0rI+xGb5OA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rMUMO-0038r2-1L;
-	Sun, 07 Jan 2024 14:42:44 +0000
-Received: from mail-il1-x130.google.com ([2607:f8b0:4864:20::130])
+	id 1rMfd2-003rXs-3D;
+	Mon, 08 Jan 2024 02:44:41 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rMUMM-0038q6-06
+	id 1rMfcv-003rWk-2B
 	for linux-mtd@lists.infradead.org;
-	Sun, 07 Jan 2024 14:42:43 +0000
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-36074b286d8so7889285ab.1
-        for <linux-mtd@lists.infradead.org>; Sun, 07 Jan 2024 06:42:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704638559; x=1705243359; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5dvigx7Xd9v1hP219sxX3eYFqvUkyHmTLjMlO5CznBg=;
-        b=cJ/A3z6tONLA2h/R9NP0LYypuEz1oam/gTzrVX5i9tcVmWSuStwzQ9vvi8HiEpcjdf
-         EbvZWQItCZvvjiHvDdSoC1zrdmDw7aui63BVnCJWmbnExiYRMqTe0sI5gOQfEN7YteHu
-         Kmmrsl+lABPzoqgoObhbwIcQ/9xu0nue83lTNlpG3vIvR9jUUM1WMwNO0mYGn82b+gZF
-         DXKxpyqfJKzqwXPw3ItIouj63axNIWQ8sLdJU4OK3c7wXwYYmlGMBFGjrOk1BgAYDLs6
-         uONixZ9TaRDwFD7sQlPpSomM76kqUGOgppq/sMuEtFLHOyiykwuENXJvdw1/0ZDOxMMt
-         dzLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704638559; x=1705243359;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5dvigx7Xd9v1hP219sxX3eYFqvUkyHmTLjMlO5CznBg=;
-        b=c+RZ6pQLpenscux/jjkLNdF1/G9al6687uK0F97JE4FCeJQ7qURrajTEsJF38XdmR1
-         r7MiiLIdVSmjk3Iqg1DsPeVUoKNZe6uyc492DAyER5iAieA1wdn7nKZQ2o9mTWKN79YK
-         MILTOyh0PR1LHWukLDYJujELX4dQdlHu9chQlgEj7q89ZLSUsQljtW9XYBCnIt0MpTFS
-         A12dMQceCx+xsFuvRPSUQFaGuX5G7NP86ILMbmhLtfLGucIM4zknpFdBCJUjjrqobBhm
-         8ZDzZjilTWRNcbgHN4YrhKt3QoH+3lu6wQwHDoYb1wFn6oQEfncWtFv3BeYYj4SyHnL6
-         aNRA==
-X-Gm-Message-State: AOJu0YwMdPdGU7uMA+Jpnc90QbHTlOmLYF1xQjCM1mcx3eqUeOB+lM+I
-	LsGgOc9hUeMrfAHpGRY/YIWtjVZDsa2A5A==
-X-Google-Smtp-Source: AGHT+IFcUARrONH00uDvClFTYezLHMwZAWtE4lemo/FoFLu01BBa9wSBk62+LtR8rM4t2J7VDlydCA==
-X-Received: by 2002:a05:6e02:308d:b0:360:88ff:51d with SMTP id bf13-20020a056e02308d00b0036088ff051dmr2815172ilb.56.1704638559626;
-        Sun, 07 Jan 2024 06:42:39 -0800 (PST)
-Received: from localhost.localdomain ([182.234.152.214])
-        by smtp.gmail.com with ESMTPSA id r15-20020a63e50f000000b005c66e25497dsm4331443pgh.83.2024.01.07.06.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jan 2024 06:42:39 -0800 (PST)
-From: Zhi-Jun You <hujy652@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at
-Cc: Zhi-Jun You <hujy652@gmail.com>
-Subject: [PATCH v2] mtd: spinand: winbond: add support for W25N04KV
-Date: Sun,  7 Jan 2024 14:41:20 +0000
-Message-Id: <20240107144120.532-1-hujy652@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	Mon, 08 Jan 2024 02:44:35 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4T7dfn1f62z1wrq4;
+	Mon,  8 Jan 2024 10:43:45 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 05C421404FD;
+	Mon,  8 Jan 2024 10:44:20 +0800 (CST)
+Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
+ 2024 10:44:19 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <ebiggers@google.com>, <terrelln@fb.com>
+CC: <linux-fscrypt@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3 2/2] ubifs: ubifs_symlink: Fix memleak of inode->i_link in error path
+Date: Mon, 8 Jan 2024 10:41:05 +0800
+Message-ID: <20240108024105.194516-3-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240108024105.194516-1-chengzhihao1@huawei.com>
+References: <20240108024105.194516-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.175.104.67]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240107_064242_096169_C1DCE408 
-X-CRM114-Status: GOOD (  10.23  )
+X-CRM114-CacheID: sfid-20240107_184433_915160_CA34AE97 
+X-CRM114-Status: UNSURE (   8.29  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,57 +70,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for W25N04KV.
+For error handling path in ubifs_symlink(), inode will be marked as
+bad first, then iput() is invoked. If inode->i_link is initialized by
+fscrypt_encrypt_symlink() in encryption scenario, inode->i_link won't
+be freed by callchain ubifs_free_inode -> fscrypt_free_inode in error
+handling path, because make_bad_inode() has changed 'inode->i_mode' as
+'S_IFREG'.
+Following kmemleak is easy to be reproduced by injecting error in
+ubifs_jnl_update() when doing symlink in encryption scenario:
+ unreferenced object 0xffff888103da3d98 (size 8):
+  comm "ln", pid 1692, jiffies 4294914701 (age 12.045s)
+  backtrace:
+   kmemdup+0x32/0x70
+   __fscrypt_encrypt_symlink+0xed/0x1c0
+   ubifs_symlink+0x210/0x300 [ubifs]
+   vfs_symlink+0x216/0x360
+   do_symlinkat+0x11a/0x190
+   do_syscall_64+0x3b/0xe0
+There are two ways fixing it:
+ 1. Remove make_bad_inode() in error handling path. We can do that
+    because ubifs_evict_inode() will do same processes for good
+    symlink inode and bad symlink inode, for inode->i_nlink checking
+    is before is_bad_inode().
+ 2. Free inode->i_link before marking inode bad.
+Method 2 is picked, it has less influence, personally, I think.
 
-W25N04KV has 8-bit on-die ECC.
-
-Signed-off-by: Zhi-Jun You <hujy652@gmail.com>
+Cc: stable@vger.kernel.org
+Fixes: 2c58d548f570 ("fscrypt: cache decrypted symlink target in ->i_link")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Suggested-by: Eric Biggers <ebiggers@kernel.org>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 ---
-Changes in v2
- - Rebase
----
- drivers/mtd/nand/spi/winbond.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/ubifs/dir.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 1a473021cca5..ba7c813b9542 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -15,6 +15,8 @@
- 
- #define WINBOND_CFG_BUF_READ		BIT(3)
- 
-+#define W25N04KV_STATUS_ECC_5_8_BITFLIPS	(3 << 4)
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-@@ -118,6 +120,7 @@ static int w25n02kv_ecc_get_status(struct spinand_device *spinand,
- 		return -EBADMSG;
- 
- 	case STATUS_ECC_HAS_BITFLIPS:
-+	case W25N04KV_STATUS_ECC_5_8_BITFLIPS:
- 		/*
- 		 * Let's try to retrieve the real maximum number of bitflips
- 		 * in order to avoid forcing the wear-leveling layer to move
-@@ -214,6 +217,15 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, w25n02kv_ecc_get_status)),
-+	SPINAND_INFO("W25N04KV",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x23),
-+		     NAND_MEMORG(1, 2048, 128, 64, 4096, 40, 2, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
- };
- 
- static int winbond_spinand_init(struct spinand_device *spinand)
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 3b13c648d490..e413a9cf8ee3 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1234,6 +1234,8 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	dir_ui->ui_size = dir->i_size;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+ out_inode:
++	/* Free inode->i_link before inode is marked as bad. */
++	fscrypt_free_inode(inode);
+ 	make_bad_inode(inode);
+ 	iput(inode);
+ out_fname:
 -- 
-2.40.1
+2.39.2
 
 
 ______________________________________________________
