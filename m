@@ -4,54 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8D19C47079
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jan 2024 02:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 997D0C3DA6E
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jan 2024 13:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=q+T/0gb3ztsqKatY44Yi1Irfu/sSjoh7mqGBG+96XMw=; b=k0uNn7EBrm6gLQ
-	2OfoEPiyW+LK04d3E2F3Y0VomrEz6ZIVCNNNnFXNbFJGbI54hhpeYpjfT1bMGKD5oOvtan05jtUDU
-	Kne8fYr8i/GBoZ8iqxYp+TJgvpuYvgPfDLDgFhrB1E3XY5Zo3lcfqamGEtFm1mWSXzXcQlKOwB1Xh
-	8lb6DaV4LXGFov6H0UL8imzXwuBWpUzRn+fRp/rQK7BJP+46g9cf0Jvm4i7Hp0SrrMzNf3UXRwWJI
-	aM330eg/O1JdcW5EPrumNZRkuy8avzj5atVufca/nGU7HPojBo72AJZvx5aABc7vT5pQJ7vsB158R
-	2hD0pl+YDST5jyu1wX6g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kZ+fR1NT59IG9muaDufX1HUQ8VpyaKBehYLa8DcVyX0=; b=VzJ34wWoqNhtlJ
+	/2q0nE2MU7RQ2Of+YSD3BMoCrs+7YUHihNckopxio4l5xnA++kMr5Wco/g4yf5jy+zwAyhFvXtlRi
+	GgtahWxMF03rU0ITLrOFgzWCkY8i/PAE703q/GQhQK3lb1sW2NEF69uS6MlAOWxM+c1n7F6dpPbjM
+	WlqfT+N0zwWMewl8Od/qnFJptNtDCSNP/nXtLd9eOSln94OS9GcULRIhR1xURR1T/TSEg5+o4Wpdi
+	HiljUlQWrxUzTUmWIym+r2mUl7veLenSCIFD7B2GlzrnDu73rePk1/pJXmCTL0NII4qt6CHLMEjdZ
+	NVFWDMapMfQDU0wpnWyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rMfd4-003rY9-02;
-	Mon, 08 Jan 2024 02:44:42 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1rMpyU-005Fc4-1H;
+	Mon, 08 Jan 2024 13:47:30 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rMfcx-003rWg-2F
+	id 1rMpyR-005FbB-1x
 	for linux-mtd@lists.infradead.org;
-	Mon, 08 Jan 2024 02:44:37 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T7dg71tzSzZgdt;
-	Mon,  8 Jan 2024 10:44:03 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id D53161800BE;
-	Mon,  8 Jan 2024 10:44:18 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 8 Jan
- 2024 10:44:18 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <ebiggers@google.com>, <terrelln@fb.com>
-CC: <linux-fscrypt@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 0/2] ubifs: Fix two kmemleaks in error path
-Date: Mon, 8 Jan 2024 10:41:03 +0800
-Message-ID: <20240108024105.194516-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
+	Mon, 08 Jan 2024 13:47:29 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 768D4FF816;
+	Mon,  8 Jan 2024 13:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1704721643;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KK74zJV3+vbSkhhTpnLL3WdmgDIKgCnjWr7zHHHvD9w=;
+	b=iduO7rOr1wQU/+MBZiodDtX3EVSTYpDNW23qQCJ1evAB2cH9lBfdFi7E//nRjpBJQo62XF
+	JF5Xgq5MvL6cGQU7cOmneTSQbhs6WSyflavIpKBBPLQwzxWJFoJTZBBWXuskiH2wh7pkkX
+	5DLhoTWqwtn4zSXjJbY0ismIWpWmHfPPgvCB5EI6ev6Dbjv7OJeHBJRDBsH6XK8Y/umDj9
+	QKcB7ontXY91lP2uTPRv1V8iE0Pp0y4PaOGwEDQT4+MO0M2aBLO8wJfhYhrYz/VjY0WYN3
+	rfXw4gA04QXiFPvYnQtdx5b1YZdwFRQlRoXwvBVXgW19MpAfnmQ6EL6FX/Tn+A==
+Date: Mon, 8 Jan 2024 14:47:19 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Mohamed Sardi <moh.sardi@skyhighmemory.com>
+Cc: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "p.yadav@ti.com" <p.yadav@ti.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "richard@nod.at" <richard@nod.at>,
+ "Kyeongrho.Kim" <kr.kim@skyhighmemory.com>, Mohammad Nada
+ <Mohammad.nada@skyhighmemory.com>, "Changsub.Shim"
+ <changsub.shim@skyhighmemory.com>
+Subject: Re: [SkyHigh Memory SPI NAND Driver]
+Message-ID: <20240108144719.3198373e@xps-13>
+In-Reply-To: <7C13C29F-DBE0-494F-8BA6-99BB68FD08AF@skyhighmemory.com>
+References: <7C13C29F-DBE0-494F-8BA6-99BB68FD08AF@skyhighmemory.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240107_184435_910698_714809EA 
-X-CRM114-Status: UNSURE (   5.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240108_054727_787782_8CB5B825 
+X-CRM114-Status: GOOD (  14.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,37 +72,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-First memleak is found by mounting corrupted UBIFS image with chk_index
-enabled.
-Second memleak is found by powercut testing for encryption scenario.
-
-v1->v2:
- ubifs_symlink: Call fscrypt_free_inode() directly in error handling path.
- Add 'Cc: stable@vger.kernel.org' and 'Suggested-by' tags in patch 2.
-v2->v3:
- Handle tnc releasing in error handling path in dbg_check_idx_size().
-
-
-Zhihao Cheng (2):
-  ubifs: dbg_check_idx_size: Fix kmemleak if loading znode failed
-  ubifs: ubifs_symlink: Fix memleak of inode->i_link in error path
-
- fs/ubifs/debug.c    |  9 +++++++--
- fs/ubifs/dir.c      |  2 ++
- fs/ubifs/tnc.c      |  9 +--------
- fs/ubifs/tnc_misc.c | 22 ++++++++++++++++++++++
- fs/ubifs/ubifs.h    |  1 +
- 5 files changed, 33 insertions(+), 10 deletions(-)
-
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTW9oYW1lZCwKCm1vaC5zYXJkaUBza3loaWdobWVtb3J5LmNvbSB3cm90ZSBvbiBUaHUsIDQg
+SmFuIDIwMjQgMTg6MjE6NTIgKzAwMDA6Cgo+IEhlbGxvIFNQSSBOT1IgLyBOQU5EIEZsYXNoIFN1
+YnN5dGVtIHRlYW0sCj4gCj4gUGxlYXNlIGZpbmQgYXR0YWNoZWQgdGhlIGRyaXZlciBkZXZlbG9w
+ZWQgb24gTGludXggNS40IGFuZCB0ZXN0ZWQuLiBmb3Igb3VyIDFHYi8yR2IvNEdiIFNQSSBOQU5E
+4oCmCj4gCj4gV2Ugd291bGQgbGlrZSB0byBrbm93Cj4gCj4gCj4gICAxLiAgV2hvIGlzIGluIGNo
+YXJnZSBvZiBzdXBwb3J0aW5nIFNQSSBOQU5EIGRyaXZlciB1cGRhdGUgYW5kIHVuZGVyc3RhbmQg
+dGhlIHByb2Nlc3M/CgpJJ2QgbGlrZSB0byBzYXkgInRoZSBjb21tdW5pdHkiLCBhbmQgdGhhdCBt
+ZWFucyBhbnlib2R5IHdobyB3YW50cyB0bwppbnRlcmFjdCBvbiB0aGlzIHRvcGljLiBJIHdpbGwg
+cHJvYmFibHkgYmUgdGhlIGd1eSB3aG8gZXZlbnR1YWxseQphcHBsaWVzIHRoZSBwYXRjaChlcyku
+Cgo+ICAgMi4gIEhvdyBtYW55IHZlcnNpb24gb2YgdGhpcyBkcml2ZXIgd2UgbmVlZCB0byBkZXZl
+bG9wIHRvIHN1cHBvcnQgYWxsIHZlcnNpb24gb2YgTGludXggKG5vdyBiZWluZyA2Lnh4eCk/CgpX
+ZSBvbmx5IGJyaW5nIHN1cHBvcnQgdG8gdGhlIGxhdGVzdCBtYWlubGluZSBrZXJuZWwsIHdoYXRl
+dmVyIHZlcnNpb24KaXQgY291bGQgYmUuIFNvIGlmIHlvdSBzZW5kIGEgcGF0Y2ggKHBsZWFzZSBm
+b2xsb3cgdGhlIGNvbnRyaWJ1dGluZwpndWlkZWxpbmVzIGluIERvY3VtZW50YXRpb24vKSBpdCBz
+aG91bGQgYmUgYSBkaWZmIGFnYWluc3QgdGhlIG5leHQgLXJjMQooc28gaXQgd2lsbCBiZSB2Ni44
+LXJjMSBpbiB0d28gd2Vla3MpLiBZb3UgY2FuIHNoYXJlIGRpZmZzIGZvciBvdGhlcgp2ZXJzaW9u
+cyBhcyB3ZWxsIG9uIHlvdXIgb3duIHdlYnNpdGUgYnV0IHRoZXJlIGlzIHVzdWFsbHkgbm8gYmFj
+a3BvcnQKb2YgJ25ldyBmZWF0dXJlcycuCgo+IEZvciBpbnN0YW5jZSBpZiB0aGUgZHJpdmVyIChh
+dHRhY2hlZCBpcyA1LjQpLCBjYW4gaXQgYmUgdXNlZCB1cCB0byA1LjE44oCmICBvciBzaG91bGQg
+d2UgbW9kaWZ5IGl0IHN0YXJ0aW5nIGZyb20gdmVyc2lvbiA1LjR4LgoKSWYgaXQgY29tcGlsZXMs
+IGl0IHdpbGwgcHJvYmFibHkgd29yayBhcyB3ZWxsIGFzIHRoZSBjb3JlIGhhcyBub3QKY2hhbmdl
+ZCBtdWNoIHNpbmNlIGl0J3MgYmVlbiBjcmVhdGVkLCBidXQgdGhlcmUgaXMgb2YgY291cnNlIG5v
+Cmd1YXJhbnRlZS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
