@@ -4,86 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 577AEC46CD2
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jan 2024 18:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CAB1C4706C
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jan 2024 21:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FUrW/DTtb9/VgHmTDZAoKw7Y7Z3ZJm5m75AzxO3sD/E=; b=3eLZVmfbK3SAg4
-	u5ty2mL5aiWMtP2IruIGavDW0R9G+D4cMfKFWk7GZEg3/X0xqBb0z196EFkdzd27ijD6udd7k3+Ve
-	/LlV9EFLMANZ5BnzXqaifjCHJfkr6QBoPms53wBCrWTGncAEcg6ykXft7hZ2H484uj1UvWpT8f3Z+
-	JZ077/IBle64QChTVDGlJi3S/E6IstV6bUGpjRRdHAT/A930DnH1oMZYc76SPzYH1S3e1N6PhyXYm
-	NjRG7583WQkw0odde/SQYiicmWCqjUau+iB6/4bHeUQ6IZ7j24LsP8TkA1xzHEGTOBmvGhhxkNtfQ
-	pNxVisppyUbH2vOtQNiA==;
+	List-Owner; bh=thoILbKqdb6ScjsHMAJW0EhRBGHJoGqOkhQHEWpCOC8=; b=H4v6lpBCnmvB3b
+	3r1sawJvJ5VnZgKeRRCb25IlL7g5hMoI7B4Pf1FTujq1lfCZz7sUVaZOhYnEbEAlyODnkuipO3Bo8
+	RhwKM04WwPdgI0BP3mDPJC6TpQ5Yi7piMLxJSxP6b1Tpqc4GxlseauGh5mIzXkjXzwwVDQQVuoIqA
+	lpmrnbIdtaSTBYvOK/tE3PljDQGKlpnvCnn5TYXh3dOBHLVs2MlCD3AFGLYc5ROBofU/KEoO/cZy2
+	NKai51/fIsPQoz1ah7A087ogEwR7pi3dUW8ECvMtu+ObnczTJXJrkRAKlP/Xf4ucWcJiPwzgeoGDQ
+	E1NssJKLJXVnk70fkrqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNH4e-009CHf-2L;
-	Tue, 09 Jan 2024 18:43:40 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1rNJY2-009Xlz-0v;
+	Tue, 09 Jan 2024 21:22:10 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNH4Z-009CFH-1q
+	id 1rNJXy-009Xkv-2c
 	for linux-mtd@lists.infradead.org;
-	Tue, 09 Jan 2024 18:43:37 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 409HbdIJ019425;
-	Tue, 9 Jan 2024 18:43:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=WCWpu2RIhrOq6HplpMQL7
-	vEfslhi3o20Rz7+Rge3pHo=; b=P2NSDdPVg058BEoGfmLI8MdOdrIcASLB6QcW+
-	3Dc8drwI0oDBt2rnWtAWr92oHNRG2pp1GM0Xgo8kfEFr5/BmS6LZ56ZVMfnJrIEE
-	9cJ1GoKEz4K4v39n2Izx52H9QhMhvtX+dTP1PaJ/JRpazsIR1tmOCCLidL7m1wfd
-	TnvdbZXJwtWoYaOikZum+AQw/erbV2LCeJke1RixBGoSFHG0QGqK9Zalu75Bbsbc
-	BOy/Ozns+c8ki0e8Q5lMefhfqHrow8Qh0S+LdbWnZZbwnc1FeC4M24EPz+47oFCn
-	e5qumkSyxuzYw742fXAkbPUPpYp2umimds8AzlJ1JTv5z6zMQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vh9ta09yf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 09 Jan 2024 18:43:26 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 409IhPdF001740
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 9 Jan 2024 18:43:25 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 9 Jan 2024 10:43:24 -0800
-Date: Tue, 9 Jan 2024 10:43:23 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_tingweiz@quicinc.com>
+	Tue, 09 Jan 2024 21:22:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 06778B81A66;
+	Tue,  9 Jan 2024 21:22:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C8CAC433F1;
+	Tue,  9 Jan 2024 21:22:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704835324;
+	bh=wc05eXzLAZHA4XJcdaJKh8o0upGkPyKt64W55IJkYEA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NmflrM0NA1BFhHvPv0ppqDOdQPA8QfEw+ATTo61a0bT63CqmeIadLGseGKpiQKXUH
+	 tcm85TelA0P7Ol4NqYBMyKGaFcAM0XUpW8KBLM+wql3yBDLe+0dt3PXPITXD/o5Ciu
+	 pnG1c/RvygLr+hiWm0yeErLXGMPi+K1BPD6y/dU3P16/rFACra5A0l26vzPmHqihO0
+	 Tds9IUu2B6lPfIUeImzGZkpMmUXRikEvXVzDPAMN/ZTXXWxgi8zjLs8L3U1ymURDuj
+	 DGPqZLtA2VBRmu5G88w689qC0VrTXRBFM418qFmwWvHaHfXZttt0kq9xZRhatqcRjS
+	 v1H/UzcdB7Dcg==
+Received: (nullmailer pid 3241456 invoked by uid 1000);
+	Tue, 09 Jan 2024 21:22:02 -0000
+Date: Tue, 9 Jan 2024 15:22:02 -0600
+From: Rob Herring <robh@kernel.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Zhenhua Huang <quic_zhenhuah@quicinc.com>, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, quic_tingweiz@quicinc.com
 Subject: Re: [PATCH] dt-bindings: mtd: Change the schema for nodename which
  includes "sram"
-Message-ID: <20240109184323.GA24189@hu-bjorande-lv.qualcomm.com>
+Message-ID: <20240109212202.GA3236341-robh@kernel.org>
 References: <1704367382-29979-1-git-send-email-quic_zhenhuah@quicinc.com>
+ <20240109184323.GA24189@hu-bjorande-lv.qualcomm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1704367382-29979-1-git-send-email-quic_zhenhuah@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: D3jd0Yer2swtBYyNa5sjn2eqUEtYhwU9
-X-Proofpoint-ORIG-GUID: D3jd0Yer2swtBYyNa5sjn2eqUEtYhwU9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1011
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401090151
+In-Reply-To: <20240109184323.GA24189@hu-bjorande-lv.qualcomm.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240109_104335_765175_9DEC2288 
-X-CRM114-Status: GOOD (  24.28  )
+X-CRM114-CacheID: sfid-20240109_132207_222376_F38A5D06 
+X-CRM114-Status: GOOD (  27.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,93 +75,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 04, 2024 at 07:23:02PM +0800, Zhenhua Huang wrote:
-> Node name which includes "sram" not only represents MTD devices, but also
-> lots of sram devices(eg, qcom,imem.yaml, rules in folder sram/*).
+On Tue, Jan 09, 2024 at 10:43:23AM -0800, Bjorn Andersson wrote:
+> On Thu, Jan 04, 2024 at 07:23:02PM +0800, Zhenhua Huang wrote:
+> > Node name which includes "sram" not only represents MTD devices, but also
+> > lots of sram devices(eg, qcom,imem.yaml, rules in folder sram/*).
+> > 
+> > To avoid the conflicts, change the schema as:
+> >  - if node name includes "sram", must select "compatible" to match
+> > (I have listed all "comptible" string in mtd.yaml by searching
+> > drivers/mtd/* to find applicable drivers)
+> >  - if node name is nand/flash, use "nodename" to select.
+> > 
 > 
-> To avoid the conflicts, change the schema as:
->  - if node name includes "sram", must select "compatible" to match
-> (I have listed all "comptible" string in mtd.yaml by searching
-> drivers/mtd/* to find applicable drivers)
->  - if node name is nand/flash, use "nodename" to select.
+> You're right, it doesn't seem appropriate for the mtd binding to be
+> selected for nodes intended to match e.g. the qcom,imem binding.
 > 
-
-You're right, it doesn't seem appropriate for the mtd binding to be
-selected for nodes intended to match e.g. the qcom,imem binding.
-
-> Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
-> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> ---
-> Hello,
+> > Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
+> > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> > ---
+> > Hello,
+> > 
+> > Tested a few devicetree nodes, which confirms:
+> > "qcom,imem.yaml" which in sram/ not matches with mtd.yaml anymore.
+> > All nodes include string "sram" must have "compatible" which listed in
+> > mtd.yaml to be matched.
+> > 
+> > Current I just modify the rule for "sram" as it is definitely conflicting with
+> > rules in sram/*. I have not much backgrounds on nand/flash whether they may have
+> > similar conflicts.
+> > 
+> >  Documentation/devicetree/bindings/mtd/mtd.yaml | 24 +++++++++++++++++++++---
+> >  1 file changed, 21 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+> > index f322290..1704437 100644
+> > --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+> > @@ -10,10 +10,28 @@ maintainers:
+> >    - Miquel Raynal <miquel.raynal@bootlin.com>
+> >    - Richard Weinberger <richard@nod.at>
+> >  
+> > -properties:
+> > -  $nodename:
 > 
-> Tested a few devicetree nodes, which confirms:
-> "qcom,imem.yaml" which in sram/ not matches with mtd.yaml anymore.
-> All nodes include string "sram" must have "compatible" which listed in
-> mtd.yaml to be matched.
+> The mtd binding is $ref'ed by other bindings, similar to how we do with
+> other bindings of common properties.
 > 
-> Current I just modify the rule for "sram" as it is definitely conflicting with
-> rules in sram/*. I have not much backgrounds on nand/flash whether they may have
-> similar conflicts.
+> So, I think the problem with mtd is that this ($nodename) turns into a
+> "select" automatically, which causes this binding to match nodes by
+> name, rather than just those $ref'ing it.
 > 
->  Documentation/devicetree/bindings/mtd/mtd.yaml | 24 +++++++++++++++++++++---
->  1 file changed, 21 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-> index f322290..1704437 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-> @@ -10,10 +10,28 @@ maintainers:
->    - Miquel Raynal <miquel.raynal@bootlin.com>
->    - Richard Weinberger <richard@nod.at>
->  
-> -properties:
-> -  $nodename:
-
-The mtd binding is $ref'ed by other bindings, similar to how we do with
-other bindings of common properties.
-
-So, I think the problem with mtd is that this ($nodename) turns into a
-"select" automatically, which causes this binding to match nodes by
-name, rather than just those $ref'ing it.
-
-
-We should be able to avoid the automatically created select from the
-$nodename, and rely on $ref, by just adding:
-
-select: false
-
-Regards,
-Bjorn
-
-> -    pattern: "^(flash|.*sram|nand)(@.*)?$"
-> +select:
-> +  if:
-> +    properties:
-> +      $nodename:
-> +        pattern: "^.*sram(@.*)?$"
-> +  then:
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - arm,vexpress-psram
-> +          - cypress,cy7c1019dv33-10zsxi
-> +          - microchip,48l640
-> +          - mtd-ram
-> +  else:
-> +    properties:
-> +      $nodename:
-> +        pattern: "^(flash|nand)(@.*)?$"
->  
-> +  required:
-> +    - $nodename
-> +
-> +properties:
->    label:
->      description:
->        User-defined MTD device name. Can be used to assign user friendly
-> -- 
-> 2.7.4
+> We should be able to avoid the automatically created select from the
+> $nodename, and rely on $ref, by just adding:
 > 
+> select: false
+
+Yes.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
