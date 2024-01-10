@@ -4,86 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A6AC47073
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jan 2024 19:19:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E4EFC4707B
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jan 2024 19:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qXBKngpIfIK07Db0KV/R1LH8d3lBeqPbGdLhQEYlN/A=; b=yQMCoDVaQrY+qW
-	JqcVAxQHSfyF80KIxfBjs3zRB14q5hDAYg30/3SzSHxVjXDcFyVuR/RojB/AhEvf7+RY5xCxFuli6
-	bZRfzoPnDBIXMFWRgKfs0YoQ4/+GtMvrSS3yVzf+69HoPDuEmjdrecV32BEVbg4SvPDs61pW1WGkH
-	4G+JkqHS+xieDJTC1rnKqbXZ7jJyQwDGbeyS0WxxeCyUDf7M+sC8u7IqVgmeTRXtOiouksnNDMeSE
-	5bLLqOzLVMCkbRbk5ORogpMQ9ntbfWxA9kE4SSlQSjB4G7PUDxmQReN+S7C+EYr9tmfSv1H/uzLN+
-	at29m+bhW/GmkK1rrDjQ==;
+	List-Owner; bh=6NYvYY/HxOU9N70D5W6Isvs9d6Hexts/hmfH9GQjuoI=; b=bE5hJaNEBer5Wy
+	7TVzd90jmiDoVjlZdaTxhkSFfKak1GTlKRIezN3yt2lwBWL6I16yaOisfZWw8Y7R0ZSc9ihcBJwsV
+	zRqpZssyhcYzChjblYLvFWPTLZc7OJdPT5ZWsIPJPEfbPyoY3o9twQ9djGFacgNszC5TK40O/BqfC
+	9S+p7oKwSsvmTtr0kBynfZm6N4+nMysGE0x2YHP6y5SQLBHvdZDa08TWRIHkxzhLm+BRGCj+i+s7B
+	baJV//SL9xw4ITLQRvGWd0qducWj/xcFTMVu/umXvVT3GxWqrifW1TIlpzZWX2BaCBjTU7QrJ83q1
+	adVJjLVh2GlN5m8HJzFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNe6f-00Del6-0l;
-	Wed, 10 Jan 2024 19:19:17 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1rNeW0-00Dlmv-0L;
+	Wed, 10 Jan 2024 19:45:28 +0000
+Received: from mail-yb1-xb2f.google.com ([2607:f8b0:4864:20::b2f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNe6a-00DejJ-2q
+	id 1rNeVw-00Dli6-2l
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Jan 2024 19:19:14 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40AII4np021305;
-	Wed, 10 Jan 2024 19:19:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=jnvwjaJSh71ZVdoK5gBOs
-	QlHTKzC8Uxma1PfqBu+KWY=; b=Dw1CASMgk2yRTzRSq2AcXokPOEjLjSnrVW2l9
-	nuZmm1dMt6Iyo7XHd8zvbuBCEVkIBFvO4aWCwMqKt1ajwcRqYj1B1TmQT1iAv56I
-	yphX3H0ZYIXZmAfcqvhebNPhYlNlZnqIzzQ23iFur1xuryC1RBE4l2xkuZPQ6yqA
-	XMT8jpJZCgyOYqUrzfvUJx7nTzUwuBWYJFnBOO2LooB8FjlHi+IlF8p3NPwQlXCM
-	ETplm81jt7KYSM39a0qUjF4O/4imS90ZQVJg69cQWXgKK1sz7DSx/ftj3dstw07R
-	E8KeJbcbhUcFzec39aI3anDBtMSiM3nF9v4parOIocVmeP2vQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhq2h1ngg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 19:19:03 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40AJJ1kE003837
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jan 2024 19:19:01 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Jan 2024 11:19:02 -0800
-Date: Wed, 10 Jan 2024 11:19:00 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_tingweiz@quicinc.com>
-Subject: Re: [PATCH v2] dt-bindings: mtd: avoid automatically select from
- mtd.yaml
-Message-ID: <20240110191900.GM1315173@hu-bjorande-lv.qualcomm.com>
-References: <1704885705-7486-1-git-send-email-quic_zhenhuah@quicinc.com>
+	Wed, 10 Jan 2024 19:45:26 +0000
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-dbe69afb431so3774410276.1
+        for <linux-mtd@lists.infradead.org>; Wed, 10 Jan 2024 11:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704915919; x=1705520719; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8zRr9k3M5lt1NLGiBm4LGGbEU76LPHiRlYHf6Ykn1Ys=;
+        b=EZQnvBipZu/SkwxKncbSy/TPv9fRMn5TT1/+b5UT0CkxKO08EKL3sF/1jIJpwoKX30
+         KHj/y8RSLLSGARiiRZMZxNdnv1rmf1crIfw+lRLUcdk8U7V9olahOjEFje7P9hf3Q+U5
+         78mYIqDfBaEnuXecf5vRYtcyeboHJ0x7eVpv/BDicFmR2gbCeoKAbroQd1PLUvJVUET9
+         xPvs6q3HtWX0S3wGDmiyWVBmMdJTfdNkjkUc28bv4ehTdSJ9vm6mxCGlKoPXklsbvnnB
+         IgknWEgFReNMvP/35ymq4+RvcpbgGzcDEkbjLHE7QffGZTfheEvQgFxlXUPrvXQ80yYY
+         G2ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704915919; x=1705520719;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8zRr9k3M5lt1NLGiBm4LGGbEU76LPHiRlYHf6Ykn1Ys=;
+        b=KrH9G7j20t9IOYy23VO6OtRrIMYO53eWVj4+AC7DHA4nanOOjhPAIjpcH0WGSEC71b
+         20jGz701WOfmIPOyJQrDstvck9bsBTaL2NJCmvSr2GHE6ERPFTJSxwXGxE2EUcYQegqW
+         6nqfZeV7T7BySPdJKTtOGcAUg0CdwrjHN4dDc+610erUuoVTgBNcN6rSUE7UXghqBEH6
+         42xC5soqiNy1PwB8+fVnbKiPulLVEbBZUlvmtcmH+kivHk8VsNmJT0Vqs+hPy9LYaGim
+         m3bAl5G5zlylQM/I4vYfk5hcAsm2ufoItKnNp28xfY+3NR88mZIXK6BMdnS/KknTOukt
+         PP0g==
+X-Gm-Message-State: AOJu0Yyyb3r42mA174yZ4kCFhBQ0CaJZ6jtxCzpvHTwzgqwv+WB+ZSqn
+	FcTV20fXBogYZjjwSqEI4hc=
+X-Google-Smtp-Source: AGHT+IHIC4STcmIVvHNojmmb+kWLZtF32D5cncsDs8Rdjedin7IsN3qjxeZAoMn26pYsOd81Vi25VQ==
+X-Received: by 2002:a25:9f85:0:b0:dbd:5be1:1768 with SMTP id u5-20020a259f85000000b00dbd5be11768mr133994ybq.73.1704915919301;
+        Wed, 10 Jan 2024 11:45:19 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i29-20020a25b21d000000b00dbccc57e9c8sm1615656ybj.56.2024.01.10.11.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jan 2024 11:45:18 -0800 (PST)
+Date: Wed, 10 Jan 2024 11:45:16 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rich Felker <dalias@libc.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Richard Weinberger <richard@nod.at>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: [PATCH v3 6/6] Makefile.extrawarn: turn on missing-prototypes
+ globally
+Message-ID: <ab94f844-a4ec-4b4f-b67b-2b67347596d9@roeck-us.net>
+References: <20231123110506.707903-1-arnd@kernel.org>
+ <20231123110506.707903-7-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1704885705-7486-1-git-send-email-quic_zhenhuah@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dC_Wu6G7ldqe4tlIvy4yutzMoxLRc0mM
-X-Proofpoint-ORIG-GUID: dC_Wu6G7ldqe4tlIvy4yutzMoxLRc0mM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- spamscore=0 bulkscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 suspectscore=0
- mlxlogscore=961 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401100153
+In-Reply-To: <20231123110506.707903-7-arnd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240110_111913_083723_2B711C37 
-X-CRM114-Status: GOOD (  18.40  )
+X-CRM114-CacheID: sfid-20240110_114524_895931_25BEB068 
+X-CRM114-Status: GOOD (  22.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,54 +120,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 10, 2024 at 07:21:45PM +0800, Zhenhua Huang wrote:
-> The mtd binding is always $ref'ed by other bindings, default selector
-> should be from other binding files which ref'ed it. Now, "$nodename" in
-> mtd.yaml turns into a "select" automatically such that a few binding check
-> issues reported because it conflicts with sram devices(eg, qcom,imem.yaml,
-> rules in folder sram/*)
+On Thu, Nov 23, 2023 at 12:05:06PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> To avoid the automatically created "select" in mtd.yaml, adding:
+> Over the years we went from > 1000 of warnings to under 100 earlier
+> this year, and I sent patches to address all the ones that I saw with
+> compile testing randcom configs on arm64, arm and x86 kernels. This is a
+> really useful warning, as it catches real bugs when there are mismatched
+> prototypes. In particular with kernel control flow integrity enabled,
+> those are no longer allowed.
 > 
-> select: false
+> I have done extensive testing to ensure that there are no new build
+> errors or warnings on any configuration of x86, arm and arm64 builds.
+> I also made sure that at least the both the normal defconfig and an
+> allmodconfig build is clean for arc, csky, loongarch, m68k, microblaze,
+> openrisc, parisc, powerpc, riscv, s390, and xtensa, with the respective
+> maintainers doing most of the patches.
 > 
-> Suggested-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
-> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> At this point, there are five architectures with a number of known
+> regressions: alpha, nios2, mips, sh and sparc. In the previous version
+> of this patch, I had turned off the missing prototype warnings for the 15
+> architectures that still had issues, but since there are only five left,
+> I think we can leave the rest to the maintainers (Cc'd here) as well.
+> 
 
-Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+Not sure I understand why this was so important that it warrants the
+resulting buildtest failures.
 
-> ---
-> Hi Bjorn,
-> 
-> As the idea is from your comment, I added "Suggested-by" you.
-> Please tell me if that's not suitable. Thanks.
+FWIW, I'll disable WERROR in my build tests for the affected architectures.
+That is kind of counter-productive, but the only real alternative would be
+to stop build (and sometimes, such as for ppc, runtime) tests entirely,
+which would be even worse.
 
-I appreciate that, thank you.
-
-Regards,
-Bjorn
-
-> 
->  Documentation/devicetree/bindings/mtd/mtd.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-> index f322290..ee442ec 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-> @@ -10,6 +10,8 @@ maintainers:
->    - Miquel Raynal <miquel.raynal@bootlin.com>
->    - Richard Weinberger <richard@nod.at>
->  
-> +select: false
-> +
->  properties:
->    $nodename:
->      pattern: "^(flash|.*sram|nand)(@.*)?$"
-> -- 
-> 2.7.4
-> 
+Guenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
