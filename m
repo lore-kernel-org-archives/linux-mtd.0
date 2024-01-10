@@ -4,146 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1319CC3DA6E
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jan 2024 10:20:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 415BEC3DA6E
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jan 2024 11:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6VE8N/nQyVi/FLqUApVSFbwPdUqyk8UDb9DVUn3HOC0=; b=p1TBRH/YSfXCRO
-	prjm6C43VQplxaP/JHiaF/4Xv3f6YsEshqmhy5uyNCwE9NBhCOC/BFhX3qBFu5HX5YwhZMZa1aM7Z
-	6uaBRddMuXiYu/hp5lLdP0e8Szcw+NZdjOPMwHVXZSYSE5++e4dzkVmWiqYMLcwMs6nTkmBVKbgFC
-	//wn3IqSZtoWwgjlJlrxMS2Wull/SqAytu2hvuVpPDgnP1LnZmcdv+SNvJLSbxDK7bTyNisQpnrNp
-	nGJgzSNB0vrotacG60BF/3lrtUlS6LW2EiZeKZj3ZYgI+cy5zxvqHbfkX66kbdleq7+l0XOLEdlY0
-	oK7VA0VeyFqzOJMhEQdw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cGwdZGN0Q0ySDCvRQXTZOgWXpQK8WcoxIqWrddejBUc=; b=I3J2kdbr00Pp0w
+	4ydfIonk9tJAVxENMDH/0F1ez0MTRrg6Go1ZDSWbi4EoWZbVYk1OZ+bnSLs3iJPQcDj5IhC3Av7HC
+	ymTHmvKFHhFtDMqWrgP882pP66wLIesfpgjLpU0F/1U5c/povVyBZ0QEo3ZWJgIIp+y/Tm7hmSTlB
+	3EtYQyh+RI8KZroDnhRmw4jt/6uy0LdftSxBAWnawmoWbM2NPr6deOJABJFQLTbVmyc98JStDcAKI
+	VuqdJdvSunx1+EpnZzUoo5Xj5MzcAP+6MR9Jxaj0/lEhh4rY92frxDxl3bI6jppV6y/8ohyH5QbhL
+	NZG2Gls1lWWXjEqWqWog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNVhX-00AzoY-0J;
-	Wed, 10 Jan 2024 10:20:47 +0000
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18])
+	id 1rNWhV-00BG1j-1G;
+	Wed, 10 Jan 2024 11:24:49 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rNVhS-00Azme-27;
-	Wed, 10 Jan 2024 10:20:44 +0000
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailnew.west.internal (Postfix) with ESMTP id 0F1522B005B2;
-	Wed, 10 Jan 2024 05:20:33 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 10 Jan 2024 05:20:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1704882033;
-	 x=1704889233; bh=syE5UlqFQxkc/rlq6eSMNsD1Ft+dm/4kEwr9kygNnZw=; b=
-	JP39xJs9nz7sao0Mw71uaZ/eiQXIoVplqugjUGZYhQ7guX3+bZhIuPn+FTIF0P/U
-	kFKA5/KKnrvphnR9VVDqO7b9pSS6wICSG3UluT021gLpH5lthNGCLq13PQ9KJjEJ
-	1ljadw2mqVer0c9AYE4e0vRLjHJbc6Ff1HjG1hJRNVl2d58ls4RnrwTbd1lVfNCT
-	/p4Lj2EC6KAxjG6XjKrUccDBnfGAbkRQ9JltT0U4qRnMynNH4R98FTVJAThZmA9u
-	jQBMWbwGpK+oalRypy9TC8j8qfMWGON+J6gzAN0ArgN5Lu7H51+TiItFXrD89wmd
-	vZG/l4E5n8fT1+kO8ueizQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704882033; x=
-	1704889233; bh=syE5UlqFQxkc/rlq6eSMNsD1Ft+dm/4kEwr9kygNnZw=; b=U
-	mPKqJXZVgmHnjEzCuKASxczr7emU7nTNeH25WN9+C8eCNew7DVr1bRr/+srzmGUM
-	OLnTHQSNkb+EpmX50WeEu35xdXIziu96hJDuEpPD56diPrxIQi32vTaocnV2ckb1
-	HD7aUd5o6s31cHFZPeyloB1t3fGS7jNWGPLq0zyRBeBaK7y25NpZqIyzw5gFDKsU
-	pgPvYLFgWLau455DHxp57ybe58+CnFFt/AMqw12H893i5lWeRlqp9SNjB20pdoew
-	+mPjKLaT3vdzJvpuSAYIlv2XgkShbWLlHqONIAN9nqEm1n8JAXEzEYFZ9iKC3jQK
-	mYsm11bq3sdDv2qml7QSw==
-X-ME-Sender: <xms:b2-eZV_KMr_PAO_kk0ge4HNc0mbJzBFnJKYHP3Wn5ArwwAHJiUgo6g>
-    <xme:b2-eZZug-0NmwZ3_tB5EneosW6omYAdslyOjXGHW_SxmM98uPtte7R3mOTMO5r8vb
-    U5elh8Vhr3nkMsPDkU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:b2-eZTD8snTlVFeWedik1H69gSlAKgK5Cfa5oODX4P9VlRv3yNVtaA>
-    <xmx:b2-eZZfs69_EmPDsleKZW4CQjR8pVKQx5Y8bLR1JfUiKHCBXHCWmmA>
-    <xmx:b2-eZaMqe5fTef3bZBI_1IiTCXh5CeSfqu9FYtz6ovkxTl1P8-0xSA>
-    <xmx:cW-eZYGsc9qNXZdY9id5LaSUAgT20Cc4RFtJpxiSbqeKVbO3FhZS773eVF0>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 64819B6008D; Wed, 10 Jan 2024 05:20:31 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	id 1rNWhR-00BFvu-1N
+	for linux-mtd@lists.infradead.org;
+	Wed, 10 Jan 2024 11:24:47 +0000
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40AA33Bf014480;
+	Wed, 10 Jan 2024 11:24:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=J6w8/2Uaivc+IhxWpx33fUyFHAcLJNahWcoAf86tYLU=; b=lZ
+	Gq1KKj+QmNxD0sKY8WW9yn6/tRPSSwTozMn2tMp2Z4RBoTZN4Ogk0RKdQjs4uo1i
+	6AZKgWjDwyHr9Dr6Hi0qwIWdlckTS2KoUEALKY59OzlwfREaY7gnMfrBvkF4yIeF
+	2/3Rz1etd+LZASdOLvXZ8rxCajQd4GujDNRaluTgY6YWdLnpgl520rLkpo9ck+cM
+	5O/JO4BYcYCoLpNn1CLKWfx7JzPnRjUcBfzMkMAhl/G2+4rzDQLxIHlxm5V6PiJe
+	rXkJP7GAx5QRLLalL9GjVkCAjFHnMDY5QQU/EZ9PkFlvx056ZlmH6FuE8oI1aob8
+	TO5nk2GaMwrz0H+Xr7wQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vhs4mg634-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 11:24:37 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40ABOa1j018220
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jan 2024 11:24:36 GMT
+Received: from zhenhuah-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 10 Jan 2024 03:24:33 -0800
+From: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tingweiz@quicinc.com>,
+        <quic_bjorande@quicinc.com>, Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: [PATCH v2] dt-bindings: mtd: avoid automatically select from mtd.yaml
+Date: Wed, 10 Jan 2024 19:21:45 +0800
+Message-ID: <1704885705-7486-1-git-send-email-quic_zhenhuah@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Message-Id: <fdf707b9-f39d-4f5a-a8bf-1bcb8cc6594f@app.fastmail.com>
-In-Reply-To: <CAMuHMdV8uFKntiMfwwmnFpd4Dcx8vJDwS6r1iBLtkh40N71dbw@mail.gmail.com>
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-9-arnd@kernel.org>
- <CAMuHMdV8uFKntiMfwwmnFpd4Dcx8vJDwS6r1iBLtkh40N71dbw@mail.gmail.com>
-Date: Wed, 10 Jan 2024 11:20:10 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Andrew Morton" <akpm@linux-foundation.org>,
- linux-kernel@vger.kernel.org, "Masahiro Yamada" <masahiroy@kernel.org>,
- linux-kbuild@vger.kernel.org, "Matt Turner" <mattst88@gmail.com>,
- "Vineet Gupta" <vgupta@kernel.org>,
- "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>, guoren <guoren@kernel.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Ard Biesheuvel" <ardb@kernel.org>,
- "Huacai Chen" <chenhuacai@kernel.org>,
- "Greg Ungerer" <gerg@linux-m68k.org>, "Michal Simek" <monstr@monstr.eu>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Geoff Levand" <geoff@infradead.org>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "David S . Miller" <davem@davemloft.net>,
- "Andy Lutomirski" <luto@kernel.org>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- x86@kernel.org, "Helge Deller" <deller@gmx.de>,
- "Sudip Mukherjee" <sudipm.mukherjee@gmail.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Timur Tabi" <timur@kernel.org>,
- "Kent Overstreet" <kent.overstreet@linux.dev>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Anil S Keshavamurthy" <anil.s.keshavamurthy@intel.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
- "Juri Lelli" <juri.lelli@redhat.com>,
- "Vincent Guittot" <vincent.guittot@linaro.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Nicolas Schier" <nicolas@fjasle.eu>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- Netdev <netdev@vger.kernel.org>, linux-parisc@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
- linux-mtd@lists.infradead.org, "Palmer Dabbelt" <palmer@rivosinc.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>
-Subject: Re: [PATCH 08/22] [v2] arch: consolidate arch_irq_work_raise prototypes
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: eVtUjBz7nsmPqilmuphc3XYpZr017eOc
+X-Proofpoint-ORIG-GUID: eVtUjBz7nsmPqilmuphc3XYpZr017eOc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=882
+ adultscore=0 impostorscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401100093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240110_022042_743015_B5899F89 
-X-CRM114-Status: GOOD (  10.97  )
+X-CRM114-CacheID: sfid-20240110_032445_620462_8D3E32AC 
+X-CRM114-Status: GOOD (  13.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,28 +92,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBKYW4gMTAsIDIwMjQsIGF0IDEwOjAzLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6
-Cj4gT24gV2VkLCBOb3YgOCwgMjAyMyBhdCAyOjAx4oCvUE0gQXJuZCBCZXJnbWFubiA8YXJuZEBr
-ZXJuZWwub3JnPiB3cm90ZToKPj4gRnJvbTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4K
-Pj4KPj4gVGhlIHByb3RvdHlwZSB3YXMgaGlkZGVuIGluIGFuICNpZmRlZiBvbiB4ODYsIHdoaWNo
-IGNhdXNlcyBhIHdhcm5pbmc6Cj4+Cj4+IGtlcm5lbC9pcnFfd29yay5jOjcyOjEzOiBlcnJvcjog
-bm8gcHJldmlvdXMgcHJvdG90eXBlIGZvciAnYXJjaF9pcnFfd29ya19yYWlzZScgWy1XZXJyb3I9
-bWlzc2luZy1wcm90b3R5cGVzXQo+Cj4gVGhpcyBpc3N1ZSBpcyBub3cgcHJlc2VudCB1cHN0cmVh
-bS4KPgo+PiBTb21lIGFyY2hpdGVjdHVyZXMgaGF2ZSBhIHdvcmtpbmcgcHJvdG90eXBlLCB3aGls
-ZSBvdGhlcnMgZG9uJ3QuCj4+IEZpeCB0aGlzIGJ5IHByb3ZpZGluZyBpdCBpbiBvbmx5IG9uZSBw
-bGFjZSB0aGF0IGlzIGFsd2F5cyB2aXNpYmxlLgo+Pgo+PiBBY2tlZC1ieTogQ2F0YWxpbiBNYXJp
-bmFzIDxjYXRhbGluLm1hcmluYXNAYXJtLmNvbT4KPj4gQWNrZWQtYnk6IFBhbG1lciBEYWJiZWx0
-IDxwYWxtZXJAcml2b3NpbmMuY29tPgo+PiBBY2tlZC1ieTogR3VvIFJlbiA8Z3VvcmVuQGtlcm5l
-bC5vcmc+Cj4+IFJldmlld2VkLWJ5OiBBbGV4YW5kZXIgR29yZGVldiA8YWdvcmRlZXZAbGludXgu
-aWJtLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4K
-Pgo+IFRlc3RlZC1ieTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4K
-CkkndmUgc2VudCBvdXQgdGhlIGFzbS1nZW5lcmljIHB1bGwgcmVxdWVzdCBub3csCnRoYXQgY29u
-dGFpbnMgdGhlIGZpeC4gVGhhbmtzIGZvciB0aGUgcmVtaW5kZXIuCgogICAgICBBcm5kCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The mtd binding is always $ref'ed by other bindings, default selector
+should be from other binding files which ref'ed it. Now, "$nodename" in
+mtd.yaml turns into a "select" automatically such that a few binding check
+issues reported because it conflicts with sram devices(eg, qcom,imem.yaml,
+rules in folder sram/*)
+
+To avoid the automatically created "select" in mtd.yaml, adding:
+
+select: false
+
+Suggested-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+Fixes: 7bdc671822e9 ("dt-bindings: mtd: physmap: Reuse the generic definitions")
+Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+---
+Hi Bjorn,
+
+As the idea is from your comment, I added "Suggested-by" you.
+Please tell me if that's not suitable. Thanks.
+
+ Documentation/devicetree/bindings/mtd/mtd.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index f322290..ee442ec 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -10,6 +10,8 @@ maintainers:
+   - Miquel Raynal <miquel.raynal@bootlin.com>
+   - Richard Weinberger <richard@nod.at>
+ 
++select: false
++
+ properties:
+   $nodename:
+     pattern: "^(flash|.*sram|nand)(@.*)?$"
+-- 
+2.7.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
