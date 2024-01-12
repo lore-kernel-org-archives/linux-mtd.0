@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63F2BC4706C
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jan 2024 09:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8897C4706C
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jan 2024 10:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
+	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zATDk+av4HTY3prb+avP3tgmim41rtQazk1CyoqxtNk=; b=xgbnwkW1z7P+pr
-	GP7LNY1oLoLBnylbBTeN6zKgwWyFIqAkYgASVU+VKMarcg3g6jjhjlUjVT2wHutBmZ9k4GTQnK4AW
-	PqyCuXhqKEtFpLqTzLdKYMIxAr441mkhChyYCegF+fzrugO/AcseAuaXwrgrpo3jRSF9UUmn5fd8b
-	/bkMDgZ6wedslblemu12XrbbhHl2aDofExI2Od9ny2DxwJD6FLEz/9KNk9aIgLszbPyJM2G0jpyaL
-	mKhaI4I0sXLuA+6vLICesV4yz42jcKOEUugnzZcYNJMoDydru6ZUskxB8XUcSZhHQ3HD6sR/KgzfP
-	OFN0LHtzVWIpQTVx3bgQ==;
+	List-Owner; bh=z1e/gnx1iOpcCKVUYW4kCv+unbvNUbEkx03ow74+7nc=; b=S8EwkMEw8cZzlc
+	Sx97HaqwpNK54K+ciQ67I1rxDBAGOLRG3wUEt4tMTHvLKs2pIjhSxlYBq10ywyZQs0tnnepuNm3QY
+	RLtwhA2c68oXHrPRRxZx7tZXhDKrhNmnfFO2rRBbCUxB6tGH0AReNeRh3cs2Ax2QiCH/KHDA1J+19
+	jvwGNmGn8vkXtoHIzzXflaKdM/5MSHJcy/noUEX0O4Tc12df6GRNHZ6TkUsndEzOhLuefvqa6QP0M
+	oNuaQIeLYEojuAfgB4q/J7quuSV57Q/YIrGrZjQypI6iJEi99sgDNuig9jpvRmMyG3vwNmqqe2++J
+	7J9hyPCZhC98LIbHnfCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOE4l-002MNO-0i;
-	Fri, 12 Jan 2024 09:43:43 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1rOEWN-002SIz-2c;
+	Fri, 12 Jan 2024 10:12:15 +0000
+Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rOE4i-002MLa-1W
+	id 1rOEWK-002SFT-2g
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Jan 2024 09:43:42 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-337874b8164so1231548f8f.2
-        for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2024 01:43:37 -0800 (PST)
+	Fri, 12 Jan 2024 10:12:14 +0000
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso15093945e9.0
+        for <linux-mtd@lists.infradead.org>; Fri, 12 Jan 2024 02:12:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705052617; x=1705657417; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YBzRXt2Ez623oyr7wOzaIZMRhx6i9DthZ3CivOZ8D9M=;
-        b=TsHPUryy5t3Unydlu0IXjpUvIuuDtqN/6ZZfe0rEOGTs3moBVdxCIU2pIL6pXhN+Hz
-         7+hds8uMd6cEnD8JaDoBDpczjt7dpPEwtCrb4jPHcQvtNVA3b+TLLRhazOEojAbm0ueH
-         hn8FvUje6Yze+aLAr0Wa+74E9n1KIL4v0m4aG/auvxcwmFTy2VNJzljXqC8gP1plH7BJ
-         nkKnJedGfxZYyM1AQu46cpWU/049HrLXD8CBp9TbaeVlENmSm9ZXvv2pst2qEmkoSDzO
-         B2ZsrYPNJ00scwvX8nJ0nK3ieGsAEQ2rfs9WkXvIjVliafE2Mca02ldhALGCyYD/Htcl
-         B2lQ==
+        d=linaro.org; s=google; t=1705054324; x=1705659124; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DhprdGBBaGg3tGsHtPSJtaO0eKJ0B0oNQM9z7hnsptA=;
+        b=RYQntiTPrXW8Sfvgj2vmgVrSoFGYCOqq2rZhP+1gjSKNuTapvqvMOCUaUnZRf+kX1n
+         tx/kTHRoZxvg/1ohxUNWwquSM4lsvYHayUcSr7Fv46QI1xHBkIf7svJqv8bD691MjwOi
+         e+ui4ngpVWrUBrPmg84OY/GmqTNzQJvaPY/yhqyHY5a1Qso0xOSpXVXpZgUg8Q5EsMG+
+         EdD4w0XcDg1TaenHli7Iefib7+tJoJcjNYwSP2OEtw+IOnmx6EiC9lJlHnAvuYwwTEgz
+         SOWYDt0AHoVuoMRhnvV9TywHZamzbioz0/FTLPcIFWpt6pe/gsTm0FkNNgQxuc1P5Sxu
+         gxZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705052617; x=1705657417;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1705054324; x=1705659124;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YBzRXt2Ez623oyr7wOzaIZMRhx6i9DthZ3CivOZ8D9M=;
-        b=c48xPrr6o2lDUAcqlwedMUMuSullAhryRY2k+b7EdygTmdkLfeezJidHLgRi9t5Hay
-         ECxU0hK5RZ2c5Nqh7DgfhjFzJ70OIZKnmztmzOiOkpX2IMqZD8e1wA+UryGTfbQWLyc4
-         sRM6pXVBvu4Ul/FVzelKBXu1yiZBAayQSc9tE36sanDi5FouuK6/ypgV5wx4mSN2fekx
-         OvFb4lp60Oe3LdKdzy5SEN7am826W1EPmIbUmfuPSassvVgr8XZ/YG0pCrabFRWixhjj
-         PbOWkUbr4Vvb5xyZWDYhMoQEeo3A2yM5DC3PcL5C/DhoepONhmfTm4W4BGwqYRHU+sFE
-         ce6w==
-X-Gm-Message-State: AOJu0YwrBAw1lYb7vMxVZiADOvw4gTc8MNVTQpLlXop1mzF6L/B63f9I
-	0fCYlJT6qz3Ws6MHYuxQlns/TcwcU61bTg==
-X-Google-Smtp-Source: AGHT+IGCEMAu2OnQOE8O8AkM73XVE84ZH6Igz2BN/S8edONtgssRnXJptTrdrm/fYt0sIiqIe0C2tg==
-X-Received: by 2002:a05:6000:1145:b0:336:7051:8400 with SMTP id d5-20020a056000114500b0033670518400mr559146wrx.23.1705052616708;
-        Fri, 12 Jan 2024 01:43:36 -0800 (PST)
+        bh=DhprdGBBaGg3tGsHtPSJtaO0eKJ0B0oNQM9z7hnsptA=;
+        b=kDA1MIemB7buoiclBmYMQXa6Y0Lu0IGFP9s5w+MdbRHbSDDB1EBCIPmGHznOz7WFHR
+         3bfxpp731TJIVa+12qAvcDkFbj/3CUxQ3tOXgmHlc2VwVfebVW0pheOIX3p/ODTWjVbV
+         2tA9DwqkMmDPSnC3BF3mgcb4sykTeDzoHr+wT+HhPDQf9etVh9QvUo5mMiJQNXu+idu7
+         Zsj/4B121PkftIyH8mlUDtrRGKOYrIPvdl8g+girYZJJNf/MG2vcA0jN5aOszOwliQvY
+         D/fmctG8I9iEObNO9Po6Z87efvslHQvkcoAzL8wa4e71aCKt0GrgAEOiOde42N5l0+3J
+         IJog==
+X-Gm-Message-State: AOJu0Yz0PDwmwd2D7iBZwjy33jzng7qdoR7t246xQ49Y3vX+os1Q/20x
+	v8MELfpsplVCkzk06soetG7OESsG1aS6SQ==
+X-Google-Smtp-Source: AGHT+IFrg/eo2ig/RuFL29cLCy9+AQUPzbaCCbsHaL0axKebTvJY+5MCR9mfVkFt0LIABrwSbNyHew==
+X-Received: by 2002:a05:600c:a3a1:b0:40d:3a32:7d51 with SMTP id hn33-20020a05600ca3a100b0040d3a327d51mr607188wmb.119.1705054324042;
+        Fri, 12 Jan 2024 02:12:04 -0800 (PST)
 Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id q15-20020adfea0f000000b00336e6014263sm3346719wrm.98.2024.01.12.01.43.35
+        by smtp.gmail.com with ESMTPSA id l8-20020adfe588000000b0033662c2820bsm3421866wrm.117.2024.01.12.02.12.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 01:43:36 -0800 (PST)
-Message-ID: <e908c29a-1997-4c76-a3e4-556fec018de1@linaro.org>
-Date: Fri, 12 Jan 2024 09:43:34 +0000
+        Fri, 12 Jan 2024 02:12:03 -0800 (PST)
+Message-ID: <bb98a601-5c76-4273-820e-2b1c9b449820@linaro.org>
+Date: Fri, 12 Jan 2024 10:12:02 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 Subject: Re: [PATCH] mtd: spi-nor: core: Set mtd->eraseregions for non-uniform
  erase map
-Content-Language: en-US
 To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
 Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 References: <20231225080349.17222-1-Takahiro.Kuwano@infineon.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
 In-Reply-To: <20231225080349.17222-1-Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240112_014340_511611_8ADFA8E2 
-X-CRM114-Status: GOOD (  30.55  )
+X-CRM114-CacheID: sfid-20240112_021212_873614_8D34C21C 
+X-CRM114-Status: GOOD (  26.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -268,46 +268,8 @@ of regions somewhere and use it everywhere?
 this for, determining the erase size, deserves a dedicated method. Too
 many indentation levels.
 
-> +		}
-> +		mtd_region[i].erasesize = erase_size;
-> +		mtd_region[i].numblocks = div64_ul(region[i].size, erase_size);
-> +		mtd_region[i].offset = region[i].offset &
-> +				       ~SNOR_ERASE_FLAGS_MASK;
-> +	}
-> +
-> +	mtd->numeraseregions = n_regions;
-> +	mtd->eraseregions = mtd_region;
-> +
-> +	return 0;
-> +}
-> +
-> +static int spi_nor_set_mtd_info(struct spi_nor *nor)
->  {
->  	struct mtd_info *mtd = &nor->mtd;
->  	struct device *dev = nor->dev;
-> @@ -3439,6 +3483,11 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
->  	mtd->_resume = spi_nor_resume;
->  	mtd->_get_device = spi_nor_get_device;
->  	mtd->_put_device = spi_nor_put_device;
-> +
-> +	if (spi_nor_has_uniform_erase(nor))
-> +		return 0;
-> +
-> +	return spi_nor_set_mtd_eraseregions(nor);
->  }
->  
->  static int spi_nor_hw_reset(struct spi_nor *nor)
-> @@ -3531,7 +3580,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  		return ret;
->  
->  	/* No mtd_info fields should be used up to this point. */
-> -	spi_nor_set_mtd_info(nor);
-> +	ret = spi_nor_set_mtd_info(nor);
-> +	if (ret)
-> +		return ret;
->  
->  	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
->  			(long long)mtd->size >> 10);
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
