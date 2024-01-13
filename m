@@ -4,134 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47542C4707C
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jan 2024 20:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B84FAC4707C
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Jan 2024 13:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iFYacFHaPlhX9d0Mb+Hsk2xqGIvmWZ1xINUgQQXsDQ4=; b=C+OXP85f1UmUuD
-	2wrmvq5Dl1Nkznz0b4Q9LwTlObKh2YQ9qCeb0IvwV46V8bWckRQ1AgaVjRdVURjQhz8eCCvEU943C
-	uSzwToFqk1kOfoIqn21rWpoEDARBj1vuYuF7qA9m4+aKGIokyic9X1aT3UDXC5fhc35973HEd272Q
-	DgRLBggUgx5GSUtyHbqrwxPRsCcJR1fAzcrTytnfxVvavO5zE6TTciHcUHQ+q0uPzXeq9cCByCMbz
-	lVC6w4h/3dthR++SswbITymzxZSPupwxUqm+6w07Z6G4oCHK+qtGvjO4DynaUcgsK2613QCWLeE+V
-	ACWMHfLIvR4lxNcT1Ztg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Fq0VvoMkCXChvJMmf1f3bIDd2+o9Awxx0XBZIIIrbag=; b=qpSfkvuRgsEgo7
+	Zho+L/UoHejtdt6L5AK8c9EeVYE/RTi4OXsuChClig/yPz5arEC1QsqeMHIkoajKaEyD1vCt4p+Km
+	qD9STSSGAorqRZ/fTNDJ3fqcyYUFksSSUXn7xc57RksEUDjl+OjhelHvHqT8X988TdmMpFrB9Yb6q
+	ecVu7YjEBhd1LaxrxoZWiq0NSXPJS98Xwx5TzLGYnddlJvUdSd1ips1MWLnzGjCeXP+JtVAGS6P34
+	gmqsFO8nT5ggDdVci2RL0Xw1l2ITFPvD18biz82QYUV/ePKfFdgoi6JcDtBk+lb2ULE3M1wbaRkUT
+	B+iuGbDgREK2geNy3u/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rONmN-003tSr-2t;
-	Fri, 12 Jan 2024 20:05:23 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	id 1rOdiX-005AM3-0z;
+	Sat, 13 Jan 2024 13:06:29 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rONmL-003tS2-21;
-	Fri, 12 Jan 2024 20:05:23 +0000
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6d9b5c4f332so4266653b3a.3;
-        Fri, 12 Jan 2024 12:05:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705089919; x=1705694719; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=na4pzT09FoS2V7jC/k9PCQ6SoXGbrDcnbxJvw9iXvfw=;
-        b=LGiGp3Kx9Vy525O/rMIOuzItiuGr/nZHZW3Z/LFn3xRqTm3+PI9+DNCOFotZXRtjVM
-         OPYG2OStdUq/ZvWTFovC7j+zb8N3xgt7NXMS8YS4xJOO86cotySqrfss4/BlbtR8do2m
-         80TgXVnGgltWRIqs3WwgsvPy2xIoL15hCoV5EAwieCqas9E6milM6qp2fn+nFiAqZ6mK
-         NvjgHzxf75JVcPPc5z31rkTTu0ztNEJPQpJDzlIjkdHxpfgI1KN56eSvdfxhBBaTr89T
-         CJeTUWlYaQzbj3WlKgwxC5n4mQJZ8cBliE21uXHNLMWF9QRRmCprmPeI47oSi6DGguuM
-         eCnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705089919; x=1705694719;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=na4pzT09FoS2V7jC/k9PCQ6SoXGbrDcnbxJvw9iXvfw=;
-        b=FXwRn6qfLfHVv/UIykCMWmGiq/TBapCd06lSgsC9jOjzMrm594Z7KKAZg23BzIwuHx
-         k34hCLKJvymKynj8yn6/oC1hOC560AL0khouw1Kz19FMlT2cQkR7S2OozfLHrbkIVfwt
-         ba8xDIPXMaqkmO/Klc5x2yYh0pdfnDGW7UFuZizj6RgeHJFf5L2ej6dZLChAr3jsaWwN
-         HS/ir+9mWlo87AA0Cug/7yOoJNJM4Zo5Q4Tus9664ydNfnpLPcZzW4B48suOzM76fgiO
-         60buiKGCqsrIVMgj1HJoqWiVLqX19RZ4LaQkzXP0+lX4EGtmMjsM8LSFzoYKwJfy3ZaW
-         lgqA==
-X-Gm-Message-State: AOJu0YzeCw3vjwJQlr1iA7XBubuxwZcLy9zw11Dbn9N1+f9kwQPMUU8m
-	Ll8K86t6svPE4NVotbIY5Ko=
-X-Google-Smtp-Source: AGHT+IEycVEFGBn6j534mvX1bIJ3wserMi/KocsyYR1yA0juEfXSWk02LCKmPQcDWHDQHxYvEQekQg==
-X-Received: by 2002:a05:6a20:3942:b0:19a:59da:a73b with SMTP id r2-20020a056a20394200b0019a59daa73bmr1319668pzg.33.1705089919134;
-        Fri, 12 Jan 2024 12:05:19 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id sk3-20020a17090b2dc300b0028d276f078asm6926015pjb.43.2024.01.12.12.05.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jan 2024 12:05:18 -0800 (PST)
-Message-ID: <3488ac24-a40d-4376-98f3-2d97ec1aa204@roeck-us.net>
-Date: Fri, 12 Jan 2024 12:05:15 -0800
+	id 1rOdiR-005AKQ-0v
+	for linux-mtd@lists.infradead.org;
+	Sat, 13 Jan 2024 13:06:25 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TBz7l2ySsz1FJ0F;
+	Sat, 13 Jan 2024 21:01:55 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id 37AA41A016B;
+	Sat, 13 Jan 2024 21:06:05 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpemd200001.china.huawei.com
+ (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Sat, 13 Jan
+ 2024 21:06:04 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH v3 1/2] ubi: fix slab-out-of-bounds in ubi_eba_get_ldesc+0xfb/0x130
+Date: Sat, 13 Jan 2024 21:06:00 +0800
+Message-ID: <20240113130601.2502095-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
- tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, sbinding@opensource.cirrus.com,
- lee@kernel.org, james.schulman@cirrus.com, david.rhodes@cirrus.com,
- rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, michael@walle.cc,
- linux-mtd@lists.infradead.org, nicolas.ferre@microchip.com,
- alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
- michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
- <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
- <d21e76ce-8b55-48b1-ade0-9ec22092caeb@sirena.org.uk>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <d21e76ce-8b55-48b1-ade0-9ec22092caeb@sirena.org.uk>
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240112_120521_696874_D50513F2 
-X-CRM114-Status: GOOD (  11.98  )
+X-CRM114-CacheID: sfid-20240113_050623_670622_D43CC164 
+X-CRM114-Status: GOOD (  19.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,36 +63,254 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/12/24 11:16, Mark Brown wrote:
-> On Fri, Jan 12, 2024 at 11:11:07AM -0800, Guenter Roeck wrote:
->> On Sat, Nov 25, 2023 at 02:51:30PM +0530, Amit Kumar Mahapatra wrote:
-> 
->>> AMD-Xilinx GQSPI controller has two advanced mode that allows the
->>> controller to consider two flashes as one single device.
-> 
-> ...
-> 
->> With this patch in the mainline kernel, two of my qemu emulations
->> (quanta-q71l-bmc and almetto-bmc) fail to instantiate the first SPI
->> controller and thus fail to boot from SPI. The error message is
-> 
-> Not sure what quanta-q711-bmc is - is almetto-bmc really palmetto-bmc
-> (which has a mainline DT with a SPI flash)?
-> 
+From: Guo Xuenan <guoxuenan@huawei.com>
 
-Yes, sorry, it should have been palmetto-bmc.
+When using the ioctl interface to resize a UBI volume, `ubi_resize_volume`
+resizes the EBA table first but does not change `vol->reserved_pebs` in
+the same atomic context, which may cause concurrent access to the EBA table.
 
-quanta-q71l-bmc: See
-arch/arm/boot/dts/aspeed/aspeed-bmc-quanta-q71l.dts
+For example, when a user shrinks UBI volume A by calling `ubi_resize_volume`,
+while another thread is writing to volume B and triggering wear-leveling,
+which may call `ubi_write_fastmap`, under these circumstances, KASAN may
+report a slab-out-of-bounds error in `ubi_eba_get_ldesc+0xfb/0x130`.
 
-(it is q71l, not q711)
+This patch fixes race conditions in `ubi_resize_volume` and
+`ubi_update_fastmap` to avoid out-of-bounds reads of `eba_tbl`. First,
+it ensures that updates to `eba_tbl` and `reserved_pebs` are protected
+by `vol->volumes_lock`. Second, it implements a rollback mechanism in case
+of resize failure. It is also worth mentioning that for volume shrinkage
+failures, since part of the volume has already been shrunk and unmapped,
+there is no need to recover `{rsvd/avail}_pebs`.
 
-Guenter
+==================================================================
+BUG: KASAN: slab-out-of-bounds in ubi_eba_get_ldesc+0xfb/0x130 [ubi]
+Read of size 4 at addr ffff88800f43f570 by task kworker/u16:0/7
+CPU: 0 PID: 7 Comm: kworker/u16:0 Not tainted 5.16.0-rc7 #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+Workqueue: writeback wb_workfn (flush-ubifs_0_0)
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x4d/0x66
+ print_address_description.constprop.0+0x41/0x60
+ kasan_report.cold+0x83/0xdf
+ ubi_eba_get_ldesc+0xfb/0x130 [ubi]
+ ubi_update_fastmap.cold+0x60f/0xc7d [ubi]
+ ubi_wl_get_peb+0x25b/0x4f0 [ubi]
+ try_write_vid_and_data+0x9a/0x4d0 [ubi]
+ ubi_eba_write_leb+0x7e4/0x17d0 [ubi]
+ ubi_leb_map+0x1a0/0x2c0 [ubi]
+ ubifs_leb_map+0x139/0x270 [ubifs]
+ ubifs_add_bud_to_log+0xb40/0xf30 [ubifs]
+ make_reservation+0x86e/0xb00 [ubifs]
+ ubifs_jnl_write_data+0x430/0x9d0 [ubifs]
+ do_writepage+0x1d1/0x550 [ubifs]
+ ubifs_writepage+0x37c/0x670 [ubifs]
+ __writepage+0x67/0x170
+ write_cache_pages+0x259/0xa90
+ do_writepages+0x277/0x5d0
+ __writeback_single_inode+0xb8/0x850
+ writeback_sb_inodes+0x4b3/0xb20
+ __writeback_inodes_wb+0xc1/0x220
+ wb_writeback+0x59f/0x740
+ wb_workfn+0x6d0/0xca0
+ process_one_work+0x711/0xfc0
+ worker_thread+0x95/0xd00
+ kthread+0x3a6/0x490
+ ret_from_fork+0x1f/0x30
+ </TASK>
+
+Allocated by task 711:
+ kasan_save_stack+0x1e/0x50
+ __kasan_kmalloc+0x81/0xa0
+ ubi_eba_create_table+0x88/0x1a0 [ubi]
+ ubi_resize_volume.cold+0x175/0xae7 [ubi]
+ ubi_cdev_ioctl+0x57f/0x1a60 [ubi]
+ __x64_sys_ioctl+0x13a/0x1c0
+ do_syscall_64+0x35/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x1e/0x50
+ __kasan_record_aux_stack+0xb7/0xc0
+ call_rcu+0xd6/0x1000
+ blk_stat_free_callback+0x28/0x30
+ blk_release_queue+0x8a/0x2e0
+ kobject_put+0x186/0x4c0
+ scsi_device_dev_release_usercontext+0x620/0xbd0
+ execute_in_process_context+0x2f/0x120
+ device_release+0xa4/0x240
+ kobject_put+0x186/0x4c0
+ put_device+0x20/0x30
+ __scsi_remove_device+0x1c3/0x300
+ scsi_probe_and_add_lun+0x2140/0x2eb0
+ __scsi_scan_target+0x1f2/0xbb0
+ scsi_scan_channel+0x11b/0x1a0
+ scsi_scan_host_selected+0x24c/0x310
+ do_scsi_scan_host+0x1e0/0x250
+ do_scan_async+0x45/0x490
+ async_run_entry_fn+0xa2/0x530
+ process_one_work+0x711/0xfc0
+ worker_thread+0x95/0xd00
+ kthread+0x3a6/0x490
+ ret_from_fork+0x1f/0x30
+The buggy address belongs to the object at ffff88800f43f500
+ which belongs to the cache kmalloc-128 of size 128
+The buggy address is located 112 bytes inside of
+ 128-byte region [ffff88800f43f500, ffff88800f43f580)
+The buggy address belongs to the page:
+page:ffffea00003d0f00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xf43c
+head:ffffea00003d0f00 order:2 compound_mapcount:0 compound_pincount:0
+flags: 0x1fffff80010200(slab|head|node=0|zone=1|lastcpupid=0x1fffff)
+raw: 001fffff80010200 ffffea000046ba08 ffffea0000457208 ffff88810004d1c0
+raw: 0000000000000000 0000000000190019 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+Memory state around the buggy address:
+ ffff88800f43f400: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88800f43f480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> ffff88800f43f500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc
+                                                             ^
+ ffff88800f43f580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88800f43f600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+
+The following steps can used to reproduce:
+Process 1: write and trigger ubi wear-leveling
+    ubimkvol /dev/ubi0 -s 5000MiB -N v1
+    ubimkvol /dev/ubi0 -s 2000MiB -N v2
+    ubimkvol /dev/ubi0 -s 10MiB -N v3
+    mount -t ubifs /dev/ubi0_0 /mnt/ubifs
+    while true;
+    do
+        filename=/mnt/ubifs/$((RANDOM))
+        dd if=/dev/random of=${filename} bs=1M count=$((RANDOM % 1000))
+        rm -rf ${filename}
+        sync /mnt/ubifs/
+    done
+
+Process 2: do random resize
+    struct ubi_rsvol_req req;
+    req.vol_id = 1;
+    req.bytes = (rand() % 50) * 512KB;
+    ioctl(fd, UBI_IOCRSVOL, &req);
+
+V3:
+ - Fix the commit message error.
+
+V2:
+ - Add volumes_lock in ubi_eba_copy_leb() to avoid race caused by
+   updating eba_tbl.
+
+V1:
+ - Rebase the patch on the latest mainline.
+
+Signed-off-by: Guo Xuenan <guoxuenan@huawei.com>
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/ubi/eba.c |  7 +++++++
+ drivers/mtd/ubi/vmt.c | 24 +++++++++++++++++-------
+ 2 files changed, 24 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 8d1f0e05892c..e5ac3cd0bbae 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -1456,7 +1456,14 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 	}
+ 
+ 	ubi_assert(vol->eba_tbl->entries[lnum].pnum == from);
++
++	/**
++	 * The volumes_lock lock is needed here to prevent the expired old eba_tbl
++	 * being updated when the eba_tbl is copied in the ubi_resize_volume() process.
++	 */
++	spin_lock(&ubi->volumes_lock);
+ 	vol->eba_tbl->entries[lnum].pnum = to;
++	spin_unlock(&ubi->volumes_lock);
+ 
+ out_unlock_buf:
+ 	mutex_unlock(&ubi->buf_mutex);
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 2c867d16f89f..97294def01eb 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -408,6 +408,7 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 	struct ubi_device *ubi = vol->ubi;
+ 	struct ubi_vtbl_record vtbl_rec;
+ 	struct ubi_eba_table *new_eba_tbl = NULL;
++	struct ubi_eba_table *old_eba_tbl = NULL;
+ 	int vol_id = vol->vol_id;
+ 
+ 	if (ubi->ro_mode)
+@@ -453,10 +454,13 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 			err = -ENOSPC;
+ 			goto out_free;
+ 		}
++
+ 		ubi->avail_pebs -= pebs;
+ 		ubi->rsvd_pebs += pebs;
+ 		ubi_eba_copy_table(vol, new_eba_tbl, vol->reserved_pebs);
+-		ubi_eba_replace_table(vol, new_eba_tbl);
++		old_eba_tbl = vol->eba_tbl;
++		vol->eba_tbl = new_eba_tbl;
++		vol->reserved_pebs = reserved_pebs;
+ 		spin_unlock(&ubi->volumes_lock);
+ 	}
+ 
+@@ -471,7 +475,9 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 		ubi->avail_pebs -= pebs;
+ 		ubi_update_reserved(ubi);
+ 		ubi_eba_copy_table(vol, new_eba_tbl, reserved_pebs);
+-		ubi_eba_replace_table(vol, new_eba_tbl);
++		old_eba_tbl = vol->eba_tbl;
++		vol->eba_tbl = new_eba_tbl;
++		vol->reserved_pebs = reserved_pebs;
+ 		spin_unlock(&ubi->volumes_lock);
+ 	}
+ 
+@@ -493,7 +499,6 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 	if (err)
+ 		goto out_acc;
+ 
+-	vol->reserved_pebs = reserved_pebs;
+ 	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 		vol->used_ebs = reserved_pebs;
+ 		vol->last_eb_bytes = vol->usable_leb_size;
+@@ -501,19 +506,24 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 			(long long)vol->used_ebs * vol->usable_leb_size;
+ 	}
+ 
++	/* destroy old table */
++	ubi_eba_destroy_table(old_eba_tbl);
+ 	ubi_volume_notify(ubi, vol, UBI_VOLUME_RESIZED);
+ 	self_check_volumes(ubi);
+ 	return err;
+ 
+ out_acc:
++	spin_lock(&ubi->volumes_lock);
++	vol->reserved_pebs = reserved_pebs - pebs;
+ 	if (pebs > 0) {
+-		spin_lock(&ubi->volumes_lock);
+ 		ubi->rsvd_pebs -= pebs;
+ 		ubi->avail_pebs += pebs;
+-		spin_unlock(&ubi->volumes_lock);
++		ubi_eba_copy_table(vol, old_eba_tbl, vol->reserved_pebs);
++	} else {
++		ubi_eba_copy_table(vol, old_eba_tbl, reserved_pebs);
+ 	}
+-	return err;
+-
++	vol->eba_tbl = old_eba_tbl;
++	spin_unlock(&ubi->volumes_lock);
+ out_free:
+ 	ubi_eba_destroy_table(new_eba_tbl);
+ 	return err;
+-- 
+2.34.3
 
 
 ______________________________________________________
