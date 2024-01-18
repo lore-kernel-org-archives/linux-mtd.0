@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F08D0C47DAF
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jan 2024 09:32:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3801FC4707B
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jan 2024 09:37:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eb1Ayl44AJoVDBnLrVZHqWhOIqdTkz1Tlul8ir3tZVI=; b=nWbg53jnJugUUCysexIAEJkvyz
-	HlRRlSDK/YDqnz1fNqO3UQ17Ot7+nkQoZpTN1n6uMxdW+gGjBl3SENVKq33d9vp7ImzJCzKbp5NHW
-	oBAhCWoQYA71Os4uqjAyzOdgsreZ3rEIRosUgXdsIpMQJ7nXnHZzY3q52UFNJM1KcVLX8q6Ms+eOV
-	47nImke3++LSPryUcSBGlNJBS14tqSrvJisjZVwLQ3p6ahsm8nBzTcgkkxorSnHIWWzvUlp+D0e3r
-	WS8+hiAO9uBTFimVTwaGF59qkC3l/+L687va121o2ogF/aosWFBuvoiOJ5+N0eGE4YF/thOXDgKcD
-	KA9D4DpQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2HdvDbLjZNIy4HNt/6VN+eFO4ADqxu4e7/f+6tV9QIU=; b=z1SlR0ZyARC9Me
+	39GIo5W+MQ0rfvnGNxJly6ECO1IIsxsKeNYgLNbjsbFN+/9+leQ46/ORKsIXqQmzROFwn6/ong/Q9
+	EXjmLpqQ44HylMj9lLF5I7MOLTvWZfeWkqpJwb2xP2WyMpvhmEKuFm+dPVuMZj1zGjRgMpF/EPDIQ
+	DW2g8BFjuSKxbokVnQNT9ZBBmetjohUvJHFoBBHdmMOdWbc/ig1QkWxaPNkMq3Ym0KjdC5GNOhNpC
+	caCLKNehaeGLrUTZbx2EO+dPfmtPlr6B+OcnSP4JXjArFgcsWPER+NBP/FMLy3f5PoKwVHLmLMNP9
+	T4Erp/x6qoKC/fKnKIpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQOkf-002IMw-2E;
-	Thu, 18 Jan 2024 09:31:57 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1rQOpY-002IsL-0y;
+	Thu, 18 Jan 2024 09:37:00 +0000
+Received: from forward500a.mail.yandex.net ([2a02:6b8:c0e:500:1:45:d181:d500])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQOkd-002IMD-0K
-	for linux-mtd@lists.infradead.org;
-	Thu, 18 Jan 2024 09:31:56 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQOj3-0002xz-Tn; Thu, 18 Jan 2024 10:30:17 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQOiy-000etK-Ax; Thu, 18 Jan 2024 10:30:12 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rQOiy-002Ifg-0Y;
-	Thu, 18 Jan 2024 10:30:12 +0100
-Date: Thu, 18 Jan 2024 10:30:11 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>, 
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Thierry Reding <thierry.reding@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
-	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
-	dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org, 
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-ide@vger.kernel.org, linux-input@vger.kernel.org, linux-sound@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko <andriy.shevchenko@intel.com>, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Andy Shevchenko <andy.shevchenko@gmail.com>
+	id 1rQOpQ-002IrH-2v;
+	Thu, 18 Jan 2024 09:36:57 +0000
+Received: from mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1d:5fd0:0:640:c018:0])
+	by forward500a.mail.yandex.net (Yandex) with ESMTP id A8B01616FD;
+	Thu, 18 Jan 2024 12:36:44 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id baJWEC7aoCg0-7skv82tT;
+	Thu, 18 Jan 2024 12:36:42 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+	t=1705570602; bh=eOYgq6vBGLmYMc8CNKKKb0RzNhlbCa5ML+43wchdMZA=;
+	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+	b=Es19nIjpoisIBb6MjPgosN8BBLwA3g37Sg+8/RzikHK2iJGA8I33MTMMnsCeSd95a
+	 FcvuQE7PCMCd9C0Lf3UXj5lju7/29hXhNB61xQrIV3xj6jS+j2ttUffxBAet9gIIDQ
+	 eap9ausw2GyVdWnpZfdMCuPomyP6WRpJQi/KCiZk=
+Authentication-Results: mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <3659cd8be443f632f44f9ad31a214a82f995ed75.camel@maquefel.me>
 Subject: Re: [PATCH v7 00/39] ep93xx device tree conversion
-Message-ID: <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
+ <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, Thierry Reding
+ <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>,  Sergey
+ Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>, "Wu,
+ Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, Olof Johansson
+ <olof@lixom.net>,  Niklas Cassel <cassel@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org,  devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org,  linux-watchdog@vger.kernel.org,
+ linux-pwm@vger.kernel.org,  linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko
+ <andriy.shevchenko@intel.com>, Bartosz Golaszewski
+ <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, Andy
+ Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 18 Jan 2024 12:36:38 +0300
+In-Reply-To: <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
 References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+	 <a54csycouodnmj6qarfel7cvgupaerl7uhrruixuy7uaekqgzw@2whufrjqunme>
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-In-Reply-To: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240118_013155_169787_B8C20FB9 
-X-CRM114-Status: GOOD (  13.08  )
+X-CRM114-CacheID: sfid-20240118_013654_056417_9BD18624 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,64 +96,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4963714756695992984=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============4963714756695992984==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s7rbtueqy4vwjth4"
-Content-Disposition: inline
-
-
---s7rbtueqy4vwjth4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Thu, Jan 18, 2024 at 11:20:43AM +0300, Nikita Shubin via B4 Relay wrote:
-> No major changes since last version (v6) all changes are cometic.
-
-Never saw changes described as "cometic". I guess that means "fast" and
-"high impact"?
-
-SCNR
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---s7rbtueqy4vwjth4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWo76MACgkQj4D7WH0S
-/k5uKAf/Z0JDYxAVHNppDOc31mQ8q/h4mL5VX4NFHWitBkLRBX5sufWi6uUBbK7h
-KA9Z1DHWGNNXUXsV2IsXKsw6WcsC+Wj/g+hUfWMx2kvbnvD8JtYBl1+MJALeBVlt
-aQCy1yMPL36xcy8vSLyh63vZXUHyBaWuooRwVqOhklHSg7/rwSEwECEZZqsg748Z
-iiYmSVRjLlktw1yUtJBvlO1fXWQ41DSbyaQWaIJvbym8B5+2XXW2BTGZOg7CuDz5
-HG9KvXf2AnAEM4RAV6Oo/WKBBEq0kfQ/UBkkH85YOaXrDlNblggfMix84LyansxB
-43g95kkMn3JP3koNgEA+nk73+SCctA==
-=1qlI
------END PGP SIGNATURE-----
-
---s7rbtueqy4vwjth4--
-
-
---===============4963714756695992984==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4963714756695992984==--
-
+SGVsbG8sCgpPbiBUaHUsIDIwMjQtMDEtMTggYXQgMTA6MzAgKzAxMDAsIFV3ZSBLbGVpbmUtS8O2
+bmlnIHdyb3RlOgo+IEhlbGxvLAo+IAo+IE9uIFRodSwgSmFuIDE4LCAyMDI0IGF0IDExOjIwOjQz
+QU0gKzAzMDAsIE5pa2l0YSBTaHViaW4gdmlhIEI0IFJlbGF5Cj4gd3JvdGU6Cj4gPiBObyBtYWpv
+ciBjaGFuZ2VzIHNpbmNlIGxhc3QgdmVyc2lvbiAodjYpIGFsbCBjaGFuZ2VzIGFyZSBjb21ldGlj
+Lgo+IAo+IE5ldmVyIHNhdyBjaGFuZ2VzIGRlc2NyaWJlZCBhcyAiY29tZXRpYyIuIEkgZ3Vlc3Mg
+dGhhdCBtZWFucyAiZmFzdCIKPiBhbmQKPiAiaGlnaCBpbXBhY3QiPwoKIkNvc21ldGljIiBvZiBj
+b3Vyc2UuCgpXZWxsIGkgZ3Vlc3MgaXQncyBuaWNlIHRoYXQgaSBoYWRuJ3QgbWlzc3BlbGxlZCBp
+dCBsaWtlICJjb21lZGljIi4uLgoKPiAKPiBTQ05SCj4gVXdlCj4gCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
