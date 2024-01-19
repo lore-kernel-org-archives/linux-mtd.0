@@ -4,98 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9347EC47DB7
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jan 2024 19:55:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33CF0C47DD3
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Jan 2024 05:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SEmaOhuYO34IZUnbPnYYEkzXdUKVWujSXsKDP1WEUAA=; b=qx4V9DeJHbWcpg
-	XGCOBT+05dYgWHL5sPNrODjLSutCIXmJIpOLrYjlVeeGRIykSvI3cXE3jAR3kBMyOJ8ibMI/jYQXz
-	nU3a7Vk4BFEkGz2mdzq0PKqchizkK6l2sFPNqJ8LO+mfMUTMXqNNBCD+Z/Jja6/2vMGE0RRHdlKUD
-	6TCbe7eFVrzYSnSGv62jT/06xw2SUnOI8mVd7oezGpgbKnIthELhMAg7TQzGB4XHl4Q1+Xo4ntal9
-	l7i3KpBUu/LgD6WgPylXzobz4FIDl7NQRnh5pdcfp030kAEmeDwY7865a5EiPdQ/+oJuIv9USE8pP
-	weB4dxQfx71ZSYX9jNXg==;
+	List-Owner; bh=/hFnc250M9i0pqKvmfdtWdolHTljmbaNPdgijTQRQRw=; b=OU9qyeAPSpGTKT
+	UiDPNLHnY8WfBm1716A2/McA+FtQR79y/T/cZRqdnJ+ljFyn2aoTrTc+jczGyvcIpjcx+r3ul9BYK
+	HKvhTdFM2Mzqpv10bW1KuaMsq2c+8/FE5xEMT5AyEyh/pT57hrZR015AVh2zHgqUeXD0sb7Y634UB
+	BDR5MtSFWZkvSeywpyaMIQfBmaF0LDv+Eg+vLd1Z1s1KiZEZDofh+8cI8jhGvdWBkjwWOYVkpv/MM
+	3NDM7w1t1F+QezLTTEmmzFhVbMzw/dC8DTBNvN3pmKjroKX44YTUVr0IAPiQg9BxK3rAkV8oyHLVx
+	gEGDb7qoo9deaL391+rQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQYU9-003h7z-0O;
-	Thu, 18 Jan 2024 19:55:33 +0000
-Received: from mail-pg1-x531.google.com ([2607:f8b0:4864:20::531])
+	id 1rQhYO-004WSJ-0x;
+	Fri, 19 Jan 2024 05:36:32 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQYTJ-003gNc-1c
+	id 1rQhYK-004WQj-2N
 	for linux-mtd@lists.infradead.org;
-	Thu, 18 Jan 2024 19:54:43 +0000
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-53fa455cd94so18601a12.2
-        for <linux-mtd@lists.infradead.org>; Thu, 18 Jan 2024 11:54:39 -0800 (PST)
+	Fri, 19 Jan 2024 05:36:30 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40e9ed20ffcso1144995e9.2
+        for <linux-mtd@lists.infradead.org>; Thu, 18 Jan 2024 21:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1705607679; x=1706212479; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BeH1TIJtMu9dNiviTF/nkxwiev6sYu4cBkxn5iUmNwA=;
-        b=NYxhS921R9ha0UaTeRIakdj7z+jD+TuUScesLJla7lCS93CRvp3c6D9vNRE9PYEWYI
-         Z9QCiCzG4CCJHeoGykl97VyxIlJW4nyWOBTKEOGG999ucSpbeL7CADfWKyyGLshCoXai
-         CrS10N+o39RwZRIEiyA1dx0tyaKcuXPTGDT8A=
+        d=linaro.org; s=google; t=1705642586; x=1706247386; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ojAQrKurCVDTpDyr9Ud8UUA59iisRxNip7GO8MCjIo=;
+        b=mq6Wp1leu1PoNkS48w7+lavxdGaGJoSmVKt1ZZo44KV4Cp+dnUA48NPbGWi7bithQJ
+         79QIqS/NRxLCXpta55ZdFNF9bUu3Z4YhntOAyxz1GDIFUZKX+hOBBzUTmWFxa0s/1Hef
+         wKT03Gj8qwlmZIK3ZqU23Uyk7ZAq+KRQNmberSRTNvhgCifMErPMqF65Jc0/ddItfeTj
+         VLGqy7qSiG8rxXe+v2O17I0D6JEawG2ubykJeYpgh1OAfElbT8pgnEszOVoMe935G+6r
+         nFJekbOejX2B7sG34JYOqZ+c/rvV1ORjoh2RU9REh2RpsdOVHsDdnQXkaQh3RW91aRQ3
+         I4Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705607679; x=1706212479;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BeH1TIJtMu9dNiviTF/nkxwiev6sYu4cBkxn5iUmNwA=;
-        b=KGMihk4g0PnbGle9pk3XRwXo2bu9jDu4j2sgTbFaUugDNpZcT/58xtqY6XlenSJXte
-         xEKQ+x/AZbtghZTnSiWg0hdQbfRhv9D1rMHFhKfYptS6BSQ/9Cc/pssniJv5Wr7HxMC4
-         gECL30F404N+kvnRlPMGkp8Fg+UEJYJdJpRddhfRu5dL9DHbj+D8fkSXMKwIebOQOEDB
-         zVeQAoozQ+5nAfr0137YgODhW7cNUhLII5RAVvBEpcYvhv0MBTMyfZcpu1gI9aiXu/j9
-         ZrA6bZ7gSriCjrA3lPLTLv+ovnsUHckfD7Yu/TUTRJLSW6XJCldoL9zkiWI2RR5bKsU8
-         8JMQ==
-X-Gm-Message-State: AOJu0Ywx/tqC/X5onZefYn3T9DFU8DBsoAyl1AAtCkGrGSicBeuqtVZi
-	waeTfxbO2DjOpCnEZnVD/wTPlOdykBo5EPx5nfmzqZJoFIwuNpbv70xlUzZmKw==
-X-Google-Smtp-Source: AGHT+IHACuKl4Ub94+Xnxo/jnjCOYBw1yW1Eo6Y2FDr3CuoZ6RFhJZAwMW6S4Z0cAarZk55E4E+D7g==
-X-Received: by 2002:a17:90b:2349:b0:290:1d33:cc66 with SMTP id ms9-20020a17090b234900b002901d33cc66mr1276623pjb.91.1705607679035;
-        Thu, 18 Jan 2024 11:54:39 -0800 (PST)
-Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id rr12-20020a17090b2b4c00b0028d9b5d41edsm2263805pjb.38.2024.01.18.11.54.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Jan 2024 11:54:38 -0800 (PST)
-From: dregan@broadcom.com
-To: dregan@broadcom.com,
-	dregan@mail.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	computersforpeace@gmail.com,
-	kdasu.kdev@gmail.com,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	joel.peshkin@broadcom.com,
-	tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	william.zhang@broadcom.com,
-	anand.gore@broadcom.com,
-	kursad.oney@broadcom.com,
-	florian.fainelli@broadcom.com,
-	rafal@milecki.pl,
-	bcm-kernel-feedback-list@broadcom.com,
-	andre.przywara@arm.com,
-	baruch@tkos.co.il,
-	linux-arm-kernel@lists.infradead.org,
-	dan.carpenter@linaro.org
-Subject: [PATCH v2 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
-Date: Thu, 18 Jan 2024 11:53:56 -0800
-Message-Id: <20240118195356.133391-11-dregan@broadcom.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20240118195356.133391-1-dregan@broadcom.com>
+        d=1e100.net; s=20230601; t=1705642586; x=1706247386;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2ojAQrKurCVDTpDyr9Ud8UUA59iisRxNip7GO8MCjIo=;
+        b=YD/MjAlB/DjgyGiUQ6595vtNZoxTACuubOQ7qyoex8GQW87Zeul8kcQhzJemWOyH/6
+         davtLX6QcBD+qFQLwKoyqh1duvVSarrybBfKiRu/r8xvsS8fCP5ojx1Q0KYgpuTV5S8a
+         NP2zSc4wjpL6IdE7RXK7ykPLbwSbAkC0VjUNMfmFerT/A7F3Ip/LsegJl1IchdQcOR+o
+         qxIT+fdNcuIgvT7um+QLjvH1+pk59KI/9qYcfhgrs8fwfM3XFNLmSoF1x5hnyyukdDSd
+         holqpjiaEaoDWzBODwTlTUb2b78ph1HRbQefkl3aTSYdfjEY8MfHDggf07db4N6NGNv5
+         54dA==
+X-Gm-Message-State: AOJu0YxverFRgkPVwbcIHvYKaylQdQQEnAgknYPToMQFp1dMRq0GGHXL
+	iGI7GT3+YzmXzfJXXhMiMsoxx33QKKj6F9X70712E05OXVavMaQxOHAb44s20O8=
+X-Google-Smtp-Source: AGHT+IHrVI4oY2pMxT9TBfDrffE6L2KwXvHH72Vz5VkiemXhVD26PJJFGqJUEoXqdWldgAqugJlPlw==
+X-Received: by 2002:a05:600c:1990:b0:40e:50ac:d24e with SMTP id t16-20020a05600c199000b0040e50acd24emr1438421wmq.13.1705642586217;
+        Thu, 18 Jan 2024 21:36:26 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id l6-20020a7bc346000000b0040d81ca11casm27067641wmj.28.2024.01.18.21.36.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 21:36:25 -0800 (PST)
+Date: Fri, 19 Jan 2024 08:36:21 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: dregan@broadcom.com
+Cc: dregan@mail.com, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
+	tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+	william.zhang@broadcom.com, anand.gore@broadcom.com,
+	kursad.oney@broadcom.com, florian.fainelli@broadcom.com,
+	rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com,
+	andre.przywara@arm.com, baruch@tkos.co.il,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 05/10] mtd: rawnand: brcmnand: Add BCMBCA read data
+ bus interface
+Message-ID: <4b3f4316-0da4-4fde-a806-7b579948db50@moroto.mountain>
 References: <20240118195356.133391-1-dregan@broadcom.com>
+ <20240118195356.133391-6-dregan@broadcom.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240118195356.133391-6-dregan@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240118_115441_540412_D48499B1 
-X-CRM114-Status: GOOD (  10.98  )
+X-CRM114-CacheID: sfid-20240118_213628_776888_258930D7 
+X-CRM114-Status: GOOD (  17.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,54 +103,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: David Regan <dregan@broadcom.com>
+On Thu, Jan 18, 2024 at 11:53:51AM -0800, dregan@broadcom.com wrote:
+> diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+> index 3e2f3b79788d..e97e13ae246c 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+> @@ -26,6 +26,18 @@ enum {
+>  	BCMBCA_CTLRDY		= BIT(4),
+>  };
+>  
+> +#if defined(CONFIG_ARM64)
+> +#define ALIGN_REQ		8
+> +#else
+> +#define ALIGN_REQ		4
+> +#endif
+> +
+> +static inline bool bcmbca_nand_is_buf_aligned(void *flash_cache,  void *buffer)
+> +{
+> +	return IS_ALIGNED((uintptr_t)buffer, ALIGN_REQ) &&
+> +				IS_ALIGNED((uintptr_t)flash_cache, ALIGN_REQ);
+> +}
+> +
+>  static bool bcmbca_nand_intc_ack(struct brcmnand_soc *soc)
+>  {
+>  	struct bcmbca_nand_soc *priv =
+> @@ -56,6 +68,20 @@ static void bcmbca_nand_intc_set(struct brcmnand_soc *soc, bool en)
+>  	brcmnand_writel(val, mmio);
+>  }
+>  
+> +static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
+> +				 void __iomem *flash_cache,  u32 *buffer, int fc_words)
+> +{
+> +	/*
+> +	 * memcpy can do unaligned aligned access depending on source
+> +	 * and dest address, which is incompatible with nand cache. Fallback
+> +	 * to the memcpy for io version
+> +	 */
+> +	if (bcmbca_nand_is_buf_aligned((void *)flash_cache, buffer))
+> +		memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
+> +	else
+> +		memcpy_fromio((void *)buffer, flash_cache, fc_words * 4);
+> +}
 
-Allow settings for on-die ecc such that if on-die ECC is selected
-don't error out but require ECC strap setting of zero
+This comment is confusing or maybe the if statement is reversed...
+We're falling back to memcpy_fromio() for the unaligned accesses but the
+comment says we're falling back to memcpy().
 
-Signed-off-by: David Regan <dregan@broadcom.com>
-Reviewed-by: William Zhang <william.zhang@broadcom.com>
----
-Changes in v2:
-- Added to patch series
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index a4e311b6798c..42526f3250c9 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	cfg->blk_adr_bytes = get_blk_adr_bytes(mtd->size, mtd->writesize);
- 
- 	if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST) {
--		dev_err(ctrl->dev, "only HW ECC supported; selected: %d\n",
--			chip->ecc.engine_type);
--		return -EINVAL;
-+		if (chip->ecc.strength) {
-+			dev_err(ctrl->dev, "ERROR!!! HW ECC must be set to zero for non-hardware ECC; selected: %d\n",
-+				chip->ecc.strength);
-+			return -EINVAL;
-+		}
- 	}
- 
- 	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN) {
-@@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 	if (ret)
- 		return ret;
- 
--	brcmnand_set_ecc_enabled(host, 1);
-+	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE) {
-+		dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\n");
-+		brcmnand_set_ecc_enabled(host, 0);
-+	} else
-+		brcmnand_set_ecc_enabled(host, 1);
- 
- 	brcmnand_print_cfg(host, msg, cfg);
- 	dev_info(ctrl->dev, "detected %s\n", msg);
--- 
-2.37.3
+regards,
+dan carpenter
 
 
 ______________________________________________________
