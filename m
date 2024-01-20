@@ -4,53 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71AA3C47DD9
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2DFEC47DDF
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nKVb9XPwF4nUJsTWdgp6o/SI4Kw9d6Jcb0641d463O8=; b=pT/6M0S11FJW3X
-	Ny5QbigX8TrPyKAPT/iJEuU4RKj++UfT6BUwjA7BGKN7x1Aom3b7IGRyU3C2yw87QaWq+j66+4dCA
-	ZrJctzuEc9SZJ8rKeRvY/OFLvcVNK8LZrzA7ka+7YG/wavsvvk1ZDukxcCQ9p9q+6EZVXwZkrdT0m
-	u/T1IrmQxqw7lUanllXcTwUud1ZIQgth9KKc5hb+MIxs8kct/4NIpEBV3TJ9CVFEahZocYKeppTP2
-	cRna6zhF9xCYFnRMLdPqQddoqVwPBU5xJtSZBZi/wBy7Haim7BBEZxZj4Y6SaLUsw2H3BCD91UEKp
-	Qd/L5YFAsKqJiPNE9ZXQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xr6mDjYVecSCR6oT8xgiXLlhw/DNZwzhFmfFvCluRVI=; b=YmiNQblkPagWvz
+	7UfFec4SaALL/prhEgdSoMLzUTFu9Zn0y3yiyq1WvQOOIEtRNpysrlnG2SRF1tR/5BsejkT8Ry8bi
+	OzClqaLXj3ENDE4GZLeG4Pec1EmEHu9OGKPSVZtGOd7cmfK5D+OJwvFIw4+ALO8ot3iTNMqG2t7Yi
+	B9tP7Y4UpMYnDFnmwVFa+Zfg61bip3XPPPX9RmBzWvPgzihIbEZAVv/Rchd4EzydKLBXKtzmQ5wNq
+	qJZF5utu73YMoasBAiflXjBahC/kTUp2VsNjqHO5WnZWz28S504Rf9JekGy2CPHUNh9i7BNkakR2r
+	2cSVi65zaFx0AWg0ZElQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS5-008ZLC-0H;
-	Sat, 20 Jan 2024 23:08:37 +0000
+	id 1rRKS8-008ZN7-24;
+	Sat, 20 Jan 2024 23:08:40 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKRx-008ZI4-1g
+	id 1rRKRz-008ZJZ-07
 	for linux-mtd@bombadil.infradead.org;
-	Sat, 20 Jan 2024 23:08:29 +0000
+	Sat, 20 Jan 2024 23:08:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=XkaHGMGt53SwjvP38fxIGwhU3n+LAaDVWYrWt4x1lLk=; b=qwh/+t6VGbMzPwT954U9+opLGO
-	VxH6WuCucZRU5DkSfTUOMXxraAshL73pJihDm7n5wB79X1J6Ko8DqI4/k6wEvM0iwk9b/NGhTAado
-	8vac6fELjzGCvjxXl6AnygIGtmsf6eIaDp1wQKw7j4zVhiIYQQJ3ndAcqvAMEYztIYEznT/VETr6E
-	ADsrK5mqCgiMbH2JlWLqw/IMpedOP46b0icbbA9a2PKzK5i6BbeaqAW+sGB+6Op7Gmu2GoXRV/N9V
-	IFDiOHA5AWCsmNiutWSsl7cZJpFSMtzoi+SK6Ww/nTwaCm1GmFXwlfb7juL8vxqsO93yfT30XEmtf
-	nU60UYEw==;
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=aKPU1GuhbqrjhCwGcCbXEW4LCUpoELTARGXwBlRSxWI=; b=c1PhC0+vcyPiG1ObWdWIEhoxgu
+	yHUT3CM4wWlowx1Q4x1icwNK5Mu+/IJZnhao6vGN+KFe52PXz6LQeajhVBthlu9VCKhcfHkPGdefA
+	JAVRYmeRQq2YusYOlO389u4EEnXGesX+0yOqWFidarK3+0Z5riwHOuFSbHyfxQ+wea3zAMcGLCcae
+	zGxZ8hv8ZWPZ7/5n+Eqt+J1YcX2HRyR1dDGrCL1ES4oR5rAiyxInIz02ulaK3ec6Ay/SGTtB0dgha
+	aHX9yx0Eq1xtxw1aLCYzhDLYkhzHDrC9MoXkx3EOmcdrLwE/cZsESb33Jox0oQlRcHtFvrQwvJW7p
+	YL1UkMkg==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRKRu-0000000AzVy-3QZr;
+	id 1rRKRu-0000000AzVl-36k2;
 	Sat, 20 Jan 2024 23:08:26 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-mtd@lists.infradead.org,
-	stable@vger.kernel.org
-Subject: [PATCH 01/15] ubifs: Set page uptodate in the correct place
-Date: Sat, 20 Jan 2024 23:08:09 +0000
-Message-ID: <20240120230824.2619716-2-willy@infradead.org>
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 00/15] ubifs folio conversion
+Date: Sat, 20 Jan 2024 23:08:08 +0000
+Message-ID: <20240120230824.2619716-1-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240120230824.2619716-1-willy@infradead.org>
-References: <20240120230824.2619716-1-willy@infradead.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,43 +65,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Page cache reads are lockless, so setting the freshly allocated page
-uptodate before we've overwritten it with the data it's supposed to have
-in it will allow a simultaneous reader to see old data.  Move the call
-to SetPageUptodate into ubifs_write_end(), which is after we copied the
-new data into the page.
+This patchset converts ubifs to use folios throughout.  I made some
+attempt to support large folios, but more work definitely needs to be
+done before it can be enabled.  It's not clear to me whether it's worth
+doing, so I've left that for you ;-)
 
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Cc: stable@vger.kernel.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ubifs/file.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The first patch fixes a misplaced call to SetPageUptodate which has been
+with us since the initial merge of ubifs.  It looks to be a pretty hard
+race to hit, which is why it probably hasn't affected anyone.
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 5029eb3390a5..40a9b03ef821 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -463,9 +463,6 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 				return err;
- 			}
- 		}
--
--		SetPageUptodate(page);
--		ClearPageError(page);
- 	}
- 
- 	err = allocate_budget(c, page, ui, appending);
-@@ -569,6 +566,9 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 		goto out;
- 	}
- 
-+	if (len == PAGE_SIZE)
-+		SetPageUptodate(page);
-+
- 	if (!PagePrivate(page)) {
- 		attach_page_private(page, (void *)1);
- 		atomic_long_inc(&c->dirty_pg_cnt);
+With my usual test config, this saves about 2kB of kernel text (almost
+1%).  Some functions shrink more than others, eg ubifs_write_begin
+reduces by almost a third.  YMMV with different configs.
+
+I've done a few other updates while I'm in here; eg setting/clearing
+PageError is pointless because the VFS doesn't use it and ubifs doesn't
+test it.  And we're phasing out use of PagePrivate / folio_test_private()
+in favour of just testing whether folio->private is set.
+
+I ran this through xfstests and it didn't seem any worse.
+
+Matthew Wilcox (Oracle) (15):
+  ubifs: Set page uptodate in the correct place
+  ubifs: Convert from writepage to writepages
+  ubifs: Convert ubifs_writepage to use a folio
+  ubifs: Use a folio in do_truncation()
+  ubifs: Convert do_writepage() to take a folio
+  ubifs: Convert ubifs_vm_page_mkwrite() to use a folio
+  ubifs: Convert write_begin_slow() to use a folio
+  ubifs: Convert ubifs_write_begin() to use a folio
+  ubifs: Convert ubifs_write_end() to use a folio
+  ubifs: Convert do_readpage() to take a folio
+  ubifs: Convert allocate_budget() to work on a folio
+  ubifs: Convert cancel_budget() to take a folio
+  ubifs: Pass a folio into ubifs_bulk_read() and ubifs_do_bulk_read()
+  ubifs: Use a folio in ubifs_do_bulk_read()
+  ubifs: Convert populate_page() to take a folio
+
+ Documentation/mm/page_cache.rst |  10 +
+ fs/ubifs/file.c                 | 443 ++++++++++++++++----------------
+ 2 files changed, 232 insertions(+), 221 deletions(-)
+
 -- 
 2.43.0
 
