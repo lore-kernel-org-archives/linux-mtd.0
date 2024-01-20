@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A79C47DDC
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7DA7C47E49
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eCD/kbZw5j+FK8scslVmJU0Y8qcPb41QG6QTZCXfcdg=; b=HVV3TuuGApCcj1
-	uBgEQo7+jThi4BVgHXhc2/oT1YRfkTzFROUrHfUq0yIihb45752aLj4Ef7fR+9XsOp19QLfHtvhYg
-	TphXjmOF/VQdCgtLLpemLPYTMXvbgZ7uVE+uujq78KH/c8eyqwMVFBfF8x9h2Z8utVjsrc0mYgUd5
-	ZTUpodJ0Y3deVTrf1hDFlYvPyspm36Qa7wSJYkE+ZyfB8PJwBFqee+MNI1A6PtFjDyqk+mj5UhAHf
-	ZpPPNSK+hfAq9Zsflt0Rva3HctHdaLEWaff9rLEGZeAhQ74Qc0oNa7WPDrdHMikEycovO7kAHcsQv
-	mEfRCGmfGYEhPHxrPKJQ==;
+	List-Owner; bh=5MRgyKkJ692DzyAtbx+vRAnhnSVIML5gqgpsmBsuaiw=; b=fLgzoCjZ8vxSBG
+	Q2oHBWJCillG0d7989saF0tPuYZjdxz7HE2UKciDncSvEZZdy5gWsOKd/DcRsIL/ruDe2/q+rEV8O
+	y0ChhEsoRtW4QkDtDAWf2LJz8VMrgovhiibfDV0whhClaFv7zFcWp5EKKKLjY5Qci7J21u7orCuIg
+	mG2LiUYUn97sTVXg13eJ67a3QYyl0QxQI/lrGbJe8vFB/IIcTu2TX8mJrfODWpBUm0l9PbjWXEtye
+	9QW0CwJl/Xa2NtxPuLwg6xtTwzugFexvuNovAHZJ3WfrjKDFakjG52iTbk92dwkVMRYZ7rnlnTUJV
+	1NQ6ZOav8pS728VwVuzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS1-008ZKH-2c;
-	Sat, 20 Jan 2024 23:08:33 +0000
+	id 1rRKS9-008ZNe-0p;
+	Sat, 20 Jan 2024 23:08:41 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKRx-008ZIC-1g
+	id 1rRKS1-008ZKC-38
 	for linux-mtd@bombadil.infradead.org;
-	Sat, 20 Jan 2024 23:08:29 +0000
+	Sat, 20 Jan 2024 23:08:33 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=bP3NAI6jKZXSkc9LiH7i2pqAGk+JzDwFDC53khJvR00=; b=kZdcNwfSMSVSzapsh3ua5zksl1
-	RTC9sRlK3P9xyeN9bhzPaSc6BHZ5FJFbs1rrZQmsT7I+Z50nQjMEHGBpFdIL1fMIJDVRMq9pt9r+h
-	46se3reY6niOUENcnC+vyySXYC4P0H8wIGvtOjB3aS/mQ99Nq0Go4aNKMXt1JPX+GvdCgTneUM/Ml
-	QizkVjXXm848vsnH5AuFLEho/oT6y0n/3KTsXtUIoZK7OklDdiIoqPKaOO80mTbhzH27esXbOZFCo
-	HGx0xMROUqRl//f8Q91RkHLq5sHlwLBaQxqUQpGh7i/eBdHBNGq66s02Wex2IVe1WnUtrQjCztnUt
-	mCk3JCgQ==;
+	bh=4z0khGYiWNQyZt0ecSrl3YfD1tCE0g7u4Ic9ln2ioQs=; b=EnsTdlwCtJ1y6ZwpbCTHbZoLjS
+	sglQsL+LjTNzDrER97dDuGh3nw5Vwsrj6YXIm15y5G7E06g9wfvvULu3TcJMUMpdXs8ezwC+mHR5m
+	ewh49lUtiRbxIHGC004FAXtISNoILr6lL2HGpf9Ttg6xhjNRyfk4xv/QXx+tFtEDFZ1HO8q0KDRSE
+	akSg96j7xI5m2evVDiw1Z+zwTfVzlASLCnOB++1fgjCROP++yDMHezpZArqk5dlDuG5GSDKuG+gyq
+	seEx0DEzLo+zF1P9IXeFrzSY329aZHwhy2JrEJzXVCWz9RtW4YEjPepRGEVppKadwmr2GjIEVQ/kJ
+	V45JlCYg==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRKRv-0000000AzWj-1d1t;
-	Sat, 20 Jan 2024 23:08:27 +0000
+	id 1rRKRu-0000000AzW1-3itt;
+	Sat, 20 Jan 2024 23:08:26 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 06/15] ubifs: Convert ubifs_vm_page_mkwrite() to use a folio
-Date: Sat, 20 Jan 2024 23:08:14 +0000
-Message-ID: <20240120230824.2619716-7-willy@infradead.org>
+Subject: [PATCH 02/15] ubifs: Convert from writepage to writepages
+Date: Sat, 20 Jan 2024 23:08:10 +0000
+Message-ID: <20240120230824.2619716-3-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240120230824.2619716-1-willy@infradead.org>
 References: <20240120230824.2619716-1-willy@infradead.org>
@@ -67,121 +67,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace six implicit calls to compound_head() with one.
+This is a simplistic conversion to separate out any effects of
+no longer having a writepage method.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- Documentation/mm/page_cache.rst | 10 +++++++++
- fs/ubifs/file.c                 | 36 ++++++++++++++++-----------------
- 2 files changed, 28 insertions(+), 18 deletions(-)
+ fs/ubifs/file.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/mm/page_cache.rst b/Documentation/mm/page_cache.rst
-index 75eba7c431b2..138d61f869df 100644
---- a/Documentation/mm/page_cache.rst
-+++ b/Documentation/mm/page_cache.rst
-@@ -3,3 +3,13 @@
- ==========
- Page Cache
- ==========
-+
-+The page cache is the primary way that the user and the rest of the kernel
-+interact with filesystems.  It can be bypassed (e.g. with O_DIRECT),
-+but normal reads, writes and mmaps go through the page cache.
-+
-+Folios
-+======
-+
-+The folio is the unit of memory management within the page cache.
-+Operations 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index e755d0a11146..9dfedd91b576 100644
+index 40a9b03ef821..007a73052561 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -1519,14 +1519,14 @@ static bool ubifs_release_folio(struct folio *folio, gfp_t unused_gfp_flags)
+@@ -1006,8 +1006,10 @@ static int do_writepage(struct page *page, int len)
+  * on the page lock and it would not write the truncated inode node to the
+  * journal before we have finished.
   */
- static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+-static int ubifs_writepage(struct page *page, struct writeback_control *wbc)
++static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
++		void *data)
  {
--	struct page *page = vmf->page;
-+	struct folio *folio = page_folio(vmf->page);
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
++	struct page *page = &folio->page;
+ 	struct inode *inode = page->mapping->host;
  	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	struct timespec64 now = current_time(inode);
- 	struct ubifs_budget_req req = { .new_page = 1 };
- 	int err, update_time;
- 
--	dbg_gen("ino %lu, pg %lu, i_size %lld",	inode->i_ino, page->index,
-+	dbg_gen("ino %lu, pg %lu, i_size %lld",	inode->i_ino, folio->index,
- 		i_size_read(inode));
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
- 
-@@ -1534,17 +1534,17 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 		return VM_FAULT_SIGBUS; /* -EROFS */
- 
- 	/*
--	 * We have not locked @page so far so we may budget for changing the
--	 * page. Note, we cannot do this after we locked the page, because
-+	 * We have not locked @folio so far so we may budget for changing the
-+	 * folio. Note, we cannot do this after we locked the folio, because
- 	 * budgeting may cause write-back which would cause deadlock.
- 	 *
--	 * At the moment we do not know whether the page is dirty or not, so we
--	 * assume that it is not and budget for a new page. We could look at
-+	 * At the moment we do not know whether the folio is dirty or not, so we
-+	 * assume that it is not and budget for a new folio. We could look at
- 	 * the @PG_private flag and figure this out, but we may race with write
--	 * back and the page state may change by the time we lock it, so this
-+	 * back and the folio state may change by the time we lock it, so this
- 	 * would need additional care. We do not bother with this at the
- 	 * moment, although it might be good idea to do. Instead, we allocate
--	 * budget for a new page and amend it later on if the page was in fact
-+	 * budget for a new folio and amend it later on if the folio was in fact
- 	 * dirty.
- 	 *
- 	 * The budgeting-related logic of this function is similar to what we
-@@ -1567,21 +1567,21 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 		return VM_FAULT_SIGBUS;
- 	}
- 
--	lock_page(page);
--	if (unlikely(page->mapping != inode->i_mapping ||
--		     page_offset(page) > i_size_read(inode))) {
--		/* Page got truncated out from underneath us */
-+	folio_lock(folio);
-+	if (unlikely(folio->mapping != inode->i_mapping ||
-+		     folio_pos(folio) >= i_size_read(inode))) {
-+		/* Folio got truncated out from underneath us */
- 		goto sigbus;
- 	}
- 
--	if (PagePrivate(page))
-+	if (folio->private)
- 		release_new_page_budget(c);
- 	else {
--		if (!PageChecked(page))
-+		if (!folio_test_checked(folio))
- 			ubifs_convert_page_budget(c);
--		attach_page_private(page, (void *)1);
-+		folio_attach_private(folio, (void *)1);
- 		atomic_long_inc(&c->dirty_pg_cnt);
--		__set_page_dirty_nobuffers(page);
-+		filemap_dirty_folio(folio->mapping, folio);
- 	}
- 
- 	if (update_time) {
-@@ -1597,11 +1597,11 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 			ubifs_release_dirty_inode_budget(c, ui);
- 	}
- 
--	wait_for_stable_page(page);
-+	folio_wait_stable(folio);
- 	return VM_FAULT_LOCKED;
- 
- sigbus:
--	unlock_page(page);
-+	folio_unlock(folio);
- 	ubifs_release_budget(c, &req);
- 	return VM_FAULT_SIGBUS;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+@@ -1079,6 +1081,12 @@ static int ubifs_writepage(struct page *page, struct writeback_control *wbc)
+ 	return err;
  }
+ 
++static int ubifs_writepages(struct address_space *mapping,
++		struct writeback_control *wbc)
++{
++	return write_cache_pages(mapping, wbc, ubifs_writepage, NULL);
++}
++
+ /**
+  * do_attr_changes - change inode attributes.
+  * @inode: inode to change attributes for
+@@ -1648,7 +1656,7 @@ static int ubifs_symlink_getattr(struct mnt_idmap *idmap,
+ 
+ const struct address_space_operations ubifs_file_address_operations = {
+ 	.read_folio     = ubifs_read_folio,
+-	.writepage      = ubifs_writepage,
++	.writepages     = ubifs_writepages,
+ 	.write_begin    = ubifs_write_begin,
+ 	.write_end      = ubifs_write_end,
+ 	.invalidate_folio = ubifs_invalidate_folio,
 -- 
 2.43.0
 
