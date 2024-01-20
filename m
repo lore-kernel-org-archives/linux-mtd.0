@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7DA7C47E49
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70A92C47DDB
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5MRgyKkJ692DzyAtbx+vRAnhnSVIML5gqgpsmBsuaiw=; b=fLgzoCjZ8vxSBG
-	Q2oHBWJCillG0d7989saF0tPuYZjdxz7HE2UKciDncSvEZZdy5gWsOKd/DcRsIL/ruDe2/q+rEV8O
-	y0ChhEsoRtW4QkDtDAWf2LJz8VMrgovhiibfDV0whhClaFv7zFcWp5EKKKLjY5Qci7J21u7orCuIg
-	mG2LiUYUn97sTVXg13eJ67a3QYyl0QxQI/lrGbJe8vFB/IIcTu2TX8mJrfODWpBUm0l9PbjWXEtye
-	9QW0CwJl/Xa2NtxPuLwg6xtTwzugFexvuNovAHZJ3WfrjKDFakjG52iTbk92dwkVMRYZ7rnlnTUJV
-	1NQ6ZOav8pS728VwVuzg==;
+	List-Owner; bh=BYRDlj9MJaMptHLuTGzXJhjaRRml5Wbs7vjoJxTIRew=; b=wkRogPrEmJTyI7
+	q+N8IVMk0PfCV2uw8Gm3MYZMIRoxVG+dmWmIZW8dDZjcWx97LfBtJ8C2vyPBAlKmRhi7r18uFlHVF
+	tDPYuzNaKR6KFDErtSvhfyoq/ClBuHwtBgqfGcFba8nzShnFLnO8YcDad5OF/NNwCHaAsp+bsGUGk
+	1qzK8smZ7pA5ZOKT9RGFFQWsbfuS9RrXVvBC7U6v18/gxjlIRW4QafLzvYlftVyO65lusS/ThLlkQ
+	KIYXyGZ+iDan35F3/qu5gZOHObSTI3iqwPlAVcYL3NnVWguWtVEY4Sj+PKz4R4UbJ9STewyxglpac
+	7MDyOP8TfRaidpcqigFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS9-008ZNe-0p;
-	Sat, 20 Jan 2024 23:08:41 +0000
+	id 1rRKS7-008ZMR-3A;
+	Sat, 20 Jan 2024 23:08:40 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS1-008ZKC-38
+	id 1rRKRx-008ZIO-1l
 	for linux-mtd@bombadil.infradead.org;
-	Sat, 20 Jan 2024 23:08:33 +0000
+	Sat, 20 Jan 2024 23:08:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=4z0khGYiWNQyZt0ecSrl3YfD1tCE0g7u4Ic9ln2ioQs=; b=EnsTdlwCtJ1y6ZwpbCTHbZoLjS
-	sglQsL+LjTNzDrER97dDuGh3nw5Vwsrj6YXIm15y5G7E06g9wfvvULu3TcJMUMpdXs8ezwC+mHR5m
-	ewh49lUtiRbxIHGC004FAXtISNoILr6lL2HGpf9Ttg6xhjNRyfk4xv/QXx+tFtEDFZ1HO8q0KDRSE
-	akSg96j7xI5m2evVDiw1Z+zwTfVzlASLCnOB++1fgjCROP++yDMHezpZArqk5dlDuG5GSDKuG+gyq
-	seEx0DEzLo+zF1P9IXeFrzSY329aZHwhy2JrEJzXVCWz9RtW4YEjPepRGEVppKadwmr2GjIEVQ/kJ
-	V45JlCYg==;
+	bh=qdmDsFMrRPPZa9BFTb/C0Xay6JnZph6F00B4zxqCFUk=; b=tnAGySnMxSKIfsirxyT6TGDy67
+	JSth4C3dq5igaT6e+5zPQL44XdkUbc7MyNAwhGh8jbhyZqwMVPLgRwf5gEEXxle5Y7bIlRiDxbBE9
+	jVZ94QGtMkzIf+in8zX18KMYj7DFc4Gproz2IRpiXCFNjWqTrE8fuN3tSKf1b8ixuVXSpVJJRpMDZ
+	HZXz9wROWFPwK2XW6LgHHz0hMOdohccQanhZLrEfQMvy2ioWr9g5h6LzHx97HGeUlAmc90tB3ndcn
+	8Wu1Me0khY8AEHLa2Q3PjEek11vqh3uhsNZhJPud4O9wyuKJfpywjlQgC3/+hqeqXfodDV6eHgxC9
+	x/IZbDFg==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRKRu-0000000AzW1-3itt;
-	Sat, 20 Jan 2024 23:08:26 +0000
+	id 1rRKRw-0000000AzXR-1hjR;
+	Sat, 20 Jan 2024 23:08:28 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 02/15] ubifs: Convert from writepage to writepages
-Date: Sat, 20 Jan 2024 23:08:10 +0000
-Message-ID: <20240120230824.2619716-3-willy@infradead.org>
+Subject: [PATCH 13/15] ubifs: Pass a folio into ubifs_bulk_read() and ubifs_do_bulk_read()
+Date: Sat, 20 Jan 2024 23:08:21 +0000
+Message-ID: <20240120230824.2619716-14-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240120230824.2619716-1-willy@infradead.org>
 References: <20240120230824.2619716-1-willy@infradead.org>
@@ -67,52 +67,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a simplistic conversion to separate out any effects of
-no longer having a writepage method.
+This saves a single call to compound_head().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ubifs/file.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ fs/ubifs/file.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 40a9b03ef821..007a73052561 100644
+index f34371436a84..8cad1fe9c50f 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -1006,8 +1006,10 @@ static int do_writepage(struct page *page, int len)
-  * on the page lock and it would not write the truncated inode node to the
-  * journal before we have finished.
+@@ -705,15 +705,15 @@ static int populate_page(struct ubifs_info *c, struct page *page,
+  * ubifs_do_bulk_read - do bulk-read.
+  * @c: UBIFS file-system description object
+  * @bu: bulk-read information
+- * @page1: first page to read
++ * @folio1: first folio to read
+  *
+  * Returns: %1 if the bulk-read is done, otherwise %0 is returned.
   */
--static int ubifs_writepage(struct page *page, struct writeback_control *wbc)
-+static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
-+		void *data)
+ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+-			      struct page *page1)
++			      struct folio *folio1)
  {
-+	struct page *page = &folio->page;
- 	struct inode *inode = page->mapping->host;
+-	pgoff_t offset = page1->index, end_index;
+-	struct address_space *mapping = page1->mapping;
++	pgoff_t offset = folio1->index, end_index;
++	struct address_space *mapping = folio1->mapping;
+ 	struct inode *inode = mapping->host;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	int err, page_idx, page_cnt, ret = 0, n = 0;
+@@ -763,11 +763,11 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 			goto out_warn;
+ 	}
+ 
+-	err = populate_page(c, page1, bu, &n);
++	err = populate_page(c, &folio1->page, bu, &n);
+ 	if (err)
+ 		goto out_warn;
+ 
+-	unlock_page(page1);
++	folio_unlock(folio1);
+ 	ret = 1;
+ 
+ 	isize = i_size_read(inode);
+@@ -812,7 +812,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 
+ /**
+  * ubifs_bulk_read - determine whether to bulk-read and, if so, do it.
+- * @page: page from which to start bulk-read.
++ * @folio: folio from which to start bulk-read.
+  *
+  * Some flash media are capable of reading sequentially at faster rates. UBIFS
+  * bulk-read facility is designed to take advantage of that, by reading in one
+@@ -821,12 +821,12 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+  *
+  * Returns: %1 if a bulk-read is done and %0 otherwise.
+  */
+-static int ubifs_bulk_read(struct page *page)
++static int ubifs_bulk_read(struct folio *folio)
+ {
+-	struct inode *inode = page->mapping->host;
++	struct inode *inode = folio->mapping->host;
  	struct ubifs_info *c = inode->i_sb->s_fs_info;
  	struct ubifs_inode *ui = ubifs_inode(inode);
-@@ -1079,6 +1081,12 @@ static int ubifs_writepage(struct page *page, struct writeback_control *wbc)
- 	return err;
- }
+-	pgoff_t index = page->index, last_page_read = ui->last_page_read;
++	pgoff_t index = folio->index, last_page_read = ui->last_page_read;
+ 	struct bu_info *bu;
+ 	int err = 0, allocated = 0;
  
-+static int ubifs_writepages(struct address_space *mapping,
-+		struct writeback_control *wbc)
-+{
-+	return write_cache_pages(mapping, wbc, ubifs_writepage, NULL);
-+}
-+
- /**
-  * do_attr_changes - change inode attributes.
-  * @inode: inode to change attributes for
-@@ -1648,7 +1656,7 @@ static int ubifs_symlink_getattr(struct mnt_idmap *idmap,
+@@ -874,8 +874,8 @@ static int ubifs_bulk_read(struct page *page)
  
- const struct address_space_operations ubifs_file_address_operations = {
- 	.read_folio     = ubifs_read_folio,
--	.writepage      = ubifs_writepage,
-+	.writepages     = ubifs_writepages,
- 	.write_begin    = ubifs_write_begin,
- 	.write_end      = ubifs_write_end,
- 	.invalidate_folio = ubifs_invalidate_folio,
+ 	bu->buf_len = c->max_bu_buf_len;
+ 	data_key_init(c, &bu->key, inode->i_ino,
+-		      page->index << UBIFS_BLOCKS_PER_PAGE_SHIFT);
+-	err = ubifs_do_bulk_read(c, bu, page);
++		      folio->index << UBIFS_BLOCKS_PER_PAGE_SHIFT);
++	err = ubifs_do_bulk_read(c, bu, folio);
+ 
+ 	if (!allocated)
+ 		mutex_unlock(&c->bu_mutex);
+@@ -889,9 +889,7 @@ static int ubifs_bulk_read(struct page *page)
+ 
+ static int ubifs_read_folio(struct file *file, struct folio *folio)
+ {
+-	struct page *page = &folio->page;
+-
+-	if (ubifs_bulk_read(page))
++	if (ubifs_bulk_read(folio))
+ 		return 0;
+ 	do_readpage(folio);
+ 	folio_unlock(folio);
 -- 
 2.43.0
 
