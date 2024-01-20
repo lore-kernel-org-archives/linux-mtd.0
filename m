@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1B37C47DB7
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C2D6C47258
+	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IJ6RzWRDYPBreRm8yQ++3Ab6eAEIsWeCQek7ElHB6SA=; b=tzGYWCl+6kNdw5
-	j8M9qb0/NM506wAkMXTD7sd9sN/Ro+l32uYvlWTbEueGPDe4op1W8jaFTBGp/86dypYhy2M4W+HfW
-	SFXGBzTAzJmAxAqTj+du55mkqn2fBGsj9aZMMYMaC3d9mbviYYuo0avTtkA3fFUc9HrTdHP8tjf9N
-	LEAMmkKJwNbMrs4b0b5Uv5FWIs/EaJNpE07Z/55PyxqhxAJsN/jYSohzxzEhMlg+/8isjst8IrNoM
-	9q7umLFuWatwEWbqhlItr50fpH4u3EBPedbpGbbZmPEaMKjYEaglq0oEzJp0LJt32hygXf72ZiWwN
-	SFE0EiE9dSO91kXE7znw==;
+	List-Owner; bh=WXbi9A/KMKxOECUFuCFnZCOazSw6FVukQkJbtC315h4=; b=yYjuhi796F8WLi
+	cPczVsOAcTwIfyDWIXVjkRoWKBHHQ+bH3auR/a7YMzzCqHKOhjvCXBsfnY2gYrzYl2weWmArlB8ag
+	JXXVLkBHfWEuIed+4EZ0Ai7dnfEdTdS8qgOeYh7Y9jHZG6qd9T8I4kLIIcHcECRQSa5Tn0n1XxOhh
+	rqUHVy9gtwB9RC+yR8ia0K9217TbeWl+LBMEbJNtR+O7f8bMl02yzZ951reiWIBYp6nezufZ2vRrM
+	9eK+oLaiLcTmtz/ZeD7sXapz2EbS3dTq/VJwcf7DBEKOE66C+zdZcENeae+mAdavjV+5WMkzp38JL
+	TcTjj5tSV/NUc2GXAQaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS5-008ZLM-26;
-	Sat, 20 Jan 2024 23:08:37 +0000
+	id 1rRKS3-008ZKn-1a;
+	Sat, 20 Jan 2024 23:08:35 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKRx-008ZIH-1g
+	id 1rRKRx-008ZI6-1g
 	for linux-mtd@bombadil.infradead.org;
 	Sat, 20 Jan 2024 23:08:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=1eZBtlPMhjaMnH0zztaU9yAqOLnsHSz5hPP6gny/kKE=; b=LlO8WSKxborpLwCUiPFWTTe0gP
-	Lg6Fh2LdwlPzpCOqpwTeCAXoHHELJi62pzlX4kvSgP+EWOMQuig4g5r/wdI7IccXu81b2BxH+L4Ej
-	gztE9yaU6zImWvV/4c3gWWoRO6l/F7PXsh9mAkgVrv4zgjzz/TspbhKjg7HhA0F3Fl0MSQIqNwzDJ
-	gr4qokyk2JvDtu1rpAVxzINF8gZKLtdymGmxpZXU3vqh3yHtMTm64ubB6b0XUL5QNR1N/EYxKSZHM
-	4GIHjP/wDIMlZhfqugYpsYw4RdcgzWnKS37im/wPo/foJJRt1lKriF8ofLb4oY2yVVz+z8e+cfQnX
-	XFJNIAdw==;
+	bh=SN5s8QMGe2z44Ixnh9xatnj0Oo+pNrQls9YNjaDmxbc=; b=ku4YTm22u+tBAIVZMEPFKROQmw
+	BAU1g3hR2+JFj+HoHwBcjNhkrgH2mgjrt/3UNDpfGdGClJIAT8KOGfXnFGla6EXHnz4j9RbNSUb0g
+	jHkVIrU6UWQ2m2XfTjn4aBiJK1MW9yeifjCF5NOk8G5tEFl7N+Qgv3dlIOSFLgouLu+aKuTmVu/tK
+	AmpFtRU2xXIUcQDKWS+ggepJMKOR8XhavOXoVuFCwlXrVFGTzuJI2mR3pLxZAC94rQuLFXlTYc6Sr
+	b5i6a0wqlgu0YnBfBcWEqDECpWs+uVXfUO6773jAMleYtIh+nOFKMSPms8udjER/r7RKfIkE9dSYi
+	9ZBL6Etg==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRKRv-0000000AzX2-3VIa;
+	id 1rRKRu-0000000AzW7-46CA;
 	Sat, 20 Jan 2024 23:08:27 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 09/15] ubifs: Convert ubifs_write_end() to use a folio
-Date: Sat, 20 Jan 2024 23:08:17 +0000
-Message-ID: <20240120230824.2619716-10-willy@infradead.org>
+Subject: [PATCH 03/15] ubifs: Convert ubifs_writepage to use a folio
+Date: Sat, 20 Jan 2024 23:08:11 +0000
+Message-ID: <20240120230824.2619716-4-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240120230824.2619716-1-willy@infradead.org>
 References: <20240120230824.2619716-1-willy@infradead.org>
@@ -67,102 +67,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the incoming page pointer to a folio and use it throughout,
-saving several calls to compound_head().  Also remove some PAGE_SIZE
-assumptions.
+We still pass the page down to do_writepage(), but ubifs_writepage()
+itself is now large folio safe.  It also contains far fewer hidden calls
+to compound_head().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ubifs/file.c | 41 +++++++++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+ fs/ubifs/file.c | 39 +++++++++++++++++----------------------
+ 1 file changed, 17 insertions(+), 22 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index ef262499f228..52027b4feebf 100644
+index 007a73052561..7d0967daded3 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -532,6 +532,7 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 			   loff_t pos, unsigned len, unsigned copied,
- 			   struct page *page, void *fsdata)
+@@ -1009,21 +1009,18 @@ static int do_writepage(struct page *page, int len)
+ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
+ 		void *data)
  {
-+	struct folio *folio = page_folio(page);
- 	struct inode *inode = mapping->host;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
+-	struct page *page = &folio->page;
+-	struct inode *inode = page->mapping->host;
++	struct inode *inode = folio->mapping->host;
  	struct ubifs_info *c = inode->i_sb->s_fs_info;
-@@ -539,47 +540,47 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 	int appending = !!(end_pos > inode->i_size);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	loff_t i_size =  i_size_read(inode), synced_i_size;
+-	pgoff_t end_index = i_size >> PAGE_SHIFT;
+-	int err, len = i_size & (PAGE_SIZE - 1);
+-	void *kaddr;
++	int err, len = folio_size(folio);
  
- 	dbg_gen("ino %lu, pos %llu, pg %lu, len %u, copied %d, i_size %lld",
--		inode->i_ino, pos, page->index, len, copied, inode->i_size);
-+		inode->i_ino, pos, folio->index, len, copied, inode->i_size);
+ 	dbg_gen("ino %lu, pg %lu, pg flags %#lx",
+-		inode->i_ino, page->index, page->flags);
+-	ubifs_assert(c, PagePrivate(page));
++		inode->i_ino, folio->index, folio->flags);
++	ubifs_assert(c, folio->private != NULL);
  
--	if (unlikely(copied < len && len == PAGE_SIZE)) {
-+	if (unlikely(copied < len && !folio_test_uptodate(folio))) {
- 		/*
--		 * VFS copied less data to the page that it intended and
-+		 * VFS copied less data to the folio than it intended and
- 		 * declared in its '->write_begin()' call via the @len
--		 * argument. If the page was not up-to-date, and @len was
--		 * @PAGE_SIZE, the 'ubifs_write_begin()' function did
-+		 * argument. If the folio was not up-to-date,
-+		 * the 'ubifs_write_begin()' function did
- 		 * not load it from the media (for optimization reasons). This
--		 * means that part of the page contains garbage. So read the
--		 * page now.
-+		 * means that part of the folio contains garbage. So read the
-+		 * folio now.
- 		 */
- 		dbg_gen("copied %d instead of %d, read page and repeat",
- 			copied, len);
--		cancel_budget(c, page, ui, appending);
--		ClearPageChecked(page);
-+		cancel_budget(c, &folio->page, ui, appending);
-+		folio_clear_checked(folio);
+-	/* Is the page fully outside @i_size? (truncate in progress) */
+-	if (page->index > end_index || (page->index == end_index && !len)) {
++	/* Is the folio fully outside @i_size? (truncate in progress) */
++	if (folio_pos(folio) >= i_size) {
+ 		err = 0;
+ 		goto out_unlock;
+ 	}
+@@ -1032,9 +1029,9 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
+ 	synced_i_size = ui->synced_i_size;
+ 	spin_unlock(&ui->ui_lock);
  
- 		/*
- 		 * Return 0 to force VFS to repeat the whole operation, or the
- 		 * error code if 'do_readpage()' fails.
- 		 */
--		copied = do_readpage(page);
-+		copied = do_readpage(&folio->page);
- 		goto out;
+-	/* Is the page fully inside @i_size? */
+-	if (page->index < end_index) {
+-		if (page->index >= synced_i_size >> PAGE_SHIFT) {
++	/* Is the folio fully inside i_size? */
++	if (folio_pos(folio) + len <= i_size) {
++		if (folio_pos(folio) >= synced_i_size) {
+ 			err = inode->i_sb->s_op->write_inode(inode, NULL);
+ 			if (err)
+ 				goto out_redirty;
+@@ -1047,20 +1044,18 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
+ 			 * with this.
+ 			 */
+ 		}
+-		return do_writepage(page, PAGE_SIZE);
++		return do_writepage(&folio->page, len);
  	}
  
--	if (len == PAGE_SIZE)
--		SetPageUptodate(page);
-+	if (len >= folio_size(folio))
-+		folio_mark_uptodate(folio);
+ 	/*
+-	 * The page straddles @i_size. It must be zeroed out on each and every
++	 * The folio straddles @i_size. It must be zeroed out on each and every
+ 	 * writepage invocation because it may be mmapped. "A file is mapped
+ 	 * in multiples of the page size. For a file that is not a multiple of
+ 	 * the page size, the remaining memory is zeroed when mapped, and
+ 	 * writes to that region are not written out to the file."
+ 	 */
+-	kaddr = kmap_atomic(page);
+-	memset(kaddr + len, 0, PAGE_SIZE - len);
+-	flush_dcache_page(page);
+-	kunmap_atomic(kaddr);
++	len = i_size - folio_pos(folio);
++	folio_zero_segment(folio, len, folio_size(folio));
  
--	if (!PagePrivate(page)) {
--		attach_page_private(page, (void *)1);
-+	if (!folio->private) {
-+		folio_attach_private(folio, (void *)1);
- 		atomic_long_inc(&c->dirty_pg_cnt);
--		__set_page_dirty_nobuffers(page);
-+		filemap_dirty_folio(mapping, folio);
+ 	if (i_size > synced_i_size) {
+ 		err = inode->i_sb->s_op->write_inode(inode, NULL);
+@@ -1068,16 +1063,16 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
+ 			goto out_redirty;
  	}
  
- 	if (appending) {
- 		i_size_write(inode, end_pos);
- 		ui->ui_size = end_pos;
- 		/*
--		 * Note, we do not set @I_DIRTY_PAGES (which means that the
--		 * inode has dirty pages), this has been done in
--		 * '__set_page_dirty_nobuffers()'.
-+		 * We do not set @I_DIRTY_PAGES (which means that
-+		 * the inode has dirty pages), this was done in
-+		 * filemap_dirty_folio().
- 		 */
- 		__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
- 		ubifs_assert(c, mutex_is_locked(&ui->ui_mutex));
-@@ -587,8 +588,8 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 	}
- 
- out:
+-	return do_writepage(page, len);
++	return do_writepage(&folio->page, len);
+ out_redirty:
+ 	/*
+-	 * redirty_page_for_writepage() won't call ubifs_dirty_inode() because
++	 * folio_redirty_for_writepage() won't call ubifs_dirty_inode() because
+ 	 * it passes I_DIRTY_PAGES flag while calling __mark_inode_dirty(), so
+ 	 * there is no need to do space budget for dirty inode.
+ 	 */
+-	redirty_page_for_writepage(wbc, page);
++	folio_redirty_for_writepage(wbc, folio);
+ out_unlock:
 -	unlock_page(page);
--	put_page(page);
 +	folio_unlock(folio);
-+	folio_put(folio);
- 	return copied;
+ 	return err;
  }
  
 -- 
