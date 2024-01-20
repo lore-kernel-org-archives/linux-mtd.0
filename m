@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BEA2C48277
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB040C47DDE
 	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,41 +12,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lM51EFlmw8zXOjEKYWNESbLP7iCMe6EPH/SI3Mlnbio=; b=Ae0REiS42JuaeB
-	hD3RwL/bvsithmeFXC/Q0imVPMj/nRUkbSJL8wyrntfCWkyJrhh++W/qhMNtzkzQF3x61WvsHHukW
-	xjV+5CWJyG7bcCAPu5LB7JvvoDliLoZDbpEzlz+J8M3OxmsoxUDNib4IpNGTkk/YmsdxJrEdrjXqS
-	r0kLbh/1XTr4rV8nwlAsTZt9UgqC13UFfrwko6UK9KcV059edzlCuY0gU29KHdtKpnglH8y0qHyu9
-	tiaLH6BA/UuazimFEMq6P+c8CR7VPhAdDSaWkXzqK/7DrSmIos/NwVLkl9375S+Syaj84Mgr1vtMo
-	8jFOQeh+SCN35kHs4RuQ==;
+	List-Owner; bh=5VkGV/cqZtLoK0NaUrCrK+jgd1+iLUIWKSOc5WPUDw8=; b=ZfCteD+YUvJiD3
+	fuF7Yhpy08SFVLZlSO7JoZeOjLUno3RMpjK+/Pc09MHhAZnmwL9RnumJ3EoBIkjOeEIFSmnBYj02R
+	mHsc4UqqKIyMASwb7f1eboUFvDS3xNDWNgrSKojcATrz6DTkfpYqAfOFp48qin5lCQ9AtV+vLfE4d
+	vuLnLS3sC5zDtT2ogUsn2KnrlE5afIdbrKamYg9yIS5J85mTEWkzTBfwJhP4xmAwDsEdHuHiuu/OI
+	wFu6SIERx7bLDTjKF/yHgIVHgf8q4I6QnY+ssa2r2juNqVTwekTeX11mouar6san3W4TpS6fLzqV2
+	Updf6BAc5mnbR0gip6ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS6-008ZLV-0Z;
-	Sat, 20 Jan 2024 23:08:38 +0000
+	id 1rRKS1-008ZKA-0v;
+	Sat, 20 Jan 2024 23:08:33 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKRx-008ZIA-1f
+	id 1rRKRx-008ZIK-1g
 	for linux-mtd@bombadil.infradead.org;
 	Sat, 20 Jan 2024 23:08:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=tvrJ4dodtP40guthtd0MvSGvpnvGa+Yzpa66nbBVRBw=; b=PE9pINjfBh3TatM8WARzYdb/H4
-	UT7t5PZF4EapqGGCNlY1PA3axeNl0MNHC796ynPtMxJLROkE63h3ML8HbB16cHiMr75KU3bx8oZlD
-	LZhRX/6dqW9IxlQ29lbKZQ/hExLlpOIPVarFCuff8XrvtsCV32QDB5elH4ogahP+xzktodOKXpuff
-	0FVDZzYCOAkflQ9OPS0Wr4sieqwCWRMviDkTZV7DNFaj+nysM/iqg/td1+ZBrYm1qFVIFgPWIk+Vh
-	OvTWq3dnqfAburPI82vAEAiC9TJVoXuVjUXWM7ocAH4Fi4RBg5fu4a3ueqksn8rbGwxrA1ab1+/O3
-	90m8m3+Q==;
+	bh=+pfj62HVFLRhQa76E5lqZ9ATTPCNNeY/kUCyEYPP1Fo=; b=YcLhXckWLN8188OGYVr/PiAQi8
+	rb1EozocNmZwnDA3dPF5m/zJv1NjcgphRRyaQdDYlXMCOfpHAe89yiFr/ARnyXjP2HCJr3FWX4Qbh
+	YbR+1pFtaP0acNaCOJsm7MWW3VNbRiEqz7lGlcj3UyplJl9wt1XPYORl00IVttHl9QoqR6l/KoUAa
+	+nAB9HeLWJrBHUSoxksU6Q37ydLlhJ7EWfXRRjA6q4pSMGgcRiLjge8thEfqo7ZVqS1fpvFOMI9ce
+	46NYtsOOSewPMC63F/4vJUXNolLQdHevDKVpCEASaNYyTqALLr+8GrPHLsNHJFlnuvF5NKkTsJ7dl
+	kLIjMQMw==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRKRv-0000000AzWd-18Uo;
-	Sat, 20 Jan 2024 23:08:27 +0000
+	id 1rRKRw-0000000AzXF-0Zrn;
+	Sat, 20 Jan 2024 23:08:28 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 05/15] ubifs: Convert do_writepage() to take a folio
-Date: Sat, 20 Jan 2024 23:08:13 +0000
-Message-ID: <20240120230824.2619716-6-willy@infradead.org>
+Subject: [PATCH 11/15] ubifs: Convert allocate_budget() to work on a folio
+Date: Sat, 20 Jan 2024 23:08:19 +0000
+Message-ID: <20240120230824.2619716-12-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240120230824.2619716-1-willy@infradead.org>
 References: <20240120230824.2619716-1-willy@infradead.org>
@@ -67,134 +67,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the call to SetPageError() with a call to mapping_set_error().
-Support large folios by using kmap_local_folio() and remapping each time
-we cross a page boundary.  Saves a lot of hidden calls to compound_head().
+The one caller has a folio, so pass it in instead of the page.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ubifs/file.c | 56 ++++++++++++++++++++++++++-----------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
+ fs/ubifs/file.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index b297582c9b75..e755d0a11146 100644
+index cc450afdcc47..6bc7965ce918 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -903,60 +903,64 @@ static int ubifs_read_folio(struct file *file, struct folio *folio)
- 	return 0;
- }
- 
--static int do_writepage(struct page *page, int len)
-+static int do_writepage(struct folio *folio, size_t len)
+@@ -307,7 +307,7 @@ static int write_begin_slow(struct address_space *mapping,
+ /**
+  * allocate_budget - allocate budget for 'ubifs_write_begin()'.
+  * @c: UBIFS file-system description object
+- * @page: page to allocate budget for
++ * @folio: folio to allocate budget for
+  * @ui: UBIFS inode object the page belongs to
+  * @appending: non-zero if the page is appended
+  *
+@@ -318,15 +318,15 @@ static int write_begin_slow(struct address_space *mapping,
+  *
+  * Returns: %0 in case of success and %-ENOSPC in case of failure.
+  */
+-static int allocate_budget(struct ubifs_info *c, struct page *page,
++static int allocate_budget(struct ubifs_info *c, struct folio *folio,
+ 			   struct ubifs_inode *ui, int appending)
  {
--	int err = 0, i, blen;
-+	int err = 0, blen;
- 	unsigned int block;
- 	void *addr;
-+	size_t offset = 0;
- 	union ubifs_key key;
--	struct inode *inode = page->mapping->host;
-+	struct inode *inode = folio->mapping->host;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	struct ubifs_budget_req req = { .fast = 1 };
  
- #ifdef UBIFS_DEBUG
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	spin_lock(&ui->ui_lock);
--	ubifs_assert(c, page->index <= ui->synced_i_size >> PAGE_SHIFT);
-+	ubifs_assert(c, folio->index <= ui->synced_i_size >> PAGE_SHIFT);
- 	spin_unlock(&ui->ui_lock);
- #endif
- 
--	/* Update radix tree tags */
--	set_page_writeback(page);
-+	folio_start_writeback(folio);
- 
--	addr = kmap(page);
--	block = page->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
--	i = 0;
--	while (len) {
--		blen = min_t(int, len, UBIFS_BLOCK_SIZE);
-+	addr = kmap_local_folio(folio, offset);
-+	block = folio->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
-+	for (;;) {
-+		blen = min_t(size_t, len, UBIFS_BLOCK_SIZE);
- 		data_key_init(c, &key, inode->i_ino, block);
- 		err = ubifs_jnl_write_data(c, inode, &key, addr, blen);
- 		if (err)
- 			break;
--		if (++i >= UBIFS_BLOCKS_PER_PAGE)
-+		len -= blen;
-+		if (!len)
- 			break;
- 		block += 1;
- 		addr += blen;
--		len -= blen;
-+		if (folio_test_highmem(folio) && !offset_in_page(addr)) {
-+			kunmap_local(addr - blen);
-+			offset += PAGE_SIZE;
-+			addr = kmap_local_folio(folio, offset);
-+		}
- 	}
-+	kunmap_local(addr);
- 	if (err) {
--		SetPageError(page);
--		ubifs_err(c, "cannot write page %lu of inode %lu, error %d",
--			  page->index, inode->i_ino, err);
-+		mapping_set_error(folio->mapping, err);
-+		ubifs_err(c, "cannot write folio %lu of inode %lu, error %d",
-+			  folio->index, inode->i_ino, err);
- 		ubifs_ro_mode(c, err);
- 	}
- 
--	ubifs_assert(c, PagePrivate(page));
--	if (PageChecked(page))
-+	ubifs_assert(c, folio->private != NULL);
-+	if (folio_test_checked(folio))
- 		release_new_page_budget(c);
- 	else
- 		release_existing_page_budget(c);
- 
- 	atomic_long_dec(&c->dirty_pg_cnt);
--	detach_page_private(page);
--	ClearPageChecked(page);
-+	folio_detach_private(folio);
-+	folio_clear_checked(folio);
- 
--	kunmap(page);
--	unlock_page(page);
--	end_page_writeback(page);
-+	folio_unlock(folio);
-+	folio_end_writeback(folio);
- 	return err;
- }
- 
-@@ -1044,7 +1048,7 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 			 * with this.
+-	if (PagePrivate(page)) {
++	if (folio->private) {
+ 		if (!appending)
+ 			/*
+-			 * The page is dirty and we are not appending, which
++			 * The folio is dirty and we are not appending, which
+ 			 * means no budget is needed at all.
  			 */
+ 			return 0;
+@@ -350,11 +350,11 @@ static int allocate_budget(struct ubifs_info *c, struct page *page,
+ 		 */
+ 		req.dirtied_ino = 1;
+ 	} else {
+-		if (PageChecked(page))
++		if (folio_test_checked(folio))
+ 			/*
+ 			 * The page corresponds to a hole and does not
+ 			 * exist on the media. So changing it makes
+-			 * make the amount of indexing information
++			 * the amount of indexing information
+ 			 * larger, and we have to budget for a new
+ 			 * page.
+ 			 */
+@@ -462,7 +462,7 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
  		}
--		return do_writepage(&folio->page, len);
-+		return do_writepage(folio, len);
  	}
  
- 	/*
-@@ -1063,7 +1067,7 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 			goto out_redirty;
- 	}
- 
--	return do_writepage(&folio->page, len);
-+	return do_writepage(folio, len);
- out_redirty:
- 	/*
- 	 * folio_redirty_for_writepage() won't call ubifs_dirty_inode() because
-@@ -1177,7 +1181,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
- 				if (UBIFS_BLOCKS_PER_PAGE_SHIFT)
- 					offset = offset_in_folio(folio,
- 							new_size);
--				err = do_writepage(&folio->page, offset);
-+				err = do_writepage(folio, offset);
- 				folio_put(folio);
- 				if (err)
- 					goto out_budg;
+-	err = allocate_budget(c, &folio->page, ui, appending);
++	err = allocate_budget(c, folio, ui, appending);
+ 	if (unlikely(err)) {
+ 		ubifs_assert(c, err == -ENOSPC);
+ 		/*
 -- 
 2.43.0
 
