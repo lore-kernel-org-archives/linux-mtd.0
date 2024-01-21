@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B0F6C47422
-	for <linux-mtd@archiver.kernel.org>; Sun, 21 Jan 2024 21:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB858C47DB7
+	for <linux-mtd@archiver.kernel.org>; Sun, 21 Jan 2024 21:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=B2uM1Vp9B/YfO+SfAvpmMUHK+JdrE9dP3fvY+dqTTgs=; b=2n52Z63xctZd5K6uWJqzZ6ZMVc
-	/Us+RD9V+CQ/+eLNvGmAdcRzQUpj/1Gm9CuCQtoC0duXhGOIKDquGe1qWtx1NKAeE5Q7h6uEM38C3
-	A6N7FtfazG0HZwdgr8MysbHYtKVIR4ZXlkefpjStkDIlKqxSibg/JK/LwuA79JvJ+ua6pJEiKsTIE
-	ohRHQRxVSp3aAJkbgjZ/K2i2LUQA4NALM2mp61pGMGxjHWBK/4D2i9XD4KDj8qCuoS1FjdeIb0+xA
-	AMT0BN3ZvsV2pYMhbnkQmg92dxhp+gYEu9I+4+2767gc7gQ+RmcQOG8NxRzoTZAt5PgOXGcge/4UF
-	RdY6N5EA==;
+	bh=jFPDg8fH2SSarUUDDqp98JUZjF8CSTiLXiRqs9XmxqA=; b=M/zRwTMWkEha2YMM5XqENgtbIy
+	zeGJN/Xw6L5glTAySLh/tpm85dchoI+7IzvsozKBwBVLVKqQLMN2BpkT1eh+uPEuwOVctD4Y8YE/0
+	kWffVJTbwrj5bPvvtvsOimUub89aN6qCBXI6VrbxjICa0eAl+W8kkiaJX66I02dlsVxwOzjv9ry2G
+	ASsjpCONb8zXZGWt72nib5F6CPJPccN0DuO83jc4UiSh8cQgAivaIAyUuMkgOJ/z69YV0t2eUm9Yh
+	I0KgSA2sPUfxx4uvn44RB2lbiEadgFMjwWdhxkHXrO9oT5iKhKrnJPgrm4I+lx8kYQFQdD5J/uBT5
+	xhytpjJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRfAM-00A3JH-2L;
-	Sun, 21 Jan 2024 21:15:42 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rRfCe-00A3cS-14;
+	Sun, 21 Jan 2024 21:18:04 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRfAI-00A3IX-2l;
-	Sun, 21 Jan 2024 21:15:40 +0000
+	id 1rRfCb-00A3bY-1A;
+	Sun, 21 Jan 2024 21:18:02 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 644E4CE1FB4;
-	Sun, 21 Jan 2024 21:15:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3723C433C7;
-	Sun, 21 Jan 2024 21:15:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5AEA460EB7;
+	Sun, 21 Jan 2024 21:18:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A64EC433C7;
+	Sun, 21 Jan 2024 21:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705871731;
-	bh=kpFY2RXVxwUhXk4eqhD0utH+s2JevbcgTonbpZsQyvE=;
+	s=k20201202; t=1705871880;
+	bh=h45STSfPy1P3Y2GbWo89YV/iBga1C9nJ+uPwiQ9NLLs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uUmQzfNE5I476xwm15KvhWPBP+M6mlMealJoyw1XtxiG6Yy5zlZ3WeOGe47eQmy7b
-	 tFy5f8Jwl9GEjM6jI8ebZVaSu2z3bQjFzx1yFFlufOZP40a4bc4zOZEmcx5lln1F7S
-	 REv+swQPS+/xra7QSSyTUC+aJbURXZr3P62O02R8ccwMmKL3wgCEltsFSqeq6GlLfE
-	 O9Ww5VwTsLJ+AxbWMglQ0+2iLnfhPlEzrnv6/0rH6ahcnSy8IQEh6PiOpKyVI7Ok3/
-	 fO7C4DZ3HoeUzkyY+Om7H3wbYn1W9zy4yufYp64gWZ8oM2OQCv8ftDeXWO6gqw6TRp
-	 UTbxPzcQGeZdw==
-Date: Sun, 21 Jan 2024 21:15:28 +0000
+	b=YhR+7g+N26Oh8TUBBWHDR4e4Ao5+BO0iPfaqNrwoueieSZ2Y25fB5bmyNN4lALQOf
+	 ZB6sWAyqtXi9S7gnUaSWKIA+mfRTZi4gUMswHz6vygxOk7mXg6jXDe1Ej8VqgW/2OP
+	 XczGEJz/GK9DaABwFFQjEjhalev7oivpob93FI3hG8uWQ8Ww9CPrBSTxrfmkExenw9
+	 QuSg0PpALT1HsFD/F1KRAM6hmWymcCaP8a+Virr5n8Hl+dneFGBqiIAV52bLtD6ChV
+	 UuCldWKDA1SJ+lcg+QlLfmz2LOt1sFIR0gXw+LNycpe3MIiM5ryukpuPUxN5a3PvqB
+	 bmy4uWMX+nlOg==
+Date: Sun, 21 Jan 2024 21:17:56 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Guenter Roeck <linux@roeck-us.net>,
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Michael Walle <michael@walle.cc>,
 	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
 	tudor.ambarus@linaro.org, pratyush@kernel.org,
 	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
@@ -58,7 +58,7 @@ Cc: Guenter Roeck <linux@roeck-us.net>,
 	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
 	linux-sound@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
 Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
-Message-ID: <Za2JcHQNipO2qK60@finisterre.sirena.org.uk>
+Message-ID: <Za2KBNsUmE6xRqD6@finisterre.sirena.org.uk>
 References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
  <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
  <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
@@ -66,12 +66,14 @@ References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
  <Zaxtm0JlQYU0/K/v@finisterre.sirena.org.uk>
  <ec7e7972-d48d-4a47-bd03-eec0c4334471@roeck-us.net>
  <9806d99fab46c928f337b30b21057b3e@walle.cc>
+ <ed1de0d4-9a88-47b1-a280-b872f6fdecb6@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <9806d99fab46c928f337b30b21057b3e@walle.cc>
+In-Reply-To: <ed1de0d4-9a88-47b1-a280-b872f6fdecb6@roeck-us.net>
 X-Cookie: You might have mail.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240121_131539_091393_82FCADA9 
-X-CRM114-Status: GOOD (  12.20  )
+X-CRM114-CacheID: sfid-20240121_131801_439653_123E1478 
+X-CRM114-Status: UNSURE (   8.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,53 +85,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8352119007223296759=="
+Content-Type: multipart/mixed; boundary="===============1175306763544834441=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============8352119007223296759==
+--===============1175306763544834441==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jaYudf2Qatjg9XbQ"
+	protocol="application/pgp-signature"; boundary="tcmSRZRy9C5FJXV1"
 Content-Disposition: inline
 
 
---jaYudf2Qatjg9XbQ
+--tcmSRZRy9C5FJXV1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Jan 21, 2024 at 07:06:31PM +0100, Michael Walle wrote:
+On Sun, Jan 21, 2024 at 11:29:48AM -0800, Guenter Roeck wrote:
 
-> Given that, that the rest of this series is under discussion (and esp.
-> whether
-> it is the correct way to do it) it might make sense to just revert the
-> picked
-> patches.
+> So I guess 8 would be the absolute minimum to re-enable support for
+> affected systems.
 
-The API change in the patch is a pain out of tree due to the way it's
-easy to add new things that miss the helpers without it so I'd rather
-keep it in if possible.  The underlying implementation does need some
-TLC though.
+That's actually the number I went for, just waiting for CI to go
+through before I send it out.
 
---jaYudf2Qatjg9XbQ
+--tcmSRZRy9C5FJXV1
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWtiW0ACgkQJNaLcl1U
-h9BQswf9GyF3//21FvfdPQIKhkExHr2h2cGzlMrSSeuagdoyh+dlJPQXC4C/poic
-vpt9904btt6ubjlnpp3LJhtEFky7nLQQiRCYUMXZoLJwZ556Ixk0GQQ844SMI5h0
-Frz9fUTXkKW24um3wXkfWA1KHEK2obOTAZzlP6KqnHmkwzRMWbEvWGG9OXGXmNL1
-HwWa+Sw/HmdcYUo1gYwUY/Sy7SDTw4/vJDTwQMxiC/uPNd60FrRC7Ia6qBP+vUD2
-QzwRmme2U+gfLbWSzrkYYPqGsKYQYddgz0Y1BMspZ1Ptvw00somMsz4zMqxOIKQN
-K0Ao5bjbuOFXpRh6EulWQonrG0tLCA==
-=Na53
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWtigMACgkQJNaLcl1U
+h9Bupwf9ElV4f82yrrRTlzrth8zQZIj8vOQ1sXS02CQRaCYayGxIcjYRGvRCtLvO
+Rw0SV2fD+C7t+UMikK/3GPIstF42bYF7hpXWhIyvKXKS3jZiBE3Y21VQtvaDGVSO
+oNkyDqph/hbwQ09ps9TUi6AC5LOQWHdm3QLM9pOrZ2jMr6z56Vge/RlkK4VoLHYg
+PUIgguXVtDEK31eqYfmji9p8xByXg0B+88MH90buxC6H11PG2JIRnIMMTY95C8r4
+VDiaT2HCw+nf36cpv6LbkMr68qARlHcdOA1H3bvy9ofNDbkkLcvV3q8cj0IDeDRV
+xtlgLlOsbzrWoh7pcG6QTXtih3SIWg==
+=X0HL
 -----END PGP SIGNATURE-----
 
---jaYudf2Qatjg9XbQ--
+--tcmSRZRy9C5FJXV1--
 
 
---===============8352119007223296759==
+--===============1175306763544834441==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -139,5 +136,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============8352119007223296759==--
+--===============1175306763544834441==--
 
