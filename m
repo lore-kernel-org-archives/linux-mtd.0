@@ -4,53 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A47BC47258
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Jan 2024 23:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D420C47258
+	for <linux-mtd@archiver.kernel.org>; Sun, 21 Jan 2024 01:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hv3U8LWusaXbBzlvVINoNHCkmQF2KIXk33rj436Q9Pc=; b=UzKm0kKsQBtjm2
-	dl2qsFVhky5IM0vmOJ7fVrwMjYa3jCebNKcMyRyqWswL6ld8rU2l6tfsu0VMZMVNEnfzacdmMD54M
-	Hsquk970cBbx/8gQ+oy+oCkkA64yvPlqSfi7FytxWrGuu2Ir+tDqY910gGzc6tmm7rpwjUJHHNAfq
-	KhhFVXeNWKjwbAVi2HsYPcyh0pYXibMnk5Wt1/XXwtsLV1wM0Kz18yr5yhQuFI8+lGb3VO7RKINIA
-	/OdgIaGk6Na0pWJ8LalcGWUpgjoAnhb7uL0HcKaXo6XC4yMz+WIl/kyOsVX19RCFwjhxUN0KI3XKk
-	w3HyFAo+qF1+SbvIOnmQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=NWrSPpcIoWIu5m3YM4nn4TFLChpf2+7WJx05QR8Fmz8=; b=3xbFV0KtWJ3sC9+sNOYNuvT4u6
+	D6zHdB0hHJCi3dgMmNv1SbfWIRgZT32IC4pXQnDi1UxXnb6Ak8W1FiqszqnuMZKpcaZBbg4Xqrs/3
+	BQ7Wxj4Yjj2msCYjmxfVbO642CAX2tQJ90CX8l8b/jRgy0CJbqR142JOsczV5oGSLyqX32qAGBNsK
+	15hfQ/8CvIlNsTQqN+XRtEa4HA3l5bculJiG6VMx39E3nu4qW63SBSmchphK9r3V/Bcc0P7PMNHJF
+	AO9l3LFX7By3aB5J+j3ENwdqZTmRhNt4pf//n3uW6wbOR8glPJPHO0hS0GV+5GOeS8ZVyZYSABdMO
+	ohmu/FcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKS6-008ZLf-2L;
-	Sat, 20 Jan 2024 23:08:38 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rRMGI-008i2r-0H;
+	Sun, 21 Jan 2024 01:04:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRKRx-008ZIG-1g
-	for linux-mtd@bombadil.infradead.org;
-	Sat, 20 Jan 2024 23:08:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=/Aug0Xm3x69SETlLxtE4WIsqNVgcTUMjI3DkrbFXGWo=; b=Zj5N4AOGjvzY/nI2hEiHJswPkJ
-	tXpCB0nLNTAqM70U4J5U4N/wgPmRCjslYWGDzGrimvwMKtgvqoIU5RtPyXlQ2X+4WnBOR42BjqChn
-	HcevrZf0B28JpgCs8v0CdwoMQRYcgBAfUorTr8DWaI14oE0JoTenYiZcjaLgDAWbSJnIeXMN8T8eB
-	4/Cp2R1dldSnmHEEbWyVEKt6olkL0TqVr9xtXx3t2Q1LOjfQnijoyOGKz8I9X1WcyThWxJ7ddfq6I
-	83uygsTQue95Y3FnBkncdiKwn88b0Eb2KKACsZp9DX5qtcVCXlQbkXAMXQBhCB9nbc9ZggtMuNjrL
-	fc7QI7bw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rRKRv-0000000AzWv-2h5J;
-	Sat, 20 Jan 2024 23:08:27 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 08/15] ubifs: Convert ubifs_write_begin() to use a folio
-Date: Sat, 20 Jan 2024 23:08:16 +0000
-Message-ID: <20240120230824.2619716-9-willy@infradead.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240120230824.2619716-1-willy@infradead.org>
-References: <20240120230824.2619716-1-willy@infradead.org>
+	id 1rRMGF-008i2G-1e;
+	Sun, 21 Jan 2024 01:04:32 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2B3C860C69;
+	Sun, 21 Jan 2024 01:04:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A34BC433C7;
+	Sun, 21 Jan 2024 01:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705799069;
+	bh=d3XsdJmOrPceBBoewmuW2GJNC71GNXagT5eGFvKkFyc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WVURKBzj+xJyBsvL4Hp5ZEf4Y1BburBTkn3HSSonkiyqUYQw910DdugQjvjVjupRr
+	 QU2eExc7ZrjXtcVYPC3PyDhpVdfbub8Hat2hoZhtfeaSP8lALrVlVBs7BMR4uELmoC
+	 mqsIPPcuon3uEX5ePlDtmPAU+jPi7v1EOIXLfbb85B/VKF5pNE/fD8kaKI69IyNUZQ
+	 dkj5qxFhfvr5XbTT0MjEDVhtbqoptR73v7Bgz40vSEdtL1+PtzKzS1jIG0WdBXGMDK
+	 jR+BUcv3NfWbVSkxP6jUV8FdsO1Lj87T9cIRYcsU9ql1TfdZ9bpTs6F4/8/EIZYlgJ
+	 bekzpo8TMkTWA==
+Date: Sun, 21 Jan 2024 01:04:27 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	tudor.ambarus@linaro.org, pratyush@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sbinding@opensource.cirrus.com, lee@kernel.org,
+	james.schulman@cirrus.com, david.rhodes@cirrus.com,
+	rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	michael@walle.cc, linux-mtd@lists.infradead.org,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev, michal.simek@amd.com,
+	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	git@amd.com, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v11 03/10] spi: Add multi-cs memories support in SPI core
+Message-ID: <Zaxtm0JlQYU0/K/v@finisterre.sirena.org.uk>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-4-amit.kumar-mahapatra@amd.com>
+ <3d3a11b1-8396-4d8e-9bb3-61ecb67e7efa@roeck-us.net>
+ <d3c93c4c-3754-480c-84c2-9455ec8af702@roeck-us.net>
 MIME-Version: 1.0
+In-Reply-To: <d3c93c4c-3754-480c-84c2-9455ec8af702@roeck-us.net>
+X-Cookie: You might have mail.
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240120_170431_616515_5A40C5AF 
+X-CRM114-Status: GOOD (  12.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,115 +80,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0500218183388607028=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Save eight calls to compound_head() by using the new folio API.
-Remove a few assumptions that would break with large folios.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ubifs/file.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+--===============0500218183388607028==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gbj27IA6g3j5b4VB"
+Content-Disposition: inline
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 6302ce65e0b3..ef262499f228 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -428,7 +428,7 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 	pgoff_t index = pos >> PAGE_SHIFT;
- 	int err, appending = !!(pos + len > inode->i_size);
- 	int skipped_read = 0;
--	struct page *page;
-+	struct folio *folio;
- 
- 	ubifs_assert(c, ubifs_inode(inode)->ui_size == inode->i_size);
- 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
-@@ -437,13 +437,14 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 		return -EROFS;
- 
- 	/* Try out the fast-path part first */
--	page = grab_cache_page_write_begin(mapping, index);
--	if (unlikely(!page))
--		return -ENOMEM;
-+	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
-+			mapping_gfp_mask(mapping));
-+	if (IS_ERR(folio))
-+		return PTR_ERR(folio);
- 
--	if (!PageUptodate(page)) {
-+	if (!folio_test_uptodate(folio)) {
- 		/* The page is not loaded from the flash */
--		if (!(pos & ~PAGE_MASK) && len == PAGE_SIZE) {
-+		if (pos == folio_pos(folio) && len >= folio_size(folio)) {
- 			/*
- 			 * We change whole page so no need to load it. But we
- 			 * do not know whether this page exists on the media or
-@@ -453,29 +454,27 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 			 * media. Thus, we are setting the @PG_checked flag
- 			 * here.
- 			 */
--			SetPageChecked(page);
-+			folio_set_checked(folio);
- 			skipped_read = 1;
- 		} else {
--			err = do_readpage(page);
-+			err = do_readpage(&folio->page);
- 			if (err) {
--				unlock_page(page);
--				put_page(page);
-+				folio_unlock(folio);
-+				folio_put(folio);
- 				return err;
- 			}
- 		}
- 	}
- 
--	err = allocate_budget(c, page, ui, appending);
-+	err = allocate_budget(c, &folio->page, ui, appending);
- 	if (unlikely(err)) {
- 		ubifs_assert(c, err == -ENOSPC);
- 		/*
- 		 * If we skipped reading the page because we were going to
- 		 * write all of it, then it is not up to date.
- 		 */
--		if (skipped_read) {
--			ClearPageChecked(page);
--			ClearPageUptodate(page);
--		}
-+		if (skipped_read)
-+			folio_clear_checked(folio);
- 		/*
- 		 * Budgeting failed which means it would have to force
- 		 * write-back but didn't, because we set the @fast flag in the
-@@ -487,8 +486,8 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 			ubifs_assert(c, mutex_is_locked(&ui->ui_mutex));
- 			mutex_unlock(&ui->ui_mutex);
- 		}
--		unlock_page(page);
--		put_page(page);
-+		folio_unlock(folio);
-+		folio_put(folio);
- 
- 		return write_begin_slow(mapping, pos, len, pagep);
- 	}
-@@ -499,9 +498,8 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 	 * with @ui->ui_mutex locked if we are appending pages, and unlocked
- 	 * otherwise. This is an optimization (slightly hacky though).
- 	 */
--	*pagep = page;
-+	*pagep = &folio->page;
- 	return 0;
--
- }
- 
- /**
--- 
-2.43.0
 
+--gbj27IA6g3j5b4VB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Jan 20, 2024 at 09:05:43AM -0800, Guenter Roeck wrote:
+
+> FWIW, the problem is due to
+
+> +#define SPI_CS_CNT_MAX 4
+
+> in the offending patch, but apeed2400 FMC supports up to 5 SPI chip selec=
+ts.
+>=20
+>  static const struct aspeed_spi_data ast2400_fmc_data =3D {
+>         .max_cs        =3D 5,
+> 	^^^^^^^^^^^^^^^^^^^
+>         .hastype       =3D true,
+
+> Limiting .max_cs to 4 or increasing SPI_CS_CNT_MAX to 5 fixes the problem,
+> though of course I don't know if increasing SPI_CS_CNT_MAX has other side
+> effects.
+
+Yeah, I was coming to a similar conclusion myself - the limit is just
+too low.  I can't see any problem with increasing it.
+
+--gbj27IA6g3j5b4VB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWsbY8ACgkQJNaLcl1U
+h9Cd8Af/avJ6OwNEUdXRf7+Y/ez1nlW4KmF435+5Krs7iC0gW1bASAqTgK1wW/vH
+Qn1dkyXEXhJr6D0AXzIaOBKg3k6gmKJ9AL0kbeMeIMsxj5f/2BYI62z0B8nx7dZC
+Y3fMiOxEqHxwU0eWCD2HuzN/GxHD7mrLi5VEFCE572HROza7PRt0jFfRyy7GAfaM
+BIfHMtCRiq5SMmya80D0iKJ9aZgeI0bf/DmzRVDOQnjo6sG7uCSyzPp4Rg1Z6wk1
+kottzJ+R1VHbzCngl404KHzG8SBHAXxYOVxf1HqiBzSgJ2/aa/asAsV0mHnoccn9
+5wKmraNTPzlncfC6l1dz4k3QPdXH7g==
+=vqew
+-----END PGP SIGNATURE-----
+
+--gbj27IA6g3j5b4VB--
+
+
+--===============0500218183388607028==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0500218183388607028==--
+
