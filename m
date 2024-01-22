@@ -4,122 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DEA7C47DD3
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 18:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0F29C47DD3
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 18:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=osn6jzYTyd+6Awazlg2sEhBg7hdaKTLRyjndW4U5Mk0=; b=b7DnyffBvSV8nKPxW+DuFj598b
-	CXFgvkBnlLmYGVxFvPhYg51YBIzgkR2eDvaNYqvaGA722ZMPeQbtxkf8/IQjLsugCxnD/JZmwHulp
-	4YKnUGiS9Ywlde3XHjXTgFAGvW7lTcLPtRrHwU7MoHNrXe0GdSafNSaD2uTVuZ7IRZTx1tDd8gCrt
-	qpr8bndN+uXqaLgQVkvEkbbLYf8W2g6cEHH1ndqlX4XGAAnN3bza1Sx6sD7O7i0RYVOZBce2iZGSx
-	FAC3HpI7lO+t6sZWbj4u9DW1LUo0Bt5Dpxgn555iF1ww3/liSXwbYr8ykoOANu327xMGyEmhoTPBY
-	gxuu0luw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rT5Q8oUWBG+bhtBY/e+MrQCIpqPr5nwD7UXFSEDPyw8=; b=xiWK4wUK60Vgjn
+	CPrl5AlrD9o+7gwuIaHHDgfvpQinA/AeeT718ttoQwa6saKbOVM77aMi4nndXNNmx0dOjbcOf1I4i
+	07AljB6zgMM3j/NlTx1474djwG3QDE0+mcafwoatLexg38AHC/JAZUNn9VNfpeX2xOwtIUlQfrqL/
+	+zFjRiMSO1tkcJsMhoE68ox42EVyIxr/78gzRPtp7KI+vLHm2ZZvxa1iE9EsRJIZZMESHwMlE7eRC
+	fOidZez6+dYNFfxi8TO9wt4XCoUq8+AieymrvwTVqR+EUkTB+t/whwR3s1AHxeWKxH3yVXc92WRaJ
+	d0oMvL2h+IbWuiKdlRNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRysk-00DUf3-1D;
-	Mon, 22 Jan 2024 18:18:50 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rRyty-00DV9g-2q;
+	Mon, 22 Jan 2024 18:20:06 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRysg-00DUc8-0V;
-	Mon, 22 Jan 2024 18:18:47 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 37E0CCE2C10;
-	Mon, 22 Jan 2024 18:18:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84691C433F1;
-	Mon, 22 Jan 2024 18:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705947523;
-	bh=McOauSyMQNxtPZ0g7TEpEiNFuLd+iPYfNexDMsX/FI0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c8fifh16cqrlBPFhmdK0/1YCmVp+FCQJRM3mcc61e8B54POXfNtNHCezXLI06U+BW
-	 2HyC31K2GKN8pqxyPoe5eH43Wr1IvzJ4qYvgVKrZ28cOHRapgl4U0tO7nRd1Hg96Gu
-	 /I85mPr8fKbNlof8bDAKADfRcHtOpPxmy3YbesJ0DqFFZ2OTYAI+xKJ3khkG5PRPqb
-	 IkZ7Lha5tDCBsHZjVT1Pc0QMwPbNJ0JMPGxW7jUMjEknv7bvXLCARAShkNA8Yp5eXw
-	 Jxu0Ft8Uip4jzu6W9VwfTzuvxciZJpio1DrdN7XFmAH69ub0PysqfBMv84es2fWtex
-	 o4y4YVecDwVTQ==
-Date: Mon, 22 Jan 2024 18:18:22 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-input@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-	Rayyan Ansari <rayyan@ansari.sh>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, Sergey Kozlov <serjk@netup.ru>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-	Michal Simek <michal.simek@amd.com>,
-	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
-	linux-mtd@lists.infradead.org,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	Ronald Wahl <ronald.wahl@raritan.com>,
-	Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	chrome-platform@lists.linux.dev, Max Filippov <jcmvbkbc@gmail.com>,
-	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mediatek@lists.infradead.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-staging@lists.linux.dev, Viresh Kumar <vireshk@kernel.org>,
-	Rui Miguel Silva <rmfrfs@gmail.com>,
-	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-	greybus-dev@lists.linaro.org, Peter Huewe <peterhuewe@gmx.de>,
-	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	linux-integrity@vger.kernel.org,
-	Herve Codina <herve.codina@bootlin.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
-	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
-Message-ID: <e62cdf7f-ce58-4f46-a0a0-25ce9fb271b1@sirena.org.uk>
+	id 1rRytv-00DV7P-1I
+	for linux-mtd@lists.infradead.org;
+	Mon, 22 Jan 2024 18:20:04 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 60DD4C0008;
+	Mon, 22 Jan 2024 18:19:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705947599;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8W7nuPtHrC/Hj56hA90mhHUdLtjrN9XFg/luUGKxfNs=;
+	b=Ro4C+lyC8DiYanjVguhp0jyVAhJRO3/nU2DF3V6l2G05sVRSDem+FwD8i/jNbYm6dOZKVQ
+	I53bR8QwRykQwviL/3BbGimvK44PLL79jrJqyYehK93nErBoMNSkIFp9YRT93Spq4Exfmf
+	JHhNjlGR+OWnLvN0P7JXmWML9Zb8461P3HefBu9/K3KR7Fa72C/xfloGtPZw+XommQ56eb
+	dRexUiUhhc90KZdotFbwsNRIoy1wv9hQbyOGOJjmNvpWbRrEHakErzeSYz54oZJkQyJL1q
+	kWclhMjHSIhiq6SlhgAX2LqNXe7fg9DPkO1uIFndWqWcUAcFjS79Irron+UmZA==
+Date: Mon, 22 Jan 2024 19:19:44 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, Heiko Stuebner <heiko@sntech.de>, Pali
+ =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 13/33] mtd: rawnand: fsl_elbc: Let .probe retry if
+ local bus is missing
+Message-ID: <20240122191931.17807644@xps-13>
+In-Reply-To: <41a042207ef791c4c5bcb46f09f63c40c6aa321b.1705944943.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+	<41a042207ef791c4c5bcb46f09f63c40c6aa321b.1705944943.git.u.kleine-koenig@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
-X-Cookie: Nice guys don't finish nice.
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240122_101846_548861_C83DFEF6 
-X-CRM114-Status: GOOD (  14.28  )
+X-CRM114-CacheID: sfid-20240122_102003_621411_DF91245B 
+X-CRM114-Status: GOOD (  10.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,57 +74,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6920616683742092693=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============6920616683742092693==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="T+I3YsJdHvT4lja9"
-Content-Disposition: inline
-
-
---T+I3YsJdHvT4lja9
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=F6nig wrote:
-
-> Note that Jonathan Cameron has already applied patch 3 to his tree, it
-> didn't appear in a public tree though yet. I still included it here to
-> make the kernel build bots happy.
-
-It's also going to be needed for buildability of the end of the series.
-
---T+I3YsJdHvT4lja9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWusW0ACgkQJNaLcl1U
-h9AR1Af8DbPI9TFuBXKEh4BM61G07z/XXFesQgMYJFn7hnO/3qPq0DB2udfdH+HR
-WrEFwWfImJcLCzV8lyZSjyQS8FeUMRbP7r99FeoYIb8amMJfpQIN7gD1IJ+OzZGL
-9PhsdsnLY3FgKjHbQCA6B6TnEDwI/0zpTfNjtElcXbWRB+V9uqBR/i8Uk02ngrKd
-MFM4BWy/tlEQvi0AQcylB9znY58FISMxd4ww1jeW0euV6Do4c1U3/9N+ivg6WNfs
-rKxD/BMTdGNcwlR3dWzHBLLYk3YAMLSi8p37kFSHwDGoHFtHCuUNPhA4RsVlbb9P
-SyEM0rudlzp/uFBuKSBT2nWslCLfjA==
-=Dr9Y
------END PGP SIGNATURE-----
-
---T+I3YsJdHvT4lja9--
-
-
---===============6920616683742092693==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6920616683742092693==--
-
+SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIE1vbiwgMjIg
+SmFuIDIwMjQgMTk6MDc6MDggKzAxMDA6Cgo+IElmIGR1cmluZyBwcm9iZSBmc2xfbGJjX2N0cmxf
+ZGV2IGlzIE5VTEwgdGhhdCBtaWdodCBqdXN0IGJlIGJlY2F1c2UgdGhlCj4gZnNsX2xiYyBkcml2
+ZXIgZGlkbid0IGJpbmQgeWV0LiBTbyByZXR1cm4gLUVQUk9CRV9ERUZFUiBpbiB0aGlzIGNhc2Ug
+dG8KPiBtYWtlIHRoZSBkcml2ZXIgY29yZSByZXRyeSBwcm9iaW5nIGxhdGVyLgoKRGVzcGl0ZSB0
+aGUgcHJvYmFibGUgdXNlZnVsbmVzcyBvZiB0aGlzIGNoYW5nZSwgSSBkb24ndCBzZWUgYW55CnJl
+bGF0aW9uc2hpcCB3aXRoIHRoZSBjdXJyZW50IHNlcmllcy4gU28gdW5sZXNzIHRoZXJlIGlzIGEg
+Z29vZCByZWFzb24KSSBtaWdodCB0YWtlIHRoaXMgb25lIHRocm91Z2ggdGhlIG5hbmQgdHJlZS4K
+CkFsc28sIHdoYXQgYWJvdXQgYSBGaXhlcy9DYzogc3RhYmxlIHRhZyBoZXJlPwoKPiBTaWduZWQt
+b2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRl
+PgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
