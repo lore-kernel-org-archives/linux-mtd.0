@@ -4,82 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FE1FC4725D
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 11:48:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A78EC4725D
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 11:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1sez7TYro7Jt03/V7HhENIxGNJADgXbzPeOXOois0Hs=; b=qpM3Awavg0gE3v
-	wMsP7H6xL4Qh7hwEtVr+hG5HSS9UqYPJhdal7OGKZZo8F5h+cPxsSWD2c0uIsiSH+GuE2YejI8DDL
-	gzZ5+fKnzvh8s/Juau8KF3a1URVggnlbG8B484wgJMTDXRNuE6x4zyqjBVU4xTKcsnSxCZUceuYWI
-	URnGU5LEZ714McSRYxew+fxb+NwHJxSHG8AzriNbKssoLwzmTffaRPCawQgDDm6xVgPI/pzyrgdCQ
-	+CqXMpb//NKDdWflZyawXCKgrA95JGuhMqCRzlWtuaRY5at5w2hP9BKYcesB7NM+LtJstgtQHeSlr
-	ipabLePT8VX3NHuGe5AA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=HXyDmMgM2EdvyeoHtTe/6x8ajdpcddT7WS2eTNzHBWY=; b=x0/ZDGM82ZMs+KQg/W0lEE3oVe
+	OIqW849Eu4R6u0lxYWumf3ciwBDgsDSZ7IGpuw4bnkRZDrXzi/NRqHwaT6u9NIhe3iSvc/hWI6Go5
+	iFWxELzkaKZrLtUW4G7CBAq/2WA6OkMzOel8kbhLYQYe9m1CailCjzwtPBdHPRvOxmeFv+WGaqME6
+	IIK0BVWnD6BA+gqCuIoXsXKBMYLrkVSSTUfqu1Nt5TyKZ5K1CVOEN8wGxePrl6a5Ol82ms3i7vyC9
+	Y5zgEoHe0hFordOA6mV9kX8S8AairAz2MeU5d6qG6mN0wXp7lTiM4d+raKcFdNDvjFClUtX5vdKHl
+	Jq47ymcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRsmz-00BrZ2-1I;
-	Mon, 22 Jan 2024 11:48:29 +0000
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
+	id 1rRspr-00BtWq-1o;
+	Mon, 22 Jan 2024 11:51:27 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRsmv-00BrRG-3B;
-	Mon, 22 Jan 2024 11:48:27 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2909a632e40so325015a91.0;
-        Mon, 22 Jan 2024 03:48:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705924097; x=1706528897; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmCR5Hs59/0vtuduKlpgs+GpqISPKERHfnKxl2Hek7k=;
-        b=NJPjg/cdzHHQu4JVqrCwVdduHGXZcwDn0xJ8rPuCmfD2LkWblvKYOwfQrGXXt0vvhY
-         AduV1fEn4Rc7GA5icSVsjmCqsKb5oKp/JfHwlsBIZ/gPMiZOS0cZUfej3UHkSwdmjgBl
-         uXAnO7wMkXYvRBZ6+NpMAbQi6n+iaaObOZ5ZG27Zm3VBVNO9fA5teS3JFvgnVl1EdfI5
-         GozIR3SU9ZXPt527U9rvNkW40Js976zzPY4V94MS6vOCTi/uKtocji4qmUNw1MAejwNo
-         iNOaCycjP7JprAepk5yWrsEHgmLyFiymSb7zGcdPacVKp1vyZwC1YsEoRAp235HbpjF4
-         xn2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705924097; x=1706528897;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jmCR5Hs59/0vtuduKlpgs+GpqISPKERHfnKxl2Hek7k=;
-        b=HH0APzkT98b4b4T7mfYVXcTvnpukqVH9/Uvckm9TLNZ91gbEskTWoKOTStQ7PjXhx+
-         Miqm8ZdjkEgy0WiHOr6S17oXy4FhvA0qWXjs/+BUJhqUDA3A+ufbEvk/AAW70RPLTj12
-         tvM2tANwYyvb70IfrxSkRJijcecz5Qcta6e+jflS99eeRNrD3wqHX9MEa8cZuc9Sj9v9
-         ZjXcCO42MJbc3K78EHIj6L0DZM+cZW2ff9s3yB2M4tlOSDXZA1x//8UW2mK8B4IBx/zf
-         BbU7VETiYu0bQAy2d+PWVUul9l21XkNl7aAPndfpAGhZgkLzLEh2sbFu9pjXfEbOqRO8
-         5IaA==
-X-Gm-Message-State: AOJu0YzI3FATdYGNp3CPFxQ/cixx/hVGbBQM0tmF66kun5wfMhmnGB+3
-	ZBBQFPX/GrRvWoSg7qarpH4SdSIFswFuLLwJolYJ3TVehaTJLRr4dHHWqX7BlEQGP+r/BBAT/t7
-	hVVS5iztdSjpC1CqezT+4tq+Yguc=
-X-Google-Smtp-Source: AGHT+IHbJKr0+ESj/7wEsolCjUfhmX5aIfeStUtaEjVhlvaoVw+P+Od3BmO0j+0slKfHsE4bNUCILoUPH2kUJuGqtHk=
-X-Received: by 2002:a17:90a:fe95:b0:290:b5b2:b90c with SMTP id
- co21-20020a17090afe9500b00290b5b2b90cmr333726pjb.58.1705924097190; Mon, 22
- Jan 2024 03:48:17 -0800 (PST)
+	id 1rRspo-00BtSC-04
+	for linux-mtd@lists.infradead.org;
+	Mon, 22 Jan 2024 11:51:26 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TJT754rWDz1xmF5;
+	Mon, 22 Jan 2024 19:50:25 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 04C7E1400CC;
+	Mon, 22 Jan 2024 19:51:16 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 19:51:15 +0800
+Subject: Re: [PATCH 08/15] ubifs: Convert ubifs_write_begin() to use a folio
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Richard Weinberger
+	<richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>
+References: <20240120230824.2619716-1-willy@infradead.org>
+ <20240120230824.2619716-9-willy@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <0f015efd-4142-764c-24b3-e413f5e16d4c@huawei.com>
+Date: Mon, 22 Jan 2024 19:51:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20240118195356.133391-1-dregan@broadcom.com> <20240118195356.133391-2-dregan@broadcom.com>
-In-Reply-To: <20240118195356.133391-2-dregan@broadcom.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Mon, 22 Jan 2024 12:48:05 +0100
-Message-ID: <CAOiHx=k2Wn+UaVFbB-n2XKmFuBss4LKmLSW45YME07z=7zg0ww@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
-To: dregan@broadcom.com
-Cc: dregan@mail.com, miquel.raynal@bootlin.com, richard@nod.at, 
-	vigneshr@ti.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, computersforpeace@gmail.com, kdasu.kdev@gmail.com, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com, 
-	tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, 
-	william.zhang@broadcom.com, anand.gore@broadcom.com, kursad.oney@broadcom.com, 
-	florian.fainelli@broadcom.com, rafal@milecki.pl, 
-	bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com, 
-	baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, 
-	dan.carpenter@linaro.org
+In-Reply-To: <20240120230824.2619716-9-willy@infradead.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240122_034826_058763_CD5364FA 
-X-CRM114-Status: GOOD (  26.87  )
+X-CRM114-CacheID: sfid-20240122_035124_429118_9D87C4C5 
+X-CRM114-Status: GOOD (  25.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,113 +67,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Thu, 18 Jan 2024 at 20:56, <dregan@broadcom.com> wrote:
->
-> From: William Zhang <william.zhang@broadcom.com>
->
-> Update the descriptions to reflect different families of broadband SoC and
-> use the general name bcmbca for ARM based SoC.
->
-> Add brcm,nand-use-wp property to have an option for disabling this
-> feature on broadband board design that does not use write protection.
->
-> Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap for
-> broadband board designs because they do not specify ecc setting in dts
-> but rather using the strap setting.
->
-> Remove the requirement of interrupts property to reflect the driver
-> code. Also add myself to the list of maintainers.
->
-> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> Reviewed-by: David Regan <dregan@broadcom.com>
-> ---
-> Changes in v2:
-> - Revert the new compatible string nand-bcmbca
-> - Drop the BCM63168 compatible fix to avoid any potential ABI
-> incompatibility issue
-> - Simplify the explanation for brcm,nand-use-wp
-> - Keep the interrupt name requirement when interrupt number is specified
-> ---
->  .../bindings/mtd/brcm,brcmnand.yaml           | 36 +++++++++++++++----
->  1 file changed, 30 insertions(+), 6 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> index f57e96374e67..56176ec1a992 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
->  maintainers:
->    - Brian Norris <computersforpeace@gmail.com>
->    - Kamal Dasu <kdasu.kdev@gmail.com>
-> +  - William Zhang <william.zhang@broadcom.com>
->
->  description: |
->    The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
-> @@ -18,9 +19,10 @@ description: |
->    supports basic PROGRAM and READ functions, among other features.
->
->    This controller was originally designed for STB SoCs (BCM7xxx) but is now
-> -  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
-> -  iProc/Cygnus. Its history includes several similar (but not fully register
-> -  compatible) versions.
-> +  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
-> +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
-> +  Its history includes several similar (but not fully register compatible)
-> +  versions.
->
->    -- Additional SoC-specific NAND controller properties --
->
-> @@ -53,7 +55,7 @@ properties:
->                - brcm,brcmnand-v7.2
->                - brcm,brcmnand-v7.3
->            - const: brcm,brcmnand
-> -      - description: BCM63138 SoC-specific NAND controller
-> +      - description: BCMBCA SoC-specific NAND controller
->          items:
->            - const: brcm,nand-bcm63138
->            - enum:
-> @@ -65,7 +67,7 @@ properties:
->            - const: brcm,nand-iproc
->            - const: brcm,brcmnand-v6.1
->            - const: brcm,brcmnand
-> -      - description: BCM63168 SoC-specific NAND controller
-> +      - description: BCM63xx SoC-specific NAND controller
-
-Only the BCM63268 family has a v4.0 NAND controller with support for
-ONFI and raw access; BCM6368 has a v2.1, and BCM6328 and BCM6362 have
-a v2.2.
-
-So claiming this is a generic binding is wrong; you would need to add
-the appropriate variants first. Or add another one for the BCM6368
-NAND v2.x controllers, which is missing. You can find them used in
-arch/mips/boot/dts/brcm/bcm63{28,62,68}.dtsi.
-
->          items:
->            - const: brcm,nand-bcm63168
->            - const: brcm,nand-bcm6368
-
-Also bcm63168's v4.0 has a different register layout than bcm6368's
-v2.x, so claiming brcm.nand-bcm6368 as compatible here is a bit weird.
-It works because the register layout used is derived from the
-"brcm,brcmnand-vX.Y" compatible, and the driver attaching to
-'brcm,nand-bcm6368" only uses the shared interrupt registers which are
-identical, the layout only diverges after that.
-
-But then again these aren't really used as compatibles in the original
-sense, and more like tags which describe different parts of the
-controller, and the combination is the whole unique "compatible". Not
-sure if this is how compatibles are supposed to be used. /rant.
-
-Best Regards,
-Jonas
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xLzIxIDc6MDgsIE1hdHRoZXcgV2lsY294IChPcmFjbGUpINC0tcA6Cj4gU2F2ZSBl
+aWdodCBjYWxscyB0byBjb21wb3VuZF9oZWFkKCkgYnkgdXNpbmcgdGhlIG5ldyBmb2xpbyBBUEku
+Cj4gUmVtb3ZlIGEgZmV3IGFzc3VtcHRpb25zIHRoYXQgd291bGQgYnJlYWsgd2l0aCBsYXJnZSBm
+b2xpb3MuCj4gCj4gU2lnbmVkLW9mZi1ieTogTWF0dGhldyBXaWxjb3ggKE9yYWNsZSkgPHdpbGx5
+QGluZnJhZGVhZC5vcmc+Cj4gLS0tCj4gICBmcy91Ymlmcy9maWxlLmMgfCAzNiArKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxNyBpbnNlcnRp
+b25zKCspLCAxOSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZmlsZS5j
+IGIvZnMvdWJpZnMvZmlsZS5jCj4gaW5kZXggNjMwMmNlNjVlMGIzLi5lZjI2MjQ5OWYyMjggMTAw
+NjQ0Cj4gLS0tIGEvZnMvdWJpZnMvZmlsZS5jCj4gKysrIGIvZnMvdWJpZnMvZmlsZS5jCj4gQEAg
+LTQyOCw3ICs0MjgsNyBAQCBzdGF0aWMgaW50IHViaWZzX3dyaXRlX2JlZ2luKHN0cnVjdCBmaWxl
+ICpmaWxlLCBzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywKPiAgIAlwZ29mZl90IGluZGV4
+ID0gcG9zID4+IFBBR0VfU0hJRlQ7Cj4gICAJaW50IGVyciwgYXBwZW5kaW5nID0gISEocG9zICsg
+bGVuID4gaW5vZGUtPmlfc2l6ZSk7Cj4gICAJaW50IHNraXBwZWRfcmVhZCA9IDA7Cj4gLQlzdHJ1
+Y3QgcGFnZSAqcGFnZTsKPiArCXN0cnVjdCBmb2xpbyAqZm9saW87Cj4gICAKPiAgIAl1Ymlmc19h
+c3NlcnQoYywgdWJpZnNfaW5vZGUoaW5vZGUpLT51aV9zaXplID09IGlub2RlLT5pX3NpemUpOwo+
+ICAgCXViaWZzX2Fzc2VydChjLCAhYy0+cm9fbWVkaWEgJiYgIWMtPnJvX21vdW50KTsKPiBAQCAt
+NDM3LDEzICs0MzcsMTQgQEAgc3RhdGljIGludCB1Ymlmc193cml0ZV9iZWdpbihzdHJ1Y3QgZmls
+ZSAqZmlsZSwgc3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsCj4gICAJCXJldHVybiAtRVJP
+RlM7Cj4gICAKPiAgIAkvKiBUcnkgb3V0IHRoZSBmYXN0LXBhdGggcGFydCBmaXJzdCAqLwo+IC0J
+cGFnZSA9IGdyYWJfY2FjaGVfcGFnZV93cml0ZV9iZWdpbihtYXBwaW5nLCBpbmRleCk7Cj4gLQlp
+ZiAodW5saWtlbHkoIXBhZ2UpKQo+IC0JCXJldHVybiAtRU5PTUVNOwo+ICsJZm9saW8gPSBfX2Zp
+bGVtYXBfZ2V0X2ZvbGlvKG1hcHBpbmcsIGluZGV4LCBGR1BfV1JJVEVCRUdJTiwKPiArCQkJbWFw
+cGluZ19nZnBfbWFzayhtYXBwaW5nKSk7Cj4gKwlpZiAoSVNfRVJSKGZvbGlvKSkKPiArCQlyZXR1
+cm4gUFRSX0VSUihmb2xpbyk7Cj4gICAKPiAtCWlmICghUGFnZVVwdG9kYXRlKHBhZ2UpKSB7Cj4g
+KwlpZiAoIWZvbGlvX3Rlc3RfdXB0b2RhdGUoZm9saW8pKSB7Cj4gICAJCS8qIFRoZSBwYWdlIGlz
+IG5vdCBsb2FkZWQgZnJvbSB0aGUgZmxhc2ggKi8KPiAtCQlpZiAoIShwb3MgJiB+UEFHRV9NQVNL
+KSAmJiBsZW4gPT0gUEFHRV9TSVpFKSB7Cj4gKwkJaWYgKHBvcyA9PSBmb2xpb19wb3MoZm9saW8p
+ICYmIGxlbiA+PSBmb2xpb19zaXplKGZvbGlvKSkgewoKV2h5IG5vdCBsZW4gPT0gZm9saW9fc2l6
+ZShmb2xpbyk/IEFsdGhvdWdoICdsZW4gPj0gZm9saW9fc2l6ZShmb2xpbyknIGlzIApub3Qgd3Jv
+bmcuCgo+ICAgCQkJLyoKPiAgIAkJCSAqIFdlIGNoYW5nZSB3aG9sZSBwYWdlIHNvIG5vIG5lZWQg
+dG8gbG9hZCBpdC4gQnV0IHdlCj4gICAJCQkgKiBkbyBub3Qga25vdyB3aGV0aGVyIHRoaXMgcGFn
+ZSBleGlzdHMgb24gdGhlIG1lZGlhIG9yCj4gQEAgLTQ1MywyOSArNDU0LDI3IEBAIHN0YXRpYyBp
+bnQgdWJpZnNfd3JpdGVfYmVnaW4oc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVjdCBhZGRyZXNzX3Nw
+YWNlICptYXBwaW5nLAo+ICAgCQkJICogbWVkaWEuIFRodXMsIHdlIGFyZSBzZXR0aW5nIHRoZSBA
+UEdfY2hlY2tlZCBmbGFnCj4gICAJCQkgKiBoZXJlLgo+ICAgCQkJICovCj4gLQkJCVNldFBhZ2VD
+aGVja2VkKHBhZ2UpOwo+ICsJCQlmb2xpb19zZXRfY2hlY2tlZChmb2xpbyk7Cj4gICAJCQlza2lw
+cGVkX3JlYWQgPSAxOwo+ICAgCQl9IGVsc2Ugewo+IC0JCQllcnIgPSBkb19yZWFkcGFnZShwYWdl
+KTsKPiArCQkJZXJyID0gZG9fcmVhZHBhZ2UoJmZvbGlvLT5wYWdlKTsKPiAgIAkJCWlmIChlcnIp
+IHsKPiAtCQkJCXVubG9ja19wYWdlKHBhZ2UpOwo+IC0JCQkJcHV0X3BhZ2UocGFnZSk7Cj4gKwkJ
+CQlmb2xpb191bmxvY2soZm9saW8pOwo+ICsJCQkJZm9saW9fcHV0KGZvbGlvKTsKPiAgIAkJCQly
+ZXR1cm4gZXJyOwo+ICAgCQkJfQo+ICAgCQl9Cj4gICAJfQo+ICAgCj4gLQllcnIgPSBhbGxvY2F0
+ZV9idWRnZXQoYywgcGFnZSwgdWksIGFwcGVuZGluZyk7Cj4gKwllcnIgPSBhbGxvY2F0ZV9idWRn
+ZXQoYywgJmZvbGlvLT5wYWdlLCB1aSwgYXBwZW5kaW5nKTsKPiAgIAlpZiAodW5saWtlbHkoZXJy
+KSkgewo+ICAgCQl1Ymlmc19hc3NlcnQoYywgZXJyID09IC1FTk9TUEMpOwo+ICAgCQkvKgo+ICAg
+CQkgKiBJZiB3ZSBza2lwcGVkIHJlYWRpbmcgdGhlIHBhZ2UgYmVjYXVzZSB3ZSB3ZXJlIGdvaW5n
+IHRvCj4gICAJCSAqIHdyaXRlIGFsbCBvZiBpdCwgdGhlbiBpdCBpcyBub3QgdXAgdG8gZGF0ZS4K
+PiAgIAkJICovCj4gLQkJaWYgKHNraXBwZWRfcmVhZCkgewo+IC0JCQlDbGVhclBhZ2VDaGVja2Vk
+KHBhZ2UpOwo+IC0JCQlDbGVhclBhZ2VVcHRvZGF0ZShwYWdlKTsKPiAtCQl9Cj4gKwkJaWYgKHNr
+aXBwZWRfcmVhZCkKPiArCQkJZm9saW9fY2xlYXJfY2hlY2tlZChmb2xpbyk7Cj4gICAJCS8qCj4g
+ICAJCSAqIEJ1ZGdldGluZyBmYWlsZWQgd2hpY2ggbWVhbnMgaXQgd291bGQgaGF2ZSB0byBmb3Jj
+ZQo+ICAgCQkgKiB3cml0ZS1iYWNrIGJ1dCBkaWRuJ3QsIGJlY2F1c2Ugd2Ugc2V0IHRoZSBAZmFz
+dCBmbGFnIGluIHRoZQo+IEBAIC00ODcsOCArNDg2LDggQEAgc3RhdGljIGludCB1Ymlmc193cml0
+ZV9iZWdpbihzdHJ1Y3QgZmlsZSAqZmlsZSwgc3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcs
+Cj4gICAJCQl1Ymlmc19hc3NlcnQoYywgbXV0ZXhfaXNfbG9ja2VkKCZ1aS0+dWlfbXV0ZXgpKTsK
+PiAgIAkJCW11dGV4X3VubG9jaygmdWktPnVpX211dGV4KTsKPiAgIAkJfQo+IC0JCXVubG9ja19w
+YWdlKHBhZ2UpOwo+IC0JCXB1dF9wYWdlKHBhZ2UpOwo+ICsJCWZvbGlvX3VubG9jayhmb2xpbyk7
+Cj4gKwkJZm9saW9fcHV0KGZvbGlvKTsKPiAgIAo+ICAgCQlyZXR1cm4gd3JpdGVfYmVnaW5fc2xv
+dyhtYXBwaW5nLCBwb3MsIGxlbiwgcGFnZXApOwo+ICAgCX0KPiBAQCAtNDk5LDkgKzQ5OCw4IEBA
+IHN0YXRpYyBpbnQgdWJpZnNfd3JpdGVfYmVnaW4oc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVjdCBh
+ZGRyZXNzX3NwYWNlICptYXBwaW5nLAo+ICAgCSAqIHdpdGggQHVpLT51aV9tdXRleCBsb2NrZWQg
+aWYgd2UgYXJlIGFwcGVuZGluZyBwYWdlcywgYW5kIHVubG9ja2VkCj4gICAJICogb3RoZXJ3aXNl
+LiBUaGlzIGlzIGFuIG9wdGltaXphdGlvbiAoc2xpZ2h0bHkgaGFja3kgdGhvdWdoKS4KPiAgIAkg
+Ki8KPiAtCSpwYWdlcCA9IHBhZ2U7Cj4gKwkqcGFnZXAgPSAmZm9saW8tPnBhZ2U7Cj4gICAJcmV0
+dXJuIDA7Cj4gLQo+ICAgfQo+ICAgCj4gICAvKioKPiAKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
