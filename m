@@ -4,81 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D960CC4725D
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 05:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30E65C4725D
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 06:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EsMYRkzvkttjrMpcPJbeNSXx7A20l3DFxKNnHSQw7Kc=; b=3YcIVrc51GJSrW
-	5reBw+WuTqLLKrdg6a9CIHgztF1PZfY7YiwROveLHYQV8W7U9tlmLE6Yk1HFGmQtlRfd9golQbhNT
-	QxV7d/8iKqKnpC0sm/u5aoKRKqLDvNXlR2dwY7X4g4fGONIX+vP+2xe807Mm9ntSXfFCD6MMInj5a
-	54aklWbr9LLfsA7YoBTUkvUo2FYrsBAyKpQWqcJvOBE29yY5bK9pa3xgiEYb8nRPutiyE0MaMn9EQ
-	LhICb11+yNgxaK4GVbd3eIoEQOMh6n1b6kJ5V2HdfodOqL60OtOBqgO3Gbi3zXVyK5TztETWd+fvt
-	/F85z0IiFnQcRQqRwAfw==;
+	List-Owner; bh=bnvLcT+S6csJRD6u5aWvHXifjZNvKdmCQtVLquvsODI=; b=c8mVkBNK0ecoKi
+	AjX/e7gHMaXQsdmKpcyWoNnTG6TvruuqcGGuMjI79PTPg2zXSa4pq8SCT6HDAKxnWs+6J6bU+GyLk
+	E5GfFp/D4XYK8/k1+wvAcw/SXfdG+6uvJrZNqtJ/+0GRNfS0eJ4DaMOJl1hsIeVG685j9TDyYq0Ze
+	xT8Lf7GEP6pBd51w3h96PHN46pIhY1oOCeApuY6GGLAjhcAhhC4mqkjAvJN/2/PKL1xcXDsaSYiHZ
+	yTxHySDjeUFDz5BAV2jEsdNvDr5HNj60bV0a5Ob5F7rElV15Py/NSappmf7n6UwHNKsEJVh0dcOf4
+	J4CDcWGnLR29xVEly6Cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRnA8-00AdZr-0O;
-	Mon, 22 Jan 2024 05:48:00 +0000
-Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
+	id 1rRnXB-00AhGP-0Z;
+	Mon, 22 Jan 2024 06:11:49 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRnA2-00AdZL-0C
+	id 1rRnX5-00AhG1-1X
 	for linux-mtd@lists.infradead.org;
-	Mon, 22 Jan 2024 05:47:58 +0000
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40e8d3b29f2so34086575e9.1
-        for <linux-mtd@lists.infradead.org>; Sun, 21 Jan 2024 21:47:51 -0800 (PST)
+	Mon, 22 Jan 2024 06:11:47 +0000
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a30359b97a8so69410166b.0
+        for <linux-mtd@lists.infradead.org>; Sun, 21 Jan 2024 22:11:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705902470; x=1706507270; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1705903901; x=1706508701; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EB3k4bOEHsfZ3BnTyiyUuxkXfGmyhPbl4WHfu0BUDT0=;
-        b=iWc/rQuUMwsV6pwnmWjVTQIo1qJDmhONMJ3o4NI+h84gPnmU3ZafmxFftyLtECQptg
-         tODFHTJmmlInQ2qDTMzTox1Cc8KX3oWv0WmkjyE1JHuViukpdTtmKU+sShA7kxIlEgot
-         gvVKFaPT3+4WtEJXp2Bw0NmZc/rJcd7MzM11era10Fzzfg7kSpzxrscxhj5ttxdDkuBw
-         /VDIQRrR/ee0PRCTnNFZxNMVSdxfOlQsYQ29qXcECF/7SUmwj+Pt6G1oHiT/4NtMFOpC
-         7VUiYS8iL5YZWAtj8QVT5m8Rp6S0R+dyAU3B2cfYRL5OmT941+MPiGxIA6LxhFyO9D7n
-         vtDw==
+        bh=RIcaNbIbYjZhJZaFVFa9N/62Fsv5I4TrG8yXnt0PL2o=;
+        b=kQgj9jtWsSyA4ZpHHfwOQomg420VPf9dNeShSsmVveLxXFSkm3hfjFzgDamlYdm+J5
+         osSG/MLOsmsEdwLk7LOkXL7+UEPoZIvmlvWcrOqujV+0ET4ilWcLt+ddvX30Q3Zre7Je
+         DpVMsdQFqObzuHasUSjWDIBkzKPBQdl/GsiLu6l/4rSeP7o/eFdGrlQUEiT7uNA21Thl
+         3shugJ7ooC6LylOCxr58MkHehuTPI4FSBQBwvtkQ5k7Gxp4LjWHHD0WjL5GujNvlf1KQ
+         4YT85PQDIv6vdju1OA/Zu3U/GOATikoVlLjbpbpuZpN8OQ6UfuiFwi1VCV3AXdDNDJtq
+         XNMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705902470; x=1706507270;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1705903901; x=1706508701;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EB3k4bOEHsfZ3BnTyiyUuxkXfGmyhPbl4WHfu0BUDT0=;
-        b=phNZrz99MEOO5WUkj3cPGdgERTEChhihCnVkWeICZWvlt4UO45N+nYCWrL9JHMXTTb
-         nXXwlyXWq1EnCuVvXjqRwz5zI5tZqHNOWRT3MLU+FfCNKXI5m9pdLUeBW0yCFje6xdag
-         mbmUMe5+dd4zMtNiNxLjw99qQiVLCmpb36m71m/6bzzjiqL4vnluYv61vdut+A/V+EHb
-         yoYjLloBeoD6l2oPzErTB3Ck/XoNkivsz1TOMKlIhNXK1xGFfx/F8klVSNWFnSbhE3iq
-         A/5y4Pc/dUviF7tIXnsFo1NnqiNGtwaKwmRsglWCXOi+R2KsjvkftEvc/mSQcQUnk9cE
-         0iQQ==
-X-Gm-Message-State: AOJu0YxNzHAAzCHVFNQYmlGr/yd/kCvJ7tVwYQ3ht946NpWAx5KiRTQx
-	4+DfGryySmCYF9YZdR849e/g1BgQGVfqmamk9eoMEN3gesR8AHEohzG7OnO6LSQ=
-X-Google-Smtp-Source: AGHT+IF0qKJobBgBE/56kVzGTnv2kQ5tUQSpyLMkpcOPTcYPC7N+x/UNRQmGDo6MJ4WM+kEtxpsVqA==
-X-Received: by 2002:a1c:7511:0:b0:40e:49be:48e1 with SMTP id o17-20020a1c7511000000b0040e49be48e1mr1414347wmc.61.1705902469993;
-        Sun, 21 Jan 2024 21:47:49 -0800 (PST)
+        bh=RIcaNbIbYjZhJZaFVFa9N/62Fsv5I4TrG8yXnt0PL2o=;
+        b=t+Dgqkr2hmBoH0nq8RPNHEo4hk+tPyZbRXi7AmTWSP2DwfoyC84Ht5FUcLDpKepvo+
+         4WvqDdOUpJApQEW69i8CrRVvBmxlgckSgkVmkIgB/+2EYYo9KXlLfgUrPNpKlW/d4+zh
+         48O/aarvTgJj0IhWmVYkQSOIFQcc7oIdRAqDMKVvfIaAuxss9frVnGlBqz4qenJ+IGUX
+         vJnSFcurDZO9g6nFiTeImOBuTASkBQ+g+3P+GztlHzNN/Kq+T86zjS9f4FSg8SWoNRUw
+         HmtDDNDv8ny6W5URjbHpfNmEO47WE9ZEYLQIQ3PtCOlwaUIkJZ/EJm4RZlO6+/wxuVNX
+         CVgw==
+X-Gm-Message-State: AOJu0Yw8pK1rct+IGtiVMwMiMb5QFdUDhg2yRh41B6xvm3cemG0r0q63
+	tAuFa3Aewxa3aD8Q95WqIbqhFQn+JVddVymeb3Z00M08OWAj+2OX80xatD1HI0E=
+X-Google-Smtp-Source: AGHT+IFSFZsZFRemCFZuOlTP3Z1DcCiYWF6dB5Cw4RmXxg5Rs8bDDiKyLhYhZPNfo+Z7CiK9NIWnrA==
+X-Received: by 2002:a17:906:a008:b0:a2d:edc:de0 with SMTP id p8-20020a170906a00800b00a2d0edc0de0mr1830242ejy.76.1705903901476;
+        Sun, 21 Jan 2024 22:11:41 -0800 (PST)
 Received: from [192.168.0.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id f6-20020a05600c4e8600b0040d6ffae526sm41972927wmq.39.2024.01.21.21.47.47
+        by smtp.gmail.com with ESMTPSA id wr8-20020a170907700800b00a2e08b24ea3sm8373350ejb.174.2024.01.21.22.11.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 21:47:49 -0800 (PST)
-Message-ID: <9cb99638-b43a-4f4d-b112-77f8d35f74f4@linaro.org>
-Date: Mon, 22 Jan 2024 07:47:46 +0200
+        Sun, 21 Jan 2024 22:11:40 -0800 (PST)
+Message-ID: <158830c6-d492-4967-a543-c0f5f8428d8b@linaro.org>
+Date: Mon, 22 Jan 2024 08:11:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mtd: hyperbus: Introduce SFDP probe
-To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, d-gole@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1680663252.git.Takahiro.Kuwano@infineon.com>
- <480824dd0f9b1d549ffe08e7a6e2a93a88f6e13d.1680663252.git.Takahiro.Kuwano@infineon.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: Re: [PATCH 0/2] mtd: hyperbus: Add support for Infineon S26Hx-T
 Content-Language: en-US
-In-Reply-To: <480824dd0f9b1d549ffe08e7a6e2a93a88f6e13d.1680663252.git.Takahiro.Kuwano@infineon.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org,
+ Vignesh Raghavendra <vigneshr@ti.com>, sergei.shtylyov@cogentembedded.com,
+ geert+renesas@glider.be, Mark Brown <broonie@kernel.org>
+Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
+ richard@nod.at, d-gole@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+References: <cover.1680663252.git.Takahiro.Kuwano@infineon.com>
+ <d94273b2-9516-2b80-308f-9fd1fdd2b4d5@linaro.org>
+In-Reply-To: <d94273b2-9516-2b80-308f-9fd1fdd2b4d5@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240121_214754_117217_86ECC273 
-X-CRM114-Status: GOOD (  42.99  )
+X-CRM114-CacheID: sfid-20240121_221143_538711_6373445B 
+X-CRM114-Status: GOOD (  12.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,421 +99,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Takahiro!
++ Sergei, Geert, Mark & linux-spi
 
-On 07.04.2023 09:11, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Hi, Sergei,
+
+On 23.05.2023 07:22, Tudor Ambarus wrote:
+> Hi, Takahiro, Vignesh,
 > 
-> Infineon(Cypress) S26HL-T/S26HS-T family of flash devices support both
-> legacy SPI mode and HyperBus (JESD251C xSPI profile 2.0) mode. In
-> HyperBus mode, it is compatible with Cypress S26KL-S/S26KS-S HyperFlash
-> family with some exceptions. One significant difference is that the CFI
-> is replaced by SFDP. This patch intends to support Hyperbus devices that
-> has SFDP instead of CFI, by adding new probing method that detects SFDP
-> signature and setting up CFI structure to make SFDP chips work with
-> cfi_cmdset_xxxx.
+> 
+> On 07.04.2023 09:11, tkuw584924@gmail.com wrote:
+>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>>
+>> This sereis adds support for Infineon S26HL-T/S26HS-T flash family.
+>> https://www.infineon.com/dgdl/Infineon-S26HS01GTGABHM020-DataSheet-v01_00-EN.pdf?fileId=8ac78c8c7f2a768a017f52f2f5182c91
+>>
+>> This family supports two interface modes, SPI mode and Hyperbus mode. The mode
+>> can be switched at rutime. The default mode is selected by ordering option
+>> and non-volatile user configuration. In hyperbus mode, the device is compatible
+>> with S26KL-S/S26KS-S hyperflash family that supports hyperbus only so one of
+>> use cases of S26Hx-T is replacement of (or migration from) S26Kx-S. This patch
+>> set focuses on particular usage that the device is pre-configured as hyperbus
+>> mode for compatibility with S26Kx-S.
+> 
+> I'm questioning the overall hyperbus software architecture, not your
+> patches per se. IMO hyperbus framework should have been written on top
+> of SPIMEM and the controllers be placed in drivers/spi/. So I'd first
+> address the SPIMEM adoption before adding/accepting new support. Would
+> love to hear more from Vignesh.
 > 
 
-By SFDP you mean the JESD216 SFDP standard, right? Would it make sense
-to pull out the SFDP parsing from SPI NOR into its own dedicated entity
-so that it's used by hyperbus as well?
+RPC is the only multi IO SPI controller that's upstreamed and capable of
+dealing with hyperflashes, but there are others which are not upstreamed
+yet (microchip).
 
-> The probe flow implemented in hyperbus_sfdp_probe_chip() is same as
-> cfi_probe_chip() in chips/cfi_probe.c. The CFI "QRY" detection is
-> replaced by "SFDP" signature detection.
-> 
-> Device identification and setup functions specific for S26Hx-T are also
-> implemented in the same source file as SFDP probe and called from probe
-> function. Once other devices that supports SFDP come up, we will implemet
-> generic detection and setup flow.
+Struct ``struct rpcif_op`` [1] duplicates the contents of ``struct
+spi_mem_op`` [2] which could have been avoided if hyperflash driver was
+extended with SPI MEM support. This way the RPC hyperbus driver, which
+is an SPI controller, could have been moved to drivers/spi.
 
-What other hyperflash devices are out in the market and which of them
-support SFDP? I saw ISSI has hyperflashes:
-https://www.issi.com/us/product-flash.shtml
+Sergei, do you remember why we haven't used SPI MEM for hyberbus since
+the beginning? Was it something that we aimed for in a future patch set?
 
-In SPI NOR we worked a lot to separate the core from the manufacturer
-drivers. I'd make the split here since the beginning, the code will
-become cleaner and easier to maintain.
-
-> 
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> ---
->  drivers/mtd/hyperbus/Makefile        |   4 +-
->  drivers/mtd/hyperbus/hyperbus-core.c |  15 +-
->  drivers/mtd/hyperbus/hyperbus-sfdp.c | 346 +++++++++++++++++++++++++++
->  3 files changed, 363 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/mtd/hyperbus/hyperbus-sfdp.c
-> 
-> diff --git a/drivers/mtd/hyperbus/Makefile b/drivers/mtd/hyperbus/Makefile
-> index 26386158bd1c..03132bc05853 100644
-> --- a/drivers/mtd/hyperbus/Makefile
-> +++ b/drivers/mtd/hyperbus/Makefile
-> @@ -1,9 +1,11 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus-core.o
-> +obj-$(CONFIG_MTD_HYPERBUS)	+= hyperbus.o
->  obj-$(CONFIG_HBMC_AM654)	+= hbmc-am654.o
->  obj-$(CONFIG_RPCIF_HYPERBUS)	+= rpc-if.o
->  
-> +hyperbus-objs	:= hyperbus-core.o hyperbus-sfdp.o
-
-maybe rename hyperbus-core to core, as we're already in a hyperbus directory
-
-> +
->  
->  
->  obj-y += ifx-hyperbus.o
-> diff --git a/drivers/mtd/hyperbus/hyperbus-core.c b/drivers/mtd/hyperbus/hyperbus-core.c
-> index 4d8047d43e48..b31a8bea3995 100644
-> --- a/drivers/mtd/hyperbus/hyperbus-core.c
-> +++ b/drivers/mtd/hyperbus/hyperbus-core.c
-> @@ -12,6 +12,19 @@
->  #include <linux/of.h>
->  #include <linux/types.h>
->  
-> +struct mtd_info *hyperbus_sfdp_probe(struct map_info *map);
-> +
-> +static struct mtd_info *hyperbus_map_probe(struct map_info *map)
-> +{
-> +	struct mtd_info *mtd;
-> +
-> +	mtd = do_map_probe("cfi_probe", map);
-> +	if (!mtd)
-> +		mtd = hyperbus_sfdp_probe(map);
-> +
-> +	return mtd;
-> +}
-> +
->  static struct hyperbus_device *map_to_hbdev(struct map_info *map)
->  {
->  	return container_of(map, struct hyperbus_device, map);
-> @@ -106,7 +119,7 @@ int hyperbus_register_device(struct hyperbus_device *hbdev)
->  		}
->  	}
->  
-> -	hbdev->mtd = do_map_probe("cfi_probe", map);
-> +	hbdev->mtd = hyperbus_map_probe(map);
->  	if (!hbdev->mtd) {
->  		dev_err(dev, "probing of hyperbus device failed\n");
->  		return -ENODEV;
-> diff --git a/drivers/mtd/hyperbus/hyperbus-sfdp.c b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-> new file mode 100644
-> index 000000000000..f292e39856cb
-> --- /dev/null
-> +++ b/drivers/mtd/hyperbus/hyperbus-sfdp.c
-> @@ -0,0 +1,346 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023, Infineon Technologies.
-> + */
-> +#include <linux/mtd/xip.h>
-> +#include <linux/mtd/gen_probe.h>
-> +
-> +#ifdef CONFIG_MTD_XIP
-> +
-> +/* only needed for short periods, so this is rather simple */
-> +#define xip_disable()	local_irq_disable()
-> +
-> +#define xip_allowed(base, map) \
-> +do { \
-> +	(void) map_read(map, base); \
-> +	xip_iprefetch(); \
-> +	local_irq_enable(); \
-> +} while (0)
-> +
-> +#define xip_enable(base, map, cfi) \
-> +do { \
-> +	hyperbus_sfdp_mode_off(base, map, cfi);		\
-> +	xip_allowed(base, map); \
-> +} while (0)
-> +
-> +#else
-> +
-> +#define xip_disable()				do { } while (0)
-> +#define xip_allowed(base, map)			do { } while (0)
-> +#define xip_enable(base, map, cfi)		do { } while (0)
-> +> +#endif
-
-
-Is the xip tested? You haven't specified anything about it in the commit
-message. I would get rid of it if possible, and come with a dedicated
-patch on top. The simpler a patch is, the more chances it gets to get
-integrated.
-
-> +
-> +/* HyperBus Commands */
-> +#define HYPERBUS_ADDR_UNLOCK1	0x555
-> +#define HYPERBUS_ADDR_UNLOCK2	0x2AA
-> +#define HYPERBUS_CMD_UNLOCK1	0xAA
-> +#define HYPERBUS_CMD_UNLOCK2	0x55
-> +#define HYPERBUS_CMD_RDSFDP	0x90
-> +#define HYPERBUS_CMD_RDVCR1	0xC7
-> +#define HYPERBUS_CMD_RDVCR2	0xC9
-> +#define HYPERBUS_CMD_ASOEXT	0xF0
-> +#define HYPERBUS_CMD_ERSCTR	0x30
-
-these shall be moved to include/linux/mtd/hyperbus.h
-
-> +
-> +/* For Infineon S26Hx family */
-> +#define S26HX_ADDR_MFR_ID	0x800
-> +#define S26HX_ADDR_DEV_ID1	0x801
-> +#define S26HX_ADDR_DEV_ID2	0x802
-> +#define S26HX_DEV_ID1_3V0	0x006A
-> +#define S26HX_DEV_ID1_1V8	0x007B
-> +#define S26HX_DEV_ID2_512	0x001A
-> +#define S26HX_DEV_ID2_01G	0x001B
-> +#define S26HX_CFR1_UNIFORM	BIT(9)
-> +#define S26HX_CFR1_TP4KBS	BIT(8)
-> +#define S26HX_CFR2_SP4KBS	BIT(2)
-
-and these to thier own manufacturer file
-
-> +#define ERASEINFO(s, b)		(((s) << 8) | ((b) - 1))
-
-can we use FIELD_GET/FIELD_SET for eraseinfo?
-
-> +
-> +static inline u16 hyperbus_read(u32 addr, struct map_info *map,
-> +				struct cfi_private *cfi)
-> +{
-> +	return cfi_read_query16(map, addr * cfi->interleave * cfi->device_type);
-> +}
-> +
-> +static inline void hyperbus_write(u8 cmd, u32 addr, struct map_info *map,
-> +				  struct cfi_private *cfi)
-
-here you ignore the return value of cfi_send_gen_cmd. Shall we change
-the return type to u32?
-
-> +{
-> +	cfi_send_gen_cmd(cmd, addr, 0, map, cfi, cfi->device_type, NULL);> +}
-> +
-> +static int __xipram hyperbus_sfdp_present(struct map_info *map, __u32 base,
-> +					  struct cfi_private *cfi)
-> +{
-> +	int osf = cfi->interleave * cfi->device_type; /* scale factor */
-> +	map_word val[2];
-> +	map_word sfdp[2];
-> +
-> +	sfdp[0] = cfi_build_cmd(0x4653, map, cfi); /* "SF" */
-> +	sfdp[1] = cfi_build_cmd(0x5044, map, cfi); /* "DP" */
-> +
-> +	val[0] = map_read(map, base + osf * 0x0);
-> +	val[1] = map_read(map, base + osf * 0x1);
-
-can we read the entire SFDP in one shot?
-
-> +
-> +	if (!map_word_equal(map, sfdp[0], val[0]))
-> +		return 0;
-> +
-> +	if (!map_word_equal(map, sfdp[1], val[1]))
-> +		return 0;
-> +
-> +	return 1; /* "SFDP" found */
-
-return -EINVAL for error and zero for success
-> +}
-> +
-> +static int __xipram hyperbus_sfdp_mode_on(u32 base, struct map_info *map,
-> +					  struct cfi_private *cfi)
-
-base is unused
-> +{
-> +	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_UNLOCK1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_UNLOCK2, HYPERBUS_ADDR_UNLOCK2, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_RDSFDP, HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	return hyperbus_sfdp_present(map, 0, cfi);
-> +}
-> +
-> +static void __xipram hyperbus_sfdp_mode_off(u32 base, struct map_info *map,
-> +					    struct cfi_private *cfi)
-
-base in unused
-> +{
-> +	hyperbus_write(HYPERBUS_CMD_ASOEXT, 0, map, cfi);
-> +}
-> +
-> +static u16 __xipram hyperbus_s26hx_rdvcr1(struct map_info *map,
-> +					  struct cfi_private *cfi)
-> +{
-> +	hyperbus_write(HYPERBUS_CMD_UNLOCK1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_UNLOCK2, HYPERBUS_ADDR_UNLOCK2, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_RDVCR1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	return hyperbus_read(0, map, cfi);
-> +}
-> +
-> +static u16 __xipram hyperbus_s26hx_rdvcr2(struct map_info *map,
-> +					  struct cfi_private *cfi)
-> +{
-> +	hyperbus_write(HYPERBUS_CMD_UNLOCK1, HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_UNLOCK2, HYPERBUS_ADDR_UNLOCK2, map, cfi);
-> +	hyperbus_write(HYPERBUS_CMD_RDVCR2, HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	return hyperbus_read(0, map, cfi);
-> +}
-> +
-> +static int __xipram hyperbus_s26hx_chip_setup(struct map_info *map,
-> +					      struct cfi_private *cfi)
-> +{
-> +	u16 mfr_id, dev_id1, dev_id2, cfr1v, cfr2v;
-> +	u8 nregions, nbtm4ks, ntop4ks, n256ks;
-> +	u32 *erase;
-> +
-> +	/* Read manufacturer and Device ID */
-> +	mfr_id = hyperbus_read(S26HX_ADDR_MFR_ID, map, cfi);
-> +	dev_id1 = hyperbus_read(S26HX_ADDR_DEV_ID1, map, cfi);
-> +	dev_id2 = hyperbus_read(S26HX_ADDR_DEV_ID2, map, cfi);
-> +
-> +	if ((mfr_id != CFI_MFR_CYPRESS) ||
-> +	    (dev_id1 != S26HX_DEV_ID1_3V0 && dev_id1 != S26HX_DEV_ID1_1V8) ||
-> +	    (dev_id2 != S26HX_DEV_ID2_512 && dev_id2 != S26HX_DEV_ID2_01G)) {
-> +		xip_enable(0, map, cfi);
-> +		return 0;
-> +	}
-> +
-> +	/* Exit SFDP ASO then read CFR1V and CFR2V */
-> +	hyperbus_sfdp_mode_off(0, map, cfi);
-> +	cfr1v = hyperbus_s26hx_rdvcr1(map, cfi);
-> +	cfr2v = hyperbus_s26hx_rdvcr2(map, cfi);
-> +
-> +	xip_enable(0, map, cfi);
-> +
-> +	/*
-> +	 * Determine number of regions (nregions), number of bottom 4KB sectors
-> +	 * (nbtm4ks), and number of top 4KB sectors (ntop4ks)
-> +	 */
-> +	if (cfr1v & S26HX_CFR1_UNIFORM) {
-> +		nregions = 1;
-> +		nbtm4ks = 0;
-> +		ntop4ks = 0;
-> +	} else if (cfr2v & S26HX_CFR2_SP4KBS) {
-> +		nregions = 5;
-> +		nbtm4ks = 16;
-> +		ntop4ks = 16;
-> +	} else if (cfr1v & S26HX_CFR1_TP4KBS) {
-> +		nregions = 3;
-> +		nbtm4ks = 0;
-> +		ntop4ks = 32;
-> +	} else {
-> +		nregions = 3;
-> +		nbtm4ks = 32;
-> +		ntop4ks = 0;
-> +	}
-> +
-> +	cfi->cfiq = kmalloc(sizeof(struct cfi_ident) + nregions * sizeof(u32),
-> +			    GFP_KERNEL);
-> +	if (!cfi->cfiq)
-> +		return 0;
-> +
-> +	memset(cfi->cfiq, 0, sizeof(struct cfi_ident));
-> +
-> +	cfi->mfr = mfr_id;
-> +	cfi->id = dev_id1 << 8 | dev_id2;
-> +	cfi->cfi_mode = CFI_MODE_CFI;
-> +	cfi->addr_unlock1 = HYPERBUS_ADDR_UNLOCK1;
-> +	cfi->addr_unlock2 = HYPERBUS_ADDR_UNLOCK2;
-> +	cfi->sector_erase_cmd = CMD(HYPERBUS_CMD_ERSCTR);
-> +
-> +	cfi->cfiq->P_ID = P_ID_AMD_STD;
-> +	cfi->cfiq->DevSize = dev_id2; /* dev_id2 indicates size in 2^N */
-> +	cfi->cfiq->MaxBufWriteSize = 9; /* 2^9 = 512 */
-> +
-> +	/*
-> +	 * cfi_cmdset_0002 uses fixed timeout for word write (1ms + 1 jiffies)
-> +	 * and sector erase (20s) that should be enough for s26hx. For buffer
-> +	 * write, 2000us is used if cfiq->BufWriteTimeoutXXX is 0. The typical
-> +	 * and maximum 512B page programming times are 680us and 2175us
-> +	 * respectively. Specify proper values here to extend buffer write
-> +	 * timeout.
-> +	 */
-> +	cfi->cfiq->BufWriteTimeoutTyp = 10; /* 2^10 = 1024 */
-> +	cfi->cfiq->BufWriteTimeoutMax = 2; /* 1024 x 2^2 = 4096 */
-> +
-> +	/* Setup erase region info */
-> +	cfi->cfiq->NumEraseRegions = nregions;
-> +	erase = cfi->cfiq->EraseRegionInfo;
-> +
-> +	/* Bottom 4KB sectors and remaining portion */
-> +	if (nbtm4ks) {
-> +		*erase++ = ERASEINFO(SZ_4K, nbtm4ks);
-> +		*erase++ = ERASEINFO(SZ_256K - (SZ_4K * nbtm4ks), 1);
-> +	}
-> +
-> +	/*
-> +	 * The number of uniform 256KB sectors is obtained by dividing 'device
-> +	 * size' by 256K(=2^18). Deduct overlaid sector(s) from uniform number
-> +	 * if top and/or bottom 4KB sectors exist.
-> +	 */
-> +	n256ks = (1 << (cfi->cfiq->DevSize - 18)) - !!(nbtm4ks) - !!(ntop4ks);
-> +	*erase++ = ERASEINFO(SZ_256K, n256ks);
-> +
-> +	/* Top 4KB sectors and remaining portion */
-> +	if (ntop4ks) {
-> +		*erase++ = ERASEINFO(SZ_256K - (SZ_4K * ntop4ks), 1);
-> +		*erase = ERASEINFO(SZ_4K, ntop4ks);
-> +	}
-> +
-> +	return 1;
-
-please return 0 for success, -errno in case of others. Is this method
-entirely IFX specific? Let's move it in its own cypress/ifx manufacturer
-file.
-
-> +}
-> +
-> +static int __xipram hyperbus_sfdp_chip_setup(struct map_info *map,
-> +					     struct cfi_private *cfi)
-> +{
-> +	/*
-> +	 * Just call setup for S26Hx since it is only chip supported.
-> +	 * Once other devices come up, we will implement vendor/chip specific
-> +	 * detection and setup flow here.
-> +	 */
-> +	return hyperbus_s26hx_chip_setup(map, cfi);
-> +}
-> +
-> +static int __xipram hyperbus_sfdp_probe_chip(struct map_info *map, __u32 base,
-> +					     unsigned long *chip_map,
-> +					     struct cfi_private *cfi)
-> +{
-> +	u32 probe_addr;
-> +	int i;
-> +
-> +	if (base >= map->size) {
-> +		pr_notice("Probe at base(0x%08x) past the end of the map(0x%08lx)\n",
-> +			  base, map->size - 1);
-> +		return 0;
-> +	}
-> +
-> +	probe_addr = base + cfi_build_cmd_addr(HYPERBUS_ADDR_UNLOCK1, map, cfi);
-> +	if (probe_addr >= map->size) {
-> +		pr_notice("Probe at base[unlock](0x%08x) past the end of the map(0x%08lx)\n",
-> +			  probe_addr, map->size - 1);
-> +		return 0;
-> +	}
-> +
-> +	xip_disable();
-> +	if (!hyperbus_sfdp_mode_on(base, map, cfi)) {
-> +		xip_enable(base, map, cfi);
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * This is the first time we're called. Set up the CFI stuff accordingly
-> +	 * and return
-> +	 */
-> +	if (!cfi->numchips)
-> +		return hyperbus_sfdp_chip_setup(map, cfi);
-
-Ah, I need to study more. Would you please speed me up a little and tell
-me more about the multi chip handling? Why is the probe called multiple
-times?
-
-Thanks!
+Thanks,
 ta
+
+[1]
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/memory/renesas-rpc-if.h?h=mtd/for-6.8#n22
+
+[2]
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/linux/spi/spi-mem.h?h=mtd/for-6.8#n99
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
