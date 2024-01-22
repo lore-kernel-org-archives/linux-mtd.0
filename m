@@ -4,87 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 241B9C4725D
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 08:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA3AEC47DAF
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Jan 2024 09:27:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QV2w8XnwYxmNwfwTVrP7ra2Cg3CBTlNIq4Cug3bpJSU=; b=Coxhc1qx+8hrtu
-	LoCU0z1iDf+XPxLygqHomdSiMkx9TonA8eWv7f0AVXwv0AAkp57WCf3p5KAx3engfAcP13K/Me3EP
-	5GRT+MrsbzX9pXNfb1LwfT8yDPHaIrJkT24AzQ+aHDyI6t/vJfOE9HEs7pOQM1mSU1pf7y7Lfk6m8
-	sgRbUkEB5mgWLovHYtMyabC8pKL1vsKN16p1tjRrVwjRNT6QhyAAGT2p+x7U+BBEVQsKMi9zoW2yI
-	ju1gZZ34a2H1W1jjSKW6nJSF04LMgbC9qhPQp26iomSQJCTr40wFMxvaGODEcTtc8fBQ3EAF9qk4v
-	bxMKOJG4oBPK7e9h1Vnw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3fAAPAQCNoznZCZU3pQQA4s8y10p8OdFL4lMMmYdQhA=; b=fJO56sSwJ9jVr0Chstcjgmeh/n
+	DD1N+hQP4C37KsSOcuzQZIobry++ST/ISK2Uc5XjlvNnod7XTzCiE5zW9n0n1OErt2z8oUGhWfbpv
+	gfPmEmRi6F/S6LVbw6JkzgZl7i8kCXQO8FH5IImegT9TmrKcqfEuiiRjih+Tir1KMNUdAIHpyovJw
+	9BmHX+jag0/s70xLL2YQB204j0bkQRT5jZBEXb9LItSIbpayxltGcZfzBcv7Mv9J0Kp4xoy/x0Pao
+	c2ur8vDfJxIyz4kUoLQQZ7cnUfYHM3VDPUS6BdOY+xXwATu42tPOaEUkOQjHNNAU0lszJdtPc4dn7
+	vaJgi0lQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRpRR-00Azrg-0j;
-	Mon, 22 Jan 2024 08:14:01 +0000
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+	id 1rRqaj-00BHh1-1n;
+	Mon, 22 Jan 2024 09:27:41 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rRpRM-00AzqQ-0Q
+	id 1rRqaf-00BHdu-05
 	for linux-mtd@lists.infradead.org;
-	Mon, 22 Jan 2024 08:14:00 +0000
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-33921b8988fso2514101f8f.3
-        for <linux-mtd@lists.infradead.org>; Mon, 22 Jan 2024 00:13:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705911233; x=1706516033; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5bETPM8oCthIJxvtz9/EW/JDG11DvuEOvRmdYkisMXk=;
-        b=tbGM/HGBrGLhtn8eHwb4E2sawe0Nnvl8lbMYFvW95A9RINVAgDgxhZ/x+DRhoTuxE+
-         jfP4GD1ddCmmEy0nQfaq/20hA4ogkugGvQV/IcGOtata2OrkOQwYdHCKkLvboAUyas5o
-         vutUqypCTu+Q1L/1l5a9q4Pkmx8BFEJihHb8l87Fr1vClaIAQNxbu76mr7ZSaUsF6xuS
-         QRjqWRCs2DAzToFGZGO9ozD9TeQU39oOhQwqMlOcI+YlF4mMLLyiG3vjXdglFPuBXytP
-         TdKDELMXCMaPHbeq1RJDpXzwVU4K5xaWP9ZEBAhxI9CUNyTcZ3X6eh3kzajaqy7AF8Sa
-         YzIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705911233; x=1706516033;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5bETPM8oCthIJxvtz9/EW/JDG11DvuEOvRmdYkisMXk=;
-        b=D7pteMDb5zE7ii9M7TrJOBbwvbCPsgbp5R9u72oMEva2IQ52wUh0+68hj8sW3Di2p/
-         +6A7y4JKmKBXDZxOa9rW3bgKva3CgJXsLpfTAdcFNuLvBBsbDsk5oDcE7LudYk+AEzUT
-         t8DnMgFzlI9Cb0yNMYJ0lPlb7ANjFD5a+r41Sr6ab/QGDkGozcvkXxeOZcuVdttefBQC
-         vjm6Xy0c0pNgugOPQWhqMBH1XkvPbW9xZ7GaPdari/nlTAzqnT+4jeXK7eBPTQF8aGZ/
-         DF9BPk1Dv13bFkY75pEvboWlMX5VCuWCMGyQ9xvHmCsKoSbJ6l7b5Cr3Q8RBNARL7TXG
-         HXLQ==
-X-Gm-Message-State: AOJu0YwC93y9yE1SKsHdppBdFnNS/rNDUglSTS5YPFKSIm2neHLdQAnd
-	zA8CUn6svOUSKNKpu7jrCdddhp1FtwwVMdVbprr8lkKCmXh5gOEDxfie1GzIG0I=
-X-Google-Smtp-Source: AGHT+IEv81t2Cirbph1WSpZmMPNn9zT/tADSV0WIaGjAKOec1NK91Mm5MQPNd9pObJr69GaIhuvgWQ==
-X-Received: by 2002:adf:f6cb:0:b0:337:bfe8:5bfd with SMTP id y11-20020adff6cb000000b00337bfe85bfdmr2263974wrp.50.1705911233429;
-        Mon, 22 Jan 2024 00:13:53 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id l8-20020a5d5608000000b003392bcd6c48sm4780856wrv.79.2024.01.22.00.13.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 00:13:52 -0800 (PST)
-Message-ID: <508196d4-a533-47c9-bf6e-5718364c8d54@linaro.org>
-Date: Mon, 22 Jan 2024 08:13:50 +0000
+	Mon, 22 Jan 2024 09:27:39 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TJPw21QKzz29kdp;
+	Mon, 22 Jan 2024 17:25:38 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id A86281400FD;
+	Mon, 22 Jan 2024 17:27:20 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 17:27:20 +0800
+Subject: Re: [PATCH 03/15] ubifs: Convert ubifs_writepage to use a folio
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Richard Weinberger
+	<richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>
+References: <20240120230824.2619716-1-willy@infradead.org>
+ <20240120230824.2619716-4-willy@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <9902761c-c8d6-64d2-8a78-d99d4450996e@huawei.com>
+Date: Mon, 22 Jan 2024 17:27:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] mtd: hyperbus: Add support for Infineon S26Hx-T
-To: "Raghavendra, Vignesh" <vigneshr@ti.com>, tkuw584924@gmail.com,
- linux-mtd@lists.infradead.org, sergei.shtylyov@cogentembedded.com,
- geert+renesas@glider.be, Mark Brown <broonie@kernel.org>
-Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, d-gole@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-References: <cover.1680663252.git.Takahiro.Kuwano@infineon.com>
- <d94273b2-9516-2b80-308f-9fd1fdd2b4d5@linaro.org>
- <158830c6-d492-4967-a543-c0f5f8428d8b@linaro.org>
- <2bcf6646-b7ce-48c9-8a9b-0634c3fb40e9@ti.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <2bcf6646-b7ce-48c9-8a9b-0634c3fb40e9@ti.com>
+In-Reply-To: <20240120230824.2619716-4-willy@infradead.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240122_001356_172426_84D249E8 
-X-CRM114-Status: GOOD (  20.61  )
+X-CRM114-CacheID: sfid-20240122_012737_434962_C1DE45DF 
+X-CRM114-Status: GOOD (  21.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,98 +67,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 1/22/24 06:25, Raghavendra, Vignesh wrote:
-> 
-> 
-> On 1/22/2024 11:41 AM, Tudor Ambarus wrote:
->> + Sergei, Geert, Mark & linux-spi
->>
->> Hi, Sergei,
->>
->> On 23.05.2023 07:22, Tudor Ambarus wrote:
->>> Hi, Takahiro, Vignesh,
->>>
->>>
->>> On 07.04.2023 09:11, tkuw584924@gmail.com wrote:
->>>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>>
->>>> This sereis adds support for Infineon S26HL-T/S26HS-T flash family.
->>>> https://www.infineon.com/dgdl/Infineon-S26HS01GTGABHM020-DataSheet-v01_00-EN.pdf?fileId=8ac78c8c7f2a768a017f52f2f5182c91
->>>>
->>>> This family supports two interface modes, SPI mode and Hyperbus mode. The mode
->>>> can be switched at rutime. The default mode is selected by ordering option
->>>> and non-volatile user configuration. In hyperbus mode, the device is compatible
->>>> with S26KL-S/S26KS-S hyperflash family that supports hyperbus only so one of
->>>> use cases of S26Hx-T is replacement of (or migration from) S26Kx-S. This patch
->>>> set focuses on particular usage that the device is pre-configured as hyperbus
->>>> mode for compatibility with S26Kx-S.
->>>
->>> I'm questioning the overall hyperbus software architecture, not your
->>> patches per se. IMO hyperbus framework should have been written on top
->>> of SPIMEM and the controllers be placed in drivers/spi/. So I'd first
->>> address the SPIMEM adoption before adding/accepting new support. Would
->>> love to hear more from Vignesh.
->>>
->>
->> RPC is the only multi IO SPI controller that's upstreamed and capable of
->> dealing with hyperflashes, but there are others which are not upstreamed
->> yet (microchip).
->>
->> Struct ``struct rpcif_op`` [1] duplicates the contents of ``struct
->> spi_mem_op`` [2] which could have been avoided if hyperflash driver was
->> extended with SPI MEM support. This way the RPC hyperbus driver, which
->> is an SPI controller, could have been moved to drivers/spi.
->>
->> Sergei, do you remember why we haven't used SPI MEM for hyberbus since
->> the beginning? Was it something that we aimed for in a future patch set?
->>
->> Thanks,
->> ta
->>
->> [1]
->> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/memory/renesas-rpc-if.h?h=mtd/for-6.8#n22
->>
->> [2]
->> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/linux/spi/spi-mem.h?h=mtd/for-6.8#n99
->>
-> 
-> The initial hyperflash predates opening up of HyperBus protocol and
-> inclusion of it in xSPI spec. First gen Flashes followed CFI specification
-> and hence made sense to make use of cfi_cmdset_0002.c
-> 
-> We did have a discussion on extending spi_mem to support xSPI profile 
-> 2.0 during the RPC_IF [3] [4].
-> 
-> Overall, both Controllers and Flashes have moved away from CFI parallel 
-> flash protocol over to xSPI / SPI NOR flash protocol (profile 2.0), so I 
-> agree with Tudor's assessment that we need to move towards spi_mem in 
-> longer term. So
-> 
-
-Good, thanks Vignesh! I'll study a bit more and let you know about the
-progress on this topic.
-
-Cheers,
-ta
-
-> a) Extend spi_mem_op to support xSPI profile 2.0 transaction template
-> b) HyperBus layer can then either be a adapter from CFI to spi_mem for CFI
-> compliant devices. And  be subsumed completely within SPI NOR for SFDP
-> compliant devices.
-> c) Move the existing controllers over to new framework.
-> 
-> 
-> [3] https://lore.kernel.org/all/b8224f46-fc2e-de35-0a90-a2a86cacb489@ti.com/
-> [4] https://lore.kernel.org/all/20200220084927.7a411d40@collabora.com/
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8xLzIxIDc6MDgsIE1hdHRoZXcgV2lsY294IChPcmFjbGUpINC0tcA6Cj4gV2Ugc3Rp
+bGwgcGFzcyB0aGUgcGFnZSBkb3duIHRvIGRvX3dyaXRlcGFnZSgpLCBidXQgdWJpZnNfd3JpdGVw
+YWdlKCkKPiBpdHNlbGYgaXMgbm93IGxhcmdlIGZvbGlvIHNhZmUuICBJdCBhbHNvIGNvbnRhaW5z
+IGZhciBmZXdlciBoaWRkZW4gY2FsbHMKPiB0byBjb21wb3VuZF9oZWFkKCkuCj4gCj4gU2lnbmVk
+LW9mZi1ieTogTWF0dGhldyBXaWxjb3ggKE9yYWNsZSkgPHdpbGx5QGluZnJhZGVhZC5vcmc+Cj4g
+LS0tCj4gICBmcy91Ymlmcy9maWxlLmMgfCAzOSArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAyMiBkZWxl
+dGlvbnMoLSkKPiAKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3
+ZWkuY29tPgoKPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZmlsZS5jIGIvZnMvdWJpZnMvZmlsZS5j
+Cj4gaW5kZXggMDA3YTczMDUyNTYxLi43ZDA5NjdkYWRlZDMgMTAwNjQ0Cj4gLS0tIGEvZnMvdWJp
+ZnMvZmlsZS5jCj4gKysrIGIvZnMvdWJpZnMvZmlsZS5jCj4gQEAgLTEwMDksMjEgKzEwMDksMTgg
+QEAgc3RhdGljIGludCBkb193cml0ZXBhZ2Uoc3RydWN0IHBhZ2UgKnBhZ2UsIGludCBsZW4pCj4g
+ICBzdGF0aWMgaW50IHViaWZzX3dyaXRlcGFnZShzdHJ1Y3QgZm9saW8gKmZvbGlvLCBzdHJ1Y3Qg
+d3JpdGViYWNrX2NvbnRyb2wgKndiYywKPiAgIAkJdm9pZCAqZGF0YSkKPiAgIHsKPiAtCXN0cnVj
+dCBwYWdlICpwYWdlID0gJmZvbGlvLT5wYWdlOwo+IC0Jc3RydWN0IGlub2RlICppbm9kZSA9IHBh
+Z2UtPm1hcHBpbmctPmhvc3Q7Cj4gKwlzdHJ1Y3QgaW5vZGUgKmlub2RlID0gZm9saW8tPm1hcHBp
+bmctPmhvc3Q7Cj4gICAJc3RydWN0IHViaWZzX2luZm8gKmMgPSBpbm9kZS0+aV9zYi0+c19mc19p
+bmZvOwo+ICAgCXN0cnVjdCB1Ymlmc19pbm9kZSAqdWkgPSB1Ymlmc19pbm9kZShpbm9kZSk7Cj4g
+ICAJbG9mZl90IGlfc2l6ZSA9ICBpX3NpemVfcmVhZChpbm9kZSksIHN5bmNlZF9pX3NpemU7Cj4g
+LQlwZ29mZl90IGVuZF9pbmRleCA9IGlfc2l6ZSA+PiBQQUdFX1NISUZUOwo+IC0JaW50IGVyciwg
+bGVuID0gaV9zaXplICYgKFBBR0VfU0laRSAtIDEpOwo+IC0Jdm9pZCAqa2FkZHI7Cj4gKwlpbnQg
+ZXJyLCBsZW4gPSBmb2xpb19zaXplKGZvbGlvKTsKPiAgIAo+ICAgCWRiZ19nZW4oImlubyAlbHUs
+IHBnICVsdSwgcGcgZmxhZ3MgJSNseCIsCj4gLQkJaW5vZGUtPmlfaW5vLCBwYWdlLT5pbmRleCwg
+cGFnZS0+ZmxhZ3MpOwo+IC0JdWJpZnNfYXNzZXJ0KGMsIFBhZ2VQcml2YXRlKHBhZ2UpKTsKPiAr
+CQlpbm9kZS0+aV9pbm8sIGZvbGlvLT5pbmRleCwgZm9saW8tPmZsYWdzKTsKPiArCXViaWZzX2Fz
+c2VydChjLCBmb2xpby0+cHJpdmF0ZSAhPSBOVUxMKTsKPiAgIAo+IC0JLyogSXMgdGhlIHBhZ2Ug
+ZnVsbHkgb3V0c2lkZSBAaV9zaXplPyAodHJ1bmNhdGUgaW4gcHJvZ3Jlc3MpICovCj4gLQlpZiAo
+cGFnZS0+aW5kZXggPiBlbmRfaW5kZXggfHwgKHBhZ2UtPmluZGV4ID09IGVuZF9pbmRleCAmJiAh
+bGVuKSkgewo+ICsJLyogSXMgdGhlIGZvbGlvIGZ1bGx5IG91dHNpZGUgQGlfc2l6ZT8gKHRydW5j
+YXRlIGluIHByb2dyZXNzKSAqLwo+ICsJaWYgKGZvbGlvX3Bvcyhmb2xpbykgPj0gaV9zaXplKSB7
+Cj4gICAJCWVyciA9IDA7Cj4gICAJCWdvdG8gb3V0X3VubG9jazsKPiAgIAl9Cj4gQEAgLTEwMzIs
+OSArMTAyOSw5IEBAIHN0YXRpYyBpbnQgdWJpZnNfd3JpdGVwYWdlKHN0cnVjdCBmb2xpbyAqZm9s
+aW8sIHN0cnVjdCB3cml0ZWJhY2tfY29udHJvbCAqd2JjLAo+ICAgCXN5bmNlZF9pX3NpemUgPSB1
+aS0+c3luY2VkX2lfc2l6ZTsKPiAgIAlzcGluX3VubG9jaygmdWktPnVpX2xvY2spOwo+ICAgCj4g
+LQkvKiBJcyB0aGUgcGFnZSBmdWxseSBpbnNpZGUgQGlfc2l6ZT8gKi8KPiAtCWlmIChwYWdlLT5p
+bmRleCA8IGVuZF9pbmRleCkgewo+IC0JCWlmIChwYWdlLT5pbmRleCA+PSBzeW5jZWRfaV9zaXpl
+ID4+IFBBR0VfU0hJRlQpIHsKPiArCS8qIElzIHRoZSBmb2xpbyBmdWxseSBpbnNpZGUgaV9zaXpl
+PyAqLwo+ICsJaWYgKGZvbGlvX3Bvcyhmb2xpbykgKyBsZW4gPD0gaV9zaXplKSB7Cj4gKwkJaWYg
+KGZvbGlvX3Bvcyhmb2xpbykgPj0gc3luY2VkX2lfc2l6ZSkgewo+ICAgCQkJZXJyID0gaW5vZGUt
+Pmlfc2ItPnNfb3AtPndyaXRlX2lub2RlKGlub2RlLCBOVUxMKTsKPiAgIAkJCWlmIChlcnIpCj4g
+ICAJCQkJZ290byBvdXRfcmVkaXJ0eTsKPiBAQCAtMTA0NywyMCArMTA0NCwxOCBAQCBzdGF0aWMg
+aW50IHViaWZzX3dyaXRlcGFnZShzdHJ1Y3QgZm9saW8gKmZvbGlvLCBzdHJ1Y3Qgd3JpdGViYWNr
+X2NvbnRyb2wgKndiYywKPiAgIAkJCSAqIHdpdGggdGhpcy4KPiAgIAkJCSAqLwo+ICAgCQl9Cj4g
+LQkJcmV0dXJuIGRvX3dyaXRlcGFnZShwYWdlLCBQQUdFX1NJWkUpOwo+ICsJCXJldHVybiBkb193
+cml0ZXBhZ2UoJmZvbGlvLT5wYWdlLCBsZW4pOwo+ICAgCX0KPiAgIAo+ICAgCS8qCj4gLQkgKiBU
+aGUgcGFnZSBzdHJhZGRsZXMgQGlfc2l6ZS4gSXQgbXVzdCBiZSB6ZXJvZWQgb3V0IG9uIGVhY2gg
+YW5kIGV2ZXJ5Cj4gKwkgKiBUaGUgZm9saW8gc3RyYWRkbGVzIEBpX3NpemUuIEl0IG11c3QgYmUg
+emVyb2VkIG91dCBvbiBlYWNoIGFuZCBldmVyeQo+ICAgCSAqIHdyaXRlcGFnZSBpbnZvY2F0aW9u
+IGJlY2F1c2UgaXQgbWF5IGJlIG1tYXBwZWQuICJBIGZpbGUgaXMgbWFwcGVkCj4gICAJICogaW4g
+bXVsdGlwbGVzIG9mIHRoZSBwYWdlIHNpemUuIEZvciBhIGZpbGUgdGhhdCBpcyBub3QgYSBtdWx0
+aXBsZSBvZgo+ICAgCSAqIHRoZSBwYWdlIHNpemUsIHRoZSByZW1haW5pbmcgbWVtb3J5IGlzIHpl
+cm9lZCB3aGVuIG1hcHBlZCwgYW5kCj4gICAJICogd3JpdGVzIHRvIHRoYXQgcmVnaW9uIGFyZSBu
+b3Qgd3JpdHRlbiBvdXQgdG8gdGhlIGZpbGUuIgo+ICAgCSAqLwo+IC0Ja2FkZHIgPSBrbWFwX2F0
+b21pYyhwYWdlKTsKPiAtCW1lbXNldChrYWRkciArIGxlbiwgMCwgUEFHRV9TSVpFIC0gbGVuKTsK
+PiAtCWZsdXNoX2RjYWNoZV9wYWdlKHBhZ2UpOwo+IC0Ja3VubWFwX2F0b21pYyhrYWRkcik7Cj4g
+KwlsZW4gPSBpX3NpemUgLSBmb2xpb19wb3MoZm9saW8pOwo+ICsJZm9saW9femVyb19zZWdtZW50
+KGZvbGlvLCBsZW4sIGZvbGlvX3NpemUoZm9saW8pKTsKPiAgIAo+ICAgCWlmIChpX3NpemUgPiBz
+eW5jZWRfaV9zaXplKSB7Cj4gICAJCWVyciA9IGlub2RlLT5pX3NiLT5zX29wLT53cml0ZV9pbm9k
+ZShpbm9kZSwgTlVMTCk7Cj4gQEAgLTEwNjgsMTYgKzEwNjMsMTYgQEAgc3RhdGljIGludCB1Ymlm
+c193cml0ZXBhZ2Uoc3RydWN0IGZvbGlvICpmb2xpbywgc3RydWN0IHdyaXRlYmFja19jb250cm9s
+ICp3YmMsCj4gICAJCQlnb3RvIG91dF9yZWRpcnR5Owo+ICAgCX0KPiAgIAo+IC0JcmV0dXJuIGRv
+X3dyaXRlcGFnZShwYWdlLCBsZW4pOwo+ICsJcmV0dXJuIGRvX3dyaXRlcGFnZSgmZm9saW8tPnBh
+Z2UsIGxlbik7Cj4gICBvdXRfcmVkaXJ0eToKPiAgIAkvKgo+IC0JICogcmVkaXJ0eV9wYWdlX2Zv
+cl93cml0ZXBhZ2UoKSB3b24ndCBjYWxsIHViaWZzX2RpcnR5X2lub2RlKCkgYmVjYXVzZQo+ICsJ
+ICogZm9saW9fcmVkaXJ0eV9mb3Jfd3JpdGVwYWdlKCkgd29uJ3QgY2FsbCB1Ymlmc19kaXJ0eV9p
+bm9kZSgpIGJlY2F1c2UKPiAgIAkgKiBpdCBwYXNzZXMgSV9ESVJUWV9QQUdFUyBmbGFnIHdoaWxl
+IGNhbGxpbmcgX19tYXJrX2lub2RlX2RpcnR5KCksIHNvCj4gICAJICogdGhlcmUgaXMgbm8gbmVl
+ZCB0byBkbyBzcGFjZSBidWRnZXQgZm9yIGRpcnR5IGlub2RlLgo+ICAgCSAqLwo+IC0JcmVkaXJ0
+eV9wYWdlX2Zvcl93cml0ZXBhZ2Uod2JjLCBwYWdlKTsKPiArCWZvbGlvX3JlZGlydHlfZm9yX3dy
+aXRlcGFnZSh3YmMsIGZvbGlvKTsKPiAgIG91dF91bmxvY2s6Cj4gLQl1bmxvY2tfcGFnZShwYWdl
+KTsKPiArCWZvbGlvX3VubG9jayhmb2xpbyk7Cj4gICAJcmV0dXJuIGVycjsKPiAgIH0KPiAgIAo+
+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
