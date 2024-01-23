@@ -4,140 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEBDDC46CD2
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Jan 2024 01:02:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09E5FC47DDB
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Jan 2024 01:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xxThkTygQJ+yFIK/ZSd5OTM67XxUiqd4nPAFJffxDFI=; b=XJv8fA/9Vrhx0R
-	cFcNNenCW/eHkrdYzjMmsJbb8E2jhCq/+7ZStltocg6ZlSkaa/VY0NjhXvdHHAjwAyqps6BE7fsO0
-	VFkoJkaYsVqKA+t32N01oZdhD3upaZspeNRcv7lKOWE12s2zMvurmYQuKpxLQAElkuy36+iK0ZeQU
-	5kTywfe9KaZRkkEilLDi324kcxb41ZhvkCffCEfB/HJBm4jcc/ft11+maGZL/fpYNmkVdI7OQORrf
-	FU4srWBtaMds5OWdEr3JUYOrzXYl1IUQTlJk+SZvDc5Tnk5OEr1aRFLMpCCMenAsodEmtkCAWeK/l
-	zh/dimdXrbG9R7NL3W7g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:From
+	:To:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=NhQeuFlaxMQ0qkwuMFDgvwvLlsiQemfty+sbdWbysPQ=; b=Rg+p3pyQnpsgAV
+	Mtk7PPibPMrUy9TQjYuTFYMZu3/ojGraRiE+ZMn0n62HLkpFd93a9xTrM21QFkYk+WfcsRIXpKR0Y
+	hWYvkUsofctAkuyumbzSLjWf+ngRbvveEqxWT7G6cN5pSJSfEpfsa+tt9WcArCAgrtbXK1+CDcun4
+	fl72qjPkFpjhXdFVfmcV0TBhE3F5wSNuucECsbun1K3ByZS6wLb0JiyVk0nJwESWIEyVGsDoo+GKg
+	qAOIljIutU3qKk2MRUoS6F1Mj/BPHFnOLsc9RLDeWxjwlyvH8zCN0Em7Cf3jQUxY/w10j1KyXKEYU
+	jDI7DfJU3DuUC8YAmFlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rS5B0-00Eg9C-0j;
-	Tue, 23 Jan 2024 01:02:06 +0000
-Received: from mail-ps2kor01on0626.outbound.protection.outlook.com ([2a01:111:f400:fead::626] helo=KOR01-PS2-obe.outbound.protection.outlook.com)
+	id 1rS5rc-00Eng0-3B;
+	Tue, 23 Jan 2024 01:46:09 +0000
+Received: from mail-4322.protonmail.ch ([185.70.43.22])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rS5Ax-00Eg7e-1H
+	id 1rS5rZ-00Ene3-1U
 	for linux-mtd@lists.infradead.org;
-	Tue, 23 Jan 2024 01:02:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bxVLR4pEEOaUg/v/EVyZVoREBeriXWef2qfVQja+KvH7PJFJz6+nKaRmi3edUjhGAPUZitggEz6qaI4mzVhkyA6GXhllBCaI/am0Jqyj6UaOaVsvAIB3lCd+O50RKm2Bwzte9x3NA6pS3I6KPiJmaqRRZLtyQBW/33ebW9VJ+lFKk2BY0+CaoJjFkka6KFe0hARLj9VVg4ENK9pm3uoTqHgu/KlJgHlF1mHqvHxok7gk/EnUo/UqXRVyly/AT9bFGbbeCXo9D7yp1fOLT+2JOVhUPQzdQVuvnwcNjyD/Bb15nB+y/zZjDDb6woY/bwZtgvCvm15j1Uu/Ag2NjT4liw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K3r1iNRLXcDGpH2F+6ZcS0jqjWVoI1J1xA6FtghtCVk=;
- b=OYkhYiXGL46rKH7ETcEvxp38Q+NDtrn5EGP17d+ZXGXMn/ODNY+7uPNboAm/LbwUE1syZWC8Xl8Ib0tFu1/1/r3cs4yhnZTzRMSnb95rlzac0TD0rMZU1Oc2WWf+th4pKvm162zzBWjYTPcM3L8lmsakhEZrpkSsiXxKtkPWh1JzECiyIsevAvv0/vsqTQfZPD6rJSouWs4/iMm8BqybntEcaTrX7/9PsfvvI0x4O+drknzEB0aDb4+3BMu4KxUGZNopT9P/b/va7d86VRtcGdAK+4zn1nupUccgj6bncri21gCNRVy2nJpE9pSvqJpcvzRRau4Ro415ZMUpp1mSVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=skyhighmemory.com; dmarc=pass action=none
- header.from=skyhighmemory.com; dkim=pass header.d=skyhighmemory.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=skyhighmemory.onmicrosoft.com; s=selector1-skyhighmemory-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K3r1iNRLXcDGpH2F+6ZcS0jqjWVoI1J1xA6FtghtCVk=;
- b=sJsQVlvAPggl0TMONjZqIJbzQXm65Dln414zIch2U9lHShc/1zWz/w2ZLbMzubyjkaO/rx+nTfNl6oNy2XqN2jWezXuy+wu2lGxS6/sXhCB5vRruO3ictZp95ofQsFJ6arP7J0VFjP9TzMZY+W+0ekoqJgTSqx4cN0dfmhySfMOrm2nIzfKDLiyldFcVDSE+LDoDipdwzYcQLx+EU86zwlNUxWXgRwSKpc7qGJpqKCu89R90wtQyxtRyXbYqAOmpVjSffBvADpwvQt1/ymcaxYuJvrLHwYwkBNRMW9fapJTZSg/UCZrX/kdg0HHNWsC6Y6Z76yE4TKe/6RkzDGMDDg==
-Received: from PS2P216MB1185.KORP216.PROD.OUTLOOK.COM (2603:1096:301:56::10)
- by SL2P216MB2109.KORP216.PROD.OUTLOOK.COM (2603:1096:101:155::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.36; Tue, 23 Jan
- 2024 01:01:53 +0000
-Received: from PS2P216MB1185.KORP216.PROD.OUTLOOK.COM
- ([fe80::29c3:e88e:a010:56de]) by PS2P216MB1185.KORP216.PROD.OUTLOOK.COM
- ([fe80::29c3:e88e:a010:56de%5]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 01:01:53 +0000
-From: Mohamed Sardi <moh.sardi@skyhighmemory.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Kyeongrho.Kim
-	<kr.kim@skyhighmemory.com>
-CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
-	"p.yadav@ti.com" <p.yadav@ti.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "richard@nod.at" <richard@nod.at>, Mohammad
- Nada <Mohammad.nada@skyhighmemory.com>, Changsub.Shim
-	<changsub.shim@skyhighmemory.com>
-Subject: Re: [SkyHigh Memory SPI NAND Driver]
-Thread-Topic: [SkyHigh Memory SPI NAND Driver]
-Thread-Index: AQHaPzrkQfH71ygAnk28xsGw/vDWzLDP8++AgAPob9CAAGeNAIASKhEA
-Date: Tue, 23 Jan 2024 01:01:53 +0000
-Message-ID: <880CF70D-DC61-4E18-9A31-48A82A45CA3E@skyhighmemory.com>
-References: <7C13C29F-DBE0-494F-8BA6-99BB68FD08AF@skyhighmemory.com>
- <20240108144719.3198373e@xps-13>
- <SE2P216MB2102316F0F2D8134C755C37283682@SE2P216MB2102.KORP216.PROD.OUTLOOK.COM>
- <20240111083838.7f215daf@xps-13>
-In-Reply-To: <20240111083838.7f215daf@xps-13>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.79.23112723
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=skyhighmemory.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PS2P216MB1185:EE_|SL2P216MB2109:EE_
-x-ms-office365-filtering-correlation-id: 2a0cf670-762c-46c3-b6f4-08dc1baee389
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: woq8bbmHvuETPj71sYC6TZIoM0KokFXJAeK9x8w7Bjap5ujGicK4wliRYcbyxNwQjRlckm29zBqNgflLsN0xNoWnbYc2P4Eb3Nk3D9GFZ6VP1OijtOXSUVybHbaH5FSGHt7P+T+BWgEPOKt//WQbYmR/lUr+H9117TorE0hsi3ef4EtFlDf7Kb+WRjw+/iAyhbbwQRXtjHl1ItIJacqn6Y8EuvOWMnw65s8USVkiorQy/bv2pGgg2qfy2gwKSElnvgmjmRKby0mcAVa27t0ov3heOqoC2fwM5fFsX6wO4fCEPvbm+fej2TObSjxRLIWDwK8eAJqFYTZpZTx+36KYh4HHgryluLXHFWkICu4Ft9XUBvpZxKSqTD0/IduvpIf0uecKzp3eU2esx+bexWKOLcfZXtX2AmvdCt+696FTPOWg6JffnylQaOCH2Fjrz/D1z+F1Ffc1W9/zRru3DCLXbgcOtUaLNfl0fv+IaCiDacajfmL16t3OZa6T0B6nM+C6qEucUSHJBx7U5WPvfz5NQwYw4ipmn6eb8MZeReuUdI+OfxhrrjTIq+aj4tsQxsM2MNzixxZDOjoC8lSqJ8H8dvePeO/6OuaJsEcImlcJw/rDR/TxZanxg3iNjLGeVtDC1ZHysvIZQL/XeLDQjwfoH61vE1qiNq52QFeGfxeCOgk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2P216MB1185.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(39850400004)(376002)(366004)(136003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(6636002)(316002)(64756008)(66556008)(66476007)(66446008)(54906003)(6506007)(2616005)(76116006)(110136005)(66946007)(91956017)(5660300002)(6512007)(107886003)(478600001)(26005)(71200400001)(6486002)(83380400001)(4326008)(8676002)(8936002)(38070700009)(36756003)(2906002)(86362001)(38100700002)(82960400001)(41300700001)(122000001)(33656002)(21314003)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NzF4MzRyMXhTdUxXSFNnc1FQblZMTDZ0QzZFNmdiVSs0ZVNBcms1NHM4RUxN?=
- =?utf-8?B?ams3Ym8wRlY2a2J2NzRmWUFLQVBUWXBuNEVFMTF3RnFuZi84Z2dlT0N5UTda?=
- =?utf-8?B?YVZ1Tm1Xek0rMnlWMjhvd2NibHBDSG9sakZ1U2trTmM5alo3K25qU2FyeEZx?=
- =?utf-8?B?TFZaKzk2ZlRCd1BQQS9DL3Q2aTcrOVZjNVFTazNDUjMyZ1R0UzBYL09RVjVq?=
- =?utf-8?B?V1pnOUlrTkNrM3NsUG5ldytzTFo0Q0htbEp3S3JQU0FKUHlvWGo5Zm1pL3B5?=
- =?utf-8?B?OHRSUDgxL3dITXVJbTcyU3NRVjcxZGxUVDFhckNqTG55U0l3ZjFtakNucHdZ?=
- =?utf-8?B?ejFhYllmdzVuS05jOXRpbngwYUE4Y2RBZ1BxdTI0NkUrSGt2NmNWQWI5aUZB?=
- =?utf-8?B?RUVUbWkxeVZYcFVGR0s3WWdYMHVwazBJQmowditNcjF5STNJN0Rab0pLTE5N?=
- =?utf-8?B?NHduek5Sd05wTlJSNjRHWlI1V1RacThIN0FrM2kxRW0yZ2lMM2JyRTN1VGdw?=
- =?utf-8?B?WWpEZlorV1pSTXE2cDJtKzNBYzVoRmhublNRN1dIbHc1amQxSjlDVWZnV0M5?=
- =?utf-8?B?UU9zbXJET1RLa2RkbENMbmIrWklVRXR2WUcxWlpVVDJPUk90SjNZYWdTRDEv?=
- =?utf-8?B?UWVoK3o3Y3RkS2dtN254dmxTZlAxUVE5TEtJTm81c1Exa3Z6ejZ6SkpmMTFy?=
- =?utf-8?B?QXg3dmFBK1JMTUcwN1A2Q1J0dHhyNnUzUnpGcnE2aFZVUlJmamYxRDJQY3Bl?=
- =?utf-8?B?QjZQSU15UnpNUTBaY00rRUdMVDJ3ZUVRY1BKTnhiYU9DVzZxcVk4d04yN2RY?=
- =?utf-8?B?UGYxRTE1WVJ4c3o3ZWpNOUJoQldpdHlXQysrczNoZjJCNjV4dkprODF1QS9E?=
- =?utf-8?B?ZG9ZaDQwRXViMUVBV1h2L2pBa1B5OG5TQnJZb080L1haSVFMWjBuaEtyTW1Z?=
- =?utf-8?B?dEkxTjgxckRQZVluQjUvY0UwMFNIaDAvT3RxY3lSbmY1R1dnNldyOUN2Tlpm?=
- =?utf-8?B?ODBMdC9zSm9JVGw1ekhnOEpzTnJSUTJPY2IveHk3UzFaOWIyZUVzVGI5eXFq?=
- =?utf-8?B?VHlWMGtiMllDc0pLa1l2NEpwZE8wMWpQR2F5QU9kMWxpQ3hKdEczWEU5eXFI?=
- =?utf-8?B?aUtYbG1DZE13MTdCdUFIZHFTWTkrajN1WXUzTUZINHp4MVpJTjN5MGI2OWF0?=
- =?utf-8?B?Y0orUWxqZktDOFVLSGZISjdycFFzeXcwaGlkbGVTTys4SHp6QU43WkY2YjdM?=
- =?utf-8?B?Z3dzZjFHenFzWFVzZWVWRjV2STVQOXhYMm56YnpsWWd0dEoyd0tZUUh2alNj?=
- =?utf-8?B?V2QzT2gySG9PUy9nanIrUU9YaWFpOHFJQkxoN014Z0lWdTNUdXhoRjdIdXQx?=
- =?utf-8?B?Q2Jyc0dQY0svREsycGJZcDFkVGlGRllPN2o2V0JZcFlMQ0J6UGJ1V2tmUEhJ?=
- =?utf-8?B?KzN5TGtTQTdjdEo1RHdLei85T2plY0o5OHV0REJtOWx3L21XVGozRTgzR1o4?=
- =?utf-8?B?MU5BOG1CbXVuVUZPTEpTaTNIdUZOTjltTmRidVF6MEExZG5JdXhWV3E1SkYr?=
- =?utf-8?B?TXR2VlZRQTA0dkJqdmVlZzFOczlsV0RyRDVWSzVXdzBSWDRydjc3OXRDSWMy?=
- =?utf-8?B?Wi85N1Y5WmpRNmNzeDh5VmNWYXBRNnY0Mkwxbld6alpSUzczNHoyT1Jxc0sv?=
- =?utf-8?B?OXJCdHBySWMvM25RWlNWYmNNOU1qT0YwY2RVcUs5MHlOd28xTmcxYlA3b3NC?=
- =?utf-8?B?VDhNalFUU1pqYlRiUW9hRmhVTXAzVFNwakxDanQvQmRaeFZaL2JsWEsrKzMy?=
- =?utf-8?B?Vm5oTUtKM2RqV2lwU0ZQdURsU1EzczZ6WWFpTzluZ20vZHdKMkd2YmNXYXpo?=
- =?utf-8?B?RUxRdnF6ZDdaTG1IaEdESEdnRXZBY3B0OEJZUTAxQVJvV0ttL1QzMnBWYWsr?=
- =?utf-8?B?L2hHUW5USSsvSjZheG52cURSNzFuZnVNaVpPQjhzUnBCeGFnL1l6Z1V4M1Ny?=
- =?utf-8?B?blVmM0Y5VWFydWNmN3NUaEJ0WjBrQ0YxQm5DUnVXaGVSWThrcjNzSWw4UjlL?=
- =?utf-8?B?ekRWNW44a0g0ZURudDVLWmI3dzJIWm04cHplWnlTQVl4Q2JmMVV3ajZMbm8w?=
- =?utf-8?B?V0F6RHhDR1YvcXJoZGpRWnh6cmsvWC8zWllSSG9VcFR5ZzIwemY0VDFndkU1?=
- =?utf-8?B?cWc9PQ==?=
-Content-ID: <DECAF8DE06E5F14DA14B69E5BA8BB282@KORP216.PROD.OUTLOOK.COM>
+	Tue, 23 Jan 2024 01:46:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1705974359; x=1706233559;
+	bh=mcnYv4ICnO11P0Sn1Sa919eKhcJsfwhNHOsnLcCSFLU=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=ZmOMA9SEjwO5R/DphCqeNUxcfZ0eau0G2khHbnS+2J0y93asuCsTrmjKIJDAevRu2
+	 H5Z/UBaA4U+RI3IwWSfsQUwOKUjJ+NvX1XnPDOC6q6nKQvjW0EgdXshqA9A4VYeHht
+	 secP1ACWeMucxCpK3VmcbrL1GFbGnZZCIQyvLyRBer8Zue2pPpo8UF78fFrEv73OMt
+	 zjKz3tcR0cfj/1q5ErRk/ssYn+lTbTHe9y465UnTtLcXn95apE/iVi8xHOstlEDDaz
+	 zB+E4chA+Ds7S82Mg2Lbj/qOpgNYs4/eLZCC9pSfKtrT724YgSWHFFziWKwrOLVELF
+	 vKIug3QMKOKMg==
+Date: Tue, 23 Jan 2024 01:45:48 +0000
+To: devicetree@vger.kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+From: Michael Pratt <mcpratt@pm.me>
+Cc: Michael Pratt <mcpratt@pm.me>, saravanak@google.com, abel.vesa@linaro.org, alexander.stein@ew.tq-group.com, andriy.shevchenko@linux.intel.com, bigunclemax@gmail.com, brgl@bgdev.pl, colin.foster@in-advantage.com, djrscally@gmail.com, dmitry.baryshkov@linaro.org, festevam@gmail.com, fido_max@inbox.ru, frowand.list@gmail.com, geert@linux-m68k.org, heikki.krogerus@linux.intel.com, kernel@pengutronix.de, linus.walleij@linaro.org, linux@roeck-us.net, luca.weiss@fairphone.com, magnus.damm@gmail.com, martin.kepplinger@puri.sm, miquel.raynal@bootlin.com, rafal@milecki.pl, ansuelsmth@gmail.com, richard@nod.at, sakari.ailus@linux.intel.com, sudeep.holla@arm.com, tglx@linutronix.de, tony@atomide.com, vigneshr@ti.com, dianders@chromium.org, jpb@kernel.org, rafael@kernel.org
+Subject: [PATCH v1 0/4] fw_devlink: generically handle bad links to child fwnodes
+Message-ID: <20240123014517.5787-1-mcpratt@pm.me>
+Feedback-ID: 27397442:user:proton
 MIME-Version: 1.0
-X-OriginatorOrg: skyhighmemory.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PS2P216MB1185.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a0cf670-762c-46c3-b6f4-08dc1baee389
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2024 01:01:53.5453
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 39b82b34-0966-49dc-81a7-5bcab7ea53c0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yVZz0hd7T2AlS9jLVcmBrE/olytJeOgMat5nwf7ofhPsFQXs/K70v4ah6Inj01d6xRYseKbFdR+nWr8WSv/UQnbnIkTDWD7f9xuDuIvIfoM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2P216MB2109
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240122_170203_467597_75468844 
-X-CRM114-Status: GOOD (  20.39  )
+X-CRM114-CacheID: sfid-20240122_174605_674171_FFB85FAB 
+X-CRM114-Status: GOOD (  32.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,47 +60,189 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWlxdWVsLA0KDQpJIGhhdmUgYSBxdWVzdGlvbiBmb3IgYmFkIGJsb2NrIG1hcmtpbmcg
-YW5kIGNoZWNraW5nIG9uIExpbnV4Li4uIGFuZCBFQ0MuDQoNCkRvIHlvdSBrbm93IGhvdyBiYWQg
-YmxvY2sgbWFya2luZyBpcyBkb25lPw0KDQoxKSBCYWQgQmxvY2sgTWFya2luZzogQXJlIHlvdXIg
-d3JpdGluZyBub24gRkYgb24gdGhlIGZpcnN0IDIgYnl0ZXMgb2YgdGhlIE9PQj8gRG8geW91IGtl
-ZXAgRGV2aWNlIEVDQyBPTiBvciBPRkY/DQoyKSBCYWQgYmxvY2sgQ2hlY2tpbmc6IERvIHlvdSBy
-ZWFkIHRoZSBmaXJzdCAyIGJ5dGVzIG9mIHRoZSBPT0Igd2l0aCBFQ0MgT0ZGIG9yIGRvIHlvdSBr
-ZWVwIEVDQyBPTj8NCg0KVGhhbmtzLA0KTW9oYW1lZCANCg0K77u/T24gMS8xMS8yNCwgMzozOCBB
-TSwgIk1pcXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tIDxtYWlsdG86bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4+IHdyb3RlOg0KDQoNCkhpIEtpbSwNCg0KDQo+ID4gMi4g
-SG93IG1hbnkgdmVyc2lvbiBvZiB0aGlzIGRyaXZlciB3ZSBuZWVkIHRvIGRldmVsb3AgdG8gc3Vw
-cG9ydCBhbGwgdmVyc2lvbiBvZiBMaW51eCAobm93IGJlaW5nIDYueHh4KT8gDQo+IA0KPiBXZSBv
-bmx5IGJyaW5nIHN1cHBvcnQgdG8gdGhlIGxhdGVzdCBtYWlubGluZSBrZXJuZWwsIHdoYXRldmVy
-IHZlcnNpb24gaXQgY291bGQgYmUuIFNvIGlmIHlvdSBzZW5kIGEgcGF0Y2ggKHBsZWFzZSBmb2xs
-b3cgdGhlIGNvbnRyaWJ1dGluZyBndWlkZWxpbmVzIGluIERvY3VtZW50YXRpb24vKSBpdCBzaG91
-bGQgYmUgYSBkaWZmIGFnYWluc3QgdGhlIG5leHQgLXJjMSAoc28gaXQgd2lsbCBiZSB2Ni44LXJj
-MSBpbiB0d28gd2Vla3MpLiBZb3UgY2FuIHNoYXJlIGRpZmZzIGZvciBvdGhlciB2ZXJzaW9ucyBh
-cyB3ZWxsIG9uIHlvdXIgb3duIHdlYnNpdGUgYnV0IHRoZXJlIGlzIHVzdWFsbHkgbm8gYmFja3Bv
-cnQgb2YgJ25ldyBmZWF0dXJlcycuDQo+IA0KPiBbS1JdIFNpbXBseSwgeW91IGNhbiBvbmx5IHN1
-cHBvcnQgZm9yIG91ciBwYXRjaCB0byB0aGUgbGF0ZXN0IHZlcnNpb24uIElzIHRoYXQgcmlnaHQ/
-DQoNCg0KV2VsbCwgdGhlcmUgaXMgb25seSBvbmUgIm1haW5saW5lIiwgYW5kIHlvdXIgY29udHJp
-YnV0aW9ucyBtdXN0IG1hdGNoDQp0aGUgc3RhdGUgb2YgdGhpcyBtYWlubGluZS4gV2hlbiBhcHBs
-eWluZyB0aGUgcGF0Y2gsIHRoZSBuZXh0IGtlcm5lbA0KYW5kIGFsbCBvdGhlcnMgZm9sbG93aW5n
-IHdpbGwgaGF2ZSBzdXBwb3J0IGZvciB5b3VyIGNoaXBzLg0KPiANCj4gPiBGb3IgaW5zdGFuY2Ug
-aWYgdGhlIGRyaXZlciAoYXR0YWNoZWQgaXMgNS40KSwgY2FuIGl0IGJlIHVzZWQgdXAgdG8gNS4x
-OOKApiBvciBzaG91bGQgd2UgbW9kaWZ5IGl0IHN0YXJ0aW5nIGZyb20gdmVyc2lvbiA1LjR4LiAN
-Cj4gDQo+IElmIGl0IGNvbXBpbGVzLCBpdCB3aWxsIHByb2JhYmx5IHdvcmsgYXMgd2VsbCBhcyB0
-aGUgY29yZSBoYXMgbm90IGNoYW5nZWQgbXVjaCBzaW5jZSBpdCdzIGJlZW4gY3JlYXRlZCwgYnV0
-IHRoZXJlIGlzIG9mIGNvdXJzZSBubyBndWFyYW50ZWUuDQo+IA0KPiBbS1JdIElzIGl0IHBvc3Np
-YmxlIHRvIGFwcGx5IHRoZSBwYXRjaCB0byBvbGQgdmVyc2lvbiBvZiBMaW51eCBjb21tdW5pdHk/
-DQoNCg0KT24geW91ciBzaWRlIHlvdSBjYW4gcHJvdmlkZSBhIGRpZmYgZm9yIGVhY2gga2VybmVs
-IHZlcnNpb24gdGhhdCB5b3UNCndhbnQgdG8gc3VwcG9ydCB3aGljaCBkb2VzIG5vdCBjb250YWlu
-IHlvdXIgcGF0Y2ggc2VyaWVzLiBGb3IgYWxsDQprZXJuZWwgdmVyc2lvbnMgYWZ0ZXIgeW91ciBj
-aGFuZ2VzIGhhdmUgYmVlbiBtZXJnZWQsIHRoZXJlIGlzIG5vdGhpbmcNCmFkZGl0aW9uYWwgdG8g
-ZG8gb24geW91ciBzaWRlIChiZXNpZGVzIHBvc3RpbmcgdXBkYXRlcy9maXhlcyBtYXliZSkuDQpZ
-b3UgY2Fubm90IGJhY2twb3J0IGEgZmVhdHVyZSB0byBvbGRlciAoc3RhYmxlKSBrZXJuZWxzLg0K
-DQoNClRoYW5rcywNCk1pcXXDqGwNCg0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+Hi all,
+
+First off, if you are CC'ed here, it's likely because you were
+involved in or CC'ed in a patch series by Saravana Kannan for fw_devlink,
+and for consistency, I'm kindly asking for review from you all as well.
+If you think this may not affect your use cases, feel free to ignore this.
+I'm also CC'ing Christian and Rafal from the Openwrt project.
+
+This series is following up on some excellent work from Saravana [1]
+which is another patch series that includes some changes
+that helped make it possible for fw_devlink to work with MTD partitions
+that are a supplier fwnode by being a NVMEM provider. For an MTD partition
+to become an NVMEM provider, it must be registered as a platform device
+using of_platform_populate() or similar function
+which was done in a previous commit [2]
+but this also resulted in fw_devlink to apply
+to those fwnodes and their child fwnodes.
+
+That regression caused consumer devices to defer indefinitely
+while waiting for probing that will never happen or for device links
+to form from fwnode links with fwnodes that are not associated
+with any real device or driver that probes
+(e.g. describing the location of a MAC address).
+
+Saravana's patch series helped in two ways:
+First, by moving consumers from a child fwnode (in this case,
+the "nvmem-cells" compatible node) to an ancestor fwnode
+that represents the actual supplier device when that device probes,
+which handles the case where
+the supplier device has a probe attempt first. [3] [4]
+And secondly, by specifically marking "nvmem-cells" compatible nodes
+as populated during MTD partition parsing which also occurs during
+the supplier device probe, which handles both cases of initial probe order,
+but only for that node type. [5]
+
+However, there's some drawbacks to the second solution
+from having to manually name which nodes need the workaround
+for the corner case with the compatible string.
+Most notably, that it's possible for this corner case
+to apply to other nodes types, but also the fact that initial probe order
+deciding whether or not everything probes in the intended order, if at all,
+through driver core alone is still an issue with fw_devlink,
+despite the fact that controlling probe order in driver core
+is one of it's goals. In other words, the real problem is in driver core,
+but the fix is in the mtd driver.
+
+Unfortunately, with the Openwrt project
+we are experiencing this regression again
+by implementing the new NVMEM layout "fixed-layout"
+after it was accepted into the kernel. [6]
+This causes some subsystems of an SOC, like
+ethernet or wireless or both depending on hardware and DTS,
+and in some cases a completely different function like USB
+to never probe once again, and the temporary fix, like before,
+is by disabling fw_devlink. [7]
+
+Below is a simplified DTS of an Atheros device with the NVMEM layout:
+
+
+&eth0 {
+	nvmem-cells = <&macaddr_art_0>;
+	nvmem-cell-names = "mac-address";
+};
+
+&wifi {
+	nvmem-cells = <&caldata_art_1000>;
+	nvmem-cell-names = "calibration";
+};
+
+&spi {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+
+		partitions {
+			compatible = "fixed-partitions";
+
+			partition@ff0000 {
+				label = "art";
+				reg = <0xff0000 0x010000>;
+				read-only;
+
+				nvmem-layout {
+					compatible = "fixed-layout";
+
+					macaddr_art_0: macaddr@0 {
+						reg = <0x0 0x6>;
+					};
+
+					caldata_art_1000: caldata@1000 {
+						reg = <0x1000 0x440>;
+					};
+				};
+			};
+		};
+	};
+};
+
+
+When the DTS is written this way, not only is there a different node
+involved for NVMEM, but this node is a new node that is yet another
+descendant in the tree. In other words, the "partition@ff0000" node
+used to be what designated this device as the NVMEM provider
+with the "nvmem-cells" compatible, so the node that represents
+the actual probing device is now 4 parent nodes up in the tree
+in this example instead of 3 parent nodes up in the tree as before.
+
+For the past year, and even before the "fixed-layout" issue came up,
+I had been experimenting with a way to handle these reverse probe order
+and linking of distant descendant node issues in a generic way instead of
+naming exceptions with the compatible string, and this series is the
+culmination of those efforts. It may look strange at first,
+but there are a myriad set of cases to handle and other reasons
+that led me to develop this approach of using existing bad device links
+in order to find the correct fwnode to link to, and then redo
+the relevant links for that consumer device altogether.
+I'm concerned that doing this another way would be a much more massive
+project that would basically rewrite what the fw_devlink feature does.
+Or perhaps there would have to be a new, third form of device links
+that would be a "placeholder" before it becomes a fwnode link.
+Eventually, I came to the conclusion that
+there simply is not enough information to form the correct fwnode link
+before the real supplier device has a successful probe.
+
+Some of the changes proposed here are made on the extreme side of caution,
+for example, checking for null dereference when it might not be necessary,
+and reducing the activity of some functions in order to reduce
+the amount of assumptions taking place in the middle of driver core
+in cases where the new functions proposed here handles that just as well
+and closer to a possible probe defer event
+(e.g. not declaring a fwnode as NOT_DEVICE before
+a probe attempt is expected to have happened).
+
+I have tried to make the commit messages as self-explanatory as I can,
+but they might have ended up a little too verbose, and therefore confusing
+but I'm ready to explain whatever has not been explained well already.
+Lastly, this is my first attempt at sending a larger change to the kernel,
+so I appreciate your time and patience very much.
+
+MCP
+
+
+[1] https://lore.kernel.org/lkml/20230207014207.1678715-1-saravanak@google.com/
+
+[2] bcdf0315a61a29eb753a607d3a85a4032de72d94
+
+[3] 3a2dbc510c437ca392516b0105bad8e7970e6614
+
+[4] 411c0d58ca6faa9bc4b9f5382118a31c7bb92a6f
+
+[5] fb42378dcc7f247df56f0ecddfdae85487495fbc
+
+[6] 27f699e578b1a72df89dfa3bc42e093a01dc8d10
+
+[7] https://github.com/openwrt/openwrt/commit/703d667a0cdf6dfa402c08e72d0c77a257ca5009
+
+
+Michael Pratt (4):
+  driver core: fw_devlink: Use driver to determine probe ability
+  driver core: fw_devlink: Link to supplier ancestor if no device
+  driver core: fw_devlink: Add function device_links_fixup_suppliers()
+  mtd: mtdpart: Allow fwnode links to NVMEM compatible fwnodes
+
+ drivers/base/base.h    |   1 +
+ drivers/base/core.c    | 144 ++++++++++++++++++++++++++++++++++++++---
+ drivers/base/dd.c      |   2 +
+ drivers/mtd/mtdpart.c  |  10 ---
+ include/linux/fwnode.h |   4 ++
+ 5 files changed, 143 insertions(+), 18 deletions(-)
+
+
+base-commit: b0d326da462e20285236e11e4cbc32085de9f363
+--
+2.30.2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
