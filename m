@@ -4,84 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14796C47DDB
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Jan 2024 10:35:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9355C47DDB
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Jan 2024 11:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8bDos5SbfAgMNN10xpffJ0vRU4dEfHi9oy3D1o4WDD4=; b=JvPwz56jtLAoa1
-	STvm7F3qQUw9MWVy/nAwunPmtBO0rFvUp8gVPYUQiYic5SHp8fcWAvt9ogn4CxNEMG7FG2KPzTCOo
-	0Dc8zWSgsjfZZ3qu4mYGK8hukNPKKH3I0ro8NusdCfdMnoJD4NPd4o4IbYS/x4BbhoWLKhQHiJLJ2
-	HJHrgTpIYdLCrQFnMSMMGH351z7wTVrmxtzgtZXfMM5aJDzWTau4mA67fycv7LdmYnV1UOyrPdTMd
-	reBCnKH689O/GCl5Ygd+VIDvLz+XDBapqEq1vhMNB8ykzcaV+UawMcOIGM3g7zw33W6Awm0MRzTDj
-	gkhrCHJ1072VRIW9wrng==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=QwJJsCxYTts4Gdr0BOUX7iTsjIc4ZhJCOJnhAzP57YA=; b=OT38fk3bByI2o1n98GuKi5Ijeh
+	p8M70lHd5+KnKjCu3LswcF7LU/sJoF+2f3D4usWvo5mj4aJqwxQQ33GiCEeqx803J6xWsrYHzbQhf
+	Y01F215n/Eh4xfTI/tANwppiDwoHiKuxFefYlVoZf3b9Cg2+nIPdSSWjy0rpOTBpUp4TxnXlVkk7M
+	XLaW5jJPC6Le7b2rSJZOBorBOu1DoUmPcHONFvAXwbcNpVizJ5q+YWM8Z5hhV+9xoTtPte8D9YxSY
+	gOzz4NsuS9jO+9IryD8BoyGPE6KET53CoyXLY43byn37wvXgt7G1wAxblLhWckh1WmMCl+rEVbfcd
+	upKNPCXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSE7F-00FxZw-1T;
-	Tue, 23 Jan 2024 10:34:49 +0000
-Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
+	id 1rSFDt-00GJ70-2X;
+	Tue, 23 Jan 2024 11:45:45 +0000
+Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSE7B-00FxXI-2k;
-	Tue, 23 Jan 2024 10:34:47 +0000
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5cf1f4f6c3dso1982208a12.2;
-        Tue, 23 Jan 2024 02:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706006084; x=1706610884; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gf2YaREmVYXxOJZhUokIKRBOvqtSAWNcOsE6VEYJ3QI=;
-        b=fVmmTrA/E5NiUuPqvbdy2qfyn0AOJ37XWiriyfT991Yd+3jBZkNpWbDeiseCmzQLbJ
-         pOK/rv8jjffBhs3BbkEcbBmtP+eBz+T6WJrJZEmwNNVg/jQgrAUe464uv08Fn2zmsTuU
-         XoIAzHIX60yhCzgEKWJ3q9Sage0wjuL4D3F8fuoEpWbNewM+EJaJWrqjIXN6ej1LwR9c
-         0Wl+ziJvve+UEb4DEyqjTUYVL5hIAVBNi76pVUwQxXhz9z7RLjxCUe3MFmy1WbMhY02T
-         9mVoGRRlQ+vJXF2VjABYUK4YCaNHX6GHw/5CgPS3cDKekqiElS5C3FVQ1/5ZhClhf2sU
-         T7hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706006084; x=1706610884;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gf2YaREmVYXxOJZhUokIKRBOvqtSAWNcOsE6VEYJ3QI=;
-        b=nMIPht+6fbTGsr4a8STuAHi1UqyH3B37yaqHSUVxsdcJxF5EFAylGt9Ve/U2QzR+YA
-         Fu0Px70/UM6cPZGo77CicaSRGaSHbmoEW8nLIN0sW4Y1juNdtkXFfwoqWmKeJFBny7l0
-         uXGiLoHWjUUUXSpp0ILFtSWcq5FY7hjXDTmYcWH1qLL37YOQbuv/s4FZ/PDgdRdNsNRg
-         G2QlvWOrUO42kEQ+UpUpWjhEPEzCC0ODESHAtP8cf9vfgCeiTxP8V0+j1Fzx0oTAyfyk
-         ECwKY4rXpeyXiiSiNJMxQ6Y5WG0xA4M1PKuMarO/69a1+XnXlqedjFZTKHgPQInNadKh
-         HvRw==
-X-Gm-Message-State: AOJu0YxNx/ucKHOiLvBs4ifBTszRuMxK8ZWWSzu+EwwfHJnvpXZxSSV0
-	LSh5M9bnrO1h75dLw+AI9lNSoi3GkdLJbMRvszZ0tNkLBc1fv5qIuVNwiPtE6dsx2rTS+28iwzC
-	NjY9t1Yp22ae/2Iyir8bQfvLHNFA=
-X-Google-Smtp-Source: AGHT+IGtLI4G6LyMbWMUQB8P4MTNxrKBQrJ79HxJ8bP4yLpCab9rJ66u1Flg526m0fJyc9ODaJKxJjZvD7pQkLmg+ws=
-X-Received: by 2002:a17:90b:228f:b0:28e:82bb:746f with SMTP id
- kx15-20020a17090b228f00b0028e82bb746fmr2297885pjb.97.1706006084311; Tue, 23
- Jan 2024 02:34:44 -0800 (PST)
+	id 1rSFDp-00GJ5o-08
+	for linux-mtd@lists.infradead.org;
+	Tue, 23 Jan 2024 11:45:44 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:8ec8:24bf:c2ed:213e])
+	by andre.telenet-ops.be with bizsmtp
+	id eBlV2B0032E7G5801BlVKu; Tue, 23 Jan 2024 12:45:37 +0100
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rSFDd-00GLOZ-05;
+	Tue, 23 Jan 2024 12:45:29 +0100
+Date: Tue, 23 Jan 2024 12:45:28 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org
+cc: linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, 
+    sparclinux@vger.kernel.org, intel-xe@lists.freedesktop.org, 
+    dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org, 
+    mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org, 
+    Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+    linux-hardening@vger.kernel.org, qat-linux@intel.com, 
+    linux-crypto@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+    netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: Build regressions/improvements in v6.8-rc1
+In-Reply-To: <20240123111235.3097079-1-geert@linux-m68k.org>
+Message-ID: <d03e90ca-8485-4d1b-5ec1-c3398e0e8da@linux-m68k.org>
+References: <CAHk-=wiB4iHTtfZKiy5pC24uOjun4fbj4kSX0=ZnGsOXadMf6g@mail.gmail.com> <20240123111235.3097079-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-References: <20240118195356.133391-1-dregan@broadcom.com> <20240118195356.133391-2-dregan@broadcom.com>
- <CAOiHx=k2Wn+UaVFbB-n2XKmFuBss4LKmLSW45YME07z=7zg0ww@mail.gmail.com> <c1fc163b-1f4f-42a5-91c3-b31ad33a9741@broadcom.com>
-In-Reply-To: <c1fc163b-1f4f-42a5-91c3-b31ad33a9741@broadcom.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Tue, 23 Jan 2024 11:34:32 +0100
-Message-ID: <CAOiHx=n62Ap8bGbTu0xcKMHcqgpaLZ-GNjsW2DQ5XPrnsxmAJw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
-To: William Zhang <william.zhang@broadcom.com>
-Cc: dregan@broadcom.com, dregan@mail.com, miquel.raynal@bootlin.com, 
-	richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	computersforpeace@gmail.com, kdasu.kdev@gmail.com, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com, 
-	tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, 
-	anand.gore@broadcom.com, kursad.oney@broadcom.com, 
-	florian.fainelli@broadcom.com, rafal@milecki.pl, 
-	bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com, 
-	baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, 
-	dan.carpenter@linaro.org
+Content-Type: multipart/mixed; boundary="8323329-792708632-1706010328=:3895412"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240123_023445_913640_9218CC9E 
-X-CRM114-Status: GOOD (  36.75  )
+X-CRM114-CacheID: sfid-20240123_034541_360210_B09DDA75 
+X-CRM114-Status: GOOD (  19.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,124 +66,215 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 22 Jan 2024 at 18:34, William Zhang <william.zhang@broadcom.com> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-792708632-1706010328=:3895412
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+
+On Tue, 23 Jan 2024, Geert Uytterhoeven wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v6.8-rc1[1] compared to v6.7[2].
 >
-> Hi,
+> Summarized:
+>  - build errors: +68/-18
+>  - build warnings: +129/-1487
 >
-> On 1/22/24 03:48, Jonas Gorski wrote:
-> > Hi,
-> >
-> > On Thu, 18 Jan 2024 at 20:56, <dregan@broadcom.com> wrote:
-> >>
-> >> From: William Zhang <william.zhang@broadcom.com>
-> >>
-> >> Update the descriptions to reflect different families of broadband SoC and
-> >> use the general name bcmbca for ARM based SoC.
-> >>
-> >> Add brcm,nand-use-wp property to have an option for disabling this
-> >> feature on broadband board design that does not use write protection.
-> >>
-> >> Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap for
-> >> broadband board designs because they do not specify ecc setting in dts
-> >> but rather using the strap setting.
-> >>
-> >> Remove the requirement of interrupts property to reflect the driver
-> >> code. Also add myself to the list of maintainers.
-> >>
-> >> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> >> Reviewed-by: David Regan <dregan@broadcom.com>
-> >> ---
-> >> Changes in v2:
-> >> - Revert the new compatible string nand-bcmbca
-> >> - Drop the BCM63168 compatible fix to avoid any potential ABI
-> >> incompatibility issue
-> >> - Simplify the explanation for brcm,nand-use-wp
-> >> - Keep the interrupt name requirement when interrupt number is specified
-> >> ---
-> >>   .../bindings/mtd/brcm,brcmnand.yaml           | 36 +++++++++++++++----
-> >>   1 file changed, 30 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> >> index f57e96374e67..56176ec1a992 100644
-> >> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> >> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> >> @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
-> >>   maintainers:
-> >>     - Brian Norris <computersforpeace@gmail.com>
-> >>     - Kamal Dasu <kdasu.kdev@gmail.com>
-> >> +  - William Zhang <william.zhang@broadcom.com>
-> >>
-> >>   description: |
-> >>     The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
-> >> @@ -18,9 +19,10 @@ description: |
-> >>     supports basic PROGRAM and READ functions, among other features.
-> >>
-> >>     This controller was originally designed for STB SoCs (BCM7xxx) but is now
-> >> -  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
-> >> -  iProc/Cygnus. Its history includes several similar (but not fully register
-> >> -  compatible) versions.
-> >> +  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
-> >> +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
-> >> +  Its history includes several similar (but not fully register compatible)
-> >> +  versions.
-> >>
-> >>     -- Additional SoC-specific NAND controller properties --
-> >>
-> >> @@ -53,7 +55,7 @@ properties:
-> >>                 - brcm,brcmnand-v7.2
-> >>                 - brcm,brcmnand-v7.3
-> >>             - const: brcm,brcmnand
-> >> -      - description: BCM63138 SoC-specific NAND controller
-> >> +      - description: BCMBCA SoC-specific NAND controller
-> >>           items:
-> >>             - const: brcm,nand-bcm63138
-> >>             - enum:
-> >> @@ -65,7 +67,7 @@ properties:
-> >>             - const: brcm,nand-iproc
-> >>             - const: brcm,brcmnand-v6.1
-> >>             - const: brcm,brcmnand
-> >> -      - description: BCM63168 SoC-specific NAND controller
-> >> +      - description: BCM63xx SoC-specific NAND controller
-> >
-> > Only the BCM63268 family has a v4.0 NAND controller with support for
-> > ONFI and raw access; BCM6368 has a v2.1, and BCM6328 and BCM6362 have
-> > a v2.2.
-> >
-> > So claiming this is a generic binding is wrong; you would need to add
-> > the appropriate variants first. Or add another one for the BCM6368
-> > NAND v2.x controllers, which is missing. You can find them used in
-> > arch/mips/boot/dts/brcm/bcm63{28,62,68}.dtsi.
-> >
-> I am not changing binding here but jsut update the description to
-> identify these MIPS based chip as bcm63xx family. This convention is
-> used in other IP blocks too.  And yes this binding is not correct and I
-> noticed the same v2.x usage in the dtsi files you pointed out. So I
-> actually updated this binding in my v1 here
-> https://lore.kernel.org/lkml/20230606231252.94838-6-william.zhang@broadcom.com/
-> but there was some concern as it could possibly break the ABI in that
-> thread's discussion.
+> Happy fixing! ;-)
+>
+> Thanks to the linux-next team for providing the build service.
+>
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6613476e225e090cc9aad49be7fa504e290dd33d/ (all 239 configs)
+> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0dd3ee31125508cd67f7e7172247f05b7fd1753a/ (all 239 configs)
+>
+>
+> *** ERRORS ***
+>
+> 68 error regressions:
 
-That change did change the ABI that would have (AFAICT) broken it for BCM63168.
+>  + /kisskb/src/arch/powerpc/sysdev/udbg_memcons.c: error: no previous prototype for 'memcons_getc' [-Werror=missing-prototypes]:  => 80:5
+>  + /kisskb/src/arch/powerpc/sysdev/udbg_memcons.c: error: no previous prototype for 'memcons_getc_poll' [-Werror=missing-prototypes]:  => 57:5
+>  + /kisskb/src/arch/powerpc/sysdev/udbg_memcons.c: error: no previous prototype for 'memcons_putc' [-Werror=missing-prototypes]:  => 44:6
 
-My point is: This binding in its current state is valid *only* for the
-BCM63168 NAND controller, and not for any other BCM63xx NAND
-controllers.
+powerpc-gcc{5,12,13}/ppc64_book3e_allmodconfig
 
-So changing the description to BCM63xx is wrong, unless you extend it
-to also match the BCM6328/6362/6368 NAND controller bindings as used.
+>  + /kisskb/src/arch/sh/kernel/cpu/init.c: error: no previous prototype for 'l2_cache_init' [-Werror=missing-prototypes]:  => 99:29
 
-I can send a patch adding the missing binding parts, I actually have a
-WIP one lying around as I started trying to address dts issues in the
-MIPS bcm63xx dts(i) files a while ago.
+sh4-gcc1[123]/se7{619,750}_defconfig
+sh4-gcc1[123]/sh-{all{mod,no,yes},def}config
+sh4-gcc11/sh-allnoconfig
 
-Best Regards,
-Jonas
+>  + /kisskb/src/arch/sh/math-emu/math.c: error: no previous prototype for 'do_fpu_inst' [-Werror=missing-prototypes]:  => 492:5
+
+sh4-gcc1[123]/sh-all{mod,yes}config
+
+>  + /kisskb/src/arch/sh/mm/cache-sh2.c: error: no previous prototype for 'sh2_cache_init' [-Werror=missing-prototypes]:  => 85:13
+
+sh4-gcc1[123]/se7619_defconfig
+sh4-gcc1[123]/sh-all{mod,yes}config
+
+>  + /kisskb/src/arch/sh/mm/nommu.c: error: no previous prototype for 'kmap_coherent' [-Werror=missing-prototypes]:  => 80:7
+>  + /kisskb/src/arch/sh/mm/nommu.c: error: no previous prototype for 'kmap_coherent_init' [-Werror=missing-prototypes]:  => 76:13
+>  + /kisskb/src/arch/sh/mm/nommu.c: error: no previous prototype for 'kunmap_coherent' [-Werror=missing-prototypes]:  => 86:6
+
+sh4-gcc1[123]/se7619_defconfig
+sh4-gcc1[123]/sh-allnoconfig
+sh4-gcc12/sh-allyesconfig
+
+>  + /kisskb/src/arch/sparc/include/asm/floppy_64.h: error: no previous prototype for 'sparc_floppy_irq' [-Werror=missing-prototypes]:  => 200:13
+>  + /kisskb/src/arch/sparc/include/asm/floppy_64.h: error: no previous prototype for 'sun_pci_fd_dma_callback' [-Werror=missing-prototypes]:  => 437:6
+
+sparc64-gcc{5,11,12,13}/sparc64-allmodconfig
+
+>  + /kisskb/src/arch/sparc/kernel/traps_64.c: error: no previous prototype for 'do_mcd_err' [-Werror=missing-prototypes]:  => 2035:6
+>  + /kisskb/src/arch/sparc/kernel/traps_64.c: error: no previous prototype for 'is_no_fault_exception' [-Werror=missing-prototypes]:  => 253:6
+>  + /kisskb/src/arch/sparc/kernel/traps_64.c: error: no previous prototype for 'sun4v_nonresum_error_user_handled' [-Werror=missing-prototypes]:  => 2153:6
+>  + /kisskb/src/arch/sparc/prom/misc_64.c: error: no previous prototype for 'prom_get_mmu_ihandle' [-Werror=missing-prototypes]:  => 165:5
+>  + /kisskb/src/arch/sparc/prom/p1275.c: error: no previous prototype for 'prom_cif_init' [-Werror=missing-prototypes]:  => 52:6
+>  + /kisskb/src/kernel/dma.c: error: no previous prototype for 'free_dma' [-Werror=missing-prototypes]:  => 88:6
+>  + /kisskb/src/kernel/dma.c: error: no previous prototype for 'request_dma' [-Werror=missing-prototypes]:  => 70:5
+
+sparc64-gcc{5,1[123]}/sparc64-{all{mod,no},def}config
+
+>  + /kisskb/src/arch/sparc/lib/cmpdi2.c: error: no previous prototype for '__cmpdi2' [-Werror=missing-prototypes]:  => 6:11
+
+sparc64-gcc{5,1[123]}/sparc-{all{mod,no},def}config
+
+>  + /kisskb/src/arch/sparc/mm/init_64.c: error: no previous prototype for 'vmemmap_free' [-Werror=missing-prototypes]:  => 2644:6
+
+sparc64-gcc{5,1[123]}/sparc64-{allmod,def}config
+
+>  + /kisskb/src/arch/sparc/power/hibernate.c: error: no previous prototype for 'pfn_is_nosave' [-Werror=missing-prototypes]:  => 22:5
+>  + /kisskb/src/arch/sparc/power/hibernate.c: error: no previous prototype for 'restore_processor_state' [-Werror=missing-prototypes]:  => 35:6
+>  + /kisskb/src/arch/sparc/power/hibernate.c: error: no previous prototype for 'save_processor_state' [-Werror=missing-prototypes]:  => 30:6
+>  + /kisskb/src/drivers/gpu/drm/xe/xe_lrc.c: error: "CTX_VALID" redefined [-Werror]:  => 24, 24:0
+>  + /kisskb/src/drivers/mtd/maps/sun_uflash.c: error: no previous prototype for 'uflash_devinit' [-Werror=missing-prototypes]:  => 50:5
+
+sparc64-gcc{5,1[123]}/sparc64-allmodconfig
+
+>  + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]:  => 254:1
+>  + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime_stick' [-Werror=missing-prototypes]:  => 282:1
+>  + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]:  => 307:1
+>  + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday_stick' [-Werror=missing-prototypes]:  => 343:1
+>  + /kisskb/src/arch/sparc/vdso/vdso32/../vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]:  => 254:1
+>  + /kisskb/src/arch/sparc/vdso/vdso32/../vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime_stick' [-Werror=missing-prototypes]:  => 282:1
+>  + /kisskb/src/arch/sparc/vdso/vdso32/../vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]:  => 307:1
+>  + /kisskb/src/arch/sparc/vdso/vdso32/../vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday_stick' [-Werror=missing-prototypes]:  => 343:1
+>  + /kisskb/src/arch/sparc/vdso/vma.c: error: no previous prototype for 'init_vdso_image' [-Werror=missing-prototypes]:  => 246:12
+
+sparc64-gcc{5,12,13}/sparc64-{allno,def}config
+sparc64-gcc11/sparc64-{all{mod,no},def}config
+
+>  + /kisskb/src/arch/x86/um/shared/sysdep/kernel-offsets.h: error: no previous prototype for ‘foo’ [-Werror=missing-prototypes]:  => 9:6
+
+um-x86_64-gcc12/um-{all{mod,yes},def}config
+
+>  + /kisskb/src/drivers/sbus/char/bbc_envctrl.c: error: no previous prototype for 'bbc_envctrl_cleanup' [-Werror=missing-prototypes]:  => 594:6
+>  + /kisskb/src/drivers/sbus/char/bbc_envctrl.c: error: no previous prototype for 'bbc_envctrl_init' [-Werror=missing-prototypes]:  => 566:5
+
+sparc64-gcc1[12]/sparc64-allmodconfig
+
+>  + /kisskb/src/drivers/scsi/mpi3mr/mpi3mr_transport.c: error: the frame size of 1680 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 1818:1
+
+xtensa-gcc11/xtensa-allmodconfig
+
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1044' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1064' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+
+in drivers/net/ethernet/intel/ice/ice_base.c
+
+powerpc-gcc5/ppc32_allmodconfig
+
+
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1083' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1136' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_923' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+
+in drivers/net/ethernet/intel/ice/ice_nvm.c
+
+aarcharm64-gcc5/arm64-allmodconfig
+powerpc-gcc5/ppc32_allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/ppc64le_allmodconfig
+
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1094' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1147' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_934' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+
+in drivers/net/ethernet/intel/ice/ice_common.c
+
+arm64-gcc5/arm64-allmodconfig
+powerpc-gcc5/ppc32_allmodconfig
+
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_453' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_485' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_544' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_565' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_614' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_646' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_656' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_688' declared with attribute error: FIELD_PREP: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_705' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_747' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+
+in drivers/gpu/drm/xe/xe_guc_ct.c
+arm64-gcc5/arm64-allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_693' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_704' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_748' declared with attribute error: FIELD_GET: mask is not constant:  => 435:38
+
+in drivers/net/ethernet/intel/i40e/i40e_dcb.c
+
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/ppc32_allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+
+
+arm64-gcc5/arm64-allmodconfig
+powerpc-gcc5/powerpc-all{mod,yes}config
+powerpc-gcc5/ppc{32,64le,64_book3e}_allmodconfig
+
+>  + /kisskb/src/include/linux/fortify-string.h: error: call to '__read_overflow2_field' declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror]:  => 537:4
+>  + /kisskb/src/include/linux/fortify-string.h: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror]:  => 528:4
+
+mips-gcc8/mips-allmodconfig
+
+>  + {standard input}: Error: displacement to undefined symbol .L105 overflows 8-bit field :  => 590, 593
+>  + {standard input}: Error: displacement to undefined symbol .L135 overflows 8-bit field :  => 603
+>  + {standard input}: Error: displacement to undefined symbol .L140 overflows 8-bit field :  => 606
+>  + {standard input}: Error: displacement to undefined symbol .L76 overflows 12-bit field:  => 591, 594
+>  + {standard input}: Error: displacement to undefined symbol .L77 overflows 8-bit field : 607 => 607, 582, 585
+>  + {standard input}: Error: displacement to undefined symbol .L97 overflows 12-bit field:  => 607
+>  + {standard input}: Error: pcrel too far: 604, 590, 577, 593, 572, 569, 598, 599, 596, 610 => 610, 574, 599, 569, 598, 596, 601, 590, 604, 595, 572, 577, 593
+
+SH ICE crickets
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
+--8323329-792708632-1706010328=:3895412
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--8323329-792708632-1706010328=:3895412--
+
