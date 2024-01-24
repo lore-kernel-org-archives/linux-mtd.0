@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F41C7C47258
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 03:07:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9615C47DDB
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 03:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8odZD5tWo0zQZH/PxBJZy+Wk4Mf4Agif73LjY5LeW/s=; b=vIOAUw1yqfE9XI
-	bpw2LkEx6wealIz9QCv82MkgIM9MaBm7OYSusYL2RChmqymJv+yQLYg2m40L4yLPBeWJd7nJhHvu6
-	kyuvbi5sRtzfPJp24yZA+ChXcsNZh6beCbpklfXKD4DEu5rP3dtsElhkxOHfcl6OKQ9bAxSIw6SaO
-	IOrVBUoyZW9Qs0MKfgrABWU3KV39Fl0d8r/Xijgt62IPfh9s16GwmIhqqoxHDBQvk5/9HzsYbkCzo
-	BeH91IFbtJ36W6zpTZ+5SLwlqgjO8JzEetMyqSvzvSUz/3YkW+lHmorrN91V0IQiqGtzZqCslSIU4
-	+pBD9sJ27JZgalyl90Jg==;
+	List-Owner; bh=7nYkkobhXPMf+oZT7QKlW0Rl3QuA6niAxf19BFEhS50=; b=rNI5qLeT9CBvHd
+	ItUOep8fgfyLWSVyH85t2jy9i08vkTfFwVUSIsbmdFqPjGv2azyDBsFnAUvAQIcaK+V3nJeCsX2zo
+	WxXW/+93EDoqWo0xXn+AbuVfUK3OkhWXn7OX+9E9wTgyYhBlA5XNWk99Xpe5ojAP6LPAi0rLaYHKo
+	LhChTHrMahqR26Tt0+ZerZe/fm53DbFVFSiHrolxyr/HNzYJcwG02W3UsSIJhp+upFg2Q8DAJUK8J
+	m1VGKIGLc/A/pcTNOX4mIs2GyLKGj7f0t7lIA8pnkrxY7N8agAzGbT8v3M4otsyCTkeXrhLxGpNw6
+	ECxlq1nCzltobF8NF/Hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSTbY-001Fv3-28;
-	Wed, 24 Jan 2024 03:07:08 +0000
-Received: from mail-oi1-f225.google.com ([209.85.167.225])
+	id 1rSTbd-001Fzk-19;
+	Wed, 24 Jan 2024 03:07:13 +0000
+Received: from mail-ot1-f98.google.com ([209.85.210.98])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSTb7-001Fce-1i
+	id 1rSTb8-001Fdk-2P
 	for linux-mtd@lists.infradead.org;
-	Wed, 24 Jan 2024 03:06:43 +0000
-Received: by mail-oi1-f225.google.com with SMTP id 5614622812f47-3bd3b34a58dso3193490b6e.3
-        for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2024 19:06:41 -0800 (PST)
+	Wed, 24 Jan 2024 03:06:44 +0000
+Received: by mail-ot1-f98.google.com with SMTP id 46e09a7af769-6ddef319fabso3310513a34.1
+        for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2024 19:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706065540; x=1706670340; darn=lists.infradead.org;
+        d=broadcom.com; s=google; t=1706065542; x=1706670342; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ynywjXfyuUDyBEky1TbYS2FW4j63gm4kdZM9CH++EkQ=;
-        b=HCwZMOkav9IZk/piXokSOfXZVcJHb565vGVvK2InS3/wkspw/BzVAnbco1S+Eh18Xs
-         Pqf8/Wyk3qgtLZCJFxAYgGrf6v3xP5/TL9RbBcgrJlHU5sELvtUKBFfABVojBy4nrMXQ
-         Y/U+AbGbAwiTB/dV3o/NVM73LWE5elJl8zbsk=
+        bh=T27qW4zzYD2KNCPRIh3CSpIvD6wIUQ7nz6JSAMgdquY=;
+        b=dVlT0yD9GGp9WH2p7PbvKZ61WBfi54hIZoDKO2d5OTPyojq/sGjwiH12MYtfhJcGgP
+         MlayblA/4ZLE+q0HfwSuA9V28xAMX96VSNbyDDGY0UW03CshY8hr7TEEm6BLHHyLoJza
+         rMXd9xsI5oEAgPIkxu4WM78kYw/0pWZLqClDE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706065540; x=1706670340;
+        d=1e100.net; s=20230601; t=1706065542; x=1706670342;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ynywjXfyuUDyBEky1TbYS2FW4j63gm4kdZM9CH++EkQ=;
-        b=tcCTGTp0qQEcmuM0wFIKvnxx5OE2erlS+DnfaPis1Ax0Wql9bSwhJAI4CKRm/x9tuU
-         G9WAmGEq1SLA9uC+qnBTzuDfaxm+UMcgHDvU2vYObWQUzvrIp2UBcNgIH8gfKRVYf7gI
-         W/N2ZmQOttjtorh7WQeP0uM9N/LD64kPPG7fvCtYS4dqUDmfgC6lvrFVg4wYyTDHTIoF
-         FqCDmKkMg0my0MCkM4OG/pk3w+/j6I1qx1bzDERpu0pHQM7sn0JvmEnqEL7Pfe00sVVE
-         98/ClN3KWJBBiSHaz5ol/BpAEmtMiAgGnvRQE4XaX/uMCUHH7fOqkz+Sw+svtNd3FJzh
-         yP7Q==
-X-Gm-Message-State: AOJu0YyO3Uun5CiHC70MLPO3RMJShnHWrTrRt+6hymv6mi/Qj/grvQ92
-	NJqF+AkVV+fMlRzzWY2US+EF6ycw4XpzntFBomh5cWqFRwhGi080s4MDtL3kIj0y9agi/9GVI/q
-	ufwqAqzTaaScPKNDx4zIbp8/B9MG+mA==
-X-Google-Smtp-Source: AGHT+IFK/2w2iG1AZMvtjj1jtWThPpJ7sawSzLyPn2mzN4taB1JWwBEzC/CVEwcbMMV+JpYCODWXvertPG7F
-X-Received: by 2002:a05:6871:3319:b0:213:84f3:b21a with SMTP id nf25-20020a056871331900b0021384f3b21amr2242246oac.61.1706065540433;
-        Tue, 23 Jan 2024 19:05:40 -0800 (PST)
+        bh=T27qW4zzYD2KNCPRIh3CSpIvD6wIUQ7nz6JSAMgdquY=;
+        b=BQOkVv+bAeGyEgQ+j2z4YXs/P26TLErPra4QKtBSgLiFK3rYdMmoXeUku95w5kWTNK
+         K4Z6n+MMNROaAmxHq0P0i9cfKKdZTzENJfFuYakxKjK6UKBDkJTZJ+8ukCDOImIJXJ+6
+         CfqG9IEPbFK5JIW0Pz8TonlfuoRJwx2KWKHd9IHHs2GdX0Od+sXibA+QfT3IpdXS35vz
+         dNjoMxggtlw3uh29Q9+qDX1vmFGGYFHCSp1mfzE3Rk397AAypQcq74HrHdqUVJDGTFfR
+         iXzoTkl4WHepj6I4w0Q52O2+Grockaf9lKB7DMfKU2fL4NA191BN3zGo8CruNYc9jTaI
+         vXkQ==
+X-Gm-Message-State: AOJu0YxxcHW69NF5EKKDRr5c+coeRkq0jQmPQrhAAQjnL5/qNMMklPT0
+	YDpMvycnF5ZS7Zv/BRMwc6aXeXBYW/Q10q7pQJYBRc/8lMHkl/k6dOzPfiR4neXgJlyGuAliF6N
+	BzX0CdS4lIHe4tTdh4hJkTMx0D6Gotw==
+X-Google-Smtp-Source: AGHT+IGIA6CSGHXai6wCUvWT+JTuolGf8dL4LUaj4MqP2aGMcA51O74ZV5BcrivqiVpljg8gEORZQAU1vCtL
+X-Received: by 2002:a9d:6ad5:0:b0:6dd:ef0b:4f62 with SMTP id m21-20020a9d6ad5000000b006ddef0b4f62mr879830otq.77.1706065542092;
+        Tue, 23 Jan 2024 19:05:42 -0800 (PST)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp-relay.gmail.com with ESMTPS id c22-20020a056830349600b006dc7502beabsm455320otu.3.2024.01.23.19.05.38
+        by smtp-relay.gmail.com with ESMTPS id c22-20020a056830349600b006dc7502beabsm455320otu.3.2024.01.23.19.05.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jan 2024 19:05:40 -0800 (PST)
+        Tue, 23 Jan 2024 19:05:42 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 From: David Regan <dregan@broadcom.com>
 To: dregan@broadcom.com,
@@ -88,16 +88,16 @@ To: dregan@broadcom.com,
 	baruch@tkos.co.il,
 	linux-arm-kernel@lists.infradead.org,
 	dan.carpenter@linaro.org
-Subject: [PATCH v3 06/10] mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
-Date: Tue, 23 Jan 2024 19:04:54 -0800
-Message-Id: <20240124030458.98408-7-dregan@broadcom.com>
+Subject: [PATCH v3 07/10] mtd: rawnand: brcmnand: Support write protection setting from dts
+Date: Tue, 23 Jan 2024 19:04:55 -0800
+Message-Id: <20240124030458.98408-8-dregan@broadcom.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20240124030458.98408-1-dregan@broadcom.com>
 References: <20240124030458.98408-1-dregan@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240123_190641_570615_E4CC82C4 
-X-CRM114-Status: GOOD (  19.94  )
+X-CRM114-CacheID: sfid-20240123_190642_792522_3DA387EC 
+X-CRM114-Status: GOOD (  15.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,142 +116,51 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: William Zhang <william.zhang@broadcom.com>
 
-BCMBCA broadband SoC based board design does not specify ecc setting in
-dts but rather use the SoC NAND strap info to obtain the ecc strength
-and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
-this purpose and update driver to support this option.
-
-The generic nand ecc settings still take precedence over this flag. For
-example, if nand-ecc-strength is set in the dts, the driver ignores the
-strap setting and falls back to original behavior. This makes sure that
-the existing BCMBCA board dts still works the old way even the strap
-flag is set in the BCMBCA chip dtsi.
+The write protection feature is controlled by the module parameter wp_on
+with default set to enabled. But not all the board use this feature
+especially in BCMBCA broadband board. And module parameter is not
+sufficient as different board can have different option.  Add a device
+tree property and allow this feature to be configured through the board
+dts on per board basis.
 
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Kamal Dasu <kamal.dasu@broadcom.com>
 Reviewed-by: David Regan <dregan@broadcom.com>
 ---
 Changes in v3: None
 ---
-Changes in v2:
-- Minor cosmetic fixes
+Changes in v2: None
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 83 ++++++++++++++++++++++--
- 1 file changed, 76 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 73fdf7ce21aa..869ea64e9189 100644
+index 869ea64e9189..9a904c7c6dad 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1038,6 +1038,19 @@ static inline int brcmnand_sector_1k_shift(struct brcmnand_controller *ctrl)
- 		return -1;
- }
- 
-+static int brcmnand_get_sector_size_1k(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	int shift = brcmnand_sector_1k_shift(ctrl);
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+
-+	if (shift < 0)
-+		return 0;
-+
-+	return (nand_readreg(ctrl, acc_control_offs) >> shift) & 0x1;
-+}
-+
- static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
- {
- 	struct brcmnand_controller *ctrl = host->ctrl;
-@@ -1055,6 +1068,38 @@ static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
- 	nand_writereg(ctrl, acc_control_offs, tmp);
- }
- 
-+static int brcmnand_get_spare_size(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	u32 acc = nand_readreg(ctrl, acc_control_offs);
-+
-+	return (acc & brcmnand_spare_area_mask(ctrl));
-+}
-+
-+static int brcmnand_get_ecc_strength(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	int sector_size_1k = brcmnand_get_sector_size_1k(host);
-+	int spare_area_size, ecc_level, ecc_strength;
-+	u32 acc;
-+
-+	spare_area_size = brcmnand_get_spare_size(host);
-+	acc = nand_readreg(ctrl, acc_control_offs);
-+	ecc_level = (acc & brcmnand_ecc_level_mask(ctrl)) >> ctrl->ecc_level_shift;
-+	if (sector_size_1k)
-+		ecc_strength = ecc_level * 2;
-+	else if (spare_area_size == 16 && ecc_level == 15)
-+		ecc_strength = 1; /* hamming */
-+	else
-+		ecc_strength = ecc_level;
-+
-+	return ecc_strength;
-+}
-+
- /***********************************************************************
-  * CS_NAND_SELECT
-  ***********************************************************************/
-@@ -2622,19 +2667,43 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 		nanddev_get_memorg(&chip->base);
- 	struct brcmnand_controller *ctrl = host->ctrl;
- 	struct brcmnand_cfg *cfg = &host->hwcfg;
--	char msg[128];
-+	struct device_node *np = nand_get_flash_node(chip);
- 	u32 offs, tmp, oob_sector;
+@@ -3081,7 +3081,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	struct brcmnand_controller *ctrl;
+ 	struct brcmnand_host *host;
+ 	struct resource *res;
 -	int ret;
-+	int ret, sector_size_1k = 0;
-+	bool use_strap = false;
-+	char msg[128];
++	int ret, wp_dt;
  
- 	memset(cfg, 0, sizeof(*cfg));
-+	use_strap = of_property_read_bool(np, "brcm,nand-ecc-use-strap");
+ 	if (dn && !of_match_node(brcmnand_of_match, dn))
+ 		return -ENODEV;
+@@ -3218,6 +3218,12 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	/* Disable XOR addressing */
+ 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
  
--	ret = of_property_read_u32(nand_get_flash_node(chip),
--				   "brcm,nand-oob-sector-size",
-+	/*
-+	 * Set ECC size and strength based on hw configuration from strap
-+	 * if device tree does not specify them and use strap property is set
-+	 * If ecc strength is set in dts, don't use strap setting.
-+	 */
-+	if (chip->ecc.strength)
-+		use_strap = 0;
-+
-+	if (use_strap) {
-+		chip->ecc.strength = brcmnand_get_ecc_strength(host);
-+		sector_size_1k = brcmnand_get_sector_size_1k(host);
-+		if (chip->ecc.size == 0) {
-+			if (sector_size_1k < 0)
-+				chip->ecc.size = 512;
-+			else
-+				chip->ecc.size = 512 << sector_size_1k;
-+		}
++	/* Not all boards support write protect (WP), check DT property */
++	if (of_property_read_u32(dn, "brcm,nand-use-wp", &wp_dt) == 0) {
++		if (wp_dt >= 0 && wp_dt <= 2)
++			wp_on = wp_dt;
 +	}
 +
-+	ret = of_property_read_u32(np, "brcm,nand-oob-sector-size",
- 				   &oob_sector);
- 	if (ret) {
--		/* Use detected size */
--		cfg->spare_area_size = mtd->oobsize /
--					(mtd->writesize >> FC_SHIFT);
-+		if (use_strap)
-+			cfg->spare_area_size = brcmnand_get_spare_size(host);
-+		else
-+			/* Use detected size */
-+			cfg->spare_area_size = mtd->oobsize /
-+						(mtd->writesize >> FC_SHIFT);
- 	} else {
- 		cfg->spare_area_size = oob_sector;
- 	}
+ 	if (ctrl->features & BRCMNAND_HAS_WP) {
+ 		/* Permanently disable write protection */
+ 		if (wp_on == 2)
 -- 
 2.37.3
 
