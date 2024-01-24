@@ -4,69 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51649C46CD2
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 871A9C47E49
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:31:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+CWKaWAQAsBU7xHmep7sdUR/MgBPKhjEcuuEoCT0kTg=; b=WO1U7wBpMj/qCg
-	7rxg61y5KTVlGOPJert+L2rB25342TiPMzlxpJrob6+JycxK29oId5UAKDR/srm/1C1OiQMNsvdjl
-	6Yf1fzK3KxUJiN/X/P86p+XULBM/eYMsKtnxwRVauSeduu4wCwQ6kKIN39CO2d7xyvGeShtTDAknj
-	ZfteywCAo8r7AD80KRdY05iQScZzG985BLECFnG8CNInQK8gVd3t0XYSy9PEZQ9DkP3gIznwOgGbn
-	blfVOgtJ5RyOAhjJPx/KiGygoJsQgTwLupsW1BZKQZcJR+Z6KCjO1JRyc7nOAOIajwhCFf7LqvMhL
-	W8u4qOLYVxqILJgoNkCg==;
+	List-Owner; bh=fQIdl/E+HxXJkcZWIh5VaeZG920lb50gQ7jIjuqjTaE=; b=E3IvGn3nIW01Px
+	kcoXQEfr4GR3oNAEs7aPeoWKj1oHKyQdL/HAJOzkX7FmUDO+aNEXGUcvU3YExYfUstwOQu6KiHQMj
+	Bd39NsxoaxjkaqqRlBAYmPjywOxen+QzXcOnk0kTGBzwH6UPP3cbjIqIYVxlfFTShJlcCr/8+YTPG
+	F9n0yO7Cawve2DpQmVXwZaugkomEGKaFbdsfmn9GSD0oCe173D8RMgwEarVE4apxBA7LuNgNhC+bf
+	DLdftepMeA5h3gJMLcdX1HsNYs1sav/hctRrqYyRPObOjtWDvNXWlD6CXWzzItifnZPtrb5ewI2Np
+	R30+pqVAWIT/iP7okkXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSh4w-004Txi-36;
-	Wed, 24 Jan 2024 17:30:22 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1rSh5d-004UIB-2N;
+	Wed, 24 Jan 2024 17:31:05 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSh4s-004Tve-1L;
-	Wed, 24 Jan 2024 17:30:20 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DA1FD20003;
-	Wed, 24 Jan 2024 17:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706117414;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QDJPwgnovDPZQtAnXZHhrhDNXtdN2BbUYDsnE5iArNU=;
-	b=mVolzOCPVR+lxctmATLnQTHk4XMcD68acOR4A0c9we6uG8asCXhfcSc+YaoDS30d/2LjvO
-	AISia/Qos/zBCf3VLdQL5f9dT5FZ6VccdjYGftW2FmfLbT0vPSRcKqIiwb0oWwRt4eyJVY
-	gmvu4QKQQAk41BWtsNp3SIU3ZW/7d2rRiLzpfm2fcNUk/6fRR6ncNGDd/c5YOQRZKCY8ja
-	7yxHhLBOlL8zNE6myAxm0ZdG8O+lBwiyuI2su77WxAAiyGzB2dpxorEFJYOYEziVmxw+Kw
-	tEwATAwPhXMunV+sZBaQLLSZ+HCYf1FTzSOKNCNsGKJYSfsX25VnsZZf7mIQog==
-Date: Wed, 24 Jan 2024 18:30:08 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: David Regan <dregan@broadcom.com>
-Cc: dregan@mail.com, richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- computersforpeace@gmail.com, kdasu.kdev@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- william.zhang@broadcom.com, anand.gore@broadcom.com,
- kursad.oney@broadcom.com, florian.fainelli@broadcom.com, rafal@milecki.pl,
- bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
- baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
- dan.carpenter@linaro.org
-Subject: Re: [PATCH v3 02/10] ARM: dts: broadcom: bcmbca: Add NAND
- controller node
-Message-ID: <20240124183008.04a1bcb0@xps-13>
-In-Reply-To: <20240124030458.98408-3-dregan@broadcom.com>
-References: <20240124030458.98408-1-dregan@broadcom.com>
-	<20240124030458.98408-3-dregan@broadcom.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1rSh5X-004UET-0q;
+	Wed, 24 Jan 2024 17:31:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 443BB61DE4;
+	Wed, 24 Jan 2024 17:30:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA2D0C433C7;
+	Wed, 24 Jan 2024 17:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706117457;
+	bh=NNDXRpvhIGTKBi9slZ/qWQEGn6Uj559Gpw2fxZO2A8A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TE8sMbvfIUEPS7l+FWWrLd9ucrffQrWpUeULzzDGbHOZntLPKHC9u7ekCFztLhU3U
+	 g9c/BN8CkGH0i32zPynRDSS6j46gbVDA6ioIe6yR345V3vEOlOOOrQK63M5gAF7wrU
+	 bDTC1oJaRecQ9F29HgZfYDFNvnxiLNzNXD19CPf8=
+Date: Wed, 24 Jan 2024 09:30:56 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+	Rayyan Ansari <rayyan@ansari.sh>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, Sergey Kozlov <serjk@netup.ru>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+	Michal Simek <michal.simek@amd.com>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	linux-mtd@lists.infradead.org,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Ronald Wahl <ronald.wahl@raritan.com>,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	chrome-platform@lists.linux.dev, Max Filippov <jcmvbkbc@gmail.com>,
+	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev, Viresh Kumar <vireshk@kernel.org>,
+	Rui Miguel Silva <rmfrfs@gmail.com>,
+	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+	greybus-dev@lists.linaro.org, Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-integrity@vger.kernel.org,
+	Herve Codina <herve.codina@bootlin.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
+	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
+Message-ID: <2024012439-machinist-amazingly-2d2c@gregkh>
+References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+ <2024012417-prissy-sworn-bc55@gregkh>
+ <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_093018_759695_40C4AAA7 
-X-CRM114-Status: GOOD (  15.08  )
+X-CRM114-CacheID: sfid-20240124_093059_405496_0FFBBABC 
+X-CRM114-Status: GOOD (  18.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,55 +130,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGF2aWQsCgpkcmVnYW5AYnJvYWRjb20uY29tIHdyb3RlIG9uIFR1ZSwgMjMgSmFuIDIwMjQg
-MTk6MDQ6NTAgLTA4MDA6Cgo+IEZyb206IFdpbGxpYW0gWmhhbmcgPHdpbGxpYW0uemhhbmdAYnJv
-YWRjb20uY29tPgo+IAo+IEFkZCBzdXBwb3J0IGZvciBCcm9hZGNvbSBTVEIgTkFORCBjb250cm9s
-bGVyIGluIEJDTUJDQSBBUk12NyBjaGlwIGR0cwo+IGZpbGVzLgo+IAo+IFNpZ25lZC1vZmYtYnk6
-IFdpbGxpYW0gWmhhbmcgPHdpbGxpYW0uemhhbmdAYnJvYWRjb20uY29tPgo+IFJldmlld2VkLWJ5
-OiBEYXZpZCBSZWdhbiA8ZHJlZ2FuQGJyb2FkY29tLmNvbT4KPiAtLS0KPiBDaGFuZ2VzIGluIHYz
-OiBOb25lCj4gLS0tCj4gQ2hhbmdlcyBpbiB2MjogTm9uZQo+IC0tLQo+ICBhcmNoL2FybS9ib290
-L2R0cy9icm9hZGNvbS9iY200NzYyMi5kdHNpICAgIHwgMTcgKysrKysrKysrKysrKysrKysKPiAg
-YXJjaC9hcm0vYm9vdC9kdHMvYnJvYWRjb20vYmNtNjMxMzguZHRzaSAgICB8IDEwICsrKysrKysr
-Ky0KPiAgYXJjaC9hcm0vYm9vdC9kdHMvYnJvYWRjb20vYmNtNjMxNDguZHRzaSAgICB8IDE3ICsr
-KysrKysrKysrKysrKysrCj4gIGFyY2gvYXJtL2Jvb3QvZHRzL2Jyb2FkY29tL2JjbTYzMTc4LmR0
-c2kgICAgfCAxNyArKysrKysrKysrKysrKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9hZGNv
-bS9iY202NzU2LmR0c2kgICAgIHwgMTcgKysrKysrKysrKysrKysrKysKPiAgYXJjaC9hcm0vYm9v
-dC9kdHMvYnJvYWRjb20vYmNtNjg0Ni5kdHNpICAgICB8IDE3ICsrKysrKysrKysrKysrKysrCj4g
-IGFyY2gvYXJtL2Jvb3QvZHRzL2Jyb2FkY29tL2JjbTY4NTUuZHRzaSAgICAgfCAxNyArKysrKysr
-KysrKysrKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9hZGNvbS9iY202ODc4LmR0c2kgICAg
-IHwgMTcgKysrKysrKysrKysrKysrKysKPiAgYXJjaC9hcm0vYm9vdC9kdHMvYnJvYWRjb20vYmNt
-OTQ3NjIyLmR0cyAgICB8ICA0ICsrKysKPiAgYXJjaC9hcm0vYm9vdC9kdHMvYnJvYWRjb20vYmNt
-OTYzMTM4LmR0cyAgICB8ICA0ICsrKysKPiAgYXJjaC9hcm0vYm9vdC9kdHMvYnJvYWRjb20vYmNt
-OTYzMTM4ZHZ0LmR0cyB8IDEyICsrKysrLS0tLS0tLQo+ICBhcmNoL2FybS9ib290L2R0cy9icm9h
-ZGNvbS9iY205NjMxNDguZHRzICAgIHwgIDQgKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9h
-ZGNvbS9iY205NjMxNzguZHRzICAgIHwgIDQgKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9h
-ZGNvbS9iY205Njc1Ni5kdHMgICAgIHwgIDQgKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9h
-ZGNvbS9iY205Njg0Ni5kdHMgICAgIHwgIDQgKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9h
-ZGNvbS9iY205Njg1NS5kdHMgICAgIHwgIDQgKysrKwo+ICBhcmNoL2FybS9ib290L2R0cy9icm9h
-ZGNvbS9iY205Njg3OC5kdHMgICAgIHwgIDQgKysrKwo+ICAxNyBmaWxlcyBjaGFuZ2VkLCAxNjUg
-aW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0v
-Ym9vdC9kdHMvYnJvYWRjb20vYmNtNDc2MjIuZHRzaSBiL2FyY2gvYXJtL2Jvb3QvZHRzL2Jyb2Fk
-Y29tL2JjbTQ3NjIyLmR0c2kKPiBpbmRleCA3Y2QzOGRlMTE4YzMuLjU1ZmYxODA0M2Q5NiAxMDA2
-NDQKPiAtLS0gYS9hcmNoL2FybS9ib290L2R0cy9icm9hZGNvbS9iY200NzYyMi5kdHNpCj4gKysr
-IGIvYXJjaC9hcm0vYm9vdC9kdHMvYnJvYWRjb20vYmNtNDc2MjIuZHRzaQo+IEBAIC0xMzgsNiAr
-MTM4LDIzIEBAIGhzc3BpOiBzcGlAMTAwMCB7Cj4gIAkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7Cj4g
-IAkJfTsKPiAgCj4gKwkJbmFuZF9jb250cm9sbGVyOiBuYW5kLWNvbnRyb2xsZXJAMTgwMCB7Cj4g
-KwkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Owo+ICsJCQkjc2l6ZS1jZWxscyA9IDwwPjsKPiArCQkJ
-Y29tcGF0aWJsZSA9ICJicmNtLG5hbmQtYmNtNjMxMzgiLCAiYnJjbSxicmNtbmFuZC12Ny4xIiwg
-ImJyY20sYnJjbW5hbmQiOwo+ICsJCQlyZWcgPSA8MHgxODAwIDB4NjAwPiwgPDB4MjAwMCAweDEw
-PjsKPiArCQkJcmVnLW5hbWVzID0gIm5hbmQiLCAibmFuZC1pbnQtYmFzZSI7Cj4gKwkJCWJyY20s
-bmFuZC11c2Utd3AgPSA8MD47Cj4gKwkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7Cj4gKwo+ICsJCQlu
-YW5kY3M6IG5hbmRAMCB7Cj4gKwkJCQljb21wYXRpYmxlID0gImJyY20sbmFuZGNzIjsKPiArCQkJ
-CXJlZyA9IDwwPjsKPiArCQkJCW5hbmQtb24tZmxhc2gtYmJ0Owo+ICsJCQkJYnJjbSxuYW5kLWVj
-Yy11c2Utc3RyYXA7CgpEZXNjcmliaW5nIHRoZSBOQU5EIGNoaXAgaW4gYSBTb0MgRFRTSSBkb2Vz
-IG5vdCBsb29rIHJlbGV2YW50IHRvIG1lLgpFdmVuIG1vcmUgaWYgeW91IGFkZCBzb21ldGhpbmcg
-bGlrZSB0aGlzIG5hbmQtZWNjLXVzZS1zdHJhcCBzZXR0aW5nCndoaWNoIGlzIHZlcnkgYm9hcmQg
-ZGVwZW5kZW50LgoKU2FtZSBhcHBsaWVzIHRvIHlvdXIgYXJtNjQgRFQgcGF0Y2guCgpUaGFua3Ms
-Ck1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed, Jan 24, 2024 at 05:22:00PM +0000, Mark Brown wrote:
+> On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
+> > On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=F6nig wrote:
+> =
+
+> > > Note that Jonathan Cameron has already applied patch 3 to his tree, it
+> > > didn't appear in a public tree though yet. I still included it here to
+> > > make the kernel build bots happy.
+> =
+
+> > Are we supposed to take the individual changes in our different
+> > subsystem trees, or do you want them all to go through the spi tree?
+> =
+
+> Given that the final patch removes the legacy interfaces I'm expecting
+> to take them via SPI.
+
+Great, thanks, I'll go ack the subsystem patches that are relevent for
+me.
+
+greg k-h
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
