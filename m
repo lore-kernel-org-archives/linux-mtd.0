@@ -4,54 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43D3FC47E49
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26018C46CD2
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 20:03:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UvG2pojSHpxQPcpVZBY8qzKYJbVxj8pu5cpimu4Odcc=; b=GglU2V+SEJonCp
-	EJS8rlQvfdIdwgDOzcV3dlTmQpD3nj4f+FKsE5xVazpodJrNwGO14gfUuRukOIC4K0qTKdXlg80BX
-	Pe3b3DtR86dbDacLCXv08w1J+Xu0v8gbSt3W7HtWRIp1S0CV7d6q3ZBZnr4cReMzNRrc44GmfI278
-	Z/IFaPtJ5m+tdyF7gZL0OoF2atwzoXxlYC2ynMOTCINplf9dqQ8zQJXKnnhwnAdUNenviSvINAHvJ
-	sNgyL6b5LeLaP8fbZPhvyQLb6T6zyDWMOkBJKRsPVW6aQUT4mbFWeT0KmB2Rz30ksIoSMeBOvmOrT
-	EDEO6twHgDb6VxrGefMA==;
+	List-Owner; bh=TC7sLop8tLzdbF0a/ceGAWJ67J3A2VQfVSmD5hsFOWI=; b=TYlwIcNckiJgPj
+	PcgiGpCnv0nqBVOFfQcuPj80EyuvMLVWmbrihOHt3V62s0t0/+edjdHSXt3mZoPIbwy3PVO3cpFOF
+	XYTXDQOWQJSYxiKe5TtBaYOioqUFJ6Gjb43A8zmgALCZdi8pMxkEChl1Ee9WDtj22gvicN17txQFn
+	OvVOCE83UWWsP9Y9FoqzGAM4XpnVD67N1wWPfYW/fFfH1eMTGpYOYKYGBnj0sovaS13dK/DIuL0pJ
+	gE+kK6EeZ7HE6fymuAFYCzWoQesAy0HCseOWu69R2+JrC45mx0cy3TToy5NZWYvWLrpWvQED6BN7m
+	uIK80X4VErdykDGcCIKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShRT-004aDI-28;
-	Wed, 24 Jan 2024 17:53:39 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rSjSW-004ws9-1z;
+	Wed, 24 Jan 2024 20:02:52 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShRR-004aBA-2e
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 24 Jan 2024 17:53:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=bBV9wdg0ftfYMLoYCIiEOJkgpB1SWeaCu1Cd2JScvd4=; b=ZCdXiCpOtIjnffAS1/H0gvOaoT
-	SjYtQFRfRRH372/Hag6vI3EFFm91jcxd1CAAidThKAryDyYmB3cpWEWYBtocO6mhF8nD4IWWMnMsd
-	X+gZn2kE9C6QY3GNA+9WvjW9Zp9r+Jq3KUZ2VaIvwquQPixbRSfvby76QQTulDhOjvRVeA5Y8zjER
-	xA1J4ruw0Zj0QfctTtK4rMeaDoHiMuEroSFWi9S3+QJ0d8cycK6APocn3DX7Vo5QJCnzQxADthocG
-	Mf6d0REAxLv7n+VplmYXLFzHSivrBWXFk3rEWesz31qyK7CtXApQZ2bUECysI5hxakUalJjZngWTG
-	NDD3n6tQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rShQu-00000007LVR-3zpt;
-	Wed, 24 Jan 2024 17:53:04 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-mtd@lists.infradead.org,
-	Zhihao Cheng <chengzhihao1@huawei.com>
-Subject: [PATCH v2 03/15] ubifs: Convert ubifs_writepage to use a folio
-Date: Wed, 24 Jan 2024 17:52:46 +0000
-Message-ID: <20240124175302.1750912-4-willy@infradead.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124175302.1750912-1-willy@infradead.org>
-References: <20240124175302.1750912-1-willy@infradead.org>
+	id 1rSjSP-004wp1-0v;
+	Wed, 24 Jan 2024 20:02:47 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 66341CE321D;
+	Wed, 24 Jan 2024 20:02:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D9C4C433F1;
+	Wed, 24 Jan 2024 20:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706126562;
+	bh=jfXWrPM5ALhDnKgFnFkdz4CMio32hmCt3xWSsf12HKU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TIXWtyFH5yxUa2sKS25qW3wOvsP8Ed2klnxIK0jQEvMXqnYVHZWCU0zqLjO7+ilCR
+	 JWdnVZmbglYShezSvqIcZWDN/Vh46HywERZIGBwdalc9QELX9rTL+upLtWfATkdWgT
+	 WOJSdLKuC7J9/6NYjh+DNGAalqkPr+gBHAK+jK1uAFFeeu8RJwLSBlu58kMYFUoEl1
+	 Yp7MPDfACwXPwjaV1u4/U968HoLm30T94Tl/mdr2QRYc4fOG1E9E30BuK8sKFpJ4U8
+	 n+9CHV5JSYN6y7zhCegxJ1IM+OVstyfug/6ZJ17Jvqz0l9lgm0LjUJl94LQR9K86D2
+	 ni5ld1wGOGq1w==
+Date: Wed, 24 Jan 2024 20:02:07 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Cc: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>,
+ kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>, Wu Hao
+ <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>, Tom Rix
+ <trix@redhat.com>, linux-fpga@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, linux-wpan@vger.kernel.org,
+ netdev@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Michael
+ Hennerich <Michael.Hennerich@analog.com>, linux-iio@vger.kernel.org, Dmitry
+ Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org, Ulf
+ Hansson <ulf.hansson@linaro.org>, Rayyan Ansari <rayyan@ansari.sh>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, Martin Tuma
+ <martin.tuma@digiteqautomotive.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, linux-media@vger.kernel.org, Sergey Kozlov
+ <serjk@netup.ru>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Yang Yingliang <yangyingliang@huawei.com>,
+ linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, Heiko
+ Stuebner <heiko@sntech.de>, Michal Simek <michal.simek@amd.com>, Amit Kumar
+ Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+ linux-mtd@lists.infradead.org, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
+ Simon Horman <horms@kernel.org>, Ronald Wahl <ronald.wahl@raritan.com>,
+ Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ Guenter Roeck <groeck@chromium.org>, chrome-platform@lists.linux.dev, Max
+ Filippov <jcmvbkbc@gmail.com>, linux-arm-kernel@lists.infradead.org, Bjorn
+ Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ linux-arm-msm@vger.kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-mediatek@lists.infradead.org, Thomas Zimmermann
+ <tzimmermann@suse.de>, Javier Martinez Canillas <javierm@redhat.com>, Amit
+ Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+ dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+ linux-staging@lists.linux.dev, Viresh Kumar <vireshk@kernel.org>, Rui
+ Miguel Silva <rmfrfs@gmail.com>, Johan Hovold <johan@kernel.org>, Alex
+ Elder <elder@kernel.org>, greybus-dev@lists.linaro.org, Peter Huewe
+ <peterhuewe@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe
+ <jgg@ziepe.ca>, linux-integrity@vger.kernel.org, Herve Codina
+ <herve.codina@bootlin.com>, Alan Stern <stern@rowland.harvard.edu>, Aaro
+ Koskinen <aaro.koskinen@iki.fi>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, linux-usb@vger.kernel.org, Helge Deller
+ <deller@gmx.de>, Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+ Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
+ libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org, Jonathan
+ Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>, Bjorn Helgaas
+ <bhelgaas@google.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
+Message-ID: <20240124200207.7e02b501@jic23-huawei>
+In-Reply-To: <20240122192343.148a0b6d@jic23-huawei>
+References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+	<e62cdf7f-ce58-4f46-a0a0-25ce9fb271b1@sirena.org.uk>
+	<20240122192343.148a0b6d@jic23-huawei>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.40; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240124_120245_711966_9F123DF9 
+X-CRM114-Status: GOOD (  20.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,116 +116,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We still pass the page down to do_writepage(), but ubifs_writepage()
-itself is now large folio safe.  It also contains far fewer hidden calls
-to compound_head().
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/file.c | 39 +++++++++++++++++----------------------
- 1 file changed, 17 insertions(+), 22 deletions(-)
-
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 2022a31006df..a4e8bec6c03c 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1004,21 +1004,18 @@ static int do_writepage(struct page *page, int len)
- static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 		void *data)
- {
--	struct page *page = &folio->page;
--	struct inode *inode = page->mapping->host;
-+	struct inode *inode = folio->mapping->host;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	loff_t i_size =  i_size_read(inode), synced_i_size;
--	pgoff_t end_index = i_size >> PAGE_SHIFT;
--	int err, len = i_size & (PAGE_SIZE - 1);
--	void *kaddr;
-+	int err, len = folio_size(folio);
- 
- 	dbg_gen("ino %lu, pg %lu, pg flags %#lx",
--		inode->i_ino, page->index, page->flags);
--	ubifs_assert(c, PagePrivate(page));
-+		inode->i_ino, folio->index, folio->flags);
-+	ubifs_assert(c, folio->private != NULL);
- 
--	/* Is the page fully outside @i_size? (truncate in progress) */
--	if (page->index > end_index || (page->index == end_index && !len)) {
-+	/* Is the folio fully outside @i_size? (truncate in progress) */
-+	if (folio_pos(folio) >= i_size) {
- 		err = 0;
- 		goto out_unlock;
- 	}
-@@ -1027,9 +1024,9 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 	synced_i_size = ui->synced_i_size;
- 	spin_unlock(&ui->ui_lock);
- 
--	/* Is the page fully inside @i_size? */
--	if (page->index < end_index) {
--		if (page->index >= synced_i_size >> PAGE_SHIFT) {
-+	/* Is the folio fully inside i_size? */
-+	if (folio_pos(folio) + len <= i_size) {
-+		if (folio_pos(folio) >= synced_i_size) {
- 			err = inode->i_sb->s_op->write_inode(inode, NULL);
- 			if (err)
- 				goto out_redirty;
-@@ -1042,20 +1039,18 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 			 * with this.
- 			 */
- 		}
--		return do_writepage(page, PAGE_SIZE);
-+		return do_writepage(&folio->page, len);
- 	}
- 
- 	/*
--	 * The page straddles @i_size. It must be zeroed out on each and every
-+	 * The folio straddles @i_size. It must be zeroed out on each and every
- 	 * writepage invocation because it may be mmapped. "A file is mapped
- 	 * in multiples of the page size. For a file that is not a multiple of
- 	 * the page size, the remaining memory is zeroed when mapped, and
- 	 * writes to that region are not written out to the file."
- 	 */
--	kaddr = kmap_atomic(page);
--	memset(kaddr + len, 0, PAGE_SIZE - len);
--	flush_dcache_page(page);
--	kunmap_atomic(kaddr);
-+	len = i_size - folio_pos(folio);
-+	folio_zero_segment(folio, len, folio_size(folio));
- 
- 	if (i_size > synced_i_size) {
- 		err = inode->i_sb->s_op->write_inode(inode, NULL);
-@@ -1063,16 +1058,16 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 			goto out_redirty;
- 	}
- 
--	return do_writepage(page, len);
-+	return do_writepage(&folio->page, len);
- out_redirty:
- 	/*
--	 * redirty_page_for_writepage() won't call ubifs_dirty_inode() because
-+	 * folio_redirty_for_writepage() won't call ubifs_dirty_inode() because
- 	 * it passes I_DIRTY_PAGES flag while calling __mark_inode_dirty(), so
- 	 * there is no need to do space budget for dirty inode.
- 	 */
--	redirty_page_for_writepage(wbc, page);
-+	folio_redirty_for_writepage(wbc, folio);
- out_unlock:
--	unlock_page(page);
-+	folio_unlock(folio);
- 	return err;
- }
- 
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAyMiBKYW4gMjAyNCAxOToyMzo0MyArMDAwMApKb25hdGhhbiBDYW1lcm9uIDxqaWMy
+M0BrZXJuZWwub3JnPiB3cm90ZToKCj4gT24gTW9uLCAyMiBKYW4gMjAyNCAxODoxODoyMiArMDAw
+MAo+IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4gCj4gPiBPbiBNb24s
+IEphbiAyMiwgMjAyNCBhdCAwNzowNjo1NVBNICswMTAwLCBVd2UgS2xlaW5lLUvDtm5pZyB3cm90
+ZToKPiA+ICAgCj4gPiA+IE5vdGUgdGhhdCBKb25hdGhhbiBDYW1lcm9uIGhhcyBhbHJlYWR5IGFw
+cGxpZWQgcGF0Y2ggMyB0byBoaXMgdHJlZSwgaXQKPiA+ID4gZGlkbid0IGFwcGVhciBpbiBhIHB1
+YmxpYyB0cmVlIHRob3VnaCB5ZXQuIEkgc3RpbGwgaW5jbHVkZWQgaXQgaGVyZSB0bwo+ID4gPiBt
+YWtlIHRoZSBrZXJuZWwgYnVpbGQgYm90cyBoYXBweS4gICAgCj4gPiAKPiA+IEl0J3MgYWxzbyBn
+b2luZyB0byBiZSBuZWVkZWQgZm9yIGJ1aWxkYWJpbGl0eSBvZiB0aGUgZW5kIG9mIHRoZSBzZXJp
+ZXMuICAKPiAKPiBBaC4gIEkgdGhvdWdodCBpbnRlbnQgd2FzIHRvIHNwbGl0IHRoaXMgYWNyb3Nz
+IGFsbCB0aGUgZGlmZmVyZW50IHRyZWVzCj4gdGhlbiBkbyB0aGUgZmluYWwgcGF0Y2ggb25seSBh
+ZnRlciB0aGV5IHdlcmUgYWxsIGdvbmU/Cj4gCj4gSSdtIGZpbmUgd2l0aCBpdCBnb2luZyBhbGwg
+aW4gb25lIGdvIGlmIHBlb3BsZSBwcmVmZXIgdGhhdC4KPiAKPiBNeSB0cmVlIHdpbGwgYmUgb3V0
+IGluIGEgZmV3IG1pbnMuIFdhcyBqdXN0IHdhaXRpbmcgdG8gcmViYXNlIG9uIHJjMQo+IHdoaWNo
+IEkndmUganVzdCBkb25lLgo+IAo+IEpvbmF0aGFuCj4gCgpEcm9wcGVkIGZyb20gbXkgdHJlZS4K
+CkFja2VkLWJ5OiBKb25hdGhhbiBDYW1lcm9uIDxKb25hdGhhbi5DYW1lcm9uQGh1YXdlaS5jb20+
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
