@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBD97C46CD2
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37474C46CD2
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lnBMbAw59yS0BN29OIZcGsPS4xD6NKo/Qkq4ViTJT5M=; b=3Td5QXA5YxA6vj
-	LlAGpco1TeIa9oPSXQRnNwKVAa4+Pkv2rhAeRKe8Sc06yIQFY4+xlOvsnzDrh2bgptIjzV5dyf8sL
-	8LfelCaZ9lG07TyLP58cWAOEFR4k6vNCiSV/0K3ZagcKon2blWVyU6Rh64qngMGzaoSkdIPuB3qsJ
-	UXyc/+Xysq1rbEqPYim49KdMWF7d8qIUPwvGYh6bCgxwQexCH+SD+oVIhZtH8AQdZ9HAGY3NPBp3y
-	ziONoKxfxjZvfTZQnjg+b/KwDp17OVXD4I+I0EwEYx4jtwELQI4kWf9l04Tbplqgdmxiy10yZu3/Q
-	IzLNUTn4yI2NKVvY4sng==;
+	List-Owner; bh=5VEQ7ubtcKYXaG0zqk4DOnOtrLE3GUoBMVO3HP13OeU=; b=r+gDjQqGg/1hNp
+	qEFc/M5PceqI0x9giFcX4XI1lIcNmkQrUURJQYSCShgOANyq+2KHn7YQPwXSM5bkCVzUHN8+OfD/w
+	9YRcqwxE8R1a7RGwB6E3/w5KQ3DjOVuWhYyHI+iMclSkUos5ZfIlGTT9FkKg3klfiR/d5LWuIMVDn
+	mVqaRs46hxbKdf4GmNzIYwA2YVum/2T4yk8Y9ssglyH2xVKjOXKul3VD+evZ4qimSIsVW2Egl9WKd
+	lZs1HSu1JT1w3PV3x1P+I88CinTgRMyZcqy0tmLPz/f31pCYmTms0l6py728VZ8Vhfnh8TbGTeJkR
+	CFOzRkFG4gWcyPJFneCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShRL-004a5Z-0P;
-	Wed, 24 Jan 2024 17:53:31 +0000
+	id 1rShRN-004a7H-0H;
+	Wed, 24 Jan 2024 17:53:33 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShRI-004a2o-2E
+	id 1rShRL-004a5e-2a
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 24 Jan 2024 17:53:28 +0000
+	Wed, 24 Jan 2024 17:53:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=8AfaF6DytG47ELkiAdnea90zu+tdQdQf2u3VUPXkh5U=; b=ezISrbp/JtvNia0Hr27b5/LKPz
-	SnOaMcag0iI81is3nfF2TlbY/cHeulAbCgF9dN5GNmpRWmIfLvwIwHrKbKFAc+n9DyYPlI38DT93u
-	UdxqFZwyWQWVPe99H2qrrbWHOMHRg/AoMbMEtGGEpHKN4R7VX8+3C3DCiUPkY/1PvfdRoW5j2Yvxd
-	0qSmxgfK2iMR5BU8O5uaSPkoXR0Ox4w6gYkO+roq42n2Zf+JMrnO6MYzvwdEgcJS8SF9P7M3lYFGe
-	FfRe4/Kon7Cf6F0b5stgCFcaHSCGtZXXrMQqlEZtgzuCam2KgsUYRjuOueDM/savUr3rvIw66IbAX
-	dfgOcuUw==;
+	bh=uCHbLgCV9zy7rGbnpECRVHQsD31NrJzQDK4qy5/rI/M=; b=omFWOdRf62F2ZE7txGOEATmH3C
+	QYGJIh5JbgHpWNmN8VsTeitTxyH/4Xsaliw5E99ov2JXSVdQleYzBMH7l4zPDPIwKZGNUqgsJ116D
+	VyhJfeIlUxcnAwOZjv3VpUsa2hmkhWWvROBh6d2NR/9FBL0W8fI8qTEFr+sclX46jpMB8kKlAdbci
+	R4smK/LjOVnQl1ceo9u9x99M+pMnTimLubhwx1mIPHaOLTlXTRAVbRNYLnHlTMeqWmL3zSj/Wc7vv
+	KCNsfaOiCTM0XHCzqM316W+RsedU9VP2d+L09bTVrfAKxu0X0YH31vS3LoD3Hd7NsoYSBPa69MRlW
+	DWtkVuNw==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rShQv-00000007LVY-0fwF;
-	Wed, 24 Jan 2024 17:53:05 +0000
+	id 1rShQw-00000007LW0-0g0t;
+	Wed, 24 Jan 2024 17:53:06 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org,
 	Zhihao Cheng <chengzhihao1@huawei.com>
-Subject: [PATCH v2 05/15] ubifs: Convert do_writepage() to take a folio
-Date: Wed, 24 Jan 2024 17:52:48 +0000
-Message-ID: <20240124175302.1750912-6-willy@infradead.org>
+Subject: [PATCH v2 15/15] ubifs: Convert populate_page() to take a folio
+Date: Wed, 24 Jan 2024 17:52:58 +0000
+Message-ID: <20240124175302.1750912-16-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124175302.1750912-1-willy@infradead.org>
 References: <20240124175302.1750912-1-willy@infradead.org>
@@ -68,135 +68,125 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Replace the call to SetPageError() with a call to mapping_set_error().
-Support large folios by using kmap_local_folio() and remapping each time
-we cross a page boundary.  Saves a lot of hidden calls to compound_head().
+Both callers now have a folio, so pass it in.  This function contains
+several assumptions that folios are not large.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/file.c | 56 ++++++++++++++++++++++++++-----------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
+ fs/ubifs/file.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 7039c9006f24..70d391b72897 100644
+index 11bf9f8cca6c..a1f46919934c 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -898,60 +898,64 @@ static int ubifs_read_folio(struct file *file, struct folio *folio)
- 	return 0;
- }
- 
--static int do_writepage(struct page *page, int len)
-+static int do_writepage(struct folio *folio, size_t len)
+@@ -590,35 +590,35 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
+ /**
+  * populate_page - copy data nodes into a page for bulk-read.
+  * @c: UBIFS file-system description object
+- * @page: page
++ * @folio: folio
+  * @bu: bulk-read information
+  * @n: next zbranch slot
+  *
+  * Returns: %0 on success and a negative error code on failure.
+  */
+-static int populate_page(struct ubifs_info *c, struct page *page,
++static int populate_page(struct ubifs_info *c, struct folio *folio,
+ 			 struct bu_info *bu, int *n)
  {
--	int err = 0, i, blen;
-+	int err = 0, blen;
- 	unsigned int block;
- 	void *addr;
-+	size_t offset = 0;
- 	union ubifs_key key;
+ 	int i = 0, nn = *n, offs = bu->zbranch[0].offs, hole = 0, read = 0;
 -	struct inode *inode = page->mapping->host;
 +	struct inode *inode = folio->mapping->host;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	loff_t i_size = i_size_read(inode);
+ 	unsigned int page_block;
+ 	void *addr, *zaddr;
+ 	pgoff_t end_index;
  
- #ifdef UBIFS_DEBUG
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	spin_lock(&ui->ui_lock);
--	ubifs_assert(c, page->index <= ui->synced_i_size >> PAGE_SHIFT);
-+	ubifs_assert(c, folio->index <= ui->synced_i_size >> PAGE_SHIFT);
- 	spin_unlock(&ui->ui_lock);
- #endif
+ 	dbg_gen("ino %lu, pg %lu, i_size %lld, flags %#lx",
+-		inode->i_ino, page->index, i_size, page->flags);
++		inode->i_ino, folio->index, i_size, folio->flags);
  
--	/* Update radix tree tags */
--	set_page_writeback(page);
-+	folio_start_writeback(folio);
+-	addr = zaddr = kmap(page);
++	addr = zaddr = kmap_local_folio(folio, 0);
  
--	addr = kmap(page);
--	block = page->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
--	i = 0;
--	while (len) {
--		blen = min_t(int, len, UBIFS_BLOCK_SIZE);
-+	addr = kmap_local_folio(folio, offset);
-+	block = folio->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
-+	for (;;) {
-+		blen = min_t(size_t, len, UBIFS_BLOCK_SIZE);
- 		data_key_init(c, &key, inode->i_ino, block);
- 		err = ubifs_jnl_write_data(c, inode, &key, addr, blen);
- 		if (err)
+ 	end_index = (i_size - 1) >> PAGE_SHIFT;
+-	if (!i_size || page->index > end_index) {
++	if (!i_size || folio->index > end_index) {
+ 		hole = 1;
+-		memset(addr, 0, PAGE_SIZE);
++		addr = folio_zero_tail(folio, 0, addr);
+ 		goto out_hole;
+ 	}
+ 
+-	page_block = page->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
++	page_block = folio->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
+ 	while (1) {
+ 		int err, len, out_len, dlen;
+ 
+@@ -667,9 +667,13 @@ static int populate_page(struct ubifs_info *c, struct page *page,
  			break;
--		if (++i >= UBIFS_BLOCKS_PER_PAGE)
-+		len -= blen;
-+		if (!len)
- 			break;
- 		block += 1;
- 		addr += blen;
--		len -= blen;
-+		if (folio_test_highmem(folio) && !offset_in_page(addr)) {
-+			kunmap_local(addr - blen);
-+			offset += PAGE_SIZE;
-+			addr = kmap_local_folio(folio, offset);
+ 		addr += UBIFS_BLOCK_SIZE;
+ 		page_block += 1;
++		if (folio_test_highmem(folio) && (offset_in_page(addr) == 0)) {
++			kunmap_local(addr - UBIFS_BLOCK_SIZE);
++			addr = kmap_local_folio(folio, i * UBIFS_BLOCK_SIZE);
 +		}
  	}
-+	kunmap_local(addr);
- 	if (err) {
--		SetPageError(page);
--		ubifs_err(c, "cannot write page %lu of inode %lu, error %d",
--			  page->index, inode->i_ino, err);
-+		mapping_set_error(folio->mapping, err);
-+		ubifs_err(c, "cannot write folio %lu of inode %lu, error %d",
-+			  folio->index, inode->i_ino, err);
- 		ubifs_ro_mode(c, err);
+ 
+-	if (end_index == page->index) {
++	if (end_index == folio->index) {
+ 		int len = i_size & (PAGE_SIZE - 1);
+ 
+ 		if (len && len < read)
+@@ -678,22 +682,19 @@ static int populate_page(struct ubifs_info *c, struct page *page,
+ 
+ out_hole:
+ 	if (hole) {
+-		SetPageChecked(page);
++		folio_set_checked(folio);
+ 		dbg_gen("hole");
  	}
  
--	ubifs_assert(c, PagePrivate(page));
--	if (PageChecked(page))
-+	ubifs_assert(c, folio->private != NULL);
-+	if (folio_test_checked(folio))
- 		release_new_page_budget(c);
- 	else
- 		release_existing_page_budget(c);
- 
- 	atomic_long_dec(&c->dirty_pg_cnt);
--	detach_page_private(page);
--	ClearPageChecked(page);
-+	folio_detach_private(folio);
-+	folio_clear_checked(folio);
- 
+-	SetPageUptodate(page);
+-	ClearPageError(page);
+-	flush_dcache_page(page);
 -	kunmap(page);
--	unlock_page(page);
--	end_page_writeback(page);
-+	folio_unlock(folio);
-+	folio_end_writeback(folio);
- 	return err;
- }
++	folio_mark_uptodate(folio);
++	flush_dcache_folio(folio);
++	kunmap_local(addr);
+ 	*n = nn;
+ 	return 0;
  
-@@ -1039,7 +1043,7 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 			 * with this.
- 			 */
- 		}
--		return do_writepage(&folio->page, len);
-+		return do_writepage(folio, len);
+ out_err:
+-	ClearPageUptodate(page);
+-	SetPageError(page);
+-	flush_dcache_page(page);
+-	kunmap(page);
++	flush_dcache_folio(folio);
++	kunmap_local(addr);
+ 	ubifs_err(c, "bad data node (block %u, inode %lu)",
+ 		  page_block, inode->i_ino);
+ 	return -EINVAL;
+@@ -761,7 +762,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 			goto out_warn;
  	}
  
- 	/*
-@@ -1058,7 +1062,7 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
- 			goto out_redirty;
- 	}
+-	err = populate_page(c, &folio1->page, bu, &n);
++	err = populate_page(c, folio1, bu, &n);
+ 	if (err)
+ 		goto out_warn;
  
--	return do_writepage(&folio->page, len);
-+	return do_writepage(folio, len);
- out_redirty:
- 	/*
- 	 * folio_redirty_for_writepage() won't call ubifs_dirty_inode() because
-@@ -1172,7 +1176,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
- 				if (UBIFS_BLOCKS_PER_PAGE_SHIFT)
- 					offset = offset_in_folio(folio,
- 							new_size);
--				err = do_writepage(&folio->page, offset);
-+				err = do_writepage(folio, offset);
- 				folio_put(folio);
- 				if (err)
- 					goto out_budg;
+@@ -785,7 +786,7 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+ 		if (IS_ERR(folio))
+ 			break;
+ 		if (!folio_test_uptodate(folio))
+-			err = populate_page(c, &folio->page, bu, &n);
++			err = populate_page(c, folio, bu, &n);
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+ 		if (err)
 -- 
 2.43.0
 
