@@ -4,123 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92B26C47E49
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:22:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D37E1C46CD2
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1AKL0GdWiJZhGhXHdWGoFvAPTaXKyrMskoD+nyxXIIY=; b=SM0S9rHXjL905X/oPJmQjpijWC
-	gS8zSi36p6UcCEEH4GR74jglvO1wE41r9/fohj/aw9kFaH3d0t8tkAY3YswxOdFDzGokh3jlLoN8T
-	qZWDJI29I/VCWurUjKVItvvq3R4w+eqDYeoeyJA6IY3OrfgKUZhALDhLLpDfVjtktKgIQDyI9o4YL
-	3EsqOdIE/NX0RrADf+AZvlKsnI7Emz2uRcwXqW9UtjCDh51bBYD77mR38FyI5AZuzMe7ES7v18G+3
-	qJVKIJseFlH6t9XeB8Ry6a393MaAOpYUrWibtBBvVTN5WiPVBOnsBYdJayLMbHYaOaF4Q9utXtmBE
-	eTNQehuw==;
+	bh=gsEQKepEJ1oED3Y7mVIoTmBB7GJOiyKV2z7spObvVIU=; b=tOBD2qWkQuSdYAqrk2BLEayyDv
+	rKtz5MkU96UVnpvw/QjFR6BHuKv9th4Jp9/lxqXX8w6EmKjoCC5j/yJJwYxAJu9Pt+hz5L5sNh4Jh
+	VfYuhoI3U4paYCP7BqW+iTtzMN/pCHFZOUROl96oVmh4yOWmdqMZkdgb86vHU/FqLmoIP3da9cBdN
+	5m34hjt0Hf6Jgt70F8oqcSZcs+EgcFvLYI/kQ+ThM2GbCN1vv5HcFHZCT6moM9elRwqN9fqUjUP6d
+	rOZcHNhIVHdYIuDVzJNee1eDkQUQEuUegM0qz90Knhtg0VNwWouKUdKZrZsGTheRK44OgdHNFGmXo
+	/9s+W4JQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSgxN-004RRS-1P;
-	Wed, 24 Jan 2024 17:22:33 +0000
+	id 1rSgzE-004S2z-2p;
+	Wed, 24 Jan 2024 17:24:28 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSgxB-004RM6-2X;
-	Wed, 24 Jan 2024 17:22:24 +0000
+	id 1rSgzA-004RzE-0V;
+	Wed, 24 Jan 2024 17:24:26 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B592E61DC3;
-	Wed, 24 Jan 2024 17:22:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF93C433C7;
-	Wed, 24 Jan 2024 17:22:03 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id CE79B61DB8;
+	Wed, 24 Jan 2024 17:24:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9FEC43390;
+	Wed, 24 Jan 2024 17:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706116940;
-	bh=J9cWHBzQAtoEqppKJznkEOwXANl/OtQJlMreI+w5+pM=;
+	s=k20201202; t=1706117062;
+	bh=5NDG4ruRlNIX+UbrypiIwNk4QT0QTppyNY0YFyRXnYA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LzpFWfp68rpr4dWHpdN+3IBhvKe1BMer+To6gMN52sFIqJGOHOg2ldSKjRXCcMb5m
-	 TFWNLUoV1HFSfX27ssqcTmUNGmLjfsu/z7ab3gxQuXnjvSNFUQXmjhZEIyIhUWWEIT
-	 CgAYNmzcDLnvRg+viWfwfm6By4Ffbj0ymjEy26C89CVOqr6JLR32V+zT7k2ef93fpP
-	 1Ka1oOBMomGGEuXbLQOuhLohRSeVfalTXlkn0w18Bo0vP0gpL8EpG8vIchAhQdEue3
-	 Cd0Kc25AAqNkrZ3Jhe5TUtRkxqZmjaKSQ074XXZPz2CPZUgeNzrq5mcjx4JO7BaCUH
-	 nqaKOF7sEH13g==
-Date: Wed, 24 Jan 2024 17:22:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-input@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-	Rayyan Ansari <rayyan@ansari.sh>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, Sergey Kozlov <serjk@netup.ru>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-	Michal Simek <michal.simek@amd.com>,
-	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
-	linux-mtd@lists.infradead.org,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	Ronald Wahl <ronald.wahl@raritan.com>,
-	Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	chrome-platform@lists.linux.dev, Max Filippov <jcmvbkbc@gmail.com>,
-	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mediatek@lists.infradead.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-staging@lists.linux.dev, Viresh Kumar <vireshk@kernel.org>,
-	Rui Miguel Silva <rmfrfs@gmail.com>,
-	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-	greybus-dev@lists.linaro.org, Peter Huewe <peterhuewe@gmx.de>,
-	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	linux-integrity@vger.kernel.org,
-	Herve Codina <herve.codina@bootlin.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
-	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
-Message-ID: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
- <2024012417-prissy-sworn-bc55@gregkh>
+	b=lQOvjnp55YW+eOWsG4YDOVjajkN/dypextnAU6y2Mf1k5b1DGUsjbKWkmOOCEeuNZ
+	 G8R9ucH7IZYpauiWahLP4zaUGpdYGhTfSK2b3UTEjTMwGUUYdy5ClQVuvszG/mPGKz
+	 4t/EFO+QP/yQjyLeX5MfwnmDtfDpeyu2SlJfFYws6QsSQoaG9fiXlAHZ7GCcLnCPyu
+	 l7u/C+ROrZwH7fbNB6mTYmjl8ln7RI8pqwPXg5XnQ2obRUu7jE8cLH0uAF0p08LWJW
+	 pSsv+L1F3FJyDS4xe8N3wpZ3QSehXLkB6PGlSWypTILg0qeOJ+THu5JworoN+OWQT1
+	 fDr+vkpXQtG1Q==
+Date: Wed, 24 Jan 2024 17:24:15 +0000
+From: Conor Dooley <conor@kernel.org>
+To: David Regan <dregan@broadcom.com>
+Cc: dregan@mail.com, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
+	tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+	william.zhang@broadcom.com, anand.gore@broadcom.com,
+	kursad.oney@broadcom.com, florian.fainelli@broadcom.com,
+	rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com,
+	andre.przywara@arm.com, baruch@tkos.co.il,
+	linux-arm-kernel@lists.infradead.org, dan.carpenter@linaro.org
+Subject: Re: [PATCH v3 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca
+ SoCs
+Message-ID: <20240124-direness-outpost-bbc22550a161@spud>
+References: <20240124030458.98408-1-dregan@broadcom.com>
+ <20240124030458.98408-2-dregan@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <2024012417-prissy-sworn-bc55@gregkh>
-X-Cookie: To err is human, to moo bovine.
+In-Reply-To: <20240124030458.98408-2-dregan@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_092222_055057_73991F17 
-X-CRM114-Status: GOOD (  18.69  )
+X-CRM114-CacheID: sfid-20240124_092424_303489_C41DE2B4 
+X-CRM114-Status: GOOD (  46.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,54 +77,237 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0793148939654284980=="
+Content-Type: multipart/mixed; boundary="===============4712776611930360079=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============0793148939654284980==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FdGjmVpGJ74QDTu1"
+--===============4712776611930360079==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LHu9IQ8b/LkMYX/w"
 Content-Disposition: inline
 
 
---FdGjmVpGJ74QDTu1
-Content-Type: text/plain; charset=iso-8859-1
+--LHu9IQ8b/LkMYX/w
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
-> On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=F6nig wrote:
+Hey,
 
-> > Note that Jonathan Cameron has already applied patch 3 to his tree, it
-> > didn't appear in a public tree though yet. I still included it here to
-> > make the kernel build bots happy.
+On Tue, Jan 23, 2024 at 07:04:49PM -0800, David Regan wrote:
+> From: William Zhang <william.zhang@broadcom.com>
+>=20
+> Update the descriptions to reflect different families of broadband SoC and
+> use the general name bcmbca for ARM based SoC.
+>=20
+> Add brcm,nand-use-wp property to have an option for disabling this
+> feature on broadband board design that does not use write protection.
+>=20
+> Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap for
+> broadband board designs because they do not specify ecc setting in dts
+> but rather using the strap setting.
+>=20
+> Remove the requirement of interrupts property to reflect the driver
+> code. Also add myself to the list of maintainers.
+>=20
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: David Regan <dregan@broadcom.com>
+> ---
+> Changes in v3:
+> - Update brcm,nand-use-wp description
+> - Revert the description change to BCM63168 SoC-specific NAND controller
+> ---
+> Changes in v2:
+> - Revert the new compatible string nand-bcmbca
+> - Drop the BCM63168 compatible fix to avoid any potential ABI
+> incompatibility issue
+> - Simplify the explanation for brcm,nand-use-wp
+> - Keep the interrupt name requirement when interrupt number is specified
+> ---
+>  .../bindings/mtd/brcm,brcmnand.yaml           | 37 ++++++++++++++++---
+>  1 file changed, 32 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/D=
+ocumentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> index f57e96374e67..752c6ee98a7d 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
+>  maintainers:
+>    - Brian Norris <computersforpeace@gmail.com>
+>    - Kamal Dasu <kdasu.kdev@gmail.com>
+> +  - William Zhang <william.zhang@broadcom.com>
+> =20
+>  description: |
+>    The Broadcom Set-Top Box NAND controller supports low-level access to =
+raw NAND
+> @@ -18,9 +19,10 @@ description: |
+>    supports basic PROGRAM and READ functions, among other features.
+> =20
+>    This controller was originally designed for STB SoCs (BCM7xxx) but is =
+now
+> -  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63=
+xx, and
+> -  iProc/Cygnus. Its history includes several similar (but not fully regi=
+ster
+> -  compatible) versions.
+> +  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS =
+based
+> +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cy=
+gnus.
+> +  Its history includes several similar (but not fully register compatibl=
+e)
+> +  versions.
+> =20
+>    -- Additional SoC-specific NAND controller properties --
+> =20
+> @@ -53,7 +55,7 @@ properties:
+>                - brcm,brcmnand-v7.2
+>                - brcm,brcmnand-v7.3
+>            - const: brcm,brcmnand
+> -      - description: BCM63138 SoC-specific NAND controller
+> +      - description: BCMBCA SoC-specific NAND controller
+>          items:
+>            - const: brcm,nand-bcm63138
+>            - enum:
+> @@ -111,6 +113,20 @@ properties:
+>        earlier versions of this core that include WP
+>      type: boolean
+> =20
+> +  brcm,nand-use-wp:
+> +    description:
+> +      Use this property to indicate if board design uses
+> +      controller's write protection feature and connects its
+> +      NAND_WPb pin to nand chip's WP_L pin.
 
-> Are we supposed to take the individual changes in our different
-> subsystem trees, or do you want them all to go through the spi tree?
+> By default the driver
+> +      uses a module parameter with default value set to enable to
+> +      control this feature for all boards. Use this dts property to
+> +      override the default behavior and enable/disable this feature
+> +      through board dts on a per board basis.
 
-Given that the final patch removes the legacy interfaces I'm expecting
-to take them via SPI.
+None of this information about module parameters is relevant in the
+binding, as it should be independent of the implementation of one
+particular operating system.
 
---FdGjmVpGJ74QDTu1
+If the module parameter is not provided, what does the driver do?
+If "wp_on" is the module parameter, then the default is to enable the
+write protection feature. If that's correct, it seems to me that the
+property should be called something like "brcm,no-wp". This property
+would be a boolean that indicates that the NAND_WPb and WP_L pins are
+not connected & nothing more. Clearly if the module param tries to
+enable WP and the DT property indicates that it is not supported you
+can decline to enable the feature, but that is up to the drivers in
+the OS to decide.
+
+
+> +      Set to 0 if WP pins are not connected and feature is not
+> +      used. Set to 1 if WP pins are connected and feature is used.
+
+As it stands, this property is firmly in the "software policy" side
+of things, as it is being used as an override for a module parameter,
+particularly given you have properties for each direction. Whether or
+not the feature is to be used by the operating system is not relevant to
+the binding.
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1]
+> +
+>  patternProperties:
+>    "^nand@[a-f0-9]$":
+>      type: object
+> @@ -137,6 +153,16 @@ patternProperties:
+>            layout.
+>          $ref: /schemas/types.yaml#/definitions/uint32
+> =20
+> +      brcm,nand-ecc-use-strap:
+> +        description:
+> +          This flag is used by the driver to get the ecc strength and
+> +          spare area size from the SoC NAND boot strap setting. This
+> +          is commonly used by the BCMBCA SoC board design.
+
+Quoting from v1, as I didn't get to it in time:
+
+| > This property I'm not all that sure about either. If the specific
+| > properties that you mention here are not set in the DT what happens at
+| > the moment?
+| >=20
+| In that case, the ecc strength and oob size come from ONFI or nand id=20
+| decoding.  But that is usually the minimum requirement and user can=20
+| choose to use stronger ecc as long as there is enough oob spare area in=
+=20
+| the nand chip.
+|=20
+| > I suppose what I am getting at is why are the bootstrap settings not
+| > always used in the absence of specific values provided in the DT?
+| >=20
+| This is because the STB, iProc and other chip and their board design may=
+=20
+| not have or use the strap setting. But for BCMBCA SoC and board=20
+| reference design, we always use the strap setting.
+
+My main question here I suppose is why would you need this property at
+all? If the specific properties are provided (nand-ecc-strength etc)
+then use them, and if they are not use the strap settings?
+
+If there's no properties and no strap settings, the this property does
+not help. If there's properties and strap settings, but properties are
+wrong, then you just have some devicetrees that incorrectly describe the
+hardware and need to be fixed.
+
+> If ecc
+> +          strength and spare area size are set by nand-ecc-strength
+> +          and brcm,nand-oob-sector-size in the dts, these settings
+> +          have precedence and override this flag.
+
+Again, IMO, this is not for the binding to decide. That is a decision
+for the operating system to make.
+
+I am confused!
+
+
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +
+>      unevaluatedProperties: false
+> =20
+>  allOf:
+> @@ -177,6 +203,8 @@ allOf:
+>              - const: iproc-idm
+>              - const: iproc-ext
+>    - if:
+> +      required:
+> +        - interrupts
+>        properties:
+>          interrupts:
+>            minItems: 2
+> @@ -189,7 +217,6 @@ unevaluatedProperties: false
+>  required:
+>    - reg
+>    - reg-names
+> -  - interrupts
+> =20
+>  examples:
+>    - |
+> --=20
+> 2.37.3
+>=20
+
+--LHu9IQ8b/LkMYX/w
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWxRzcACgkQJNaLcl1U
-h9CS5Af+OPZh7Z4aM5AF1TAMNJebJxrwbV+lfEa8zsdVnpHBXYpXokCrVwsSRBtM
-yR/bt2+OoZjrVep6c0lufmewH58kEtQF4UazYao7MD2alCnwzn49m697Ubpnc/k9
-iSCRd+E5ICMZuRdRrDAmd/To7o3jsg85SeN4qLdeer17NkjU6VS9vR6NlzImV/nS
-MXj52eAHL5+EZIpIlwZSBkCxyEEsz/UFaGcFsKMonZ+24Oz5SXXWFhUWfiFCD+fA
-DNZKxXJ9Vk2i5pCUsduff5giUUypwRqVP4C01wYMs7o3jkMZ2cQhtuH8iyDtKKMU
-FSwO3bpbAgZzLbY2G2cqYZyEpqJ8Ow==
-=E3cl
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbFHvwAKCRB4tDGHoIJi
+0nJ1AQCMOND3o35gksttzdifP3aYkpWo8/VZtCNTMq408XjJKQD+ItdQyhxh/ckc
+RfB431tZbrTy/MCgA0r/jtTAkIbbJgE=
+=ElNo
 -----END PGP SIGNATURE-----
 
---FdGjmVpGJ74QDTu1--
+--LHu9IQ8b/LkMYX/w--
 
 
---===============0793148939654284980==
+--===============4712776611930360079==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -189,5 +317,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============0793148939654284980==--
+--===============4712776611930360079==--
 
