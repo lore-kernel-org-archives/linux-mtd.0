@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD12C47E49
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:53:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA521C48260
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gsEHwls4Vd4RbfLa8Ma3O5VQffR0I/JUCbBSyPujyHw=; b=JLx/yuXF045hsU
-	LFVluwNSLNk52cqx0rJh90WsLPdB9H1ZHLVF28Kmhpoyo3XKo3bMSuNEj0enPT7PRYsYhOqkPFynN
-	mz/Ya6tH+8gn+dY/U8AVTn5z5WQRGZ64PduVZJM+7iAa+4/UZa0tgRNY1Jte+wqY6hLihct3rj2nF
-	wq+Bk6c1iieaGbzbO5N/5OgqoHa+h8Ql/eplNg+/SyL1mi7KXeoztPOsiJSKc4ih5Lem463yYTcGF
-	woxfu5kXuWkQNzKDjPfgXLl9vIG1n7owtIuWtfFGl+n7LvIOh2YQED950x6IxcdATIZvu7N3wIRtk
-	xeHpyRzY38jQpD5pYPKA==;
+	List-Owner; bh=hZE3ZRszkFLBdn6M6TGjK6eXU/2QSKoK1ysfXTIAHTQ=; b=ztrcKihbYjbRaK
+	nchKhWz9/8TGKP0EOSQYSMNMXi1F34In6t7IezZ3ZhLfjHLa+mjiJJZwiNpkirueXp2eocYEcj5B+
+	Ox2UPWhm8n/+JZdFYvT7v2w2z45VFwdYZae5EqWAr3bR0ASg1OBFg2HM6P1+e8DmfmzgmDfoUHD3X
+	jcrLqhWrm7svU/PDKH8OzC62liIysbV1sONmgadFzc2Vbc4fR/M32fft5dYWAnIbc6CFSbP3FQGBf
+	IA3LSq2peaNcwQiTzuBaNZDSCtrRgzC4a8MntsxlqkqC8Uo1Z28vY553HrKn9otLOqNawLS8RrLwZ
+	d3PVzXzr/zTkkCalt++g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShR9-004ZuS-1p;
-	Wed, 24 Jan 2024 17:53:19 +0000
+	id 1rShRA-004ZvB-2E;
+	Wed, 24 Jan 2024 17:53:20 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShR2-004ZpZ-0b
+	id 1rShR3-004ZqO-2H
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 24 Jan 2024 17:53:12 +0000
+	Wed, 24 Jan 2024 17:53:13 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=Yfukrl63pDT9YdJAQm/2xR2RtMxsdfpdJRK7RXif2YM=; b=BHhWfbYJQa/ZoaWTiDUTqWxBSy
-	xepEDPd7vPihtc+G3LyGvA+2bewE+noEzBIT7EHQQzi21beBuC4FvkegSRl9T+6dtLY45paSRlS6E
-	HNqHGZLzFHMeT/EDcoZEHbhw1XB1yXJewVJT+Z9CLZoh5mlSdwuR6iti4TzTdtSaJ71pD2ZOOKYUr
-	sfwIbXezwuHQhopi3meRpEWDhvU1LnKeckCTzJseFB/b34fnHZ6cU8HxY9EE/nnfztpOjhdYrxy4O
-	k31SqpgeSMPwdtD4jUbaviIuJlTVFVgaOyWfkl2eMFR711qMuhZieGyESEPiziLJyEVqNs1uluM/i
-	flf/1Igg==;
+	bh=JI7TRcrNAWTGD3JADBBjfQKlKi2IoQX6n2CFdIsy/E4=; b=XGl3b6wAc3wR3IgrapwULGUAvQ
+	k40XFAKc91jjY9B8Pyzn7eth0fWgo4DURFNFwGDE9WxifxiPTGMdYrtqfTR2BZ9paex6RAq4ZTrEw
+	ED5D4tTqSRT+2Kzb1lHI9dBv5wr+HDmFo78EinT4yomoNTD/5sGKZWzcfwE1E/nTRkxCfaFhEjtdN
+	/x9L9M5napsobmCcGfSKrpStXPclqP3JO7x/J0S2nut6EqJdrhQUCC/ZRv/4qZUNVcQEMIMGLjyr+
+	63UyM65k18L+0cID0Y6yQHzXMO/UVnzu9hoZoXnGiW1n2N7U3jeWUHGQ8VKieaFYIyHWJ1NDLatrl
+	HbLdeHCA==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rShQv-00000007LVy-421s;
-	Wed, 24 Jan 2024 17:53:06 +0000
+	id 1rShQv-00000007LVa-12dc;
+	Wed, 24 Jan 2024 17:53:05 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org,
 	Zhihao Cheng <chengzhihao1@huawei.com>
-Subject: [PATCH v2 14/15] ubifs: Use a folio in ubifs_do_bulk_read()
-Date: Wed, 24 Jan 2024 17:52:57 +0000
-Message-ID: <20240124175302.1750912-15-willy@infradead.org>
+Subject: [PATCH v2 06/15] ubifs: Convert ubifs_vm_page_mkwrite() to use a folio
+Date: Wed, 24 Jan 2024 17:52:49 +0000
+Message-ID: <20240124175302.1750912-7-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124175302.1750912-1-willy@infradead.org>
 References: <20240124175302.1750912-1-willy@infradead.org>
@@ -68,46 +68,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When looking in the page cache, retrieve a folio instead of a page.
-This would need some work to make it safe for large folios.
+Replace six implicit calls to compound_head() with one.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/file.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ Documentation/mm/page_cache.rst | 10 +++++++++
+ fs/ubifs/file.c                 | 36 ++++++++++++++++-----------------
+ 2 files changed, 28 insertions(+), 18 deletions(-)
 
+diff --git a/Documentation/mm/page_cache.rst b/Documentation/mm/page_cache.rst
+index 75eba7c431b2..138d61f869df 100644
+--- a/Documentation/mm/page_cache.rst
++++ b/Documentation/mm/page_cache.rst
+@@ -3,3 +3,13 @@
+ ==========
+ Page Cache
+ ==========
++
++The page cache is the primary way that the user and the rest of the kernel
++interact with filesystems.  It can be bypassed (e.g. with O_DIRECT),
++but normal reads, writes and mmaps go through the page cache.
++
++Folios
++======
++
++The folio is the unit of memory management within the page cache.
++Operations 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index f481fca7f53d..11bf9f8cca6c 100644
+index 70d391b72897..3c4a98476c23 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -775,19 +775,19 @@ static int ubifs_do_bulk_read(struct ubifs_info *c, struct bu_info *bu,
+@@ -1514,14 +1514,14 @@ static bool ubifs_release_folio(struct folio *folio, gfp_t unused_gfp_flags)
+  */
+ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+ {
+-	struct page *page = vmf->page;
++	struct folio *folio = page_folio(vmf->page);
+ 	struct inode *inode = file_inode(vmf->vma->vm_file);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	struct timespec64 now = current_time(inode);
+ 	struct ubifs_budget_req req = { .new_page = 1 };
+ 	int err, update_time;
  
- 	for (page_idx = 1; page_idx < page_cnt; page_idx++) {
- 		pgoff_t page_offset = offset + page_idx;
--		struct page *page;
-+		struct folio *folio;
+-	dbg_gen("ino %lu, pg %lu, i_size %lld",	inode->i_ino, page->index,
++	dbg_gen("ino %lu, pg %lu, i_size %lld",	inode->i_ino, folio->index,
+ 		i_size_read(inode));
+ 	ubifs_assert(c, !c->ro_media && !c->ro_mount);
  
- 		if (page_offset > end_index)
- 			break;
--		page = pagecache_get_page(mapping, page_offset,
-+		folio = __filemap_get_folio(mapping, page_offset,
- 				 FGP_LOCK|FGP_ACCESSED|FGP_CREAT|FGP_NOWAIT,
- 				 ra_gfp_mask);
--		if (!page)
-+		if (IS_ERR(folio))
- 			break;
--		if (!PageUptodate(page))
--			err = populate_page(c, page, bu, &n);
--		unlock_page(page);
--		put_page(page);
-+		if (!folio_test_uptodate(folio))
-+			err = populate_page(c, &folio->page, bu, &n);
-+		folio_unlock(folio);
-+		folio_put(folio);
- 		if (err)
- 			break;
+@@ -1529,17 +1529,17 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+ 		return VM_FAULT_SIGBUS; /* -EROFS */
+ 
+ 	/*
+-	 * We have not locked @page so far so we may budget for changing the
+-	 * page. Note, we cannot do this after we locked the page, because
++	 * We have not locked @folio so far so we may budget for changing the
++	 * folio. Note, we cannot do this after we locked the folio, because
+ 	 * budgeting may cause write-back which would cause deadlock.
+ 	 *
+-	 * At the moment we do not know whether the page is dirty or not, so we
+-	 * assume that it is not and budget for a new page. We could look at
++	 * At the moment we do not know whether the folio is dirty or not, so we
++	 * assume that it is not and budget for a new folio. We could look at
+ 	 * the @PG_private flag and figure this out, but we may race with write
+-	 * back and the page state may change by the time we lock it, so this
++	 * back and the folio state may change by the time we lock it, so this
+ 	 * would need additional care. We do not bother with this at the
+ 	 * moment, although it might be good idea to do. Instead, we allocate
+-	 * budget for a new page and amend it later on if the page was in fact
++	 * budget for a new folio and amend it later on if the folio was in fact
+ 	 * dirty.
+ 	 *
+ 	 * The budgeting-related logic of this function is similar to what we
+@@ -1562,21 +1562,21 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+ 		return VM_FAULT_SIGBUS;
  	}
+ 
+-	lock_page(page);
+-	if (unlikely(page->mapping != inode->i_mapping ||
+-		     page_offset(page) > i_size_read(inode))) {
+-		/* Page got truncated out from underneath us */
++	folio_lock(folio);
++	if (unlikely(folio->mapping != inode->i_mapping ||
++		     folio_pos(folio) >= i_size_read(inode))) {
++		/* Folio got truncated out from underneath us */
+ 		goto sigbus;
+ 	}
+ 
+-	if (PagePrivate(page))
++	if (folio->private)
+ 		release_new_page_budget(c);
+ 	else {
+-		if (!PageChecked(page))
++		if (!folio_test_checked(folio))
+ 			ubifs_convert_page_budget(c);
+-		attach_page_private(page, (void *)1);
++		folio_attach_private(folio, (void *)1);
+ 		atomic_long_inc(&c->dirty_pg_cnt);
+-		__set_page_dirty_nobuffers(page);
++		filemap_dirty_folio(folio->mapping, folio);
+ 	}
+ 
+ 	if (update_time) {
+@@ -1592,11 +1592,11 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+ 			ubifs_release_dirty_inode_budget(c, ui);
+ 	}
+ 
+-	wait_for_stable_page(page);
++	folio_wait_stable(folio);
+ 	return VM_FAULT_LOCKED;
+ 
+ sigbus:
+-	unlock_page(page);
++	folio_unlock(folio);
+ 	ubifs_release_budget(c, &req);
+ 	return VM_FAULT_SIGBUS;
+ }
 -- 
 2.43.0
 
