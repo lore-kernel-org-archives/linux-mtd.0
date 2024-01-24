@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 561E9C48277
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D35B9C47E49
 	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 17:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lgs2eKd+rHCN3OgQzp0pnVDzL5io+EYkCdRC+LofMrU=; b=ydjaziZFjdfZpY
-	C8bIYsPs/BPZ4hpX2A0kez8VMfSieehA18JCdrn6Aup11rEIm9d3D8kT/gccPGbzhs/tyheP8MH66
-	8wCx1CcDA2vtRMWKAS59zh2CXWHKUv97mg9Q/124Fap7o4rIGJ8JcRa03F/SYr4pvZ0onLRu5iWwD
-	WDmJvniNj/Ks0OkNvhjK3os2B/5ZeVn/VWlbeD+at3ZBPB3W+tPKfvBbFgTeNsmEo3KlP59ppNdd8
-	Xl3D5Y0xSriczMXpu9r6MZUT4CdIZxmUif84RgGGRKK/jKluBo1yYFVHez3FzA5dcQwhSs6RrazKv
-	V0CuElTk79G5monND2Dg==;
+	List-Owner; bh=/0wEqc6hXcR1N0MhD0sYaZSFaI0RaVqgUfoM/qBbvM8=; b=OOUJ2r5E8Z44b9
+	BYJkYm+0sQSWxRIAeicmEhP250GptH4bUNcNE9gwEopwnZvSn4F6tQ2VMmy7gyJxe99jgV5gHaNiJ
+	BbaR3Cyub8Bs4tHN0yTt/eisfPGt0f69A3jP9C2HfZRY65ZVwr7cJHS1JYZRDFqqxrLurZnhtSNa3
+	MBhc2Vb4a3xh9xUTdgKBklxCY0Ek4ahegdNu9MFOytJ8ACxCRCtsKlzops9iHeL+Y+1zOqpxA0KG5
+	QgbHLSSBoD2GuBsM6FiZMpNDWcRS3+xpq650maQHtAznlTqDm07M94g1L+flQI3x1cX20MsTCnaFR
+	c/Tg5cRf/+oHIXBcD/Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShR5-004ZrZ-07;
-	Wed, 24 Jan 2024 17:53:15 +0000
+	id 1rShR3-004Zr7-34;
+	Wed, 24 Jan 2024 17:53:13 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rShQz-004ZnM-2u
+	id 1rShQz-004Zn1-2u
 	for linux-mtd@bombadil.infradead.org;
 	Wed, 24 Jan 2024 17:53:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=4BLcXtunv8K55EIbLY6Cz+Ba9KEcTs01x6W2txMgvd4=; b=GpzadNX7vKAg0W1zJQWMGP7nCA
-	hAnJIOYgyBkTKcMI2XJly6GLL1gfJal3ppuBSXC2I7G3rXSvMwhZdSysVwJkg8b7XeGLtvJIhO51R
-	bBD4ZFNAwtKm6d4N5PdxWgFxE2et9YXSw0a8leQbv8KBQ/KmTnFRZvfrhkKmkX5zsnONCs5sGsskR
-	9lEb1/MZRDfTZ77H0QdkNIlaOJ7dHF4rPrMWfyg1anktS/AxY7xYAkgNQi0szLNBCvNB14vJicKou
-	vvS0PPM/+9thoNkE+N5R+w0tfm6TPL0lmi2dMod1Fbp9fFszvXVjcAtpWKF0bPDBffMu2eZOu8j2q
-	yTYeDm0g==;
+	bh=MsLLiDOs5ykapzSY/981WXO083v47qOirmDZqu2Q0iQ=; b=BwXL8DDXFgH/JGMgzpRCHbsW8n
+	q3PqJnoAMOEgFPOVPYJyIgbShBHE2T5fDsObM/aiUz0AFy+eVq9p3bAb650G0/gFRwHp6YnIqjmbx
+	DZNEIOS3Z/PvNGCkXja4iY2hmqNEZFh3fFU2vUCoLcDDJJFQdpa7A+W1iRLNwmvtcfv/l93fOTn71
+	SiyA5zt31yIPGr1v6092N9Cp/WWuPNmeK2sdR2i12jGKxOxolI7HEr4I6rYdqSnVgb1uOTSRrplFn
+	HtAKKrMTJasDfpww6TUSI363GLNOXebALNveK405MKw8GN+gGwbWgnAOTte+aoFqsD9XtaDBGPUf2
+	dZGXhkKQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rShQu-00000007LVL-3I7V;
-	Wed, 24 Jan 2024 17:53:04 +0000
+	id 1rShQv-00000007LVc-1M4m;
+	Wed, 24 Jan 2024 17:53:05 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-mtd@lists.infradead.org,
-	stable@vger.kernel.org
-Subject: [PATCH v2 01/15] ubifs: Set page uptodate in the correct place
-Date: Wed, 24 Jan 2024 17:52:44 +0000
-Message-ID: <20240124175302.1750912-2-willy@infradead.org>
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v2 07/15] ubifs: Convert write_begin_slow() to use a folio
+Date: Wed, 24 Jan 2024 17:52:50 +0000
+Message-ID: <20240124175302.1750912-8-willy@infradead.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124175302.1750912-1-willy@infradead.org>
 References: <20240124175302.1750912-1-willy@infradead.org>
@@ -68,65 +67,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Page cache reads are lockless, so setting the freshly allocated page
-uptodate before we've overwritten it with the data it's supposed to have
-in it will allow a simultaneous reader to see old data.  Move the call
-to SetPageUptodate into ubifs_write_end(), which is after we copied the
-new data into the page.
+Update to new APIs, removing several calls to compound_head() and
+including support for large folios.
 
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Cc: stable@vger.kernel.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ubifs/file.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ fs/ubifs/file.c | 45 +++++++++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 5029eb3390a5..d0694b83dd02 100644
+index 3c4a98476c23..cc4d2ec95b70 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -261,9 +261,6 @@ static int write_begin_slow(struct address_space *mapping,
+@@ -222,16 +222,16 @@ static int write_begin_slow(struct address_space *mapping,
+ 	pgoff_t index = pos >> PAGE_SHIFT;
+ 	struct ubifs_budget_req req = { .new_page = 1 };
+ 	int err, appending = !!(pos + len > inode->i_size);
+-	struct page *page;
++	struct folio *folio;
+ 
+ 	dbg_gen("ino %lu, pos %llu, len %u, i_size %lld",
+ 		inode->i_ino, pos, len, inode->i_size);
+ 
+ 	/*
+-	 * At the slow path we have to budget before locking the page, because
+-	 * budgeting may force write-back, which would wait on locked pages and
+-	 * deadlock if we had the page locked. At this point we do not know
+-	 * anything about the page, so assume that this is a new page which is
++	 * At the slow path we have to budget before locking the folio, because
++	 * budgeting may force write-back, which would wait on locked folios and
++	 * deadlock if we had the folio locked. At this point we do not know
++	 * anything about the folio, so assume that this is a new folio which is
+ 	 * written to a hole. This corresponds to largest budget. Later the
+ 	 * budget will be amended if this is not true.
+ 	 */
+@@ -243,42 +243,43 @@ static int write_begin_slow(struct address_space *mapping,
+ 	if (unlikely(err))
+ 		return err;
+ 
+-	page = grab_cache_page_write_begin(mapping, index);
+-	if (unlikely(!page)) {
++	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
++			mapping_gfp_mask(mapping));
++	if (IS_ERR(folio)) {
+ 		ubifs_release_budget(c, &req);
+-		return -ENOMEM;
++		return PTR_ERR(folio);
+ 	}
+ 
+-	if (!PageUptodate(page)) {
+-		if (!(pos & ~PAGE_MASK) && len == PAGE_SIZE)
+-			SetPageChecked(page);
++	if (!folio_test_uptodate(folio)) {
++		if (pos == folio_pos(folio) && len >= folio_size(folio))
++			folio_set_checked(folio);
+ 		else {
+-			err = do_readpage(page);
++			err = do_readpage(&folio->page);
+ 			if (err) {
+-				unlock_page(page);
+-				put_page(page);
++				folio_unlock(folio);
++				folio_put(folio);
+ 				ubifs_release_budget(c, &req);
  				return err;
  			}
  		}
--
--		SetPageUptodate(page);
--		ClearPageError(page);
  	}
  
- 	if (PagePrivate(page))
-@@ -463,9 +460,6 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 				return err;
- 			}
- 		}
--
--		SetPageUptodate(page);
--		ClearPageError(page);
- 	}
- 
- 	err = allocate_budget(c, page, ui, appending);
-@@ -475,10 +469,8 @@ static int ubifs_write_begin(struct file *file, struct address_space *mapping,
- 		 * If we skipped reading the page because we were going to
- 		 * write all of it, then it is not up to date.
- 		 */
--		if (skipped_read) {
-+		if (skipped_read)
- 			ClearPageChecked(page);
--			ClearPageUptodate(page);
--		}
+-	if (PagePrivate(page))
++	if (folio->private)
  		/*
- 		 * Budgeting failed which means it would have to force
- 		 * write-back but didn't, because we set the @fast flag in the
-@@ -569,6 +561,9 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 		goto out;
+-		 * The page is dirty, which means it was budgeted twice:
++		 * The folio is dirty, which means it was budgeted twice:
+ 		 *   o first time the budget was allocated by the task which
+-		 *     made the page dirty and set the PG_private flag;
++		 *     made the folio dirty and set the private field;
+ 		 *   o and then we budgeted for it for the second time at the
+ 		 *     very beginning of this function.
+ 		 *
+-		 * So what we have to do is to release the page budget we
++		 * So what we have to do is to release the folio budget we
+ 		 * allocated.
+ 		 */
+ 		release_new_page_budget(c);
+-	else if (!PageChecked(page))
++	else if (!folio_test_checked(folio))
+ 		/*
+-		 * We are changing a page which already exists on the media.
+-		 * This means that changing the page does not make the amount
++		 * We are changing a folio which already exists on the media.
++		 * This means that changing the folio does not make the amount
+ 		 * of indexing information larger, and this part of the budget
+ 		 * which we have already acquired may be released.
+ 		 */
+@@ -301,7 +302,7 @@ static int write_begin_slow(struct address_space *mapping,
+ 			ubifs_release_dirty_inode_budget(c, ui);
  	}
  
-+	if (len == PAGE_SIZE)
-+		SetPageUptodate(page);
-+
- 	if (!PagePrivate(page)) {
- 		attach_page_private(page, (void *)1);
- 		atomic_long_inc(&c->dirty_pg_cnt);
+-	*pagep = page;
++	*pagep = &folio->page;
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
