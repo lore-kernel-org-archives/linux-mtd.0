@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9615C47DDB
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 03:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B20AC47258
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 Jan 2024 03:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7nYkkobhXPMf+oZT7QKlW0Rl3QuA6niAxf19BFEhS50=; b=rNI5qLeT9CBvHd
-	ItUOep8fgfyLWSVyH85t2jy9i08vkTfFwVUSIsbmdFqPjGv2azyDBsFnAUvAQIcaK+V3nJeCsX2zo
-	WxXW/+93EDoqWo0xXn+AbuVfUK3OkhWXn7OX+9E9wTgyYhBlA5XNWk99Xpe5ojAP6LPAi0rLaYHKo
-	LhChTHrMahqR26Tt0+ZerZe/fm53DbFVFSiHrolxyr/HNzYJcwG02W3UsSIJhp+upFg2Q8DAJUK8J
-	m1VGKIGLc/A/pcTNOX4mIs2GyLKGj7f0t7lIA8pnkrxY7N8agAzGbT8v3M4otsyCTkeXrhLxGpNw6
-	ECxlq1nCzltobF8NF/Hg==;
+	List-Owner; bh=YdElMX7gLUvCLB8u/iDKSdazRlYnQIe44exL+meDbmQ=; b=qnkc5j2uF/oZQL
+	TvSx8wYjYyQomKmuCs6rObBxz9aPoqJdLdKByqFnatNGBqmor4RFql/UDo5yM2pD7xaoh2MDvGZh6
+	X/zwiG8T7o1k3MaHJbyHcUYk4kr3btwE8DWgWbrrJqsWKoFDBKyAQm69aztFPQuYEb1G0Z+YIeQ0f
+	QGwBDvEd3m3B4xyjLV3MECpgLcAC4jvh8YAzpHGtaHPcn85WKoCaNxY4wyRJk0w+jaxbG8bSwajWT
+	kihHWUInPHtQdBKBq7qAM+JVt2bX4honL6R61DosAZlwLiXCAJH5ub/uBbMcX8k+8+gTVUdZhk75Z
+	kR/xf7SaziiXtJNNds9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSTbd-001Fzk-19;
-	Wed, 24 Jan 2024 03:07:13 +0000
-Received: from mail-ot1-f98.google.com ([209.85.210.98])
+	id 1rSTbe-001G1Y-3A;
+	Wed, 24 Jan 2024 03:07:14 +0000
+Received: from mail-ot1-f100.google.com ([209.85.210.100])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSTb8-001Fdk-2P
+	id 1rSTbA-001Feg-0Y
 	for linux-mtd@lists.infradead.org;
-	Wed, 24 Jan 2024 03:06:44 +0000
-Received: by mail-ot1-f98.google.com with SMTP id 46e09a7af769-6ddef319fabso3310513a34.1
-        for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2024 19:06:42 -0800 (PST)
+	Wed, 24 Jan 2024 03:06:45 +0000
+Received: by mail-ot1-f100.google.com with SMTP id 46e09a7af769-6dc83674972so2749300a34.1
+        for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2024 19:06:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706065542; x=1706670342; darn=lists.infradead.org;
+        d=broadcom.com; s=google; t=1706065543; x=1706670343; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=T27qW4zzYD2KNCPRIh3CSpIvD6wIUQ7nz6JSAMgdquY=;
-        b=dVlT0yD9GGp9WH2p7PbvKZ61WBfi54hIZoDKO2d5OTPyojq/sGjwiH12MYtfhJcGgP
-         MlayblA/4ZLE+q0HfwSuA9V28xAMX96VSNbyDDGY0UW03CshY8hr7TEEm6BLHHyLoJza
-         rMXd9xsI5oEAgPIkxu4WM78kYw/0pWZLqClDE=
+        bh=A1sI7nRj6Sb3+vzY3tBFzwAr+P5ADn9TFjJ984wNlHs=;
+        b=g0r1yBEPXY3E3XTUmht85WPfzMCx2mHx6fBZSZ0INxTI+6kAcZeCt4BXwlBKR8R4GP
+         KN6iMJN0YUGgxvnwkJ8eIyX4C0IIZIUtp+W1398kaUgNKegW+Vww7Rmnnm51krpy0JH3
+         chPGbDBCvfdX03UsqP5jvFeqBxOL2gc7JyXiE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706065542; x=1706670342;
+        d=1e100.net; s=20230601; t=1706065543; x=1706670343;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T27qW4zzYD2KNCPRIh3CSpIvD6wIUQ7nz6JSAMgdquY=;
-        b=BQOkVv+bAeGyEgQ+j2z4YXs/P26TLErPra4QKtBSgLiFK3rYdMmoXeUku95w5kWTNK
-         K4Z6n+MMNROaAmxHq0P0i9cfKKdZTzENJfFuYakxKjK6UKBDkJTZJ+8ukCDOImIJXJ+6
-         CfqG9IEPbFK5JIW0Pz8TonlfuoRJwx2KWKHd9IHHs2GdX0Od+sXibA+QfT3IpdXS35vz
-         dNjoMxggtlw3uh29Q9+qDX1vmFGGYFHCSp1mfzE3Rk397AAypQcq74HrHdqUVJDGTFfR
-         iXzoTkl4WHepj6I4w0Q52O2+Grockaf9lKB7DMfKU2fL4NA191BN3zGo8CruNYc9jTaI
-         vXkQ==
-X-Gm-Message-State: AOJu0YxxcHW69NF5EKKDRr5c+coeRkq0jQmPQrhAAQjnL5/qNMMklPT0
-	YDpMvycnF5ZS7Zv/BRMwc6aXeXBYW/Q10q7pQJYBRc/8lMHkl/k6dOzPfiR4neXgJlyGuAliF6N
-	BzX0CdS4lIHe4tTdh4hJkTMx0D6Gotw==
-X-Google-Smtp-Source: AGHT+IGIA6CSGHXai6wCUvWT+JTuolGf8dL4LUaj4MqP2aGMcA51O74ZV5BcrivqiVpljg8gEORZQAU1vCtL
-X-Received: by 2002:a9d:6ad5:0:b0:6dd:ef0b:4f62 with SMTP id m21-20020a9d6ad5000000b006ddef0b4f62mr879830otq.77.1706065542092;
-        Tue, 23 Jan 2024 19:05:42 -0800 (PST)
+        bh=A1sI7nRj6Sb3+vzY3tBFzwAr+P5ADn9TFjJ984wNlHs=;
+        b=FfUzl2CqadfvDNvpqNapSDwsKUs5ZjEefALIEThiaa2YLDGn7D6CM9ls5IM3FHJOZj
+         m7iHnfxcbTwdn8LGS7Xb4gXchOoc9U6Kb/kIRR5OpAHgPgF33oFKD3WWSfqzmkkXhQDV
+         /FIHcdfL6NRbs8JB8arsYuGrtIKIB4+SrCG6aALpHyF+Nu/xxtqwFp7OE3IKF+WOq+96
+         xzH8qZLUu0vNp7ghcuJCRgfczxP4IHsY6HjrDmI9qp1wLjAJY0/97wf8VuCqGH4m9THs
+         styQxS5UQsp2KxzjoRbnORG70jmLs/KbHAfNkIRgHLG4LgCBlg5SLtezGXBPRJLgqlG/
+         0knw==
+X-Gm-Message-State: AOJu0YzfwBZgE2Of6mAWwSEC5OEr43CjW4NxEFSCck3jF5AfEdnqOwF3
+	38BT982MikH4LkpbsIkWfuyCujUaZe9A7n7Xrhrfh6C8GuGYaU78kAzEZplqIU54IFD0SqYSilX
+	E040RRp8pFH/4nkLB9/LM7hRoPVpfHw==
+X-Google-Smtp-Source: AGHT+IE6/QlqXprWei1rIePUFWUKuwHJE0/o+ALcxQ84BQGJO6Em+rTO6MQXs78sdkGu/UVrkZ0YG02crven
+X-Received: by 2002:a05:6830:94:b0:6dd:e9ee:2568 with SMTP id a20-20020a056830009400b006dde9ee2568mr811597oto.22.1706065543726;
+        Tue, 23 Jan 2024 19:05:43 -0800 (PST)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp-relay.gmail.com with ESMTPS id c22-20020a056830349600b006dc7502beabsm455320otu.3.2024.01.23.19.05.40
+        by smtp-relay.gmail.com with ESMTPS id c22-20020a056830349600b006dc7502beabsm455320otu.3.2024.01.23.19.05.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jan 2024 19:05:42 -0800 (PST)
+        Tue, 23 Jan 2024 19:05:43 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 From: David Regan <dregan@broadcom.com>
 To: dregan@broadcom.com,
@@ -88,16 +88,16 @@ To: dregan@broadcom.com,
 	baruch@tkos.co.il,
 	linux-arm-kernel@lists.infradead.org,
 	dan.carpenter@linaro.org
-Subject: [PATCH v3 07/10] mtd: rawnand: brcmnand: Support write protection setting from dts
-Date: Tue, 23 Jan 2024 19:04:55 -0800
-Message-Id: <20240124030458.98408-8-dregan@broadcom.com>
+Subject: [PATCH v3 08/10] mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+Date: Tue, 23 Jan 2024 19:04:56 -0800
+Message-Id: <20240124030458.98408-9-dregan@broadcom.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20240124030458.98408-1-dregan@broadcom.com>
 References: <20240124030458.98408-1-dregan@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240123_190642_792522_3DA387EC 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20240123_190644_219072_BFE8EF53 
+X-CRM114-Status: GOOD (  13.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,53 +114,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: William Zhang <william.zhang@broadcom.com>
+fix return type for exec_op reset and status detect helper functions
 
-The write protection feature is controlled by the module parameter wp_on
-with default set to enabled. But not all the board use this feature
-especially in BCMBCA broadband board. And module parameter is not
-sufficient as different board can have different option.  Add a device
-tree property and allow this feature to be configured through the board
-dts on per board basis.
-
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Reviewed-by: Kamal Dasu <kamal.dasu@broadcom.com>
-Reviewed-by: David Regan <dregan@broadcom.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
+Fixes: 3cc4718fa644 ("mtd: rawnand: brcmnand: exec_op implementation")
+Signed-off-by: David Regan <dregan@broadcom.com>
+Reviewed-by: William Zhang <william.zhang@broadcom.com>
 ---
 Changes in v3: None
 ---
-Changes in v2: None
+Changes in v2:
+- Added to patch series
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 869ea64e9189..9a904c7c6dad 100644
+index 9a904c7c6dad..6b5d76eff0ec 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -3081,7 +3081,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	struct brcmnand_controller *ctrl;
- 	struct brcmnand_host *host;
- 	struct resource *res;
--	int ret;
-+	int ret, wp_dt;
+@@ -625,7 +625,7 @@ enum {
+ /* Only for v7.2 */
+ #define	ACC_CONTROL_ECC_EXT_SHIFT		13
  
- 	if (dn && !of_match_node(brcmnand_of_match, dn))
- 		return -ENODEV;
-@@ -3218,6 +3218,12 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	/* Disable XOR addressing */
- 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
+-static u8 brcmnand_status(struct brcmnand_host *host);
++static int brcmnand_status(struct brcmnand_host *host);
  
-+	/* Not all boards support write protect (WP), check DT property */
-+	if (of_property_read_u32(dn, "brcm,nand-use-wp", &wp_dt) == 0) {
-+		if (wp_dt >= 0 && wp_dt <= 2)
-+			wp_on = wp_dt;
-+	}
+ static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctrl)
+ {
+@@ -1749,7 +1749,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
+ 				 INTFC_FLASH_STATUS;
+ }
+ 
+-static u8 brcmnand_status(struct brcmnand_host *host)
++static int brcmnand_status(struct brcmnand_host *host)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -1760,7 +1760,7 @@ static u8 brcmnand_status(struct brcmnand_host *host)
+ 	return brcmnand_waitfunc(chip);
+ }
+ 
+-static u8 brcmnand_reset(struct brcmnand_host *host)
++static int brcmnand_reset(struct brcmnand_host *host)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 
+@@ -2492,11 +2492,14 @@ static int brcmnand_exec_op(struct nand_chip *chip,
+ 
+ 	if (brcmnand_op_is_status(op)) {
+ 		status = op->instrs[1].ctx.data.buf.in;
+-		*status = brcmnand_status(host);
++		ret = brcmnand_status(host);
++		if (ret < 0)
++			return ret;
 +
- 	if (ctrl->features & BRCMNAND_HAS_WP) {
- 		/* Permanently disable write protection */
- 		if (wp_on == 2)
++		*status = ret & 0xFF;
+ 
+ 		return 0;
+-	}
+-	else if (brcmnand_op_is_reset(op)) {
++	} else if (brcmnand_op_is_reset(op)) {
+ 		ret = brcmnand_reset(host);
+ 		if (ret < 0)
+ 			return ret;
 -- 
 2.37.3
 
