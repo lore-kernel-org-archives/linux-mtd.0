@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A084C48260
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7B62C47258
 	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jan 2024 20:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,57 +12,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sUP9/UWuRSbedv0IgjXVNu4xiTemLyvRBgOtimFWIKc=; b=K6Miv3U0cWHN+E
-	rN5feCt/80KS0I62ZklrOtckGzIgKO/5IKY7WzxQ/vyS/BB3wneUboDd0tA9A9TR85nnzronVRMOR
-	mYwQp2DeuUHTNwNhSzXzci06ho53QnGGzU7TugN5tMBII51FXz1CUIXy1D6SA5e3FwEfLhdxzyo01
-	ChbOwYLYwmE8LyM1Pd5OCm8oNX2lHV2K4COyChEkuA1fY1a8aWcrxdEnC5LhsbX65i616na67JagS
-	MnNPShM94cEXrIG82b0gzMtSX3A+8SvIpl93TG7LSrwcF64fEolwixC46vziRKm8e8sFGiow3skiG
-	6ymzNMglbX1PbIGivsRQ==;
+	List-Owner; bh=HJesQZA3wPdY/TCCE86/TXpUjFX+pJ0JDLlQYmabGnQ=; b=yx8HU2BP+BEP0W
+	PErmpklY6+rhuPcmQSXgAQADrgHXA2L+hxMpz0827SaMZJ8L96sjaTsnoaHF36iZmkZk6NEI4xHbv
+	/w3JfGZGy/NexrGJUUg24kV2uoBv5Z4e+b/ID16Ht53Uk2bDeCQvSpo5GqEGxqrhIGXPFr6VGbNra
+	+HX3R3Z+Q5HfHkVhyUuud36sONdfnPMvSLtX1swaEXUdrogKfq6urc6QG9oJdlDBJAj1gKkiWW1ca
+	tieL6bQX0g7n+VnE+QOAUOmKnkJ0xabwMvh8VLQWHzg5LF4vQnG9lsvuPLbnaQ5VdOys9MbYRSXAC
+	mH5PghMqjPXrNT6xr8MA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT5uh-00000001h8P-1p1z;
-	Thu, 25 Jan 2024 20:01:27 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1rT5ui-00000001h8z-1i5P;
+	Thu, 25 Jan 2024 20:01:28 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT5uc-00000001h3r-0iiN
+	id 1rT5ue-00000001h6j-4A2L
 	for linux-mtd@lists.infradead.org;
-	Thu, 25 Jan 2024 20:01:24 +0000
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a2e633c5365so193723266b.1
-        for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2024 12:01:20 -0800 (PST)
+	Thu, 25 Jan 2024 20:01:26 +0000
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a34a1790041so2310166b.1
+        for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2024 12:01:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1706212878; x=1706817678; darn=lists.infradead.org;
+        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1706212881; x=1706817681; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DQ0g29wlAAYawG7enqb5FROZ6lIs9rjJ1HjxjPIRBr4=;
-        b=M7qchn50YnzUfk4zdgfozASJZirZhB7OmmiDtDyj6BdzohR7JyOLoEyD2mxUn2Fwv/
-         vaWKfOfoj5+HLbI6EEvc2a7dE9+9yL0L9AeLib2FOBd0zN8Qt0SzebEGVLZgTZ4blY+6
-         kWZJS92Gj/807NU7lLVdcy3GxoKcl2+JJmRXTFc2rH7NhsBjRpwHR+X8yBt19Iu12o9M
-         DGPhdMZ9eSgiJSEl7ODr5HrLf3kZFHJvMnv/GR21RUCJQYv7G+L5Ka9sigx8oB6UErIy
-         p/0MOczfWz5jPORSYD+h70HrIX88CBYYgxjqteZ5TjrMXAXluzEWsumUtwIzrYTqoWjS
-         hKjw==
+        bh=nI2TUBrWsibpggLWuO+Eog4ByDUTome4h9IXAkq4JHg=;
+        b=h/V9KP0jRc1O11YNUJEn6IlplDhaTN67WRI5dAE9VWLUCk+lasGEl0Tts1SntHCvsk
+         TT3vXOXGwn0P9uTKxyMf4rytDxQYA+CS+QHIuA/BDJKWM/CJFjcSdfG1Dtvh2UWlRCOU
+         mwnuyIhnN/RTm+UblYvoh9GZAO+2FzNWvjDvmB4v9UTJxqB74DD6j/G3m8zO4wJU1uqt
+         /vceHMBXmAH+lQzlUeB4VIq0NAzCpzEENy/whpEUf/vRm/zLvk8fhUkYQqa5Edj4oShs
+         wfJjLH3cCNF69+8JPcCJVS2QHCPlKcWAAgLLkJywNi58r9Sm6qsM2LGYU+WumWTFa87s
+         sVvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706212878; x=1706817678;
+        d=1e100.net; s=20230601; t=1706212881; x=1706817681;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DQ0g29wlAAYawG7enqb5FROZ6lIs9rjJ1HjxjPIRBr4=;
-        b=dD2on4GKvG/JnMUUWSm0TWWW/14kaJpU7EsjK5s/hpxAxffnVWE5EQ3ADNrdtEcYCJ
-         Q+Crek9ccAQ07YTvL3AGIuJjklBj4GVi0bUnR+8g3y9RMqQ+5YFttHIthU+uF4lPkcdP
-         kznllpKHNc0o58jP4D8L5/plDXWBCuDGRxQyWN8ihwVK2tvrlnxpvH7jGKszuXOOhwQX
-         5N21J/GNVIq2MjfF0asBe97z4gY7QOGcT+Z3ma7/9h63D0ZxjtKItAVdfxr0VRw1qOW7
-         oW70k9i86Qy+QUNhyjhlZHU793o9bgdLnTYDKJQpwh7mKXv7FxpQPxBM/3nxLV9PN4JS
-         Rtqg==
-X-Gm-Message-State: AOJu0Yynpd/ws+W/aJlC9j7RCUVuvYBC1f8vZaUMTKB6EaA6Cw6XpFuM
-	cBqnoiCEdT0B1cD/1eq5clweK9RtR64JQHijS/GKYaJBLZ+tchZYYxSz46iFVBwjuQDuE9HUg1L
-	p
-X-Google-Smtp-Source: AGHT+IHqVYL/lJVL7JEAq3szsDoY8tNhXCz0ekp9lxwVygOHTiAaO1z5D4lST0SmwVn/brdSUyzCLQ==
-X-Received: by 2002:a17:907:7da5:b0:a31:1d58:262c with SMTP id oz37-20020a1709077da500b00a311d58262cmr170599ejc.5.1706212878670;
-        Thu, 25 Jan 2024 12:01:18 -0800 (PST)
+        bh=nI2TUBrWsibpggLWuO+Eog4ByDUTome4h9IXAkq4JHg=;
+        b=XIAViGAGzllsBETdd5osrNFuKQLZfakj+H/uULmfuh/wa36yZKXsF4lbK1HRDMbDXF
+         oY76X89wQx5g03alo5nbMExovcDG1Lde9rIGtv0YSyS/CrBfjq36NXlU6CcWWiART3ic
+         HzEx65xUkDoh9kZcQdv9UgvGnKb62BUnb5L+Zw36kNvbQ+FUH7aIV94M62dLWnp1eWwG
+         Kl/7BVTxLaEHBe5dBMbdyjXzSzgJnee6G/VYYCT2VTgkRLgCoYylkrv//j2SaX239NaK
+         05q9Q51ncKIjn/jK6hzXbCX3CbL0D5Pe0CZG2cTMhugD3TzXg/ANEDFgMDZeKho9JJeF
+         Yrbw==
+X-Gm-Message-State: AOJu0YyLIzeVuBmqFpb9wAue1El2K+TFhn36RefyyY61ud88sX/qugnL
+	LQOu+Z9cOU1mPHsK8zGGLtFm7iVKSbbCCDL410YeijdtzQ3Xjm+rg/KZ33+zeJn1/RvU6HQv8WT
+	H
+X-Google-Smtp-Source: AGHT+IH2rF8eHuhiaQIwI/Xc+DXpK654R/gK9VQE4TxudoFLQcJX4ThR2HuNQxMZHhNWur8zy1OTlw==
+X-Received: by 2002:a17:906:80c9:b0:a34:95ac:65b4 with SMTP id a9-20020a17090680c900b00a3495ac65b4mr132618ejx.1.1706212881683;
+        Thu, 25 Jan 2024 12:01:21 -0800 (PST)
 Received: from pikachu.. ([105.225.45.176])
-        by smtp.gmail.com with ESMTPSA id ss17-20020a170907c01100b00a3496fa1f7fsm195577ejc.91.2024.01.25.12.01.15
+        by smtp.gmail.com with ESMTPSA id ss17-20020a170907c01100b00a3496fa1f7fsm195577ejc.91.2024.01.25.12.01.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 12:01:18 -0800 (PST)
+        Thu, 25 Jan 2024 12:01:21 -0800 (PST)
 From: Ezra Buehler <ezra@easyb.ch>
 To: linux-mtd@lists.infradead.org
 Cc: Chuanhong Guo <gch981213@gmail.com>,
@@ -74,16 +74,16 @@ Cc: Chuanhong Guo <gch981213@gmail.com>,
 	Sridharan S N <quic_sridsn@quicinc.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mtd: spinand: Add support for 5-byte IDs
-Date: Thu, 25 Jan 2024 22:01:07 +0200
-Message-ID: <20240125200108.24374-2-ezra@easyb.ch>
+Subject: [PATCH 2/2] mtd: spinand: esmt: Extend IDs to 5 bytes
+Date: Thu, 25 Jan 2024 22:01:08 +0200
+Message-ID: <20240125200108.24374-3-ezra@easyb.ch>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240125200108.24374-1-ezra@easyb.ch>
 References: <20240125200108.24374-1-ezra@easyb.ch>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240125_120122_348300_7E85A584 
-X-CRM114-Status: GOOD (  13.72  )
+X-CRM114-CacheID: sfid-20240125_120125_185097_09303DF7 
+X-CRM114-Status: GOOD (  12.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,33 +102,57 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-E.g. ESMT chips will return an identification code with a length of 5
-bytes. In order to prevent ambiguity, flash chips would actually need to
-return IDs that are up to 17 or more bytes long due to JEDEC's
-continuation scheme. I understand that if a manufacturer ID is located
-in bank N of JEDEC's database (there are currently 16 banks), N - 1
-continuation codes (7Fh) need to be added to the identification code
-(comprising of manufacturer ID and device ID). However, most flash chip
-manufacturers don't seem to implement this (correctly).
+According to the datasheets, the ESMT chips in question will return a 5
+byte long identification code where the last 3 bytes are the JEDEC
+continuation codes (7Fh). Although, I would have expected 4 continuation
+codes as Powerchip Semiconductor (C8h, corresponding to the parameter
+page data) is located in bank 5 of the JEDEC database.
 
+By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
+flashes.
+
+This fix allows the MT7688-based GARDENA smart Gateway to boot again.
+
+Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
 Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 ---
- include/linux/mtd/spinand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/spi/esmt.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index badb4c1ac079..5c19ead60499 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -169,7 +169,7 @@
- struct spinand_op;
- struct spinand_device;
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+index 31c439a557b1..4597a82de23a 100644
+--- a/drivers/mtd/nand/spi/esmt.c
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -104,7 +104,8 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
  
--#define SPINAND_MAX_ID_LEN	4
-+#define SPINAND_MAX_ID_LEN	5
- /*
-  * For erase, write and read operation, we got the following timings :
-  * tBERS (erase) 1ms to 4ms
+ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 	SPINAND_INFO("F50L1G41LB",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+@@ -113,7 +114,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+ 	SPINAND_INFO("F50D1G41LB",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+@@ -122,7 +124,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+ 	SPINAND_INFO("F50D2G41KA",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
 -- 
 2.43.0
 
