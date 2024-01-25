@@ -4,84 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 391C2C47258
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jan 2024 19:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A3A0C47258
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jan 2024 19:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9R7g74rhw6G4qB+hmyjj+FkYf613IqcCmFIUddwlw34=; b=GQOoJAPM4H/pjF
-	PhPVKR20WjJo1OQdM9HaUHY+U3vSHWdp+QAqY7WFYBqGNgBffYChaArl4Qr6iLb6yVKpPOLJCeaMG
-	hsl8lLCykXAvntGuPsn0Csw83vG1jmiyVWhTejUiTP+BttlIUJ4MCYRDTpiLVhw5cW1dVHZd5BV2L
-	+QDShCJywb5BVkU+3h2/WctUKnin90s1eZHJw97MswF1gNU6Drryy5WLkt8hDw385QID7qqsAr9tr
-	hLzb0ZnX4zA9GOjnAIF4xuhReXVs4G+oYZnDqawHEV651FAtxeF14G1U7Wz2aA7gFNWlbtbCzNJ09
-	3mx/DotmFnpu16INN36g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=t2ovT0MefWnglr8/W5ceokxif8HJTA8aOaKwmZltkkU=; b=yi6rqzabcLt8v3G9VEy3ECMfV5
+	+A1EaeaSw8E1tk2EmP4kepb3O6oHbaV/GT7kp2yFKrI4o7O1rw7j0xL2XbMgDyRteGQ86c/iXUx+/
+	DPn2MYSSofJAP+P7pCxsM6u9jPvi/YrGT/7e+XQObd/LsLqcCwAs+Pf2mxrGn6G2jQC3CDVyNnWW/
+	Bln/voBZDKzoLGSWVzC+2cnjTlCRqrE7CHJf0JV+zg/rRYQ0AUPXhtwVR8C+HDjcctRoqqpT8FTkE
+	3PiEenqgf/y8w9qKAKfNRHaoRnLe0jVjP2Hv8zahEoWf6PnOQ9tQpdQDkqhwrc9GT7pjLlP6W0bSr
+	ekqf51CQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT5hj-00000001dP7-1DQO;
-	Thu, 25 Jan 2024 19:48:03 +0000
-Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
+	id 1rT5lP-00000001eO3-2RCR;
+	Thu, 25 Jan 2024 19:51:51 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rT5hh-00000001dNp-13qe
-	for linux-mtd@lists.infradead.org;
-	Thu, 25 Jan 2024 19:48:02 +0000
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6dc36e501e1so5799126a34.1
-        for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2024 11:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706212077; x=1706816877; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hyIWFQ1vFWoo45M1BlWLEeXRVeP9Nt7FD+B+f6FiY+w=;
-        b=EvFSgYHEZSNlEmTqbJsbiX7fD5oCdxjUY7FWDzWnrbCNtQNOVI975VzwBe0+qZZ6vz
-         FHHI8occdNMVDjZ30jbZa5XNXOs6nEyGbpZ9w0vZkN7CxqKjEdXbW08BCleksoElFbom
-         efE5IdSS/cQd7kVcXOGyEAN0Npc1rKYpIBxGI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706212077; x=1706816877;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hyIWFQ1vFWoo45M1BlWLEeXRVeP9Nt7FD+B+f6FiY+w=;
-        b=YdTqUbfqwbpPrnVgSLg5Xos0V1Z9f9Kxh3NUw+A/Y/nLLBY0qz5S0l0FUEJqINITEl
-         Uq9mJnrFk+fbt1uM3foV8eZkS8bLTzzsLez3VwV7UdrU1Qd2dmrDy2fI98Y8sc72Fplu
-         m34SBZgbhp7xdbUSjWJ12Gfy3CdfJmi08PUrj2b2yVb0tgYRdMfhCxe3DiAxV8AhJCm8
-         ZmcSjsPv9mNB8M+5qihEP1A0B19NjigkbP5loihSarupO354o4msam4lwhkPcAyv4zRc
-         c2culxcNUnDD2HnzgX+6c6ctVR6TBf/YhyE6tLSvL/kIwNcmY5BkhlcDqwhonm9SxLLW
-         u/4w==
-X-Gm-Message-State: AOJu0YxFrzVLJ4/ZidvKq9trpCbDlw7jVvhY9xWJOEopjY+G6py6LflF
-	KYoc4wJoQNx3C3GGKXDtPYGPpqtN1MiZPeV9QLrEFqBQnkMhtLRaua5McNkY56DxVkJZXQ5zO8O
-	WdQYfBC0IK5kZHQuatYKPc4nSvwWko+tM0vc4
-X-Google-Smtp-Source: AGHT+IGekG3Dtb9CcWAk4PYoE+WDZ1VA7nT/CUBW+XazLbLifZzJFyi+b1ofXaGFHNvhlX5SIyIFFhz3O6B/sKC2sg0=
-X-Received: by 2002:a9d:7495:0:b0:6db:fa81:564a with SMTP id
- t21-20020a9d7495000000b006dbfa81564amr488303otk.3.1706212076800; Thu, 25 Jan
- 2024 11:47:56 -0800 (PST)
+	id 1rT5lL-00000001eMw-3LKi;
+	Thu, 25 Jan 2024 19:51:49 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4EA50622CB;
+	Thu, 25 Jan 2024 19:51:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2F5FC433F1;
+	Thu, 25 Jan 2024 19:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706212306;
+	bh=QLNP0M6wu4KA/+kIwFsIjRRWbd6oSMe76sDMN+UZ/8I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F9UfcKJAbwbyYCix1Nh6V5qWadMYyiZAV2p539hBA1MWSHPZWLkfhez7LHCPFSmix
+	 EbCqYhvAXI+y2s2qTnbomlY9fodvlCegz3bS8hp0zabaKCf8vuHDdCggddgeIQW3fc
+	 0IN5x3/hC8mIPwm0QS4Lt5U+7lL5y71SXjvuxpkpDcdU6jiys9U2SLZhXJV/NbgAKL
+	 SxVgkxaYHAD9jNsfp63b428BELvneKpGGaPa/nXATkdva/b2r2aB2vCIZkvwd8bzhx
+	 pLuv7u9NBbCLReXQ9bGpu8Ww+5B/TdvWbIciXgLFz9CoSzB4nZSWSsvywKtRGAsF2R
+	 dCDPiVXPaLQ0A==
+Date: Thu, 25 Jan 2024 19:51:38 +0000
+From: Conor Dooley <conor@kernel.org>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: David Regan <dregan@broadcom.com>, dregan@mail.com,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, computersforpeace@gmail.com,
+	kdasu.kdev@gmail.com, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	joel.peshkin@broadcom.com, tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com, anand.gore@broadcom.com,
+	kursad.oney@broadcom.com, florian.fainelli@broadcom.com,
+	rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com,
+	andre.przywara@arm.com, baruch@tkos.co.il,
+	linux-arm-kernel@lists.infradead.org, dan.carpenter@linaro.org
+Subject: Re: [PATCH v3 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca
+ SoCs
+Message-ID: <20240125-drove-undiluted-5d822b7fd4fa@spud>
+References: <20240124030458.98408-1-dregan@broadcom.com>
+ <20240124030458.98408-2-dregan@broadcom.com>
+ <20240124-direness-outpost-bbc22550a161@spud>
+ <451151f3-33df-4de8-ab62-a683ad4b7cb1@broadcom.com>
 MIME-Version: 1.0
-References: <20240124030458.98408-1-dregan@broadcom.com> <20240124030458.98408-11-dregan@broadcom.com>
- <20240124184027.712b1e47@xps-13>
-In-Reply-To: <20240124184027.712b1e47@xps-13>
-From: David Regan <dregan@broadcom.com>
-Date: Thu, 25 Jan 2024 11:47:46 -0800
-Message-ID: <CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
-Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: David Regan <dregan@broadcom.com>, dregan@mail.com, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	computersforpeace@gmail.com, kdasu.kdev@gmail.com, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Joel Peshkin <joel.peshkin@broadcom.com>, 
-	Tomer Yacoby <tomer.yacoby@broadcom.com>, Dan Beygelman <dan.beygelman@broadcom.com>, 
-	William Zhang <william.zhang@broadcom.com>, Anand Gore <anand.gore@broadcom.com>, 
-	Kursad Oney <kursad.oney@broadcom.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	rafal@milecki.pl, bcm-kernel-feedback-list@broadcom.com, 
-	andre.przywara@arm.com, baruch@tkos.co.il, 
-	linux-arm-kernel@lists.infradead.org, 
-	Dan Carpenter <dan.carpenter@linaro.org>
+In-Reply-To: <451151f3-33df-4de8-ab62-a683ad4b7cb1@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240125_114801_342626_1BD8FDFD 
-X-CRM114-Status: GOOD (  22.93  )
+X-CRM114-CacheID: sfid-20240125_115147_983327_12D4EE66 
+X-CRM114-Status: GOOD (  85.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,58 +79,300 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0887448589263973767=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdcOobCwKCk9uIFdlZCwgSmFuIDI0LCAyMDI0IGF0IDk6NDDigK9BTSBNaXF1ZWwgUmF5
-bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToKPgo+IEhpIERhdmlkLAo+Cj4g
-ZHJlZ2FuQGJyb2FkY29tLmNvbSB3cm90ZSBvbiBUdWUsIDIzIEphbiAyMDI0IDE5OjA0OjU4IC0w
-ODAwOgo+Cj4gPiBBbGxvdyBzZXR0aW5ncyBmb3Igb24tZGllIGVjYyBzdWNoIHRoYXQgaWYgb24t
-ZGllIEVDQyBpcyBzZWxlY3RlZAo+ID4gZG9uJ3QgZXJyb3Igb3V0IGJ1dCByZXF1aXJlIEVDQyBz
-dHJhcCBzZXR0aW5nIG9mIHplcm8KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBSZWdhbiA8
-ZHJlZ2FuQGJyb2FkY29tLmNvbT4KPiA+IFJldmlld2VkLWJ5OiBXaWxsaWFtIFpoYW5nIDx3aWxs
-aWFtLnpoYW5nQGJyb2FkY29tLmNvbT4KPiA+IC0tLQo+ID4gQ2hhbmdlcyBpbiB2MzogTm9uZQo+
-ID4gLS0tCj4gPiBDaGFuZ2VzIGluIHYyOgo+ID4gLSBBZGRlZCB0byBwYXRjaCBzZXJpZXMKPiA+
-IC0tLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCAxNCAr
-KysrKysrKysrLS0tLQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCA0IGRl
-bGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNt
-bmFuZC9icmNtbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQu
-Ywo+ID4gaW5kZXggYTRlMzExYjY3OThjLi40MjUyNmYzMjUwYzkgMTAwNjQ0Cj4gPiAtLS0gYS9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gPiArKysgYi9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gPiBAQCAtMjcyNyw5ICsyNzI3LDEx
-IEBAIHN0YXRpYyBpbnQgYnJjbW5hbmRfc2V0dXBfZGV2KHN0cnVjdCBicmNtbmFuZF9ob3N0ICpo
-b3N0KQo+ID4gICAgICAgY2ZnLT5ibGtfYWRyX2J5dGVzID0gZ2V0X2Jsa19hZHJfYnl0ZXMobXRk
-LT5zaXplLCBtdGQtPndyaXRlc2l6ZSk7Cj4gPgo+ID4gICAgICAgaWYgKGNoaXAtPmVjYy5lbmdp
-bmVfdHlwZSAhPSBOQU5EX0VDQ19FTkdJTkVfVFlQRV9PTl9IT1NUKSB7Cj4gPiAtICAgICAgICAg
-ICAgIGRldl9lcnIoY3RybC0+ZGV2LCAib25seSBIVyBFQ0Mgc3VwcG9ydGVkOyBzZWxlY3RlZDog
-JWRcbiIsCj4gPiAtICAgICAgICAgICAgICAgICAgICAgY2hpcC0+ZWNjLmVuZ2luZV90eXBlKTsK
-PiA+IC0gICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7Cj4gPiArICAgICAgICAgICAgIGlmIChj
-aGlwLT5lY2Muc3RyZW5ndGgpIHsKPiA+ICsgICAgICAgICAgICAgICAgICAgICBkZXZfZXJyKGN0
-cmwtPmRldiwgIkVSUk9SISEhIEhXIEVDQyBtdXN0IGJlIHNldCB0byB6ZXJvIGZvciBub24taGFy
-ZHdhcmUgRUNDOyBzZWxlY3RlZDogJWRcbiIsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjaGlwLT5lY2Muc3RyZW5ndGgpOwo+Cj4gQ2FuIHlvdSB1c2UgYSBtb3JlIGZvcm1hbCBz
-dHJpbmc/IEFsc28gY2xhcmlmeSBpdCBiZWNhdXNlIEkgZG9uJ3QKPiByZWFsbHkgdW5kZXJzdGFu
-ZCB3aGF0IGl0IGxlYWRzIHRvLgoKSG93IGFib3V0OgoKZGV2X2VycihjdHJsLT5kZXYsICJIVyBF
-Q0Mgc2V0IHRvICVkLCBtdXN0IGJlIHplcm8gZm9yIG9uLWRpZSBFQ0NcbiIsCgo+Cj4gPiArICAg
-ICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7Cj4gPiArICAgICAgICAgICAgIH0KPiA+
-ICAgICAgIH0KPiA+Cj4gPiAgICAgICBpZiAoY2hpcC0+ZWNjLmFsZ28gPT0gTkFORF9FQ0NfQUxH
-T19VTktOT1dOKSB7Cj4gPiBAQCAtMjc5Nyw3ICsyNzk5LDExIEBAIHN0YXRpYyBpbnQgYnJjbW5h
-bmRfc2V0dXBfZGV2KHN0cnVjdCBicmNtbmFuZF9ob3N0ICpob3N0KQo+ID4gICAgICAgaWYgKHJl
-dCkKPiA+ICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKPiA+Cj4gPiAtICAgICBicmNtbmFuZF9z
-ZXRfZWNjX2VuYWJsZWQoaG9zdCwgMSk7Cj4gPiArICAgICBpZiAoY2hpcC0+ZWNjLmVuZ2luZV90
-eXBlID09IE5BTkRfRUNDX0VOR0lORV9UWVBFX09OX0RJRSkgewo+ID4gKyAgICAgICAgICAgICBk
-ZXZfZGJnKGN0cmwtPmRldiwgIkRpc2FibGUgSFcgRUNDIGZvciBvbi1kaWUgRUNDXG4iKTsKPgo+
-IE5vdCBuZWVkZWQuCgpXaWxsIHJlbW92ZS4KCj4KPiA+ICsgICAgICAgICAgICAgYnJjbW5hbmRf
-c2V0X2VjY19lbmFibGVkKGhvc3QsIDApOwo+ID4gKyAgICAgfSBlbHNlCj4gPiArICAgICAgICAg
-ICAgIGJyY21uYW5kX3NldF9lY2NfZW5hYmxlZChob3N0LCAxKTsKPgo+IFN0eWxlIGlzIHdyb25n
-LCBidXQgb3RoZXJ3aXNlIEkgdGhpbmsgRUNDIHNob3VsZCBiZSBrZXB0IGRpc2FibGVkIHdoaWxl
-Cj4gbm90IGluIGFjdGl2ZSB1c2UsIHNvIEkgYW0gYSBiaXQgc3VycHJpc2VkIGJ5IHRoaXMgbGlu
-ZS4KClRoaXMgaXMgYSBkb3VibGUgY2hlY2sgdG8gdHVybiBvbi9vZmYgb3VyIGhhcmR3YXJlIEVD
-Qy4KCj4KPiA+Cj4gPiAgICAgICBicmNtbmFuZF9wcmludF9jZmcoaG9zdCwgbXNnLCBjZmcpOwo+
-ID4gICAgICAgZGV2X2luZm8oY3RybC0+ZGV2LCAiZGV0ZWN0ZWQgJXNcbiIsIG1zZyk7Cj4KPgo+
-IFRoYW5rcywKPiBNaXF1w6hsCgpUaGFua3MhCgotRGF2ZQoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+
+--===============0887448589263973767==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="RBywQ9RMWc8iS1B8"
+Content-Disposition: inline
+
+
+--RBywQ9RMWc8iS1B8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+On Wed, Jan 24, 2024 at 07:01:48PM -0800, William Zhang wrote:
+> On 1/24/24 09:24, Conor Dooley wrote:
+> > On Tue, Jan 23, 2024 at 07:04:49PM -0800, David Regan wrote:
+> > > From: William Zhang <william.zhang@broadcom.com>
+> > >=20
+> > > Update the descriptions to reflect different families of broadband So=
+C and
+> > > use the general name bcmbca for ARM based SoC.
+> > >=20
+> > > Add brcm,nand-use-wp property to have an option for disabling this
+> > > feature on broadband board design that does not use write protection.
+> > >=20
+> > > Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap =
+for
+> > > broadband board designs because they do not specify ecc setting in dts
+> > > but rather using the strap setting.
+> > >=20
+> > > Remove the requirement of interrupts property to reflect the driver
+> > > code. Also add myself to the list of maintainers.
+> > >=20
+> > > Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> > > Reviewed-by: David Regan <dregan@broadcom.com>
+> > > ---
+> > > Changes in v3:
+> > > - Update brcm,nand-use-wp description
+> > > - Revert the description change to BCM63168 SoC-specific NAND control=
+ler
+> > > ---
+> > > Changes in v2:
+> > > - Revert the new compatible string nand-bcmbca
+> > > - Drop the BCM63168 compatible fix to avoid any potential ABI
+> > > incompatibility issue
+> > > - Simplify the explanation for brcm,nand-use-wp
+> > > - Keep the interrupt name requirement when interrupt number is specif=
+ied
+> > > ---
+> > >   .../bindings/mtd/brcm,brcmnand.yaml           | 37 ++++++++++++++++=
+---
+> > >   1 file changed, 32 insertions(+), 5 deletions(-)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml=
+ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> > > index f57e96374e67..752c6ee98a7d 100644
+> > > --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> > > +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> > > @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
+> > >   maintainers:
+> > >     - Brian Norris <computersforpeace@gmail.com>
+> > >     - Kamal Dasu <kdasu.kdev@gmail.com>
+> > > +  - William Zhang <william.zhang@broadcom.com>
+> > >   description: |
+> > >     The Broadcom Set-Top Box NAND controller supports low-level acces=
+s to raw NAND
+> > > @@ -18,9 +19,10 @@ description: |
+> > >     supports basic PROGRAM and READ functions, among other features.
+> > >     This controller was originally designed for STB SoCs (BCM7xxx) bu=
+t is now
+> > > -  available on a variety of Broadcom SoCs, including some BCM3xxx, B=
+CM63xx, and
+> > > -  iProc/Cygnus. Its history includes several similar (but not fully =
+register
+> > > -  compatible) versions.
+> > > +  available on a variety of Broadcom SoCs, including some BCM3xxx, M=
+IPS based
+> > > +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iPro=
+c/Cygnus.
+> > > +  Its history includes several similar (but not fully register compa=
+tible)
+> > > +  versions.
+> > >     -- Additional SoC-specific NAND controller properties --
+> > > @@ -53,7 +55,7 @@ properties:
+> > >                 - brcm,brcmnand-v7.2
+> > >                 - brcm,brcmnand-v7.3
+> > >             - const: brcm,brcmnand
+> > > -      - description: BCM63138 SoC-specific NAND controller
+> > > +      - description: BCMBCA SoC-specific NAND controller
+> > >           items:
+> > >             - const: brcm,nand-bcm63138
+> > >             - enum:
+> > > @@ -111,6 +113,20 @@ properties:
+> > >         earlier versions of this core that include WP
+> > >       type: boolean
+> > > +  brcm,nand-use-wp:
+> > > +    description:
+> > > +      Use this property to indicate if board design uses
+> > > +      controller's write protection feature and connects its
+> > > +      NAND_WPb pin to nand chip's WP_L pin.
+> >=20
+> > > By default the driver
+> > > +      uses a module parameter with default value set to enable to
+> > > +      control this feature for all boards. Use this dts property to
+> > > +      override the default behavior and enable/disable this feature
+> > > +      through board dts on a per board basis.
+> >=20
+> > None of this information about module parameters is relevant in the
+> > binding, as it should be independent of the implementation of one
+> > particular operating system.
+> >=20
+> Agree this is OS related stuff. I was trying to make it more clean by
+> explaining how it is implemented in linux. And if we were to implement the
+> driver for another OS, there will be at least a default value for wp_on. I
+> will remove any mention of module parameter from this doc.
+>=20
+> > If the module parameter is not provided, what does the driver do?
+> > If "wp_on" is the module parameter, then the default is to enable the
+> > write protection feature. If that's correct, it seems to me that the
+> > property should be called something like "brcm,no-wp". This property
+> > would be a boolean that indicates that the NAND_WPb and WP_L pins are
+> > not connected & nothing more. Clearly if the module param tries to
+> > enable WP and the DT property indicates that it is not supported you
+> > can decline to enable the feature, but that is up to the drivers in
+> > the OS to decide.
+> >=20
+> If I were to implement this from day one, I certainly will choose the same
+> approach as you suggested here.  But there is existing brcm,nand-has-wp
+> property for other purpose and now if we have brcm,no-wp, it will be more
+> confusing with that property IMHO. I prefer to keep use the "has" for
+> feature availability and "use" for feature being used or not.
+
+"brcm,wp-not-connected" then, since I want it to become a boolean and it
+would better communicate what the problem is than "brcm,dont-use-wp"
+would.
+
+> And the reason I keep it as int is because there could be a potential val=
+ue
+> of 2 for another mode that the current driver could set the wp_on to.
+
+Can you explain, in driver independent terms, what this other mode has
+to do with how the WP is connected?
+Either you've got the standard scenario where apparently "NAND_WPb" and
+"WP_L" are connected and another situation where they are not.
+Is there another pin configuration in addition to that, that this 3rd
+mode represents?
+
+> I
+> don't see it is being used in BCMBCA product but I am not sure about other
+> SoC family. So I don't want to completely close the door here just in cas=
+e.
+
+If you ever need it, you could have a "brcm,wp-in-wacky-configuration"
+property that indicates that the hardware is configured in that way
+(providing that this hardware configuration is not just "NAND_WPb" and
+"WP_L" pins connected. The property can very easily be made mutually
+exclusive with "brcm,wp-not-connected" iff it ever comes to be.
+
+> > > +      Set to 0 if WP pins are not connected and feature is not
+> > > +      used. Set to 1 if WP pins are connected and feature is used.
+> >=20
+> > As it stands, this property is firmly in the "software policy" side
+> > of things, as it is being used as an override for a module parameter,
+> > particularly given you have properties for each direction. Whether or
+> > not the feature is to be used by the operating system is not relevant to
+> > the binding.
+> >=20
+> I don't understand why this is a software policy.  This is the board desi=
+gn
+> choice although it does override the driver default value. But it is still
+> board or device setting and describe the hardware. OS has to follow this
+> hardware configuration and set up accordingly.
+
+The software policy side of things is that you are instructing the
+software what to do with "use" nature of it and the force enable &
+disable options for the property. A boolean property that tells software
+that the wp is not connected is all you need, as far as I can tell.
+That should be sufficient information for the operating system to know
+whether or not it can use the wp.
+
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    enum: [0, 1]
+> > > +
+> > >   patternProperties:
+> > >     "^nand@[a-f0-9]$":
+> > >       type: object
+> > > @@ -137,6 +153,16 @@ patternProperties:
+> > >             layout.
+> > >           $ref: /schemas/types.yaml#/definitions/uint32
+> > > +      brcm,nand-ecc-use-strap:
+> > > +        description:
+> > > +          This flag is used by the driver to get the ecc strength and
+> > > +          spare area size from the SoC NAND boot strap setting. This
+> > > +          is commonly used by the BCMBCA SoC board design.
+> >=20
+> > Quoting from v1, as I didn't get to it in time:
+> >=20
+> > | > This property I'm not all that sure about either. If the specific
+> > | > properties that you mention here are not set in the DT what happens=
+ at
+> > | > the moment?
+> > | >
+> > | In that case, the ecc strength and oob size come from ONFI or nand id
+> > | decoding.  But that is usually the minimum requirement and user can
+> > | choose to use stronger ecc as long as there is enough oob spare area =
+in
+> > | the nand chip.
+> > |
+> > | > I suppose what I am getting at is why are the bootstrap settings not
+> > | > always used in the absence of specific values provided in the DT?
+> > | >
+> > | This is because the STB, iProc and other chip and their board design =
+may
+> > | not have or use the strap setting. But for BCMBCA SoC and board
+> > | reference design, we always use the strap setting.
+> >=20
+> > My main question here I suppose is why would you need this property at
+> > all? If the specific properties are provided (nand-ecc-strength etc)
+> > then use them, and if they are not use the strap settings?If
+> > nand-ecc-strength does not exist, the current driver implementation
+> use the auto detected ecc strength from the NAND chip ONFI parameter which
+> is okay. But for BCABCM SoC and our reference board design, we don't use
+> nand-ecc-strength and don't want to use the auto detected value(as they a=
+re
+> typically minimum requirement) but rather use strap setting so I need a
+> third choice.
+
+That seems reasonable. Please limit the property though to the SoCs
+where it is relevant if you had not done so already.
+Thanks for the explanation.
+
+> > If there's no properties and no strap settings, the this property does
+> > not help. If there's properties and strap settings, but properties are
+> > wrong, then you just have some devicetrees that incorrectly describe the
+> > hardware and need to be fixed.
+> >=20
+> True but manually setting nand-ecc-strength can be error prone like
+> copy/paste error. The hardware strap setting does not involve such edit in
+> the dts file so no error can happen.
+
+Copy paste errors are not really an argument here, you could use that as
+an excuse for anything DT property in the world.. You could copy paste
+the wrong thing into the strap, and idk about you, but on the systems I
+have it is far easier to change the DT passed to the kernel than what I
+assume is an early bootloader stage? (I tried googling for "broadcom
+strap" but there was nothing relevant)
+
+> > > If ecc
+> > > +          strength and spare area size are set by nand-ecc-strength
+> > > +          and brcm,nand-oob-sector-size in the dts, these settings
+> > > +          have precedence and override this flag.
+> >=20
+> > Again, IMO, this is not for the binding to decide. That is a decision
+> > for the operating system to make.
+> >=20
+> Again this is just for historic reason and BCMBCA as late player does not
+> want to break any existing dts setting.  So I thought it is useful to
+> explain here.  I can remove this text if you don't think it should be in =
+the
+> binding document.
+
+I don't, at least not in that form. I think it is reasonable to explain
+why these values are better though.
+
+Thanks,
+Conor.
+
+--RBywQ9RMWc8iS1B8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbK7ygAKCRB4tDGHoIJi
+0s+HAP0dTWSerDmmb/ifwIBohH15b3yqgvrNaY7FwwskT/dfigD+NZV2yWisvM9H
+zw3klP3GLMQGXl+H2IZHG3/i19rUxww=
+=2try
+-----END PGP SIGNATURE-----
+
+--RBywQ9RMWc8iS1B8--
+
+
+--===============0887448589263973767==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0887448589263973767==--
+
