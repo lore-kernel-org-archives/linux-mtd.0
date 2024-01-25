@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4122DC47258
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jan 2024 03:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E24BDC47DDF
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Jan 2024 03:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/ZKtui3Qk/WwXE3UhqHG6c8nPrwV+NDAkY0aEa+xXkM=; b=V1qpHYv/rCcesh0tIHt55sFlll
-	7EbZa06fMZ1KeWQ5NsxiXis281ZpAkv/+iOdyRk5FyAwExPI5VnVR1di/F89dDC7NHlBs2EdyuTBp
-	wxtviyCC/l229+lp9tNbA3evpc40If9t/xLDAOf2MYe0RBnn6gd6+dEYhD4d4xxowZAKOwfd17YSs
-	7upzcHXB125ZzLeEZGXvHMyN6QPuxCA+yo/NTEcFEKjVRisQ2ekZ8WaiGQjPtua63myMsO55BZ9Me
-	grVtCevL7p5kn/4MuCxfj8tuM3OZ6yvYvCooI9TBxlUPKFyTJSNMpZjtAsvnD6QSxENNnSaO3PTb4
-	SAock6Zg==;
+	bh=6FPLffIeO9KDyfNQ4xp8g5rPw09kwmWdHoVySFEUs/g=; b=Eaz/PTlKnumY5kfbQrvGa5LUEl
+	CDtA1rjJYa5/rr8fiI44guYzxDQESe2dieUpai0T3KpI/U9+SVWx78FEcrVeocwyx4Z26LfLqku+Y
+	J8pdPZ5IOIInflYyL0pmYhTAFepBuu4LxSAODyxHF9cCUFGn5kG/edUNTt/a83SWjr9VSWUX/3AXs
+	CMjCarBpNTgEUjwGO5zs9dRkHq2Llb04DPzk8/FyqoEbgfpnIA3O2n+MOMimkUzR3Kl6MKG4r0qlq
+	Nun6HAOEANDY676xkKBUxTiGB3CJosCTuIq+q0GZ03D7RTYHaz4MbkGqDK0xJ1CK40t2kZ3+glSxg
+	/FHel0Pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSqBh-005zVL-07;
-	Thu, 25 Jan 2024 03:13:57 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1rSqC0-005zgj-1O;
+	Thu, 25 Jan 2024 03:14:16 +0000
+Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSqBc-005zTX-1d
+	id 1rSqBw-005zbz-2C
 	for linux-mtd@lists.infradead.org;
-	Thu, 25 Jan 2024 03:13:54 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso3452820a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 24 Jan 2024 19:13:48 -0800 (PST)
+	Thu, 25 Jan 2024 03:14:14 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d751bc0c15so36730065ad.2
+        for <linux-mtd@lists.infradead.org>; Wed, 24 Jan 2024 19:14:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706152428; x=1706757228; darn=lists.infradead.org;
+        d=broadcom.com; s=google; t=1706152449; x=1706757249; darn=lists.infradead.org;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=17LCSb1+14EHw2gOvJZO0s6lf28cwAgNJP2dCX8Zbvg=;
-        b=L1U3W7QkNj4TLtaG9is3+LGucQhla+aIZs6H6B9Ht0zdYYa+Mj1c6TT624xy3SPb8c
-         /EamqVbltApReEvQOQhCOaLK4syfGRn5WzUQzANsXBWTIk+gVRL6cbsFrFBiXx+zV5Vf
-         UD10tLJwgD2mz5v8id5y7+zfvfWYTAC47Fxs0=
+        bh=YaUl7JG3TotEQ43RC3hJDkUAeTP8ICL21pknq8r+zxg=;
+        b=GQd19l92ihLQ2Q0FUlBYrPvEWEbLNzobJ9V2XUEZ5MxcxM69CrkbVNRcoZYhqNW/Tg
+         j14LPJLILd1OLlHiyPmzT+hVRR8HiKvzPgV1j05ECMJi2Ln7Y7jkuqEi5iPlMK1veUri
+         8eim7iHyxI+Z4dG5NNP7iqKGimqddGwhRvdro=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706152428; x=1706757228;
+        d=1e100.net; s=20230601; t=1706152449; x=1706757249;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=17LCSb1+14EHw2gOvJZO0s6lf28cwAgNJP2dCX8Zbvg=;
-        b=Wd9uUTlw9N36HPDSOfcT6RxL+hp8OBjSAOmNSD9Jv6wFTv1Rps04lAEBr9G2TIE8Ov
-         cMgIwvTzIDVAbBL8eramrTfhK6UHuARj/31ABLT2ObqW8zLHM/6iFJUlCWkgNmVKuidW
-         VIiv9UBZa72Mph1bCK2vf1FaIxr5J/O7JrRzKppWT7zWVujvp/0ww1uXqr2+1AZ9fcI4
-         5cuFlpv7kUxEp4wGjEWBvUWKKhMR9XLgvcDWQW0+4ciMHByk/AdtmeQsgdeLWtgV8X8r
-         25DM0mF0y5qurUzhV4R+Ekt6j2wYW3NI7JP6RlzRArTXxhz9K+l5DRuwUp2vw4DdFeaw
-         G7kQ==
-X-Gm-Message-State: AOJu0Yz86G+soVxgNG6A+WecCipeJR4syiYM9lGMcQ83a0J3zjNX9dhE
-	3anm0GBrZ4cpHGwWgqIA7Iad6kjpkmo4ipVq73dEgf86Kc3FkWTZENy0jmwI8xlJ/CP1uExvKJj
-	qCA==
-X-Google-Smtp-Source: AGHT+IEh8pPkKN39L5yFBrTbbUqwL/tWSZACJhvFXuMqscj2IrvLo4adiqYeQJujoTTLA7mrt1TYPw==
-X-Received: by 2002:a05:6a20:2594:b0:19c:56cf:1cdd with SMTP id k20-20020a056a20259400b0019c56cf1cddmr416400pzd.46.1706152427836;
-        Wed, 24 Jan 2024 19:13:47 -0800 (PST)
+        bh=YaUl7JG3TotEQ43RC3hJDkUAeTP8ICL21pknq8r+zxg=;
+        b=nMYBUrPmxt+42BjeXcrUPxCw1FBcYtl36W/bSzEAgkBC61BibJHoBQX5gm0fdfnZ+I
+         mJ4zOK9gXacN8BMzB733tCYeW6g+4OYfp/TGm958Rb/guaagxRp7LMA+0Fwb6jg5ARVA
+         en9HSulQkg2Rg1fglqitMIaDZzlEi9kC24pHATHDfLGdymmh/aL4Lb1+0QIOgVU09Rgd
+         aEOuUjTt/JJdRrBMWDLi2cvEz1NkHoSuhRZw0oeARGMY9FmBgtxnSq0qc8e+P3g6ldbP
+         IlUausj6KxlvpgKH6pS8Dors448+18pik/XQ36Gm60hG/JnM2DMNOu0znS8nDdAqi7qu
+         xSLA==
+X-Gm-Message-State: AOJu0Yy28gZ2KhnT/JXdwswvCIY0CiFx6shKsbhHIaA5OG2v4OWNoYmX
+	yPjrlmmjw9mbFM+6sbSnonNvMkr+E2uyljz9E25N0+BrkK5ADtwnDLw+SWZXpg==
+X-Google-Smtp-Source: AGHT+IHewB79tNDYYPPysrECtfUIbLuUo+seUCWy6dAnOzH6MomzFsofGzML4yV7CdDLmHe/epMABA==
+X-Received: by 2002:a17:902:e547:b0:1d4:c445:c705 with SMTP id n7-20020a170902e54700b001d4c445c705mr519834plf.26.1706152449565;
+        Wed, 24 Jan 2024 19:14:09 -0800 (PST)
 Received: from [192.168.52.129] ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id t3-20020a170902a5c300b001d755ec4bc0sm5328111plq.241.2024.01.24.19.13.45
+        by smtp.gmail.com with ESMTPSA id t3-20020a170902a5c300b001d755ec4bc0sm5328111plq.241.2024.01.24.19.14.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 19:13:47 -0800 (PST)
-Message-ID: <48f3c65f-4e27-42d8-b32a-3889329303c2@broadcom.com>
-Date: Wed, 24 Jan 2024 19:13:45 -0800
+        Wed, 24 Jan 2024 19:14:08 -0800 (PST)
+Message-ID: <b46ccaff-fad1-476c-b70d-2c23c484cd6e@broadcom.com>
+Date: Wed, 24 Jan 2024 19:14:07 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 06/10] mtd: rawnand: brcmnand: Add support for getting
- ecc setting from strap
+Subject: Re: [PATCH v3 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca
+ SoCs
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  David Regan <dregan@broadcom.com>
 Cc: dregan@mail.com, richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
@@ -79,12 +78,12 @@ Cc: dregan@mail.com, richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
  baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
  dan.carpenter@linaro.org
 References: <20240124030458.98408-1-dregan@broadcom.com>
- <20240124030458.98408-7-dregan@broadcom.com> <20240124183207.5898cbfd@xps-13>
+ <20240124030458.98408-2-dregan@broadcom.com> <20240124183408.245b7bb4@xps-13>
 From: William Zhang <william.zhang@broadcom.com>
-In-Reply-To: <20240124183207.5898cbfd@xps-13>
+In-Reply-To: <20240124183408.245b7bb4@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_191352_577133_F59AFEE6 
-X-CRM114-Status: GOOD (  18.27  )
+X-CRM114-CacheID: sfid-20240124_191412_721967_12F3D191 
+X-CRM114-Status: GOOD (  11.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,90 +95,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1047486649249555470=="
+Content-Type: multipart/mixed; boundary="===============2981143473348234538=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1047486649249555470==
+--===============2981143473348234538==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000006ad08a060fbc91f8"
+	boundary="000000000000b54568060fbc9258"
 
---0000000000006ad08a060fbc91f8
+--000000000000b54568060fbc9258
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Miquel,
 
-On 1/24/24 09:32, Miquel Raynal wrote:
+
+On 1/24/24 09:34, Miquel Raynal wrote:
 > Hi David,
 > 
->> @@ -2622,19 +2667,43 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->>   		nanddev_get_memorg(&chip->base);
->>   	struct brcmnand_controller *ctrl = host->ctrl;
->>   	struct brcmnand_cfg *cfg = &host->hwcfg;
->> -	char msg[128];
->> +	struct device_node *np = nand_get_flash_node(chip);
->>   	u32 offs, tmp, oob_sector;
->> -	int ret;
->> +	int ret, sector_size_1k = 0;
->> +	bool use_strap = false;
->> +	char msg[128];
->>   
->>   	memset(cfg, 0, sizeof(*cfg));
->> +	use_strap = of_property_read_bool(np, "brcm,nand-ecc-use-strap");
->>   
->> -	ret = of_property_read_u32(nand_get_flash_node(chip),
->> -				   "brcm,nand-oob-sector-size",
->> +	/*
->> +	 * Set ECC size and strength based on hw configuration from strap
->> +	 * if device tree does not specify them and use strap property is set
->> +	 * If ecc strength is set in dts, don't use strap setting.
->> +	 */
+> dregan@broadcom.com wrote on Tue, 23 Jan 2024 19:04:49 -0800:
 > 
-> You would have to use the strap settings only if the property is set.
-> If not property is set, the default from the core should apply I guess.
+>> From: William Zhang <william.zhang@broadcom.com>
+>>
+>> Update the descriptions to reflect different families of broadband SoC and
+>> use the general name bcmbca for ARM based SoC.
+>>
+>> Add brcm,nand-use-wp property to have an option for disabling this
+>> feature on broadband board design that does not use write protection.
+>>
+>> Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap for
+>> broadband board designs because they do not specify ecc setting in dts
+>> but rather using the strap setting.
+>>
+>> Remove the requirement of interrupts property to reflect the driver
+>> code. Also add myself to the list of maintainers.
+>>
+>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+>> Reviewed-by: David Regan <dregan@broadcom.com>
 > 
-Maybe the comment confuse you... I will make it more clear.  But the 
-logic here is exactly what you said.  If no properties are set, the core 
-value is already set in chip->ecc.strength and chip->ecc.size and it 
-clear the use_strap flag too.
+> Please split this into three commits. dt-bindings are hard enough to
+> think again, mixing changes is definitely not a good idea.
+> 
+Will do
 
->> +	if (chip->ecc.strength)
->> +		use_strap = 0;
->> +
->> +	if (use_strap) {
->> +		chip->ecc.strength = brcmnand_get_ecc_strength(host);
->> +		sector_size_1k = brcmnand_get_sector_size_1k(host);
->> +		if (chip->ecc.size == 0) {
->> +			if (sector_size_1k < 0)
->> +				chip->ecc.size = 512;
->> +			else
->> +				chip->ecc.size = 512 << sector_size_1k;
->> +		}
->> +	}
->> +
->> +	ret = of_property_read_u32(np, "brcm,nand-oob-sector-size",
->>   				   &oob_sector);
->>   	if (ret) {
->> -		/* Use detected size */
->> -		cfg->spare_area_size = mtd->oobsize /
->> -					(mtd->writesize >> FC_SHIFT);
->> +		if (use_strap)
->> +			cfg->spare_area_size = brcmnand_get_spare_size(host);
->> +		else
->> +			/* Use detected size */
->> +			cfg->spare_area_size = mtd->oobsize /
->> +						(mtd->writesize >> FC_SHIFT);
->>   	} else {
->>   		cfg->spare_area_size = oob_sector;
->>   	}
-> 
-> 
 > Thanks,
 > Miquèl
 
---0000000000006ad08a060fbc91f8
+--000000000000b54568060fbc9258
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -250,19 +212,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF+VJ4d1/Lh6uSqHgwd4DnNUNCYq
-nPGjLQxaHUmRQF7IMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
-MDEyNTAzMTM0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEUqu+Rcpkaet8QkKxks+8dt+a4U
+jODKbRw6z02ozxDLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
+MDEyNTAzMTQwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBvs+9j2MZiFTsRL1fvJwy0jauuFwHMfXwm4HzVZqKVG0Zp
-lVi2hQbaplVxMx6VeUz1y40HbDmoBmLIlxa0B6rSpepKX6HnCZ5mmEwd6y7nYNnuahjIsct1GEJX
-GZsWiK9woJQrg0e/hR6LG0IiCvjbR3PfDUvLsiOkd8H1SRq9ZXVoJ3L4mF2f4gON1pmpsy3m7Vvp
-PC8m5IK1jvZhOw7kIjtIMxU2F5Njrha2LxBn7uoQqggG0+WSPzHiXQiZaMHB/D6vfOM1mpBCJRmR
-a/mtR91JoA/oPX00A+uNKbo7/N7hrq6WxaN60T5oNhyo5vP2LQkmQluwZpjD/SkWRMzF
---0000000000006ad08a060fbc91f8--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBycHt9XSCpS3F0+VVjshs/KrzqyA3TktjgJ4JBb5dLOc9u
+XM3PK/nu5uhN6YeiKztWkc6DYGQ/dLGcj68H4pb0746wkJMY4cosTMvZd72KzyO+Yow2en44KV5f
+sxnOdo8pRz/x/54p6+wC3rxZ3usWlumJzojLo6tbbIVyFKsgC4XMebXUL9RYgeE0NezQ7kc5fdDV
+fwgK96sI3OEwyM0H19DAslYivYGeAzQeeLPcQEt52pPg4ojW1m2oRIy5xJYyGXO65tx7Eggprmx7
+ie3ZKsUEqxDu2YBECilD8Gd7fC7RvbOPBQHG0a+DBDx682gPFi82IzNSK2J/fQ/HkAYf
+--000000000000b54568060fbc9258--
 
 
---===============1047486649249555470==
+--===============2981143473348234538==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -272,5 +234,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============1047486649249555470==--
+--===============2981143473348234538==--
 
