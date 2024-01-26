@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88DC1C47422
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jan 2024 18:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70593C47DDB
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jan 2024 18:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vIPUTMvKxFd7/thzPEioNdxLKrrHmo5VZRWpvYuYRp8=; b=zUNf7P1kXJf1f5
-	ia1acIp6Uo2yq2urFriWFoNUz90nwPivUfL4aMVCNP2j4N1KWQ76s82uQG2hGRIUed1LmSv3oRPG4
-	nfo3UVBn9+GbuQTkDI5iUtuKGBfykN4x15OXjMEnQHTI7YsUo/68NlQ4QAyWQBRyaF/Vejj0UJ+uK
-	/S0hTJ+6CRfrKlmrW8CLFBi6jUbh2dTSFsGeTqz6QwTKQHwXs2N/SmPSe+jt+voW1JEMB8YgMrSa6
-	ANRANyp7vehGNLXYD/TGwu4PWJciltxjPQ6TYX4nWIl92gUvwonlZZSw8oVnaKW6KfaWT5n35+bNB
-	wm/YkUh7Dcl6hTvFMQpA==;
+	List-Owner; bh=CDyRC7N+Uq9Hb3GySMSIR+d6xVx/76AEjTeH5jITmsE=; b=kNOl+M8F36c/Bg
+	zfkpCgYk8TiWLRHccqUuWxLSbmunTuPMFVhzO0fKesx0YwzW7fGQW/V1hAaam7e+hZwYf/k87bTLg
+	DUj2NLOU1Wc9fEFz4+7WbocmwpGn3qubdzAneSJhXxVt2MQRkjvXrMuwWPSRgYiHAe82sOlGvC188
+	KrqYvjoucEts6Dj0sCzbY+SQE+0NfnWoaNTAaFkO0a9dNNocfa+lo09wBAEx+Rkhq9tPbrvhzZ2S0
+	07MkdQztFV5Avj2bc5/6n7L/vXQLUbsYwF3m/vwLiPu0hOdF0ScrMgP7QcwouD1/lVWwrkW0r4gMn
+	N3Vkw8gNHZnrDv0IzstQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTRE7-000000058A2-2H6A;
-	Fri, 26 Jan 2024 18:46:55 +0000
+	id 1rTRGJ-000000058U7-0sBQ;
+	Fri, 26 Jan 2024 18:49:11 +0000
 Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTRE1-0000000589J-46w4
+	id 1rTRGH-000000058TK-0AdG
 	for linux-mtd@lists.infradead.org;
-	Fri, 26 Jan 2024 18:46:53 +0000
+	Fri, 26 Jan 2024 18:49:10 +0000
 Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 538C8100005;
-	Fri, 26 Jan 2024 21:46:39 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 538C8100005
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 3273F100005;
+	Fri, 26 Jan 2024 21:49:06 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3273F100005
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706294799;
-	bh=o8Wk+nRV/WANv25MMKemwcRfh2eTYuNCBHJRR9H6Ffg=;
+	s=mail; t=1706294946;
+	bh=+VMT5ekAOGZXIljkx7C8fwo+qbjUMHJIXLSw6QsvLi8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=ryF+vtFHBMhpfIExhPDXu//aR6hScmNHZM9jpYGU32nzOx8JFLjWELR0qBx4OqyYK
-	 ON88fyR+Yh6Q8hVa7Mk6rxoMTArln90fYmcSSeDlqc9jPvfPw08kQm4hvPxXI5yOsz
-	 FOSl2Snm4PdRDiY+LyAc8Y+ODi/SJkrorGYkNwtJE2HLbLPdqqdkZX8pcWsTsb6jfC
-	 5mrMHL3s49x2/rQuUYv5zUSCwMosKNY863gY86dmNBA8hIJ6FwAXW65oq3X2f9K/mq
-	 sZ/Mcq2YcBi2nBS8ocKZMalhmb/8tDkyKlBzMXggq66XQRGKXp9sfu8+M5FcrC8jVC
-	 EQLI/1G+2dnXQ==
+	b=bHSbKS75eQ4Hdknp3gNnbhA06/TKBye7BZCOUUE0xqydAnesgyVUO8cHvYeg0Okw6
+	 WyXalaHjHWDb1Jb53Mx9VT3C16NAs7cSCdEZysD5TWU4NU8MWWOXvSOYq3+sc1Tu+F
+	 HOAKMnwMa0skf/REfIn18A/Z99teiDtvf9SjmcPAH+J+GlEEZ3VBtntKizGDKFYBwJ
+	 7ioT5muvGV87EMBHWdJvwujQnsxBaKLTgldXEjS2B67Q40XqyggA4FB2amfK0i8+we
+	 BF71sPDPEurw9MQ0R8OSkdt7RlKx/jiCM7WmEuOKBOoHBO7TnKpSbRrpym8gLg3Q8x
+	 ZCuYHdGauKLQA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 26 Jan 2024 21:46:39 +0300 (MSK)
+	Fri, 26 Jan 2024 21:49:05 +0300 (MSK)
 Received: from [172.28.137.2] (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 26 Jan 2024 21:46:36 +0300
-Message-ID: <7a5c147b-e531-4aa3-8439-1b80d8ed7747@salutedevices.com>
-Date: Fri, 26 Jan 2024 21:46:33 +0300
+ 15.2.1118.40; Fri, 26 Jan 2024 21:49:00 +0300
+Message-ID: <adf1fa3b-33eb-4def-97e3-55a7231430d4@salutedevices.com>
+Date: Fri, 26 Jan 2024 21:48:23 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mtd: spinand: Add support for 5-byte IDs
+Subject: Re: [PATCH 2/2] mtd: spinand: esmt: Extend IDs to 5 bytes
 Content-Language: en-US
 To: Ezra Buehler <ezra@easyb.ch>, <linux-mtd@lists.infradead.org>
 CC: Chuanhong Guo <gch981213@gmail.com>, Dmitry Rokosov
@@ -64,11 +64,11 @@ CC: Chuanhong Guo <gch981213@gmail.com>, Dmitry Rokosov
  N <quic_sridsn@quicinc.com>, Vignesh Raghavendra <vigneshr@ti.com>,
 	<linux-kernel@vger.kernel.org>
 References: <20240125200108.24374-1-ezra@easyb.ch>
- <20240125200108.24374-2-ezra@easyb.ch>
+ <20240125200108.24374-3-ezra@easyb.ch>
 From: Martin Kurbanov <mmkurbanov@salutedevices.com>
-In-Reply-To: <20240125200108.24374-2-ezra@easyb.ch>
+In-Reply-To: <20240125200108.24374-3-ezra@easyb.ch>
 X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
 X-KSMG-Rule-ID: 10
 X-KSMG-Message-Action: clean
@@ -87,8 +87,8 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/26 14:25:00 #23442014
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240126_104651_247447_626DBD9F 
-X-CRM114-Status: GOOD (  18.16  )
+X-CRM114-CacheID: sfid-20240126_104909_474627_1D906DDD 
+X-CRM114-Status: GOOD (  17.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,16 +110,20 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 25.01.2024 23:01, Ezra Buehler wrote:
 > From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 > 
-> E.g. ESMT chips will return an identification code with a length of 5
-> bytes. In order to prevent ambiguity, flash chips would actually need to
-> return IDs that are up to 17 or more bytes long due to JEDEC's
-> continuation scheme. I understand that if a manufacturer ID is located
-> in bank N of JEDEC's database (there are currently 16 banks), N - 1
-> continuation codes (7Fh) need to be added to the identification code
-> (comprising of manufacturer ID and device ID). However, most flash chip
-> manufacturers don't seem to implement this (correctly).
+> According to the datasheets, the ESMT chips in question will return a 5
+> byte long identification code where the last 3 bytes are the JEDEC
+> continuation codes (7Fh). Although, I would have expected 4 continuation
+> codes as Powerchip Semiconductor (C8h, corresponding to the parameter
+> page data) is located in bank 5 of the JEDEC database.
 > 
+> By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
+> flashes.
+> 
+> This fix allows the MT7688-based GARDENA smart Gateway to boot again.
+> 
+> Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
 > Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+
 
 Tested for F50L1G41LB
 
@@ -127,22 +131,43 @@ Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 
 > ---
->  include/linux/mtd/spinand.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/spi/esmt.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index badb4c1ac079..5c19ead60499 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -169,7 +169,7 @@
->  struct spinand_op;
->  struct spinand_device;
+> diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+> index 31c439a557b1..4597a82de23a 100644
+> --- a/drivers/mtd/nand/spi/esmt.c
+> +++ b/drivers/mtd/nand/spi/esmt.c
+> @@ -104,7 +104,8 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
 >  
-> -#define SPINAND_MAX_ID_LEN	4
-> +#define SPINAND_MAX_ID_LEN	5
->  /*
->   * For erase, write and read operation, we got the following timings :
->   * tBERS (erase) 1ms to 4ms
+>  static const struct spinand_info esmt_c8_spinand_table[] = {
+>  	SPINAND_INFO("F50L1G41LB",
+> -		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
+> +				0x7f, 0x7f),
+>  		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+>  		     NAND_ECCREQ(1, 512),
+>  		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> @@ -113,7 +114,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+>  		     0,
+>  		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+>  	SPINAND_INFO("F50D1G41LB",
+> -		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
+> +				0x7f, 0x7f),
+>  		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+>  		     NAND_ECCREQ(1, 512),
+>  		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> @@ -122,7 +124,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+>  		     0,
+>  		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+>  	SPINAND_INFO("F50D2G41KA",
+> -		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51),
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
+> +				0x7f, 0x7f),
+>  		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+>  		     NAND_ECCREQ(8, 512),
+>  		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
 
 -- 
 Best Regards,
