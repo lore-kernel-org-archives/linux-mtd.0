@@ -4,53 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98969C47422
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jan 2024 07:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77A6DC47DDF
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jan 2024 11:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TDZ3sn7Q9nzIIaO8YPR7Ztar9Pqs0aTijY+OucVw2HA=; b=1IQetiE0h6mxmM
-	KGOAVC2uwfP0Bfq8smkdQPWfo4nBOwXi8ZuOcMEE1w2ahyH+MAlcSZoVH7ygtiZxdgrLhEt3DTIOw
-	IcXhQ+rm2AZM9Csgu7Pjex5B490XmDg/O7MaYyzm0of285TQFg1g9BNcvGG5XIjJHRt0+BVWaawfJ
-	aUuULyMWzRFGFf4u2dAjA5qP1bbW+5KSj7FPPH7zi839GTQ87m8TJh8tZazvHamzqxCRIFGsJTLwv
-	TWIWCRKPU9xVVKvDr86dZu9dTM4T1Xg8IFacDqRFrw4qXJEmRhUeEA1qHP2cEQsLKURUYc6Y9UGPH
-	V2tsWENhmb6kmgXDBYzQ==;
+	List-Owner; bh=ElnLCyxXOUgY9pyMw14oy7jdQaFU+Dqwf68qbZOV1BY=; b=idN7tn8d4/Hqb9
+	RmS0buPrkRwJc/oezfagdxG0frr953lP0R64HxPsGaEpjr2jn9qTNyoOz7UeVFq/vpX0ZvFLcePbn
+	+KolCfBEArZ+jmtBKEvmbbaktsxPdE+YTxQDSk9BdmhpAk/1Z2QZ1vK0cXPZS5hsVrruUNUlYD5yM
+	CzizEAyD+Ny8vnfzP9k9oVkSkU63zfHlxSqqZv8AhMqJkXUxzd7ESEmQ/3iiFjHxqg6wr3G/cGtTn
+	Zla+c4UX4AuvX7tjWmet5aykk168Jw4/G4ZlDnUo6IyYA+cGKCmtkz+6ZG9hvrRRpKxUM7+S6Z9GG
+	p/pVybVJhMHy5Ii1DHng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTGE4-00000003IWE-1sU4;
-	Fri, 26 Jan 2024 07:02:08 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rTK5R-00000003x63-1M06;
+	Fri, 26 Jan 2024 11:09:29 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTGE3-00000003IW1-08ji
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 26 Jan 2024 07:02:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=l7Dw4ZucWoH6p0xVnUgKiMRWXXupBNncYxdOpylDCZI=; b=s0M/+0DlriPPYBQpc38JXKm9wr
-	rMgc6NpuZlUrG0dKXVdJVzaEQYGrPhhkeqgmMD/AwzXz16ztX3Rb6lfdLa1WT5kMwKQ6YniAI6M4n
-	zcAEIQqgixXKQ5b1N8XcSdtheJLBmkKtA0xB22fZOmdpgFrWfvf+gbXEHvkyYG6SpELLGhbLQQYL9
-	7mePUqodlvRAC5gl6nvqE7NoMFknmo1TPvhjkbM99by3MdDJ8cUw0C1c+0+9B6nYdVKsqz1fVib2i
-	H8pAGti4wQpHc+x9Mtm3JxRbTqS2xU8jfOGZmecnEFsRGkCWbjlTzcCMual/Twq/5I5phF12BOnYW
-	/ZnxKp4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTGE1-0000000Cpxb-0eiX;
-	Fri, 26 Jan 2024 07:02:05 +0000
-Date: Fri, 26 Jan 2024 07:02:05 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 2/2] mtd: Remove support for Carillo Ranch driver
-Message-ID: <ZbNY7Vd2l8wjIhcp@casper.infradead.org>
-References: <20231208224703.1603264-1-willy@infradead.org>
- <20231208224703.1603264-2-willy@infradead.org>
+	id 1rTK5M-00000003x4J-35UV
+	for linux-mtd@lists.infradead.org;
+	Fri, 26 Jan 2024 11:09:27 +0000
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 0867F100002;
+	Fri, 26 Jan 2024 14:09:16 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0867F100002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1706267356;
+	bh=QC+fwRjPGpDJM4kIQo3FgE8G06XlaXmNPf2j/Q+wUFs=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=KoxSaK4J83fjCXCOf38cxfBa7Nyhs/6j4cI+yrQnu8Qs/ehAa5hQfartScrq4C6xh
+	 EKVq+XkvNdOi6ylmuJMA1PaKZXygOd1lkqxiga+Ncl6L/OlmhXRridrPAfQeqzc5xW
+	 2iS+xeWhJ9lN0aSGueNMRuSGF4Hi0fqF2wJA1vLuftSkmEpXJ6FzScHaAcwshQZDry
+	 Qlv/q12+Q2eQ9zJlzgCuI2SxQh/DeQPAl6Not9Aw/neZcH/gHDDay06kFNqkD9Hejz
+	 gTt1kOxwtSZZ+Jx2cVfCMw3vv3uGEjRyClLfUx2OUlye5o9pOprjHdApPaV7UnBz6Z
+	 Xibli0Qajcm6g==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri, 26 Jan 2024 14:09:15 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
+ 2024 14:09:14 +0300
+Date: Fri, 26 Jan 2024 14:09:13 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Ezra Buehler <ezra@easyb.ch>
+CC: <linux-mtd@lists.infradead.org>, Chuanhong Guo <gch981213@gmail.com>,
+	Dmitry Rokosov <ddrokosov@sberdevices.ru>, Martin Kurbanov
+	<mmkurbanov@sberdevices.ru>, Md Sadre Alam <quic_mdalam@quicinc.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+	Sridharan S N <quic_sridsn@quicinc.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] mtd: spinand: Resolve GigaDevice/ESMT ID clash
+Message-ID: <20240126110831.5ol6jl2kb7uhlq6d@CAB-WSD-L081021>
+References: <20240125200108.24374-1-ezra@easyb.ch>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20231208224703.1603264-2-willy@infradead.org>
+In-Reply-To: <20240125200108.24374-1-ezra@easyb.ch>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 182960 [Jan 26 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/26 07:16:00 #23429590
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240126_030925_507597_4E160E33 
+X-CRM114-Status: GOOD (  17.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,324 +104,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ping
+Hello Ezra!
 
-On Fri, Dec 08, 2023 at 10:47:03PM +0000, Matthew Wilcox (Oracle) wrote:
-> As far as anybody can tell, this product never shipped.  If it did,
-> it shipped in 2007 and nobody has access to one any more.  Remove the
-> mtd NOR driver.
+Thank you for the patch series!
+
+We will test it on the our side with ESMT flash and back to you soon.
+
+On Thu, Jan 25, 2024 at 10:01:06PM +0200, Ezra Buehler wrote:
+> From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  drivers/mtd/maps/Kconfig        |   7 -
->  drivers/mtd/maps/Makefile       |   1 -
->  drivers/mtd/maps/intel_vr_nor.c | 265 --------------------------------
->  3 files changed, 273 deletions(-)
->  delete mode 100644 drivers/mtd/maps/intel_vr_nor.c
+> Since commit aa08bf187f32 ("mtd: spinand: esmt: add support for
+> F50D2G41KA") the MT7688-based GARDENA smart Gateway no longer boots.
+> This is due to an ID clash resulting in the ESMT driver being used
+> together with our GigaDevice GD5F1GQ5UEYIG.
 > 
-> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> index e098ae937ce8..8a8b19874e23 100644
-> --- a/drivers/mtd/maps/Kconfig
-> +++ b/drivers/mtd/maps/Kconfig
-> @@ -341,13 +341,6 @@ config MTD_UCLINUX
->  	help
->  	  Map driver to support image based filesystems for uClinux.
->  
-> -config MTD_INTEL_VR_NOR
-> -	tristate "NOR flash on Intel Vermilion Range Expansion Bus CS0"
-> -	depends on PCI
-> -	help
-> -	  Map driver for a NOR flash bank located on the Expansion Bus of the
-> -	  Intel Vermilion Range chipset.
-> -
->  config MTD_PLATRAM
->  	tristate "Map driver for platform device RAM (mtd-ram)"
->  	select MTD_RAM
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index 094cfb244086..a9083c888e3b 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -40,6 +40,5 @@ obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
->  obj-$(CONFIG_MTD_NETtel)	+= nettel.o
->  obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
->  obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
-> -obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
->  obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
->  obj-$(CONFIG_MTD_LANTIQ)	+= lantiq-flash.o
-> diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
-> deleted file mode 100644
-> index d67b845b0e89..000000000000
-> --- a/drivers/mtd/maps/intel_vr_nor.c
-> +++ /dev/null
-> @@ -1,265 +0,0 @@
-> -/*
-> - * drivers/mtd/maps/intel_vr_nor.c
-> - *
-> - * An MTD map driver for a NOR flash bank on the Expansion Bus of the Intel
-> - * Vermilion Range chipset.
-> - *
-> - * The Vermilion Range Expansion Bus supports four chip selects, each of which
-> - * has 64MiB of address space.  The 2nd BAR of the Expansion Bus PCI Device
-> - * is a 256MiB memory region containing the address spaces for all four of the
-> - * chip selects, with start addresses hardcoded on 64MiB boundaries.
-> - *
-> - * This map driver only supports NOR flash on chip select 0.  The buswidth
-> - * (either 8 bits or 16 bits) is determined by reading the Expansion Bus Timing
-> - * and Control Register for Chip Select 0 (EXP_TIMING_CS0).  This driver does
-> - * not modify the value in the EXP_TIMING_CS0 register except to enable writing
-> - * and disable boot acceleration.  The timing parameters in the register are
-> - * assumed to have been properly initialized by the BIOS.  The reset default
-> - * timing parameters are maximally conservative (slow), so access to the flash
-> - * will be slower than it should be if the BIOS has not initialized the timing
-> - * parameters.
-> - *
-> - * Author: Andy Lowe <alowe@mvista.com>
-> - *
-> - * 2006 (c) MontaVista Software, Inc. This file is licensed under
-> - * the terms of the GNU General Public License version 2. This program
-> - * is licensed "as is" without any warranty of any kind, whether express
-> - * or implied.
-> - */
-> -
-> -#include <linux/module.h>
-> -#include <linux/kernel.h>
-> -#include <linux/slab.h>
-> -#include <linux/pci.h>
-> -#include <linux/mtd/mtd.h>
-> -#include <linux/mtd/map.h>
-> -#include <linux/mtd/partitions.h>
-> -#include <linux/mtd/cfi.h>
-> -#include <linux/mtd/flashchip.h>
-> -
-> -#define DRV_NAME "vr_nor"
-> -
-> -struct vr_nor_mtd {
-> -	void __iomem *csr_base;
-> -	struct map_info map;
-> -	struct mtd_info *info;
-> -	struct pci_dev *dev;
-> -};
-> -
-> -/* Expansion Bus Configuration and Status Registers are in BAR 0 */
-> -#define EXP_CSR_MBAR 0
-> -/* Expansion Bus Memory Window is BAR 1 */
-> -#define EXP_WIN_MBAR 1
-> -/* Maximum address space for Chip Select 0 is 64MiB */
-> -#define CS0_SIZE 0x04000000
-> -/* Chip Select 0 is at offset 0 in the Memory Window */
-> -#define CS0_START 0x0
-> -/* Chip Select 0 Timing Register is at offset 0 in CSR */
-> -#define EXP_TIMING_CS0 0x00
-> -#define TIMING_CS_EN		(1 << 31)	/* Chip Select Enable */
-> -#define TIMING_BOOT_ACCEL_DIS	(1 <<  8)	/* Boot Acceleration Disable */
-> -#define TIMING_WR_EN		(1 <<  1)	/* Write Enable */
-> -#define TIMING_BYTE_EN		(1 <<  0)	/* 8-bit vs 16-bit bus */
-> -#define TIMING_MASK		0x3FFF0000
-> -
-> -static void vr_nor_destroy_partitions(struct vr_nor_mtd *p)
-> -{
-> -	mtd_device_unregister(p->info);
-> -}
-> -
-> -static int vr_nor_init_partitions(struct vr_nor_mtd *p)
-> -{
-> -	/* register the flash bank */
-> -	/* partition the flash bank */
-> -	return mtd_device_register(p->info, NULL, 0);
-> -}
-> -
-> -static void vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)
-> -{
-> -	map_destroy(p->info);
-> -}
-> -
-> -static int vr_nor_mtd_setup(struct vr_nor_mtd *p)
-> -{
-> -	static const char * const probe_types[] =
-> -	    { "cfi_probe", "jedec_probe", NULL };
-> -	const char * const *type;
-> -
-> -	for (type = probe_types; !p->info && *type; type++)
-> -		p->info = do_map_probe(*type, &p->map);
-> -	if (!p->info)
-> -		return -ENODEV;
-> -
-> -	p->info->dev.parent = &p->dev->dev;
-> -
-> -	return 0;
-> -}
-> -
-> -static void vr_nor_destroy_maps(struct vr_nor_mtd *p)
-> -{
-> -	unsigned int exp_timing_cs0;
-> -
-> -	/* write-protect the flash bank */
-> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
-> -	exp_timing_cs0 &= ~TIMING_WR_EN;
-> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
-> -
-> -	/* unmap the flash window */
-> -	iounmap(p->map.virt);
-> -
-> -	/* unmap the csr window */
-> -	iounmap(p->csr_base);
-> -}
-> -
-> -/*
-> - * Initialize the map_info structure and map the flash.
-> - * Returns 0 on success, nonzero otherwise.
-> - */
-> -static int vr_nor_init_maps(struct vr_nor_mtd *p)
-> -{
-> -	unsigned long csr_phys, csr_len;
-> -	unsigned long win_phys, win_len;
-> -	unsigned int exp_timing_cs0;
-> -	int err;
-> -
-> -	csr_phys = pci_resource_start(p->dev, EXP_CSR_MBAR);
-> -	csr_len = pci_resource_len(p->dev, EXP_CSR_MBAR);
-> -	win_phys = pci_resource_start(p->dev, EXP_WIN_MBAR);
-> -	win_len = pci_resource_len(p->dev, EXP_WIN_MBAR);
-> -
-> -	if (!csr_phys || !csr_len || !win_phys || !win_len)
-> -		return -ENODEV;
-> -
-> -	if (win_len < (CS0_START + CS0_SIZE))
-> -		return -ENXIO;
-> -
-> -	p->csr_base = ioremap(csr_phys, csr_len);
-> -	if (!p->csr_base)
-> -		return -ENOMEM;
-> -
-> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
-> -	if (!(exp_timing_cs0 & TIMING_CS_EN)) {
-> -		dev_warn(&p->dev->dev, "Expansion Bus Chip Select 0 "
-> -		       "is disabled.\n");
-> -		err = -ENODEV;
-> -		goto release;
-> -	}
-> -	if ((exp_timing_cs0 & TIMING_MASK) == TIMING_MASK) {
-> -		dev_warn(&p->dev->dev, "Expansion Bus Chip Select 0 "
-> -		       "is configured for maximally slow access times.\n");
-> -	}
-> -	p->map.name = DRV_NAME;
-> -	p->map.bankwidth = (exp_timing_cs0 & TIMING_BYTE_EN) ? 1 : 2;
-> -	p->map.phys = win_phys + CS0_START;
-> -	p->map.size = CS0_SIZE;
-> -	p->map.virt = ioremap(p->map.phys, p->map.size);
-> -	if (!p->map.virt) {
-> -		err = -ENOMEM;
-> -		goto release;
-> -	}
-> -	simple_map_init(&p->map);
-> -
-> -	/* Enable writes to flash bank */
-> -	exp_timing_cs0 |= TIMING_BOOT_ACCEL_DIS | TIMING_WR_EN;
-> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
-> -
-> -	return 0;
-> -
-> -      release:
-> -	iounmap(p->csr_base);
-> -	return err;
-> -}
-> -
-> -static const struct pci_device_id vr_nor_pci_ids[] = {
-> -	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x500D)},
-> -	{0,}
-> -};
-> -
-> -static void vr_nor_pci_remove(struct pci_dev *dev)
-> -{
-> -	struct vr_nor_mtd *p = pci_get_drvdata(dev);
-> -
-> -	vr_nor_destroy_partitions(p);
-> -	vr_nor_destroy_mtd_setup(p);
-> -	vr_nor_destroy_maps(p);
-> -	kfree(p);
-> -	pci_release_regions(dev);
-> -	pci_disable_device(dev);
-> -}
-> -
-> -static int vr_nor_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
-> -{
-> -	struct vr_nor_mtd *p = NULL;
-> -	unsigned int exp_timing_cs0;
-> -	int err;
-> -
-> -	err = pci_enable_device(dev);
-> -	if (err)
-> -		goto out;
-> -
-> -	err = pci_request_regions(dev, DRV_NAME);
-> -	if (err)
-> -		goto disable_dev;
-> -
-> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> -	err = -ENOMEM;
-> -	if (!p)
-> -		goto release;
-> -
-> -	p->dev = dev;
-> -
-> -	err = vr_nor_init_maps(p);
-> -	if (err)
-> -		goto release;
-> -
-> -	err = vr_nor_mtd_setup(p);
-> -	if (err)
-> -		goto destroy_maps;
-> -
-> -	err = vr_nor_init_partitions(p);
-> -	if (err)
-> -		goto destroy_mtd_setup;
-> -
-> -	pci_set_drvdata(dev, p);
-> -
-> -	return 0;
-> -
-> -      destroy_mtd_setup:
-> -	map_destroy(p->info);
-> -
-> -      destroy_maps:
-> -	/* write-protect the flash bank */
-> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
-> -	exp_timing_cs0 &= ~TIMING_WR_EN;
-> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
-> -
-> -	/* unmap the flash window */
-> -	iounmap(p->map.virt);
-> -
-> -	/* unmap the csr window */
-> -	iounmap(p->csr_base);
-> -
-> -      release:
-> -	kfree(p);
-> -	pci_release_regions(dev);
-> -
-> -      disable_dev:
-> -	pci_disable_device(dev);
-> -
-> -      out:
-> -	return err;
-> -}
-> -
-> -static struct pci_driver vr_nor_pci_driver = {
-> -	.name = DRV_NAME,
-> -	.probe = vr_nor_pci_probe,
-> -	.remove = vr_nor_pci_remove,
-> -	.id_table = vr_nor_pci_ids,
-> -};
-> -
-> -module_pci_driver(vr_nor_pci_driver);
-> -
-> -MODULE_AUTHOR("Andy Lowe");
-> -MODULE_DESCRIPTION("MTD map driver for NOR flash on Intel Vermilion Range");
-> -MODULE_LICENSE("GPL");
-> -MODULE_DEVICE_TABLE(pci, vr_nor_pci_ids);
-> -- 
-> 2.42.0
+> The following patches resolve the issue for our board. However, I do not
+> have any ESMT NAND flash chips to further test my changes with.
 > 
+> Ezra Buehler (2):
+>   mtd: spinand: Add support for 5-byte IDs
+>   mtd: spinand: esmt: Extend IDs to 5 bytes
+> 
+>  drivers/mtd/nand/spi/esmt.c | 9 ++++++---
+>  include/linux/mtd/spinand.h | 2 +-
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+> 
+
+-- 
+Thank you,
+Dmitry
 
 ______________________________________________________
 Linux MTD discussion mailing list
