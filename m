@@ -4,73 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 149E2C47422
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jan 2024 06:19:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98969C47422
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Jan 2024 07:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M35hjtCjkat1HGK//MJBEIjBFP4QRcGpLtePIW7V94A=; b=fZASkN8AIZNGvi
-	vRJRmgC7/UlCKlkpZYpyk7Lrbd7lRAE89waBqkpIxk2Nog91e8c0Buz6S/TkUDYn4/i78pTq5jE8E
-	yoW9JejhY/AkYdOboGbIZ0uuwEGmLyd/PPqKaOkpRtDBH/7bRAI40kcfApxS+EyYr/TrhFPCPZl1Y
-	+JO2nG10e36gQNmFTTskxj5nXgrzck/AxHu2z/NWp2x8uGNJ7xlPyWY664PvLngSNFPYbfal5Kixr
-	Pav3UqXebGrTPb2LPQyusg3DKcG1fUIMw77J7g2fyQyoa7gMcWFR2sV17kBtOQkI9I3qaRwrirVvX
-	IP4v3w1qw/1KR73TkC4g==;
+	List-Owner; bh=TDZ3sn7Q9nzIIaO8YPR7Ztar9Pqs0aTijY+OucVw2HA=; b=1IQetiE0h6mxmM
+	KGOAVC2uwfP0Bfq8smkdQPWfo4nBOwXi8ZuOcMEE1w2ahyH+MAlcSZoVH7ygtiZxdgrLhEt3DTIOw
+	IcXhQ+rm2AZM9Csgu7Pjex5B490XmDg/O7MaYyzm0of285TQFg1g9BNcvGG5XIjJHRt0+BVWaawfJ
+	aUuULyMWzRFGFf4u2dAjA5qP1bbW+5KSj7FPPH7zi839GTQ87m8TJh8tZazvHamzqxCRIFGsJTLwv
+	TWIWCRKPU9xVVKvDr86dZu9dTM4T1Xg8IFacDqRFrw4qXJEmRhUeEA1qHP2cEQsLKURUYc6Y9UGPH
+	V2tsWENhmb6kmgXDBYzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTFYl-00000003Dxm-1A4w;
-	Fri, 26 Jan 2024 06:19:27 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1rTGE4-00000003IWE-1sU4;
+	Fri, 26 Jan 2024 07:02:08 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTFYh-00000003Dx6-1scr;
-	Fri, 26 Jan 2024 06:19:25 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D16D640003;
-	Fri, 26 Jan 2024 06:19:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706249957;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pzlhwUVFx4zm9tXJ7XTM/+LMgA8bFcm+1XMzEx3pfK8=;
-	b=pv3WnWWRevCdcz+4tJnzojyH43cxQwuwHltR1pkR5YfxXJLK+s8UaDRxRYg9Mib8Ik0lna
-	H3zikgpegGs8JHYOzUlyEKYmfzghrt+N4PbLuHnmj1CCzGhaAzdvp1FD6PEk7yfiKjJ5kM
-	vxfowimCa4XC+rV22Bz42T6TEZSuY5+Mp2xfl2Um0zba9uNSKs/WyictHKXICFBA6v8XTz
-	gc366KELLfnOLB5Us9BWj19qFVBcIgImsmueHcEzq9wA7KFMHL1z3n3oL5BRxU99jLJHwR
-	vHKTsvary9tD5gYSzrx144o2pnJ3ysQq47yLED+ZPei1Osr6Y+ul80jOJWs90g==
-Date: Fri, 26 Jan 2024 07:19:13 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: David Regan <dregan@broadcom.com>
-Cc: dregan@mail.com, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- computersforpeace@gmail.com, kdasu.kdev@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Joel Peshkin
- <joel.peshkin@broadcom.com>, Tomer Yacoby <tomer.yacoby@broadcom.com>, Dan
- Beygelman <dan.beygelman@broadcom.com>, William Zhang
- <william.zhang@broadcom.com>, Anand Gore <anand.gore@broadcom.com>, Kursad
- Oney <kursad.oney@broadcom.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, rafal@milecki.pl,
- bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
- baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, Dan Carpenter
- <dan.carpenter@linaro.org>
-Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
-Message-ID: <20240126071913.699c3795@xps-13>
-In-Reply-To: <CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
-References: <20240124030458.98408-1-dregan@broadcom.com>
-	<20240124030458.98408-11-dregan@broadcom.com>
-	<20240124184027.712b1e47@xps-13>
-	<CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1rTGE3-00000003IW1-08ji
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 26 Jan 2024 07:02:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=l7Dw4ZucWoH6p0xVnUgKiMRWXXupBNncYxdOpylDCZI=; b=s0M/+0DlriPPYBQpc38JXKm9wr
+	rMgc6NpuZlUrG0dKXVdJVzaEQYGrPhhkeqgmMD/AwzXz16ztX3Rb6lfdLa1WT5kMwKQ6YniAI6M4n
+	zcAEIQqgixXKQ5b1N8XcSdtheJLBmkKtA0xB22fZOmdpgFrWfvf+gbXEHvkyYG6SpELLGhbLQQYL9
+	7mePUqodlvRAC5gl6nvqE7NoMFknmo1TPvhjkbM99by3MdDJ8cUw0C1c+0+9B6nYdVKsqz1fVib2i
+	H8pAGti4wQpHc+x9Mtm3JxRbTqS2xU8jfOGZmecnEFsRGkCWbjlTzcCMual/Twq/5I5phF12BOnYW
+	/ZnxKp4g==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTGE1-0000000Cpxb-0eiX;
+	Fri, 26 Jan 2024 07:02:05 +0000
+Date: Fri, 26 Jan 2024 07:02:05 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2] mtd: Remove support for Carillo Ranch driver
+Message-ID: <ZbNY7Vd2l8wjIhcp@casper.infradead.org>
+References: <20231208224703.1603264-1-willy@infradead.org>
+ <20231208224703.1603264-2-willy@infradead.org>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240125_221923_952520_7F380E18 
-X-CRM114-Status: GOOD (  27.98  )
+Content-Disposition: inline
+In-Reply-To: <20231208224703.1603264-2-willy@infradead.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,64 +62,330 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGF2aWQsCgpkcmVnYW5AYnJvYWRjb20uY29tIHdyb3RlIG9uIFRodSwgMjUgSmFuIDIwMjQg
-MTE6NDc6NDYgLTA4MDA6Cgo+IEhpIE1pcXXDqGwsCj4gCj4gT24gV2VkLCBKYW4gMjQsIDIwMjQg
-YXQgOTo0MOKAr0FNIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdy
-b3RlOgo+ID4KPiA+IEhpIERhdmlkLAo+ID4KPiA+IGRyZWdhbkBicm9hZGNvbS5jb20gd3JvdGUg
-b24gVHVlLCAyMyBKYW4gMjAyNCAxOTowNDo1OCAtMDgwMDoKPiA+ICAKPiA+ID4gQWxsb3cgc2V0
-dGluZ3MgZm9yIG9uLWRpZSBlY2Mgc3VjaCB0aGF0IGlmIG9uLWRpZSBFQ0MgaXMgc2VsZWN0ZWQK
-PiA+ID4gZG9uJ3QgZXJyb3Igb3V0IGJ1dCByZXF1aXJlIEVDQyBzdHJhcCBzZXR0aW5nIG9mIHpl
-cm8KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogRGF2aWQgUmVnYW4gPGRyZWdhbkBicm9hZGNv
-bS5jb20+Cj4gPiA+IFJldmlld2VkLWJ5OiBXaWxsaWFtIFpoYW5nIDx3aWxsaWFtLnpoYW5nQGJy
-b2FkY29tLmNvbT4KPiA+ID4gLS0tCj4gPiA+IENoYW5nZXMgaW4gdjM6IE5vbmUKPiA+ID4gLS0t
-Cj4gPiA+IENoYW5nZXMgaW4gdjI6Cj4gPiA+IC0gQWRkZWQgdG8gcGF0Y2ggc2VyaWVzCj4gPiA+
-IC0tLQo+ID4gPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyB8IDE0
-ICsrKysrKysrKystLS0tCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwg
-NCBkZWxldGlvbnMoLSkKPiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L2JyY21uYW5kL2JyY21uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9i
-cmNtbmFuZC5jCj4gPiA+IGluZGV4IGE0ZTMxMWI2Nzk4Yy4uNDI1MjZmMzI1MGM5IDEwMDY0NAo+
-ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gPiA+
-ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiA+ID4gQEAg
-LTI3MjcsOSArMjcyNywxMSBAQCBzdGF0aWMgaW50IGJyY21uYW5kX3NldHVwX2RldihzdHJ1Y3Qg
-YnJjbW5hbmRfaG9zdCAqaG9zdCkKPiA+ID4gICAgICAgY2ZnLT5ibGtfYWRyX2J5dGVzID0gZ2V0
-X2Jsa19hZHJfYnl0ZXMobXRkLT5zaXplLCBtdGQtPndyaXRlc2l6ZSk7Cj4gPiA+Cj4gPiA+ICAg
-ICAgIGlmIChjaGlwLT5lY2MuZW5naW5lX3R5cGUgIT0gTkFORF9FQ0NfRU5HSU5FX1RZUEVfT05f
-SE9TVCkgewo+ID4gPiAtICAgICAgICAgICAgIGRldl9lcnIoY3RybC0+ZGV2LCAib25seSBIVyBF
-Q0Mgc3VwcG9ydGVkOyBzZWxlY3RlZDogJWRcbiIsCj4gPiA+IC0gICAgICAgICAgICAgICAgICAg
-ICBjaGlwLT5lY2MuZW5naW5lX3R5cGUpOwo+ID4gPiAtICAgICAgICAgICAgIHJldHVybiAtRUlO
-VkFMOwo+ID4gPiArICAgICAgICAgICAgIGlmIChjaGlwLT5lY2Muc3RyZW5ndGgpIHsKPiA+ID4g
-KyAgICAgICAgICAgICAgICAgICAgIGRldl9lcnIoY3RybC0+ZGV2LCAiRVJST1IhISEgSFcgRUND
-IG11c3QgYmUgc2V0IHRvIHplcm8gZm9yIG5vbi1oYXJkd2FyZSBFQ0M7IHNlbGVjdGVkOiAlZFxu
-IiwKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hpcC0+ZWNjLnN0cmVuZ3Ro
-KTsgIAo+ID4KPiA+IENhbiB5b3UgdXNlIGEgbW9yZSBmb3JtYWwgc3RyaW5nPyBBbHNvIGNsYXJp
-ZnkgaXQgYmVjYXVzZSBJIGRvbid0Cj4gPiByZWFsbHkgdW5kZXJzdGFuZCB3aGF0IGl0IGxlYWRz
-IHRvLiAgCj4gCj4gSG93IGFib3V0Ogo+IAo+IGRldl9lcnIoY3RybC0+ZGV2LCAiSFcgRUNDIHNl
-dCB0byAlZCwgbXVzdCBiZSB6ZXJvIGZvciBvbi1kaWUgRUNDXG4iLAoKQWN0dWFsbHkgSSBhbSB3
-b25kZXJpbmcgaG93IGxlZ2l0aW1hdGUgdGhpcyBpcy4gSnVzdCBkb24ndCBlbmFibGUgdGhlCm9u
-IGhvc3QgRUNDIGVuZ2luZSBpZiBpdCdzIG5vdCBpbiB1c2UuIE5vIG5lZWQgdG8gY2hlY2sgdGhl
-IGNvcmUncwpjaG9pY2UuCgo+IAo+ID4gIAo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgcmV0
-dXJuIC1FSU5WQUw7Cj4gPiA+ICsgICAgICAgICAgICAgfQo+ID4gPiAgICAgICB9Cj4gPiA+Cj4g
-PiA+ICAgICAgIGlmIChjaGlwLT5lY2MuYWxnbyA9PSBOQU5EX0VDQ19BTEdPX1VOS05PV04pIHsK
-PiA+ID4gQEAgLTI3OTcsNyArMjc5OSwxMSBAQCBzdGF0aWMgaW50IGJyY21uYW5kX3NldHVwX2Rl
-dihzdHJ1Y3QgYnJjbW5hbmRfaG9zdCAqaG9zdCkKPiA+ID4gICAgICAgaWYgKHJldCkKPiA+ID4g
-ICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ID4gPgo+ID4gPiAtICAgICBicmNtbmFuZF9zZXRf
-ZWNjX2VuYWJsZWQoaG9zdCwgMSk7Cj4gPiA+ICsgICAgIGlmIChjaGlwLT5lY2MuZW5naW5lX3R5
-cGUgPT0gTkFORF9FQ0NfRU5HSU5FX1RZUEVfT05fRElFKSB7Cj4gPiA+ICsgICAgICAgICAgICAg
-ZGV2X2RiZyhjdHJsLT5kZXYsICJEaXNhYmxlIEhXIEVDQyBmb3Igb24tZGllIEVDQ1xuIik7ICAK
-PiA+Cj4gPiBOb3QgbmVlZGVkLiAgCj4gCj4gV2lsbCByZW1vdmUuCj4gCj4gPiAgCj4gPiA+ICsg
-ICAgICAgICAgICAgYnJjbW5hbmRfc2V0X2VjY19lbmFibGVkKGhvc3QsIDApOwo+ID4gPiArICAg
-ICB9IGVsc2UKPiA+ID4gKyAgICAgICAgICAgICBicmNtbmFuZF9zZXRfZWNjX2VuYWJsZWQoaG9z
-dCwgMSk7ICAKPiA+Cj4gPiBTdHlsZSBpcyB3cm9uZywgYnV0IG90aGVyd2lzZSBJIHRoaW5rIEVD
-QyBzaG91bGQgYmUga2VwdCBkaXNhYmxlZCB3aGlsZQo+ID4gbm90IGluIGFjdGl2ZSB1c2UsIHNv
-IEkgYW0gYSBiaXQgc3VycHJpc2VkIGJ5IHRoaXMgbGluZS4gIAo+IAo+IFRoaXMgaXMgYSBkb3Vi
-bGUgY2hlY2sgdG8gdHVybiBvbi9vZmYgb3VyIGhhcmR3YXJlIEVDQy4KCkkgZXhwZWN0IHRoZSBl
-bmdpbmUgdG8gYmUgYWx3YXlzIGRpc2FibGVkLiBFbmFibGUgaXQgb25seSB3aGVuIHlvdQpuZWVk
-IChtYXkgcmVxdWlyZSBhbiBhZGRpdGlvbmFsIHBhdGNoIGJlZm9yZSB0aGlzIG9uZSkuCgpUaGFu
-a3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Ping
+
+On Fri, Dec 08, 2023 at 10:47:03PM +0000, Matthew Wilcox (Oracle) wrote:
+> As far as anybody can tell, this product never shipped.  If it did,
+> it shipped in 2007 and nobody has access to one any more.  Remove the
+> mtd NOR driver.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  drivers/mtd/maps/Kconfig        |   7 -
+>  drivers/mtd/maps/Makefile       |   1 -
+>  drivers/mtd/maps/intel_vr_nor.c | 265 --------------------------------
+>  3 files changed, 273 deletions(-)
+>  delete mode 100644 drivers/mtd/maps/intel_vr_nor.c
+> 
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index e098ae937ce8..8a8b19874e23 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -341,13 +341,6 @@ config MTD_UCLINUX
+>  	help
+>  	  Map driver to support image based filesystems for uClinux.
+>  
+> -config MTD_INTEL_VR_NOR
+> -	tristate "NOR flash on Intel Vermilion Range Expansion Bus CS0"
+> -	depends on PCI
+> -	help
+> -	  Map driver for a NOR flash bank located on the Expansion Bus of the
+> -	  Intel Vermilion Range chipset.
+> -
+>  config MTD_PLATRAM
+>  	tristate "Map driver for platform device RAM (mtd-ram)"
+>  	select MTD_RAM
+> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> index 094cfb244086..a9083c888e3b 100644
+> --- a/drivers/mtd/maps/Makefile
+> +++ b/drivers/mtd/maps/Makefile
+> @@ -40,6 +40,5 @@ obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
+>  obj-$(CONFIG_MTD_NETtel)	+= nettel.o
+>  obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
+>  obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+> -obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+>  obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+>  obj-$(CONFIG_MTD_LANTIQ)	+= lantiq-flash.o
+> diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+> deleted file mode 100644
+> index d67b845b0e89..000000000000
+> --- a/drivers/mtd/maps/intel_vr_nor.c
+> +++ /dev/null
+> @@ -1,265 +0,0 @@
+> -/*
+> - * drivers/mtd/maps/intel_vr_nor.c
+> - *
+> - * An MTD map driver for a NOR flash bank on the Expansion Bus of the Intel
+> - * Vermilion Range chipset.
+> - *
+> - * The Vermilion Range Expansion Bus supports four chip selects, each of which
+> - * has 64MiB of address space.  The 2nd BAR of the Expansion Bus PCI Device
+> - * is a 256MiB memory region containing the address spaces for all four of the
+> - * chip selects, with start addresses hardcoded on 64MiB boundaries.
+> - *
+> - * This map driver only supports NOR flash on chip select 0.  The buswidth
+> - * (either 8 bits or 16 bits) is determined by reading the Expansion Bus Timing
+> - * and Control Register for Chip Select 0 (EXP_TIMING_CS0).  This driver does
+> - * not modify the value in the EXP_TIMING_CS0 register except to enable writing
+> - * and disable boot acceleration.  The timing parameters in the register are
+> - * assumed to have been properly initialized by the BIOS.  The reset default
+> - * timing parameters are maximally conservative (slow), so access to the flash
+> - * will be slower than it should be if the BIOS has not initialized the timing
+> - * parameters.
+> - *
+> - * Author: Andy Lowe <alowe@mvista.com>
+> - *
+> - * 2006 (c) MontaVista Software, Inc. This file is licensed under
+> - * the terms of the GNU General Public License version 2. This program
+> - * is licensed "as is" without any warranty of any kind, whether express
+> - * or implied.
+> - */
+> -
+> -#include <linux/module.h>
+> -#include <linux/kernel.h>
+> -#include <linux/slab.h>
+> -#include <linux/pci.h>
+> -#include <linux/mtd/mtd.h>
+> -#include <linux/mtd/map.h>
+> -#include <linux/mtd/partitions.h>
+> -#include <linux/mtd/cfi.h>
+> -#include <linux/mtd/flashchip.h>
+> -
+> -#define DRV_NAME "vr_nor"
+> -
+> -struct vr_nor_mtd {
+> -	void __iomem *csr_base;
+> -	struct map_info map;
+> -	struct mtd_info *info;
+> -	struct pci_dev *dev;
+> -};
+> -
+> -/* Expansion Bus Configuration and Status Registers are in BAR 0 */
+> -#define EXP_CSR_MBAR 0
+> -/* Expansion Bus Memory Window is BAR 1 */
+> -#define EXP_WIN_MBAR 1
+> -/* Maximum address space for Chip Select 0 is 64MiB */
+> -#define CS0_SIZE 0x04000000
+> -/* Chip Select 0 is at offset 0 in the Memory Window */
+> -#define CS0_START 0x0
+> -/* Chip Select 0 Timing Register is at offset 0 in CSR */
+> -#define EXP_TIMING_CS0 0x00
+> -#define TIMING_CS_EN		(1 << 31)	/* Chip Select Enable */
+> -#define TIMING_BOOT_ACCEL_DIS	(1 <<  8)	/* Boot Acceleration Disable */
+> -#define TIMING_WR_EN		(1 <<  1)	/* Write Enable */
+> -#define TIMING_BYTE_EN		(1 <<  0)	/* 8-bit vs 16-bit bus */
+> -#define TIMING_MASK		0x3FFF0000
+> -
+> -static void vr_nor_destroy_partitions(struct vr_nor_mtd *p)
+> -{
+> -	mtd_device_unregister(p->info);
+> -}
+> -
+> -static int vr_nor_init_partitions(struct vr_nor_mtd *p)
+> -{
+> -	/* register the flash bank */
+> -	/* partition the flash bank */
+> -	return mtd_device_register(p->info, NULL, 0);
+> -}
+> -
+> -static void vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)
+> -{
+> -	map_destroy(p->info);
+> -}
+> -
+> -static int vr_nor_mtd_setup(struct vr_nor_mtd *p)
+> -{
+> -	static const char * const probe_types[] =
+> -	    { "cfi_probe", "jedec_probe", NULL };
+> -	const char * const *type;
+> -
+> -	for (type = probe_types; !p->info && *type; type++)
+> -		p->info = do_map_probe(*type, &p->map);
+> -	if (!p->info)
+> -		return -ENODEV;
+> -
+> -	p->info->dev.parent = &p->dev->dev;
+> -
+> -	return 0;
+> -}
+> -
+> -static void vr_nor_destroy_maps(struct vr_nor_mtd *p)
+> -{
+> -	unsigned int exp_timing_cs0;
+> -
+> -	/* write-protect the flash bank */
+> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
+> -	exp_timing_cs0 &= ~TIMING_WR_EN;
+> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
+> -
+> -	/* unmap the flash window */
+> -	iounmap(p->map.virt);
+> -
+> -	/* unmap the csr window */
+> -	iounmap(p->csr_base);
+> -}
+> -
+> -/*
+> - * Initialize the map_info structure and map the flash.
+> - * Returns 0 on success, nonzero otherwise.
+> - */
+> -static int vr_nor_init_maps(struct vr_nor_mtd *p)
+> -{
+> -	unsigned long csr_phys, csr_len;
+> -	unsigned long win_phys, win_len;
+> -	unsigned int exp_timing_cs0;
+> -	int err;
+> -
+> -	csr_phys = pci_resource_start(p->dev, EXP_CSR_MBAR);
+> -	csr_len = pci_resource_len(p->dev, EXP_CSR_MBAR);
+> -	win_phys = pci_resource_start(p->dev, EXP_WIN_MBAR);
+> -	win_len = pci_resource_len(p->dev, EXP_WIN_MBAR);
+> -
+> -	if (!csr_phys || !csr_len || !win_phys || !win_len)
+> -		return -ENODEV;
+> -
+> -	if (win_len < (CS0_START + CS0_SIZE))
+> -		return -ENXIO;
+> -
+> -	p->csr_base = ioremap(csr_phys, csr_len);
+> -	if (!p->csr_base)
+> -		return -ENOMEM;
+> -
+> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
+> -	if (!(exp_timing_cs0 & TIMING_CS_EN)) {
+> -		dev_warn(&p->dev->dev, "Expansion Bus Chip Select 0 "
+> -		       "is disabled.\n");
+> -		err = -ENODEV;
+> -		goto release;
+> -	}
+> -	if ((exp_timing_cs0 & TIMING_MASK) == TIMING_MASK) {
+> -		dev_warn(&p->dev->dev, "Expansion Bus Chip Select 0 "
+> -		       "is configured for maximally slow access times.\n");
+> -	}
+> -	p->map.name = DRV_NAME;
+> -	p->map.bankwidth = (exp_timing_cs0 & TIMING_BYTE_EN) ? 1 : 2;
+> -	p->map.phys = win_phys + CS0_START;
+> -	p->map.size = CS0_SIZE;
+> -	p->map.virt = ioremap(p->map.phys, p->map.size);
+> -	if (!p->map.virt) {
+> -		err = -ENOMEM;
+> -		goto release;
+> -	}
+> -	simple_map_init(&p->map);
+> -
+> -	/* Enable writes to flash bank */
+> -	exp_timing_cs0 |= TIMING_BOOT_ACCEL_DIS | TIMING_WR_EN;
+> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
+> -
+> -	return 0;
+> -
+> -      release:
+> -	iounmap(p->csr_base);
+> -	return err;
+> -}
+> -
+> -static const struct pci_device_id vr_nor_pci_ids[] = {
+> -	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x500D)},
+> -	{0,}
+> -};
+> -
+> -static void vr_nor_pci_remove(struct pci_dev *dev)
+> -{
+> -	struct vr_nor_mtd *p = pci_get_drvdata(dev);
+> -
+> -	vr_nor_destroy_partitions(p);
+> -	vr_nor_destroy_mtd_setup(p);
+> -	vr_nor_destroy_maps(p);
+> -	kfree(p);
+> -	pci_release_regions(dev);
+> -	pci_disable_device(dev);
+> -}
+> -
+> -static int vr_nor_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+> -{
+> -	struct vr_nor_mtd *p = NULL;
+> -	unsigned int exp_timing_cs0;
+> -	int err;
+> -
+> -	err = pci_enable_device(dev);
+> -	if (err)
+> -		goto out;
+> -
+> -	err = pci_request_regions(dev, DRV_NAME);
+> -	if (err)
+> -		goto disable_dev;
+> -
+> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> -	err = -ENOMEM;
+> -	if (!p)
+> -		goto release;
+> -
+> -	p->dev = dev;
+> -
+> -	err = vr_nor_init_maps(p);
+> -	if (err)
+> -		goto release;
+> -
+> -	err = vr_nor_mtd_setup(p);
+> -	if (err)
+> -		goto destroy_maps;
+> -
+> -	err = vr_nor_init_partitions(p);
+> -	if (err)
+> -		goto destroy_mtd_setup;
+> -
+> -	pci_set_drvdata(dev, p);
+> -
+> -	return 0;
+> -
+> -      destroy_mtd_setup:
+> -	map_destroy(p->info);
+> -
+> -      destroy_maps:
+> -	/* write-protect the flash bank */
+> -	exp_timing_cs0 = readl(p->csr_base + EXP_TIMING_CS0);
+> -	exp_timing_cs0 &= ~TIMING_WR_EN;
+> -	writel(exp_timing_cs0, p->csr_base + EXP_TIMING_CS0);
+> -
+> -	/* unmap the flash window */
+> -	iounmap(p->map.virt);
+> -
+> -	/* unmap the csr window */
+> -	iounmap(p->csr_base);
+> -
+> -      release:
+> -	kfree(p);
+> -	pci_release_regions(dev);
+> -
+> -      disable_dev:
+> -	pci_disable_device(dev);
+> -
+> -      out:
+> -	return err;
+> -}
+> -
+> -static struct pci_driver vr_nor_pci_driver = {
+> -	.name = DRV_NAME,
+> -	.probe = vr_nor_pci_probe,
+> -	.remove = vr_nor_pci_remove,
+> -	.id_table = vr_nor_pci_ids,
+> -};
+> -
+> -module_pci_driver(vr_nor_pci_driver);
+> -
+> -MODULE_AUTHOR("Andy Lowe");
+> -MODULE_DESCRIPTION("MTD map driver for NOR flash on Intel Vermilion Range");
+> -MODULE_LICENSE("GPL");
+> -MODULE_DEVICE_TABLE(pci, vr_nor_pci_ids);
+> -- 
+> 2.42.0
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
