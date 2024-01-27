@@ -4,85 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC176C46CD2
-	for <linux-mtd@archiver.kernel.org>; Sat, 27 Jan 2024 08:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C92BAC46CD2
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Jan 2024 09:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:In-Reply-To:Cc:References:Message-Id
-	:Date:Subject:Mime-Version:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LmZMO4uPryp90zmNgCPvdysFcca/htdytKZ/CGxFBVM=; b=u0wT15MzvKaTIg
-	bHHq6d0uJqCS3IjitZT2n20G22p1LSGPD0PigBg1mTMe1CLX3FgIK/HNXRxFcN8oRBFx8/TDvm4x2
-	3C1VmQymCplIA6UwGBVHVjwEcssZpcdKbhEQULHjfaFNWBZaX4ajlo4IHbmXKvNg+FaD2X7QTLEQp
-	BcrErvD4TFRJVwYiK4SM1hpeGOt/Nebq1DdMVOuUzdb5+qfuZP1UDEGAyms/VtKUKZx3XGQOv5wcY
-	9iwlWhvROf6ApCEygONaFO0bA2Win0VLG8tUTjyLM4HGJUT8CiLNykUmjgkQ3WhV08vZZQeZTOie5
-	UcvHBPPSF56sR0sHuAmA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LsyVmCNUa5tnTvy8v1s3ABfsW1oy6JykeZ6YGs2tGwU=; b=HUVACumSv5Xdtmst3CFgozEIl/
+	g/YGHR1kofQDOBxgUoj1uAT/NGJB6+uM7dVMx4Ou5uuXGRvRLxf7tNAIWm4+qoLc57Q8h2qRX8D/J
+	Tov6R8G/fgeVo4v52IlZ4tSADcqC6w44Dl/6hHTEupoCuvDoZqWTUpwvVgS+q0onRlzGYnRyHXz2B
+	CZL5GOEGhlhCdoxgR5OZAsjsWPj8o61ce/0QlLqVOK9f1Cu6mf7cVeagOaZ8gNPyZV4/94PQwUQi3
+	OAa0Xowz1u06PNRH5b115UDM4SMUL9L5GWATa1pCfFwhHzvqApwUdIPDE+A3XlQI2k9/k7+58xHay
+	8RSxSRMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTe1o-000000079HG-1CxD;
-	Sat, 27 Jan 2024 08:27:04 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1rTf9v-00000007IDR-0We8;
+	Sat, 27 Jan 2024 09:39:31 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTe1j-000000079ER-14lv
+	id 1rTf9r-00000007IAT-0QxP
 	for linux-mtd@lists.infradead.org;
-	Sat, 27 Jan 2024 08:27:02 +0000
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a3169f46d73so34978866b.1
-        for <linux-mtd@lists.infradead.org>; Sat, 27 Jan 2024 00:26:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1706344010; x=1706948810; darn=lists.infradead.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0ZcJQsLhZWh/yYW2Exmnxbqre8RfnYmZr+JOb/fNAlQ=;
-        b=0GY0QVd3W/1K22wYF++TOsOB3dqTVVdNyx01MNNmj7lx9SIGiLEK9h5DkZqfb/Ae03
-         Yi9VK9xP2cJLoSDiPAtOFrWBDTUXXRM8eUsPV19Wd/hRFIMkc8gax84huq3Nng4Vr36P
-         ymmgkwdWhVX3mIZry5VQXw1Rc/sYXoSddWRIUZxmDIWZN9PLaiBk/n1UoHtADmCDJVz7
-         obE5N+YcJO2T8UTzpw+E+53gshhe1tELmJopqg1yN3VwcTCYkw93Y3uU3j5+7syocytG
-         FghBewjHNpNFLClNHfzpAzH2CNqxvlKsvO66RPe5WHJYHoDZejmBGg09Cw5HADekeMZG
-         fqfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706344010; x=1706948810;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0ZcJQsLhZWh/yYW2Exmnxbqre8RfnYmZr+JOb/fNAlQ=;
-        b=A8neZdOYVz9Cv+sZkKcN6etCgo5LderW6by1OXMVQPD7iPRFTZv6PeBf+1pa3Sjd70
-         2nSBp19Hg2h9jlvu/vpkv6kePzGL5ifbLhTGjD37kWpVIbz8vU+q5RCex7IYqt7HhQnl
-         0tKmn7aAWdnR7YdQ1+RL4AaYM7Fz/AgkWogJvJfdO1I1EurbHAc9DKXiCxkG4ng6nmq/
-         6mmM97rPK+XFEY2EhKTy/FQe2AJzk8E1DtpXrqBJ0bH24Mtzk7NY8yVIkyCuYa5MKzTG
-         f2QvCJJp19GazRUqZWkfJau8Gvoi8G31Ie5Gi9JCwsLGKnQPwoN+a2eWS17f/skMrbej
-         d9lg==
-X-Gm-Message-State: AOJu0Yz/TwYM4Q+Qe08gkRqPTl/tcITRXpNXLA5DYH4e1mNdzGJM6Z04
-	HoCQG/sp7nf+l176v+NJ3VQzTz4yzYg9pDCoS1+PtL9vLZodAc4CAMuiC0ieimo=
-X-Google-Smtp-Source: AGHT+IH5GPlHdnxblD9bjgkz4seFu3hVBl0p1VvML+Fg5/SBWeqi1q6fzsWVFg8pBqqdDOeM3qEMVw==
-X-Received: by 2002:a17:906:1c57:b0:a35:3eb7:3b74 with SMTP id l23-20020a1709061c5700b00a353eb73b74mr498284ejg.3.1706344010096;
-        Sat, 27 Jan 2024 00:26:50 -0800 (PST)
-Received: from smtpclient.apple ([105.225.45.176])
-        by smtp.gmail.com with ESMTPSA id mc4-20020a170906eb4400b00a338fedb9ebsm1525002ejb.54.2024.01.27.00.26.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Jan 2024 00:26:49 -0800 (PST)
-From: Ezra Buehler <ezra@easyb.ch>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 2/2] mtd: spinand: esmt: Extend IDs to 5 bytes
-Date: Sat, 27 Jan 2024 10:26:37 +0200
-Message-Id: <F3EF7144-ED08-448C-860E-D8ED898A7931@easyb.ch>
-References: <adf1fa3b-33eb-4def-97e3-55a7231430d4@salutedevices.com>
-Cc: linux-mtd@lists.infradead.org, Chuanhong Guo <gch981213@gmail.com>,
- Dmitry Rokosov <ddrokosov@sberdevices.ru>,
- Martin Kurbanov <mmkurbanov@sberdevices.ru>,
- Md Sadre Alam <quic_mdalam@quicinc.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Sridharan S N <quic_sridsn@quicinc.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <adf1fa3b-33eb-4def-97e3-55a7231430d4@salutedevices.com>
-To: Martin Kurbanov <mmkurbanov@salutedevices.com>
-X-Mailer: iPhone Mail (20D67)
+	Sat, 27 Jan 2024 09:39:28 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TMTy83hpgzsVBl
+	for <linux-mtd@lists.infradead.org>; Sat, 27 Jan 2024 17:38:08 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 38151180079
+	for <linux-mtd@lists.infradead.org>; Sat, 27 Jan 2024 17:39:15 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 27 Jan 2024 17:39:14 +0800
+Subject: Re: ubifs: master area fails to recover when master node 1 is
+ corrupted
+To: Ryder Wang <rydercoding@hotmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+References: <MEYP282MB3164FE84067710E5AC8D34A9BF7A2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+ <45ef54d1-582b-e6a8-f8f7-291f9b4c98c4@huawei.com>
+ <MEYP282MB3164A9167C34C14EAC15663ABF782@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <628521b7-36c1-ab83-4e98-752d6ff71017@huawei.com>
+Date: Sat, 27 Jan 2024 17:39:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <MEYP282MB3164A9167C34C14EAC15663ABF782@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240127_002700_324284_4476704F 
-X-CRM114-Status: UNSURE (   6.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240127_013927_522841_913DE3C0 
+X-CRM114-Status: GOOD (  17.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,24 +68,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-2022-jp"; Format="flowed"; DelSp="yes"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Martin,
-
-> On 26 Jan 2024, at 20:49, Martin Kurbanov <mmkurbanov@salutedevices.com> wrote:
+在 2024/1/27 15:21, Ryder Wang 写道:
+> Hi Zhihao,
 > 
-> Tested for F50L1G41LB
+> Your explanation is very professional. Thanks for it.
 > 
-> Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-> Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+> But I still have a doubt about the code logic:
+> ------------------------------------
+>    if (mst1) // false
+>    else {
+>     offs2 = (void *)mst2 - buf2;  // offs2 = 0
+>     if (offs2 + sz + sz <= c->leb_size) // true, mst2 is the first node in LEB 2
+>       goto out_err
+>    }
+> ------------------------------------
+> 1. My testing result just proved that CRC-corrupted master#1 also runs to "else" clause of the code above, just like master#1 is unmapped.
+> 2. For CRC corrupted master#1 case, the code logic looks inconsistent:
+>    2.1. If master#2 LEB is just to be full, master#2 will be used to recover master area.
+>    2.2. If master#2 LEB is not to be full, master recovering will be aborted with error.
+> 
+> I think whether master#2 LEB is to be full has nothing to do with whether to recover master area in such case. How do you think about it?
 
-Thank you very much for your valuable feedback!
 
-Cheers,
-Ezra.
+Actually, UBIFS can still work even if master#2 is recovered in such  
+case(master#1 is corrupted), because the master#2 is the newest version.
+The offset checking for master#2 LEB being full is a way to make sure  
+that UBIFS can find the newest master node. If we simply remove the  
+checking, UBIFS could go wrong in some situations, for example:
+
+Powercut happens before writing mst2_v2 on LEB2, so the UBIFS image  
+looks like:
+              LEB1                                LEB2
+|mst1_v1 | mst1_v2 |0xFF 0xFF ... |      |mst2_v1 | 0xFF 0xFF ... |
+
+The mast1_v2 is expected to be recovered after exeucting  
+ubifs_recover_master_node(). If both mst1_v1 and mst1_v2 are corrupted,  
+UBIFS will enter into this branch:
+
+    if (mst1) // false
+    else {
+      offs2 = (void *)mst2 - buf2;  // offs2 = 0
+      if (offs2 + sz + sz <= c->leb_size) // offset checking
+        goto out_err
+      mst = mst2;
+    }
+If the offset checking is removed, mst_2_v1 is recovered, apperantly,  
+UBIFS picks wrong master node and it's not right.
+
+So accodring to the realization of ubifs_recover_master_node(), UBFIS  
+choose the newest master node by various offset checking, it's just like  
+a whitelist of situations that UBIFS can fully trust on, other  
+situations are failure pathes, although some of failure pathes can make  
+UBIFS still get a right master node in some(not all) cases.
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
