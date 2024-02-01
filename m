@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 066EFC4828D
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 15:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F68C4828D
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 15:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OIcTke2mO5cQZR7+rF/5vSYBZc33sQ50w83Yu4WL2GY=; b=QAYxE1IGBhv5+pqLjmV3qsGiY0
-	zzR8nXUFsMpGLJ3SIMuDIVh/ejMWsHaT68NxqG+q5L2wdflaAl4YtrPFmkETNL+GDw25EvrF52k50
-	+H+9GTvAKX2JrW/ewwwOPMywA7u48qBz3co7OdgD7LoqyMaerE8C1v0AcwS5RQF4xnLLFBkk7O37L
-	YAgNEqHSaxB4U6jDiYs5/NeOpwhFR43J3G3PutQflj5YNSQBKH1BNqCRFyCbwEuBOGoAlhr4pUPw4
-	KznwsqLYw/aZwxOpTuXBLuZe3Hib3+CGVkSvnKNi/IMGThiuzyjLt53JxQdyZn6SgQ1/YxZo7r0SP
-	nCRN2Dww==;
+	bh=wusqGk7FNQfdxTV6yhx49pgOOReArmTeDmyc7zWYv6M=; b=EkP7ZhpLzVJ89pMNNC9aXxJrZR
+	3iAvZlpHHqHRwbqvcHaBHBhjshOA05MlL4oSf+L9OUBYEwMjBFm8PknLKtF9T0jjUknPJfYS/0Eu3
+	/AqPyXh5PPRM8db3dlZixGBqswdZg6h92GBNGADIjW9+vcRDIvWIe4amDnYGVIlnehHp2Cz/b+ifN
+	+F08aiEi5cYuVgkUxA2SG00y1E/vHsndENdQLU9GDlwhJpE2kBFUEmdIpLe9oJAdMgtlLe2IVqkCM
+	dJ5UEDdeQNIspGrcRa/Wcf+z7hi+Kb46IAJk2OBdlGA34YQ9PdkeFk3gq+EHGGNQ+jeXBH+Ph48ld
+	ALlNO/4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVYzk-00000008RwS-46OV;
-	Thu, 01 Feb 2024 15:28:52 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rVZAD-00000008TnE-1dHJ;
+	Thu, 01 Feb 2024 15:39:41 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVYzh-00000008RuV-3QAl
+	id 1rVZAA-00000008Tlq-1iMG
 	for linux-mtd@lists.infradead.org;
-	Thu, 01 Feb 2024 15:28:51 +0000
+	Thu, 01 Feb 2024 15:39:39 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 385B061F70;
-	Thu,  1 Feb 2024 15:28:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 804BDC433F1;
-	Thu,  1 Feb 2024 15:28:46 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id CCD1761F8B;
+	Thu,  1 Feb 2024 15:39:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FA0C43390;
+	Thu,  1 Feb 2024 15:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706801328;
-	bh=5CkmtnYRZDwQa3AKcyQfp1dgmpBdKEsPqGGm8IacKsE=;
+	s=k20201202; t=1706801977;
+	bh=XoLv9C+DJd3qb4dNm0ZUOh/6NcnIi4gjK0PvdVFdsis=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MmwztpI2HyosWCOXTmGULnEUeBGD9b3mPGpgzTKZXtDcEt23A/c2F2rkbuDS2ThqV
-	 q8VBH9/ktQUr4/y2ecSLpFSgxIFtQQ36wka8Il1FRFDXjTAi07xxZv6KgQx5CL2Bq8
-	 Nzyz8WR5UZMuv/eqrrM06UtWCEvDyf1/7jbRwiyFwq/HPqRjGbXDzMLZH15b2zOGDB
-	 gJb6aEf0gWHjLvefdU2VYozsYMdPA+G0oGgPgi6ffsIRy80qGBcdi3ZB8pEATr/Urx
-	 gAbTlM5v8RCvriaaPmkMkMO5+TDrBaTfI5JuMh1k/h3LzSpgqI9G3JK/vvRS4fMCHS
-	 EcTREXd3SO56w==
+	b=SdFw1h6LTHMX6kYgfafJTUxqISulNOh2JrJ9xFJHfibFXwGSqFZW9DAvfQpcfdBd5
+	 u1m7GV+bHOhc0mLTKN7TNI1Yh3ehoLacnpYWnlDDZqYEzqxhUtvZ4vYiPJDmFwSYt5
+	 oMJv+Pyss09TrKB/b5qW6E2CQbIK0GOAC5qQybxDsPcKEkz3qL1hr/RlCKRgLo6wOc
+	 jbZ7J9bui2I44uJBeoS1SGy00dTsX2yfTHQSwkuyF00FTV8Bn9jtyQdXC2tk0RUFGG
+	 nijpfFVtIA2QGSNxG7lP841wqKifw11WtVnGJPw+iIDZzJ15WNoje0QVXJsetvUanZ
+	 Ed+sfWR5zB/rQ==
 MIME-Version: 1.0
-Date: Thu, 01 Feb 2024 16:28:44 +0100
+Date: Thu, 01 Feb 2024 16:39:32 +0100
 From: Michael Walle <mwalle@kernel.org>
 To: Jaime Liao <jaimeliao.tw@gmail.com>
 Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
  tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, broonie@kernel.org, leoyu@mxic.com.tw,
  jaimeliao@mxic.com.tw
-Subject: Re: [PATCH v8 3/9] mtd: spi-nor: core: Allow specifying the byte
- order in Octal DTR mode
-In-Reply-To: <20240201094353.33281-4-jaimeliao.tw@gmail.com>
+Subject: Re: [PATCH v8 5/9] spi: mxic: Add support for swapping byte
+In-Reply-To: <20240201094353.33281-6-jaimeliao.tw@gmail.com>
 References: <20240201094353.33281-1-jaimeliao.tw@gmail.com>
- <20240201094353.33281-4-jaimeliao.tw@gmail.com>
-Message-ID: <1b726357f67c1e1a680326b821875031@kernel.org>
+ <20240201094353.33281-6-jaimeliao.tw@gmail.com>
+Message-ID: <8e834cd19cf896d792a0338a3fb5465c@kernel.org>
 X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240201_072849_980517_72A14635 
-X-CRM114-Status: GOOD (  21.17  )
+X-CRM114-CacheID: sfid-20240201_073938_613671_E16FDA6E 
+X-CRM114-Status: GOOD (  21.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,77 +75,120 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi,
+
 > From: JaimeLiao <jaimeliao@mxic.com.tw>
-
-Same remark as for patch 2/9.
-
-> Macronix swaps bytes on a 16-bit boundary when configured in Octal DTR.
-> The byte order of 16-bit words is swapped when read or written in 
-> 8D-8D-8D
-> mode compared to STR modes. Allow operations to specify the byte order 
-> in
-> DTR mode, so that controllers can swap the bytes back at run-time to
-> address the flash's endianness requirements, if they are capable. If 
-> the
-> controllers are not capable of swapping the bytes, the protocol is
-> downgrade via spi_nor_spimem_adjust_hwcaps(). When available, the 
-> swapping
-> of the bytes is always done regardless if it's a data or register 
-> access,
-> so that we comply with the JESD216 requirements: "Byte order of 16-bit
-> words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
 > 
-> Merge Tudor's patch and add modifications for suiting newer version
-> of Linux kernel.
+> Some SPI-NOR flash swap the bytes on a 16-bit boundary when
+> configured in Octal DTR mode. It means data format D0 D1 D2 D3
+> would be swapped to D1 D0 D3 D2. So that whether controller
+> support swapping bytes should be checked before enable Octal
+> DTR mode. Add swap byte support on a 16-bit boundary when
+> configured in Octal DTR mode for Macronix xSPI host controller
+> dirver.
+> 
+> According dtr_swab in operation to enable/disable Macronix
+> xSPI host controller swap byte feature.
+> 
+> To make sure swap byte feature is working well, program data in
+> 1S-1S-1S mode then read back and compare read data in 8D-8D-8D
+> mode.
+> 
+> This feature have been validated on byte-swap flash and
+> non-byte-swap flash.
+> 
+> Macronix xSPI host controller bit "HC_CFG_DATA_PASS" determine
+> the byte swap feature disabled/enabled and swap byte feature is
+> working on 8D-8D-8D mode only.
 > 
 > Suggested-by: Michael Walle <mwalle@kernel.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 > ---
->  drivers/mtd/spi-nor/core.c | 5 +++++
->  drivers/mtd/spi-nor/core.h | 1 +
->  2 files changed, 6 insertions(+)
+>  drivers/spi/spi-mxic.c | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4129764fad8c..0076007e1cde 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -113,6 +113,11 @@ void spi_nor_spimem_setup_op(const struct spi_nor 
-> *nor,
->  		op->cmd.opcode = (op->cmd.opcode << 8) | ext;
->  		op->cmd.nbytes = 2;
->  	}
-> +
-> +	/* SWAP16 is only applicable when Octal DTR mode */
-> +	if (nor->read_proto == SNOR_PROTO_8_8_8_DTR)
+> diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+> index 60c9f3048ac9..8ac302e48c9f 100644
+> --- a/drivers/spi/spi-mxic.c
+> +++ b/drivers/spi/spi-mxic.c
+> @@ -294,7 +294,8 @@ static void mxic_spi_hw_init(struct mxic_spi *mxic)
+>  	       mxic->regs + HC_CFG);
+>  }
+> 
+> -static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
+> +static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags,
+> +				bool swap16)
+>  {
+>  	int nio = 1;
+> 
+> @@ -305,6 +306,11 @@ static u32 mxic_spi_prep_hc_cfg(struct spi_device 
+> *spi, u32 flags)
+>  	else if (spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
+>  		nio = 2;
+> 
+> +	if (!swap16)
+> +		flags |= HC_CFG_DATA_PASS;
+> +	else
+> +		flags &= ~HC_CFG_DATA_PASS;
 
-Why is it read_proto now? For all the former patches, the local
-proto variable was used.
-
-> +		if (nor->flags & SNOR_F_SWAP16)
-
-Please fold this into the former condition.
-if (proto == SNOR_PROTO_8_8_8_DTR && nor->flags & SNOR_F_SWAP16)
-    op->data.swap16 = true;
+Again, not my driver and I don't care too much, but you are changing
+the behavior of this driver. If I had to guess, with this patch applied,
+you'd read data (in octal mode) with the bytes swapped compared to 
+kernel
+without this patch.
+And compared to the former version, you just made it harder to read
+by using negated logic.
 
 -michael
 
-> +			op->data.swap16 = true;
->  }
+> +
+>  	return flags | HC_CFG_NIO(nio) |
+>  	       HC_CFG_TYPE(spi_get_chipselect(spi, 0), HC_CFG_TYPE_SPI_NOR) |
+>  	       HC_CFG_SLV_ACT(spi_get_chipselect(spi, 0)) | 
+> HC_CFG_IDLE_SIO_LVL(1);
+> @@ -397,7 +403,8 @@ static ssize_t mxic_spi_mem_dirmap_read(struct 
+> spi_mem_dirmap_desc *desc,
+>  	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
+>  		return -EINVAL;
 > 
->  /**
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index d36c0e072954..3c5190ac0a79 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -140,6 +140,7 @@ enum spi_nor_option_flags {
->  	SNOR_F_RWW		= BIT(14),
->  	SNOR_F_ECC		= BIT(15),
->  	SNOR_F_NO_WP		= BIT(16),
-> +	SNOR_F_SWAP16		= BIT(17),
+> -	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
+> +	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0, 
+> desc->info.op_tmpl.data.swap16),
+> +	       mxic->regs + HC_CFG);
+> 
+>  	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
+>  	       mxic->regs + LRD_CFG);
+> @@ -441,7 +448,8 @@ static ssize_t mxic_spi_mem_dirmap_write(struct 
+> spi_mem_dirmap_desc *desc,
+>  	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
+>  		return -EINVAL;
+> 
+> -	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
+> +	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0, 
+> desc->info.op_tmpl.data.swap16),
+> +	       mxic->regs + HC_CFG);
+> 
+>  	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
+>  	       mxic->regs + LWR_CFG);
+> @@ -518,7 +526,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem 
+> *mem,
+>  	if (ret)
+>  		return ret;
+> 
+> -	writel(mxic_spi_prep_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN),
+> +	writel(mxic_spi_prep_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN, 
+> op->data.swap16),
+>  	       mxic->regs + HC_CFG);
+> 
+>  	writel(HC_EN_BIT, mxic->regs + HC_EN);
+> @@ -572,6 +580,7 @@ static const struct spi_controller_mem_ops 
+> mxic_spi_mem_ops = {
+> 
+>  static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
+>  	.dtr = true,
+> +	.swap16 = true,
+>  	.ecc = true,
 >  };
-> 
->  struct spi_nor_read_command {
 
 ______________________________________________________
 Linux MTD discussion mailing list
