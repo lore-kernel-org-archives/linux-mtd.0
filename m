@@ -4,67 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE84C47258
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jan 2024 08:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B181C47DDF
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 06:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=yuas5jJvu6Lp3v5DoAsk0e90TESIJZ+1eEZWwM4dRl4=; b=ZESkG75Nt3j7mY
-	ld/GM7vjPAkrICPD3lF4K+blGxib6MWevnn6qqYLcKzdOSMX6Wfl6bSWn6iyeH9G4FozR0A7/oZRv
-	NxJ/mBgSzsIPZqt8aynWNQ+Stkq4NvKSOlFLX5z9GUTpUZJQv/diE23yDN7ZMrfJqZW2H1K+hy5JI
-	XOCIzZ5Jdr6nIUuSewyczPw595NtdDQUat3Se6AMLSdk7mYJW8tcay3MOTrRqOKSNebee/LJ7rBTm
-	2OUQEXs3+tY+iY/aQe5yRVcuoiV0V1Ds8ulZ7v4ZhWSyOIxNxQ1Zv10Ej97FaUvxU2lkSctS2Gg0P
-	imy0OTs5eUuU5Hs1C4jA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=b9qAfhq6amZts116yvbrd1xRIL8PH3qyLe781uTUYLA=; b=2JeQzQwJE/T4mDsLVT8Pew0LSj
+	sEmUEiZhBwpZzp1SwAq6vzkBeP+8wvLFkhAWJmlXljg3/cxUaYrBMaP6VW8NQYzu5GrGNU5z1l0DN
+	7S18InWmZmfMuMX/wEejfZWxoJ+Su3sbI4FB9ANp450vgOWVvqAVbsG9wueK8VX4kcokE95RphbKf
+	EIpYpc/yaDwXm2Ptfl+QIlXPWyVtBrMnT1bNXjwe4g7Gi0xl7n2YGzi+aKCsBmrgEbX1eJA+KCsvf
+	HBj/T7Zm9f/mO+SAWFDPufPNzfvbck9bCkHDwxcQWjeAahC60otjpXpNTSyxPC+NT5CGqGeZUJbAg
+	eC3x4v3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV66S-000000029v2-1u7f;
-	Wed, 31 Jan 2024 08:37:52 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rVQst-00000006p8b-3hop;
+	Thu, 01 Feb 2024 06:49:15 +0000
+Received: from mail-qt1-x836.google.com ([2607:f8b0:4864:20::836])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV66Q-000000029u8-2l1l
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 31 Jan 2024 08:37:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Subject:To:From:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=V4qwQGqC7KpJoyielzRpnopuINFIOvKXsSgJ3ZENIXU=; b=TVlLAvkdZZS0dfRMzF0c6jQWTl
-	FaYC8y5pvQyuXqdQuYHieIJseJpECbb4ERUHISyDH3+j5dLpYvRzSDnsfYVj29IQcbC2yelKAbxmv
-	e1JrEs79B/z+ce6BabraksM4pVbyhNs85IGhaxjbJfWs5gT6hKpQZl+YED1j2oNo5uCPO6d3b3bcc
-	/9oC7JRjUTohqW/Zmx214CDWQae920QhEfAJIF6/BNIM2ZZrs3ZCx6PJCNwttGUS/znlt8JekmNfr
-	7AtdkeV8pa0Ijd0AL58sxTip6DKqjTsHYkV3Y9p6goiYud+ud+9ylZlJN5OWaxrJG+7Uq/pf74ZUz
-	MyAVAG1A==;
-Received: from mail.quirkbyte.pl ([94.177.238.152])
-	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV66K-0000000CCyF-2z6k
+	id 1rVQsc-00000006p2k-1JqQ
 	for linux-mtd@lists.infradead.org;
-	Wed, 31 Jan 2024 08:37:48 +0000
-Received: by mail.quirkbyte.pl (Postfix, from userid 1002)
-	id C1DB8839A5; Wed, 31 Jan 2024 09:36:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=quirkbyte.pl; s=mail;
-	t=1706690242; bh=V4qwQGqC7KpJoyielzRpnopuINFIOvKXsSgJ3ZENIXU=;
-	h=Date:From:To:Subject:From;
-	b=HabT700pB1voiq3NzILFfwdKDR7rjO7AxCiWwHSaHCN3EdoEWYI8ZoDDiPaXxhseS
-	 TJ0WN4SCexxYSG2aQGCwe8QkRpFYtBAJfa7bL0dXAOHEqyJ/tpX1f0JOoThOI8QZy2
-	 BllgwOALeLGHjnaGVk4cqhwJ1c09xO/wDQUtARTHYOQ8Gz0kGGKsqw+sWpvxFMC1YZ
-	 AF7vMawr3NK1u10Zpe9dl/VeJ7O/WG50tDVlAHSvlODO614FonD9/TKGZD8JiIeh+l
-	 XSr/Ub6SdwuNwQ3+qzXNjVdneIGjspT8vmb1btJ1hyrsCc1tFjrCzKcIW9oUnP2wLI
-	 iCMtp68O1DnsQ==
-Received: by mail.quirkbyte.pl for <linux-mtd@lists.infradead.org>; Wed, 31 Jan 2024 08:35:46 GMT
-Message-ID: <20240131084500-0.1.10.iwt3.0.fgypnl74fe@quirkbyte.pl>
-Date: Wed, 31 Jan 2024 08:35:46 GMT
-From: "Norbert Karecki" <norbert.karecki@quirkbyte.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: Fotowoltaika - propozycja instalacji
-X-Mailer: mail.quirkbyte.pl
+	Thu, 01 Feb 2024 06:49:01 +0000
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-42a8be32041so5169571cf.1
+        for <linux-mtd@lists.infradead.org>; Wed, 31 Jan 2024 22:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1706770135; x=1707374935; darn=lists.infradead.org;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=9vdLpdX7B/8FATQOmH8IAfffi8cvCHQAI0aV2xqsm/8=;
+        b=U90/5w4gPpqua5bArUzz1tbrNRPt4GXjQBGP1+DP7scaAZi4/NUNlEBa5PoduyFE6v
+         XKVqk8xg+ZX/gnWP8vsXWRowRlE6yK6G3U39hcf3bo1ZQx/Ut47zyoqHVZQta+LjKOc3
+         pLzfVKWTbmMUz3Mx55aZZtwCdLzKK2weTUYG4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706770135; x=1707374935;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9vdLpdX7B/8FATQOmH8IAfffi8cvCHQAI0aV2xqsm/8=;
+        b=IndjxFufWSsydCKW6LvR3+r2MQlbhO8hxcaCy1iV9IFG6JHyjmsxnUph9578sIgspx
+         NM9PyQBfMqOW8vg25P07+WvxUxOgTbj2R2f+xPOHIK0yenzg8ELIJvkoQCwRDXmO+NQ2
+         rPxXz/lAr+IwMXF4xOJwKDFTyUCvlJ0jCVOox0l+ygaedHv7EujIjeIbiyYvjOl07QBI
+         SRH3Ur52gk6Y0ictfeRqTRcBtRwZ7FQ3wl+7BqPk7VtyQdGK/TBpGAQwBfzQMm3DGgpA
+         2/uXPV2iFy1Tlcw0YWfPwG1fpvSjpBTSPM7Bj5dIl7sPRq5DxftNfQ6l4vrVTnP0rl94
+         JcUA==
+X-Gm-Message-State: AOJu0YyW1lxd+BOIPwehHH3trKdxzNUuXfGc9zDmOR4srBgAULIA5L7i
+	pAsqP96Iw4bclxmzI+TiUkdSYEYS6G1hJGR6wKNDrVBDoW7nbOK9bQGn3DJbiA==
+X-Google-Smtp-Source: AGHT+IFu3hpSEYcg5NjFumnW8pSOQjAuDiaik+mNKuXlASIZK7ixwBrqaitvekqcbMmlfTD42c14OQ==
+X-Received: by 2002:a05:6214:268d:b0:685:73fe:aafe with SMTP id gm13-20020a056214268d00b0068573feaafemr5262448qvb.18.1706770135028;
+        Wed, 31 Jan 2024 22:48:55 -0800 (PST)
+Received: from [192.168.52.129] ([192.19.222.250])
+        by smtp.gmail.com with ESMTPSA id qo11-20020a056214590b00b0068c655f3e4dsm2057425qvb.15.2024.01.31.22.48.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Jan 2024 22:48:53 -0800 (PST)
+Message-ID: <bcd9f8a5-7dab-42e6-b860-8a56ebb51cb6@broadcom.com>
+Date: Wed, 31 Jan 2024 22:48:50 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Regan <dregan@broadcom.com>
+Cc: dregan@mail.com, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Joel Peshkin <joel.peshkin@broadcom.com>,
+ Tomer Yacoby <tomer.yacoby@broadcom.com>,
+ Dan Beygelman <dan.beygelman@broadcom.com>,
+ Anand Gore <anand.gore@broadcom.com>, Kursad Oney
+ <kursad.oney@broadcom.com>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, rafal@milecki.pl,
+ bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
+ baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
+ Dan Carpenter <dan.carpenter@linaro.org>
+References: <20240124030458.98408-1-dregan@broadcom.com>
+ <20240124030458.98408-11-dregan@broadcom.com>
+ <20240124184027.712b1e47@xps-13>
+ <CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
+ <20240126071913.699c3795@xps-13>
+ <CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
+ <20240129115228.06dc2292@xps-13>
+ <2a3edcf5-7afc-410c-a402-3d8cd3feb1da@broadcom.com>
+ <20240130120155.3cb6feed@xps-13>
+ <CAA_RMS577vw=QWN9_NHfmWqt+_cDG22tA01aU019CPNjAgHqJQ@mail.gmail.com>
+ <20240130195504.506fb446@xps-13>
+From: William Zhang <william.zhang@broadcom.com>
+In-Reply-To: <20240130195504.506fb446@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240131_083746_726066_156C2F7D 
-X-CRM114-Status: UNSURE (   1.59  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240131_224858_527563_7521A56A 
+X-CRM114-Status: GOOD (  45.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,22 +107,295 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1025155631669118948=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAogCkN6eSByb3p3YcW8YWxpIFBhxYRzdHdvIG1vbnRhxbwgc3lzdGVtdSBm
-b3Rvd29sdGFpY3puZWdvPwogCkluc3RhbGFjamEgZm90b3dvbHRhaWN6bmEgamVzdCBuYWpsZXBz
-enltIHNwb3NvYmVtIG5hIG9ibmnFvGVuaWUgd3lzb2tvxZtjaSByYWNodW5rw7N3IHphIHByxIVk
-IChwb3pvc3RhasSFIHR5bGtvIG9wxYJhdHkgc3RhxYJlKSBpIHphYmV6cGllY3plbmllIHNpxJkg
-cHJ6ZWQgcm9zbsSFY3ltaSBjZW5hbWkgZW5lcmdpaSBlbGVrdHJ5Y3puZWouIEplc3QgdG8gdyBw
-ZcWCbmkgb2RuYXdpYWxuZSBpIGJlemVtaXN5am5lIMW6csOzZMWCbyBlbmVyZ2lpLCBkemnEmWtp
-IGN6ZW11IHByenljenluaWFteSBzacSZIGRvIG9jaHJvbnkgxZtyb2Rvd2lza2EgbmF0dXJhbG5l
-Z28uCiAKRHppYcWCYW15IG9kIHdpZWx1IGxhdCBuYSByeW5rdSBlbmVyZ2V0eWN6bnltLiBQcnp5
-Z290dWplbXkgcHJvamVrdCwgd3ljZW7EmSBvcmF6IGtvbXBsZWtzb3dvIHd5a29uYW15IGkgemfF
-gm9zaW15IHJlYWxpemFjasSZIGRvIHpha8WCYWR1IGVuZXJnZXR5Y3puZWdvLiAKIApDenkgY2hj
-xIUgUGHFhHN0d28gcG96bmHEhyBuYXN6xIUgcHJvcG96eWNqxJk/ICAKCgpQb3pkcmF3aWFtCk5v
-cmJlcnQgS2FyZWNraQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+--===============1025155631669118948==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000a28b9906104c63db"
+
+--000000000000a28b9906104c63db
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Hi Miquel,
+
+On 1/30/24 10:55, Miquel Raynal wrote:
+> Hi David,
+> 
+> dregan@broadcom.com wrote on Tue, 30 Jan 2024 07:26:02 -0800:
+> 
+>> Hi Miquel,
+>>
+>> On Tue, Jan 30, 2024 at 3:01 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>>>
+>>> Hi William,
+>>>
+>>> william.zhang@broadcom.com wrote on Tue, 30 Jan 2024 00:11:32 -0800:
+>>>   
+>>>> Hi Miquel,
+>>>>
+>>>> On 1/29/24 02:52, Miquel Raynal wrote:
+>>>>> Hi David,
+>>>>>
+>>>>> dregan@broadcom.com wrote on Fri, 26 Jan 2024 11:57:39 -0800:
+>>>>>   
+>>>>>> Hi Miquèl,
+>>>>>>
+>>>>>> On Thu, Jan 25, 2024 at 10:19 PM Miquel Raynal
+>>>>>> <miquel.raynal@bootlin.com> wrote:
+>>>>>>>
+>>>>>>> Hi David,
+>>>>>>>
+>>>>>>> dregan@broadcom.com wrote on Thu, 25 Jan 2024 11:47:46 -0800:
+>>>>>>>    >>>> Hi Miquèl,
+>>>>>>>>
+>>>>>>>> On Wed, Jan 24, 2024 at 9:40 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>>>>>>>>>
+>>>>>>>>> Hi David,
+>>>>>>>>>
+>>>>>>>>> dregan@broadcom.com wrote on Tue, 23 Jan 2024 19:04:58 -0800:
+>>>>>>>>>    >>>>>> Allow settings for on-die ecc such that if on-die ECC is selected
+>>>>>>>>>> don't error out but require ECC strap setting of zero
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: David Regan <dregan@broadcom.com>
+>>>>>>>>>> Reviewed-by: William Zhang <william.zhang@broadcom.com>
+>>>>>>>>>> ---
+>>>>>>>>>> Changes in v3: None
+>>>>>>>>>> ---
+>>>>>>>>>> Changes in v2:
+>>>>>>>>>> - Added to patch series
+>>>>>>>>>> ---
+>>>>>>>>>>    drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
+>>>>>>>>>>    1 file changed, 10 insertions(+), 4 deletions(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+>>>>>>>>>> index a4e311b6798c..42526f3250c9 100644
+>>>>>>>>>> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+>>>>>>>>>> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+>>>>>>>>>> @@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>>>>>>>>>>         cfg->blk_adr_bytes = get_blk_adr_bytes(mtd->size, mtd->writesize);
+>>>>>>>>>>
+>>>>>>>>>>         if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST) {
+>>>>>>>>>> -             dev_err(ctrl->dev, "only HW ECC supported; selected: %d\n",
+>>>>>>>>>> -                     chip->ecc.engine_type);
+>>>>>>>>>> -             return -EINVAL;
+>>>>>>>>>> +             if (chip->ecc.strength) {
+>>>>>>>>>> +                     dev_err(ctrl->dev, "ERROR!!! HW ECC must be set to zero for non-hardware ECC; selected: %d\n",
+>>>>>>>>>> +                             chip->ecc.strength);
+>>>>>>>>>
+>>>>>>>>> Can you use a more formal string? Also clarify it because I don't
+>>>>>>>>> really understand what it leads to.
+>>>>>>>>
+>>>>>>>> How about:
+>>>>>>>>
+>>>>>>>> dev_err(ctrl->dev, "HW ECC set to %d, must be zero for on-die ECC\n",
+>>>>>>>
+>>>>>>> Actually I am wondering how legitimate this is. Just don't enable the
+>>>>>>> on host ECC engine if it's not in use. No need to check the core's
+>>>>>>> choice.
+>>>>>>
+>>>>>> Our chip ECC engine will either be on if it's needed or off if it's not.
+>>>>>> Either I can do that in one place or put checks in before each
+>>>>>> read/write to turn on/off the ECC engine, which seems a lot more
+>>>>>> work and changes and possible issues/problems.
+>>>>>> Turning it on/off as needed has not been explicitly tested and
+>>>>>> could cause unforeseen consequences. This
+>>>>>> is a minimal change which should have minimal impact.
+>>>>>>   
+>>>>>>>    >>>>   >>>>>   >>>>>> +                     return -EINVAL;
+>>>>>>>>>> +             }
+>>>>>>>>>>         }
+>>>>>>>>>>
+>>>>>>>>>>         if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN) {
+>>>>>>>>>> @@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>>>>>>>>>>         if (ret)
+>>>>>>>>>>                 return ret;
+>>>>>>>>>>
+>>>>>>>>>> -     brcmnand_set_ecc_enabled(host, 1);
+>>>>>>>>>> +     if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE) {
+>>>>>>>>>> +             dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\n");
+>>>>>>>>>
+>>>>>>>>> Not needed.
+>>>>>>>>
+>>>>>>>> Will remove.
+>>>>>>>>    >>>>>   >>>>>> +             brcmnand_set_ecc_enabled(host, 0);
+>>>>>>>>>> +     } else
+>>>>>>>>>> +             brcmnand_set_ecc_enabled(host, 1);
+>>>>>>>>>
+>>>>>>>>> Style is wrong, but otherwise I think ECC should be kept disabled while
+>>>>>>>>> not in active use, so I am a bit surprised by this line.
+>>>>>>>>
+>>>>>>>> This is a double check to turn on/off our hardware ECC.
+>>>>>>>
+>>>>>>> I expect the engine to be always disabled. Enable it only when you
+>>>>>>> need (may require an additional patch before this one).
+>>>>>>
+>>>>>> We are already turning on the ECC enable at this point,
+>>>>>> this is just adding the option to turn it off if the NAND chip
+>>>>>> itself will be doing the ECC instead of our controller.
+>>>>>
+>>>>> Sorry if I have not been clear.
+>>>>>
+>>>>> This sequence:
+>>>>> - init
+>>>>> - enable hw ECC engine
+>>>>> Is broken.
+>>>>>   
+>>>> ECC engine is not enabled for all the cases. Here we only intended to enable it for the nand chip that is set to use NAND_ECC_ENGINE_TYPE_ON_HOST. The logic here should better change to:
+>>>> if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST)
+>>>>       brcmnand_set_ecc_enabled(host, 1);
+>>>> else
+>>>>       brcmnand_set_ecc_enabled(host, 0);
+>>>>   
+>>>>> It *cannot* work as any operation going through exec_op now may
+>>>>> perform page reads which should be unmodified by the ECC engine. You > driver *must* follow the following sequence:
+>>>>> - init and disable (or keep disabled) the hw ECC engine
+>>>>> - when you perform a page operation with correction you need to
+>>>>>      - enable the engine
+>>>>>      - perform the operation
+>>>>>      - disable the engine
+>>>>> Maybe I am missing something here but are you saying the exec_op can have different ecc type for page read/write at run time on the same nand chip? I don't see the op instr structure has the ecc type field and thought it is only bind to the nand chip and won't change at run time. So looks to me the init time setting to the engine based on ecc.engine_type should be sufficient.
+>>>>
+>>>> What you described here can work for the hw.ecc read path (ecc.read_page = brcmnand_read_page) which always assumes ecc is enabled. Although it is probably not too bad with these two extra operation, it would be better if we don't have to add anything as our current code does. For the brcmnand_read_page_raw,  we currently disable the engine and then re-enable it(but we need to fix it to only enable it with hw ecc engine type).  So it is just opposite of you logic but works the same with no impact on the most performance critical path.
+>>>
+>>> This is not "my" logic, this is the "core's" logic. I am saying: your
+>>> approach is broken because that is not how the API is supposed to work,
+>>> but it mostly works in the standard case.
+>>
+>> In the interest of minimizing register writes, would it be acceptable to
+>> enable/disable ECC at the beginning of a standard
+>> path transfer but not, after the transfer, turn off the ECC? This should not
+>> affect other standard path operations nor affect the exec_op path as those
+>> are low level transfers which our ECC engine would not touch and the NAND
+>> device driver should be responsible for turning on/off its own ECC.
+> 
+> Do you have legitimate concerns about this register write taking way
+> more time than I could expect? Because compared to the transfer of a
+> NAND page + tR/tPROG it should not be noticeable. I don't see how you
+> could even measure such impact actually, unless the register write does
+> way more than usual. I'm fine with the above idea if you show me it has
+> an interest.
+> 
+Dave did the mtd_speed test and we can see we get consistently ~35KB/s 
+slower with the extra enable and disable ecc engine calls in ecc read 
+page path.
+
+With the change:
+[   28.148355] mtd_speedtest:   page read speed is 9857 KiB/s
+[   31.754258] mtd_speedtest: 2 page read speed is 9865 KiB/s
+Without the change
+[   56.444735] mtd_speedtest:   page read speed is 9892 KiB/s
+[   60.042262] mtd_speedtest: 2 page read speed is 9897 KiB/s
+
+Although it is only less than 1% drop, it is still something. I 
+understand the procedure you laid out above is the preferred way but 
+with our driver fully control the chip ecc read/write page, ecc 
+read_raw/write_raw page function and exec_op path, I don't see where it 
+may not work. What are the non-standard cases that can break it?
+
+If the driver started with preferred procedure,  we will never have this 
+conversation:) But unfortunately it is not the case and now if we want 
+to revert this but lose performance, I just don't feel like to swallow 
+this if there is no real world case that breaks this code.
+
+> Thanks,
+> Miquèl
+
+--000000000000a28b9906104c63db
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
+6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
+xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
+VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
+/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
+0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
+urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF6qJIru8AzQ3YLQtXCSb+XBo+xs
+Y/sd915KMwlIS8JUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
+MDIwMTA2NDg1NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAfERPa3kCDxDsoMA9r7wR4ks1xE85SqUGhUjQrPQUTmSex
+RtQXP0uMseGL7nX4plhavrSUqXAJMCxgdgOGFSRxQNh0UltLsMmOeE+jTfFUmQ05GDt9+9jSkw83
+42C/p7UgyGSOxhAMaKgBjqY8ZU1eTWhDrfVzmtdsELGEv8g/cX9z1xKQMhqMqcIUEj/OtRidNaRe
+BqHuJUEs7X31rg056QluNAiLZbYaOhdu7OK2zAT0P9Tw0+xKxFJW57VKM/ixK/UwTIGgfAe7vd82
+bZMrhDGEcxtpa6pyN7rAIsvBtgkRCp69AeSpzmESnY9j+FSEL99N9Fu296r+8WHqbbyI
+--000000000000a28b9906104c63db--
+
+
+--===============1025155631669118948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1025155631669118948==--
+
