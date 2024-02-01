@@ -4,98 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B181C47DDF
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 06:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFFB5C47DDB
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 08:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=b9qAfhq6amZts116yvbrd1xRIL8PH3qyLe781uTUYLA=; b=2JeQzQwJE/T4mDsLVT8Pew0LSj
-	sEmUEiZhBwpZzp1SwAq6vzkBeP+8wvLFkhAWJmlXljg3/cxUaYrBMaP6VW8NQYzu5GrGNU5z1l0DN
-	7S18InWmZmfMuMX/wEejfZWxoJ+Su3sbI4FB9ANp450vgOWVvqAVbsG9wueK8VX4kcokE95RphbKf
-	EIpYpc/yaDwXm2Ptfl+QIlXPWyVtBrMnT1bNXjwe4g7Gi0xl7n2YGzi+aKCsBmrgEbX1eJA+KCsvf
-	HBj/T7Zm9f/mO+SAWFDPufPNzfvbck9bCkHDwxcQWjeAahC60otjpXpNTSyxPC+NT5CGqGeZUJbAg
-	eC3x4v3Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CDynaQmCMTtRJjmzLu6wwrqoTkxvU7cZ1Q0oqyNs3Co=; b=c5E/r/U+05XieA
+	F4TMzuGYjWWbjkfgBoj2QCl+Ui2K96DrwxT2XWxpwqjzCIxCO+4w1b4NDmo/t2HpwmKZ99UVW+J8B
+	S8i5znSrQ5ZFNgkq/Zxx2I/SHoHRaJjIQIkszCSXxT+un9mjz0em2uFU0ewGPhogNLGK0mwJ6Jvmx
+	7oGmtMJxNTtiF020g6zOWOaO4Lw97M20uTP6vYgNHYeweUl4nsYNw+eZFJqVyAGUJU+2DrCNcGLMQ
+	6JCz2Vc4TO6l8NcxvgCoBMhkPD9UC5ZI7HCQoqC0TOP4VnUy2zH0xFoE8N/kReQ3iVuRwuRhsSKHL
+	UyzS3se7rfjF594hABgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVQst-00000006p8b-3hop;
-	Thu, 01 Feb 2024 06:49:15 +0000
-Received: from mail-qt1-x836.google.com ([2607:f8b0:4864:20::836])
+	id 1rVSOi-000000073HK-1auA;
+	Thu, 01 Feb 2024 08:26:12 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVQsc-00000006p2k-1JqQ
-	for linux-mtd@lists.infradead.org;
-	Thu, 01 Feb 2024 06:49:01 +0000
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-42a8be32041so5169571cf.1
-        for <linux-mtd@lists.infradead.org>; Wed, 31 Jan 2024 22:48:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706770135; x=1707374935; darn=lists.infradead.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9vdLpdX7B/8FATQOmH8IAfffi8cvCHQAI0aV2xqsm/8=;
-        b=U90/5w4gPpqua5bArUzz1tbrNRPt4GXjQBGP1+DP7scaAZi4/NUNlEBa5PoduyFE6v
-         XKVqk8xg+ZX/gnWP8vsXWRowRlE6yK6G3U39hcf3bo1ZQx/Ut47zyoqHVZQta+LjKOc3
-         pLzfVKWTbmMUz3Mx55aZZtwCdLzKK2weTUYG4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706770135; x=1707374935;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9vdLpdX7B/8FATQOmH8IAfffi8cvCHQAI0aV2xqsm/8=;
-        b=IndjxFufWSsydCKW6LvR3+r2MQlbhO8hxcaCy1iV9IFG6JHyjmsxnUph9578sIgspx
-         NM9PyQBfMqOW8vg25P07+WvxUxOgTbj2R2f+xPOHIK0yenzg8ELIJvkoQCwRDXmO+NQ2
-         rPxXz/lAr+IwMXF4xOJwKDFTyUCvlJ0jCVOox0l+ygaedHv7EujIjeIbiyYvjOl07QBI
-         SRH3Ur52gk6Y0ictfeRqTRcBtRwZ7FQ3wl+7BqPk7VtyQdGK/TBpGAQwBfzQMm3DGgpA
-         2/uXPV2iFy1Tlcw0YWfPwG1fpvSjpBTSPM7Bj5dIl7sPRq5DxftNfQ6l4vrVTnP0rl94
-         JcUA==
-X-Gm-Message-State: AOJu0YyW1lxd+BOIPwehHH3trKdxzNUuXfGc9zDmOR4srBgAULIA5L7i
-	pAsqP96Iw4bclxmzI+TiUkdSYEYS6G1hJGR6wKNDrVBDoW7nbOK9bQGn3DJbiA==
-X-Google-Smtp-Source: AGHT+IFu3hpSEYcg5NjFumnW8pSOQjAuDiaik+mNKuXlASIZK7ixwBrqaitvekqcbMmlfTD42c14OQ==
-X-Received: by 2002:a05:6214:268d:b0:685:73fe:aafe with SMTP id gm13-20020a056214268d00b0068573feaafemr5262448qvb.18.1706770135028;
-        Wed, 31 Jan 2024 22:48:55 -0800 (PST)
-Received: from [192.168.52.129] ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id qo11-20020a056214590b00b0068c655f3e4dsm2057425qvb.15.2024.01.31.22.48.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jan 2024 22:48:53 -0800 (PST)
-Message-ID: <bcd9f8a5-7dab-42e6-b860-8a56ebb51cb6@broadcom.com>
-Date: Wed, 31 Jan 2024 22:48:50 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- David Regan <dregan@broadcom.com>
-Cc: dregan@mail.com, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	id 1rVSOd-000000073Fk-0dDc;
+	Thu, 01 Feb 2024 08:26:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F1E3D60003;
+	Thu,  1 Feb 2024 08:25:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706775961;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EYkQXqzcGz3hrfklpGf6cCnC1Loec/vHktXK38RmtMw=;
+	b=KsjPgccLmKV1+LN1lgOi+u4HVkmk+JOojxWki84Yx7/kX3tpLAEHnbw0M5SOBRdylO+9su
+	pj6qWeV3v+U2fJRx9FQH6DcrHPZMlMm41naFkDbo5k3a8t3Bagu4pyhoQGOSDkEA221+Mh
+	VywBw67GHyz7WPF4/0A1LZ9y/oxvQC1FJPbEAhsRV9BRtE7PizquX+rWgGakSdWQ7qAZN2
+	lR3EDPnv24fE0E1RZx2dYRR8c9hrWMw8BHwkB8IHVQCPj2NHudCoa4/rBxdRkmm5qeu8pZ
+	kLkXNy2Yc1tgFCT9U6aog4tgUXUV+kIKpI2YoXd44VfoKMCc9h5sd5VMrKdTXQ==
+Date: Thu, 1 Feb 2024 09:25:58 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: David Regan <dregan@broadcom.com>, dregan@mail.com, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
  computersforpeace@gmail.com, kdasu.kdev@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Joel Peshkin <joel.peshkin@broadcom.com>,
- Tomer Yacoby <tomer.yacoby@broadcom.com>,
- Dan Beygelman <dan.beygelman@broadcom.com>,
- Anand Gore <anand.gore@broadcom.com>, Kursad Oney
- <kursad.oney@broadcom.com>, Florian Fainelli
- <florian.fainelli@broadcom.com>, rafal@milecki.pl,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Joel Peshkin
+ <joel.peshkin@broadcom.com>, Tomer Yacoby <tomer.yacoby@broadcom.com>, Dan
+ Beygelman <dan.beygelman@broadcom.com>, Anand Gore
+ <anand.gore@broadcom.com>, Kursad Oney <kursad.oney@broadcom.com>, Florian
+ Fainelli <florian.fainelli@broadcom.com>, rafal@milecki.pl,
  bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
- baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
- Dan Carpenter <dan.carpenter@linaro.org>
+ baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, Dan Carpenter
+ <dan.carpenter@linaro.org>
+Subject: Re: [PATCH v3 10/10] mtd: rawnand: brcmnand: allow for on-die ecc
+Message-ID: <20240201092558.5499ee6a@xps-13>
+In-Reply-To: <bcd9f8a5-7dab-42e6-b860-8a56ebb51cb6@broadcom.com>
 References: <20240124030458.98408-1-dregan@broadcom.com>
- <20240124030458.98408-11-dregan@broadcom.com>
- <20240124184027.712b1e47@xps-13>
- <CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
- <20240126071913.699c3795@xps-13>
- <CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
- <20240129115228.06dc2292@xps-13>
- <2a3edcf5-7afc-410c-a402-3d8cd3feb1da@broadcom.com>
- <20240130120155.3cb6feed@xps-13>
- <CAA_RMS577vw=QWN9_NHfmWqt+_cDG22tA01aU019CPNjAgHqJQ@mail.gmail.com>
- <20240130195504.506fb446@xps-13>
-From: William Zhang <william.zhang@broadcom.com>
-In-Reply-To: <20240130195504.506fb446@xps-13>
+	<20240124030458.98408-11-dregan@broadcom.com>
+	<20240124184027.712b1e47@xps-13>
+	<CAA_RMS42FaiN+Za1iY12o0YUANH9rJarBTBa=9jNn8x6_g-Fng@mail.gmail.com>
+	<20240126071913.699c3795@xps-13>
+	<CAA_RMS5gX88v_Qt1csgSL_ffMNsqo2G8B164EB_Hg=hXd620eg@mail.gmail.com>
+	<20240129115228.06dc2292@xps-13>
+	<2a3edcf5-7afc-410c-a402-3d8cd3feb1da@broadcom.com>
+	<20240130120155.3cb6feed@xps-13>
+	<CAA_RMS577vw=QWN9_NHfmWqt+_cDG22tA01aU019CPNjAgHqJQ@mail.gmail.com>
+	<20240130195504.506fb446@xps-13>
+	<bcd9f8a5-7dab-42e6-b860-8a56ebb51cb6@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240131_224858_527563_7521A56A 
-X-CRM114-Status: GOOD (  45.12  )
+X-CRM114-CacheID: sfid-20240201_002607_625566_E09F524A 
+X-CRM114-Status: GOOD (  35.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,295 +89,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1025155631669118948=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1025155631669118948==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000a28b9906104c63db"
-
---000000000000a28b9906104c63db
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-Hi Miquel,
-
-On 1/30/24 10:55, Miquel Raynal wrote:
-> Hi David,
-> 
-> dregan@broadcom.com wrote on Tue, 30 Jan 2024 07:26:02 -0800:
-> 
->> Hi Miquel,
->>
->> On Tue, Jan 30, 2024 at 3:01 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->>>
->>> Hi William,
->>>
->>> william.zhang@broadcom.com wrote on Tue, 30 Jan 2024 00:11:32 -0800:
->>>   
->>>> Hi Miquel,
->>>>
->>>> On 1/29/24 02:52, Miquel Raynal wrote:
->>>>> Hi David,
->>>>>
->>>>> dregan@broadcom.com wrote on Fri, 26 Jan 2024 11:57:39 -0800:
->>>>>   
->>>>>> Hi Miquèl,
->>>>>>
->>>>>> On Thu, Jan 25, 2024 at 10:19 PM Miquel Raynal
->>>>>> <miquel.raynal@bootlin.com> wrote:
->>>>>>>
->>>>>>> Hi David,
->>>>>>>
->>>>>>> dregan@broadcom.com wrote on Thu, 25 Jan 2024 11:47:46 -0800:
->>>>>>>    >>>> Hi Miquèl,
->>>>>>>>
->>>>>>>> On Wed, Jan 24, 2024 at 9:40 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->>>>>>>>>
->>>>>>>>> Hi David,
->>>>>>>>>
->>>>>>>>> dregan@broadcom.com wrote on Tue, 23 Jan 2024 19:04:58 -0800:
->>>>>>>>>    >>>>>> Allow settings for on-die ecc such that if on-die ECC is selected
->>>>>>>>>> don't error out but require ECC strap setting of zero
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: David Regan <dregan@broadcom.com>
->>>>>>>>>> Reviewed-by: William Zhang <william.zhang@broadcom.com>
->>>>>>>>>> ---
->>>>>>>>>> Changes in v3: None
->>>>>>>>>> ---
->>>>>>>>>> Changes in v2:
->>>>>>>>>> - Added to patch series
->>>>>>>>>> ---
->>>>>>>>>>    drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++----
->>>>>>>>>>    1 file changed, 10 insertions(+), 4 deletions(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
->>>>>>>>>> index a4e311b6798c..42526f3250c9 100644
->>>>>>>>>> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
->>>>>>>>>> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
->>>>>>>>>> @@ -2727,9 +2727,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->>>>>>>>>>         cfg->blk_adr_bytes = get_blk_adr_bytes(mtd->size, mtd->writesize);
->>>>>>>>>>
->>>>>>>>>>         if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST) {
->>>>>>>>>> -             dev_err(ctrl->dev, "only HW ECC supported; selected: %d\n",
->>>>>>>>>> -                     chip->ecc.engine_type);
->>>>>>>>>> -             return -EINVAL;
->>>>>>>>>> +             if (chip->ecc.strength) {
->>>>>>>>>> +                     dev_err(ctrl->dev, "ERROR!!! HW ECC must be set to zero for non-hardware ECC; selected: %d\n",
->>>>>>>>>> +                             chip->ecc.strength);
->>>>>>>>>
->>>>>>>>> Can you use a more formal string? Also clarify it because I don't
->>>>>>>>> really understand what it leads to.
->>>>>>>>
->>>>>>>> How about:
->>>>>>>>
->>>>>>>> dev_err(ctrl->dev, "HW ECC set to %d, must be zero for on-die ECC\n",
->>>>>>>
->>>>>>> Actually I am wondering how legitimate this is. Just don't enable the
->>>>>>> on host ECC engine if it's not in use. No need to check the core's
->>>>>>> choice.
->>>>>>
->>>>>> Our chip ECC engine will either be on if it's needed or off if it's not.
->>>>>> Either I can do that in one place or put checks in before each
->>>>>> read/write to turn on/off the ECC engine, which seems a lot more
->>>>>> work and changes and possible issues/problems.
->>>>>> Turning it on/off as needed has not been explicitly tested and
->>>>>> could cause unforeseen consequences. This
->>>>>> is a minimal change which should have minimal impact.
->>>>>>   
->>>>>>>    >>>>   >>>>>   >>>>>> +                     return -EINVAL;
->>>>>>>>>> +             }
->>>>>>>>>>         }
->>>>>>>>>>
->>>>>>>>>>         if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN) {
->>>>>>>>>> @@ -2797,7 +2799,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->>>>>>>>>>         if (ret)
->>>>>>>>>>                 return ret;
->>>>>>>>>>
->>>>>>>>>> -     brcmnand_set_ecc_enabled(host, 1);
->>>>>>>>>> +     if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_DIE) {
->>>>>>>>>> +             dev_dbg(ctrl->dev, "Disable HW ECC for on-die ECC\n");
->>>>>>>>>
->>>>>>>>> Not needed.
->>>>>>>>
->>>>>>>> Will remove.
->>>>>>>>    >>>>>   >>>>>> +             brcmnand_set_ecc_enabled(host, 0);
->>>>>>>>>> +     } else
->>>>>>>>>> +             brcmnand_set_ecc_enabled(host, 1);
->>>>>>>>>
->>>>>>>>> Style is wrong, but otherwise I think ECC should be kept disabled while
->>>>>>>>> not in active use, so I am a bit surprised by this line.
->>>>>>>>
->>>>>>>> This is a double check to turn on/off our hardware ECC.
->>>>>>>
->>>>>>> I expect the engine to be always disabled. Enable it only when you
->>>>>>> need (may require an additional patch before this one).
->>>>>>
->>>>>> We are already turning on the ECC enable at this point,
->>>>>> this is just adding the option to turn it off if the NAND chip
->>>>>> itself will be doing the ECC instead of our controller.
->>>>>
->>>>> Sorry if I have not been clear.
->>>>>
->>>>> This sequence:
->>>>> - init
->>>>> - enable hw ECC engine
->>>>> Is broken.
->>>>>   
->>>> ECC engine is not enabled for all the cases. Here we only intended to enable it for the nand chip that is set to use NAND_ECC_ENGINE_TYPE_ON_HOST. The logic here should better change to:
->>>> if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST)
->>>>       brcmnand_set_ecc_enabled(host, 1);
->>>> else
->>>>       brcmnand_set_ecc_enabled(host, 0);
->>>>   
->>>>> It *cannot* work as any operation going through exec_op now may
->>>>> perform page reads which should be unmodified by the ECC engine. You > driver *must* follow the following sequence:
->>>>> - init and disable (or keep disabled) the hw ECC engine
->>>>> - when you perform a page operation with correction you need to
->>>>>      - enable the engine
->>>>>      - perform the operation
->>>>>      - disable the engine
->>>>> Maybe I am missing something here but are you saying the exec_op can have different ecc type for page read/write at run time on the same nand chip? I don't see the op instr structure has the ecc type field and thought it is only bind to the nand chip and won't change at run time. So looks to me the init time setting to the engine based on ecc.engine_type should be sufficient.
->>>>
->>>> What you described here can work for the hw.ecc read path (ecc.read_page = brcmnand_read_page) which always assumes ecc is enabled. Although it is probably not too bad with these two extra operation, it would be better if we don't have to add anything as our current code does. For the brcmnand_read_page_raw,  we currently disable the engine and then re-enable it(but we need to fix it to only enable it with hw ecc engine type).  So it is just opposite of you logic but works the same with no impact on the most performance critical path.
->>>
->>> This is not "my" logic, this is the "core's" logic. I am saying: your
->>> approach is broken because that is not how the API is supposed to work,
->>> but it mostly works in the standard case.
->>
->> In the interest of minimizing register writes, would it be acceptable to
->> enable/disable ECC at the beginning of a standard
->> path transfer but not, after the transfer, turn off the ECC? This should not
->> affect other standard path operations nor affect the exec_op path as those
->> are low level transfers which our ECC engine would not touch and the NAND
->> device driver should be responsible for turning on/off its own ECC.
-> 
-> Do you have legitimate concerns about this register write taking way
-> more time than I could expect? Because compared to the transfer of a
-> NAND page + tR/tPROG it should not be noticeable. I don't see how you
-> could even measure such impact actually, unless the register write does
-> way more than usual. I'm fine with the above idea if you show me it has
-> an interest.
-> 
-Dave did the mtd_speed test and we can see we get consistently ~35KB/s 
-slower with the extra enable and disable ecc engine calls in ecc read 
-page path.
-
-With the change:
-[   28.148355] mtd_speedtest:   page read speed is 9857 KiB/s
-[   31.754258] mtd_speedtest: 2 page read speed is 9865 KiB/s
-Without the change
-[   56.444735] mtd_speedtest:   page read speed is 9892 KiB/s
-[   60.042262] mtd_speedtest: 2 page read speed is 9897 KiB/s
-
-Although it is only less than 1% drop, it is still something. I 
-understand the procedure you laid out above is the preferred way but 
-with our driver fully control the chip ecc read/write page, ecc 
-read_raw/write_raw page function and exec_op path, I don't see where it 
-may not work. What are the non-standard cases that can break it?
-
-If the driver started with preferred procedure,  we will never have this 
-conversation:) But unfortunately it is not the case and now if we want 
-to revert this but lose performance, I just don't feel like to swallow 
-this if there is no real world case that breaks this code.
-
-> Thanks,
-> Miquèl
-
---000000000000a28b9906104c63db
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
-6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
-xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
-VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
-/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
-0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
-urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF6qJIru8AzQ3YLQtXCSb+XBo+xs
-Y/sd915KMwlIS8JUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
-MDIwMTA2NDg1NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAfERPa3kCDxDsoMA9r7wR4ks1xE85SqUGhUjQrPQUTmSex
-RtQXP0uMseGL7nX4plhavrSUqXAJMCxgdgOGFSRxQNh0UltLsMmOeE+jTfFUmQ05GDt9+9jSkw83
-42C/p7UgyGSOxhAMaKgBjqY8ZU1eTWhDrfVzmtdsELGEv8g/cX9z1xKQMhqMqcIUEj/OtRidNaRe
-BqHuJUEs7X31rg056QluNAiLZbYaOhdu7OK2zAT0P9Tw0+xKxFJW57VKM/ixK/UwTIGgfAe7vd82
-bZMrhDGEcxtpa6pyN7rAIsvBtgkRCp69AeSpzmESnY9j+FSEL99N9Fu296r+8WHqbbyI
---000000000000a28b9906104c63db--
-
-
---===============1025155631669118948==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1025155631669118948==--
-
+SGkgV2lsbGlhbSwKCj4gPj4+Pj4+Pj4gVGhpcyBpcyBhIGRvdWJsZSBjaGVjayB0byB0dXJuIG9u
+L29mZiBvdXIgaGFyZHdhcmUgRUNDLiAgCj4gPj4+Pj4+Pgo+ID4+Pj4+Pj4gSSBleHBlY3QgdGhl
+IGVuZ2luZSB0byBiZSBhbHdheXMgZGlzYWJsZWQuIEVuYWJsZSBpdCBvbmx5IHdoZW4geW91Cj4g
+Pj4+Pj4+PiBuZWVkIChtYXkgcmVxdWlyZSBhbiBhZGRpdGlvbmFsIHBhdGNoIGJlZm9yZSB0aGlz
+IG9uZSkuICAKPiA+Pj4+Pj4KPiA+Pj4+Pj4gV2UgYXJlIGFscmVhZHkgdHVybmluZyBvbiB0aGUg
+RUNDIGVuYWJsZSBhdCB0aGlzIHBvaW50LAo+ID4+Pj4+PiB0aGlzIGlzIGp1c3QgYWRkaW5nIHRo
+ZSBvcHRpb24gdG8gdHVybiBpdCBvZmYgaWYgdGhlIE5BTkQgY2hpcAo+ID4+Pj4+PiBpdHNlbGYg
+d2lsbCBiZSBkb2luZyB0aGUgRUNDIGluc3RlYWQgb2Ygb3VyIGNvbnRyb2xsZXIuICAKPiA+Pj4+
+Pgo+ID4+Pj4+IFNvcnJ5IGlmIEkgaGF2ZSBub3QgYmVlbiBjbGVhci4KPiA+Pj4+Pgo+ID4+Pj4+
+IFRoaXMgc2VxdWVuY2U6Cj4gPj4+Pj4gLSBpbml0Cj4gPj4+Pj4gLSBlbmFibGUgaHcgRUNDIGVu
+Z2luZQo+ID4+Pj4+IElzIGJyb2tlbi4gIAo+ID4+Pj4+ICAgPj4+PiBFQ0MgZW5naW5lIGlzIG5v
+dCBlbmFibGVkIGZvciBhbGwgdGhlIGNhc2VzLiBIZXJlIHdlIG9ubHkgaW50ZW5kZWQgdG8gZW5h
+YmxlIGl0IGZvciB0aGUgbmFuZCBjaGlwIHRoYXQgaXMgc2V0IHRvIHVzZSBOQU5EX0VDQ19FTkdJ
+TkVfVFlQRV9PTl9IT1NULiBUaGUgbG9naWMgaGVyZSBzaG91bGQgYmV0dGVyIGNoYW5nZSB0bzog
+IAo+ID4+Pj4gaWYgKGNoaXAtPmVjYy5lbmdpbmVfdHlwZSA9PSBOQU5EX0VDQ19FTkdJTkVfVFlQ
+RV9PTl9IT1NUKQo+ID4+Pj4gICAgICAgYnJjbW5hbmRfc2V0X2VjY19lbmFibGVkKGhvc3QsIDEp
+Owo+ID4+Pj4gZWxzZQo+ID4+Pj4gICAgICAgYnJjbW5hbmRfc2V0X2VjY19lbmFibGVkKGhvc3Qs
+IDApOyAgCj4gPj4+PiAgID4+Pj4+IEl0ICpjYW5ub3QqIHdvcmsgYXMgYW55IG9wZXJhdGlvbiBn
+b2luZyB0aHJvdWdoIGV4ZWNfb3Agbm93IG1heSAgCj4gPj4+Pj4gcGVyZm9ybSBwYWdlIHJlYWRz
+IHdoaWNoIHNob3VsZCBiZSB1bm1vZGlmaWVkIGJ5IHRoZSBFQ0MgZW5naW5lLiBZb3UgPiBkcml2
+ZXIgKm11c3QqIGZvbGxvdyB0aGUgZm9sbG93aW5nIHNlcXVlbmNlOgo+ID4+Pj4+IC0gaW5pdCBh
+bmQgZGlzYWJsZSAob3Iga2VlcCBkaXNhYmxlZCkgdGhlIGh3IEVDQyBlbmdpbmUKPiA+Pj4+PiAt
+IHdoZW4geW91IHBlcmZvcm0gYSBwYWdlIG9wZXJhdGlvbiB3aXRoIGNvcnJlY3Rpb24geW91IG5l
+ZWQgdG8KPiA+Pj4+PiAgICAgIC0gZW5hYmxlIHRoZSBlbmdpbmUKPiA+Pj4+PiAgICAgIC0gcGVy
+Zm9ybSB0aGUgb3BlcmF0aW9uCj4gPj4+Pj4gICAgICAtIGRpc2FibGUgdGhlIGVuZ2luZQo+ID4+
+Pj4+IE1heWJlIEkgYW0gbWlzc2luZyBzb21ldGhpbmcgaGVyZSBidXQgYXJlIHlvdSBzYXlpbmcg
+dGhlIGV4ZWNfb3AgY2FuIGhhdmUgZGlmZmVyZW50IGVjYyB0eXBlIGZvciBwYWdlIHJlYWQvd3Jp
+dGUgYXQgcnVuIHRpbWUgb24gdGhlIHNhbWUgbmFuZCBjaGlwPyBJIGRvbid0IHNlZSB0aGUgb3Ag
+aW5zdHIgc3RydWN0dXJlIGhhcyB0aGUgZWNjIHR5cGUgZmllbGQgYW5kIHRob3VnaHQgaXQgaXMg
+b25seSBiaW5kIHRvIHRoZSBuYW5kIGNoaXAgYW5kIHdvbid0IGNoYW5nZSBhdCBydW4gdGltZS4g
+U28gbG9va3MgdG8gbWUgdGhlIGluaXQgdGltZSBzZXR0aW5nIHRvIHRoZSBlbmdpbmUgYmFzZWQg
+b24gZWNjLmVuZ2luZV90eXBlIHNob3VsZCBiZSBzdWZmaWNpZW50LiAgCj4gPj4+Pgo+ID4+Pj4g
+V2hhdCB5b3UgZGVzY3JpYmVkIGhlcmUgY2FuIHdvcmsgZm9yIHRoZSBody5lY2MgcmVhZCBwYXRo
+IChlY2MucmVhZF9wYWdlID0gYnJjbW5hbmRfcmVhZF9wYWdlKSB3aGljaCBhbHdheXMgYXNzdW1l
+cyBlY2MgaXMgZW5hYmxlZC4gQWx0aG91Z2ggaXQgaXMgcHJvYmFibHkgbm90IHRvbyBiYWQgd2l0
+aCB0aGVzZSB0d28gZXh0cmEgb3BlcmF0aW9uLCBpdCB3b3VsZCBiZSBiZXR0ZXIgaWYgd2UgZG9u
+J3QgaGF2ZSB0byBhZGQgYW55dGhpbmcgYXMgb3VyIGN1cnJlbnQgY29kZSBkb2VzLiBGb3IgdGhl
+IGJyY21uYW5kX3JlYWRfcGFnZV9yYXcsICB3ZSBjdXJyZW50bHkgZGlzYWJsZSB0aGUgZW5naW5l
+IGFuZCB0aGVuIHJlLWVuYWJsZSBpdChidXQgd2UgbmVlZCB0byBmaXggaXQgdG8gb25seSBlbmFi
+bGUgaXQgd2l0aCBodyBlY2MgZW5naW5lIHR5cGUpLiAgU28gaXQgaXMganVzdCBvcHBvc2l0ZSBv
+ZiB5b3UgbG9naWMgYnV0IHdvcmtzIHRoZSBzYW1lIHdpdGggbm8gaW1wYWN0IG9uIHRoZSBtb3N0
+IHBlcmZvcm1hbmNlIGNyaXRpY2FsIHBhdGguICAKPiA+Pj4KPiA+Pj4gVGhpcyBpcyBub3QgIm15
+IiBsb2dpYywgdGhpcyBpcyB0aGUgImNvcmUncyIgbG9naWMuIEkgYW0gc2F5aW5nOiB5b3VyCj4g
+Pj4+IGFwcHJvYWNoIGlzIGJyb2tlbiBiZWNhdXNlIHRoYXQgaXMgbm90IGhvdyB0aGUgQVBJIGlz
+IHN1cHBvc2VkIHRvIHdvcmssCj4gPj4+IGJ1dCBpdCBtb3N0bHkgd29ya3MgaW4gdGhlIHN0YW5k
+YXJkIGNhc2UuICAKPiA+Pgo+ID4+IEluIHRoZSBpbnRlcmVzdCBvZiBtaW5pbWl6aW5nIHJlZ2lz
+dGVyIHdyaXRlcywgd291bGQgaXQgYmUgYWNjZXB0YWJsZSB0bwo+ID4+IGVuYWJsZS9kaXNhYmxl
+IEVDQyBhdCB0aGUgYmVnaW5uaW5nIG9mIGEgc3RhbmRhcmQKPiA+PiBwYXRoIHRyYW5zZmVyIGJ1
+dCBub3QsIGFmdGVyIHRoZSB0cmFuc2ZlciwgdHVybiBvZmYgdGhlIEVDQz8gVGhpcyBzaG91bGQg
+bm90Cj4gPj4gYWZmZWN0IG90aGVyIHN0YW5kYXJkIHBhdGggb3BlcmF0aW9ucyBub3IgYWZmZWN0
+IHRoZSBleGVjX29wIHBhdGggYXMgdGhvc2UKPiA+PiBhcmUgbG93IGxldmVsIHRyYW5zZmVycyB3
+aGljaCBvdXIgRUNDIGVuZ2luZSB3b3VsZCBub3QgdG91Y2ggYW5kIHRoZSBOQU5ECj4gPj4gZGV2
+aWNlIGRyaXZlciBzaG91bGQgYmUgcmVzcG9uc2libGUgZm9yIHR1cm5pbmcgb24vb2ZmIGl0cyBv
+d24gRUNDLiAgCj4gPiAKPiA+IERvIHlvdSBoYXZlIGxlZ2l0aW1hdGUgY29uY2VybnMgYWJvdXQg
+dGhpcyByZWdpc3RlciB3cml0ZSB0YWtpbmcgd2F5Cj4gPiBtb3JlIHRpbWUgdGhhbiBJIGNvdWxk
+IGV4cGVjdD8gQmVjYXVzZSBjb21wYXJlZCB0byB0aGUgdHJhbnNmZXIgb2YgYQo+ID4gTkFORCBw
+YWdlICsgdFIvdFBST0cgaXQgc2hvdWxkIG5vdCBiZSBub3RpY2VhYmxlLiBJIGRvbid0IHNlZSBo
+b3cgeW91Cj4gPiBjb3VsZCBldmVuIG1lYXN1cmUgc3VjaCBpbXBhY3QgYWN0dWFsbHksIHVubGVz
+cyB0aGUgcmVnaXN0ZXIgd3JpdGUgZG9lcwo+ID4gd2F5IG1vcmUgdGhhbiB1c3VhbC4gSSdtIGZp
+bmUgd2l0aCB0aGUgYWJvdmUgaWRlYSBpZiB5b3Ugc2hvdyBtZSBpdCBoYXMKPiA+IGFuIGludGVy
+ZXN0Lgo+ID4gICAKPiBEYXZlIGRpZCB0aGUgbXRkX3NwZWVkIHRlc3QgYW5kIHdlIGNhbiBzZWUg
+d2UgZ2V0IGNvbnNpc3RlbnRseSB+MzVLQi9zIHNsb3dlciB3aXRoIHRoZSBleHRyYSBlbmFibGUg
+YW5kIGRpc2FibGUgZWNjIGVuZ2luZSBjYWxscyBpbiBlY2MgcmVhZCBwYWdlIHBhdGguCj4gCj4g
+V2l0aCB0aGUgY2hhbmdlOgo+IFsgICAyOC4xNDgzNTVdIG10ZF9zcGVlZHRlc3Q6ICAgcGFnZSBy
+ZWFkIHNwZWVkIGlzIDk4NTcgS2lCL3MKPiBbICAgMzEuNzU0MjU4XSBtdGRfc3BlZWR0ZXN0OiAy
+IHBhZ2UgcmVhZCBzcGVlZCBpcyA5ODY1IEtpQi9zCj4gV2l0aG91dCB0aGUgY2hhbmdlCj4gWyAg
+IDU2LjQ0NDczNV0gbXRkX3NwZWVkdGVzdDogICBwYWdlIHJlYWQgc3BlZWQgaXMgOTg5MiBLaUIv
+cwo+IFsgICA2MC4wNDIyNjJdIG10ZF9zcGVlZHRlc3Q6IDIgcGFnZSByZWFkIHNwZWVkIGlzIDk4
+OTcgS2lCL3MKCkkgYmVsaWV2ZSBpZiB5b3UgcmVwZWF0IHRoaXMgMTAgdGltZXMgeW91J2xsIGdl
+dCB0b3RhbGx5IGRpZmZlcmVudApyZXN1bHRzLiBJIGRvbid0IHRoaW5rIHRoaXMgdGVzdCBvbiBh
+IG5vbiBSVCBtYWNoaW5lIGlzIHByZWNpc2UgZW5vdWdoCnNvIHRoYXQgYSB1bmlxdWUgMzVraUIg
+ZGlmZmVyZW5jZSBjYW4gYmUgaW50ZXJwcmV0ZWQgYXMgYmVpbmcKc2lnbmlmaWNhbnQuCgo+IEFs
+dGhvdWdoIGl0IGlzIG9ubHkgbGVzcyB0aGFuIDElIGRyb3AsIGl0IGlzIHN0aWxsIHNvbWV0aGlu
+Zy4gSSB1bmRlcnN0YW5kIHRoZSBwcm9jZWR1cmUgeW91IGxhaWQgb3V0IGFib3ZlIGlzIHRoZSBw
+cmVmZXJyZWQgd2F5IGJ1dCB3aXRoIG91ciBkcml2ZXIgZnVsbHkgY29udHJvbCB0aGUgY2hpcCBl
+Y2MgcmVhZC93cml0ZSBwYWdlLCBlY2MgcmVhZF9yYXcvd3JpdGVfcmF3IHBhZ2UgZnVuY3Rpb24g
+YW5kIGV4ZWNfb3AgcGF0aCwgSSBkb24ndCBzZWUgd2hlcmUgaXQgbWF5IG5vdCB3b3JrLgoKSSBq
+dXN0IHRvbGQgeW91LCB0aGUgZXhlY19vcCBwYXRoIHJ1bnMgd2l0aCBFQ0MgZW5hYmxlZC4gSSBk
+b24ndCBrbm93CmhvdyB0aGlzIGNvbnRyb2xsZXIgd29ya3MuIE5vdyBpZiB5b3UgZG9uJ3QgY2Fy
+ZSBhbmQgYXJlIDEwMCUgc3VyZSB0aGlzCmlzIHdvcmtpbmcgYW5kIGZ1dHVyZSBwcm9vZiwganVz
+dCBrZWVwIGl0IGxpa2UgdGhpcy4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
