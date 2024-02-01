@@ -4,125 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CC65C4828F
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 14:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37E4CC4828D
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 15:18:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qd98epSyQTES85flG5ERCW6cc3NoQga7oFHnJbyXi9I=; b=f0nTbZ1VBeS/Se
-	2uPKZ8yGMQPMyXsHWHL2w/jIda3AQhNi3GbrtL+69Wj33v2JLTz2in1Uqih/j939fhqANURCmbGqJ
-	U3gZLNYdC/wDYJxTiiJiWl07fPHA7U4hHoIGetn+ETWrLdVwncHeoI6kOn491NjxZiHsy+UntfGE5
-	DUuKR202xO1tWfVi+C+IJc3hpaZBMMP8M1/dZJwPgosf/779EEHl+uJAvceOvoxTXjkZtj2yeWUL+
-	A/hcKPdTzAPeewkAfKXK+Gpbi+hEDcwyMP/Qiek+7Ncc0Ckd0Pce0VylY9Rndlsf7LghHk3XMfiAc
-	vl2pz8Rx2cuhi+Df5H6Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Cud6YSzjvOyXcrwKsa3KvoItUsi+KY2jiMXe1r35BW8=; b=tGV2TTQbt4Hub+W5oI7I4lm+Ny
+	85FLbbQi/GsHHzR4ugBUiIIayz2kTvDhF6T+53Pv9f2xaDes07/OsGLNa5j0lk0V+wHShV/rR0B8b
+	4ZL9Qp3vZ+eVYGZhR13wSeLs/IkPA6yN4Rie+TR9xjdL4WzRfeG0u0mIU9NhYQ0C6fAnjrUAr7bM/
+	FPHrCKrwBVB94Ldgp2OIikqM8NGjoBrDdyKzguDkpLDBxXHjmKjNR3gcs1LMCwT8R9y+KEqEDdrmx
+	zmuSgbZO/h/DHMs4j5Z6UpdYIQ47goIsKXa5hFBPZVz7x6S62/ZkJvkPVfQx8r3OcWVUiheL1u0FQ
+	VsbelowA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVXii-00000008E1l-0b0v;
-	Thu, 01 Feb 2024 14:07:12 +0000
-Received: from mail-am6eur05on20700.outbound.protection.outlook.com ([2a01:111:f403:2612::700] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+	id 1rVYpY-00000008P6g-1Rjt;
+	Thu, 01 Feb 2024 15:18:20 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVXie-00000008E18-0yTD
+	id 1rVYpV-00000008P69-32YA
 	for linux-mtd@lists.infradead.org;
-	Thu, 01 Feb 2024 14:07:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FQori5LDMwaVXMfqUyw6YrIXVe0KNd5iQs8pJfEt7aFYZUMXU1YGveuw16YMVYecYqPpJlTXpCNYGYoB9+u/Bee3bkST0rETxfADGipdHKUa8V6yM6tgR2wPsuFn08Ombb8LDvC9zwsjDbxDL9m/8kLZqzUD06wTu9/khkxGUVKzQbdVCtKs7/5/X1wIua5LTqh56574ekFvVCtZFTqf5TdopRP32/gJKgQWg3TBM5mIxqqkwL6hW71Dd+9Lp8V4FszkyKODjQJCsgtt4n1zdw8lfIl8h0Pi44lXEe2HOY50AgNmaCTmLjJ4XeiWfk2CJlc3AZb7zAjF1q4ncN4HuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XRQOAcG+4r0ikF+de1juKxR1EBAOTAhKKRVDYtWL8Kw=;
- b=OZDQ0A32i6l7bhtNcXqcYdLSZm+146g7F91aGU9R4ugyA0xa/2BKhCYe9eU91foEZUCTpiUxuacoEKy/kUf43c/1CHeoUuAdF1BNG7BLrgWzP6Nr2Gw82KPYANZQdfbXIRqTt4WHZRJasLv0SLO2eP1KsXH7vf/tJ0EeWGB+LMdI1CZnMj+CRdN16usNcy35TrbrDAqJop2Z/5BI44OlzJ0sovaAkNOFoQ/EA5dv5zqXPTvrGdiGMAOJc8KMy/bNLEcLUrUMwWbmuasb4nRhlXfuiESkeJU6mD6j5j5t7MQg74bIDB0WTGvlajidZA0yRpeYUfzWKy5Xnv+bYe3T3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
- header.d=asem.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XRQOAcG+4r0ikF+de1juKxR1EBAOTAhKKRVDYtWL8Kw=;
- b=NCAtRR4J+KZHwTE15Gk3/SDwyYVkLFVA/mY/S9wUx3SIB/8J3SjjvKFvXbOtObbxb7cMWuHNq0zrQ09bmQv1EqfMUu3x5/Wp6NfHa9qNLprIO9dLbNCjebVdDAjszgKEf6GFoTidesKMAq2N/5bueFTL4L1V/o3Rg6Ggb23+ubc=
-Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:273::14) by DB9PR01MB7194.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:218::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26; Thu, 1 Feb
- 2024 14:07:01 +0000
-Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
- ([fe80::f272:d554:d6b7:13cd]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
- ([fe80::f272:d554:d6b7:13cd%7]) with mapi id 15.20.7228.029; Thu, 1 Feb 2024
- 14:07:01 +0000
-From: Flavio Suligoi <f.suligoi@asem.it>
-To: Michael Walle <mwalle@kernel.org>
-CC: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
-	<pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
-Thread-Topic: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
-Thread-Index: AQHaVREwV9yOPWUKn0aMKNL4g65aJbD1gEgAgAACsXA=
-Date: Thu, 1 Feb 2024 14:07:01 +0000
-Message-ID: <DU2PR01MB8034B0342FFC88CEC7CC976FF9432@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
-References: <20240201131710.797505-1-f.suligoi@asem.it>
- <20240201131710.797505-2-f.suligoi@asem.it>
- <9a22148dd786dd1c37f10412b574aae8@kernel.org>
-In-Reply-To: <9a22148dd786dd1c37f10412b574aae8@kernel.org>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=asem.it;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|DB9PR01MB7194:EE_
-x-ms-office365-filtering-correlation-id: 655ad6fe-5041-407e-2970-08dc232f0fbf
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +J61UxaMNDUZAFueQNzoi4BtqIAKxqcsMCfuBt+v6Y6yDwWwl6VgURTMo2cukEwrMc2AW5WESpmqW4lgOFj0iQ3hRbuvXOAbyo9hPeeV3LMyRfkDYyKtztvAPhaskmfChOlkK9nJP/zlHwl9C6CYXxuLzNCZYSX5olIQse+0aGM7xWdQcPYN6RiKa73c8c70YMwAm+PRMG/BTc20Mnu+/j923qQaDp14nhd63x7J77Vbj6TqXFFCiSHXxy9Mc3gSewrm7JeDre7L7r1FVfVF+TgKhr1QVi/dSj3k0tU1RB49UVRMExTN4p0ubUw3GWNuu/tb6Q+Br93efrLGHEL6Kh6jajH5BqIwR5J0G71VptAPDZXgmvuOJoa0Lw9EPDJ1oG43yM+3zds3DPbWQ1XTGNtpYD9iSrfNgI7TpXaKdOq3jwTwHgvq78Iy7PyVhwa1hxsRdsNwaVY/ZEGMSUX0Qd4IhjNWi5wm1Pw6GG/lv2G2u70a4UE723ZvdxltlDXS2ggHQeV5N3FE7V0VW4KGIUO0UbDotxiEsPQrg85dokWveBTykzKkAvhMFaoysgvPNQvHvPG+i8RTKQHkOdgnuw/cokUGGnLd691cTmgLti9eYumSqRA2A+e+wVoCLdl4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(39850400004)(376002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(478600001)(41300700001)(55016003)(38100700002)(83380400001)(122000001)(71200400001)(9686003)(7696005)(6506007)(52536014)(64756008)(6916009)(316002)(38070700009)(33656002)(2906002)(54906003)(5660300002)(8936002)(8676002)(26005)(4326008)(66556008)(66946007)(76116006)(66446008)(66476007)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?09pLEbBch2UpIGl9r7MC7nltqsrGMs2HnXGhxxUv5yWLjpSAOZJJuRrTihtR?=
- =?us-ascii?Q?Nhcze0NK8p/eLfi1+DCAKCB0157gJ+82Ng2FZh3/M7ZNFyJDdet1iCU5IXWr?=
- =?us-ascii?Q?nwS9HtSF2wRf1yf9jj0OHebkOWXka2/vvpeMb+1ygntfif4p29MWFB1yNb40?=
- =?us-ascii?Q?lj6HeBrMsu6sG0wOsrofQTxtdyD9toGCGcPEneIQZy4R8KqdCLdckk8vLrvS?=
- =?us-ascii?Q?4UyQTIoaZmkOFXjw6rxeB+Y/AUwf7j9UM4s9VJ+FtXrxGk019RnuBzQzlqtR?=
- =?us-ascii?Q?9xiZAjPciSv+wvCY4BkfBRD3KzPQ8MllrUJJV+RjZg7tn1twILxeCzGuFtz5?=
- =?us-ascii?Q?gonohaxRvsvbg/WX+x3FJ/BMuNzUw3oR/jxln1hlBabwHCwXrDRrChlT9udv?=
- =?us-ascii?Q?8FNIdiyBTxOdODEuD1V+xu19zMSNYetBukGR2f35dSI1sIzLNGAGdqFuUNdi?=
- =?us-ascii?Q?32pXrFPteD4yYRte7KxY8VnoF9N4v9iRr0IRhRefCrFYjJ0wg6Zgvuqg4g/O?=
- =?us-ascii?Q?R0fYhMw9kkGx0xAecCVGMJmh+c6FH5ISbAU6CSBxNTSHR7RbreIuRBz61dEw?=
- =?us-ascii?Q?mZjmXOp+sjTRC74yb1kItKExQDmhGs1TkdHYRQD4Ev85axhbT/YBdlMuQ2qI?=
- =?us-ascii?Q?pb/CKtzSD4yDcbWLJfSMeuSFhmsJ/V58TaIJWX5/f3FKL6MLxYd21Zz8TAse?=
- =?us-ascii?Q?7cTeXd9/hdXWENIX6cBVuvkIqN6wVF/zRyea78o0bfCV5ijmDX6ilF4lKDEu?=
- =?us-ascii?Q?RqwLvPFQEEj9kGZMswENoP+QcCjujzyRG0OW6/91QF1QmpqaEX02wsR7Tq1n?=
- =?us-ascii?Q?777WfZiGakdWMI/rJqMZALxtbpNgsc/ik77Kxx8GZ+G9/QvCpYKDtBwakB+X?=
- =?us-ascii?Q?q/EGMXe9aPQPd6zHXc540wL6s+j3i/rNw2md1ev1VsT+Ya4kaP5/mx2afy/H?=
- =?us-ascii?Q?OYlzWo87gOmrPtMBT0xRti0qne29c/0gQJ4SWwAnJXoprOZOoWFmqJsguBUd?=
- =?us-ascii?Q?cTafRtAlQshIFdrarNe1qmcQXSqyAunM6JB4y6aMxq4R+/V5KeKXclbxXsr2?=
- =?us-ascii?Q?0ovcTCOb8gy128FrH7h9NOCwE/33iQndhcO9BacJnkv7Z9fmcjA51QwdNBgz?=
- =?us-ascii?Q?p50INI6k1BKTM3yBl1CCVHtw9TdYvuMPwIN60hHwCxyFM3uM6WDU+p8LFY8B?=
- =?us-ascii?Q?UN+J/C9OjefgW5/8LTUnH5DK39QUpiWi7j3tcglENkvnX5/VWvOEB097oE34?=
- =?us-ascii?Q?JmDNfKHbjEt5IFgkqts6nQEGyf1to9hWxkY3YX/tmXCe1tA985OlzoZWBxNK?=
- =?us-ascii?Q?a5MxbRJsoAKcHoYv31RWdqrTnG5ANV5B26aOU2wkQmzAq7l1ozZmOAulzd0h?=
- =?us-ascii?Q?iEh/OD+Mvxa3NFh/x5+nU/w/dGawn2Abp2hMGyp5PjThfA1LbG7pOvrYzJ03?=
- =?us-ascii?Q?fqyGQzgplZmww2KgpzOu/YUouOA7p4yP1CDLhoQZM00DBZqDlIHlsSI1O9nv?=
- =?us-ascii?Q?ZjLZk0iErKIU6ijZxJRON0as6yl5+VyMTInCNFK9dINJQ76HFcsM1u9sbWvP?=
- =?us-ascii?Q?iqxC75n5j8e1oO/V+iY=3D?=
+	Thu, 01 Feb 2024 15:18:18 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 25F0B61D52;
+	Thu,  1 Feb 2024 15:18:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E42C433C7;
+	Thu,  1 Feb 2024 15:18:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706800696;
+	bh=lmRhxmDHzvLoaCUgcDTCJ9u+TMkemcWwqNv6zznEFRo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UDPXnM+0stYxaKgDsbpESo+ULmedE82hmPD3dImT0zWmUXm1MhuWUbq0hvdRqibFw
+	 /ZErnatBJoWBaf80pWPnUP2og+2/EIxy8vSxFLZZPSVH931ch578JXydBJFsQsA7gp
+	 X4Bp2QbbS6aF32u8FC4c1baLoy/hqDynsBCSCqra7j8bm4WCq6D4QFZeSILKlTJq1q
+	 UAgdSyeS/mNB/4ObtgVXTMhwn1yPCrA2UxLzjWOPuwrLV5bdG0x/Sx1QkKQIVZ508p
+	 VvDrMtqCpmmnRK/gt0RnlvF2LAUxW/rzoIlcLvfPeam5Y8ogAjWWAQQ4gXypAgMLfu
+	 dn9Z5ZaJTULfQ==
 MIME-Version: 1.0
-X-OriginatorOrg: asem.it
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 655ad6fe-5041-407e-2970-08dc232f0fbf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2024 14:07:01.3942
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: r5JsHH1gpO6jNjo1TmLsi5EbM3rfM6lH7GLT22gKK6R2jDYIDpwk75gHA9Cp4R0ZsUXIlIkNnfTrRZ5wvlZvkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR01MB7194
+Date: Thu, 01 Feb 2024 16:18:12 +0100
+From: Michael Walle <mwalle@kernel.org>
+To: Jaime Liao <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, broonie@kernel.org, leoyu@mxic.com.tw,
+ jaimeliao@mxic.com.tw
+Subject: Re: [PATCH v8 2/9] spi: spi-mem: Allow specifying the byte order in
+ Octal DTR mode
+In-Reply-To: <20240201094353.33281-3-jaimeliao.tw@gmail.com>
+References: <20240201094353.33281-1-jaimeliao.tw@gmail.com>
+ <20240201094353.33281-3-jaimeliao.tw@gmail.com>
+Message-ID: <e256a1842aeb911083021a2e25baa370@kernel.org>
+X-Sender: mwalle@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240201_060708_663979_BB9C908C 
-X-CRM114-Status: GOOD (  13.20  )
+X-CRM114-CacheID: sfid-20240201_071817_891125_5483DEFD 
+X-CRM114-Status: GOOD (  28.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,44 +71,120 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+Hi,
 
-...
+> From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-> Subject: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
+I think Tudor told you to keep his name/mail here.
+
+> There are NOR flashes (Macronix) that swap the bytes on a 16-bit
+> boundary when configured in Octal DTR mode. The byte order of
+> 16-bit words is swapped when read or written in Octal Double
+> Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
+> modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
+> 8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
+> Swapping the bytes may introduce some endianness problems. It can
+> affect the boot sequence if the entire boot sequence is not handled
+> in either 8D-8D-8D mode or 1-1-1 mode. So we must swap the bytes
+> back to have the same byte order as in STR modes. Fortunately there
+> are controllers that could swap the bytes back at runtime,
+> addressing the flash's endiannesses requirements. Provide a way for
+> the upper layers to specify the byte order in Octal DTR mode.
 > 
-> Hi,
+> Merge Tudor's patch and add modifications for suiting newer version
+> of Linux kernel.
 > 
-> > Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
-> > Memory.
+> Suggested-by: Michael Walle <mwalle@kernel.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> ---
+>  drivers/spi/spi-mem.c       | 4 ++++
+>  include/linux/spi/spi-mem.h | 6 ++++++
+>  2 files changed, 10 insertions(+)
 > 
-> Out of curiosity, what is your use case here? Usually, I push back on this small
-> MRAM devices in SPI-NOR in favor of the at25 driver. But this datasheet lists
-> octal dtr with 200mhz, which seems a bit ridiculous for 512kB. The at25 driver
-> only supports single bit SPI of course.
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 2dc8ceb85374..f8120f6b288f 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -172,6 +172,10 @@ bool spi_mem_default_supports_op(struct spi_mem 
+> *mem,
+>  		if (!spi_mem_controller_is_capable(ctlr, dtr))
+>  			return false;
 > 
-> I'm not sure in which mode you are using this device, though. The DS shows a
-> non-volatile configuration register (Table 10, offset 0) and it's default value is
-> single bit SPI.
-...
+> +		if (op->data.swap16 &&
+> +		    !spi_mem_controller_is_capable(ctlr, swap16))
 
-We adopted the MRAM to save some important application data in case of
-power loss (there are some super-capacitors to maintain the power for a few
-seconds).
-We use this MRAM in single SPI mode (MISO, MOSI, clock and CS).
-About the SPI frequency,  we use only 30MHz, because it is a hw limit of the
-MX8MP CPU.
+Since you need to redo this anyway (see below):
+This can now be one line. Please keep in mind that the 80char limit
+was extended to 100 chars some time ago. And I think this reads
+better if its just one line.
 
-I used the SPI-NOR driver, instead of at25, because in everspin.c there are other
-Everspin MRAMs devices (already used in other our boards).
+> +			return false;
+> +
+>  		if (op->cmd.nbytes != 2)
+>  			return false;
+>  	} else {
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index f866d5c8ed32..8df44fbc9d99 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -89,6 +89,8 @@ enum spi_mem_data_dir {
+>   * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or 
+> not
+>   * @data.buswidth: number of IO lanes used to send/receive the data
+>   * @data.dtr: whether the data should be sent in DTR mode or not
+> + * @data.swap16: whether the byte order of 16-bit words is swapped 
+> when read
+> + *		 or written in Octal DTR mode compared to STR mode.
 
-Best regards,
-Flavio
+I think this was ordered alphabetically in the former patch, but since
+you've renamed it to swap16 now the order would change. I don't have
+any preference here, just wanted to point that out. I just noticed
+because the new member "swap16" in spi_controller_mem_caps was added in
+the middle, which looked odd.
+
+>   * @data.ecc: whether error correction is required or not
+>   * @data.dir: direction of the transfer
+>   * @data.nbytes: number of data bytes to send/receive. Can be zero if 
+> the
+> @@ -123,6 +125,7 @@ struct spi_mem_op {
+>  	struct {
+>  		u8 buswidth;
+>  		u8 dtr : 1;
+> +		u8 swap16 : 1;
+>  		u8 ecc : 1;
+>  		u8 __pad : 6;
+
+Still wrong, please go over all the previous remarks, to be clear you 
+have
+to use "__pad : 5" here.
+
+Otherwise looks good. So with the above fixed:
+
+Reviewed-by: Michael Walle <mwalle@kernel.org>
+
+-michael
+
+>  		enum spi_mem_data_dir dir;
+> @@ -296,10 +299,13 @@ struct spi_controller_mem_ops {
+>  /**
+>   * struct spi_controller_mem_caps - SPI memory controller capabilities
+>   * @dtr: Supports DTR operations
+> + * @swap16: Supports swapping bytes on a 16 bit boundary when 
+> configured in
+> + *	    Octal DTR
+>   * @ecc: Supports operations with error correction
+>   */
+>  struct spi_controller_mem_caps {
+>  	bool dtr;
+> +	bool swap16;
+>  	bool ecc;
+>  };
 
 ______________________________________________________
 Linux MTD discussion mailing list
