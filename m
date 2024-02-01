@@ -4,94 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0AC1C47DDF
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 12:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18BC3C4828D
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 13:39:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=z2aiYfzIiy9mQV87BYzy6OUCXC3tqqaS47S4H+lMHcU=; b=BHnQoNwBav8Gd9
-	JAgJVRDAptLj+Dp0w/DiVuZFdKiJWLA6flX0Tqb21IOgONhw3cmIwscqy+55NF9C62Qq6QYRLdka+
-	esefTfLI6s2qiY/uMny9UmAR8scpg1GDxO/E69lMFTEQOuCN8Ia9svDdVCLi6Frq80OaUqi/QyAnp
-	uSKDNLhthfNUZWn+h33sFe6WedReFXaj9k0ayYWwzt5dFwavNT57WnJysg/YuixRxBpeMFvC0Rbxz
-	YHD69FnepNg2CuAJmPQmRUHujpfuc+puPUa2pQ7qyivaw8tfaTrtj5GC61G8VBjiUezDJTH8maS9E
-	VgEO+qDK+xVOYU9jeoIQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kOSOOIeptXbTJ/Z0LEkNrCGjFsK3d4Yk5qE8AdnNy7w=; b=BcS6hDiN7zy17w
+	4Rbez64FsvkQNz/q4S8FRL0+iqJwqlc/NgNfOHwqTDtJPi/tqOoc0OUPnA7Edivm45D4C6ssjSgR1
+	01JSfnTsdgNrbiVJkhY2wJhGwx7O+RpIr8NBqDTkKiO8/dycl8AarMYez5Kps0zaXLqm0VrLXrjbP
+	O42tDSGqTVaDj/dVkBjevrwukPARhwCx2n0iqB4lH+2KLV0tCJSVkWn9LbkXqDe61A6wNIQtmKRBt
+	rZuqI+Xq6LRqgiMYBBN5pWraAkfpKIz7yAhjn75opQW6sSMrOHngKQc7mzg/4u4qCybS5W6KWGQga
+	Nrw4KOzDuSEZYSa4ZzGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVWJk-00000007nDD-1kfx;
-	Thu, 01 Feb 2024 12:37:20 +0000
-Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
+	id 1rVXHv-000000088A2-0DcF;
+	Thu, 01 Feb 2024 13:39:31 +0000
+Received: from mail-am6eur05on20701.outbound.protection.outlook.com ([2a01:111:f403:2612::701] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVWJh-00000007n9o-2vuL
+	id 1rVWxs-00000007zX5-3shF
 	for linux-mtd@lists.infradead.org;
-	Thu, 01 Feb 2024 12:37:19 +0000
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a357cba4a32so113054666b.2
-        for <linux-mtd@lists.infradead.org>; Thu, 01 Feb 2024 04:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706791030; x=1707395830; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xoTHSXWECzNeEX4hwunhwLYfV1JWZsEFOUBoOk82HaA=;
-        b=f84smFJwq+RKH+Hr+CRLMy7LS1m5XCkOa/SX0ZF3TIjszifPTO9owwzN7Luizqmy+9
-         YMg+iKwCsM8KIJdmOkpBaMllsmtTZzXcJ9/7GuxNmtYYAEzOd6qGPyPAGKG9SuhC5N9i
-         IVTaK/2XcfJP1BmDZ0KGOVGDcSZdk8l0Y9RBaElrE+p1EXZwuf6EkLqEGULE2CRcszCX
-         k4FnBW4/WVhp5/lS+TksU7chYZH5yvhDXKfDkEwWyrJqHQkg+vXnEicA92nP8Rqv1sLE
-         1XNY5a+olz/ArI/+4cEumOKi/VdXJ7EcLh1/E94maXd5YxCJLjkg/TeM+Cb3QIzMdh0+
-         cYKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706791030; x=1707395830;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xoTHSXWECzNeEX4hwunhwLYfV1JWZsEFOUBoOk82HaA=;
-        b=opQgwmtMtKA77V0ZLX3GOd2lQqmqibB4Lcp+9CRSsSCXJYlaUsTWgW0AJ9f34NFJ4d
-         R3HCsUA5e0nIC3oJwYDEifES1hUIgz4Ux+7G+KlIyLUZgqNdzWojAZiQo+7yf4olf6K3
-         SE4DKVgC1Oxr94GZB2Ny1JuVgUUgSp1O/WxteWQOHxMHDcB4B15/sOaLceq+ww+0b5b5
-         QsMaxfVntPzqm1PS65/s5X6PT0+Xfxk9CoyHfh560Q1Eh9xKjlMs76R/kukH+UymXHYP
-         sVV337R9ohQDoo+bn76406LEGUkunCERKmKKuabRR37Url995jArUj6KJOJOAkezbFBy
-         FYig==
-X-Gm-Message-State: AOJu0YxPei2cfOCV80HhPnrNyFjVZD6F12Jp5Ia7tD8qUZq3zEQIAqdq
-	943oywHvM3OWbNCniGAeJK9SVPLyc9kYsKVNm0zK2lnwd+gQUK/mKMaBxHPCVYM=
-X-Google-Smtp-Source: AGHT+IEqOL816tqer2FcKzdKIzrZxu37nCR4OVV1sPdi6208bjjgPQtyRx83t6fmAz32MCNR/qCo6Q==
-X-Received: by 2002:a17:906:131a:b0:a36:5551:ad76 with SMTP id w26-20020a170906131a00b00a365551ad76mr1816766ejb.75.1706791030610;
-        Thu, 01 Feb 2024 04:37:10 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXegE9bb7E1tgis9igkW5e5d8j7Ofe64E7MpUTScWaOz2Jst1S7myw+BaiaIoekPF/Ev4YmvvcK4Q5SO7mmiai2BLEPcvQqFqdqV9O//wu4QvJ64AmswmGi4DUzKdkk0cCAIRlBBDUErQXcxEH1DJ6zMD3jBCp6USxSLXwTxXiR553A0X+1djg/fHLE5L5J/1j9ay/1tayaCM7PcY5ebTiQphOXYyknzHglx4haE7dFZJwCMPdbuEMmRRrd3WjaDcoFME6his8vU0shUpqn7iBi5du4ijJCRy2Wo71/fBjt7Tlb4y6KZKpgg4yUOMKuAR0IpYqWUXUOUMEI0ifRMzTOFU3A8dyuA87//KGsz9YYVbd9tKvmm1wq0xHFcZl8fuE8wY01YvXQUPk8Op6X4Br5zIfRKW7GB7Xu0BmpcdJHfksstj5Le5ipBATnA9fmZHoGH7Rm2hhFu4SndHCPvdbwaKBqypVR7xgez73zuULyE5x7RmXHSwLF5gKzeJwRqnJt9bhOwu2NkoQEGjQV80wfrgr5h7ixuWizAfQD/SYCQSZbc+E=
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id cw1-20020a170907160100b00a359558648esm4864902ejd.24.2024.02.01.04.37.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Feb 2024 04:37:10 -0800 (PST)
-Message-ID: <9a4339fb-5997-4d94-8471-46ac27c790fa@linaro.org>
-Date: Thu, 1 Feb 2024 12:37:08 +0000
+	Thu, 01 Feb 2024 13:18:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aDQV8/6iZ/+rhDmrkzygVK5ppB1ctJepABaDHtQwLmwpKT1ODHiRA5ODwDP1HbdOoryPRfCs4iiv/QQc4DXcSvYrtv3U/XG3ifL/xBkt7vX7d3A44qsQmTt4eJQ3mM2eiR0wz792UcuLoJ3lKOeOVmBLBsXgVlJPcTcBxxgEy0fzxju/XEiNR6u1T2imni52lWt4KGsMA08gS1btZxTaBp6LH0RqTY4+TMC+wxP/5zQVPhMyrh4aeJ0N8oItBwkIWfPd94jIvlarrUx4q/ZBR09rley/9Wz8pOPTNrP0mcu+o2qHVUqGjg11V+JAAli9SU31wST00bXZX5XH/LRKNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BEE1Q44IuerTAix98C68lkBVz054z7wXlAMnf+3bW8g=;
+ b=NjRHgde4xLT8hmAy4f/wm47CBLvXhFPiaaJu7iQPEQyGZc5FRcDrp2ZUheg5hJ6Ue48qCEeF1gjQnl9IdAfhiid7aw0IxcCSvW2vuGBVtrWxOQT4X7RV/ciGYF49xt67uOtCm6e12UBReKvKOEIFfXE5eJi6sgXRulDnCT18QbLk8pZHJr6q1I4kORoWS7q6Nxnp2DtaJetC4ELfFgXOa4BdSTkM44bqO5qMnGN8HHzNDAH5mRq7508pyuJ4aeL3K9EjWS0VW9r1zV0McBkHTDfiat+vDS6Qt2USGorV6GfV40PDMqEnXVNi3LbLLcAXK5MmTV9F3U28pBQcQagKeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 151.1.184.193) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=asem.it; dmarc=fail (p=none sp=none pct=100) action=none
+ header.from=asem.it; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BEE1Q44IuerTAix98C68lkBVz054z7wXlAMnf+3bW8g=;
+ b=DNA0fAmcNdlw2UUDbrA2qcNAPFSyk1I4Ke2+HIYoQvpttR6voOveA5xRL6fRhewC9Z43Z/sm5AH23rdzFhFaAB6ybQPmWJ0cMAYlrJfZ7EsZHp/iSP63JX1gOJoxshSH9RXtRO0ZXJGRDlvXeVSShEHe2mS11r74TJkvnxPuJ7s=
+Received: from DU2PR04CA0046.eurprd04.prod.outlook.com (2603:10a6:10:234::21)
+ by DU2PR01MB8608.eurprd01.prod.exchangelabs.com (2603:10a6:10:2f8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.27; Thu, 1 Feb
+ 2024 13:18:40 +0000
+Received: from DB5PEPF00014B99.eurprd02.prod.outlook.com
+ (2603:10a6:10:234:cafe::29) by DU2PR04CA0046.outlook.office365.com
+ (2603:10a6:10:234::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.26 via Frontend
+ Transport; Thu, 1 Feb 2024 13:18:39 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 151.1.184.193) smtp.mailfrom=asem.it; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=asem.it;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ asem.it discourages use of 151.1.184.193 as permitted sender)
+Received: from asas054.asem.intra (151.1.184.193) by
+ DB5PEPF00014B99.mail.protection.outlook.com (10.167.8.166) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.19 via Frontend Transport; Thu, 1 Feb 2024 13:18:39 +0000
+Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with Microsoft SMTPSVC(10.0.14393.4169);
+	 Thu, 1 Feb 2024 14:18:38 +0100
+From: Flavio Suligoi <f.suligoi@asem.it>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH 0/1] mtd: spi-nor: everspin: add em004lxb entry
+Date: Thu,  1 Feb 2024 14:17:09 +0100
+Message-Id: <20240201131710.797505-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] mtd: hyperbus: Add support for Infineon S26Hx-T
-Content-Language: en-US
-To: Patrice CHOTARD <patrice.chotard@foss.st.com>,
- "Raghavendra, Vignesh" <vigneshr@ti.com>, tkuw584924@gmail.com,
- linux-mtd@lists.infradead.org, sergei.shtylyov@cogentembedded.com,
- geert+renesas@glider.be, Mark Brown <broonie@kernel.org>,
- Christophe KERELLO <christophe.kerello@foss.st.com>
-Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, d-gole@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-References: <cover.1680663252.git.Takahiro.Kuwano@infineon.com>
- <d94273b2-9516-2b80-308f-9fd1fdd2b4d5@linaro.org>
- <158830c6-d492-4967-a543-c0f5f8428d8b@linaro.org>
- <2bcf6646-b7ce-48c9-8a9b-0634c3fb40e9@ti.com>
- <508196d4-a533-47c9-bf6e-5718364c8d54@linaro.org>
- <c75f33ce-d7a8-46db-aeab-f4406f3d9cf9@foss.st.com>
- <09b1e193-8a87-4f29-a1d5-8dfd370b03a1@linaro.org>
- <cfe84e34-1dc0-459a-a347-e559718b4d75@foss.st.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <cfe84e34-1dc0-459a-a347-e559718b4d75@foss.st.com>
+X-OriginalArrivalTime: 01 Feb 2024 13:18:38.0573 (UTC) FILETIME=[2B09F9D0:01DA5511]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB5PEPF00014B99:EE_|DU2PR01MB8608:EE_
+X-MS-Office365-Filtering-Correlation-Id: 78dacf3b-1fb6-4680-61dd-08dc23284e02
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ruYp29VT3NvOpcb+4TxVsi5hEjkedGwMI/Z02g1anfVfKug/ZcSGK3O7BhQaZMdd0NVuLSbRL+nkFejvmhRfqDhAP+UNgw0nNPiCfggltHyqqbijvTz0qFgVpwc/aT9jyquVEnQsQbyXixUfhZ3v5Kvd2wVtZ8J7DieR6FQeYOF24091cR4st268gaHV33nFdr/IJNqQWw+t/1FFV+qRdaQtLoIIeELZ+nMJDKf15qzv2X8oO+/efQV/MTq9S6iZfezm4cKozdNYYGjhjDO9CK6OyvH0lNfd7tcCL0kvt2WXIU7XfaJ6Hy1XKSXu6w6T3ccHtADJmJUiVmU/3DSlIsKRl8w7dOL6GmYD4sg2PNv1tszRw4pwDCrsaqBkwpsMT8i5tGICjOWQyTVMn0ahMz50WIOHrip33l/XWrLhusXdwa7DtW/xgq7yz4haur+1cv8bHuCHa6D3Fma9CvLhy1QiLowjH8KGXVRcex3K8Cs3ynDM61gS1rG/cweHEcJMc+oQBE5hrS4pC1OKMjUZLadVuJ902kpI8khFjfbbtwyUPn0ERiTIp0looW63cy2fBYwtY9Zz0KtbZ0hPAznyYpRgBtHdXP/kjOPWMG3p1L4MPqypj8leZIPejEMpsYI6EX7QdcKxIyIzLdiMIGmvX+7ZEKi4brZnqUGDHf9iaAJyFUoO9/+UxIQpx87SHwVgzuWQTRGhrndFGMXzyaz0JiTKNkqDuhp1jNHf1hXl/pM=
+X-Forefront-Antispam-Report: CIP:151.1.184.193;CTRY:IT;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:asas054.asem.intra;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(39840400004)(136003)(396003)(376002)(346002)(230922051799003)(186009)(82310400011)(64100799003)(451199024)(1800799012)(46966006)(36840700001)(40480700001)(83380400001)(41300700001)(86362001)(36756003)(81166007)(356005)(36860700001)(47076005)(1076003)(107886003)(2616005)(26005)(336012)(110136005)(2906002)(4744005)(966005)(478600001)(70586007)(70206006)(316002)(6666004)(4326008)(5660300002)(8676002)(8936002)(36900700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2024 13:18:39.2023
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78dacf3b-1fb6-4680-61dd-08dc23284e02
+X-MS-Exchange-CrossTenant-Id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d0a766c6-7992-4344-a4a2-a467a7bb1ed2;Ip=[151.1.184.193];Helo=[asas054.asem.intra]
+X-MS-Exchange-CrossTenant-AuthSource: DB5PEPF00014B99.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR01MB8608
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240201_043717_805393_B2DFDC76 
-X-CRM114-Status: GOOD (  20.70  )
+X-CRM114-CacheID: sfid-20240201_051849_041224_EB22E923 
+X-CRM114-Status: UNSURE (   5.84  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,147 +118,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
+Memory.
+This device is JEDEC compatible (JESD251 and JESD251-1), but it is not able
+to provide SFDP information.
 
+Link: https://www.everspin.com/file/158244/download
 
-On 2/1/24 12:23, Patrice CHOTARD wrote:
-> 
-> 
-> On 2/1/24 13:02, Tudor Ambarus wrote:
->>
->>
->> On 2/1/24 10:46, Patrice CHOTARD wrote:
->>>
->>>
->>> On 1/22/24 09:13, Tudor Ambarus wrote:
->>>>
->>>>
->>>> On 1/22/24 06:25, Raghavendra, Vignesh wrote:
->>>>>
->>>>>
->>>>> On 1/22/2024 11:41 AM, Tudor Ambarus wrote:
->>>>>> + Sergei, Geert, Mark & linux-spi
->>>>>>
->>>>>> Hi, Sergei,
->>>>>>
->>>>>> On 23.05.2023 07:22, Tudor Ambarus wrote:
->>>>>>> Hi, Takahiro, Vignesh,
->>>>>>>
->>>>>>>
->>>>>>> On 07.04.2023 09:11, tkuw584924@gmail.com wrote:
->>>>>>>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>>>>>>
->>>>>>>> This sereis adds support for Infineon S26HL-T/S26HS-T flash family.
->>>>>>>> https://www.infineon.com/dgdl/Infineon-S26HS01GTGABHM020-DataSheet-v01_00-EN.pdf?fileId=8ac78c8c7f2a768a017f52f2f5182c91
->>>>>>>>
->>>>>>>> This family supports two interface modes, SPI mode and Hyperbus mode. The mode
->>>>>>>> can be switched at rutime. The default mode is selected by ordering option
->>>>>>>> and non-volatile user configuration. In hyperbus mode, the device is compatible
->>>>>>>> with S26KL-S/S26KS-S hyperflash family that supports hyperbus only so one of
->>>>>>>> use cases of S26Hx-T is replacement of (or migration from) S26Kx-S. This patch
->>>>>>>> set focuses on particular usage that the device is pre-configured as hyperbus
->>>>>>>> mode for compatibility with S26Kx-S.
->>>>>>>
->>>>>>> I'm questioning the overall hyperbus software architecture, not your
->>>>>>> patches per se. IMO hyperbus framework should have been written on top
->>>>>>> of SPIMEM and the controllers be placed in drivers/spi/. So I'd first
->>>>>>> address the SPIMEM adoption before adding/accepting new support. Would
->>>>>>> love to hear more from Vignesh.
->>>>>>>
->>>>>>
->>>>>> RPC is the only multi IO SPI controller that's upstreamed and capable of
->>>>>> dealing with hyperflashes, but there are others which are not upstreamed
->>>>>> yet (microchip).
->>>>>>
->>>>>> Struct ``struct rpcif_op`` [1] duplicates the contents of ``struct
->>>>>> spi_mem_op`` [2] which could have been avoided if hyperflash driver was
->>>>>> extended with SPI MEM support. This way the RPC hyperbus driver, which
->>>>>> is an SPI controller, could have been moved to drivers/spi.
->>>>>>
->>>>>> Sergei, do you remember why we haven't used SPI MEM for hyberbus since
->>>>>> the beginning? Was it something that we aimed for in a future patch set?
->>>>>>
->>>>>> Thanks,
->>>>>> ta
->>>>>>
->>>>>> [1]
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/memory/renesas-rpc-if.h?h=mtd/for-6.8#n22
->>>>>>
->>>>>> [2]
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/linux/spi/spi-mem.h?h=mtd/for-6.8#n99
->>>>>>
->>>>>
->>>>> The initial hyperflash predates opening up of HyperBus protocol and
->>>>> inclusion of it in xSPI spec. First gen Flashes followed CFI specification
->>>>> and hence made sense to make use of cfi_cmdset_0002.c
->>>>>
->>>>> We did have a discussion on extending spi_mem to support xSPI profile 
->>>>> 2.0 during the RPC_IF [3] [4].
->>>>>
->>>>> Overall, both Controllers and Flashes have moved away from CFI parallel 
->>>>> flash protocol over to xSPI / SPI NOR flash protocol (profile 2.0), so I 
->>>>> agree with Tudor's assessment that we need to move towards spi_mem in 
->>>>> longer term. So
->>>>>
->>>>
->>>> Good, thanks Vignesh! I'll study a bit more and let you know about the
->>>> progress on this topic.
->>>
->>> Hi All
->>
->> Hi,
->>
->>>
->>> At STMicroelectronics we got an OSPI block which is supporting both OSPI and HyperBus protocol
->>> similarly to the mentioned RPC-IF.
->>>
->>> This means that we intend to split our implementation in 3 drivers as RPC-IF:
->>>   _ backend driver including common source code to OSPI and HyperBus
->>>   _ OSPI frontend driver
->>>   _ HyperBus frontend driver
->>>
->>> Following this discussion thread, we are wondering if it will be the right direction to 
->>> choose in order to propose this implementation to MTD mailing list.
->>
->> I think the right direction would be to have hyperflash on top of
->> SPIMEM, and the SPI controller under drivers/spi.
-> 
-> 
-> To be more precise, when you say "would be to have", you mean you will NAK 
-> an implementation in 3 drivers as RPC-IF ?
-> 
+I currently use this MRAM on one of our i.MX8MP boards.
 
-Yes. I think we should move towards SPIMEM adoption, don't you?
+Flavio Suligoi (1):
+  mtd: spi-nor: everspin: add em004lxb entry
 
-> 
->>>
->>> Have you an idea about time scale regarding the HyperBus migration over spi-mem ?
->>>
->>
->> No, sorry. It's at best effort from my side. Happy to review proposals
->> though.
->>
->>> Thanks
->>> Patrice
->>>
->>>
->>>>
->>>> Cheers,
->>>> ta
->>>>
->>>>> a) Extend spi_mem_op to support xSPI profile 2.0 transaction template
->>>>> b) HyperBus layer can then either be a adapter from CFI to spi_mem for CFI
->>>>> compliant devices. And  be subsumed completely within SPI NOR for SFDP
->>>>> compliant devices.
->>>>> c) Move the existing controllers over to new framework.
->>>>>
->>>>>
->>>>> [3] https://lore.kernel.org/all/b8224f46-fc2e-de35-0a90-a2a86cacb489@ti.com/
->>>>> [4] https://lore.kernel.org/all/20200220084927.7a411d40@collabora.com/
->>>>>
->>>>
->>>> ______________________________________________________
->>>> Linux MTD discussion mailing list
->>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+ drivers/mtd/spi-nor/everspin.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
