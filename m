@@ -4,62 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9403C47DDB
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 12:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C43AC4828C
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Feb 2024 12:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=B9SSP/ssXpRoCPLGOxUA/x672Zmfl7Ve8yasq+8Zj+0=; b=yVybincLMmNJj2IM16e6nMR9R2
-	9QP/AydP0/noEWhvtj6rsrxTc0ry1HB4EWbJqCF/cMQREib6yGzmVGrRzr3QwhKt0RjAyEfcYzVUx
-	IRS09Cm2KotxuOl+bi5grzc9CcprLa9EgXphOss199g5/hJ/oHf8hwAoySkXrdFsL0Q67MQLN2PGD
-	Teivv/k6vhEZQD4cwhWEOTfMzzNvp1OGairOJBAk4rmLLMzNFtxy3XJN4CWE9NXIoE72gBldSwrpT
-	fY9rR9WbersPDok7FjQct5+SdWDc1WMw0xEYF+zs+ObKURqpm/MLU4hU9lEX8kcJ6wCZebeHSUCsD
-	pzOt5LNw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=P36LPAcoyiJ8hv8uFQUurlXCU5f1U538xkGcH6TXt5E=; b=DtzHD2eQ39sXk2
+	LhBKQL7rbgC1VhFg6tQLFEG3tOPNmtzlUB1tN3ipHP5dWCsvuf7JcQ8uQkObzXjR/yvVV5btylN8l
+	TNNkt9gZTgcd5Rwk6Kfcr3LvHvQfJysVtu4nleNU5r1K5gMPKH7ry7d3RlMVWaZAzPPaauSL/Kb7Y
+	cBJ1tJUFGS6oOjRphZgnaAFxvrO/ejn/efSSlsKo9wffJd3I2WItFLiK9qgc0yWDfK8+QeYc/GHgH
+	N7MM+xXFbJgAsd0hMhv4WOgieSd+UDhQzyxVgKyiNKM01FknnXmnaXAPyODIvmsnHMq5dZwnAZlJX
+	U5HhG39OZoI7iS08/IBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVVor-00000007gAs-0aRX;
-	Thu, 01 Feb 2024 12:05:25 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rVW6y-00000007kEf-0Wke;
+	Thu, 01 Feb 2024 12:24:08 +0000
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVVoo-00000007g9i-0hlQ
+	id 1rVW6u-00000007kAi-1ghW
 	for linux-mtd@lists.infradead.org;
-	Thu, 01 Feb 2024 12:05:23 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 87595CE248D;
-	Thu,  1 Feb 2024 12:05:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FB0AC433F1;
-	Thu,  1 Feb 2024 12:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706789119;
-	bh=JblNlADTGIUqGdf8F+iqM4tBd9N53xAW9CwEjFnpqp0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HfwkO06DYVAeN2U82y3W0uzC3jtu1NCFX/lpLfoKhuYt5lIunR2XPvdtUjv5av7yV
-	 ZVg03T10OVl5DBGiVuKo7Q+4E8Lm5ObOxoLye855pmiyVg3WtwZ6L3j6UVGYUVPTYI
-	 oLR7ZfACxRQ9MwyyawBBsUMoW/1nF6JkBecJ34lOXN10gX1xXIPnce4modNpTpAiDA
-	 cKCQW7Wn+lnaQDEaBCwbxCEHt3fPZ5NHQj9KMrXu4s+OYxI0wVonHvR7wKsXOc9rW3
-	 X4BcPunlPv85njhsigXZz8TnFCtnpASfldfqcCzcltVmfgHTmxNY0UxrgmiyK4Ah/9
-	 iGh8CfbZOkPqg==
-Date: Thu, 1 Feb 2024 12:05:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jaime Liao <jaimeliao.tw@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-	tudor.ambarus@linaro.org, pratyush@kernel.org, mwalle@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	leoyu@mxic.com.tw, jaimeliao@mxic.com.tw
-Subject: Re: [PATCH v8 5/9] spi: mxic: Add support for swapping byte
-Message-ID: <c81eb3b6-c9c1-499f-8868-0f6bed10b259@sirena.org.uk>
-References: <20240201094353.33281-1-jaimeliao.tw@gmail.com>
- <20240201094353.33281-6-jaimeliao.tw@gmail.com>
+	Thu, 01 Feb 2024 12:24:06 +0000
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 411CKrSA017922;
+	Thu, 1 Feb 2024 13:23:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=F/rOSrW+a/ZqA8DHiCyanTm3mjkwrDiOTsDGyObWwR8=; b=cs
+	YSDLT4teAvFD9g8dTcKheRo27UhDezpPdfOHpUaaE/dljojm7IjkEwt//FO9HBzf
+	PEZf3GFmo+bCyj8ipM7gwgyLA6UmLnWYg68haOsmvqWPOrpL6N0u4ivqvD9rEl9e
+	F/zcDMGBvohGNjQQROWDf3YK8DiLSGnmYhw9CLDDLkaR2VL/rj7XQuYdwbW3BXNg
+	VaFl3Olb+ykJOJddCfGSc1YXoD32hVizMN6xZ8+bAkwWi0dHzSf0mF4TQ1qsZ2m/
+	H4X0xCkESdOKDvQ1RhqZ5s5uMb9s9YemQfDOwDtUtAL7qdbek2refYX1L3Gx3Goc
+	bPrUNLxaps87WttwZEEg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vvr4m589r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 13:23:47 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 35A62100053;
+	Thu,  1 Feb 2024 13:23:44 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2B970264D76;
+	Thu,  1 Feb 2024 13:23:44 +0100 (CET)
+Received: from [10.201.20.205] (10.201.20.205) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 1 Feb
+ 2024 13:23:43 +0100
+Message-ID: <cfe84e34-1dc0-459a-a347-e559718b4d75@foss.st.com>
+Date: Thu, 1 Feb 2024 13:23:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <20240201094353.33281-6-jaimeliao.tw@gmail.com>
-X-Cookie: You can't cheat the phone company.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mtd: hyperbus: Add support for Infineon S26Hx-T
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+        "Raghavendra, Vignesh"
+	<vigneshr@ti.com>, <tkuw584924@gmail.com>,
+        <linux-mtd@lists.infradead.org>, <sergei.shtylyov@cogentembedded.com>,
+        <geert+renesas@glider.be>, Mark Brown
+	<broonie@kernel.org>,
+        Christophe KERELLO <christophe.kerello@foss.st.com>
+CC: <pratyush@kernel.org>, <michael@walle.cc>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <d-gole@ti.com>, <Bacem.Daassi@infineon.com>,
+        Takahiro
+ Kuwano <Takahiro.Kuwano@infineon.com>,
+        Boris Brezillon
+	<boris.brezillon@collabora.com>,
+        "linux-spi@vger.kernel.org"
+	<linux-spi@vger.kernel.org>
+References: <cover.1680663252.git.Takahiro.Kuwano@infineon.com>
+ <d94273b2-9516-2b80-308f-9fd1fdd2b4d5@linaro.org>
+ <158830c6-d492-4967-a543-c0f5f8428d8b@linaro.org>
+ <2bcf6646-b7ce-48c9-8a9b-0634c3fb40e9@ti.com>
+ <508196d4-a533-47c9-bf6e-5718364c8d54@linaro.org>
+ <c75f33ce-d7a8-46db-aeab-f4406f3d9cf9@foss.st.com>
+ <09b1e193-8a87-4f29-a1d5-8dfd370b03a1@linaro.org>
+Content-Language: en-US
+From: Patrice CHOTARD <patrice.chotard@foss.st.com>
+In-Reply-To: <09b1e193-8a87-4f29-a1d5-8dfd370b03a1@linaro.org>
+X-Originating-IP: [10.201.20.205]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-01_01,2024-01-31_01,2023-05-22_02
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240201_040522_405474_70087214 
-X-CRM114-Status: UNSURE (   9.38  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240201_042404_918691_CFDAD96C 
+X-CRM114-Status: GOOD (  22.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,62 +104,148 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7969025140765722105=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============7969025140765722105==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gBg1v3E20fkE7FB1"
-Content-Disposition: inline
+
+On 2/1/24 13:02, Tudor Ambarus wrote:
+> 
+> 
+> On 2/1/24 10:46, Patrice CHOTARD wrote:
+>>
+>>
+>> On 1/22/24 09:13, Tudor Ambarus wrote:
+>>>
+>>>
+>>> On 1/22/24 06:25, Raghavendra, Vignesh wrote:
+>>>>
+>>>>
+>>>> On 1/22/2024 11:41 AM, Tudor Ambarus wrote:
+>>>>> + Sergei, Geert, Mark & linux-spi
+>>>>>
+>>>>> Hi, Sergei,
+>>>>>
+>>>>> On 23.05.2023 07:22, Tudor Ambarus wrote:
+>>>>>> Hi, Takahiro, Vignesh,
+>>>>>>
+>>>>>>
+>>>>>> On 07.04.2023 09:11, tkuw584924@gmail.com wrote:
+>>>>>>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>>>>>>>
+>>>>>>> This sereis adds support for Infineon S26HL-T/S26HS-T flash family.
+>>>>>>> https://www.infineon.com/dgdl/Infineon-S26HS01GTGABHM020-DataSheet-v01_00-EN.pdf?fileId=8ac78c8c7f2a768a017f52f2f5182c91
+>>>>>>>
+>>>>>>> This family supports two interface modes, SPI mode and Hyperbus mode. The mode
+>>>>>>> can be switched at rutime. The default mode is selected by ordering option
+>>>>>>> and non-volatile user configuration. In hyperbus mode, the device is compatible
+>>>>>>> with S26KL-S/S26KS-S hyperflash family that supports hyperbus only so one of
+>>>>>>> use cases of S26Hx-T is replacement of (or migration from) S26Kx-S. This patch
+>>>>>>> set focuses on particular usage that the device is pre-configured as hyperbus
+>>>>>>> mode for compatibility with S26Kx-S.
+>>>>>>
+>>>>>> I'm questioning the overall hyperbus software architecture, not your
+>>>>>> patches per se. IMO hyperbus framework should have been written on top
+>>>>>> of SPIMEM and the controllers be placed in drivers/spi/. So I'd first
+>>>>>> address the SPIMEM adoption before adding/accepting new support. Would
+>>>>>> love to hear more from Vignesh.
+>>>>>>
+>>>>>
+>>>>> RPC is the only multi IO SPI controller that's upstreamed and capable of
+>>>>> dealing with hyperflashes, but there are others which are not upstreamed
+>>>>> yet (microchip).
+>>>>>
+>>>>> Struct ``struct rpcif_op`` [1] duplicates the contents of ``struct
+>>>>> spi_mem_op`` [2] which could have been avoided if hyperflash driver was
+>>>>> extended with SPI MEM support. This way the RPC hyperbus driver, which
+>>>>> is an SPI controller, could have been moved to drivers/spi.
+>>>>>
+>>>>> Sergei, do you remember why we haven't used SPI MEM for hyberbus since
+>>>>> the beginning? Was it something that we aimed for in a future patch set?
+>>>>>
+>>>>> Thanks,
+>>>>> ta
+>>>>>
+>>>>> [1]
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/memory/renesas-rpc-if.h?h=mtd/for-6.8#n22
+>>>>>
+>>>>> [2]
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/include/linux/spi/spi-mem.h?h=mtd/for-6.8#n99
+>>>>>
+>>>>
+>>>> The initial hyperflash predates opening up of HyperBus protocol and
+>>>> inclusion of it in xSPI spec. First gen Flashes followed CFI specification
+>>>> and hence made sense to make use of cfi_cmdset_0002.c
+>>>>
+>>>> We did have a discussion on extending spi_mem to support xSPI profile 
+>>>> 2.0 during the RPC_IF [3] [4].
+>>>>
+>>>> Overall, both Controllers and Flashes have moved away from CFI parallel 
+>>>> flash protocol over to xSPI / SPI NOR flash protocol (profile 2.0), so I 
+>>>> agree with Tudor's assessment that we need to move towards spi_mem in 
+>>>> longer term. So
+>>>>
+>>>
+>>> Good, thanks Vignesh! I'll study a bit more and let you know about the
+>>> progress on this topic.
+>>
+>> Hi All
+> 
+> Hi,
+> 
+>>
+>> At STMicroelectronics we got an OSPI block which is supporting both OSPI and HyperBus protocol
+>> similarly to the mentioned RPC-IF.
+>>
+>> This means that we intend to split our implementation in 3 drivers as RPC-IF:
+>>   _ backend driver including common source code to OSPI and HyperBus
+>>   _ OSPI frontend driver
+>>   _ HyperBus frontend driver
+>>
+>> Following this discussion thread, we are wondering if it will be the right direction to 
+>> choose in order to propose this implementation to MTD mailing list.
+> 
+> I think the right direction would be to have hyperflash on top of
+> SPIMEM, and the SPI controller under drivers/spi.
 
 
---gBg1v3E20fkE7FB1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To be more precise, when you say "would be to have", you mean you will NAK 
+an implementation in 3 drivers as RPC-IF ?
 
-On Thu, Feb 01, 2024 at 05:43:49PM +0800, Jaime Liao wrote:
-> From: JaimeLiao <jaimeliao@mxic.com.tw>
->=20
-> Some SPI-NOR flash swap the bytes on a 16-bit boundary when
-> configured in Octal DTR mode. It means data format D0 D1 D2 D3
-> would be swapped to D1 D0 D3 D2. So that whether controller
-> support swapping bytes should be checked before enable Octal
-> DTR mode. Add swap byte support on a 16-bit boundary when
-> configured in Octal DTR mode for Macronix xSPI host controller
-> dirver.
+Patrice
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---gBg1v3E20fkE7FB1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmW7iPkACgkQJNaLcl1U
-h9DJlwf+Lmmsat/t2Ej8cR794ywlry2+IcRfBH4pN8fKO7aLvV1lUl9kCo7wqsQt
-RxmBmbcsmiNVFPFtst57PyFbc5YWzQCm3D7ZRj2l+LsLUUepDrLlxXTuIVQCmErA
-hZuD4xbzxRNb14s9nfkXMRHbwfGYZpmxQyJvEvCBd567Oo+akVJ9lp1jJZVXDusr
-CBStw4y4wnwsl4qFJnSdl+AVjMHSpKfXqkpSwD5HcZO1ppU36FFYuqlUHH8V0J5u
-u0JtpNKq92TQtZwyDAQyMlc9AE/cDtVHPvEKx+ja4b06P7xMzU4GwGxUV/4sKZlx
-3pKoP0v637XaKQ4Rggm+c2fvi53fdQ==
-=Dpq9
------END PGP SIGNATURE-----
-
---gBg1v3E20fkE7FB1--
-
-
---===============7969025140765722105==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>>
+>> Have you an idea about time scale regarding the HyperBus migration over spi-mem ?
+>>
+> 
+> No, sorry. It's at best effort from my side. Happy to review proposals
+> though.
+> 
+>> Thanks
+>> Patrice
+>>
+>>
+>>>
+>>> Cheers,
+>>> ta
+>>>
+>>>> a) Extend spi_mem_op to support xSPI profile 2.0 transaction template
+>>>> b) HyperBus layer can then either be a adapter from CFI to spi_mem for CFI
+>>>> compliant devices. And  be subsumed completely within SPI NOR for SFDP
+>>>> compliant devices.
+>>>> c) Move the existing controllers over to new framework.
+>>>>
+>>>>
+>>>> [3] https://lore.kernel.org/all/b8224f46-fc2e-de35-0a90-a2a86cacb489@ti.com/
+>>>> [4] https://lore.kernel.org/all/20200220084927.7a411d40@collabora.com/
+>>>>
+>>>
+>>> ______________________________________________________
+>>> Linux MTD discussion mailing list
+>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7969025140765722105==--
-
