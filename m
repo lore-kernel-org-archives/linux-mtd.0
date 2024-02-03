@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35BF7C4828F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4891C48295
 	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=UjB66fxsvsOVkTN8l4bOFaxM3J0zETa9JBVbEutjNz0=; b=s48UjVIYXL6RlF
-	L4nzIiOhwAq4RHYzWagn0AY3SVmi7NdfeUvsN3T52rONC91USVdglgXjpolMSk5AGy8C9LVPvbEqh
-	f/pLQbb3st0tGdEKlnips3zuGkjhz4r/bcAgEyyNhtmPeQfwh6K4gEeyepLBgbsPoScquunPzwfzE
-	imxoNQPkQiwhywgEPVeXWQc9SbAkNM+F5v6B2QPkhsJGOESxi3cgqi+18p44zauWkQR5VUeLpUHHy
-	lZiszlHIMCvTRONJpUQRHyVUvtYA5gDn527TbjG14bynMWDKwS9qTmyy1m/CrI7UG2BLOJwOFzszp
-	XnoLqmCiqHEubJA77aeA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SvS1kgExS6e7Nzs52iMgrECU7u1t+OfzNWpC9u2kxt0=; b=pnfgwjPyXhqbhy
+	jcd00sdpcIqHeCoxWnf2+58c9R4RGyD+wEHT8+GG4Sd8LPUn8S/VtSe8eit1QFXxAetp+bmuB4I6L
+	T12KMHe09SvayoWnmY6ZxJ0bogoCCwHH5I5Ucm3jl+XN+pPwv9xwkCxy0fU/yU3nMHOdOYPzSWGvh
+	yxQfXgaa9KDpo3rkJnpcQCpL0pZ4eURQ15PhR6cm7gZc3isAa4Tv2DUhC4kngfkzO0wARFOkPuJ4i
+	g0hsT9nueG7oke7JJdwAlH6lXPwR/zRyevClVDG29QBxDlU3ZFVUmRtI6EYWZ/Jo6FIIr7lMIO4x8
+	JXFavn0Kh0VGwQysG4tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3u3-0000000DwGv-3B9W;
-	Sat, 03 Feb 2024 00:29:03 +0000
+	id 1rW3uB-0000000DwIM-0g6S;
+	Sat, 03 Feb 2024 00:29:11 +0000
 Received: from lpdvsmtp11.broadcom.com ([192.19.166.231] helo=relay.smtp-ext.broadcom.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3u0-0000000DwGL-20ir;
-	Sat, 03 Feb 2024 00:29:02 +0000
+	id 1rW3u8-0000000DwHR-0owb;
+	Sat, 03 Feb 2024 00:29:09 +0000
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 4E384C001668;
-	Fri,  2 Feb 2024 16:28:55 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4E384C001668
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id AFA6EC001668;
+	Fri,  2 Feb 2024 16:29:07 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com AFA6EC001668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1706920135;
-	bh=6IQ2jaFQHup3JsKNrVAd3gd6vlUrscEJfijinF/hldk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=nVoSGtgI+VGLYpVsku7u3qKIEEu4jKfcDFkG2JnJsn4rlXIIN5mS1AfXg8E8LcarT
-	 Q/0Df0cBhKderf+SST47yI3qWo1UUUtqD5TILU0ZZ31pgGC4Tju4NJCRKOCSjWWc0V
-	 IHcwbKjELiKVZxpvTXPlpbQrFaEoB2G3AbhtaSzk=
+	s=dkimrelay; t=1706920147;
+	bh=s6uMo50V83lQTFPmBSTZbJWskTqu4gIvfj3LFjK0xHk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SYsPErs/LBSgVl54vY+9OxENj5P2edKlodbbaIvSW/ld25bUWhQgOLIiuqhBX6GXc
+	 eFJ61p8suOaZsO22pVY7v9NiFgsZxmy6UkwwHKGDfVtJl2L8fQ7ZppXP9aWQ6Uw288
+	 JFKXakzG4zkCGo/dmKPXuVmLNi37es760zhicSX0=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id C3D4A18041CAC4;
-	Fri,  2 Feb 2024 16:28:53 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 48C9418041CAC4;
+	Fri,  2 Feb 2024 16:29:06 -0800 (PST)
 From: William Zhang <william.zhang@broadcom.com>
 To: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
@@ -55,30 +55,27 @@ Cc: f.fainelli@gmail.com,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
 	William Zhang <william.zhang@broadcom.com>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Kamal Dasu <kdasu.kdev@gmail.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Shawn Guo <shawnguo@kernel.org>,
 	David Regan <dregan@broadcom.com>,
 	devicetree@vger.kernel.org,
-	Alexandre TORGUE <alexandre.torgue@st.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
 	Brian Norris <computersforpeace@gmail.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
 	linux-kernel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 00/12] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
-Date: Fri,  2 Feb 2024 16:28:21 -0800
-Message-Id: <20240203002834.171462-1-william.zhang@broadcom.com>
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Kamal Dasu <kdasu.kdev@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v4 01/12] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+Date: Fri,  2 Feb 2024 16:28:22 -0800
+Message-Id: <20240203002834.171462-2-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20240203002834.171462-1-william.zhang@broadcom.com>
+References: <20240203002834.171462-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_162900_884422_BC8B2CE0 
-X-CRM114-Status: GOOD (  21.27  )
+X-CRM114-CacheID: sfid-20240202_162908_291059_8EDFEBC8 
+X-CRM114-Status: GOOD (  15.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,110 +92,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch series is an update from the previous version [1] after
-exex_op support and fixes (patch 1 to 4 from the previous version.)
+Update the descriptions to reflect different families of broadband SoC and
+use the general name bcmbca for ARM based SoC.
 
-It updates all the BCMBCA SoC to support the nand controller and add
-functions to handle BCMBCA specific needs on ECC and Write Protection
-usage. The device tree document is also updated accordingly with the new
-properties needed by the driver.
+Remove the requirement of interrupts property to reflect the driver
+code and only require interrupt-names when interrupts property present.
 
-In addition there is a bug fix for exec_op helper functions and log
-level adjustment on uncorrectable ECC error.
+Also add myself to the list of maintainers.
 
-[1] https://lore.kernel.org/lkml/20230606231252.94838-1-william.zhang@broadcom.com/
+Signed-off-by: William Zhang <william.zhang@broadcom.com>
+Reviewed-by: David Regan <dregan@broadcom.com>
+
+---
 
 Changes in v4:
-- Split the yaml changes into three patches.
-- Move the WP pin property to a new patch and change it to boolean type.
-- Move ecc strap property to a new patch and remove some non-binding 
-related text from the description
-- Add a new patch for bcm4908 based router board dts update
-- Move the board related dts setting from SoC dtsi to board dts
-- Update the comments for ecc setting selection
-- Use the new brcm,wp-not-connected property based on the dts binding
-change
-- Fix the commit id in the fixes tag
-- Revert the log level change for correctable ecc error
+- Split the yaml changes into three patches. This is the first one.
 
 Changes in v3:
 - Update brcm,nand-use-wp description
 - Revert the description change to BCM63168 SoC-specific NAND controller
-- Updated bcmbca_read_data_bus comment
 
 Changes in v2:
 - Revert the new compatible string nand-bcmbca
 - Drop the BCM63168 compatible fix to avoid any potential ABI
-Incompatibility issue
+incompatibility issue
 - Simplify the explanation for brcm,nand-use-wp
 - Keep the interrupt name requirement when interrupt number is specified
-- Add nand controller node label for 4908 so it is consistent with other
-SoC's and can be referenced by board dts file
-- Drop the is_param argument to the read data bus function now that we
-have the exec_op API to read the parameter page and ONFI data
-- Minor cosmetic fixes
-- Added patches 8, 9, 10 to patch series
 
-David Regan (2):
-  mtd: rawnand: brcmnand: exec_op helper functions return type fixes
-  mtd: rawnand: brcmnand: update log level messages
+ .../devicetree/bindings/mtd/brcm,brcmnand.yaml      | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-William Zhang (10):
-  dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
-  dt-bindings: mtd: brcmnand: Add WP pin connection property
-  dt-bindings: mtd: brcmnand: Add ecc strap property
-  ARM: dts: broadcom: bcmbca: Add NAND controller node
-  arm64: dts: broadcom: bcmbca: Add NAND controller node
-  arm64: dts: broadcom: bcmbca: Update router boards
-  mtd: rawnand: brcmnand: Rename bcm63138 nand driver
-  mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
-  mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
-  mtd: rawnand: brcmnand: Support write protection setting from dts
-
- .../bindings/mtd/brcm,brcmnand.yaml           |  29 +++-
- arch/arm/boot/dts/broadcom/bcm47622.dtsi      |  14 ++
- arch/arm/boot/dts/broadcom/bcm63138.dtsi      |   7 +-
- arch/arm/boot/dts/broadcom/bcm63148.dtsi      |  14 ++
- arch/arm/boot/dts/broadcom/bcm63178.dtsi      |  14 ++
- arch/arm/boot/dts/broadcom/bcm6756.dtsi       |  14 ++
- arch/arm/boot/dts/broadcom/bcm6846.dtsi       |  14 ++
- arch/arm/boot/dts/broadcom/bcm6855.dtsi       |  14 ++
- arch/arm/boot/dts/broadcom/bcm6878.dtsi       |  14 ++
- arch/arm/boot/dts/broadcom/bcm947622.dts      |  10 ++
- arch/arm/boot/dts/broadcom/bcm963138.dts      |  10 ++
- arch/arm/boot/dts/broadcom/bcm963138dvt.dts   |  14 +-
- arch/arm/boot/dts/broadcom/bcm963148.dts      |  10 ++
- arch/arm/boot/dts/broadcom/bcm963178.dts      |  10 ++
- arch/arm/boot/dts/broadcom/bcm96756.dts       |  10 ++
- arch/arm/boot/dts/broadcom/bcm96846.dts       |  10 ++
- arch/arm/boot/dts/broadcom/bcm96855.dts       |  10 ++
- arch/arm/boot/dts/broadcom/bcm96878.dts       |  10 ++
- .../bcmbca/bcm4906-netgear-r8000p.dts         |   5 +
- .../bcmbca/bcm4906-tplink-archer-c2300-v1.dts |   5 +
- .../bcmbca/bcm4908-asus-gt-ac5300.dts         |   6 +-
- .../boot/dts/broadcom/bcmbca/bcm4908.dtsi     |   4 +-
- .../boot/dts/broadcom/bcmbca/bcm4912.dtsi     |  14 ++
- .../boot/dts/broadcom/bcmbca/bcm63146.dtsi    |  14 ++
- .../boot/dts/broadcom/bcmbca/bcm63158.dtsi    |  14 ++
- .../boot/dts/broadcom/bcmbca/bcm6813.dtsi     |  14 ++
- .../boot/dts/broadcom/bcmbca/bcm6856.dtsi     |  14 ++
- .../boot/dts/broadcom/bcmbca/bcm6858.dtsi     |  14 ++
- .../boot/dts/broadcom/bcmbca/bcm94908.dts     |  10 ++
- .../boot/dts/broadcom/bcmbca/bcm94912.dts     |  10 ++
- .../boot/dts/broadcom/bcmbca/bcm963146.dts    |  10 ++
- .../boot/dts/broadcom/bcmbca/bcm963158.dts    |  10 ++
- .../boot/dts/broadcom/bcmbca/bcm96813.dts     |  10 ++
- .../boot/dts/broadcom/bcmbca/bcm96856.dts     |  10 ++
- .../boot/dts/broadcom/bcmbca/bcm96858.dts     |  10 ++
- drivers/mtd/nand/raw/brcmnand/Makefile        |   2 +-
- drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c |  99 --------------
- drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c   | 126 ++++++++++++++++++
- drivers/mtd/nand/raw/brcmnand/brcmnand.c      | 126 +++++++++++++++---
- drivers/mtd/nand/raw/brcmnand/brcmnand.h      |   2 +
- 40 files changed, 623 insertions(+), 134 deletions(-)
- delete mode 100644 drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
- create mode 100644 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+index f57e96374e67..e54ca08a798a 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+@@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
+ maintainers:
+   - Brian Norris <computersforpeace@gmail.com>
+   - Kamal Dasu <kdasu.kdev@gmail.com>
++  - William Zhang <william.zhang@broadcom.com>
+ 
+ description: |
+   The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
+@@ -18,9 +19,10 @@ description: |
+   supports basic PROGRAM and READ functions, among other features.
+ 
+   This controller was originally designed for STB SoCs (BCM7xxx) but is now
+-  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
+-  iProc/Cygnus. Its history includes several similar (but not fully register
+-  compatible) versions.
++  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
++  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
++  Its history includes several similar (but not fully register compatible)
++  versions.
+ 
+   -- Additional SoC-specific NAND controller properties --
+ 
+@@ -53,7 +55,7 @@ properties:
+               - brcm,brcmnand-v7.2
+               - brcm,brcmnand-v7.3
+           - const: brcm,brcmnand
+-      - description: BCM63138 SoC-specific NAND controller
++      - description: BCMBCA SoC-specific NAND controller
+         items:
+           - const: brcm,nand-bcm63138
+           - enum:
+@@ -177,6 +179,8 @@ allOf:
+             - const: iproc-idm
+             - const: iproc-ext
+   - if:
++      required:
++        - interrupts
+       properties:
+         interrupts:
+           minItems: 2
+@@ -189,7 +193,6 @@ unevaluatedProperties: false
+ required:
+   - reg
+   - reg-names
+-  - interrupts
+ 
+ examples:
+   - |
 -- 
 2.37.3
 
