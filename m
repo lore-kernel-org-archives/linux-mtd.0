@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF37C48295
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:29:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FED1C4828F
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GrVU//JuqckWEiCfbYfDldM6v6t184tD19+fulvPMas=; b=PElu38OrUI5x/+
-	l7eNDK7/zcQl3GIt+8AR5xLC/jmvQZ/2QvWGcwn8V62CUealC0baLvEVSC3/phbGYZWTwpJF+OecC
-	K14Xsk1HZgefJoSss20lcgfiLvyN+hC+N3V0levIDNUgAkfKe8n17f8y+dFxYL+cD9UAB4F7Kbicl
-	TOoktVPApblRQqvR/pOpF5kMjQBNSkOSvnE4CzjBkRmPqhUjNPCPBGBdQlPKYlOsjFO8Y+HsQhUD6
-	Pc2E7DpAx3LNE5EOR0NGy6js2yMmwGRSIgFFhBY5Xxf5LdK9JfJJqvZ8mcxXf+kdNQ0ZVkE13G3nG
-	ZNSeFmV7KNEYKHIBDNqw==;
+	List-Owner; bh=dvD12qL/SKD8FXOshiMC+lvj06262QI2aEvjOILAoV8=; b=Zwo85IclEzARr4
+	MKchMMiK6tebQk9TRFODAQf3I5nlC1KmKtsRZhJqfgcPJbMRkGUp+VLrTdiIpnbL3mc55Ozmxfhbf
+	Ajn87X2G6RW7lWpWtJtpSR7OaqkscUZHOFkkU92TjQe3wMi2oFh09VHYS7aI5uRzL0Xhy7ulnObXs
+	6GtERm0M4rhkBd3vwcYTGDXtapnc5jPGhS6+/YchnWJtcUMn1gbxQxyd7vgQe3cz+QDFYNENx8RK0
+	5ja/aRIhYozPlDJdhtrXcojecei8TWimdfL6IsbnxLjSb53BmLNLVII3Ch/chcLqQ5UKWHXNykpzH
+	M04i7zVa7qCKM/4/3Dcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3uJ-0000000DwOA-2NXC;
-	Sat, 03 Feb 2024 00:29:19 +0000
-Received: from lpdvacalvio01.broadcom.com ([192.19.166.228] helo=relay.smtp-ext.broadcom.com)
+	id 1rW3uP-0000000DwTM-0uUd;
+	Sat, 03 Feb 2024 00:29:25 +0000
+Received: from lpdvsmtp11.broadcom.com ([192.19.166.231] helo=relay.smtp-ext.broadcom.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3uF-0000000DwKs-2bnY;
-	Sat, 03 Feb 2024 00:29:16 +0000
+	id 1rW3uI-0000000DwNA-2Kz6;
+	Sat, 03 Feb 2024 00:29:19 +0000
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 71E9CC0029C3;
-	Fri,  2 Feb 2024 16:29:14 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 71E9CC0029C3
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 0AC1AC001668;
+	Fri,  2 Feb 2024 16:29:18 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 0AC1AC001668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1706920154;
-	bh=VYh+6T868Hjd9BlZA701iKMQ4aVmP1U0C12y+IHan7Q=;
+	s=dkimrelay; t=1706920158;
+	bh=te5+l18ZZxWvnmfq+UvIJN6+FYEaQdsKeXHBLOKms1E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vxD3GewRgxTIuh2y78J8VlNUvDDF1RMhBY6AcWPOG5UDt5DotblfCfD3IW82sQ9Zp
-	 4OqK+KL6XYakLPsCNd5ka02MxYEHE7zt0rKpdja/fSCnDoBKvFzfCadxIKEG80A5rZ
-	 8hbkxWPeJ6gzROp528jZavr/BOBJMxOtRsGpy5Gc=
+	b=ty2gDHgv+jc6uy7673PtqGYXFmrpGpr/XOfWkQZt2NVMDG34t3iGTNr/MwC4zIL/H
+	 cMNoD2hcIjF62NLa9sUCpg5cgECxGbB9GP2s0EK60Mn1UsGiunyIEk9+/OBg2UggyY
+	 op+TypxFuMBBfe7j3uvH5VR6ku6uctfclC31MeCE=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id EAF4718041CAC4;
-	Fri,  2 Feb 2024 16:29:12 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 98EA018041CAC4;
+	Fri,  2 Feb 2024 16:29:16 -0800 (PST)
 From: William Zhang <william.zhang@broadcom.com>
 To: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
@@ -65,16 +65,16 @@ Cc: f.fainelli@gmail.com,
 	Richard Weinberger <richard@nod.at>,
 	Kamal Dasu <kdasu.kdev@gmail.com>,
 	Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v4 02/12] dt-bindings: mtd: brcmnand: Add WP pin connection property
-Date: Fri,  2 Feb 2024 16:28:23 -0800
-Message-Id: <20240203002834.171462-3-william.zhang@broadcom.com>
+Subject: [PATCH v4 03/12] dt-bindings: mtd: brcmnand: Add ecc strap property
+Date: Fri,  2 Feb 2024 16:28:24 -0800
+Message-Id: <20240203002834.171462-4-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20240203002834.171462-1-william.zhang@broadcom.com>
 References: <20240203002834.171462-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_162915_702750_4A7DAEDA 
-X-CRM114-Status: GOOD (  11.91  )
+X-CRM114-CacheID: sfid-20240202_162918_652797_BE9DEED4 
+X-CRM114-Status: GOOD (  11.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,16 +91,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add brcm,wp-not-connected property to have an option for disabling this
-feature on broadband board design that does not connect WP pin.
+Add brcm,nand-ecc-use-strap to get ecc and spare area size settings from
+board boot strap for broadband board designs because they do not specify
+ecc setting in dts but rather using the strap setting.
 
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
 
 ---
 
 Changes in v4:
-- Move the WP pin property to this separate patch and change it to
-boolean type.
+- Move ecc strap property to this separate patch and remove some
+non-binding related text from the description
 
 Changes in v3: None
 Changes in v2: None
@@ -109,24 +110,24 @@ Changes in v2: None
  1 file changed, 8 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-index e54ca08a798a..d0168d55c73e 100644
+index d0168d55c73e..2599d902ec3a 100644
 --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
 +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-@@ -113,6 +113,14 @@ properties:
-       earlier versions of this core that include WP
-     type: boolean
+@@ -147,6 +147,14 @@ patternProperties:
+           layout.
+         $ref: /schemas/types.yaml#/definitions/uint32
  
-+  brcm,wp-not-connected:
-+    description:
-+      Use this property when board design does not connect controller's
-+      NAND_WPb pin to NAND chip's WP_L pin and disable the write
-+      protection feature. By default, controller assumes the pin is
-+      connected and feature is used.
-+    $ref: /schemas/types.yaml#/definitions/flag
++      brcm,nand-ecc-use-strap:
++        description:
++          This flag indicates the ecc strength and spare area size should
++          be retrieved from the SoC NAND boot strap setting instead of
++          nand-ecc-strength and brcm,nand-oob-sector-size or auto detection.
++          This is commonly used by the BCMBCA SoC board design.
++        $ref: /schemas/types.yaml#/definitions/flag
 +
- patternProperties:
-   "^nand@[a-f0-9]$":
-     type: object
+     unevaluatedProperties: false
+ 
+ allOf:
 -- 
 2.37.3
 
