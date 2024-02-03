@@ -4,44 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D23EC4828F
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:30:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFFF0C4828F
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i+NePb+tDtys7YaveVS7AamafUdy+2wLqUQuSaUSdos=; b=oKQxRRWCrj8Ayn
-	xIQRAXTwD3PRoUKLOO70A1PETYfJcXJ3QUCS0H1cpBSD6PWJhIITBCBBIpR8PSBXvjVKKWqfxUz+u
-	w41gDE9HXpNub/pEGSOEZuIF/LHGa6GxvIuNE2QRBN8ZWa08/blhJLyMVedpgcMQ3qrCGpZBnEdo+
-	7Zg7Qq/88EeWnAzGON9tmknb3BmtP6apgTZNwW8pEassfXoes+nL/Lyk+UUJxpmR2pXg6WVXpAXU/
-	z+JcfDgohFGTUyySduy66IgfPcjBbtNdK9d8eDi+clFUVrUakIvmRoc9P82WJG3I9YC6gdRBDWsVe
-	iOjEw+H0fYDNgt/Tc4nw==;
+	List-Owner; bh=qkcs+r4UheT2BDQ21Pl1Krq+AjEukC8uFPjC0uOQKig=; b=KU+UelXtK/pp7n
+	v7m9q7mIG06dTFjKKeEfhAbWLFuEn+mXNwyJEBdZ+eEscQm3r/rFrZnRzPYh2ivZShYBS46XwO8M1
+	x1qaxnXHOgmx9zzPh/fva6/El1HxPfyUAB63xJYdb299vnlLwFhR++dpG8lFOipJPnbSfzUkicrxD
+	c89xx5Vp+JP+2VuBS/hi6bHnejYlRmfa3Yh47GsyZk/HcCJlk05q7rzfEB3v+fpxo4KYuvoUtRC6y
+	0q+C0ac86KfXp9R/XGGYqH6koOTFhqu1arMpdw9NIN+BhAIZlWvLslmnFmaU6VQsipIBzxlwusXyT
+	GPyGQbk+c+tPiSoFWIIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3v8-0000000Dx6U-3Dwh;
-	Sat, 03 Feb 2024 00:30:10 +0000
-Received: from lpdvsmtp11.broadcom.com ([192.19.166.231] helo=relay.smtp-ext.broadcom.com)
+	id 1rW3vP-0000000DxHm-1MZ6;
+	Sat, 03 Feb 2024 00:30:27 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3ua-0000000Dwdj-3etY;
-	Sat, 03 Feb 2024 00:29:47 +0000
+	id 1rW3ur-0000000DwsW-39v4;
+	Sat, 03 Feb 2024 00:29:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=aVTx8NmI279qyMHsiYWgjkWJltxhcWDLITolixCPC/s=; b=pNT8X0inrjY2/ggKMekyJAKD5m
+	jtGWM/rOJum7u/AgUSE2kPPa3/hlMNQ07GJAjwIurnKoctUSErstoMggo50A6FuJfof/zD18ShTOZ
+	4+GfqPUG7U4ph9YFrLQM5rMWbGfuX3QSPDp6xrLlNac8GMUsTvqs7fHIDaWfL62afRH78GfaI7rj3
+	q6pXE52oIXKtYCSFdRtubX1BGN7NR/l21EgtSvg9PJ+e6x6gfgVoNsqTDydTHAsubR8MqRERNK46S
+	kTnvG/i4sLzIYMrvGm/0nEiP5xlNkRSWs+kChJhxusChaXvo2+amvikYi97ZycrOJ5Hv59RSxmorZ
+	90Eeh7Hg==;
+Received: from lpdvsmtp11.broadcom.com ([192.19.166.231] helo=relay.smtp-ext.broadcom.com)
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rW3uk-0000000ALTc-2J8K;
+	Sat, 03 Feb 2024 00:29:51 +0000
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 1AA05C0019BC;
-	Fri,  2 Feb 2024 16:29:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 1AA05C0019BC
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 43320C001C89;
+	Fri,  2 Feb 2024 16:29:44 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 43320C001C89
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1706920176;
-	bh=rHgDo1RKEQeKn1A0o+gadEkZReIynFyOZSruP7Uclbw=;
+	s=dkimrelay; t=1706920184;
+	bh=oYWu5Fo1F0+7WCqhPKRqpGmYX5+YscXs0w2BLbY2DiQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YMSOX+OLBaxYUxdfEaqMtA8//BYlesGFGKHuZaVAu6lq/yoBtpOle7Pa/zSuDiYB/
-	 iQGae9yacVQymVany2+tpQhE7Ug1VPTaxDnnyFnM9zNw6R5rscEdgrqJtqgz88UR9M
-	 L6eWU40IDbTJqfGzGI7t/O1+sHpK6VdRRbdI1mZw=
+	b=HbftFuFpjR7830bsBF/2j9Qdq7mRKEkN9FA1o1PTlAT6Ls2omsvXj9V71I+nLbXmK
+	 oPgWUth5QCxpRyG8ZE4lNLwGKgLAkQ0W3W3bbASQZxAmZVqLfRo+4/slP5RQS/EKO4
+	 00n+k/iE5SCbt0di86f5a4vuy3c/gnasIbnS40VQ=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id A855718041CAC4;
-	Fri,  2 Feb 2024 16:29:34 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id D179218041CAC4;
+	Fri,  2 Feb 2024 16:29:42 -0800 (PST)
 From: William Zhang <william.zhang@broadcom.com>
 To: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
@@ -54,25 +68,24 @@ Cc: f.fainelli@gmail.com,
 	kamal.dasu@broadcom.com,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
 	David Regan <dregan@broadcom.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	William Zhang <william.zhang@broadcom.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Brian Norris <computersforpeace@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Florian Fainelli <florian.fainelli@broadcom.com>
-Subject: [PATCH v4 08/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
-Date: Fri,  2 Feb 2024 16:28:29 -0800
-Message-Id: <20240203002834.171462-9-william.zhang@broadcom.com>
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH v4 11/12] mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+Date: Fri,  2 Feb 2024 16:28:32 -0800
+Message-Id: <20240203002834.171462-12-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20240203002834.171462-1-william.zhang@broadcom.com>
 References: <20240203002834.171462-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_162937_391127_FA9B56AD 
-X-CRM114-Status: GOOD (  22.23  )
+X-CRM114-CacheID: sfid-20240203_002947_110472_40B07E42 
+X-CRM114-Status: GOOD (  15.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,143 +102,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The BCMBCA broadband SoC integrates the NAND controller differently than
-STB, iProc and other SoCs.  It has different endianness for NAND cache
-data.
+From: David Regan <dregan@broadcom.com>
 
-Add a SoC read data bus shim for BCMBCA to meet the specific SoC need
-and performance improvement using the optimized memcpy function on NAND
-cache memory.
+fix return type for exec_op reset and status detect helper functions
 
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
+Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+Signed-off-by: David Regan <dregan@broadcom.com>
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: David Regan <dregan@broadcom.com>
+Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
 ---
 
-Changes in v4: None
-Changes in v3:
-- Updated bcmbca_read_data_bus comment
+Changes in v4:
+- Fix the commit id in the fixes tag
 
+Changes in v3: None
 Changes in v2:
-- Drop the is_param argument to the read data bus function now that we
-have the exec_op API to read the parameter page and ONFI data
-- Remove be32_to_cpu from brcmnand_read_data_bus
+- Added to patch series
 
- drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c | 27 +++++++++++++++++++++
- drivers/mtd/nand/raw/brcmnand/brcmnand.c    | 20 ++++++++++++---
- drivers/mtd/nand/raw/brcmnand/brcmnand.h    |  2 ++
- 3 files changed, 46 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-index 3e2f3b79788d..7ad3e7a98f97 100644
---- a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-@@ -26,6 +26,18 @@ enum {
- 	BCMBCA_CTLRDY		= BIT(4),
- };
- 
-+#if defined(CONFIG_ARM64)
-+#define ALIGN_REQ		8
-+#else
-+#define ALIGN_REQ		4
-+#endif
-+
-+static inline bool bcmbca_nand_is_buf_aligned(void *flash_cache,  void *buffer)
-+{
-+	return IS_ALIGNED((uintptr_t)buffer, ALIGN_REQ) &&
-+				IS_ALIGNED((uintptr_t)flash_cache, ALIGN_REQ);
-+}
-+
- static bool bcmbca_nand_intc_ack(struct brcmnand_soc *soc)
- {
- 	struct bcmbca_nand_soc *priv =
-@@ -56,6 +68,20 @@ static void bcmbca_nand_intc_set(struct brcmnand_soc *soc, bool en)
- 	brcmnand_writel(val, mmio);
- }
- 
-+static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
-+				 void __iomem *flash_cache,  u32 *buffer, int fc_words)
-+{
-+	/*
-+	 * memcpy can do unaligned aligned access depending on source
-+	 * and dest address, which is incompatible with nand cache. Fallback
-+	 * to the memcpy_fromio in such case
-+	 */
-+	if (bcmbca_nand_is_buf_aligned((void *)flash_cache, buffer))
-+		memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
-+	else
-+		memcpy_fromio((void *)buffer, flash_cache, fc_words * 4);
-+}
-+
- static int bcmbca_nand_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -73,6 +99,7 @@ static int bcmbca_nand_probe(struct platform_device *pdev)
- 
- 	soc->ctlrdy_ack = bcmbca_nand_intc_ack;
- 	soc->ctlrdy_set_enabled = bcmbca_nand_intc_set;
-+	soc->read_data_bus = bcmbca_read_data_bus;
- 
- 	return brcmnand_probe(pdev, soc);
- }
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 8faca43ae1ff..73fdf7ce21aa 100644
+index 8c1489ff7bd6..7ce2b267676f 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -851,6 +851,20 @@ static inline u32 edu_readl(struct brcmnand_controller *ctrl,
- 	return brcmnand_readl(ctrl->edu_base + offs);
+@@ -625,7 +625,7 @@ enum {
+ /* Only for v7.2 */
+ #define	ACC_CONTROL_ECC_EXT_SHIFT		13
+ 
+-static u8 brcmnand_status(struct brcmnand_host *host);
++static int brcmnand_status(struct brcmnand_host *host);
+ 
+ static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctrl)
+ {
+@@ -1749,7 +1749,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
+ 				 INTFC_FLASH_STATUS;
  }
  
-+static inline void brcmnand_read_data_bus(struct brcmnand_controller *ctrl,
-+					  void __iomem *flash_cache, u32 *buffer, int fc_words)
-+{
-+	struct brcmnand_soc *soc = ctrl->soc;
-+	int i;
-+
-+	if (soc->read_data_bus) {
-+		soc->read_data_bus(soc, flash_cache, buffer, fc_words);
-+	} else {
-+		for (i = 0; i < fc_words; i++)
-+			buffer[i] = brcmnand_read_fc(ctrl, i);
-+	}
-+}
-+
- static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
+-static u8 brcmnand_status(struct brcmnand_host *host)
++static int brcmnand_status(struct brcmnand_host *host)
  {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -1760,7 +1760,7 @@ static u8 brcmnand_status(struct brcmnand_host *host)
+ 	return brcmnand_waitfunc(chip);
+ }
  
-@@ -1975,7 +1989,7 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
+-static u8 brcmnand_reset(struct brcmnand_host *host)
++static int brcmnand_reset(struct brcmnand_host *host)
  {
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
- 	struct brcmnand_controller *ctrl = host->ctrl;
--	int i, j, ret = 0;
-+	int i, ret = 0;
+ 	struct nand_chip *chip = &host->chip;
  
- 	brcmnand_clear_ecc_addr(ctrl);
+@@ -2492,11 +2492,14 @@ static int brcmnand_exec_op(struct nand_chip *chip,
  
-@@ -1988,8 +2002,8 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
- 		if (likely(buf)) {
- 			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
+ 	if (brcmnand_op_is_status(op)) {
+ 		status = op->instrs[1].ctx.data.buf.in;
+-		*status = brcmnand_status(host);
++		ret = brcmnand_status(host);
++		if (ret < 0)
++			return ret;
++
++		*status = ret & 0xFF;
  
--			for (j = 0; j < FC_WORDS; j++, buf++)
--				*buf = brcmnand_read_fc(ctrl, j);
-+			brcmnand_read_data_bus(ctrl, ctrl->nand_fc, buf, FC_WORDS);
-+			buf += FC_WORDS;
- 
- 			brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
- 		}
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-index 928114c0be5e..7261a69989fe 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-@@ -24,6 +24,8 @@ struct brcmnand_soc {
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
- 				 bool is_param);
-+	void (*read_data_bus)(struct brcmnand_soc *soc, void __iomem *flash_cache,
-+				  u32 *buffer, int fc_words);
- 	const struct brcmnand_io_ops *ops;
- };
- 
+ 		return 0;
+-	}
+-	else if (brcmnand_op_is_reset(op)) {
++	} else if (brcmnand_op_is_reset(op)) {
+ 		ret = brcmnand_reset(host);
+ 		if (ret < 0)
+ 			return ret;
 -- 
 2.37.3
 
