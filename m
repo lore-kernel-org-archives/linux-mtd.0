@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4891C48295
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF37C48295
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 00:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SvS1kgExS6e7Nzs52iMgrECU7u1t+OfzNWpC9u2kxt0=; b=pnfgwjPyXhqbhy
-	jcd00sdpcIqHeCoxWnf2+58c9R4RGyD+wEHT8+GG4Sd8LPUn8S/VtSe8eit1QFXxAetp+bmuB4I6L
-	T12KMHe09SvayoWnmY6ZxJ0bogoCCwHH5I5Ucm3jl+XN+pPwv9xwkCxy0fU/yU3nMHOdOYPzSWGvh
-	yxQfXgaa9KDpo3rkJnpcQCpL0pZ4eURQ15PhR6cm7gZc3isAa4Tv2DUhC4kngfkzO0wARFOkPuJ4i
-	g0hsT9nueG7oke7JJdwAlH6lXPwR/zRyevClVDG29QBxDlU3ZFVUmRtI6EYWZ/Jo6FIIr7lMIO4x8
-	JXFavn0Kh0VGwQysG4tg==;
+	List-Owner; bh=GrVU//JuqckWEiCfbYfDldM6v6t184tD19+fulvPMas=; b=PElu38OrUI5x/+
+	l7eNDK7/zcQl3GIt+8AR5xLC/jmvQZ/2QvWGcwn8V62CUealC0baLvEVSC3/phbGYZWTwpJF+OecC
+	K14Xsk1HZgefJoSss20lcgfiLvyN+hC+N3V0levIDNUgAkfKe8n17f8y+dFxYL+cD9UAB4F7Kbicl
+	TOoktVPApblRQqvR/pOpF5kMjQBNSkOSvnE4CzjBkRmPqhUjNPCPBGBdQlPKYlOsjFO8Y+HsQhUD6
+	Pc2E7DpAx3LNE5EOR0NGy6js2yMmwGRSIgFFhBY5Xxf5LdK9JfJJqvZ8mcxXf+kdNQ0ZVkE13G3nG
+	ZNSeFmV7KNEYKHIBDNqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3uB-0000000DwIM-0g6S;
-	Sat, 03 Feb 2024 00:29:11 +0000
-Received: from lpdvsmtp11.broadcom.com ([192.19.166.231] helo=relay.smtp-ext.broadcom.com)
+	id 1rW3uJ-0000000DwOA-2NXC;
+	Sat, 03 Feb 2024 00:29:19 +0000
+Received: from lpdvacalvio01.broadcom.com ([192.19.166.228] helo=relay.smtp-ext.broadcom.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3u8-0000000DwHR-0owb;
-	Sat, 03 Feb 2024 00:29:09 +0000
+	id 1rW3uF-0000000DwKs-2bnY;
+	Sat, 03 Feb 2024 00:29:16 +0000
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id AFA6EC001668;
-	Fri,  2 Feb 2024 16:29:07 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com AFA6EC001668
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 71E9CC0029C3;
+	Fri,  2 Feb 2024 16:29:14 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 71E9CC0029C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1706920147;
-	bh=s6uMo50V83lQTFPmBSTZbJWskTqu4gIvfj3LFjK0xHk=;
+	s=dkimrelay; t=1706920154;
+	bh=VYh+6T868Hjd9BlZA701iKMQ4aVmP1U0C12y+IHan7Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SYsPErs/LBSgVl54vY+9OxENj5P2edKlodbbaIvSW/ld25bUWhQgOLIiuqhBX6GXc
-	 eFJ61p8suOaZsO22pVY7v9NiFgsZxmy6UkwwHKGDfVtJl2L8fQ7ZppXP9aWQ6Uw288
-	 JFKXakzG4zkCGo/dmKPXuVmLNi37es760zhicSX0=
+	b=vxD3GewRgxTIuh2y78J8VlNUvDDF1RMhBY6AcWPOG5UDt5DotblfCfD3IW82sQ9Zp
+	 4OqK+KL6XYakLPsCNd5ka02MxYEHE7zt0rKpdja/fSCnDoBKvFzfCadxIKEG80A5rZ
+	 8hbkxWPeJ6gzROp528jZavr/BOBJMxOtRsGpy5Gc=
 Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 48C9418041CAC4;
-	Fri,  2 Feb 2024 16:29:06 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id EAF4718041CAC4;
+	Fri,  2 Feb 2024 16:29:12 -0800 (PST)
 From: William Zhang <william.zhang@broadcom.com>
 To: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
@@ -55,7 +55,6 @@ Cc: f.fainelli@gmail.com,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
 	William Zhang <william.zhang@broadcom.com>,
-	David Regan <dregan@broadcom.com>,
 	devicetree@vger.kernel.org,
 	Brian Norris <computersforpeace@gmail.com>,
 	linux-kernel@vger.kernel.org,
@@ -66,16 +65,16 @@ Cc: f.fainelli@gmail.com,
 	Richard Weinberger <richard@nod.at>,
 	Kamal Dasu <kdasu.kdev@gmail.com>,
 	Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v4 01/12] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
-Date: Fri,  2 Feb 2024 16:28:22 -0800
-Message-Id: <20240203002834.171462-2-william.zhang@broadcom.com>
+Subject: [PATCH v4 02/12] dt-bindings: mtd: brcmnand: Add WP pin connection property
+Date: Fri,  2 Feb 2024 16:28:23 -0800
+Message-Id: <20240203002834.171462-3-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20240203002834.171462-1-william.zhang@broadcom.com>
 References: <20240203002834.171462-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_162908_291059_8EDFEBC8 
-X-CRM114-Status: GOOD (  15.61  )
+X-CRM114-CacheID: sfid-20240202_162915_702750_4A7DAEDA 
+X-CRM114-Status: GOOD (  11.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,88 +91,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update the descriptions to reflect different families of broadband SoC and
-use the general name bcmbca for ARM based SoC.
-
-Remove the requirement of interrupts property to reflect the driver
-code and only require interrupt-names when interrupts property present.
-
-Also add myself to the list of maintainers.
+Add brcm,wp-not-connected property to have an option for disabling this
+feature on broadband board design that does not connect WP pin.
 
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: David Regan <dregan@broadcom.com>
 
 ---
 
 Changes in v4:
-- Split the yaml changes into three patches. This is the first one.
+- Move the WP pin property to this separate patch and change it to
+boolean type.
 
-Changes in v3:
-- Update brcm,nand-use-wp description
-- Revert the description change to BCM63168 SoC-specific NAND controller
+Changes in v3: None
+Changes in v2: None
 
-Changes in v2:
-- Revert the new compatible string nand-bcmbca
-- Drop the BCM63168 compatible fix to avoid any potential ABI
-incompatibility issue
-- Simplify the explanation for brcm,nand-use-wp
-- Keep the interrupt name requirement when interrupt number is specified
-
- .../devicetree/bindings/mtd/brcm,brcmnand.yaml      | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-index f57e96374e67..e54ca08a798a 100644
+index e54ca08a798a..d0168d55c73e 100644
 --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
 +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-@@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
- maintainers:
-   - Brian Norris <computersforpeace@gmail.com>
-   - Kamal Dasu <kdasu.kdev@gmail.com>
-+  - William Zhang <william.zhang@broadcom.com>
+@@ -113,6 +113,14 @@ properties:
+       earlier versions of this core that include WP
+     type: boolean
  
- description: |
-   The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
-@@ -18,9 +19,10 @@ description: |
-   supports basic PROGRAM and READ functions, among other features.
- 
-   This controller was originally designed for STB SoCs (BCM7xxx) but is now
--  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
--  iProc/Cygnus. Its history includes several similar (but not fully register
--  compatible) versions.
-+  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
-+  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
-+  Its history includes several similar (but not fully register compatible)
-+  versions.
- 
-   -- Additional SoC-specific NAND controller properties --
- 
-@@ -53,7 +55,7 @@ properties:
-               - brcm,brcmnand-v7.2
-               - brcm,brcmnand-v7.3
-           - const: brcm,brcmnand
--      - description: BCM63138 SoC-specific NAND controller
-+      - description: BCMBCA SoC-specific NAND controller
-         items:
-           - const: brcm,nand-bcm63138
-           - enum:
-@@ -177,6 +179,8 @@ allOf:
-             - const: iproc-idm
-             - const: iproc-ext
-   - if:
-+      required:
-+        - interrupts
-       properties:
-         interrupts:
-           minItems: 2
-@@ -189,7 +193,6 @@ unevaluatedProperties: false
- required:
-   - reg
-   - reg-names
--  - interrupts
- 
- examples:
-   - |
++  brcm,wp-not-connected:
++    description:
++      Use this property when board design does not connect controller's
++      NAND_WPb pin to NAND chip's WP_L pin and disable the write
++      protection feature. By default, controller assumes the pin is
++      connected and feature is used.
++    $ref: /schemas/types.yaml#/definitions/flag
++
+ patternProperties:
+   "^nand@[a-f0-9]$":
+     type: object
 -- 
 2.37.3
 
