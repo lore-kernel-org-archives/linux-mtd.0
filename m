@@ -4,88 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2035C48291
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 05:48:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF2F7C4828F
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 14:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vDXtyo6g6+HXhGvNgOeVcMTeFDqNGMu5JtVMB/Kyrjw=; b=ohMNWC0kzIf5j7
-	oMmeWrOHinhIh7aKfECsUPg+FxG9ZfYg16xsNxUr5prhZfsrIcN0HMOaf13NYf+vDHk0+uk7j5oYR
-	7QyXWNwCgZZ0zCWyJyQehInE1k02+X0DK1MMx3cjBNslqleY0mnJFTBvq2uWOhSeMqi1sqLcWtRcC
-	//XPJubF8cK5kJ0Sezzr3kt/jm1M5BGKqnBuJjPPOT9thRhjaLfd7cFCx+ocvn5T0+p9iR0+KCuCj
-	FQbK83IT7jV72XoatT8U2qa1EkHJiFiSab22tx2JCBgLoqhRhZ/pb0rsuu2pDnri3WvEdmzgiZ5rt
-	bSpF2/qEtiyIoKZlFC1w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=t3xyaEXYTdy1TsrKjvap2SorEGMzguNCu6RI/ZsICRw=; b=LkUrDaf/JheHd7L1M3wvRLLiLu
+	S2kDCrK0E7iPZYhmCXdAVi8SNRf+WROG0SCKFtJg9kOd9rqM4QPXJ03PWM34rtuLwTVFj98jKkCHj
+	Og6gy1zwPe79+CemE06Gw84WPTnOk6B/QjMWfeaFgXNzNRmlxJ7q8Okb3oMmpXhglwmCKQzQhPdRS
+	PsjogfC2ofB9WI9mVvO90b1ulOZD9zFnAhzaXuUBaSSaojVyt9rwkSkveDiJyygtKkFWab/ltWYDv
+	N1T1Zwi7+Cr6hsbo9aYpurjYBM0MJAdnLb89gynUYPWtsX0b/oaZkMr1o+0N1x4uhgdEBSrQQBAq/
+	rozBACBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW8tK-0000000FTFM-09TU;
-	Sat, 03 Feb 2024 05:48:38 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1rWHLI-0000000GeQB-13Z9;
+	Sat, 03 Feb 2024 14:50:04 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3ur-0000000DwsS-2QBS;
-	Sat, 03 Feb 2024 00:29:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=JbJskgU16IKX1o+zwN+em6SbRZySqO1hl82127p0go8=; b=fjFeoj4Eq1eddU8UoZgNjpZ4lX
-	UZye7PIiXUE6fp4v5+cNeukVFi0S/nwdQJ27xYSeYyKx5acld5kB6RxAm8kIGESWMK53HCa/1eig6
-	7xneNVFn7qSKVthcoGVGlKRKkvlTGiVr6jxxPXdzcuzR7M4V4ITw/RVMGF3JJKsOtkoQEDz975BXr
-	eS190/m7KDC/d6cfOJ+HRwlB3Bi3drjcJvTMQFRY4xR+6TVRiZMsaDGVL47m42MSUs2NDUmeJI/OR
-	LLGdJ/+tvPXRDqRKPBxrjv/bHGMJE1dr16QlwDFeFCjhIjAl/gvr3ihFT2dCO47RQvQJA4Ys/f2rU
-	qJHZj11A==;
-Received: from saphodev.broadcom.com ([192.19.144.205] helo=relay.smtp-ext.broadcom.com)
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW3uk-0000000ALTC-0oLD;
-	Sat, 03 Feb 2024 00:29:51 +0000
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 63CA3C0000EC;
-	Fri,  2 Feb 2024 16:29:41 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 63CA3C0000EC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1706920181;
-	bh=UPiy9NotMMhw6RetrVpXpgqiL4XDR2ya1PJkJ281Hf8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AlOW1xN+lDL5uGwFqHKc4uMARbK5v94zuXoKF0hP1LhOT+WAHAL7MkoSU+zbEHFxx
-	 VtPNJTcVDwzuxLCnN0z/yyw6F1YD8Ewj79abbz4NboHDpX5i6UaYD4IblJ7qnGCTXA
-	 COFjVniYLx4GhQvguR6/bT08YNL4ksYPLVdDrm/k=
-Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id BE1E518041CAC4;
-	Fri,  2 Feb 2024 16:29:39 -0800 (PST)
-From: William Zhang <william.zhang@broadcom.com>
-To: Linux MTD List <linux-mtd@lists.infradead.org>,
+	id 1rWHLD-0000000GeOh-0U5O;
+	Sat, 03 Feb 2024 14:50:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 98FCB602E1;
+	Sat,  3 Feb 2024 14:49:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D780C433F1;
+	Sat,  3 Feb 2024 14:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706971797;
+	bh=5ctG5h8mEiQAu9NdNXA4+XFyWIp25c6pytmgpTEtD2U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uSh5vQ8usObzfCmqjYrQoE5B1ZtZ3tDCGsR4EBCuLPWMoozl4vy84blzVU9AJA4XT
+	 puueVthAvgqm5TXxSI5NPwIxq4W6cgJg7duKCBUpDO/9cwHe+hKSRcjaNi73dZ2ZzQ
+	 tQeMHvHKBfkVKea7kVSeA42jRL4P5ocf4d1Mh5DhoZ/Oa1FV8YdXsdRqcJLCefdL0w
+	 QtLYEnmrF0XjgrXbwsc8543J0UY3duyIrQLjAj22Iu20KE0cArltNnSjnHgUpra/ri
+	 KFmQk1qcxDQb4xNzOjkDGE2NGnef7J4tHp81ui6URq920Ghs5Hs5BTgNUH4ELNAnf2
+	 rCb8buZ0u6CYg==
+Date: Sat, 3 Feb 2024 14:49:50 +0000
+From: Conor Dooley <conor@kernel.org>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
-	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
-Cc: f.fainelli@gmail.com,
-	kursad.oney@broadcom.com,
-	joel.peshkin@broadcom.com,
-	anand.gore@broadcom.com,
-	dregan@mail.com,
-	kamal.dasu@broadcom.com,
-	tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	David Regan <dregan@broadcom.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-kernel@vger.kernel.org,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+	f.fainelli@gmail.com, kursad.oney@broadcom.com,
+	joel.peshkin@broadcom.com, anand.gore@broadcom.com, dregan@mail.com,
+	kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com, devicetree@vger.kernel.org,
 	Brian Norris <computersforpeace@gmail.com>,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH v4 10/12] mtd: rawnand: brcmnand: Support write protection setting from dts
-Date: Fri,  2 Feb 2024 16:28:31 -0800
-Message-Id: <20240203002834.171462-11-william.zhang@broadcom.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20240203002834.171462-1-william.zhang@broadcom.com>
+	linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 03/12] dt-bindings: mtd: brcmnand: Add ecc strap
+ property
+Message-ID: <20240203-expenses-tarmac-c564bc7ae34f@spud>
 References: <20240203002834.171462-1-william.zhang@broadcom.com>
+ <20240203002834.171462-4-william.zhang@broadcom.com>
 MIME-Version: 1.0
+In-Reply-To: <20240203002834.171462-4-william.zhang@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240203_002946_849285_433D14A7 
-X-CRM114-Status: GOOD (  13.89  )
+X-CRM114-CacheID: sfid-20240203_064959_266454_6F5613B1 
+X-CRM114-Status: GOOD (  20.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,54 +79,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7704082108658524536=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The write protection feature is controlled by the module parameter wp_on
-with default set to enabled. But not all the board use this feature
-especially in BCMBCA broadband board. And module parameter is not
-sufficient as different board can have different option.  Add a device
-tree property and allow this feature to be configured through the board
-dts on per board basis.
 
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Reviewed-by: Kamal Dasu <kamal.dasu@broadcom.com>
-Reviewed-by: David Regan <dregan@broadcom.com>
+--===============7704082108658524536==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="z/AOuDAE/L8fKLSt"
+Content-Disposition: inline
 
----
 
-Changes in v4:
-- Use the new brcm,wp-not-connected property based on the dts binding
-change
+--z/AOuDAE/L8fKLSt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes in v3: None
-Changes in v2: None
+On Fri, Feb 02, 2024 at 04:28:24PM -0800, William Zhang wrote:
+> Add brcm,nand-ecc-use-strap to get ecc and spare area size settings from
+> board boot strap for broadband board designs because they do not specify
+> ecc setting in dts but rather using the strap setting.
+>=20
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+>=20
+> ---
+>=20
+> Changes in v4:
+> - Move ecc strap property to this separate patch and remove some
+> non-binding related text from the description
+>=20
+> Changes in v3: None
+> Changes in v2: None
+>=20
+>  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/D=
+ocumentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> index d0168d55c73e..2599d902ec3a 100644
+> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+> @@ -147,6 +147,14 @@ patternProperties:
+>            layout.
+>          $ref: /schemas/types.yaml#/definitions/uint32
+> =20
+> +      brcm,nand-ecc-use-strap:
+> +        description:
+> +          This flag indicates the ecc strength and spare area size should
+> +          be retrieved from the SoC NAND boot strap setting instead of
+> +          nand-ecc-strength and brcm,nand-oob-sector-size or auto detect=
+ion.
 
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I'm still on the fence about this being overly prescriptive about the
+operating systems behaviour. I think it would be good to say why the
+strap values are better than those explicitly provided in DT rather than
+just saying "these strap values should be used".
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index efeee9e80213..8c1489ff7bd6 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -3218,6 +3218,10 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	/* Disable XOR addressing */
- 	brcmnand_rmw_reg(ctrl, BRCMNAND_CS_XOR, 0xff, 0, 0);
- 
-+	/* Check if the board connects the WP pin */
-+	if (of_property_read_bool(dn, "brcm,wp-not-connected"))
-+		wp_on = 0;
-+
- 	if (ctrl->features & BRCMNAND_HAS_WP) {
- 		/* Permanently disable write protection */
- 		if (wp_on == 2)
--- 
-2.37.3
+> +          This is commonly used by the BCMBCA SoC board design.
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +
+>      unevaluatedProperties: false
+> =20
+>  allOf:
+> --=20
+> 2.37.3
+>=20
 
+--z/AOuDAE/L8fKLSt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb5SjgAKCRB4tDGHoIJi
+0tWnAP9mesDP/aST3xwWYHD8YvKXyojpcT4bQMcvlk7eIb6bLQEA++HFzMX/8fDp
+xvzyDoEeIOF7mwJLYnJs2aHZBWDl3Qc=
+=qcHg
+-----END PGP SIGNATURE-----
+
+--z/AOuDAE/L8fKLSt--
+
+
+--===============7704082108658524536==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7704082108658524536==--
+
