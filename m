@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF2F7C4828F
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 14:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68F4AC4828F
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Feb 2024 14:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=t3xyaEXYTdy1TsrKjvap2SorEGMzguNCu6RI/ZsICRw=; b=LkUrDaf/JheHd7L1M3wvRLLiLu
-	S2kDCrK0E7iPZYhmCXdAVi8SNRf+WROG0SCKFtJg9kOd9rqM4QPXJ03PWM34rtuLwTVFj98jKkCHj
-	Og6gy1zwPe79+CemE06Gw84WPTnOk6B/QjMWfeaFgXNzNRmlxJ7q8Okb3oMmpXhglwmCKQzQhPdRS
-	PsjogfC2ofB9WI9mVvO90b1ulOZD9zFnAhzaXuUBaSSaojVyt9rwkSkveDiJyygtKkFWab/ltWYDv
-	N1T1Zwi7+Cr6hsbo9aYpurjYBM0MJAdnLb89gynUYPWtsX0b/oaZkMr1o+0N1x4uhgdEBSrQQBAq/
-	rozBACBg==;
+	bh=+itFxIuyz6GEhE+2ywH77uo05yrTXYNuyVc6tFntF3M=; b=MILR40vhYielweLhENBgdwvNgE
+	upL53X3c5Mw3iiMYwf1xh5btPW7k5/2Gn/LCMMg51LwTLYUdCEwu0TNDx6yac8V1OQdaHb3bcr53S
+	8HkSc3blQ8CZ3v0NrMhhC79EbE2BtlOOLi1rWGpGOVHe3Fn47hEoPdPQGhWID9E1PmbnR59WMRsvD
+	WZmFDdwul03ssdtpirtKjRXURbQITPeeLsglw2kfk7KOsd942dXc/M7X33LiTYSgTEd2wwKU39FXX
+	7gieTeZ3xZnJ8MRsK+VlsfkRynzyu3/hlNcl/dqDqopI0xx9mD3Qf1x1SUDj0zgENRyMZFyU9ulsT
+	5Pia3i2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWHLI-0000000GeQB-13Z9;
-	Sat, 03 Feb 2024 14:50:04 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rWHMT-0000000Geds-0h1K;
+	Sat, 03 Feb 2024 14:51:17 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWHLD-0000000GeOh-0U5O;
-	Sat, 03 Feb 2024 14:50:00 +0000
+	id 1rWHMP-0000000GecV-3CRp;
+	Sat, 03 Feb 2024 14:51:15 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 98FCB602E1;
-	Sat,  3 Feb 2024 14:49:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D780C433F1;
-	Sat,  3 Feb 2024 14:49:52 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 33D45CE2A74;
+	Sat,  3 Feb 2024 14:51:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88AB0C433C7;
+	Sat,  3 Feb 2024 14:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706971797;
-	bh=5ctG5h8mEiQAu9NdNXA4+XFyWIp25c6pytmgpTEtD2U=;
+	s=k20201202; t=1706971867;
+	bh=kZrg3ai602uwcG9r7fcunazV+Lut/tm/tBOnYvdvVwc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uSh5vQ8usObzfCmqjYrQoE5B1ZtZ3tDCGsR4EBCuLPWMoozl4vy84blzVU9AJA4XT
-	 puueVthAvgqm5TXxSI5NPwIxq4W6cgJg7duKCBUpDO/9cwHe+hKSRcjaNi73dZ2ZzQ
-	 tQeMHvHKBfkVKea7kVSeA42jRL4P5ocf4d1Mh5DhoZ/Oa1FV8YdXsdRqcJLCefdL0w
-	 QtLYEnmrF0XjgrXbwsc8543J0UY3duyIrQLjAj22Iu20KE0cArltNnSjnHgUpra/ri
-	 KFmQk1qcxDQb4xNzOjkDGE2NGnef7J4tHp81ui6URq920Ghs5Hs5BTgNUH4ELNAnf2
-	 rCb8buZ0u6CYg==
-Date: Sat, 3 Feb 2024 14:49:50 +0000
+	b=kyU/GFd+9pKR7Kt/css9MJdmrcVnZ31dprRIGBrXJASerebXa55nK2X+PPYZ2+Kby
+	 jYc4JUwHZeOn7OozmHC3BHF0mOaSCRiCEr3y60yFSoyFvtLCeLcVZuvQtiSQDBtKV2
+	 0cVHAOMes0FI5vc0pf1SsLRzj5yf2xA/FycdT4GZGLAZPlYFgMWf4GK12E3gSPfiWm
+	 e4qx9TuXucn0q3Trv0+QSgEgyq+BhvdGeQNR9ztU29Y2KhWGtc37brmKRfWAvbylpL
+	 YUiPCCfpu2yfCgFSptOr9qtgLJIhSYg3zY/sFBXAbxymoKdmlXMLDG4mEnK91AJmTd
+	 0trNq/P0TLk6A==
+Date: Sat, 3 Feb 2024 14:51:01 +0000
 From: Conor Dooley <conor@kernel.org>
 To: William Zhang <william.zhang@broadcom.com>
 Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
@@ -58,16 +58,17 @@ Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Kamal Dasu <kdasu.kdev@gmail.com>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 03/12] dt-bindings: mtd: brcmnand: Add ecc strap
- property
-Message-ID: <20240203-expenses-tarmac-c564bc7ae34f@spud>
+Subject: Re: [PATCH v4 02/12] dt-bindings: mtd: brcmnand: Add WP pin
+ connection property
+Message-ID: <20240203-unselfish-rewire-78cc0d3db0db@spud>
 References: <20240203002834.171462-1-william.zhang@broadcom.com>
- <20240203002834.171462-4-william.zhang@broadcom.com>
+ <20240203002834.171462-3-william.zhang@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <20240203002834.171462-4-william.zhang@broadcom.com>
+In-Reply-To: <20240203002834.171462-3-william.zhang@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240203_064959_266454_6F5613B1 
-X-CRM114-Status: GOOD (  20.76  )
+X-CRM114-CacheID: sfid-20240203_065113_994738_FDB17667 
+X-CRM114-Status: UNSURE (   8.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,87 +80,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7704082108658524536=="
+Content-Type: multipart/mixed; boundary="===============2758567857748825193=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============7704082108658524536==
+--===============2758567857748825193==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="z/AOuDAE/L8fKLSt"
+	protocol="application/pgp-signature"; boundary="qrjKC5ASGNxluNoU"
 Content-Disposition: inline
 
 
---z/AOuDAE/L8fKLSt
+--qrjKC5ASGNxluNoU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 04:28:24PM -0800, William Zhang wrote:
-> Add brcm,nand-ecc-use-strap to get ecc and spare area size settings from
-> board boot strap for broadband board designs because they do not specify
-> ecc setting in dts but rather using the strap setting.
+On Fri, Feb 02, 2024 at 04:28:23PM -0800, William Zhang wrote:
+> Add brcm,wp-not-connected property to have an option for disabling this
+> feature on broadband board design that does not connect WP pin.
 >=20
 > Signed-off-by: William Zhang <william.zhang@broadcom.com>
->=20
-> ---
->=20
-> Changes in v4:
-> - Move ecc strap property to this separate patch and remove some
-> non-binding related text from the description
->=20
-> Changes in v3: None
-> Changes in v2: None
->=20
->  Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/D=
-ocumentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> index d0168d55c73e..2599d902ec3a 100644
-> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> @@ -147,6 +147,14 @@ patternProperties:
->            layout.
->          $ref: /schemas/types.yaml#/definitions/uint32
-> =20
-> +      brcm,nand-ecc-use-strap:
-> +        description:
-> +          This flag indicates the ecc strength and spare area size should
-> +          be retrieved from the SoC NAND boot strap setting instead of
-> +          nand-ecc-strength and brcm,nand-oob-sector-size or auto detect=
-ion.
 
-I'm still on the fence about this being overly prescriptive about the
-operating systems behaviour. I think it would be good to say why the
-strap values are better than those explicitly provided in DT rather than
-just saying "these strap values should be used".
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-> +          This is commonly used by the BCMBCA SoC board design.
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +
->      unevaluatedProperties: false
-> =20
->  allOf:
-> --=20
-> 2.37.3
->=20
+Thanks,
+Conor.
 
---z/AOuDAE/L8fKLSt
+--qrjKC5ASGNxluNoU
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb5SjgAKCRB4tDGHoIJi
-0tWnAP9mesDP/aST3xwWYHD8YvKXyojpcT4bQMcvlk7eIb6bLQEA++HFzMX/8fDp
-xvzyDoEeIOF7mwJLYnJs2aHZBWDl3Qc=
-=qcHg
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZb5S1QAKCRB4tDGHoIJi
+0mOCAP9+H/eJznyn7suY07Ew8Ml+xZ9vSfwBboku/7M35uHXvgD/aybKwovhGgVC
+4DhLtmNGAk2tCCNzRnIEcGoX8bHOmwA=
+=E5iS
 -----END PGP SIGNATURE-----
 
---z/AOuDAE/L8fKLSt--
+--qrjKC5ASGNxluNoU--
 
 
---===============7704082108658524536==
+--===============2758567857748825193==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -169,5 +131,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============7704082108658524536==--
+--===============2758567857748825193==--
 
