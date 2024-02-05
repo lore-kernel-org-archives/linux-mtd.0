@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC218C4828D
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Feb 2024 14:28:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DEF8C4828D
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Feb 2024 14:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GywtRxouRSYXBDv6yBsuMBnB5WoV3aS7TUjkagF8dxw=; b=SSDI14Ml+HcDXT
-	c9kjmlCz/GZX0l3zrRFc8b+utXnA6XH+47TvblK7V7H7kN0jmt3BNVebdn7IyLQM/rP8x/wG9Q47e
-	cg4mRx/aBSQvH8++8tXtA2fCa/Qll8Ppu4/2o6nsCXKZAx/5OTEgHQ/UZalOPJI37tSLdIUdyUngK
-	3MfDrLDyqKXwfacFpVhZicL6RlLupQW4yIWpl3hF+Jp+3Lf0MojlMNzEufTjqhT7Zx0EffdE39eLM
-	Q5uRtNxgxZcceZeXrAIUn9bUHx83IY7Mxhs038lKltLf+lwHcHsHFERfy3OF8NvZ6lRVQTcA1g7SM
-	erEy78uoeYk6pNFBpAzw==;
+	List-Owner; bh=GNLB8D5Dh/Y55ocZ/kYwI+HAUqlFl+emhbHpjXNBBd8=; b=DG0woFy7ThaKdQ
+	cbek63eUzSsfg73+FgE4alM/jbUK7XwgZxigFdCM2+CCr+N1omxZd4frxeJgrAPZdiDSWdA7xyS8y
+	KsbnBnF5h9yPw87lzSTYc9ti3HgiR6G9XxyEQqKI16dnd0euV9AY15AEeoNmelVnjs5o8CpSUWCvV
+	Xi8wiZ620b0pFw+PSS0TUnuOSS04KN4iKbmgq6uF/h27lVPRB2cn5y/OcWC2H7Eljl0SvUX7Kt6p5
+	9+thXa6VjedGv4llhly73G14hBrBYqFxNPOWkNJvHIXOzqyaAnTnlXPP0iXZvBJVw1wBFz2bOSfqr
+	+/UEpnksFQMV5pzFqqvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWzxD-00000003bhA-1UTO;
-	Mon, 05 Feb 2024 14:28:11 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1rX08f-00000003e1P-1ptw;
+	Mon, 05 Feb 2024 14:40:01 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rWzx9-00000003bet-3HSG
+	id 1rX08b-00000003dy8-3ZRj
 	for linux-mtd@lists.infradead.org;
-	Mon, 05 Feb 2024 14:28:09 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32AFEE000E;
-	Mon,  5 Feb 2024 14:28:01 +0000 (UTC)
+	Mon, 05 Feb 2024 14:39:59 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E8CC36000E;
+	Mon,  5 Feb 2024 14:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707143282;
+	t=1707143992;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Rr8qzPIYqM+HdXpoa3bzvlmyjnTmSf9J/CC9t8G0s0A=;
-	b=U5DBarV1kWvF6kp6bsYh7pMLbNmHG365DTQi/YCihxMfxi3a94oiNCX0QoZem3hi/YJM1P
-	Dgpo1S7r2d+8hybPIBGTKY4JK6pSTMP5lO+krI1U049Qt1oEsOgbSGzWeq3oMgjnbmcIAB
-	AkOU7a9qwJnFbvgBqNAzSlEDe6HpQ8aLDX77UecgqHEZ8JgLcsv+xW8RWy+TBh/vpbwnyd
-	L2OP+pTXjafmMZQWKYE33jVBYFKOQvjfNU1Z3fzPVHH83J6i6yxmEpIGmDzUWeeM5mSksI
-	BrYJ07GDTL+HBVIaitm7ekLHQzHWm/jII1GAmQP2sA5bPybyv43/6h2mWEEWLA==
+	bh=URtlvilCKZIja+wEIGAtzdCBNORCDc/ZUlUfuI6MA0E=;
+	b=JZ5KTrPKCgnXa1FhR9uDobg6lmSJWT8m2zK7XK4W0ysjEnhkBHf+8la653i2W82z15KFPQ
+	TNSgW+xwxrWFnG4hCUEVGK0lxHNc6ALcNp8APqJvL3PbDTlE3hF11+V6K5m0Wl+4CnJVJG
+	npSUnjVh1aHGSHRef2hIqJKcnGZJ/YQuJdjN9T4qABXHbyF9aV+fGTjVdK3vLOSzzxTr6s
+	dOMphh+QVDp7fpVwKjiaDAQKlQmjDkfOGNuSZPGwSaSNpevvAYXa+l7EMGSBUztPRdnPnd
+	m38IDEKT1SWMBtdKJyMKdYx2bajQO9VDRPg1ks9wUAeegNU7s5FaTlYXxmrBqg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ezra Buehler <ezra@easyb.ch>,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Chuanhong Guo <gch981213@gmail.com>,
-	Dmitry Rokosov <ddrokosov@sberdevices.ru>,
-	Martin Kurbanov <mmkurbanov@sberdevices.ru>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Sridharan S N <quic_sridsn@quicinc.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: spinand: esmt: Extend IDs to 5 bytes
-Date: Mon,  5 Feb 2024 15:28:00 +0100
-Message-Id: <20240205142800.466649-1-miquel.raynal@bootlin.com>
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org
+Cc: kernel test robot <lkp@intel.com>,
+	Julia Lawall <julia.lawall@inria.fr>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	=?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH v2] mtd: Fix possible refcounting issue when going through partition nodes
+Date: Mon,  5 Feb 2024 15:39:51 +0100
+Message-Id: <20240205143951.543727-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240125200108.24374-3-ezra@easyb.ch>
+In-Reply-To: <20240104081446.126540-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'4bd14b2fd8a83a2f5220ba4ef323f741e11bfdfd'
+X-linux-mtd-patch-commit: b'5ab9bbf6c678444dd99afabd44665e7f04047cc5'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240205_062807_980172_457496E1 
-X-CRM114-Status: UNSURE (   9.87  )
+X-CRM114-CacheID: sfid-20240205_063958_065797_F06BAD2B 
+X-CRM114-Status: UNSURE (   8.70  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,34 +78,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2024-01-25 at 20:01:08 UTC, Ezra Buehler wrote:
-> From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> 
-> According to the datasheets, the ESMT chips in question will return a 5
-> byte long identification code where the last 3 bytes are the JEDEC
-> continuation codes (7Fh). Although, I would have expected 4 continuation
-> codes as Powerchip Semiconductor (C8h, corresponding to the parameter
-> page data) is located in bank 5 of the JEDEC database.
-> 
-> By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
-> flashes.
-> 
-> This fix allows the MT7688-based GARDENA smart Gateway to boot again.
-> 
-> Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
-> Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-> Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCAyMDI0LTAxLTA0IGF0IDA4OjE0OjQ2IFVUQywgTWlxdWVsIFJheW5hbCB3cm90ZToK
+PiBVbmRlciBub3JtYWwgY29uZGl0aW9ucywgdGhlIGxvb3AgZ29lcyBvdmVyIGFsbCBjaGlsZCBw
+YXJ0aXRpb25zLCBhbmQKPiAnYnJlYWtzJyB3aGVuIHRoZSByZWxldmFudCBwYXJ0aXRpb24gaXMg
+Zm91bmQuIEluIHRoaXMgY2FzZSB3ZSBnZXQgYQo+IHJlZmVyZW5jZSB0byB0aGUgcGFydGl0aW9u
+IG5vZGUgd2l0aG91dCBldmVyIHJlbGVhc2luZyBpdC4gSW5kZWVkLCByaWdodAo+IGFmdGVyIHRo
+ZSBtdGRfY2hlY2tfb2Zfbm9kZSgpIGZ1bmN0aW9uIHJldHVybnMsIHdlIGNhbGwgb2Zfbm9kZV9n
+ZXQoKQo+IGFnYWluIG92ZXIgdGhpcyB2ZXJ5IHNhbWUgbm9kZS4gSXQgaXMgcHJvYmFibHkgc2Fm
+ZXIgdG8ga2VlcCB0aGUKPiBjb3VudGVycyBldmVuIGluIHRoaXMgaGVscGVyIGFuZCBjYWxsIG9m
+X25vZGVfcHV0KCkgYmVmb3JlIGJyZWFrLWluZy4KPiAKPiBSZXBvcnRlZC1ieToga2VybmVsIHRl
+c3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+Cj4gUmVwb3J0ZWQtYnk6IEp1bGlhIExhd2FsbCA8anVs
+aWEubGF3YWxsQGlucmlhLmZyPgo+IENsb3NlczogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8y
+MDIzMTIyNTA1NDYuSVN6Z2x2TTItbGtwQGludGVsLmNvbS8KPiBDYzogQ2hyaXN0aWFuIE1hcmFu
+Z2kgPGFuc3VlbHNtdGhAZ21haWwuY29tPgo+IENjOiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1p
+bGVja2kucGw+Cj4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
+b290bGluLmNvbT4KCkFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xp
+bnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBtdGQvZml4ZXMuCgpNaXF1ZWwKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
