@@ -4,66 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58CC8C48297
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Feb 2024 07:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E43ABC48297
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Feb 2024 11:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SXuNRRcDg/3yaUdlBnqW+68RseCtuDon/XnCo5a1hEU=; b=n1vMsS32PNhpVf
-	AGh72DxpjkoTZ2Luv2JP7skm6gMg1KlQDnhvrAVl1IdKhAYgeTFH7zOM5OzhCAfcMGjGC9j/8rFPa
-	lDXe1mq3r867YkJI2qNsvo0GweVEvOPf3YnlDC6a2tVWqXYIZXxGZD8E0JJfltV8zS6u9+V33fqnp
-	hbc5rTPtAMmCnqJDy7nHjtKKKvfgalmO/5MfKVTRVguO1LjlpGiONe6vASun7NTKqRdzg+W/lvffu
-	2j2JhL2zz9BhRUTKYWo+qnllKwyqoBwrXY5UFjfBqpToSJaUYEVLHajSZVq4/pMOuIfon6lkzU71m
-	3k6L9La/4NLY2rDEBlHg==;
+	List-Owner; bh=g3D7WCnTZaKcKCFlWhTljFmLuJrw/6au34VUZhXDyoE=; b=NJwqrW2T0Kk6Dl
+	zY2Bu9a6dNg/tkYIG5pXhMc6VL49qbecljV2DFPYM4429ztK5LuRTZhKUwJBShdNR9xF7rtfqaV4a
+	ko6n8LPBUYwyk0O5FQ+yxLZ8yCztMGRrt8k3l9COA6rR3rjo4UpzpW+K90fiRNJKzZ6eiaYmsKdn+
+	uTbPbOtdxK3DSCRTgzGOWG0uKbHQxJsDbSMQ22LQhJklyNWwhgycEIJRiY7puktV0+gp0ek6Oih9a
+	jpv/Z6c3xd2hc8r3H05VCcm/Xo4cOUWPNVvYOfTIEoTSMEVcZtpDhwhuKbeLdRWUT0URtU38ON4WH
+	IQnXRqTWo96qJ86l0nvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rYL17-0000000GIud-1ltn;
-	Fri, 09 Feb 2024 07:09:45 +0000
-Received: from mout01.posteo.de ([185.67.36.65])
+	id 1rYOiD-0000000GnoU-3LfF;
+	Fri, 09 Feb 2024 11:06:29 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rYL13-0000000GIu4-3uip
+	id 1rYOi9-0000000Gnmb-0U5A
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Feb 2024 07:09:43 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 1BAFB240028
-	for <linux-mtd@lists.infradead.org>; Fri,  9 Feb 2024 08:09:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-	t=1707462577; bh=2BecjwjxWB2L3ulwqYvp9rQ/5AQPmxbNsodwlauhfRM=;
-	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version:From;
-	b=T74uBNGku0fTk/NCGLSBW3d8y5ICswyHvDkhWQVizuQEdu5sw0NBt8Ts6qtQgHrMP
-	 zZZuc3dfukTSeeMIXL+CiZJ9IId5zZOMBt328ck83K+Bi1iRz6c2jsQl5qJTTAK3rX
-	 xkIlpvIAhhGqjFWpOMQ2bsLjUSdxMLQZ8NQioN1yGAVOtjghWzn9Kten5UfyET8k6k
-	 yeRH6VPquMjhsTutHnlIoCtweMmQO/JGM7A4vuIm0Q5IdItWKuY+XcQvMJ09ukQcag
-	 n3EK/FFVfJZyJW0UA5m3+f+l0r5nG+Rylui+KSqbwjLWA6ma9fFOwr53cu+VzBCxy/
-	 /y4smrK7bHotQ==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4TWQ2f0klvz9rxK;
-	Fri,  9 Feb 2024 08:09:29 +0100 (CET)
-Message-ID: <fdfcc3b6e1a884bb986acf072bcc13611eae8bdd.camel@posteo.de>
-Subject: Re: [PATCH 5.4 058/194] mtd: Fix gluebi NULL pointer dereference
- caused by ftl notifier
-From: Martin Kepplinger-Novakovic <martink@posteo.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, ZhaoLong Wang <wangzhaolong1@huawei.com>, 
- Zhihao Cheng <chengzhihao1@huawei.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>, Sasha Levin
- <sashal@kernel.org>,  linux-mtd@lists.infradead.org, vigneshr@ti.com,
- dpervushin@embeddedalley.com,  Artem.Bityutskiy@nokia.com,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com,  yangerkun@huawei.com,
- Henri Roosen <Henri.Roosen@ginzinger.com>, Melchior Franz
- <Melchior.Franz@ginzinger.com>
-Date: Fri, 09 Feb 2024 07:09:29 +0000
-In-Reply-To: <20240122235721.687806578@linuxfoundation.org>
-References: <20240122235719.206965081@linuxfoundation.org>
-	 <20240122235721.687806578@linuxfoundation.org>
+	Fri, 09 Feb 2024 11:06:26 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-51171c9f4c0so944825e87.3
+        for <linux-mtd@lists.infradead.org>; Fri, 09 Feb 2024 03:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707476783; x=1708081583; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dNIMeDELEsgEmpHqgGVZK/F6ni2JqtV13kYmgPwfag4=;
+        b=NCW3poz3bJIxyinmKfLlAJDfV3+tUjZv1S+pwFCKz23UtbtcSaSKfVoiSKcDgVEx3m
+         S9dP+AuaB2zbmC0XPEdkgNjCyKloLrV4yHbSKj7UjYqtRGHhl1idIjgzlGsu4D65gP4Z
+         iHculdkeppUQEsdoLHVL1WwuguC4/590R2qtxG+yq59rn7hMYHmq1zx/dWN7rtQfO6uT
+         Iyck8fWSWwAmyOCTmMkhsG6KIaaWoLxfEb7sH0+ucTsnwL77M7uTSj/m6JP3cOargKXX
+         b5JFWblrRVP0DB+0TwODNfg4Fkjke/ETNh9bletMlsBFvPXDgOkG9pBEZuTIcu8L/c/1
+         6R7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707476783; x=1708081583;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dNIMeDELEsgEmpHqgGVZK/F6ni2JqtV13kYmgPwfag4=;
+        b=II0GOFebTlRXRKGH/YqkpjpQoOpLEu/OMAxE2sRh7+PBjS1dSH/OtURpu/Ua7QR2GH
+         ARjeTzjd8GrbAglAwQU7uqmjZFV+raxLTvc7oS/a6N2iqyhLJI8g90i11Enrsj2nLSZx
+         m/EzVhrJbqFHipfcepwXaLaZxpCoeja8YWEPuFQs1+8dpbzYNZIWy1G9CVybEsRpEpz9
+         yV+5VlElDfP8LqkYQ7CynsGYUwBtVTqrUbO4UPsfqzWoEzn7QGrAQaGl+QSdSitYC7cy
+         HML48Ui5+UDzsdgFxy7z+5tGyK+bB03kvIIS9Gq0415Li1Bzs/jijuGnze3m/H0wkMWr
+         imkQ==
+X-Gm-Message-State: AOJu0YwEOLlwCJMDoA3JnXEZzjXATpeVuYjBAfDv255ex5/qepKowkNk
+	1kOdK+OiSVZIBd6ts7MJusP0c/jJhvN95zDtN78b4VN1g01Lg4GE0Mdwv/GvnM0=
+X-Google-Smtp-Source: AGHT+IGZ4YeLwzzx9v2KEXYku9ce24n0sGchhrnQap39oaCPrLkoUAU1Sl/NMvrZ3PlAMCjfJ+TRmA==
+X-Received: by 2002:a05:6512:1381:b0:511:5afc:f186 with SMTP id fc1-20020a056512138100b005115afcf186mr1088963lfb.26.1707476783128;
+        Fri, 09 Feb 2024 03:06:23 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWNKk5u18t/ut/bsH1vOixwQcHhTy21s9IglMiX84N0gidC2hfcol35fdyB7F9vbD9O/XHeL8U9dHFzqTVbF74/jtEF0J67IVcVVzN6A/xBrNHbHyseqF5qrHIM+nk4P17gMax9XNcKsn7oQX5ECeEEx09GIHmTiplTmEQ8O9v2OR6xHA1Gt2cRqxJ0D4g4UaAbLt8MBB6tNA5/zLpg+9lqjO7VhJBROSXOdecuwgn7IV7M9YNXmc7z5OXM0S8os4PtV/3v5VO8sNUKC6Sm6vUw/TUN/rZrJITgzvplSJpoTCUwRSOv3PRT1ecLmHOfEUGWNRIIGEyLmGjm+M9wvwwOO676IrPctx/o1f9XOFd0VBCLvQNKIuReFh5XAFBqV6ukRXHMpdOca11H5oodx+Sa7CDi8ZaZAjA2ShcbLuVwMtf8wBr8XGuJQiguif4aoG3KEJ7ET+i6cFJXmqbJh7aPWnz0zFDy/epMJkve68hf+UB10h6NVSOYrOmLup25V1nOFBCyFiHQ/xp5oayvNuhB0UgDB8kovb2scqg9Q9ibijpgEvpA5veRYNib5JEvl7dWPW4R0WtaMHIYD6w/MJb2ikEL4/k4pDHPuJ4dVd6X8EW6q3UN3BLrYITa4fKDJfJ+RU1p0GxWsFlc8QGMS6GrKlQ36mVYy13e9Bd8EIAXMKWGQrTNDBpfX9sJM6Ax4nurkJot2JSc8f/rThLpO1iIQenMbiHg3V9ILKX4KtJy4+ADbNWVL/2nvd5WXDuuPR7/Nacb/IM3HuDPDZC15nx2/WZZqmEud4CbV2kDl0K0lgnT6zs5fWloKAwmBf5wlhfHppCJZtLN+0iZaRJEUiFxkFH9SgunzlMFTTZj26GPnnqAcuwIbcShmSx3Orzxn9QMUWe/lK0j23HuP/cacgY2OHKW8RVucqw0hNOHUDKWowf5
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id l9-20020a1c7909000000b0040e527602c8sm285252wme.9.2024.02.09.03.06.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 03:06:22 -0800 (PST)
+Message-ID: <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org>
+Date: Fri, 9 Feb 2024 11:06:20 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
+Content-Language: en-US
+To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "pratyush@kernel.org" <pratyush@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+ "lee@kernel.org" <lee@kernel.org>,
+ "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+ "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "michael@walle.cc" <michael@walle.cc>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+ "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
+ "Simek, Michal" <michal.simek@amd.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>,
+ Conor Dooley <conor.dooley@microchip.com>, beanhuo@micron.com
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
+ <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
+ <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <5a6f6764-6779-42b0-b6c6-3f638b85ef78@linaro.org>
+ <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
+ <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
+ <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
+ <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org>
+ <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240208_230942_298399_0809046D 
-X-CRM114-Status: GOOD (  25.97  )
+X-CRM114-CacheID: sfid-20240209_030625_215879_E4EE827F 
+X-CRM114-Status: GOOD (  15.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,92 +128,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gTW9udGFnLCBkZW0gMjIuMDEuMjAyNCB1bSAxNTo1NiAtMDgwMCBzY2hyaWViIEdyZWcgS3Jv
-YWgtSGFydG1hbjoKPiA1LjQtc3RhYmxlIHJldmlldyBwYXRjaC7CoCBJZiBhbnlvbmUgaGFzIGFu
-eSBvYmplY3Rpb25zLCBwbGVhc2UgbGV0IG1lCj4ga25vdy4KPiAKPiAtLS0tLS0tLS0tLS0tLS0t
-LS0KPiAKPiBGcm9tOiBaaGFvTG9uZyBXYW5nIDx3YW5nemhhb2xvbmcxQGh1YXdlaS5jb20+Cj4g
-Cj4gWyBVcHN0cmVhbSBjb21taXQgYTQzYmRjMzc2ZGVhYjVmZmYxY2ViOTNkY2E1NWJjYWI4ZGJk
-YzFkNiBdCj4gCj4gSWYgYm90aCBmdGwua28gYW5kIGdsdWViaS5rbyBhcmUgbG9hZGVkLCB0aGUg
-bm90aWZpZXIgb2YgZnRsCj4gdHJpZ2dlcnMgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIHdoZW4g
-dHJ5aW5nIHRvIGFjY2Vzcwo+IOKAmGdsdWViaS0+ZGVzY+KAmSBpbiBnbHVlYmlfcmVhZCgpLgo+
-IAo+IHViaV9nbHVlYmlfaW5pdAo+IMKgIHViaV9yZWdpc3Rlcl92b2x1bWVfbm90aWZpZXIKPiDC
-oMKgwqAgdWJpX2VudW1lcmF0ZV92b2x1bWVzCj4gwqDCoMKgwqDCoCB1Ymlfbm90aWZ5X2FsbAo+
-IMKgwqDCoMKgwqDCoMKgIGdsdWViaV9ub3RpZnnCoMKgwqAgbmItPm5vdGlmaWVyX2NhbGwoKQo+
-IMKgwqDCoMKgwqDCoMKgwqDCoCBnbHVlYmlfY3JlYXRlCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBtdGRfZGV2aWNlX3JlZ2lzdGVyCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbXRkX2Rl
-dmljZV9wYXJzZV9yZWdpc3Rlcgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhZGRf
-bXRkX2RldmljZQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmxrdHJhbnNf
-bm90aWZ5X2FkZMKgwqAgbm90LT5hZGQoKQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGZ0bF9hZGRfbXRkwqDCoMKgwqDCoMKgwqDCoCB0ci0+YWRkX210ZCgpCj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNjYW5faGVhZGVyCj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtdGRfcmVhZAo+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG10ZF9yZWFk
-X29vYgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBtdGRfcmVhZF9vb2Jfc3RkCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnbHVlYmlfcmVhZMKgwqAgbXRkLT5yZWFkKCkKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBnbHVlYmktPmRlc2MgLSBOVUxMCj4gCj4gRGV0YWlsZWQgcmVwcm9kdWN0aW9uIGluZm9y
-bWF0aW9uIGF2YWlsYWJsZSBhdCB0aGUgTGluayBbMV0sCj4gCj4gSW4gdGhlIG5vcm1hbCBjYXNl
-LCBvYnRhaW4gZ2x1ZWJpLT5kZXNjIGluIHRoZSBnbHVlYmlfZ2V0X2RldmljZSgpLAo+IGFuZCBh
-Y2Nlc3MgZ2x1ZWJpLT5kZXNjIGluIHRoZSBnbHVlYmlfcmVhZCgpLiBIb3dldmVyLAo+IGdsdWVi
-aV9nZXRfZGV2aWNlKCkgaXMgbm90IGV4ZWN1dGVkIGluIGFkdmFuY2UgaW4gdGhlCj4gZnRsX2Fk
-ZF9tdGQoKSBwcm9jZXNzLCB3aGljaCBsZWFkcyB0byBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2Uu
-Cj4gCj4gVGhlIHNvbHV0aW9uIGZvciB0aGUgZ2x1ZWJpIG1vZHVsZSBpcyB0byBydW4gamZmczIg
-b24gdGhlIFVCSQo+IHZvbHVtZSB3aXRob3V0IGNvbnNpZGVyaW5nIHdvcmtpbmcgd2l0aCBmdGwg
-b3IgbXRkYmxvY2sgWzJdLgo+IFRoZXJlZm9yZSwgdGhpcyBwcm9ibGVtIGNhbiBiZSBhdm9pZGVk
-IGJ5IHByZXZlbnRpbmcgZ2x1ZWJpIGZyb20KPiBjcmVhdGluZyB0aGUgbXRkYmxvY2sgZGV2aWNl
-IGFmdGVyIGNyZWF0aW5nIG10ZCBwYXJ0aXRpb24gb2YgdGhlCj4gdHlwZSBNVERfVUJJVk9MVU1F
-Lgo+IAo+IEZpeGVzOiAyYmEzZDc2YTFlMjkgKCJVQkk6IG1ha2UgZ2x1ZWJpIGEgc2VwYXJhdGUg
-bW9kdWxlIikKPiBMaW5rOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dp
-P2lkPTIxNzk5MsKgWzFdCj4gTGluazoKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzQ0
-MTEwNzEwMC4yMzczNC4xNjk3OTA0NTgwMjUyLkphdmFNYWlsLnppbWJyYUBub2QuYXQvCj4gwqBb
-Ml0KPiBTaWduZWQtb2ZmLWJ5OiBaaGFvTG9uZyBXYW5nIDx3YW5nemhhb2xvbmcxQGh1YXdlaS5j
-b20+Cj4gUmV2aWV3ZWQtYnk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+
-Cj4gQWNrZWQtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Cj4gU2lnbmVk
-LW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiBMaW5r
-Ogo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yMDIzMTIyMDAyNDYxOS4yMTM4
-NjI1LTEtd2FuZ3poYW9sb25nMUBodWF3ZWkuY29tCj4gU2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2
-aW4gPHNhc2hhbEBrZXJuZWwub3JnPgo+IC0tLQo+IMKgZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMu
-YyB8IDQgKystLQo+IMKgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
-bnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMuYyBiL2RyaXZl
-cnMvbXRkL210ZF9ibGtkZXZzLmMKPiBpbmRleCAwYzA1Zjc3ZjliMjEuLmRkMGQwYmY1ZjU3ZiAx
-MDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9tdGRfYmxrZGV2cy5jCj4gKysrIGIvZHJpdmVycy9t
-dGQvbXRkX2Jsa2RldnMuYwo+IEBAIC01MzMsNyArNTMzLDcgQEAgc3RhdGljIHZvaWQgYmxrdHJh
-bnNfbm90aWZ5X2FkZChzdHJ1Y3QgbXRkX2luZm8KPiAqbXRkKQo+IMKgewo+IMKgwqDCoMKgwqDC
-oMKgwqBzdHJ1Y3QgbXRkX2Jsa3RyYW5zX29wcyAqdHI7Cj4gwqAKPiAtwqDCoMKgwqDCoMKgwqBp
-ZiAobXRkLT50eXBlID09IE1URF9BQlNFTlQpCj4gK8KgwqDCoMKgwqDCoMKgaWYgKG10ZC0+dHlw
-ZSA9PSBNVERfQUJTRU5UIHx8IG10ZC0+dHlwZSA9PSBNVERfVUJJVk9MVU1FKQo+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuOwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGxp
-c3RfZm9yX2VhY2hfZW50cnkodHIsICZibGt0cmFuc19tYWpvcnMsIGxpc3QpCj4gQEAgLTU3Niw3
-ICs1NzYsNyBAQCBpbnQgcmVnaXN0ZXJfbXRkX2Jsa3RyYW5zKHN0cnVjdCBtdGRfYmxrdHJhbnNf
-b3BzCj4gKnRyKQo+IMKgwqDCoMKgwqDCoMKgwqBsaXN0X2FkZCgmdHItPmxpc3QsICZibGt0cmFu
-c19tYWpvcnMpOwo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoG10ZF9mb3JfZWFjaF9kZXZpY2UobXRk
-KQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAobXRkLT50eXBlICE9IE1URF9B
-QlNFTlQpCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChtdGQtPnR5cGUgIT0g
-TVREX0FCU0VOVCAmJiBtdGQtPnR5cGUgIT0KPiBNVERfVUJJVk9MVU1FKQo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRyLT5hZGRfbXRkKHRyLCBtdGQp
-Owo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoG11dGV4X3VubG9jaygmbXRkX3RhYmxlX211dGV4KTsK
-CkhpIEdyZWcsIGhpIHBhdGNoLWRldmVsb3BlcnMsCgp3YWl0IGEgc2Vjb25kLiB0aGlzIGFscmVh
-ZHkgd2VudCBpbnRvIHY1LjQuMjY4IGJ1dCBzdGlsbDogRG9lc24ndCB0aGlzCmJyZWFrIHVzZXJz
-cGFjZT8KCkFjY29yZGluZyB0bwpodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzQ0MTEwNzEw
-MC4yMzczNC4xNjk3OTA0NTgwMjUyLkphdmFNYWlsLnppbWJyYUBub2QuYXQvCndoZXJlIHRoaXMg
-c29sdXRpb24gc2VlbXMgdG8gY29tZSBmcm9tLCB0aGUgYmVoYXZpb3VyIGNoYW5nZXM6ICJubwpt
-dGRibG9jayAoaGVuY2UsIGFsc28gbm8gRlRMcykgb24gdG9wIG9mIGdsdWViaS4iCgpJIGZlbGwg
-YWNjcm9zcyB0aGlzIGJlY2F1c2Ugb2YgYW4gb3V0LW9mLXRyZWUgbW9kdWxlIHRoYXQgZG9lcwpz
-eXNfbW91bnQoKSBhbiBtdGRibG9jaywgc28gSSB3b24ndCBjb21wbGFpbiBhYm91dCBteSBjb2Rl
-IHNwZWNpZmljYWxseQo6KSBCdXQgZG9lc24ndCBpdCBicmVhayBtb3VudGluZywgc2F5LCBqZmZz
-MiBpbnNpZGUgYW4gdWJpIHZpYQptdGRibG9jaz8gSWYgc28sIGlzIHRoaXMgcmVhbGx5IHNvbWV0
-aGluZyB0aGF0IHlvdSB3YW50IHRvIHNlZQpiYWNrcG9ydGVkIHRvIG9sZCBrZXJuZWxzPwoKT3Ig
-ZGlmZmVyZW50bHkgcHV0OiBIYXMgdGhpcyBwYXRjaCBiZWVuIHBpY2tlZCB1cCBmb3Igb2xkIHN0
-YWJsZQprZXJuZWxzIGJ5IHNjcmlwdHMgb3IgYnkgYSBodW1hbj8KCkkganVzdCB3YW50IHRvIG1h
-a2Ugc3VyZSwgYW5kIHdobyBrbm93cywgaXQgbWlnaHQgaGVscCBvdGhlcnMgdG9vLCB3aG8Kd291
-bGQganVzdCBkbyBhIChwb3NzaWJseSBkYW5nZXJvdXM/KSByZXZlcnQgaW4gdGhlaXIgdHJlZXMu
-Cgp0aGFua3MhCiAgICAgICAgICAgICAgICAgICAgICAgICAgbWFydGluCgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+
+
+On 12/21/23 06:54, Mahapatra, Amit Kumar wrote:
+>> Something else to consider: I see that Micron has a twin quad mode:
+>> https://media-www.micron.com/-
+>> /media/client/global/documents/products/data-sheet/nor-flash/serial-
+>> nor/mt25t/generation-
+>> b/mt25t_qljs_l_512_xba_0.pdf?rev=de70b770c5dc4da8b8ead06b57c03500
+>>
+>> The micron's "Separate Chip-Select and Clock Signals" resembles the AMD's
+>> dual parallel 8-bit.
+> Yes, I agree.
+> 
+>> Micron's "Shared Chip-Select and Clock Signals" differs from the AMD's
+>> stacked mode, as Micron uses DQ[3:0] and DQ[7:4], whereas AMD considers
+>> both as DQ[3:0].
+> Yes, correct.
+
+Amit, please help me to assess this. I assume Micron and Microchip is
+using the same concepts as AMD uses for the "Dual Parallel 8-bit IO
+mode", but they call it "Twin Quad Mode".
+
+I was wrong, the AMD datasheet [1] was misleading [2], it described the
+IOs for both flashes as IO[3:0], but later on in the "Table QSPI
+Interface Signals" the second flash is described with IO[7:4].
+
+The AMD's 8-bit Dual Flash Parallel Interface is using dedicated CS# and
+CLK# lines for each flash. As Micron does, isn't it?
+
+Micron says [3] that:
+"The device contains two quad I/O die, each able to operate
+independently for a total of eight I/Os. The memory map applies to each
+die. Each die has internal registers for status, configuration, and
+device protection that can be set and read independently from one other.
+Micron recommends that internal configuration settings for the two die
+be set identically."
+
+it also says that:
+"When using quad commands in XIO-SPI or when using QIO-SPI,
+DQ[3:0]/DQ[7:4] are I/O."
+
+So I guess the upper layers just ask for a chunk of memory to be written
+and the controller handles the cs# lines automatically. How is the AMD
+controller working, do you have to drive the cs# lines manually, or you
+just set the parallel mode and the controller takes care of everything?
+
+I assume this is how mchp is handling things, they seem to just set a
+bit the protocol into the QSPI_IFR.PROTTYP register field and that's all
+[4]. They even seem to write the registers of both flashes at the same time.
+
+In what regards the AMD's "dual stack interface", AMD is sharing the
+clock and IO lines and uses dedicated CS# lines for the flashes, whereas
+Micron shares the CS# and CLK# lines with different IO lines.
+
+Amit, please study the architectures used by mchp, micron and amd and
+let us know if they are the same or they differ, and if they differ what
+are the differences.
+
+I added Conor from mchp in cc, I see Nicolas is already there, and Bean
+from micron.
+
+Thanks,
+ta
+
+[1]
+https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/QSPI-Flash-Interface-Signals
+[2]
+https://docs.xilinx.com/viewer/attachment/dwmjhDJGICdJqD4swyVzcQ/fD8nv4ry78xM0_EF5kv4mA
+[3]
+https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25t/generation-b/mt25t_qljs_l_512_xba_0.pdf?rev=de70b770c5dc4da8b8ead06b57c03500
+[4]
+https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/DataSheets/SAMA7G5-Series-Data-Sheet-DS60001765.pdf
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
