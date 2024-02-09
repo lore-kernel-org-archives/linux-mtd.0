@@ -4,93 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 404DAC4828F
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Feb 2024 13:36:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 189FBC48297
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Feb 2024 16:14:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YSetH+CVRGkN8N0RmgRBLzckeDu/fDrHnJzPaw23nDE=; b=Qczi9cIhYfHBhg
-	JUG3sFgtVE7mevkgAUtNUhX/bWOcHwxa5vGe9zjfGvOtKsUwl/+/KIaAAb1PPsYFpmmPXF9zWEW+p
-	o2kQ5cX2P9T6/BMFlWuAIBZluvkyd/3LCXjiTjiMmfOeUTndO4wxJ0+djANEb1lID9cRA1rT7OLE+
-	QllT154vjLEVLBLXfWULraDmYbkTIBdec8NXazMq43pQ/8u84EQm5Xt0vp+jh4I+j3zmwk/aHR9mg
-	DidsRWh2FC3McgR5P69l1o5QZmS1toaSLo1ws3I5+TkNUmmWHgsQiWn6elsHN2nqoeFzq6VuGjemg
-	HdnnYilC+e51jROidcfg==;
+	List-Owner; bh=UHWo0eTQKgA7nH/FHsh4mtR3wWjIf5ZAkIpkT/oxyhg=; b=IOQtmbtO2DfKs2
+	49+A7cu734ZrmMjqHc8Z/kX297d+fLH54rlHO7SMNaUVLc76vrWLgWLNOxX0MxrPt0TbLqLeGx6kJ
+	/OWma7x/ERKAzqGcecVc1zRHEw8kYDvvDo5Ew6w2NSIUfK54lBjkdrIlgNKj0eHQmq2K6mtRzhezg
+	7uLmu2lq8cvLB0YP1MwjLrgq5HEgy/0jUzvW6zD4SKgQHi6eFcL5lNYrZea15fYqzB00OXE17erpX
+	CZVVcrIxVtbCbZt91Bb5c9uXsFVB1MzV5ibOlw36Rzy0lffRBDYKSySg+/ztoGSRANtlMF3i6CzDe
+	VroxDk1uYfEFcRFe2IIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rYR3A-0000000H5gj-1Eww;
-	Fri, 09 Feb 2024 13:36:16 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93] helo=mx07-00178001.pphosted.com)
+	id 1rYTVo-0000000HV1M-2Ho7;
+	Fri, 09 Feb 2024 16:14:00 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rYR35-0000000H5g6-1rpj
+	id 1rYTVm-0000000HV07-08dC
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Feb 2024 13:36:14 +0000
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419DQV2U025580;
-	Fri, 9 Feb 2024 14:35:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=eCEkKbZGZPL3zRpBq/852hOYd7stcJAFijx6CGG5eU4=; b=Ok
-	d7x1tc9V/Hkn6VKrH0MPwWzDV8LmBIB4KBOB42nxxy8Cuh2NRlkz0XEM2WMhg3hz
-	NvoBoUB12VDKBVUDUaPoabiJd0F2cQChnkMpV6P7pSiGs+cJ0lcYRFMifSKQQmU5
-	Qoq/TSV8xDNUJ9je6dy2jsJb3bru8u48liColUWBqraDBhGheS2QhuFOtSlLMEq+
-	H3iSE+m5XrO34kpVpEJSV6/Mn8RJoqOmRVIu94bbmo8qh2MESUz+Zj1sjE2cwsDU
-	L1bFwqaQBujWG8qGaGB8GMa3xOfJexQNvrbWH08xE3OptgHxYVtewfbJRKmrqnBD
-	FtHPnMXHJvio26K0dnBg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w1f6414p5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 14:35:47 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7FAE410004F;
-	Fri,  9 Feb 2024 14:35:46 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6BBDA22FA2C;
-	Fri,  9 Feb 2024 14:35:46 +0100 (CET)
-Received: from [10.201.22.200] (10.201.22.200) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 9 Feb
- 2024 14:35:45 +0100
-Message-ID: <cce57281-4149-459f-b741-0f3c08af7d20@foss.st.com>
-Date: Fri, 9 Feb 2024 14:35:44 +0100
+	Fri, 09 Feb 2024 16:13:59 +0000
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4102f273c46so10394705e9.2
+        for <linux-mtd@lists.infradead.org>; Fri, 09 Feb 2024 08:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707495235; x=1708100035; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ISVQjlDhuxktgdvlQkAYJcUhQrr8fLt/EuWGjCe2nWo=;
+        b=rC8w4KQaIY+Tu1UR7Tm8/XQqJEBdum4IrmoY4qouZbWia8Wt6918TgwE1WlIlLBpKW
+         dPzptO4kyG/m3A6TQDX6jeN8mArxV5vy0FxjdPs0snVK7pwOLo4tvZPNM66Eeun0495m
+         /vaT3wLCcKZ64dG55tlGTvMe577y2HISH9QNdHDuIQxl9yo7tukVO84sZ3o/N2YTYXQF
+         I09aNWWyFIMbWS0Vn6ROenkiDE9QLrOc0hauUSVjMOMXVTTw93hSR2A1XRjM/eS0uU17
+         5/vkvM28yCYcvp0F//IKz/5xS5gZFXoJTsiy0FeDQ3fxDVTBhvrUlsrj/4VXx5IdMRlM
+         3mnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707495235; x=1708100035;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISVQjlDhuxktgdvlQkAYJcUhQrr8fLt/EuWGjCe2nWo=;
+        b=tNTSRXHg/qsmSbZXMnjgC4sP5oL5olXgkcEd1gCe+UcBrQQ2k9/CnLF+10LSjXHm1e
+         MgZDF95DPpCl2CNfR/x5h8M0Oz1cFHCOgZTBzEhklzHTle4DmsLbDd8FqeUfi9m6XdOO
+         tTGrBYi86SZiYYIrszF5QnPgW8ykNkSdWDzYy7n1RORFTTCNgoiMeJg+zfSOFEDIH23i
+         OtZ9vIVbc/brb6NlWc+DjuE24cFlnJN6maHWQz9U9wAzPf04+R6PclRn/P/ZB+YurwDa
+         R5tHiM9jqKdi648wEGLTIHsk4Be2M94f7b9Q2wJDcIZTSbcxxFiEUf9bOaCgSQBBhlUe
+         3Lpg==
+X-Gm-Message-State: AOJu0Yw/cI2Q2pBPJecIdQmo3UMn5bv+Xc/QuW1UfFneh5E4arq+rnx4
+	UI4HwZOMM8zge9t+HR4wAOsZR0ZVLcdL1DzljBeveaBV8kEmmm9Deiv88VPSSjA=
+X-Google-Smtp-Source: AGHT+IHNXgGcu2a4xAMztcYxQsvAn119baDjUiN1sOdu4laW5FMqfT1Xd+U4nI4trQf9VcVjOxKC1g==
+X-Received: by 2002:a05:600c:4e8f:b0:410:7980:72a3 with SMTP id f15-20020a05600c4e8f00b00410798072a3mr1044002wmq.35.1707495235379;
+        Fri, 09 Feb 2024 08:13:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWF9ZWG8EjCTnWx0jkyeDG0Qr8YdWFzC+ONvCzW3TxFZu/8e0GoKxPRmAmFosVMJx9f3ENvvTYzE8VGh/wMu3BuJm6x7/39QGv3S34hBE/WYGN+PZNwxgy7jJs5Dh6nxkk24wi/5EbfE8/K3us2WG/MATNRtkqe/sep40BlUeeQsM6fzYclywF9xHIR1t5BpDhUQLqkF3FDPbxgC41KgbPWBm+bbI9Ls0om4YQ7hN8FRSyYEBKXPxRzwGHU0kEojdBrqdumf6SBbDF29dQRp0mNc/SoD/gOD8AKd8KS22DECkyg2mF5iGaP5PWfY3VwuTNxOvNwAIW344cS0LIo1T8ZixGinvUbTFSSpwuTyFuXlIdonsOCAJVLWC3lwJWu1q4WXV846RajN2IgL2FxauGK+JH/+66f2yvlP6qRFiqb4/7V+lNjdruQwzNyyHocvGGVFZSxnJQVw0virYE+H5aWtFELSMFlZzrHziZJ6ejtQd9QmN3iqOMY6mMjjllS8wiQWdHuBznQOLnCBtUUbYZp5UEJ0S1UpgSZ1+cAzfrXjJ/j6+jWK7vNyar4tq7ZzSUVTADY+XpQQJhs3c7Rx835/3zi72jHBTvTcvnTQP4fx615KX2wOx2sH7bHpr/lOO6rQrBHKZcMEjrXEoiku5RBe/z4mlu68TKe4z1i2gUH2m+q+RXEJEoIi3vXzXE8tpCNZi/ICBr6XGilXUtas9XBev0xDTwzeUoyGhWsWtj6w7vgwx+azT9bWTKbRugRGUFqs7Jrg2A1WT1g4zbgZUz03EER7uDjLrYAOVjIBKY5LLxd9khEtvZFnLQleX18EzrKYbYoQvTqKce7xU2M1liC9/nkkRfgXOp75CGb82w8RBBehQy1BzF5IF8jxWPC5AiXcqfO2opl4uno1zFjMvkxjk5WBvghsCZoUsp9kbn7gTNr
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id 25-20020a05600c021900b0040fbba734f3sm1041447wmi.34.2024.02.09.08.13.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 08:13:54 -0800 (PST)
+Message-ID: <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org>
+Date: Fri, 9 Feb 2024 16:13:52 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] mtd: rawnand: Clarify conditions to enable continuous
- reads
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger
-	<richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus
-	<tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael
- Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>
-CC: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Julien Su
-	<juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
-        Jaime Liao
-	<jaimeliao.tw@gmail.com>,
-        Alvin Zhou <alvinzhou@mxic.com.tw>, <eagle.alexander923@gmail.com>,
-        <mans@mansr.com>, <martin@geanix.com>,
-        =?UTF-8?Q?Sean_Nyekj=C3=A6r?= <sean@geanix.com>,
-        <stable@vger.kernel.org>
-References: <20231222113730.786693-1-miquel.raynal@bootlin.com>
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-In-Reply-To: <20231222113730.786693-1-miquel.raynal@bootlin.com>
-X-Originating-IP: [10.201.22.200]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_11,2024-02-08_01,2023-05-22_02
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "pratyush@kernel.org" <pratyush@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+ "lee@kernel.org" <lee@kernel.org>,
+ "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+ "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "michael@walle.cc" <michael@walle.cc>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+ "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
+ "Simek, Michal" <michal.simek@amd.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>,
+ Conor Dooley <conor.dooley@microchip.com>, beanhuo@micron.com
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
+ <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <5a6f6764-6779-42b0-b6c6-3f638b85ef78@linaro.org>
+ <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
+ <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
+ <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
+ <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org>
+ <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org>
+In-Reply-To: <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240209_053612_014384_70531331 
-X-CRM114-Status: GOOD (  19.54  )
+X-CRM114-CacheID: sfid-20240209_081358_084687_506D68E7 
+X-CRM114-Status: GOOD (  27.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,174 +128,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
 
-I am testing last nand/next branch with the MP1 board, and i get an 
-issue since this patch was applied.
 
-When I read the SLC NAND using nandump tool (reading page 0 and page 1), 
-the OOB is not displayed at expected. For page 1, oob is displayed when 
-for page 0 the first data of the page are displayed.
-
-The nanddump command used is: nanddump -c -o -l 0x2000 /dev/mtd9
-
-Page 0:
-   OOB Data: 7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00 
-|.ELF............|
-   OOB Data: 03 00 28 00 01 00 00 00 a4 03 00 00 34 00 00 00 
-|..(.........4...|
-   OOB Data: 7c 11 00 00 00 04 00 05 34 00 20 00 06 00 28 00 
-||.......4. ...(.|
-   OOB Data: 1b 00 1a 00 01 00 00 00 00 00 00 00 00 00 00 00 
-|................|
-   OOB Data: 00 00 00 00 10 05 00 00 10 05 00 00 05 00 00 00 
-|................|
-   OOB Data: 00 00 01 00 01 00 00 00 e8 0e 00 00 e8 0e 01 00 
-|................|
-   OOB Data: e8 0e 01 00 44 01 00 00 48 01 00 00 06 00 00 00 
-|....D...H.......|
-   OOB Data: 00 00 01 00 02 00 00 00 f0 0e 00 00 f0 0e 01 00 
-|................|
-   OOB Data: f0 0e 01 00 10 01 00 00 10 01 00 00 06 00 00 00 
-|................|
-   OOB Data: 04 00 00 00 04 00 00 00 f4 00 00 00 f4 00 00 00 
-|................|
-   OOB Data: f4 00 00 00 44 00 00 00 44 00 00 00 04 00 00 00 
-|....D...D.......|
-   OOB Data: 04 00 00 00 51 e5 74 64 00 00 00 00 00 00 00 00 
-|....Q.td........|
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 06 00 00 00 
-|................|
-   OOB Data: 10 00 00 00 52 e5 74 64 e8 0e 00 00 e8 0e 01 00 
-|....R.td........|
-
-Page 1:
-   OOB Data: ff ff 94 25 8c 3c c7 44 e7 c0 b7 b0 92 5e 50 fb 
-|...%.<.D.....^P.|
-   OOB Data: 80 ca a3 de e2 73 b4 4e 58 39 fe b4 85 76 65 31 
-|.....s.NX9...ve1|
-   OOB Data: 48 86 91 f3 58 0b 59 df 2c 08 75 8b 6f 48 36 a6 
-|H...X.Y.,.u.oH6.|
-   OOB Data: bc 16 61 58 db 52 08 75 8b 6f 48 36 a6 bc 16 61 
-|..aX.R.u.oH6...a|
-   OOB Data: 58 db 52 08 75 8b 6f 48 36 a6 bc 16 61 58 db 52 
-|X.R.u.oH6...aX.R|
-   OOB Data: 08 75 8b 6f 48 36 a6 bc 16 61 58 db 52 08 75 8b 
-|.u.oH6...aX.R.u.|
-   OOB Data: 6f 48 36 a6 bc 16 61 58 db 52 ff ff ff ff ff ff 
-|oH6...aX.R......|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-|................|
-
-I have checked what is happening in rawnand_enable_cont_reads function,
-and for page 0, con_read.ongoing = true when for page 1 con_read.ongoing 
-= false
-
-page 0:
-[   51.785623] rawnand_enable_cont_reads: page=0, col=0, readlen=4096, 
-mtd->writesize=4096
-[   51.793751] rawnand_enable_cont_reads: end_page=1, end_col=0
-[   51.799356] rawnand_enable_cont_reads: con_read.ongoing=1
-
-page 1:
-[   53.493337] rawnand_enable_cont_reads: page=1, col=0, readlen=4096, 
-mtd->writesize=4096
-[   53.501413] rawnand_enable_cont_reads: end_page=1, end_col=0
-[   53.507013] rawnand_enable_cont_reads: con_read.ongoing=0
-
-I do not expect con_read.ongoing set to true when we read one page.
-
-I have also dumped what happened when we read the bad block table and it 
-is also strange for me in particular the value end_page.
-
-[    1.581940] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd3
-[    1.581966] nand: Micron MT29F8G08ABACAH4
-[    1.581974] nand: 1024 MiB, SLC, erase size: 256 KiB, page size: 
-4096, OOB size: 224
-[    1.582379] rawnand_enable_cont_reads: page=262080, col=0, readlen=5, 
-mtd->writesize=4096
-[    1.582411] rawnand_enable_cont_reads: end_page=0, end_col=5
-[    1.582419] rawnand_enable_cont_reads: con_read.ongoing=0
-[    1.585817] Bad block table found at page 262080, version 0x01
-[    1.585943] rawnand_enable_cont_reads: page=262080, col=0, readlen=5, 
-mtd->writesize=4096
-[    1.585960] rawnand_enable_cont_reads: end_page=0, end_col=5
-[    1.585968] rawnand_enable_cont_reads: con_read.ongoing=0
-[    1.586677] rawnand_enable_cont_reads: page=262016, col=0, readlen=5, 
-mtd->writesize=4096
-[    1.586700] rawnand_enable_cont_reads: end_page=0, end_col=5
-[    1.586708] rawnand_enable_cont_reads: con_read.ongoing=0
-[    1.587139] Bad block table found at page 262016, version 0x01
-[    1.587168] rawnand_enable_cont_reads: page=262081, col=5, 
-readlen=1019, mtd->writesize=4096
-[    1.587181] rawnand_enable_cont_reads: end_page=0, end_col=1024
-[    1.587189] rawnand_enable_cont_reads: con_read.ongoing=0
-[    1.587672] rawnand_enable_cont_reads: page=262081, col=1024, 
-readlen=5, mtd->writesize=4096
-[    1.587692] rawnand_enable_cont_reads: end_page=0, end_col=1029
-[    1.587700] rawnand_enable_cont_reads: con_read.ongoing=0
-
-I currently do not understand the logic implemented but there is 
-something suspect around end_page variable.
-
-end_page = DIV_ROUND_UP(col + readlen, mtd->writesize);
-=> So, if i have well understood, end_page is the number of pages we are 
-going to read.
-
-if (page + 1 > end_page) {
-=> We are comparing the page that we are starting to read with the 
-number of pages to read and not the last page to read
-
-chip->cont_read.first_page = page;
-chip->cont_read.last_page = end_page;
-=> first_page is the first page to read and last page is the number of 
-pages to read.
-
-Before this patch,
-chip->cont_read.last_page = page + ((readlen >> chip->page_shift) & 
-chip->pagemask);
-=> last page was the last page to read.
-
-Regards,
-Christophe Kerello.
-
-On 12/22/23 12:37, Miquel Raynal wrote:
-> On Fri, 2023-12-15 at 12:32:08 UTC, Miquel Raynal wrote:
->> The current logic is probably fine but is a bit convoluted. Plus, we
->> don't want partial pages to be part of the sequential operation just in
->> case the core would optimize the page read with a subpage read (which
->> would break the sequence). This may happen on the first and last page
->> only, so if the start offset or the end offset is not aligned with a
->> page boundary, better avoid them to prevent any risk.
+On 2/9/24 11:06, Tudor Ambarus wrote:
+> 
+> 
+> On 12/21/23 06:54, Mahapatra, Amit Kumar wrote:
+>>> Something else to consider: I see that Micron has a twin quad mode:
+>>> https://media-www.micron.com/-
+>>> /media/client/global/documents/products/data-sheet/nor-flash/serial-
+>>> nor/mt25t/generation-
+>>> b/mt25t_qljs_l_512_xba_0.pdf?rev=de70b770c5dc4da8b8ead06b57c03500
+>>>
+>>> The micron's "Separate Chip-Select and Clock Signals" resembles the AMD's
+>>> dual parallel 8-bit.
+>> Yes, I agree.
 >>
->> Cc: stable@vger.kernel.org
->> Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
->> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>> Micron's "Shared Chip-Select and Clock Signals" differs from the AMD's
+>>> stacked mode, as Micron uses DQ[3:0] and DQ[7:4], whereas AMD considers
+>>> both as DQ[3:0].
+>> Yes, correct.
 > 
-> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next.
+> Amit, please help me to assess this. I assume Micron and Microchip is
+> using the same concepts as AMD uses for the "Dual Parallel 8-bit IO
+> mode", but they call it "Twin Quad Mode".
 > 
-> Miquel
+> I was wrong, the AMD datasheet [1] was misleading [2], it described the
+> IOs for both flashes as IO[3:0], but later on in the "Table QSPI
+> Interface Signals" the second flash is described with IO[7:4].
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> The AMD's 8-bit Dual Flash Parallel Interface is using dedicated CS# and
+> CLK# lines for each flash. As Micron does, isn't it?
+> 
+> Micron says [3] that:
+> "The device contains two quad I/O die, each able to operate
+> independently for a total of eight I/Os. The memory map applies to each
+> die. Each die has internal registers for status, configuration, and
+> device protection that can be set and read independently from one other.
+> Micron recommends that internal configuration settings for the two die
+> be set identically."
+
+Amit,
+
+I forgot to say my first conclusion about the quote from above. Even if
+the dies are in the same physical package, micron asks users to
+configure each die as it is a self-standing entity, IOW to configure
+each die as it is a flash on its own. To me it looks like 2 concatenated
+flashes at first look. Thus identical to how AMD controller works.
+Please clarify this.
+
+> 
+> it also says that:
+> "When using quad commands in XIO-SPI or when using QIO-SPI,
+> DQ[3:0]/DQ[7:4] are I/O."
+
+and this would be a parallel concatenation of two flashes.
+
+Then it would be good if you let us now the similarities and differences
+between how amd and mchp controller work, I scrawled few ideas below.
+
+thanks,
+ta
+> 
+> So I guess the upper layers just ask for a chunk of memory to be written
+> and the controller handles the cs# lines automatically. How is the AMD
+> controller working, do you have to drive the cs# lines manually, or you
+> just set the parallel mode and the controller takes care of everything?
+> 
+> I assume this is how mchp is handling things, they seem to just set a
+> bit the protocol into the QSPI_IFR.PROTTYP register field and that's all
+> [4]. They even seem to write the registers of both flashes at the same time.
+> 
+> In what regards the AMD's "dual stack interface", AMD is sharing the
+> clock and IO lines and uses dedicated CS# lines for the flashes, whereas
+> Micron shares the CS# and CLK# lines with different IO lines.
+> 
+> Amit, please study the architectures used by mchp, micron and amd and
+> let us know if they are the same or they differ, and if they differ what
+> are the differences.
+> 
+> I added Conor from mchp in cc, I see Nicolas is already there, and Bean
+> from micron.
+> 
+> Thanks,
+> ta
+> 
+> [1]
+> https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/QSPI-Flash-Interface-Signals
+> [2]
+> https://docs.xilinx.com/viewer/attachment/dwmjhDJGICdJqD4swyVzcQ/fD8nv4ry78xM0_EF5kv4mA
+> [3]
+> https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25t/generation-b/mt25t_qljs_l_512_xba_0.pdf?rev=de70b770c5dc4da8b8ead06b57c03500
+> [4]
+> https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/DataSheets/SAMA7G5-Series-Data-Sheet-DS60001765.pdf
 
 ______________________________________________________
 Linux MTD discussion mailing list
