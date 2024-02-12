@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55794C48BC4
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Feb 2024 17:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D23D2C48BC3
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Feb 2024 17:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:In-Reply-To:
-	References:Message-Id:Subject:Date:From:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=jxa5OJbn6CZ6ZdTR53H1W+5k2zdZB9hXlsiuvRpCYtE=; b=nvjofF92xF9Xskhjegfoly0asJ
-	CS/5lpsfeeA6Mke0nuCKCaLRr3uucUXipGGf1sfF2cP6Iin55Z72vSvwhfRQEzxGnhD36SyvHDuFO
-	IbB9SuQE35yD93KEV6SSQt9bOBwASfLfMXXaYJPY/NGNdQ/kJhTdJrkdC7mSETQ7dy+SgS+9d9W3W
-	0q5Hwq6vnQ0rGkeQIDpSjjuWnTXgjJD382UMe2yqNTgF3w2habeYqnL0m7+D9IUIHgEpypVFHvbkp
-	qfdoTc0PhhR/Kl+pKGeMDwSN/7Cte+FSHcBJlcceSDPtMuk+J4m0nBcVeuuTU39ZVit1PMGP9MBbS
-	7/3zZblw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2x/NkgWxwIWtPJ0KIiLBUeiBHfteeMdA8Rh0TPr6uk4=; b=GVemcC4qLof1LK
+	RrouBEQSRP6c1eS3WtWmFX8SAlYIAdBm0vZnJMS9Z7vF8H+wdZzROWEenoj1XNkTGMgIWi7DQ2pq1
+	gFEl8V2GwAL+zPHjLm/5oH7owPcPh4kEUIG55HpvygTC4FtgdQGSwEOPIYSwSzk+9Eg563hT4uB7e
+	Hvj6D/Y8sE3UMpQJNoElkTzmW2XqIdUNWKZQixbTeyPZ+9rDuFvFDJ+EEnkdbFgFSGwj4Ac08/BRm
+	iGRYWSsO6QTQAs82CbUtDZVtujQXV7iurB6xua3D7KzG+7K8+dLVaUB4PbQqDPygKuvdjdVBZ6TSJ
+	9d5lKotBjYTFNYSg+L3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZaGH-00000006TEi-1wvi;
-	Mon, 12 Feb 2024 17:38:33 +0000
+	id 1rZaGB-00000006TBa-089o;
+	Mon, 12 Feb 2024 17:38:27 +0000
 Received: from mail-ve1eur01on070e.outbound.protection.outlook.com ([2a01:111:f400:fe1f::70e] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZaGB-00000006TAP-3206;
-	Mon, 12 Feb 2024 17:38:29 +0000
+	id 1rZaG7-00000006TAP-2eBe;
+	Mon, 12 Feb 2024 17:38:25 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AlzKQuxLa6Mf5uiTQ0DyVzfidlyvi0UVFosOHrUs9NXcPesxmDmhxedwZw0iVNuwmBC5vkkwRVVsP+ntLlnZGtk5Ee8z1CGzElmOtNkm42GKx1UVjTFezHevZYPUvCTklzVssad310jk8fokLziymkKPct/U3dqq/kVq/9OCfKmUxXNMiIRVKlngaYc31YnADO0S2T+bMEA85i4V1ZjDgNPlQqaIduWjLn7VXXqj6UUODGjcLn905+qb+QbQbOdvg4EagM+S9W974MKKov3N3BP8CBK5nGM+/hrcnLcp5Tcumw1HtJnb1qVCzgiaJiDllODbRl6tx9OlBoyLyL4oPg==
+ b=Y/2A/3RQVyh3lJ+GW36NJZmxtFOqNAVVHCmks99VfDzzP8b5HT8fQD4ZBcuGT9eLH9afc0OVt5hEsLebCTK+XVQagEHXFkCDVaOZ0rZduXwG+pv2g6pzNUO2FAc8nq3r/Oe8xubq+1/GB+5cX696rXtHQ6fPqXB0jNuO79i+xAWIfpw5osPhSvnjCTSCxQTGee6UsUtjwTGg13BWcWFOm45OUhcJkdcV5MT4ubF8HOt/N/XHfRXFrE6m2RAcQEgWMx/Fme4FRo8phV/6nGvsdykUFuU5hiURbV0aHHLJMjAbdu2ydgGHKukq439HUdMPLeWVul31Y8twWaA/ldb+4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j9Jyr5lvMsW/PDnX/iJIgv8Rk7hcQ2oITDvhDHbCycw=;
- b=I9y6Pp4Sn4xVFyVj1gCc7w2wghchYkETUgRX3jWRsTHjs9kS6M0HDqKg8zJgFv+j5ZToN3+rhpuT4fZ07XOqQx4TdTRZL6rb/7rQ9zGg9cr61qRDTXhJHJoCX4DMeXlJq2/EYML/TTy3g4KuHTCO+ZRRBiFDq7bZ3ytk5p/1jKlMN/ZXG8LbKDkDM9MBvgDwema6olnjuHtcccYoKz+cnoQ4g7NZrYkznfsAz1nW4cA0v6MbJFU28T1B2UQXdCbigZ0quhnGWG64YxJ+RHYKtgeRbHhq+wsLN9rCZNyn/tsPM8TNqUTLPapHK3VcXx557OGUk0v25Bd01KVYEhjvsw==
+ bh=A7ozJX8gEn4oDXO+mPD4jjZp1ovQwYBgUPFIyAWED+8=;
+ b=Bg8t/cF8adILL2c8BuiipUpFyvror3mO8ldWrPpDj0fa75TdPbqrTNB1ar20Tekdjfod2equSFEe4i7ANNfveFrDAcnpyzcAbkMTlNv50MO3xkRBi/gzxvIKYETWKLOiLnoIJBc62by8iqWmnTA9eJYfcOGn1v3k9AfnYhycVx+c8dwW7d3/qvDEVWz+s0JHIwaTpKaED2NNnGyL3T1c0wUYHIIqeHWk7ClGgzPqueYML9JecmEBAdT6/AmbRiIxVsby/7oG+SzHnKCqwHP3nT1wvyxl7JBBmpMY4/reX3L/ec7HvacAJiqtT5/uNObwI8UJBGWs4UX3HBdJwBc3mg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=solid-run.com; dmarc=pass action=none
  header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j9Jyr5lvMsW/PDnX/iJIgv8Rk7hcQ2oITDvhDHbCycw=;
- b=NaWZv98AiNeqwNeTXopypoVzq6ClTjFbe/RqVbabOSxeg6u8pUmJIe3wRU/pVJk7/6JW0PS327DfXfC+v5UtQ0CTdoXQOT1FxU+ck21SRLW3DydTT8WN5TdINbIzh5e6ZeII18SWvL7PRdHgh70IKBMYP24dnhy9iUBCrW5nUIc=
+ bh=A7ozJX8gEn4oDXO+mPD4jjZp1ovQwYBgUPFIyAWED+8=;
+ b=PVMNLNo4zf9I0lVFgEIplnbquYyHjd0OlGdaTUYASoDtqVaRPwJ1kaFgC9kvvHXWvR5IER4yR49lKL3RwaQp/DpZ14/RGFSytIs6xKCGbZdXXc6YeqTBrB2eweeGo04nLaPW+GT8QtjePL6eu/uTsb1LuBqc8TQWwbQmdcCWP+s=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=solid-run.com;
 Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
  by AS8PR04MB7909.eurprd04.prod.outlook.com (2603:10a6:20b:2a2::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.24; Mon, 12 Feb
- 2024 17:38:19 +0000
+ 2024 17:38:17 +0000
 Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
  ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
  ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7249.039; Mon, 12 Feb 2024
- 17:38:19 +0000
+ 17:38:16 +0000
 From: Josua Mayer <josua@solid-run.com>
-Date: Mon, 12 Feb 2024 18:38:10 +0100
-Subject: [PATCH v6 3/7] dt-bindings: iio: humidity: hdc20x0: add optional
- interrupts property
-Message-Id: <20240212-add-am64-som-v6-3-b59edb2bc8c3@solid-run.com>
-References: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
-In-Reply-To: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
+Subject: [PATCH v6 0/7] arm64: dts: add description for solidrun am642 som
+ and hummingboard evb
+Date: Mon, 12 Feb 2024 18:38:07 +0100
+Message-Id: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
+X-B4-Tracking: v=1; b=H4sIAH9XymUC/33QwUoEMQwG4FdZerbSpO10xpPvIR5qm7oFZyqtF
+ mWZdze7IK7j4CXwJ+Qj5CQa1UxN3B1OolLPLZeFw3BzEOHol2eSOXIWqNAoUCB9jNLPg5GtzNK
+ Ch+CNo5i04JXXSil/XLiHR87H3N5K/bzoHc7db0j/hjpIJWP0kCZE5yndt/KSo6zvy20oszhjH
+ a8AwA2ADIAeLZohGBzDHqB/AC4bQDOAyfBIR6to2gPMf4BhwKbxCdAnSw72AHsFwOaZ3TLgJkX
+ RAQKaPxes6/oFYG/Fb7ABAAA=
 To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
@@ -75,7 +77,10 @@ Cc: Yazan Shhady <yazan.shhady@solid-run.com>,
  linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
  linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, 
- linux-mtd@lists.infradead.org, Josua Mayer <josua@solid-run.com>
+ linux-mtd@lists.infradead.org, Josua Mayer <josua@solid-run.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Suman Anna <s-anna@ti.com>, Grygorii Strashko <grygorii.strashko@ti.com>, 
+ MD Danish Anwar <danishanwar@ti.com>
 X-Mailer: b4 0.12.4
 X-ClientProxiedBy: FR3P281CA0027.DEUP281.PROD.OUTLOOK.COM
  (2603:10a6:d10:1c::14) To AM9PR04MB7586.eurprd04.prod.outlook.com
@@ -83,64 +88,63 @@ X-ClientProxiedBy: FR3P281CA0027.DEUP281.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|AS8PR04MB7909:EE_
-X-MS-Office365-Filtering-Correlation-Id: fede1b32-5137-43b3-d09b-08dc2bf166d0
+X-MS-Office365-Filtering-Correlation-Id: bc0c8ce7-9f29-4631-6672-08dc2bf16559
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GEk55DRonMQjlyeTcLjUMh+3GeTnFiSuBHQP3VCIfx3uDjL2BFw1rrTiGF7OUllXpGHP+fhP3BMGnvuc8kBpq0cVBFbQHjeQmAD6O4xgVDyXayXoF5ZpZS4xSW4iUBvjU4t+9ECac9x/xl6/KyF34L3NPrl27sWIgO1h7rGTSLj7p/UgD+/4n/pY25aFdtEqtGUVlPHgWF54ESBCxK80YUZnYO5LtmUjhG7ID3I96zvRAgBDzYPQ9ZHNy9LdBFmdnGXbXy23seoYu5QN6kArGzxJnDYtFiqQc4PjmH2Auj3i2vsK6nyddhboQZbhRKj4o8RuwnRlWoT3i2ApXw30y52onxz8gBu67C+FzGySNGXDSstC70TIm2p0xMljY1Vvz8ob7+1XQcqoaFUUrXTktraMaCC41hXOJoj9GmadSP2ZkP6oggoTORq7UH94T5Yb8djgy+9maztP/2s3i+Yx8IBit5KX/u9jEzTfo29GDOwiLmDVpxi+ZBhsPzhMc8oTI2rAIieXPDtoIEnTywxAAlhIfTp+dhwRWnD6LVyEuWEO18GxX44/+IhgX5keDyCPcZph/P+pxDGni2n4vkoaUO+PP/l8YMtiTxycDQXup9gbMpP2AbJG+v2NdXjMC8mtEclduaeSNorczaSbpZfa7A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39840400004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(8936002)(7416002)(66946007)(4326008)(66476007)(8676002)(66556008)(5660300002)(4744005)(2906002)(41300700001)(26005)(2616005)(38350700005)(36756003)(107886003)(38100700002)(86362001)(110136005)(54906003)(52116002)(6512007)(6666004)(6506007)(316002)(921011)(6486002)(478600001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Jxh931NooluzDs3NaDQHdxwfbo2Ls8RsHnUQvck3KjZo+zDzeil3m+3YwU4D8mbHdOa7EOuEWxlunwIt4OiQvLWyk4M2aRVv7zzG1h9SaYANOITq5C/ZK0nsvHS5BcyWrFDwtCqk7bLU1jNl1If428Wie5obzZZk0jhiiChWF0YdLmzao9LfOvWf03OHQmxVmbUNsY8qFWeLFAuS4whA90XjYYtl1flZXL9+EURpPaGT2hly7Uix4MNKEhBqWjLZ+HfPrPnp7/kgvczBNvIoBBHaDLJMO4ZgfPRCbnrP76cBFp7R5mOouAw/IOw0MFDNqX5q0cHLspI6MTBe+0z7NBN0Ji+NZDeILyb5ePZzPhWXarP4jiDkw/uKaYBzyuGr1I/9DButXRgO+bkJdunLiPFFTIOdK5gHStSFJX542d7/ItSnwD4jTCAXqMA6ZkypKSEjCOuZQ9PDXKS1j1fEnzaYRYDklu9WwCeLMNBJzO/RJIDxPLDxazInbSog53mU9Fyq/tjrFTkxESCUjoTOBCem0hd1cchs3OP18SlJT/nG44YmMEFR8DioJc9DyXYpeB4IGh7RQobzpc0njahrVRDkz5meW6nRWU3rqpQ1fVIoIATew7tkjm6faA7k5+gI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39840400004)(230922051799003)(230273577357003)(64100799003)(1800799012)(451199024)(186009)(8936002)(7416002)(66946007)(4326008)(66476007)(8676002)(66556008)(5660300002)(2906002)(41300700001)(26005)(2616005)(38350700005)(36756003)(38100700002)(86362001)(83380400001)(110136005)(54906003)(52116002)(966005)(6512007)(6666004)(6506007)(316002)(921011)(6486002)(478600001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1dmTnVoWnRWL3N0Szk3OTBOTDdDOU5iMFliOWZETkhUSW9FaEh0ZU5peDF0?=
- =?utf-8?B?aGp0emNmVEl1a2RPU1pUSFYyWjZBdmJnanRGTUllUm9EOE80SHN3U25Ja1Ir?=
- =?utf-8?B?UkFBVnJmL3doMW53NWtKQzE3dHduQ0Z6dVFOVXAxZlFSTVJONnpUTFg2NGJS?=
- =?utf-8?B?Wlp1Wmo5OWc0ZEU5SlhTQXFkYWkxbmtQU0tGc1FCQXF1Y1ExRWd5R0pJVVk1?=
- =?utf-8?B?bG5tUXdreXZINHZVcmxEUFZ4NHJnVmNMT3IvUzhyZE4yZzlOR3NyV3RLR0xD?=
- =?utf-8?B?dzgxbTV4MTlTUTJpdWt3K1hGVG9iUkZaaDg3OVBTcVZscTRBbjkxTXg2S1Rr?=
- =?utf-8?B?Wi81M3AvMHF0c3ZYR0I3YzlIV1dBUG93UEtiQjlnSUkzaWhRM1FEMVlJellN?=
- =?utf-8?B?SldsckFpcDBubG8wSDQxWjNiZDBXVEJRUkNidUdrTm9xS0dad0pqdk9aMzJO?=
- =?utf-8?B?TndiaXhIY0ZvanE1eXFtbk55blV2QkNwRk9NaTZ2ZCtNKzZmck1WMTZiOGhX?=
- =?utf-8?B?TnQzSFhhaXFaM0NZV2NoZEsyVFJPc2g1QjVqWUUzU290K3NqanQyWmo4cE03?=
- =?utf-8?B?ckpqRHlOMTRyQUJOOVQraEk4LzMyVGZmMUhrRFhQOHlEbWp5eitZRE8wMmI3?=
- =?utf-8?B?amZNRHQ3S2tXS0I2b2dRbTV4UVAvNjJsVjdCc2pTQThhaUkyWWwxR3IzR3NS?=
- =?utf-8?B?dkI0VEpONUxHOTFyTzkzNjRTSWRxZFlUUzJEL3NIZks4UytCWlo0S281N3A5?=
- =?utf-8?B?ZXdwUUl3U1haYU9lZk5CR3hnUUczdUJkL0VoMk9OS0JGNUc0dlp1Vk05MFhT?=
- =?utf-8?B?RnJMUVVZdUE2V0dYVGdpYzlKRC81VDRkQVAwZzh5MnRiOHVJRjdjZll4U0tZ?=
- =?utf-8?B?QURQNm54QmpvRFdmTW40a0owL2ZtbmEzbk9OeG51cXNsSzFUY0FCbkR6T3ZN?=
- =?utf-8?B?Uk03SGtFeEltcUl4YjF4azBrYkdVSHFBN1lwd0o2T2FGb3NZTC9jSU5CeVV4?=
- =?utf-8?B?Tnczdi9za2g5TzQ1Rm0rZ2VoVTRiZ0FoRGUxRzdDZ0dpdWJIeWRoaHhacGwz?=
- =?utf-8?B?RjVLQ2hlWEZzUjJ5cXhUTGhjTW9EL3VxVzRxdW9OUFpPYmdLMHJBcVJjNmRa?=
- =?utf-8?B?Tjh5NFVXU1N1WnZ6UlVpMTZUYjVsT0hzZ1BGOWJCdlBOWjJDT2VlN0J6aWhw?=
- =?utf-8?B?RzU0UmtQZ2pxNTZ3WHZXRU1lVDJRd0FOcG5CeWhaVjRFM1JwcWdhUmhzYTZ2?=
- =?utf-8?B?V3VrS1FHZmllSXJIUTJnNjVYY1lDSGZSS1Z3eWxtNWc3eG5hZWFBOEhIWmNP?=
- =?utf-8?B?dTh2VlZzaGYrYThCdGxOUjMxVnFQUXZRR2IrazI3R3RNOG11ZlZQN1VBeTA0?=
- =?utf-8?B?UFJ5aHpWbHBNTDJzQ2VzUFd5UFNKVEpCMjBVNFJ4Z0djeTRPemdZMkpQQkls?=
- =?utf-8?B?c1N3bE0wQXJHSnJzVXFlQXllTVNhb0I1M2JEZFRrYk9Da1dDaERabkY3ckRk?=
- =?utf-8?B?QUVVaDZSNzFhK25SeXUvb0FtQTNjN016U1pJWTl1VmVGYXdkMTV1Nm5lVG92?=
- =?utf-8?B?eks0Zk9wNmNVZGsyRFpHeG5qN1hsL1ozRUhRVXZ0WjVhZDB3NEJaMWFFRGhX?=
- =?utf-8?B?ZVBTa3pRelRNRUxnQ0tKbjF6OXpKOEtyNXJ4bzE4TWdORk9qN0JNelEzUDVO?=
- =?utf-8?B?SXJQd1ZaQytQVFJSc3ptYTh0enRTbVE4aWVGWkxvck9icGxHc00wRFpyUVAz?=
- =?utf-8?B?K0M2MmdmY3djcEFiVnhGekY4MTRZaE9MY0p2UWFyOTFEeGJibTZ2bTRhWTFC?=
- =?utf-8?B?QWhkNHNFS2QyUEVHbi9FYnNpKzhMM1NFZzJWVjJVektIUml3SFRIYklZdGtZ?=
- =?utf-8?B?Z0VqODNHRUV2bUJsM1ZZQmo3ZTZwWTk2elpGT2IvdzYyTVpRWWVWanJEOW94?=
- =?utf-8?B?U1hoN2MzeFlHMXZwTXNTcmhpTzNGRVpaZnJTeEt4Z1JLNWRiUk5HYjF6cS8v?=
- =?utf-8?B?VEwwRmxLRHlFT1I0bW1MMkVkeThybmhrZnR6a3F1azhMM2RNVnErbkllZVJQ?=
- =?utf-8?B?M3kvb3F3SHAzQk5nK1lTc1dXT0JqcnJNYWxpRkRIblppQ2I5UFpQbWZ0VTh2?=
- =?utf-8?Q?5JsdJgzZCqFigKCfFhiFULqeU?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TjdIeG1PblhnMHJYT0dGRi9nRWxYNEpKTEVOU3h1THlDZHhaS256TDVBaDU1?=
+ =?utf-8?B?dUVDcUJhUi9JUkRhR1pHUTJ1V1pISXRLSzVxQkxrSU8vOHpsSks0SzdCd2Z2?=
+ =?utf-8?B?UGNENzJ2YWh0Q2gzdFV5ZkdscmRHSWZxNmxOZHRVclJNMGpaNkFQeU1NNklu?=
+ =?utf-8?B?MlNXRVhwTFBWV2ZyMzhJV2VMd0ZzbkgwRlUraUUzV085WTFCeWFwWUVtYzNz?=
+ =?utf-8?B?aUdwRGNwRTlLYnBqWktkRTROemxLQVo1Tkc0alpkUEp4cUw0M2p0RzcydEJr?=
+ =?utf-8?B?TWFldm1tY2pzTHpCeUR4MUZUYUk2OHJtd0QrUEZXVXdJSEE1Y3RGekRTYVc3?=
+ =?utf-8?B?Wnh0YXRqZnphekZEWXpvRTZIL2tuQzVFOGNRQVhhL0k0OTBxVzVPU1diV0JJ?=
+ =?utf-8?B?YlJGTFA3YTIxS0dmLzVYMzgrWUl1RVZ0VklXaEFWZ1k0NzJhclNITURyeERC?=
+ =?utf-8?B?NXIvUWE1ZC8rZW1pelR1aHQzMTBNZ3pMUFNVSEc3Q0ZCM1d0QkpHemZyR0dn?=
+ =?utf-8?B?RHRiMnB5ZUYwazZnNnNIaXdQOXMyY0NYUHl6UCs5OFZmNXRFbWZ4aHpqMmxx?=
+ =?utf-8?B?dFRVYVBHUVJ0bHlOOFRsS0RheGxHTlJad3d0NDQ3bExGVWJhOEk1SFc0OFcr?=
+ =?utf-8?B?VzFDNDhrZmdEQUtrWngzRHpSWktZMU9WVGpaUFB4WnBsUmhrVldxYWVwSVRP?=
+ =?utf-8?B?cU9YMExvNlNDSlN3alVrNzNNMC95NTE0WGVaWDhrMGphd1VWbTcxYzFFL0JH?=
+ =?utf-8?B?cEZ2UnFVaGVTTEVSRm0vQm9GNml0YUxNT0IrR240MWt2dDgzZXFIZTlieThi?=
+ =?utf-8?B?VVc2VU5ZbGNXQ01GTk8ycmxGWDRDL0Rnb3VZejJmMEx4TW54cjhFb01jMW1k?=
+ =?utf-8?B?ODZLR2Q1R04zM1JVOXRNc2FPdFZUOXhmRlJka21qTUxaQVFLR0lKR0VMZ3VR?=
+ =?utf-8?B?d0F2REJ6djJudlpoeFdOZ2gwTk04d3JMZjB6VU1FYnl1cWYxU01wL3p6eEpt?=
+ =?utf-8?B?by9YaXNheDBCM1RFQml0WGgzWFlsQ1RBWHdaT0xMTHRRRGxheDg2Q1hRa0lj?=
+ =?utf-8?B?NDdrUDdmYzY5eFBEejgvV2pNYXJJSWZwbG1iS0tkaG03cDBrS1BXMTVCNWpJ?=
+ =?utf-8?B?bGl5ejgzejE2RjVJL1lXeVd6dmsvYkh0ZzFpZlBRdXA3M2ppRUVDMkVrTGRv?=
+ =?utf-8?B?MjdDZzM5VmRWeHVjZG8yRU1uYlFvUnBNbjVxRWpvYUlLQjlUN01SMlRHRnlC?=
+ =?utf-8?B?M3dIQi9NZFF1SmgxZjNpbUtDN2JOaHEvUWtSVjQ4YmZIenRoTWZPSkJ2RHUw?=
+ =?utf-8?B?VFJ1NGRuRFZEaGwwaDhJVWM4M3BZSGpvMVBZelRrVkZLT0lISk9DN0NuSS9k?=
+ =?utf-8?B?Y1BFWjVFT1hOK09odERBb0h1blUxUGFxT3V6WHBESDlCMlp4YU9JdXNEYTg0?=
+ =?utf-8?B?SlY0WGVFU3gvZTJoQ2JpbWhqK25QQlFSUlNLT0MyQXk1bFlpZm90LzQ1eW43?=
+ =?utf-8?B?WXBBZVphcDlKNHFsenZmN2tQWnI5alRtK1ZQTWxCTkJ1dW9WOVFRMC9aYW14?=
+ =?utf-8?B?cksybWo2dlVNT21ydWlzR3JKMTNTcXcxR2pJbVJHNUYrNkFPc1hic3NOOTNw?=
+ =?utf-8?B?RWtjOE1xejBUTnlFYlZaQ0pMMzMzM2kvUVpSZmNLci9aY1crdHBUTHFnQ1BK?=
+ =?utf-8?B?V3kzazFrNUZDdU1QYkpyQUpURVJ6RVpXS3prSDdMZGRqNFR3cWlrSXpwVVNo?=
+ =?utf-8?B?bDZKS0JKTUJiWWw4VGNMT0VRcnM5cVZnS1hXS0xMV1dRZy9ZVEhNLzcrcVl2?=
+ =?utf-8?B?TmpzMEpwVE4yNVd1V2JIVE9sVTNUNHMrSGNQYjRWdzJNSWlHcHJmYWJVcTVY?=
+ =?utf-8?B?ME1pNkhIK1dGRnRyTmFGZTBZTjVYWWNpdDBWckRaSnJ3UjNzL3diQXFrWHow?=
+ =?utf-8?B?TjdlbG5xRVNhWDF1K0JqUW5ZOUNmeC94anN5S2dka0h2U2hlZHBUR2JGU1dF?=
+ =?utf-8?B?MlFSaHpabmhDbmhPQndSOUVPa3ZmUjdOMWt4ZVhmajBMd0ZLcFJKNW1FTjVh?=
+ =?utf-8?B?UHJPa3I1NlI3UlNDbk9Ma0pLZDZ4TTV1SWVjZDVPRFVLN2c0WHdYYUpVMzhR?=
+ =?utf-8?Q?qXSRQm5s8rcB7cXNqkeRdZKOP?=
 X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fede1b32-5137-43b3-d09b-08dc2bf166d0
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc0c8ce7-9f29-4631-6672-08dc2bf16559
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 17:38:19.2581
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 17:38:16.8912
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MjsRFMn+6jaF9+6+592HuUuECx8978dvaLgAmrAimMWTrQj3PTWhvEsBWTjuL6IBFEzWPKVdsdpp0i0fwJjbhw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: lvgID/0Iq1icugwn3ADEmXbby2PrvD8cnGmZtbpNP3AQWLo1O6I992/QEHB+uqTQSlj63Xn4VheP+DslxpniVg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240212_093827_844361_D78C542B 
-X-CRM114-Status: UNSURE (   8.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240212_093823_720103_5207A17C 
+X-CRM114-Status: GOOD (  14.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,34 +161,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-HDC2010 and HDC2080 humidity sensors both have an interrupt / data-ready
-signal which can be used for signaling to the host.
+This series adds DT bindings and dts descriptions for SolidRun AM642
+based SoM and Hummingboard EVB.
 
-Add binding for "interrupts" property so that boards wiring this signal
-may describe the connection.
+Additionally a commit from downstream vendor kernel are included,
+enhancing support for pru based ethernet.
+I wasn't sure how to properly annotate it in commit description /
+signed-off area ...:
+
+1. add description for "Industrial Ethernet Peripherals" (IEP) to am64
+   https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/commit/arch/arm64/boot/dts/ti/k3-am64-main.dtsi?h=ti-linux-6.1.y-cicd&id=5afb73d82a014b59462162d960b350b8c58e5ae6
+   IEP is already supported in-tree by a driver, and used in
+   k3-am65-main.dtsi.
+
+Unfortunately dtbs_check still reports one problem:
+
+- 'mux-controller' does not match any of the regexes
+  The expectation seems to be that a mux-controller at minimum has an
+  address, something to put behind an @, e.g. "mux-controller@7".
+  However this mux is not on a bus, it is just a gpio-mux,
+  not sure how to name it better.
 
 Signed-off-by: Josua Mayer <josua@solid-run.com>
 ---
- Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v6:
+- renamed pinctrl nodes to *-default-pins
+  (reported by Vignesh Raghavendra <vigneshr@ti.com>)
+  (dropped Reviewed-by: Andrew Davis <afd@ti.com>)
+- removed tabs from pinctrl comments to shorten lines
+- updated humidity sensor yaml with interrupts property
+- updated spi-nor flash yaml with interrupts property
+- Link to v5: https://lore.kernel.org/r/20240211-add-am64-som-v5-0-790ed7121249@solid-run.com
 
-diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
-index 79e75a8675cb..e3eca8917517 100644
---- a/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
-+++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
-@@ -27,6 +27,9 @@ properties:
-   reg:
-     maxItems: 1
- 
-+  interrupts:
-+    maxItems: 1
-+
- required:
-   - compatible
-   - reg
+Changes in v5:
+- abracon,abx80x.yaml:
+  - reworded 'compatible' description
+  - removed $ref to interrupts.yaml
+  - nested example in fake i2c
+  - changed maintainer to rtc list
+  (reported by Conor Dooley <conor@kernel.org>)
+- patch 4/5 dts:
+  - re-added status properties for sdhci nodes
+    k3-am64-main.dtsi has been changed in-tree since v1
+    such that sdhci nodes are explicitly status disabled now.
+  - picked up reviewed-by
+  (reported by Andrew Davis <afd@ti.com>)
+- Link to v4: https://lore.kernel.org/r/20240202-add-am64-som-v4-0-5f8b12af5e71@solid-run.com
 
+Changes in v4:
+- abracon,abx80x.yaml: fixed dtc error in example irq reference
+- Link to v3: https://lore.kernel.org/r/20240202-add-am64-som-v3-0-2f44023d50e9@solid-run.com
+
+Changes in v3:
+- removed lots more status properties, double-checked against soc dtsi
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>)
+  (reported by Andrew Davis <afd@ti.com>)
+- removed intentionally-disabled pcie node from dts
+- rewrote yaml bindings to use enum instead of anyof+const+description
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>)
+- abracon yaml
+  - added missing maintainer
+  - added diode type property type
+  - added example
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>)
+  - added reference to /schemas/interrupts.yaml#
+- use generic name for pru ethernet controller node
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>)
+- removed unnamed dmas from pru ethernet controller node
+- moved pcie/usb3 features to dtb overlays
+- Link to v2: https://lore.kernel.org/r/20240112-add-am64-som-v2-0-1385246c428c@solid-run.com
+
+Changes in v2:
+- reordered patchset to drop separate patch adding iep handle to som
+- moved dtbs_check warnings to cover letter
+- converted abracon abx80x rtc bindings to yaml
+- updated dts:
+  - remove unnecessary status properties
+  - changed non-generic node names
+  - use color property for led descriptions,
+    they have no default function on evaluation board
+  - drop earlycon bootargs from chosen node
+  (reported by Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>)
+- converted charger node to comment, part not assembled, has no bindings
+- picked up acked-by on board bindings patch
+- Link to v1: https://lore.kernel.org/r/20240103-add-am64-som-v1-0-dda1f9227aef@solid-run.com
+
+---
+Josua Mayer (6):
+      dt-bindings: arm: ti: Add bindings for SolidRun AM642 HummingBoard-T
+      dt-bindings: rtc: abx80x: convert to yaml
+      dt-bindings: iio: humidity: hdc20x0: add optional interrupts property
+      dt-bindings: mtd: spi-nor: add optional interrupts property
+      arm64: dts: add description for solidrun am642 som and evaluation board
+      arm64: dts: ti: hummingboard-t: add overlays for m.2 pci-e and usb-3
+
+Suman Anna (1):
+      arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
+
+ Documentation/devicetree/bindings/arm/ti/k3.yaml   |   7 +
+ .../bindings/iio/humidity/ti,hdc2010.yaml          |   3 +
+ .../devicetree/bindings/mtd/jedec,spi-nor.yaml     |   3 +
+ .../devicetree/bindings/rtc/abracon,abx80x.txt     |  31 --
+ .../devicetree/bindings/rtc/abracon,abx80x.yaml    |  79 +++
+ arch/arm64/boot/dts/ti/Makefile                    |   7 +
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi           |  24 +
+ .../boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso  |  45 ++
+ .../boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso  |  44 ++
+ arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dts | 292 ++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-sr-som.dtsi        | 594 +++++++++++++++++++++
+ 11 files changed, 1098 insertions(+), 31 deletions(-)
+---
+base-commit: 83d0ff463b50d2395e05339a34e35d14ba82043f
+change-id: 20240101-add-am64-som-51a1ca47edf3
+
+Sincerely,
 -- 
-2.35.3
+Josua Mayer <josua@solid-run.com>
 
 
 ______________________________________________________
