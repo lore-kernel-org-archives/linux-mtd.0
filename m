@@ -4,62 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D830EC48297
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Feb 2024 18:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9EF4C48BC3
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Feb 2024 18:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SYSI0+/IE42p7XrOeF/BwBTXjZanWyEQJ7QN0zR9tVA=; b=opxEeQYuLXWQ0luTEW/ptwIeFi
-	vdz0xF3U3P4F+6de1ClVoSpv/vpz7BTReUg4e/mrdZmWyLsEuemY6i9uHdC9xDDHlOVbvFDlKKFZy
-	8w7iLPHIFmJuMKrXxsIvpdJNeperhY/SHmQVdoecGVnXH3WqQw15eYorgElIw3rwftGzMkJonvG9v
-	dy+MQGUdaEjzwGtKgahCiloe9fX6X3rI8rtTYByASeRmKRaoUee19qZXciE9vPYjOnTHz8a8Mc92i
-	4aX8BD+kDuAKVs+6n/QYOgSNml6zldri6Zy6IR0Rp0iU4lbLMExM/5ESpomKDY6t9V9uZ84iFprsg
-	p3ABSsBQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:In-Reply-To:
+	References:Message-Id:Subject:Date:From:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=vN253G5LzAjsxAUnqDpkrAClEH9hx2tAp6QVNjzrZcs=; b=NUBNWcjUd1ONDfSZT2Grojv2sv
+	6DZzTGWwMRBZWiBuJiIi1uTBczApDzYSyfAgnNIH+S3pG8H1clGB+7dnd+gikG85ugpW/1CqxFnTs
+	a02qeYkSQwiaLylX53WZvvusebqLhva6iFvpvIWo1Y8XUkGZNTMv4JrFASqDrsWsBxAHWGlo/I34n
+	H06C+jGczv4fNxDksDpaTtsTs2+RL5llL24y1XC8ohhjGEFSVlK/MqNa0mLHPRxPA+xNEMgHCIX5a
+	EsCrdkO3z6cgRmAIiHjV3NrMpIoOnFYIf+7KnUMCRUStASvJEMcgam7tQE6feWoAfQbzEkQ7HBa13
+	XgvYBLig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZbCG-00000006dqQ-38ow;
-	Mon, 12 Feb 2024 18:38:28 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rZbIz-00000006eyI-2eo0;
+	Mon, 12 Feb 2024 18:45:25 +0000
+Received: from mail-ve1eur01on072e.outbound.protection.outlook.com ([2a01:111:f400:fe1f::72e] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZbCD-00000006dpG-46hO
-	for linux-mtd@lists.infradead.org;
-	Mon, 12 Feb 2024 18:38:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D9A4961062;
-	Mon, 12 Feb 2024 18:38:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B78EC433C7;
-	Mon, 12 Feb 2024 18:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707763104;
-	bh=DB+QxJu9d3ZS9rmjqca4J9xEJVvpvRrU2w7NHJpSp2s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EMUyCia9MG/ccuDFUpmDHiaLgC+igJvueSb2uGUiW+TWBq+vBFJgv8cUhmQuvL+pz
-	 5iUT2b3vi+tdzkMXYYrc1B47l5j0QmWiB9PXCy926EZDb90ffrj4N8HGa+6ELm+baa
-	 d1O2E1uY04FIGeZwOqJkdmUtPJLY5anr/dqnPnvxGLeRiKmLD0fwaP48UDg+6JQpGI
-	 kmvpJ2wegkC+GvoCO932G8UHkEkGm1sJGgCoev1AUcQOsunK5XzdWaUaXPYSOGUYqp
-	 p9S5u9N0bEQx6QB8D9+o/mABVRhhIOFXR2yemqFi5EEwnKE1jChO2G6vNh5tKdRLgQ
-	 16/DAqRwQIcPg==
-Date: Mon, 12 Feb 2024 18:38:19 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 08/12] dt-bindings: mtd: st,stm32: add MP25 support
-Message-ID: <20240212-squeak-mortality-5a53a4d1039c@spud>
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-9-christophe.kerello@foss.st.com>
+	id 1rZaGF-00000006TCR-4Bf7;
+	Mon, 12 Feb 2024 17:38:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JqNi1GrVeAIahdUv/tFmw9FDheR6Xv2h8w2nGIRDEdMaL6KEMfYUj4XZewMXAhNO3beWnCd52rI9zJTMwGunfitJ6FYfpGsjbbwJT9eD2YRN36h2BvqTNtcPDkC2VElRS5g4RDNj8MfOIMYrstQ9+/0NuDfj4muKCZuDPXDra9rLCVgD+ngaZOAxajWRrf80dEEzhyhCD1lF7Vb+Rr+HMe/ri2hwTyDqXCVgUH23v8al4+BJXLtq2t8K7Wk28Q1Tt2P9ha9BsfiHHYgGHLpf1wUqoyOzcam6NAx7oEJQrq6Z9bSZqQMLxl0kUDeAu/hGs2CHJmva2cEHYSsEXC/E8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DVxPmi2eYokNgwgRMfWZLMrATkmf6SNKFaT5hWZTTKk=;
+ b=NF5sYM1l5gR1eB1WefuOxPXyB+P1WEsh6nJIBq24F8uNKWPcOjEaR2DEi3PcIDP+fkf7cSrE9KlecgR7/D5u0Y6Ecdj7taH1n7pN31EzhEA6FGXJzSgeYFObgR4/60/IH+mXr0hLdgjRwUPpcW0P0fOU1j5C4rHfNM4pCupx0dLLPjjOMztS40aVnjQiXOhKTY+9ooLokczfoeDZ0mG5EFAJ5Hz4AMedHbtH7qhwFp470pfdtSkT7YsPAOUNRofbEgL0ZFb6VtQVJgk9T89EpHH1oYL4OwCTzykOAwCuqb+Uyg6X8f0vBriCBDm1X1e76YaJucFX9HSGBxrEFvOGvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DVxPmi2eYokNgwgRMfWZLMrATkmf6SNKFaT5hWZTTKk=;
+ b=dWJqdG0cT05stbdof8sJky5nPzxjfhFuM00KRhUz0BDJ8bz3fYxO6VnAfq8+HhcoMrfb4UoHYPVM8zeN0mLwHAnkN1yngFSwyF4nbTS2aMEgvr/6nNf8tfzeiFtNgT1rZTmura2cKHzd+GB+Q9/D/Rry8v/DdVHsTavXqif0TCY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+ by AS8PR04MB7909.eurprd04.prod.outlook.com (2603:10a6:20b:2a2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.24; Mon, 12 Feb
+ 2024 17:38:17 +0000
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7249.039; Mon, 12 Feb 2024
+ 17:38:17 +0000
+From: Josua Mayer <josua@solid-run.com>
+Date: Mon, 12 Feb 2024 18:38:08 +0100
+Subject: [PATCH v6 1/7] dt-bindings: arm: ti: Add bindings for SolidRun
+ AM642 HummingBoard-T
+Message-Id: <20240212-add-am64-som-v6-1-b59edb2bc8c3@solid-run.com>
+References: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
+In-Reply-To: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, 
+ Eugene Zaikonnikov <ez@norophonic.com>, 
+ Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>
+Cc: Yazan Shhady <yazan.shhady@solid-run.com>, 
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
+ linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+ linux-mtd@lists.infradead.org, Josua Mayer <josua@solid-run.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: FR3P281CA0027.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1c::14) To AM9PR04MB7586.eurprd04.prod.outlook.com
+ (2603:10a6:20b:2d5::17)
 MIME-Version: 1.0
-In-Reply-To: <20240212174822.77734-9-christophe.kerello@foss.st.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|AS8PR04MB7909:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb066ff4-86f6-4285-7f61-08dc2bf165d8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vwo8B4MdGxZ/P2zTxkTTdrKYb6hExkpwMx+ZUG5tWEN1OGBNyPYU21Hh4sW/MF1QnIMlVTYjBfogXM3OTSe4+V8loWK+JrVdoxu0332KY2rvcHgz3TIZm+1au59xM7nWjC3gbHwXQkzwi7dV47/u6Ww4XRw0tjnYopbygE5bdpXdBItiSKDXT9TXHxDvyJHPMFJw5ujtmIzr6kKHxkwCxz6HhREpdKHN3sVdPypvQ6K3ZHeUWxa7xtaen+offW5fXUUQO04mJbNkfSsccwxghU2crlHqaFbylM6hq4f3/fXGj/CL0U/8AL9MAKxuL89oz/K4iZ0CrZkXqinD5n/tlWvMS0NwufdpcGvSJJZkjf3KsbW7IhKPIUQt9lya6TLX8yxIQd8bk+imZfI41J2/lUBlFbsIE9nIHdB3Rp7yYsmRVlzPb5VycgUPnvclEnRiBhzzvMKB0SPgXlxuDyNDLFK+wyJN3oIwMZxnPAOFRXhzF0kfH6i0oRltQsvaDoKV0769aWLZxzjvfBBBsve9NY8qYfNR61xNCzC68utYS+e55oozUh22zuqvEOS42UJTwKmRAHgn8P2djvKuzoEnEwIt4NhNpU2p9XHVahNAYQTMybg6SsnBKtAwvNj3k7F5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39840400004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(8936002)(7416002)(66946007)(4326008)(66476007)(8676002)(66556008)(5660300002)(4744005)(2906002)(41300700001)(26005)(2616005)(38350700005)(36756003)(38100700002)(86362001)(110136005)(54906003)(52116002)(6512007)(6666004)(6506007)(316002)(921011)(6486002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?clRqUGhqZGtRN2tISmRnR2ZjNHR1b2RQWFBjRWF3cjUwUkl3K0hSNEFCREFO?=
+ =?utf-8?B?Q0JrcnRCc05hTzNvMnlPbnVPN09HelZmWENBdjdRN0xBbUZ2MzF4ZjJRQ05C?=
+ =?utf-8?B?d3RTQ2JnbWFRZTBSNkJlejZnb1RCT29oY2RwcTg5KzB5NUI5N2JpZnlYYW5w?=
+ =?utf-8?B?d1ExYTFwMGJCR3FMZzcwaUIvQkdzRDlLbmlud05xTXFLeVJ5OHFWdHgyL2RR?=
+ =?utf-8?B?ayt5TU5oSnV1ZnZ6OFpselkwQ3JWQzRFVkNlVVQ1WVp4SXlKbVRhekVLWkxO?=
+ =?utf-8?B?QlE3cFA3VWdETDNyV1U5ODRFR1MyN0wzbjRSQWpta0lBWHpJZ0p6eU9DUjNH?=
+ =?utf-8?B?V1pTZUN3bXhRaUdQdjRoQ3RWek9NalhWM1YzN2h6c3UzZFp4OFhNYjEzd05s?=
+ =?utf-8?B?VnczaUxHQjRRNzk2Q3BTMmxNNGFndW1uZ2IxWnBRWWdBakhGZTFOS2JGUUhi?=
+ =?utf-8?B?Qk1nUlRLQWNMNDZ0ODJGczV0bVpVVDNkU3A4Z3RWT2JpdUkwaElILzUxK3o0?=
+ =?utf-8?B?aHppRzR0MzBVaENvZGxmQmIzT0dnanNhS1ViaFFKZ0dOUE5SZ1VZZ2V4cHA0?=
+ =?utf-8?B?eXJibnFLU1J3a3FiV1ZKM2I3TFpndHVVSUY0THdOLy9JZ0ZxSklxRHFrdFNS?=
+ =?utf-8?B?U0V6cGZ6cUhkMmdORnJETXAzS2pOb1VFLzVlYStsVm9CdTlicjk0ZjVPRmUw?=
+ =?utf-8?B?YmtpeXR5dDlweDRtQkZPS2hsbWJIQ1ZXcUhwWXlnK2FCRkpHVm9TNXN5b2hO?=
+ =?utf-8?B?QUlmand3TVVSeWFvYmpLQkRoVzlhYVg4WWpvUDIvazJyVmV3WXlSTWN4Y1p1?=
+ =?utf-8?B?Y1JIWnA3KzFNS3BBQkdDaVZWMWFFUmpQTHZkOENhQXVQOVR3ZUJ5MU1XcEFx?=
+ =?utf-8?B?a0lndVJZYlBRYjdiRVRUV1NQTFVHMmZlYVhGWTJmbnErZjlsMGRhYld5SUhC?=
+ =?utf-8?B?NTQ2YVdiMUhFdUQ3cjRKQ3JzeTBuMzZsenhpaEdqM1BvSWorNm1WblZpc1Mv?=
+ =?utf-8?B?cjRwYWRGOGE1VTB4TlVjR09LNGRId3ZXSDdHSXRzVEtsN3pmM2Y0OWJybHo5?=
+ =?utf-8?B?NlBxK0doZGhCRWlHVmRnUFdsUHhKM0xodjNJM0RRUVVrNTNnWDlidjlITG1v?=
+ =?utf-8?B?THVrY0JYdytGQldFVHNLazMrTGNkZERaOThYTmt0ODUvVlREVk5ibHc3OEJl?=
+ =?utf-8?B?N1BpSFQ2R1VwYWYzZXZyVGowOTM1czJMbnluK0xGSHBlREtERXFSRm9YMnBv?=
+ =?utf-8?B?YklvcHhHN3RtRXdmOUJUSnpCOTBaYksrdmFpZWIyV3pNcnB6K1R2OGNkbWZS?=
+ =?utf-8?B?LzhJa0FQRk1UUTdZbVIvTFc5RmNxKzVVMjk5MzZlV2h1TURuNmQrVy9kKzQr?=
+ =?utf-8?B?OFNIOGJyM0krc1dYeWNxZ2ZtbmJFU050TWVvdUx0YnFVWk04MFBrQkN4VGY2?=
+ =?utf-8?B?RnhyVGg1bjhFV0RzdWxxdFJJQzdYWEYzbUJrZ0JibUtmNlVWMlRZM1A4Rzhr?=
+ =?utf-8?B?ZFFzUnc4Y09Qakd5U0FRM2ZCem9ZRGZDQjZrU2NuQ3pWUW01ZlcrbW94K2FL?=
+ =?utf-8?B?WlhuSWI5STRqTTFVTFhLRWJvOCthcWVhS1J4VzZ0c1d2b3k5Ymh3dThaRkhn?=
+ =?utf-8?B?bUtKT2prZlNBU1JscktEcjg0K3NhenhjY3JaRGc3SGYwbkZKQ0VvVlNlWkxU?=
+ =?utf-8?B?enhiTG5IMDdxWis0V2ttS1JUM2dka0xCU1JDcW1DeGE2NG5ERFlXdFNDRmZT?=
+ =?utf-8?B?eWF3d042dldueUp1eXYxSmRoVElScS9oSlJQRk5ZZzNnVGJpRUwwMEl6Sklr?=
+ =?utf-8?B?anRITUlQa2JabGQ1RDFlVVNjcDNBUXhXZFk0eWpIUW93dnoyOEl0Tis0N284?=
+ =?utf-8?B?R29iUnFPd2Y1T0k4Rk5NNHI0S0JkNHM1ZTFDNThYUU5RTG4zeU5QYlQ1K2ZM?=
+ =?utf-8?B?d1BUakZPWTc4WDRlWWxPOTUwM3AwdzRoME85SXB2MkI2d081V0JDMHF2V0d2?=
+ =?utf-8?B?aFVmY3BIY2hpbjNXaXQ3Unp1TVZPYkdsUWVyeFo0YzBmZUVnR2NkR0Z1b2l3?=
+ =?utf-8?B?SnVQUTgrODB1U1oxVWNIeXh4d0l4VFBSckFXWUpzS01ucm9IQVF1MG1BL3dC?=
+ =?utf-8?Q?fnyP4tzGwHwNA2fpArt+dwimY?=
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb066ff4-86f6-4285-7f61-08dc2bf165d8
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2024 17:38:17.6511
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mdphCWSIj8p4/W69ZMut33rAVkmUu8oL5rMfb8FI2NIVcuCccsCODW53fq90I8xARLqjOwgD5hRcRxa+HNuh5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240212_103826_129515_71FD747C 
-X-CRM114-Status: GOOD (  15.13  )
+X-CRM114-CacheID: sfid-20240212_093832_185640_13F38F50 
+X-CRM114-Status: UNSURE (   7.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,146 +153,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7142576333344883193=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Add bindings for SolidRun AM642 HummingBoard-T Board, which is the
+evaluation board for SolidRun AM642 SoM.
 
---===============7142576333344883193==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5x9qetWChxMtvEey"
-Content-Disposition: inline
+Signed-off-by: Josua Mayer <josua@solid-run.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/arm/ti/k3.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+index c6506bccfe88..0233a8b0b6fc 100644
+--- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
++++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+@@ -87,6 +87,13 @@ properties:
+           - const: tq,am642-tqma6442l
+           - const: ti,am642
+ 
++      - description: K3 AM642 SoC SolidRun SoM based boards
++        items:
++          - enum:
++              - solidrun,am642-hummingboard-t
++          - const: solidrun,am642-sr-som
++          - const: ti,am642
++
+       - description: K3 AM654 SoC
+         items:
+           - enum:
 
---5x9qetWChxMtvEey
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-- 
+2.35.3
 
-On Mon, Feb 12, 2024 at 06:48:18PM +0100, Christophe Kerello wrote:
-> Add 2 new compatible strings to support MP25 SOC.
-> MP25 SOC supports up to 4 chip select.
-
-Again, please explain why the new device is not compatible with the
-existing ones. Also, please explain why two compatibles are required for
-the mp25.
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> ---
->  .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 58 ++++++++++++++++++-
->  1 file changed, 57 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yam=
-l b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-> index e72cb5bacaf0..33a753c8877b 100644
-> --- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-> @@ -14,10 +14,12 @@ properties:
->      enum:
->        - st,stm32mp15-fmc2
->        - st,stm32mp1-fmc2-nfc
-> +      - st,stm32mp25-fmc2
-> +      - st,stm32mp25-fmc2-nfc
-> =20
->    reg:
->      minItems: 6
-> -    maxItems: 7
-> +    maxItems: 13
-> =20
->    interrupts:
->      maxItems: 1
-> @@ -92,6 +94,60 @@ allOf:
->              - description: Chip select 1 command
->              - description: Chip select 1 address space
-> =20
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: st,stm32mp25-fmc2
-> +    then:
-> +      properties:
-> +        reg:
-> +          items:
-> +            - description: Registers
-> +            - description: Chip select 0 data
-> +            - description: Chip select 0 command
-> +            - description: Chip select 0 address space
-> +            - description: Chip select 1 data
-> +            - description: Chip select 1 command
-> +            - description: Chip select 1 address space
-> +            - description: Chip select 2 data
-> +            - description: Chip select 2 command
-> +            - description: Chip select 2 address space
-> +            - description: Chip select 3 data
-> +            - description: Chip select 3 command
-> +            - description: Chip select 3 address space
-> +
-> +        clocks:
-> +          maxItems: 1
-> +
-> +        resets:
-> +          maxItems: 1
-> +
-> +      required:
-> +        - clocks
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: st,stm32mp25-fmc2-nfc
-> +    then:
-> +      properties:
-> +        reg:
-> +          items:
-> +            - description: Chip select 0 data
-> +            - description: Chip select 0 command
-> +            - description: Chip select 0 address space
-> +            - description: Chip select 1 data
-> +            - description: Chip select 1 command
-> +            - description: Chip select 1 address space
-> +            - description: Chip select 2 data
-> +            - description: Chip select 2 command
-> +            - description: Chip select 2 address space
-> +            - description: Chip select 3 data
-> +            - description: Chip select 3 command
-> +            - description: Chip select 3 address space
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.25.1
->=20
-
---5x9qetWChxMtvEey
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcplmwAKCRB4tDGHoIJi
-0qEaAQC6FzMEWUZon7Rbw9b51wIt52mF6FLV+DfSgClzOalRFAEAiDB3FOanV76n
-XJT9NErVw/coKCkhHjtRx02Cv9xOtQI=
-=9ijQ
------END PGP SIGNATURE-----
-
---5x9qetWChxMtvEey--
-
-
---===============7142576333344883193==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7142576333344883193==--
-
