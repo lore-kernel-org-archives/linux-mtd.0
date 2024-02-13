@@ -4,88 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1D3FC4829A
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 09:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9753C4829A
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 09:54:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BfRTeUOBPuAYDc0vN0AaIAyoo3+n05b1HIQBglV8lzE=; b=rhRx2JlcMvpNT9
-	IRYrkhiObhXgVqx6jRVCNu5+HkCYGKZYWw9n7FY2EI6qj1l9bpktBSfOdMrzhaBKCUNpg3VDt9e4l
-	ASUwECwtSGypbox6OjfUTsJXMmlXUqqhsZypYMj2xyRScqzeJv6LCwHtykxYzUqOkkf5wlz93/kVX
-	Yq2Jov6flBtosHUYWrlmet+8wOl3sA6S7TGFdAOfmW5xV9tGizBKnMXtLHSJepGZ4qfJdbV/RYJkW
-	6s0FoL/vuevw9Dpj6Qd+8J+j1MEOEgk77SCG84C8F4I6I+0a4nRFZlqjxF99JxHwhaTtu7Ld6DaJS
-	fXM5LYUdvqHzZLQWbRjg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=moML9SSCrUVwz5HgM6bizAxn2lxwHfAqnzpA88OZoR8=; b=uisO9520sg/hd9
+	BpvvORo+dQMNPjHypqPqyhNB1/hvBcutR5VtvezB0FGo9ElheD6UD5yj0f0yvY8sCpaM9WJNFaBzd
+	9rY1jIOnxnNxFIPuoD1qZoiNQMOCdeuN1DRllUpwuxTKpzQXTrduZ1Rq4Hz4zUoXXT0qQfgvYx0kV
+	/sg0nPt/9RRLWMJ4oNa37gppFwhvkrx1GQM2EGyMH7lnYzAQ+ragkPhcY5avV1PpW7VGzt5pw09FH
+	flfrXLRISrA3Vdf63I6LzgIDF4T/gmLzojMYrLl242e1dBELui+6Wa+3oPNQeqQ+14hdHuzXRhaEP
+	6Wl71L69wjMt3PviYquA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZpOy-00000008fxZ-2Opt;
-	Tue, 13 Feb 2024 09:48:32 +0000
-Received: from forward500b.mail.yandex.net ([178.154.239.144])
+	id 1rZpUf-00000008hkB-0Lsd;
+	Tue, 13 Feb 2024 09:54:25 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZpOs-00000008fsS-0hbZ;
-	Tue, 13 Feb 2024 09:48:29 +0000
-Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3019:0:640:a0d4:0])
-	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 9CCD561154;
-	Tue, 13 Feb 2024 12:48:16 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id Amja449YvOs0-Ohe7AJJt;
-	Tue, 13 Feb 2024 12:48:14 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
-	t=1707817694; bh=BNSX9WQo4fdZixPgrChnndimSE1LeUip7SbHQG3EiRk=;
-	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
-	b=tHSpq6lLbJRzMUl5S+AQdH+yFWqgLs5dAvYesqMe255xcZfmaDSgVPRqcA1r0bzrw
-	 TkfIPDSLR62NkdUlPI+s/lCQcEhokM08txNkwukmx6USimZGbDh66EHaLNxEHxEu27
-	 3BeQU0snEq2nQPzdmEknsfQ0A1hkYVGjcAylct3Y=
-Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-Message-ID: <84444657b86c7a25ea2e6031ea85978917f33342.camel@maquefel.me>
-Subject: Re: [PATCH v7 00/39] ep93xx device tree conversion
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: andy.shevchenko@gmail.com, Vinod Koul <vkoul@kernel.org>, Stephen Boyd
-	 <sboyd@kernel.org>
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
- Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Guenter Roeck <linux@roeck-us.net>, Thierry Reding
- <thierry.reding@gmail.com>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
- <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, Sergey
- Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>,  "Wu,
- Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, Olof Johansson
- <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-pm@vger.kernel.org,  devicetree@vger.kernel.org,
- dmaengine@vger.kernel.org,  linux-watchdog@vger.kernel.org,
- linux-pwm@vger.kernel.org,  linux-spi@vger.kernel.org,
- netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko
- <andriy.shevchenko@intel.com>, Bartosz Golaszewski
- <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>
-Date: Tue, 13 Feb 2024 12:48:11 +0300
-In-Reply-To: <Zb_DfISgoNyTKWMp@surfacebook.localdomain>
-References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
-	 <Zb_DfISgoNyTKWMp@surfacebook.localdomain>
-User-Agent: Evolution 3.48.4 
+	id 1rZpUb-00000008hiL-1WIM
+	for linux-mtd@lists.infradead.org;
+	Tue, 13 Feb 2024 09:54:23 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id ACC99CE1AB0;
+	Tue, 13 Feb 2024 09:54:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8707AC433C7;
+	Tue, 13 Feb 2024 09:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707818059;
+	bh=tyrKSJ+fpXIRAZe8ycgeQ8Vq9Yq+VZQ5WTyjhUVTRPA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=m2/QZK6nA2S8/E5kGUsVsTSn9C71ihbSd/3BFmOQyQAui7Jb8Sa1MhdrvJnzxLweS
+	 irAvGeDMdoCeXu6FjLCaB964QMcwrfLD+Yj5ev+8e3khQ6qMGYyofGPbxAhwJeCXmf
+	 yfmIF0qWgYGDCVuOA5liTwZO1YFrHcJODG93j+26y/pt4R8jizxu5oQlqttzahfJtX
+	 M6Ln4G2r+tP7S/Dnq5iuSLpx2W6iFtEt2K8PTJsB/8R4v//i2ntTXlnsGbVNwZTz60
+	 goTtSlhokITvTnTMm+bzHzbVn4xKC5/isBKi5DeqYYsU4iS5W6MyyxaOwkvGP6YbuO
+	 v/LkRqSB8YDFw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Richard Weinberger <richard@nod.at>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH 1/2] ubifs: fix sort function prototype
+Date: Tue, 13 Feb 2024 10:54:07 +0100
+Message-Id: <20240213095412.453787-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240213_014826_458951_CB77E048 
-X-CRM114-Status: GOOD (  16.93  )
+X-CRM114-CacheID: sfid-20240213_015421_608566_6FCE708E 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,51 +78,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 2024-02-04 at 19:03 +0200, andy.shevchenko@gmail.com wrote:
-> Thu, Jan 18, 2024 at 11:20:43AM +0300, Nikita Shubin kirjoitti:
-> > The goal is to recieve ACKs for all patches in series to merge it
-> > via Arnd branch.
-> > 
-> > No major changes since last version (v6) all changes are cometic.
-> > 
-> > Following patches require attention from Stephen Boyd, as they were
-> > converted to aux_dev as suggested:
-> > 
-> > - ARM: ep93xx: add regmap aux_dev
-> > - clk: ep93xx: add DT support for Cirrus EP93xx
-> > 
-> > Following patches require attention from Vinod Koul:
-> > 
-> > - dma: cirrus: Convert to DT for Cirrus EP93xx
-> > - dma: cirrus: remove platform code
-> > 
-> > Following patches are dropped:
-> > - dt-bindings: wdt: Add ts72xx (pulled requested by Wim Van
-> > Sebroeck)
-> > 
-> > Big Thanks to Andy Shevchenko once again.
-> 
-> You're welcome!
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thank you Andy!
+The global sort() function expects a callback pointer to a function with two
+void* arguments, but ubifs has a function with specific object types, which
+causes a warning in clang-16 and higher:
 
-> I have a few minor comments, I believe if you send a new version it
-> will be
-> final (at least from my p.o.v.).
-> 
+fs/ubifs/lprops.c:1272:9: error: cast from 'int (*)(struct ubifs_info *, const struct ubifs_lprops *, int, struct ubifs_lp_stats *)' to 'ubifs_lpt_scan_callback' (aka 'int (*)(struct ubifs_info *, const struct ubifs_lprops *, int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1272 |                                     (ubifs_lpt_scan_callback)scan_check_cb,
+      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Still waiting for some comment from Stephen Boyd and Vinod Koul on:
+Change the prototype to the regular one and cast the object pointers
+locally instead.
 
-- ARM: ep93xx: add regmap aux_dev
-- clk: ep93xx: add DT support for Cirrus EP93xx
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/ubifs/find.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-- dma: cirrus: Convert to DT for Cirrus EP93xx
-- dma: cirrus: remove platform code
-
-
-
-
+diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
+index 873e6e1c92b5..1cb79b167a4f 100644
+--- a/fs/ubifs/find.c
++++ b/fs/ubifs/find.c
+@@ -726,11 +726,10 @@ int ubifs_find_free_leb_for_idx(struct ubifs_info *c)
+ 	return err;
+ }
+ 
+-static int cmp_dirty_idx(const struct ubifs_lprops **a,
+-			 const struct ubifs_lprops **b)
++static int cmp_dirty_idx(const void *a, const void *b)
+ {
+-	const struct ubifs_lprops *lpa = *a;
+-	const struct ubifs_lprops *lpb = *b;
++	const struct ubifs_lprops *lpa = *(const struct ubifs_lprops **)a;
++	const struct ubifs_lprops *lpb = *(const struct ubifs_lprops **)b;
+ 
+ 	return lpa->dirty + lpa->free - lpb->dirty - lpb->free;
+ }
+@@ -754,7 +753,7 @@ int ubifs_save_dirty_idx_lnums(struct ubifs_info *c)
+ 	       sizeof(void *) * c->dirty_idx.cnt);
+ 	/* Sort it so that the dirtiest is now at the end */
+ 	sort(c->dirty_idx.arr, c->dirty_idx.cnt, sizeof(void *),
+-	     (int (*)(const void *, const void *))cmp_dirty_idx, NULL);
++	     cmp_dirty_idx, NULL);
+ 	dbg_find("found %d dirty index LEBs", c->dirty_idx.cnt);
+ 	if (c->dirty_idx.cnt)
+ 		dbg_find("dirtiest index LEB is %d with dirty %d and free %d",
+-- 
+2.39.2
 
 
 ______________________________________________________
