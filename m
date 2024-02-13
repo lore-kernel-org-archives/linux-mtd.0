@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6843C4829A
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 14:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91DC4C48260
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 15:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Gu9jdRX1M6Ht8ZZURiZGSaD37EHIWu27HmRW/H4/xWY=; b=sTBlplOrvbbuIS
-	xsTEO1Oa53N3YYm1zWErp1s8mlHPyRv0WNl7p7CRLmLcuSfSHJFgoCxmYA9bXhD8XrUGMU/nfPbEI
-	eQiKZk8T+i2NN/w9i7rNA8Rk2WwPmD+V/CWZW1ExtFDlAR1/Hbf0KdmHdwmjbnNj5/azFqXpxbzAm
-	62CtyvyA80aNp4qtQSiD8DTgJrO7I22KB7/gBClKDdtMgUvqo4uldMpfJxj+cLi9RP9JegzDmVBJ+
-	Vf+INECYSeFi/Bl7V/x9EFbJ76gokr8EbYng7rqaOtfScMDRwy62O2zvrllC+T2Z3paxgWkgDXr9c
-	MOfvJVY4rpeQI6zEbwfw==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
+	In-Reply-To:Cc:To:From:MIME-Version:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=Q276kvrJsQ2pAeXKISC+NrnJJgcvk23ZZVF3qcsrNks=; b=R9jLUSSgZe7S64oVLav7herORX
+	U48M6XCGZp9ZQH3q/2/zTRg4S4D8UPrJKt2xcjJKaOmk9rr/r8+E/hD+KwMazGDg8xQS8xuQA9+uC
+	O5fIhuNAT5++xfFfDpZZP9DfdGBNPfCxuDf11ZyWUwh0uOHXar0CD7ISWQ6VpUEUFMWjs7HGWcSKq
+	EbHPwOfkNP6qbk+auZ11tC/V3eoy8FbRgnfWV88V3j/5oqO0K5p/1xC4vg6GUP7yWCJwQ3WG5yHqI
+	h7kjJgIiZ7YgbFuDBoFvUlWu0LA6cO4laJ8pEuQDpoPEO5cAFjiR4qCRkF3jVd06Sin5Me99OPM9S
+	wSOhRyFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZu2E-00000009ZFD-3R4R;
-	Tue, 13 Feb 2024 14:45:22 +0000
-Received: from smtp-out3.simply.com ([94.231.106.210])
+	id 1rZutP-00000009nOl-0Ayl;
+	Tue, 13 Feb 2024 15:40:19 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZu2B-00000009ZEL-1LUP
-	for linux-mtd@lists.infradead.org;
-	Tue, 13 Feb 2024 14:45:21 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4TZ3yd4Dj4z681k;
-	Tue, 13 Feb 2024 15:45:13 +0100 (CET)
-Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4TZ3yH6LD4z67wS;
-	Tue, 13 Feb 2024 15:44:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=unoeuro; t=1707835513;
-	bh=v6NrxM1eJN7Z7yzkWSBTKUltm5dbJ2HTXi9hG2LMSTA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=fxRUG6+yBSU+BFXn6+rebuuiiuqqWopqe29Vz2GaIf78w+V69ZIB+Af31iKeLr62p
-	 qpQdz7sWHzQ58CP3tqsZon5MfZ78+Sms5m4nebpjjUITGZQ1A2ZnKMsF4BxSh1OMBa
-	 S898RixpmWtD3+3XqXRY4JGgZ7I8bBk64Oy1wp1k=
-Message-ID: <4582ff28-a443-4b0f-ba92-f48c414e2248@gaisler.com>
-Date: Tue, 13 Feb 2024 15:44:53 +0100
+	id 1rZutM-00000009nO6-13xe;
+	Tue, 13 Feb 2024 15:40:17 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 933C560F5A;
+	Tue, 13 Feb 2024 15:40:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3F76C433C7;
+	Tue, 13 Feb 2024 15:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707838815;
+	bh=JmajiVMeGbUG4HFBYyxTca1KGVT1oSh0/LH/LKEkvJ4=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=g6dYGbKPjQQFYCbry4zR+rem49mPuNDPIM+DPkrvT05yrocfAqVm3uQ4M98mmKxFa
+	 lbFW13RvwixjzA8BQzzv1PzjMgqmKbx6CLBwcDkdzhgnB24DZUohfib/NN2RzknBK0
+	 VKVu8/KCvML2VSiCoqfTX9y4hf2fMXpaVYzGHpRDxYcl7t+zk0JVvPe40da/KxW7dh
+	 O98a798e4PUH5+AAuk6zYhBFJa/5okuQdAgrj16DPoVDm8Gv3T4/dJUktcIa7cmHS2
+	 Thi4uFRnjHJed30/JZmYhIzmRv8IzxHfQZbFqK8negW2pKfaRvuS/BrQoiHFa1Oml4
+	 FW+mLYxfuTg3w==
+Date: Tue, 13 Feb 2024 09:40:13 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Build regressions/improvements in v6.8-rc1
-Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
- mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- linux-hardening@vger.kernel.org, qat-linux@intel.com,
- linux-crypto@vger.kernel.org,
- "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
- Netdev <netdev@vger.kernel.org>
-References: <CAHk-=wiB4iHTtfZKiy5pC24uOjun4fbj4kSX0=ZnGsOXadMf6g@mail.gmail.com>
- <20240123111235.3097079-1-geert@linux-m68k.org>
- <d03e90ca-8485-4d1b-5ec1-c3398e0e8da@linux-m68k.org>
- <0229fa60-2d87-4b1c-b9f0-6f04c6e4dbdd@app.fastmail.com>
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <0229fa60-2d87-4b1c-b9f0-6f04c6e4dbdd@app.fastmail.com>
+From: Rob Herring <robh@kernel.org>
+To: Manojkiran Eda <manojkiran.eda@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+ Patrick Rudolph <patrick.rudolph@9elements.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-aspeed@lists.ozlabs.org, 
+ Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, 
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ zev@bewilderbeest.net, openbmc@lists.ozlabs.org, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Chia-Wei Wang <chiawei_wang@aspeedtech.com>, devicetree@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ jk@codeconstruct.com.au, Ryan Chen <ryan_chen@aspeedtech.com>, 
+ Richard Weinberger <richard@nod.at>
+In-Reply-To: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+Message-Id: <170783881259.1420281.1418000696740064343.robh@kernel.org>
+Subject: Re: [PATCH] Add eSPI device driver (flash channel)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240213_064519_964708_441774A6 
-X-CRM114-Status: UNSURE (   8.12  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240213_074016_401873_B4741DA3 
+X-CRM114-Status: GOOD (  21.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,19 +81,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2024-01-23 15:21, Arnd Bergmann wrote:
->>>  + /kisskb/src/arch/sparc/include/asm/floppy_64.h: error: no previous prototype for 'sparc_floppy_irq' [-Werror=missing-prototypes]:  => 200:13
->>>  + /kisskb/src/arch/sparc/include/asm/floppy_64.h: error: no previous prototype for 'sun_pci_fd_dma_callback' [-Werror=missing-prototypes]:  => 437:6
->>
->> sparc64-gcc{5,11,12,13}/sparc64-allmodconfig
-> 
-> Andrew Morton did a patch for the sparc warnings, and Andreas Larsson
-> is joining as a maintainer, so hopefully he can pick that up soon.
-Which patch do you refer to here? I can not seem to find a patch fixing
-these ones in particular on lore.kernel.org.
 
-Thanks,
-Andreas
+On Tue, 13 Feb 2024 20:06:08 +0530, Manojkiran Eda wrote:
+> This patch adds the driver support for the eSPI controller of
+> Aspeed 5/6th generation SoCs. This controller is a slave device
+> communicating with a master over Enhanced Serial Peripheral
+> Interface (eSPI).
+> 
+> eSPI supports 4 channels, namely peripheral, virtual wire,
+> out-of-band, and flash, and operates at max frequency of 66MHz.
+> 
+> But at the moment, this patch set only supports the flash channel.
+> 
+> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
+> ---
+> Hello everyone,
+> 
+> I'm presenting a revised version of the eSPI device driver patch series found at the following link:
+> 
+> https://lore.kernel.org/openbmc/20220516005412.4844-1-chiawei_wang@aspeedtech.com/
+> 
+> This update addresses the issues identified during the review process.
+> 
+> While the previous patch series attempted to incorporate support for all four different channels of eSPI,
+> this new series focuses on upstreaming the flash channel initially, ensuring that all review comments are
+> duly addressed, before progressing further.
+> 
+> Results:
+> 
+> Successfully conducted a flash update via eSPI.
+> 
+> Note:
+> 
+> This marks my inaugural endeavor in contributing code to the kernel subsystem. I kindly request reviewers
+> to incorporate as many details as possible in the review comments.
+> ---
+>  .../devicetree/bindings/soc/aspeed/espi.yaml       | 125 ++++++
+>  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi            |  16 +-
+>  drivers/mtd/mtdcore.c                              |   2 +-
+>  drivers/soc/aspeed/Kconfig                         |  10 +
+>  drivers/soc/aspeed/Makefile                        |   3 +
+>  drivers/soc/aspeed/aspeed-espi-ctrl.c              | 197 +++++++++
+>  drivers/soc/aspeed/aspeed-espi-ctrl.h              | 169 ++++++++
+>  drivers/soc/aspeed/aspeed-espi-flash.c             | 466 +++++++++++++++++++++
+>  drivers/soc/aspeed/aspeed-espi-flash.h             |  45 ++
+>  include/uapi/linux/espi/aspeed-espi-ioc.h          | 103 +++++
+>  10 files changed, 1134 insertions(+), 2 deletions(-)
+> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/soc/aspeed/espi.yaml:5:6: [error] string value is redundantly quoted with any quotes (quoted-strings)
+./Documentation/devicetree/bindings/soc/aspeed/espi.yaml:6:10: [error] string value is redundantly quoted with any quotes (quoted-strings)
+
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240213-espi_driver-v1-1-92741c812843@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
 ______________________________________________________
