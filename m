@@ -4,67 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91DC4C48260
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 15:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17076C48260
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 15:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=Q276kvrJsQ2pAeXKISC+NrnJJgcvk23ZZVF3qcsrNks=; b=R9jLUSSgZe7S64oVLav7herORX
-	U48M6XCGZp9ZQH3q/2/zTRg4S4D8UPrJKt2xcjJKaOmk9rr/r8+E/hD+KwMazGDg8xQS8xuQA9+uC
-	O5fIhuNAT5++xfFfDpZZP9DfdGBNPfCxuDf11ZyWUwh0uOHXar0CD7ISWQ6VpUEUFMWjs7HGWcSKq
-	EbHPwOfkNP6qbk+auZ11tC/V3eoy8FbRgnfWV88V3j/5oqO0K5p/1xC4vg6GUP7yWCJwQ3WG5yHqI
-	h7kjJgIiZ7YgbFuDBoFvUlWu0LA6cO4laJ8pEuQDpoPEO5cAFjiR4qCRkF3jVd06Sin5Me99OPM9S
-	wSOhRyFw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=QqezqZXNX/hcPtZmczeHUDNbSbuKRac3ZT4uQguni24=; b=um3Wavn04QlLN0
+	WZ8EoENJwXp+bt0IFaXBv2Z3yeEXeGaVKjCKoPxOud4+iN5rNKI2ECKOiq2exYCfzfvufDtwnTigQ
+	hmwbimmAbKVstqT9+Pb5/GsKTeQZv+qRIUNTTA2WJtO4/ICjJzzFiVflxeAgCHqtdmD4gJrhxg1kp
+	ZxmsJvVmksK/KB0AZVSUzG2N0Jwh/gLe31P4xWoSpNZ8X3Jnh5qB5kwD/kHfCrrUJNzVOdhkTdjDW
+	6iRG2G7B6KngVzHLbwK4HWTH2SZGQBae5Q+iywBKbXmmDTa+MVTp7lNE9tfxlNKkOgsNiepR8ExXT
+	D5OK1Qt/cjni0gNZ6PKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZutP-00000009nOl-0Ayl;
-	Tue, 13 Feb 2024 15:40:19 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rZvB3-00000009rF4-3bPw;
+	Tue, 13 Feb 2024 15:58:33 +0000
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZutM-00000009nO6-13xe;
-	Tue, 13 Feb 2024 15:40:17 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 933C560F5A;
-	Tue, 13 Feb 2024 15:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3F76C433C7;
-	Tue, 13 Feb 2024 15:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707838815;
-	bh=JmajiVMeGbUG4HFBYyxTca1KGVT1oSh0/LH/LKEkvJ4=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=g6dYGbKPjQQFYCbry4zR+rem49mPuNDPIM+DPkrvT05yrocfAqVm3uQ4M98mmKxFa
-	 lbFW13RvwixjzA8BQzzv1PzjMgqmKbx6CLBwcDkdzhgnB24DZUohfib/NN2RzknBK0
-	 VKVu8/KCvML2VSiCoqfTX9y4hf2fMXpaVYzGHpRDxYcl7t+zk0JVvPe40da/KxW7dh
-	 O98a798e4PUH5+AAuk6zYhBFJa/5okuQdAgrj16DPoVDm8Gv3T4/dJUktcIa7cmHS2
-	 Thi4uFRnjHJed30/JZmYhIzmRv8IzxHfQZbFqK8negW2pKfaRvuS/BrQoiHFa1Oml4
-	 FW+mLYxfuTg3w==
-Date: Tue, 13 Feb 2024 09:40:13 -0600
+	id 1rZvB0-00000009rD2-33hY
+	for linux-mtd@lists.infradead.org;
+	Tue, 13 Feb 2024 15:58:32 +0000
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DFfl8Z015351;
+	Tue, 13 Feb 2024 16:58:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=/7j7puYAJdXGzVp6s9NPsesdHRXPxVYZpy3cSzTw1+k=; b=Z3
+	OGAhtmBsX3EzNnf9vnuK9f5xiPfL8KXPnbhAUrp8ltB0PpZ84bso1c7mc+arFnoJ
+	t0IUOEepyKndq6KgjWWbRQH8fQzt+/rsoSbsy2GGkTUp42omdve3TN4ku90xQPei
+	vIQtByTB4CFeUaPCe/eP5RcWcgs6qCO9DELiuZTnm/0+ntnwjHGJ/Xj0dUT4Ug6p
+	lwDEPwK8DABFYlEOuA/LOiRd9OQ4/Gnnp20g1uj0oLbtt2VAjzABY65IgDqNZU7Y
+	7MUs15CRtMA4agZy0XNOK1RH81msXYIj5F7GDK6gcToHtSM61EGURc87l1DVX9gi
+	040yBb9Zgx0S2EbzP9VQ==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w62jsbpu4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 16:58:24 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 52B4840044;
+	Tue, 13 Feb 2024 16:58:19 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0ADF62747D6;
+	Tue, 13 Feb 2024 16:57:33 +0100 (CET)
+Received: from [10.201.22.200] (10.201.22.200) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 13 Feb
+ 2024 16:57:32 +0100
+Message-ID: <44f24885-eb62-4730-86fd-f42b3a3cca34@foss.st.com>
+Date: Tue, 13 Feb 2024 16:57:31 +0100
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Manojkiran Eda <manojkiran.eda@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
- Patrick Rudolph <patrick.rudolph@9elements.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, linux-aspeed@lists.ozlabs.org, 
- Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, 
- Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- zev@bewilderbeest.net, openbmc@lists.ozlabs.org, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Chia-Wei Wang <chiawei_wang@aspeedtech.com>, devicetree@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- jk@codeconstruct.com.au, Ryan Chen <ryan_chen@aspeedtech.com>, 
- Richard Weinberger <richard@nod.at>
-In-Reply-To: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
-References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
-Message-Id: <170783881259.1420281.1418000696740064343.robh@kernel.org>
-Subject: Re: [PATCH] Add eSPI device driver (flash channel)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/12] dt-bindings: memory-controller: st,stm32: add
+ 'power-domains' property
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley
+	<conor@kernel.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>,
+        Patrick Delaunay <patrick.delaunay@foss.st.com>
+References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
+ <20240212174822.77734-3-christophe.kerello@foss.st.com>
+ <20240212-chemicals-skinny-18eda1cfe781@spud>
+ <c57b8094-be08-4ae4-ba85-f48522e5d2a8@foss.st.com>
+ <52be1d88-51a1-4ec7-8aaf-6046f5a469f4@linaro.org>
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+In-Reply-To: <52be1d88-51a1-4ec7-8aaf-6046f5a469f4@linaro.org>
+X-Originating-IP: [10.201.22.200]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_08,2024-02-12_03,2023-05-22_02
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240213_074016_401873_B4741DA3 
-X-CRM114-Status: GOOD (  21.05  )
+X-CRM114-CacheID: sfid-20240213_075831_175196_CDEE54B4 
+X-CRM114-Status: GOOD (  13.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,85 +98,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-On Tue, 13 Feb 2024 20:06:08 +0530, Manojkiran Eda wrote:
-> This patch adds the driver support for the eSPI controller of
-> Aspeed 5/6th generation SoCs. This controller is a slave device
-> communicating with a master over Enhanced Serial Peripheral
-> Interface (eSPI).
+
+On 2/13/24 12:57, Krzysztof Kozlowski wrote:
+> On 13/02/2024 11:57, Christophe Kerello wrote:
+>>
+>>
+>> On 2/12/24 19:33, Conor Dooley wrote:
+>>> On Mon, Feb 12, 2024 at 06:48:12PM +0100, Christophe Kerello wrote:
+>>>> From: Patrick Delaunay <patrick.delaunay@foss.st.com>
+>>>>
+>>>> On STM32MP25 SOC, STM32 FMC2 memory controller is in a power domain.
+>>>> Allow a single 'power-domains' entry for STM32 FMC2.
+>>>
+>>> This should be squashed with patch 1, since they both modify the same
+>>> file and this power-domain is part of the addition of mp25 support.
+>>
+>> Hi Conor,
+>>
+>> Ok, I will squash this patch with patch 1.
+>>
+>>>
+>>> If the mp1 doesn't have power domains, shouldn't you constrain the
+>>> property to mp25 only?
+>>>
+>>
+>> As this property is optional, I do not see the need to constrain the
+>> property to MP25 only, but if you think that it should be the case, I
+>> will do it.
 > 
-> eSPI supports 4 channels, namely peripheral, virtual wire,
-> out-of-band, and flash, and operates at max frequency of 66MHz.
-> 
-> But at the moment, this patch set only supports the flash channel.
-> 
-> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
-> ---
-> Hello everyone,
-> 
-> I'm presenting a revised version of the eSPI device driver patch series found at the following link:
-> 
-> https://lore.kernel.org/openbmc/20220516005412.4844-1-chiawei_wang@aspeedtech.com/
-> 
-> This update addresses the issues identified during the review process.
-> 
-> While the previous patch series attempted to incorporate support for all four different channels of eSPI,
-> this new series focuses on upstreaming the flash channel initially, ensuring that all review comments are
-> duly addressed, before progressing further.
-> 
-> Results:
-> 
-> Successfully conducted a flash update via eSPI.
-> 
-> Note:
-> 
-> This marks my inaugural endeavor in contributing code to the kernel subsystem. I kindly request reviewers
-> to incorporate as many details as possible in the review comments.
-> ---
->  .../devicetree/bindings/soc/aspeed/espi.yaml       | 125 ++++++
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi            |  16 +-
->  drivers/mtd/mtdcore.c                              |   2 +-
->  drivers/soc/aspeed/Kconfig                         |  10 +
->  drivers/soc/aspeed/Makefile                        |   3 +
->  drivers/soc/aspeed/aspeed-espi-ctrl.c              | 197 +++++++++
->  drivers/soc/aspeed/aspeed-espi-ctrl.h              | 169 ++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.c             | 466 +++++++++++++++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.h             |  45 ++
->  include/uapi/linux/espi/aspeed-espi-ioc.h          | 103 +++++
->  10 files changed, 1134 insertions(+), 2 deletions(-)
+> The question is: is this property valid for the old/existing variant?
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Hi Krzysztof,
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/soc/aspeed/espi.yaml:5:6: [error] string value is redundantly quoted with any quotes (quoted-strings)
-./Documentation/devicetree/bindings/soc/aspeed/espi.yaml:6:10: [error] string value is redundantly quoted with any quotes (quoted-strings)
+It is not currently valid but there is a plan to move MP1 on PSCI 
+OS-initiated.
 
-dtschema/dtc warnings/errors:
+Regards,
+Christophe Kerello.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240213-espi_driver-v1-1-92741c812843@gmail.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+> Best regards,
+> Krzysztof
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
