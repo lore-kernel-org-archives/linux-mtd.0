@@ -4,67 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA801C4829A
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Feb 2024 22:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7375C48260
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Feb 2024 03:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a0QWZjvDMR0a6VNOqLYm/FYrqM261v4lYjjqoIQM8E4=; b=bIRVCVFKpyhLiq
-	Xj7DQmjbkIV7cyow4xQFqL2jkMea1aS1EiuckcgjsLKkPw5qRXsYd7jkgKKZZaRS9KOFQjRzyZGTk
-	iuQKRGPr1Pfj3Z97gZTl2zKMvaGaDg+Iz+zOzeY/fjLJVlGK27DalQKi1igtGxr+q+6hFxbkiGa1F
-	sYcueV8aeYFf6u0nErq9BFEQeU5OE4vohaSZUPDr4uK0a0Ln7BhagVTAfTk6PmMFNC23j6SwrHXP0
-	6SYsErz/mlxaBnaOfu9FXs6RucMsWXKP1VNjTDTHooqlc2yH/HdCqF+rrycfwDZhllZCBV3oxialn
-	Uokt4KraYKH5J4ERfnVQ==;
+	List-Owner; bh=ZpixLfdgzDojQ/VZ/eig7o3FVofRATsnfAdL8JNfVj8=; b=3PiLW/dQkxNU43
+	RJaLQJJkVEo1s27T6KANRBJD3wJlgWKvlMiZcWcLLaOzFeQdDhwUfSygiKQAcmHrdSeY4f+a830Na
+	bJFvpXtYPw7Q/xkB2v3O9Cjve+EkwOh3yhr+zuTPVyJwXBu3rq8GBRhQcj+5Joyg/cns6riwqfWZg
+	Ob5oK3RF94YtAAng8ZkJBwGKbm9vQ8hF48QbTkoayCCQoYp+dmCRTUKtZCOHpCsl0smv7bjuJ0E4s
+	9zb9O2KJ2MjG/qwYB65tCrMs56ZG7bgu7znNTfILwhAWRTmtec5oVGnxt+uoVB3phqiqvx4Mw7ivH
+	2jrbbVn+IWIyfGLkdKVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ra1GB-0000000B3uZ-3zQO;
-	Tue, 13 Feb 2024 22:28:15 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1ra5nO-0000000Bc9d-2MuK;
+	Wed, 14 Feb 2024 03:18:50 +0000
+Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ra1G7-0000000B3td-3goM;
-	Tue, 13 Feb 2024 22:28:13 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 53BE8614CD;
-	Tue, 13 Feb 2024 22:28:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C98C7C433C7;
-	Tue, 13 Feb 2024 22:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707863291;
-	bh=oFFuZOUNHSicGqYZMLonLDDYLy/GpUY8EBDB1WTG0es=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JGYwGyrXK0nZVTCamXE68PrmsELblm6cb8mI3mbXPZc25oIOSYbHIWJoHI51r7Vn3
-	 TsCNlOmBf2Hr9SQCZzeHfyBJlackDsH7UzciNBg0CANB3tAk7ds4Ue0VTyOQHCUbKK
-	 jhNqA0EcAEftZD4goOrxFg6NJU/4a79BHiGCcTvWTdY4YBjVst8sfWyS3RibS3sCIO
-	 gmfkzc/KkApqmTn1NKZF6W8R2y9dds7mKR+skzNlXlIOfAjwrVrg25PApvx5eLsEdo
-	 Dtufo9gsq9TAGe/CpwxVRE3DV0DhYTTwFC4SphIJPic5hhMp4gJRLyqaS7TxOL3ZOt
-	 VlqZKTej1QzQg==
-Date: Tue, 13 Feb 2024 16:28:08 -0600
-From: Rob Herring <robh@kernel.org>
-To: Manojkiran Eda <manojkiran.eda@gmail.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, jk@codeconstruct.com.au,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
-	Ryan Chen <ryan_chen@aspeedtech.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	openbmc@lists.ozlabs.org, zev@bewilderbeest.net
-Subject: Re: [PATCH] Add eSPI device driver (flash channel)
-Message-ID: <20240213222808.GA2490812-robh@kernel.org>
-References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+	id 1ra5nM-0000000Bc7r-2Jfh
+	for linux-mtd@lists.infradead.org;
+	Wed, 14 Feb 2024 03:18:50 +0000
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-42a99dc9085so260641cf.0
+        for <linux-mtd@lists.infradead.org>; Tue, 13 Feb 2024 19:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707880721; x=1708485521; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sCvKWGSZEcrU3I62UsBWqAtToZ+Q/bkHpybmK6GQZiU=;
+        b=ZyBLQusDx3WVOf9lFRGMyAgL8D3J6Sphoq8X8JR/ut6IFlopGoCCkjTzlQ81CAKLNb
+         GLsXjL2BBLf8gxYYy4BApQiM86Se8mlNscI85IqGeeu26QJgASJ3yK0b5mKFWyzczJCn
+         02M+to0Y7utsrWJ8F3TNW3uFQLDh38u5SKGS6UnbsU88FbLyAemXX/j4DjkasC9LBaM2
+         WcNDloFf5ANdOU8PGd7tMYTk3JbIiTzvPCtErUsHGP0tfPIkHcfXGfbsDpOunMPRngDT
+         vX7P8YPhgYAdRRbfAO4Ix+m6DCbQCJnqIFDFf+sh64254l/r+9YzAx7LA3FlWBQLD6/s
+         hr+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707880721; x=1708485521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sCvKWGSZEcrU3I62UsBWqAtToZ+Q/bkHpybmK6GQZiU=;
+        b=prVFy4knR+/8wXYZqOOAPqWN6+rL6QU3QrTQ2yJ26MPpxhRE8vTD/Zf6ZKudvlja3x
+         p2M9cCccAA5TaWmknnB/E9FWCezX4+m+QtIaTfleUPyfL9wqRnf1SmEokNZLN3OIsgBJ
+         dTAWvkypRPdJUmXJDvjrb/edSyJzeQmG1lZTAPX4JnDASBhvl2FlrfdV/8AxK0qbbFOL
+         DTKwhbI36L3vphZztuq2c3bHL/MeLTkw/k92m3dE4bHS0FQD2e+6NF4WUkKpfpBHvtxt
+         uxY8xQPtiU0EaWnfFPsjds21eE8JjJT0hk4tRZQJWH+5U+xMbWIUIUkrls30IQ/LoSB9
+         Kxkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWtTM+Zn8oZIewl2Z5KemdaIHJ/uxXn+6OdeWAx+qS7AtWq+UYtp6LZcj8Z9R/TOjEz6eXHOhGAqlU31h6O/NUONtuLdVb0j3nPJ+4NQA==
+X-Gm-Message-State: AOJu0YwKHiXhtUF8h/3J1boq/eRsqgCjMeKdr2yW8AcXnmWGw0bTmXyS
+	0qVkg7yREIIPnnc1Yy2kEJ0TnO1rJ6HJdrTPpOyQKVCfKu+oM4BywPLbr8/GNgSzMjiMvHXQtoN
+	0pILv7FaxEmXbTkCZYa/OoI8kYNSIMGnUoF00
+X-Google-Smtp-Source: AGHT+IEp+qv5fTphOIfgPXLRE+ClfamHmS/tNOlBEDSEnlU91CYmiW1H+DkSTjWWiWmrKrbLLHofzXQl4CbqVQ+DLpc=
+X-Received: by 2002:a05:622a:1882:b0:42c:501c:ed12 with SMTP id
+ v2-20020a05622a188200b0042c501ced12mr228524qtc.4.1707880720926; Tue, 13 Feb
+ 2024 19:18:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+References: <20240123014517.5787-1-mcpratt@pm.me> <20240123014517.5787-2-mcpratt@pm.me>
+In-Reply-To: <20240123014517.5787-2-mcpratt@pm.me>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 13 Feb 2024 19:18:03 -0800
+Message-ID: <CAGETcx-udSMDLEmwynQMxEnaHb5TR=nD+YJysAx7Jc73UVKdZA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] driver core: fw_devlink: Use driver to determine
+ probe ability
+To: Michael Pratt <mcpratt@pm.me>
+Cc: devicetree@vger.kernel.org, gregkh@linuxfoundation.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	abel.vesa@linaro.org, alexander.stein@ew.tq-group.com, 
+	andriy.shevchenko@linux.intel.com, bigunclemax@gmail.com, brgl@bgdev.pl, 
+	colin.foster@in-advantage.com, djrscally@gmail.com, 
+	dmitry.baryshkov@linaro.org, festevam@gmail.com, fido_max@inbox.ru, 
+	frowand.list@gmail.com, geert@linux-m68k.org, heikki.krogerus@linux.intel.com, 
+	kernel@pengutronix.de, linus.walleij@linaro.org, linux@roeck-us.net, 
+	luca.weiss@fairphone.com, magnus.damm@gmail.com, martin.kepplinger@puri.sm, 
+	miquel.raynal@bootlin.com, rafal@milecki.pl, ansuelsmth@gmail.com, 
+	richard@nod.at, sakari.ailus@linux.intel.com, sudeep.holla@arm.com, 
+	tglx@linutronix.de, tony@atomide.com, vigneshr@ti.com, dianders@chromium.org, 
+	jpb@kernel.org, rafael@kernel.org, 
+	Android Kernel Team <kernel-team@android.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240213_142812_035700_7610B2E7 
-X-CRM114-Status: GOOD (  31.12  )
+X-CRM114-CacheID: sfid-20240213_191848_640372_C08230D9 
+X-CRM114-Status: GOOD (  33.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,257 +98,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 13, 2024 at 08:06:08PM +0530, Manojkiran Eda wrote:
-> This patch adds the driver support for the eSPI controller of
-> Aspeed 5/6th generation SoCs. This controller is a slave device
-> communicating with a master over Enhanced Serial Peripheral
-> Interface (eSPI).
-> 
-> eSPI supports 4 channels, namely peripheral, virtual wire,
-> out-of-band, and flash, and operates at max frequency of 66MHz.
-> 
-> But at the moment, this patch set only supports the flash channel.
-
-You're not going to need binding changes to add support for those, 
-right?
-
-> 
-> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
-> ---
-> Hello everyone,
-> 
-> I'm presenting a revised version of the eSPI device driver patch series found at the following link:
-> 
-> https://lore.kernel.org/openbmc/20220516005412.4844-1-chiawei_wang@aspeedtech.com/ 
-> 
-> This update addresses the issues identified during the review process.
-> 
-> While the previous patch series attempted to incorporate support for all four different channels of eSPI,
-> this new series focuses on upstreaming the flash channel initially, ensuring that all review comments are
-> duly addressed, before progressing further.
-> 
-> Results:
-> 
-> Successfully conducted a flash update via eSPI.
-> 
-> Note:
-> 
-> This marks my inaugural endeavor in contributing code to the kernel subsystem. I kindly request reviewers
-> to incorporate as many details as possible in the review comments.
-
-Please start with submitting-patches.rst and the DT specific version of 
-that.
-
-> ---
->  .../devicetree/bindings/soc/aspeed/espi.yaml       | 125 ++++++
-
-This should be a separate patch. checkpatch.pl will tell you this and 
-other things.
-
-Filename should match compatible.
-
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi            |  16 +-
-
-This is another patch.
-
->  drivers/mtd/mtdcore.c                              |   2 +-
-
-Yet another patch. But really, this one will be rejected most likely 
-unless you can justify why it is needed.
-
->  drivers/soc/aspeed/Kconfig                         |  10 +
->  drivers/soc/aspeed/Makefile                        |   3 +
->  drivers/soc/aspeed/aspeed-espi-ctrl.c              | 197 +++++++++
->  drivers/soc/aspeed/aspeed-espi-ctrl.h              | 169 ++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.c             | 466 +++++++++++++++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.h             |  45 ++
->  include/uapi/linux/espi/aspeed-espi-ioc.h          | 103 +++++
-
-Your own interface to userspace is probably not going to be accepted 
-either.
-
->  10 files changed, 1134 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/aspeed/espi.yaml b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> new file mode 100644
-> index 000000000000..6521a351d18d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> @@ -0,0 +1,125 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# # Copyright (c) 2021 Aspeed Technology Inc.
-
-It's 2024 now.
-
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/aspeed/espi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Aspeed eSPI Controller
-> +
-> +maintainers:
-> +  - Manojkiran Eda <manojkiran.eda@gmail.com>
-> +  - Patrick Rudolph <patrick.rudolph@9elements.com>
-> +  - Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> +  - Ryan Chen <ryan_chen@aspeedtech.com>
-> +
-> +description:
-> +  Aspeed eSPI controller implements a slave side eSPI endpoint device
-
-s/slave/device/
-
-> +  supporting the four eSPI channels, namely peripheral, virtual wire,
-> +  out-of-band, and flash.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - aspeed,ast2500-espi
-> +          - aspeed,ast2600-espi
-> +      - const: simple-mfd
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +  ranges: true
-> +
-> +patternProperties:
-> +  "^espi-ctrl@[0-9a-f]+$":
-> +    type: object
-
-Is this really a separate sub-block? As in could it be reused somewhere 
-else or in a different combination of blocks?
-
-> +
-> +    description: Control of the four basic eSPI channels
-> +
-> +    properties:
-> +      compatible:
-> +        items:
-> +          - enum:
-> +              - aspeed,ast2500-espi-ctrl
-> +              - aspeed,ast2600-espi-ctrl
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +      clocks:
-> +        maxItems: 1
-> +
-> +      flash,dma-mode:
-> +        type: boolean
-> +        description: Enable DMA support for eSPI flash channel
-> +
-> +      flash,safs-mode:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [ 0, 1, 2 ]
-> +        default: 0
-> +        description: Slave-Attached-Sharing-Flash mode, 0->Mix, 1->SW, 2->HW
-> +
-> +    required:
-> +      - compatible
-> +      - interrupts
-> +      - clocks
-> +
-> +  "^espi-mmbi@[0-9a-f]+$":
-> +    type: object
-
-Is this really a separate sub-block?
-
-> +
-> +    description: Control of the PCH-BMC data exchange over eSPI peripheral memory cycle
-> +
-> +    properties:
-> +      compatible:
-> +        const: aspeed,ast2600-espi-mmbi
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - interrupts
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +
-> +    espi: espi@1e6ee000 {
-> +        compatible = "aspeed,ast2600-espi", "simple-mfd", "syscon";
-> +        reg = <0x1e6ee000 0x1000>;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges = <0x0 0x1e6ee000 0x1000>;
-> +
-> +        espi_ctrl: espi-ctrl@0 {
-> +            compatible = "aspeed,ast2600-espi-ctrl";
-> +            reg = <0x0 0x800>;
-> +            interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
-> +        };
-> +
-> +        espi_mmbi: espi-mmbi@800 {
-> +            compatible = "aspeed,ast2600-espi-mmbi";
-> +            reg = <0x800 0x50>;
-> +            interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>;
-> +        };
-> +    };
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> index c4d1faade8be..08d7a2689086 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> @@ -453,7 +453,21 @@ video: video@1e700000 {
->  				interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
->  				status = "disabled";
->  			};
-> -
-> +			espi: espi@1e6ee000 {
-> +				compatible = "aspeed,ast2600-espi", "simple-mfd", "syscon";
-> +				reg = <0x1e6ee000 0x1000>;
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0x0 0x1e6ee000 0x1000>;
-> +				espi_ctrl: espi-ctrl@0 {
-> +						compatible = "aspeed,ast2600-espi-ctrl";
-> +						reg = <0x0 0x800>,<0x0 0x4000000>;
-> +						reg-names = "espi_ctrl","espi_flash";
-> +						interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-> +						clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
-> +						status = "disabled";
-> +						};
-
-Wrong indentation.
-
-> +			};
->  			gpio0: gpio@1e780000 {
->  				#gpio-cells = <2>;
->  				gpio-controller;
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKClRoYW5rcyBmb3IgcmVwb3J0aW5nIHRoaXMgYW5kIGJlaW5nIHdpbGxpbmcg
+dG8gd29yayBvbiBhIGZpeC4KCk9uIE1vbiwgSmFuIDIyLCAyMDI0IGF0IDU6NDbigK9QTSBNaWNo
+YWVsIFByYXR0IDxtY3ByYXR0QHBtLm1lPiB3cm90ZToKPgo+IFRoZSBmdW5jdGlvbiBfX2Z3X2Rl
+dmxpbmtfcGlja3VwX2RhbmdsaW5nX2NvbnN1bWVycygpCj4gaW50ZW5kcyB0byBpZ25vcmUgc3Vw
+cGxpZXJzIHRoYXQgYXJlIGFscmVhZHkgY2FwYWJsZSBvZiBwcm9iaW5nLAoKZndfZGV2bGluayBp
+c24ndCB0cnlpbmcgdG8gZmlndXJlIG91dCBpZiBhIGZ3bm9kZSBpcyAiYWxyZWFkeSBjYXBhYmxl
+IgpvZiBwcm9iaW5nLiBJdCdzIHRyeWluZyB0byBmaWd1cmUgb3V0IGlmIGEgZndub2RlIHdpbGwg
+TkVWRVIgcHJvYmUuIElmCml0J3MganVzdCBsb29raW5nIGF0ICJyaWdodCBub3ciIG9yICJhbHJl
+YWR5IGNhcGFibGUiLCBpdCBiZWNvbWVzCmtpbmRhIHVzZWxlc3MuCgo+IGJ1dCB1c2VzIHdoZXRo
+ZXIgb3Igbm90IGEgYnVzIHN0cnVjdCBpcyBkZWZpbmVkIGluIHRoZSBkZXZpY2Ugc3RydWN0LgoK
+QmVjYXVzZSBpZiB5b3UgZG9uJ3QgbmVlZCBhIGNsYXNzIG9mIGRldmljZXMgdG8gcHJvYmUsIHlv
+dSBhZGQgdGhlbSB0bwphICJjbGFzcyIgbm90IGEgImJ1cyIuCgo+IFRoZXJlIGFyZSBzb21lIGNh
+c2VzIHdoZXJlIGEgZmlybXdhcmUgY2hpbGQgbm9kZQo+IGNhbiBiZSBhZGRyZXNzIHRyYW5zbGF0
+YWJsZSBidXQgbm90IGFibGUgdG8gcHJvYmUKPiAoZS5nLiB0aGUgdXNlIG9mIG9mX3BsYXRmb3Jt
+X3BvcHVsYXRlKCkgZm9yIE1URCBwYXJ0aXRpb25zKSwKPiBzbyB3aGV0aGVyIG9yIG5vdCBhIGRy
+aXZlciBpcyBwcmVzZW50IGlzIGEgbW9yZSBhY2N1cmF0ZSB3YXkKPiB0byBndWVzcyB3aGV0aGVy
+IGEgZndub2RlIHJlcHJlc2VudHMgYSByZWFsIHByb2JpbmcgZGV2aWNlIGhlcmUuCgpObywgY2hl
+Y2tpbmcgZm9yIHRoZSBkcml2ZXIgaXMgbm90IGEgIm1vcmUgYWNjdXJhdGUgd2F5IiBmb3IgdGhl
+CnJlYXNvbnMgbWVudGlvbmVkIGFib3ZlLgoKPiBUaGlzIGFsc28gc2VydmVzIGFzIGEgcHJlcGFy
+YXRpb24gc3RlcCBmb3IgZnVydGhlciBjaGFuZ2VzCj4gdG8gZndfZGV2bGluayBpbmNsdWRpbmcg
+bWFraW5nIHRoZSBjb250ZW50cyBvZiB0aGlzIGZ1bmN0aW9uCj4gbGVzcyBzdHJpY3QgaW4gb3Jk
+ZXIgdG8gY29tcGVuc2F0ZSBmb3IgbW9yZSBjYXNlcyBiZWluZyBwYXNzZWQgaW50bwo+IHRoZSBy
+ZXN0IG9mIHRoZSBmdW5jdGlvbiBiZWNhdXNlIHRoZSByZXR1cm4gY2FzZSBpcyBub3cgbW9yZSBz
+dHJpY3QuCgpUaGlzIGNoYW5nZSBpdHNlbGYgaXMgYSBkZWZpbml0ZSBOYWNrLCBidXQgSSdsbCBs
+b29rIGF0IHlvdXIgb3RoZXIKcGF0Y2hlcyB0byBzZWUgd2hhdCB5b3UgYXJlIHRyeWluZyB0byBk
+by4KCj4gIkhleSEgV2hvJ3MgZHJpdmluZyB0aGUgYnVzPyIKClRoZSBkcml2ZXIgaXNuJ3QgaGVy
+ZSB5ZXQuIEhlJ2xsIGJlIGhlcmUgaW4gYSB3aGlsZS4gQnV0IGF0IGxlYXN0IHRoaXMKaXMgYSBt
+b2RlIG9mIHRyYW5zcG9ydGF0aW9uIGFuZCBub3QgYSBmb290YmFsbCBzdGFkaXVtIDopCgpTZWUg
+bW9yZSBiZWxvdy4KCj4gU2lnbmVkLW9mZi1ieTogTWljaGFlbCBQcmF0dCA8bWNwcmF0dEBwbS5t
+ZT4KPiAtLS0KPiAgZHJpdmVycy9iYXNlL2NvcmUuYyB8IDQgKystLQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvYmFzZS9jb3JlLmMgYi9kcml2ZXJzL2Jhc2UvY29yZS5jCj4gaW5kZXggMTRkNDZhZjQwZjlh
+Li5jMDVhNWY2YjA2NDEgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9iYXNlL2NvcmUuYwo+ICsrKyBi
+L2RyaXZlcnMvYmFzZS9jb3JlLmMKPiBAQCAtMjE0LDcgKzIxNCw3IEBAIHN0YXRpYyB2b2lkIF9f
+Zndub2RlX2xpbmtzX21vdmVfY29uc3VtZXJzKHN0cnVjdCBmd25vZGVfaGFuZGxlICpmcm9tLAo+
+ICAgKiBAbmV3X3N1cDogZndub2RlIG9mIG5ldyBzdXBwbGllcgo+ICAgKgo+ICAgKiBJZiB0aGUg
+QGZ3bm9kZSBoYXMgYSBjb3JyZXNwb25kaW5nIHN0cnVjdCBkZXZpY2UgYW5kIHRoZSBkZXZpY2Ug
+c3VwcG9ydHMKPiAtICogcHJvYmluZyAodGhhdCBpcywgYWRkZWQgdG8gYSBidXMpLCB0aGVuIHdl
+IHdhbnQgdG8gbGV0IGZ3X2RldmxpbmsgY3JlYXRlCj4gKyAqIHByb2JpbmcgKHRoYXQgaXMsIGJv
+dW5kIHRvIGEgZHJpdmVyKSwgdGhlbiB3ZSB3YW50IHRvIGxldCBmd19kZXZsaW5rIGNyZWF0ZQo+
+ICAgKiBNQU5BR0VEIGRldmljZSBsaW5rcyB0byB0aGlzIGRldmljZSwgc28gbGVhdmUgQGZ3bm9k
+ZSBhbmQgaXRzIGRlc2NlbmRhbnQncwo+ICAgKiBmd25vZGUgbGlua3MgYWxvbmUuCj4gICAqCj4g
+QEAgLTIyNSw3ICsyMjUsNyBAQCBzdGF0aWMgdm9pZCBfX2Z3X2RldmxpbmtfcGlja3VwX2Rhbmds
+aW5nX2NvbnN1bWVycyhzdHJ1Y3QgZndub2RlX2hhbmRsZSAqZndub2RlLAo+ICB7Cj4gICAgICAg
+ICBzdHJ1Y3QgZndub2RlX2hhbmRsZSAqY2hpbGQ7Cj4KPiAtICAgICAgIGlmIChmd25vZGUtPmRl
+diAmJiBmd25vZGUtPmRldi0+YnVzKQo+ICsgICAgICAgaWYgKGZ3bm9kZS0+ZGV2ICYmIGZ3bm9k
+ZS0+ZGV2LT5kcml2ZXIpCgpUaGlzIHdpbGwgY29tcGxldGVseSBicmVhayBmd19kZXZsaW5rIHdo
+ZW4gbW9kdWxlcyBhcmUgZW5hYmxlZC4gV2hpY2gKaXMgd2hlcmUgZndfZGV2bGluayBpcyBhbHNv
+IHZlcnkgbXVjaCBuZWVkZWQuIEFuZCBpZiBtb2R1bGVzIGFyZQpsb2FkZWQgdXNpbmcgdWRldiBl
+dmVudHMsIHRoaXMgaXMgZ3VhcmFudGVlZCB0byBicmVhayBmb3IgdGhvc2UgY2FzZXMuCkFsc28s
+IHRoZSBkcml2ZXIgZ2V0cyBzZXQgQUZURVIgYSBkZXZpY2UgaXMgcHJvYmVkLiBOb3QgYmVmb3Jl
+LiBTbywgSQp0aGluayB5b3UgYXJlIGp1c3QgZGVsZXRpbmcvaW5jb3JyZWN0bHkgbW92aW5nIGEg
+d2hvbGUgYnVuY2ggb2YgZGV2aWNlCmxpbmtzIHRoYXQgd291bGQgaGF2ZSBiZWVuIGNyZWF0ZWQu
+CgpBIGZpcnN0IGxldmVsIHNhbml0eSB0ZXN0IGZvciBhbnkgZndfZGV2bGluayBjaGFuZ2UgaXMg
+dG8gdGFrZSBhCnN1ZmZpY2llbnRseSBjb21wbGljYXRlZCBib2FyZC9zeXN0ZW0gYW5kIHRoZW4g
+Y29tcGFyZSB0aGUgb3V0cHV0IG9mCnRoaXMgY29tbWFuZCBiZWZvcmUgYW5kIGFmdGVyIHlvdXIg
+Y2hhbmdlczoKbHMgLTEgL3N5cy9jbGFzcy9kZXZsaW5rCgpUaGUgZGlmZiB5b3Ugc2VlIHNob3Vs
+ZCBiZSBleGFjdGx5IHdoYXQgeW91IGV4cGVjdC93YW50IHRvIGhhcHBlbi4gSWYKdGhlcmUgYXJl
+IG90aGVyIHVuZXhwZWN0ZWQgZGlmZnMgaXQncyBnZW5lcmFsbHkgYSBidWcuIEkndmUgY2F1Z2h0
+IHNvCm1hbnkgYnVncyBpbiBteSBjaGFuZ2VzIChiZWZvcmUgSSBzZW5kIHRoZW0pIHRoaXMgd2F5
+LgoKQWxzbywgaWYgYSBkZXZpY2UgaXMgbmV2ZXIgc3VwcG9zZWQgdG8gcHJvYmUsIGl0IHNob3Vs
+ZCBub3QgYmUgYWRkZWQKdG8gYSBidXMgYW55d2F5LiBUaGF0J3Mgd2hhdCBhICJjbGFzcyIgaXMg
+Zm9yLiBJdCdzIGZvciBhIGNsYXNzIG9mCmRldmljZXMuIEFkZGluZyBhIGRldmljZSB0byBhIGJ1
+cyBhbmQgdGhlbiBuZXZlciBwcm9iaW5nIGl0IGlzIHN1Y2ggYQp3YXN0ZS4gQW5kIHRoaXMgZGV2
+aWNlIChhdCBsZWFzdCBmb3IgbnZtZW0tY2VsbHMpIGlzIG5ldmVyIGV2ZW4KcmVmZXJlbmNlZCAt
+LSB3aGljaCBpcyBhbiBldmVuIGJpZ2dlciB3YXN0ZSBvZiBtZW1vcnkuCgpJJ2QgcmVhbGx5IHBy
+ZWZlciBpZiBzb21lb25lIHdpdGggbnZtZW0gY2VsbHMgZXhwZXJpZW5jZSAoaGludCBoaW50Ck1p
+Y2hhZWwgaGludCBoaW50IDopICkgY2FuIGNsZWFuIHVwIHRoZSBmcmFtZXdvcmsgdG8gbm90IGNy
+ZWF0ZQpkZXZpY2VzIHVubmVjZXNzYXJpbHkgb3IgYXQgbGVhc3QgbWFrZSBpdCBhIGRldmljZSB0
+aGF0J3MgYWRkZWQgdG8gYQpjbGFzcyBpbnN0ZWFkIG9mIGEgYnVzLgoKLVNhcmF2YW5hCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
