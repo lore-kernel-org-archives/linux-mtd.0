@@ -4,79 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEE6DC48BC1
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Feb 2024 16:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82461C48BED
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Feb 2024 18:31:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nft6S+MvknUTEmEg5EMaA96XSkUf42IQ+tTwIq2coJo=; b=uhHzk5xAKczElw
-	WP4n328gK4mtX9ZB46UaHWb4tLx8Q9uxzgOl2KUZNumzL12HtBvinyXS3uf3ksEi/eX6QqWynYHaS
-	+v0nCVXMfepC5EJxcfjzHmq/+aQUQGznOVCnxD3Eey6+Yqu2cozyU4MDaL9b7Vju3wDwxu58k5bx1
-	Tjyba5DfFLgwUsm86ZvKRbflvStbGcN2VpsY+5FJ8ydDq8TSgloShcRoa8BtfNOixKDFPggp5QWzD
-	wxYQvitL5GysTihXaTAKPER6wsiqa0r/wlfWIW/0xe1HuSdC3z/8EQsHE9cemAxpGjpxJps0DeK1r
-	+opwjN0/byS53iM0cPwQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=9oSChoSy5JPlZiLzU6qxke36ydbCeV7+isxxjvK2qCg=; b=UlDimkijWx/2jiJKDjuR4R5082
+	bDoW4XugUD+Z8uucn8pz6xErQs3LPkZHZxNelzpFQ3ojz8OwvHQ3DwuQxj3pAUefD5Lf4jtALyJG/
+	+S/cOlyBZGEwk1vu+FKsoJVhpfUqVYvCsmoNo33yADSZMULsC/z+q+HbnAkz6zdiScFBK0p3pJL6U
+	kR9IOwoYbx2u20VViGUBVvZz0+coDaWmGxEnHqSAMpk804aybr1dkWQP6TEoa7ImrbNJ2GUDwXZME
+	8msFuWKmG9A8KimFzpScFIVoQ/sGRl34s1rqqFCiyCnhy3bpC8hoXZ03RBdumxVSp9qz2K3TUmgrw
+	AyR4LT+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raIPi-0000000DajT-3bch;
-	Wed, 14 Feb 2024 16:47:14 +0000
-Received: from mail-yw1-f174.google.com ([209.85.128.174])
+	id 1raK2T-0000000Dwxm-2OvX;
+	Wed, 14 Feb 2024 18:31:21 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raIPg-0000000DaiO-1zP4;
-	Wed, 14 Feb 2024 16:47:13 +0000
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-607a84acf6aso7588267b3.2;
-        Wed, 14 Feb 2024 08:47:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707929231; x=1708534031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ICVRIlP5TWlztMLLLMDwV83GSTpE4QQrJbkwQICALLk=;
-        b=BIPuKKSA4YU6WfiQmqHbJAhMOZpScwm61GLrPFn74r8/MyJ+idAX506qNvjlhj9+hl
-         IB6ZUDwhHxoPGAgBkY80QRmqu757K7Quw4MbFhjtbMVN92S6tWoLgn++EaA9aNZ0b7S3
-         yLpMBtBZ89r0mhiD3q/Af6zNKpbOdvBmNKevqqc/oU90eLVFCLtKwfrl9n4r64dV9q3L
-         be6/R3iQOTRGi5lLwNkLaBzmpa5rNlEqr2cMo9Ve/ZoZ0qJ80Y+oaMaz6hEbiizeXuSH
-         7nSjabgEj/9Yqdst2TPsw6MtGO/XHn2VUec/4cj0GtXFrBIkIlrxe/I5KqHohyWTgt7W
-         fLOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDUQCVma1LKlDAswWhXeQAif/i+B9Eu2h7EhnLbWAjA9ak/peZ1cPhg0A8tQjy185tAcE6Euvh/zjPd9ANxWh3TL+v71HSKtIH3n2NNq4Edt+VzjseDPdj7dKJenCQls3sAnVz7RZyK3vlEwtoDv7/xp3L
-X-Gm-Message-State: AOJu0Yzi7FAXgxLqN/wo/rPxvPPuAlerxgnnvCiM8EhPB4xacUE7eopc
-	yQxeVimJz1cmgkzXtD7gqDKzt0vUfZnCkBFkiRbd7T18wT2zUtWw0EznPktVYSM=
-X-Google-Smtp-Source: AGHT+IHTHeoAP1Va6EyerEIPegmaG3LUG8jEIT2Wbjl7h1qz5QNGYTJfVLw/VsKBgmdDj3ooqG3kTw==
-X-Received: by 2002:a0d:d3c3:0:b0:607:9d44:aef1 with SMTP id v186-20020a0dd3c3000000b006079d44aef1mr2948409ywd.47.1707929230937;
-        Wed, 14 Feb 2024 08:47:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW+REeaNbxX0X8dr7UtkacMa6T7IBZb9t1+1RWrzPvvsUxNypnfixH7Up9K4YY+iqrMnHZYbEc8fWJ8UjFkUh7c/MKdqctxgLucDp2oCi8trfYR9CEw2V2pAVC4sPWtzu2LXQzk0W0llt78Q02WfIN/7lU7
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id t125-20020a0dea83000000b006078c48a265sm780072ywe.6.2024.02.14.08.47.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 08:47:10 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so2953931276.3;
-        Wed, 14 Feb 2024 08:47:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXdYKdki3LK1q3IpxxWyhuuqEjofLC1aLiNCh55cCALHd0DFQ6w+cM7v1P2yXsBySXUUFGZezBTe3X2677CAwUZOkRw1npfZnDUwe0CdSLbDGh9Xj0hu8HD219DRQxln6gl+wj8JuZTr6tD9Pj/z49tX7Zh
-X-Received: by 2002:a25:870d:0:b0:dc2:6496:f41a with SMTP id
- a13-20020a25870d000000b00dc26496f41amr2267049ybl.28.1707929230231; Wed, 14
- Feb 2024 08:47:10 -0800 (PST)
+	id 1raK2J-0000000Dwoy-05xd;
+	Wed, 14 Feb 2024 18:31:12 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id A90D5CE2382;
+	Wed, 14 Feb 2024 18:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE62C43390;
+	Wed, 14 Feb 2024 18:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707935467;
+	bh=DqQ+n4sMmsCgeic4jR8u6aoCgKS/praQFMsaqy5xqsc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O3AHXwqSkO5POA0F9lBb4ChwP/ZSNILgVv96DwvQU+n4Vdq084zSQI/LKhzzz/3HE
+	 qj7UkFxJxqMPgXNxwiY3O+IL1e7TxuXkVEtWjS4oeo3E3gL2yiqzfok+5jVUr3H+nT
+	 V0QQPtPfDLjDdP0W0oyAPz45O2kftqMz6OQSiX4Aw3vxspviPc7OOo6GwN7DclWYqh
+	 audeqpj4t38pplAZIyGSaGoWTgthXRngGCWOBsaGEBzT0SdS10fwSfaio0Upkinn7n
+	 TsWx267Grb4nlbKbjw0jLxhGP+ofuhinSSmbxxf5gk9Sl3enCdypaoryVWRw08oiuC
+	 p4LjRvMwCfr0g==
+Date: Wed, 14 Feb 2024 18:31:01 +0000
+From: Conor Dooley <conor@kernel.org>
+To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc: Manojkiran Eda <manojkiran.eda@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"jk@codeconstruct.com.au" <jk@codeconstruct.com.au>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Ryan Chen <ryan_chen@aspeedtech.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+	"zev@bewilderbeest.net" <zev@bewilderbeest.net>
+Subject: Re: =?utf-8?B?5Zue6KaG?= =?utf-8?Q?=3A?= [PATCH] Add eSPI device
+ driver (flash channel)
+Message-ID: <20240214-yoyo-platinum-dcd0e7e16a22@spud>
+References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+ <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
-References: <946079fe606d18b97578db42dd57a31acf38b26a.1693407641.git.geert+renesas@glider.be>
- <CACRpkdbgBtAmyxfiXrZ75gAdc1DeaqMaHRNVX=nz7SuzxFU40w@mail.gmail.com>
-In-Reply-To: <CACRpkdbgBtAmyxfiXrZ75gAdc1DeaqMaHRNVX=nz7SuzxFU40w@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Feb 2024 17:46:57 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWJ7-3ULokmvFPRuvquTme6HFzsK=VUKpvP=CVOVqnDQQ@mail.gmail.com>
-Message-ID: <CAMuHMdWJ7-3ULokmvFPRuvquTme6HFzsK=VUKpvP=CVOVqnDQQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: arm: realview: Fix development chip ROM
- compatible value
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Boris Brezillon <bbrezillon@kernel.org>, Ricardo Ribalda <ribalda@kernel.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+In-Reply-To: <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240214_084712_530956_9B5B52D1 
-X-CRM114-Status: GOOD (  21.01  )
+X-CRM114-CacheID: sfid-20240214_103111_338550_FB146B6A 
+X-CRM114-Status: GOOD (  11.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,34 +83,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0164257499656550866=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTGludXMsCgpPbiBUdWUsIFNlcCAxMiwgMjAyMyBhdCA5OjE44oCvQU0gTGludXMgV2FsbGVp
-aiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPiB3cm90ZToKPiBPbiBXZWQsIEF1ZyAzMCwgMjAy
-MyBhdCA1OjAz4oCvUE0gR2VlcnQgVXl0dGVyaG9ldmVuCj4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVy
-LmJlPiB3cm90ZToKPiA+IFdoZW4gdGhlIGRldmVsb3BtZW50IGNoaXAgUk9NIHdhcyBhZGRlZCwg
-dGhlICJkaXJlY3QtbWFwcGVkIiBjb21wYXRpYmxlCj4gPiB2YWx1ZSB3YXMgYWxyZWFkeSBvYnNv
-bGV0ZS4gIEluIGFkZGl0aW9uLCB0aGUgZGV2aWNlIG5vZGUgbGFja2VkIHRoZQo+ID4gYWNjb21w
-YW55aW5nICJwcm9iZS10eXBlIiBwcm9wZXJ0eSwgY2F1c2luZyB0aGUgb2xkIHBoeXNtYXBfb2Zf
-Y29yZQo+ID4gZHJpdmVyIHRvIGZhbGwgYmFjayB0byB0cnlpbmcgYWxsIGF2YWlsYWJsZSBwcm9i
-ZSB0eXBlcy4KPiA+IFVuZm9ydHVuYXRlbHkgdGhpcyBmYWxsYmFjayB3YXMgbG9zdCB3aGVuIHRo
-ZSBEVCBhbmQgcGRhdGEgY2FzZXMgd2VyZQo+ID4gbWVyZ2VkLgo+ID4KPiA+IEZpeCB0aGlzIGJ5
-IHVzaW5nIHRoZSBtb2Rlcm4gIm10ZC1yb20iIGNvbXBhdGlibGUgdmFsdWUgaW5zdGVhZC4KPiA+
-Cj4gPiBGaXhlczogNWMzZjVlZGJlMGExZGZmMyAoIkFSTTogcmVhbHZpZXc6IGFkZCBmbGFzaCBk
-ZXZpY2VzIHRvIHRoZSBQQjExNzYgRFRTIikKPiA+IEZpeGVzOiA2NDJiMWU4ZGJlZDdiYmJmICgi
-bXRkOiBtYXBzOiBNZXJnZSBwaHlzbWFwX29mLmMgaW50byBwaHlzbWFwLWNvcmUuYyIpCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJl
-Pgo+Cj4gUGF0Y2ggYXBwbGllZCEKCkxvb2tzIGxpa2UgdGhpcyBmZWxsIHRocm91Z2ggdGhlIGNy
-YWNrcz8KU2hhbGwgSSByZXNlbmQ/ClRoYW5rcyEKCkdye29ldGplLGVldGluZ31zLAoKICAgICAg
-ICAgICAgICAgICAgICAgICAgR2VlcnQKCi0tIApHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUn
-cyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnCgpJbiBw
-ZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxsIG15c2Vs
-ZiBhIGhhY2tlci4gQnV0CndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNh
-eSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAtLSBMaW51cyBUb3J2YWxkcwoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+
+--===============0164257499656550866==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DN7xbo+G2YJV9a8X"
+Content-Disposition: inline
+
+
+--DN7xbo+G2YJV9a8X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Feb 14, 2024 at 11:34:31AM +0000, ChiaWei Wang wrote:
+> We appreciate that you are willing to help on the open source contributio=
+n.=20
+> However, please co-work with Aspeed before submitting drivers of Aspeed H=
+W.
+> Otherwise, a misleading driver on the community are going to bring tons o=
+f customer issues to Aspeed.
+
+It may not apply in this particular case as Aspeed did write the
+original driver and it is polite to work with previous authors
+when respinning a patchset, but in general there is no need to work
+with a hardware vendor before writing drivers for their hardware.
+
+Blocking a driver because that company might receive more support
+requests is not the kernel's problem.
+
+Cheers,
+Conor.
+
+
+--DN7xbo+G2YJV9a8X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc0G5QAKCRB4tDGHoIJi
+0jh4AQDULTHpmdpjBuvc/RMvcJk7Fsv+M5FEZdXcxYYbDBlSKAEA7XX/zOdWdqxP
+wKZsM8bYsV8j1gJqXlEScsdOOOgxJQU=
+=GWXb
+-----END PGP SIGNATURE-----
+
+--DN7xbo+G2YJV9a8X--
+
+
+--===============0164257499656550866==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0164257499656550866==--
+
