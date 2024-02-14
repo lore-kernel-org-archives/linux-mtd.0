@@ -4,87 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D572BC48BEB
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Feb 2024 09:53:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43341C48BC4
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Feb 2024 10:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RdojXZ0mGiKMA7Sjyxo9xXelZYeiTDVD0h7MdZuGkvQ=; b=R97rizjLF1Z2cf
-	XlskrMpvhMHSjSI9ejsw9EUBchvki8fDQvh3CxSNXr7X6riPyIhl4+2y/cWHqGHhVjzec9KowyW+W
-	HmYI2LzdI3/zabzvMI1ey39dmzv++U6CejO62QlzwAIFP6rBb3o0R3DhRH+Eqa93ELTV5y6OexfTM
-	yJxawT+7luFaqhP/cK1xo+2F9BPGg192QXbkgfzWExt6EES7xJcu2WF53pSyThGYSpBDB+cB0H5o6
-	MslMeHmrhwWYSBtIrJZ7g2KbCvGBN10+mvi91kvgQHrcM+pqT+8wSiVQN2YoTlZh6FDXCE2uf+DAG
-	NwUuNYeYAP6EtcJJ/hBA==;
+	List-Owner; bh=kog6TchFKEyTgJBHUYuDaYaMLWD2ukayd4RbSEG9iOM=; b=WyOtioEtoga7hA
+	Bp877RNa89MHAO5ZSdYml2pRE/dJY94aoVtxKHH6W9hNkEN+I2tvd2XA7ngQbJz+uzLC2AfnEN9ea
+	9jUhAsyEYi2h886EC5nVM/Mh68NlmPt7YG8t/1j1br4mrwG0h0G7WQeNPn+3kpxSHoobeyrRhcNPZ
+	1ZrR06m+Mc/fkzbs9UIYz2tcNJgv9uHKzTWZ7/6L+j20sbKJx79ZlmaP4mx1+WoD/xfjxWcrMIIjy
+	WUgS4Z5LD/UBrf1yELfTMiKhiEBld3HOSWzmVeXIIhFTWF2UgKnkwn76kQJWmsOO3oSK7ua8xCTSt
+	MOV9WyqGQJzsxrK1Fubg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raBxU-0000000CRsi-459e;
-	Wed, 14 Feb 2024 09:53:40 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1raC6K-0000000CTCM-33mI;
+	Wed, 14 Feb 2024 10:02:48 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raBxP-0000000CRqm-3cyG
+	id 1raC6H-0000000CTC0-3zrF
 	for linux-mtd@lists.infradead.org;
-	Wed, 14 Feb 2024 09:53:37 +0000
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5600d950442so6174945a12.1
-        for <linux-mtd@lists.infradead.org>; Wed, 14 Feb 2024 01:53:35 -0800 (PST)
+	Wed, 14 Feb 2024 10:02:47 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so7066081a12.1
+        for <linux-mtd@lists.infradead.org>; Wed, 14 Feb 2024 02:02:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707904414; x=1708509214; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1707904962; x=1708509762; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EaUjppUgiZAPCVE885hL282NkwF8fm6ZDFZemDPWHzs=;
-        b=PmT1K6i2EBQtjdTtcvy/bIHyl73qjK7DyvpbPVRAPzzPksDI+rYOEsJnsm24kDjOOD
-         HqHcjK968TTgASvmowJEXe0iPJTT1Vwv8o/vByiruILq7+I7YOaKzfTpa6AZT1TTACHb
-         RUFeZSh1awg29VcUzHG83eeojEkAmg9WygdgM6W5dnaANWeKO7NHhbs9CX4oMRcaMmcE
-         CKxoyJxXDj0x7uyYuC8HDX3o3qNPfjN+w8gwdTJOKR9qu+R7qBlfQFaqToDmCDvFZbtV
-         8Sg4JZVf8YbcfV43BxNS90LVEwk1AFFPlXFGMS7EFAL88zsnYfZ0aWnalPKlco/ZkA3G
-         BVVw==
+        bh=3bMW9whpBA0jL3HiuL3tccPcVAuuxpNXPVuN6B+u2gg=;
+        b=uG/EDNzAb8BKucSLkQrc87sGZDv17sKljjF0hKPWvQQ39ta6ZbcnpZF/ouPWh414h6
+         jgyOZLWq1mbASLenllu80sLHCxHkxBvF9vfzzJ+Gn0merXEVJmV1o4FTQgV8o2VWDS4W
+         LMSgArFdJXQe/ZsN6SW6PgRwnb3zno4fq6qnBJ/7MU2YDStrTZWaejh0mvFk5dQK+t04
+         10uGlJOKkEKypuM01jjG3InieCsgZvSeVeeR2C1Lta3ueKwA+vPmbNVIy2cMfiWz3kpx
+         zkrTEyy9cGDhpO9ONpKAg9nJdSdw0/tlBpbVdbD9rKBcuePvT85f5iVFSPSM02+JivKH
+         a88g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707904414; x=1708509214;
+        d=1e100.net; s=20230601; t=1707904962; x=1708509762;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EaUjppUgiZAPCVE885hL282NkwF8fm6ZDFZemDPWHzs=;
-        b=V2IR+h4hTL0FkgswF+X5QxVb1eGvv+4l//y1xxUrTgpp55UTPFvjStfPl1vgKvtv6P
-         oZQgL2gOvkXnjQWVw8k9KoL2zS4B1nqmQlwO3EWFQ9pLxRlFCtKACqsirWMh0u63T/b8
-         hzoOUCH6N62XiZwBf30IfhvkdCKBDef+BwCV4nkPsILi9cfe9HtDxXDeDI/yuUpAZT0Z
-         5k1QaqJlZuzQ/CcrFogYf7kpsDmD1xtp2Ca8o9eBBz3hw3V78RX8VC1SxQgADJAmxehV
-         /OHBwJnPkV21ZDbFYtZvJLoaeRmP1+RgR5o/l43X+UNfTYrr2XHldgXvDcKDaGA9b1yo
-         vgvA==
-X-Forwarded-Encrypted: i=1; AJvYcCW8LLysPGx3i0VOpe0rXqGqZRIgycK3ctYWFHu9AOO7tMYg9En60zyTiSCUdeH0/rnNtqEhIyJTckh+fbrzj6AyQvXrxnVHYcTkOWz3FQ==
-X-Gm-Message-State: AOJu0Yzvx5HQsRjVHDWA0+/PkenW/uSmsr1v/2F8n7LthLY2DyLVc/DX
-	qqke62y6BmsZjEFFVtKiebH1q+bJA9WmIknyDtCioFtxTF0M20LxsgG8b0kMSSU=
-X-Google-Smtp-Source: AGHT+IHUD7IopZjbxD8lEAJpguq89fNC7GXCm2nTCf0GUa5tnbfVhf0QZ0UYSyTxXbaUiG4GWvlugA==
-X-Received: by 2002:a17:906:ccd2:b0:a3d:6592:a7e with SMTP id ot18-20020a170906ccd200b00a3d65920a7emr21284ejb.37.1707904413927;
-        Wed, 14 Feb 2024 01:53:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWHWykznHAKiQeCk2JWDJoDpwem6lshIoVSZOgUBdVG8iZb9VmTYPODLgX8OQxj8tR0kJ4OtjD0fxSc0+ebR3Cz79J6Ku12QeDik7HtGEdWTkpeGJjD3EAQB8hu5s/JRQwNNZcgWsFdn1kXhhT7j9bBlUk+x3XBxwz8w5vJ7YOObhPNLYebG9L+MFxXvKIvtxK5xsRHwd6TRTjh4DFe/KcZ11IA+zpDOdLAHYAy0WSIMqZo0a5m+xIfpFvSnwT8sn/RmUMnxbj86KE+GC1TOMtsic5uPXnTxKzNCMjLxU7pOZICVj9ZCnshWQmhBQCUSkg/Bya5iLMaaNft4ORp1DHkTLfRSlX9eE3isN1OCyKPiysU6ulCZOZ0xI3/nzYIdqPCHIgVD0/M1HS/rScP+puMadMbBsuhtrbbO4l42L+oQMObzJrzaBsKX4TpkpZcnBInSHuxu61oZjQHNPN7S2eQDZl21Px5vLstqvw3fZAyzcnEA6NKpizqE8Wp03JKTUN4wQ5evHazQkyymSSjZUsrWtMsq/ra8Y2sUP+spbE2YSjfFdD1ze5wKzw2WAaZUBHu1rWBHjRUiKowpf3+oVlaoiX5Fxa2bqMYr7CM4dFzx9vRc6a7ZrhBH4zBcgVialZZjDDSQX5DTh1dHagf4lj7Cffp/eKVbY913MkhZesbaYuXlPBl
+        bh=3bMW9whpBA0jL3HiuL3tccPcVAuuxpNXPVuN6B+u2gg=;
+        b=pP0+SognZKtsGNpo+Re4p7S1HS41FSYAnuWyppo3Rh0kbjdO8RE4Oe8YYY67QJVXnl
+         hOCviPVDY5oA6PLOuOa8u3x7fz+/Ff/LHFRFWPboVFHEgGYXd6edtgJL15z6JuLKSTTE
+         uaNMPvGY8wBVQeWEJB6mnKZ6hccBSIu0seeHoYd6ozslOGFu6v0LGm4GdIC0HeGOPtH/
+         DEZufH0Y3edASefvRVWOlI9CtiH4PZPQlTX25JOleN56cJk0Vhg+agha+abdG7maBXvs
+         cpbbINL/Kh53kCp0E4zljbDRU1vxqLMgLcdoA41RiA/4Nh/Z+O+RtdnT9n46EZjBI6fv
+         hWcA==
+X-Gm-Message-State: AOJu0YwhFo2B/M7i9xrdDrCepBWLVnU0dt56GhoAmu/IKsEBWG4tDNDU
+	rHsFZZ6ys1cSVZNmLSSKXk8Uej5wP/Olh0moseXVy2H4uaqS/DnYNw2TtDqx6+U=
+X-Google-Smtp-Source: AGHT+IHNVysDTvrlpcCZDo0fkXx0/f/34mP+7CCFE+pH3BouUA6vCsnowXjEfoeQZZOjgW0VU98yIg==
+X-Received: by 2002:a17:906:378a:b0:a3d:1ca9:b994 with SMTP id n10-20020a170906378a00b00a3d1ca9b994mr1336086ejc.33.1707904962270;
+        Wed, 14 Feb 2024 02:02:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW8vaf5LHXA17YCCPIKcCCtlN1JISNK+L+VrIGFWTWtREpE1AommHGZJDnPVDiyqv5Kb3Yot2I0tQMagrYNam/8/G1wb/LJQvRe7L+8jidwhLyIZLCQVvqF61FOsGBALdfbuybfh96uQ0O8DdqzPj++WYaJYxVcDNGiiIWzCHqzwRPG0esmoeeKjcnwxpub+78fyDCH5C1za7lKiNo/wLYhTWB7TMIS89U+ZH2yoA0naIxu2VBihinXMTW1ulQ3/vBQ9GtBRNsipahtPye1hljmvrCfPLaQRHZloR87PxaIbaqz/iw715ueVl/uyKpO/xlITCbHZ//w0q7f35j/3UPxcl+0cKzt423t0OxTNavA+Q6y7bagpiTRrII=
 Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id o7-20020a1709061d4700b00a3d6395156esm43228ejh.168.2024.02.14.01.53.32
+        by smtp.gmail.com with ESMTPSA id wp14-20020a170907060e00b00a3d36da3a57sm589083ejb.7.2024.02.14.02.02.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 01:53:33 -0800 (PST)
-Message-ID: <630b892e-a948-4683-97bd-5633fc81f917@linaro.org>
-Date: Wed, 14 Feb 2024 10:53:31 +0100
+        Wed, 14 Feb 2024 02:02:41 -0800 (PST)
+Message-ID: <ff61656d-e4a8-4561-a3ba-f34abd1c6ce4@linaro.org>
+Date: Wed, 14 Feb 2024 11:02:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Add eSPI device driver (flash channel)
+Subject: Re: [PATCH 00/12] Add MP25 FMC2 support
 Content-Language: en-US
-To: Manojkiran Eda <manojkiran.eda@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@codeconstruct.com.au>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- jk@codeconstruct.com.au, Patrick Rudolph <patrick.rudolph@9elements.com>,
- Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
- Ryan Chen <ryan_chen@aspeedtech.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, openbmc@lists.ozlabs.org,
- zev@bewilderbeest.net
-References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+To: Christophe Kerello <christophe.kerello@foss.st.com>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, devicetree@vger.kernel.org
+References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
+ <fbaad3c7-13b7-41a2-a8f6-7036ec1ca2fe@linaro.org>
+ <9f20563b-bef1-41d0-a1ba-fefeabed2e09@foss.st.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -130,10 +122,10 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+In-Reply-To: <9f20563b-bef1-41d0-a1ba-fefeabed2e09@foss.st.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240214_015335_946401_090368AA 
-X-CRM114-Status: GOOD (  26.77  )
+X-CRM114-CacheID: sfid-20240214_020246_190454_4C0E9A66 
+X-CRM114-Status: GOOD (  10.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,82 +142,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 13/02/2024 15:36, Manojkiran Eda wrote:
-> This patch adds the driver support for the eSPI controller of
-> Aspeed 5/6th generation SoCs. This controller is a slave device
-> communicating with a master over Enhanced Serial Peripheral
-> Interface (eSPI).
+On 13/02/2024 13:09, Christophe Kerello wrote:
 > 
-> eSPI supports 4 channels, namely peripheral, virtual wire,
-> out-of-band, and flash, and operates at max frequency of 66MHz.
 > 
-> But at the moment, this patch set only supports the flash channel.
+> On 2/13/24 08:34, Krzysztof Kozlowski wrote:
+>> On 12/02/2024 18:48, Christophe Kerello wrote:
+>>> Add MP25 SOC support in stm32_fmc2 drivers:
+>>>   - Update stm32-fmc2-ebi driver to support FMC2 revision 2 and MP25 SOC.
+>>>   - Update stm32_fmc2_nand driver to support FMC2 revision 2 and MP25 SOC
+>>
+>> Why do you combine memory controller driver and NAND in one patchset if
+>> there is no dependency? On any further submissions, please split
+>> independent works.
 > 
-> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
-> ---
-> Hello everyone,
+> Hi Krzysztof,
 > 
-> I'm presenting a revised version of the eSPI device driver patch series found at the following link:
-> 
-> https://lore.kernel.org/openbmc/20220516005412.4844-1-chiawei_wang@aspeedtech.com/ 
+> NAND driver patch 11 refers to the compatible described for the memory
 
-What changed? Please provide changelog and continue with versioning.
+Eh, it shouldn't really. This does not scale - you will keep growing
+that 'if' clause? And other drivers should not include other device
+compatibles.
 
-
-> 
-> This update addresses the issues identified during the review process.
-> 
-> While the previous patch series attempted to incorporate support for all four different channels of eSPI,
-> this new series focuses on upstreaming the flash channel initially, ensuring that all review comments are
-> duly addressed, before progressing further.
-> 
-> Results:
-> 
-> Successfully conducted a flash update via eSPI.
-> 
-> Note:
-> 
-> This marks my inaugural endeavor in contributing code to the kernel subsystem. I kindly request reviewers
-> to incorporate as many details as possible in the review comments.
-> ---
->  .../devicetree/bindings/soc/aspeed/espi.yaml       | 125 ++++++
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi            |  16 +-
-
-These are all separatge patches.
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
->  drivers/mtd/mtdcore.c                              |   2 +-
->  drivers/soc/aspeed/Kconfig                         |  10 +
->  drivers/soc/aspeed/Makefile                        |   3 +
->  drivers/soc/aspeed/aspeed-espi-ctrl.c              | 197 +++++++++
->  drivers/soc/aspeed/aspeed-espi-ctrl.h              | 169 ++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.c             | 466 +++++++++++++++++++++
->  drivers/soc/aspeed/aspeed-espi-flash.h             |  45 ++
->  include/uapi/linux/espi/aspeed-espi-ioc.h          | 103 +++++
->  10 files changed, 1134 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/aspeed/espi.yaml b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> new file mode 100644
-> index 000000000000..6521a351d18d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> @@ -0,0 +1,125 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# # Copyright (c) 2021 Aspeed Technology Inc.
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/aspeed/espi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
-
-Not reviewing further. Test your code....
+But anyway that's not a real subsystem dependency. Just mention in patch
+changelog (so ---) that compatible is documented somewhere at URL xyz.
 
 Best regards,
 Krzysztof
