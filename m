@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAADFC48BF1
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E3AFC4829E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f8a8DoE719tsYNTXR/rrwfGiByeciAySzVUqBHVrIp4=; b=Rx6dkyWDL/dDVB
-	7w4fhThCtitMZNV68oPQNcSf0yalq5t+oUlSrGK5g3cdPuCdoxCFBvmkb4sPy3j97YT7K9se2Bj36
-	/jZ2cZLoy3c1cjje+r8jGfYoPbR8rp/Q06DTn4ji4juOaLKUjafCd/GkvFl01Q6B8CnzZOdrL2NTT
-	9p6RnGK/AekP5N808f+s/FgxC7qZCnK/RiocQOg9YgEfeCUATEGttkW3fd7l8pRVeDSgHY+2z8EWb
-	Ht4wwHxAZPL9gR4VI4Kur2lto31wke1aV16wV+SS1Yd1KHHbpNOLQsq48+JR8AeXm+x62UOB/YJxb
-	HcEePadNdtmEiUyZ9I4w==;
+	List-Owner; bh=yIEvJhqtypH3Bwn5h0ILlVIQiz1Pfep/2G8njL5kVRc=; b=TVAymOIXGJpfZ6
+	4MleFbfFi2ot8DqNl4kOUeuvJWOgya/bfNIrfAzK5/cR+4STIZWYsxMjGcTA5cOtkv52+rRw5eqDC
+	786hosQlupY/9zmcjZWCn5oMlxT5ui/rnHZkpbqYwYW8Y6Vn8oQmexUPwjB1gbX6RiwSnNPgWqBNl
+	E49hVxN7HhsLs2Qis9xcrnzhyGmiXEE92ZSeVThXt03ZutLKgb9qEKrU6LPOI2nSZDu6APM7BMWRh
+	hwuj5A62hFz3+vcQ1D5mlJtJDPS+Wwsg7RW3GAU3Ie+eq4itKdp/3zDn0IBFI7NynXVrvaAinbp2c
+	C98FXDwFjgQvNvMqsE3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmC-0000000FARc-1tXn;
-	Thu, 15 Feb 2024 07:03:20 +0000
+	id 1raVm6-0000000FAPC-3zkQ;
+	Thu, 15 Feb 2024 07:03:14 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVm9-0000000FAPj-290B;
-	Thu, 15 Feb 2024 07:03:18 +0000
+	id 1raVm4-0000000FANy-1sSl;
+	Thu, 15 Feb 2024 07:03:12 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -51,9 +51,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-mmc@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 04/17] mtip: pass queue_limits to blk_mq_alloc_disk
-Date: Thu, 15 Feb 2024 08:02:47 +0100
-Message-Id: <20240215070300.2200308-5-hch@lst.de>
+Subject: [PATCH 02/17] aoe: pass queue_limits to blk_mq_alloc_disk
+Date: Thu, 15 Feb 2024 08:02:45 +0100
+Message-Id: <20240215070300.2200308-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240215070300.2200308-1-hch@lst.de>
 References: <20240215070300.2200308-1-hch@lst.de>
@@ -74,54 +74,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pass the few limits mtip imposes directly to blk_mq_alloc_disk instead
-of setting them one at a time and drop the pointless setting of a io_min
-that is equal to the physical block size.
+Pass the few limits aoe imposes directly to blk_mq_alloc_disk instead
+of setting them one at a time and improve the way the default
+max_hw_sectors is initialized while we're at it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/mtip32xx/mtip32xx.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/block/aoe/aoeblk.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/block/mtip32xx/mtip32xx.c b/drivers/block/mtip32xx/mtip32xx.c
-index ac08dea73552f4..43a187609ef794 100644
---- a/drivers/block/mtip32xx/mtip32xx.c
-+++ b/drivers/block/mtip32xx/mtip32xx.c
-@@ -3401,6 +3401,12 @@ static const struct blk_mq_ops mtip_mq_ops = {
-  */
- static int mtip_block_initialize(struct driver_data *dd)
- {
+diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
+index 2ff6e2da8cc41c..b6dac8cee70fe1 100644
+--- a/drivers/block/aoe/aoeblk.c
++++ b/drivers/block/aoe/aoeblk.c
+@@ -24,8 +24,8 @@ static DEFINE_MUTEX(aoeblk_mutex);
+ static struct kmem_cache *buf_pool_cache;
+ static struct dentry *aoe_debugfs_dir;
+ 
+-/* GPFS needs a larger value than the default. */
+-static int aoe_maxsectors;
++/* random default picked from the historic block max_sectors cap */
++static int aoe_maxsectors = 2560;
+ module_param(aoe_maxsectors, int, 0644);
+ MODULE_PARM_DESC(aoe_maxsectors,
+ 	"When nonzero, set the maximum number of sectors per I/O request");
+@@ -334,6 +334,10 @@ aoeblk_gdalloc(void *vp)
+ 	mempool_t *mp;
+ 	struct blk_mq_tag_set *set;
+ 	sector_t ssize;
 +	struct queue_limits lim = {
-+		.physical_block_size	= 4096,
-+		.max_hw_sectors		= 0xffff,
-+		.max_segments		= MTIP_MAX_SG,
-+		.max_segment_size	= 0x400000,
++		.max_hw_sectors		= aoe_maxsectors,
++		.io_opt			= SZ_2M,
 +	};
- 	int rv = 0, wait_for_rebuild = 0;
- 	sector_t capacity;
- 	unsigned int index = 0;
-@@ -3431,7 +3437,7 @@ static int mtip_block_initialize(struct driver_data *dd)
- 		goto block_queue_alloc_tag_error;
+ 	ulong flags;
+ 	int late = 0;
+ 	int err;
+@@ -371,7 +375,7 @@ aoeblk_gdalloc(void *vp)
+ 		goto err_mempool;
  	}
  
--	dd->disk = blk_mq_alloc_disk(&dd->tags, NULL, dd);
-+	dd->disk = blk_mq_alloc_disk(&dd->tags, &lim, dd);
- 	if (IS_ERR(dd->disk)) {
- 		dev_err(&dd->pdev->dev,
- 			"Unable to allocate request queue\n");
-@@ -3481,12 +3487,7 @@ static int mtip_block_initialize(struct driver_data *dd)
- 	/* Set device limits. */
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, dd->queue);
- 	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, dd->queue);
--	blk_queue_max_segments(dd->queue, MTIP_MAX_SG);
--	blk_queue_physical_block_size(dd->queue, 4096);
--	blk_queue_max_hw_sectors(dd->queue, 0xffff);
--	blk_queue_max_segment_size(dd->queue, 0x400000);
- 	dma_set_max_seg_size(&dd->pdev->dev, 0x400000);
--	blk_queue_io_min(dd->queue, 4096);
- 
- 	/* Set the capacity of the device in 512 byte sectors. */
- 	if (!(mtip_hw_get_capacity(dd, &capacity))) {
+-	gd = blk_mq_alloc_disk(set, NULL, d);
++	gd = blk_mq_alloc_disk(set, &lim, d);
+ 	if (IS_ERR(gd)) {
+ 		pr_err("aoe: cannot allocate block queue for %ld.%d\n",
+ 			d->aoemajor, d->aoeminor);
+@@ -384,14 +388,9 @@ aoeblk_gdalloc(void *vp)
+ 	WARN_ON(d->flags & DEVFL_TKILL);
+ 	WARN_ON(d->gd);
+ 	WARN_ON(d->flags & DEVFL_UP);
+-	/* random number picked from the history block max_sectors cap */
+-	blk_queue_max_hw_sectors(gd->queue, 2560u);
+-	blk_queue_io_opt(gd->queue, SZ_2M);
+ 	d->bufpool = mp;
+ 	d->blkq = gd->queue;
+ 	d->gd = gd;
+-	if (aoe_maxsectors)
+-		blk_queue_max_hw_sectors(gd->queue, aoe_maxsectors);
+ 	gd->major = AOE_MAJOR;
+ 	gd->first_minor = d->sysminor;
+ 	gd->minors = AOE_PARTITIONS;
 -- 
 2.39.2
 
