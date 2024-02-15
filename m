@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBF43C4829E
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58C08C48BEB
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wz8fTaKzlr3HWiIkze7Jj3HRDue6qEz9vJAeTUYTaJo=; b=FZoFeuAzhF/E8J
-	hUN1PdWrUvLlJtiZjVGUQDo1Fy6s1uxcdEjXrqxhsihBAI7E4ZuoN2k2tR3ITQlFpnDK5ZlH2NuCn
-	xX7/NIoXsnmuFP/kJDytx7eMrsi6vmXFoTr4oIqav6RnfkuET+Pe+w2LhDeVE/MtbxGcboTs7geXO
-	TmjrCpC+O5yG/chRy7AlvLwZGJnhjYk80hKLYcX3Vg8fknQhj3Axd92YakhOU/2HLzQJkn5KeETal
-	A6uC+pQY8QLquamFINKl59PJ0j9WifR+O80Pw6PYBPE/xkZdfJPO+BNfZ+pDJqWtjaZf6/SmQfS7W
-	Om1A9dqzpBsgy1KpsVdw==;
+	List-Owner; bh=sY5rH1OaoRUjzOh1McPHMDxeKpSDMtqK4jeXusXHS1A=; b=0bor/t+kKLg8+Y
+	9w5lR5Mvfzxe3scI6q7aNU7b4MxTiCQl4CWv2iuMxHnu/toxKmT9gAut+1jPpGBC8YEMcugbsBPmx
+	rNYjMMthWzetrAPI0TxqjEd2Nb078St70rD46sAZ3UYH//S3ynqKagWP6Nwd21j+www4ZKjjQfu77
+	Z3dMnJRULYXSoACrRqMHBtXAnsnCYlUxw2W6isOOZhckGaMx6OPrqp6a89TWMpJFsqW5ixFq5+Sws
+	JRTLHxRP8kxZTCyfsadaj7Hds06JA2qiPPdMGxC2+Islw37BVC4eNiBCjaopnbHTVkGvX4YGPDa3n
+	6O0UE2p6AcSofmKatKEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmW-0000000FAi8-3QP0;
-	Thu, 15 Feb 2024 07:03:40 +0000
+	id 1raVmd-0000000FAo1-1IjQ;
+	Thu, 15 Feb 2024 07:03:47 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmP-0000000FAb7-3OYC;
-	Thu, 15 Feb 2024 07:03:34 +0000
+	id 1raVmS-0000000FAdC-1wnt;
+	Thu, 15 Feb 2024 07:03:37 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -51,9 +51,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-mmc@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 10/17] gdrom: pass queue_limits to blk_mq_alloc_disk
-Date: Thu, 15 Feb 2024 08:02:53 +0100
-Message-Id: <20240215070300.2200308-11-hch@lst.de>
+Subject: [PATCH 11/17] ms_block: pass queue_limits to blk_mq_alloc_disk
+Date: Thu, 15 Feb 2024 08:02:54 +0100
+Message-Id: <20240215070300.2200308-12-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240215070300.2200308-1-hch@lst.de>
 References: <20240215070300.2200308-1-hch@lst.de>
@@ -74,53 +74,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pass the few limits gdrom imposes directly to blk_mq_alloc_disk instead
-of setting them one at a time.
+Pass the few limits ms_block imposes directly to blk_mq_alloc_disk
+instead of setting them one at a time.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/cdrom/gdrom.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/memstick/core/ms_block.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
-index 1d044779f5e42a..9398beeb5d1e89 100644
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -724,11 +724,6 @@ static void probe_gdrom_setupdisk(void)
- 
- static int probe_gdrom_setupqueue(void)
+diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
+index d3277c901d16bb..47a314a4eb6faf 100644
+--- a/drivers/memstick/core/ms_block.c
++++ b/drivers/memstick/core/ms_block.c
+@@ -2078,6 +2078,12 @@ static const struct blk_mq_ops msb_mq_ops = {
+ static int msb_init_disk(struct memstick_dev *card)
  {
--	blk_queue_logical_block_size(gd.gdrom_rq, GDROM_HARD_SECTOR);
--	/* using DMA so memory will need to be contiguous */
--	blk_queue_max_segments(gd.gdrom_rq, 1);
--	/* set a large max size to get most from DMA */
--	blk_queue_max_segment_size(gd.gdrom_rq, 0x40000);
- 	gd.disk->queue = gd.gdrom_rq;
- 	return gdrom_init_dma_mode();
- }
-@@ -743,6 +738,13 @@ static const struct blk_mq_ops gdrom_mq_ops = {
-  */
- static int probe_gdrom(struct platform_device *devptr)
- {
+ 	struct msb_data *msb = memstick_get_drvdata(card);
 +	struct queue_limits lim = {
-+		.logical_block_size		= GDROM_HARD_SECTOR,
-+		/* using DMA so memory will need to be contiguous */
-+		.max_segments			= 1,
-+		/* set a large max size to get most from DMA */
-+		.max_segment_size		= 0x40000,
++		.logical_block_size	= msb->page_size,
++		.max_hw_sectors		= MS_BLOCK_MAX_PAGES,
++		.max_segments		= MS_BLOCK_MAX_SEGS,
++		.max_segment_size	= MS_BLOCK_MAX_PAGES * msb->page_size,
 +	};
- 	int err;
+ 	int rc;
+ 	unsigned long capacity;
  
- 	/*
-@@ -778,7 +780,7 @@ static int probe_gdrom(struct platform_device *devptr)
- 	if (err)
- 		goto probe_fail_free_cd_info;
+@@ -2093,19 +2099,13 @@ static int msb_init_disk(struct memstick_dev *card)
+ 	if (rc)
+ 		goto out_release_id;
  
--	gd.disk = blk_mq_alloc_disk(&gd.tag_set, NULL, NULL);
-+	gd.disk = blk_mq_alloc_disk(&gd.tag_set, &lim, NULL);
- 	if (IS_ERR(gd.disk)) {
- 		err = PTR_ERR(gd.disk);
- 		goto probe_fail_free_tag_set;
+-	msb->disk = blk_mq_alloc_disk(&msb->tag_set, NULL, card);
++	msb->disk = blk_mq_alloc_disk(&msb->tag_set, &lim, card);
+ 	if (IS_ERR(msb->disk)) {
+ 		rc = PTR_ERR(msb->disk);
+ 		goto out_free_tag_set;
+ 	}
+ 	msb->queue = msb->disk->queue;
+ 
+-	blk_queue_max_hw_sectors(msb->queue, MS_BLOCK_MAX_PAGES);
+-	blk_queue_max_segments(msb->queue, MS_BLOCK_MAX_SEGS);
+-	blk_queue_max_segment_size(msb->queue,
+-				   MS_BLOCK_MAX_PAGES * msb->page_size);
+-	blk_queue_logical_block_size(msb->queue, msb->page_size);
+-
+ 	sprintf(msb->disk->disk_name, "msblk%d", msb->disk_id);
+ 	msb->disk->fops = &msb_bdops;
+ 	msb->disk->private_data = msb;
 -- 
 2.39.2
 
