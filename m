@@ -4,85 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6098C48BEB
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 16:54:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFF99C48BC4
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 17:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ElF4isrWb2M3zqR+4XuRVvQuK4miesYoqxrAOW4CO2A=; b=TJA9NMtUZcfE6w
-	T4rsZW9O/Z/spi/5vjezjXtKXNdgyWvL2i5f0vwLPprhKLe011QRVzQDJ/2sZKgK8LHPqu6xA5HTB
-	fyMi27tDmAIECXD34+e5l9viKXYm3KZNweQQWnQwpnDy9FgRA3W6BkIlS7yHWULTrnzXAdwX5xe/4
-	7Wr35PvfcasVCRyvXr+rLmAzzL23E4N0bhOCTNF6dv+LCwJ4AGD/G6aJjTLl4pWbLUO06Ic8l4DuG
-	uSx7y7f2gdo7nMzgeuF9voDuvhwU6T9BJYg54/e6TBAjbnmtKG0z/mRk4tOSPymfM5sSIAA7P3JB2
-	ZDMNsE56PsMVzwE9rh3A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JGmGSve3A3sm2Y7heBr5Jb6RGwZCtrV4BgkvWCfNHhs=; b=aH2D8HtVo2dsG3fa2YMTOSJrl8
+	TH/iCkhg6GO0aouTyqud754d/Px0n1vuFtQOuGIsBjR8SanKBPq4RtV+IyyDL2ZK0ihH4Lw0H4KLl
+	h0IkGEyhzSIlV6/Mctcbx9viLq1xoD5yRG584Q5HpblR2/SGR2kY35JFMXoMNFs5nAcD0jEZwxjxD
+	PHMNtu/UzvEVln5HkhjA8YeYL0fvVqP5ZXHjtnSWGGSbjqGP0oUjUworJKkS6EnaZexhPt9JPYOg9
+	+w3YfaOHsmeUOV4Of1H3kEInn5qeT+gSsAGbi7dcJNMrpx5gTTp2Yhpulr1xBZsdJndvH1KCq4IsE
+	qopWk4ZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raf0D-0000000H4IR-2CMa;
-	Thu, 15 Feb 2024 16:54:25 +0000
-Received: from mail-yw1-x1129.google.com ([2607:f8b0:4864:20::1129])
+	id 1rafIF-0000000H84s-26GS;
+	Thu, 15 Feb 2024 17:13:03 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raf08-0000000H4Dr-3ZPM
-	for linux-mtd@lists.infradead.org;
-	Thu, 15 Feb 2024 16:54:23 +0000
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-607e54b6cf5so3493567b3.0
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2024 08:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708016059; x=1708620859; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vEQiCmvhKfS0/A0znECfTzFjRTV/dZsqotvM6rEKanU=;
-        b=Exe4lzIIrRJz+iT6qn8Eav2n4uCIrh5SSRmHOU27joo2HvELYACceh9JKum7sRTiQ+
-         C0YFnvvCV9qK3JvyNYFwjyfaTB0LIJIeIY5KRZBylhLwKWZIn9vB1fHYnSXJtcuDVu5h
-         69jQ/OJU9V0HsY12dwwLctRBjPkMAGENxPhUIiJtRkuYH5KHmRnmE6B4AATqmIlClxcI
-         ebKUTbngixQVmrqMvRKa6W8DYEFaY5kKNw+SiXHJeBy+puEUFtju+Udf1P3uPU98dPb2
-         aZc8HpcooSJFvribF0v3opiFqLrGO0nZ9h3Nw1IxSUBBHyCLHblefQ0KDbSgBwI5acq4
-         rFEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708016059; x=1708620859;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vEQiCmvhKfS0/A0znECfTzFjRTV/dZsqotvM6rEKanU=;
-        b=B3QDc9j04LlZIysmUqN3j5p9A4uMgBNDq3FnUIRLaXj4DUi4AYfhdEZvsWTWOjql9f
-         qYcSOemm8zX0kdkoShof6mdL/alc5DTFEYrZphNQHIco/B+Wt7pCEOuzN5s+07obpFat
-         +2zoYpVx3CpGmzbFipmKn40PrQoDG/wWflNbMDP1t8T8eqQJIxmJlf4qTfiOXPoYbXDH
-         x34rusJ1HPdJ3g+Vq+4Ie0CfzDwCaWLW5pg4Ew2lAQt2p2uhUiNgGVyBPkOG+3xGLcYz
-         u/Bzk0yz1SBDebPFmHvzN/tZHFjMxfls49z+Vr6WyjrMWgr0zEw87aDoU4GYwMKUGqNR
-         JDgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXF2P+s8+VjgfkWMPgp4zPdA7q/TYqQlc2UC2PhJwa2vvotU79Vqki9sCY3kiB5tbERei8D4JZwer5BxALq+XGgS03kB9ytFdXpeHtQqA==
-X-Gm-Message-State: AOJu0Yz7o4kUvlVMd7zA/fa/XD2S6ZGZalxgPz3BvtGz+4TEnbtId6aQ
-	X3Ac1t8b6Mqry1QOld+ZqkK19s7z4XZVomw33EowwAnMUSsjFNekBeMi7zXSjLyFgGw8xSIZNGu
-	R4DXYO7FAIGhj9myA5sWMBRHGdMO7sC3UmzNh3Q==
-X-Google-Smtp-Source: AGHT+IF28WiAUAxb9BXDQ9j656YBYmKEubg2qRwCcoIKEiRoMN+j/rX1+ioqB8yOfGTSrxa8mYZDRwHKLR7BN/dl2kA=
-X-Received: by 2002:a81:b717:0:b0:607:c65a:ba02 with SMTP id
- v23-20020a81b717000000b00607c65aba02mr1752372ywh.17.1708016059449; Thu, 15
- Feb 2024 08:54:19 -0800 (PST)
+	id 1rafIB-0000000H840-0c2b;
+	Thu, 15 Feb 2024 17:13:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 3694BCE27B2;
+	Thu, 15 Feb 2024 17:12:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA9E1C433F1;
+	Thu, 15 Feb 2024 17:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708017176;
+	bh=pk5Mt+RImQXUgBvMKAZepH41L3RMj9FKexYkzEU54nI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TRi71hB4J37HDQh3t1ZfohcSCokTMBTIWFlXk8unUCZGAcnbgcFAYuiLZDhQSHFXj
+	 hxT+sMSSa2T7IKUkyx7sMVbr5h3zjN/ggkblR69V4kg7xZzVEX0XWnHoIpww+EM64f
+	 A/IKw8J0A4lekCriXehJQD7MMFAJLD5unYXKPBQw7v1i5jMUSFLktChLwDH/olDmr6
+	 CSUZZqPuqBvJ7A4Wk6rpL/Vmhtlp2D1ikj2A+r1ja3TPU7uhZn0ER6svRLkWUeWRSX
+	 tp1lzO4k5PRCYHeyCQPLN1SV82Rn1Ywh92tYhNObqXrzSMmHq0Ei9DTSfRNleeWcss
+	 5jDYkHp02pV+Q==
+Date: Thu, 15 Feb 2024 17:12:50 +0000
+From: Conor Dooley <conor@kernel.org>
+To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc: Manojkiran Eda <manojkiran.eda@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"jk@codeconstruct.com.au" <jk@codeconstruct.com.au>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Ryan Chen <ryan_chen@aspeedtech.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+	"zev@bewilderbeest.net" <zev@bewilderbeest.net>
+Subject: Re: =?utf-8?B?5Zue6KaG?= =?utf-8?Q?=3A?= [PATCH] Add eSPI device
+ driver (flash channel)
+Message-ID: <20240215-probable-gimmick-83d5dcbc4729@spud>
+References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+ <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
+ <20240214-yoyo-platinum-dcd0e7e16a22@spud>
+ <TYZPR06MB6640F82C539F0B17BCDCC55E914D2@TYZPR06MB6640.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
-References: <20240215070300.2200308-1-hch@lst.de> <20240215070300.2200308-18-hch@lst.de>
- <CAPDyKFqPnC9jwWnoVz+UVJJ_SGYnB4CrB8jmJOSxCnT7AYQrKg@mail.gmail.com> <20240215164942.GA19722@lst.de>
-In-Reply-To: <20240215164942.GA19722@lst.de>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 15 Feb 2024 17:53:43 +0100
-Message-ID: <CAPDyKFpSNL28sWqNMY9Y2+tP9VMd_Wabnw1hVjQ-g0RfKCUVgQ@mail.gmail.com>
-Subject: Re: [PATCH 17/17] mmc: pass queue_limits to blk_mq_alloc_disk
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Justin Sanders <justin@coraid.com>, Denis Efremov <efremov@linux.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Geoff Levand <geoff@infradead.org>, 
-	Ilya Dryomov <idryomov@gmail.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, 
-	Jack Wang <jinpu.wang@ionos.com>, Ming Lei <ming.lei@redhat.com>, 
-	Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Vineeth Vijayan <vneethv@linux.ibm.com>, linux-block@vger.kernel.org, nbd@other.debian.org, 
-	ceph-devel@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org
+In-Reply-To: <TYZPR06MB6640F82C539F0B17BCDCC55E914D2@TYZPR06MB6640.apcprd06.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240215_085421_134439_B2DCC850 
-X-CRM114-Status: GOOD (  16.58  )
+X-CRM114-CacheID: sfid-20240215_091259_561112_319282AD 
+X-CRM114-Status: GOOD (  21.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,38 +85,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3494119693595254560=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 15 Feb 2024 at 17:49, Christoph Hellwig <hch@lst.de> wrote:
->
-> On Thu, Feb 15, 2024 at 05:40:37PM +0100, Ulf Hansson wrote:
-> > Looks like $subject patch, patch11 and patch12  have already been
-> > queued up as they are cooking linux-next. Normally I prefer to funnel
-> > these via my mmc tree, to avoid potential conflicts (mostly for mmc,
-> > where more active developments are ongoing).
->
-> None of this is in my fresh linux-next pull, which would be rather
-> surprising anyway as I've just sent them out and Jens isn't that
-> quick to merge unreviewed series :)
 
-Weird. :-)
+--===============3494119693595254560==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jYXpxHj7B0OPYCKZ"
+Content-Disposition: inline
 
->
-> That being said it depends on prep patches in the block tree and thus
-> I'd prefer merging this entire series through that tree.
 
-Okay, in that case, np! Next time, it would be nice to get that
-information upfront in a cover-letter or similar.
+--jYXpxHj7B0OPYCKZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If not too late, feel free to add my acks on the three patches for mmc
-and memstick.
+On Thu, Feb 15, 2024 at 01:56:00AM +0000, ChiaWei Wang wrote:
+> >=20
+> > On Wed, Feb 14, 2024 at 11:34:31AM +0000, ChiaWei Wang wrote:
+> > > We appreciate that you are willing to help on the open source contrib=
+ution.
+> > > However, please co-work with Aspeed before submitting drivers of Aspe=
+ed
+> > HW.
+> > > Otherwise, a misleading driver on the community are going to bring to=
+ns of
+> > customer issues to Aspeed.
+> >=20
+> > It may not apply in this particular case as Aspeed did write the origin=
+al driver
+> > and it is polite to work with previous authors when respinning a patchs=
+et, but in
+> > general there is no need to work with a hardware vendor before writing =
+drivers
+> > for their hardware.
+> >=20
+> > Blocking a driver because that company might receive more support reque=
+sts
+> > is not the kernel's problem.
+>=20
+> I agree with that and Aspeed will not refuse to support.
+>=20
+> However, in this case, the authors, IBM, and Aspeed already have discussi=
+on (at least 4 times) before and foresee "issues" on practical eSPI SAFS us=
+e.
+> If there is already a known issue of the driver, why ignoring the previou=
+s discussion and push it?
+> A compromise is to ask for driver renaming to espi-mafs to avoid confusio=
+n.
+> Otherwise we need to explain, again, why the driver does not fulfill the =
+SAFS expectation.
 
-Kind regards
-Uffe
+To be clear, in case you misunderstood, I was making a general point and
+not about this particular patchset.
+
+--jYXpxHj7B0OPYCKZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5GEgAKCRB4tDGHoIJi
+0q6qAQCwK7ClX6/ipMYZ/2VmkvC0xZdaAiUrt57wlJ0DcnoxoAD+OADevy96or/y
+yayrHHRwjY2W37V1/RxOp8h0jhl17QU=
+=71+s
+-----END PGP SIGNATURE-----
+
+--jYXpxHj7B0OPYCKZ--
+
+
+--===============3494119693595254560==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3494119693595254560==--
+
