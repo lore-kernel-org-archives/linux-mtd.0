@@ -4,141 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E32C4829E
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 14:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7854C48BC4
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 14:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
-	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lIeTfAMHylWwFWs1vY9LTzAQQgAIQFpN6yVSDmWr5/0=; b=46E3FbZ/JzOmLcbiJj4AqGFyWc
-	C1USmQtNTBGIq6lJN07ZO06Jk5DkUO2J4Wm5VVsfmb6jaUeqxOdZc3VrT7BfMqg8d9NcVPW46UX6L
-	3R76CUnBdQZtdKP/0KN4XYDQBdRvxbxHNZGjT2jMYgBzw9G/mxAr216UtRoUqTDDTGZ5Vyfq6yAA/
-	eArJVwNN2EyjBIwoVyr78QAFvqCTpK6Grzm6DfZybdpyZHVz772YfZms0o0ikIBB6pyUqixO9GB9F
-	ZrCOo8txqFNOEbz6MxRWfm8RyuG++dDLneBaDO/v4YcBw7CVPgvg8f4JoU8c6N9Ejh7U+6JJJdAVJ
-	0+hdW1xA==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=78Yw4Z4owT2q1wMmVZZkTNMFpOdcGka/IJcB7D7is4Y=; b=0/nLxGoAWb8olE4LOzjaV7vpFN
+	yYAyOYM2YSI6aXdHVfdVL9VSzuBnRqH5yW5VcDyUExeruI3PSMVLsPMNhtWU3kzGIVhV84d993W7Y
+	sNYjSbgui42zNud5bCd52/SnFGSVYKTEW/ISWh30ETm7BPFGlrfk/XJutDLevVlLaZp0ZPTwIxKF5
+	mUamlN2Ni3q9Q+TMlNkRrf4Kc0hbEy9R3RK3/tCBMDYy5ppMLOGySYMBz0QCJIcyl/sEHicOu/Jsg
+	n5ag6D31fk0YEyzsS+IdnLR1GB1JPgSd9zLkKtk6g50ArFtJySk/J2Hds0mdCe8yDO4m4SQi4K+J0
+	fIdCl94g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1racLs-0000000GUsq-3ofR;
-	Thu, 15 Feb 2024 14:04:36 +0000
-Received: from mail-dbaeur03on20700.outbound.protection.outlook.com ([2a01:111:f403:260d::700] helo=EUR03-DBA-obe.outbound.protection.outlook.com)
+	id 1racVb-0000000GWMV-28Wv;
+	Thu, 15 Feb 2024 14:14:39 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1racLp-0000000GUsG-0TRh;
-	Thu, 15 Feb 2024 14:04:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jYq/mS/rJPde3y0YfWE48Zqonx2rJLvjuM4yvNUl0DNtXceOZw1yEepnKlO5Cw2N6A9hdhPs1FZN4UhdLN0ehpupTIhR5lHoTICi51e5ua07vRvONMge4hlXiTpW9m3zp9COLih98OD7ss+Z+TnFkWIfFWJF5gsvU/y+mEiE999aAKsw4cA0qGalIt+D4HO4hlhMbhW8HlDz6JeR/uXOBX7E+qTgo79KPM8JPPXWYhTh+QikvpwSIIzWI0mjdPxdzmlQqr9K16gqnp2Gt54VMNWQTa7R+ulFzSAwQQTbdIRHrUQBxFc05qqAivF+Y3t2a4YjILsjnC4bTAoXfgrk6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5T3YgzsoARN3XsgdN2LsCFISddbkr0VlhUYcOz+4L5Y=;
- b=RzuWKvhbAwB6CzKE3QQRX18o6bNug4AbkcYEUekbwRXxkMTKDIW1P1lbnXiE53a2YVfWi+hifKjxN7HGvyn5uIXmL5g5I/jYE48tJiiB/d8rcUkSQAmSLenA+tb3OxF9t5W8QP8cgYQk0QWNi3lHXrexGB9sCXMm35HSd9SPQ1lYxxWnEL0x6+UHWhUkbqohlDFvA3WCdDtPjBiTpyDHHguIWbIa5/y4Q2UqlfSangn4nQqgc0PDghZoiIiTujSbief9opNXEXuqeznXU40KThkAcHIEd9d6Vg8zUOAyfVAZs9SqR7/HFVftVSuC2C8pGOOlyRQrSPYHszu5GpD0Jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5T3YgzsoARN3XsgdN2LsCFISddbkr0VlhUYcOz+4L5Y=;
- b=V2I2tjJ+ALOj4PvuRAyTmsvUU7P6u1dCo0vhKX4p11PEVRyB+UCkJdRgqPZEUj8rR66H3+HvlGu3X/AmVC8ccrl4nshiglg7mehYTg9SdaGhKrg+F3GqR5GdVAkSBTuwO5gYpIX6THvR+okJKjudA2nfRG4wnISvfc2rVHuMyZ8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
- by DU2PR04MB8581.eurprd04.prod.outlook.com (2603:10a6:10:2d8::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.27; Thu, 15 Feb
- 2024 14:04:23 +0000
-Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
- ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
- ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7249.039; Thu, 15 Feb 2024
- 14:04:23 +0000
-Message-ID: <48f04999-687e-41d5-a0c0-0cfed481dc50@solid-run.com>
-Date: Thu, 15 Feb 2024 15:04:17 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/7] dt-bindings: rtc: abx80x: convert to yaml
-Content-Language: en-US
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Yazan Shhady <yazan.shhady@solid-run.com>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-iio@vger.kernel.org, Rob Herring <robh@kernel.org>,
- linux-mtd@lists.infradead.org
-References: <20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com>
- <20240212-add-am64-som-v6-2-b59edb2bc8c3@solid-run.com>
- <2024021220055301ade3d4@mail.local>
-From: Josua Mayer <josua@solid-run.com>
-In-Reply-To: <2024021220055301ade3d4@mail.local>
-X-ClientProxiedBy: TL0P290CA0006.ISRP290.PROD.OUTLOOK.COM (2603:1096:950:5::9)
- To AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+	id 1racVY-0000000GWM7-1NZ8
+	for linux-mtd@lists.infradead.org;
+	Thu, 15 Feb 2024 14:14:37 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A569761DCD;
+	Thu, 15 Feb 2024 14:14:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1856FC43399;
+	Thu, 15 Feb 2024 14:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708006475;
+	bh=RtD5fIwW2Tv98e2ZwItrznuWej/tQ+n+fDjWn0UkU18=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=idNGx56Z5MDGH1zTVRUU5AS28xfueBdbCV1C/deCWpkJJh6WN0lbvNfZTwGBpT2ih
+	 m2QBP/WBTV+9ooTCV+3tUsOix0622rp1usFV97Bd0FmZsZyFARUCYG9FrH4mb/46wM
+	 ao2XsXsdzY5cW8n1Z6y87mu6DLtn4DDLpPkrXg0bfAs32llBCdaQD1x93BosBzuWGm
+	 Vv5w3Duz4ylJepPvEGPgwTe69fgpd5sAeK101U9vg5p0+jaT4kkkaIB/ReOG5drZ/n
+	 574CJarVFgDx7NsiiJ2yRmYIhjDdYYqsmEl7Pgcs65ecGf7pPpdLZ6xWeBFlaD7Re8
+	 ZZIkTkge6/ORw==
+Date: Thu, 15 Feb 2024 14:14:29 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	quic_srichara@quicinc.com, quic_varada@quicinc.com
+Subject: Re: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
+Message-ID: <21dde665-54b4-48e4-b963-1008ac890df3@sirena.org.uk>
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-4-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|DU2PR04MB8581:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9db4cf98-463e-4b80-0e69-08dc2e2f0310
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ylkYSAu9OwdPybPmPuX/VM+vZec2Hgcca307eP1z0OWFYUZNvPzbgiEicEEBw79hcVlGXnwdaYOVBv0QOxAB5x/gx9e4dJBAFq8kKJfB6LRoMNiOg8sM5RtPak7xB7i8lxk0p1fRtJlGnDEIcB6TRFXDqb6mVXL3/fGwZ79+va+biiGT/PZHh0WFSZ1SpMVhwSfULzp6Cks7raN1w7FEOt7RhLO1cD+0P5syCO4WsaZCPH8gFoowIQId2yVIg1NggMLWOIUckqSTVuO5KupGNAqGKvVrcDMM7I/GmkHuIsl7R1qzuDh5utLyKH+O4JswKZxIQtXpv+kGyszoiE0691gg13UhUqlb/ga/VLCC8uLDgqOIxWhfPgRRPLAHuTOe+U3mWHk588PcUaE+mMjcmTo9yalbfd2VEbkLSf6LVyUfgG4awkYj2AJGFnnAHh7xdPGIGXnTCBSlvecuMaSBUrnPTghRymMRolKaDDo/kRYLl5FdcCO8DELcNpqJ3ZFWg+6ctNknmzbBQ3L2s1zVcPbtGd/ftugGFEzmgRRkHbI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39830400003)(346002)(366004)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(31686004)(6666004)(6486002)(6512007)(478600001)(41300700001)(966005)(7416002)(2906002)(8676002)(8936002)(5660300002)(4326008)(66946007)(6506007)(66556008)(316002)(54906003)(66476007)(6916009)(83380400001)(2616005)(31696002)(86362001)(26005)(38100700002)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L21kNHRQODRSWVpPeDdFVkNKMlhzUkR3QXFLOXZKQkVNL0U3d2t5eVBkS2hK?=
- =?utf-8?B?ZzY4bXRra002aE5yNG5PTkdJaldWNUNDSndlMUJsYmhKRXlwWi93cS9DdmZB?=
- =?utf-8?B?aGpRdktHVEk3SDRtbWZKMGpXZHZPWlU2ZXhIL0RsR2tLTTBJWnVWNm5aQ2Rl?=
- =?utf-8?B?ZHlrQm1vRW5tMFZnaG85UGJLRjZLbUdQUVFxL3NmNXRIak4xVkhLVGhtWm5G?=
- =?utf-8?B?VjYzdkduOTZERnU4cTJrWnBpNVViNE51ejMxeWxwWUZ1MHhxZkRUK21lK2Y5?=
- =?utf-8?B?REJoWUE1Y3BVM0JxSW1zZnVJd0xCNy9yOEU5d25yYkxNK2J2M2duWjNTeEVs?=
- =?utf-8?B?Uit6a1RsS1hmdFFhcVdjTENnUDJabW1mTGdSSkRISDRJUHkyM0J3OFo2Z20w?=
- =?utf-8?B?UVVvbUl0VktSeWNLSmF0d2N1dlAyYzlBU2J2SHY5a2ZpRHZNWnFBN1B4dURy?=
- =?utf-8?B?RlZwR0NuWG94V3hYZC9DZk9ETjZxcldkVDhiU2xMMTAyMXY1WFgwQWFXY29M?=
- =?utf-8?B?Rng2RTdFKzBKbGVxU2JvbkVDc3dzZEZWMkJDQnc5ZWFlOGRHVG8vc2hkYzJz?=
- =?utf-8?B?MS9FV3BqZ3Q2endyaWZvMitNbDFzSTJaSUZ2NkpzYXArZ21GSDF2Q3RzTzNh?=
- =?utf-8?B?alJVcWF2bDdETHUzb3lTUEFjWlhzSXlkdnc4RGwzOG55MGFFdms4QVVLdWRQ?=
- =?utf-8?B?R3VXRW5INk5vNFhqYStoMk1Ua3ZNUldMeTlNZXZOaGxFS0hFNTZVdXVuWkxT?=
- =?utf-8?B?TENJY3E5QnkyMTRDcDByUGRqME5sQUxkaXpHazlxVGRtd1B5N1RqMHI4cDNs?=
- =?utf-8?B?TmZCZDNxYjV0VFVmYWpUNk9kSzM0SkJoOTJhNnU0bzlTU2ZGeFRNWHk4SHdJ?=
- =?utf-8?B?ZHhuUmlWUExzVDFpM1Z5RkJhN25RTWloQzk0dWw2eUtwNUUyV0RKSzBDbUFU?=
- =?utf-8?B?UlM5OUlLY3ZwWXFnNGU2M3hBQXkrckV2bU9yeG8vRm9yNTV5ZndZMU5YQnR0?=
- =?utf-8?B?WWgwVFhtSWhGOW9lSEpNSFcvTWFORDNCU0RIK1QwTTlKQjZxMGs5cURhdDMy?=
- =?utf-8?B?enBLYjNZM2lRbkl0ekZDaDB5dDFDUFREQzRkVWFZM3JFSzZON1RGdW1iNUhx?=
- =?utf-8?B?R0VGeURYVlhCSkNENXFEdEk1ekp2anFlNVV0OWthL0lUYlpUeTR3MGZ0MGo3?=
- =?utf-8?B?ZGVIVkd5T3N3VjhsTTdFTlZGVG54K2JiNHUrMjZaekppYzltQ1pGT24wMDd2?=
- =?utf-8?B?SzY0bTFuYmYwN0tGZzB6RVY1RXc3Q3kvZkdYWTM2c1NEaW9MZWIydUVwMEV4?=
- =?utf-8?B?a1gzL21IVUxrRUlhV3hrbkpCOGE4TkVHanl2SjBxQjdCeXhTYXlla2hTUkNq?=
- =?utf-8?B?WHg2czV4M2tLUVJDOHFMZmdaUWR5QStoRkFGMGVMTU5tRmU4T24zMXVWRjdN?=
- =?utf-8?B?ZjdiMEQ5dWJlMlJXR3JJTFVGWThUaFBndy9TYXVTUGM4RFEwZGVNekdlUUsv?=
- =?utf-8?B?QWJjZlJLK0x6UExMOWxiTkZZMjBHdkZ6cWlxQTJFa1MzMlNTYTkraVZ3R1Bt?=
- =?utf-8?B?eFNoUWZhR2ZrY1NXYmF2R0hKdVVFUWlPNDBWbzk1dlNmZHFpV0VzL1dac2pP?=
- =?utf-8?B?MGlodWJzVUZyWkNESTVtZkFKVllvd21GQXRKaUVnTWNaWkJLTUlFYlo1UVFW?=
- =?utf-8?B?Tk42RWxEUldlMktqQ1RyR2gzOHFaWG1DTEU0NlVaSnpaZ2hndGs4MzZEVEtV?=
- =?utf-8?B?OWt2K2NlN0xad1BLMUY0Q3hzSXRZcXdmM1BUdEdOM1V6d1R4VGFISm11QUFw?=
- =?utf-8?B?eXFpenFHbXhPQXNKYjJnNVJKendud3F1TmFNaDY3eFl0UExoQmdjRnE3b0l6?=
- =?utf-8?B?R25MejdlK1pwUk5XemM5YXFjLzA2Smo4TWdGR2NhRlBnNFNzNHpTSW5ZS2tw?=
- =?utf-8?B?Zm41aTNsUWZhazNJcHdpclozQk9idVpYYnZTS1cwbnROU01uaDdKd0RmWFdp?=
- =?utf-8?B?M2dOTE5WWHhZUkJhVUpCdk9sRlJMVTJCYWsrb0wvWWo3eTAyUGNNRmt4eUN3?=
- =?utf-8?B?aTdaQ09LemN5aFg3VmcycXl6czhwTVptUm1HV095M3pNR3BSWmxjSWw3b016?=
- =?utf-8?Q?iARARR9NsGIY1mES89fOtqhGt?=
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9db4cf98-463e-4b80-0e69-08dc2e2f0310
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 14:04:23.2176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sw2L7YY15QybVz7DyDn6O9F7SQ0vhukl984YRP8pwIF0lOJdSEteSpGPCM31tgCjSYiRY72cH8miQ2eVm11bvg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8581
+In-Reply-To: <20240215134856.1313239-4-quic_mdalam@quicinc.com>
+X-Cookie: Pass with care.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240215_060433_200338_3C620281 
-X-CRM114-Status: GOOD (  18.59  )
+X-CRM114-CacheID: sfid-20240215_061436_471755_7F4E6146 
+X-CRM114-Status: GOOD (  26.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,160 +73,197 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============8050639276462288178=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 12.02.24 um 21:06 schrieb Alexandre Belloni:
-> On 12/02/2024 18:38:09+0100, Josua Mayer wrote:
->> Convert the abracon abx80x rtc text bindings to dt-schema format.
->>
->> In addition to the text description reference generic interrupts
->> properties and add an example.
->>
->> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> Did something change since v6? If not, why didn't you collect the
-> reviewed-by tag?
-I forgot about seeing the tag by Krzysztof ... which is why I didn't 
-collect it.
-Nothing changed since v6, so this still valid:
 
-Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
+--===============8050639276462288178==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XhokIFG6tLIbxTBQ"
+Content-Disposition: inline
 
->
->> ---
->>   .../devicetree/bindings/rtc/abracon,abx80x.txt     | 31 ---------
->>   .../devicetree/bindings/rtc/abracon,abx80x.yaml    | 79 ++++++++++++++++++++++
->>   2 files changed, 79 insertions(+), 31 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/rtc/abracon,abx80x.txt b/Documentation/devicetree/bindings/rtc/abracon,abx80x.txt
->> deleted file mode 100644
->> index 2405e35a1bc0..000000000000
->> --- a/Documentation/devicetree/bindings/rtc/abracon,abx80x.txt
->> +++ /dev/null
->> @@ -1,31 +0,0 @@
->> -Abracon ABX80X I2C ultra low power RTC/Alarm chip
->> -
->> -The Abracon ABX80X family consist of the ab0801, ab0803, ab0804, ab0805, ab1801,
->> -ab1803, ab1804 and ab1805. The ab0805 is the superset of ab080x and the ab1805
->> -is the superset of ab180x.
->> -
->> -Required properties:
->> -
->> - - "compatible": should one of:
->> -        "abracon,abx80x"
->> -        "abracon,ab0801"
->> -        "abracon,ab0803"
->> -        "abracon,ab0804"
->> -        "abracon,ab0805"
->> -        "abracon,ab1801"
->> -        "abracon,ab1803"
->> -        "abracon,ab1804"
->> -        "abracon,ab1805"
->> -        "microcrystal,rv1805"
->> -	Using "abracon,abx80x" will enable chip autodetection.
->> - - "reg": I2C bus address of the device
->> -
->> -Optional properties:
->> -
->> -The abx804 and abx805 have a trickle charger that is able to charge the
->> -connected battery or supercap. Both the following properties have to be defined
->> -and valid to enable charging:
->> -
->> - - "abracon,tc-diode": should be "standard" (0.6V) or "schottky" (0.3V)
->> - - "abracon,tc-resistor": should be <0>, <3>, <6> or <11>. 0 disables the output
->> -                          resistor, the other values are in kOhm.
->> diff --git a/Documentation/devicetree/bindings/rtc/abracon,abx80x.yaml b/Documentation/devicetree/bindings/rtc/abracon,abx80x.yaml
->> new file mode 100644
->> index 000000000000..58dbbca27deb
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/rtc/abracon,abx80x.yaml
->> @@ -0,0 +1,79 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/rtc/abracon,abx80x.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Abracon ABX80X I2C ultra low power RTC/Alarm chip
->> +
->> +maintainers:
->> +  - linux-rtc@vger.kernel.org
->> +
->> +allOf:
->> +  - $ref: rtc.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    description:
->> +      The wildcard 'abracon,abx80x' may be used to support a mix
->> +      of different abracon rtc`s. In this case the driver
->> +      must perform auto-detection from ID register.
->> +    enum:
->> +      - abracon,abx80x
->> +      - abracon,ab0801
->> +      - abracon,ab0803
->> +      - abracon,ab0804
->> +      - abracon,ab0805
->> +      - abracon,ab1801
->> +      - abracon,ab1803
->> +      - abracon,ab1804
->> +      - abracon,ab1805
->> +      - microcrystal,rv1805
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  abracon,tc-diode:
->> +    description:
->> +      Trickle-charge diode type.
->> +      Required to enable charging backup battery.
->> +
->> +      Supported are 'standard' diodes with a 0.6V drop
->> +      and 'schottky' diodes with a 0.3V drop.
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    enum:
->> +      - standard
->> +      - schottky
->> +
->> +  abracon,tc-resistor:
->> +    description:
->> +      Trickle-charge resistor value in kOhm.
->> +      Required to enable charging backup battery.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    enum: [0, 3, 6, 11]
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +
->> +    i2c {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        rtc@69 {
->> +            compatible = "abracon,abx80x";
->> +            reg = <0x69>;
->> +            abracon,tc-diode = "schottky";
->> +            abracon,tc-resistor = <3>;
->> +            interrupts = <44 IRQ_TYPE_EDGE_FALLING>;
->> +        };
->> +    };
->>
->> -- 
->> 2.35.3
->>
+
+--XhokIFG6tLIbxTBQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 15, 2024 at 07:18:54PM +0530, Md Sadre Alam wrote:
+
+> +config SPI_QPIC_SNAND
+> +	tristate "QPIC SNAND controller"
+> +	default y
+
+Why is this driver so special it should be enabled by default?
+
+> +	depends on ARCH_QCOM
+
+Please add an || COMPILE_TEST so this gets some build coverage.
+
+> +	help
+> +	  QPIC_SNAND (QPIC SPI NAND) driver for Qualcomm QPIC controller.
+> +	  QPIC controller supports both parallel nand and serial nand.
+> +	  This config will enable serial nand driver for QPIC controller.
+> +
+>  config SPI_QUP
+>  	tristate "Qualcomm SPI controller with QUP interface"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+> index 4ff8d725ba5e..1ac3bac35007 100644
+> --- a/drivers/spi/Makefile
+> +++ b/drivers/spi/Makefile
+> @@ -153,6 +153,7 @@ obj-$(CONFIG_SPI_XTENSA_XTFPGA)		+= spi-xtensa-xtfpga.o
+>  obj-$(CONFIG_SPI_ZYNQ_QSPI)		+= spi-zynq-qspi.o
+>  obj-$(CONFIG_SPI_ZYNQMP_GQSPI)		+= spi-zynqmp-gqspi.o
+>  obj-$(CONFIG_SPI_AMD)			+= spi-amd.o
+> +obj-$(CONFIG_SPI_QPIC_SNAND)            += spi-qpic-snand.o
+
+Please keep this sorted.
+
+> --- /dev/null
+> +++ b/drivers/spi/spi-qpic-snand.c
+> @@ -0,0 +1,1025 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+
+Please make the entire comment a C++ one so things look more
+intentional.
+
+> +#define snandc_set_read_loc_first(snandc, reg, cw_offset, read_size, is_last_read_loc)	\
+> +snandc_set_reg(snandc, reg,			\
+> +	      ((cw_offset) << READ_LOCATION_OFFSET) |		\
+> +	      ((read_size) << READ_LOCATION_SIZE) |			\
+> +	      ((is_last_read_loc) << READ_LOCATION_LAST))
+> +
+> +#define snandc_set_read_loc_last(snandc, reg, cw_offset, read_size, is_last_read_loc)	\
+> +snandc_set_reg(snandc, reg,			\
+> +	      ((cw_offset) << READ_LOCATION_OFFSET) |		\
+> +	      ((read_size) << READ_LOCATION_SIZE) |			\
+> +	      ((is_last_read_loc) << READ_LOCATION_LAST))
+
+For type safety and legibility please write these as functions, mark
+them as static inline if needed.
+
+> +void snandc_set_reg(struct qcom_nand_controller *snandc, int offset, u32 val)
+> +{
+> +	struct nandc_regs *regs = snandc->regs;
+> +	__le32 *reg;
+> +
+> +	reg = offset_to_nandc_reg(regs, offset);
+> +
+> +	if (reg)
+> +		*reg = cpu_to_le32(val);
+> +}
+
+This silently ignores writes to invalid registers, that doesn't seem
+great.
+
+> +	return snandc->ecc_stats.failed ? -EBADMSG : snandc->ecc_stats.bitflips;
+
+For legibility please just write normal conditional statements.
+
+> +static int qpic_snand_program_execute(struct qcom_nand_controller *snandc,
+> +				      const struct spi_mem_op *op)
+> +{
+
+> +       int num_cw = 4;
+
+> +	data_buf = (u8 *)snandc->wbuf;
+
+Why the cast?  If it's needed that smells like it's masking a bug, it
+looks like it's casting from a u8 * to a u8 *.
+
+> +	for (i = 0; i < num_cw; i++) {
+> +		int data_size;
+
+All these functions appear to hard code "num_cw" to 4.  What is "num_cw"
+and why are we doing this per function?
+
+> +static int qpic_snand_program_execute(struct qcom_nand_controller *snandc,
+> +                                     const struct spi_mem_op *op)
+
+> +	if (op->cmd.opcode == SPINAND_READID) {
+> +		snandc->buf_count = 4;
+> +		read_reg_dma(snandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
+> +
+> +		ret = submit_descs(snandc);
+> +		if (ret)
+> +			dev_err(snandc->dev, "failure in submitting descriptor for readid\n");
+> +
+> +		nandc_read_buffer_sync(snandc, true);
+> +		memcpy(op->data.buf.in, snandc->reg_read_buf, snandc->buf_count);
+
+These memcpy()s don't seem great, why aren't we just reading directly
+into the output buffer?
+
+> +	if (op->cmd.opcode == SPINAND_GET_FEATURE) {
+
+This function looks like it should be a switch statement.
+
+> +static bool qpic_snand_is_page_op(const struct spi_mem_op *op)
+> +{
+
+> +	if (op->data.dir == SPI_MEM_DATA_IN) {
+> +		if (op->addr.buswidth == 4 && op->data.buswidth == 4)
+> +			return true;
+> +
+> +		if (op->addr.nbytes == 2 && op->addr.buswidth == 1)
+> +			return true;
+> +
+> +	} else if (op->data.dir == SPI_MEM_DATA_OUT) {
+> +		if (op->data.buswidth == 4)
+> +			return true;
+> +		if (op->addr.nbytes == 2 && op->addr.buswidth == 1)
+> +			return true;
+> +	}
+
+Again looks like a switch statement.
+
+> +	ctlr = devm_spi_alloc_master(dev, sizeof(*snandc));
+> +	if (!ctlr)
+> +		return -ENOMEM;
+
+Please use _alloc_controller.
+
+> +static int qcom_snand_remove(struct platform_device *pdev)
+> +{
+> +	struct spi_controller *ctlr = platform_get_drvdata(pdev);
+> +
+> +	spi_unregister_controller(ctlr);
+> +
+> +	return 0;
+> +}
+
+We don't disable any of the clocks in the remove path.
+
+--XhokIFG6tLIbxTBQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXOHEQACgkQJNaLcl1U
+h9DPNQf+J50wqlt9PTavj5k8BZ9Z6zwjzegCMvrnHopmC1YAf4xbXkQCAQxV7emn
+twIkNpsgq47QVVagkvGaKItUPEEBYLfAD0xSueD9f45evFnwqXWn0vKkaVIN4rwu
+1G/1V7E6yS71iuctmkMd1QDTey4Q2zG869/GYDKkBC01JFJ5yWzMi8kpCetcJYs1
+D1a6PVUMWv6wWaCGIcXPjPXguhKmy2S3Z6WSqZ/pr8hxDfNHgy58ie9lvh71axNc
+AM+nlRRggHB6he9/9EtGMxe1nNAmFa5i6rIPVHlPYgbmKiy9H325PnGwXsoJ0GRb
+3BRpV35HMNNSHJyfXyBP/J3nWz7MqQ==
+=n07f
+-----END PGP SIGNATURE-----
+
+--XhokIFG6tLIbxTBQ--
+
+
+--===============8050639276462288178==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============8050639276462288178==--
+
