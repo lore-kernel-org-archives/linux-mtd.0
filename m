@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 329B6C48BC4
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 17:55:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C764C4829E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 17:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2KLk8sbdXvXl1JwCP0o4WVFnDawENR4hDt+GMdLqmj0=; b=qmKPCGNoiJYjhq
-	HvzTTto7yVO53iZdyP+cclsBphMEyQYuroqSLpmXaaugZN6OPXlHCYGP1Mkz9sjyUSFvefzFSMv9s
-	adRQGeAjKVnwZROMISfQJJ3sCq+4ld+ekqiEpQnnI8AQWHoXB9X6bM3Ykye6wD9b5wxVtD7KsmDBN
-	E3xmgdLRt1rDFTMPeWG6uTkfcdSvqVmPqXzULi7Pv5vCmADFQ9Fp0ISxz7vqPD9g+3nqvExucmUCP
-	XjiM7UdzlEiWVmMJg2acRS7KseP0KTshFnBvKfWEfCS6brl/9cwMs0RlaEpzkn+3+c/8Ib/vlu72K
-	sD8DkFXcIUa7N8jOB0NQ==;
+	List-Owner; bh=sCFxofV9OJXFGrK5hE4NdRAdV8skC48U6ZOQ9+8WS8s=; b=FN/5vdci+tD9Bc
+	AtV+/rDWZy4Ve71UGJK+idg00PadmFXY7S4Vrmu722wtZt5gssdWGmQhdep9ghHD/gghMTIHVVDk/
+	m8Nu5z6U7E/ZCzkvz/sN5rjhnYs0UhkWwVGZ1QOMRNVeCyvTYJMghkrHsxHPg9oYRDDLiPE/aY+6D
+	ab98UTx1UYUSam4wsIA8Q9sj38PUmehHNCgWsB8KOCI0GGF+imHXDFuhXLl0OqByvOSTEqZx0PvYd
+	p6UqQg29FDBZ1lScippT/mLKMmNHG+eu8XlOQdsg4tsIORbsiCOgZ4LP8mDouxoTf/kN521dHoCh/
+	q4RhVxu45u/hXA2ZnCJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rafxT-0000000HGUz-11Xo;
-	Thu, 15 Feb 2024 17:55:39 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1rag05-0000000HGyi-2Hz9;
+	Thu, 15 Feb 2024 17:58:29 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rafxJ-0000000HGSE-2gO7
+	id 1rafze-0000000HGwb-3Lhz
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Feb 2024 17:55:32 +0000
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2d0cdbd67f0so16133261fa.3
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2024 09:55:29 -0800 (PST)
+	Thu, 15 Feb 2024 17:57:56 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-51182ece518so1380329e87.3
+        for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2024 09:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708019727; x=1708624527; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1708019873; x=1708624673; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JDWXjBWcKFEbyW8Uf48hnpLWCBqnIeEgb6RPWjwQokE=;
-        b=t/tskts5ABuFYUQTx+VlMzoGGLTkiBP7Y1dcl4nD9WyH+cGBUR5iB81Bv7XHlNrNJ0
-         mgmca7mOAVEr6I+ZtBYl+1ZZmXZ84UHjN9UIlRzfcH0q7WstKWsJl+zw8YkiFUGNFdE0
-         UtP4b3d3vGgxIq0lFGW6hQOMql8rugL29wRFnKc23ZMFw0wwpq9Jgv11X/FPP0CWzGDz
-         p5dyOmXI2yJQoZ2sVICVait76rMjzwlmj65b8zm5O+FHKVwW7iluybbt3h09Zckaq8in
-         P8FRitiyWTlKuC73qHM8PMtRhwL9dX8+PgHrBS6tHtyp35BNC/9rQTzPMMgSR7xv18+u
-         xefA==
+        bh=Bzg0JZnBuG9xbxYGq7b3vA4VfEtQYoIHH8VKH+YR0eo=;
+        b=c58DIsSgcuZSs7LNstZLkHdiTxXrDC2o68xKEmsKLsmZWuAo89A12ubMx4UQN855a7
+         2vAiXo2JfvSWGdQJMdaPAhlnDJtvFw1yDB4JL+EvTLGjlmmFApiqmRQ3ITgyMrZYCwlW
+         aP4D6AkJaGFpskylb5EuMMGaIv/lpLEiFwtJkNz2UBBAyX+KOgNM0jTV71dUEF9nVMRL
+         vSCOX1eAk5MsUYqWINtYh2H9mOZVT3+PDfgD3CDbmHeWHVGArVBlUMZd3uGw0tZ+8stC
+         t0cg0nPbvihKbVZ8SWY45nYItiS9lzO8SDNrbrVOhxsdadswL4FDbYm/IRWtNEPtS6dl
+         neNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708019727; x=1708624527;
+        d=1e100.net; s=20230601; t=1708019873; x=1708624673;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDWXjBWcKFEbyW8Uf48hnpLWCBqnIeEgb6RPWjwQokE=;
-        b=HikPnnUeD5ilumaBGKz7RDduqsFxME3MQScZIboMrovqNptVxezBZlBgo0Uv9JdoOG
-         ZDQbxvbhgg3zW3EyAMxi6nO6fvhN03zJky8nGLJb8cw3ySnrjhSUlv94QP+DXvOgo3lI
-         rj5Sx3UlGgDDT6TlZy2KLTEjeIkgQ4i1cl+SxHgUH8iW4DclheoDwiNAoivI+kjUV31D
-         y4azMx5G3LVvyis+hLrNXFU/6dsJQwjkC25zFCSkNdsS29wwmcZZZ1k/f4jg0k03VaT/
-         xMW0ZEJrfSJrJi5aVgVrqyp/Fvi2YR9hR7hiGSXm8p+uOA+gziJhuwaIf4RKbp4HXVrT
-         ex5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVR7pqp2ASKHDktAktUxTF8Wq8NeXtCoC1CZiqMo9Dn2CHTnOLZRXKRcz/1vJogbz8nlDgEPwqwsEWpx8BxuVVyDcG3thV+J6mWiYXYWw==
-X-Gm-Message-State: AOJu0YwqrqiyrAPLdFvT9BnFnNqj2IPeRUZXVUz7vc7Vbx7gIwg23c0P
-	/0NHZePm5HRTMLe3gKLr0Z3aCykKt5/2rpMIRdeSBp4CPEPTUcuW1PjVFdGk1Qs=
-X-Google-Smtp-Source: AGHT+IHCLIfN6muAhaewbjdhnO1CjXkKfDODDb3Jlvpzo3uuFHn1hyVeYSewW3DaaUIu7nCHSXFxCA==
-X-Received: by 2002:ac2:4d8d:0:b0:511:5537:fb26 with SMTP id g13-20020ac24d8d000000b005115537fb26mr1993787lfe.39.1708019720252;
-        Thu, 15 Feb 2024 09:55:20 -0800 (PST)
+        bh=Bzg0JZnBuG9xbxYGq7b3vA4VfEtQYoIHH8VKH+YR0eo=;
+        b=C0Vqp4k+2nw+tBkAd6gFmGwQhu1qAIl5A+OEJ24ERzPcEFwxdPwZaJRdseWkQEVuTA
+         LCz4mE5z92gOqWgXuXBv8xjuEXqK0aXO0wCrrlgWKKNiTtAMLTIRZA58hGRHUc9jNCrp
+         ertCw4B7glv1SvCC5CISK0VYjgfcYOnZQLfDI7kFQ5xhR7F3mk40oABBndy1hyIoynj0
+         qwch0xESmH3erMH2+IeOIhGBoIIieTC/rz3iKsqhocLzfWpvYcMJr8Id3VgsRauCUSNQ
+         b9UBQQ2c2crH2xYepi86P0BFnTvSr9MPkRkZnbaWgsNdz94GTScC/grc/P8jS+Fa6lYr
+         mwIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJZV+jXY11BbOPq/8b3fvDP3wY2C/Qae+1pzhNuDSuCCLo/Aet8l3DLMF4PFITElpRkmb9aZ8V1h/RmZHs9RwX4ogQA4Ix0OebL7PqPg==
+X-Gm-Message-State: AOJu0YzhA7IGjNbFD+McTQONJ/WfmcM3pnHZA/LVvI9W02aX6J17tAH4
+	ok/ud0cMBorOAAYHK+laNXyOL2fLSDIlnA2YKgliD+ZKmBUCFvGl8C1MRAgeGJc=
+X-Google-Smtp-Source: AGHT+IEgWc7gk7Qw+cWxS3tvYJs5tD8dCPuz++09dvf4RN6mi1qt5Xjy9cWFXxSDHU3kPh4Gu11FvQ==
+X-Received: by 2002:a05:6512:3f06:b0:512:8d30:6dce with SMTP id y6-20020a0565123f0600b005128d306dcemr879333lfa.52.1708019872670;
+        Thu, 15 Feb 2024 09:57:52 -0800 (PST)
 Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id g6-20020aa7c586000000b005619eea3d52sm749980edq.8.2024.02.15.09.55.12
+        by smtp.gmail.com with ESMTPSA id h32-20020a0564020ea000b00561e675a3casm749438eda.68.2024.02.15.09.57.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 09:55:14 -0800 (PST)
-Message-ID: <4cb0144c-303b-4b91-bf88-0a7d7412afe1@linaro.org>
-Date: Thu, 15 Feb 2024 18:55:11 +0100
+        Thu, 15 Feb 2024 09:57:52 -0800 (PST)
+Message-ID: <d1c80d3f-3b70-4630-8f7d-b00983b487dd@linaro.org>
+Date: Thu, 15 Feb 2024 18:57:50 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] drivers: mtd: nand: Add qpic_common API file
+Subject: Re: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
 Content-Language: en-US
 To: Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
  broonie@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -78,7 +78,7 @@ To: Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
  linux-mtd@lists.infradead.org
 Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
 References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-4-quic_mdalam@quicinc.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -115,10 +115,10 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+In-Reply-To: <20240215134856.1313239-4-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240215_095529_775252_46E548C4 
-X-CRM114-Status: GOOD (  20.59  )
+X-CRM114-CacheID: sfid-20240215_095755_133883_55C479B2 
+X-CRM114-Status: GOOD (  10.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,9 +136,16 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 15.02.2024 14:48, Md Sadre Alam wrote:
-> Add qpic_common.c file which hold all the common
-> qpic APIs which will be used by both qpic raw nand
-> driver and qpic spi nand driver.
+> Add qpic spi nand driver support. The spi nand
+> driver currently supported the below commands.
+> 
+> -- RESET
+> -- READ ID
+> -- SET FEATURE
+> -- GET FEATURE
+> -- READ PAGE
+> -- WRITE PAGE
+> -- ERASE PAGE
 > 
 > Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 > Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
@@ -147,120 +154,39 @@ On 15.02.2024 14:48, Md Sadre Alam wrote:
 > Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 > ---
 
-IIUC this is mostly moving code around?
+[...]
 
-I do however have some suggestions..
-
->  drivers/mtd/nand/Makefile            |    1 +
->  drivers/mtd/nand/qpic_common.c       |  786 +++++++++++++++++
->  drivers/mtd/nand/raw/qcom_nandc.c    | 1226 +-------------------------
->  include/linux/mtd/nand-qpic-common.h |  488 ++++++++++
->  4 files changed, 1291 insertions(+), 1210 deletions(-)
->  create mode 100644 drivers/mtd/nand/qpic_common.c
->  create mode 100644 include/linux/mtd/nand-qpic-common.h
-> 
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index 19e1291ac4d5..131707a41293 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -12,3 +12,4 @@ nandcore-$(CONFIG_MTD_NAND_ECC) += ecc.o
->  nandcore-$(CONFIG_MTD_NAND_ECC_SW_HAMMING) += ecc-sw-hamming.o
->  nandcore-$(CONFIG_MTD_NAND_ECC_SW_BCH) += ecc-sw-bch.o
->  nandcore-$(CONFIG_MTD_NAND_ECC_MXIC) += ecc-mxic.o
-> +obj-y += qpic_common.o
-> diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
-> new file mode 100644
-> index 000000000000..4d74ba888028
-> --- /dev/null
-> +++ b/drivers/mtd/nand/qpic_common.c
-> @@ -0,0 +1,786 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * QPIC Controller common API file.
-> + * Copyright (C) 2023  Qualcomm Inc.
-> + * Authors:	Md sadre Alam           <quic_mdalam@quicinc.com>
-> + *		Sricharan R             <quic_srichara@quicinc.com>
-> + *		Varadarajan Narayanan	<quic_varada@quicinc.com>
-> + *
-> + */
-> +
-> +#include <linux/mtd/nand-qpic-common.h>
-> +
-> +struct qcom_nand_controller *
-> +get_qcom_nand_controller(struct nand_chip *chip)
+> +void snandc_set_reg(struct qcom_nand_controller *snandc, int offset, u32 val)
 > +{
-> +	return container_of(chip->controller, struct qcom_nand_controller,
-> +			    controller);
-> +}
-> +EXPORT_SYMBOL(get_qcom_nand_controller);
-
-#define to_qcom_nand_controller()?
-
+> +	struct nandc_regs *regs = snandc->regs;
+> +	__le32 *reg;
 > +
-> +/*
-> + * Helper to prepare DMA descriptors for configuring registers
-> + * before reading a NAND page.
-> + */
-
-Can you convert these to kerneldoc instead?
-
-> +void config_nand_page_read(struct nand_chip *chip)
-> +{
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +	reg = offset_to_nandc_reg(regs, offset);
 > +
-> +	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
-> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-> +	if (!nandc->props->qpic_v2)
+> +	if (reg)
+> +		*reg = cpu_to_le32(val);
 
-This is not going to scale going forward.. please include a version
-enum instead.
+if (WARN_ON(!reg))
+	return;
+
+instead?
+
+This would be tragic..
 
 [...]
 
 > +
-> +int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
-> +		      int reg_off, const void *vaddr, int size,
-> +			     bool flow_control)
-> +{
-> +	struct desc_info *desc;
-> +	struct dma_async_tx_descriptor *dma_desc;
-> +	struct scatterlist *sgl;
-> +	struct dma_slave_config slave_conf;
-> +	struct qcom_adm_peripheral_config periph_conf = {};
-> +	enum dma_transfer_direction dir_eng;
-> +	int ret;
+> +	ecc_cfg->cfg0 = (cwperpage - 1) << CW_PER_PAGE
+> +				| ecc_cfg->cw_data << UD_SIZE_BYTES
+> +				| 1 << DISABLE_STATUS_AFTER_WRITE
+> +				| 3 << NUM_ADDR_CYCLES
+> +				| ecc_cfg->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_RS
+> +				| 0 << STATUS_BFR_READ
+> +				| 1 << SET_RD_MODE_AFTER_STATUS
+> +				| ecc_cfg->spare_bytes << SPARE_SIZE_BYTES;
 
-Revertse-christmas-tree, please
-
-> +
-> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
-> +	if (!desc)
-> +		return -ENOMEM;
-> +
-> +	sgl = &desc->adm_sgl;
-> +
-> +	sg_init_one(sgl, vaddr, size);
-> +
-> +	if (read) {
-> +		dir_eng = DMA_DEV_TO_MEM;
-> +		desc->dir = DMA_FROM_DEVICE;
-> +	} else {
-> +		dir_eng = DMA_MEM_TO_DEV;
-> +		desc->dir = DMA_TO_DEVICE;
-> +	}
-> +
-> +	ret = dma_map_sg(nandc->dev, sgl, 1, desc->dir);
-> +	if (ret == 0) {
-
-if (!ret)
-
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +
-> +	memset(&slave_conf, 0x00, sizeof(slave_conf));
-
-Just zero-initialize it (= { 0 }) at declaration time
+Let me introduce you to FIELD_PREP/GET and GENMASK().. Many assignments
+in this file could use these.
 
 Konrad
 
