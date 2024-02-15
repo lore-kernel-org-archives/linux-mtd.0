@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 570A1C48BEF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A70CC48BF0
 	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LICrHZl/ViL+G+f5WgKjATsu41tnwks+3W/NPndngdw=; b=BAyoKEauWTvoA/
-	yjt3mG9h7+L1cFxlh1Y9cih6V1h4jU2b6MA3VkL2D63v3uOcxu5hr81nf5Zddh8z5Sw8Ml+VsW2PY
-	QiAkj6idUz4VpMOph6/rSCnl9vE68Jag5gQvJQghEsNNwpb2V9ISPOvZP+0yZXMpejk0IJsnqhtGV
-	6n9xJVYQZMRqDK1et5Cn4BbDnpHkIS3rFA75ZaaWpvM33pndSos3DsdKFBWhxWbT9PoXRT9hJA+yJ
-	5LKajZx4taEwzlyBUGT6SJ0+tVOgF5CwtGO4MTs1+ZbtQaCMWUF+o9qq0C2VhjUoF1bx3D/HRemnO
-	fnn4xKLxMeQaUM8pMFBg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9R3X3NjJEWbjcW8j4oit19mgOVW36Zuy2T/l4ZplK18=; b=f+uPfe76DPUOO+
+	xTZfP9dlDb/apXoQpqEKufLJWVvPNLDxE93eIDZV7D/YpYnDDc32YfJHB21n1pFnl7jiyezfjIa+9
+	8jiFJUruBxK0CXIZ/62tej6NdjgCcsnudf759B1A9LZECFTvUMAR/QtCH9RCaZBDswHlTxZjqdRFA
+	tDqhQPzyY3rSR6kMbXTDFKcIb1w6vyfESgEcAj+gAgeq49w0M10R0YyI2HcF6i38e5RcRqzL8yYph
+	3WlBK8h7FLDlVozd1DqMUZE5kFHXetQN1oiudZTKP0sxpekNbZOHA17dxD6ljKUofH/V5VTP9Kexs
+	PS4STPg8da92vKKpeJ2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVm8-0000000FAPq-2nH4;
-	Thu, 15 Feb 2024 07:03:16 +0000
+	id 1raVm5-0000000FAOj-19Nv;
+	Thu, 15 Feb 2024 07:03:13 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVm7-0000000FAOz-09gd;
-	Thu, 15 Feb 2024 07:03:15 +0000
+	id 1raVlz-0000000FANl-1akg;
+	Thu, 15 Feb 2024 07:03:07 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -51,12 +51,10 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-mmc@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 03/17] floppy: pass queue_limits to blk_mq_alloc_disk
-Date: Thu, 15 Feb 2024 08:02:46 +0100
-Message-Id: <20240215070300.2200308-4-hch@lst.de>
+Subject: pass queue_limits to blk_mq_alloc_disk for simple drivers
+Date: Thu, 15 Feb 2024 08:02:43 +0100
+Message-Id: <20240215070300.2200308-1-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240215070300.2200308-1-hch@lst.de>
-References: <20240215070300.2200308-1-hch@lst.de>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,39 +72,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pass the few limits floppy imposes directly to blk_mq_alloc_disk instead
-of setting them one at a time.
+Hi Jens,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/floppy.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+this series converts all "simple" blk-mq drivers that don't have complex
+internal layering or other oddities to pass the queue_limits to
+blk_mq_alloc_disk.  None of these drivers updates the limits at runtime.
 
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index 582cf50c6bf6b8..1b399ec8c07d1e 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -4516,13 +4516,15 @@ static bool floppy_available(int drive)
- 
- static int floppy_alloc_disk(unsigned int drive, unsigned int type)
- {
-+	struct queue_limits lim = {
-+		.max_hw_sectors = 64,
-+	};
- 	struct gendisk *disk;
- 
--	disk = blk_mq_alloc_disk(&tag_sets[drive], NULL, NULL);
-+	disk = blk_mq_alloc_disk(&tag_sets[drive], &lim, NULL);
- 	if (IS_ERR(disk))
- 		return PTR_ERR(disk);
- 
--	blk_queue_max_hw_sectors(disk->queue, 64);
- 	disk->major = FLOPPY_MAJOR;
- 	disk->first_minor = TOMINOR(drive) | (type << 2);
- 	disk->minors = 1;
--- 
-2.39.2
 
+Diffstat:
+ arch/um/drivers/ubd_kern.c          |    8 +-
+ drivers/block/aoe/aoeblk.c          |   15 ++---
+ drivers/block/floppy.c              |    6 +-
+ drivers/block/mtip32xx/mtip32xx.c   |   13 ++--
+ drivers/block/nbd.c                 |   13 ++--
+ drivers/block/ps3disk.c             |   17 +++---
+ drivers/block/rbd.c                 |   29 +++++-----
+ drivers/block/rnbd/rnbd-clt.c       |   64 +++++++++--------------
+ drivers/block/sunvdc.c              |   18 +++---
+ drivers/block/ublk_drv.c            |   90 +++++++++++++++------------------
+ drivers/cdrom/gdrom.c               |   14 ++---
+ drivers/memstick/core/ms_block.c    |   14 ++---
+ drivers/memstick/core/mspro_block.c |   15 ++---
+ drivers/mmc/core/queue.c            |   97 +++++++++++++++++++-----------------
+ drivers/mtd/mtd_blkdevs.c           |   12 ++--
+ drivers/mtd/ubi/block.c             |    6 +-
+ drivers/s390/block/scm_blk.c        |   17 +++---
+ 17 files changed, 222 insertions(+), 226 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
