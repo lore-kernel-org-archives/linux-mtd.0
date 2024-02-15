@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 547BAC4829E
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B0FC4829E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UXQBKQ0VvyaAXqIh5sCYghc+OMKNe95t2QKQLVOvvKw=; b=KsJQFV9w+7rwH2
-	j5dkQNDhma4YR20jcrfnYa2zBPXEoFGCx4hYYLTsBjAAkP1AxwTKQIaIUW9W5iFjReAUWhW5I/UX3
-	ca34EEhryBe7ctXKyqjxhScYyG4CEvynLKaAe6zExODCEuoOIW8jidzhs6ATV/QvqKg3hLcN2Lw6X
-	mUcPSxYCq+pMF1fNBerqTGYTN59/PFveEuAqR+/8jPvIWzCNefMgpGpMJz+7iPI8rG+uwSpNm0TCZ
-	ZMDAfQL3hUQSntSB982CeDpprkfwxbKDM51Kh6zCcuAnIL3xmIx0FQgzLnfXKwyrkgRFSBQAxkXEu
-	H4SQzRbWzsCr6STJjVoQ==;
+	List-Owner; bh=ci1WTGt41TcLIYgdkui7MX3Z7T2ah4oz2vUA64QWTVQ=; b=NaWpcn0SGd7Vxx
+	OzuBYY76PuayOTUVheIj4HOy/8lZtpCQc3SMtpBPLghjuzR0sIGMhOCzJw6yjyHucaI85QtQPq4vP
+	yFCu/6u4Drdn7Xp3N+2SSBa9BJPAKW3Fd27QC5TEqcFM9BhycizyK10CVbqfmXKYskVd6xSZQX1Io
+	wRPEXIfEqFyAQBn1J8ueF0lbLTg2FWWxAZpE2i/pkIUnWmFaAXDZCuv4wYX11hd48FDpm82MzV73X
+	vyM4S/Vojpwon/nLc3bMXKCkpZw9LsfjDbTO7qR7npSSKM5vtnCJhFydUTxI2B9VPu4ouyZUh15Qp
+	+rWkj+48qrNSDWkGV1qQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmO-0000000FAbU-3YS8;
-	Thu, 15 Feb 2024 07:03:32 +0000
+	id 1raVmS-0000000FAeI-2PLd;
+	Thu, 15 Feb 2024 07:03:36 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmK-0000000FAUd-0tPX;
-	Thu, 15 Feb 2024 07:03:28 +0000
+	id 1raVmN-0000000FAY2-0VaO;
+	Thu, 15 Feb 2024 07:03:31 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -51,9 +51,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-mmc@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 08/17] rnbd-clt: pass queue_limits to blk_mq_alloc_disk
-Date: Thu, 15 Feb 2024 08:02:51 +0100
-Message-Id: <20240215070300.2200308-9-hch@lst.de>
+Subject: [PATCH 09/17] sunvdc: pass queue_limits to blk_mq_alloc_disk
+Date: Thu, 15 Feb 2024 08:02:52 +0100
+Message-Id: <20240215070300.2200308-10-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240215070300.2200308-1-hch@lst.de>
 References: <20240215070300.2200308-1-hch@lst.de>
@@ -74,109 +74,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pass the limits rnbd-clt imposes directly to blk_mq_alloc_disk instead
+Pass the few limits sunvdc imposes directly to blk_mq_alloc_disk instead
 of setting them one at a time.
-
-While at it don't set an explicit number of discard segments, as 1 is
-the default (which most drivers rely on).
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/rnbd/rnbd-clt.c | 64 ++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 39 deletions(-)
+ drivers/block/sunvdc.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
-index d51be4f2df61a3..b7ffe03c61606d 100644
---- a/drivers/block/rnbd/rnbd-clt.c
-+++ b/drivers/block/rnbd/rnbd-clt.c
-@@ -1329,43 +1329,6 @@ static void rnbd_init_mq_hw_queues(struct rnbd_clt_dev *dev)
- 	}
- }
+diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
+index a1f74dd1eae5d5..c99dd6698977ea 100644
+--- a/drivers/block/sunvdc.c
++++ b/drivers/block/sunvdc.c
+@@ -784,6 +784,14 @@ static const struct blk_mq_ops vdc_mq_ops = {
  
--static void setup_request_queue(struct rnbd_clt_dev *dev,
--				struct rnbd_msg_open_rsp *rsp)
--{
--	blk_queue_logical_block_size(dev->queue,
--				     le16_to_cpu(rsp->logical_block_size));
--	blk_queue_physical_block_size(dev->queue,
--				      le16_to_cpu(rsp->physical_block_size));
--	blk_queue_max_hw_sectors(dev->queue,
--				 dev->sess->max_io_size / SECTOR_SIZE);
--
--	/*
--	 * we don't support discards to "discontiguous" segments
--	 * in on request
--	 */
--	blk_queue_max_discard_segments(dev->queue, 1);
--
--	blk_queue_max_discard_sectors(dev->queue,
--				      le32_to_cpu(rsp->max_discard_sectors));
--	dev->queue->limits.discard_granularity =
--					le32_to_cpu(rsp->discard_granularity);
--	dev->queue->limits.discard_alignment =
--					le32_to_cpu(rsp->discard_alignment);
--	if (le16_to_cpu(rsp->secure_discard))
--		blk_queue_max_secure_erase_sectors(dev->queue,
--					le32_to_cpu(rsp->max_discard_sectors));
--	blk_queue_flag_set(QUEUE_FLAG_SAME_COMP, dev->queue);
--	blk_queue_flag_set(QUEUE_FLAG_SAME_FORCE, dev->queue);
--	blk_queue_max_segments(dev->queue, dev->sess->max_segments);
--	blk_queue_io_opt(dev->queue, dev->sess->max_io_size);
--	blk_queue_virt_boundary(dev->queue, SZ_4K - 1);
--	blk_queue_write_cache(dev->queue,
--			      !!(rsp->cache_policy & RNBD_WRITEBACK),
--			      !!(rsp->cache_policy & RNBD_FUA));
--	blk_queue_max_write_zeroes_sectors(dev->queue,
--					   le32_to_cpu(rsp->max_write_zeroes_sectors));
--}
--
- static int rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev,
- 				   struct rnbd_msg_open_rsp *rsp, int idx)
- {
-@@ -1403,18 +1366,41 @@ static int rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev,
- static int rnbd_client_setup_device(struct rnbd_clt_dev *dev,
- 				    struct rnbd_msg_open_rsp *rsp)
+ static int probe_disk(struct vdc_port *port)
  {
 +	struct queue_limits lim = {
-+		.logical_block_size	= le16_to_cpu(rsp->logical_block_size),
-+		.physical_block_size	= le16_to_cpu(rsp->physical_block_size),
-+		.io_opt			= dev->sess->max_io_size,
-+		.max_hw_sectors		= dev->sess->max_io_size / SECTOR_SIZE,
-+		.max_hw_discard_sectors	= le32_to_cpu(rsp->max_discard_sectors),
-+		.discard_granularity	= le32_to_cpu(rsp->discard_granularity),
-+		.discard_alignment	= le32_to_cpu(rsp->discard_alignment),
-+		.max_segments		= dev->sess->max_segments,
-+		.virt_boundary_mask	= SZ_4K - 1,
-+		.max_write_zeroes_sectors =
-+			le32_to_cpu(rsp->max_write_zeroes_sectors),
++		.physical_block_size		= port->vdisk_phys_blksz,
++		.max_hw_sectors			= port->max_xfer_size,
++		/* Each segment in a request is up to an aligned page in size. */
++		.seg_boundary_mask		= PAGE_SIZE - 1,
++		.max_segment_size		= PAGE_SIZE,
++		.max_segments			= port->ring_cookies,
 +	};
- 	int idx = dev->clt_device_id;
+ 	struct request_queue *q;
+ 	struct gendisk *g;
+ 	int err;
+@@ -824,7 +832,7 @@ static int probe_disk(struct vdc_port *port)
+ 	if (err)
+ 		return err;
  
- 	dev->size = le64_to_cpu(rsp->nsectors) *
- 			le16_to_cpu(rsp->logical_block_size);
+-	g = blk_mq_alloc_disk(&port->tag_set, NULL, port);
++	g = blk_mq_alloc_disk(&port->tag_set, &lim, port);
+ 	if (IS_ERR(g)) {
+ 		printk(KERN_ERR PFX "%s: Could not allocate gendisk.\n",
+ 		       port->vio.name);
+@@ -835,12 +843,6 @@ static int probe_disk(struct vdc_port *port)
+ 	port->disk = g;
+ 	q = g->queue;
  
--	dev->gd = blk_mq_alloc_disk(&dev->sess->tag_set, NULL, dev);
-+	if (rsp->secure_discard) {
-+		lim.max_secure_erase_sectors =
-+			le32_to_cpu(rsp->max_discard_sectors);
-+	}
-+
-+	dev->gd = blk_mq_alloc_disk(&dev->sess->tag_set, &lim, dev);
- 	if (IS_ERR(dev->gd))
- 		return PTR_ERR(dev->gd);
- 	dev->queue = dev->gd->queue;
- 	rnbd_init_mq_hw_queues(dev);
+-	/* Each segment in a request is up to an aligned page in size. */
+-	blk_queue_segment_boundary(q, PAGE_SIZE - 1);
+-	blk_queue_max_segment_size(q, PAGE_SIZE);
+-
+-	blk_queue_max_segments(q, port->ring_cookies);
+-	blk_queue_max_hw_sectors(q, port->max_xfer_size);
+ 	g->major = vdc_major;
+ 	g->first_minor = port->vio.vdev->dev_no << PARTITION_SHIFT;
+ 	g->minors = 1 << PARTITION_SHIFT;
+@@ -872,8 +874,6 @@ static int probe_disk(struct vdc_port *port)
+ 		}
+ 	}
  
--	setup_request_queue(dev, rsp);
-+	blk_queue_flag_set(QUEUE_FLAG_SAME_COMP, dev->queue);
-+	blk_queue_flag_set(QUEUE_FLAG_SAME_FORCE, dev->queue);
-+	blk_queue_write_cache(dev->queue,
-+			      !!(rsp->cache_policy & RNBD_WRITEBACK),
-+			      !!(rsp->cache_policy & RNBD_FUA));
-+
- 	return rnbd_clt_setup_gen_disk(dev, rsp, idx);
- }
- 
+-	blk_queue_physical_block_size(q, port->vdisk_phys_blksz);
+-
+ 	pr_info(PFX "%s: %u sectors (%u MB) protocol %d.%d\n",
+ 	       g->disk_name,
+ 	       port->vdisk_size, (port->vdisk_size >> (20 - 9)),
 -- 
 2.39.2
 
