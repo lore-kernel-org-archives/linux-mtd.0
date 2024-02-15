@@ -4,69 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 554D1C48BC4
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 13:45:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C5B9C4829E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 13:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NuuGGI5gPMhu0gvObIfNlQCnPW0tDNL2mux1MNRNa/o=; b=U9+GxRPRhKCCfB
-	jX6dSo8J336aaBGlcbASPE8coaEsSj4CBJmRbhRSqxQmZbhB2aGoMnAYhIquz4J1YS4QgGAMoX7uH
-	yWl5rQfNko8N6Zby7FLJd3ZmMivNjWpJ/EhhXRUK0GY4qVISqyaFRmhkWOHQ3gTH5U3J0QuflYvjh
-	yUgl0p6kKuM0/qdb1Q0VvAQ17cqILIH5ZkDj4jtDABW8l5oSNEncGzU5yVoBxDhk68VP41MdFHkSQ
-	tHTjXByL3csGH+WuC8GM/M2HuF+90gUcRRC0/7LJf9IjIAOtRoItRnHqwhoRjg9XSW7DteM9QWQPW
-	2IpIPFUk59aZT3SvL0Dw==;
+	List-Owner; bh=kasbRtr1KrgSeZw5g5EZstHrsYtMPfG1chx9xMHgPU0=; b=ri/Cur5THenCBC
+	5O1MYAUNDrQeOuVy4VCD4U/zUozBrzwUSQkmoMKQk2P8rZlCwHewSlITvMkRisHxkfy1tWLtNvFzp
+	lBH52qoW8WbJJTPuEyGhYeNdOJAsoHWeDQfJVhmtCbXCZBLZqz+dvKsk3sx6Kme/mJmnm96gC1C9P
+	MLnXuyd8OciKwy/nt/j714lGlogvLuTCXV5HdTXu7Z7QAdZTLQQm2v9dGiyhpKzxV7XAUwfvdAcUG
+	OrV9xkHx6XZ63paqLUd5vOhkQWO7IwFgRbFWcqa+VMZKunZWB7ZloMq20ASN5WmKS5tRTXqLZIwbU
+	3ZABkbtBGAD+dsraEuMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rac3H-0000000GQxU-3U5S;
-	Thu, 15 Feb 2024 13:45:23 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rac79-0000000GRjF-3Q82;
+	Thu, 15 Feb 2024 13:49:23 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rac3D-0000000GQx8-3nE3
+	id 1rac77-0000000GRhQ-0iMM
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Feb 2024 13:45:21 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3139961DA6;
-	Thu, 15 Feb 2024 13:45:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 778EBC433F1;
-	Thu, 15 Feb 2024 13:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708004718;
-	bh=tfwPW1BfqUnBwuV7ndvI9kwgLvCcwttcwLBgnVwDmKo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UWI3RpXixCcJyvLLteIW3OOg5247DhQ3Ti8by7iDTz8kN5iRS7jpv+OnuzuqlV2w7
-	 CgAi3pjaQyB5GwdSiv6CZlST3gSTM/aTrkfzZB/4FCXzJs5+BOLDVagaKWaDtdkuiQ
-	 bFMdkPN0AecQvEln2yrB2BQQaUKnxsU+Oa9ynSlzoxN79ULt94K8xdavkBbzCSNp8K
-	 vBmXehqIxnl+ues2Ghq+j+L/KwUhWFkqsy9X5waRncgxlUR8kwL+YXrIA4hBzYcxCg
-	 Mr52olTxr1jHI1foUKnYJttry0Z1/Eqm7B6nOKQNyTiMz8qk15+e26jmsn5QT14TSL
-	 0JDJIiezJcaHw==
-Date: Thu, 15 Feb 2024 07:45:15 -0600
-From: Rob Herring <robh@kernel.org>
-To: Nayab Sayed <nayabbasha.sayed@microchip.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-tegra@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-	devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>, Han Xu <han.xu@nxp.com>,
-	Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH] dt-bindings: mtd: update references from partition.txt
- to mtd.yaml
-Message-ID: <170800471457.4134974.8222118532104907656.robh@kernel.org>
-References: <20240208-partition-txt-v1-1-4398af3b7bb2@microchip.com>
+	Thu, 15 Feb 2024 13:49:22 +0000
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41F7dSa3020044;
+	Thu, 15 Feb 2024 13:49:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding; s=qcppdkim1; bh=o3yh+AK
+	jvLI03nbojYLfsnAL6ZAu+V6Vwa7HDGmBstc=; b=dGyoxR1qq7zeWBqxqIezPsa
+	ppj/Da7NIHFXAHwqvPKxCjHtqlAS8GE9RFKd3RYqWUTw8AcSD612Y9OfAR1my6zC
+	T2eNpKeyv9gGbM4rK6nVqaMrJPwtO6wENouOo24I/Qfo/lNy8Y3LgqhwzEeN2B6u
+	UZ4ihaMZHNRBcOTn4cMVmk0DbnVJ0XXjcw2nPb6mp0tzMAv2AJnoaXDJTMNGlqyk
+	Q45uyOal6w48JZd3mtkBsftZOodXF7+ISIH+m3QsWEhxcsE8sLsaRy36qrTQPcF/
+	4as1IPekMK/bDMJlrHj7iTWZFKFS73JfpaZg6TnmdzGN0jgxXsPBEShPQfXaC6w=
+	=
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9e4h0uf2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 13:49:12 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41FDn8x9009959;
+	Thu, 15 Feb 2024 13:49:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3w627mb92a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 13:49:08 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FDn8qK009929;
+	Thu, 15 Feb 2024 13:49:08 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 41FDn8fw009922
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 13:49:08 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+	id 6D721414AE; Thu, 15 Feb 2024 19:19:07 +0530 (+0530)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org,
+        robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, manivannan.sadhasivam@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com,
+        quic_mdalam@quicinc.com
+Subject: [PATCH 4/5] arm64: dts: qcom: ipq9574: Add SPI nand support
+Date: Thu, 15 Feb 2024 19:18:55 +0530
+Message-Id: <20240215134856.1313239-5-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240208-partition-txt-v1-1-4398af3b7bb2@microchip.com>
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aD-mdvpOgIgPD0lXegfx6Bn1HNnkZlxD
+X-Proofpoint-ORIG-GUID: aD-mdvpOgIgPD0lXegfx6Bn1HNnkZlxD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_12,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=848
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402150111
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240215_054520_004124_09DAA8E8 
-X-CRM114-Status: UNSURE (   9.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240215_054921_243616_07A90937 
+X-CRM114-Status: GOOD (  10.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,28 +110,108 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Add SPI NAND support for ipq9574 SoC.
 
-On Thu, 08 Feb 2024 17:12:12 +0530, Nayab Sayed wrote:
-> Commit f902baa917b6 ("dt-bindings: mtd: Remove useless file about
-> partitions") removed the file partition.txt. Hence, in this commit, the
-> lines mentioning this file are updated to reference mtd.yaml, which now
-> includes partition{,s}.yaml.
-> 
-> Signed-off-by: Nayab Sayed <nayabbasha.sayed@microchip.com>
-> ---
->  Documentation/devicetree/bindings/mtd/davinci-nand.txt        | 2 +-
->  Documentation/devicetree/bindings/mtd/flctl-nand.txt          | 2 +-
->  Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt        | 2 +-
->  Documentation/devicetree/bindings/mtd/gpio-control-nand.txt   | 2 +-
->  Documentation/devicetree/bindings/mtd/gpmi-nand.yaml          | 2 +-
->  Documentation/devicetree/bindings/mtd/hisi504-nand.txt        | 2 +-
->  Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt | 2 +-
->  Documentation/devicetree/bindings/mtd/orion-nand.txt          | 2 +-
->  Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt     | 2 +-
->  9 files changed, 9 insertions(+), 9 deletions(-)
-> 
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+ .../boot/dts/qcom/ipq9574-rdp-common.dtsi     | 43 +++++++++++++++++++
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         | 27 ++++++++++++
+ 2 files changed, 70 insertions(+)
 
-Acked-by: Rob Herring <robh@kernel.org>
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+index 91e104b0f865..5b54a027fa5d 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+@@ -139,6 +139,49 @@ gpio_leds_default: gpio-leds-default-state {
+ 		drive-strength = <8>;
+ 		bias-pull-up;
+ 	};
++
++	qpic_snand_default_state: qpic-snand-default-state {
++		clock-pins {
++			pins = "gpio5";
++			function = "qspi_clk";
++			drive-strength = <8>;
++			bias-disable;
++		};
++
++		cs-pins {
++			pins = "gpio4";
++			function = "qspi_cs";
++			drive-strength = <8>;
++			bias-disable;
++		};
++
++		data-pins {
++			pins = "gpio0", "gpio1", "gpio2";
++			function = "qspi_data";
++			drive-strength = <8>;
++			bias-disable;
++		};
++	};
++};
++
++&qpic_bam {
++	status = "okay";
++};
++
++&qpic_nand {
++	pinctrl-0 = <&qpic_snand_default_state>;
++	pinctrl-names = "default";
++	status = "okay";
++
++	flash@0 {
++		compatible = "spi-nand";
++		reg = <0>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		nand-ecc-engine = <&qpic_nand>;
++		nand-ecc-strength = <4>;
++		nand-ecc-step-size = <512>;
++	};
+ };
+ 
+ &usb_0_dwc3 {
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+index 7f2e5cbf3bbb..d963dd2035dd 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+@@ -319,6 +319,33 @@ tcsr: syscon@1937000 {
+ 			reg = <0x01937000 0x21000>;
+ 		};
+ 
++		qpic_bam: dma-controller@7984000 {
++			compatible = "qcom,bam-v1.7.0";
++			reg = <0x7984000 0x1c000>;
++			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&gcc GCC_QPIC_AHB_CLK>;
++			clock-names = "bam_clk";
++			#dma-cells = <1>;
++			qcom,ee = <0>;
++			status = "disabled";
++		};
++
++		qpic_nand: spi@79b0000 {
++			compatible = "qcom,ipq9574-snand";
++			reg = <0x79b0000 0x10000>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			clocks = <&gcc GCC_QPIC_CLK>,
++			<&gcc GCC_QPIC_AHB_CLK>,
++			<&gcc GCC_QPIC_IO_MACRO_CLK>;
++			clock-names = "core", "aon", "iom";
++			dmas = <&qpic_bam 0>,
++				<&qpic_bam 1>,
++				<&qpic_bam 2>;
++			dma-names = "tx", "rx", "cmd";
++			status = "disabled";
++		};
++
+ 		sdhc_1: mmc@7804000 {
+ 			compatible = "qcom,ipq9574-sdhci", "qcom,sdhci-msm-v5";
+ 			reg = <0x07804000 0x1000>,
+-- 
+2.34.1
 
 
 ______________________________________________________
