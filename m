@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B0FC4829E
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBF43C4829E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ci1WTGt41TcLIYgdkui7MX3Z7T2ah4oz2vUA64QWTVQ=; b=NaWpcn0SGd7Vxx
-	OzuBYY76PuayOTUVheIj4HOy/8lZtpCQc3SMtpBPLghjuzR0sIGMhOCzJw6yjyHucaI85QtQPq4vP
-	yFCu/6u4Drdn7Xp3N+2SSBa9BJPAKW3Fd27QC5TEqcFM9BhycizyK10CVbqfmXKYskVd6xSZQX1Io
-	wRPEXIfEqFyAQBn1J8ueF0lbLTg2FWWxAZpE2i/pkIUnWmFaAXDZCuv4wYX11hd48FDpm82MzV73X
-	vyM4S/Vojpwon/nLc3bMXKCkpZw9LsfjDbTO7qR7npSSKM5vtnCJhFydUTxI2B9VPu4ouyZUh15Qp
-	+rWkj+48qrNSDWkGV1qQ==;
+	List-Owner; bh=Wz8fTaKzlr3HWiIkze7Jj3HRDue6qEz9vJAeTUYTaJo=; b=FZoFeuAzhF/E8J
+	hUN1PdWrUvLlJtiZjVGUQDo1Fy6s1uxcdEjXrqxhsihBAI7E4ZuoN2k2tR3ITQlFpnDK5ZlH2NuCn
+	xX7/NIoXsnmuFP/kJDytx7eMrsi6vmXFoTr4oIqav6RnfkuET+Pe+w2LhDeVE/MtbxGcboTs7geXO
+	TmjrCpC+O5yG/chRy7AlvLwZGJnhjYk80hKLYcX3Vg8fknQhj3Axd92YakhOU/2HLzQJkn5KeETal
+	A6uC+pQY8QLquamFINKl59PJ0j9WifR+O80Pw6PYBPE/xkZdfJPO+BNfZ+pDJqWtjaZf6/SmQfS7W
+	Om1A9dqzpBsgy1KpsVdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmS-0000000FAeI-2PLd;
-	Thu, 15 Feb 2024 07:03:36 +0000
+	id 1raVmW-0000000FAi8-3QP0;
+	Thu, 15 Feb 2024 07:03:40 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVmN-0000000FAY2-0VaO;
-	Thu, 15 Feb 2024 07:03:31 +0000
+	id 1raVmP-0000000FAb7-3OYC;
+	Thu, 15 Feb 2024 07:03:34 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -51,9 +51,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-mmc@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH 09/17] sunvdc: pass queue_limits to blk_mq_alloc_disk
-Date: Thu, 15 Feb 2024 08:02:52 +0100
-Message-Id: <20240215070300.2200308-10-hch@lst.de>
+Subject: [PATCH 10/17] gdrom: pass queue_limits to blk_mq_alloc_disk
+Date: Thu, 15 Feb 2024 08:02:53 +0100
+Message-Id: <20240215070300.2200308-11-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240215070300.2200308-1-hch@lst.de>
 References: <20240215070300.2200308-1-hch@lst.de>
@@ -74,64 +74,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pass the few limits sunvdc imposes directly to blk_mq_alloc_disk instead
+Pass the few limits gdrom imposes directly to blk_mq_alloc_disk instead
 of setting them one at a time.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/sunvdc.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/cdrom/gdrom.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
-index a1f74dd1eae5d5..c99dd6698977ea 100644
---- a/drivers/block/sunvdc.c
-+++ b/drivers/block/sunvdc.c
-@@ -784,6 +784,14 @@ static const struct blk_mq_ops vdc_mq_ops = {
+diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+index 1d044779f5e42a..9398beeb5d1e89 100644
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -724,11 +724,6 @@ static void probe_gdrom_setupdisk(void)
  
- static int probe_disk(struct vdc_port *port)
+ static int probe_gdrom_setupqueue(void)
+ {
+-	blk_queue_logical_block_size(gd.gdrom_rq, GDROM_HARD_SECTOR);
+-	/* using DMA so memory will need to be contiguous */
+-	blk_queue_max_segments(gd.gdrom_rq, 1);
+-	/* set a large max size to get most from DMA */
+-	blk_queue_max_segment_size(gd.gdrom_rq, 0x40000);
+ 	gd.disk->queue = gd.gdrom_rq;
+ 	return gdrom_init_dma_mode();
+ }
+@@ -743,6 +738,13 @@ static const struct blk_mq_ops gdrom_mq_ops = {
+  */
+ static int probe_gdrom(struct platform_device *devptr)
  {
 +	struct queue_limits lim = {
-+		.physical_block_size		= port->vdisk_phys_blksz,
-+		.max_hw_sectors			= port->max_xfer_size,
-+		/* Each segment in a request is up to an aligned page in size. */
-+		.seg_boundary_mask		= PAGE_SIZE - 1,
-+		.max_segment_size		= PAGE_SIZE,
-+		.max_segments			= port->ring_cookies,
++		.logical_block_size		= GDROM_HARD_SECTOR,
++		/* using DMA so memory will need to be contiguous */
++		.max_segments			= 1,
++		/* set a large max size to get most from DMA */
++		.max_segment_size		= 0x40000,
 +	};
- 	struct request_queue *q;
- 	struct gendisk *g;
  	int err;
-@@ -824,7 +832,7 @@ static int probe_disk(struct vdc_port *port)
+ 
+ 	/*
+@@ -778,7 +780,7 @@ static int probe_gdrom(struct platform_device *devptr)
  	if (err)
- 		return err;
+ 		goto probe_fail_free_cd_info;
  
--	g = blk_mq_alloc_disk(&port->tag_set, NULL, port);
-+	g = blk_mq_alloc_disk(&port->tag_set, &lim, port);
- 	if (IS_ERR(g)) {
- 		printk(KERN_ERR PFX "%s: Could not allocate gendisk.\n",
- 		       port->vio.name);
-@@ -835,12 +843,6 @@ static int probe_disk(struct vdc_port *port)
- 	port->disk = g;
- 	q = g->queue;
- 
--	/* Each segment in a request is up to an aligned page in size. */
--	blk_queue_segment_boundary(q, PAGE_SIZE - 1);
--	blk_queue_max_segment_size(q, PAGE_SIZE);
--
--	blk_queue_max_segments(q, port->ring_cookies);
--	blk_queue_max_hw_sectors(q, port->max_xfer_size);
- 	g->major = vdc_major;
- 	g->first_minor = port->vio.vdev->dev_no << PARTITION_SHIFT;
- 	g->minors = 1 << PARTITION_SHIFT;
-@@ -872,8 +874,6 @@ static int probe_disk(struct vdc_port *port)
- 		}
- 	}
- 
--	blk_queue_physical_block_size(q, port->vdisk_phys_blksz);
--
- 	pr_info(PFX "%s: %u sectors (%u MB) protocol %d.%d\n",
- 	       g->disk_name,
- 	       port->vdisk_size, (port->vdisk_size >> (20 - 9)),
+-	gd.disk = blk_mq_alloc_disk(&gd.tag_set, NULL, NULL);
++	gd.disk = blk_mq_alloc_disk(&gd.tag_set, &lim, NULL);
+ 	if (IS_ERR(gd.disk)) {
+ 		err = PTR_ERR(gd.disk);
+ 		goto probe_fail_free_tag_set;
 -- 
 2.39.2
 
