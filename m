@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0BE8C4829E
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 18:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C13ECC4829E
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 19:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IhBavI9B6j8HT7FujXA/3OT3u1hLp/EW7OfLJejueHw=; b=u/8msUo3jkr0m+
-	M5nt4pYO4ueEVpeoEjy1dqGXBXTHtxtan+ccykBlLcNvryO6IkmBP63ESi3yAqHah4hlwcFyqqxHk
-	vSkneQ9E5Y4l5xzU7frwSz+hVsKNCyhsRS2gzSOnfzuP1Jl+iIvB2rTkYLsSjfrs2yr4YuWqaBPuP
-	IFlI9r0g8BImYzie5rpcHNgV+MAh6BG4jzDyrQnjhhe6Kz3AvoDBFAjXnDbEgduEHb8C34BypIe3n
-	YU6MXSe2KgiNgRVsyi1+ICQCKKDpxNWx0q5HLIlUN9eFiSATbzAXNEVfzpcIhnQCZd24atGTZYnQR
-	fWNn603/FQTJilcz/BjQ==;
+	List-Owner; bh=dCpIBjQvCpb37FnOBJHFtyBn6uba2JDSWflNYVBHocg=; b=Hn7mmK3OVMHYAQ
+	/xE0mCycU8lGsTt2D/lcXiIUwKriqCriYa7Glo259AsocquKfxLcZdrVxTDYUia723dblE/lQVRRb
+	vb6XwQ3/ERZlEpwoifitYUr0NmaNSS4Dcgi0cM1fVW6tWX+9DIYw2p66Hka9xGHnMQrjM/gme0jZ8
+	AYQKIsTGPuZq8ou9H5aDwrYGZm48Dsak0VXVZU4w8llQb33IpyBj8l6wwVV8MAyqukoKblOU2/OwJ
+	bSyXMDfaks+1xmJipq2To7ovcdFOy7tiUGRdjuehxr8DXurSpfhXsL0TWlpZW0eH9OMiVNwhsIooE
+	4Zdke8z1nXmcgg/cUJJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ragu4-0000000HQoa-2BR8;
-	Thu, 15 Feb 2024 18:56:12 +0000
-Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
+	id 1rah0G-0000000HRPi-3zlQ;
+	Thu, 15 Feb 2024 19:02:36 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ragtz-0000000HQnu-3nYS
+	id 1rah0E-0000000HRP8-16xQ
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Feb 2024 18:56:10 +0000
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso628533a12.3
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2024 10:56:07 -0800 (PST)
+	Thu, 15 Feb 2024 19:02:35 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-51178bbb5d9so1404772e87.2
+        for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2024 11:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708023366; x=1708628166; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1708023752; x=1708628552; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4cAJLHNF/JRrCEO49lp/BKyIGOuJcZVH2wEu3LRWvvE=;
-        b=J/oxrgnTrKcqks1mR9M9wNmZwIA28rB74bn1jtxkBHf3EYh0bMp+uoDlo+ApFaHExo
-         7HUtYazdVKr9glVTpSTWcNw+Bsd013HvH+Vsj4W1/n1pe8HFbIMfTIChImYCUrky4hju
-         2IA8w7hgNYZabfMjD7RhNdLy3RbnLh0qCr1NQyXTd2v7JeLokQf7A2U5TMVrL8DZzy2/
-         Frn10Q9wGCVaDk/Xi7ho6hjcNipEnId2ynrh4JfZ2LXn83rnj5BsEZ2qpozeCMb4kqid
-         nbjzvQ4F6DIBr76HklXW2xclXPyGFeCCY8w7Au6EASD2qnLaRZfVwXSqRkU/we3XhxxV
-         /FDw==
+        bh=WINM1CAiAfhoXZ192uGwEElhM4Prco8Dh6+uC1Zs1Sk=;
+        b=Hif5q5bph25vLoLsGMV8tPohEy05GpVB0US9upAhYXPUS9d+zs0O/ORpUlKmA92Sp0
+         C11la73yAC8OCXGWLqAX+qIF0WxIAbPK89B7OyYWTbrfndWuoNoR2Y8uyOAvhgGcCT0S
+         /NfN1z8AyCbfZj/Rhxh8US4xBS+gjz0Y0i3I13NCtzMsDuf1YRKON377PJTdhGl+VJQs
+         9h3UyHor4xdObOWlh0oaLHm5UopG5ZGuTvseNqDp3boWEgi9Abtp4P0YfGDg0PPH+y52
+         Pif/Kg91kxr8lAARq/GOBH31ABbZk7RcBDToXteM55uqikwVbJC0C4rLH6/8C2QtRBZy
+         cxsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708023366; x=1708628166;
+        d=1e100.net; s=20230601; t=1708023752; x=1708628552;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4cAJLHNF/JRrCEO49lp/BKyIGOuJcZVH2wEu3LRWvvE=;
-        b=WkpEk40iEnWxJB2KalFB4sFGNB5Am7xTE0cRRl79gArB+y8bAL+6nJZSGtuj8xl00A
-         S5jMUXzzfFyhuLI1ggXjcGdYa6xsaPLHtd8PEl0rWUpDFMJczaH3uGqaxUTaj3fVdHX6
-         JVI6HVSC9ir2aUrBrjEF8yQBR38U5+NWnSewHRtYJyS0KjaePG5kUvuMoJFXvC/is1Fh
-         QrsS1qMnePCez+wosQrWRPl7B7Oxqpc/uHD22K14TwKmIUB7wQzbHRoIdmOq8i2/LSrI
-         qppZUJvBqq9tN9WsogsnO9PkUOWCWPsBDVfPvJyhpH7FnE51QTR6kr9LlnThUOp3hYqM
-         pX2Q==
-X-Gm-Message-State: AOJu0YwiDW7/5X6Ur+nND2wJD4CXpMOdCOtS1La1ctjEnmRA4YKjI/MV
-	ZE1ORzRjWKnCgE/qIfichrfERrpu0JKkDtg59eBTD6kaT0z6g22lkcR9Wrw0z5U=
-X-Google-Smtp-Source: AGHT+IEP+URuxt3T56XaW6PGp8rRSuDf5PyL8goXj3rHrMJxTftAeuUO0uUbbfH7vkxrWaqXZt2u9A==
-X-Received: by 2002:a17:906:1186:b0:a39:6c07:d31c with SMTP id n6-20020a170906118600b00a396c07d31cmr1969344eja.25.1708023366046;
-        Thu, 15 Feb 2024 10:56:06 -0800 (PST)
+        bh=WINM1CAiAfhoXZ192uGwEElhM4Prco8Dh6+uC1Zs1Sk=;
+        b=Yv9puyUl1j1rURx9YEAeS/Lvgi+1g9zyk2iLItY1a+E0bJeBmGeypqSdZysIdCmucW
+         EDYoNo80c6dE1ycpJ+CjsFwUuihxw0MBknqJpSp319xOCB+kn0DgwV9ZAmuSNCVjOlUh
+         oV9+S++2WNrtvqRk0d+PJyxx8cS9b2v0qhJyghnNUuNXt6bu0DseOinvxhWfmYynIMNu
+         yXIJxinVkmLiMMRmsDXvwwdX39yQmC2eHBHWb03ViAJV9JS5DnqWVSKYjkO+x9N46KCf
+         bKEjlTCTR9WsKWeeoWiALOVsVeLyYli5VUxKQhUXiTf5v/aikOwqCsB+lQd7v6+VLWv9
+         qNbg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPL3rNtOI/fdtvScJwoTrP1TaHpqsk4LTSx30TPH7vilMNlE6J1uFPrxkdDDql2NoOzwnE+F1Ab1MfpX44wpdq4n2K3eE9ro9Yc+6eew==
+X-Gm-Message-State: AOJu0YzeFZb9aJtmFlaqu5bjeCgBZvi39VotsLKJjn5mvypSuA7Kgzpb
+	Izae6WYCtyBL3gxSz/KgC9O51qAfzeCxxtL6/JGMNlhrv3UmS4YWSlghCcP6tjU=
+X-Google-Smtp-Source: AGHT+IGPISWatCsmdezcsFzOVFA1u++4PVNjsFb3qToyHec4nyciHsccN+lriRsa3TovwxGoo4rxVQ==
+X-Received: by 2002:a19:ca42:0:b0:511:66f0:8287 with SMTP id h2-20020a19ca42000000b0051166f08287mr2120743lfj.28.1708023752222;
+        Thu, 15 Feb 2024 11:02:32 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id tj6-20020a170907c24600b00a3dba44a709sm261960ejc.50.2024.02.15.10.56.04
+        by smtp.gmail.com with ESMTPSA id au2-20020a170907092200b00a3cf5450b28sm820024ejc.189.2024.02.15.11.02.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 10:56:05 -0800 (PST)
-Message-ID: <9c36b6e5-262d-48b1-971c-b03d9edf7789@linaro.org>
-Date: Thu, 15 Feb 2024 19:56:04 +0100
+        Thu, 15 Feb 2024 11:02:31 -0800 (PST)
+Message-ID: <8c3d8fc3-2c1e-4ece-abb1-b427a909ad39@linaro.org>
+Date: Thu, 15 Feb 2024 20:02:29 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/12] memory: stm32-fmc2-ebi: add RIF support
+Subject: Re: [PATCH 1/5] spi: dt-bindings: add binding doc for spi-qpic-snand
 Content-Language: en-US
-To: Christophe Kerello <christophe.kerello@foss.st.com>,
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, broonie@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, devicetree@vger.kernel.org
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-7-christophe.kerello@foss.st.com>
- <989661f0-f539-43c3-a332-13c0e99ed7b9@linaro.org>
- <edbb5e6e-44c0-426b-9c97-87ea1eee1b4c@foss.st.com>
- <1e1ae38b-7f8c-44ba-9970-0929aaaa28a8@linaro.org>
- <a1badd8b-041b-495d-81cb-b264c687de80@foss.st.com>
+ manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-2-quic_mdalam@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -124,10 +124,10 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a1badd8b-041b-495d-81cb-b264c687de80@foss.st.com>
+In-Reply-To: <20240215134856.1313239-2-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240215_105607_993350_44FFC8F1 
-X-CRM114-Status: GOOD (  18.34  )
+X-CRM114-CacheID: sfid-20240215_110234_354497_57BD47B4 
+X-CRM114-Status: GOOD (  14.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,64 +144,142 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 15/02/2024 10:00, Christophe Kerello wrote:
+On 15/02/2024 14:48, Md Sadre Alam wrote:
+> Add device-tree binding documentation for QCOM QPIC-SNAND-NAND Flash
+> Interface.
 > 
+
+A nit, subject: drop second/last, redundant "bindings". The
+"dt-bindings" prefix is already stating that these are bindings.
+See also:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+
+> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> ---
+>  .../bindings/spi/qcom,spi-qpic-snand.yaml     | 82 +++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
 > 
-> On 2/14/24 11:07, Krzysztof Kozlowski wrote:
->> On 13/02/2024 14:15, Christophe Kerello wrote:
->>>>> +
->>>>> +	if (ebi->majrev < FMC2_VERR_MAJREV_2)
->>>>> +		return 0;
->>>>> +
->>>>> +	if (resource >= FMC2_MAX_RESOURCES)
->>>>> +		return -EINVAL;
->>>>> +
->>>>> +	regmap_read(ebi->regmap, FMC2_SECCFGR, &seccfgr);
->>>
->>> Hi Krzysztof,
->>>
->>>>
->>>> No checking of read value?
->>>>
->>>
->>> No, it should never failed.
->>
->> And you tested that neither smatch, sparse nor Coverity report here
->> warnings?
->>
-> 
-> Hi Krzysztof,
-> 
-> There is a lot of driver in the Kernel that are using same 
-> implementation, and I am surprised to not have had this comment 4 years 
-> ago when the driver was introduced.
+> diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+> new file mode 100644
+> index 000000000000..fa7484ce1319
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
 
-Really? Care to give some pointers? Heh, I don't know what to respond to
-it. Either you say that my comment is incorrect or you say that it's
-okay to sneak poor code if no one notices? We can argue on the first,
-whether my comment is reasonable or not. But if you claim that previous
-poor choice of code is argument of bringing more of such poor choices,
-then we are done here. It's the oldest argument: someone did it that
-way, so I can do the same. Nope.
+Filename like compatible.
 
-> 
-> So, how should I proceed? Shall I initialize all local variables used by 
-> regmap_read? Or shall I check the return value of regmap_read?
-> And, as there is a lot of regmap_read call in this driver, shall I fix 
-> them in a separate patch?
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/qcom,spi-qpic-snand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm QPIC NAND controller
+> +
+> +maintainers:
+> +  - Md sadre Alam <quic_mdalam@quicinc.com>
+> +
 
-regmap operations, depending on the regmap used, can fail. Most of the
-errors are result of static configuration, e.g. alignment, regmap in
-cache mode etc. Then certain regmap implementations can produce errors,
-which is not a static condition but dynamic.
+Provide description which will describe hardware.
 
-You have neither error checking nor value initialization. You risk here
-to have quite tricky to find, unnoticeable bugs, if there any mistake
-leading to regmap errors.
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,ipq9574-snand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 2
+> +    maxItems: 3
 
-Indeed neither smatch nor sparse report this as error currently, but
-maybe that's their limitation?
+You must document the items (could be sufficient in clock-names if the
+names are obvious).
 
+
+Why the clocks are flexible? This given IPQ9574 has variable clock
+inputs? Please explain.
+
+> +
+> +  clock-names:
+> +    minItems: 2
+> +    maxItems: 3
+> +
+
+required goes here.
+
+> +allOf:
+> +  - $ref: /schemas/spi/spi-controller.yaml#
+
+
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq9574-snand
+> +
+> +    then:
+> +      properties:
+> +        dmas:
+> +          items:
+> +            - description: tx DMA channel
+> +            - description: rx DMA channel
+> +            - description: cmd DMA channel
+> +
+> +        dma-names:
+> +          items:
+> +            - const: tx
+> +            - const: rx
+> +            - const: cmd
+
+No clue why it is here, move it to top level.
+
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
+> +    qpic_nand: spi@79b0000 {
+
+Drop unused label
+
+> +        compatible = "qcom,ipq9574-snand";
+> +        reg = <0x1ac00000 0x800>;
+> +
+> +        clocks = <&gcc GCC_QPIC_CLK>,
+> +                 <&gcc GCC_QPIC_AHB_CLK>,
+> +                 <&gcc GCC_QPIC_IO_MACRO_CLK>;
+> +        clock-names = "core", "aon", "iom";
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        flash@0 {
+> +            compatible = "spi-nand";
+> +            reg = <0>;
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +            nand-ecc-engine = <&qpic_nand>;
+> +            nand-ecc-strength = <4>;
+> +            nand-ecc-step-size = <512>;
+> +            };
+
+Fix indentation.
+
+> +        };
 
 Best regards,
 Krzysztof
