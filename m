@@ -4,147 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59140C48BC4
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 01:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CDABC48BEB
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Feb 2024 07:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=O4DkZrjBNcY+0hUUpyfxlFfbn4oMP3KlI7rLHupTdfw=; b=wk98VypD7bCz1R
-	6QMObbA+5+V5Xeh/PD4+MyLOpsxi9jdoTLONobM3FcBjPkjcjfswuLzdtNob3ZVURDW/cwu5n/Giv
-	MFjJLYZA8D1QThxgiBwVqzdbffCa2iO/RNcpXBK6/l4KGoP1peZ97dGYRryMkWTzFp4A/ntRqsThs
-	oNOeg7M5LyBrjfHuHyhIVpes+a61jHIcbeELAawN5zedKt05Gn2hYI/zrEONEGTPhN2VG8z77A59R
-	BryfQloYXAj7vab2J11cRQtebcnZl+kYQKePHnKygdCW1+cAUKS1Sw4+7MPOEX+VP7qvLXWLAi0k/
-	m0BUx1qEQkAGuBnF1E/w==;
+	List-Owner; bh=H8oMNrKnroJM5ipoSP54ISD44v6DDaRwBmQ/dH7BwuI=; b=kUifWvW/sFPGpC
+	yCeS1bw8+NMsmIbv8eLmtVr+0OdDsFScR4C+p3UwUnne9TGKSUPperhpB6ulbfBzvLLmqxqvDbtB8
+	BB4SSBmVcj7k+WoU0+yeGXCRskMXRJgCBni4JJaGpY8YADbNFSye+ZZqDzN7e0c6t+mjAUl55cJPk
+	UG5t2/FUSLcpb0DxjMflMBVqNcJ3xBHy+KsY2dtXT7YFbnLrIpzkw1f05p6OCXxi28mkcZ/95Syv2
+	UO2eJqQ3j5ta3RYGrNMvBxXg83Rg+M+lbsii5fDm3tMI8rsucGwKWV8PNxEljkzW4EbO3250j5Thy
+	tqvv43Y2rBUqTm1ThbDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raQz6-0000000Emb6-378a;
-	Thu, 15 Feb 2024 01:56:20 +0000
-Received: from mail-sgaapc01on2070c.outbound.protection.outlook.com ([2a01:111:f400:feab::70c] helo=APC01-SG2-obe.outbound.protection.outlook.com)
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raQz2-0000000EmZj-2YKt;
-	Thu, 15 Feb 2024 01:56:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FR9/nq9Nc8d/bw8akzQgZEDT+zJ36FGGwgR4Vl+0mLOFo47QPYHi+J/0uG70T12tR1YqHv9C8Ws2R+zayytHnbGndhCeZg+eT4O4zio2w0VkzTLslOW9paRh/+qc1rPEn8KAJZI5/Tn3u9jPAVE1Iwu06+nEkSN6FqmizOZwP4s6ntuOPowEWM+SM1jGd0VEVt72gltL6H8ZPHsVpYRVM31DtEj1vZWfloAYaWzhLOn/1h5FfgwMMQFenQx4hAGWf04El5oKPsR6tMKt8xidkDZ3ow1Eb1zrSD115pYV5BPMR6/8s+Pw7JOX6I+8QztEB870ODh8YvGNgUdnh80ydg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GlvHYIbNt+s4/WW6jhR330/e71dpEO/qNL/YjEBiJkI=;
- b=ZP/qrLr0eNFkoK0WwnvPQhddNiUu77DrkyuIpdM64ztfYtVV2pkNV/oPpJC7V/m5bC/fZmOcEOYDm8vi8FMj16m2CWQ6nsk3WeurfID+5T9wwtJENRu577dS8xeSFLCAKfgfyf++U1iUm78q5hHBNbSBaqYSbhzSScoxGBwTrTIw+ANB8SIR6eKoMuRBYKGs/oPziZ9hp8Lu0eZURtYQI+9Cqw9oDBOb3PsmPidOocB9wd62BsQnjZC1DLmGOg1fzpvr9+FDXQZp8YzrJ6yt/wRjIVIIlgEdDlFpbInAwwB8AK0cyxYKm3SMP+6j0PbE9Qm9ppMK5b+Qc50h9OblQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GlvHYIbNt+s4/WW6jhR330/e71dpEO/qNL/YjEBiJkI=;
- b=h1MXznkqhG1RMM4neFtv6eN9DBK1eKKyj1iGTWlMBrgkoSppqbe8yoH6g65y0nRQC23sq1FlfsORjp9fRXaRTidRwS8ApjEUqKxLkvKcyAhPGdehiW7HUh5iYHytD98lRDeUXdp1r0yXQQhbThn2qmecubD0EiobuPN0+TNkh0zPSJBZFndBBVKLYajEoBXATJlGJ8owqMVED9X7MMgxe7yGJ6c5fb8PL8V76BXLjl0EPT0/UYGnZBQjZonTlEApwyo2GxtcMrXVm3a8Qw2uNWWQeQCAmRnqDsP+qQJdS2jYWexj17HjzxEn3TVwUqLsnoeLRpuIGaIbOFdhfFQnHQ==
-Received: from TYZPR06MB6640.apcprd06.prod.outlook.com (2603:1096:400:44c::10)
- by TYZPR06MB6893.apcprd06.prod.outlook.com (2603:1096:405:1f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Thu, 15 Feb
- 2024 01:56:00 +0000
-Received: from TYZPR06MB6640.apcprd06.prod.outlook.com
- ([fe80::e77d:5a7a:3205:d527]) by TYZPR06MB6640.apcprd06.prod.outlook.com
- ([fe80::e77d:5a7a:3205:d527%4]) with mapi id 15.20.7292.026; Thu, 15 Feb 2024
- 01:56:00 +0000
-From: ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To: Conor Dooley <conor@kernel.org>
-CC: Manojkiran Eda <manojkiran.eda@gmail.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Joel
- Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
-	"jk@codeconstruct.com.au" <jk@codeconstruct.com.au>, Patrick Rudolph
-	<patrick.rudolph@9elements.com>, Ryan Chen <ryan_chen@aspeedtech.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-aspeed@lists.ozlabs.org"
-	<linux-aspeed@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "openbmc@lists.ozlabs.org"
-	<openbmc@lists.ozlabs.org>, "zev@bewilderbeest.net" <zev@bewilderbeest.net>
-Subject: =?utf-8?B?UkU6IOWbnuimhjogW1BBVENIXSBBZGQgZVNQSSBkZXZpY2UgZHJpdmVyIChm?=
- =?utf-8?Q?lash_channel)?=
-Thread-Topic: =?utf-8?B?5Zue6KaGOiBbUEFUQ0hdIEFkZCBlU1BJIGRldmljZSBkcml2ZXIgKGZsYXNo?=
- =?utf-8?Q?_channel)?=
-Thread-Index: AQHaXooDcj/dRKED5EijCru7OZnLmbEJqwsogAB/zICAAHchIA==
-Date: Thu, 15 Feb 2024 01:56:00 +0000
-Message-ID: <TYZPR06MB6640F82C539F0B17BCDCC55E914D2@TYZPR06MB6640.apcprd06.prod.outlook.com>
-References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
- <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
- <20240214-yoyo-platinum-dcd0e7e16a22@spud>
-In-Reply-To: <20240214-yoyo-platinum-dcd0e7e16a22@spud>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR06MB6640:EE_|TYZPR06MB6893:EE_
-x-ms-office365-filtering-correlation-id: 2abd40f6-4f4e-4c2e-917e-08dc2dc94240
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c2n+BwRRf9sNZ1TqJDHGwzFc7pvHkUd1Tkd23o+08H/jgNjAXydSLvou+guoWzf7KWZfWmed9dqaJQjb0sYQJq/Mvy/aSts4hXkgbY1Ufkm65x4MpKk1jlRsSIx9HM8rRNZQWMvlhpVgj3h5B7AAFMQzg5uMr+ciF/ArHfUkisX9dBMMGS461C5iYC8UkdtqPlOpeklOW9RGyUR3G2Kl7z+qUK3jMqYfu5olmBS2AsNJ8BQSBnBs8H+bJbG91mR4CB4vxennz1OMVc5z1GkKxCAtW8aW8l1ue8P/STlCh+g+9gr3IUbrdgwYWzFUFzZwEWsu9VHrM5/PQAjF7H58lTt1zY5iRjFk7GfzY9C6rwqOlSrg/lmqH8dNiJWbuDRJ7HV/UnkD8d/3ZBe6y7YXz+RdpB0UcQjx+LAlqNIhTkVJcHLi9O4vqs73IMBTG66jlEE3XCkF8n9zpkb8wK0KQBFCMn43OFC2a/4gRSPdubd2hRyb0NCc0ur23+r+szXg26Mo1rzqfs010aGUJGSyvqqstsVpuS2/GRCZ+HPmLjn5gUsVwSqpeQaNvZd1RzNwkO8adQJNBrCNEE3CN6SLc2xpFdOcqEquE6NoIuRr7HaOMXoOn8sVQIpA+MRxGbqH
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6640.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(346002)(39830400003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(66446008)(66476007)(66556008)(316002)(54906003)(76116006)(6916009)(64756008)(55016003)(66946007)(8936002)(2906002)(7416002)(5660300002)(52536014)(38070700009)(4326008)(41300700001)(7696005)(86362001)(478600001)(33656002)(71200400001)(6506007)(9686003)(224303003)(26005)(83380400001)(122000001)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UG84b0UwUDZENTRyTEdSTTNNVVlmRVdxWVc2RVRIWkJZVTFwVUFHbG5ESzY4?=
- =?utf-8?B?WTlpQ3kwTnk0cjNaaWIxeGxWNFphbWRPQVF5QUF2RzFha0pVa0VCTUYzRC9n?=
- =?utf-8?B?aU9uQnh6UHlBNUNYZFVxb21SYnhsR1ordkx6Z3U5VkVSeUd1ZTV4LzJBYzVD?=
- =?utf-8?B?dVlMd2hOcGNWcjFJdGROd0FaL0ZRNkhveW9VYTY3WkpwQ2NjUmZWbzV6cHU3?=
- =?utf-8?B?ajdBRmtNTld4eTQwSGtmMnBpUHhETitLZTVKOWRUc05SUTZZdlF3Sk43akVB?=
- =?utf-8?B?UjV5N2orWTZXNUN3S21jUTB5VC9HRlpiSDhyeWdGWnlEc284cWh5bVJkR3lT?=
- =?utf-8?B?cW52dGtPUk5wTXlpN0EwVVRTS1lSVk1OeWl6RDB2dWJybHVVRUV6OWROcVRF?=
- =?utf-8?B?L3pDZ2hBSVpQZ1h0Qi9RRzlhalV0RVZRdlFQTVd5THJYUUlZL09GR015Q3Zi?=
- =?utf-8?B?S0w5clp4M09OeHU1Zkw1ZGozYnUyUlJOV0VwZXQ2OTZXTTAzNW9pM29TMDZJ?=
- =?utf-8?B?ZnJ6bkxxNkZnMUV1a2ZIK2dYc0gzVFRCV2RtdnBFa1l3MDJ6ZStJcWl3WUNy?=
- =?utf-8?B?N2prWTRCOHQya0VyUFB3VnNLN0hTNEpPQmp3YVdwelkzODQvTTVGYlJJYzJM?=
- =?utf-8?B?VG5BanU0MFFOWnVXdDdtZkVUTTdDTFpERTkwQm1HM0pIUVZ0cGlLbTFjLzBT?=
- =?utf-8?B?V0F0TjdiUHl0VzNuNFV3eGllbS85ZExxT3hkZnhkbjVQV21xWllwbU1nbHc1?=
- =?utf-8?B?cWJkaTNSRmV4QmowQ0Vwcnl0cGw2Uk1TNlhXQU15dURFTmJ3ZkFNSEZrVUxy?=
- =?utf-8?B?K3pDTWdLTWIwa1dZMGxsVHhVeWxnUFIyOGt4d2FCdi9oa2w3ZDFkWGNuZzd5?=
- =?utf-8?B?c3NVYjdzU0Q3bEc3SlpOb2FIRDNUd0QybVNzOHpMOW1qU0dFS0tJR3Z2S0JO?=
- =?utf-8?B?dUtNRnd5TnFoTSs5WGNVVU4yK1JxdWdtelBwajc2aXZlWWRnUklXV3F1eGVN?=
- =?utf-8?B?U0pRWWd0ZXlralNyRmV5V1NvSjlReDdBUDRvd2pXekw2MU95cUtOK25ZUjBy?=
- =?utf-8?B?MjRMS0QzMS9zU2orV1ZEVG1QeXZrYmc0K1V1bitIV0Jkc0dHcUpPczErTXZu?=
- =?utf-8?B?OEJMNkhNYkc0YlRSUldTcnhXcXBuUFNMNmIrdmdGZjJTZDhlcmY0ZUZ6RFNa?=
- =?utf-8?B?WSt2YXAwRVA1Z1ltOXZNZXNuSUNKYXB3VWYwOEF1cU5OSkx2Z2VzWjdwWi9P?=
- =?utf-8?B?bkgwenZRcW5ZVlRRKzZYWUhWMjB4MkpQcEo2amdmQjJJQ1pvbTQxajhId0RX?=
- =?utf-8?B?aEN5NTJCYThudDRRWU1EMFFDaG9DVUpXNmpncE9xUHFVOHVzV0xUclVjZ0t2?=
- =?utf-8?B?MDlTVXJzTVluZkVHcWRCVm8zUG9FdmZiUHpRZUZ0Y3R2MnBsR2lRdUwyN3JF?=
- =?utf-8?B?UkhpaldLQ1ZDeDZWVjZQNlBUL1NneTluUDRrLzFzQTh1bVdIOEZnSnVHSnNU?=
- =?utf-8?B?Y0I1b2ZxV2U3aFRqMGRpbzlXQkw4aGJ4aURXUU13WDQ5cVdVS1VTWVdINEFK?=
- =?utf-8?B?UC9zOWNJa25PbVJyaDVpTUhKRTJ0Zmo1bTEwWUFycTROdVhmSDZaaDhpR2t5?=
- =?utf-8?B?UXpDYytqWUU5a08xRUJnNGRRVHdYcTdtcVBHZHNiQVMyNy9pUys2ck5Bc1lu?=
- =?utf-8?B?OHdVbmJBTEVzUU5oSXI4ZXY2dmE3c2Z1REN1SUJRMDQ3RmJoVE1pR3JBVDNY?=
- =?utf-8?B?RVo0aVVyUFcxdDRrY0V1aWlGWkY3VW5mWERhNEdNMUhjczk4dXdwb2VoQmRT?=
- =?utf-8?B?NEd6SkxPbk9VVTFycFA1SUd5WFFURUtPSWEvQStmR1paa2hYQlJIZGxwUXg2?=
- =?utf-8?B?M3I4aWhBRVIyUkNMSFdZYUFUWjFQK29IZCtBaitBZk9OTXlYbUhweEt3UkZL?=
- =?utf-8?B?VC9pN2VzaldrUVg2TlhwUGdETXdqU1RnSDcyOVROK252aGpyVWVDNWhPdXYy?=
- =?utf-8?B?Z1pkMkdBVTZtNlhXQ2w5MzBLL0hkM1BKbUxsdGpoblB3WGZUckdaMTU4Tkpz?=
- =?utf-8?B?c2J1Y1V1WHp1NWZuT1FPZDRGUklMaXMvYzJZOXJNNjFyamsxZWhkaGl1R2xs?=
- =?utf-8?B?WWJGdkJGc0VhK1pYVWJBUFBMY2ROUFk4dzlTZDZUUHhDblRsMlFDN1hqeDNH?=
- =?utf-8?B?alE9PQ==?=
+	id 1raVm4-0000000FAOW-2KFg;
+	Thu, 15 Feb 2024 07:03:12 +0000
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raVm2-0000000FANr-02ZR;
+	Thu, 15 Feb 2024 07:03:10 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Justin Sanders <justin@coraid.com>,
+	Denis Efremov <efremov@linux.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Geoff Levand <geoff@infradead.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Ming Lei <ming.lei@redhat.com>,
+	Maxim Levitsky <maximlevitsky@gmail.com>,
+	Alex Dubov <oakad@yahoo.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	linux-block@vger.kernel.org,
+	nbd@other.debian.org,
+	ceph-devel@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org
+Subject: [PATCH 01/17] ubd: pass queue_limits to blk_mq_alloc_disk
+Date: Thu, 15 Feb 2024 08:02:44 +0100
+Message-Id: <20240215070300.2200308-2-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240215070300.2200308-1-hch@lst.de>
+References: <20240215070300.2200308-1-hch@lst.de>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6640.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2abd40f6-4f4e-4c2e-917e-08dc2dc94240
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2024 01:56:00.2719
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PJrE+Op/HyOL9F1NUq31o2pKXDwYGZ78/AirhvlnflzZ2UY37cSWVNRgXknOv+/D3q6wydPRFjE4Th9XJSyTqKf+qEXiEXUAKI3SzcPMXn0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6893
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240214_175616_677531_2A1DBEAF 
-X-CRM114-Status: GOOD (  17.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -161,31 +74,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> 
-> On Wed, Feb 14, 2024 at 11:34:31AM +0000, ChiaWei Wang wrote:
-> > We appreciate that you are willing to help on the open source contribution.
-> > However, please co-work with Aspeed before submitting drivers of Aspeed
-> HW.
-> > Otherwise, a misleading driver on the community are going to bring tons of
-> customer issues to Aspeed.
-> 
-> It may not apply in this particular case as Aspeed did write the original driver
-> and it is polite to work with previous authors when respinning a patchset, but in
-> general there is no need to work with a hardware vendor before writing drivers
-> for their hardware.
-> 
-> Blocking a driver because that company might receive more support requests
-> is not the kernel's problem.
+Pass the few limits ubd imposes directly to blk_mq_alloc_disk instead
+of setting them one at a time.
 
-I agree with that and Aspeed will not refuse to support.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/um/drivers/ubd_kern.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-However, in this case, the authors, IBM, and Aspeed already have discussion (at least 4 times) before and foresee "issues" on practical eSPI SAFS use.
-If there is already a known issue of the driver, why ignoring the previous discussion and push it?
-A compromise is to ask for driver renaming to espi-mafs to avoid confusion.
-Otherwise we need to explain, again, why the driver does not fulfill the SAFS expectation.
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 25f1b18ce7d4e9..48e11f073551b4 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -881,6 +881,10 @@ static const struct blk_mq_ops ubd_mq_ops = {
+ static int ubd_add(int n, char **error_out)
+ {
+ 	struct ubd *ubd_dev = &ubd_devs[n];
++	struct queue_limits lim = {
++		.max_segments		= MAX_SG,
++		.seg_boundary_mask	= PAGE_SIZE - 1,
++	};
+ 	struct gendisk *disk;
+ 	int err = 0;
+ 
+@@ -906,7 +910,7 @@ static int ubd_add(int n, char **error_out)
+ 	if (err)
+ 		goto out;
+ 
+-	disk = blk_mq_alloc_disk(&ubd_dev->tag_set, NULL, ubd_dev);
++	disk = blk_mq_alloc_disk(&ubd_dev->tag_set, &lim, ubd_dev);
+ 	if (IS_ERR(disk)) {
+ 		err = PTR_ERR(disk);
+ 		goto out_cleanup_tags;
+@@ -914,8 +918,6 @@ static int ubd_add(int n, char **error_out)
+ 	ubd_dev->queue = disk->queue;
+ 
+ 	blk_queue_write_cache(ubd_dev->queue, true, false);
+-	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
+-	blk_queue_segment_boundary(ubd_dev->queue, PAGE_SIZE - 1);
+ 	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, disk);
+ 	if (err)
+ 		goto out_cleanup_disk;
+-- 
+2.39.2
 
-Regards,
-Chiawei
 
 ______________________________________________________
 Linux MTD discussion mailing list
