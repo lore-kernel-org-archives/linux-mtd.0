@@ -4,83 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA249C48BC4
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Feb 2024 12:20:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33CAEC48BC4
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Feb 2024 13:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=J7hJ/iNubFJhccmo4lR1KY0RybnF3SqLeLrrrjXaTao=; b=35T/BszpMo2+fP
-	BOcAFvUAuMMZ/qss1EP9iTZ/3TWuFbSbBif+FlwvM4XurBP+TOq8mUmsnLF9YzN574Ww3m+Gvj1hj
-	Xi+4Lh/gjEAkHeOoDgHBzrFnlJFdmhNQBxXryDuxWNbljMZr24EHPbqb4yMtzpncZJ65HQ7uvpuuW
-	66yeLMbJabwqRETueSBEcVcuykPBE+OkZjDwlgiSNwdA83rmEILUe8o9IcQKTD19xlVyiB4tTatXV
-	MffDymNSDfKLPp8MpD9OI8/Ml/pBm4D/E6Q0Q7nq2JnnIr4pORYPCbiFGqt1TqD9LQzW/Fwp5hKpT
-	KNAdkLH6WDoOwO1rBxeA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=d1etdVcOWSmqHWPnnjtG01kV9T0AdrT5mpxUhaG/YhY=; b=U6VTf0W9+BdTkJ
+	C8mbQpAs1gXdlKbsCe9P51DQwtIt35FjFdvLTI3Sc5EqAe4q0uz5OzgK/2DcQjnKGi0Yrnu3dJCfX
+	R4lZYjfb4ynhVPElq7R1KH5vp2PEowBnaZKdhBUe9nI6L5M0eqLw1lEUHAUxgCJBvdAX/njFhPqCX
+	brTstRvO4qO1Ma7JjPZQb4WWeoY3cVq0cDULcjWrWWIzg0F0stXGVanH5P1uaVPx1V1TG2gVyx9Ut
+	CARpLIgpx+TIXyPFqlKaVeB4f0aB0BwomAJQ9WlIfb/VicIyc4RpnLC5/7wQ5ls3S6epShBtoizfI
+	13xcTkIWmEBc5RKLe/xw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rbJgX-00000005dTn-3aaE;
-	Sat, 17 Feb 2024 12:20:49 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1rbL41-00000005lqN-10Fw;
+	Sat, 17 Feb 2024 13:49:09 +0000
+Received: from mgamail.intel.com ([192.198.163.15])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rbJgU-00000005dT8-3bwV
+	id 1rbL3y-00000005lpa-2zia
 	for linux-mtd@lists.infradead.org;
-	Sat, 17 Feb 2024 12:20:48 +0000
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4125296400cso8607185e9.0
-        for <linux-mtd@lists.infradead.org>; Sat, 17 Feb 2024 04:20:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708172443; x=1708777243; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+mNrI/k5QCja8EvIn+nI1FFHhVVQ40ZahQzJY3VQjKM=;
-        b=YOq2E5D0m3eYm6yvMg6dGfLU0tcE2dGuSSYrNNGQp0cAphyzeZ3xTKeZ3T0S59iobq
-         QVf0PEdnobtebK4iY7dTTmO7fB4jmXFUnOIKFkYzRKLO6WX+j7BZbgF2jwkpnjv86MTl
-         1JUcvGRTsPU5m2Y+VU1+VuXb13MXex+Ra0YZPCli7Ero01gtP8a8cXB0NmN/Ly/5Akxl
-         ksGsnW7fDQ+7h45d5BysOYmHVA5nM4y3gZv3UtdKC8whMuLK+qMkP+VyGg+8vSRQ/GYj
-         zuVvtdRiG/6aKZ1bDKTh683/xQ7XxKuayXrVzNK8CIhc+6NIGHbQMNhxry5/d2VWp8Vt
-         6qBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708172443; x=1708777243;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+mNrI/k5QCja8EvIn+nI1FFHhVVQ40ZahQzJY3VQjKM=;
-        b=mgRzb+twokoh15AGDfWZyHJ1k/lM+8oqv8pQnrvEsCy5SmYysq5gGusvOLtRVM7iGQ
-         YEZvrWTabzYVr8tOoRLZgWEfSwBXbVokSHuZ72OCQTIIeaqgxIjbDmlGc3m8r+HBg+sq
-         nkVdwG0N53Wy6i6RywgXjLhQF999PjCCObOB/J8D4NDeHfOxg9qFSIjr1CPB3fLDQ5wl
-         c/sivLoXj+5kDOwEbadkHOXsOW+QZbr3/bp99Zk2CJ+iJrISWfkJnbAn/euzwJnkKHop
-         VNgz98T7x9NqEYnY4DnJGO1BSDFjWDpy6fYSjrn0TqB5xuFSMXCL1a2mgWPkdt/qe3Ma
-         xIcg==
-X-Forwarded-Encrypted: i=1; AJvYcCWavl7aJQsmKA/f11O5sx67b0AEAUG17FwtYljaibgGuV0K9YKY5fBqIjv+cpEfWIT8Z1rHURBFeen6ZsYWF5ZyjCdv2mewVY61pwwjrg==
-X-Gm-Message-State: AOJu0YzEyaHKVThVfkCPa8V5lcj40zmq5oBarxHPfx2BgpCOGHz+xtuD
-	vnO+o8T3NNsW9UAUyBA7TF/nhMONYMq/05PtNbEbr+XhlPmSJF1Q
-X-Google-Smtp-Source: AGHT+IEaYydFzZj86yy02sJAY3W0hS6m0uQKa8C/F2YRxJXILvcI9FUuldxlvRHNzSnwpPSKvZB0Dg==
-X-Received: by 2002:a05:600c:2184:b0:411:c9c0:eddf with SMTP id e4-20020a05600c218400b00411c9c0eddfmr6002720wme.36.1708172442564;
-        Sat, 17 Feb 2024 04:20:42 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id n11-20020a7bcbcb000000b00410bc833c2csm1800172wmi.1.2024.02.17.04.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 04:20:42 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: David Bauer <mail@david-bauer.net>,
-	Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH] mtd: spi-nor: Add support for BoHong bh25q128as
-Date: Sat, 17 Feb 2024 13:20:22 +0100
-Message-ID: <20240217122029.3278-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	Sat, 17 Feb 2024 13:49:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708177746; x=1739713746;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Sy3rNKIx5Ui639NRais+KmPpwAJj9NL8Ysw1j/NJYXI=;
+  b=YxKK0AfeMyLYhD4UH480fz8NuuRX0BJcbDgAX0xeyNgShBrLvhWl32u2
+   Cw2AEMOXG8WnUzvnbkyGEk//KGw6iB9cp1GpkQGqS6z/EYalM/6qK60FY
+   26xvXfT4QWf6GpvNRGFpzG5VDd6878zJatMgA2zgF+J6AUZfKtlIuhG/+
+   WD6Q+0obMCiDCa04tjhRfM/EElpATHBrX/A8xb+b9xr4K65Rz2emvr+JA
+   gC+ovszMAq2fBJBBjY2ZyWRFnQuqV1nT5efXy8i+gvUAAG7aRZ3iC2ui+
+   tk330rM6XfHIwDTZuYpL51hTNBN9HGGS6cjrR/JkJ7Lk4UF8alwshWdnt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2428386"
+X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
+   d="scan'208";a="2428386"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 05:49:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
+   d="scan'208";a="8700226"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 17 Feb 2024 05:49:01 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rbL3i-00029c-0q;
+	Sat, 17 Feb 2024 13:48:55 +0000
+Date: Sat, 17 Feb 2024 21:48:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
+	konrad.dybcio@linaro.org, broonie@kernel.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
+	quic_varada@quicinc.com, quic_mdalam@quicinc.com
+Subject: Re: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
+Message-ID: <202402172116.yfeRMLEF-lkp@intel.com>
+References: <20240215134856.1313239-4-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240215134856.1313239-4-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240217_042046_931286_FF084C1F 
-X-CRM114-Status: GOOD (  17.23  )
+X-CRM114-CacheID: sfid-20240217_054906_825843_4ACEA454 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,99 +90,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: David Bauer <mail@david-bauer.net>
+Hi Md,
 
-Add MTD support for the BoHong bh25q128as SPI NOR chip.
-The chip has 16MB of total capacity, divided into a total of 256
-sectors, each 64KB sized. The chip also supports 4KB sectors.
-Additionally, it supports dual and quad read modes.
+kernel test robot noticed the following build warnings:
 
-Datasheet is public and can be found here [1].
+[auto build test WARNING on next-20240215]
+[also build test WARNING on linus/master v6.8-rc4]
+[cannot apply to mtd/nand/next broonie-spi/for-next robh/for-next v6.8-rc4 v6.8-rc3 v6.8-rc2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
+url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/spi-dt-bindings-add-binding-doc-for-spi-qpic-snand/20240215-215348
+base:   next-20240215
+patch link:    https://lore.kernel.org/r/20240215134856.1313239-4-quic_mdalam%40quicinc.com
+patch subject: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240217/202402172116.yfeRMLEF-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402172116.yfeRMLEF-lkp@intel.com/reproduce)
 
-[1] https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402172116.yfeRMLEF-lkp@intel.com/
 
-Signed-off-by: David Bauer <mail@david-bauer.net>
-[ reworked to new flash_info format ]
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/bohong.c | 24 ++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.c   |  1 +
- drivers/mtd/spi-nor/core.h   |  1 +
- 4 files changed, 27 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/bohong.c
+All warnings (new ones prefixed by >>):
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 5e68468b72fc..c8849cf5124f 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -2,6 +2,7 @@
- 
- spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
- spi-nor-objs			+= atmel.o
-+spi-nor-objs			+= bohong.o
- spi-nor-objs			+= eon.o
- spi-nor-objs			+= esmt.o
- spi-nor-objs			+= everspin.o
-diff --git a/drivers/mtd/spi-nor/bohong.c b/drivers/mtd/spi-nor/bohong.c
-new file mode 100644
-index 000000000000..26988c139262
---- /dev/null
-+++ b/drivers/mtd/spi-nor/bohong.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2005, Intec Automation Inc.
-+ * Copyright (C) 2014, Freescale Semiconductor, Inc.
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info bohong_parts[] = {
-+	{
-+		.id = SNOR_ID(0x68, 0x40, 0x18),
-+		.name = "bh25q128as",
-+		.size = SZ_16M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	},
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_bohong = {
-+	.name = "bohong",
-+	.parts = bohong_parts,
-+	.nparts = ARRAY_SIZE(bohong_parts),
-+};
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4129764fad8c..29c28ee683a1 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2037,6 +2037,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
- 
- static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_atmel,
-+	&spi_nor_bohong,
- 	&spi_nor_eon,
- 	&spi_nor_esmt,
- 	&spi_nor_everspin,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index d36c0e072954..c293568ae827 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -601,6 +601,7 @@ struct sfdp {
- 
- /* Manufacturer drivers. */
- extern const struct spi_nor_manufacturer spi_nor_atmel;
-+extern const struct spi_nor_manufacturer spi_nor_bohong;
- extern const struct spi_nor_manufacturer spi_nor_eon;
- extern const struct spi_nor_manufacturer spi_nor_esmt;
- extern const struct spi_nor_manufacturer spi_nor_everspin;
+   drivers/spi/spi-qpic-snand.c: In function 'qpic_snand_ecc_init_ctx_pipelined':
+   drivers/spi/spi-qpic-snand.c:161:14: warning: variable 'ecc_user' set but not used [-Wunused-but-set-variable]
+     161 |         bool ecc_user = false;
+         |              ^~~~~~~~
+   drivers/spi/spi-qpic-snand.c:160:42: warning: variable 'desired_correction' set but not used [-Wunused-but-set-variable]
+     160 |         int step_size = 0, strength = 0, desired_correction = 0, steps;
+         |                                          ^~~~~~~~~~~~~~~~~~
+   drivers/spi/spi-qpic-snand.c: In function 'qpic_snand_read_oob':
+   drivers/spi/spi-qpic-snand.c:399:13: warning: variable 'oob_buf' set but not used [-Wunused-but-set-variable]
+     399 |         u8 *oob_buf;
+         |             ^~~~~~~
+   drivers/spi/spi-qpic-snand.c: In function 'snandc_check_error':
+   drivers/spi/spi-qpic-snand.c:452:37: warning: variable 'erased' set but not used [-Wunused-but-set-variable]
+     452 |         bool serial_op_err = false, erased;
+         |                                     ^~~~~~
+   drivers/spi/spi-qpic-snand.c: In function 'qpic_snand_write_page_cache':
+>> drivers/spi/spi-qpic-snand.c:682:30: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+     682 |                 snandc->wbuf = op->data.buf.out;
+         |                              ^
+>> drivers/spi/spi-qpic-snand.c:675:30: warning: variable 's_op' set but not used [-Wunused-but-set-variable]
+     675 |         struct qpic_snand_op s_op = {};
+         |                              ^~~~
+
+
+vim +/const +682 drivers/spi/spi-qpic-snand.c
+
+   671	
+   672	static int qpic_snand_write_page_cache(struct qcom_nand_controller *snandc,
+   673					       const struct spi_mem_op *op)
+   674	{
+ > 675		struct qpic_snand_op s_op = {};
+   676		u32 cmd;
+   677	
+   678		cmd = qpic_snand_cmd_mapping(snandc, op->cmd.opcode);
+   679		s_op.cmd_reg = cmd;
+   680	
+   681		if (op->cmd.opcode == SPINAND_PROGRAM_LOAD) {
+ > 682			snandc->wbuf = op->data.buf.out;
+   683			snandc->wlen = op->data.nbytes;
+   684		}
+   685	
+   686		return 0;
+   687	}
+   688	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
