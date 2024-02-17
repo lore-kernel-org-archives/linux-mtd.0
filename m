@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3304BC48260
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Feb 2024 18:00:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA249C48BC4
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Feb 2024 12:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HYLbxp3QBGdCoLPT+5PbwHOQVt/4pGdsQEf4a5YWFR0=; b=i92UXEDPc0XDjG
-	g0TWjhukFQ75d789eht5EmrxQSDGVIL3K8z9DLU254evU/hCNaR9+1Ljy7mOl98n/G1HNlBUs0+52
-	EpQ8auPJXDHo5ix+zJJ9+UFYlkbtlF51CAwnBfuEJCPnCYxsGP2C/FJ1zd1PHhbmJa5qAKQMLnXIF
-	+wglaYC1i1AXP2nhbMCEGjDX7WVhAKbxzFDw1j2VwyCSLEVN0Q1gY+IifzlFuESB/xncR/nsx/rzW
-	f43b5p766yNeM4LJjBzHh0VvtH8qbS/SmUg5cMfcCEYfy2LIr3UAlR7qRr5FmboRKVrLxawbkBqMd
-	k5NCadNbN+YQkd265BNg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=J7hJ/iNubFJhccmo4lR1KY0RybnF3SqLeLrrrjXaTao=; b=35T/BszpMo2+fP
+	BOcAFvUAuMMZ/qss1EP9iTZ/3TWuFbSbBif+FlwvM4XurBP+TOq8mUmsnLF9YzN574Ww3m+Gvj1hj
+	Xi+4Lh/gjEAkHeOoDgHBzrFnlJFdmhNQBxXryDuxWNbljMZr24EHPbqb4yMtzpncZJ65HQ7uvpuuW
+	66yeLMbJabwqRETueSBEcVcuykPBE+OkZjDwlgiSNwdA83rmEILUe8o9IcQKTD19xlVyiB4tTatXV
+	MffDymNSDfKLPp8MpD9OI8/Ml/pBm4D/E6Q0Q7nq2JnnIr4pORYPCbiFGqt1TqD9LQzW/Fwp5hKpT
+	KNAdkLH6WDoOwO1rBxeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb2Vv-00000003GbC-0tNc;
-	Fri, 16 Feb 2024 18:00:43 +0000
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+	id 1rbJgX-00000005dTn-3aaE;
+	Sat, 17 Feb 2024 12:20:49 +0000
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb2Vr-00000003GZv-1hUT
+	id 1rbJgU-00000005dT8-3bwV
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 Feb 2024 18:00:41 +0000
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GFVavx008758;
-	Fri, 16 Feb 2024 19:00:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=jJ5ftO6qA0bAbkgyUfXtwPro3bnB89V6hMXoFA1fX/0=; b=Xz
-	qy8X/YaHt/8k33pAAt7aZRhVsgVFL3Me4tcPqydMkRXJNewjP8V4MmwnP63N82Au
-	jEZPPAyiTU0nbkgT9PBSMU+tHiHt879JqklHFkUSnV/2LSoTA1IRjmD49jbthIxQ
-	HMMowLqc67S9ONoxnIqhqltbXdtZ5jl5g8NPD7PlZsO8h/2aS36JNvqRC79CI+fQ
-	WtNuO6+MBb8Uby4QrRxGzK3YSXqa0dm3EQyovHV42YGiMMRNBb490h1KkBwVm2EJ
-	xSGNSf3CCO2c0OXjc7s8DuInLSFy2xAQreAKn8ZGtlK1P5RoowG/n0mucZIWZWf/
-	od4yDgDDQHFSe6PSvGEg==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wa124k49t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 19:00:26 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D02CB40045;
-	Fri, 16 Feb 2024 19:00:21 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 535432951A1;
-	Fri, 16 Feb 2024 18:59:35 +0100 (CET)
-Received: from [10.201.22.200] (10.201.22.200) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 16 Feb
- 2024 18:59:34 +0100
-Message-ID: <90e6e7a2-97fd-41dc-bde9-43949168f9cd@foss.st.com>
-Date: Fri, 16 Feb 2024 18:59:33 +0100
+	Sat, 17 Feb 2024 12:20:48 +0000
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4125296400cso8607185e9.0
+        for <linux-mtd@lists.infradead.org>; Sat, 17 Feb 2024 04:20:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708172443; x=1708777243; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+mNrI/k5QCja8EvIn+nI1FFHhVVQ40ZahQzJY3VQjKM=;
+        b=YOq2E5D0m3eYm6yvMg6dGfLU0tcE2dGuSSYrNNGQp0cAphyzeZ3xTKeZ3T0S59iobq
+         QVf0PEdnobtebK4iY7dTTmO7fB4jmXFUnOIKFkYzRKLO6WX+j7BZbgF2jwkpnjv86MTl
+         1JUcvGRTsPU5m2Y+VU1+VuXb13MXex+Ra0YZPCli7Ero01gtP8a8cXB0NmN/Ly/5Akxl
+         ksGsnW7fDQ+7h45d5BysOYmHVA5nM4y3gZv3UtdKC8whMuLK+qMkP+VyGg+8vSRQ/GYj
+         zuVvtdRiG/6aKZ1bDKTh683/xQ7XxKuayXrVzNK8CIhc+6NIGHbQMNhxry5/d2VWp8Vt
+         6qBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708172443; x=1708777243;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+mNrI/k5QCja8EvIn+nI1FFHhVVQ40ZahQzJY3VQjKM=;
+        b=mgRzb+twokoh15AGDfWZyHJ1k/lM+8oqv8pQnrvEsCy5SmYysq5gGusvOLtRVM7iGQ
+         YEZvrWTabzYVr8tOoRLZgWEfSwBXbVokSHuZ72OCQTIIeaqgxIjbDmlGc3m8r+HBg+sq
+         nkVdwG0N53Wy6i6RywgXjLhQF999PjCCObOB/J8D4NDeHfOxg9qFSIjr1CPB3fLDQ5wl
+         c/sivLoXj+5kDOwEbadkHOXsOW+QZbr3/bp99Zk2CJ+iJrISWfkJnbAn/euzwJnkKHop
+         VNgz98T7x9NqEYnY4DnJGO1BSDFjWDpy6fYSjrn0TqB5xuFSMXCL1a2mgWPkdt/qe3Ma
+         xIcg==
+X-Forwarded-Encrypted: i=1; AJvYcCWavl7aJQsmKA/f11O5sx67b0AEAUG17FwtYljaibgGuV0K9YKY5fBqIjv+cpEfWIT8Z1rHURBFeen6ZsYWF5ZyjCdv2mewVY61pwwjrg==
+X-Gm-Message-State: AOJu0YzEyaHKVThVfkCPa8V5lcj40zmq5oBarxHPfx2BgpCOGHz+xtuD
+	vnO+o8T3NNsW9UAUyBA7TF/nhMONYMq/05PtNbEbr+XhlPmSJF1Q
+X-Google-Smtp-Source: AGHT+IEaYydFzZj86yy02sJAY3W0hS6m0uQKa8C/F2YRxJXILvcI9FUuldxlvRHNzSnwpPSKvZB0Dg==
+X-Received: by 2002:a05:600c:2184:b0:411:c9c0:eddf with SMTP id e4-20020a05600c218400b00411c9c0eddfmr6002720wme.36.1708172442564;
+        Sat, 17 Feb 2024 04:20:42 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id n11-20020a7bcbcb000000b00410bc833c2csm1800172wmi.1.2024.02.17.04.20.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 04:20:42 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: David Bauer <mail@david-bauer.net>,
+	Christian Marangi <ansuelsmth@gmail.com>
+Subject: [PATCH] mtd: spi-nor: Add support for BoHong bh25q128as
+Date: Sat, 17 Feb 2024 13:20:22 +0100
+Message-ID: <20240217122029.3278-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/12] Add MP25 FMC2 support
-Content-Language: en-US
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-In-Reply-To: <20240212174822.77734-1-christophe.kerello@foss.st.com>
-X-Originating-IP: [10.201.22.200]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_17,2024-02-16_01,2023-05-22_02
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240216_100040_073605_26D0ED34 
-X-CRM114-Status: UNSURE (   8.38  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240217_042046_931286_FF084C1F 
+X-CRM114-Status: GOOD (  17.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,51 +92,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: David Bauer <mail@david-bauer.net>
 
+Add MTD support for the BoHong bh25q128as SPI NOR chip.
+The chip has 16MB of total capacity, divided into a total of 256
+sectors, each 64KB sized. The chip also supports 4KB sectors.
+Additionally, it supports dual and quad read modes.
 
-On 2/12/24 18:48, Christophe Kerello wrote:
-> Add MP25 SOC support in stm32_fmc2 drivers:
->   - Update stm32-fmc2-ebi driver to support FMC2 revision 2 and MP25 SOC.
->   - Update stm32_fmc2_nand driver to support FMC2 revision 2 and MP25 SOC.
-> 
+Datasheet is public and can be found here [1].
 
-Hi Miquel,
+Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
 
-Don't waste time reviewing this first patchset because I rewrote the 
-NAND part.
-Patch V2 will be sent next week.
+[1] https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
 
-Regards,
-Christophe Kerello.
+Signed-off-by: David Bauer <mail@david-bauer.net>
+[ reworked to new flash_info format ]
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/mtd/spi-nor/Makefile |  1 +
+ drivers/mtd/spi-nor/bohong.c | 24 ++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.c   |  1 +
+ drivers/mtd/spi-nor/core.h   |  1 +
+ 4 files changed, 27 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/bohong.c
 
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 5e68468b72fc..c8849cf5124f 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -2,6 +2,7 @@
+ 
+ spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
+ spi-nor-objs			+= atmel.o
++spi-nor-objs			+= bohong.o
+ spi-nor-objs			+= eon.o
+ spi-nor-objs			+= esmt.o
+ spi-nor-objs			+= everspin.o
+diff --git a/drivers/mtd/spi-nor/bohong.c b/drivers/mtd/spi-nor/bohong.c
+new file mode 100644
+index 000000000000..26988c139262
+--- /dev/null
++++ b/drivers/mtd/spi-nor/bohong.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2005, Intec Automation Inc.
++ * Copyright (C) 2014, Freescale Semiconductor, Inc.
++ */
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static const struct flash_info bohong_parts[] = {
++	{
++		.id = SNOR_ID(0x68, 0x40, 0x18),
++		.name = "bh25q128as",
++		.size = SZ_16M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	},
++};
++
++const struct spi_nor_manufacturer spi_nor_bohong = {
++	.name = "bohong",
++	.parts = bohong_parts,
++	.nparts = ARRAY_SIZE(bohong_parts),
++};
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4129764fad8c..29c28ee683a1 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2037,6 +2037,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
+ 
+ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_atmel,
++	&spi_nor_bohong,
+ 	&spi_nor_eon,
+ 	&spi_nor_esmt,
+ 	&spi_nor_everspin,
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index d36c0e072954..c293568ae827 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -601,6 +601,7 @@ struct sfdp {
+ 
+ /* Manufacturer drivers. */
+ extern const struct spi_nor_manufacturer spi_nor_atmel;
++extern const struct spi_nor_manufacturer spi_nor_bohong;
+ extern const struct spi_nor_manufacturer spi_nor_eon;
+ extern const struct spi_nor_manufacturer spi_nor_esmt;
+ extern const struct spi_nor_manufacturer spi_nor_everspin;
+-- 
+2.43.0
 
-> Christophe Kerello (11):
->    dt-bindings: memory-controller: st,stm32: add MP25 support
->    memory: stm32-fmc2-ebi: add a platform data structure
->    memory: stm32-fmc2-ebi: add MP25 support
->    memory: stm32-fmc2-ebi: update the driver to support revision 2
->    memory: stm32-fmc2-ebi: add RIF support
->    memory: stm32-fmc2-ebi: add runtime PM support
->    dt-bindings: mtd: st,stm32: add MP25 support
->    mtd: rawnand: stm32_fmc2: use dma_get_slave_caps to get DMA max burst
->    mtd: rawnand: stm32_fmc2: add a platform data structure
->    mtd: rawnand: stm32_fmc2: add MP25 support
->    mtd: rawnand: stm32_fmc2: update the driver to support revision 2
-> 
-> Patrick Delaunay (1):
->    dt-bindings: memory-controller: st,stm32: add 'power-domains' property
-> 
->   .../memory-controllers/st,stm32-fmc2-ebi.yaml |   7 +-
->   .../bindings/mtd/st,stm32-fmc2-nand.yaml      |  58 ++-
->   drivers/memory/stm32-fmc2-ebi.c               | 445 ++++++++++++++++--
->   drivers/mtd/nand/raw/stm32_fmc2_nand.c        | 108 ++++-
->   4 files changed, 547 insertions(+), 71 deletions(-)
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
