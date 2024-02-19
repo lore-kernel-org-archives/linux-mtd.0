@@ -4,139 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A06AC54764
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Feb 2024 14:42:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 554F2C48BC3
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Feb 2024 21:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Cc:To:Message-Id:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HTZdDnEaZyd0JF8V0RCWEAwSgaV3pYxC6UetXYichgI=; b=c4namuw9M7DcuG
-	70RkCdnYJr2VjIC7o8RC0CXCRn+s8PpKzOm2jBLSDWGjgFJwqSBrhe1AOcDpiGrFdbkVVmEW2bl5o
-	qopAHjgcZs16B1EuxnMXGpv7wH9oT7pNO+LmGyCxH3XS9TX7Kzd7CsL4+Mi9ViMZDDbrJ2iBdTuDL
-	k0n3I7BG/1NGNYqXY7jZLw5LMw+jw67kNyUi71InyTnbEy+L/McjvqRIyM6oZgZtGxG/wdjUlplFT
-	W06Q4opWouhFwPxP57WX5+UUhQTmmEaRh02tiDusfxRaM7aNFR6tum6etI+OqHI+LSoUrhSrXjIsh
-	I7ShZXuGrpknytUFlU6Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=eF6qlowDBDoNV59mPMDfIoo0Mipp64VoPGOKzjxsf8U=; b=N49jvtwRtJhlqO
+	/BIjZEtmxwCu+18PRPV9rJk49X9J2ROO9lPmtVUDzLNX/uYd/GNUmOYsRlF8ote1CV7QVAAdoZR6Y
+	lQtJW65+Vedho0LhYLVFSrdDnZvwPWBjgv7s8Xpm6fFLABZDkRBZb4u4ss7X0PlvGrw+u4SBXYRul
+	JpOtYzbCWGn6J52BMVswQh0bLVexf0YnMdmEBznYbMi9AiVF9FZHqlMuTSli2+Z6E47XSvM0rphC7
+	bVKXmDKYi4TkQ/cEBK32W5EV1exPimMqBYeR397eV8R2kEa7o2Epo22lL8GgyA8oivvUPLj9ZJKeR
+	bVYp9fintEP/OCdBjW8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rc4qQ-0000000Ataq-3ajP;
-	Mon, 19 Feb 2024 14:42:10 +0000
-Received: from mail-vi1eur02on20700.outbound.protection.outlook.com ([2a01:111:f403:2607::700] helo=EUR02-VI1-obe.outbound.protection.outlook.com)
+	id 1rcBcq-0000000CJOk-2Apz;
+	Mon, 19 Feb 2024 21:56:36 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rc4qN-0000000AtYj-2oFR
+	id 1rcBcn-0000000CJO5-2abl
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Feb 2024 14:42:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oa4Lm/IoAb60E4HcMHICyC+WHLOoItTRZDFJXbaNHFoKvyz7cy0XryyNgtGNmUpmx3IUZRkZyHVmXXcF1iWzw52p2Jr9jjD4V9yNLK9PPzEx9lDG2g4hnC5DhiYLxj4T5HDfNZNAXIO+hYVYKcc90LgENMJdGQsQ3LHjB1xXA1kRVGs4PcgX1G74wseDk9wG0WEAqw1t3MkrGZ25GwAeYlYrc+cOy1kXxRWNeIFmYwimC2AL/IuunU86OZPBotKefPd8kG8irrD1ii6jpE3xNrxsOmVbi8ARdgQrHXsVvlNGmlg5QRuNjXMCO7zcTGs9vOf1VjKc2+IHUbDVRsi+FQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Iysi81QcxMkh7xwJQNcvfrcaX9e9U+OBz60Rrl6hZVo=;
- b=Oe+t7aKG+cc82sPW/yGsTfVLcDTaNLxl7Qxnz1KpTbXpIQZ2SHtk57LMdAWPePR1Jx2UDMPnqsVBaGncwxgUvx4xnuGDbObf8XfTUNc6z281Vz7HrNwLjfFGOEs4+SORlC4hSXTTaf0pNvBR4GLIadxd7L3dODHJNg3GYM+T8BK1om7N37FmcH6KvotMhSFyn0gLKOZUEBfhhwYNOvth7EUoLJsd16r/wCzMLsTkFLD6kQr8uW3WZuwp7rg/AMPo9esZcTzjbDkolcVOM+8QOPuMNvjAYSpJ2yO7GP/tI+boueySy8hTX/L8RiqfRzlO89AdQNSpaoGoXTYQBE/nCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+	Mon, 19 Feb 2024 21:56:35 +0000
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-41263dbdfeaso13380975e9.2
+        for <linux-mtd@lists.infradead.org>; Mon, 19 Feb 2024 13:56:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iysi81QcxMkh7xwJQNcvfrcaX9e9U+OBz60Rrl6hZVo=;
- b=mAlqYg2s/0XVgJWPx04i05/Eu9W3sgtl8Z/l0kLKZApCQRMQB+zlais+9mxEsi6jt83VBcAT/lYiTB4tGSfsZAe+X4w0LgkPbsiQjZWVpJ1uaH7cBVK+m08RVY1PxBCr4JNkdE6PQadAeB3KCjFTU3+Dl+iDZfBDhdLcud4p8YU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
- by DBBPR04MB7563.eurprd04.prod.outlook.com (2603:10a6:10:206::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.39; Mon, 19 Feb
- 2024 14:41:57 +0000
-Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
- ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
- ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 14:41:56 +0000
-From: Josua Mayer <josua@solid-run.com>
-Date: Mon, 19 Feb 2024 15:41:19 +0100
-Subject: [PATCH v7] dt-bindings: mtd: spi-nor: add optional interrupts
- property
-Message-Id: <20240219-mtd-flash-interrupt-binding-v7-1-206e30a656fa@solid-run.com>
-X-B4-Tracking: v=1; b=H4sIAI5o02UC/6XNSw6DIBSF4a0Yxr2NIqJ21H00HchDvYmAATVtj
- HsvmnQFDP8z+M5OgvaoA3lkO/F6w4DOxqhvGZFjZwcNqGITmlOW06IFsyjopy6MgHbR3q/zAgK
- tQjsAZ3VfN6qgpRQkCrPXPX4u/fWOPWJYnP9eZ1txrn+XQqcUdIYzCM7AxiEHUbVaCSpkI8tnc
- BMq8Ku9S2fIiW00FShTAZYKVKkATwGO4/gBmwz+ZQACAAA=
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org
-Cc: Yazan Shhady <yazan.shhady@solid-run.com>, 
- Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Josua Mayer <josua@solid-run.com>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: TL2P290CA0011.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:2::14) To AM9PR04MB7586.eurprd04.prod.outlook.com
- (2603:10a6:20b:2d5::17)
+        d=gmail.com; s=20230601; t=1708379792; x=1708984592; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=oJHcV/T82uWCoxsFHTEBn8FHgLuv3HM/m85Ck6a9z44=;
+        b=jr5tdbB9OKX3qsjDBuyte25GIQOnWFd0ERp/FURUdFS/pB0Pheko877egHeCXgq4/I
+         TgTpYu3S9gzmQJhev1gf1mSKMXWy0DFMm46BcWg6pxDIlSHEmublHjz4bIjeXoS5EmYb
+         EDoWEYORcR9Eg1P5EPGAIMhUS/s8q1TDStbsNqjpNphV0NKupwT/HiFsb3QSuv10ptqs
+         E0ayTps20+ciUD9oP/n6QGr4rbLVWlIgUP0fTYGS1aaTqGLbU8vVkRH75TyM9tRQbQuh
+         TT8pNSYSWEK9Q/URM5IIB1moBKqGWT38yUhQefxVTu8bv8JWRXPCK+6FOmuKZD9Wwkm5
+         9WuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708379792; x=1708984592;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oJHcV/T82uWCoxsFHTEBn8FHgLuv3HM/m85Ck6a9z44=;
+        b=CMBa/uxMtRmOQkAJHh6fnW8YuISUKRVG9v6kTetbJcAoS4vnyVOi1S350O/ikpJbaO
+         K6G/Rh0oIYT89CiylYqwR9xdpAZ75rGtRvvvzzcOoEiKrR32f0hht60Le7ojqT2Pe1YU
+         91ssByMmNCl7CS5NzWONY+gLc4XqYkjksL5MvsMQSnT/xxMILXFO4YoRThD58OuW3WAu
+         PjeAXjD6qWa4vjLNqoFcnax4DbTtaQ3tF/q910YKOfBPCkAWEh+rSGRbwoEhAZC+7t+Z
+         wEfBP9nKTAikCXuj0Cl/jeSLW3ggfQLZabIeMpBzP/FK5+M5e+n+49Loc6++BZ04aljl
+         2AvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXdD0EgBqWyNfrnje6VXF7U5NeemXlYp6S60QVBRE81JoUjCc/8i4Iyf9UNZts0NHMDEodX3k4zRYcDte8lA5WjOgAeDmT7GgKFoQCcXg==
+X-Gm-Message-State: AOJu0YwaW+Sx11CNmHdkK0AX5/1nCIPTLUcbizNyzhgpDTr8yvRe1NpA
+	boY6ld0jOqrnyLqNX85hM3+MZp1YR2758HL7c6FTL5oDQsk18FPG
+X-Google-Smtp-Source: AGHT+IFJYWBDF4gET9omu3xc8KSaSs/8Eb4LET3mTi87Yb5PdCv4fspcYOYQ4rnbRp6gkgvbvHS4UA==
+X-Received: by 2002:adf:fe0f:0:b0:33c:e35b:7a59 with SMTP id n15-20020adffe0f000000b0033ce35b7a59mr9025210wrr.48.1708379791537;
+        Mon, 19 Feb 2024 13:56:31 -0800 (PST)
+Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id bv9-20020a0560001f0900b0033b5b6a186dsm11690760wrb.69.2024.02.19.13.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 13:56:31 -0800 (PST)
+Message-ID: <65d3ce8f.050a0220.e5faf.c252@mx.google.com>
+X-Google-Original-Message-ID: <ZdPOjrr7AYoOth74@Ansuel-XPS.>
+Date: Mon, 19 Feb 2024 22:56:30 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, David Bauer <mail@david-bauer.net>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for BoHong bh25q128as
+References: <20240217122029.3278-1-ansuelsmth@gmail.com>
+ <CZ8X218EWPC9.25TO9O5C7VXQ9@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|DBBPR04MB7563:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3e30da8-4442-48d0-3c64-08dc3158ec15
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jlcB379X/WnwCbusxLWSEZEuXZG1M3elDtTGZ6S5fXOX1Ig8EJI+O/NJLY7s6VXCrbZ/8T3chLzQjIgZXGb/8bgVQE6q5D2XTveKaN4DLLqvszk7lILzbTeSFa3vUqvZjQxj0xhTDAzNzjQ6FPowLe14VOGHHiZo+oXmPte6R+iY264hXVAr0488kApI0IFL+L4CNAb2FBI1DwHLGX0rkpV7rChka9kpGhxTHdDtV8/zNPTR0fAwcIefz/ZiCRbNmRQQGzcXShP5EGcwdTrsCQoDv8oH4HeKQkU1Y4wXFAr6M5Gw8q9j46o+fFliZyj7n65k9IsxwUqRLhW/EYZMO6VDw5ORmH0hXnhJh74QtIi1JkKGHcdkieKJFIypaSBrd6FwOqIndDng12psZi7Vo8bhhwa6XSxhl4udnUOk75mR77/fxaFDIaPLvGEAo7LPhe7WdmpxovnNphJxL7IkiPNzgHm+pM30Ljo+JUR1FQ7NOxPYJN9hCKRcyvtqd+FpiR6xmFDGbrk3EpjZK2GVb+Fc5icX23TJzsmj5QfK2BwOlndSK6ffo+ofP9eAfzh3K3t10Vbj54zofiIVpOiAHbh7j8bC4wZ5zyvcfZEEze+HtarBu8MsbtHV+8lpAJvf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHhYaWwzNy8xcGhpWlYxV3pDQzlJNVBkc2c1MGlCbFpaY3dIbU16MnBUNWhr?=
- =?utf-8?B?Rm1kN1d3RDFYd09mYXNSdlE5TkdrRURlNUtsd2Z2aHRiMkpHeWE0d0EwdjNq?=
- =?utf-8?B?cWJDWFlldTBHcS9yS1RtRnJzeDhtOCtZYjNuc3JJU2h6cjVYeEVsMlVxTm9Y?=
- =?utf-8?B?Y24yODFLOVVZSjQ4MU5mL3FZWjNTMVo1eDJ1dGJoT1BFWGU4bno3enBybkZ3?=
- =?utf-8?B?U2hVT093ajh0YjdZMWRCNC9XK2lvNWwzU3hNQ3VEaFNub2FOTC9VRytFeFVx?=
- =?utf-8?B?QlJFZVVtaG91c202VUZsNFdVNDdUQVhVbFF5SjlyajM5SzcySnMzeHpHWlN2?=
- =?utf-8?B?ZzRYUXFDTlV4eU5Gd2tKUm9tY0U1N0dwTHphR2g2TlFucEVDKzdNOEdRSU1o?=
- =?utf-8?B?bmNNdXlJYnl3Si85MHNDZmwyb2hBa0s1T2ZqVXpUNWRud0ZZZFVGQ0hRdDdD?=
- =?utf-8?B?aThsazhIbkVobUNYTDM1NjREQXRoZXVFMFY5bEpOV2FWWFB0TDU2a1JUOFdM?=
- =?utf-8?B?YnFITkJOSUQ0cTgyL3lIUDlnQ0RVby91VVJ6SloyT2p1K3A4SzhtZmZEZ1R3?=
- =?utf-8?B?VzNFbjVjWjJrT0Z6SC80UTlzTERwamp0RVRjV045dUI0Q1ZEdDBxalpEbDNr?=
- =?utf-8?B?YmJiNzdqRkJaYW5IckUveGpNYWRjb000S01LUzNJUkR1UWZNQ3FGYTJ2ZUht?=
- =?utf-8?B?WlFwOHRhTzI5SzdIZjl2aXZvYTJNY2dOeU5ZTDJDTUFxdk9ZZzVzcHpFWlo5?=
- =?utf-8?B?ZENRWUVqQmg2QXRkdU5lU1hIdWtFUVQxNFB5RXBsUTByMFJSN21jRmdlTzl3?=
- =?utf-8?B?WHdkMnJYR0dDRUU5WWVBMFc0Z2JmVGxLeFk3V2Y0WVIzZFdlZnEvN09QL3gz?=
- =?utf-8?B?RlZ0cTJEZDZsNStESVR3OURpcjJsRlJqbVVWbUNlU1F2aEZuRFlON1dtM2Uz?=
- =?utf-8?B?dHdVTnc3U00zWmZpNGFMQzJuRkMrcVF4UVgxSVlCOTRjVWQ3MnRNZ0Vpc0VC?=
- =?utf-8?B?TUZRSmx5K2hSMFl1RmFUcERwd2YwN1dUaHlHR2FFSzRjcDQwNjBQQXJSUVc3?=
- =?utf-8?B?SVNiQWZHL1hNY0ZHZVA0RXZkc3hBamlhY3RidDF3c0d5Rnh2QklVVGovRlBN?=
- =?utf-8?B?RzdxbjBCeFFiYmk3WHgxSzl6QlFmd3pIWWZkcEJJZUlxcGZabTlMS3ozZ0VS?=
- =?utf-8?B?aHhLdi9zVVNlZWh3QWpUTEUzVnRKRzRUUHRicmI4UjA2UDgzdjZiQ1dmcis2?=
- =?utf-8?B?NFlob0crc0U3OWR3MmE4ZHVkbmh3MVRMWXdZWitPUUp3S1B1WWo4QVJNSFk2?=
- =?utf-8?B?MHk4RXVpbUlwSlRwTE9ycG5mRzl3cjhFNVR6MTh5WWprbEtqaWdYd29UODlJ?=
- =?utf-8?B?ZDFlOCtZU1gxQU93MU5Jall2aVV5T3Fjb0Vhckd4MlZYSTE3SndzRDlpeis4?=
- =?utf-8?B?eEEyUHFrTlRacDQyQWVWczFVd3JGZ2hmY3JuWjZvRHlQRDlyQjBsNWFzTkpw?=
- =?utf-8?B?TXgxQ0ZqQlo3bEE0YTU0cWFJSHAxTEMvVHQ1WC9kVm5HOHNGM0I5UDN1SVZH?=
- =?utf-8?B?TlRzTDFSV0xjSnFaLzFRUlRGUndJejV5bTRNN21nd1RkNU5HSXU5TGIzMlI2?=
- =?utf-8?B?MW90SHlSOXJDN0VRbnJYYjlSY0Z3V292V2NVMXdMQ21QcmwrZWtzOVdHZUZ2?=
- =?utf-8?B?Q09xNGRVa3piV3BJQTRlRTJFcnVKUUpnemdiN3Y4TmpnMldBd0NaR1RMSnJO?=
- =?utf-8?B?Z1U1UXE2U3NzRGxlRGZ3K0VXVDZTdFltUHFaTjJFLzc2cWRjYzJlN1pobGpm?=
- =?utf-8?B?L0hPY1FDT29lUjZ3TThZVXVxTWZzWHkyc3RKeU1hdUVUS1V4VEMvLzI2WHRE?=
- =?utf-8?B?bkE2OHg3OU5hVTJWSTJzazQ3bjFXOEFzVUNyeU9ZcUdUSXBXOGVNZXdDWXIv?=
- =?utf-8?B?eUExc2QvRVJLTFplV2ZNWEdaRDVHR3FBVk5VbHk2ck9vemc2cGZUbmhKMlJT?=
- =?utf-8?B?OTlrdjZMYnNERnFWVU5yQmIxbk45RkdEY3FyOEVXaElHM2tUbkZ3cEcxWXdw?=
- =?utf-8?B?SkhSTkFtQ0Z3ek9sZjZ1OFRFcUErN1JSRkUxSUQzd0JlTkJUK0tLdW1rRmFQ?=
- =?utf-8?Q?mHhtjTxEaNxdUwncC77iv8hSF?=
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3e30da8-4442-48d0-3c64-08dc3158ec15
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 14:41:56.8401
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iGyA5cowRf073hvvNRbRUJ8uPdHXzCcRNGeWYROpitb7tMnMW2a5WF3G6hz+yyflOGnZgRhh8UdzTk8eYKpJjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7563
+Content-Disposition: inline
+In-Reply-To: <CZ8X218EWPC9.25TO9O5C7VXQ9@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240219_064207_764245_90B88F5B 
-X-CRM114-Status: UNSURE (   8.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240219_135633_681564_991D0BF8 
+X-CRM114-Status: GOOD (  33.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -153,46 +98,136 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some spi flash memories have an interrupt signal which can be used for
-signalling on-chip events such as busy status or ecc errors to the host.
+On Mon, Feb 19, 2024 at 09:35:27AM +0100, Michael Walle wrote:
+> Hi,
+> 
+> On Sat Feb 17, 2024 at 1:20 PM CET, Christian Marangi wrote:
+> > From: David Bauer <mail@david-bauer.net>
+> >
+> > Add MTD support for the BoHong bh25q128as SPI NOR chip.
+> > The chip has 16MB of total capacity, divided into a total of 256
+> > sectors, each 64KB sized. The chip also supports 4KB sectors.
+> > Additionally, it supports dual and quad read modes.
+> >
+> > Datasheet is public and can be found here [1].
+> 
+> Last time it wasn't clear if this flash will support SFDP or not.
+> Could you please try to dump the SFDP again, see [1].
+>
 
-Add binding for "interrupts" property so that boards wiring this signal
-may describe the connection.
+Ok will include in v2.
 
-Signed-off-by: Josua Mayer <josua@solid-run.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
-Changes in v7:
-- split out of original patchset because it should go via mtd tree
-- collected acked-by Rob Herring from v6
-- Link to v6: https://lore.kernel.org/r/20240212-add-am64-som-v6-0-b59edb2bc8c3@solid-run.com
----
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+> 
+> > Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
+> 
+> Also per [1], you'd need to provide your test results.
+> 
+> > [1] https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
+> 
+> Link: right above your SoB please.
+> 
+> > Signed-off-by: David Bauer <mail@david-bauer.net>
+> > [ reworked to new flash_info format ]
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> >  drivers/mtd/spi-nor/Makefile |  1 +
+> >  drivers/mtd/spi-nor/bohong.c | 24 ++++++++++++++++++++++++
+> >  drivers/mtd/spi-nor/core.c   |  1 +
+> >  drivers/mtd/spi-nor/core.h   |  1 +
+> >  4 files changed, 27 insertions(+)
+> >  create mode 100644 drivers/mtd/spi-nor/bohong.c
+> >
+> > diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> > index 5e68468b72fc..c8849cf5124f 100644
+> > --- a/drivers/mtd/spi-nor/Makefile
+> > +++ b/drivers/mtd/spi-nor/Makefile
+> > @@ -2,6 +2,7 @@
+> >  
+> >  spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
+> >  spi-nor-objs			+= atmel.o
+> > +spi-nor-objs			+= bohong.o
+> >  spi-nor-objs			+= eon.o
+> >  spi-nor-objs			+= esmt.o
+> >  spi-nor-objs			+= everspin.o
+> > diff --git a/drivers/mtd/spi-nor/bohong.c b/drivers/mtd/spi-nor/bohong.c
+> > new file mode 100644
+> > index 000000000000..26988c139262
+> > --- /dev/null
+> > +++ b/drivers/mtd/spi-nor/bohong.c
+> > @@ -0,0 +1,24 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2005, Intec Automation Inc.
+> > + * Copyright (C) 2014, Freescale Semiconductor, Inc.
+> 
+> Please remove, there is nothing from the old code left here.
+> 
+> > + */
+> > +
+> > +#include <linux/mtd/spi-nor.h>
+> > +
+> > +#include "core.h"
+> > +
+> > +static const struct flash_info bohong_parts[] = {
+> > +	{
+> > +		.id = SNOR_ID(0x68, 0x40, 0x18),
+> > +		.name = "bh25q128as",
+> No names anymore, please.
+> 
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index 58f0cea160ef..6e3afb42926e 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -52,6 +52,9 @@ properties:
-     minItems: 1
-     maxItems: 2
- 
-+  interrupts:
-+    maxItems: 1
-+
-   m25p,fast-read:
-     type: boolean
-     description:
+Mhhh why this change? Doesn't this makes the thing problematic to
+identify?
 
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240219-mtd-flash-interrupt-binding-647f78d123cb
+> > +		.size = SZ_16M,
+> > +		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+> > +	},
+> > +};
+> > +
+> > +const struct spi_nor_manufacturer spi_nor_bohong = {
+> > +	.name = "bohong",
+> 
+> This should be dropped, too. Otherwise looks good, if SFDP is not
+> supported.
+>
 
-Best regards,
+Ok, thanks a lot for the review!
+
+> 
+> [1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
+> 
+> > +	.parts = bohong_parts,
+> > +	.nparts = ARRAY_SIZE(bohong_parts),
+> > +};
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 4129764fad8c..29c28ee683a1 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -2037,6 +2037,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
+> >  
+> >  static const struct spi_nor_manufacturer *manufacturers[] = {
+> >  	&spi_nor_atmel,
+> > +	&spi_nor_bohong,
+> >  	&spi_nor_eon,
+> >  	&spi_nor_esmt,
+> >  	&spi_nor_everspin,
+> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> > index d36c0e072954..c293568ae827 100644
+> > --- a/drivers/mtd/spi-nor/core.h
+> > +++ b/drivers/mtd/spi-nor/core.h
+> > @@ -601,6 +601,7 @@ struct sfdp {
+> >  
+> >  /* Manufacturer drivers. */
+> >  extern const struct spi_nor_manufacturer spi_nor_atmel;
+> > +extern const struct spi_nor_manufacturer spi_nor_bohong;
+> >  extern const struct spi_nor_manufacturer spi_nor_eon;
+> >  extern const struct spi_nor_manufacturer spi_nor_esmt;
+> >  extern const struct spi_nor_manufacturer spi_nor_everspin;
+> 
+
+
+
 -- 
-Josua Mayer <josua@solid-run.com>
-
+	Ansuel
 
 ______________________________________________________
 Linux MTD discussion mailing list
