@@ -4,56 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 132FEC48BC4
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Feb 2024 04:27:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BF40C48BC4
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Feb 2024 08:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=a6ReTV9tOuqoNy4uhELlLyBdH3WypVN/Rh//otUHphg=; b=beTu3FbheqxwaA/aHsPApPcBdv
-	3CIGnSdII6/IZvxnaBGc7u8Akx/QdyANn+/8WV9cy3UfQN/F84jAfMOa/xL4C/w3zAjV0JnHsmrnY
-	oSveFITVbQqS7omM6Eh60PcdYEDouCyHzB3r3/yd1mQE9crT9qHsDEHcdFoSmRadTM2dY0r/Ije//
-	Bh0AbGI2Bc8jdRU2/HuFbfiPw7hA6piB4+cm3nQnFj2DlBAel4r37rRkLCOfwex2jyMcxM6FHyOEt
-	oYbotNzclmJ8lqMfu2lq3MWqT8KTpctlCARmDf4KW1SB13HP5CcDVb4O0hwsNLGRERMGLthKIj3cD
-	6Fpbu1iw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=atvI/mRxYYZ+LWMTKCHjzACRLighJfJNiS/LQ4KA+9g=; b=tMy7Pfck2QOABP
+	RDlK93D5Inh3eoM+knJ9f3YKduXbQOu8zXP4/OsXw3jDL9M5xTt0h1FzFA03kDM3xXief1bQ9615z
+	+HlCtjhVNd9bdZthiBMlYgi7NU0YI7lfAzOl14ciJ3SyxJ58PTeQOPP7CxqsKcP3frbe+a0NlCAzL
+	iQdwiDik3mExVkks84Qpz30o8Mwmx+F05D5qQP+H2CAQUP2r/CTGUrSMrpuox8g+XTfQF1dnd7zYh
+	0Gj1GIPFRG44dy+nku+TzdJ9lkiT8VrUgweAvYmM++OIDDYJvJYsDSIB7OWq4ML1skbUBJn3VKmH9
+	DBt/WTwsiNc2uxpEjtLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcHin-0000000D7SX-3xEd;
-	Tue, 20 Feb 2024 04:27:09 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1rcLa3-0000000Djyu-2ZJS;
+	Tue, 20 Feb 2024 08:34:23 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcHil-0000000D7RX-0LLq
+	id 1rcLa0-0000000DjyQ-3ijx
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Feb 2024 04:27:09 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tf5pM3phkz1FKvd;
-	Tue, 20 Feb 2024 12:22:03 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id D8FAF18005F;
-	Tue, 20 Feb 2024 12:26:53 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 12:26:52 +0800
-Subject: Re: [PATCH] ubi: correct the calculation of fastmap size
-To: Zhang Yi <yi.zhang@huaweicloud.com>, <linux-mtd@lists.infradead.org>
-CC: <richard@nod.at>, <yi.zhang@huawei.com>, <yukuai3@huawei.com>
-References: <20240220024903.2477468-1-yi.zhang@huaweicloud.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <8128700f-1cc6-c8fa-466a-3110c7cce233@huawei.com>
-Date: Tue, 20 Feb 2024 12:26:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Tue, 20 Feb 2024 08:34:22 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d51ba18e1bso52335495ad.0
+        for <linux-mtd@lists.infradead.org>; Tue, 20 Feb 2024 00:34:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708418059; x=1709022859; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sUpftnyqk2wi69nXZ2DEClvqqDVHgLQf8Eu0MCCrDo8=;
+        b=LguEPp23sh/pg3i5NqFQLfWI+7Y1RcGdOSEMbc4n3/XmgccIHoRqjCia1M5uLnZNJ9
+         7+qkhVDLSxupNgf0eJO5nywUHhwF66DXOGxW5CCk67Uf10JrGcX7hlu4Z/XuKBPz4xpx
+         eRW+WydxaRhuBpiM7NLCH1f6FQHO5epDwv2PJjGMIVokMRz0kgZAnIiKSa/DGKO/Cxre
+         j96FYsP6yJ8LRYOwp8mA1+fcabtBGPYDaRJwTHYUgtFfsiq6l78LTrMQ2lJESmW7Qwr/
+         kKDDSk/6QumHjg3SXKQM5I4QccRoGVuk5YVxYMBhF8ax08Joidv739KVJv41pMdM85bi
+         ac7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708418059; x=1709022859;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sUpftnyqk2wi69nXZ2DEClvqqDVHgLQf8Eu0MCCrDo8=;
+        b=kPrp1N/nLm5wbB5bhhZFTnKQmbJSjHK+036SxNmgioBrOS7Zwd8M3/qzGUdXJPOai/
+         DgIj8XM2iM2GyK+ngdbLWhvujuTxOZ0V6g06gjjBfh0NHPxyA+jadvhL/w+osePjxJG5
+         JIbtHjrI+VSwzOloE9Yv7fNHnN2rIJJXHIE3KTSKvZAsZS4NdV4L1q8DxvzcAiaTzXfl
+         Jdw7amShYESyR0Z4qWRKg2H+Orcs+XVcvrQbu025+uVlf49lcDf/12kqtucQPRhfV4wS
+         kRZbCovIBBW/Q1xUH30W+KyrXmuZQhD3JeZJURkihRBgTK4uAqBMWbaTm+YvQqZ9WMAh
+         490w==
+X-Gm-Message-State: AOJu0YwqJ3MVS6gc9GdnTEqc/98x0Uhp1ZDYGF2hKclL/FPzF3fUDIwD
+	ARbwfbIy9+ZCbNnGUauTNoQgCR1W8BlYpvJeGHDXB7R63P//BLBgjDE3EYaL
+X-Google-Smtp-Source: AGHT+IEvJhI7xeVJ4oFH/UVbk0d1vH2f3g9tFOot6VkJEh6IN41YMcwslkpZPl5vazycZMz42RBqjQ==
+X-Received: by 2002:a17:902:aa0b:b0:1d9:5371:bc with SMTP id be11-20020a170902aa0b00b001d9537100bcmr13920102plb.37.1708418059589;
+        Tue, 20 Feb 2024 00:34:19 -0800 (PST)
+Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id lo5-20020a170903434500b001db715d3bf2sm5655655plb.137.2024.02.20.00.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 00:34:19 -0800 (PST)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	tkuw584924@gmail.com,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v4 0/4] mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map
+Date: Tue, 20 Feb 2024 17:34:05 +0900
+Message-Id: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20240220024903.2477468-1-yi.zhang@huaweicloud.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240219_202707_319408_B6C3866F 
-X-CRM114-Status: GOOD (  12.28  )
+X-CRM114-CacheID: sfid-20240220_003420_949275_76F17170 
+X-CRM114-Status: UNSURE (   7.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,39 +93,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8yLzIwIDEwOjQ5LCBaaGFuZyBZaSDQtLXAOgo+IEZyb206IFpoYW5nIFlpIDx5aS56
-aGFuZ0BodWF3ZWkuY29tPgo+IAo+IE5vdyB0aGF0IHRoZSBjYWxjdWxhdGlvbiBvZiBmYXN0bWFw
-IHNpemUgaW4gdWJpX2NhbGNfZm1fc2l6ZSgpIGlzCj4gaW5jb3JyZWN0IHNpbmNlIGl0IG1pc3Mg
-ZWFjaCB1c2VyIHZvbHVtZSdzIHViaV9mbV9lYmEgc3RydWN0dXJlIGFuZCB0aGUKPiBJbnRlcm5h
-bCBVQkkgdm9sdW1lIGluZm8uIExldCdzIGNvcnJlY3QgdGhlIGNhbGN1bGF0aW9uLgo+IAo+IENj
-OiBzdGFibGVAdmdlci5rZXJuZWwub3JnCj4gU2lnbmVkLW9mZi1ieTogWmhhbmcgWWkgPHlpLnpo
-YW5nQGh1YXdlaS5jb20+Cj4gLS0tCj4gICBkcml2ZXJzL210ZC91YmkvZmFzdG1hcC5jIHwgNyAr
-KysrLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygt
-KQoKTG9va3MgbGlrZSB0aGUgYXNzZXJ0aW9uICd1YmlfYXNzZXJ0KGZtX3BvcyA8PSB1YmktPmZt
-X3NpemUpJyBoYXMgbmV2ZXIgCmZhaWxlZCBpbiB0aGUgcmVhbCB3b3JsZCwgbWF5YmUgdGhlIG1p
-c3NpbmcgY2FsY3VsYXRlZCBzaXplIGlzIHRvbyBzbWFsbCAKKHNpemVvZihzdHJ1Y3QgdWJpX2Zt
-X2ViYSkgKiAxMjkgPSA4ICogMTI5ID0gMTAzMikgYW5kIGhhcmQgdG8gdHJpZ2dlciAKYW4gZWZm
-ZWN0aXZlIHByb2JsZW0sIG9yIG5vIG9uZSB3aWxsIGNyZWF0ZSBtYW55IHZvbHVtZXMuCgpJIGhh
-dmUgdGVzdGVkIG9uIHNldmVyYWwgdHlwZXMgb2YgZmxhc2hlcywgYWxsIHViaSB0ZXN0cyhmcm9t
-IG10ZC11dGlscykgCmFyZSBwYXNzZWQuCgpSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVu
-Z3poaWhhbzFAaHVhd2VpLmNvbT4KCgo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91Ymkv
-ZmFzdG1hcC5jIGIvZHJpdmVycy9tdGQvdWJpL2Zhc3RtYXAuYwo+IGluZGV4IDJhNzI4YzMxZTZi
-OC4uOWE0OTQwODc0YmU1IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9mYXN0bWFwLmMK
-PiArKysgYi9kcml2ZXJzL210ZC91YmkvZmFzdG1hcC5jCj4gQEAgLTg1LDkgKzg1LDEwIEBAIHNp
-emVfdCB1YmlfY2FsY19mbV9zaXplKHN0cnVjdCB1YmlfZGV2aWNlICp1YmkpCj4gICAJCXNpemVv
-ZihzdHJ1Y3QgdWJpX2ZtX3NjYW5fcG9vbCkgKwo+ICAgCQlzaXplb2Yoc3RydWN0IHViaV9mbV9z
-Y2FuX3Bvb2wpICsKPiAgIAkJKHViaS0+cGViX2NvdW50ICogc2l6ZW9mKHN0cnVjdCB1YmlfZm1f
-ZWMpKSArCj4gLQkJKHNpemVvZihzdHJ1Y3QgdWJpX2ZtX2ViYSkgKwo+IC0JCSh1YmktPnBlYl9j
-b3VudCAqIHNpemVvZihfX2JlMzIpKSkgKwo+IC0JCXNpemVvZihzdHJ1Y3QgdWJpX2ZtX3ZvbGhk
-cikgKiBVQklfTUFYX1ZPTFVNRVM7Cj4gKwkJKChzaXplb2Yoc3RydWN0IHViaV9mbV9lYmEpICsK
-PiArCQkgIHNpemVvZihzdHJ1Y3QgdWJpX2ZtX3ZvbGhkcikpICoKPiArCQkgKFVCSV9NQVhfVk9M
-VU1FUyArIFVCSV9JTlRfVk9MX0NPVU5UKSkgKwo+ICsJCSh1YmktPnBlYl9jb3VudCAqIHNpemVv
-ZihfX2JlMzIpKTsKPiAgIAlyZXR1cm4gcm91bmR1cChzaXplLCB1YmktPmxlYl9zaXplKTsKPiAg
-IH0KPiAgIAo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+In v4, split two flags removement into separated patches. Reworked
+spi_nor_init_erase_cmd() to use n_regions in outer loop.
+
+In v3, reworked to remove LAST_REGION and OVERLAID_REGION flags. Updated
+and tested debugfs.
+
+In v2, reworked spi_nor_erase_region to stop bitmask encoding in offset.
+And added n_regions member to spi_nor_erase_map.
+
+Takahiro Kuwano (4):
+  mtd: spi-nor: core: rework struct spi_nor_erase_region
+  mtd: spi-nor: core: get rid of SNOR_LAST_REGION flag
+  mtd: spi-nor: core: get rid of SNOR_OVERLAID_REGION flag
+  mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map
+
+ drivers/mtd/spi-nor/core.c    | 187 +++++++++++++++++-----------------
+ drivers/mtd/spi-nor/core.h    |  30 ++----
+ drivers/mtd/spi-nor/debugfs.c |  26 +++--
+ drivers/mtd/spi-nor/sfdp.c    |  47 +++------
+ 4 files changed, 128 insertions(+), 162 deletions(-)
+
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
