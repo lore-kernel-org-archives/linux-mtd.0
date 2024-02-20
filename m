@@ -4,86 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5491AC48BC3
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Feb 2024 08:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07EF4C48BC4
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Feb 2024 09:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3PxrTE5fmEg6SDxFoT/dMESZsC33/NRltE8fTtXFAOg=; b=cIdi3Pumbfebb8
-	L+pmPu5b2HT5KSMEqUuhwBDFZtgMOvNH8tUnRjPgWs5dy9tQ+A1/hLOZ9DN8nfd7Wmiv3saJ92s7A
-	CeqQtbd1lrU6DfE1hOl5PPHl5KPH2MiBNXEKxEdWYiHCk3QmRvKLtxTQmm0qxZGWZ05WIbSCGjHCi
-	iOmhB16wLxrWF6yyddgTb1t0LKi+YYG00TBc/YHqGCityzu6rLzr/UV4bcneLozZg5COGgzxbntFe
-	GRNGCurPVnytDz8zgm4cPQ+QrvovrQJtjADnbX1uxIqlob+cJtAvJF1vzZw5Yr2OA6R91HKAR61TW
-	5Iup6nFwxUPBITUWtECw==;
+	List-Owner; bh=I7fsQiwpz7HdF5dlDLl55Yl4In5/PM5KI/pq2GDhuE8=; b=Sat5S9JE5oW1qI
+	GSkxsIN62xj3xj2fDCDxA6fxeke+ycpWM6KnB8PLBOU7W641bJfsPjuAFbTO16PL945/yEg/5H3HQ
+	qCawYo5cS17AbAJVS/e79B0StcPk/jGvtQKN5Cwz22oFYXf7Xk81GxhbF5ojd911WCPxVBBG23UEs
+	hlCcimTRyJpBIVzXhz3mnhwnnESG+TuUh95xJEVmKNyfcMRQL18OCazgUfLRGsmostXYtfHUoltsc
+	Qg26ozG/5mTGz0tpAxfoT1spkCP8zgGg+8Yl9EMNumCE3jhU7bSWU8CnQ2VpLAvbNNvn9BjAu7MVk
+	lYx+aV3yLpDDtlHg0gqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcLaI-0000000Dk4s-28Tp;
-	Tue, 20 Feb 2024 08:34:38 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1rcMoZ-0000000E6zs-0irm;
+	Tue, 20 Feb 2024 09:53:27 +0000
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcLaF-0000000Dk1t-1imK
-	for linux-mtd@lists.infradead.org;
-	Tue, 20 Feb 2024 08:34:36 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6e47c503fb5so236800b3a.2
-        for <linux-mtd@lists.infradead.org>; Tue, 20 Feb 2024 00:34:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708418074; x=1709022874; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mEBbtN49KtsL7jFR1er0xAilkk80hBThV1SlWq40Aps=;
-        b=XsAClwX0WRJwkxBHyt7YpDuni5ehjfnWOkkl78ioVyR2xpYiL6gq7jEaUfaHGvGCA+
-         iLY7ugIGZxxMwLKEc3SO81wGuqC92xqT78wbpaLX+U/TaVY3Do8IHIpfak9CbOsg8ykT
-         FQDrAhC9VZbBo0RvEtrGFpNEVa+UR6Z2gFGf4Z6aY6jp03Pd/aia/KniXNYfZn3lXCCO
-         tHA44irG3rGnkAqhxPSxXr7lMjCBcaw60gzFIMEGZsqWHsHFCkd4cYEnEevnlmJ0cceM
-         toyDnRkrz38Gq/Bkt4Hzq5tbAx6rfCm4ZEojvlrbBEo3mSNsiZ9y4qofZuFjP85FXLvT
-         C20Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708418074; x=1709022874;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mEBbtN49KtsL7jFR1er0xAilkk80hBThV1SlWq40Aps=;
-        b=mjvsapnlIE8o1VtJTB3Oh+ahWQKnpWm0W7Wro3cErRf6vhCrdtmnwBNGP9ZePDWkI1
-         DrqYZzHZ+h3EQo7kyLhPF+1CDptnR36YlQS0/VW7xRz3RPGREpBcBsZ6tDsYioXFYqvg
-         oURuvsv+16rIl7FLq42fmcCsD8Mjdg8/aPArbVQ0Q+MjaePegujjnGedITBKD62SI8YT
-         Lyjtyt42tzIsx/t23zcNPP3bvJQm80Jkdwc+b/skqbd320Fuy0h3owAlqkwsoqcDKNmc
-         KnsB8vhwoIwtlpSSNvHHtNGxiAO+8/RWOQxGn95uzl5sSaBM4NvxRW77U4c9HU3yKe1B
-         ZCZw==
-X-Gm-Message-State: AOJu0Yzj90WzrzuZJZEi3fyrQLdR/13ABlkoth3tn5u2aNX1RsryTMnx
-	dpEzB4yvtorCpnxPEzn1bUEJsbxyg3TZ2whdpvjf4TzoUC85lWBioGpHJE//
-X-Google-Smtp-Source: AGHT+IG7FQSXMdKvzyi/wZ4PzlLIaBi3/MDmBhLf0/rREopA/Z1JVlN4VMxmIaQz5D7vJfLUUgsDWA==
-X-Received: by 2002:a05:6a20:939b:b0:19e:a9e6:bfa with SMTP id x27-20020a056a20939b00b0019ea9e60bfamr20134770pzh.0.1708418074292;
-        Tue, 20 Feb 2024 00:34:34 -0800 (PST)
-Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id lo5-20020a170903434500b001db715d3bf2sm5655655plb.137.2024.02.20.00.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 00:34:33 -0800 (PST)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	mwalle@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v4 4/4] mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map
-Date: Tue, 20 Feb 2024 17:34:09 +0900
-Message-Id: <35d0962986e493b06c13bdf7ada8130a9966dc02.1708404584.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
+	id 1rcMoT-0000000E6vH-1fr9;
+	Tue, 20 Feb 2024 09:53:23 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4B9F81C0009;
+	Tue, 20 Feb 2024 09:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708422796;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vSdHFa3arkRH7EqPLCC3LYRFNsMZzoRHpNScPv/MSXA=;
+	b=I6T8Fm/7/rqeok3R1j6SrMr8pTjanZgbB/g44wr2tAmV2NGxNJy0K7MbQna0gZUWFZCyLJ
+	qU60Z4qMmwfe4G4AUPinZEterEvt3q8JLLScpTDgrvIOeSJrxn5nOn85rrgQ81ypYuu6EE
+	rGTLHuT3PSWdX8ljKkwn6ltgrgol/mlbr5XexZguT4C9AcjGtImOYL/TsNbnOjYtNBGfiz
+	FEJbY8o7asRMSQ8OWW3xUrWeK97K6LRY4a6r1f7gAeX0WBFn0VEEdFAnJULNtcjwKzs5u9
+	j0whHTBfGhABgX+P4bTnfCWKT6QwUAozhEG+B0nw1UbK08Mk7sCfSKBI92MV6A==
+Date: Tue, 20 Feb 2024 10:53:13 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
+ <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
+ <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
+ kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
+ <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
+ <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH v5 09/12] mtd: rawnand: brcmnand: Add support for
+ getting ecc setting from strap
+Message-ID: <20240220105313.5e3c600d@xps-13>
+In-Reply-To: <20240207202257.271784-10-william.zhang@broadcom.com>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+	<20240207202257.271784-10-william.zhang@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240220_003435_508802_E28229B3 
-X-CRM114-Status: GOOD (  18.16  )
+X-CRM114-CacheID: sfid-20240220_015321_936192_DA7371F4 
+X-CRM114-Status: GOOD (  31.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,115 +76,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-
-Some of Infineon SPI NOR flash devices support hybrid sector layout that
-overlays 4KB sectors on a 256KB sector and SPI NOR framework recognizes
-that by parsing SMPT and construct params->erase_map. The hybrid sector
-layout is similar to CFI flash devices that have small sectors on top
-and/or bottom address. In case of CFI flash devices, the erase map
-information is parsed through CFI table and populated into
-mtd->eraseregions so that users can create MTD partitions that aligned
-with small sector boundaries. This patch provides the same capability to
-SPI NOR flash devices that have non-uniform erase map.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/spi-nor/core.c | 58 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 56 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 21775d5eccd5..5ba570248cb9 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3349,7 +3349,54 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
- 	return info;
- }
- 
--static void spi_nor_set_mtd_info(struct spi_nor *nor)
-+static u32
-+spi_nor_get_region_erasesize(const struct spi_nor_erase_region *region,
-+			     const struct spi_nor_erase_type *erase_type)
-+{
-+	u8 i;
-+
-+	if (region->overlaid)
-+		return region->size;
-+
-+	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-+		if (region->erase_mask & BIT(i))
-+			return erase_type[i].size;
-+	}
-+
-+	return 0;
-+}
-+
-+static int spi_nor_set_mtd_eraseregions(struct spi_nor *nor)
-+{
-+	const struct spi_nor_erase_map *map = &nor->params->erase_map;
-+	const struct spi_nor_erase_region *region = map->regions;
-+	struct mtd_erase_region_info *mtd_region;
-+	struct mtd_info *mtd = &nor->mtd;
-+	u32 erasesize, i;
-+
-+	mtd_region = devm_kcalloc(nor->dev, map->n_regions, sizeof(*mtd_region),
-+				  GFP_KERNEL);
-+	if (!mtd_region)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < map->n_regions; i++) {
-+		erasesize = spi_nor_get_region_erasesize(&region[i],
-+							 map->erase_type);
-+		if (!erasesize)
-+			return -EINVAL;
-+
-+		mtd_region[i].erasesize = erasesize;
-+		mtd_region[i].numblocks = div64_ul(region[i].size, erasesize);
-+		mtd_region[i].offset = region[i].offset;
-+	}
-+
-+	mtd->numeraseregions = map->n_regions;
-+	mtd->eraseregions = mtd_region;
-+
-+	return 0;
-+}
-+
-+static int spi_nor_set_mtd_info(struct spi_nor *nor)
- {
- 	struct mtd_info *mtd = &nor->mtd;
- 	struct device *dev = nor->dev;
-@@ -3380,6 +3427,11 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 	mtd->_resume = spi_nor_resume;
- 	mtd->_get_device = spi_nor_get_device;
- 	mtd->_put_device = spi_nor_put_device;
-+
-+	if (!spi_nor_has_uniform_erase(nor))
-+		return spi_nor_set_mtd_eraseregions(nor);
-+
-+	return 0;
- }
- 
- static int spi_nor_hw_reset(struct spi_nor *nor)
-@@ -3472,7 +3524,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 		return ret;
- 
- 	/* No mtd_info fields should be used up to this point. */
--	spi_nor_set_mtd_info(nor);
-+	ret = spi_nor_set_mtd_info(nor);
-+	if (ret)
-+		return ret;
- 
- 	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)mtd->size >> 10);
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgV2lsbGlhbSwKCndpbGxpYW0uemhhbmdAYnJvYWRjb20uY29tIHdyb3RlIG9uIFdlZCwgIDcg
+RmViIDIwMjQgMTI6MjI6NTQgLTA4MDA6Cgo+IEJDTUJDQSBicm9hZGJhbmQgU29DIGJhc2VkIGJv
+YXJkIGRlc2lnbiBkb2VzIG5vdCBzcGVjaWZ5IGVjYyBzZXR0aW5nIGluCj4gZHRzIGJ1dCByYXRo
+ZXIgdXNlIHRoZSBTb0MgTkFORCBzdHJhcCBpbmZvIHRvIG9idGFpbiB0aGUgZWNjIHN0cmVuZ3Ro
+Cj4gYW5kIHNwYXJlIGFyZWEgc2l6ZSBzZXR0aW5nLiBBZGQgYnJjbSxuYW5kLWVjYy11c2Utc3Ry
+YXAgZHRzIHByb3BldHkgZm9yCj4gdGhpcyBwdXJwb3NlIGFuZCB1cGRhdGUgZHJpdmVyIHRvIHN1
+cHBvcnQgdGhpcyBvcHRpb24uCj4gCj4gVGhlIGdlbmVyaWMgbmFuZCBlY2Mgc2V0dGluZ3Mgc3Rp
+bGwgdGFrZSBwcmVjZWRlbmNlIG92ZXIgdGhpcyBmbGFnLiBGb3IKPiBleGFtcGxlLCBpZiBuYW5k
+LWVjYy1zdHJlbmd0aCBpcyBzZXQgaW4gdGhlIGR0cywgdGhlIGRyaXZlciBpZ25vcmVzIHRoZQo+
+IHN0cmFwIHNldHRpbmcgYW5kIGZhbGxzIGJhY2sgdG8gb3JpZ2luYWwgYmVoYXZpb3IuIFRoaXMg
+bWFrZXMgc3VyZSB0aGF0Cj4gdGhlIGV4aXN0aW5nIEJDTUJDQSBib2FyZCBkdHMgc3RpbGwgd29y
+a3MgdGhlIG9sZCB3YXkgZXZlbiB0aGUgc3RyYXAKPiBmbGFnIGlzIHNldCBpbiB0aGUgQkNNQkNB
+IGNoaXAgZHRzaS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBXaWxsaWFtIFpoYW5nIDx3aWxsaWFtLnpo
+YW5nQGJyb2FkY29tLmNvbT4KPiBSZXZpZXdlZC1ieTogRGF2aWQgUmVnYW4gPGRyZWdhbkBicm9h
+ZGNvbS5jb20+Cj4gCj4gLS0tCj4gCj4gQ2hhbmdlcyBpbiB2NTogTm9uZQo+IENoYW5nZXMgaW4g
+djQ6Cj4gLSBVcGRhdGUgdGhlIGNvbW1lbnRzIGZvciBlY2Mgc2V0dGluZyBzZWxlY3Rpb24KPiAK
+PiBDaGFuZ2VzIGluIHYzOiBOb25lCj4gQ2hhbmdlcyBpbiB2MjoKPiAtIE1pbm9yIGNvc21ldGlj
+IGZpeGVzCj4gCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCA4
+MyArKysrKysrKysrKysrKysrKysrKysrLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDc2IGluc2VydGlv
+bnMoKyksIDcgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L2JyY21uYW5kL2JyY21uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9i
+cmNtbmFuZC5jCj4gaW5kZXggNzNmZGY3Y2UyMWFhLi5lZmVlZTllODAyMTMgMTAwNjQ0Cj4gLS0t
+IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYwo+ICsrKyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiBAQCAtMTAzOCw2ICsxMDM4LDE5
+IEBAIHN0YXRpYyBpbmxpbmUgaW50IGJyY21uYW5kX3NlY3Rvcl8xa19zaGlmdChzdHJ1Y3QgYnJj
+bW5hbmRfY29udHJvbGxlciAqY3RybCkKPiAgCQlyZXR1cm4gLTE7Cj4gIH0KPiAgCj4gK3N0YXRp
+YyBpbnQgYnJjbW5hbmRfZ2V0X3NlY3Rvcl9zaXplXzFrKHN0cnVjdCBicmNtbmFuZF9ob3N0ICpo
+b3N0KQo+ICt7Cj4gKwlzdHJ1Y3QgYnJjbW5hbmRfY29udHJvbGxlciAqY3RybCA9IGhvc3QtPmN0
+cmw7Cj4gKwlpbnQgc2hpZnQgPSBicmNtbmFuZF9zZWN0b3JfMWtfc2hpZnQoY3RybCk7Cj4gKwl1
+MTYgYWNjX2NvbnRyb2xfb2ZmcyA9IGJyY21uYW5kX2NzX29mZnNldChjdHJsLCBob3N0LT5jcywK
+PiArCQkJCQkJICBCUkNNTkFORF9DU19BQ0NfQ09OVFJPTCk7Cj4gKwo+ICsJaWYgKHNoaWZ0IDwg
+MCkKPiArCQlyZXR1cm4gMDsKPiArCj4gKwlyZXR1cm4gKG5hbmRfcmVhZHJlZyhjdHJsLCBhY2Nf
+Y29udHJvbF9vZmZzKSA+PiBzaGlmdCkgJiAweDE7CgpXaGF0IGlzIHRoaXMgJiAweDEgPyBJZiB5
+b3UgcmV0dXJuIGEgeWVzL25vIHZhbHVlLCBwbGVhc2UgbWFrZSB0aGlzCmZ1bmN0aW9uIHJldHVy
+biBhIGJvb2wuIEFsc28sIHBsZWFzZSB1c2UgaW50ZXJtZWRpYXRlIHN0ZXBzIHRvIGNsYXJpZnkK
+d2hhdCB5b3UgZG8uCgpzZWN0b3JfMWtfYml0ID0gLi4uOwphY2MgPSBuYW5kX3JlYWRyZWcoKTsK
+cmV0dXJuIGFjYyAmIEJJVChzZWN0b3JfMWtfYml0KTsKCk9yIHNvbWV0aGluZyBsaWtlIHRoYXQu
+Cgo+ICt9Cj4gKwo+ICBzdGF0aWMgdm9pZCBicmNtbmFuZF9zZXRfc2VjdG9yX3NpemVfMWsoc3Ry
+dWN0IGJyY21uYW5kX2hvc3QgKmhvc3QsIGludCB2YWwpCj4gIHsKPiAgCXN0cnVjdCBicmNtbmFu
+ZF9jb250cm9sbGVyICpjdHJsID0gaG9zdC0+Y3RybDsKPiBAQCAtMTA1NSw2ICsxMDY4LDM4IEBA
+IHN0YXRpYyB2b2lkIGJyY21uYW5kX3NldF9zZWN0b3Jfc2l6ZV8xayhzdHJ1Y3QgYnJjbW5hbmRf
+aG9zdCAqaG9zdCwgaW50IHZhbCkKPiAgCW5hbmRfd3JpdGVyZWcoY3RybCwgYWNjX2NvbnRyb2xf
+b2ZmcywgdG1wKTsKPiAgfQo+ICAKPiArc3RhdGljIGludCBicmNtbmFuZF9nZXRfc3BhcmVfc2l6
+ZShzdHJ1Y3QgYnJjbW5hbmRfaG9zdCAqaG9zdCkKPiArewo+ICsJc3RydWN0IGJyY21uYW5kX2Nv
+bnRyb2xsZXIgKmN0cmwgPSBob3N0LT5jdHJsOwo+ICsJdTE2IGFjY19jb250cm9sX29mZnMgPSBi
+cmNtbmFuZF9jc19vZmZzZXQoY3RybCwgaG9zdC0+Y3MsCj4gKwkJCQkJCSAgQlJDTU5BTkRfQ1Nf
+QUNDX0NPTlRST0wpOwo+ICsJdTMyIGFjYyA9IG5hbmRfcmVhZHJlZyhjdHJsLCBhY2NfY29udHJv
+bF9vZmZzKTsKPiArCj4gKwlyZXR1cm4gKGFjYyAmIGJyY21uYW5kX3NwYXJlX2FyZWFfbWFzayhj
+dHJsKSk7Cj4gK30KPiArCj4gK3N0YXRpYyBpbnQgYnJjbW5hbmRfZ2V0X2VjY19zdHJlbmd0aChz
+dHJ1Y3QgYnJjbW5hbmRfaG9zdCAqaG9zdCkKCgkJCQkJX2Zyb21fc3RyYXAKCj4gK3sKPiArCXN0
+cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsID0gaG9zdC0+Y3RybDsKPiArCXUxNiBhY2Nf
+Y29udHJvbF9vZmZzID0gYnJjbW5hbmRfY3Nfb2Zmc2V0KGN0cmwsIGhvc3QtPmNzLAo+ICsJCQkJ
+CQkgIEJSQ01OQU5EX0NTX0FDQ19DT05UUk9MKTsKPiArCWludCBzZWN0b3Jfc2l6ZV8xayA9IGJy
+Y21uYW5kX2dldF9zZWN0b3Jfc2l6ZV8xayhob3N0KTsKPiArCWludCBzcGFyZV9hcmVhX3NpemUs
+IGVjY19sZXZlbCwgZWNjX3N0cmVuZ3RoOwo+ICsJdTMyIGFjYzsKPiArCj4gKwlzcGFyZV9hcmVh
+X3NpemUgPSBicmNtbmFuZF9nZXRfc3BhcmVfc2l6ZShob3N0KTsKPiArCWFjYyA9IG5hbmRfcmVh
+ZHJlZyhjdHJsLCBhY2NfY29udHJvbF9vZmZzKTsKPiArCWVjY19sZXZlbCA9IChhY2MgJiBicmNt
+bmFuZF9lY2NfbGV2ZWxfbWFzayhjdHJsKSkgPj4gY3RybC0+ZWNjX2xldmVsX3NoaWZ0OwoKUGxl
+YXNlIHVzZSBGSUVMRF9QUkVQL0ZJRUxEX0dFVC4KCj4gKwlpZiAoc2VjdG9yX3NpemVfMWspCj4g
+KwkJZWNjX3N0cmVuZ3RoID0gZWNjX2xldmVsICogMjsKPiArCWVsc2UgaWYgKHNwYXJlX2FyZWFf
+c2l6ZSA9PSAxNiAmJiBlY2NfbGV2ZWwgPT0gMTUpCj4gKwkJZWNjX3N0cmVuZ3RoID0gMTsgLyog
+aGFtbWluZyAqLwo+ICsJZWxzZQo+ICsJCWVjY19zdHJlbmd0aCA9IGVjY19sZXZlbDsKPiArCj4g
+KwlyZXR1cm4gZWNjX3N0cmVuZ3RoOwo+ICt9Cj4gKwo+ICAvKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKPiAgICog
+Q1NfTkFORF9TRUxFQ1QKPiAgICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwo+IEBAIC0yNjIyLDE5ICsyNjY3LDQz
+IEBAIHN0YXRpYyBpbnQgYnJjbW5hbmRfc2V0dXBfZGV2KHN0cnVjdCBicmNtbmFuZF9ob3N0ICpo
+b3N0KQo+ICAJCW5hbmRkZXZfZ2V0X21lbW9yZygmY2hpcC0+YmFzZSk7Cj4gIAlzdHJ1Y3QgYnJj
+bW5hbmRfY29udHJvbGxlciAqY3RybCA9IGhvc3QtPmN0cmw7Cj4gIAlzdHJ1Y3QgYnJjbW5hbmRf
+Y2ZnICpjZmcgPSAmaG9zdC0+aHdjZmc7Cj4gLQljaGFyIG1zZ1sxMjhdOwo+ICsJc3RydWN0IGRl
+dmljZV9ub2RlICpucCA9IG5hbmRfZ2V0X2ZsYXNoX25vZGUoY2hpcCk7Cj4gIAl1MzIgb2Zmcywg
+dG1wLCBvb2Jfc2VjdG9yOwo+IC0JaW50IHJldDsKPiArCWludCByZXQsIHNlY3Rvcl9zaXplXzFr
+ID0gMDsKPiArCWJvb2wgdXNlX3N0cmFwID0gZmFsc2U7Cj4gKwljaGFyIG1zZ1sxMjhdOwo+ICAK
+PiAgCW1lbXNldChjZmcsIDAsIHNpemVvZigqY2ZnKSk7Cj4gKwl1c2Vfc3RyYXAgPSBvZl9wcm9w
+ZXJ0eV9yZWFkX2Jvb2wobnAsICJicmNtLG5hbmQtZWNjLXVzZS1zdHJhcCIpOwo+ICAKPiAtCXJl
+dCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5hbmRfZ2V0X2ZsYXNoX25vZGUoY2hpcCksCj4gLQkJ
+CQkgICAiYnJjbSxuYW5kLW9vYi1zZWN0b3Itc2l6ZSIsCj4gKwkvKgo+ICsJICogU2V0IEVDQyBz
+aXplIGFuZCBzdHJlbmd0aCBiYXNlZCBvbiBodyBjb25maWd1cmF0aW9uIGZyb20gc3RyYXAKPiAr
+CSAqIGlmIGJyY20sbmFuZC1lY2MtdXNlLXN0cmFwIGlzIHNldC4gSG93ZXZlciBpZiBuYW5kLWVj
+Yy1zdHJlbmd0aAo+ICsJICogaXMgc2V0LCBpdHMgdmFsdWUgd2lsbCBiZSB1c2VkIGFuZCBpZ25v
+cmUgdGhlIHN0cmFwIHNldHRpbmcuCgpQbGVhc2UgZXJyb3Igb3V0IGluIHRoaXMgY2FzZS4gSXQn
+cyBvbmUgb3IgdGhlIG90aGVyLCBub3QgYm90aC4KCj4gKwkgKi8KPiArCWlmIChjaGlwLT5lY2Mu
+c3RyZW5ndGgpCj4gKwkJdXNlX3N0cmFwID0gMDsKPiArCj4gKwlpZiAodXNlX3N0cmFwKSB7Cj4g
+KwkJY2hpcC0+ZWNjLnN0cmVuZ3RoID0gYnJjbW5hbmRfZ2V0X2VjY19zdHJlbmd0aChob3N0KTsK
+PiArCQlzZWN0b3Jfc2l6ZV8xayA9IGJyY21uYW5kX2dldF9zZWN0b3Jfc2l6ZV8xayhob3N0KTsK
+PiArCQlpZiAoY2hpcC0+ZWNjLnNpemUgPT0gMCkgewo+ICsJCQlpZiAoc2VjdG9yX3NpemVfMWsg
+PCAwKQo+ICsJCQkJY2hpcC0+ZWNjLnNpemUgPSA1MTI7Cj4gKwkJCWVsc2UKPiArCQkJCWNoaXAt
+PmVjYy5zaXplID0gNTEyIDw8IHNlY3Rvcl9zaXplXzFrOwo+ICsJCX0KCkknZCBpbnN0ZWFkIG1h
+a2UgYSBmdW5jdGlvbiBuYW1lZCBicmNtbmFuZF9nZXRfZWNjX3NldHRpbmdzKCkgd2l0aCB0aGUK
+Y2hpcC0+ZWNjIHBhcmFtZXRlciwgc28geW91IGNhbiBkaXJlY3RseSBmaWxsIHRoZSBlbnRyaWVz
+IHdpdGhvdXQKZ2V0dGluZyBhbm90aGVyIHRpbWUgdGhlIHNlY3Rvcl9zaXplXzFrIHRoaW5nLgoK
+U3RyZW5ndGggYW5kIHN0ZXAgc2l6ZSBhcmUgdGlnaHRseSBsaW5rZWQsIGl0IGRvZXMgbWFrZSBz
+ZW5zZSB0byBkZXJpdmUKdGhlbSBib3RoIGF0IHRoZSBzYW1lIHRpbWUuCgo+ICsJfQo+ICsKPiAr
+CXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAiYnJjbSxuYW5kLW9vYi1zZWN0b3Itc2l6
+ZSIsCj4gIAkJCQkgICAmb29iX3NlY3Rvcik7Cj4gIAlpZiAocmV0KSB7Cj4gLQkJLyogVXNlIGRl
+dGVjdGVkIHNpemUgKi8KPiAtCQljZmctPnNwYXJlX2FyZWFfc2l6ZSA9IG10ZC0+b29ic2l6ZSAv
+Cj4gLQkJCQkJKG10ZC0+d3JpdGVzaXplID4+IEZDX1NISUZUKTsKPiArCQlpZiAodXNlX3N0cmFw
+KQo+ICsJCQljZmctPnNwYXJlX2FyZWFfc2l6ZSA9IGJyY21uYW5kX2dldF9zcGFyZV9zaXplKGhv
+c3QpOwo+ICsJCWVsc2UKPiArCQkJLyogVXNlIGRldGVjdGVkIHNpemUgKi8KPiArCQkJY2ZnLT5z
+cGFyZV9hcmVhX3NpemUgPSBtdGQtPm9vYnNpemUgLwo+ICsJCQkJCQkobXRkLT53cml0ZXNpemUg
+Pj4gRkNfU0hJRlQpOwo+ICAJfSBlbHNlIHsKPiAgCQljZmctPnNwYXJlX2FyZWFfc2l6ZSA9IG9v
+Yl9zZWN0b3I7Cj4gIAl9CgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
