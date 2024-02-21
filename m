@@ -4,72 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0622FC48BF6
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Feb 2024 10:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A53C48BF6
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Feb 2024 11:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d73X4zXlIPyI3lJIQMIaB9g4sz4GuKbK6tkJ9J7Amzo=; b=ixv1OJnTdB3WPJ
-	jbKhXMq1SeOBDvo+ooc7q6OLzCbl2B4tOCXbCFQ2LyB/SalcFF6aZtj4mvwic8U+6d7RCGq8ddAod
-	m9DMR3+LaZvWCoAdTuHkP4lbxb71fgPFo2TMnwnTQgw0kbzzC4aybOeVeqQqDQTqB/WwaRPcu6Tg+
-	FmXO/otQoHRLESUy1LmLokqkz+jicvvxFKdZNcDyT2CTPiGn9H6Vlv9bO0v1VcjVyKQJNqdlf53Zx
-	z33ZvyF2l4+aq3seg5o1ZwvxOVPwzDi2r/ZZ1SCdwhZu8XCjaOgqCdmfMjKXrwFpj/GDQHDeh8Qc5
-	qmuv1D2dqXtC+FCkW9AA==;
+	List-Owner; bh=d9eoKQ4m/MpuRfY1jBzkeYnSsHAwyidY9gkit5AxR+U=; b=jATwIfUN/6zmO4
+	5OwUion7UmnvjaRrkOAwYtdfzyqOGYTIRiksPllEtZdSdzIqQnpFdXFheYno8w8CZ2wDP3vpW7nuC
+	ureAiWOKO/K4XKCqmEUaB9dr4A/rzvxmVRGGWbuxcXglfF0kygH9v+pmk3FnErLiF/ArohQwrCPpR
+	VlhznWKkQ1pRVYU/IBHe1h9i+nmrl0Yx/xB3NqYuWebtr+E5/Lhaxw+SSwfjnKg9QHlFJxyfD1Y/T
+	BNdGqY6GMKJIsOKue42VOYAA336iRuizgnt0thNQKKcmPTaF0QnXCF0z9yCLqUAodqYlQEkaaVrVZ
+	+xoGiMgji+LYoMCq3csg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rck9h-00000000Zsq-2jsO;
-	Wed, 21 Feb 2024 10:48:49 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rckLc-00000000bq0-2DKd;
+	Wed, 21 Feb 2024 11:01:08 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rck9e-00000000ZsQ-18zZ
+	id 1rckLZ-00000000bnk-1xwO
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Feb 2024 10:48:47 +0000
+	Wed, 21 Feb 2024 11:01:06 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8576F611E2;
-	Wed, 21 Feb 2024 10:48:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D911CC43390;
-	Wed, 21 Feb 2024 10:48:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708512525;
-	bh=du6ulVJ73M5wtTyYQAMASVTtXVIeYy+D8eMVD7sAGcM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ti6uUWf4IMz0kw7JYGID5wK+hy5KW5gd72V9h+qGGVURRiy25YuWyrqx7ytJVmBQm
-	 W0SefMJ5GIJZVl9iBOwtS2c+VvgfP6bgM8VNer3k88ze/LPMVPJ0NCSSZKczu1KTat
-	 bjag50BtU0sZlPkPe9Up4g4bkxKFHm4MBYQFq9v6ISJIBil9r9+moARU88SsTawU94
-	 I0vgD//rWiWYCPYePus98rkRTlOWbTNO1YBeNBAAmxc3b8WtWaO1dhr7uU3r3MeVGM
-	 Te92lqOTFG2tM34rDUW9tJ2ZIoyAi8eIJRNJIBfGcmh+/WJ8KKFudToHPJdo/cZioI
-	 jjgzAhewmIzNQ==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Josua Mayer" <josua@solid-run.com>,  "Tudor Ambarus"
- <tudor.ambarus@linaro.org>,  "Pratyush Yadav" <pratyush@kernel.org>,
-  "Miquel Raynal" <miquel.raynal@bootlin.com>,  "Richard Weinberger"
- <richard@nod.at>,  "Vignesh Raghavendra" <vigneshr@ti.com>,  "Rob Herring"
- <robh+dt@kernel.org>,  "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>,  "Conor Dooley"
- <conor+dt@kernel.org>,  <linux-mtd@lists.infradead.org>,  "Takahiro
- Kuwano" <tkuw584924@gmail.com>,  "Takahiro Kuwano"
- <Takahiro.Kuwano@infineon.com>,  "Yazan Shhady"
- <yazan.shhady@solid-run.com>,  "Rob Herring" <robh@kernel.org>,
-  <devicetree@vger.kernel.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7] dt-bindings: mtd: spi-nor: add optional interrupts
- property
-In-Reply-To: <CZANBUQ2RJ3N.DO07Z9VFJCBZ@kernel.org> (Michael Walle's message
-	of "Wed, 21 Feb 2024 10:23:25 +0100")
-References: <20240219-mtd-flash-interrupt-binding-v7-1-206e30a656fa@solid-run.com>
-	<CZAM553H2H56.2TDN36QEL90XX@kernel.org>
-	<a0144c5b-4095-4a0c-84b6-93dfe9631a6b@solid-run.com>
-	<CZANBUQ2RJ3N.DO07Z9VFJCBZ@kernel.org>
-Date: Wed, 21 Feb 2024 11:48:41 +0100
-Message-ID: <mafs0v86i6qk6.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by sin.source.kernel.org (Postfix) with ESMTP id 13AB1CE1CFB;
+	Wed, 21 Feb 2024 11:01:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1A33C433C7;
+	Wed, 21 Feb 2024 11:00:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708513260;
+	bh=oJUXBVVY+vVx1UyN31Vre1Dkgow45biC3Dpaor0ifBw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p8EGoMto2GGvZ3giIazo/7t0byjEUCrn9wkrxEXwjdooLYVSpG8MdEVgLtN+VbnMz
+	 RFmRwAElSeYvhD2Rv/4MzakNoQUizTgHvxSmdZJkSJN6/wJz34Jhco1h8X1Oyzn2NO
+	 jJkmgH9jW/2tJKUmdAyYv9Ie00rVRiFj9Rub9oPc=
+Date: Wed, 21 Feb 2024 12:00:56 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: max.oss.09@gmail.com
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, s.hauer@pengutronix.de,
+	han.xu@nxp.com, tomasz.mon@camlingroup.com, richard@nod.at,
+	tharvey@gateworks.com, linux-mtd@lists.infradead.org,
+	Max Krummenacher <max.krummenacher@toradex.com>
+Subject: Re: [regression 5.4.y][RFC][PATCH 0/1]  mtd: rawnand: gpmi:
+ busy_timeout_cycles
+Message-ID: <2024022151-tinker-sprang-5fa2@gregkh>
+References: <20240207174911.870822-1-max.oss.09@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240207174911.870822-1-max.oss.09@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240221_024846_423045_18AE5583 
-X-CRM114-Status: GOOD (  13.90  )
+X-CRM114-CacheID: sfid-20240221_030105_705150_A691BC28 
+X-CRM114-Status: GOOD (  15.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,53 +72,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 21 2024, Michael Walle wrote:
+On Wed, Feb 07, 2024 at 06:49:10PM +0100, max.oss.09@gmail.com wrote:
+> From: Max Krummenacher <max.krummenacher@toradex.com>
+> 
+> Hello
+> 
+> With the backported commit e09ff743e30b ("mtd: rawnand: gpmi: Set
+> WAIT_FOR_READY timeout based on program/erase times") in kernel 5.4.y
+> I see corruption of the NAND content during kernel boot.
+> Reverting said commit on top of current 5.4.y fixes the issue.
+> 
+> It seems that the commit relies on commit 71c76f56b97c ("mtd:
+> rawnand: gpmi: Fix setting busy timeout setting"), but its
+> backport got reverted.
+> One should either backport both commits or none, having only one
+> results in potential bugs.
+> 
+> I've seen it in 5.4.y, however in 5.10.y and 5.15.y there one of
+> the two backports is also reverted and likely the same regression
+> exists.
+> 
+> Any comments?
+> 
+> Max
+> 
+> Max Krummenacher (1):
+>   Revert "Revert "mtd: rawnand: gpmi: Fix setting busy timeout setting""
+> 
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> -- 
+> 2.42.0
+> 
+> 
 
-> [+ Takahiro]
->
-> Hi,
->
-> On Wed Feb 21, 2024 at 10:13 AM CET, Josua Mayer wrote:
->> Hi,
->>
->> Am 21.02.24 um 09:27 schrieb Michael Walle:
->> > Hi,
->> >
->> > On Mon Feb 19, 2024 at 3:41 PM CET, Josua Mayer wrote:
->> >> Some spi flash memories have an interrupt signal which can be used for
->> >> signalling on-chip events such as busy status or ecc errors to the host.
->> > Do you have an example? Maybe one with a public datasheet?
->>
->> My example is Infineon S28HS512T, however datasheet download requires 
->> user account.
->>
->> S26HS512T has interrupt line, too, and datasheet is downloadable without 
->> registration:
->> https://www.infineon.com/cms/en/product/memories/nor-flash/semper-nor-flash-family/semper-nor-flash/#!documents
->
-> Thanks, as far as I can see, both are hyperbus flashes. I'm asking
-> because I'm not aware of any SPI NOR flash with an interrupt line. 
+Now queeud up, thanks.
 
-I found this datasheet [0] for S28H flash family from Infineon on
-Google. These are SPI NOR flashes. In pinout you can see there is an
-INT# signal. The signal description says: "System Interrupt (INT#). When
-LOW, the device is indicating that an internal event has occurred."
-Further in section 4.1.1.5 "INT# Output" it says:
-
-    HL-T/HS-T supports INT# output pin to indicate to the host system
-    that an event has occurred within the flash device. The user can
-    configure the INT# output pin to transition to the active (LOW)
-    state when:
-
-    - 2-bit ECC error is detected
-    - 1-bit ECC error is detected
-    - Transitioning from the Busy to the Ready state
-
-[0] https://www.infineon.com/dgdl/Infineon-S28HS256T_S28HS512T_S28HS01GT_S28HL256T_S28HL512T_S28HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Octal_Interface-DataSheet-v03_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee6bca96f97&da=t
-
--- 
-Regards,
-Pratyush Yadav
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
