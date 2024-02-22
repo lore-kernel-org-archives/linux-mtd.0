@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47075C48BF8
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Feb 2024 09:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2352C48BEB
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Feb 2024 09:19:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WPCTGpN2L0+aGNrnp2T6Q3em33Z6ftt/i878oEmxCtg=; b=Q1bmJVREtE6OSj
-	cPYQ2oxF6LmQ+8ocGid80tIXt5ugKYoZykmD6ESYGcQWy25bEAjFSD23URFuBLur/leD1MhmFmciO
-	6X81yTdqa95aU+O5o4E6i79TyO8v7r0TcgHKFiOjATTBGWIy9BiU2oSopzshYWc0C5P3kAbP75gR1
-	CK64JwMmMlE+SLJanJwrDr6vk2gQjCABZRDEt7N3yfUcVVl2HYFgtm2VZGnSBOD0GOvrlmrqOWtKG
-	XIYB5pAHWFuobSKezI0MXNdLL2InPJPDvLs4/ecRxdHx17poO+2JBOdt2yes4PaOiyfx5Vz20dYaE
-	t1UYidXqSbWBPtuyb3Ww==;
+	List-Owner; bh=0dEhc9zZxPOciy8b9dWVEQfopZDjwlR0dMZbnusE+MA=; b=EIKVKp2WvAl46B
+	N7L5YAoWdwJ0831Zs++/RW7zvEhPXoUcxWP8DF9x8ee/NltchR5YsKevqly+mIYhgFCYZ1B8qJh4L
+	O7qEhJ55YNUMCqDE96kLemdVGYDKU6LXTKTCT7IAUqDIFRI5XAsaVPa1EjjTm4O8lfgiMs4oH1pZn
+	8+X7CF4CkGYyfESLzydkiWXTawzbWzx2CeqpsI/phhUMJ8FEAtC7yU/nQhqOsGhqjREiEC9sRn1gb
+	Z6ujym5JFFVxMQQLiaplWHMX8GreRa6+THD+4GAKCRYZL84yDHuKQnfrFg+tATkaLf2+dAg3p5AVs
+	YLf2/PfnYG5yoUFPWVAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd5C1-00000004CEc-1h7h;
-	Thu, 22 Feb 2024 09:16:37 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1rd5FE-00000004Cf5-0ODW;
+	Thu, 22 Feb 2024 09:19:56 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd5By-00000004CD2-21nn
+	id 1rd5FB-00000004Ccw-1KFy
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Feb 2024 09:16:35 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a3d484a58f6so213982766b.3
-        for <linux-mtd@lists.infradead.org>; Thu, 22 Feb 2024 01:16:33 -0800 (PST)
+	Thu, 22 Feb 2024 09:19:54 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a3122b70439so943597866b.3
+        for <linux-mtd@lists.infradead.org>; Thu, 22 Feb 2024 01:19:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708593392; x=1709198192; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1708593591; x=1709198391; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SKC7Il8b1oyV+oNDEp38tjmSeRJe+TR1zKY2Fatcllw=;
-        b=ZncUkFTW6HYBtl/9ak1EqhYx8bZaNuS5AUc5P/LfCsGhwzzT5qonjjWqI+oi9WsfVn
-         g9INhoctq20npQKZKzLzvdrEPc7uWXPQLCvvS1hLxOK/rzrOGc5P2DRff+qsOqwpqrGf
-         64XBNm/Qm9Myn2AZLJXaqf+E9hGrI3PFON9SGsYJrKtzP07Sk/7rBIF2Dr4SRXrXLTvm
-         Ng7tmLpOfNHCvPd8bmzbS9rc1XGXiLKPMn+4CtTiv20H5sBOltTBTAvKCdxwAVK1f3WH
-         DiZ87bK1cpfNeHnefYKBA3th/RnRh33P2ISsvKLIPYzRL9qrUBWr1X0ZmJVUtlPoBGcm
-         94/A==
+        bh=PmCv2CfcyvQ6sw1yTT6r/W//XC5XTP1YOZCBBSo1OxU=;
+        b=jY5O0bHkoZ7ZS3UPqTm2p2yVjXrTkd0IbsUTs/soxbC3MkkG+jO/bDtuYRNnWz/wXO
+         C7riAIzlkiqIQOzQP31RyyS8+CdRQIKTLEjWaiQv/0lBY5zPW+0QBClr8t19OPxUbMw5
+         E7A0cqus9c6eeNo5O8cbJPx/DGDSbS9FmIwUj+d7a8awjsl9vkKDqY0tBM2BPfZ3K4GU
+         /a+jCRFYl6Y9WZzUhWEhO16+2NdgrRbn4ehnmwkwoZu4R/ZE6bYI33dYnJl0Dzl0iET8
+         0BihpHHXroRyIAdi1r/uqhWBDxxhlPSGxfUlsoWyzHeb/6aowaassh+0M/ZpfJh19pwW
+         JjKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708593392; x=1709198192;
+        d=1e100.net; s=20230601; t=1708593591; x=1709198391;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKC7Il8b1oyV+oNDEp38tjmSeRJe+TR1zKY2Fatcllw=;
-        b=NNZxE14edesOZnFLwBgnxqGRPiUIToxO/PMRUsi3FhOpdQOjXXsv8eaIefD2om5TXD
-         p6XY9LXY08AFeVlEp4vFZESfg/qwzMFjty2WINgdX7Bzn4pIrCeZ/4DWXfHzjW9Qx08/
-         os7bOZ2Unskz+8iBMF7Q5s+w26LJcq/Xzu8mC8HpbzQcbul6B8YO9phftzN+AZPN3m64
-         YBMArE4IzOdOsNd52FVGuDPjgBu990a0Q1qJqqa/EXDj4G/NI/r3qn7NE7JfWC70i9TU
-         oxoLggznVraaZo/gEtX8DKIS4H32ugm9BU24R+w9kSicgBFw+scmhqGPzDxvvmQwYcdW
-         70Jg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3trPGpoTskDKDzDnOV3sKWg+aJjkSxRD1wE8b6QwJ0CKh0aJ2EZ08HtVugMGTVMvRyyKmwubSTzcxsjX09jpmYClpbVhnt5OFPyjOhg==
-X-Gm-Message-State: AOJu0YzPcrkmXnxuawWKl0zZ1VbmQYe5cp568z+1gO9T8gxHl1UnTLFD
-	ML0qpKfZDYqKsAgFHGSIOTZeFt0edWwT9E66ZTCWDD5JIb5B/XhBjuwM2c3LcY4=
-X-Google-Smtp-Source: AGHT+IHurcoZo5K0JwHVgAkKm7hPXRukaQEP17fWHTT4J3toQ8Qx0XhGggn3S0bGy1q1fN2bAmWIgw==
-X-Received: by 2002:a17:906:1c5a:b0:a3e:9def:5ed5 with SMTP id l26-20020a1709061c5a00b00a3e9def5ed5mr7265080ejg.33.1708593391743;
-        Thu, 22 Feb 2024 01:16:31 -0800 (PST)
+        bh=PmCv2CfcyvQ6sw1yTT6r/W//XC5XTP1YOZCBBSo1OxU=;
+        b=KvRjmkM7+5paQHOAZariNt5CKF35uW8Q0ox7ECAw+U3h0XW440WStBG8gEfNFiDCWb
+         DeutIgDAusjheEkvoRsEqCvPlzReKttoOzwvXkemECEbCyexf2GHMVi6HmxDkVpLsYJQ
+         9mayhfphLlnrdJqvV06ASxC1W3tdJuAepXb6YQaSFVUAGBXn1b2a5eSIvxw4XI7Vr0Gf
+         WrbyyO7R9sUJZ43Xk4dqsN0B+l7jwzj87yJpcWv1ggPKQmFsyXLamYLEsW4EL9Pf/i8B
+         brdYhc5nrfpy+5SFBWxwTuBkaO0L3fkfW2h/wvAjpGnnqvCe5iZkmCLV5hMsPgBOWdKW
+         uJiA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2W0cW1deVmjEpX6NbedgP0OwhybyvOG/iclkckef+sZL+dDQpw9o4A/o3VEmNb+RRau+HgVv+7Ir6T7OSvfPNvMnCtFrFv87XDSFP7A==
+X-Gm-Message-State: AOJu0YwbpGyNyVllQ74+22ZUaooG+YNvg50EMpOk+mm0g8sjzyLrpPwb
+	YrrjeRHEOwqpk7OtqHjhyEdDOryiCSNyBKiZPaYwMZgCRKzbKs998h81InJ0tBs=
+X-Google-Smtp-Source: AGHT+IElQJs14kGBEH2/dau4pudlpNgnogD+EQS8guSJOGGw5Csg+0mpBBjRV5MfGLpTwt/CHIV6QQ==
+X-Received: by 2002:a17:906:2b88:b0:a3e:34b2:a2fc with SMTP id m8-20020a1709062b8800b00a3e34b2a2fcmr8564380ejg.1.1708593590715;
+        Thu, 22 Feb 2024 01:19:50 -0800 (PST)
 Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id tz3-20020a170907c78300b00a3ee67806fasm2665347ejc.152.2024.02.22.01.16.30
+        by smtp.gmail.com with ESMTPSA id q10-20020a17090609aa00b00a3f6466ba85sm852819eje.35.2024.02.22.01.19.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 01:16:31 -0800 (PST)
-Message-ID: <242f1bbd-a9f8-4781-b553-681385f1489d@linaro.org>
-Date: Thu, 22 Feb 2024 09:16:29 +0000
+        Thu, 22 Feb 2024 01:19:50 -0800 (PST)
+Message-ID: <f7c45e7b-993c-444b-8710-042da7512bbf@linaro.org>
+Date: Thu, 22 Feb 2024 09:19:48 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/4] mtd: spi-nor: core: set mtd->eraseregions for
- non-uniform erase map
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for BoHong bh25q128as
 Content-Language: en-US
-To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
+To: Christian Marangi <ansuelsmth@gmail.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: David Bauer <mail@david-bauer.net>
+References: <20240220200325.19089-1-ansuelsmth@gmail.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
+In-Reply-To: <20240220200325.19089-1-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240222_011634_561344_BF88946A 
-X-CRM114-Status: UNSURE (   5.17  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240222_011953_396865_90AEC2AA 
+X-CRM114-Status: GOOD (  12.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,10 +97,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Takahiro,
 
-I'll try to review this today or tomorrow and queue it if I'll find it
-fine. Please let us know if you tested the series and on which flash.
+
+On 2/20/24 20:03, Christian Marangi wrote:
+> From: David Bauer <mail@david-bauer.net>
+> 
+> Add MTD support for the BoHong bh25q128as SPI NOR chip.
+> The chip has 16MB of total capacity, divided into a total of 256
+> sectors, each 64KB sized. The chip also supports 4KB sectors.
+> Additionally, it supports dual and quad read modes.
+> 
+> Datasheet is public and can be found at the referenced link.
+> 
+> Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
+> 
+> Link: https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
+> Signed-off-by: David Bauer <mail@david-bauer.net>
+> [ reworked to new flash_info format ]
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+> Read/write/erase test are done by flashing and installing an OpenWrt
+> image on the spi and by using overlayfs on it confirming correct
+> read/write.
+> 
+> root@OpenWrt:/tmp/tmp2# cat /sys/bus/spi/devices/spi0.0/spi-nor/partname 
+> bh25q128as
+> root@OpenWrt:/tmp/tmp2# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id 
+> 684018
+> root@OpenWrt:/tmp/tmp2# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer 
+> bohong
+> 
+> root@OpenWrt:/# xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 53464450000101ff00000109300000ff68000103600000ffffffffffffff
+> ffffffffffffffffffffffffffffffffffffe520f1ffffffff0744eb086b
+> 083b42bbeeffffffffff00ffffff44eb0c200f5210d800ffffffffffffff
+> ffffffffffff003600279ef97764fcebffff
+> 
+
+Hey, Christian,
+
+Seems that the flash defines the SFDP tables, thus it's likely you won't
+need a flash entry at all, and instead rely on the generic SFDP driver
+to parse the flash settings from SFDP and initialize the flash based on
+that.
+
+Have you tried testing the flash without adding a dedicated entry for
+it? Just specifying the jedec,spi-nor compatible in dt will do the
+trick. As you do now, but without this patch :).
 
 Cheers,
 ta
