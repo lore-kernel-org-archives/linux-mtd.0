@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 978D7C48BEB
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Feb 2024 07:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5970EC48BEB
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Feb 2024 07:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bxkg2bxN4riezX807zVejo0eM1RN5w/fIYJS8mnh5FY=; b=OsLDAdZDtCq+Zt0tfNbqBdjr6x
-	Pv9slULtNQYMm6LC6KO3VJJ2Gt6t1nsvIOPubmJlBcqyZ992UCW/tB3TM/KneGrBsPAZOsczqynRv
-	U7WtAKf5DtVgfYTrMrk6VeRf9rp7hMBdWeF44tqnpc1uk7Ru/dTsc13gBmmSxbZXzvQU/gVNcS238
-	QHfrFSW8h8WrYwzsRCXDLh0OI9mRET5brpYdOa9jPZeF1IB0F+o45kGhgcOJUZ/klgiwIt3E1lvka
-	YOlKGdlJHMlEqjwVAf2Lyz/G4hdR4BOJdoAAZSHF2NT1Vdv/Fuiaq8TA8LNO6s/KYPCiEKACCIETA
-	6kjK1l2A==;
+	bh=abGSwzRGFr/QtppL9V1QbVfUU4EJdCQ2RSXxHawW/Y0=; b=5FbaamI2w0x1W0+8D08D9s3xj/
+	edmYVhEtXHAmU5r3PN6jkFw3Xiwr5n33/4yVS3tsMtPNX0a1cTO4j2A8PHKkoM4xTFIc+Qq2sObMO
+	VNMHNe15GUB2DTrpAVAmQ8fphWmNcIuQSaXSBOArnKQMz9MnUWlINTjcPM2cHcLbEsD2qNUHc3x0x
+	k4wxerBnVhmSmPQLEVjBBSH76zhLzflDByMM+F/3EJo8MpSqj6MsvMCww45fsaZ+EAkT/Gz9ufWbe
+	5uKvF8cmuUBo+JwfPhuR6aE1u28BQHtfLnsyfZwo20Fe3YEhB3qkGndSN3mO6983P9Sd7r41bgUUt
+	ooMAGn0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd35K-00000003kN4-3oXA;
-	Thu, 22 Feb 2024 07:01:34 +0000
-Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
+	id 1rd35s-00000003kWg-2erq;
+	Thu, 22 Feb 2024 07:02:08 +0000
+Received: from mail-qt1-x835.google.com ([2607:f8b0:4864:20::835])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd35H-00000003kMF-2ebP
+	id 1rd35o-00000003kUg-30kr
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Feb 2024 07:01:33 +0000
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-42dc86cc271so40277231cf.2
-        for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2024 23:01:28 -0800 (PST)
+	Thu, 22 Feb 2024 07:02:06 +0000
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-42c758f075dso5229871cf.0
+        for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2024 23:02:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1708585288; x=1709190088; darn=lists.infradead.org;
+        d=broadcom.com; s=google; t=1708585323; x=1709190123; darn=lists.infradead.org;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zAE5k43J6SesaCGKOcrF9XA5pBt5tdKteIhjsCNrB7Q=;
-        b=ZpKRl/ApzG594GRT6V48udefmiHHNIdyL8RzU+l71sl799HEJooJBSCdPYU8CUDTEd
-         1CtCUnAc7OopmbWHsbFOTkJrxfTfw2iSdECgTKaMPewKAvnw7ATFn/ezIO84y7csh/+v
-         IfE5RLoGIct7wcQY6kjxluvzohEslmBcnY1hY=
+        bh=XlKXg1zat/hXFXRVEYm0Bh33d6iP+j+eswNJeEE5r2c=;
+        b=CZSJC3chBxZjzf9NSccHJ0bX68klbFFoicn0NJluovVig5sGvloEhZFMk7YvVFHSc8
+         zX6L7xR1+4sH3qL4bD7gqMkKSgY+emRQzBae0XaLdmVQx6pNCt5G7K5vPrLdSlkl2n3J
+         u+W+HoYNw0bACztGlcxKZWPe/XJdSL8z/KorI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708585288; x=1709190088;
+        d=1e100.net; s=20230601; t=1708585323; x=1709190123;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zAE5k43J6SesaCGKOcrF9XA5pBt5tdKteIhjsCNrB7Q=;
-        b=MGtaE5dDQa8IEIGM9sfaB4bv71fixs/rnFwQ4WABOsLHjeVSq5vtQqIsD1ig6BK1Rq
-         7L4jg+hQoqM8+il3gADmZFxv9cVHoAndS1S69QggzzIi6LcVKruIKYdoaP/RUqpm3QYl
-         cW0fxp6p75tGv4JWLF2kPDCHJJdgi8trM7JVYZyWhowRXEasRiPZbRF+v0VXCkuG9vIx
-         n504QDnNz2+NHkGhw8EJQf5SZVKG8uOwc8XnnAUZLz7NzfpMPz1Xk2ZY7jbWDf3O1xd7
-         63bNOM7HHXKtI0pcR3rmNtHMUgimQcDaIDlMcFdfNOPdcMTs39bL9pk8e2McgBAtO4SR
-         QM6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVMcWxTsZfMlCq3FqPmhO1kCzw7Fsaq9f/g9vXurkrNzMJupJiY11jmDrCCC9RA67bIuceH9TuADa/MzZpmgCYk7hLpgPDC6A+4sKQsKw==
-X-Gm-Message-State: AOJu0Ywh0iv9dKbGZD/SRCBWAA0YrY7qWmIgHM90ckcSIAJFaOGT66Tv
-	3QzV0ftTCTGiUUHh2AfU6orfGaiV/98bKkAjccpqfls6zmYeIx+mmbwJFMroEw==
-X-Google-Smtp-Source: AGHT+IG9p93UVyOYtW+0PZRth+EAeFDMN4w3iqtipuCzr40LyEzXcBr9PmAYeqrLZO+vGyBXk8g2NA==
-X-Received: by 2002:a05:622a:85:b0:42c:791c:3e67 with SMTP id o5-20020a05622a008500b0042c791c3e67mr24523815qtw.16.1708585287792;
-        Wed, 21 Feb 2024 23:01:27 -0800 (PST)
+        bh=XlKXg1zat/hXFXRVEYm0Bh33d6iP+j+eswNJeEE5r2c=;
+        b=bXtnu5JXyyfZFDAVUTfWMsYdqUc5D8DAnTq5pOZEJMxyxXzGTxq3pQSKWKTKHmkryQ
+         l9y6SHqV8VyNfSyS7G8/Y+5NCwCnA8hezQCD6E8DiOntdgShFyv7ij6c7bu2NuOhSi8N
+         QxIshtRE6E+EEgkwfOvQPPRHuzsX66y+U5P24jwt4vwhF6ouml0pzX1Dmdydbz8YUpw0
+         zWHLyem/QSDT0JrByWsbfaViXKEnEvEeKvUx1fq3H6ZPksfsE1rRs1iKhCSKNwmY/W7y
+         fD5u42OhDKYhCj9gTqH7hBzEMOwOL6BCcmBpO8hIjFgjxVdYh9+oIcgrMHCrtmLXP2BQ
+         PZTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkg5XIAXqsFXJnz/rlgP4gUJjim+nJfILbP4e4UF/x++QU6PzFTjPWfZXaPMsI5KeCxRtTIhy/hepoWRnVMOrhovvNyDFOKWGryXy5kg==
+X-Gm-Message-State: AOJu0YzQ+BCt2n+kaceVlh8hteXLJNK9gfft4DuPHG78GuRsfTakLPLL
+	YfpholnV0OFOj8fe31fHizue7++2tm0kNYB2A0fHRhQDmnJeAAEnPMFnHlKS2g==
+X-Google-Smtp-Source: AGHT+IGPrNKIFRsRzBV63lmyGtidbuGhgWgLV1gKIwJszNG6phrh0OaIP0DO7e52a+TkG17At/+Fvw==
+X-Received: by 2002:ac8:5c55:0:b0:42e:2ce0:2f0e with SMTP id j21-20020ac85c55000000b0042e2ce02f0emr2780244qtj.15.1708585323312;
+        Wed, 21 Feb 2024 23:02:03 -0800 (PST)
 Received: from [192.168.52.129] ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id b6-20020ac86786000000b0042e1bb57665sm2910738qtp.66.2024.02.21.23.01.23
+        by smtp.gmail.com with ESMTPSA id b6-20020ac86786000000b0042e1bb57665sm2910738qtp.66.2024.02.21.23.02.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 23:01:25 -0800 (PST)
-Message-ID: <c4710d19-e6ef-4a99-a10b-6fb41c87d410@broadcom.com>
-Date: Wed, 21 Feb 2024 23:01:22 -0800
+        Wed, 21 Feb 2024 23:02:02 -0800 (PST)
+Message-ID: <d6c4f087-4e25-43df-8187-7c7f9af2b6ca@broadcom.com>
+Date: Wed, 21 Feb 2024 23:02:00 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 04/12] ARM: dts: broadcom: bcmbca: Add NAND controller
- node
+Subject: Re: [PATCH v5 06/12] arm64: dts: broadcom: bcmbca: Update router
+ boards
 To: Florian Fainelli <f.fainelli@gmail.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ bcm-kernel-feedback-list@broadcom.com,
  Linux MTD List <linux-mtd@lists.infradead.org>,
- Linux ARM List <linux-arm-kernel@lists.infradead.org>,
- Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
+ Linux ARM List <linux-arm-kernel@lists.infradead.org>
 Cc: kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
  anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
  tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- David Regan <dregan@broadcom.com>, devicetree@vger.kernel.org,
- Conor Dooley <conor+dt@kernel.org>, Andre Przywara <andre.przywara@arm.com>,
+ devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
  linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Rob Herring <robh+dt@kernel.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Florian Fainelli <florian.fainelli@broadcom.com>,
- Alexandre TORGUE <alexandre.torgue@st.com>, Shawn Guo <shawnguo@kernel.org>
+ <rafal@milecki.pl>
 References: <20240207202257.271784-1-william.zhang@broadcom.com>
- <20240207202257.271784-5-william.zhang@broadcom.com>
- <c145b90c-e9f0-4d82-94cc-baf7bfda5954@gmail.com>
+ <20240207202257.271784-7-william.zhang@broadcom.com>
+ <20240222003755.670359-1-florian.fainelli@broadcom.com>
+ <1e636620-d456-4bb8-a5f0-742be3a9d6ad@gmail.com>
 From: William Zhang <william.zhang@broadcom.com>
-In-Reply-To: <c145b90c-e9f0-4d82-94cc-baf7bfda5954@gmail.com>
+In-Reply-To: <1e636620-d456-4bb8-a5f0-742be3a9d6ad@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240221_230131_746540_F5524191 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20240221_230204_797998_039465C9 
+X-CRM114-Status: UNSURE (   6.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,42 +99,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0089791704751534890=="
+Content-Type: multipart/mixed; boundary="===============8595792688565859157=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============0089791704751534890==
+--===============8595792688565859157==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000002a7f400611f303a1"
+	boundary="0000000000004a0f8a0611f3053d"
 
---0000000000002a7f400611f303a1
+--0000000000004a0f8a0611f3053d
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Florian,
 
-On 2/21/24 16:39, Florian Fainelli wrote:
-> On 2/7/24 12:22, William Zhang wrote:
->> Add support for Broadcom STB NAND controller in BCMBCA ARMv7 chip dts
->> files.
+
+On 2/21/24 16:40, Florian Fainelli wrote:
+> On 2/21/24 16:37, Florian Fainelli wrote:
+>> From: Florian Fainelli <f.fainelli@gmail.com>
 >>
->> Signed-off-by: William Zhang <william.zhang@broadcom.com>
->> Reviewed-by: David Regan <dregan@broadcom.com>
+>> On Wed,  7 Feb 2024 12:22:51 -0800, William Zhang 
+>> <william.zhang@broadcom.com> wrote:
+>>> Enable the nand controller and add WP pin connection property in actual
+>>> board dts as they are board level properties now that they are disabled
+>>> and moved out from SoC dtsi.
+>>>
+>>> Also remove the unnecessary brcm,nand-has-wp property from AC5300 board.
+>>> This property is only needed for some old controller that this board
+>>> does not apply.
+>>>
+>>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+>>> ---
+>>
+>> Applied to 
+>> https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
+>> -- 
+>> Florian
 > 
-> I would like to apply this and the next one, but the use of the 
-> brcm,nand-ecc-use-strap property which is still being discussed would 
-> require me to wait a bit, unless you want to split things up and add the 
-> NAND controller node(s), and then issue a subsequent patch which adds 
-> "brcm,nand-ecc-use-strap" where relevant.
-> 
-> You have a few days to decide before I send the pull request for 6.9.
-> 
-I will send out the v6 patches tomorrow based on Miquel's feedback.
+> Actually no, cannot apply this just yet since this depends upon patch #5.
+Correct. Please wait for v6.
 
-> Thanks!
-
---0000000000002a7f400611f303a1
+--0000000000004a0f8a0611f3053d
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -204,19 +210,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFgQG7E7B3MZRsKN2yaMqDoDuiVz
-dH3FdM4SnRnkgUWVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
-MDIyMjA3MDEyOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICmh2SVq1GN3V1wIKJTMGNGgAJ9+
+qGQuy8Cu+TY/9Qy+MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
+MDIyMjA3MDIwM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBW/fOY1Qnac6kPyLqcQ4pLmL/gGa5P8qtlOShj6/XcARSi
-QRneF03ZJy5MkHbvUdFcKhMI3Q6vnEa16hx/JVioZHSBr0waEsV/SQkuELatZJ4yHSYHZBh5s8Vj
-beOmwohLN+9pK+8Qv73IJE9d+wBf3Gtm/al5ZfxOW0vmnfIvL2sABBdh+OKZ/csVB4XwbiMOOYXI
-+hH0KRExHoLGys/DCUQPUEeyyD8sn/fCOccAR8Dm5fGLuS0eqsWEKcIw3VzKa767mLfJmctHckQZ
-brS1oXHHdcPKUteluQa77x7MTvh4NfXEI7hYbHyff/sEQGZJhBeNdo+FL18Aw3//28/0
---0000000000002a7f400611f303a1--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAJNgi0wQS24xgx0nnyPyVY2HQhAFEuvPh9xMpocJda7oHK
+PW7CDv7LCRIkvsxLomQtt/Wt1GYb8XU9XrrTsQ4ZSHAu2BS0b3x81nIHndPWSzD5lnG40/i+4hP6
+aqxPxgC1h9E6Wq0Evr3PuM5Hz6r7sahmcuDaY9+xf+OdeHiM5f3+NZudhHSViUtjM9PJgbX5pP8B
+/nd4npSbAq1uc+DGVVJQqDA9G/Y/4G633utZh+yMSPqn672zTd1C1AzeFMdpcBbfrkUCSCUUU9Jb
+9vKAHvUKHKwA4rtHzecZgwuPsBW+GHKesDHEd7ic9vCYXrJC1P90s+8m7iRFPdGUDkAg
+--0000000000004a0f8a0611f3053d--
 
 
---===============0089791704751534890==
+--===============8595792688565859157==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -226,5 +232,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============0089791704751534890==--
+--===============8595792688565859157==--
 
