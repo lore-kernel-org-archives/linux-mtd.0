@@ -4,81 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EC11C48BC4
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Feb 2024 09:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFF06C54E49
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Feb 2024 10:15:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
+	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=O16/Vchcicy6wRYtJ+Hkr5mSYC5ULhoAZ62N0VTJ54k=; b=gCRwj1dxl/71pG
-	Z3emYLcTKa2R+VOzsioh08inT/2U4PkUMuHIL4/cv0G+4kgI7T86jK4nxqYQUCukOh+8aDq3YNKJP
-	pXTRkEeKC30Os9VqzCCxb8l0uHbcbZ1cUR0WsIHxZnMk4aU1sy67vgKFCcpucxH5xdIXouCNZ3bRj
-	LmZC10tyTWWc+JSCTd0L+WbR5yyYppfu7N0W3x3dTbtoGGb7SYPyNYzG1r+gxO9L59GjNRkmIxA0h
-	+7Ditx/nYK42iYgwET7fuSodhejucNXbddQOtAn8q2TYF/Aj6SpqGTJdtB61CVFehAC3q7eiBZuml
-	GbjdHypFANRy5YdIZfow==;
+	List-Owner; bh=Of/6vVe2A99x/UvYmVBmA/vXjCAluf+3tl4kYXu3VDA=; b=Kb7/enWposmbs+
+	8UI8+ibf2YLTxuSS34kG4ZsyirDs4TUgucqAROTAJLGJko3IYAKr2984MSlTu1JhOOV5WYeyZqr2+
+	MPtIj+JwATralGrl3Hx3PljfjJwzXL+9rQZ0PmawV4zkmtP3KDDt/tXo1bUP7Zkho3ShbdN5sDLW3
+	lPA4Jjlf74fR/CcbKnV5+bqg8kJb0M4/2zRvHTTjed/2QzMyU9gG8B21JCt2zM8wgQ3by+9U5R2Sq
+	gwmTC584J81dyD1R7j2obAyn/24ke6KGLbKEDMdLB6MjVb+okV4syX+pfOQqATe32a/FuUhD3rPfq
+	N5dTjJGN1mYyHA6ITWWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdRiS-00000008e0J-2775;
-	Fri, 23 Feb 2024 09:19:36 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rdSaX-00000008rKD-2HTN;
+	Fri, 23 Feb 2024 10:15:29 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdRi0-00000008drR-24vP;
-	Fri, 23 Feb 2024 09:19:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=4gG2DNJQ1sxB4LTvdXFLaVAG1FVlnYdKq/NERCDiFaw=; b=Gu1CCjLNfAa6UySGElhdUu4I37
-	RuUhvgu/1OJGJqzCdv5OaaaCKUdtm63GiQgGjk8wulHDZjOEEe0zX4UCFk/PDBcckdlMx+rFJHd/A
-	uJjn8BB1F5XNK9fcEp03JuDkuFg76FpssMU5TEACc8XFLfg7O8jeJUqC4LBfBaq+uN/4RfiKNz6aL
-	9O7RQgzyTMPfTHvLoErs+yLSv9r7g2wlPnmpwCRbC4saWPisTv7XU//xK4iKeVxqfGEyVnwlmL14h
-	QvwrAvxb6AQHNQee5BVgbpFYiUSfCT/8FIx8rsP/SLdzyUiZjcO5KxE2feQk/c2aSai+gRyFS59/X
-	UdKATFlQ==;
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
-	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdRhx-00000006TCn-0svI;
-	Fri, 23 Feb 2024 09:19:07 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BF3CF40003;
-	Fri, 23 Feb 2024 09:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708679936;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4gG2DNJQ1sxB4LTvdXFLaVAG1FVlnYdKq/NERCDiFaw=;
-	b=dxvqT30FkF1AEQwwbZp9iFl6iVBI1iuZ5T3QAuYocxhIb6yAMgZGLQ6cyLgJZIBGs/UNW9
-	RhBIDu2U0OM1WILz2pqmn/HeZ7JWWEu0vQ3Dj69AEtVpH1ja7VYBV74JewhwR7c0StLlMS
-	sfZTk2S17OEolI40LMKkhX6yxcvMpGqvPOsJnaNadvEB8koCFRL6fWnLdSWe8hZPCWOye9
-	fFdagj/DuBIu1WNXochOxnBXl/8qYl350SsfiFBj/ZUx6hJIKWPNp47RGjGtg+VYPfiFDG
-	pt1FveOSYb8B/LxfaKd2W2IimazIKfGJwgx0cjjVQoHQV6T2PkPuLFsc5F0LWw==
-Date: Fri, 23 Feb 2024 10:18:52 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: William Zhang <william.zhang@broadcom.com>
-Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
- <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
- <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
- kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
- anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
- <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
- <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>
-Subject: Re: [PATCH v6 12/13] mtd: rawnand: brcmnand: Add support for
- getting ecc setting from strap
-Message-ID: <20240223101852.005da3ad@xps-13>
-In-Reply-To: <20240223034758.13753-13-william.zhang@broadcom.com>
-References: <20240223034758.13753-1-william.zhang@broadcom.com>
-	<20240223034758.13753-13-william.zhang@broadcom.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+	id 1rdSZt-00000008rGu-0IBa
+	for linux-mtd@lists.infradead.org;
+	Fri, 23 Feb 2024 10:15:10 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4340:6430:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 5BE8DA08;
+	Fri, 23 Feb 2024 11:14:21 +0100 (CET)
+Mime-Version: 1.0
+Date: Fri, 23 Feb 2024 11:14:21 +0100
+Message-Id: <CZCDNXMTGOA0.3QSDTTWS8H0LT@kernel.org>
+Subject: Re: [PATCH v4 1/4] mtd: spi-nor: core: rework struct
+ spi_nor_erase_region
+Cc: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <Bacem.Daassi@infineon.com>, "Takahiro Kuwano"
+ <Takahiro.Kuwano@infineon.com>
+From: "Michael Walle" <mwalle@kernel.org>
+To: <tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.16.0
+References: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
+ <8e5e9e4081ed9f16ea9dce30693304a4b54d19b1.1708404584.git.Takahiro.Kuwano@infineon.com>
+In-Reply-To: <8e5e9e4081ed9f16ea9dce30693304a4b54d19b1.1708404584.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240223_091905_346934_4B5A2848 
-X-CRM114-Status: GOOD (  30.54  )
+X-CRM114-CacheID: sfid-20240223_021458_798932_A578728C 
+X-CRM114-Status: GOOD (  33.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,109 +62,355 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgV2lsbGlhbSwKCndpbGxpYW0uemhhbmdAYnJvYWRjb20uY29tIHdyb3RlIG9uIFRodSwgMjIg
-RmViIDIwMjQgMTk6NDc6NTcgLTA4MDA6Cgo+IEJDTUJDQSBicm9hZGJhbmQgU29DIGJhc2VkIGJv
-YXJkIGRlc2lnbiBkb2VzIG5vdCBzcGVjaWZ5IGVjYyBzZXR0aW5nIGluCj4gZHRzIGJ1dCByYXRo
-ZXIgdXNlIHRoZSBTb0MgTkFORCBzdHJhcCBpbmZvIHRvIG9idGFpbiB0aGUgZWNjIHN0cmVuZ3Ro
-Cj4gYW5kIHNwYXJlIGFyZWEgc2l6ZSBzZXR0aW5nLiBBZGQgYnJjbSxuYW5kLWVjYy11c2Utc3Ry
-YXAgZHRzIHByb3BldHkgZm9yCj4gdGhpcyBwdXJwb3NlIGFuZCB1cGRhdGUgZHJpdmVyIHRvIHN1
-cHBvcnQgdGhpcyBvcHRpb24uIEhvd2V2ZXIgdGhlc2UgdHdvCj4gb3B0aW9ucyBjYW4gbm90IGJl
-IHVzZWQgYXQgdGhlIHNhbWUgdGltZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBXaWxsaWFtIFpoYW5n
-IDx3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbT4KPiBSZXZpZXdlZC1ieTogRGF2aWQgUmVnYW4g
-PGRyZWdhbkBicm9hZGNvbS5jb20+Cj4gCgpGWUkgSSBkaWQgbm90IHJlY2VpdmUgcGF0Y2hlcyA3
-LCA4LCA5LCB3aGljaCBtYWtlcyB0aGUgc2VyaWVzIG51bWJlcmluZwp2ZXJ5IG9kZC4KCj4gLS0t
-Cj4gCj4gQ2hhbmdlcyBpbiB2NjoKPiAtIENvbWJpbmUgdGhlIGVjYyBzdGVwIHNpemUgYW5kIGVj
-YyBzdHJlbmd0aCBpbnRvIG9uZSBnZXQgZnVuY3Rpb24KPiAtIFRyZWF0IGl0IGFzIGVycm9yIGNv
-bmRpdGlvbiBpZiBib3RoIGJyY20sbmFuZC1lY2MtdXNlLXN0cmFwIGFuZCBuYW5kCj4gZWNjIGR0
-cyBwcm9wZXJ0aWVzIGFyZSBzZXQKPiAtIEFkZCBpbnRlcm1lZGlhdGUgc3RlcHMgdG8gZ2V0IHRo
-ZSBzZWN0b3Igc2l6ZSBiaXRmaWVsZAo+IAo+IENoYW5nZXMgaW4gdjU6IE5vbmUKPiBDaGFuZ2Vz
-IGluIHY0Ogo+IC0gVXBkYXRlIHRoZSBjb21tZW50cyBmb3IgZWNjIHNldHRpbmcgc2VsZWN0aW9u
-Cj4gCj4gQ2hhbmdlcyBpbiB2MzogTm9uZQo+IENoYW5nZXMgaW4gdjI6Cj4gLSBNaW5vciBjb3Nt
-ZXRpYyBmaXhlcwo+IAo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5j
-IHwgODMgKysrKysrKysrKysrKysrKysrKysrKy0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA3NyBpbnNl
-cnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
-YW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5h
-bmQvYnJjbW5hbmQuYwo+IGluZGV4IGVmN2QzNDA0NzViZS4uZThmZmMyODNiMzY1IDEwMDY0NAo+
-IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiArKysgYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gQEAgLTEwMzgsNiArMTAz
-OCwyMiBAQCBzdGF0aWMgaW5saW5lIGludCBicmNtbmFuZF9zZWN0b3JfMWtfc2hpZnQoc3RydWN0
-IGJyY21uYW5kX2NvbnRyb2xsZXIgKmN0cmwpCj4gIAkJcmV0dXJuIC0xOwo+ICB9Cj4gIAo+ICtz
-dGF0aWMgaW50IGJyY21uYW5kX2dldF9zZWN0b3Jfc2l6ZV8xayhzdHJ1Y3QgYnJjbW5hbmRfaG9z
-dCAqaG9zdCkKPiArewo+ICsJc3RydWN0IGJyY21uYW5kX2NvbnRyb2xsZXIgKmN0cmwgPSBob3N0
-LT5jdHJsOwo+ICsJaW50IHNlY3Rvcl9zaXplX2JpdCA9IGJyY21uYW5kX3NlY3Rvcl8xa19zaGlm
-dChjdHJsKTsKPiArCXUxNiBhY2NfY29udHJvbF9vZmZzID0gYnJjbW5hbmRfY3Nfb2Zmc2V0KGN0
-cmwsIGhvc3QtPmNzLAo+ICsJCQkJCQkgIEJSQ01OQU5EX0NTX0FDQ19DT05UUk9MKTsKPiArCXUz
-MiBhY2NfY29udHJvbDsKPiArCj4gKwlpZiAoc2VjdG9yX3NpemVfYml0IDwgMCkKPiArCQlyZXR1
-cm4gMDsKPiArCj4gKwlhY2NfY29udHJvbCA9IG5hbmRfcmVhZHJlZyhjdHJsLCBhY2NfY29udHJv
-bF9vZmZzKTsKPiArCj4gKwlyZXR1cm4gKGFjY19jb250cm9sICYgQklUKHNlY3Rvcl9zaXplX2Jp
-dCkpID4+IHNlY3Rvcl9zaXplX2JpdDsKCkZJRUxEX1BSRVAsIEZJRUxEX0dFVCwgKnBsZWFzZSou
-Cgo+ICt9Cj4gKwo+ICBzdGF0aWMgdm9pZCBicmNtbmFuZF9zZXRfc2VjdG9yX3NpemVfMWsoc3Ry
-dWN0IGJyY21uYW5kX2hvc3QgKmhvc3QsIGludCB2YWwpCj4gIHsKPiAgCXN0cnVjdCBicmNtbmFu
-ZF9jb250cm9sbGVyICpjdHJsID0gaG9zdC0+Y3RybDsKPiBAQCAtMTA1NSw2ICsxMDcxLDQzIEBA
-IHN0YXRpYyB2b2lkIGJyY21uYW5kX3NldF9zZWN0b3Jfc2l6ZV8xayhzdHJ1Y3QgYnJjbW5hbmRf
-aG9zdCAqaG9zdCwgaW50IHZhbCkKPiAgCW5hbmRfd3JpdGVyZWcoY3RybCwgYWNjX2NvbnRyb2xf
-b2ZmcywgdG1wKTsKPiAgfQo+ICAKPiArc3RhdGljIGludCBicmNtbmFuZF9nZXRfc3BhcmVfc2l6
-ZShzdHJ1Y3QgYnJjbW5hbmRfaG9zdCAqaG9zdCkKPiArewo+ICsJc3RydWN0IGJyY21uYW5kX2Nv
-bnRyb2xsZXIgKmN0cmwgPSBob3N0LT5jdHJsOwo+ICsJdTE2IGFjY19jb250cm9sX29mZnMgPSBi
-cmNtbmFuZF9jc19vZmZzZXQoY3RybCwgaG9zdC0+Y3MsCj4gKwkJCQkJCSAgQlJDTU5BTkRfQ1Nf
-QUNDX0NPTlRST0wpOwo+ICsJdTMyIGFjYyA9IG5hbmRfcmVhZHJlZyhjdHJsLCBhY2NfY29udHJv
-bF9vZmZzKTsKPiArCj4gKwlyZXR1cm4gKGFjYyAmIGJyY21uYW5kX3NwYXJlX2FyZWFfbWFzayhj
-dHJsKSk7Cj4gK30KPiArCj4gK3N0YXRpYyB2b2lkIGJyY21uYW5kX2dldF9lY2Nfc2V0dGluZ3Mo
-c3RydWN0IGJyY21uYW5kX2hvc3QgKmhvc3QsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gK3sK
-PiArCXN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsID0gaG9zdC0+Y3RybDsKPiArCXUx
-NiBhY2NfY29udHJvbF9vZmZzID0gYnJjbW5hbmRfY3Nfb2Zmc2V0KGN0cmwsIGhvc3QtPmNzLAo+
-ICsJCQkJCQkgIEJSQ01OQU5EX0NTX0FDQ19DT05UUk9MKTsKPiArCWludCBzZWN0b3Jfc2l6ZV8x
-ayA9IGJyY21uYW5kX2dldF9zZWN0b3Jfc2l6ZV8xayhob3N0KTsKPiArCWludCBzcGFyZV9hcmVh
-X3NpemUsIGVjY19sZXZlbDsKPiArCXUzMiBhY2M7Cj4gKwo+ICsJc3BhcmVfYXJlYV9zaXplID0g
-YnJjbW5hbmRfZ2V0X3NwYXJlX3NpemUoaG9zdCk7Cj4gKwlhY2MgPSBuYW5kX3JlYWRyZWcoY3Ry
-bCwgYWNjX2NvbnRyb2xfb2Zmcyk7Cj4gKwllY2NfbGV2ZWwgPSAoYWNjICYgYnJjbW5hbmRfZWNj
-X2xldmVsX21hc2soY3RybCkpID4+IGN0cmwtPmVjY19sZXZlbF9zaGlmdDsKCmRpdHRvCgo+ICsJ
-aWYgKHNlY3Rvcl9zaXplXzFrKQo+ICsJCWNoaXAtPmVjYy5zdHJlbmd0aCA9IGVjY19sZXZlbCAq
-IDI7Cj4gKwllbHNlIGlmIChzcGFyZV9hcmVhX3NpemUgPT0gMTYgJiYgZWNjX2xldmVsID09IDE1
-KQo+ICsJCWNoaXAtPmVjYy5zdHJlbmd0aCA9IDE7IC8qIGhhbW1pbmcgKi8KPiArCWVsc2UKPiAr
-CQljaGlwLT5lY2Muc3RyZW5ndGggPSBlY2NfbGV2ZWw7Cj4gKwo+ICsJaWYgKGNoaXAtPmVjYy5z
-aXplID09IDApIHsKPiArCQlpZiAoc2VjdG9yX3NpemVfMWsgPCAwKQoKU2hvdWxkIGJlIDw9IDAg
-SSBndWVzcwoKPiArCQkJY2hpcC0+ZWNjLnNpemUgPSA1MTI7Cj4gKwkJZWxzZQo+ICsJCQljaGlw
-LT5lY2Muc2l6ZSA9IDUxMiA8PCBzZWN0b3Jfc2l6ZV8xazsKCldoYXQgaXMgdGhpcz8gQXJlIHlv
-dSBleHBlY3Rpbmcgc2VjdG9yX3NpemVfMWsgdG8gYmUgMCBvciAxCmFuZCB0aHVzIG11bHRpcGx5
-IDUxMiBieSB0d28/CgpQbGVhc2UganVzdCB1c2U6CgkJCWNoaXAtPmVjYy5zaXplID0gU1pfMUs7
-CgkJCQo+ICsJfQo+ICt9Cj4gKwo+ICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKPiAgICogQ1NfTkFORF9TRUxF
-Q1QKPiAgICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqLwo+IEBAIC0yNjI1LDE5ICsyNjc4LDM3IEBAIHN0YXRpYyBp
-bnQgYnJjbW5hbmRfc2V0dXBfZGV2KHN0cnVjdCBicmNtbmFuZF9ob3N0ICpob3N0KQo+ICAJCW5h
-bmRkZXZfZ2V0X21lbW9yZygmY2hpcC0+YmFzZSk7Cj4gIAlzdHJ1Y3QgYnJjbW5hbmRfY29udHJv
-bGxlciAqY3RybCA9IGhvc3QtPmN0cmw7Cj4gIAlzdHJ1Y3QgYnJjbW5hbmRfY2ZnICpjZmcgPSAm
-aG9zdC0+aHdjZmc7Cj4gLQljaGFyIG1zZ1sxMjhdOwo+ICsJc3RydWN0IGRldmljZV9ub2RlICpu
-cCA9IG5hbmRfZ2V0X2ZsYXNoX25vZGUoY2hpcCk7Cj4gIAl1MzIgb2ZmcywgdG1wLCBvb2Jfc2Vj
-dG9yOwo+ICsJYm9vbCB1c2Vfc3RyYXAgPSBmYWxzZTsKPiArCWNoYXIgbXNnWzEyOF07Cj4gIAlp
-bnQgcmV0Owo+ICAKPiAgCW1lbXNldChjZmcsIDAsIHNpemVvZigqY2ZnKSk7Cj4gKwl1c2Vfc3Ry
-YXAgPSBvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJicmNtLG5hbmQtZWNjLXVzZS1zdHJhcCIp
-Owo+ICAKPiAtCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5hbmRfZ2V0X2ZsYXNoX25vZGUo
-Y2hpcCksCj4gLQkJCQkgICAiYnJjbSxuYW5kLW9vYi1zZWN0b3Itc2l6ZSIsCj4gKwkvKgo+ICsJ
-ICogRWl0aGVyIG5hbmQtZWNjLXh4eCBvciBicmNtLG5hbmQtZWNjLXVzZS1zdHJhcCBjYW4gYmUg
-c2V0LiBFcnJvciBvdXQKPiArCSAqIGlmIGJvdGggZXhpc3QuCj4gKwkgKi8KClRoYW5rcyBmb3Ig
-dGhlIGNvbW1lbnQgYnV0IEkgdGhpbmsgdGhlIGVycm9yIHN0cmluZyBpcyBjbGVhciBlbm91Z2gu
-Cgo+ICsJaWYgKGNoaXAtPmVjYy5zdHJlbmd0aCAmJiB1c2Vfc3RyYXApIHsKPiArCQlkZXZfZXJy
-KGN0cmwtPmRldiwKPiArCQkJIm5hbmQgZWNjIGFuZCBzdHJhcCBlY2Mgc2V0dGluZ3MgY2FuJ3Qg
-YmUgc2V0IGF0IHRoZSBzYW1lIHRpbWVcbiIpOwoKQ2FuIHdlIGNoYW5nZSB0bwoiRUNDIHN0cmFw
-IGFuZCBEVCBFQ0MgY29uZmlndXJhdGlvbiBwcm9wZXJ0aWVzIGFyZSBtdXR1YWxseSBleGNsdXNp
-dmUiCgo+ICsJCXJldHVybiAtRUlOVkFMOwo+ICsJfQo+ICsKPiArCWlmICh1c2Vfc3RyYXApCj4g
-KwkJYnJjbW5hbmRfZ2V0X2VjY19zZXR0aW5ncyhob3N0LCBjaGlwKTsKPiArCj4gKwlyZXQgPSBv
-Zl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgImJyY20sbmFuZC1vb2Itc2VjdG9yLXNpemUiLAo+ICAJ
-CQkJICAgJm9vYl9zZWN0b3IpOwo+ICAJaWYgKHJldCkgewo+IC0JCS8qIFVzZSBkZXRlY3RlZCBz
-aXplICovCj4gLQkJY2ZnLT5zcGFyZV9hcmVhX3NpemUgPSBtdGQtPm9vYnNpemUgLwo+IC0JCQkJ
-CShtdGQtPndyaXRlc2l6ZSA+PiBGQ19TSElGVCk7Cj4gKwkJaWYgKHVzZV9zdHJhcCkKPiArCQkJ
-Y2ZnLT5zcGFyZV9hcmVhX3NpemUgPSBicmNtbmFuZF9nZXRfc3BhcmVfc2l6ZShob3N0KTsKPiAr
-CQllbHNlCj4gKwkJCS8qIFVzZSBkZXRlY3RlZCBzaXplICovCj4gKwkJCWNmZy0+c3BhcmVfYXJl
-YV9zaXplID0gbXRkLT5vb2JzaXplIC8KPiArCQkJCQkJKG10ZC0+d3JpdGVzaXplID4+IEZDX1NI
-SUZUKTsKPiAgCX0gZWxzZSB7Cj4gIAkJY2ZnLT5zcGFyZV9hcmVhX3NpemUgPSBvb2Jfc2VjdG9y
-Owo+ICAJfQoKVGhlIHJlc3Qgb2YgdGhlIHNlcmllcyBsb29rcyBnb29kIHRvIG1lLgoKVGhhbmtz
-LApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue Feb 20, 2024 at 9:34 AM CET, tkuw584924 wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>
+> Encoding bitmask flags into offset worsen the code readability. The
+> erase type mask and flags should be stored in dedicated members. Also,
+> erase_map.uniform_erase_type can be removed as it is redundant.
+>
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> Suggested-by: Michael Walle <mwalle@kernel.org>
+> ---
+>  drivers/mtd/spi-nor/core.c    | 35 +++++++++++++++--------------------
+>  drivers/mtd/spi-nor/core.h    | 28 ++++++++++------------------
+>  drivers/mtd/spi-nor/debugfs.c | 13 +++++++------
+>  drivers/mtd/spi-nor/sfdp.c    | 30 +++++++++++++-----------------
+>  4 files changed, 45 insertions(+), 61 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 1b0c6770c14e..5b2f13d0888e 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1150,7 +1150,7 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
+>  
+>  static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+>  {
+> -	return !!nor->params->erase_map.uniform_erase_type;
+> +	return !!nor->params->erase_map.uniform_region.erase_mask;
+>  }
+>  
+>  static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
+> @@ -1534,7 +1534,6 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+>  	const struct spi_nor_erase_type *erase;
+>  	u32 rem;
+>  	int i;
+> -	u8 erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+>  
+>  	/*
+>  	 * Erase types are ordered by size, with the smallest erase type at
+> @@ -1542,7 +1541,7 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+>  	 */
+>  	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+>  		/* Does the erase region support the tested erase type? */
+> -		if (!(erase_mask & BIT(i)))
+> +		if (!(region->erase_mask & BIT(i)))
+>  			continue;
+>  
+>  		erase = &map->erase_type[i];
+> @@ -1550,7 +1549,7 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+>  			continue;
+>  
+>  		/* Alignment is not mandatory for overlaid regions */
+> -		if (region->offset & SNOR_OVERLAID_REGION &&
+> +		if (region->flags & SNOR_OVERLAID_REGION &&
+>  		    region->size <= len)
+>  			return erase;
+>  
+> @@ -1568,12 +1567,12 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+>  
+>  static u64 spi_nor_region_is_last(const struct spi_nor_erase_region *region)
+>  {
+> -	return region->offset & SNOR_LAST_REGION;
+> +	return region->flags & SNOR_LAST_REGION;
+>  }
+>  
+>  static u64 spi_nor_region_end(const struct spi_nor_erase_region *region)
+
+I'd drop this helper too. It doesn't add much value anymore.
+
+>  {
+> -	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size;
+> +	return region->offset + region->size;
+>  }
+>  
+>  /**
+> @@ -1604,16 +1603,14 @@ static struct spi_nor_erase_region *
+>  spi_nor_find_erase_region(const struct spi_nor_erase_map *map, u64 addr)
+>  {
+>  	struct spi_nor_erase_region *region = map->regions;
+> -	u64 region_start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
+> -	u64 region_end = region_start + region->size;
+> +	u64 region_end = spi_nor_region_end(region);
+>  
+> -	while (addr < region_start || addr >= region_end) {
+> +	while (addr < region->offset || addr >= region_end) {
+
+while (addr < region->offset || addr >= region->offset + region->size) {
+
+>  		region = spi_nor_region_next(region);
+>  		if (!region)
+>  			return ERR_PTR(-EINVAL);
+>  
+> -		region_start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
+> -		region_end = region_start + region->size;
+> +		region_end = spi_nor_region_end(region);
+
+Then get rid of the spi_nor_region_end() helper, which I don't see
+as useful as it was anymore. Also debugfs.c and sfdp.c don't use
+it neither.
+
+>  	}
+>  
+>  	return region;
+> @@ -1641,7 +1638,7 @@ spi_nor_init_erase_cmd(const struct spi_nor_erase_region *region,
+>  	cmd->opcode = erase->opcode;
+>  	cmd->count = 1;
+>  
+> -	if (region->offset & SNOR_OVERLAID_REGION)
+> +	if (region->flags & SNOR_OVERLAID_REGION)
+>  		cmd->size = region->size;
+>  	else
+>  		cmd->size = erase->size;
+> @@ -1700,7 +1697,7 @@ static int spi_nor_init_erase_cmd_list(struct spi_nor *nor,
+>  
+>  		if (prev_erase != erase ||
+>  		    erase->size != cmd->size ||
+> -		    region->offset & SNOR_OVERLAID_REGION) {
+> +		    region->flags & SNOR_OVERLAID_REGION) {
+>  			cmd = spi_nor_init_erase_cmd(region, erase);
+>  			if (IS_ERR(cmd)) {
+>  				ret = PTR_ERR(cmd);
+> @@ -2439,12 +2436,11 @@ void spi_nor_mask_erase_type(struct spi_nor_erase_type *erase)
+>  void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+>  				    u8 erase_mask, u64 flash_size)
+>  {
+> -	/* Offset 0 with erase_mask and SNOR_LAST_REGION bit set */
+> -	map->uniform_region.offset = (erase_mask & SNOR_ERASE_TYPE_MASK) |
+> -				     SNOR_LAST_REGION;
+> +	map->uniform_region.offset = 0;
+>  	map->uniform_region.size = flash_size;
+> +	map->uniform_region.erase_mask = erase_mask;
+> +	map->uniform_region.flags = SNOR_LAST_REGION;
+>  	map->regions = &map->uniform_region;
+> -	map->uniform_erase_type = erase_mask;
+>  }
+>  
+>  int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+> @@ -2539,7 +2535,7 @@ spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
+>  {
+>  	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
+>  	int i;
+> -	u8 uniform_erase_type = map->uniform_erase_type;
+> +	u8 uniform_erase_type = map->uniform_region.erase_mask;
+>  
+>  	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+>  		if (!(uniform_erase_type & BIT(i)))
+> @@ -2573,8 +2569,7 @@ spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
+>  		return NULL;
+>  
+>  	/* Disable all other Sector Erase commands. */
+> -	map->uniform_erase_type &= ~SNOR_ERASE_TYPE_MASK;
+> -	map->uniform_erase_type |= BIT(erase - map->erase_type);
+> +	map->uniform_region.erase_mask = BIT(erase - map->erase_type);
+>  	return erase;
+>  }
+>  
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 9217379b9cfe..e002de22b18a 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -233,27 +233,25 @@ struct spi_nor_erase_command {
+>  /**
+>   * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
+>   * @offset:		the offset in the data array of erase region start.
+> - *			LSB bits are used as a bitmask encoding flags to
+> - *			determine if this region is overlaid, if this region is
+> - *			the last in the SPI NOR flash memory and to indicate
+> - *			all the supported erase commands inside this region.
+> - *			The erase types are sorted in ascending order with the
+> - *			smallest Erase Type size being at BIT(0).
+>   * @size:		the size of the region in bytes.
+> + * @erase_mask:		bitmask to indicate all the supported erase commands
+> + *			inside this region. The erase types are sorted in
+> + *			ascending order with the smallest Erase Type size being
+> + *			at BIT(0).
+> + * @flags:		flags to determine if this region is overlaid, if this
+> + *			region is the last in the SPI NOR flash memory
+>   */
+>  struct spi_nor_erase_region {
+>  	u64		offset;
+>  	u64		size;
+> +	u8		erase_mask;
+> +	u8		flags;
+>  };
+>  
+>  #define SNOR_ERASE_TYPE_MAX	4
+> -#define SNOR_ERASE_TYPE_MASK	GENMASK_ULL(SNOR_ERASE_TYPE_MAX - 1, 0)
+>  
+> -#define SNOR_LAST_REGION	BIT(4)
+> -#define SNOR_OVERLAID_REGION	BIT(5)
+> -
+> -#define SNOR_ERASE_FLAGS_MAX	6
+> -#define SNOR_ERASE_FLAGS_MASK	GENMASK_ULL(SNOR_ERASE_FLAGS_MAX - 1, 0)
+> +#define SNOR_LAST_REGION	BIT(0)
+> +#define SNOR_OVERLAID_REGION	BIT(1)
+>  
+>  /**
+>   * struct spi_nor_erase_map - Structure to describe the SPI NOR erase map
+> @@ -266,17 +264,11 @@ struct spi_nor_erase_region {
+>   *			The erase types are sorted in ascending order, with the
+>   *			smallest Erase Type size being the first member in the
+>   *			erase_type array.
+> - * @uniform_erase_type:	bitmask encoding erase types that can erase the
+> - *			entire memory. This member is completed at init by
+> - *			uniform and non-uniform SPI NOR flash memories if they
+> - *			support at least one erase type that can erase the
+> - *			entire memory.
+>   */
+>  struct spi_nor_erase_map {
+>  	struct spi_nor_erase_region	*regions;
+>  	struct spi_nor_erase_region	uniform_region;
+>  	struct spi_nor_erase_type	erase_type[SNOR_ERASE_TYPE_MAX];
+> -	u8				uniform_erase_type;
+>  };
+>  
+>  /**
+> diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+> index 6e163cb5b478..16b30f1a3066 100644
+> --- a/drivers/mtd/spi-nor/debugfs.c
+> +++ b/drivers/mtd/spi-nor/debugfs.c
+> @@ -147,16 +147,17 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
+>  	for (region = erase_map->regions;
+>  	     region;
+>  	     region = spi_nor_region_next(region)) {
+> -		u64 start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
+> -		u64 flags = region->offset & SNOR_ERASE_FLAGS_MASK;
+> +		u64 start = region->offset;
+>  		u64 end = start + region->size - 1;
+> +		u8 erase_mask = region->erase_mask;
+> +		u8 flags = region->flags;
+>  
+>  		seq_printf(s, " %08llx-%08llx |     [%c%c%c%c] | %s\n",
+>  			   start, end,
+> -			   flags & BIT(0) ? '0' : ' ',
+> -			   flags & BIT(1) ? '1' : ' ',
+> -			   flags & BIT(2) ? '2' : ' ',
+> -			   flags & BIT(3) ? '3' : ' ',
+> +			   erase_mask & BIT(0) ? '0' : ' ',
+> +			   erase_mask & BIT(1) ? '1' : ' ',
+> +			   erase_mask & BIT(2) ? '2' : ' ',
+> +			   erase_mask & BIT(3) ? '3' : ' ',
+>  			   flags & SNOR_OVERLAID_REGION ? "overlaid" : "");
+>  	}
+>  
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index b3b11dfed789..c8d8b4e5b7e6 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -389,17 +389,14 @@ static u8 spi_nor_sort_erase_mask(struct spi_nor_erase_map *map, u8 erase_mask)
+>  static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+>  {
+>  	struct spi_nor_erase_region *region = map->regions;
+> -	u8 region_erase_mask, sorted_erase_mask;
+> +	u8 sorted_erase_mask;
+>  
+>  	while (region) {
+> -		region_erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+> -
+>  		sorted_erase_mask = spi_nor_sort_erase_mask(map,
+> -							    region_erase_mask);
+> +							    region->erase_mask);
+>  
+>  		/* Overwrite erase mask. */
+
+This comment could also be dropped now. The assignment is pretty
+obvious now.
+
+With above remarks fixed:
+Reviewed-by: Michael Walle <mwalle@kernel.org>
+
+Maybe Tudor can fix while applying.
+
+-michael
+
+> -		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK) |
+> -				 sorted_erase_mask;
+> +		region->erase_mask = sorted_erase_mask;
+>  
+>  		region = spi_nor_region_next(region);
+>  	}
+> @@ -553,8 +550,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	 * selecting the uniform erase.
+>  	 */
+>  	spi_nor_regions_sort_erase_types(map);
+> -	map->uniform_erase_type = map->uniform_region.offset &
+> -				  SNOR_ERASE_TYPE_MASK;
+>  
+>  	/* Stop here if not JESD216 rev A or later. */
+>  	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
+> @@ -781,12 +776,12 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
+>  
+>  static void spi_nor_region_mark_end(struct spi_nor_erase_region *region)
+>  {
+> -	region->offset |= SNOR_LAST_REGION;
+> +	region->flags |= SNOR_LAST_REGION;
+>  }
+>  
+>  static void spi_nor_region_mark_overlay(struct spi_nor_erase_region *region)
+>  {
+> -	region->offset |= SNOR_OVERLAID_REGION;
+> +	region->flags |= SNOR_OVERLAID_REGION;
+>  }
+>  
+>  /**
+> @@ -848,9 +843,10 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+>  	/* Populate regions. */
+>  	for (i = 0; i < region_count; i++) {
+>  		j = i + 1; /* index for the region dword */
+> +		region[i].offset = offset;
+>  		region[i].size = SMPT_MAP_REGION_SIZE(smpt[j]);
+>  		erase_type = SMPT_MAP_REGION_ERASE_TYPE(smpt[j]);
+> -		region[i].offset = offset | erase_type;
+> +		region[i].erase_mask = erase_type;
+>  
+>  		spi_nor_region_check_overlay(&region[i], erase, erase_type);
+>  
+> @@ -866,21 +862,21 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+>  		 */
+>  		regions_erase_type |= erase_type;
+>  
+> -		offset = (region[i].offset & ~SNOR_ERASE_FLAGS_MASK) +
+> -			 region[i].size;
+> +		offset = region[i].offset + region[i].size;
+>  	}
+>  	spi_nor_region_mark_end(&region[i - 1]);
+>  
+> -	save_uniform_erase_type = map->uniform_erase_type;
+> -	map->uniform_erase_type = spi_nor_sort_erase_mask(map,
+> -							  uniform_erase_type);
+> +	save_uniform_erase_type = map->uniform_region.erase_mask;
+> +	map->uniform_region.erase_mask =
+> +				spi_nor_sort_erase_mask(map,
+> +							uniform_erase_type);
+>  
+>  	if (!regions_erase_type) {
+>  		/*
+>  		 * Roll back to the previous uniform_erase_type mask, SMPT is
+>  		 * broken.
+>  		 */
+> -		map->uniform_erase_type = save_uniform_erase_type;
+> +		map->uniform_region.erase_mask = save_uniform_erase_type;
+>  		return -EINVAL;
+>  	}
+>  
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
