@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA857C54798
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Feb 2024 11:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D56DC5478C
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Feb 2024 11:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=93NFVXIL1Jzyw2xSmn7T2Ef93cb+4ue7xDNGUXGX4IU=; b=T8N4WNJyyHKZGk
-	RuUACUl1p7LhcMxqYFAK/HH2jfYazAJalKvtfQj3cIVAP0nuZOcYKYcIgWtBEIeuw63mhjMvq30G+
-	1EddmBKIIZf8VhHFK2byfGfPXB2QoA/HPU8Dpm2bHHDlNIYBLe+o2CNsiAV1ITOkISQZwou0Mylt9
-	gFFNmpaPPgN7wbkZGopJrK3piOEw260vUvV1/o14LnqM1BB5fMcUuqPa4Z8GafcFmAdiaF4K7AILc
-	Ka/pFxVbspLRdUGGTLsWxrUh7YmEyBdTOmiHO1K8G2+GeSGTWJYCEmIMBQCt2//Qr1lW31qQvd287
-	44hru2QSEiWPLpV5eT6A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BAl019+CCX8e2+aSUVpNrjnN96RIp2wo+8QKjxoNH4w=; b=3qqDLSBB4/Lpor
+	T6Lj86S7om5VYucJB7aUf9KZyOoeA1qcDXBCXqpAFrQreMvwTNmkgaT0iHPMKRxZ+9DYMupyz7NcU
+	WhbE23AOgvTKXq5u+w8Y1pz2mX1yIYUBN0djypyknbXCDCcEL91dP4naWzrzLMP/smxJyaeLaQbB0
+	M1L5UfldqEBtSCGxQJuKfnTCEn5Y/27XEjlc34XfSGq9gc+Y0sHnS8Bstw/DitxHYy57+K9qiA2Qa
+	HLQiusaN7bQidbltbxXfqBB5rDNo4KxVdfMOHUtScV17Biroo4Qd0eTmHnPeGO0JoJjeFMjgvdnSQ
+	lgLMJSDtyvscv9EY5BtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdU9o-00000009EdB-3R71;
-	Fri, 23 Feb 2024 11:56:00 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1rdU9r-00000009EdM-1AuH;
+	Fri, 23 Feb 2024 11:56:03 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdU9i-00000009Eb3-2HeE
+	id 1rdU9i-00000009EbK-2Bro
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Feb 2024 11:55:56 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4CA12C0004;
-	Fri, 23 Feb 2024 11:55:46 +0000 (UTC)
+	Fri, 23 Feb 2024 11:55:58 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id AA410C0011;
+	Fri, 23 Feb 2024 11:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708689349;
+	t=1708689352;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uqPqRsroU2HM/uhxZbflZOFz5dy1nibvmQlzJ0Wiyg8=;
-	b=haGrWRU851oapURs97ehMMkvDhF+beDfP0dmLsRcaFxuG0eQhBkXrIzZRryxny1MJ4/Vjq
-	5ZXhmz1JH13s0xjDy6S4XX7sl7GhvBhaKr9waUzHQjk8lhPUOwX+wtOE8h1HbMVo9peSMZ
-	VaDBp41OlgVIEg7inDr121dYLQAhU4cIc+XNlacZ085vYnwktKBW0jQLvB6vuMP/LhFeWF
-	U1p/Updx8nrti84FqEzCv0BCnYxjNE44ch0jlQbQg9HFunZJxBY9TjW0EgWmOjlkDzRySO
-	FvcrgdnQCr4hM9dEK38D0Frd/W81lpZiAHHe7V6cts86EoCBBjrjUy0BE4F0JA==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QrEN5TvhX5/r3qsoC4vp32SJepM9NsZrN5JkiWr7IcI=;
+	b=WcErOA83RYMMh38XrwuXrvfqtTUJltPjlqhY+/HmZTbFP2fAdAqOy4qsbSQki41OvsMtqX
+	8sfLN+1QF1Yjn2CFuronLxOAB8Hsa+uJd/bnb0LqyKeaOZG956rLjxgeOzjbPwCvermdXs
+	c6xpiH/6bvYXF3gAxTO/gLCAkTLWZvTUQqXCAaGOCG946zkc3cl3jUv5ZAKlikN/k4XMhF
+	QStfP3iqMu8orfvVOP3hHSsck0cOaE162Ne3TQyYTz3APab4bzn3U8or2vvNbslWjiiguo
+	Q9R8wsCLDKOwTGd8iSdjJhYcBQrCGMZHWyGRLYt5GBZEXBlt73Kzf0R1/hUQ1g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -57,17 +58,19 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	mans@mansr.com,
 	martin@geanix.com,
 	=?UTF-8?q?Sean=20Nyekj=C3=A6r?= <sean@geanix.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 0/3] mtd: rawnand: More continuous read fixes
-Date: Fri, 23 Feb 2024 12:55:42 +0100
-Message-Id: <20240223115545.354541-1-miquel.raynal@bootlin.com>
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	stable@vger.kernel.org
+Subject: [PATCH 3/3] mtd: rawnand: Ensure all continuous terms are always in sync
+Date: Fri, 23 Feb 2024 12:55:45 +0100
+Message-Id: <20240223115545.354541-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240223115545.354541-1-miquel.raynal@bootlin.com>
+References: <20240223115545.354541-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240223_035554_971272_68CA33BF 
-X-CRM114-Status: UNSURE (   8.98  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240223_035555_007328_0E13AD91 
+X-CRM114-Status: GOOD (  13.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,27 +82,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpGb2xsb3dpbmcgQ2hyaXN0b3BoZSByZXBvcnQgSSBtYW51YWxseSBpbnNlcnRlZCBt
-YW55IGRpZmZlcmVudApjb25kaXRpb25zIHRvIHRlc3QgdGhlIGxvZ2ljIGVuYWJsaW5nYW5kIGNv
-bmZpZ3VyaW5nIGNvbnRpbnVvdXMgcmVhZHMgaW4KdGhlIGNvcmUsIHRyeWluZyB0byBjbGFyaWZ5
-IHRoZSBjb3JlIGFuZCBob3BlZnVsbHkgZml4IGl0IGZvciByZWFsLiBJIGFtCnByZXR0eSBjb25m
-aWRlbnQgcmVnYXJkaW5nIHRoZSBmaXJzdCBwYXRjaCBidXQgYSBiaXQgbW9yZSBpbiB0aGUgZm9n
-IGZvcgp0aGUgc2Vjb25kL3RoaXJkLiBFdmVuIHRob3VnaCBJJ20gcHJldHR5IHN1cmUgdGhleSBp
-bXByb3ZlIHRoZSBzaXR1YXRpb24KdGhlcmUgbWlnaHQgc3RpbGwgYmUgY29ybmVyIGNhc2VzIEkg
-ZG9uJ3QgaGF2ZSBpbiBtaW5kLgoKTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgt
-bXRkLzIwMjQwMjIxMTc1MzI3LjQyZjcwNzZkQHhwcy0xMy9ULyNtMzk5YmFjYjEwZGI4ZjU4ZjZi
-MWYwMTQ5YTFkZjg2N2VjMDg2YmIwYQoKQ2hlZXJzLApNaXF1w6hsCgpNaXF1ZWwgUmF5bmFsICgz
-KToKICBtdGQ6IHJhd25hbmQ6IEZpeCBhbmQgc2ltcGxpZnkgYWdhaW4gdGhlIGNvbnRpbnVvdXMg
-cmVhZCBkZXJpdmF0aW9ucwogIG10ZDogcmF3bmFuZDogQWRkIGEgaGVscGVyIGZvciBjYWxjdWxh
-dGluZyBhIHBhZ2UgaW5kZXgKICBtdGQ6IHJhd25hbmQ6IEVuc3VyZSBhbGwgY29udGludW91cyB0
-ZXJtcyBhcmUgYWx3YXlzIGluIHN5bmMKCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2Uu
-YyB8IDc3ICsrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwg
-NDcgaW5zZXJ0aW9ucygrKSwgMzAgZGVsZXRpb25zKC0pCgotLSAKMi4zNC4xCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+While crossing a LUN boundary, it is probably safer (and clearer) to
+keep all members of the continuous read structure aligned, including the
+pause page (which is the last page of the lun or the last page of the
+continuous read). Once these members properly in sync, we can use the
+rawnand_cap_cont_reads() helper everywhere to "prepare" the next
+continuous read if there is one.
+
+Fixes: bbcd80f53a5e ("mtd: rawnand: Prevent crossing LUN boundaries during sequential reads")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+This is not 100% a fix but I believe it is worth backporting as there
+may be corner cases which were not identified with the initial
+implementation.
+---
+ drivers/mtd/nand/raw/nand_base.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d6a27e08b112..4d5a663e4e05 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1232,6 +1232,15 @@ static void rawnand_cap_cont_reads(struct nand_chip *chip)
+ 		chip->cont_read.pause_page = rawnand_last_page_of_lun(ppl, first_lun);
+ 	else
+ 		chip->cont_read.pause_page = chip->cont_read.last_page;
++
++	if (chip->cont_read.first_page == chip->cont_read.pause_page) {
++		chip->cont_read.first_page++;
++		chip->cont_read.pause_page = min(chip->cont_read.last_page,
++						 rawnand_last_page_of_lun(ppl, first_lun + 1));
++	}
++
++	if (chip->cont_read.first_page >= chip->cont_read.last_page)
++		chip->cont_read.ongoing = false;
+ }
+ 
+ static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int page,
+@@ -1298,12 +1307,11 @@ static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int p
+ 	if (!chip->cont_read.ongoing)
+ 		return 0;
+ 
+-	if (page == chip->cont_read.pause_page &&
+-	    page != chip->cont_read.last_page) {
+-		chip->cont_read.first_page = chip->cont_read.pause_page + 1;
+-		rawnand_cap_cont_reads(chip);
+-	} else if (page == chip->cont_read.last_page) {
++	if (page == chip->cont_read.last_page) {
+ 		chip->cont_read.ongoing = false;
++	} else if (page == chip->cont_read.pause_page) {
++		chip->cont_read.first_page++;
++		rawnand_cap_cont_reads(chip);
+ 	}
+ 
+ 	return 0;
+@@ -3510,10 +3518,7 @@ static void rawnand_cont_read_skip_first_page(struct nand_chip *chip, unsigned i
+ 		return;
+ 
+ 	chip->cont_read.first_page++;
+-	if (chip->cont_read.first_page == chip->cont_read.pause_page)
+-		chip->cont_read.first_page++;
+-	if (chip->cont_read.first_page >= chip->cont_read.last_page)
+-		chip->cont_read.ongoing = false;
++	rawnand_cap_cont_reads(chip);
+ }
+ 
+ /**
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
