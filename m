@@ -4,58 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81B8AC54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 00:06:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29508C47DD9
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 00:22:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LkcrmPXP60sg/XfT1V4omyBVzz4fIrgwxhQAm5oCnDc=; b=UssvNdpJrOFxco
-	bxL1EVUZRteH+1y9sqliqrYz8YGGXmkudIJQy3+P/WTBnXt0JPQyxUWEJ5KQySEvLtClWKKN1aeho
-	uu8u0VgFwQKyHIRCdObf6agAiw6IadOYOVPLOhl63pbePSJrQC4grQXsicOdWYbVWPYBMQU62eW2i
-	jBQqyzx+YLcqOU7XOB1sYxt9wiomy17nk6Phd/UGdx33gBg57szs9MKYT8dbqMC3gJ65h1bSRiiP8
-	vvPqYyB6euSeHeAoQT2o9bNBg9vfuszbQVidfmJfJDYaodw6fHmljphvwfZQgzkEdSo3ld4dycdQ5
-	l8h6SUs5bCucDu+qTRcQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oXQIvGadAt3985ixZbqVOiwmT7tl/Ro5Tp59CSheGk4=; b=fT/tIrbjq/g4/P
+	nM1tyY3WxSbzxsdpnMCNC0Svqrh5BxxnrJ9+XzWIXacTT91bvoQk/8Q/r4EbH3exwVLSCs21LPFDT
+	oFmbdArvrLDVYA6SWvUeavuD/EFpuyUrMsFBRn/CuRJCB7SnTXPM4366y61fF7X+tczmf9JdRF7/8
+	or5TBmwl5f2BMbEmxp2H8e37LH2N6MqhsuDJqqb9mqdp3AukUKpPPF5/1u2DJ5P69xBLKrGAtwBV1
+	Dhu//gm3dC0eEZEs+Zi0nSBmIE0NTPm2r43bZR07TTxBSRtOnIgvol8WxlTx2eZjinvDVXQdh7eSN
+	Qb8QUKL+Uyso1csjLhYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reOVW-0000000FyEQ-1Zcj;
-	Mon, 26 Feb 2024 00:06:10 +0000
+	id 1reOlh-0000000FzYY-2s7M;
+	Mon, 26 Feb 2024 00:22:53 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reOVP-0000000FyCd-304a
+	id 1reOld-0000000FzY4-3wBM
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 00:06:08 +0000
+	Mon, 26 Feb 2024 00:22:51 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1reOVA-0001je-1q;
-	Mon, 26 Feb 2024 00:05:48 +0000
-Date: Mon, 26 Feb 2024 00:05:40 +0000
+	id 1reOlW-0001nE-1i;
+	Mon, 26 Feb 2024 00:22:42 +0000
+Date: Mon, 26 Feb 2024 00:22:39 +0000
 From: Daniel Golle <daniel@makrotopia.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	devicetree <devicetree@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
-Message-ID: <ZdvV1KABu_UCSL7B@makrotopia.org>
-References: <cover.1702952891.git.daniel@makrotopia.org>
- <82ceb13954f7e701bf47c112333e7b15a57fc360.1702952891.git.daniel@makrotopia.org>
- <20240219120156.383a1427@xps-13>
- <1209094181.98490.1708899174329.JavaMail.zimbra@nod.at>
+	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/7] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1708906456.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1209094181.98490.1708899174329.JavaMail.zimbra@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240225_160603_944836_5E82B79E 
-X-CRM114-Status: GOOD (  25.22  )
+X-CRM114-CacheID: sfid-20240225_162250_006874_5853F624 
+X-CRM114-Status: GOOD (  23.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,81 +61,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Richard,
+Similar to how MAC addresses and Wi-Fi calibration data would be
+stored inside an MTD partition on devices coming with NOR flash, a UBI
+volume is used by some vendors in the same way on devices with NAND
+flash.
 
-On Sun, Feb 25, 2024 at 11:12:54PM +0100, Richard Weinberger wrote:
-> ----- Urspr=FCngliche Mail -----
-> > Von: "Miquel Raynal" <miquel.raynal@bootlin.com>
-> > An: "Daniel Golle" <daniel@makrotopia.org>
-> > CC: "richard" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>=
-, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
-> > Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+d=
-t@kernel.org>, "linux-mtd"
-> > <linux-mtd@lists.infradead.org>, "devicetree" <devicetree@vger.kernel.o=
-rg>, "linux-kernel"
-> > <linux-kernel@vger.kernel.org>
-> > Gesendet: Montag, 19. Februar 2024 12:01:56
-> > Betreff: Re: [PATCH v7 7/7] mtd: ubi: provide NVMEM layer over UBI volu=
-mes
-> =
+The goal of this series is to support such embedded Linux devices which
+got NVMEM bits stored inside a UBI volume.
 
-> > Hi Daniel,
-> > =
+Representing the UBI volume in the Device Tree and adding a phandle to
+be referenced by NVMEM consumers allows such devices to come up with
+their correct MAC addresses and device-specific Wi-Fi calibration data
+loaded.
 
-> > daniel@makrotopia.org wrote on Tue, 19 Dec 2023 02:33:48 +0000:
-> > =
+In order for NVMEM bits to be available for other drivers, attaching
+UBI devices has to be moved from late_initcall (which is too late for
+other drivers) to happen earlier. As an alternative to the existing
+kernel cmdline parameter the Device Tree property 'compatible =
+"linux,ubi";' inside an MTD partition can be used to have that MTD
+device attached as UBI device. MTD partitions which serve as UBI
+devices may have a "volumes" subnode with volumes, and volumes may
+have an "nvmem-layout" object which will trigger the creation of an
+emulated NVMEM device on top of the UBI volume.
 
-> >> In an ideal world we would like UBI to be used where ever possible on a
-> >> NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
-> >> is possible to achieve an (almost-)all-UBI flash layout. Hence the need
-> >> for a way to also use UBI volumes to store board-level constants, such
-> >> as MAC addresses and calibration data of wireless interfaces.
-> >> =
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
 
-> >> Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
-> >> providers. Allow UBI devices to have a "volumes" firmware subnode with
-> >> volumes which may be compatible with "nvmem-cells".
-> >> Access to UBI volumes via the NVMEM interface at this point is
-> >> read-only, and it is slow, opening and closing the UBI volume for each
-> >> access due to limitations of the NVMEM provider API.
-> > =
+This series is a follow-up and contains most patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
 
-> > I don't feel qualified enough to review the other patches, however this
-> > one looks good to me.
-> =
+As lots of time has passed NVMEM-on-UBI is by now already in-use
+downstream at OpenWrt to support reading WiFi EEPROMs and MAC
+addresses on a bunch of ASUS devices[2], [3] which laudably store all
+in UBI. That also exposed a possible issue on 32-bit platforms which
+has now been addressed in v8.
 
-> Finally(!), I had enough time to look.
-> Thanks for addressing all my comments form the previous series.
-> Patches applied.
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
+[2]: https://github.com/openwrt/openwrt/pull/14676 (merged)
+[3]: https://github.com/openwrt/openwrt/pull/14729 (pending)
 
-It's an enourmous coicident that you are writing just now that I found
-a sizeof(int)-related problem which triggers a compiler warning when
-building the UBI NVMEM provider on 32-bit platforms. I was just about
-to prepare an updated series. Literally in this minute.
-Should I still send the whole updates series or only the final patch
-(as the necessary change is there) or a follow-up patch fixing the
-original patch?
+Changes since v7:
+ * use integer types with well-defined size for use with do_div(n, base)
+   (addresses compiler warning when building on 32-bit platforms)
 
-> =
+Changes since v6:
+ * dt-bindings fixes got squashed into the wrong patch, fix that and
+   newly introduced YAML white space issues
 
-> I have only one tiny request, can you share the lockdep spalt
-> you encountered in ubi_notify_add() regarding mtd_table_mutex
-> and ubi_devices_mutex? The solutions looks okay to me, but
-> if you have more details that would be great.
+Changes since v5:
+ * fix whitespace problems in dt-schema additions
 
-I will setup a test build to reproduce the original warning and
-let you know shortly.
+Changes since v4:
+ * split ubi_open_volume_path() breaking out reusable parts for
+   new match_volume_desc() function as suggested by Richard Weinberger.
+   Doing the same for ubi_open_volume_nm() doesn't work as we are working
+   on struct ubi_volume_info in match_volume_desc() while ubi_open_volume_nm()
+   is working on struct ubi_volume. That reduces the common part to a string
+   comparision and length check which doesn't seem worth breaking out of the
+   existing function.
+ * drop patches and changes not strictly needed for NVMEM use-case:
+   - don't handle ubi detach on MTD removal notification. It was not done
+     until now and the locking hell I was facing when trying to implement
+     that is non trivial.
+   - don't relocate the call to ubiblock device creation to the
+     notification handler
+   - change ubiblock only as far as needed to handle creation from cmdline
+     parameter when a volume is added.
+ * improve commit messages and comments
 
+Changes since v3:
+ * dt-bindings fixes as requested
 
-Cheers
+Changes since v2:
+ * include dt-bindings additions
 
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
 
-Daniel
+Daniel Golle (7):
+  dt-bindings: mtd: add basic bindings for UBI
+  dt-bindings: mtd: ubi-volume: allow UBI volumes to provide NVMEM
+  mtd: ubi: block: use notifier to create ubiblock from parameter
+  mtd: ubi: attach from device tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ .../bindings/mtd/partitions/linux,ubi.yaml    |  75 +++++++
+ .../bindings/mtd/partitions/ubi-volume.yaml   |  40 ++++
+ drivers/mtd/ubi/Kconfig                       |  13 ++
+ drivers/mtd/ubi/Makefile                      |   1 +
+ drivers/mtd/ubi/block.c                       | 136 ++++++-------
+ drivers/mtd/ubi/build.c                       | 154 ++++++++++----
+ drivers/mtd/ubi/kapi.c                        |  56 +++--
+ drivers/mtd/ubi/nvmem.c                       | 191 ++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                         |   3 +
+ drivers/mtd/ubi/vmt.c                         |  44 +++-
+ include/linux/mtd/ubi.h                       |   2 +
+ 11 files changed, 583 insertions(+), 132 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
+-- 
+2.44.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
