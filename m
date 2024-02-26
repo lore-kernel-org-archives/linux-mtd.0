@@ -4,94 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF21C54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B099C54E49
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wUnhiIEb3/CAR8qpJA87eJhPOjDcItNUbQ7bIXUIaQg=; b=wC0G24/KMDcIvm
-	ndoet1rHyaxBXQ7WteSrgdUtC1ylrth0QgQYR6Syzwqmwip5I3kfYdno2SJ3x3wWkemMbGHpfAeAq
-	ONvvs5jx1Z84EJSuI+gjf8R/dUkmH6ArJtyYtTvkhq69SzUztlxxPZqX21dk8hEWLDZmhPNdHXZxG
-	rLFk6WEjlO/L2r8UkedkRwFdtlj8tncTfgOjewm2Ua6b3V4LnGleTqWN/myhn4iFMCvDpJ+38Wg67
-	YZ3I5p/pZs1WfsCMI/E3DgYG86QNS/lBe7pNwJGZ2kXWswrKF++P2m+7b8UYy61yHaagd/9WGuE12
-	XcP1w0QrmsRQtW0M903g==;
+	List-Owner; bh=CmSfkxn8gsokvE7q7yFchFwWTAtvhvhBRFpxO6og/XM=; b=RBWrqJ5KqoJj/X
+	wHhWxFLIxYKnAmoFVZDHbM7c8asxLf4uwB6hwz4749er7WWjBo1ukCJ55yZB81aSU26sfveSjKPJR
+	Q+oF9a7ajMdG6W8whZ66pvej3ICra4+Bn8PsjRyDe/oOMpiAzI+0T5BgH/87niNy5ISiiVd6TLGUE
+	88u4C67lP6aHjSkZ5Jj6uZbOY6GbUWhCwXa0eWTiz/RV7J3sQ6U/0sFXT34sdVPWH+yXRTJ4OL31M
+	3hZwTfEWRbJK0/lUkLbgRWdQOtBtDTV8/+Cb3aCAjFh4GcbMG8uV81/8LQ/85dh4BtU5p/lC9lYhb
+	3wKwsC2NPrJaXs9gTQuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reXou-0000000HWIp-1jaN;
-	Mon, 26 Feb 2024 10:02:48 +0000
-Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
+	id 1reY7A-0000000011C-0y23;
+	Mon, 26 Feb 2024 10:21:40 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reXoq-0000000HWGT-23jL
-	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 10:02:46 +0000
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a3e85a76fa8so252588866b.1
-        for <linux-mtd@lists.infradead.org>; Mon, 26 Feb 2024 02:02:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708941763; x=1709546563; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jsfybu/J7fq2BKb3fyxEbQKzNC70FxEDrNxyD6UJV2w=;
-        b=n4sKlSdm6Wyo6qEJIMZDDvfwUbIfA9TpdD9iLXw5i+aW5rep3+SPBYJa2paebSl5nm
-         Md9bgT3ymgqOLRKL8EfZJNeIqya5W5ZRqzKrkdt236Rd+UxFlxnCzx+2N3MmtBNIZIaF
-         YRpKayjotSptztbfIeRMF2ceynAWTdFPIcGE0qPi6bzhAhgTkhbuYieFJDwb7UFuBqHE
-         MXV9Ow9Nck7VZ/CvATMpeohIktME1phms/bWxMkD/Sof8KLhMo1fuMmFZ4Oj6yXf3Oeb
-         UEmw1kOh65UTy0poKLKHROQyT4+pPDdHGtqJvYphIOX0qp0fXrg3Plv/xnxIUaV2/ft7
-         xz+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708941763; x=1709546563;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jsfybu/J7fq2BKb3fyxEbQKzNC70FxEDrNxyD6UJV2w=;
-        b=nggitOsV1DX0suW3Kqpjw5GpMQ5RRjdsUdO23rk4p0aLD7nBnx7qDn4lYAMHMu2enC
-         kuD3bCLIIhVsCsNLAac/XKsVRF4aM5THQp8a8aXjbJ6Zm5smOZ97dz8eN48oCOMw5BhH
-         ntsyCvaJRzo7jcnV+hMY8403chvSokRjC2dEXM/eGnYVVoM3WeyMRJ8dxFCwVqlyhz0H
-         BUj1LW4YaSt1MsayHLHNAKEHZemySPtZ30Uz1E9o3/mFOkhSANvdoCTEFCMTm6I+JFxb
-         kpjPqGN9yDwrUiIqrlrrBJ2X1XmDdKYxSuYivTGPdUiqJ+n2PQkHA9SIp93jdm0dBBPR
-         JILA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRFGXotCrAHJmGYBEagqaznFCfk9lT5bCQIwWZbqENgtnEi5w26PyEaIrMkBBg4D6VtVY5GAmXZLCcj3LjF5jW2Wn9G+g+vQzLfK4s4A==
-X-Gm-Message-State: AOJu0Yy/ozXIT0vzCXWLSGA1DXExN+IkgJcH4Qnhc066/PicBazVvlSg
-	FW0WEvNgPdcRLyrMc+tXBOMbR0Y9aks91BAYCdJ8dOzRYTnHNSGoCL/PgDIQG68=
-X-Google-Smtp-Source: AGHT+IF5ob2nxmdMYoXYiTfxoywwvzuSWhSgCcUYqYf7yAuMkb9+/iKNXTtfGae++7reeSVA5ElfRw==
-X-Received: by 2002:a17:906:4f95:b0:a3f:52dc:6a21 with SMTP id o21-20020a1709064f9500b00a3f52dc6a21mr4306694eju.14.1708941762699;
-        Mon, 26 Feb 2024 02:02:42 -0800 (PST)
-Received: from 1.. ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id jx20-20020a170906ca5400b00a3d777aa8fesm2258764ejb.69.2024.02.26.02.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 02:02:42 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-mtd@lists.infradead.org,
-	Josua Mayer <josua@solid-run.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Yazan Shhady <yazan.shhady@solid-run.com>,
-	Rob Herring <robh@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7] dt-bindings: mtd: spi-nor: add optional interrupts property
-Date: Mon, 26 Feb 2024 12:02:37 +0200
-Message-Id: <170894175149.30146.3207560853406450700.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240219-mtd-flash-interrupt-binding-v7-1-206e30a656fa@solid-run.com>
-References: <20240219-mtd-flash-interrupt-binding-v7-1-206e30a656fa@solid-run.com>
+	id 1reY76-000000000ze-26dT;
+	Mon, 26 Feb 2024 10:21:38 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 307D520017;
+	Mon, 26 Feb 2024 10:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708942893;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9atkydl0QJMpqVx+Mp3qMYN15UNdxqngzP9FbgdYuuw=;
+	b=flq+W0cBjqqwu9qC+BNB8to/cq+RAlZHyxmQ1+h1Przde1RcY+49LPEUVueQt0aTLNaZUJ
+	xAmRjhb0A7U33bY4D6gaTkp8l0grxp3eaNbx3z1ugRgW0JLivVZ1A8WDwmc4WoD98pyW6w
+	zWTRwu+xF7c2AWaL1vAtD8J+GOFaMHvUSpgC7cp0YZkD+AqaLfD/pm9SWbJknsj3GHcAt/
+	fR8QAfNG+eR5n4Kn3D/UrRZpJeuR0Jehi6DL99UxxKGF/tQfQzqkWdjRYhEYOCV9QhA1kV
+	SozyTh3q7ofJrXbycMdCeIIxLhSGeq9Qso3pnj7iumZqjz6unY3X/tN7aRtjug==
+Date: Mon, 26 Feb 2024 11:21:32 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: claudiu.beznea@tuxon.dev, nicolas.ferre@microchip.com,
+ dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Remove T Ambarus from few mchp entries
+Message-ID: <20240226112132.22025454@xps-13>
+In-Reply-To: <20240226094718.29104-1-tudor.ambarus@linaro.org>
+References: <20240226094718.29104-1-tudor.ambarus@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=590; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=FMXE677AO8wWequWg/647kFxLIZ8WzSQjNdPcXIe84c=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBl3GG7RxwRnOerZC5wsNaIk5lFzF4BjDuzFg+Dj BY7/tk64LSJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZdxhuwAKCRBLVU9HpY0U 6Z7+CACw4HgtlaW+WJ9I5b9WPhh6l/AMqhDc+vLlwQrd57Yfz7D54Pxvh1e3LRlJNTUU2Sf4PYy KUbirTSAaVvrBrPHXkMwr2dIN6aF42j1s1xZBz5Cvykcs2m6sEXnSKQlHyONVnV5cP7zw4w6YPZ 2wE6EyoxLkfpvZSAHIMjpOXkVDcETLwtdHGpctE1ORRSHksUc52TyMWs+6WWuYqGnt2q2Nff4m5 /NoZB38BMW38A01SCil6lc0uV+E/tXvO/sPSS8eEVBSsQkreIAevUNpus5Ltg/x7X5UuTG9DVwt eDg6FGQxEjDwPmZGYGEX+ctOOocmWo4OkSp2pyalupIBcbKi
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_020244_550782_3785CF76 
-X-CRM114-Status: UNSURE (   9.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240226_022136_711608_268FAD04 
+X-CRM114-Status: GOOD (  12.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,31 +68,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 19 Feb 2024 15:41:19 +0100, Josua Mayer wrote:
-> Some spi flash memories have an interrupt signal which can be used for
-> signalling on-chip events such as busy status or ecc errors to the host.
-> 
-> Add binding for "interrupts" property so that boards wiring this signal
-> may describe the connection.
-> 
-> 
-> [...]
-
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
-
-[1/1] dt-bindings: mtd: spi-nor: add optional interrupts property
-      (no commit info)
-
-Cheers,
--- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gTW9uLCAyNiBGZWIg
+MjAyNCAxMTo0NzoxOCArMDIwMDoKCj4gSSBoYXZlIGJlZW4gbm8gbG9uZ2VyIGF0IE1pY3JvY2hp
+cCBmb3IgbW9yZSB0aGFuIGEgeWVhciBhbmQgSSdtIG5vCj4gbG9uZ2VyIGludGVyZXN0ZWQgaW4g
+bWFpbnRhaW5pbmcgdGhlc2UgZHJpdmVycy4gTGV0IG90aGVyIG1jaHAgcGVvcGxlCj4gc3RlcCB1
+cCwgdGh1cyByZW1vdmUgbXlzZWxmLiBUaGFua3MgZm9yIHRoZSBuaWNlIGNvbGxhYm9yYXRpb24g
+ZXZlcnlvbmUhCj4gCj4gU2lnbmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1
+c0BsaW5hcm8ub3JnPgo+IC0tLQo+IFNoYWxsIGJlIHF1ZXVlZCB0aHJvdWdoIHRoZSBhdDkxIHRy
+ZWUuCj4gCj4gIE1BSU5UQUlORVJTIHwgMTQgLS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5n
+ZWQsIDE0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5U
+QUlORVJTCj4gaW5kZXggZTE0NzVjYTM4ZmYyLi5mZDRkNGU1OGZlYWQgMTAwNjQ0Cj4gLS0tIGEv
+TUFJTlRBSU5FUlMKPiArKysgYi9NQUlOVEFJTkVSUwo+IEBAIC0xNDM1MCw3ICsxNDM1MCw2IEBA
+IEY6CWRyaXZlcnMvbWlzYy94aWxpbnhfdG1yX21hbmFnZXIuYwo+ICAKPiAgTUlDUk9DSElQIEFU
+OTEgRE1BIERSSVZFUlMKPiAgTToJTHVkb3ZpYyBEZXNyb2NoZXMgPGx1ZG92aWMuZGVzcm9jaGVz
+QG1pY3JvY2hpcC5jb20+Cj4gLU06CVR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJv
+Lm9yZz4KPiAgTDoJbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnIChtb2RlcmF0
+ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykKPiAgTDoJZG1hZW5naW5lQHZnZXIua2VybmVsLm9yZwo+
+ICBTOglTdXBwb3J0ZWQKPiBAQCAtMTQzOTgsMTIgKzE0Mzk3LDYgQEAgUzoJU3VwcG9ydGVkCj4g
+IEY6CURvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9taWNyb2NoaXAsY3Np
+MmRjLnlhbWwKPiAgRjoJZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9taWNyb2NoaXAvbWljcm9jaGlw
+LWNzaTJkYy5jCj4gIAo+IC1NSUNST0NISVAgRUNDIERSSVZFUgo+IC1NOglUdWRvciBBbWJhcnVz
+IDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+Cj4gLUw6CWxpbnV4LWNyeXB0b0B2Z2VyLmtlcm5l
+bC5vcmcKPiAtUzoJTWFpbnRhaW5lZAo+IC1GOglkcml2ZXJzL2NyeXB0by9hdG1lbC1lY2MuKgo+
+IC0KPiAgTUlDUk9DSElQIEVJQyBEUklWRVIKPiAgTToJQ2xhdWRpdSBCZXpuZWEgPGNsYXVkaXUu
+YmV6bmVhQHR1eG9uLmRldj4KPiAgTDoJbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
+b3JnIChtb2RlcmF0ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykKPiBAQCAtMTQ1MDUsMTMgKzE0NDk4
+LDYgQEAgTToJQXViaW4gQ29uc3RhbnMgPGF1YmluLmNvbnN0YW5zQG1pY3JvY2hpcC5jb20+Cj4g
+IFM6CU1haW50YWluZWQKPiAgRjoJZHJpdmVycy9tbWMvaG9zdC9hdG1lbC1tY2kuYwo+ICAKPiAt
+TUlDUk9DSElQIE5BTkQgRFJJVkVSCj4gLU06CVR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNA
+bGluYXJvLm9yZz4KPiAtTDoJbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiAtUzoJU3Vw
+cG9ydGVkCj4gLUY6CURvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXRtZWwt
+bmFuZC50eHQKPiAtRjoJZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvKgoKQ291bGQgd2UgbWFy
+ayB0aGVzZSBlbnRyaWVzIG9ycGhhbmVkIGluc3RlYWQgb2YgcmVtb3ZpbmcgdGhlbT8KCj4gLQo+
+ICBNSUNST0NISVAgT1RQQyBEUklWRVIKPiAgTToJQ2xhdWRpdSBCZXpuZWEgPGNsYXVkaXUuYmV6
+bmVhQHR1eG9uLmRldj4KPiAgTDoJbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
+IChtb2RlcmF0ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
