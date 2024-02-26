@@ -4,84 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 851CDC48BF6
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A857C54E49
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TipUpJhnXlp3sYH/TT2JZe8HQTgEWMLkuTEevWLOo2c=; b=QHD6Sc61X05PDs
-	G38uhyincQsE1P9OBwXnErpt0R2oQVBWAAkRdrhBY5RW4Xi7UlmoHmTWMaWfCqJVCoNgwg7Psrrcw
-	/0rx1cp84TtVjQEXd47jHt+hh2cLdvwBGT3PwgXCfBK7QwHMyRrmsrkqY9mHKSIATujlMB06yvndD
-	UBlezxb2hnBkKWm8ixwgp/v9E8mN+NDzl5fJH3kwDLGnThCVpP2JC0JSeXV0HUNWB384D++EbqKpG
-	Oq+15NtwaqBErf+qiijw/jJIpWZNPH4Xcri9yw4ZGy8Tpl6hNIExZ57U5wzrvkeZQ0eZyRngQCYSg
-	DIBFKqxcZymyQDFzN3MA==;
+	List-Owner; bh=eGQXEsAysNejgfdqqMewk7TMJeHNDi+N66ssYm7Fdw0=; b=YivbaKwRrxkrVC
+	01wvbDjCOvCfp8HGX1Kmi5iejG7/vYi2JZOwcPBRA6OZjc0yw6/88cKXyPTpEb6ZGi4d8YPN2RnHV
+	5e3KacIxghkKVEDkzLRALxOjVsVuzGx6dn9nW1ZLgeMxucc39WufN6fk2/Gocd03ZJeOtYS1OBdr1
+	fDUPfpaTRVkCdHiGKp4R9x4fDoEXY1Zzl0ofFuIrk0H2zNnoxAXOR4p8YwgGxv2PvDogEIvMNiWpd
+	jKzo8oTal7Jg0U34jDf75gflRx9mVy5GshVfwspOEUt7tDTLM5L5lz+7nPTLWWLnFtb1sVnKXFqts
+	TALn/EbvV/vlAVoE+LMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reYTv-000000009UD-3L29;
-	Mon, 26 Feb 2024 10:45:11 +0000
-Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
+	id 1reYU1-000000009Xf-1IWA;
+	Mon, 26 Feb 2024 10:45:17 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reYSo-000000008rs-42uA
-	for linux-mtd@lists.infradead.org;
+	id 1reYT0-0000000090I-2xEB;
 	Mon, 26 Feb 2024 10:44:14 +0000
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-564647bcdbfso2797257a12.2
-        for <linux-mtd@lists.infradead.org>; Mon, 26 Feb 2024 02:44:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708944241; x=1709549041; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/1u96TCZGh+uaR4bi6Ag7KK+CWFlrG+NLarSYTmkM2k=;
-        b=WrV8BcPqhZmLUEK/lKVu/HbHdwuMVi5XM9z/D7A3t1l8vUhYUYJPTZl6tI3BvOFMvU
-         NSYj3SKk328PHZj54Lw7pJ3LY7umCZdzXNyc+7G2gw/6WS8M4P1hCAvyUT3XtKCTp15D
-         TqTrPzyCd+Zorg7NnORihYXJKucH+BeqFT50+zu5g3YUOECEQZOQiXW9vKF/cC75uRaN
-         MpJHTQPBeyTAJtI300qZJCGi2ZMmw6Io6ki/tabQymoFGrUGDHpj03BerCZukfc+8yGF
-         YojNdWtiKwQ/uwTYXuh+4xycsQBjDeTV7gBUD4DmvsJ48p07kov1UJzve+jMzgjTwkFf
-         BPuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708944241; x=1709549041;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/1u96TCZGh+uaR4bi6Ag7KK+CWFlrG+NLarSYTmkM2k=;
-        b=v0xgYUUoTiK11XcKh5GodTmSm2uj2zPd4xlNa2fV/EazSZG03rdECinpvp5XL1ZttS
-         EMganVFmzfMYDMNq9x06iPQiYEdaFPKr3ZUhpigkRMFbAyX3Z6SYiXx23nNi5nWEorqb
-         V0eVojMEWCoUl5085nrE7FAVF8640CDJj8eodcg2QKpaxFw06tr6CvrkgY4AXuZaXlly
-         lSiaFB1BVIqX2YyDfzmYgV5atc6Y3RBScflrDpI/HHaFRYeUGM1pFUF69dor4mX4m7nD
-         EoWcsPs+wPCtUrq9cMPNpLx5hvaLbCa8glMYynYoBQvfA8o/JadctT5VXJuiKt+suCHy
-         2LUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIrEDCa1uEJoHd6w7n4XhYk/+5Xl0PJ6RN3OXokb2p1ISikqBrEFU1pf8HkzxHyl0Asv8yAbXzeAeYstdZSGlK7dTXCahzJu4Us446lw==
-X-Gm-Message-State: AOJu0Yx89xddHjj/PGZTI6JdzyFpTdSgRCteZe+zwmqp4/bzWd6g3d5y
-	b+9aOFOQOAsQyeeWpC7gz9S95X8Y7AeVXPPAHkqutIh9n9/m0WjctqZ6visnejY=
-X-Google-Smtp-Source: AGHT+IFXQa+vLT3VSAjwilZdTzIVK0TdFefSAdZBFz9SZ+bVKQh5rMYDuB0XwPGEMcDzdkmxULENgA==
-X-Received: by 2002:a05:6402:35ca:b0:565:ba2f:85d7 with SMTP id z10-20020a05640235ca00b00565ba2f85d7mr3967435edc.37.1708944240891;
-        Mon, 26 Feb 2024 02:44:00 -0800 (PST)
-Received: from [192.168.0.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id z18-20020aa7c652000000b005657eefa8e9sm2192416edr.4.2024.02.26.02.43.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 02:44:00 -0800 (PST)
-Message-ID: <33c0c516-1f5f-4cf5-bd3b-70b61372a53c@linaro.org>
-Date: Mon, 26 Feb 2024 12:43:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=YS0xtPJLUWz/J44LlF/6XFwOsdD0shWEo8A0ddxsJAk=; b=cAfbHi0hWZoHDgcy+kRyg5b3aI
+	MSHHX2fI9TTUAwrwij2cjTjFidtZ7G8mJRkj1ifUKhxbGgvZ5MO1PxhqT6NmUPGzsnsiA1oQ20Akx
+	GZwGKsjepIDPEUa71lL/33AQM8fV/s98qwRBACIJq5OzjPfuf6UmUmXvw50ORy/aGEHRK0cI7bGO4
+	EUMJhbwh5XGIVwOyXsWfqeqQ/OOiqwSxYQYWlk31zqec01OmYfjcx3BNGQIy613eJ0Hy/2exC6wAq
+	gopI3D2FpUBPfu8YVlM6ols8cwwXP7/B+h/ftyyMfy3591gc101bthAA9KN4j01jyVN7D8S1bF2Gh
+	NDzoWsew==;
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1reYSx-000000017qc-1LtI;
+	Mon, 26 Feb 2024 10:44:13 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 82CEE1BF20E;
+	Mon, 26 Feb 2024 10:44:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708944249;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YS0xtPJLUWz/J44LlF/6XFwOsdD0shWEo8A0ddxsJAk=;
+	b=U5pFjkvYgh0y2PiE1W+62YAIs4NhEF7VTUKjSqllfIkvKmONJALI1a8QyJ5n/uvwPnp57c
+	LdULRXff4M5HuUZbFTA16ibyXoseEq04WA7gPw0h9puZVwIb6T3nVCwZCw4pgutuI0QD8L
+	Af95BjzvRGOORziuyaAMKpIPtI0QHYVGnAJ02qRW2kodeFUFzJzyrxbvqKxKYDs6jduiEH
+	1u6h81SeVhgHO2e9xWPW8m8bKG0SMuqO9whFoDDQs7QVsaU/+IvdCMt8+30RnkQvN5is5B
+	9254ysHoT2/0P/c5tOZY3Dc23ACqaISLfUszKcrhUZvwjGsg4gx9Z330yH86MA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>,
+	Linux MTD List <linux-mtd@lists.infradead.org>,
+	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	f.fainelli@gmail.com,
+	kursad.oney@broadcom.com,
+	joel.peshkin@broadcom.com,
+	anand.gore@broadcom.com,
+	dregan@mail.com,
+	kamal.dasu@broadcom.com,
+	tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com,
+	David Regan <dregan@broadcom.com>,
+	devicetree@vger.kernel.org,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	=?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH v6 08/13] arm64: dts: broadcom: bcmbca: Add NAND controller node
+Date: Mon, 26 Feb 2024 11:44:08 +0100
+Message-Id: <20240226104408.489472-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240223034758.13753-9-william.zhang@broadcom.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mtd: spi-nor: Add Puya Semiconductor chips driver
-Content-Language: en-US
-To: Dmitry Dunaev <dunaev@tecon.ru>
-Cc: dunaich@mail.ru, Pratyush Yadav <pratyush@kernel.org>,
- Michael Walle <mwalle@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-References: <9ebf9cdf-eeba-417a-8410-3f87a0973136@linaro.org>
- <20240226104101.1848855-1-dunaev@tecon.ru>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240226104101.1848855-1-dunaev@tecon.ru>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'87b0c3f2cd0247c843dd118068ff0d7539b8f791'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_024403_411812_520B3208 
-X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-CacheID: sfid-20240226_104411_515412_D771F330 
+X-CRM114-Status: UNSURE (   5.23  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,24 +106,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 26.02.2024 12:40, Dmitry Dunaev wrote:
-> Add a SPI NOR manufacturer driver for Puya Semiconductor chips
+On Fri, 2024-02-23 at 03:47:53 UTC, William Zhang wrote:
+> Add support for Broadcom STB NAND controller in BCMBCA ARMv8 chip dts
+> files.
 > 
-> Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
-> ---
->  drivers/mtd/spi-nor/Makefile |  1 +
->  drivers/mtd/spi-nor/core.c   |  1 +
->  drivers/mtd/spi-nor/core.h   |  1 +
->  drivers/mtd/spi-nor/puya.c   | 64 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 67 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/puya.c
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: David Regan <dregan@broadcom.com>
 
-what changed in v2? why do you need these entries? Can you rely instead
-on SFDP to initialize these flashes?
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Please read: https://docs.kernel.org/driver-api/mtd/spi-nor.html
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
