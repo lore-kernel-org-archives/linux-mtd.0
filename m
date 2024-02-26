@@ -4,77 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9DC8C47DD9
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 02:03:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 698C3C54798
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 02:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W+qfNPJ8A7ypvIGtE5falhmzX4WaWGWQlNXJachNQnY=; b=P5U8zT79/FzRcI
-	CqUIbXNLqbAh1HfC0ytwzCaw0Zi+AJXSbnD6Ps7EjISxPbUFgTMGXs1g6mqEGeMZBs3ro90WE8U7j
-	Uz8wTqYq9h4feW3Q7IohCib24FGq1sCemXydx2/WmOOrt1t5SRu54EpI/UqsTX3iY6+KP2QWtxpLQ
-	faNVKNQmkxQMg0requgVS9Je61A96KPWtE+RhinSLp1fnb7bJcwjdtLNCP9j1B3D8H3osOrJVCvEh
-	1Drulq9zIe05oqkD8FQ5PHVf0Yfi7EWqlKPKPCPtoWhGuUt/dh0e4d+WsFD5DHawR73OSWkLuHxZh
-	9XFi/R+hxUoRYeHOU9Fw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=E7es3pFPuKNvtkCXrG+ruYwd2H7yIKoleIy1IgQhsgY=; b=UmC87m120jJLF2lHcN3kuJUDcc
+	b6JpWNyHNhbKxO9+I8z5rl+cSoDOJ8Buekz8ZCtRDi/i+cxPlNaBOB8CfWHUK/SbKEHTsPhJWWfhR
+	c3UodnQZtOG2anwdkHAlb39hPd/xnFSCcvbqdKtqcJ+riarwXirphSvB/jW+wSnQ0EbSItkG8d2v9
+	v2WlzK8UBNcbmf2W0vjCk8D2vCq/CmBJaJX3mjao9to3pIYO41Op9RRiwEdhF34KYxtK8HMW4VOH4
+	2jxdNex61MgqjA4ArxCOgun+fRvqIp9BpyZeQHvSne3i7kC9ewq31PkcwsJ7byPjQW3P1djiyxDs3
+	Sdj4s2+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reQKl-0000000G7ll-2BLG;
-	Mon, 26 Feb 2024 02:03:11 +0000
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	id 1reQUG-0000000G9FD-0SOY;
+	Mon, 26 Feb 2024 02:13:00 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reQKi-0000000G7lG-2Z9Y
+	id 1reQUC-0000000G9Cw-2h88
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 02:03:10 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso3059684a12.2
-        for <linux-mtd@lists.infradead.org>; Sun, 25 Feb 2024 18:03:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708912983; x=1709517783; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4cpaHBEdPSwYMPzpDqnA+dJ66X3qsQRUCH+N+Yn5wA=;
-        b=nqXkxkr8VAJqlkHg+BYzu02klwaq4yk/aEfRtVwtd5G/7H2da0cZEzZguL8MihHtlV
-         5HjI242QcdKWVuCDF5vodl5EIr0g9jDZcvANPXQBnpnWcwxNDXxry+0Ty+WrQYUv91FZ
-         iUaO2s9PObZvWZKcH4WAy3AW/sKtdfFE8IW+yljWoSlGhL8T7NlxF9XVkYd+d6fDY3uq
-         MeOXmeA5OLpf0InFulpA9wOoCEgH9OHhf6vlu17Wi4WQxtwBTYjkVbsZhGxzN6rKxx43
-         qVQ9jLO5ixjU187jqJ+22evkdE4fNiv2k6E5d2ZlNNZaqfAxhYSqJ9NePpxCjTjCCAZr
-         gJHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708912983; x=1709517783;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O4cpaHBEdPSwYMPzpDqnA+dJ66X3qsQRUCH+N+Yn5wA=;
-        b=OO+0KZX/h6P+QAQ2be8WlX540IreUswaeU16IiLDSuF4QHRbxOm3l4Tv2GlXHjNman
-         fhivVpNpsMO93jwrihN9iQ3pIdXbMy1QeSWQT71xtc89+4mIAudo67mG/z5zRlnVd2EF
-         oh9lREMl7cQ3By/06DzhbcCCSADIRRKBqvYXtin654dGVi1jkxJ/S5A4rU2beBa+kWMl
-         +az6dHdDuMVyd5/wzok1hgzm4ZyDNdVmBXKr6d7NHBIleK81WfyJIPN7tfnm5drwA4/t
-         W8WUYTfFogdqr0FzpK5YFePe5ZIdm9AzdYTnFn063pxixTaEDPgpdmXfQUXo7NyQCrjD
-         IC+Q==
-X-Gm-Message-State: AOJu0Ywrbk/HisKt+D3h9n5DyH4xXVtG62s8Oi888vm7WuBj9kxLl1xi
-	kRGl7byLxF+ybdsh4zWeAc6cGN1C2+/401tLyUQGaf/Ua0GfJsyAP73jAbwCNEt8oVwm7Gi7iRY
-	NEgiVq+CS9QTmZl7aO4UaN6jkxWo=
-X-Google-Smtp-Source: AGHT+IEwG4fJQD3kx53nN39VRnBZjVmb0USWLLq2/UFkAVhbtU/RhqBXA8UMx4wIPqZM9NwIMAP96pMulpvNonxc0mo=
-X-Received: by 2002:aa7:daca:0:b0:565:ad43:2229 with SMTP id
- x10-20020aa7daca000000b00565ad432229mr3033648eds.15.1708912983382; Sun, 25
- Feb 2024 18:03:03 -0800 (PST)
+	Mon, 26 Feb 2024 02:12:58 +0000
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Tjkbt4VsQz1X3QJ;
+	Mon, 26 Feb 2024 10:10:34 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id DE5981400D3;
+	Mon, 26 Feb 2024 10:12:47 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 10:12:46 +0800
+Subject: Re: [PATCH] ubifs: remove SLAB_MEM_SPREAD flag usage
+To: <chengming.zhou@linux.dev>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <vbabka@suse.cz>, <roman.gushchin@linux.dev>,
+	<Xiongwei.Song@windriver.com>, Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240224135217.830331-1-chengming.zhou@linux.dev>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <3384a81a-e6c9-6f2e-e66e-c9b9a9433c0f@huawei.com>
+Date: Mon, 26 Feb 2024 10:12:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20240201094353.33281-1-jaimeliao.tw@gmail.com>
- <75a22482-0d2a-4e0c-86e8-3a8e71f2f403@linaro.org> <CAAQoYRkVYjs_+7cSc5oU4qKoi3_5My8xk32RWq3O5V5D_xBg0A@mail.gmail.com>
-In-Reply-To: <CAAQoYRkVYjs_+7cSc5oU4qKoi3_5My8xk32RWq3O5V5D_xBg0A@mail.gmail.com>
-From: Alvin Zhou <alvinzhou.tw@gmail.com>
-Date: Mon, 26 Feb 2024 10:02:54 +0800
-Message-ID: <CAPhrvRTW0z950mZsuaFRW0_vs1NmOU+L_FKM_64UdTwLwVsQzg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/9] Add octal DTR support for Macronix flash
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, 
-	pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com, 
-	richard@nod.at, vigneshr@ti.com, broonie@kernel.org, leoyu@mxic.com.tw, 
-	jaimeliao@mxic.com.tw, Alvin Zhou <alvinzhou@mxic.com.tw>
+In-Reply-To: <20240224135217.830331-1-chengming.zhou@linux.dev>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240225_180309_202862_D8DE84A4 
-X-CRM114-Status: GOOD (  12.54  )
+X-CRM114-CacheID: sfid-20240225_181256_878995_1506908C 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,40 +67,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
-
->
-> Hi Tudor
->
->
-> >
-> > Jaime,
-> >
-> > You're so close to have these integrated, I see there are no major
-> > comments for the patch set. Would you please address the comments and
-> > re-submit?
-> This patchset would be take over by Alvin.
-> Thank you for always giving useful and kind advice.
->
-> >
-> > I plan to do the PR next Monday.
-Because I just received the patchwork from Jaime, so I need to spend
-some time studying the comments to prepare for the next PR.
-Thank you for your understanding.
-> >
-> > ta
->
-> Thanks
-> Jaime
-
-Thanks
-Alvin
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8yLzI0IDIxOjUyLCBjaGVuZ21pbmcuemhvdUBsaW51eC5kZXYg0LS1wDoKPiBGcm9t
+OiBDaGVuZ21pbmcgWmhvdSA8emhvdWNoZW5nbWluZ0BieXRlZGFuY2UuY29tPgo+IAo+IFRoZSBT
+TEFCX01FTV9TUFJFQUQgZmxhZyBpcyBhbHJlYWR5IGEgbm8tb3AgYXMgb2YgNi44LXJjMSwgcmVt
+b3ZlCj4gaXRzIHVzYWdlIHNvIHdlIGNhbiBkZWxldGUgaXQgZnJvbSBzbGFiLiBObyBmdW5jdGlv
+bmFsIGNoYW5nZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaGVuZ21pbmcgWmhvdSA8emhvdWNoZW5n
+bWluZ0BieXRlZGFuY2UuY29tPgo+IC0tLQo+ICAgZnMvdWJpZnMvc3VwZXIuYyB8IDQgKystLQo+
+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiAKClJl
+dmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IGRpZmYg
+LS1naXQgYS9mcy91Ymlmcy9zdXBlci5jIGIvZnMvdWJpZnMvc3VwZXIuYwo+IGluZGV4IGY3ODA3
+MjllZWMwNi4uOGFlNzY0ODAyMWE4IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL3N1cGVyLmMKPiAr
+KysgYi9mcy91Ymlmcy9zdXBlci5jCj4gQEAgLTI0MzMsOCArMjQzMyw4IEBAIHN0YXRpYyBpbnQg
+X19pbml0IHViaWZzX2luaXQodm9pZCkKPiAgIAo+ICAgCXViaWZzX2lub2RlX3NsYWIgPSBrbWVt
+X2NhY2hlX2NyZWF0ZSgidWJpZnNfaW5vZGVfc2xhYiIsCj4gICAJCQkJc2l6ZW9mKHN0cnVjdCB1
+Ymlmc19pbm9kZSksIDAsCj4gLQkJCQlTTEFCX01FTV9TUFJFQUQgfCBTTEFCX1JFQ0xBSU1fQUND
+T1VOVCB8Cj4gLQkJCQlTTEFCX0FDQ09VTlQsICZpbm9kZV9zbGFiX2N0b3IpOwo+ICsJCQkJU0xB
+Ql9SRUNMQUlNX0FDQ09VTlQgfCBTTEFCX0FDQ09VTlQsCj4gKwkJCQkmaW5vZGVfc2xhYl9jdG9y
+KTsKPiAgIAlpZiAoIXViaWZzX2lub2RlX3NsYWIpCj4gICAJCXJldHVybiAtRU5PTUVNOwo+ICAg
+Cj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
