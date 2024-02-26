@@ -4,83 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87EF6C48BF6
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 09:02:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67EAAC48BF6
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 09:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WmIDt3yp9Puw6b8Uycs0oMYx71JOBwtGLQEGC6jKcYE=; b=alksZ/rcRcPUWE
-	JPLDXCItg1ytxrrpqrmsQWoDipqGGWwd95wyO2H9sDXCMBIgXA61KqRDHsqtmyw369e8WsVf6gqlR
-	y2V7ObndHdY5aPXtFBz1HYZQ+ziXIuyUV+cwsdFzD1tGUIt4XUS2qWyK9iARlNMhyXfyBS6qVeMir
-	LkOXKv4NYUf65ct6ZLb96/dTek1GRSejr+lc4nN7vbePHdKU6gD2rTDeIvqodRD4BgyVGf4oE0VIN
-	h56j5dvlylf+JAkwhFZHAWHKuS9X7D6yQrWsmNFmUCDGvMiyyq9i+6QGMVkl7zLZdJeHvZFDTwMOl
-	ncCtyz5FnkZX3lwZmFJQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=L+X5XbOCGXAtdCL8LJK0pPiFY0Qc0fagBv1WHYJphYY=; b=QxWMgS2ShsNfkx
+	uL+I0WF2d9iiVF9kSJWozKkdyMqR65az3FjWpJFfdxCzn9/4m7zCDOOZL0ychxFe0sjEF4YLCsKnX
+	gvU4faUT8b4zrRK9INzkr2CjJYfXZnSeifl7KFWSle97hA6LuCiQb7uQVt3bvW/oW2SahqvL0iYdJ
+	zCjMXWGu0l+zYsqa3+O52x81BK9rc7vkYzP4S8R2aEikD85Lk2dWGqbwFwFbsRo5uCPzdJJslW05B
+	0LWRiCZAGAW8LBtdsn/0guUwi+pZ1TfttwjKQZlSgv7XkKn/TpLLaa/fjaLtePsw4zoAsPg1lLcKZ
+	YKCXH82g7q0bHAWu7OTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reWsl-0000000HChH-4Beh;
-	Mon, 26 Feb 2024 09:02:44 +0000
-Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
+	id 1reXEC-0000000HK6C-152p;
+	Mon, 26 Feb 2024 09:24:52 +0000
+Received: from mail.tecon.ru ([82.112.190.120])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reWsj-0000000HCgG-3Kwq
+	id 1reXE6-0000000HK1A-06kw
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 09:02:43 +0000
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-564e4df00f3so3539334a12.3
-        for <linux-mtd@lists.infradead.org>; Mon, 26 Feb 2024 01:02:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708938160; x=1709542960; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l4vuj3eSn8A7txG5vBFIYiDQpLrdAS5lSvykbiGNFDk=;
-        b=W8tjM45ADhIUU4SC6ZiGMkb2cLBiwjO1nR5o6PAtL3zwtcTsGU92J7tDCvrWtbPtTx
-         nr+89r4Zq5E7o0LF72oaWa23SL5/lBfJQXhTauzbCGLSdjzyczzD4WpgnJLvtJmpznku
-         MJRlSEFinFO/73hK9gs7nVqPPzgP2Oe3g6nyiGP4b0LTcNUJO8Lb3MGDx006KlagEfdh
-         TCFB1fB4vgtup2ujSdjJjmAZiXrfvfHxW5Wfyb2sSR8hRHODrKJHkgTtSAAymTIiBTcw
-         zgGbQ33JDibYVioAjdOZKoaYhGMsZQq8CKvoRtMMlYwgMASBMyXS1etJs5hqsc7IucJO
-         5Fyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708938160; x=1709542960;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l4vuj3eSn8A7txG5vBFIYiDQpLrdAS5lSvykbiGNFDk=;
-        b=tkcCD81GjIuoAk9WPKeWwqP8AnUYQHvbUML4tH/6PztY0TLIynLyQD67kqODoYJD1e
-         fBmB1ExanHCqWYCmXboRvCVAnb8/ZNJVdYTxh7OsX/28f/qmQxOwUodze+auTKnonNJO
-         uWceOTHNqBLIdyDqUquzhTkwVrAL3cKayON7dZh/CfJhh+Kkvapm2vpISA/ovKz3wDWb
-         FLUm0Kwk6dbQ49yJLlwYMb+/8kqeqI/eOOayFT03yW7BsUTVuGHj2vjtdgEfIlSg6S2x
-         gxrnw/B2DiVpcHdbxy81I5xgCNuwLz1KI+U7TgNGX874l1QnXPD03dQG2nZvd1A5SN8O
-         n9WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUqdGbt7gRVfFdkdjyqEp+nM7AZRXhV/lAFbnZNpCQhoIVSIYm73AZjPA3xSOCcwGqWrhpsm6cm3KnKPa9o+ftgs+8EbQf3WAdFehYXvg==
-X-Gm-Message-State: AOJu0Yw1WT3LIwZ4cP3ao/scSjvGsIwdYPNgnIs1LE+Rm3teUnknFx8X
-	mQ6cOAVZ5nZGU47q9CF2ooQVN0tN7pMOtLoTUF0zuTt6V9ODyb104ybXOurOj2U=
-X-Google-Smtp-Source: AGHT+IFiM3a9JqDcX+o1wZIY33EBfcLiW2gXKm3nl1PJL5AegCjP+Sp05In2Y6rAkAXy3GuYhUyJRw==
-X-Received: by 2002:a17:906:f191:b0:a3b:e8f3:25d with SMTP id gs17-20020a170906f19100b00a3be8f3025dmr3933749ejb.75.1708938160001;
-        Mon, 26 Feb 2024 01:02:40 -0800 (PST)
-Received: from [192.168.2.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id pw23-20020a17090720b700b00a3e4673e7dbsm2216139ejb.38.2024.02.26.01.02.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 01:02:39 -0800 (PST)
-Message-ID: <e317ed6e-d132-4e23-9396-b747a939913e@linaro.org>
-Date: Mon, 26 Feb 2024 11:02:39 +0200
+	Mon, 26 Feb 2024 09:24:49 +0000
+From: Dmitry Dunaev <dunaev@tecon.ru>
+To: 
+CC: <dunaich@mail.ru>, Dmitry Dunaev <dunaev@tecon.ru>, Tudor Ambarus
+	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael
+ Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: Add Puya Semiconductor chips driver
+Date: Mon, 26 Feb 2024 12:23:10 +0300
+Message-ID: <20240226092312.1834584-1-dunaev@tecon.ru>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/4] mtd: spi-nor: core: set mtd->eraseregions for
- non-uniform erase map
-Content-Language: en-US
-To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_010241_873948_9D13C7F2 
-X-CRM114-Status: UNSURE (   9.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240226_012446_420666_C89C2A4F 
+X-CRM114-Status: GOOD (  10.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,35 +57,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Takahiro, which base did you use for the patch set? It does not apply
-cleanly on spi_nor/next (v6.8-rc1), neither on spi-nor/for-6.8.
+Add a SPI NOR manufacturer driver for Puya Semiconductor chips
 
-Please rebase and resubmit.
+Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
+---
+ drivers/mtd/spi-nor/Makefile |  1 +
+ drivers/mtd/spi-nor/puya.c   | 64 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 65 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/puya.c
 
-On 20.02.2024 10:34, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> 
-> In v4, split two flags removement into separated patches. Reworked
-> spi_nor_init_erase_cmd() to use n_regions in outer loop.
-> 
-> In v3, reworked to remove LAST_REGION and OVERLAID_REGION flags. Updated
-> and tested debugfs.
-> 
-> In v2, reworked spi_nor_erase_region to stop bitmask encoding in offset.
-> And added n_regions member to spi_nor_erase_map.
-> 
-> Takahiro Kuwano (4):
->   mtd: spi-nor: core: rework struct spi_nor_erase_region
->   mtd: spi-nor: core: get rid of SNOR_LAST_REGION flag
->   mtd: spi-nor: core: get rid of SNOR_OVERLAID_REGION flag
->   mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map
-> 
->  drivers/mtd/spi-nor/core.c    | 187 +++++++++++++++++-----------------
->  drivers/mtd/spi-nor/core.h    |  30 ++----
->  drivers/mtd/spi-nor/debugfs.c |  26 +++--
->  drivers/mtd/spi-nor/sfdp.c    |  47 +++------
->  4 files changed, 128 insertions(+), 162 deletions(-)
-> 
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 5e68468b72fc..3e22039d0432 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -10,6 +10,7 @@ spi-nor-objs			+= intel.o
+ spi-nor-objs			+= issi.o
+ spi-nor-objs			+= macronix.o
+ spi-nor-objs			+= micron-st.o
++spi-nor-objs			+= puya.o
+ spi-nor-objs			+= spansion.o
+ spi-nor-objs			+= sst.o
+ spi-nor-objs			+= winbond.o
+diff --git a/drivers/mtd/spi-nor/puya.c b/drivers/mtd/spi-nor/puya.c
+new file mode 100644
+index 000000000000..2198a9ed7101
+--- /dev/null
++++ b/drivers/mtd/spi-nor/puya.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2024, Tecon MT LLC.
++ */
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++/* Puya Semiconductor (Shanghai) Co., Ltd */
++static const struct flash_info puya_nor_parts[] = {
++	{
++		.id = SNOR_ID(0x85, 0x60, 0x10),
++		.name = "p25q05h",
++		.size = SZ_64K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x11),
++		.name = "p25q10h",
++		.size = SZ_128K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x12),
++		.name = "p25q20h",
++		.size = SZ_256K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x13),
++		.name = "p25q40h",
++		.size = SZ_512K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x14),
++		.name = "p25q80h",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x15),
++		.name = "p25q16h",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x16),
++		.name = "p25q32h",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x17),
++		.name = "p25q64h",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x18),
++		.name = "p25q128h",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}
++};
++
++const struct spi_nor_manufacturer spi_nor_puya = {
++	.name = "puya",
++	.parts = puya_nor_parts,
++	.nparts = ARRAY_SIZE(puya_nor_parts),
++};
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
