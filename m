@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB114C54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 12:47:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 742CAC48BF6
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 12:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BCAIEfFEOU/Cvw6L2nfJDQ3oBJndeUWO+8SkIk2/3Q4=; b=JPm+37fQ9lNk45
-	IHqhpugqcsFkP3oKSSIwLBX1RBGwXAqL49hXa070z43lR2trsPZtdGLxkWsB9oeFTXBZKDuYewRpz
-	O18Cg/UJre+2r5UdptBhj4nTCNZzCzGaGHde4nB0rv7eudk8jx9FyX3FEthGLmVN0kmdONxtGNCD8
-	zYeVeEUtCR0PkGBwVPwudSSR9xjvAEDoxf4YW3Hu/yyukgQeLrf4PQHiNxQVH4Jf2+/mDWiQ2kPZy
-	WICDcsj/fVXDre7nyxDccb33ybidlVn7vc9p2yGYvbTHTYWRdH7+eyEWLxYtHBvP8yBh2/eHfw8Pv
-	DJHX7g9pG3o0jLZHsFSw==;
+	List-Owner; bh=G3YnYFysKPYzkFwPpwflAULigqK3U6gALCMBBWjNGKc=; b=CQQjWkN1+qOCtu
+	u+24uzGepXlNd4QUzZCZy807ij9MJTNDCdSQ5q8hPuVozWRA8/z507IIAXJqy/CR6KMqpCVXTWL9H
+	oy5d0b7l67i2fphIqmgT0YPWGqaxpcXBWfRkBtQOjzhFw1OHIo1CmWh6q6aGsP0+FCKDJDbWwnPFT
+	uNnZQ6CYIFGMhEn6TgUEgVdnzfyN7NVDAgvr84tdbve4vHO7Uk4jt7dWIc5gLoyVDgzAVD9xraxMe
+	kixxxvuolemghR44HiuC1MAs+2cg8Gvd7LaN6CtD/qtlZ2lNhc5l1/6CKOrrIFsDJpbW7ny9xZnDu
+	68Yh7FheyhGqSopm35zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reaNx-00000000ffG-1iM6;
-	Mon, 26 Feb 2024 12:47:09 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1reaO0-00000000fi0-4Bps;
+	Mon, 26 Feb 2024 12:47:13 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reYTN-000000009Be-0tP1;
-	Mon, 26 Feb 2024 10:44:48 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 862F960007;
-	Mon, 26 Feb 2024 10:44:34 +0000 (UTC)
+	id 1reYTR-000000009Dl-2moc;
+	Mon, 26 Feb 2024 10:44:51 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5C835FF808;
+	Mon, 26 Feb 2024 10:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708944275;
+	t=1708944279;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wEfzB1nd/zVZF23uR/LjdFqixm6QUNJQL8/Lb4lp4ck=;
-	b=E+YASnOU/WN00JkzEqMHSEXuDgjlzyoiCaRS8ZT2/ci7zz8S4tozzBFXoBggpq83qAL981
-	JdtOIN/PuGWnWjGuDkQldGosWdKUOD196RDIzx+8W2FTseo6bA6C0OeVH7y7qgS6Szk3R/
-	dXKEnp9Ph/yRC6+H9UvdnV5Y5TnkA+LgFVDD1n14PqZ1yEuQM8jf/3H+5KbjN8GAzuvO9k
-	WSWL55ICAE/D0DelERo/y62bptEUx5CQrcSsf8C0tbByPYhSAJNE3Gz/72YBLlfyvUZ+MH
-	IiutkJMlQsriXYiV7uQkQme4IgQ9JJq2b4GIfKAMUP15IVj1jLLlQZXtR3FrIg==
+	bh=UB1IOQo3ol1zgMkxzEY1pF40MDSbhNzWiuEXfhitfrc=;
+	b=fzNGZ+YtkPXFUu15ymnBFHeanM/sUHd1Xd5ycAqqFj8uCd7XFNW3wj0a+U8R6qjWhVtqn1
+	kZp+oHVdBSO73qt3/EhW6POoBWaY6Q7wM7Pq1/kRvhiCg4/VL8MNdmALyHInTVUzWXLQQO
+	i7lcGnIDO3VFCi0ZnuiZjGwpnH0raSdGQKPy1AX29MQvXG5yJ7IYjxYri+SX0Pph/NeqNT
+	qZPrfDqddX4jkUZk5J4rOCFrv1LN1FLC9GZforSfdA+MVTdn28xBAWCh84mJDX9QyoG32j
+	b2jq2Pvxyu5vZcsbcNvOhSH0kERLTbd5jxMvd3cnfoqx4rCSisnHTlf/tgz2sQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: William Zhang <william.zhang@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>,
@@ -55,23 +55,24 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
 	David Regan <dregan@broadcom.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Brian Norris <computersforpeace@gmail.com>,
 	Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v6 02/13] mtd: rawnand: brcmnand: fix style issues
-Date: Mon, 26 Feb 2024 11:44:34 +0100
-Message-Id: <20240226104434.489790-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v6 01/13] mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+Date: Mon, 26 Feb 2024 11:44:37 +0100
+Message-Id: <20240226104437.489832-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240223034758.13753-3-william.zhang@broadcom.com>
+In-Reply-To: <20240223034758.13753-2-william.zhang@broadcom.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'8e6070e5a39cb2202d66b78134f8b7681cdf3cd8'
+X-linux-mtd-patch-commit: b'd4bba1501f72e8af09f2cde3d327147de1b69f5d'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_024437_548496_AE1EDE24 
-X-CRM114-Status: UNSURE (   4.57  )
+X-CRM114-CacheID: sfid-20240226_024441_944207_47150ABE 
+X-CRM114-Status: UNSURE (   5.91  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,12 +90,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-02-23 at 03:47:47 UTC, William Zhang wrote:
-> Fix various style issues.
+On Fri, 2024-02-23 at 03:47:46 UTC, William Zhang wrote:
+> From: David Regan <dregan@broadcom.com>
 > 
+> Fix return types for exec_op reset and status helper functions.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
+> Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
 > Signed-off-by: David Regan <dregan@broadcom.com>
 > Signed-off-by: William Zhang <william.zhang@broadcom.com>
 > Reviewed-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
