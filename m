@@ -4,107 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7DBEC48BF6
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 07:32:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7DE1C5478C
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 08:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
-	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qfaP2sQEPkswLRmM3XFR64ghCOzcCJw/0linBE/nZkw=; b=s/uCtgZTJGo5Qj
-	/ebOxxK+DuSQpJ1vE8JBvJ+DBTYJznF4gPBC84FM/IO6xob9uD2bMW3qNRx1QHPefayBlmwX4t2KB
-	qcRAKS17Dd1rHWr8GrhzweSDsdKyTqs68bUOBtHhDUlvj3jNmhN01QYN2TvFbyPqnzKjlWwGD4/yg
-	vpoqs0Drgsq73IjZXnjufg76CgpoZxL8YS2frBECBGrxJ7jZTxGydKuOqM3ba+FYF52npD0LGS19C
-	ueiQFzxXKsh0RdgHn4tptSKe1fHrAyq7fagER2tX6tCCg+bHMjFHT78nCJVnvAV1xVwCMmbHwMOgK
-	/OMbxk+0hfq17D3HehZQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=JXTSNTPGDaerZkpfW1r5uH7l28LiIKcH8bRAFG5RLfE=; b=u3SU/XdE/5GYBr
+	pucCRKW2pJO4LxgGUSYHSsFJcxpvkuS9uYlqlHleuK1KYIgBQM7GWRDIdMzPd8dqfFLZNTPPxJ1IF
+	KIMwk/7ROI7yua4sX1iu/rNL2EKyfzFoqS46cXjzcF47r8qj3K2vKTTGevoFV+1cJn4vasqoxW5vG
+	p3rdYFiqIfNqEon/9CHl26XqrowzjLUj++S7R47l8yy3pZ1E0AC9gcp5BfJsGS382M5+yNon1tfSf
+	zdCEqu1LVrWpPHGPHmDhhRBPQzZ5bcGkuAlf6LOl/mklNcV1xoAvlsE06Njp+edl+YOo3rQ0Zy3Us
+	hnsI5iJvzcOXAMeRuXQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reVT2-0000000GnEw-0xms;
-	Mon, 26 Feb 2024 07:32:04 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1reWTf-0000000H1z0-05eY;
+	Mon, 26 Feb 2024 08:36:47 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reVSP-0000000GmyT-0Ct1;
-	Mon, 26 Feb 2024 07:31:41 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0875860E86;
-	Mon, 26 Feb 2024 07:31:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 94BAEC433C7;
-	Mon, 26 Feb 2024 07:31:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708932681;
-	bh=dcEVmcf77DVIMovL/YaiMfgr5H01UEZll0xOlIVYfpk=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=UeF7OaoqSbGeDKwmkqz9bElREg0sl+11N4VjKuq1bXE/ID7L1zLK0800lX7hc+1mQ
-	 G97VI3DdrIEoIwv7FX4o+EIW52Mu9CixtO/0fbhHm5CZKUSXDIQBaRP5RVUAJ89I+M
-	 5Ig5bsKDJSDoT+uBwoPA0yDNkpFJhRT/rhUwTrm1LnrQC6nhQ4IjMGBD4L+qUYn12F
-	 LGC/rV4sn5bNbfGUtyVqL8Pc0RQCNRrziWB8xIh38OmA/+hdXHhtAOJXMPsdSydOcw
-	 6Ecq58d1pcx69/Z5s6uEhJNZEiu1Mw8Rxrcm/wRB12nQMpfDPUHdUPKkeRYx2OnAN6
-	 P9aOhFE/AIu6w==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B5B8C48BF6;
-	Mon, 26 Feb 2024 07:31:21 +0000 (UTC)
-From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Subject: [PATCH v8 00/38] ep93xx device tree conversion
-Date: Mon, 26 Feb 2024 10:29:56 +0300
-Message-Id: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
+	id 1reWTY-0000000H1vI-1WVG;
+	Mon, 26 Feb 2024 08:36:44 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4ACA3240012;
+	Mon, 26 Feb 2024 08:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708936595;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ed35DgZT8up8dS5tg0t3dwfRBrSktHLqjatLU9kFk9U=;
+	b=hZq+vBySzyQVPfyS1qj/uShP2HwWpY1NMrZJZ07lNgp/pxnSPTsIsvCH8uQKP9+eSyATeu
+	KxlK5CuI0WpBmtI2yr3B4D5qQS2wbLMAFTP184ftX+5aaGGR77Ky7YM/ARs3Mkj0hyySwy
+	z+RGAJHBK7apr0dA/poIhqhjW4ZJky3gbBrUQXaFMdPZsgWtTgFOvFMb1p16r0Z4GjRh0O
+	m4nkPcQcholIjgr8RvDwtIwtCXVpC78E2y7swG8nfaN6ir52i3qS9VdQq6QjEbFtutXujq
+	nJb7ZsAM3WcNkLs7vqnWidxbkciim+D6V9euXV4pa38PO1kmvK+ZFdiaTNoT4g==
+Date: Mon, 26 Feb 2024 09:36:32 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
+ <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
+ <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
+ kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
+ <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
+ <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH v6 12/13] mtd: rawnand: brcmnand: Add support for
+ getting ecc setting from strap
+Message-ID: <20240226093632.089d594c@xps-13>
+In-Reply-To: <db1c1e68-40e2-4c6c-afb2-2fb591883a46@broadcom.com>
+References: <20240223034758.13753-1-william.zhang@broadcom.com>
+	<20240223034758.13753-13-william.zhang@broadcom.com>
+	<20240223101852.005da3ad@xps-13>
+	<db1c1e68-40e2-4c6c-afb2-2fb591883a46@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPQ93GUC/2XOwW6DMAwG4FepOC9V7JCE7LT3mHYwiRnRBnQJR
- Z2qvvtCpRVVHH/Z329fq8wpcq5eD9cq8RJznMYSmpdD5XsaP1nEUHKFEpU0Ugs+OXW5CAneGgW
- WMWBVllvKLNpEo+/X9YHyzGkdnBJ38XK/8P5RcpemQcx9Ytp6a6wBlUY8QqMkChBj/IozHXN/b
- uP4NtDPmTv+Pg68VvYxz1P6vf+8qLV4996ihBQqGEW6A5CKnzrWP5Z6gw42WBdIEKx1wbMHuYf
- 6AQEQH1AXGLQja4IOHbo9NBtE2KAp0Ctp24a8I2r20P7DWgI0D2jXi06rpjbE1sIzvN1ufxNG9
- 5jeAQAA
-To: Hartley Sweeten <hsweeten@visionengravers.com>, 
- Alexander Sverdlin <alexander.sverdlin@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Nikita Shubin <nikita.shubin@maquefel.me>, Vinod Koul <vkoul@kernel.org>, 
- Wim Van Sebroeck <wim@linux-watchdog.org>, 
- Guenter Roeck <linux@roeck-us.net>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>, 
- "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
- Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
- dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org, 
- linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
- netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Andrew Lunn <andrew@lunn.ch>, Andy Shevchenko <andy.shevchenko@gmail.com>
-X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708932678; l=17014;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=dcEVmcf77DVIMovL/YaiMfgr5H01UEZll0xOlIVYfpk=; =?utf-8?q?b=3DItBu4UQQv+dq?=
- =?utf-8?q?bLuuO2RYcYv88kbC4PsjqfYxziChPxqRD6Nxqtwg8iGPpgOmfIYvgn8+Na9dwae+?=
- ftVk5q1/AxvC98P7BI/FhJ0TH7plc9BgkDLhOhVLeXeBSFz5uwHm
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240225_233135_954552_76E364B1 
-X-CRM114-Status: GOOD (  22.57  )
+X-CRM114-CacheID: sfid-20240226_003640_691076_50CC15AD 
+X-CRM114-Status: GOOD (  37.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,441 +78,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: nikita.shubin@maquefel.me
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The goal is to receive ACKs for all patches in series to merge it via Arnd branch.
-
-No major changes since last version (v7) all changes are cosmetics.
-
-Following patches require attention from Stephen Boyd, as they were converted to aux_dev as suggested:
-
-- ARM: ep93xx: add regmap aux_dev
-- clk: ep93xx: add DT support for Cirrus EP93xx
-
-Following patches require attention from Vinod Koul:
-
-- dma: cirrus: Convert to DT for Cirrus EP93xx
-- dma: cirrus: remove platform code
-
-Following patches dropped from series:
-
-- ARM: ep93xx: Add terminator to gpiod_lookup_table (taken)
-
-Patches should be formated with '--histogram'
-
----
-Changes in v8:
-
-soc: Add SoC driver for Cirrus ep93xx
-    - fixed freeing adev instead of rdev
-    - use __free() and no_free_ptr() for rdev allocation
-    - s/of_device_get_match_data()/device_get_match_data()/
-
-ata: pata_ep93xx: add device tree support
-    - more appropriate usage of dev_err_probe()
-
-pinctrl: add a Cirrus ep93xx SoC pin controller
-    - 8 per row in ide_9312_pins
-
-mtd: rawnand: add support for ts72xx
-    - fwnode_handle_put() for fwnode in ts72xx_nand_remove()
-
-- Link to v7: https://lore.kernel.org/r/20240118-ep93xx-v7-0-d953846ae771@maquefel.me
-
-Changes in v7:
-
-mtd: rawnand: add support for ts72xx
-    - fixed KConfig description
-
-ARM: ep93xx: Add terminator to gpiod_lookup_table
-    - + Reported-by, Fixes
-
-ARM: ep93xx: add regmap aux_dev
-    - + trailing comma
-    - - #include <linux/spinlock.h>
-
-clk: ep93xx: add DT support for Cirrus EP93xx
-    - dropped unused defines
-    - return from default in ep93xx_mux_get_parent()
-    - use guard() in ep93xx_mux_set_parent_lock()
-    - <math.h> header for abs_diff()
-    - fixed comments
-
-pinctrl: add a Cirrus ep93xx SoC pin controller
-    - dropped comments for DEVCFG defines
-    - <linux/array_size.h> for ARRAY_SIZE()
-    - + default in ep93xx_get_group_name()
-    - correct cast for id->driver_data
-    - s/device_set_of_node_from_dev()/device_set_node()/
-
-power: reset: Add a driver for the ep93xx reset
-    - Add <linux/container_of.h>, <linux/errno.h>, <linux/slab.h>
-    - Add <linux/module.h>, <linux/mod_devicetable.h>
-    - Remove <platform_device.h>
-
-spi: ep93xx: add DT support for Cirrus EP93xx
-    - Replace with ret = dev_err_probe(...);
-
-ata: pata_ep93xx: add device tree support
-    - fixed wrong rebase with some partes leaked in "ata: pata_ep93xx: remove legacy pinctrl use"
-    - fix dma_request_chan() error processing
-
-dma: cirrus: Convert to DT for Cirrus EP93xx
-    - fixed commit message (dropped explicit "only")
-    - fixed clk_get() processing to defer probe and log spamming
-    - refactor ep93xx_m2p_dma_filter()
-    - dropped blank line in ep93xx_m2p_dma_of_xlate()
-    - refactor ep93xx_m2m_dma_of_xlate()
-
-dma: cirrus: remove platform code
-    - s/dma/DMA/ in commit message
-
-soc: Add SoC driver for Cirrus ep93xx
-    - add period
-    - use cleanup and guard() for spinlocking
-    - correct cast for device_get_match_data()
-    - dropped dev_info() with SoC revision - i can't find it anywhere since 2.6 :/,
-      don't know why i was so sured that ep93xx always printed that
-
-ata: pata_ep93xx: remove legacy pinctrl use
-    - made error handling in DMA as Uwe suggested
-
-- Link to v6: https://lore.kernel.org/r/20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me
-
-Changes in v6:
-
-- clk: ep93xx: add DT support for Cirrus EP93xx
-  - s/spin_lock_irqsave()/guard()/
-  - refactor index check in ep93xx_mux_set_parent_lock() to something more readable
-  - use in_range in ep93xx_mux_set_parent_lock()/ep93xx_ddiv_set_rate()
-  - use GENMASK() in ep93xx_ddiv_recalc_rate()
-  - comment reserved bit in ep93xx_ddiv_set_rate()
-  - move out from loop ClkDiv value assigment
-  - some style fixes
-
-Andy, i was i asked to set index of XTALI explicitly, i am not setting ddiv_pdata
-there becouse only XTALI is jnown in advance, and i think setting them in one place is more convenient.
-
-- pinctrl: add a Cirrus ep93xx SoC pin controller
-  - drop OF from Kconfig
-  - droped linux/of.h include
-  - add space to */ where it is applicable
-  - add coma in multiline assigment
-  - "return NULL" as default case in ep93xx_get_group_name()
-  - fixed casting id->driver_data
-  - use device_set_of_node_from_dev()
-  - use dev_err_probe()
-
-- power: reset: Add a driver for the ep93xx reset
-  - drop linux/of.h include
-
-- soc: Add SoC driver for Cirrus ep93xx
-  - s/GPL-2.0/GPL-2.0-only/
-  - drop linux/kernel.h include
-  - + blank line before linux/soc/cirrus/ep93xx.h
-  - + blank line after ep93xx_get_soc_rev()
-  - + coma for pinctrl_names
-  - valid casting to int for of_device_get_match_data() return value
-
-- mtd: rawnand: add support for ts72xx
-  - return as part of switch case
-  - s/iowrite8/iowrite8_rep/
-
-- net: cirrus: add DT support for Cirrus EP93xx
-  - fix header sorting
-
-- dma: cirrus: Convert to DT for Cirrus EP93xx
-  - use devm_clk_get
-  - use is_slave_direction
-
-Changes in v5:
-
-- gpio: ep93xx: split device in multiple
-  - ordered headers
-  - use irqd_to_hwirq()
-  - s/platform_get_irq()/platform_get_irq_optional()/
-
-- [PATCH v4 02/42] ARM: ep93xx: add swlocked prototypes
-  - replaced with ARM: ep93xx: add regmap aux_dev
-
-- [PATCH v4 03/42] dt-bindings: clock: Add Cirrus EP93xx
-  - fixed identation
-  - removed EP93XX_CLK_END
-  - and dropped it
-  - clock bindings moved to syscon with renaming to cirrus,ep9301-syscon.h
-
-- clk: ep93xx: add DT support for Cirrus EP93xx
-  - convert to auxiliary and use parent device tree node
-  - moved all clocks except XTALI here
-  - used devm version everywhere and *_parent_hw() instead of passing name where it's possible
-  - unfortunately devm_clk_hw_register_fixed_rate doesn't have a parent index version
-
-- [PATCH v4 05/42] dt-bindings: pinctrl: Add Cirrus EP93xx
-  - "unevaluatedProperties: false" for pins
-  - returned "additionalProperties: false" where it was
-  - and dropped it
-
-- pinctrl: add a Cirrus ep93xx SoC pin controller
-  - sorted includes
-  - convert to auxiliary and use parent device tree node
-
-- power: reset: Add a driver for the ep93xx reset
-  - convert to auxiliary device
-
-- dt-bindings: soc: Add Cirrus EP93xx
-  - dropped all ref to reboot, clk, pinctrl subnodes
-  - added pins, as it's now used for pinctrl
-  - added #clock-cells, as it's now used for clk
-
-- dt-bindings: pwm: Add Cirrus EP93xx
-  - $ref to pwm.yaml
-  - fixed 'pwm-cells'
-  - s/additionalProperties/unevaluatedProperties/
-
-- soc: Add SoC driver for Cirrus ep93xx
-  - removed clocks, they are moved to clk auxiliary driver, as we dropped the clk dt node
-  - removed all swlocked exported functions
-  - dropped static spinlock
-  - added instantiating auxiliary reboot, clk, pinctrl
-
-- dt-bindings: spi: Add Cirrus EP93xx
-  - Document DMA support
-
-- spi: ep93xx: add DT support for Cirrus EP93xx
-  - dropped CONFIG_OF and SPI/DMA platform data entirely
-  - s/master/host/
-  - reworked DMA setup so we can use probe defer
-
-- dt-bindings: dma: Add Cirrus EP93xx
-  - dropped bindings header (moved ports description to YAML)
-  - changed '#dma-cells' to 2, we use port, direction in cells so we can drop platform code completely
-
-- dma: cirrus: add DT support for Cirrus EP93xx
-  - dropped platform probing completely
-  - dropped struct ep93xx_dma_data replaced with internal struct ep93xx_dma_chan_cfg with port/direction
-  - added xlate functions for m2m/m2p
-  - we require filters to set dma_cfg before hw_setup
-
-- dt-bindings: ata: Add Cirrus EP93xx
-  - Document DMA support
-
-- ata: pata_ep93xx: add device tree support
-  - drop DMA platform header with data
-  - use DMA OF so we can defer probing until DMA is up
-
-- ARM: dts: add Cirrus EP93XX SoC .dtsi
-- ARM: dts: ep93xx: add ts7250 board
-- ARM: dts: ep93xx: Add EDB9302 DT
-  - replaced "eclk: clock-controller" to syscon reference
-  - replaced "pinctrl: pinctrl" to syscon reference
-  - gpios are now "enabled" by default
-  - reworked i2s node
-  - change all dma nodes and refs
-
-- new additions to I2S
-  - Document DMA
-  - Document Audio Port usage
-  - drop legacy DMA support
-
-- Link to v4: https://lore.kernel.org/r/20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me
-
-Changes in v4:
-
-- gpio: ep93xx: split device in multiple
-  - s/generic_handle_irq/generic_handle_domain_irq/
-  - s/int offset/irq_hw_number_t offset/ though now it looks a bit odd to me
-  - drop i = 0
-  - drop 'error'
-  - use dev_err_probe withour printing devname once again
-
-dt-bindings: clock: Add Cirrus EP93xx
-  - renamed cirrus,ep93xx-clock.h -> cirrus,ep9301-clk.h
-
-clk: ep93xx: add DT support for Cirrus EP93xx
-  - drop unused includes
-  - use .name only for xtali, pll1, pll2 parents
-  - convert // to /*
-  - pass clk_parent_data instead of char* clock name
-
-dt-bindings: pinctrl: Add Cirrus EP93xx
-  - s/additionalProperties/unevaluatedProperties/
-
-dt-bindings: soc: Add Cirrus EP93xx
-  - move syscon to soc directory
-  - add vendor prefix
-  - make reboot same style as pinctrl, clk
-  - use absolute path for ref
-  - expand example
-
-soc: Add SoC driver for Cirrus ep93xx
-  - s/0xf0000000/GENMASK(31, 28)/
-  - s/ret/ep93xx_chip_revision(map)/
-  - drop symbol exports
-  - convert to platform driver
-
-dt-bindings: rtc: Add Cirrus EP93xx
-  - allOf: with $ref to rtc.yaml
-  - s/additionalProperties/unevaluatedProperties/
-
-dt-bindings: watchdog: Add Cirrus EP93x
-  - drop description
-  - reword
-
-power: reset: Add a driver for the ep93xx reset
-  - lets use 'GPL-2.0+' instead of '(GPL-2.0)'
-  - s/of_device/of/
-  - drop mdelay with warning
-  - return 0 at the end
-
-net: cirrus: add DT support for Cirrus EP93xx
-  - fix leaking np
-
-mtd: nand: add support for ts72xx
-  - +bits.h
-  - drop comment
-  - ok to fwnode_get_next_child_node
-  - use goto to put handle and nand and report error
-
-ARM: dts: add Cirrus EP93XX SoC .dtsi
-  - add simple-bus for ebi, as we don't require to setup anything
-  - add arm,pl011 compatible to uart nodes
-  - drop i2c-gpio, as it's isn't used anywhere
-
-ARM: dts: ep93xx: add ts7250 board
-  - generic node name for temperature-sensor
-  - drop i2c
-  - move nand, rtc, watchdog to ebi node
-
-- Link to v3: https://lore.kernel.org/r/20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me
-
----
-Alexander Sverdlin (3):
-      ASoC: ep93xx: Drop legacy DMA support
-      ARM: dts: ep93xx: Add EDB9302 DT
-      ASoC: cirrus: edb93xx: Delete driver
-
-Nikita Shubin (35):
-      gpio: ep93xx: split device in multiple
-      ARM: ep93xx: add regmap aux_dev
-      clk: ep93xx: add DT support for Cirrus EP93xx
-      pinctrl: add a Cirrus ep93xx SoC pin controller
-      power: reset: Add a driver for the ep93xx reset
-      dt-bindings: soc: Add Cirrus EP93xx
-      soc: Add SoC driver for Cirrus ep93xx
-      dt-bindings: dma: Add Cirrus EP93xx
-      dma: cirrus: Convert to DT for Cirrus EP93xx
-      dt-bindings: watchdog: Add Cirrus EP93x
-      watchdog: ep93xx: add DT support for Cirrus EP93xx
-      dt-bindings: pwm: Add Cirrus EP93xx
-      pwm: ep93xx: add DT support for Cirrus EP93xx
-      dt-bindings: spi: Add Cirrus EP93xx
-      spi: ep93xx: add DT support for Cirrus EP93xx
-      dt-bindings: net: Add Cirrus EP93xx
-      net: cirrus: add DT support for Cirrus EP93xx
-      dt-bindings: mtd: Add ts7200 nand-controller
-      mtd: rawnand: add support for ts72xx
-      dt-bindings: ata: Add Cirrus EP93xx
-      ata: pata_ep93xx: add device tree support
-      dt-bindings: input: Add Cirrus EP93xx keypad
-      input: keypad: ep93xx: add DT support for Cirrus EP93xx
-      wdt: ts72xx: add DT support for ts72xx
-      gpio: ep93xx: add DT support for gpio-ep93xx
-      ASoC: dt-bindings: ep93xx: Document DMA support
-      ASoC: dt-bindings: ep93xx: Document Audio Port support
-      ARM: dts: add Cirrus EP93XX SoC .dtsi
-      ARM: dts: ep93xx: add ts7250 board
-      ARM: ep93xx: DT for the Cirrus ep93xx SoC platforms
-      pwm: ep93xx: drop legacy pinctrl
-      ata: pata_ep93xx: remove legacy pinctrl use
-      ARM: ep93xx: delete all boardfiles
-      ARM: ep93xx: soc: drop defines
-      dma: cirrus: remove platform code
-
- .../bindings/arm/cirrus/cirrus,ep9301.yaml         |   38 +
- .../bindings/ata/cirrus,ep9312-pata.yaml           |   42 +
- .../bindings/dma/cirrus,ep9301-dma-m2m.yaml        |   84 ++
- .../bindings/dma/cirrus,ep9301-dma-m2p.yaml        |  144 ++
- .../bindings/input/cirrus,ep9307-keypad.yaml       |   87 ++
- .../devicetree/bindings/mtd/technologic,nand.yaml  |   45 +
- .../devicetree/bindings/net/cirrus,ep9301-eth.yaml |   59 +
- .../devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml |   53 +
- .../bindings/soc/cirrus/cirrus,ep9301-syscon.yaml  |   94 ++
- .../bindings/sound/cirrus,ep9301-i2s.yaml          |   16 +
- .../devicetree/bindings/spi/cirrus,ep9301-spi.yaml |   70 +
- .../bindings/watchdog/cirrus,ep9301-wdt.yaml       |   42 +
- arch/arm/Makefile                                  |    1 -
- arch/arm/boot/dts/cirrus/Makefile                  |    4 +
- arch/arm/boot/dts/cirrus/ep93xx-bk3.dts            |  126 ++
- arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts        |  182 +++
- arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts         |  145 ++
- arch/arm/boot/dts/cirrus/ep93xx.dtsi               |  441 ++++++
- arch/arm/mach-ep93xx/Kconfig                       |   20 +-
- arch/arm/mach-ep93xx/Makefile                      |   11 -
- arch/arm/mach-ep93xx/clock.c                       |  733 ----------
- arch/arm/mach-ep93xx/core.c                        | 1018 --------------
- arch/arm/mach-ep93xx/dma.c                         |  114 --
- arch/arm/mach-ep93xx/edb93xx.c                     |  368 -----
- arch/arm/mach-ep93xx/ep93xx-regs.h                 |   38 -
- arch/arm/mach-ep93xx/gpio-ep93xx.h                 |  111 --
- arch/arm/mach-ep93xx/hardware.h                    |   25 -
- arch/arm/mach-ep93xx/irqs.h                        |   76 --
- arch/arm/mach-ep93xx/platform.h                    |   42 -
- arch/arm/mach-ep93xx/soc.h                         |  212 ---
- arch/arm/mach-ep93xx/timer-ep93xx.c                |  143 --
- arch/arm/mach-ep93xx/ts72xx.c                      |  422 ------
- arch/arm/mach-ep93xx/ts72xx.h                      |   94 --
- arch/arm/mach-ep93xx/vision_ep9307.c               |  321 -----
- drivers/ata/pata_ep93xx.c                          |  107 +-
- drivers/clk/Kconfig                                |    8 +
- drivers/clk/Makefile                               |    1 +
- drivers/clk/clk-ep93xx.c                           |  840 ++++++++++++
- drivers/dma/ep93xx_dma.c                           |  287 +++-
- drivers/gpio/gpio-ep93xx.c                         |  345 ++---
- drivers/input/keyboard/ep93xx_keypad.c             |   74 +-
- drivers/mtd/nand/raw/Kconfig                       |    6 +
- drivers/mtd/nand/raw/Makefile                      |    1 +
- drivers/mtd/nand/raw/technologic-nand-controller.c |  222 +++
- drivers/net/ethernet/cirrus/ep93xx_eth.c           |   63 +-
- drivers/pinctrl/Kconfig                            |    7 +
- drivers/pinctrl/Makefile                           |    1 +
- drivers/pinctrl/pinctrl-ep93xx.c                   | 1434 ++++++++++++++++++++
- drivers/power/reset/Kconfig                        |   10 +
- drivers/power/reset/Makefile                       |    1 +
- drivers/power/reset/ep93xx-restart.c               |   84 ++
- drivers/pwm/pwm-ep93xx.c                           |   26 +-
- drivers/soc/Kconfig                                |    1 +
- drivers/soc/Makefile                               |    1 +
- drivers/soc/cirrus/Kconfig                         |   13 +
- drivers/soc/cirrus/Makefile                        |    2 +
- drivers/soc/cirrus/soc-ep93xx.c                    |  240 ++++
- drivers/spi/spi-ep93xx.c                           |   66 +-
- drivers/watchdog/ep93xx_wdt.c                      |    8 +
- drivers/watchdog/ts72xx_wdt.c                      |    8 +
- include/dt-bindings/clock/cirrus,ep9301-syscon.h   |   46 +
- include/linux/platform_data/dma-ep93xx.h           |   94 --
- include/linux/platform_data/eth-ep93xx.h           |   10 -
- include/linux/platform_data/keypad-ep93xx.h        |   32 -
- include/linux/platform_data/spi-ep93xx.h           |   15 -
- include/linux/soc/cirrus/ep93xx.h                  |   47 +-
- sound/soc/cirrus/Kconfig                           |    9 -
- sound/soc/cirrus/Makefile                          |    4 -
- sound/soc/cirrus/edb93xx.c                         |  116 --
- sound/soc/cirrus/ep93xx-i2s.c                      |   19 -
- sound/soc/cirrus/ep93xx-pcm.c                      |   19 +-
- 71 files changed, 5138 insertions(+), 4550 deletions(-)
----
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
-change-id: 20230605-ep93xx-01c76317e2d2
-
-Best regards,
--- 
-Nikita Shubin <nikita.shubin@maquefel.me>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgV2lsbGlhbSwKCndpbGxpYW0uemhhbmdAYnJvYWRjb20uY29tIHdyb3RlIG9uIEZyaSwgMjMg
+RmViIDIwMjQgMDk6MjU6MDkgLTA4MDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiAyLzIzLzI0IDAx
+OjE4LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgV2lsbGlhbSwKPiA+IAo+ID4gd2lsbGlh
+bS56aGFuZ0Bicm9hZGNvbS5jb20gd3JvdGUgb24gVGh1LCAyMiBGZWIgMjAyNCAxOTo0Nzo1NyAt
+MDgwMDoKPiA+ICAgCj4gPj4gQkNNQkNBIGJyb2FkYmFuZCBTb0MgYmFzZWQgYm9hcmQgZGVzaWdu
+IGRvZXMgbm90IHNwZWNpZnkgZWNjIHNldHRpbmcgaW4KPiA+PiBkdHMgYnV0IHJhdGhlciB1c2Ug
+dGhlIFNvQyBOQU5EIHN0cmFwIGluZm8gdG8gb2J0YWluIHRoZSBlY2Mgc3RyZW5ndGgKPiA+PiBh
+bmQgc3BhcmUgYXJlYSBzaXplIHNldHRpbmcuIEFkZCBicmNtLG5hbmQtZWNjLXVzZS1zdHJhcCBk
+dHMgcHJvcGV0eSBmb3IKPiA+PiB0aGlzIHB1cnBvc2UgYW5kIHVwZGF0ZSBkcml2ZXIgdG8gc3Vw
+cG9ydCB0aGlzIG9wdGlvbi4gSG93ZXZlciB0aGVzZSB0d28KPiA+PiBvcHRpb25zIGNhbiBub3Qg
+YmUgdXNlZCBhdCB0aGUgc2FtZSB0aW1lLgo+ID4+Cj4gPj4gU2lnbmVkLW9mZi1ieTogV2lsbGlh
+bSBaaGFuZyA8d2lsbGlhbS56aGFuZ0Bicm9hZGNvbS5jb20+Cj4gPj4gUmV2aWV3ZWQtYnk6IERh
+dmlkIFJlZ2FuIDxkcmVnYW5AYnJvYWRjb20uY29tPgo+ID4+ICAKPiA+IAo+ID4gRllJIEkgZGlk
+IG5vdCByZWNlaXZlIHBhdGNoZXMgNywgOCwgOSwgd2hpY2ggbWFrZXMgdGhlIHNlcmllcyBudW1i
+ZXJpbmcKPiA+IHZlcnkgb2RkLgo+ID4gICAKPiBJIHdhcyB1c2luZyB0aGUgZ2V0IG1haW50YWlu
+ZXIgc2NyaXB0IG1haW5seSBhbmQgaXQgc2VuZHMgdG8gdGhlIGxpbnV4IE1URCBsaXN0LiAgSSB3
+aWxsIGFkZCB5b3VyIGVtYWlsIGRpcmVjdGx5IG5leHQgdGltZS4KClllcywgSSBwcmVmZXIgdG8g
+YmUgaW4gQ2Mgb2YgdGhlIHdob2xlIHNlcmllcywgcGxlYXNlLgoKPiA+PiAtLS0KPiA+Pgo+ID4+
+IENoYW5nZXMgaW4gdjY6Cj4gPj4gLSBDb21iaW5lIHRoZSBlY2Mgc3RlcCBzaXplIGFuZCBlY2Mg
+c3RyZW5ndGggaW50byBvbmUgZ2V0IGZ1bmN0aW9uCj4gPj4gLSBUcmVhdCBpdCBhcyBlcnJvciBj
+b25kaXRpb24gaWYgYm90aCBicmNtLG5hbmQtZWNjLXVzZS1zdHJhcCBhbmQgbmFuZAo+ID4+IGVj
+YyBkdHMgcHJvcGVydGllcyBhcmUgc2V0Cj4gPj4gLSBBZGQgaW50ZXJtZWRpYXRlIHN0ZXBzIHRv
+IGdldCB0aGUgc2VjdG9yIHNpemUgYml0ZmllbGQKPiA+Pgo+ID4+IENoYW5nZXMgaW4gdjU6IE5v
+bmUKPiA+PiBDaGFuZ2VzIGluIHY0Ogo+ID4+IC0gVXBkYXRlIHRoZSBjb21tZW50cyBmb3IgZWNj
+IHNldHRpbmcgc2VsZWN0aW9uCj4gPj4KPiA+PiBDaGFuZ2VzIGluIHYzOiBOb25lCj4gPj4gQ2hh
+bmdlcyBpbiB2MjoKPiA+PiAtIE1pbm9yIGNvc21ldGljIGZpeGVzCj4gPj4KPiA+PiAgIGRyaXZl
+cnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCA4MyArKysrKysrKysrKysrKysr
+KysrKysrLS0KPiA+PiAgIDEgZmlsZSBjaGFuZ2VkLCA3NyBpbnNlcnRpb25zKCspLCA2IGRlbGV0
+aW9ucygtKQo+ID4+Cj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21u
+YW5kL2JyY21uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5j
+Cj4gPj4gaW5kZXggZWY3ZDM0MDQ3NWJlLi5lOGZmYzI4M2IzNjUgMTAwNjQ0Cj4gPj4gLS0tIGEv
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYwo+ID4+ICsrKyBiL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiA+PiBAQCAtMTAzOCw2ICsxMDM4
+LDIyIEBAIHN0YXRpYyBpbmxpbmUgaW50IGJyY21uYW5kX3NlY3Rvcl8xa19zaGlmdChzdHJ1Y3Qg
+YnJjbW5hbmRfY29udHJvbGxlciAqY3RybCkKPiA+PiAgIAkJcmV0dXJuIC0xOwo+ID4+ICAgfSAg
+Cj4gPj4gICA+PiArc3RhdGljIGludCBicmNtbmFuZF9nZXRfc2VjdG9yX3NpemVfMWsoc3RydWN0
+IGJyY21uYW5kX2hvc3QgKmhvc3QpICAKPiA+PiArewo+ID4+ICsJc3RydWN0IGJyY21uYW5kX2Nv
+bnRyb2xsZXIgKmN0cmwgPSBob3N0LT5jdHJsOwo+ID4+ICsJaW50IHNlY3Rvcl9zaXplX2JpdCA9
+IGJyY21uYW5kX3NlY3Rvcl8xa19zaGlmdChjdHJsKTsKPiA+PiArCXUxNiBhY2NfY29udHJvbF9v
+ZmZzID0gYnJjbW5hbmRfY3Nfb2Zmc2V0KGN0cmwsIGhvc3QtPmNzLAo+ID4+ICsJCQkJCQkgIEJS
+Q01OQU5EX0NTX0FDQ19DT05UUk9MKTsKPiA+PiArCXUzMiBhY2NfY29udHJvbDsKPiA+PiArCj4g
+Pj4gKwlpZiAoc2VjdG9yX3NpemVfYml0IDwgMCkKPiA+PiArCQlyZXR1cm4gMDsKPiA+PiArCj4g
+Pj4gKwlhY2NfY29udHJvbCA9IG5hbmRfcmVhZHJlZyhjdHJsLCBhY2NfY29udHJvbF9vZmZzKTsK
+PiA+PiArCj4gPj4gKwlyZXR1cm4gKGFjY19jb250cm9sICYgQklUKHNlY3Rvcl9zaXplX2JpdCkp
+ID4+IHNlY3Rvcl9zaXplX2JpdDsgIAo+ID4gCj4gPiBGSUVMRF9QUkVQLCBGSUVMRF9HRVQsICpw
+bGVhc2UqLiAgCj4gWW91IHByb2JhYmx5IG1pc3NlZCBteSByZXBseSB0byB5b3VyIGNvbW1lbnRz
+IG9uIHRoZSBzYW1lIHBhdGNoIGluIHY1LiBIZXJlIGlzIHRoZSBsaW5rIGZvciB0aGUgcG9zdCBp
+biBjYXNlIGl0IGxvc3QgaW4geW91ciBlbWFpbDoKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9s
+a21sL2MxNDViOTBjLWU5ZjAtNGQ4Mi05NGNjLWJhZjdiZmRhNTk1NEBnbWFpbC5jb20vVC8jbTFk
+OTExZDJmMTE5ZjNiZDM0NWM1NzVhODFiNjBiYzJiZDhjNDYxZWIKCkkgZGlkbid0IG1pc3MgaXQs
+IGJ1dCB0aGUgcmVhc29uIGRvZXMgbm90IHNvdW5kIGxlZ2l0aW1hdGUgdG8gbWUuClBsZWFzZSB3
+b3JrIG9uIGl0LCBpdCB3aWxsIGJlIHNvIG11Y2ggY2xlYW5lci4KCj4gVGhlIG1hc2sgaXMgbm90
+IGNvbnN0YW50IGhlcmUgYW5kIGNhdXNlIGJ1aWxkIGVycm9ycy4KPiA+ICAgCj4gPj4gK30KPiA+
+PiArCj4gPj4gICBzdGF0aWMgdm9pZCBicmNtbmFuZF9zZXRfc2VjdG9yX3NpemVfMWsoc3RydWN0
+IGJyY21uYW5kX2hvc3QgKmhvc3QsIGludCB2YWwpCj4gPj4gICB7Cj4gPj4gICAJc3RydWN0IGJy
+Y21uYW5kX2NvbnRyb2xsZXIgKmN0cmwgPSBob3N0LT5jdHJsOwo+ID4+IEBAIC0xMDU1LDYgKzEw
+NzEsNDMgQEAgc3RhdGljIHZvaWQgYnJjbW5hbmRfc2V0X3NlY3Rvcl9zaXplXzFrKHN0cnVjdCBi
+cmNtbmFuZF9ob3N0ICpob3N0LCBpbnQgdmFsKQo+ID4+ICAgCW5hbmRfd3JpdGVyZWcoY3RybCwg
+YWNjX2NvbnRyb2xfb2ZmcywgdG1wKTsKPiA+PiAgIH0gIAo+ID4+ICAgPj4gK3N0YXRpYyBpbnQg
+YnJjbW5hbmRfZ2V0X3NwYXJlX3NpemUoc3RydWN0IGJyY21uYW5kX2hvc3QgKmhvc3QpICAKPiA+
+PiArewo+ID4+ICsJc3RydWN0IGJyY21uYW5kX2NvbnRyb2xsZXIgKmN0cmwgPSBob3N0LT5jdHJs
+Owo+ID4+ICsJdTE2IGFjY19jb250cm9sX29mZnMgPSBicmNtbmFuZF9jc19vZmZzZXQoY3RybCwg
+aG9zdC0+Y3MsCj4gPj4gKwkJCQkJCSAgQlJDTU5BTkRfQ1NfQUNDX0NPTlRST0wpOwo+ID4+ICsJ
+dTMyIGFjYyA9IG5hbmRfcmVhZHJlZyhjdHJsLCBhY2NfY29udHJvbF9vZmZzKTsKPiA+PiArCj4g
+Pj4gKwlyZXR1cm4gKGFjYyAmIGJyY21uYW5kX3NwYXJlX2FyZWFfbWFzayhjdHJsKSk7Cj4gPj4g
+K30KPiA+PiArCj4gPj4gK3N0YXRpYyB2b2lkIGJyY21uYW5kX2dldF9lY2Nfc2V0dGluZ3Moc3Ry
+dWN0IGJyY21uYW5kX2hvc3QgKmhvc3QsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gPj4gK3sK
+PiA+PiArCXN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsID0gaG9zdC0+Y3RybDsKPiA+
+PiArCXUxNiBhY2NfY29udHJvbF9vZmZzID0gYnJjbW5hbmRfY3Nfb2Zmc2V0KGN0cmwsIGhvc3Qt
+PmNzLAo+ID4+ICsJCQkJCQkgIEJSQ01OQU5EX0NTX0FDQ19DT05UUk9MKTsKPiA+PiArCWludCBz
+ZWN0b3Jfc2l6ZV8xayA9IGJyY21uYW5kX2dldF9zZWN0b3Jfc2l6ZV8xayhob3N0KTsKPiA+PiAr
+CWludCBzcGFyZV9hcmVhX3NpemUsIGVjY19sZXZlbDsKPiA+PiArCXUzMiBhY2M7Cj4gPj4gKwo+
+ID4+ICsJc3BhcmVfYXJlYV9zaXplID0gYnJjbW5hbmRfZ2V0X3NwYXJlX3NpemUoaG9zdCk7Cj4g
+Pj4gKwlhY2MgPSBuYW5kX3JlYWRyZWcoY3RybCwgYWNjX2NvbnRyb2xfb2Zmcyk7Cj4gPj4gKwll
+Y2NfbGV2ZWwgPSAoYWNjICYgYnJjbW5hbmRfZWNjX2xldmVsX21hc2soY3RybCkpID4+IGN0cmwt
+PmVjY19sZXZlbF9zaGlmdDsgIAo+ID4gCj4gPiBkaXR0bwo+ID4gICAKPiA+PiArCWlmIChzZWN0
+b3Jfc2l6ZV8xaykKPiA+PiArCQljaGlwLT5lY2Muc3RyZW5ndGggPSBlY2NfbGV2ZWwgKiAyOwo+
+ID4+ICsJZWxzZSBpZiAoc3BhcmVfYXJlYV9zaXplID09IDE2ICYmIGVjY19sZXZlbCA9PSAxNSkK
+PiA+PiArCQljaGlwLT5lY2Muc3RyZW5ndGggPSAxOyAvKiBoYW1taW5nICovCj4gPj4gKwllbHNl
+Cj4gPj4gKwkJY2hpcC0+ZWNjLnN0cmVuZ3RoID0gZWNjX2xldmVsOwo+ID4+ICsKPiA+PiArCWlm
+IChjaGlwLT5lY2Muc2l6ZSA9PSAwKSB7Cj4gPj4gKwkJaWYgKHNlY3Rvcl9zaXplXzFrIDwgMCkg
+IAo+ID4gCj4gPiBTaG91bGQgYmUgPD0gMCBJIGd1ZXNzCj4gPiAgIAo+ID4+ICsJCQljaGlwLT5l
+Y2Muc2l6ZSA9IDUxMjsKPiA+PiArCQllbHNlCj4gPj4gKwkJCWNoaXAtPmVjYy5zaXplID0gNTEy
+IDw8IHNlY3Rvcl9zaXplXzFrOyAgCj4gPiAKPiA+IFdoYXQgaXMgdGhpcz8gQXJlIHlvdSBleHBl
+Y3Rpbmcgc2VjdG9yX3NpemVfMWsgdG8gYmUgMCBvciAxCj4gPiBhbmQgdGh1cyBtdWx0aXBseSA1
+MTIgYnkgdHdvPwo+ID4gICAKPiBFeHBsYWluZWQgaW4gdGhlIHNhbWUgcG9zdCBhYm92ZS4gU2Vj
+dG9yX3NpemVfMWsgY2FuIGJlIG5lZ2F0aXZlIG51bWJlciBmb3IgZXJyb3IgY29uZGl0aW9uIHdo
+ZXJlIHdlIGRlZmF1bHQgdG8gNTEyIHN0ZXAgc2l6ZS4gT3RoZXJ3aXNlIDAgZm9yIDUxMiBhbmQg
+MSBmb3IgMUsgd2hpY2ggdGhlIGFib3ZlIHNoaWZ0IHRha2VzIGNhcmUgb2YuCgpUaGUgbG9naWMg
+aXMgdW5jbGVhciwgdW5uYXR1cmFsLiBQbGVhc2Ugc2ltcGxpZnkuIFlvdSBoYXZlIHRoZQpwb3Nz
+aWJpbGl0eSB0byBjaGFuZ2UgYWxsIHRoZSBkcml2ZXIsIHNvIHBsZWFzZSBzaW1wbGlmeSBhbmQg
+Y2xhcmlmeQp0aGUgbG9naWMuCgo+ID4gUGxlYXNlIGp1c3QgdXNlOgo+ID4gCQkJY2hpcC0+ZWNj
+LnNpemUgPSBTWl8xSzsKPiA+IAkJCSAgCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
