@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68514C48BF6
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:43:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FF82C54E4A
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:43:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kgC6ASDQnclOSvfC+caWPqihJPNLRKDsuw3OZusxlzw=; b=WnD73Tb0BDg9tW
-	i4h3oO0CH0MksXus2wwkbCOfmzQrSChHMPGgYd5d8QUbdEb63dybvClXcI7iaXFreXfadwkMnaK1R
-	vwK24OjLUSvxIWY3OvztC1VbJA4TQM9JTwaDooa8PGGoaRFBqBu93sNHu+0O4eYdnd9uvVX/E+aD0
-	Zv3M+YnpHEaTmlCpGNLvaZv9hYArLqyvRsVK+8dIWofaJVG+eFscg5qlrIS9LnediYItn2GOm89OA
-	M84V8HT5FkE6RluoVx4pJvSKdu0yZssNx11gJ7Dpwo0TJdSMPdMgCj9cD3evq7thPrYddl27Ptb+R
-	uLH5myuJmq5WECTf2YIg==;
+	List-Owner; bh=QJF9Q6Oz5npLuoZaj3XFVDhrd+uGOFLVwabfcyVlf0E=; b=aDaL5glLSmQJ7x
+	zQL0jG7TNHaI0SD9wqMpgx6ngoWNJqwCGuHLrwEgZ9BEVgXbLMyp1jt74HFNJIaPs+1nLL43Tr+kB
+	SiHfp1MyJps35QIIfZ6L+OLNYQ3DZBwy4t8KzbcnpBwfaXLheQanQFO9rxxzledmvSwut0DDY603Y
+	vkdRPwkG0cFHHtFXzp9CBT2wgLZfo5NbPbLtcyJUs4bhs53PARX+oeMbGQIe2Z84MlFQbZ7sC5x6j
+	qU6URjbvadgEhKRRljW8e9HcL6G1QQAuEvo6+zpwyGhmrknDnb1v306jqde/mHN39/6HSvrlNahjG
+	Pr87zqgt3uycLV/bI61w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reYSL-000000008XT-2NW6;
-	Mon, 26 Feb 2024 10:43:33 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1reYSP-000000008aA-02uC;
+	Mon, 26 Feb 2024 10:43:37 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reYSA-000000008Rp-2nd9
+	id 1reYSD-000000008S7-2HeE
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 10:43:29 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9987F60009;
-	Mon, 26 Feb 2024 10:43:19 +0000 (UTC)
+	Mon, 26 Feb 2024 10:43:32 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E2AFE0003;
+	Mon, 26 Feb 2024 10:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708944200;
+	t=1708944203;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WWnQ1ew/adqQWSYAPjKxyawcnRgAZhYULEnzwiGjhjY=;
-	b=onE6VgmXzkkmDbCwUJ9csVwJuvcYWYrYFbKzCiKwunQq/hQzefNNMl6lEtOwxvST7iSR7h
-	nhx8y8yqEXVllgDVAKCeKSGfcR2+OU6t7+3ej875+ZLyIP6m87I9/oxR0H70g4HwIwK7wp
-	2pSXwiGnOXYS5PisSKMzKJ5Fmur0vnFGa7AAOLg6cjG4PPRDDyhJbxGl6fi1L8Baq3qJHo
-	eYRf/d1ylzd11v3BkRAouaXpiVSuHFC68Ex14xDLVvANYU4Sb+5F5LupPzNx0rxo9g7W1b
-	nXeZHIFHjVlUBcObkg4XZXsbFwTtEKksfhNQjDrzD4QxovOAWc10E4s7nB4aAQ==
+	bh=9cUOu/Bvds6IWzkUYXUufNxfYQc8ER3syNtdbbPnHc8=;
+	b=YvGqP2LLM+FcTfrtjxQwzs7w3A2fUilwQeUI58huYIm2Kg1IQMFfGt+Zet2mcELXqH2fob
+	mn4B2THIdiZmkOsYQUmnmSIq4P258lPEmg80dYPqD/7sY7u7ZuXtoaC3XfASxHuN01/MFn
+	ysabwloahnVouXM+KREKryMSYQojH8p/FzMg2NlnQZn5HSHyoT3D1K0H8Wx/BrtIVlKNTm
+	YKgKPmiXzz+jm91LfbKhCi8QmV4Qbldt0B7Dhu8K9Dwx5BCADLIQKTfxbCH4yIhlMgmDkQ
+	Y/F6coD0LmKVep9scoc2ocmi7rGw4SfPk/796x6la7xFzZjySPlpMgNuZCwfTw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marcel Hamer <marcel.hamer@windriver.com>,
+To: Colin Ian King <colin.i.king@gmail.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: fix minor comment typo for struct mtd_master
-Date: Mon, 26 Feb 2024 11:43:18 +0100
-Message-Id: <20240226104318.488980-1-miquel.raynal@bootlin.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mtd: chips: remove redundant assignment to variable timeo
+Date: Mon, 26 Feb 2024 11:43:22 +0100
+Message-Id: <20240226104322.489020-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240216155022.79371-1-marcel.hamer@windriver.com>
+In-Reply-To: <20240215140106.2062858-1-colin.i.king@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'081064cc103929c8a0d7d5fd057110c739c62ee1'
+X-linux-mtd-patch-commit: b'2416a2e7be9b27157f173268f5c7f769bd72a8dc'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_024325_622810_ABE0B51A 
-X-CRM114-Status: UNSURE (   5.61  )
+X-CRM114-CacheID: sfid-20240226_024326_169589_3ECC8889 
+X-CRM114-Status: UNSURE (   7.39  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,10 +79,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-02-16 at 15:50:22 UTC, Marcel Hamer wrote:
-> Minor typo in the suspend description.
+On Thu, 2024-02-15 at 14:01:06 UTC, Colin Ian King wrote:
+> In two functions the variable timeo is being initialized with a value
+> that is never read, it is being re-assigned later on. The initializations
+> are redundant and can be removed.
 > 
-> Signed-off-by: Marcel Hamer <marcel.hamer@windriver.com>
+> Cleans up clang scan build warning:
+> warning: Value stored to 'timeo' during its initialization is never
+> read [deadcode.DeadStores]
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
