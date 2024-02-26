@@ -4,54 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB2C8C54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 01:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9DC8C47DD9
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 02:03:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E31tGqt9xsejTXil9UA3boC3n+0xr4im8vYlhGrKlBY=; b=IyMf+ND4AH0aEd
-	Z+04JUWxWyblmNPEQwwRmyuR2k2LEzj3jbfs2JSj0Fae1PG//aJ1DaeQwDlTqzuX4q6JssV8ulmSC
-	iHsygD5U/31TKxhed0rs2/NISja5YFSkZ+/TRWP1FElDj3j3Y1at0K5Xg/JpCzsbTCIJsFCP838e9
-	PKQeDoqWY7F4uPhFP6gFg+ba+NHJD31MwyKwJZYkrHQTLH1f6PQoZYVmLupaPxoTcNFP9fK/C8cq3
-	UW1pKH3VRfC/Jo2bCk/Mbe0+BaxK3rtcH1GMDCPiAJn5MO/RDq/inG585bKwPx3Vjbxn5qQEagjX1
-	BgFgrIzXXpyBP5oSDIYg==;
+	List-Owner; bh=W+qfNPJ8A7ypvIGtE5falhmzX4WaWGWQlNXJachNQnY=; b=P5U8zT79/FzRcI
+	CqUIbXNLqbAh1HfC0ytwzCaw0Zi+AJXSbnD6Ps7EjISxPbUFgTMGXs1g6mqEGeMZBs3ro90WE8U7j
+	Uz8wTqYq9h4feW3Q7IohCib24FGq1sCemXydx2/WmOOrt1t5SRu54EpI/UqsTX3iY6+KP2QWtxpLQ
+	faNVKNQmkxQMg0requgVS9Je61A96KPWtE+RhinSLp1fnb7bJcwjdtLNCP9j1B3D8H3osOrJVCvEh
+	1Drulq9zIe05oqkD8FQ5PHVf0Yfi7EWqlKPKPCPtoWhGuUt/dh0e4d+WsFD5DHawR73OSWkLuHxZh
+	9XFi/R+hxUoRYeHOU9Fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rePpc-0000000G4pv-0x2Y;
-	Mon, 26 Feb 2024 01:31:00 +0000
-Received: from pidgin.makrotopia.org ([185.142.180.65])
+	id 1reQKl-0000000G7ll-2BLG;
+	Mon, 26 Feb 2024 02:03:11 +0000
+Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reOmc-0000000G02W-3wd5
+	id 1reQKi-0000000G7lG-2Z9Y
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 00:23:59 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1reOmW-0001qY-0d;
-	Mon, 26 Feb 2024 00:23:44 +0000
-Date: Mon, 26 Feb 2024 00:23:41 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
-Message-ID: <3ac88da4adc342af428b359cd27037b1498f6c91.1708906456.git.daniel@makrotopia.org>
-References: <cover.1708906456.git.daniel@makrotopia.org>
+	Mon, 26 Feb 2024 02:03:10 +0000
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso3059684a12.2
+        for <linux-mtd@lists.infradead.org>; Sun, 25 Feb 2024 18:03:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708912983; x=1709517783; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4cpaHBEdPSwYMPzpDqnA+dJ66X3qsQRUCH+N+Yn5wA=;
+        b=nqXkxkr8VAJqlkHg+BYzu02klwaq4yk/aEfRtVwtd5G/7H2da0cZEzZguL8MihHtlV
+         5HjI242QcdKWVuCDF5vodl5EIr0g9jDZcvANPXQBnpnWcwxNDXxry+0Ty+WrQYUv91FZ
+         iUaO2s9PObZvWZKcH4WAy3AW/sKtdfFE8IW+yljWoSlGhL8T7NlxF9XVkYd+d6fDY3uq
+         MeOXmeA5OLpf0InFulpA9wOoCEgH9OHhf6vlu17Wi4WQxtwBTYjkVbsZhGxzN6rKxx43
+         qVQ9jLO5ixjU187jqJ+22evkdE4fNiv2k6E5d2ZlNNZaqfAxhYSqJ9NePpxCjTjCCAZr
+         gJHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708912983; x=1709517783;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4cpaHBEdPSwYMPzpDqnA+dJ66X3qsQRUCH+N+Yn5wA=;
+        b=OO+0KZX/h6P+QAQ2be8WlX540IreUswaeU16IiLDSuF4QHRbxOm3l4Tv2GlXHjNman
+         fhivVpNpsMO93jwrihN9iQ3pIdXbMy1QeSWQT71xtc89+4mIAudo67mG/z5zRlnVd2EF
+         oh9lREMl7cQ3By/06DzhbcCCSADIRRKBqvYXtin654dGVi1jkxJ/S5A4rU2beBa+kWMl
+         +az6dHdDuMVyd5/wzok1hgzm4ZyDNdVmBXKr6d7NHBIleK81WfyJIPN7tfnm5drwA4/t
+         W8WUYTfFogdqr0FzpK5YFePe5ZIdm9AzdYTnFn063pxixTaEDPgpdmXfQUXo7NyQCrjD
+         IC+Q==
+X-Gm-Message-State: AOJu0Ywrbk/HisKt+D3h9n5DyH4xXVtG62s8Oi888vm7WuBj9kxLl1xi
+	kRGl7byLxF+ybdsh4zWeAc6cGN1C2+/401tLyUQGaf/Ua0GfJsyAP73jAbwCNEt8oVwm7Gi7iRY
+	NEgiVq+CS9QTmZl7aO4UaN6jkxWo=
+X-Google-Smtp-Source: AGHT+IEwG4fJQD3kx53nN39VRnBZjVmb0USWLLq2/UFkAVhbtU/RhqBXA8UMx4wIPqZM9NwIMAP96pMulpvNonxc0mo=
+X-Received: by 2002:aa7:daca:0:b0:565:ad43:2229 with SMTP id
+ x10-20020aa7daca000000b00565ad432229mr3033648eds.15.1708912983382; Sun, 25
+ Feb 2024 18:03:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cover.1708906456.git.daniel@makrotopia.org>
+References: <20240201094353.33281-1-jaimeliao.tw@gmail.com>
+ <75a22482-0d2a-4e0c-86e8-3a8e71f2f403@linaro.org> <CAAQoYRkVYjs_+7cSc5oU4qKoi3_5My8xk32RWq3O5V5D_xBg0A@mail.gmail.com>
+In-Reply-To: <CAAQoYRkVYjs_+7cSc5oU4qKoi3_5My8xk32RWq3O5V5D_xBg0A@mail.gmail.com>
+From: Alvin Zhou <alvinzhou.tw@gmail.com>
+Date: Mon, 26 Feb 2024 10:02:54 +0800
+Message-ID: <CAPhrvRTW0z950mZsuaFRW0_vs1NmOU+L_FKM_64UdTwLwVsQzg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/9] Add octal DTR support for Macronix flash
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, 
+	pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com, 
+	richard@nod.at, vigneshr@ti.com, broonie@kernel.org, leoyu@mxic.com.tw, 
+	jaimeliao@mxic.com.tw, Alvin Zhou <alvinzhou@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240225_162351_267419_CCFCDD54 
-X-CRM114-Status: GOOD (  24.82  )
+X-CRM114-CacheID: sfid-20240225_180309_202862_D8DE84A4 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,257 +91,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In an ideal world we would like UBI to be used where ever possible on a
-NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
-is possible to achieve an (almost-)all-UBI flash layout. Hence the need
-for a way to also use UBI volumes to store board-level constants, such
-as MAC addresses and calibration data of wireless interfaces.
+Hi Tudor,
 
-Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
-providers. Allow UBI devices to have a "volumes" firmware subnode with
-volumes which may be compatible with "nvmem-cells".
-Access to UBI volumes via the NVMEM interface at this point is
-read-only, and it is slow, opening and closing the UBI volume for each
-access due to limitations of the NVMEM provider API.
+>
+> Hi Tudor
+>
+>
+> >
+> > Jaime,
+> >
+> > You're so close to have these integrated, I see there are no major
+> > comments for the patch set. Would you please address the comments and
+> > re-submit?
+> This patchset would be take over by Alvin.
+> Thank you for always giving useful and kind advice.
+>
+> >
+> > I plan to do the PR next Monday.
+Because I just received the patchwork from Jaime, so I need to spend
+some time studying the comments to prepare for the next PR.
+Thank you for your understanding.
+> >
+> > ta
+>
+> Thanks
+> Jaime
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/Kconfig  |  13 +++
- drivers/mtd/ubi/Makefile |   1 +
- drivers/mtd/ubi/nvmem.c  | 191 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 205 insertions(+)
- create mode 100644 drivers/mtd/ubi/nvmem.c
-
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 7499a540121e8..e28a3af83c0eb 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -113,4 +113,17 @@ config MTD_UBI_FAULT_INJECTION
- 	   testing purposes.
- 
- 	   If in doubt, say "N".
-+
-+config MTD_UBI_NVMEM
-+	tristate "UBI virtual NVMEM"
-+	default n
-+	depends on NVMEM
-+	help
-+	   This option enabled an additional driver exposing UBI volumes as NVMEM
-+	   providers, intended for platforms where UBI is part of the firmware
-+	   specification and used to store also e.g. MAC addresses or board-
-+	   specific Wi-Fi calibration data.
-+
-+	   If in doubt, say "N".
-+
- endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 543673605ca72..4b51aaf00d1a2 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
- 
- obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
-+obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-new file mode 100644
-index 0000000000000..5820a170d2512
---- /dev/null
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -0,0 +1,191 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ */
-+
-+/* UBI NVMEM provider */
-+#include "ubi.h"
-+#include <linux/nvmem-provider.h>
-+#include <asm/div64.h>
-+
-+/* List of all NVMEM devices */
-+static LIST_HEAD(nvmem_devices);
-+static DEFINE_MUTEX(devices_mutex);
-+
-+struct ubi_nvmem {
-+	struct nvmem_device *nvmem;
-+	int ubi_num;
-+	int vol_id;
-+	int usable_leb_size;
-+	struct list_head list;
-+};
-+
-+static int ubi_nvmem_reg_read(void *priv, unsigned int from,
-+			      void *val, size_t bytes)
-+{
-+	uint32_t bytes_left, offs, to_read;
-+	struct ubi_nvmem *unv = priv;
-+	struct ubi_volume_desc *desc;
-+	uint64_t lnum = from;
-+	int err = 0;
-+
-+	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	bytes_left = bytes;
-+	offs = do_div(lnum, unv->usable_leb_size);
-+	while (bytes_left) {
-+		to_read = unv->usable_leb_size - offs;
-+
-+		if (to_read > bytes_left)
-+			to_read = bytes_left;
-+
-+		err = ubi_read(desc, lnum, val, offs, to_read);
-+		if (err)
-+			break;
-+
-+		lnum += 1;
-+		offs = 0;
-+		bytes_left -= to_read;
-+		val += to_read;
-+	}
-+	ubi_close_volume(desc);
-+
-+	if (err)
-+		return err;
-+
-+	return bytes_left == 0 ? 0 : -EIO;
-+}
-+
-+static int ubi_nvmem_add(struct ubi_volume_info *vi)
-+{
-+	struct device_node *np = dev_of_node(vi->dev);
-+	struct nvmem_config config = {};
-+	struct ubi_nvmem *unv;
-+	int ret;
-+
-+	if (!np)
-+		return 0;
-+
-+	if (!of_get_child_by_name(np, "nvmem-layout"))
-+		return 0;
-+
-+	if (WARN_ON_ONCE(vi->usable_leb_size <= 0) ||
-+	    WARN_ON_ONCE(vi->size <= 0))
-+		return -EINVAL;
-+
-+	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
-+	if (!unv)
-+		return -ENOMEM;
-+
-+	config.id = NVMEM_DEVID_NONE;
-+	config.dev = vi->dev;
-+	config.name = dev_name(vi->dev);
-+	config.owner = THIS_MODULE;
-+	config.priv = unv;
-+	config.reg_read = ubi_nvmem_reg_read;
-+	config.size = vi->usable_leb_size * vi->size;
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.read_only = true;
-+	config.root_only = true;
-+	config.ignore_wp = true;
-+	config.of_node = np;
-+
-+	unv->ubi_num = vi->ubi_num;
-+	unv->vol_id = vi->vol_id;
-+	unv->usable_leb_size = vi->usable_leb_size;
-+	unv->nvmem = nvmem_register(&config);
-+	if (IS_ERR(unv->nvmem)) {
-+		ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
-+				    "Failed to register NVMEM device\n");
-+		kfree(unv);
-+		return ret;
-+	}
-+
-+	mutex_lock(&devices_mutex);
-+	list_add_tail(&unv->list, &nvmem_devices);
-+	mutex_unlock(&devices_mutex);
-+
-+	return 0;
-+}
-+
-+static void ubi_nvmem_remove(struct ubi_volume_info *vi)
-+{
-+	struct ubi_nvmem *unv_c, *unv = NULL;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry(unv_c, &nvmem_devices, list)
-+		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
-+			unv = unv_c;
-+			break;
-+		}
-+
-+	if (!unv) {
-+		mutex_unlock(&devices_mutex);
-+		return;
-+	}
-+
-+	list_del(&unv->list);
-+	mutex_unlock(&devices_mutex);
-+	nvmem_unregister(unv->nvmem);
-+	kfree(unv);
-+}
-+
-+/**
-+ * nvmem_notify - UBI notification handler.
-+ * @nb: registered notifier block
-+ * @l: notification type
-+ * @ns_ptr: pointer to the &struct ubi_notification object
-+ */
-+static int nvmem_notify(struct notifier_block *nb, unsigned long l,
-+			 void *ns_ptr)
-+{
-+	struct ubi_notification *nt = ns_ptr;
-+
-+	switch (l) {
-+	case UBI_VOLUME_RESIZED:
-+		ubi_nvmem_remove(&nt->vi);
-+		fallthrough;
-+	case UBI_VOLUME_ADDED:
-+		ubi_nvmem_add(&nt->vi);
-+		break;
-+	case UBI_VOLUME_SHUTDOWN:
-+		ubi_nvmem_remove(&nt->vi);
-+		break;
-+	default:
-+		break;
-+	}
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block nvmem_notifier = {
-+	.notifier_call = nvmem_notify,
-+};
-+
-+static int __init ubi_nvmem_init(void)
-+{
-+	return ubi_register_volume_notifier(&nvmem_notifier, 0);
-+}
-+
-+static void __exit ubi_nvmem_exit(void)
-+{
-+	struct ubi_nvmem *unv, *tmp;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
-+		nvmem_unregister(unv->nvmem);
-+		list_del(&unv->list);
-+		kfree(unv);
-+	}
-+	mutex_unlock(&devices_mutex);
-+
-+	ubi_unregister_volume_notifier(&nvmem_notifier);
-+}
-+
-+module_init(ubi_nvmem_init);
-+module_exit(ubi_nvmem_exit);
-+MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
-+MODULE_AUTHOR("Daniel Golle");
-+MODULE_LICENSE("GPL");
--- 
-2.44.0
+Thanks
+Alvin
 
 ______________________________________________________
 Linux MTD discussion mailing list
