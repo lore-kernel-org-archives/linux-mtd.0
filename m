@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 312CFC54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 08:54:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87EF6C48BF6
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 09:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Bzq3Pjj2TMIRTJ4airZtD50XIdrLnUnffANkiDuDLvM=; b=s2HR1Cq26IALxd
-	O9jZg/o+dttai0KrkyddfGsL825AWx5K58+JU3KRNBUKjsEcCclAxVkc/SHeu3CwYDFB0+aWujUyw
-	nRex/N/orpjEvYcxScz2VDQ+OaMGJIt+e6K5dLZlOTjRlQcwX3lgjQXDD5BXxuy6ObsWocAFFbuAg
-	BvFnHtE6csytelHPks3NcjNNjuv28aEDcIONod+5f9zoK1PzPUy3cWj2EMYRn9Z+sCWddQXkmDh2/
-	ELoiGGtPH+ZLi+QHu4ncKJf7sf0dW3Z6MrgG+p0Np5kLQvqlzDQv7mqV/FWwAOq/T3C++cKcaAiRD
-	/vo/UmBQjxQXK6fV+XoQ==;
+	List-Owner; bh=WmIDt3yp9Puw6b8Uycs0oMYx71JOBwtGLQEGC6jKcYE=; b=alksZ/rcRcPUWE
+	JPLDXCItg1ytxrrpqrmsQWoDipqGGWwd95wyO2H9sDXCMBIgXA61KqRDHsqtmyw369e8WsVf6gqlR
+	y2V7ObndHdY5aPXtFBz1HYZQ+ziXIuyUV+cwsdFzD1tGUIt4XUS2qWyK9iARlNMhyXfyBS6qVeMir
+	LkOXKv4NYUf65ct6ZLb96/dTek1GRSejr+lc4nN7vbePHdKU6gD2rTDeIvqodRD4BgyVGf4oE0VIN
+	h56j5dvlylf+JAkwhFZHAWHKuS9X7D6yQrWsmNFmUCDGvMiyyq9i+6QGMVkl7zLZdJeHvZFDTwMOl
+	ncCtyz5FnkZX3lwZmFJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reWkb-0000000H9Ww-1hBH;
-	Mon, 26 Feb 2024 08:54:17 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1reWsl-0000000HChH-4Beh;
+	Mon, 26 Feb 2024 09:02:44 +0000
+Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reWjy-0000000H94B-3bEJ
+	id 1reWsj-0000000HCgG-3Kwq
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Feb 2024 08:53:41 +0000
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a3f5808b0dfso377264766b.1
-        for <linux-mtd@lists.infradead.org>; Mon, 26 Feb 2024 00:53:36 -0800 (PST)
+	Mon, 26 Feb 2024 09:02:43 +0000
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-564e4df00f3so3539334a12.3
+        for <linux-mtd@lists.infradead.org>; Mon, 26 Feb 2024 01:02:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708937615; x=1709542415; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1708938160; x=1709542960; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bHQ7jHKdG+MDwmW7kS/5z1xq3VefC7Loe1slCKwf0q8=;
-        b=vaV8sL3QpQOUXv+2h717rty4UnK/D/afEGfAwe3ajcVN4oLQH5YX0vAwh4NT0IYI53
-         ImIzrAH7wo1zoSXhf+7aLHR+rkS70TTuYNIUJlp+2m9aqf5ls3CBJFK8/4Dl7U4Emswf
-         SshY9kz+fCgiNOEwlnkJ+mWcoMr3g7hZ8N79Kxosppqp6uRnvRUR8ML0L1mK2/xmwLU1
-         bVCPo7YoGRDwSRJNqsYOvrfFBmTNdFs/T6ZrinCx6wiNrO3IHsK7qk9UrgQywusfaGqH
-         2CL+IDUY8jcOK5MU95byhEc0lIJoc+H9m6p6LW5FwG5Eogn3ea0hi3dn2FHMRdHGKszH
-         2sYA==
+        bh=l4vuj3eSn8A7txG5vBFIYiDQpLrdAS5lSvykbiGNFDk=;
+        b=W8tjM45ADhIUU4SC6ZiGMkb2cLBiwjO1nR5o6PAtL3zwtcTsGU92J7tDCvrWtbPtTx
+         nr+89r4Zq5E7o0LF72oaWa23SL5/lBfJQXhTauzbCGLSdjzyczzD4WpgnJLvtJmpznku
+         MJRlSEFinFO/73hK9gs7nVqPPzgP2Oe3g6nyiGP4b0LTcNUJO8Lb3MGDx006KlagEfdh
+         TCFB1fB4vgtup2ujSdjJjmAZiXrfvfHxW5Wfyb2sSR8hRHODrKJHkgTtSAAymTIiBTcw
+         zgGbQ33JDibYVioAjdOZKoaYhGMsZQq8CKvoRtMMlYwgMASBMyXS1etJs5hqsc7IucJO
+         5Fyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708937615; x=1709542415;
+        d=1e100.net; s=20230601; t=1708938160; x=1709542960;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bHQ7jHKdG+MDwmW7kS/5z1xq3VefC7Loe1slCKwf0q8=;
-        b=CcvaFdvEol6YkA+yMD6apgvXl6G8sO6eUQlTy9kvCPoM1GQd3tZW5X9jV8s07vznGH
-         /BeEWH/PoVOKrLT8dlQU1KtWJL7xfIKiRlyKso4C/b3EHP5P+LW9TToH0igHLoHZ8tNN
-         hxS2wXABIM4AmeOTat+f3DHNYG9SYF8IN5j0943tVzQ0UZNTbU6PGwJ/lZRhwZ7dCxzL
-         vkRj0Ti7sEeVXgVMlYkb7r6l1pfk5ZEjeClShXTM4ToQcXNZKYoDAQOtUSp+YQsltYOv
-         tMu4nYcPJTJ23TnZBhBnusu/vayI7wF+y3fu0SpIL5qJenQj4rsxD16+7KT3sCPhXJuV
-         DxsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUuMl3sekuGTUOWI1EqxgC+4Sijz68m6uDrnqewNoMBGcMfN7jqw8rirIylv/VeY0LbbyvE+diDg32yla1iD6CokHlEwkIDZo3OOyfrXQ==
-X-Gm-Message-State: AOJu0YywmYPo4UzKjdCNDE6MHdtxyZVdCsgcF35iOKHZV/AC0g3gcYmH
-	GgeN9a+9tzYrOjJ2PVJ0rzGoXsIqou2vGn7X0pqAHMx/7iCZP5rxaajPh1OLQ4A=
-X-Google-Smtp-Source: AGHT+IFy+cfEp+0Vwzv3Xmk4x476cj5LMncuXFcuxpkchPSoWaMXxiVwBZRPr9hLyqRy+3Xybx3Kjg==
-X-Received: by 2002:a17:907:9902:b0:a3e:5726:c12 with SMTP id ka2-20020a170907990200b00a3e57260c12mr4363389ejc.37.1708937615031;
-        Mon, 26 Feb 2024 00:53:35 -0800 (PST)
+        bh=l4vuj3eSn8A7txG5vBFIYiDQpLrdAS5lSvykbiGNFDk=;
+        b=tkcCD81GjIuoAk9WPKeWwqP8AnUYQHvbUML4tH/6PztY0TLIynLyQD67kqODoYJD1e
+         fBmB1ExanHCqWYCmXboRvCVAnb8/ZNJVdYTxh7OsX/28f/qmQxOwUodze+auTKnonNJO
+         uWceOTHNqBLIdyDqUquzhTkwVrAL3cKayON7dZh/CfJhh+Kkvapm2vpISA/ovKz3wDWb
+         FLUm0Kwk6dbQ49yJLlwYMb+/8kqeqI/eOOayFT03yW7BsUTVuGHj2vjtdgEfIlSg6S2x
+         gxrnw/B2DiVpcHdbxy81I5xgCNuwLz1KI+U7TgNGX874l1QnXPD03dQG2nZvd1A5SN8O
+         n9WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqdGbt7gRVfFdkdjyqEp+nM7AZRXhV/lAFbnZNpCQhoIVSIYm73AZjPA3xSOCcwGqWrhpsm6cm3KnKPa9o+ftgs+8EbQf3WAdFehYXvg==
+X-Gm-Message-State: AOJu0Yw1WT3LIwZ4cP3ao/scSjvGsIwdYPNgnIs1LE+Rm3teUnknFx8X
+	mQ6cOAVZ5nZGU47q9CF2ooQVN0tN7pMOtLoTUF0zuTt6V9ODyb104ybXOurOj2U=
+X-Google-Smtp-Source: AGHT+IFiM3a9JqDcX+o1wZIY33EBfcLiW2gXKm3nl1PJL5AegCjP+Sp05In2Y6rAkAXy3GuYhUyJRw==
+X-Received: by 2002:a17:906:f191:b0:a3b:e8f3:25d with SMTP id gs17-20020a170906f19100b00a3be8f3025dmr3933749ejb.75.1708938160001;
+        Mon, 26 Feb 2024 01:02:40 -0800 (PST)
 Received: from [192.168.2.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id qo3-20020a170907874300b00a3fcbd4eb2esm2204489ejc.1.2024.02.26.00.53.33
+        by smtp.gmail.com with ESMTPSA id pw23-20020a17090720b700b00a3e4673e7dbsm2216139ejb.38.2024.02.26.01.02.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 00:53:34 -0800 (PST)
-Message-ID: <4d117770-6e0c-412f-ac1a-d9ba84b5b4ba@linaro.org>
-Date: Mon, 26 Feb 2024 10:53:34 +0200
+        Mon, 26 Feb 2024 01:02:39 -0800 (PST)
+Message-ID: <e317ed6e-d132-4e23-9396-b747a939913e@linaro.org>
+Date: Mon, 26 Feb 2024 11:02:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for BoHong bh25q128as
+Subject: Re: [PATCH v4 0/4] mtd: spi-nor: core: set mtd->eraseregions for
+ non-uniform erase map
 Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>,
- Christian Marangi <ansuelsmth@gmail.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Bauer <mail@david-bauer.net>
-References: <20240220200325.19089-1-ansuelsmth@gmail.com>
- <f7c45e7b-993c-444b-8710-042da7512bbf@linaro.org>
- <65d9d08f.df0a0220.988bb.3177@mx.google.com>
- <CZEVS9033HET.1NPH0K6PQLR87@kernel.org>
+To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
+Cc: pratyush@kernel.org, mwalle@kernel.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CZEVS9033HET.1NPH0K6PQLR87@kernel.org>
+In-Reply-To: <cover.1708404584.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_005339_219910_942A9DC3 
-X-CRM114-Status: GOOD (  12.31  )
+X-CRM114-CacheID: sfid-20240226_010241_873948_9D13C7F2 
+X-CRM114-Status: UNSURE (   9.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,27 +97,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Takahiro, which base did you use for the patch set? It does not apply
+cleanly on spi_nor/next (v6.8-rc1), neither on spi-nor/for-6.8.
 
+Please rebase and resubmit.
 
-On 26.02.2024 10:51, Michael Walle wrote:
-> Hi,
+On 20.02.2024 10:34, tkuw584924@gmail.com wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 > 
-> On Sat Feb 24, 2024 at 12:18 PM CET, Christian Marangi wrote:
->> The user just tested this and It seems there is a problem in JEDEC id?
->>
->> [    0.726451] spi spi0.0: setup: ignoring unsupported mode bits a00
+> In v4, split two flags removement into separated patches. Reworked
+> spi_nor_init_erase_cmd() to use n_regions in outer loop.
 > 
-> What SPI controller is used in this case?
+> In v3, reworked to remove LAST_REGION and OVERLAID_REGION flags. Updated
+> and tested debugfs.
 > 
->> [    0.732850] spi-nor spi0.0: unrecognized JEDEC id bytes: 68 40 18 68 40 18
->> [    0.739725] spi-nor: probe of spi0.0 failed with error -2
+> In v2, reworked spi_nor_erase_region to stop bitmask encoding in offset.
+> And added n_regions member to spi_nor_erase_map.
 > 
-> And what kernel version is this? This should only happen if the SFDP
-> header is wrong, but according to your dump, it is correct.
+> Takahiro Kuwano (4):
+>   mtd: spi-nor: core: rework struct spi_nor_erase_region
+>   mtd: spi-nor: core: get rid of SNOR_LAST_REGION flag
+>   mtd: spi-nor: core: get rid of SNOR_OVERLAID_REGION flag
+>   mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map
 > 
-
-I assume the test was done on an older kernel, where the identification
-of the flash based on SFDP is not yet available.
+>  drivers/mtd/spi-nor/core.c    | 187 +++++++++++++++++-----------------
+>  drivers/mtd/spi-nor/core.h    |  30 ++----
+>  drivers/mtd/spi-nor/debugfs.c |  26 +++--
+>  drivers/mtd/spi-nor/sfdp.c    |  47 +++------
+>  4 files changed, 128 insertions(+), 162 deletions(-)
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
