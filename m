@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0AABC54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 12:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB114C54E49
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 12:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HsAr55cFwGzM61ro11NIM8mCnFFeaBjJV/OOXTqFN3c=; b=SKTz7luwZlwWlM
-	YcScUVDSojlm5B6A9p+U39QKjDZL5cppZT0ocYnZFF8/sG02KwGRza1yXCq6PMmBhUcneJYKXjD+L
-	fPlT9jc47HI4AptSXv6N3JBy7pNT9H37pvUM5l55na5kFPRrAoVYYTTvpDZa1fOUa2t7sbsqFV1n2
-	2ohbF4pDg1Mk3OnOAhv78nt5BSvm4yvGvfLFc5e0Z/apLtzmMyR1lEn6Uy59lQCmbEc53BeY4cUx2
-	fF792QreKCBmVlE5XbIWGA7SJZhbuXMCB5bbFNBN+hh8o7dgm73Fnf/5KAWcFB4g7m34gbW07L0GV
-	dA1hEFuJ/6MMHPviHIUg==;
+	List-Owner; bh=BCAIEfFEOU/Cvw6L2nfJDQ3oBJndeUWO+8SkIk2/3Q4=; b=JPm+37fQ9lNk45
+	IHqhpugqcsFkP3oKSSIwLBX1RBGwXAqL49hXa070z43lR2trsPZtdGLxkWsB9oeFTXBZKDuYewRpz
+	O18Cg/UJre+2r5UdptBhj4nTCNZzCzGaGHde4nB0rv7eudk8jx9FyX3FEthGLmVN0kmdONxtGNCD8
+	zYeVeEUtCR0PkGBwVPwudSSR9xjvAEDoxf4YW3Hu/yyukgQeLrf4PQHiNxQVH4Jf2+/mDWiQ2kPZy
+	WICDcsj/fVXDre7nyxDccb33ybidlVn7vc9p2yGYvbTHTYWRdH7+eyEWLxYtHBvP8yBh2/eHfw8Pv
+	DJHX7g9pG3o0jLZHsFSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reaNd-00000000fTF-0XMZ;
-	Mon, 26 Feb 2024 12:46:49 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1reaNx-00000000ffG-1iM6;
+	Mon, 26 Feb 2024 12:47:09 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reYT9-0000000094V-1HL5;
-	Mon, 26 Feb 2024 10:44:39 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CD0CC240004;
-	Mon, 26 Feb 2024 10:44:18 +0000 (UTC)
+	id 1reYTN-000000009Be-0tP1;
+	Mon, 26 Feb 2024 10:44:48 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 862F960007;
+	Mon, 26 Feb 2024 10:44:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708944259;
+	t=1708944275;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NVWZdJzIt0sMRE0sF1Fi2eHeNg9G/wm4KdgqiJdEH80=;
-	b=nlVOK+dOs1yaI5QT3ei8fQBNTi7qk+B9IwGRaGEcWl+nXu8tNkOgBAtJUCw9H4zyL4gUe2
-	loDiJiVhee7gxN73gr17hQJnReOnWgDqMwik2qzWVK2TSDQO0qqsAhyCqiPFg6V7LW313z
-	Yc3Anpz0ESPrxsvQz7pB7R4AjrDosSqphB9/hLrZQuobBM3GX6XlibinLs6YJhc1PhqWlT
-	JM+5I7CYt3Q3PnXqz5VLUfFX3LTAVQvy9YZvlgckD0tM3mb2piTT4R4e8oTRo0sJthRsf3
-	teZ+RYYBbOdGpOvlnGtEkP+lf6feuckGN3HoZ4+8JzZ5l2o3wjs+A8sX4GsnHQ==
+	bh=wEfzB1nd/zVZF23uR/LjdFqixm6QUNJQL8/Lb4lp4ck=;
+	b=E+YASnOU/WN00JkzEqMHSEXuDgjlzyoiCaRS8ZT2/ci7zz8S4tozzBFXoBggpq83qAL981
+	JdtOIN/PuGWnWjGuDkQldGosWdKUOD196RDIzx+8W2FTseo6bA6C0OeVH7y7qgS6Szk3R/
+	dXKEnp9Ph/yRC6+H9UvdnV5Y5TnkA+LgFVDD1n14PqZ1yEuQM8jf/3H+5KbjN8GAzuvO9k
+	WSWL55ICAE/D0DelERo/y62bptEUx5CQrcSsf8C0tbByPYhSAJNE3Gz/72YBLlfyvUZ+MH
+	IiutkJMlQsriXYiV7uQkQme4IgQ9JJq2b4GIfKAMUP15IVj1jLLlQZXtR3FrIg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: William Zhang <william.zhang@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>,
@@ -54,28 +54,24 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	kamal.dasu@broadcom.com,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
-	devicetree@vger.kernel.org,
-	Brian Norris <computersforpeace@gmail.com>,
+	David Regan <dregan@broadcom.com>,
 	linux-kernel@vger.kernel.org,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Weinberger <richard@nod.at>,
-	Kamal Dasu <kdasu.kdev@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v6 06/13] dt-bindings: mtd: brcmnand: Add ecc strap property
-Date: Mon, 26 Feb 2024 11:44:18 +0100
-Message-Id: <20240226104418.489578-1-miquel.raynal@bootlin.com>
+	Brian Norris <computersforpeace@gmail.com>,
+	Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v6 02/13] mtd: rawnand: brcmnand: fix style issues
+Date: Mon, 26 Feb 2024 11:44:34 +0100
+Message-Id: <20240226104434.489790-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240223034758.13753-7-william.zhang@broadcom.com>
+In-Reply-To: <20240223034758.13753-3-william.zhang@broadcom.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'280962d413e873c7b2ff82b0767d04c60cbe0615'
+X-linux-mtd-patch-commit: b'8e6070e5a39cb2202d66b78134f8b7681cdf3cd8'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_024424_566377_86172C83 
-X-CRM114-Status: UNSURE (   6.34  )
+X-CRM114-CacheID: sfid-20240226_024437_548496_AE1EDE24 
+X-CRM114-Status: UNSURE (   4.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,13 +89,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-02-23 at 03:47:51 UTC, William Zhang wrote:
-> Add brcm,nand-ecc-use-strap to get ecc and spare area size settings from
-> board boot strap for broadband board designs because they do not specify
-> ecc setting in dts but rather using the strap setting.
+On Fri, 2024-02-23 at 03:47:47 UTC, William Zhang wrote:
+> Fix various style issues.
 > 
+> Signed-off-by: David Regan <dregan@broadcom.com>
 > Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Reviewed-by: William Zhang <william.zhang@broadcom.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
