@@ -4,59 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B099C54E49
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:21:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECFCAC48BF6
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Feb 2024 10:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CmSfkxn8gsokvE7q7yFchFwWTAtvhvhBRFpxO6og/XM=; b=RBWrqJ5KqoJj/X
-	wHhWxFLIxYKnAmoFVZDHbM7c8asxLf4uwB6hwz4749er7WWjBo1ukCJ55yZB81aSU26sfveSjKPJR
-	Q+oF9a7ajMdG6W8whZ66pvej3ICra4+Bn8PsjRyDe/oOMpiAzI+0T5BgH/87niNy5ISiiVd6TLGUE
-	88u4C67lP6aHjSkZ5Jj6uZbOY6GbUWhCwXa0eWTiz/RV7J3sQ6U/0sFXT34sdVPWH+yXRTJ4OL31M
-	3hZwTfEWRbJK0/lUkLbgRWdQOtBtDTV8/+Cb3aCAjFh4GcbMG8uV81/8LQ/85dh4BtU5p/lC9lYhb
-	3wKwsC2NPrJaXs9gTQuA==;
+	List-Owner; bh=4iFzK3ARYp/RL/4TMaUV99yZrTtzJWZiIByoA3uw0K8=; b=Bh/p/dwGg/gvLw
+	HQdFUlETEUzdXSmzYZC3pyDIR1ymoE9LxscztY6C/623LULP0Zm2m0d0t5F/z5WonxfLgPj1gdqeU
+	M135na17GmUYSVPAqJlpGnormOEBr6gbiRpsH45xZ7vwMITjeBfMKde5G6uxb79DAPveY8tGQgVJL
+	PPO1HXPv4K2gvFzKNntqoL3HHUzkPLI2plGmK9+HTjMdD6kcrz1bu7INmnJ8IqSHgMNN3YV+vcVq1
+	iBmoxnOH2YSW6iEbrbcZAudAA7NgSH5SApiDSk1O2E7mvgzvEw8kREt6Q2TeEwA1zrK7JtxEkN5vN
+	mWI90xzu2Uu5v6X1fNxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reY7A-0000000011C-0y23;
-	Mon, 26 Feb 2024 10:21:40 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1reYRA-0000000089A-1B08;
+	Mon, 26 Feb 2024 10:42:20 +0000
+Received: from mail.tecon.ru ([82.112.190.120])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reY76-000000000ze-26dT;
-	Mon, 26 Feb 2024 10:21:38 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 307D520017;
-	Mon, 26 Feb 2024 10:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708942893;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9atkydl0QJMpqVx+Mp3qMYN15UNdxqngzP9FbgdYuuw=;
-	b=flq+W0cBjqqwu9qC+BNB8to/cq+RAlZHyxmQ1+h1Przde1RcY+49LPEUVueQt0aTLNaZUJ
-	xAmRjhb0A7U33bY4D6gaTkp8l0grxp3eaNbx3z1ugRgW0JLivVZ1A8WDwmc4WoD98pyW6w
-	zWTRwu+xF7c2AWaL1vAtD8J+GOFaMHvUSpgC7cp0YZkD+AqaLfD/pm9SWbJknsj3GHcAt/
-	fR8QAfNG+eR5n4Kn3D/UrRZpJeuR0Jehi6DL99UxxKGF/tQfQzqkWdjRYhEYOCV9QhA1kV
-	SozyTh3q7ofJrXbycMdCeIIxLhSGeq9Qso3pnj7iumZqjz6unY3X/tN7aRtjug==
-Date: Mon, 26 Feb 2024 11:21:32 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: claudiu.beznea@tuxon.dev, nicolas.ferre@microchip.com,
- dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Remove T Ambarus from few mchp entries
-Message-ID: <20240226112132.22025454@xps-13>
-In-Reply-To: <20240226094718.29104-1-tudor.ambarus@linaro.org>
-References: <20240226094718.29104-1-tudor.ambarus@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1reYR6-0000000086j-0oNh
+	for linux-mtd@lists.infradead.org;
+	Mon, 26 Feb 2024 10:42:18 +0000
+From: Dmitry Dunaev <dunaev@tecon.ru>
+To: 
+CC: <dunaich@mail.ru>, Dmitry Dunaev <dunaev@tecon.ru>, Tudor Ambarus
+	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael
+ Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: spi-nor: Add Puya Semiconductor chips driver
+Date: Mon, 26 Feb 2024 13:40:59 +0300
+Message-ID: <20240226104101.1848855-1-dunaev@tecon.ru>
+In-Reply-To: <9ebf9cdf-eeba-417a-8410-3f87a0973136@linaro.org>
+References: <9ebf9cdf-eeba-417a-8410-3f87a0973136@linaro.org>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_022136_711608_268FAD04 
-X-CRM114-Status: GOOD (  12.17  )
+X-CRM114-CacheID: sfid-20240226_024216_615445_03D58BE4 
+X-CRM114-Status: GOOD (  12.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,46 +54,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gTW9uLCAyNiBGZWIg
-MjAyNCAxMTo0NzoxOCArMDIwMDoKCj4gSSBoYXZlIGJlZW4gbm8gbG9uZ2VyIGF0IE1pY3JvY2hp
-cCBmb3IgbW9yZSB0aGFuIGEgeWVhciBhbmQgSSdtIG5vCj4gbG9uZ2VyIGludGVyZXN0ZWQgaW4g
-bWFpbnRhaW5pbmcgdGhlc2UgZHJpdmVycy4gTGV0IG90aGVyIG1jaHAgcGVvcGxlCj4gc3RlcCB1
-cCwgdGh1cyByZW1vdmUgbXlzZWxmLiBUaGFua3MgZm9yIHRoZSBuaWNlIGNvbGxhYm9yYXRpb24g
-ZXZlcnlvbmUhCj4gCj4gU2lnbmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1
-c0BsaW5hcm8ub3JnPgo+IC0tLQo+IFNoYWxsIGJlIHF1ZXVlZCB0aHJvdWdoIHRoZSBhdDkxIHRy
-ZWUuCj4gCj4gIE1BSU5UQUlORVJTIHwgMTQgLS0tLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5n
-ZWQsIDE0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5U
-QUlORVJTCj4gaW5kZXggZTE0NzVjYTM4ZmYyLi5mZDRkNGU1OGZlYWQgMTAwNjQ0Cj4gLS0tIGEv
-TUFJTlRBSU5FUlMKPiArKysgYi9NQUlOVEFJTkVSUwo+IEBAIC0xNDM1MCw3ICsxNDM1MCw2IEBA
-IEY6CWRyaXZlcnMvbWlzYy94aWxpbnhfdG1yX21hbmFnZXIuYwo+ICAKPiAgTUlDUk9DSElQIEFU
-OTEgRE1BIERSSVZFUlMKPiAgTToJTHVkb3ZpYyBEZXNyb2NoZXMgPGx1ZG92aWMuZGVzcm9jaGVz
-QG1pY3JvY2hpcC5jb20+Cj4gLU06CVR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJv
-Lm9yZz4KPiAgTDoJbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnIChtb2RlcmF0
-ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykKPiAgTDoJZG1hZW5naW5lQHZnZXIua2VybmVsLm9yZwo+
-ICBTOglTdXBwb3J0ZWQKPiBAQCAtMTQzOTgsMTIgKzE0Mzk3LDYgQEAgUzoJU3VwcG9ydGVkCj4g
-IEY6CURvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9taWNyb2NoaXAsY3Np
-MmRjLnlhbWwKPiAgRjoJZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9taWNyb2NoaXAvbWljcm9jaGlw
-LWNzaTJkYy5jCj4gIAo+IC1NSUNST0NISVAgRUNDIERSSVZFUgo+IC1NOglUdWRvciBBbWJhcnVz
-IDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+Cj4gLUw6CWxpbnV4LWNyeXB0b0B2Z2VyLmtlcm5l
-bC5vcmcKPiAtUzoJTWFpbnRhaW5lZAo+IC1GOglkcml2ZXJzL2NyeXB0by9hdG1lbC1lY2MuKgo+
-IC0KPiAgTUlDUk9DSElQIEVJQyBEUklWRVIKPiAgTToJQ2xhdWRpdSBCZXpuZWEgPGNsYXVkaXUu
-YmV6bmVhQHR1eG9uLmRldj4KPiAgTDoJbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
-b3JnIChtb2RlcmF0ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykKPiBAQCAtMTQ1MDUsMTMgKzE0NDk4
-LDYgQEAgTToJQXViaW4gQ29uc3RhbnMgPGF1YmluLmNvbnN0YW5zQG1pY3JvY2hpcC5jb20+Cj4g
-IFM6CU1haW50YWluZWQKPiAgRjoJZHJpdmVycy9tbWMvaG9zdC9hdG1lbC1tY2kuYwo+ICAKPiAt
-TUlDUk9DSElQIE5BTkQgRFJJVkVSCj4gLU06CVR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNA
-bGluYXJvLm9yZz4KPiAtTDoJbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiAtUzoJU3Vw
-cG9ydGVkCj4gLUY6CURvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXRtZWwt
-bmFuZC50eHQKPiAtRjoJZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvKgoKQ291bGQgd2UgbWFy
-ayB0aGVzZSBlbnRyaWVzIG9ycGhhbmVkIGluc3RlYWQgb2YgcmVtb3ZpbmcgdGhlbT8KCj4gLQo+
-ICBNSUNST0NISVAgT1RQQyBEUklWRVIKPiAgTToJQ2xhdWRpdSBCZXpuZWEgPGNsYXVkaXUuYmV6
-bmVhQHR1eG9uLmRldj4KPiAgTDoJbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-IChtb2RlcmF0ZWQgZm9yIG5vbi1zdWJzY3JpYmVycykKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Add a SPI NOR manufacturer driver for Puya Semiconductor chips
+
+Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
+---
+ drivers/mtd/spi-nor/Makefile |  1 +
+ drivers/mtd/spi-nor/core.c   |  1 +
+ drivers/mtd/spi-nor/core.h   |  1 +
+ drivers/mtd/spi-nor/puya.c   | 64 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 67 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/puya.c
+
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 5e68468b72fc..3e22039d0432 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -10,6 +10,7 @@ spi-nor-objs			+= intel.o
+ spi-nor-objs			+= issi.o
+ spi-nor-objs			+= macronix.o
+ spi-nor-objs			+= micron-st.o
++spi-nor-objs			+= puya.o
+ spi-nor-objs			+= spansion.o
+ spi-nor-objs			+= sst.o
+ spi-nor-objs			+= winbond.o
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4129764fad8c..09ad2142d004 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2045,6 +2045,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_issi,
+ 	&spi_nor_macronix,
+ 	&spi_nor_micron,
++	&spi_nor_puya,
+ 	&spi_nor_st,
+ 	&spi_nor_spansion,
+ 	&spi_nor_sst,
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index d36c0e072954..93df7a6328ca 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -609,6 +609,7 @@ extern const struct spi_nor_manufacturer spi_nor_intel;
+ extern const struct spi_nor_manufacturer spi_nor_issi;
+ extern const struct spi_nor_manufacturer spi_nor_macronix;
+ extern const struct spi_nor_manufacturer spi_nor_micron;
++extern const struct spi_nor_manufacturer spi_nor_puya;
+ extern const struct spi_nor_manufacturer spi_nor_st;
+ extern const struct spi_nor_manufacturer spi_nor_spansion;
+ extern const struct spi_nor_manufacturer spi_nor_sst;
+diff --git a/drivers/mtd/spi-nor/puya.c b/drivers/mtd/spi-nor/puya.c
+new file mode 100644
+index 000000000000..2198a9ed7101
+--- /dev/null
++++ b/drivers/mtd/spi-nor/puya.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2024, Tecon MT LLC.
++ */
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++/* Puya Semiconductor (Shanghai) Co., Ltd */
++static const struct flash_info puya_nor_parts[] = {
++	{
++		.id = SNOR_ID(0x85, 0x60, 0x10),
++		.name = "p25q05h",
++		.size = SZ_64K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x11),
++		.name = "p25q10h",
++		.size = SZ_128K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x12),
++		.name = "p25q20h",
++		.size = SZ_256K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x13),
++		.name = "p25q40h",
++		.size = SZ_512K,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x14),
++		.name = "p25q80h",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x15),
++		.name = "p25q16h",
++		.size = SZ_2M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x16),
++		.name = "p25q32h",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x17),
++		.name = "p25q64h",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0x85, 0x60, 0x18),
++		.name = "p25q128h",
++		.size = SZ_8M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}
++};
++
++const struct spi_nor_manufacturer spi_nor_puya = {
++	.name = "puya",
++	.parts = puya_nor_parts,
++	.nparts = ARRAY_SIZE(puya_nor_parts),
++};
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
