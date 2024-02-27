@@ -4,74 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28F51C54798
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Feb 2024 19:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FB99C54798
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Feb 2024 19:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tP71mUhvrgGdWGDohMAXmOtkeo1/8MLjL06AhtNC9po=; b=FlMaC2wKsDNJjQ
-	N5LxUy20vkAAPrkDGnKU/qlWqejvcDGIO+H6aRYUuEoG+h0xJzCfTrDk7zVXwVWPM6jYzRm9KK21n
-	Ifv48D2woiX5Y4Ds9QiU336EkPbi2qWfWCvrM3oG2YLKCfk5/yPnBCbrc8Qu4cpaGuUPx8o4QQYmp
-	lb1ljeYPY+ExEoKs6yofYM4+RW0x1F7m8MrHr/xqZxZ4lgoebIqTQog4xKjIjNpLP/OBSkAMNAeXj
-	xlmizuUMpbUSjZPJXnsMlEcJlaoMZO6Dr9stcOoSMMXj/d9CnoFxjCIl+kPnTpXhOl7a9RaTIgsct
-	qP+joJQIt8+XLr0VF+Lw==;
+	List-Owner; bh=7WC1ph/mRpaXLq5q7wkLAWYkTvtKN1YCnWKCiRU2X2A=; b=OsvfK7vLEwybty
+	I8XBKwEr24NaRf98wC42BOTm2FOq/wt0JE3MuCxypU6LCwWWoi9M7p3zXo/MBCcaexR/GGPOZ99Pf
+	eZiXFfQpabtFF/qhY/0OaWAiaVfVKcwkCscXWEdW6RQwzs1VKnOiHWyQcRP3J2rjTp2SzPbuJKl27
+	TikkiV9ldn3tZ3YC9ldeLXxJhVErCfLRGpADaVjFw35nKoJKrTj4mG7elD95dV8n/8byqIng94JBD
+	r8vAb0WyUPlJJhfb5vfGGQlYDqlnf+BshBuJ3gyZlEsQzIYb4fqzg5lzNbEzPyq+fnPf8H9CEZ6/1
+	iQlXQSuWLZkotVEQryUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf2jf-00000006Xbo-2kCc;
-	Tue, 27 Feb 2024 19:03:27 +0000
-Received: from lpdvsmtp09.broadcom.com ([192.19.166.228] helo=relay.smtp-ext.broadcom.com)
+	id 1rf3FP-00000006eN9-2jCr;
+	Tue, 27 Feb 2024 19:36:15 +0000
+Received: from mgamail.intel.com ([192.198.163.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf2jZ-00000006XXr-3M4r;
-	Tue, 27 Feb 2024 19:03:25 +0000
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 38C09C002447;
-	Tue, 27 Feb 2024 11:03:18 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 38C09C002447
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1709060598;
-	bh=BoWABUn1BHPA1kyndGRUMStiFm/fHNE3QtKwM9H3nBM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=OVFmRDrYgzqLGPly1HT6HYrshnsYYT48BvU8jVn9UBewjWVkzpDazgtEEbk4qMIVc
-	 jgT0+K0xciQkv++/5yukLJWftEr14alsLbKIh9UOWrICPqIBE+IHh5QuuBe4JLf79H
-	 cCLrw4v5+scKOo4maI5BkHnpVe1iPl0UYpJJxxNQ=
-Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id B9BB418041CAC4;
-	Tue, 27 Feb 2024 11:03:16 -0800 (PST)
-From: William Zhang <william.zhang@broadcom.com>
-To: Linux MTD List <linux-mtd@lists.infradead.org>,
-	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
-	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
-Cc: f.fainelli@gmail.com,
-	kursad.oney@broadcom.com,
-	joel.peshkin@broadcom.com,
-	miquel.raynal@bootlin.com,
-	anand.gore@broadcom.com,
-	dregan@mail.com,
-	kamal.dasu@broadcom.com,
-	tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
-	kernel test robot <lkp@intel.com>,
-	linux-kernel@vger.kernel.org,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	David Regan <dregan@broadcom.com>
-Subject: [PATCH] mtd: rawnand: brcmnand: fix sparse warnings
-Date: Tue, 27 Feb 2024 11:02:57 -0800
-Message-Id: <20240227190258.200929-1-william.zhang@broadcom.com>
-X-Mailer: git-send-email 2.37.3
-MIME-Version: 1.0
+	id 1rf3FM-00000006eLH-1K4h
+	for linux-mtd@lists.infradead.org;
+	Tue, 27 Feb 2024 19:36:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709062572; x=1740598572;
+  h=date:from:to:cc:subject:message-id;
+  bh=t+gq8A6ziXURV723j83efeTzY1oWZAvqFy77PEToBAU=;
+  b=Mbbtdei5QWhx4euVQUSroE8+mYr1UAUVbyvive+yYeh0JqeVeaN5pcMF
+   GFR9nuCF4t2cGVfOWiruiRMPD6wJA0NRyOf76q3X+L865Bv7Ej4xmaUGt
+   9tbzxkATBnbcrfmV4g/3MtSLmHhlgxE0/J/aBxpKBIyn5SKJwM1RH6v2x
+   MQEDGmcq0jNNqC9sC6OqRU2UfuIjFud1QhqXUpM5Kp1dVu0SZxGxYeGx2
+   Yh7Cr2Rp26qXB5XFfkA0Zu9rQCqcvCObQLt1dJcG/yUCIpbwLhnTzOfrk
+   mku6p0lABwideWerxFrOiMaSS1COtS5G+mVN9mhjQEc+OOD2daMzk2yD5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14067732"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="14067732"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:36:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="11770449"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2024 11:36:10 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rf3FH-000BTb-2U;
+	Tue, 27 Feb 2024 19:36:07 +0000
+Date: Wed, 28 Feb 2024 03:35:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ nouveau@lists.freedesktop.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 22ba90670a51a18c6b36d285fddf92b9887c0bc3
+Message-ID: <202402280351.qFQ2V2tO-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240227_110322_076950_D9A974DE 
-X-CRM114-Status: GOOD (  13.08  )
+X-CRM114-CacheID: sfid-20240227_113612_402772_8D8DCB4A 
+X-CRM114-Status: UNSURE (   4.58  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,50 +78,247 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix the following sparse warnings:
-sparse warnings: (new ones prefixed by >>)
->> drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:79:41: sparse: sparse:
-cast removes address space '__iomem' of expression
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:80:17: sparse: sparse:
-cast removes address space '__iomem' of expression
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:80:17: sparse: sparse:
-cast removes address space '__iomem' of expression
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:80:17: sparse: sparse:
-cast removes address space '__iomem' of expression
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 22ba90670a51a18c6b36d285fddf92b9887c0bc3  Add linux-next specific files for 20240227
 
-Fixes: c52c16d1bee5 ("mtd: rawnand: brcmnand: Add BCMBCA read data bus interface")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402270940.gmVLVRg0-lkp@intel.com/
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
+Error/Warning reports:
 
----
+https://lore.kernel.org/oe-kbuild-all/202402271629.7zZU8sCF-lkp@intel.com
 
- drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Error/Warning: (recently discovered and may have been fixed)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-index 7ad3e7a98f97..ea534850b97a 100644
---- a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-@@ -76,8 +76,8 @@ static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
- 	 * and dest address, which is incompatible with nand cache. Fallback
- 	 * to the memcpy_fromio in such case
- 	 */
--	if (bcmbca_nand_is_buf_aligned((void *)flash_cache, buffer))
--		memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
-+	if (bcmbca_nand_is_buf_aligned((void __force *)flash_cache, buffer))
-+		memcpy((void *)buffer, (void __force *)flash_cache, fc_words * 4);
- 	else
- 		memcpy_fromio((void *)buffer, flash_cache, fc_words * 4);
- }
+WARNING: modpost: vmlinux: section mismatch in reference: virtio_fs_init+0x8c (section: .init.text) -> map_benchmark_cleanup (section: .exit.text)
+WARNING: modpost: vmlinux: section mismatch in reference: virtio_fs_init+0xdc (section: .init.text) -> sq_api_exit (section: .exit.text)
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+{standard input}:1474: Error: unknown pseudo-op: `.l141'
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-randconfig-001-20240227
+|   `-- fs-ubifs-journal.c:warning:expecting-prototype-for-wake_up_reservation().-Prototype-was-for-add_or_start_queue()-instead
+|-- arm-randconfig-002-20240227
+|   `-- fs-ubifs-journal.c:warning:expecting-prototype-for-wake_up_reservation().-Prototype-was-for-add_or_start_queue()-instead
+|-- arm64-defconfig
+|   |-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+|   `-- fs-ubifs-journal.c:warning:expecting-prototype-for-wake_up_reservation().-Prototype-was-for-add_or_start_queue()-instead
+|-- i386-buildonly-randconfig-002-20240227
+|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+|-- parisc-defconfig
+|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+|-- parisc64-defconfig
+|   `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+|-- sh-buildonly-randconfig-r003-20230528
+|   `-- WARNING:modpost:vmlinux:section-mismatch-in-reference:virtio_fs_init-(section:.init.text)-map_benchmark_cleanup-(section:.exit.text)
+|-- sh-randconfig-r003-20230713
+|   `-- standard-input:Error:unknown-pseudo-op:l141
+`-- sh-randconfig-r004-20220501
+    `-- WARNING:modpost:vmlinux:section-mismatch-in-reference:virtio_fs_init-(section:.init.text)-sq_api_exit-(section:.exit.text)
+clang_recent_errors
+|-- hexagon-allmodconfig
+|   `-- fs-ubifs-journal.c:warning:expecting-prototype-for-wake_up_reservation().-Prototype-was-for-add_or_start_queue()-instead
+|-- hexagon-allyesconfig
+|   `-- fs-ubifs-journal.c:warning:expecting-prototype-for-wake_up_reservation().-Prototype-was-for-add_or_start_queue()-instead
+`-- riscv-defconfig
+    `-- drivers-gpu-drm-nouveau-nvkm-subdev-gsp-r535.c:warning:Function-parameter-or-struct-member-gsp-not-described-in-nvkm_gsp_radix3_sg
+
+elapsed time: 724m
+
+configs tested: 179
+configs skipped: 3
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240227   gcc  
+arc                   randconfig-002-20240227   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                        keystone_defconfig   gcc  
+arm                        multi_v7_defconfig   gcc  
+arm                   randconfig-001-20240227   gcc  
+arm                   randconfig-002-20240227   gcc  
+arm                   randconfig-003-20240227   gcc  
+arm                   randconfig-004-20240227   gcc  
+arm                           tegra_defconfig   gcc  
+arm                    vt8500_v6_v7_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240227   clang
+arm64                 randconfig-002-20240227   gcc  
+arm64                 randconfig-003-20240227   gcc  
+arm64                 randconfig-004-20240227   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240227   gcc  
+csky                  randconfig-002-20240227   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240227   clang
+hexagon               randconfig-002-20240227   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240227   gcc  
+i386         buildonly-randconfig-002-20240227   gcc  
+i386         buildonly-randconfig-003-20240227   clang
+i386         buildonly-randconfig-004-20240227   gcc  
+i386         buildonly-randconfig-005-20240227   gcc  
+i386         buildonly-randconfig-006-20240227   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240227   gcc  
+i386                  randconfig-002-20240227   gcc  
+i386                  randconfig-003-20240227   clang
+i386                  randconfig-004-20240227   clang
+i386                  randconfig-005-20240227   clang
+i386                  randconfig-006-20240227   gcc  
+i386                  randconfig-011-20240227   clang
+i386                  randconfig-012-20240227   clang
+i386                  randconfig-013-20240227   clang
+i386                  randconfig-014-20240227   clang
+i386                  randconfig-015-20240227   clang
+i386                  randconfig-016-20240227   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240227   gcc  
+loongarch             randconfig-002-20240227   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                           ci20_defconfig   clang
+mips                         cobalt_defconfig   gcc  
+mips                     loongson2k_defconfig   gcc  
+mips                      malta_kvm_defconfig   gcc  
+mips                malta_qemu_32r6_defconfig   gcc  
+mips                           xway_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240227   gcc  
+nios2                 randconfig-002-20240227   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240227   gcc  
+parisc                randconfig-002-20240227   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240227   clang
+powerpc               randconfig-002-20240227   gcc  
+powerpc               randconfig-003-20240227   clang
+powerpc                     tqm8548_defconfig   clang
+powerpc64             randconfig-001-20240227   clang
+powerpc64             randconfig-002-20240227   gcc  
+powerpc64             randconfig-003-20240227   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240227   gcc  
+riscv                 randconfig-002-20240227   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240227   gcc  
+s390                  randconfig-002-20240227   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240227   gcc  
+sh                    randconfig-002-20240227   gcc  
+sh                           sh2007_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240227   gcc  
+sparc64               randconfig-002-20240227   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240227   clang
+um                    randconfig-002-20240227   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240227   clang
+x86_64       buildonly-randconfig-002-20240227   gcc  
+x86_64       buildonly-randconfig-003-20240227   clang
+x86_64       buildonly-randconfig-004-20240227   clang
+x86_64       buildonly-randconfig-005-20240227   clang
+x86_64       buildonly-randconfig-006-20240227   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240227   clang
+x86_64                randconfig-002-20240227   clang
+x86_64                randconfig-003-20240227   gcc  
+x86_64                randconfig-004-20240227   gcc  
+x86_64                randconfig-005-20240227   gcc  
+x86_64                randconfig-006-20240227   gcc  
+x86_64                randconfig-011-20240227   gcc  
+x86_64                randconfig-012-20240227   gcc  
+x86_64                randconfig-013-20240227   clang
+x86_64                randconfig-014-20240227   gcc  
+x86_64                randconfig-015-20240227   gcc  
+x86_64                randconfig-016-20240227   gcc  
+x86_64                randconfig-071-20240227   gcc  
+x86_64                randconfig-072-20240227   clang
+x86_64                randconfig-073-20240227   gcc  
+x86_64                randconfig-074-20240227   clang
+x86_64                randconfig-075-20240227   clang
+x86_64                randconfig-076-20240227   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240227   gcc  
+xtensa                randconfig-002-20240227   gcc  
+
 -- 
-2.37.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
