@@ -4,88 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EB15C54798
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Feb 2024 10:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AC39C54798
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Feb 2024 12:57:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rtbcR2h5Wg4Plvcm1IqPodisXK4PrK23mLHE5PeLNlQ=; b=awWoSLoK4TkGyd
-	FTvYl+36lggRZSOV4rrcRuVJhrocj8Ngs3aSCQOf1vf+Uj8atmO2y+6eXSLEfLCga8QFO85TpzneO
-	Aphz5iXEbfLF9Bu0l3kdM9xJMNGTJuXRT6MAU/b5Kf7oFVjPqfZm0jkW/HbvecZ8Br0xI93uI284W
-	t0O/Dg4sldVeWBY6sm+b3GTjYiwccFgbU3iy85AcK2eiY/dHE2P6nM5zGl/INO/du7REnrI36/oei
-	aOyV0IkBuALjidvWBpXeSaRbcoDKX3+017v9DNFyN2hFh52tNdf/FVCuICBqlqv9dJbWjWaoSrd0L
-	/YVRqD5wp0rJmhta9lSg==;
+	List-Owner; bh=jFTPRMb8P23azRLE6I+iRosfj+pAoLTKWLspgAMzsK8=; b=dhTJVaTN24EZgw
+	22I/QgzSpiINYbJreiqoj5ivw2suT3kHxZNI+F8jm1Ky+V7a0Xu6hAG2vxoRoRYBkX6GQeyDZUwAE
+	5kdMEAAOeMXgjcST24+4+CT0pAnOrVRgbCXbhaARTfKN1AW5OcqB+w3/9OsXTcJ3NZPSh6WHrV2M5
+	yGlNUrnNiErP0+t//IcqDHvynlHkZj+ZENvqXtNVPmCQd+uBP3keRzGy8s59wAIlabWtFwNpioW84
+	5T+6ETDaxlxrlqvmRNKOAoxwmphO7Ap4d2pzmxIFWF0XraR/hMiVENRa9fq/kBh0UkTeyinb8gajQ
+	KE3yjvNW6aPUhwHxIb2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reuOE-00000004eoz-43WF;
-	Tue, 27 Feb 2024 10:08:46 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1rex1e-00000005HIl-2afc;
+	Tue, 27 Feb 2024 12:57:38 +0000
+Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reuO2-00000004eiJ-3xVf
+	id 1rex1b-00000005HHs-1n7n
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Feb 2024 10:08:44 +0000
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a36126ee41eso485075266b.2
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Feb 2024 02:08:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709028501; x=1709633301; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ooc5SS3j03ORm6wAIXAzAUPoc8fJQ9XOTzT5/SJVA8Y=;
-        b=S8wjwDALZREULsisCkw9gmf5+UXlP8D5pg2t2GgY1+Of+EP8tv7kxn5IyXJbJXBlEe
-         7YwHh0HbB6GmHLcaNKc1GMOzr4jCKpRhw8ahiHSD2ahKBzYvgsJWUfhGPZE5f1qFd4K7
-         vX7DwS3z+cxQV4VxXBYqnD+pdZ8Xyrm88nXGRbVLPr2s1lb/UDL2SQAurylpN9V5qcAU
-         LkSNW+MCjrRXkVQkFjIdcTSD74bmiz4qPXbzhGasKxO3xSu2iyllZGCvTcNNvV6puvns
-         sANh3rHxiKow3eYBpbuNcDN6/LspaeBsKIWj2sQ8AYchqYD5C3A7HT1MIALUHwNp+kgG
-         lqvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709028501; x=1709633301;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ooc5SS3j03ORm6wAIXAzAUPoc8fJQ9XOTzT5/SJVA8Y=;
-        b=Tt8WKMcQ4yLsMZvjjTkJxg7w/YoyCa07q6XWWlL2g7ZNu8vAE5vJNvqBZOuFvV3+yr
-         riTDyDEH7PcHfFgrQ1BANLxRBmObEcNhLCPUfjQHtBZT3Pd3tSpEP0pPadQodex8OAzD
-         dUmhVnUcVKvNJa+FG+J9DsGkI9RzSdjdZFvSwSob4pesohmRpXazk9qOUh4gtl3SoZYH
-         rB9NT172eV3txVZNoxnyS9Dq8lPcrTywtJXjuvfGzPte0SEMIKno1l0NPHD8l6pn9/3Q
-         7X0bvfQ3np8bCmE7qn4FsdeeuxPtFH641ZPBJhjs6+0pamKz1CR5Pf+N1Yh2O1TIMAGp
-         zGyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQih6/9dkgYy4Ki4gSLaEI+NND/oEltXL4WWONMBomi5mA2C2WlhhoWCdOKTOGy8y4U5UygtKZTZlWI+/zJ/s7LkZJOcADBy73H9WWjA==
-X-Gm-Message-State: AOJu0YzAdCPWxjL3MX8nHPuVa7wHH0yYzSTiywg5j6ur45plZ3Gu3miv
-	+TyX9jofytaOi1qjHQ1uxRfGTnDpQ4uUvFSkX3F8+xMJcXZK9naNQTxc21U8LA4=
-X-Google-Smtp-Source: AGHT+IE1EiV8Igbb2EVKLcncUtmKcFbSvxFWmJNfpS/Isp1yWRgR1sxzZOpH5nj0WUOH1E7n+jeMtQ==
-X-Received: by 2002:a17:906:7d86:b0:a3c:36ae:6c96 with SMTP id v6-20020a1709067d8600b00a3c36ae6c96mr5271008ejo.42.1709028501368;
-        Tue, 27 Feb 2024 02:08:21 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id tb16-20020a1709078b9000b00a43d1968921sm5696ejc.190.2024.02.27.02.08.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 02:08:20 -0800 (PST)
-Message-ID: <ddc5c922-8587-492c-93b0-9fd6f584d081@linaro.org>
-Date: Tue, 27 Feb 2024 10:08:19 +0000
+	Tue, 27 Feb 2024 12:57:37 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rex1I-0004YG-2F;
+	Tue, 27 Feb 2024 12:57:16 +0000
+Date: Tue, 27 Feb 2024 12:57:07 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems
+Message-ID: <Zd3cIw5NZOW2KtXe@makrotopia.org>
+References: <186fa96ae25f7033ff8b6f0f7fcfb1e602f556fc.1708971705.git.daniel@makrotopia.org>
+ <ab2b4573-58ce-d895-0aae-69e3647e0a68@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mtd: spi-nor: Add support for BoHong bh25q128as
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Bauer <mail@david-bauer.net>
-References: <20240220200325.19089-1-ansuelsmth@gmail.com>
- <f7c45e7b-993c-444b-8710-042da7512bbf@linaro.org>
- <65d9d08f.df0a0220.988bb.3177@mx.google.com>
- <CZEVS9033HET.1NPH0K6PQLR87@kernel.org>
- <4d117770-6e0c-412f-ac1a-d9ba84b5b4ba@linaro.org>
- <65ddac61.5d0a0220.a0c6e.35bf@mx.google.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <65ddac61.5d0a0220.a0c6e.35bf@mx.google.com>
+Content-Disposition: inline
+In-Reply-To: <ab2b4573-58ce-d895-0aae-69e3647e0a68@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240227_020843_241275_A2826E8E 
-X-CRM114-Status: GOOD (  16.09  )
+X-CRM114-CacheID: sfid-20240227_045735_493869_3F7856B1 
+X-CRM114-Status: GOOD (  21.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,46 +61,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 2/27/24 09:33, Christian Marangi wrote:
-> On Mon, Feb 26, 2024 at 10:53:34AM +0200, Tudor Ambarus wrote:
->>
->>
->> On 26.02.2024 10:51, Michael Walle wrote:
->>> Hi,
->>>
->>> On Sat Feb 24, 2024 at 12:18 PM CET, Christian Marangi wrote:
->>>> The user just tested this and It seems there is a problem in JEDEC id?
->>>>
->>>> [    0.726451] spi spi0.0: setup: ignoring unsupported mode bits a00
->>>
->>> What SPI controller is used in this case?
->>>
->>>> [    0.732850] spi-nor spi0.0: unrecognized JEDEC id bytes: 68 40 18 68 40 18
->>>> [    0.739725] spi-nor: probe of spi0.0 failed with error -2
->>>
->>> And what kernel version is this? This should only happen if the SFDP
->>> header is wrong, but according to your dump, it is correct.
->>>
->>
->> I assume the test was done on an older kernel, where the identification
->> of the flash based on SFDP is not yet available.
-> 
-> The test has been done on 5.15 and 6.1. The support for this was
-> introduced later? Can you point me to the commits so I can backport
-> them?
-> 
-
-Use git blame.
-
-773bbe104497 ("mtd: spi-nor: add generic flash driver")
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBGZWIgMjcsIDIwMjQgYXQgMTA6MjM6MTdBTSArMDgwMCwgWmhpaGFvIENoZW5nIHdy
+b3RlOgo+IOWcqCAyMDI0LzIvMjcgMjoyMywgRGFuaWVsIEdvbGxlIOWGmemBkzoKPiA+IEEgY29t
+cGlsZXIgd2FybmluZyByZWxhdGVkIHRvIHNpemVvZihpbnQpICE9IDggd2hlbiBjYWxsaW5nIGRv
+X2RpdigpCj4gPiBpcyB0cmlnZ2VyZWQgd2hlbiBidWlsZGluZyBvbiAzMi1iaXQgcGxhdGZvcm1z
+Lgo+ID4gQWRkcmVzcyB0aGlzIGJ5IHVzaW5nIGludGVnZXIgdHlwZXMgaGF2aW5nIGEgd2VsbC1k
+ZWZpbmVkIHNpemUgd2hlcmUKPiA+IGFwcHJvcHJpYXRlLgo+ID4gCj4gPiBGaXhlczogM2NlNDg1
+ODAzZGExICgibXRkOiB1Ymk6IHByb3ZpZGUgTlZNRU0gbGF5ZXIgb3ZlciBVQkkgdm9sdW1lcyIp
+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgR29sbGUgPGRhbmllbEBtYWtyb3RvcGlhLm9yZz4K
+PiA+IC0tLQo+ID4gICBkcml2ZXJzL210ZC91YmkvbnZtZW0uYyB8IDUgKysrKy0KPiA+ICAgMSBm
+aWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4gCj4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL252bWVtLmMgYi9kcml2ZXJzL210ZC91YmkvbnZtZW0u
+Ywo+ID4gaW5kZXggYjdhOTNjNDk1ZDE3Mi4uNTgyMGExNzBkMjUxMiAxMDA2NDQKPiA+IC0tLSBh
+L2RyaXZlcnMvbXRkL3ViaS9udm1lbS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC91YmkvbnZtZW0u
+Ywo+ID4gQEAgLTIzLDE0ICsyMywxNyBAQCBzdHJ1Y3QgdWJpX252bWVtIHsKPiA+ICAgc3RhdGlj
+IGludCB1YmlfbnZtZW1fcmVnX3JlYWQodm9pZCAqcHJpdiwgdW5zaWduZWQgaW50IGZyb20sCj4g
+PiAgIAkJCSAgICAgIHZvaWQgKnZhbCwgc2l6ZV90IGJ5dGVzKQo+ID4gICB7Cj4gPiAtCWludCBl
+cnIgPSAwLCBsbnVtID0gZnJvbSwgb2ZmcywgYnl0ZXNfbGVmdCA9IGJ5dGVzLCB0b19yZWFkOwo+
+ID4gKwl1aW50MzJfdCBieXRlc19sZWZ0LCBvZmZzLCB0b19yZWFkOwo+ID4gICAJc3RydWN0IHVi
+aV9udm1lbSAqdW52ID0gcHJpdjsKPiA+ICAgCXN0cnVjdCB1Ymlfdm9sdW1lX2Rlc2MgKmRlc2M7
+Cj4gPiArCXVpbnQ2NF90IGxudW0gPSBmcm9tOwo+ID4gKwlpbnQgZXJyID0gMDsKPiA+ICAgCWRl
+c2MgPSB1Ymlfb3Blbl92b2x1bWUodW52LT51YmlfbnVtLCB1bnYtPnZvbF9pZCwgVUJJX1JFQURP
+TkxZKTsKPiA+ICAgCWlmIChJU19FUlIoZGVzYykpCj4gPiAgIAkJcmV0dXJuIFBUUl9FUlIoZGVz
+Yyk7Cj4gPiArCWJ5dGVzX2xlZnQgPSBieXRlczsKPiBUaGUgJ2J5dGVzJyBpcyBhIHNpemVfdCB0
+eXBlLCB3aGljaCBoYXMgNjQgYml0cyBvbiA2NC1iaXQgcGxhdGZvcm1zLiBUaGlzCj4gYXNzaWdu
+bWVudCB3aWxsIGxlYWQgYSB0eXBlIHRydW5jYXRpb24sIHNvIHNob3VsZCB3ZSBhZGQgYSBleHBs
+aWNpdCB0eXBlCj4gY29udmVyc2lvbiBoZXJlIHRvIGF2b2lkIGNvbXBpbGVyIHdhcm5pbmc/CgpP
+aCByaWdodC4gSSByZWNrb24gdGhlIGJlc3QgaXMgdG8gZGVjbGFyZSAnYnl0ZXMnIGFzICdzaXpl
+X3QnIHR5cGUgYXMgd2VsbAp0aGVuLiBJIHdpbGwgc2VuZCB2MiB3aXRoIHRoYXQgY2hhbmdlIHNo
+b3J0bHkuCgoKPiA+ICAgCW9mZnMgPSBkb19kaXYobG51bSwgdW52LT51c2FibGVfbGViX3NpemUp
+Owo+ID4gICAJd2hpbGUgKGJ5dGVzX2xlZnQpIHsKPiA+ICAgCQl0b19yZWFkID0gdW52LT51c2Fi
+bGVfbGViX3NpemUgLSBvZmZzOwo+ID4gCj4gCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
