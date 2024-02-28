@@ -4,50 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6984FC54798
-	for <linux-mtd@archiver.kernel.org>; Wed, 28 Feb 2024 01:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9038C54E41
+	for <linux-mtd@archiver.kernel.org>; Wed, 28 Feb 2024 08:23:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+4uTmgqd6AEQi79Z8LwkHXP1xmdF22rkLBPbifRNuRY=; b=X2DvDXT2sVhnBZ
-	mrBdBgDtbQuK9MBZpKAD2twnXwjRDPpMefHPSQXe0zxOGPjSj0YSOgeIn++aZ9+/dluPkLxZbw58W
-	A72PBLS9Z7Rdfr0ONcxurGDgd3w5UsHo7VHesUr+8glOosACXTiVkoe+HqMxz7Tw7uCUdZ9bxkoS5
-	0jYgcgAbEEpt/HwekBbKPhRIm67q7DxlOsylN0J3vRrSKzOL1tzSQWhwqPnhMIkJKVNnvhEZTn9aC
-	ixBxx7ixwvyWYVKiI0MEynUmo504jWUDr50bGSbk+9P0rXdgkiLzIuqqYI1Q4j+Ks0YKZPpz3Thcx
-	K21wxKpe9gG463ENsVXA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hSb49gb39KNEbolwd4Yk+QCf2CFZD2g2FdQ7AnRw9lU=; b=bbi+2Q8ZDVSNAx
+	XUAUHZ4QXdgsCRM3DjDW3Q3mBR21YIuEXYqq+8TCIeGuEbnVmVoQbwJUaOLWfXZDrPj32rZYT01k2
+	KzJPoWHmRn5RjnG7NV9iEqnx1Mun2kuWlNxZyC4LCrwnVcx35gu/Vn2Yqyd7SbAmq3ix41kWP2ws1
+	Vy9BGNlcJva2gU3UV6XA25fvEvtL60lbYIz8ksGdTq5EUdgIKnW2LVyLZggjKuwI7bzHNQ73Zr0UT
+	ysc1QtGeqjiK4mZI9FZvQouawEb2RYdLS9XbXZGkgZa/A4z92SZTK1W7YgEZLtLO7CgC0Nyq0zOUo
+	LJf37hi7Um34lfnrjpkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf91v-00000007b0f-2OBj;
-	Wed, 28 Feb 2024 01:46:43 +0000
-Received: from pidgin.makrotopia.org ([185.142.180.65])
+	id 1rfFDs-00000008SYJ-08i1;
+	Wed, 28 Feb 2024 08:23:28 +0000
+Received: from forward501a.mail.yandex.net ([178.154.239.81])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf85b-00000007RFE-31Gq
-	for linux-mtd@lists.infradead.org;
-	Wed, 28 Feb 2024 00:46:29 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rf85L-0002GY-1d;
-	Wed, 28 Feb 2024 00:46:11 +0000
-Date: Wed, 28 Feb 2024 00:46:02 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Richard Weinberger <richard@nod.at>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems
-Message-ID: <31a20aead3419209991bf01aaeaefe07ab94d23a.1709081052.git.daniel@makrotopia.org>
+	id 1rfFDk-00000008ST5-3qPD;
+	Wed, 28 Feb 2024 08:23:24 +0000
+Received: from mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:8c9b:0:640:8c33:0])
+	by forward501a.mail.yandex.net (Yandex) with ESMTPS id 7184B61680;
+	Wed, 28 Feb 2024 11:23:10 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 2NUOVYANd8c0-nNSnKwOK;
+	Wed, 28 Feb 2024 11:23:08 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+	t=1709108588; bh=5C6vD/fRuXGe615n6PpX9VIOEIZkOgWqNNFadbqmy4M=;
+	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+	b=EalO3ZTMGKQby2mNKqzwTBWhRSR2vOdtx+YGi+0dATxHc9Ne404mREzk3ONsmowJQ
+	 Sbt6ELQEiXojAyllpQkuQc6yuKN4UbpwNHkcrWbSfpHM6co896dWu7EcWBkPxvOZZi
+	 FlkHZDOUFmF5J3w7ul6ZRoH0jf1AGJ+fqIZrkwaY=
+Authentication-Results: mail-nwsmtp-smtp-production-main-18.iva.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <154df7fd17dd05fdb6ba21d5f4d84ecfdb476091.camel@maquefel.me>
+Subject: Re: [PATCH v8 00/38] ep93xx device tree conversion
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Mark Brown <broonie@kernel.org>
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
+ <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, Thierry Reding
+ <thierry.reding@gmail.com>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
+ <u.kleine-koenig@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron"
+ <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, Olof Johansson
+ <olof@lixom.net>,  Niklas Cassel <cassel@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org,  devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org,  linux-watchdog@vger.kernel.org,
+ linux-pwm@vger.kernel.org,  linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-sound@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Bartosz
+ Golaszewski <bartosz.golaszewski@linaro.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, Andy
+ Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 28 Feb 2024 11:23:02 +0300
+In-Reply-To: <168fd3d7-d1e9-467e-bdd0-36c12aa81b68@sirena.org.uk>
+References: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
+	 <168fd3d7-d1e9-467e-bdd0-36c12aa81b68@sirena.org.uk>
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240227_164627_784342_DF6D16AB 
-X-CRM114-Status: GOOD (  11.48  )
+X-CRM114-CacheID: sfid-20240228_002321_977566_8DFE16FB 
+X-CRM114-Status: GOOD (  12.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,39 +101,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A compiler warning related to sizeof(int) != 8 when calling do_div()
-is triggered when building on 32-bit platforms.
-Address this by using integer types having a well-defined size.
+Hello Mark!
 
-Fixes: 3ce485803da1 ("mtd: ubi: provide NVMEM layer over UBI volumes")
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
-v2: use size_t for 'bytes_left' variable to match parameter type
+On Mon, 2024-02-26 at 13:34 +0000, Mark Brown wrote:
+> On Mon, Feb 26, 2024 at 10:29:56AM +0300, Nikita Shubin via B4 Relay
+> wrote:
+> 
+> > The goal is to receive ACKs for all patches in series to merge it
+> > via Arnd branch.
+> 
+> What are the actual dependencies here?
 
- drivers/mtd/ubi/nvmem.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+More than a half of patches makes device drivers incompatible with
+"platform" approach, this is intentionally cause we don't want any
+leftovers - ep93xx should be fully converted to dt or left as is.
 
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-index b7a93c495d172..e68b8589c4279 100644
---- a/drivers/mtd/ubi/nvmem.c
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -23,9 +23,12 @@ struct ubi_nvmem {
- static int ubi_nvmem_reg_read(void *priv, unsigned int from,
- 			      void *val, size_t bytes)
- {
--	int err = 0, lnum = from, offs, bytes_left = bytes, to_read;
- 	struct ubi_nvmem *unv = priv;
- 	struct ubi_volume_desc *desc;
-+	size_t bytes_left = bytes;
-+	uint32_t offs, to_read;
-+	uint64_t lnum = from;
-+	int err = 0;
- 
- 	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
- 	if (IS_ERR(desc))
--- 
-2.44.0
+Currently only 4 patches that require review/ack left:
 
+- ARM: ep93xx: add regmap aux_dev
+- clk: ep93xx: add DT support for Cirrus EP93xx
+- dma: cirrus: Convert to DT for Cirrus EP93xx
+- dma: cirrus: remove platform code
 
 ______________________________________________________
 Linux MTD discussion mailing list
