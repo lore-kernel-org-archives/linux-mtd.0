@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6B21C48BF6
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Feb 2024 23:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E90A2C54798
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Feb 2024 23:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=88csVwIaspscR+H4FU21BEDLqR9yEDVnshnIfZvfWTc=; b=IYYUH/J5Xf88IzA/0D8ea5PSCm
-	G0OXo6mJ4qQ+WNF2p7EQvEKPhfwCoHSzXiqf/ccYhLFRLIIEl9XDpFw5hVHALaUTvQnDRi70u5M5v
-	pk1c0SFMqPCMaef6vgGiUQkS1c84Pw0fPWkEZwVQhJUCt8FhOfCfmPs4jZa0aAY8K4KMEQ4+38wqU
-	1ro8eDWsWP+RcAm7ixwVprPGrQwzQOLFUMKiC/iqtet4W134W/sTaMZRQHV6fMUvK3TOD3u7mHYOa
-	JMP2SN5yCMKc+yGhefi9a63tgHHlw1XlbExUJPJqvV+fGtemAiFTJSlbLqszezeDNg4HSgfdHAAmi
-	/h45mi+A==;
+	bh=hbwBYnGYdzcqBDwbungcTpTpL4x6li0eWw4AneTWOwE=; b=zIWM9tWDjR4s2IuAGeoKmWhw4K
+	D+xe+1X913xzUOE1KrbcLyqr1f2bNkVVnbKQkBJeqNCFVPtnIXIcFmOG37rbNWMoIzshctjeS42t2
+	XMuhMzxB8YrFMSGjA9n1K4aYs/UxGqGGvSQjDgfHVSChuzWJDfC2vdlECydrZkQMbPGw2/IjQSuSq
+	Sx2/qQWeuufkCl/DGHWE7jIeyf67YFSwZlG1GiwLS3lWTeD9uNv/mXu4L+d5uTU/e1IWgHyHk7vDK
+	lTwFzWdmFB209y+zCOq3vvgUZBWpjy1c2wXDkqN8LY6w8lGIVof157bgqX6dMk1n04FUpSmml+UcP
+	y0G9FRAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfpvb-0000000Fda7-0tcA;
-	Thu, 29 Feb 2024 23:35:03 +0000
-Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
+	id 1rfq01-0000000FeWQ-1AEi;
+	Thu, 29 Feb 2024 23:39:37 +0000
+Received: from mail-oi1-x236.google.com ([2607:f8b0:4864:20::236])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfpvY-0000000FdYt-1pd6
+	id 1rfpzy-0000000FeUl-34kX
 	for linux-mtd@lists.infradead.org;
-	Thu, 29 Feb 2024 23:35:02 +0000
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so1676355ad.3
-        for <linux-mtd@lists.infradead.org>; Thu, 29 Feb 2024 15:34:57 -0800 (PST)
+	Thu, 29 Feb 2024 23:39:36 +0000
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3c1a1e1e539so1508296b6e.1
+        for <linux-mtd@lists.infradead.org>; Thu, 29 Feb 2024 15:39:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1709249697; x=1709854497; darn=lists.infradead.org;
+        d=broadcom.com; s=google; t=1709249973; x=1709854773; darn=lists.infradead.org;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=fjdsbnf00a2xZ+NeSkKHzVwnxjdctYK52n+j8T3rysA=;
-        b=iRKd8RJH/p7rUFyCc53BXHpFJehkS7wmjs0GsQ4PisWQAXgto8yG4lOP4mz7Z2mIyX
-         GHN7NyF5uz2M8JYZu8mnBjtgQHs23oH2uCPMyxnfqgixjhtsezF+h4bYJRxuB/YfGXKY
-         5mRe9DWIbVF89slcMEiLWinEgVTj0UQ2yiB+Q=
+        bh=ghyvejtqR8cjrXsn5Z0/R8D4LhSz8gPAGzu2+a2FVho=;
+        b=CWpq1d5oDyeRmtugx+z6SrHtYL4aIA63BBRYFD7sEh6sk0zoqzeuAINKOzxVIwtXt1
+         y1YXvTXWNuPw1zKO92bVAwqTbAj9sOGeDEzaNmL3eD4yE7qW8TS2Ehy63ZOXnYdSYVpO
+         OuVhf+u/t1fruAWE6N2sQiLDIrE6pj37/JReY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709249697; x=1709854497;
+        d=1e100.net; s=20230601; t=1709249973; x=1709854773;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fjdsbnf00a2xZ+NeSkKHzVwnxjdctYK52n+j8T3rysA=;
-        b=AdD8sZFfep5wwKh1Kq+zDoX381CEXMwRZwGfTH/6M3lHXh9lK3wTsA45Us8H3kPq34
-         dN5VArfCCUycBtM+Npn0ySjmAnIsOtBY02R+Je492T4RcbPgA5YKPgJ213JBbLdogYqB
-         LznfKHhJHWUojaIdOL1LziTXBBFbaQYvIgn2PUbU8A5cxbj0F9exrhaZJsvF8v4B92K3
-         YrclsfXi8UP0aJt7QcMWDJLs29jDSkgiVIFZopYx7/t9uW1yz1B8NyC2KqItDOG0EcSs
-         F5ZSiVeYw/gYaZJix5osQBoLFyj/wH+9/gzaxVBMvmjooHJyDr8+KKPgWmkH/0dpXPI/
-         Dk8g==
-X-Gm-Message-State: AOJu0YykO+zryBXFeY+D/cmfRpAtifky8Qr0GVkSjElJQWRBvVROOZlY
-	QAY0qzaXK1wDXuo4+62niCutbaEAynLI6y3YJ3/D29JzRRT1Vn0QtbR21ndHEw==
-X-Google-Smtp-Source: AGHT+IGHUiUWHRdVyfFQbALGxzuEatMLb9UDKSBHeeH1RYePer03kdD+xeJ3HCW0IAvno7hNRslLrw==
-X-Received: by 2002:a17:902:6b85:b0:1dc:b6ef:e233 with SMTP id p5-20020a1709026b8500b001dcb6efe233mr16042plk.50.1709249696995;
-        Thu, 29 Feb 2024 15:34:56 -0800 (PST)
+        bh=ghyvejtqR8cjrXsn5Z0/R8D4LhSz8gPAGzu2+a2FVho=;
+        b=euTz8JgAj+eVU6ADqS/bn/qLMXksSJwIFaUY7XJql9cWVPL2j6NNwJTr72Gaop4idI
+         Eby9VdxqJ58kDor+NBN1Y/6BEQC2T+mZoGZ+NyhXUo4srjZ7BynVcDYQftt2Op0+rpGu
+         NSQy7NRqqX1zR5rUkb6PJs55+m2a5qKw6flN0teukKaWfNpOiTiGX4zptgB7moJUVowc
+         oH1y43N5JEreVCCOF8pT81zEj5njRNvl7gPcxc3BMbs6EPlWavEH/ZyMplnv1zgFy8Vv
+         zQG14hoaID5mOE9rst1+R8zOQq/PW/BARr91p5G/9cgtfuzHYiBjFIYu0aeasHeArLku
+         Sv6w==
+X-Gm-Message-State: AOJu0YxvPDU43m0h1p2Aj0nfIeD5ZtAMC5Fgf5IjT5xPbWSqiLZ5THro
+	+sE5+vqmRu+zdfArtakdCffU+B/3R8BPWR+2uYQUTJf7FVNGfbyhN+w+3X9Szg==
+X-Google-Smtp-Source: AGHT+IHrnQFk5V1Gx4muZz0BpVESvZdJFZdtyn0w3VCC538rgaY7jbWZpkjyPU9+0hPKD9pelvTKCA==
+X-Received: by 2002:a05:6358:7e4b:b0:17a:e9db:bc10 with SMTP id p11-20020a0563587e4b00b0017ae9dbbc10mr4079387rwm.20.1709249968484;
+        Thu, 29 Feb 2024 15:39:28 -0800 (PST)
 Received: from [192.168.52.129] ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id b1-20020a170902d50100b001dcc12a729dsm2075527plg.29.2024.02.29.15.34.54
+        by smtp.gmail.com with ESMTPSA id r17-20020a05620a299100b007871ec18655sm1144572qkp.1.2024.02.29.15.39.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 15:34:55 -0800 (PST)
-Message-ID: <0f6659ca-536b-4003-a6f3-ddaaa44a9cdf@broadcom.com>
-Date: Thu, 29 Feb 2024 15:34:53 -0800
+        Thu, 29 Feb 2024 15:39:27 -0800 (PST)
+Message-ID: <67a69fa6-bbff-4b9a-8253-c9b20093dee1@broadcom.com>
+Date: Thu, 29 Feb 2024 15:39:25 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 12/13] mtd: rawnand: brcmnand: Add support for getting
- ecc setting from strap
+Subject: Re: [PATCH v7] mtd: rawnand: brcmnand: Add support for getting ecc
+ setting from strap
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
  Linux ARM List <linux-arm-kernel@lists.infradead.org>,
@@ -75,18 +75,13 @@ Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>
-References: <20240223034758.13753-1-william.zhang@broadcom.com>
- <20240223034758.13753-13-william.zhang@broadcom.com>
- <20240223101852.005da3ad@xps-13>
- <db1c1e68-40e2-4c6c-afb2-2fb591883a46@broadcom.com>
- <20240226093632.089d594c@xps-13>
- <be75db7d-a698-43ab-b29e-dea3a0f60ba2@broadcom.com>
- <20240229113119.30f7cee6@xps-13>
+References: <20240227201253.31978-1-william.zhang@broadcom.com>
+ <20240229112818.2e54d0f6@xps-13>
 From: William Zhang <william.zhang@broadcom.com>
-In-Reply-To: <20240229113119.30f7cee6@xps-13>
+In-Reply-To: <20240229112818.2e54d0f6@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240229_153500_682108_C460D137 
-X-CRM114-Status: GOOD (  24.44  )
+X-CRM114-CacheID: sfid-20240229_153934_829848_639CFA22 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,109 +93,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4518564618704220227=="
+Content-Type: multipart/mixed; boundary="===============6069013268990527460=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4518564618704220227==
+--===============6069013268990527460==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000000bba6906128db560"
+	boundary="000000000000855b9606128dc5c8"
 
---0000000000000bba6906128db560
+--000000000000855b9606128dc5c8
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Minquel,
+Hi Miquel,
 
-On 2/29/24 02:31, Miquel Raynal wrote:
+On 2/29/24 02:28, Miquel Raynal wrote:
 > Hi William,
 > 
-> william.zhang@broadcom.com wrote on Mon, 26 Feb 2024 12:05:18 -0800:
+> william.zhang@broadcom.com wrote on Tue, 27 Feb 2024 12:12:52 -0800:
 > 
->> On 2/26/24 00:36, Miquel Raynal wrote:
->>> Hi William,
->>>
->>> william.zhang@broadcom.com wrote on Fri, 23 Feb 2024 09:25:09 -0800:
->>>    
->>>> Hi Miquel,
->>>>
->>>> On 2/23/24 01:18, Miquel Raynal wrote:
->>>>> Hi William,
->>>>>
->>>>> william.zhang@broadcom.com wrote on Thu, 22 Feb 2024 19:47:57 -0800:
->>>>>     >>>> BCMBCA broadband SoC based board design does not specify ecc setting in
->>>>>> dts but rather use the SoC NAND strap info to obtain the ecc strength
->>>>>> and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
->>>>>> this purpose and update driver to support this option. However these two
->>>>>> options can not be used at the same time.
->>>>>>
->>>>>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
->>>>>> Reviewed-by: David Regan <dregan@broadcom.com>
->>>>>>    >>>
->>>>> FYI I did not receive patches 7, 8, 9, which makes the series numbering
->>>>> very odd.
->>>>>     >> I was using the get maintainer script mainly and it sends to the linux MTD list.  I will add your email directly next time.
->>>
->>> Yes, I prefer to be in Cc of the whole series, please.
->>>    
->> Sure.  And thanks for applying other patches.  Do you want me to just send a new single patch for the update?
+>> This is the update to the patch 12 in the original series [1] that was
+>> applied to nand-next except this patch.
 > 
-> Yes just the missing patch.
+> This is context. While interesting, it should not be part of the commit
+> log but instead located...
 > 
-v7 of this patch was sent early
-
->>>>>>     >> +static int brcmnand_get_sector_size_1k(struct brcmnand_host *host)
->>>>>> +{
->>>>>> +	struct brcmnand_controller *ctrl = host->ctrl;
->>>>>> +	int sector_size_bit = brcmnand_sector_1k_shift(ctrl);
->>>>>> +	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
->>>>>> +						  BRCMNAND_CS_ACC_CONTROL);
->>>>>> +	u32 acc_control;
->>>>>> +
->>>>>> +	if (sector_size_bit < 0)
->>>>>> +		return 0;
->>>>>> +
->>>>>> +	acc_control = nand_readreg(ctrl, acc_control_offs);
->>>>>> +
->>>>>> +	return (acc_control & BIT(sector_size_bit)) >> sector_size_bit;
->>>>>
->>>>> FIELD_PREP, FIELD_GET, *please*.
->>>> You probably missed my reply to your comments on the same patch in v5. Here is the link for the post in case it lost in your email:
->>>> https://lore.kernel.org/lkml/c145b90c-e9f0-4d82-94cc-baf7bfda5954@gmail.com/T/#m1d911d2f119f3bd345c575a81b60bc2bd8c461eb
->>>
->>> I didn't miss it, but the reason does not sound legitimate to me.
->>> Please work on it, it will be so much cleaner.
->>>    
->> I understand FIELD_PREP/GET is the preferred way of linux accessing the register fields but it requires a constant MASK value and does not apply to our case as we have different versions of the register and have different mask.  There is way to workaround it. i.e defining the multiple constants directly and using these macros with if/else based on reg version. But it is not clean and since we already have helper functions that handle and return different shift/mask value, I see this is a perfect way for our situation and can adapt to future reg version change easily and cleanly.
 >>
->>>> The mask is not constant here and cause build errors.
+>> BCMBCA broadband SoC based board design does not specify ecc setting in
+>> dts but rather use the SoC NAND strap info to obtain the ecc strength
+>> and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
+>> this purpose and update driver to support this option. However these two
+>> options can not be used at the same time.
+>>
+>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+>> Reviewed-by: David Regan <dregan@broadcom.com>
+>>
+>> [1] https://lore.kernel.org/lkml/20240223034758.13753-1-william.zhang@broadcom.com/
 > 
-> Which errors?
+> This as well should be below.
+>>
+>> ---
 > 
-If I use the code below In function brcmnand_get_sector_size_1k, inlined 
-from brcmnand_get_ecc_settings at 
-drivers/mtd/nand/raw/brcmnand/brcmnand.c:1089:24,
-     inlined from brcmnand_setup_dev at 
-drivers/mtd/nand/raw/brcmnand/brcmnand.c:2701:3:
-././include/linux/compiler_types.h:442:38: error: call to 
-compiletime_assert_254 declared with attribute error: FIELD_GET: mask is 
-not  constant
-
-> +       acc_control = nand_readreg(ctrl, acc_control_offs);
-> +       return FIELD_GET(BIT(sector_size_bit), acc_control);
+> ...here.
 > 
-> Does not return any error here.
-> 
-Right, this function does not return error. brcmnand_sector_1k_shift 
-does. I didn't make that clear enough. This function is updated and 
-logic that calls this function is simplified in v7 based on your feedbacks.
-
+Sorry accidentally put these info in the commit log.  Should be in the 
+revision history.  Let me know if you want to send a new version.
 
 > Thanks,
 > Miquèl
 
---0000000000000bba6906128db560
+--000000000000855b9606128dc5c8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -271,19 +214,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINhKdfVBTcnbLdos+FBz54esvuh3
-zmy1mXqrE88HB/17MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
-MDIyOTIzMzQ1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINTvhwz2w9iOtPUzd2QhpsM16J0u
+xJTjigne64LAGUmqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
+MDIyOTIzMzkzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBdfLsG1MdHdvS2IiU3r2cqJXE5Tu0hk/r277LCr+yqe7E9
-29uvDDlfHXmfdgLT7mmx633x+L3TAPwbiBdAGhFEL8U+hsLacP6vvz6IirUJE5LdhjnqClUDaqo/
-Bx/4d/+j0Wdi3EnoLU9ry1KtYAkeTsVC2CHcLIbkG4F6yHFcPnb3ovaRWiUqYWynV18kcLxg/X+I
-TugPgEGYD19PJE2/N8ezVSNqhU4ZrTwO+RnGlwYIqf2vrCI4lxyTEkfYspy+7hjBdbKSwkjImMfD
-dc2VgaN29+vpmYhB+mOCuv+pfPwBmePszemKrBrsV50FvWrbgGIK+IjgWX++ThMIydsX
---0000000000000bba6906128db560--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAZx0Wi7NGVFZe495rAhHMgT2nogctlzy8UNcNOKmUoWGQk
+H2PyBUgIwf88jhbePE8CtuXm6c7YhYyvMCm2Npm4Jw4Wtei0JC+w7tySHyYqQY8v8+10KrSH04Rh
+JmNGec24hxiS1nzruAGIIhm4oxf75MkhweeoBkdlPTrYNT/pz329cWkj4gAYfI29EFJcJL/Xj+Iy
+g8YOoz0DwDNCNdNAfeAQz2h8K6qLEYSFSYBXyralESqqna+1ASnvHTWkdsQwlrG6bA+Dih7fItoH
+F2pr4GJj9zY4T0VSJIthVxb0gbYoJVBygGR+K7QzeICo8NYS0xiTZEyXVulruDPUfwNN
+--000000000000855b9606128dc5c8--
 
 
---===============4518564618704220227==
+--===============6069013268990527460==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -293,5 +236,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============4518564618704220227==--
+--===============6069013268990527460==--
 
