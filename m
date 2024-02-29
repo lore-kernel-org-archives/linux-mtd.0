@@ -4,59 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A31DC48BF6
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Feb 2024 20:44:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6B21C48BF6
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Feb 2024 23:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=raDhXUx1Qq4yCm/9+gvrvMMBh8n+DLO5vTGwEh0lYVo=; b=wIIxLuXXtKE6O6
-	FEyZOPh+1ctjv1je7M52KnmYBtEsZhpvDkiSTXj4VDrPiF3rUkNxrMwP+M4dKPQqYG1o9VBK0WoNG
-	sY5DTVcOKzf8nqj5a/wokGKYwytD3jtBl8yYssR+w+2mZvjcy9jWt6358EGiSRseCVWSrDcyxsd5i
-	u0qmBhL/eZi/T4T0hZ4rS2TuDcpr3oJY0YTkrbu9ve7P3D0SyE5ztO2OSS9OaZct8T7HzHO5L6aXI
-	rF+0ULG5pHySlaxkv5+vSGQWAr6zUxz/Uf7xSBqA33Y9Ed1R/j8bmQ+OSKuxaASSdnQZoZnXmyK03
-	eqVPlkvgtSX1WwDQKTmw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=88csVwIaspscR+H4FU21BEDLqR9yEDVnshnIfZvfWTc=; b=IYYUH/J5Xf88IzA/0D8ea5PSCm
+	G0OXo6mJ4qQ+WNF2p7EQvEKPhfwCoHSzXiqf/ccYhLFRLIIEl9XDpFw5hVHALaUTvQnDRi70u5M5v
+	pk1c0SFMqPCMaef6vgGiUQkS1c84Pw0fPWkEZwVQhJUCt8FhOfCfmPs4jZa0aAY8K4KMEQ4+38wqU
+	1ro8eDWsWP+RcAm7ixwVprPGrQwzQOLFUMKiC/iqtet4W134W/sTaMZRQHV6fMUvK3TOD3u7mHYOa
+	JMP2SN5yCMKc+yGhefi9a63tgHHlw1XlbExUJPJqvV+fGtemAiFTJSlbLqszezeDNg4HSgfdHAAmi
+	/h45mi+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfnG7-0000000F8s7-2osU;
-	Thu, 29 Feb 2024 20:44:13 +0000
-Received: from mail.ispras.ru ([83.149.199.84])
+	id 1rfpvb-0000000Fda7-0tcA;
+	Thu, 29 Feb 2024 23:35:03 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfnFU-0000000F8fb-0VmF
+	id 1rfpvY-0000000FdYt-1pd6
 	for linux-mtd@lists.infradead.org;
-	Thu, 29 Feb 2024 20:43:29 +0000
-Received: from localhost.ispras.ru (unknown [10.10.165.8])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 3295940B27A1;
-	Thu, 29 Feb 2024 20:42:51 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 3295940B27A1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1709239372;
-	bh=eANDFJjcF28TbbY3NAVdjRQJ+bbD85155CR8rqMcY8E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=SfBEQkleMTQQB8i9ri0DjO6Qh0zDw1x5+QA69r+8BbMw93Gf8bbETFYaG4995ugcW
-	 lxfXENFRm1JGJ1peL2XYto6WOYj07fixAqX41BTfoWTSAD/03u4eLrGLcwVomxKABH
-	 sU264do6bHhtUbcKqgQjdJfblDDtLGX38dd5fH6E=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: Richard Weinberger <richard@nod.at>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org
-Subject: [PATCH] ubi: eba: properly rollback inside self_check_eba
-Date: Thu, 29 Feb 2024 23:42:36 +0300
-Message-ID: <20240229204237.30453-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.43.2
+	Thu, 29 Feb 2024 23:35:02 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so1676355ad.3
+        for <linux-mtd@lists.infradead.org>; Thu, 29 Feb 2024 15:34:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1709249697; x=1709854497; darn=lists.infradead.org;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=fjdsbnf00a2xZ+NeSkKHzVwnxjdctYK52n+j8T3rysA=;
+        b=iRKd8RJH/p7rUFyCc53BXHpFJehkS7wmjs0GsQ4PisWQAXgto8yG4lOP4mz7Z2mIyX
+         GHN7NyF5uz2M8JYZu8mnBjtgQHs23oH2uCPMyxnfqgixjhtsezF+h4bYJRxuB/YfGXKY
+         5mRe9DWIbVF89slcMEiLWinEgVTj0UQ2yiB+Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709249697; x=1709854497;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fjdsbnf00a2xZ+NeSkKHzVwnxjdctYK52n+j8T3rysA=;
+        b=AdD8sZFfep5wwKh1Kq+zDoX381CEXMwRZwGfTH/6M3lHXh9lK3wTsA45Us8H3kPq34
+         dN5VArfCCUycBtM+Npn0ySjmAnIsOtBY02R+Je492T4RcbPgA5YKPgJ213JBbLdogYqB
+         LznfKHhJHWUojaIdOL1LziTXBBFbaQYvIgn2PUbU8A5cxbj0F9exrhaZJsvF8v4B92K3
+         YrclsfXi8UP0aJt7QcMWDJLs29jDSkgiVIFZopYx7/t9uW1yz1B8NyC2KqItDOG0EcSs
+         F5ZSiVeYw/gYaZJix5osQBoLFyj/wH+9/gzaxVBMvmjooHJyDr8+KKPgWmkH/0dpXPI/
+         Dk8g==
+X-Gm-Message-State: AOJu0YykO+zryBXFeY+D/cmfRpAtifky8Qr0GVkSjElJQWRBvVROOZlY
+	QAY0qzaXK1wDXuo4+62niCutbaEAynLI6y3YJ3/D29JzRRT1Vn0QtbR21ndHEw==
+X-Google-Smtp-Source: AGHT+IGHUiUWHRdVyfFQbALGxzuEatMLb9UDKSBHeeH1RYePer03kdD+xeJ3HCW0IAvno7hNRslLrw==
+X-Received: by 2002:a17:902:6b85:b0:1dc:b6ef:e233 with SMTP id p5-20020a1709026b8500b001dcb6efe233mr16042plk.50.1709249696995;
+        Thu, 29 Feb 2024 15:34:56 -0800 (PST)
+Received: from [192.168.52.129] ([192.19.222.250])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902d50100b001dcc12a729dsm2075527plg.29.2024.02.29.15.34.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Feb 2024 15:34:55 -0800 (PST)
+Message-ID: <0f6659ca-536b-4003-a6f3-ddaaa44a9cdf@broadcom.com>
+Date: Thu, 29 Feb 2024 15:34:53 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 12/13] mtd: rawnand: brcmnand: Add support for getting
+ ecc setting from strap
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>,
+ Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+ Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+ f.fainelli@gmail.com, kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+ David Regan <dregan@broadcom.com>, linux-kernel@vger.kernel.org,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>
+References: <20240223034758.13753-1-william.zhang@broadcom.com>
+ <20240223034758.13753-13-william.zhang@broadcom.com>
+ <20240223101852.005da3ad@xps-13>
+ <db1c1e68-40e2-4c6c-afb2-2fb591883a46@broadcom.com>
+ <20240226093632.089d594c@xps-13>
+ <be75db7d-a698-43ab-b29e-dea3a0f60ba2@broadcom.com>
+ <20240229113119.30f7cee6@xps-13>
+From: William Zhang <william.zhang@broadcom.com>
+In-Reply-To: <20240229113119.30f7cee6@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240229_124324_765517_365CDCCC 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20240229_153500_682108_C460D137 
+X-CRM114-Status: GOOD (  24.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,49 +98,200 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4518564618704220227=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In case of a memory allocation failure in the volumes loop we can only
-process the already allocated scan_eba and fm_eba array elements on the
-error path - others are still uninitialized.
+--===============4518564618704220227==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000000bba6906128db560"
 
-Found by Linux Verification Center (linuxtesting.org).
+--0000000000000bba6906128db560
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Fixes: 00abf3041590 ("UBI: Add self_check_eba()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- drivers/mtd/ubi/eba.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi Minquel,
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 8d1f0e05892c..6f5eadb1598d 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1557,6 +1557,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
- 					  GFP_KERNEL);
- 		if (!fm_eba[i]) {
- 			ret = -ENOMEM;
-+			kfree(scan_eba[i]);
- 			goto out_free;
- 		}
- 
-@@ -1592,7 +1593,7 @@ int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
- 	}
- 
- out_free:
--	for (i = 0; i < num_volumes; i++) {
-+	while (--i >= 0) {
- 		if (!ubi->volumes[i])
- 			continue;
- 
--- 
-2.43.2
+On 2/29/24 02:31, Miquel Raynal wrote:
+> Hi William,
+> 
+> william.zhang@broadcom.com wrote on Mon, 26 Feb 2024 12:05:18 -0800:
+> 
+>> On 2/26/24 00:36, Miquel Raynal wrote:
+>>> Hi William,
+>>>
+>>> william.zhang@broadcom.com wrote on Fri, 23 Feb 2024 09:25:09 -0800:
+>>>    
+>>>> Hi Miquel,
+>>>>
+>>>> On 2/23/24 01:18, Miquel Raynal wrote:
+>>>>> Hi William,
+>>>>>
+>>>>> william.zhang@broadcom.com wrote on Thu, 22 Feb 2024 19:47:57 -0800:
+>>>>>     >>>> BCMBCA broadband SoC based board design does not specify ecc setting in
+>>>>>> dts but rather use the SoC NAND strap info to obtain the ecc strength
+>>>>>> and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
+>>>>>> this purpose and update driver to support this option. However these two
+>>>>>> options can not be used at the same time.
+>>>>>>
+>>>>>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+>>>>>> Reviewed-by: David Regan <dregan@broadcom.com>
+>>>>>>    >>>
+>>>>> FYI I did not receive patches 7, 8, 9, which makes the series numbering
+>>>>> very odd.
+>>>>>     >> I was using the get maintainer script mainly and it sends to the linux MTD list.  I will add your email directly next time.
+>>>
+>>> Yes, I prefer to be in Cc of the whole series, please.
+>>>    
+>> Sure.  And thanks for applying other patches.  Do you want me to just send a new single patch for the update?
+> 
+> Yes just the missing patch.
+> 
+v7 of this patch was sent early
 
+>>>>>>     >> +static int brcmnand_get_sector_size_1k(struct brcmnand_host *host)
+>>>>>> +{
+>>>>>> +	struct brcmnand_controller *ctrl = host->ctrl;
+>>>>>> +	int sector_size_bit = brcmnand_sector_1k_shift(ctrl);
+>>>>>> +	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
+>>>>>> +						  BRCMNAND_CS_ACC_CONTROL);
+>>>>>> +	u32 acc_control;
+>>>>>> +
+>>>>>> +	if (sector_size_bit < 0)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>> +	acc_control = nand_readreg(ctrl, acc_control_offs);
+>>>>>> +
+>>>>>> +	return (acc_control & BIT(sector_size_bit)) >> sector_size_bit;
+>>>>>
+>>>>> FIELD_PREP, FIELD_GET, *please*.
+>>>> You probably missed my reply to your comments on the same patch in v5. Here is the link for the post in case it lost in your email:
+>>>> https://lore.kernel.org/lkml/c145b90c-e9f0-4d82-94cc-baf7bfda5954@gmail.com/T/#m1d911d2f119f3bd345c575a81b60bc2bd8c461eb
+>>>
+>>> I didn't miss it, but the reason does not sound legitimate to me.
+>>> Please work on it, it will be so much cleaner.
+>>>    
+>> I understand FIELD_PREP/GET is the preferred way of linux accessing the register fields but it requires a constant MASK value and does not apply to our case as we have different versions of the register and have different mask.  There is way to workaround it. i.e defining the multiple constants directly and using these macros with if/else based on reg version. But it is not clean and since we already have helper functions that handle and return different shift/mask value, I see this is a perfect way for our situation and can adapt to future reg version change easily and cleanly.
+>>
+>>>> The mask is not constant here and cause build errors.
+> 
+> Which errors?
+> 
+If I use the code below In function brcmnand_get_sector_size_1k, inlined 
+from brcmnand_get_ecc_settings at 
+drivers/mtd/nand/raw/brcmnand/brcmnand.c:1089:24,
+     inlined from brcmnand_setup_dev at 
+drivers/mtd/nand/raw/brcmnand/brcmnand.c:2701:3:
+././include/linux/compiler_types.h:442:38: error: call to 
+compiletime_assert_254 declared with attribute error: FIELD_GET: mask is 
+not  constant
+
+> +       acc_control = nand_readreg(ctrl, acc_control_offs);
+> +       return FIELD_GET(BIT(sector_size_bit), acc_control);
+> 
+> Does not return any error here.
+> 
+Right, this function does not return error. brcmnand_sector_1k_shift 
+does. I didn't make that clear enough. This function is updated and 
+logic that calls this function is simplified in v7 based on your feedbacks.
+
+
+> Thanks,
+> Miquèl
+
+--0000000000000bba6906128db560
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
+6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
+xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
+VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
+/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
+0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
+urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINhKdfVBTcnbLdos+FBz54esvuh3
+zmy1mXqrE88HB/17MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
+MDIyOTIzMzQ1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBdfLsG1MdHdvS2IiU3r2cqJXE5Tu0hk/r277LCr+yqe7E9
+29uvDDlfHXmfdgLT7mmx633x+L3TAPwbiBdAGhFEL8U+hsLacP6vvz6IirUJE5LdhjnqClUDaqo/
+Bx/4d/+j0Wdi3EnoLU9ry1KtYAkeTsVC2CHcLIbkG4F6yHFcPnb3ovaRWiUqYWynV18kcLxg/X+I
+TugPgEGYD19PJE2/N8ezVSNqhU4ZrTwO+RnGlwYIqf2vrCI4lxyTEkfYspy+7hjBdbKSwkjImMfD
+dc2VgaN29+vpmYhB+mOCuv+pfPwBmePszemKrBrsV50FvWrbgGIK+IjgWX++ThMIydsX
+--0000000000000bba6906128db560--
+
+
+--===============4518564618704220227==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4518564618704220227==--
+
