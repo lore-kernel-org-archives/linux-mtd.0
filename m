@@ -4,71 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50354C5478C
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2024 17:33:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8E01C5475B
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2024 17:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xUZ7gA9w7aAuhdFB+3Dtocc+3gwc9yK4Jfre1ILHXes=; b=hppw3TwtkT/0qF
-	HRfntsKQHGL4ZBDQJRYPIduNhxAzN1SPuL6pAu0My52A9OylNPe/5a2GMXiDk1OUZenoz2YoJIgC5
-	3jxjWp83o99AScCyaSqvfNYNazmtzae5l6zHBXx3/PThJrBCYDYT7wzhZqH6zmprFL0MbIPyd1+tL
-	QblMr94UZHCoMKSVkNzNwFTaASHgFBDxhRSgJZReCQQbqH9AkQLkm0pIq3r+LuTuEoje91eVbBCGY
-	ntacJIz+j68sUuDuZ3TfisfRdN2zbHKCyhWqRNEeYpclkb89VVeDEckk2mVDq2gC7WFuWGxHYIkZ6
-	qA+BJh94Bdh49r44B7Ag==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mdZV2+jrxY/UHdnQyvoKhZRsatFmpR7IbqoI+jHYhww=; b=I8II9i4QpIE7Tv
+	zwdBShsbgOaca5e1m1hxRm0KAUxsi4WZMORiWvmR1SqfcnmSTMdsFjesA6lEacSX/Se9UPJaBRwXR
+	peo1YNCg3CZQDQnZDpg2yGZ7gLBg84B1vPArBlKjXZWvaW4/r8T8t+hoobwKhERRx/QaNdJ3MpH7a
+	qbwHIxgSE7mQbRoUHZFgEf2LyjF51fqHIolknbK2aVDuzYZLAQ60+h3gHD+2AGVsY+USxGKNjbddH
+	1VnP05Y3St2S/rDKBbGPvxa1bsKEKooOmRqr3uyHKLqQW8tk6JswQ5RBPfhoocCu4TbvSleRUb9pv
+	Cb7N5Y6hC3sQQ8T11XbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rg6lM-00000001MOs-3sun;
-	Fri, 01 Mar 2024 17:33:36 +0000
-Received: from lpdvsmtp11.broadcom.com ([192.19.166.231] helo=relay.smtp-ext.broadcom.com)
+	id 1rg71a-00000001PuD-2cuq;
+	Fri, 01 Mar 2024 17:50:22 +0000
+Received: from mx08-00178001.pphosted.com ([91.207.212.93] helo=mx07-00178001.pphosted.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rg6lJ-00000001MO3-1YCU;
-	Fri, 01 Mar 2024 17:33:34 +0000
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 6970FC001BE3;
-	Fri,  1 Mar 2024 09:33:31 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 6970FC001BE3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1709314411;
-	bh=6C7kUWjoZj+bDBVzxj0XxvUNYCpEIU3ZAbUZhUfTY7s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Oc+DiUx3upQyGnYCXF5R8QY4m108L92oXeUVTSXMT8Ftt5uEWCuz6bBxlr9MNpi2H
-	 7j8k7Pv9f2sgRSVumab94vpUDzIoNyUJ4N2W8okEmgf1zx8XE+b3puc3Ek4t64TG6J
-	 Sr/eBB9WXozgkm+VqVdXj5VVK1BfLrnZPRJqJx5c=
-Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id D363318041CAC4;
-	Fri,  1 Mar 2024 09:33:29 -0800 (PST)
-From: William Zhang <william.zhang@broadcom.com>
-To: Linux MTD List <linux-mtd@lists.infradead.org>,
-	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
-	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
-Cc: f.fainelli@gmail.com,
-	kursad.oney@broadcom.com,
-	joel.peshkin@broadcom.com,
-	miquel.raynal@bootlin.com,
-	anand.gore@broadcom.com,
-	dregan@mail.com,
-	kamal.dasu@broadcom.com,
-	tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
-	David Regan <dregan@broadcom.com>,
-	linux-kernel@vger.kernel.org,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH v8] mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
-Date: Fri,  1 Mar 2024 09:33:07 -0800
-Message-Id: <20240301173308.226004-1-william.zhang@broadcom.com>
-X-Mailer: git-send-email 2.37.3
+	id 1rg71Y-00000001Psq-0iNS
+	for linux-mtd@lists.infradead.org;
+	Fri, 01 Mar 2024 17:50:22 +0000
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 421AwvQv022493;
+	Fri, 1 Mar 2024 18:49:51 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=pX880VHAiAcKRls7BPjtfXjDb7SpOtdl+UFZ3qPxx60=; b=KA
+	L1IhSbUxXIkHg+U5/kqU4BHlgD8eexB8iJCuhy+yYWXbrrNGD3/BNP4fU223ECvE
+	pbigtTe6NHusoBW9ODNgRMhxwg5Mj6T2wuVjXEtsE1a4oooO9UrJsfvxC66Qlr9L
+	a9rz0JLHd89T9o7hxnMsp4fKKSG8iq7xqlxJMtXHncGnrawE5IQ1lKhoyeL28yFd
+	cJsKdXXBvSN9OpXtxYpB1wXGlXOetgkod4brXW/fF25uetrcsMlc+EE1a3HjIsyE
+	cSZ+y/ztFRyB1lZNTS6SZN3v9QXIMjNvB7NGm5eIwN0zRw4cWRJnYTWJTricY73g
+	Fcw/Rvj18/g3UposTNFg==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3whf4e8q8h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 01 Mar 2024 18:49:50 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 1CD384002D;
+	Fri,  1 Mar 2024 18:49:43 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1277F2B0123;
+	Fri,  1 Mar 2024 18:48:33 +0100 (CET)
+Received: from [10.201.21.177] (10.201.21.177) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 1 Mar
+ 2024 18:48:32 +0100
+Message-ID: <ffdb0f72-5e49-4e41-9801-399035c0bdce@foss.st.com>
+Date: Fri, 1 Mar 2024 18:48:31 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] mtd: rawnand: Fix and simplify again the continuous
+ read derivations
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus
+	<tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael
+ Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>
+CC: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Julien Su
+	<juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+        Jaime Liao
+	<jaimeliao.tw@gmail.com>,
+        Alvin Zhou <alvinzhou@mxic.com.tw>, <eagle.alexander923@gmail.com>,
+        <mans@mansr.com>, <martin@geanix.com>,
+        =?UTF-8?Q?Sean_Nyekj=C3=A6r?= <sean@geanix.com>,
+        <stable@vger.kernel.org>
+References: <20240223115545.354541-1-miquel.raynal@bootlin.com>
+ <20240223115545.354541-2-miquel.raynal@bootlin.com>
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+In-Reply-To: <20240223115545.354541-2-miquel.raynal@bootlin.com>
+X-Originating-IP: [10.201.21.177]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-01_20,2024-03-01_02,2023-05-22_02
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240301_093333_495654_620A925C 
-X-CRM114-Status: GOOD (  21.94  )
+X-CRM114-CacheID: sfid-20240301_095020_680561_F395C3E2 
+X-CRM114-Status: GOOD (  18.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,162 +103,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-BCMBCA broadband SoC based board design does not specify ecc setting in
-dts but rather use the SoC NAND strap info to obtain the ecc strength
-and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
-this purpose and update driver to support this option. However these two
-options can not be used at the same time.
+Hi Miquel,
 
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: David Regan <dregan@broadcom.com>
+On 2/23/24 12:55, Miquel Raynal wrote:
+> We need to avoid the first page if we don't read it entirely.
+> We need to avoid the last page if we don't read it entirely.
+> While rather simple, this logic has been failed in the previous
+> fix. This time I wrote about 30 unit tests locally to check each
+> possible condition, hopefully I covered them all.
+> 
+> Reported-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Closes: https://lore.kernel.org/linux-mtd/20240221175327.42f7076d@xps-13/T/#m399bacb10db8f58f6b1f0149a1df867ec086bb0a
+> Suggested-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Fixes: 828f6df1bcba ("mtd: rawnand: Clarify conditions to enable continuous reads")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
----
+Tested-by: Christophe Kerello <christophe.kerello@foss.st.com>
 
-Changes in v8:
-- Remove the patch revision info from the commit log
+Regards,
+Christophe Kerello.
 
-Changes in v7:
-- Simply the logic for sector size detection
-- Update the error message
-
-Changes in v6:
-- Combine the ecc step size and ecc strength into one get function
-- Treat it as error condition if both brcm,nand-ecc-use-strap and nand
-ecc dts properties are set
-- Add intermediate steps to get the sector size bitfield
-
-Changes in v4:
-- Update the comments for ecc setting selection
-
-Changes in v2:
-- Minor cosmetic fixes
-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 83 ++++++++++++++++++++++--
- 1 file changed, 77 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index ef7d340475be..8a26ff97c8e2 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1038,6 +1038,22 @@ static inline int brcmnand_sector_1k_shift(struct brcmnand_controller *ctrl)
- 		return -1;
- }
- 
-+static bool brcmnand_get_sector_size_1k(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	int sector_size_bit = brcmnand_sector_1k_shift(ctrl);
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	u32 acc_control;
-+
-+	if (sector_size_bit < 0)
-+		return false;
-+
-+	acc_control = nand_readreg(ctrl, acc_control_offs);
-+
-+	return ((acc_control & BIT(sector_size_bit)) != 0);
-+}
-+
- static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
- {
- 	struct brcmnand_controller *ctrl = host->ctrl;
-@@ -1055,6 +1071,43 @@ static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
- 	nand_writereg(ctrl, acc_control_offs, tmp);
- }
- 
-+static int brcmnand_get_spare_size(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	u32 acc = nand_readreg(ctrl, acc_control_offs);
-+
-+	return (acc & brcmnand_spare_area_mask(ctrl));
-+}
-+
-+static void brcmnand_get_ecc_settings(struct brcmnand_host *host, struct nand_chip *chip)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	bool sector_size_1k = brcmnand_get_sector_size_1k(host);
-+	int spare_area_size, ecc_level;
-+	u32 acc;
-+
-+	spare_area_size = brcmnand_get_spare_size(host);
-+	acc = nand_readreg(ctrl, acc_control_offs);
-+	ecc_level = (acc & brcmnand_ecc_level_mask(ctrl)) >> ctrl->ecc_level_shift;
-+	if (sector_size_1k)
-+		chip->ecc.strength = ecc_level * 2;
-+	else if (spare_area_size == 16 && ecc_level == 15)
-+		chip->ecc.strength = 1; /* hamming */
-+	else
-+		chip->ecc.strength = ecc_level;
-+
-+	if (chip->ecc.size == 0) {
-+		if (sector_size_1k)
-+			chip->ecc.size = 1024;
-+		else
-+			chip->ecc.size = 512;
-+	}
-+}
-+
- /***********************************************************************
-  * CS_NAND_SELECT
-  ***********************************************************************/
-@@ -2625,19 +2678,37 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 		nanddev_get_memorg(&chip->base);
- 	struct brcmnand_controller *ctrl = host->ctrl;
- 	struct brcmnand_cfg *cfg = &host->hwcfg;
--	char msg[128];
-+	struct device_node *np = nand_get_flash_node(chip);
- 	u32 offs, tmp, oob_sector;
-+	bool use_strap = false;
-+	char msg[128];
- 	int ret;
- 
- 	memset(cfg, 0, sizeof(*cfg));
-+	use_strap = of_property_read_bool(np, "brcm,nand-ecc-use-strap");
- 
--	ret = of_property_read_u32(nand_get_flash_node(chip),
--				   "brcm,nand-oob-sector-size",
-+	/*
-+	 * Either nand-ecc-xxx or brcm,nand-ecc-use-strap can be set. Error out
-+	 * if both exist.
-+	 */
-+	if (chip->ecc.strength && use_strap) {
-+		dev_err(ctrl->dev,
-+			"ECC strap and DT ECC configuration properties are mutually exclusive\n");
-+		return -EINVAL;
-+	}
-+
-+	if (use_strap)
-+		brcmnand_get_ecc_settings(host, chip);
-+
-+	ret = of_property_read_u32(np, "brcm,nand-oob-sector-size",
- 				   &oob_sector);
- 	if (ret) {
--		/* Use detected size */
--		cfg->spare_area_size = mtd->oobsize /
--					(mtd->writesize >> FC_SHIFT);
-+		if (use_strap)
-+			cfg->spare_area_size = brcmnand_get_spare_size(host);
-+		else
-+			/* Use detected size */
-+			cfg->spare_area_size = mtd->oobsize /
-+						(mtd->writesize >> FC_SHIFT);
- 	} else {
- 		cfg->spare_area_size = oob_sector;
- 	}
--- 
-2.37.3
-
+> ---
+>   drivers/mtd/nand/raw/nand_base.c | 38 ++++++++++++++++++--------------
+>   1 file changed, 22 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 3b3ce2926f5d..bcfd99a1699f 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -3466,30 +3466,36 @@ static void rawnand_enable_cont_reads(struct nand_chip *chip, unsigned int page,
+>   				      u32 readlen, int col)
+>   {
+>   	struct mtd_info *mtd = nand_to_mtd(chip);
+> -	unsigned int end_page, end_col;
+> +	unsigned int first_page, last_page;
+>   
+>   	chip->cont_read.ongoing = false;
+>   
+>   	if (!chip->controller->supported_op.cont_read)
+>   		return;
+>   
+> -	end_page = DIV_ROUND_UP(col + readlen, mtd->writesize);
+> -	end_col = (col + readlen) % mtd->writesize;
+> +	/*
+> +	 * Don't bother making any calculations if the length is too small.
+> +	 * Side effect: avoids possible integer underflows below.
+> +	 */
+> +	if (readlen < (2 * mtd->writesize))
+> +		return;
+>   
+> +	/* Derive the page where continuous read should start (the first full page read) */
+> +	first_page = page;
+>   	if (col)
+> -		page++;
+> -
+> -	if (end_col && end_page)
+> -		end_page--;
+> -
+> -	if (page + 1 > end_page)
+> -		return;
+> -
+> -	chip->cont_read.first_page = page;
+> -	chip->cont_read.last_page = end_page;
+> -	chip->cont_read.ongoing = true;
+> -
+> -	rawnand_cap_cont_reads(chip);
+> +		first_page++;
+> +
+> +	/* Derive the page where continuous read should stop (the last full page read) */
+> +	last_page = page + ((col + readlen) / mtd->writesize) - 1;
+> +
+> +	/* Configure and enable continuous read when suitable */
+> +	if (first_page < last_page) {
+> +		chip->cont_read.first_page = first_page;
+> +		chip->cont_read.last_page = last_page;
+> +		chip->cont_read.ongoing = true;
+> +		/* May reset the ongoing flag */
+> +		rawnand_cap_cont_reads(chip);
+> +	}
+>   }
+>   
+>   static void rawnand_cont_read_skip_first_page(struct nand_chip *chip, unsigned int page)
 
 ______________________________________________________
 Linux MTD discussion mailing list
