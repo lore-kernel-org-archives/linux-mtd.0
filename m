@@ -4,72 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F5BEC5475B
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2024 10:53:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E65D6C5475B
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Mar 2024 14:45:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w5ien+hlrqtyZOgIP+4xlFGihCumSuYcyXs9DmaqTHo=; b=0NrlNDRvKL8eC9
-	2TlgmvIUjjk1GBrFn4GL/D1NtoH6LQFv5telF7xh45GOO+pSyYL4mfA1zRylxH9+CAKwhuf+mDBnq
-	GGk6tHHck96qfxpWC6n1P7PtWhPA4Fs1N/VSi65I9Zvz6kHYo5wyXrUYNYmvJYWzG7hBXhUk+pWOn
-	rYoiRaCWy8OLYYmXqP+lE0r3hbRr9yadjBpOdvTSDlSooh26XCjY+dIWZ1+T0Vtfpefn6OM1+8fiI
-	F4nQung5P8g1G/2j3RX7IIILuSgWOymcrF+ZhU/2/XKGIHwnmJ5VuZ/uIADFiaCKkq6YfleP77kU+
-	gJxclrE13ds7D0R7bSPA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mfd3C8fjPEMmgyzlIIJfcoIHGXHGVEL+UYA0QHRmq4g=; b=1V78p6OQebE7v4
+	3bXxBgO1JmTPcBB+3P2YkNI/yHu8GtIrUI+WP6Cds1nDmCRnlFUVwM+cIN4lKhizNLzOilI2Kc4nB
+	OJ+Q0het6esBKWvcf3P1I1wYvEWRLNXOXgg/+Voaa3K8Nc9KmR4FJYXN7OLK0LZpSTv/gIVc7/jlP
+	/LWIJS8H5Rujs6hUhee4lBQs+NCXOtkqe7y6BdCdMb0tuTqvxuf3/wczVv5ysZ86SmE2Q6WuAhokC
+	t4pJTEokNL+4OXvdw/PMOPaL1rG0LZiY3OAOBb4FiPu3z7hOmwNCo5DvcMH3bJp1iFY1+c0za19/M
+	fLFO5K/QdhDJBmvbbEjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rg0W5-0000000HS8u-2sUm;
-	Fri, 01 Mar 2024 10:53:25 +0000
-Received: from abb.hmeau.com ([144.6.53.87])
+	id 1rg48E-00000000llK-3tV2;
+	Fri, 01 Mar 2024 14:45:02 +0000
+Received: from madrid.collaboradmins.com ([46.235.227.194])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rg0W1-0000000HS6N-1IKk;
-	Fri, 01 Mar 2024 10:53:22 +0000
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rg0UC-002Hbb-4N; Fri, 01 Mar 2024 18:51:29 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 01 Mar 2024 18:51:43 +0800
-Date: Fri, 1 Mar 2024 18:51:43 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
-	mturquette@baylibre.com, sboyd@kernel.org, davem@davemloft.net,
-	andi.shyti@kernel.org, tglx@linutronix.de, tudor.ambarus@linaro.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	linus.walleij@linaro.org, sre@kernel.org,
-	u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-	olivia@selenic.com, radu_nicolae.pirea@upb.ro,
-	richard.genoud@gmail.com, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-	wim@linux-watchdog.org, linux@roeck-us.net, linux@armlinux.org.uk,
-	andrei.simion@microchip.com, mihai.sain@microchip.com,
-	andre.przywara@arm.com, neil.armstrong@linaro.org, tony@atomide.com,
-	durai.manickamkr@microchip.com, geert+renesas@glider.be,
-	arnd@arndb.de, Jason@zx2c4.com, rdunlap@infradead.org,
-	rientjes@google.com, vbabka@suse.cz, mripard@kernel.org,
-	codrin.ciubotariu@microchip.com, eugen.hristev@collabora.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v4 00/39] Add support for sam9x7 SoC family
-Message-ID: <ZeGzPwdslHIj5IWt@gondor.apana.org.au>
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+	id 1rg48A-00000000lhd-1xQU
+	for linux-mtd@lists.infradead.org;
+	Fri, 01 Mar 2024 14:45:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709304297;
+	bh=+HDNwzccRkcc9hkZwYDAOt4M5Q55mu65xiChlYxn1dQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pZkNualVekd3oqnVTbyHho7X9a0TfTXMrnaziDRaJuNjpVhtH/ldHxYvBFfjVKGs8
+	 nRTXZokimaEUyf8L/HDeFwqHyiNNDD9SIny/tWWzrFRWqi0eCd/z4kTHb5LZLovYv/
+	 la1r0v6NgLzIg89PPK8lXJi1Qx/K6rfOnIeB5Dp/REZmZ/rbTHybVUX7/cGS6Mn+DR
+	 t8AZo93TmYzPzeYWEfeqslFe+xWaf0d2DVURdIUGlY1eMAGAsCWbbYstJ6/RNW42uQ
+	 5XiSJwzhVx4YxHieVKiny3fIds9b51FFRHQnNrAwIdpBlATEOXNCNUYJJTJnU7n6Gr
+	 0PSx8sSrce0XA==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EA57137803EE;
+	Fri,  1 Mar 2024 14:44:53 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	kernel-janitors@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: core: correct type of i to be signed
+Date: Fri,  1 Mar 2024 19:45:16 +0500
+Message-Id: <20240301144517.2811370-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240223171342.669133-1-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240301_025321_647610_6C7B92DB 
-X-CRM114-Status: GOOD (  36.07  )
+X-CRM114-CacheID: sfid-20240301_064458_824299_C9DE7ECC 
+X-CRM114-Status: GOOD (  10.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,178 +81,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 23, 2024 at 10:43:42PM +0530, Varshini Rajendran wrote:
-> This patch series adds support for the new SoC family - sam9x7.
->  - The device tree, configs and drivers are added
->  - Clock driver for sam9x7 is added
->  - Support for basic peripherals is added
->  - Target board SAM9X75 Curiosity is added
-> 
->  Changes in v4:
->  --------------
-> 
->  - Addressed all the review comments in the patches
->  - Picked up all Acked-by and Reviewed-by tags
->  - Dropped applied patches from the series
->  - Added pwm node and related dt binding documentation
->  - Added support for exporting some clocks to DT
->  - Dropped USB related patches and changes. See NOTE.
->  - All the specific changes are captured in the corresponding patches
-> 
->  NOTE: Owing to the discussion here
->  https://lore.kernel.org/linux-devicetree/CAL_JsqJ9PrX6fj-EbffeJce09MXs=B7t+KS_kOinxaRx38=WxA@mail.gmail.com/
->  the USB related changes are dropped from this series in order to enable
->  us to work on the mentioned issues before adding new compatibles as
->  said. The issues/warnings will be addressed in subsequent patches.
->  After which the USB related support for sam9x7 SoCs will be added. Hope
->  this works out fine.
-> 
->  Changes in v3:
->  --------------
-> 
->  - Fixed the DT documentation errors pointed out in v2.
->  - Dropped Acked-by tag in tcb DT doc patch as it had to be adapted
->    according to sam9x7 correctly.
->  - Picked by the previously missed tags.
->  - Dropped this patch "dt-bindings: usb: generic-ehci: Document clock-names
->    property" as the warning was not found while validating DT-schema for
->    at91-sam9x75_curiosity.dtb.
->  - Dropped redundant words in the commit message.
->  - Fixed the CHECK_DTBS warnings validated against
->    at91-sam9x75_curiosity.dtb.
->  - Renamed dt nodes according to naming convention.
->  - Dropped unwanted status property in dts.
->  - Removed nodes that are not in use from the board dts.
->  - Removed spi DT doc patch from the series as it was already applied
->    and a fix patch was applied subsequently. Added a patch to remove the
->    compatible to adapt sam9x7.
->  - Added sam9x7 compatibles in usb dt documentation.
-> 
-> 
->  Changes in v2:
->  --------------
-> 
->  - Added sam9x7 specific compatibles in DT with fallbacks
->  - Documented all the newly added DT compatible strings
->  - Added device tree for the target board sam9x75 curiosity and
->    documented the same in the DT bindings documentation
->  - Removed the dt nodes that are not supported at the moment
->  - Removed the configs added by previous version that are not supported
->    at the moment
->  - Fixed all the corrections in the commit message
->  - Changed all the instances of copyright year to 2023
->  - Added sam9x7 flag in PIT64B configuration
->  - Moved macro definitions to header file
->  - Added another divider in mck characteristics in the pmc driver
->  - Fixed the memory leak in the pmc driver
->  - Dropped patches that are no longer needed
->  - Picked up Acked-by and Reviewed-by tags
-> 
-> 
-> Varshini Rajendran (39):
->   dt-bindings: net: cdns,macb: add sam9x7 ethernet interface
->   dt-bindings: atmel-sysreg: add sam9x7
->   dt-bindings: crypto: add sam9x7 in Atmel AES
->   dt-bindings: crypto: add sam9x7 in Atmel SHA
->   dt-bindings: crypto: add sam9x7 in Atmel TDES
->   dt-bindings: i2c: at91: Add sam9x7 compatible string
->   dt-bindings: atmel-ssc: add microchip,sam9x7-ssc
->   dt-bindings: atmel-nand: add microchip,sam9x7-pmecc
->   dt-bindings: pinctrl: at91: add sam9x7
->   dt-bindings: rng: atmel,at91-trng: add sam9x7 TRNG
->   dt-bindings: rtt: at91rm9260: add sam9x7 compatible
->   dt-bindings: serial: atmel,at91-usart: add compatible for sam9x7.
->   ASoC: dt-bindings: atmel-classd: add sam9x7 compatible
->   dt-bindings: pwm: at91: Add sam9x7 compatible strings list
->   dt-bindings: watchdog: sama5d4-wdt: add compatible for sam9x7-wdt
->   spi: dt-bindings: atmel,at91rm9200-spi: remove 9x60 compatible from
->     list
->   ASoC: dt-bindings: microchip: add sam9x7
->   ARM: at91: pm: add support for sam9x7 SoC family
->   ARM: at91: pm: add sam9x7 SoC init config
->   ARM: at91: add support in SoC driver for new sam9x7
->   dt-bindings: clk: at91: add sam9x7
->   dt-bindings: clk: at91: add sam9x7 clock controller
->   clk: at91: clk-sam9x60-pll: re-factor to support individual core freq
->     outputs
->   clk: at91: sam9x7: add support for HW PLL freq dividers
->   clk: at91: sama7g5: move mux table macros to header file
->   dt-bindings: clock: at91: Allow PLLs to be exported and referenced in
->     DT
->   clk: at91: sam9x7: add sam9x7 pmc driver
->   dt-bindings: irqchip/atmel-aic5: Add support for sam9x7 aic
->   irqchip/atmel-aic5: Add support to get nirqs from DT for sam9x60 &
->     sam9x7
->   power: reset: at91-poweroff: lookup for proper pmc dt node for sam9x7
->   power: reset: at91-reset: add reset support for sam9x7 SoC
->   power: reset: at91-reset: add sdhwc support for sam9x7 SoC
->   dt-bindings: reset: atmel,at91sam9260-reset: add sam9x7
->   dt-bindings: power: reset: atmel,sama5d2-shdwc: add sam9x7
->   ARM: at91: Kconfig: add config flag for SAM9X7 SoC
->   ARM: configs: at91: enable config flags for sam9x7 SoC family
->   ARM: dts: at91: sam9x7: add device tree for SoC
->   dt-bindings: arm: add sam9x75 curiosity board
->   ARM: dts: at91: sam9x75_curiosity: add sam9x75 curiosity board
-> 
->  .../devicetree/bindings/arm/atmel-at91.yaml   |    6 +
->  .../devicetree/bindings/arm/atmel-sysregs.txt |    7 +-
->  .../bindings/clock/atmel,at91rm9200-pmc.yaml  |    2 +
->  .../bindings/clock/atmel,at91sam9x5-sckc.yaml |    4 +-
->  .../crypto/atmel,at91sam9g46-aes.yaml         |    6 +-
->  .../crypto/atmel,at91sam9g46-sha.yaml         |    6 +-
->  .../crypto/atmel,at91sam9g46-tdes.yaml        |    6 +-
->  .../bindings/i2c/atmel,at91sam-i2c.yaml       |    4 +-
->  .../interrupt-controller/atmel,aic.txt        |    2 +-
->  .../devicetree/bindings/misc/atmel-ssc.txt    |    1 +
->  .../devicetree/bindings/mtd/atmel-nand.txt    |    1 +
->  .../devicetree/bindings/net/cdns,macb.yaml    |    5 +
->  .../bindings/pinctrl/atmel,at91-pinctrl.txt   |    2 +
->  .../power/reset/atmel,sama5d2-shdwc.yaml      |    3 +
->  .../bindings/pwm/atmel,at91sam-pwm.yaml       |    3 +
->  .../reset/atmel,at91sam9260-reset.yaml        |    4 +
->  .../bindings/rng/atmel,at91-trng.yaml         |    4 +
->  .../bindings/rtc/atmel,at91sam9260-rtt.yaml   |    4 +-
->  .../bindings/serial/atmel,at91-usart.yaml     |   12 +-
->  .../bindings/sound/atmel,sama5d2-classd.yaml  |    7 +-
->  .../sound/microchip,sama7g5-i2smcc.yaml       |   11 +-
->  .../bindings/spi/atmel,at91rm9200-spi.yaml    |    1 -
->  .../bindings/watchdog/atmel,sama5d4-wdt.yaml  |   12 +-
->  arch/arm/boot/dts/microchip/Makefile          |    3 +
->  .../dts/microchip/at91-sam9x75_curiosity.dts  |  309 +++++
->  arch/arm/boot/dts/microchip/sam9x60.dtsi      |    1 +
->  arch/arm/boot/dts/microchip/sam9x7.dtsi       | 1214 +++++++++++++++++
->  arch/arm/configs/at91_dt_defconfig            |    1 +
->  arch/arm/mach-at91/Kconfig                    |   23 +-
->  arch/arm/mach-at91/Makefile                   |    1 +
->  arch/arm/mach-at91/generic.h                  |    2 +
->  arch/arm/mach-at91/pm.c                       |   35 +
->  arch/arm/mach-at91/sam9x7.c                   |   34 +
->  drivers/clk/at91/Makefile                     |    1 +
->  drivers/clk/at91/clk-sam9x60-pll.c            |   50 +-
->  drivers/clk/at91/pmc.h                        |   18 +
->  drivers/clk/at91/sam9x60.c                    |    7 +
->  drivers/clk/at91/sam9x7.c                     |  946 +++++++++++++
->  drivers/clk/at91/sama7g5.c                    |   42 +-
->  drivers/irqchip/irq-atmel-aic5.c              |   12 +-
->  drivers/power/reset/Kconfig                   |    4 +-
->  drivers/power/reset/at91-sama5d2_shdwc.c      |    1 +
->  drivers/soc/atmel/soc.c                       |   23 +
->  drivers/soc/atmel/soc.h                       |    9 +
->  include/dt-bindings/clock/at91.h              |    4 +
->  45 files changed, 2788 insertions(+), 65 deletions(-)
->  create mode 100644 arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
->  create mode 100644 arch/arm/boot/dts/microchip/sam9x7.dtsi
->  create mode 100644 arch/arm/mach-at91/sam9x7.c
->  create mode 100644 drivers/clk/at91/sam9x7.c
-> 
-> -- 
-> 2.25.1
+The i should be signed to find out the end of the loop. Otherwise,
+i >= 0 is always true and loop becomes infinite.
 
-Patches 3-5 and 10 applied.  Thanks.
+Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ drivers/mtd/spi-nor/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 65b32ea59afc6..46bc45b80883f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3373,7 +3373,7 @@ static u32
+ spi_nor_get_region_erasesize(const struct spi_nor_erase_region *region,
+ 			     const struct spi_nor_erase_type *erase_type)
+ {
+-	u8 i;
++	s8 i;
+ 
+ 	if (region->overlaid)
+ 		return region->size;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
