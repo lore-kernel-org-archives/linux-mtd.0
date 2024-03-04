@@ -4,85 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C92CCC48BF6
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2024 10:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F23EC5478C
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Mar 2024 10:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K60aK4HPxE5SzIbzJ+44L7UI1/cLYVSjCaS/yjACW84=; b=RRSFz8sk+5xyXy
-	hki+y06pp9RFRHKLS/Jz2MQ5WbrXmFTflJ5UKNwQLe6gKagFrNTK4RpDN586NQP/DZcxWlGiVYYfD
-	do/ncFTG9UqpsZXfDwd8M92oQjvV+NCHZH5d1smsH2eS5fbPwsSLvPN9dMt0mYFWX7kIYADuNLGqU
-	m8VlZWYIYDFodfmqXsIPbW7eLiiavYJEShsW1mJCaIHvSSjYssewOxWFv5H329XzvizLtszC6hjKK
-	m8raTuowyVJ28ZoRaDo/Ikw5JOK/hMRis4A2ALYfWQosUVnNONFpqfOH1HaSp5QyjTonFP6aM5KLA
-	APjPem45TdLQLhHlKlsQ==;
+	List-Owner; bh=HqoKwxnEXYL3MP/Eo8aPz+koHcWO8qcYIsLR/6+xo8E=; b=hqi47DUprca76Q
+	CJzleeQV2m7RJGDtKQduiYDN2/NccmdEvQSV6/FU1NAdU0ZnFrS8sLN6nIPUQ/GSGFSj0xwOUZp3W
+	wxpP43AZOPvlUcL6eQkFj4wiDXKxfmg7qS0bqNkcbBeVIm4OuD9xjO4oGDfVSUYVt0HZH9lUCgrzz
+	S0ai0XwNYBdaAIdephu9R0jrm2giFqe7VCd1GIvW6Equix8cW5U9wHfQzkkOsky4tdd9xjrqRICHu
+	9yHOO51LX52inKAN1Pk87i/+wydhGlQkmWt/AHS4YMiylzHV3dt8TVcn35v9JNzfHPan7T2BCH3Uv
+	CsLL+85lGXV6TY9WKW8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rh5aO-00000008cR3-47Ti;
-	Mon, 04 Mar 2024 10:30:21 +0000
-Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
+	id 1rh5bw-00000008dPv-0NuL;
+	Mon, 04 Mar 2024 10:31:56 +0000
+Received: from madrid.collaboradmins.com ([46.235.227.194])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rh5I4-00000008Y2R-30cS
+	id 1rh5S4-00000008aFS-1O4a
 	for linux-mtd@lists.infradead.org;
-	Mon, 04 Mar 2024 10:11:27 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-412e355e258so5030825e9.2
-        for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2024 02:11:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709547076; x=1710151876; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=apfVynKdMHWt/84gIfAXsivA2/2+KZh2cujSEqljhTk=;
-        b=yjZOHMcdXbfYpR7PNsrCp/kkrWiJNXNQJpWgLQNvlFMr9KBjIVaqRlas/8Xm8sVSab
-         fIn/RFsNn9eEHjiGmoNWQhA5zd1LKMM9Q6iQdMJ2n923K+rLd6NCLDlOPp+Jrut+hdPO
-         iedjdgHUqZTSmcX/R/v2Wmo7bBpgpWtMF/8S+MxJTbsm/weCBf2Bt3Cvv32Hy0zPj1oV
-         gvCBrZj+2s59GyH8kchWg9abKnlL7peP8A73nvmLhMMXzJZ2MuwIisw2UtbM/eYEyjH0
-         FK4Ll+mqi5ZEUv/uGVKvac+1aEr41NGX+QxU/z6Ih3kQdUfmKRG7VWsRbkPJgL9ArUc1
-         OjoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709547076; x=1710151876;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=apfVynKdMHWt/84gIfAXsivA2/2+KZh2cujSEqljhTk=;
-        b=rJHWJkZUXeUhkNhn3QQ0wcI9u0LyAg9V9Be+tDDdXfyCEzyz9+jwC4mwpdJY9l5AYT
-         7s2QGYZsjfRvskzJacNRoW/S6MItBuHwMkiAOV4MkOLLxsOhkUY9XBqjjWkHZetVqbgV
-         kWNq3+B0h94NOP0qxAVQGp91KEdiVhKuO1o3TX7DmaOlX2W8BIn7fB0aDZT9B4KDmXyZ
-         gj9fzOVmAqiWyCr1rqMNQMLDZLFtVXG6a680GLgpuYAhdoD0KYFgjtqmJ9s62ZU88NUt
-         rmwn45xe7WOeZad/Dsj0tnZoKRKW0Y7zmaEaAnzTC65BMqgqU/eZHY7MCq3+LS4NTcvV
-         W5jg==
-X-Forwarded-Encrypted: i=1; AJvYcCXj9RsZSb1LlDqbdvFxkpqIMpGMTBvrM/y61D4VOSDjPJdbLBag81V6aqsx6YH+IJJEuG6pE9wb63j3yvKYtKlLie5v2USoeQsMdypU9g==
-X-Gm-Message-State: AOJu0YykDyV0GOhDuY0jlSKGDcOTCFNFVWOTRPI4wkr+pGZP9dQ1p9B/
-	Hpy+WDFnRLOdCHXlyv5FQ2j6kJrPOjGLWmjYJnOjTUcloNbyFP431nrg4u+xf54=
-X-Google-Smtp-Source: AGHT+IHNn7sU3K7fVrmKdjcX18dvKktXyRnPZAwnYOUoT0D0zKIFokCLkKqap2Bkk/sWa6rTyu9UnQ==
-X-Received: by 2002:a5d:5ccb:0:b0:33e:1627:4682 with SMTP id cg11-20020a5d5ccb000000b0033e16274682mr5193040wrb.29.1709547076459;
-        Mon, 04 Mar 2024 02:11:16 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id f10-20020a5d58ea000000b0033d4cf751b2sm11722955wrd.33.2024.03.04.02.11.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 02:11:15 -0800 (PST)
-Date: Mon, 4 Mar 2024 13:11:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-	kernel@collabora.com, kernel-janitors@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
-Message-ID: <7a42984f-34cc-494e-b8f3-83596621d31a@moroto.mountain>
-References: <20240304090103.818092-1-usama.anjum@collabora.com>
+	Mon, 04 Mar 2024 10:21:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709547702;
+	bh=CdqsZgMWba5+4/38tOJ0rHa2CTmblAVjgPmyX2jcBAQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hmxqRTZHaFH0EmwDUqjKD9B2YwFeSsIN/Sv9G9R8MUAarAtX2CpV6WXAVo3j03DJZ
+	 6vtWlYiV9WgPT41PzE6h8UvM67wx+aYuxtN5FD6Z5ySrC0TSYmZWVDzObsJNaEEq19
+	 2F5mvVJ+sQerOh7Oec65NMyNutREUl9jXMX76RXUcTYj+60Jola5sSeKiapp7c3csh
+	 DrnyU2GY34R8J3dVvpY3sTjr9zMAhT+l4KSSlIpa2KFcJtnKaqdo5tN6OKykJmv9wh
+	 GlRMMxNol9Qj3uXcyXs/AHzksKgEVfi4mYlgmPapw+/Iel+AITOCchRhf27ktJFVQB
+	 DDXKQJZ5gzz6A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7C77137813CB;
+	Mon,  4 Mar 2024 10:21:41 +0000 (UTC)
+Message-ID: <02738700-6328-460b-8a5f-fb531756dd55@collabora.com>
+Date: Mon, 4 Mar 2024 11:21:40 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240304090103.818092-1-usama.anjum@collabora.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: core: correct type of i to be signed
+Content-Language: en-US
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Cc: kernel@collabora.com, kernel-janitors@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240301144517.2811370-1-usama.anjum@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240301144517.2811370-1-usama.anjum@collabora.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240304_021125_025530_702B2C1F 
-X-CRM114-Status: GOOD (  10.72  )
+X-CRM114-CacheID: sfid-20240304_022144_985526_0470522E 
+X-CRM114-Status: UNSURE (   6.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,28 +76,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 04, 2024 at 02:01:03PM +0500, Muhammad Usama Anjum wrote:
+Il 01/03/24 15:45, Muhammad Usama Anjum ha scritto:
 > The i should be signed to find out the end of the loop. Otherwise,
-> i >= 0 is always true and loop becomes infinite. Make its type to be
-> int.
+> i >= 0 is always true and loop becomes infinite.
 > 
 > Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
 > Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> Changes since v1:
-> - Make i int instead of u8
 
-Thanks!
-
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-
-regards,
-dan carpenter
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
 ______________________________________________________
