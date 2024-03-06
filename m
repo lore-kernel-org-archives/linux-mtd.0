@@ -4,55 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ADDCC54E41
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2024 14:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C501C5475B
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2024 15:17:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NSu6ELN6gDoEh2qE/YSI9bWnCLtAK7NFBuhu/Ay1lQU=; b=hxa+ZUpOtf26+7
-	vK+Q19vh05HtzWhPPq+iKn0LHhQ3wtj6jRitaf8hVHIQ4YidBCZ+uOonnDG1szmDj74CclY7M6jM+
-	B/ZUKW+AfdIktTyxQsXIZFmPZJn5s/8Tl1jUMvY4hicJAo2oJL87050mQOoBhw24bK9U4Y4QN27H0
-	spJO0fJUag+8bJJ+kICJOzBBfN06S3322vadm1i3u8ltnLW0tXcuSrGpVRxvIyR3Fj2OIHJipz324
-	iaRRFTMroF/gaI8vt4UP0jNuQfpNrgcPWbHUVa16WubYSSTw1weRZv5l8DsN2Tu1gAs98YiJDZzrS
-	bGtdf+I2lIxgLPkBDHAQ==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yqB9YsPFHTTQhcKSZKNEkv2ds7LyW0pPeHq1wv8fz6U=; b=2Hv21Y6QY7xLio
+	mpAZ+O9bCSaPLEPj81oLPs0mGMKsSm2DvF/BjqIxyK3eaD391fGGdcGb1jpOxfukMfvhrnAGj2+Oa
+	Z4+ALaNtju2WRHIcIiOjQ17hgnYJWzjKTOHbpmGFkr0t6m3a22TjWkaBSaA/oCGw2ygsp70qWTQx3
+	w0AS/1h3ypW0K6hzgGNv/i1BlT8+vTZixLF/Nf7TkGcTTEWzHXIStJybKW6tjgea7ypckENQE6i9N
+	4Xcq4xJxjgVHFKZpMMuvt7vo95ImN90CNeS/pAQYp234R4nrNkxzdLFouHzKgzJpRS79N3JwKoLC6
+	/yKKn5SDyBhNQGv2YLHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhsNb-00000000bYa-0cCv;
-	Wed, 06 Mar 2024 14:36:23 +0000
+	id 1rht1j-00000000kcm-3dOK;
+	Wed, 06 Mar 2024 15:17:51 +0000
 Received: from mail.thorsis.com ([92.198.35.195])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhsNX-00000000bTr-2QSg
+	id 1rht1g-00000000kbx-1qfS
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Mar 2024 14:36:21 +0000
-Date: Wed, 6 Mar 2024 15:36:04 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=default;
-	t=1709735767;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type;
-	bh=7jCdvnKrinLLfLtx8TMEpiZHox5gBJf77z1PKz+bvrY=;
-	b=d6/6q03CvvzyUSka3C4XlwHu/RNS/55OXwRb9mJjGJt7/POiqIpjeTLHh88hJA3losJf3A
-	xU7eAy4X/6xNLKafzNq/48HPDXxJNMt3Y/OaXDV4ecXWp3BdHyt4Z2f769DEely3mIjA2g
-	dpjTGksTmm0p9GPFhyyDfZQyj/MJcr8IQalifYToxtlslCcYp56mD9FhBT8mcsnSvKXjja
-	Da8+fZpN2cnu4rZAZH6q04YcYVLR1IY6ng11Ryv833Podj6ZI05N59Koz+8moL7sDIg5Se
-	CJdPZ4Ig3nNw2s9DRFKUXNWL4MAjGLOSHxpOJYdFs3wQMSDAq0zUSeXSQY4n8w==
+	Wed, 06 Mar 2024 15:17:50 +0000
 From: Alexander Dahl <ada@thorsis.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=default;
+	t=1709738265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fUMnD/6vW9NuKS/nt5Th0ViTDQ0l8XBA8uW2U71G7FA=;
+	b=Qmy3zDxHcz0x49pC/oGsJguYnhheHUGXXvH2JG867cwvYVAeOAHo0ypIfzsbOkbHuGYgN5
+	9+5P5PGUIcQNycCtnB7G42CLiZ6EFf5XvmWkjkFyHDNCr5H0uxHYpK187SgXUoIwI27LAL
+	mhfjHvxb7syc0h68xmVStZGJpZq4QpcybMc1Fg41C5kmY3QJcsSnIn7beb3kRx1oKwqmnh
+	RQacNViqmfMuRCHPFCNmvXVsEjuXJJu/AFEjnmm/tmSkPycUGFj3kXUq8yVlXfypKBJYb8
+	2kuEjzUZWUuYuqLfoBgfLyeZAF4R+1owWY58GnHH3bN6hRGuyOWYWOv3aVBgaw==
 To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: mtd: nand: raw: Possible bug in nand_onfi_detect()?
-Message-ID: <20240306-shaky-bunion-d28b65ea97d7@thorsis.com>
-Mail-Followup-To: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Content-Disposition: inline
+Subject: Re: raw nand: Accessing R/B# through GPIO never used
+Date: Wed, 06 Mar 2024 16:17:48 +0100
+Message-ID: <8343299.T7Z3S40VBb@ada-pc>
+In-Reply-To: <20230811-anyplace-backhand-4131de006e84@ifak-system.com>
+References: <20230811-anyplace-backhand-4131de006e84@ifak-system.com>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_063619_885087_C2AE27EA 
-X-CRM114-Status: GOOD (  14.76  )
+X-CRM114-CacheID: sfid-20240306_071748_667993_8721E339 
+X-CRM114-Status: GOOD (  36.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,71 +62,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello everyone,
+Hei hei,
 
-I think I found a bug in nand_onfi_detect() which was introduced with
-commit c27842e7e11f ("mtd: rawnand: onfi: Adapt the parameter page
-read to constraint controllers") back in 2020.
+meanwhile we made a custom board with SAM9X60 and a Spansion S34ML02G1 SLC =
 
-Background on how I found this: I'm currently struggling getting raw
-nand flash access to fly with an at91 sam9x60 SoC and a S34ML02G1
-Spansion SLC raw NAND flash on a custom board.  The setup is
-comparable to the sam9x60 curiosity board and can be reproduced with
-that one.
+flash, and I learned some more things here.
 
-NAND flash on sam9x60 curiosity board works fine with what is in
-mainline Linux kernel.  However after removing the line 'rb-gpios =
-<&pioD 5 GPIO_ACTIVE_HIGH>;' from at91-sam9x60_curiosity.dts all data
-read from the flash appears to be zeros only.  (I did not add that
-line to the dts of my custom board first, this is how I stumbled over
-this.)
+Am Freitag, 11. August 2023, 08:40:23 CET schrieb Alexander Dahl:
+> Hello flash developers,
+> =
 
-I have no explanation for that behaviour, it should work without R/B#
-by reading the status register, maybe we investigate that
-in depth later.  However those all zeros data reads happens when
-reading the ONFI param page as well es data read from OOB/spare area
-later and I bet it's the same with usual data.
+> I'm currently evaluating the nice Microchip SAM9X60-Curiosity board
+> for booting from NAND flash.  Is has a at91 SAM9X60 SoC, a Macronix
+> MX30LF4G28AD 4Gbit flash chip and uses the new atmel raw nand driver
+> contributed by Boris Brezillon back in 2017 based on different older
+> drivers.  NAND flash access in Linux works fine and out of the box
+> with current mainline, I did not expect anything else.
 
-This read error reveals a bug in nand_onfi_detect().  After setting
-up some things there's this for loop:
+All things observed and mentioned here happen with the curiosity board, too.
 
-    for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+> When trying to get the NAND flash access working in U-Boot I noticed a
+> strange behaviour.  You can see the whole thread here:
+> =
 
-For i = 0 nand_read_param_page_op() is called and in my case all zeros
-are returned and thus the CRC calculated does not match the all zeros
-CRC read.  So the usual break on successful reading the first page is
-skipped and for reading the second page nand_change_read_column_op()
-is called.  I think that one always fails on this line:
+> https://lore.kernel.org/u-boot/20230809-marvelous-number-8e973a3bb5e0@ifa=
+k-s
+> ystem.com/T/#t
+> =
 
-    if (offset_in_page + len > mtd->writesize + mtd->oobsize) {
+> What got me wondering is the behaviour with regard to the R/B# line of
+> the flash chip.  According to the chips datasheet (and datasheet of
+> other raw NAND flash chips we used before, e.g. a Spansion=AE S34ML02G1
+> 2Gbit chip) that pin is somewhat optional to use, right?  You can get
+> the same information through an access of bit 6 in the status register
+> of the flash chip.  We learned this a few years ago when trying to
+> make raw nand work with an at91 sama5d2 in U-Boot, where U-Boot had
+> only an old driver for the atmel nand controller which did not work
+> with the pio4 GPIO controller of the SoC, so accessing R/B# through
+> GPIO was not possible, but thanks to the other way (status bit) you
+> could get it to run.
+> =
 
-Those variables contain the following values:
+> Note: the SoC's nand flash controller we are talking about here (SMC
+> in SAM9X60) has no native R/B# line support and the SAM9X60 datasheet
+> explicitly recommends to connect that pin to a GPIO.
+> =
 
-    offset_in_page: 256
-    len: 256
-    mtd->writesize: 0
-    mtd->oobsize: 0
+> Now the problem in recent U-Boot with proper GPIO access is: it takes
+> ages for some flash operations to complete.  The gpio signal stays 0
+> for several hundrets (!) of milliseconds until the read from the pin
+> gets 1 (confirmed by debug print in modified U-Boot source).  My
+> workaround for now is removing the 'rb-gpios' property from U-Boot
+> dts, that way flash access is reasonably fast.
 
-The condition is true and nand_change_read_column_op() returns with
--EINVAL, because mtd->writesize and mtd->oobsize are not set yet in
-that code path.  Those are probably initialized later, maybe with
-parameters read from that ONFI param page?
+I tried again with recent U-Boot 2024.01 and the behaviour is still the sam=
+e, =
 
-Returning with error from nand_change_read_column_op() leads to
-jumping out of nand_onfi_detect() early, and no ONFI param page is
-evaluated at all, although the second or third page could be intact.
+you should be able to reproduce this with mainline U-Boot and the sam9x60-
+curiosity board.
 
-I guess this would also fail with any other reason for not matching
-CRCs in the first page, but I have not faulty NAND flash chip to
-confirm that.
+> So I wondered what the Linux driver makes different.
+> =
+
+> Turns out: if I am not mistaken, the Linux driver does not consider
+> that R/B# line at all.  Why?  The GPIO is determined in DTS through
+> the property 'rb-gpios' which is well documented in device tree
+> bindings docs, and used in numerous dts files over different vendors.
+> However that property is not evaluated in a single driver?!  My
+> conclusion is: no driver ever accesses that pin and everything just
+> works through status bit register access, right?
+> =
+
+> Can anyone confirm that?
+
+I was mistaken.  See this call:
+
+https://elixir.bootlin.com/linux/v6.8-rc7/source/drivers/mtd/nand/raw/atmel/
+nand-controller.c#L1688
+
+Following the function devm_fwnode_gpiod_get_index() the parameter "con_id"=
+ is =
+
+passed along through several functions down to of_find_gpio() and when pass=
+ed =
+
+"foo" that says:
+
+    /* Try GPIO property "foo-gpios" and "foo-gpio" */
+
+So it tries several suffixes for "foo", that is why a simple grep does not =
+
+find anything.  In the particular case passing "rb" to =
+
+devm_fwnode_gpiod_get_index() would find the "rb-gpios" which is described =
+in =
+
+dt bindings.  =
+
+
+Thanks to frieder in IRC for pointing me.  This mail is to have that wisdom =
+
+archived.
+
+> Bonus questions:
+> =
+
+> Has anyone tried to really access that line through GPIO if the SoC
+> requires that and how does that R/B# line behave over different flash
+> chips then?  Can this be a problem of the NAND flash chip itself?  Is it
+> safe to go with "soft wait" through status bit access only?
+
+Fun findings: unlike U-Boot where using that GPIO does _not_ work for me, t=
+he =
+
+NAND flash access on SAM9X60 in Linux _only_ works with that dts property =
+
+present and thus the linux driver using nand_gpio_waitrdy() instead of =
+
+nand_soft_waitrdy() (which it would use if that dts property would be =
+
+missing).  In the latter case I only get zeros as data, making it impossibl=
+e =
+
+to read anything useful from the flash.
+
+> (Note: it's not easily possible to analyse this with an oscilloscope
+> or logic analyzer on the sam9x60-curiosity board, because the line in
+> question is a direct pcb trace from a ball of one chip to a ball of
+> the other chip.  Similar for other connections from NAND to SoC.)
+
+Well on our custom board the flash comes in TSOP package, so we might be ab=
+le =
+
+to investigate that in depth later.  Of course any other insights welcome. =
+:-)
 
 Greets
 Alex
+
+> =
+
+> Hoping someone can shed some light on this topic.
+> =
+
+> Greets
+> Alex
+> =
+
+> =
+
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
 
 
 ______________________________________________________
