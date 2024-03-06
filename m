@@ -4,80 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6925C54E49
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2024 05:05:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EFD4C54E41
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2024 06:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FdXC5CyJJico5RC/OhqNoVlixQr8y33kdhaARiN3T3c=; b=GapbyiKP6ch+Jx
-	GtDtrHaRXHwGUAZItox8zj3SBg6x/UEL3YTBW9UQD9SPBzJRpG8DRtJY0OwrKo9iN6iTuAR+KnP9/
-	/WTCQUjzs6PwWJH1fHEqMZ4qmEAG4ZT5JRrgJd716J6xertUrKov5pdadYGte94UinA69CpHNb6NT
-	3h74hwc2nzydl7e3jyTxvPNdZp0d74KL353ww+10XnEtNR6MVq7xGhpa0FfftOJtt3bjZcRsXjOUY
-	QaYVgp4EDnVmRBGgXVbS/6zMKPHjvkzkH9zotFKQN7f10fBR+TCttdDjkU8Gz/+QldP1HHT0tjHZe
-	0/91/v+Pea/IVMepswVQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:References:CC:To:From:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=M5cykMQh9sLYOe5d0NWCgv5JJn1bVrZV4/eUkc6yfr8=; b=O2ZMVZjilVSu2K
+	p+cQNT+dE9LQHBC0kR6AyHr1UX5iD9wpQMw0lHREGnpLzlMpAmB6p17oh1gDIeEmQKhHES7EjRaWm
+	1cWYYwyr3TAldf4haq+slmiV5RYEkGvJDBKCeujOtLSt+aylqhf7gggPx6NSmjqloB9/3fBCU82aL
+	bJ0Q7lNo3WM9uzmb1q41Zzw1DBQSexqJafEC5rUZZ5sHksXJelWCWnDJB9a/quDZZXM/cI8+Uzbve
+	2uUSKk6vD0lz2T6OXpkK315prExkW63okuYg/nN8fGTBpxTWRI0JwhH1/ka78cHBBROSWClIMl7xo
+	5LgHyaXXKsumsJzu/fZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhjSk-0000000GKeh-2xGx;
-	Wed, 06 Mar 2024 05:05:06 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1rhkMD-0000000GU24-2uSH;
+	Wed, 06 Mar 2024 06:02:25 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhjSi-0000000GKe8-2Uor
+	id 1rhkMA-0000000GU1D-393n
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Mar 2024 05:05:06 +0000
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4264CDSk016800;
-	Wed, 6 Mar 2024 05:05:00 GMT
+	Wed, 06 Mar 2024 06:02:24 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4264lnL6025042;
+	Wed, 6 Mar 2024 06:02:14 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=TZFSjoc
-	FQ8GlWHSdGzVQA4UjzLLsomxvn7+e+QIxL5w=; b=gak8e1pNHaA3ZZ4F19RGR9x
-	28ASvK82W2kXMOdlTozjKIoAwBTFdbm64jBKmiOHlnKZO1ubLFAygbjAKISborLY
-	AOEyOi9R5jjAL1J89OqJRm0ZDlsNTnHzuFlVA7xmWZJMfL+w2qiwIvevjvlTLOSK
-	mhRRjn8lTFMQwNNdZqYvXK5v09gyO53bSD/y9/AfcV5xm4pmlydit10ctvuLpwXg
-	RMiHjXmotL/VDdh0/YGnk4oIEZUHKLq957ET3zHHUDtUXNX93+izTurv0CNA+SEs
-	2lV2ATtFDn9jlZvKb0kKuU4psxqY2yN87sISVfCggyLwpFTQ5LkNrGpW1bx7Nwg=
-	=
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp07w2drf-1
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=1agwj1KEBjXJb1VsQmvvWQDpTBswQ8dZsb3xaybDUfA=; b=O3
+	7JzgXqIAQRBJs2N4xDV3yOhhsX/4023Gwu0vO2d8p0GWbfVvOgxy8wTYlQ7k/uB9
+	8ETK+B5slU2P0V+WA1B1Q92sauFU2DuXmamZ0fHvPT9aSqBNfUOst/ijFi+fHX5L
+	A+ynX8MyU2I/ZYMm3J+oADniWO8VUmF8fy+/Ij+KNOz+FPm5ZrRRNasqht295ObZ
+	gRKhhHXQ715/OYAW3ZN5g/RNPaS5RbaObderlh/vViC8Nxnl90Y0jjHtQ0RgE3+s
+	3PdpUC0myFgfSs+H/vbcraNpRlh+gBNX0VLZwPrLNvYsaW8E98Vr3ALoBKxb7zfT
+	O/3dYh+l7y+LMgMR8MZQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp7ky1dsm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 05:05:00 +0000 (GMT)
+	Wed, 06 Mar 2024 06:02:13 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42654xZ1024858
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42661skN008895
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 6 Mar 2024 05:04:59 GMT
-Received: from 3b9e253d05fa.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 5 Mar 2024 21:04:57 -0800
-From: Weimin Xie <quic_weimxie@quicinc.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd: fix out-of-bounds issue in inftl_add_mtd() and nftl_add_mtd()
-Date: Wed, 6 Mar 2024 05:04:50 +0000
-Message-ID: <20240306050450.1429675-1-quic_weimxie@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	Wed, 6 Mar 2024 06:01:54 GMT
+Received: from [10.216.3.154] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
+ 2024 22:01:47 -0800
+Message-ID: <3e544d37-b1d2-9c58-3130-9e6950430671@quicinc.com>
+Date: Wed, 6 Mar 2024 11:31:43 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
+        <broonie@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-4-quic_mdalam@quicinc.com>
+ <d1c80d3f-3b70-4630-8f7d-b00983b487dd@linaro.org>
+ <f5177fad-214f-1b60-46ba-1dc0a4fb059e@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <f5177fad-214f-1b60-46ba-1dc0a4fb059e@quicinc.com>
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: X_aESGEvCL8L3yErI1q6J3zqBQ57WCbk
-X-Proofpoint-GUID: X_aESGEvCL8L3yErI1q6J3zqBQ57WCbk
+X-Proofpoint-GUID: f8jqsuNHAm51FTD0iqA6FB3d6deFb5aV
+X-Proofpoint-ORIG-GUID: f8jqsuNHAm51FTD0iqA6FB3d6deFb5aV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_02,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 phishscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403060038
+ definitions=2024-03-06_03,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 clxscore=1011
+ mlxlogscore=963 lowpriorityscore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060047
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_210504_806397_044EA8F3 
-X-CRM114-Status: GOOD (  14.07  )
+X-CRM114-CacheID: sfid-20240305_220222_816802_2013BDE6 
+X-CRM114-Status: UNSURE (   7.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,100 +103,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-when the length of mtd->name is less than 10, it will hit out-of-bounds
-issue.
-
-OOB log of nftl_add_mtd():
-[    3.918811][    T1] Creating 44 MTD partitions on "1c98000.nand":
-[    3.918916][    T1] 0x000000000000-0x000000400000 : "sbl"
-[    3.922087][    T1] ==================================================================
-[    3.922163][    T1] BUG: KASAN: slab-out-of-bounds in bcmp+0x44/0xe0
-[    3.922263][    T1] Read of size 8 at addr ffffff8003590d00 by task swapper/0/1
-[    3.922384][    T1] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.123-debug-g63e58e33b056-dirty #1
-[    3.922484][    T1] Hardware name: XXX
-[    3.922557][    T1] Call trace:
-[    3.922611][    T1]  dump_backtrace+0x0/0x404
-[    3.922699][    T1]  show_stack+0x30/0x44
-[    3.922781][    T1]  dump_stack_lvl+0x90/0xb0
-[    3.922875][    T1]  print_address_description+0x78/0x38c
-[    3.922978][    T1]  kasan_report+0x184/0x1fc
-[    3.923071][    T1]  kasan_check_range+0x278/0x2b8
-[    3.923167][    T1]  __asan_loadN+0x44/0x54
-[    3.923264][    T1]  bcmp+0x44/0xe0
-[    3.923342][    T1]  nftl_add_mtd+0xb0/0x384
-[    3.923441][    T1]  blktrans_notify_add+0x6c/0xb4
-[    3.923538][    T1]  add_mtd_device+0x8f0/0xaec
-[    3.923626][    T1]  add_mtd_partitions+0x148/0x330
-[    3.923721][    T1]  mtd_device_parse_register+0x66c/0x860
-[    3.923813][    T1]  msm_nand_probe+0xf74/0x107c
-[    3.923897][    T1]  platform_probe+0x108/0x168
-
-OOB log of inftl_add_mtd():
-[    3.918811][    T1] Creating 44 MTD partitions on "1c98000.nand":
-[    3.918028][    T1] 0x000000000000-0x000000400000 : "sbl"
-[    3.921215][    T1] ==================================================================
-[    3.921288][    T1] BUG: KASAN: slab-out-of-bounds in bcmp+0x44/0xe0
-[    3.921386][    T1] Read of size 8 at addr ffffff8003593100 by task swapper/0/1
-[    3.921509][    T1] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.123-debug-g63e58e33b056 #1
-[    3.921606][    T1] Hardware name: XXX
-[    3.921675][    T1] Call trace:
-[    3.921728][    T1]  dump_backtrace+0x0/0x404
-[    3.921821][    T1]  show_stack+0x30/0x44
-[    3.921904][    T1]  dump_stack_lvl+0x90/0xb0
-[    3.921999][    T1]  print_address_description+0x78/0x38c
-[    3.922102][    T1]  kasan_report+0x184/0x1fc
-[    3.922195][    T1]  kasan_check_range+0x278/0x2b8
-[    3.922290][    T1]  __asan_loadN+0x44/0x54
-[    3.922388][    T1]  bcmp+0x44/0xe0
-[    3.922466][    T1]  inftl_add_mtd+0xb0/0x3a8
-[    3.922568][    T1]  blktrans_notify_add+0x6c/0xb4
-[    3.922665][    T1]  add_mtd_device+0x8f0/0xaec
-[    3.922752][    T1]  add_mtd_partitions+0x148/0x330
-[    3.922847][    T1]  mtd_device_parse_register+0x66c/0x860
-[    3.922940][    T1]  msm_nand_probe+0xf74/0x107c
-[    3.923024][    T1]  platform_probe+0x108/0x168
-
-Signed-off-by: Weimin Xie <quic_weimxie@quicinc.com>
----
- drivers/mtd/inftlcore.c | 2 +-
- drivers/mtd/nftlcore.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index 9739387cff8c..37484d914bd0 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -40,7 +40,7 @@ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	if (!mtd_type_is_nand(mtd) || mtd->size > UINT_MAX)
- 		return;
- 	/* OK, this is moderately ugly.  But probably safe.  Alternatives? */
--	if (memcmp(mtd->name, "DiskOnChip", 10))
-+	if (strncmp(mtd->name, "DiskOnChip", 10))
- 		return;
- 
- 	if (!mtd->_block_isbad) {
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index 64d319e959b2..599b84548086 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -40,7 +40,7 @@ static void nftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	if (!mtd_type_is_nand(mtd) || mtd->size > UINT_MAX)
- 		return;
- 	/* OK, this is moderately ugly.  But probably safe.  Alternatives? */
--	if (memcmp(mtd->name, "DiskOnChip", 10))
-+	if (strncmp(mtd->name, "DiskOnChip", 10))
- 		return;
- 
- 	pr_debug("NFTL: add_mtd for %s\n", mtd->name);
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+S29ucmFkLAoKT24gMi8yMC8yMDI0IDU6NDQgUE0sIE1kIFNhZHJlIEFsYW0gd3JvdGU6Cj4+PiAr
+wqDCoMKgIGVjY19jZmctPmNmZzAgPSAoY3dwZXJwYWdlIC0gMSkgPDwgQ1dfUEVSX1BBR0UKPj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCBlY2NfY2ZnLT5jd19kYXRhIDw8IFVE
+X1NJWkVfQllURVMKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAxIDw8IERJ
+U0FCTEVfU1RBVFVTX0FGVEVSX1dSSVRFCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHwgMyA8PCBOVU1fQUREUl9DWUNMRVMKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgfCBlY2NfY2ZnLT5lY2NfYnl0ZXNfaHcgPDwgRUNDX1BBUklUWV9TSVpFX0JZVEVTX1JT
+Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgMCA8PCBTVEFUVVNfQkZSX1JF
+QUQKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCAxIDw8IFNFVF9SRF9NT0RF
+X0FGVEVSX1NUQVRVUwo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IGVjY19j
+ZmctPnNwYXJlX2J5dGVzIDw8IFNQQVJFX1NJWkVfQllURVM7Cj4+Cj4+IExldCBtZSBpbnRyb2R1
+Y2UgeW91IHRvIEZJRUxEX1BSRVAvR0VUIGFuZCBHRU5NQVNLKCkuLiBNYW55IGFzc2lnbm1lbnRz
+Cj4+IGluIHRoaXMgZmlsZSBjb3VsZCB1c2UgdGhlc2UuCj4gCj4gIMKgT2sKCldoaWxlIGRvaW5n
+IHRoZSBjaGFuZ2UgaSByZWFsaXplZCB0aGF0IGl0IHdpbGwgaW1wYWN0IHJhdyBuYW5kIGRyaXZl
+ciBhcyB3ZWxsLgpTaGFsbCBJIHBvc3QgdGhpcyBjaGFuZ2UgYXMgc2VwYXJhdGUgcGF0Y2guIElz
+IHRoaXMgb2s/IFBsZWFzZSBsZXQgbWUga25vdy4KClJlZ2FyZHMsCkFsYW0uCgo+Pgo+PiBLb25y
+YWQKPiAKPiBUaGFua3MgZm9yIHJldmlld2luZywgd2lsbCBmaXggYWxsIHRoZSBjb21tZW50cyBp
+biBuZXh0IHBhdGNoLgo+IAo+IFJlZ2FyZHMsCj4gQWxhbS4KPiAKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
