@@ -4,126 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE48C5475B
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2024 04:16:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6925C54E49
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Mar 2024 05:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dAk7kIOpeldWLEYC3OCjgHT1QK1xbyvlYt/2I46dyUE=; b=hTn8shrpMN3iZ0
-	nbd5bSuD7Pk85j8S0AOOE898zXODNh7frHYjOX+kBqQq3mbMj4fjWY0Y/JJvNHr8BIyqQyaZGLDE6
-	CehIuSQrxf0ajR3X+dXckXvR6e0QxNbnWQ3WPOagFU/du7PafL6aiHDk7ObeERSvKxIeL8nd+wkX0
-	x7pWy0Du8LYXNgrbK28vMNA5hTqKExzt+7pFHw6A1OZ6y2s6xKpD2Cf2M1hohpjO8eCQKH4BORxWc
-	Iztfq5+cElJdTtiwVrZwYsrWt/f5bIOGG+pSrzCmJiv/ye4FG2rBw0QsjLyzVYZlDa04Z5yuON/kT
-	dE+FDzkwtAoJb6XmqVXA==;
+	List-Owner; bh=FdXC5CyJJico5RC/OhqNoVlixQr8y33kdhaARiN3T3c=; b=GapbyiKP6ch+Jx
+	GtDtrHaRXHwGUAZItox8zj3SBg6x/UEL3YTBW9UQD9SPBzJRpG8DRtJY0OwrKo9iN6iTuAR+KnP9/
+	/WTCQUjzs6PwWJH1fHEqMZ4qmEAG4ZT5JRrgJd716J6xertUrKov5pdadYGte94UinA69CpHNb6NT
+	3h74hwc2nzydl7e3jyTxvPNdZp0d74KL353ww+10XnEtNR6MVq7xGhpa0FfftOJtt3bjZcRsXjOUY
+	QaYVgp4EDnVmRBGgXVbS/6zMKPHjvkzkH9zotFKQN7f10fBR+TCttdDjkU8Gz/+QldP1HHT0tjHZe
+	0/91/v+Pea/IVMepswVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhihh-0000000GEf0-34q9;
-	Wed, 06 Mar 2024 04:16:29 +0000
-Received: from mail-ps2kor01on062b.outbound.protection.outlook.com ([2a01:111:f400:fead::62b] helo=KOR01-PS2-obe.outbound.protection.outlook.com)
+	id 1rhjSk-0000000GKeh-2xGx;
+	Wed, 06 Mar 2024 05:05:06 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhihe-0000000GEcD-3usg
+	id 1rhjSi-0000000GKe8-2Uor
 	for linux-mtd@lists.infradead.org;
-	Wed, 06 Mar 2024 04:16:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QvJwJxw51yNN3jFoOcyR/d1NZ7XE3dp+9g+XVWpnnkkgTmJms+IpG6iCdFSo3YpskHKtNt0YXqCSgB2mf4Rr78dV1oioc4Dyeb+x28LZEA9Fn/h5cpKsJ1xZ7tmVVXqJZ6h8BJLcf2Z9gDpCDKNRUoc1ZmoZ0emJ1z2AdS3t+pKv/Rft82jSt8hYa7EiupK6RRA1A5e75zMgCKNTpzyTDWj/hbFVRTyqt7MAesLGsIAykbdtqb0Ni2VJX08ay/6WpxVt9wKGFJDTaiROvfR7f6ddJshljwlDaqA5fDNuaLm4V12SKkitKs2zZQd+ajwGGLKMoWRdaNb7mkkeDZocxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=89trl++5sIrUmtdjWJlt+98R0lOUKCJOxXi8QsSM5Qc=;
- b=gpu9nIs7Kb15debRxrMvqAPU7JDRTqr2Ze1aigGXS/q5Yu4DLxFsMNHOfqcgel36yRhTrODr0JaxPULtTa7jf3Wzg52ba5JCwZkJThfRCNcvq/BRBfDNHANeDBQxZ+FpHYpJTl+TknMpava+j67FNUsp2nSgWVgDr71xA4Lb18Zc4DsDaVUqpgZC3O1m3BAhHkKvTxvED5NYXcCoUY4zACzAeuyolfF717PvM2XFxIZwWk5Uywtgqq5oT9Xd3zdCW8fkT2aYjrSccHkT/Iya0Nj1buwGCCdj+r4qIBwW+lgA8PwbR811dNmQboztsn208otUuIlWS6/BmQKiIQ1HWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=skyhighmemory.com; dmarc=pass action=none
- header.from=skyhighmemory.com; dkim=pass header.d=skyhighmemory.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=skyhighmemory.onmicrosoft.com; s=selector1-skyhighmemory-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=89trl++5sIrUmtdjWJlt+98R0lOUKCJOxXi8QsSM5Qc=;
- b=7INxlBqS0/w3N0/C0JTB/ta+k5UR72liBGsa6Kkh/DADWvgAFpxhX8ygejKvd6mMxVGNJmVdkndNhCOXwuq6n3kR2Q7aE6uvXJMx8PvV4L0VanMS5IMwOf8a3GscTkqKU1Of+i1ewCTzfUfZQg2glSSW6K947v7a2Fnq41j41Uc0PpJ6nB4WDyVCtOUa6Sw/F597hNx+cYg0TFqJTxuyzh2t/K+rzwlzQBqYgkmz2/Ge42sGfdkWjtQXcKu/iHP6bRSU3arC8sqIEWkdqrpr8lcFGzPTkyM9Ol4hMn9/7ZkYpcy3klnmHhsJOo62iaWzMlCtDsEfSIu2syCIJMGXHw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=skyhighmemory.com;
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM (2603:1096:101:11b::5)
- by SE2P216MB1992.KORP216.PROD.OUTLOOK.COM (2603:1096:101:119::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
- 2024 04:16:14 +0000
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::6bad:dd98:cdca:c48d]) by SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::6bad:dd98:cdca:c48d%3]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
- 04:16:14 +0000
-From: KR Kim <kr.kim@skyhighmemory.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	mmkurbanov@salutedevices.com,
-	ddrokosov@sberdevices.ru
-Cc: kr.kim@skyhighmemory.com,
-	gch981213@gmail.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	moh.sardi@skyhighmemory.com,
-	changsub.shim@skyhighmemory.com
-Subject: [PATCH 2/2] SPI Nand Patch code for SkyHigh Momory
-Date: Wed,  6 Mar 2024 13:15:32 +0900
-Message-Id: <20240306041532.16985-1-kr.kim@skyhighmemory.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: SL2P216CA0079.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2::12) To SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:11b::5)
+	Wed, 06 Mar 2024 05:05:06 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4264CDSk016800;
+	Wed, 6 Mar 2024 05:05:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=TZFSjoc
+	FQ8GlWHSdGzVQA4UjzLLsomxvn7+e+QIxL5w=; b=gak8e1pNHaA3ZZ4F19RGR9x
+	28ASvK82W2kXMOdlTozjKIoAwBTFdbm64jBKmiOHlnKZO1ubLFAygbjAKISborLY
+	AOEyOi9R5jjAL1J89OqJRm0ZDlsNTnHzuFlVA7xmWZJMfL+w2qiwIvevjvlTLOSK
+	mhRRjn8lTFMQwNNdZqYvXK5v09gyO53bSD/y9/AfcV5xm4pmlydit10ctvuLpwXg
+	RMiHjXmotL/VDdh0/YGnk4oIEZUHKLq957ET3zHHUDtUXNX93+izTurv0CNA+SEs
+	2lV2ATtFDn9jlZvKb0kKuU4psxqY2yN87sISVfCggyLwpFTQ5LkNrGpW1bx7Nwg=
+	=
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp07w2drf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 05:05:00 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42654xZ1024858
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Mar 2024 05:04:59 GMT
+Received: from 3b9e253d05fa.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Mar 2024 21:04:57 -0800
+From: Weimin Xie <quic_weimxie@quicinc.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: fix out-of-bounds issue in inftl_add_mtd() and nftl_add_mtd()
+Date: Wed, 6 Mar 2024 05:04:50 +0000
+Message-ID: <20240306050450.1429675-1-quic_weimxie@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SE2P216MB2102:EE_|SE2P216MB1992:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce872f17-71c5-415e-7e44-08dc3d9429de
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: buRo6fCD+geAf6UMK/NXpvbUo2sT0/SXgtv7154C8j73P1F+zIcfbxv+ypJxEPIKfT0NcKiTLmkh7xqDDvnfltyT876SrxcSpwfB1wEPBQt9xw+21yYf2Ohc3fDUB/xQmcv/G493tYXsyvK8Ep7p0Xs2UCokKe1IP83wRuh25Z/c6cmoETGL7DF3vkgq6jkwbeJEgx23Ilr2C1xdzorWkVSg7LcMhHXLjZzpP8TJUFZI8azDJn/Y1ONiKzr7THt8z84Pe6Dc22oz2ses6UiCdBTpjG2vkQmP8tX0MfMru5sJEcp9gG4NRktUc8V/0hLYC9H26X2VpWfaGipAUpfpPjLx2462VyX4RbcQdZ3Ctg8vpe0vo9wNUH/YnSr0kwnff4m3PALJX0zvuL9xaKOgjt7KPjIyQ2ICCubOUk/PiMwKUlIs0ZdoVGkt2HQTzu+KC5HAJ6UA8CAINM3ojjt+PIioCr6DX2bv+IzQqLkK5XrEg7qC/TRAJXlb66AfOndxwoOMtuIqtMsge4OQHy3m+rVISZHguleBT4tKbIB54K4Xb0/HdJwvPBtCZDQ27RI5IQ+umjivv3mMpYRUDgjMbyjWDGUu0SmcP52j2iSUdqPHi6nakUBFJNhAhrP+l1ZC0qQrhTQiidWjs+Y6RqiEnSqzXqrCUexZpS3qnr+uFmHAQhh6UaazzzIsQDY+teWL7jRbJPeghigL4kjyWcDncw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SE2P216MB2102.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/pMq6yMP7evG0k/FJffwywPYyCQPHMB2Lp7fLpbcIOKyhNsihRr1qGQgBK4G?=
- =?us-ascii?Q?9sF1doEAZ7wwbDrb7roUnl0oF66hbDEVb1w8pyoxdfTZ6uBCgIsDazexkffC?=
- =?us-ascii?Q?hpjqMXgoRPIF2s2pZ4A4Mfx7Onow11dg9t02sYi90ijkHOXYIIRuZIYnmqFz?=
- =?us-ascii?Q?ptLZDGYg7qSDCV47RIoudTw5RwfT5QHCF5LAKle8ea0I+86Y9cfSqvu6Szu4?=
- =?us-ascii?Q?ldNSStbsmyEzTYYvcyU9h4Y3BPwFi6GozrAabBqiRkTi4DGFgBQaZhNNUujx?=
- =?us-ascii?Q?O/vB71/6eAf0oUpbb9MiXPUcSHITAve8c8CQdEYisSe6csGxj6IHi4LNdxaQ?=
- =?us-ascii?Q?gOsOEZezkFIb3+g33MhXaTx27aXO1lX72E/3rd4dWnfO5KzPKVwrVmgAmmNd?=
- =?us-ascii?Q?YN2D0N+y/kAf0Kr2cy3MfPoDvqQ3RBeyk/X2BUkT0i4CYkthhxNh+mnDqzKD?=
- =?us-ascii?Q?9xIv39868FbCD0zQ6ImnP2HwhLBveoV5jW+X/WJ8TxPZQZMarjHUUgEK6A7L?=
- =?us-ascii?Q?UqOs21QoeHg/UFV89nuKndMRkH3+7tJ4Rn7FMelzAQrYgblOcdpoad8q6mMe?=
- =?us-ascii?Q?Tu5/uk+a1gEnvpoOfwEa2xAXVzGs3Tu0pUhJ2dEOEBosorYOWp+VaCoFhL//?=
- =?us-ascii?Q?0kQMxLpYeAVLLu1309DNAd00kMccXktLIOMBSQoY4K6UvBpn/xa+Tn9xR3/7?=
- =?us-ascii?Q?rqog3fv7ZwvYiOOAVsPgIXfsp/nmahgAb9RKNjihvUT4XkA5NUR4jqZ4NBaA?=
- =?us-ascii?Q?hMAOS97wKRirUhXO3tEPZmbqDGwHzU5hE8k7AgptgTkahBcRUK2JdcF6Wm/E?=
- =?us-ascii?Q?gMQPaRMW0kyXkc8VTktCncuqzQJoBuxLqZ2xUlmTZDNFCLKusDB1NglPxugd?=
- =?us-ascii?Q?NrTR5uRk2j0/qRgB4Tjag8NO36j/F0kHbNzjPct1pGue6LMgj174rmImcLpN?=
- =?us-ascii?Q?5OePDf2QdnRy6Ct5f73G++F2DKJNqgvVpf87l5o676XSkh/CoRVf6hmaPGnp?=
- =?us-ascii?Q?8v5c1vj9FtfeCFuT6GUqPCzNfq/rvDXNWsobpV9Lb3WFalyR+AhbMgVqzaq0?=
- =?us-ascii?Q?WtsReDVnq7/Ta/sPr8kBqwEmmAobYZWBOQhH/B5eYuMsO9huwFjyp+y5f/RO?=
- =?us-ascii?Q?fIVi+mqYDwsTi8Jrqo2/uehxCmA+SlgOIth6qPNyGMxeTNtSIdUVdLv8jmlf?=
- =?us-ascii?Q?2Bb/HgQcFUx/jDuo4Yq6WmdAqkal9o6dtGXPV/6JLn8Vh5QCIJmxnNzzrWtY?=
- =?us-ascii?Q?7Ay5eYTvuw62qiet6jt/1byQYnkhFIVxD0HMt5/td+qCEArENETbrl50vqpt?=
- =?us-ascii?Q?Eaofm7WIa/7chW4gubhdccJdRVeI3bDGN5TIjcDyOjpNbBUSyya5MSt7Orls?=
- =?us-ascii?Q?eN71OMLRJNVeFa889QfRG0AEeANwvrkL9C3ngeFk5LVhS1PL8PXoNsx502dD?=
- =?us-ascii?Q?JwpV/QFNpXJrtFJgQpeYXJWusk8ShwauUGf2N8AuFmH853m3qnslgzHiNDbj?=
- =?us-ascii?Q?UbTZCtz1dGxx/xiL1gWLLkQwC4fsMncnRtCiqIZBUGd78koj2u3H+1R38h7X?=
- =?us-ascii?Q?YdQboKaY0+ENsnN05OfF4xYgEiv2IXZ9H5Syj2lAShtFNXnx1U/aRB6iv94v?=
- =?us-ascii?Q?Fg=3D=3D?=
-X-OriginatorOrg: skyhighmemory.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce872f17-71c5-415e-7e44-08dc3d9429de
-X-MS-Exchange-CrossTenant-AuthSource: SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 04:16:14.7350
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 39b82b34-0966-49dc-81a7-5bcab7ea53c0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1ppHe1htDSHnpq1LYB9XQkAJwhXiB1Tl9H0ajAB945X0NAGy3W6H1O1Y4wLj8SWEVqp4tpDT8HkPPHN9QwmGIv4RYriAcwRg+/5FbsfsGo8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SE2P216MB1992
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: X_aESGEvCL8L3yErI1q6J3zqBQ57WCbk
+X-Proofpoint-GUID: X_aESGEvCL8L3yErI1q6J3zqBQ57WCbk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_02,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060038
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_201626_990123_DCE44407 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20240305_210504_806397_044EA8F3 
+X-CRM114-Status: GOOD (  14.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,118 +94,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
----
- drivers/mtd/nand/spi/Makefile  |  2 +-
- drivers/mtd/nand/spi/skyhigh.c | 57 ++++++----------------------------
- 2 files changed, 11 insertions(+), 48 deletions(-)
+when the length of mtd->name is less than 10, it will hit out-of-bounds
+issue.
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 48b429d90460..1e61ab21893a 100755
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
--spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o skyhigh.o
-+spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
-index 71de4fa34406..dd348849216d 100644
---- a/drivers/mtd/nand/spi/skyhigh.c
-+++ b/drivers/mtd/nand/spi/skyhigh.c
-@@ -12,8 +12,8 @@
- #define SPINAND_MFR_SKYHIGH		0x01
+OOB log of nftl_add_mtd():
+[    3.918811][    T1] Creating 44 MTD partitions on "1c98000.nand":
+[    3.918916][    T1] 0x000000000000-0x000000400000 : "sbl"
+[    3.922087][    T1] ==================================================================
+[    3.922163][    T1] BUG: KASAN: slab-out-of-bounds in bcmp+0x44/0xe0
+[    3.922263][    T1] Read of size 8 at addr ffffff8003590d00 by task swapper/0/1
+[    3.922384][    T1] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.123-debug-g63e58e33b056-dirty #1
+[    3.922484][    T1] Hardware name: XXX
+[    3.922557][    T1] Call trace:
+[    3.922611][    T1]  dump_backtrace+0x0/0x404
+[    3.922699][    T1]  show_stack+0x30/0x44
+[    3.922781][    T1]  dump_stack_lvl+0x90/0xb0
+[    3.922875][    T1]  print_address_description+0x78/0x38c
+[    3.922978][    T1]  kasan_report+0x184/0x1fc
+[    3.923071][    T1]  kasan_check_range+0x278/0x2b8
+[    3.923167][    T1]  __asan_loadN+0x44/0x54
+[    3.923264][    T1]  bcmp+0x44/0xe0
+[    3.923342][    T1]  nftl_add_mtd+0xb0/0x384
+[    3.923441][    T1]  blktrans_notify_add+0x6c/0xb4
+[    3.923538][    T1]  add_mtd_device+0x8f0/0xaec
+[    3.923626][    T1]  add_mtd_partitions+0x148/0x330
+[    3.923721][    T1]  mtd_device_parse_register+0x66c/0x860
+[    3.923813][    T1]  msm_nand_probe+0xf74/0x107c
+[    3.923897][    T1]  platform_probe+0x108/0x168
+
+OOB log of inftl_add_mtd():
+[    3.918811][    T1] Creating 44 MTD partitions on "1c98000.nand":
+[    3.918028][    T1] 0x000000000000-0x000000400000 : "sbl"
+[    3.921215][    T1] ==================================================================
+[    3.921288][    T1] BUG: KASAN: slab-out-of-bounds in bcmp+0x44/0xe0
+[    3.921386][    T1] Read of size 8 at addr ffffff8003593100 by task swapper/0/1
+[    3.921509][    T1] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.123-debug-g63e58e33b056 #1
+[    3.921606][    T1] Hardware name: XXX
+[    3.921675][    T1] Call trace:
+[    3.921728][    T1]  dump_backtrace+0x0/0x404
+[    3.921821][    T1]  show_stack+0x30/0x44
+[    3.921904][    T1]  dump_stack_lvl+0x90/0xb0
+[    3.921999][    T1]  print_address_description+0x78/0x38c
+[    3.922102][    T1]  kasan_report+0x184/0x1fc
+[    3.922195][    T1]  kasan_check_range+0x278/0x2b8
+[    3.922290][    T1]  __asan_loadN+0x44/0x54
+[    3.922388][    T1]  bcmp+0x44/0xe0
+[    3.922466][    T1]  inftl_add_mtd+0xb0/0x3a8
+[    3.922568][    T1]  blktrans_notify_add+0x6c/0xb4
+[    3.922665][    T1]  add_mtd_device+0x8f0/0xaec
+[    3.922752][    T1]  add_mtd_partitions+0x148/0x330
+[    3.922847][    T1]  mtd_device_parse_register+0x66c/0x860
+[    3.922940][    T1]  msm_nand_probe+0xf74/0x107c
+[    3.923024][    T1]  platform_probe+0x108/0x168
+
+Signed-off-by: Weimin Xie <quic_weimxie@quicinc.com>
+---
+ drivers/mtd/inftlcore.c | 2 +-
+ drivers/mtd/nftlcore.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+index 9739387cff8c..37484d914bd0 100644
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -40,7 +40,7 @@ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 	if (!mtd_type_is_nand(mtd) || mtd->size > UINT_MAX)
+ 		return;
+ 	/* OK, this is moderately ugly.  But probably safe.  Alternatives? */
+-	if (memcmp(mtd->name, "DiskOnChip", 10))
++	if (strncmp(mtd->name, "DiskOnChip", 10))
+ 		return;
  
- #define SKYHIGH_STATUS_ECC_1TO2_BITFLIPS	(1 << 4)
--#define SKYHIGH_STATUS_ECC_3TO4_BITFLIPS	(2 << 4)
--#define SKYHIGH_STATUS_ECC_5TO6_BITFLIPS	(3 << 4)
-+#define SKYHIGH_STATUS_ECC_3TO6_BITFLIPS	(2 << 4)
-+#define SKYHIGH_STATUS_ECC_UNCOR_ERROR  	(3 << 4)
+ 	if (!mtd->_block_isbad) {
+diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
+index 64d319e959b2..599b84548086 100644
+--- a/drivers/mtd/nftlcore.c
++++ b/drivers/mtd/nftlcore.c
+@@ -40,7 +40,7 @@ static void nftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 	if (!mtd_type_is_nand(mtd) || mtd->size > UINT_MAX)
+ 		return;
+ 	/* OK, this is moderately ugly.  But probably safe.  Alternatives? */
+-	if (memcmp(mtd->name, "DiskOnChip", 10))
++	if (strncmp(mtd->name, "DiskOnChip", 10))
+ 		return;
  
- #define SKYHIGH_CONFIG_PROTECT_EN	BIT(1)
- 
-@@ -62,49 +62,15 @@ static const struct mtd_ooblayout_ops skyhigh_spinand_ooblayout = {
- 	.free = skyhigh_spinand_ooblayout_free,
- };
- 
--#if 0
--bool skyhigh_spinand_isbad(struct spinand_device *spinand,
--			   const struct nand_pos *pos)
--{
--	u8 marker;
--	struct nand_page_io_req req = {
--		.pos = *pos,
--		.ooblen = 1,
--		.ooboffs = 0,
--		.oobbuf.in = &marker,
--		.mode = MTD_OPS_RAW,
--	};
--
--	req.pos.page = 0;
--	spinand_read_page(spinand, &req);
--	if (marker != 0xff)
--		return true;
--
--#if 0
--	req.pos.page = 1;
--	spinand_read_page(spinand, &req);
--	if (marker != 0xff)
--		return true;
--
--	req.pos.page = 63;
--	spinand_read_page(spinand, &req);
--	if (marker != 0xff)
--		return true;
--#endif
--
--	return false;
--}
--#endif
--
- static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand,
- 				  u8 status)
- {
- 	/* SHM
--	00 : No bit-flip
--	01 : 1-2 errors corrected
--	10 : 3-6 errors corrected         
--	11 : uncorrectable
--	*/
-+	 * 00 : No bit-flip
-+	 * 01 : 1-2 errors corrected
-+	 * 10 : 3-6 errors corrected         
-+	 * 11 : uncorrectable
-+	 */
- 
- 	switch (status & STATUS_ECC_MASK) {
- 	case STATUS_ECC_NO_BITFLIPS:
-@@ -113,12 +79,10 @@ static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand,
- 	case SKYHIGH_STATUS_ECC_1TO2_BITFLIPS:
- 		return 2;
- 
--	/* change from 4 to 6 */
--	case SKYHIGH_STATUS_ECC_3TO4_BITFLIPS:
-+ 	case SKYHIGH_STATUS_ECC_3TO6_BITFLIPS:
- 		return 6; 
- 
--	/* uncorrectable for '11' */
--	case SKYHIGH_STATUS_ECC_5TO6_BITFLIPS:
-+ 	case SKYHIGH_STATUS_ECC_UNCOR_ERROR:
- 		return -EBADMSG;;
- 
- 	default:
-@@ -179,8 +143,7 @@ static int skyhigh_spinand_init(struct spinand_device *spinand)
- 
- static const struct spinand_manufacturer_ops skyhigh_spinand_manuf_ops = {
- 	.init = skyhigh_spinand_init,
--/*	.isbad = skyhigh_spinand_isbad,*/
--};
-+ };
- 
- const struct spinand_manufacturer skyhigh_spinand_manufacturer = {
- 	.id = SPINAND_MFR_SKYHIGH,
+ 	pr_debug("NFTL: add_mtd for %s\n", mtd->name);
 -- 
-2.34.1
+2.25.1
 
 
 ______________________________________________________
