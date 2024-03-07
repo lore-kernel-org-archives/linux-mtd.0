@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FDC6C48BF6
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8964AC54798
 	for <linux-mtd@archiver.kernel.org>; Thu,  7 Mar 2024 13:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T7LSNRTXVov49Cv9MrrCp7xPZenwnSaqrSgYtwVjk1A=; b=geIsqBy04sdXf4
-	WuEQ2TOhcIoyxMmzIb9Tig1STmMBCu7P7zv9q2UJ4lyvsrgWxkApwEeoOAFb/FxsEBSJ/EL+Jtr1u
-	bo02Ovr8flp2H5riXQ/NIuimSO1uVvh13XyWW0ceHSnZlSQluAI9OYs67tMnTtd7HH10z6J1/fXPY
-	T+P29PxoSNKvjBv/9V6JlFjX5BvT4VZGqg0c8fBM3wACvkAtqFzVUy52SAIWekuV452QmSAlzj+LR
-	twawvqBqPZtWyZdJdoh/rz/Uidt/9RjGh4M9UdyjYqI6+fz9oPyIkpnjYBOMuLXzDyX7HA5gu6i5p
-	db39PypWrP/H6fYpINlg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=qI13VlA3yKfQH3RXZKA71Kf4j5N9Xy1deux5yWjr688=; b=BLouyfbHMjqM/W
+	p4vLZQt10x0qrb1FNSxMH4D0gVoDnZJ5btoHrFAvWMM1G2Sso6SQJQsn9wDKyY29Ov0TG4cyaL6qL
+	Iev1qB1jqAvPn3BSUuh9bate2jPRhKFUcOoGb1muf5awhFf+5/rwx/FY2x+Iw3wX8ZUzHKqD1XNmG
+	BjgyAo24rGthLjHO3sSDd0sAhB/Il2pn6Z9e/f6iX4zZjS41MJkvFA+rbXwsSjf/XljfVJaHbr+JJ
+	Muu0gr7O7bd6GOaSCYby21sCdk8lwb8KRAP1/LtqwBRu1LvcQG/W8/8iaFsysPAPCnYAeceDYr7RI
+	M9AEX5GIV0XusRNZb7RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riDQO-00000004evx-1bO4;
-	Thu, 07 Mar 2024 13:04:40 +0000
+	id 1riDQN-00000004evL-3VhT;
+	Thu, 07 Mar 2024 13:04:39 +0000
 Received: from mgamail.intel.com ([192.198.163.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riDQL-00000004eum-2Cvs
+	id 1riDQK-00000004eu3-13uh
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Mar 2024 13:04:38 +0000
+	Thu, 07 Mar 2024 13:04:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709816678; x=1741352678;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ydcV8KjuRh1M2V0fUWpxwuVFVEPey+xI15J/nZoDhU4=;
-  b=XK1WlkU3ErSdriQ9dd5Nc6SOOA66veelwjbo/dUOsOaEllTVpSkR0eEr
-   Y68DnsgkBgBp9gqDbIS+p02/xmL3VsF+0Z60skEaTiWBB/eypgHgQ6nlv
-   sLjJugIsr+rx3LGw1LiKNxXxcQCp+veBUHhQK1uleoGlFxtC16t23dL1h
-   eZcHmRWYDA4ePylbVWC+kUnAZEbyw6Ab99l/QHD/Oco6d5Qt+8qs/Smow
-   E3GHbLGH72Ih6kQK/Bdtl2iunnBeLoyZefQ+2kITnVM3pbxW8FIS7QMGd
-   rT7nw8B+ojz+yz7D5fZDKbom9VRd2aWUGUyZPDVHtO3qcyVvsNl/T1oaq
+  t=1709816676; x=1741352676;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N+eRZXxN2eytANgfSbyduqZhkAXglYBQyinbb8Xem8k=;
+  b=FlZCWdguUaPtJ466A+iCApWO+oXFI8yNh73KbSMyhwyGHEzJTjGaEMy/
+   Jl8GKGVBhh0gS2++nnSnnsiSlI/+9LgRVMxHznTiD8xDsNOuj1R03WYsc
+   5WTuXuTScAJ7DaHe77C7rkkhAznoc7L7Pnw+ftIW+IJS5WdLKxPCXoqP6
+   j6ZbEObukMJvtHkHWGn8vJx5kuWJBgD9GayPK5f+V5XPaB5DxERWuKu/R
+   0CE5ZKyftdxmuNN6l7OijJfu78T2WIksogKML9DfdOkdFhntzAikowNCX
+   C3VDGszNnbXkO6y3GBOMe+UiDOF/PB3bmLyJtAqH9OWmb3o0FrqLGhpjL
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="5068063"
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="5068049"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="5068063"
+   d="scan'208";a="5068049"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 05:04:37 -0800
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 05:04:33 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="14592316"
+   d="scan'208";a="14592300"
 Received: from unknown (HELO localhost) ([10.237.72.159])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 05:04:35 -0800
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 05:04:31 -0800
 From: Aapo Vienamo <aapo.vienamo@linux.intel.com>
 To: Michael Walle <michael@walle.cc>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -57,18 +57,16 @@ To: Michael Walle <michael@walle.cc>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Cc: Aapo Vienamo <aapo.vienamo@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 1/2] mtd: core: Report error if first mtd_otp_size() call fails in mtd_otp_nvmem_add()
-Date: Thu,  7 Mar 2024 15:04:17 +0200
-Message-ID: <20240307130418.3131898-2-aapo.vienamo@linux.intel.com>
+Cc: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+Subject: [PATCH 0/2] mtd: core: Handle unsupported OTP operations
+Date: Thu,  7 Mar 2024 15:04:16 +0200
+Message-ID: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
-References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240307_050437_624202_3C05FE7D 
-X-CRM114-Status: GOOD (  12.10  )
+X-CRM114-CacheID: sfid-20240307_050436_371527_830E0DF0 
+X-CRM114-Status: UNSURE (   8.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,33 +83,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Jump to the error reporting code in mtd_otp_nvmem_add() if the
-mtd_otp_size() call fails. Without this fix, the error is not logged.
+Make MTD core tolerate SPI controllers without OTP support and report
+an error from MTD core if OTP initialization fails early.
 
-Signed-off-by: Aapo Vienamo <aapo.vienamo@linux.intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
----
- drivers/mtd/mtdcore.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+These changes address the issue that occurs when an OTP capable
+SPI NOR device is initialized with the Intel SPI controller. The limited
+supported opcode set of the SPI controller leads to failure in the OTP
+initialization, which in turn fails the probe for the MTD device. By
+allowing the MTD core to tolerate unsupported OTP, the rest of the MTD
+functionality remains intact even if OTP initialization is unsupported.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5887feb347a4..c365c97e7232 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -956,8 +956,10 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
- 
- 	if (mtd->_get_user_prot_info && mtd->_read_user_prot_reg) {
- 		size = mtd_otp_size(mtd, true);
--		if (size < 0)
--			return size;
-+		if (size < 0) {
-+			err = size;
-+			goto err;
-+		}
- 
- 		if (size > 0) {
- 			nvmem = mtd_otp_nvmem_register(mtd, "user-otp", size,
+Aapo Vienamo (2):
+  mtd: core: Report error if first mtd_otp_size() call fails in
+    mtd_otp_nvmem_add()
+  mtd: core: Don't fail mtd_device_parse_register() if OTP is
+    unsupported
+
+ drivers/mtd/mtdcore.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
 -- 
 2.41.0
 
