@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91363C54E49
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Mar 2024 11:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B454C54E49
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Mar 2024 11:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FhKClRGbIEWuA9GFEdVcslUYnmASmah1RCFTQ255H1s=; b=E477DtDBmERBm5
-	+IIrJmwANmzD8Kh7gD/1jSBhbvAehi8CSAce389wlWcSkIzM5WW9ecurmOp5Baj7lFxKD2Oi673BV
-	wg9SL2q6j6qWFt6BgF8be/gpxIUFVppAjNmNYVYI1bM5seq5f4M2XH9yrA/HfM6fZ4GMkeryaJneT
-	/lLeRlP5v2gmzXzmOkRLWLiohXyHPb1mEk06zWJqYA7mpuMVMkNNL6A/SzmVZmyG2QYbuY/JBnjRL
-	g0rDtzxD+YR+S3yxrAKWTjM7eslIyj9zZvA1+IT/h6fBwXYYTBoDpiHOvHa9uROiBGTbqimXKRg/g
-	ThhZbul4I5q5sC/x+A7w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zzxGapihkW6zWC88m3ZNq/tivkw6tVmygnfKmAudijk=; b=IzBKDezGSEX+w0
+	JSVHcKmN+FtQtY9Rh1d8wmTw7YsgH3QnnNP3UusBuJ59hCduj9dVgaaWv/EMF0xqrzfU50hlWSPTc
+	e9m5bV82TcgpBCWohz0QjrFgvYBZcLoGaVOaSplCev14Gn35pOAkGN7ZHa1sSfIVPZaXDuhx+NvUZ
+	ce/iz96uV94CthiIJ5UcNQCLjW1fbpZE4COqSMvSV2AAnCvxFdEwSkHEEYUn4/iP7EsekBNsRfWUx
+	9y2jkbAr3eEHv53xetXH/mfzrHGPyIEEDebFevVRGehDa1t9su62NGe9uVOafSMqJVQxwyYZnIqOw
+	IsXbdxXy3G9uUkej1tAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riCIG-00000004R8j-3s4G;
-	Thu, 07 Mar 2024 11:52:12 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1riCJU-00000004RZk-1seM;
+	Thu, 07 Mar 2024 11:53:28 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riCID-00000004R5z-46lt
+	id 1riCJQ-00000004RXb-44KG
 	for linux-mtd@lists.infradead.org;
-	Thu, 07 Mar 2024 11:52:11 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A1831C0003;
-	Thu,  7 Mar 2024 11:52:01 +0000 (UTC)
+	Thu, 07 Mar 2024 11:53:26 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 81FE8E000F;
+	Thu,  7 Mar 2024 11:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709812324;
+	t=1709812401;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8qjzIPvPaHnI7CkxFs3SDACYEgBDUcaPOqsPQVtT6bk=;
-	b=Wonxoi2pEuf7HrDiYqxl22kTQ9Swr1eeV5GV20NEPfv+7s3ql7IP/ZrGCjX5QDZnCca5YG
-	9mlg7lNeMa/UIn8/kZo83FqzdduC5bp+WL8PbPTRhCBE64EZY0F8Xt+s9/uvdiFjGIR0q/
-	V840ZUWUNrAnPqkXK7sCLWhLFTnnSUve7iS3joQz4Ckb795JG1hdB0HDBEyglTHpmseX/K
-	3t+v5HDj7iM/RwbNJQV6KA2k8hxs2Wdy6lMYaIG1axnWENah232Q6oThECRRIWRC5ybLTw
-	ArRXTvsIppKOaFTTTPxuUBF9eI+gtG4P/EjCEXDg39JtPY0PFdM6a+xfRNpRgg==
-Date: Thu, 7 Mar 2024 12:52:00 +0100
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4gfOLzMfOuj4PpOKwX97oBCeemWK8LHtpA2XW/OPMjA=;
+	b=pEalU7Z7OK34nBBZELLnLk1hBXNu4Kd/y67OaFV0nwiHCnXHG7QJYLvW1wGVE+cdXAYCWR
+	wCTSGIH/nfc/qfAquKGFYdd+f9GkP2D2SzHs3fMsbxT1go6ok+1P9iPOlE59XibmJKku+e
+	h+tdvPONIGm2yMz+MmvCPStmNyqwdhyEdQFG42JwSTdcNPNCgqZ3fgZtOhCJanC3o+XutB
+	h2CiTyAz9cqeM5omb5BklfJSdcOtQbrQf/PkpOCNZ62yFVnA9B/g2vrE7aWLgEcQypVDcO
+	PIT2m7dZRklsxy1Ci8zFn0mi41BXFAjX+mI+7Mg3cqsWeEmHqXgcd5HN4MaRdA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
- <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Julien Su <juliensu@mxic.com.tw>, Jaime
- Liao <jaimeliao@mxic.com.tw>, Jaime Liao <jaimeliao.tw@gmail.com>, Alvin
- Zhou <alvinzhou@mxic.com.tw>, <eagle.alexander923@gmail.com>,
- <mans@mansr.com>, <martin@geanix.com>, Sean =?UTF-8?B?Tnlla2rDpnI=?=
- <sean@geanix.com>
-Subject: Re: [PATCH 0/3] mtd: rawnand: More continuous read fixes
-Message-ID: <20240307125200.0c7fb137@xps-13>
-In-Reply-To: <93098d4e-c3b6-4c61-9ab7-764e18b7cb7d@foss.st.com>
-References: <20240223115545.354541-1-miquel.raynal@bootlin.com>
-	<d950908e-5c2b-41f7-9708-2eae1e6d9c76@foss.st.com>
-	<20240229114627.647f4af2@xps-13>
-	<93098d4e-c3b6-4c61-9ab7-764e18b7cb7d@foss.st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Julien Su <juliensu@mxic.com.tw>,
+	Jaime Liao <jaimeliao@mxic.com.tw>,
+	Jaime Liao <jaimeliao.tw@gmail.com>,
+	Alvin Zhou <alvinzhou@mxic.com.tw>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Christophe Kerello <christophe.kerello@foss.st.com>,
+	eagle.alexander923@gmail.com,
+	mans@mansr.com,
+	martin@geanix.com,
+	=?UTF-8?q?Sean=20Nyekj=C3=A6r?= <sean@geanix.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	stable@vger.kernel.org
+Subject: [PATCH 1/2] mtd: rawnand: Constrain even more when continuous reads are enabled
+Date: Thu,  7 Mar 2024 12:53:14 +0100
+Message-Id: <20240307115315.1942678-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240307_035210_171383_ED82725E 
-X-CRM114-Status: GOOD (  17.83  )
+X-CRM114-CacheID: sfid-20240307_035325_312541_E462483F 
+X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,33 +79,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCj4gPiBJIHdhcyBleHBlY3RpbmcgdGhlIG9uZ29pbmcgYm9vbGVhbiB0
-byBhbHdheXMgYmUgcmVzZXQgYXQgdGhlIGVuZCBvZgo+ID4gbmFuZF9kb19yZWFkX29wcygpLCBJ
-IHByb2JhYmx5IG1pc3NlZCBhIHNjZW5hcmlvLiBJbiBhbnkgY2FzZSB3aGF0IGlzCj4gPiBwcm9i
-YWJseSBuZWVkZWQgZm9yIHRoZSBzZXF1ZW5jZXIgdG8gd29yayBpczoKPiA+IAo+ID4gKysrIGIv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiA+IEBAIC0zNzI2LDYgKzM3MjYsNyBA
-QCBzdGF0aWMgaW50IG5hbmRfZG9fcmVhZF9vcHMoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgbG9m
-Zl90IGZyb20sCj4gPiAgICAgICAgICAgICAgICAgIH0KPiA+ICAgICAgICAgIH0KPiA+ICAgICAg
-ICAgIG5hbmRfZGVzZWxlY3RfdGFyZ2V0KGNoaXApOwo+ID4gKyAgICAgICBjaGlwLT5jb250X3Jl
-YWQub25nb2luZyA9IGZhbHNlOyAgCj4gCj4gV2l0aCB0aGlzIHBhdGNoLCBpdCBpcyBPSywgdGhl
-IGNvbnRpbnVvdXMgcmVhZCBmZWF0dXJlIHdpbGwgYmUgZGlzYWJsZWQKPiBhcyBleHBlY3RlZCBp
-biBhbGwgY2FzZXMuCgpUaGFua3MgdG8geW91ciBmZWVkYmFjaywgSSd2ZSB0aG91Z2h0IGFnYWlu
-IGFib3V0IHRoaXMgY2FzZS4gVGhlIGZpeApwcmVzZW50ZWQgaGVyZSB3aWxsIG1vc3QgbGlrZWx5
-IHdvcmsgYnV0IGRvZXMgbm90IHNvdW5kIGlkZWFsIGFzIHdlCnN0aWxsIGVuYWJsZSB0aGUgY29u
-dGludW91cyByZWFkIGludGVybmFsIGZsYWcgd2l0aG91dCB1c2luZyBpdC4gU28gSQphbSBkcmFm
-dGluZyBzb21ldGhpbmcgZWxzZSB0aGF0IHNob3VsZCBlbnN1cmUgd2UgYXJlIGFsd2F5cyBlbmFi
-bGluZwpjb250aW51b3VzIHJlYWQgb25seSB3aGVuIHdlIGNhbiB1c2UgaXQuCgpBcyBhIHNlY29u
-ZCBzdGVwLCBJIHdpbGwgcmVzZXQgdGhlIGZsYWcgbGlrZSBhYm92ZSwgYnV0IHdpdGggYQpXQVJO
-X09OX09OQ0UoKS4gVGhpcyB3YXk6Ci0gSWYgaXQgaGFwcGVucyB0aGF0IHdlIG1pc3NlZCBhbm90
-aGVyIHBhdGggd2hlcmUgdGhpcyBpcyBub3QgZGlzYWJsZWQsCiAgdGhlcmUgd2lsbCBiZSBubyBi
-ZWhhdmlvcmFsIGJ1ZyAoaG9wZWZ1bGx5KS4KLSBXZSB3aWxsIHN0aWxsIGJlIG5vdGlmaWVkIGJ5
-IHRoZSB3YXJuaW5nLgoKVGhhbmtzIGZvciBhbGwgeW91ciB2YWx1YWJsZSBmZWVkYmFjayBhbmQg
-dGVzdGluZy4gTGV0IG1lIGtub3cgd2hhdAp5b3UgdGhpbmsgb2YgdGhpcyBuZXcgc2VyaWVzLgoK
-VGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+As a matter of fact, continuous reads require additional handling at the
+operation level in order for them to work properly. The core helpers do
+have this additional logic now, but any time a controller implements its
+own page helper, this extra logic is "lost". This means we need another
+level of per-controller driver checks to ensure they can leverage
+continuous reads. This is for now unsupported, so in order to ensure
+continuous reads are enabled only when fully using the core page
+helpers, we need to add more initial checks.
+
+Also, as performance is not relevant during raw accesses, we also
+prevent these from enabling the feature.
+
+This should solve the issue seen with controllers such as the STM32 FMC2
+when in sequencer mode. In this case, the continuous read feature would
+be enabled but not leveraged, and most importantly not disabled, leading
+to further operations to fail.
+
+Reported-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 4d5a663e4e05..2479fa98f991 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -3594,7 +3594,8 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
+ 	oob = ops->oobbuf;
+ 	oob_required = oob ? 1 : 0;
+ 
+-	rawnand_enable_cont_reads(chip, page, readlen, col);
++	if (likely(ops->mode != MTD_OPS_RAW))
++		rawnand_enable_cont_reads(chip, page, readlen, col);
+ 
+ 	while (1) {
+ 		struct mtd_ecc_stats ecc_stats = mtd->ecc_stats;
+@@ -5212,6 +5213,15 @@ static void rawnand_late_check_supported_ops(struct nand_chip *chip)
+ 	if (!nand_has_exec_op(chip))
+ 		return;
+ 
++	/*
++	 * For now, continuous reads can only be used with the core page helpers.
++	 * This can be extended later.
++	 */
++	if (!(chip->ecc.read_page == nand_read_page_hwecc ||
++	      chip->ecc.read_page == nand_read_page_syndrome ||
++	      chip->ecc.read_page == nand_read_page_swecc))
++		return;
++
+ 	rawnand_check_cont_read_support(chip);
+ }
+ 
+-- 
+2.40.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
