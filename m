@@ -4,65 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 608A9C54798
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Mar 2024 17:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9A82C54798
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Mar 2024 18:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x7IDssXiC+dGHBxCdJH3CKCI45LTkrCjGVyJAGTCVhI=; b=DemlfaC6PLEIoa
-	/mLxrbB1VNjRv9r1lCSqvv4uD0TJl7HxfCclgSmCbDlw3Hr1Qi0/gi/Kb5o/kWvG9mdDH2qSbIgMC
-	am6gRPsRAr/5yEm8cfaOJGS5hi9A5DIh58lBEscQndf0vLE7ptjl+CJqYVLW7Xij2V4v8dHO4sIlI
-	CZNtC8ZJKrH/arLXtvGI5J0WES55MIALZmOuu+yJT9cItwiP7rBM1dKX3UtYMWuDMhU67cpsRL8XZ
-	OUtASC/AVKS6BXO6p4UrR8Qg91SctiWdVoV5hamA1b3HnRpuxQUnjAhsxKkzq+JDXHatR/J08h0pk
-	j5YyQpPB410zOAwaLplw==;
+	List-Owner; bh=pVoN7yKVA5mhM8RGHvAj33Aw7271MRG9sI8cw97UST0=; b=p3UbpGrxb9f7v0
+	q1EmDtVCL5mSCSYAIWkMODU4BDQEcpc5vjgvm4PzmgVMBaPhunKaGB2MIVHwGzHWbW8amR0A18EHg
+	iZbPPqYz9HvXMhaGXfbPgBqZEQEAvTA9u9YxU/Nu90/aCdiUxjanUXVRggT1p83w0rLh5jkeqUImN
+	IA63RbneuKN9LvpLf0cLjxyClUmrAGmgDm/6as5+kAXeSACzfAGnP8hOMblU4IwjNVdTVp0943XXj
+	TA3ccNMROAz6YkjWECjkrruuKOAHQhwzYu6xmX/ZiVmHORJCkCiPqG5dIC7vn6Tuio1mAwHnM0VXW
+	S0cB/aKf9YGjc8ZTdTfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riHXy-00000005gev-1RIT;
-	Thu, 07 Mar 2024 17:28:46 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1riIbh-00000005t6L-2Crg;
+	Thu, 07 Mar 2024 18:36:41 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riHXs-00000005gYf-0a7Q;
-	Thu, 07 Mar 2024 17:28:42 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C397D20005;
-	Thu,  7 Mar 2024 17:28:36 +0000 (UTC)
+	id 1riHYU-00000005h15-16gd
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 07 Mar 2024 17:29:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=INBnBefA/N55FIuu5yy0zef6mNSIr7WS39BueUt6jTw=; b=ZUv3GhZ9O+uLDwPi+2GQ9lUKd6
+	uc5uy/j+48Zac4cOHYgUXrESUC14e3lQIiLbM1bfq/0cTRDZRMFtP8Dqaj88DnVVcD91JuKhJmVSG
+	h5BpjlJ1ksYkeIXa/f3+9qKNCYf6zBWyOJlPYB2vKFYMlFWe3wVljb9/DJT+J/WPbBxlMlpXgU/27
+	qnUppLoJNNYN74p1U1x3BJgqAXIAqHs40RFEhg6zj0LFUd+Af25/i7iERf1nIDZLGYHNP35nHPJl+
+	Iuc+UhSPyFe9ldUbfZUv1T5a7GB9whdAqF8VKivVbgO89u+hf3UAdI6CUZ7iLKWaskMhHwpHvOvXX
+	m708ELDQ==;
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1riHYL-00000006oMW-1UB6
+	for linux-mtd@lists.infradead.org;
+	Thu, 07 Mar 2024 17:29:16 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5EACEC0007;
+	Thu,  7 Mar 2024 17:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709832517;
+	t=1709832543;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q21DLTQj0SvAQbvsDh1KicDozRTQwOzP95SJqpPGBGw=;
-	b=N5PPEM0FilHp2agp8St2TXpGgvFLXB17kbldpeIjASzZ3VL3D3s2E5pUGt+te7ZspetCP7
-	GGTFQHm33ttAnWGPoz1iehSR7xIGSS/cqoqqMLpPNnbekk+huDtyYOV9Cl4XBg7UmTpp73
-	FAhluhXKkf9P2o15/W+XiNocTAKFeZPuNUESpjgX0+JdRl+qza5saoGWqJMZmMTkx8aNfC
-	2nci/0eWvA/7An4GYRw2CnGARVCvRxZgOGgI8NXwFoLF4Hs93pU1wcetdexpMEw5WOiQQP
-	pja4vxDDgl+SmLTpIdJuVsnqDMfK7px6Yq8x2NkE0ezRPo6TEc/IyskJJOZhJA==
+	bh=INBnBefA/N55FIuu5yy0zef6mNSIr7WS39BueUt6jTw=;
+	b=l4aZ7vspb5AUynnn+1oVbm72gNtIkNXJ7I0YQInRWYUZIsLjy0fNPAZx6zgX21fyPVkMj1
+	jGlHKmtFHY7Q19x2qGjRy7jsekY7hvmeiBUWn1+jUtvKzlt4orQzErMiMPqEpI2iNKmQhc
+	KOBPHljlrHMsepM++ZM62YSdxmOes0SaYvw05N9JIIBwfM6p3aJBRou/iIZWv1kvRHZ+gB
+	/c57m3xHlOnCIedk6LIBjMYzCzwUCXylVQ7nipo+dpBXfKBN0aJxwo5XUWs19WTqdSKDuP
+	ckVygwgKhhLIirD7uEfRcYJeMtcKrjuE8pYMZQOvo6fmlMUvAKcHv89tHZwSuw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Alexander Dahl <ada@thorsis.com>,
-	linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Boris Brezillon <bbrezillon@kernel.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: raw: atmel: Fix comment in timings preparation
-Date: Thu,  7 Mar 2024 18:28:35 +0100
-Message-Id: <20240307172835.3453880-1-miquel.raynal@bootlin.com>
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Julien Su <juliensu@mxic.com.tw>,
+	Jaime Liao <jaimeliao@mxic.com.tw>,
+	Jaime Liao <jaimeliao.tw@gmail.com>,
+	Alvin Zhou <alvinzhou@mxic.com.tw>,
+	Christophe Kerello <christophe.kerello@foss.st.com>,
+	eagle.alexander923@gmail.com,
+	mans@mansr.com,
+	martin@geanix.com,
+	=?utf-8?q?Sean_Nyekj=C3=A6r?= <sean@geanix.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: rawnand: Fix and simplify again the continuous read derivations
+Date: Thu,  7 Mar 2024 18:28:58 +0100
+Message-Id: <20240307172859.3455856-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240226122537.75097-1-ada@thorsis.com>
+In-Reply-To: <20240223115545.354541-2-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c52f6062fa3d93eb033cfc38cc56c34976df1258'
+X-linux-mtd-patch-commit: b'b7da181307b928aa44349cf8eecd82a590ffbfac'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240307_092840_439521_B107297B 
-X-CRM114-Status: UNSURE (   7.22  )
+X-CRM114-CacheID: sfid-20240307_172909_546151_332ED3B2 
+X-CRM114-Status: UNSURE (   7.90  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,16 +105,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-02-26 at 12:25:37 UTC, Alexander Dahl wrote:
-> Looks like a copy'n'paste mistake introduced when initially adding the
-> dynamic timings feature with commit f9ce2eddf176 ("mtd: nand: atmel: Add
-> ->setup_data_interface() hooks").  The context around this and
-> especially the code itself suggests 'read' is meant instead of write.
+On Fri, 2024-02-23 at 11:55:43 UTC, Miquel Raynal wrote:
+> We need to avoid the first page if we don't read it entirely.
+> We need to avoid the last page if we don't read it entirely.
+> While rather simple, this logic has been failed in the previous
+> fix. This time I wrote about 30 unit tests locally to check each
+> possible condition, hopefully I covered them all.
 > 
-> Signed-off-by: Alexander Dahl <ada@thorsis.com>
-> Reviewed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Reported-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Closes: https://lore.kernel.org/linux-mtd/20240221175327.42f7076d@xps-13/T/#m399bacb10db8f58f6b1f0149a1df867ec086bb0a
+> Suggested-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Fixes: 828f6df1bcba ("mtd: rawnand: Clarify conditions to enable continuous reads")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Tested-by: Christophe Kerello <christophe.kerello@foss.st.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
