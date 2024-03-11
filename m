@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1773C54E58
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Mar 2024 14:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5165C5475B
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Mar 2024 16:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C0xJLV923uQ9UPTIOgc2N7IUSvKo+wcZXFN+BjvqrLk=; b=odTANaoecYbPh6
-	Mu13d4bmGDYNxCdraQRNDc7YgYJfrZ5MctKTMEBoyuUyDrF/WuoieiJf0P9RCSzt8Bu4/rCKNDvEh
-	7kqUPxYk8UkIOY9KvqIX0hEYgLIUWd5tQATKZK5eHzJlXZCMQN3GVqKMVWULYVjAJcdSV3E1Mwcz7
-	yniEOjNZtRZVeZW4sXQ5rSQa8KGDaeNH6eRlo78YWrhBKwKzcijWLzwrK6RxUU8DQTpsLGCUd41zy
-	DpollbfqKkZ4w7qxJLVeWEb7pSwV3qRzKu4IbitArzv1Ny9w7Oa43NyoDeKafc5/jTOZ1UoHwAFIF
-	RNEYo5VDCPIfEj3uWDGQ==;
+	List-Owner; bh=NRuQeHdmDOwMaaYRHZYTz/KfY14btsEEfzlrZ7/XZMk=; b=qwKw2nA9EENHd0
+	n+TbPKRj083uKFqPYR1BE06TL++yoOdHq1Mo2gPgneWmuDCBiMbXhRh3sGQ9cD35vM0VYepL83Z5M
+	F/CTbip5+EPuKERdNIepiXhvDPd6+lyBb0Wegh3QdmmSflqozY0matIOi+zsAXo3uG/fk6RavwJ83
+	d3eeNzmDX+iycixJuDFkI3Cz8JDtUacn3bkglzeBUySuW/E58KQpcEiQT1GBrcKwoUsoK0AWhKi1N
+	/2OId0FdyGI4OOts7oUwYMpbfZb7RUip4dDjjqncWKCflRIvuP+onzSHM63BLOQ6l4vqCKPg0wlc3
+	BQKN3Ok1VDTzurJaittw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjh4C-00000001vyp-3O4j;
-	Mon, 11 Mar 2024 14:55:52 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rjiOo-00000002I9f-1GUw;
+	Mon, 11 Mar 2024 16:21:14 +0000
+Received: from mgamail.intel.com ([198.175.65.9])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjh3s-00000001vj2-0E1c
+	id 1rjiOh-00000002I7s-2p5N
 	for linux-mtd@lists.infradead.org;
-	Mon, 11 Mar 2024 14:55:37 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 6B04DCE10FE;
-	Mon, 11 Mar 2024 14:55:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3417C433B2;
-	Mon, 11 Mar 2024 14:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710168927;
-	bh=LvW9nTAyldiPop/Tibv4R+2RE6G1PnecV6XkNaBzfHU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=C/FdvGT1IhklU0hQgvncDarCtzuZJg/X9/A/KRM2Ok9EyBGOGD9918a269te/L6dJ
-	 PjHJA3rntAnFWHn9/3NsK2F6kTxh6I9FK/1akxCWbSzW8IPdxcUTHkjDgM8AWd6Nxm
-	 ycdRRfkkBdbmksRI6cJwQvY75MnN6I9QzrNBJ8FYOqVkidwteJJSEz50MUJ9wPEObw
-	 Vf8wnp2LhIoaQoHY4lLmhaRItN2s/p4UvKtHxpjiuot0vL/M7Edl/KrzGCT8a1hWDe
-	 Hvj3IicHJ2d1PXu8/XS+UvMgpBtvHjikO4FJizE2CvIDA9LKq9Xb0ea7RjPfbY84un
-	 i0aj9TzbTD7mg==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,  Mark Brown
- <broonie@kernel.org>,
-  Rob Herring <robh+dt@kernel.org>,  Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
-  Vaishnav Achath <vaishnav.a@ti.com>,  Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>,  "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>,  Pratyush Yadav <pratyush@kernel.org>,
-  Michael Walle <mwalle@kernel.org>,  linux-spi@vger.kernel.org,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mips@vger.kernel.org,  Vladimir Kondratiev
- <vladimir.kondratiev@mobileye.com>,  Gregory CLEMENT
- <gregory.clement@bootlin.com>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  Tawfik Bayouk
- <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 11/11] MIPS: mobileye: eyeq5: add octal flash node to
- eval board DTS
-In-Reply-To: <f6b8d9bc-d95a-4d85-a2bc-820b1206fcaf@linaro.org> (Tudor
-	Ambarus's message of "Mon, 11 Mar 2024 14:06:10 +0000")
-References: <20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com>
-	<20240308-cdns-qspi-mbly-v1-11-a503856dd205@bootlin.com>
-	<f6b8d9bc-d95a-4d85-a2bc-820b1206fcaf@linaro.org>
-Date: Mon, 11 Mar 2024 15:55:23 +0100
-Message-ID: <mafs0v85s95t0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Mon, 11 Mar 2024 16:21:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710174068; x=1741710068;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qgnk+NurW/dc0O021XzFvbekQGoW8NW7JLtzZnW170g=;
+  b=I1lBzgx/Ql//+uIpqsRP2Sr5xPyUeseaJ33pwE5z/7V2nH9wADSwMWDT
+   D13x0TzrXgvTbE7yg0L48KjSkMmfwKh8BxDpgY7tXXgvlVjtnwmGx9GGA
+   NfjfCySc+TGZEq+Q8fCiKR/zKrJmBLzXMxb0VVv+kXBWaMj9W9XHe+4ab
+   FZH4OwbUVRSduylKIQwVFOYzf4tPOiryKnIlTJYl6OHkT+rVG1HhTUiDS
+   gsfkG4l4kzIi0WATsR6WjMYBpRVJiCX7w16x2Ld+JoLxM+ForwDghMqjp
+   /nOoHS3jj9NbtmtnYJxNyw2TXjUUQW2OMOipQg4U6zcr5iRp1H6NnoFiq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11010"; a="27317298"
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="27317298"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 09:21:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,117,1708416000"; 
+   d="scan'208";a="15710843"
+Received: from cindreic-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.141.11])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 09:21:02 -0700
+Date: Mon, 11 Mar 2024 18:20:52 +0200
+From: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 2/2] mtd: core: Don't fail mtd_device_parse_register() if
+ OTP is unsupported
+Message-ID: <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
+References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
+ <20240307130418.3131898-3-aapo.vienamo@linux.intel.com>
+ <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_075532_603711_28EBD45D 
-X-CRM114-Status: GOOD (  13.56  )
+X-CRM114-CacheID: sfid-20240311_092107_773573_301F18C3 
+X-CRM114-Status: GOOD (  24.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,36 +80,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBNYXIgMTEgMjAyNCwgVHVkb3IgQW1iYXJ1cyB3cm90ZToKCj4gT24gMy84LzI0IDE3
-OjE4LCBUaMOpbyBMZWJydW4gd3JvdGU6Cj4+IEFkZCBTUEktTk9SIG9jdGFsIGZsYXNoIG5vZGUg
-dG8gZXZhbHVhdGlvbiBib2FyZCBkZXZpY2V0cmVlLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogVGjD
-qW8gTGVicnVuIDx0aGVvLmxlYnJ1bkBib290bGluLmNvbT4KPj4gLS0tCj4+ICBhcmNoL21pcHMv
-Ym9vdC9kdHMvbW9iaWxleWUvZXllcTUtZXBtNS5kdHMgfCAxNSArKysrKysrKysrKysrKysKPj4g
-IDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspCj4+IAo+PiBkaWZmIC0tZ2l0IGEvYXJj
-aC9taXBzL2Jvb3QvZHRzL21vYmlsZXllL2V5ZXE1LWVwbTUuZHRzIGIvYXJjaC9taXBzL2Jvb3Qv
-ZHRzL21vYmlsZXllL2V5ZXE1LWVwbTUuZHRzCj4+IGluZGV4IDY4OThiMmQ4MjY3ZC4uMGU1ZmVl
-N2I2ODBjIDEwMDY0NAo+PiAtLS0gYS9hcmNoL21pcHMvYm9vdC9kdHMvbW9iaWxleWUvZXllcTUt
-ZXBtNS5kdHMKPj4gKysrIGIvYXJjaC9taXBzL2Jvb3QvZHRzL21vYmlsZXllL2V5ZXE1LWVwbTUu
-ZHRzCj4+IEBAIC0yMSwzICsyMSwxOCBAQCBtZW1vcnlAMCB7Cj4+ICAJCSAgICAgIDwweDggMHgw
-MjAwMDAwMCAweDAgMHg3RTAwMDAwMD47Cj4+ICAJfTsKPj4gIH07Cj4+ICsKPj4gKyZvc3BpIHsK
-Pj4gKwlmbGFzaDA6IGZsYXNoQDAgewo+PiArCQljb21wYXRpYmxlID0gImplZGVjLHNwaS1ub3Ii
-Owo+PiArCQlyZWcgPSA8MD47IC8qIGNoaXAgc2VsZWN0ICovCj4+ICsKPj4gKwkJc3BpLW1heC1m
-cmVxdWVuY3kgPSA8NDAwMDAwMDA+Owo+PiArCQlzcGktcngtYnVzLXdpZHRoID0gPDg+Owo+PiAr
-CQljZG5zLHJlYWQtZGVsYXkgPSA8MT47Cj4+ICsJCWNkbnMsdHNoc2wtbnMgPSA8NDAwPjsKPj4g
-KwkJY2Rucyx0c2QyZC1ucyA9IDw0MDA+Owo+PiArCQljZG5zLHRjaHNoLW5zID0gPDEyNT47Cj4+
-ICsJCWNkbnMsdHNsY2gtbnMgPSA8NTA+Owo+Cj4gVGhlc2UgY2RucyBwcm9wZXJ0aWVzIGxvb2sg
-YmFkLCB0aGV5IGJ5cGFzcyBTUEkgTk9SIGVudGlyZWx5LiBJJ2QgY2hlY2sKPiBpZiB0aGVzZSB0
-aW1pbmdzIGNhbiBiZSBkZXRlcm1pbmVkIGF0IFNGRFAgcGFyc2luZyB0aW1lLCB0aGVuIEknZCBw
-YXNzCj4gdGhlbSB0byB0aGUgU1BJIGNvbnRyb2xsZXIuCgpJIGFncmVlLCBidXQgSSBkb24ndCBz
-ZWUgYW55IHRhYmxlIGluIFNGRFAgdGhhdCBkZXNjcmliZXMgdGhlc2UgdGltaW5ncy4KU28gSSBk
-b24ndCB0aGluayB0aGVyZSBpcyBhIHdheSB0byBkaXNjb3ZlciB0aGVtLgoKPgo+IEkgc2VlIHRo
-ZXNlIHByb3BlcnRpZXMgYXJlIGFscmVhZHkgYWNjZXB0ZWQgaW4gdGhlIGJpbmRpbmdzIGZpbGUg
-Zm9yIGZldwo+IHllYXJzIG5vdy4gU29tZXRoaW5nIHRvIGltcHJvdmUgbGF0ZXIgb24uCgotLSAK
-UmVnYXJkcywKUHJhdHl1c2ggWWFkYXYKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Michael
+
+On Mon, Mar 11, 2024 at 03:38:17PM +0100, Michael Walle wrote:
+> On Thu Mar 7, 2024 at 2:04 PM CET, Aapo Vienamo wrote:
+> > Handle the case where -EOPNOTSUPP is returned from OTP driver.
+> > +	/*
+> > +	 * Don't abort MTD init if OTP functionality is unsupported. The
+> > +	 * cleanup of the OTP init is contained within mtd_otp_nvmem_add().
+> > +	 * Omitting goto out here is safe since the cleanup code there
+> > +	 * should be no-ops.
+> > +	 */
+> 
+> Only if that's true for both the factory and user OTP area.
+
+I'm not sure I follow. I'm not seeing a path in mtd_otp_nvmem_add()
+that would result in either mtd->otp_user_nvmem or mtd->otp_factor_nvmem
+needing to be cleaned up by the caller, if an error is returned, if
+that's what you are referring to.
+
+> Also, you'll print an error message for EOPNOTSUPP, although that is
+> not really an error. Is that intended? 
+
+Well, when we hit this, the functionality of the SPI memory itself is
+degraded in the sense that the OTP functionality is not available. What
+would you suggest?
+
+> 
+> >  	ret = mtd_otp_nvmem_add(mtd);
+> > -	if (ret)
+> > +	if (ret && ret != -EOPNOTSUPP)
+> 
+> Maybe there is a better way to handle this, like controller
+> capabilities instead of putting these EOPNOTSUPP checks
+> everywhere? I'm not sure.
+
+Trying to come up with clear semantics for a capabilities flag to solve
+this is difficult. The issue is that on the SPI controller side, the
+limitation stems from the really strict set of opcodes that are allowed.
+For example, we already hit an error with the 0x35 (read configuration
+register) not being on the set of allowed opcodes. While this
+instruction is used by the OTP code, it's not a strictly OTP specific
+operation.
+
+If there was a flag that would signal OTP support, I think it would have
+be defined as "the controller supports all operations that are
+performed by the OTP code", which sounds brittle. The other way around
+would be to have a really fine-grained set of flags that the MTD core
+would check, but that feels tedious and error prone as well.
+
+Best,
+Aapo
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
