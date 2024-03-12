@@ -4,53 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 533B1C54E58
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2024 08:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD102C54E60
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2024 12:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+pL7r62yy3OP+19nbwhSEPTy0kENbcOjJScam1zhZUQ=; b=sZbzhWClr/vw+Y
-	W8kKM8SsycfaXeuFCPrWQwPocNml7P2UYFwQPbEGZIFjPiaDYgCMYH/S8UFNXUuCWO6VQyLJEgw0h
-	lAo+FKd37TzgiL4ePTaG72h79jWL4E+hejFi7AlTrCphAqQw2XLy01SIFxmDVMJ5TI7zjg6adTmf4
-	wVPIuYwApAfUboUTyepcT5xLEkEmVme3qn12E/pUmAWJdyiJs8w2aDsO0XcpNirlQAxbgyLd4QI7K
-	ilPBrN1gGBKz6b8dImMnU7Rtw4JuVyW9zrx70UJHtTzu24lCNG1j+Cn4SYO37MvrVj5NBB/QvoV0r
-	4imsL3SNbumM6dBjx5bA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GIlLbi+E5jC1i/dvuBvrQEMQvYQYNI5jB8zGvl0aLiY=; b=DJEgbzqOZs6+xQ
+	/uax87cG+CDEmNwT4sUWxbppy3uKDuF7H9jh7lXhgwwyEK03jXwafGhHgLTxuOAyanxK4B16OA7RN
+	TPzDOqVWdHk5Mfe0ihRODlfWaUwzS+ZypBDWGT7sN+e6AbN4Z1FlcUbnnemZ9OwRsJcbSq098J8kD
+	1+e/TXasDfns65uhkNEoky5tc7yH8fGpKxP0ZE2ue8RVeKSfsM88eyOpDlYLDVZ6TKV5SZboZKeq3
+	FRuFlcj766YDrZ6O44MkeUdX0YXVagqF1uohFT7a/87LqhZIesTgtrmcPpsLpibCe3maiDaIbJ5O3
+	XnYvdqofVRmRoc9fiN5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjxWx-00000004t7M-2R79;
-	Tue, 12 Mar 2024 08:30:39 +0000
-Received: from mail.createsavvy.pl ([51.195.117.175])
+	id 1rk11H-00000005giP-3wWW;
+	Tue, 12 Mar 2024 12:14:11 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjxWr-00000004t6Y-40gP
+	id 1rk11E-00000005ghB-0eWs
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Mar 2024 08:30:36 +0000
-Received: by mail.createsavvy.pl (Postfix, from userid 1002)
-	id 4CC34A2C4F; Tue, 12 Mar 2024 08:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=createsavvy.pl;
-	s=mail; t=1710232226;
-	bh=Q787bUI8wqiKELAtyWRvCTxaBwNaZfpooGhkyk63cfU=;
-	h=Date:From:To:Subject:From;
-	b=bBFAyLagbPiqezxjRWLJeQw0BeR0+UmPmTuqJmlU8C+n0Ck8tRc8BXr9yMA8Ar8wp
-	 C35mATElI9kSJxhiiDYzl7TG/QvWtk4Kd2WQFnkXJ1xqEGY22raeALLGExcqIG4nFx
-	 NCzYGsgxnQTS23lD8FkqjnZ6I/V+TAMm1+zcvw9KmZdbsuVbcTkzd1p8rp6q03fwSW
-	 iAciGLdDnJx8rLgm/37LE5+Tg9YatgR0lTceyGEe2UpbMD3E79XMtj3O/3iOjB/+Ka
-	 S0tmp/PeTNyNbP9VkV+2L1CnquD1NfuAbLseDWq8eB8EthlYmvINj9c+KejLVQpy3u
-	 4a7u8iriq6BFA==
-Received: by mail.createsavvy.pl for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2024 08:30:23 GMT
-Message-ID: <20240312074500-0.1.do.24dc0.0.8uein9w3u6@createsavvy.pl>
-Date: Tue, 12 Mar 2024 08:30:23 GMT
-From: "Maksymilian Ciszewski" <maksymilian.ciszewski@createsavvy.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
-X-Mailer: mail.createsavvy.pl
+	Tue, 12 Mar 2024 12:14:09 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4AFD8611A7;
+	Tue, 12 Mar 2024 12:14:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 498B1C43399;
+	Tue, 12 Mar 2024 12:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710245647;
+	bh=RIledjCrWSCL/IPypQh0lHmpGxAEht7ZxoU3/0wNE40=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=YMtMcM1HD9JepAKEyuQuswytFBV5pq115pEWz+RZw+dGwUTHO+H4E8uCtlCmZLu3K
+	 yeOtnQJas5uaLZ5D4TxqkVTt8JDac3yA4qXENMSAKlo1jxQnELvmHvHhkI7osYGwze
+	 YtiXGANJtJ+sCP1L4YujohQOGY44MzijVk8bgsW/4iKM8MrU41wWsXsGr3yQcI5Hlv
+	 ddPv1rRmJn5LS76fTTGBSTVsIoyDae2Ohagyot/OLHO4LaUc2iLaAYU7ypAGttwB2e
+	 r/F1J1p7aMpA21mP3h8ofprS7UQ3ZLuF7U3n1xXqT7sW50x6UCInYUuiyGxhWwRwTS
+	 AQFPaCOFGml7A==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
+ <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  Takahiro Kuwano
+ <Takahiro.Kuwano@infineon.com>,  kernel@collabora.com,
+  kernel-janitors@vger.kernel.org,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
+In-Reply-To: <865fc24b-ae27-4084-893b-c5c389480a09@collabora.com> (Muhammad
+	Usama Anjum's message of "Mon, 11 Mar 2024 22:11:33 +0500")
+References: <20240304090103.818092-1-usama.anjum@collabora.com>
+	<865fc24b-ae27-4084-893b-c5c389480a09@collabora.com>
+Date: Tue, 12 Mar 2024 13:14:03 +0100
+Message-ID: <mafs0r0gf8x6c.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240312_013035_018002_A1F794DF 
-X-CRM114-Status: UNSURE (   1.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240312_051408_273523_591B9320 
+X-CRM114-Status: GOOD (  13.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,16 +74,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
-cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
-xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
-Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
-ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbQpNYWtzeW1pbGlhbiBDaXN6ZXdza2kKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi,
+
+On Mon, Mar 11 2024, Muhammad Usama Anjum wrote:
+
+> Soft reminder
+
+Miquel should pick up the patch when sending out his pull request [0].
+
+[0] https://lore.kernel.org/linux-mtd/20240307180919.4cb7a4cb@xps-13/
+
+>
+> On 3/4/24 2:01 PM, Muhammad Usama Anjum wrote:
+>> The i should be signed to find out the end of the loop. Otherwise,
+>> i >= 0 is always true and loop becomes infinite. Make its type to be
+>> int.
+>> 
+>> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>> Changes since v1:
+>> - Make i int instead of u8
+>> ---
+>>  drivers/mtd/spi-nor/core.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 65b32ea59afc6..3e1f1913536bf 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -3373,7 +3373,7 @@ static u32
+>>  spi_nor_get_region_erasesize(const struct spi_nor_erase_region *region,
+>>  			     const struct spi_nor_erase_type *erase_type)
+>>  {
+>> -	u8 i;
+>> +	int i;
+>>  
+>>  	if (region->overlaid)
+>>  		return region->size;
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
