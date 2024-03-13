@@ -4,63 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A24DC54E60
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 09:24:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9F44C54791
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 10:27:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DeRKpGFAnQsOaRuhd4dn8phCrrVO2P//w9SnPgLNp8w=; b=NI0upig7yx5nMuDXAnj2aPjvlp
-	DvONCXHJUUi+cu27elBnyk45CmTIc28nBs89CP8dx1ZsZmEFlOgtEGMg7R1m+h8AxTDhpf9YxrgRY
-	fzM2sVbLLZUiUFVQHEPvVIkowwjb0odW3fX8u1zypdnaCgBls8t8akrR9aHpQet9vJhkAiwzwNeAh
-	aZs672rhfd74hNN5ypc0qR4H0WawdwPzBWeOObwexnJveswrI4OwTU2y/i0oE+o9FHdECVVvl1GPD
-	wverhgTzbCNt4NkICVIp56MKFi+TPH5ecsFlkQKHy9WwFSe7ZGuiCrNLlRfGxHA6DZ3IHaE0n0MaY
-	/fIc0G5w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0JO8cd/JrIl+mnertcmKvMM9EKd1kre9FmpdRd250pg=; b=JutpeDO3TNNouG
+	2yLXQ7KCMqgMvR2K00GPFEZZ2t5OxNPqWEZcfV5jeXdh2R7WthI4Vyp9jsqd5RNh8g2+fFSEN/D2g
+	K7IK4GE79ofVsWW0UXqTyM1FnYrMFQBRLJWJTD/CI70frvSjDVnvW1EYAExxoDsr/de9fz6RLCr6j
+	Rv5QNYl/L9seqlyT/dI0m5WaDSk37ZUVxqnoDuzuoZ4ke3P8gI2JbH4fanhC3K6UqngJsaiEJLDNq
+	rHcO0bQmYT3ybFclXwAncwzOPZlrJIK4wZ5fGzGGnyLN3NcHaQga2TdhEqGNVNM7gFnw3DLf5XjpK
+	i889M0OpK+jyXn4WMcbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkKqZ-00000009UcD-1Cjk;
-	Wed, 13 Mar 2024 09:24:27 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rkLps-00000009ftq-3YdE;
+	Wed, 13 Mar 2024 10:27:48 +0000
+Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkKqW-00000009Ub9-3kVi
+	id 1rkLpq-00000009fse-1vrf
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Mar 2024 09:24:26 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 71F6061405;
-	Wed, 13 Mar 2024 09:24:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E18C43390;
-	Wed, 13 Mar 2024 09:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710321862;
-	bh=cEc1lGHAzmhktzZB3LfkyJVWkCDMr1m6qmRcF67PJgE=;
-	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
-	b=u3QdwIqSRNu5/om0tD9SwyuK8cIYuVYHvLvUNW53DAa0NROSmvucitQ0yLnmqIenD
-	 qm103QJ3GGn182nkchaA8rvdEZN7PyRVUATcM+NkKbQt/9eNOLqLcOmgwu9Mi6anUG
-	 QIz+5CYzNn6l9I9aFozmhbzkn1zzRDJlnFK0Nvulx306itgLhsiyeSXgNGwI99p9sU
-	 sSwW72KfNh3CZyyRgJX0HqpWHIwHVGO/bm9wDU1tjLY9a3/Hf7MemvYdMETTve3Kra
-	 x9xYQvQhbZKfb8Ei2CshzKn6BRU9Bz01hcCnnhFw340Dyjizo0+4I731zwV7fyDOwZ
-	 2Arl373zckpQQ==
-Date: Wed, 13 Mar 2024 10:24:13 +0100
-Message-Id: <CZSIHWU6IYXB.2DUCUUYFTAB2X@kernel.org>
-To: "Aapo Vienamo" <aapo.vienamo@linux.intel.com>
-Subject: Re: [PATCH 2/2] mtd: core: Don't fail mtd_device_parse_register()
- if OTP is unsupported
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Mika
- Westerberg" <mika.westerberg@linux.intel.com>
-From: "Michael Walle" <mwalle@kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
- <20240307130418.3131898-3-aapo.vienamo@linux.intel.com>
- <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
- <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
-In-Reply-To: <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
+	Wed, 13 Mar 2024 10:27:47 +0000
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2d29111272eso110184741fa.0
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2024 03:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710325658; x=1710930458; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GrWU5S3r8n7ABKmHosAcw1tFmQwtwioDP9kb+kgmgPc=;
+        b=R+MBN0mXVbXLE+w9sbZ5OMgUsUotY1XFAzrVlnKVtidK4H0hCNb2ZohH2VFLd87acH
+         EUfKDj3h+ES44HgIFR2YrxoZjJMmvLkdNhF3aLlaakbbOAvO926qc+Z590tqMTogUzfu
+         SnZ4NolZNsVuGIvIasMr7kBPlXR/xoWd4iuPs2nK1c1y+PKC5qBsGA+Dsp27O3NtIcx3
+         WLBNfYY+CVX9pWZZOljy3UgKhKBFOa+0Ey6sSFkHQ/6j9DhY438pvJhGs744CCMrkFFb
+         F/dxq1ASIwzI/hs+5CW/PtdREsajnpdUswzMZBrec/e/m+vWOuX51oj+Gq+EM4j0SR9y
+         2yCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710325658; x=1710930458;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GrWU5S3r8n7ABKmHosAcw1tFmQwtwioDP9kb+kgmgPc=;
+        b=hBIExGAcJk3y+gm1ftdJWD1eflCTwGV7hm+hj+EH6qkAB75WKyGObaKeZyEbi2SHgL
+         fyZ7aRvRNNXzjjnOzBomLX6iZUXvS+HFi0Xm7KsoUmxW6XQlR5AEJNkK5qXtmILvKEQd
+         un1MSdDE3t0AsN6CJNRE4Ku6tEKwf7K0LS+DYd811dssXfB2LIN53lhYNv6dlipUJDIz
+         7PjM/uL6Vi3NkrPnUcnkJtc9UnIUwUY61j8eS3bNGxO+q9Y0QnoDBrn9CmMyF9gSZqGO
+         EPGmOxGIaBTSAfIXbY1L7EtpjEulPBNwzKZtq9vVokWPWPE2/qf6pR2dBxiP9pXmTvpA
+         f8ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsQgwwk1yvSKt+w6fqvg0n5MY+WsiJFPtrq6fv9jxOhA/fx49YcF2mVunpKvcZws3Ltz+zjjXEzOhqUc5LSzwbA8/E8Hky5GAvXH5Dnw==
+X-Gm-Message-State: AOJu0Yy3goHJe8WKc3n2Akm5ezQWodYomGOFqFqXxw0bxCJjqQSamFR9
+	qb0bTAChz3Y53sTWomkKm13GTXpoXyyM4EVjdnWMI+KVdDpdz18p
+X-Google-Smtp-Source: AGHT+IE0wvyNlJYld1l2UG/SCUa6eIml3WWIv72zVSS2Ajod8IiYL+3saVFji46D+bE9CMBu5yfMxA==
+X-Received: by 2002:a2e:7d14:0:b0:2d4:693d:ff10 with SMTP id y20-20020a2e7d14000000b002d4693dff10mr1341497ljc.20.1710325658052;
+        Wed, 13 Mar 2024 03:27:38 -0700 (PDT)
+Received: from localhost.localdomain ([212.22.67.162])
+        by smtp.gmail.com with ESMTPSA id w20-20020a2e9bd4000000b002d0f0f5e395sm2082845ljj.47.2024.03.13.03.27.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 03:27:37 -0700 (PDT)
+From: Maxim Korotkov <korotkov.maxim.s@gmail.com>
+To: Boris Brezillon <bbrezillon@kernel.org>
+Cc: Maxim Korotkov <korotkov.maxim.s@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Hector Palacios <hector.palacios@digi.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] mtd: rawnand: hynix: fixed typo
+Date: Wed, 13 Mar 2024 13:27:20 +0300
+Message-Id: <20240313102721.1991299-1-korotkov.maxim.s@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240313_022425_051265_F0002400 
-X-CRM114-Status: GOOD (  33.41  )
+X-CRM114-CacheID: sfid-20240313_032746_521180_5257C3EA 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,110 +91,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2623757657908539603=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============2623757657908539603==
-Content-Type: multipart/signed;
- boundary=8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+The function hynix_nand_rr_init() should probably return an error code.
+Judging by the usage, it seems that the return code is passed up 
+the call stack.
+Right now, it always returns 0 and the function hynix_nand_cleanup()
+in hynix_nand_init() has never been called.
 
---8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Found by RASU JSC and Linux Verification Center (linuxtesting.org)
 
-Hi,
+Fixes: 626994e07480 ("mtd: nand: hynix: Add read-retry support for 1x nm MLC NANDs")
 
-On Mon Mar 11, 2024 at 5:20 PM CET, Aapo Vienamo wrote:
-> On Mon, Mar 11, 2024 at 03:38:17PM +0100, Michael Walle wrote:
-> > On Thu Mar 7, 2024 at 2:04 PM CET, Aapo Vienamo wrote:
-> > > Handle the case where -EOPNOTSUPP is returned from OTP driver.
-> > > +	/*
-> > > +	 * Don't abort MTD init if OTP functionality is unsupported. The
-> > > +	 * cleanup of the OTP init is contained within mtd_otp_nvmem_add().
-> > > +	 * Omitting goto out here is safe since the cleanup code there
-> > > +	 * should be no-ops.
-> > > +	 */
-> >=20
-> > Only if that's true for both the factory and user OTP area.
->
-> I'm not sure I follow. I'm not seeing a path in mtd_otp_nvmem_add()
-> that would result in either mtd->otp_user_nvmem or mtd->otp_factor_nvmem
-> needing to be cleaned up by the caller, if an error is returned, if
-> that's what you are referring to.
+Signed-off-by: Maxim Korotkov <korotkov.maxim.s@gmail.com>
+---
+ drivers/mtd/nand/raw/nand_hynix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes you're right, sorry for the noise.
->
-> > Also, you'll print an error message for EOPNOTSUPP, although that is
-> > not really an error. Is that intended?=20
->
-> Well, when we hit this, the functionality of the SPI memory itself is
-> degraded in the sense that the OTP functionality is not available. What
-> would you suggest?
+diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
+index 39076735a3fb..9695f07b5eb2 100644
+--- a/drivers/mtd/nand/raw/nand_hynix.c
++++ b/drivers/mtd/nand/raw/nand_hynix.c
+@@ -402,7 +402,7 @@ static int hynix_nand_rr_init(struct nand_chip *chip)
+ 	if (ret)
+ 		pr_warn("failed to initialize read-retry infrastructure");
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
+-- 
+2.34.1
 
-But it's not really an error, I mean, we are ignoring that one on
-purpose now :) I'd just guard it with "if (ret !=3D -EOPNOTSUPP)".
-
-> >=20
-> > >  	ret =3D mtd_otp_nvmem_add(mtd);
-> > > -	if (ret)
-> > > +	if (ret && ret !=3D -EOPNOTSUPP)
-> >=20
-> > Maybe there is a better way to handle this, like controller
-> > capabilities instead of putting these EOPNOTSUPP checks
-> > everywhere? I'm not sure.
->
-> Trying to come up with clear semantics for a capabilities flag to solve
-> this is difficult. The issue is that on the SPI controller side, the
-> limitation stems from the really strict set of opcodes that are allowed.
-> For example, we already hit an error with the 0x35 (read configuration
-> register) not being on the set of allowed opcodes. While this
-> instruction is used by the OTP code, it's not a strictly OTP specific
-> operation.
-
-I see. It's just that due to this (very) restricted SPI contoller
-all this EOPNOTSUPP handling is creeping into more an more places in
-spi-nor core and now mtdcore :)
-
-Anyway, I don't have any better idea right now. So I think this is
-fine.
-
--michael
-
-
-> If there was a flag that would signal OTP support, I think it would have
-> be defined as "the controller supports all operations that are
-> performed by the OTP code", which sounds brittle. The other way around
-> would be to have a really fine-grained set of flags that the MTD core
-> would check, but that feels tedious and error prone as well.
-
-
---8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfFwvRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvtCSAD/YJkNHNj/CVCUeVVMRLzNJTsb131beCFk
-kGoenLQ4aE8BAJpLL0syl9RnrQOhboV6hPopHwley8DRc9x7jlNUn0ED
-=5+gS
------END PGP SIGNATURE-----
-
---8d4e32d90b12bddb067516627e24c977e5b2bdef96f77024fb6ad523e783--
-
-
---===============2623757657908539603==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2623757657908539603==--
-
