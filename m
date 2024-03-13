@@ -4,87 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB919C54E5D
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Mar 2024 22:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98A11C54791
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 07:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4ZWOPvwiIgFA1KAwGvHEsZcq+aBxlHVmYUJje4RdIk8=; b=d86Y3xdt6BfhTs
-	uf03O+dXKerCfaao947+HD+GGge5Bch5REJaq+P1GdUgQq6PiWKDo+WpW7FG4DDFWv+W6zHI0F/gr
-	6srQ7RtSsbAxC6PUnTFszx0+UGeVRpLJKb3594nrfXMFiljAKnmRqZSSNutpyzzCDrUNzuBPwXK68
-	K6fZ9WaD1XkQRDMSyy6i57NQbuJrQInvU8NQ3ESXlWBMjsRgL0AoXtbQMmUkdDH3nTg6qOJTuGzXA
-	dv6AGn5o5GgKwUq4LR+0K9WtMglzvbpbifxvFm/UMzciEo9i+GP4mKrdXuRGHhckIylfkc79liTZV
-	pqcPT2X9MrhZpUFYc9MA==;
+	List-Owner; bh=osRv3qlmfma18tA3v2xaWYe0SVDj2GXTXwUiNFaUXJo=; b=L/1P2nMKtEt7uZ
+	cxQ0BHA1y2zBofBCei4xmNi8TBEKeQypRpQHdlNZ+KAqFf89XlCeY0XiJJIRUjWnJEoZUPW3OF+hl
+	kB8qqkFEiMJmXC8cb3uC3MyvasT2oiBAC5g6BQtu9W54dE6vnyPfSGbtHuD58lkqcKJjVFdMyv0Ue
+	oLC5z42k93FPb85oym9B+NXwdNd6Rm8hKt4P/+NOYQ6swZ9qokRdOhGGUwxw+eCz5Qr+WZE4S8BIL
+	+Pl2QoIIB446QKkgVFzHCRvh9ipjk9RHBvFiyMyhI1YiU/UdqhZ3VqiVcRE67Mcf53VyA+s8L5D08
+	0d4WBUpqW5iNp5OLC+9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkAZN-00000007p0k-2cWA;
-	Tue, 12 Mar 2024 22:26:01 +0000
-Received: from mail-qv1-xf33.google.com ([2607:f8b0:4864:20::f33])
+	id 1rkJ9V-00000009DFQ-2Z6H;
+	Wed, 13 Mar 2024 07:35:53 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkAZI-00000007oze-0uBw
+	id 1rkJ9Q-00000009DEZ-3Frv
 	for linux-mtd@lists.infradead.org;
-	Tue, 12 Mar 2024 22:25:58 +0000
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-690b24973beso2631016d6.0
-        for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2024 15:25:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710282354; x=1710887154; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzQZAVQefo3mI7JaOv3i9HOffYntNfvUVWBj/1pTaQU=;
-        b=G4HkWZ8skbcpoOAOAc8JhfAp3S6QrKDNFSry2ctWwMVEjMdE9vSYDthINB8t6kNzM8
-         fuoZuGsrLtotLu3ktCsn/23wbOmm02TtameuOvLkMs/uA8NdnfcvymcG89iZJAqdcbsR
-         sDeYKKdIVjqk+oFuRqkMMi7vJhek1ZqGhBjl0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710282354; x=1710887154;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OzQZAVQefo3mI7JaOv3i9HOffYntNfvUVWBj/1pTaQU=;
-        b=NsItvlHkxGD3M7RUws38e5VIpIWd7Tg5JXSIB85gdLGEya+v1rP00AEGyTfiHjOCft
-         Am/jjShEWhikA11hNe/HNaVI84g5AHUFLT65cXDzwawsQFXkO1/KNtLqGE5MDxuImAlN
-         E3CG4wYWASTZCTEsldxslx7Zg22h0eaxqRvTNHzAG98tEf9Zqp4R/sgxZC47UIovXnFp
-         rl2wE1tcthd4MXLWqV+uiQXvCmCp9Z/HCgNmH4fzq14K21Mgoxjl13xVCzORMQGxop1n
-         sLa6b06J1kITmO/8YiPyiMIxEVADsuZ/ZRahXKHQReTkkSELOzJb4RPYKJ9ChVcL+4ml
-         ELsA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfoOaZrdAZBas1FBzSyCnMAkv2eB5dw8TSJ+8BStqt7BLvfxiwiz63lbTPLg8ifYqYObxiubQNz+STQfeSmqWwJa/p7KAm6d2/rgp+pQ==
-X-Gm-Message-State: AOJu0Yyv1jP9fhNjoAL0Bgv2KcBe3sYUYIpOUilxTQGhLQ1fRdF46BGw
-	CbLvrTE2ofx5NeLjuEFBthRljPVDXU5ZmDkcEAL+GfBYrJqxHh9Iy0iKXzt6XA41eu3GGlMUS4K
-	H3ZgdrTu+DWLBk/9CJwG2tMHYkMmKGGAe5X1t
-X-Google-Smtp-Source: AGHT+IGmyFqJ7I5OEdlVeWDP4fniRKop5+ziAYZpGgboPbvZWq7MrHq+rtsBULHzzfs4hoNrK7NjvGlYv1SDUXqSk04=
-X-Received: by 2002:ad4:5c48:0:b0:68f:dde4:fb12 with SMTP id
- a8-20020ad45c48000000b0068fdde4fb12mr1707180qva.9.1710282354445; Tue, 12 Mar
- 2024 15:25:54 -0700 (PDT)
+	Wed, 13 Mar 2024 07:35:51 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EAFD9E0004;
+	Wed, 13 Mar 2024 07:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710315344;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lMY+XSNXJZpg0rP2ibnjQyP7ikTmYekL+OvsMizJktY=;
+	b=SC2JTsVYdRQQzQRyp1HfcYeCNZfGOnai6gE4a/oOVnTCpgJ7JjvBrEpcPek5xOMshAloN7
+	5gMjiGsMGaK0VSUmq18DQ1VFJbOeTm35XRH3LndnsqKeTF3VOQoMJC4/lpWwXS7eI2e6ch
+	KE3mR0d96+m6a0g5iUMy9/KhAX/m3tpA/xPmVUNr7jbz5yf8GGskzGcyacVGQgCaK3jQFf
+	I4DQWNrjwlb87sV6thFp+5f/4Q9Coh3cCZ3VKfGHqxc2i7dAHfwxeBl0cl8oQ5Vakn1rF4
+	GP/t7uutcpv3ul9thYuu0XT2Gc/NycMtQ9kdALHLsorI9k6NUZXYqwJpUrMA0g==
+Date: Wed, 13 Mar 2024 08:35:41 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Simon Glass <sjg@chromium.org>
+Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, Michael Walle
+ <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, Conor
+ Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman
+ compatible
+Message-ID: <20240313083541.1e7d4a2f@xps-13>
+In-Reply-To: <CAFLszTi8w4gBoa-6uoKUN-Ng07ieA+DXy3gm2cdxfwgAybrgsQ@mail.gmail.com>
+References: <20231116172859.393744-1-sjg@chromium.org>
+	<20231208150042.GA1278773-robh@kernel.org>
+	<CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
+	<CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+	<CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
+	<20231214172702.GA617226-robh@kernel.org>
+	<CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
+	<CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
+	<CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
+	<CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
+	<20240205085056.44278f2c@xps-13>
+	<CAFLszTi+8ygXOidnhxj7sdJwc6X5i+++QvnUyfe-kde5eSts_w@mail.gmail.com>
+	<20240205131755.3462084f@xps-13>
+	<CAFLszTh3t6wPz8PFhFzazTAGaLVpObkjY9qv7MtSkQ21zZFzKA@mail.gmail.com>
+	<20240308084212.4aa58761@xps-13>
+	<CAFLszTi8w4gBoa-6uoKUN-Ng07ieA+DXy3gm2cdxfwgAybrgsQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
- <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
- <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
- <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
- <20231214172702.GA617226-robh@kernel.org> <CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
- <CAFLszTizRRVbRO6_ygE2X-Lp5dENWSc4uMGL5GPJAFGAbRdCyQ@mail.gmail.com>
- <CAL_Jsq+j7_KZtQ2ENq9+vsw0LOZF=spu293_G=AxOmBM+m_f-g@mail.gmail.com>
- <CAFLszTimaFw9sf=JKvQXG4fS6V_2T=2n+pfvYLCiuG1o+7cHPA@mail.gmail.com>
- <20240205085056.44278f2c@xps-13> <CAFLszTi+8ygXOidnhxj7sdJwc6X5i+++QvnUyfe-kde5eSts_w@mail.gmail.com>
- <20240205131755.3462084f@xps-13> <CAFLszTh3t6wPz8PFhFzazTAGaLVpObkjY9qv7MtSkQ21zZFzKA@mail.gmail.com>
- <20240308084212.4aa58761@xps-13>
-In-Reply-To: <20240308084212.4aa58761@xps-13>
-From: Simon Glass <sjg@chromium.org>
-Date: Wed, 13 Mar 2024 11:25:42 +1300
-Message-ID: <CAFLszTi8w4gBoa-6uoKUN-Ng07ieA+DXy3gm2cdxfwgAybrgsQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
-	Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240312_152556_338451_B98672D1 
-X-CRM114-Status: GOOD (  55.22  )
+X-CRM114-CacheID: sfid-20240313_003549_745024_391A9292 
+X-CRM114-Status: GOOD (  56.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,145 +90,135 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On Fri, 8 Mar 2024 at 20:42, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Simon,
->
-> sjg@chromium.org wrote on Fri, 8 Mar 2024 15:44:25 +1300:
->
-> > Hi Miquel,
-> >
-> > On Tue, 6 Feb 2024 at 01:17, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >
-> > > Hi Simon,
-> > >
-> > > > > > > > > > > > > > > +description: |
-> > > > > > > > > > > > > > > +  The binman node provides a layout for firmware, used when packaging firmware
-> > > > > > > > > > > > > > > +  from multiple projects. It is based on fixed-partitions, with some
-> > > > > > > > > > > > > > > +  extensions, but uses 'compatible' to indicate the contents of the node, to
-> > > > > > > > > > > > > > > +  avoid perturbing or confusing existing installations which use 'label' for a
-> > > > > > > > > > > > > > > +  particular purpose.
-> > > > > > > > > > > > > > > +
-> > > > > > > > > > > > > > > +  Binman supports properties used as inputs to the firmware-packaging process,
-> > > > > > > > > > > > > > > +  such as those which control alignment of partitions. This binding addresses
-> > > > > > > > > > > > > > > +  these 'input' properties. For example, it is common for the 'reg' property
-> > > > > > > > > > > > > > > +  (an 'output' property) to be set by Binman, based on the alignment requested
-> > > > > > > > > > > > > > > +  in the input.
-> > > > > > > > > > > > > > > +
-> > > > > > > > > > > > > > > +  Once processing is complete, input properties have mostly served their
-> > > > > > > > > > > > > > > +  purpose, at least until the firmware is repacked later, e.g. due to a
-> > > > > > > > > > > > > > > +  firmware update. The 'fixed-partitions' binding should provide enough
-> > > > > > > > > > > > > > > +  information to read the firmware at runtime, including decompression if
-> > > > > > > > > > > > > > > +  needed.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > How is this going to work exactly? binman reads these nodes and then
-> > > > > > > > > > > > > > writes out 'fixed-partitions' nodes. But then you've lost the binman
-> > > > > > > > > > > > > > specifc parts needed for repacking.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > No, they are the same node. I do want the extra information to stick
-> > > > > > > > > > > > > around. So long as it is compatible with fixed-partition as well, this
-> > > > > > > > > > > > > should work OK.
-> > > > > > > > > > > >
-> > > > > > > > > > > > How can it be both? The partitions node compatible can be either
-> > > > > > > > > > > > 'fixed-partitions' or 'binman'.
-> > > > > > > > > > >
-> > > > > > > > > > > Can we not allow it to be both? I have tried to adjust things in
-> > > > > > > > > > > response to feedback but perhaps the feedback was leading me down the
-> > > > > > > > > > > wrong path?
-> > > > > > > > > >
-> > > > > > > > > > Sure, but then the schema has to and that means extending
-> > > > > > > > > > fixed-partitions.
-> > > > > > > > >
-> > > > > > > > > Can we cross that bridge later? There might be resistance to it. I'm
-> > > > > > > > > not sure. For now, perhaps just a binman compatible works well enough
-> > > > > > > > > to make progress.
-> > > > > > > >
-> > > > > > > > Is there any way to make progress on this? I would like to have
-> > > > > > > > software which doesn't understand the binman compatible to at least be
-> > > > > > > > able to understand the fixed-partition compatible. Is that acceptable?
-> > > > > > >
-> > > > > > > There's only 2 ways that it can work. Either binman writes out
-> > > > > > > fixed-partition nodes dropping/replacing anything only defined for
-> > > > > > > binman or fixed-partition is extended to include what binman needs.
-> > > > > >
-> > > > > > OK, then I suppose the best way is to add a new binman compatible, as
-> > > > > > is done with this v6 series. People then need to choose it instead of
-> > > > > > fixed-partition.
-> > > > >
-> > > > > I'm sorry this is not at all what Rob suggested, or did I totally
-> > > > > misunderstand his answer?
-> > > > >
-> > > > > In both cases the solution is to generate a "fixed-partition" node. Now
-> > > > > up to you to decide whether binman should adapt the output to the
-> > > > > current schema, or if the current schema should be extended to
-> > > > > understand all binman's output.
-> > > > >
-> > > > > At least that is my understanding and also what I kind of agree with.
-> > > >
-> > > > I do want to binman schema to include all the features of Binman.
-> > > >
-> > > > So are you saying that there should not be a 'binman'  schema, but I
-> > > > should just add all the binman properties to the fixed-partition
-> > > > schema?
-> > >
-> > > This is my current understanding, yes. But acknowledgment from Rob is
-> > > also welcome.
-> >
-> > I am trying again to wade through all the confusion here.
-> >
-> > There is not actually a 'fixed-partition' node. So are you saying I
-> > should add one? There is already a 'partitions' node. Won't they
-> > conflict?
->
-> Sorry for the confusion, there is a 'partitions' node indeed. This
-> node shall declare it's "programming model" (let's say), ie. how it
-> should be parsed. What defines this programming model today is the
-> 'fixed-partitions' compatible. I think we (Rob and myself, but again,
-> Rob, please confirm) agree on the fact that we don't want to duplicate
-> the fixed-partitions compatible/logic and thus the binman compatible
-> was rejected.
->
-> Hence, in order to move forward, I would definitely appreciate an
-> update of the fixed-partitions binding in order to support what binman
-> can generate.
-
-OK, so I think my confusion is that I thought you were referring to a
-'partitions' compatible. But you are just referring to the name of the
-node being 'partitions', with the compatible string being
-'fixed-partitions'.
-
-I believe I can make this work by adding a new 'binman.yaml' with the
-compatibles that I want to introduce. I cannot change partition.yaml
-since it does not itself specify a compatible.
-
->
-> We are here talking about the output of binman, not its input. TBH I
-> haven't understood the point in having binman's input parsed by the
-> generic yaml binding. I would advise to focus on binman's output first
-> because it feels more relevant, at a first glance.
-
-Yes that is fine.
-
->
-> > Would it be possible for you to look at my patches and suggest
-> > something? I think at this point, after so many hours of trying
-> > different things and trying to understand what is needed, I could
-> > really use a little help.
->
-> I hope the above details will help.
-
-I think so, thank you. I will send another version.
-
-Regards,
-Simon
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgU2ltb24sCgpzamdAY2hyb21pdW0ub3JnIHdyb3RlIG9uIFdlZCwgMTMgTWFyIDIwMjQgMTE6
+MjU6NDIgKzEzMDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiBGcmksIDggTWFyIDIwMjQgYXQgMjA6
+NDIsIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4K
+PiA+IEhpIFNpbW9uLAo+ID4KPiA+IHNqZ0BjaHJvbWl1bS5vcmcgd3JvdGUgb24gRnJpLCA4IE1h
+ciAyMDI0IDE1OjQ0OjI1ICsxMzAwOgo+ID4gIAo+ID4gPiBIaSBNaXF1ZWwsCj4gPiA+Cj4gPiA+
+IE9uIFR1ZSwgNiBGZWIgMjAyNCBhdCAwMToxNywgTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5h
+bEBib290bGluLmNvbT4gd3JvdGU6ICAKPiA+ID4gPgo+ID4gPiA+IEhpIFNpbW9uLAo+ID4gPiA+
+ICAKPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiArZGVzY3JpcHRpb246IHwKPiA+ID4g
+PiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiArICBUaGUgYmlubWFuIG5vZGUgcHJvdmlkZXMgYSBs
+YXlvdXQgZm9yIGZpcm13YXJlLCB1c2VkIHdoZW4gcGFja2FnaW5nIGZpcm13YXJlCj4gPiA+ID4g
+PiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgZnJvbSBtdWx0aXBsZSBwcm9qZWN0cy4gSXQgaXMg
+YmFzZWQgb24gZml4ZWQtcGFydGl0aW9ucywgd2l0aCBzb21lCj4gPiA+ID4gPiA+ID4gPiA+ID4g
+PiA+ID4gPiA+ID4gKyAgZXh0ZW5zaW9ucywgYnV0IHVzZXMgJ2NvbXBhdGlibGUnIHRvIGluZGlj
+YXRlIHRoZSBjb250ZW50cyBvZiB0aGUgbm9kZSwgdG8KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
+PiA+ID4gPiArICBhdm9pZCBwZXJ0dXJiaW5nIG9yIGNvbmZ1c2luZyBleGlzdGluZyBpbnN0YWxs
+YXRpb25zIHdoaWNoIHVzZSAnbGFiZWwnIGZvciBhCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
+PiA+ID4gKyAgcGFydGljdWxhciBwdXJwb3NlLgo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
+PiA+ICsKPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiArICBCaW5tYW4gc3VwcG9ydHMg
+cHJvcGVydGllcyB1c2VkIGFzIGlucHV0cyB0byB0aGUgZmlybXdhcmUtcGFja2FnaW5nIHByb2Nl
+c3MsCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgc3VjaCBhcyB0aG9zZSB3aGlj
+aCBjb250cm9sIGFsaWdubWVudCBvZiBwYXJ0aXRpb25zLiBUaGlzIGJpbmRpbmcgYWRkcmVzc2Vz
+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgdGhlc2UgJ2lucHV0JyBwcm9wZXJ0
+aWVzLiBGb3IgZXhhbXBsZSwgaXQgaXMgY29tbW9uIGZvciB0aGUgJ3JlZycgcHJvcGVydHkKPiA+
+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiArICAoYW4gJ291dHB1dCcgcHJvcGVydHkpIHRv
+IGJlIHNldCBieSBCaW5tYW4sIGJhc2VkIG9uIHRoZSBhbGlnbm1lbnQgcmVxdWVzdGVkCj4gPiA+
+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgaW4gdGhlIGlucHV0Lgo+ID4gPiA+ID4gPiA+
+ID4gPiA+ID4gPiA+ID4gPiA+ICsKPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiArICBP
+bmNlIHByb2Nlc3NpbmcgaXMgY29tcGxldGUsIGlucHV0IHByb3BlcnRpZXMgaGF2ZSBtb3N0bHkg
+c2VydmVkIHRoZWlyCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgcHVycG9zZSwg
+YXQgbGVhc3QgdW50aWwgdGhlIGZpcm13YXJlIGlzIHJlcGFja2VkIGxhdGVyLCBlLmcuIGR1ZSB0
+byBhCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgZmlybXdhcmUgdXBkYXRlLiBU
+aGUgJ2ZpeGVkLXBhcnRpdGlvbnMnIGJpbmRpbmcgc2hvdWxkIHByb3ZpZGUgZW5vdWdoCj4gPiA+
+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gKyAgaW5mb3JtYXRpb24gdG8gcmVhZCB0aGUgZmly
+bXdhcmUgYXQgcnVudGltZSwgaW5jbHVkaW5nIGRlY29tcHJlc3Npb24gaWYKPiA+ID4gPiA+ID4g
+PiA+ID4gPiA+ID4gPiA+ID4gPiArICBuZWVkZWQuICAKPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
+PiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gSG93IGlzIHRoaXMgZ29pbmcgdG8g
+d29yayBleGFjdGx5PyBiaW5tYW4gcmVhZHMgdGhlc2Ugbm9kZXMgYW5kIHRoZW4KPiA+ID4gPiA+
+ID4gPiA+ID4gPiA+ID4gPiA+ID4gd3JpdGVzIG91dCAnZml4ZWQtcGFydGl0aW9ucycgbm9kZXMu
+IEJ1dCB0aGVuIHlvdSd2ZSBsb3N0IHRoZSBiaW5tYW4KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
+PiA+ID4gc3BlY2lmYyBwYXJ0cyBuZWVkZWQgZm9yIHJlcGFja2luZy4gIAo+ID4gPiA+ID4gPiA+
+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+IE5vLCB0aGV5IGFyZSB0
+aGUgc2FtZSBub2RlLiBJIGRvIHdhbnQgdGhlIGV4dHJhIGluZm9ybWF0aW9uIHRvIHN0aWNrCj4g
+PiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiBhcm91bmQuIFNvIGxvbmcgYXMgaXQgaXMgY29tcGF0
+aWJsZSB3aXRoIGZpeGVkLXBhcnRpdGlvbiBhcyB3ZWxsLCB0aGlzCj4gPiA+ID4gPiA+ID4gPiA+
+ID4gPiA+ID4gPiBzaG91bGQgd29yayBPSy4gIAo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+Cj4g
+PiA+ID4gPiA+ID4gPiA+ID4gPiA+ID4gSG93IGNhbiBpdCBiZSBib3RoPyBUaGUgcGFydGl0aW9u
+cyBub2RlIGNvbXBhdGlibGUgY2FuIGJlIGVpdGhlcgo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+
+ICdmaXhlZC1wYXJ0aXRpb25zJyBvciAnYmlubWFuJy4gIAo+ID4gPiA+ID4gPiA+ID4gPiA+ID4g
+Pgo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiBDYW4gd2Ugbm90IGFsbG93IGl0IHRvIGJlIGJvdGg/
+IEkgaGF2ZSB0cmllZCB0byBhZGp1c3QgdGhpbmdzIGluCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiA+
+IHJlc3BvbnNlIHRvIGZlZWRiYWNrIGJ1dCBwZXJoYXBzIHRoZSBmZWVkYmFjayB3YXMgbGVhZGlu
+ZyBtZSBkb3duIHRoZQo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gPiB3cm9uZyBwYXRoPyAgCj4gPiA+
+ID4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gU3VyZSwgYnV0IHRoZW4gdGhl
+IHNjaGVtYSBoYXMgdG8gYW5kIHRoYXQgbWVhbnMgZXh0ZW5kaW5nCj4gPiA+ID4gPiA+ID4gPiA+
+ID4gPiBmaXhlZC1wYXJ0aXRpb25zLiAgCj4gPiA+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4g
+PiA+ID4gPiBDYW4gd2UgY3Jvc3MgdGhhdCBicmlkZ2UgbGF0ZXI/IFRoZXJlIG1pZ2h0IGJlIHJl
+c2lzdGFuY2UgdG8gaXQuIEknbQo+ID4gPiA+ID4gPiA+ID4gPiA+IG5vdCBzdXJlLiBGb3Igbm93
+LCBwZXJoYXBzIGp1c3QgYSBiaW5tYW4gY29tcGF0aWJsZSB3b3JrcyB3ZWxsIGVub3VnaAo+ID4g
+PiA+ID4gPiA+ID4gPiA+IHRvIG1ha2UgcHJvZ3Jlc3MuICAKPiA+ID4gPiA+ID4gPiA+ID4KPiA+
+ID4gPiA+ID4gPiA+ID4gSXMgdGhlcmUgYW55IHdheSB0byBtYWtlIHByb2dyZXNzIG9uIHRoaXM/
+IEkgd291bGQgbGlrZSB0byBoYXZlCj4gPiA+ID4gPiA+ID4gPiA+IHNvZnR3YXJlIHdoaWNoIGRv
+ZXNuJ3QgdW5kZXJzdGFuZCB0aGUgYmlubWFuIGNvbXBhdGlibGUgdG8gYXQgbGVhc3QgYmUKPiA+
+ID4gPiA+ID4gPiA+ID4gYWJsZSB0byB1bmRlcnN0YW5kIHRoZSBmaXhlZC1wYXJ0aXRpb24gY29t
+cGF0aWJsZS4gSXMgdGhhdCBhY2NlcHRhYmxlPyAgCj4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4g
+PiA+ID4gVGhlcmUncyBvbmx5IDIgd2F5cyB0aGF0IGl0IGNhbiB3b3JrLiBFaXRoZXIgYmlubWFu
+IHdyaXRlcyBvdXQKPiA+ID4gPiA+ID4gPiA+IGZpeGVkLXBhcnRpdGlvbiBub2RlcyBkcm9wcGlu
+Zy9yZXBsYWNpbmcgYW55dGhpbmcgb25seSBkZWZpbmVkIGZvcgo+ID4gPiA+ID4gPiA+ID4gYmlu
+bWFuIG9yIGZpeGVkLXBhcnRpdGlvbiBpcyBleHRlbmRlZCB0byBpbmNsdWRlIHdoYXQgYmlubWFu
+IG5lZWRzLiAgCj4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiBPSywgdGhlbiBJIHN1cHBvc2Ug
+dGhlIGJlc3Qgd2F5IGlzIHRvIGFkZCBhIG5ldyBiaW5tYW4gY29tcGF0aWJsZSwgYXMKPiA+ID4g
+PiA+ID4gPiBpcyBkb25lIHdpdGggdGhpcyB2NiBzZXJpZXMuIFBlb3BsZSB0aGVuIG5lZWQgdG8g
+Y2hvb3NlIGl0IGluc3RlYWQgb2YKPiA+ID4gPiA+ID4gPiBmaXhlZC1wYXJ0aXRpb24uICAKPiA+
+ID4gPiA+ID4KPiA+ID4gPiA+ID4gSSdtIHNvcnJ5IHRoaXMgaXMgbm90IGF0IGFsbCB3aGF0IFJv
+YiBzdWdnZXN0ZWQsIG9yIGRpZCBJIHRvdGFsbHkKPiA+ID4gPiA+ID4gbWlzdW5kZXJzdGFuZCBo
+aXMgYW5zd2VyPwo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBJbiBib3RoIGNhc2VzIHRoZSBzb2x1
+dGlvbiBpcyB0byBnZW5lcmF0ZSBhICJmaXhlZC1wYXJ0aXRpb24iIG5vZGUuIE5vdwo+ID4gPiA+
+ID4gPiB1cCB0byB5b3UgdG8gZGVjaWRlIHdoZXRoZXIgYmlubWFuIHNob3VsZCBhZGFwdCB0aGUg
+b3V0cHV0IHRvIHRoZQo+ID4gPiA+ID4gPiBjdXJyZW50IHNjaGVtYSwgb3IgaWYgdGhlIGN1cnJl
+bnQgc2NoZW1hIHNob3VsZCBiZSBleHRlbmRlZCB0bwo+ID4gPiA+ID4gPiB1bmRlcnN0YW5kIGFs
+bCBiaW5tYW4ncyBvdXRwdXQuCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IEF0IGxlYXN0IHRoYXQg
+aXMgbXkgdW5kZXJzdGFuZGluZyBhbmQgYWxzbyB3aGF0IEkga2luZCBvZiBhZ3JlZSB3aXRoLiAg
+Cj4gPiA+ID4gPgo+ID4gPiA+ID4gSSBkbyB3YW50IHRvIGJpbm1hbiBzY2hlbWEgdG8gaW5jbHVk
+ZSBhbGwgdGhlIGZlYXR1cmVzIG9mIEJpbm1hbi4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBTbyBhcmUg
+eW91IHNheWluZyB0aGF0IHRoZXJlIHNob3VsZCBub3QgYmUgYSAnYmlubWFuJyAgc2NoZW1hLCBi
+dXQgSQo+ID4gPiA+ID4gc2hvdWxkIGp1c3QgYWRkIGFsbCB0aGUgYmlubWFuIHByb3BlcnRpZXMg
+dG8gdGhlIGZpeGVkLXBhcnRpdGlvbgo+ID4gPiA+ID4gc2NoZW1hPyAgCj4gPiA+ID4KPiA+ID4g
+PiBUaGlzIGlzIG15IGN1cnJlbnQgdW5kZXJzdGFuZGluZywgeWVzLiBCdXQgYWNrbm93bGVkZ21l
+bnQgZnJvbSBSb2IgaXMKPiA+ID4gPiBhbHNvIHdlbGNvbWUuICAKPiA+ID4KPiA+ID4gSSBhbSB0
+cnlpbmcgYWdhaW4gdG8gd2FkZSB0aHJvdWdoIGFsbCB0aGUgY29uZnVzaW9uIGhlcmUuCj4gPiA+
+Cj4gPiA+IFRoZXJlIGlzIG5vdCBhY3R1YWxseSBhICdmaXhlZC1wYXJ0aXRpb24nIG5vZGUuIFNv
+IGFyZSB5b3Ugc2F5aW5nIEkKPiA+ID4gc2hvdWxkIGFkZCBvbmU/IFRoZXJlIGlzIGFscmVhZHkg
+YSAncGFydGl0aW9ucycgbm9kZS4gV29uJ3QgdGhleQo+ID4gPiBjb25mbGljdD8gIAo+ID4KPiA+
+IFNvcnJ5IGZvciB0aGUgY29uZnVzaW9uLCB0aGVyZSBpcyBhICdwYXJ0aXRpb25zJyBub2RlIGlu
+ZGVlZC4gVGhpcwo+ID4gbm9kZSBzaGFsbCBkZWNsYXJlIGl0J3MgInByb2dyYW1taW5nIG1vZGVs
+IiAobGV0J3Mgc2F5KSwgaWUuIGhvdyBpdAo+ID4gc2hvdWxkIGJlIHBhcnNlZC4gV2hhdCBkZWZp
+bmVzIHRoaXMgcHJvZ3JhbW1pbmcgbW9kZWwgdG9kYXkgaXMgdGhlCj4gPiAnZml4ZWQtcGFydGl0
+aW9ucycgY29tcGF0aWJsZS4gSSB0aGluayB3ZSAoUm9iIGFuZCBteXNlbGYsIGJ1dCBhZ2FpbiwK
+PiA+IFJvYiwgcGxlYXNlIGNvbmZpcm0pIGFncmVlIG9uIHRoZSBmYWN0IHRoYXQgd2UgZG9uJ3Qg
+d2FudCB0byBkdXBsaWNhdGUKPiA+IHRoZSBmaXhlZC1wYXJ0aXRpb25zIGNvbXBhdGlibGUvbG9n
+aWMgYW5kIHRodXMgdGhlIGJpbm1hbiBjb21wYXRpYmxlCj4gPiB3YXMgcmVqZWN0ZWQuCj4gPgo+
+ID4gSGVuY2UsIGluIG9yZGVyIHRvIG1vdmUgZm9yd2FyZCwgSSB3b3VsZCBkZWZpbml0ZWx5IGFw
+cHJlY2lhdGUgYW4KPiA+IHVwZGF0ZSBvZiB0aGUgZml4ZWQtcGFydGl0aW9ucyBiaW5kaW5nIGlu
+IG9yZGVyIHRvIHN1cHBvcnQgd2hhdCBiaW5tYW4KPiA+IGNhbiBnZW5lcmF0ZS4gIAo+IAo+IE9L
+LCBzbyBJIHRoaW5rIG15IGNvbmZ1c2lvbiBpcyB0aGF0IEkgdGhvdWdodCB5b3Ugd2VyZSByZWZl
+cnJpbmcgdG8gYQo+ICdwYXJ0aXRpb25zJyBjb21wYXRpYmxlLiBCdXQgeW91IGFyZSBqdXN0IHJl
+ZmVycmluZyB0byB0aGUgbmFtZSBvZiB0aGUKPiBub2RlIGJlaW5nICdwYXJ0aXRpb25zJywgd2l0
+aCB0aGUgY29tcGF0aWJsZSBzdHJpbmcgYmVpbmcKPiAnZml4ZWQtcGFydGl0aW9ucycuCgpZZXMu
+Cgo+IAo+IEkgYmVsaWV2ZSBJIGNhbiBtYWtlIHRoaXMgd29yayBieSBhZGRpbmcgYSBuZXcgJ2Jp
+bm1hbi55YW1sJyB3aXRoIHRoZQo+IGNvbXBhdGlibGVzIHRoYXQgSSB3YW50IHRvIGludHJvZHVj
+ZS4gSSBjYW5ub3QgY2hhbmdlIHBhcnRpdGlvbi55YW1sCj4gc2luY2UgaXQgZG9lcyBub3QgaXRz
+ZWxmIHNwZWNpZnkgYSBjb21wYXRpYmxlLgoKV2hhdCBhYm91dCBmaXhlZC1wYXJ0aXRpb25zLnlt
+YWw/IFRoZSB5YW1sIGZpbGUgbmFtZSBzaG91bGQgbWF0Y2ggdGhlCmNvbXBhdGlibGUuCgo+ID4g
+V2UgYXJlIGhlcmUgdGFsa2luZyBhYm91dCB0aGUgb3V0cHV0IG9mIGJpbm1hbiwgbm90IGl0cyBp
+bnB1dC4gVEJIIEkKPiA+IGhhdmVuJ3QgdW5kZXJzdG9vZCB0aGUgcG9pbnQgaW4gaGF2aW5nIGJp
+bm1hbidzIGlucHV0IHBhcnNlZCBieSB0aGUKPiA+IGdlbmVyaWMgeWFtbCBiaW5kaW5nLiBJIHdv
+dWxkIGFkdmlzZSB0byBmb2N1cyBvbiBiaW5tYW4ncyBvdXRwdXQgZmlyc3QKPiA+IGJlY2F1c2Ug
+aXQgZmVlbHMgbW9yZSByZWxldmFudCwgYXQgYSBmaXJzdCBnbGFuY2UuICAKPiAKPiBZZXMgdGhh
+dCBpcyBmaW5lLgo+IAo+ID4gIAo+ID4gPiBXb3VsZCBpdCBiZSBwb3NzaWJsZSBmb3IgeW91IHRv
+IGxvb2sgYXQgbXkgcGF0Y2hlcyBhbmQgc3VnZ2VzdAo+ID4gPiBzb21ldGhpbmc/IEkgdGhpbmsg
+YXQgdGhpcyBwb2ludCwgYWZ0ZXIgc28gbWFueSBob3VycyBvZiB0cnlpbmcKPiA+ID4gZGlmZmVy
+ZW50IHRoaW5ncyBhbmQgdHJ5aW5nIHRvIHVuZGVyc3RhbmQgd2hhdCBpcyBuZWVkZWQsIEkgY291
+bGQKPiA+ID4gcmVhbGx5IHVzZSBhIGxpdHRsZSBoZWxwLiAgCj4gPgo+ID4gSSBob3BlIHRoZSBh
+Ym92ZSBkZXRhaWxzIHdpbGwgaGVscC4gIAo+IAo+IEkgdGhpbmsgc28sIHRoYW5rIHlvdS4gSSB3
+aWxsIHNlbmQgYW5vdGhlciB2ZXJzaW9uLgo+IAo+IFJlZ2FyZHMsCj4gU2ltb24KCgpUaGFua3Ms
+Ck1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
