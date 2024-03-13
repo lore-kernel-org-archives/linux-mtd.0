@@ -4,102 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C906C54E58
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 13:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC0B6C54E58
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 13:59:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XoIo6gtR8VKhv93ML0aC9f3JH945A4tDxAUWLRMTjOw=; b=kpRe3LQljRaLpV
-	OqnRJumQlkh9dmZpn2PJjYvegEHrnWLCCrjIRkWS/O+yu6seXMQP1czMvEdgpqm0Fj8a7m+53a7VM
-	ltURRXf8IuzuoYrZBBYsbPZAftSLsZpxc2cjl4oE8T96hZ4uBk6kpf8XxHM7N/+/bivpYotdyiIqC
-	B32J+LaAPzRemli5rb9P73p0MBYfj6LwJahFduGMrQTZqmj5QPCQycnWPmPQvED/FFnAKS4ELoguw
-	acsWwVrNhM818M+g8gscazm24wkWylUD+FeObqeI98GTRoBqi/SIzFbGLDCFsl1ohOPIZ2/iKSFBg
-	oRT4ByoiQy4HCR/e+hVw==;
+	List-Owner; bh=EyvSvKoh/uAGqYyEW7U74OFztXE7Qj4X9ed5PapPEbQ=; b=07JB6RGK+jVZgF
+	7x7ORUd/VXjPFjrNz1GvzcAL3qhlskrjtuWHNr+447BmTP4us3fuXhfLCSAulqc9+UrPcsVtSCjnZ
+	tWmMyefGVfGhvfjFDXwBIU+hRA7UbatCm7sRmrYgm7fGuid9ipj1XWoPtgMUfssmGMXD1YXU8AAST
+	1SoN9wxRa+nR9loNw/PXAjGlK+rrxURwT1BpZIuatLtpykYScLRBMn/b74NvCM++RhD0ICb7ROO1L
+	+tZZlWOv96dB3zjso42MyTjDjj0tkjTDQ07/7mCiiT48T7s0sOy3k8LnyA9/jl/yKv7Wl96dPzD+H
+	BD3VH5tLCnF5myITdM1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkP1C-0000000AILB-3521;
-	Wed, 13 Mar 2024 13:51:42 +0000
-Received: from fout2-smtp.messagingengine.com ([103.168.172.145])
+	id 1rkP8f-0000000AJt6-16vT;
+	Wed, 13 Mar 2024 13:59:25 +0000
+Received: from mgamail.intel.com ([198.175.65.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkP18-0000000AIJA-34Ca
+	id 1rkP8W-0000000AJpF-0jma
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Mar 2024 13:51:41 +0000
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 3788C13800C4;
-	Wed, 13 Mar 2024 09:51:36 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 13 Mar 2024 09:51:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1710337896;
-	 x=1710424296; bh=UF33/biTEk+qguK6UgC6G5DzkRWJpdJ3TPt8FCcXrto=; b=
-	OgW22M8NJ5eWiAaCNYCPbbSMKZhr3yN8z3+VjSy410ClcDv5i7z8CZsFaDgxqMn5
-	pgoV1h45tTvUOlsLK6zmDmWnmhbwUhH8SbtsZeazwUB8G+cDlST/vsqArttL47i5
-	trONPg+Tad2vw5CfbUWVr9GADXMHTmagizAsrQ1axinvklQHm4N4xwI6yMjNIo2n
-	ExZN+RNBI5BrlGPyjl20ep3Pl7oZXcAKn/rIsqD+LKaefX41v78jqPNseU3ElXn5
-	/aRSb1/sCw6hTrtK9WsvwFpJCmv9lemvfohH11UuKjTD13n45fg3spg8uyPmVdoC
-	2lX5AGTN0as5oG31/5c2HA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1710337896; x=
-	1710424296; bh=UF33/biTEk+qguK6UgC6G5DzkRWJpdJ3TPt8FCcXrto=; b=I
-	Xlb1e7iaQ9sB1Gh28/aRIyf91fDvFf/FQU2hbkk1TWs/vZf9zgZBRlXH0giCrmwl
-	AR2wFmmdH5pSAOft9/cr+/dBRLbuHifafZY6IXWMkbPmDlk+6Xdb8P2Teqn6W5oo
-	/0r35KJjQAMJrH7gNwoEthHva3ciPgsEUx7LFBtRuUzQSRtkjpEmh1OINmZ0xkSW
-	NiEE+i5X+bLKaqRb8H5vc3gkzSFe9V0PubjJkun8C6bytlmW/RhQVH1Af6s4MO/C
-	02g/H7ynvqV4rDwnWXlLnymSQbXx5aivauR60MFg5JpVg1d+KVEi9vzlGvqy715o
-	7iS8tITxYSgvxUvZlOGvw==
-X-ME-Sender: <xms:Zq_xZQ6YcqwjbX8cpD0MWJwABF5FhoQCfz0XPLpIZTwgSDMUsEGw-w>
-    <xme:Zq_xZR5uRfpGHMkWAQJVg7LRVXt1T25X3Ko_sKnxI6xRV1Taw3y_05LtLN8ZSV3fQ
-    b0a-lrbFvfDRhqYw-0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeehgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:Zq_xZfcuh2-c0LS5sXsSce9JHykwNIph3tccVuz6FZkoc6RzRgDJXg>
-    <xmx:Zq_xZVJVWLMuACqtXw0sbVnqj5o6tkC__Yac1SvW4jJChN8i4cQ5iQ>
-    <xmx:Zq_xZULEH7kh3YQyNbQ9-J13UCD_0iuxsp3AimTkgNUFq5YGDhfVYQ>
-    <xmx:Zq_xZWx4mAZXPvXa0uBBF6pyJaG5Q44Z17gyBwrv0TZftlpSRNF6BQ>
-    <xmx:aK_xZT_DS3-L1O6zcIQnJk9OmvxiXiV3CPLyEIhn9vUIgo6nXNUBIA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A6AD1B6008D; Wed, 13 Mar 2024 09:51:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	Wed, 13 Mar 2024 13:59:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710338356; x=1741874356;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ObhAjMMSUSjidRVrJtIshpIU3PRlAw7QTAnpjAyYG3w=;
+  b=f5BOjVCCegw5kQcc5AsRyiC/0Qz6DBECgSwOvU6XgTFHxGwiejBOJ2RX
+   zvmFyX8nB7AT8wGKElhIQEK61lG2ivtbpx3OTfTI8HSf9WsOodPNn03Yp
+   j2g22Focu1HyBCNWAuC5ZQSl7Q848Jc2eP+/a8WKUAOJEw4qqBz8eSTwS
+   fU7NL9ygF2Kx/dHy/MgwOFufkwsXHTMyytF4PkLnSNDMsWHd08KcC2voT
+   TD3CZx4SQaAx9uzNjKIk4IJ+ZoG4iZ3Pt4VIkOWTQ+XC+57kJEY/sbq1v
+   EyBOQQjD5zFoc7Z5sl/7gz9CvoK1wC5eyWSBaAS5cU1fMda5QLnrfG1dm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11011"; a="16253099"
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="16253099"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 06:59:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,122,1708416000"; 
+   d="scan'208";a="11854200"
+Received: from svigh-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.52.216])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2024 06:59:10 -0700
+Date: Wed, 13 Mar 2024 15:59:02 +0200
+From: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 2/2] mtd: core: Don't fail mtd_device_parse_register() if
+ OTP is unsupported
+Message-ID: <lxl3zzgq4kgbgxkya2c6zyagcnrcyp2lzewu553mkmgdlooeca@m2wyltn7qpog>
+References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
+ <20240307130418.3131898-3-aapo.vienamo@linux.intel.com>
+ <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
+ <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
+ <CZSIHWU6IYXB.2DUCUUYFTAB2X@kernel.org>
 MIME-Version: 1.0
-Message-Id: <1ee86ea9-fa91-4795-b5f8-2e57609ae65e@app.fastmail.com>
-In-Reply-To: <ecc5d070-a773-1180-b50c-59088b23695e@huawei.com>
-References: <20240313084707.3292300-1-arnd@kernel.org>
- <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
- <e0684202-6926-4bd1-86f6-2bb682524712@app.fastmail.com>
- <1a12c8ed-0cb5-5650-24a2-84b021c444c3@huawei.com>
- <b08aaae4-8c69-47eb-9658-5f3f5c8e4056@app.fastmail.com>
- <610231c3-c3ee-e543-1a8a-8e1098ee6a7c@huawei.com>
- <21cd0f32-c94b-4b2b-8fa6-ebe12756b0c4@app.fastmail.com>
- <ecc5d070-a773-1180-b50c-59088b23695e@huawei.com>
-Date: Wed, 13 Mar 2024 14:51:14 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Zhihao Cheng" <chengzhihao1@huawei.com>,
- "Arnd Bergmann" <arnd@kernel.org>, "Richard Weinberger" <richard@nod.at>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Daniel Golle" <daniel@makrotopia.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
+Content-Disposition: inline
+In-Reply-To: <CZSIHWU6IYXB.2DUCUUYFTAB2X@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240313_065139_199790_272EEFEB 
-X-CRM114-Status: GOOD (  11.53  )
+X-CRM114-CacheID: sfid-20240313_065916_332041_90B0DF9B 
+X-CRM114-Status: GOOD (  15.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,26 +82,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBNYXIgMTMsIDIwMjQsIGF0IDE0OjQzLCBaaGloYW8gQ2hlbmcgd3JvdGU6Cj4g5Zyo
-IDIwMjQvMy8xMyAyMTozOSwgQXJuZCBCZXJnbWFubiDlhpnpgZM6Cj4KPj4+IFRoYW5rcyBmb3Ig
-ZXhwbGFpbmF0aW9uLCB3aGljaCBtZWFucyB0aGF0IGRvX2RpdiBpcyB1c2VkIGZvciA2NC1iaXQK
-Pj4+IGRpdmlzaW9uIHRvIHNvbHZlIHRoZSBsaW5rIGZhaWx1cmUgY2F1c2VkIGJ5IG1pc3NlZCBs
-aWJnY2MuIFNpbmNlCj4+PiBwYXJhbWV0ZXIgJ2Zyb20nIGlzIHUzMiwgdGhlcmUgaXMgbm8gbmVl
-ZCB0byBpbnZva2UgZG9fZGl2IG9uIGEgMzItYml0Cj4+PiBwbGF0Zm9ybSwgeW91IGp1c3Qgd2Fu
-dCB0byBzdG9wIHRoZSB3YXN0aW5nIGJlaGF2aW9yIG9uIGEgMzItYml0Cj4+PiBwbGF0Zm9ybS4g
-RG8gSSB1bmRlcnN0YW5kIHJpZ2h0Pwo+PiAKPiBIb3cgZG8geW91IGZpbmQgaXQ/IEkgbWVhbiB0
-aGVyZSBhcmUgc28gbWFueSB0eXBlcyBhbmQgbWFueSBkb19kaXYgCj4gY2FsbGVycywgZG8geW91
-IGhhdmUgYSBzdGF0aWMgY2hlY2sgdG9vbD8KCkkgaGFkIGEgbG9jYWwgZml4IHdpdGggdGhlIHNh
-bWUgZWZmZWN0IHRoYXQgSSBhcHBsaWVkIHdoZW4KdGhlIGNvZGUgb3JpZ2luYWxseSBicm9rZSwg
-YnV0IGhhZCBub3QgZ290dGVuIGFyb3VuZCB0bwpzZW5kaW5nIG15IGZpeC4KCkFmdGVyIGI4YTc3
-YjlhNWY5YyAoIm10ZDogdWJpOiBmaXggTlZNRU0gb3ZlciBVQkkgdm9sdW1lcyBvbgozMi1iaXQg
-c3lzdGVtcyIpIGludHJvZHVjZWQgYSBkaWZmZXJlbnQgd29ya2Fyb3VuZCwgSSBnb3QgdGhlCmxp
-bmsgZXJyb3IgYmVjYXVzZSBJIGhhZCByZW1vdmVkIHRoZSBkb19kaXYoKS4KCiAgICAgQXJuZAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
-bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Wed, Mar 13, 2024 at 10:24:13AM +0100, Michael Walle wrote:
+> On Mon Mar 11, 2024 at 5:20 PM CET, Aapo Vienamo wrote:
+> > On Mon, Mar 11, 2024 at 03:38:17PM +0100, Michael Walle wrote:
+> > > Also, you'll print an error message for EOPNOTSUPP, although that is
+> > > not really an error. Is that intended? 
+> >
+> > Well, when we hit this, the functionality of the SPI memory itself is
+> > degraded in the sense that the OTP functionality is not available. What
+> > would you suggest?
+> 
+> But it's not really an error, I mean, we are ignoring that one on
+> purpose now :) I'd just guard it with "if (ret != -EOPNOTSUPP)".
+
+To clarify, are you suggesting a modification like this to the code at
+the end of mtd_otp_nvmem_add()?
+
+err:
+	nvmem_unregister(...);
+	if (ret != EOPNOTSUPP)
+		return dev_err_probe(...);
+	return 0;
+
+Best,
+Aapo
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
