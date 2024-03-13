@@ -4,82 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9F44C54791
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 10:27:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8A5BC54E58
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 11:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0JO8cd/JrIl+mnertcmKvMM9EKd1kre9FmpdRd250pg=; b=JutpeDO3TNNouG
-	2yLXQ7KCMqgMvR2K00GPFEZZ2t5OxNPqWEZcfV5jeXdh2R7WthI4Vyp9jsqd5RNh8g2+fFSEN/D2g
-	K7IK4GE79ofVsWW0UXqTyM1FnYrMFQBRLJWJTD/CI70frvSjDVnvW1EYAExxoDsr/de9fz6RLCr6j
-	Rv5QNYl/L9seqlyT/dI0m5WaDSk37ZUVxqnoDuzuoZ4ke3P8gI2JbH4fanhC3K6UqngJsaiEJLDNq
-	rHcO0bQmYT3ybFclXwAncwzOPZlrJIK4wZ5fGzGGnyLN3NcHaQga2TdhEqGNVNM7gFnw3DLf5XjpK
-	i889M0OpK+jyXn4WMcbw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=mK4HMFmmR9WbO6+q03eUb5YwglZJbTinDR9UjPSvhKI=; b=Ik+RcfDJF1PjpoZwJvl70DN9mM
+	w4cxF9P2XIzcG2rqGywEYIGYFp2M3y964bAPJLnWbMaNMfPEGYhAcrrQb+yDVrnhG8E9nG+jL6v0u
+	ZMeL2PBs/B87yA103fAS5xrfmOPd51FNsThMpzz/73QPvBoxGoFq01XAETE5xQUa9NS+XQajQrGZh
+	ZlcnFcOmSsd9gaLFr5vndwd02FWbkf02TTClJnvjD/qwQeYKCFcsO+Iu6Zm8UtWbLW20OJB0SbBHc
+	kiocRdaDoIV9t7TUGAns51FYXbytDjTJ4hl2UUiKXrO2zESKgA4hwqsJ0Oq3SkwHSqOpbBbaDd0Yt
+	fDhAwvPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkLps-00000009ftq-3YdE;
-	Wed, 13 Mar 2024 10:27:48 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1rkMo0-00000009vLG-0YnL;
+	Wed, 13 Mar 2024 11:29:56 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkLpq-00000009fse-1vrf
+	id 1rkMnx-00000009vJr-1hA2
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Mar 2024 10:27:47 +0000
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2d29111272eso110184741fa.0
-        for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2024 03:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710325658; x=1710930458; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GrWU5S3r8n7ABKmHosAcw1tFmQwtwioDP9kb+kgmgPc=;
-        b=R+MBN0mXVbXLE+w9sbZ5OMgUsUotY1XFAzrVlnKVtidK4H0hCNb2ZohH2VFLd87acH
-         EUfKDj3h+ES44HgIFR2YrxoZjJMmvLkdNhF3aLlaakbbOAvO926qc+Z590tqMTogUzfu
-         SnZ4NolZNsVuGIvIasMr7kBPlXR/xoWd4iuPs2nK1c1y+PKC5qBsGA+Dsp27O3NtIcx3
-         WLBNfYY+CVX9pWZZOljy3UgKhKBFOa+0Ey6sSFkHQ/6j9DhY438pvJhGs744CCMrkFFb
-         F/dxq1ASIwzI/hs+5CW/PtdREsajnpdUswzMZBrec/e/m+vWOuX51oj+Gq+EM4j0SR9y
-         2yCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710325658; x=1710930458;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GrWU5S3r8n7ABKmHosAcw1tFmQwtwioDP9kb+kgmgPc=;
-        b=hBIExGAcJk3y+gm1ftdJWD1eflCTwGV7hm+hj+EH6qkAB75WKyGObaKeZyEbi2SHgL
-         fyZ7aRvRNNXzjjnOzBomLX6iZUXvS+HFi0Xm7KsoUmxW6XQlR5AEJNkK5qXtmILvKEQd
-         un1MSdDE3t0AsN6CJNRE4Ku6tEKwf7K0LS+DYd811dssXfB2LIN53lhYNv6dlipUJDIz
-         7PjM/uL6Vi3NkrPnUcnkJtc9UnIUwUY61j8eS3bNGxO+q9Y0QnoDBrn9CmMyF9gSZqGO
-         EPGmOxGIaBTSAfIXbY1L7EtpjEulPBNwzKZtq9vVokWPWPE2/qf6pR2dBxiP9pXmTvpA
-         f8ZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXsQgwwk1yvSKt+w6fqvg0n5MY+WsiJFPtrq6fv9jxOhA/fx49YcF2mVunpKvcZws3Ltz+zjjXEzOhqUc5LSzwbA8/E8Hky5GAvXH5Dnw==
-X-Gm-Message-State: AOJu0Yy3goHJe8WKc3n2Akm5ezQWodYomGOFqFqXxw0bxCJjqQSamFR9
-	qb0bTAChz3Y53sTWomkKm13GTXpoXyyM4EVjdnWMI+KVdDpdz18p
-X-Google-Smtp-Source: AGHT+IE0wvyNlJYld1l2UG/SCUa6eIml3WWIv72zVSS2Ajod8IiYL+3saVFji46D+bE9CMBu5yfMxA==
-X-Received: by 2002:a2e:7d14:0:b0:2d4:693d:ff10 with SMTP id y20-20020a2e7d14000000b002d4693dff10mr1341497ljc.20.1710325658052;
-        Wed, 13 Mar 2024 03:27:38 -0700 (PDT)
-Received: from localhost.localdomain ([212.22.67.162])
-        by smtp.gmail.com with ESMTPSA id w20-20020a2e9bd4000000b002d0f0f5e395sm2082845ljj.47.2024.03.13.03.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Mar 2024 03:27:37 -0700 (PDT)
-From: Maxim Korotkov <korotkov.maxim.s@gmail.com>
-To: Boris Brezillon <bbrezillon@kernel.org>
-Cc: Maxim Korotkov <korotkov.maxim.s@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Hector Palacios <hector.palacios@digi.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] mtd: rawnand: hynix: fixed typo
-Date: Wed, 13 Mar 2024 13:27:20 +0300
-Message-Id: <20240313102721.1991299-1-korotkov.maxim.s@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	Wed, 13 Mar 2024 11:29:55 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TvpFM0Pr2z1FMLH;
+	Wed, 13 Mar 2024 19:29:27 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id C2CAB1A018A;
+	Wed, 13 Mar 2024 19:29:42 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Mar 2024 19:29:41 +0800
+Subject: Re: [PATCH] mtd: ubi: avoid expensive do_div() on 32-bit machines
+To: Arnd Bergmann <arnd@kernel.org>, Richard Weinberger <richard@nod.at>,
+	Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, Daniel Golle <daniel@makrotopia.org>
+CC: Arnd Bergmann <arnd@arndb.de>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240313084707.3292300-1-arnd@kernel.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <4f945f4a-ac29-3ef7-9e15-123962f2a0e9@huawei.com>
+Date: Wed, 13 Mar 2024 19:29:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20240313084707.3292300-1-arnd@kernel.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240313_032746_521180_5257C3EA 
-X-CRM114-Status: GOOD (  13.16  )
+X-CRM114-CacheID: sfid-20240313_042953_629456_79BF9A9A 
+X-CRM114-Status: GOOD (  19.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,43 +68,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The function hynix_nand_rr_init() should probably return an error code.
-Judging by the usage, it seems that the return code is passed up 
-the call stack.
-Right now, it always returns 0 and the function hynix_nand_cleanup()
-in hynix_nand_init() has never been called.
-
-Found by RASU JSC and Linux Verification Center (linuxtesting.org)
-
-Fixes: 626994e07480 ("mtd: nand: hynix: Add read-retry support for 1x nm MLC NANDs")
-
-Signed-off-by: Maxim Korotkov <korotkov.maxim.s@gmail.com>
----
- drivers/mtd/nand/raw/nand_hynix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index 39076735a3fb..9695f07b5eb2 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -402,7 +402,7 @@ static int hynix_nand_rr_init(struct nand_chip *chip)
- 	if (ret)
- 		pr_warn("failed to initialize read-retry infrastructure");
- 
--	return 0;
-+	return ret;
- }
- 
- static void hynix_nand_extract_oobsize(struct nand_chip *chip,
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC8zLzEzIDE2OjQ2LCBBcm5kIEJlcmdtYW5uINC0tcA6Cj4gRnJvbTogQXJuZCBCZXJn
+bWFubiA8YXJuZEBhcm5kYi5kZT4KPiAKPiBUaGUgdXNlIG9mIGRvX2RpdigpIGluIHViaV9udm1l
+bV9yZWdfcmVhZCgpIG1ha2VzIGNhbGxpbmcgaXQgb24KPiAzMi1iaXQgbWFjaGluZXMgcmF0aGVy
+IGV4cGVuc2l2ZS4gU2luY2UgdGhlICdmcm9tJyB2YXJpYWJsZSBpcwo+IGtub3duIHRvIGJlIGEg
+MzItYml0IHF1YW50aXR5LCBpdCBpcyBjbGVhcmx5IG5ldmVyIG5lZWRlZCBhbmQKPiBjYW4gYmUg
+b3B0aW1pemVkIGludG8gYSByZWd1bGFyIGRpdmlzaW9uIG9wZXJhdGlvbi4KPiAKRG8geW91IG1l
+ZXQgYSBwZXJmb3JtYW5jZSBwcm9ibGVtIG9uIGEgMzItYml0IG1hY2hpbmU/IFRoZXJlIGFyZSB0
+b28gCm1hbnkgcGxhY2VzIGludm9raW5nIGRvX2Rpdiwgd2h5IGRvIHlvdSBvcHRpbWl6ZSB0aGlz
+IG9uZT8KSGF2ZSB5b3UgdGVzdGVkIHRoZSBpbmZsdWVuY2Ugb24gYSB4ODZfNjQgcGxhdGZvcm0g
+YWZ0ZXIgdGhpcyBwYXRjaCAKYXBwbGllZD8gTG9va3MgbGlrZSB0aGF0IGRvX2RpdiBpcyBtb3Jl
+IGVmZmljaWVudCBpbiB4ODYuCgo+IEZpeGVzOiBiOGE3N2I5YTVmOWMgKCJtdGQ6IHViaTogZml4
+IE5WTUVNIG92ZXIgVUJJIHZvbHVtZXMgb24gMzItYml0IHN5c3RlbXMiKQo+IEZpeGVzOiAzY2U0
+ODU4MDNkYTEgKCJtdGQ6IHViaTogcHJvdmlkZSBOVk1FTSBsYXllciBvdmVyIFVCSSB2b2x1bWVz
+IikKPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+IC0tLQo+
+ICAgZHJpdmVycy9tdGQvdWJpL252bWVtLmMgfCA2ICsrKy0tLQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9tdGQvdWJpL252bWVtLmMgYi9kcml2ZXJzL210ZC91YmkvbnZtZW0uYwo+IGluZGV4IDhhZWI5
+YzQyOGU1MS4uYTk0YTFhOWFhZWMxIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9udm1l
+bS5jCj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL252bWVtLmMKPiBAQCAtNiw3ICs2LDYgQEAKPiAg
+IC8qIFVCSSBOVk1FTSBwcm92aWRlciAqLwo+ICAgI2luY2x1ZGUgInViaS5oIgo+ICAgI2luY2x1
+ZGUgPGxpbnV4L252bWVtLXByb3ZpZGVyLmg+Cj4gLSNpbmNsdWRlIDxhc20vZGl2NjQuaD4KPiAg
+IAo+ICAgLyogTGlzdCBvZiBhbGwgTlZNRU0gZGV2aWNlcyAqLwo+ICAgc3RhdGljIExJU1RfSEVB
+RChudm1lbV9kZXZpY2VzKTsKPiBAQCAtMjcsMTQgKzI2LDE1IEBAIHN0YXRpYyBpbnQgdWJpX252
+bWVtX3JlZ19yZWFkKHZvaWQgKnByaXYsIHVuc2lnbmVkIGludCBmcm9tLAo+ICAgCXN0cnVjdCB1
+YmlfbnZtZW0gKnVudiA9IHByaXY7Cj4gICAJc3RydWN0IHViaV92b2x1bWVfZGVzYyAqZGVzYzsK
+PiAgIAl1aW50MzJfdCBvZmZzOwo+IC0JdWludDY0X3QgbG51bSA9IGZyb207Cj4gKwl1aW50MzJf
+dCBsbnVtOwo+ICAgCWludCBlcnIgPSAwOwo+ICAgCj4gICAJZGVzYyA9IHViaV9vcGVuX3ZvbHVt
+ZSh1bnYtPnViaV9udW0sIHVudi0+dm9sX2lkLCBVQklfUkVBRE9OTFkpOwo+ICAgCWlmIChJU19F
+UlIoZGVzYykpCj4gICAJCXJldHVybiBQVFJfRVJSKGRlc2MpOwo+ICAgCj4gLQlvZmZzID0gZG9f
+ZGl2KGxudW0sIHVudi0+dXNhYmxlX2xlYl9zaXplKTsKPiArCW9mZnMgPSBmcm9tICUgdW52LT51
+c2FibGVfbGViX3NpemU7Cj4gKwlsbnVtID0gZnJvbSAvIHVudi0+dXNhYmxlX2xlYl9zaXplOwo+
+ICAgCXdoaWxlIChieXRlc19sZWZ0KSB7Cj4gICAJCXRvX3JlYWQgPSB1bnYtPnVzYWJsZV9sZWJf
+c2l6ZSAtIG9mZnM7Cj4gICAKPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
