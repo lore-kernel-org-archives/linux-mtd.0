@@ -4,65 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BCD7C54791
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 14:04:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78A3DC54791
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Mar 2024 15:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Reply-To:
+	Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Kzq2SEaDxtPejP3/L8BwbCcqcWMryeJreaWDLd98l5I=; b=uCoVsOvzV/7z/oIEd/RxgjqQTc
-	nMUFpv5cb72CKOgXEwio/3WWaIKA6H/z3Z63bUV38P4UNr0ikbW23rforg6uxW6z86Y3IAYA+mJcR
-	8sz4FxAqMgxxnWpkFgV+ObyjPT3zQXW+IAyO8Y1uUSEZt4+y8jctu38bVqWCfooIEANR47FZSsp0l
-	p/q2lLf07yWglSJpF6ePjlXSyNC5076s7F/tq9exlyhH4OAffOrvbEpEDPsElgAyJcHSYNZGJE8oI
-	TgoGG1NJX5DPRUQ9D4lECYVCYZuxec3KBIVxuwCiUji4RJdtbqG3vPrHZzxpV3LtCWch/cQZHHAF1
-	gIWZks6g==;
+	bh=qpkxWA8UUsGeYOhp98eCFu9qmWHUUOThwV+rL0WpMoU=; b=e1uxFguBlzJRBO9KtO02oaYpTE
+	cr5v3Cw7zYoq4vBfmxyXPX4YNVIKp18WZvxjkbT9v6oxcUKELLyV22l1k/UBzZ66+n5ofLW9b2m38
+	nT6i5z0DBQj1uv67J9u6aOjBh2jwQe7OMzpuSaWF7wCyUMINvefRHq3jisPnUAqmKgeh1ccsdojdT
+	UGeU7yrXZ6yvPQNt1yTAKvg/GiV52U5aAR+UxhIoeqalrsE1PV8gssGQmdPdTZQa2D6qBe5U69878
+	fqxFAu8EsgozKwuBmHlCKnXT76zq9WqrvOjtLqBO5154T5GlMduMsEZAtlbZpbP1xnSug8OBaOQQb
+	0YQwZGNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkPDF-0000000AKrI-3zeX;
-	Wed, 13 Mar 2024 14:04:09 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rkQiJ-0000000Adhr-12BQ;
+	Wed, 13 Mar 2024 15:40:19 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rkPDC-0000000AKph-2Kia
+	id 1rkQiG-0000000Adgh-1QoY
 	for linux-mtd@lists.infradead.org;
-	Wed, 13 Mar 2024 14:04:07 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 669CE6117C;
-	Wed, 13 Mar 2024 14:04:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5FD8C433C7;
-	Wed, 13 Mar 2024 14:04:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710338645;
-	bh=c6F26WYWOWPHGngG2bLzrx8m4VbcPQ7QBfWC8CH32Uc=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=TWJQupRIoMDLYy8Z56ID/kiUfI6+tt/S/oJpr7erwMaWPJ+GlbRvRDuV7jZ+vNmW8
-	 L84D1juJ/mh9/OBoyiDYlxWn9t7oAQdGo/jRyJ/oRm1l1zEXBxecSCpPYkg9MAJ+pU
-	 64NHCHsaoggzD/OW+aAClUurZ7GUlNxJVHQ1pn3aSbQVAz3YYVf38VFf6tYwMpBubo
-	 NNGz+uzf7S+1MnHqZ0RVmVducRmBkaHBxNG6P3kZ1Pbq6MMEsoqieSyPGFkvX9lAHl
-	 /5Hli3BRxYj1+dtAo2U5BZ9jTfqNZQ7IV+ojXqvGlwvkJG3fsChRR95RPReU9TN6kb
-	 p8/TfJKxXmutQ==
-Date: Wed, 13 Mar 2024 15:03:52 +0100
-Message-Id: <CZSOG0WG0FAJ.23WQ5CB6Q8RIZ@kernel.org>
-Subject: Re: [PATCH 2/2] mtd: core: Don't fail mtd_device_parse_register()
- if OTP is unsupported
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger"
- <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Mika
- Westerberg" <mika.westerberg@linux.intel.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Aapo Vienamo" <aapo.vienamo@linux.intel.com>
-X-Mailer: aerc 0.16.0
-References: <20240307130418.3131898-1-aapo.vienamo@linux.intel.com>
- <20240307130418.3131898-3-aapo.vienamo@linux.intel.com>
- <CZQZXAB2GOCY.12YVJ6CRGG26B@kernel.org>
- <xeqscncwirfaz77mtpcvkueo5xto7vis5khr3uwclcx4sfx6eb@35j3grcqrzo2>
- <CZSIHWU6IYXB.2DUCUUYFTAB2X@kernel.org>
- <lxl3zzgq4kgbgxkya2c6zyagcnrcyp2lzewu553mkmgdlooeca@m2wyltn7qpog>
-In-Reply-To: <lxl3zzgq4kgbgxkya2c6zyagcnrcyp2lzewu553mkmgdlooeca@m2wyltn7qpog>
+	Wed, 13 Mar 2024 15:40:17 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-690c5d7851dso149316d6.0
+        for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2024 08:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1710344413; x=1710949213; darn=lists.infradead.org;
+        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h8/YH3np5gG0k8gJLFFNQtyVIP9EhBH/AMUWNCgPrg8=;
+        b=RqV1LmYzoi9VnoFnG7w55vPaEI4iIJ9DjcQ83pCTI/+pKo1bKPZUpveJVUxh3ujR4N
+         BjTA4nZjBAD+euR34EJpkuvyeFqi/eIWaXVUB8avIDInHJSnieXJEBtEQ2Q+B3JYlo0O
+         1jEEz+U4mjIbYKz/XtoQbcB1Xa7aAAe0y4Qos=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710344413; x=1710949213;
+        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=h8/YH3np5gG0k8gJLFFNQtyVIP9EhBH/AMUWNCgPrg8=;
+        b=Cbv3XV78OAgH/EEDc2OgJW+Q4x3SBnf87skN3+kLnrS0nH6kdTrKI/DO7SZBnyrH41
+         iJvgj8XoW/fIPxs5fdEhQWh88UvQvgdLaIVzQ29YHMrQPTIyMxAHKbyRoigsKEGG1pKp
+         cMUD8/aGlcGBZfnL1+vjFU1uzioHz3o33UPcYv/5q+mHii4ZCtjrtmx6phXfiA5ikxiN
+         oLe6gh9/xtH/1w8D/886BGmuLWzjDpdBJXi1OjRt8EaKzAYTBrvJhCDEWyE8nHB1Cc5X
+         1XgLSxtfF+rcxzcbG4KIarlnOaDKtlY8JHY0HKjQHjePUmEbKL7DfX5T/ZvQa+E/iDiz
+         CHGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDiOEsVwMU/uvV6KCyE4sBbqKY5tHM2a7yjpcJC/ZiPjTGe70Klt1BKBGFS7ta/CrAan+XTNbSMQMIq5A7kUwe9VEPeVDTRi+Qoms4sw==
+X-Gm-Message-State: AOJu0Ywh1a2fSVg7Rww1f7o8Nw440Gs77aJ9M3YehyohVh3IEnAFwVVD
+	52rHDCWnxR6CQ530oUaZ32nzHErJegAs/2BaNurzzibpiGmQpzMSLKM7JNMzxw==
+X-Google-Smtp-Source: AGHT+IHXeDPH6sYlQIIXq1VXK/QmzEcX7aMA9KmD3XB8fOE/tOSjMMwJLpSvPIRsByb2udrNwmV1VA==
+X-Received: by 2002:a05:6214:4a49:b0:690:d5ad:2b88 with SMTP id ph9-20020a0562144a4900b00690d5ad2b88mr186879qvb.19.1710344413221;
+        Wed, 13 Mar 2024 08:40:13 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id kl30-20020a056214519e00b00690f9ea30aesm1487440qvb.26.2024.03.13.08.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 08:40:11 -0700 (PDT)
+Message-ID: <0e06cf32-7ef9-41bb-827f-3b9ab3269dec@broadcom.com>
+Date: Wed, 13 Mar 2024 08:40:07 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP with
+ -EOPNOTSUPP
+To: AceLan Kao <acelan.kao@canonical.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, Kamal Dasu <kamal.dasu@broadcom.com>,
+ =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+ Mario Kicherer <dev@kicherer.org>, Chuanhong Guo <gch981213@gmail.com>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231129064311.272422-1-acelan.kao@canonical.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <20231129064311.272422-1-acelan.kao@canonical.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240313_070406_682667_46D53ADE 
-X-CRM114-Status: GOOD (  18.82  )
+X-CRM114-CacheID: sfid-20240313_084016_483908_F704F862 
+X-CRM114-Status: GOOD (  19.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,68 +126,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3938584058246942350=="
+Content-Type: multipart/mixed; boundary="===============1558943172997760183=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============3938584058246942350==
-Content-Type: multipart/signed;
- boundary=fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+--===============1558943172997760183==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000003812db06138c97a0"
 
---fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+--0000000000003812db06138c97a0
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 11/28/2023 10:43 PM, AceLan Kao wrote:
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> 
+> This commit updates the SPI subsystem, particularly affecting "SPI MEM"
+> drivers and core parts, by replacing the -ENOTSUPP error code with
+> -EOPNOTSUPP.
+> 
+> The key motivations for this change are as follows:
+> 1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
+> might return ENOTSUPP. This update aims to unify the error reporting
+> within the SPI subsystem for clarity and consistency.
+> 
+> 2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
+> mainly being reserved for NFS-related errors. To align with kernel coding
+> standards and recommendations, this change is being made.
+> 
+> 3. By using EOPNOTSUPP, we provide more specific context to the error,
+> indicating that a particular operation is not supported. This helps
+> differentiate from the more generic ENOTSUPP error, allowing drivers to
+> better handle and respond to different error scenarios.
+> 
+> Risks and Considerations:
+> While this change is primarily intended as a code cleanup and error code
+> unification, there is a minor risk of breaking user-space applications
+> that rely on specific return codes for unsupported operations. However,
+> this risk is considered low, as such use-cases are unlikely to be common
+> or critical. Nevertheless, developers and users should be aware of this
+> change, especially if they have scripts or tools that specifically handle
+> SPI error codes.
+> 
+> This commit does not introduce any functional changes to the SPI subsystem
+> or the affected drivers.
+> 
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 
-On Wed Mar 13, 2024 at 2:59 PM CET, Aapo Vienamo wrote:
-> On Wed, Mar 13, 2024 at 10:24:13AM +0100, Michael Walle wrote:
-> > On Mon Mar 11, 2024 at 5:20 PM CET, Aapo Vienamo wrote:
-> > > On Mon, Mar 11, 2024 at 03:38:17PM +0100, Michael Walle wrote:
-> > > > Also, you'll print an error message for EOPNOTSUPP, although that i=
-s
-> > > > not really an error. Is that intended?=20
-> > >
-> > > Well, when we hit this, the functionality of the SPI memory itself is
-> > > degraded in the sense that the OTP functionality is not available. Wh=
-at
-> > > would you suggest?
-> >=20
-> > But it's not really an error, I mean, we are ignoring that one on
-> > purpose now :) I'd just guard it with "if (ret !=3D -EOPNOTSUPP)".
->
-> To clarify, are you suggesting a modification like this to the code at
-> the end of mtd_otp_nvmem_add()?
->
-> err:
-> 	nvmem_unregister(...);
-> 	if (ret !=3D EOPNOTSUPP)
-> 		return dev_err_probe(...);
-> 	return 0;
+This patch breaks SPI probing with spi-bcm-qspi.c on v6.8 and beyond:
 
-Yes, either this variant, then you don't need to fix the caller or
-return EOPNOTSUPP but just don't print the message.
+[    2.196300] brcmstb_qspi f0440920.qspi: using bspi-mspi mode
+[    2.210295] spi-nor: probe of spi1.0 failed with error -95
 
--michael
+I am still going down drivers/mtd/spi-nor/core.c to figure out where 
+this broke.
+-- 
+Florian
 
---fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256
-Content-Type: application/pgp-signature; name="signature.asc"
+--0000000000003812db06138c97a0
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
------BEGIN PGP SIGNATURE-----
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIE3acwLqWDOzfkOi
+6/QjPptpBSmgQZK3oNg1jlRca96WMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDMxMzE1NDAxM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA/17cTMOxuSGlRJEKr/1n2lFDcrlYnya4q
+0aeDQNuWo6IBmdvRbdSNOEr7nABIS5+6alVLfHySslPV0gwlLSM+BuazwhmvwiPMLe9hJ4R73zCt
+zqjcAs6EBNVerWiPF4eSK5vq2+3XQdd/I3DpjthL+1Lr0HdjVUVqnp39NgIBk9fdbFEYxcGJJVHq
+q3VPp4DjFtpTjMYkhivL2p9H5kV9h/Y79nyGRu0mA/h7oSiWDyJGbof+KTHZ5/XYT419JSmfcwHC
+04OJQZQvuNSvb74E79Bf5bAdS17fBidquXiUv/f0cWGhOp5b9eHsdtRcTpQ9ZDxqWsUyfmbQHKoc
+KpZM
+--0000000000003812db06138c97a0--
 
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfGySBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvuZrgEArJM6xLpOYhTGbcQdQa1SJArVlp1t5IKr
-KPBIGGXA9cUA/iy1eF1dAKCAhY7cOF1DcpEEl6KNC17kS+2BT82oVJ4E
-=KvfU
------END PGP SIGNATURE-----
 
---fd774a84601503390b4d60fed6349c6cc9ccc01530323bbd271b951b5256--
-
-
---===============3938584058246942350==
+--===============1558943172997760183==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -145,5 +278,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============3938584058246942350==--
+--===============1558943172997760183==--
 
