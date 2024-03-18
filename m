@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17CB1C54E58
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Mar 2024 22:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C06D3C54E58
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Mar 2024 14:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=yWMstgHSypKvG+yVzKiua9ee99PJ/PyfCCbD+JSZE2Y=; b=v6Zx/Y+3UyZWISIbgssa+3LUM5
-	w93aVmARTYOJXsVvRRkWBCQvdYk7Ma7Qare/TQTtFQw8GxgT3zx3ExEhfLlkVV5oOz74ISRYClfH2
-	dvmsug0aQnfRMdHHl5HEyG5BfIkJrusBOqkHYQXKIJtbzZ0Ai30KFPk8RFtMx3VPpzD/nUvQPJODr
-	FqaciiPrb+XG8DB44gN69Z/8FPbDbO64DT8GmlaydJtvtTzi1kt3/GycWb5jjEQTI/UpyGIa77CAB
-	t2yi9q45w8VV9Lya7n36qBkz2SEh/U6KILSw5zvyqb2o+Ckk1SO1M10YTTGQbNpY05k2vzoJoSrEi
-	Dqor85/w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=fHsMAjLXWiyS6iM1ZsYOFJfHeh+16UxnYLSyt0GjmzA=; b=2un0HCCSCwLfeP1AEIM4ubg3H2
+	A2tcYR6Dt9/hEVRTopMOwGpbDtOaLCKWph0DUdNQKGggTxSxgbwjbFm34HWJFbQra99ZApFCt1XLC
+	fvYK8S+q92MM7hs2PgN8yzbWaRQLRnJxPJnypDkmVaEuoRGWg5Xzx4DPNUdxudJJZn9bhnY3NRg/7
+	9dKnEUEAuY2pXE6fY5F+l6rZURj/ul9B5/OgUsYo2g+L6Imqw80EyTn00Ey0shGzKY7CBzH3Nhric
+	cnaejRydN1ZF/Yr/7AHPTGHzVZrOLiuoabyTwvDtwjAKAfM0kjSFcgGXYH5POEfneELN/KyehB3np
+	sH2KjM2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rlGDN-00000001lxj-06Yc;
-	Fri, 15 Mar 2024 22:39:49 +0000
+	id 1rmDeC-00000008kYK-1PXr;
+	Mon, 18 Mar 2024 14:07:28 +0000
 Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rlGDF-00000001lwT-3CgT
+	id 1rmDe8-00000008kWu-166G
 	for linux-mtd@lists.infradead.org;
-	Fri, 15 Mar 2024 22:39:46 +0000
+	Mon, 18 Mar 2024 14:07:26 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 0E428CE20D3;
-	Fri, 15 Mar 2024 22:39:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28387C433F1;
-	Fri, 15 Mar 2024 22:39:35 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id CE551CE0201;
+	Mon, 18 Mar 2024 14:07:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE18FC433C7;
+	Mon, 18 Mar 2024 14:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710542375;
-	bh=7AGoxyZRNwhWGRoTX0vozA4l+C5nDgnZKf/FebfvTaM=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=EhVlUuzJAcqLU0r1H2j4kr9URd7T6xVe8pbRCDtZAKanIlZ0r2DagcWdPI5uqeoqg
-	 9cQYNI8hjHYRZyK0m5KrCHu8hR0Lwra7Sclv3UC7lMbG7Xuw31s00jilt07Fm2xoA3
-	 BWkr09TCiS+x625sOJKABC6q+IUrp84D/AqlK8vf5GEXR0fMUv8rbebvThQQunjOpZ
-	 3bFr96dJ6ZksmJ33F0oJkVZp7aDUTJsiagVdIe6q+GmIr6pyUTvPPYp6WKu5IoJ0bR
-	 OH2ksIE5X8P9EBF78g4XZi8CLONMncZW2hMQljMhhix1aPqsT/if2h8GlWFUa5xUzQ
-	 AoJBZ5qknUmTg==
-Date: Fri, 15 Mar 2024 16:39:34 -0600
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Simon Glass <sjg@chromium.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
- Michael Walle <mwalle@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
- Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20240315204521.28613-1-sjg@chromium.org>
-References: <20240315204521.28613-1-sjg@chromium.org>
-Message-Id: <171054237303.2017019.6117263925348911387.robh@kernel.org>
-Subject: Re: [PATCH v8 1/2] dt-bindings: mtd: fixed-partitions: Add
- alignment properties
+	s=k20201202; t=1710770841;
+	bh=vkD2c6YOu/3PLLtPJN8BZ4sJ1EZR5ZziaUiEsoLiRHo=;
+	h=Date:To:Subject:Cc:From:References:In-Reply-To:From;
+	b=UoAASRy49t4fYNk5zt4y3ZniIxzKKiwzxdCQE4wzQnV649Zwua5izMsVO/rVMbngB
+	 KMMX/zmbd1oJMn7AQRMeeX/sMIMN163l/RUwVVwT7LLkBwQXfG3Bf5EFSgDM869Z5q
+	 J1fqus1YFKq0OnTNxkIQj7VziN2+7BBOLm1iOgkkZbVaUSSeD9L7vO4LXAtM/2hBo6
+	 K/JUc5lAA48VTB3Mu3GzGzyZ5JFRzPCHv73prUmPeRNyPxLhAzmjy9SlQs44qv/WTZ
+	 KPpAJlD2d1JzKY3hJy6BNiSjR7FNu0Y90a+huEiqI9LHf2I8zW5VGhzEG//MGA6TmB
+	 1XPARtvsjEiVQ==
+Date: Mon, 18 Mar 2024 15:07:13 +0100
+Message-Id: <CZWXNB1U9VWE.G9CWTCUO3ZY3@kernel.org>
+To: "Aapo Vienamo" <aapo.vienamo@linux.intel.com>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mtd: core: Don't fail mtd_otp_nvmem_add() if OTP
+ is unsupported
+Cc: <mika.westerberg@linux.intel.com>
+From: "Michael Walle" <mwalle@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240313173425.1325790-1-aapo.vienamo@linux.intel.com>
+ <20240313173425.1325790-3-aapo.vienamo@linux.intel.com>
+In-Reply-To: <20240313173425.1325790-3-aapo.vienamo@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240315_153942_433850_6201F9FF 
-X-CRM114-Status: GOOD (  18.07  )
+X-CRM114-CacheID: sfid-20240318_070724_505562_54B48E4E 
+X-CRM114-Status: GOOD (  10.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,76 +69,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0921806705715089948=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+--===============0921806705715089948==
+Content-Type: multipart/signed;
+ boundary=8ac9ce41e26f4cabb23549944e22bfa9a25961dadc257ee5a3e92aa37b29;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 
-On Sat, 16 Mar 2024 09:45:20 +1300, Simon Glass wrote:
-> Add three properties for controlling alignment of partitions, aka
-> 'entries' in fixed-partition.
-> 
-> For now there is no explicit mention of hierarchy, so a 'section' is
-> just the 'fixed-partitions' node.
-> 
-> These new properties are inputs to the Binman packaging process, but are
-> also needed if the firmware is repacked, to ensure that alignment
-> constraints are not violated. Therefore they are provided as part of
-> the schema.
-> 
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
-> 
-> (no changes since v7)
-> 
-> Changes in v7:
-> - Drop patch 'Add binman compatible'
-> - Put the alignment properties into the fixed-partition binding
-> 
-> Changes in v6:
-> - Correct schema-validation errors missed due to older dt-schema
->   (enum fix and reg addition)
-> 
-> Changes in v5:
-> - Add value ranges
-> - Consistently mention alignment must be power-of-2
-> - Mention that alignment refers to bytes
-> 
-> Changes in v2:
-> - Fix 'a' typo in commit message
-> 
->  .../bindings/mtd/partitions/partition.yaml    | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
-> 
+--8ac9ce41e26f4cabb23549944e22bfa9a25961dadc257ee5a3e92aa37b29
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On Wed Mar 13, 2024 at 6:34 PM CET, Aapo Vienamo wrote:
+> Handle the case where -EOPNOTSUPP is returned from OTP driver.
+>
+> This addresses an issue that occurs with the Intel SPI flash controller,
+> which has a limited supported opcode set. Whilst the OTP functionality
+> is not available due to this restriction, other parts of the MTD
+> functionality of the device are intact. This change allows the driver
+> to gracefully handle the restriction by allowing the supported
+> functionality to remain available instead of failing the probe
+> altogether.
+>
+> Signed-off-by: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-yamllint warnings/errors:
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mtd/partitions/partition.example.dtb: /example-0/partitions/partition@100000: failed to match any schema with compatible: ['u-boot']
-Documentation/devicetree/bindings/mtd/partitions/partition.example.dtb: /example-0/partitions/partition@200000: failed to match any schema with compatible: ['tfa-bl31']
+-michael
 
-doc reference errors (make refcheckdocs):
+--8ac9ce41e26f4cabb23549944e22bfa9a25961dadc257ee5a3e92aa37b29
+Content-Type: application/pgp-signature; name="signature.asc"
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240315204521.28613-1-sjg@chromium.org
+-----BEGIN PGP SIGNATURE-----
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfhKkRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQzcodo7VsRvs0YQEAsYw1iglE8VFvcu5bjOkVo5oFjG2qb2Jo
+lbITqsfqxfoA/iYKuEvmeC+oVqLKwTwaumonvnWI4F8TpREztajbvYoD
+=uszn
+-----END PGP SIGNATURE-----
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+--8ac9ce41e26f4cabb23549944e22bfa9a25961dadc257ee5a3e92aa37b29--
 
-pip3 install dtschema --upgrade
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--===============0921806705715089948==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0921806705715089948==--
+
