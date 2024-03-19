@@ -4,56 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92C4ECD11DD
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2024 16:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BE76C54E71
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2024 22:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ODVh4IzqACTSsKc5LPkSQwBWXPOwutXbHqArthh6Onw=; b=QKaDRtfwB+s0s3
-	BsEmWocpeSE/WlU7X5oLe3iT+2h1dF908Awz874/OpUzgmp1+GtHOuEMWMrIIScwI+A5Ol2KXkBg0
-	2sit3ah738QM1EUrhCnF3OwBVY42dhHqHbAdJV2Eqsl5x/czRXjlX3bSnubOpWNpaPEJlAbmCQMLH
-	Uen1emW7z4G0ZX9oc++0Mt+LgBBZFTqsdi0Ndk7jdA35LpAmXjF0YJuk0J9kXGBrYlO+Qgv5HRtlB
-	BrCHWv33iJtppIDNXxwqFEWoVlaYLNBMsNIovBGxibNQ+Ty9YI76M5wZRKqZ8jLcq5XuqAJMRW18e
-	rs40JxW1kELOBqxn7WZw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=0DCJFM3J3e6M13tzdKIxHubHQVoBJ4aKvK9jWvi2GIY=; b=HEmSO8YJR/ijQa1KA9nF20KLfd
+	sCZBVmhAy7MlJEyQHFgtId/vWM0G8zUtJEjKN4Oahw7LV1h98p1+tueCJW8N6C6O+dATUVF2zpY+S
+	Tjaa3tN3plBAH+gx5p1iUxAdlDpVCfam3MmCGxRhMY3/UdH/1xwlUHJ1uqiiamXDYMNEVcTPP9Hf+
+	1SK6JDHMJAT2t3Kjqrbbtb35VHCLgG7k+GhPADS+sZ1dv+miUnnf7MWZrQIP5Soykd4kxRihGvn5W
+	8s77cxTFin+/ghHKB9y/W85U8ZpAWGtnOYJsG3faiO6vqUgLlq+nV5i//OomPlCGThAmdhBSn2GC2
+	nbaSWdlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmc9I-0000000DKIN-3X17;
-	Tue, 19 Mar 2024 16:17:12 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1rmhzP-0000000ESvY-2xtp;
+	Tue, 19 Mar 2024 22:31:23 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmc9C-0000000DKE6-2uLP
+	id 1rmhzM-0000000ESuc-3Q0W
 	for linux-mtd@lists.infradead.org;
-	Tue, 19 Mar 2024 16:17:08 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TzcHM5Q6dz2Bgb9;
-	Wed, 20 Mar 2024 00:14:23 +0800 (CST)
-Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7D3A514013B;
-	Wed, 20 Mar 2024 00:16:56 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemd500012.china.huawei.com
- (7.221.188.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Wed, 20 Mar
- 2024 00:16:56 +0800
-From: Li Zetao <lizetao1@huawei.com>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>
-CC: <lizetao1@huawei.com>, <linux-kernel@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>
-Subject: [RFC PATCH 4/5] ubifs: Introduce ACLs mount options
-Date: Wed, 20 Mar 2024 00:16:45 +0800
-Message-ID: <20240319161646.2153867-5-lizetao1@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240319161646.2153867-1-lizetao1@huawei.com>
-References: <20240319161646.2153867-1-lizetao1@huawei.com>
+	Tue, 19 Mar 2024 22:31:22 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 5CB9D62E1A81;
+	Tue, 19 Mar 2024 23:31:19 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id buCitthY5iPP; Tue, 19 Mar 2024 23:31:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id A8F1762348AD;
+	Tue, 19 Mar 2024 23:31:18 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id qcuwPV9gpYre; Tue, 19 Mar 2024 23:31:18 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7BE7E6450958;
+	Tue, 19 Mar 2024 23:31:18 +0100 (CET)
+Date: Tue, 19 Mar 2024 23:31:18 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	devicetree <devicetree@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	david oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <1196553263.78350.1710887478387.JavaMail.zimbra@nod.at>
+In-Reply-To: <Ze5uUyUuEDBM3p43@makrotopia.org>
+References: <cover.1702952891.git.daniel@makrotopia.org> <82ceb13954f7e701bf47c112333e7b15a57fc360.1702952891.git.daniel@makrotopia.org> <20240219120156.383a1427@xps-13> <1209094181.98490.1708899174329.JavaMail.zimbra@nod.at> <ZdvV1KABu_UCSL7B@makrotopia.org> <1754825522.38834.1710105437883.JavaMail.zimbra@nod.at> <Ze5uUyUuEDBM3p43@makrotopia.org>
+Subject: Re: [PATCH v7 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd500012.china.huawei.com (7.221.188.25)
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: provide NVMEM layer over UBI volumes
+Thread-Index: ULk91lSCNuYw1pJMwwbTh6ecFyLSEA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240319_091707_177227_4F16DA14 
-X-CRM114-Status: GOOD (  12.69  )
+X-CRM114-CacheID: sfid-20240319_153121_027642_5BC91D39 
+X-CRM114-Status: GOOD (  13.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,144 +78,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement the ability to enable or disable the ACLs feature through
-mount options. "-o acl" option means enable and "-o noacl" means disable
-and it is enable by default.
-
-Signed-off-by: Li Zetao <lizetao1@huawei.com>
----
- fs/ubifs/super.c | 40 ++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/ubifs.h |  2 ++
- 2 files changed, 42 insertions(+)
-
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 7f4031a15f4d..ed03bf11e51d 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -457,6 +457,13 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
- 	seq_printf(s, ",assert=%s", ubifs_assert_action_name(c));
- 	seq_printf(s, ",ubi=%d,vol=%d", c->vi.ubi_num, c->vi.vol_id);
- 
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (c->mount_opts.acl == 2)
-+		seq_puts(s, ",acl");
-+	else if (c->mount_opts.acl == 1)
-+		seq_puts(s, ",noacl");
-+#endif
-+
- 	return 0;
- }
- 
-@@ -967,6 +974,8 @@ static int check_volume_empty(struct ubifs_info *c)
-  * Opt_assert: set ubifs_assert() action
-  * Opt_auth_key: The key name used for authentication
-  * Opt_auth_hash_name: The hash type used for authentication
-+ * Opt_acl: enable posix acl
-+ * Opt_noacl: disable posix acl
-  * Opt_err: just end of array marker
-  */
- enum {
-@@ -981,6 +990,8 @@ enum {
- 	Opt_auth_key,
- 	Opt_auth_hash_name,
- 	Opt_ignore,
-+	Opt_acl,
-+	Opt_noacl,
- 	Opt_err,
- };
- 
-@@ -997,6 +1008,8 @@ static const match_table_t tokens = {
- 	{Opt_ignore, "ubi=%s"},
- 	{Opt_ignore, "vol=%s"},
- 	{Opt_assert, "assert=%s"},
-+	{Opt_acl, "acl"},
-+	{Opt_noacl, "noacl"},
- 	{Opt_err, NULL},
- };
- 
-@@ -1137,6 +1150,23 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			break;
- 		case Opt_ignore:
- 			break;
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+		case Opt_acl:
-+			c->mount_opts.acl = 2;
-+			c->vfs_sb->s_flags |= SB_POSIXACL;
-+			break;
-+		case Opt_noacl:
-+			c->mount_opts.acl = 1;
-+			c->vfs_sb->s_flags &= ~SB_POSIXACL;
-+			break;
-+#else
-+		case Opt_acl:
-+			ubifs_err(c, "acl options not supported");
-+			return -EINVAL;
-+		case Opt_noacl:
-+			ubifs_err(c, "noacl options not supported");
-+			return -EINVAL;
-+#endif
- 		default:
- 		{
- 			unsigned long flag;
-@@ -2011,12 +2041,17 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
- 	sync_filesystem(sb);
- 	dbg_gen("old flags %#lx, new flags %#x", sb->s_flags, *flags);
- 
-+	c->mount_opts.acl = 0;
- 	err = ubifs_parse_options(c, data, 1);
- 	if (err) {
- 		ubifs_err(c, "invalid or unknown remount parameter");
- 		return err;
- 	}
- 
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (!c->mount_opts.acl)
-+		c->vfs_sb->s_flags |= SB_POSIXACL;
-+#endif
- 	if (c->ro_mount && !(*flags & SB_RDONLY)) {
- 		if (c->ro_error) {
- 			ubifs_msg(c, "cannot re-mount R/W due to prior errors");
-@@ -2197,6 +2232,11 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	if (err)
- 		goto out_close;
- 
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+	if (!c->mount_opts.acl)
-+		c->vfs_sb->s_flags |= SB_POSIXACL;
-+#endif
-+
- 	/*
- 	 * UBIFS provides 'backing_dev_info' in order to disable read-ahead. For
- 	 * UBIFS, I/O is not deferred, it is done immediately in read_folio,
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index b0d3b076290d..4a6078cbb2f5 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -956,6 +956,7 @@ struct ubifs_orphan {
-  *                  specified in @compr_type)
-  * @compr_type: compressor type to override the superblock compressor with
-  *              (%UBIFS_COMPR_NONE, etc)
-+ * @acl: enable/disable posix acl (%0 default, %1 disable, %2 enable)
-  */
- struct ubifs_mount_opts {
- 	unsigned int unmount_mode:2;
-@@ -963,6 +964,7 @@ struct ubifs_mount_opts {
- 	unsigned int chk_data_crc:2;
- 	unsigned int override_compr:1;
- 	unsigned int compr_type:2;
-+	unsigned int acl:2;
- };
- 
- /**
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkRhbmllbCBHb2xsZSIgPGRh
+bmllbEBtYWtyb3RvcGlhLm9yZz4KPj4gQlRXOiBJcyB0aGVyZSBhIG5pY2Ugd2F5IHRvIHRlc3Qg
+dGhpcyB3aXRoIG5hbmRzaW0gaW4gcWVtdT8KPj4gSSdkIGxvdmUgYmVpbmcgYWJsZSB0byB0ZXN0
+IGFsbCB1YmkgYXR0YWNoIGNvZGUgcGF0aHMgb24gbXkgdGVzdCBzZXR1cC4KPiAKPiBGcm9tIHdo
+YXQgSSBjYW4gdGVsbCAnbmFuZHNpbScgZG9lc24ndCBoYXZlIGEgd2F5IHRvIGJlIGRlZmluZWQg
+aW4KPiBEZXZpY2UgVHJlZSwgbWFraW5nIGl0IHVuc3VpdGFibGUgdG8gdGVzdCB0aGUgYXR0YWNo
+bWVudCBvZiBVQkkgaW4KPiB0aGlzIHdheS4KPiAKPiBIb3dldmVyLCBRRU1VIGRvZXMgc3VwcG9y
+dCBlbXVsYXRpbmcgVEkgT01BUCdzIE9uZU5BTkQgY29udHJvbGxlciwgZWcuCj4gYXMgcGFydCBv
+ZiB0aGUgTm9raWEgTjgxMCBoYXJkd2FyZSBzdXBwb3J0ZWQgYnkgcWVtdS1zeXN0ZW0tYXJtLCBz
+ZWUKPiAKPiBodHRwczovL3d3dy5xZW11Lm9yZy9kb2NzL21hc3Rlci9zeXN0ZW0vYXJtL25zZXJp
+ZXMuaHRtbAo+IAo+IFNvIHdlIGNvdWxkIHVzZSB0aGF0IGFuZCBtb2RpZnkgdGhlIGRldmljZSB0
+cmVlIGluIExpbnV4IHRvIGhhdmUgYSBNVEQKPiBwYXJ0aXRpb24gZm9yIFVCSSBhbmQgJ2NvbXBh
+dGlibGUgPSAibGludXgsdWJpIjsnIHNldCB0aGVyZWluOgo+IAo+IGh0dHBzOi8vZ2l0Lmtlcm5l
+bC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90cmVlL2Fy
+Y2gvYXJtL2Jvb3QvZHRzL3RpL29tYXAvb21hcDI0MjAtbjh4MC1jb21tb24uZHRzaSNuODQKPiAK
+PiBJZiB5b3UgbGlrZSBJIGNhbiBwcmVwYXJlIHN1Y2ggYSB0ZXN0IHNldHVwLgoKVGhpcyB3b3Vs
+ZCBiZSBncmVhdCEKCj4gSXMgdGhlcmUgYSByZXBvc2l0b3J5IGZvciBNVEQvVUJJIHRlc3RzIHRv
+IGJlIHJ1biBvbiBRRU1VIHdoaWNoIEkgc2hvdWxkCj4gY29udHJpYnV0ZSB0aGlzIHRvPwoKVUJJ
+IHRlc3RzIHJlc2lkZSBpbiB0aGUgbXRkLXV0aWxzIHJlcG9zaXRvcnkuCmh0dHA6Ly9naXQuaW5m
+cmFkZWFkLm9yZy8/cD1tdGQtdXRpbHMuZ2l0O2E9dHJlZTtmPXRlc3RzL3ViaS10ZXN0cztoPTIw
+ZmQ2YTA0M2VlYjk2YTgxNzM2ZGQwNzg4NWY3NGU0ZTBiYjBjYzA7aGI9SEVBRAoKTWF5YmUgeW91
+IGNhbiBwcm92aWRlIGEgc21hbGwgc2hlbGwgc2NyaXB0IHdoaWNoIGNvbmZpZ3VyZXMgcWVtdT8K
+SXQgZG9lc24ndCBoYXZlIHRvIGJlIGZhbmN5LCBqdXN0IHNvbWV0aGluZyBEYXZpZCBvciBJIGNh
+biB1c2UgYXMgc3RhcmluZyBwb2ludC4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
