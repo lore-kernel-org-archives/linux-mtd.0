@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 908D9C54E68
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2024 09:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFA1BC54E60
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Mar 2024 09:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kzkw4lki4Yq8zxA+XLO4vZzmiiewoIV0kSNxVwBzmAg=; b=xjjp7TKiIvYKFe
-	5Ivck1T4412qPPDVheudEBWy6ti/ie5pycpQL8LU2yJTcXzYRmXEcjmhQk0HTBCOp+1vTRWiKFzo/
-	+8CNvLVdzfmdAtLE7B5urLZPP58kathF2xRHmZAeSOgxTyDk2Fy8+ptHjjBtgz+oVNnc1RrtC92W+
-	DJHqmOFlvmITyIi1nawVN00ugrFqQsg5XcOW4bJda0nNfL9sgSQjxiNrzkYx/tVEUCZjr7YqO8sve
-	iWhsIEMcSbdCJ0VbgFCygpM+G/BaEDlLDdKKPjGhteCLTLe0Q2HoHcjDsu+YP9Mxgsw4VNFeVmKJ5
-	+cWoc54SzwOBukQANvBg==;
+	List-Owner; bh=Uw64ObE/r4dUAF0D8uFaBpl1D+zFeNubrHgdu3M1/h0=; b=2dAh47Tf/KUgVc
+	MqNEZBjfhhZLp/xKUaFZJrha+M1s+Y+7Ax9eBWYVfhe1+SU8Nm5j6+DrcXsO56yKMC3BP40x8vDAW
+	ei8qZsu73EI9WHb/2PukCg7oaoZWEWDazIAE2C1KVfvMxLjMgK9Xs3PcDdeBxBacw3n42DsufUGV9
+	abHi2DQRHMF6bHXmMjVQ/iTtLEmeRmJR4n9g0YF3NL2D9+eWQ5byDvuP4gRPW9ZvghEAE7/gnSZch
+	R3e35lqdpYDslmokKdqx8ZoiiGgAT8AVqxwwlUUnGYNvwtHZDkgz4q2Cvq6BNw6/8Bee/TXdTUJXK
+	XoAz0JOBn6tuJRLv+ESQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmVsx-0000000C766-10eB;
-	Tue, 19 Mar 2024 09:35:55 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1rmVt4-0000000C7BF-3ulA;
+	Tue, 19 Mar 2024 09:36:02 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmVsb-0000000C6ro-0lWF;
-	Tue, 19 Mar 2024 09:35:35 +0000
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1dc29f1956cso31368175ad.0;
-        Tue, 19 Mar 2024 02:35:32 -0700 (PDT)
+	id 1rmVsh-0000000C6uw-2uTy;
+	Tue, 19 Mar 2024 09:35:44 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1def142ae7bso35128865ad.3;
+        Tue, 19 Mar 2024 02:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710840932; x=1711445732; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1710840937; x=1711445737; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e94g+9vzH11aUQZhgMcMoQcXNPU48KmdzBLfG1dsEIk=;
-        b=HnzpqLePyEFWC3PPJZ5hRfareH75Wbhl/eFH/53gVisj2r1oT6Rp3392ZSdzknmLdI
-         9NkgCC1P01hGZYCuDyC5e993RHuNYMhlblYZUAxtFKPBcDM2LG5Z7gYJFNmfoXgKTkQ9
-         Ynr90WNf+L+92F8O8pP9wMMUIUCVvXZnM9G6tVU/MFlYNqPs8xrsyivT2qzIRQO5oEA0
-         0dK2MMBSNln1xiNN/UXUq5syh1NYeXfZrk2Nx0v64vD2Kam1rVSZV32rmq4isPe9ZO6y
-         /+6hDRKrt7TraEIXDI0t8cd0ypKLa9I75thcZsnjeVdNpWtbECzhI5lKB9hzxSvVK2mv
-         utjg==
+        bh=O8lLJjV9sz++A3S70yTL0kgzPdOoYGF0BKRxiCCU5iY=;
+        b=SuuS6Ct5fsj/UnKnHlUOOKFp8kggPaQVcUK+acKPNvlBR7ftiFKU1SyW7hJ5scV7Md
+         SjTVgNrJvcmytXbYsYQ/PJNuUam7BeUlXMSPSTfIkOBN/23i6DvKtZDumyDPFqmB/RB5
+         eULpNjJkj2/Ue/sPaj2gHgdqLWxkQY4l/y4J5e9/PCx+nzQLruN8jdVrtlEAXGOikEAZ
+         c3I+lk/wHKxxjhsSxkQuXEo1UHL4hpQTALgm4UANooaD9Ou7HacITAPrvjtz4siLrIyd
+         Vl7Tdd7oawE+HiMQ82EOjT9ZREIgC+tdKEy95iaPASOS/oXc9xZDylU4vzxLoHQ59JYw
+         xxlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710840932; x=1711445732;
+        d=1e100.net; s=20230601; t=1710840937; x=1711445737;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e94g+9vzH11aUQZhgMcMoQcXNPU48KmdzBLfG1dsEIk=;
-        b=FBslhEs0Zh7HXmdK44P5ty+DGRNaPIy3KGwRR0VkyDYD4g8cW4rkXSZNn7YtZV99Wh
-         0UE9r32HjdYp0JzBissNrXMh2T3ivZeq2GbhWS2lLkd/bBpGCR0Q/9xZH1aAnW7hgoob
-         xh9NbzhKLB0BemNE6qTXZVoZooh4k9njB1go7wrcw5HrKIXCtw01f3DZi36bT1R3f0qg
-         uM8tRie/jIT3fB8hxBf3OUzpQ1nOohCYJe+kMDlEKIm56hXkN7eWwty257aEb9hAx8OI
-         0nIp1/2U2zU9wq8KPfhZ+BNxPrqdSn0anzDayFSSIsTqRxqt2TX/To1YWyxUCnMxFPIu
-         K5LA==
-X-Forwarded-Encrypted: i=1; AJvYcCXVveUtB1iH5y/jpM9L8xEgwGdhgrgKaPqhOLPnZgqpFpHS7VvkVM7joC1jygkErMjMUU7QVCE3IMCIf6zOyvG1Snl5VlFZeEE5VkT9wJhs6yirkv4SMBNtADUQSZG9giS0RSJ0h0bK9AwD/CosVMHH7jXA
-X-Gm-Message-State: AOJu0Yw/pV6Hwmev8dKzDW7DaODr7u1PhmyzLLXbUsQXc0DVlKzvrFqc
-	sD7GFpiyPgGQPhcceiHMx57w9Z8ZWjeYx+WK1tSVqB8d0MDIOSji
-X-Google-Smtp-Source: AGHT+IGRQerkxhBoo9SgQmB9rahSKXo6Kh9y5bn7m0LW33X3wWAr2V/9ZSigvft5pwucY8WqXpU8Zg==
-X-Received: by 2002:a17:902:ea08:b0:1db:55cc:d226 with SMTP id s8-20020a170902ea0800b001db55ccd226mr12398549plg.66.1710840932208;
-        Tue, 19 Mar 2024 02:35:32 -0700 (PDT)
+        bh=O8lLJjV9sz++A3S70yTL0kgzPdOoYGF0BKRxiCCU5iY=;
+        b=vq+wnd8+ZaShKw/sKv1Q49CUJiHER++msfSbagJc3gaoDUEjF4yTGEs9PtYhWS6Q4z
+         rmexM0OjIu2ymtEIJyDrnjb+yFwzMy8sUB/pfL1FUzQgulB5v7qPNf1jc7r9QKYMM4nv
+         WC9pClR2urgsWUQhemqGSaWvWxsHDLF4h3WBXjlUP+NuotMQ2+VSOzxF+ZEjcIejMhtn
+         Vdw7eKAj568jr0yZzcGNI5QClJ76Rr3Mb/ZzOMXronkynjB3Qd10eObz3QfqpLkn4MJ3
+         bnbr5zs/ux2wHv0jNGKcT71tLnqaXsbcKDQo5ByzxKvKNwIJ9SrltFTnaF5rS6EjfoEn
+         SWrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVkH9D4kVbM0AmowxlUsQV4w/nwJa+bLAzBYixAee4EjUQ35MKDPzYeHWQa+4qH21Pczb9a8MesyXgUuVCzxRBeL8wYHeNkJbK8ZAYNyC8mJ5GGxvQiKHtwxxEhDz2RRfwEuXDWxSM6+xrV66Pf32OuUTgc
+X-Gm-Message-State: AOJu0YxrLi6kMn/tH4bG6MTkPugP7fl6IsJ6B2Wo9wZU6CyG+yzXqWqf
+	Hu4z9wOFPJdqBNS5w2at0r5DhDl9DdFgTi4eKz1Rmm2H7Y7V+usahjRnGgQJXAQ=
+X-Google-Smtp-Source: AGHT+IGMXcgzPbiRbAaZnXiJWR2s96AphzV/ePKBVZUQDbytucyVA3PArFmkTCYWRUbf042LO6gbGA==
+X-Received: by 2002:a17:902:cecc:b0:1dd:8bc5:afe3 with SMTP id d12-20020a170902cecc00b001dd8bc5afe3mr18719900plg.1.1710840937439;
+        Tue, 19 Mar 2024 02:35:37 -0700 (PDT)
 Received: from localhost.localdomain ([129.41.58.3])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170903110500b001ddc0bc5934sm10942432plh.249.2024.03.19.02.35.27
+        by smtp.gmail.com with ESMTPSA id n5-20020a170903110500b001ddc0bc5934sm10942432plh.249.2024.03.19.02.35.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 02:35:31 -0700 (PDT)
+        Tue, 19 Mar 2024 02:35:37 -0700 (PDT)
 From: Manojkiran Eda <manojkiran.eda@gmail.com>
 To: patrick.rudolph@9elements.com,
 	chiawei_wang@aspeedtech.com,
@@ -82,16 +82,17 @@ Cc: robh+dt@kernel.org,
 	manojkiran.eda@gmail.com,
 	jk@codeconstruct.com.au,
 	openbmc@lists.ozlabs.org
-Subject: [PATCH v2 2/4] mtd: Replace module_init with subsys_initcall
-Date: Tue, 19 Mar 2024 15:04:03 +0530
-Message-Id: <20240319093405.39833-3-manojkiran.eda@gmail.com>
+Subject: [PATCH v2 3/4] ARM: dts: aspeed: Add eSPI node
+Date: Tue, 19 Mar 2024 15:04:04 +0530
+Message-Id: <20240319093405.39833-4-manojkiran.eda@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240319093405.39833-1-manojkiran.eda@gmail.com>
 References: <20240319093405.39833-1-manojkiran.eda@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240319_023533_264266_F1812864 
-X-CRM114-Status: GOOD (  12.98  )
+X-CRM114-CacheID: sfid-20240319_023539_967859_6CCB9A34 
+X-CRM114-Status: UNSURE (   9.61  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,44 +109,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While engaged in development on the espi kernel device driver[1],
-I noticed that the espi flash driver, utilizing the mtd subsystem,
-appears to initialize before the mtdcore subsystem registers the
-mtd_class. As a result, although the mtd device for espi is created,
-it does not populate within the /sys/class/mtd hierarchy.
-
-Given that mtd serves as a subsystem upon which numerous other drivers
-rely for infrastructure, it appears logical to adjust the module_init()
-call to an alternative priority initcall, subsys_initcall(), thereby
-ensuring that the mtd core subsystem is probed prior to the drivers
-utilizing its infrastructure.
-
-Although this adjustment alters the initialization ordering, there
-exists a slight risk of uncovering implicit initialization ordering
-issues. However, I believe it is preferable to prioritize it reasonably
-rather than having module_init() in order to maintain the exact old
-ordering.
-
-Link : [1] https://lore.kernel.org/openbmc/20240213-espi_driver-v1-1-92741c812843@gmail.com
+This commit adds eSPI to the device tree for aspeed 5/6th
+generation SoCs.
 
 Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
 ---
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/aspeed/aspeed-g5.dtsi | 19 +++++++++++++++++++
+ arch/arm/boot/dts/aspeed/aspeed-g6.dtsi | 20 ++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e451b28840d5..cc51c9fb2c1e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2560,7 +2560,7 @@ static void __exit cleanup_mtd(void)
- 	idr_destroy(&mtd_idr);
- }
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
+index 04f98d1dbb97..eaf7d82b6f46 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
++++ b/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
+@@ -343,6 +343,25 @@ sdhci1: sdhci@200 {
+ 					status = "disabled";
+ 				};
+ 			};
++			espi: espi@1e6ee000 {
++				compatible = "aspeed,ast2500-espi", "simple-mfd", "syscon";
++				reg = <0x1e6ee000 0x1000>;
++
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x0 0x1e6ee000 0x1000>;
++
++				espi_ctrl: espi-ctrl@0 {
++					compatible = "aspeed,ast2500-espi-ctrl";
++					reg = <0x0 0x800>,<0x0 0x4000000>;
++					reg-names = "espi_ctrl","espi_flash";
++					interrupts = <23>;
++					clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
++					status = "disabled";
++					pinctrl-names = "default";
++					pinctrl-0 = <&pinctrl_espi_default>;
++				};
++			};
  
--module_init(init_mtd);
-+subsys_initcall(init_mtd);
- module_exit(cleanup_mtd);
+ 			gpio: gpio@1e780000 {
+ 				#gpio-cells = <2>;
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+index c4d1faade8be..094e14442101 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+@@ -454,6 +454,26 @@ video: video@1e700000 {
+ 				status = "disabled";
+ 			};
  
- MODULE_LICENSE("GPL");
++			espi: espi@1e6ee000 {
++				compatible = "aspeed,ast2500-espi", "simple-mfd", "syscon";
++				reg = <0x1e6ee000 0x1000>;
++
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x0 0x1e6ee000 0x1000>;
++
++				espi_ctrl: espi-ctrl@0 {
++					compatible = "aspeed,ast2500-espi-ctrl";
++					reg = <0x0 0x800>,<0x0 0x4000000>;
++					reg-names = "espi_ctrl","espi_flash";
++					interrupts = <23>;
++					clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
++					status = "disabled";
++					pinctrl-names = "default";
++					pinctrl-0 = <&pinctrl_espi_default>;
++				};
++			};
++
+ 			gpio0: gpio@1e780000 {
+ 				#gpio-cells = <2>;
+ 				gpio-controller;
 -- 
 2.40.1
 
