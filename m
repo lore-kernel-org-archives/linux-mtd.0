@@ -4,66 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 844B1C54E58
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2024 16:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1366C54E58
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2024 16:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DR+XLJzmcKYBiEzp1hUmkGNvYvWZinkFJNEUhfb7ZaY=; b=sXttI8zHvwbAa3vPtu+mcrMrkS
-	tkTfhtzhQCYxMydpiFnCmIMtcXbulpv35A2l97XEClM+obW2NohC+w09M4nEZDoXHjmAi3O8ycZHx
-	jU6w0tVMl2EfqnkoaFd1iYKe6W0ZHYuguuXLtn7UozD/nTvyJloIqBbMUfG1vvSW8y+4wdQlwqALj
-	i4s+FQgHKJWl3zyVwNcVoRaoy+FNcSveRXmsndq1dlzy4FTOmE3wmEr060UDzuPt2y8j/zwe9klKS
-	YyUjPj3sHNo1HyGxA2OnVIgkHLy97Cac6W4xoH/Z32aOykw4KcU5H1x+OJLH3CZRiIRt8u9B46p3z
-	8YVh8X5Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CsaE68+yznXOVZt1BndOZYhECY17EHvSLhIwW8wEWSw=; b=pYUvV2dyxpaROv
+	TJufKB4mN2UkXCfY6Zt60uCDh62crFx5fyHneq0ugrlm0J/0Eic/oLpPIvr8bsUt4EduWCFlqtvZD
+	QFgBzzOzxlHC48+g/Ng8TPqNHZBTdyprW0kEZdNkvS19s5hpZzYcebuGWGciz6PkOOXGkDAwY6Vad
+	p9jJbdRMuM5TOQfpVyZ6SMX7Jo2SqJVBHGKjNwr4JsL2k+/bojggBqemlm6HsyNNZtHH/JDTJDI/H
+	JFOblaQNrr+4dFaMOntJC/yDEusJqXW/Q8TIpSWz4SZJZH8a0z6HBEf9zYE07NPA6z02ziXavAOrL
+	9RNUyBtJ/O6wr7icThTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmylX-00000000Iml-1Qz2;
-	Wed, 20 Mar 2024 16:26:11 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rmyp1-00000000JcC-3usk;
+	Wed, 20 Mar 2024 16:29:47 +0000
+Received: from mail-lj1-x235.google.com ([2a00:1450:4864:20::235])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmylR-00000000Ilp-3hB0;
-	Wed, 20 Mar 2024 16:26:08 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 655C161040;
-	Wed, 20 Mar 2024 16:26:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47769C433F1;
-	Wed, 20 Mar 2024 16:26:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710951963;
-	bh=AbAffIR7MFEWLLKn/T3bv0OnBju5rB/FzYNjiIim1XI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OeAzk6+Uknf8lI/ls+NRpQRLUwIHUEClV0ZXFnBYSj6z1K3MssrjL31lHxT2bdSxI
-	 7tASlVdmjqFVCz9xbohcXZ6pRB8R3lnoQdhJQrkcB+szwi594VbhF2Ekpqrac6UfE7
-	 5ZwqjuCfzovF2sNiDf6sWvpOiIveEP7EjcsGtFK34APyQT6zRiPNIURKHIRyt2cMay
-	 ZTszs7Ugs4kgtgDNdt8eC+Q4xcYyEoXNKlFboaYn0gzp4Qt/L8VgLTqwlF4n7kJiDf
-	 ZguGeuiAa6AWvvoaz46nzuVTUzlP4JDCVagVMC0BgiP3dY+G2/npXF0VVm+CdMmOdr
-	 jd7UPX0jhxUsA==
-Date: Wed, 20 Mar 2024 16:25:58 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	id 1rmyoz-00000000JbA-0vdm
+	for linux-mtd@lists.infradead.org;
+	Wed, 20 Mar 2024 16:29:46 +0000
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so604071fa.3
+        for <linux-mtd@lists.infradead.org>; Wed, 20 Mar 2024 09:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710952183; x=1711556983; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LSz7fQzVFVXAFxgeYQXEQZk+nVYjVrCMtbK7Jhjtun0=;
+        b=UcN06aahmVPODfPc3cGpkP3o1crnAK+Iz309fOFd//HnL4P/fmIW9v9vNQtCr06Dnx
+         uY/2A5B2qyCH/7R2WBkA40TKozd+YZQTR9WvZslZv4D4w02MCmjP2QFtwRsCbgv3MziK
+         vXGWDmMxeiKjth+Kpt4Lou5Vxxh7pDbAtxlWBu0q4ORPgrqphfLrMPnbH0n7uOd2DoBj
+         VrejXbVz9QHDqDMLbnzepyD1iE4eNPEoL0Yj/0bLHMZCfl0Vi/nyk1vhSppHk8W8dIGd
+         4Xd3AiEyDhZ+uFJGG8DYEDaaP2hoEmDcwUrk3oLo48n4wh0ZDIX65ZCoi60P7umqNXI9
+         V7WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710952183; x=1711556983;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LSz7fQzVFVXAFxgeYQXEQZk+nVYjVrCMtbK7Jhjtun0=;
+        b=ZMf4+7TI5iRf0Ts5+HqpKCjNAUVk1Jsz2D/AN2YMi3RuTi/V/+x6LnHOPad9rbg0xo
+         1texb5vOEitA4MAw3eb0DPGin2S6L8TMcRB9ILawKixkkN+P3EnVL1xA1EcNDLW+Z7Aa
+         gzP+aG3s1tiXbhhP+h4Vug2GAbEnz/CHR4DyZFAeiUgL5cD/7xuh8JZatUGef5OLd/ui
+         mSm7dtW6rtou0A9ZM7F2sykaxAYvbaO6A79EwXC7GcZiphzT8Dnd1jK6v3uXiYc5t8f3
+         2FxJ/pae3+fO+FXIsWdogf5ATYUiNAkSYr9M8T88vDvIXMl9yAcQRwwB4dYcKKoOq2th
+         77/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUSBHCy8HfSQvVsO8VttZP6HMxtx2DWjPoDX5AGBi6cttNtt3B2gSO6S/+XnpWoRcWL1oC0Gc3LlYh5QfNCsPrvcB6dOCHvr1PxRNASKg==
+X-Gm-Message-State: AOJu0YzZjhouz2XN9lI+sPnRm1ff7ASgqeD3mfjIPSiVHwq2GKbnkybQ
+	aSUfqmTC1FRkk+SNAJgPxQAhYCAAzdtG44GRZnrQtqJqzvEnoLHF
+X-Google-Smtp-Source: AGHT+IGrXcBnTFuQK24EEr9sarEyN5j7+SUWW/AjM5t6F29uCnPCJezOmOuBx2kavAu6gDq7MHe+NA==
+X-Received: by 2002:ac2:5f9a:0:b0:513:5fb0:c5ad with SMTP id r26-20020ac25f9a000000b005135fb0c5admr12638319lfe.17.1710952182786;
+        Wed, 20 Mar 2024 09:29:42 -0700 (PDT)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id fc18-20020a05600c525200b00414105c4cd9sm2692710wmb.21.2024.03.20.09.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 09:29:42 -0700 (PDT)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: mtd: atmel-nand: add deprecated bindings
-Message-ID: <20240320-audibly-emoticon-400e3a42550b@spud>
-References: <20240320-linux-next-nand-yaml-v1-0-2d2495363e88@microchip.com>
- <20240320-linux-next-nand-yaml-v1-3-2d2495363e88@microchip.com>
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Date: Wed, 20 Mar 2024 17:29:25 +0100
+Message-ID: <20240320162927.5015-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-In-Reply-To: <20240320-linux-next-nand-yaml-v1-3-2d2495363e88@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240320_092606_232509_AD16C731 
-X-CRM114-Status: GOOD (  35.20  )
+X-CRM114-CacheID: sfid-20240320_092945_284930_90897C46 
+X-CRM114-Status: GOOD (  15.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,288 +94,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6614246082430141576=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+MTD OTP logic is very fragile and can be problematic with some specific
+kind of devices.
 
---===============6614246082430141576==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bLcjqDi7D14ZgMoA"
-Content-Disposition: inline
+NVMEM across the years had various iteration on how Cells could be
+declared in DT and MTD OTP probably was left behind and
+add_legacy_fixed_of_cells was enabled without thinking of the consequences.
 
+That option enables NVMEM to scan the provided of_node and treat each
+child as a NVMEM Cell, this was to support legacy NVMEM implementation
+and don't cause regression.
 
---bLcjqDi7D14ZgMoA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is problematic if we have devices like Nand where the OTP is
+triggered by setting a special mode in the flash. In this context real
+partitions declared in the Nand node are registered as OTP Cells and
+this cause probe fail with -EINVAL error.
 
-On Wed, Mar 20, 2024 at 11:22:09AM +0530, Balamanikandan Gunasundar wrote:
-> Add nand bindings for legacy nand controllers. These bindings are not used
-> with the new device trees. This is still maintained to support legacy dt
-> bindings.
->=20
-> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@micro=
-chip.com>
-> ---
->  .../bindings/mtd/atmel-nand-deprecated.yaml        | 156 +++++++++++++++=
-++++++
->  .../devicetree/bindings/mtd/atmel-nand.txt         | 116 ---------------
->  2 files changed, 156 insertions(+), 116 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated.=
-yaml b/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated.yaml
-> new file mode 100644
-> index 000000000000..c8922ab0f1d5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated.yaml
+This was never notice due to the fact that till now, no Nand supported
+the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
+access for MX30LFxG18AC") this changed and coincidentally this Nand is
+used on an FritzBox 7530 supported on OpenWrt.
 
-Node name matching the devices please.
+Alternative and more robust way to declare OTP Cells are already
+prossible by using the fixed-layout node or by declaring a child node
+with the compatible set to "otp-user" or "otp-factory".
 
-> @@ -0,0 +1,156 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/atmel-nand-deprecated.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel NAND flash controller deprecated bindings
+To fix this and limit any regression with other MTD that makes use of
+declaring OTP as direct child of the dev node, disable
+add_legacy_fixed_of_cells if we have a node called nand since it's the
+standard property name to identify Nand devices attached to a Nand
+Controller.
 
-/stuff/linux-dt/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated=
-=2Eyaml: title: 'Atmel NAND flash controller deprecated bindings' should no=
-t be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-	hint: Everything is a binding/schema, no need to say it. Describe what har=
-dware the binding is for.
+With the following logic, the OTP NVMEM entry is correctly created with
+no Cells and the MTD Nand is correctly probed and partitions are
+correctly exposed.
 
-> +
-> +maintainers:
-> +  - Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-> +
-> +description: |
-> +  This should not be used in the new device trees.
+Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old syntax fixed OF cells")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/mtd/mtdcore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If these should not be used in new files, where are the replacement
-bindings for the three devices listed here? I think, rather than being
-deprecated, these are the only bindings for these devices and what you
-actually want to say here is that these should not be used for /new
-devices/. I'd drop mention of deprecation from the title as these
-bindings are the only ones for this hardware AFAICT and just say that
-new devices should be documented in $new_file.
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5887feb347a4..6872477a5129 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+ 	config.name = compatible;
+ 	config.id = NVMEM_DEVID_AUTO;
+ 	config.owner = THIS_MODULE;
+-	config.add_legacy_fixed_of_cells = true;
++	config.add_legacy_fixed_of_cells = !of_node_name_eq(mtd->dev.of_node, "nand");
+ 	config.type = NVMEM_TYPE_OTP;
+ 	config.root_only = true;
+ 	config.ignore_wp = true;
+-- 
+2.43.0
 
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - atmel,at91rm9200-nand
-> +      - atmel,sama5d2-nand
-> +      - atmel,sama5d4-nand
-> +
-> +  reg:
-
-Missing constraints.
-
-> +    description:
-> +      should specify localbus address and size used for the chip, and
-> +      hardware ECC controller if available. If the hardware ECC is PMECC,
-> +      it should contain address and size for PMECC and PMECC Error Locat=
-ion
-> +      controller.  The PMECC lookup table address and size in ROM is
-> +      optional. If not specified, driver will build it in runtime.
-> +
-> +  atmel,nand-addr-offset:
-> +    description:
-> +      offset for the address latch.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-Missing constraints.
-
-> +
-> +  atmel,nand-cmd-offset:
-> +    description:
-> +      offset for the command latch.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-Missing contraints.
-
-> +
-> +  "#address-cells":
-> +    description:
-> +      Must be present if the device has sub-nodes representing partitions
-
-Does this binding even allow partition child nodes? Hint: it doesn't.
-
-> +  "#size-cells":
-> +    description:
-> +      Must be present if the device has sub-nodes representing partition=
-s.
-> +
-> +  gpios:
-> +    description:
-> +      specifies the gpio pins to control the NAND device. detect is an
-> +      optional gpio and may be set to 0 if not present.
-
-Missing constraints (and maybe a type too? I dunno if "gpios" has a
-special case in the -gpios regexes).
-
-> +  atmel,nand-has-dma:
-> +    description:
-> +      support dma transfer for nand read/write.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  atmel,has-pmecc:
-> +    description:
-> +      enable Programmable Multibit ECC hardware, capable of BCH encoding
-> +      and decoding, on devices where it is present.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  nand-on-flash-bbt:
-> +    description:
-> +      enable on flash bbt option if not present false
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  nand-ecc-mode:
-
-Missing a default since this is optional.
-
-> +    description:
-> +      operation mode of the NAND ecc mode, soft by default.  Supported
-> +    enum:
-> +      [none, soft, hw, hw_syndrome, hw_oob_first, soft_bch]
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  atmel,pmecc-cap:
-> +    description:
-> +      error correct capability for Programmable Multibit ECC Controller.=
- If
-> +      the compatible string is "atmel,sama5d2-nand", 32 is also valid.
-> +    enum:
-> +      [2, 4, 8, 12, 24]
-
-You're missing an extra permitted value for the sama5d2.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  atmel,pmecc-sector-size:
-
-Missing a default since this is optional.
-
-> +    description:
-> +      sector size for ECC computation.
-> +    enum:
-> +      [512, 1024]
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  atmel,pmecc-lookup-table-offset:
-
-Missing a default since this is optional.
-
-> +    description:
-> +      includes two offsets of lookup table in ROM for different sector
-> +      size. First one is for sector size 512, the next is for sector size
-> +      1024. If not specified, driver will build the table in runtime.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +  nand-bus-width:
-> +    description:
-> +      nand bus width
-> +    enum:
-> +      [8, 16]
-
-Missing a default of 8 here.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-
-You're missing the optional child node for the "nand flash controller" on
-sama5d2.
-
-> +required:
-> +  - compatible
-> +  - reg
-> +  - atmel,nand-addr-offset
-> +  - atmel,nand-cmd-offset
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - gpios
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand0: nand@40000000,0 {
-
-Drop the unused node name.
-
-> +            compatible =3D "atmel,at91rm9200-nand";
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +            reg =3D <0x40000000 0x10000000
-> +                   0xffffe800 0x200>;
-> +            atmel,nand-addr-offset =3D <21>;	/* ale */
-> +            atmel,nand-cmd-offset =3D <22>;	/* cle */
-> +            nand-on-flash-bbt;
-> +            nand-ecc-mode =3D "soft";
-> +            gpios =3D <&pioC 13 0	/* rdy */
-> +                     &pioC 14 0 /* nce */
-> +                     0		/* cd */
-> +                    >;
-
-Please follow the coding style rather than copy-paste from the text
-based binding. Applies to both examples. An example with the nfc would
-be more helpful than two bindings for the same device.
-
-
-Thanks,
-Conor.
-
-> +    };
-> +  - |
-> +    /* for PMECC supported chips */
-> +    nand1@40000000 {
-> +            compatible =3D "atmel,at91rm9200-nand";
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +            reg =3D <0x40000000 0x10000000	/* bus addr & size */
-> +                   0xffffe000 0x00000600	/* PMECC addr & size */
-> +                   0xffffe600 0x00000200	/* PMECC ERRLOC addr & size */
-> +                   0x00100000 0x00100000>;	/* ROM addr & size */
-> +
-> +            atmel,nand-addr-offset =3D <21>;	/* ale */
-> +            atmel,nand-cmd-offset =3D <22>;	/* cle */
-> +            nand-on-flash-bbt;
-> +            nand-ecc-mode =3D "hw";
-> +            atmel,has-pmecc;	/* enable PMECC */
-> +            atmel,pmecc-cap =3D <2>;
-> +            atmel,pmecc-sector-size =3D <512>;
-> +            atmel,pmecc-lookup-table-offset =3D <0x8000 0x10000>;
-> +            gpios =3D <&pioD 5 0	/* rdy */
-> +                     &pioD 4 0	/* nce */
-> +                     0		/* cd */
-> +                    >;
-> +    };
-
---bLcjqDi7D14ZgMoA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfsOFQAKCRB4tDGHoIJi
-0t3kAP9jY8HZKToi98ltz47V6tQojJLjSgDRdnCw6LafnC0+wgD+JYw2mnTfdEk6
-AskqOwNiZoOOmlMA/wdsvn9DUlQKOwo=
-=XKaT
------END PGP SIGNATURE-----
-
---bLcjqDi7D14ZgMoA--
-
-
---===============6614246082430141576==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6614246082430141576==--
-
