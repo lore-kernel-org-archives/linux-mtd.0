@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F0E5C6FD1F
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2024 16:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2223C54E67
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Mar 2024 22:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=i3arbXKmrdjMQv43CY4Okm+wXple6j3kDp6kw3FzzBQ=; b=t4zn6VVhsewB4TLOG2fMKwoXQ7
-	9u9lpSxIt3prBR5qoYYGpMNq8q2eZEF/qfRLUBx2duHq+XtIGZDos9AN5bpnV75sbq68OaOKJETsV
-	jv5Z1ZkPJBmn1tApefgMdZhkZu6AMSSnmTxj7xuITH/LgWKRSFQdLaOEO0maBXpgNbBJ36Q75Onet
-	i1iOsgMf0wn8hxl9t/VN4ZMkjHQC4Y4PCYKNTN9mCUJAHdGyFwmitTXpNGIZLvAuA6LBaxePffo3h
-	gCXHhGFmR+KMKOjzLW/AGhqK4EGKRd8q8FT+Zoiu228DpKlPKWKOtAjhy8Sks1shhoOf8FX9fQOyZ
-	TG4D9wYQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BSRAiMENSpb/fb3AIG/9zRPDHeOxdOep1HjsIi9Je84=; b=hNPBgwKhItuGnQ
+	2uWzLYQ+DuEWsvM9sT/LgYuZhL40bOertgGdxwEmWBpQqS2tpkcIQy6lrwEsgn1u83/nvjgrWilYd
+	SeAvPxJRkEx32LZy2CDRMXijEGJ7Na9HdYvHqwKA0wmG2OxFDBdPGd9rzd7AfQ2oQOhyGNM9aNyY0
+	ZmJMb+NRJjXLepDX0DVJDeTo9mxR/woX51tz5AE3Irtt6W8VkGNRx4SuXpEzQLluB8M+pZ0d6LX5H
+	Ztg3Qm4JlrnsVnYTHMzSJfqL4dWXiDyBLQA3/1Q0PIpKNPGSp6hdOprJzaLTX3pexnomVMwiNbr1/
+	/sUuaCv8CeQuvuDgccZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmyzF-00000000Ltt-3rId;
-	Wed, 20 Mar 2024 16:40:21 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rn4P1-000000017fT-1tfb;
+	Wed, 20 Mar 2024 22:27:19 +0000
+Received: from relay.smtp-ext.broadcom.com ([192.19.144.207])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmyzC-00000000LsW-0KXV;
-	Wed, 20 Mar 2024 16:40:19 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 49A3FCE10EA;
-	Wed, 20 Mar 2024 16:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7EBEC433F1;
-	Wed, 20 Mar 2024 16:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710952815;
-	bh=1Jiit+psOx+w3ZLWPRwFAlOd6Nj6twJmRshP++j8nWs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MOKmvughlofy+rngsD/rKW+tCtOXQ3l2f8RY8A0GFHgGpvF+Yp5g5+Xro8AMAfuOk
-	 8cIjDMngUJyF2j5GMFwV62c2hbj+c3n5BNdvvZy5FSfq88SMfe9NskXd3wca1GI9Nu
-	 /+bJZtXHsrDy+2RVIeG4oIKq3bfZtGiSIhkRtcRs1RgBaYCxwsSugXPCh/1dpVElSy
-	 FDjTqg+lH/SfLdC/5sfX5APEWpUreM8khaEFlqw/T33kWhF9IGER4+eoLr6agn9xDs
-	 l7edI1tFVbcr8sPGdFtw4zhY0aCOJX9CUfbwGlrTLz8vGvweZo3PE6F/EwIPc3hF5G
-	 5NH3NWc+ylUFg==
-Date: Wed, 20 Mar 2024 16:40:10 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
+	id 1rn4Oy-000000017ef-2jsu
+	for linux-mtd@lists.infradead.org;
+	Wed, 20 Mar 2024 22:27:17 +0000
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 2C1A3C0000F1;
+	Wed, 20 Mar 2024 15:27:11 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 2C1A3C0000F1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1710973631;
+	bh=FrDJYOWwf0Ic6PWmCehY4eGVyxmoLrR6fV2hXhRI9/Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ER8oSDVyI4SJemYdbsgNDwpfuVSQeWV7O2fsjUkexdgoUpfAYVJF0CsaG8zXRVHWv
+	 yCJ9ZAjuaYfFtblXku6S7QQS0lDWMKy7VFlC7wGmYO/ldblsPv0kekiCYfXob+yNZG
+	 qAAgxKj9kMvY0ep7wc4FbfKjEOwcJQ/l3QM3wXQc=
+Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 6420918041CAC4;
+	Wed, 20 Mar 2024 15:27:09 -0700 (PDT)
+From: William Zhang <william.zhang@broadcom.com>
+To: Linux MTD List <linux-mtd@lists.infradead.org>
+Cc: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+	joel.peshkin@broadcom.com,
+	f.fainelli@gmail.com,
+	miquel.raynal@bootlin.com,
+	dregan@mail.com,
+	kamal.dasu@broadcom.com,
+	kursad.oney@broadcom.com,
+	William Zhang <william.zhang@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-nand: add atmel pmecc
-Message-ID: <20240320-unafraid-fidelity-669f937c846a@spud>
-References: <20240320-linux-next-nand-yaml-v1-0-2d2495363e88@microchip.com>
- <20240320-linux-next-nand-yaml-v1-2-2d2495363e88@microchip.com>
+	Brian Norris <computersforpeace@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	David Regan <dregan@broadcom.com>
+Subject: [PATCH] mtd: rawnand: brcmnand: Fix data access violation for STB chip
+Date: Wed, 20 Mar 2024 15:26:22 -0700
+Message-Id: <20240320222623.35604-1-william.zhang@broadcom.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-In-Reply-To: <20240320-linux-next-nand-yaml-v1-2-2d2495363e88@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240320_094018_503775_9A3AC40B 
-X-CRM114-Status: GOOD (  17.27  )
+X-CRM114-CacheID: sfid-20240320_152716_882397_0B94C0E6 
+X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,140 +78,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4115029093222492054=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Florian reported the following kernel NULL pointer dereference issue on
+a BCM7250 board:
+[    2.829744] Unable to handle kernel NULL pointer dereference at virtual address 0000000c when read
+[    2.838740] [0000000c] *pgd=80000000004003, *pmd=00000000
+[    2.844178] Internal error: Oops: 206 [#1] SMP ARM
+[    2.848990] Modules linked in:
+[    2.852061] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-next-20240305-gd95fcdf4961d #66
+[    2.860436] Hardware name: Broadcom STB (Flattened Device Tree)
+[    2.866371] PC is at brcmnand_read_by_pio+0x180/0x278
+[    2.871449] LR is at __wait_for_common+0x9c/0x1b0
+[    2.876178] pc : [<c094b6cc>]    lr : [<c0e66310>]    psr: 60000053
+[    2.882460] sp : f0811a80  ip : 00000012  fp : 00000000
+[    2.887699] r10: 00000000  r9 : 00000000  r8 : c3790000
+[    2.892936] r7 : 00000000  r6 : 00000000  r5 : c35db440  r4 : ffe00000
+[    2.899479] r3 : f15cb814  r2 : 00000000  r1 : 00000000  r0 : 00000000
 
---===============4115029093222492054==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Z/ovpiDLJ7pJUqlX"
-Content-Disposition: inline
+The issue only happens when dma mode is disabled or not supported on STB
+chip. The pio mode transfer calls brcmnand_read_data_bus function which
+dereferences ctrl->soc->read_data_bus. But the soc member in STB chip is
+NULL hence triggers the access violation. The function needs to check
+the soc pointer first.
 
+Fixes: 546e42599120 ("mtd: rawnand: brcmnand: Add BCMBCA read data bus interface")
 
---Z/ovpiDLJ7pJUqlX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: William Zhang <william.zhang@broadcom.com>
 
-On Wed, Mar 20, 2024 at 11:22:08AM +0530, Balamanikandan Gunasundar wrote:
-> Add bindings for programmable multibit error correction code controller
-> (PMECC).
->=20
-> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@micro=
-chip.com>
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-pmecc.yaml b/Doc=
-umentation/devicetree/bindings/mtd/atmel-pmecc.yaml
+---
 
-Filename matching a compatible please.
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> new file mode 100644
-> index 000000000000..872401e9dda3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-pmecc.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/atmel-pmecc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip pmecc controller
-> +
-> +maintainers:
-> +  - Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-> +
-> +description: |
-> +  Bindings for microchip Programmable Multibit Error Correction Code
-> +  Controller (PMECC). pmecc is a programmable BCH encoder/decoder. This
-> +  block is passed as the value to the "ecc-engine" property of microchip
-> +  nand flash controller node.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - atmel,at91sam9g45-pmecc
-> +          - atmel,sama5d2-pmecc
-> +          - atmel,sama5d4-pmecc
-> +          - microchip,sam9x60-pmecc
-> +          - microchip,sam9x7-pmecc
-> +      - items:
-> +          - const: microchip,sam9x60-pmecc
-> +          - const: atmel,at91sam9g45-pmecc
-> +
-> +  reg:
-> +    description:
-> +      The first should point to the PMECC block. The second should point=
- to the
-> +      PMECC_ERRLOC block.
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index a8d12c71f987..1b2ec0fec60c 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -857,7 +857,7 @@ static inline void brcmnand_read_data_bus(struct brcmnand_controller *ctrl,
+ 	struct brcmnand_soc *soc = ctrl->soc;
+ 	int i;
+ 
+-	if (soc->read_data_bus) {
++	if (soc && soc->read_data_bus) {
+ 		soc->read_data_bus(soc, flash_cache, buffer, fc_words);
+ 	} else {
+ 		for (i = 0; i < fc_words; i++)
+-- 
+2.37.3
 
-Constraints please. In fact, describe it as an items list and then you
-don't need constraints or a free-form text explanation of what each
-entry is :)
-
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: microchip,sam9x7-pmecc
-> +    then:
-> +      properties:
-> +        clocks:
-> +          description:
-> +            The clock source for pmecc controller
-> +          maxItems: 1
-
-Please define the property at the top level and constrain it on a per
-device basis.
-
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    pmecc: ecc-engine@ffffc070 {
-
-Drop the unused label please.
-
-Thanks,
-Conor.
-
-> +            compatible =3D "microchip,sam9x7-pmecc";
-> +            reg =3D <0xffffe000 0x300>,
-> +                  <0xffffe600 0x100>;
-> +            clocks =3D <&pmc 2 48>;
-> +    };
->=20
-> --=20
-> 2.25.1
->=20
-
---Z/ovpiDLJ7pJUqlX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfsRagAKCRB4tDGHoIJi
-0gpnAPsFDklQs2uawCixXd1EqxeDXmWagdQ0y/IUTND16hB7UgEA/SExCMWY8kCh
-TPV2Y3aXY+TdAAOAGsf6xL8p9JGcPQ8=
-=c65W
------END PGP SIGNATURE-----
-
---Z/ovpiDLJ7pJUqlX--
-
-
---===============4115029093222492054==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4115029093222492054==--
-
