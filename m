@@ -4,87 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DDA0C54E68
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2024 10:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8493C54E68
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2024 13:19:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0/RLtOveg7CbjIpj9YR41tZHupuJ6O+FFCrm7bdqf4Q=; b=2Sm4akzGa9td0B
-	+87tpSxHyLHjxW4RikQwObLvPTg5KQrQ/YAyQrXVSdHq6gWaP8QzI2DbR8OiJRmJvW0ZeaGn/YrAy
-	1AHHRDy0igye9qgAvx1oDyoHe7wbAgtYNooKKF8w3SktxLe3Milb313wRtYpb/Jqxf0agiUwwGJR+
-	Wy3Y/LMCGcZkJwXxWjCfLQmgrkFXDVJjOEfVU5Ik+LjUoX6dJBp+95hMUJHg+s9U2sZCpF9LXK2dd
-	gyutl2jW4c9NBpcjeVH+UDSMm0fIw6eF+E2lQVX5O10+xB8U4atQO/fz3Uw5BSXv9nnrmCx4TmIFd
-	ooQJD4rEXpYpwa9Tyn6w==;
+	List-Owner; bh=fsAOfGzxtBbeO/cZigDh2sbGATJhKfiiM7zwdKNiRrQ=; b=eGAgdl0A/NvPbu
+	ieuLsjYTMuHbQ6rDZxNKoRPdrl2iMsULluUW4OX+agYU6Xa9bWHRQkQnNV5OY4FSImuKfwHyNb0HS
+	56J6OPC/mpqGRYhc7qFLUNOvhCuX18eFI6hAnSmGQ1szORr7LypInJI+0mypV86xrQSIXzDw82y4O
+	0rpDnUU23afXa2jfH6fbcWqb3xfVaHyleLZiYLP5asX5/hFtwBwhAkPBwzxhEic/V/ZxdHk7XF7fL
+	d04bPS6Z2WVHGSZz2+E+CvUq/yaA6VzXfoKt4++pF+di4YJshTLEodyNOnAAlQgd2OeEb7qrcpyWo
+	t7wjlNldhX8FzqW9Gm1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnFkg-00000002eal-1z6t;
-	Thu, 21 Mar 2024 10:34:26 +0000
-Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
+	id 1rnIKf-000000036Hj-03IP;
+	Thu, 21 Mar 2024 13:19:45 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnFkc-00000002eZp-3wcQ
+	id 1rnIKb-000000036Gi-1C8w
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Mar 2024 10:34:24 +0000
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2d46c2e8dd7so10077631fa.1
-        for <linux-mtd@lists.infradead.org>; Thu, 21 Mar 2024 03:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711017260; x=1711622060; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=NHG19S00nW0KrNYH2WSzHwN8S/SHdrN0ELw9d3lEmaU=;
-        b=id5yRz7ZgHrLRxuvGueAMFsp3YmxRMDKtI37/RoGi0XYpOnPMC1nPdB0gD/elkEi1c
-         T/HLF39FW8P3EXzR3r7m4X55OJE3+4RW7eL83BaeSVgEOlNA6tBZiv6hLDYCzV2+A/pT
-         KYX+fqU82hJpuFIeRTH7QN1zPaTtcUMuZLObYdalZJqXe9ZXjMncYIzU6Q8uwuscRQdE
-         R90evlKnkIlV4KWgrtE9Q/aYvyc7z0njaUqF6ZD696/+hh+kpCzirdrL1yw7/A/4wr68
-         /7p2oA29xzsM62iw9bNQy1c4rt5B2cnrGIcWqqVxC5eQArQbxMjxn0PlLHM6D56urHAp
-         CtYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711017260; x=1711622060;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHG19S00nW0KrNYH2WSzHwN8S/SHdrN0ELw9d3lEmaU=;
-        b=Dkw4huKGLDNUYwwo0thmzyX6COu+3MxRL7Bce+De3q0Q6HXmx3kBVvIAx9GEGQ11zg
-         3Eje2o1SEFcRY+mAzWgnR1NDEqpZbigpS/ev8ep+Fy9mjSMEBVKzl1aE4IIa/R6FoMrm
-         KxZ+JDp6LzN+nc3PqPcP6zuC8CW8XfQEn72403I8awg+5lOyg58PVlg2deIKOQ/rFBKv
-         TnUaYyFf1IwtIjbbt+RkTPV6IJIrE/cGzyJorFbn23OdKL/J+xXv2H9TLUP3/7VhxSqb
-         Q5dPYUQL2Pxq5OChxjoaqDD5m3gcES7ID+QfN9Z6di6/yRDbc/pNdgy/nq2xxdq9R/Nm
-         mYzw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzIGdwbxYGoWRxV9tWwiKwO+da+sziEJ91HLVcn85UTattebAwyntFS6FS6ArrctpYnBSswexEjM19mMR64BunWF3nhFR5YoqP3+lh0w==
-X-Gm-Message-State: AOJu0YzBXw6gy487Lw2qYc/KOHHW18SeCyEQRRtSBUcKv304kmCMsBXm
-	z2e0+OzHD4CDZ0Rww2eowtjb/ZoGHVpHpLbXf8rijiUlI9sGkqDG
-X-Google-Smtp-Source: AGHT+IHZsmHDVKcW8S4Muplgc0gm08EDd7GKFo3DN0TZd0vtgrg7sUO9gJqCCt6ZDD/IbDH6dh92eQ==
-X-Received: by 2002:a2e:a4cf:0:b0:2d2:c83c:ffd7 with SMTP id p15-20020a2ea4cf000000b002d2c83cffd7mr2823962ljm.42.1711017259315;
-        Thu, 21 Mar 2024 03:34:19 -0700 (PDT)
-Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id p5-20020a05600c468500b004132ae838absm5174369wmo.43.2024.03.21.03.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 03:34:19 -0700 (PDT)
-Message-ID: <65fc0d2b.050a0220.102ac.24f6@mx.google.com>
-X-Google-Original-Message-ID: <ZfwNKKJD5Yy6UjxN@Ansuel-XPS.>
-Date: Thu, 21 Mar 2024 11:34:16 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
+	Thu, 21 Mar 2024 13:19:43 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4D9BBE0009;
+	Thu, 21 Mar 2024 13:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711027178;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wux1s3DDeZBv3SAkVVcioL1ZXc29Eq5S/w6BTrDFtLI=;
+	b=MBoOE/TdPuhXe16Grsc3TzmXJ9oCsqgYShJpE3uG/edE5lbdMpxbLojckikoY/d/WP8DNa
+	SrBSEsgml8tVUa3xDMX8uPIAnW1UifW3PflqNxQonUdqeiCBlRE2ngn2SkewJ1BGLu5KLH
+	XNlVY14IOYZa7G0cwTECVqw99oilSgZPYGGTbMPKJ2Ay29sAWFRI07KWrGGGv965Q1CPN3
+	7qEOjzke+bqJXJex0ocr6QJlkhuR0gWH8a03utAsnnRydbcKQM4sMlxGmbPB0PzkND0DFr
+	jD30VPH0Ds5O6DRf14T+HxHfj4xIqNPvwAau7MaaSJxZM8WCVdmos+5HbNP6Hw==
+Date: Thu, 21 Mar 2024 14:19:35 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH v2] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Message-ID: <20240321141935.1b9f6e71@xps-13>
+In-Reply-To: <65fc0d2b.050a0220.102ac.24f6@mx.google.com>
 References: <20240321095522.12755-1-ansuelsmth@gmail.com>
- <20240321113256.7e66ac0f@xps-13>
+	<20240321113256.7e66ac0f@xps-13>
+	<65fc0d2b.050a0220.102ac.24f6@mx.google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240321113256.7e66ac0f@xps-13>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240321_033423_144962_7F65CE0C 
-X-CRM114-Status: GOOD (  23.36  )
+X-CRM114-CacheID: sfid-20240321_061941_756509_88A35ABE 
+X-CRM114-Status: GOOD (  24.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,56 +75,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Mar 21, 2024 at 11:32:56AM +0100, Miquel Raynal wrote:
-> Hi Christian,
-> 
-> ansuelsmth@gmail.com wrote on Thu, 21 Mar 2024 10:55:13 +0100:
-> 
-> > MTD OTP logic is very fragile and can be problematic with some specific
-> > kind of devices.
-> > 
-> > NVMEM across the years had various iteration on how Cells could be
-> > declared in DT and MTD OTP probably was left behind and
-> > add_legacy_fixed_of_cells was enabled without thinking of the consequences.
-> > 
-> > That option enables NVMEM to scan the provided of_node and treat each
-> > child as a NVMEM Cell, this was to support legacy NVMEM implementation
-> > and don't cause regression.
-> > 
-> > This is problematic if we have devices like Nand where the OTP is
-> > triggered by setting a special mode in the flash. In this context real
-> > partitions declared in the Nand node are registered as OTP Cells and
-> > this cause probe fail with -EINVAL error.
-> > 
-> > This was never notice due to the fact that till now, no Nand supported
-> > the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
-> > access for MX30LFxG18AC") this changed and coincidentally this Nand is
-> > used on an FritzBox 7530 supported on OpenWrt.
-> > 
-> > Alternative and more robust way to declare OTP Cells are already
-> > prossible by using the fixed-layout node or by declaring a child node
-> > with the compatible set to "otp-user" or "otp-factory".
-> > 
-> > To fix this and limit any regression with other MTD that makes use of
-> > declaring OTP as direct child of the dev node, disable
-> > add_legacy_fixed_of_cells if we have a node called nand since it's the
-> > standard property name to identify Nand devices attached to a Nand
-> > Controller.
-> 
-> You forgot to update the commit log :-)
->
-
-Ugh... sorry. Ok to resend or I need to wait 24h similar to the rules on
-net-next?
-
--- 
-	Ansuel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgphbnN1ZWxzbXRoQGdtYWlsLmNvbSB3cm90ZSBvbiBUaHUsIDIxIE1hciAyMDI0IDExOjM0
+OjE2ICswMTAwOgoKPiBPbiBUaHUsIE1hciAyMSwgMjAyNCBhdCAxMTozMjo1NkFNICswMTAwLCBN
+aXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgQ2hyaXN0aWFuLAo+ID4gCj4gPiBhbnN1ZWxzbXRo
+QGdtYWlsLmNvbSB3cm90ZSBvbiBUaHUsIDIxIE1hciAyMDI0IDEwOjU1OjEzICswMTAwOgo+ID4g
+ICAKPiA+ID4gTVREIE9UUCBsb2dpYyBpcyB2ZXJ5IGZyYWdpbGUgYW5kIGNhbiBiZSBwcm9ibGVt
+YXRpYyB3aXRoIHNvbWUgc3BlY2lmaWMKPiA+ID4ga2luZCBvZiBkZXZpY2VzLgo+ID4gPiAKPiA+
+ID4gTlZNRU0gYWNyb3NzIHRoZSB5ZWFycyBoYWQgdmFyaW91cyBpdGVyYXRpb24gb24gaG93IENl
+bGxzIGNvdWxkIGJlCj4gPiA+IGRlY2xhcmVkIGluIERUIGFuZCBNVEQgT1RQIHByb2JhYmx5IHdh
+cyBsZWZ0IGJlaGluZCBhbmQKPiA+ID4gYWRkX2xlZ2FjeV9maXhlZF9vZl9jZWxscyB3YXMgZW5h
+YmxlZCB3aXRob3V0IHRoaW5raW5nIG9mIHRoZSBjb25zZXF1ZW5jZXMuCj4gPiA+IAo+ID4gPiBU
+aGF0IG9wdGlvbiBlbmFibGVzIE5WTUVNIHRvIHNjYW4gdGhlIHByb3ZpZGVkIG9mX25vZGUgYW5k
+IHRyZWF0IGVhY2gKPiA+ID4gY2hpbGQgYXMgYSBOVk1FTSBDZWxsLCB0aGlzIHdhcyB0byBzdXBw
+b3J0IGxlZ2FjeSBOVk1FTSBpbXBsZW1lbnRhdGlvbgo+ID4gPiBhbmQgZG9uJ3QgY2F1c2UgcmVn
+cmVzc2lvbi4KPiA+ID4gCj4gPiA+IFRoaXMgaXMgcHJvYmxlbWF0aWMgaWYgd2UgaGF2ZSBkZXZp
+Y2VzIGxpa2UgTmFuZCB3aGVyZSB0aGUgT1RQIGlzCj4gPiA+IHRyaWdnZXJlZCBieSBzZXR0aW5n
+IGEgc3BlY2lhbCBtb2RlIGluIHRoZSBmbGFzaC4gSW4gdGhpcyBjb250ZXh0IHJlYWwKPiA+ID4g
+cGFydGl0aW9ucyBkZWNsYXJlZCBpbiB0aGUgTmFuZCBub2RlIGFyZSByZWdpc3RlcmVkIGFzIE9U
+UCBDZWxscyBhbmQKPiA+ID4gdGhpcyBjYXVzZSBwcm9iZSBmYWlsIHdpdGggLUVJTlZBTCBlcnJv
+ci4KPiA+ID4gCj4gPiA+IFRoaXMgd2FzIG5ldmVyIG5vdGljZSBkdWUgdG8gdGhlIGZhY3QgdGhh
+dCB0aWxsIG5vdywgbm8gTmFuZCBzdXBwb3J0ZWQKPiA+ID4gdGhlIE9UUCBmZWF0dXJlLiBXaXRo
+IGNvbW1pdCBlODcxNjEzMjFhNDAgKCJtdGQ6IHJhd25hbmQ6IG1hY3Jvbml4OiBPVFAKPiA+ID4g
+YWNjZXNzIGZvciBNWDMwTEZ4RzE4QUMiKSB0aGlzIGNoYW5nZWQgYW5kIGNvaW5jaWRlbnRhbGx5
+IHRoaXMgTmFuZCBpcwo+ID4gPiB1c2VkIG9uIGFuIEZyaXR6Qm94IDc1MzAgc3VwcG9ydGVkIG9u
+IE9wZW5XcnQuCj4gPiA+IAo+ID4gPiBBbHRlcm5hdGl2ZSBhbmQgbW9yZSByb2J1c3Qgd2F5IHRv
+IGRlY2xhcmUgT1RQIENlbGxzIGFyZSBhbHJlYWR5Cj4gPiA+IHByb3NzaWJsZSBieSB1c2luZyB0
+aGUgZml4ZWQtbGF5b3V0IG5vZGUgb3IgYnkgZGVjbGFyaW5nIGEgY2hpbGQgbm9kZQo+ID4gPiB3
+aXRoIHRoZSBjb21wYXRpYmxlIHNldCB0byAib3RwLXVzZXIiIG9yICJvdHAtZmFjdG9yeSIuCj4g
+PiA+IAo+ID4gPiBUbyBmaXggdGhpcyBhbmQgbGltaXQgYW55IHJlZ3Jlc3Npb24gd2l0aCBvdGhl
+ciBNVEQgdGhhdCBtYWtlcyB1c2Ugb2YKPiA+ID4gZGVjbGFyaW5nIE9UUCBhcyBkaXJlY3QgY2hp
+bGQgb2YgdGhlIGRldiBub2RlLCBkaXNhYmxlCj4gPiA+IGFkZF9sZWdhY3lfZml4ZWRfb2ZfY2Vs
+bHMgaWYgd2UgaGF2ZSBhIG5vZGUgY2FsbGVkIG5hbmQgc2luY2UgaXQncyB0aGUKPiA+ID4gc3Rh
+bmRhcmQgcHJvcGVydHkgbmFtZSB0byBpZGVudGlmeSBOYW5kIGRldmljZXMgYXR0YWNoZWQgdG8g
+YSBOYW5kCj4gPiA+IENvbnRyb2xsZXIuICAKPiA+IAo+ID4gWW91IGZvcmdvdCB0byB1cGRhdGUg
+dGhlIGNvbW1pdCBsb2cgOi0pCj4gPiAgCj4gCj4gVWdoLi4uIHNvcnJ5LiBPayB0byByZXNlbmQg
+b3IgSSBuZWVkIHRvIHdhaXQgMjRoIHNpbWlsYXIgdG8gdGhlIHJ1bGVzIG9uCj4gbmV0LW5leHQ/
+Cj4gCgpZb3UgY2FuIGdvIGFoZWFkLCBidXQgSSdsbCBvbmx5IHF1ZXVlIGl0IGFmdGVyIC1yYzEg
+aXMgb3V0LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
