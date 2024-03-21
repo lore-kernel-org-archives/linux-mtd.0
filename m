@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8493C54E68
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2024 13:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D135C54E68
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Mar 2024 13:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fsAOfGzxtBbeO/cZigDh2sbGATJhKfiiM7zwdKNiRrQ=; b=eGAgdl0A/NvPbu
-	ieuLsjYTMuHbQ6rDZxNKoRPdrl2iMsULluUW4OX+agYU6Xa9bWHRQkQnNV5OY4FSImuKfwHyNb0HS
-	56J6OPC/mpqGRYhc7qFLUNOvhCuX18eFI6hAnSmGQ1szORr7LypInJI+0mypV86xrQSIXzDw82y4O
-	0rpDnUU23afXa2jfH6fbcWqb3xfVaHyleLZiYLP5asX5/hFtwBwhAkPBwzxhEic/V/ZxdHk7XF7fL
-	d04bPS6Z2WVHGSZz2+E+CvUq/yaA6VzXfoKt4++pF+di4YJshTLEodyNOnAAlQgd2OeEb7qrcpyWo
-	t7wjlNldhX8FzqW9Gm1w==;
+	List-Owner; bh=e+cURw0kEZiZcaN1pLVDISDlg8xGI6yanoWTGxZRMHU=; b=zyCMehfSW2mglt
+	f3Rk3KpPsW9q6rt9hlfzrb6mxlSP0c0v4jm/RKxGbCp8gNkrHveBoAV8i43AyJtvG1HG9yShNuq2t
+	KRtTVyWd6y4E+kRA3IVmTCkHVAcVolziOb9lGux2f2faVp+61KwyOxUAUNt7AeBYpy1J52q+XVFu0
+	NQvdE8qyipGb3oCW+ZpvurxPaWE6HsIUoJXow2IZKInK/XjBCUv4zNBril3nlcpRDi7DiN+TzZw4g
+	cklJFdSxXyYlYbav4trCUz8goAlbu74qoZB6ZbPQi9jOBUHR+dbbgh7HfvDIh50qsAEf7SrWc4J4D
+	SEBq/nQZNEXClb2z6+BA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnIKf-000000036Hj-03IP;
-	Thu, 21 Mar 2024 13:19:45 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1rnIdW-000000038xI-0J3l;
+	Thu, 21 Mar 2024 13:39:14 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnIKb-000000036Gi-1C8w
+	id 1rnIdS-000000038w6-30m7
 	for linux-mtd@lists.infradead.org;
-	Thu, 21 Mar 2024 13:19:43 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4D9BBE0009;
-	Thu, 21 Mar 2024 13:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711027178;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wux1s3DDeZBv3SAkVVcioL1ZXc29Eq5S/w6BTrDFtLI=;
-	b=MBoOE/TdPuhXe16Grsc3TzmXJ9oCsqgYShJpE3uG/edE5lbdMpxbLojckikoY/d/WP8DNa
-	SrBSEsgml8tVUa3xDMX8uPIAnW1UifW3PflqNxQonUdqeiCBlRE2ngn2SkewJ1BGLu5KLH
-	XNlVY14IOYZa7G0cwTECVqw99oilSgZPYGGTbMPKJ2Ay29sAWFRI07KWrGGGv965Q1CPN3
-	7qEOjzke+bqJXJex0ocr6QJlkhuR0gWH8a03utAsnnRydbcKQM4sMlxGmbPB0PzkND0DFr
-	jD30VPH0Ds5O6DRf14T+HxHfj4xIqNPvwAau7MaaSJxZM8WCVdmos+5HbNP6Hw==
-Date: Thu, 21 Mar 2024 14:19:35 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Claudiu Beznea
- <claudiu.beznea@tuxon.dev>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: limit OTP NVMEM Cell parse to non Nand devices
-Message-ID: <20240321141935.1b9f6e71@xps-13>
-In-Reply-To: <65fc0d2b.050a0220.102ac.24f6@mx.google.com>
-References: <20240321095522.12755-1-ansuelsmth@gmail.com>
-	<20240321113256.7e66ac0f@xps-13>
-	<65fc0d2b.050a0220.102ac.24f6@mx.google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	Thu, 21 Mar 2024 13:39:12 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id AF530CE0E42;
+	Thu, 21 Mar 2024 13:39:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B45B4C433F1;
+	Thu, 21 Mar 2024 13:39:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711028347;
+	bh=CyqSIKd95/3uoReHNnW1elb9HosCTRAVT1Iw5QyGoYo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kcx9GsdhjQvQQpYLWFnvdZLS+2ZKFWR6qmN9cHugEVPhYHa3TH1bw9xOWhbQMmnFG
+	 RqF+a08SQ/ecPsw08+s4HtSPqF9f7aS5wpynb3GlpMvUM9qhMwRVLZwLSS7y/Lt+eN
+	 vZRkHyZ3OjfHODobgA2AfG5SYrv/a2upSZH6I3Hg+Ig8p5FCfol9HVQgiGnOuDnkkE
+	 Gk6DJcTIokLICiR2NJfixRatOMZQ1+x7emzlgjVwprfE/HPP9peRzYdJdt1F/T8agr
+	 +3W/AL1REGEO2KflIeMTQoJKD/RO7A/TTnDg9I/KcMIuNTIVWblkh4Fvg+6e5AbXmH
+	 nCwr/jeQgH/5Q==
+Date: Thu, 21 Mar 2024 08:39:05 -0500
+From: Rob Herring <robh@kernel.org>
+To: Simon Glass <sjg@chromium.org>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 1/2] dt-bindings: mtd: fixed-partitions: Add alignment
+ properties
+Message-ID: <20240321133905.GA1622174-robh@kernel.org>
+References: <20240320052449.175786-1-sjg@chromium.org>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20240320052449.175786-1-sjg@chromium.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240321_061941_756509_88A35ABE 
-X-CRM114-Status: GOOD (  24.68  )
+X-CRM114-CacheID: sfid-20240321_063910_991669_54A5F8B2 
+X-CRM114-Status: GOOD (  20.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,47 +74,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgphbnN1ZWxzbXRoQGdtYWlsLmNvbSB3cm90ZSBvbiBUaHUsIDIxIE1hciAyMDI0IDExOjM0
-OjE2ICswMTAwOgoKPiBPbiBUaHUsIE1hciAyMSwgMjAyNCBhdCAxMTozMjo1NkFNICswMTAwLCBN
-aXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgQ2hyaXN0aWFuLAo+ID4gCj4gPiBhbnN1ZWxzbXRo
-QGdtYWlsLmNvbSB3cm90ZSBvbiBUaHUsIDIxIE1hciAyMDI0IDEwOjU1OjEzICswMTAwOgo+ID4g
-ICAKPiA+ID4gTVREIE9UUCBsb2dpYyBpcyB2ZXJ5IGZyYWdpbGUgYW5kIGNhbiBiZSBwcm9ibGVt
-YXRpYyB3aXRoIHNvbWUgc3BlY2lmaWMKPiA+ID4ga2luZCBvZiBkZXZpY2VzLgo+ID4gPiAKPiA+
-ID4gTlZNRU0gYWNyb3NzIHRoZSB5ZWFycyBoYWQgdmFyaW91cyBpdGVyYXRpb24gb24gaG93IENl
-bGxzIGNvdWxkIGJlCj4gPiA+IGRlY2xhcmVkIGluIERUIGFuZCBNVEQgT1RQIHByb2JhYmx5IHdh
-cyBsZWZ0IGJlaGluZCBhbmQKPiA+ID4gYWRkX2xlZ2FjeV9maXhlZF9vZl9jZWxscyB3YXMgZW5h
-YmxlZCB3aXRob3V0IHRoaW5raW5nIG9mIHRoZSBjb25zZXF1ZW5jZXMuCj4gPiA+IAo+ID4gPiBU
-aGF0IG9wdGlvbiBlbmFibGVzIE5WTUVNIHRvIHNjYW4gdGhlIHByb3ZpZGVkIG9mX25vZGUgYW5k
-IHRyZWF0IGVhY2gKPiA+ID4gY2hpbGQgYXMgYSBOVk1FTSBDZWxsLCB0aGlzIHdhcyB0byBzdXBw
-b3J0IGxlZ2FjeSBOVk1FTSBpbXBsZW1lbnRhdGlvbgo+ID4gPiBhbmQgZG9uJ3QgY2F1c2UgcmVn
-cmVzc2lvbi4KPiA+ID4gCj4gPiA+IFRoaXMgaXMgcHJvYmxlbWF0aWMgaWYgd2UgaGF2ZSBkZXZp
-Y2VzIGxpa2UgTmFuZCB3aGVyZSB0aGUgT1RQIGlzCj4gPiA+IHRyaWdnZXJlZCBieSBzZXR0aW5n
-IGEgc3BlY2lhbCBtb2RlIGluIHRoZSBmbGFzaC4gSW4gdGhpcyBjb250ZXh0IHJlYWwKPiA+ID4g
-cGFydGl0aW9ucyBkZWNsYXJlZCBpbiB0aGUgTmFuZCBub2RlIGFyZSByZWdpc3RlcmVkIGFzIE9U
-UCBDZWxscyBhbmQKPiA+ID4gdGhpcyBjYXVzZSBwcm9iZSBmYWlsIHdpdGggLUVJTlZBTCBlcnJv
-ci4KPiA+ID4gCj4gPiA+IFRoaXMgd2FzIG5ldmVyIG5vdGljZSBkdWUgdG8gdGhlIGZhY3QgdGhh
-dCB0aWxsIG5vdywgbm8gTmFuZCBzdXBwb3J0ZWQKPiA+ID4gdGhlIE9UUCBmZWF0dXJlLiBXaXRo
-IGNvbW1pdCBlODcxNjEzMjFhNDAgKCJtdGQ6IHJhd25hbmQ6IG1hY3Jvbml4OiBPVFAKPiA+ID4g
-YWNjZXNzIGZvciBNWDMwTEZ4RzE4QUMiKSB0aGlzIGNoYW5nZWQgYW5kIGNvaW5jaWRlbnRhbGx5
-IHRoaXMgTmFuZCBpcwo+ID4gPiB1c2VkIG9uIGFuIEZyaXR6Qm94IDc1MzAgc3VwcG9ydGVkIG9u
-IE9wZW5XcnQuCj4gPiA+IAo+ID4gPiBBbHRlcm5hdGl2ZSBhbmQgbW9yZSByb2J1c3Qgd2F5IHRv
-IGRlY2xhcmUgT1RQIENlbGxzIGFyZSBhbHJlYWR5Cj4gPiA+IHByb3NzaWJsZSBieSB1c2luZyB0
-aGUgZml4ZWQtbGF5b3V0IG5vZGUgb3IgYnkgZGVjbGFyaW5nIGEgY2hpbGQgbm9kZQo+ID4gPiB3
-aXRoIHRoZSBjb21wYXRpYmxlIHNldCB0byAib3RwLXVzZXIiIG9yICJvdHAtZmFjdG9yeSIuCj4g
-PiA+IAo+ID4gPiBUbyBmaXggdGhpcyBhbmQgbGltaXQgYW55IHJlZ3Jlc3Npb24gd2l0aCBvdGhl
-ciBNVEQgdGhhdCBtYWtlcyB1c2Ugb2YKPiA+ID4gZGVjbGFyaW5nIE9UUCBhcyBkaXJlY3QgY2hp
-bGQgb2YgdGhlIGRldiBub2RlLCBkaXNhYmxlCj4gPiA+IGFkZF9sZWdhY3lfZml4ZWRfb2ZfY2Vs
-bHMgaWYgd2UgaGF2ZSBhIG5vZGUgY2FsbGVkIG5hbmQgc2luY2UgaXQncyB0aGUKPiA+ID4gc3Rh
-bmRhcmQgcHJvcGVydHkgbmFtZSB0byBpZGVudGlmeSBOYW5kIGRldmljZXMgYXR0YWNoZWQgdG8g
-YSBOYW5kCj4gPiA+IENvbnRyb2xsZXIuICAKPiA+IAo+ID4gWW91IGZvcmdvdCB0byB1cGRhdGUg
-dGhlIGNvbW1pdCBsb2cgOi0pCj4gPiAgCj4gCj4gVWdoLi4uIHNvcnJ5LiBPayB0byByZXNlbmQg
-b3IgSSBuZWVkIHRvIHdhaXQgMjRoIHNpbWlsYXIgdG8gdGhlIHJ1bGVzIG9uCj4gbmV0LW5leHQ/
-Cj4gCgpZb3UgY2FuIGdvIGFoZWFkLCBidXQgSSdsbCBvbmx5IHF1ZXVlIGl0IGFmdGVyIC1yYzEg
-aXMgb3V0LgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, Mar 20, 2024 at 06:24:48PM +1300, Simon Glass wrote:
+> Add three properties for controlling alignment of partitions, aka
+> 'entries' in fixed-partition.
+> 
+> For now there is no explicit mention of hierarchy, so a 'section' is
+> just the 'fixed-partitions' node.
+> 
+> These new properties are inputs to the Binman packaging process, but are
+> also needed if the firmware is repacked, to ensure that alignment
+> constraints are not violated. Therefore they are provided as part of
+> the schema.
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+> 
+> Changes in v9:
+> - Move binding example to next batch to avoid build error
+> 
+> Changes in v7:
+> - Drop patch 'Add binman compatible'
+> - Put the alignment properties into the fixed-partition binding
+> 
+> Changes in v6:
+> - Correct schema-validation errors missed due to older dt-schema
+>   (enum fix and reg addition)
+> 
+> Changes in v5:
+> - Add value ranges
+> - Consistently mention alignment must be power-of-2
+> - Mention that alignment refers to bytes
+> 
+> Changes in v2:
+> - Fix 'a' typo in commit message
+> 
+>  .../bindings/mtd/partitions/partition.yaml    | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> index 1ebe9e2347ea..39c7d7672783 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> @@ -57,6 +57,57 @@ properties:
+>        user space from
+>      type: boolean
+>  
+> +  align:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 1
+
+Shouldn't this and the others be 2?
+
+Otherwise,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
