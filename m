@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2906CD11DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Mar 2024 15:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51853C54E71
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Mar 2024 15:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eelWiEatA9PUJi3viMNY0I6zmxllXyQicEpWYZwirh4=; b=FtAvHG44gn0PXW
-	9SgVv3HYPB5nzo4xbyfEvex62w0EYw8kQCuzRZ6n9Q5xpoMjXMfdZrAHopJJ6IJ54zWJvgFIP02TN
-	RI+wXHfGT+ydY6iNpzXGnNaRkJj67V7/hLF7KPdOCg2YX0njGxHFNZz1HIojDPLa3gYcI8HPmZQVL
-	6p1mImG10tWkT83dCA82QQ07Sj6p8RSA+e08xONmYSI/st6fEsK45l4uZa0l6/aHW7NW2qUKiU93q
-	ytZ6pcysmYOif6sY6tB8P1cKPdRYHSdrVDGDY1On8BXfPj4KJeEO5KL2ehsnJrwzx+nUIg/OmRrUB
-	OPmvgK458bc2dWp1UPWA==;
+	List-Owner; bh=rIPdwIfyCviZJdxTnhMqKUezw2qD027c7mnZVejFEhM=; b=4YlHLbzQvG/yc4
+	r6vEMtdFZpjoEGnYpifaEon0CfiCBGj3CuPDUIpJSCv+dC/KFifTWAv1FnaJot7kfXX3E/usYqkOC
+	RfqgG7RgFWFXjRVsbGD0u0kE2t4Z3xN+Y2UCGNXIlBgZJvs7pHIYeQqXQJn65BX5E4qVqnKXC38Ba
+	S3N+KxPBd/6+yRxg6VC3vtqiVylV1gKCEOqLUSGGlSaAeyEhXV9IjYVMUdYsJmeCnrNSRvSAJKLBG
+	KLoSX8J5yFwWZy0mAJOxEpJ8yMzF+DAs2ea5ScyVcKkbh2kpKeIv6k7fqvap6UxCFmV074aNObtsK
+	PP4s+xwTai8xQ1NF/CMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnh8H-00000007oB6-10yz;
-	Fri, 22 Mar 2024 15:48:37 +0000
+	id 1rnh8J-00000007oCH-0I66;
+	Fri, 22 Mar 2024 15:48:39 +0000
 Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnh89-00000007o5b-4Bcg
+	id 1rnh89-00000007o5d-4BVp
 	for linux-mtd@lists.infradead.org;
 	Fri, 22 Mar 2024 15:48:33 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V1RWh5dH2z1xsQp;
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V1RWh3GpJz1xsQg;
 	Fri, 22 Mar 2024 23:46:24 +0800 (CST)
 Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0CBA91A016C;
-	Fri, 22 Mar 2024 23:48:20 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id AC31B1A0188;
+	Fri, 22 Mar 2024 23:48:19 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemd500012.china.huawei.com
  (7.221.188.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 22 Mar
@@ -42,9 +42,9 @@ To: <richard@nod.at>, <chengzhihao1@huawei.com>, <corbet@lwn.net>,
 	<kent.overstreet@linux.dev>, <agruenba@redhat.com>
 CC: <lizetao1@huawei.com>, <linux-mtd@lists.infradead.org>,
 	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v2 2/5] ubifs: Implement POSIX Access Control Lists (ACLs)
-Date: Fri, 22 Mar 2024 23:48:09 +0800
-Message-ID: <20240322154812.215369-3-lizetao1@huawei.com>
+Subject: [RFC PATCH v2 1/5] ubifs: Add ACLs config option
+Date: Fri, 22 Mar 2024 23:48:08 +0800
+Message-ID: <20240322154812.215369-2-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240322154812.215369-1-lizetao1@huawei.com>
 References: <20240322154812.215369-1-lizetao1@huawei.com>
@@ -53,8 +53,9 @@ X-Originating-IP: [10.90.53.73]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemd500012.china.huawei.com (7.221.188.25)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240322_084830_529963_D09BE74F 
-X-CRM114-Status: GOOD (  26.84  )
+X-CRM114-CacheID: sfid-20240322_084830_297653_D778513C 
+X-CRM114-Status: UNSURE (   7.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,298 +72,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement the ACLs feature for ubifs based on vfs Posix ACLs,
-details as follows:
-  * Initialize acl for newly created inode.
-  * Provides get/set interface to access ACLs.
-
-ACLs feature relies on xattr implementation which using specific key
-names "system.posix_acl_default" and "system.posix_acl_access". Now Only
-the v2 version of POSIX ACLs is supported, and ubifs does not need to
-customize the storage format, which can simplify the implementation.
-
-It should be noted that Linux supports updating the file mode through
-ACLs. However the acl may not exist, so ubifs_xattr_remove() returns
--ENODATA. Such a scenario needs to be specially handled. At the same
-time, it needs to ensure that the updated inode is written to flash.
+Add CONFIG_UBIFS_FS_POSIX_ACL to select ACL for UBIFS, but it should
+be noted that this config option depends on UBIFS_FS_XATTR.
 
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
-v1 -> v2:
-  * Get xattr_name by direct expansion instead of posix_acl_xattr_name().
-  * Modify ubifs_xattr_remove to an external function to remove the xattr of ACL.
-  * Remove redundant likely() and unlikely().
-  * Fix updating file mode via ACL and support writing to flash.
+v1 -> v2: Put this patch first.
+v1: https://lore.kernel.org/all/20240319161646.2153867-6-lizetao1@huawei.com/
 
-v1: https://lore.kernel.org/all/20240319161646.2153867-2-lizetao1@huawei.com/
+ fs/ubifs/Kconfig | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
- fs/ubifs/Makefile |   1 +
- fs/ubifs/acl.c    | 192 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/ubifs.h  |  14 ++++
- fs/ubifs/xattr.c  |   3 +-
- 4 files changed, 208 insertions(+), 2 deletions(-)
- create mode 100644 fs/ubifs/acl.c
-
-diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
-index 314c80b24a76..b615fbb73908 100644
---- a/fs/ubifs/Makefile
-+++ b/fs/ubifs/Makefile
-@@ -9,3 +9,4 @@ ubifs-y += misc.o sysfs.o
- ubifs-$(CONFIG_FS_ENCRYPTION) += crypto.o
- ubifs-$(CONFIG_UBIFS_FS_XATTR) += xattr.o
- ubifs-$(CONFIG_UBIFS_FS_AUTHENTICATION) += auth.o
-+ubifs-$(CONFIG_UBIFS_FS_POSIX_ACL) += acl.o
-diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
-new file mode 100644
-index 000000000000..8ac5bd86f32d
---- /dev/null
-+++ b/fs/ubifs/acl.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * This file is part of UBIFS.
-+ *
-+ * Copyright (C) 2024 Huawei Tech. Co., Ltd.
-+ *
-+ * Authors: Li Zetao <lizetao1@huawei.com>
-+ */
-+
-+/* This file implements POSIX Access Control Lists (ACLs) */
-+
-+#include "ubifs.h"
-+
-+#include <linux/posix_acl_xattr.h>
-+
-+struct posix_acl *ubifs_get_inode_acl(struct inode *inode, int type, bool rcu)
-+{
-+	char *xattr_value = NULL;
-+	const char *xattr_name;
-+	struct posix_acl *acl;
-+	ssize_t size;
-+
-+	if (rcu)
-+		return ERR_PTR(-ECHILD);
-+
-+	switch (type) {
-+	case ACL_TYPE_ACCESS:
-+		xattr_name = XATTR_NAME_POSIX_ACL_ACCESS;
-+		break;
-+	case ACL_TYPE_DEFAULT:
-+		xattr_name = XATTR_NAME_POSIX_ACL_DEFAULT;
-+		break;
-+	default:
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	size = ubifs_xattr_get(inode, xattr_name, NULL, 0);
-+	if (size > 0) {
-+		xattr_value = kzalloc(size, GFP_KERNEL);
-+		if (unlikely(!xattr_value))
-+			return ERR_PTR(-ENOMEM);
-+
-+		size = ubifs_xattr_get(inode, xattr_name, xattr_value, size);
-+	}
-+
-+	if (size > 0)
-+		acl = posix_acl_from_xattr(&init_user_ns, xattr_value, size);
-+	else if (size == -ENODATA || size == 0)
-+		acl = NULL;
-+	else
-+		acl = ERR_PTR(size);
-+
-+	kfree(xattr_value);
-+
-+	return acl;
-+}
-+
-+static int __ubifs_set_acl(struct inode *inode, int type, struct posix_acl *acl, int flags)
-+{
-+	void *xattr_value = NULL;
-+	const char *xattr_name;
-+	size_t size = 0;
-+	int error;
-+
-+	switch (type) {
-+	case ACL_TYPE_ACCESS:
-+		xattr_name = XATTR_NAME_POSIX_ACL_ACCESS;
-+		break;
-+
-+	case ACL_TYPE_DEFAULT:
-+		xattr_name = XATTR_NAME_POSIX_ACL_DEFAULT;
-+		if (!S_ISDIR(inode->i_mode))
-+			return acl ? -EACCES : 0;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (acl) {
-+		size = posix_acl_xattr_size(acl->a_count);
-+		xattr_value = kmalloc(size, GFP_KERNEL);
-+		if (unlikely(!xattr_value))
-+			return -ENOMEM;
-+
-+		error = posix_acl_to_xattr(&init_user_ns, acl, xattr_value, size);
-+		if (unlikely(error < 0))
-+			goto out;
-+
-+		error = ubifs_xattr_set(inode, xattr_name, xattr_value, size, flags, false);
-+	} else {
-+		error = ubifs_xattr_remove(inode, xattr_name);
-+		if (error == -ENODATA)
-+			return 0;
-+	}
-+
-+	if (!error)
-+		set_cached_acl(inode, type, acl);
-+out:
-+	kfree(xattr_value);
-+	return error;
-+}
-+
-+static int ubifs_update_mode(struct inode *inode, umode_t mode)
-+{
-+	struct ubifs_inode *ui = ubifs_inode(inode);
-+	struct ubifs_info *c = inode->i_sb->s_fs_info;
-+	struct ubifs_budget_req req = { .dirtied_ino = 1,
-+				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
-+	int release;
-+	int err;
-+
-+	err = ubifs_budget_space(c, &req);
-+	if (err)
-+		return err;
-+
-+	mutex_lock(&ui->ui_mutex);
-+	release = ui->dirty;
-+	inode->i_mode = mode;
-+	inode_set_ctime_current(inode);
-+	mark_inode_dirty_sync(inode);
-+	mutex_unlock(&ui->ui_mutex);
-+
-+	if (release)
-+		ubifs_release_budget(c, &req);
-+	if (IS_SYNC(inode))
-+		err = inode->i_sb->s_op->write_inode(inode, NULL);
-+
-+	return err;
-+}
-+
-+int ubifs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry, struct posix_acl *acl, int type)
-+{
-+	struct inode *inode = d_inode(dentry);
-+	umode_t mode = inode->i_mode;
-+	bool update_mode = false;
-+	int error;
-+
-+	if (type == ACL_TYPE_ACCESS && acl) {
-+		error = posix_acl_update_mode(idmap, inode, &mode, &acl);
-+		if (unlikely(error))
-+			return error;
-+
-+		if (inode->i_mode != mode)
-+			update_mode = true;
-+	}
-+
-+	error = __ubifs_set_acl(inode, type, acl, 0);
-+	if (!error && update_mode)
-+		error = ubifs_update_mode(inode, mode);
-+
-+	return error;
-+
-+}
-+
-+/**
-+ * ubifs_init_acl - initialize the ACLs for a new inode.
-+ * @inode: newly created inode
-+ * @dir: parent directory inode
-+ *
-+ * This function initializes ACLs, including inheriting the
-+ * default ACLs of parent directory or modifying the default
-+ * ACLs according to the mode parameter in open() / creat()
-+ * system calls.
-+ */
-+int ubifs_init_acl(struct inode *inode, struct inode *dir)
-+{
-+	struct posix_acl *default_acl;
-+	struct posix_acl *acl;
-+	int error;
-+
-+	error = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
-+	if (unlikely(error))
-+		return error;
-+
-+	if (default_acl) {
-+		error = __ubifs_set_acl(inode, ACL_TYPE_DEFAULT, default_acl, XATTR_CREATE);
-+		posix_acl_release(default_acl);
-+	} else {
-+		inode->i_default_acl = NULL;
-+	}
-+
-+	if (acl) {
-+		if (!error)
-+			error = __ubifs_set_acl(inode, ACL_TYPE_ACCESS, acl, XATTR_CREATE);
-+		posix_acl_release(acl);
-+	} else {
-+		inode->i_acl = NULL;
-+	}
-+
-+	return error;
-+}
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 1f3ea879d93a..b96c2462237a 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -2046,6 +2046,7 @@ int ubifs_xattr_set(struct inode *host, const char *name, const void *value,
- 		    size_t size, int flags, bool check_lock);
- ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
- 			size_t size);
-+int ubifs_xattr_remove(struct inode *host, const char *name);
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index 45d3d207fb99..9ac5ddd5ded3 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -98,4 +98,18 @@ config UBIFS_FS_AUTHENTICATION
+ 	  sha256, these are not selected automatically since there are many
+ 	  different options.
  
- #ifdef CONFIG_UBIFS_FS_XATTR
- extern const struct xattr_handler * const ubifs_xattr_handlers[];
-@@ -2074,6 +2075,19 @@ static inline int ubifs_init_security(struct inode *dentry,
- }
- #endif
- 
-+#ifdef CONFIG_UBIFS_FS_POSIX_ACL
-+struct posix_acl *ubifs_get_inode_acl(struct inode *inode, int type, bool rcu);
-+int ubifs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry, struct posix_acl *acl, int type);
-+int ubifs_init_acl(struct inode *inode, struct inode *dir);
++config UBIFS_FS_POSIX_ACL
++	bool "UBIFS POSIX Access Control Lists"
++	depends on UBIFS_FS_XATTR
++	select FS_POSIX_ACL
++	default y
++	help
++	  Posix Access Control Lists (ACLs) support permissions for users and
++	  groups beyond the owner/group/world scheme.
 +
-+#else /* CONFIG_UBIFS_FS_POSIX_ACL */
-+#define ubifs_get_inode_acl NULL
-+#define ubifs_set_acl NULL
-+static inline int ubifs_init_acl(struct inode *inode, struct inode *dir)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_UBIFS_FS_POSIX_ACL */
- 
- /* super.c */
- struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 0847db521984..87350b15f2c2 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -40,7 +40,6 @@
-  * in the VFS inode cache. The xentries are cached in the LNC cache (see
-  * tnc.c).
-  *
-- * ACL support is not implemented.
-  */
- 
- #include "ubifs.h"
-@@ -592,7 +591,7 @@ void ubifs_evict_xattr_inode(struct ubifs_info *c, ino_t xattr_inum)
- 	}
- }
- 
--static int ubifs_xattr_remove(struct inode *host, const char *name)
-+int ubifs_xattr_remove(struct inode *host, const char *name)
- {
- 	struct inode *inode;
- 	struct ubifs_info *c = host->i_sb->s_fs_info;
++	  To learn more about Access Control Lists, visit the Posix ACLs for
++	  Linux website <http://acl.bestbits.at/>.
++
++	  If you don't know what Access Control Lists are, say N
++
+ endif # UBIFS_FS
 -- 
 2.34.1
 
