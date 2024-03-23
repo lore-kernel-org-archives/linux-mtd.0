@@ -4,59 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE045C47DD9
-	for <linux-mtd@archiver.kernel.org>; Sat, 23 Mar 2024 02:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01598C54E58
+	for <linux-mtd@archiver.kernel.org>; Sat, 23 Mar 2024 21:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oY+86e9PVbdRrCDt6w5us0zFfQNAJUEkfZ78UaZUb1Q=; b=VylCBrhg4kQNkEj6vTvGO5SQts
-	GD9ye8/23GKtK7Gorskj7QmEWUwWYHTIkXzFxTOaAxA6Ai7b/IQ49J8tbuSrJuxBctzAno76xeckf
-	mQ+XVGAFyTbKgN2P6E+uETz4igHxTOBdb+VpDMGbwbKpY9725L9CTWUT8Ge9lAklbTEJYHcZaBIW2
-	m+zk6ME5/TxhGi2h3Cp515jl4k89WikZQENQeWcYbeOa1HpooK3sNeEAsx1ujLaie2wBifk0wpCvJ
-	ZEEESetitxXSUYNAkParjTSjyuTHaFnKKkMLefu2Qo0S19SfNQTQNe8ZICQgE1E1vE3eFt6onzZae
-	FcDu7/sQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=UQytDb59QeNFqSLrLAcEadBep/dDW502jNIMJ96C9Z4=; b=NVwGivYe5OogVx
+	YqYAcZK1ALA5ksL6mw55CnLnV7xFF2Zgp3qNxCnPf36ZrP+W2mQ7vrLqm+mrzTQFwGgqfDbXUupvf
+	xrAcuA728iBY1cvHNtbe1vxJKKOPy+Gh6NWM0gAF/QBBkzSQUyh1sxBR43SOOhS3IBBS8B8b9EOAa
+	Pf/MLSHuHRlfxZWUOWIXNHzYgy867bbfAgXgzHPZr6zhOJeBb58vxhdJ7SHAqkC5h7Xb3dWOsz8WR
+	suW3swraHcFZs6g6z92x/40hc3Zd3MSnZcTN2dY0QY6dMGNYBVRN9GxpFjqpv5C+lZeqZIcQkgQtR
+	dfqrbPg8CbIFes6vC8qg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnrXt-00000009Hr5-1pVS;
-	Sat, 23 Mar 2024 02:55:45 +0000
-Received: from szxga06-in.huawei.com ([45.249.212.32])
+	id 1ro8fJ-0000000BBvc-1wy7;
+	Sat, 23 Mar 2024 21:12:33 +0000
+Received: from mail-yw1-x1130.google.com ([2607:f8b0:4864:20::1130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnrXp-00000009Hoo-3nK1
+	id 1ro8fF-0000000BBtc-3z0Z
 	for linux-mtd@lists.infradead.org;
-	Sat, 23 Mar 2024 02:55:43 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4V1kLn1J3hz1vx4F;
-	Sat, 23 Mar 2024 10:54:41 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 93D79140258;
-	Sat, 23 Mar 2024 10:55:28 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 23 Mar 2024 10:55:27 +0800
-Subject: Re: [RFC PATCH v2 5/5] ubifs: Introduce ACLs mount options
-To: Li Zetao <lizetao1@huawei.com>, <richard@nod.at>, <corbet@lwn.net>,
-	<kent.overstreet@linux.dev>, <agruenba@redhat.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240322154812.215369-1-lizetao1@huawei.com>
- <20240322154812.215369-6-lizetao1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <e10b4182-a6b6-25f5-b04d-92bc20fa56d4@huawei.com>
-Date: Sat, 23 Mar 2024 10:55:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Sat, 23 Mar 2024 21:12:31 +0000
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-611248b4805so16284647b3.0
+        for <linux-mtd@lists.infradead.org>; Sat, 23 Mar 2024 14:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711228343; x=1711833143; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Y3ciYm0VxZfrPijrgMTJyMdjg8ZrAzLnw8EK162/0c=;
+        b=DACDRrGYK1F/0AKUjsTfHHQz18Vr/6qtoOMR2NQmmS0Z4utX5E3H8PfJWXXuxqqRhI
+         jpkJs13/bJxJ+aTaGhiJBrrgQhIzIIRaDKJBAchnke4cCa6/JEzU/LZajRv7tbiXR0xx
+         TaYnPFmU9KAi/Oqy5+KppR1DoQFcq5DMM67GY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711228343; x=1711833143;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Y3ciYm0VxZfrPijrgMTJyMdjg8ZrAzLnw8EK162/0c=;
+        b=G7u+jLkO2JOzRGBjZWMIXb5Nh7bCvTLoYGRpUDWx5HyNYrEq1FBFojhVIi3s8fx9h3
+         GUdkU4CYdf2iFY6sl3aPM8ZzwPlwaXUSL+iMZqtUTZaP/dBS9eRUc47Yh166aZbCpK10
+         T7qZ1GwQ7plItvYg23fUGORlmnLsBgFpDvem3dge8BevU2sPPZ04uD2hgHSD0gqH66pv
+         VOJ2HT7us7BQ/BtlpNqbYYVln3GTsN06eGGPQsR/eJmRHPx3Rzujh4rAetgRzmlOWRWz
+         pNNdt1Y5KrhtBjpdc7JV1aJ6U/gzN0pO7yEh+TCTF9fnX1h3PsnypEqrmNBgzCnJZ1nd
+         wiNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWvkb5pPdudbad7hLrJQNSFX4oYi1FSkdF/Pdj90p74eZuM1rFJw8jXfV5XnPDXIhREqQ+L/U3/KvMt9F8CtbLp2XcjmIbR2KQheXOODg==
+X-Gm-Message-State: AOJu0YwkpLeB91uTJqRuhbxZjtmj2ssKm+3Mz5g5ibduuYd4JNmY02An
+	WNmSF+Bt7pKuWNqWOjqfmdDe0YaNCGt7Illpmtlwexr8cDjwOILV2zwtNRXZ7TvTuy7NfnPyG+m
+	uS8rx8buVKsUOrMJvS2ptWVvPw89bPuxKCWaE
+X-Google-Smtp-Source: AGHT+IEDJszqpW1tP+cv5jXC4Oabaq1P2MqF2oGnuJi80CpG95eHJKzJDW7qqZ8SP+4LnF8HV/fDKJZxwXd9lg8KfQI=
+X-Received: by 2002:a81:8404:0:b0:609:f898:9832 with SMTP id
+ u4-20020a818404000000b00609f8989832mr2972227ywf.23.1711228343188; Sat, 23 Mar
+ 2024 14:12:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20240322154812.215369-6-lizetao1@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+References: <20240320052449.175786-1-sjg@chromium.org> <20240321133905.GA1622174-robh@kernel.org>
+In-Reply-To: <20240321133905.GA1622174-robh@kernel.org>
+From: Simon Glass <sjg@chromium.org>
+Date: Sun, 24 Mar 2024 10:12:12 +1300
+Message-ID: <CAFLszTg4UUhcs_oG=vq6ZuiyGfAGn015Usn58gYtGqKqLvNWUg@mail.gmail.com>
+Subject: Re: [PATCH v9 1/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	Michael Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240322_195542_131357_D74C59F3 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20240323_141230_125193_6D91F49C 
+X-CRM114-Status: GOOD (  25.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,37 +84,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC8zLzIyIDIzOjQ4LCBMaSBaZXRhbyDQtLXAOgo+IEltcGxlbWVudCB0aGUgYWJpbGl0
-eSB0byBlbmFibGUgb3IgZGlzYWJsZSB0aGUgQUNMcyBmZWF0dXJlIHRocm91Z2gKPiBtb3VudCBv
-cHRpb25zLiAiLW8gYWNsIiBvcHRpb24gbWVhbnMgZW5hYmxlIGFuZCAiLW8gbm9hY2wiIG1lYW5z
-IGRpc2FibGUKPiBhbmQgaXQgaXMgZW5hYmxlIGJ5IGRlZmF1bHQuCj4gCj4gU2lnbmVkLW9mZi1i
-eTogTGkgWmV0YW8gPGxpemV0YW8xQGh1YXdlaS5jb20+Cj4gLS0tCj4gdjEgLT4gdjI6Cj4gICAg
-KiBSZW1vdmUgcmVkdW5kYW50IGFzc2lnbm1lbnRzIHRvIG1vdW50LmFjbC4KPiAgICAqIEFkZGVk
-IHRoZSBkZXNjcmlwdGlvbiBvZiBhY2wgbW91bnQgb3B0aW9ucyBpbiB1Ymlmcy5yc3QuCj4gCj4g
-djE6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDI0MDMxOTE2MTY0Ni4yMTUzODY3LTUt
-bGl6ZXRhbzFAaHVhd2VpLmNvbS8KPiAKPiAgIERvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvdWJp
-ZnMucnN0IHwgIDQgKysrCj4gICBmcy91Ymlmcy9zdXBlci5jICAgICAgICAgICAgICAgICAgICB8
-IDQxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gICBmcy91Ymlmcy91Ymlmcy5oICAg
-ICAgICAgICAgICAgICAgICB8ICAyICsrCj4gICAzIGZpbGVzIGNoYW5nZWQsIDQ3IGluc2VydGlv
-bnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy91Ymlmcy5y
-c3QgYi9Eb2N1bWVudGF0aW9uL2ZpbGVzeXN0ZW1zL3ViaWZzLnJzdAo+IGluZGV4IGNlZDJmNzY3
-OWRkYi4uZjk2MTUxMDRkN2EzIDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZmlsZXN5c3Rl
-bXMvdWJpZnMucnN0Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy91Ymlmcy5yc3QK
-PiBAQCAtMTA1LDYgKzEwNSwxMCBAQCBhdXRoX2tleT0JCXNwZWNpZnkgdGhlIGtleSB1c2VkIGZv
-ciBhdXRoZW50aWNhdGluZyB0aGUgZmlsZXN5c3RlbS4KPiAgIGF1dGhfaGFzaF9uYW1lPQkJVGhl
-IGhhc2ggYWxnb3JpdGhtIHVzZWQgZm9yIGF1dGhlbnRpY2F0aW9uLiBVc2VkIGZvcgo+ICAgCQkJ
-Ym90aCBoYXNoaW5nIGFuZCBmb3IgY3JlYXRpbmcgSE1BQ3MuIFR5cGljYWwgdmFsdWVzCj4gICAJ
-CQlpbmNsdWRlICJzaGEyNTYiIG9yICJzaGE1MTIiCj4gK25vYWNsCQkJVGhpcyBvcHRpb24gZGlz
-YWJsZXMgUE9TSVggQWNjZXNzIENvbnRyb2wgTGlzdCBzdXBwb3J0LiBJZiBBQ0wgc3VwcG9ydAo+
-ICsJCQlpcyBlbmFibGVkIGluIHRoZSBrZXJuZWwgY29uZmlndXJhdGlvbiAoQ09ORklHX0VYVDRf
-RlNfUE9TSVhfQUNMKSwgQUNMCj4gKwkJCWlzIGVuYWJsZWQgYnkgZGVmYXVsdCBvbiBtb3VudC4g
-U2VlIHRoZSBhY2woNSkgbWFudWFsIHBhZ2UgZm9yIG1vcmUKPiArCQkJaW5mb3JtYXRpb24gYWJv
-dXQgYWNsLgpBbHNvIGFkZCBhY2wgZGVzY3JpcHRpb24/ClNwbGl0IGRvY3VtZW50YXRpb24gaW50
-byBhIG5ldyBwYXRjaD8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Rob,
+
+On Fri, 22 Mar 2024 at 02:39, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Mar 20, 2024 at 06:24:48PM +1300, Simon Glass wrote:
+> > Add three properties for controlling alignment of partitions, aka
+> > 'entries' in fixed-partition.
+> >
+> > For now there is no explicit mention of hierarchy, so a 'section' is
+> > just the 'fixed-partitions' node.
+> >
+> > These new properties are inputs to the Binman packaging process, but are
+> > also needed if the firmware is repacked, to ensure that alignment
+> > constraints are not violated. Therefore they are provided as part of
+> > the schema.
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > ---
+> >
+> > Changes in v9:
+> > - Move binding example to next batch to avoid build error
+> >
+> > Changes in v7:
+> > - Drop patch 'Add binman compatible'
+> > - Put the alignment properties into the fixed-partition binding
+> >
+> > Changes in v6:
+> > - Correct schema-validation errors missed due to older dt-schema
+> >   (enum fix and reg addition)
+> >
+> > Changes in v5:
+> > - Add value ranges
+> > - Consistently mention alignment must be power-of-2
+> > - Mention that alignment refers to bytes
+> >
+> > Changes in v2:
+> > - Fix 'a' typo in commit message
+> >
+> >  .../bindings/mtd/partitions/partition.yaml    | 51 +++++++++++++++++++
+> >  1 file changed, 51 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> > index 1ebe9e2347ea..39c7d7672783 100644
+> > --- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+> > @@ -57,6 +57,57 @@ properties:
+> >        user space from
+> >      type: boolean
+> >
+> > +  align:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 1
+>
+> Shouldn't this and the others be 2?
+
+It could be, but 1 means that there is no alignment and is a valid
+value. I don't mind changing it if you like.
+
+>
+> Otherwise,
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
