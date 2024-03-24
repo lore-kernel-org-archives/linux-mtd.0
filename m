@@ -4,75 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01598C54E58
-	for <linux-mtd@archiver.kernel.org>; Sat, 23 Mar 2024 21:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6639BC47DD9
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Mar 2024 12:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UQytDb59QeNFqSLrLAcEadBep/dDW502jNIMJ96C9Z4=; b=NVwGivYe5OogVx
-	YqYAcZK1ALA5ksL6mw55CnLnV7xFF2Zgp3qNxCnPf36ZrP+W2mQ7vrLqm+mrzTQFwGgqfDbXUupvf
-	xrAcuA728iBY1cvHNtbe1vxJKKOPy+Gh6NWM0gAF/QBBkzSQUyh1sxBR43SOOhS3IBBS8B8b9EOAa
-	Pf/MLSHuHRlfxZWUOWIXNHzYgy867bbfAgXgzHPZr6zhOJeBb58vxhdJ7SHAqkC5h7Xb3dWOsz8WR
-	suW3swraHcFZs6g6z92x/40hc3Zd3MSnZcTN2dY0QY6dMGNYBVRN9GxpFjqpv5C+lZeqZIcQkgQtR
-	dfqrbPg8CbIFes6vC8qg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iec/JFKYW///J8YGkYjubH6jfLvw4cOwvTjJ6bg61B8=; b=2LN+qopSw8iYY8
+	tKEh2hPIWjECI+jXjfD+nOi1ggdyZuJDetux/++IfNl+EQ+7+ynKCcrLCOx8Qgf4hchPBvf1bTjuQ
+	v8IcDZXGmVsdjPmunyht2RferEsqd+y6gH5RTv8wxOBHw3V3hZOcOMy/Es/OPS9WvO5n3XI3wRKF9
+	ailOd4PGLdNcvGQA9dtV26tKaStlvt1Yyy6bntyeWkwbUQpc+C0yPCeGpx47uUjdcy/d9R+iGNKDB
+	g4m3Pl04EXb6ZRK739JNxq8KrBVLS6ooinuVH2rUy0Fa99m1SXmUTipHTsaflnDNzgu+v+rszUSwp
+	+7UwCswiXUxoYYNyMruw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ro8fJ-0000000BBvc-1wy7;
-	Sat, 23 Mar 2024 21:12:33 +0000
-Received: from mail-yw1-x1130.google.com ([2607:f8b0:4864:20::1130])
+	id 1roMYx-0000000CV0j-2mTe;
+	Sun, 24 Mar 2024 12:02:55 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ro8fF-0000000BBtc-3z0Z
+	id 1roMYr-0000000CUvx-3cmw
 	for linux-mtd@lists.infradead.org;
-	Sat, 23 Mar 2024 21:12:31 +0000
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-611248b4805so16284647b3.0
-        for <linux-mtd@lists.infradead.org>; Sat, 23 Mar 2024 14:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711228343; x=1711833143; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Y3ciYm0VxZfrPijrgMTJyMdjg8ZrAzLnw8EK162/0c=;
-        b=DACDRrGYK1F/0AKUjsTfHHQz18Vr/6qtoOMR2NQmmS0Z4utX5E3H8PfJWXXuxqqRhI
-         jpkJs13/bJxJ+aTaGhiJBrrgQhIzIIRaDKJBAchnke4cCa6/JEzU/LZajRv7tbiXR0xx
-         TaYnPFmU9KAi/Oqy5+KppR1DoQFcq5DMM67GY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711228343; x=1711833143;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Y3ciYm0VxZfrPijrgMTJyMdjg8ZrAzLnw8EK162/0c=;
-        b=G7u+jLkO2JOzRGBjZWMIXb5Nh7bCvTLoYGRpUDWx5HyNYrEq1FBFojhVIi3s8fx9h3
-         GUdkU4CYdf2iFY6sl3aPM8ZzwPlwaXUSL+iMZqtUTZaP/dBS9eRUc47Yh166aZbCpK10
-         T7qZ1GwQ7plItvYg23fUGORlmnLsBgFpDvem3dge8BevU2sPPZ04uD2hgHSD0gqH66pv
-         VOJ2HT7us7BQ/BtlpNqbYYVln3GTsN06eGGPQsR/eJmRHPx3Rzujh4rAetgRzmlOWRWz
-         pNNdt1Y5KrhtBjpdc7JV1aJ6U/gzN0pO7yEh+TCTF9fnX1h3PsnypEqrmNBgzCnJZ1nd
-         wiNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWvkb5pPdudbad7hLrJQNSFX4oYi1FSkdF/Pdj90p74eZuM1rFJw8jXfV5XnPDXIhREqQ+L/U3/KvMt9F8CtbLp2XcjmIbR2KQheXOODg==
-X-Gm-Message-State: AOJu0YwkpLeB91uTJqRuhbxZjtmj2ssKm+3Mz5g5ibduuYd4JNmY02An
-	WNmSF+Bt7pKuWNqWOjqfmdDe0YaNCGt7Illpmtlwexr8cDjwOILV2zwtNRXZ7TvTuy7NfnPyG+m
-	uS8rx8buVKsUOrMJvS2ptWVvPw89bPuxKCWaE
-X-Google-Smtp-Source: AGHT+IEDJszqpW1tP+cv5jXC4Oabaq1P2MqF2oGnuJi80CpG95eHJKzJDW7qqZ8SP+4LnF8HV/fDKJZxwXd9lg8KfQI=
-X-Received: by 2002:a81:8404:0:b0:609:f898:9832 with SMTP id
- u4-20020a818404000000b00609f8989832mr2972227ywf.23.1711228343188; Sat, 23 Mar
- 2024 14:12:23 -0700 (PDT)
+	Sun, 24 Mar 2024 12:02:52 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V2ZQ44bs9z1xs6Y;
+	Sun, 24 Mar 2024 20:00:28 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id E11ED140381;
+	Sun, 24 Mar 2024 20:02:25 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemd200001.china.huawei.com
+ (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Sun, 24 Mar
+ 2024 20:02:25 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<ada@thorsis.com>, <error27@gmail.com>, <Artem.Bityutskiy@nokia.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>
+Subject: [PATCH] ubifs: fix incorrect UBIFS_DFS_DIR_LEN macro definition
+Date: Sun, 24 Mar 2024 20:03:33 +0800
+Message-ID: <20240324120333.3837837-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20240320052449.175786-1-sjg@chromium.org> <20240321133905.GA1622174-robh@kernel.org>
-In-Reply-To: <20240321133905.GA1622174-robh@kernel.org>
-From: Simon Glass <sjg@chromium.org>
-Date: Sun, 24 Mar 2024 10:12:12 +1300
-Message-ID: <CAFLszTg4UUhcs_oG=vq6ZuiyGfAGn015Usn58gYtGqKqLvNWUg@mail.gmail.com>
-Subject: Re: [PATCH v9 1/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	Michael Walle <mwalle@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240323_141230_125193_6D91F49C 
-X-CRM114-Status: GOOD (  25.28  )
+X-CRM114-CacheID: sfid-20240324_050250_541741_365B6F21 
+X-CRM114-Status: GOOD (  23.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,68 +70,153 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
+The UBIFS_DFS_DIR_LEN macro, which defines the maximum length of the UBIFS
+debugfs directory name, is incorrectly calculated. The current formula is
+(3 + 1 + 2*2 + 1), which assumes that both UBI device number and volume ID
+are limited to 2 characters. However, UBI device number ranges from 0 to
+37 (2 characters), and volume ID ranges from 0 to 127 (up to 3 characters).
 
-On Fri, 22 Mar 2024 at 02:39, Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Mar 20, 2024 at 06:24:48PM +1300, Simon Glass wrote:
-> > Add three properties for controlling alignment of partitions, aka
-> > 'entries' in fixed-partition.
-> >
-> > For now there is no explicit mention of hierarchy, so a 'section' is
-> > just the 'fixed-partitions' node.
-> >
-> > These new properties are inputs to the Binman packaging process, but are
-> > also needed if the firmware is repacked, to ensure that alignment
-> > constraints are not violated. Therefore they are provided as part of
-> > the schema.
-> >
-> > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > ---
-> >
-> > Changes in v9:
-> > - Move binding example to next batch to avoid build error
-> >
-> > Changes in v7:
-> > - Drop patch 'Add binman compatible'
-> > - Put the alignment properties into the fixed-partition binding
-> >
-> > Changes in v6:
-> > - Correct schema-validation errors missed due to older dt-schema
-> >   (enum fix and reg addition)
-> >
-> > Changes in v5:
-> > - Add value ranges
-> > - Consistently mention alignment must be power-of-2
-> > - Mention that alignment refers to bytes
-> >
-> > Changes in v2:
-> > - Fix 'a' typo in commit message
-> >
-> >  .../bindings/mtd/partitions/partition.yaml    | 51 +++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-> > index 1ebe9e2347ea..39c7d7672783 100644
-> > --- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-> > @@ -57,6 +57,57 @@ properties:
-> >        user space from
-> >      type: boolean
-> >
-> > +  align:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    minimum: 1
->
-> Shouldn't this and the others be 2?
+This incorrect definition leads to a buffer overflow issue when the device
+number is 31 and volume ID is 127, causing the dbg_debugfs_init_fs() function
+to return prematurely without creating debugfs directory in the stable branch
+linux-5.10.y.
 
-It could be, but 1 means that there is no alignment and is a valid
-value. I don't mind changing it if you like.
+A previous attempt to fix this issue in commit be076fdf8369 ("ubifs: fix
+snprintf() checking") by modifying the snprintf return value check range is
+insufficient. It avoids the premature function return but does not address
+the root cause of the problem. If the buffer length is inadequate, snprintf
+will truncate the output string, resulting in incorrect directory names
+during filesystem debugging.
 
->
-> Otherwise,
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
+The proper solution is to correct the UBIFS_DFS_DIR_LEN macro definition to
+(3 + 1 + 2 + 3 + 1), accommodating the maximum lengths of both UBI device
+number and volume ID, plus the separators and null terminator.
+
+Additionally, the original equality check for snprintf return value strictly
+adheres to the function definition. Although it may seem rigid, it is a good
+programming practice to prevent introducing subtle bugs.
+
+This patch makes the following changes:
+
+1. Corrects the UBIFS_DFS_DIR_LEN macro definition to (3 + 1 + 2 + 3 + 1).
+2. Updates the snprintf calls to use UBIFS_DFS_DIR_LEN instead of
+    UBIFS_DFS_DIR_LEN + 1.
+3. Modifies the error checks to compare against UBIFS_DFS_DIR_LEN using >=
+    instead of >.
+4. Removes the redundant UBIFS_DFS_DIR_LEN definition in ubifs.h.
+5. Updates the relevant comments to reflect the correct maximum length
+    calculation.
+
+With these changes, the buffer overflow issue is thoroughly resolved, and the
+code is made more robust and maintainable.
+
+Fixes: be076fdf8369 ("ubifs: fix snprintf() checking")
+Fixes: ae380ce04731 ("UBIFS: lessen the size of debugging info data structure")
+Fixes: 2a734bb8d502 ("UBI: use debugfs for the extra checks knobs")
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+---
+ drivers/mtd/ubi/debug.c | 4 ++--
+ drivers/mtd/ubi/ubi.h   | 2 +-
+ fs/ubifs/debug.c        | 4 ++--
+ fs/ubifs/debug.h        | 9 +++++----
+ fs/ubifs/ubifs.h        | 7 -------
+ 5 files changed, 10 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index d57f52bd2ff3..9ec3b8b6a0aa 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -598,9 +598,9 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+ 		return 0;
+ 
+-	n = snprintf(d->dfs_dir_name, UBI_DFS_DIR_LEN + 1, UBI_DFS_DIR_NAME,
++	n = snprintf(d->dfs_dir_name, UBI_DFS_DIR_LEN, UBI_DFS_DIR_NAME,
+ 		     ubi->ubi_num);
+-	if (n > UBI_DFS_DIR_LEN) {
++	if (n >= UBI_DFS_DIR_LEN) {
+ 		/* The array size is too small */
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 32009a24869e..da4e53ef5b0a 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -420,7 +420,7 @@ struct ubi_debug_info {
+ 	unsigned int power_cut_min;
+ 	unsigned int power_cut_max;
+ 	unsigned int emulate_failures;
+-	char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
++	char dfs_dir_name[UBI_DFS_DIR_LEN];
+ 	struct dentry *dfs_dir;
+ 	struct dentry *dfs_chk_gen;
+ 	struct dentry *dfs_chk_io;
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index ac77ac1fd73e..d91cec93d968 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2827,9 +2827,9 @@ void dbg_debugfs_init_fs(struct ubifs_info *c)
+ 	const char *fname;
+ 	struct ubifs_debug_info *d = c->dbg;
+ 
+-	n = snprintf(d->dfs_dir_name, UBIFS_DFS_DIR_LEN + 1, UBIFS_DFS_DIR_NAME,
++	n = snprintf(d->dfs_dir_name, UBIFS_DFS_DIR_LEN, UBIFS_DFS_DIR_NAME,
+ 		     c->vi.ubi_num, c->vi.vol_id);
+-	if (n > UBIFS_DFS_DIR_LEN) {
++	if (n >= UBIFS_DFS_DIR_LEN) {
+ 		/* The array size is too small */
+ 		return;
+ 	}
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index ed966108da80..bbcb2bf41f83 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -18,11 +18,12 @@ typedef int (*dbg_znode_callback)(struct ubifs_info *c,
+ 				  struct ubifs_znode *znode, void *priv);
+ 
+ /*
+- * The UBIFS debugfs directory name pattern and maximum name length (3 for "ubi"
+- * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
++ * The UBIFS sysfs directory name pattern and maximum name length (3 for "ubi"
++ * + 1 for "_" and 2 for UBI device numbers and 3 for volume number and 1 for
++ * the trailing zero byte.
+  */
+ #define UBIFS_DFS_DIR_NAME "ubi%d_%d"
+-#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
++#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2 + 3 + 1)
+ 
+ /**
+  * ubifs_debug_info - per-FS debugging information.
+@@ -103,7 +104,7 @@ struct ubifs_debug_info {
+ 	unsigned int chk_fs:1;
+ 	unsigned int tst_rcvry:1;
+ 
+-	char dfs_dir_name[UBIFS_DFS_DIR_LEN + 1];
++	char dfs_dir_name[UBIFS_DFS_DIR_LEN];
+ 	struct dentry *dfs_dir;
+ 	struct dentry *dfs_dump_lprops;
+ 	struct dentry *dfs_dump_budg;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 1f3ea879d93a..7b6be3fb4f62 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -157,13 +157,6 @@
+ #define UBIFS_HMAC_ARR_SZ 0
+ #endif
+ 
+-/*
+- * The UBIFS sysfs directory name pattern and maximum name length (3 for "ubi"
+- * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
+- */
+-#define UBIFS_DFS_DIR_NAME "ubi%d_%d"
+-#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
+-
+ /*
+  * Lockdep classes for UBIFS inode @ui_mutex.
+  */
+-- 
+2.31.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
