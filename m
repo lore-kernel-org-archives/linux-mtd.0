@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D159C54E64
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2024 09:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6E1FC54E64
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2024 09:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G1QD1JhELKUjC1yJWj7XSvZKtWNlmOS9xLZiul6IQNU=; b=hyKzAKrnosyQ1K
-	DLXnnV8y5Wg3H4A0Q6bou9JjkDZG6MSGLotntKCNjNXewGnla+5XSj3biCwTjl1Gazrl//je4wY/m
-	D829DOuRG0gmbtbqEWL9/Ogfsa6Rezk+InZkHHCQBIgkIV9QBfdN9B5RrJ+Wuy8/e3zF1ae3IaPlD
-	D2l2rLDGf1FIylOAn3IDTZ7H7tH5gjqbaX/oDP3GtDLsrC6BHg5dlXVZcAiLR1jiofhELfbPP7kk/
-	1DUHGuQw828L7R0fdYrQqJu74D05y9kM9QOoOrDtbne+dZhLBMJSdcNiTHKlSmLTydciTbOwsWsFs
-	ZkgHjaBnbzCWA69D8MzA==;
+	List-Owner; bh=uGM6VAyr/0oHyCE8MFJjH2n2ThLhRnASzPrUAWIkeFQ=; b=Hf2GaVJOVK108/
+	17X8+z3gyPhMHGaR3q9OV/sf7hKtYsw4mLVZDMlLYtk81Jjj1njgL8pBHKjzuzsCxe/SEoqUtTiED
+	cR5PIeLiDo4/mLtFLCzIaxOxbzpX80ByWE7ssNxFTjBZj+7w8V7BD6w0G3KX2ISyMuOaJliDhT+Vr
+	C931jZXnE43loREDMbB6QizjAMYXOlUYADkH3G4shhavCmB4/jcif0cKEf9ZWUiOJf7mVhIc3eZUA
+	0LFxGHNawgyJ95QO6YttqyMfZNP9Yl0JvlrooyhzuSAouJP1PruEwioOW6UAP8ZeLvDUo5ByUmT77
+	5YI8qpQclR6ZuORWlFGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rogUb-0000000GPgb-14zd;
-	Mon, 25 Mar 2024 09:19:45 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1roh7B-0000000Gb4o-10IH;
+	Mon, 25 Mar 2024 09:59:37 +0000
+Received: from mail.thorsis.com ([2003:a:e28:26e4::10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rogUT-0000000GPdH-0wXC
+	id 1roh79-0000000Gb1M-0Dnw
 	for linux-mtd@lists.infradead.org;
-	Mon, 25 Mar 2024 09:19:39 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E2A8FC000E;
-	Mon, 25 Mar 2024 09:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711358372;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qU3idiONxQ8MOsIGn2G3Z38vry1Zi7EOzhSXkBaZx3c=;
-	b=oQULipp7fpuoLENxFEYSzusTa1N+3RT+c29MLC61RSlUAX89wB4XuGe2h/91Is/HVsnDLe
-	1JB5u38X7Yt6TEYS3+2WbV7uIBIBTYaaRoNGULhdRvDjj/qUh3KqiS1WjXWYJAJlnPuQba
-	DvXrnZ1Ms9dX/jhDnqfFcCv8xtTg0ElkoUZEVRcittP8umfxjanofuuFPxuV3TyRlL8ANJ
-	ASwAvZRvzp53EHJkUTgng/7li2TTo46X+0nj41A3KvDP3ppm9qda7+0QExcXYoy8AJLKhy
-	2jj747yfAYmAv1ivg/v5IWzu2EsyLXRCXaQzGzOz9Q4BeZrEhKBQH6UIlHLPNA==
-Date: Mon, 25 Mar 2024 10:19:30 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Christian Marangi <ansuelsmth@gmail.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Sricharan
- Ramabadhran <quic_srichara@quicinc.com>, Md Sadre Alam
- <quic_mdalam@quicinc.com>, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: Fix broken misc_cmd_type in exec_op
-Message-ID: <20240325101930.13ed914d@xps-13>
-In-Reply-To: <20240322150510.GC3774@thinkpad>
-References: <20240320001141.16560-1-ansuelsmth@gmail.com>
-	<20240322150510.GC3774@thinkpad>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	Mon, 25 Mar 2024 09:59:36 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 472731484B07;
+	Mon, 25 Mar 2024 10:59:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=dkim;
+	t=1711360765; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=CamFrT0reqTDJ7jbhj/1NySGwvpXr3L1a1Ko18MM4wI=;
+	b=Xyi6vghXh4FTX8vYs+zIjiiogALaahRNb8Cc56dQkwsVwBkWneolgu3D9b5oH9WkpSzQSo
+	WlkfY/7V5NvgfWugGODt3oLdnWpkGXsKKOzcPKb2gpbi5PWrxFVzV3px1PM5VblbbZHiXy
+	8Hk4lwaZwyBFxjHTOA6uc4KVYr7tkdxbhRxsqwIfECkHQQfTKirrt3u7GoRo/BYM0wRl3h
+	YLzciLsQW+/zekSNbvuUzAg2fxwkUbvxkybccTsPHpN4GB/0LlUeWH1qpE0k9FFNhgjBz9
+	f0oilnIchjFMWGvTP4k1VzgolnqWYQ/7SuETD/SkMh81+GxqPdzsLXAfk1tqOg==
+Date: Mon, 25 Mar 2024 10:59:09 +0100
+From: Alexander Dahl <ada@thorsis.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Alexander Dahl <ada@thorsis.com>, linux-mtd@lists.infradead.org,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: mtd: nand: raw: Possible bug in nand_onfi_detect()?
+Message-ID: <20240325-dig-user-c4b9af6f8ea2@thorsis.com>
+Mail-Followup-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+References: <20240306-shaky-bunion-d28b65ea97d7@thorsis.com>
+ <20240306164831.29eed907@xps-13>
+ <20240307-pantry-deceit-78ce20f47899@thorsis.com>
+ <20240307181931.440c9c3f@xps-13>
+ <20240325100917.502c75b7@xps-13>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20240325100917.502c75b7@xps-13>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240325_021937_677426_A414B82C 
-X-CRM114-Status: GOOD (  16.67  )
+X-CRM114-CacheID: sfid-20240325_025935_355280_3E1EC25B 
+X-CRM114-Status: GOOD (  21.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,31 +73,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgptYW5pdmFubmFuLnNhZGhhc2l2YW1AbGluYXJvLm9yZyB3cm90ZSBvbiBGcmksIDIyIE1h
-ciAyMDI0IDIwOjM1OjEwCiswNTMwOgoKPiBPbiBXZWQsIE1hciAyMCwgMjAyNCBhdCAwMToxMToz
-OUFNICswMTAwLCBDaHJpc3RpYW4gTWFyYW5naSB3cm90ZToKPiA+IG1pc2NfY21kX3R5cGUgaW4g
-ZXhlY19vcCBoYXZlIG11bHRpcGxlIHByb2JsZW1zLiBXaXRoIGNvbW1pdCBhODI5OTBjOGE0MDkK
-PiA+ICgibXRkOiByYXduYW5kOiBxY29tOiBBZGQgcmVhZC9yZWFkX3N0YXJ0IG9wcyBpbiBleGVj
-X29wIHBhdGgiKSBpdCB3YXMKPiA+IHJld29ya2VkIGFuZCBnZW5lcmFsaXplZCBidXQgYWN0dWFs
-bHkgZHJvcHBlZCB0aGUgaGFuZGxpbmcgb2YgdGhlCj4gPiBSRVNFVF9ERVZJQ0UgY29tbWFuZC4K
-PiA+IAo+ID4gVGhlIHJld29yayBpdHNlbGYgd2FzIGNvcnJlY3Qgd2l0aCBzdXBwb3J0aW5nIGNh
-c2Ugd2hlcmUgYSBzaW5nbGUgbWlzYwo+ID4gY29tbWFuZCBpcyBoYW5kbGVkLCBidXQgYmVjYW1l
-IHByb2JsZW1hdGljIGJ5IHRoZSBhZGRpdGlvbiBvZiBleGl0aW5nCj4gPiBlYXJseSBpZiB3ZSBk
-aWRuJ3QgaGFkIGFuIEVSQVNFIG9yIGFuIE9QX1BST0dSQU1fUEFHRSBvcGVyYXRpb24uCj4gPiAK
-PiA+IEFsc28gYWRkaXRpb25hbCBsb2dpYyB3YXMgYWRkZWQgd2l0aG91dCBjbGVhciBleHBsYWlu
-YXRpb24gY2F1c2luZyB0aGUKPiA+IGVyYXNlIGNvbW1hbmQgdG8gYmUgYnJva2VuIG9uIHRlc3Rp
-bmcgaXQgb24gYSBpcHE4MDZ4IG5hbmRjLgo+ID4gICAKPiAKPiBJbnRlcmVzdGluZy4gSSBiZWxp
-ZXZlIEFsYW0gdGVzdGVkIHRoZSByZXdvcmsgb24gSVBRIHBsYXRmb3JtcyBhbmQgbm90IHN1cmUg
-aG93Cj4gaXQgZ290IG1pc3NlZC4KPiAKPiA+IEFkZCBzb21lIGFkZGl0aW9uYWwgbG9naWMgdG8g
-cmVzdG9yZSBSRVNFVF9ERVZJQ0UgY29tbWFuZCBoYW5kbGluZyBhbmQKPiA+IGZpeCBlcmFzZSBj
-b21tYW5kLgo+ID4gICAKPiAKPiBUaGlzIHNvdW5kcyBsaWtlIHR3byBpbmRlcGVuZGVudCBmaXhl
-cywgbm8/IFBsZWFzZSBzcGxpdCB0aGVtIGludG8gc2VwYXJhdGUKPiBwYXRjaGVzLgoKTWlnaHQg
-YmUgc3BsaXQgaW5kZWVkLiBAQ2hyaXN0aWFuLCBkbyB5b3UgcGxhbiBvbiBzZW5kaW5nIGEgdjI/
-CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hello Miqu=E8l,
+
+Am Mon, Mar 25, 2024 at 10:09:16AM +0100 schrieb Miquel Raynal:
+> Hello Alexander,
+> =
+
+> > > > > The condition is true and nand_change_read_column_op() returns wi=
+th
+> > > > > -EINVAL, because mtd->writesize and mtd->oobsize are not set yet =
+in
+> > > > > that code path.  Those are probably initialized later, maybe with
+> > > > > parameters read from that ONFI param page?
+> > > > > =
+
+> > > > > Returning with error from nand_change_read_column_op() leads to
+> > > > > jumping out of nand_onfi_detect() early, and no ONFI param page is
+> > > > > evaluated at all, although the second or third page could be inta=
+ct.
+> > > > > =
+
+> > > > > I guess this would also fail with any other reason for not matchi=
+ng
+> > > > > CRCs in the first page, but I have not faulty NAND flash chip to
+> > > > > confirm that.    =
+
+> > > > =
+
+> > > > Thanks for the whole report, it is interesting and should lead to f=
+ixes:
+> > > > - why does the controller refuses the datain op?    =
+
+> > > =
+
+> > > See above.
+> > >   =
+
+> > > > - why nand_soft_waitrdy is not enough?    =
+
+> > > =
+
+> > > I don't know.  That's one reason I asked here.
+> > >   =
+
+> > > > - changing the condition in nand_change_read_column_op()
+> > > > =
+
+> > > > Can you take care of these?    =
+
+> =
+
+> Now would be a perfect time to send these fixes. Could you work on them?
+
+I'm sorry, no not yet.  Have some more important work to do, which
+will take another one or two weeks before I can return to this
+problem.  Will have to wait, at least from my side.
+
+Greets
+Alex
+
+> =
+
+> Thanks!
+> Miqu=E8l
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
