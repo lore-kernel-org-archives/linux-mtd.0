@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C112C54E58
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2024 10:18:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DEE3C54E64
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2024 10:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CZ3dZZAhUZ8ztE5MGcFgAQvQumkycHzR4U9sFBwbFfU=; b=CSz1eaxlD7fxme
-	JGF0Zo7BTQT9akNTrvFgNi1znt+Kds7gPr6fdGyLHlSIEuVUPUlOIcOfvnNp6a3b8PccxHJAcS3BF
-	pUk00tcwn7YztPozilon5lWrmyxav3bnFuwxe4SlB9UMEqAC+zrOiQacQgSKEvEvhpe+U4mTprlRM
-	57VLdX0sVU+I1+r7LBNUuPmopBSDYsivqNyOqAySUjVeCgDefq1mHuA8dJn4b/0F1PZolYDrVRaxt
-	bylqcXhAO08nQeQFu3XF7klSyR+5ILrkZsvPldfCQRKLdBEhJTGPrlN+gfG6WAO8qwPj9hOFs3FMd
-	HiC1gS2Pko/bTUcSkUCw==;
+	List-Owner; bh=uLo5v9k3SmILNVJIHRIUbmo8TrGsd9KwM5WzS5NpwI8=; b=hq+ca769FLjN4t
+	IRvzunsP0nbXh/J5iJUzmHRaHDupADrHicFH9fRRInGwZ1ykK14XOlekJNS5pqnLAnWdD9IYyPNIC
+	Bjy01JpA7J0sPI74vrfSHlfq+idSWjfNNDEyHoh6t0dNQFU4HldyD0WLV4ylGWGqlqJYdv7GqBJCH
+	4PAIZxgleSv0gxWFrV4FDKEvI+2P7RWw2oeXYDrzy9/h0vUQwTbt/L7u1pSLOHalbvJ/mhrXZcIRi
+	nX4oY5FBc85MbAchJ6/dhXRSQVXSKPQnnNRNsJrtzWiD4oUXDZGPXXhHndGP1gY6r7lWyPPl9StFd
+	wYNTbHHeI8p3JTlOp5Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rohPp-0000000GhPx-3U1j;
-	Mon, 25 Mar 2024 10:18:53 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1rohPz-0000000GhWI-1LXO;
+	Mon, 25 Mar 2024 10:19:03 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rohPk-0000000GhLy-38Xk
-	for linux-mtd@lists.infradead.org;
-	Mon, 25 Mar 2024 10:18:51 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4291DFF80B;
-	Mon, 25 Mar 2024 10:18:42 +0000 (UTC)
+	id 1rohPp-0000000GhO3-0sxI;
+	Mon, 25 Mar 2024 10:18:55 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F607E0004;
+	Mon, 25 Mar 2024 10:18:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711361925;
+	t=1711361929;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+fYpIswoyUf/77da/e8+AFgNqj1S3IPZlB14Z5/zv28=;
-	b=KB7EBpxKVXlxzcEmFit9EC+eJ5OE/bihBkdkNq2JDR0EAJVSUxHL8GfrpQFud5eml2i1hz
-	P5D2K8GcVCi4EZGqr80eEzQYzti5+bghIa7WImvVgygqTTsqoj6ROWAidrHsH8tospjjl/
-	ZZ2A7IK5Sez6SE/R2Pde6umhnmIL6zGbxhna5SZWSr2HLL9FubKscdFw4SfZv0wPl5qTuy
-	XhGpY4gi2iG0G/ZKvVs6UyP39R2FDUHMbL5xW+yLOSFB2TdKDfSX+/AMUEMVvPQog0IRSc
-	OzPP/e8Oko9t9RfGi5KcsblxwKx1F/ovRUOL0uAseQGf6BzMcv1rNgwFiSwQ4Q==
+	bh=WbqeBpH+1QqX5M3BkHKBHii3KNtrStCGIe/gU4War+M=;
+	b=kg16ByBE+hTjI5M1VNC9tw5XGgrSRTyhUOsnX6FW+GRN5E8xg0DVVMdVUNxYKM+ZlZxDSX
+	ArfOPFUhppEDSpXnyZoEpeCfVZHHzLcyVuWtAZZsDkuMxCA3KQsSyzcNRg93ePpCqKRTdS
+	oz2UFUCRjBQlKmwQywTiO9rP1scFmZitYTxgIA8vta4fJs1+v3tEWM7d7fxmHYmZoCK8a9
+	jPEllFSh+USSEFdrM71O/lGUL7z5bmjWVIZHOUFVK3YsySEZw1XE+vOIeZVkM8csTZJV+j
+	XcIJeo9sf3d08eJ9PFDaJHG9sqSRRI3RhKY2TXqZQaeExGZfQYpwXoARcx9w0g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Denis Arefev <arefev@swemel.ru>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	trufanov@swemel.ru,
-	vfh@swemel.ru
-Subject: Re: [PATCH] mtd: partitions: redboot: Added conversion of operands to a larger type
-Date: Mon, 25 Mar 2024 11:18:42 +0100
-Message-Id: <20240325101842.262419-1-miquel.raynal@bootlin.com>
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: Add Samsung S5Pv210 OneNAND
+Date: Mon, 25 Mar 2024 11:18:47 +0100
+Message-Id: <20240325101847.262460-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240315093758.20790-1-arefev@swemel.ru>
+In-Reply-To: <20240313184317.18466-1-krzysztof.kozlowski@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'1162bc2f8f5de7da23d18aa4b7fbd4e93c369c50'
+X-linux-mtd-patch-commit: b'26729dbb53ac575635ef96ece0442165efa9613f'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240325_031850_076836_BCE6DF13 
-X-CRM114-Status: UNSURE (   7.02  )
+X-CRM114-CacheID: sfid-20240325_031853_649075_6CFD7594 
+X-CRM114-Status: UNSURE (   5.91  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,14 +84,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-03-15 at 09:37:58 UTC, Denis Arefev wrote:
-> The value of an arithmetic expression directory * master->erasesize is
-> subject to overflow due to a failure to cast operands to a larger data
-> type before perfroming arithmetic
+On Wed, 2024-03-13 at 18:43:17 UTC, Krzysztof Kozlowski wrote:
+> Document binding for Samsung S5Pv210 SoC OneNAND controller used already
+> in S5Pv210 DTS.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
