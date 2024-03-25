@@ -4,64 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6E1FC54E64
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2024 09:59:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27CEDC54E58
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Mar 2024 10:18:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uGM6VAyr/0oHyCE8MFJjH2n2ThLhRnASzPrUAWIkeFQ=; b=Hf2GaVJOVK108/
-	17X8+z3gyPhMHGaR3q9OV/sf7hKtYsw4mLVZDMlLYtk81Jjj1njgL8pBHKjzuzsCxe/SEoqUtTiED
-	cR5PIeLiDo4/mLtFLCzIaxOxbzpX80ByWE7ssNxFTjBZj+7w8V7BD6w0G3KX2ISyMuOaJliDhT+Vr
-	C931jZXnE43loREDMbB6QizjAMYXOlUYADkH3G4shhavCmB4/jcif0cKEf9ZWUiOJf7mVhIc3eZUA
-	0LFxGHNawgyJ95QO6YttqyMfZNP9Yl0JvlrooyhzuSAouJP1PruEwioOW6UAP8ZeLvDUo5ByUmT77
-	5YI8qpQclR6ZuORWlFGw==;
+	List-Owner; bh=zNrFOo7VQL55Gykj+1RExh8y381nVg+Q8F126WEa7HA=; b=rBTpzW4dAfmx7k
+	oo++U/AozI2mUizwnVEo7/0pL+sNs4ZMTYpQxQrDoIA/WdChbxPA+d2ddAj7dVMg6nMRnNF8J7Zwr
+	JtVMJOxrtVMAZdytemJXPVQTtfyTImxBJe4SCX+jZXkAJ9X6FRwBLHo26TDbOqR1pfOG3SOz60XAA
+	KT4UULXVNYzqnhzgXEnp43f6ntgN9DdZ3fj+ocXfvtzT9dejY68/qFxvm1Oti7/sjl9dggSTnaLz8
+	xIYQQmRjV6Sb+CPt97nGhstZTX0ZmiKo1Ny+ZYg+Cb4vc/UaBrCed2jPwEzmJutFI1phkg9/xyuZj
+	deh5A695Vv9nn8BJUtpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1roh7B-0000000Gb4o-10IH;
-	Mon, 25 Mar 2024 09:59:37 +0000
-Received: from mail.thorsis.com ([2003:a:e28:26e4::10])
+	id 1rohPf-0000000GhLD-3PRu;
+	Mon, 25 Mar 2024 10:18:43 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1roh79-0000000Gb1M-0Dnw
+	id 1rohPb-0000000GhK0-3WHM
 	for linux-mtd@lists.infradead.org;
-	Mon, 25 Mar 2024 09:59:36 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 472731484B07;
-	Mon, 25 Mar 2024 10:59:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=dkim;
-	t=1711360765; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=CamFrT0reqTDJ7jbhj/1NySGwvpXr3L1a1Ko18MM4wI=;
-	b=Xyi6vghXh4FTX8vYs+zIjiiogALaahRNb8Cc56dQkwsVwBkWneolgu3D9b5oH9WkpSzQSo
-	WlkfY/7V5NvgfWugGODt3oLdnWpkGXsKKOzcPKb2gpbi5PWrxFVzV3px1PM5VblbbZHiXy
-	8Hk4lwaZwyBFxjHTOA6uc4KVYr7tkdxbhRxsqwIfECkHQQfTKirrt3u7GoRo/BYM0wRl3h
-	YLzciLsQW+/zekSNbvuUzAg2fxwkUbvxkybccTsPHpN4GB/0LlUeWH1qpE0k9FFNhgjBz9
-	f0oilnIchjFMWGvTP4k1VzgolnqWYQ/7SuETD/SkMh81+GxqPdzsLXAfk1tqOg==
-Date: Mon, 25 Mar 2024 10:59:09 +0100
-From: Alexander Dahl <ada@thorsis.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Alexander Dahl <ada@thorsis.com>, linux-mtd@lists.infradead.org,
+	Mon, 25 Mar 2024 10:18:41 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D9BF7C000B;
+	Mon, 25 Mar 2024 10:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711361915;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fJ+47P+RHmGvxe+WTJ+sohpvSvUI9IclV23BMTd4mZ0=;
+	b=PU3gBbuG8C4gJV4/r2P6rGSYICdiI1h4uO21LKWuX9FS8pFhqRMDq9VQJTtIMAFLIS686l
+	5HsSs2x0RJA7Qwuo0e1XKpamWhn1+ZGoZByFQKM5rYpKp6CEbpVKIdlM2GzanGu8XZM8V/
+	+HGvVcaiMA9T0HyzkZDOePVFXFc8AlihHAfK1/IzHWNl3aqTBazNzO+vd/TqmBtJokbkFi
+	MlPwB404kD9sy32p1qXKcqdpkE6ZjLSg2jdEc/lu6aNK/+Y3fdK1RXDOmNfs9DAt6RryZm
+	EGWRoifHlLlIGgDg1sie1wazgVT/ghjYmMJHeiLCushsHl1IjtNSe2jDshzzyw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: Re: mtd: nand: raw: Possible bug in nand_onfi_detect()?
-Message-ID: <20240325-dig-user-c4b9af6f8ea2@thorsis.com>
-Mail-Followup-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-References: <20240306-shaky-bunion-d28b65ea97d7@thorsis.com>
- <20240306164831.29eed907@xps-13>
- <20240307-pantry-deceit-78ce20f47899@thorsis.com>
- <20240307181931.440c9c3f@xps-13>
- <20240325100917.502c75b7@xps-13>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	=?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Date: Mon, 25 Mar 2024 11:18:34 +0100
+Message-Id: <20240325101834.262354-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240322040951.16680-1-ansuelsmth@gmail.com>
+References: 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240325100917.502c75b7@xps-13>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Last-TLS-Session-Version: TLSv1.3
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'b0a53dc56c145b8b2c13b43eba2c9ef0507f9840'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240325_025935_355280_3E1EC25B 
-X-CRM114-Status: GOOD (  21.98  )
+X-CRM114-CacheID: sfid-20240325_031840_267334_776C3EFD 
+X-CRM114-Status: GOOD (  17.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,74 +78,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miqu=E8l,
+On Fri, 2024-03-22 at 04:09:49 UTC, Christian Marangi wrote:
+> MTD OTP logic is very fragile and can be problematic with some specific
+> kind of devices.
+> 
+> NVMEM across the years had various iteration on how Cells could be
+> declared in DT and MTD OTP probably was left behind and
+> add_legacy_fixed_of_cells was enabled without thinking of the consequences.
+> 
+> That option enables NVMEM to scan the provided of_node and treat each
+> child as a NVMEM Cell, this was to support legacy NVMEM implementation
+> and don't cause regression.
+> 
+> This is problematic if we have devices like Nand where the OTP is
+> triggered by setting a special mode in the flash. In this context real
+> partitions declared in the Nand node are registered as OTP Cells and
+> this cause probe fail with -EINVAL error.
+> 
+> This was never notice due to the fact that till now, no Nand supported
+> the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
+> access for MX30LFxG18AC") this changed and coincidentally this Nand is
+> used on an FritzBox 7530 supported on OpenWrt.
+> 
+> Alternative and more robust way to declare OTP Cells are already
+> prossible by using the fixed-layout node or by declaring a child node
+> with the compatible set to "otp-user" or "otp-factory".
+> 
+> To fix this and limit any regression with other MTD that makes use of
+> declaring OTP as direct child of the dev node, disable
+> add_legacy_fixed_of_cells if we detect the MTD type is Nand.
+> 
+> With the following logic, the OTP NVMEM entry is correctly created with
+> no Cells and the MTD Nand is correctly probed and partitions are
+> correctly exposed.
+> 
+> Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old syntax fixed OF cells")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-Am Mon, Mar 25, 2024 at 10:09:16AM +0100 schrieb Miquel Raynal:
-> Hello Alexander,
-> =
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
-> > > > > The condition is true and nand_change_read_column_op() returns wi=
-th
-> > > > > -EINVAL, because mtd->writesize and mtd->oobsize are not set yet =
-in
-> > > > > that code path.  Those are probably initialized later, maybe with
-> > > > > parameters read from that ONFI param page?
-> > > > > =
-
-> > > > > Returning with error from nand_change_read_column_op() leads to
-> > > > > jumping out of nand_onfi_detect() early, and no ONFI param page is
-> > > > > evaluated at all, although the second or third page could be inta=
-ct.
-> > > > > =
-
-> > > > > I guess this would also fail with any other reason for not matchi=
-ng
-> > > > > CRCs in the first page, but I have not faulty NAND flash chip to
-> > > > > confirm that.    =
-
-> > > > =
-
-> > > > Thanks for the whole report, it is interesting and should lead to f=
-ixes:
-> > > > - why does the controller refuses the datain op?    =
-
-> > > =
-
-> > > See above.
-> > >   =
-
-> > > > - why nand_soft_waitrdy is not enough?    =
-
-> > > =
-
-> > > I don't know.  That's one reason I asked here.
-> > >   =
-
-> > > > - changing the condition in nand_change_read_column_op()
-> > > > =
-
-> > > > Can you take care of these?    =
-
-> =
-
-> Now would be a perfect time to send these fixes. Could you work on them?
-
-I'm sorry, no not yet.  Have some more important work to do, which
-will take another one or two weeks before I can return to this
-problem.  Will have to wait, at least from my side.
-
-Greets
-Alex
-
-> =
-
-> Thanks!
-> Miqu=E8l
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
