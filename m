@@ -4,78 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C814ECD1280
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2024 09:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6ACEC6FD1F
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Mar 2024 10:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VrYqHXECHJLjr7uqNMhkA2Sq6dOQnzTagcZPsEsPQGc=; b=a5pNRw85viSjlB
-	LqKY7ZyBdd1b/WAxsG6IldhVQBNaQ2KpFZefiirmpUwnGZ7PVODH2Ow4aIemWpFzZCh8e9M6qHkKM
-	b6x3jUFH3J6/0PMMeFoOeclbETL88RiWikVFtuXHWyDJnZLWzmni+WN5cs6+b3r2e+azGrQTTk6aw
-	pC6Wix4Wg9BDwPLfArQWPybtYdjn99OrQqcM4B1xg9B1rK+JqjMs0d3HyqzyiA9x/+/bExlRFF//8
-	6Bt4FX53TYquTlAxhBfqIBMlpES5kv0EefWnMaSHDnsNNyh3UbFhoN+Kan0SgEIYk3Kj4R7kv9i33
-	UuQaAPLstDMuWhnPJhlg==;
+	List-Owner; bh=mMgjgXCSVtfLy4vD0Q13d5EtLKv7z/ZPEcNQCqO8VDU=; b=N+YxC0OpBT5mka
+	nPR3cj4XPZi6QhkPboQoeFgdEomRyBJQ5MjgA4uOZO1fLCMANILwkEtC90XKtPsZ18QYMsScmCjwA
+	TXXYlZJrY54wj5hv9vSk/RS5ZYYBDLUvgYSpfivvx+hROsxCmBMPAY4ZVrHqZhBsVYD+RnAvHIB+c
+	qpxUPpXQLz2txKJ3LzXfhtUQBCmERWujOw4J0+r42f+pxJ+u+grjpf+O9zJ41T9eszX4Halyjj8Wk
+	oZo/N80ZKuoTAOssXtf/3R76VEL8pX9Yx1M4CmbaBF1+f6n2PS/3bCuKQqO94l1Q82CognAixa0k0
+	m4N9GSGKrzod2bhgL5Ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp2zO-00000003mtb-0Y5m;
-	Tue, 26 Mar 2024 09:21:02 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rp3iR-00000003xNd-2hYv;
+	Tue, 26 Mar 2024 10:07:35 +0000
+Received: from flow2-smtp.messagingengine.com ([103.168.172.137])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp2z6-00000003mk7-3PTQ
-	for linux-mtd@lists.infradead.org;
-	Tue, 26 Mar 2024 09:20:48 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B802C612F2;
-	Tue, 26 Mar 2024 09:20:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 02E99C433C7;
-	Tue, 26 Mar 2024 09:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711444842;
-	bh=xLXssePJaiQf3nWd7+yYKdHgW8yDiYvcVqY/wx22wok=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=dWnGmt32YLmdeNgmERFOALcPIxNbB65iKm6mixEpZYhEFppbzNNHfLpinNpUTWe5Y
-	 EIFgGV0OuA79yZr2eKHn2RfrIIrkcgdmrtAbGi55m9aEz7LQHnKQjZ7X59DsYSICI6
-	 i2DPXRppggdOczFpBIPLWbPoSnCuDaPTm6P2JdJtNqDmU9UzD0d5GY20EVStWef8Af
-	 bPED71/uVGxJDIU4h3ZBCU55oe1hZxTVg5pWWRmxHJ0I9hxl8PTdLnxfOIR4nw4ioJ
-	 KbGSE+MDBhcTN5Y1K42yq9WnWM/3Gn97sia0IZJFDqLsOwIXKmMRp/lEq8Aq2NNE4R
-	 A+ZovcA8SAfWg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E24FECD1283;
-	Tue, 26 Mar 2024 09:20:41 +0000 (UTC)
-From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Tue, 26 Mar 2024 12:18:46 +0300
-Subject: [PATCH v9 19/38] mtd: rawnand: add support for ts72xx
+	id 1rp3iM-00000003xK2-48cZ;
+	Tue, 26 Mar 2024 10:07:32 +0000
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 19AEF20063A;
+	Tue, 26 Mar 2024 06:07:29 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 26 Mar 2024 06:07:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1711447649; x=1711454849; bh=LwutBSd20d
+	Y9F2mV05mJEYeO4BD3EduCXGrjUsQ79Ro=; b=PJFRJLskOPk2rK+iB7VvkPPP1e
+	SLERW5kzTADhItQdrbiFv7tHcH459/NpFcy9PVmm2d3OMZxaeh4ysJYYP5cZf3qj
+	6kjIVklsQy+lvoygejE+/OdIqRnqn7vhNuUyKcCouDezDB2zrzbQAcrOcG5wRx1Q
+	/hyrVAIthJ3IcKcUv70qLinqbc0/cuSq+lRcpEVPspAtrLBo049R/SlUmMrbdiGs
+	TArsa7RG1X/FxCSiLg57bN6iu/mWAPJTP7y/4UxfORaC+BlRTRVj1SlffpoHl5qi
+	pgcEbeW0r+BWpFJHnJbm98mW6OQYQt+6RUbF3F8dlyhbgvQAD4/6+EMJOgig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711447649; x=1711454849; bh=LwutBSd20dY9F2mV05mJEYeO4BD3
+	EduCXGrjUsQ79Ro=; b=DvF0P3czs1dT3R3uZ4D9WNdJ2Jvy5Q/+5INgRPqZyxK+
+	hkqBV3aCiIN+QgTQEUKV5qtqUGvod8DLhb4bQ4i/xDPexgDy/LVf/8n/SJG7rush
+	XEBrOGiQWpazHs9g1aNsGBmL9W7WKcnYtFoJnaylqiK3kyAaruyJHAEbhDFJEixz
+	5C4r3h9JlVJuv4pfz8arK6cd1bEtQT3q/wE5BJms9/xT6Cqp7CF1eewQzWbLj6CQ
+	kT+x1WrKGo7OqATRWp5uF+DNlqL9lnGL1Sxa/z3LB3DLbhM/+QCE+v7JbE1GfhI2
+	32FgJGmKdK/NrXqToufcvz/D0yB1o1nZjODsft/Oig==
+X-ME-Sender: <xms:X54CZuxNGYqpCrTpdkoMeYu7QHep-DtABIoilrdxkHD3sWQYbCebew>
+    <xme:X54CZqRRTk4BO6C0XUl_JYlUMa3bpBBaMeXDG4sLQi4OS4DrIkLZzvu8UfG_OQaS1
+    B-Yn9ExIQl6NTvvdyM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:X54CZgVzQidMIFZ5N9JpoYFGxrVx7337JziEMcVKsZMuJH165E0AZA>
+    <xmx:X54CZkjjIA4yhyjXlr5VojHurih3Ujo9_CVAICaJW8Ost8Vl5nVLqA>
+    <xmx:X54CZgA618J6_VWBxFs5t0RmjT9d4r6JLbi7Tkm1KxTbcEZMnccM0Q>
+    <xmx:X54CZlJOpkzdS_UtGHyqZuzem8YjLstkDNB3SMS9OX5-aGoBVoQ36w>
+    <xmx:YZ4CZvfWf4jPj0Z4AOpwXEiirjZXkASxh6SPn7mRGqleIMTKC6GJcUpzF9w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 717EEB6008D; Tue, 26 Mar 2024 06:07:27 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-328-gc998c829b7-fm-20240325.002-gc998c829
 MIME-Version: 1.0
-Message-Id: <20240326-ep93xx-v9-19-156e2ae5dfc8@maquefel.me>
-References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
+Message-Id: <66e1da99-5cf4-4506-b0bf-4bdf04959f41@app.fastmail.com>
 In-Reply-To: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
- Nikita Shubin <nikita.shubin@maquefel.me>, 
- Christophe Kerello <christophe.kerello@foss.st.com>, 
- Chris Packham <chris.packham@alliedtelesis.co.nz>, 
- Johan Jonker <jbx6244@gmail.com>
-Cc: Daniel Golle <daniel@makrotopia.org>, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
-X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711444837; l=8042;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=HVE3SdBS2+n0q9LVXiySqSz0+0Be2JSY+pWAYbvzc1g=;
- b=gUsrLjKFHn3EhvKvW2WwQmhf3LMkkLAOjgNEhvevz8NUKCLAQxFD4WBu9Xa8o/zfzCKBnSiTQnKn
- xWtDsKZ9C1msCPBIS+atQQJTkWf6eAq0Sa/2321ZE7r8Z6Sp89KT
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
- with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
+Date: Tue, 26 Mar 2024 11:07:06 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Nikita Shubin" <nikita.shubin@maquefel.me>,
+ "Hartley Sweeten" <hsweeten@visionengravers.com>,
+ "Alexander Sverdlin" <alexander.sverdlin@gmail.com>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Lukasz Majewski" <lukma@denx.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>,
+ "Bartosz Golaszewski" <brgl@bgdev.pl>,
+ "Andy Shevchenko" <andy@kernel.org>,
+ "Michael Turquette" <mturquette@baylibre.com>,
+ "Stephen Boyd" <sboyd@kernel.org>, "Sebastian Reichel" <sre@kernel.org>,
+ "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+ "Conor Dooley" <conor+dt@kernel.org>, "Vinod Koul" <vkoul@kernel.org>,
+ "Wim Van Sebroeck" <wim@linux-watchdog.org>,
+ "Guenter Roeck" <linux@roeck-us.net>,
+ "Thierry Reding" <thierry.reding@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ "Mark Brown" <broonie@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Damien Le Moal" <dlemoal@kernel.org>,
+ "Sergey Shtylyov" <s.shtylyov@omp.ru>,
+ "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+ "Liam Girdwood" <lgirdwood@gmail.com>,
+ "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>,
+ "Ralf Baechle" <ralf@linux-mips.org>, "Aaron Wu" <Aaron.Wu@analog.com>,
+ "Lee Jones" <lee@kernel.org>, "Olof Johansson" <olof@lixom.net>,
+ "Niklas Cassel" <cassel@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
+ devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-spi@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-sound@vger.kernel.org,
+ "Bartosz Golaszewski" <bartosz.golaszewski@linaro.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+ "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ "Andrew Lunn" <andrew@lunn.ch>, "Andy Shevchenko" <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v9 00/38] ep93xx device tree conversion
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240326_022045_622162_C37B9B00 
-X-CRM114-Status: GOOD (  23.88  )
+X-CRM114-CacheID: sfid-20240326_030731_164611_E19EDB69 
+X-CRM114-Status: GOOD (  16.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,286 +139,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: nikita.shubin@maquefel.me
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Tue, Mar 26, 2024, at 10:18, Nikita Shubin via B4 Relay wrote:
+> The goal is to recieve ACKs for all patches in series to merge it via 
+> Arnd branch.
 
-Technologic Systems has it's own nand controller implementation in CPLD.
+Thank you for the continued updates, I really hope we can merge
+it all for 6.10. I've looked through it again and I'm pretty much
+ready to just merge it, though I admit that the process is not
+working out that great, and it would probably have been quicker
+to add DT support to drivers individually through the subsystem
+trees.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- drivers/mtd/nand/raw/Kconfig                       |   6 +
- drivers/mtd/nand/raw/Makefile                      |   1 +
- drivers/mtd/nand/raw/technologic-nand-controller.c | 222 +++++++++++++++++++++
- 3 files changed, 229 insertions(+)
+> Stephen Boyd, Vinod Koul PLEASE! give some comments on following, couse 
+> i hadn't one for a couple of iterations already:
+>
+> Following patches require attention from Stephen Boyd, as they were 
+> converted to aux_dev as suggested:
+>
+> - ARM: ep93xx: add regmap aux_dev
+> - clk: ep93xx: add DT support for Cirrus EP93xx
+>
+> Following patches require attention from Vinod Koul:
+>
+> - dma: cirrus: Convert to DT for Cirrus EP93xx
+> - dma: cirrus: remove platform code
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index cbf8ae85e1ae..5a51b835f6b6 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -449,6 +449,12 @@ config MTD_NAND_RENESAS
- 	  Enables support for the NAND controller found on Renesas R-Car
- 	  Gen3 and RZ/N1 SoC families.
- 
-+config MTD_NAND_TS72XX
-+	tristate "ts72xx NAND controller"
-+	depends on ARCH_EP93XX && HAS_IOMEM
-+	help
-+	  Enables support for NAND controller on ts72xx SBCs.
-+
- comment "Misc"
- 
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 25120a4afada..d0b0e6b83568 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
- obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
- obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
- obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
-+obj-$(CONFIG_MTD_NAND_TS72XX)           += technologic-nand-controller.o
- obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
-diff --git a/drivers/mtd/nand/raw/technologic-nand-controller.c b/drivers/mtd/nand/raw/technologic-nand-controller.c
-new file mode 100644
-index 000000000000..0e45a6fd91dd
---- /dev/null
-+++ b/drivers/mtd/nand/raw/technologic-nand-controller.c
-@@ -0,0 +1,222 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Technologic Systems TS72xx NAND controller driver
-+ *
-+ * Copyright (C) 2023 Nikita Shubin <nikita.shubin@maquefel.me>
-+ *
-+ * Derived from: plat_nand.c
-+ *  Author: Vitaly Wool <vitalywool@gmail.com>
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/platnand.h>
-+
-+#define TS72XX_NAND_CONTROL_ADDR_LINE	BIT(22)	/* 0xN0400000 */
-+#define TS72XX_NAND_BUSY_ADDR_LINE	BIT(23)	/* 0xN0800000 */
-+
-+#define TS72XX_NAND_ALE			BIT(0)
-+#define TS72XX_NAND_CLE			BIT(1)
-+#define TS72XX_NAND_NCE			BIT(2)
-+
-+#define TS72XX_NAND_CTRL_CLE		(TS72XX_NAND_NCE | TS72XX_NAND_CLE)
-+#define TS72XX_NAND_CTRL_ALE		(TS72XX_NAND_NCE | TS72XX_NAND_ALE)
-+
-+struct ts72xx_nand_data {
-+	struct nand_controller	controller;
-+	struct nand_chip	chip;
-+	void __iomem		*base;
-+	void __iomem		*ctrl;
-+	void __iomem		*busy;
-+};
-+
-+static inline struct ts72xx_nand_data *chip_to_ts72xx(struct nand_chip *chip)
-+{
-+	return container_of(chip, struct ts72xx_nand_data, chip);
-+}
-+
-+static int ts72xx_nand_attach_chip(struct nand_chip *chip)
-+{
-+	switch (chip->ecc.engine_type) {
-+	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-+		return -EINVAL;
-+	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-+			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		fallthrough;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static void ts72xx_nand_ctrl(struct nand_chip *chip, u8 value)
-+{
-+	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
-+	unsigned char bits = ioread8(data->ctrl) & ~GENMASK(2, 0);
-+
-+	iowrite8(bits | value, data->ctrl);
-+}
-+
-+static int ts72xx_nand_exec_instr(struct nand_chip *chip,
-+				const struct nand_op_instr *instr)
-+{
-+	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
-+	unsigned int timeout_us;
-+	u32 status;
-+	int ret;
-+
-+	switch (instr->type) {
-+	case NAND_OP_CMD_INSTR:
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_CLE);
-+		iowrite8(instr->ctx.cmd.opcode, data->base);
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
-+		break;
-+
-+	case NAND_OP_ADDR_INSTR:
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_ALE);
-+		iowrite8_rep(data->base, instr->ctx.addr.addrs, instr->ctx.addr.naddrs);
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
-+		break;
-+
-+	case NAND_OP_DATA_IN_INSTR:
-+		ioread8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+
-+	case NAND_OP_DATA_OUT_INSTR:
-+		iowrite8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+
-+	case NAND_OP_WAITRDY_INSTR:
-+		timeout_us = instr->ctx.waitrdy.timeout_ms * 1000;
-+		ret = readb_poll_timeout(data->busy, status, status & BIT(5), 0, timeout_us);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	}
-+
-+	if (instr->delay_ns)
-+		ndelay(instr->delay_ns);
-+
-+	return 0;
-+}
-+
-+static int ts72xx_nand_exec_op(struct nand_chip *chip,
-+			       const struct nand_operation *op, bool check_only)
-+{
-+	unsigned int i;
-+	int ret;
-+
-+	if (check_only)
-+		return 0;
-+
-+	for (i = 0; i < op->ninstrs; i++) {
-+		ret = ts72xx_nand_exec_instr(chip, &op->instrs[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_controller_ops ts72xx_nand_ops = {
-+	.attach_chip = ts72xx_nand_attach_chip,
-+	.exec_op = ts72xx_nand_exec_op,
-+};
-+
-+static int ts72xx_nand_probe(struct platform_device *pdev)
-+{
-+	struct ts72xx_nand_data *data;
-+	struct fwnode_handle *child;
-+	struct mtd_info *mtd;
-+	int err;
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	nand_controller_init(&data->controller);
-+	data->controller.ops = &ts72xx_nand_ops;
-+	data->chip.controller = &data->controller;
-+
-+	data->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(data->base))
-+		return PTR_ERR(data->base);
-+	data->ctrl = data->base + TS72XX_NAND_CONTROL_ADDR_LINE;
-+	data->busy = data->base + TS72XX_NAND_BUSY_ADDR_LINE;
-+
-+	child = fwnode_get_next_child_node(dev_fwnode(&pdev->dev), NULL);
-+	if (!child)
-+		return dev_err_probe(&pdev->dev, -ENXIO,
-+				"ts72xx controller node should have exactly one child\n");
-+
-+	nand_set_flash_node(&data->chip, to_of_node(child));
-+	mtd = nand_to_mtd(&data->chip);
-+	mtd->dev.parent = &pdev->dev;
-+	platform_set_drvdata(pdev, data);
-+
-+	/*
-+	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-+	 * Set ->engine_type before registering the NAND devices in order to
-+	 * provide a driver specific default value.
-+	 */
-+	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-+
-+	/* Scan to find existence of the device */
-+	err = nand_scan(&data->chip, 1);
-+	if (err)
-+		goto err_handle_put;
-+
-+	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	if (err)
-+		goto err_clean_nand;
-+
-+	return 0;
-+
-+err_clean_nand:
-+	nand_cleanup(&data->chip);
-+err_handle_put:
-+	fwnode_handle_put(child);
-+	return err;
-+}
-+
-+static void ts72xx_nand_remove(struct platform_device *pdev)
-+{
-+	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
-+	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
-+	struct nand_chip *chip = &data->chip;
-+	int ret;
-+
-+	ret = mtd_device_unregister(nand_to_mtd(chip));
-+	WARN_ON(ret);
-+	nand_cleanup(chip);
-+	fwnode_handle_put(fwnode);
-+}
-+
-+static const struct of_device_id ts72xx_id_table[] = {
-+	{ .compatible = "technologic,ts7200-nand" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ts72xx_id_table);
-+
-+static struct platform_driver ts72xx_nand_driver = {
-+	.driver = {
-+		.name = "ts72xx-nand",
-+		.of_match_table = ts72xx_id_table,
-+	},
-+	.probe = ts72xx_nand_probe,
-+	.remove_new = ts72xx_nand_remove,
-+};
-+module_platform_driver(ts72xx_nand_driver);
-+
-+MODULE_AUTHOR("Nikita Shubin <nikita.shubin@maquefel.me>");
-+MODULE_DESCRIPTION("Technologic Systems TS72xx NAND controller driver");
-+MODULE_LICENSE("GPL");
+I suspect that Stephen and Vinod may be missing this, as reviewing
+a 38 patch series tends to be a lot of work, and they may have
+missed that they are on the critical path here. I certainly
+tend to just ignore an entire thread when it looks like I'm not
+immediately going to be reviewing it all and other people are
+likely to have more comments first, so I'm not blaming them.
 
--- 
-2.41.0
+To better catch their attention, I would suggest you repost the
+two smaller sets of patches as a separate series, with only the
+relevant people on Cc. Please also include the respective
+bindings when you send send these patches to Stephen and
+Vinod.
 
-
+      Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
