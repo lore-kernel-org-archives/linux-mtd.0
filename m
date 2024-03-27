@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF214C47DD9
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 21:53:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7908CC47DD9
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 22:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B2L0s564uIo8RAqPZuTyKcZInMAS0xA+nM7sIb+HS68=; b=RJ7x9BgJgTjy76
-	rRU3ArwYkeEtK67jJrSStf1UpEkoUuY2pBLpbDeAbrSfo9LoL5EaKTASh2aFPeY15XQPAfK4KpGoA
-	tewV0WKDvmPqlr24bzjI0TvX65ety86kzEABS5v49U8eAUsW72Fq0pAoHnJx2lWWUYdobJRGnz9Y/
-	Y4ym3tFPrR5SzvXhmjHys3JSu2ono4cY/A+gzFhWgIu8S10L3m1kQmDESeLisJYNShd/l4MV7vuux
-	pZUGw7HtAUK2vXoLh6A8sz2zsdDvsGmBQ6wAkHrub1hQQJXbT++3kM8UjCcul9D496sSdaCK1Hren
-	d6GCnKgCr/qv5VAK1tkg==;
+	List-Owner; bh=utWdUFqg8ID0FiBUqS2rMiivQHsbQZKC5QTYUHqxurk=; b=09kAGkwJrgFsJd
+	QFF0+FpqVT5CRC/nJoA4YEymwZSF3rzcS8ay6g7zxNgjXLmYt2JASX/XKuQYJXzffBqs5LuiCCpPy
+	MTcoGg5hvVAp4iD/RvC8WdILvVgJCJerHtW26e2DAdRIyfmI2ltDcE00G748vpcc00erQ1HVCyoOi
+	zURN48N/QzBPSIOOAZdeqg+NBXMKo6glcR563LIEc/c35o1pRo0xIQUbJTY78U9k+e54d6ACyaSb8
+	XorSBXbTqIqvhLncjYSqZoMh2MTY042cHNUwA7kb8hGH4zWN9YHmnNPTn7Pykzp12UxDHAQHMxmRV
+	pePcWCIajXQu5PbPvhcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpbD0-0000000BJ6Z-2x7Z;
-	Wed, 27 Mar 2024 21:53:22 +0000
-Received: from 14.mo583.mail-out.ovh.net ([188.165.51.82])
+	id 1rpbYB-0000000BNTa-1trf;
+	Wed, 27 Mar 2024 22:15:15 +0000
+Received: from 16.mo581.mail-out.ovh.net ([46.105.72.216])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpbCw-0000000BJ5M-1ohT
+	id 1rpbY7-0000000BNSA-1TUM
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Mar 2024 21:53:20 +0000
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.109.148.126])
-	by mo583.mail-out.ovh.net (Postfix) with ESMTP id 4V4gQc6sdNz1Ckh
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2024 21:53:12 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-fsmdr (unknown [10.110.168.247])
-	by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 63E7A1FD49;
-	Wed, 27 Mar 2024 21:53:09 +0000 (UTC)
-Received: from milecki.pl ([37.59.142.95])
-	by ghost-submission-6684bf9d7b-fsmdr with ESMTPSA
-	id WN4WFEWVBGbp2AUAQbJ/Pw
-	(envelope-from <rafal@milecki.pl>); Wed, 27 Mar 2024 21:53:09 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-95G00185960c84-105b-4035-9ca6-df95b4d75bca,
+	Wed, 27 Mar 2024 22:15:13 +0000
+Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.17.147])
+	by mo581.mail-out.ovh.net (Postfix) with ESMTP id 4V4gvv2qnfz19l7
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2024 22:15:07 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-xfkn4 (unknown [10.110.178.52])
+	by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id E1CF91FD2C;
+	Wed, 27 Mar 2024 22:15:03 +0000 (UTC)
+Received: from milecki.pl ([37.59.142.107])
+	by ghost-submission-6684bf9d7b-xfkn4 with ESMTPSA
+	id gjE7MWeaBGY6QxIAbVqslg
+	(envelope-from <rafal@milecki.pl>); Wed, 27 Mar 2024 22:15:03 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-107S0012491a7f4-335c-4194-8bbd-5f1ada98fd90,
                     AD8588E3BB83D84E59DEA8CE8674EAB20989D6B2) smtp.auth=rafal@milecki.pl
 X-OVh-ClientIp: 31.11.218.106
-Message-ID: <b02dd24b-9e67-4ba7-973e-4c2b180eb56a@milecki.pl>
-Date: Wed, 27 Mar 2024 22:53:07 +0100
+Message-ID: <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
+Date: Wed, 27 Mar 2024 23:15:02 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+Content-Language: en-US
+To: Christian Marangi <ansuelsmth@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jernej Skrabec <jernej.skrabec@gmail.com>,
  Claudiu Beznea <claudiu.beznea@tuxon.dev>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
 References: <20240322040951.16680-1-ansuelsmth@gmail.com>
- <44a377b11208ff33045f12f260b667dd@milecki.pl>
- <66042f0a.050a0220.374bd.5e4a@mx.google.com>
-Content-Language: en-US
 From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-In-Reply-To: <66042f0a.050a0220.374bd.5e4a@mx.google.com>
-X-Ovh-Tracer-Id: 10756847710028540729
+In-Reply-To: <20240322040951.16680-1-ansuelsmth@gmail.com>
+X-Ovh-Tracer-Id: 11126987304968301369
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgudeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepteetfeejjeeghfeikeevleevkeehtdeghffguddthefhgffgveduheetveejueetnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqmhhtugeslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdpoffvtefjohhsthepmhhoheekfedpmhhouggvpehsmhhtphhouhht
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepgeekvdfgleeuteeludfghfduvdffjeekhfehteefvefggeelheeludeuiedvueejnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipdefjedrheelrddugedvrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehkedupdhmohguvgepshhmthhpohhuth
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240327_145318_804240_A7EF2DB6 
-X-CRM114-Status: GOOD (  19.00  )
+X-CRM114-CacheID: sfid-20240327_151511_724354_9667398F 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,89 +76,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyNy4wMy4yMDI0IDE1OjM2LCBDaHJpc3RpYW4gTWFyYW5naSB3cm90ZToKPiBPbiBXZWQs
-IE1hciAyNywgMjAyNCBhdCAwMzoyNjo1NVBNICswMTAwLCBSYWZhxYIgTWnFgmVja2kgd3JvdGU6
-Cj4+IE9uIDIwMjQtMDMtMjIgMDU6MDksIENocmlzdGlhbiBNYXJhbmdpIHdyb3RlOgo+Pj4gTVRE
-IE9UUCBsb2dpYyBpcyB2ZXJ5IGZyYWdpbGUgYW5kIGNhbiBiZSBwcm9ibGVtYXRpYyB3aXRoIHNv
-bWUgc3BlY2lmaWMKPj4+IGtpbmQgb2YgZGV2aWNlcy4KPj4+Cj4+PiBOVk1FTSBhY3Jvc3MgdGhl
-IHllYXJzIGhhZCB2YXJpb3VzIGl0ZXJhdGlvbiBvbiBob3cgQ2VsbHMgY291bGQgYmUKPj4+IGRl
-Y2xhcmVkIGluIERUIGFuZCBNVEQgT1RQIHByb2JhYmx5IHdhcyBsZWZ0IGJlaGluZCBhbmQKPj4+
-IGFkZF9sZWdhY3lfZml4ZWRfb2ZfY2VsbHMgd2FzIGVuYWJsZWQgd2l0aG91dCB0aGlua2luZyBv
-ZiB0aGUKPj4+IGNvbnNlcXVlbmNlcy4KPj4KPj4gRXIuLi4gdGhhbmsgeW91Pwo+Pgo+IAo+IFBy
-b2JhYmx5IG1hZGUgc29tZSBiYWQgYXNzdW1wdGlvbiBhbmQgc29ycnkgZm9yIGl0IQoKTm8gcHJv
-YmxlbSA6KQoKCj4+PiBUaGF0IG9wdGlvbiBlbmFibGVzIE5WTUVNIHRvIHNjYW4gdGhlIHByb3Zp
-ZGVkIG9mX25vZGUgYW5kIHRyZWF0IGVhY2gKPj4+IGNoaWxkIGFzIGEgTlZNRU0gQ2VsbCwgdGhp
-cyB3YXMgdG8gc3VwcG9ydCBsZWdhY3kgTlZNRU0gaW1wbGVtZW50YXRpb24KPj4+IGFuZCBkb24n
-dCBjYXVzZSByZWdyZXNzaW9uLgo+Pj4KPj4+IFRoaXMgaXMgcHJvYmxlbWF0aWMgaWYgd2UgaGF2
-ZSBkZXZpY2VzIGxpa2UgTmFuZCB3aGVyZSB0aGUgT1RQIGlzCj4+PiB0cmlnZ2VyZWQgYnkgc2V0
-dGluZyBhIHNwZWNpYWwgbW9kZSBpbiB0aGUgZmxhc2guIEluIHRoaXMgY29udGV4dCByZWFsCj4+
-PiBwYXJ0aXRpb25zIGRlY2xhcmVkIGluIHRoZSBOYW5kIG5vZGUgYXJlIHJlZ2lzdGVyZWQgYXMg
-T1RQIENlbGxzIGFuZAo+Pj4gdGhpcyBjYXVzZSBwcm9iZSBmYWlsIHdpdGggLUVJTlZBTCBlcnJv
-ci4KPj4+Cj4+PiBUaGlzIHdhcyBuZXZlciBub3RpY2UgZHVlIHRvIHRoZSBmYWN0IHRoYXQgdGls
-bCBub3csIG5vIE5hbmQgc3VwcG9ydGVkCj4+PiB0aGUgT1RQIGZlYXR1cmUuIFdpdGggY29tbWl0
-IGU4NzE2MTMyMWE0MCAoIm10ZDogcmF3bmFuZDogbWFjcm9uaXg6IE9UUAo+Pj4gYWNjZXNzIGZv
-ciBNWDMwTEZ4RzE4QUMiKSB0aGlzIGNoYW5nZWQgYW5kIGNvaW5jaWRlbnRhbGx5IHRoaXMgTmFu
-ZCBpcwo+Pj4gdXNlZCBvbiBhbiBGcml0ekJveCA3NTMwIHN1cHBvcnRlZCBvbiBPcGVuV3J0Lgo+
-Pgo+PiBTbyBhcyB5b3Ugbm90aWNlZCB0aGlzIHByb2JsZW0gd2FzICpleHBvc2VkKiBieSBhZGRp
-bmcgT1RQIHN1cHBvcnQgZm9yCj4+IE1hY3Jvbml4IE5BTkQgY2hpcHMuCj4+Cj4+Cj4+PiBBbHRl
-cm5hdGl2ZSBhbmQgbW9yZSByb2J1c3Qgd2F5IHRvIGRlY2xhcmUgT1RQIENlbGxzIGFyZSBhbHJl
-YWR5Cj4+PiBwcm9zc2libGUgYnkgdXNpbmcgdGhlIGZpeGVkLWxheW91dCBub2RlIG9yIGJ5IGRl
-Y2xhcmluZyBhIGNoaWxkIG5vZGUKPj4+IHdpdGggdGhlIGNvbXBhdGlibGUgc2V0IHRvICJvdHAt
-dXNlciIgb3IgIm90cC1mYWN0b3J5Ii4KPj4+Cj4+PiBUbyBmaXggdGhpcyBhbmQgbGltaXQgYW55
-IHJlZ3Jlc3Npb24gd2l0aCBvdGhlciBNVEQgdGhhdCBtYWtlcyB1c2Ugb2YKPj4+IGRlY2xhcmlu
-ZyBPVFAgYXMgZGlyZWN0IGNoaWxkIG9mIHRoZSBkZXYgbm9kZSwgZGlzYWJsZQo+Pj4gYWRkX2xl
-Z2FjeV9maXhlZF9vZl9jZWxscyBpZiB3ZSBkZXRlY3QgdGhlIE1URCB0eXBlIGlzIE5hbmQuCj4+
-Pgo+Pj4gV2l0aCB0aGUgZm9sbG93aW5nIGxvZ2ljLCB0aGUgT1RQIE5WTUVNIGVudHJ5IGlzIGNv
-cnJlY3RseSBjcmVhdGVkIHdpdGgKPj4+IG5vIENlbGxzIGFuZCB0aGUgTVREIE5hbmQgaXMgY29y
-cmVjdGx5IHByb2JlZCBhbmQgcGFydGl0aW9ucyBhcmUKPj4+IGNvcnJlY3RseSBleHBvc2VkLgo+
-Pj4KPj4+IEZpeGVzOiAyY2MzYjM3ZjViNmQgKCJudm1lbTogYWRkIGV4cGxpY2l0IGNvbmZpZyBv
-cHRpb24gdG8gcmVhZCBvbGQKPj4+IHN5bnRheCBmaXhlZCBPRiBjZWxscyIpCj4+Cj4+IEl0J3Mg
-bm90IHRoYXQgY29tbWl0IGhvd2V2ZXIgdGhhdCBpbnRyb2R1Y2VkIHRoZSBwcm9ibGVtLiBJbnRy
-b2R1Y2luZwo+PiAiYWRkX2xlZ2FjeV9maXhlZF9vZl9jZWxscyIganVzdCBhZGRlZCBhIGNsZWFu
-IHdheSBvZiBlbmFibGluZyBwYXJzaW5nCj4+IG9mIG9sZCBjZWxscyBzeW50YXguIEV2ZW4gYmVm
-b3JlIG15IGNvbW1pdCBOVk1FTSBzdWJzeXN0ZW0gd2FzIGxvb2tpbmcKPj4gZm9yIE5WTUVNIGNl
-bGxzIGluIE5BTkQgZGV2aWNlcy4KPj4KPj4gSSBib290ZWQga2VybmVsIDYuNiB3aGljaCBoYXMg
-Y29tbWl0IGU4NzE2MTMyMWE0MCAoIm10ZDogcmF3bmFuZDoKPj4gbWFjcm9uaXg6IE9UUCA+IGFj
-Y2VzcyBmb3IgTVgzMExGeEcxOEFDIikgYnV0IGRvZXMgTk9UIGhhdmUgY29tbWl0Cj4+IDJjYzNi
-MzdmNWI2ZCAoIm52bWVtOiBhZGQgZXhwbGljaXQgY29uZmlnIG9wdGlvbiB0byByZWFkIG9sZCBz
-eW50YXgKPj4gZml4ZWQgT0YgY2VsbHMiKS4KPj4KPj4gTG9vayBhdCB0aGlzIGxvZyBmcm9tIEJy
-b2FkY29tIE5vcnRoc3RhciAoTGludXggNi42KToKPj4gWyAgICAwLjQxMDEwN10gbmFuZDogZGV2
-aWNlIGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6IDB4YzIsIENoaXAgSUQ6IDB4ZGMKPj4gWyAgICAw
-LjQxNjUzMV0gbmFuZDogTWFjcm9uaXggTVgzMExGNEcxOEFDCj4+IFsgICAgMC40MjA0MDldIG5h
-bmQ6IDUxMiBNaUIsIFNMQywgZXJhc2Ugc2l6ZTogMTI4IEtpQiwgcGFnZSBzaXplOiAyMDQ4LCBP
-T0IKPj4gc2l6ZTogNjQKPj4gWyAgICAwLjQyODAyMl0gaXByb2NfbmFuZCAxODAyODAwMC5uYW5k
-LWNvbnRyb2xsZXI6IGRldGVjdGVkIDUxMk1pQiB0b3RhbCwKPj4gMTI4S2lCIGJsb2NrcywgMktp
-QiBwYWdlcywgMTZCIE9PQiwgOC1iaXQsIEJDSC04Cj4+IFsgICAgMC40Mzg5OTFdIFNjYW5uaW5n
-IGRldmljZSBmb3IgYmFkIGJsb2Nrcwo+PiBbICAgIDAuODczNTk4XSBCYWQgZXJhc2VibG9jayA3
-MzggYXQgMHgwMDAwMDVjNDAwMDAKPj4gWyAgICAxLjAzMDI3OV0gcmFuZG9tOiBjcm5nIGluaXQg
-ZG9uZQo+PiBbICAgIDEuODU0ODk1XSBCYWQgZXJhc2VibG9jayAyNDE0IGF0IDB4MDAwMDEyZGMw
-MDAwCj4+IFsgICAgMi42NTczNTRdIEJhZCBlcmFzZWJsb2NrIDM3ODMgYXQgMHgwMDAwMWQ4ZTAw
-MDAKPj4gWyAgICAyLjY2Mjk2N10gQmFkIGVyYXNlYmxvY2sgMzc4NSBhdCAweDAwMDAxZDkyMDAw
-MAo+PiBbICAgIDIuODQ4NDE4XSBudm1lbSB1c2VyLW90cDE6IG52bWVtOiBpbnZhbGlkIHJlZyBv
-bgo+PiAvbmFuZC1jb250cm9sbGVyQDE4MDI4MDAwL25hbmRAMAo+PiBbICAgIDIuODU2MTI2XSBp
-cHJvY19uYW5kIDE4MDI4MDAwLm5hbmQtY29udHJvbGxlcjogZXJyb3IgLUVJTlZBTDogRmFpbGVk
-IHRvCj4+IHJlZ2lzdGVyIE9UUCBOVk1FTSBkZXZpY2UKPj4KPj4gU28gdG8gc3VtbWFyeSBpdCB1
-cDoKPj4gMS4gUHJvYmxlbSBleGlzdHMgc2luY2UgbXVjaCBlYXJsaWVyIGFuZCB3YXNuJ3QgaW50
-cm9kdWNlZCBieSAyY2MzYjM3ZjViNmQKPj4gMi4gQ29tbWl0IDJjYzNiMzdmNWI2ZCBqdXN0IGdp
-dmVzIHlvdSBhIGNsZWFuIHdheSBvZiBzb2x2aW5nIHRoaXMgaXNzdWUKPj4gMy4gUHJvYmxlbSB3
-YXMgZXhwb3NlZCBieSBjb21taXQgZTg3MTYxMzIxYTQwCj4+IDQuIFdlIG1pc3MgZml4IGZvciB2
-Ni42IHdoaWNoIGRvZXNuJ3QgaGF2ZSAyY2MzYjM3ZjViNmQgKGl0IGhpdCB2Ni43KQo+Pgo+IAo+
-IFNvIHRoZSB0aGluZyB3YXMgYnJva2VuIGFsbCBhbG9uZz8gTWF5YmUgdGhlIHJlZ3Jlc3Npb24g
-d2FzIGludHJvZHVjZWQKPiB3aGVuIE9GIHN1cHBvcnQgZm9yIE5WTUVNIGNlbGwgd2FzIGludHJv
-ZHVjZWQ/IChhbmQgT0Ygc2NhbiB3YXMgZW5hYmxlZAo+IGJ5IGRlZmF1bHQ/KQoKSSB3ZW50IGJh
-Y2sgdG8gdGhlIGNvbW1pdCA0YjM2MWNmYTg2MjQgKCJtdGQ6IGNvcmU6IGFkZCBPVFAgbnZtZW0K
-cHJvdmlkZXIgc3VwcG9ydCIpIGZyb20gMjAyMSAoaXQgd2VudCBpbnRvIDUuMTQpLiBJdCBzZWVt
-cyB0aGF0IGV2ZW4KYmFjayB0aGVuIG52bWVtX3JlZ2lzdGVyKCkgdXNlZCB0byBjYWxsIG52bWVt
-X2FkZF9jZWxsc19mcm9tX29mKCkuIFNPCm1heWJlIHRoaXMgcHJvYmxlbSBpcyBhcyBvbGQgYXMg
-dGhhdD8KCgo+IEFueXdheSBTb3JyeSBmb3IgYWRkaW5nIHRoZSB3cm9uZyBmaXhlcywgbWF5YmUg
-TWlxdWVsIGNhbiByZW1vdGUgdGhlCj4gY29tbWl0IGZyb20gbXRkL2ZpeGVzIGFuZCBmaXggdGhl
-IHByb2JsZW1hdGljIGZpeGVzIHRhZz8KPiAKPj4KPj4+IENjOiA8c3RhYmxlQHZnZXIua2VybmVs
-Lm9yZz4KPj4+IFNpZ25lZC1vZmYtYnk6IENocmlzdGlhbiBNYXJhbmdpIDxhbnN1ZWxzbXRoQGdt
-YWlsLmNvbT4KPiAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 22.03.2024 05:09, Christian Marangi wrote:
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 5887feb347a4..0de87bc63840 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+>   	config.name = compatible;
+>   	config.id = NVMEM_DEVID_AUTO;
+>   	config.owner = THIS_MODULE;
+> -	config.add_legacy_fixed_of_cells = true;
+> +	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
+>   	config.type = NVMEM_TYPE_OTP;
+>   	config.root_only = true;
+>   	config.ignore_wp = true;
+
+I think there may be even more unwanted behaviour here. If
+mtd_otp_nvmem_register() fails to find node with "user-otp" /
+"factory-otp" compatible then it sets "config.of_node" to NULL but that
+means NVMEM core still looks for NVMEM cells in device's "of_node".
+
+I believe we should not look for OTP NVMEM cells out of the "user-otp" /
+"factory-otp" compatible nodes.
+
+So maybe what we need in the first place is just:
+config.add_legacy_fixed_of_cells = !!np;
+?
+
+Any extra limitation of .add_legacy_fixed_of_cells should probably be
+used only if we want to prevent new users of the legacy syntax. The
+problem is that mtd.yaml binding allowed "user-otp" and "factory-otp"
+with old syntax cells. It means every MTD device was allowed to have
+them.
+
+No in-kernel DTS even used "user-otp" or "factory-otp" with NVMEM legacy
+cells but I'm not sure about downstream DTS files. Ideally we would do
+config.add_legacy_fixed_of_cells = false;
+but that could break compatibility with some downstream DTS files.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
