@@ -4,102 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1756CC54E67
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 11:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB220C54E67
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 12:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BTvvKzwz77ifGW/YTAgLgPp+Sf3n0AMPzKtil+4NsXE=; b=QnsWXe7F2SNl8z
-	dEw+90S/z6zYRQ6pIW/fjDseKe+BPGkl7o3JUCrEe1HBVDdO2K0X7KX0BOp1HCS7gGMFD6UZ8OUUl
-	9w+cDYXyPia266Uu8CdX+3SO8BS9yVJGQIvfvJjAmSiadUhwybbbNBrApzO8ATF1ox2iIs8W5qCh5
-	Nk6X4El880Kp1mU08Cssk2406jAGSLJEoPWbgG3ronXgx41PIHowP6EV8e2GmFc5UtK4Qw9145Vud
-	4lUHWioUKE1FeVzFqUXHUfrI92KLHyG3DHJXh6/Udmaoaesf3WEPP+XkO9lSQ1rXZoZw3FEB4xxHr
-	Jrw98+bEM4DIWz6V+ndg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kWkwO0ftjZ79VKQBLmeVW4eILtx7thlzlQtmgubh/iM=; b=q8DqmDcLWC27v/
+	ygQdgV58oEDiZIScfX3dIjiHJAQ8LfESjQcTQxnzREBvNGfIBp2/JJ/QNdA/K41Rcfc491x8ajuVn
+	F9limOgo/2VDZrvKE5SqCcNuBAWi1SEF5yWsySbyFgJUIU9w/HHDj/OmpMsOnXoUevuDAYywf5Jbl
+	DkVD8y0TKPXvQ19HisjApQMsV0YIGbQXTu9dcapdGWNfwOmmWDqLSDLvfnDI13HaWUmaSGcst8qyi
+	uX3M4Ji66f4pw7Sv1pANU4OGvwGNBuHqTlJq8W/0edrsxFQ3aQ2AmmORnFwtHSN+RJCS3OZrdLVA9
+	zdPRR+6IptI9dQecP18Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpR1M-00000008Vhd-0NUs;
-	Wed, 27 Mar 2024 11:00:40 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1rpS7W-00000008kOf-3HDQ;
+	Wed, 27 Mar 2024 12:11:06 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpR1B-00000008VeA-3vdG;
-	Wed, 27 Mar 2024 11:00:36 +0000
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a466a27d30aso808315266b.1;
-        Wed, 27 Mar 2024 04:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711537225; x=1712142025; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ju32kgFLniZCS7dOELnk78OlOgWmgFWMWc/+6Cau/QE=;
-        b=fdu+WrUHTD6h4HWBmV1avQk91BT4tFdQWXmqu5jwt4N3hyVIzBLXGWrYNUIO4wi7SD
-         ZLE3byUBGSc8VP7j2rm1o6EPZJVL6vubTvs6AJ1aW6YaYKRgCZbqH6o3pV8xR9LCZfmh
-         J8DdBYxmr1lfpJsikFmNFmZCnpSx/DtcvYqut9p58y1ZI/tNwrPnfpYIPjjF2Ar0hYUQ
-         WsXt22ravxFUUN4zianRFGcSzpqqiCYrqpIdidVowKkFg4FmDl1CaQqfgBM3r+bVyeyP
-         5t37FGXhX4Z6u5CAeMVOjHxl3xo0gVDQG2vHb8VX4dtw7UEQvXF6oLgeOZzFde3YxXg1
-         dXrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711537225; x=1712142025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ju32kgFLniZCS7dOELnk78OlOgWmgFWMWc/+6Cau/QE=;
-        b=w+4C+FQu01jRYJjLh0OZf3HLZHrEL5CnA2fvh0LMOoxGgyBwl62Wy6sp0tdDoOVyAJ
-         3S7RTm9NcYv+dpz7+QdIbtuqr/qZkTruirxhu4rCvVjKkjTLF1oi1dqFX5N+qfejy68p
-         6QjsQmSmh0l/LKpzMID7xnS6SsQ0/4QDQ7vUoKPUj62lnc0qBz8DED8yrkOzTlIH3Rt4
-         hxkY9wKjzqBzWsbDZzurxrgQN1kmTVyXSVBy1po+YDQIpbvgCqSDc/rwoFg0yqhlZfc5
-         Z2Gqgz2PJtKLXriRAPShf+BHuwfTYRLRqzB3XD7KzEmaKMD0VxsKv+XDieG0rmkuAtq9
-         QOvg==
-X-Forwarded-Encrypted: i=1; AJvYcCV//8MMDwEjfLJ1y4gwI4FkKwCN2aPBFHqMtqkgFxWVdmXGU7SggstA8A5/YdGCV8lpnwXUlqtl/ys7oKJZ5yPKHZvhMchJEdkUxzn4S12wW246vsQY7uBt7u4RIk9aXJDR/Zt2GZl/ma4jlcWizZ22IRZu
-X-Gm-Message-State: AOJu0YzWMIsldre8UW0HibBwHGPTylLKJVYHiT56WW7RyVJxaSos/wLh
-	+eejlELqk4JSeA3ahF6BPSHOZ0DTXovZ2k1QBWnVFbvjyTG7hTpH/YefHlF4vMqyIHmMPFweG7M
-	wDFU3+Vdx5ojSm5zXGTLRSxcNVho=
-X-Google-Smtp-Source: AGHT+IFELlWWydcIPiZzRfNkNJ0aiBtjYHAQu2rRkgw6Ipxw5ipMsk32+2Jcyp9P3eYXGgeptSDoDh0kCNzfCJ8MD0U=
-X-Received: by 2002:a17:906:2998:b0:a49:dfe7:834f with SMTP id
- x24-20020a170906299800b00a49dfe7834fmr616671eje.59.1711537225336; Wed, 27 Mar
- 2024 04:00:25 -0700 (PDT)
+	id 1rpS7Q-00000008kJ9-29Oc
+	for linux-mtd@lists.infradead.org;
+	Wed, 27 Mar 2024 12:11:04 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id CAEF9CE16C2;
+	Wed, 27 Mar 2024 12:10:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81180C433F1;
+	Wed, 27 Mar 2024 12:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711541455;
+	bh=fqH/vwRWApc26Sbipm6ozbFEBw4FdYS/8zFOtx/kQCs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XDTAfM+3cg6Y7XqSxg+1xaNWYwjdsa8D39/Ya/iEp1PqR5n6v861ihotLLVuI4tPB
+	 FxaBz/CwDosoXk6GOlNEDVnEeYxe6fvtaES6AfS/GV3qKOcNhnugZw642n/vwsmi3V
+	 kFNoQ8KMZEbEjqh/piEuvBq9PwkKoogJtPW9iSpL3yg6wwzvh+PxGzVp8R3uztll4P
+	 EWUpLWsf/hkcZNg3ZOPggWwiskzAZGEG5G+6qzUgpV5A5+ddoNWahsfPKM6mexMaQb
+	 KE4wn51zEBLEA72WdogYXOKuBJ86Y3iy9pHaNM3PI/l0ecpzsWCEHfZECXVGDVh/9f
+	 vmGjbYhWdo9Ww==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	miquel.raynal@bootlin.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: FAILED: Patch "mtd: rawnand: Ensure all continuous terms are always in sync" failed to apply to 6.6-stable tree
+Date: Wed, 27 Mar 2024 08:10:53 -0400
+Message-ID: <20240327121053.2828334-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me>
- <dc3e2cb4-f631-4611-8814-0dc04c5502f0@linaro.org> <ZgLgY11N8dkpTZJB@smile.fi.intel.com>
- <a16f45c9-747c-4a19-98a3-aa5f47ee5c4d@linaro.org>
-In-Reply-To: <a16f45c9-747c-4a19-98a3-aa5f47ee5c4d@linaro.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 27 Mar 2024 12:59:49 +0200
-Message-ID: <CAHp75VfdsRkGiJCUsiTj0p7SMaSkJqQeojNWT3tGz2W7JhwMmQ@mail.gmail.com>
-Subject: Re: [PATCH v9 00/38] ep93xx device tree conversion
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Andy Shevchenko <andy@kernel.org>, nikita.shubin@maquefel.me, 
-	Hartley Sweeten <hsweeten@visionengravers.com>, 
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Thierry Reding <thierry.reding@gmail.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Sergey Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
-	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, 
-	devicetree@vger.kernel.org, dmaengine@vger.kernel.org, 
-	linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org, 
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-sound@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Andrew Lunn <andrew@lunn.ch>
+X-Patchwork-Hint: ignore
+X-stable: review
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240327_040030_902497_82DE01FB 
-X-CRM114-Status: GOOD (  14.04  )
+X-CRM114-CacheID: sfid-20240327_051101_183739_D1142DCD 
+X-CRM114-Status: GOOD (  14.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,24 +68,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBNYXIgMjcsIDIwMjQgYXQgNzowN+KAr0FNIEtyenlzenRvZiBLb3psb3dza2kKPGty
-enlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4gd3JvdGU6Cj4gT24gMjYvMDMvMjAyNCAxNTo0
-OSwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOgo+ID4gT24gVHVlLCBNYXIgMjYsIDIwMjQgYXQgMTE6
-MTk6NTRBTSArMDEwMCwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToKPiA+PiBPbiAyNi8wMy8y
-MDI0IDEwOjE4LCBOaWtpdGEgU2h1YmluIHZpYSBCNCBSZWxheSB3cm90ZToKCi4uLgoKPiA+PiBB
-IGxvdCBvZiB0aGlzIGNvdWxkIGhhdmUgYmVlbiBhbHJlYWR5IG1lcmdlZCBpZiB5b3Ugc3BsaXQg
-aXQuLi4gSnVzdAo+ID4+IHNheWluZy4uLgo+ID4KPiA+IEJ1dCB5b3UgYWJsZSB0byBhcHBseSBE
-VCBzY2hlbWEgcGF0Y2hlcyBpZiB5b3Ugd2lzaC4KPiA+IEp1c3QgZG9pbmc/IDotKQo+Cj4gTWU/
-IFdoeT8gRFQgYmluZGluZ3MgYXJlIHN1cHBvc2VkIHRvIGdvIHZpYSBzdWJzeXN0ZW0gbWFpbnRh
-aW5lcnMsIG5vdAo+IERUIHRyZWUuCgpPa2F5LCBJIG5ldmVyIHJlbWVtYmVyZWQgdGhpcyBydWxl
-LCB0aGFuayB5b3UgZm9yIGNsYXJpZnlpbmcuCgo+IFBsdXMsIEkgZG8gbm90IGFwcGx5IGFueSBi
-aW5kaW5ncyBwYXRjaGVzLCBleGNlcHQgZm9yIG1hbmFnZWQKPiBzdWJzeXN0ZW1zIGFuZCBub25l
-IG9mIHRoZW0gYXJlIHRvdWNoZWQgaGVyZS4KCkdvb2QgdG8ga25vdyEKCi0tIApXaXRoIEJlc3Qg
-UmVnYXJkcywKQW5keSBTaGV2Y2hlbmtvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The patch below does not apply to the 6.6-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
+
+Thanks,
+Sasha
+
+------------------ original commit in Linus's tree ------------------
+
+From 6fb075fca63c3486612986eeff84ed4179644038 Mon Sep 17 00:00:00 2001
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Fri, 23 Feb 2024 12:55:45 +0100
+Subject: [PATCH] mtd: rawnand: Ensure all continuous terms are always in sync
+
+While crossing a LUN boundary, it is probably safer (and clearer) to
+keep all members of the continuous read structure aligned, including the
+pause page (which is the last page of the lun or the last page of the
+continuous read). Once these members properly in sync, we can use the
+rawnand_cap_cont_reads() helper everywhere to "prepare" the next
+continuous read if there is one.
+
+Fixes: bbcd80f53a5e ("mtd: rawnand: Prevent crossing LUN boundaries during sequential reads")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20240223115545.354541-4-miquel.raynal@bootlin.com
+---
+ drivers/mtd/nand/raw/nand_base.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d6a27e08b1127..4d5a663e4e059 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1232,6 +1232,15 @@ static void rawnand_cap_cont_reads(struct nand_chip *chip)
+ 		chip->cont_read.pause_page = rawnand_last_page_of_lun(ppl, first_lun);
+ 	else
+ 		chip->cont_read.pause_page = chip->cont_read.last_page;
++
++	if (chip->cont_read.first_page == chip->cont_read.pause_page) {
++		chip->cont_read.first_page++;
++		chip->cont_read.pause_page = min(chip->cont_read.last_page,
++						 rawnand_last_page_of_lun(ppl, first_lun + 1));
++	}
++
++	if (chip->cont_read.first_page >= chip->cont_read.last_page)
++		chip->cont_read.ongoing = false;
+ }
+ 
+ static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int page,
+@@ -1298,12 +1307,11 @@ static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int p
+ 	if (!chip->cont_read.ongoing)
+ 		return 0;
+ 
+-	if (page == chip->cont_read.pause_page &&
+-	    page != chip->cont_read.last_page) {
+-		chip->cont_read.first_page = chip->cont_read.pause_page + 1;
+-		rawnand_cap_cont_reads(chip);
+-	} else if (page == chip->cont_read.last_page) {
++	if (page == chip->cont_read.last_page) {
+ 		chip->cont_read.ongoing = false;
++	} else if (page == chip->cont_read.pause_page) {
++		chip->cont_read.first_page++;
++		rawnand_cap_cont_reads(chip);
+ 	}
+ 
+ 	return 0;
+@@ -3510,10 +3518,7 @@ static void rawnand_cont_read_skip_first_page(struct nand_chip *chip, unsigned i
+ 		return;
+ 
+ 	chip->cont_read.first_page++;
+-	if (chip->cont_read.first_page == chip->cont_read.pause_page)
+-		chip->cont_read.first_page++;
+-	if (chip->cont_read.first_page >= chip->cont_read.last_page)
+-		chip->cont_read.ongoing = false;
++	rawnand_cap_cont_reads(chip);
+ }
+ 
+ /**
+-- 
+2.43.0
+
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
