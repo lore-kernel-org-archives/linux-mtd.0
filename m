@@ -4,64 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 728BCC54E67
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 16:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 109ABC54E67
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 16:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zzkDKjNIHOK5oXvRxMoDsWT9uiJrqJ64eyju9/PfmiE=; b=R4d4DwDST4zQoujYz9S7tCpvxI
-	xjasFytXqUjWz+BeOf7BwTDTMhTQ0OJefxbqDfUWoal2t+WpNbaWmpl4ESEGrND5vooAC8Z2xDZT6
-	O0eBUYIYoNBpulebXmPb9PyiCu4cVNGfMmuIsg6efxAycpP6pO2D4CVwCRG/EFhCFUr3Gov573Beg
-	QSyVqX85m5ItwBv8xWaskG/1+pZIq5g4IIXh35wtPbMUk88BuMYt1XyesVLtxZs8NT05omttduPYU
-	QYwm5ehTWB7OVJpyx6K0d9styfu41K75PLIdCokT43dhQMoH4VfNGItr7IeaOCa0ALJ6hv4j0sPsP
-	bKRAPnDA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yKUVy5lW0h4S7waccJ0WJ4W67h7aZXz8NjN4PIbVer4=; b=2w5B1Pzbl52eQ1
+	mojEVjTpXwhK6xe5ix7y7SfHrHAZWzSZ9jbfTlvI+ufz/9JbmjpkdYaqJLzLXWgS0g/qv7N2XzrIB
+	0QfmscvcNvOq1aXPPLTvQA3e7gqbg7utW8mu88aZrYf0NlXiZO8CgBKvMfde7if9m2U4AyeldZd5X
+	+SdEHjTATCwIqhtfMbxeHtXv0L1Dx9Mg71TpRnLtWd8VeF7lM4BOblVS/Rb1q5HyYLHfVUyoL52Iw
+	XbA8/vgysu6uof5CHhCYigtT3QquALPktxFpJ9q4pYz6Kl+fu31gjmoyMKpmiQEP7H+gLgBXMGhNg
+	jk/OQRHS3Pisl/slmOyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpW3u-0000000A4B8-0ecV;
-	Wed, 27 Mar 2024 16:23:38 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rpWK1-0000000A7U2-1Rtz;
+	Wed, 27 Mar 2024 16:40:17 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpW3p-0000000A49d-1q21
+	id 1rpWJx-0000000A7TR-17l0
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Mar 2024 16:23:36 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B7B1A615F2;
-	Wed, 27 Mar 2024 16:23:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AB43C433F1;
-	Wed, 27 Mar 2024 16:23:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711556612;
-	bh=vfPOVeol10GjjIU8ukwbAq6kQFpShA89H7TmSgKAE5Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=antVw9bEudlvuPfsZTc4U5PdrQ+1Sv1sJpEBD79eHkcA23MRs6E/67Vh7v+GGzwo+
-	 80UP4CDdyBynFZZhYS1gJUTAbd+NUya50+NYF1FBrPS00OrWRulINJ0v0EE/nmS11I
-	 DF7KsVEjQlTZO9kWv5UB8IKfVmCtYDlJtrw6jUBsqG57YiNWV2uFrbP8gu1aOmOOxz
-	 PC9bo9vCsmMFKgQRLe2bRFKUnJ7DU0OYP/sGcUsuGqrY3KVmhvEQY+wJKOMDMW6c1j
-	 T/OHcS6tovHgtDXoyok9M7rsKgp4a1uRTLEQKAEsfWTDJFjn83qB8e5Qj//O59P45I
-	 XjlIEAxaflZwg==
-Date: Wed, 27 Mar 2024 16:23:28 +0000
-From: Conor Dooley <conor@kernel.org>
-To: keguang.zhang@gmail.com
+	Wed, 27 Mar 2024 16:40:14 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-414925ba716so8567645e9.2
+        for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2024 09:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711557611; x=1712162411; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=vlQkpxaGQW3p984RRGKWywyzWKD0TWHivq5zfU3FFHY=;
+        b=TUFaIBkTIXwJi1nQvdKBb3p9Jj9KtwMeWkeaminQ3YVkSN8j3iPOKmcFWPNKSLa4V2
+         U3/TwPHJB9rlik6M4LBiMUpMonE5Ax7npwC7Ep78C7DCGkWyL00h36jfIvM0G+304qS/
+         LSFigTX76R3alcR9RRbSoZpHiRTERdwbKQGZ6ztZGLRs6rjsHLT/WAVCJGECxGgaJRVq
+         o4E2HIIW3I7x80GT8fK+qAsVfbvBCfGCE+rJwH5hDg+X0SKGPJ/jcMrhKhaxT3sJrmyA
+         enpy/GwWjMJU5u0ATlzp5QHc2s26XcBRf/1VWJ92psfnf2Q74J/jDG4ZkOHqeLRi6jT2
+         JTVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711557611; x=1712162411;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vlQkpxaGQW3p984RRGKWywyzWKD0TWHivq5zfU3FFHY=;
+        b=DcDiP/xdZiSsHbP41nVps/4yGo+cQV/hvsGBbq8PldC/fjgI0BQa2U4Dl1Wkdo5bo+
+         32Hzkc6d7QcQC1Lrkc8LDjP0vUdn0P5CqiEnOvVBuMTnMDExykZTKG3bwMREWAG0UrTK
+         jro+aQecO0oVi2TnXsHbh3hVEPHX3tYO8/VjSvMgQ1K2sfaxZJE0Xc9vqhkS1Rp4hu15
+         QstNm+NcYktXCcvq8EMg5BwvfHzDMa24j5/dmh10K3NvJUj4wIyDHQ+rmmwE6iGynAgl
+         kYxnmV3yfZx+JfW1WCUgO1zhyIjf3jwgLn4xcpf2p4q5czvwuA7WM81tK+Yze4K76ISq
+         yOAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWkklauhCSq7E6nneq8OLhu6WCZNoUNCQAaFtH9p2UFJV8TnNgQOSPlxy8/2bn4JutebUbPViJta66sg19BTUNof7oeSj0QbbqTDBjnvg==
+X-Gm-Message-State: AOJu0YxxHMu2SZMSo66r041IEL78O9TUWahSiTt6dGSPaqSBLmctEytb
+	0TrdNaLj40InL0fYGOk/qCAFtEQqH1GBpGCn59Jtpfl4mKc392ghRwLtDTBW
+X-Google-Smtp-Source: AGHT+IGlxMmgSl6wOcskjtwSMRobLESUDTi3KLNM9ekBedCGEFAVz8OWGEvAAhpMa74zmpbd08FWtw==
+X-Received: by 2002:a05:600c:4ed0:b0:414:8894:213d with SMTP id g16-20020a05600c4ed000b004148894213dmr382271wmq.35.1711557611033;
+        Wed, 27 Mar 2024 09:40:11 -0700 (PDT)
+Received: from Ansuel-XPS. (host-95-247-253-192.retail.telecomitalia.it. [95.247.253.192])
+        by smtp.gmail.com with ESMTPSA id j19-20020a05600c191300b00414924f307csm2630583wmq.26.2024.03.27.09.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Mar 2024 09:40:10 -0700 (PDT)
+Message-ID: <66044bea.050a0220.dee16.c250@mx.google.com>
+X-Google-Original-Message-ID: <ZgQ5RmS3eWaiVdwB@Ansuel-XPS.>
+Date: Wed, 27 Mar 2024 16:20:58 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: Add Loongson-1 NAND Controller
-Message-ID: <20240327-bonehead-handlebar-1ca8dab95179@spud>
-References: <20240327-loongson1-nand-v6-0-7f9311cef020@gmail.com>
- <20240327-loongson1-nand-v6-1-7f9311cef020@gmail.com>
+	Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: qcom: Fix broken erase in
+ misc_cmd_type in exec_op
+References: <20240325103053.24408-1-ansuelsmth@gmail.com>
+ <20240326072512.GA8436@thinkpad>
 MIME-Version: 1.0
-In-Reply-To: <20240327-loongson1-nand-v6-1-7f9311cef020@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20240326072512.GA8436@thinkpad>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240327_092335_213391_93B0E235 
-X-CRM114-Status: GOOD (  16.79  )
+X-CRM114-CacheID: sfid-20240327_094013_336814_55BD69D4 
+X-CRM114-Status: GOOD (  25.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,147 +95,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7890615371948171456=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, Mar 26, 2024 at 12:55:12PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Mar 25, 2024 at 11:30:47AM +0100, Christian Marangi wrote:
+> > misc_cmd_type in exec_op have multiple problems. With commit a82990c8a409
+> > ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path") it was
+> > reworked and generalized but actually broke the handling of the
+> > ERASE_BLOCK command.
+> > 
+> > Additional logic was added to the erase command cycle without clear
+> > explaination causing the erase command to be broken on testing it on
+> > a ipq806x nandc.
+> > 
+> > Fix the erase command by reverting the additional logic and only adding
+> > the NAND_DEV0_CFG0 additional call (required for erase command).
+> > 
+> > Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> > Changes v2:
+> > - Split this and rework commit description and title
+> > 
+> >  drivers/mtd/nand/raw/qcom_nandc.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> > index b079605c84d3..19d76e345a49 100644
+> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> > @@ -2830,9 +2830,8 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
+> >  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
+> >  
+> >  	write_reg_dma(nandc, NAND_FLASH_CMD, instrs, NAND_BAM_NEXT_SGL);
+> > -	(q_op.cmd_reg == OP_BLOCK_ERASE) ? write_reg_dma(nandc, NAND_DEV0_CFG0,
+> > -	2, NAND_BAM_NEXT_SGL) : read_reg_dma(nandc,
+> > -	NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+> > +	if (q_op.cmd_reg == OP_BLOCK_ERASE)
+> > +		write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
+> 
+> So this only avoids the call to, 'read_reg_dma(nandc, NAND_FLASH_STATUS, 1,
+> NAND_BAM_NEXT_SGL)' if q_op.cmd_reg != OP_BLOCK_ERASE. But for q_op.cmd_reg ==
+> OP_BLOCK_ERASE, the result is the same.
+> 
+> I'm wondering how it results in fixing the OP_BLOCK_ERASE command.
+> 
+> Can you share the actual issue that you are seeing? Like error logs etc...
+>
 
---===============7890615371948171456==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yDH5t1GCumTzOBnO"
-Content-Disposition: inline
+Issue is that nandc goes to ADM timeout as soon as a BLOCK_ERASE is
+called. BLOCK_ERASE operation match also another operation from MTD
+read. (parser also maps to other stuff)
 
+I will be away from the testing board for 7-10 days so I can't provide
+logs currently.
 
---yDH5t1GCumTzOBnO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Mar 27, 2024 at 06:43:59PM +0800, Keguang Zhang via B4 Relay wrote:
-> From: Keguang Zhang <keguang.zhang@gmail.com>
->=20
-> Add devicetree binding document for Loongson-1 NAND Controller.
->=20
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> Changes in v6:
-> - A newly added patch
-> ---
->  .../devicetree/bindings/mtd/loongson,ls1x-nfc.yaml | 66 ++++++++++++++++=
-++++++
->  1 file changed, 66 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml=
- b/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml
-> new file mode 100644
-> index 000000000000..2494c7b3b506
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/loongson,ls1x-nfc.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/loongson,ls1x-nfc.yaml#
-
-Please make the filename match the compatible.
-
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Loongson-1 NAND Controller
-> +
-> +maintainers:
-> +  - Keguang Zhang <keguang.zhang@gmail.com>
-> +
-> +allOf:
-> +  - $ref: nand-controller.yaml
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: loongson,ls1b-nfc
-> +      - items:
-> +          - enum:
-> +              - loongson,ls1a-nfc
-> +              - loongson,ls1c-nfc
-> +          - const: loongson,ls1b-nfc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 1
-> +
-> +  dma-names:
-> +    const: rxtx
-
-If you only have one dma, why do you need a dma-names entry for it?
-
-Looks fine to me otherwise though,
-COnor.
-
-> +
-> +patternProperties:
-> +  "^nand@[0-3]$":
-> +    type: object
-> +    $ref: raw-nand-chip.yaml
-> +
-> +    unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - dmas
-> +  - dma-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand-controller@1fe78000 {
-> +        compatible =3D "loongson,ls1b-nfc";
-> +        reg =3D <0x1fe78000 0x40>;
-> +
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        dmas =3D <&dma 0>;
-> +        dma-names =3D "rxtx";
-> +
-> +        nand@0 {
-> +            reg =3D <0>;
-> +            nand-use-soft-ecc-engine;
-> +            nand-ecc-algo =3D "hamming";
-> +        };
-> +    };
->=20
-> --=20
-> 2.40.1
->=20
->=20
-
---yDH5t1GCumTzOBnO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgRH8AAKCRB4tDGHoIJi
-0kj7AP42f1IGw8/uELOCbVdp8rqrSHtY1cdHyVGBqH4jo8IuMwD/U9azUbyS3Hm1
-gd8v7u0uXHNq+KiSBtDQOh2Gsg6REQs=
-=2rtW
------END PGP SIGNATURE-----
-
---yDH5t1GCumTzOBnO--
-
-
---===============7890615371948171456==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+	Ansuel
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7890615371948171456==--
-
