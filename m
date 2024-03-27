@@ -4,59 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB220C54E67
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 12:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27F93C47DD9
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Mar 2024 14:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=kWkwO0ftjZ79VKQBLmeVW4eILtx7thlzlQtmgubh/iM=; b=q8DqmDcLWC27v/
-	ygQdgV58oEDiZIScfX3dIjiHJAQ8LfESjQcTQxnzREBvNGfIBp2/JJ/QNdA/K41Rcfc491x8ajuVn
-	F9limOgo/2VDZrvKE5SqCcNuBAWi1SEF5yWsySbyFgJUIU9w/HHDj/OmpMsOnXoUevuDAYywf5Jbl
-	DkVD8y0TKPXvQ19HisjApQMsV0YIGbQXTu9dcapdGWNfwOmmWDqLSDLvfnDI13HaWUmaSGcst8qyi
-	uX3M4Ji66f4pw7Sv1pANU4OGvwGNBuHqTlJq8W/0edrsxFQ3aQ2AmmORnFwtHSN+RJCS3OZrdLVA9
-	zdPRR+6IptI9dQecP18Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=S4BKUCSo/0upYRntVoUZ3xcCX7VxskPA1v9VaUVHsgU=; b=Psd6OSwiY0RzVrIXMgbSsRPNM3
+	f0He0QSvMrKvofnEhsa6b8l7gYE3GOLB5bsY8aX+YWlS2uXQQaP49tHZhJrpVnR/QEUrOmEDUgyfw
+	xyuMQN087wrjG13kkD0mUlhTXhIoPtliLEr+zdyIjtFzYafo+yOnLHn+ph8g7CdUo9PWogpNX2AVw
+	8qyxRN3L9KGs1Hy/Ik3fXy2JmArGiK/jXbP0tHD04h6ykZiV2ZKxCN+sqr62zEsv9f6oYi6ZP9H9D
+	DcCzFlVWjFaw1KkipWxbZwS/h94lHq4V+TcoqL9qc7w/7NKpjwMbaMGxAqKexXpHITX/kEMiEzZyP
+	p8GZQB1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpS7W-00000008kOf-3HDQ;
-	Wed, 27 Mar 2024 12:11:06 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rpUFK-00000009T05-47TF;
+	Wed, 27 Mar 2024 14:27:18 +0000
+Received: from 3.mo561.mail-out.ovh.net ([46.105.44.175])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpS7Q-00000008kJ9-29Oc
+	id 1rpUFF-00000009Ssx-3X9A
 	for linux-mtd@lists.infradead.org;
-	Wed, 27 Mar 2024 12:11:04 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id CAEF9CE16C2;
-	Wed, 27 Mar 2024 12:10:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81180C433F1;
-	Wed, 27 Mar 2024 12:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541455;
-	bh=fqH/vwRWApc26Sbipm6ozbFEBw4FdYS/8zFOtx/kQCs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XDTAfM+3cg6Y7XqSxg+1xaNWYwjdsa8D39/Ya/iEp1PqR5n6v861ihotLLVuI4tPB
-	 FxaBz/CwDosoXk6GOlNEDVnEeYxe6fvtaES6AfS/GV3qKOcNhnugZw642n/vwsmi3V
-	 kFNoQ8KMZEbEjqh/piEuvBq9PwkKoogJtPW9iSpL3yg6wwzvh+PxGzVp8R3uztll4P
-	 EWUpLWsf/hkcZNg3ZOPggWwiskzAZGEG5G+6qzUgpV5A5+ddoNWahsfPKM6mexMaQb
-	 KE4wn51zEBLEA72WdogYXOKuBJ86Y3iy9pHaNM3PI/l0ecpzsWCEHfZECXVGDVh/9f
-	 vmGjbYhWdo9Ww==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	miquel.raynal@bootlin.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "mtd: rawnand: Ensure all continuous terms are always in sync" failed to apply to 6.6-stable tree
-Date: Wed, 27 Mar 2024 08:10:53 -0400
-Message-ID: <20240327121053.2828334-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	Wed, 27 Mar 2024 14:27:15 +0000
+Received: from director10.ghost.mail-out.ovh.net (unknown [10.109.176.198])
+	by mo561.mail-out.ovh.net (Postfix) with ESMTP id 4V4TWh6qHQz1HMx
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Mar 2024 14:26:56 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-5j6lf (unknown [10.110.96.237])
+	by director10.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 9D2931FE92;
+	Wed, 27 Mar 2024 14:26:55 +0000 (UTC)
+Received: from milecki.pl ([37.59.142.103])
+	by ghost-submission-6684bf9d7b-5j6lf with ESMTPSA
+	id lEULJa8sBGYx4A0AML5+ww
+	(envelope-from <rafal@milecki.pl>); Wed, 27 Mar 2024 14:26:55 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-103G0051bcccc50-b51a-4dd6-be14-20d89d3369be,
+                    AD8588E3BB83D84E59DEA8CE8674EAB20989D6B2) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 178.33.236.78
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
+Date: Wed, 27 Mar 2024 15:26:55 +0100
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Jernej Skrabec
+ <jernej.skrabec@gmail.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+In-Reply-To: <20240322040951.16680-1-ansuelsmth@gmail.com>
+References: <20240322040951.16680-1-ansuelsmth@gmail.com>
+Message-ID: <44a377b11208ff33045f12f260b667dd@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 31.11.218.106
+X-Webmail-UserID: rafal@milecki.pl
+X-Ovh-Tracer-Id: 3220073736837835577
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedggedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghfkfigihgtgfesthejjhdttddtvdenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeeftefghfetueetveevvddugfelfeevvedvleeljeetfefggfdtteevuddtleeunecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipddujeekrdeffedrvdefiedrjeekpdefjedrheelrddugedvrddutdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehiedupdhmohguvgepshhmthhpohhuth
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240327_051101_183739_D1142DCD 
-X-CRM114-Status: GOOD (  14.80  )
+X-CRM114-CacheID: sfid-20240327_072714_226186_8DA9BA66 
+X-CRM114-Status: GOOD (  21.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,96 +75,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The patch below does not apply to the 6.6-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+On 2024-03-22 05:09, Christian Marangi wrote:
+> MTD OTP logic is very fragile and can be problematic with some specific
+> kind of devices.
+> 
+> NVMEM across the years had various iteration on how Cells could be
+> declared in DT and MTD OTP probably was left behind and
+> add_legacy_fixed_of_cells was enabled without thinking of the 
+> consequences.
 
-Thanks,
-Sasha
-
------------------- original commit in Linus's tree ------------------
-
-From 6fb075fca63c3486612986eeff84ed4179644038 Mon Sep 17 00:00:00 2001
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Date: Fri, 23 Feb 2024 12:55:45 +0100
-Subject: [PATCH] mtd: rawnand: Ensure all continuous terms are always in sync
-
-While crossing a LUN boundary, it is probably safer (and clearer) to
-keep all members of the continuous read structure aligned, including the
-pause page (which is the last page of the lun or the last page of the
-continuous read). Once these members properly in sync, we can use the
-rawnand_cap_cont_reads() helper everywhere to "prepare" the next
-continuous read if there is one.
-
-Fixes: bbcd80f53a5e ("mtd: rawnand: Prevent crossing LUN boundaries during sequential reads")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20240223115545.354541-4-miquel.raynal@bootlin.com
----
- drivers/mtd/nand/raw/nand_base.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d6a27e08b1127..4d5a663e4e059 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1232,6 +1232,15 @@ static void rawnand_cap_cont_reads(struct nand_chip *chip)
- 		chip->cont_read.pause_page = rawnand_last_page_of_lun(ppl, first_lun);
- 	else
- 		chip->cont_read.pause_page = chip->cont_read.last_page;
-+
-+	if (chip->cont_read.first_page == chip->cont_read.pause_page) {
-+		chip->cont_read.first_page++;
-+		chip->cont_read.pause_page = min(chip->cont_read.last_page,
-+						 rawnand_last_page_of_lun(ppl, first_lun + 1));
-+	}
-+
-+	if (chip->cont_read.first_page >= chip->cont_read.last_page)
-+		chip->cont_read.ongoing = false;
- }
- 
- static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int page,
-@@ -1298,12 +1307,11 @@ static int nand_lp_exec_cont_read_page_op(struct nand_chip *chip, unsigned int p
- 	if (!chip->cont_read.ongoing)
- 		return 0;
- 
--	if (page == chip->cont_read.pause_page &&
--	    page != chip->cont_read.last_page) {
--		chip->cont_read.first_page = chip->cont_read.pause_page + 1;
--		rawnand_cap_cont_reads(chip);
--	} else if (page == chip->cont_read.last_page) {
-+	if (page == chip->cont_read.last_page) {
- 		chip->cont_read.ongoing = false;
-+	} else if (page == chip->cont_read.pause_page) {
-+		chip->cont_read.first_page++;
-+		rawnand_cap_cont_reads(chip);
- 	}
- 
- 	return 0;
-@@ -3510,10 +3518,7 @@ static void rawnand_cont_read_skip_first_page(struct nand_chip *chip, unsigned i
- 		return;
- 
- 	chip->cont_read.first_page++;
--	if (chip->cont_read.first_page == chip->cont_read.pause_page)
--		chip->cont_read.first_page++;
--	if (chip->cont_read.first_page >= chip->cont_read.last_page)
--		chip->cont_read.ongoing = false;
-+	rawnand_cap_cont_reads(chip);
- }
- 
- /**
--- 
-2.43.0
+Er... thank you?
 
 
+> That option enables NVMEM to scan the provided of_node and treat each
+> child as a NVMEM Cell, this was to support legacy NVMEM implementation
+> and don't cause regression.
+> 
+> This is problematic if we have devices like Nand where the OTP is
+> triggered by setting a special mode in the flash. In this context real
+> partitions declared in the Nand node are registered as OTP Cells and
+> this cause probe fail with -EINVAL error.
+> 
+> This was never notice due to the fact that till now, no Nand supported
+> the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
+> access for MX30LFxG18AC") this changed and coincidentally this Nand is
+> used on an FritzBox 7530 supported on OpenWrt.
+
+So as you noticed this problem was *exposed* by adding OTP support for
+Macronix NAND chips.
 
 
+> Alternative and more robust way to declare OTP Cells are already
+> prossible by using the fixed-layout node or by declaring a child node
+> with the compatible set to "otp-user" or "otp-factory".
+> 
+> To fix this and limit any regression with other MTD that makes use of
+> declaring OTP as direct child of the dev node, disable
+> add_legacy_fixed_of_cells if we detect the MTD type is Nand.
+> 
+> With the following logic, the OTP NVMEM entry is correctly created with
+> no Cells and the MTD Nand is correctly probed and partitions are
+> correctly exposed.
+> 
+> Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old 
+> syntax fixed OF cells")
+
+It's not that commit however that introduced the problem. Introducing
+"add_legacy_fixed_of_cells" just added a clean way of enabling parsing
+of old cells syntax. Even before my commit NVMEM subsystem was looking
+for NVMEM cells in NAND devices.
+
+I booted kernel 6.6 which has commit e87161321a40 ("mtd: rawnand:
+macronix: OTP > access for MX30LFxG18AC") but does NOT have commit
+2cc3b37f5b6d ("nvmem: add explicit config option to read old syntax
+fixed OF cells").
+
+Look at this log from Broadcom Northstar (Linux 6.6):
+[    0.410107] nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xdc
+[    0.416531] nand: Macronix MX30LF4G18AC
+[    0.420409] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, 
+OOB size: 64
+[    0.428022] iproc_nand 18028000.nand-controller: detected 512MiB 
+total, 128KiB blocks, 2KiB pages, 16B OOB, 8-bit, BCH-8
+[    0.438991] Scanning device for bad blocks
+[    0.873598] Bad eraseblock 738 at 0x000005c40000
+[    1.030279] random: crng init done
+[    1.854895] Bad eraseblock 2414 at 0x000012dc0000
+[    2.657354] Bad eraseblock 3783 at 0x00001d8e0000
+[    2.662967] Bad eraseblock 3785 at 0x00001d920000
+[    2.848418] nvmem user-otp1: nvmem: invalid reg on 
+/nand-controller@18028000/nand@0
+[    2.856126] iproc_nand 18028000.nand-controller: error -EINVAL: 
+Failed to register OTP NVMEM device
+
+So to summary it up:
+1. Problem exists since much earlier and wasn't introduced by 
+2cc3b37f5b6d
+2. Commit 2cc3b37f5b6d just gives you a clean way of solving this issue
+3. Problem was exposed by commit e87161321a40
+4. We miss fix for v6.6 which doesn't have 2cc3b37f5b6d (it hit v6.7)
+
+
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
