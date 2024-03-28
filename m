@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FB5EC54E67
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2024 12:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5790C54E67
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2024 12:26:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lz4VyVgO4vFNIdpDZSNfdCy1I33ef40e/+c+N5PgFVs=; b=eXqr15ozJ+K/E4
-	q17VXgfqEa3FMcoLcqwxG7hyQVqflKCeug75kVMFyDtpZoRrqFF+v4gxQryJ8soAohneI3LzV0iCE
-	oxU2RkwZFCifpF0Ewr7Mu1qwjVvAhbausXbDIS652WJSzGFQIgFoFkRCYQ97JlE1Vl43YG7tTC2Il
-	ZHqNjEIhEdKOGpnNVlkSMK5dpZWvowNc6WaA9MfnplrJJwd5s0zDEjpjpGaFBmFSoGIRvMXS8B0a6
-	vodzTTelGmcqJAHAJ2IDpRUxFdfx9da2MnGNWoS9uqZyMH+AiLvf50EJGUmaBoEhfDRHrz5v2deO+
-	WpWAIvPdab4C649aHkvQ==;
+	List-Owner; bh=tVA+quUyjnGiTxFaavSYWt4fCAZHzqIpPmdlJI3uQG4=; b=Y/OxRPiCH4wIZO
+	dlQnyN5NplUy8e88X7Z0/edVX1g2T2TYEoSP6Vq27dNrpVkvHtlXg6PI+/LpWz89pPTcKyF5joTKR
+	l820TUa9l1GVULgiN17Ri/ylu/SB+KwNMEOm+AYCFkkzZEEYDJ5j7RLIYmgUTa9SNIpozV0MTxhQQ
+	wGzujXPSOXlIhplyXKiYy50yiPx1VFykwE0w521Se/Pn3XvoePRWuBQqA5D2s6E0/DBUG0HQB2L8W
+	3LXzjcKGB45ZjChTUn3YuIjYclXeWt+7ThfAGAEjTwuCJrUMEhw8OMaJ8SU1LV8H+bvlwOU+UpKpC
+	7Tbk0QB24AtG89pHEsog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpoq2-0000000DtK0-2o4f;
-	Thu, 28 Mar 2024 12:26:34 +0000
+	id 1rpoq7-0000000DtO3-2q0l;
+	Thu, 28 Mar 2024 12:26:39 +0000
 Received: from mgamail.intel.com ([192.198.163.9])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpoq0-0000000DtED-16Fh
+	id 1rpoq3-0000000DtED-2IVy
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Mar 2024 12:26:33 +0000
+	Thu, 28 Mar 2024 12:26:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711628792; x=1743164792;
+  t=1711628796; x=1743164796;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=LxuKJEWg0lbMOOsOZYkLINRoTvlhJO/F2y259wm366I=;
-  b=ELvJGEN82EOfLWpQ8AGLusmOzChm+N0OKeO1ENB+idSYuYaGcbDRxx5v
-   vsKLbYTz7zZnXIT+/95Vtt7jAzERd4CjBgKDSlVXzoN9NBsEA10WMlGWx
-   TUAi68Yp65gMYiBG/jMaQolqAORWG037XYzTUI9xK1ctKE+0Zw0SmJd1E
-   Yt197cqc5YEqvb+/Q6/uf+FdpQmAFURuo73TyJ6Nh4KOipb9eWRMvnNDl
-   vmMfj4/kVtnwgDuV6D7q+mhcBtMlP/WRB96Sk52GryMTwXY3gCnkcAy07
-   /akkQQjC9WmCKED1iH2GDXS9XtUpNVKtPpDMK6LsE7y3YshKoAhoDQ4En
-   A==;
-X-CSE-ConnectionGUID: XGkTKayXSCCSjmBClGmuhg==
-X-CSE-MsgGUID: 3wSSESq3SJOUH0/sspQBDA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17505480"
+  bh=uqy+BRaTGrlZT701dUpBBU11lyKzmoJnhJuzWVAT9tc=;
+  b=gpJx0Yd3yPYUsSaUizfskC1tUJIJTWeeFADl2bciXiiFCUpgubQIMexX
+   1xkDNDNyOk/GaNVuHNL3hKAOqi3xHQcqupR8I3NCRV820I5ilcPYHgZw6
+   HQtGe9VWGjX3UUbhnCnvChl3aEaV7tkpqvzKZGS+gucfzDlMzVyQPTcqU
+   o127GD7FMIPFte3246E+kQFFVUaC/THItWjxeIXQ2bdqPO3V2c/iAomth
+   dr1seAGZ47E7fT9rA6fXCsyCEqbfNYPN1vWBf6BWftWE9Lx1QkqcUy2SC
+   vqPUpQXeSFXmrrKeQFaig1QyFszlAuB+rdPghX51nVsAhsUTacqwsTkPu
+   g==;
+X-CSE-ConnectionGUID: czFU20ZwT5OgFvpkAIPb2g==
+X-CSE-MsgGUID: TJ9JyBSsT6Wj8gyy0/AI8A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17505490"
 X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="17505480"
+   d="scan'208";a="17505490"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:32 -0700
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:35 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="16657577"
+   d="scan'208";a="16657580"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:29 -0700
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:32 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -63,18 +63,18 @@ Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
 	Vitaly Lubart <vitaly.lubart@intel.com>,
 	linux-mtd@lists.infradead.org,
 	intel-gfx@lists.freedesktop.org,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Lucas De Marchi <lucas.demarchi@intel.com>
-Subject: [PATCH 05/13] spi: add driver for intel graphics on-die spi device
-Date: Thu, 28 Mar 2024 14:22:28 +0200
-Message-Id: <20240328122236.1718111-6-alexander.usyskin@intel.com>
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH 06/13] spi: intel-dg: implement region enumeration
+Date: Thu, 28 Mar 2024 14:22:29 +0200
+Message-Id: <20240328122236.1718111-7-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328122236.1718111-1-alexander.usyskin@intel.com>
 References: <20240328122236.1718111-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240328_052632_388970_C05B868A 
-X-CRM114-Status: GOOD (  22.92  )
+X-CRM114-CacheID: sfid-20240328_052635_646529_BA6EF2B0 
+X-CRM114-Status: GOOD (  20.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,206 +91,233 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add auxiliary driver for intel discrete graphics
-on-die spi device.
+In intel-dg spi, there is no access to the spi controller,
+the information is extracted from the descriptor region.
 
 CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/spi/Kconfig        |  11 +++
- drivers/spi/Makefile       |   1 +
- drivers/spi/spi-intel-dg.c | 146 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 158 insertions(+)
- create mode 100644 drivers/spi/spi-intel-dg.c
+ drivers/spi/spi-intel-dg.c | 190 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 190 insertions(+)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index ddae0fde798e..d84896e6e7a0 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -507,6 +507,17 @@ config SPI_INTEL_PLATFORM
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called spi-intel-platform.
- 
-+config SPI_INTEL_DG
-+	tristate "Intel Discrete Graphic SPI flash driver"
-+	depends on AUXILIARY_BUS || COMPILE_TEST
-+	depends on MTD
-+	help
-+	  This enables support for Intel Discrete Graphic SPI
-+	  auxiliary device.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called spi-intel-dg.
-+
- config SPI_JCORE
- 	tristate "J-Core SPI Master"
- 	depends on OF && (SUPERH || COMPILE_TEST)
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 4ff8d725ba5e..e158761d6844 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -69,6 +69,7 @@ obj-$(CONFIG_SPI_INGENIC)		+= spi-ingenic.o
- obj-$(CONFIG_SPI_INTEL)			+= spi-intel.o
- obj-$(CONFIG_SPI_INTEL_PCI)		+= spi-intel-pci.o
- obj-$(CONFIG_SPI_INTEL_PLATFORM)	+= spi-intel-platform.o
-+obj-$(CONFIG_SPI_INTEL_DG)		+= spi-intel-dg.o
- obj-$(CONFIG_SPI_LANTIQ_SSC)		+= spi-lantiq-ssc.o
- obj-$(CONFIG_SPI_JCORE)			+= spi-jcore.o
- obj-$(CONFIG_SPI_LJCA)			+= spi-ljca.o
 diff --git a/drivers/spi/spi-intel-dg.c b/drivers/spi/spi-intel-dg.c
-new file mode 100644
-index 000000000000..8dc5448fc901
---- /dev/null
+index 8dc5448fc901..8ef9dccc9062 100644
+--- a/drivers/spi/spi-intel-dg.c
 +++ b/drivers/spi/spi-intel-dg.c
-@@ -0,0 +1,146 @@
-+// SPDX-License-Identifier: GPL-2.0
+@@ -17,14 +17,197 @@ struct intel_dg_spi {
+ 	void __iomem *base;
+ 	size_t size;
+ 	unsigned int nregions;
++	u32 access_map;
+ 	struct {
+ 		const char *name;
+ 		u8 id;
+ 		u64 offset;
+ 		u64 size;
++		unsigned int is_readable:1;
++		unsigned int is_writable:1;
+ 	} regions[];
+ };
+ 
++#define SPI_TRIGGER_REG       0x00000000
++#define SPI_VALSIG_REG        0x00000010
++#define SPI_ADDRESS_REG       0x00000040
++#define SPI_REGION_ID_REG     0x00000044
 +/*
-+ * Copyright(c) 2019-2024, Intel Corporation. All rights reserved.
++ * [15:0]-Erase size = 0x0010 4K 0x0080 32K 0x0100 64K
++ * [23:16]-Reserved
++ * [31:24]-Erase SPI RegionID
 + */
++#define SPI_ERASE_REG         0x00000048
++#define SPI_ACCESS_ERROR_REG  0x00000070
++#define SPI_ADDRESS_ERROR_REG 0x00000074
 +
-+#include <linux/device.h>
-+#include <linux/intel_dg_spi_aux.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
++/* Flash Valid Signature */
++#define SPI_FLVALSIG          0x0FF0A55A
 +
-+struct intel_dg_spi {
-+	struct kref refcnt;
-+	void __iomem *base;
-+	size_t size;
-+	unsigned int nregions;
-+	struct {
-+		const char *name;
-+		u8 id;
-+		u64 offset;
-+		u64 size;
-+	} regions[];
-+};
++#define SPI_MAP_ADDR_MASK     0x000000FF
++#define SPI_MAP_ADDR_SHIFT    0x00000004
 +
-+static void intel_dg_spi_release(struct kref *kref)
++#define REGION_ID_DESCRIPTOR  0
++/* Flash Region Base Address */
++#define FRBA      0x40
++/* Flash Region __n - Flash Descriptor Record */
++#define FLREG(__n)  (FRBA + ((__n) * 4))
++/*  Flash Map 1 Register */
++#define FLMAP1_REG  0x18
++#define FLMSTR4_OFFSET 0x00C
++
++#define SPI_ACCESS_ERROR_PCIE_MASK 0x7
++
++static inline void spi_set_region_id(struct intel_dg_spi *spi, u8 region)
 +{
-+	struct intel_dg_spi *spi = container_of(kref, struct intel_dg_spi, refcnt);
-+	int i;
-+
-+	pr_debug("freeing spi memory\n");
-+	for (i = 0; i < spi->nregions; i++)
-+		kfree(spi->regions[i].name);
-+	kfree(spi);
++	iowrite32((u32)region, spi->base + SPI_REGION_ID_REG);
 +}
 +
-+static int intel_dg_spi_probe(struct auxiliary_device *aux_dev,
-+			  const struct auxiliary_device_id *aux_dev_id)
++static inline u32 spi_error(struct intel_dg_spi *spi)
 +{
-+	struct intel_dg_spi_dev *ispi = auxiliary_dev_to_intel_dg_spi_dev(aux_dev);
-+	struct device *device;
-+	struct intel_dg_spi *spi;
-+	unsigned int nregions;
-+	unsigned int i, n;
-+	size_t size;
-+	char *name;
-+	size_t name_size;
-+	int ret;
++	u32 reg = ioread32(spi->base + SPI_ACCESS_ERROR_REG) &
++		  SPI_ACCESS_ERROR_PCIE_MASK;
 +
-+	device = &aux_dev->dev;
++	/* reset error bits */
++	if (reg)
++		iowrite32(reg, spi->base + SPI_ACCESS_ERROR_REG);
 +
-+	/* count available regions */
-+	for (nregions = 0, i = 0; i < INTEL_DG_SPI_REGIONS; i++) {
-+		if (ispi->regions[i].name)
-+			nregions++;
-+	}
++	return reg;
++}
 +
-+	if (!nregions) {
-+		dev_err(device, "no regions defined\n");
++static inline u32 spi_read32(struct intel_dg_spi *spi, u32 address)
++{
++	void __iomem *base = spi->base;
++
++	iowrite32(address, base + SPI_ADDRESS_REG);
++
++	return ioread32(base + SPI_TRIGGER_REG);
++}
++
++static int spi_get_access_map(struct intel_dg_spi *spi)
++{
++	u32 flmap1;
++	u32 fmba;
++	u32 fmstr4;
++	u32 fmstr4_addr;
++
++	spi_set_region_id(spi, REGION_ID_DESCRIPTOR);
++
++	flmap1 = spi_read32(spi, FLMAP1_REG);
++	if (spi_error(spi))
++		return -EIO;
++	/* Get Flash Master Baser Address (FMBA) */
++	fmba = ((flmap1 & SPI_MAP_ADDR_MASK) << SPI_MAP_ADDR_SHIFT);
++	fmstr4_addr = fmba + FLMSTR4_OFFSET;
++
++	fmstr4 = spi_read32(spi, fmstr4_addr);
++	if (spi_error(spi))
++		return -EIO;
++
++	spi->access_map = fmstr4;
++	return 0;
++}
++
++static bool spi_region_readable(struct intel_dg_spi *spi, u8 region)
++{
++	if (region < 12)
++		return spi->access_map & (1 << (region + 8)); /* [19:8] */
++	else
++		return spi->access_map & (1 << (region - 12)); /* [3:0] */
++}
++
++static bool spi_region_writeable(struct intel_dg_spi *spi, u8 region)
++{
++	if (region < 12)
++		return spi->access_map & (1 << (region + 20)); /* [31:20] */
++	else
++		return spi->access_map & (1 << (region - 8)); /* [7:4] */
++}
++
++static int intel_dg_spi_is_valid(struct intel_dg_spi *spi)
++{
++	u32 is_valid;
++
++	spi_set_region_id(spi, REGION_ID_DESCRIPTOR);
++
++	is_valid = spi_read32(spi, SPI_VALSIG_REG);
++	if (spi_error(spi))
++		return -EIO;
++
++	if (is_valid != SPI_FLVALSIG)
 +		return -ENODEV;
++
++	return 0;
++}
++
++static int intel_dg_spi_init(struct intel_dg_spi *spi, struct device *device)
++{
++	int ret;
++	unsigned int i, n;
++
++	/* clean error register, previous errors are ignored */
++	spi_error(spi);
++
++	ret = intel_dg_spi_is_valid(spi);
++	if (ret) {
++		dev_err(device, "The SPI is not valid %d\n", ret);
++		return ret;
 +	}
 +
-+	size = sizeof(*spi) + sizeof(spi->regions[0]) * nregions;
-+	spi = kzalloc(size, GFP_KERNEL);
-+	if (!spi)
-+		return -ENOMEM;
++	if (spi_get_access_map(spi))
++		return -EIO;
 +
-+	kref_init(&spi->refcnt);
++	for (i = 0, n = 0; i < spi->nregions; i++) {
++		u32 address, base, limit, region;
++		u8 id = spi->regions[i].id;
 +
-+	spi->nregions = nregions;
-+	for (n = 0, i = 0; i < INTEL_DG_SPI_REGIONS; i++) {
-+		if (ispi->regions[i].name) {
-+			name_size = strlen(dev_name(&aux_dev->dev)) +
-+				    strlen(ispi->regions[i].name) + 2; /* for point */
-+			name = kzalloc(name_size, GFP_KERNEL);
-+			if (!name)
-+				continue;
-+			snprintf(name, name_size, "%s.%s",
-+				 dev_name(&aux_dev->dev), ispi->regions[i].name);
-+			spi->regions[n].name = name;
-+			spi->regions[n].id = i;
-+			n++;
++		address = FLREG(id);
++		region = spi_read32(spi, address);
++
++		base = (region & 0x0000FFFF) << 12;
++		limit = (((region & 0xFFFF0000) >> 16) << 12) | 0xFFF;
++
++		dev_dbg(device, "[%d] %s: region: 0x%08X base: 0x%08x limit: 0x%08x\n",
++			id, spi->regions[i].name, region, base, limit);
++
++		if (base >= limit || (i > 0 && limit == 0)) {
++			dev_dbg(device, "[%d] %s: disabled\n",
++				id, spi->regions[i].name);
++			spi->regions[i].is_readable = 0;
++			continue;
 +		}
++
++		if (spi->size < limit)
++			spi->size = limit;
++
++		spi->regions[i].offset = base;
++		spi->regions[i].size = limit - base + 1;
++		/* No write access to descriptor; mask it out*/
++		spi->regions[i].is_writable = spi_region_writeable(spi, id);
++
++		spi->regions[i].is_readable = spi_region_readable(spi, id);
++		dev_dbg(device, "Registered, %s id=%d offset=%lld size=%lld rd=%d wr=%d\n",
++			spi->regions[i].name,
++			spi->regions[i].id,
++			spi->regions[i].offset,
++			spi->regions[i].size,
++			spi->regions[i].is_readable,
++			spi->regions[i].is_writable);
++
++		if (spi->regions[i].is_readable)
++			n++;
 +	}
 +
-+	spi->base = devm_ioremap_resource(device, &ispi->bar);
-+	if (IS_ERR(spi->base)) {
-+		dev_err(device, "mmio not mapped\n");
-+		ret = PTR_ERR(spi->base);
++	dev_dbg(device, "Registered %d regions\n", n);
++
++	/* Need to add 1 to the amount of memory
++	 * so it is reported as an even block
++	 */
++	spi->size += 1;
++
++	return n;
++}
++
+ static void intel_dg_spi_release(struct kref *kref)
+ {
+ 	struct intel_dg_spi *spi = container_of(kref, struct intel_dg_spi, refcnt);
+@@ -92,6 +275,13 @@ static int intel_dg_spi_probe(struct auxiliary_device *aux_dev,
+ 		goto err;
+ 	}
+ 
++	ret = intel_dg_spi_init(spi, device);
++	if (ret < 0) {
++		dev_err(device, "cannot initialize spi\n");
++		ret = -ENODEV;
 +		goto err;
 +	}
 +
-+	dev_set_drvdata(&aux_dev->dev, spi);
-+
-+	dev_dbg(device, "bound\n");
-+
-+	return 0;
-+
-+err:
-+	kref_put(&spi->refcnt, intel_dg_spi_release);
-+	return ret;
-+}
-+
-+static void intel_dg_spi_remove(struct auxiliary_device *aux_dev)
-+{
-+	struct intel_dg_spi *spi = dev_get_drvdata(&aux_dev->dev);
-+
-+	if (!spi)
-+		return;
-+
-+	dev_set_drvdata(&aux_dev->dev, NULL);
-+
-+	kref_put(&spi->refcnt, intel_dg_spi_release);
-+}
-+
-+static const struct auxiliary_device_id intel_dg_spi_id_table[] = {
-+	{
-+		.name = "i915.spi",
-+	},
-+	{
-+		.name = "xe.spi",
-+	},
-+	{
-+		/* sentinel */
-+	}
-+};
-+MODULE_DEVICE_TABLE(auxiliary, intel_dg_spi_id_table);
-+
-+static struct auxiliary_driver intel_dg_spi_driver = {
-+	.probe  = intel_dg_spi_probe,
-+	.remove = intel_dg_spi_remove,
-+	.driver = {
-+		/* auxiliary_driver_register() sets .name to be the modname */
-+	},
-+	.id_table = intel_dg_spi_id_table
-+};
-+
-+module_auxiliary_driver(intel_dg_spi_driver);
-+
-+MODULE_ALIAS("auxiliary:i915.spi");
-+MODULE_ALIAS("auxiliary:xe.spi");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_DESCRIPTION("Intel DGFX SPI driver");
+ 	dev_set_drvdata(&aux_dev->dev, spi);
+ 
+ 	dev_dbg(device, "bound\n");
 -- 
 2.34.1
 
