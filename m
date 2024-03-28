@@ -4,75 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AF72C54E64
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2024 12:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CBF9C54E67
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2024 14:19:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xHQyj4aKx/n2+Jog3OTgm/MbsI1GDIMZ94WMauYLkwQ=; b=TvcYqXUB3hsTXA
-	yZmT9AYV7HUGy//q6cFjp2t50ai3EZ21DqVvBc34Oon/L8PiCO5crXHDtITGLApR6P1TeO1yYVvq5
-	xmMKX0Cn/hW17Lfxd+PkosLYqp7qdU5sVdwHNHk/LXO3mUXn6BVeULHr06ysHZnrQe4/7P7V+3TGu
-	CiMM4tUG73dpTXCBBX2qEaAi8reCaJJ2PwnUb1kgcOGPiZiTc3ZOKDX1L76tI+6eRKDiOMuC6FSyu
-	x5b4gjVEt3P5DdypJ7ez5W0LFPPMRQ+ZlkqrtWdx2XYL79bo+D16DmIBxO2P5DJwTiTCpfex+IbFD
-	5UI1dQ7ExBQK/VdJ0ZAg==;
+	List-Owner; bh=TpsibNkzKkj4f+UTGJY/+4CyMchMAwHReVytNy7FPNE=; b=gqHDXAD9mn1fVX
+	Zix9HdRPDsTME91V8FRjAKrLjGr+Upl11bXxeqTpnZ/50rnsJHYBKqAPVpSwrzeKSNucv+BuCOcg5
+	QAnjumKMmAeMtJ5tPe3hv1BkfyaGZt38fTyCIFjGj5kSg9B1Q94GudLAxp4TRG4HNgaxcDyskTecv
+	IITYFh5sRIppSode5FeHOXd5lPf4yvj5eESrpzzX+9C9whbxm6alPlxoeXfktupzquwWDzLJ1cfdQ
+	Odmu5mg+ysLwFEZA/kvgjnZmmUcUnel3FttEqiz/NWYh/jHrDaYrYXv7GAyVPOukXHDSrlep4K9Ta
+	0EjWOzEZ72TWHmHsbBOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpoqg-0000000DtrA-1Fuh;
-	Thu, 28 Mar 2024 12:27:14 +0000
-Received: from mgamail.intel.com ([192.198.163.9])
+	id 1rpqbQ-0000000EIKE-2HeL;
+	Thu, 28 Mar 2024 14:19:36 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpoqO-0000000DtYK-1e7Z
+	id 1rpqbN-0000000EIGZ-0e3D
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Mar 2024 12:26:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711628816; x=1743164816;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1X2jKXaU7KqqY3UOoP2nFe4T9o7++CVXSfqero4maXQ=;
-  b=VjqiITPxbVQS5A2xYBY35Txx6R5AzmpF/GJJkAH8Ur4/tELkotnQvHP2
-   H9V1M5Fu7suOt3KdKk8uAII3TUcepg0LRvnjaOItKqNPJNP18osK8Agvb
-   ADkckmeLpJ2M2v0fViaJkRkQy5LfC0q44pN3dD0eomATosoMNQ3bx563r
-   npoYXVtgj+QllTWtKWVGrrwG7qiBJjz6aO7dUPIte83QkftvGu+NiPxm+
-   WUrf6Gp4FmVfiEk/0zN6lTZYn3ITdP4P/K5KggOhSEoJD7AyULsN4VD1h
-   YeaUCfODgWn8yGQfs2YNTooyS/btnrMfOZ38h7sogYX2Z6ooB0WIOHGJ/
-   g==;
-X-CSE-ConnectionGUID: ltaxQUPbQ9aBQcaFVl6X0A==
-X-CSE-MsgGUID: SaeevGaLR0ms4mzz1KwEdg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17505542"
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="17505542"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="16657605"
-Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:53 -0700
-From: Alexander Usyskin <alexander.usyskin@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Thu, 28 Mar 2024 14:19:34 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-415455fc8e8so4093175e9.2
+        for <linux-mtd@lists.infradead.org>; Thu, 28 Mar 2024 07:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711635570; x=1712240370; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WrB39jskNAQxk3poTjDI2WVUKziiXPl2M1zSpgJNL0Y=;
+        b=Mjo3coawyJS/nigKi4+pwKnrF+jcCVo5TuMbLiNqbuZj1w0xGHMOkHLvO1IzbNOqsb
+         YwC3T9GyZTHttqw4HzBR0ivw7Da9Q09EmgwrmRuxxHSpusm7N/YLTrx5iajN1q8IFz0E
+         wq7DC3VSdTsB3N5XShwzieU7u3GCnprX23IPksckRcxZgqwkKyR+GLIJmLkgrHRYC1Nb
+         68hfe0/F23EPJWzpXfeH8SEfFJ3olPX8GOlvblKcpPt6PRjXyjM+rfYYD7u7CyaC/2yc
+         fZAR2MbLdGaH6dC0FeCFDpJCDXUIgQsOD+pZeQz3RaNr8mgsnS1pRM5I9yRIi0GrdMJf
+         bX+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711635570; x=1712240370;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WrB39jskNAQxk3poTjDI2WVUKziiXPl2M1zSpgJNL0Y=;
+        b=dj2uxpzu1QflUxmOHz0GVyTRk7+xDfWN5cRCUZUkTLYJI6lUMNGAFuKTp3V72RTWjV
+         +chuLmxWCR4PB2B1RJ1iGKT7ePamcB42gJgggIA5npYwBaDuw+389jAH5ZTBvnGYGRUK
+         0YQgbEcTWQPjiBo4MzUyabnlXrHNvsHju0LDyWEuQ7K8DtnOim+iuZljM1QiJLMxdfFX
+         +ZlsUBGfZgl0Id6eUpQNLlr82fs1suq5Az3lYBr8d8u845SBHZoKcLrR8ASUbfoyx1OF
+         3xwdCZhoCdIfPzz/l8fOfYTAs8Z5tBeeaZECxMEIF1vErZdQ19r40tVILfLiPUn4KFgl
+         Im6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUbv+8TmCkYvPryFEMoMHO6MTMqSo6FzL1q5DxQVhpavo0B+vdBEuHx/VvMeAQxoN+KyZx/2dCEJ04/WwPTKqLfDoOeHJVaPH2V2ckTOw==
+X-Gm-Message-State: AOJu0YxbmrZzxUVmzgAIOsiBVr6Fgi16mNTjksuMK5wVWP5lJyw9FnIT
+	h+ZWhLkB+n5cPYi1wrgQBELj/se12M0bZ6W71ag9Kj2KYnP3JSs5
+X-Google-Smtp-Source: AGHT+IHWrLZeKk2CojUjAsEcno3P9RlE2RJMQ3G0SD3pycUW+URPzK2IyGZs4uxY7GtMdfxhVmrWqg==
+X-Received: by 2002:a05:600c:45ca:b0:414:8948:621c with SMTP id s10-20020a05600c45ca00b004148948621cmr2718071wmo.8.1711635569770;
+        Thu, 28 Mar 2024 07:19:29 -0700 (PDT)
+Received: from Ansuel-XPS. (host-87-1-248-55.retail.telecomitalia.it. [87.1.248.55])
+        by smtp.gmail.com with ESMTPSA id l14-20020a05600c1d0e00b0041477f95cf6sm2457876wms.13.2024.03.28.07.19.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 07:19:29 -0700 (PDT)
+Message-ID: <66057c71.050a0220.e4ba.97dc@mx.google.com>
+X-Google-Original-Message-ID: <ZgV8bS19nCFV8iQm@Ansuel-XPS.>
+Date: Thu, 28 Mar 2024 15:19:25 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
-	Vitaly Lubart <vitaly.lubart@intel.com>,
-	linux-mtd@lists.infradead.org,
-	intel-gfx@lists.freedesktop.org
-Subject: [PATCH 13/13] drm/xe/spi: add support for access mode
-Date: Thu, 28 Mar 2024 14:22:36 +0200
-Message-Id: <20240328122236.1718111-14-alexander.usyskin@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240328122236.1718111-1-alexander.usyskin@intel.com>
-References: <20240328122236.1718111-1-alexander.usyskin@intel.com>
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: limit OTP NVMEM Cell parse to non Nand devices
+References: <20240322040951.16680-1-ansuelsmth@gmail.com>
+ <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <30bc0d38-b610-4397-ba42-46819d5507fc@milecki.pl>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240328_052656_857860_58A09350 
-X-CRM114-Status: GOOD (  14.45  )
+X-CRM114-CacheID: sfid-20240328_071933_381388_027125C3 
+X-CRM114-Status: GOOD (  22.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,118 +97,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Check SPI access mode from GSC FW status registers
-and overwrite access status read from SPI descriptor, if needed.
-
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
----
- drivers/gpu/drm/xe/regs/xe_gsc_regs.h |  5 +++++
- drivers/gpu/drm/xe/xe_heci_gsc.c      |  5 +----
- drivers/gpu/drm/xe/xe_spi.c           | 31 ++++++++++++++++++++++++++-
- 3 files changed, 36 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/xe/regs/xe_gsc_regs.h b/drivers/gpu/drm/xe/regs/xe_gsc_regs.h
-index 9886ec9cb08e..ef04fab3a4b0 100644
---- a/drivers/gpu/drm/xe/regs/xe_gsc_regs.h
-+++ b/drivers/gpu/drm/xe/regs/xe_gsc_regs.h
-@@ -16,6 +16,11 @@
- #define MTL_GSC_HECI1_BASE	0x00116000
- #define MTL_GSC_HECI2_BASE	0x00117000
- 
-+#define DG1_GSC_HECI2_BASE	0x00259000
-+#define PVC_GSC_HECI2_BASE	0x00285000
-+#define DG2_GSC_HECI2_BASE	0x00374000
-+
-+
- #define HECI_H_CSR(base)	XE_REG((base) + 0x4)
- #define   HECI_H_CSR_IE		REG_BIT(0)
- #define   HECI_H_CSR_IS		REG_BIT(1)
-diff --git a/drivers/gpu/drm/xe/xe_heci_gsc.c b/drivers/gpu/drm/xe/xe_heci_gsc.c
-index bfdd33b9b23b..f240a3fbb507 100644
---- a/drivers/gpu/drm/xe/xe_heci_gsc.c
-+++ b/drivers/gpu/drm/xe/xe_heci_gsc.c
-@@ -11,14 +11,11 @@
- #include "xe_device_types.h"
- #include "xe_drv.h"
- #include "xe_heci_gsc.h"
-+#include "regs/xe_gsc_regs.h"
- #include "xe_platform_types.h"
- 
- #define GSC_BAR_LENGTH  0x00000FFC
- 
--#define DG1_GSC_HECI2_BASE			0x259000
--#define PVC_GSC_HECI2_BASE			0x285000
--#define DG2_GSC_HECI2_BASE			0x374000
--
- static void heci_gsc_irq_mask(struct irq_data *d)
- {
- 	/* generic irq handling */
-diff --git a/drivers/gpu/drm/xe/xe_spi.c b/drivers/gpu/drm/xe/xe_spi.c
-index 3dde2ec9c389..91632d68db8a 100644
---- a/drivers/gpu/drm/xe/xe_spi.c
-+++ b/drivers/gpu/drm/xe/xe_spi.c
-@@ -5,7 +5,10 @@
- 
- #include <linux/intel_dg_spi_aux.h>
- #include <linux/pci.h>
-+#include "xe_device.h"
- #include "xe_device_types.h"
-+#include "xe_mmio.h"
-+#include "regs/xe_gsc_regs.h"
- #include "xe_spi.h"
- 
- #define GEN12_GUNIT_SPI_BASE 0x00102040
-@@ -23,6 +26,32 @@ static void xe_spi_release_dev(struct device *dev)
- {
- }
- 
-+static bool xe_spi_writeable_override(struct xe_device *xe)
-+{
-+	struct xe_gt *gt = xe_root_mmio_gt(xe);
-+	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
-+	resource_size_t base;
-+	bool writeable_override;
-+
-+	if (xe->info.platform == XE_PVC) {
-+		base = PVC_GSC_HECI2_BASE;
-+	} else if (xe->info.platform == XE_DG2) {
-+		base = DG2_GSC_HECI2_BASE;
-+	} else if (xe->info.platform == XE_DG1) {
-+		base = DG1_GSC_HECI2_BASE;
-+	} else {
-+		dev_err(&pdev->dev, "Unknown platform\n");
-+		return true;
-+	}
-+
-+	writeable_override =
-+		!(xe_mmio_read32(gt, HECI_H_GS1(base)) &
-+		  HECI_FW_STATUS_2_SPI_ACCESS_MODE);
-+	if (writeable_override)
-+		dev_info(&pdev->dev, "SPI access overridden by jumper\n");
-+	return writeable_override;
-+}
-+
- void xe_spi_init(struct xe_device *xe)
- {
- 	struct intel_dg_spi_dev *spi = &xe->spi;
-@@ -34,7 +63,7 @@ void xe_spi_init(struct xe_device *xe)
- 	if (!IS_DGFX(xe))
- 		return;
- 
--	spi->writeable_override = false;
-+	spi->writeable_override = xe_spi_writeable_override(xe);
- 	spi->bar.parent = &pdev->resource[0];
- 	spi->bar.start = GEN12_GUNIT_SPI_BASE + pdev->resource[0].start;
- 	spi->bar.end = spi->bar.start + GEN12_GUNIT_SPI_SIZE - 1;
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCBNYXIgMjcsIDIwMjQgYXQgMTE6MTU6MDJQTSArMDEwMCwgUmFmYcWCIE1pxYJlY2tp
+IHdyb3RlOgo+IE9uIDIyLjAzLjIwMjQgMDU6MDksIENocmlzdGlhbiBNYXJhbmdpIHdyb3RlOgo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYyBiL2RyaXZlcnMvbXRkL210ZGNv
+cmUuYwo+ID4gaW5kZXggNTg4N2ZlYjM0N2E0Li4wZGU4N2JjNjM4NDAgMTAwNjQ0Cj4gPiAtLS0g
+YS9kcml2ZXJzL210ZC9tdGRjb3JlLmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwo+
+ID4gQEAgLTkwMCw3ICs5MDAsNyBAQCBzdGF0aWMgc3RydWN0IG52bWVtX2RldmljZSAqbXRkX290
+cF9udm1lbV9yZWdpc3RlcihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwKPiA+ICAgCWNvbmZpZy5uYW1l
+ID0gY29tcGF0aWJsZTsKPiA+ICAgCWNvbmZpZy5pZCA9IE5WTUVNX0RFVklEX0FVVE87Cj4gPiAg
+IAljb25maWcub3duZXIgPSBUSElTX01PRFVMRTsKPiA+IC0JY29uZmlnLmFkZF9sZWdhY3lfZml4
+ZWRfb2ZfY2VsbHMgPSB0cnVlOwo+ID4gKwljb25maWcuYWRkX2xlZ2FjeV9maXhlZF9vZl9jZWxs
+cyA9ICFtdGRfdHlwZV9pc19uYW5kKG10ZCk7Cj4gPiAgIAljb25maWcudHlwZSA9IE5WTUVNX1RZ
+UEVfT1RQOwo+ID4gICAJY29uZmlnLnJvb3Rfb25seSA9IHRydWU7Cj4gPiAgIAljb25maWcuaWdu
+b3JlX3dwID0gdHJ1ZTsKPiAKPiBJIHRoaW5rIHRoZXJlIG1heSBiZSBldmVuIG1vcmUgdW53YW50
+ZWQgYmVoYXZpb3VyIGhlcmUuIElmCj4gbXRkX290cF9udm1lbV9yZWdpc3RlcigpIGZhaWxzIHRv
+IGZpbmQgbm9kZSB3aXRoICJ1c2VyLW90cCIgLwo+ICJmYWN0b3J5LW90cCIgY29tcGF0aWJsZSB0
+aGVuIGl0IHNldHMgImNvbmZpZy5vZl9ub2RlIiB0byBOVUxMIGJ1dCB0aGF0Cj4gbWVhbnMgTlZN
+RU0gY29yZSBzdGlsbCBsb29rcyBmb3IgTlZNRU0gY2VsbHMgaW4gZGV2aWNlJ3MgIm9mX25vZGUi
+Lgo+IAo+IEkgYmVsaWV2ZSB3ZSBzaG91bGQgbm90IGxvb2sgZm9yIE9UUCBOVk1FTSBjZWxscyBv
+dXQgb2YgdGhlICJ1c2VyLW90cCIgLwo+ICJmYWN0b3J5LW90cCIgY29tcGF0aWJsZSBub2Rlcy4K
+PiAKPiBTbyBtYXliZSB3aGF0IHdlIG5lZWQgaW4gdGhlIGZpcnN0IHBsYWNlIGlzIGp1c3Q6Cj4g
+Y29uZmlnLmFkZF9sZWdhY3lfZml4ZWRfb2ZfY2VsbHMgPSAhIW5wOwo+ID8KPiAKPiBBbnkgZXh0
+cmEgbGltaXRhdGlvbiBvZiAuYWRkX2xlZ2FjeV9maXhlZF9vZl9jZWxscyBzaG91bGQgcHJvYmFi
+bHkgYmUKPiB1c2VkIG9ubHkgaWYgd2Ugd2FudCB0byBwcmV2ZW50IG5ldyB1c2VycyBvZiB0aGUg
+bGVnYWN5IHN5bnRheC4gVGhlCj4gcHJvYmxlbSBpcyB0aGF0IG10ZC55YW1sIGJpbmRpbmcgYWxs
+b3dlZCAidXNlci1vdHAiIGFuZCAiZmFjdG9yeS1vdHAiCj4gd2l0aCBvbGQgc3ludGF4IGNlbGxz
+LiBJdCBtZWFucyBldmVyeSBNVEQgZGV2aWNlIHdhcyBhbGxvd2VkIHRvIGhhdmUKPiB0aGVtLgo+
+IAo+IE5vIGluLWtlcm5lbCBEVFMgZXZlbiB1c2VkICJ1c2VyLW90cCIgb3IgImZhY3Rvcnktb3Rw
+IiB3aXRoIE5WTUVNIGxlZ2FjeQo+IGNlbGxzIGJ1dCBJJ20gbm90IHN1cmUgYWJvdXQgZG93bnN0
+cmVhbSBEVFMgZmlsZXMuIElkZWFsbHkgd2Ugd291bGQgZG8KPiBjb25maWcuYWRkX2xlZ2FjeV9m
+aXhlZF9vZl9jZWxscyA9IGZhbHNlOwo+IGJ1dCB0aGF0IGNvdWxkIGJyZWFrIGNvbXBhdGliaWxp
+dHkgd2l0aCBzb21lIGRvd25zdHJlYW0gRFRTIGZpbGVzLgoKWWVzIHRoZSBtYWluIHByb2JsZW0g
+aXMgcHJldmVudCByZWdyZXNzaW9uIGluIGRvd25zdHJlYW0uIEkgZmVlbCBmb3IgdGhlCm5hbmQg
+dXNhZ2UsIHRoaXMgaXMgMTAwJSBvZiB0aGUgdGltZXMgYnJva2VuLiBGb3IgU1BJIGFuZCBvdGhl
+ciBjb3JuZXIKY2FzZSBNVEQgZGV2aWNlcyBpdCdzIG5vdD8KCkFueXdheSBkaWQgeW91IGJ5IGNo
+YW5jZSBoYXZlIGEgc3VnZ2VzdGlvbiBmb3IgYSBiZXR0ZXIgZml4ZXMgdGFnPwoKLS0gCglBbnN1
+ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
