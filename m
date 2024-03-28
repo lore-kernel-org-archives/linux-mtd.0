@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DC86C54E64
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2024 12:27:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27E31C54E67
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Mar 2024 12:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bdcN8P1sR6x0XKRihcDbEu9w719PN5U4/Qcspg89BBc=; b=4WI0hJp6MGs6aY
-	fDK6oFcwePZMkfPX8A7RUjYlSiR7Gb69Qkb8x2f7OZA5BMnbR0SpyV4IDizSoh9epl7VC8SFC2mw5
-	WJrDm4VZFgbqfhRvDnkSCGw3m1OQJvCjSUWSdiuaUVS+b336M9+oXln0s6YwzJy+n4xNucTyKj0QU
-	bEJ6tPEsDu5NVLuLLH5SKt/2PXK6Gt6SUnH0frFX0J++sc/rnA0NJWkOXytRsBbjLjM5EEkFAmoSi
-	5Wz9J5gCfUzUQ12/2DtS/yI6/qpBffpaV3LPysm+z7wL2gzndOLnQiioDu8zwBUxBkJHhiQbFImwf
-	mVLpJ53JwIbCL43TFMVQ==;
+	List-Owner; bh=a6VtWQNUk2OaDZP57NDoYywaMnCIOngDAVMls7vwd3U=; b=btAPGpsIjp0eSr
+	HJD+22IRsbr0ocRreCTZOOFdd/6c9e4kDw4eGDc2dnfkispYf8Uzyg+6onuD0myrAeggRP+SOzoNd
+	Z1DCuqbruUiRmRPWnHV1/nE4jTygvSohUMYQhXy35UpiKTa6i/zwL7Mt4U8FFYLmHH0gsZs/G1XJl
+	G348xCLrR5I/6ZJJuSqhXG5+hkdautYYXyinVis+HKrqcC7PcSmFeJSNtMq2se3m5060OZVdDqy4n
+	+lK+B59V/U5FMVtqlD3yY+zFDTZK07eLcLCVakU6YBrjkYPD8F10ER1mnSib2S9dnxaqgDOX/DR0W
+	jI1lt5WNshcChCZy33Mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpoqV-0000000Dti1-08Au;
-	Thu, 28 Mar 2024 12:27:03 +0000
+	id 1rpoqZ-0000000DtlX-0f5R;
+	Thu, 28 Mar 2024 12:27:07 +0000
 Received: from mgamail.intel.com ([192.198.163.9])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpoqF-0000000DtQF-3PK4
+	id 1rpoqJ-0000000DtYK-0T7v
 	for linux-mtd@lists.infradead.org;
-	Thu, 28 Mar 2024 12:26:49 +0000
+	Thu, 28 Mar 2024 12:26:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711628808; x=1743164808;
+  t=1711628811; x=1743164811;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jD9b2EQdkHTxRF/wrwHTfsIHz7uTUs2VLMamN2+Y2L8=;
-  b=mQcuEAzUOn3j5BSoJ82tmGznP+MdT/za/TuIl5B2ise4uHj+21Ht7Psq
-   Xm3Gac3Tn7RiZ9GaWSXV3nNLGLu32GB1UPD9V0JV/k8aisk79Ii/OVuHc
-   RGDFXBvMhhKh2B876w3gROR/oV4XAS4ICp2KRn5ODxq0F/7m/pqKGjrBf
-   861oJ55Ol+16L/fW3pLIQZVDmdniPcN+tELTxZoWJ5SB4NDPtxUapaMwI
-   N9eeZaFlQ+ys+s11AqyBqMiYQ9h92USfRx5U/Js57nTbGEQfJ7+RSmpQu
-   b97+16d9pWqeg7AyM2rrwmUQ33/ZIYIDQsgT7O+qBwv+Fkc5yRhH6/kzL
+  bh=pTau1N9kok1E1vlNW/B+GOKBtuZqhfkaXfTH0H/6QvA=;
+  b=jIMYFviK72hrQHlM1tlRb4v/yCy7QLxAO5p9NZMjHObYmwa2eSE2hsso
+   FiexDm/ArVxt0b+1su7gVFg3ImCFq87rOzdZNnEdUZl2Mo9MoA5whK695
+   8giLI1btmE08soqOP8YMYAMYchSqsqvduSumqN/S0zX1XP59BQIQhzcff
+   +9BmcpRff2A4auUGVDITRDZfgyuovqdIvBVSrZVQwbxXXPG+Uu1r1B92b
+   jKdzwvHANvAKy4EMLSOAQsg5QtCXwSFV+wHTPKcdt49fChCEOekLQSfET
+   soPobK/aJI3kwfXkjEqsGH20B/baxki54IfdLviWJN3yepH0aW3wohHn/
    w==;
-X-CSE-ConnectionGUID: YRSAwhsKSquZ01msm/+kpQ==
-X-CSE-MsgGUID: ghrr+h8XTJGKTCRgBSdCDw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17505519"
+X-CSE-ConnectionGUID: QL7qd7woQWqhaHe/Zzp5sw==
+X-CSE-MsgGUID: 5SWnv5q1QBu4r98TaM0agg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="17505529"
 X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="17505519"
+   d="scan'208";a="17505529"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:48 -0700
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:51 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,161,1708416000"; 
-   d="scan'208";a="16657595"
+   d="scan'208";a="16657598"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:45 -0700
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 05:26:48 -0700
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -62,17 +62,18 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
 	Vitaly Lubart <vitaly.lubart@intel.com>,
 	linux-mtd@lists.infradead.org,
-	intel-gfx@lists.freedesktop.org
-Subject: [PATCH 10/13] spi: intel-dg: align 64bit read and write
-Date: Thu, 28 Mar 2024 14:22:33 +0200
-Message-Id: <20240328122236.1718111-11-alexander.usyskin@intel.com>
+	intel-gfx@lists.freedesktop.org,
+	Lucas De Marchi <lucas.demarchi@intel.com>
+Subject: [PATCH 11/13] spi: intel-dg: wake card on operations
+Date: Thu, 28 Mar 2024 14:22:34 +0200
+Message-Id: <20240328122236.1718111-12-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240328122236.1718111-1-alexander.usyskin@intel.com>
 References: <20240328122236.1718111-1-alexander.usyskin@intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240328_052648_124639_B3BEDBF5 
-X-CRM114-Status: GOOD (  11.31  )
+X-CRM114-CacheID: sfid-20240328_052651_522320_00980F69 
+X-CRM114-Status: GOOD (  13.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,67 +90,142 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-GSC SPI HW errors on quad access overlapping 1K border.
-Align 64bit read and write to avoid readq/writeq over 1K border.
+Enable runtime PM in spi driver to notify graphics driver that
+whole card should be kept awake while spi operations are
+performed through this driver.
 
+CC: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/spi/spi-intel-dg.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ drivers/spi/spi-intel-dg.c | 44 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
 diff --git a/drivers/spi/spi-intel-dg.c b/drivers/spi/spi-intel-dg.c
-index 9e8be7713f1a..d626e9526631 100644
+index d626e9526631..24be2f7e14d7 100644
 --- a/drivers/spi/spi-intel-dg.c
 +++ b/drivers/spi/spi-intel-dg.c
-@@ -231,6 +231,24 @@ static ssize_t spi_write(struct intel_dg_spi *spi, u8 region,
- 		len_s -= to_shift;
- 	}
+@@ -12,11 +12,14 @@
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/pm_runtime.h>
+ #include <linux/string.h>
+ #include <linux/slab.h>
+ #include <linux/sizes.h>
+ #include <linux/types.h>
  
-+	if (!IS_ALIGNED(to, sizeof(u64)) &&
-+	    ((to ^ (to + len_s)) & GENMASK(31, 10))) {
-+		/*
-+		 * Workaround reads/writes across 1k-aligned addresses
-+		 * (start u32 before 1k, end u32 after)
-+		 * as this fails on hardware.
-+		 */
-+		u32 data;
++#define INTEL_DG_SPI_RPM_TIMEOUT 500
 +
-+		memcpy(&data, &buf[0], sizeof(u32));
-+		spi_write32(spi, to, data);
-+		if (spi_error(spi))
-+			return -EIO;
-+		buf += sizeof(u32);
-+		to += sizeof(u32);
-+		len_s -= sizeof(u32);
+ struct intel_dg_spi {
+ 	struct kref refcnt;
+ 	struct mtd_info mtd;
+@@ -471,6 +474,12 @@ static int intel_dg_spi_erase(struct mtd_info *mtd, struct erase_info *info)
+ 	total_len = info->len;
+ 	addr = info->addr;
+ 
++	ret = pm_runtime_resume_and_get(mtd->dev.parent);
++	if (ret < 0) {
++		dev_err(&mtd->dev, "rpm: get failed %d\n", ret);
++		return ret;
 +	}
 +
- 	len8 = ALIGN_DOWN(len_s, sizeof(u64));
- 	for (i = 0; i < len8; i += sizeof(u64)) {
- 		u64 data;
-@@ -289,6 +307,23 @@ static ssize_t spi_read(struct intel_dg_spi *spi, u8 region,
- 		from += from_shift;
- 	}
+ 	mutex_lock(&spi->lock);
  
-+	if (!IS_ALIGNED(from, sizeof(u64)) &&
-+	    ((from ^ (from + len_s)) & GENMASK(31, 10))) {
-+		/*
-+		 * Workaround reads/writes across 1k-aligned addresses
-+		 * (start u32 before 1k, end u32 after)
-+		 * as this fails on hardware.
-+		 */
-+		u32 data = spi_read32(spi, from);
-+
-+		if (spi_error(spi))
-+			return -EIO;
-+		memcpy(&buf[0], &data, sizeof(data));
-+		len_s -= sizeof(u32);
-+		buf += sizeof(u32);
-+		from += sizeof(u32);
+ 	while (total_len > 0) {
+@@ -512,6 +521,8 @@ static int intel_dg_spi_erase(struct mtd_info *mtd, struct erase_info *info)
+ 
+ out:
+ 	mutex_unlock(&spi->lock);
++	pm_runtime_mark_last_busy(mtd->dev.parent);
++	pm_runtime_put_autosuspend(mtd->dev.parent);
+ 	return ret;
+ }
+ 
+@@ -545,6 +556,12 @@ static int intel_dg_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	if (len > spi->regions[idx].size - from)
+ 		len = spi->regions[idx].size - from;
+ 
++	ret = pm_runtime_resume_and_get(mtd->dev.parent);
++	if (ret < 0) {
++		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
++		return ret;
 +	}
 +
- 	len8 = ALIGN_DOWN(len_s, sizeof(u64));
- 	for (i = 0; i < len8; i += sizeof(u64)) {
- 		u64 data = spi_read64(spi, from + i);
+ 	mutex_lock(&spi->lock);
+ 
+ 	ret = spi_read(spi, region, from, len, buf);
+@@ -557,6 +574,8 @@ static int intel_dg_spi_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	*retlen = ret;
+ 
+ 	mutex_unlock(&spi->lock);
++	pm_runtime_mark_last_busy(mtd->dev.parent);
++	pm_runtime_put_autosuspend(mtd->dev.parent);
+ 	return 0;
+ }
+ 
+@@ -590,6 +609,12 @@ static int intel_dg_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	if (len > spi->regions[idx].size - to)
+ 		len = spi->regions[idx].size - to;
+ 
++	ret = pm_runtime_resume_and_get(mtd->dev.parent);
++	if (ret < 0) {
++		dev_err(&mtd->dev, "rpm: get failed %zd\n", ret);
++		return ret;
++	}
++
+ 	mutex_lock(&spi->lock);
+ 
+ 	ret = spi_write(spi, region, to, len, buf);
+@@ -602,6 +627,8 @@ static int intel_dg_spi_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	*retlen = ret;
+ 
+ 	mutex_unlock(&spi->lock);
++	pm_runtime_mark_last_busy(mtd->dev.parent);
++	pm_runtime_put_autosuspend(mtd->dev.parent);
+ 	return 0;
+ }
+ 
+@@ -747,6 +774,17 @@ static int intel_dg_spi_probe(struct auxiliary_device *aux_dev,
+ 		}
+ 	}
+ 
++	pm_runtime_enable(device);
++
++	pm_runtime_set_autosuspend_delay(device, INTEL_DG_SPI_RPM_TIMEOUT);
++	pm_runtime_use_autosuspend(device);
++
++	ret = pm_runtime_resume_and_get(device);
++	if (ret < 0) {
++		dev_err(device, "rpm: get failed %d\n", ret);
++		goto err_norpm;
++	}
++
+ 	spi->base = devm_ioremap_resource(device, &ispi->bar);
+ 	if (IS_ERR(spi->base)) {
+ 		dev_err(device, "mmio not mapped\n");
+@@ -771,9 +809,13 @@ static int intel_dg_spi_probe(struct auxiliary_device *aux_dev,
+ 
+ 	dev_dbg(device, "bound\n");
+ 
++	pm_runtime_put(device);
+ 	return 0;
+ 
+ err:
++	pm_runtime_put(device);
++err_norpm:
++	pm_runtime_disable(device);
+ 	kref_put(&spi->refcnt, intel_dg_spi_release);
+ 	return ret;
+ }
+@@ -785,6 +827,8 @@ static void intel_dg_spi_remove(struct auxiliary_device *aux_dev)
+ 	if (!spi)
+ 		return;
+ 
++	pm_runtime_disable(&aux_dev->dev);
++
+ 	mtd_device_unregister(&spi->mtd);
+ 
+ 	dev_set_drvdata(&aux_dev->dev, NULL);
 -- 
 2.34.1
 
