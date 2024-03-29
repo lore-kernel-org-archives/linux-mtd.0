@@ -4,87 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF7A6CD11DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2024 12:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE1DFC6FD1F
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2024 12:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HpaZ6VLdQVKCDI62DYVtY2vnhaGQIJ+RmDnrJ7Z9g6o=; b=es1OCwmocoQ4dC
-	gFrljkqcQKfkQIuraA/Qu8YTM/BJZ4KM9bG02rtv3iJcPDlhRl48pU5NNYD+qwfHEFV2uBX0QNYOD
-	kcWSBI69UWQAGSGfTfo7+PfXn3DIKxuzDDvegFJ/+AbInFJ1o2vZ18WiLWFac3r2GMooi71B1rdSA
-	6aYY9kn3rSnx+EQlpXTmHYgngh16tSGxHVvVAAkNwQY0dVGkgVjMO4eS+ufhdTIZvXEO5wojIgn8N
-	lWgjiCaRQEXRzhOiI5vuTmG0qSsJOGVJaZendP3XwvdbuYWg8MizoENbA78nQw8AYKblBNlMH305p
-	v/XJ8kLvRbEkY2JOI91A==;
+	List-Owner; bh=jVVrY+Ljw+BQwOubkTvlU3fZ1oRMwPDb9nt4pYUYcF4=; b=XMXl6TDR+7Y+iv
+	l9p5SirFQb9TFLM6HE+hvyHaMyhO2KZuySXr9XEUyB4xwdYOVYCbZOY3sGL51WBZd+w8+EOnDh3do
+	S105YhSv8NXzNSGoZOaA7ljiksDd0uLAWyRiVHinJpidYzt3UHSihd0UupmOAcxnjWihPl6Nca92P
+	oJ3SD98BVUZKca5X2+RVLuXrGVEGdJn31msWp/yco75khtM87tVlPUjuWFMI7LsrNkQ10AHCpLV7i
+	IkQtu0gX2op0hPVpMrl3LDwfoPzIycedReAtWjQBLidcN+boOX0VonIoY9G05jG0KpudIg+deGWZP
+	kU2ScYjWtJKNpG5fN/Mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBcK-00000000RuI-07A7;
-	Fri, 29 Mar 2024 12:45:56 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1rqBeY-00000000TBZ-0FQo;
+	Fri, 29 Mar 2024 12:48:14 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBaI-00000000R4K-0w5Q
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 29 Mar 2024 12:43:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=I6SqBEsoY1Vn7ttHCCdsyclZUL3xSFWBxIPmWDNmwdw=; b=CdKGQN8ryaC9q08jLm1Wk0hUCk
-	XdjgoWxPoy55hOnxU7f8hksWYjmgCJpwD5XMm4fFyk7AkYb8XpaWlZISMMnvEyAOFAjXgYpZ3uQ//
-	QbXJudOxMaXauVUbtWeYbPkf6676Ied4p8twzOyPRTuIxL6FdsffUh5WG8gjxBjYreI7dcqCWlm8+
-	unJIiX4Puoo7OmCE6Rr0MWNPpQ3De6UksLOwga2VYdtnVxJ5wAAlgGkYXAhDkqsUpUlt/fAiIgUgJ
-	4O/Iwtcjas0CgZrx1DqBSFrNrPKiVKqCMX2pTJqn4Eg78B3/2rFj0g1IZOhATW40KMW8MxIwlbqsU
-	I9dyPszA==;
-Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBaE-00000001Z8p-0pA8
+	id 1rqBcw-00000000S9C-2HfJ
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Mar 2024 12:43:49 +0000
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2d715638540so8806071fa.3
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Mar 2024 05:43:45 -0700 (PDT)
+	Fri, 29 Mar 2024 12:46:40 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-41549a9dcbaso8788425e9.0
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Mar 2024 05:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711716222; x=1712321022; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1711716387; x=1712321187; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=I6SqBEsoY1Vn7ttHCCdsyclZUL3xSFWBxIPmWDNmwdw=;
-        b=P4Qi8pJsJAI8xunLDE5Au0uduVkHmxD8TA4WUx7nQ5wM97OCgtNFmgXMmnKmDJpHiz
-         AQZfPCZl9/j/uJoDVHgcXeOwZVZvFXUQc+mdBeTy3xTot8I9WmuBgP++Dsy6g8kldcOs
-         mEnxI+8t06VFiniYdB7LOvIPtExz4zoaHkw/fobMejwDO9hx/G4bYYq4beXgm8uEohsY
-         vBCq+wTLRc8etWnkHZlraLwA26jZ3BTVvkS5sdJ9aOeE1dXYXQHJ2iivf7EfrY7b849F
-         QkEU6GRID0MNnw5kzBVqbcvVBKtW5+9zRTpLEWLAviKZkvTD47J1SdKKPRsIwKp/rPtS
-         o4hw==
+        bh=8YeHNiYgpqUA3csFyXBWArlvGAsCek/IygYY4/XO2cs=;
+        b=Qo5TFQJQR1KevY4CJCEUqkXIfR2DQGaSOJrAERK0wM2vDE0EyQq2OKw1Gul5qpNJQU
+         bPA+ATWD8b2meskpnxMms+IGTBlzSx3qu+ACWZPpBfx63+GZMV59K7lbazHKqWSpUaRr
+         RhUS2oYriAbZGPj4KU2Q72F/POwVg77Y2zQKfqAuhfPUPl9dDSaRtj2wsWSZuZ69N2Bb
+         elliZsVeoc8+mCf1Bwt0CIlmZFbBpJzmoCJOYG2p8rA01kq3skZxcanlbJJWAlEnHmBw
+         Jcf5PWnHNCVZ0+Tw8UYMgSbdVVDhoLzDR6tFtrHdO80/z+zrENGurqOyCo0jI/cf11h/
+         3RKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711716222; x=1712321022;
+        d=1e100.net; s=20230601; t=1711716387; x=1712321187;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I6SqBEsoY1Vn7ttHCCdsyclZUL3xSFWBxIPmWDNmwdw=;
-        b=oaYpESxItkJb9BuZEiL8ri44VFYmZoivCvuzNxKiqEASryX2AZi3ipx/REzhmFz7nX
-         L/X7RRBO8lVLEUldsLj6SFcNnMRqMT11j8jPh31Q45sluXK9Fcp56TiZTQE0ApwMmyd1
-         IYI0TMZSQsgIX4T6PxfWkmnSMPxPP4dZvqCEp15Qz99Tszj/XoJkWWccLtALt4vVUIsF
-         D5MuV4tNvToq4CKqACfipVxBtu1c8Mu79mTIbZSlLqPbfHkc4dxCyDDbsHcVa0+4FYcX
-         8bjBh+7MGkur/3PdtFUeuJIYhBFgx8ZTDzwujMAPF3AX1sTDROHMWzw5qnXMA6taURWE
-         KhZw==
-X-Forwarded-Encrypted: i=1; AJvYcCVttKo5EXbiZLZtKK8/akRAHG7lU9mLUFcA69+4jdred6VuSE5izOI3yCZMGPU3+j2pQ7hqozzvcNnosdAEOW4kGrjNkG1VnaGAH0PJ2A==
-X-Gm-Message-State: AOJu0YwMWfLm/PYI3ZNC93KQWLSh1sO10D2HI8320HiYMA34WcZnZ7tr
-	XwKI83J93CmUYciUaTcBCeE4gTh+qXTIoZ9IiLlGKszY05Jm8HBBkJr/TSJPl6Q=
-X-Google-Smtp-Source: AGHT+IHj1CqyeeMc7Jx1ZqklwSAHRddwaj85h3duBiYuahqk8FtM0x8jOZ6anq38yzh9vcPccDnGRQ==
-X-Received: by 2002:a05:651c:1a13:b0:2d4:a925:d5bc with SMTP id by19-20020a05651c1a1300b002d4a925d5bcmr1488329ljb.16.1711716221973;
-        Fri, 29 Mar 2024 05:43:41 -0700 (PDT)
+        bh=8YeHNiYgpqUA3csFyXBWArlvGAsCek/IygYY4/XO2cs=;
+        b=muHmL4kCfEq1GQLiprZPsh9Vvn7OB2UkDhijDdnHMmGdP83rTYhrKoodCnEWYn6hRu
+         LLKQVUxAOfkk3bBrDkbaacAhRevnBLECQV70O7I5x2ZOMHW2Ybq8uruuTi6sAhA4/Ez+
+         7hQeX0sZdGpcwfY9YS8PPhkwguM4hTtttsfZV9mB8J4skOi6+3OrGByWsJtsp1xk+X1p
+         NDUwB+RL57HMjr7o3+2d65NakhnxVVQIWN1ISgWAIhc8cYFTxG9SNXlLeq21poBon+6X
+         3/P5E93aMmd8VQ5BUoV37FDJyLb+HBqoqR2R+CsBeJmJRfCPWsaN4sH1O+jO1IS6Udf2
+         en7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVh7U9k37sAMoECihJyKkpFOvqcesL8g9vOn4WT67FTcHQAOzNBJTP6Sd+nv7mjPBkNnU+xYYORB6bxvvEyNQ9QwhfDggH/NmbuAQLr/w==
+X-Gm-Message-State: AOJu0Yx1cDDEHzS1ADm2amHwvq3zmwraRf8Yy9w5qnBkZmYbwSleaOQN
+	2YUle/tgk3bhDqmNBYLHXkkUKFAiTFSBu7LSsAYdF5noTh75vAROrBWgnI+dEdI=
+X-Google-Smtp-Source: AGHT+IFtw5PuV4+gGgZdA7zkX5FtNKwKbv8VnKOgfpHlS3eKIL/8rN2QtfMdOJQ/0OoWPWz52UnDUw==
+X-Received: by 2002:a05:600c:5114:b0:414:1eb:301a with SMTP id o20-20020a05600c511400b0041401eb301amr1355434wms.28.1711716387142;
+        Fri, 29 Mar 2024 05:46:27 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.50])
-        by smtp.gmail.com with ESMTPSA id jb2-20020a05600c54e200b004155387c08esm549913wmb.27.2024.03.29.05.43.40
+        by smtp.gmail.com with ESMTPSA id fs11-20020a05600c3f8b00b004146dd6bfe2sm5279154wmb.47.2024.03.29.05.46.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 05:43:41 -0700 (PDT)
-Message-ID: <a8eaa566-bcc8-4558-bcf0-38b7fc1551b3@linaro.org>
-Date: Fri, 29 Mar 2024 13:43:40 +0100
+        Fri, 29 Mar 2024 05:46:26 -0700 (PDT)
+Message-ID: <9b7a0699-936d-46b3-abf2-f11131b699d0@linaro.org>
+Date: Fri, 29 Mar 2024 13:46:25 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/13] spi: add driver for intel graphics on-die spi
- device
+Subject: Re: [PATCH 12/13] drm/xe/spi: add on-die spi device
 To: Alexander Usyskin <alexander.usyskin@intel.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -92,10 +76,9 @@ To: Alexander Usyskin <alexander.usyskin@intel.com>,
  Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
  Rodrigo Vivi <rodrigo.vivi@intel.com>
 Cc: Vitaly Lubart <vitaly.lubart@intel.com>, linux-mtd@lists.infradead.org,
- intel-gfx@lists.freedesktop.org, Tomas Winkler <tomas.winkler@intel.com>,
- Lucas De Marchi <lucas.demarchi@intel.com>
+ intel-gfx@lists.freedesktop.org
 References: <20240328122236.1718111-1-alexander.usyskin@intel.com>
- <20240328122236.1718111-6-alexander.usyskin@intel.com>
+ <20240328122236.1718111-13-alexander.usyskin@intel.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -142,10 +125,10 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240328122236.1718111-6-alexander.usyskin@intel.com>
+In-Reply-To: <20240328122236.1718111-13-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240329_124346_457018_5ABA68DC 
-X-CRM114-Status: GOOD (  20.58  )
+X-CRM114-CacheID: sfid-20240329_054636_122329_ECE91822 
+X-CRM114-Status: GOOD (  11.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,100 +146,34 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 28/03/2024 13:22, Alexander Usyskin wrote:
-> Add auxiliary driver for intel discrete graphics
-> on-die spi device.
-> 
-> CC: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 > ---
->  drivers/spi/Kconfig        |  11 +++
->  drivers/spi/Makefile       |   1 +
->  drivers/spi/spi-intel-dg.c | 146 +++++++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/xe/Makefile          |  1 +
+>  drivers/gpu/drm/xe/xe_device.c       |  3 ++
+>  drivers/gpu/drm/xe/xe_device_types.h |  5 ++
+>  drivers/gpu/drm/xe/xe_spi.c          | 78 ++++++++++++++++++++++++++++
+>  drivers/gpu/drm/xe/xe_spi.h          | 15 ++++++
+>  5 files changed, 102 insertions(+)
+>  create mode 100644 drivers/gpu/drm/xe/xe_spi.c
+>  create mode 100644 drivers/gpu/drm/xe/xe_spi.h
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC (and consider --no-git-fallback argument). It might
-happen, that command when run on an older kernel, gives you outdated
-entries. Therefore please be sure you base your patches on recent Linux
-kernel.
-
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
 
 ...
 
 > +
-> +	spi->base = devm_ioremap_resource(device, &ispi->bar);
-> +	if (IS_ERR(spi->base)) {
-> +		dev_err(device, "mmio not mapped\n");
-> +		ret = PTR_ERR(spi->base);
-> +		goto err;
-> +	}
-> +
-> +	dev_set_drvdata(&aux_dev->dev, spi);
-> +
-> +	dev_dbg(device, "bound\n");
-
-Sorry, no. No silly function success messages. There is existing
-infrastructure for this. Drop.
-
-> +
-> +	return 0;
-> +
-> +err:
-> +	kref_put(&spi->refcnt, intel_dg_spi_release);
-> +	return ret;
-> +}
-> +
-> +static void intel_dg_spi_remove(struct auxiliary_device *aux_dev)
+> +void xe_spi_fini(struct xe_device *xe)
 > +{
-> +	struct intel_dg_spi *spi = dev_get_drvdata(&aux_dev->dev);
+> +	struct intel_dg_spi_dev *spi = &xe->spi;
+> +	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
 > +
-> +	if (!spi)
+> +	/* Only the DGFX devices have internal SPI */
+> +	if (!IS_DGFX(xe))
 > +		return;
 > +
-> +	dev_set_drvdata(&aux_dev->dev, NULL);
-> +
-> +	kref_put(&spi->refcnt, intel_dg_spi_release);
-> +}
-> +
-> +static const struct auxiliary_device_id intel_dg_spi_id_table[] = {
-> +	{
-> +		.name = "i915.spi",
-> +	},
-> +	{
-> +		.name = "xe.spi",
-> +	},
-> +	{
-> +		/* sentinel */
-> +	}
-> +};
-> +MODULE_DEVICE_TABLE(auxiliary, intel_dg_spi_id_table);
-> +
-> +static struct auxiliary_driver intel_dg_spi_driver = {
-> +	.probe  = intel_dg_spi_probe,
-> +	.remove = intel_dg_spi_remove,
-> +	.driver = {
-> +		/* auxiliary_driver_register() sets .name to be the modname */
-> +	},
-> +	.id_table = intel_dg_spi_id_table
-> +};
-> +
-> +module_auxiliary_driver(intel_dg_spi_driver);
-> +
-> +MODULE_ALIAS("auxiliary:i915.spi");
-> +MODULE_ALIAS("auxiliary:xe.spi");
+> +	dev_dbg(&pdev->dev, "removing xe-spi cell\n");
 
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong (e.g. misses either
-entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
-for incomplete ID table.
-
+No need for simple functions entry/exit messages. There is already
+infrastructure for this. Drop.
 
 Best regards,
 Krzysztof
