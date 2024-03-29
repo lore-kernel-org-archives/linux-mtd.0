@@ -4,71 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE1DFC6FD1F
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2024 12:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30ED2CD11DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Mar 2024 12:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jVVrY+Ljw+BQwOubkTvlU3fZ1oRMwPDb9nt4pYUYcF4=; b=XMXl6TDR+7Y+iv
-	l9p5SirFQb9TFLM6HE+hvyHaMyhO2KZuySXr9XEUyB4xwdYOVYCbZOY3sGL51WBZd+w8+EOnDh3do
-	S105YhSv8NXzNSGoZOaA7ljiksDd0uLAWyRiVHinJpidYzt3UHSihd0UupmOAcxnjWihPl6Nca92P
-	oJ3SD98BVUZKca5X2+RVLuXrGVEGdJn31msWp/yco75khtM87tVlPUjuWFMI7LsrNkQ10AHCpLV7i
-	IkQtu0gX2op0hPVpMrl3LDwfoPzIycedReAtWjQBLidcN+boOX0VonIoY9G05jG0KpudIg+deGWZP
-	kU2ScYjWtJKNpG5fN/Mg==;
+	List-Owner; bh=Il9UDVU8cyUw7q/iQFvc49lE+SMLPyl3QHJBdwm9lzA=; b=CHGkhk8ZUh99bM
+	u9uTbnc3PicyCewl6anRmtz7YJQh34omhPja9kF6Rqq5t4alIkdcG7R3+i6sb0dolJXNy835dmtc9
+	/eeks39cVMQOctDA+jr1RksDGWl2cc240zZH0lafsdR3ASLuMH7zKMkD8OkxNbAFulmKhYYHcfSYr
+	hruYc7BuXUKmkPEd7EhJQsBLF4F3VJdTdZnTGhcJmOWk7Z6wZH4Asd2twcB5EBj+UB5PS1CbBF+i7
+	0G0OLqHuo9A+O6JnDB+K5SwU7vEWOVgyh9MWSQcZBZyV4RDTRe0Qhz3ORcHarRDaQgBRjaThP5M3X
+	zEm8NecgQzFWlbMTzusg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBeY-00000000TBZ-0FQo;
-	Fri, 29 Mar 2024 12:48:14 +0000
-Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
+	id 1rqBfT-00000000TZv-1R0n;
+	Fri, 29 Mar 2024 12:49:12 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqBcw-00000000S9C-2HfJ
+	id 1rqBdP-00000000STQ-1YEP
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 29 Mar 2024 12:47:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=GpEMLYAFIcPLXy8ORDoBI86Ex7kDadKVjlkWpRyMmO0=; b=VgMxNQlYYAhsGq5vFonRozz6vm
+	F/RRGhxlSDag/F207EM0+k3HvPZkluL5xHupfdgd4pQw6Hf3xYXbqsiy1hu3FZ0+68QmKGhNqJ8rC
+	bSgc7p9SVfQut+TkBYLCA0GVRj/MAonP3/OJuT7NoBDfZtwwCbbhW6MZ8suq4RkK2ELd+zxRbrMTQ
+	h1OQa0dfw9DckAzhUaN+3tKqSPLJBmvq1wLL/DJCSu2gc84+5WcixwvEpHdvR+qBqAn5fp3Fy8wfb
+	Bcyx7K1hgE7xw2G8eUI8uGy5WKzIz/8PZhW8V1mvjQotvyIeJST2vpfE2QLw8chJUII1BBP7Y/ygK
+	oSdZD5Aw==;
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rqBdM-00000001Zby-1JVP
 	for linux-mtd@lists.infradead.org;
-	Fri, 29 Mar 2024 12:46:40 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-41549a9dcbaso8788425e9.0
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Mar 2024 05:46:28 -0700 (PDT)
+	Fri, 29 Mar 2024 12:47:02 +0000
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-415523d9824so2521675e9.3
+        for <linux-mtd@lists.infradead.org>; Fri, 29 Mar 2024 05:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711716387; x=1712321187; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1711716418; x=1712321218; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8YeHNiYgpqUA3csFyXBWArlvGAsCek/IygYY4/XO2cs=;
-        b=Qo5TFQJQR1KevY4CJCEUqkXIfR2DQGaSOJrAERK0wM2vDE0EyQq2OKw1Gul5qpNJQU
-         bPA+ATWD8b2meskpnxMms+IGTBlzSx3qu+ACWZPpBfx63+GZMV59K7lbazHKqWSpUaRr
-         RhUS2oYriAbZGPj4KU2Q72F/POwVg77Y2zQKfqAuhfPUPl9dDSaRtj2wsWSZuZ69N2Bb
-         elliZsVeoc8+mCf1Bwt0CIlmZFbBpJzmoCJOYG2p8rA01kq3skZxcanlbJJWAlEnHmBw
-         Jcf5PWnHNCVZ0+Tw8UYMgSbdVVDhoLzDR6tFtrHdO80/z+zrENGurqOyCo0jI/cf11h/
-         3RKg==
+        bh=GpEMLYAFIcPLXy8ORDoBI86Ex7kDadKVjlkWpRyMmO0=;
+        b=J4vaiBWlfOZGzp4isprX0G4OzrLY1hiwdMzu+cLXOmR8mHnlirI9zWMHSw/rn5SdRq
+         9X32IV7727yUCXqI9nvK3tIwpuUwD2R4+tSf0+IEjS1Qu2PWCqWXS1wXWTtar45RzhFZ
+         O1MXFhIOJ0NAheuL6vtCR3H+5LELgO/DiCsQwc0BZVMIupIgMfcyeC7RXB+PvpgursT4
+         MBKzt27hFp9qo2bXsENP0KTR0CXDeIua+E7zZ9brUaQ2xNnhvYl+C1WHcTNw8qlG4ddA
+         cGXI+k/n6B50yWuQpON09QqulHSJ2ulAOvxLjBUwEclCiaAXd6YZVgKtNUutHHNHWlkK
+         6/0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711716387; x=1712321187;
+        d=1e100.net; s=20230601; t=1711716418; x=1712321218;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8YeHNiYgpqUA3csFyXBWArlvGAsCek/IygYY4/XO2cs=;
-        b=muHmL4kCfEq1GQLiprZPsh9Vvn7OB2UkDhijDdnHMmGdP83rTYhrKoodCnEWYn6hRu
-         LLKQVUxAOfkk3bBrDkbaacAhRevnBLECQV70O7I5x2ZOMHW2Ybq8uruuTi6sAhA4/Ez+
-         7hQeX0sZdGpcwfY9YS8PPhkwguM4hTtttsfZV9mB8J4skOi6+3OrGByWsJtsp1xk+X1p
-         NDUwB+RL57HMjr7o3+2d65NakhnxVVQIWN1ISgWAIhc8cYFTxG9SNXlLeq21poBon+6X
-         3/P5E93aMmd8VQ5BUoV37FDJyLb+HBqoqR2R+CsBeJmJRfCPWsaN4sH1O+jO1IS6Udf2
-         en7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVh7U9k37sAMoECihJyKkpFOvqcesL8g9vOn4WT67FTcHQAOzNBJTP6Sd+nv7mjPBkNnU+xYYORB6bxvvEyNQ9QwhfDggH/NmbuAQLr/w==
-X-Gm-Message-State: AOJu0Yx1cDDEHzS1ADm2amHwvq3zmwraRf8Yy9w5qnBkZmYbwSleaOQN
-	2YUle/tgk3bhDqmNBYLHXkkUKFAiTFSBu7LSsAYdF5noTh75vAROrBWgnI+dEdI=
-X-Google-Smtp-Source: AGHT+IFtw5PuV4+gGgZdA7zkX5FtNKwKbv8VnKOgfpHlS3eKIL/8rN2QtfMdOJQ/0OoWPWz52UnDUw==
-X-Received: by 2002:a05:600c:5114:b0:414:1eb:301a with SMTP id o20-20020a05600c511400b0041401eb301amr1355434wms.28.1711716387142;
-        Fri, 29 Mar 2024 05:46:27 -0700 (PDT)
+        bh=GpEMLYAFIcPLXy8ORDoBI86Ex7kDadKVjlkWpRyMmO0=;
+        b=usy+Y54nyDZCVSlb6cj+qbKtm4dp9H4cDVzzbbXsTnXPK2l45lI43P8TgYPNxAYuEY
+         j2TiLXjrmXTDX6pVr4Z5MM6SXCyWxjsVRZUsmr0hDQ3kyviPJjCSLhhN9dEYKxYdv5kL
+         GOParyHEluzSgGPTiPaK7B+CO9yNJLHNCEV3FT66eea9zp5ElJBuN9vMd+Npse1dDR6p
+         oxHLcsmZqcRNsAjTlnRAuTD38B9Mkyqgjy4MeQquSwSY4c9I1cHk+95xeN6gBQp1yAT7
+         XAEZxILmwgzLG5akr3vsAO2hb1QNUdbqyQooIMqaiLjBVsjrhFpbVxFnLLW4t7WUnXVb
+         VJIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFJWZhahiEvsEU2dMWa5yU92QXJpa0RnxCWI3AiWlFj63UA0oRuZLY9xrWGvM+8hRMuvqUo/YQRMi7pZ3kj7H4hWa8NdS52lrg5PGf7Q==
+X-Gm-Message-State: AOJu0Yyv8IIScJ7r1sk37Ur3Pu5CoS01JEE9D1+4lJy33EwXaZWSCtgn
+	aUvtWk3kV6R6YrsiuOH9PpGSEeJXl7LXSRKN5ixLrnDqbs9LFFUCFTUiPwWnUdk=
+X-Google-Smtp-Source: AGHT+IGaLfRLZOjQlzfHPXGvqq0b0oycpx9hVo3wIKjyPtH/FXBwjXElidFR6x69Jr6aVZQTPWY3eQ==
+X-Received: by 2002:a05:6000:1964:b0:33d:5a6f:a856 with SMTP id da4-20020a056000196400b0033d5a6fa856mr1745147wrb.30.1711716418583;
+        Fri, 29 Mar 2024 05:46:58 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.50])
-        by smtp.gmail.com with ESMTPSA id fs11-20020a05600c3f8b00b004146dd6bfe2sm5279154wmb.47.2024.03.29.05.46.25
+        by smtp.gmail.com with ESMTPSA id r7-20020adfab47000000b0033e43756d11sm4142761wrc.85.2024.03.29.05.46.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Mar 2024 05:46:26 -0700 (PDT)
-Message-ID: <9b7a0699-936d-46b3-abf2-f11131b699d0@linaro.org>
-Date: Fri, 29 Mar 2024 13:46:25 +0100
+        Fri, 29 Mar 2024 05:46:58 -0700 (PDT)
+Message-ID: <3f26157d-d79e-43a4-b61c-5da5aed9adcf@linaro.org>
+Date: Fri, 29 Mar 2024 13:46:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/13] drm/xe/spi: add on-die spi device
+Subject: Re: [PATCH 01/13] spi: add auxiliary device for intel dg spi
 To: Alexander Usyskin <alexander.usyskin@intel.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -78,7 +93,7 @@ To: Alexander Usyskin <alexander.usyskin@intel.com>,
 Cc: Vitaly Lubart <vitaly.lubart@intel.com>, linux-mtd@lists.infradead.org,
  intel-gfx@lists.freedesktop.org
 References: <20240328122236.1718111-1-alexander.usyskin@intel.com>
- <20240328122236.1718111-13-alexander.usyskin@intel.com>
+ <20240328122236.1718111-2-alexander.usyskin@intel.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -125,10 +140,10 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240328122236.1718111-13-alexander.usyskin@intel.com>
+In-Reply-To: <20240328122236.1718111-2-alexander.usyskin@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240329_054636_122329_ECE91822 
-X-CRM114-Status: GOOD (  11.93  )
+X-CRM114-CacheID: sfid-20240329_124700_504768_B003F79A 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -146,34 +161,25 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 28/03/2024 13:22, Alexander Usyskin wrote:
+> Add auxilary bus device structure for
+> Intel Discrete Graphics SPI device.
+> 
 > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 > ---
->  drivers/gpu/drm/xe/Makefile          |  1 +
->  drivers/gpu/drm/xe/xe_device.c       |  3 ++
->  drivers/gpu/drm/xe/xe_device_types.h |  5 ++
->  drivers/gpu/drm/xe/xe_spi.c          | 78 ++++++++++++++++++++++++++++
->  drivers/gpu/drm/xe/xe_spi.h          | 15 ++++++
->  5 files changed, 102 insertions(+)
->  create mode 100644 drivers/gpu/drm/xe/xe_spi.c
->  create mode 100644 drivers/gpu/drm/xe/xe_spi.h
+>  include/linux/intel_dg_spi_aux.h | 27 +++++++++++++++++++++++++++
 
+There is no user of this header. Please add it in the patch which uses it.
 
-...
+It will also justify why you use this or other subject prefix. Now, it
+looks just wrong: it's not a patch for spi.
 
-> +
-> +void xe_spi_fini(struct xe_device *xe)
-> +{
-> +	struct intel_dg_spi_dev *spi = &xe->spi;
-> +	struct pci_dev *pdev = to_pci_dev(xe->drm.dev);
-> +
-> +	/* Only the DGFX devices have internal SPI */
-> +	if (!IS_DGFX(xe))
-> +		return;
-> +
-> +	dev_dbg(&pdev->dev, "removing xe-spi cell\n");
+If it was a patch for spi, then:
 
-No need for simple functions entry/exit messages. There is already
-infrastructure for this. Drop.
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC (and consider --no-git-fallback argument). It might
+happen, that command when run on an older kernel, gives you outdated
+entries. Therefore please be sure you base your patches on recent Linux
+kernel.
 
 Best regards,
 Krzysztof
