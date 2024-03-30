@@ -4,93 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 330EEC6FD1F
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2024 16:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96755CD1288
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2024 17:56:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5LYMplQGuoGeZRyECd8oRBEhZcVzlLOwLS9AuPRe4pY=; b=B8J0NASo4RMiyR
-	OtUWiFJ9VkWzx7wtIvZ6eaGwIczthMWp6p4YUCdb6zrfYAidla/sU5jMg4RUOmHJG4MeFSOe/TB9w
-	eSI6YS7ohokrmXoQy/UouYiL3MTiMB8WGuHQDEkgo4t4XtXBwFGvzM5jw2xit41RimKqHxbIpXAqs
-	5Q6hu8cE3Fs590MjOYx5vJ9jL3e25rz/RSPYNqz5uvcS+DwV+v12q+KB3BFnyLQCYejfCabrVNoH3
-	f8BaajYYhAKZJ7nV/9XyJlcSZ7TAhyheTSs4UKgg97sl6gTLoUOlvD8yeUCIDnOGO3mp9LQA0c2cQ
-	j5vYcw/BxVtQjRt4+wbA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=d4YO5Ew/uB/DqgMH+4rRy9nXht0Qh1Hj/Vr1EdJ/Hss=; b=y1aGUy7gbI8kr4
+	j7yp2hSPDi40MFWYccwOV6su4mklPZ2txwwV2KAxDsxli0t4xWRP5ehiSjUl4vORaN0DTgK04F5VM
+	8nMvV2UEivK4iSfJ1SOx61Cswo870YknqfxEb3BbTu6WwY8ZxRgj1Z635bR6ah08ftGVELCBiPIgF
+	zQDddzS+BgZ6oUmTpDbj3jsHn8TUGol6pUfzV+znIb+r8sOM/649SrCh9Cct4G1J5cH/ZBQjQpFLD
+	u/wDOS2+jQIURvyR6LcIk7Oa3B2+vihObR2I4lFwhgEtJP49OgxRhowAVEoAh7iQTvfCBHLinJmjR
+	t+M7FzY3V4b3O9jwz0jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqbWg-00000003n7r-44kt;
-	Sat, 30 Mar 2024 16:25:50 +0000
-Received: from fout8-smtp.messagingengine.com ([103.168.172.151])
+	id 1rqcwF-00000003uIx-3hI1;
+	Sat, 30 Mar 2024 17:56:19 +0000
+Received: from mail-vi1eur04olkn20801.outbound.protection.outlook.com ([2a01:111:f403:2e11::801] helo=EUR04-VI1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqbWd-00000003n7H-3jSL
+	id 1rqcwD-00000003uIH-0AOG
 	for linux-mtd@lists.infradead.org;
-	Sat, 30 Mar 2024 16:25:49 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 4E4E213800C9;
-	Sat, 30 Mar 2024 12:25:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 30 Mar 2024 12:25:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1711815944; x=1711902344; bh=6EmT5VAqAf
-	VZEI7t418sTxwaqRhYXuC8xtP73kRinY0=; b=bbofwrgrvDVnvxLRyVZpMTtBre
-	3+lEQCq38uqaevFNaFjo3X06pEayq8lgfhDzevGBduZp1J/RqVgaVbkgBhxk+67K
-	Fk7Qjb+xwo4hmACFQHbUwyzGh5w2Ww0HNUlVjSkQSNA+lUSf0EZpU45wKkL5YnMq
-	XczmaFq7ej1XSVmxlR/wUQgDxjfFTjF+/yPQY/YgjwkUwLrmX/lorGkR0/Gt9ze+
-	wOp549tMOGkSu7TLn0Jhwqjr0gY5dYRpbWwCXGukWpvequy7DWYocYlDTdp96NRM
-	rH68WGa/vNCVj1qHK8f9G/K9lW4lPQ6KBWWqRnTuaOhehTsE4LRAF37qGXKg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711815944; x=1711902344; bh=6EmT5VAqAfVZEI7t418sTxwaqRhY
-	XuC8xtP73kRinY0=; b=Rhc+L6LCWGlBcpLNVsythswcQ8UCZ4CEFaqn5l3aiPG5
-	5AlUqcVAAozkYzxfFdHYQRc6mCiuPb2ViLA7QmnxZgs6dYl/wrw/ZvTobbJloGGV
-	0yc0HQPqEqj8vbHw3ggRREfEn/jkY+ZVpu2movy/FJDc/9o9mGlgx+9Dg/MT89CU
-	7LsdZGkId3Z+vLnP5yBGOTf7dmlntsF2icCMDSjXboCFu7FbZEwEjJ0sZjwUtBip
-	a7zN8g52WxeQgFOV4H4ix//kWz94u9I+EqUQTPkAuDWfyvmcFH1L4ugbAMsYLnFa
-	3af6wZhq3heyZVFQXUR4pCEU5dBe0Udti+dfCe+6jg==
-X-ME-Sender: <xms:CD0IZo7qHYm5ud-w8sI3o-_P4Fg9pIcQUqVDOr8JTSqFBZdKMXcGHA>
-    <xme:CD0IZp6OVukFKzxDtcfANQHKDReRe-026cZxgxnNUq-j1cu9vSpcFewi2O-XeVamU
-    dwjqVJRj6Fv6Q>
-X-ME-Received: <xmr:CD0IZncFBZMW2SNIsWQOZxaDNMHIkedSbUPfpWikce5EKobk5sTs-RyIs5DEnsWP7FjqFOiBwsYEOdzx_7VDfCvRtRNa8-ErlCpEZg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvhedgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepudeife
-    evhefhvddtiefhvdevhfelleefieeffeekieeggfethfdvudetfeetffeknecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:CD0IZtKpo5zL4Ly0kX66J7ClYcJuLjkJ_Uilui4iiqIWBprAuh7GFg>
-    <xmx:CD0IZsK-HaL8HueTW5PRVJUrZ6hnFrheWCVEhV1TMftQMa25iqUbBA>
-    <xmx:CD0IZuwgy1eS7W_CZipm5RyNmfrbFqwUNGCXGPcjJpy_GYh2OyHFXw>
-    <xmx:CD0IZgKePlX7CC_4OR2s5HH_5iZ6exObJsGFaCMaoS9i4EtNMuoH_Q>
-    <xmx:CD0IZvaUw8724KLq5Qg-lgG5ChNlWA67Sya8maJpXROgAzQDJQ6YAg>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 30 Mar 2024 12:25:43 -0400 (EDT)
-Date: Sat, 30 Mar 2024 17:25:40 +0100
-From: Greg KH <greg@kroah.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: stable@vger.kernel.org, John Audia <therealgraysky@proton.me>,
-	Ezra Buehler <ezra.buehler@husqvarnagroup.com>,
+	Sat, 30 Mar 2024 17:56:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z/YrDR0dZqeh3YVDRAwPuRN8Z236ANxxzN+EI7gFYQN70alXpSBQonUhqtmtz56MAuv9bdrhePDXeeFsxvIiMPe0EzU4tZ3N/67FQxRo+bVxOQIDPGR4HKdWaeOschz03ASarWtFDCcvLm+iJG7RaxXO2KaXSMRPcjOXsDaRNtUk5Ob74XMnPiHTP/OpNqpuo7INiBg7U8Au8F4e49M2rSmzxF0W5xbLOSBsrcGxjREt66g0fQdaECMzM3aZFlTxlZxRQBM9NLy9FkofXsnF4VqPWheON5RCy//9H5dgfgqtj8zI1OD5oYrk2VjxPF31x5vVSb1nAWlqpOWEKzQGOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6JPYul6UFtV/uydQyRywj+NOEJaZoeTfkGCi/cPvmmA=;
+ b=UV09dPhwLqYpCYYofhd0w97S6Gf3ztfXeKA28XX1vDPirZtm9u2bCr4PSo/9YvTluy71jf5u1m/pDNAD7oetA3Ay3ZFfeJ93JQD0zt4aIN+cgrB8ez6kUEenh3Xm9g3t8aAXKRCQKd47Z4fhglJz27/sRBFeBafAhuFdGgFNEx3r0FetXAygzSLMme+rgPTYgFERO8FX/fpjjRfFgh8beXuziXWleELyb247hvMUp0ZfeB5Fkr5/Ov6zNtC1iCVDhSQkK0s8qm7xDdy3ilGb1JwlpBpBL6O0q60zM/f2wiHP6HTYlVR6WabRV2evrx/v/FQ4Ff58RpcuLCP2E3m8KA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6JPYul6UFtV/uydQyRywj+NOEJaZoeTfkGCi/cPvmmA=;
+ b=JRrs9m6YPkp6zOWL2UP5f/MamNeLpahmewfpYJ/yrLS1cfssuGm8ifLScpkiMiUjoxSM8aHC/qyCBmiXXhbvmGL5Zzid0fZTsiJmdJ9+yAAIaGe/RaiPeqFD4p2TVMtbyLqszg/YUZNMDLWvH2bgFBB7UPkDMyr0gSrvnL6e0zwC0o8E4RATd8g0Px0dHmy2uukBpNA6JuEDiTQI70/Jfb/c9B2+9zGgS7Cze49dXOElQzOE/AhIT930hsN/r/aZzY+L+p5Lns7fV8biX0ZjY5jzAmIF2wcBxMOsv2Rxwz3gBToas13UyR/3McxdCHGWYO3RbLSH6MiOu80IxNNRRQ==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by PAWPR02MB9808.eurprd02.prod.outlook.com (2603:10a6:102:2ed::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.42; Sat, 30 Mar
+ 2024 17:56:07 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
+ 17:56:06 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
 	linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: Backport "mtd: spinand: Add support for 5-byte IDs" to 6.6, 6.7
- and 6.8
-Message-ID: <2024033034-volley-grout-f835@gregkh>
-References: <de171eb5-3e95-4529-9228-9a4ed526ed46@hauke-m.de>
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] mtd: maps: sa1100-flash: Prefer struct_size over open coded arithmetic
+Date: Sat, 30 Mar 2024 18:55:35 +0100
+Message-ID: <AS8PR02MB7237AC633B0D1D2EBD3C40E98B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+X-TMN: [T+ZyUfahhoB55AR6bYEJtt19jsRTdR4E]
+X-ClientProxiedBy: MA2P292CA0017.ESPP292.PROD.OUTLOOK.COM (2603:10a6:250::20)
+ To AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID: <20240330175535.15295-1-erick.archer@outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <de171eb5-3e95-4529-9228-9a4ed526ed46@hauke-m.de>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|PAWPR02MB9808:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9bb94aeb-dc60-48f9-a86c-08dc50e2a80d
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eSMvfRbAqPG5Nvow6NiLM7YQLWMKJrHb4ERXtV9go7MRQfSkf/PVG9Jo63J2insti/J0CcdqgHo3ABm2SWm97cAzI4uGjCM3b4CbJyOvI5OKg2G1OWyjoI6slGrFVBxgq5WNKu8QbCU6a/8RbTZYNNisEck64TBdm3QJnGZQE8N7bGx9hFPANsq6y+wG1ZFOxDzjyOOoo3SGcu1jtI0Re/6lQVqgVvHstOsdgjQXWHIGlHH294RQnqw9/FTRKR8excgT80BPEs9uGlSAwATuh32+OdHbMRWnEHQI7VPtiiy3gAATWaPUA96rH65kMDEjh7BQTGsgoNL6GqbXaMlBF6iWS3vB+qE/ngsaPw73/q9TNbmfz4V28z1FMfPU+eH13+ggCIfOgfhRJhSKZohJWjpzoYHGbFWjX7h/lShm+sT8uDOLJ7b1/YgKmL1UvESufb2lK/+ZdYNisQMWZi5GelHrMmR8Ind0tCmQVrVJ0OxhcpTny25/rfHwr78JlLVoDFQMDRHiIuFgXMIDZGchxWJTakmRrYDOw0NuLnfJXW2xpYeNy/5yrHG3io7I+HmAx7bm5ymcknOOu0+y9F/WPJWNI9+24LMoBkf8iAPeh0yzlJEvqc67g1h/eXsTmjgZNxY24Snzs7wGijzhkqJSXSjZzknbC72IO6GcE4IUgp7J+K7Prknkkpl0L6zpMi4a
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4KIttPLzxZLzjc2xWZCqvnNPdkSpSsxiv/YCi/v192y9H0eoyBqsvktoPZKD?=
+ =?us-ascii?Q?sRfDQjoJ3wj3aIYcRUSTrYlHs1ewupB9MaUkQZu7I/tltC+ll6XbDmUcATyy?=
+ =?us-ascii?Q?sRKghjg7TIt+PvyapWHI3pUJ+Axrc+E6kgUo4Sj8UAhKSyv/yntd3boVy9PG?=
+ =?us-ascii?Q?nXgXd6vPAdx+xQQKQIUsTmd1uY1+VG1B//Z6Kat0vF0JyeBWZeMMMtMQ4qoB?=
+ =?us-ascii?Q?U2inxLYBuZ3kcWCS4fz7az8wXgr237fBagG+OfgMR3EyvzAaTxY78pSJ8kvL?=
+ =?us-ascii?Q?1xo5GPLRx5bTVQ1FM4tUArsTYzH5snrgw6G8NO4EAYpZnpokqvL/kWzo3mGY?=
+ =?us-ascii?Q?7un6jnrB3lbzThw4XdR6MStLxmzPZp0BvJORESGW3QLvM64pelWvzahWEoCx?=
+ =?us-ascii?Q?3RXyQQlIUg2YJX7aq9b7H0yQniIJjtrc94msVWSaj3k1InTgFfZ5VKF6tZxw?=
+ =?us-ascii?Q?XmJDUJubjxHcXqqeVi4dltw4yEV/USPxYYeEtv0fhxOg4Gjlz72NYLU2Jil9?=
+ =?us-ascii?Q?Z5BXAlab2ke3IGLdk2renvFKiJv0fRockoL1ctoDGkjQ0bbEGqiYuN/W1F1M?=
+ =?us-ascii?Q?YAI61OLEqGGZDMot6Ojy9gjhD1PfHpMi80dEIBkpMwmSn8btiYCCiiCFKmay?=
+ =?us-ascii?Q?jAhjeJ75l1wMmjUp9CwV8A+8KfYgmIkKib0Gc4IrzRs3+4L6+9M2DSpU7R+p?=
+ =?us-ascii?Q?6xB0N1MhhMi16YG+LLnEHSReBHhMe2VzrRpUEIGLluNAROvh2pIdbxMtJiQZ?=
+ =?us-ascii?Q?Ih0+lz41+ujgztHQNo9MB4vnKoholdWxjhlyWDgmq/LCYPww0EVxwuWEkBVL?=
+ =?us-ascii?Q?34vknIECXUBYNVH4BLzJFGe4M/sfcs2NKc6AI5o6vLap5mfdzz64UUUW7Mz/?=
+ =?us-ascii?Q?Q/hOGEDZIgQByj6o6S0gOnRI5UNwnBZVBUj0sUI8PHaQ7kduScqP93W86FmQ?=
+ =?us-ascii?Q?iOTNSpztL167d+uYA64tAJIoS53qaQJnPbQOt9CTJ6eHEg6+2AxdvOXVrhBa?=
+ =?us-ascii?Q?36v4tpVz5IJAHlahVParElhM0CqBJ8S0G/bbQtNlABacuLDVyLF4pgx4z4Xz?=
+ =?us-ascii?Q?0PjPugqtCoIKcUzU7zBjj+4p3+uLUWDajXqL1nx1ZNhPXpBOYyhD6fUevtYd?=
+ =?us-ascii?Q?4cCDZxyzFm3twMQL/AeN7FU/5dRDAOzMB4XaKhNvocclKH0yo5medp8JhEMI?=
+ =?us-ascii?Q?61Muwe15Ys707gpqmTKHDDluk8JY2VC1DjDYp6DiwrlGvZ0nZrQzTbKEUKtL?=
+ =?us-ascii?Q?eMLIpqXW0DYhFOBd2LW2?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bb94aeb-dc60-48f9-a86c-08dc50e2a80d
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 17:56:01.7331
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR02MB9808
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240330_092548_288676_B270925E 
-X-CRM114-Status: GOOD (  16.12  )
+X-CRM114-CacheID: sfid-20240330_105617_126865_991CD796 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,53 +129,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 30, 2024 at 02:49:56PM +0100, Hauke Mehrtens wrote:
-> Hi,
-> 
-> Please backport the following commit back to the Linux stable kernels 6.6,
-> 6.7 and 6.8:
-> 
-> commit 34a956739d295de6010cdaafeed698ccbba87ea4
-> Author: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> Date:   Thu Jan 25 22:01:07 2024 +0200
-> 
->     mtd: spinand: Add support for 5-byte IDs
-> 
->     E.g. ESMT chips will return an identification code with a length of 5
->     bytes. In order to prevent ambiguity, flash chips would actually need to
->     return IDs that are up to 17 or more bytes long due to JEDEC's
->     continuation scheme. I understand that if a manufacturer ID is located
->     in bank N of JEDEC's database (there are currently 16 banks), N - 1
->     continuation codes (7Fh) need to be added to the identification code
->     (comprising of manufacturer ID and device ID). However, most flash chip
->     manufacturers don't seem to implement this (correctly).
-> 
->     Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
->     Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
->     Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
->     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->     Link:
-> https://lore.kernel.org/linux-mtd/20240125200108.24374-2-ezra@easyb.ch
-> 
-> 
-> This will fix a regression introduced between Linux kernel 6.6.22 and 6.6.23
-> in OpenWrt. The esmt NAND flash is not detected any more:
-> <3>[    0.885607] spi-nand spi0.0: unknown raw ID c8017f7f
-> <4>[    0.890852] spi-nand: probe of spi0.0 failed with error -524
-> See: https://github.com/openwrt/openwrt/pull/14992
-> 
-> 
-> The following commit was backported to 6.6.22, but the commit it depends on
-> was not backported.
-> commit 4bd14b2fd8a83a2f5220ba4ef323f741e11bfdfd
-> Author: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> Date:   Thu Jan 25 22:01:08 2024 +0200
-> 
->     mtd: spinand: esmt: Extend IDs to 5 bytes
+This is an effort to get rid of all multiplications from allocation
+functions in order to prevent integer overflows [1][2].
 
-Now queued up, thanks.
+As the "info" variable is a pointer to "struct sa_info" and this
+structure ends in a flexible array:
 
-greg k-h
+struct sa_info {
+	[...]
+	struct sa_subdev_info	subdev[];
+};
+
+the preferred way in the kernel is to use the struct_size() helper to
+do the arithmetic instead of the calculation "size + size * count" in
+the kzalloc() function.
+
+This way, the code is more readable and safer.
+
+This code was detected with the help of Coccinelle, and audited and
+modified manually.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+Link: https://github.com/KSPP/linux/issues/160 [2]
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
+---
+Hi,
+
+The Coccinelle script used to detect this code pattern is the following:
+
+virtual report
+
+@rule1@
+type t1;
+type t2;
+identifier i0;
+identifier i1;
+identifier i2;
+identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
+position p1;
+@@
+
+i0 = sizeof(t1) + sizeof(t2) * i1;
+...
+i2 = ALLOC@p1(..., i0, ...);
+
+@script:python depends on report@
+p1 << rule1.p1;
+@@
+
+msg = "WARNING: verify allocation on line %s" % (p1[0].line)
+coccilib.report.print_report(p1[0],msg)
+
+Regards,
+Erick
+---
+ drivers/mtd/maps/sa1100-flash.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index d4ce2376d33f..ac8a0a19a021 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -153,7 +153,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+ 					struct flash_platform_data *plat)
+ {
+ 	struct sa_info *info;
+-	int nr, size, i, ret = 0;
++	int nr, i, ret = 0;
+ 
+ 	/*
+ 	 * Count number of devices.
+@@ -167,12 +167,10 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+ 		goto out;
+ 	}
+ 
+-	size = sizeof(struct sa_info) + sizeof(struct sa_subdev_info) * nr;
+-
+ 	/*
+ 	 * Allocate the map_info structs in one go.
+ 	 */
+-	info = kzalloc(size, GFP_KERNEL);
++	info = kzalloc(struct_size(info, subdev, nr), GFP_KERNEL);
+ 	if (!info) {
+ 		ret = -ENOMEM;
+ 		goto out;
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
