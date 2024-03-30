@@ -4,115 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96755CD1288
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2024 17:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D5E6C6FD1F
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Mar 2024 18:37:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=d4YO5Ew/uB/DqgMH+4rRy9nXht0Qh1Hj/Vr1EdJ/Hss=; b=y1aGUy7gbI8kr4
-	j7yp2hSPDi40MFWYccwOV6su4mklPZ2txwwV2KAxDsxli0t4xWRP5ehiSjUl4vORaN0DTgK04F5VM
-	8nMvV2UEivK4iSfJ1SOx61Cswo870YknqfxEb3BbTu6WwY8ZxRgj1Z635bR6ah08ftGVELCBiPIgF
-	zQDddzS+BgZ6oUmTpDbj3jsHn8TUGol6pUfzV+znIb+r8sOM/649SrCh9Cct4G1J5cH/ZBQjQpFLD
-	u/wDOS2+jQIURvyR6LcIk7Oa3B2+vihObR2I4lFwhgEtJP49OgxRhowAVEoAh7iQTvfCBHLinJmjR
-	t+M7FzY3V4b3O9jwz0jg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=YgAI5BjARJGDedbDc0oCbk6eQnWukBgCzb90HVJ2xs4=; b=vUzupnTWGgPebK
+	7uMqy4nE3AnlME5C92zEu0olIi0OATflVNGu4jImsHiSsYoidAdRGZMbGO54UwpCdpUWUKfTjYYrG
+	k2knzFqd9GDTOM+KK7gwY0fvt+Uy/OTKuz1Ur9lBDVQi2bk53L3oJ356NdsAZVFUQ4ixIp7EgHCP5
+	b0StZiJoDePkR14pBQUsdhfO1VCSf+lmhNrO6pOtE1yrAS+LMXV8K3wL40wzYDcyiKomz230qIBzd
+	x4pRG1ZyIIUmzY/Myaw07wdEz3/PyrSE5yugunVHCZsZT3cu4sSgOiQkW7tjWWoyv9kdoyPb8LzLx
+	qIVrQlDBn78ZoAawvFig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqcwF-00000003uIx-3hI1;
-	Sat, 30 Mar 2024 17:56:19 +0000
-Received: from mail-vi1eur04olkn20801.outbound.protection.outlook.com ([2a01:111:f403:2e11::801] helo=EUR04-VI1-obe.outbound.protection.outlook.com)
+	id 1rqdZb-00000003yQ7-45QW;
+	Sat, 30 Mar 2024 18:36:59 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqcwD-00000003uIH-0AOG
+	id 1rqdZY-00000003yPN-32kk
 	for linux-mtd@lists.infradead.org;
-	Sat, 30 Mar 2024 17:56:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z/YrDR0dZqeh3YVDRAwPuRN8Z236ANxxzN+EI7gFYQN70alXpSBQonUhqtmtz56MAuv9bdrhePDXeeFsxvIiMPe0EzU4tZ3N/67FQxRo+bVxOQIDPGR4HKdWaeOschz03ASarWtFDCcvLm+iJG7RaxXO2KaXSMRPcjOXsDaRNtUk5Ob74XMnPiHTP/OpNqpuo7INiBg7U8Au8F4e49M2rSmzxF0W5xbLOSBsrcGxjREt66g0fQdaECMzM3aZFlTxlZxRQBM9NLy9FkofXsnF4VqPWheON5RCy//9H5dgfgqtj8zI1OD5oYrk2VjxPF31x5vVSb1nAWlqpOWEKzQGOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6JPYul6UFtV/uydQyRywj+NOEJaZoeTfkGCi/cPvmmA=;
- b=UV09dPhwLqYpCYYofhd0w97S6Gf3ztfXeKA28XX1vDPirZtm9u2bCr4PSo/9YvTluy71jf5u1m/pDNAD7oetA3Ay3ZFfeJ93JQD0zt4aIN+cgrB8ez6kUEenh3Xm9g3t8aAXKRCQKd47Z4fhglJz27/sRBFeBafAhuFdGgFNEx3r0FetXAygzSLMme+rgPTYgFERO8FX/fpjjRfFgh8beXuziXWleELyb247hvMUp0ZfeB5Fkr5/Ov6zNtC1iCVDhSQkK0s8qm7xDdy3ilGb1JwlpBpBL6O0q60zM/f2wiHP6HTYlVR6WabRV2evrx/v/FQ4Ff58RpcuLCP2E3m8KA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6JPYul6UFtV/uydQyRywj+NOEJaZoeTfkGCi/cPvmmA=;
- b=JRrs9m6YPkp6zOWL2UP5f/MamNeLpahmewfpYJ/yrLS1cfssuGm8ifLScpkiMiUjoxSM8aHC/qyCBmiXXhbvmGL5Zzid0fZTsiJmdJ9+yAAIaGe/RaiPeqFD4p2TVMtbyLqszg/YUZNMDLWvH2bgFBB7UPkDMyr0gSrvnL6e0zwC0o8E4RATd8g0Px0dHmy2uukBpNA6JuEDiTQI70/Jfb/c9B2+9zGgS7Cze49dXOElQzOE/AhIT930hsN/r/aZzY+L+p5Lns7fV8biX0ZjY5jzAmIF2wcBxMOsv2Rxwz3gBToas13UyR/3McxdCHGWYO3RbLSH6MiOu80IxNNRRQ==
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
- by PAWPR02MB9808.eurprd02.prod.outlook.com (2603:10a6:102:2ed::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.42; Sat, 30 Mar
- 2024 17:56:07 +0000
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sat, 30 Mar 2024
- 17:56:06 +0000
-From: Erick Archer <erick.archer@outlook.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@outlook.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] mtd: maps: sa1100-flash: Prefer struct_size over open coded arithmetic
-Date: Sat, 30 Mar 2024 18:55:35 +0100
-Message-ID: <AS8PR02MB7237AC633B0D1D2EBD3C40E98B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
-X-Mailer: git-send-email 2.25.1
-X-TMN: [T+ZyUfahhoB55AR6bYEJtt19jsRTdR4E]
-X-ClientProxiedBy: MA2P292CA0017.ESPP292.PROD.OUTLOOK.COM (2603:10a6:250::20)
- To AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
-X-Microsoft-Original-Message-ID: <20240330175535.15295-1-erick.archer@outlook.com>
+	Sat, 30 Mar 2024 18:36:58 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-415446af364so13860785e9.0
+        for <linux-mtd@lists.infradead.org>; Sat, 30 Mar 2024 11:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711823815; x=1712428615; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=2epNLcqYlDDxFlqorb7Cjat3BktL4sasPGtCRb+vLrQ=;
+        b=kiTS7Qv6ZVt37jLIVApJClxL+0DAE6av5mSCDc5V8FK0kGWsMmJgWioQHXbMC2Vrl5
+         yWxIm+vEy7fHWIaqp9B+ietZ/C/78md7dp2iJyG1dHB2jAKgqHzqJXR4ZoHD2rFbrC8i
+         6ybasxsiSkmyvgzmL2ji3zB0JH9uD6rPOnnW+bMMreBUv0glBuAmxvmpaUaOBa4bb3xm
+         7EksUuLSJ6+0nWUy47YzkktamKe9od1f+XgQIqAJg/XO0YkIottAtMmlj4zF+m19CcZ0
+         dN7T71sYLDLJOmGtZ1UMiMt2dnBLB4xxeZs6IVx5nQOi3HIF55k2dEMbjA+ykueqDn4t
+         gLIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711823815; x=1712428615;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2epNLcqYlDDxFlqorb7Cjat3BktL4sasPGtCRb+vLrQ=;
+        b=mz3RA7FxbhAI+63wgwupMSj+AmEBJRBHxqycf1IWRKz7Q4RRu6wAh3yz6S1YdDgHWU
+         +4++M5YJo2bWitPMQ8CK2r1Mo96RxEPsl7uMsasEvG9fQXiGBeDA3hyAP3sqPDA6Q2by
+         xKC9mXK+/rCFhzedfakC2XrIQMfA8JH1yjZwDOjfpcJ8r2/Qnd7FwrwhampskPmVnkbs
+         PA4Do++T60OOghWhtd65/wIVU3BS0z9bTHkt4Co/QFwNUGMc2Sawup2xRyBNlwcYO4pO
+         NjgEnCQQftPbOB8S7C+u0kpux0y3gOIn+yk1h88U4GV9QA0aYBPrl2gYNSRHZ3lVxq9I
+         4SZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUCAisWu70UuRWWongrZqB+gkci9CXzUk/3dXCnQG6jtJ0l9e3ojVSRkU1Qls2rCwqiRPU/fRBol7/4s4/4I2j9BnII0COx6NC0w2zWzA==
+X-Gm-Message-State: AOJu0YysLJ5ZOC7kE/m2W03woe21zqiYWMTVtAmUin/W/USMqR3wsMKe
+	VaR/D1VlSqd4yBXTFOYveigyNIsFR57UaEwMhCDsommHFoPEhGBlDs9kPhFttcQ=
+X-Google-Smtp-Source: AGHT+IFnVFj7i3GEZdjCS5RRUzI2AJw0B5Vjpn+qZ4xY+uoBiHeOJ0ETODeVEXt0VqNUBa9c3fyCAw==
+X-Received: by 2002:a05:600c:1c27:b0:414:37f:18dc with SMTP id j39-20020a05600c1c2700b00414037f18dcmr7990830wms.1.1711823814939;
+        Sat, 30 Mar 2024 11:36:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id h9-20020a05600c314900b004147b824b08sm9302259wmo.7.2024.03.30.11.36.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Mar 2024 11:36:54 -0700 (PDT)
+Message-ID: <98a5c1b4-b508-45ed-8719-149ec960250c@linaro.org>
+Date: Sat, 30 Mar 2024 19:36:52 +0100
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|PAWPR02MB9808:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9bb94aeb-dc60-48f9-a86c-08dc50e2a80d
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eSMvfRbAqPG5Nvow6NiLM7YQLWMKJrHb4ERXtV9go7MRQfSkf/PVG9Jo63J2insti/J0CcdqgHo3ABm2SWm97cAzI4uGjCM3b4CbJyOvI5OKg2G1OWyjoI6slGrFVBxgq5WNKu8QbCU6a/8RbTZYNNisEck64TBdm3QJnGZQE8N7bGx9hFPANsq6y+wG1ZFOxDzjyOOoo3SGcu1jtI0Re/6lQVqgVvHstOsdgjQXWHIGlHH294RQnqw9/FTRKR8excgT80BPEs9uGlSAwATuh32+OdHbMRWnEHQI7VPtiiy3gAATWaPUA96rH65kMDEjh7BQTGsgoNL6GqbXaMlBF6iWS3vB+qE/ngsaPw73/q9TNbmfz4V28z1FMfPU+eH13+ggCIfOgfhRJhSKZohJWjpzoYHGbFWjX7h/lShm+sT8uDOLJ7b1/YgKmL1UvESufb2lK/+ZdYNisQMWZi5GelHrMmR8Ind0tCmQVrVJ0OxhcpTny25/rfHwr78JlLVoDFQMDRHiIuFgXMIDZGchxWJTakmRrYDOw0NuLnfJXW2xpYeNy/5yrHG3io7I+HmAx7bm5ymcknOOu0+y9F/WPJWNI9+24LMoBkf8iAPeh0yzlJEvqc67g1h/eXsTmjgZNxY24Snzs7wGijzhkqJSXSjZzknbC72IO6GcE4IUgp7J+K7Prknkkpl0L6zpMi4a
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4KIttPLzxZLzjc2xWZCqvnNPdkSpSsxiv/YCi/v192y9H0eoyBqsvktoPZKD?=
- =?us-ascii?Q?sRfDQjoJ3wj3aIYcRUSTrYlHs1ewupB9MaUkQZu7I/tltC+ll6XbDmUcATyy?=
- =?us-ascii?Q?sRKghjg7TIt+PvyapWHI3pUJ+Axrc+E6kgUo4Sj8UAhKSyv/yntd3boVy9PG?=
- =?us-ascii?Q?nXgXd6vPAdx+xQQKQIUsTmd1uY1+VG1B//Z6Kat0vF0JyeBWZeMMMtMQ4qoB?=
- =?us-ascii?Q?U2inxLYBuZ3kcWCS4fz7az8wXgr237fBagG+OfgMR3EyvzAaTxY78pSJ8kvL?=
- =?us-ascii?Q?1xo5GPLRx5bTVQ1FM4tUArsTYzH5snrgw6G8NO4EAYpZnpokqvL/kWzo3mGY?=
- =?us-ascii?Q?7un6jnrB3lbzThw4XdR6MStLxmzPZp0BvJORESGW3QLvM64pelWvzahWEoCx?=
- =?us-ascii?Q?3RXyQQlIUg2YJX7aq9b7H0yQniIJjtrc94msVWSaj3k1InTgFfZ5VKF6tZxw?=
- =?us-ascii?Q?XmJDUJubjxHcXqqeVi4dltw4yEV/USPxYYeEtv0fhxOg4Gjlz72NYLU2Jil9?=
- =?us-ascii?Q?Z5BXAlab2ke3IGLdk2renvFKiJv0fRockoL1ctoDGkjQ0bbEGqiYuN/W1F1M?=
- =?us-ascii?Q?YAI61OLEqGGZDMot6Ojy9gjhD1PfHpMi80dEIBkpMwmSn8btiYCCiiCFKmay?=
- =?us-ascii?Q?jAhjeJ75l1wMmjUp9CwV8A+8KfYgmIkKib0Gc4IrzRs3+4L6+9M2DSpU7R+p?=
- =?us-ascii?Q?6xB0N1MhhMi16YG+LLnEHSReBHhMe2VzrRpUEIGLluNAROvh2pIdbxMtJiQZ?=
- =?us-ascii?Q?Ih0+lz41+ujgztHQNo9MB4vnKoholdWxjhlyWDgmq/LCYPww0EVxwuWEkBVL?=
- =?us-ascii?Q?34vknIECXUBYNVH4BLzJFGe4M/sfcs2NKc6AI5o6vLap5mfdzz64UUUW7Mz/?=
- =?us-ascii?Q?Q/hOGEDZIgQByj6o6S0gOnRI5UNwnBZVBUj0sUI8PHaQ7kduScqP93W86FmQ?=
- =?us-ascii?Q?iOTNSpztL167d+uYA64tAJIoS53qaQJnPbQOt9CTJ6eHEg6+2AxdvOXVrhBa?=
- =?us-ascii?Q?36v4tpVz5IJAHlahVParElhM0CqBJ8S0G/bbQtNlABacuLDVyLF4pgx4z4Xz?=
- =?us-ascii?Q?0PjPugqtCoIKcUzU7zBjj+4p3+uLUWDajXqL1nx1ZNhPXpBOYyhD6fUevtYd?=
- =?us-ascii?Q?4cCDZxyzFm3twMQL/AeN7FU/5dRDAOzMB4XaKhNvocclKH0yo5medp8JhEMI?=
- =?us-ascii?Q?61Muwe15Ys707gpqmTKHDDluk8JY2VC1DjDYp6DiwrlGvZ0nZrQzTbKEUKtL?=
- =?us-ascii?Q?eMLIpqXW0DYhFOBd2LW2?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9bb94aeb-dc60-48f9-a86c-08dc50e2a80d
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2024 17:56:01.7331
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR02MB9808
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] dt-bindings: aspeed: Add eSPI controller
+To: Manojkiran Eda <manojkiran.eda@gmail.com>, patrick.rudolph@9elements.com,
+ chiawei_wang@aspeedtech.com, ryan_chen@aspeedtech.com,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ jk@codeconstruct.com.au, openbmc@lists.ozlabs.org, broonie@kernel.org,
+ linux-spi@vger.kernel.org
+References: <20240319093405.39833-1-manojkiran.eda@gmail.com>
+ <20240319093405.39833-5-manojkiran.eda@gmail.com>
+ <bad5df79-e040-4868-9db6-701110894ea3@linaro.org>
+ <a9faa9b4-9bf6-49b6-b7eb-f642e2d261c3@gmail.com>
+ <f2a487c4-eba3-4a78-9a14-67c8754c8b61@linaro.org>
+ <582c276c-ea2f-456c-9bf9-47e39289a0b6@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <582c276c-ea2f-456c-9bf9-47e39289a0b6@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240330_105617_126865_991CD796 
-X-CRM114-Status: GOOD (  13.63  )
+X-CRM114-CacheID: sfid-20240330_113657_051360_E948F008 
+X-CRM114-Status: GOOD (  25.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,92 +151,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is an effort to get rid of all multiplications from allocation
-functions in order to prevent integer overflows [1][2].
+On 28/03/2024 12:33, Manojkiran Eda wrote:
+>>>>> +    description: Controls the flash channel of eSPI hardware
+>>>> That explains nothing. Unless you wanted to use here MTD bindings.
+>>>>
+>>>> This binding did not improve much. I don't understand why this is not
+>>>> SPI (nothing in commit msg, nothing in description), what is eSPI,
+>>>
+>>> eSPI uses Peripheral, Virtual Wire, Out of Band, and Flash Access
+>>> channels to communicate different sets of data.
+>>
+>> And what are these channels? What does it mean a "channel"? Is it just
+>> how you organize transfers and classes of devices? Or some sort of
+>> addressable instance on the bus?
+>>
+> 
+> Yes, an espi channel provides a means to allow multiple independent 
+> flows of traffic to share the same physical bus. Each of the channels 
+> has its own dedicated resources such as queue and flow control.
 
-As the "info" variable is a pointer to "struct sa_info" and this
-structure ends in a flexible array:
+Resources as queue and flow-control? Where are they defined in
+Devicetree? Which binding?
 
-struct sa_info {
-	[...]
-	struct sa_subdev_info	subdev[];
-};
+> 
+>> The channels feel like some sort of software or logical concept, not
+>> physical. Physical would be endpoint with peripheral. Or flash memory.
+> 
+> A channel is a logical communication pathway or interface between the 
+> chipset and peripheral devices. The concept of channels in the ESPI 
+> protocol helps organize and manage different types of communication 
+> between the chipset and peripherals. Each channel may have its own set 
+> of protocols, data transfer rates, and supported features, tailored to 
+> the requirements of the devices it serves.
+> 
+>> How do they fit here?
+> 
+> I am not sure I understand, can you please elaborate ?
 
-the preferred way in the kernel is to use the struct_size() helper to
-do the arithmetic instead of the calculation "size + size * count" in
-the kzalloc() function.
+All this suggests channel is programming aspect of your device thus does
+not have to be represented in DT. I don't know, come with any DT
+property to back up your case...
 
-This way, the code is more readable and safer.
+So far I see only interrupts and clocks, but then I would claim these
+could be part of parent node.
 
-This code was detected with the help of Coccinelle, and audited and
-modified manually.
+Rob said it last time: your split of nodes looks artificial and it all
+looks like one node.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-Link: https://github.com/KSPP/linux/issues/160 [2]
-Signed-off-by: Erick Archer <erick.archer@outlook.com>
----
-Hi,
+Your DTS reg like:
+	reg = <0x0 0x800>,<0x0 0x4000000>;
+proves it. I don't know if this is just bug in your code or some silly
+DTS just to create fake children. :/
 
-The Coccinelle script used to detect this code pattern is the following:
+> 
+>>>
+>>>    * The *Peripheral* Channel is used for communication between eSPI host
+>>>      bridge located on the master side and eSPI endpoints located on the
+>>>      slave side. LPC Host and LPC Peripherals are an example of eSPI host
+>>>      bridge and eSPI endpoints respectively.
+>>>    * *Virtual Wire* Channel: The Virtual Wire channel is used to
+>>>      communicate the state of sideband pins or GPIO tunneled through eSPI
+>>>      as in-band messages. Serial IRQ interrupts are communicated through
+>>>      this channel as in-band messages.
+>>>    * *OOB* Channel: The SMBus packets are tunneled through eSPI as
+>>>      Out-Of-Band (OOB) messages. The whole SMBus packet is embedded
+>>>      inside the eSPI OOB message as data.
+>>>    * *Flash Access* Channel: The Flash Access channel provides a path
+>>>      allowing the flash components to be shared run-time between chipset
+>>>      and the eSPI slaves that require flash accesses such as EC (Embedded
+>>>      Controller) and BMC.
+>>
+>> Please make binding complete, so define all of the channels.
+> 
+> 
+> I would like to inquire about the rationale behind this request. Based 
 
-virtual report
+Rationale - writing bindings document.
+https://elixir.bootlin.com/linux/v6.9-rc1/source/Documentation/devicetree/bindings/writing-bindings.rst#L17
 
-@rule1@
-type t1;
-type t2;
-identifier i0;
-identifier i1;
-identifier i2;
-identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
-position p1;
-@@
 
-i0 = sizeof(t1) + sizeof(t2) * i1;
-...
-i2 = ALLOC@p1(..., i0, ...);
+> on previous feedback received from the upstream efforts 
+> [https://lore.kernel.org/openbmc/HK0PR06MB37798462D17443C697433D7191D09@HK0PR06MB3779.apcprd06.prod.outlook.com/], 
+> suggestions were made to model the flash channel by utilizing the mtd 
+> subsystem, the virtual wire channel by utilizing the GPIO subsystem, and 
+> to consider the OOB channel as a type of i2c device, thereby allowing it 
+> to be utilized by the existing in-kernel MCTP subsystem, among others. 
+> My intention was to prioritize upstreaming the flash channel binding, 
+> along with its driver code, before proceeding to address other channels. 
 
-@script:python depends on report@
-p1 << rule1.p1;
-@@
+Just to clarify: I don't care about drivers and we do not talk about
+them here.
 
-msg = "WARNING: verify allocation on line %s" % (p1[0].line)
-coccilib.report.print_report(p1[0],msg)
+> I am curious to understand if it is a strict requirement to have the 
+> complete binding upstreamed before addressing the device drivers code.
 
-Regards,
-Erick
----
- drivers/mtd/maps/sa1100-flash.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+What if your other "devices" or "channels" are entirely different and
+binding would just not work? Or how can we understand the design if you
+upstream only part of it?
 
-diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-index d4ce2376d33f..ac8a0a19a021 100644
---- a/drivers/mtd/maps/sa1100-flash.c
-+++ b/drivers/mtd/maps/sa1100-flash.c
-@@ -153,7 +153,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
- 					struct flash_platform_data *plat)
- {
- 	struct sa_info *info;
--	int nr, size, i, ret = 0;
-+	int nr, i, ret = 0;
- 
- 	/*
- 	 * Count number of devices.
-@@ -167,12 +167,10 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
- 		goto out;
- 	}
- 
--	size = sizeof(struct sa_info) + sizeof(struct sa_subdev_info) * nr;
--
- 	/*
- 	 * Allocate the map_info structs in one go.
- 	 */
--	info = kzalloc(size, GFP_KERNEL);
-+	info = kzalloc(struct_size(info, subdev, nr), GFP_KERNEL);
- 	if (!info) {
- 		ret = -ENOMEM;
- 		goto out;
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
