@@ -4,84 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9299CCD1292
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2024 08:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB195CD1284
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Apr 2024 12:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZVqW9tC8n/lpleS6ypPSQtT3yhy20KuzS++hY7nXUuk=; b=w4tZPgEpbPTT7J
-	I/aQxmHHYoVkMRwpBuIJ9Dx5H8s5hAlkXz6sLDAQWMdL3So7v+exIK1H1+WeRPwo0Z5pPT9ht23Uq
-	VwfOAsRz6rf4Kocxf0cC2jcjELxeGyNeICA4bIJ9uJK02kWB81V0/aUEqVSXuj3sFkC/aEF1V9Lfo
-	S2nbmEGUyAIbm/jFiZpKJaIrDnpFOMAc2KvgcF+OWWcxEK21Y9ZyY3OBapeqTRd1XeiAHuHmt7zix
-	9SemnUV+M/NNeOZWArLVtKuRUHopm5zVm83esEWO+QJwHG2wmlrYNMrAxaMAXMjCouruscIePCc+4
-	AxCkZvSE+sPin841XtgA==;
+	List-Owner; bh=QpgZHfW3OG+Tk72kYl34siJSg7rxfADgBVuxGMqtkck=; b=N3/9M/fBQ1GiX4
+	wobq7hLQYE8UuSJzKuCOx4K39d1AxGS+sNMvCdlybFexRaKt5vXefFZaqlln5p9T+wDtP36q0If8R
+	Ku7ft/AH0LQJOY3pvvdx/6dsYyN0AxEx279zdkT4nnaQV+vEb2pyAy9MI25e5npapBySOlHyabmvY
+	hWLQ+PaOwbXMeuJAmEBGQi8Qb9XWd2cJNcJeZeb/VCNq9qkoPziFtySSzovXTxfWTVJ0SKvLSfE6G
+	8D8XwsDxRgVCPP2USv2leCax37094MmeVgUky9SnlFBEieAZIyTRCf8EsDBSgOsx1JCKXYwbit1La
+	808J/WWjWg5cOwoJNONw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsIW6-00000001qsE-0ptX;
-	Thu, 04 Apr 2024 08:32:14 +0000
-Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	id 1rsM0a-00000002XW5-0itN;
+	Thu, 04 Apr 2024 12:15:56 +0000
+Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsIW2-00000001qro-43df
+	id 1rsM0W-00000002XSa-1IDn
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Apr 2024 08:32:12 +0000
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-34356f794a5so635874f8f.1
-        for <linux-mtd@lists.infradead.org>; Thu, 04 Apr 2024 01:32:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712219527; x=1712824327; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ooJENRerkoGv8RC2dqQyR7rICIVbxFIMSkiHPTOG8iI=;
-        b=FEz3fk0thCtppnj46MNTMalqujD5krfB9Re5dxt0pm7Sfasgm3K2xCumbnhDfb/ZS4
-         /Wri0sDiL1B4HSnKLEcwhhtz/ekxo8FUaGIlCLsBFT2XUG2hS1QuwUmqBJLhQjS9Qntw
-         Ji7cI6OMK69UL0iqK527EZN5wGhSEjR1F7Hz+KKk11is9p0qocmtQsRBTymnPeXgDYXE
-         8x2XLpvK0vqVX6JH+lbtaazzrR8Ori/8t1Haww2Ue4cdoCp02r6WDnHUi8UVZ1IRWlUN
-         nR9Md390JeuXargRYRoJrQnUk+yneGEsuW6Jqy9pXu0EiMv3CQFBIL4idHHMCmWS+GB1
-         43uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712219527; x=1712824327;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ooJENRerkoGv8RC2dqQyR7rICIVbxFIMSkiHPTOG8iI=;
-        b=w1SOP4bIQTkBiol9GJQoBURLJtqiYeNQLhv1gqYd/8rio1xsSqtyiyeQFqO13/CPnV
-         JKSzXF9JOLjz0K7BPzuCD1qv5fTXuvkHW5xDGQaOGlKlSXk9VxWJR7EEe8bjZcEOQWmn
-         S0kWBMDfP6hYOi8dqDw61XEL8y4LoV+vywIa0GsNJQ3kVfkpXfUre1d4CbhhXw7tRzWO
-         RlKcAWXoWBnbOMskyP5V/he2K13uiMaL79v8SsQDy2HavUBaVN0OpLtsX/iLBxVOiVv1
-         3e3fLhdol2irBugGXTKQ9t7/K0t4kewpoP8Ecz/RIu8P6AmwevbqLblptpa5pDbePlrm
-         gZSA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6qUYrKZ1WJEaBV64flswTJFw5l94YR6BbtA96obEmSgESsWGq1zi6uoZG8R7exsIYxy+DOBtZY2GVjcxSJJYMrctNG/QSSxUXxgcbEg==
-X-Gm-Message-State: AOJu0YxOb5+c0mkl5tx4vnJoXkpiZx8M9dAxVBtJ4jbRwl2VFnMxlutQ
-	YZ6VmxdKpVw1d75pweBCRZT1CmlGsoVwIgJxNvYQ8bsMGs3V0cb0
-X-Google-Smtp-Source: AGHT+IHMYG3JmAlvLO/BWsvlKYgpaEbWbKyheePdqiabhMh4InIyJ6wQlfooDCFT3M3D6bhH2Wi1RA==
-X-Received: by 2002:a5d:568a:0:b0:33e:cf4d:c583 with SMTP id f10-20020a5d568a000000b0033ecf4dc583mr1575171wrv.16.1712219527113;
-        Thu, 04 Apr 2024 01:32:07 -0700 (PDT)
-Received: from localhost.localdomain (host-79-35-252-101.retail.telecomitalia.it. [79.35.252.101])
-        by smtp.googlemail.com with ESMTPSA id dj13-20020a0560000b0d00b0033e9fca1e49sm19279707wrb.60.2024.04.04.01.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 01:32:06 -0700 (PDT)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v4] mtd: rawnand: qcom: Fix broken OP_RESET_DEVICE command in qcom_misc_cmd_type_exec()
-Date: Thu,  4 Apr 2024 10:31:55 +0200
-Message-ID: <20240404083157.940-1-ansuelsmth@gmail.com>
+	Thu, 04 Apr 2024 12:15:54 +0000
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id E7E0512000D;
+	Thu,  4 Apr 2024 15:15:39 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E7E0512000D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712232939;
+	bh=ETwhhACPGuY4BnkEtYjTCpxmGzMAX5wMpPGvtWzJOJ0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=cqkae22nnOJqKTjS9Lp6VhJEf2QNNRAq4f7aVqH2buIB76IitunvIJ44Iwb6PtLsL
+	 I2cUykRoAANFgj1t4Rh2xZWfpdnTMB8oLdn2vqW9krJmEmZkVEQ94zwyKMjGUvMM2T
+	 lnfLlKg/rHTSY/uVsad5RK4aaS6KJevVoiOVJLKq/LOTtxXykCymr+uKd4Qwo1Rj7M
+	 jtwGTstLm5e4zXJ10VZcrafOxnvOAr9xb9AMWz45xIZrSqCkKLRG6tP61svUBo0qtm
+	 5j2mjXphjhEqE8bTCwzHo6BtKTTbZWmiPA754x60e7TY+uY2CuXTGXXSX68Xno0ca8
+	 F2E0WCNNAez6A==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu,  4 Apr 2024 15:15:39 +0300 (MSK)
+Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 4 Apr 2024 15:15:39 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <quic_sridsn@quicinc.com>, <quic_mdalam@quicinc.com>, <ezra@easyb.ch>,
+	<gch981213@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<sashal@kernel.org>, <gregkh@linuxfoundation.org>, <vigneshr@ti.com>
+CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Ezra Buehler
+	<ezra.buehler@husqvarnagroup.com>, <stable@vger.kernel.org>, Martin Kurbanov
+	<mmkurbanov@salutedevices.com>, Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v1] mtd: spinand: Add support for 5-byte IDs
+Date: Thu, 4 Apr 2024 15:15:21 +0300
+Message-ID: <20240404121532.14755-1-ddrokosov@salutedevices.com>
 X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184579 [Apr 04 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/04 11:24:00
+X-KSMG-LinksScanning: Clean, bases: 2024/04/04 11:24:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/04 07:34:00 #24651931
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240404_013211_032558_61495109 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20240404_051553_056737_73B41CE9 
+X-CRM114-Status: GOOD (  16.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,59 +101,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While migrating to exec_ops in commit a82990c8a409 ("mtd: rawnand: qcom:
-Add read/read_start ops in exec_op path"), OP_RESET_DEVICE command handling
-got broken unintentionally. Right now for the OP_RESET_DEVICE command,
-qcom_misc_cmd_type_exec() will simply return 0 without handling it. Even,
-if that gets fixed, an unnecessary FLASH_STATUS read descriptor command is
-being added in the middle and that seems to be causing the command to fail
-on IPQ806x devices.
+From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-So let's fix the above two issues to make OP_RESET_DEVICE command working
-again.
+[ Upstream commit 34a956739d295de6010cdaafeed698ccbba87ea4 ]
 
-Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
-Cc: stable@vger.kernel.org
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+E.g. ESMT chips will return an identification code with a length of 5
+bytes. In order to prevent ambiguity, flash chips would actually need to
+return IDs that are up to 17 or more bytes long due to JEDEC's
+continuation scheme. I understand that if a manufacturer ID is located
+in bank N of JEDEC's database (there are currently 16 banks), N - 1
+continuation codes (7Fh) need to be added to the identification code
+(comprising of manufacturer ID and device ID). However, most flash chip
+manufacturers don't seem to implement this (correctly).
+
+Cc: <stable@vger.kernel.org> # 6.6.23
+Cc: <stable@vger.kernel.org> # 6.7.11
+Cc: <stable@vger.kernel.org> # 6.8.2
+Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20240125200108.24374-2-ezra@easyb.ch
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 ---
-Changes v4:
-- Rework commit title and description as suggested.
-- Add Reviewed-by tag
-Changes v3:
-- Merge patches
-- Rework commit description
-Changes v2:
-- Split patches
 
- drivers/mtd/nand/raw/qcom_nandc.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+In the patch series [1] only one patch was marked with Fixes tag, that's
+why the secon patch was not applied to 6.6.y, 6.7.y and 6.8y. It breaks
+ESMT detection flow with logs:
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index b079605c84d3..b8cff9240b28 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2815,7 +2815,7 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
- 			      host->cfg0_raw & ~(7 << CW_PER_PAGE));
- 		nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
- 		instrs = 3;
--	} else {
-+	} else if (q_op.cmd_reg != OP_RESET_DEVICE) {
- 		return 0;
- 	}
+[    0.770730] spi-nand spi0.0: unknown raw ID c8017f7f
+[    0.772688] spi-nand: probe of spi0.0 failed with error -524
+
+Please cherry-pick the second patch from the series to 6.6.y, 6.7.y and
+6.8.y.
+
+Links:
+    [1] https://lore.kernel.org/linux-mtd/20240125200108.24374-1-ezra@easyb.ch/
+
+---
+ include/linux/mtd/spinand.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index badb4c1ac079..5c19ead60499 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -169,7 +169,7 @@
+ struct spinand_op;
+ struct spinand_device;
  
-@@ -2830,9 +2830,8 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
- 	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, instrs, NAND_BAM_NEXT_SGL);
--	(q_op.cmd_reg == OP_BLOCK_ERASE) ? write_reg_dma(nandc, NAND_DEV0_CFG0,
--	2, NAND_BAM_NEXT_SGL) : read_reg_dma(nandc,
--	NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-+	if (q_op.cmd_reg == OP_BLOCK_ERASE)
-+		write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
- 
- 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+-#define SPINAND_MAX_ID_LEN	4
++#define SPINAND_MAX_ID_LEN	5
+ /*
+  * For erase, write and read operation, we got the following timings :
+  * tBERS (erase) 1ms to 4ms
 -- 
 2.43.0
 
