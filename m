@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00381C67861
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2024 14:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A48A4CD11C2
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2024 14:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=h+PU3J7RLCYv2dsXxCVGbnTGHGHQDwoZhhCDwh38eeQ=; b=bS+W5UkyiKkJT6
-	rHl72Xwad4N45w/wqN80FmQUxqSG/rp8mfApjsA6X26dtZZDNwf2PrxOsxy0YIFZbIv9TSgSKncuE
-	DFUNjQjiKPR44Q7UZZ8Ad6bSsSlxELDywUrNwJkANwghWmjdazfg2hipoaY8uzIapvzMfqvtKsfM+
-	4hvWv23CshYyNIU0YEAHHY/P1T7Uyt4Sa4TNqK9zR4yQqvxMfikN39z9j/BQdafmXTr6HIZ93glQr
-	hUqhWwfrNCB+ZkkExyHCGCgWcC3OrKu/fDhZI1Tp56yROBRN/LxMIPg/mkm/8Py5pKoZlRZ4zmzIR
-	qKwCsfOZWv5WmY84R1dA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:Subject:To:From:Cc:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6VfPJPK56t97sIbsKw5h3tqYZxrtX/XLopHUe4GaGUY=; b=kQp7BRdI+EZcxHScnuabnaFXII
+	fBjtUMIbRXbj6IVSlMRud7FpaQRU1k9YUu/fbsz/0sJVaDIMu2N4VjUcqRBIz0qbdzvVdt/dvQmFj
+	C0lY/3DmriysTWwo/357QjNbg24EgoR3wUyLHuBAb+EvZ6jW4syE7QN1xJqdSCJJNgYMi8MLoaOJ5
+	xDqcj+YW9rL8ddjJQPBGL5oTaRWPpzze4RsbNf9+SKEnJ/jUphkYmeyo1dEFqpRFMJi1YmOoZxOaw
+	OUtx5QvZzMRTlqNiVkbGySOouAxTnT43qudWyOg3jEeO6qPQFNbp6KD2n66GN09nLucVS/5Ky9Hhf
+	BSNS7EMQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rskaI-00000007T7R-3ZxL;
-	Fri, 05 Apr 2024 14:30:26 +0000
+	id 1rsklE-00000007X6B-1Lo9;
+	Fri, 05 Apr 2024 14:41:44 +0000
 Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rskaF-00000007T6H-3u8y
+	id 1rskl6-00000007X3z-2Cya
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Apr 2024 14:30:25 +0000
+	Fri, 05 Apr 2024 14:41:38 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 903C9CE1F79;
-	Fri,  5 Apr 2024 14:30:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF9D1C433C7;
-	Fri,  5 Apr 2024 14:30:18 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 1C9E2CE3634;
+	Fri,  5 Apr 2024 14:41:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0203CC433F1;
+	Fri,  5 Apr 2024 14:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712327420;
-	bh=+hmouGUWtNRPVBEAQ5zRor/cUdIz1q9ZT+Aeo5mwccg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=j09wuuDE9l5oYSv9w8XepGpi8h2sXOQdieK6zR23WRChleFDSnvbOVd+ExJnd/PXy
-	 qdABiXoKu+9hxF4ZT9rFLZklYVCZIhjtZwfl+LMS9CuaD80N9b4J+ctJqvj8JZGfbS
-	 k/EdxwZ7oJlIureGUJxau4aNZ17V7TZ+xviTLUS6nlAWdjuj1X9wzh2aEh6VIXaL5S
-	 nrm8VdBr0/6Z0G4X4SwC9Hxc4dXRoAZ+f3bmpnHH7AlIujr+eM9sjFM+SjKkkGMzM+
-	 KTn3DQsXZKnPBd4f1FNevs0uzygBXAJ2Oj0VwD1yRVm9XwiDHmHUf07eaB5vdvnX9i
-	 2U2SM9ymcGdgQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	stable@vger.kernel.org,
-	Dinghao Liu <dinghao.liu@zju.edu.cn>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: diskonchip: work around ubsan link failure
-Date: Fri,  5 Apr 2024 16:30:04 +0200
-Message-Id: <20240405143015.717429-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
+	s=k20201202; t=1712328093;
+	bh=Btz/Hmez86EgZIrlgPrZQhuTuSmdGF/ahACcmo7T4Mg=;
+	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
+	b=ceKEAO9UgifeYaKFh885NRTA4DS7/FeFKKR9QT7dkK3CHRKwAa217pcHGGBK1wM5B
+	 PWe4e1byFUEtobZUDsRGGIZ7eyXWhFGJuvEh3aFxafYxb/A8JrKqq5vWt49qQ1plw7
+	 l6SNs8m/5FcsN4oVBqULt8Z1F2+/v4gDk83WsOFH4Q27thtKChR5qSiCMdZvorsy4x
+	 AND6dENTJMwSssXppAlY1MIp6VKYAwYz6fX0Nbgrk2soTM9T2hDW+EzZpvZZvomjh4
+	 6EShp2Nk6PmavmEDN0f7ey5HV9Zankjufonefl/0S7JnmInABpjRIVKuwKblw97YZK
+	 7rbEPHrqJhpZQ==
+Date: Fri, 05 Apr 2024 16:41:29 +0200
+Message-Id: <D0C9NCOMI27O.2VW2U3FNFTSPK@kernel.org>
+Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Flavio Suligoi" <f.suligoi@asem.it>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>
+Subject: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
+X-Mailer: aerc 0.16.0
+References: <20240405100104.480779-1-f.suligoi@asem.it>
+ <20240405100104.480779-2-f.suligoi@asem.it>
+In-Reply-To: <20240405100104.480779-2-f.suligoi@asem.it>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240405_073024_241065_EFFF6E8F 
-X-CRM114-Status: GOOD (  16.90  )
+X-CRM114-CacheID: sfid-20240405_074137_133241_030EA3E7 
+X-CRM114-Status: GOOD (  15.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,63 +69,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7744623161556918146=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+--===============7744623161556918146==
+Content-Type: multipart/signed;
+ boundary=acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
 
-I ran into a randconfig build failure with UBSAN using gcc-13.2:
+--acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-arm-linux-gnueabi-ld: error: unplaced orphan section `.bss..Lubsan_data31' from `drivers/mtd/nand/raw/diskonchip.o'
+Hi Flavio,
 
-I'm not entirely sure what is going on here, but I suspect this has something
-to do with the check for the end of the doc_locations[] array that contains
-an (unsigned long)0xffffffff element, which is compared against the signed
-(int)0xffffffff. If this is the case, we should get a runtime check for
-undefined behavior, but we instead get an unexpected build-time error.
+On Fri Apr 5, 2024 at 12:01 PM CEST, Flavio Suligoi wrote:
+> Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
+> Memory.
+> This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
+> able to provide SFDP information.
 
-I would have expected this to work fine on 32-bit architectures despite the
-signed integer overflow, though on 64-bit architectures this likely won't
-ever work.
+Did you try the at25 driver if it will fit your usecase? Judging
+from your last response, it sounds like it will do.
 
-Changing the contition to instead check for the size of the array makes the
-code safe everywhere and avoids the ubsan check that leads to the link
-error. The loop code goes back to before 2.6.12.
+>
+> Link: https://www.everspin.com/file/158244/download
+>
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>  drivers/mtd/spi-nor/everspin.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspi=
+n.c
+> index 5f321e24ae7d..4741930ce9a8 100644
+> --- a/drivers/mtd/spi-nor/everspin.c
+> +++ b/drivers/mtd/spi-nor/everspin.c
+> @@ -31,6 +31,14 @@ static const struct flash_info everspin_nor_parts[] =
+=3D {
+>  		.size =3D SZ_512K,
+>  		.sector_size =3D SZ_512K,
+>  		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +	}, {
+> +		.id =3D SNOR_ID(0x6b, 0xbb, 0x13),
+> +		.name =3D "em004lxb",
+> +		.size =3D SZ_512K,
+> +		.sector_size =3D SZ_512K,
+> +		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR | SPI_NOR_HAS_LOCK |
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/nand/raw/diskonchip.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Will it also work without SPI_NOR_NO_ERASE? Also, the flash supports
+fast read, so drop NO_FR. Also, please have a look at [1] for the
+testing requirements.
 
-diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index 5243fab9face..8db7fc424571 100644
---- a/drivers/mtd/nand/raw/diskonchip.c
-+++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -53,7 +53,7 @@ static unsigned long doc_locations[] __initdata = {
- 	0xe8000, 0xea000, 0xec000, 0xee000,
- #endif
- #endif
--	0xffffffff };
-+};
- 
- static struct mtd_info *doclist = NULL;
- 
-@@ -1554,7 +1554,7 @@ static int __init init_nanddoc(void)
- 		if (ret < 0)
- 			return ret;
- 	} else {
--		for (i = 0; (doc_locations[i] != 0xffffffff); i++) {
-+		for (i = 0; i < ARRAY_SIZE(doc_locations); i++) {
- 			doc_probe(doc_locations[i]);
- 		}
- 	}
--- 
-2.39.2
+Thanks.
+-michael
 
+> +			 SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
+> +		.no_sfdp_flags =3D SPI_NOR_SKIP_SFDP,
+>  	}
+>  };
+> =20
+
+[1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
+
+--acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZhANmRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hh6wF/W6ehEKW1KipXS15k6n/JOHz5SNhKHN3B
+vpilSYvkfW+/ZLMZBgGjNTKnOFlePmnOAYCVhLAxPiDYQ1p8FHwGOLNFEjYLw/Lu
+GRDEhq8JnOuyKnFJMv9UO0OaGygMib3W9Xg=
+=bbaR
+-----END PGP SIGNATURE-----
+
+--acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb--
+
+
+--===============7744623161556918146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7744623161556918146==--
+
