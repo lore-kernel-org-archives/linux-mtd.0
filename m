@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F09BCD11C2
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2024 10:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BB7CD11C2
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2024 12:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=uym+SeOG2+hLbwh9Sc7wLTrW24h0t646BG4xGq7OAx8=; b=Twz
-	rl7eotgnSO7uWsFpZqIKJwSrqnM3mE2sj3mbk6+L2b6SSiE+cOH6Lru/mWMOEhfL75c1oBQrcOvAE
-	qhLTz5hQtyV4T8FdB3R3OPIHyAKTm1NxLoX1YNhHhXuIcFBVCiTKTKkGCr889E4AVDjs1UZ2LrYY5
-	81k2TTsV0h0JXyMz+JN9ZfpecB7RzsOG6ROq6IA2IALi/p1vBIN9K4IhqueJOgsHQsNccpNKUWxkq
-	NgfW4P8Q/HOmr8trdKHvoUwiuYAhu6xitIPJhJGwd5K5OmsUT5t87UJy6gvkg7q+lkJn/SkkjQB98
-	GcUBhtn+fFZ7olyltqTFBmpXq9YApzw==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
+	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=dPYAoellcuw09bT9ONezEt+zjcB5urngoX8Zc0GfYQQ=; b=fxin46gRNNgudJ
+	wqMFj66H3V+j3sUDDjfna/yz/xBvguTFo0sfMsC7yqhfknVMqmpfqqkWsfLSqW4oKMTk6jr1MrvmV
+	51wBE7UDRcs6Q3va0CpIRA9PV2QAR6fxw5xWc2ZE8mI0aRuXt6mgou96sD2h511iif6xHCDf7t/F6
+	6U19rb6h9+FvZrYZaQJsQNu6LoTIkXjBbQ97TO8XbKbH6XdXVvZsVb5K2xfVcbGakETkn61e4BmEa
+	OIYCNwoV167Qpgt5FThzd8oQkdEyee/5v2S7P9mlNWmPmfd7dt6+DHFbM7z514IRPUWVoDNMxF8ys
+	nKmfB6+6h5T61ZFHMf1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsgOB-00000006Jtl-4A48;
-	Fri, 05 Apr 2024 10:01:39 +0000
+	id 1rsiFu-00000006nVA-02ik;
+	Fri, 05 Apr 2024 12:01:14 +0000
 Received: from mail-io1-f72.google.com ([209.85.166.72])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsgO7-00000006Joj-1C1R
+	id 1rsiFq-00000006nTR-24Pz
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Apr 2024 10:01:37 +0000
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc74ea9c20so212477539f.1
-        for <linux-mtd@lists.infradead.org>; Fri, 05 Apr 2024 03:01:31 -0700 (PDT)
+	Fri, 05 Apr 2024 12:01:12 +0000
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d04135eb47so207774439f.0
+        for <linux-mtd@lists.infradead.org>; Fri, 05 Apr 2024 05:01:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712311290; x=1712916090;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=445TRXAVmjH4O2IS6/Ji32WBWYko0u0kvTDkSdMao+8=;
-        b=dlq0KVOiFq1ER3ifkuu0cy6AWvlC1GJOAgaDAV/SfKgqh/+7wwoQ++ZjmNkxjWzLi3
-         X4oVF64qs2OWl648sDcGFIWYs6WzQPyQitgB3QAQCJ4dhe/MEKCVfcbHIXj2JxKMdcRD
-         ueV68jS1PKWiI9AyoDAY0ENzVh5nCswOov/ri8D4AIuDfVswNwm0Pkt+PZvMEElDHYjy
-         lnz3eKAwsCE1skZpHpl5wLzyYL+kkhHOsqehmmP24F/WpPp3ad6v9CGK6n8owfvc1Y3a
-         H+y+4uDAt7SnzG6TnWTnLhAesccbELo+qBqB1BVjAXZ7YOr/5xT8XjiXuUEznVx+Y/a3
-         /jHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXZvF0E5K57tJ+vwztVWnb4XkuYWW++zAPBoWujY9UT9mkNetYKgILkietL8ulkgHaQhP2sN0dIOs/laJ8M0fsMAgZw7uInsMItGlLyNA==
-X-Gm-Message-State: AOJu0YyBqNl4aph6InF0fI+2V/Jq2L7oxrNiaC3RTqkDjQYbYgeMZzXL
-	JdV1ePjclJLbR27Pz1a83lNnhTNOOVf73f6Gbe+hK2z1PVd5VBSwGShb9Vunb1E3yCNfoTBrk4Z
-	St2iOYNgMzfc9hztniVo/nj2DNyFaC4QGQiIMnKQaldPH9EdvPP1AGwI=
-X-Google-Smtp-Source: AGHT+IF9qeoaTXjy5G7O5FcDTQyaw7YGFi4/1FGYAzCeRse6ENIrye7Iy/ow7UyR1XttBUeTB0TOGll9dM6Ew04QTqIOr3P6KqIq
+        d=1e100.net; s=20230601; t=1712318464; x=1712923264;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h+2bGjZ5bXU5Jyjw/hPKObCDQon7IZrrva5+NdOfmYM=;
+        b=Gi+RlO2VNN8P9VE9ohGLF1oy8fgY2pTisc5tppt0bn2QjlGPX3vJAaTPtErchk/zy1
+         DUCK8kprDXsVQUqYe4mlPyinVcvOqv3Wy4wsybHSuQ/Fdkww1ctgJqMU26bKOfu1YyUu
+         F4eiO7tZO0HjD5iJJF6Ivenmj4GQPgctEzU4haPZcKEDKisqTf4WsLbAtbDxVTtFaGU2
+         Y9d2aRLrgm7IUR3UJt52Ga1X2e/eSbARsUabN+8NJ8nQvWjdlQEgchognbVELOXRZw4l
+         NaiHqiXEs0jzppw472mkDdmYtEhYaySGJk39Z7GvlrqdL5tg7W1tNRZYsRt0V7ycM3l9
+         l27A==
+X-Forwarded-Encrypted: i=1; AJvYcCXcQmQNelW7M7hLY3nQCKducxyKk7ucMsQC/OUXHdkpaC4w7fzbbNPmZ4BaWDWLmOOCpb5GQ478WDCB6oV82rE0jadJXtITJpxr0Ap11A==
+X-Gm-Message-State: AOJu0YwswJn7ZJHAKoLCNkPP0kjmzEHD489UDByTsleT9YmjFAXX2jR1
+	ZK0VrDH41Qim8du7cUU4OE8axAREmLft+5xTXylpHAkgIYTExQOUra4qKSzltYIBQGDkmJVIggS
+	y5L7x2isBLzqYzsK/VyInFkggMUraP5cEtyyPCV8ph2rgroKJWnvOzLQ=
+X-Google-Smtp-Source: AGHT+IE1D/TEXf+4qApYpOoI8HPj3Ge9wGIYouUqObjPXJuA/Im15IdGe7ptIxsZ9IbWUIJP1Cs/fz+iW6j6BrQTUktydF+zKLHu
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:190b:b0:36a:1104:2d42 with SMTP id
- w11-20020a056e02190b00b0036a11042d42mr45597ilu.1.1712311290205; Fri, 05 Apr
- 2024 03:01:30 -0700 (PDT)
-Date: Fri, 05 Apr 2024 03:01:30 -0700
+X-Received: by 2002:a05:6638:2582:b0:47e:d240:4d82 with SMTP id
+ s2-20020a056638258200b0047ed2404d82mr19208jat.1.1712318464427; Fri, 05 Apr
+ 2024 05:01:04 -0700 (PDT)
+Date: Fri, 05 Apr 2024 05:01:04 -0700
+In-Reply-To: <00000000000032adb00615568aee@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000032adb00615568aee@google.com>
-Subject: [syzbot] [jffs2?] [nilfs?] KASAN: slab-use-after-free Read in jffs2_garbage_collect_pass
+Message-ID: <000000000000d099c506155835b9@google.com>
+Subject: Re: [syzbot] [jffs2?] [nilfs?] KASAN: slab-use-after-free Read in jffs2_garbage_collect_pass
 From: syzbot <syzbot+e84662c5f30b8c401437@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, konishi.ryusuke@gmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-nilfs@vger.kernel.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
+To: arnd@arndb.de, dhowells@redhat.com, dwmw2@infradead.org, 
+	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-nilfs@vger.kernel.org, richard@nod.at, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240405_030135_375345_B79F22F3 
-X-CRM114-Status: UNSURE (   6.47  )
+X-CRM114-CacheID: sfid-20240405_050110_565363_8462049C 
+X-CRM114-Status: UNSURE (   3.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,196 +81,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+syzbot has bisected this issue to:
 
-syzbot found the following issue on:
+commit 9c8ad7a2ff0bfe58f019ec0abc1fb965114dde7d
+Author: David Howells <dhowells@redhat.com>
+Date:   Thu May 16 11:52:27 2019 +0000
 
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+    uapi, x86: Fix the syscall numbering of the mount API syscalls [ver #2]
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=113c6b3d180000
+start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ea8b3d180000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=133c6b3d180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=153c6b3d180000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
 dashboard link: https://syzkaller.appspot.com/bug?extid=e84662c5f30b8c401437
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141bc615180000
 C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148423e3180000
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a3126c30eb43/mount_2.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
 Reported-by: syzbot+e84662c5f30b8c401437@syzkaller.appspotmail.com
+Fixes: 9c8ad7a2ff0b ("uapi, x86: Fix the syscall numbering of the mount API syscalls [ver #2]")
 
-==================================================================
-BUG: KASAN: slab-use-after-free in __mutex_lock_common kernel/locking/mutex.c:587 [inline]
-BUG: KASAN: slab-use-after-free in __mutex_lock+0xfe/0xd70 kernel/locking/mutex.c:752
-Read of size 8 at addr ffff88807e402130 by task jffs2_gcd_mtd0/5063
-
-CPU: 0 PID: 5063 Comm: jffs2_gcd_mtd0 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- __mutex_lock_common kernel/locking/mutex.c:587 [inline]
- __mutex_lock+0xfe/0xd70 kernel/locking/mutex.c:752
- jffs2_garbage_collect_pass+0xae/0x2120 fs/jffs2/gc.c:134
- jffs2_garbage_collect_thread+0x651/0x6e0 fs/jffs2/background.c:155
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-Allocated by task 5052:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- kmalloc_trace+0x1db/0x360 mm/slub.c:3997
- kmalloc include/linux/slab.h:628 [inline]
- kzalloc include/linux/slab.h:749 [inline]
- jffs2_init_fs_context+0x4f/0xc0 fs/jffs2/super.c:313
- alloc_fs_context+0x68a/0x800 fs/fs_context.c:318
- do_new_mount+0x160/0xb40 fs/namespace.c:3331
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Freed by task 5052:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
- poison_slab_object+0xa6/0xe0 mm/kasan/common.c:240
- __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2106 [inline]
- slab_free mm/slub.c:4280 [inline]
- kfree+0x14a/0x380 mm/slub.c:4390
- deactivate_locked_super+0xc4/0x130 fs/super.c:472
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1267
- task_work_run+0x24f/0x310 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa1b/0x27e0 kernel/exit.c:878
- do_group_exit+0x207/0x2c0 kernel/exit.c:1027
- __do_sys_exit_group kernel/exit.c:1038 [inline]
- __se_sys_exit_group kernel/exit.c:1036 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-The buggy address belongs to the object at ffff88807e402000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 304 bytes inside of
- freed 4096-byte region [ffff88807e402000, ffff88807e403000)
-
-The buggy address belongs to the physical page:
-page:ffffea0001f90000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7e400
-head:ffffea0001f90000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888014c42140 ffffea0000937e00 0000000000000002
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4727, tgid 4727 (dhcpcd), ts 35281916523, free_ts 35270327271
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
- __alloc_pages+0x256/0x680 mm/page_alloc.c:4569
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2175
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2391
- ___slab_alloc+0xc73/0x1260 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- __do_kmalloc_node mm/slub.c:3965 [inline]
- __kmalloc+0x2e5/0x4a0 mm/slub.c:3979
- kmalloc include/linux/slab.h:632 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x255/0x500 security/tomoyo/file.c:771
- security_file_open+0x69/0x570 security/security.c:2955
- do_dentry_open+0x327/0x15a0 fs/open.c:942
- do_open fs/namei.c:3642 [inline]
- path_openat+0x2860/0x3240 fs/namei.c:3799
- do_filp_open+0x235/0x490 fs/namei.c:3826
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
- do_syscall_64+0xfb/0x240
-page last free pid 4727 tgid 4727 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x95d/0xa80 mm/page_alloc.c:2346
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
- discard_slab mm/slub.c:2437 [inline]
- __put_partials+0xeb/0x130 mm/slub.c:2906
- put_cpu_partial+0x17c/0x250 mm/slub.c:2981
- __slab_free+0x2ea/0x3d0 mm/slub.c:4151
- qlink_free mm/kasan/quarantine.c:163 [inline]
- qlist_free_all+0x5e/0xc0 mm/kasan/quarantine.c:179
- kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
- __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:322
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3798 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmem_cache_alloc+0x174/0x340 mm/slub.c:3852
- getname_flags+0xbd/0x4f0 fs/namei.c:139
- vfs_fstatat+0x11c/0x190 fs/stat.c:303
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x117/0x190 fs/stat.c:462
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Memory state around the buggy address:
- ffff88807e402000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807e402080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88807e402100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff88807e402180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807e402200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 ______________________________________________________
 Linux MTD discussion mailing list
