@@ -4,66 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BB7CD11C2
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2024 12:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB9C3CD11C2
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Apr 2024 13:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
-	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=dPYAoellcuw09bT9ONezEt+zjcB5urngoX8Zc0GfYQQ=; b=fxin46gRNNgudJ
-	wqMFj66H3V+j3sUDDjfna/yz/xBvguTFo0sfMsC7yqhfknVMqmpfqqkWsfLSqW4oKMTk6jr1MrvmV
-	51wBE7UDRcs6Q3va0CpIRA9PV2QAR6fxw5xWc2ZE8mI0aRuXt6mgou96sD2h511iif6xHCDf7t/F6
-	6U19rb6h9+FvZrYZaQJsQNu6LoTIkXjBbQ97TO8XbKbH6XdXVvZsVb5K2xfVcbGakETkn61e4BmEa
-	OIYCNwoV167Qpgt5FThzd8oQkdEyee/5v2S7P9mlNWmPmfd7dt6+DHFbM7z514IRPUWVoDNMxF8ys
-	nKmfB6+6h5T61ZFHMf1w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5CS0JprEkuo651O+2hP96SFTxabcf8Px13HryxlBUzY=; b=TzZr//dFa2e7hO
+	TuPSu1u/OTuDhoRGPG6YvdzVSttHUYMsnM7IkEengmWSUpTTTDfEawOe8H/oj/xNssKx+J4ZXAipj
+	62hBhlIDFpmo07VWL1zCceE2SK6vlE/l9OZR05tGA9ojD0TW0sBD0CCGFAqAl2mqQYb8bHNbu2jcP
+	7cz6R91DLNoyeY9uRMX1H/Jct9oJH6jxW2+/eWelETXsvhNJ8HidTxiDLmDXrmjiBIpIix8giryqB
+	5YTLRN6dmmSH8XesjtswuPURrbfjXtOdsLAaAWnGjRj+3E6NY4JtSjvCiyl/HTD6YyStDA2UxR/L2
+	/kL1yHyyIDRYTYRVnbIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsiFu-00000006nVA-02ik;
-	Fri, 05 Apr 2024 12:01:14 +0000
-Received: from mail-io1-f72.google.com ([209.85.166.72])
+	id 1rsjEs-000000077PS-1QKa;
+	Fri, 05 Apr 2024 13:04:14 +0000
+Received: from mail11.truemail.it ([2001:4b7e:0:8::81])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsiFq-00000006nTR-24Pz
+	id 1rsjEo-000000077Mk-3PXE
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Apr 2024 12:01:12 +0000
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d04135eb47so207774439f.0
-        for <linux-mtd@lists.infradead.org>; Fri, 05 Apr 2024 05:01:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712318464; x=1712923264;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h+2bGjZ5bXU5Jyjw/hPKObCDQon7IZrrva5+NdOfmYM=;
-        b=Gi+RlO2VNN8P9VE9ohGLF1oy8fgY2pTisc5tppt0bn2QjlGPX3vJAaTPtErchk/zy1
-         DUCK8kprDXsVQUqYe4mlPyinVcvOqv3Wy4wsybHSuQ/Fdkww1ctgJqMU26bKOfu1YyUu
-         F4eiO7tZO0HjD5iJJF6Ivenmj4GQPgctEzU4haPZcKEDKisqTf4WsLbAtbDxVTtFaGU2
-         Y9d2aRLrgm7IUR3UJt52Ga1X2e/eSbARsUabN+8NJ8nQvWjdlQEgchognbVELOXRZw4l
-         NaiHqiXEs0jzppw472mkDdmYtEhYaySGJk39Z7GvlrqdL5tg7W1tNRZYsRt0V7ycM3l9
-         l27A==
-X-Forwarded-Encrypted: i=1; AJvYcCXcQmQNelW7M7hLY3nQCKducxyKk7ucMsQC/OUXHdkpaC4w7fzbbNPmZ4BaWDWLmOOCpb5GQ478WDCB6oV82rE0jadJXtITJpxr0Ap11A==
-X-Gm-Message-State: AOJu0YwswJn7ZJHAKoLCNkPP0kjmzEHD489UDByTsleT9YmjFAXX2jR1
-	ZK0VrDH41Qim8du7cUU4OE8axAREmLft+5xTXylpHAkgIYTExQOUra4qKSzltYIBQGDkmJVIggS
-	y5L7x2isBLzqYzsK/VyInFkggMUraP5cEtyyPCV8ph2rgroKJWnvOzLQ=
-X-Google-Smtp-Source: AGHT+IE1D/TEXf+4qApYpOoI8HPj3Ge9wGIYouUqObjPXJuA/Im15IdGe7ptIxsZ9IbWUIJP1Cs/fz+iW6j6BrQTUktydF+zKLHu
+	Fri, 05 Apr 2024 13:04:13 +0000
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 14ACD2027B;
+	Fri,  5 Apr 2024 15:04:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1712322244;
+	bh=l7CqLckDLbgqOsa5j//MSRXiFTqbO5DRUoXwQ6kAxls=; h=From:To:Subject;
+	b=ltlx3w2vw3Y+QWe1kOtgzo7BfRzUla8vaHq4YMv9qw2AUtt6fmMGbdFvqOK8LDRyi
+	 T58fmgOad+HwY0S1XAOFI9b0EawRz6A40OTrTGbdMzqkSwAchh1KzxdG/db3r7Qvfl
+	 /W9DSR+fTbtnEEfPo8koKpoHoKZZvY2EVd6flsP5lD5xW2RNbSNH8uVmQGQUm1QGe7
+	 1GPGAHek+s3BFLEoPTfM0M0zDnSuQeGo4w8fe1Imo53XOx/zEGoJ0E+M0vJ5tyHWUf
+	 Q0BZ2o5vbnZVs91k2Xkau32pQKhQ9NS4RUPVsHBIiLIn3eOUvjIAgkLoXWUdXtWMlx
+	 nGO9TVFcS9+Wg==
+Date: Fri, 5 Apr 2024 15:03:59 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Flavio Suligoi <f.suligoi@asem.it>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
+Message-ID: <20240405130359.GA308940@francesco-nb>
+References: <20240405100104.480779-1-f.suligoi@asem.it>
+ <20240405100104.480779-2-f.suligoi@asem.it>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2582:b0:47e:d240:4d82 with SMTP id
- s2-20020a056638258200b0047ed2404d82mr19208jat.1.1712318464427; Fri, 05 Apr
- 2024 05:01:04 -0700 (PDT)
-Date: Fri, 05 Apr 2024 05:01:04 -0700
-In-Reply-To: <00000000000032adb00615568aee@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d099c506155835b9@google.com>
-Subject: Re: [syzbot] [jffs2?] [nilfs?] KASAN: slab-use-after-free Read in jffs2_garbage_collect_pass
-From: syzbot <syzbot+e84662c5f30b8c401437@syzkaller.appspotmail.com>
-To: arnd@arndb.de, dhowells@redhat.com, dwmw2@infradead.org, 
-	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-nilfs@vger.kernel.org, richard@nod.at, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
+Content-Disposition: inline
+In-Reply-To: <20240405100104.480779-2-f.suligoi@asem.it>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240405_050110_565363_8462049C 
-X-CRM114-Status: UNSURE (   3.59  )
+X-CRM114-CacheID: sfid-20240405_060411_916851_EAD63700 
+X-CRM114-Status: UNSURE (   6.74  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,28 +76,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-syzbot has bisected this issue to:
+Hello Flavio, thanks for your patch.
 
-commit 9c8ad7a2ff0bfe58f019ec0abc1fb965114dde7d
-Author: David Howells <dhowells@redhat.com>
-Date:   Thu May 16 11:52:27 2019 +0000
+On Fri, Apr 05, 2024 at 12:01:04PM +0200, Flavio Suligoi wrote:
+> Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
+> Memory.
+> This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
+> able to provide SFDP information.
+> 
+> Link: https://www.everspin.com/file/158244/download
+> 
+No empty lines in-between tags
 
-    uapi, x86: Fix the syscall numbering of the mount API syscalls [ver #2]
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=113c6b3d180000
-start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=133c6b3d180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=153c6b3d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=e84662c5f30b8c401437
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141bc615180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148423e3180000
-
-Reported-by: syzbot+e84662c5f30b8c401437@syzkaller.appspotmail.com
-Fixes: 9c8ad7a2ff0b ("uapi, x86: Fix the syscall numbering of the mount API syscalls [ver #2]")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Francesco
 
 ______________________________________________________
 Linux MTD discussion mailing list
