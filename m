@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7834CCD1292
-	for <linux-mtd@archiver.kernel.org>; Sun,  7 Apr 2024 18:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73DFCCD128A
+	for <linux-mtd@archiver.kernel.org>; Sun,  7 Apr 2024 18:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M5KCN+O2claxdLJmrR/rdwKnkrG/29v2wGVsesIiUbw=; b=a+KYLqhzn1/x8h
-	naLAHYKgVtoFZ1e1ZEaPhfd6+huz9OxfmXhnd6nMwM6Kp3cexT66OY5WOMMhewQyEGHUWehM7gZ/N
-	etn+18YKiVOtQj/1eAWELyUXiyl9zoF6f8mGtqaa+R7m19xXXAbMJlbsOpBUKVxxUe9FMyjv6caLM
-	dGLoyUA2ko+T3nTu7cFQ8WqMb/k1tsWWzgy/m9TH/VZmNoB8iOcGAYsBjqXwO0vfMzocPRgLi/7tH
-	udjidgQJ9F9dyaX180a7T20YXAiHiv+2M2pvgun9qMvb8Ow7TB8cYhpejxZYpajsZoafVHvhvYAjx
-	6yZ0v0/rjUjzEGQSaOfQ==;
+	List-Owner; bh=Ns7LKIS2nfriWZ3kSCJEsoq1QzCc9Y9dLgU0kbL/Dro=; b=AvXZJr5g4fBckm
+	+u8WB4c5mPEg7oziCUXq5Ff9X3sSrfVR9bXlHGsfWqOu4Wt90c0ffsjjUNiZ9vWWhBUSrkalwgDWU
+	gTm6mUfd8H1HVdyWlblnH/Z/7xetcFlFRq/lR3jQzEGej77dcFzlCtVswWqvanm/x8MvBHALrwkmG
+	UGhsrebdc2HYoOSCp3Be7zdFwmKjzNJO0j5T8Yurg0HOP79wVTDwOyfeAifHAFURZhqkNjY5GqtAp
+	O+JdtYbnFAt4uGetoDXM0XLy6ojafiUHA67MchdY17fCY3jpuMEqDamoJl+uRIofAX4mYdpBJDFXF
+	fCLxevkYDv0rfkyWQDug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtXfM-0000000DJI0-0q7s;
-	Sun, 07 Apr 2024 18:54:56 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1rtXg2-0000000DJQN-0QmC;
+	Sun, 07 Apr 2024 18:55:38 +0000
+Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtXfJ-0000000DJH1-0rch
+	id 1rtXfy-0000000DJPZ-1k4L
 	for linux-mtd@lists.infradead.org;
-	Sun, 07 Apr 2024 18:54:55 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-516d16db927so3679103e87.0
-        for <linux-mtd@lists.infradead.org>; Sun, 07 Apr 2024 11:54:51 -0700 (PDT)
+	Sun, 07 Apr 2024 18:55:36 +0000
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-516c403cc46so6697164e87.3
+        for <linux-mtd@lists.infradead.org>; Sun, 07 Apr 2024 11:55:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712516090; x=1713120890; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1712516132; x=1713120932; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SRHNe6DXwYeiXKNaWOEzea5rcgNzeKm7MchGtxqe2UU=;
-        b=SSFQJrwC+/N69sIO7eyznamQ/P9vfD4ty6h63/gCzoCyBtR4Wkdb9M5IEvPora5Znk
-         snuI5L5vHo4stTo6NSii27ik/vXOseKIyR0kBXfDk2Nqv9xO3hIHGv8v1a0b3+XocvfG
-         RVPPju7TtVT/4IpXk+pEAPROyjVlMup0LDk/WiWun7N84MrJt4fc24UbUTNnv5yLSaxW
-         c70wmE/mnG7dIP4xjaaD0/yFuPx9N2liAyB4e+ucNO6nmZwLan5Bjq1AUHGlZgkYyJJq
-         7Zw0CEuGYuoWJXGkcWPgloAt1EYSjxKhm9+DVylAyyD2SvR+K8VfQXA7mKFixxwMMy+U
-         77qw==
+        bh=OU07XWrH7QrRx8z6lpwbyNFVehByy6iiEfzZuuvlVDc=;
+        b=Pu3Pyu6bud4hiN+BGM44J5HSlCWNePeNC0AdDaR2bI1CKiZIy81zGAErbiJCD5NsBc
+         JxblVRNHoKPOKnTm1jw0KjDo6aKZk61rbyzcRAvpPiZzh5GzgrI/XIS7PkehTsmwsvjS
+         04inRPQu7vpBeVbu41DPWPECs0okVbIGPMON78R+yxrZvXeJB3OtiElsuWxLllIRseGl
+         Y6ksUIDitVeQWE1tqSsz3n0RTLOxxaTNHl0qV6UpLEdbyxHTjhjQPV5HAvaJ13nkto1Z
+         vPQBhWCXyGnDgV48hZ39iWFcnw6LDXAB+DuOjbhD5+733SNzKng9Exc5hyab0rmEvWU7
+         FQuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712516090; x=1713120890;
+        d=1e100.net; s=20230601; t=1712516132; x=1713120932;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SRHNe6DXwYeiXKNaWOEzea5rcgNzeKm7MchGtxqe2UU=;
-        b=pPMu6CgdBn6qXL9FDUGNQmjkPAKWB/HMUMfGtQphebsp8q4C/LQCDepSNTXn+ChP4Y
-         VSqa1LGsJ0ojaMkizwvVi054s2qj2Bi1F0JfNfLUf6rH/7c/SvbzDf03YBjStkY7tpKA
-         V0k9wQYbsFu+vUUpUgvPG8mPLq7qyf50H1wdbVnTJws1TVWLj45cCcU/EXFAu9fb1HMq
-         V6C9HJl+Q9UzxiRahTPhIXlACn7xWh6RWP592K9z5f5JJW2hv7CWDzBWrIuJhVlPEoW1
-         v8iMbiriBq48K0KCVVUFMFdLxgw7yf5lnR9B1syxLp5yZRFWQordlFbfv89VAfGU6Zrs
-         xwag==
-X-Forwarded-Encrypted: i=1; AJvYcCUD7Kbo00UQBNrQaAYt10vhmXnGtGVE9g907U4X0A6U663wj/H8xdhZuQAcRjt/Rwkyuun3+4zjypwaTQivHRzO684orx0FJ6etKb98Ew==
-X-Gm-Message-State: AOJu0YwvyKO+cQS2H54S5ytPcn5g1/47WIVSP7tU4ijAn/YRoIoGu4he
-	p0D5+KrwgIDwkFzOHSldaw8ZuQ0Lp1O7y6sZN5jsutxXjmXYDK6vMIwWcYAnn9Q=
-X-Google-Smtp-Source: AGHT+IEmKcP0onwipRC3csletl2FBdeGskT7hj2FjZDw8XOdg3PxvMTcQ4g0TuxnzJAZ39wimZLiyA==
-X-Received: by 2002:ac2:5302:0:b0:516:7739:354c with SMTP id c2-20020ac25302000000b005167739354cmr4475280lfh.58.1712516090055;
-        Sun, 07 Apr 2024 11:54:50 -0700 (PDT)
+        bh=OU07XWrH7QrRx8z6lpwbyNFVehByy6iiEfzZuuvlVDc=;
+        b=s8OF8HUjLheJLjatz2zASjhV+nbBavo6OsrgTTLrTHbS9mtm3pz7GfmTVDM0oLDIE1
+         k1gzRwHhxkHbLlPbW6HTzF+hbAxjgUvH31WVcUl82lY4nQhkBzAdVS8OGOe2lEpyDrC9
+         jA1K5vPnvKUp3mHP++0KMlOP0X0SJENT8w15pXCUQIGYRgWNEQaxrSjYpQGvVhVCWr5J
+         d8ydZ3zR3qh5bX9EshwHaOHQZvGFFdw9UXdBzrhlkG8abV7W85IJPU1X9Fr6/qCe5W1U
+         kipW+lFR6r48VEDHgJXD3w/sFqXT1stf4Tu/dhuDNjOZev7XQMCtLA8vihjiRH++z3/w
+         8lJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ1tAMNC1n6Y34k4UomFOp0GkRTudTcPk+A8zKHhCjZXFHIvHdvg6raXeydY0xWkI5n1PRe/ZRpXKM5HQUab+YotD4tLXmzCADItpcIA==
+X-Gm-Message-State: AOJu0YzwsYE/vSD67RqAmXSixUN3JLRoFzZ9KnLxUgPS5+VnnWOK0rXc
+	pnci/x1V/0nZfjqRsqdoktp8fByvPgcDsMNa/iAx8Q+MvO5u/NlFl0osDE7Bjk0=
+X-Google-Smtp-Source: AGHT+IE1bcgFsTWpWkUF7p2n+cWGRC6JhLC677ZsCW3QO9jXpGb+GKMv8gNPyxkV1COnJrWbN+ubFg==
+X-Received: by 2002:ac2:4c01:0:b0:516:d0c2:3ff9 with SMTP id t1-20020ac24c01000000b00516d0c23ff9mr5845387lfq.67.1712516132325;
+        Sun, 07 Apr 2024 11:55:32 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id q23-20020a170906b29700b00a4a3807929esm3435350ejz.119.2024.04.07.11.54.48
+        by smtp.gmail.com with ESMTPSA id jz13-20020a17090775ed00b00a51a1d1a3d4sm3457158ejc.47.2024.04.07.11.55.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 11:54:49 -0700 (PDT)
-Message-ID: <5fe5396e-c628-49e1-bec3-770847f061e5@linaro.org>
-Date: Sun, 7 Apr 2024 20:54:47 +0200
+        Sun, 07 Apr 2024 11:55:31 -0700 (PDT)
+Message-ID: <46ee8ac3-b868-431e-b3cc-78fd33e9dfb1@linaro.org>
+Date: Sun, 7 Apr 2024 20:55:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 3/5] spi: spi-qpic: Add qpic spi nand driver support
@@ -83,6 +83,8 @@ Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
 References: <20240308091752.16136-1-quic_mdalam@quicinc.com>
  <20240308091752.16136-4-quic_mdalam@quicinc.com>
  <1c803d8c-80b2-47a9-bc8c-8b13cbfc6841@gmail.com>
+ <4f72048a-a764-43de-846c-3b4edc1232e3@gmail.com>
+ <0c0487cb-c73d-42dd-94f8-499c29009730@gmail.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -129,10 +131,10 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1c803d8c-80b2-47a9-bc8c-8b13cbfc6841@gmail.com>
+In-Reply-To: <0c0487cb-c73d-42dd-94f8-499c29009730@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240407_115453_460927_30513C48 
-X-CRM114-Status: GOOD (  11.75  )
+X-CRM114-CacheID: sfid-20240407_115534_480332_A76DC441 
+X-CRM114-Status: GOOD (  10.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,61 +146,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 07/04/2024 19:48, Alex G. wrote:
-> On 3/8/24 03:17, Md Sadre Alam wrote:
->> Add qpic spi nand driver support. The spi nand
->> driver currently supported the below commands.
->>
->> -- RESET
->> -- READ ID
->> -- SET FEATURE
->> -- GET FEATURE
->> -- READ PAGE
->> -- WRITE PAGE
->> -- ERASE PAGE
->>
->> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
-> 
-> For the entire series:
-> 
-> Tested-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-> 
->> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
->> index bc7021da2fe9..63764e943d82 100644
->> --- a/drivers/spi/Kconfig
->> +++ b/drivers/spi/Kconfig
->> @@ -882,6 +882,14 @@ config SPI_QCOM_QSPI
->>   	help
->>   	  QSPI(Quad SPI) driver for Qualcomm QSPI controller.
->>   
->> +config SPI_QPIC_SNAND
->> +	tristate "QPIC SNAND controller"
->> +	depends on ARCH_QCOM || COMPILE_TEST
-> 
-> Here, it needs to 'select QPIC_COMMON`. Otherwise it can run into 
-> unresolved symbols:
-> 
-> : drivers/spi/spi-qpic-snand.o: in function `snandc_set_reg':
->   drivers/spi/spi-qpic-snand.c:56:(.text+0x484): undefined reference to 
-> `qcom_offset_to_nandc_reg'
-
-No, do not select user-visible symbols. If you observe such issues then
-either stubs are missing or depends on.
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMDcvMDQvMjAyNCAyMDo0NSwgQWxleCBHLiB3cm90ZToKPiAKPiAKPiBPbiA0LzcvMjQgMTM6
+NDAsIEFsZXggRy4gd3JvdGU6Cj4+Cj4+Cj4+IE9uIDQvNy8yNCAxMjo0OCwgQWxleCBHLiB3cm90
+ZToKPj4+IE9uIDMvOC8yNCAwMzoxNywgTWQgU2FkcmUgQWxhbSB3cm90ZToKPj4+PiBBZGQgcXBp
+YyBzcGkgbmFuZCBkcml2ZXIgc3VwcG9ydC4gVGhlIHNwaSBuYW5kCj4+Pj4gZHJpdmVyIGN1cnJl
+bnRseSBzdXBwb3J0ZWQgdGhlIGJlbG93IGNvbW1hbmRzLgo+Pj4+Cj4+Pj4gLS0gUkVTRVQKPj4+
+PiAtLSBSRUFEIElECj4+Pj4gLS0gU0VUIEZFQVRVUkUKPj4+PiAtLSBHRVQgRkVBVFVSRQo+Pj4+
+IC0tIFJFQUQgUEFHRQo+Pj4+IC0tIFdSSVRFIFBBR0UKPj4+PiAtLSBFUkFTRSBQQUdFCj4+Pj4K
+Pj4+PiBDby1kZXZlbG9wZWQtYnk6IFNyaWNoYXJhbiBSYW1hYmFkaHJhbiA8cXVpY19zcmljaGFy
+YUBxdWljaW5jLmNvbT4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBTcmljaGFyYW4gUmFtYWJhZGhyYW4g
+PHF1aWNfc3JpY2hhcmFAcXVpY2luYy5jb20+Cj4+Pj4gQ28tZGV2ZWxvcGVkLWJ5OiBWYXJhZGFy
+YWphbiBOYXJheWFuYW4gPHF1aWNfdmFyYWRhQHF1aWNpbmMuY29tPgo+Pj4+IFNpZ25lZC1vZmYt
+Ynk6IFZhcmFkYXJhamFuIE5hcmF5YW5hbiA8cXVpY192YXJhZGFAcXVpY2luYy5jb20+Cj4+Pj4g
+U2lnbmVkLW9mZi1ieTogTWQgU2FkcmUgQWxhbSA8cXVpY19tZGFsYW1AcXVpY2luYy5jb20+Cj4+
+Pj4gLS0tCj4+Pgo+Pj4gRm9yIHRoZSBlbnRpcmUgc2VyaWVzOgo+Pj4KPj4+IFRlc3RlZC1ieTog
+QWxleGFuZHJ1IEdhZ25pdWMgPG1yLm51a2UubWVAZ21haWwuY29tPgo+Pj4KPj4+PiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9zcGkvS2NvbmZpZyBiL2RyaXZlcnMvc3BpL0tjb25maWcKPj4+PiBpbmRl
+eCBiYzcwMjFkYTJmZTkuLjYzNzY0ZTk0M2Q4MiAxMDA2NDQKPj4+PiAtLS0gYS9kcml2ZXJzL3Nw
+aS9LY29uZmlnCj4+Pj4gKysrIGIvZHJpdmVycy9zcGkvS2NvbmZpZwo+Pj4+IEBAIC04ODIsNiAr
+ODgyLDE0IEBAIGNvbmZpZyBTUElfUUNPTV9RU1BJCj4+Pj4gwqDCoMKgwqDCoCBoZWxwCj4+Pj4g
+wqDCoMKgwqDCoMKgwqAgUVNQSShRdWFkIFNQSSkgZHJpdmVyIGZvciBRdWFsY29tbSBRU1BJIGNv
+bnRyb2xsZXIuCj4+Pj4gK2NvbmZpZyBTUElfUVBJQ19TTkFORAo+Pj4+ICvCoMKgwqAgdHJpc3Rh
+dGUgIlFQSUMgU05BTkQgY29udHJvbGxlciIKPj4KPj4gQWxzbywgZG9uJ3QgdHJpc3RhdGUgdGhp
+cy4gSXQgY2FuIGJlIHNldCBhcyBDT05GSUdfUVBJQ19DT01NT049bSwgd2hpY2ggCj4+IHdpbGwg
+Y2F1c2UgdGhlIGJ1aWxkIHRvIGZhaWwgYmVjYXVzZSB5b3UgZG9uJ3QgaGF2ZSBhIE1PRFVMRV9M
+SUNFTlNFKCkuCj4gCj4gUGxlYXNlIGRpc3JlZ2FyZCBteSBpZGlvdGljIHN1Z2dlc3Rpb24gaGVy
+ZS4gSSBtZWFudCB0byBtYWtlIHRoaXMgCj4gY29tbWVudCBvbiB0aGUgcHJldmlvdXMgcGF0Y2gu
+Cj4gCgpBbHNvIG5vdC4gQWxsIG9mIHRoZXNlIG11c3QgYmUgYWxsb3dlZCB0byBiZSBhIG1vZHVs
+ZS4gSWYgeW91IG5lZWQKZGVwZW5kZW5jeSBiZXR3ZWVuIG1vZHVsZXMsIHRoZW4gdXNlIGRvY3Vt
+ZW50ZWQgc3ludGF4IGluIHRoZSBrZXJuZWwKKGZvbyB8fCAhZm9vKS4KCkJlc3QgcmVnYXJkcywK
+S3J6eXN6dG9mCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
