@@ -4,91 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53EE0CD128A
-	for <linux-mtd@archiver.kernel.org>; Sun,  7 Apr 2024 18:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A20F3CD1292
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Apr 2024 03:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5ojdnJChI1BUUyJFchYR8GmVM54b0OK6nqrMx/BsZzw=; b=O7AbkAHUjWOaFV
-	9W/MtY/0WMzTs/a5yZ91u72MlOotzJlaSLjP1ZFuZU1C2El6lou5wrO6CxChP8HAykQ+C+q/Za2By
-	jwrJlcsbuRhzyeyRkBDusknz0UC1ePuiHTk6T+vDWb1oX/zdZbuQpErSfFIVQTErk8XDZjMsQYm8E
-	rG12t3vSfmaewya/uodTpWdzRGs9QzuM1BNh/BLUE02UINZF45OAu/CbpIaxUt2iX3r50DMxcJfnr
-	+an088NchqTBK1LMaPv15KF/TRimgc4WaZfWtdd8u2l6tYoO3DWz5OBXZys3kYk1PIcGpRzA8yP6l
-	ZcMvgR4HLCU+A2Ca9Kng==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:CC:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Jn1JPV6QGrldV+ChxacFC7AE+RWCWEVSdZctDz3/rHA=; b=mbb8AvrX6Fd0jb
+	rWLVPfoMdYb//4K0FB5uqmtY1SCSoqsuVoadyGbS+GzTpem8s+sIHs7LRM5/MViNpm84UVxzj0Ifp
+	zzy2b4oQbpxy2EMixPJbqaOja5p1XQe3U+3LANpreeUnPcGJ9p4Yl6108lrykJ6wdjTtNFZ5EB2fx
+	HEi/tG7neSAXT67UDID3FqRzEWwHllOF5nVP/zgjzbVb0Eo8gwp9cvDaVo2CAbtgeqqzzY5lnx9q8
+	ZxEaafRxBxYjTgsyGPDN7lT/uF00lm7atEgSA44PdpYMr4ThsXaHPQ+uKO/6CimsVFzEnTVOvCzUj
+	Xqzk5YxSsVIHitFtwtXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtXj5-0000000DK35-0MxA;
-	Sun, 07 Apr 2024 18:58:47 +0000
-Received: from mail-ot1-x330.google.com ([2607:f8b0:4864:20::330])
+	id 1rtfJS-0000000E8la-1TG6;
+	Mon, 08 Apr 2024 03:04:50 +0000
+Received: from mgamail.intel.com ([192.198.163.18])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtXj1-0000000DK2Z-3cQ5
+	id 1rtfJP-0000000E8kz-0lYX
 	for linux-mtd@lists.infradead.org;
-	Sun, 07 Apr 2024 18:58:45 +0000
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6e68a30e6a1so1504471a34.1
-        for <linux-mtd@lists.infradead.org>; Sun, 07 Apr 2024 11:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712516321; x=1713121121; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=scTTNj2woy/vxyldPj6pFMZnJWGeLMiGwUL3lFw6SWg=;
-        b=WiBmEtJ1c1lD3+9k4GVW/ov7XKFCFycD5fhfy2O/0VOpFAHkDMdac1NFX+cVVpXd/8
-         CUs3T7aWHkmc4BVoEOBdz27vrveP/2nDi6LiMRKIYmd5aYg+GqT/aUZDrjn1/FaIgToo
-         79CBGn1nispR4vNQqqpWZeXpuyVj+YjJXEGwa03PExGt+nz5JwGdk8Vra75/sa3XIe20
-         R6D04yPu9Y3lqlr/7BIhPEff3JJc2SahjLZvZLx6fAAUvtG/eYb9Vs9T4Z7iquGMucet
-         osebzC9DDwwyctyZC6LtVR9xtZyrJBQQrTnk8pfLVzUUdrE5G+1whewWr1FfCly/IjlS
-         Ruqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712516321; x=1713121121;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=scTTNj2woy/vxyldPj6pFMZnJWGeLMiGwUL3lFw6SWg=;
-        b=scqUcEwOnL4Kd26sc0wIuUJis/kSmHLHMgCUZcc5Slk39FRKxV20zDsq3ZZyG9RUqC
-         +Y8M4sc1fjKpfUv0BAtcGkQ9Kz1QqYkDCaJM7B7FqtPzEI3S0mkQdz+LEyFS5CLxLL00
-         xYL8PByt7OFcTeOStC8blOCUxvpWkOrnG9vYgRd6r3UctSHVXegg8PmGB6G5mRVf1SHM
-         QCmKSdVzVSI1TR8VkuKPf8rErZlmTSsXLWjNoxs28nF9Dtp7FigIgNY0S6yPzdhpyuhW
-         OrQlAUwyf54t8P8scbaWxyMCfeOnb1hcHKv+sBgwKnmbGdmdNWdwvW0fTv2YjSgWU6qk
-         YQHg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8hE9kkFO0zoqu3K6JCQhpKB3tJBST6kmW4jv18gQZ/xU6KbCR/NEg3rDLzgcnxu3at38mgbqYiez2JgMLbz23F4ri7OkwTLfOQY/EXA==
-X-Gm-Message-State: AOJu0Yyfk/CT+q4jgmcuzfdpz/35pMVpKrDK3bcLJMQ2U/vDbhDI3ozO
-	Kfk+Oo1gRaUOKeF2Iqd3oPk3TyG1duHtTSfIzJ8Zjxgwyf7yBv8k
-X-Google-Smtp-Source: AGHT+IFG8tDCVi2Hal8zENXLD8XK/N4pT4qILbW/+jIbZ5ynGBiQjUlYTNwzup3agDIiljYWM/Wa6w==
-X-Received: by 2002:a9d:6b19:0:b0:6e6:8d2f:4013 with SMTP id g25-20020a9d6b19000000b006e68d2f4013mr3146432otp.8.1712516321474;
-        Sun, 07 Apr 2024 11:58:41 -0700 (PDT)
-Received: from [192.168.7.110] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id e3-20020a0568301e4300b006e66e9ac835sm1156906otj.2.2024.04.07.11.58.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 11:58:40 -0700 (PDT)
-Message-ID: <a0c7ab26-4eb7-42e8-a151-671a9222660f@gmail.com>
-Date: Sun, 7 Apr 2024 13:58:38 -0500
+	Mon, 08 Apr 2024 03:04:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712545487; x=1744081487;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=uYk764/6KaoT/+HlWtJ16G5qV2tOQnw+YbQxzGrDFao=;
+  b=OeGxMgiUfsFaBoAdMPP2sZzAQWVOXvmoKMMdyHmFry83P/yHcEVMomLa
+   617UFedQlKwO/gLcKGGpurteKF1cislnRtUN4xkg0g5csI/C2b+k9ZaMP
+   qPv6R2cDrPzoSSxpSPwWwE0NcrK6714ShXZNqle+/U4KOAGhfTR+LXZaK
+   he2E1R+JO+TlbtovO1W0JIR83h7P9/QdPr7oBMoUz1iKz6t9jLcNO4v5R
+   XjMS1A658dfx8ETlwMLhBJI3h7vPPCStpuxG2JX7pWEgZsDu7OiaSu0kL
+   3SKNI87YuYDzr7QCBAqQUo6uFpKa5ThL9p2jd8/McobDx8Ooazry5iz5z
+   w==;
+X-CSE-ConnectionGUID: MCmDR+kaTmGTpgMVYgmVjg==
+X-CSE-MsgGUID: 9MCydSIXQKyK6qFB4vd77A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7642223"
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="7642223"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 20:04:45 -0700
+X-CSE-ConnectionGUID: ArJUln0gTt+bm2jPgRkYUQ==
+X-CSE-MsgGUID: Wt0GdtHLSGqpWDX5vRwpMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,186,1708416000"; 
+   d="scan'208";a="19794504"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Apr 2024 20:04:44 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 7 Apr 2024 20:04:44 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 7 Apr 2024 20:04:43 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 7 Apr 2024 20:04:43 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 7 Apr 2024 20:04:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kzdjJX4F30OlmG0KeejE3fY3CHyCf866cljBG7WEwJPR/kvytzIZHMtOvCBjMMagung3nXaEzcxZauaPnukWMiLSoREXz/PMo/3aCP4diaV0WAVMJHU8N4VMFt5t98ShGNshY5FGVYiqTn/NEyFcowsKLJHOn2XJcaBsfGQjRS1HPaS9ez8sgTPXPL9j7sw3AaJR+o11CnmpprNxyTlEMicaxFj3Cp7rD+f2QDW03g864ARiQstRDbWYozfFmGssLDcfSRsn8Mv/Y6k65K8jGq2mG7ym6490wHF5zSaC8SpfabLk0FRfTSc3kHSl1UmkJRvqmHcZwLQxT4vGPLkZrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=99flzzJk7Izo6OcIMxuky3u7RPlETzfjAWeNU/iODWY=;
+ b=GGwOZg/7cT6Iiyd1418ZqYaUgK7eafwfWkoqSox3g51V01S2SSBxVgMXwAuQ3Tvskt7ne/xPZ+fMgHjf0D5fIa7b26rZtChpvCdxVo4lkYhWRotAkbZuzlgR1K61mtjn0/HMeQWw0NWdulLxYCf0YIJapNrWGkciWVkrl8BIgL+xqvHU+EaIzVDZe0svZ2ev8x5DvinWMyEdLk+PwUmdyieAJc4Tsqx+NO7HUBQw2vreFrRhDaH4Yjp6YD5pIi+gqkzBlOsEDiqYgM19nKcXklMDWB7oZpA7msIgwZK/+LbfjNdCurNcscLqB+tvIHq3dRzMVwOLsFzdC+II4Lr/2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by CO1PR11MB5060.namprd11.prod.outlook.com (2603:10b6:303:93::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Mon, 8 Apr
+ 2024 03:04:42 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7452.019; Mon, 8 Apr 2024
+ 03:04:42 +0000
+Date: Mon, 8 Apr 2024 11:04:32 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Jeff Layton <jlayton@kernel.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	<gfs2@lists.linux.dev>, <linux-fsdevel@vger.kernel.org>,
+	<devel@lists.orangefs.org>, <linux-mtd@lists.infradead.org>,
+	<linux-xfs@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: [linus:master] [fs]  541d4c798a:
+ BUG:KCSAN:data-race_in_atime_needs_update/inode_update_timestamps
+Message-ID: <202404081036.56aa7de3-lkp@intel.com>
+Content-Disposition: inline
+X-ClientProxiedBy: SI2PR01CA0033.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::23) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/5] spi: spi-qpic: Add qpic spi nand driver support
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, broonie@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- manivannan.sadhasivam@linaro.org, neil.armstrong@linaro.org,
- daniel@makrotopia.org, arnd@arndb.de, chris.packham@alliedtelesis.co.nz,
- christophe.kerello@foss.st.com, linux-arm-msm@vger.kernel.org,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
-References: <20240308091752.16136-1-quic_mdalam@quicinc.com>
- <20240308091752.16136-4-quic_mdalam@quicinc.com>
- <1c803d8c-80b2-47a9-bc8c-8b13cbfc6841@gmail.com>
- <5fe5396e-c628-49e1-bec3-770847f061e5@linaro.org>
-From: "Alex G." <mr.nuke.me@gmail.com>
-In-Reply-To: <5fe5396e-c628-49e1-bec3-770847f061e5@linaro.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CO1PR11MB5060:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lt6aRq+pr2Ln9qPJPgDbWtCoJFsWooL/R9U7P6y4tNcKEt3bVE7PbtCqaNG7REKszG6JYFx3OarH6q6FsV/Q6GHfe0dqU4XwonBQJIef4ES2ZbGjKxEcSqF9Vw2l/YPfszI6TaDyFHRi9T4HLbNn5uSSSWMAXx2oBwtZlI45qbvue2pe1sl14xqZSzJEstZRt/3i+GUL3j/HI8C0A0l5qUu+0+ldu6l8Z8kAzqumeMakXTi9nzTc18/ASjtYP06rPF4H3eJI7M65Wh+at1xb8W9ftkhJn9byoABawkz9INyrU+Rl8PObXD0wbMeSDGU5oci1LLwcWC02AMENtaUlJQmK5NWWypvF3vlDAHR69Ye8V6D+qHE4jvt1ThQi3q+4TmjZgbE9AEvqRRl23j3uoU1OAp4Fd8K4BaAxkrqBfnQElvZFB5Ybn6uGieo0VHmrr9Z9COPiFcPPxGTSKvEbMUahJ0Y2qd8gKX8MapiUPSfpdGINhFMDmdew6HmXqeApwrWAPiquKHJmf1Ct4atGg/NiORWk10/1tIj9i1O5yBSFLYBkTyZv9YZyMk8Oobf0J+kvk5fJAqeddTP/DUpoGr7QGEfRQ31cHxecO1S5PSEdNaIRQbsnXVC8cd6XUu9v
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F2cY3WZHQrY8TJ3uLhzbF2Swjg/rlCzIVE4karWMcCMOSnJZ8eIZNDjUdy+n?=
+ =?us-ascii?Q?9avLQq3tXOMCPQXLJJXKYW0ro0unMNeCWI0H8wjlF+lgiITleNLm8DGx8O1H?=
+ =?us-ascii?Q?mEm8AjWfQcr+mIOvRCEl3HCc3zE6cvCxvt9UvXCjMbGFCR2wSoCmeIC56JxZ?=
+ =?us-ascii?Q?BW1XNc6VAqSBQtozjC6faG0sTSgbiOUfYmDR4ZNs0GSZTY392SLsWDjCkTzd?=
+ =?us-ascii?Q?pHgbpYCZjZhGPnNFgO9U94dj+/DQhiLdoJRl7ove+yCBfga4PqmH4vxYsjn0?=
+ =?us-ascii?Q?QOAiC2+nLBP6Y3/u/gRAFD3dCAhC9wr4jTiiIXeyw5QQxSFShY0uavmetwMQ?=
+ =?us-ascii?Q?X83/28vvb4an509EoqmXdrivEk1dXZy5GQcmovvUu1klHVuwH0KMY6wQyNiI?=
+ =?us-ascii?Q?L2YIgM7zcU8dbi8y3a47cjplO4lEXQkKYJVqrsCA1sNyjK/7JPHBUjsvyXK6?=
+ =?us-ascii?Q?bBM5t3AJDjOw+zFi11xDkGYmN1WxC/yTxT7/FkItFoRClqIv4/ZFUNJFWHZe?=
+ =?us-ascii?Q?EKn9Xwiysp/eIJ8Mw9FVi2XzS/hgrCNUKqzNKaDjqEFCYvLsnxZCdDqCDkTx?=
+ =?us-ascii?Q?jF2PeDiF5Z7PbZ1qkMWJKyUSYwzAiN6KkVAyuZKOC+OxD8XYhiwSUvaUKFhO?=
+ =?us-ascii?Q?JL0D3ehiBYeInSTQl5ux3Hb3IVzuMnCPtml0lrpG03/8GjY1kRAljgd3TEuS?=
+ =?us-ascii?Q?CiG6ZiL5MkXMk49djpqw/h3bobWh11q004jpfpVruqWgNyBqdCky0YuHu4eg?=
+ =?us-ascii?Q?XYAoZ0yEXj+rrVRhjGv51BvEyCPolcE73ulp4UCfd5O5HgfgRwp3LpoZx/ok?=
+ =?us-ascii?Q?W3KVwffCi1oifZyTVRulw8Zyj5S4YAUYaiL89MNXRTfw2lIfK16esL9KNlP0?=
+ =?us-ascii?Q?S/WFwK3XCIkYTkCTLmEfIjKRHDn4LYtBUc2kryVm6hcAe6oRz/STXBuTgWU9?=
+ =?us-ascii?Q?N8uRxTWFdmectvZSqLibDrheTkcbrUQEYAtxZ+vPxiX6zvcBQmW4Y6Wj5X2v?=
+ =?us-ascii?Q?1ZCq6DTRUeGU7Cxx6076hOf/TMoqNxMnMep91Z2venDhUHay78wMcw8V6xrv?=
+ =?us-ascii?Q?up8jxQ75bYeB5PJGaYjonyWwwyt0hsrkyLwTcImtWnWr7ms2FGcWwtOuAuUE?=
+ =?us-ascii?Q?ghLLvtImcXmJOA4X+1L5hnhizsX+cFiSCCXPmXzBOtR4yW/QCjv9E+LpyUdz?=
+ =?us-ascii?Q?K3ADxVc9Zgajsj3G2uD0aP9ROV19Kag3i/Sl2UUvUtOd8h4GQLyCM/KxF2e2?=
+ =?us-ascii?Q?C8Z02u4upvDCxHTcBKiX/ZfdeIYw/Hs0U2rFgtxVYOiafAbrfYljXqUFd5c8?=
+ =?us-ascii?Q?RmY1b5THGxspoaCZ8iJKNQo6JAuCSHDnGzkJlJtB9Vm5ML/E+HZq+BKfdZqp?=
+ =?us-ascii?Q?fNizKe6ifSfns0G/yVNKk/KGheIEE/7iKlTo3gjsjV3aApEyU5PXgACsXKSW?=
+ =?us-ascii?Q?70PFopYdZcY8CZoIXNUCaX+DgM21RfHNYCtkMGsoecoCTIudXrq4rgCo4NrL?=
+ =?us-ascii?Q?SphxXqlgWAOH5x4PNwp9R6RJaTO9pNXxUzTVp81kEcNo695i4JCLTZhwirwF?=
+ =?us-ascii?Q?/h1HsvK0mbrcsewWPzmvPL7FgG3Z32BrfGJJdpIN?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90ee5022-2534-4f20-6913-08dc5778a2ad
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2024 03:04:41.9599
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LrrXdX/mVHBokcAavil8qtuincZ1J2934ecm+S+2sdkRiZPK0jKWB0cLywzv3rWiDcjUjFOqUyRV+Cqe7/SSoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5060
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240407_115843_944446_44DB61E8 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20240407_200447_280781_1B26BDF4 
+X-CRM114-Status: UNSURE (   6.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,63 +165,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 4/7/24 13:54, Krzysztof Kozlowski wrote:
-> On 07/04/2024 19:48, Alex G. wrote:
->> On 3/8/24 03:17, Md Sadre Alam wrote:
->>> Add qpic spi nand driver support. The spi nand
->>> driver currently supported the below commands.
->>>
->>> -- RESET
->>> -- READ ID
->>> -- SET FEATURE
->>> -- GET FEATURE
->>> -- READ PAGE
->>> -- WRITE PAGE
->>> -- ERASE PAGE
->>>
->>> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->>> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->>> ---
->>
->> For the entire series:
->>
->> Tested-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->>
->>> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
->>> index bc7021da2fe9..63764e943d82 100644
->>> --- a/drivers/spi/Kconfig
->>> +++ b/drivers/spi/Kconfig
->>> @@ -882,6 +882,14 @@ config SPI_QCOM_QSPI
->>>    	help
->>>    	  QSPI(Quad SPI) driver for Qualcomm QSPI controller.
->>>    
->>> +config SPI_QPIC_SNAND
->>> +	tristate "QPIC SNAND controller"
->>> +	depends on ARCH_QCOM || COMPILE_TEST
->>
->> Here, it needs to 'select QPIC_COMMON`. Otherwise it can run into
->> unresolved symbols:
->>
->> : drivers/spi/spi-qpic-snand.o: in function `snandc_set_reg':
->>    drivers/spi/spi-qpic-snand.c:56:(.text+0x484): undefined reference to
->> `qcom_offset_to_nandc_reg'
-> 
-> No, do not select user-visible symbols. If you observe such issues then
-> either stubs are missing or depends on.
+Hello,
 
-I apologize for making a bad suggestion. Thank you for pointing it out.
+kernel test robot noticed "BUG:KCSAN:data-race_in_atime_needs_update/inode_update_timestamps" on:
 
-Alex
+commit: 541d4c798a598854fcce7326d947cbcbd35701d6 ("fs: drop the timespec64 arg from generic_update_time")
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+
+in testcase: trinity
+version: trinity-i386-abe9de86-1_20230429
+with following parameters:
+
+	runtime: 300s
+	group: group-04
+	nr_groups: 5
+
+
+
+compiler: gcc-13
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+we noticed this issue does not always happen, and parent has similar ones.
+we don't know if these issues are expected, just report what we found in our
+tests FYI.
+
+
+0d72b92883c651a1 541d4c798a598854fcce7326d94
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+          8:202         -4%            :202   dmesg.BUG:KCSAN:data-race_in_atime_needs_update/generic_update_time
+           :202         11%          22:202   dmesg.BUG:KCSAN:data-race_in_atime_needs_update/inode_update_timestamps
+         48:202        -24%            :202   dmesg.BUG:KCSAN:data-race_in_atime_needs_update/touch_atime
+           :202          7%          14:202   dmesg.BUG:KCSAN:data-race_in_generic_fillattr/inode_update_timestamps
+         21:202        -10%            :202   dmesg.BUG:KCSAN:data-race_in_generic_fillattr/touch_atime
+           :202         12%          24:202   dmesg.BUG:KCSAN:data-race_in_inode_update_timestamps/inode_update_timestamps
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202404081036.56aa7de3-lkp@intel.com
+
+
+[  179.356355][ T3221] BUG: KCSAN: data-race in atime_needs_update / inode_update_timestamps
+[  179.363113][ T3221]
+[  179.363323][ T3221] write to 0xffffa34c4c66f600 of 8 bytes by task 3222 on cpu 0:
+[ 179.363951][ T3221] inode_update_timestamps (fs/inode.c:1923) 
+[ 179.364410][ T3221] generic_update_time (fs/inode.c:1948) 
+[ 179.364823][ T3221] touch_atime (fs/inode.c:1966 fs/inode.c:2038) 
+[ 179.365207][ T3221] generic_file_mmap (include/linux/fs.h:2245 mm/filemap.c:3616) 
+[ 179.365721][ T3221] mmap_region (mm/mmap.c:2751) 
+[ 179.366104][ T3221] do_mmap (mm/mmap.c:1362) 
+[ 179.366448][ T3221] vm_mmap_pgoff (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 include/linux/mmap_lock.h:41 include/linux/mmap_lock.h:127 mm/util.c:545) 
+[ 179.366840][ T3221] vm_mmap (mm/util.c:562) 
+[ 179.367181][ T3221] elf_map (fs/binfmt_elf.c:378) 
+[ 179.367586][ T3221] load_elf_binary (fs/binfmt_elf.c:1187) 
+[ 179.367996][ T3221] search_binary_handler (fs/exec.c:1740) 
+[ 179.368434][ T3221] exec_binprm (fs/exec.c:1781) 
+[ 179.368813][ T3221] bprm_execve (fs/exec.c:279 fs/exec.c:383 fs/exec.c:1533) 
+[ 179.369251][ T3221] bprm_execve (fs/exec.c:1885) 
+[ 179.369784][ T3221] kernel_execve (fs/exec.c:2023) 
+[ 179.370172][ T3221] call_usermodehelper_exec_async (kernel/umh.c:114) 
+[ 179.370673][ T3221] ret_from_fork (arch/x86/entry/entry_64.S:314) 
+[  179.371043][ T3221]
+[  179.371253][ T3221] read to 0xffffa34c4c66f600 of 8 bytes by task 3221 on cpu 1:
+[ 179.371864][ T3221] atime_needs_update (include/linux/time64.h:49 (discriminator 1) fs/inode.c:2008 (discriminator 1)) 
+[ 179.372294][ T3221] touch_atime (fs/inode.c:2020 (discriminator 1)) 
+[ 179.372669][ T3221] generic_file_mmap (include/linux/fs.h:2245 mm/filemap.c:3616) 
+[ 179.373163][ T3221] mmap_region (mm/mmap.c:2751) 
+[ 179.373533][ T3221] do_mmap (mm/mmap.c:1362) 
+[ 179.373950][ T3221] vm_mmap_pgoff (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 include/linux/mmap_lock.h:41 include/linux/mmap_lock.h:127 mm/util.c:545) 
+[ 179.374338][ T3221] vm_mmap (mm/util.c:562) 
+[ 179.374673][ T3221] elf_map (fs/binfmt_elf.c:378) 
+[ 179.375070][ T3221] load_elf_binary (fs/binfmt_elf.c:1187) 
+[ 179.375498][ T3221] search_binary_handler (fs/exec.c:1740) 
+[ 179.375941][ T3221] exec_binprm (fs/exec.c:1781) 
+[ 179.376294][ T3221] bprm_execve (fs/exec.c:279 fs/exec.c:383 fs/exec.c:1533) 
+[ 179.376712][ T3221] bprm_execve (fs/exec.c:1885) 
+[ 179.377063][ T3221] kernel_execve (fs/exec.c:2023) 
+[ 179.377452][ T3221] call_usermodehelper_exec_async (kernel/umh.c:114) 
+[ 179.378061][ T3221] ret_from_fork (arch/x86/entry/entry_64.S:314) 
+[  179.378434][ T3221]
+[  179.378635][ T3221] value changed: 0x000000000402a3d1 -> 0x000000000411e611
+[  179.379219][ T3221]
+[  179.379411][ T3221] Reported by Kernel Concurrency Sanitizer on:
+[  179.379920][ T3221] CPU: 1 PID: 3221 Comm: modprobe Tainted: G                 N 6.5.0-rc1-00096-g541d4c798a59 #1
+[  179.380804][ T3221] ==================================================================
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240408/202404081036.56aa7de3-lkp@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
