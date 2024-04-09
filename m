@@ -4,62 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D898C67861
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2024 09:41:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09054C67861
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2024 11:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ccDsC6OneLg9h+skgnGEbk9coAI9CJrSOLx9QzEiGqg=; b=kHn0vKZYNq6pZjzBjJfJMl23y8
-	6ug5q2VIEqPAXqeh2RXNT46YHAwmFPMW203eBMuzAC4S/6Ms0EWnx7nXJZn9J/QEPC3dm/BeHKQyg
-	gTxg5DqvfMZNZx4mQEdYgHDIl8LZZxLA9JMj+3MkaDWOh9djF5srO54d1NO58OY2jKE/A6vbQ3XeK
-	jhy0uPqNrDFa3pYvWUU7WYG98eqsb55IxLXBZr0Ig3/33/hvNXyJ5xNouT05Kbdhv9JQ2+FfCzZ3Q
-	gGQGTpoZ1+P4AV44muxgLxM5791nfSjjovAeFO21HNP2ErOtQ4UmM6RfO00w3zGv3XIN8m3Wa35BH
-	t36+4qBw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NIiDmyPaEZLFyeFCGCwNguYVM03Zk1yXwtC+opsrdVs=; b=bu4Z86+3U1mAYZ
+	MPlJFbi3tA/9YhkxIy7V2rkmqif3wfZdy/qyw+v0OMaNGn4owqDMKGALfyhGIelzPXxLqu3SxbyFW
+	Y13XDTOiq1htHW1lA+E8rD7ThAovDFFUfMZWn0rC31o/EsFdfcxTny62hSnS9eKLydGAeuNcPC49R
+	Bnc38ioyBaC9pkWWrYY/i5uM5AecGaWD9dguxGkj7GsgmWqGfAwuyx68U0Ohio0IhY+VLl8Qaj6Gz
+	dNz2l3P9HMoh7G/z4PLJc1h7D9jHPAcE+yGyzNdSqOdITivwuF+oHPHLDkNbBiU7LVIh5esRVLqBt
+	+V6bDejIfwapPQUJpEOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ru7yn-00000001GDy-2HmD;
-	Tue, 09 Apr 2024 09:41:25 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1ruA6D-00000001nzu-0NaL;
+	Tue, 09 Apr 2024 11:57:13 +0000
+Received: from mail-bn8nam11on20701.outbound.protection.outlook.com ([2a01:111:f403:2414::701] helo=NAM11-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ru7yi-00000001GB1-3mSK
+	id 1ruA68-00000001nyt-2oLi
 	for linux-mtd@lists.infradead.org;
-	Tue, 09 Apr 2024 09:41:23 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 148E53D5;
-	Tue,  9 Apr 2024 11:41:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1712655668;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=B1hRF4wh5KsEIlNYnlONjUnwHiM/6l8Y0AGg+VjQqrI=;
-	b=UA764w1yQyVsuLGF6Lk+kfDHdZhFDibWXIrnwXcrK/b2vDlQVDhehSpZhGld8VTQlDT5Wg
-	/Qx/N2KRJ477RGmQv9Qs4s+qZgpmV3kF2VXlzJ1yXarTQI6ZHpKhcmWK2pcoVjLkk/uT+N
-	gUNtI6X20YBPuXVlye++Tk8wqiJNKOv1DWOd1OYjYhYdLsPLMictRnyQ4PgWPize3PBlTP
-	7HhYb+Npmmfr3nHQOVCb12am3FVBBNbLiqS26vXz5qdBAV6GOCUyOxpSY/NzofXcM/ijeI
-	JWZpOTz2HdNwueoVBML8t6clo2yQJl34olPUELkWXN3iMANTaurzrMmE3qVrhA==
-Date: Tue, 09 Apr 2024 11:41:06 +0200
-Message-Id: <D0FHRJG05LJN.1GU1N7J0BH6S4@walle.cc>
-Subject: Re: [PATCH v4] mtd: limit OTP NVMEM Cell parse to non Nand devices
-Cc: <stable@vger.kernel.org>
-From: "Michael Walle" <michael@walle.cc>
-To: "Christian Marangi" <ansuelsmth@gmail.com>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240402212331.27328-1-ansuelsmth@gmail.com>
-In-Reply-To: <20240402212331.27328-1-ansuelsmth@gmail.com>
+	Tue, 09 Apr 2024 11:57:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bPUyJihhWktiZRMRTOQ71sOP67TmqxFoUOzDQmQp5YlVQQsxxwBrUApBme7AxpoiAyeUb4wLt79+lLnp3luUo4SpLrsk5vEZT4NxnTswtolOCvEO0PGJrTxhHC6D/cG+7h4UDcI4OPagKjnmWU3nYueSH0MvQjDfA3+5pGZzPDUAxmE3beVi+HXHNeFJniNXIeziT6N5LPMfEG1Quc+VFmOv3uDNmw5mqGs2h9tdM0MV6tq5sPYa1eca20Co6d4/53Oj4gZFc8Ojk9glP/DlHMGTVREIe5XA/IZHnN5bcQH4zA+EEo2tIg/ZAuZpx969ac4aWatz1n2DtNcslY9oaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8K45sA6ph+Wd3TxGL7sY+00G1gKprxNTj34JplnOCeE=;
+ b=nFC393eAf5jUCbuZU7d6dggR44H/+cankd2mFBOMmalYur1XO5uobbH4Tmo/U/P2XSVcQcBpa/Hni5iXaoiQDpZEaL1EDTFcpvP6OP0zp4B4nmcjJGvf+BbMKmTx6JUkDdpjUIsL5ax00F3NA9mv87iGdQI9FMc8nGJKc5zN/hxS25w6X8UzrXD5sszN+gcmq6tqi/zsIqPHRTfccj/Y7bwek5X4rMzvYYK1Ti6ljbGPYCW5FetkoYpu3P+NZnCP44g4WO/HmdyJXM5B7mqxpi0HWyoOgYXTB2kUZT5Bio9/C86CzaY+yA27ubJtKhwk7rYk+uuWzZ5KGRF2eHpzLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8K45sA6ph+Wd3TxGL7sY+00G1gKprxNTj34JplnOCeE=;
+ b=d/HaoAXLudviWWAPdgQTjiNS/ZSNUheSkxslhrkr9vNiMSQtc8S4q8+G8c1oalsYaveuH0PuXWyntmeCgBq28avyIxPdv7D5GRR1e6ONsyXINU0haMRuTlK1oU+XrCLyc2LW9vdiy1ruO5CyZ9skOd4HXRveAR1VwvpWMB/PZvzlaGXQ0t1v6ezhXFHLMSNhjGxnJtY8c74pvn/I/bAJDjYhcLqGU8BY36A1xSe5tYh2mq3gocw+vfsK3ktdTpskcHtEIBZCgTgK/RcVRDo/YSLDCt47AXHd8oRrvuqStbZPg+LkaArbbp/EMJ4UDyN36goPVBmQwaQwXuWUPe2mKw==
+Received: from PH0PR22MB3789.namprd22.prod.outlook.com (2603:10b6:510:29c::11)
+ by PH0PR22MB3790.namprd22.prod.outlook.com (2603:10b6:510:2a0::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
+ 2024 11:57:02 +0000
+Received: from PH0PR22MB3789.namprd22.prod.outlook.com
+ ([fe80::35ce:ff48:fa8b:d4a7]) by PH0PR22MB3789.namprd22.prod.outlook.com
+ ([fe80::35ce:ff48:fa8b:d4a7%7]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
+ 11:57:02 +0000
+From: FLAVIO SULIGOI <f.suligoi@asem.it>
+To: 'Francesco Dolcini' <francesco@dolcini.it>
+CC: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+	<pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: EXTERNAL: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb
+ entry
+Thread-Topic: EXTERNAL: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb
+ entry
+Thread-Index: AQHah1nAfXWnkfTva0GHRKLjc+c+r7Ff2yLg
+Date: Tue, 9 Apr 2024 11:57:02 +0000
+Message-ID: <PH0PR22MB3789745264AFC2A3DC86CE3EF9072@PH0PR22MB3789.namprd22.prod.outlook.com>
+References: <20240405100104.480779-1-f.suligoi@asem.it>
+ <20240405100104.480779-2-f.suligoi@asem.it>
+ <20240405130359.GA308940@francesco-nb>
+In-Reply-To: <20240405130359.GA308940@francesco-nb>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR22MB3789:EE_|PH0PR22MB3790:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: v1EH6kS998pykQrxspwJXaXuBzicCPS7Dvhws/Amq5vcV8JyaIVptA8h8ogyA+pocyqCqNPf7Q7lPU31gJmamJFlR33a5n+JOYZljaNGR3SCb728km8ERVvG9BOaDonFsXAJlv+grAyRRvGNBIhF5gX5c+Reg7ipjCvxtPorj54y8Jid8LlmnfwHD9/qm4+LkWMoWBNH/ih8rhBroeO0pDFPcQvXXIgSuQOB6nNEW4M1fcpO+SWvaDSlMn85Rf2+6gB0UmcfdYt1HMvWiXGNUlyLWLNzhfeDackEV37Gdv4BcK6+gpRtCyVrM9+4D1hoiDEpXl8tc52CrWYN1PaHhAsE6bI8DnfDylSBfH6Q9sMeqKB+xz9n273yaH6VICwfMadIEw1K0FiSjKkHnAnakPnxwv4NKDPoOFjuWDeF3MyLMxTDmttHLKhPM9ZmINrH8eOsq93qod+fTBT5r1uFBUqVIqfQXlHb14ZHXwHC+VCrF8e4Pyhgd7fc5DjhqSMblkNrDeIO+eAlRTBJEObD5waxWwycsR1W4zbLK7VvZQnmgRaiNiUSSRUyo9qrW8dHTi1iCVEF745GVKHW2Bjj/B3voe7oh0nWlCJtFhRYgqs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR22MB3789.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Pt+/AUBJKE6RX1ka7KV32GhlBOjcFwkSIRf7AVD8QMtkHGHA1zUnzoMVHy3E?=
+ =?us-ascii?Q?aPyroiAYHM4C0Vftyp77UB75EU3AUflvj4eaf7C4MU/nY5bgZTrq+4NbRWDZ?=
+ =?us-ascii?Q?Wxwa52B4NGbhkzrRy5MhzFKSfLlF6ZfKvA+UMQDltOZMpzt1Ew5BSVi2rR2C?=
+ =?us-ascii?Q?fifQSg85zez6Yiht/zeym8mBNtcaiVcAs6h86y5n8am1KuNMX+0Y6XzwNbvh?=
+ =?us-ascii?Q?iJiRhWssVVAtzRXpS3cz04eIpYEgn7eRt7jcqm1RSYhZkJM6x8dBMsC9mdeJ?=
+ =?us-ascii?Q?27qsYy6urW3ekpd8ehy90IIArUFBXO/eSqbPr7qE+q9ebOE9HyKlXPeW6Ojk?=
+ =?us-ascii?Q?hgJqopi8kl5blt3l3aNwzaa5+7d7nrE3khSaWyIfDEvqxbB2jrXQQmVARI8E?=
+ =?us-ascii?Q?evNdHNLGILDrk6VRA1ZeF1U5Bs1ZJU6VVCI77zwnb/pVmfFn7W+N9tbuxgoy?=
+ =?us-ascii?Q?n4V/JDBk/CFbS+7KmKCLNAi2KngL8qIthjX9114lHJCqQAn47t00W8aJCjxj?=
+ =?us-ascii?Q?QaDe2Ol3R048fIMyCfCmcgIs7jB0ftx4oqKxDrAHO24HHRCermKge3X/Xrc+?=
+ =?us-ascii?Q?OYdyzz1EKv4EInlVaMb+Zur6bKs5N1PA95Uq8d/XLnDtNcbLqkgqHxSJg06U?=
+ =?us-ascii?Q?HL2Gk/c70uxPqLVRRlOE/sb8t+Gy9NvnhpCLw2td62IOITlC+xe7pSeAC5BK?=
+ =?us-ascii?Q?8dYGedy85Jii6KtI664x8JEBP9WePOl+cJCGypSJIEBFNj60qQbKkG8QaSdu?=
+ =?us-ascii?Q?izO8vNXsKflfJwZBL6uUL+JUjJ3chlsPs5iG9bkUUKLSzBGK11OmYg3DpqNf?=
+ =?us-ascii?Q?oZmNXc7muXmdSpuLEUZxL3MkKcmiZBMI1E33V0nyzSAkdBe8jIMJt60qkP8B?=
+ =?us-ascii?Q?jc2V0QgoIwF1FG6bvkKLRssfHrOAXv6roOGjfuldm6LeJEUJF0KugjOY1odz?=
+ =?us-ascii?Q?dX5i4dHe5rPYrKVkuEJPe3oHNxsO2pm3OG1Bv6apLd5NLtKLo2yjcP/Q4nNO?=
+ =?us-ascii?Q?MJwNXn2hd3jHf5DCXOFYpzk19bfHIDCTO6oSYDyTc1Lel6zib9+cUcTAzUFd?=
+ =?us-ascii?Q?8XrPU5ksgBFaRSOxIHWiA9l+9jL6V5WTmZ16DINOEjFvh+k0VcUADG28MdCW?=
+ =?us-ascii?Q?U4ZqSleK2w71b5hw9QsB1R9S3T+9KBYOmoec3Ika+IFIH7u8ilDSlPUK9vy4?=
+ =?us-ascii?Q?6qDNQz7dSe5YVKK/uH9c4KTqLwUtiWrRgcvU2jqip8eDmbTn+hUoBvgb8oHP?=
+ =?us-ascii?Q?fi6UhWnPzl/6JpbxWBNzxnSVdRHDmgsQL8nnLvoqvKCXuBRvbTd1vhIUIFC+?=
+ =?us-ascii?Q?qA5mPKTWvQ3xRFYVlkaYB0IS2CPBljHcpamQU1lHQ/c9QBQ1evLn2Yz35Ky+?=
+ =?us-ascii?Q?nPW1hd1DooXIHZHKSh2R5lqc3GaoMPHVni9ah9uZZSGseAf/KOwgkqwUD6Cq?=
+ =?us-ascii?Q?TKDPee45M5Pq1XhjH9T/qDXDvxXdU1Y1qWBh6PBF2DVFRBz9c1pbtUmH3TgH?=
+ =?us-ascii?Q?G2AUJLw9XzI3/Qr6Gec3UXuTAzqozStxhxpxlxSM534h7GY4qQxJ+BxlA3ly?=
+ =?us-ascii?Q?ID9/PewI49O+EWvOTLKLQWHZE0GtLZmIdI6GAllO/aIqT+0GmUprywN3PZYR?=
+ =?us-ascii?Q?7s/NML5WVHpYBeOIt03ayx4=3D?=
+MIME-Version: 1.0
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR22MB3789.namprd22.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c7f5501-0319-4f62-c314-08dc588c2b14
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2024 11:57:02.0633
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 855b093e-7340-45c7-9f0c-96150415893e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ep77AkKTMBOBuHL1u/dIKyv0mCcoLQtcynlxO9rB6SqBFk9vPIPdTk7s+rwct13djIn8Aw596abPQdtezthJ1ofok6sHzNzRImBt2OaxVo9vRxTUCQz24OHJ0vs9y3rT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR22MB3790
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240409_024121_218201_C0928C8B 
-X-CRM114-Status: UNSURE (   6.18  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240409_045709_091166_0BE227BF 
+X-CRM114-Status: GOOD (  10.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,56 +135,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1682054764495111627=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============1682054764495111627==
-Content-Type: multipart/signed;
- boundary=8a32cdc00bd7bdcde487afcf8d9f9ed3c2c6e755e2a918de1ef16595d7db;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+Hi Francesco,
+...
 
---8a32cdc00bd7bdcde487afcf8d9f9ed3c2c6e755e2a918de1ef16595d7db
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+> Hello Flavio, thanks for your patch.
+> 
+> On Fri, Apr 05, 2024 at 12:01:04PM +0200, Flavio Suligoi wrote:
+> > Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
+> > Memory.
+> > This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
+> > able to provide SFDP information.
+> >
+> > Link:
+> > https://urldefense.com/v3/__https://www.everspin.com/file/158244/downl
+> > oad__;!!JhrIYaSK6lFZ!tWeIxTcqY-RFxb9oTGXkVDvdN3bGApINZBts9sSPv-AIlH7r2
+> > xf0to_QuyONQPwOICeq6hrz5Ia-1e6vT1VfaA$
+> >
+> No empty lines in-between tags
 
-Hi,
+Thanks for your observation, right!
 
-just a quick (non-technical) nitpick if you do a new version or
-maybe Miquel will fix it during applying:
+> 
+> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> 
+> Francesco
 
-> Subject: [PATCH v4] mtd: limit OTP NVMEM Cell parse to non Nand devices
-
-subject should be "non-NAND", also cell could be lower case :)
-
--michael
-
---8a32cdc00bd7bdcde487afcf8d9f9ed3c2c6e755e2a918de1ef16595d7db
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZhUNMhEcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+LymAYDD9wmmYfgy26EJDv13ae+bC0ut1EyeUTAm
-lJ9YqLRePNYZ6DdNEEPblZqfBNUTD04BfR6m8Yg0Y/LiFSrhkmPFkcOGZroghen/
-hXr19Rz/FouCSXF2uoJ0y/cdSqW5pYZJKg==
-=wSoG
------END PGP SIGNATURE-----
-
---8a32cdc00bd7bdcde487afcf8d9f9ed3c2c6e755e2a918de1ef16595d7db--
-
-
---===============1682054764495111627==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Flavio
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1682054764495111627==--
-
