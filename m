@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C89C5C67861
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2024 13:22:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0F7C67861
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2024 13:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:Subject:To:From:Cc:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=okZK53XTlMH3xEA5tbS9Qyz0k9uXc7dAxMA9FWuaR1M=; b=w359j5EuHApq2idTA+EUwSXA1j
-	2JPz7oJsMrFXD5fQtLp03NIj4vusrTP9K9rEfgBnqMNnWrfBjLFCUh3t6+yj3+nzAxvBU6Sd2lRDD
-	J2YID/dBCzQG5AQZWKxIrgZnJ89rcgWWZeydkbTaDwZEQ2WtdydDrXWoF8i6qcUTLOHT8W8BBR4pv
-	stM4V3gRlfv7LeMWBXr/9DPfKBf9GEeXKeK/u1RTbGjE6EkwSWbipMrKkTLwfW1DI6Vpzc04RNtQ4
-	lPTpidetfQ1uAH65F3jSWN5jGPWQH62o2VXIYEoAN+S6xF8yxVBdgsskMC2/T1agZ8+v7PhZGR4lE
-	JyBX938A==;
+	bh=WD3DNrhJY5wywbqkz2K4dxvFDnL0/d/lIDYTmUtroGg=; b=kBAZtLd0GnxZrNjKcLiprHyQ7J
+	8Qr8EL8ekmCh0OzgOk0sGayU2yF+d1Wi9SCApABpwjW79dPRrI5L0x7wGSAnWlu8/5iERNIh1mq12
+	B0ed5u8yaFRY31F91or8PbNrrKf74dMBRDXQxZ2EDO5jJ7xspnoKA5iUjJLQwTI6C0xZ9u75LRoZM
+	NvIGybwc7kE4zsIfhjZd//49Kzst+gbj18UfACYPDozfFPTlIJRwJdwYGIivJ1sfycz9kTMnVuFHl
+	5HeeEMoXpuuqIivCuDBxxNmsqVo6T4sJH1QSA7DmjVir2B26N56/6tC0CjY3+RVPt/NteIV10lqJr
+	LTY5Rbsw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruBR4-000000026QU-1fk8;
-	Tue, 09 Apr 2024 13:22:50 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1ruBRR-000000026cx-2AlO;
+	Tue, 09 Apr 2024 13:23:13 +0000
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruBR0-000000026Og-3k6u
+	id 1ruBRN-000000026Zd-2kcR
 	for linux-mtd@lists.infradead.org;
-	Tue, 09 Apr 2024 13:22:48 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0F961616E3;
-	Tue,  9 Apr 2024 13:22:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB7BC43399;
-	Tue,  9 Apr 2024 13:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712668965;
-	bh=+qRpdfn6imp+KKjieABpdtfi/x/YK+WbMGLOebjohNk=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=Nk/px9LiDpuUrGNWp4QUd2ZRpM8tUx7ILrgAPBox1vJaVZUta8bFvsx4oHja8ZamL
-	 EOQUJ99W0uoHEIaJEkZWU3wOJ/XTmIcyPU2AhW39jw10Sgtdj//YlvGU+45G/rDd2P
-	 AUXBqdDmR9UlFb/N5cG0iFTWkq2YsHmYAAZ4WfwlvXplSc4KBD4UbcZgZdErQMGnPN
-	 AakX3AiO6eaWlHp19uTYSVVHWaipTGQz7wNx61qtFcHGUJnIGDJgXu0mRZHc5/onke
-	 CInI7908qRJdFKCVNrjg3yvvl8+JhJGLVZvF0rYKApbmoUlmiUpXHdb/7nU3iKmEom
-	 7/0nHOcmkAJyA==
-Date: Tue, 09 Apr 2024 15:22:00 +0200
-Message-Id: <D0FMGOEWQC1O.30D61WTXL4087@kernel.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "FLAVIO SULIGOI" <f.suligoi@asem.it>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-Subject: Re: EXTERNAL: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb
- entry
-X-Mailer: aerc 0.16.0
-References: <20240405100104.480779-1-f.suligoi@asem.it>
- <20240405100104.480779-2-f.suligoi@asem.it>
- <D0C9NCOMI27O.2VW2U3FNFTSPK@kernel.org>
- <PH0PR22MB3789719A62A1EE483C9FDF76F9072@PH0PR22MB3789.namprd22.prod.outlook.com>
-In-Reply-To: <
- <PH0PR22MB3789719A62A1EE483C9FDF76F9072@PH0PR22MB3789.namprd22.prod.outlook.com>
+	Tue, 09 Apr 2024 13:23:11 +0000
+Received: from [192.168.0.106] (unknown [114.249.187.16])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 99A683F0F8;
+	Tue,  9 Apr 2024 13:23:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712668984;
+	bh=EksjzJ3CymsKewjeeiKpJNkz0yRVlJ2oULqb01KBTqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type;
+	b=A23wJqihb5Kdv+wzWFFG6vwgSMNE/tUjnslryEmEuiJ9KkLgBqyeqebFkz7/DCWot
+	 lFihHW/ZGX8UicD/PAiIeislIgv5DIX8RVeABp9P9ihREmi3Fp28XXG9xG2C574uWW
+	 LIA9UkfNM7zwOhSoZk6ariCLFrUf9pW6HT+rTnrtyMzha7VmLpq6ojSwBmCkgOGIgb
+	 p0Gooll0lujoBRh8/AyvGyp4Ha+mn7J/91lqbLPYfP7vYUpiXbcIeZaTkVcxJ5Fv97
+	 MBTcvzEf2JI04SV5TpuosVBOgttdaTRytGlsF4wGCHZB9mMRWx2UrL4oYkXnMEtMNf
+	 aTsf76tijFkWA==
+Message-ID: <a82f7811-e9f4-4d1f-91f4-56b87d35eb9a@canonical.com>
+Date: Tue, 9 Apr 2024 21:22:57 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for infineon
+ cy15v102qsn
+To: Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org,
+ tudor.ambarus@linaro.org, pratyush@kernel.org
+References: <20240408124328.777375-1-hui.wang@canonical.com>
+ <D0ER81J5LHKW.N4T3BI3FRLDB@kernel.org>
+ <81551ca3-532d-43c8-859e-c3d9be8d6e9d@canonical.com>
+ <D0FGHMY4V864.118ONNO1DWQ7G@kernel.org>
+Content-Language: en-US
+From: Hui Wang <hui.wang@canonical.com>
+In-Reply-To: <D0FGHMY4V864.118ONNO1DWQ7G@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240409_062247_050107_9C5ADBE7 
-X-CRM114-Status: GOOD (  26.60  )
+X-CRM114-CacheID: sfid-20240409_062309_908043_73BD68C6 
+X-CRM114-Status: GOOD (  15.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,121 +73,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3794672495859805702=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============3794672495859805702==
-Content-Type: multipart/signed;
- boundary=075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749;
- micalg=pgp-sha384; protocol="application/pgp-signature"
 
---075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-
-On Tue Apr 9, 2024 at 2:07 PM CEST, FLAVIO SULIGOI wrote:
-> > On Fri Apr 5, 2024 at 12:01 PM CEST, Flavio Suligoi wrote:
-> > > Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
-> > > Memory.
-> > > This device is JEDEC compatible (JESD251 and JESD251-1), but it is no=
-t
-> > > able to provide SFDP information.
-> >=20
-> > Did you try the at25 driver if it will fit your usecase? Judging from
-> > your last response, it sounds like it will do.
+On 4/9/24 16:41, Michael Walle wrote:
+> Hi,
 >
-> Yes, you are right, it works with at25 driver!
-> Thanks!
-
-Good news :)
-
-> At the moment I have to use a page size of 256 bytes, using "atmel,at25".
-> Since the Everspin EM0004LXB MRAM doesn't have problem with any page size
-> (theoretically I could use a single page size of 512KB), can I update the
-> at25.c driver with a support for the EM0004LXB MRAM, as already done for
-> the Cypress fm25 F-RAM?
-
-Feel free to propose a patch. Keep in mind that it is another ML and
-maintainer. Just use get_maintainer.pl. Keep me on CC if you like.
-
--michael
-
-> >=20
-> > >
-> > > Link: https://www.everspin.com/file/158244/download
-> > >
-> > > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> > > ---
-> > >  drivers/mtd/spi-nor/everspin.c | 8 ++++++++
-> > >  1 file changed, 8 insertions(+)
-> > >
-> > > diff --git a/drivers/mtd/spi-nor/everspin.c
-> > > b/drivers/mtd/spi-nor/everspin.c index 5f321e24ae7d..4741930ce9a8
-> > > 100644
-> > > --- a/drivers/mtd/spi-nor/everspin.c
-> > > +++ b/drivers/mtd/spi-nor/everspin.c
-> > > @@ -31,6 +31,14 @@ static const struct flash_info everspin_nor_parts[=
-]
-> > =3D {
-> > >  		.size =3D SZ_512K,
-> > >  		.sector_size =3D SZ_512K,
-> > >  		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> > > +	}, {
-> > > +		.id =3D SNOR_ID(0x6b, 0xbb, 0x13),
-> > > +		.name =3D "em004lxb",
-> > > +		.size =3D SZ_512K,
-> > > +		.sector_size =3D SZ_512K,
-> > > +		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR | SPI_NOR_HAS_LOCK
-> > |
-> >=20
-> > Will it also work without SPI_NOR_NO_ERASE? Also, the flash supports
-> > fast read, so drop NO_FR. Also, please have a look at [1] for the
-> > testing requirements.
-> >=20
-> > Thanks.
-> > -michael
-> >=20
-> > > +			 SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
-> > > +		.no_sfdp_flags =3D SPI_NOR_SKIP_SFDP,
-> > >  	}
-> > >  };
-> > >
-> >=20
-> > [1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
+>>>> It is 2Mbit F-RAM which is logically organized as 256K x 8.
+>>> Please have a look at drivers/misc/at25.c. I'm trying to get rid of
+>>> the NO_ERASE flag. This is more of an EEPROM like device. The at25
+>>> driver already have some kind of FRAM type support.
+>> After reading your comment, I checked the drivers/misc/at25.c, I found
+>> It couldn't work on my hardware. In my case, the F-RAM is under a spi
+>> bus (spi-nxp-fspi.c) which only supports spi_mem transfer mode. So
+>> currently, the mtd/spi-nor is the only choice.
+> Then it will be a great opportunity to make the at25 driver spi-mem
+> ready :)
+OK. :-)
+>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>>> ---
+>>>>    drivers/mtd/spi-nor/spansion.c | 6 ++++++
+>>>>    1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>>>> index 6cc237c24e07..5dc94926b2cb 100644
+>>>> --- a/drivers/mtd/spi-nor/spansion.c
+>>>> +++ b/drivers/mtd/spi-nor/spansion.c
+>>>> @@ -981,6 +981,12 @@ static const struct flash_info spansion_nor_parts[] = {
+>>>>    		.name = "s28hs02gt",
+>>>>    		.mfr_flags = USE_CLPEF,
+>>>>    		.fixups = &s28hx_t_fixups,
+>>>> +	}, {
+>>>> +		.id = SNOR_ID(0x48, 0x51, 0x80, 0x06, 0x00, 0x00),
+>>> This doesn't look like a JEDEC id. The datasheet says it is a 11bit
+>>> manufacturer id?
+>>>
+>>> -michael
+>>   From the page 82 of datasheet, the Device ID is 0000000006805148, and
+>> the ID read by spi_nor_read_id() matches it (id[0] is 0x48, id[1] is
+>> 0x51, ...).
+> JEDEC manufacturer IDs are not 11bit wide.
+Have no idea here. I thought it is same as the cy15x104q and the 
+spansion.c has the support for cy15x104q.
 >
-> Thanks and best regards,
-> Flavio
-
-
---075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZhVA+hIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/i8/AF/fD2dzcyQr3HGVxsEAOBduorhF05MB4hO
-h5jZbHCSISsiRqqlasJnnSPViXGrm4OcAYDd7cDbdX1ItpPATVlsfP8dkRWSRju1
-l3e0T4hfE1nZO4iUukBEDc9TS8dL0MTgMDw=
-=HQCi
------END PGP SIGNATURE-----
-
---075ae5208db4a3d47fdbb558f3a42d323bc83d22469cd68f40760735a749--
-
-
---===============3794672495859805702==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> -michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3794672495859805702==--
-
