@@ -4,142 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E797CD128A
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2024 17:36:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2B37CD128A
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2024 18:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cfL10kPNfyAWKxVr88PJFfx7FKhNKFN4u7OXevK1kII=; b=IEjUVo8Z1yTQSa
-	43n9aCBcNK3jJvFYwhfdHWygQrjURtIFOHewvqKwUR67LYSYgLa/A5TJnt0nbt8gw4h/f4yamqBHI
-	b82sMvs/LMDR1sZR49PifKCQGp9BfLOdPikG/7mzj9cArYKymJKpSwDl+SYuRiiQop5ISAFKELAor
-	a6ZXxcOTArwdn+GbWs6j8aDTm3FlJK+/EhWcvDIGLkG9SDYT0akRrqTIpiV6nVIpf6VmY2QRtYsTr
-	VAhfAqo1l7lTYloBfQhH2LJOvqFala3+lPhkOzpIwRsJCd2WMoW+ehHfkS9/r/eVq9im4afOsi/Ds
-	JmgoE1A5MkV+/lzfhVKQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=v4o+FVJyteGpORtX1Ftr/1qIH17Ln40sBziBopd4ZLk=; b=RIXEdsaXs4FUQ8
+	LCE93e3WuB3RXflIP41OW61mWgxwpM7+wA5WUkdulWoVkKPkz3Da925kRE/VGI+udQekfwakuzb/L
+	IAlNuTXu7PDBpiBWIRjDOWDS8Ijm3YrQQKc5sJe5VxC6AuD2F5FJjVhUJEhbgZPxJQktgX3Na4XhE
+	J1Ii85RmQW8gO/AhIp4vBVwAjl+Y5ZYkf6StDycjgF/qo6VK3TXW8HQQH3s5/qUanMhCntYc8i9Ec
+	hM4voUgKKsBXaz7FHydpHMOGS763HimXdBV977JHIKorKCwPM+lUWoaynYDUSifPlXxtejCUzQxKo
+	J5gASkqHzfXqoD60Gl+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rubrt-00000008I10-3WGq;
-	Wed, 10 Apr 2024 17:36:17 +0000
-Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
+	id 1rucQK-00000008Qgl-2ecH;
+	Wed, 10 Apr 2024 18:11:52 +0000
+Received: from mail-southcentralusazlp170100000.outbound.protection.outlook.com ([2a01:111:f403:c10e::] helo=SN4PR2101CU001.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rubrp-00000008Hys-01cM
+	id 1rucQF-00000008QeD-0Ifc
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Apr 2024 17:36:15 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3395033A89;
-	Wed, 10 Apr 2024 17:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
-	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
-	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
-	JIolcEC5hlnuCvCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
-	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
-	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712770567;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
-	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
-	JIolcEC5hlnuCvCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFAAD13691;
-	Wed, 10 Apr 2024 17:36:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 20hgOgbOFmZrWQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 10 Apr 2024 17:36:06 +0000
-Date: Wed, 10 Apr 2024 19:28:37 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Jan Kara <jack@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>,
-	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
-	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 09/17] btrfs: use bdev apis
-Message-ID: <20240410172837.GO3492@suse.cz>
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085712.1766333-10-yukuai1@huaweicloud.com>
- <ZYcZi5YYvt5QHrG9@casper.infradead.org>
- <20240104114958.f3cit5q7syp3tn3a@quack3>
+	Wed, 10 Apr 2024 18:11:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DdL4c7dlfouedviT7HSxpB+4IKX4XYQcVurB1iYUhtggoolzhWoSn280LYg/bjeY2YkFkTf2SLb/3jpL3yJaKGaPf87t2eVZaQ0QBfIPfj9uhgeRKEEOcReCc/5UUGPdrSYM0cpQYcjy949IAi7hpQ3KCtfGMoCyRoZfV4qJ99mVXuwdRJqivo9GRWEVFA3yHObZfN5ZB1i1LT+t0uOQuyt9RerhxJ0tN3ulAR57yufQN6G32nrcUgEooOLGEanEA4s5IMHS8U2nm7SQpWLFsFw8i4GsN6TvJqq67Qzcf7ZvhKeonnh1Q88ZbIrzLxm6mOTBbvF8mTWRam3kfnwXOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x6hu2P3+aYtejuyZVvXR8LzHdgzlDMuX1KYWHVJiNtc=;
+ b=ZjfkiEmmNPDU3j5PkbzvAX0lBwxq8wxwO+/hOK068bYT6puImYB7YNPQg2K1Tl01w6w4ea1z2a587Z0f0piPIgrXMhq3+KfVofHO5Dk3fQjzCpdxVEBH6ajIvMb/UGCWiRPfxWfxawGpKRJtxVGyEUhELiMxcj48hDeGrn2YD5WF9H6nPhMpPfxDkbMhXykP1bgWAgYALpM9FmBawEPgAqWOCnLsHHdPiTxjmnSbBeqBVeYWzjLXzSB4cALBzFlmpoBRCHBNKE2lo2k2F3kYeSGdZ2POCKyQr2x6FukAUzTW+9OqYTF2ZKpG+H8brx4evTTGrVziM6vRkHgJyUw4Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=flightsystems.net; dmarc=pass action=none
+ header.from=flightsystems.net; dkim=pass header.d=flightsystems.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NETORG5447408.onmicrosoft.com; s=selector1-NETORG5447408-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x6hu2P3+aYtejuyZVvXR8LzHdgzlDMuX1KYWHVJiNtc=;
+ b=y7Z1U0PnI958sA9urY+VfsVR5XOCI5E2/quW6ZLv2fSYkN38YTXGX1ziIXSZfB3HlH+VUds7L48n+VghQmGSxfRJnEBP2X8cFxGMfz+kjCQUyYiMGiAn2nUxXusS7xLzq44YUHud2eLeEW4JVow74hXN042GjC0tCyOsInnUziU=
+Received: from DM6PR05MB4506.namprd05.prod.outlook.com (2603:10b6:5:97::17) by
+ BY3PR05MB7907.namprd05.prod.outlook.com (2603:10b6:a03:363::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Wed, 10 Apr
+ 2024 18:11:41 +0000
+Received: from DM6PR05MB4506.namprd05.prod.outlook.com
+ ([fe80::3db7:1825:d936:33e0]) by DM6PR05MB4506.namprd05.prod.outlook.com
+ ([fe80::3db7:1825:d936:33e0%6]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 18:11:41 +0000
+From: Steven Seeger <steven.seeger@flightsystems.net>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "ada@thorsis.com" <ada@thorsis.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>
+Subject: NAND parameter page read fails with bitflip and no column change
+ support
+Thread-Topic: NAND parameter page read fails with bitflip and no column change
+ support
+Thread-Index: AQHai3HIa8ir8AUCL0ehOwUDoMRk7g==
+Date: Wed, 10 Apr 2024 18:11:41 +0000
+Message-ID: <DM6PR05MB4506554457CF95191A670BDEF7062@DM6PR05MB4506.namprd05.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR05MB4506:EE_|BY3PR05MB7907:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: t19R0IHW6aUeQgo/rv86++1jRdicavarvKHa9x7dOzQfbPIkXKbJkOzECGOu6NEY9VNpNteUzdEJwuXhl4jmm4BCHHoEiUi1oK/pFnd2DEEAJupX6BB08Gk9Gwir7veGLBc4VhOdaoxfjRlD5pYO9Q9qr2/H8yV1QSD5cvTt9gFJdztiwgeZgDhupUD3leJnbPrHLA0TGUrBB6Id7btYQ35VuAJzLx8zD/4/U6WxFcYK3mEcKBCUE8dvILAK+u268gjrAPLxNHOzS9LjRny2lDnqCsqbttCXBIM8tBcSNkd15drJpG0YCSaHnn7yv47QhieZ1D1R8ozahZL//C3T89+l/lZB9Dg/JwhlyVJgHXA1kjGAcG7b1IcwbX7EmWHp9kqA8UMLPS44JpmFfHzh5zhRjH206Mzz6R6+Jso4Qhw5/mJqgYk3nFjNxr60LZG6GeMFb5y9DZRTWZZlo3ETswj+CybZuTIW+uaDcEcC+sCshNqIFCgF4ZgJ1E+Ry4jrb4tNfZmQSNyQKwqaMZuhGyi53dLH92Qf96dBNXBK+67BjtN+MNFJIUlfx/NTkrkZmynP8gE9L+XzSnxqRODtNV2N6pDZnKOxa9raPmQ8CXB6+0WwYUk2REPE0yXfkLvNqGf9V1Kqcfnkl/doaYT2NZw0tv0ZkliBK1ez7kYvKAk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR05MB4506.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?H7QNvpk1bAZRkzOTBnD98/fYS5+DqdV4K88VhP99augLfkS4WcsfEaax2l?=
+ =?iso-8859-1?Q?jmN1O8A3+vc8kYt+RHv+mkUpoXbTagxvZZbgI/ev9DmBoq4TQFdDCQgxVH?=
+ =?iso-8859-1?Q?X43upBiqLBUavf8U4YmdKANdY3k+X3NDGlT8/cbqTowU5Em5cn/uSObmAK?=
+ =?iso-8859-1?Q?mWqLmyFiyys9oKZZ080wmCqOeo3uX4c5LLJxs1Z4bVOJyn8x0yWlszofK7?=
+ =?iso-8859-1?Q?aheLeBvylQ41F1KxgehzxdRqYohEDXwfkWLdrDbWaapzgCYkFsP36lHILw?=
+ =?iso-8859-1?Q?DrpV22M6bMa/g6XzP5yMjQ3S32ZAYJDiUcoCS1A4wPGnWiF3rmi+BxdDYE?=
+ =?iso-8859-1?Q?iWSpo8xGCGHIZlkceRy71hpO1bhc8PMXT0kk9LkkiXxHP5fGo/wLBaoCzG?=
+ =?iso-8859-1?Q?fxoxVRft4r+ET49+wjUBr6jg/9gJDAN93AgiMiksE4FH4+Vw7+pUkTL2Ux?=
+ =?iso-8859-1?Q?rdWNU8uPm3TKQfgMyVqT4b47fMC07AGtIJhuLPAC9k3b4DBa4PhJ8vND5E?=
+ =?iso-8859-1?Q?aQkkedwIzUb2wDZKWbbFkFtqgxclBFHk+JW91bWscsJbtPr6YE5ZEMbNtg?=
+ =?iso-8859-1?Q?yFtLcEhFyNpoUyQJs0VKtt+4T6w0Z9sF61czdZ1AVMl+nPcAUY0ndUc3yq?=
+ =?iso-8859-1?Q?0iAz2vPgpKXV4z0nqCpdIfSf4peCgH4j9Wmfoor0WHGgBLCzjDsJJCf7kj?=
+ =?iso-8859-1?Q?fPvRRiWApe35LVuysfy6cOrX9GiL3rOy0CAnJ9l1H1JuMTCUwB/B2sawM4?=
+ =?iso-8859-1?Q?2bVHjJj21OWQtAXcLTZDqIMKP6clmdX5Ed7w8fTWvTwNaBhlDR+5r31o1y?=
+ =?iso-8859-1?Q?R9ssYpf8PV55MOUMOEhABon1C6YwQ8v0Uh3ZsW1NuB6+8jJj+aygEo+Ek9?=
+ =?iso-8859-1?Q?x9ZL8k4aj21/OOP6J18MDTzGDLskS10ktK3oJjoUmiipgBVXkfrPsgIHwC?=
+ =?iso-8859-1?Q?UmgNyCm2h8G/IJ+AgX5edVSQ/cStD6TXEA9hAXWH2X5YF0Wf0/LO0Y5TEP?=
+ =?iso-8859-1?Q?f2DGmmsFJ9GjPKZxUENATDIp0iEZ0INIMTRm2N4wj9or1Sb8CxCfTH/LQD?=
+ =?iso-8859-1?Q?hUAVdwp3utJLKuu4MyEkJ9bjdPJw/Cq/D3O+gKDMLTu/nY7tBPWd62nY/V?=
+ =?iso-8859-1?Q?YCsI/dzBVOpFR9UTvh+O6ibgcUS3eOVIu24PYXgEOzirHXi+fo0d4ePpUK?=
+ =?iso-8859-1?Q?d3FXFGr62ZBcbKa/45xv9QewFhAG1abWN+tAF8sOUTuR8vdD54/729jVxj?=
+ =?iso-8859-1?Q?kHYqaFsFpc/y8C7bmCqpFzY/RPEkJH2Z1RAFa5PJagFT2ZLtNN0eknja21?=
+ =?iso-8859-1?Q?PvAM1iqkOBmZCLnWnUydKOGdX92rqslbpONkZRuaxxcb5LJSnPwvZY+1rt?=
+ =?iso-8859-1?Q?rGjrF6rGMoljCU3AtmpTgg5a5efjl4f0edtOp8tu662qvm6hvAUWHLwGDR?=
+ =?iso-8859-1?Q?UL7Aa064qVLxwg4GEZi4JHdDpNuDxsqTyS2iRY81WUKnzbkGpdM7d9m+ai?=
+ =?iso-8859-1?Q?BaURxtoSLIOXFntF45XoGULe7vkzggAN7ZmZVVDwK5WhebVpfmO8ejGpkX?=
+ =?iso-8859-1?Q?O4OpGtCkhAGRbEzrCSloJg7LD3+L6riYyZ9k3ze9TZf93FssupmolnZC3H?=
+ =?iso-8859-1?Q?F813kUTqkWdQD3d2gwc/fBA2NOc6Bmx49On+AKEJ8uYKQ1ATNTqgdYpw?=
+ =?iso-8859-1?Q?=3D=3D?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240104114958.f3cit5q7syp3tn3a@quack3>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[49];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLtpaten8pmzgjg419jubxqoa7)];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,huaweicloud.com,kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-OriginatorOrg: flightsystems.net
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR05MB4506.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 93bf05ad-004c-48fe-22ed-08dc5989ac29
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2024 18:11:41.2996
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: cc3d8032-d019-412f-a0a3-ce7bb88962c5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: U4Or5U1uuBChYc1aQQzJdWdRA16xRWNLx5OQiBywTRi8Cb1lNyt65+U/zfIKpy0QANKSGTJ+sJAqKQiclO54j/p7r1Bo0erqnjCyPQ4eOHY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR05MB7907
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240410_103613_215257_5E9F1956 
-X-CRM114-Status: GOOD (  24.86  )
+X-CRM114-CacheID: sfid-20240410_111147_148095_C16D8A41 
+X-CRM114-Status: GOOD (  17.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,53 +130,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: dsterba@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 04, 2024 at 12:49:58PM +0100, Jan Kara wrote:
-> On Sat 23-12-23 17:31:55, Matthew Wilcox wrote:
-> > On Thu, Dec 21, 2023 at 04:57:04PM +0800, Yu Kuai wrote:
-> > > @@ -3674,16 +3670,17 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
-> > >  		 * Drop the page of the primary superblock, so later read will
-> > >  		 * always read from the device.
-> > >  		 */
-> > > -		invalidate_inode_pages2_range(mapping,
-> > > -				bytenr >> PAGE_SHIFT,
-> > > +		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
-> > >  				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
-> > >  	}
-> > >  
-> > > -	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
-> > > -	if (IS_ERR(page))
-> > > -		return ERR_CAST(page);
-> > > +	nofs_flag = memalloc_nofs_save();
-> > > +	folio = bdev_read_folio(bdev, bytenr);
-> > > +	memalloc_nofs_restore(nofs_flag);
-> > 
-> > This is the wrong way to use memalloc_nofs_save/restore.  They should be
-> > used at the point that the filesystem takes/releases whatever lock is
-> > also used during reclaim.  I don't know btrfs well enough to suggest
-> > what lock is missing these annotations.
-> 
-> In principle I agree with you but in this particular case I agree the ask
-> is just too big. I suspect it is one of btrfs btree locks or maybe
-> chunk_mutex but I doubt even btrfs developers know and maybe it is just a
-> cargo cult. And it is not like this would be the first occurence of this
-> anti-pattern in btrfs - see e.g. device_list_add(), add_missing_dev(),
-> btrfs_destroy_delalloc_inodes() (here the wrapping around
-> invalidate_inode_pages2() looks really weird), and many others...
+Hello list.
 
-The pattern is intentional and a temporary solution before we could
-implement the scoped NOFS. Functions calling allocations get converted
-from GFP_NOFS to GFP_KERNEL but in case they're called from a context
-that either holds big locks or can recursively enter the filesystem then
-it's protected by the memalloc calls. This should not be surprising.
-What may not be obvious is which locks or kmalloc calling functions it
-could be, this depends on the analysis of the function call chain and
-usually there's enough evidence why it's needed.
+I have an interesting board with 8GB of NAND, and the first of 8 chips has a bitflip in the first ONFI 256 bytes of the ONFI parameter page. My driver did not support column change operations, and this worked fine with linux 5.x kernels. I noticed this problem with a 6.6 kernel, and the fix was to add column change support to my driver. Without it, the NAND layer always reads the first 256 bytes of the parameter page. As my hardware is an FPGA that abstracts some of the direct NAND access away, and ECC Is done on-die, the driver is a bit of a hybrid between the newer exec operation API and providing functions like nand_read_page, nand_read_page_raw, etc. So the parameter page read upon module load uses the data in instructions in the exec command, while page and OOB reads and writes are done through the driver-supplied functions.
+
+Adding support for column change operations fixed this issue, but it seems that this support should not be necessary. It  didn't use to work that way.
+
+I had reached out to Miquel privately with this issue, only due to the desire to help inform maintainers of the issue. I was too busy at the time to join the list and write up something more formal. Miquel provided a small patch for me that did not work at the time, and then I lost access to the board for a while. Now I have a little time and a board, so I am here to report the issue and make it public.
+
+I am fine continuing my work with my driver that supports column change operations, but also happy to use a previous commit of it to do any additional testing with any patch provided as long as I have a board.
+
+From my original email to Miquel:
+
+Your commit 9f820fc0651c32f8dde26b8e3ad93e1b9fdb62c4 I think has a small bug.
+
+In rawnand_check_data_only_read_support(), you call nand_read_data_op() with a NULL buffer, which causes nand_read_data_op() to return -EINVAL, therefore the value for data_only_read is never set.
+
+Apologies to the people on CC for sending this a couple of times due to errors.
+
+Thanks,
+Steven
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
