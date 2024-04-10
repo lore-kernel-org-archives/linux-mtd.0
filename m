@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A5C4CD129D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91EADCD129C
 	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2024 07:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,38 +12,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0FG2I+Ph/foNjRP3R88L9uE+Er7w5FsMili1zhU1nRY=; b=cmmiOzPFZ6zf6N
-	Th1ngxOxs+7L8SUYc2KND1lNPuGsoNv9aA3Rhg7yAPfatA5hQRYnWrHwMspW4tV5QSE37eh0MoRvH
-	w1nCilIlszKZ6qSUQ1Ja+/YemrJlnIe7LV1tEfPs+yxrjrviQBzbv0MFGcLEM1JYeJOkkknzc8AsX
-	V9tEBd98apJP3iSDKJ0oyWZkeHJmFslTOrXmd/ZY8Omj98BweqgqxFdHp6oKg5DBAuYUqu7bWAvYA
-	cW2moIiryqyut7dp5qEtjeTMA4Rz+BxNr1u0xErLscmZqfQIbGduPH9Jor0Xk9SKds9H1krb9PDvW
-	cx3CaSIpB8zrD6eJdJXg==;
+	List-Owner; bh=amJHd4SrGchhluq0T+D7kxrQ0szxddC61vLbf8jcQUw=; b=SZyrv46OdRZPRL
+	ViNS16fUht0quwqaAaPC2dW9aL91IgRxtLFruh3EVgVsiGScjNrFthXP7oW/MhK5aUEIvmbcpWuAF
+	Y3qqL1rpBktXdraHoNF3hvs7uSpmhVVJ0EBPwSHFoewj3NTfPQB9y5BD1atnJjyY4VwWskCBgNZvA
+	XMo5bJD/ggpU3EuNhslnxIrL0B715ZKwhBTH0YDzZedpC7bZc7N1z8aOJpfIWRAPlCWgIvPfTHlHc
+	WXYSWAIj35rSv3vWBV35/gceoWRAPaJn/3L8iXFMvnaKxBf+58rjwodxlLYKnM088BLZIfEKso1FJ
+	h4XFUmOpblPG0+9JczlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruSfF-00000005gIG-2Eyc;
-	Wed, 10 Apr 2024 07:46:37 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1ruSfD-00000005gH9-3Yos;
+	Wed, 10 Apr 2024 07:46:35 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruSf9-00000005gBu-0516
+	id 1ruSf8-00000005gBl-0gYL
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Apr 2024 07:46:33 +0000
+	Wed, 10 Apr 2024 07:46:32 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VDvy74PJPz1GGhr;
-	Wed, 10 Apr 2024 15:45:35 +0800 (CST)
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VDvy12drVz21kfQ;
+	Wed, 10 Apr 2024 15:45:29 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 81DAA180064;
-	Wed, 10 Apr 2024 15:46:21 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B88D7180064;
+	Wed, 10 Apr 2024 15:46:24 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
- 2024 15:46:19 +0800
+ 2024 15:46:21 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<yi.zhang@huawei.com>
-Subject: [PATCH 2/9] ubifs: Don't add xattr inode into orphan area
-Date: Wed, 10 Apr 2024 15:37:44 +0800
-Message-ID: <20240410073751.2522830-3-chengzhihao1@huawei.com>
+Subject: [PATCH 7/9] ubifs: Fix space leak when powercut happens in linking tmpfile
+Date: Wed, 10 Apr 2024 15:37:49 +0800
+Message-ID: <20240410073751.2522830-8-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240410073751.2522830-1-chengzhihao1@huawei.com>
 References: <20240410073751.2522830-1-chengzhihao1@huawei.com>
@@ -52,8 +52,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240410_004631_496478_1F940898 
-X-CRM114-Status: GOOD (  16.66  )
+X-CRM114-CacheID: sfid-20240410_004630_755810_01939BCE 
+X-CRM114-Status: GOOD (  16.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,219 +70,195 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now, the entire inode with its' xattrs are removed while replaying
-orphan nodes. There is no need to add xattr inodes into orphan area,
-which is based on the fact that xattr entries won't be cleared from
-disk before deleting xattr inodes, in another words, current logic
-can make sure that xattr inode be deleted in any cases even UBIFS not
-record xattr inode into orphan area.
-Let's looking for possible paths that could clear xattr entries from
-disk but leave the xattr inode on TNC:
- 1. unlink/tmpfile -> ubifs_jnl_update: inode(nlink=0) is written
-    into bud LEB and added into orphan list, then:
-    a. powercut: ubifs_tnc_remove_ino(xattr entry/inode can be found
-       from TNC and being deleted) is invoked in replaying journal.
-    b. commit + powercut: inode is written into orphan area, and
-       ubifs_tnc_remove_ino is invoked in replaying orphan nodes.
-    c. evicting + powercut: xattr inode(nlink=0) is written on disk,
-       xattr is removed from TNC, gc could clear xattr entries from
-       disk. ubifs_tnc_remove_ino will apply on inode and xattr inode
-       in replaying journal, so lost xattr entries will make no
-       influence.
-    d. evicting + commit + powercut: xattr inode/entry are removed from
-       index tree(on disk) by ubifs_jnl_write_inode, xattr inode is
-       cleared from orphan area by ubifs_jnl_write_inode + commit.
-    e. commit + evicting + powercut: inode is written into orphan area,
-       then equivalent to c.
- 2. remove xattr -> ubifs_jnl_delete_xattr: xattr entry(inum=0) and
-    xattr inode(nlink=0) is written into bud LEB, xattr entry/inode are
-    removed from TNC, then:
-    a. powercut: gc could clear xattr entries from disk, which won't
-       affect deleting xattr entry from TNC. ubifs_tnc_remove_ino will
-       apply on xattr inode in replaying journal, ubifs_tnc_remove_nm
-       will apply on xattr entry in replaying journal.
-    b. commit + powercut: xattr entry/inode are removed from index tree
-       (on disk).
-Tracking xattr inode in orphan list is imported by commit 988bec41318f3f
-("ubifs: orphan: Handle xattrs like files"), it aims to fix the similar
-problem described in commit 7959cf3a7506d4a ("ubifs: journal: Handle
-xattrs like files"). Actually, the problem only exist in journal case
-but not the orphan case. So, we can remove the orphan tracking for xattr
-inodes.
+There is a potential space leak problem when powercut happens in linking
+tmpfile, in which case, inode node (with nlink=0) and its' data nodes can
+be found from tnc (on flash), but there are no dentries related to the
+inode, so the file is invisible but takes free space. Detailed process is
+shown as:
+ ubifs_tmpfile
+  ubifs_jnl_update // Add bud A into log area
+   ubifs_add_orphan // Add inode into orphan list
 
+     P1             P2
+ ubifs_link
+  ubifs_delete_orphan // Delete inode from orphan list, then inode won't
+		      // be written into orphan area, there is no chance
+		      // to delete inode by replaying orphan.
+                commit // bud A won't be replayed in next mounting
+   >> powercut <<
+  ubifs_jnl_update // Link inode to dentry
+
+The root cause is that orphan entry deletion and journal writing(for link)
+are interrupted by commit, which makes the two operations are not atomic.
+Fix it by doing ubifs_delete_orphan under the protection of c->commit_sem
+within ubifs_jnl_update. This is also a preparation to support all creating
+new files by orphan inode.
+
+v1 is https://lore.kernel.org/linux-mtd/20200701093227.674945-1-chengzhihao1@huawei.com/
+
+Fixes: 32fe905c17f0 ("ubifs: Fix O_TMPFILE corner case in ubifs_link()")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=208405
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/orphan.c | 85 ++++++++---------------------------------------
- fs/ubifs/ubifs.h  |  3 --
- 2 files changed, 14 insertions(+), 74 deletions(-)
+ fs/ubifs/dir.c     | 22 ++++++++--------------
+ fs/ubifs/journal.c |  6 +++++-
+ fs/ubifs/ubifs.h   |  2 +-
+ fs/ubifs/xattr.c   |  2 +-
+ 4 files changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index ddeb125e6930..88fbf331ad8c 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -42,24 +42,30 @@
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 848988f2b7dc..fe16443243ab 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -325,7 +325,7 @@ static int ubifs_create(struct mnt_idmap *idmap, struct inode *dir,
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+@@ -479,7 +479,7 @@ static int ubifs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
+ 	mutex_unlock(&ui->ui_mutex);
  
- static int dbg_check_orphans(struct ubifs_info *c);
+ 	lock_2_inodes(dir, inode);
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	unlock_2_inodes(dir, inode);
+@@ -760,10 +760,6 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
  
--static struct ubifs_orphan *orphan_add(struct ubifs_info *c, ino_t inum,
--				       struct ubifs_orphan *parent_orphan)
-+/**
-+ * ubifs_add_orphan - add an orphan.
-+ * @c: UBIFS file-system description object
-+ * @inum: orphan inode number
-+ *
-+ * Add an orphan. This function is called when an inodes link count drops to
-+ * zero.
-+ */
-+int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
- {
- 	struct ubifs_orphan *orphan, *o;
- 	struct rb_node **p, *parent = NULL;
+ 	lock_2_inodes(dir, inode);
  
- 	orphan = kzalloc(sizeof(struct ubifs_orphan), GFP_NOFS);
- 	if (!orphan)
--		return ERR_PTR(-ENOMEM);
-+		return -ENOMEM;
- 	orphan->inum = inum;
- 	orphan->new = 1;
--	INIT_LIST_HEAD(&orphan->child_list);
- 
- 	spin_lock(&c->orphan_lock);
- 	if (c->tot_orphans >= c->max_orphans) {
- 		spin_unlock(&c->orphan_lock);
- 		kfree(orphan);
--		return ERR_PTR(-ENFILE);
-+		return -ENFILE;
- 	}
- 	p = &c->orph_tree.rb_node;
- 	while (*p) {
-@@ -73,7 +79,7 @@ static struct ubifs_orphan *orphan_add(struct ubifs_info *c, ino_t inum,
- 			ubifs_err(c, "orphaned twice");
- 			spin_unlock(&c->orphan_lock);
- 			kfree(orphan);
--			return ERR_PTR(-EINVAL);
-+			return -EINVAL;
- 		}
- 	}
- 	c->tot_orphans += 1;
-@@ -83,14 +89,9 @@ static struct ubifs_orphan *orphan_add(struct ubifs_info *c, ino_t inum,
- 	list_add_tail(&orphan->list, &c->orph_list);
- 	list_add_tail(&orphan->new_list, &c->orph_new);
- 
--	if (parent_orphan) {
--		list_add_tail(&orphan->child_list,
--			      &parent_orphan->child_list);
--	}
+-	/* Handle O_TMPFILE corner case, it is allowed to link a O_TMPFILE. */
+-	if (inode->i_nlink == 0)
+-		ubifs_delete_orphan(c, inode->i_ino);
 -
- 	spin_unlock(&c->orphan_lock);
- 	dbg_gen("ino %lu", (unsigned long)inum);
--	return orphan;
-+	return 0;
- }
- 
- static struct ubifs_orphan *lookup_orphan(struct ubifs_info *c, ino_t inum)
-@@ -144,59 +145,6 @@ static void orphan_delete(struct ubifs_info *c, struct ubifs_orphan *orph)
- 	__orphan_drop(c, orph);
- }
- 
--/**
-- * ubifs_add_orphan - add an orphan.
-- * @c: UBIFS file-system description object
-- * @inum: orphan inode number
-- *
-- * Add an orphan. This function is called when an inodes link count drops to
-- * zero.
-- */
--int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
--{
--	int err = 0;
--	ino_t xattr_inum;
--	union ubifs_key key;
--	struct ubifs_dent_node *xent, *pxent = NULL;
--	struct fscrypt_name nm = {0};
--	struct ubifs_orphan *xattr_orphan;
--	struct ubifs_orphan *orphan;
--
--	orphan = orphan_add(c, inum, NULL);
--	if (IS_ERR(orphan))
--		return PTR_ERR(orphan);
--
--	lowest_xent_key(c, &key, inum);
--	while (1) {
--		xent = ubifs_tnc_next_ent(c, &key, &nm);
--		if (IS_ERR(xent)) {
--			err = PTR_ERR(xent);
--			if (err == -ENOENT)
--				break;
--			kfree(pxent);
--			return err;
--		}
--
--		fname_name(&nm) = xent->name;
--		fname_len(&nm) = le16_to_cpu(xent->nlen);
--		xattr_inum = le64_to_cpu(xent->inum);
--
--		xattr_orphan = orphan_add(c, xattr_inum, orphan);
--		if (IS_ERR(xattr_orphan)) {
--			kfree(pxent);
--			kfree(xent);
--			return PTR_ERR(xattr_orphan);
--		}
--
--		kfree(pxent);
--		pxent = xent;
--		key_read(c, &xent->key, &key);
--	}
--	kfree(pxent);
--
--	return 0;
--}
--
- /**
-  * ubifs_delete_orphan - delete an orphan.
-  * @c: UBIFS file-system description object
-@@ -206,7 +154,7 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
+ 	inc_nlink(inode);
+ 	ihold(inode);
+ 	inode_set_ctime_current(inode);
+@@ -771,7 +767,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, inode->i_nlink == 1);
+ 	if (err)
+ 		goto out_cancel;
+ 	unlock_2_inodes(dir, inode);
+@@ -785,8 +781,6 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 	dir->i_size -= sz_change;
+ 	dir_ui->ui_size = dir->i_size;
+ 	drop_nlink(inode);
+-	if (inode->i_nlink == 0)
+-		ubifs_add_orphan(c, inode->i_ino);
+ 	unlock_2_inodes(dir, inode);
+ 	ubifs_release_budget(c, &req);
+ 	iput(inode);
+@@ -846,7 +840,7 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	unlock_2_inodes(dir, inode);
+@@ -950,7 +944,7 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	unlock_2_inodes(dir, inode);
+@@ -1025,7 +1019,7 @@ static int ubifs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 0);
+ 	if (err) {
+ 		ubifs_err(c, "cannot create directory, error %d", err);
+ 		goto out_cancel;
+@@ -1119,7 +1113,7 @@ static int ubifs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+@@ -1220,7 +1214,7 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	dir_ui->ui_size = dir->i_size;
+ 	inode_set_mtime_to_ts(dir,
+ 			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
++	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	mutex_unlock(&dir_ui->ui_mutex);
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index f997a85bcdce..3178020ea3c1 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -643,6 +643,7 @@ static void set_dent_cookie(struct ubifs_info *c, struct ubifs_dent_node *dent)
+  * @inode: inode to update
+  * @deletion: indicates a directory entry deletion i.e unlink or rmdir
+  * @xent: non-zero if the directory entry is an extended attribute entry
++ * @delete_orphan: indicates an orphan entry deletion for @inode
+  *
+  * This function updates an inode by writing a directory entry (or extended
+  * attribute entry), the inode itself, and the parent directory inode (or the
+@@ -664,7 +665,7 @@ static void set_dent_cookie(struct ubifs_info *c, struct ubifs_dent_node *dent)
   */
- void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
+ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 		     const struct fscrypt_name *nm, const struct inode *inode,
+-		     int deletion, int xent)
++		     int deletion, int xent, int delete_orphan)
  {
--	struct ubifs_orphan *orph, *child_orph, *tmp_o;
-+	struct ubifs_orphan *orph;
+ 	int err, dlen, ilen, len, lnum, ino_offs, dent_offs, orphan_added = 0;
+ 	int aligned_dlen, aligned_ilen, sync = IS_DIRSYNC(dir);
+@@ -806,6 +807,9 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	if (err)
+ 		goto out_ro;
  
- 	spin_lock(&c->orphan_lock);
- 
-@@ -219,11 +167,6 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
- 		return;
- 	}
- 
--	list_for_each_entry_safe(child_orph, tmp_o, &orph->child_list, child_list) {
--		list_del(&child_orph->child_list);
--		orphan_delete(c, child_orph);
--	}
--	
- 	orphan_delete(c, orph);
- 
- 	spin_unlock(&c->orphan_lock);
++	if (delete_orphan)
++		ubifs_delete_orphan(c, inode->i_ino);
++
+ 	finish_reservation(c);
+ 	spin_lock(&ui->ui_lock);
+ 	ui->synced_i_size = ui->ui_size;
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 7a7c62104f2b..3651a87e64b2 100644
+index 3651a87e64b2..14d28c5456f4 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -923,8 +923,6 @@ struct ubifs_budget_req {
-  * @rb: rb-tree node of rb-tree of orphans sorted by inode number
-  * @list: list head of list of orphans in order added
-  * @new_list: list head of list of orphans added since the last commit
-- * @child_list: list of xattr children if this orphan hosts xattrs, list head
-- * if this orphan is a xattr, not used otherwise.
-  * @cnext: next orphan to commit
-  * @dnext: next orphan to delete
-  * @inum: inode number
-@@ -936,7 +934,6 @@ struct ubifs_orphan {
- 	struct rb_node rb;
- 	struct list_head list;
- 	struct list_head new_list;
--	struct list_head child_list;
- 	struct ubifs_orphan *cnext;
- 	struct ubifs_orphan *dnext;
- 	ino_t inum;
+@@ -1800,7 +1800,7 @@ int ubifs_consolidate_log(struct ubifs_info *c);
+ /* journal.c */
+ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 		     const struct fscrypt_name *nm, const struct inode *inode,
+-		     int deletion, int xent);
++		     int deletion, int xent, int delete_orphan);
+ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 			 const union ubifs_key *key, const void *buf, int len);
+ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode);
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index 0847db521984..f734588b224a 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -149,7 +149,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+ 	if (strcmp(fname_name(nm), UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT) == 0)
+ 		host_ui->flags |= UBIFS_CRYPT_FL;
+ 
+-	err = ubifs_jnl_update(c, host, nm, inode, 0, 1);
++	err = ubifs_jnl_update(c, host, nm, inode, 0, 1, 0);
+ 	if (err)
+ 		goto out_cancel;
+ 	ubifs_set_inode_flags(host);
 -- 
 2.39.2
 
