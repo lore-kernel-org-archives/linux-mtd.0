@@ -4,86 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80AA7C67861
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Apr 2024 21:30:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB9D8C67861
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2024 00:36:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n2uWHA0Bs7Od0pnGV21DH8jfk+iuZqb6qi5dF6qYb+s=; b=11Ny6x3Y5TnQ3D
-	H13lJzayXe+tDixlsjlXCCgFk20S4lWW3Gf/BI73r5iYgMAIWGjDJamL+WRRoWKFqtaW/knVme4qZ
-	4zHplCKuCtkjBO59f5vmdqlO5xX3JO4Rr76gzx3D6DTJasFcTiV/KlCiTnnGoMcxwE2qk9lWXPHBM
-	FRfX1b7KydRiM6JaMTTME/vSNiVbECn9dW7qqTC6UprqpePMMOSWOB1PQXHBf08tYXjbkejXtMlNh
-	W7lgQGKWMDIVWFXY65/y3NxwcxJ5WCQ6NuLO38Eo0oPjunaXD0DTAv24rM35KL33A9TeY3ehY/ZRm
-	pj2qBmmwifzzxn++Lk8A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=dLUqCpDtxTquC7sq7/ZfDe5VAPJv8sepPyjGRqsVf0c=; b=XFmx/t4PapeuBSU1FdzXDC/3cR
+	XAt2xWARy9J7+CK/eRINvTETr4xyGVgECrHPFbuJaMT4ul0JaZ1Gm2J7VVaOCRL6rUffviOqbFIry
+	1/mjYIwl28gaMu8qpbBy2DpDzchwmw+HFLKiavo0NVstlMZUfqfwW8WXtp/b6P5kIjQZ5pm4t3Vy9
+	TSwsYdtjd32Gif3maNWDnSM8qH1IiepoXsSgfVnAvNZDxha/7wP4W/1sNJjMemY8qRkOg1KYejMfi
+	XXQ28/aSWNEIrjC/Ji4yAJ9CmNMe0hm5Z5Y3Q8o8aLGf+KAOwKgF6PgI64jJYzJcyCHOKC2M7j8ME
+	NpfHsw2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruJ2S-00000003tzh-27kg;
-	Tue, 09 Apr 2024 21:29:56 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1ruLx4-00000004SAq-038y;
+	Wed, 10 Apr 2024 00:36:34 +0000
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruJ2P-00000003tym-0sEk
+	id 1ruLwz-00000004S9p-35L5
 	for linux-mtd@lists.infradead.org;
-	Tue, 09 Apr 2024 21:29:54 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ed5109d924so1898838b3a.0
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Apr 2024 14:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1712698191; x=1713302991; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
-        b=dlMAfWDCTPf2VEPgPLCl1YxcPd5ts7wk537VRM7mO6vek4Z82BGWv0vwzbvsTU2wH2
-         jJZXR5wNj8UJpZE9WHF2pjQ8o0g3gIuleeekkQPkjsuWm5DLyKelB1Kk1hZLUZxq3FIe
-         CPn+ud7vTuaIap+uzw46nJ/6uPWrtWdvUX2crkE8Hxr/t6po+oMiSQw/vXK3hsYVq9PU
-         twLDx89rWADKhgoLAqtIroUzjU2IMuAqHapmZ4n3PAiN97ztw8wiOGDNA/cSrbqtZlot
-         x7ASzQRJ03v7Zr23vuXWX0/l6xoM3ePnOIBUbt0h/6U2EAA0OfN2+Dflt1+TltI7lsi9
-         jFtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712698191; x=1713302991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
-        b=COG+SA1KokTd/lU2GfpS5OYGCzVvv6EnyYTOcExvSlYzUn/VMCkCIm0o4TQaDe9Xg5
-         E8smGPn0L5CjaAT1F73+4okzSeGXeaQg4dpl8Pqbb5rwVgpE04cOkshFzUqmvN5hbyJr
-         6iLbxK/dNEfP7GQ43dh2v9rrHoCOWhr+3jNYDSvzcm1c9nel7ONBycopnoX9qtErQqR2
-         DM6cRcqtEEVfLYRsEKFgp8LEDjtxJjQqmECnGDIDzo9aSbWsX00pOKnOs1v4gGNwweqO
-         6JbRQUOIq8uySZYEWAC7RJTlWXdZoTvCtSBbDdQTUtnCptPGQD9KUb5pXRHMFVoCcxdI
-         IbZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUO41mfmTSkraWyV7F14X6N5fcbRTGs8rP6WkZbBwb6LkpA9XHXIHM8EueTFd2GSIyJEuFKYkplUevHfIfiwJE3heeF59FzJajK7l/CeA==
-X-Gm-Message-State: AOJu0Yz2NZVRRfpXwr181b0dustfPAn8BCfAgbAGE/Qm6VNI6L0VIH1N
-	eMJWR98WpNNHDvZ0E9+IMjCT9FYYqPG6tHT+HWKns0DYmlU8or7D9guULiZNexg=
-X-Google-Smtp-Source: AGHT+IFvOqPyH50nuc2JACoXyF6q2DKJ9ivcnsRna4tGd1/cjZ8p4v7GhrD65qleDU/qtwwIyhj4CQ==
-X-Received: by 2002:a05:6a00:14d1:b0:6ec:faef:dd28 with SMTP id w17-20020a056a0014d100b006ecfaefdd28mr932086pfu.23.1712698191116;
-        Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id x12-20020a056a00270c00b006ed048a7323sm8006356pfv.86.2024.04.09.14.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 14:29:50 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1ruJ2J-009xO3-3A;
-	Wed, 10 Apr 2024 07:29:47 +1000
-Date: Wed, 10 Apr 2024 07:29:47 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com>
-Cc: chandan.babu@oracle.com, dwmw2@infradead.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org, richard@nod.at,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ext4?] [jffs2?] [xfs?] kernel BUG in
- unrefer_xattr_datum
-Message-ID: <ZhWzS47ZvqF2WriS@dread.disaster.area>
-References: <0000000000002444e20615a20456@google.com>
+	Wed, 10 Apr 2024 00:36:31 +0000
+Received: from [192.168.0.106] (unknown [114.249.187.16])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 7C7CD40F3E;
+	Wed, 10 Apr 2024 00:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712709385;
+	bh=YP1M8DtqRvEFHJMO3l3zyq/BygpkFBNmCE9piIku7P0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type;
+	b=eD4DbQQxA+wXeH6UkyFJrMXTgrnutc/5xjY4MrqFOvaKWy7wDNuyDNTTl4A1PBsWo
+	 DHKHQA9O6h75YZNx0u3A9TmW6r9i6tr2PJH/sBG7ckW0pv7oll53g05BoHQ0Y/iEyh
+	 I0BLSoZklGFvRutHD6GJ6OA9I0f6KYC81Zd47m9IzK2q9iI989BuFJkavri+tpkX6h
+	 AjeAu2TdXOPZrlrs8maaSN78FLAp3LdLqI7exsYwBlErdSYDhvGpiShDaYxY+rNWjC
+	 updLNO6KF6YaAoeI1+5/rVU+nzU0/UNLD+AP6FfDU7Z4VddaVnu5AeFOoRmMH7eqku
+	 lA2vC2ex7ID2Q==
+Message-ID: <54e55933-8125-43b3-9c89-be5a83debf59@canonical.com>
+Date: Wed, 10 Apr 2024 08:36:20 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0000000000002444e20615a20456@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for infineon
+ cy15v102qsn
+To: Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org,
+ tudor.ambarus@linaro.org, pratyush@kernel.org
+References: <20240408124328.777375-1-hui.wang@canonical.com>
+ <D0ER81J5LHKW.N4T3BI3FRLDB@kernel.org>
+ <81551ca3-532d-43c8-859e-c3d9be8d6e9d@canonical.com>
+ <D0FGHMY4V864.118ONNO1DWQ7G@kernel.org>
+ <a82f7811-e9f4-4d1f-91f4-56b87d35eb9a@canonical.com>
+ <D0FMJAZ3ZR1W.13DMUSVMDMJ7H@kernel.org>
+Content-Language: en-US
+From: Hui Wang <hui.wang@canonical.com>
+In-Reply-To: <D0FMJAZ3ZR1W.13DMUSVMDMJ7H@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240409_142953_496055_EFC74391 
-X-CRM114-Status: GOOD (  10.62  )
+X-CRM114-CacheID: sfid-20240409_173630_148848_2466E0F1 
+X-CRM114-Status: GOOD (  15.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,49 +75,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 08, 2024 at 09:04:18PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1562c52d180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b417f0468b73945887f0
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e74805180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1613cca9180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f039597bec42/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/b3fe5cff7c96/mount_4.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com
-> 
-> jffs2: nextblock 0x0001d000, expected at 0001f000
-> jffs2: argh. node added in wrong place at 0x0001e03c(2)
-> jffs2: nextblock 0x0001d000, expected at 0001f000
-
-Nothing to do with XFS or ext4 - they are simply being mounted with
-invalid mount options at the same time.
-
-#syz set subsystems: jffs2
-
--- 
-Dave Chinner
-david@fromorbit.com
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDQvOS8yNCAyMToyNSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPiBIaSwKPgo+Pj4+Pj4gSXQg
+aXMgMk1iaXQgRi1SQU0gd2hpY2ggaXMgbG9naWNhbGx5IG9yZ2FuaXplZCBhcyAyNTZLIHggOC4K
+Pj4+Pj4gUGxlYXNlIGhhdmUgYSBsb29rIGF0IGRyaXZlcnMvbWlzYy9hdDI1LmMuIEknbSB0cnlp
+bmcgdG8gZ2V0IHJpZCBvZgo+Pj4+PiB0aGUgTk9fRVJBU0UgZmxhZy4gVGhpcyBpcyBtb3JlIG9m
+IGFuIEVFUFJPTSBsaWtlIGRldmljZS4gVGhlIGF0MjUKPj4+Pj4gZHJpdmVyIGFscmVhZHkgaGF2
+ZSBzb21lIGtpbmQgb2YgRlJBTSB0eXBlIHN1cHBvcnQuCj4+Pj4gQWZ0ZXIgcmVhZGluZyB5b3Vy
+IGNvbW1lbnQsIEkgY2hlY2tlZCB0aGUgZHJpdmVycy9taXNjL2F0MjUuYywgSSBmb3VuZAo+Pj4+
+IEl0IGNvdWxkbid0IHdvcmsgb24gbXkgaGFyZHdhcmUuIEluIG15IGNhc2UsIHRoZSBGLVJBTSBp
+cyB1bmRlciBhIHNwaQo+Pj4+IGJ1cyAoc3BpLW54cC1mc3BpLmMpIHdoaWNoIG9ubHkgc3VwcG9y
+dHMgc3BpX21lbSB0cmFuc2ZlciBtb2RlLiBTbwo+Pj4+IGN1cnJlbnRseSwgdGhlIG10ZC9zcGkt
+bm9yIGlzIHRoZSBvbmx5IGNob2ljZS4KPj4+IFRoZW4gaXQgd2lsbCBiZSBhIGdyZWF0IG9wcG9y
+dHVuaXR5IHRvIG1ha2UgdGhlIGF0MjUgZHJpdmVyIHNwaS1tZW0KPj4+IHJlYWR5IDopCj4+IE9L
+LiA6LSkKPj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEh1aSBXYW5nIDxodWkud2FuZ0BjYW5vbmljYWwu
+Y29tPgo+Pj4+Pj4gLS0tCj4+Pj4+PiAgICAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGFuc2lvbi5j
+IHwgNiArKysrKysKPj4+Pj4+ICAgICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspCj4+
+Pj4+Pgo+Pj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BhbnNpb24uYyBi
+L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BhbnNpb24uYwo+Pj4+Pj4gaW5kZXggNmNjMjM3YzI0ZTA3
+Li41ZGM5NDkyNmIyY2IgMTAwNjQ0Cj4+Pj4+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3Nw
+YW5zaW9uLmMKPj4+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BhbnNpb24uYwo+Pj4+
+Pj4gQEAgLTk4MSw2ICs5ODEsMTIgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIHNw
+YW5zaW9uX25vcl9wYXJ0c1tdID0gewo+Pj4+Pj4gICAgIAkJLm5hbWUgPSAiczI4aHMwMmd0IiwK
+Pj4+Pj4+ICAgICAJCS5tZnJfZmxhZ3MgPSBVU0VfQ0xQRUYsCj4+Pj4+PiAgICAgCQkuZml4dXBz
+ID0gJnMyOGh4X3RfZml4dXBzLAo+Pj4+Pj4gKwl9LCB7Cj4+Pj4+PiArCQkuaWQgPSBTTk9SX0lE
+KDB4NDgsIDB4NTEsIDB4ODAsIDB4MDYsIDB4MDAsIDB4MDApLAo+Pj4+PiBUaGlzIGRvZXNuJ3Qg
+bG9vayBsaWtlIGEgSkVERUMgaWQuIFRoZSBkYXRhc2hlZXQgc2F5cyBpdCBpcyBhIDExYml0Cj4+
+Pj4+IG1hbnVmYWN0dXJlciBpZD8KPj4+Pj4KPj4+Pj4gLW1pY2hhZWwKPj4+PiAgICBGcm9tIHRo
+ZSBwYWdlIDgyIG9mIGRhdGFzaGVldCwgdGhlIERldmljZSBJRCBpcyAwMDAwMDAwMDA2ODA1MTQ4
+LCBhbmQKPj4+PiB0aGUgSUQgcmVhZCBieSBzcGlfbm9yX3JlYWRfaWQoKSBtYXRjaGVzIGl0IChp
+ZFswXSBpcyAweDQ4LCBpZFsxXSBpcwo+Pj4+IDB4NTEsIC4uLikuCj4+PiBKRURFQyBtYW51ZmFj
+dHVyZXIgSURzIGFyZSBub3QgMTFiaXQgd2lkZS4KPj4gSGF2ZSBubyBpZGVhIGhlcmUuIEkgdGhv
+dWdodCBpdCBpcyBzYW1lIGFzIHRoZSBjeTE1eDEwNHEgYW5kIHRoZQo+PiBzcGFuc2lvbi5jIGhh
+cyB0aGUgc3VwcG9ydCBmb3IgY3kxNXgxMDRxLgo+IFRoYXQgb25lIHdhcyBhbHJlYWR5IGJyb2tl
+biAoYW5kIEknZCBsaWtlIHRvIG1vdmUgdGhhdCBvbmUgdG8gdGhlCj4gYXQyNSB0b28pOyBpdCBo
+YWQgdGhlIElEIGJpdHMgcmV2ZXJzZWQgYW5kIHRoaXMgb25lIGlzIGV2ZW4gbW9yZQo+IGJyb2tl
+biA6KApPSywgZ290IGl0LiA6LSnCoCB3aWxsIGZvY3VzIG9uIGF0MjUgdGhlbi4KPiAtbWljaGFl
+bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
