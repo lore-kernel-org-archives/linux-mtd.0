@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 391E6CD128A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE22FCD1297
 	for <linux-mtd@archiver.kernel.org>; Wed, 10 Apr 2024 19:05:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WpvU0vimu2AJTfGltXZRt5YKGy4uCE8fcVTruaaVQXI=; b=ov3GnscpD7UsFN
-	z6v4zgEuVPEJXnaIAs0EcdIsw0AY8/1M1YzBlMOxH857n62i6kkBCnCKyjQ2ThGaROE3hUmx5PTOK
-	RikdkSaMoRj0P/UOk7hBsuqDwzp7AG0jsso0jHwGMoP9RR0qqaLP/QGW69sBtABVIJ6kY1Ph9yppl
-	MtqVFIiyQnVJIWkysezAwAtsKUjh1kJFV3fa2Y1Gapn/w9BwV+ThTFLIxNgEuLhJvBsC5HnOzkcfO
-	dTvUyAQzzudhxvMtrdIyucJ0qO0y/sd45mtgpMKuaASzIHZCnboRa+U7kCLSPN+/rwWRwM2Te+Ywn
-	QykEyhmMgb2Bc6woX3tg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=COyuHoKU4KRq+Iz5u8D/0ybdmzJJ7qYslGngtHket2c=; b=kgBccYFmGliUJs
+	UVoXNz3Q6g/CZwxCGQTOPDGtzknH4WKBqI2biFmvdL19mSh73H9yoQmbMnjl5tQRCsN1WRROkJNKF
+	xgLluYmH67FPiVPdoDu6WgklkWB+r6f0Pkkbt9S7cfU2HEez3GrzgJatt9xwT963H6Wp8ryZdehaS
+	PgE95F6TfdNO2qfEPQxuTtXMw2/6L0+NzABi3/RcyWXIPe7CmzndthK72E3QLuxlsuFa3adl/iRWv
+	lnobCkcwMGyECajLOl5M91bnF+3S8QAwnWLVZV1DM4mJOtmfECEQs5xZPAL2rm2YF7aU5isKGvCDj
+	7FuP+iyp3QX7n5Rb7i8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rudFw-00000008bdJ-2sD9;
-	Wed, 10 Apr 2024 19:05:12 +0000
+	id 1rudFx-00000008be9-406L;
+	Wed, 10 Apr 2024 19:05:13 +0000
 Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rudFo-00000008bY8-1KVY;
+	id 1rudFo-00000008bYU-1KN8;
 	Wed, 10 Apr 2024 19:05:07 +0000
 Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 513B5100078;
-	Wed, 10 Apr 2024 22:04:58 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 513B5100078
+	by mx1.sberdevices.ru (Postfix) with ESMTP id CC67B10007C;
+	Wed, 10 Apr 2024 22:04:59 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CC67B10007C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712775898;
-	bh=KPqzQ6GA9yQYv2FMku0FIiAMvpL81PJdS/5X+nH2yHU=;
+	s=mail; t=1712775899;
+	bh=nlvCjxCsDmswnKHUR9zLC0s4ABtaZZnkhgMtH/U3PBg=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Gom9vxDsOW2Yf1l9CBFAIIFxV+oNvW22YqNwSejJROBa5xSCAXF9ojfZRqBPuC7I5
-	 mkhGonjHphVP5Ru+jzeoQ+wr2niVJw7ikYcjf90uhMg5udu0nqUKjJjV1TAkYxyg07
-	 Hhs7CplwJTQR7sOowYz2lGqCpXaq5jP5jNPrY2UfrpHa9ZXY9c+ePS36+qNzcT//Os
-	 CjEglogI3p52xUDplCV+uZLDqmq7HHHQFOy2INZ2oJAC4tqPA4eDvilIpsJjOFsyip
-	 LjEAUC3me7KDY/z2nU9M3ZeZdDBQelQ8ZbMuY5JyI8YcBA93+ospgqH4wk3jWCmfII
-	 mfx+OZhksQFEA==
+	b=YXRKntLKo5upqcu6QBNT6qnDkhTJScyKLOu+7vm7d2wRSrasEaKWxrGYJrfE2uSNP
+	 iA0PFOvbf01UwsWpCvTdlMQj+Nl7bLMqCEHhFW+HMbt43DXAotbY/EqyUjm8568Gem
+	 Oc7ARSAE+uoDA7CNEbHeTnE0xgeSer2l+VBC8Pr0p2JxLF6WOU1VmTT7TG/C/+Qts5
+	 GdspLkbLxj6cvaBwO55gaMy5xQIpX5lZdDIzSjAL6m5zF8bl2bfNbq/ankkftHJXtf
+	 SY7faaWAW9tdZNvc4WU5tzJh8+8MX8shxgi+N2D+o+wjsekSvShMCA7M8z21+lthBN
+	 zlR+HFV9Kw/3w==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed, 10 Apr 2024 22:04:58 +0300 (MSK)
+	Wed, 10 Apr 2024 22:04:59 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Apr 2024 22:04:57 +0300
+ 15.2.1118.40; Wed, 10 Apr 2024 22:04:59 +0300
 From: Arseniy Krasnov <avkrasnov@salutedevices.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
@@ -61,10 +61,12 @@ CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <oxffffaa@gmail.com>,
 	<kernel@sberdevices.ru>, Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: [PATCH v4 0/2] Meson: R/W support for pages used by boot ROM
-Date: Wed, 10 Apr 2024 21:54:07 +0300
-Message-ID: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
+Subject: [PATCH v4 2/2] mtd: rawnand: meson: support R/W mode for boot ROM
+Date: Wed, 10 Apr 2024 21:54:09 +0300
+Message-ID: <20240410185409.2635622-3-avkrasnov@salutedevices.com>
 X-Mailer: git-send-email 2.35.0
+In-Reply-To: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
+References: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
 X-Originating-IP: [100.64.160.123]
 X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
@@ -86,8 +88,8 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/10 15:26:00 #24739493
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240410_120505_067944_1EBF4B8E 
-X-CRM114-Status: GOOD (  12.40  )
+X-CRM114-CacheID: sfid-20240410_120505_059848_1A42A950 
+X-CRM114-Status: GOOD (  19.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,46 +106,170 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Amlogic's boot ROM code needs that some pages on NAND must be written
-in special "short" ECC mode with scrambling enabled. Such pages:
-1) Contain some metadata about hardware.
-2) Located with some interval starting from 0 offset, until some
-   specified offset. Interval and second offset are set in the
-   device tree.
+Boot ROM code on Meson requires that some pages on NAND must be written
+in special mode: "short" ECC mode where each block is 384 bytes and
+scrambling mode is on. Such pages located with the specified interval
+within specified offset. Both interval and offset are located in the
+device tree and used by driver if 'nand-is-boot-medium' is set for
+NAND chip.
 
-This patchset adds R/W support for such pages. To enable it we can setup
-it in dts:
+Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 88 +++++++++++++++++++++----------
+ 1 file changed, 59 insertions(+), 29 deletions(-)
 
-    nand-is-boot-medium;
-    amlogic,boot-page-last = <1024>;
-    amlogic,boot-page-step = <128>;
-
-It means that each 128th page in range 0 to 1024 pages will be accessed
-in special mode ("short" ECC + scrambling). In practice this feature is
-needed when we want to update first block of NAND - driver will enable
-required mode by itself using value from device tree.
-
-Changelog:
- v1 -> v2:
-  * Rename 'meson,boot-page-XXX' -> 'amlogic,boot-page-XXX'.
-  * Add words that 'amlogic,boot-page-step' is measured in pages.
-  * Remove words that 'amlogic,boot-page-XXX' depends on 'nand-is-boot-medium'.
-  * Make both 'amlogic,boot-page-XXX' depend on each other also, in
-    addition to 'nand-is-boot-medium' dependency.
- v2 -> v3:
-  * Add quotes to 0001 in dependencies. This fixes 'make dt_binding_check'
-    warning.
- v3 -> v4:
-  * Rename 'amlogic,boot-page-last' to 'amlogic,boot-pages'.
-
-Arseniy Krasnov (2):
-  dt-bindings: mtd: amlogic,meson-nand: support fields for boot ROM code
-  mtd: rawnand: meson: support R/W mode for boot ROM
-
- .../bindings/mtd/amlogic,meson-nand.yaml      | 14 +++
- drivers/mtd/nand/raw/meson_nand.c             | 88 +++++++++++++------
- 2 files changed, 73 insertions(+), 29 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 00ce0e5bb970..9ee11243b257 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -35,6 +35,7 @@
+ #define NFC_CMD_RB		BIT(20)
+ #define NFC_CMD_SCRAMBLER_ENABLE	BIT(19)
+ #define NFC_CMD_SCRAMBLER_DISABLE	0
++#define NFC_CMD_SHORTMODE_ENABLE	1
+ #define NFC_CMD_SHORTMODE_DISABLE	0
+ #define NFC_CMD_RB_INT		BIT(14)
+ #define NFC_CMD_RB_INT_NO_PIN	((0xb << 10) | BIT(18) | BIT(16))
+@@ -78,6 +79,8 @@
+ #define DMA_DIR(dir)		((dir) ? NFC_CMD_N2M : NFC_CMD_M2N)
+ #define DMA_ADDR_ALIGN		8
+ 
++#define NFC_SHORT_MODE_ECC_SZ	384
++
+ #define ECC_CHECK_RETURN_FF	(-1)
+ 
+ #define NAND_CE0		(0xe << 10)
+@@ -125,6 +128,8 @@ struct meson_nfc_nand_chip {
+ 	u32 twb;
+ 	u32 tadl;
+ 	u32 tbers_max;
++	u32 boot_pages;
++	u32 boot_page_step;
+ 
+ 	u32 bch_mode;
+ 	u8 *data_buf;
+@@ -298,28 +303,49 @@ static void meson_nfc_cmd_seed(struct meson_nfc *nfc, u32 seed)
+ 	       nfc->reg_base + NFC_REG_CMD);
+ }
+ 
+-static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
+-				 int scrambler)
++static int meson_nfc_page_is_boot(struct nand_chip *nand, int page)
++{
++	const struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
++
++	return (nand->options & NAND_IS_BOOT_MEDIUM) &&
++	       !(page % meson_chip->boot_page_step) &&
++	       (page < meson_chip->boot_pages);
++}
++
++static void meson_nfc_cmd_access(struct nand_chip *nand, bool raw, bool dir, int page)
+ {
++	const struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
+ 	struct mtd_info *mtd = nand_to_mtd(nand);
+ 	struct meson_nfc *nfc = nand_get_controller_data(mtd_to_nand(mtd));
+-	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
+-	u32 bch = meson_chip->bch_mode, cmd;
+ 	int len = mtd->writesize, pagesize, pages;
++	int scrambler;
++	u32 cmd;
+ 
+-	pagesize = nand->ecc.size;
++	if (nand->options & NAND_NEED_SCRAMBLING)
++		scrambler = NFC_CMD_SCRAMBLER_ENABLE;
++	else
++		scrambler = NFC_CMD_SCRAMBLER_DISABLE;
+ 
+ 	if (raw) {
+ 		len = mtd->writesize + mtd->oobsize;
+ 		cmd = len | scrambler | DMA_DIR(dir);
+-		writel(cmd, nfc->reg_base + NFC_REG_CMD);
+-		return;
+-	}
++	} else if (meson_nfc_page_is_boot(nand, page)) {
++		pagesize = NFC_SHORT_MODE_ECC_SZ >> 3;
++		pages = mtd->writesize / 512;
++
++		scrambler = NFC_CMD_SCRAMBLER_ENABLE;
++		cmd = CMDRWGEN(DMA_DIR(dir), scrambler, NFC_ECC_BCH8_1K,
++			       NFC_CMD_SHORTMODE_ENABLE, pagesize, pages);
++	} else {
++		pagesize = nand->ecc.size >> 3;
++		pages = len / nand->ecc.size;
+ 
+-	pages = len / nand->ecc.size;
++		cmd = CMDRWGEN(DMA_DIR(dir), scrambler, meson_chip->bch_mode,
++			       NFC_CMD_SHORTMODE_DISABLE, pagesize, pages);
++	}
+ 
+-	cmd = CMDRWGEN(DMA_DIR(dir), scrambler, bch,
+-		       NFC_CMD_SHORTMODE_DISABLE, pagesize, pages);
++	if (scrambler == NFC_CMD_SCRAMBLER_ENABLE)
++		meson_nfc_cmd_seed(nfc, page);
+ 
+ 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ }
+@@ -743,15 +769,7 @@ static int meson_nfc_write_page_sub(struct nand_chip *nand,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nand->options & NAND_NEED_SCRAMBLING) {
+-		meson_nfc_cmd_seed(nfc, page);
+-		meson_nfc_cmd_access(nand, raw, DIRWRITE,
+-				     NFC_CMD_SCRAMBLER_ENABLE);
+-	} else {
+-		meson_nfc_cmd_access(nand, raw, DIRWRITE,
+-				     NFC_CMD_SCRAMBLER_DISABLE);
+-	}
+-
++	meson_nfc_cmd_access(nand, raw, DIRWRITE, page);
+ 	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_PAGEPROG;
+ 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 	meson_nfc_queue_rb(nand, PSEC_TO_MSEC(sdr->tPROG_max), false);
+@@ -829,15 +847,7 @@ static int meson_nfc_read_page_sub(struct nand_chip *nand,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nand->options & NAND_NEED_SCRAMBLING) {
+-		meson_nfc_cmd_seed(nfc, page);
+-		meson_nfc_cmd_access(nand, raw, DIRREAD,
+-				     NFC_CMD_SCRAMBLER_ENABLE);
+-	} else {
+-		meson_nfc_cmd_access(nand, raw, DIRREAD,
+-				     NFC_CMD_SCRAMBLER_DISABLE);
+-	}
+-
++	meson_nfc_cmd_access(nand, raw, DIRREAD, page);
+ 	ret = meson_nfc_wait_dma_finish(nfc);
+ 	meson_nfc_check_ecc_pages_valid(nfc, nand, raw);
+ 
+@@ -1436,6 +1446,26 @@ meson_nfc_nand_chip_init(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
++	if (nand->options & NAND_IS_BOOT_MEDIUM) {
++		ret = of_property_read_u32(np, "amlogic,boot-pages",
++					   &meson_chip->boot_pages);
++		if (ret) {
++			dev_err(dev, "could not retrieve 'amlogic,boot-pages' property: %d",
++				ret);
++			nand_cleanup(nand);
++			return ret;
++		}
++
++		ret = of_property_read_u32(np, "amlogic,boot-page-step",
++					   &meson_chip->boot_page_step);
++		if (ret) {
++			dev_err(dev, "could not retrieve 'amlogic,boot-page-step' property: %d",
++				ret);
++			nand_cleanup(nand);
++			return ret;
++		}
++	}
++
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register MTD device: %d\n", ret);
 -- 
 2.35.0
 
