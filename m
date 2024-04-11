@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3456C4345F
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2024 15:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C491C4345F
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2024 15:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d6jDJZlY68b7tyXbF3I5IqOFfMnFJFNMtJhIhb+NPio=; b=lCA/aHE8bUnIeZ
-	r+nCBiE2jiglVfRQD4ooqUFVXm0oxETn9oR42SRX/16SLtzRBB5++fVp7+be7P9/nEhageeuP1zUO
-	o/YtsB8CXIUTEQma59pPf57Y4ETO1yyS+mMPijAaKnOnvsmGp15jfp0cgXKdG2+fjWH/R8DDV8umG
-	SVZOsNv1TfL6GGVFdZAes163YKKAc6xllTNecvKrQBIQqJoZ9B6CrFPBe0CNgnG4bQgN+hSsJ64vG
-	KBwRuRzxNbOlcVXlnIeQU4Mm77yr5YJy+HLB+SC/EuLMKaKcHDvS19rOIGWR9eEp2zXYViiaikhLB
-	jObH34gMXbD1edP/bl2A==;
+	List-Owner; bh=OwVZf0d7ApxMbZOCvq+z25QWNl8ocbIgi0XUDDVXdBo=; b=tvRAkPwVORqECu
+	90scUfBClDNLJ78nHbtl9w+r8HNtWLzd4WK/baCjlBJMLbGL9nzL6BY9bNBHcoenaoC8WFt7ZrySS
+	I1x8wCbW7ZbRH2gUtlgYW5D80EcDa356ELmpeDXQHJpqHSm8nsqIkpOlYleE/xuJXNhW+W0BQ+vE4
+	i5JZ7cVhb6AQvpckdIvXHzcDv3TxjNIYkfeDRDzWphLntKh9I1dIZPTFC2NV2SXKfkrM2qvtks5xK
+	+r02waciZklmf859DmNxxxOmHmAhQDjqdA0XCOPvmaXB/McfJX0JIQ5N3mgfv3+WAaLgdbcF0SDrA
+	woS6hCT0Gs0EOXk5NW1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruw3q-0000000CfMQ-3kmA;
-	Thu, 11 Apr 2024 15:09:58 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1ruwYt-0000000Co97-23dg;
+	Thu, 11 Apr 2024 15:42:03 +0000
+Received: from mgamail.intel.com ([198.175.65.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruw3m-0000000CfEL-3Iwx
+	id 1ruwYq-0000000Co7f-0qlK
 	for linux-mtd@lists.infradead.org;
-	Thu, 11 Apr 2024 15:09:57 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4155819f710so62034205e9.2
-        for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2024 08:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google; t=1712848171; x=1713452971; darn=lists.infradead.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pJvFhjtrT0jG8I/iNrHe3ZLfNPX/c8Ah/lLJwH+cC5o=;
-        b=ImsEw9zKqGXj9Qmx4ztCswOTA/Yln230U6OlgCrasDoZ/+y+6Sy5qf+9FfdrRZ5eVa
-         6n+BZlFTiiAeIuAounXK8B9mPb4fLo2W7mSvZ4eRA+FKpWrNh6UBpffC9pvwuVrBpiHC
-         nJkGdeLTBtGesrtEKSF2YIJzI3QJOiOZEZn7ztrVVL02sceZCKKXbDy6pqtygjj/u8hR
-         9mnKHIWDiHb8HkmXGw6l9SPOQtXEK5gss5/9T1zSjJZC8c3SG3fZs6PqTY5UsOs9bnBg
-         60GewjwJ174EtHOkgJBkVPJWtalzoZ2jWS/fuNb8FpOl9LXmZyumycPt7yZKcTBctJ3w
-         mmOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712848171; x=1713452971;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pJvFhjtrT0jG8I/iNrHe3ZLfNPX/c8Ah/lLJwH+cC5o=;
-        b=fBaTpicLX7rMDxnK9f6NF75SElds4ttH81q7CltOpd781Hf+dkzA2VAj9oEpyChSED
-         iGptcPOiz2FCsldhbc/6Lljnb44Wooi9lTIa5vHvb+u95dLdWIU1It2vKK+pbdFtCJ48
-         e2mpWTzsQlidcPQ5PYcDd4YSikaGFa1J61Wj+1h8d8sFKg898JMZtenj1206005dbuWO
-         TdikT9LqZ7U1vZSeR5VBzxSd9Lyayb0wKVtrY8uEwBFX4/zaVeBwc51Wh+LjpCyDnNuO
-         +CIvzhIxJjaKfU2Xfy0wBxC4cxB2kzlmrkEK8i5lg6dTXFHpOQ7wk+XPZi/xwaxbT55k
-         t1UQ==
-X-Gm-Message-State: AOJu0Yx9BUooY3F4rJup8fJEWl4W5r1d0gg2lO4LzkbhlVdlmecqIGWV
-	Oe1RuEWG7G/FbEJjhKF+5MXnqKWaaqI+p3R+RdeAoxdBCAwLfWqbRM+anbrQbG4=
-X-Google-Smtp-Source: AGHT+IFSglO+pHI22nHpuIMadu7Xad4sxbdlSXaJoE3ADpRN/IC51yGchmh5ZcMgmmbqBrWqr+8ZjQ==
-X-Received: by 2002:a05:600c:5491:b0:415:6daf:c64b with SMTP id iv17-20020a05600c549100b004156dafc64bmr66997wmb.16.1712848171578;
-        Thu, 11 Apr 2024 08:09:31 -0700 (PDT)
-Received: from cephalopod (213.219.156.63.adsl.dyn.edpnet.net. [213.219.156.63])
-        by smtp.gmail.com with ESMTPSA id bh12-20020a05600c3d0c00b00417e326ff3bsm1391844wmb.36.2024.04.11.08.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:09:31 -0700 (PDT)
-Date: Thu, 11 Apr 2024 17:09:29 +0200
-From: Ben Hutchings <ben.hutchings@essensium.com>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/2] mtd: ubi: Fix some initialisation failure cases
-Message-ID: <Zhf9KUCzO_bh_u38@cephalopod>
-References: <cover.1712788087.git.ben.hutchings@mind.be>
- <f6191bef-9adb-9517-762d-ac95ebd3a4d1@huawei.com>
+	Thu, 11 Apr 2024 15:42:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712850120; x=1744386120;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+VdZKFRspQe3KDv3J/ZsiPt1j1rsYqHFED5iEqREzMU=;
+  b=bDFpM+4t9qBuJo4lKMsofK+NkbDe5hbiLwQlce9Il9Tw6mcrTJDbScBa
+   Fg6OAkw4FLGm/jG2VkJT8t5nVmIz48nm3F4vKA8yzqrZ6hFX2dFFTuU7h
+   ReT9OuKAtTnGiE4H5+mZm3bR8lPoRY/eHkOCU9RRhnS83ifLt1p03A+ca
+   sCznlqLmioBPUObHLnIK++y3ohwziOK51ZlK+iDNgeGlL4XIW7LXO/vHg
+   Z0eeZnRF/924vNYhlIjgMN5pAUYPtGkNxp0agr999kgQfB8Phjd2W0Bb/
+   xYNPOjAy5olv1WFDMPOegtlbLEuTLUFtMLncI28SXeMuqUGSr6WbR/m58
+   g==;
+X-CSE-ConnectionGUID: K/k4RdzgT2+MMYZxo2ZdsA==
+X-CSE-MsgGUID: qaZTiLGgR1KmKvK7rldh4Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25721212"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="25721212"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:41:54 -0700
+X-CSE-ConnectionGUID: 2B2e42FsRjWsSxnIKC5SmQ==
+X-CSE-MsgGUID: zNe4wGfHSwe/KPzSUNOhMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="58358752"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 11 Apr 2024 08:41:52 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ruwYf-0008kL-2i;
+	Thu, 11 Apr 2024 15:41:49 +0000
+Date: Thu, 11 Apr 2024 23:40:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>, richard@nod.at,
+	daniel@makrotopia.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ubi: ubi_init: Fix missed ubiblock cleanup in error
+ handling path
+Message-ID: <202404112327.158HJfAw-lkp@intel.com>
+References: <20240410074033.2523399-3-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <f6191bef-9adb-9517-762d-ac95ebd3a4d1@huawei.com>
+In-Reply-To: <20240410074033.2523399-3-chengzhihao1@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240411_080955_365865_DE3C72DC 
-X-CRM114-Status: GOOD (  17.19  )
+X-CRM114-CacheID: sfid-20240411_084200_449326_76A6D5FB 
+X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,27 +86,168 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBBcHIgMTEsIDIwMjQgYXQgMTE6MzA6NDFBTSArMDgwMCwgWmhpaGFvIENoZW5nIHdy
-b3RlOgo+IOWcqCAyMDI0LzQvMTEgNjo0MiwgQmVuIEh1dGNoaW5ncyDlhpnpgZM6Cj4gPiB1Ymkg
-Y3VycmVudGx5IGZhaWxzIHRvIGluaXRpYWxpc2UgaWYgZGVidWdmcyBpcyBlbmFibGVkIGF0IGJ1
-aWxkIHRpbWUKPiA+IGJ1dCBkaXNhYmxlZCBhdCBib290IHRpbWUgKENPTkZJR19ERUJVR19GUyBp
-cyBlbmFibGVkIGFuZCBkZWJ1Z2ZzPW9mZgo+ID4gaXMgc2V0IG9uIHRoZSBrZXJuZWwgY29tbWFu
-ZCBsaW5lKS4gIEVycm9ycyBmcm9tIGRlYnVnZnMgc2hvdWxkIGFsd2F5cwo+ID4gYmUgaWdub3Jl
-ZCBidXQgdGhpcyB3YXNuJ3QgZG9uZSBldmVyeXdoZXJlLgo+ID4gCj4gPiBXaGlsZSBmaXhpbmcg
-dGhpcyBJIGFsc28gbm90aWNlZCB0aGF0IGEgcmVjZW50IGNoYW5nZSB0byB1YmkgcmVtb3ZlZAo+
-ID4gc29tZSBjbGVhbnVwIGZyb20gdGhlIHViaV9pbml0KCkgZmFpbHVyZSBwYXRoIHRoYXQgSSB0
-aGluayBpcyBzdGlsbAo+ID4gbmVlZGVkLgo+ID4gCj4gPiBUaGlzIHNlcmllcyBzaG91bGQgZml4
-IGJvdGggcHJvYmxlbXMuCj4gPiAKPiA+IEJlbi4KPiAKPiBIaSwgQmVuLiBJIGhhdmUgYSBzYW1l
-IHBhdGNoIHdpdGggeW91ciBmaXJzdCBvbmUsIEkgaGF2ZSBtZXJnZSBvdXIgcGF0Y2hzZXQKPiBp
-bnRvIGEgbmV3IHNlcmllcyBbMV0KPiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgt
-bXRkLzIwMjQwNDExMDMxOTAzLjMwNTAyNzgtMS1jaGVuZ3poaWhhbzFAaHVhd2VpLmNvbS8KWy4u
-Ll0KClRoYW5rIHlvdSEKCkJlbi4KCi0tIApCZW4gSHV0Y2hpbmdzIMK3IFNlbmlvciBFbWJlZGRl
-ZCBTb2Z0d2FyZSBFbmdpbmVlciwgRXNzZW5zaXVtLU1pbmQgwrcgbWluZC5iZQoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Zhihao,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on rw-ubifs/next]
+[also build test WARNING on linus/master v6.9-rc3 next-20240411]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Zhihao-Cheng/ubi-ubi_init-Fix-missed-debugfs-cleanup-in-error-handling-path/20240410-155105
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
+patch link:    https://lore.kernel.org/r/20240410074033.2523399-3-chengzhihao1%40huawei.com
+patch subject: [PATCH 2/2] ubi: ubi_init: Fix missed ubiblock cleanup in error handling path
+config: x86_64-randconfig-104-20240411 (https://download.01.org/0day-ci/archive/20240411/202404112327.158HJfAw-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240411/202404112327.158HJfAw-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404112327.158HJfAw-lkp@intel.com/
+
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-13.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-14.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-celtic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-centeuro.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-croatian.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-greek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-inuit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-turkish.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/binfmt_misc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/isofs/isofs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/smb/common/cifs_arc4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/smb/common/cifs_md4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/autofs/autofs4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in security/keys/trusted-keys/trusted.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in security/keys/encrypted-keys/encrypted-keys.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in block/t10-pi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pci/pci-stub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/backlight/platform_lcd.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_accel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_DAC1064.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_Ti3026.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/macmodes.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/via/viafb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/kyro/kyrofb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dma/dmatest.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/tty/goldfish.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/agp/sis-agp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/lp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/ppdev.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/tlclk.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/sil-sii8620.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tiny/bochs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/udl/udl.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-slimbus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-w1.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/arizona.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dax/dax.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/scsi/scsi_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/auxdisplay/hd44780_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/navman.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/usb-serial-simple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/libcomposite.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_acm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_ss_lb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/u_serial.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_serial.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_obex.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_mass_storage.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_fs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_uac1.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_hid.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_printer.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_tcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/legacy/g_zero.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/i2c/busses/i2c-ali1563.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/platform/marvell/mcam-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/menz69_wdt.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/leds/flash/leds-rt4505.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/coreboot_table.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/memconsole.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/memconsole-coreboot.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/vpd-sysfs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-apple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-betopff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-bigbenff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-elecom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gyration.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-keytouch.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-letsketch.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lg-g15.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech-dj.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech-hidpp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-magicmouse.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-mf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-megaworld.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-prodikeys.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-redragon.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sony.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zpff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-viewsonic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-waltop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-light.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-loopback.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-power-supply.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-gbphy.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-i2c.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-uart.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem_u-boot-env.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
+>> WARNING: modpost: drivers/mtd/ubi/ubi: section mismatch in reference: init_module+0x17d (section: .init.text) -> ubiblock_exit (section: .exit.text)
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_aec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_netx.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_pruss.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/greybus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-aspeed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
+WARNING: modpost: sound/soc/codecs/snd-soc-tlv320adc3xxx: section mismatch in reference: adc3xxx_i2c_driver+0x10 (section: .data) -> adc3xxx_i2c_remove (section: .exit.text)
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/yc/snd-soc-acp6x-mach.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-pdm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-legacy-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-da7219.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-dmic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-max98373.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-nau8825.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-rt286.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-rt5682.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-ssm4567.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/ac97_bus.o
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
