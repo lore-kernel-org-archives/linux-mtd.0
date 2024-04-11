@@ -4,55 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A87B5CD1292
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2024 03:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 875C6CD1284
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2024 08:53:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aKqfMlV9u5iC3rNpOU0jDog793jTqgAhVH4nezPdh7k=; b=U2cZkq9Ce/bhmlrYtf5sNWbBSV
-	xvIEE0qvlxKF/sIypirWr/vnd6RkNg0oXeOch3vvniAUKlJF10yfQ5UNeBzkvhNKbIdOr6qD2DeUt
-	aiHguKJVMOllD9ffzkkgqrgA+IIqpL5F6c7nOU4qQSgs1RCa1z5rq4MH7PknmQ2xGsqgaJ2tMSUqL
-	+3wrgE0w1qR88QD3KynSgG+FF1hNnXmUwovW+G4Qlz+7SVh/geVrZIqEqvSZdaJIk7Qhp7xZiE0C5
-	kcJNUbT+lVbv7XisN5XFE8yhg5qwXz4gdABDd8YFUZPCkiraxpgxMJylvT+lbKk3ciJqS7s4WI+pI
-	amdoJ4gw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=NDGKhBIc56EgMLLncQdbqzruZUXDfo5lGAePys4HWMo=; b=zMuJ6cKF9yoJeE
+	IzgaDtcm6FejUM5Ln3tmR4X439hAnsDzbY/PUOUUYv7kD9MyRwAjk3k+PTLGe/a94aKBeSqdWeW15
+	bJbKXhPSnbskQyDf8958Z4gNfPIyOU0fTMdaW0negZJzTn/gzTcAgluQET0pjJlLIPDGrupZMcTZC
+	8HPy2mBJwL500L+WnOr5UovHa6E6FJBzlqLmkB8TCD4rH2/OR2GyMqsma/srUU1HnftieOB1196VL
+	b6ibwmdN3u0LDOIiSlOJg7U/LWHio2LwUJqUDC2RdhmwZ/kwzh9Oa45nY/t87hcJsiJboOvhinCRr
+	u2abR0knxazYTzJP0bBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rul9N-0000000AA98-3QkW;
-	Thu, 11 Apr 2024 03:30:57 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1ruqBD-0000000BC6D-2cYg;
+	Thu, 11 Apr 2024 08:53:11 +0000
+Received: from mail.thorsis.com ([2003:a:e28:26e4::10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rul9K-0000000AA82-1I4K
+	id 1ruqB9-0000000BC2K-3gTh
 	for linux-mtd@lists.infradead.org;
-	Thu, 11 Apr 2024 03:30:56 +0000
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VFQBG4w46z29lfj;
-	Thu, 11 Apr 2024 11:27:50 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 33F711400D9;
-	Thu, 11 Apr 2024 11:30:43 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 11:30:42 +0800
-Subject: Re: [PATCH 0/2] mtd: ubi: Fix some initialisation failure cases
-To: Ben Hutchings <ben.hutchings@mind.be>, <linux-mtd@lists.infradead.org>
-References: <cover.1712788087.git.ben.hutchings@mind.be>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f6191bef-9adb-9517-762d-ac95ebd3a4d1@huawei.com>
-Date: Thu, 11 Apr 2024 11:30:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Thu, 11 Apr 2024 08:53:10 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 40C52148CC29;
+	Thu, 11 Apr 2024 10:52:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=dkim;
+	t=1712825576; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 in-reply-to:references; bh=NgO6OjXf6iEGnq0O9UnTHt48tOQRdt7cpLTMDR0T0CI=;
+	b=HIBfpGdQ60ia3YLx/RwmLePW3Ge8Hbc42yGOqAgS1q5X2e6DWd+0zlurXo6Y4wYLEhP+Ka
+	V77tth+5hyRE+leQasVChcCDT+Fp/bMlV8OzxO4+IDk0bzqplzeaWLXesn9w+9YhwV6NZc
+	ZJyX3+/P47UstOyOEovjZ7QIVAtXYgLpef0wfRkXdLD5m/TBrCyTLTda2+vJU5bGo8wi4o
+	yEsESnyW2jLd+5jPHaIchZwVmwPkSPvdgxe6S6zl9vz5jNEDOtCHu2Wz1Rntgmkz7nZVgK
+	l7JWxbR0jF9AYXz59ssbVUpS9TRFkfY3imzGGqfuCa0y5klrzRyGjo6xL3fX9w==
+Date: Thu, 11 Apr 2024 10:52:48 +0200
+From: "ada@thorsis.com" <ada@thorsis.com>
+To: Steven Seeger <steven.seeger@flightsystems.net>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"ada@thorsis.com" <ada@thorsis.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"richard@nod.at" <richard@nod.at>
+Subject: Re: NAND parameter page read fails with bitflip and no column change
+ support
+Message-ID: <20240411-candied-plod-8e55373d63cd@thorsis.com>
+Mail-Followup-To: Steven Seeger <steven.seeger@flightsystems.net>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"richard@nod.at" <richard@nod.at>
+References: <mailman.25709.1712772710.1280.linux-mtd@lists.infradead.org>
+ <DM6PR05MB4506C6DFD7ED777C5896B83BF7062@DM6PR05MB4506.namprd05.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1712788087.git.ben.hutchings@mind.be>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Content-Disposition: inline
+In-Reply-To: <DM6PR05MB4506C6DFD7ED777C5896B83BF7062@DM6PR05MB4506.namprd05.prod.outlook.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Last-TLS-Session-Version: TLSv1.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240410_203054_666700_55E5AF69 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20240411_015308_739878_4985E15B 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,30 +72,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC80LzExIDY6NDIsIEJlbiBIdXRjaGluZ3Mg0LS1wDoKPiB1YmkgY3VycmVudGx5IGZh
-aWxzIHRvIGluaXRpYWxpc2UgaWYgZGVidWdmcyBpcyBlbmFibGVkIGF0IGJ1aWxkIHRpbWUKPiBi
-dXQgZGlzYWJsZWQgYXQgYm9vdCB0aW1lIChDT05GSUdfREVCVUdfRlMgaXMgZW5hYmxlZCBhbmQg
-ZGVidWdmcz1vZmYKPiBpcyBzZXQgb24gdGhlIGtlcm5lbCBjb21tYW5kIGxpbmUpLiAgRXJyb3Jz
-IGZyb20gZGVidWdmcyBzaG91bGQgYWx3YXlzCj4gYmUgaWdub3JlZCBidXQgdGhpcyB3YXNuJ3Qg
-ZG9uZSBldmVyeXdoZXJlLgo+IAo+IFdoaWxlIGZpeGluZyB0aGlzIEkgYWxzbyBub3RpY2VkIHRo
-YXQgYSByZWNlbnQgY2hhbmdlIHRvIHViaSByZW1vdmVkCj4gc29tZSBjbGVhbnVwIGZyb20gdGhl
-IHViaV9pbml0KCkgZmFpbHVyZSBwYXRoIHRoYXQgSSB0aGluayBpcyBzdGlsbAo+IG5lZWRlZC4K
-PiAKPiBUaGlzIHNlcmllcyBzaG91bGQgZml4IGJvdGggcHJvYmxlbXMuCj4gCj4gQmVuLgoKSGks
-IEJlbi4gSSBoYXZlIGEgc2FtZSBwYXRjaCB3aXRoIHlvdXIgZmlyc3Qgb25lLCBJIGhhdmUgbWVy
-Z2Ugb3VyIApwYXRjaHNldCBpbnRvIGEgbmV3IHNlcmllcyBbMV0KWzFdIApodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9saW51eC1tdGQvMjAyNDA0MTEwMzE5MDMuMzA1MDI3OC0xLWNoZW5nemhpaGFv
-MUBodWF3ZWkuY29tLwo+IAo+IEJlbiBIdXRjaGluZ3MgKDIpOgo+ICAgIG10ZDogdWJpOiBSZXN0
-b3JlIG1pc3NpbmcgY2xlYW51cCBvbiB1YmlfaW5pdCgpIGZhaWx1cmUgcGF0aAo+ICAgIG10ZDog
-dWJpOiBJZ25vcmUgYWxsIGRlYnVnZnMgaW5pdGlhbGlzYXRpb24gZmFpbHVyZXMKPiAKPiAgIGRy
-aXZlcnMvbXRkL3ViaS9idWlsZC5jIHwgMTUgKysrKysrLS0tLS0tLS0tCj4gICBkcml2ZXJzL210
-ZC91YmkvZGVidWcuYyB8IDMzICsrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAg
-ZHJpdmVycy9tdGQvdWJpL2RlYnVnLmggfCAgNCArKy0tCj4gICAzIGZpbGVzIGNoYW5nZWQsIDE1
-IGluc2VydGlvbnMoKyksIDM3IGRlbGV0aW9ucygtKQo+IAoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+Hello Steven, Miquel,
+
+Am Wed, Apr 10, 2024 at 06:45:58PM +0000 schrieb Steven Seeger:
+> >I had reached out to Miquel privately with this issue, only due to the desire to
+> >help inform maintainers of the issue. I was too busy at the time to join the list
+> >and write up something more formal. Miquel provided a small patch for me
+> >that did not work at the time, and then I lost access to the board for a while.
+> >Now I have a little time and a board, so I am here to report the issue and make it public.
+> 
+> I tried the patch from Miquel back in February and it works correctly with 6.6.12
+> and my older driver without column change support.
+> 
+> Here is h is patch for reference:
+> 
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -2123,7 +2123,7 @@ EXPORT_SYMBOL_GPL(nand_reset_op);
+>  int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
+>                       bool force_8bit, bool check_only)
+>  {
+> -       if (!len || !buf)
+> +       if (!len || (!check_only && !buf))
+>                 return -EINVAL;
+>  
+>         if (nand_has_exec_op(chip)) {
+
+Looking at the context aka the whole function nand_read_data_op() this
+looks fine.  I had reported the same issue in March, referencing the
+same commit 9f820fc0651c ("mtd: rawnand: Check the data only read
+pattern only once") you mentioned in your other mail:
+
+Link: https://lore.kernel.org/linux-mtd/20240307-pantry-deceit-78ce20f47899@thorsis.com/
+
+With nand_read_data_op() fixed in nand_onfi_detect() the boolean
+`use_datain` is true now instead of false (because
+rawnand_check_data_only_read_support() calls that function, too).  So
+in nand_onfi_detect() code jumps to nand_read_data_op() in the second
+loop run now instead of nand_change_read_column_op() which probably
+masks that other problem with mtd->writesize not set mentioned in our
+earlier discussion.
+
+Long story short: the diff above in itself seems correct to me.  A
+test with that fix applied on our sam9x60 board using
+nand_soft_waitrdy instead of RB# gpio successfully gets ONFI param
+page 1 with nand_read_data_op() after getting ONFI param page 0 with
+nand_read_param_page_op() failed.
+
+You said this is a patch/diff from Miquel.  Miquel do you send this
+as a proper patch then, or should someone else?
+
+Greets
+Alex
+
+P.S.: still busy with other things, no time yet for proper timing
+analysis of our other NAND flash problems with logic analyzer etc.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
