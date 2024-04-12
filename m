@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CE6CC00A94
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 13:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07842C00A94
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 13:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kKhBOSKPCf7I4AX5C2P53De/ruWS//4ova1OCRBP5Bo=; b=AhG1zFz1ns8LS8
-	KEkUwMfzEpJBd56PGblXnCKmwsz3FuPNzY70Bvsdi3NfLlJWhUnQdd0mhRujlvEXVBZlYFMMDkGW5
-	1WC7QlbJj7i8rawtzrEs5ZD4EuySTwEPbxtX3shfpNoLy2v7WOthRPJL5tQo+ezBepLA4UMoxjdjS
-	5JTtyHGKhnk7f6jQjhhg7Rsq/9cOIbaDjsEMOY8Ft5H2Q2UhOMmwuaERXoUy1/Q5rhkC3gI1WLf6l
-	vMc2fqHcji2drR9DPriuQj7TY5TTLXEPbfkTXKKqvVR/O+OcFdk5N1pMf1L9jmI6ITGR6iO9DhKuA
-	ZMJ1dz74IvyPRPe0ALcg==;
+	List-Owner; bh=N0RCNDiK/6QYizix4N11AC6Se+iuZWE0Nl7AHHxRSeI=; b=qV3YwvZ7kEdBZG
+	VTuTNizosRj9IwXXzsYrFw10pxE3arOstpMzUSiccbaknk7nDt9yqgtFXE8cYp7Upf3KYw9dcL39N
+	DuXvDavVmft6ahGyHBWmKQ1k445bHlzwNlH6qaQOpp9YzjQ3YY/SDwqjU6QE7l736Mn1kv0WtABoS
+	TqCHKOPExizpMGMOo1+91L6LjFuoUQLdVpZGgoEJ6Dqb1ibPvhSBlZXkNy9OE3PaBDdnMWAXV/k6a
+	LkVeYUiqXQXonddzJmYKaQt6xpx+zmp6fhd/dHSl8RmZD9fHtjnngF4yNzPzQRhk8+I7hmmzNMerr
+	q25FG9uaZa1EXit4MJ7A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvHCj-0000000HOOr-2SiX;
-	Fri, 12 Apr 2024 13:44:33 +0000
+	id 1rvHCr-0000000HOVF-2MJY;
+	Fri, 12 Apr 2024 13:44:41 +0000
 Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvHCb-0000000HOIO-0RoN
+	id 1rvHCd-0000000HOK5-2xqc
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Apr 2024 13:44:28 +0000
+	Fri, 12 Apr 2024 13:44:30 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 171AACE394E;
+	by sin.source.kernel.org (Postfix) with ESMTP id 04039CE3951;
+	Fri, 12 Apr 2024 13:44:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0450C2BD11;
 	Fri, 12 Apr 2024 13:44:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02F8AC2BD10;
-	Fri, 12 Apr 2024 13:44:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712929462;
-	bh=A6BCPGJ14ENBTg9zhAGY9Mu4ckKO6EuAyGkOaKXiHHc=;
+	s=k20201202; t=1712929465;
+	bh=B7/0WXuNeHfB1kb629KPZ4FB30EU6w2b00Yh+4BqI5Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OFU3Lzy8z+yqS3ejO+Tcv7VXdremci/vj/siJdZYf2xB1NQB2tC6yhrDX6BmYb/vG
-	 gj9m4waCMEED7nkXBaFWXY0jw81LE1NUtmZqdp5dOCcU7lEVvXpd62xtEygRfM+JPj
-	 Ssqy/+9duN9wzsIz2K/PXiDoPy7ab6vxcuICJ+itpIdKDz8s7zIRNJGAhMPV+3Ylcj
-	 X1erVsCLV/qeHr4iWxzon2l1smWICW6MaHR1og5iZWg9H1osBPf8OeT0BxksQ9XINi
-	 Y9SdTJmkF2gSR4aLOb6HxZbpfbNq4MezBkqNo3Pr1rBKx2vVnk3QxyIWGCdcaO6gye
-	 T/4IGBmBS297g==
+	b=kzndw7DQL4qgxyf+i/F1X6Ux4uobIQIrrUahDYPKEe/uuUdQiwNY8rkMf8YlVuaKn
+	 BJaODhv1AMqazS3IfOT5wTTawOpqvif6YS31LOmMRqD3QKVELrlEWI0Y2W54NvubhU
+	 C4+X7gQz9EZhjd+Etq3YVBUUWNAReyN5bl8djIWSsasPto7Cj8/RSdy7K7LmYOh8BL
+	 F4aOZiroGwU4dYWR7Ia3chsHv8fsJUJDoDEYHz2Fox/8Dl7e4R1HlttvXeI0nmA2zZ
+	 edOMT2eWhJop6owo34F7zDkQir/C3uUzSpYGylF608I8UXURaH0Z9yinJIQHfOH/jO
+	 6dz+CbrPEv+hQ==
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -51,16 +51,16 @@ To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 Cc: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v1 4/6] mtd: spi-nor: remove .setup() callback
-Date: Fri, 12 Apr 2024 15:44:03 +0200
-Message-Id: <20240412134405.381832-5-mwalle@kernel.org>
+Subject: [PATCH v1 5/6] mtd: spi-nor: simplify spi_nor_get_flash_info()
+Date: Fri, 12 Apr 2024 15:44:04 +0200
+Message-Id: <20240412134405.381832-6-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240412134405.381832-1-mwalle@kernel.org>
 References: <20240412134405.381832-1-mwalle@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240412_064425_879778_AEA9BA58 
-X-CRM114-Status: GOOD (  21.73  )
+X-CRM114-CacheID: sfid-20240412_064428_818547_70F1D5E8 
+X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,163 +77,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is no flash driver using that hook. The original intention was to
-let the driver configure special requirements like page size an opcodes.
-This is already possible by other means and it is unlikely a flash will
-overwrite the (more or less complex) setup function.
+Rework spi_nor_get_flash_info() to make it look more straight forward
+and esp. don't return early. The latter is a preparation to check for
+deprecated flashes.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/core.c | 105 ++++++++++++++++---------------------
- drivers/mtd/spi-nor/core.h |   5 --
- 2 files changed, 45 insertions(+), 65 deletions(-)
+ drivers/mtd/spi-nor/core.c | 45 ++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 65e6531ada0a..bbfef7b3997f 100644
+index bbfef7b3997f..58d310427d35 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2568,8 +2568,51 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	return 0;
- }
- 
--static int spi_nor_default_setup(struct spi_nor *nor,
--				 const struct spi_nor_hwcaps *hwcaps)
-+static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
-+{
-+	if (nor->params->addr_nbytes) {
-+		nor->addr_nbytes = nor->params->addr_nbytes;
-+	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
-+		/*
-+		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
-+		 * in this protocol an odd addr_nbytes cannot be used because
-+		 * then the address phase would only span a cycle and a half.
-+		 * Half a cycle would be left over. We would then have to start
-+		 * the dummy phase in the middle of a cycle and so too the data
-+		 * phase, and we will end the transaction with half a cycle left
-+		 * over.
-+		 *
-+		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
-+		 * avoid this situation.
-+		 */
-+		nor->addr_nbytes = 4;
-+	} else if (nor->info->addr_nbytes) {
-+		nor->addr_nbytes = nor->info->addr_nbytes;
-+	} else {
-+		nor->addr_nbytes = 3;
-+	}
-+
-+	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
-+		/* enable 4-byte addressing if the device exceeds 16MiB */
-+		nor->addr_nbytes = 4;
-+	}
-+
-+	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
-+		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
-+			nor->addr_nbytes);
-+		return -EINVAL;
-+	}
-+
-+	/* Set 4byte opcodes when possible. */
-+	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
-+	    !(nor->flags & SNOR_F_HAS_4BAIT))
-+		spi_nor_set_4byte_opcodes(nor);
-+
-+	return 0;
-+}
-+
-+static int spi_nor_setup(struct spi_nor *nor,
-+			 const struct spi_nor_hwcaps *hwcaps)
+@@ -3311,39 +3311,36 @@ static const struct flash_info *spi_nor_match_name(struct spi_nor *nor,
+ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+ 						       const char *name)
  {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	u32 ignored_mask, shared_mask;
-@@ -2626,64 +2669,6 @@ static int spi_nor_default_setup(struct spi_nor *nor,
- 		return err;
+-	const struct flash_info *info = NULL;
++	const struct flash_info *jinfo = NULL, *info = NULL;
+ 
+ 	if (name)
+ 		info = spi_nor_match_name(nor, name);
+-	/* Try to auto-detect if chip name wasn't specified or not found */
+-	if (!info)
+-		return spi_nor_detect(nor);
+-
+ 	/*
+-	 * If caller has specified name of flash model that can normally be
+-	 * detected using JEDEC, let's verify it.
++	 * Auto-detect if chip name wasn't specified or not found, or the chip
++	 * has an ID. If the chip supposedly has an ID, we also do an
++	 * auto-detection to compare it later.
+ 	 */
+-	if (name && info->id) {
+-		const struct flash_info *jinfo;
+-
++	if (!info || info->id) {
+ 		jinfo = spi_nor_detect(nor);
+-		if (IS_ERR(jinfo)) {
++		if (IS_ERR(jinfo))
+ 			return jinfo;
+-		} else if (jinfo != info) {
+-			/*
+-			 * JEDEC knows better, so overwrite platform ID. We
+-			 * can't trust partitions any longer, but we'll let
+-			 * mtd apply them anyway, since some partitions may be
+-			 * marked read-only, and we don't want to loose that
+-			 * information, even if it's not 100% accurate.
+-			 */
+-			dev_warn(nor->dev, "found %s, expected %s\n",
+-				 jinfo->name, info->name);
+-			info = jinfo;
+-		}
  	}
  
--	return 0;
--}
--
--static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
--{
--	if (nor->params->addr_nbytes) {
--		nor->addr_nbytes = nor->params->addr_nbytes;
--	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
--		/*
--		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
--		 * in this protocol an odd addr_nbytes cannot be used because
--		 * then the address phase would only span a cycle and a half.
--		 * Half a cycle would be left over. We would then have to start
--		 * the dummy phase in the middle of a cycle and so too the data
--		 * phase, and we will end the transaction with half a cycle left
--		 * over.
--		 *
--		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
--		 * avoid this situation.
--		 */
--		nor->addr_nbytes = 4;
--	} else if (nor->info->addr_nbytes) {
--		nor->addr_nbytes = nor->info->addr_nbytes;
--	} else {
--		nor->addr_nbytes = 3;
--	}
--
--	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
--		/* enable 4-byte addressing if the device exceeds 16MiB */
--		nor->addr_nbytes = 4;
--	}
--
--	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
--		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
--			nor->addr_nbytes);
--		return -EINVAL;
--	}
--
--	/* Set 4byte opcodes when possible. */
--	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
--	    !(nor->flags & SNOR_F_HAS_4BAIT))
--		spi_nor_set_4byte_opcodes(nor);
--
--	return 0;
--}
--
--static int spi_nor_setup(struct spi_nor *nor,
--			 const struct spi_nor_hwcaps *hwcaps)
--{
--	int ret;
--
--	if (nor->params->setup)
--		ret = nor->params->setup(nor, hwcaps);
--	else
--		ret = spi_nor_default_setup(nor, hwcaps);
--	if (ret)
--		return ret;
--
- 	return spi_nor_set_addr_nbytes(nor);
+-	return info;
++	/*
++	 * If caller has specified name of flash model that can normally be
++	 * detected using JEDEC, let's verify it.
++	 */
++	if (info && jinfo && jinfo != info)
++		dev_warn(nor->dev, "found %s, expected %s\n",
++			 jinfo->name, info->name);
++
++	/*
++	 * JEDEC knows better, so overwrite platform ID. We can't trust
++	 * partitions any longer, but we'll let mtd apply them anyway, since
++	 * some partitions may be marked read-only, and we don't want to loose
++	 * that information, even if it's not 100% accurate.
++	 */
++	return jinfo ?: info;
  }
  
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 9aa7d6399c8a..8552e31b1b07 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -369,10 +369,6 @@ struct spi_nor_otp {
-  * @convert_addr:	converts an absolute address into something the flash
-  *                      will understand. Particularly useful when pagesize is
-  *                      not a power-of-2.
-- * @setup:		(optional) configures the SPI NOR memory. Useful for
-- *			SPI NOR flashes that have peculiarities to the SPI NOR
-- *			standard e.g. different opcodes, specific address
-- *			calculation, page size, etc.
-  * @ready:		(optional) flashes might use a different mechanism
-  *			than reading the status register to indicate they
-  *			are ready for a new command
-@@ -404,7 +400,6 @@ struct spi_nor_flash_parameter {
- 	int (*quad_enable)(struct spi_nor *nor);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
--	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
- 	int (*ready)(struct spi_nor *nor);
- 
- 	const struct spi_nor_locking_ops *locking_ops;
+ static u32
 -- 
 2.39.2
 
