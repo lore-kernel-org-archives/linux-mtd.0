@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 266DEC4345F
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 15:33:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7421AC4345F
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 15:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LIOZCqSajYwYeQsSrKaM0zFAjzQcuAo4zdyaXaiIcd0=; b=D+dYRcR+YLjokw
-	VF0St+tHYzVchoNJBjcaYrcn7bggadnsRDN5z38fP6XpcMgbwmMUuUhBPVOcHGhgswUjaU6eeJfsn
-	nzVeHL9uo4nscnvrnybYfDbNQt6tJQgfre+EzBnv1zLnQROJzJXqvZE6Nwv1SIweDtowAjI89Tvdm
-	yACh+A3DMdFrM1pOwm96jsup5/v+8R0D+dUk9uQKzjPkv1aHQwdLTmAjiL9oiqbzWdRqG9yGSUQbj
-	fwickLnmUS2oBTGYlyclj1P2uzSNaE6RTqBGOiFrMRJjVItyCvgs01RR+mINIa4lfgcVXsI+HVtaG
-	/71CG8HNtTkcuGCdj9Tg==;
+	List-Owner; bh=rq2jCja5ycar8wYL7sGgs9/s8iYbobrrNDb5LfaS+0o=; b=Et3BZnGy1HbTRq
+	J4MTahul1Dpqq5wLFk8q9QU8axm+laO01UMbfq+43J+9gbd/GDXYqpNZQ6SMUKEEZd2/feKw0EjWh
+	cC6P1NnQSqhefL6OU4iXW1b+YELslRZqxWs/+stpqRHLBeNkxuaioamQOpH0x/obIej4Z9/cegnG0
+	TibPcdEir1j2SJgEwb8S5HMJa3wI7EtODJ6jg/9dH0tjFRmvDgBRMVLbfcvf8MEh5+ljqreM4h5GC
+	LJyiqtZkqbua8utXoO/joVaDNV+Ez+SACcA1fyukBkTV10svqORZgOrEIcZWuX/2EATxpDmtBV1zH
+	WenpbkG4ne3bQAuzyeDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvItj-00000000FgS-1WzH;
-	Fri, 12 Apr 2024 15:33:03 +0000
-Received: from mail-io1-xd29.google.com ([2607:f8b0:4864:20::d29])
+	id 1rvJF1-00000000Jnv-152g;
+	Fri, 12 Apr 2024 15:55:03 +0000
+Received: from smtp43.i.mail.ru ([95.163.41.66])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvItg-00000000Fcs-1euC
+	id 1rvJEx-00000000Jm5-1Iqf
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Apr 2024 15:33:02 +0000
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7d6b0c766e9so25110239f.0
-        for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2024 08:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712935972; x=1713540772; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uqDcmcdfEAxpSmSYIoRjoyegxjm8YY6DAayxwa7eB28=;
-        b=I3J71v+yeGfpt3uBdyr0VC2GfsD0301sRk8X8AYbnoJS4pdcIDK7hO1dKIExYSnJ5/
-         J4XXFgsw10RQVpeps0RNgun9hY9CZz9+yqN7vxqxz8UGL8n3Cc9U4QBgvv/rRetl4fVr
-         uJL6Rseo7dtTbEkfq9gYT3Kg5kdKCkabd9U+s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712935972; x=1713540772;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uqDcmcdfEAxpSmSYIoRjoyegxjm8YY6DAayxwa7eB28=;
-        b=XWbcLS2dUNYKNZ1EAvzv5lcEIVuP0/eLQovO/gd0TcWyo4BqGkUV9ZAJTXkNQMHt4Y
-         2T52h2DhoaiQJkJpEuqWCEQgNLrZA9lesBv1jXeUQAfKO9jrS+zvxqnR03s6Wd+QWHEk
-         L221luGrF7JDqmKw+p7fnUoVG3qAYzHJYaNQ+thjsoxHBAyvnHJx6TTifPcPpmAbPaDT
-         ApZcGU2jKVhnGzJGuJTZWvM2lwaJLjmmlTv4BIvA1UycbFDbLOKKU7H5jCnuEPrmDYgE
-         NZ9BnR6dyKPYFkIDUPDXZ5UB+FM2qus9tGa2jtqtHhlidrxn5wjaZR+HGclJlYddyG8I
-         08Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8C440uzh4wNLXTil5AG8qoxI7X7CLc35BW5ZT5p+R/RM67PXzlC97CONDNEWAp5OeZn/cXvuRRPboiVhd8KJH+mRNc+03G47huw3otg==
-X-Gm-Message-State: AOJu0Yxkr/LXDk13jOwJukjZiiurPxDHwNFShNtsNkHi+ilasjIc/aG3
-	VWCfhG/mgmJExEvO6RRhKFcJhp97Qx0bfwVccWUktv4DqEoo8NrlZaTjfobhVA==
-X-Google-Smtp-Source: AGHT+IHbtl8u5oM4YD0V1cyL9JOfCkw7w+xIl41C6otd6LoyoE8+lKTPybLQ5MBLMHKFw5O2MCIjbw==
-X-Received: by 2002:a05:6602:1a98:b0:7d6:3f52:2f27 with SMTP id bn24-20020a0566021a9800b007d63f522f27mr3223842iob.0.1712935972439;
-        Fri, 12 Apr 2024 08:32:52 -0700 (PDT)
-Received: from chromium.org (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
-        by smtp.gmail.com with ESMTPSA id ik14-20020a0566026c0e00b007d65a95d95csm1093828iob.42.2024.04.12.08.32.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 08:32:52 -0700 (PDT)
-From: Simon Glass <sjg@chromium.org>
-To: devicetree@vger.kernel.org
-Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
-	Michael Walle <mwalle@kernel.org>,
-	Tom Rini <trini@konsulko.com>,
-	linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Rob Herring <robh@kernel.org>,
-	Simon Glass <sjg@chromium.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Fri, 12 Apr 2024 15:55:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elkcl.ru;
+	s=mailru; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
+	Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+	List-Owner:List-Archive:X-Cloud-Ids:Disposition-Notification-To;
+	bh=QFS0D/M7dvwApK3A76KiviBzof0kZdBxTZ34NthdSy8=; t=1712937295; x=1713027295; 
+	b=Mi1xVWgxrJYOjQz7JXTa/xFb/0ICFtK8s1+jrT+7Jd+kAB1gAes7DgWvyQsZZVVbnuRGKGozkUL
+	xfmfQaAmtfgnCh5ZIX0VLJoj/Rv0MKBydaVCGDKavfa645B48+IWMbYrg7pXThR8uBXQXI2PLGq6k
+	sPsi3PK6CjxMwQad9Mo=;
+Received: by smtp43.i.mail.ru with esmtpa (envelope-from <pub@elkcl.ru>)
+	id 1rvJEp-0000000BIcj-2x1T; Fri, 12 Apr 2024 18:54:52 +0300
+From: Ilya Denisyev <dev@elkcl.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Ilya Denisyev <dev@elkcl.ru>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v11 1/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
-Date: Fri, 12 Apr 2024 09:32:48 -0600
-Message-Id: <20240412153249.100787-1-sjg@chromium.org>
-X-Mailer: git-send-email 2.34.1
+	Christian Brauner <brauner@kernel.org>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Fabian Frederick <fabf@skynet.be>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Wedson Almeida Filho <walmeida@microsoft.com>,
+	KaiGai Kohei <kaigai@ak.jp.nec.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] jffs2: prevent xattr node from overflowing the eraseblock
+Date: Fri, 12 Apr 2024 18:53:54 +0300
+Message-ID: <20240412155357.237803-1-dev@elkcl.ru>
+X-Mailer: git-send-email 2.44.0
 MIME-Version: 1.0
+Authentication-Results: smtp43.i.mail.ru; auth=pass smtp.auth=pub@elkcl.ru smtp.mailfrom=pub@elkcl.ru
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D3B5F9CEDACDA8A37625F0445A84289E9B182A05F538085040843BD67FAA79768F33594132A326AF8BCEAE490106F7B863C222E478C8B5E4506837A08AC964547F
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE78CB87876C5D626D4EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371D26D2A8652661258638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8147B5DEEC622027DEEA818C3B420E6A81562A0DB420D21BECC7F00164DA146DAFE8445B8C89999728AA50765F7900637BA2F0AEB80054583389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8AD74539164518AE5F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C17119E5299B287EEAD7EC71F1DB884274AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C356E3D212986C9D9EBA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF17B107DEF921CE791DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3F6A27782D052760535872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-C1DE0DAB: 0D63561A33F958A54E068876C7DE3C8E5002B1117B3ED696538D2A3C96BE7402484B8D70797403F6823CB91A9FED034534781492E4B8EEADDFC043C56F70D752C79554A2A72441328621D336A7BC284946AD531847A6065A17B107DEF921CE79BDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF1D5D3BAAD1272071CBB8234144E1EBE2896135156D9F16CB998C73ECA2F75A71963129249CAA680A1E5F415AA55898CCA736FDAA89DE208D695903BF9C1DC331129538D5484F1A9442BF32D1DA1046D202C26D483E81D6BE8B4B3506CD0458C56E5349047F11E5783FCF178C6DD14203
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojj8Sl06kWf03Ngj57zzxREA==
+X-Mailru-Sender: 7971DA0162A9842A75A8A63AE98D4FF4703F3DE0473E7D67D4570605F44DF537BF768613B42F11ECD8649DE294F77099CA0B8C118E355A7C54A42CAEBACFBF7EF55A8A299F926F354FD7C49A7833DCB4162D03413E14ADD05FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240412_083300_475118_BC90814E 
-X-CRM114-Status: GOOD (  21.52  )
+X-CRM114-CacheID: sfid-20240412_085459_381893_562F5871 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,80 +82,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QWRkIHRocmVlIHByb3BlcnRpZXMgZm9yIGNvbnRyb2xsaW5nIGFsaWdubWVudCBvZiBwYXJ0aXRp
-b25zLCBha2EKJ2VudHJpZXMnIGluIGZpeGVkLXBhcnRpdGlvbi4KCkZvciBub3cgdGhlcmUgaXMg
-bm8gZXhwbGljaXQgbWVudGlvbiBvZiBoaWVyYXJjaHksIHNvIGEgJ3NlY3Rpb24nIGlzCmp1c3Qg
-dGhlICdmaXhlZC1wYXJ0aXRpb25zJyBub2RlLgoKVGhlc2UgbmV3IHByb3BlcnRpZXMgYXJlIGlu
-cHV0cyB0byB0aGUgQmlubWFuIHBhY2thZ2luZyBwcm9jZXNzLCBidXQgYXJlCmFsc28gbmVlZGVk
-IGlmIHRoZSBmaXJtd2FyZSBpcyByZXBhY2tlZCwgdG8gZW5zdXJlIHRoYXQgYWxpZ25tZW50CmNv
-bnN0cmFpbnRzIGFyZSBub3QgdmlvbGF0ZWQuIFRoZXJlZm9yZSB0aGV5IGFyZSBwcm92aWRlZCBh
-cyBwYXJ0IG9mCnRoZSBzY2hlbWEuCgpTaWduZWQtb2ZmLWJ5OiBTaW1vbiBHbGFzcyA8c2pnQGNo
-cm9taXVtLm9yZz4KUmV2aWV3ZWQtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+Ci0t
-LQoKQ2hhbmdlcyBpbiB2MTE6Ci0gRHJvcCBtZW50aW9uIG9mIEJpbm1hbgotIFVzZSAnY29udGVu
-dCcgaW5zdGVhZCBvZiAnY29udGVudHMnCgpDaGFuZ2VzIGluIHYxMDoKLSBVcGRhdGUgdGhlIG1p
-bmltdW0gdG8gMgoKQ2hhbmdlcyBpbiB2OToKLSBNb3ZlIGJpbmRpbmcgZXhhbXBsZSB0byBuZXh0
-IGJhdGNoIHRvIGF2b2lkIGJ1aWxkIGVycm9yCgpDaGFuZ2VzIGluIHY3OgotIERyb3AgcGF0Y2gg
-J0FkZCBiaW5tYW4gY29tcGF0aWJsZScKLSBQdXQgdGhlIGFsaWdubWVudCBwcm9wZXJ0aWVzIGlu
-dG8gdGhlIGZpeGVkLXBhcnRpdGlvbiBiaW5kaW5nCgpDaGFuZ2VzIGluIHY2OgotIENvcnJlY3Qg
-c2NoZW1hLXZhbGlkYXRpb24gZXJyb3JzIG1pc3NlZCBkdWUgdG8gb2xkZXIgZHQtc2NoZW1hCiAg
-KGVudW0gZml4IGFuZCByZWcgYWRkaXRpb24pCgpDaGFuZ2VzIGluIHY1OgotIEFkZCB2YWx1ZSBy
-YW5nZXMKLSBDb25zaXN0ZW50bHkgbWVudGlvbiBhbGlnbm1lbnQgbXVzdCBiZSBwb3dlci1vZi0y
-Ci0gTWVudGlvbiB0aGF0IGFsaWdubWVudCByZWZlcnMgdG8gYnl0ZXMKCkNoYW5nZXMgaW4gdjI6
-Ci0gRml4ICdhJyB0eXBvIGluIGNvbW1pdCBtZXNzYWdlCgogLi4uL2JpbmRpbmdzL210ZC9wYXJ0
-aXRpb25zL3BhcnRpdGlvbi55YW1sICAgIHwgNTEgKysrKysrKysrKysrKysrKysrKwogMSBmaWxl
-IGNoYW5nZWQsIDUxIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0aW9uLnlhbWwgYi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0aW9uLnlhbWwK
-aW5kZXggMWViZTllMjM0N2VhLi4zMWJiZWIxNjEzOTYgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRpb24ueWFtbAorKysg
-Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvcGFydGl0
-aW9uLnlhbWwKQEAgLTU3LDYgKzU3LDU3IEBAIHByb3BlcnRpZXM6CiAgICAgICB1c2VyIHNwYWNl
-IGZyb20KICAgICB0eXBlOiBib29sZWFuCiAKKyAgYWxpZ246CisgICAgJHJlZjogL3NjaGVtYXMv
-dHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyCisgICAgbWluaW11bTogMgorICAgIG1heGlt
-dW06IDB4ODAwMDAwMDAKKyAgICBtdWx0aXBsZU9mOiAyCisgICAgZGVzY3JpcHRpb246CisgICAg
-ICBUaGlzIHNldHMgdGhlIGFsaWdubWVudCBvZiB0aGUgZW50cnkgaW4gYnl0ZXMuCisKKyAgICAg
-IFRoZSBlbnRyeSBvZmZzZXQgaXMgYWRqdXN0ZWQgc28gdGhhdCB0aGUgZW50cnkgc3RhcnRzIG9u
-IGFuIGFsaWduZWQKKyAgICAgIGJvdW5kYXJ5IHdpdGhpbiB0aGUgY29udGFpbmluZyBzZWN0aW9u
-IG9yIGltYWdlLiBGb3IgZXhhbXBsZSDigJhhbGlnbiA9CisgICAgICA8MTY+4oCZIG1lYW5zIHRo
-YXQgdGhlIGVudHJ5IHdpbGwgc3RhcnQgb24gYSAxNi1ieXRlIGJvdW5kYXJ5LiBUaGlzIG1heQor
-ICAgICAgbWVhbiB0aGF0IHBhZGRpbmcgaXMgYWRkZWQgYmVmb3JlIHRoZSBlbnRyeS4gVGhlIHBh
-ZGRpbmcgaXMgcGFydCBvZgorICAgICAgdGhlIGNvbnRhaW5pbmcgc2VjdGlvbiBidXQgaXMgbm90
-IGluY2x1ZGVkIGluIHRoZSBlbnRyeSwgbWVhbmluZyB0aGF0CisgICAgICBhbiBlbXB0eSBzcGFj
-ZSBtYXkgYmUgY3JlYXRlZCBiZWZvcmUgdGhlIGVudHJ5IHN0YXJ0cy4gQWxpZ25tZW50CisgICAg
-ICBtdXN0IGJlIGEgcG93ZXIgb2YgMi4gSWYg4oCYYWxpZ27igJkgaXMgbm90IHByb3ZpZGVkLCBu
-byBhbGlnbm1lbnQgaXMKKyAgICAgIHBlcmZvcm1lZC4KKworICBhbGlnbi1zaXplOgorICAgICRy
-ZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMgorICAgIG1pbmltdW06
-IDIKKyAgICBtYXhpbXVtOiAweDgwMDAwMDAwCisgICAgbXVsdGlwbGVPZjogMgorICAgIGRlc2Ny
-aXB0aW9uOgorICAgICAgVGhpcyBzZXRzIHRoZSBhbGlnbm1lbnQgb2YgdGhlIGVudHJ5IHNpemUg
-aW4gYnl0ZXMuIEl0IG11c3QgYmUgYSBwb3dlcgorICAgICAgb2YgMi4KKworICAgICAgRm9yIGV4
-YW1wbGUsIHRvIGVuc3VyZSB0aGF0IHRoZSBzaXplIG9mIGFuIGVudHJ5IGlzIGEgbXVsdGlwbGUg
-b2YgNjQKKyAgICAgIGJ5dGVzLCBzZXQgdGhpcyB0byA2NC4gV2hpbGUgdGhpcyBkb2VzIG5vdCBh
-ZmZlY3QgdGhlIGNvbnRlbnQgb2YgdGhlCisgICAgICBlbnRyeSBpdHNlbGYgKHRoZSBwYWRkaW5n
-IGlzIHBlcmZvcm1lZCBvbmx5IHdoZW4gaXRzIHBhcmVudCBzZWN0aW9uIGlzCisgICAgICBhc3Nl
-bWJsZWQpLCB0aGUgZW5kIHJlc3VsdCBpcyB0aGF0IHRoZSBlbnRyeSBlbmRzIHdpdGggdGhlIHBh
-ZGRpbmcKKyAgICAgIGJ5dGVzLCBzbyBtYXkgZ3Jvdy4gSWYg4oCYYWxpZ24tc2l6ZeKAmSBpcyBu
-b3QgcHJvdmlkZWQsIG5vIGFsaWdubWVudCBpcworICAgICAgcGVyZm9ybWVkLgorCisgIGFsaWdu
-LWVuZDoKKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzIK
-KyAgICBtaW5pbXVtOiAyCisgICAgbWF4aW11bTogMHg4MDAwMDAwMAorICAgIG11bHRpcGxlT2Y6
-IDIKKyAgICBkZXNjcmlwdGlvbjoKKyAgICAgIFRoaXMgc2V0cyB0aGUgYWxpZ25tZW50IChpbiBi
-eXRlcykgb2YgdGhlIGVuZCBvZiBhbiBlbnRyeSB3aXRoIHJlc3BlY3QKKyAgICAgIHRvIHRoZSBj
-b250YWluaW5nIHNlY3Rpb24uIEl0IG11c3QgYmUgYSBwb3dlciBvZiAyLgorCisgICAgICBTb21l
-IGVudHJpZXMgcmVxdWlyZSB0aGF0IHRoZXkgZW5kIG9uIGFuIGFsaWdubWVudCBib3VuZGFyeSwK
-KyAgICAgIHJlZ2FyZGxlc3Mgb2Ygd2hlcmUgdGhleSBzdGFydC4gVGhpcyBkb2VzIG5vdCBtb3Zl
-IHRoZSBzdGFydCBvZiB0aGUKKyAgICAgIGVudHJ5LCBzbyB0aGUgY29udGVudCBvZiB0aGUgZW50
-cnkgd2lsbCBzdGlsbCBzdGFydCBhdCB0aGUgYmVnaW5uaW5nLgorICAgICAgQnV0IHRoZXJlIG1h
-eSBiZSBwYWRkaW5nIGF0IHRoZSBlbmQuIFdoaWxlIHRoaXMgZG9lcyBub3QgYWZmZWN0IHRoZQor
-ICAgICAgY29udGVudCBvZiB0aGUgZW50cnkgaXRzZWxmICh0aGUgcGFkZGluZyBpcyBwZXJmb3Jt
-ZWQgb25seSB3aGVuIGl0cworICAgICAgcGFyZW50IHNlY3Rpb24gaXMgYXNzZW1ibGVkKSwgdGhl
-IGVuZCByZXN1bHQgaXMgdGhhdCB0aGUgZW50cnkgZW5kcworICAgICAgd2l0aCB0aGUgcGFkZGlu
-ZyBieXRlcywgc28gbWF5IGdyb3cuIElmIOKAmGFsaWduLWVuZOKAmSBpcyBub3QgcHJvdmlkZWQs
-CisgICAgICBubyBhbGlnbm1lbnQgaXMgcGVyZm9ybWVkLgorCiBpZjoKICAgbm90OgogICAgIHJl
-cXVpcmVkOiBbIHJlZyBdCi0tIAoyLjM0LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+Add a check to make sure that the requested xattr node size is no larger
+than the eraseblock minus the cleanmarker.
+
+Unlike the usual inode nodes, the xattr nodes aren't split into parts
+and spread across multiple eraseblocks, which means that a xattr node
+must not occupy more than one eraseblock. If the requested xattr value is
+too large, the xattr node can spill onto the next eraseblock, overwriting
+the nodes and causing errors such as:
+
+jffs2: argh. node added in wrong place at 0x0000b050(2)
+jffs2: nextblock 0x0000a000, expected at 0000b00c
+jffs2: error: (823) do_verify_xattr_datum: node CRC failed at 0x01e050, 
+read=0xfc892c93, calc=0x000000
+jffs2: notice: (823) jffs2_get_inode_nodes: Node header CRC failed 
+at 0x01e00c. {848f,2fc4,0fef511f,59a3d171}
+jffs2: Node at 0x0000000c with length 0x00001044 would run over the 
+end of the erase block
+jffs2: Perhaps the file system was created with the wrong erase size?
+jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found
+at 0x00000010: 0x1044 instead
+
+This breaks the filesystem and can lead to KASAN crashes such as:
+
+BUG: KASAN: slab-out-of-bounds in jffs2_sum_add_kvec+0x125e/0x15d0
+Read of size 4 at addr ffff88802c31e914 by task repro/830
+CPU: 0 PID: 830 Comm: repro Not tainted 6.9.0-rc3+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+BIOS Arch Linux 1.16.3-1-1 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xc6/0x120
+ print_report+0xc4/0x620
+ ? __virt_addr_valid+0x308/0x5b0
+ kasan_report+0xc1/0xf0
+ ? jffs2_sum_add_kvec+0x125e/0x15d0
+ ? jffs2_sum_add_kvec+0x125e/0x15d0
+ jffs2_sum_add_kvec+0x125e/0x15d0
+ jffs2_flash_direct_writev+0xa8/0xd0
+ jffs2_flash_writev+0x9c9/0xef0
+ ? __x64_sys_setxattr+0xc4/0x160
+ ? do_syscall_64+0x69/0x140
+ ? entry_SYSCALL_64_after_hwframe+0x76/0x7e
+ [...]
+
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+
+Fixes: aa98d7cf59b5 ("[JFFS2][XATTR] XATTR support on JFFS2 (version. 5)")
+Signed-off-by: Ilya Denisyev <dev@elkcl.ru>
+---
+ fs/jffs2/xattr.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index 00224f3a8d6e..9509b33f7675 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -1110,6 +1110,9 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
+ 		return rc;
+ 
+ 	request = PAD(sizeof(struct jffs2_raw_xattr) + strlen(xname) + 1 + size);
++	if (request > c->sector_size - c->cleanmarker_size)
++		return -ERANGE;
++
+ 	rc = jffs2_reserve_space(c, request, &length,
+ 				 ALLOC_NORMAL, JFFS2_SUMMARY_XATTR_SIZE);
+ 	if (rc) {
+-- 
+2.44.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
