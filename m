@@ -4,63 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D632C04FF8
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 13:44:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 634D7C4345F
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 13:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K0eqkgwRqItnUlFb5VwH1Slm6C27QdenxzJVdfJQczQ=; b=We/Y/74a+tT/G1
-	B5Oje7iYGyTLQQIUrmRFl+0i+d5P0+6kQcq8sFoBuUmzpHCSMoPxzgUV2Jm1WY1D/7btIKyhW2arA
-	akCmkniFbMASu1yw/PTbdx2Y4DAm2Vc/PpgYU0llV4nCob54h296HjgDWFNLQFCkkvnN6YJjgxcio
-	yrqIv3x8dSHGOrBjkPR/RyG3LPCy3QKyP2kcyeFpuX+2D2meU5CdIkCIOM/gLmXlJZiP7iUE3bivM
-	vxFzvFozB92ThRjMozaHt5YUQp7GWwImrrNojlQmTEbMMNFuFYM4V6LXhZPk2uk5BpsFiZeWr8Rq6
-	+nLQ1wlq+ThwqwKzezfw==;
+	List-Owner; bh=SqsEH/mjGIMwb0RNqZXc+zkBD9qwjbN32NNOsnWkXy8=; b=WSjeSXNhfJftmM
+	+NmrvQX9rA1/cioLrsYNBle0QR/yvQ2pMHc2MX8pLTVPzdgGNeDqEFQimjl9gZMVixOjnXwRAYxzs
+	7RBqULeH2nxsm9mibwTWfc1vqsoxjmg8J+RxLJLfd1kbzckbV+JLpdpmVPoltSR3ZFru7jPCu39ZS
+	bVaMdpfUgPEbaTt/ACj5wUuyMNQeiVgxTQe7f8o47KoVL856grf+RrFljsIgY7GylvAWx5AA+dRbO
+	CGb9DG5qtQoXA9vlbJblDouWl0nm8Xq15VQznHF1uRTVktz7j7gEARDOacrTWCQCrrXaEkkT7rZGs
+	wMuNMv+xP/1iwzvsJpPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvHCu-0000000HOWQ-3F7p;
-	Fri, 12 Apr 2024 13:44:44 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rvHLt-0000000HR4C-2WlU;
+	Fri, 12 Apr 2024 13:54:01 +0000
+Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvHCe-0000000HOH5-3PMs
+	id 1rvHLp-0000000HR1d-2Y2T
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Apr 2024 13:44:31 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 254DACE393B;
-	Fri, 12 Apr 2024 13:44:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 123BCC2BD10;
-	Fri, 12 Apr 2024 13:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712929467;
-	bh=Hetc/oU2jZtMC9jkGVkbwuLoaws05Gs3ek4EybKWEMU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h3HBauPOR0oPi0tOF6mEj1wDwCkaBlUi0Wq3QWcIVW9hWixJ5AS2Lk0mbuRzp/jlR
-	 WR09bQOmjRCBddX2sOdOldFbb5tO8hV48GbfdiFN38I7dFHw3k8+204OdsN8XIRyKF
-	 dKt6879LcC3LGSn/1GlzpKlGu7TLiM39ugnpnw6BviHV3Uhjy4JCvQ/Di+CUAV7OOG
-	 J4JuW05KVu7JRdIPRi5sI1YcWcfLQOiaeFVqUw4XSAhRt9tiY9wkuExoWEo7J90egI
-	 HgzcXod64yKmBDtjZ16XaiMs3vJDDjGm0L0CMB9laMEsOOIkyO4cqH9um7MoHfLYeC
-	 M3YPWXWYucP1g==
-From: Michael Walle <mwalle@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Michael Walle <mwalle@kernel.org>
-Subject: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for displaying deprecation message
-Date: Fri, 12 Apr 2024 15:44:05 +0200
-Message-Id: <20240412134405.381832-7-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240412134405.381832-1-mwalle@kernel.org>
-References: <20240412134405.381832-1-mwalle@kernel.org>
+	Fri, 12 Apr 2024 13:54:00 +0000
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a44665605f3so93413466b.2
+        for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2024 06:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712930035; x=1713534835; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OZDAh4RJKN0lCfNyM40gq+9n7tFtOvPXFiwnprF//0E=;
+        b=lO0gZd3fSJTbDpRN1drCbGon86nsvTRQXqhDETBiArqpDuJNra38S7/AS+Ixpbu6im
+         qdmtLZNzz6VM+JO/IJGewMy3yXXkY4+4OuU7O58CGZzI0i7AmaUao0fFQbuQkWGme5sl
+         eVj8CGjEcQd8j06fN3zn1bLDNRDHIzWk/oCu22Yv9p2zNRLZkQgFEz1C5UPY+Ahsabtu
+         C0T5Slh0q67LzXWsrQOKuUfAKKj3+ETr82KoQxaDbPh062PLacWWMp8JNd2d7SitfR3J
+         STzXqwcFZ+i6TR62KlkXKxLRc9WGanDgcc3OBWPwelIyYNI7Vkup1nahxOW5wqcpSheH
+         QDvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712930035; x=1713534835;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OZDAh4RJKN0lCfNyM40gq+9n7tFtOvPXFiwnprF//0E=;
+        b=P867twN3SkfD5ZNq1ROER5H2KRFpFkK0UCYhs0Mqo3wmwDo27NKp1qjAZfhFhUOteZ
+         yEqg/7wlUK/LZ3szTOZqUpb7vM2kp6mZ7usOcKbjSYg6mjw+wQe/y9nxElI+/nmUR90h
+         sRErNILXAZjtkxE6eoAY1WZL4FpGme9GjttdRcocvAr6HOyoP3uc/PWaDl6Q8pPIa3iJ
+         uQq50sB1WQPDt85PQUDl8FD/zooVZVtAYYr+yZE2d8z20j8EoK1BuQq+/tiKIc5t+51s
+         OpAexqXMZmTpc+PEVpdIk/4XdCb4LEVuooFzD9NnuNmjO9tHocMMGW4kp/vWxNdKAllt
+         pfsg==
+X-Forwarded-Encrypted: i=1; AJvYcCXEQvDwN+qxtHYnzHkX7fHWFRqNTymeR48XsFhGoSLobV9R258apqS6ANJ6xoHz/3FxBJ+nC/amVigDo/t9tgrtH0pzGzpR73ybeIKXsA==
+X-Gm-Message-State: AOJu0YxQg9OOx6zqBlhhBGgZxrcX0iqC70Bt9CzYV27rSNABD/9P5dNC
+	OwxSG2TgKteuHE9Gk/FqlghUvGD2DAy11dNO3XaqXdSC5hI2CLerJKsBhQh3pvI=
+X-Google-Smtp-Source: AGHT+IHGdLT3xh+OfkHFowI0iMM2RnENLU9VQdb2De0ZU6EDTzDcEuMelz1LzDyIXUS/CZzCUCCC3g==
+X-Received: by 2002:a17:906:e2cd:b0:a51:b23c:1187 with SMTP id gr13-20020a170906e2cd00b00a51b23c1187mr1700707ejb.12.1712930034691;
+        Fri, 12 Apr 2024 06:53:54 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.35])
+        by smtp.gmail.com with ESMTPSA id gx12-20020a1709068a4c00b00a522ef899bbsm1046547ejc.7.2024.04.12.06.53.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Apr 2024 06:53:54 -0700 (PDT)
+Message-ID: <7b2fc5cb-d1ab-4e9d-b955-b88698322057@linaro.org>
+Date: Fri, 12 Apr 2024 14:53:52 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/6] mtd: spi-nor: Remove support for Xilinx S3AN
+ flashes
+To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20240412134405.381832-1-mwalle@kernel.org>
+ <20240412134405.381832-2-mwalle@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240412134405.381832-2-mwalle@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240412_064429_266343_6A2275A7 
-X-CRM114-Status: GOOD (  13.89  )
+X-CRM114-CacheID: sfid-20240412_065357_746765_8B893385 
+X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,63 +98,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SPI-NOR will automatically detect the attached flash device most of the
-time. We cannot easily find out if boards are using a given flash.
-Therefore, introduce a (temporary) flag to display a message on boot if
-support for a given flash device is scheduled to be removed in the
-future.
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
- drivers/mtd/spi-nor/core.c | 12 ++++++++++++
- drivers/mtd/spi-nor/core.h |  1 +
- 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 58d310427d35..a294eef2e34a 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3312,6 +3312,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
- 						       const char *name)
- {
- 	const struct flash_info *jinfo = NULL, *info = NULL;
-+	const char *deprecated = NULL;
- 
- 	if (name)
- 		info = spi_nor_match_name(nor, name);
-@@ -3326,6 +3327,17 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
- 			return jinfo;
- 	}
- 
-+	if (info && (info->flags & SPI_NOR_DEPRECATED))
-+		deprecated = info->name;
-+	else if (jinfo && (jinfo->flags & SPI_NOR_DEPRECATED))
-+		deprecated = jinfo->name;
-+
-+	if (deprecated)
-+		pr_warn("Your board or device tree is using a SPI NOR flash (%s) with\n"
-+			"deprecated driver support. It will be removed in future kernel\n"
-+			"version. If you feel this shouldn't be the case, please contact\n"
-+			"us at linux-mtd@lists.infradead.org\n", deprecated);
-+
- 	/*
- 	 * If caller has specified name of flash model that can normally be
- 	 * detected using JEDEC, let's verify it.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 8552e31b1b07..0317d8e253f4 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -524,6 +524,7 @@ struct flash_info {
- #define SPI_NOR_NO_ERASE		BIT(6)
- #define SPI_NOR_QUAD_PP			BIT(8)
- #define SPI_NOR_RWW			BIT(9)
-+#define SPI_NOR_DEPRECATED		BIT(15)
- 
- 	u8 no_sfdp_flags;
- #define SPI_NOR_SKIP_SFDP		BIT(0)
--- 
-2.39.2
+On 4/12/24 14:44, Michael Walle wrote:
+> These flashes are kind of an oddball for the very old Xilinx Spartan 3
+> FPGAs to store their bitstream. More importantly, they reuse the Atmel
+> JEDEC manufacturer ID and in fact the at45db081d already blocks the use
+> of the 3S700AN flash chip. It's time to sunset support for these
+> flashes.
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
 
+Good, I'll let Pratyush review the details:
+
+Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+Please resend once you get enough feedback and include in To: all the
+contributors to this driver.
+
+Thanks!
 
 ______________________________________________________
 Linux MTD discussion mailing list
