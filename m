@@ -4,68 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFA48C001CC
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 Apr 2024 17:49:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C2EDC001CC
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 01:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0JxVovPlr/zGpjOvBDZeI/HBXSI/4GLhqWKmW7aIcsE=; b=fQtZGWMyAJwEr5
-	vKQrsiOFqr9h1+FTqz9gLEeMRH3zRAC2jM3Qj/7YRzBueoV/tzVk9zX+/u2eFIAU6XjXW1AB3Go88
-	lLWuXu9GKAkWg19xadOku0s8Rvk6/wB90zI1w2RsDgFclniOLSZjuF96nMyTOJS8mYYvRM9Tjo3sG
-	r2trUAs8Il0OQFeHIH/vKdyyjC+tYfd5ZIMxFaqAmJ7/ePyx0uVMxfxd+F3rH3NZL5RIE6LQJ2HNq
-	9aj1hT0AJNqPNBse0gzdSTJ2lzstY41vUiBENI1FbXgQxfWhUUaPMUSFMKFxAWFoGT+HK1QIpTlpr
-	/MjLRE0cbqKK475RF3IA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=uHpbyM3IwZusFLED6UXB2rwnC9gcAOqgxuAfekOl7jQ=; b=gi7qJZn+QJrAyPKawtXgfvoAIB
+	By2I7w9jHltMWLMVRMnY4lad09UzyNp6OAKUCZ0bwfMGRN45pvk8orvW17LmE/5VphG5kSpkmdali
+	PQ/kkpJ6rGCfDtvxOaCF4wlziX+sgy50LSZ8C5gkV7Li2jm1cbWWeVSqU8HKwLWKV+7IrhUnZllsr
+	7K81RbbZGY1gaQ67mKT89ft75AlXTWufliGmUpg//LeQ7YY8HqanF822IrYyAdbce5RjKO/wZrF5y
+	A+zp4g3p6M26jhYzTD4y5mHtSLIXLchPs8EBD8xT73MYB8LmenSKqGVqXmzti7EAL3EQ1IfnCGf6z
+	XL3JHVAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruyYN-0000000DUb4-1KJe;
-	Thu, 11 Apr 2024 17:49:39 +0000
-Received: from out-186.mta1.migadu.com ([95.215.58.186])
+	id 1rv5ax-0000000Ejm6-3M8W;
+	Fri, 12 Apr 2024 01:20:48 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruyYJ-0000000DUYf-2xT2
+	id 1rv5as-0000000EjjX-3zug
 	for linux-mtd@lists.infradead.org;
-	Thu, 11 Apr 2024 17:49:37 +0000
-Date: Thu, 11 Apr 2024 13:49:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712857769;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V/TZdE1FK3O4qkESTbUB1nUL6z8CdzrLZmjris90VHw=;
-	b=aI/Km0jiSMVL4A1tCs8hlsrV66vbuWxJKZ+EgkonCW2LmuJAGBaIivtgu4+3HhSKhbSBh3
-	uS3+3l/YqK0GsHToDiJSOy8jQgouByPKNokiyLYxRwngjkex1lryU/nDL4TDH7+GmcHLtc
-	35AcbG0Y+MpEd8VLadpzkGxeP5lZ1Bo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de, 
-	kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at, 
-	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com, 
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com, 
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
-	viro@zeniv.linux.org.uk, brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, 
-	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com, 
-	konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org, hare@suse.de, 
-	p.raghav@samsung.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
-	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org, yukuai3@huawei.com, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 07/17] bcachefs: remove dead
- function bdev_sectors()
-Message-ID: <2pat6ombemqnq5wjl6eb4lbip2pfgg5tkubmbwqphvcvpdc6cu@poiexziaa2q4>
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085712.1766333-8-yukuai1@huaweicloud.com>
+	Fri, 12 Apr 2024 01:20:45 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VFzFh2xg9ztScQ;
+	Fri, 12 Apr 2024 09:17:44 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id E58151400C8;
+	Fri, 12 Apr 2024 09:20:29 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 09:20:29 +0800
+Subject: Re: [PATCH v2 2/4] ubi: ubi_init: Fix missed ubiblock cleanup in
+ error handling path
+To: Daniel Golle <daniel@makrotopia.org>
+CC: <richard@nod.at>, <miquel.raynal@bootlin.com>, <ben.hutchings@mind.be>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240411031903.3050278-1-chengzhihao1@huawei.com>
+ <20240411031903.3050278-3-chengzhihao1@huawei.com>
+ <ZhgGPE_5urw2izAA@makrotopia.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <fb1de5ee-46d3-7148-7b59-a5d736e00f1c@huawei.com>
+Date: Fri, 12 Apr 2024 09:20:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231221085712.1766333-8-yukuai1@huaweicloud.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ZhgGPE_5urw2izAA@makrotopia.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240411_104936_109796_56A710EF 
-X-CRM114-Status: GOOD (  11.40  )
+X-CRM114-CacheID: sfid-20240411_182043_267338_4C4313FA 
+X-CRM114-Status: GOOD (  19.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,44 +69,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 21, 2023 at 04:57:02PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> bdev_sectors() is not used hence remove it.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-
-Acked-by: Kent Overstreet <kent.overstreet@linux.dev>
-
-> ---
->  fs/bcachefs/util.h | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-> index 2984b57b2958..22a0acc1704f 100644
-> --- a/fs/bcachefs/util.h
-> +++ b/fs/bcachefs/util.h
-> @@ -516,11 +516,6 @@ static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
->  void bch2_bio_map(struct bio *bio, void *base, size_t);
->  int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
->  
-> -static inline sector_t bdev_sectors(struct block_device *bdev)
-> -{
-> -	return bdev->bd_inode->i_size >> 9;
-> -}
-> -
->  #define closure_bio_submit(bio, cl)					\
->  do {									\
->  	closure_get(cl);						\
-> -- 
-> 2.39.2
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC80LzExIDIzOjQ4LCBEYW5pZWwgR29sbGUg0LS1wDoKPiBPbiBUaHUsIEFwciAxMSwg
+MjAyNCBhdCAxMToxOTowMUFNICswODAwLCBaaGloYW8gQ2hlbmcgd3JvdGU6Cj4+IFRoZSB1Ymli
+bG9ja19pbml0IGNhbGxlZCBieSB1YmlfaW5pdCB3aWxsIHJlZ2lzdGVyIGRldmljZSBudW1iZXIs
+IGJ1dAo+PiBkZXZpY2UgbnVtYmVyIGlzIG5vdCByZWxlYXNlZCBpbiBlcnJvciBoYW5kbGluZyBw
+YXRoIG9mIHViaV9pbml0IHdoZW4KPj4gdWJpIGlzIGxvYWRlZCBieSBpbnNlcnRpbmcgbW9kdWxl
+IChlZy4gYXR0YWNoaW5nIGZhaWx1cmUpLCB3aGljaCBsZWFkcwo+PiB0byBzdWJzZXF1ZW50IHVi
+aV9pbml0IGNhbGxzIGZhaWxlZCBieSBydW5uaW5nIG91dCBvZiBkZXZpY2UgbnVtYmVyCj4+IChk
+bWVzZyBzaG93cyB0aGF0ICJfX3JlZ2lzdGVyX2Jsa2RldjogZmFpbGVkIHRvIGdldCBtYWpvciBm
+b3IgdWJpYmxvY2siKS4KPj4gU2luY2UgdWJpYmxvY2tfaW5pdCgpIHJlZ2lzdGVycyBub3RpZmll
+ciBhbmQgaW52b2tlcyBub3RpZmljYXRpb24KPj4gZnVuY3Rpb25zLCBzbyB3ZSBjYW4gbW92ZSBp
+dCBhZnRlciB1YmlfaW5pdF9hdHRhY2goKSB0byBmaXggdGhlIHByb2JsZW0uCj4+Cj4+IEZpeGVz
+OiA5MjdjMTQ1MjA4YjAgKCJtdGQ6IHViaTogYXR0YWNoIGZyb20gZGV2aWNlIHRyZWUiKQo+PiBT
+aWduZWQtb2ZmLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+PiAt
+LS0KPj4gICBkcml2ZXJzL210ZC91YmkvYnVpbGQuYyB8IDUxICsrKysrKysrKysrKysrKysrKysr
+Ky0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDI2IGluc2VydGlvbnMo
+KyksIDI1IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2J1
+aWxkLmMgYi9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+PiBpbmRleCA3Zjk1ZmQ3OTY4YTguLmJj
+NjNmYmY1ZTk0NyAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPj4gKysr
+IGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPj4gQEAgLTEyNjMsOSArMTI2MywyMSBAQCBzdGF0
+aWMgc3RydWN0IG10ZF9ub3RpZmllciB1YmlfbXRkX25vdGlmaWVyID0gewo+PiAgIAkucmVtb3Zl
+ID0gdWJpX25vdGlmeV9yZW1vdmUsCj4+ICAgfTsKPj4gICAKPj4gK3N0YXRpYyB2b2lkIGRldGFj
+aF9tdGRfZGV2cyhpbnQgY291bnQpCj4gCj4gTWlzc2luZyBfX2luaXQgdG8gYXZvaWQgc2VjdGlv
+biBtaXNzbWF0Y2guCj4gCj4gU2VlIGFsc286IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL29lLWti
+dWlsZC1hbGwvMjAyNDA0MTEyMzI3LjE1OEhKZkF3LWxrcEBpbnRlbC5jb20vCgpJIHRoaW5rIGZ1
+bmN0aW9uIHdpdGhvdXQgJ19faW5pdCcgYXR0cmlidXRlcyBjYW4gYmUgY2FsbGVkIGluIHViaV9p
+bml0LCAKZm9yIGV4YW1wbGUgbWlzY19yZWdpc3Rlciwga21lbV9jYWNoZV9jcmVhdGUsIGFuZCBJ
+IHZlcmlmeSBpdCBieSBtYWtlIApXPTEgaW4gbG9jYWwgbWFjaGluZS4gQW5kIGFib3ZlIHdhcm5p
+bmcoaW4geW91ciBsaW5rKSBpcyBvbmx5IGRldGVjdGVkIAppbiBteSB2MSBzZXJpZXMuCkFmdGVy
+IGludmVzdGlnYXRpbmcgdGhlICdfX2luaXQnIGFuZCAnX19leGl0JywgSSB1bmRlcnN0YW5kIHRo
+YXQgdGhlcmUgCmFyZSB0d28gaW5kZXBlbmRlbnQgdGV4dCBzZWN0aW9uIGZvciB0aGVzZSBmdW5j
+dGlvbnMsIGZvciBleGFtcGxlLCAKX19pbml0IHRleHQgc2VjdGlvbiB3aWxsIGJlIHJlbW92ZWQg
+ZnJvbSBtZW1vcnkgYWZ0ZXIgaXQgaXMgZmluaXNoZWQsIHNvIAp3ZSBjYW5ub3QgY2FsbCBfX2V4
+aXQgZnVuY3Rpb24gaW4gX19pbml0IGZ1bmN0aW9uLgo+IAo+PiArewo+PiArCWludCBpOwo+PiAr
+Cj4+ICsJZm9yIChpID0gMDsgaSA8IGNvdW50OyBpKyspCj4+ICsJCWlmICh1YmlfZGV2aWNlc1tp
+XSkgewo+PiArCQkJbXV0ZXhfbG9jaygmdWJpX2RldmljZXNfbXV0ZXgpOwo+PiArCQkJdWJpX2Rl
+dGFjaF9tdGRfZGV2KHViaV9kZXZpY2VzW2ldLT51YmlfbnVtLCAxKTsKPj4gKwkJCW11dGV4X3Vu
+bG9jaygmdWJpX2RldmljZXNfbXV0ZXgpOwo+PiArCQl9Cj4+ICt9CgoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
