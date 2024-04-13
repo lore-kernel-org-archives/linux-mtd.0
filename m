@@ -4,75 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A48EC4345F
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Apr 2024 20:55:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B87C4345F
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Apr 2024 02:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=aAfDJRN4j3ORzOQRdyEuncz7fH7VqfelrEvcBUFSrbg=; b=cuZfsmIMCeTDS5
-	DZVJKKVr4lAFRdLJ+H0rEsirYSxoH/zU7sE54fcTSC0gPucXYMrvXVxn9LRgApPJEOCsmTishlaSn
-	cQjaC3lf8ibsUm2iaVXtVOfHJN+yNQ1pHUufo6rIOdCRON7KFvzOJrpg94R3x387Q5GzVaq0LXBNf
-	QTXI5FZ9CYTvUkYq1m/dwc9hBf33QEX699QD+J27WWTW7x414RTBYzou54/Gan/bplgdNVrmxhOEw
-	2mVIWUdhsUcEu53Zi2r0v8bmnCrFZUmn1eK6WkNpPjr1MM4Zyiku1UYHzfqpMN8XjxHZQJbVykM9m
-	Fbne2ViOFAToalhzTd+g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3zvKdvK4HkLkr1YTi4KrO40iHiczTpjSH5VISz6pmRM=; b=bgal+sa+T9+0XaPsco2KIESHHi
+	xj7m+QeLbeIRT9ODNBiMlxZW/EOp3NjHjUWwyjBZDf1Lmx3UdcLIGf48c2aRpl00Z5sGQXHOaD4Xz
+	EBhkdzEQ7qMV557u8A2CASNrh/njDLP8WB8YdOAbU6TkiAWIb/gzDkMdJmYmHhMZ81Ozo0OAP+NIP
+	wZAYJqGyfzQDkWY/yvLO5xklXL72O8hXaPIjO95XlFbgTxkyvC+ugPDtFOPRV710w36puU+VdScp1
+	eZARd4aOEbW44CxQu5Vy4mLIBGfP2jvfLDGaqLRD1ZXzX7Nmfd+2EX/YIkvDou/RtPzJyUTlr/1py
+	aNVfZqBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvNvg-00000001He4-2WgK;
-	Fri, 12 Apr 2024 20:55:24 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1rvStS-000000023ed-34Bv;
+	Sat, 13 Apr 2024 02:13:26 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvNvc-00000001Hd7-1yE1
+	id 1rvStN-000000023ck-3f3V
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Apr 2024 20:55:22 +0000
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-417d14c3411so13166005e9.2
-        for <linux-mtd@lists.infradead.org>; Fri, 12 Apr 2024 13:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mind.be; s=google; t=1712955318; x=1713560118; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PgcU5BGZBDzXmccvOO0FU/JUF/atSsHs99HycQT+khg=;
-        b=b7ZzfgO/eKhGh0eBIb3UgTJ0aqKw0jPfnJF5zhmGKTpgpwzwgUkuIpciY7rQK+O0cD
-         NpNy5prCX+6Bjk/yyPeyXcMFz1IS6ACKoz67HNT5xe8ZvJ7xYqWZLnQ/VISJ0GrfKPEf
-         1qj4Y3ccCMNhSFEGfWn9yTs3Zi/pNL98tbOadPXxeXet7wqKg2xj8ikwasXR9axMF/zF
-         hk3j4CPCbMrFmIb/GT/9Th68td/hNPg67Wyh7V/sGQqWMIFKQ00tMul4wFOHJY1savoo
-         wvDcN4f08MCdwugkJm+KdRC9JXS69TYeTTI+7UI0CTMZk5f5p60XmsNTyPMm1Xoc9hxy
-         Gtiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712955318; x=1713560118;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PgcU5BGZBDzXmccvOO0FU/JUF/atSsHs99HycQT+khg=;
-        b=TDzNUhMxUCkhISSnwxBdCH4QHDvP+MqOytFKxL6l35DU/Ufg8U5wKDYwzKoAyC0cij
-         9YBv8mqeeecObcAejEUQaOwg0YhmPw4acatkDsSe7/vsF0CoZsrJvJzXbi4yzE2gnC9K
-         TyfTFl4OcbFjrmLAwuqgbuTWWEWL6zP4bCoxWK901oB0GsKhwDuugvbZjYctatJr76M3
-         P5p4iOfnRmvtreafcL79uB3bvaysPztQmBvDYwpRM2HAY2lkOuor0M7JLQGYkJgHSupm
-         2yPCgqbze3rkXyO3F84Fa8pmZT5chhNvUfhjjS8aIgA9kqY5STr2tR3R+1EWEa32J1BZ
-         qWuw==
-X-Gm-Message-State: AOJu0Yy+mOBEmDDhZDg6M7I4TERc/G9wpYQYnLFDvleIl3V5hJSHkvj3
-	aMZYD2rXG+Ot/ki15po+Y4OdmNyA9IgVbv3cElrtTBPKtC/bFqMyAiuuAqLJwPltdBPBpnGnIXI
-	XWsM=
-X-Google-Smtp-Source: AGHT+IGYKAEUyFyjVc5enTa5QxYFnzCIn4DJs1dVAovy/SDC1fUTKg7qeKv8d5mufd+5y0j9BlUohQ==
-X-Received: by 2002:a05:600c:4f14:b0:418:1b39:bed5 with SMTP id l20-20020a05600c4f1400b004181b39bed5mr407568wmq.36.1712955318216;
-        Fri, 12 Apr 2024 13:55:18 -0700 (PDT)
-Received: from cephalopod.i.decadent.org.uk (213.219.156.63.adsl.dyn.edpnet.net. [213.219.156.63])
-        by smtp.gmail.com with ESMTPSA id k15-20020a05600c1c8f00b004181303f953sm1358812wms.47.2024.04.12.13.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 13:55:17 -0700 (PDT)
-From: Ben Hutchings <ben.hutchings@mind.be>
-To: linux-mtd@lists.infradead.org
-Cc: Ben Hutchings <ben.hutchings@mind.be>
-Subject: [PATCH] mtd-utils: fectest: Fix time formatting with _TIME_BITS=64 on 32-bit system
-Date: Fri, 12 Apr 2024 22:55:05 +0200
-Message-Id: <20240412205505.1283783-1-ben.hutchings@mind.be>
-X-Mailer: git-send-email 2.39.2
+	Sat, 13 Apr 2024 02:13:24 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VGcQ62nB0z1xmcQ;
+	Sat, 13 Apr 2024 10:12:14 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 56E201402CE;
+	Sat, 13 Apr 2024 10:13:03 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 13 Apr 2024 10:13:02 +0800
+Subject: Re: [PATCH] mtd-utils: fectest: Fix time formatting with
+ _TIME_BITS=64 on 32-bit system
+To: Ben Hutchings <ben.hutchings@mind.be>, <linux-mtd@lists.infradead.org>
+References: <20240412205505.1283783-1-ben.hutchings@mind.be>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <2fd9e121-133c-57b4-db16-3eb1860406e6@huawei.com>
+Date: Sat, 13 Apr 2024 10:13:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20240412205505.1283783-1-ben.hutchings@mind.be>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240412_135520_813595_8A6BBC6C 
-X-CRM114-Status: GOOD (  11.30  )
+X-CRM114-CacheID: sfid-20240412_191322_109477_BF89A064 
+X-CRM114-Status: GOOD (  13.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,40 +65,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-fectest.c formats a struct timeval with the assumption that time_t and
-suseconds_t are aliases for long, but some 32-bit systems now define
-them as long long in order to support timestamps beyond 2038.
-
-As this is an elapsed time and not a timestamp, both fields should be
-within the range of long, so cast them to long before formatting
-rather than moving to long long.
-
-Signed-off-by: Ben Hutchings <ben.hutchings@mind.be>
----
- misc-utils/fectest.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/misc-utils/fectest.c b/misc-utils/fectest.c
-index eb1d33e..f560f2b 100644
---- a/misc-utils/fectest.c
-+++ b/misc-utils/fectest.c
-@@ -87,6 +87,6 @@ int main(void)
- 		exit(1);
- 	}
- 
--	printf("Decoded in %ld.%06lds\n", now.tv_sec, now.tv_usec);
-+	printf("Decoded in %ld.%06lds\n", (long)now.tv_sec, (long)now.tv_usec);
- 	return 0;
- }
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC80LzEzIDQ6NTUsIEJlbiBIdXRjaGluZ3Mg0LS1wDoKPiBmZWN0ZXN0LmMgZm9ybWF0
+cyBhIHN0cnVjdCB0aW1ldmFsIHdpdGggdGhlIGFzc3VtcHRpb24gdGhhdCB0aW1lX3QgYW5kCj4g
+c3VzZWNvbmRzX3QgYXJlIGFsaWFzZXMgZm9yIGxvbmcsIGJ1dCBzb21lIDMyLWJpdCBzeXN0ZW1z
+IG5vdyBkZWZpbmUKPiB0aGVtIGFzIGxvbmcgbG9uZyBpbiBvcmRlciB0byBzdXBwb3J0IHRpbWVz
+dGFtcHMgYmV5b25kIDIwMzguCj4gCj4gQXMgdGhpcyBpcyBhbiBlbGFwc2VkIHRpbWUgYW5kIG5v
+dCBhIHRpbWVzdGFtcCwgYm90aCBmaWVsZHMgc2hvdWxkIGJlCj4gd2l0aGluIHRoZSByYW5nZSBv
+ZiBsb25nLCBzbyBjYXN0IHRoZW0gdG8gbG9uZyBiZWZvcmUgZm9ybWF0dGluZwo+IHJhdGhlciB0
+aGFuIG1vdmluZyB0byBsb25nIGxvbmcuCj4gCj4gU2lnbmVkLW9mZi1ieTogQmVuIEh1dGNoaW5n
+cyA8YmVuLmh1dGNoaW5nc0BtaW5kLmJlPgo+IC0tLQo+ICAgbWlzYy11dGlscy9mZWN0ZXN0LmMg
+fCAyICstCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkK
+CkZpeCBjb21waWxlciB3YXJuaW5nLgpSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3po
+aWhhbzFAaHVhd2VpLmNvbT4KPiAKPiBkaWZmIC0tZ2l0IGEvbWlzYy11dGlscy9mZWN0ZXN0LmMg
+Yi9taXNjLXV0aWxzL2ZlY3Rlc3QuYwo+IGluZGV4IGViMWQzM2UuLmY1NjBmMmIgMTAwNjQ0Cj4g
+LS0tIGEvbWlzYy11dGlscy9mZWN0ZXN0LmMKPiArKysgYi9taXNjLXV0aWxzL2ZlY3Rlc3QuYwo+
+IEBAIC04Nyw2ICs4Nyw2IEBAIGludCBtYWluKHZvaWQpCj4gICAJCWV4aXQoMSk7Cj4gICAJfQo+
+ICAgCj4gLQlwcmludGYoIkRlY29kZWQgaW4gJWxkLiUwNmxkc1xuIiwgbm93LnR2X3NlYywgbm93
+LnR2X3VzZWMpOwo+ICsJcHJpbnRmKCJEZWNvZGVkIGluICVsZC4lMDZsZHNcbiIsIChsb25nKW5v
+dy50dl9zZWMsIChsb25nKW5vdy50dl91c2VjKTsKPiAgIAlyZXR1cm4gMDsKPiAgIH0KPiAKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
