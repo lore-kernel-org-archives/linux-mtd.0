@@ -4,63 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3D0BC4345F
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Apr 2024 10:29:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 081C9C4345F
+	for <linux-mtd@archiver.kernel.org>; Sun, 14 Apr 2024 09:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=iPZYZ7G5cv34T/MZJif3FVBI+IOEb9R3WvQJbqmp8P8=; b=iD8
-	fOwE6I/WrXa5aoEr2MFopfdhZaouHfd2ZL6ptEPUEHuJZXV7MIdO7+Iv1HtxquFumNR5MGtNXKLGy
-	2ncAA37mVq3/6uJRXeS213jRrsRfuX/DaRSp+X5lTUdD2e8/xD0zvTwkmaJjrIemSV1OjaTdQy2SZ
-	egryI8+Gqkbj7KGEZxY9BHHL3ZmklfXa+a7tI/tMNB2bBp6pMEHdtW2C7LOvf7fs3CrH2rgtt2kx5
-	wZt3HkEOk8fIm7RvuLHk75TpVYc3WZfmkEDEclXtdcpTKKMTD+6sIg/cdkuHjA/8grI3ILlHKgGr/
-	qv8UWhgvjbHsbcjRDHGrk5oKXCOBkfQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
+	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Q1pBpMH5pg4+8dxVCxMUaup3UPUZ6MNzNJ1nPBOZ97g=; b=IrAFtuFLMbezFq
+	G5pcilEAS+5Ksm+RCmN08Z9oKC7AGEgcz7seSfKJdcWWe+T+4DeeE8DjikhEgHO6PRViuF+QiuMVf
+	84tIKCt14ZM5tIxc4OICNOrvRXBZcePi16mRrarXeDxqya2JT7WI1kxBd70ICU8a/IPxpVi/xtSty
+	cmA+M1q/XKutDLqZ6p+EANnqzTza63KTJxHItlsQW069DX+FzJjadGfDYwbr9kxkS4HmJ7839+8D7
+	SPRnd+E6efmzHao418VczWGJ809FmFZvJi7+m58IQjs8coSJqXUxBMgI7eSM//MA2pDNCZ9NIAgK5
+	f53+/k5GM27DY+kccdRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvadV-00000002wuz-3CXO;
-	Sat, 13 Apr 2024 10:29:29 +0000
-Received: from mail-il1-f197.google.com ([209.85.166.197])
+	id 1rvvzP-0000000582b-41WT;
+	Sun, 14 Apr 2024 09:17:31 +0000
+Received: from mout.web.de ([212.227.17.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvadS-00000002wuB-3nEi
+	id 1rvvzK-0000000581o-093b
 	for linux-mtd@lists.infradead.org;
-	Sat, 13 Apr 2024 10:29:28 +0000
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-369f9e8863dso14059635ab.3
-        for <linux-mtd@lists.infradead.org>; Sat, 13 Apr 2024 03:29:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713004164; x=1713608964;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uLtKsq0VwINExJJun7o7HSXh8fWOT6rp0lewqu3Iurk=;
-        b=stqqOYIMMGQZpeqCNzIouQD1zmj61x8gAcSuX/HkBYZP53upHH7RHSiUYRtqtN+RFK
-         8VlR+uDa4FSiRk3v8s2C55BpO6QwPTxXaNAslTfw6dRiibuO6IhNJAZbxyqrGf6iurbS
-         QhWFhPawcdjaLRnas5ge6ti6uPUilTtJUzgD8YdBrcUddDJPcRnRa4J7ZxdWca8AS1+q
-         SR8f19T1ykU21rSZwm59y9lFm+muFu6j2rQkHrZRP8u0zMRdZPZLH6DDrGxIwyoHreqJ
-         yswI26MBKZjOaL8JzeXifwU9g3fQVXADcERA5GP3zHCN26ZX7xhJPebvUmyLtWfv7Idx
-         XvdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXjteR7sLZOl/Z6JhZzm5/rLwVbRpeq4F/HJGU11TjSPj7EGWW/UgtpwVa2D8cJZ0oiVIho6KL6h/ufc1F5pLTPzWcroInFllewShAQeg==
-X-Gm-Message-State: AOJu0YzIubDKYUJoMpma2h7tfd84GJa8cYhinAXg6I7EP6XOboDWkZYx
-	aSut9PhhTuWPk0ty6Y8f2T4RDPzkspC+eSPkRgS149PcV1dsWXJLxXF063cDsgmJPgAKKhwl7TI
-	QciIpj6DFom453SWLMXgyoHSaabKREQzmOk/rDO6qN5SjB54uFMtc5Ws=
-X-Google-Smtp-Source: AGHT+IEbBv5golGdck82zYT7VdnqUxrDuq+0YFtaoJS4PcQHU4sgfH1SEXp7Ye8MxD8F0nCNKiPM93GrBg6wVk6VsKNLWYPChVRY
+	Sun, 14 Apr 2024 09:17:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713086209; x=1713691009; i=markus.elfring@web.de;
+	bh=s5ltjkK1gwJpndCII1TvY/cIdzI9eB2EsZ3Lgn3ig3E=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=CFa0btk3oTUPmhtLP1Jr4TeJI+C2q5qqpzNMiaUz338/aMdx3vyqH3dvrFyvAHEU
+	 EJnRaIk005DV1njvWd/qJYRmwIr1l1L7bEGZo0TTh94NyzcX3L6lJfSPJsPgixgQv
+	 OM9vVjtONSlDTKjc5VkTJ8pdRUJUFe822RTZ0Q86jT8QRR9WB/qbCzb09hVkdQ0Vd
+	 5T04n73e47EkjPNE6QcUHOjXJBvauEF9PA8X2on7bLkSVjyqsh5oAJXxImhkWYztO
+	 wV/1w4vtpzgtjwgt4mt/8dR4T743R1x25p4CrFAN579Tpmm9dzRUOgU5rfLwHpjNF
+	 WcIF7vOPShuJy0T/cA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.88.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MidDR-1sQqUJ45dn-00fQIp; Sun, 14
+ Apr 2024 11:16:49 +0200
+Message-ID: <22f324ce-552a-4f6a-b4e5-2d84a00010aa@web.de>
+Date: Sun, 14 Apr 2024 11:16:34 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13a8:b0:36b:7e8:3851 with SMTP id
- h8-20020a056e0213a800b0036b07e83851mr313392ilo.6.1713004163888; Sat, 13 Apr
- 2024 03:29:23 -0700 (PDT)
-Date: Sat, 13 Apr 2024 03:29:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b005380615f7dc07@google.com>
-Subject: [syzbot] Monthly jffs2 report (Apr 2024)
-From: syzbot <syzbot+list87c7a7f61f75d325f246@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+To: Li Nan <linan122@huawei.com>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Hou Tao <houtao1@huawei.com>,
+ Yang Erkun <yangerkun@huawei.com>, Yu Kuai <yukuai3@huawei.com>,
+ Zhang Yi <yi.zhang@huawei.com>
+References: <20231208074629.1656356-1-linan666@huaweicloud.com>
+Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20231208074629.1656356-1-linan666@huaweicloud.com>
+X-Provags-ID: V03:K1:78p3dblrsqPURz0FRE4t9XDi/hn8Hkx9PEJPx94ac+U8J2gEHyd
+ ATSHvvuSo0/6ZUrt4X79V1sVdDHxzZV0Fk6+QX6uvvcat67jFNb9mOdBPiUm9ZTf5/42ipC
+ Iac82O8R4x7hKff4bxvwRukSDZSYCe5z5K42hTU7CBVN9OE5/DSMtHMxNUAmjsshKnCB8+3
+ 5jlJw7JL1UE6tfYrFbS/g==
+UI-OutboundReport: notjunk:1;M01:P0:TlSKKbKkQYc=;AU2R7k6wO03BiwEwBd+BqUW+9HK
+ SoJNi24iuSQwSBJApiqLcCwyCCOXrzvpx0Uva55LiNofjvIdiiXY32Y092MOm/3+sfx2fq5ZO
+ fN9OQfgUCFD33Ldka6pCXv2h12h0bprrDoL83NegtShdz085dBcaMaZzG0G8WdADdrwpPFjBc
+ ZQLAMdbbUAxxAYKN+yK5QDsBhe/puNEtnQ0H3cX9U9hoOvtic3aEMLcqDCMuSdA4KfP91g2mx
+ BBGVXFFU8bN/wQj0SzvR/hM37H39BJ5T2Rv+ATpUReYhihmm3lYJcmXTYk64yMUYLGnQq9UmN
+ qk9Xjk4M4ozID5fQkhUTUjyesOjefUsgcUCiAc+Hztts61F1SZCaOKAJkBAt+b+6fhZxzthln
+ p8YeMXqYbNsBuLxf09vuq87bX9aPgffseFBgWQrG1hTBBNKxt3k6JQ3rNs8Re3Kybt362/btp
+ v57x2xambw+D1imPhMrH6p1Y7wEBA2QhYXdkYzpfE1uzFsJ6KUPzQ8y7b+McfrdG6sL9OGW1c
+ nj70r76lmmLiZdveXhmHapFBDKaCKU899oVk3jax1gtnBT3i3q0pt0p0d9bDGmy+9QtuhdOMW
+ t5JD49bnlgVqx2aZyGFwLb3E8rhT9o2TVP4fd/hezaMhwg1r0S+3OBYYptwjda+dmgh+4PE8I
+ 9kokAAY5Spoz3d+vFb8Ct58qSdki7/hx05BxNjiaEJtDXnYG4bmv1J+kBHChqOBqcoCuEYbxY
+ r0quBwEo7aphTzCZOsRtsTw/7p/z+Zqng0/zBKY3LQzVlgArW/btXROwpXoEAM6odhr8r+YAk
+ NJ7K238adkuoXWAYncoh9BARU+fmIrMTM9yuzXBGu8Eik=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240413_032926_968688_40C04613 
-X-CRM114-Status: UNSURE (   3.11  )
+X-CRM114-CacheID: sfid-20240414_021726_580472_C5A991F5 
+X-CRM114-Status: UNSURE (   4.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,43 +90,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello jffs2 maintainers/developers,
-
-This is a 31-day syzbot report for the jffs2 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jffs2
-
-During the period, 9 new issues were detected and 0 were fixed.
-In total, 9 issues are still open and 1 has been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 616     Yes   kernel BUG in jffs2_del_ino_cache
-                  https://syzkaller.appspot.com/bug?extid=44664704c1494ad5f7a0
-<2> 12      Yes   KASAN: slab-use-after-free Read in jffs2_garbage_collect_pass
-                  https://syzkaller.appspot.com/bug?extid=e84662c5f30b8c401437
-<3> 7       Yes   KASAN: slab-out-of-bounds Read in jffs2_sum_add_kvec
-                  https://syzkaller.appspot.com/bug?extid=d7c218ea1def103f6bcd
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Q2FuIGl0IGJlIG5pY2VyIHRvIHVzZSB0aGUgdGVybSDigJxtZW1vcnkgbGVha+KAnSBpbnN0ZWFk
+IG9mIOKAnG1lbWxlYWvigJ0KaW4gdGhlIHBhdGNoIHN1YmplY3Q/CgoK4oCmCj4gJ2dkJyB3aWxs
+IG5vdCBiZSBwdXQgYW55bW9yZS4gRml4IGl0IGJ5IHB1dHRpbmcgJ2dkJyBkaXJlY3RseS4KCldv
+dWxkIHRoZSBmb2xsb3dpbmcgd29yZGluZyB2YXJpYW50IGJlIG1vcmUgZGVzaXJhYmxlPwoKICAg
+4oCmIGFueW1vcmUuCiAgIFRodXMgcGFzcyB0aGUgdmFyaWFibGUg4oCcZ2TigJ0gdG8gYSBwdXRf
+ZGlzaygpIGNhbGwgZGlyZWN0bHkuCgoKV291bGQgeW91IGxpa2UgdG8gYWRkIHRoZSB0YWcg4oCc
+Rml4ZXPigJ0gYWNjb3JkaW5nbHk/CgpSZWdhcmRzLApNYXJrdXMKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
