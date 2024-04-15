@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E182C04FFE
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 10:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B907C04FFE
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 10:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q65R4gbLBO1BWJ/2x3/a0tmMN2STjrP6bLDUxRU3E7o=; b=tQphL3BLExYX4d
-	NKJSkfJZGbZ5bi8HDdU3Xnw5ajuUd6Yx+FZ0vBwxvazCYCR2TSpouSw7Q1GSnol1BDTl8mF4GhWTu
-	1rWy7tTgZM3v0d3xTnImzipVA7tu9ZedSglsmqPYdINgn/afplm/wfXCirb5aTFwvgUqrtIFLN/n0
-	OzRtQHF7QekajA2IfEPpdn7Fn3JhNfr3e1G5v9MvapvOgES2d3rQcevQ7EkLQnlCeyUceVsS07OVy
-	4R4TnXVI5FRUb8sbhAFv33Bb11kBAUTzwH27gjothhRej2ngA+FxTwM1LqQNUMQLFk/iwCWV+KFy/
-	kaN0NXkgWRFFJiOOfMQg==;
+	List-Owner; bh=SE03uKmleoWcQcWupsT9HMR9k6Tyx8Jt1LhtbC7vU/g=; b=Qzdr94yOU3GZah
+	3jsxxFJSi8tzX/0szikvUwa4+aYbmj4meJu7DbCcsNep89jR0v239iF/eYkp/R8KkyV7Nt+Kx3tR+
+	uY2xgHrpjB6DhPdMEk9+35sBH47yfHyQtVlJeihHVhZ827quLCnX7vOcXo3cl/dsAO0y0n5YpgHbe
+	YYfYdvd72ec+NYTtQBZZiE6mmImyKE5XqpFS5t1u7E/FkQSErBwvvnz7t+oVujzOQjgMcP+fnhuB0
+	bkR4IELMphNZjczks4h1ch6EJ+j1gzD0SF7W+iHAnhNHIY8Gqm8BeVlZnt6qWlroo2P+JEElzahAI
+	HELTRafQ+aaeovuuoMCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwJF0-00000007oT8-0pPE;
-	Mon, 15 Apr 2024 10:07:10 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1rwJF6-00000007oVU-0Dek;
+	Mon, 15 Apr 2024 10:07:16 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwJEt-00000007oQ9-3hjT
+	id 1rwJEz-00000007oQw-0FKz
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Apr 2024 10:07:09 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E93DFFF807;
-	Mon, 15 Apr 2024 10:06:57 +0000 (UTC)
+	Mon, 15 Apr 2024 10:07:14 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F31B560003;
+	Mon, 15 Apr 2024 10:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713175620;
+	t=1713175624;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=V5QLmDLe7bTBJ0+9ot2S2z1GTRFgNDrJEqWQ4tSiw9M=;
-	b=WdZH/YOIxbzPqd9V1i0OXiHiO+KJ3JLh/SY9hmxmROpoq4nqPlR0ecLlQqP4y17L6ppZfE
-	J16t1EOO2ixBAFZp7QXfJBxDOoLyzoH1tptJVKNgpB/WeDwSJnsHTFfOShHcSLnxwlR6eD
-	6neDQ32dxdiszoSx4zkvi7nyrvqY8czeyFhO3JiXArWNUvzeYLGSfTF4YwYiFdt4diB7bF
-	x2bJ3MNu9VNsPQaOaYW5Uu5ISJNVjU5DFLeVz0ZMVSnSJB3eOZWIIFTYb2jvtMMOo+0KtM
-	xxiGqj1fBQXP+9Pf97WBy/BUQgQODkM8kiseLNo6HUZ0WO9m3xuJGsBE0zfS9w==
+	bh=hzh6KDR0h3E2eLm0JI3eKxgZxPnuJOrm7c/ie9flbm8=;
+	b=VeIeYz1HQNTmCzsI6Fi1bUuBwGsHemZZrrcjz152OK1dAtDiI3UqF1TmPNHbrfFFum4gOL
+	skLSAEVI4xYPRc9lIFdoPJmw0VLf+6mtaqEMLAV2yN3LqVzTVeMu+SluWoPdG+pVWME832
+	ebZVHsdToNqrys6A6xxzF1GmSkIXLLJ7KFRW+1znKJYYy1+WzcS9zElrnYG6yCYmY1jzGK
+	ztkLfRUCkEUQRn+0T/TI9LS8uVA7dq1851e1h0t7PLmmQWi7dHTewFgZKk6AoiR2Snd8im
+	JSxUyE6dVKGRJReYEabKOgFmQBLJGuKnziRW3g1CDdYGiQwgGarb/pJ/4cBeaw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Simon Glass <sjg@chromium.org>,
 	devicetree@vger.kernel.org
@@ -56,19 +56,19 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/2] dt-bindings: mtd: fixed-partition: Add binman compatibles
-Date: Mon, 15 Apr 2024 12:06:57 +0200
-Message-Id: <20240415100657.32087-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v11 1/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
+Date: Mon, 15 Apr 2024 12:07:02 +0200
+Message-Id: <20240415100702.32115-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240412153249.100787-2-sjg@chromium.org>
+In-Reply-To: <20240412153249.100787-1-sjg@chromium.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'f48d2d6ebd3bde515f4725a88e53953cd6eccc29'
+X-linux-mtd-patch-commit: b'd8d42d47a9ff9a997abccab1e4ebffe4fce28f32'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240415_030704_092418_BE696561 
-X-CRM114-Status: GOOD (  10.27  )
+X-CRM114-CacheID: sfid-20240415_030709_260451_AB742B31 
+X-CRM114-Status: GOOD (  10.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,19 +85,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-04-12 at 15:32:49 UTC, Simon Glass wrote:
-> Add two compatibles for binman entries, as a starting point for the
-> schema.
+On Fri, 2024-04-12 at 15:32:48 UTC, Simon Glass wrote:
+> Add three properties for controlling alignment of partitions, aka
+> 'entries' in fixed-partition.
 > 
-> Note that, after discussion on v2, we decided to keep the existing
-> meaning of label so as not to require changes to existing userspace
-> software when moving to use binman nodes to specify the firmware
-> layout.
+> For now there is no explicit mention of hierarchy, so a 'section' is
+> just the 'fixed-partitions' node.
 > 
-> Note also that, after discussion on v6, we decided to use the same
-> 'fixed-partition' schema for the binman features, so this version
-> adds a new 'binman.yaml' file providing the new compatibles to the
-> existing partition.yaml binding.
+> These new properties are inputs to the Binman packaging process, but are
+> also needed if the firmware is repacked, to ensure that alignment
+> constraints are not violated. Therefore they are provided as part of
+> the schema.
 > 
 > Signed-off-by: Simon Glass <sjg@chromium.org>
 > Reviewed-by: Rob Herring <robh@kernel.org>
