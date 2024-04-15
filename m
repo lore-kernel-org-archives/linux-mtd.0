@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D81CC00A94
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E182C04FFE
 	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 10:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,57 +12,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aw6NZBbdmITT1cjms0ENcnDIiWu9l3TH/Y0v1Z9NXkU=; b=BMMWjpkk7D+wzT
-	u/Z3HEAVS8gDDe/GSLyGHQP+oXg1M6eClJ1OBrx/c7O2kqlTrR0HceIeqEy+8BaLb91i5ICIVCtJq
-	Zf4mGY3uVJtt/nXuFg1OQSkSNl3Yp7/nYSYRWOFB6labhx2HjjitHU9ZXaKiZMSxAWdPMTFz7Hqt5
-	GxeHT/iaSaCtV82h+qpM7LUyDKts2q41osqNyEBqC/2wIaS0ZxA7OiDIg8GRvIkWy2hhbiA/O5HRP
-	7nzx17GEMAgozIGnMpUxTP+6Q/7w0+r5QjgLPAUyRNvPue1lf8aK1ZHOYlnerBdACnhsR5htu04es
-	40rpInS7DfG6ctqs+TMw==;
+	List-Owner; bh=Q65R4gbLBO1BWJ/2x3/a0tmMN2STjrP6bLDUxRU3E7o=; b=tQphL3BLExYX4d
+	NKJSkfJZGbZ5bi8HDdU3Xnw5ajuUd6Yx+FZ0vBwxvazCYCR2TSpouSw7Q1GSnol1BDTl8mF4GhWTu
+	1rWy7tTgZM3v0d3xTnImzipVA7tu9ZedSglsmqPYdINgn/afplm/wfXCirb5aTFwvgUqrtIFLN/n0
+	OzRtQHF7QekajA2IfEPpdn7Fn3JhNfr3e1G5v9MvapvOgES2d3rQcevQ7EkLQnlCeyUceVsS07OVy
+	4R4TnXVI5FRUb8sbhAFv33Bb11kBAUTzwH27gjothhRej2ngA+FxTwM1LqQNUMQLFk/iwCWV+KFy/
+	kaN0NXkgWRFFJiOOfMQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwJEw-00000007oRL-1OlR;
-	Mon, 15 Apr 2024 10:07:06 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1rwJF0-00000007oT8-0pPE;
+	Mon, 15 Apr 2024 10:07:10 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwJEo-00000007oOT-3k6U
+	id 1rwJEt-00000007oQ9-3hjT
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Apr 2024 10:07:05 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C746AE0009;
-	Mon, 15 Apr 2024 10:06:47 +0000 (UTC)
+	Mon, 15 Apr 2024 10:07:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E93DFFF807;
+	Mon, 15 Apr 2024 10:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713175611;
+	t=1713175620;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g0cicJjCB0pYUGc3CIeWy4etjAY/rbc0DSqQlONwh64=;
-	b=cOWr2Axlsxc5zgGlGL5N5xatr95AvVuW6dgEuNyElf/zq5gA7TuOwd8rl0xsEgqymaMxOi
-	gGPKbMv71uTSsaB9dgzDp9hlULihjNB3YibaP5mIN8IbAEIWtwXjr/pFtIF0blYf/BNAIE
-	eLjRtw3wSa7Hkvvul8FBOb8uA76/GZeOU55JYZ5ZQuDr9sLmN2UCnKqPcAg1mp4W5XlNoe
-	w1VGS9cniLFZ0QaUOo9amESU1xMiGovK7C2lK//oHyBFzoONgOPJ1cJZ9UG13Tl1tUQ34o
-	0zpCJobQJFwetpfu4lo4ygel0ZQdZGWS9F0hVfDtSlq436Pm7yV6MdZQITRvMQ==
+	bh=V5QLmDLe7bTBJ0+9ot2S2z1GTRFgNDrJEqWQ4tSiw9M=;
+	b=WdZH/YOIxbzPqd9V1i0OXiHiO+KJ3JLh/SY9hmxmROpoq4nqPlR0ecLlQqP4y17L6ppZfE
+	J16t1EOO2ixBAFZp7QXfJBxDOoLyzoH1tptJVKNgpB/WeDwSJnsHTFfOShHcSLnxwlR6eD
+	6neDQ32dxdiszoSx4zkvi7nyrvqY8czeyFhO3JiXArWNUvzeYLGSfTF4YwYiFdt4diB7bF
+	x2bJ3MNu9VNsPQaOaYW5Uu5ISJNVjU5DFLeVz0ZMVSnSJB3eOZWIIFTYb2jvtMMOo+0KtM
+	xxiGqj1fBQXP+9Pf97WBy/BUQgQODkM8kiseLNo6HUZ0WO9m3xuJGsBE0zfS9w==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christian Marangi <ansuelsmth@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Simon Glass <sjg@chromium.org>,
+	devicetree@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	U-Boot Mailing List <u-boot@lists.denx.de>,
+	Michael Walle <mwalle@kernel.org>,
+	Tom Rini <trini@konsulko.com>,
+	linux-mtd@lists.infradead.org,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	=?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Michael Walle <michael@walle.cc>,
-	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: Re: [PATCH v5] mtd: limit OTP NVMEM cell parse to non-NAND devices
-Date: Mon, 15 Apr 2024 12:06:47 +0200
-Message-Id: <20240415100647.32028-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v11 2/2] dt-bindings: mtd: fixed-partition: Add binman compatibles
+Date: Mon, 15 Apr 2024 12:06:57 +0200
+Message-Id: <20240415100657.32087-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240412105030.1598-1-ansuelsmth@gmail.com>
+In-Reply-To: <20240412153249.100787-2-sjg@chromium.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'd2d73a6dd17365c43e109263841f7c26da55cfb0'
+X-linux-mtd-patch-commit: b'f48d2d6ebd3bde515f4725a88e53953cd6eccc29'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240415_030659_084582_633597A5 
-X-CRM114-Status: GOOD (  16.46  )
+X-CRM114-CacheID: sfid-20240415_030704_092418_BE696561 
+X-CRM114-Status: GOOD (  10.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,39 +85,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-04-12 at 10:50:26 UTC, Christian Marangi wrote:
-> MTD OTP logic is very fragile on parsing NVMEM cell and can be
-> problematic with some specific kind of devices.
+On Fri, 2024-04-12 at 15:32:49 UTC, Simon Glass wrote:
+> Add two compatibles for binman entries, as a starting point for the
+> schema.
 > 
-> The problem was discovered by e87161321a40 ("mtd: rawnand: macronix:
-> OTP access for MX30LFxG18AC") where OTP support was added to a NAND
-> device. With the case of NAND devices, it does require a node where ECC
-> info are declared and all the fixed partitions, and this cause the OTP
-> codepath to parse this node as OTP NVMEM cells, making probe fail and
-> the NAND device registration fail.
+> Note that, after discussion on v2, we decided to keep the existing
+> meaning of label so as not to require changes to existing userspace
+> software when moving to use binman nodes to specify the firmware
+> layout.
 > 
-> MTD OTP parsing should have been limited to always using compatible to
-> prevent this error by using node with compatible "otp-user" or
-> "otp-factory".
+> Note also that, after discussion on v6, we decided to use the same
+> 'fixed-partition' schema for the binman features, so this version
+> adds a new 'binman.yaml' file providing the new compatibles to the
+> existing partition.yaml binding.
 > 
-> NVMEM across the years had various iteration on how cells could be
-> declared in DT, in some old implementation, no_of_node should have been
-> enabled but now add_legacy_fixed_of_cells should be used to disable
-> NVMEM to parse child node as NVMEM cell.
-> 
-> To fix this and limit any regression with other MTD that makes use of
-> declaring OTP as direct child of the dev node, disable
-> add_legacy_fixed_of_cells if we detect the MTD type is Nand.
-> 
-> With the following logic, the OTP NVMEM entry is correctly created with
-> no cells and the MTD Nand is correctly probed and partitions are
-> correctly exposed.
-> 
-> Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-> Cc: <stable@vger.kernel.org> # v6.7+
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
 
