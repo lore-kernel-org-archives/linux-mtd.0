@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F947C4345F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 15:26:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E4C5C4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 15:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2NDZ7b8fd5AteS1pOGXDQn1dJiZJFefW24sV+3KjNSw=; b=jRzbTQRO8sM4NB
-	ZVEuoo+c5VHzwvoCBrWmR8MLiGaC+Das2vn/B/Xw0ZLaP50itxlaOyGQRYdo7FSEbay+1vgcgEOa5
-	DJCVY10qALrnjJUSEuyQxPv6F5GiZESX7Q2+ev81KV2x2ZxP/MF17yZ4e8sI2fO2xkmLeXVhBEmfA
-	9eJMpi4Z8m2WPSSTqpu2pDs+cPOgqPoqO64XuEPS/fSlK4q3sSz0/WMsktnSKIcyf2OA0a4s2W6zS
-	qyftcwn74bM1qYK9sDKMf8W/PqkwHtoampvUVUgpVVEKczKLO1NIsa6QG8OcoDm3ccWEm3j1+2bm1
-	Bs/55Q3o3ZwgveLlVYDw==;
+	List-Owner; bh=PG8aeIHUmPZ3q3juvxkMV9M6Zoew+5arXH9gKlxdg9E=; b=1tBZygrYOoF6FW
+	SwtiNeZjU8UoM3CFjVmK0TPspiezRHkO9NvkniyOnrS7wFGeJfcmiwoKqTo8G4FuWBv0VaU1MZTIT
+	Yi+28U+DLn1iYd6uR4FQUe3u7/RDESwCNRl4kNPw6OysXzt22nT95iNcbjh78dOnUJfDVFciGpmuM
+	bUdIHVjwpK3UFq7SD4pcT4oc028XnZti3wzgSPcHlttKONUfxOW6W8YyDHfExjwQMcVcF978vT/Zp
+	gup+KJK/WOTycFy/eIHvST89pEMpRWvhNGTuMJFt1WxSHz2p9GsK+r4bQ3j6wVoyZFqtBJxrxgfpm
+	+3iwJIRSU7mfAqJR+A5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwODv-00000008skU-35vN;
-	Mon, 15 Apr 2024 15:26:23 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rwOZz-00000008weF-03t3;
+	Mon, 15 Apr 2024 15:49:11 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwODt-00000008sk5-2q2E
+	id 1rwOZw-00000008wdA-1Bcg
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Apr 2024 15:26:23 +0000
+	Mon, 15 Apr 2024 15:49:09 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 614F960E86;
-	Mon, 15 Apr 2024 15:26:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D21C113CC;
-	Mon, 15 Apr 2024 15:26:18 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id C620560E75;
+	Mon, 15 Apr 2024 15:49:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75CC113CC;
+	Mon, 15 Apr 2024 15:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713194780;
-	bh=c5A2ZbFFlaMWCo1btByGYDCqOF3ITNaXb24+w/6iX1w=;
+	s=k20201202; t=1713196147;
+	bh=BJXjB4r8u0vb4Jwuxwghtyi9WRN5rvURICx0OP1Z1io=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=PVMtViJ1lUVqr4hJO1GaQV5frmWssd3EVGySDFeIvq3f0ms/PpMHxtOHS5sVGKT7B
-	 7bICcbk7Znj904jgQck54gQEf9SKYhXLqZaOLcNaueJrzdtI8cz0Z77eyHMP7t5arf
-	 G1PNYYZMS3jQHzYE8lfvZ5UnmWEKhlMkicNBqy/l63PIvy7zEWPEyaxf2riTM6UZFZ
-	 KJmaws70LCvXqrnZtHKG7u+m195ROdk7HVU8RFKww1339z5dWZHTN/OET59c/QZ+tc
-	 vued91MarqPEILWfD7TDZmtRX0tCmuvbmKXdqAsePWo0koZt2SfQTmvHY1c8rR/a8Y
-	 gocwDlyZYg6Tg==
+	b=joCh/hq9tOzj6rQAF98jynVX4S0K+b70h1HXUwyOAd9QJgy1Y+AQInX4fkHj+qVHA
+	 QnletxDqJLaMlTKAI9gq0/9GwL70u4G1LyHSKCRflUhmI1b3uLOtOkeiicJ9alf2Pl
+	 am7MlrbTF/aB4fOa72+vRYSXuOayo+NSGvqMTOZulHBD5hi9a6VuS9qRK3iMRV/WoB
+	 QadCiTi6dOMmLq1iTlNb7ySDygToYF+YWn9rq5lV4mjjPx56kuM4fRfj8uguk/F5HW
+	 1T/kn2bXe9lWxAX4ro8rjgAH4BoX7ggwa/ukXdlIkn1zyQLC1HcfftexYuQxer1wc1
+	 SdNjx4mImwP2A==
 From: Pratyush Yadav <pratyush@kernel.org>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>,  "Pratyush Yadav"
- <pratyush@kernel.org>,  "Miquel Raynal" <miquel.raynal@bootlin.com>,
-  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
- <vigneshr@ti.com>,  <linux-kernel@vger.kernel.org>,
-  <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v1 1/6] mtd: spi-nor: Remove support for Xilinx S3AN
- flashes
-In-Reply-To: <D0I76PPKBWF9.X2XFZAO5OE7S@kernel.org> (Michael Walle's message
-	of "Fri, 12 Apr 2024 16:01:43 +0200")
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v1 2/6] mtd: spi-nor: get rid of non-power-of-2 page
+ size handling
+In-Reply-To: <20240412134405.381832-3-mwalle@kernel.org> (Michael Walle's
+	message of "Fri, 12 Apr 2024 15:44:01 +0200")
 References: <20240412134405.381832-1-mwalle@kernel.org>
-	<20240412134405.381832-2-mwalle@kernel.org>
-	<7b2fc5cb-d1ab-4e9d-b955-b88698322057@linaro.org>
-	<D0I76PPKBWF9.X2XFZAO5OE7S@kernel.org>
-Date: Mon, 15 Apr 2024 17:26:17 +0200
-Message-ID: <mafs0a5lu8x5y.fsf@kernel.org>
+	<20240412134405.381832-3-mwalle@kernel.org>
+Date: Mon, 15 Apr 2024 17:49:04 +0200
+Message-ID: <mafs05xwi8w3z.fsf@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240415_082621_784818_0E548612 
-X-CRM114-Status: GOOD (  18.72  )
+X-CRM114-CacheID: sfid-20240415_084908_384185_83984D49 
+X-CRM114-Status: UNSURE (   8.60  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,50 +83,17 @@ Hi,
 
 On Fri, Apr 12 2024, Michael Walle wrote:
 
-> On Fri Apr 12, 2024 at 3:53 PM CEST, Tudor Ambarus wrote:
->>
->>
->> On 4/12/24 14:44, Michael Walle wrote:
->> > These flashes are kind of an oddball for the very old Xilinx Spartan 3
->> > FPGAs to store their bitstream. More importantly, they reuse the Atmel
->> > JEDEC manufacturer ID and in fact the at45db081d already blocks the use
->> > of the 3S700AN flash chip. It's time to sunset support for these
->> > flashes.
->> > 
->> > Signed-off-by: Michael Walle <mwalle@kernel.org>
->>
->> Good, I'll let Pratyush review the details:
->>
->> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->>
->> Please resend once you get enough feedback and include in To: all the
->> contributors to this driver.
+> The Xilinx flashes were the only user of the page sized that were no
+> power of 2. Support for them were dropped, thus we can also get rid of
+> the special page size handling for it.
 
-+1. It would be good to hear from past contributors to see if they still
-use it.
+Looks like the Xilinx flashes are the only users of
+flash_info->page_size, and params->convert_addr (along with
+spi_nor_convert_addr()) so those should also be dropped.
 
-Also, I think we should let this patch cook in linux-next for some time
-before merging to give people a chance to complain if we break
-something. Since now there isn't much time left until the SPI NOR pull
-request goes out (around 2 weeks I reckon), it would probably make sense
-to merge it in the next cycle.
+The patch looks good to me otherwise.
 
-Otherwise, the patch looks good to me.
-
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-
->
->
-> For my future reference: This seem so be the only interesting
-> commit:
->
-> commit e99ca98f1d7190c16601b00d0c96212d7c00577d
-> Author: Ricardo Ribalda <ribalda@kernel.org>
-> Date:   Fri Dec 2 12:31:44 2016 +0100
->
->     mtd: spi-nor: Add support for S3AN spi-nor devices
->
-> -michael
+[...]
 
 -- 
 Regards,
