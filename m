@@ -4,76 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6304FC4345F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 01:32:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81985C4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 06:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1hxJ9uhhCbcyCISdAvyewY8YMKWYlPAdpq1CrxBSVGI=; b=QnyuVKoCQzWm2u
-	yNtnDbC2QlD7AqcRvlvUMgELN0NSmaeSW94pUYVeA4mmn8rL2HzX40Lu9jrFoshndZHyuNcwRcv3g
-	uI8kKCN2MC6P4LIV0t/qDJ+HR0nZ1+zFWNLcEW3K4+qrx71kn3Cwi2QtemswIBzc6I/nGowY1ZiJu
-	tX0lcMlC4v99UhF7Jb4SEhTXKv+DAL+rdT86A1vyUQaTJwvq4zLmEhMken0dWquqvFFs08r8M/ocH
-	WSClnNaerBcQoXDJTL1UNtY2ukqa5NsZZhZ0xJqJ3COHOqyfjniWE8uoGrzzcxazF5bEJoYe5LAag
-	RTUtclwHTrpe473iqOXw==;
+	List-Owner; bh=XprB/9Aw2T2CLZ6KcXJIaeIMIyJDP8wEgb2t/bXjRWM=; b=uKSXDkYILh/TRw
+	B33nvG52kLcW6e3m7dUp7ssGY4c5fWGB+nZg0KqbsZRIwM6plztgFk6+orztiENPERjHG1ulfOhHt
+	wZwqEAzw6IcV4B/vr+6HRu6g2BZW0Hm9DZUen32eQy4jaRjdfu4RXdzVUhWjsceD8c84BL5yfTzmn
+	CZN9VpVyRejFcuFwY4j1nLec9RNx7dy1d6JnOAsLFnbHYxYhUIgLETzQJW7TF596xE4lA+xu9/X1u
+	Y5J7EWvibtF2ke83+5zrBEZbGv6Q3JjhzdORKVpKnlpcIeM0HdhwA9qbqgfz5a4xRWiIkvobT/VhH
+	yT47F7L2I+ZmPSby0RBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwBCs-00000006ftD-28h2;
-	Mon, 15 Apr 2024 01:32:26 +0000
-Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
+	id 1rwFuG-00000007A33-3Ol2;
+	Mon, 15 Apr 2024 06:33:32 +0000
+Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwBCn-00000006fpt-0JrB
+	id 1rwFuD-00000007A2T-0jOU
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Apr 2024 01:32:23 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VHqQd0Mv6z4f3lY6
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2024 09:31:53 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 973801A016E
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2024 09:31:57 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgAnmAuKgxxmNlDvKA--.9408S3;
-	Mon, 15 Apr 2024 09:31:56 +0800 (CST)
-Message-ID: <b8dbcc3d-f0ec-ba59-4ebc-01476029aa80@huaweicloud.com>
-Date: Mon, 15 Apr 2024 09:31:54 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
+	Mon, 15 Apr 2024 06:33:31 +0000
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so3748024a12.3
+        for <linux-mtd@lists.infradead.org>; Sun, 14 Apr 2024 23:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713162807; x=1713767607; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kcK6IuttindIK0ibbk1Eks/0diZZJiqcDdWxbvTVosU=;
+        b=BTR087scbGnGvX4avanI3ndg+FAHcAgp6vhEP2a6PYl7bZXWNrRyAwhCHEExOPw0+4
+         i3UmMIL/kqsHSN11lYiJpqwfpPUmI8eG76HOHsxaivIKyLcmLNqEFJDCcSMK+b53DQu4
+         T0Yk58VvuvZrQRRCBFT9wxFnNPKPFo+VC322WQQxtqJcOmvPkpTnvj1GxzbdW+uj8gq2
+         LDbJDhCVCGk8jmH0jtDEqitzUYiDm+5RLCew2UfZMPiPzzgB0nA9GtaAYqXiHt8G5RgY
+         9XhWK+bkuLzQ+JUMH4PECUgf9k3v4STQf977qu9o8cAB7VA6/YzKcQj7AsdGhgXm/Yjl
+         tanA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713162807; x=1713767607;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kcK6IuttindIK0ibbk1Eks/0diZZJiqcDdWxbvTVosU=;
+        b=A5Ed5C9qQ+fWXyh49JAtJ9JHOgcCz6hj9hfvsNyKVr9P2M5PnrajwGdcX3IB45Tz1o
+         UoGbgVbnL6xPo7b+lQEaYx47c5UcqvMaBRHJotwp7XjACHoEMlGQ71KXruh14IjpxFh1
+         wGjZ9TUA2uNC1kOt5xy3lXjcBR6STvIKpuTsHShYZ2F8grPNrzIcJ1D7y6+Dtxw6yAeE
+         G7BZZ8R9S6klNA1MuB6Z1werH7Wb7ni1nyt4qeJPEn0P4pCvU3IbazH5+8RDV4vt1YtZ
+         +QSo0we1jaK8Vx3s1PMFhcv8P7zGbY4cUTIl/yjouigG4bykmD6guZsBhAYby/E3Ikqd
+         k01A==
+X-Forwarded-Encrypted: i=1; AJvYcCVAqy2+waKa+SSU27fziQgtev9lKgFo7xqIs5h3cZtWQJyE4mHpSZtY7Ww+GihW95UM3yTfCgH/s3UskwZcNwnEKXKDT22+nio6HDnh1Q==
+X-Gm-Message-State: AOJu0Yyl++DXq2EOc1UzZln3U/MvZ3jbnLtyiawgj52LlUVH3yHqXWWE
+	oYt0TnDzKoklgvoiJbp/kWfmCZNhjPEeQr7aHlsSoIHciLhcbgm6eV8eY6yYPmI=
+X-Google-Smtp-Source: AGHT+IGvpMtw3rMInVwgGIn+k3i/tzXT0C81uzRme6mL6qXm7+7PCc3jMvdKuafc3RxvzZ5W19cVzQ==
+X-Received: by 2002:a50:8acf:0:b0:56b:fd17:3522 with SMTP id k15-20020a508acf000000b0056bfd173522mr5621220edk.14.1713162806745;
+        Sun, 14 Apr 2024 23:33:26 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id u5-20020aa7d985000000b0057000a2cb5bsm3225234eds.18.2024.04.14.23.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Apr 2024 23:33:26 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:33:22 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: linan666@huaweicloud.com
+Cc: richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+	houtao1@huawei.com, yangerkun@huawei.com
 Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
-To: Markus Elfring <Markus.Elfring@web.de>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Hou Tao <houtao1@huawei.com>,
- Yang Erkun <yangerkun@huawei.com>, Yu Kuai <yukuai3@huawei.com>,
- Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <79703e8b-ce3a-4407-9750-05f9202039d4@moroto.mountain>
 References: <20231208074629.1656356-1-linan666@huaweicloud.com>
- <22f324ce-552a-4f6a-b4e5-2d84a00010aa@web.de>
-From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <22f324ce-552a-4f6a-b4e5-2d84a00010aa@web.de>
-X-CM-TRANSID: Syh0CgAnmAuKgxxmNlDvKA--.9408S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw15WFW8Cw4Uuw18CFy5twb_yoWxKFgEk3
-	48JF97J34xtF10yanaga1fArnxWay3J3Wjva48JwnIg34fWFnxGFZxGr98Z3Z3Xas5ZFWD
-	Cr43t34Fvw1SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbaAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
-	5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
-	AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3
-	Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
-	UvcSsGvfC2KfnxnUUI43ZEXa7IU1VOJ7UUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20231208074629.1656356-1-linan666@huaweicloud.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240414_183221_302367_CB0A60D1 
-X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-CacheID: sfid-20240414_233329_361514_8935688C 
+X-CRM114-Status: UNSURE (   9.53  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -86,24 +90,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgrlnKggMjAyNC80LzE0IDE3OjE2LCBNYXJrdXMgRWxmcmluZyDlhpnpgZM6Cj4gQ2FuIGl0IGJl
-IG5pY2VyIHRvIHVzZSB0aGUgdGVybSDigJxtZW1vcnkgbGVha+KAnSBpbnN0ZWFkIG9mIOKAnG1l
-bWxlYWvigJ0KPiBpbiB0aGUgcGF0Y2ggc3ViamVjdD8KPiAKPiAKPiDigKYKPj4gJ2dkJyB3aWxs
-IG5vdCBiZSBwdXQgYW55bW9yZS4gRml4IGl0IGJ5IHB1dHRpbmcgJ2dkJyBkaXJlY3RseS4KPiAK
-PiBXb3VsZCB0aGUgZm9sbG93aW5nIHdvcmRpbmcgdmFyaWFudCBiZSBtb3JlIGRlc2lyYWJsZT8K
-PiAKPiAgICAg4oCmIGFueW1vcmUuCj4gICAgIFRodXMgcGFzcyB0aGUgdmFyaWFibGUg4oCcZ2Ti
-gJ0gdG8gYSBwdXRfZGlzaygpIGNhbGwgZGlyZWN0bHkuCj4gCj4gCj4gV291bGQgeW91IGxpa2Ug
-dG8gYWRkIHRoZSB0YWcg4oCcRml4ZXPigJ0gYWNjb3JkaW5nbHk/Cj4gCgpUaGUgcGF0Y2ggaGFz
-IGFscmVhZHkgYmVlbiBhcHBsaWVkOgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGlu
-dXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lz9pZD1hZGJmNGM0OTU0ZTMz
-ZTYyMzg5NzA1OGE2MTdjNTgzZDY1YTE3N2Y2CgpUaGFuayB5b3UgdmVyeSBtdWNoIGZvciB5b3Vy
-IHN1Z2dlc3Rpb24uIEkgd2lsbCBwYXkgYXR0ZW50aW9uIHRvIHRoZW0gaW4KZnV0dXJlIHBhdGNo
-ZXMuCgo+IFJlZ2FyZHMsCj4gTWFya3VzCj4gLgoKLS0gClRoYW5rcywKTmFuCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Fri, Dec 08, 2023 at 03:46:29PM +0800, linan666@huaweicloud.com wrote:
+> From: Li Nan <linan122@huawei.com>
+> 
+> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
+> ubiblock_create(), but dev->gd has not been assigned yet at this time, and
+> 'gd' will not be put anymore. Fix it by putting 'gd' directly.
+> 
+
+There is another invalid reference to dev->gd if blk_mq_alloc_tag_set()
+fails.
+
+	dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
+                            ^^^^^^^
+
+regards,
+dan carpenter
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
