@@ -4,130 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 293DEC4345F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 15:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A372C4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 16:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
-	:Subject:To:From:Reply-To:Cc:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cNRikRMztlLV07CFy6fA37cf1E6rCubKj5+mhs70U8U=; b=e/+gpIVFHidLLZ
-	yGB+NPnUqRSlotRz8AefyotNgAQmYjwKcJRKdRUCHAIB1skUIkE/JE0fqGcELp2Ix302YFlx/SHYk
-	XkB5ZQErGVEERMaSqN2CUR8v3l/XZN9NISai4HCi2VamB2c1igKNLy9dYqrOtEhwkoIZdhlebsEZm
-	r4A5upWsYkIKk++udYY1aBkgj2/ldTuhRM1VpwWgPCd7uxBE0U+kD05E8j0HroL4Nc84KMsPWruRX
-	Et+sF9ZXH8ww6wO1cji75+DaIKPC+chMultFGesvZVZXdzhsyY8IRKls7Q9b7CMp1aOlNGepfwB+5
-	66CuWE/tAlqIju8MWn0Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qQTF5WZfli7rPcYZbaNkhwAdHXBdGeF+RlCPiXbR+ZY=; b=lH7L+vJrbO3Fl/
+	PZtPBLFjA67aliBlC4qIi0oEonncOEpIzfrBy3EW9YrcLBYYqb//kLoBdREmbKlnRf7uVm4d0PSwH
+	l5P5T8qyVrrGRxYZ5mYZ8aGBtUtDv9IJm0MyCI/JPHTrA/qtNs9DQcY9KHo5Ew2fwhyc8QWtezImk
+	xGvYHsgmkKgiivsUuDbU2i+bL8HrQUh9y9tOJ7n4Un+KNEYj3kXSMdLEgJ/bjrAUy6/CZ52F+KgL/
+	3HIEc5ro09f+a5Xx11EQPIr1oceEMzmC3wopSKxbJTyfffpF/fI2OrmZfs9rq03f1Csr3yRsVsB21
+	BgtcDJEGBhAH10EY0btg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwOg1-00000008xQA-1Srs;
-	Mon, 15 Apr 2024 15:55:25 +0000
-Received: from mail-mw2nam12on20700.outbound.protection.outlook.com ([2a01:111:f403:200a::700] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1rwPXe-000000099Dj-1zAA;
+	Mon, 15 Apr 2024 16:50:50 +0000
+Received: from smtp46.i.mail.ru ([95.163.41.84])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwOfy-00000008xNN-11aW
+	id 1rwPXY-0000000997l-3qYw
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Apr 2024 15:55:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UqdkGYA63xV4ItL99S7Pd4Ru6o/KLG2l9v0LHBizdvm2H5pKF1QcegJ3hOvUjT08V3QT0uTkegiVxaA3RwKpMDgBtx3gb56LPpX2RHMMGF4+7qZtkj8tgCBgat7BMNcMMa4gglu1uZw6WZ6S5FrEn44LtAy7qVWjwq4QDJ4ZeZD4ErMpgmPZsxx92fJ0sgfsDNkduyoKW7CJm7/dIv5iE1OhOfbN8yV2ANkBnuPxUnJIP8Jp9I7Rjg+oMIPW36mS9xYqrcG39PFTLBFv9+jTuCVmdHK/6uYu1O/vOUKHACMtW4CExjxiqTc0j7mS2LZXPEhvMyPwy4yT2y0xsc/sbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v83WbzJJEHjU6dcw2vOeigLal5AjCY+gxayhBEaVdeg=;
- b=CPABANXIkw38+nRGZwKrBfCWZxzOYCLHySwRFzMxRttzfaIkhoendagIFhIKq7TTnMBoKbYALd1wvkNEepA2XuqZEosNVoWkBIPAexOBMtvTMGjYSX+44gc8gGCClzn2lCpChNPlORevpUVQnDH5fD2i1ZoLpVF21aO4Vpd+auGP4vuSNmaYu9TiSbseCY57ueYPpXWk2ICjsQ73K7jlHmMzTySsMJR6HrK5ew6jQgzAzUp7UPI9JfHjg9PizK7TtOjShMj5FjIpUtHFzV/3hoFMiS1hCsKJ+Gqi0g4TFWrRiVb8xjDucunuF1TXmvDts5PzxDO76oqjjhGFIEDGUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
- dkim=pass header.d=infinera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v83WbzJJEHjU6dcw2vOeigLal5AjCY+gxayhBEaVdeg=;
- b=t70d+E9RZxgolfWoAb8s4n842W4vj8utrvPuEb5e0wsK9fuqs1wRhVLYgDc6N2ZkY0vl26MY8kBMcuMQ6A6si/40ngCckhq3vmDxj+FHRKZ2PvWvlqNIgMtYlhgXUMtLgzYMBnWmwOEIIIC3CN1jds3GZFo2gNLm3fJYzmYChTTXiXiQPMwWzYGyKC7kvVe2wX0+aLXL8G87WswuHGJCLLrS+tAgYtYfZcgV3WTIC4OdnHbl1oRHhP6iDox33zZUdeWVj0frJU9zqqO8NKfQ1kPVi4gyZmZgn4PE8aCDyvz4lIhSeP8e+AdLQCcMg6qK5uR2Wjy5Ia3pGLvQa8pjpg==
-Received: from PH0PR10MB4615.namprd10.prod.outlook.com (2603:10b6:510:36::24)
- by CY8PR10MB6684.namprd10.prod.outlook.com (2603:10b6:930:93::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Mon, 15 Apr
- 2024 15:55:11 +0000
-Received: from PH0PR10MB4615.namprd10.prod.outlook.com
- ([fe80::24d1:393a:f0ee:5c7f]) by PH0PR10MB4615.namprd10.prod.outlook.com
- ([fe80::24d1:393a:f0ee:5c7f%6]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 15:55:10 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: spi-nor: excessive locking in spi_nor_erase()
-Thread-Topic: spi-nor: excessive locking in spi_nor_erase()
-Thread-Index: AQHaj01L6sSQ/XG/4Eyuk2wXNC2LlQ==
-Date: Mon, 15 Apr 2024 15:55:10 +0000
-Message-ID: <069251d381826e9bc8a59c49c39c393c2860a028.camel@infinera.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.50.4 
-autocrypt: addr=joakim.tjernlund@infinera.com; prefer-encrypt=mutual;
- keydata=mQENBFp0f28BCADPn4XzN2HEzkY4BZKE6/T/S4M/Qjlf01K6gmECJZi5LQgOt0jOUAdvsXVd8yKYeqCq+eWvlfrLU9OXPGoCqwj95P2YjMsttqaPBEAnf4XyBs67Snz2wHyBDONoRxGoyq2Ondy+TPicWEm0mh404h9EzKxRNxwrRyKhsjWoVeaucuybAiGbJvqQj0CLmuMCl4PUBYDmXFzt3yx0g54z8E9/8ON+z0J7yZbA0aftZAjFLv6nn0Th/2dpD8d3vWtkJw4yBjLX2KFvlzJfQqkd6RI4Cn1OP9sguXDob123dMiMk/5XbjXz+0C21QFxejxt3HGisvKes+8swplyni7KdiDtABEBAAG0MEpvYWtpbSBUamVybmx1bmQgPGpvYWtpbS50amVybmx1bmRAaW5maW5lcmEuY29tPokBVAQTAQgAPhYhBFtMG/jmfqy7x0aBp4VMQ6CbDpcaBQJadH9vAhsDBQkDwmcABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEIVMQ6CbDpcasFAH/j64dpHpjY55tVoUg5yK8hcmxS/buKQQP9H3e2DdHeYrK0qeQ97AXiWTh63UvzvEXchiKjua6kYhUUkDObaltmwkKgPv0qb9lP6yfFBzvllriS6LrdIMCOLgtnQW2x28m5mC1hYT08jlqEXluYDoj2dTll9HGMsqn0JkhRjBsuzTXq8VyJjjnNLpzsAlTOGEQoAi7SqtDHs9PSNyOAKH5jRjATdNbPAsTKuI1veJf7Zzyc98yG0ya43Hqal1scoa+9GJZXNQPRaMVkyxKGbEEncdtnQl9e/DUMH4SUQ5vbM/+U4WvkX5Cvc+KwI6JAm1PhrAaVHSkDNAU5LqUqEbbHY=
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=infinera.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR10MB4615:EE_|CY8PR10MB6684:EE_
-x-ms-office365-filtering-correlation-id: 06bbac45-c422-4ef9-43dc-08dc5d646e41
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BuZiwZrOdiNnDX7hi+Uuugm1JXQXpauH9if1NbGMFDFpw0uSp/dKAUII07VrfD/plFAjAYEbhVoNdSivge37IwxVpKpOCF2cV4RjtNvhljojAbhfHWZZoetkCOu/ldVHHRwhEuNOjCAENFXF+ph5FtD5mUhKMZBvt9FV4eoLunY/WLiTeHet5/amFQA2ei4fV1FFmS4NYqfmPO61lYKEL+ZBDM3lcaEBncu2UOnRnkkq70PWty8X3OeelzjtT/QVXt93jsAqYyGM+nXx09bSjrd5CKKyrDcENJCSJqIh3cxneW2s3/ZpPvXHuav3j+jvL+tTWIVe95phQpM7Qa87gZz+XEDrXZ6qCYO+5ujPnZLDwQn0UjSSgTF9N4S6VFS8+XG4blDVD7EiehvMT1NS15YZCDVlJuexUJ4RITc9aDfZoDfI6oXP6G8YzUZ9SU6O13jdMwWK5+9EoibJePCa2WITHHbyVAuaoB2rSMWHwUJloxrpGWnPWawhAb1YZ2gj7R4rvIjxICNoYrk7BLBfEKoDTBSoFwXiUvmD28fG9UBvsuWbfQlJaVB3S3E++jl63KOIsFciYOcqXq2eTeQMag7DnxiJXSy+CAqX81v7ECgkuXMrmidublErZNkjWawRDtJkkTVmDZactQow+Qjb3HvxkRyD6VFiCfT+jFbv5R29rGu8M3sFx5muGKtaU5yAfJtq1595Ao1loFcY/P4yylafFgnBgHHq8pbugzUzEZI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4615.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QnpnNklGT0FkcVlsSE1DZUdIN2RJaVNtQit1SzBuSTEzdlVZRzdCNFJZbFhy?=
- =?utf-8?B?djFCd0ZSRHluS2dOY21GK3FmYUI5VlRZcWd1eGhmRURZaXFCRlRVY3gxMjRE?=
- =?utf-8?B?bmFSY0ticDhTczJ2VC9iOW1TSDRRTTBZT3NXN1dQb25ucURBamxpRVlIZFcw?=
- =?utf-8?B?TGVhTXNkdXVqTFBkbXVpczhOZjYzVWJndU9HbUJoZ3U3NjNnbjAxb1lzWGdm?=
- =?utf-8?B?UzhTL0hpR0U2QXBoeTNrV0tGSkMzdmp3VWpQL2JiTW1ybzl5MjV3UmZYVmx5?=
- =?utf-8?B?QUdscG9lOWxUZkF2WUZjSjNwcTl3UnFhQ0dqUGNyTU5xVlNSays4b1JWSlJ4?=
- =?utf-8?B?VFoyUzNtOHV5c3RyUUU1am14YUJZclJ2VjhMS3hzUG00ZFh5ZlVSVTJ1MGly?=
- =?utf-8?B?Yi92RVVRYi95WFAxZ1JLVGs1cGFITTNFN0x5eXNvdFpPSkZuYytLeXQ1QWRy?=
- =?utf-8?B?SWMwZU5ETWZrbzV4ZkJNY1FvWmZ1azdTZDBsNEExaTFnQTNhc3k0S1hzaXJa?=
- =?utf-8?B?KzN0cVpQK3czYnZyMDlwYnFoV3RIOWhIWm82M1JwTmlsVytIYnJCeFF0Qjcw?=
- =?utf-8?B?OUdEY0FwTnRFQVc4SUNibjdlSjdIZEJ3UEVTTkwrSURobnJEdFZPMG5wcGdv?=
- =?utf-8?B?YWQ1SFpXbHBCWHZ6cHM5Y3p0Y2NZaHNFbGZkMEYxN0xFREhXQUJWT01NMmZD?=
- =?utf-8?B?SmN6UGN3WitQOStGU3VBUXhxUDRESC9lQmpkSEx4QUkzNE42NjRvVm9ObnRL?=
- =?utf-8?B?TGVNdDl6NVlkNWpURDdoWlhHazFrV05GRVNBUUE0Umc4Y0N3VWdSSWs1UmI2?=
- =?utf-8?B?MXVDWm02Y0pWM3BDZGxHcnM0QzJQMUtyWDdBYklWQnVpWEsyMGhnb0w1eml6?=
- =?utf-8?B?NkU1WDYzK0IwdGxrYkNvSTg0UTJnMC9qT29wamhITllGbExLS1FtbncyYW9Z?=
- =?utf-8?B?bEQ0bk1hWmpURHdpTERSUGtGb09xckJxcjBRemlJM3RNL3RqVWFsWkV3NlBJ?=
- =?utf-8?B?dUtHSkFwSkJQSTY0dUFmUGFjbjdPQlBsYzF5ekNuNHloaTI4cmRiS0ZUYnND?=
- =?utf-8?B?NE9sOGxDd2dzQ1RuQllDTzJPdjBKUDFDQnFzTzBrK3AyRzZIbUV5eEl0dVNN?=
- =?utf-8?B?V05ad0pOaTNkNGV3SHBKcXhtTmRHY1BlcityaHJ3MUh6M0VPZ3ZpYzM0YkhR?=
- =?utf-8?B?TTB0aFIwd3l1MWo3L1p2TlZvdis4UWM4anhkVGxIM3pPR0lJVWZpNWpCZUFR?=
- =?utf-8?B?L2VXRFdHT2pVeUJMRG5MWUEvZkFDZ2hKbnc3akpOWUd1dW5MMWVoa214U1RW?=
- =?utf-8?B?MVAxajd6YkkrOWgrVkdsMlliekhPVkttSnkyRkpyVk4vWXJDVndsMU0vTE81?=
- =?utf-8?B?T1NZYkE1YXdlSTI1RzZhZ1JmVnh2WjhpdGM5TmdKbDVRdDY2K0lKZXFlOWZB?=
- =?utf-8?B?RzdVMkl4SDFvNG4rdFhLdFg4TDhUaWxDdUxYcE45Q0VTaHBQSVVBQnRmMm82?=
- =?utf-8?B?VmRCWnAvTWN1Rks1OHp1aThyMFNXRVJPSllTdjg5VXBnMHcwNXpFNHVBdkVP?=
- =?utf-8?B?RjZuVUs5Q1FyV1RQVCt0dFU0RFpQOHRoVUxQTWJsSWZuTGhRQjI4NjErU1h6?=
- =?utf-8?B?bHhKRmlIN3VVMDBROW4ySFlXVzRKWnkzY016MG9ldVVBbWJRZnQ5NGhSdEds?=
- =?utf-8?B?aVVpaFplSDdQdVlENEFTczFTREJtbm1mbW5DelZpRnVxcG5TWFlnMkQ4aFBV?=
- =?utf-8?B?M3pudm5pSEJmcDRFNjkweklDT3NKTXdwa2pEWmJUcGdtZUh0SFpzbnVyY1cr?=
- =?utf-8?B?dU54cnNvUjdpRkdvYWMwV3hJQ1BmcUVMU3dDUnJPR1QzKzFkcEdkejNaSHJ3?=
- =?utf-8?B?TDF5UjVnNW9ob0pkK1Zsb3FsWEdYSjlaQ29FSjRSMVdlWWZ2TE5VWFVtZVI3?=
- =?utf-8?B?S1Erc2VIQnZjSk11WDV3RER6aTNqQncwaXJkcU5rbTdVK3BMRm8wYWhFeTJo?=
- =?utf-8?B?bWJXMHdCRmJ5TW1sQ1RmNzArVzIxK1RIUGZuSnJ3VzRPcTBobXhLRGF6L0s2?=
- =?utf-8?B?aUlrNGF1eW96d0JVOUw0ekRFUHIwUHFTbmJNWEZIbTdxRzhwMnB6aDJVeXBJ?=
- =?utf-8?Q?H9l8PmcawYMRCefJmKtbhhaMm?=
-Content-ID: <81022CB17CACB344A8D316B765274719@namprd10.prod.outlook.com>
+	Mon, 15 Apr 2024 16:50:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elkcl.ru;
+	s=mailru; h=Sender:Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To
+	:Cc:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
+	bh=fU4Jb+HjcUIRnkvmA6oZd00NQJEftaoLs9sEK5mizZM=; t=1713199831; x=1713289831; 
+	b=TjqeWsC3yMPABFPvzpQ0U2xlJ6iN+7y7V+mmbbekAb7s7Qxl1unP8OOHZTC+VYCNISYt0YGmZnT
+	SFc7rAXk1dBS0dCcN7KM7lSMm0AAhDFE0+VNthwLGp5n3spW4iKJI1HB+CL2VXGY5qihk68dz4SS9
+	TmkUzMNHHaq5YEDtChM=;
+Received: by smtp46.i.mail.ru with esmtpa (envelope-from <pub@elkcl.ru>)
+	id 1rwPXH-00000000gYc-2w35; Mon, 15 Apr 2024 19:50:28 +0300
+Message-ID: <74f2b16a-dd48-4306-b28b-ad5ba77d8bfe@elkcl.ru>
+Date: Mon, 15 Apr 2024 19:50:23 +0300
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4615.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06bbac45-c422-4ef9-43dc-08dc5d646e41
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 15:55:10.7051
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lJcWMYbN5Gj/+2a4XB57aXMSSQKCkiRDCqPEaqChlXBTYRBsRxJqqnsmf5fCN9mvnMTyjyMyms4pmjHHMG/fMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6684
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH] jffs2: prevent xattr node from overflowing the eraseblock
+To: Christian Brauner <brauner@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
+ <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ Fabian Frederick <fabf@skynet.be>, Nick Desaulniers
+ <ndesaulniers@google.com>, Wedson Almeida Filho <walmeida@microsoft.com>,
+ KaiGai Kohei <kaigai@ak.jp.nec.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <20240412155357.237803-1-dev@elkcl.ru>
+ <20240415-anspielen-gelyncht-d2f0efd6569e@brauner>
+From: Ilya Denisyev <dev@elkcl.ru>
+Content-Language: en-US
+In-Reply-To: <20240415-anspielen-gelyncht-d2f0efd6569e@brauner>
+Authentication-Results: smtp46.i.mail.ru; auth=pass smtp.auth=pub@elkcl.ru smtp.mailfrom=pub@elkcl.ru
+X-Mailru-Src: smtp
+X-4EC0790: 10
+X-7564579A: B8F34718100C35BD
+X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D31116567C8E3CFDFF0E1C6585A2586D0D182A05F538085040B179075AD4DF425F3DE06ABAFEAF6705DB7E7932B9893A00AA6517558154513EABAB3F2802300857
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE70A10A23A3B64B805EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637B24541F05F0BFC9F8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8E0CA407E709CDC0B2168C34F444F38000FFCE30886D58649CC7F00164DA146DAFE8445B8C89999728AA50765F7900637D0FEED2715E18529389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8062BEEFFB5F8EA3EF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C17119E5299B287EE03F1AB874ED890284AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C3F841116EA1ACDE45BA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF3D321E7403792E342EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE788761406820A3098731C566533BA786AA5CC5B56E945C8DA
+X-C1DE0DAB: 0D63561A33F958A5CF9135D71564AE835002B1117B3ED6968B55D18063B74FD2FB820E9FE7BD014C823CB91A9FED034534781492E4B8EEAD2609375A3A81E2DDBDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0ADBF74143AD284FC7177DD89D51EBB7742424CF958EAFF5D571004E42C50DC4CA955A7F0CF078B5EC49A30900B95165D34C1E32F4AD4B2486BFADDC33E07DB661C86FD219ECB6969EA373161ADC8ED28D39A2BF46180FC39FC1D7E09C32AA3244CE12BF5A6A205140D77DD89D51EBB7742D02FDEF4547DCF12EA455F16B58544A20C45C0626CB26EE85DA084F8E80FEBD339673C7991D68BBF964550E41902C4E4
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojOezlh5vAwsobvGokhiVzuQ==
+X-Mailru-Sender: 7971DA0162A9842A75A8A63AE98D4FF4B1116962D713EEE2F7A6B01B8567BB205D9139C693FB2D64A3EAC56F6A374A44CA0B8C118E355A7C54A42CAEBACFBF7EF55A8A299F926F354FD7C49A7833DCB4162D03413E14ADD05FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240415_085522_322878_61B9D162 
-X-CRM114-Status: UNSURE (   8.38  )
+X-CRM114-CacheID: sfid-20240415_095045_226029_6630EE62 
+X-CRM114-Status: UNSURE (   7.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -140,58 +83,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
-{
-...
-Lock here
-	ret = spi_nor_lock_and_prep(nor);
-	if (ret)
-		return ret;
-....
-Then we have:
-	} else if (spi_nor_has_uniform_erase(nor)) {
-		while (len) {
-			ret = spi_nor_write_enable(nor);
-			if (ret)
-				goto erase_err;
+On 15.04.2024 17:28, Christian Brauner wrote:
+> Can this overflow? I.e. can c->sector_size be smaller than c->cleanmarker_size?
 
-			ret = spi_nor_erase_sector(nor, addr);
-			if (ret)
-				goto erase_err;
+I'm pretty sure that it can't. As far as I know, c->sector_size is at 
+least the MTD eraseblock size[1] or even bigger in the case of 
+DataFlash[2]. The cleanmarker is either the size of the smallest JFFS2 
+node[3] (currently 12 bytes), 0 bytes for certain flash types (like 
+NAND, where it's stored out of band[4]) or apparently at most the MTD 
+writesize (which, as far as I understand, is not larger than the 
+erasesize) for Intel Sibley[5].
 
-			ret = spi_nor_wait_till_ready(nor);
-			if (ret)
-				goto erase_err;
+Considering that any JFFS2 node must fit inside one block and that the 
+cleanmarker is the smallest node there is (if it's even a proper node), 
+it shouldn't overflow, otherwise JFFS2 won't work in the first place.
 
-			addr += mtd->erasesize;
-			len -= mtd->erasesize;
-		}
 
-	/* erase multiple sectors */
-	} else {
-		ret = spi_nor_erase_multi_sectors(nor, addr, len);
-		if (ret)
-			goto erase_err;
-	}
-....
-erase_err:
-unlock here
-	spi_nor_unlock_and_unprep(nor);
+[1] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/fs.c#L539
 
-	return ret;
-}
+[2] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/wbuf.c#L1253
 
-So erase locks the flash for the whole erase op which can include many sectors and I don't see
-any Erase Suspend handling in spi-nor like the cfi_cmdset_0001/cfi_cmdset_0002 has.
+[3] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/fs.c#L557
 
-Locking can be a challenge but this seems over the top, anyone working/looking into improving this?
+[4] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/wbuf.c#L1190
 
-    Jocke
+[5] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/wbuf.c#L1296
+
+
+---
+
+Best regards,
+
+Ilya
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
