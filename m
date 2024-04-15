@@ -4,80 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81985C4345F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 06:33:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08E78C4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 10:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XprB/9Aw2T2CLZ6KcXJIaeIMIyJDP8wEgb2t/bXjRWM=; b=uKSXDkYILh/TRw
-	B33nvG52kLcW6e3m7dUp7ssGY4c5fWGB+nZg0KqbsZRIwM6plztgFk6+orztiENPERjHG1ulfOhHt
-	wZwqEAzw6IcV4B/vr+6HRu6g2BZW0Hm9DZUen32eQy4jaRjdfu4RXdzVUhWjsceD8c84BL5yfTzmn
-	CZN9VpVyRejFcuFwY4j1nLec9RNx7dy1d6JnOAsLFnbHYxYhUIgLETzQJW7TF596xE4lA+xu9/X1u
-	Y5J7EWvibtF2ke83+5zrBEZbGv6Q3JjhzdORKVpKnlpcIeM0HdhwA9qbqgfz5a4xRWiIkvobT/VhH
-	yT47F7L2I+ZmPSby0RBA==;
+	List-Owner; bh=JhYH03CXcFESn6nWsEaqPQIf6P0SZjov8kUIWTKtpds=; b=QMbOUXFBgnon9x
+	jMNTncxjKro8kza+x7DORnQU/9CKHlWcDPHBFoyZ1bL365frq2z+zV50CcyjQlyaJ4A8UlY5wj8u7
+	bBdHgHzlzYUsuJcZMQEEK6aipK0l0ibOJBK0zlepJed7L1KMOuUv47Gf0KCoQf2hsjmWD7LZe4H6G
+	cVQCVuw47+6T7uR3vWSR8/W21zIjYVf9RByhPv2b3Ssql/cv4MnGxt2CdJuKUlLRAzxyfMJsv6A2q
+	/DYDhVefcAFjmYduStNIZgGYP9QI9gIXHepFKkxhRXncK8TYLIxNdNFbO6P7L9P3TwxF5Q+kU4Vhr
+	2Rd9ByZGmqY6vmDLYH7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwFuG-00000007A33-3Ol2;
-	Mon, 15 Apr 2024 06:33:32 +0000
-Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
+	id 1rwJEv-00000007oQp-2aim;
+	Mon, 15 Apr 2024 10:07:05 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwFuD-00000007A2T-0jOU
+	id 1rwJEn-00000007oP9-2wvF
 	for linux-mtd@lists.infradead.org;
-	Mon, 15 Apr 2024 06:33:31 +0000
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so3748024a12.3
-        for <linux-mtd@lists.infradead.org>; Sun, 14 Apr 2024 23:33:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713162807; x=1713767607; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kcK6IuttindIK0ibbk1Eks/0diZZJiqcDdWxbvTVosU=;
-        b=BTR087scbGnGvX4avanI3ndg+FAHcAgp6vhEP2a6PYl7bZXWNrRyAwhCHEExOPw0+4
-         i3UmMIL/kqsHSN11lYiJpqwfpPUmI8eG76HOHsxaivIKyLcmLNqEFJDCcSMK+b53DQu4
-         T0Yk58VvuvZrQRRCBFT9wxFnNPKPFo+VC322WQQxtqJcOmvPkpTnvj1GxzbdW+uj8gq2
-         LDbJDhCVCGk8jmH0jtDEqitzUYiDm+5RLCew2UfZMPiPzzgB0nA9GtaAYqXiHt8G5RgY
-         9XhWK+bkuLzQ+JUMH4PECUgf9k3v4STQf977qu9o8cAB7VA6/YzKcQj7AsdGhgXm/Yjl
-         tanA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713162807; x=1713767607;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kcK6IuttindIK0ibbk1Eks/0diZZJiqcDdWxbvTVosU=;
-        b=A5Ed5C9qQ+fWXyh49JAtJ9JHOgcCz6hj9hfvsNyKVr9P2M5PnrajwGdcX3IB45Tz1o
-         UoGbgVbnL6xPo7b+lQEaYx47c5UcqvMaBRHJotwp7XjACHoEMlGQ71KXruh14IjpxFh1
-         wGjZ9TUA2uNC1kOt5xy3lXjcBR6STvIKpuTsHShYZ2F8grPNrzIcJ1D7y6+Dtxw6yAeE
-         G7BZZ8R9S6klNA1MuB6Z1werH7Wb7ni1nyt4qeJPEn0P4pCvU3IbazH5+8RDV4vt1YtZ
-         +QSo0we1jaK8Vx3s1PMFhcv8P7zGbY4cUTIl/yjouigG4bykmD6guZsBhAYby/E3Ikqd
-         k01A==
-X-Forwarded-Encrypted: i=1; AJvYcCVAqy2+waKa+SSU27fziQgtev9lKgFo7xqIs5h3cZtWQJyE4mHpSZtY7Ww+GihW95UM3yTfCgH/s3UskwZcNwnEKXKDT22+nio6HDnh1Q==
-X-Gm-Message-State: AOJu0Yyl++DXq2EOc1UzZln3U/MvZ3jbnLtyiawgj52LlUVH3yHqXWWE
-	oYt0TnDzKoklgvoiJbp/kWfmCZNhjPEeQr7aHlsSoIHciLhcbgm6eV8eY6yYPmI=
-X-Google-Smtp-Source: AGHT+IGvpMtw3rMInVwgGIn+k3i/tzXT0C81uzRme6mL6qXm7+7PCc3jMvdKuafc3RxvzZ5W19cVzQ==
-X-Received: by 2002:a50:8acf:0:b0:56b:fd17:3522 with SMTP id k15-20020a508acf000000b0056bfd173522mr5621220edk.14.1713162806745;
-        Sun, 14 Apr 2024 23:33:26 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id u5-20020aa7d985000000b0057000a2cb5bsm3225234eds.18.2024.04.14.23.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 23:33:26 -0700 (PDT)
-Date: Mon, 15 Apr 2024 09:33:22 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: linan666@huaweicloud.com
-Cc: richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-	houtao1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
-Message-ID: <79703e8b-ce3a-4407-9750-05f9202039d4@moroto.mountain>
-References: <20231208074629.1656356-1-linan666@huaweicloud.com>
+	Mon, 15 Apr 2024 10:07:02 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1AF5AC0002;
+	Mon, 15 Apr 2024 10:06:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713175614;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z2SwlIPSgTwFnJsuIKzMY9+vt/yHtdwscdSZB6mQOW8=;
+	b=iR6dQYvFkl5Svd/hCMCscoiZlfYcraDq8OBiHnTauIJ0XRAI2cupwPlWH5NMboUSWdK0/z
+	saMdNmofXIcn28F3ee9IPQM4aXW6iQwE3HzGwNuYHkTfxtk/Q5cbElz6rZvsulclcQkQpo
+	j9TlfTTM15Nz3dbfuHgxAjL2VQg3P1yC7Ww62QxHxoM4GEBfUFdtiqr12IBIhz9DrsHUFg
+	z6vkWPQb1WYWQ2hAHGenPQDm2+95cmIYW94c50hqbLfgE/EgkK1nhwXseCRYF2gXuzdF8v
+	RkEgyq2UzSppVxe+suPPqBP3zydrhPTL5PpWKBGMkQsbw/64QMVTYQx0F9z8Zg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: mchp23k256: drop unneeded MODULE_ALIAS
+Date: Mon, 15 Apr 2024 12:06:53 +0200
+Message-Id: <20240415100653.32058-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240414154943.127079-1-krzk@kernel.org>
+References: 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20231208074629.1656356-1-linan666@huaweicloud.com>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'6277967d872e229de53b0585ebc34c8172965492'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240414_233329_361514_8935688C 
-X-CRM114-Status: UNSURE (   9.53  )
+X-CRM114-CacheID: sfid-20240415_030658_031724_B3E4B01B 
+X-CRM114-Status: UNSURE (   6.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,23 +78,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 08, 2023 at 03:46:29PM +0800, linan666@huaweicloud.com wrote:
-> From: Li Nan <linan122@huawei.com>
+On Sun, 2024-04-14 at 15:49:43 UTC, Krzysztof Kozlowski wrote:
+> The ID table already has respective entry and MODULE_DEVICE_TABLE and
+> creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
+> the alias to be duplicated.
 > 
-> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
-> ubiblock_create(), but dev->gd has not been assigned yet at this time, and
-> 'gd' will not be put anymore. Fix it by putting 'gd' directly.
-> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-There is another invalid reference to dev->gd if blk_mq_alloc_tag_set()
-fails.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-	dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
-                            ^^^^^^^
-
-regards,
-dan carpenter
-
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
