@@ -4,63 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A797C4345F
-	for <linux-mtd@archiver.kernel.org>; Sun, 14 Apr 2024 15:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6304FC4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 01:32:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/qLscLbBnRnvkvQjcHF030sjxCj6Y45qDicn154WaLU=; b=IbbY7m41cEOFpK
-	ikio0SVNBegebyhK62eYWQOUS1EF1lXoTAXGtPfVpsppCqFzmfpXLZKZkKGeEhkW5+U/8bEU+4Lvl
-	GMLt9Fu9ft6eSydL4jmJXLi2ZBFJK6FswVegLvgcC2XhQiqo4d7FlyZB5I9PAAl/CPXqIjmtLgdFV
-	T2d1d5gIwtainFyuREVAD9clG2lKgW+AcU1mzBtPwGsFh4FAlutnP/IxakZmVY4nJ9wa9rCaiCCE0
-	PAZlm4gjoPUgVWOXsoFQ/jRt/37El7GuVLDndxTO0OBWdaGmimr2kRlMgv1RaZ25M8ghzt3knzjiz
-	5B7op2QRzZjj5+zSz06A==;
+	List-Owner; bh=1hxJ9uhhCbcyCISdAvyewY8YMKWYlPAdpq1CrxBSVGI=; b=QnyuVKoCQzWm2u
+	yNtnDbC2QlD7AqcRvlvUMgELN0NSmaeSW94pUYVeA4mmn8rL2HzX40Lu9jrFoshndZHyuNcwRcv3g
+	uI8kKCN2MC6P4LIV0t/qDJ+HR0nZ1+zFWNLcEW3K4+qrx71kn3Cwi2QtemswIBzc6I/nGowY1ZiJu
+	tX0lcMlC4v99UhF7Jb4SEhTXKv+DAL+rdT86A1vyUQaTJwvq4zLmEhMken0dWquqvFFs08r8M/ocH
+	WSClnNaerBcQoXDJTL1UNtY2ukqa5NsZZhZ0xJqJ3COHOqyfjniWE8uoGrzzcxazF5bEJoYe5LAag
+	RTUtclwHTrpe473iqOXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rw27e-00000005mnJ-0ZEn;
-	Sun, 14 Apr 2024 15:50:26 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rwBCs-00000006ftD-28h2;
+	Mon, 15 Apr 2024 01:32:26 +0000
+Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rw27V-00000005miW-2aXP
+	id 1rwBCn-00000006fpt-0JrB
 	for linux-mtd@lists.infradead.org;
-	Sun, 14 Apr 2024 15:50:20 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 77B92CE097B;
-	Sun, 14 Apr 2024 15:50:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E5AEC2BD11;
-	Sun, 14 Apr 2024 15:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713109811;
-	bh=1siY9G7c32/jXXjmIv0pzxqYCWLt7XapCGkShk13+8w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HJxUIf6opbRLmamr7yUQE1j/d4/xq8J4ynotLlQB/lNvpVgNgQMXj/XZ75l2Vsb8f
-	 a9zEEOCuQUXVz5uITy8NWUmgshUTipuwuaY+ruJq1egAoPoj4wsmJ8ngBj+2RTr7L1
-	 zPKeoLuHzhUghhA2mlVAakHzhCzOYwNZOkNO+y4Kx7mq7aiABzcYPpj/1UliDgog6y
-	 XY9DLmpPDbNy1zvANNyxLTdqRTrLXGf6nGDnzq79dBfwXNczneuGW0cXUB8xNEoAaF
-	 +aX45htApFHAvRnXBjOzlqeaY/C8GC2scd4aJfm+MgEedJhgv2anuBxVX6Ns2jSXsq
-	 l5ZLL8xWleCAQ==
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/2] eeprom: 93xx46: drop unneeded MODULE_ALIAS
-Date: Sun, 14 Apr 2024 17:49:57 +0200
-Message-Id: <20240414154957.127113-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240414154957.127113-1-krzk@kernel.org>
-References: <20240414154957.127113-1-krzk@kernel.org>
+	Mon, 15 Apr 2024 01:32:23 +0000
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VHqQd0Mv6z4f3lY6
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2024 09:31:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 973801A016E
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2024 09:31:57 +0800 (CST)
+Received: from [10.174.179.247] (unknown [10.174.179.247])
+	by APP2 (Coremail) with SMTP id Syh0CgAnmAuKgxxmNlDvKA--.9408S3;
+	Mon, 15 Apr 2024 09:31:56 +0800 (CST)
+Message-ID: <b8dbcc3d-f0ec-ba59-4ebc-01476029aa80@huaweicloud.com>
+Date: Mon, 15 Apr 2024 09:31:54 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
+To: Markus Elfring <Markus.Elfring@web.de>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Hou Tao <houtao1@huawei.com>,
+ Yang Erkun <yangerkun@huawei.com>, Yu Kuai <yukuai3@huawei.com>,
+ Zhang Yi <yi.zhang@huawei.com>
+References: <20231208074629.1656356-1-linan666@huaweicloud.com>
+ <22f324ce-552a-4f6a-b4e5-2d84a00010aa@web.de>
+From: Li Nan <linan666@huaweicloud.com>
+In-Reply-To: <22f324ce-552a-4f6a-b4e5-2d84a00010aa@web.de>
+X-CM-TRANSID: Syh0CgAnmAuKgxxmNlDvKA--.9408S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw15WFW8Cw4Uuw18CFy5twb_yoWxKFgEk3
+	48JF97J34xtF10yanaga1fArnxWay3J3Wjva48JwnIg34fWFnxGFZxGr98Z3Z3Xas5ZFWD
+	Cr43t34Fvw1SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbaAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
+	5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
+	AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3
+	Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+	UvcSsGvfC2KfnxnUUI43ZEXa7IU1VOJ7UUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240414_085018_348353_54EB3B10 
-X-CRM114-Status: UNSURE (   7.86  )
+X-CRM114-CacheID: sfid-20240414_183221_302367_CB0A60D1 
+X-CRM114-Status: UNSURE (   9.69  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,34 +86,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ID table already has respective entry and MODULE_DEVICE_TABLE and
-creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
-the alias to be duplicated.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/misc/eeprom/eeprom_93xx46.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index e78a76d74ff4..45c8ae0db8f9 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -578,5 +578,3 @@ MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
- MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
- MODULE_ALIAS("spi:93xx46");
--MODULE_ALIAS("spi:eeprom-93xx46");
--MODULE_ALIAS("spi:93lc46b");
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgrlnKggMjAyNC80LzE0IDE3OjE2LCBNYXJrdXMgRWxmcmluZyDlhpnpgZM6Cj4gQ2FuIGl0IGJl
+IG5pY2VyIHRvIHVzZSB0aGUgdGVybSDigJxtZW1vcnkgbGVha+KAnSBpbnN0ZWFkIG9mIOKAnG1l
+bWxlYWvigJ0KPiBpbiB0aGUgcGF0Y2ggc3ViamVjdD8KPiAKPiAKPiDigKYKPj4gJ2dkJyB3aWxs
+IG5vdCBiZSBwdXQgYW55bW9yZS4gRml4IGl0IGJ5IHB1dHRpbmcgJ2dkJyBkaXJlY3RseS4KPiAK
+PiBXb3VsZCB0aGUgZm9sbG93aW5nIHdvcmRpbmcgdmFyaWFudCBiZSBtb3JlIGRlc2lyYWJsZT8K
+PiAKPiAgICAg4oCmIGFueW1vcmUuCj4gICAgIFRodXMgcGFzcyB0aGUgdmFyaWFibGUg4oCcZ2Ti
+gJ0gdG8gYSBwdXRfZGlzaygpIGNhbGwgZGlyZWN0bHkuCj4gCj4gCj4gV291bGQgeW91IGxpa2Ug
+dG8gYWRkIHRoZSB0YWcg4oCcRml4ZXPigJ0gYWNjb3JkaW5nbHk/Cj4gCgpUaGUgcGF0Y2ggaGFz
+IGFscmVhZHkgYmVlbiBhcHBsaWVkOgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGlu
+dXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lz9pZD1hZGJmNGM0OTU0ZTMz
+ZTYyMzg5NzA1OGE2MTdjNTgzZDY1YTE3N2Y2CgpUaGFuayB5b3UgdmVyeSBtdWNoIGZvciB5b3Vy
+IHN1Z2dlc3Rpb24uIEkgd2lsbCBwYXkgYXR0ZW50aW9uIHRvIHRoZW0gaW4KZnV0dXJlIHBhdGNo
+ZXMuCgo+IFJlZ2FyZHMsCj4gTWFya3VzCj4gLgoKLS0gClRoYW5rcywKTmFuCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
