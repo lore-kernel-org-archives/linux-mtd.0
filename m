@@ -4,70 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B33B8C04FF9
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Apr 2024 21:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1083BC4345F
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Apr 2024 04:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YhFzfWCNT+iOZGPnYDy8D5TNAp11plIJmKQ0hWhYJXA=; b=hcRatwNI11vGEb
-	okN6TT/SwypH6Vf08tUOjkZz6SgId49zslrvt+WIg45Pwar9vD6EAiy77cHzbRl+xwA02jprAToE1
-	2d6slHv0453oqS/S7gBoVbWX7NnjCfNhHpUvURfjSDx5HsGh6/HFHh85K7W1zYikd3GmOK8wDGe5A
-	R4VlMNjOj9w35SjbdhCFJKSQw6CHqrM8n3RS8duv6eACdTrhRa4T8wOKkekjyi7FOo8LzbrCRLlDa
-	M+X7v1KUDyB8DJYehU+yzonkW30edwNN4o/PZt7s0JE8xMiY8326Cn3ZSsjHWDhvkOGhmxznYCNvn
-	JOZ1if4eFlhcZiO3UL3g==;
+	List-Owner; bh=9ozyIv/fqVcpYorOROVUnb20lLbzt36MyBINGZbSZFU=; b=drao2oPsFH8yGd
+	ABCbqIIuh0+fLY/sFy2qwRTfrRwR/mWf+2EVIcIFm8B5PMoLeg/laG0N8IY8Y/9UlxJNkTNGtafUv
+	/2SereqOoW6I3e1Ocmv0raZCg+cMnEEkrfJaNSSJk3uLMo4U1pQsHys4npmDiRgl3NgzSmD5jeaWd
+	EFAr1wIctFSSygiTknGQqQj2Vyvl0j42wMwgzVCdBCPh8f6VcJ3SAOGHHcWnlB5027KmhZKmNMIvH
+	uRE/ej9o9Ee1yM9Jo6/A97IW6CM1V71LtUjJ70JT6VIaQ2tLNlgYNfECSs02mhWRXZNxmSkaZFyaI
+	eUeyavqy8H6jRaaE7p2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwTrO-00000009xtn-1gb6;
-	Mon, 15 Apr 2024 21:27:30 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rwahn-0000000Aqzp-0Ryz;
+	Tue, 16 Apr 2024 04:46:03 +0000
+Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwTrD-00000009xq1-1Enk;
-	Mon, 15 Apr 2024 21:27:20 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 26F7DCE0A50;
-	Mon, 15 Apr 2024 21:27:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C9AC113CC;
-	Mon, 15 Apr 2024 21:27:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713216433;
-	bh=AokiBwLoenA+AuAq05ya7tY/KjTt6b5eb9h8P1KVQgY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hXy8eAQj0AlY6mfR43iRJ6wS/B4Mn29gxVYqTjINDIeY7vknv4DS3h4gc4pDRJLUq
-	 uB1iJajd7UgRZ7Da4E2BzwyONCB1jPrkpDxaA01jy7sQbz4WuQreTY69KXFrZtxtU7
-	 t1AwZARUlS1IyHp3/w+trYZ2JH5XrcDvDnKpvJlJKyKgMJTGyZV9ZxlQjEQ2pPgCGa
-	 FeY9zkIYRVhknFX9GyEYSvm3upQRX61YNLdl2jQz94icifluufllDDRCdHdT61HzE3
-	 osRcwcH6S3/KK/Bei8f6d22RF+Qa1WXy+tnX1cni3hG61xlz534rwNjrKLvaAO4KzF
-	 kJqePPDycI82Q==
-Date: Mon, 15 Apr 2024 16:27:10 -0500
-From: Rob Herring <robh@kernel.org>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-	oxffffaa@gmail.com, kernel@sberdevices.ru
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: amlogic,meson-nand: support
- fields for boot ROM code
-Message-ID: <20240415212710.GA105671-robh@kernel.org>
-References: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
- <20240410185409.2635622-2-avkrasnov@salutedevices.com>
+	id 1rwahj-0000000AqzF-2c8z
+	for linux-mtd@lists.infradead.org;
+	Tue, 16 Apr 2024 04:46:01 +0000
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so49053441fa.2
+        for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2024 21:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713242755; x=1713847555; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QKB+fts9+FSOSdB9lddQnPbhqERI/yOafNkOO10c0Jc=;
+        b=UcWpF5YRxqi1aOchV+B5QZiysrwcNhyvxX6PpesKyW43X8g7kGZh72lGEr3+bSSv/x
+         SdG2Vxe8RX527s/yj11dJCEtEBqvr86L/1NMBdCg3Jgfh817N6iBFRIsRfKv1lID/w2l
+         lF7KoDoG9yEEuicqpXsKR6BDS6gURXrpeMiiO201is9dUmV6SEjxRATDIvCZD8wCM0xB
+         fWoRrp8lxcvLKQivgGd+AjRWXgdcGmmdy1CL0NQoGuJO+1KEnYv1oTGJa6F2peCyBjTP
+         k1XFfftlSkdjyjDOEf/QHtweba6+jm/sl+h925IVz5+GIhqS6yqNcRbrcAalcKtB0LNW
+         I1ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713242755; x=1713847555;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QKB+fts9+FSOSdB9lddQnPbhqERI/yOafNkOO10c0Jc=;
+        b=RoW85KcWMKNxklodn4a7m8NhOBkblXnMYtNOVDcytqDJU9rdQOoW6LVCwibLVqYhg0
+         dvWNyQorg/oe4pICW2/dhLPDROiX59ScpytqhNMBkOpNPeTPcUnIVQI/djHQI+TSkQzL
+         yVf0d/GtTja/NPPc5mAX/0qF+8CmLgvPzZ1iBTwHjY7E/ypNZOnV0oFzR7LChC212+2K
+         NRptRBc4Zoxq3/0FMM+n9ZUQan2O2yEYlUrxTVeqzqXxwOsuiifCOswisx5ZUdBKvVxf
+         4N6YZSbnfN3LDU2o6pVJihtDlXOjQlxXJfNNzFECaj5FV5DUv+TkTt0U0qSC7GcQbIWa
+         UMOA==
+X-Forwarded-Encrypted: i=1; AJvYcCVsfjtY/DqUzy1AJId9TCp2vHdob80MIGJjvUNrkF2IGhgG7w3jKn5sVg5erfq4iC5nCg2v/+y5Jez9HoWHJPRBo1xzty+6cNAbDNVmCA==
+X-Gm-Message-State: AOJu0YxRN4+AKcBS3LiqOJuiPFojnViruIZY/SiuEY6JC9sA1U+cNEwS
+	4QLbXDrPJ3kElcGVIXESkDwPY7ARJxVWnieR41cTZTa1xccKIj7cJTJnNtQgIcY=
+X-Google-Smtp-Source: AGHT+IGVCkk+bcdkhwjYIyaGOu3n5uDE8fKeovKRVpv0oYfV/HU33/rsUXCy5MMVPlmhCYZr+JWPPg==
+X-Received: by 2002:a05:651c:546:b0:2d8:9537:6d37 with SMTP id q6-20020a05651c054600b002d895376d37mr9825139ljp.21.1713242755412;
+        Mon, 15 Apr 2024 21:45:55 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.35])
+        by smtp.gmail.com with ESMTPSA id he8-20020a05600c540800b00416a08788a5sm21697294wmb.27.2024.04.15.21.45.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 21:45:55 -0700 (PDT)
+Message-ID: <e3c9352a-a770-4952-b15f-bd307aa284c5@linaro.org>
+Date: Tue, 16 Apr 2024 05:45:53 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240410185409.2635622-2-avkrasnov@salutedevices.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/6] mtd: spi-nor: Remove support for Xilinx S3AN
+ flashes
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20240412134405.381832-1-mwalle@kernel.org>
+ <20240412134405.381832-2-mwalle@kernel.org>
+ <7b2fc5cb-d1ab-4e9d-b955-b88698322057@linaro.org>
+ <D0I76PPKBWF9.X2XFZAO5OE7S@kernel.org> <mafs0a5lu8x5y.fsf@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <mafs0a5lu8x5y.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240415_142719_766275_114162C9 
-X-CRM114-Status: GOOD (  16.95  )
+X-CRM114-CacheID: sfid-20240415_214559_892301_AFE663A4 
+X-CRM114-Status: UNSURE (   9.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,60 +100,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 10, 2024 at 09:54:08PM +0300, Arseniy Krasnov wrote:
-> Boot ROM code on Meson requires that some pages on NAND must be written
-> in special mode: "short" ECC mode where each block is 384 bytes and
-> scrambling mode is on. Such pages located with the specified interval
-> within specified offset. Both interval and offset are located in the
-> device tree and used by driver if 'nand-is-boot-medium' is set for
-> NAND chip.
-> 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> index 57b6957c8415..838ae1847ef0 100644
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -64,11 +64,25 @@ patternProperties:
->          items:
->            maximum: 0
->  
-> +      amlogic,boot-pages:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM.
 
-'the $driver drivers needs this information' is true for every property, 
-so it's redundant. You fail to say *what* the property represents or 
-defines.
 
-> +
-> +      amlogic,boot-page-step:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM (in pages).
+On 4/15/24 16:26, Pratyush Yadav wrote:
+> Also, I think we should let this patch cook in linux-next for some time
+> before merging to give people a chance to complain if we break
+> something. Since now there isn't much time left until the SPI NOR pull
+> request goes out (around 2 weeks I reckon), it would probably make sense
+> to merge it in the next cycle.
 
-Same issue here.
-
-> +
->      unevaluatedProperties: false
->  
->      dependencies:
->        nand-ecc-strength: [nand-ecc-step-size]
->        nand-ecc-step-size: [nand-ecc-strength]
-> +      amlogic,boot-pages: [nand-is-boot-medium, "amlogic,boot-page-step"]
-> +      amlogic,boot-page-step: [nand-is-boot-medium, "amlogic,boot-pages"]
->  
->  
->  required:
-> -- 
-> 2.35.0
-> 
+sounds good to me!
 
 ______________________________________________________
 Linux MTD discussion mailing list
