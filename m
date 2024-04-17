@@ -4,70 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93936C4345F
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2024 07:14:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 755BDC4345F
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2024 08:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=naS8wcIQSVbZDk2YoZKdmYGffN5CHicSEVhwnYrNYwo=; b=rMGxvyYNeiVIrz
-	PjsbKtiRkbyEbMRA1Yef2jSVGAtQoDYHlfEi3y+m4Qz8CKPcySr7ojK9+7YwJuKHKl32hT4mqvkKO
-	h0lqWk3PGldx9ER+JImJ9dTuc6UZSuAFA2Pat52nLwgxnBs/MZM+0o4Bzu8WPaVgVxwO4hriXvJVZ
-	Ye2YQPKST+ydzhdyfASjCFNQER16CNeH73mVPYT8XNmuMRENqctu/4phvCyEU2jnteM1LLPux2ciq
-	IzfrVBMGu1Cob98kTQC86LkzcoMCdzXFAHwiPU+fpYJ1KFLhfKc3NvvV85xMwizLFrS+kClr6AjB9
-	Ox9qkIKAZBW5WSSJCcNw==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=69Z7BDf+J8G71xi1yDA7/TjMMV4GQDDSCFA6wx7Kjv8=; b=x4e
+	Lx5YXiz/1kVlzDWQizFNALFRh4iSMJtoskJX9srUOWf3M2f4qYsZK/AG12hHBo+Vilq6TzDeSH7+X
+	f5nCHI0nPgmMgUi7ZirvaDST/Zkn9FbBqHuFhh8p+LlMeK6W9ILPKMnHMZzxrmWWkfpJvrSsUw3C0
+	5yaszv68zX5lMeSeNSmOQzqLOahCkdCGzDAmD2xlPJwTTGvw2hOmsj2LgkNS3Q/YkyDgFU1kDU0Zd
+	w/l1ocvYfZqCOU5HVb7oZr4Kvnf2JRsLaRmd3a0ldc2zBLpCXlC3B3sxgNJ0rnP6feg7/j92UMJ0Z
+	aS+Gv903D9UQHxc9KiBu5O2cIRdZDUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwzUf-0000000Ezal-1fXG;
-	Wed, 17 Apr 2024 07:14:09 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1rx14k-0000000FIKW-1Qbt;
+	Wed, 17 Apr 2024 08:55:30 +0000
+Received: from mail-io1-f72.google.com ([209.85.166.72])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwzUb-0000000EzXX-1AVB
+	id 1rx14g-0000000FIG0-1a5h
 	for linux-mtd@lists.infradead.org;
-	Wed, 17 Apr 2024 07:14:07 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1rwzUB-0003Vw-ES; Wed, 17 Apr 2024 09:13:39 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1rwzUA-00Ckam-Ab; Wed, 17 Apr 2024 09:13:38 +0200
-Received: from localhost ([::1] helo=dude02.red.stw.pengutronix.de)
-	by dude02.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1rwzUA-004DbZ-0b;
-	Wed, 17 Apr 2024 09:13:38 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Wed, 17 Apr 2024 09:13:29 +0200
-Subject: [PATCH 2/4] mtd: nand: mxc_nand: implement exec_op
+	Wed, 17 Apr 2024 08:55:28 +0000
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8a960bd9eso502157639f.0
+        for <linux-mtd@lists.infradead.org>; Wed, 17 Apr 2024 01:55:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713344117; x=1713948917;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zh1HrmkMpxkFxJvtc6D3gSemQqObtNz2dVEHVmtIHrA=;
+        b=lneCJUClTM7q/DfWoNeLcHXIciVXBgZGWR3ryv8XWhQMkQky68VMPMNXFH7tpnAZDD
+         yMK3+VCbMxGguudJLiQ5TrYR8kGB/sssvqPn4LkUbGLl4idUMs+0l0U+J9HJzFauhyHX
+         i6b859rpZPPaAXdeffac+djPVEYcnFx7oKlTPHmMtXOqQ5DkHDyOe//wAWqdFDDnsKVz
+         GzEpZO4M/kxxX8arDLzhqEdhis09n4yMlVrshqAnbGC3ZO7hQxnD9J3BFkNtxrW4u+h/
+         aeZlQP0j2PXpPCyPCktgBSdfHtFXGiT02mtGLzO4XS6TA7WbAswkTYXC+KH6Si3YNDat
+         8Lzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXfAcZ4nrI/xEpFHGhiCzsQ3opwhpvwc2eKvz4U5tCQnIlJIA4GsDq8dIdbiqs+ZpdKwWBg203yUP5+JydJ3DR7rGFfPYWDYqDpsZ1rcg==
+X-Gm-Message-State: AOJu0YwVGxZhnueY1gJErvoluYBgNJzHmNDoCvjE0Oz3Lz67j61MWUp8
+	x/T7390DTYQ20kWYfPd2UnmLYHykSYugCIfGiTbliGI1gkacYeovemt+56dYpWbw/atQ2hEE6pa
+	wsRjInYhbsr9LUQUOU3fvx31nvR+/MrGaSvnLg6ren5/qXxebrJvYxTI=
+X-Google-Smtp-Source: AGHT+IF/9ofp2ga6ea7Pm+pvk/+Urt7/h+0S2w+bfsKAYoQCWa5yhnc+eou4k2du+7yaWbUUDLDcDY5fvOCS1gtdAPZ35jfhWPOh
 MIME-Version: 1.0
-Message-Id: <20240417-mtd-nand-mxc-nand-exec-op-v1-2-d12564fe54e9@pengutronix.de>
-References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
-In-Reply-To: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Sascha Hauer <s.hauer@pengutronix.de>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713338018; l=17179;
- i=s.hauer@pengutronix.de; s=20230412; h=from:subject:message-id;
- bh=mhyVdZJDhRW00f5UtmFd6YKLacgNjSITB/zK1oRf0j8=;
- b=HXOSD7UL09Wsyc1G6K0W75K8ORwH75ndYLPXQPy7+WBabotQMYM+DMOUMwlRh0fekinB8rTqj
- e1N7keKtWDLB1LFLU2uVehKKLTrrbpsWfEOzkkgyhOxd2ou6/Vb0Dir
-X-Developer-Key: i=s.hauer@pengutronix.de; a=ed25519;
- pk=4kuc9ocmECiBJKWxYgqyhtZOHj5AWi7+d0n/UjhkwTg=
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: s.hauer@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-Received: by 2002:a05:6638:411c:b0:482:f1bb:d927 with SMTP id
+ ay28-20020a056638411c00b00482f1bbd927mr608210jab.3.1713344117000; Wed, 17 Apr
+ 2024 01:55:17 -0700 (PDT)
+Date: Wed, 17 Apr 2024 01:55:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000078df8c061647039e@google.com>
+Subject: [syzbot] [jffs2?] possible deadlock in jffs2_read_folio
+From: syzbot <syzbot+7cab786a93f00e566e5b@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240417_001405_971349_02D71D57 
-X-CRM114-Status: GOOD (  28.82  )
+X-CRM114-CacheID: sfid-20240417_015526_445630_C9932D83 
+X-CRM114-Status: UNSURE (   6.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,563 +78,225 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This converts the driver to the more modern exec_op which gets us rid
-of a bunch of legacy code. Tested on i.MX27 and i.MX25.
+Hello,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+syzbot found the following issue on:
+
+HEAD commit:    b5d2afe8745b Merge branches 'for-next/kbuild', 'for-next/m..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1321c40b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=560f5db1d0b3f6d0
+dashboard link: https://syzkaller.appspot.com/bug?extid=7cab786a93f00e566e5b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/50bff35e1638/disk-b5d2afe8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4eeaa73e7ed1/vmlinux-b5d2afe8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8e796b089aa9/Image-b5d2afe8.gz.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7cab786a93f00e566e5b@syzkaller.appspotmail.com
+
+jffs2: notice: (9998) jffs2_build_xattr_subsystem: complete building xattr subsystem, 1 of xdatum (0 unchecked, 0 orphan) and 2 of xref (0 dead, 0 orphan) found.
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc3-syzkaller-gb5d2afe8745b #0 Not tainted
+------------------------------------------------------
+syz-executor.4/9998 is trying to acquire lock:
+ffff0000efee8c18 (&f->sem){+.+.}-{3:3}, at: jffs2_read_folio+0x6c/0xd0 fs/jffs2/file.c:125
+
+but task is already holding lock:
+ffff0000efee8f68 (mapping.invalidate_lock#11){.+.+}-{3:3}, at: filemap_invalidate_lock_shared include/linux/fs.h:850 [inline]
+ffff0000efee8f68 (mapping.invalidate_lock#11){.+.+}-{3:3}, at: filemap_fault+0x6b4/0x1004 mm/filemap.c:3296
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (mapping.invalidate_lock#11){.+.+}-{3:3}:
+       down_read+0x58/0x2fc kernel/locking/rwsem.c:1526
+       filemap_invalidate_lock_shared include/linux/fs.h:850 [inline]
+       filemap_fault+0x6b4/0x1004 mm/filemap.c:3296
+       __do_fault+0x11c/0x374 mm/memory.c:4531
+       do_read_fault mm/memory.c:4894 [inline]
+       do_fault mm/memory.c:5024 [inline]
+       do_pte_missing mm/memory.c:3880 [inline]
+       handle_pte_fault mm/memory.c:5300 [inline]
+       __handle_mm_fault+0x36d0/0x5920 mm/memory.c:5441
+       handle_mm_fault+0x1e8/0x63c mm/memory.c:5606
+       __do_page_fault arch/arm64/mm/fault.c:505 [inline]
+       do_page_fault+0x550/0xaec arch/arm64/mm/fault.c:620
+       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:704
+       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:840
+       el1_abort+0x3c/0x5c arch/arm64/kernel/entry-common.c:432
+       el1h_64_sync_handler+0x60/0xac arch/arm64/kernel/entry-common.c:492
+       el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:593
+       __arch_copy_from_user+0xb8/0x230 arch/arm64/lib/copy_template.S:110
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:904 [inline]
+       __se_sys_ioctl fs/ioctl.c:890 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:890
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #1 (&mm->mmap_lock){++++}-{3:3}:
+       __might_fault+0xc4/0x124 mm/memory.c:6220
+       filldir64+0x2d4/0x948 fs/readdir.c:375
+       dir_emit include/linux/fs.h:3570 [inline]
+       jffs2_readdir+0x314/0x42c fs/jffs2/dir.c:152
+       iterate_dir+0x3f8/0x580 fs/readdir.c:110
+       __do_sys_getdents64 fs/readdir.c:409 [inline]
+       __se_sys_getdents64 fs/readdir.c:394 [inline]
+       __arm64_sys_getdents64+0x1c4/0x4a0 fs/readdir.c:394
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+-> #0 (&f->sem){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+       lock_acquire+0x248/0x73c kernel/locking/lockdep.c:5754
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+       __mutex_lock kernel/locking/mutex.c:752 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+       jffs2_read_folio+0x6c/0xd0 fs/jffs2/file.c:125
+       filemap_read_folio+0x14c/0x39c mm/filemap.c:2331
+       filemap_fault+0xab8/0x1004 mm/filemap.c:3381
+       __do_fault+0x11c/0x374 mm/memory.c:4531
+       do_read_fault mm/memory.c:4894 [inline]
+       do_fault mm/memory.c:5024 [inline]
+       do_pte_missing mm/memory.c:3880 [inline]
+       handle_pte_fault mm/memory.c:5300 [inline]
+       __handle_mm_fault+0x36d0/0x5920 mm/memory.c:5441
+       handle_mm_fault+0x1e8/0x63c mm/memory.c:5606
+       __do_page_fault arch/arm64/mm/fault.c:505 [inline]
+       do_page_fault+0x550/0xaec arch/arm64/mm/fault.c:620
+       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:704
+       do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:840
+       el1_abort+0x3c/0x5c arch/arm64/kernel/entry-common.c:432
+       el1h_64_sync_handler+0x60/0xac arch/arm64/kernel/entry-common.c:492
+       el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:593
+       __arch_copy_from_user+0xb8/0x230 arch/arm64/lib/copy_template.S:110
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:904 [inline]
+       __se_sys_ioctl fs/ioctl.c:890 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:890
+       __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+       el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+other info that might help us debug this:
+
+Chain exists of:
+  &f->sem --> &mm->mmap_lock --> mapping.invalidate_lock#11
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(mapping.invalidate_lock#11);
+                               lock(&mm->mmap_lock);
+                               lock(mapping.invalidate_lock#11);
+  lock(&f->sem);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.4/9998:
+ #0: ffff0000cd860190 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:990 [inline]
+ #0: ffff0000cd860190 (&dev->mutex){....}-{3:3}, at: usbdev_do_ioctl drivers/usb/core/devio.c:2608 [inline]
+ #0: ffff0000cd860190 (&dev->mutex){....}-{3:3}, at: usbdev_ioctl+0x24c/0x66e0 drivers/usb/core/devio.c:2824
+ #1: ffff0000efee8f68 (mapping.invalidate_lock#11){.+.+}-{3:3}, at: filemap_invalidate_lock_shared include/linux/fs.h:850 [inline]
+ #1: ffff0000efee8f68 (mapping.invalidate_lock#11){.+.+}-{3:3}, at: filemap_fault+0x6b4/0x1004 mm/filemap.c:3296
+
+stack backtrace:
+CPU: 1 PID: 9998 Comm: syz-executor.4 Not tainted 6.9.0-rc3-syzkaller-gb5d2afe8745b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:317
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:324
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:114
+ dump_stack+0x1c/0x28 lib/dump_stack.c:123
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x3384/0x763c kernel/locking/lockdep.c:5137
+ lock_acquire+0x248/0x73c kernel/locking/lockdep.c:5754
+ __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:608
+ __mutex_lock kernel/locking/mutex.c:752 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+ jffs2_read_folio+0x6c/0xd0 fs/jffs2/file.c:125
+ filemap_read_folio+0x14c/0x39c mm/filemap.c:2331
+ filemap_fault+0xab8/0x1004 mm/filemap.c:3381
+ __do_fault+0x11c/0x374 mm/memory.c:4531
+ do_read_fault mm/memory.c:4894 [inline]
+ do_fault mm/memory.c:5024 [inline]
+ do_pte_missing mm/memory.c:3880 [inline]
+ handle_pte_fault mm/memory.c:5300 [inline]
+ __handle_mm_fault+0x36d0/0x5920 mm/memory.c:5441
+ handle_mm_fault+0x1e8/0x63c mm/memory.c:5606
+ __do_page_fault arch/arm64/mm/fault.c:505 [inline]
+ do_page_fault+0x550/0xaec arch/arm64/mm/fault.c:620
+ do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:704
+ do_mem_abort+0x74/0x200 arch/arm64/mm/fault.c:840
+ el1_abort+0x3c/0x5c arch/arm64/kernel/entry-common.c:432
+ el1h_64_sync_handler+0x60/0xac arch/arm64/kernel/entry-common.c:492
+ el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:593
+ __arch_copy_from_user+0xb8/0x230 arch/arm64/lib/copy_template.S:110
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:904 [inline]
+ __se_sys_ioctl fs/ioctl.c:890 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:890
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+
 ---
- drivers/mtd/nand/raw/mxc_nand.c | 423 ++++++++++++----------------------------
- 1 file changed, 129 insertions(+), 294 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 3fe0b471f4a2d..fc70c65dea268 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -126,8 +126,7 @@ struct mxc_nand_host;
- 
- struct mxc_nand_devtype_data {
- 	void (*preset)(struct mtd_info *);
--	int (*read_page)(struct nand_chip *chip, void *buf, void *oob, bool ecc,
--			 int page);
-+	int (*read_page)(struct nand_chip *chip);
- 	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
- 	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
- 	void (*send_page)(struct mtd_info *, unsigned int);
-@@ -182,8 +181,7 @@ struct mxc_nand_host {
- 
- 	struct completion	op_completion;
- 
--	uint8_t			*data_buf;
--	unsigned int		buf_start;
-+	void			*data_buf;
- 
- 	const struct mxc_nand_devtype_data *devtype_data;
- };
-@@ -285,63 +283,6 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom, void *buf)
- 	}
- }
- 
--/*
-- * MXC NANDFC can only perform full page+spare or spare-only read/write.  When
-- * the upper layers perform a read/write buf operation, the saved column address
-- * is used to index into the full page. So usually this function is called with
-- * column == 0 (unless no column cycle is needed indicated by column == -1)
-- */
--static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
--{
--	struct nand_chip *nand_chip = mtd_to_nand(mtd);
--	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
--
--	/* Write out column address, if necessary */
--	if (column != -1) {
--		host->devtype_data->send_addr(host, column & 0xff,
--					      page_addr == -1);
--		if (mtd->writesize > 512)
--			/* another col addr cycle for 2k page */
--			host->devtype_data->send_addr(host,
--						      (column >> 8) & 0xff,
--						      false);
--	}
--
--	/* Write out page address, if necessary */
--	if (page_addr != -1) {
--		/* paddr_0 - p_addr_7 */
--		host->devtype_data->send_addr(host, (page_addr & 0xff), false);
--
--		if (mtd->writesize > 512) {
--			if (mtd->size >= 0x10000000) {
--				/* paddr_8 - paddr_15 */
--				host->devtype_data->send_addr(host,
--						(page_addr >> 8) & 0xff,
--						false);
--				host->devtype_data->send_addr(host,
--						(page_addr >> 16) & 0xff,
--						true);
--			} else
--				/* paddr_8 - paddr_15 */
--				host->devtype_data->send_addr(host,
--						(page_addr >> 8) & 0xff, true);
--		} else {
--			if (nand_chip->options & NAND_ROW_ADDR_3) {
--				/* paddr_8 - paddr_15 */
--				host->devtype_data->send_addr(host,
--						(page_addr >> 8) & 0xff,
--						false);
--				host->devtype_data->send_addr(host,
--						(page_addr >> 16) & 0xff,
--						true);
--			} else
--				/* paddr_8 - paddr_15 */
--				host->devtype_data->send_addr(host,
--						(page_addr >> 8) & 0xff, true);
--		}
--	}
--}
--
- static int check_int_v3(struct mxc_nand_host *host)
- {
- 	uint32_t tmp;
-@@ -763,18 +704,7 @@ static void mxc_nand_enable_hwecc_v3(struct nand_chip *chip, bool enable)
- 	writel(config2, NFC_V3_CONFIG2);
- }
- 
--/* This functions is used by upper layer to checks if device is ready */
--static int mxc_nand_dev_ready(struct nand_chip *chip)
--{
--	/*
--	 * NFC handles R/B internally. Therefore, this function
--	 * always returns status as ready.
--	 */
--	return 1;
--}
--
--static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
--				 bool ecc, int page)
-+static int mxc_nand_read_page_v1(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
-@@ -782,14 +712,6 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
- 	int i;
- 	unsigned int ecc_stats = 0;
- 
--	host->devtype_data->enable_hwecc(chip, ecc);
--
--	host->devtype_data->send_cmd(host, NAND_CMD_READ0, false);
--	mxc_do_addr_cycle(mtd, 0, page);
--
--	if (mtd->writesize > 512)
--		host->devtype_data->send_cmd(host, NAND_CMD_READSTART, true);
--
- 	no_subpages = mtd->writesize >> 9;
- 
- 	for (i = 0; i < no_subpages; i++) {
-@@ -807,78 +729,72 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
- 
- 	host->ecc_stats_v1 = ecc_stats;
- 
--	if (buf)
--		memcpy32_fromio(buf, host->main_area0, mtd->writesize);
--	if (oob)
--		copy_spare(mtd, true, oob);
--
- 	return 0;
- }
- 
--static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
--				    void *oob, bool ecc, int page)
-+static int mxc_nand_read_page_v2_v3(struct nand_chip *chip)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
- 
--	host->devtype_data->enable_hwecc(chip, ecc);
--
--	host->devtype_data->send_cmd(host, NAND_CMD_READ0, false);
--	mxc_do_addr_cycle(mtd, 0, page);
--
--	if (mtd->writesize > 512)
--		host->devtype_data->send_cmd(host,
--				NAND_CMD_READSTART, true);
--
- 	host->devtype_data->send_page(mtd, NFC_OUTPUT);
- 
--	if (buf)
--		memcpy32_fromio(buf, host->main_area0, mtd->writesize);
--	if (oob)
--		copy_spare(mtd, true, oob);
--
- 	return 0;
- }
- 
- static int mxc_nand_read_page(struct nand_chip *chip, uint8_t *buf,
- 			      int oob_required, int page)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
--	void *oob_buf;
- 	int ret;
- 
--	if (oob_required)
--		oob_buf = chip->oob_poi;
--	else
--		oob_buf = NULL;
-+	host->devtype_data->enable_hwecc(chip, true);
- 
--	ret = host->devtype_data->read_page(chip, buf, oob_buf, 1, page);
-+	ret = nand_read_page_op(chip, page, 0, buf, mtd->writesize);
- 	if (ret)
- 		return ret;
- 
-+	if (oob_required)
-+		copy_spare(mtd, true, chip->oob_poi);
-+
- 	return host->devtype_data->get_ecc_status(chip);
- }
- 
- static int mxc_nand_read_page_raw(struct nand_chip *chip, uint8_t *buf,
- 				  int oob_required, int page)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
--	void *oob_buf;
-+	int ret;
-+
-+	host->devtype_data->enable_hwecc(chip, false);
-+
-+	ret = nand_read_page_op(chip, page, 0, buf, mtd->writesize);
-+	if (ret)
-+		return ret;
- 
- 	if (oob_required)
--		oob_buf = chip->oob_poi;
--	else
--		oob_buf = NULL;
-+		copy_spare(mtd, true, chip->oob_poi);
- 
--	return host->devtype_data->read_page(chip, buf, oob_buf, 0, page);
-+	return 0;
- }
- 
- static int mxc_nand_read_oob(struct nand_chip *chip, int page)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	int ret;
-+
-+	host->devtype_data->enable_hwecc(chip, false);
-+
-+	ret = nand_read_page_op(chip, page, 0, host->data_buf, mtd->writesize);
-+	if (ret)
-+		return ret;
- 
--	return host->devtype_data->read_page(chip, NULL, chip->oob_poi, 0,
--					     page);
-+	copy_spare(mtd, true, chip->oob_poi);
-+
-+	return 0;
- }
- 
- static int mxc_nand_write_page(struct nand_chip *chip, const uint8_t *buf,
-@@ -889,17 +805,7 @@ static int mxc_nand_write_page(struct nand_chip *chip, const uint8_t *buf,
- 
- 	host->devtype_data->enable_hwecc(chip, ecc);
- 
--	host->devtype_data->send_cmd(host, NAND_CMD_SEQIN, false);
--	mxc_do_addr_cycle(mtd, 0, page);
--
--	memcpy32_toio(host->main_area0, buf, mtd->writesize);
--	copy_spare(mtd, false, chip->oob_poi);
--
--	host->devtype_data->send_page(mtd, NFC_INPUT);
--	host->devtype_data->send_cmd(host, NAND_CMD_PAGEPROG, true);
--	mxc_do_addr_cycle(mtd, 0, page);
--
--	return 0;
-+	return nand_prog_page_op(chip, page, 0, buf, mtd->writesize);
- }
- 
- static int mxc_nand_write_page_ecc(struct nand_chip *chip, const uint8_t *buf,
-@@ -924,66 +830,6 @@ static int mxc_nand_write_oob(struct nand_chip *chip, int page)
- 	return mxc_nand_write_page(chip, host->data_buf, false, page);
- }
- 
--static u_char mxc_nand_read_byte(struct nand_chip *nand_chip)
--{
--	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
--	uint8_t ret;
--
--	/* Check for status request */
--	if (host->status_request)
--		return host->devtype_data->get_dev_status(host) & 0xFF;
--
--	if (nand_chip->options & NAND_BUSWIDTH_16) {
--		/* only take the lower byte of each word */
--		ret = *(uint16_t *)(host->data_buf + host->buf_start);
--
--		host->buf_start += 2;
--	} else {
--		ret = *(uint8_t *)(host->data_buf + host->buf_start);
--		host->buf_start++;
--	}
--
--	dev_dbg(host->dev, "%s: ret=0x%hhx (start=%u)\n", __func__, ret, host->buf_start);
--	return ret;
--}
--
--/* Write data of length len to buffer buf. The data to be
-- * written on NAND Flash is first copied to RAMbuffer. After the Data Input
-- * Operation by the NFC, the data is written to NAND Flash */
--static void mxc_nand_write_buf(struct nand_chip *nand_chip, const u_char *buf,
--			       int len)
--{
--	struct mtd_info *mtd = nand_to_mtd(nand_chip);
--	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
--	u16 col = host->buf_start;
--	int n = mtd->oobsize + mtd->writesize - col;
--
--	n = min(n, len);
--
--	memcpy(host->data_buf + col, buf, n);
--
--	host->buf_start += n;
--}
--
--/* Read the data buffer from the NAND Flash. To read the data from NAND
-- * Flash first the data output cycle is initiated by the NFC, which copies
-- * the data to RAMbuffer. This data of length len is then copied to buffer buf.
-- */
--static void mxc_nand_read_buf(struct nand_chip *nand_chip, u_char *buf,
--			      int len)
--{
--	struct mtd_info *mtd = nand_to_mtd(nand_chip);
--	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
--	u16 col = host->buf_start;
--	int n = mtd->oobsize + mtd->writesize - col;
--
--	n = min(n, len);
--
--	memcpy(buf, host->data_buf + col, n);
--
--	host->buf_start += n;
--}
--
- /* This function is used by upper layer for select and
-  * deselect of the NAND chip */
- static void mxc_nand_select_chip_v1_v3(struct nand_chip *nand_chip, int chip)
-@@ -1360,107 +1206,6 @@ static void preset_v3(struct mtd_info *mtd)
- 	writel(0, NFC_V3_DELAY_LINE);
- }
- 
--/* Used by the upper layer to write command to NAND Flash for
-- * different operations to be carried out on NAND Flash */
--static void mxc_nand_command(struct nand_chip *nand_chip, unsigned command,
--			     int column, int page_addr)
--{
--	struct mtd_info *mtd = nand_to_mtd(nand_chip);
--	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
--
--	dev_dbg(host->dev, "mxc_nand_command (cmd = 0x%x, col = 0x%x, page = 0x%x)\n",
--	      command, column, page_addr);
--
--	/* Reset command state information */
--	host->status_request = false;
--
--	/* Command pre-processing step */
--	switch (command) {
--	case NAND_CMD_RESET:
--		host->devtype_data->preset(mtd);
--		host->devtype_data->send_cmd(host, command, false);
--		break;
--
--	case NAND_CMD_STATUS:
--		host->buf_start = 0;
--		host->status_request = true;
--
--		host->devtype_data->send_cmd(host, command, true);
--		WARN_ONCE(column != -1 || page_addr != -1,
--			  "Unexpected column/row value (cmd=%u, col=%d, row=%d)\n",
--			  command, column, page_addr);
--		mxc_do_addr_cycle(mtd, column, page_addr);
--		break;
--
--	case NAND_CMD_READID:
--		host->devtype_data->send_cmd(host, command, true);
--		mxc_do_addr_cycle(mtd, column, page_addr);
--		host->devtype_data->send_read_id(host);
--		host->buf_start = 0;
--		break;
--
--	case NAND_CMD_ERASE1:
--	case NAND_CMD_ERASE2:
--		host->devtype_data->send_cmd(host, command, false);
--		WARN_ONCE(column != -1,
--			  "Unexpected column value (cmd=%u, col=%d)\n",
--			  command, column);
--		mxc_do_addr_cycle(mtd, column, page_addr);
--
--		break;
--	case NAND_CMD_PARAM:
--		host->devtype_data->send_cmd(host, command, false);
--		mxc_do_addr_cycle(mtd, column, page_addr);
--		host->devtype_data->send_page(mtd, NFC_OUTPUT);
--		memcpy32_fromio(host->data_buf, host->main_area0, 512);
--		host->buf_start = 0;
--		break;
--	default:
--		WARN_ONCE(1, "Unimplemented command (cmd=%u)\n",
--			  command);
--		break;
--	}
--}
--
--static int mxc_nand_set_features(struct nand_chip *chip, int addr,
--				 u8 *subfeature_param)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct mxc_nand_host *host = nand_get_controller_data(chip);
--	int i;
--
--	host->buf_start = 0;
--
--	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
--		chip->legacy.write_byte(chip, subfeature_param[i]);
--
--	memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
--	host->devtype_data->send_cmd(host, NAND_CMD_SET_FEATURES, false);
--	mxc_do_addr_cycle(mtd, addr, -1);
--	host->devtype_data->send_page(mtd, NFC_INPUT);
--
--	return 0;
--}
--
--static int mxc_nand_get_features(struct nand_chip *chip, int addr,
--				 u8 *subfeature_param)
--{
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct mxc_nand_host *host = nand_get_controller_data(chip);
--	int i;
--
--	host->devtype_data->send_cmd(host, NAND_CMD_GET_FEATURES, false);
--	mxc_do_addr_cycle(mtd, addr, -1);
--	host->devtype_data->send_page(mtd, NFC_OUTPUT);
--	memcpy32_fromio(host->data_buf, host->main_area0, 512);
--	host->buf_start = 0;
--
--	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
--		*subfeature_param++ = chip->legacy.read_byte(chip);
--
--	return 0;
--}
--
- /*
-  * The generic flash bbt descriptors overlap with our ecc
-  * hardware, so define some i.MX specific ones.
-@@ -1717,9 +1462,106 @@ static int mxcnd_setup_interface(struct nand_chip *chip, int chipnr,
- 	return host->devtype_data->setup_interface(chip, chipnr, conf);
- }
- 
-+static int mxcnd_exec_op(struct nand_chip *chip,
-+			 const struct nand_operation *op,
-+			 bool check_only)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int i, j, buf_len;
-+	void *buf_read = NULL;
-+	const void *buf_write = NULL;
-+	const struct nand_op_instr *instr;
-+	bool readid = false;
-+	bool statusreq = false;
-+
-+	dev_dbg(host->dev, "%s: %d instructions\n", __func__, op->ninstrs);
-+
-+	for (i = 0; i < op->ninstrs; i++) {
-+		instr = &op->instrs[i];
-+
-+		nand_op_trace("  ", instr);
-+
-+		switch (instr->type) {
-+		case NAND_OP_WAITRDY_INSTR:
-+			/*
-+			 * NFC handles R/B internally. Therefore, this function
-+			 * always returns status as ready.
-+			 */
-+			break;
-+		case NAND_OP_CMD_INSTR:
-+			host->devtype_data->send_cmd(host, instr->ctx.cmd.opcode, true);
-+
-+			if (instr->ctx.cmd.opcode == NAND_CMD_READID)
-+				readid = true;
-+			if (instr->ctx.cmd.opcode == NAND_CMD_STATUS)
-+				statusreq = true;
-+
-+			break;
-+		case NAND_OP_ADDR_INSTR:
-+			for (j = 0; j < instr->ctx.addr.naddrs; j++) {
-+				bool islast = j == instr->ctx.addr.naddrs - 1;
-+				host->devtype_data->send_addr(host, instr->ctx.addr.addrs[j], islast);
-+			}
-+			break;
-+		case NAND_OP_DATA_OUT_INSTR:
-+			buf_write = instr->ctx.data.buf.out;
-+			buf_len = instr->ctx.data.len;
-+
-+			memcpy32_toio(host->main_area0, buf_write, buf_len);
-+			copy_spare(mtd, false, chip->oob_poi);
-+
-+			host->devtype_data->send_page(mtd, NFC_INPUT);
-+
-+			break;
-+		case NAND_OP_DATA_IN_INSTR:
-+
-+			buf_read = instr->ctx.data.buf.in;
-+			buf_len = instr->ctx.data.len;
-+
-+			if (readid) {
-+				host->devtype_data->send_read_id(host);
-+				readid = false;
-+
-+				memcpy32_fromio(host->data_buf, host->main_area0, buf_len * 2);
-+
-+				if (chip->options & NAND_BUSWIDTH_16) {
-+					u8 *bufr = buf_read;
-+					u16 *bufw = host->data_buf;
-+					for (j = 0; j < buf_len; j++)
-+						bufr[j] = bufw[j];
-+				} else {
-+					memcpy(buf_read, host->data_buf, buf_len);
-+				}
-+				break;
-+			}
-+
-+			if (statusreq) {
-+				*(u8*)buf_read = host->devtype_data->get_dev_status(host);
-+				statusreq = false;
-+				break;
-+			}
-+
-+			host->devtype_data->read_page(chip);
-+
-+			if (IS_ALIGNED(buf_len, 4)) {
-+				memcpy32_fromio(buf_read, host->main_area0, buf_len);
-+			} else {
-+				memcpy32_fromio(host->data_buf, host->main_area0, mtd->writesize);
-+				memcpy(buf_read, host->data_buf, buf_len);
-+			}
-+
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static const struct nand_controller_ops mxcnd_controller_ops = {
- 	.attach_chip = mxcnd_attach_chip,
- 	.setup_interface = mxcnd_setup_interface,
-+	.exec_op = mxcnd_exec_op,
- };
- 
- static int mxcnd_probe(struct platform_device *pdev)
-@@ -1752,13 +1594,6 @@ static int mxcnd_probe(struct platform_device *pdev)
- 
- 	nand_set_controller_data(this, host);
- 	nand_set_flash_node(this, pdev->dev.of_node);
--	this->legacy.dev_ready = mxc_nand_dev_ready;
--	this->legacy.cmdfunc = mxc_nand_command;
--	this->legacy.read_byte = mxc_nand_read_byte;
--	this->legacy.write_buf = mxc_nand_write_buf;
--	this->legacy.read_buf = mxc_nand_read_buf;
--	this->legacy.set_features = mxc_nand_set_features;
--	this->legacy.get_features = mxc_nand_get_features;
- 
- 	host->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(host->clk))
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-2.39.2
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
 ______________________________________________________
 Linux MTD discussion mailing list
