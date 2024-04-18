@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 345D8C4345F
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2024 09:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1CFFC4345F
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2024 09:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nwRpbEc8VTcaI0EQ77c4FEnWyZN+fhaZAjODTD5IG5s=; b=XLSgBLhVriBk4e
-	nyoeiKVDf6fgqO9ufKWnN99BCkrLa2LCouemrtpD72mAUE4JZDXqIjrwJ83GZhL97SqZgpKNAk4d3
-	v8wZ9RHrHCzQ70BYcwyfw/UD1zCRV6B1vsXdZWC02JB3P5ARkELaEAuiRHOeMa3/iGM6W7tpS6utE
-	uQxKF1G9uNB/eqo+IG2RtEI8NDaNm/ei1fCE8gDqNKD/tfQNmU/4wrbshPhh/4eAwtcKwMapw14vr
-	zWOGlPyhA9JwlxKhEoWE5L4iBE8moE6GYPAgDU4PmKeGqo8U8ayVdFChkrnALbmO8EbSno0lx4BD9
-	Xh5mcb4viUleBtZvfVTw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7EigxIUW0ea3l3yFZGSWrYsVpCH2iq8FER2Ja81sNDk=; b=W983T4C/gF7v5CEQhZ72XMe9rw
+	jQBONweJCdmcCkLU3odXcwOwBvGNMANEaBid5jxB2RglWYeNqD7382G+Y3Liyt/JukS1kijj7Bcx7
+	RKFpTAIROJLbXq0y8E3uq9gspv0eTL0CPkmW4aucH1uMqNQpX2r+glVA2g5wO3AVLJwEPuORBMGGg
+	2lfpNW3Dzfxe6t47iGp7irRCPycCYh/OX7Hcq4PQNrmybGTXT5AoMXCApx5AfL2QdwOUeYqaxr2Vj
+	/WbX56iiqHeZdAzsRJkwGs7v+doB6biv1/4i2Mh/bbU6WG8p7uchuAhvD0C7yIuIsCJWDRhNVe+HS
+	Npg2/mDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO8V-00000001d9y-3qKp;
-	Thu, 18 Apr 2024 09:32:55 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1rxOWg-00000001ify-0IL3;
+	Thu, 18 Apr 2024 09:57:54 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO8S-00000001d87-2OSz
+	id 1rxOWc-00000001ier-2zU4
 	for linux-mtd@lists.infradead.org;
-	Thu, 18 Apr 2024 09:32:54 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3BEFD1BF213;
-	Thu, 18 Apr 2024 09:32:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713432767;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hnS9+FdxrmLsw9rMPbFlN43vqt5uCeXtLqiiBEoSh30=;
-	b=Ms9IXqwjiQ5l+EkNE1vgQWTvVP35KHoPgVFEBgMmV800y18fc3DGmOKwuVNs9cF9+h1tuo
-	AlnZumBLSJMvscZODtx9c/ZuuOHBU8DYD94GRBELVp5MVAMNwj761/xQbaKbnb0dXRtFyp
-	YYGJ7SLo6EPqZbSWmqLss5mWR5QE5wHXQ8M4aD/KKvgeUKIbQ48z6bhAsLN1iZNO8dMnTq
-	K0oHZ9oto3u83m47CXvsbUAcR2SI5U9fNR0D6fRBDFYDdI6q4/SmW6gEMOGgx/gY6m5amP
-	Wpzz0ok4Va28Li30uYOyT2da+gjulRsI5jwy+jYpDleGicMausXUsd9BlJNbEw==
-Date: Thu, 18 Apr 2024 11:32:44 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
-Message-ID: <20240418113244.6e535d3f@xps-13>
-In-Reply-To: <ZiDCKGlG4MZ23Tqo@pengutronix.de>
-References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
-	<20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
-	<ZiDCKGlG4MZ23Tqo@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+	Thu, 18 Apr 2024 09:57:52 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id A17E4CE17B8;
+	Thu, 18 Apr 2024 09:57:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E80EC113CC;
+	Thu, 18 Apr 2024 09:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713434266;
+	bh=FnO7O/LAw4UD9EIKQqffhjBWzBF2/WXbWWY5ME5kBNo=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=EfTBw90L4vECvMjY6fgUro/CI+kPMmubR9J4aZTL+VlxjrFBHSjNeLq5nAVOEa0ys
+	 CtUi6dSbl0AK9PtokwZkqOxh+zO+z/wu0s5olR17H4MUgOXFcb+thnZSUngjFnPeiw
+	 P8wEIgmjVLS98FHbCqoGgK8CFB+fkeXNFuFwj4Y7hR7ZmG3RsLiv/IYaq4mNgCDhr/
+	 YFjebODwdUd4aaUikgkd0jPHz05PcC1a0O93ikHC0tD5aPjDUJXwCaoi8FTUbjm704
+	 T4l/M5LUEX2qPR1N/13nqkxeSqmHu1yxu4HnroeBAYq5JslItN+Muxt5zlh/CI5ikG
+	 ueLSdRJG7J42A==
+Date: Thu, 18 Apr 2024 11:57:27 +0200
+Message-Id: <D0N5QYQMX1X4.831Q9SEANU4S@kernel.org>
+Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
+ displaying deprecation message
+Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Pratyush Yadav" <pratyush@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240412134405.381832-1-mwalle@kernel.org>
+ <20240412134405.381832-7-mwalle@kernel.org> <mafs0jzkw6oq1.fsf@kernel.org>
+ <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org> <mafs0bk686l67.fsf@kernel.org>
+In-Reply-To: <mafs0bk686l67.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240418_023252_921348_CD4E61D2 
-X-CRM114-Status: GOOD (  26.53  )
+X-CRM114-CacheID: sfid-20240418_025751_137221_CAFCEEBE 
+X-CRM114-Status: GOOD (  32.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,45 +71,138 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6409965513138380194=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU2FzY2hhLAoKcy5oYXVlckBwZW5ndXRyb25peC5kZSB3cm90ZSBvbiBUaHUsIDE4IEFwciAy
-MDI0IDA4OjQ4OjA4ICswMjAwOgoKPiBPbiBXZWQsIEFwciAxNywgMjAyNCBhdCAwOToxMzozMUFN
-ICswMjAwLCBTYXNjaGEgSGF1ZXIgd3JvdGU6Cj4gPiBUaGUgTkFORCBjb3JlIGVuYWJsZWQgc3Vi
-cGFnZSByZWFkcyB3aGVuIGEgbGFyZ2VwYWdlIE5BTkQgaXMgdXNlZCB3aXRoCj4gPiBTT0ZUX0VD
-Qy4gVGhlIGkuTVggTkFORCBjb250cm9sbGVyIGRvZXNuJ3Qgc3VwcG9ydCBzdWJwYWdlIHJlYWRz
-LCBzbwo+ID4gY2xlYXIgdGhlIGZsYWcgYWdhaW4uCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IFNh
-c2NoYSBIYXVlciA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMv
-bXRkL25hbmQvcmF3L214Y19uYW5kLmMgfCAyICsrCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5z
-ZXJ0aW9ucygrKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhj
-X25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L214Y19uYW5kLmMKPiA+IGluZGV4IGY0NGMx
-MzBkY2ExOGQuLjE5YjQ2MjEwYmQxOTQgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9teGNfbmFuZC5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9teGNfbmFuZC5j
-Cj4gPiBAQCAtMTY2Nyw2ICsxNjY3LDggQEAgc3RhdGljIGludCBteGNuZF9wcm9iZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ID4gIAlpZiAoZXJyKQo+ID4gIAkJZ290byBlc2NhbjsK
-PiA+ICAKPiA+ICsJdGhpcy0+b3B0aW9ucyAmPSB+TkFORF9TVUJQQUdFX1JFQUQ7Cj4gPiArICAK
-PiAKPiBOYWgsIGl0IGRvZXNuJ3Qgd29yayBsaWtlIHRoaXMuIEl0IHR1cm5zIG91dCB0aGUgQkJU
-IGlzIHJlYWQgdXNpbmcKPiBzdWJwYWdlIHJlYWRzIGJlZm9yZSB3ZSBjYW4gZGlzYWJsZSB0aGVt
-IGhlcmUuCj4KPiBUaGlzIGlzIHRoZSBjb2RlIGluIG5hbmRfc2Nhbl90YWlsKCkgd2Ugc3R1bWJs
-ZSB1cG9uOgo+IAo+IAkvKiBMYXJnZSBwYWdlIE5BTkQgd2l0aCBTT0ZUX0VDQyBzaG91bGQgc3Vw
-cG9ydCBzdWJwYWdlIHJlYWRzICovCj4gCXN3aXRjaCAoZWNjLT5lbmdpbmVfdHlwZSkgewo+IAlj
-YXNlIE5BTkRfRUNDX0VOR0lORV9UWVBFX1NPRlQ6Cj4gCQlpZiAoY2hpcC0+cGFnZV9zaGlmdCA+
-IDkpCj4gCQkJY2hpcC0+b3B0aW9ucyB8PSBOQU5EX1NVQlBBR0VfUkVBRDsKPiAJCWJyZWFrOwo+
-IAo+IAlkZWZhdWx0Ogo+IAkJYnJlYWs7Cj4gCX0KPiAKPiBTbyB0aGUgY29kZSBhc3N1bWVzIHN1
-YnBhZ2UgcmVhZHMgYXJlIG9rIHdoZW4gU09GVF9FQ0MgaXMgaW4gdXNlLCB3aGljaAo+IGluIG15
-IGNhc2UgaXMgbm90IHRydWUuIEkgZ3Vlc3Mgc29tZSBkcml2ZXJzIGRlcGVuZCBvbiB0aGUKPiBO
-QU5EX1NVQlBBR0VfUkVBRCBiaXQgbWFnaWNhbGx5IGJlIHNldCwgc28gc2ltcGx5IHJlbW92aW5n
-IHRoaXMgY29kZSBpcwo+IGxpa2VseSBub3QgYW4gb3B0aW9uLiAgQW55IGlkZWFzIHdoYXQgdG8g
-ZG8/CgpDYW4geW91IGVsYWJvcmF0ZSB3aHkgc3VicGFnZSByZWFkcyBhcmUgbm90IGFuIG9wdGlv
-biBpbiB5b3VyCnNpdHVhdGlvbj8gV2hpbGUgc3VicGFnZSB3cml0ZXMgZGVwZW5kIG9uIGNoaXAg
-Y2FwYWJpbGl0aWVzLCByZWFkcwpob3dldmVyIHNob3VsZCBhbHdheXMgd29yazogaXQncyBqdXN0
-IHRoZSBjb250cm9sbGVyIHNlbGVjdGluZyB0aGUKY29sdW1uIHdoZXJlIHRvIHN0YXJ0IGFuZCB0
-aGVuIHJlYWRpbmcgbGVzcyBkYXRhIHRoYW4gaXQgY291bGQgZnJvbSB0aGUKTkFORCBjYWNoZS4g
-SXQncyBhIHZlcnkgYmFzaWMgTkFORCBjb250cm9sbGVyIGZlYXR1cmUsIGFuZCBJIHJlbWVtYmVy
-CnRoaXMgd2FzIHdvcmtpbmcgb24gZWcuIGFuIGkuTVgyNy4KClRoYW5rcywKTWlxdcOobAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+--===============6409965513138380194==
+Content-Type: multipart/signed;
+ boundary=d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+On Wed Apr 17, 2024 at 5:52 PM CEST, Pratyush Yadav wrote:
+> On Wed, Apr 17 2024, Michael Walle wrote:
+> > On Wed Apr 17, 2024 at 4:36 PM CEST, Pratyush Yadav wrote:
+> >> On Fri, Apr 12 2024, Michael Walle wrote:
+> >>
+> >> > SPI-NOR will automatically detect the attached flash device most of =
+the
+> >> > time. We cannot easily find out if boards are using a given flash.
+> >> > Therefore, introduce a (temporary) flag to display a message on boot=
+ if
+> >>
+> >> Why temporary? There will always be a need to deprecate one flash or
+> >> another. Might as well keep the flag around.
+> >
+> > Mh, yes I agree. That also means that this flag will not have any
+> > users (most) of the time (hopefully ;) ).
+> >
+> >> Also, this patch/series does not add any users of the deprecated flag.
+> >> If you have some flashes in mind, it would be good to add them to the
+> >> patch/series.
+> >
+> > This is just an RFC to see if whether you Tudor agree with me :) But
+> > I was about to add it to the evervision/cypress FRAMs.
+> >
+> >> I like the idea in general. Do you think we should also print a rough
+> >> date for the deprecation as well?
+> >
+> > Might make sense, any suggestions?
+>
+> How about a simple string to flash_info?
+
+Ahh, I was rather asking if you already had a time frame in mind.
+
+Besides that, should it be a date or a (future) kernel version?
+Roughly about two/three kernel releases?
+
+> /**
+>  * struct flash_info - SPI NOR flash_info entry.
+>  * @id:   pointer to struct spi_nor_id or NULL, which means "no ID" (most=
+ly
+>  *        older chips).
+>  * @name: (obsolete) the name of the flash. Do not set it for new additio=
+ns.
+>  * @size:           the size of the flash in bytes.
+>  * @deprecation_date: The date after which the support for this flash wil=
+l be
+>  *                    removed.
+>  * [...]
+>  */
+> struct flash_info {
+> 	char *name;
+> 	const struct spi_nor_id *id;
+> 	char *deprecation_date;
+> 	[...]
+> }
+>
+> And then in everspin.c for example,
+>
+> 	{
+> 		.name =3D "mr25h128",
+> 		.size =3D SZ_16K,
+> 		.sector_size =3D SZ_16K,
+> 		.addr_nbytes =3D 2,
+> 		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> 		.deprecation_date =3D "2025-01-01",
+> 	}, {
+>
+> And in spi_nor_get_flash_info() (changed some wording of the message):
+>
+> 	info =3D jinfo ?: info;
+>
+> 	if (info->deprecation_date)
+> 		pr_warn("Your board or device tree is using a SPI NOR flash (%s) with\n=
+"
+> 			"deprecated driver support. It can be removed in any kernel\n"
+> 			"version after %s. If you feel this shouldn't be the case, please cont=
+act\n"
+> 			"us at linux-mtd@lists.infradead.org\n", info->name,
+> 			info->deprecation_date);
+>
+> 	return info;
+>
+> This would also remove the need for SPI_NOR_DEPRECATED. But it would
+> make the flash_info 4 or 8 bytes larger.
+>
+> What do you think?
+
+Looks good.
+
+-michael
+
+--d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKcEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZiDuhxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gX8QF44ntSYBOpUzOrXjd2P5ZKnbh5928I1t36
+JOjjpnwFUrSpmcnSrtzO6TzpDxJSeYABgNW3ep68DS04VArOFpAeXNmTKp9a5w91
+TagrJH8qrhzlzkJ+eVJiDIkY8Q2Z0LNYyQ==
+=4HSX
+-----END PGP SIGNATURE-----
+
+--d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b--
+
+
+--===============6409965513138380194==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6409965513138380194==--
+
