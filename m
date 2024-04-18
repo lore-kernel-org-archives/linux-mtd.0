@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16E1DC4345F
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Apr 2024 18:13:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9724BC4345F
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2024 06:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=04n6n+xQeGtBNSclq/vrrYlBHeSLHccxSrvkmXw1tY4=; b=4JClVk9JErI4eQ
-	C7dbnDHLSWBNyhe8XEh0P3Cf/lMRk3Muqozd3hdPnrUNLGB2OQksYsseARnK/e5lQFc8ZWzHr9Sjw
-	eVLWNkIXhBfjCVwD2xd2Q5pvJLGDarEWr7oPXXfV+Ka6N0tAFBPOwkyEA9kROIL6ekZNtlY1pmj2f
-	1OMK/ZAcpuVpE8n7uN/f0hA53l6BfuzHOZ73KxUjPn5Ki3kmJelmE9VfhOkOl/OiTHAeMxuePZb6u
-	CrfkSCxYoQe1JO5q9fcRN9RHe36+OlaX5YpR1SyEoGuwvZ02A193nq4nR1AVli1oqhjJ4OBG/TR6c
-	OPk7EDUlyWocgjJA7dkQ==;
+	List-Owner; bh=ozltESnfhkIoVRpddnK4k4N/+DCKV2RIvQJ3z0ROW8I=; b=VjvjLDhx2H95Zv
+	oamKL2Thjsz6jPo0MPKixeMYNpk50GARZUzRlRLPVw1ZB8dsS070ZNvFf54Yyzx9KvJBnMqEza6N3
+	iH0gLpcKtxMm3a0J7a1DAJEp2H6wopL+HZ3kLrrAAV6bNfxvhPICax47/NSuZ58j+sSULUR1O9MGH
+	svWE76P5754QooJ4TS4l7agE2Dm3nVbeJLwreGcyeS/WjYaawFPFdcXLNbHokOpRSXSoxiWKSmdWS
+	3aZ56Mx+Ie1/auztZNdTKrVbaP01juAcpaOpP0xn08cCQZs45tB55RknEBW4EVckEI8/z+QBjcqFR
+	zX1W+FITXRLouOaePTIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rx9mM-0000000H9c3-2WeG;
-	Wed, 17 Apr 2024 18:13:06 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rxLZK-00000001Ayu-22FD;
+	Thu, 18 Apr 2024 06:48:26 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rx9mI-0000000H9Z3-0vwy;
-	Wed, 17 Apr 2024 18:13:04 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 7277FCE165A;
-	Wed, 17 Apr 2024 18:13:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64067C072AA;
-	Wed, 17 Apr 2024 18:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713377579;
-	bh=+QqZIxQ8UlhnEmUdS1HJUIQc1KETk2//TWOKmBcq1yw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qs7s/U33jKkoO6fTSIvWPF98FJeWk9FRSo6ex2nV7//YcFOfYLle3tz42e3PyHo1K
-	 73MkXeI4MUUnqClLeVpdd3+PSkjp15ZdoetD6qpr3MJDoYlwpN+56vi8B30gB7xOSY
-	 AeezwTtpZ7LNNa+uI8RGOHS1IgrPuBlQMDO8xsMSKFczvJ0NLdTTXRycx1QUxWZWY7
-	 Vd1Ep+JZ7mOPAZZlorwnJd3eKifgKbVJ0lzMibz1s1k2zBeJDjQ4VZEfetj3X8zM4Q
-	 4Eljj+C90Eu/ySegZOnD9uAWewMrVlDP8UtzYgerKppJOoaK8VWz5gsq27XoNUFkif
-	 Dv+9crxRcKLSQ==
-Date: Wed, 17 Apr 2024 13:12:57 -0500
-From: Rob Herring <robh@kernel.org>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: oxffffaa@gmail.com, Kevin Hilman <khilman@baylibre.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jerome Brunet <jbrunet@baylibre.com>, linux-mtd@lists.infradead.org,
-	Neil Armstrong <neil.armstrong@linaro.org>, kernel@sberdevices.ru,
-	linux-amlogic@lists.infradead.org,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: mtd: amlogic,meson-nand: support
- fields for boot ROM code
-Message-ID: <171337756287.2947093.12060380819740476831.robh@kernel.org>
-References: <20240416085101.740458-1-avkrasnov@salutedevices.com>
- <20240416085101.740458-2-avkrasnov@salutedevices.com>
+	id 1rxLZF-00000001Axj-0c3j
+	for linux-mtd@lists.infradead.org;
+	Thu, 18 Apr 2024 06:48:24 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rxLZ3-0001ho-Jz; Thu, 18 Apr 2024 08:48:09 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rxLZ2-00CvY7-CK; Thu, 18 Apr 2024 08:48:08 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rxLZ2-001SuO-0u;
+	Thu, 18 Apr 2024 08:48:08 +0200
+Date: Thu, 18 Apr 2024 08:48:08 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
+Message-ID: <ZiDCKGlG4MZ23Tqo@pengutronix.de>
+References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
+ <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240416085101.740458-2-avkrasnov@salutedevices.com>
+In-Reply-To: <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240417_111302_632977_F7BFB95D 
-X-CRM114-Status: GOOD (  11.24  )
+X-CRM114-CacheID: sfid-20240417_234821_306596_7DD2D123 
+X-CRM114-Status: GOOD (  25.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,23 +81,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Tue, 16 Apr 2024 11:51:00 +0300, Arseniy Krasnov wrote:
-> Boot ROM code on Meson requires that some pages on NAND must be written
-> in special mode: "short" ECC mode where each block is 384 bytes and
-> scrambling mode is on. Such pages located with the specified interval
-> within specified offset. Both interval and offset are located in the
-> device tree and used by driver if 'nand-is-boot-medium' is set for
-> NAND chip.
+On Wed, Apr 17, 2024 at 09:13:31AM +0200, Sascha Hauer wrote:
+> The NAND core enabled subpage reads when a largepage NAND is used with
+> SOFT_ECC. The i.MX NAND controller doesn't support subpage reads, so
+> clear the flag again.
 > 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
->  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  drivers/mtd/nand/raw/mxc_nand.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
+> diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+> index f44c130dca18d..19b46210bd194 100644
+> --- a/drivers/mtd/nand/raw/mxc_nand.c
+> +++ b/drivers/mtd/nand/raw/mxc_nand.c
+> @@ -1667,6 +1667,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto escan;
+>  
+> +	this->options &= ~NAND_SUBPAGE_READ;
+> +
 
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Nah, it doesn't work like this. It turns out the BBT is read using
+subpage reads before we can disable them here.
 
+This is the code in nand_scan_tail() we stumble upon:
+
+	/* Large page NAND with SOFT_ECC should support subpage reads */
+	switch (ecc->engine_type) {
+	case NAND_ECC_ENGINE_TYPE_SOFT:
+		if (chip->page_shift > 9)
+			chip->options |= NAND_SUBPAGE_READ;
+		break;
+
+	default:
+		break;
+	}
+
+So the code assumes subpage reads are ok when SOFT_ECC is in use, which
+in my case is not true. I guess some drivers depend on the
+NAND_SUBPAGE_READ bit magically be set, so simply removing this code is
+likely not an option.  Any ideas what to do?
+
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
