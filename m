@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31FF6C4345F
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 09:47:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08BD3C4345F
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 12:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hIQXGf9beBbskokg8vu2ybh0iYNY/ndjLdKfGWV41LA=; b=0huEPp2r1VIKmm
-	gm9yhNn7/Sk3Gw+ckCMYJYcKDArWeJQTkEWkhQCYUutTBuh1I4UoEdop97P/LBQWnvP+kfAOJIkPW
-	NaV+cyNZA19S4gfEZiyUHvTG5SYL+CRLy6aBiJrdVqpk4KiaxSvdfEE760VxZwGxiK/1O8/CjANJA
-	t7Fz69OxXpuYWYB/mIkUMQ+PzmjkT8gM3H5WuulPhXcgU2uiW0bErnt2CS0RzAY4cjjVLwSUIYc3t
-	BOJqAPq4pUviozURrYqjBkqJ/HvVj4mYe+3xEu0zdKyhctx3JMiWkWCZwQGG7GuoiCXQAL5n7zCWa
-	bAd2n5+jLauleHFdoflw==;
+	List-Owner; bh=3JC2K2QOcR4SNOnzqeyD/CKnd19IxHvfgZFE4O7qHqM=; b=NykKOrZgjAbVdx
+	q6NHNpYgfZaMobYa3JNsqXKAcMRMNzi5416HjJBoEfB0FCF9SaraWK9JwvhFOPhfZXhs/Td1RjVOl
+	2bMkp+J1D8uS65QuUD56sNzxEO+gw52/kizt0M8K3L7014C5hjBWwlmfPvWaRVBMr4MBUbPyusCJ4
+	isd2aI4ZihY/2nGRtUfDx86yKJENNVwV/fZ/emoo5K4Rx2u31Fom06yu6P40Re9+yFFx+gZdT4+BS
+	Y8rR1k98L6tcQZObdAHAeuLvVhw2x5jk9JmL2ymf+Agl+AIK6CXxWymQEvvMMbTZNT+DGJf6kYcnH
+	i5PXxCnhbYTxPjmdG/dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxkpt-000000058Q8-2pZu;
-	Fri, 19 Apr 2024 09:47:13 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1rxnog-00000005fal-4AcE;
+	Fri, 19 Apr 2024 12:58:11 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxkpq-000000058OI-0XFi
+	id 1rxnod-00000005fZX-1Zvf
 	for linux-mtd@lists.infradead.org;
-	Fri, 19 Apr 2024 09:47:12 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4AADA240006;
-	Fri, 19 Apr 2024 09:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713520023;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qhQrAdSZcWxsBtjX37nSDsEa6NJe/8r/3/BaJkYjzC4=;
-	b=WXBK3ije6R0FhQbdMrBFErkSb3k8NZ67kO495uQot5nnroYCpmMt1l8CZEakJR8AuVAUKl
-	kRzCJkkuDztiiaISHw8tCV0pYmmLQ+ERKZnKCxLPELDq2NLwdb2D3Tt1h3QMCnwUR8nNbU
-	mGp+lRX7YhVT5RNCAoZogu+oT9FFJPGJuWCHkjLtLTCjZ0L2AWJMEL5yB0tV1dSgdaLMpo
-	xBYCPGoQ/UWiW94fErvRP9hTKDucgOajnznqh4bnB4nCS+rJXCR19tE9wiE8nsLOhPrp8s
-	6o2K9uTMQqof0WfzCkF70dDCl/3fVzFYAH3vLIj0pVuBQwaFqFaG+1i9h+9eQg==
-Date: Fri, 19 Apr 2024 11:46:57 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
-Message-ID: <20240419114507.5d25d8cd@xps-13>
-In-Reply-To: <ZiEHUz3wicDJscGP@pengutronix.de>
-References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
-	<20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
-	<ZiDCKGlG4MZ23Tqo@pengutronix.de>
-	<20240418113244.6e535d3f@xps-13>
-	<ZiEHUz3wicDJscGP@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	Fri, 19 Apr 2024 12:58:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 50F09619CB;
+	Fri, 19 Apr 2024 12:58:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E21AC072AA;
+	Fri, 19 Apr 2024 12:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713531486;
+	bh=VtCpSSv1q1vUlkowZI681Tx4yNADj3YhfNQOnFknjCw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=O2fJ/51u1nqPIUMD2q5SvfzC63/J3KArVYhlBGdhRoElJMYaGqJBxkZkkFIOsbefv
+	 k6pX4z2aHyO68i/RL6PIkc1jMA68kcocxeGbW4Euvd1Q1hBCz46nwCqPDPiTRKyP5z
+	 iJTFno3jpqeeAA3krig/sGLPU2YLNB6CCB0+IA1QP3vfj801OsyVgHOQWjSTlP7JCA
+	 sfYC73BPzrYIXTVXZalnHxFHEHQ5070wEI5Gd2Iq46+KUcm/Iy5H2d9YM3x1dkKQz9
+	 epp6CnPWlPx1KzpTAMZufKu4MHRjUqn7thHI7XMC58ifyiBz/tGFJy/hUBEpEj3+w4
+	 ATXIy4K79pf2w==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: "pratyush@kernel.org" <pratyush@kernel.org>,
+  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: spi-nor: excessive locking in spi_nor_erase()
+In-Reply-To: <9bfdc3a36d4112dd6464f26ebe86e82e88cb6ccc.camel@infinera.com>
+	(Joakim Tjernlund's message of "Wed, 17 Apr 2024 12:54:36 +0000")
+References: <069251d381826e9bc8a59c49c39c393c2860a028.camel@infinera.com>
+	<mafs01q758g7z.fsf@kernel.org>
+	<8366e6def86b792f3e8b0077dd9aaa5cbecf27ff.camel@infinera.com>
+	<mafs0wmow6tyu.fsf@kernel.org>
+	<9bfdc3a36d4112dd6464f26ebe86e82e88cb6ccc.camel@infinera.com>
+Date: Fri, 19 Apr 2024 14:58:03 +0200
+Message-ID: <mafs0y1995x2c.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240419_024710_603366_19D861F7 
-X-CRM114-Status: GOOD (  49.61  )
+X-CRM114-CacheID: sfid-20240419_055807_486733_664962DA 
+X-CRM114-Status: GOOD (  19.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,97 +72,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgU2FzY2hhLAoKcy5oYXVlckBwZW5ndXRyb25peC5kZSB3cm90ZSBvbiBUaHUsIDE4IEFwciAy
-MDI0IDEzOjQzOjE1ICswMjAwOgoKPiBPbiBUaHUsIEFwciAxOCwgMjAyNCBhdCAxMTozMjo0NEFN
-ICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgU2FzY2hhLAo+ID4gCj4gPiBzLmhh
-dWVyQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIFRodSwgMTggQXByIDIwMjQgMDg6NDg6MDggKzAy
-MDA6Cj4gPiAgIAo+ID4gPiBPbiBXZWQsIEFwciAxNywgMjAyNCBhdCAwOToxMzozMUFNICswMjAw
-LCBTYXNjaGEgSGF1ZXIgd3JvdGU6ICAKPiA+ID4gPiBUaGUgTkFORCBjb3JlIGVuYWJsZWQgc3Vi
-cGFnZSByZWFkcyB3aGVuIGEgbGFyZ2VwYWdlIE5BTkQgaXMgdXNlZCB3aXRoCj4gPiA+ID4gU09G
-VF9FQ0MuIFRoZSBpLk1YIE5BTkQgY29udHJvbGxlciBkb2Vzbid0IHN1cHBvcnQgc3VicGFnZSBy
-ZWFkcywgc28KPiA+ID4gPiBjbGVhciB0aGUgZmxhZyBhZ2Fpbi4KPiA+ID4gPiAKPiA+ID4gPiBT
-aWduZWQtb2ZmLWJ5OiBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+Cj4gPiA+
-ID4gLS0tCj4gPiA+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L214Y19uYW5kLmMgfCAyICsrCj4g
-PiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKPiA+ID4gPiAKPiA+ID4gPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhjX25hbmQuYyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L214Y19uYW5kLmMKPiA+ID4gPiBpbmRleCBmNDRjMTMwZGNhMThkLi4xOWI0NjIx
-MGJkMTk0IDEwMDY0NAo+ID4gPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L214Y19uYW5k
-LmMKPiA+ID4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9teGNfbmFuZC5jCj4gPiA+ID4g
-QEAgLTE2NjcsNiArMTY2Nyw4IEBAIHN0YXRpYyBpbnQgbXhjbmRfcHJvYmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZSAqcGRldikKPiA+ID4gPiAgCWlmIChlcnIpCj4gPiA+ID4gIAkJZ290byBlc2Nh
-bjsKPiA+ID4gPiAgCj4gPiA+ID4gKwl0aGlzLT5vcHRpb25zICY9IH5OQU5EX1NVQlBBR0VfUkVB
-RDsKPiA+ID4gPiArICAgIAo+ID4gPiAKPiA+ID4gTmFoLCBpdCBkb2Vzbid0IHdvcmsgbGlrZSB0
-aGlzLiBJdCB0dXJucyBvdXQgdGhlIEJCVCBpcyByZWFkIHVzaW5nCj4gPiA+IHN1YnBhZ2UgcmVh
-ZHMgYmVmb3JlIHdlIGNhbiBkaXNhYmxlIHRoZW0gaGVyZS4KPiA+ID4KPiA+ID4gVGhpcyBpcyB0
-aGUgY29kZSBpbiBuYW5kX3NjYW5fdGFpbCgpIHdlIHN0dW1ibGUgdXBvbjoKPiA+ID4gCj4gPiA+
-IAkvKiBMYXJnZSBwYWdlIE5BTkQgd2l0aCBTT0ZUX0VDQyBzaG91bGQgc3VwcG9ydCBzdWJwYWdl
-IHJlYWRzICovCj4gPiA+IAlzd2l0Y2ggKGVjYy0+ZW5naW5lX3R5cGUpIHsKPiA+ID4gCWNhc2Ug
-TkFORF9FQ0NfRU5HSU5FX1RZUEVfU09GVDoKPiA+ID4gCQlpZiAoY2hpcC0+cGFnZV9zaGlmdCA+
-IDkpCj4gPiA+IAkJCWNoaXAtPm9wdGlvbnMgfD0gTkFORF9TVUJQQUdFX1JFQUQ7Cj4gPiA+IAkJ
-YnJlYWs7Cj4gPiA+IAo+ID4gPiAJZGVmYXVsdDoKPiA+ID4gCQlicmVhazsKPiA+ID4gCX0KPiA+
-ID4gCj4gPiA+IFNvIHRoZSBjb2RlIGFzc3VtZXMgc3VicGFnZSByZWFkcyBhcmUgb2sgd2hlbiBT
-T0ZUX0VDQyBpcyBpbiB1c2UsIHdoaWNoCj4gPiA+IGluIG15IGNhc2UgaXMgbm90IHRydWUuIEkg
-Z3Vlc3Mgc29tZSBkcml2ZXJzIGRlcGVuZCBvbiB0aGUKPiA+ID4gTkFORF9TVUJQQUdFX1JFQUQg
-Yml0IG1hZ2ljYWxseSBiZSBzZXQsIHNvIHNpbXBseSByZW1vdmluZyB0aGlzIGNvZGUgaXMKPiA+
-ID4gbGlrZWx5IG5vdCBhbiBvcHRpb24uICBBbnkgaWRlYXMgd2hhdCB0byBkbz8gIAo+ID4gCj4g
-PiBDYW4geW91IGVsYWJvcmF0ZSB3aHkgc3VicGFnZSByZWFkcyBhcmUgbm90IGFuIG9wdGlvbiBp
-biB5b3VyCj4gPiBzaXR1YXRpb24/IFdoaWxlIHN1YnBhZ2Ugd3JpdGVzIGRlcGVuZCBvbiBjaGlw
-IGNhcGFiaWxpdGllcywgcmVhZHMKPiA+IGhvd2V2ZXIgc2hvdWxkIGFsd2F5cyB3b3JrOiBpdCdz
-IGp1c3QgdGhlIGNvbnRyb2xsZXIgc2VsZWN0aW5nIHRoZQo+ID4gY29sdW1uIHdoZXJlIHRvIHN0
-YXJ0IGFuZCB0aGVuIHJlYWRpbmcgbGVzcyBkYXRhIHRoYW4gaXQgY291bGQgZnJvbSB0aGUKPiA+
-IE5BTkQgY2FjaGUuIEl0J3MgYSB2ZXJ5IGJhc2ljIE5BTkQgY29udHJvbGxlciBmZWF0dXJlLCBh
-bmQgSSByZW1lbWJlcgo+ID4gdGhpcyB3YXMgd29ya2luZyBvbiBlZy4gYW4gaS5NWDI3LiAgCj4g
-Cj4gT24gdGhlIGkuTVgyNyByZWFkaW5nIGEgZnVsbCAyayBwYWdlIG1lYW5zIHRyaWdnZXJpbmcg
-b25lIHJlYWQgb3BlcmF0aW9uCj4gcGVyIDUxMiBieXRlcyBpbiB0aGUgTkFORCBjb250cm9sbGVy
-LCBzbyBpdCB3b3VsZCBiZSBwb3NzaWJsZSB0byByZWFkCj4gc3VicGFnZXMgYnkgdHJpZ2dlcmlu
-ZyBvbmx5IG9uZSByZWFkIG9wZXJhdGlvbiBpbnN0ZWFkIG9mIGZvdXIgaW4gYSByb3cuCj4gCj4g
-VGhlIG5ld2VyIFNvQ3MgbGlrZSBpLk1YMjUgYWx3YXlzIHJlYWQgYSBmdWxsIHBhZ2Ugd2l0aCBh
-IHNpbmdsZSByZWFkCj4gb3BlcmF0aW9uLiBXZSBjb3VsZCBsaWtlbHkgcmVhZCBzdWJwYWdlcyBi
-eSB0ZW1wb3JhcmlseSBjb25maWd1cmluZyB0aGUKPiBjb250cm9sbGVyIGZvciBhIDUxMmIgcGFn
-ZSBzaXplIE5BTkQuCj4gCj4gSSBqdXN0IHJlYWxpemVkIHRoZSByZWFsIHByb2JsZW0gY29tZXMg
-d2l0aCByZWFkaW5nIHRoZSBPT0IgZGF0YS4gV2l0aAo+IHNvZnR3YXJlIEJDSCB0aGUgTkFORCBs
-YXllciBoYXJkY29kZXMgdGhlIHJlYWRfc3VicGFnZSBob29rIHRvCj4gbmFuZF9yZWFkX3N1YnBh
-Z2UoKSB3aGljaCB1c2VzIG5hbmRfY2hhbmdlX3JlYWRfY29sdW1uX29wKCkgdG8gcmVhZCB0aGUK
-PiBPT0IgZGF0YS4gVGhpcyB1c2VzIE5BTkRfQ01EX1JORE9VVCBhbmQgSSBoYXZlIG5vdyBpZGVh
-IGlmL2hvdyB0aGlzIGNhbgo+IGJlIGltcGxlbWVudGVkIGluIHRoZSBpLk1YIE5BTkQgZHJpdmVy
-LiBSaWdodCBub3cgdGhlIGNvbnRyb2xsZXIgaW5kZWVkCj4gcmVhZHMgc29tZSBkYXRhIGFuZCB0
-aGVuIHRoZSBTUkFNIGJ1ZmZlciByZWFsbHkgY29udGFpbnMgcGFydCBvZiB0aGUKPiBkZXNpcmVk
-IE9PQiBkYXRhLCBidXQgYWxzbyBwYXJ0IG9mIHRoZSB1c2VyIGRhdGEuCgpOQU5EX0NNRF9STkRP
-VVQgaXMgaW1wb3NzaWJsZSB0byBhdm9pZCwgdGhlIGNvbnRyb2xsZXIgc3VyZWx5IHN1cHBvcnRz
-Cml0IGFuZCB0aGUgY29yZSByZWFsbHkgbmVlZCBpdCBhbnl3YXkuIEJhc2ljYWxseSByZWFkaW5n
-IGZyb20gYSBOQU5ECmNoaXAgaXMgYSBtYXR0ZXIgb2Y6CgotIGFza2luZyB0aGUgY2hpcCB0byAi
-c2FtcGxlIiB0aGUgTkFORCBhcnJheSBhbmQgc3RvcmUgYSBmdWxsIHBhZ2UKICAoZGF0YStPT0Ip
-IGluIGl0cyBpbnRlcm5hbCBTUkFNCi0gd2FpdGluZyBmb3IgaXQgdG8gaGFwcGVuCi0gcmVhZGlu
-ZyBmcm9tIHRoZSBjaGlwJ3MgU1JBTSwgYW55IGxlbmd0aCwgYW55IG9mZnNldC4gT2YgY291cnNl
-IHRoZQogIG9mZnNldCBhbmQgbGVuZ3RoIG11c3QgYmUgYWxpZ25lZCB3aXRoIHRoZSBvbi1ob3N0
-IEVDQyBlbmdpbmUgd2hlbgogIHRoZXJlIGlzIG9uZS4KClN1cHBvcnRpbmcgdGhpcyBjb21tYW5k
-IG11c3QgYmUgc3RyYWlnaHRmb3J3YXJkIHdpdGggLT5leGVjX29wKCksIGhlcmUKaXMgdGhlIHBh
-dHRlcm46Cmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJp
-dmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMjTDE0NTQKCj4gV2UgbWlnaHQgb3ZlcmNvbWUg
-dGhlc2UgcHJvYmxlbXMsIGJ1dCBJIGFtIG5vdCBzdXJlIGlmIGl0J3Mgd29ydGggaXQuCj4gSXQn
-cyBhbmNpZW50IGhhcmR3YXJlIHRoYXQgSSBkb24ndCB3YW50IHRvIHB1dCB0b28gbXVjaCBlZmZv
-cnQgaW50byBhbmQKPiBJIGRvdWJ0IHRoYXQgdGhlIGVuZCByZXN1bHQgd291bGQgaGF2ZSBhIGJl
-dHRlciBwZXJmb3JtYW5jZSB3aGVuIHdlIG5lZWQKPiBvbmUgb3BlcmF0aW9uIHRvIHJlYWQgdGhl
-IHN1YnBhZ2UgYW5kIGFub3RoZXIgb25lIHRvIHJlYWQgT09CIGFzIG9wcG9zZWQKPiB0byBhbHdh
-eXMgcmVhZCBmdWxsIHBhZ2VzCgpXZSBzaGFsbCBkZWZpbml0ZWx5IGF2b2lkIGRvaW5nIHNldmVy
-YWwgcmVhZCBvcGVyYXRpb25zLCBidXQgYXMKZXhwbGFpbmVkIGFib3ZlLCB5b3UgY2FuIG1vdmUg
-dGhlIGludGVybmFsIFNSQU0gcG9pbnRlciBhdCBubyBjb3N0CigicmVhZCBmcm9tIGNhY2hlIiBj
-b21tYW5kcywgbmFtZWQgImNoYW5nZWRfY29sdW1uIiBpbiB0aGUgY29yZSksIHNvIHRoZQpwZXJm
-b3JtYW5jZSBwZW5hbHR5IGlzIG5lZ2xpZ2libGUuCgo+ICh3aGljaCBpcyBvbmx5IG9uZSBvcGVy
-YXRpb24sIHNheSBvbmUKPiBpbnRlcnJ1cHQgbGF0ZW5jeSwgZm9yIGVhY2ggcGFnZSByZWFkKS4K
-ClRoZSBteGNfbmFuZC5jIGRyaXZlciB3YXMgbXkgZmlyc3QgZXZlciBOQU5EIGNvbnRyb2xsZXIg
-ZHJpdmVyIHJlLXdyaXRlCmJ1dCB1bmZvcnR1bmF0ZWx5IHRoZSBxdWFsaXR5IHdhcyB0b28gYmFk
-IGZvciBiZWluZyBzdWJtaXR0ZWQgYXQgdGhhdAp0aW1lLiBNeSBnb2FsIHdhcyB0aGUgc2FtZSBh
-cyB5b3Vycy4gUXVpY2tseSBhZnRlciB3ZSBpbnRyb2R1Y2VkCi0+ZXhlY19vcCgpIGFuZCB0aHVz
-IG15IGluaXRpYWwgcmUtd29yayB3YXMgdHJhc2guIEJ1dCBJIHRoaW5rIGl0IHdhcwpjbG9zZSB0
-byB0aGlzOgpodHRwczovL2dpdGh1Yi5jb20vbWlxdWVscmF5bmFsL2xpbnV4L2Jsb2IvcGVyc28v
-bXRkLW5leHQvbXhjLW5hbmQvZHJpdmVycy9tdGQvbmFuZC9teGNfbmFuZF92Mi5jCk1heWJlIHRo
-YXQgY2FuIGhlbHAuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On Wed, Apr 17 2024, Joakim Tjernlund wrote:
+
+[...]
+>> (spanning multiple sectors) is running, other tasks do still get to run
+>> (since spi_nor_wait_till_ready() calls cond_resched()) but any task that
+>> tries to access the rootfs would have to freeze since the lock is held.
+>> 
+>> Dropping and re-acquiring the lock after erasing each sector or
+>> programming each page would let readers make progress in between. This
+>> shouldn't be too difficult to implement I reckon. You already mostly do
+>> it in your patch below.
+>
+> Yes, that is simple.
+>
+>> 
+>> Doing erase or program suspend would only make sense for flashes with
+>> larger sectors since even one sector erase would take a long time. For
+>> those, I suppose we could give reads priority over program or erase
+>> operations. When a read comes in, it suspends the erase, does the read,
+>> and then resumes it. This would be a little bit more complex to
+>> implement.
+>
+> Right, a bit harder but I think it is needed like cfi_cmdset_0001 do: suspend erase to do read/write
+> Don't think cfi_cmdset suspends writes, that seems overkill.
+>> 
+>> I would suggest you try the former first and see if it already gives you
+>> the results you need. From your patch below, it seems it does. So
+>> perhaps just cleaning it up and turning it onto a proper patch would do
+>> the job for you.
+>
+> Tests with my patch shows vastly improved responsivity but there is still some
+> way to go. Consider that an erase takes some 0.20-0.25 secs for us in best case in
+> which apps are blocked. We do get some complaints from the app taking too long to complete
+> some tasks during erase. 
+
+Send some patches to fix this then :-)
+
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
