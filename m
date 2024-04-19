@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE474C4345F
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 14:14:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9157DC05023
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 14:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GnUy/P1vYXtkNUz6ov5waM33lIV4/uSBm8iWrsCC3Tg=; b=uYb3WMmsKLNH6t
-	MjHKG2by+j7G8CKnq9VmAcEf+h0lwLSNaJ/JV6GwcFl8AxtAgVO/z2y+si0CuRSaEmVW8EnDzC5hY
-	02GFwgXXzNxhtJ9tlIkY7LqTUM+9QFRWwGsttIJccXvtY74CdX5kP4iKMYiHg0z5mqCM4XfHzD5LS
-	kXcCk4Hk9fIWUHk4Z5YJ2+XQWtuQewgHJch7nEEZ1HDWF6OM3XuKgZNDwW9QbbhvJOJHwPu583yqe
-	j5l6CrpGZBLOumnwTm+WqGeZ/sziGtdl6HQGb0koF3lUIONxaxvafuznqcY8pom5AH71+Yh0z62Jj
-	+1V3fckzHvgD0O8cyxHA==;
+	List-Owner; bh=WpQqb3/7INVVouH9K0j6AikfDanwyFX0oqS9vg5/brw=; b=u9+1zv0nxmB1zl
+	Aqw2nwo5m8E5cm16okho/sFzkmkzK9zZ7yfe0nucN+J4Zm4W1bvDJlkME3JpUg5DdfzoXZzEVOvq0
+	4tkA+aBc9LQpZ1yIa+hrMij8mu9kSXZrnMlIS7hDiYaY53Y5v6Awqv4JikgCEQl9rdSwa2vxX+msH
+	vAY7BOA/xXv39J+ufB+cJ3ttoKAPwsRxJwvnHIIcQ0DwngsblvlUXZZeyntOhlDcJe23PiTMCzj1/
+	gdgKJYHZr6pkE8NobGuJrKwrgKh0b0fS3Dagv5/1W2Qg2IiUUPwCMFuN0m6coBBkiwWLwtW7HBIsy
+	JvY0d6sA6b1EDaRUkO8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxp0O-00000005vQn-3GDX;
-	Fri, 19 Apr 2024 14:14:20 +0000
+	id 1rxp0Q-00000005vRh-3ZnC;
+	Fri, 19 Apr 2024 14:14:22 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxp0L-00000005vNw-04QE
+	id 1rxp0N-00000005vPK-0ll9
 	for linux-mtd@lists.infradead.org;
-	Fri, 19 Apr 2024 14:14:18 +0000
+	Fri, 19 Apr 2024 14:14:20 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4DAB461A14;
+	by dfw.source.kernel.org (Postfix) with ESMTP id AB82E61A10;
+	Fri, 19 Apr 2024 14:14:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CC9AC32781;
 	Fri, 19 Apr 2024 14:14:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 306E4C072AA;
-	Fri, 19 Apr 2024 14:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713536056;
-	bh=ZiwsAW01Vo0W/LIsWonJMl/TomhMGShCbtNy1DqFzs4=;
+	s=k20201202; t=1713536058;
+	bh=DcpeOrGfxSWHHh5NWmUVMOKN4dI/mFp5Fo+st0c8Sy8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=deB2QTFGDKjdUBu0Q5WELIIiO5HhzOLZ7gcHlleifYuS24mXPFrzTu6lN28JmfA6P
-	 TUw+RBKKNKoZXDLgx1b3cO3niv8S5w5oRwdiYxnVutR1KsBiwB++p5lrAjCBoBVv5J
-	 f2NedEPAOjVHxT3sj6Mz4ZXq/e607XsamxO/tOyCfvXcdPdp865QfErNOOiK9FMJhs
-	 l62w8gCcMeGFWu5/ppd7DvoLdJ8Ad770WMuSibO58MrpVOQkKtc3Yb9xB4P3x0MrgF
-	 WysT3sAN6Mw77z8sBKpZg10JcwOwOHjJSgzVpZ4dOdvaJaej7zgSficI9SDPzeMtuP
-	 +CQrT5SiL+KyA==
+	b=MPzfyqZDTSlEOuYwta3lRloXs0YAlULAlSge2d5/w+h0p9F1rCwkCaU190HAsPf+C
+	 1bH9QgzNb5p1UuLAU0OcQBe+loA2WqYp0w8xC0PZz0sHNHTHD7HPgrjctiWJSo9QRE
+	 q3Kg5AWBb2Yz9x1lHjsgBe0HHDtImeGhLN8uDxP9dS5UgR4Jzd+vyWlaS1WXuGEOM2
+	 T96DNEIJPb/mIk0fXd9u8ij9sH/wEVbkRJzo+LZuKm1uvn/UlRc4FzelePYoSkQ1Qn
+	 QLiJZg/NzE1Kii8Zoq+cRjuyAGzxdtEeJsWKH8NS+sTtLCWe2ESwfn8PUnDXiktuAF
+	 qRTUxxFd6VS7A==
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -52,16 +52,16 @@ Cc: Ricardo Ribalda <ribalda@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2 4/6] mtd: spi-nor: get rid of SPI_NOR_NO_FR
-Date: Fri, 19 Apr 2024 16:12:47 +0200
-Message-Id: <20240419141249.609534-5-mwalle@kernel.org>
+Subject: [PATCH v2 5/6] mtd: spi-nor: simplify spi_nor_get_flash_info()
+Date: Fri, 19 Apr 2024 16:12:48 +0200
+Message-Id: <20240419141249.609534-6-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240419141249.609534-1-mwalle@kernel.org>
 References: <20240419141249.609534-1-mwalle@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240419_071417_546349_A8F4B14C 
-X-CRM114-Status: GOOD (  16.69  )
+X-CRM114-CacheID: sfid-20240419_071419_371290_C947FF3D 
+X-CRM114-Status: GOOD (  15.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,115 +78,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The evervision FRAM devices are the only user of the NO_FR flag. Drop
-the global flag and instead use a manufacturer fixup for the evervision
-flashes to drop the fast read support.
+Rework spi_nor_get_flash_info() to make it look more straight forward
+and esp. don't return early. The latter is a preparation to check for
+deprecated flashes.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 ---
-Please note, that the fast read opcode will still be set in
-spi_nor_init_default_params(), but the selection of the read opcodes
-just depends on the mask.
-
-That is also something I want to fix soon: the opcodes can always
-be set and the drivers/SFDP will only set the mask. Opcodes then can be
-switched between 3b and 4b ones if necessary.
----
- drivers/mtd/spi-nor/core.c     |  9 ++-------
- drivers/mtd/spi-nor/core.h     |  2 --
- drivers/mtd/spi-nor/everspin.c | 19 +++++++++++++++----
- 3 files changed, 17 insertions(+), 13 deletions(-)
+ drivers/mtd/spi-nor/core.c | 45 ++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f4c0b5185818..4e2ae6642d4c 100644
+index 4e2ae6642d4c..8e4ae1317870 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2923,15 +2923,10 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
- 	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
- 	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
+@@ -3294,39 +3294,36 @@ static const struct flash_info *spi_nor_match_name(struct spi_nor *nor,
+ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+ 						       const char *name)
+ {
+-	const struct flash_info *info = NULL;
++	const struct flash_info *jinfo = NULL, *info = NULL;
  
--	if (!(info->flags & SPI_NOR_NO_FR)) {
--		/* Default to Fast Read for DT and non-DT platform devices. */
-+	/* Default to Fast Read for non-DT and enable it if requested by DT. */
-+	if (!np || of_property_read_bool(np, "m25p,fast-read"))
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
- 
--		/* Mask out Fast Read if not requested at DT instantiation. */
--		if (np && !of_property_read_bool(np, "m25p,fast-read"))
--			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
--	}
+ 	if (name)
+ 		info = spi_nor_match_name(nor, name);
+-	/* Try to auto-detect if chip name wasn't specified or not found */
+-	if (!info)
+-		return spi_nor_detect(nor);
 -
- 	/* (Fast) Read settings. */
- 	params->hwcaps.mask |= SNOR_HWCAPS_READ;
- 	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 497957b64906..1516b6d0dc37 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -470,7 +470,6 @@ struct spi_nor_id {
-  *                            Usually these will power-up in a write-protected
-  *                            state.
-  *   SPI_NOR_NO_ERASE:        no erase command needed.
-- *   SPI_NOR_NO_FR:           can't do fastread.
-  *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
-  *   SPI_NOR_RWW:             flash supports reads while write.
-  *
-@@ -519,7 +518,6 @@ struct flash_info {
- #define SPI_NOR_BP3_SR_BIT6		BIT(4)
- #define SPI_NOR_SWP_IS_VOLATILE		BIT(5)
- #define SPI_NOR_NO_ERASE		BIT(6)
--#define SPI_NOR_NO_FR			BIT(7)
- #define SPI_NOR_QUAD_PP			BIT(8)
- #define SPI_NOR_RWW			BIT(9)
- 
-diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
-index 5f321e24ae7d..0720a61947e7 100644
---- a/drivers/mtd/spi-nor/everspin.c
-+++ b/drivers/mtd/spi-nor/everspin.c
-@@ -14,28 +14,39 @@ static const struct flash_info everspin_nor_parts[] = {
- 		.size = SZ_16K,
- 		.sector_size = SZ_16K,
- 		.addr_nbytes = 2,
--		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-+		.flags = SPI_NOR_NO_ERASE,
- 	}, {
- 		.name = "mr25h256",
- 		.size = SZ_32K,
- 		.sector_size = SZ_32K,
- 		.addr_nbytes = 2,
--		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-+		.flags = SPI_NOR_NO_ERASE,
- 	}, {
- 		.name = "mr25h10",
- 		.size = SZ_128K,
- 		.sector_size = SZ_128K,
--		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-+		.flags = SPI_NOR_NO_ERASE,
- 	}, {
- 		.name = "mr25h40",
- 		.size = SZ_512K,
- 		.sector_size = SZ_512K,
--		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-+		.flags = SPI_NOR_NO_ERASE,
+ 	/*
+-	 * If caller has specified name of flash model that can normally be
+-	 * detected using JEDEC, let's verify it.
++	 * Auto-detect if chip name wasn't specified or not found, or the chip
++	 * has an ID. If the chip supposedly has an ID, we also do an
++	 * auto-detection to compare it later.
+ 	 */
+-	if (name && info->id) {
+-		const struct flash_info *jinfo;
+-
++	if (!info || info->id) {
+ 		jinfo = spi_nor_detect(nor);
+-		if (IS_ERR(jinfo)) {
++		if (IS_ERR(jinfo))
+ 			return jinfo;
+-		} else if (jinfo != info) {
+-			/*
+-			 * JEDEC knows better, so overwrite platform ID. We
+-			 * can't trust partitions any longer, but we'll let
+-			 * mtd apply them anyway, since some partitions may be
+-			 * marked read-only, and we don't want to loose that
+-			 * information, even if it's not 100% accurate.
+-			 */
+-			dev_warn(nor->dev, "found %s, expected %s\n",
+-				 jinfo->name, info->name);
+-			info = jinfo;
+-		}
  	}
- };
  
-+static void evervision_nor_default_init(struct spi_nor *nor)
-+{
-+	/* Everspin FRAMs don't support the fast read opcode. */
-+	nor->params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-+}
+-	return info;
++	/*
++	 * If caller has specified name of flash model that can normally be
++	 * detected using JEDEC, let's verify it.
++	 */
++	if (info && jinfo && jinfo != info)
++		dev_warn(nor->dev, "found %s, expected %s\n",
++			 jinfo->name, info->name);
 +
-+static const struct spi_nor_fixups evervision_nor_fixups = {
-+	.default_init = evervision_nor_default_init,
-+};
-+
- const struct spi_nor_manufacturer spi_nor_everspin = {
- 	.name = "everspin",
- 	.parts = everspin_nor_parts,
- 	.nparts = ARRAY_SIZE(everspin_nor_parts),
-+	.fixups = &evervision_nor_fixups,
- };
++	/*
++	 * JEDEC knows better, so overwrite platform ID. We can't trust
++	 * partitions any longer, but we'll let mtd apply them anyway, since
++	 * some partitions may be marked read-only, and we don't want to loose
++	 * that information, even if it's not 100% accurate.
++	 */
++	return jinfo ?: info;
+ }
+ 
+ static u32
 -- 
 2.39.2
 
