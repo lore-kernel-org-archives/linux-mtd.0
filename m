@@ -4,69 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0415CC4345F
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Apr 2024 11:43:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73C7EC04FFE
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 09:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+8CzigANenB5Cb0T9ad8mqq/Izqmt1P0fRJI3tYwQkM=; b=qRd3ST7Pew2zrd
-	lJrkqPWbC6oNt9e5gAdztA8DIqCw43HIeI9a86AsqQlkKDopxEYhOIVIwGyDKXPx8OEpiRwTrVxjU
-	BMggaxXrDc+n1ZtXtG60s5+vXjmgo6Pp9Vo+tstVt/COI2XkN5lzd9jYajrxRxDQpFQ3XryaM4f60
-	sT14ux8nhIznOPPdm/VHE08y5rPPxlbNPIn21h/gNVevdDcmGwHl+CRXgXwIubc4xa6vNxSgAzwBd
-	g299sWic0GWVy93CB0X6Qt1R5qVkU70+TRkWcJzuyVtgM/dB356GhvKACmIsGPcmCEAWah3SFcYUo
-	d5gP5QQFxXXrJUsyrmrA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kibbSIsSgPObItdlpy8jqXmZtVVFwm7rw1BTDuSRFVI=; b=DyqGKIfoLocKiq65aKlFutqdN0
+	bgg60YmO8UYENZ6orxIAhN6BngTLTQbBcWCv71XULL62xbRoAjjesB+U4nJBP4SYoZ9orEzRgjcYT
+	mddByDo4bZuzEppatRBuJNDe2+fDr+YZGxwfbRsaKLayIIAWUmE0HO5m4sXe/QNiKzS0XFiv+YGO/
+	edRM8BMOIfNONHCcl7fgvKYyB5pB6BxoOCARomNEzzsMkcXnZnRwbsf5wVO9MKs7MW7AP3qT7bFbl
+	FCdPbovAuxV2Bln/HjGfEo8RRTk0iypGjXSxqGwI7nTC3VBaOWe8QvF0ghuDXlLQmGDnMfW5NpClL
+	7iGL69cQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxQAo-000000022PJ-2MZN;
-	Thu, 18 Apr 2024 11:43:26 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1rxkRP-000000054XY-3qFI;
+	Fri, 19 Apr 2024 09:21:56 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxQAk-000000022Of-3sGl
+	id 1rxkRL-000000054Wf-22s6
 	for linux-mtd@lists.infradead.org;
-	Thu, 18 Apr 2024 11:43:24 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rxQAe-0005H2-QC; Thu, 18 Apr 2024 13:43:16 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rxQAd-00Cxsn-Kq; Thu, 18 Apr 2024 13:43:15 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rxQAd-001Wn2-1o;
-	Thu, 18 Apr 2024 13:43:15 +0200
-Date: Thu, 18 Apr 2024 13:43:15 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
-Message-ID: <ZiEHUz3wicDJscGP@pengutronix.de>
-References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
- <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
- <ZiDCKGlG4MZ23Tqo@pengutronix.de>
- <20240418113244.6e535d3f@xps-13>
+	Fri, 19 Apr 2024 09:21:53 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so2655882a12.2
+        for <linux-mtd@lists.infradead.org>; Fri, 19 Apr 2024 02:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1713518508; x=1714123308; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
+        b=BhfrYjpJlXF3UlNCbVWS5yKudEdoEHzmAPDUMbN/YpssXARMXzyepiE8kI1jdE9rzu
+         sldaQzMoNcWqNFnB8Tn28QOqXqcwAojOgy9bKVyzSIYSxWul0bdmXL6tbVV4aWYU94sp
+         jJeES3wtuf2s8PaynDTzv9A+nCcKU+LKudEr0EjQ/QNDAAsy+jGGRFMxRZQY0NGezIJd
+         m7GOfgQw8kKcCwH4vWRSmIOEAfwHgy9y7bRbeiY4IiASo9WDxPJR/E2P9/GAnQGJknya
+         Kk/SHYZ+IADCq/9Ar6tMn6b6W7WxTL2ePHpLy7Mk9lKPFQfEyD65Sc0peS7n7mj6OISg
+         V3uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713518508; x=1714123308;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
+        b=w99DLbBXqlZhEEbK/U7HkjJ4fsyuSsvte/3dfMVU7PzHA1VZ82H1q967Vn/d4Jot3/
+         faiHZUiC2s01sDxeC9SQQkI+WlnHfxDsCST/fCVVEq+oL73q+5Kjnaa5pSVfYPfWq2EJ
+         THvGN2YHQOmsio4r1k1yqVsqyeNI4uhtRrWUOXuds5jX89cm+ovNAXoVVB4PQZ1lT9pJ
+         J1M7U2i1kp95AVVv83ssC/Jv7phRZw1ytEISMuACgvtmpzWtUzp+LhJtveyT6fTWT8tj
+         uPNaFxXBQZ3GL7UasKMZjnq8sbxwr+hgtn2yaVLcLgUlvLbtIUpXW/bZOypC0JYqYr12
+         q5mA==
+X-Forwarded-Encrypted: i=1; AJvYcCU53jRn907mnnXxhFgGj9pz+DywuTUfZhwiBPjcz43aUVYzfddn9d7lk3X6U16qX/p+lVVpPVmHsfYOIAYzOYOxCyYN9mS/VNls/FYkFA==
+X-Gm-Message-State: AOJu0YwcYxpAYa1t6/kXp/tHBWUWL7MwzOJsYuQa+yBxmqujOlrfwT4w
+	n/Xm11dsoNBkf7uA9tnyY6/HoA4EWDJbpWDn/qHZXkYu8Byeatgn2lj9OTuHK8M=
+X-Google-Smtp-Source: AGHT+IEhcNOc1ewVoi6JIJWiqzcWwYpucqLqxxzi+GxPqgpKb6HJJmNfNJ4L8P0uoxvZP/Z5uUyFEw==
+X-Received: by 2002:a05:6402:703:b0:56d:c73f:98ab with SMTP id w3-20020a056402070300b0056dc73f98abmr907979edx.19.1713518507805;
+        Fri, 19 Apr 2024 02:21:47 -0700 (PDT)
+Received: from [192.168.178.86] (clnet-p04-043.ikbnet.co.at. [83.175.81.43])
+        by smtp.gmail.com with ESMTPSA id i8-20020aa7c9c8000000b00571c1df911fsm1366790edt.37.2024.04.19.02.21.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 02:21:47 -0700 (PDT)
+Message-ID: <45008373-c3f9-4587-841c-ddc391632baa@sigma-star.at>
+Date: Fri, 19 Apr 2024 11:21:46 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240418113244.6e535d3f@xps-13>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd-utils: fectest: Fix time formatting with
+ _TIME_BITS=64 on 32-bit system
+To: Zhihao Cheng <chengzhihao1@huawei.com>,
+ Ben Hutchings <ben.hutchings@mind.be>, linux-mtd@lists.infradead.org
+References: <20240412205505.1283783-1-ben.hutchings@mind.be>
+ <2fd9e121-133c-57b4-db16-3eb1860406e6@huawei.com>
+Content-Language: en-US
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+In-Reply-To: <2fd9e121-133c-57b4-db16-3eb1860406e6@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240418_044322_992072_5DCDF0B6 
-X-CRM114-Status: GOOD (  45.86  )
+X-CRM114-CacheID: sfid-20240419_022152_038378_A059C7C7 
+X-CRM114-Status: UNSURE (   3.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,95 +91,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 18, 2024 at 11:32:44AM +0200, Miquel Raynal wrote:
-> Hi Sascha,
-> 
-> s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 08:48:08 +0200:
-> 
-> > On Wed, Apr 17, 2024 at 09:13:31AM +0200, Sascha Hauer wrote:
-> > > The NAND core enabled subpage reads when a largepage NAND is used with
-> > > SOFT_ECC. The i.MX NAND controller doesn't support subpage reads, so
-> > > clear the flag again.
-> > > 
-> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > ---
-> > >  drivers/mtd/nand/raw/mxc_nand.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-> > > index f44c130dca18d..19b46210bd194 100644
-> > > --- a/drivers/mtd/nand/raw/mxc_nand.c
-> > > +++ b/drivers/mtd/nand/raw/mxc_nand.c
-> > > @@ -1667,6 +1667,8 @@ static int mxcnd_probe(struct platform_device *pdev)
-> > >  	if (err)
-> > >  		goto escan;
-> > >  
-> > > +	this->options &= ~NAND_SUBPAGE_READ;
-> > > +  
-> > 
-> > Nah, it doesn't work like this. It turns out the BBT is read using
-> > subpage reads before we can disable them here.
-> >
-> > This is the code in nand_scan_tail() we stumble upon:
-> > 
-> > 	/* Large page NAND with SOFT_ECC should support subpage reads */
-> > 	switch (ecc->engine_type) {
-> > 	case NAND_ECC_ENGINE_TYPE_SOFT:
-> > 		if (chip->page_shift > 9)
-> > 			chip->options |= NAND_SUBPAGE_READ;
-> > 		break;
-> > 
-> > 	default:
-> > 		break;
-> > 	}
-> > 
-> > So the code assumes subpage reads are ok when SOFT_ECC is in use, which
-> > in my case is not true. I guess some drivers depend on the
-> > NAND_SUBPAGE_READ bit magically be set, so simply removing this code is
-> > likely not an option.  Any ideas what to do?
-> 
-> Can you elaborate why subpage reads are not an option in your
-> situation? While subpage writes depend on chip capabilities, reads
-> however should always work: it's just the controller selecting the
-> column where to start and then reading less data than it could from the
-> NAND cache. It's a very basic NAND controller feature, and I remember
-> this was working on eg. an i.MX27.
+Applied to mtd-utils.git master.
 
-On the i.MX27 reading a full 2k page means triggering one read operation
-per 512 bytes in the NAND controller, so it would be possible to read
-subpages by triggering only one read operation instead of four in a row.
+Thanks,
 
-The newer SoCs like i.MX25 always read a full page with a single read
-operation. We could likely read subpages by temporarily configuring the
-controller for a 512b page size NAND.
-
-I just realized the real problem comes with reading the OOB data. With
-software BCH the NAND layer hardcodes the read_subpage hook to
-nand_read_subpage() which uses nand_change_read_column_op() to read the
-OOB data. This uses NAND_CMD_RNDOUT and I have now idea if/how this can
-be implemented in the i.MX NAND driver. Right now the controller indeed
-reads some data and then the SRAM buffer really contains part of the
-desired OOB data, but also part of the user data.
-
-We might overcome these problems, but I am not sure if it's worth it.
-It's ancient hardware that I don't want to put too much effort into and
-I doubt that the end result would have a better performance when we need
-one operation to read the subpage and another one to read OOB as opposed
-to always read full pages (which is only one operation, say one
-interrupt latency, for each page read).
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
