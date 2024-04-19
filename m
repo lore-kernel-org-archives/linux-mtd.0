@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB505C04FF6
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 14:14:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D854C071DB
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Apr 2024 14:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=crF93VxOT6/FNYwz3esGWRJBKOpwlP522JJVCpdc/Fg=; b=lSUk+2K7HsW29T
-	47lC5en1AozqFEr13tJRm15H3rryvMzO720cUz4Oiyp7EUZx4o5w8lYN67GrjiG/jMOYSoCdxNo7o
-	x8y57sm39oHu+hL2aKzyuMC3IF3Gv3qpiKG0/vzHxkK+QvaLefz1u4iEEKpr8/4diqoQ1sKniD7IV
-	7xYKi4OF0OKRXzriq6ItHXZ1JiNC7YK+kDsyrLRObHojmVnDaeK7//QIyEFJo5N+X8iYbQ2J6V1CB
-	A4bZlPj2+KD4HFlIGFOwal8inVqBbv8bjVXnb3DrlN6zA9mJ3nMJuO1pG4TmFFqFRKfi2Rt4GSbbC
-	ebOmqJ7ZHkUvAPvV3txQ==;
+	List-Owner; bh=Kdl+Ul+E3E13E5F4D55uQHrin+baBN8lP0AxsuFb9+k=; b=DoXOD/B/ka+T89
+	0Goj5Rp8HC1xz1zZqlLsMHG9BfE12ZzcSh927zO2VR570lvq5YQdttTyEj+mDa50MCIHe8xB2rH4S
+	UhtedSHbs1Pb2nEUKM48D5tOIJbCaZthFRJjvxwsWpzM1Wpnu+3qe01hBp+t20VZlYqkVzESYDbfS
+	xfr22lkvqb2HXWZIsQZI7X8CpMVkp7aMBJ3Fq+ebclWkbRC2+GPrPc6UJkQlei8WKWAPtIpBKwBFu
+	HOY5AKRQasJ8MryzdAD1WkNt7X3uwyRDtMgp+tPaBQT0TzlIbtW4CKI1c33+EbVJ7N2cOKjkDClqb
+	U/MsV67CJx8GnUlzvYbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxp0J-00000005vNG-13ZF;
-	Fri, 19 Apr 2024 14:14:15 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rxp0L-00000005vNx-2drt;
+	Fri, 19 Apr 2024 14:14:17 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxp0G-00000005vM8-19xi
+	id 1rxp0I-00000005vMu-2qth
 	for linux-mtd@lists.infradead.org;
-	Fri, 19 Apr 2024 14:14:13 +0000
+	Fri, 19 Apr 2024 14:14:15 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8A746619F7;
+	by dfw.source.kernel.org (Postfix) with ESMTP id E7D1261A01;
+	Fri, 19 Apr 2024 14:14:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8952C32781;
 	Fri, 19 Apr 2024 14:14:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D068C3277B;
-	Fri, 19 Apr 2024 14:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713536051;
-	bh=q2bEZDZIudIS1aIa7CkbX4KQHDVLkk1sD20tkmStKgo=;
+	s=k20201202; t=1713536053;
+	bh=eu/b53uh7QEFQfeTA4Rx9Iizk5MHoafPYkrPYXyPtFA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y+pT+XHEQrmbwKuAGXrFAPoJzygazswmUPaVuAbqaudckIJXqbZYvfTbyFkk/tWnP
-	 sG7XtRzpei9J+MiWAoFJoCMDckSUtF98Kks8UiEm5kM5UnBEAPiLjlGu6acnOkzU5P
-	 Irar+7lFMBF9zl1INSMepDc2gzARH4HUmPxxAR9X5yTv7ZzZ4Gi05GI0kYCHTeyKPs
-	 /7Tad5JZCoQOA96NHTFQ7/Onrk6cKv7JHDIrZ/K/Bn6RsdByTGVkMqEFUCXN6fSqmH
-	 pVfw7HWDHpxjWcSCyFxUO2wr6uURB9eIVppuGwtq+kOOxJP/vNhN/7AU8KZtrzn15G
-	 VhsTHZgHUAoXQ==
+	b=MLl+bryCZObdL2ffb7sW5QC3jVBjzYkzfaV9dUxZUtCxNHCLyq/LZq4ncPugboy8f
+	 Q/599cuOFSG/hNlOFcpLRuef+Y+BnQN+h6081JDRYArHG/PNrf77TJbHmeS7iNpqgt
+	 OtFilIw1nOaIXUUWkYVV/2/CrwaQirZY+UindCrZvR615g3ailFIL4OI1bwjHE4SlI
+	 u+LU3L2mHurSnrOeKUw98PeTXBAWpUxEnnGWYyoEyf1nGAn97NqVPwxiSVc4vWKNp0
+	 cL4MyRYyX4GImZ00GH+OXje7NmqporXnlw+EHjgybGdy7f0rm1FHQnx9qSCK7ESLb4
+	 YyOUUAxa9XG8Q==
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -52,16 +52,16 @@ Cc: Ricardo Ribalda <ribalda@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2 2/6] mtd: spi-nor: get rid of non-power-of-2 page size handling
-Date: Fri, 19 Apr 2024 16:12:45 +0200
-Message-Id: <20240419141249.609534-3-mwalle@kernel.org>
+Subject: [PATCH v2 3/6] mtd: spi-nor: remove .setup() callback
+Date: Fri, 19 Apr 2024 16:12:46 +0200
+Message-Id: <20240419141249.609534-4-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240419141249.609534-1-mwalle@kernel.org>
 References: <20240419141249.609534-1-mwalle@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240419_071412_434370_A4F2FE56 
-X-CRM114-Status: GOOD (  19.34  )
+X-CRM114-CacheID: sfid-20240419_071414_845703_47291F93 
+X-CRM114-Status: GOOD (  21.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,127 +78,164 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Xilinx flashes were the only user of the page sized that were no
-power of 2. Support for them were dropped, thus we can also get rid of
-the special page size handling for it.
+With the removal of the Xilinx flashes, there is no more flash driver
+using that hook. The original intention was to let the driver configure
+special requirements like page size an opcodes.  This is already
+possible by other means and it is unlikely a flash will overwrite the
+(more or less complex) setup function.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
-Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c | 41 ++++++++++----------------------------
- drivers/mtd/spi-nor/core.h |  4 ----
- 2 files changed, 11 insertions(+), 34 deletions(-)
+ drivers/mtd/spi-nor/core.c | 105 ++++++++++++++++---------------------
+ drivers/mtd/spi-nor/core.h |   5 --
+ 2 files changed, 45 insertions(+), 65 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index cbe5f92eb0af..31dfdbf96765 100644
+index 31dfdbf96765..f4c0b5185818 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1463,14 +1463,6 @@ static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size
- 	spi_nor_unprep(nor);
+@@ -2554,8 +2554,51 @@ static int spi_nor_select_erase(struct spi_nor *nor)
+ 	return 0;
  }
  
--static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
--{
--	if (!nor->params->convert_addr)
--		return addr;
--
--	return nor->params->convert_addr(nor, addr);
--}
--
- /*
-  * Initiate the erasure of a single sector
-  */
-@@ -1478,8 +1470,6 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- {
- 	int i;
- 
--	addr = spi_nor_convert_addr(nor, addr);
--
- 	if (nor->spimem) {
- 		struct spi_mem_op op =
- 			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
-@@ -2064,8 +2054,6 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	while (len) {
- 		loff_t addr = from;
- 
--		addr = spi_nor_convert_addr(nor, addr);
--
- 		ret = spi_nor_read_data(nor, addr, len, buf);
- 		if (ret == 0) {
- 			/* We shouldn't see 0-length reads */
-@@ -2098,7 +2086,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	size_t *retlen, const u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	size_t page_offset, page_remain, i;
-+	size_t i;
- 	ssize_t ret;
- 	u32 page_size = nor->params->page_size;
- 
-@@ -2111,23 +2099,9 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	for (i = 0; i < len; ) {
- 		ssize_t written;
- 		loff_t addr = to + i;
--
--		/*
--		 * If page_size is a power of two, the offset can be quickly
--		 * calculated with an AND operation. On the other cases we
--		 * need to do a modulus operation (more expensive).
--		 */
--		if (is_power_of_2(page_size)) {
--			page_offset = addr & (page_size - 1);
--		} else {
--			u64 aux = addr;
--
--			page_offset = do_div(aux, page_size);
--		}
-+		size_t page_offset = addr & (page_size - 1);
- 		/* the size of data remaining on the first page */
--		page_remain = min_t(size_t, page_size - page_offset, len - i);
--
--		addr = spi_nor_convert_addr(nor, addr);
-+		size_t page_remain = min_t(size_t, page_size - page_offset, len - i);
- 
- 		ret = spi_nor_lock_device(nor);
- 		if (ret)
-@@ -3054,7 +3028,14 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 		spi_nor_init_params_deprecated(nor);
- 	}
- 
--	return spi_nor_late_init_params(nor);
-+	ret = spi_nor_late_init_params(nor);
-+	if (ret)
-+		return ret;
+-static int spi_nor_default_setup(struct spi_nor *nor,
+-				 const struct spi_nor_hwcaps *hwcaps)
++static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
++{
++	if (nor->params->addr_nbytes) {
++		nor->addr_nbytes = nor->params->addr_nbytes;
++	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
++		/*
++		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
++		 * in this protocol an odd addr_nbytes cannot be used because
++		 * then the address phase would only span a cycle and a half.
++		 * Half a cycle would be left over. We would then have to start
++		 * the dummy phase in the middle of a cycle and so too the data
++		 * phase, and we will end the transaction with half a cycle left
++		 * over.
++		 *
++		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
++		 * avoid this situation.
++		 */
++		nor->addr_nbytes = 4;
++	} else if (nor->info->addr_nbytes) {
++		nor->addr_nbytes = nor->info->addr_nbytes;
++	} else {
++		nor->addr_nbytes = 3;
++	}
 +
-+	if (WARN_ON(!is_power_of_2(nor->params->page_size)))
++	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
++		/* enable 4-byte addressing if the device exceeds 16MiB */
++		nor->addr_nbytes = 4;
++	}
++
++	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
++		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
++			nor->addr_nbytes);
 +		return -EINVAL;
++	}
++
++	/* Set 4byte opcodes when possible. */
++	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
++	    !(nor->flags & SNOR_F_HAS_4BAIT))
++		spi_nor_set_4byte_opcodes(nor);
 +
 +	return 0;
++}
++
++static int spi_nor_setup(struct spi_nor *nor,
++			 const struct spi_nor_hwcaps *hwcaps)
+ {
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	u32 ignored_mask, shared_mask;
+@@ -2612,64 +2655,6 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+ 		return err;
+ 	}
+ 
+-	return 0;
+-}
+-
+-static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
+-{
+-	if (nor->params->addr_nbytes) {
+-		nor->addr_nbytes = nor->params->addr_nbytes;
+-	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+-		/*
+-		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
+-		 * in this protocol an odd addr_nbytes cannot be used because
+-		 * then the address phase would only span a cycle and a half.
+-		 * Half a cycle would be left over. We would then have to start
+-		 * the dummy phase in the middle of a cycle and so too the data
+-		 * phase, and we will end the transaction with half a cycle left
+-		 * over.
+-		 *
+-		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
+-		 * avoid this situation.
+-		 */
+-		nor->addr_nbytes = 4;
+-	} else if (nor->info->addr_nbytes) {
+-		nor->addr_nbytes = nor->info->addr_nbytes;
+-	} else {
+-		nor->addr_nbytes = 3;
+-	}
+-
+-	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
+-		/* enable 4-byte addressing if the device exceeds 16MiB */
+-		nor->addr_nbytes = 4;
+-	}
+-
+-	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
+-		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
+-			nor->addr_nbytes);
+-		return -EINVAL;
+-	}
+-
+-	/* Set 4byte opcodes when possible. */
+-	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
+-	    !(nor->flags & SNOR_F_HAS_4BAIT))
+-		spi_nor_set_4byte_opcodes(nor);
+-
+-	return 0;
+-}
+-
+-static int spi_nor_setup(struct spi_nor *nor,
+-			 const struct spi_nor_hwcaps *hwcaps)
+-{
+-	int ret;
+-
+-	if (nor->params->setup)
+-		ret = nor->params->setup(nor, hwcaps);
+-	else
+-		ret = spi_nor_default_setup(nor, hwcaps);
+-	if (ret)
+-		return ret;
+-
+ 	return spi_nor_set_addr_nbytes(nor);
  }
  
- /** spi_nor_set_octal_dtr() - enable or disable Octal DTR I/O.
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 072c69b0d06c..3043d583eac2 100644
+index 3043d583eac2..497957b64906 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -366,9 +366,6 @@ struct spi_nor_otp {
+@@ -366,10 +366,6 @@ struct spi_nor_otp {
   * @set_octal_dtr:	enables or disables SPI NOR octal DTR mode.
   * @quad_enable:	enables SPI NOR quad mode.
   * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-- * @convert_addr:	converts an absolute address into something the flash
-- *                      will understand. Particularly useful when pagesize is
-- *                      not a power-of-2.
-  * @setup:		(optional) configures the SPI NOR memory. Useful for
-  *			SPI NOR flashes that have peculiarities to the SPI NOR
-  *			standard e.g. different opcodes, specific address
-@@ -403,7 +400,6 @@ struct spi_nor_flash_parameter {
+- * @setup:		(optional) configures the SPI NOR memory. Useful for
+- *			SPI NOR flashes that have peculiarities to the SPI NOR
+- *			standard e.g. different opcodes, specific address
+- *			calculation, page size, etc.
+  * @ready:		(optional) flashes might use a different mechanism
+  *			than reading the status register to indicate they
+  *			are ready for a new command
+@@ -400,7 +396,6 @@ struct spi_nor_flash_parameter {
  	int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
  	int (*quad_enable)(struct spi_nor *nor);
  	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
--	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
- 	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
+-	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
  	int (*ready)(struct spi_nor *nor);
  
+ 	const struct spi_nor_locking_ops *locking_ops;
 -- 
 2.39.2
 
