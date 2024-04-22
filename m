@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7DE1C4345F
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Apr 2024 06:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5E0BC4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Apr 2024 06:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xn+qwCP14rxLNJ1mwP30VqdkRXO7cdgSPJT6YfMTRJ0=; b=liKGpPNAQ/2cQr
-	eRstYSqnCYjBjP+XvOKnhTs23oYOqfXTTugOA4BH9P9XbwnCOq+kSvma+YbIUmegHWIPz665WuHpi
-	wkmujNC4ZRlMW/OU7O1O++Rhi8wh0HoTe+w1pnOsdYIWg6eWvgnnItuSeNdLV/MdlHsvT5gxQO/FJ
-	r7MdVHTVaneAHmX9Tk6tZqGc9SD+we+c143icc/LPpfMbItYUcFAPdwEPxUJe1xMN7ZHy1/zH5xvI
-	OSYD/ndbXZe6f+h9DB6mck88KGEZqBxlECQv0+uxeraZ76g1KAH6sX48CU4Ivl924hPlxQwSBmk99
-	it5oiGC/z7P/0ljbfdmA==;
+	List-Owner; bh=Lk4CYA/hP8YNWLHJpXkU3FY+YOAgMGw/tmGgIntOWVs=; b=VfGLSFEpvnFL0f
+	u7QVXzdFEnRs9AQqG1xxzjH1aLrFRkoeYBf7bHCQTxbyxhONT331MTbUiHumCMv25CMCKm1WaGyq4
+	rfXlDbMaBRZnWentKmDh1vYz0kQJKCc/yG1Ys9JkkGUuFOLTQxVaH1R1sLVqWhRkYeT2m8qEXt3P8
+	Jva0zLDsCsXICfdLdCXd2q7uifixBFVOOkmvq50N58XmWMNi5HbiOwkRmjHokn0xNdmIx4W6Yru+D
+	AmMj+s6cXMJyiKUaYTSTz162TnqI+2P5FfKAz5MXalI8gMBxE2V7KXF2vmnXxiVo0mvmlxmVuqSL+
+	+BqWqbQPIK/fW1BqR/fQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rymik-0000000CC7n-2YpB;
-	Mon, 22 Apr 2024 06:00:06 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1rympS-0000000CCvy-3YhQ;
+	Mon, 22 Apr 2024 06:07:02 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rymig-0000000CC6p-3UwV
+	id 1rympP-0000000CCt7-3SOT
 	for linux-mtd@lists.infradead.org;
-	Mon, 22 Apr 2024 06:00:04 +0000
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a4715991c32so406826066b.1
-        for <linux-mtd@lists.infradead.org>; Sun, 21 Apr 2024 23:00:00 -0700 (PDT)
+	Mon, 22 Apr 2024 06:07:01 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a556d22fa93so451248066b.3
+        for <linux-mtd@lists.infradead.org>; Sun, 21 Apr 2024 23:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713765599; x=1714370399; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1713766017; x=1714370817; darn=lists.infradead.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=mTIk2hkxt9Gsft4fGJNtwxU+haKYdo2o58nLmGxDOIE=;
-        b=JKEVkqnRLO14YZHhYxFwFAlqUBIqhcElTVoqMDp4TvgW5mf5M9Hq4exO8GAYbQ4rEv
-         DmZ46kYUuYlMhd0peGaw8sY3Qbew1FE9Syn0i6M3I1b6tGoPH8QBDuoAlbsqNz6eUgWZ
-         G58M3S23q5B2kLns+hMYPTsGFuzshg+G5fQxIevRCFc9Zik9UeDrLsj/I/lCcU62mqcK
-         LQNFNUlldg35CAnvk+xgHDPO6y7ji13WYMgTDNJMcsoLOkaYngudrvIptI7GN7qcFARN
-         +Jfv7M8H1R06Bht155X9+fedTCis6iuFUOLMXd8qTIuEpa6IkHEseuAZAihM515177t3
-         ASGQ==
+        bh=g/dC3aqszW4WBRqrIUZqM6bgnMZxMjwSBSzDUmPYeq8=;
+        b=DMvfJkvhWVWpBFRkgKvPJnyrWg7Ezq5Nvkb7EyxoQstZgbjleg9J83MFpctdgxPVWP
+         RqM+tmVHQkD2C+o1Nh8fziqbgzbQ+3LIG7pCipBbPgjI0dZH5FDHfr1ndx42coHHnbq6
+         IX/3gpUm8mwtra8D5+6YGM/ZJTHj2aNGuEM4pw3i10Nv6hXx5RKL7Q1kg4jkvBd2T6S4
+         nzddtZcS82RpQfAw9rWqQzFanvmwYLOuqE8ItyoNcS3I/b+6OMeLqhH/xuaQFzaKnkNi
+         9A3Rxg25FWrIbQwLD3VM5QA4ondCpKyHzZKE2AKv5wzmolNJIbn4hm3zqOEt3AImx0rA
+         y7MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713765599; x=1714370399;
+        d=1e100.net; s=20230601; t=1713766017; x=1714370817;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mTIk2hkxt9Gsft4fGJNtwxU+haKYdo2o58nLmGxDOIE=;
-        b=P6jPvre3yrOM8ljRVfol5VHiC4XLiwtHKAoG4WzRZvSwcGWEBukqDxTBIcqr/a97yf
-         ud6ilmzxWUv0aCHRQMjRS9x/1gTU8Ttl/fBQyiaWRE5B/MQLLo4L8oPYoo6lpQxIhwxj
-         jGLWMlfGiYf5va9lMom9BqVSrV7iRNBZTJhJGGkD5DsdQTEQjVN6UuHtlzKRBfx947lU
-         ccfI/dKehYPZckQKM8yd/tuSPiHlbnbDeSbVCSKIILYnmHvH55y8exyxMI0XbzYhoG8N
-         tgXmrHM1h72wU+2Lh94lu79W3BHNbObn/8X7147s3Z4WdF0Q/5u7TSIw7aaZNn861Ncf
-         m4+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUJan92BnmzKjzmVf2tPj53YjVVNPWSmF0LkyBDGxuwHbg0AxFKLDpeEOhpc3Zo289rgwgI5Zo/qPlFR1TfzCekk2OJeMTkKSIHHK/aXg==
-X-Gm-Message-State: AOJu0Yw0X6YXPPy6UI9b/huHNX0uUXe2TNNzgvNCabIVEhOBW9BtSmkO
-	sxfBL+qYCeimYGzXVDfpDkfujGAJgRWxzOsvc2+6eD7yJsiymTRzwF4jl52zlpY=
-X-Google-Smtp-Source: AGHT+IG7f3ifbTeMgZnG7rk32T3DsVAkEUJPoKtCdKMlkL6tqRi+EelXsEJKjxibUYG/0MKJtMxVEg==
-X-Received: by 2002:a17:906:2a4b:b0:a52:1770:965 with SMTP id k11-20020a1709062a4b00b00a5217700965mr4928859eje.42.1713765599507;
-        Sun, 21 Apr 2024 22:59:59 -0700 (PDT)
+        bh=g/dC3aqszW4WBRqrIUZqM6bgnMZxMjwSBSzDUmPYeq8=;
+        b=OHAv7DQ/cEoR4WDnYY5wzl3nrYcjmxtvWZHlEMp83gWB3erBpj1CkTBz38JutKcz12
+         mrzCjnx+yJW1+bBj0iDf+DunstgsnsI5X56GcAmM/xEswskfeeBl40KeV+H0Lt99+/Qt
+         km3Bb4OGmi9nd9souBxRg03/GN1/ighMfBOyyg4wyfQ5yxzrqhva3ON3IuBZi+7V8a2/
+         3MlSxKRTRncGpGcio1PFBQVS/zkzTQ82GGo9ToXclU0MtGhjj9YIJO1rbufq3ZEyUXta
+         wV82DELuZviJnHdsdwfzOhfjm0KLEkYAv6FsvHBKvh2gFoI2nPVKlpfrRphQ0fcihO9g
+         hFoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVY9yJ7mbhX2od1LOfjHxqDGjRIhqNJZ3Yqx0ctuEoqW6msHrm0BQhtiz3hopbFyP0eT2IO/jXXULJKu3LlUyx7teBDSebi5S3xzAIBlg==
+X-Gm-Message-State: AOJu0YwSNJCZn5SCcUXDiSE5nHBq2OZ+cMDMzLdBBTmUOQ2jVtuUjjoC
+	Yt9bXgK/do0Vts6EJYo3Q/Tr3O9ySTT34OkW0ddMzUek1JteV8dl2hvH/RK5bzQ=
+X-Google-Smtp-Source: AGHT+IHSmA22k8/6J8gpztZttq8B3EuHe5yI/0R1vw1tNMB4yAnqjGAza5P9adcpQYd0ijVbD6FkJQ==
+X-Received: by 2002:a17:907:9715:b0:a55:b42d:e499 with SMTP id jg21-20020a170907971500b00a55b42de499mr1614968ejc.45.1713766016645;
+        Sun, 21 Apr 2024 23:06:56 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.100])
-        by smtp.gmail.com with ESMTPSA id bi14-20020a170907368e00b00a5588ed8fa2sm3785331ejc.113.2024.04.21.22.59.58
+        by smtp.gmail.com with ESMTPSA id qu20-20020a170907111400b00a5242ec4573sm5294075ejb.29.2024.04.21.23.06.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Apr 2024 22:59:59 -0700 (PDT)
-Message-ID: <494daaab-a93c-44cd-a437-d306a8269251@linaro.org>
-Date: Mon, 22 Apr 2024 06:59:56 +0100
+        Sun, 21 Apr 2024 23:06:56 -0700 (PDT)
+Message-ID: <33e23cbb-4e52-471c-929f-65316e668ae9@linaro.org>
+Date: Mon, 22 Apr 2024 07:06:53 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/6] mtd: spi-nor: get rid of SPI_NOR_NO_FR
+Subject: Re: [PATCH v2 6/6] mtd: spi-nor: introduce support for displaying
+ deprecation message
 To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Ricardo Ribalda <ribalda@kernel.org>, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org
 References: <20240419141249.609534-1-mwalle@kernel.org>
- <20240419141249.609534-5-mwalle@kernel.org>
+ <20240419141249.609534-7-mwalle@kernel.org>
 Content-Language: en-US
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240419141249.609534-5-mwalle@kernel.org>
+In-Reply-To: <20240419141249.609534-7-mwalle@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240421_230003_088321_3FFFC371 
-X-CRM114-Status: GOOD (  21.18  )
+X-CRM114-CacheID: sfid-20240421_230659_904079_9B737A1A 
+X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,49 +102,11 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 4/19/24 15:12, Michael Walle wrote:
-> The evervision FRAM devices are the only user of the NO_FR flag. Dro
+> SPI-NOR will automatically detect the attached flash device most of the
 
-everspin is evervision?
-
-> the global flag and instead use a manufacturer fixup for the evervision
-> flashes to drop the fast read support.
-> 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> ---
-> Please note, that the fast read opcode will still be set in
-> spi_nor_init_default_params(), but the selection of the read opcodes
-> just depends on the mask.
-> 
-> That is also something I want to fix soon: the opcodes can always
-> be set and the drivers/SFDP will only set the mask. Opcodes then can be
-> switched between 3b and 4b ones if necessary.
-> ---
->  drivers/mtd/spi-nor/core.c     |  9 ++-------
->  drivers/mtd/spi-nor/core.h     |  2 --
->  drivers/mtd/spi-nor/everspin.c | 19 +++++++++++++++----
->  3 files changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index f4c0b5185818..4e2ae6642d4c 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2923,15 +2923,10 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
->  	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
->  	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
->  
-> -	if (!(info->flags & SPI_NOR_NO_FR)) {
-> -		/* Default to Fast Read for DT and non-DT platform devices. */
-> +	/* Default to Fast Read for non-DT and enable it if requested by DT. */
-> +	if (!np || of_property_read_bool(np, "m25p,fast-read"))
->  		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
->  
-> -		/* Mask out Fast Read if not requested at DT instantiation. */
-> -		if (np && !of_property_read_bool(np, "m25p,fast-read"))
-> -			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-> -	}
-> -
-
-You could do this in a dedicated patch, but I'm fine either way.
+SPI NOR. Looks good. Please follow up with a patch in the same patch set
+to use deprecation_version, otherwise we introduce code that's not used
+and we risk to get patches removing it.
 
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
