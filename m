@@ -4,55 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1988AC04FF6
-	for <linux-mtd@archiver.kernel.org>; Sat, 20 Apr 2024 02:51:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43534C4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Apr 2024 05:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B9qWU+9l8ITtm17Mq3hw/O9lF2FwbrWk8rTAoVjf+EA=; b=swqLhYrR0DAc0B
-	+VpONTbNn6TdITuPEafy6JxRCG9ofXUdC+3fm1eeYyqWoKtdNWE03ufUg22wGGZG4KGEnNsETgyyj
-	JVqYuNdh6Ge97YANndyn3cP3S7x2Zw856FqB8+LyeEpCqisN11pNGUgvjZ2b8W2XaUK3xx62FOEBc
-	Qlkm2xPxeB3pZsfQoRpCyOkToGPIVjUBJJ1aiBchsFyttOghE7B5DvZOjkHASX05YDVUz7soiSM7i
-	PS1FO9EgYEX/J+Va5ptXoDOscZtK6lMnsnMPKkkpAFCYzSNmVdWy37VZyAMN5ERaiMfcDcMmKzCEh
-	s79952q6qcj474vosi9Q==;
+	List-Owner; bh=W9DDp6xZvLTu+JEay4DNvX3gdPUgNbdezUUdR4f0DZM=; b=pRb6BI6h9ejXxX
+	JeGREvm7ehEZ+/s+zzfHcY8a17Ne7MrQdb9rw2l7dbwPjV9kimDfyYSz9lbrAm7VE8LTRMp+HPmFa
+	1A+EactOF0/4KMFmA7J6cKWUDqt8YE3niDvg6Cd8tC+AIqj17J0PYLv4f140zPkxedtlNEiu+dJ7/
+	uuz5lI19t5TChFTW+f4fMUJfTWfGkL8smuQWkts8rszBx281Ek/JjU/1DwJxA1enuTeE7emSSu5Sz
+	Lt14enpwtgf2DUEqNFHApX8dsB0gBkCekvCQlQTUfd00u7JzOLODcWUR6aj3GwDO05mbjTLXqmSga
+	OQ0TECTXhnRxDdomdsog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ry0oa-00000007dUX-2OgF;
-	Sat, 20 Apr 2024 02:50:56 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1rymea-0000000CBiB-3svS;
+	Mon, 22 Apr 2024 05:55:48 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ry0oY-00000007dU5-32MK
-	for linux-mtd@bombadil.infradead.org;
-	Sat, 20 Apr 2024 02:50:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=FtvvbXv86623ovyWG3cSTC9dm4lYYmfgrBjy1npS59Q=; b=OKYm/Al+FwhYahzTOGgwhqD5Nc
-	I7/4fwWzcvjgc4gR8MjmGgTN7Em91EXe+XXle6Wb7xYQQ8PakkUQkaczbbVMZJdEtv2kEyp3w0liZ
-	m9AuySHX1XYgAmWu9iqTTjKKcNtzqSiakDEsBBAgbo8oL5D/2djPp2TP0KryuY7xBMfeRC4KW2/M0
-	rG6igylk3pdL4du0dET5/zTKNrCw3Pwfr28VVpc9xasaxVBDPBmUTwvp9TJL+5hK/2qrtaR2ThtgO
-	7Wsy8kX2FIiX8ZeVdm11TkkvcCbKRnRbl72ASEnKJYc1nrVFWq5UlOQgvPwAryKWU0er5yLmC0Wrb
-	RYxpXWWA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ry0oW-000000095fJ-2VQl;
-	Sat, 20 Apr 2024 02:50:52 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: linux-fsdevel@vger.kernel.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 14/30] jffs2: Remove calls to set/clear the folio error flag
-Date: Sat, 20 Apr 2024 03:50:09 +0100
-Message-ID: <20240420025029.2166544-15-willy@infradead.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240420025029.2166544-1-willy@infradead.org>
-References: <20240420025029.2166544-1-willy@infradead.org>
+	id 1rymeW-0000000CBdo-2je7
+	for linux-mtd@lists.infradead.org;
+	Mon, 22 Apr 2024 05:55:46 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-34af8b880e8so393717f8f.0
+        for <linux-mtd@lists.infradead.org>; Sun, 21 Apr 2024 22:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713765331; x=1714370131; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AmsS7TeoR5lfEkPA/4hWMzBs7ZLo8pjbDxlnDnyGR5I=;
+        b=g6cko9m3ZQrVZpoFNmloLhuZ6ZsOZVfIvotCeIr6WE8Pv30XHaAKV55WdrPFuinBt/
+         oRRyg+pHy/Bw7IZN49WOA0XZTEra7Pw+D1yVowtCLUMwWgfNOyYgmK/yK8AfnnRHGQsJ
+         KGN++NCLsjKYvwdp7F64plwE47KqBdmggE5qGb0q2I64ewzON3ZvaT1m0yDo0UBB7yEm
+         0ylKNqV4lZiN0rMpkHxCtin9BIoLaEtr+hrDKx5jagtbBn5/1bMX0KII+Q4j6gSAU5c1
+         t9Xj8Qc5qG2/WdKAbs2YgPa2GTW1AalTLyhE2YkEcXkEqPvLnsCgJoivVzscOHkvw3fr
+         S2dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713765331; x=1714370131;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AmsS7TeoR5lfEkPA/4hWMzBs7ZLo8pjbDxlnDnyGR5I=;
+        b=fqqz0rXwZuBqbxzymoZQDNTQJxg9jDRG62yVyNpV6tCS6OfmkpbZFW0BE0wELhUk8w
+         +VYj7d4mznjDuQchHEqXH1umjhlra+ErQrST23h5CD6wX26EBa53yeHaXHV79IhPV6vs
+         OTFBBu2+2mgiiQX6T4nm2wL4Xx2NEjsUESmzY+mwHWsyunwUwpO9mhUOde70/0wii0Eh
+         EVrvFw/mQ525ai6epBxI6H4J9eYqa6ePn0+ec8O7WQOMVMs+1thja+kQKbiiRX8cKSLT
+         Jo2+7WwhVIyIerGeVPYGHifThlhv/2BjYccB64OIAVOhz6QA85FhQCQfguoxKe2+oMrH
+         UO5w==
+X-Forwarded-Encrypted: i=1; AJvYcCU8yVxDsy5ZNiT76FkUQuz6srY+KJWIPxK3HU2l4ti4kDCNS/oZesXtgEGlRsjKD77aWbGq6/Y4wOKp1MVE1sNQ5HF/91GP29swB+NmEQ==
+X-Gm-Message-State: AOJu0Yw3XqcfiirQ18LNSga6kQVy9bQn9OAy0KDYk9jDHlMyHaqy+2Sb
+	zQc3W5tXw1ULpPKw4cj4MOyKKnAHuY8135tasHF9gSKPlMDNtRGd3FRjICQewGQ=
+X-Google-Smtp-Source: AGHT+IFwehGoU4C7S7pThJD6H5xRO3FxOWtzO8AS1uALt/2FKe01ucEOx0N/yELDrpV+GVGYiGh5IA==
+X-Received: by 2002:a5d:5706:0:b0:34a:4fa9:81cf with SMTP id a6-20020a5d5706000000b0034a4fa981cfmr6267897wrv.9.1713765331011;
+        Sun, 21 Apr 2024 22:55:31 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.100])
+        by smtp.gmail.com with ESMTPSA id e5-20020adfe385000000b003455e5d2569sm11203602wrm.0.2024.04.21.22.55.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Apr 2024 22:55:30 -0700 (PDT)
+Message-ID: <b6547140-0d2f-4e09-8897-5e557955e08c@linaro.org>
+Date: Mon, 22 Apr 2024 06:55:27 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/6] mtd: spi-nor: remove .setup() callback
+To: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Ricardo Ribalda <ribalda@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+References: <20240419141249.609534-1-mwalle@kernel.org>
+ <20240419141249.609534-4-mwalle@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240419141249.609534-4-mwalle@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240421_225544_779738_02382401 
+X-CRM114-Status: UNSURE (   3.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,64 +98,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Nobody checks the error flag on jffs2 folios, so stop setting and
-clearing it.  We can also remove the call to clear the uptodate
-flag; it will already be clear.
-
-Convert one of these into a call to mapping_set_error() which will
-actually be checked by other parts of the kernel.
-
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/jffs2/file.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
-
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 62ea76da7fdf..e12cb145147e 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -95,13 +95,8 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
- 	ret = jffs2_read_inode_range(c, f, pg_buf, pg->index << PAGE_SHIFT,
- 				     PAGE_SIZE);
- 
--	if (ret) {
--		ClearPageUptodate(pg);
--		SetPageError(pg);
--	} else {
-+	if (!ret)
- 		SetPageUptodate(pg);
--		ClearPageError(pg);
--	}
- 
- 	flush_dcache_page(pg);
- 	kunmap(pg);
-@@ -304,10 +299,8 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
- 
- 	kunmap(pg);
- 
--	if (ret) {
--		/* There was an error writing. */
--		SetPageError(pg);
--	}
-+	if (ret)
-+		mapping_set_error(mapping, ret);
- 
- 	/* Adjust writtenlen for the padding we did, so we don't confuse our caller */
- 	writtenlen -= min(writtenlen, (start - aligned_start));
-@@ -330,7 +323,6 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
- 		   it gets reread */
- 		jffs2_dbg(1, "%s(): Not all bytes written. Marking page !uptodate\n",
- 			__func__);
--		SetPageError(pg);
- 		ClearPageUptodate(pg);
- 	}
- 
--- 
-2.43.0
-
+Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
