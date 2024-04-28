@@ -4,78 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D394C19F53
-	for <linux-mtd@archiver.kernel.org>; Sun, 28 Apr 2024 07:29:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EE1DC4345F
+	for <linux-mtd@archiver.kernel.org>; Sun, 28 Apr 2024 07:52:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+zgd+EvERf6+W4d0EyBjxMinDDolCouDRgmNb6+dEIs=; b=4bs7RGqh+j5rrl
-	lxmbHCRUCFm9ni2CMLpym3wo9+vksa4jA2jIYP90Yo8Z/EKxthc4uYu1XlwUv3gE6iVftmxpCJvh0
-	rJDZ2xzBBSnxQ6rkhEope0fUr08llfGkwJMmEtzqUC3knemlegX1Rd6yY8tAliUEaqDBixIeYxC/O
-	f8aJN+ypu0EtE6s7MfUByfEbLkTpBN57YjZ/CMlCvuO3amFal1Fu7m2wOAmi7Ve4yimkYeSvZiN+A
-	qWNj/Zxxz56PqSiXhlsEPwKiR11jj/fcWhs2xl/0D2+EsjWd4IwY7kgiy0Klt57DOm3ysklpsNMNB
-	PFO8Uwl4CxeGyhXZjeHg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Dbv0WW+28fHjOGWUmiFebbxL1MMi5DLTHfsOz4W1NLc=; b=HNTpQoihRpmIkZzwHPRKzz4R+g
+	B1r4+4Lf+9uVFYvtzAR14rpsoyUAEu+1dNzO61fxstGwmCkF9f3PKwv0XGTqW9j3vqCt6CN4L5MWW
+	RJbao1qkFNHIoNUPYdBYXMwhfzwxSpUVcIW7GSJY/80HWBhULoGwrltdnIy/+Umkf65NCMAs7rcNG
+	5BsAaraqdH8OlOwhrf+MJ70IJ16gBTIw7De7kUZQGsip8MTpyMjHBTpvIP3TQ5ixxQ6x+J3sVQ/gm
+	NIc0Q1zJAEvHgQw3nFEd5raN7OxZJd7lzroN9lmkIjk7HVcnD6GdzwujRndCP5ELIZgutLqvLt6Ep
+	x5RL6CQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0yy7-0000000H46y-2Qy1;
-	Sun, 28 Apr 2024 07:29:03 +0000
-Received: from [45.249.212.51] (helo=dggsgout11.his.huawei.com)
+	id 1s0zKT-0000000H5hm-11av;
+	Sun, 28 Apr 2024 07:52:09 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0yy3-0000000H46I-06uk
+	id 1s0zKP-0000000H5e6-44WH
 	for linux-mtd@lists.infradead.org;
-	Sun, 28 Apr 2024 07:29:01 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VRykM6jJmz4f3jjj
-	for <linux-mtd@lists.infradead.org>; Sun, 28 Apr 2024 15:28:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E52961A0568
-	for <linux-mtd@lists.infradead.org>; Sun, 28 Apr 2024 15:28:48 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxCu+i1m9VSxLA--.18736S4;
-	Sun, 28 Apr 2024 15:28:48 +0800 (CST)
-From: linan666@huaweicloud.com
-To: richard@nod.at,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com,
-	axboe@kernel.dk,
-	chaitanya.kulkarni@wdc.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] ubi: block: fix null-pointer-dereference in ubiblock_create()
-Date: Sun, 28 Apr 2024 15:19:22 +0800
-Message-Id: <20240428071922.2270892-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	Sun, 28 Apr 2024 07:52:07 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VRz8n6GnyzXn7f;
+	Sun, 28 Apr 2024 15:48:09 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 344B718007D;
+	Sun, 28 Apr 2024 15:51:45 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 28 Apr 2024 15:51:44 +0800
+Subject: Re: [PATCH] ubi: block: fix null-pointer-dereference in
+ ubiblock_create()
+To: <linan666@huaweicloud.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
+	<vigneshr@ti.com>, <axboe@kernel.dk>, <chaitanya.kulkarni@wdc.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yukuai3@huawei.com>, <yi.zhang@huawei.com>, <houtao1@huawei.com>,
+	<yangerkun@huawei.com>
+References: <20240428071922.2270892-1-linan666@huaweicloud.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <98698009-e3a2-5c00-7619-6b6e3422cd1b@huawei.com>
+Date: Sun, 28 Apr 2024 15:51:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-CM-TRANSID: cCh0CgDHlxCu+i1m9VSxLA--.18736S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4kAr4Dtr4kXFy5Cr4fuFg_yoW8WF1Dpa
-	yDWa4Y9rW8GFWDuF4DJw4kCFy5X3W0g34rGFW29w4Fvr93Jr4IkFsYgr1Yvr4IyF97JanI
-	qFnxGrW8W3W8C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-	0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-	1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-	rcIFxwACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr4
-	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-	wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBSoJUUUUU=
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+In-Reply-To: <20240428071922.2270892-1-linan666@huaweicloud.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240428_002859_261375_B8185421 
-X-CRM114-Status: UNSURE (   8.33  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240428_005206_206283_749D5974 
+X-CRM114-Status: GOOD (  15.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,58 +69,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Li Nan <linan122@huawei.com>
-
-Similar to commit adbf4c4954e3 ("ubi: block: fix memleak in
-ubiblock_create()"), 'dev->gd' is not assigned but dereferenced if
-blk_mq_alloc_tag_set() fails, and leading to a null-pointer-dereference.
-
-Using 'gd' directly here is not a good idea, too. 'gd->part0.bd_device'
-is not initialized at this point. The error log will be:
-  block (null): block: dynamic minor allocation failed
-
-Fix it by using pr_err() and print ubi id.
-
-Fixes: 77567b25ab9f ("ubi: use blk_mq_alloc_disk and blk_cleanup_disk")
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/mtd/ubi/block.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index f82e3423acb9..bf7308e8ec2f 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -390,7 +390,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 
- 	ret = blk_mq_alloc_tag_set(&dev->tag_set);
- 	if (ret) {
--		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
-+		pr_err("ubiblock%d_%d: blk_mq_alloc_tag_set failed\n",
-+			dev->ubi_num, dev->vol_id);
- 		goto out_free_dev;
- 	}
- 
-@@ -407,8 +408,8 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	gd->minors = 1;
- 	gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
- 	if (gd->first_minor < 0) {
--		dev_err(disk_to_dev(gd),
--			"block: dynamic minor allocation failed");
-+		pr_err("ubiblock%d_%d: block: dynamic minor allocation failed\n",
-+			dev->ubi_num, dev->vol_id);
- 		ret = -ENODEV;
- 		goto out_cleanup_disk;
- 	}
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC80LzI4IDE1OjE5LCBsaW5hbjY2NkBodWF3ZWljbG91ZC5jb20g0LS1wDoKPiBGcm9t
+OiBMaSBOYW4gPGxpbmFuMTIyQGh1YXdlaS5jb20+Cj4gCj4gU2ltaWxhciB0byBjb21taXQgYWRi
+ZjRjNDk1NGUzICgidWJpOiBibG9jazogZml4IG1lbWxlYWsgaW4KPiB1YmlibG9ja19jcmVhdGUo
+KSIpLCAnZGV2LT5nZCcgaXMgbm90IGFzc2lnbmVkIGJ1dCBkZXJlZmVyZW5jZWQgaWYKPiBibGtf
+bXFfYWxsb2NfdGFnX3NldCgpIGZhaWxzLCBhbmQgbGVhZGluZyB0byBhIG51bGwtcG9pbnRlci1k
+ZXJlZmVyZW5jZS4KPiAKPiBVc2luZyAnZ2QnIGRpcmVjdGx5IGhlcmUgaXMgbm90IGEgZ29vZCBp
+ZGVhLCB0b28uICdnZC0+cGFydDAuYmRfZGV2aWNlJwo+IGlzIG5vdCBpbml0aWFsaXplZCBhdCB0
+aGlzIHBvaW50LiBUaGUgZXJyb3IgbG9nIHdpbGwgYmU6Cj4gICAgYmxvY2sgKG51bGwpOiBibG9j
+azogZHluYW1pYyBtaW5vciBhbGxvY2F0aW9uIGZhaWxlZAo+IAo+IEZpeCBpdCBieSB1c2luZyBw
+cl9lcnIoKSBhbmQgcHJpbnQgdWJpIGlkLgo+IAo+IEZpeGVzOiA3NzU2N2IyNWFiOWYgKCJ1Ymk6
+IHVzZSBibGtfbXFfYWxsb2NfZGlzayBhbmQgYmxrX2NsZWFudXBfZGlzayIpCj4gU2lnbmVkLW9m
+Zi1ieTogTGkgTmFuIDxsaW5hbjEyMkBodWF3ZWkuY29tPgo+IC0tLQo+ICAgZHJpdmVycy9tdGQv
+dWJpL2Jsb2NrLmMgfCA3ICsrKystLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMo
+KyksIDMgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9ibG9j
+ay5jIGIvZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMKPiBpbmRleCBmODJlMzQyM2FjYjkuLmJmNzMw
+OGU4ZWMyZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC91YmkvYmxvY2suYwo+ICsrKyBiL2Ry
+aXZlcnMvbXRkL3ViaS9ibG9jay5jCj4gQEAgLTM5MCw3ICszOTAsOCBAQCBpbnQgdWJpYmxvY2tf
+Y3JlYXRlKHN0cnVjdCB1Ymlfdm9sdW1lX2luZm8gKnZpKQo+ICAgCj4gICAJcmV0ID0gYmxrX21x
+X2FsbG9jX3RhZ19zZXQoJmRldi0+dGFnX3NldCk7Cj4gICAJaWYgKHJldCkgewo+IC0JCWRldl9l
+cnIoZGlza190b19kZXYoZGV2LT5nZCksICJibGtfbXFfYWxsb2NfdGFnX3NldCBmYWlsZWQiKTsK
+PiArCQlwcl9lcnIoInViaWJsb2NrJWRfJWQ6IGJsa19tcV9hbGxvY190YWdfc2V0IGZhaWxlZFxu
+IiwKPiArCQkJZGV2LT51YmlfbnVtLCBkZXYtPnZvbF9pZCk7Cj4gICAJCWdvdG8gb3V0X2ZyZWVf
+ZGV2Owo+ICAgCX0KPiAgIAo+IEBAIC00MDcsOCArNDA4LDggQEAgaW50IHViaWJsb2NrX2NyZWF0
+ZShzdHJ1Y3QgdWJpX3ZvbHVtZV9pbmZvICp2aSkKPiAgIAlnZC0+bWlub3JzID0gMTsKPiAgIAln
+ZC0+Zmlyc3RfbWlub3IgPSBpZHJfYWxsb2MoJnViaWJsb2NrX21pbm9yX2lkciwgZGV2LCAwLCAw
+LCBHRlBfS0VSTkVMKTsKClRoZXJlIGlzIG5vIG5lZWQgdG8gbW9kaWZ5IHRoaXMgcGxhY2UuIFRo
+ZSBkZXZpY2Ugb2YgJ2dkJyBpcyBpbml0aWFsaXplZCAKaW4gYmxrX21xX2FsbG9jX2Rpc2suIFJl
+ZmVyIHRvIG5iZF9kZXZfYWRkLgo+ICAgCWlmIChnZC0+Zmlyc3RfbWlub3IgPCAwKSB7Cj4gLQkJ
+ZGV2X2VycihkaXNrX3RvX2RldihnZCksCj4gLQkJCSJibG9jazogZHluYW1pYyBtaW5vciBhbGxv
+Y2F0aW9uIGZhaWxlZCIpOwo+ICsJCXByX2VycigidWJpYmxvY2slZF8lZDogYmxvY2s6IGR5bmFt
+aWMgbWlub3IgYWxsb2NhdGlvbiBmYWlsZWRcbiIsCj4gKwkJCWRldi0+dWJpX251bSwgZGV2LT52
+b2xfaWQpOwo+ICAgCQlyZXQgPSAtRU5PREVWOwo+ICAgCQlnb3RvIG91dF9jbGVhbnVwX2Rpc2s7
+Cj4gICAJfQo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
