@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC3DEC4345F
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2024 12:11:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8767FC4345F
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2024 13:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=88hyslKxS94oLxOfTAXuMG+nq1jIRuuZyvsQfmgZCT4=; b=yBE7rtbd/LAnkQ
-	Yka+sqxEQ88Y4zbob2gJ+4MRH5opJNOo1thvyyDKGdEQzwhNLXZEm1YNtyCwdAuQuorBr9FssmP1o
-	xYBGvYOtKIDkvnkIcscWhXYBqeON50OJMnizS4GRSAqRPrEb1AuxX0yc+zLlKjafoCLryg+4xZ1NP
-	JFVya6CvU++fobr+ajXFQoLMuNTN/pqtWE7CmGAm0x/CNP0X1rbz5w6AK0FK1lR7QH/MpSnh71Kw1
-	oPvSqXr17cdQD5JWJSIL7WeJP7AMJkcaDkxQMIKilNrzgs9bM7MBr0dKnf3TdKNwksJ3xjbaZ7nLD
-	6h7+eaBTmwLTF6obM3Rg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CjGqM/J8S0tVZ9TUIPawHzhdKBqjSJpDHv85GKqdpRU=; b=1GK3Qy1OhheQjD
+	XaOF2P/p86/jIEDowcz0V+gN/QQQSDbq3/yFbhA4gExD3iI6oHbT8On/vHghuxUYWEXK9iVJyz2c6
+	iIe3tYaUibIA8Hz2kuKeqTFwirpr8SugnRF4v4iyguUcvMQj56kvYCRPcoQn4u5ihcnJbozJykDlV
+	MHaZMLWYV4WWe1MKiIXernpj4711OIVfL6Wr5r8B7OWhRSplRK284TzDges89d+g/dc8QaOSm5ix0
+	PmM5mOSr0Gp2wWN36F7wgJaN6iBVA+ndG19FKEqmw+eWGDteAIwm0+W50e9IUHeVfy/b4cvUSektu
+	hdY0g0RGq3+gl+GNMUyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1Pqy-00000002chN-10Bl;
-	Mon, 29 Apr 2024 12:11:28 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1s1R2v-00000002vqM-1s61;
+	Mon, 29 Apr 2024 13:27:53 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1Pqt-00000002cfu-2d81
+	id 1s1R2s-00000002vpk-05KT
 	for linux-mtd@lists.infradead.org;
-	Mon, 29 Apr 2024 12:11:25 +0000
+	Mon, 29 Apr 2024 13:27:51 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 52B5260BCC;
-	Mon, 29 Apr 2024 12:11:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 020DFC113CD;
-	Mon, 29 Apr 2024 12:11:18 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id DCDF4CE0B76;
+	Mon, 29 Apr 2024 13:27:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B657FC113CD;
+	Mon, 29 Apr 2024 13:27:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714392680;
-	bh=X1Qvu63kkY3/b6fxxe2AVsLJHeAHq2bhdDS7GrXYg8Q=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Ckc5k5lO0SoC2waH5Mm3uRE9/G6jrfXw9PNzLBHvSRMyV341Vm+RlthYwYgCipJIH
-	 0E3j9rgXWKj2scNo1w2qh1TrvnXJLSmpRRpI0viX4y2eCYyCJRJf5QWbc4Isd2Rw9d
-	 Zi82egH2foL7xEEQJx12SiBOcSAbgTND1blxsrk6/U14zb1Z4TTPl99bxlWtrYlP/I
-	 DcSH0u5vWZrdGTZ7x28mtnOaJ9WvfVL9PZyiFI8wsJFCFxTFBpn9O0ufS1vK1jkTbk
-	 ctvnCu+dyyE6/MTXmGIFIc/qYZI7TEa60LaSrFrEihxBDd7ubL6E6NMl4WnxxWzHVF
-	 dFfkqnELShCUw==
-From: Michael Walle <mwalle@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: replace unnecessary div64_u64() with div_u64()
-Date: Mon, 29 Apr 2024 14:11:13 +0200
-Message-Id: <20240429121113.803703-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=k20201202; t=1714397267;
+	bh=WiGmI+j0Enf5O5AlJU8LIZQyCZ6bZpihfhCn3RhotIQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=QyBy3DqwzwIbe4F03tqVf+oGEqmzEU4W+e6WfaZqVy/mt+O90331rfXABnFsQvCRv
+	 iVZd1ZC0cyMoLGOdAQRLP4aF3hEIxA1PSMrhQwUYxKQ5LRlCsSu2xKfL+xAYtuP/Op
+	 nf/IwspCNSmN8anjeS9+BaNGnDsKSBYGjipFQEXm53nTmoKNsBwZpaQqwue3QR93r4
+	 dn5PY4RvxipgY81ge2k2I+4int4C5vZp2DGsCOECM3KRMZHhJeNgQzRwAHJgPjP/w9
+	 5pkOr69XhejhroptfUODhKhQ7vgvb2qGdgURmCEZ20h1E0cGFovZK54+Q8JwV0fono
+	 2fbxBALUz/GMw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Dan Carpenter <dan.carpenter@linaro.org>,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: replace unnecessary div64_u64() with
+ div_u64()
+In-Reply-To: <20240429121113.803703-1-mwalle@kernel.org> (Michael Walle's
+	message of "Mon, 29 Apr 2024 14:11:13 +0200")
+References: <20240429121113.803703-1-mwalle@kernel.org>
+Date: Mon, 29 Apr 2024 15:27:44 +0200
+Message-ID: <mafs05xw0cn8v.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240429_051123_728748_C228B7C4 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20240429_062750_257737_0F6DCEEF 
+X-CRM114-Status: GOOD (  11.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,41 +77,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Both occurences of div64_u64() just have a u8 or u32 divisor. Use
-div_u64() instead.
+Hi,
 
-Reported-by : Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://lore.kernel.org/r/9ba7f4e6-2b8b-44a3-9cac-9ed6e50f1700@moroto.mountain/
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
- drivers/mtd/spi-nor/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Apr 29 2024, Michael Walle wrote:
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 3e1f1913536b..028514c6996f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2893,7 +2893,7 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
- 		spi_nor_init_default_locking_ops(nor);
- 
- 	if (params->n_banks > 1)
--		params->bank_size = div64_u64(params->size, params->n_banks);
-+		params->bank_size = div_u64(params->size, params->n_banks);
- 
- 	return 0;
- }
-@@ -3406,7 +3406,7 @@ static int spi_nor_set_mtd_eraseregions(struct spi_nor *nor)
- 			return -EINVAL;
- 
- 		mtd_region[i].erasesize = erasesize;
--		mtd_region[i].numblocks = div64_ul(region[i].size, erasesize);
-+		mtd_region[i].numblocks = div_u64(region[i].size, erasesize);
- 		mtd_region[i].offset = region[i].offset;
- 	}
- 
+> Both occurences of div64_u64() just have a u8 or u32 divisor. Use
+> div_u64() instead.
+
+Does this improve performance or is this only for correctness?
+
+Patch LGTM otherwise.
+
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+
+BTW, I also noticed that there is a do_div() call in spi_nor_write()
+that also uses a u64 dividend and u32 divisor. I was wondering why it
+uses do_div() and not div_u64() (I am not sure what the difference
+between the two is) but I suppose it doesn't matter much since your
+spring cleaning series will delete that code anyway.
+
 -- 
-2.39.2
-
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
