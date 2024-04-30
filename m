@@ -4,53 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D413C4345F
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2024 08:15:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46F54C10F16
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2024 11:11:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3i0H4vS0ThOJrF1IotJdJbJDGiGW1kAcSFJjGY+WoLA=; b=EDqJ64y3jGCa0F
-	tOnM/SBM/c1GW3wnIak/tndfFUykNzevXg9ZFPVkpuLu7z1ejWj2/Mw/qk0tbBReMilxxkpvoPmlE
-	gpMH9m4tU3cQYExpAPb7FkHwzfJh/KEEvdzQ06g74UshIUILmY0Q49IdnC+kRtCM2h1g5EUZsPRcS
-	P5SgKj+YSIfkEng9BsPy1CPmsdZKZ3gbnEGan3HK8PkETqeB+o5bt3jaEiPusWCWJ9B8X6Lm51BvS
-	X4cg4XcGbB5ZHGIRg/K99HV8FPq3b97M/G14Ed3aw+q3pguVXtCXZtqkrs1pu6DWFYX14YNyMTN7f
-	d6H/qetqv4Ve8it0Yk9w==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=S/eI2SYgMyujYEATbhflq4r1YvSvO0CXe7TvPTH+WyM=; b=hvxQf4R2U9O+3z
+	iKZz+6QAjSFEh36YiozsSBgJGDhq8Mf9VfKoAfIUSsuD4A2HgLUTLVwJShYj8sEBDUq/ay3i+Aa2G
+	AsrR0VBa/k+vdufmjqeKej17gDA2Sh164dlV3jiFF12jrBYhdOkMV2jS4jfj21mudDR2vcLr6pZ3D
+	AByQ2sa4soW2Lj4p1B0G4LMbvBx9FYLfK+QaRLVrv7SOemTnfCiayQ9MnIADU13LJZjHbvRBjyKQ3
+	KbrDyVLLB/5wsWn2gR8Wc9ARchqtI0HjNJxTBdZ8kNO6bpjoTCUepDJKYNdzG9SxdsQRi0k5JIlGo
+	FeJPmpjUIFejslusuKew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1idu-00000005ZMP-3uNx;
-	Tue, 30 Apr 2024 08:15:14 +0000
-Received: from mail.explorepulse.pl ([51.91.254.67])
+	id 1s1lOd-000000068au-00HK;
+	Tue, 30 Apr 2024 11:11:39 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1idq-00000005ZKj-1a9n
+	id 1s1lOZ-000000068YH-0KDp
 	for linux-mtd@lists.infradead.org;
-	Tue, 30 Apr 2024 08:15:11 +0000
-Received: by mail.explorepulse.pl (Postfix, from userid 1002)
-	id C592B24863; Tue, 30 Apr 2024 10:15:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=explorepulse.pl;
-	s=mail; t=1714464908;
-	bh=dqx6etWJTU7o7oR1uR2aRBCwaPXPl4dirwwzUCFBDcc=;
-	h=Date:From:To:Subject:From;
-	b=Bp/Oqk8fsGsg/08Vq+5mow6dtGoY7nPSpIUBW5CpyjIUzr8dbfKIShFSS8vrmRjcD
-	 m2WbXcGt8PIhlALpG4YyHOw50CDYillMnnQjWALf6UCd7TscbnewlZV48lU60kv1pK
-	 J24UPgieJ3haG4Py8lEJBslH771y7bo4kvcZF10fFpl2XExbeTidYo7MJGQAy79qdx
-	 J6XtieB0LWAKmMkG27ywJYUP63Mvyxi8xQCKyhcDTCwFfhbp/yfMPS53/XdkdaDOjz
-	 lxuaoUFI+BQ9E8HhEnK7c+2sVaxPTFV3OR4+Iqve2oOKG1WESzLm0y//YAJujuISpr
-	 wPpcycdiT+qEg==
-Received: by mail.explorepulse.pl for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2024 08:15:05 GMT
-Message-ID: <20240430084500-0.1.ax.nnvv.0.2pbysga3rl@explorepulse.pl>
-Date: Tue, 30 Apr 2024 08:15:05 GMT
-From: "Marcin Gard" <marcin.grad@explorepulse.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
-X-Mailer: mail.explorepulse.pl
+	Tue, 30 Apr 2024 11:11:37 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 02E4F6146C;
+	Tue, 30 Apr 2024 11:11:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9FF69C4AF18;
+	Tue, 30 Apr 2024 11:11:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714475493;
+	bh=2v7bw47Y8yac0BNl8kfbTVNGSFn6BD1G1x5HiyR04yk=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=DxCGMtmliiMPZwmnrapARnExGI0flvG1XUX7bZf5eucZyez/5PfJd06nSDkxd7BKF
+	 z2GN+1anL6VUi0y2Sn0EO3lx1fKyLvLUXViar6a8rAHj/cI2ypIGjdUsRN9/08LOID
+	 dwvaK0x7yQpd5yS5OrJ1NCqssT4k7VJbA2mkC+XEHAPyY8TOnWf2aGG+RmDSj+E7eM
+	 YGSqUumO+lbjxJBnwAw0n7OHaOEeAtCe9EG6kLqipR5xZnrU63uFDXbC0LqQjCia/V
+	 5KWHAACsDZj0jqrAkd+p9mIG+l5RDlLnuq/86jm+T1jiyOnVaFpPD/0GL1b1mVaIgu
+	 u6C3MwZalUzAw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EBC7C19F53;
+	Tue, 30 Apr 2024 11:11:33 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Date: Tue, 30 Apr 2024 19:11:10 +0800
+Subject: [PATCH v7 1/3] dt-bindings: mtd: Add Loongson-1 NAND Controller
 MIME-Version: 1.0
+Message-Id: <20240430-loongson1-nand-v7-1-60787c314fa4@gmail.com>
+References: <20240430-loongson1-nand-v7-0-60787c314fa4@gmail.com>
+In-Reply-To: <20240430-loongson1-nand-v7-0-60787c314fa4@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+ Keguang Zhang <keguang.zhang@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1714475491; l=1981;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=051ksmvBr0UxivFTnhR9mHkGLTvP/HWsibHv4Ii5zR4=;
+ b=NWQWxMYBcUQhSr4sUNOhXWIGbWl7BRPCIJSTrLjZgsIWxIHm3C9M+lhuZdk/KQNJpnjN3ND9V
+ SRKmhBxJgE8ATTyAVc/nwE9e/VrZByAA7jsUZAdTZ+9zynIXp2rjo5v
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
+ auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240430_011510_574774_AC9619C5 
-X-CRM114-Status: UNSURE (   1.02  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240430_041135_401009_CFDB9BDE 
+X-CRM114-Status: GOOD (  11.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,16 +85,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: keguang.zhang@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
-cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
-xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
-Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
-ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllCk1hcmNpbiBHYXJkCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Keguang Zhang <keguang.zhang@gmail.com>
+
+Add devicetree binding document for Loongson-1 NAND Controller.
+
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+Changes in v7:
+- rename the file to loongson,ls1b-nfc.yaml
+
+Changes in v6:
+- A newly added patch
+---
+ .../devicetree/bindings/mtd/loongson,ls1b-nfc.yaml | 66 ++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml
+new file mode 100644
+index 000000000000..a69f22b9fd9e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/loongson,ls1b-nfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson-1 NAND Controller
++
++maintainers:
++  - Keguang Zhang <keguang.zhang@gmail.com>
++
++allOf:
++  - $ref: nand-controller.yaml
++
++properties:
++  compatible:
++    oneOf:
++      - const: loongson,ls1b-nfc
++      - items:
++          - enum:
++              - loongson,ls1a-nfc
++              - loongson,ls1c-nfc
++          - const: loongson,ls1b-nfc
++
++  reg:
++    maxItems: 1
++
++  dmas:
++    maxItems: 1
++
++  dma-names:
++    const: rxtx
++
++patternProperties:
++  "^nand@[0-3]$":
++    type: object
++    $ref: raw-nand-chip.yaml
++
++    unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - dmas
++  - dma-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    nand-controller@1fe78000 {
++        compatible = "loongson,ls1b-nfc";
++        reg = <0x1fe78000 0x40>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dmas = <&dma 0>;
++        dma-names = "rxtx";
++
++        nand@0 {
++            reg = <0>;
++            nand-use-soft-ecc-engine;
++            nand-ecc-algo = "hamming";
++        };
++    };
+
+-- 
+2.40.1
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
