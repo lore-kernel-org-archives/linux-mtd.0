@@ -4,64 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79808C04FFE
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Apr 2024 14:42:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D413C4345F
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Apr 2024 08:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g4cebk6s+WSRbSWQRTuinAtOXSKJWvQB1CKowfiKWvk=; b=qTcYxb7sESC7HO
-	IVaB5kRniRMteb5ecYMVrnp5qEYBZ4b23z6sB0YLd+rmpYiaD3zf6XVfSf7AP/3VotEacYkr0WLSb
-	xxOjBtLVOJ0qH0FxxTABol2+YZd9bjCYlDB72n2OChhXaj3dKN8cVWxEbOVOT6C+e3pj3n0Bp3k5+
-	RJ/7jDGiqftA2CQvNBhOSlpZR09FF1lA6aMQvWThmojlURV7ZI1zFREOZtFTqsZRCvf3lxcK3P06z
-	PNBeP5DhMXsVdUfze/I06Ejqm6APcxt5+26nv8jffRpSLduIwh2xFbsVVofUPU5yN0O3wnbVlK301
-	NrJ+PNipkxmoDkOcEo5w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3i0H4vS0ThOJrF1IotJdJbJDGiGW1kAcSFJjGY+WoLA=; b=EDqJ64y3jGCa0F
+	tOnM/SBM/c1GW3wnIak/tndfFUykNzevXg9ZFPVkpuLu7z1ejWj2/Mw/qk0tbBReMilxxkpvoPmlE
+	gpMH9m4tU3cQYExpAPb7FkHwzfJh/KEEvdzQ06g74UshIUILmY0Q49IdnC+kRtCM2h1g5EUZsPRcS
+	P5SgKj+YSIfkEng9BsPy1CPmsdZKZ3gbnEGan3HK8PkETqeB+o5bt3jaEiPusWCWJ9B8X6Lm51BvS
+	X4cg4XcGbB5ZHGIRg/K99HV8FPq3b97M/G14Ed3aw+q3pguVXtCXZtqkrs1pu6DWFYX14YNyMTN7f
+	d6H/qetqv4Ve8it0Yk9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1SDE-00000003A60-2KX6;
-	Mon, 29 Apr 2024 14:42:36 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1s1idu-00000005ZMP-3uNx;
+	Tue, 30 Apr 2024 08:15:14 +0000
+Received: from mail.explorepulse.pl ([51.91.254.67])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1SDC-00000003A5D-26ty
+	id 1s1idq-00000005ZKj-1a9n
 	for linux-mtd@lists.infradead.org;
-	Mon, 29 Apr 2024 14:42:35 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id CE63060DE7;
-	Mon, 29 Apr 2024 14:42:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00776C113CD;
-	Mon, 29 Apr 2024 14:42:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714401753;
-	bh=T92NaU3ReD2/fnkEdWIwmoqOz2RSZmJeMWeVVAK+yE0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=bjWpkTwD4eSDfStdQ1m4FdYpmAfjLkv6d5qNjnFzJ9phi9VYM10Nk//w7uYFzEmn2
-	 nisxDg74vLHcvnLH+wPZ+uZs4p4EDLnLsjS2PuecadJQDfocMbY6HEyd01P+9pCHvN
-	 aWSKiF8dBZlqMNtn5sq0AgruXic/1Vwps0NUtUH/QyO46vDdr1h6iUD0xPOHBa7dcm
-	 V5gdxm/+DxaMdTKU6+E4jLoaRYWSsdOqCZA07pX8SuCfZi3tk7HIbOeOyyymQsiUQq
-	 E1DlNmF1c9Mrpv+gl1JfRiPe5IrGdXHzp++RsEEvi4ts7FuR0k5/NxUdG+UZ13r4Ju
-	 9EnpLHc8YMOIQ==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Tudor Ambarus"
- <tudor.ambarus@linaro.org>,  "Miquel Raynal" <miquel.raynal@bootlin.com>,
-  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
- <vigneshr@ti.com>,  "Dan Carpenter" <dan.carpenter@linaro.org>,
-  <linux-mtd@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: replace unnecessary div64_u64() with
- div_u64()
-In-Reply-To: <D0WNIVK1DBL5.3KQOD1K2O128P@kernel.org> (Michael Walle's message
-	of "Mon, 29 Apr 2024 15:47:13 +0200")
-References: <20240429121113.803703-1-mwalle@kernel.org>
-	<mafs05xw0cn8v.fsf@kernel.org> <D0WNIVK1DBL5.3KQOD1K2O128P@kernel.org>
-Date: Mon, 29 Apr 2024 16:42:30 +0200
-Message-ID: <mafs0mspcb57t.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 30 Apr 2024 08:15:11 +0000
+Received: by mail.explorepulse.pl (Postfix, from userid 1002)
+	id C592B24863; Tue, 30 Apr 2024 10:15:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=explorepulse.pl;
+	s=mail; t=1714464908;
+	bh=dqx6etWJTU7o7oR1uR2aRBCwaPXPl4dirwwzUCFBDcc=;
+	h=Date:From:To:Subject:From;
+	b=Bp/Oqk8fsGsg/08Vq+5mow6dtGoY7nPSpIUBW5CpyjIUzr8dbfKIShFSS8vrmRjcD
+	 m2WbXcGt8PIhlALpG4YyHOw50CDYillMnnQjWALf6UCd7TscbnewlZV48lU60kv1pK
+	 J24UPgieJ3haG4Py8lEJBslH771y7bo4kvcZF10fFpl2XExbeTidYo7MJGQAy79qdx
+	 J6XtieB0LWAKmMkG27ywJYUP63Mvyxi8xQCKyhcDTCwFfhbp/yfMPS53/XdkdaDOjz
+	 lxuaoUFI+BQ9E8HhEnK7c+2sVaxPTFV3OR4+Iqve2oOKG1WESzLm0y//YAJujuISpr
+	 wPpcycdiT+qEg==
+Received: by mail.explorepulse.pl for <linux-mtd@lists.infradead.org>; Tue, 30 Apr 2024 08:15:05 GMT
+Message-ID: <20240430084500-0.1.ax.nnvv.0.2pbysga3rl@explorepulse.pl>
+Date: Tue, 30 Apr 2024 08:15:05 GMT
+From: "Marcin Gard" <marcin.grad@explorepulse.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.explorepulse.pl
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240429_074234_652111_9234DFA4 
-X-CRM114-Status: GOOD (  19.54  )
+X-CRM114-CacheID: sfid-20240430_011510_574774_AC9619C5 
+X-CRM114-Status: UNSURE (   1.02  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,59 +62,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 29 2024, Michael Walle wrote:
-
-> Hi,
->
-> On Mon Apr 29, 2024 at 3:27 PM CEST, Pratyush Yadav wrote:
->> On Mon, Apr 29 2024, Michael Walle wrote:
->>
->> > Both occurences of div64_u64() just have a u8 or u32 divisor. Use
->> > div_u64() instead.
->>
->> Does this improve performance or is this only for correctness?
->
-> See function doc for div_u64():
->
->  * This is the most common 64bit divide and should be used if possible,
->  * as many 32bit archs can optimize this variant better than a full 64bit
->  * divide.
-
-Thanks. I think it would be good to add this to the commit message:
-
-    Both occurences of div64_u64() just have a u8 or u32 divisor. Use
-    div_u64() instead. Many 32 bit architectures can optimize this
-    variant better than a full 64 bit divide.
-
-No need to resend, I can do this when applying.
-
->
->> Patch LGTM otherwise.
->>
->> Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
->>
->> BTW, I also noticed that there is a do_div() call in spi_nor_write()
->> that also uses a u64 dividend and u32 divisor. I was wondering why it
->> uses do_div() and not div_u64() (I am not sure what the difference
->> between the two is) but I suppose it doesn't matter much since your
->> spring cleaning series will delete that code anyway.
->
-> do_div() is a macro and is modifying the dividend in place, whereas
-> div_u64() will return it. do_div() is using u32 for the divisor
-> anyway.
->
-> -michael
->
-
--- 
-Regards,
-Pratyush Yadav
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllCk1hcmNpbiBHYXJkCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
