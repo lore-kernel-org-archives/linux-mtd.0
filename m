@@ -4,83 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78FC8C4345F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2024 07:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FBAEC4345F
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2024 18:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MVfDC4AJwam53qQ5xj+M89YZKhx7FnN4DGWx/FtZYgw=; b=TayzoFkMkPKcgr
-	+MwHkO19bShjI9AI8LGRMCakoP6GUqBJuI62eonwwUZWQroRUc91QDo+uS3BVuP1AWIx9GHkbxgWH
-	eYBpgHsph4a8WKbdEAbxq/0zO3n8rhzbk8k4eQJ1EHXHDFtFLYCrnlVm5qPgZSBt8zLrGI7ku17Fl
-	fsQL7JSgxGUlT8wC/IigfG1ScQU4Wkz9Sd1OTst6oFSc2fLqz8EUqPPMZ2LMOMCtEosyyV69d9l0i
-	xQIwYK8T0lEfrkLz9L78XO4gb7vTFgHkh5tCr8nlu8HRDYWSMaMUOhX/xT1P/pRoYyNO5iD8cIIey
-	YTAJJZ+Wrn6xEzEzVkUA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OMhsac0jssudxAsjv9vV6fZ1fWqWtVpcEtSmjCGrkM8=; b=agmhVWrP/0LN1i
+	u8cirsB1CLVm521aXSOy2HMVrHI2UygrqTFPGmZG/IPTyWRoN8+5maeG2ck7zn99BsVc08yGdIhNC
+	5eTD+iiDBVexN8OqpACMgbvMEZBwjAXN3S9CE2zD63Hv2KDUFA3lPe70Xu+n++5GJdhzx08mzyJ0W
+	k0Jw1f+V4OlHEKfRxljiDcqg1gAGCpswiITB9N/g0wXq7qro4+WRDd8dWzsbKklwPfYk2ee+Ihjto
+	ypqVgt+Ylv6lUVVOQE7Bbo+NdjrR425VKyZ6bcisC8fBjHKatcRZ9DGX5eM43ZqVI1iwNPSMqvT4d
+	N/gfE+BoVN7mVQJQa1Vg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2n2F-0000000FPNS-3XAe;
-	Fri, 03 May 2024 07:08:47 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1s2xrj-000000002ps-1I6B;
+	Fri, 03 May 2024 18:42:39 +0000
+Received: from mgamail.intel.com ([198.175.65.20])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2n2B-0000000FPMc-1RBS
+	id 1s2xrg-000000002p8-2VbO
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 May 2024 07:08:44 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-34ddc9fe497so1401567f8f.3
-        for <linux-mtd@lists.infradead.org>; Fri, 03 May 2024 00:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714720120; x=1715324920; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vbbf7SbWBB1jVqIsUo1QlocgDpm6pym6REQIs8oGG/Q=;
-        b=ddKq9xdSikIiHAGyCMf16Sf1FRMQueexH6N5W4/WECS25/jtvW7IUp0RINOKRk4RyZ
-         RCA/hHiq796ndVpUwSQaUiY9Z/4nP2RDUad1lkzrhF5Q4lgFTtJ5MoHgaWh4joBRPTdM
-         nZscQSTHZrGCN6y67gZVSPd1ZZ1LT5L48J1nBxe8afNCCNlKhz5lNfyY2Q4dLCEF5p3O
-         qtPq934ZCaPYoUdtqC9rwV+99LsdmgrodoGICrwOIcCTHcAEA2V+5H8JiMDy98ziNx1l
-         SPelBbR3+xaFDopnYkoHsryE4FAXpKqIbAwIugFuENu+WRb7SbZpp5rzzHf2N0VNRPDy
-         4txQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714720120; x=1715324920;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vbbf7SbWBB1jVqIsUo1QlocgDpm6pym6REQIs8oGG/Q=;
-        b=VC0grjHOnBsl95yJvov0zNdRRz3XbPmhy+1cH8MRHp6Tq86ijqref4Ykplq1PmRmsc
-         xbsCg5zlfyX7h6NcoklYwRNz6pP4+i+QWlrF3Gc4rmOm/026HByeY7+AHIDb9+O6rKY/
-         symlnyH/EWCMvYnYYacz2aIeLVeduf2s5zZ7cvxjIKrOmxMQK1W84lwgbMXXBcJ2IBs6
-         F064usaKWspx1SSy4zaPHAuERe1E7PKPBTG6maC8vzdIsqqhOyt2vsG9SV8pNDwW2/jN
-         dFd2sLArqZM0uMZp2cFWR21hp8/EA4czZVuEJRepffLWLKnBOdhrTSOnzEouQNQCj28P
-         qbTA==
-X-Forwarded-Encrypted: i=1; AJvYcCUP/rXRiL9P+BqeTgQq74Zq3xfwF8AkdJEWEW++0LMEn7rWJmzEiMA6PTApKk2Yd8Md6RbdMIp7KHjN33eE+1RLjDcGfInKRX6HW4pYbg==
-X-Gm-Message-State: AOJu0Yyihq067VRKWnHJcweiZW7urGnD43QZ5OgolMGhCGnGBCVpkUWc
-	PO6p4sGiPPylNx4qu6in/JCB1FcwdsWG/ci4FUfd/nNeb41PZUUg+bgDBueoziU=
-X-Google-Smtp-Source: AGHT+IHIDWc4z27PjexsY9CO33jvLJBig3vshfxodFwrYJNZufsFMOkyCNoP0eqg+oYwYwf+L3yGxw==
-X-Received: by 2002:a5d:4a43:0:b0:34c:59:fad2 with SMTP id v3-20020a5d4a43000000b0034c0059fad2mr1461121wrs.17.1714720119864;
-        Fri, 03 May 2024 00:08:39 -0700 (PDT)
-Received: from [192.168.1.119] ([37.251.223.213])
-        by smtp.gmail.com with ESMTPSA id n12-20020adfe34c000000b00343d6c7240fsm3016934wrj.35.2024.05.03.00.08.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 00:08:38 -0700 (PDT)
-Message-ID: <f2f2b2ef-05e0-4d7b-bf40-43fc17416e43@linaro.org>
-Date: Fri, 3 May 2024 08:08:36 +0100
+	Fri, 03 May 2024 18:42:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714761757; x=1746297757;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=q4xkNgHhMhLTgKFwLy/peK8W9gb/1njcDFxZND/a0m0=;
+  b=AcTpvgg12LzGwooZjMTaOXn1k6mhR2+Vimb0r/hqSU+aMUmUWL3X26rq
+   ORxFCX017AfCJDufaSlNDqiYQuc9DL5jpL05tomtMXA3N0E5UAqMbZTUU
+   5iD9qlJnbB2fg69QC83Ag6KqtWM17Vq7cMoKrIPGBqsIWvctyNJD0sJ/n
+   u1duZcXrAvVqdnXFA0VwF+HCFyRnGnn1Qvf79++FejxVGKyAeIdVsKhDa
+   9fdu4ygcvuuMG0iPAGlRHk4znNmeCSEDMvH45CE6PrSBQ5ZK0Qap6UGG4
+   hy4ESczKpMUIb8kMjwfhStBWnHQroR5Bj4oaLDyLP7L/Z2hKMW0M3J/Em
+   A==;
+X-CSE-ConnectionGUID: WgrdW9SGSXSV5Vj8oG2GOA==
+X-CSE-MsgGUID: jY96YmsVSBK7MWp10eGHYQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11063"; a="10415184"
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="10415184"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2024 11:42:36 -0700
+X-CSE-ConnectionGUID: L7Jb2MVnRRqBAFDbvzalPg==
+X-CSE-MsgGUID: jsIjoHonTVqgZoTeH/PC6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,251,1708416000"; 
+   d="scan'208";a="27634376"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa006.fm.intel.com with ESMTP; 03 May 2024 11:42:35 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 3FCBE19E; Fri,  3 May 2024 21:42:33 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v1 1/1] mtd: cfi: Get rid of redundant 'else'
+Date: Fri,  3 May 2024 21:42:30 +0300
+Message-ID: <20240503184230.2927283-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] mtd: spi-nor: changes for v6.10
-To: Pratyush Yadav <pratyush@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>
-Cc: Michael Walle <mwalle@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-References: <mafs0msp89vx5.fsf@kernel.org>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <mafs0msp89vx5.fsf@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240503_000843_464786_4F84C081 
-X-CRM114-Status: UNSURE (   4.16  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240503_114236_722735_C352455C 
+X-CRM114-Status: GOOD (  11.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,9 +87,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+In the snippets like the following
 
+	if (...)
+		return / goto / break / continue ...;
+	else
+		...
 
-Looks good, thanks Pratyush!
+the 'else' is redundant. Get rid of it.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/mtd/cfi.h | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index 947410faf9e2..35ca19ae21ae 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -308,32 +308,32 @@ static inline uint8_t cfi_read_query(struct map_info *map, uint32_t addr)
+ {
+ 	map_word val = map_read(map, addr);
+ 
+-	if (map_bankwidth_is_1(map)) {
++	if (map_bankwidth_is_1(map))
+ 		return val.x[0];
+-	} else if (map_bankwidth_is_2(map)) {
++	if (map_bankwidth_is_2(map))
+ 		return cfi16_to_cpu(map, val.x[0]);
+-	} else {
+-		/* No point in a 64-bit byteswap since that would just be
+-		   swapping the responses from different chips, and we are
+-		   only interested in one chip (a representative sample) */
+-		return cfi32_to_cpu(map, val.x[0]);
+-	}
++	/*
++	 * No point in a 64-bit byteswap since that would just be
++	 * swapping the responses from different chips, and we are
++	 * only interested in one chip (a representative sample)
++	 */
++	return cfi32_to_cpu(map, val.x[0]);
+ }
+ 
+ static inline uint16_t cfi_read_query16(struct map_info *map, uint32_t addr)
+ {
+ 	map_word val = map_read(map, addr);
+ 
+-	if (map_bankwidth_is_1(map)) {
++	if (map_bankwidth_is_1(map))
+ 		return val.x[0] & 0xff;
+-	} else if (map_bankwidth_is_2(map)) {
++	if (map_bankwidth_is_2(map))
+ 		return cfi16_to_cpu(map, val.x[0]);
+-	} else {
+-		/* No point in a 64-bit byteswap since that would just be
+-		   swapping the responses from different chips, and we are
+-		   only interested in one chip (a representative sample) */
+-		return cfi32_to_cpu(map, val.x[0]);
+-	}
++	/*
++	 * No point in a 64-bit byteswap since that would just be
++	 * swapping the responses from different chips, and we are
++	 * only interested in one chip (a representative sample)
++	 */
++	return cfi32_to_cpu(map, val.x[0]);
+ }
+ 
+ void cfi_udelay(int us);
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
