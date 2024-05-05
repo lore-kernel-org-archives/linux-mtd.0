@@ -4,87 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9836C4345F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 May 2024 18:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B039C4345F
+	for <linux-mtd@archiver.kernel.org>; Sun,  5 May 2024 08:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WIboTFgUE06/hyU4VEsW61QHiLGxKB3bfb1fQhdGWm4=; b=GJ7Z0Nlc7U1nZr
-	NGElWRTaC182tWHDw3daLhHeh60AIYrRDk9l4NgaYXLbKkJy5MkHIN5+N5yPSVN4IKC7TQ/muwz9e
-	aEHsvY4UdJ9lxJC1G/eojPpd4VrPUjAcxpwigdjfNboLp6YrMsXLQVwI9Z0YHq6p7EqJ/z3Teiq6o
-	eEEMfAnT/rkI0VP4vwTgIMC4+hKWQi14XNrlTzixzR7ZKX95wn2lwMXTVut3ESh3SY0g+sX5LRPyb
-	kYxOZYL7blqwiTIGnThEvnU7G0L3ipVfgYNKLK5/6B2E4wwT1scP3DpGUS+KSBCf/P9kuSkiaTJ8c
-	+KSFVTmiayPmzPzwRIPQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=docA3Ol1ZEwAPt7MMMGroyZtaYmNLz9MrRzN6GTQbK4=; b=B3cf/1HekXiQAg
+	Yf9BFsa20SyRrvI/51UdSF2Yuj8IBOpbC8lItRo06zMOSdJLqa3sxjJq4VvW5jYgwDa11eM3ZVSPz
+	DsyNSopnlR52bIAOk5ors7wdUXfBITmJ4QY+j1nDV5UZ3JkSH1Ug1XrvJznXASZIBMtLk89Mpcxty
+	UIABpXE3Wgz7ge1uj2nl0pRxCpoqqzGh3sLXd3As0qvMe5XlNjGBMlJYl2vOHeGx+ngyYFkYTbb3Y
+	PYMNebHTTow/6vxeEIHZDoOccKYDfPT0fNdvFiShx61rh4LGVYnINdyoZAnAL6JET0yNja4ZRqaPl
+	hcXHZY3P5VM7h+Oi+LGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2xyf-000000003z1-1Z2C;
-	Fri, 03 May 2024 18:49:49 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1s3XVu-00000003toJ-3Bjl;
+	Sun, 05 May 2024 08:46:30 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s2xyc-000000003yS-097A
+	id 1s3XVp-00000003tmj-38Ov
 	for linux-mtd@lists.infradead.org;
-	Fri, 03 May 2024 18:49:47 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443Hj0Yp014003;
-	Fri, 3 May 2024 18:49:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=77hzGIyr9qM/bmZ3o2LLjXkvCbHgrrzMWUibQcn58ic=; b=pE
-	VFslJOGHpZ/L09Q5397B+RLy7ZXdX2CbKtrxxLr+dYBSQVL7iF8DxCAvuulu76po
-	hQaZhSRKYyH5ZJkDrzL0ijjkFPuGh1tYyqc6fuxHDL3ti+PpbAAytxoVLKVO24Q9
-	smPpKrlZAwuWDo5Y3srOr6hqgOUD98h+ne10DvW9uqd4ryTzrtdlwFZsXZZTC/0+
-	NYhGKyBRYJNd7rRYRYwgpnD71XaX2cqY3qCpMgkOk/leUqTm7t0p1h1P197c/7N6
-	nT1gZJoYJo47d4VG8t6JxgC7Lp9NPHNlxe1/opG8FCGQgwqjRWzMsvKjSEccTii3
-	nuLQK9xGPBiu91xV3rag==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xw2nc8d2y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 May 2024 18:49:39 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443InRNW019967
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 18:49:27 GMT
-Received: from [10.110.94.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
- 11:49:26 -0700
-Message-ID: <3a0edfd7-fa22-434a-902d-a3a0df1c9d0f@quicinc.com>
-Date: Fri, 3 May 2024 11:49:25 -0700
+	Sun, 05 May 2024 08:46:28 +0000
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-34e28e32ea4so788880f8f.2
+        for <linux-mtd@lists.infradead.org>; Sun, 05 May 2024 01:46:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714898783; x=1715503583; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8rvqUn0JVMmaEtYEVilljD5LiJGeISCvOsUZtPDUnlA=;
+        b=SX65ruOLz67GVQanenWE2fq1ONk5MLkFnhYCcCmZjtrxAtYED6/G1sbMhr/3x5YTu3
+         lFqwegMldTJtDEIxE4fCklw8HTGK8Hzw+29kyNDo6PeLcVAadA+m8pt17rmz/h65JZ3X
+         bSRvacQiJjq/vwzRgfk0RG84b2KX0WaujbgdkGJagXoPNv0gNiFZtdNNDRf11nnen5dl
+         P7fQpmjbCyOu7e+Yf5YU1mnezttyojCgjnGcHmLp5pgZmQPTojO2jDAbZupha49yPFx7
+         IBAq6xXVJDJTO2YN+sKnW4d1ok0RDsrUZHYlfT/ajTH2hS1XhONFo9yCwTV0MWVcHDZ/
+         Uhzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714898783; x=1715503583;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8rvqUn0JVMmaEtYEVilljD5LiJGeISCvOsUZtPDUnlA=;
+        b=pNM+64UiHe4AhXqobPCqMw+eJqSEw+2OMWvf6TRtpr5GCL7t1P9OxTeQ8s6ucn4cHD
+         NHtiIARtjHaLyI0ihGuf0VfAl3fuwdZEQgbQOQQ/DSVYLFFRkHourkEcjCHa1FgXmXUL
+         5Yk3S0VRZHEABI9RZ/4lL/x4D/0TJOkJT0lsjATiGbLJ184pbmL5NvHHir/NtfG7aV7x
+         dVuYVsehP4vMnS0XqfsTWLqs6cVT5Z8ObQfpTWtQqsa7Qcl4YVkTtYGY60iurF2etnFZ
+         FL4zV8CU1KFZlyIw1enlLwtE4Lm6v11mURHcewFtUzObzuKifuQQam8kbmEwj8En8OBz
+         x4Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCWQfeDX/cWr3ef/kWuyHAICVnW8qu6cRNg8t314VBMmYwoAqifnNlFs1sPQapa6mUMwPKr2JSqqLyrM8RsC0I3xQGhcBfmXRT7bZtV4ZQ==
+X-Gm-Message-State: AOJu0YxMTcO4NM+IWroN6nol+KprOhMiFw8i76MQS5OXReRRxxs9c/Cx
+	wDK3u1+RD1KU7BLnoDD15Rh0qdwm25yg3tkB6EnI7+J6bV2mswiT/4jcpDLWJW4=
+X-Google-Smtp-Source: AGHT+IEAIRhFGaEyDg154ublccIoPbU+wBOiO4gHoxXjddQxdSA8q12a5Tt5YvOHYA6M/h8U+EvPGQ==
+X-Received: by 2002:a5d:55ca:0:b0:34d:aaca:2f6f with SMTP id i10-20020a5d55ca000000b0034daaca2f6fmr4816765wrw.69.1714898782639;
+        Sun, 05 May 2024 01:46:22 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id f20-20020a05600c4e9400b0041b5500e438sm11840163wmq.23.2024.05.05.01.46.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 May 2024 01:46:22 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Ming Qian <ming.qian@nxp.com>,
+	Zhou Peng <eagle.zhou@nxp.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jeff LaBundy <jeff@labundy.com>,
+	Shijie Qin <shijie.qin@nxp.com>,
+	linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] dt-bindings: Use full path to other schemas
+Date: Sun,  5 May 2024 10:46:18 +0200
+Message-ID: <20240505084618.135705-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] mtd: cfi: Get rid of redundant 'else'
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger
-	<richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-References: <20240503184230.2927283-1-andriy.shevchenko@linux.intel.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240503184230.2927283-1-andriy.shevchenko@linux.intel.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Sxuo-uLUCjxAOsviM6ODP59QscNBSQ_G
-X-Proofpoint-GUID: Sxuo-uLUCjxAOsviM6ODP59QscNBSQ_G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-03_13,2024-05-03_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- impostorscore=0 mlxscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
- clxscore=1011 lowpriorityscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2405030133
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240503_114946_137294_4F1C1802 
-X-CRM114-Status: GOOD (  19.18  )
+X-CRM114-CacheID: sfid-20240505_014625_819767_6CAC8DA2 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,77 +105,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 5/3/2024 11:42 AM, Andy Shevchenko wrote:
-> In the snippets like the following
-> 
-> 	if (...)
-> 		return / goto / break / continue ...;
-> 	else
-> 		...
-> 
-> the 'else' is redundant. Get rid of it.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+When referencing other schema, it is preferred to use an absolute path
+(/schemas/....), which allows also an seamless move of particular schema
+out of Linux kernel to dtschema.
 
-Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> ---
->  include/linux/mtd/cfi.h | 32 ++++++++++++++++----------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-> index 947410faf9e2..35ca19ae21ae 100644
-> --- a/include/linux/mtd/cfi.h
-> +++ b/include/linux/mtd/cfi.h
-> @@ -308,32 +308,32 @@ static inline uint8_t cfi_read_query(struct map_info *map, uint32_t addr)
->  {
->  	map_word val = map_read(map, addr);
->  
-> -	if (map_bankwidth_is_1(map)) {
-> +	if (map_bankwidth_is_1(map))
->  		return val.x[0];
-> -	} else if (map_bankwidth_is_2(map)) {
-> +	if (map_bankwidth_is_2(map))
->  		return cfi16_to_cpu(map, val.x[0]);
-> -	} else {
-> -		/* No point in a 64-bit byteswap since that would just be
-> -		   swapping the responses from different chips, and we are
-> -		   only interested in one chip (a representative sample) */
-> -		return cfi32_to_cpu(map, val.x[0]);
-> -	}
-> +	/*
-> +	 * No point in a 64-bit byteswap since that would just be
-> +	 * swapping the responses from different chips, and we are
-> +	 * only interested in one chip (a representative sample)
-> +	 */
-> +	return cfi32_to_cpu(map, val.x[0]);
->  }
->  
->  static inline uint16_t cfi_read_query16(struct map_info *map, uint32_t addr)
->  {
->  	map_word val = map_read(map, addr);
->  
-> -	if (map_bankwidth_is_1(map)) {
-> +	if (map_bankwidth_is_1(map))
->  		return val.x[0] & 0xff;
-> -	} else if (map_bankwidth_is_2(map)) {
-> +	if (map_bankwidth_is_2(map))
->  		return cfi16_to_cpu(map, val.x[0]);
-> -	} else {
-> -		/* No point in a 64-bit byteswap since that would just be
-> -		   swapping the responses from different chips, and we are
-> -		   only interested in one chip (a representative sample) */
-> -		return cfi32_to_cpu(map, val.x[0]);
-> -	}
-> +	/*
-> +	 * No point in a 64-bit byteswap since that would just be
-> +	 * swapping the responses from different chips, and we are
-> +	 * only interested in one chip (a representative sample)
-> +	 */
-> +	return cfi32_to_cpu(map, val.x[0]);
->  }
->  
->  void cfi_udelay(int us);
+---
+
+Rob, maybe you can take it directly? Should apply cleanly on your tree.
+---
+ Documentation/devicetree/bindings/input/azoteq,iqs7222.yaml | 2 +-
+ Documentation/devicetree/bindings/media/amphion,vpu.yaml    | 2 +-
+ Documentation/devicetree/bindings/mtd/mtd.yaml              | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/input/azoteq,iqs7222.yaml b/Documentation/devicetree/bindings/input/azoteq,iqs7222.yaml
+index 5b1769c19b17..418c168b223b 100644
+--- a/Documentation/devicetree/bindings/input/azoteq,iqs7222.yaml
++++ b/Documentation/devicetree/bindings/input/azoteq,iqs7222.yaml
+@@ -784,7 +784,7 @@ patternProperties:
+       gpio-2: GPIO4
+ 
+     allOf:
+-      - $ref: ../pinctrl/pincfg-node.yaml#
++      - $ref: /schemas/pinctrl/pincfg-node.yaml#
+ 
+     properties:
+       drive-open-drain: true
+diff --git a/Documentation/devicetree/bindings/media/amphion,vpu.yaml b/Documentation/devicetree/bindings/media/amphion,vpu.yaml
+index c0d83d755239..9801de3ed84e 100644
+--- a/Documentation/devicetree/bindings/media/amphion,vpu.yaml
++++ b/Documentation/devicetree/bindings/media/amphion,vpu.yaml
+@@ -44,7 +44,7 @@ patternProperties:
+     description:
+       Each vpu encoder or decoder correspond a MU, which used for communication
+       between driver and firmware. Implement via mailbox on driver.
+-    $ref: ../mailbox/fsl,mu.yaml#
++    $ref: /schemas/mailbox/fsl,mu.yaml#
+ 
+ 
+   "^vpu-core@[0-9a-f]+$":
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index ee442ecb11cd..bbb56216a4e2 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -48,8 +48,8 @@ patternProperties:
+     type: object
+ 
+     allOf:
+-      - $ref: ../nvmem/nvmem.yaml#
+-      - $ref: ../nvmem/nvmem-deprecated-cells.yaml#
++      - $ref: /schemas/nvmem/nvmem.yaml#
++      - $ref: /schemas/nvmem/nvmem-deprecated-cells.yaml#
+ 
+     unevaluatedProperties: false
+ 
+-- 
+2.43.0
 
 
 ______________________________________________________
