@@ -4,62 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86E63C10F1A
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2024 08:59:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF43DC10F1A
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 May 2024 10:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ujolTT3Mb1w5yIo8YNZqluu3u5mfpCY5qkJSjWRsjc4=; b=Y3dNvoV7KZLaCZ
-	iO0XGkEEZQBs8TBVrQ9sxddEMMEXYZi1vOdpNyAWvn21s3bgU6NqqwTITC/vNOU1gMZxRqX7QmW3/
-	xKikfP1om9dG61iIiPbJpUfl+74ya4gJmwG2DZZaFAoqNwU8HuRnnSu1UJxG29RAVDTgMKIvC9hSL
-	LPh/R3ZG3Ea1zf0/D4s0Fe+117GtNwGqCilJuCucMEDvE25wf3zDghfuVLQBI/CWBWv+2UJwpsDWr
-	0OJ9Iasn3SHKsdHk3w/JXm+TNF7p8/eTcylzHYIQdPcmdc0cClf9O9ccIyY35QcDOZxFneCMyC5rx
-	UGrcyoZ+BKZ1mwk4BrGw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mmj75ccO3Jyf2B5ULWsAkpiothAOn/nsgIRbOwkDlT4=; b=jNhzYbtsswMfhg
+	P5GHouNvxYxVZ+rqE/1ASu+XujJTs+ilREANTj6s/78purv7lQwrmQ85sbKne0TWmLvbc5OhZVY2z
+	CpSAyKc+9PAwyk7UF1O4WJDqpgUtf7LcoPpelvFQzvks/3tdLcwqzYx2XATZtOOiVSWE4draKV13N
+	Jydns7ZOoIEehrNlBS/QiqQjAdhtQ0m8ASDNaa9zkVpOgY4CNJmtG+WJx06PK8+PZfEySLk5925YW
+	9H13HjiXb649+/lhY/NfZXzwctZVTWPmbV1NjMK5+2MtBET9QDBrGWTT5b/VzpH9WCAN7N7dmFBJ4
+	4zxcDPagfqDSfEb2dIRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4GfE-0000000ADU4-0Fvy;
-	Tue, 07 May 2024 08:59:08 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1s4I8L-0000000AY9j-3UF5;
+	Tue, 07 May 2024 10:33:17 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4Gf5-0000000ADSt-1Wf9
+	id 1s4I8H-0000000AY94-2nRz
 	for linux-mtd@lists.infradead.org;
-	Tue, 07 May 2024 08:59:01 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 525711BF208;
-	Tue,  7 May 2024 08:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1715072324;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=a2sHF3ypEAiEpeHREQw270xHX0lb0//dUYs40hlXNE8=;
-	b=bTVq2gkSqk6FKob/jyCEmCCnfPOvQ8h/4EGY7Zxu9FmE/5MAShOQd3K3Nnjz642jMgVVgc
-	nhMb4ZrwKUJVMKuZbwAwBxgeCtCi9mxHDy4miCjkugz2kftrYmualM6ISAF1FvvS5cSlHu
-	oDubIS3KuhWqxy+8Rh5KPyNdwg6CHGnGnIWtR2SYMpUY5e3p+YRNfhfyK1TqNMJYf//v65
-	n9iT+M6bvWKXI2EfKC1ZZTxKczPkEYeyxDJ3DtrkHcOeEdv/k5yhINfzI1ugFfqe/0732n
-	+DIrV2UQxtCpflT+0yngNyVLqQCesFxyRxot2c9z3b5e/V0I55F9La4cNPHegw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
+	Tue, 07 May 2024 10:33:15 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s4I8C-0003JN-GZ; Tue, 07 May 2024 12:33:08 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s4I8B-0004nD-BH; Tue, 07 May 2024 12:33:07 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s4I8B-00GOiE-0q;
+	Tue, 07 May 2024 12:33:07 +0200
+Date: Tue, 7 May 2024 12:33:07 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	stable@vger.kernel.org,
-	Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] mtd: rawnand: Ensure ECC configuration is propagated to upper layers
-Date: Tue,  7 May 2024 10:58:42 +0200
-Message-Id: <20240507085842.108844-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.40.1
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] mtd: nand: mxc_nand: support software ECC
+Message-ID: <ZjoDYzVNOk06-Q3D@pengutronix.de>
+References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
+ <20240417-mtd-nand-mxc-nand-exec-op-v1-3-d12564fe54e9@pengutronix.de>
+ <20240506160508.6c60d50f@xps-13>
+ <20240506175106.2ab7c844@xps-13>
+ <ZjnUXtWGR3cmtYB0@pengutronix.de>
+ <20240507094538.745fb5a9@xps-13>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20240507094538.745fb5a9@xps-13>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240507_015859_937848_55A12332 
-X-CRM114-Status: GOOD (  14.82  )
+X-CRM114-CacheID: sfid-20240507_033313_956353_F5E45F4A 
+X-CRM114-Status: GOOD (  71.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,56 +80,179 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VW50aWwgcmVjZW50bHkgdGhlICJ1cHBlciBsYXllciIgd2FzIE1URC4gQnV0IGZvbGxvd2luZyBp
-bmNyZW1lbnRhbApyZXdvcmtzIHRvIGJyaW5nIHNwaS1uYW5kIHN1cHBvcnQgYW5kIG1vcmUgcmVj
-ZW50bHkgZ2VuZXJpYyBFQ0Mgc3VwcG9ydCwKdGhlcmUgaXMgbm93IGFuIGludGVybWVkaWF0ZSAi
-Z2VuZXJpYyBOQU5EIiBsYXllciB0aGF0IGFsc28gbmVlZHMgdG8gZ2V0CmFjY2VzcyB0byBzb21l
-IHZhbHVlcy4gV2hlbiB1c2luZyAiY29udmVydGVkIiBFQ0MgZW5naW5lcywgbGlrZSB0aGUKc29m
-dHdhcmUgb25lcywgdGhlc2UgdmFsdWVzIGFyZSBhbHJlYWR5IHByb3BhZ2F0ZWQgY29ycmVjdGx5
-LiBCdXQKb3RoZXJ3aXNlIHdoZW4gdXNpbmcgZ29vZCBvbGQgcmF3IE5BTkQgY29udHJvbGxlciBk
-cml2ZXJzLCB3ZSBuZWVkIHRvCm1hbnVhbGx5IHNldCB0aGVzZSB2YWx1ZXMgb3Vyc2VsdmVzIGF0
-IHRoZSBlbmQgb2YgdGhlICJzY2FuIiBvcGVyYXRpb24sCm9uY2UgdGhlc2UgdmFsdWVzIGhhdmUg
-YmVlbiBuZWdvdGlhdGVkLgoKV2l0aG91dCB0aGlzIHByb3BhZ2F0aW9uLCBsYXRlciAoZ2VuZXJp
-YykgY2hlY2tzIGxpa2UgdGhlIG9uZSB3YXJuaW5nCnVzZXJzIHRoYXQgdGhlIEVDQyBzdHJlbmd0
-aCBpcyBub3QgaGlnaCBlbm91Z2ggbWlnaHQgc2ltcGx5IG5vIGxvbmdlcgp3b3JrLgoKRml4ZXM6
-IDhjMTI2NzIwZmUxMCAoIm10ZDogcmF3bmFuZDogVXNlIHRoZSBFQ0MgZnJhbWV3b3JrIG5hbmRf
-ZWNjX2lzX3N0cm9uZ19lbm91Z2goKSBoZWxwZXIiKQpDYzogc3RhYmxlQHZnZXIua2VybmVsLm9y
-ZwpSZXBvcnRlZC1ieTogU2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPgpDbG9z
-ZXM6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9aaGUySnR2dk4xTTRPbXB3QHBlbmd1dHJv
-bml4LmRlLwpTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3Rs
-aW4uY29tPgotLS0KCkhlbGxvIFNhc2NoYSwgdGhpcyBpcyBvbmx5IGNvbXBpbGUgdGVzdGVkLCB3
-b3VsZCB5b3UgbWluZCBjaGVja2luZyBpZgp0aGF0IGZpeGVzIHlvdXIgc2V0dXA/ClRoYW5rcywg
-TWlxdcOobAoKIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jIHwgOSArKysrKysrKy0K
-IDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L25hbmRfYmFzZS5jCmluZGV4IGQ3ZGJiZDQ2OWI4OS4uYWNkMTM3ZGQwOTU3IDEwMDY0NAot
-LS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYworKysgYi9kcml2ZXJzL210ZC9u
-YW5kL3Jhdy9uYW5kX2Jhc2UuYwpAQCAtNjMwMSw2ICs2MzAxLDcgQEAgc3RhdGljIGNvbnN0IHN0
-cnVjdCBuYW5kX29wcyByYXduYW5kX29wcyA9IHsKIHN0YXRpYyBpbnQgbmFuZF9zY2FuX3RhaWwo
-c3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKIHsKIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5hbmRf
-dG9fbXRkKGNoaXApOworCXN0cnVjdCBuYW5kX2RldmljZSAqYmFzZSA9ICZjaGlwLT5iYXNlOwog
-CXN0cnVjdCBuYW5kX2VjY19jdHJsICplY2MgPSAmY2hpcC0+ZWNjOwogCWludCByZXQsIGk7CiAK
-QEAgLTY0NDUsOSArNjQ0NiwxMyBAQCBzdGF0aWMgaW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBu
-YW5kX2NoaXAgKmNoaXApCiAJaWYgKCFlY2MtPndyaXRlX29vYl9yYXcpCiAJCWVjYy0+d3JpdGVf
-b29iX3JhdyA9IGVjYy0+d3JpdGVfb29iOwogCi0JLyogcHJvcGFnYXRlIGVjYyBpbmZvIHRvIG10
-ZF9pbmZvICovCisJLyogUHJvcGFnYXRlIEVDQyBpbmZvIHRvIHRoZSBnZW5lcmljIE5BTkQgYW5k
-IE1URCBsYXllcnMgKi8KIAltdGQtPmVjY19zdHJlbmd0aCA9IGVjYy0+c3RyZW5ndGg7CisJaWYg
-KCFiYXNlLT5lY2MuY3R4LmNvbmYuc3RyZW5ndGgpCisJCWJhc2UtPmVjYy5jdHguY29uZi5zdHJl
-bmd0aCA9IGVjYy0+c3RyZW5ndGg7CiAJbXRkLT5lY2Nfc3RlcF9zaXplID0gZWNjLT5zaXplOwor
-CWlmICghYmFzZS0+ZWNjLmN0eC5jb25mLnN0ZXBfc2l6ZSkKKwkJYmFzZS0+ZWNjLmN0eC5jb25m
-LnN0ZXBfc2l6ZSA9IGVjYy0+c2l6ZTsKIAogCS8qCiAJICogU2V0IHRoZSBudW1iZXIgb2YgcmVh
-ZCAvIHdyaXRlIHN0ZXBzIGZvciBvbmUgcGFnZSBkZXBlbmRpbmcgb24gRUNDCkBAIC02NDU1LDYg
-KzY0NjAsOCBAQCBzdGF0aWMgaW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBuYW5kX2NoaXAgKmNo
-aXApCiAJICovCiAJaWYgKCFlY2MtPnN0ZXBzKQogCQllY2MtPnN0ZXBzID0gbXRkLT53cml0ZXNp
-emUgLyBlY2MtPnNpemU7CisJaWYgKCFiYXNlLT5lY2MuY3R4Lm5zdGVwcykKKwkJYmFzZS0+ZWNj
-LmN0eC5uc3RlcHMgPSBlY2MtPnN0ZXBzOwogCWlmIChlY2MtPnN0ZXBzICogZWNjLT5zaXplICE9
-IG10ZC0+d3JpdGVzaXplKSB7CiAJCVdBUk4oMSwgIkludmFsaWQgRUNDIHBhcmFtZXRlcnNcbiIp
-OwogCQlyZXQgPSAtRUlOVkFMOwotLSAKMi40MC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+On Tue, May 07, 2024 at 09:45:38AM +0200, Miquel Raynal wrote:
+> Hi Sascha,
+> 
+> s.hauer@pengutronix.de wrote on Tue, 7 May 2024 09:12:30 +0200:
+> 
+> > On Mon, May 06, 2024 at 05:51:06PM +0200, Miquel Raynal wrote:
+> > > Hi Miquel,
+> > > 
+> > > miquel.raynal@bootlin.com wrote on Mon, 6 May 2024 16:05:08 +0200:
+> > >   
+> > > > Hi Sascha,
+> > > > 
+> > > > s.hauer@pengutronix.de wrote on Wed, 17 Apr 2024 09:13:30 +0200:
+> > > >   
+> > > > > To support software ECC we still need the driver provided read_oob,
+> > > > > read_page_raw and write_page_raw ops, so set them unconditionally
+> > > > > no matter which engine_type we use. The OOB layout on the other hand
+> > > > > represents the layout the i.MX ECC hardware uses, so set this only
+> > > > > when NAND_ECC_ENGINE_TYPE_ON_HOST is in use.
+> > > > > 
+> > > > > With these changes the driver can be used with software BCH ECC which
+> > > > > is useful for NAND chips that require a stronger ECC than the i.MX
+> > > > > hardware supports.
+> > > > > 
+> > > > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > > > ---
+> > > > >  drivers/mtd/nand/raw/mxc_nand.c | 9 +++++----
+> > > > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+> > > > > index fc70c65dea268..f44c130dca18d 100644
+> > > > > --- a/drivers/mtd/nand/raw/mxc_nand.c
+> > > > > +++ b/drivers/mtd/nand/raw/mxc_nand.c
+> > > > > @@ -1394,15 +1394,16 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
+> > > > >  	chip->ecc.bytes = host->devtype_data->eccbytes;
+> > > > >  	host->eccsize = host->devtype_data->eccsize;
+> > > > >  	chip->ecc.size = 512;
+> > > > > -	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
+> > > > > +
+> > > > > +	chip->ecc.read_oob = mxc_nand_read_oob;
+> > > > > +	chip->ecc.read_page_raw = mxc_nand_read_page_raw;
+> > > > > +	chip->ecc.write_page_raw = mxc_nand_write_page_raw;  
+> > > 
+> > > A second thought on this. Maybe you should consider keeping these for
+> > > on-host operations only.
+> > > 
+> > > The read/write_page_raw operations are supposed to detangle the data
+> > > organization to show a proper [all data][all oob] organization to the
+> > > user.  
+> > 
+> > Let me take one step back. The organisation in the raw NAND is like this
+> > when using hardware ECC:
+> > 
+> > [512b data0][16b oob0][512b data1][16b oob1][512b data2][16b oob2][512b data3][16b oob3]
+> > 
+> > For a standard 2k+64b NAND. The read/write_page_raw operations detangle
+> > this and present the data to the user like this:
+> > 
+> > [2048b data][64b OOB]
+> > 
+> > Is this the correct behaviour or should that be changed?
+> 
+> I believe so, yes.
+> 
+> > (Side note: The GPMI NAND driver behaves differently here. It has the
+> > same interleaved organisation on the chip and also presents the same
+> > interleaved organisation to the user when using read_page_raw)
+> 
+> I'd say the GPMI driver is wrong?
+> 
+> > With my current approach for software ECC the same layout is used on the
+> > NAND chip. It would interleave the data with the OOB on the NAND chip
+> > and, since using the same read/write_page_raw operations, also presents
+> > [2048b data][64b OOB] to the user.
+> 
+> No need, I believe the only reason for interleaving is that your
+> hardware ECC engine works like that (writes the ECC bytes slightly
+> after each chunk of data). So if you don't use on-host hardware ECC,
+> you don't need to deal with this data layout.
+
+Right, I could use a different layout for software ECC. Using the same
+layout for both hardware and software ECC is just quite convenient as
+the same mxc_nand_read_page_raw()/mxc_nand_write_page_raw() could be
+used for both software and hardware ECC.
+
+Another thing that might be worth considering is that if we use
+different functions for raw read/write page is that we would get
+different views on the same raw page data if we switch from software to
+hardware ECC or the other way round which might be confusing.
+
+> 
+> > This works fine currently, but means that NAND_CMD_RNDOUT can't be used.
+> > Using NAND_CMD_RNDOUT to position the cursor at offset 512b for example
+> > doesn't give you the second subpage, but instead oob0. Positioning the
+> > cursor at offset 2048 doesn't give you the start of OOB, but some
+> > position in the middle of data3.
+> > 
+> > Ok, NAND_CMD_RNDOUT can't be used for hardware ECC and there's no way
+> > around it. For software ECC we could change the organisation in the chip
+> > to be [2048b data][64b oob]. With that NAND_CMD_RNDOUT then could be
+> > used with software ECC.
+> > 
+> > You say that NAND_CMD_RNDOUT is a basic command that is supported by all
+> > controllers, and yes, it is also supported with the mxc_nand controller.
+> > You just can't control how many bytes are transferred between the NAND
+> > chip and the controller. When using NAND_CMD_RNDOUT to read a few bytes
+> > at a certain page offset we'll end up reading 512 bytes discarding most
+> > of it. For the next ECC block we would move the cursor forward using
+> > another NAND_CMD_RNDOUT command, again read 512 bytes and discard most
+> > it (altough the desired data would have been in the first read already).
+> 
+> I'm not sure the controller limitations are so bad in this case. The
+> core helpers (using the same example) will ask for:
+> - 512b at offset 0
+> - 512b at offset 512...
+> - and finally 64b at offset 2048.
+> In practice it does not look like a huge drawback? I don't understand
+> in which case so much data would be read and then discarded?
+
+Yes, you're right. I misread the code and thought the core would read
+the ECC separately for each subpage. In fact it doesn't do so, the ECC
+is always read in one go even for multiple subpages.
+
+> 
+> > So I think NAND_CMD_RNDOUT should really be avoided for this controller,
+> > eventhough we might be able to support it.
+> 
+> I also mentioned the monolithic accessors which try to avoid these
+> random column changes. You probably want to check them out, they might
+> just avoid the need for NAND_CMD_RNDOUT by forcing full page accesses
+> directly. The reason why they were introduced is not exactly our
+> current use case, but it feels like they might be handy.
+> 
+> 658beb663960 ("mtd: rawnand: Expose monolithic read/write_page_raw() helpers")
+> 0e7f4b64ea46 ("mtd: rawnand: Allow controllers to overload soft ECC hooks")
+
+Yes, I already make use of 0e7f4b64ea46. My problem is only the ecc.read_subpage
+hook which can't be overwritten and AFAIK this is the only way
+NAND_CMD_RNDOUT might be used in my case.
+
+I think my favourite solution would be to:
+
+- store data/OOB interleaved for both hardware and software ECC
+- For software ECC use a similar OOB layout as used with hardware
+  ECC. This allows us to read a subpage including its ECC data in
+  a single step (just like with hardware ECC the controller just
+  reads 512b + 16b for each subpage)
+- Allow to disable subpage reads in the NAND core
+
+As a further optimisation we could make ecc.read_subpage overwritable
+for ecc->engine_type == NAND_ECC_ENGINE_TYPE_SOFT && ecc->algo ==
+NAND_ECC_ALGO_BCH. With the OOB layout described above that would be
+easily implementable with the mxc_nand controller.
+
+What do you think?
+
+If you insist I would go the path of making NAND_CMD_RNDOUT work for
+software ECC, although I think it would cause me extra work with no
+clear gain for me.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
