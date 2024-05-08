@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1A96C19F4F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 14:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF2FC19F4F
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 15:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+hG5VPJcEkl2C3tKKTv8yqEyuAHtiB2EKzumhQofWn8=; b=pJfARDVgbWu4pe
-	olDmq+9AyhSHtMbDxQ7I36eq0l1YoARS8ApCu7Zos/So6y0xnZCNFMq6Zn+OeNLegAcAlWNqikvdM
-	XYsztAcINPl/SmzghFQtDlPa31ohA3cPnvpEF6tYPDnHuyEEbs6km94Qhd63ppm3ggZMcJr8m/i5a
-	/oB9qmwNjHxFu26UbO6eOjOjwZ28SA6qP2prH4wlgIW2ocHwgQzxAzT73eDx50RunuoqWqt2X22tL
-	oHH93YgcjEYPF5Ij0HSXR9sO87bjtJhDlg8rK+L+8RMewefbCZCYOOwidNhSaC4dbFoAnTtkbUhxM
-	5D8JsY1CpPHf4+gJvt5A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JxETX1Bz/vrR48PfKNhjGWTcOwVJah4X7s5hCzI/6OQ=; b=nfu2w+Mqpc2rGr
+	IME6RKRqhGhep4y0DpMVbtvTXzcz6ImcHbtneMP1ML4jR41VZswNMHjBbhjRNAHq96u7V/hdyOa2K
+	uydlqXiHIlhwZ9omyI76XGCysqvmmw00AYs3tYonEThXRgExS3WFI3PPnvlwGmJMIEcx2xavvGed/
+	dsqOg1YeV0Hz+ECc+tvq+vEO0UV6EACnjaTyJH8WWqiITP38WI3nYFTPXUTDJ0a+QcvHEoF/MJbjO
+	2/brTJ2azjy6W19h4V6iAPFsuWX1XYaSIjp36KO7fY7R1WOT/8d6v3LUZ+7l9NfBhhNqeV68/czPC
+	Ba+yxB3MGMo9NyjQS0ZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4hz4-0000000FnRI-0f3r;
-	Wed, 08 May 2024 14:09:26 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1s4iyF-0000000FyAd-36Gj;
+	Wed, 08 May 2024 15:12:39 +0000
+Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4hyv-0000000FnOq-2NKK;
-	Wed, 08 May 2024 14:09:23 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 31151CE12EA;
-	Wed,  8 May 2024 14:09:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E100C113CC;
-	Wed,  8 May 2024 14:09:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715177353;
-	bh=VZyUtgn7CSrqZqD2WXaMMzb6R5zKmx5KV+opHAphR2Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FfK55lXIxxm/5TEJWNmw3vYYan6hnJpce8FOxpJnul6TMsmsdOk7CmNCaHYXaOobc
-	 pa5rpx0Jd0c5mg/SyIYRivD8ofsnFlUBpyE2Va4NH7ZxymuNaGhwpUxSZYfB2RJ7sI
-	 KbvYvutvUYdtmv3zLRpKMUjZ1/X17Sm5tqd9VhkCKU0tiUJF6o8N+yIDi1t8q1a48O
-	 51vQYjhGDcswN4zd/4iBPrFuD5lQb/DSm0ULYs9ytwRvV1f7S9cAmunIAilmKkYN3s
-	 8/aDsad/YDxVTA4PmV5g3jydDY5244NkvnQdQAeWt2kv+k8lGqmPn5/9E5NPaqdong
-	 avbGNizqPHUMQ==
-Date: Wed, 8 May 2024 09:09:11 -0500
-From: "Rob Herring (Arm)" <robh@kernel.org>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
-	Kevin Hilman <khilman@baylibre.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, oxffffaa@gmail.com,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	linux-amlogic@lists.infradead.org, kernel@sberdevices.ru,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: amlogic,meson-nand: support
- fields for boot ROM code
-Message-ID: <171517732606.1572649.16193191353725811830.robh@kernel.org>
-References: <20240507230903.3399594-1-avkrasnov@salutedevices.com>
- <20240507230903.3399594-2-avkrasnov@salutedevices.com>
+	id 1s4iy6-0000000Fy8k-3Xdt
+	for linux-mtd@lists.infradead.org;
+	Wed, 08 May 2024 15:12:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715181151; x=1746717151;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NeKIszsGqh9jwuCffltG5mcAS23lZDfRVcT3V/NAucg=;
+  b=T5Y7IjsDIT3pEXlNS/3DTK4Qjx3DWG7z2V5bMgQiBnqBdz/FlOVhOn06
+   F97qAQDjBdh5VBYLsoEb2S5inSUjojA36OHITowDFMLadQ8jh7vDQIi9h
+   ZJvQHwatBDmtfzvsHZ8BE24wa35Cl7tVqA8+b0G2QlasFsW5O7bJ6qymk
+   j8VDkPWnxGEBrzPAGaBZFIQf6bMgOrwWp5SeLi6zfjSk5FRxdXX1TWrcY
+   wqu3o8zaN6P/sCCAjtKYv2qCwyIjTo39fi8vpRxQng7tSW0Or3ySllNwo
+   ChMUcBFLtf568yPzn5P8LtA1eS/OfcqjvobPPwHoaEJ2DeK225HOlsONU
+   g==;
+X-CSE-ConnectionGUID: O+BT1QNOT5qtGVv2qk7upw==
+X-CSE-MsgGUID: 0IwjjLvcQLW7o7D2RuOzeg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="13995758"
+X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
+   d="scan'208";a="13995758"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 08:12:29 -0700
+X-CSE-ConnectionGUID: slK9hIdPTcSp/pfKo+282w==
+X-CSE-MsgGUID: lEg6CzfaRZydWglcXvrh8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
+   d="scan'208";a="33442219"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa003.fm.intel.com with ESMTP; 08 May 2024 08:12:27 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 4F32F11F; Wed, 08 May 2024 18:12:26 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v1 1/1] mtd: physmap: Use *-y instead of *-objs in Makefile
+Date: Wed,  8 May 2024 18:11:53 +0300
+Message-ID: <20240508151222.1443491-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240507230903.3399594-2-avkrasnov@salutedevices.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240508_070917_811571_005BA983 
-X-CRM114-Status: GOOD (  14.32  )
+X-CRM114-CacheID: sfid-20240508_081230_913072_F0782D8E 
+X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,39 +88,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+*-objs suffix is reserved rather for (user-space) host programs while
+usually *-y suffix is used for kernel drivers (although *-objs works
+for that purpose for now).
 
-On Wed, 08 May 2024 02:09:01 +0300, Arseniy Krasnov wrote:
-> Boot ROM code on Meson requires that some pages on NAND must be written
-> in special mode: "short" ECC mode where each block is 384 bytes and
-> scrambling mode is on. Such pages are located on the chip in the
-> following way (for example):
-> 
-> [ p0 ][ p1 ][ p2 ][ p3 ][ p4 ][ p5 ][ p6 ][ p7 ] ... [ pN ]
->   ^           ^           ^           ^
-> 
-> pX is page number "X". "^" means "special" page used by boot ROM - e.g.
-> every 2nd page in the range of [0, 7]. Step (2 in example is set by
-> 'amlogic,boot-page-step' field. Last page in range (7 in example) is
-> set by 'amlogic,boot-pages' field.
-> 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.yaml       | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
+Let's correct the old usages of *-objs in Makefiles.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+Note, the original approach is weirdest from the existing.
+Only a few drivers use this (-objs-y) one most likely by mistake.
 
-If a tag was not added on purpose, please state why and what changed.
+ drivers/mtd/maps/Makefile | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-Missing tags:
-
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-
-
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index a9083c888e3b..019f1e92cc41 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -17,13 +17,12 @@ obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
+ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+-physmap-objs-y			+= physmap-core.o
+-physmap-objs-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
+-physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
+-physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
+-physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+-physmap-objs			:= $(physmap-objs-y)
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
++physmap-y			:= physmap-core.o
++physmap-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
++physmap-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
++physmap-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
++physmap-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
 
 ______________________________________________________
