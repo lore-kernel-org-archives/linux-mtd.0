@@ -4,81 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B3E9C25B4F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 17:54:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B7EEC04FFE
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 18:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q8P0e6m4iFO3JQwLGYNUprUD/B/li8uB8aiiu4xn9/8=; b=30QSUiLIR9OdA/
-	n8uXdhD9QGwF3Tb6hcR0jsFfaknViIje8T/wUhA9lDGoGHEihAaMFu19FkHWQBletRFv5aPvvTvsg
-	lFUQnRk6f/gnAGrAAjF35CHKUrfHc70P7N1rUCkS3QYuedfQ3zKNcw0sassZ/ZtOBIR7g8haOR8c2
-	2ZZt2GUOSS6PsMxmr4qMc1JyhJRmvPmZJX1UXDeBrCe4n1v60qCPzRL+o4yAFIxHT4CsCXY1xcHJU
-	mauYUzhYcZdErk+tz/JjGlPCxqOZ34zsAvITJEvMru2/qer+Lnn+0Qii4Jtq/x/vU1959zrq9ixne
-	hj/cxLVoqeEQgzTxf27Q==;
+	List-Owner; bh=rTA54ELo4PNVumx/Elz//COOcV064PmKkNvHB+5Ay88=; b=wbwFmR1xGpQvrq
+	CVSv35puGoAuDgOSZOckS7e8j0QBioD9Orbw+lsxG0j2ztmvXQdhq0s4iBeGzETu5zU+J1285CD/i
+	7JTyyi65jtzRMsp+nQrSP3leqm+ziUBAhiKhdKwoHu1bpOnyElao9l+OHFP/qE3Jd6w+TpQW3BkwD
+	BWn79Fxvrrs/lAd9T/NB1vtW2npD1mBPKMC77DAv/RdhFpb6FDOnsnXTszVKvaLi0N8toxFApWNOS
+	7kABUqUKwoX1SrKHZuODIUzkM+RmtcY66GSEb60kPSrLCulRJKIeei3PxJRM1rJTPpMHsVMRBd5C8
+	n2D6j+rZURWbmycmcCgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4lUI-0000000GSEu-1Y2k;
-	Wed, 08 May 2024 17:53:54 +0000
-Received: from mgamail.intel.com ([198.175.65.13])
+	id 1s4loy-0000000GVVJ-0b6L;
+	Wed, 08 May 2024 18:15:16 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4lUB-0000000GSBj-1YVQ
+	id 1s4lor-0000000GVUW-2SHA
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 May 2024 17:53:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715190828; x=1746726828;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=da7eBN+RCnZYS2bJ+PqxlbsRBwzsYBthm4w6NriSzsM=;
-  b=b36DrL8LrWKEVD86gHw7JljTNLM2h0imJZJUZvKK0hUMCyHMFDrdfjcW
-   e+kG1NKZqyrD96C/F0BRaMv+VVMoN8siHPmpVl9HTrNQ97Y53YjugRfjq
-   e7YEDfH5ncOzJJrT8OTjmkJpdYurSA27Tst8JvR8bfnVjdI1I1J7TbTQ1
-   9CPMGcg8L0bosoc8IRDYOlR/IcWEqXC7Aehv6YwKfa74M5gKxuBo074dY
-   O3Niv9qW4QuSy6N4SiGTvnZFivzuhQVAPeI13F8Sq3IWap7w8AGjgs/Eu
-   X1iL1CzX766TrkdQdPqdtEWVY1qDRC1y8L7c7cCe1FN4emaActovSg9h7
-   Q==;
-X-CSE-ConnectionGUID: OSVXX/YqRHSbfW9uIPJ3CQ==
-X-CSE-MsgGUID: dXef5w3MS+CyJWXX9QRn0g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="22224101"
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="22224101"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 10:53:44 -0700
-X-CSE-ConnectionGUID: 9Bra/CBrRnqTGHL0eAcyFA==
-X-CSE-MsgGUID: FeVJ71DUSVuEx93t50Wyfg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="28909170"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 10:53:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1s4lTy-00000005Wu3-46qY;
-	Wed, 08 May 2024 20:53:34 +0300
-Date: Wed, 8 May 2024 20:53:34 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+	Wed, 08 May 2024 18:15:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 433B9CE19D9;
+	Wed,  8 May 2024 18:15:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F628C113CC;
+	Wed,  8 May 2024 18:15:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715192106;
+	bh=TFkpB6wqKib5yUSM2ThxFvN6vK5tKlCFz/zYQwF7gCA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=D1AqxpRxVwISEygzVftkCfgH12sPYUTcFBx5sRUjTlrl89eUScUviDA3HEHZdNctc
+	 yUCqiJDvfB1Uen/RirMxBDihLigc/5NaiA89/xBRU8i0Dc7yXnagWbHiqjWGdw8IQf
+	 n35iJkuuz3xDf4sm/hOrgllczdExTVBDDBGeVizEdbSAm8M74kW7oxWLtH3+kY0x0l
+	 m8ABKVgO9dWpx/gQKjTQiyoRGv6rU8lJYGlDGHvgTF09h+Uo8TAk4WIs6tk+hBjSUO
+	 aHapQObIdvG8mf98wTcZ83GH+xI7KQ10DkQyrbVyzD08URsWGMXp8RTTCzbWXZeiDO
+	 965F11jrNhozg==
+Message-ID: <6599e2a3-3b04-4ea2-aa5c-a916b66c8009@kernel.org>
+Date: Wed, 8 May 2024 20:15:00 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 2/2] eeprom: 93xx46: drop unneeded MODULE_ALIAS
-Message-ID: <Zju8HpBCiOjjIZ1j@smile.fi.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20240414154957.127113-1-krzk@kernel.org>
  <20240414154957.127113-3-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240414154957.127113-3-krzk@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+ <Zju8HpBCiOjjIZ1j@smile.fi.intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <Zju8HpBCiOjjIZ1j@smile.fi.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240508_105347_475923_7C0FB4B2 
-X-CRM114-Status: UNSURE (   9.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240508_111510_044887_664BFFF8 
+X-CRM114-Status: GOOD (  10.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,26 +121,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Apr 14, 2024 at 05:49:57PM +0200, Krzysztof Kozlowski wrote:
-> The ID table already has respective entry and MODULE_DEVICE_TABLE and
-> creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
-> the alias to be duplicated.
+On 08/05/2024 19:53, Andy Shevchenko wrote:
+> On Sun, Apr 14, 2024 at 05:49:57PM +0200, Krzysztof Kozlowski wrote:
+>> The ID table already has respective entry and MODULE_DEVICE_TABLE and
+>> creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
+>> the alias to be duplicated.
+> 
+> ...
+> 
+>>  MODULE_ALIAS("spi:93xx46");
+> 
+> I was stumbled over this (leftover?).
+> Commit message doesn't elaborate this bit.
+> Any comments?
 
-...
+It is not present in ID table and commit msg removes only duplicated
+aliases. That alias has meaning - someone might be actually relying on it.
 
->  MODULE_ALIAS("spi:93xx46");
-
-I was stumbled over this (leftover?).
-Commit message doesn't elaborate this bit.
-Any comments?
-
-> -MODULE_ALIAS("spi:eeprom-93xx46");
-> -MODULE_ALIAS("spi:93lc46b");
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
