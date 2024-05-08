@@ -4,73 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF2FC19F4F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 15:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B3E9C25B4F
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 17:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JxETX1Bz/vrR48PfKNhjGWTcOwVJah4X7s5hCzI/6OQ=; b=nfu2w+Mqpc2rGr
-	IME6RKRqhGhep4y0DpMVbtvTXzcz6ImcHbtneMP1ML4jR41VZswNMHjBbhjRNAHq96u7V/hdyOa2K
-	uydlqXiHIlhwZ9omyI76XGCysqvmmw00AYs3tYonEThXRgExS3WFI3PPnvlwGmJMIEcx2xavvGed/
-	dsqOg1YeV0Hz+ECc+tvq+vEO0UV6EACnjaTyJH8WWqiITP38WI3nYFTPXUTDJ0a+QcvHEoF/MJbjO
-	2/brTJ2azjy6W19h4V6iAPFsuWX1XYaSIjp36KO7fY7R1WOT/8d6v3LUZ+7l9NfBhhNqeV68/czPC
-	Ba+yxB3MGMo9NyjQS0ZA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=q8P0e6m4iFO3JQwLGYNUprUD/B/li8uB8aiiu4xn9/8=; b=30QSUiLIR9OdA/
+	n8uXdhD9QGwF3Tb6hcR0jsFfaknViIje8T/wUhA9lDGoGHEihAaMFu19FkHWQBletRFv5aPvvTvsg
+	lFUQnRk6f/gnAGrAAjF35CHKUrfHc70P7N1rUCkS3QYuedfQ3zKNcw0sassZ/ZtOBIR7g8haOR8c2
+	2ZZt2GUOSS6PsMxmr4qMc1JyhJRmvPmZJX1UXDeBrCe4n1v60qCPzRL+o4yAFIxHT4CsCXY1xcHJU
+	mauYUzhYcZdErk+tz/JjGlPCxqOZ34zsAvITJEvMru2/qer+Lnn+0Qii4Jtq/x/vU1959zrq9ixne
+	hj/cxLVoqeEQgzTxf27Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4iyF-0000000FyAd-36Gj;
-	Wed, 08 May 2024 15:12:39 +0000
-Received: from mgamail.intel.com ([192.198.163.13])
+	id 1s4lUI-0000000GSEu-1Y2k;
+	Wed, 08 May 2024 17:53:54 +0000
+Received: from mgamail.intel.com ([198.175.65.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4iy6-0000000Fy8k-3Xdt
+	id 1s4lUB-0000000GSBj-1YVQ
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 May 2024 15:12:37 +0000
+	Wed, 08 May 2024 17:53:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715181151; x=1746717151;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NeKIszsGqh9jwuCffltG5mcAS23lZDfRVcT3V/NAucg=;
-  b=T5Y7IjsDIT3pEXlNS/3DTK4Qjx3DWG7z2V5bMgQiBnqBdz/FlOVhOn06
-   F97qAQDjBdh5VBYLsoEb2S5inSUjojA36OHITowDFMLadQ8jh7vDQIi9h
-   ZJvQHwatBDmtfzvsHZ8BE24wa35Cl7tVqA8+b0G2QlasFsW5O7bJ6qymk
-   j8VDkPWnxGEBrzPAGaBZFIQf6bMgOrwWp5SeLi6zfjSk5FRxdXX1TWrcY
-   wqu3o8zaN6P/sCCAjtKYv2qCwyIjTo39fi8vpRxQng7tSW0Or3ySllNwo
-   ChMUcBFLtf568yPzn5P8LtA1eS/OfcqjvobPPwHoaEJ2DeK225HOlsONU
-   g==;
-X-CSE-ConnectionGUID: O+BT1QNOT5qtGVv2qk7upw==
-X-CSE-MsgGUID: 0IwjjLvcQLW7o7D2RuOzeg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="13995758"
+  t=1715190828; x=1746726828;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=da7eBN+RCnZYS2bJ+PqxlbsRBwzsYBthm4w6NriSzsM=;
+  b=b36DrL8LrWKEVD86gHw7JljTNLM2h0imJZJUZvKK0hUMCyHMFDrdfjcW
+   e+kG1NKZqyrD96C/F0BRaMv+VVMoN8siHPmpVl9HTrNQ97Y53YjugRfjq
+   e7YEDfH5ncOzJJrT8OTjmkJpdYurSA27Tst8JvR8bfnVjdI1I1J7TbTQ1
+   9CPMGcg8L0bosoc8IRDYOlR/IcWEqXC7Aehv6YwKfa74M5gKxuBo074dY
+   O3Niv9qW4QuSy6N4SiGTvnZFivzuhQVAPeI13F8Sq3IWap7w8AGjgs/Eu
+   X1iL1CzX766TrkdQdPqdtEWVY1qDRC1y8L7c7cCe1FN4emaActovSg9h7
+   Q==;
+X-CSE-ConnectionGUID: OSVXX/YqRHSbfW9uIPJ3CQ==
+X-CSE-MsgGUID: dXef5w3MS+CyJWXX9QRn0g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="22224101"
 X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="13995758"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 08:12:29 -0700
-X-CSE-ConnectionGUID: slK9hIdPTcSp/pfKo+282w==
-X-CSE-MsgGUID: lEg6CzfaRZydWglcXvrh8g==
+   d="scan'208";a="22224101"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 10:53:44 -0700
+X-CSE-ConnectionGUID: 9Bra/CBrRnqTGHL0eAcyFA==
+X-CSE-MsgGUID: FeVJ71DUSVuEx93t50Wyfg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="33442219"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa003.fm.intel.com with ESMTP; 08 May 2024 08:12:27 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 4F32F11F; Wed, 08 May 2024 18:12:26 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+   d="scan'208";a="28909170"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 10:53:38 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1s4lTy-00000005Wu3-46qY;
+	Wed, 08 May 2024 20:53:34 +0300
+Date: Wed, 8 May 2024 20:53:34 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH v1 1/1] mtd: physmap: Use *-y instead of *-objs in Makefile
-Date: Wed,  8 May 2024 18:11:53 +0300
-Message-ID: <20240508151222.1443491-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] eeprom: 93xx46: drop unneeded MODULE_ALIAS
+Message-ID: <Zju8HpBCiOjjIZ1j@smile.fi.intel.com>
+References: <20240414154957.127113-1-krzk@kernel.org>
+ <20240414154957.127113-3-krzk@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240414154957.127113-3-krzk@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240508_081230_913072_F0782D8E 
-X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-CacheID: sfid-20240508_105347_475923_7C0FB4B2 
+X-CRM114-Status: UNSURE (   9.96  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,46 +95,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-*-objs suffix is reserved rather for (user-space) host programs while
-usually *-y suffix is used for kernel drivers (although *-objs works
-for that purpose for now).
+On Sun, Apr 14, 2024 at 05:49:57PM +0200, Krzysztof Kozlowski wrote:
+> The ID table already has respective entry and MODULE_DEVICE_TABLE and
+> creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
+> the alias to be duplicated.
 
-Let's correct the old usages of *-objs in Makefiles.
+...
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+>  MODULE_ALIAS("spi:93xx46");
 
-Note, the original approach is weirdest from the existing.
-Only a few drivers use this (-objs-y) one most likely by mistake.
+I was stumbled over this (leftover?).
+Commit message doesn't elaborate this bit.
+Any comments?
 
- drivers/mtd/maps/Makefile | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+> -MODULE_ALIAS("spi:eeprom-93xx46");
+> -MODULE_ALIAS("spi:93lc46b");
 
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index a9083c888e3b..019f1e92cc41 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -17,13 +17,12 @@ obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
- obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
--physmap-objs-y			+= physmap-core.o
--physmap-objs-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
--physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
--physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
--physmap-objs-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
--physmap-objs			:= $(physmap-objs-y)
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
-+physmap-y			:= physmap-core.o
-+physmap-$(CONFIG_MTD_PHYSMAP_BT1_ROM) += physmap-bt1-rom.o
-+physmap-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
-+physmap-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
-+physmap-$(CONFIG_MTD_PHYSMAP_IXP4XX) += physmap-ixp4xx.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
- obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
- obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
 -- 
-2.43.0.rc1.1336.g36b5255a03ac
+With Best Regards,
+Andy Shevchenko
+
 
 
 ______________________________________________________
