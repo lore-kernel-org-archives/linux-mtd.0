@@ -4,72 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F29C25B4F
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 06:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08BBEC19F4F
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 May 2024 08:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dBRJyK8zz8PTF1ifB0umuOnoDUpRjRjtuL85YQQFDJM=; b=D/GaQmfzR48IDe
-	BSVaVS72HjNztwKtpnBgncAv/ohdxotw7lAglDu3U5nO/FF+dhakzllc1mWUP+o++022vhWbxzlx0
-	h2PkAOz+87mHaWvKz+KgXfMnr8YTJVaMjbbspcEQlv7CM4v1dgS2x55XHCQh+/P2FSgnj+FpmqoaP
-	9ghyX5Sb98F57cj9oZcj7+fgn+Tv+vDjlp7jKEcux8cLhgYq3ay+7Y/PVzhO4Mr3LPc15Q3XIXtOj
-	aTccY7+k9xS3jkLHw6cZEm5RtWG2n9O7uj6XbsdsmiY4e5CHetmp7CCsSctisnBi+LysbpsxCK+qd
-	S+MOMOnQLQ0sNH50bCTg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YL1uIfkxnqrOLJmmL0odFYWD8Hvnl+u9vB2Grqrp5i0=; b=GgH9Q/GFtCSRBk
+	hPPH0lt2pa8XhKOppSrfKFsKsQ1aggjhle/KOPUjv1q4oO4TzfuVbKpURLP19v6RqkJn7wu/lkS9X
+	SXoKRn9U6zPEgrFaAWssiZ4CO7A60U1pljDF1XveXNZVt/QedPtdamiKZ7iyA4UVLOKM/hZuEPFXk
+	vM1stTx6HMjsdF6eXKYsgnVz4ipdQEUkGnzadaY2giQOlPZzgjiLs54A8AFiyVIqHDzp/nm+PiARq
+	GwP4KA63U8jeblsQEmd8fZsTxEGVCpm2wDnIktmol8bFN3OLqqzafO9AvuUq6zuG/gagY4OqUnqWG
+	6saklM9YpQ3MXIXfJa0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4azy-0000000EHNd-3NAn;
-	Wed, 08 May 2024 06:41:54 +0000
-Received: from mail.thorsis.com ([2003:a:e28:26e4::10])
+	id 1s4cnW-0000000EdWQ-1GdR;
+	Wed, 08 May 2024 08:37:10 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s4azs-0000000EHMQ-3lp7
+	id 1s4cnP-0000000EdQ4-3k2a
 	for linux-mtd@lists.infradead.org;
-	Wed, 08 May 2024 06:41:52 +0000
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4402C1487F8D;
-	Wed,  8 May 2024 08:41:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=dkim;
-	t=1715150506; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=6OoEksKaoMJMftePwSYkDUWexbh0YId9wFcw5AtRcgY=;
-	b=cL+qAbNDUpTEsslUQMeMoGb5X9ObZlmWtegaKd/dqNWbonjS5IFBhPy3ccLsUd5priurt4
-	mWabOkzvuXlMUiSpdGeQ8OaH24SlRle4NbsBTw0Vx2PrvNhXUfwYng5KWiAUYuoH6fFr3X
-	OvrE1zW0WvoykhTEd+ughSXI5QSqMTFcw5bNaN5XclQZYdOwcHHWj24JV7ZuuBs/39pprp
-	VM+lRXlWWzdaBf6UrIPKslP/tIOaXJX+UPTurWL4In5SAoRXupJRt4/lL3Cwyv4/CV7W7N
-	i7vS/mt/d8HXYoTAA0zdgDyqpWuVkmfXn+/0Ocdkhfhdte8ZKzYn6MQJd1d5Ww==
-Date: Wed, 8 May 2024 08:41:44 +0200
-From: Alexander Dahl <ada@thorsis.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	stable@vger.kernel.org, Alexander Dahl <ada@thorsis.com>,
-	Steven Seeger <steven.seeger@flightsystems.net>
-Subject: Re: [PATCH 2/2] mtd: rawnand: Bypass a couple of sanity checks
- during NAND identification
-Message-ID: <20240508-patient-cover-54085f1981d8@thorsis.com>
-Mail-Followup-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	stable@vger.kernel.org,
-	Steven Seeger <steven.seeger@flightsystems.net>
-References: <20240507160546.130255-1-miquel.raynal@bootlin.com>
- <20240507160546.130255-3-miquel.raynal@bootlin.com>
+	Wed, 08 May 2024 08:37:06 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4486kWQZ027280;
+	Wed, 8 May 2024 08:36:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=l/ZPy/NScZS1QnKjOaWM
+	3P4DZKYqM4mnhWvfYuSNg9g=; b=FjgIpiiyNBnKZDuwemXx40J7qUVrdu+BKfjV
+	7UmSF/DbQwn82Z+5nyOxuPwpR/kipT8vS/TkdKvSsQuyThUaC9OOXrCsGH+btBCv
+	pEcZY+v8NUhJ12S/kTf6CkwxaiMJOTb+4+Nq0XxSb8vVfSDcOdONwVNcfFH9TZeA
+	VEcVC83a+nVmBTXL3FCYr/734SD4Hc7n3LBQJf2mGmnHEJ3P9nlo5Z48zHAqjJs9
+	YztJodp2ytxGp+Rtm1E3yBQVkejTqJc7dD8/Ds8SozFzO+oHGMnYsESOYuakTTLS
+	C+9RBUPebga9OrMpe0Ii1RUDo9GabMGXfIU+fy/1yVaik8Xl6Q==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xyspmsata-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 08 May 2024 08:36:45 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 4488afsS001204;
+	Wed, 8 May 2024 08:36:41 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3xwe3kwch4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 08 May 2024 08:36:41 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4488ae3Y001173;
+	Wed, 8 May 2024 08:36:41 GMT
+Received: from hu-devc-blr-u22-a.qualcomm.com (hu-mdalam-blr.qualcomm.com [10.131.36.157])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 4488aePJ001168
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 08 May 2024 08:36:40 +0000
+Received: by hu-devc-blr-u22-a.qualcomm.com (Postfix, from userid 466583)
+	id 094C44119C; Wed,  8 May 2024 14:06:40 +0530 (+0530)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+        conor+dt@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com,
+        quic_mdalam@quicinc.com
+Subject: [PATCH v5 0/7] Add QPIC SPI NAND driver
+Date: Wed,  8 May 2024 14:06:30 +0530
+Message-Id: <20240508083637.3744003-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240507160546.130255-3-miquel.raynal@bootlin.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Last-TLS-Session-Version: TLSv1.3
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4HFbH_7SKiWm3_Dx9Y_UA5mywC0q2kOq
+X-Proofpoint-ORIG-GUID: 4HFbH_7SKiWm3_Dx9Y_UA5mywC0q2kOq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-08_04,2024-05-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 adultscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=417 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405010000 definitions=main-2405080060
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240507_234149_287118_067B112C 
-X-CRM114-Status: GOOD (  21.90  )
+X-CRM114-CacheID: sfid-20240508_013704_399962_14C140D6 
+X-CRM114-Status: GOOD (  10.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,69 +106,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miquel,
+v5:
+ * Fixes nandbiterr issue
+ * Added raw_read() and raw_write() API
+ * Added qcom_ prefix to all the common API
+ * Removed register indirection
+ * Following tests for SPI-NAND devices passed
 
-Am Tue, May 07, 2024 at 06:05:46PM +0200 schrieb Miquel Raynal:
-> Early during NAND identification, mtd_info fields have not yet been
-> initialized (namely, writesize and oobsize) and thus cannot be used for
-> sanity checks yet. Of course if there is a misuse of
-> nand_change_read_column_op() so early we won't be warned, but there is
-> anyway no actual check to perform at this stage as we do not yet know
-> the NAND geometry.
-> 
-> So, if the fields are empty, especially mtd->writesize which is *always*
-> set quite rapidly after identification, let's skip the sanity checks.
-> 
-> nand_change_read_column_op() is subject to be used early for ONFI/JEDEC
-> identification in the very unlikely case of:
-> - bitflips appearing in the parameter page,
-> - the controller driver not supporting simple DATA_IN cycles.
-> 
-> Fixes: c27842e7e11f ("mtd: rawnand: onfi: Adapt the parameter page read to constraint controllers")
-> Fixes: daca31765e8b ("mtd: rawnand: jedec: Adapt the parameter page read to constraint controllers")
-> Cc: stable@vger.kernel.org
-> Reported-by: Alexander Dahl <ada@thorsis.com>
-> Closes: https://lore.kernel.org/linux-mtd/20240306-shaky-bunion-d28b65ea97d7@thorsis.com/
-> Reported-by: Steven Seeger <steven.seeger@flightsystems.net>
-> Closes: https://lore.kernel.org/linux-mtd/DM6PR05MB4506554457CF95191A670BDEF7062@DM6PR05MB4506.namprd05.prod.outlook.com/
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 248e654ecefd..a66e73cd68cb 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -1440,12 +1440,14 @@ int nand_change_read_column_op(struct nand_chip *chip,
->  	if (len && !buf)
->  		return -EINVAL;
->  
-> -	if (offset_in_page + len > mtd->writesize + mtd->oobsize)
-> -		return -EINVAL;
-> +	if (mtd->writesize) {
-> +		if ((offset_in_page + len > mtd->writesize + mtd->oobsize))
-> +			return -EINVAL;
+   - mtd_oobtest
+   - mtd_pagetest
+   - mtd_readtest
+   - mtd_speedtest
+   - mtd_stresstest
+   - mtd_subpagetest
+   - mtd_nandbiterrs
+   - nandtest
+   - nanddump
+   - nandwrite
+   - nandbiterr -i
+   - mtd erase
+   - mtd write
+   - dd
+   - hexddump
+v4:
+ * In this patch series fixes kernel doc for all the cmmon api
+ * Also fixes dm-binding commit message
+ * Fix qpic_common.c compilation based on config
 
-These doubled (( )) are new and I think not necessary?
+v3:
+ * In this patch series fixes multiple things like
+   added clock-name, added _alloc_controller api instead
+   of alloc_master, made common apis more generic etc.
 
-Greets
-Alex
+ * Addressed all the comment from v2 patch series
 
->  
-> -	/* Small page NANDs do not support column change. */
-> -	if (mtd->writesize <= 512)
-> -		return -ENOTSUPP;
-> +		/* Small page NANDs do not support column change. */
-> +		if (mtd->writesize <= 512)
-> +			return -ENOTSUPP;
-> +	}
->  
->  	if (nand_has_exec_op(chip)) {
->  		const struct nand_interface_config *conf =
-> -- 
-> 2.40.1
-> 
+v2:
+ * https://lore.kernel.org/linux-arm-msm/20240215134856.1313239-1-quic_mdalam@quicinc.com/
+ * In this series of patchs we have added basic working QPIC SPI NAND
+   driver with READ, WRITE, ERASE etc functionality
+
+ * Addressed all the comments given in RFC [v1] patch
+
+v1:
+ * https://lore.kernel.org/linux-arm-msm/20231031120307.1600689-1-quic_mdalam@quicinc.com/
+ * Initial set of patches for handling QPIC SPI NAND.
+
+Md Sadre Alam (7):
+  spi: dt-bindings: Introduce qcom,spi-qpic-snand
+  mtd: rawnand: qcom: cleanup qcom_nandc driver
+  mtd: rawnand: qcom: Add qcom prefix to common api
+  drivers: mtd: nand: Add qpic_common API file
+  spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
+  arm64: dts: qcom: ipq9574: Add SPI nand support
+  arm64: dts: qcom: ipq9574: Disable eMMC node
+
+ .../bindings/spi/qcom,spi-qpic-snand.yaml     |   83 +
+ .../boot/dts/qcom/ipq9574-rdp-common.dtsi     |   43 +
+ arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts   |    2 +-
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |   27 +
+ drivers/mtd/nand/Kconfig                      |    8 +
+ drivers/mtd/nand/Makefile                     |    1 +
+ drivers/mtd/nand/qpic_common.c                |  741 ++++++++
+ drivers/mtd/nand/raw/qcom_nandc.c             | 1621 +++--------------
+ drivers/spi/Kconfig                           |    8 +
+ drivers/spi/Makefile                          |    1 +
+ drivers/spi/spi-qpic-snand.c                  | 1423 +++++++++++++++
+ include/linux/mtd/nand-qpic-common.h          |  531 ++++++
+ 12 files changed, 3113 insertions(+), 1376 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+ create mode 100644 drivers/mtd/nand/qpic_common.c
+ create mode 100644 drivers/spi/spi-qpic-snand.c
+ create mode 100644 include/linux/mtd/nand-qpic-common.h
+
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
