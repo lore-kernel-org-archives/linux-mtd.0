@@ -4,86 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96DFFC25B10
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 May 2024 14:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A5FAC25B10
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 May 2024 20:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:References:
+	In-Reply-To:MIME-Version:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/aOBd80v/WVt0yzPAruSGgWKffng3UDsXqbdHjLTIN0=; b=t5m3SyuaZEM5vv
-	lXgnfv92AmRiRBbJBy1rcW0N+AUM1Rc/CKJoHMeEvDuVOu+/iAlogompVwUDTiHyojmC81QUgUafx
-	FbOoGFwsmo+/eApnc/HgfvklfrM28702p1me/a+P68pePcS71Bww5N8Y4XaIx/UqegKC1T2lyKxO5
-	A1UZRG9ti1lLdgollS7gvBdY0rtoRjjLOAqm8yIRBQSY5TOe/fuPbH1oQUHn2I7EzzRhzq452ZEx0
-	DYjY0W6CdnHkqoQl4OmE3mbMNmR3t9FURtYrp4E9KBDcBnACSTSPUanh57hzgfGvZh3MNCkISal7X
-	hMyN+hqTsU1ICBLJEbPA==;
+	List-Owner; bh=iVUWNXmtXNdabYqK+yoL4W+Vg3l3wCSjtCzwoIiijHY=; b=iznZJBnAB9Aabc
+	KxC/F+pbWosV97reqKkqSM8HDLsRaHY5GqU2a2cWzpk9tcN2XeizLCwdHs3UkKJ/nfm1Q2brsgj4f
+	SBr+CaXKthT3wM2AaBxNpTl5IiJlpKT5/iX+N4KBfN0imkArIxCpCarV6ge6IiUNSXthXnTi24iC0
+	/+46TcQdW2CTUkL8ReI8wHcH9lckeryoWkHx5fW3EJo09OyO93lGkLbKpZeK9H+xPvebi4J71XtyB
+	LTcYoX4X9X+5/5RYnvXBzNKvVcOOKiccHspVUTmm7fEQM5r0GovvaY+0xX9pirRZ96bSFWXiW0HPG
+	nrQ5e/6tsB+6YOMW9zWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s5REj-00000005Yy9-21Xh;
-	Fri, 10 May 2024 14:28:37 +0000
-Received: from mgamail.intel.com ([198.175.65.12])
+	id 1s5Wf5-00000006Mku-3icE;
+	Fri, 10 May 2024 20:16:11 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s5REg-00000005YwU-1lSv
-	for linux-mtd@lists.infradead.org;
-	Fri, 10 May 2024 14:28:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715351315; x=1746887315;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BpDfo0JyaiFAsLuhQN5rX/nDOzJtmaujSzQUgZhk2Ds=;
-  b=MYzDyLolFW+24kbKakGFv4p4QKjTLhkWUGuViMegXXfzxF0tRYRXAUZq
-   X01KW4i2wTAVB083ue5YTlYy6S9KZrB3Rxq87ZkYJmxTDC15acGeknt//
-   YwIReWevkXxE5j3nxdG0EXiJi5LWIii7yzp2Ai43hzNmBbXq5aCjDJBHO
-   XJ4AgG309ODtTtEEKuZozCeXTxW+UP4EeHFaGRY9LnW6rLS5/Bw3DCvQ+
-   tsrhIgVNMiQpOqtefygFnU6+46S8NLuoLxSzqkBE+/q1+Z5/ymS2wFJTb
-   8qiFbfODPM/cEzKZs3DPc9hiP3GPm5BiieBVPPxQ/K8YLULSkgfaa2RNU
-   w==;
-X-CSE-ConnectionGUID: KLKMSpJnStucGjk3lZBEkA==
-X-CSE-MsgGUID: mYrW7NdcSc2l/dmJkbPFow==
-X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="22741973"
-X-IronPort-AV: E=Sophos;i="6.08,151,1712646000"; 
-   d="scan'208";a="22741973"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2024 07:28:30 -0700
-X-CSE-ConnectionGUID: G9O7mg33SY+jY6kgIpS3Ww==
-X-CSE-MsgGUID: AUtjaV+hRx26k9WlB8JW+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,151,1712646000"; 
-   d="scan'208";a="29644128"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2024 07:28:28 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1s5REW-000000067yK-3Wjo;
-	Fri, 10 May 2024 17:28:24 +0300
-Date: Fri, 10 May 2024 17:28:24 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] eeprom: 93xx46: drop unneeded MODULE_ALIAS
-Message-ID: <Zj4vCGgPu2ERxewe@smile.fi.intel.com>
-References: <20240414154957.127113-1-krzk@kernel.org>
- <20240414154957.127113-3-krzk@kernel.org>
- <Zju8HpBCiOjjIZ1j@smile.fi.intel.com>
- <6599e2a3-3b04-4ea2-aa5c-a916b66c8009@kernel.org>
- <ZjvEam5paLD0Iv6V@smile.fi.intel.com>
- <9a26dac6-d776-4b84-830d-6f622719d7eb@kernel.org>
- <5b29d981-aa8a-413e-8250-5fb33802f32d@app.fastmail.com>
- <cb8df682-c006-46d7-bcf1-7a0548e65c98@kernel.org>
+	id 1s5Wf2-00000006MjG-0dUx;
+	Fri, 10 May 2024 20:16:09 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id A4347CE1EA8;
+	Fri, 10 May 2024 20:16:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F648C113CC;
+	Fri, 10 May 2024 20:16:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715372162;
+	bh=pmQ9AQITJFZy+youh/0jj+z+qY75g9ys3kkz/LOAbwo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=eq3rLu842lVFGjL//lACe/xYhdPHq7+5jm7/PIJyXOvBAhxNq1hQatlizQKAcrHbe
+	 e/vEDsQZTCS/ZmxHhuTtCMzeNq79kJGrvFaTD+gRETEoufZVFr08eE9EfVestsNmcN
+	 pF7shYpzPmHWAwgbLxc5ljRjOYRkx3FMfs4z/O4cMxHRWvDeT/s/mUvbTW1Bpze/5W
+	 d3cYj8uwV3aLkeZrSbJOM8OkAYgmLD6mxnLbTcvY6/QSpTeFSoRW1PnSB36SwLPkTC
+	 7b0Rf5HhPkPZMTsvEcCQ80Tg/FpL5PQSAQoSYqZ+iku9NbXqOOcRk89jVzxpF+DlbY
+	 0S9lyaZBIk4Iw==
+Message-ID: <d7ce7ea6b13f2da8e07a345365d8f2b3.sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cb8df682-c006-46d7-bcf1-7a0548e65c98@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240510123018.3902184-1-robh@kernel.org>
+References: <20240510123018.3902184-1-robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add more simple compatibles
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, linux-mediatek@lists.infradead.org
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>, Andrew Lunn <andrew@lunn.ch>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, Conor Dooley <conor+dt@kernel.org>, David S. Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Gregory Clement <gregory.clement@bootlin.com>, Jakub Kicinski <kuba@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Lee Jones <lee@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Paolo Abeni <pabeni@redhat.com>, Richard Weinberger <richard@nod.at>, Rob Herring (Arm) <robh@kernel.org>, Salil Mehta <salil.mehta@huawei.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, UNGLinuxDriver@microchip.com, Vignesh Raghavendra <vigneshr@ti.com>, Yisen Zhuang <yisen.zhuang@huawei.com>
+Date: Fri, 10 May 2024 13:16:00 -0700
+User-Agent: alot/0.10
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240510_072834_531272_3D7BED0B 
-X-CRM114-Status: GOOD (  23.99  )
+X-CRM114-CacheID: sfid-20240510_131608_401278_A16E94D8 
+X-CRM114-Status: UNSURE (   6.60  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,67 +71,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 08, 2024 at 09:17:59PM +0200, Krzysztof Kozlowski wrote:
-> On 08/05/2024 21:11, Arnd Bergmann wrote:
-> > On Wed, May 8, 2024, at 20:44, Krzysztof Kozlowski wrote:
-> >> On 08/05/2024 20:28, Andy Shevchenko wrote:
-> >>> On Wed, May 08, 2024 at 08:15:00PM +0200, Krzysztof Kozlowski wrote:
-> >>>> On 08/05/2024 19:53, Andy Shevchenko wrote:
-> >>>>> On Sun, Apr 14, 2024 at 05:49:57PM +0200, Krzysztof Kozlowski wrote:
-> >>>>>> The ID table already has respective entry and MODULE_DEVICE_TABLE and
-> >>>>>> creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
-> >>>>>> the alias to be duplicated.
-> >>>
-> >>> ...
-> >>>
-> >>>>>>  MODULE_ALIAS("spi:93xx46");
-> >>>>>
-> >>>>> I was stumbled over this (leftover?).
-> >>>>> Commit message doesn't elaborate this bit.
-> >>>>> Any comments?
-> >>>>
-> >>>> It is not present in ID table and commit msg removes only duplicated
-> >>>> aliases. That alias has meaning - someone might be actually relying on it.
-> >>>
-> >>> It seems no users for it. The only user of platform data of this EEPROM uses
-> >>> board files which AFAIU bypasses modalias matching.
-> >>
-> >> I don't think that's correct. The modalias of SPI board is there on
-> >> purpose. 
-> > 
-> > Right, but I think a better workaround would have been to change
-> > the board_info to pick a modalias that is part of the ID table:
-> > 
-> > --- a/drivers/misc/eeprom/digsy_mtc_eeprom.c
-> > +++ b/drivers/misc/eeprom/digsy_mtc_eeprom.c
-> > @@ -76,7 +76,7 @@ static struct gpiod_lookup_table eeprom_spi_gpiod_table = {
-> >  
-> >  static struct spi_board_info digsy_mtc_eeprom_info[] __initdata = {
-> >         {
-> > -               .modalias               = "93xx46",
-> > +               .modalias               = "eeprom-93xx46",
-> >                 .max_speed_hz           = 1000000,
-> >                 .bus_num                = EE_SPI_BUS_NUM,
-> >                 .chip_select            = 0,
-> > 
+Quoting Rob Herring (Arm) (2024-05-10 05:30:14)
+> Add another batch of various "simple" syscon compatibles which were
+> undocumented or still documented with old text bindings. Remove the old
+> text binding docs for the ones which were documented.
 > 
-> That's kind of independent change.
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> ---
 
-I have done similar change in my patch series, after which I am 100% sure the
-modalias can be removed. Can you look at that?
-
-https://lore.kernel.org/r/20240508184905.2102633-1-andriy.shevchenko@linux.intel.com
-
-> This commit *only* removed duplicated
-> aliases, thus should have not functional impact except dropping
-> redundant code. What you propose is to change spi board matching, which
-> is reasonable, just a different thing.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Acked-by: Stephen Boyd <sboyd@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
