@@ -4,56 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A5FAC25B10
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 May 2024 20:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98D0DC25B4F
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 May 2024 12:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:References:
-	In-Reply-To:MIME-Version:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iVUWNXmtXNdabYqK+yoL4W+Vg3l3wCSjtCzwoIiijHY=; b=iznZJBnAB9Aabc
-	KxC/F+pbWosV97reqKkqSM8HDLsRaHY5GqU2a2cWzpk9tcN2XeizLCwdHs3UkKJ/nfm1Q2brsgj4f
-	SBr+CaXKthT3wM2AaBxNpTl5IiJlpKT5/iX+N4KBfN0imkArIxCpCarV6ge6IiUNSXthXnTi24iC0
-	/+46TcQdW2CTUkL8ReI8wHcH9lckeryoWkHx5fW3EJo09OyO93lGkLbKpZeK9H+xPvebi4J71XtyB
-	LTcYoX4X9X+5/5RYnvXBzNKvVcOOKiccHspVUTmm7fEQM5r0GovvaY+0xX9pirRZ96bSFWXiW0HPG
-	nrQ5e/6tsB+6YOMW9zWA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3fB9tMLTJ2NbVxS75nhVBPDuIaJojasRLpydmumVm1o=; b=dToMX29yACeRLVzHNo3cvp381E
+	kLvZsWR4B+mTOMV8TnR7724zKygvk9zuZgHhifAY9WJIXRxbm9L4E98cc8pTYuXP9je3BxhJnPX0u
+	xeJRTbBqKRnDpVk4yWI70+kWj7fb50rK/spGRnJigpz/+Utm3gflq9B9zqc0Lhf+qi1bHdPwbEBDf
+	eRI5Si6unDwtleFhoAqIzqC1/6I74GXR40ZEE+U/RtA5rboP75B7B3sBZ620HAGC1qGETIpF+Xkag
+	pZY5aZzDA37Z/lTIMFXhRGuduv/J6dI1ps8RKKiYwaUNvp8DThESQZ4F54sehK8PqQzJ2Ic2FSQ6p
+	HgSEj6xA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s5Wf5-00000006Mku-3icE;
-	Fri, 10 May 2024 20:16:11 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1s5m4m-00000007uwn-2ztf;
+	Sat, 11 May 2024 12:43:44 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s5Wf2-00000006MjG-0dUx;
-	Fri, 10 May 2024 20:16:09 +0000
+	id 1s5m4g-00000007uv2-1epV;
+	Sat, 11 May 2024 12:43:39 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id A4347CE1EA8;
-	Fri, 10 May 2024 20:16:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F648C113CC;
-	Fri, 10 May 2024 20:16:02 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id EE4C0CE04AE;
+	Sat, 11 May 2024 12:43:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56CA8C2BBFC;
+	Sat, 11 May 2024 12:43:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715372162;
-	bh=pmQ9AQITJFZy+youh/0jj+z+qY75g9ys3kkz/LOAbwo=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=eq3rLu842lVFGjL//lACe/xYhdPHq7+5jm7/PIJyXOvBAhxNq1hQatlizQKAcrHbe
-	 e/vEDsQZTCS/ZmxHhuTtCMzeNq79kJGrvFaTD+gRETEoufZVFr08eE9EfVestsNmcN
-	 pF7shYpzPmHWAwgbLxc5ljRjOYRkx3FMfs4z/O4cMxHRWvDeT/s/mUvbTW1Bpze/5W
-	 d3cYj8uwV3aLkeZrSbJOM8OkAYgmLD6mxnLbTcvY6/QSpTeFSoRW1PnSB36SwLPkTC
-	 7b0Rf5HhPkPZMTsvEcCQ80Tg/FpL5PQSAQoSYqZ+iku9NbXqOOcRk89jVzxpF+DlbY
-	 0S9lyaZBIk4Iw==
-Message-ID: <d7ce7ea6b13f2da8e07a345365d8f2b3.sboyd@kernel.org>
+	s=k20201202; t=1715431412;
+	bh=d4VKieaSxJD4O9fan0sp4G+844Bs3wrwI3hZbLLfkXY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IMvdel0DY2pBVYj1A7coO/B+rMIO47XYcatES8h6dp3q/a0wHnEdYkkQhKc0kHM6F
+	 R5siUi5TNnYhyvsFZ3ct4vYXvIO//GNTkmIVazERoyp2vZdrDSPeZwuFlzD5viOLZF
+	 qu51GpXkvw7//RsxRf0s+wfmt9GuzAx/faZwnoCK0QODpe4erqsiy51Fu8KCroI9Er
+	 SXWB3N9Bzm3bkRLX+vpX3xIb+298XdKui2spF938GLhwbl3bb8edtYKBLnA8JzMxcc
+	 nXEESPNyPUFg8xwI6zZxJpcq4fhBlUvadsbA95jMtmYdMdcaijYUFF6T1DLpx9XJ8q
+	 tOTHuogfZFawA==
+Date: Sat, 11 May 2024 13:43:24 +0100
+From: Conor Dooley <conor@kernel.org>
+To: "Rob Herring (Arm)" <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Lee Jones <lee@kernel.org>,
+	UNGLinuxDriver@microchip.com,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add more simple compatibles
+Message-ID: <20240511-trailing-confiding-93e4c97f2adf@spud>
+References: <20240510123018.3902184-1-robh@kernel.org>
 MIME-Version: 1.0
 In-Reply-To: <20240510123018.3902184-1-robh@kernel.org>
-References: <20240510123018.3902184-1-robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add more simple compatibles
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, linux-mediatek@lists.infradead.org
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>, Andrew Lunn <andrew@lunn.ch>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, Conor Dooley <conor+dt@kernel.org>, David S. Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Gregory Clement <gregory.clement@bootlin.com>, Jakub Kicinski <kuba@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Lee Jones <lee@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Paolo Abeni <pabeni@redhat.com>, Richard Weinberger <richard@nod.at>, Rob Herring (Arm) <robh@kernel.org>, Salil Mehta <salil.mehta@huawei.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, UNGLinuxDriver@microchip.com, Vignesh Raghavendra <vigneshr@ti.com>, Yisen Zhuang <yisen.zhuang@huawei.com>
-Date: Fri, 10 May 2024 13:16:00 -0700
-User-Agent: alot/0.10
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240510_131608_401278_A16E94D8 
-X-CRM114-Status: UNSURE (   6.60  )
+X-CRM114-CacheID: sfid-20240511_054338_640746_C9FEB295 
+X-CRM114-Status: UNSURE (   9.43  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,21 +90,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3558521791747862090=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Quoting Rob Herring (Arm) (2024-05-10 05:30:14)
+
+--===============3558521791747862090==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="BSbcBdeN2vnKatp0"
+Content-Disposition: inline
+
+
+--BSbcBdeN2vnKatp0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 10, 2024 at 07:30:14AM -0500, Rob Herring (Arm) wrote:
 > Add another batch of various "simple" syscon compatibles which were
 > undocumented or still documented with old text bindings. Remove the old
 > text binding docs for the ones which were documented.
-> 
+>=20
 > Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 > ---
+> This batch is mostly from arm32 platforms.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+--BSbcBdeN2vnKatp0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHQEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZj9n7AAKCRB4tDGHoIJi
+0gG1AP47sdu3A8RqntUv+sHeomfUnc/kOanj3aHZojsdbapUpAD0DOQrlhFkp8Gc
+XbFn8V4hiQpWfuV/HoEcegLy+fB9DQ==
+=jck4
+-----END PGP SIGNATURE-----
+
+--BSbcBdeN2vnKatp0--
+
+
+--===============3558521791747862090==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3558521791747862090==--
+
