@@ -4,68 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FD43C25B10
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2024 09:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CCADC25B10
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2024 10:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6lK367Din6veHQkz0nHBSwkyDuRVKkZ9Nrspt8S9Eqk=; b=q4q/GxECzLm1B/
-	vS9UhwRx2m4S4n1TQYC8WEHAK0c0kOnnCtGZn6slBw1fYbz05qthFyQrs6D3Dh2A0cem/Nx/ir+xR
-	vX7yguseJwZUL/6jtAoTdfati/l6ZGk1ffVr/wi9rOrbTPFN+iDImoacuA2fYWl6JS4JSIi/xlUqn
-	FC23r4IMANzMRDMmj69p5cDfSER9tOvcYkzXvMZGYIxS5scpkLz822AyYCnyQgxHsthWyFOTsPACc
-	Nlk08cT8tB6jV8fsAwwoSnBl+lLk0Ue5ZyERqvu7ugAaTdULKek+OzSbHIQTK4znaBSD2Wz9MUXtd
-	E1TxtN3I15ljPhuH7Rgw==;
+	List-Owner; bh=mEKEQsd4gYAgT8eMwORTnSLnHbIZNsZ+sSeK3Q9Zwjo=; b=j8ejtWMJT337dp
+	K6oPQwZ01WWlYlzfMiFJOMpKtgXue14ILMmn/CmatsVoGdPXyOSokY4HaaJwkg8yCuBaF1/lQOUIW
+	O1BNrnNavWKhc/DJ9aYFtneN1hg0AjsgSCMmXmpMBvUbegluVADpq7GLsb6IplVRjIr5tu2qMv7wa
+	I1N2bW/+GuO87xvscucT6Ii3FvYIKVKWibATNQ2tzqWBCFWvsTj0Nnyy0J+PdpssmcbDm1BPwcNlO
+	jTzO7WSCkBJUCzDNybCZsCjhPrGtPjYH8ubGQWq5Edj8TDTHTt1+Kve8+K0hoS935FdHc0PVomS94
+	xQ1TCQj98WEIj+UYbMCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6RqQ-0000000CMrL-2v1J;
-	Mon, 13 May 2024 09:19:42 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1s6SoI-0000000CW3y-16qP;
+	Mon, 13 May 2024 10:21:34 +0000
+Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6RqO-0000000CMqk-0N3g
-	for linux-mtd@lists.infradead.org;
-	Mon, 13 May 2024 09:19:41 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s6RqL-00069R-KZ; Mon, 13 May 2024 11:19:37 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s6RqK-0018sg-M6; Mon, 13 May 2024 11:19:36 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s6RqK-009RDT-1v;
-	Mon, 13 May 2024 11:19:36 +0200
-Date: Mon, 13 May 2024 11:19:36 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mtd: nand: mxc_nand: support software ECC
-Message-ID: <ZkHbKGAuBPN3KOVW@pengutronix.de>
-References: <20240508-mtd-nand-mxc-nand-exec-op-v2-0-6b7366b7831f@pengutronix.de>
- <20240508-mtd-nand-mxc-nand-exec-op-v2-3-6b7366b7831f@pengutronix.de>
- <20240513094217.4c1a0fc2@xps-13>
+	id 1s6SoD-0000000CW2Y-0Edu;
+	Mon, 13 May 2024 10:21:31 +0000
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 8E12312000D;
+	Mon, 13 May 2024 13:21:23 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8E12312000D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1715595683;
+	bh=Gn/Rt6hFwjiHJvNZkbzYpga0+RVCKD7S0ie1DFPi/Wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=uD2yM309DjHBMvvSLX6ucXCb1X7jDB8wC9PvGMBURZe1L5sLyPHqmIdm+dmjbWvKf
+	 v9c16sZZsAVNr3kIRxt2uEGhMH96MqAl9frkYtRcdEx4Wfvojh+XkMYpiRTSfLDJNo
+	 6uqOIeAwB6nmeipYaz73EgfKfcMESIHMhrtWOyYwye8lGQwLso5JvZjCYQHm2syqCo
+	 OejucoNWCsXZyvUS7qCOjS3pMK+mEsPktLpAKGcRhC9gwdDrSANsSCj+3zkMXPZME3
+	 VJOlunsXp82SWxK8g94nzE97f9XNDGkb1FYMaiYZimup2IM1uosB6jXTPV3IR1vC8G
+	 hpVS/7q07nvcQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 13 May 2024 13:21:23 +0300 (MSK)
+Received: from [172.28.160.201] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 13 May 2024 13:21:22 +0300
+Message-ID: <8769f323-fbff-bd75-a1f5-7ec789639b82@salutedevices.com>
+Date: Mon, 13 May 2024 13:10:34 +0300
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240513094217.4c1a0fc2@xps-13>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: amlogic,meson-nand: support
+ fields for boot ROM code
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>
+CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <oxffffaa@gmail.com>, <kernel@sberdevices.ru>
+References: <20240507230903.3399594-1-avkrasnov@salutedevices.com>
+ <20240507230903.3399594-2-avkrasnov@salutedevices.com>
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20240507230903.3399594-2-avkrasnov@salutedevices.com>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 185182 [May 13 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 19 0.3.19 07c7fa124d1a1dc9662cdc5aace418c06ae99d2b, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/05/13 04:27:00 #25181647
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240513_021940_229007_CDA57CEB 
-X-CRM114-Status: GOOD (  43.89  )
+X-CRM114-CacheID: sfid-20240513_032129_810999_978F90DC 
+X-CRM114-Status: GOOD (  19.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,155 +109,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 13, 2024 at 09:42:17AM +0200, Miquel Raynal wrote:
-> Hi Sascha,
-> 
-> s.hauer@pengutronix.de wrote on Wed, 08 May 2024 13:08:29 +0200:
-> 
-> > With these changes the driver can be used with software BCH ECC which
-> > is useful for NAND chips that require a stronger ECC than the i.MX
-> > hardware supports.
-> > 
-> > The controller normally interleaves user data with OOB data when
-> > accessing the NAND chip. With Software BCH ECC we write the data
-> > to the NAND in a way that the raw data on the NAND chip matches the
-> > way the NAND layer sees it. This way commands like NAND_CMD_RNDOUT
-> > work as expected.
-> > 
-> > This was tested on i.MX27 but should work on the other SoCs supported
-> > by this driver as well.
-> > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  drivers/mtd/nand/raw/mxc_nand.c | 84 ++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 75 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-> > index 1e8b4553e03ba..7004fd57c80f7 100644
-> > --- a/drivers/mtd/nand/raw/mxc_nand.c
-> > +++ b/drivers/mtd/nand/raw/mxc_nand.c
-> > @@ -178,6 +178,7 @@ struct mxc_nand_host {
-> >  	int			used_oobsize;
-> >  	int			active_cs;
-> >  	unsigned int		ecc_stats_v1;
-> > +	unsigned int		column;
-> >  
-> >  	struct completion	op_completion;
-> >  
-> > @@ -1397,10 +1398,10 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
-> >  	chip->ecc.bytes = host->devtype_data->eccbytes;
-> >  	host->eccsize = host->devtype_data->eccsize;
-> >  	chip->ecc.size = 512;
-> > -	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
-> >  
-> >  	switch (chip->ecc.engine_type) {
-> >  	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-> > +		mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
-> >  		chip->ecc.read_page = mxc_nand_read_page;
-> >  		chip->ecc.read_page_raw = mxc_nand_read_page_raw;
-> >  		chip->ecc.read_oob = mxc_nand_read_oob;
-> > @@ -1465,6 +1466,54 @@ static int mxcnd_setup_interface(struct nand_chip *chip, int chipnr,
-> >  	return host->devtype_data->setup_interface(chip, chipnr, conf);
-> >  }
-> >  
-> > +static void copy_page_to_sram(struct mtd_info *mtd)
-> > +{
-> > +	struct nand_chip *this = mtd_to_nand(mtd);
-> > +	struct mxc_nand_host *host = nand_get_controller_data(this);
-> > +	void *buf = host->data_buf;
-> > +	unsigned int n_subpages = mtd->writesize / 512;
-> > +	int oob_per_subpage, i;
-> > +
-> > +	/* mtd->writesize is not set during ident scanning */
-> > +	if (!n_subpages)
-> > +		n_subpages = 1;
-> > +
-> > +	oob_per_subpage = (mtd->oobsize / n_subpages) & ~1;
-> > +
-> > +	for (i = 0; i < n_subpages; i++) {
-> > +		memcpy16_toio(host->main_area0 + i * 512, buf, 512);
-> > +		buf += 512;
-> > +
-> > +		memcpy16_toio(host->spare0 + i * host->devtype_data->spare_len, buf,
-> > +			      oob_per_subpage);
-> > +		buf += oob_per_subpage;
-> > +	}
-> > +}
-> > +
-> > +static void copy_page_from_sram(struct mtd_info *mtd)
-> > +{
-> > +	struct nand_chip *this = mtd_to_nand(mtd);
-> > +	struct mxc_nand_host *host = nand_get_controller_data(this);
-> > +	void *buf = host->data_buf;
-> > +	unsigned int n_subpages = mtd->writesize / 512;
-> > +	int oob_per_subpage, i;
-> > +
-> > +	/* mtd->writesize is not set during ident scanning */
-> > +	if (!n_subpages)
-> > +		n_subpages = 1;
-> > +
-> > +	oob_per_subpage = (mtd->oobsize / n_subpages) & ~1;
-> > +
-> > +	for (i = 0; i < n_subpages; i++) {
-> > +		memcpy16_fromio(buf, host->main_area0 + i * 512, 512);
-> > +		buf += 512;
-> > +
-> > +		memcpy16_fromio(buf, host->spare0 + i * host->devtype_data->spare_len,
-> > +				oob_per_subpage);
-> > +		buf += oob_per_subpage;
-> > +	}
-> > +}
-> > +
-> >  static int mxcnd_exec_op(struct nand_chip *chip,
-> >  			 const struct nand_operation *op,
-> >  			 bool check_only)
-> > @@ -1496,8 +1545,11 @@ static int mxcnd_exec_op(struct nand_chip *chip,
-> >  			 */
-> >  			break;
-> >  		case NAND_OP_CMD_INSTR:
-> > -			if (instr->ctx.cmd.opcode == NAND_CMD_PAGEPROG)
-> > +			if (instr->ctx.cmd.opcode == NAND_CMD_PAGEPROG) {
-> > +				if (chip->ecc.engine_type != NAND_ECC_ENGINE_TYPE_ON_HOST)
-> > +					copy_page_to_sram(mtd);
-> >  				host->devtype_data->send_page(mtd, NFC_INPUT);
-> > +			}
-> 
-> Same as before: data moves should not happen here.
-> 
-> >  
-> >  			host->devtype_data->send_cmd(host, instr->ctx.cmd.opcode, true);
-> >  
-> > @@ -1506,6 +1558,8 @@ static int mxcnd_exec_op(struct nand_chip *chip,
-> >  			if (instr->ctx.cmd.opcode == NAND_CMD_STATUS)
-> >  				statusreq = true;
-> >  
-> > +			host->column = 0;
-> > +
-> 
-> This is risky but maybe this is the trick to get NAND_CMD_RNDOUT
-> working? If yes maybe it is worth separating from this patchset, if
-> possible, with a comment explaining what this is all about (the
-> controller's SRAM being some kind of 1:1 mapping with the NAND SRAM,
-> thus we need to write the data at the correct offset in the controller
-> SRAM, I guess?).
+Changelog:
 
-I don't think it's possible to separate introducing the host->column
-variable to a separate patch, because this variable is only used with
-NAND_ECC_ENGINE_TYPE_SOFT and on the other hand NAND_ECC_ENGINE_TYPE_SOFT
-only works with this variable.
+v5 -> v6:
 
-Anyway, adding a description what this is all about is a good idea and
-I'll do this. In fact I already tried to add one when I found out that
-it's really hard to put it into words, so I sent without it ;)
+* Update description in 'yaml' and commit message by adding more details
+  about such special Meson mode. R-b was removed so.
 
-Sascha
+Thanks, Arseniy
 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+On 08.05.2024 02:09, Arseniy Krasnov wrote:
+> Boot ROM code on Meson requires that some pages on NAND must be written
+> in special mode: "short" ECC mode where each block is 384 bytes and
+> scrambling mode is on. Such pages are located on the chip in the
+> following way (for example):
+> 
+> [ p0 ][ p1 ][ p2 ][ p3 ][ p4 ][ p5 ][ p6 ][ p7 ] ... [ pN ]
+>   ^           ^           ^           ^
+> 
+> pX is page number "X". "^" means "special" page used by boot ROM - e.g.
+> every 2nd page in the range of [0, 7]. Step (2 in example is set by
+> 'amlogic,boot-page-step' field. Last page in range (7 in example) is
+> set by 'amlogic,boot-pages' field.
+> 
+> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> ---
+>  .../bindings/mtd/amlogic,meson-nand.yaml       | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> index 57b6957c8415..284f0f882c32 100644
+> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> @@ -64,11 +64,29 @@ patternProperties:
+>          items:
+>            maximum: 0
+>  
+> +      amlogic,boot-pages:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Number of pages starting from offset 0, where a special ECC
+> +          configuration must be used because it is accessed by the ROM
+> +          code. This ECC configuration uses 384 bytes data blocks.
+> +          Also scrambling mode is enabled for such pages.
+> +
+> +      amlogic,boot-page-step:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Interval between pages, accessed by the ROM code. For example
+> +          we have 8 pages [0, 7]. Pages 0,2,4,6 are accessed by the
+> +          ROM code, so this field will be 2 (e.g. every 2nd page). Rest
+> +          of pages - 1,3,5,7 are read/written without this mode.
+> +
+>      unevaluatedProperties: false
+>  
+>      dependencies:
+>        nand-ecc-strength: [nand-ecc-step-size]
+>        nand-ecc-step-size: [nand-ecc-strength]
+> +      amlogic,boot-pages: [nand-is-boot-medium, "amlogic,boot-page-step"]
+> +      amlogic,boot-page-step: [nand-is-boot-medium, "amlogic,boot-pages"]
+>  
+>  
+>  required:
 
 ______________________________________________________
 Linux MTD discussion mailing list
