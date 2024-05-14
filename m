@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49562C04FFE
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2024 14:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B747DC04FFE
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2024 14:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=911TLis2beQCfuDqgtqJwyvm/82i/UaHpLCyNGbOj3c=; b=MB3CzV5jiAd7n6
-	4FxjY+I62kwbPACHJRQFJQ0lEbROO2sbSRajqdb/e1EXNBJWqy+zfQT/exwlUPgALbd5TtWJ5llmU
-	wY5S+Bix0zERMdbx4mZAMX5K0uH4nxn9DLeSdllybOl5YF3s7wAvPZt+vaLTRBjXrthpGGbg8ullx
-	KbNn7iixq3Sn4G23Bv12Nbj36ITeMDtZnrXoIUR2aA9l058Osk59cCM6ioIeJUv6jsTfSZelKgBaN
-	4H+qP3Rw1yY2V3TDQcEGVS9BjJVIpitG/GGfd9SnANSXAGYifjOLEqOwxGUL5ZBALdrS4RJM6wvav
-	QO/i4GizTOYPJDkczxVA==;
+	List-Owner; bh=02qkqWrzY15ekHQvi1dQKhR5dXMBvSjGzrlMloYKYOM=; b=phNwi1Z0YVKJbs
+	sxG65pmOwDNFVPh0IIrRgabtUKypWOLKCqwatV29wPRRFWa6frBOPpwa6qM4UEUDRCbvfdNxqQ138
+	hsIFjwQQoyOVb2DhBIl/Rnii7J89mhssStAr/IkdqgaSYxF2bJ2MAOuDz4X/yTAC3KbI1qWYyv2g/
+	CW0qZI5ezt7od5G77bcxNYdSjb39W34/rXTFxvmKFtpeaAlUPV9B/dWDWC/cqz10xazJHpC6PT+qW
+	hZU5LssvJPu7z4L3DJs8N4ViteLGIDpcflQnQkGT2LgWCu3pFTXTcb10rn3qKsBQyhwbVAdpxC3XI
+	SY0pbmKap1GpRb2SYomQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6t5q-0000000GAn0-1IbM;
-	Tue, 14 May 2024 14:25:26 +0000
+	id 1s6t5y-0000000GAon-0rzk;
+	Tue, 14 May 2024 14:25:34 +0000
 Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6t5n-0000000GAmE-2VIL
+	id 1s6t5v-0000000GAnr-1ks2
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 May 2024 14:25:24 +0000
+	Tue, 14 May 2024 14:25:33 +0000
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s6t5m-00044O-7m; Tue, 14 May 2024 16:25:22 +0200
+	id 1s6t5m-00044P-7n; Tue, 14 May 2024 16:25:22 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s6t5l-001N6X-6h; Tue, 14 May 2024 16:25:21 +0200
+	id 1s6t5l-001N6Y-6d; Tue, 14 May 2024 16:25:21 +0200
 Received: from localhost ([::1] helo=dude02.red.stw.pengutronix.de)
 	by dude02.red.stw.pengutronix.de with esmtp (Exim 4.96)
 	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s6t5l-004mXh-0Q;
+	id 1s6t5l-004mXh-0O;
 	Tue, 14 May 2024 16:25:21 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Tue, 14 May 2024 16:25:19 +0200
-Subject: [PATCH v3 3/3] mtd: nand: mxc_nand: support software ECC
+Date: Tue, 14 May 2024 16:25:17 +0200
+Subject: [PATCH v3 1/3] mtd: nand: mxc_nand: separate page read from ecc
+ calc
 MIME-Version: 1.0
-Message-Id: <20240514-mtd-nand-mxc-nand-exec-op-v3-3-3e6f45fd3d82@pengutronix.de>
+Message-Id: <20240514-mtd-nand-mxc-nand-exec-op-v3-1-3e6f45fd3d82@pengutronix.de>
 References: <20240514-mtd-nand-mxc-nand-exec-op-v3-0-3e6f45fd3d82@pengutronix.de>
 In-Reply-To: <20240514-mtd-nand-mxc-nand-exec-op-v3-0-3e6f45fd3d82@pengutronix.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -54,11 +55,11 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Sascha Hauer <s.hauer@pengutronix.de>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1715696721; l=5082;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1715696721; l=7729;
  i=s.hauer@pengutronix.de; s=20230412; h=from:subject:message-id;
- bh=fFUDAF5lVPhHSvNzxUUCBmqbwiK0hi2y6kNbxl0InYA=;
- b=tj+4TIwISXBORWmh2MPTpURPBXKBF+9LJxh4lMhXFqbOwW+GbhgFW330wF+Nw7AwulilNg3xE
- GJVIJBKANLCBa9lJ/4sDYhcTtPGghY2dTCeqAy1aoVLkgpKM+QG8l28
+ bh=7BAnbozBUGliEkFA2yy81ruk4ikDMyqp7A70k41kDBQ=;
+ b=4qR2xlwtogYruGuRNJ93E+IpIzE4RT/7ika0hx9hcXd6dNz75/s8fZGprYOJ4RcaKormDDVbq
+ GCUoxha2WYSAPFNKzwpE4liDafExnFCAsLftub59MSVd8+SKlQW3Jwr
 X-Developer-Key: i=s.hauer@pengutronix.de; a=ed25519;
  pk=4kuc9ocmECiBJKWxYgqyhtZOHj5AWi7+d0n/UjhkwTg=
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -66,8 +67,8 @@ X-SA-Exim-Mail-From: s.hauer@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240514_072523_677414_4F8E6F87 
-X-CRM114-Status: GOOD (  25.69  )
+X-CRM114-CacheID: sfid-20240514_072531_852896_1C050031 
+X-CRM114-Status: GOOD (  21.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,140 +85,266 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-With these changes the driver can be used with software BCH ECC which
-is useful for NAND chips that require a stronger ECC than the i.MX
-hardware supports.
+Our read_page hook currently reads out a page and also counts and
+returns the number of bitflips. In upcoming exec_op conversion we'll
+need to read the page data in exec_op, but the bitflip information
+will be needed in mxc_nand_read_page(). To ease exec_op conversion
+separate the page read out from the bitflip evaluation.
 
-The controller normally interleaves user data with OOB data when
-accessing the NAND chip. With Software BCH ECC we write the data
-to the NAND in a way that the raw data on the NAND chip matches the
-way the NAND layer sees it. This way commands like NAND_CMD_RNDOUT
-work as expected.
-
-This was tested on i.MX27 but should work on the other SoCs supported
-by this driver as well.
+For the v2/v3 controllers we can leave the bitflip information in the
+status register for later evaluation. For the v1 controller this is
+not possible, because the status register is overwritten with each
+subpage read. We therefore store the bitflip information in the private
+data.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/raw/mxc_nand.c | 73 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 68 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/mxc_nand.c | 140 ++++++++++++++++++++++++----------------
+ 1 file changed, 86 insertions(+), 54 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 6f8b8f4b118ec..ae4cff2584a2d 100644
+index 003008355b3c2..3fe0b471f4a2d 100644
 --- a/drivers/mtd/nand/raw/mxc_nand.c
 +++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1404,10 +1404,10 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
- 	chip->ecc.bytes = host->devtype_data->eccbytes;
- 	host->eccsize = host->devtype_data->eccsize;
- 	chip->ecc.size = 512;
--	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
+@@ -20,6 +20,7 @@
+ #include <linux/irq.h>
+ #include <linux/completion.h>
+ #include <linux/of.h>
++#include <linux/bitfield.h>
  
- 	switch (chip->ecc.engine_type) {
- 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-+		mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
- 		chip->ecc.read_page = mxc_nand_read_page;
- 		chip->ecc.read_page_raw = mxc_nand_read_page_raw;
- 		chip->ecc.read_oob = mxc_nand_read_oob;
-@@ -1417,6 +1417,8 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
- 		break;
+ #define DRIVER_NAME "mxc_nand"
  
- 	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
-+		chip->ecc.read_page_raw = nand_monolithic_read_page_raw;
- 		break;
+@@ -47,6 +48,8 @@
+ #define NFC_V1_V2_CONFIG1		(host->regs + 0x1a)
+ #define NFC_V1_V2_CONFIG2		(host->regs + 0x1c)
  
- 	default:
-@@ -1472,6 +1474,59 @@ static int mxcnd_setup_interface(struct nand_chip *chip, int chipnr,
- 	return host->devtype_data->setup_interface(chip, chipnr, conf);
++#define NFC_V1_V2_ECC_STATUS_RESULT_ERM GENMASK(3, 2)
++
+ #define NFC_V2_CONFIG1_ECC_MODE_4	(1 << 0)
+ #define NFC_V1_V2_CONFIG1_SP_EN		(1 << 2)
+ #define NFC_V1_V2_CONFIG1_ECC_EN	(1 << 3)
+@@ -132,7 +135,7 @@ struct mxc_nand_devtype_data {
+ 	uint16_t (*get_dev_status)(struct mxc_nand_host *);
+ 	int (*check_int)(struct mxc_nand_host *);
+ 	void (*irq_control)(struct mxc_nand_host *, int);
+-	u32 (*get_ecc_status)(struct mxc_nand_host *);
++	u32 (*get_ecc_status)(struct nand_chip *);
+ 	const struct mtd_ooblayout_ops *ooblayout;
+ 	void (*select_chip)(struct nand_chip *chip, int cs);
+ 	int (*setup_interface)(struct nand_chip *chip, int csline,
+@@ -175,6 +178,7 @@ struct mxc_nand_host {
+ 	int			eccsize;
+ 	int			used_oobsize;
+ 	int			active_cs;
++	unsigned int		ecc_stats_v1;
+ 
+ 	struct completion	op_completion;
+ 
+@@ -406,19 +410,81 @@ static void irq_control(struct mxc_nand_host *host, int activate)
+ 	}
  }
  
-+static void copy_page_to_sram(struct mtd_info *mtd, const void *buf, int buf_len)
-+{
-+	struct nand_chip *this = mtd_to_nand(mtd);
-+	struct mxc_nand_host *host = nand_get_controller_data(this);
-+	unsigned int no_subpages = mtd->writesize / 512;
-+	int oob_per_subpage, i;
-+
-+	oob_per_subpage = (mtd->oobsize / no_subpages) & ~1;
-+
-+	/*
-+	 * During a page write the i.MX NAND controller will read 512b from
-+	 * main_area0 SRAM, then oob_per_subpage bytes from spare0 SRAM, then
-+	 * 512b from main_area1 SRAM and so on until the full page is written.
-+	 * For software ECC we want to have a 1:1 mapping between the raw page
-+	 * data on the NAND chip and the view of the NAND core. This is
-+	 * necessary to make the NAND_CMD_RNDOUT read the data it expects.
-+	 * To accomplish this we have to write the data in the order the controller
-+	 * reads it. This is reversed in copy_page_from_sram() below.
-+	 */
-+	for (i = 0; i < no_subpages; i++) {
-+		memcpy16_toio(host->main_area0 + i * 512, buf, 512);
-+		buf += 512;
-+
-+		memcpy16_toio(host->spare0 + i * host->devtype_data->spare_len, buf,
-+			      oob_per_subpage);
-+		buf += oob_per_subpage;
-+	}
-+}
-+
-+static void copy_page_from_sram(struct mtd_info *mtd)
-+{
-+	struct nand_chip *this = mtd_to_nand(mtd);
-+	struct mxc_nand_host *host = nand_get_controller_data(this);
-+	void *buf = host->data_buf;
-+	unsigned int no_subpages = mtd->writesize / 512;
-+	int oob_per_subpage, i;
-+
-+	/* mtd->writesize is not set during ident scanning */
-+	if (!no_subpages)
-+		no_subpages = 1;
-+
-+	oob_per_subpage = (mtd->oobsize / no_subpages) & ~1;
-+
-+	for (i = 0; i < no_subpages; i++) {
-+		memcpy16_fromio(buf, host->main_area0 + i * 512, 512);
-+		buf += 512;
-+
-+		memcpy16_fromio(buf, host->spare0 + i * host->devtype_data->spare_len,
-+				oob_per_subpage);
-+		buf += oob_per_subpage;
-+	}
-+}
-+
- static int mxcnd_do_exec_op(struct nand_chip *chip,
- 			    const struct nand_subop *op)
+-static u32 get_ecc_status_v1(struct mxc_nand_host *host)
++static u32 get_ecc_status_v1(struct nand_chip *chip)
  {
-@@ -1510,7 +1565,10 @@ static int mxcnd_do_exec_op(struct nand_chip *chip,
- 			buf_write = instr->ctx.data.buf.out;
- 			buf_len = instr->ctx.data.len;
+-	return readw(NFC_V1_V2_ECC_STATUS_RESULT);
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct mxc_nand_host *host = nand_get_controller_data(chip);
++	unsigned int ecc_stats, max_bitflips = 0;
++	int no_subpages, i;
++
++	no_subpages = mtd->writesize >> 9;
++
++	ecc_stats = host->ecc_stats_v1;
++
++	for (i = 0; i < no_subpages; i++) {
++		switch (ecc_stats & 0x3) {
++		case 0:
++		default:
++			break;
++		case 1:
++			mtd->ecc_stats.corrected++;
++			max_bitflips = 1;
++			break;
++		case 2:
++			mtd->ecc_stats.failed++;
++			break;
++		}
++
++		ecc_stats >>= 2;
++	}
++
++	return max_bitflips;
+ }
  
--			memcpy32_toio(host->main_area0, buf_write, buf_len);
-+			if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST)
-+				memcpy32_toio(host->main_area0, buf_write, buf_len);
-+			else
-+				copy_page_to_sram(mtd, buf_write, buf_len);
+-static u32 get_ecc_status_v2(struct mxc_nand_host *host)
++static u32 get_ecc_status_v2_v3(struct nand_chip *chip, unsigned int ecc_stat)
+ {
+-	return readl(NFC_V1_V2_ECC_STATUS_RESULT);
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct mxc_nand_host *host = nand_get_controller_data(chip);
++	u8 ecc_bit_mask, err_limit;
++	unsigned int max_bitflips = 0;
++	int no_subpages, err;
++
++	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
++	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
++
++	no_subpages = mtd->writesize >> 9;
++
++	do {
++		err = ecc_stat & ecc_bit_mask;
++		if (err > err_limit) {
++			mtd->ecc_stats.failed++;
++		} else {
++			mtd->ecc_stats.corrected += err;
++			max_bitflips = max_t(unsigned int, max_bitflips, err);
++		}
++
++		ecc_stat >>= 4;
++	} while (--no_subpages);
++
++	return max_bitflips;
+ }
  
- 			host->devtype_data->send_page(mtd, NFC_INPUT);
+-static u32 get_ecc_status_v3(struct mxc_nand_host *host)
++static u32 get_ecc_status_v2(struct nand_chip *chip)
+ {
+-	return readl(NFC_V3_ECC_STATUS_RESULT);
++	struct mxc_nand_host *host = nand_get_controller_data(chip);
++
++	u32 ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
++
++	return get_ecc_status_v2_v3(chip, ecc_stat);
++}
++
++static u32 get_ecc_status_v3(struct nand_chip *chip)
++{
++	struct mxc_nand_host *host = nand_get_controller_data(chip);
++
++	u32 ecc_stat = readl(NFC_V3_ECC_STATUS_RESULT);
++
++	return get_ecc_status_v2_v3(chip, ecc_stat);
+ }
  
-@@ -1545,10 +1603,15 @@ static int mxcnd_do_exec_op(struct nand_chip *chip,
+ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+@@ -712,9 +778,9 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct mxc_nand_host *host = nand_get_controller_data(chip);
+-	unsigned int bitflips_corrected = 0;
+ 	int no_subpages;
+ 	int i;
++	unsigned int ecc_stats = 0;
  
- 			host->devtype_data->read_page(chip);
+ 	host->devtype_data->enable_hwecc(chip, ecc);
  
--			if (IS_ALIGNED(buf_len, 4)) {
--				memcpy32_fromio(buf_read, host->main_area0, buf_len);
-+			if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_ON_HOST) {
-+				if (IS_ALIGNED(buf_len, 4)) {
-+					memcpy32_fromio(buf_read, host->main_area0, buf_len);
-+				} else {
-+					memcpy32_fromio(host->data_buf, host->main_area0, mtd->writesize);
-+					memcpy(buf_read, host->data_buf, buf_len);
-+				}
- 			} else {
--				memcpy32_fromio(host->data_buf, host->main_area0, mtd->writesize);
-+				copy_page_from_sram(mtd);
- 				memcpy(buf_read, host->data_buf, buf_len);
- 			}
+@@ -727,8 +793,6 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
+ 	no_subpages = mtd->writesize >> 9;
  
+ 	for (i = 0; i < no_subpages; i++) {
+-		uint16_t ecc_stats;
+-
+ 		/* NANDFC buffer 0 is used for page read/write */
+ 		writew((host->active_cs << 4) | i, NFC_V1_V2_BUF_ADDR);
+ 
+@@ -737,32 +801,18 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
+ 		/* Wait for operation to complete */
+ 		wait_op_done(host, true);
+ 
+-		ecc_stats = get_ecc_status_v1(host);
+-
+-		ecc_stats >>= 2;
+-
+-		if (buf && ecc) {
+-			switch (ecc_stats & 0x3) {
+-			case 0:
+-			default:
+-				break;
+-			case 1:
+-				mtd->ecc_stats.corrected++;
+-				bitflips_corrected = 1;
+-				break;
+-			case 2:
+-				mtd->ecc_stats.failed++;
+-				break;
+-			}
+-		}
++		ecc_stats |= FIELD_GET(NFC_V1_V2_ECC_STATUS_RESULT_ERM,
++				       readw(NFC_V1_V2_ECC_STATUS_RESULT)) << i * 2;
+ 	}
+ 
++	host->ecc_stats_v1 = ecc_stats;
++
+ 	if (buf)
+ 		memcpy32_fromio(buf, host->main_area0, mtd->writesize);
+ 	if (oob)
+ 		copy_spare(mtd, true, oob);
+ 
+-	return bitflips_corrected;
++	return 0;
+ }
+ 
+ static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
+@@ -770,10 +820,6 @@ static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct mxc_nand_host *host = nand_get_controller_data(chip);
+-	unsigned int max_bitflips = 0;
+-	u32 ecc_stat, err;
+-	int no_subpages;
+-	u8 ecc_bit_mask, err_limit;
+ 
+ 	host->devtype_data->enable_hwecc(chip, ecc);
+ 
+@@ -791,26 +837,7 @@ static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
+ 	if (oob)
+ 		copy_spare(mtd, true, oob);
+ 
+-	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
+-	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
+-
+-	no_subpages = mtd->writesize >> 9;
+-
+-	ecc_stat = host->devtype_data->get_ecc_status(host);
+-
+-	do {
+-		err = ecc_stat & ecc_bit_mask;
+-		if (err > err_limit) {
+-			mtd->ecc_stats.failed++;
+-		} else {
+-			mtd->ecc_stats.corrected += err;
+-			max_bitflips = max_t(unsigned int, max_bitflips, err);
+-		}
+-
+-		ecc_stat >>= 4;
+-	} while (--no_subpages);
+-
+-	return max_bitflips;
++	return 0;
+ }
+ 
+ static int mxc_nand_read_page(struct nand_chip *chip, uint8_t *buf,
+@@ -818,13 +845,18 @@ static int mxc_nand_read_page(struct nand_chip *chip, uint8_t *buf,
+ {
+ 	struct mxc_nand_host *host = nand_get_controller_data(chip);
+ 	void *oob_buf;
++	int ret;
+ 
+ 	if (oob_required)
+ 		oob_buf = chip->oob_poi;
+ 	else
+ 		oob_buf = NULL;
+ 
+-	return host->devtype_data->read_page(chip, buf, oob_buf, 1, page);
++	ret = host->devtype_data->read_page(chip, buf, oob_buf, 1, page);
++	if (ret)
++		return ret;
++
++	return host->devtype_data->get_ecc_status(chip);
+ }
+ 
+ static int mxc_nand_read_page_raw(struct nand_chip *chip, uint8_t *buf,
 
 -- 
 2.39.2
