@@ -4,78 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED691C25B10
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 May 2024 13:12:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C996EC04FFE
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2024 09:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LH4lgLYsLzBLPxxDsefNLa1B9tCXyCyn98loiJCUwWI=; b=yihIH7M+MQDmWF
-	EoSEbewN4QsgZMXiXPabTnGL9bFtp5O7iRYjGg9OPwWSfqQIE/mlV2SGaPwc2riBJYFk0IqINEfoy
-	Zd3RuETWQ/iTOS0wcpDDCcAQ4hVuxVgBzlPzdcvwCx5pRClh68CLiFyVRwTuRy+FSypp12+y0f39E
-	fo6klXksY38g0tYTcAerF9h7qv8U66NUBN4jgr0c1VxZgLrdiGHwzidvOR3B21BXdh53fmoE1v8A8
-	x1RY83Py4+oLQ18g1A1DbljBq2e22Bq0ZAXDMpW+NcWQMOTjnpCAoFd68Z7oIkiIl/OkVUgeH3SLO
-	LGguKOZKun3Q4a2PZmZw==;
+	List-Owner; bh=sTE6SqG1oyamLe3NAB125VCyckdKTS5r039f7OZvabo=; b=Ni0rDqKDXmo20o
+	kAaojwVUpr6j+t/jluZ0y31ULZvVC6wYWx1Fsayl5hSUMzuKUoi8hp82/n7pHoPgYQ4XtImQ2kS0n
+	s8FKLU27QUZsKk8uO6ZtfBvZu2vPKkT8XgsrPCGPBiOT5jVytFSSlsoI4YwPbtodnUGyZ2jLhXyCP
+	6YULc0fwz1vLNlFj5WoVXEwHYDIWh8cSoAi+2Umv8lkENjMCdEgQhKKmSgXg1co1VyK8UxWL8PKTr
+	hOpUUcTHh7HQRDcLR0tJURBsO7u9B8qPy+Uzz5GVAarAJed7Pxy1/yblMAwebAsr2MbGUpW6PcHay
+	posxJfFCUOmj2jy6E5Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6VTZ-0000000Cx9d-2JwM;
-	Mon, 13 May 2024 13:12:21 +0000
-Received: from madrid.collaboradmins.com ([2a00:1098:ed:100::25])
+	id 1s6oId-0000000FSSH-28kE;
+	Tue, 14 May 2024 09:18:19 +0000
+Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6VTV-0000000Cx7T-1XGR;
-	Mon, 13 May 2024 13:12:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1715605935;
-	bh=iGwqCXIPo5Sz/mVwtdsEoVu5uuBlckkioU0/F3+rFJM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=wP4V4wRD3bgtkqQVaTg10pjSetuDkdLdu8u+Xm46+KGCWbUbEeETjSVCBADEVn3fH
-	 5ONQmZ70MG6ygHnm46zi/Pi8HOrdgBWGe0HomQUvnqwcRJO38IxFF8GkkZrecDGHsc
-	 FN/NQHFV1WRuXQkLBQDdb5RAENk/TVRsH7RZLLwN+DLcgi8rTAmHcONOb35dybZdfE
-	 /79ktkbLNe4UW7oxoVgeFqQcoNtrnyw6zll/ILwHuotrt4/gSQTc8Ya/N/37Lue3Zk
-	 jOzF4liFus2SVMYo5aqP3RWGFt+aqquKqsOro4PyXJexL3+2zxSHex5q91CHHwjLMr
-	 34XuAB1Rl0PoA==
-Received: from [IPV6:fd00::2a:39ce] (cola.collaboradmins.com [IPv6:2a01:4f8:1c1c:5717::1])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7867A3782167;
-	Mon, 13 May 2024 13:12:13 +0000 (UTC)
-Message-ID: <debde564-eac8-4d07-8e25-75e321150df7@collabora.com>
-Date: Mon, 13 May 2024 15:12:12 +0200
+	id 1s6oIW-0000000FSQi-2BB5
+	for linux-mtd@lists.infradead.org;
+	Tue, 14 May 2024 09:18:14 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s6oIP-0000zQ-Fl; Tue, 14 May 2024 11:18:05 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s6oIN-001KT6-6G; Tue, 14 May 2024 11:18:03 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s6oIN-00BEFM-0K;
+	Tue, 14 May 2024 11:18:03 +0200
+Date: Tue, 14 May 2024 11:18:03 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] mtd: nand: mxc_nand: implement exec_op
+Message-ID: <ZkMsS1jj-ZTpZyE1@pengutronix.de>
+References: <20240508-mtd-nand-mxc-nand-exec-op-v2-0-6b7366b7831f@pengutronix.de>
+ <20240508-mtd-nand-mxc-nand-exec-op-v2-2-6b7366b7831f@pengutronix.de>
+ <20240513091902.2c00d30a@xps-13>
+ <20240513093256.363861d1@xps-13>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add more simple compatibles
-To: "Rob Herring (Arm)" <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Lee Jones <lee@kernel.org>,
- UNGLinuxDriver@microchip.com, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
- netdev@vger.kernel.org, linux-mediatek@lists.infradead.org
-References: <20240510123018.3902184-1-robh@kernel.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240510123018.3902184-1-robh@kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20240513093256.363861d1@xps-13>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240513_061217_571531_050B4E2B 
-X-CRM114-Status: UNSURE (   5.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240514_021812_580663_3AF9027B 
+X-CRM114-Status: GOOD (  28.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,23 +78,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Il 10/05/24 14:30, Rob Herring (Arm) ha scritto:
-> Add another batch of various "simple" syscon compatibles which were
-> undocumented or still documented with old text bindings. Remove the old
-> text binding docs for the ones which were documented.
+On Mon, May 13, 2024 at 09:32:56AM +0200, Miquel Raynal wrote:
 > 
-> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> miquel.raynal@bootlin.com wrote on Mon, 13 May 2024 09:19:02 +0200:
+> 
+> > Hi Sascha,
+> > 
+> > > @@ -1717,9 +1465,111 @@ static int mxcnd_setup_interface(struct nand_chip *chip, int chipnr,
+> > >  	return host->devtype_data->setup_interface(chip, chipnr, conf);
+> > >  }
+> > >  
+> > > +static int mxcnd_exec_op(struct nand_chip *chip,
+> > > +			 const struct nand_operation *op,
+> > > +			 bool check_only)
+> > > +{
+> > > +	struct mxc_nand_host *host = nand_get_controller_data(chip);
+> > > +	struct mtd_info *mtd = nand_to_mtd(chip);
+> > > +	int i, j, buf_len;
+> > > +	void *buf_read = NULL;
+> > > +	const void *buf_write = NULL;
+> > > +	const struct nand_op_instr *instr;
+> > > +	bool readid = false;
+> > > +	bool statusreq = false;
+> > > +
+> > > +	dev_dbg(host->dev, "%s: %d instructions\n", __func__, op->ninstrs);  
+> > 
+> > Maybe you want to get rid of this debug line.
 
-For MediaTek
+Ok.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> > 
+> > > +
+> > > +	if (check_only)
+> > > +		return 0;
+> > > +
+> > > +	for (i = 0; i < op->ninstrs; i++) {
+> > > +		instr = &op->instrs[i];
+> > > +
+> > > +		nand_op_trace("  ", instr);
+> > > +
+> > > +		switch (instr->type) {
+> > > +		case NAND_OP_WAITRDY_INSTR:
+> > > +			/*
+> > > +			 * NFC handles R/B internally. Therefore, this function
+> > > +			 * always returns status as ready.  
+> > 
+> > This is no longer a standalone function, maybe:
+> > 
+> > "The controller handles the R/B pin internally, therefore there is
+> > nothing to do here."
 
+Ok.
 
+> 
+> And this is actually very wrong.
+> 
+> You should call wait_op_done() instead.
+
+No, I don't think so. wait_op_done() is called to wait for the interrupt
+of the controller indicating a basic operation is done. A basic operation
+can be that a command is being sent or an address byte has been sent to
+the chip during an address cycle.
+
+With this arbitrary example:
+
+	struct nand_op_instr instrs[] = {
+		NAND_OP_CMD(NAND_CMD_READ0, 0),
+		NAND_OP_ADDR(4, addrs, 0),
+		NAND_OP_CMD(NAND_CMD_READSTART, NAND_COMMON_TIMING_NS(conf, tWB_max)),
+		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tR_max),
+				 NAND_COMMON_TIMING_NS(conf, tRR_min)),
+		NAND_OP_DATA_IN(len, buf, 0),
+	};
+
+I'll call wait_op_done() once for NAND_CMD_READ0, four times for the NAND_OP_ADDR,
+then once again for the NAND_CMD_READSTART command and four times (on i.MX27, once
+per subpage) for the NAND_OP_DATA_IN operation. Calling wait_op_done() for the
+NAND_OP_WAIT_RDY operation woul only timeout because there is no operation in flight
+currently.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
