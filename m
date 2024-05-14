@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5561C04FFE
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2024 10:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02EFFC04FFE
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 May 2024 11:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zpGBUDtFMJ4PFn1TctqLDv/sgxQ1kM5xOIpnpn5ufLU=; b=y0i3KnNUukxSzP
-	nBJ3mXu1e0v7ZY97LTwY7Y+8JSlJLWzRWGK2xBkPEFyP6vlKlo89BhByI0SQ4bvQmS6I6zkzPbKzY
-	IhPKe8HKO31v/vlf/PiuK8AEwH9u6Mv2j/gy4hL1J6/7JFmWCbL+u8ddRx6/NHYSkLu9DLwhGcbvF
-	WvfnbbPkDEnn6qCcC+q+CYFJxzV3kNDbmhpMtpABKbWxKVLIgqz1RGx+VtCku3rRp+9sFbsUolp2U
-	9RcZ93rKlxe+jT8x7S7jmJab0zwwhRzyTcgPTnhx2np4SVR8d/MPGlm1jVhDr782yudAIacjBRk3R
-	5EUncUu1Hk10/qEIVohg==;
+	List-Owner; bh=QIROHUdK3vHFfOPalsBba5FZTO9uVavFEHK6txA3r58=; b=fO/K/vAG4SLWiu
+	GOzs2N7zMs6GkugFnZGsFKiFKiZaI1KSdgk/lkrmO+laCkRSlanf1lLXiFgCP5GbRAfCmerwZFU2Q
+	GFff5yQ4ynDOQOhBJy/+I77d+JDJntqls5v2uZ1BCj/PqvUt8j5QxWGTKe55e9f5SvPPZxp3XfquI
+	4jTLxL+OMJDdMDhShpjXAvFZXwK2mgGsfDy467TvhHbZdFhGkL4BDZoVKpRs9or1OYybgh9NLpAbr
+	RvM1hfeUbKs1N0OuJol+FcfD1ofP+6bzapJmubrzfWYRCkuk1mV5VliSN1N61R3PnUcYAGFwZPvTm
+	jfY5pDFulExNFe4emZag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6pU6-0000000FaXr-2PAJ;
-	Tue, 14 May 2024 10:34:14 +0000
+	id 1s6qeB-0000000Fli2-3t3s;
+	Tue, 14 May 2024 11:48:43 +0000
 Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s6pU2-0000000FaVM-1AVZ
+	id 1s6qe8-0000000FlhC-0UMC
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 May 2024 10:34:13 +0000
+	Tue, 14 May 2024 11:48:41 +0000
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s6pTv-0006iz-Tn; Tue, 14 May 2024 12:34:03 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s6qe4-0003nI-Ov; Tue, 14 May 2024 13:48:36 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s6pTv-001KzM-C5; Tue, 14 May 2024 12:34:03 +0200
-Received: from localhost ([::1] helo=dude02.red.stw.pengutronix.de)
-	by dude02.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s6pTv-003QYu-0p;
-	Tue, 14 May 2024 12:34:03 +0200
+	(envelope-from <sha@pengutronix.de>)
+	id 1s6qe3-001LUZ-EO; Tue, 14 May 2024 13:48:35 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1s6qe3-00BG4Y-1B;
+	Tue, 14 May 2024 13:48:35 +0200
+Date: Tue, 14 May 2024 13:48:35 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] mtd: rawnand: make rawnand_check_data_only_read_support() work
-Date: Tue, 14 May 2024 12:33:55 +0200
-Message-Id: <20240514103355.817056-1-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Using nand_change_read_column_op() in nand_onfi_detect()
+Message-ID: <ZkNPkzKmwMWzbyWJ@pengutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: s.hauer@pengutronix.de
+X-SA-Exim-Mail-From: sha@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240514_033410_340075_A3702CBD 
-X-CRM114-Status: GOOD (  12.72  )
+X-CRM114-CacheID: sfid-20240514_044840_182186_708710B8 
+X-CRM114-Status: GOOD (  13.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,34 +76,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-rawnand_check_data_only_read_support() calls nand_read_data_op() with a
-NULL pointer as buffer which will immediately return an error. Allow a
-NULL buffer pointer when check_only is requested. This should be safe to
-do as nand_read_data_op() has no business in touching the buffer in
-check_only mode.
+Hi all,
 
-Fixes: 9f820fc0651c ("mtd: rawnand: Check the data only read pattern only once")
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/raw/nand_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am currently stumbling over this in nand_onfi_detect():
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d7dbbd469b892..a5e7d8deafbbe 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -2173,7 +2173,7 @@ EXPORT_SYMBOL_GPL(nand_reset_op);
- int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
- 		      bool force_8bit, bool check_only)
- {
--	if (!len || !buf)
-+	if (!len || (!buf && !check_only))
- 		return -EINVAL;
- 
- 	if (nand_has_exec_op(chip)) {
+	for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+		if (!i)
+			ret = nand_read_param_page_op(chip, 0, &pbuf[i],
+						      sizeof(*pbuf));
+		else if (use_datain)
+			ret = nand_read_data_op(chip, &pbuf[i], sizeof(*pbuf),
+						true, false);
+		else
+			ret = nand_change_read_column_op(chip, sizeof(*pbuf) * i,
+							 &pbuf[i], sizeof(*pbuf),
+							 true);
+		...
+	}
+
+nand_change_read_column_op() heavily uses mtd->writesize and bails out
+with an error when the writesize is 0. mtd->writesize is still
+uninitialised at that point, it's initialized a few lines further down
+in the same function. It looks like this code never worked as expected.
+
+Also it seems use_datain is always 0, see 1), so existing code only ever
+reads the first parameter page.
+
+The same pattern is in nand_jedec_detect() as well.
+
+Not sure what we make from this.
+
+Sascha
+
+1) https://lore.kernel.org/linux-mtd/20240514103355.817056-1-s.hauer@pengutronix.de/T/#u
+
 -- 
-2.39.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
