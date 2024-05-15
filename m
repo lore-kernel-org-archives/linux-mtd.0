@@ -4,67 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B97F6C25B75
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2024 08:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C0BDC25B77
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 May 2024 15:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5bnsZOBNzR4I2//+tkvCzHWp6WnWXFYzoaCChzozik4=; b=aPoEljgxLgivW5
-	lOfIh9dibqF24KzSFwXBxqdfWSYiN2rQ9bz9sTuMlSPxudx48uk9sPrIT/NntcQ1lK3UX6ea9IfWp
-	i8BfuLjamzwwNO7k5JoeD3yWF+VpMexeA+IGxa8LFYoVNnuaos3OcrEXKM11Nax8N5Qu/szd+799N
-	+wVXP0sIdGqhNQnsljZNKDD5JwW3XBoTFLHroi6J9mzztMklZu8UMCZnX+MIGQ2zPNj/WpPKgiPGH
-	QS8nZcVjF++zxeCsLC61I5Po/rJQ56l78sGRLW1Ns5l7rr5iC7uC45lljNxQL6tW1tJ4BWVTCV0jq
-	mGGlMdLvEUZwbNdcgVug==;
+	List-Owner; bh=9POf+rB6tww8HN0/nPT34d+tRnepNUQhQjJlyc5vE2Y=; b=NpdkhKIZ3BHv27
+	HxZeLY2+4/vfvM17anKlWZHTf8m+iPwNWv3R0QrpHkwC5o0bT1SyfF70lWv6fDmY/mas5rY047SMp
+	mKBK7bNL0bemyLl+v6+1DJq98oVwHvHn11AYDIftmniXtIPghV3N9tYczZ8dz9GeFM3V7eHZH76BB
+	criQTtWNf7rrPK+1zWtCzIonsnnng0Nry0OKp5LzQyOKnP9aPKx2Rxu8uZBZaFRli6CZWLJbX6bNB
+	MmxeAdy6s6Ka1jJ9mu5YILPMuT/ouxlcMZz69T7yrrz3NNsJhqQpqmhGvl8KUkkzn8ufZsSAflzS5
+	O+YoTL/BLfZz/LTZWs7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7A0b-00000000wgW-1l3b;
-	Wed, 15 May 2024 08:29:09 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1s7Gei-00000001yf4-2fwq;
+	Wed, 15 May 2024 15:35:00 +0000
+Received: from phobos.denx.de ([85.214.62.61])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7A0X-00000000wft-3geW
+	id 1s7Gec-00000001ych-2OM8
 	for linux-mtd@lists.infradead.org;
-	Wed, 15 May 2024 08:29:07 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s7A0V-0004hv-TA; Wed, 15 May 2024 10:29:03 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s7A0T-001VCp-G5; Wed, 15 May 2024 10:29:01 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s7A0T-00D0m8-1I;
-	Wed, 15 May 2024 10:29:01 +0200
-Date: Wed, 15 May 2024 10:29:01 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mtd: nand: mxc_nand: support software ECC
-Message-ID: <ZkRyTT7FcDQ-5UeV@pengutronix.de>
-References: <20240514-mtd-nand-mxc-nand-exec-op-v3-0-3e6f45fd3d82@pengutronix.de>
- <20240514-mtd-nand-mxc-nand-exec-op-v3-3-3e6f45fd3d82@pengutronix.de>
+	Wed, 15 May 2024 15:34:56 +0000
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 827AB8826C;
+	Wed, 15 May 2024 17:34:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1715787291;
+	bh=qpDDMZnH4oh16JFkL5vC8XgjNaFyOtdyPIqtGSul/2U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Z1JM2eE0Er10itepZxwytSeH4lmJlWwYzfvoXRxzOMHP6J2E4JXXfGn4zNSculB3B
+	 N0LNRK94cLSu1M+ri0xV1uX2zq54yuXoRojrlZgd8gQeof2vhFGXFygb/rfbaIyX6d
+	 9p3el+DfGUISrmjSkwFLf83cumWGixPIxkIPZZ1ohNr8hVb1O2we2fKSG2SAkQeV27
+	 GtW8folVsllhleExA5cqGothnC/CbbdspPagNCFf8hAn0g7JNjx5HhU2YxKMiQxrVl
+	 jVkxkQEZgiimZb7w6spDy4DQPWBRvZFWRZjv2iDQIRkCPvYXN4iMy6ItTBjq8HXIvl
+	 0/uL7H8wHos3g==
+Message-ID: <515848c8-65e3-41de-8a2c-af1c9e5351f1@denx.de>
+Date: Wed, 15 May 2024 16:55:29 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240514-mtd-nand-mxc-nand-exec-op-v3-3-3e6f45fd3d82@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: Clear Winbond SR3 WPS bit on boot
+To: Michael Walle <michael@walle.cc>, u-boot@lists.denx.de
+Cc: Hai Pham <hai.pham.ud@renesas.com>,
+ Heinrich Schuchardt <xypron.glpk@gmx.de>,
+ Jagan Teki <jagan@amarulasolutions.com>,
+ Johann Neuhauser <jneuhauser@dh-electronics.com>,
+ Simon Glass <sjg@chromium.org>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+ Venkatesh Yadav Abbarapu <venkatesh.abbarapu@amd.com>,
+ Vignesh R <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+References: <20240304161607.82759-1-marex@denx.de>
+ <CZLOVK212G8L.2ISEL1IIWU1YE@walle.cc>
+ <7c0e2496-4338-497d-96cf-41d75e2fc52b@denx.de>
+ <CZLTVKVR3AG1.BZIQQU2PYSU6@walle.cc>
+ <a28b0543-67ee-4e33-91c1-86ae36eb44d5@denx.de>
+ <CZLXRLFU5YKU.1S5D9EZ3GUTH4@walle.cc>
+ <faa78709-6b7c-4394-8048-3c1f09b65a04@denx.de>
+ <CZLZ391C9O5F.38A18T9S51BNT@walle.cc>
+ <d522ac8e-8664-4798-9069-947691c6cd43@denx.de>
+ <CZM55T7YDKCR.3AIA4OQT2VG0S@walle.cc>
+ <ba2831d1-9ba1-4cd3-89c5-f4b9e8a4b94f@denx.de>
+ <CZMOLX07WDHJ.36M7NNZK94F99@walle.cc>
+Content-Language: en-US
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <CZMOLX07WDHJ.36M7NNZK94F99@walle.cc>
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240515_012906_191492_A45EBEF1 
-X-CRM114-Status: GOOD (  44.06  )
+X-CRM114-CacheID: sfid-20240515_083454_785785_251C51F4 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,177 +88,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 14, 2024 at 04:25:19PM +0200, Sascha Hauer wrote:
-> With these changes the driver can be used with software BCH ECC which
-> is useful for NAND chips that require a stronger ECC than the i.MX
-> hardware supports.
+On 3/6/24 1:55 PM, Michael Walle wrote:
+> Hi,
 > 
-> The controller normally interleaves user data with OOB data when
-> accessing the NAND chip. With Software BCH ECC we write the data
-> to the NAND in a way that the raw data on the NAND chip matches the
-> way the NAND layer sees it. This way commands like NAND_CMD_RNDOUT
-> work as expected.
+> On Wed Mar 6, 2024 at 3:56 AM CET, Marek Vasut wrote:
+>>> I'd argue if one wants to use the locking at all, you have to set
+>>> UNLOCK_ALL=n. Otherwise, the bootloader might come alone and just
+>>> clear your locking bits again. Clearing the WPS bit there is just
+>>> one more thing which IMHO doesn't make much sense.
+>>
+>> On the other hand, if UNLOCK_ALL=y is supposed to work and reset
+>> locking, then the SR3 WPS bit has to be configured to select the
+>> standard SPI NOR locking scheme, so the locking can actually be reset
+>> using that scheme.
 > 
-> This was tested on i.MX27 but should work on the other SoCs supported
-> by this driver as well.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/nand/raw/mxc_nand.c | 73 ++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 68 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-> index 6f8b8f4b118ec..ae4cff2584a2d 100644
-> --- a/drivers/mtd/nand/raw/mxc_nand.c
-> +++ b/drivers/mtd/nand/raw/mxc_nand.c
-> @@ -1404,10 +1404,10 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
->  	chip->ecc.bytes = host->devtype_data->eccbytes;
->  	host->eccsize = host->devtype_data->eccsize;
->  	chip->ecc.size = 512;
-> -	mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
->  
->  	switch (chip->ecc.engine_type) {
->  	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-> +		mtd_set_ooblayout(mtd, host->devtype_data->ooblayout);
->  		chip->ecc.read_page = mxc_nand_read_page;
->  		chip->ecc.read_page_raw = mxc_nand_read_page_raw;
->  		chip->ecc.read_oob = mxc_nand_read_oob;
-> @@ -1417,6 +1417,8 @@ static int mxcnd_attach_chip(struct nand_chip *chip)
->  		break;
->  
->  	case NAND_ECC_ENGINE_TYPE_SOFT:
-> +		chip->ecc.write_page_raw = nand_monolithic_write_page_raw;
-> +		chip->ecc.read_page_raw = nand_monolithic_read_page_raw;
->  		break;
->  
->  	default:
-> @@ -1472,6 +1474,59 @@ static int mxcnd_setup_interface(struct nand_chip *chip, int chipnr,
->  	return host->devtype_data->setup_interface(chip, chipnr, conf);
->  }
->  
-> +static void copy_page_to_sram(struct mtd_info *mtd, const void *buf, int buf_len)
-> +{
-> +	struct nand_chip *this = mtd_to_nand(mtd);
-> +	struct mxc_nand_host *host = nand_get_controller_data(this);
-> +	unsigned int no_subpages = mtd->writesize / 512;
-> +	int oob_per_subpage, i;
-> +
-> +	oob_per_subpage = (mtd->oobsize / no_subpages) & ~1;
-> +
-> +	/*
-> +	 * During a page write the i.MX NAND controller will read 512b from
-> +	 * main_area0 SRAM, then oob_per_subpage bytes from spare0 SRAM, then
-> +	 * 512b from main_area1 SRAM and so on until the full page is written.
-> +	 * For software ECC we want to have a 1:1 mapping between the raw page
-> +	 * data on the NAND chip and the view of the NAND core. This is
-> +	 * necessary to make the NAND_CMD_RNDOUT read the data it expects.
-> +	 * To accomplish this we have to write the data in the order the controller
-> +	 * reads it. This is reversed in copy_page_from_sram() below.
-> +	 */
-> +	for (i = 0; i < no_subpages; i++) {
-> +		memcpy16_toio(host->main_area0 + i * 512, buf, 512);
-> +		buf += 512;
-> +
-> +		memcpy16_toio(host->spare0 + i * host->devtype_data->spare_len, buf,
-> +			      oob_per_subpage);
-> +		buf += oob_per_subpage;
-> +	}
-> +}
+> Yes, that's what I've meant with "the unlock all works as
+> advertised" and your patch is fine.
 
-I noticed the nandbiterr test won't work with this. It needs the following
-fixup. The problem is that the core wants to write only user data
-without OOB, so we have to make sure the remaining SRAM is filled up
-with 0xff.
-
-I'll wait some time for other comments before sending a v4 with this
-included.
-
-Sascha
-
------------------------------8<--------------------------------
-
-From 8287fc3b44c22811350467f00b5652c94a816a36 Mon Sep 17 00:00:00 2001
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Wed, 15 May 2024 10:25:29 +0200
-Subject: [PATCH] fixup! mtd: nand: mxc_nand: support software ECC
-
----
- drivers/mtd/nand/raw/mxc_nand.c | 35 ++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index ae4cff2584a2d..9d50f41b3d5a1 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1474,6 +1474,15 @@ static int mxcnd_setup_interface(struct nand_chip *chip, int chipnr,
- 	return host->devtype_data->setup_interface(chip, chipnr, conf);
- }
- 
-+static void memff16_toio(void *buf, int n)
-+{
-+	__iomem u16 *t = buf;
-+	int i;
-+
-+	for (i = 0; i < (n >> 1); i++)
-+		__raw_writew(0xffff, t++);
-+}
-+
- static void copy_page_to_sram(struct mtd_info *mtd, const void *buf, int buf_len)
- {
- 	struct nand_chip *this = mtd_to_nand(mtd);
-@@ -1492,14 +1501,34 @@ static void copy_page_to_sram(struct mtd_info *mtd, const void *buf, int buf_len
- 	 * necessary to make the NAND_CMD_RNDOUT read the data it expects.
- 	 * To accomplish this we have to write the data in the order the controller
- 	 * reads it. This is reversed in copy_page_from_sram() below.
-+	 *
-+	 * buf_len can either be the full page including the OOB or user data only.
-+	 * When it's user data only make sure that we fill up the rest of the
-+	 * SRAM with 0xff.
- 	 */
- 	for (i = 0; i < no_subpages; i++) {
--		memcpy16_toio(host->main_area0 + i * 512, buf, 512);
-+		int now = min(buf_len, 512);
-+
-+		if (now)
-+			memcpy16_toio(host->main_area0 + i * 512, buf, now);
-+
-+		if (now < 512)
-+			memff16_toio(host->main_area0 + i * 512 + now, 512 - now);
-+
- 		buf += 512;
-+		buf_len -= now;
-+
-+		now = min(buf_len, oob_per_subpage);
-+		if (now)
-+			memcpy16_toio(host->spare0 + i * host->devtype_data->spare_len,
-+				      buf, now);
-+
-+		if (now < oob_per_subpage)
-+			memff16_toio(host->spare0 + i * host->devtype_data->spare_len + now,
-+				     oob_per_subpage - now);
- 
--		memcpy16_toio(host->spare0 + i * host->devtype_data->spare_len, buf,
--			      oob_per_subpage);
- 		buf += oob_per_subpage;
-+		buf_len -= now;
- 	}
- }
- 
--- 
-2.39.2
-
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Can this be applied ?
 
 ______________________________________________________
 Linux MTD discussion mailing list
