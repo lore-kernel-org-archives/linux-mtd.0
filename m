@@ -4,59 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75C9EC25B78
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2024 11:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9357C25B74
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2024 11:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/mSDGmu4BvzXwvv6VPhtLlr4KiNEXJ3EgY2bREolgRQ=; b=X6wDXLhSpozc3I
-	WALfg5IqBBJQs4cpQYXDBxIvSphaI/nTUNWyj1+sa2OU6vY62IltPMC1u2b86stnnGPU1suCJL2Rv
-	+SqGxx1gVst8mHn2J+bFtW/p7PULWNRaD3MpzkDKM+1S8QpHjr+Aea40TaPSVfBWATokKepn/hxrC
-	alPCDnpfA5u+qRoFnukL74cgVezNVxLPsd73/p3AhqHQvxJEp27RP21Bpp3s937vCCKZxfLkkargn
-	tOcqLjzFNqox+nc7/ipGzYyCR3U6782cN/TZFRs6gs3d1Rehpu21Er+Ef/HCNNivysC/VawC6Np1W
-	5lYesx1TBUEvhIw4udbg==;
+	List-Owner; bh=+YX9KCSvDtfJaNczG0FJcbrA/Kgu6QZyq80p3EWPrCQ=; b=TQUCkJIimmx6vX
+	AzZLvYKa23w4jlGOsEg2ajmcLGVDXB9sNgavdKK9p84R4VTDEILu1IChnZaew7QuS9vWGxBsGcRnu
+	SPsj6tURdvb3IkrONcrTGdIxHzjMuqlrQrshuZu+bkJziPIuee9bu2ZEE/nQWoE2rMqLFva+I9kmq
+	11D7trqwsB5mBsVfGrdG9+GkQyzPGoFSwx+l6MTEU7Ok5alc6cInBXaE4prvzT9TMb0+LuXaoJnk5
+	G9qTvRD+x+wHhA46cofq7mE44mfuZC2M+xg86YTno9HqIODR53j5t5Q2LkbzmagMI/UP4hVFJDkwR
+	BDCX/G9xViJ4o3iw1mAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7ZPl-00000004dqE-2qta;
-	Thu, 16 May 2024 11:36:49 +0000
+	id 1s7ZbG-00000004fgX-3tnJ;
+	Thu, 16 May 2024 11:48:42 +0000
 Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7ZPi-00000004doP-27yk
+	id 1s7ZbC-00000004ffl-3Mi5
 	for linux-mtd@lists.infradead.org;
-	Thu, 16 May 2024 11:36:48 +0000
+	Thu, 16 May 2024 11:48:40 +0000
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <sha@pengutronix.de>)
-	id 1s7ZPf-0007gw-Mt; Thu, 16 May 2024 13:36:43 +0200
+	id 1s7ZbB-0002rM-GM; Thu, 16 May 2024 13:48:37 +0200
 Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <sha@pengutronix.de>)
-	id 1s7ZPe-001hfo-Fw; Thu, 16 May 2024 13:36:42 +0200
+	id 1s7ZbB-001hhR-0h; Thu, 16 May 2024 13:48:37 +0200
 Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <sha@pengutronix.de>)
-	id 1s7ZPe-00Eqac-1I;
-	Thu, 16 May 2024 13:36:42 +0200
-Date: Thu, 16 May 2024 13:36:42 +0200
+	id 1s7ZbA-00EqdY-31;
+	Thu, 16 May 2024 13:48:36 +0200
+Date: Thu, 16 May 2024 13:48:36 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] mtd: nand: mxc_nand: implement exec_op
-Message-ID: <ZkXvyiuB4B2Fbz4l@pengutronix.de>
-References: <20240514-mtd-nand-mxc-nand-exec-op-v3-0-3e6f45fd3d82@pengutronix.de>
- <20240514-mtd-nand-mxc-nand-exec-op-v3-2-3e6f45fd3d82@pengutronix.de>
- <20240516103214.57a8ce33@xps-13>
- <ZkXfJ6n-06YqOr39@pengutronix.de>
- <20240516124405.2da1aa23@xps-13>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: rawnand: onfi: read parameter pages in one go
+Message-ID: <ZkXylC2xrlqGW_xV@pengutronix.de>
+References: <20240514134140.1050141-1-s.hauer@pengutronix.de>
+ <20240516101350.78e5ee29@xps-13>
+ <20240516115812.02908822@xps-13>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240516124405.2da1aa23@xps-13>
+In-Reply-To: <20240516115812.02908822@xps-13>
 X-Sent-From: Pengutronix Hildesheim
 X-URL: http://www.pengutronix.de/
 X-Accept-Language: de,en
@@ -66,8 +63,8 @@ X-SA-Exim-Mail-From: sha@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240516_043646_592724_9D347A95 
-X-CRM114-Status: GOOD (  21.74  )
+X-CRM114-CacheID: sfid-20240516_044838_867213_B93DBC61 
+X-CRM114-Status: GOOD (  24.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,75 +76,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 16, 2024 at 12:44:05PM +0200, Miquel Raynal wrote:
-> Hi Sascha,
-> =
+On Thu, May 16, 2024 at 11:58:12AM +0200, Miquel Raynal wrote:
+> 
+> miquel.raynal@bootlin.com wrote on Thu, 16 May 2024 10:13:50 +0200:
+> 
+> > Hi Sascha,
+> > 
+> > s.hauer@pengutronix.de wrote on Tue, 14 May 2024 15:41:40 +0200:
+> > 
+> > > nand_read_data_op() is not supported by all NAND controllers.
+> > > nand_change_read_column_op() is not supported or at least is hard to
+> > > support by NAND controllers that use a different page layout than
+> > > expected by the NAND core.  
+> > 
+> > I'm sorry but RNDOUT is not so hard to support, and I know no NAND
+> > controller without this feature (I think even the first mxc controller
+> > supports it?). However, the command does not exist on small page NANDs
+> > (512 bytes).
+> 
+> Nevermind, the ONFI spec (in all versions) states that RNDOUT are
+> allowed during parameter page reads, regardless of the size of the chip
+> (at least, that is not mentioned).
 
-> s.hauer@pengutronix.de wrote on Thu, 16 May 2024 12:25:43 +0200:
-> =
+I could imagine that there are no ONFI compliant chips with small pages,
+I don't know how to verify this though.
 
-> > On Thu, May 16, 2024 at 10:32:14AM +0200, Miquel Raynal wrote:
-> > > Hi Sascha,
-> > >   =
-
-> > > > +static const struct nand_op_parser mxcnd_op_parser =3D NAND_OP_PAR=
-SER(
-> > > > +	NAND_OP_PARSER_PATTERN(mxcnd_do_exec_op,
-> > > > +			       NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > > > +			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 7),
-> > > > +			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> > > > +			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-> > > > +			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, MAX_DATA_SIZE)),  =
-
-> > > =
-
-> > > CMD, ADDR, CMD, DATA is the RNDOUT pattern. So it is now working fine=
-?  =
-
-> > =
-
-> > Yes, RNDOUT is working now.
-> =
-
-> Excellent!
-> =
-
-> > > Or did you forget to adapt the patterns to your use case?  =
-
-> > =
-
-> > Although it looks like the patterns from the pl35x-nand-controller.c,
-> > there is one slight difference. The 'false' in the NAND_OP_PARSER_PAT_C=
-MD_ELEM
-> > above has the effect that a plain NAND_OP_PARSER_PAT_DATA_IN_ELEM is
-> > disallowed.
-> =
-
-> I'm not sure I follow, the above pattern means: a single command cycle
-> is supported, no?
-
-A single command cycle indeed is and shall be supported. The
-pl35x-nand-controller.c I copied this from has
-NAND_OP_PARSER_PAT_CMD_ELEM(true). With all elements being optional this
-also allows a single NAND_OP_PARSER_PAT_DATA_IN_ELEM()
-(supported_op.data_only_read becomes true). I can't support that, so I
-made the CMD mandatory.
+Anyway, this was a try to make reading the parameter pages a bit more
+straight forward. It seems the MXC NAND controller can't support reading
+three parameter pages in one go either. It works in software ECC mode
+because I reverse the syndome type layout the controller introduces, but
+it can't work with hardware ECC. So disregard this patch.
 
 Sascha
 
-> =
-
-> Miqu=E8l
-> =
-
-
--- =
-
+-- 
 Pengutronix e.K.                           |                             |
 Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
