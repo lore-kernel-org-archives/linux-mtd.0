@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1FEFC25B74
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2024 10:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94DC6C25B78
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2024 10:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lXKBnC1i5FjJ1uDRh6458P1BNSmy3hIrSMJ2SflaFaM=; b=esFVhiudYb30gp
-	TcpgaYOmjaATQgq9i/RDB6t9fecAlXq2Nv57k8x40sK2D6fNR5nxv9DyeaVF43x33FRzQaXOhDefA
-	85XdXq6K3tQP/nGH8vin7HKJHI2y4u22x+pvjj7ScyJxlp/oRROyWiwjQQYNFgDfqCXi0Uz4crihe
-	eCw3Qg4mjDOF5+pJH9HISqhy6Mix/LLVrx4W54omHI2+csNk+SKv8/kWZJFVe4vTjd0Xo0WgE5YRc
-	RtTIRzV62Naay9R62f7wyOtw8wN+6Z5wVPtzOOx57cInx/MDrYc7UGY3GizBp6s2zIW8hHPc7sw4h
-	ozQjYiepZO2Vld99dnuA==;
+	List-Owner; bh=aHIgWjWYSN44C+VOOOPnPU7IuFmEw2p1hV4NBKC2rKU=; b=YUYqiDngBstHff
+	G0YtbUdBW1ZAIIWwgzuedLILjYYeIAmfG1+FxXhue5I2KlZPQlssLubxqbJrwKEQfCsPZy/SJcpo/
+	rHu3n9t1UTB5zwHOi6VwB7qRwdRF3cQiZNkoB0Elzve+xzhxH6GuktgfXcem2JXgAWrVRAcUhJJJB
+	6ZNkG5j8DJ2GSXuc9JmUHBQ5YXZpkhTGvQ0GlX4OAS/uquNIzu4CaOa24boJoKiwY1xMWY0rsmCAa
+	Xhf7f4QcPvcKQAzQ+xOKYHj7c9XostOvHhkZiQG5g3z8MshFSW8xyPtD2Ni9bRs7bkZH3PvL+U6GO
+	cudi96ldRIulxbpQjrLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7YJ7-00000004TNM-395I;
-	Thu, 16 May 2024 10:25:53 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1s7Yar-00000004W9H-49oO;
+	Thu, 16 May 2024 10:44:13 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7YJ4-00000004TMj-29Hi
+	id 1s7Yao-00000004W7G-43jP
 	for linux-mtd@lists.infradead.org;
-	Thu, 16 May 2024 10:25:52 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s7YIz-0003ji-7V; Thu, 16 May 2024 12:25:45 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s7YIx-001h9K-52; Thu, 16 May 2024 12:25:43 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1s7YIx-00Epwj-0D;
-	Thu, 16 May 2024 12:25:43 +0200
-Date: Thu, 16 May 2024 12:25:43 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+	Thu, 16 May 2024 10:44:12 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C21BA2000C;
+	Thu, 16 May 2024 10:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1715856247;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZZxMRCr3U247a7pzMzNRUdfjSJgipOrsTt2uVfBhf68=;
+	b=hTqTdi7QxnvGDshjF8nWfXQNLwDQmsGSL1oITzxcohjcutOMjL9tOqCc8LbCkoI77zLpRW
+	TH3MqQ1siOOJ42oiSxkjZPINO9M4WcKIdXjlFBalLKIm96+7Nh170n17WJiBaNXq/u9AMv
+	ilPCD9YqK5KWOioBu9eHkJhrQslVSvlslx0eUB7nXeYN/2vYOUrboTpbwvq/quIQOCfp5n
+	geB9kozgnFUIhGejHyquYAGoOvJRpcUYe0d7fOr7szFMjX87Qtn6yXO7amIiCq7L808xlM
+	ne3Gx10WLUWcdVH1n+O+lf/+8OE/NE2qrZb210fBO6wNV2L1YbzAR85AHxONRQ==
+Date: Thu, 16 May 2024 12:44:05 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v3 2/3] mtd: nand: mxc_nand: implement exec_op
-Message-ID: <ZkXfJ6n-06YqOr39@pengutronix.de>
+Message-ID: <20240516124405.2da1aa23@xps-13>
+In-Reply-To: <ZkXfJ6n-06YqOr39@pengutronix.de>
 References: <20240514-mtd-nand-mxc-nand-exec-op-v3-0-3e6f45fd3d82@pengutronix.de>
- <20240514-mtd-nand-mxc-nand-exec-op-v3-2-3e6f45fd3d82@pengutronix.de>
- <20240516103214.57a8ce33@xps-13>
+	<20240514-mtd-nand-mxc-nand-exec-op-v3-2-3e6f45fd3d82@pengutronix.de>
+	<20240516103214.57a8ce33@xps-13>
+	<ZkXfJ6n-06YqOr39@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240516103214.57a8ce33@xps-13>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240516_032550_573137_157EE561 
-X-CRM114-Status: GOOD (  15.55  )
+X-CRM114-CacheID: sfid-20240516_034411_168878_F1DEBF01 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,41 +72,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, May 16, 2024 at 10:32:14AM +0200, Miquel Raynal wrote:
-> Hi Sascha,
-> 
-> > +static const struct nand_op_parser mxcnd_op_parser = NAND_OP_PARSER(
-> > +	NAND_OP_PARSER_PATTERN(mxcnd_do_exec_op,
-> > +			       NAND_OP_PARSER_PAT_CMD_ELEM(false),
-> > +			       NAND_OP_PARSER_PAT_ADDR_ELEM(true, 7),
-> > +			       NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> > +			       NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-> > +			       NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, MAX_DATA_SIZE)),
-> 
-> CMD, ADDR, CMD, DATA is the RNDOUT pattern. So it is now working fine?
-
-Yes, RNDOUT is working now.
-
-> Or did you forget to adapt the patterns to your use case?
-
-Although it looks like the patterns from the pl35x-nand-controller.c,
-there is one slight difference. The 'false' in the NAND_OP_PARSER_PAT_CMD_ELEM
-above has the effect that a plain NAND_OP_PARSER_PAT_DATA_IN_ELEM is
-disallowed.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgU2FzY2hhLAoKcy5oYXVlckBwZW5ndXRyb25peC5kZSB3cm90ZSBvbiBUaHUsIDE2IE1heSAy
+MDI0IDEyOjI1OjQzICswMjAwOgoKPiBPbiBUaHUsIE1heSAxNiwgMjAyNCBhdCAxMDozMjoxNEFN
+ICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgU2FzY2hhLAo+ID4gICAKPiA+ID4g
+K3N0YXRpYyBjb25zdCBzdHJ1Y3QgbmFuZF9vcF9wYXJzZXIgbXhjbmRfb3BfcGFyc2VyID0gTkFO
+RF9PUF9QQVJTRVIoCj4gPiA+ICsJTkFORF9PUF9QQVJTRVJfUEFUVEVSTihteGNuZF9kb19leGVj
+X29wLAo+ID4gPiArCQkJICAgICAgIE5BTkRfT1BfUEFSU0VSX1BBVF9DTURfRUxFTShmYWxzZSks
+Cj4gPiA+ICsJCQkgICAgICAgTkFORF9PUF9QQVJTRVJfUEFUX0FERFJfRUxFTSh0cnVlLCA3KSwK
+PiA+ID4gKwkJCSAgICAgICBOQU5EX09QX1BBUlNFUl9QQVRfQ01EX0VMRU0odHJ1ZSksCj4gPiA+
+ICsJCQkgICAgICAgTkFORF9PUF9QQVJTRVJfUEFUX1dBSVRSRFlfRUxFTSh0cnVlKSwKPiA+ID4g
+KwkJCSAgICAgICBOQU5EX09QX1BBUlNFUl9QQVRfREFUQV9JTl9FTEVNKHRydWUsIE1BWF9EQVRB
+X1NJWkUpKSwgIAo+ID4gCj4gPiBDTUQsIEFERFIsIENNRCwgREFUQSBpcyB0aGUgUk5ET1VUIHBh
+dHRlcm4uIFNvIGl0IGlzIG5vdyB3b3JraW5nIGZpbmU/ICAKPiAKPiBZZXMsIFJORE9VVCBpcyB3
+b3JraW5nIG5vdy4KCkV4Y2VsbGVudCEKCj4gPiBPciBkaWQgeW91IGZvcmdldCB0byBhZGFwdCB0
+aGUgcGF0dGVybnMgdG8geW91ciB1c2UgY2FzZT8gIAo+IAo+IEFsdGhvdWdoIGl0IGxvb2tzIGxp
+a2UgdGhlIHBhdHRlcm5zIGZyb20gdGhlIHBsMzV4LW5hbmQtY29udHJvbGxlci5jLAo+IHRoZXJl
+IGlzIG9uZSBzbGlnaHQgZGlmZmVyZW5jZS4gVGhlICdmYWxzZScgaW4gdGhlIE5BTkRfT1BfUEFS
+U0VSX1BBVF9DTURfRUxFTQo+IGFib3ZlIGhhcyB0aGUgZWZmZWN0IHRoYXQgYSBwbGFpbiBOQU5E
+X09QX1BBUlNFUl9QQVRfREFUQV9JTl9FTEVNIGlzCj4gZGlzYWxsb3dlZC4KCkknbSBub3Qgc3Vy
+ZSBJIGZvbGxvdywgdGhlIGFib3ZlIHBhdHRlcm4gbWVhbnM6IGEgc2luZ2xlIGNvbW1hbmQgY3lj
+bGUKaXMgc3VwcG9ydGVkLCBubz8KCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
