@@ -4,65 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BDF4C25B74
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 May 2024 16:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85304C04FFE
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 May 2024 07:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YCivfJBD2/7KwWl/2Mf7oAy7JeYslQqx5Ak6ggTla7M=; b=1pwXXLSq8TKNVB
-	5AKa3Szj4sZrNEtjJpXqPLg4SGiIR90yHYuZE1VTyfxB+JvgsYP7EWsAVVRhGOB0RLmo0feRaG7ZM
-	IZJP7jnVPBJDwe0AwXkGalGUgwqIQpWn/jXOcV3z1F1EtdcwhGUf/j3pfkvEQS1fwVGVHDrx+lG0N
-	N/93wWn6E2sWQvve37cQv8sHSYGyiDOHxYzcK6C4gHm8QTiobb7qQJaf/1+NzOULdRr31HGHQRY6c
-	ZnQ3c4P6BS/TP7jH2n92rcphbGFBHzlWNZH89eHhoEsY3+ziwtYkxVVXXHPDg49dSAmWk2WkubiEj
-	u5D7QjZlc+1tm8pskW0A==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3i0H4vS0ThOJrF1IotJdJbJDGiGW1kAcSFJjGY+WoLA=; b=k1Yz4QAsRJ0JrF
+	QG8O5I9Vy1NVIudUwqRgmQdGzJGkDENomqY5JqBCkw97YFfKYIkl5+oRZu4pui5/ERD/umhxLAeOC
+	PuHN7jU7vND1zarAWbDDkyKZrPH1ZXD2yV5CdAPEfddgKN9qqPhbxuvMvuaPzK+y1eBJcVjzwy6Jb
+	EmAEJXAKZaYEDaL8hiitZZX/yhWIHhYSY4UihA+Wf+50rJcRI4WmeHGA+pyL+VHd6Vb2M7WSIyoix
+	F1vZTvtrlYFUQN1ekLeB2bJKnaWZRqSEbO/2g55I471ubPleeXHFxfBrFDPCKQnl5uzwZB2VuUzyR
+	mIybExnR/0g3lOnj7IGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7dtU-00000005VK6-2Hie;
-	Thu, 16 May 2024 16:23:48 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1s7sJb-000000076Pv-3oxt;
+	Fri, 17 May 2024 07:47:43 +0000
+Received: from mail.explorepulse.pl ([51.91.254.67])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7dtQ-00000005VIm-0Z1P
+	id 1s7sJX-000000076OE-3lRN
 	for linux-mtd@lists.infradead.org;
-	Thu, 16 May 2024 16:23:45 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7E45E61781;
-	Thu, 16 May 2024 16:23:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2CCADC113CC;
-	Thu, 16 May 2024 16:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715876623;
-	bh=NWcuja2TGvoqXsxcrE5MZdVTFlrrtNmTLn/25njXllw=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=OTLedGxN9zu9QDg+g0UYEemiGx5U3mOHXRfwOHogsoOBmxq0jPz8Gc5wCjc8VLxF1
-	 fV2pdtoUguDN93irirzKcq9TmwnN9sD3SNszpC1kyKG5+mBeoTs7Lws3apZc3iEIJz
-	 ji4Di/duAC5vAFZA0/VnWykECzcXnm1MaDOJS0BgWl/yU1v2p25AN4tSa8QcsIMtlO
-	 PQXPHUJIiO007uq/I66+EDwjtzEWGwx/44SkFlhiBXDnhp5a2PKaXl0YxHTVgheXZv
-	 DaxtX5yYrJa5BGKFWRm4drvtne38oZNaTCOVkuymQ4oM4SJTlrCKVrisv6i2V/VO7V
-	 11n6HkaUvjtNw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 20919C43339;
-	Thu, 16 May 2024 16:23:43 +0000 (UTC)
-Subject: Re: [GIT PULL] mtd: Changes for v6.10-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240516111016.10d8abc4@xps-13>
-References: <20240516111016.10d8abc4@xps-13>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20240516111016.10d8abc4@xps-13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-6.10
-X-PR-Tracked-Commit-Id: 552c9380f98fc47950870ef0935f94cf3acec087
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b426433c03a6eb547515edbe74ebb3a90b9979dd
-Message-Id: <171587662312.28916.5460814490515635624.pr-tracker-bot@kernel.org>
-Date: Thu, 16 May 2024 16:23:43 +0000
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-kernel@vger.kernel.org
+	Fri, 17 May 2024 07:47:42 +0000
+Received: by mail.explorepulse.pl (Postfix, from userid 1002)
+	id A5C4524BC4; Fri, 17 May 2024 09:46:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=explorepulse.pl;
+	s=mail; t=1715932046;
+	bh=dqx6etWJTU7o7oR1uR2aRBCwaPXPl4dirwwzUCFBDcc=;
+	h=Date:From:To:Subject:From;
+	b=gndlCNHpm1DHLYLmYgbr/r9GcuyYIRPBdlOp1b5nzzMfiPfTlQt6uVpoQNR/6WD5L
+	 yO98eD3yi+iuLS3ri1CQnq0SFfd7FFLAXNMnZLsX5bjI2OhvpewXJNRh3y77nZH4WG
+	 V4jT8k9JJk/K0qjhFJfrwrFOalCV0zdjDIOSdFuSkOVTalFCYeuIq+Pi6/Twa31DAx
+	 loRNUH5gS+tuiHIpWQ67YWo1cVJxOFqy3sgG8fI4IidGtRwmciKgI5u9/h4GasCfpz
+	 P6UOsxZLnyhZVenrhQGOnbvol4LvzBC+qulKCsCgBMN+YGgsqQyg4jXGz/n6lOTqyk
+	 /TJS0lx08MEIQ==
+Received: by mail.explorepulse.pl for <linux-mtd@lists.infradead.org>; Fri, 17 May 2024 07:46:18 GMT
+Message-ID: <20240517084500-0.1.b9.r04z.0.zhxcjmu4x3@explorepulse.pl>
+Date: Fri, 17 May 2024 07:46:18 GMT
+From: "Marcin Gard" <marcin.grad@explorepulse.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.explorepulse.pl
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240516_092344_241508_AA4501AB 
-X-CRM114-Status: UNSURE (   4.44  )
+X-CRM114-CacheID: sfid-20240517_004740_889565_9F43DB84 
+X-CRM114-Status: UNSURE (   0.36  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,25 +62,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Thu, 16 May 2024 11:10:16 +0200:
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-6.10
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b426433c03a6eb547515edbe74ebb3a90b9979dd
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllCk1hcmNpbiBHYXJkCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
