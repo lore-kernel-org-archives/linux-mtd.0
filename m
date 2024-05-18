@@ -4,156 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FEBEC04FFE
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 May 2024 21:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45C8FC25B74
+	for <linux-mtd@archiver.kernel.org>; Sat, 18 May 2024 03:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7e3AxuUwR2rDAuL244HIIesyZE0CLq0DzDaLeQ1cgBE=; b=fiDdxn7Bd7yP6U
-	Aihguac/QrZR7ybZSkkfmPnbJbxueXFt6ZTiDf0LGxwk1lZDoRI4blA9OWqsNdDmLuZwiKTE1O45p
-	mp+cgnPo7JVUdFLMqzBr0AFyeMUG05KmYaOtplhd9VmbaWgBtG5p0IkVUIDczAqDHI5AvJVs1JQhs
-	kk1ITrydU3tID+JbHc45SuZgB6uWGhgzeUM0/m1d3/OeYfOansM5dNmK2yX++jv5NKKfDEgOaNPB8
-	vgfOYressqiCYsVOY5+JBJkGheFYT/jK9qGuSlqz2GQQhbP57F31l3O0l4VUGeKVjSO/kIURl9/5b
-	ub72XvfY6eOBVRtbcDaw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0Du3T98SFRe8Q4+6/P+CvCm1ZevIL0PPdCWCruLFrEM=; b=KLdLo0xeszdWJc
+	EHpsC4RqXSZ5+SbvYhsxpYvUmZt9KyfgzfUiwcFKMOAjwbV8bS4kmqlHJ90eHY2TEnmd3ZylG9sF6
+	R/J4FuEZZQ7n5weHRCGASO93B0TwMsySMLqCTVZ6hJ/YQTrWh2gyB2Kb1I6nwIrI7BPuPnKzKloqJ
+	I51qXTOxO1rDFXrTSnZaWA0dlwSur5Ti4DDDFL5+AonH0S/2d71iyE1qEsjHYbfC3DULj1yaMz+W8
+	vtzWkTeK8YKYEPCciMQ/9WFLul42ANV7pnHKbMvqDSyIYT/IgZHfCdg3jB9+xDJ+vpIvNxpawG6KL
+	x9Tj+dmVgTUVHdg4ulrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s84pk-0000000906q-1Qsl;
-	Fri, 17 May 2024 21:09:44 +0000
-Received: from mail-am0eur02on20601.outbound.protection.outlook.com ([2a01:111:f403:2606::601] helo=EUR02-AM0-obe.outbound.protection.outlook.com)
+	id 1s8Awv-00000009VQN-1T2b;
+	Sat, 18 May 2024 03:41:33 +0000
+Received: from out-170.mta1.migadu.com ([2001:41d0:203:375::aa])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s84ph-0000000905T-0Fhn;
-	Fri, 17 May 2024 21:09:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V6XbpmWB6A1ZkvABxOjhb3ol7E95vYBsz/J68Gi76OFvP9/yKYM89ztwnKDiPH85GFL1CcO673Jn84yf+5CZmYcBsOyRBSYDdByOrQUR8IlU2Y/+cw01dz1ndBhcPrqoNQfZjRY+xvD/WRig3YXXnfrppUsFHsqxSI4n0dt+dxm9uPAyxg56npOg7cpLSKpPJuhrp0183lVPKENTNHRuE4Igj2Jfd08G2BwdyMNUH7LIi9GognoRKnIow1G/oWamIXhJ3inYIIhoE7BmCSDfrwG4hXlGhOoAj8N7ekx46YHXRHqGRLe+SUUwWNsHxYe01WR2gshLnWUtQtHCaIFWaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LqNPSzCRMHWx+5iWddn8r1TvXQ1QU7NJ2NJRGs9zZF8=;
- b=ZEUJI35VwtA37jcbKFp7zYHqSBE4E9WuWjmTSmjYDyRgk3C41iei/XuALpdct6j4IP/1/JxNUJQJaNmAgC1l7PN21+/mV25J3Uc8mT0nyFeJ7EV9maefAZQOk0mA4xBUAvR0oOFh8UUMHoYRAeKsBIGeIcjWhVzQgmLTQPt+b33pS/gdoFnNDwVkqT9cK9Ivbi50OJyi2GJuSngBdgtvT0OsF2VCigY3TdMKXpo4c7pDAZZp4znkfdwKKHlQPEbFl5PSNuBOtoMR4sYaZGmxM5uXD59tpKlhkUoDfp8RSkpwNKwp82uv8ziSdp7ClIVza7rilYuXdNzQwscWctnefQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LqNPSzCRMHWx+5iWddn8r1TvXQ1QU7NJ2NJRGs9zZF8=;
- b=Aoi8VpKPrc80L8TiDLAPFumD2tztn4bLPHrfHbWBQeaeBhCyMD2ZMNdkNlzLLgPnsX8kgDB87avGV0AIfY5X5Ps5/chQsxBVCJ0JeB18pXYD7RCvy8uzh3D2TMtadsfSrWwhwGt3WlDKTWjbg+Ar7BVH/iQfAvTMqz0QJ+rd40A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS5PR04MB10020.eurprd04.prod.outlook.com (2603:10a6:20b:682::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7587.27; Fri, 17 May
- 2024 21:09:29 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7587.026; Fri, 17 May 2024
- 21:09:29 +0000
-Date: Fri, 17 May 2024 17:09:20 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
+	id 1s8Awr-00000009VOR-0TCx
+	for linux-mtd@lists.infradead.org;
+	Sat, 18 May 2024 03:41:30 +0000
+X-Envelope-To: val@packett.cool
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=packett.cool;
+	s=key1; t=1716003678;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2ubBRvLZp8rewt/xkDpvLy7GWRXEow8xsujDo199KHU=;
+	b=WENIuJj/YXcKEi4kz6nEU7g+zESvAbhk3zTLBwUdv/uDETPmGXqgrKI6NNOj4c+G58BpXd
+	3oN26gFOGsl3CzU+DZO9Tv1i71Tl9yXrLu3sBJM+QQdHg+Tz/N0FyOLzrzd9dk5DW6C26k
+	nqiwM5Fd+HBcfQLFldSySPJMQ0PGNLR++bnxrbMhl2FrVWU2dgN80dpFAw/fjRCMxON7Pl
+	TBuSMjtzJE1fHxln1/H6XbpFBXhq8q1lNs8RF4z/ifEcQlzXbDfGpj+Rq9d+CmGVQ1VffO
+	ztMYpKYvwp6DX2nubhc97sOtnaMq3SyLNUgPq0uRJp8G92vtx1IOmWg5WwS1bg==
+X-Envelope-To: miquel.raynal@bootlin.com
+X-Envelope-To: richard@nod.at
+X-Envelope-To: vigneshr@ti.com
+X-Envelope-To: heiko@sntech.de
+X-Envelope-To: sfr@canb.auug.org.au
+X-Envelope-To: linux-mtd@lists.infradead.org
+X-Envelope-To: linux-arm-kernel@lists.infradead.org
+X-Envelope-To: linux-rockchip@lists.infradead.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Val Packett <val@packett.cool>
+To: 
+Cc: Val Packett <val@packett.cool>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
-	Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/5] dt-bindings: mtd: gpmi-nand: Add
- 'fsl,imx8qxp-gpmi-nand' compatible string
-Message-ID: <ZkfHgGhc5821c9Ma@lizhi-Precision-Tower-5810>
-References: <20240517-gpmi_nand-v1-0-73bb8d2cd441@nxp.com>
- <20240517-gpmi_nand-v1-1-73bb8d2cd441@nxp.com>
- <20240517203621.72b8b9c7@xps-13>
- <Zkes3n6ZLjIFFQUK@lizhi-Precision-Tower-5810>
- <20240517215055.02622324@xps-13>
-Content-Disposition: inline
-In-Reply-To: <20240517215055.02622324@xps-13>
-X-ClientProxiedBy: BY3PR05CA0054.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::29) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	Heiko Stuebner <heiko@sntech.de>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: rockchip: reject NVDDR timings when checked
+Date: Sat, 18 May 2024 00:31:13 -0300
+Message-ID: <20240518033923.5577-2-val@packett.cool>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS5PR04MB10020:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0236998b-f49b-4c1c-7794-08dc76b5a3fc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|52116005|376005|366007|1800799015|38350700005;
-X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?3JNW9WxeqDyK184yCywP2dh/sqNDlvKnpjOsa/tBmNmXRSj633G8TiCdcG?=
- =?iso-8859-1?Q?sXopiIWDftNQqZc0Sm/t1ocvREHTY3eFVEIED+gt95FE3ImRFUgBo6aHWt?=
- =?iso-8859-1?Q?gv3PT/nvN0exfNg71WugqZbxheEfN4fSsVFDucImon6+S0E0hu3yF89T8U?=
- =?iso-8859-1?Q?fHrhuyv/yalNy6XQF/2y4f5BY3HId9x3oq9AThKnElHewZTmgDelBnXo88?=
- =?iso-8859-1?Q?mP33AVNAtQRK1OoGdE5Pw617nnlqlSZnjxOmh6p1do7YUkQQcUxi+nA6RG?=
- =?iso-8859-1?Q?s1X+AyEjSjeaKTu+btXezB5X7mYtM2K45vzzFA6APvAz9duwvuHpMZYCwE?=
- =?iso-8859-1?Q?pmjsWLchtwy5bWIaQKJ7eEBVwDdamb8SymtnD8MxRA4je+iz1+8NAhLhbW?=
- =?iso-8859-1?Q?WuK/DwlbTZpj4Ej/243Hti11PND8yBSrxZ7/84fx5DO68v8b6ATr8XRrkQ?=
- =?iso-8859-1?Q?bSldOJJ4aD3X3qDWkd2SUltmv3Gd5CRMM0K52oylnjtuHZBXIDktsBE6G8?=
- =?iso-8859-1?Q?ifFewRh/Cf3gqTBuzOV3mTPj0Q4GoN83OxgdvkAD1jIS0y7a9vzygb53Fw?=
- =?iso-8859-1?Q?ctE2SvM4mwkylEUGoaElKoduUyKY+mWMiuMIXYh76i5xDwOQkigFIHLSom?=
- =?iso-8859-1?Q?JHXCJuebfFs59ISHu9nT/BNpJhbvM3cZ6ibgDytUJSP65L6JmkMcIlVqS3?=
- =?iso-8859-1?Q?6O/y+N2OZb936/r7Roby1DTfxUAAntEE+HxYjBkOH6/f83hnntKnimzbRw?=
- =?iso-8859-1?Q?AEvgzTkuFE0BYDgRV/QhqLGXKjzgUhUIzKfLsKaNecSJyg2mp3y24yC5C0?=
- =?iso-8859-1?Q?wLPCyBB2mV7okAWtezRaCCDnnrxHi6yvIlQ3zxPqW3MMlxdmlhodTlCnTz?=
- =?iso-8859-1?Q?+plpuwOJUKyYCFTUeqK2Hw82pp9dGl0lmhvfaRlYUFsuaAJ+KTMR8cUyLJ?=
- =?iso-8859-1?Q?MyvxHKc7axcC9zzdbp2S3dDesh9WYgbbYXSUOo0DFgzNfqvs+3To0vj7N7?=
- =?iso-8859-1?Q?bq5we9h6K3J86NsIYiLQa2orDMZwN87zfvNCJMiqRAyY8exXRK2ExukT1C?=
- =?iso-8859-1?Q?tdYEXD/5pq7NBUN4pqmmWWG7tkCTpACmowBuJDXOa2icemhqktfI/YOh03?=
- =?iso-8859-1?Q?cU0QWN6LRwzY1PAkDJucZJN0F5FRXsDJ6WVAWiztDOv1KvytxaF4AFJyp3?=
- =?iso-8859-1?Q?ayE6BNnVhpoI2Sdu4WpgntT7OPBI3N7VAY+54HTl08lUJxOxCJMgYpm55j?=
- =?iso-8859-1?Q?9ynsyHI3LkZAyH81TiGEOrYoWSLgtLAP8TahFjs8HRpxfugr+orxrVu/39?=
- =?iso-8859-1?Q?WR/4i01+yqXnk01GupvpzBTBnzfOkA4pighs8kD3kiCwPqekZEtD9w5JlO?=
- =?iso-8859-1?Q?2JxngFaXeE6M+zA/vrzRy2H2wygFyGCA=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(52116005)(376005)(366007)(1800799015)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?AHxWyhhk754Ho2y6jukQ+kGkvwIhpYS3co2e92QxIr80hsxduXONj6Nco4?=
- =?iso-8859-1?Q?b/1EIqauwfDziTh+t8wYCcfrXpemGI2+Z2Ppd7I4I28YG1Sazd7LqeRmp8?=
- =?iso-8859-1?Q?KPAZSLDH0oJ5rK1omfRjZF1WlHDQFuefZ1D+RQec0pfHEh6xQ7rLHnLpbU?=
- =?iso-8859-1?Q?tFjZHm+slEPNf6qp2sajD0uqd3qEogFaNQeS+F4XE1RHV0LaoYt9zqJ5Ki?=
- =?iso-8859-1?Q?gDmRC7djDfdTm+fNO+hja04nt+MyA8w9t4ZumiTJxw8SwIMeQzEro0cgii?=
- =?iso-8859-1?Q?hkmyddiZbxjEfxmasQrERJs4Hb7r0VWYXYsfsd9V1SpF9iA849ZWDJcjaW?=
- =?iso-8859-1?Q?1IuhcskILCEMbOd5wsGtP3VFJP3R8Sik7ZQrwgea+/zBmYx15QWolTMJFV?=
- =?iso-8859-1?Q?HqKltGDDREqoaVpd+J2S0gwN9+3Y2kUDumcWob7NKogvhPERmsfVsryEYM?=
- =?iso-8859-1?Q?cJzrNzdW0iz1tiqJ4wzJxEZhP4lJXqZHEaUkZqzAr33f2duFQzB08pevha?=
- =?iso-8859-1?Q?Aui89I1TYlahVYT7gmxH2CPknC7PbOxnQuN2HF35yqapcgEZT34M8Oba1h?=
- =?iso-8859-1?Q?9lGhUpS7XTqPC93weHAW5VPfZWtcJY7hLtOhD1yODDffs5IriXNpGwVjyN?=
- =?iso-8859-1?Q?UG64KkGzMHB5Z+9mwqrhGaKIiRPwU2hysxymmTiLxvu7SecsvYf0psJlKp?=
- =?iso-8859-1?Q?B+B5smKwUxJacqXVVnLZ8FOJK0fVeSxGqenST1OXwe65FMBn+YC//GFVb4?=
- =?iso-8859-1?Q?RWyGKRlnVieYpVlPSJhVCVU2ScFTx+j43GlKrf7LQGlsTYFUIVs3Xm2o4Y?=
- =?iso-8859-1?Q?QJb7CCNesJWvwqxEBlJDY1PU1JPZExa4kuqVEYukn7J0nb6vbd/IfiiHf/?=
- =?iso-8859-1?Q?DFtKLo2w4qt2ul7fuc042F1DDuo1yHmQMinqXmkPkH8NiSs8Oo4rfVAKa9?=
- =?iso-8859-1?Q?bRbkAzlrQ29BkpJZ9tBahxZEqR6ymRBK2Lzogu4MJXnGNmYFvC4iQl9PUT?=
- =?iso-8859-1?Q?XgbQSsvdOmjVwrQwtJXmxq9xcB/If0H/0qY64KPioRNjNWRSOxvsGoy45i?=
- =?iso-8859-1?Q?jEN7x3KRXG8+iVjR+/50ASie17QY1U2rZ848hqYHeo3AfxYMsm7yCEbhGv?=
- =?iso-8859-1?Q?32bs8TEwDLCmt9cCTCHEZlIt+WEUIv+2CxpH3xhi5Tb55179WpBizLH+jY?=
- =?iso-8859-1?Q?NYpIg8yxFzMyM/iNv84fvRwiHN3l2SwhJ+XNYxdcjGg8VqOOkDs3q4LCLd?=
- =?iso-8859-1?Q?7/l4u9K28NfHh52pHo95VD5G4TpB4f38RdWwUXpoU/RokRg/pJtMBpwSxl?=
- =?iso-8859-1?Q?cqvet2EdiZWM/Igr4BvKyScbhViazuEM3eaKXLyiBfxl9O0lpxOCfsBHHR?=
- =?iso-8859-1?Q?8XvhwyG4srpyLHIOGz8qShJs4IQTiAQ6ahbTh/v70pRth+rR8EaSkAspQ3?=
- =?iso-8859-1?Q?6202Oa4VvJ/kYAflU4ylKu1Y+XTmb0Ydz3e/roWmzPyMSma9oK98K9m3LL?=
- =?iso-8859-1?Q?lGV9gTntaH3xQD5lmLMKWHC+z7rOTf6FQMKDhrEHItc/pnAb14TzsnAB/6?=
- =?iso-8859-1?Q?hV5nLQxxtbgHjZZWfcx2wW1m4u/g7CF3ldgvx9UAFZZ1Hibhm3Ijk08ZBc?=
- =?iso-8859-1?Q?qcY4Mr/8ooIWQpNwBJQyudE28p3KSzaPRh?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0236998b-f49b-4c1c-7794-08dc76b5a3fc
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2024 21:09:29.3745
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oQxRNba2UrgUhoSFThYh9Yxm/R6V6t6vrOa95pp1IS62i6fc07iHVY+DjJAC+5nes9AAfcjqo99F4SIG3585rg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB10020
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240517_140941_168699_D024A0D8 
-X-CRM114-Status: GOOD (  21.20  )
+X-CRM114-CacheID: sfid-20240517_204129_311251_A4BE1A2A 
+X-CRM114-Status: GOOD (  11.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -165,107 +80,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, May 17, 2024 at 09:50:55PM +0200, Miquel Raynal wrote:
-> Hi Frank,
-> =
+.setup_interface first gets called with a negative "target" value
+NAND_DATA_IFACE_CHECK_ONLY, in which case an error is expected
+if the controller driver does not support the timing mode (NVDDR).
 
-> Frank.li@nxp.com wrote on Fri, 17 May 2024 15:15:42 -0400:
-> =
+Signed-off-by: Val Packett <val@packett.cool>
+---
+Hello everyone, first Linux patch from a long time FreeBSD person :)
 
-> > On Fri, May 17, 2024 at 08:36:21PM +0200, Miquel Raynal wrote:
-> > > Hi Frank,
-> > > =
+This was required to get the NAND controller to attach on the random
+old RK3066 tablet I'm bringing up mainline on.
+---
+ drivers/mtd/nand/raw/rockchip-nand-controller.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> > > Frank.Li@nxp.com wrote on Fri, 17 May 2024 14:09:48 -0400:
-> > >   =
+diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+index 7baaef69d..555804476 100644
+--- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
++++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+@@ -420,13 +420,13 @@ static int rk_nfc_setup_interface(struct nand_chip *chip, int target,
+ 	u32 rate, tc2rw, trwpw, trw2c;
+ 	u32 temp;
+ 
+-	if (target < 0)
+-		return 0;
+-
+ 	timings = nand_get_sdr_timings(conf);
+ 	if (IS_ERR(timings))
+ 		return -EOPNOTSUPP;
+ 
++	if (target < 0)
++		return 0;
++
+ 	if (IS_ERR(nfc->nfc_clk))
+ 		rate = clk_get_rate(nfc->ahb_clk);
+ 	else
+-- 
+2.45.0
 
-> > > > Add 'fsl,imx8qxp-gpmi-nand' compatible string and clock-names restr=
-iction.
-> > > > =
-
-> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > ---
-> > > >  .../devicetree/bindings/mtd/gpmi-nand.yaml         | 22 ++++++++++=
-++++++++++++
-> > > >  1 file changed, 22 insertions(+)
-> > > > =
-
-> > > > diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b=
-/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-> > > > index 021c0da0b072f..f9eb1868ca1f4 100644
-> > > > --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-> > > > +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-> > > > @@ -24,6 +24,7 @@ properties:
-> > > >            - fsl,imx6q-gpmi-nand
-> > > >            - fsl,imx6sx-gpmi-nand
-> > > >            - fsl,imx7d-gpmi-nand
-> > > > +          - fsl,imx8qxp-gpmi-nand
-> > > >        - items:
-> > > >            - enum:
-> > > >                - fsl,imx8mm-gpmi-nand
-> > > > @@ -151,6 +152,27 @@ allOf:
-> > > >              - const: gpmi_io
-> > > >              - const: gpmi_bch_apb
-> > > >  =
-
-> > > > +  - if:
-> > > > +      properties:
-> > > > +        compatible:
-> > > > +          contains:
-> > > > +            enum:
-> > > > +              - fsl,imx8qxp-gpmi-nand
-> > > > +    then:
-> > > > +      properties:
-> > > > +        clocks:
-> > > > +          items:
-> > > > +            - description: SoC gpmi io clock
-> > > > +            - description: SoC gpmi apb clock  =
-
-> > > =
-
-> > > I believe these two clocks are mandatory?  =
-
-> > =
-
-> > minItems default is equal to items numbers, here is 4. So all 4 clock a=
-re
-> > mandatory.
-> > =
-
-> > Anything wrong here?
-> =
-
-> I'd say that the two "bch" clocks are only used if you decide to
-> configure the on-host hardware ECC engine and thus are not needed with
-> software corrections, but I'm fine keeping the fourth described in all
-> cases if that's simpler.
-> =
-
-> Also,here the diff just shows that "if we provide a clocks property
-> with this compatible, then we need to provide 4 members", I believe the
-> "required" property is already filled somewhere with the
-> clocks/clock-names properties?
-
-yes, before allOf
-
-required:
-...                                                                 =
-
-  - clocks                                                                 =
-
-  - clock-names                                                            =
-
-...
-
-> =
-
-> Thanks,
-> Miqu=E8l
 
 ______________________________________________________
 Linux MTD discussion mailing list
