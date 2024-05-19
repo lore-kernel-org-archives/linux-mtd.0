@@ -4,55 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9510CC25B74
-	for <linux-mtd@archiver.kernel.org>; Sat, 18 May 2024 19:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BD49C25B74
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 May 2024 03:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=rl6c2j9KEN5RFkrQyU5rwM8qcPlLD+APo+lkpddHqzM=; b=jBxAAdtxpFcgxZ
-	EJRir7LXouPAghCTGAc9Am0r8ojowD90C/SeXt/U53G3nLq2vZOoQd3pbjUub0QwO5BDQXbGi5K0P
-	XRQBcwd+zG/XZfdP1mO6fatK3ommkdeTfWRAGSwIVgruoBnbLRh/ZjT7ONjC8z6isOhY8Ksj8+1CZ
-	/IEP7SYu08goNQjKwIY06/R2xUzgJoMQ1/dW0HTxLVrzKJpwbwgVSQZJ+QDWArg+lKEd7qDUGvAVS
-	3NSZJUd0kVT1cXUQZVtKbneIooMx7ak2ctiim8c8zW5DwYk8qArPaRW8P4VUu2sEut1yKAxBOLoa/
-	F0gwF/dsv3f0HOmtVx6Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=iBIfoXqcP1sD+ETP4MOuL30h9vl6rpDMdQPRkguXrDw=; b=Vl32ay+JG3GejY
+	s+s4s8gl6iZYNAcODV5g7y9B1zbxqbds+Nx4H3YDzYufxj0eN+Vrt/5p3tlPfyQAEIVhewiYqqSmW
+	Jv94KffHX/pbVFygtVnRaHyf/WTXQ1b07V/1pA35ph6fRsycZLl9aLwtoVDgpMPf3o+aPc7RSjY2C
+	TMALaTGAccJSD+91wLZrXa3noyo81y6vlq5JqnLghNC8/a2y5C2BhiRgLJWqtPu01D4t7xTM/ZHPd
+	bmYTW8LY3IoSIxS80s0JGU3ecxALCz/+t1qiY5chBQIcfhntb1jHpYwIM03EqM1WTaGoTFttEn+Ys
+	uTbBy/Ew5n8J1sW8fKiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s8PiC-0000000AdEX-3g3R;
-	Sat, 18 May 2024 19:27:20 +0000
-Received: from mail.ispras.ru ([83.149.199.84])
+	id 1s8X0u-0000000BFlJ-495F;
+	Sun, 19 May 2024 03:15:08 +0000
+Received: from out-177.mta0.migadu.com ([91.218.175.177])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s8Pi7-0000000Ad8e-0hyI
+	id 1s8X0r-0000000BFjk-1JMc
 	for linux-mtd@lists.infradead.org;
-	Sat, 18 May 2024 19:27:16 +0000
-Received: from fpc (unknown [5.228.116.47])
-	by mail.ispras.ru (Postfix) with ESMTPSA id E487C407851F;
-	Sat, 18 May 2024 19:26:42 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru E487C407851F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1716060403;
-	bh=jOuQ5uZjSUgcbnmh6vGDVilCcRsMB9GTgJKB/mLHvz0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=p9pkjPzRYueAW/qA9RLCr9VyLG0JUvqnZMAeuYGEveDyd3SrHjHE+OgF8Fk78so/5
-	 Yu0CskVgF7YMBxcx6/tyX09Opr7VzZFDnDMsEA2DqbDSNceQ0iL5l5Xbj21J5XCK7U
-	 1LT5COj5QkN5hurI6MDKVAOHWbjgK419mQ1J81fk=
-Date: Sat, 18 May 2024 22:26:38 +0300
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: syzbot <syzbot+f516089d7815b10197c9@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mtd?] WARNING: zero-size vmalloc in
- ubi_read_volume_table
-Message-ID: <20240518-f6ee39c99afd546f45cc692b-pchelkin@ispras.ru>
+	Sun, 19 May 2024 03:15:06 +0000
+X-Envelope-To: val@packett.cool
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=packett.cool;
+	s=key1; t=1716088501;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mQ68eiixPLPA8K8ibwC9Cqzr0rdSmWCBdWf8xU1y1GM=;
+	b=RFqSbC2snfhymVSfYyYailtwV2CqggBM/RQHKsrNoV3zW3MCK9cpI1GjMbIu624pm6PfOf
+	wMZxYamANR3bImVCiq3rd4Hey2NKzUTdjLZW2TmnW6HxtGiohDrEnlWvPfeh94XTIQmTWG
+	RkZ+/kTLV+QTyRJ6fGX6ifWe4SQ9p7hFBBJZEssvD/EZ3yPEymxWItYHBjcEPbz7KXgohG
+	BbrN+IVoTm+cEKZ5LHwvSV8y6sIn1qqos9AizSoliMKpVHEuANf6+ot95p8Nr6DcY8FFZ5
+	bAJa+9or7pdVeu/zXV1hTt73Lu3vETEgjRXxYBOSnTnEGSBckyFPRw9qptYMxA==
+X-Envelope-To: stable@vger.kernel.org
+X-Envelope-To: miquel.raynal@bootlin.com
+X-Envelope-To: richard@nod.at
+X-Envelope-To: vigneshr@ti.com
+X-Envelope-To: heiko@sntech.de
+X-Envelope-To: sfr@canb.auug.org.au
+X-Envelope-To: linux-mtd@lists.infradead.org
+X-Envelope-To: linux-arm-kernel@lists.infradead.org
+X-Envelope-To: linux-rockchip@lists.infradead.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Val Packett <val@packett.cool>
+To: 
+Cc: Val Packett <val@packett.cool>,
+	stable@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: rawnand: rockchip: ensure NVDDR timings are rejected
+Date: Sun, 19 May 2024 00:13:39 -0300
+Message-ID: <20240519031409.26464-1-val@packett.cool>
+In-Reply-To: <20240518124404.472eb60b@xps-13>
+References: <20240518124404.472eb60b@xps-13>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <000000000000a7f84306150bc9d5@google.com>
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240518_122715_394006_81B10274 
-X-CRM114-Status: UNSURE (   3.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240518_201505_656329_C8897FAC 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,7 +90,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-#syz fix: ubi: Check for too small LEB size in VTBL code
+.setup_interface first gets called with a "target" value of
+NAND_DATA_IFACE_CHECK_ONLY, in which case an error is expected
+if the controller driver does not support the timing mode (NVDDR).
+
+Fixes: a9ecc8c814e9 ("mtd: rawnand: Choose the best timings, NV-DDR included")
+Signed-off-by: Val Packett <val@packett.cool>
+Cc: stable@vger.kernel.org
+---
+ drivers/mtd/nand/raw/rockchip-nand-controller.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+index 7baaef69d..555804476 100644
+--- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
++++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+@@ -420,13 +420,13 @@ static int rk_nfc_setup_interface(struct nand_chip *chip, int target,
+ 	u32 rate, tc2rw, trwpw, trw2c;
+ 	u32 temp;
+ 
+-	if (target < 0)
+-		return 0;
+-
+ 	timings = nand_get_sdr_timings(conf);
+ 	if (IS_ERR(timings))
+ 		return -EOPNOTSUPP;
+ 
++	if (target < 0)
++		return 0;
++
+ 	if (IS_ERR(nfc->nfc_clk))
+ 		rate = clk_get_rate(nfc->ahb_clk);
+ 	else
+-- 
+2.45.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
