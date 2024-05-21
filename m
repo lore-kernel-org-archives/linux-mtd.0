@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 366C5C25B74
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2024 13:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A4A9C25B74
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 May 2024 13:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MezR6faZ8tzs7LUWF8nQINVO9JBV3C2ag3RjSHgEIII=; b=gJoP8tjAV7TLNc
-	AGUew/xRJJXphMmbBQngx3qY7xEQnnm4m2KulxuoGepcQih6N7crOIe3qCN8OKT4jeNlxS8blHLbX
-	t2ZiKkOYG1P+kodDfVzKQSFEp1GjGM78CfZvhLsEx16DP90ierdMxNHpWgjEGntUz4+0VR7AcaDhC
-	YgX26p4gBNZWY3M0tNTQGFWQLhaRYJFa4LEGSHx1lg9Lgvo0xl206az9e4x3UzABiY5IdI89zmTFJ
-	nQZXgmeImaztBNu0ecPCtCRSWfCvMGUyJU6oGrj72KDbcJg3i/VikLt+jufQc9U9ruQQT59wYIKKC
-	S5GGdBwZbSNZ6JxWUZag==;
+	List-Owner; bh=qStGqOHTmbBuK3Q3muGGEKTj6x5K0w8hoA4+tuunEcc=; b=hClnA8MYDAyB5d
+	gxqSig93+ooqS7QCvmWmo+uAYcHQ7ZtH2LjXw+C2XtW4VqlP6or7bAbbweaK9JgZPv++kslQSYGca
+	ycEle8A0E5Xj+FuXWIZoOXD0/lmt0pCGQDK0gViZmYc1Jql6JB0IBdh4eQQriamfzc7VTLzUua+Em
+	EUKKrzui4yORi4yxi8aPF9bDxkp5tLbawkxzE9MkyIrmRBSkmJNb0t/Ha6DcNXNVM9OgSy0gQ+OKn
+	VaJwctoHIz0Vpzh0RjHy6Ost5j2nLlqkMBSdyCHPu7VgS+KSviGg1/DpUKRsIZrorjPjJXjThXbwW
+	M2U/47zw5PU3EBJOKPjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s9Pz3-0000000049S-2LWu;
-	Tue, 21 May 2024 13:56:53 +0000
+	id 1s9PzC-000000004Cg-0WcX;
+	Tue, 21 May 2024 13:57:02 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s9Pyy-00000000481-0eKh;
-	Tue, 21 May 2024 13:56:49 +0000
+	id 1s9Pz8-000000004BF-3SXW;
+	Tue, 21 May 2024 13:57:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D927E62237;
-	Tue, 21 May 2024 13:56:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6548EC32789;
-	Tue, 21 May 2024 13:56:45 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id F38C962237;
+	Tue, 21 May 2024 13:56:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67384C32786;
+	Tue, 21 May 2024 13:56:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716299805;
-	bh=FFuwVn68atOvznkRM8++lCl3i72ug2UrS29cE+2NwmM=;
+	s=k20201202; t=1716299817;
+	bh=xVshbswY1e7znH1UPTx4SgJIxRng+OL6cql7RES1tjw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hvvTKk9+EXJ6Xym4d/wioGZbveQE+jqiYi6+83BgzvRAjrOlEjy/8VTvg99BZzXcG
-	 vLQWDrOA/TtYCKwFv+Xr/usXS4A0QVbTWd3YWmitKlk24PevlGNNfvrTWR+xuvDmfz
-	 2foYtUKL5FTB6kEixCRk7dNSxfYOhK9R8pnWIPMSc3I3uBjDm6puCvAEmSyrPjlrup
-	 Ik2jQ5jJ5BokirZLbo8tmDhggE+vD1H5QTT8Ymb0s7LMjLugOdekAvzvA20/YLOnkW
-	 AG35d0weG/j63kX6zuARghq6AJPO5EkE+cjmvdX6VEFSVYnsz6iU58QkuO5VaSTtz4
-	 yg4jYzjqV83Cw==
-Date: Tue, 21 May 2024 08:56:44 -0500
-From: Rob Herring <robh@kernel.org>
+	b=SCW6osSl45u0s6PY3hWxZwq3eDSVjS8M+xeO5IEc8im0M7hvlbh4pn1zbpIlZDD5p
+	 fvdSUmLFW7rduHE+VqbXa7qgN75Fem4PRRmrmRg9ftJ/2jCTDCmO9wN1mWKaa1XdmK
+	 IyjwZtBku40zbmMOgvItxlVl+tbLU5abhwFW+do2EmE2wvfhtEGgsjIuWtoeTQ2N4t
+	 +vb4qnFF0Q3vfKUqFO4SGACfInaN38jdyCFAlwi21TfO5i+CYkxNxf6S/3XsmspJ68
+	 OdB38zqqYnznWQuAUw7eHNUyy8b5A9e5qiRY9Rldvz0ixrkluWZ42su2UyFDBegTOa
+	 F/9qZWLUVsmHQ==
+Date: Tue, 21 May 2024 08:56:56 -0500
+From: "Rob Herring (Arm)" <robh@kernel.org>
 To: Frank Li <Frank.Li@nxp.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
-	Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Richard Weinberger <richard@nod.at>, Marek Vasut <marex@denx.de>,
+	dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: mtd: gpmi-nand: Add
- 'fsl,imx8qxp-gpmi-nand' compatible string
-Message-ID: <20240521135644.GA3953973-robh@kernel.org>
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+	Han Xu <han.xu@nxp.com>, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 2/6] dt-bindings: dma: fsl-mxs-dma: Add compatible
+ string "fsl,imx8qxp-dma-apbh"
+Message-ID: <171629980867.3956813.9155367287615832279.robh@kernel.org>
 References: <20240520-gpmi_nand-v2-0-e3017e4c9da5@nxp.com>
- <20240520-gpmi_nand-v2-1-e3017e4c9da5@nxp.com>
+ <20240520-gpmi_nand-v2-2-e3017e4c9da5@nxp.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240520-gpmi_nand-v2-1-e3017e4c9da5@nxp.com>
+In-Reply-To: <20240520-gpmi_nand-v2-2-e3017e4c9da5@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240521_065648_268888_3A2C1F97 
-X-CRM114-Status: UNSURE (   7.96  )
+X-CRM114-CacheID: sfid-20240521_065658_921406_FA408F85 
+X-CRM114-Status: UNSURE (   9.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,15 +85,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 20, 2024 at 12:09:12PM -0400, Frank Li wrote:
-> Add 'fsl,imx8qxp-gpmi-nand' compatible string and clock-names restriction.
+
+On Mon, 20 May 2024 12:09:13 -0400, Frank Li wrote:
+> Add compatible string "fsl,imx8qxp-dma-apbh". It requires power-domains
+> compared with "fsl,imx28-dma-apbh".
+> 
+> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
+> it.
+> 
+> Keep the same restriction about 'power-domains' for other compatible
+> strings.
 > 
 > Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
->  .../devicetree/bindings/mtd/gpmi-nand.yaml         | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+>  Documentation/devicetree/bindings/dma/fsl,mxs-dma.yaml | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
 
 Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
