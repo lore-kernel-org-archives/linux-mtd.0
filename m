@@ -4,71 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79CF3C25B77
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2024 05:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F34CC25B77
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 May 2024 06:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=02qkqWrzY15ekHQvi1dQKhR5dXMBvSjGzrlMloYKYOM=; b=nr1poTSIAOpCnZ
-	5pzNpx5GghJj1+osPQMsntk/jPH9Q7R/ybujQ4r0Qprj1WvtY9v5n4vUsyMdFPVSi8VI0N1K9lM8M
-	jGTuWn0jp2/Sn/YiJ/UXw5FpcKjGpCmGjBmOogzSxKZ0mvBFIJWhXyxAJujYxmt1DK4iKAfBt3sGR
-	kDdBZZP6b7JKntXvyyemR/rvI/SeWCf+B6+hvh1ZwTFJp+sHL8ef9lovAcmEntHaosYH2UFlEMbI6
-	xGtuHMG9y4M+6eZ0rvWc1aEE2h9lTobtQxRW6isLrHTdnCqsnbd2Q9YyDMyt/JeWUC1ctWvzeje+W
-	+Ccu1L1VqxyzNoeC2lPw==;
+	List-Owner; bh=VSoQKxeBvhoNIR4mxkdKXfqPTKCAkvBjARZvUVVXlvA=; b=oJTL+2qWJ1Bys1
+	C4euxXV2rjLKjTy8XYq/0UNaZbhKo3dqYnQQgmbHP/F21BnzerGKEEUtnvg2YptMQcVsIfwrWlX/Z
+	6/WRVccEa1CWLPnBuIMvtqoj8M1dXPJceMaH5JLGF3ZcNm5u4LqDlPQ+DPA8YS9LzMeVPsgeiGfQl
+	AAYNYse2p97EKvLGWzWDLyMt0XZKGrPkeV+Y9mTYFBWAzZHwLMg7R1gzEtr9ZuYN7LbhMbunyh/GD
+	jf+snxbtzKuT+/d+W0IQopgw9aoB+bXz9uO3i1SxJQapA59GalTIRIqoGaBEQHsDlQF8nUACar9DI
+	uoCoaA3PsK/s8C+hniPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s9ei4-000000022Az-2FwC;
-	Wed, 22 May 2024 05:40:20 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1s9f9y-000000024wz-0nM1;
+	Wed, 22 May 2024 06:09:10 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s9ei1-0000000228j-0KMF
+	id 1s9f9u-000000024wS-3vJ1
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 May 2024 05:40:18 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s9ehj-0003dZ-JJ; Wed, 22 May 2024 07:39:59 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s9ehg-002U0s-OJ; Wed, 22 May 2024 07:39:56 +0200
-Received: from localhost ([::1] helo=dude02.red.stw.pengutronix.de)
-	by dude02.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1s9ehg-00Dqu2-26;
-	Wed, 22 May 2024 07:39:56 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Wed, 22 May 2024 07:39:51 +0200
-Subject: [PATCH v4 1/3] mtd: nand: mxc_nand: separate page read from ecc
- calc
+	Wed, 22 May 2024 06:09:08 +0000
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44LNaRHs019181;
+	Wed, 22 May 2024 06:08:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=76X18h8ZdxGj97syQ3G8X16mJAi6U8JWctpGW0mNnGM=; b=Vf
+	cFxf9cRRjiPYJwdfkeRQkRxSwgXWdNCY0Wwdh+iQhCGEXlUEdMXe6DNkBTRLEGFw
+	GLqAKJed9gNHi7Jlqn+rWm2qu70L955pYwSaNK7E7w1+Gn5Kc/IkC9fNO0XRxeZ7
+	cFFeQ5SXKQD+23ibg0D8s3UJR0QcCYlgRM+lg3PqAB1Wl9UF4MO0LedTYPDv6E/k
+	GWVDc0DUsrtFCLqf0s9Uv7tS8Q7wzQUNN6omCr9LVPF4lr14F7oIdyg4hYLHrAqL
+	7/mh/8Co35rimFPifRFmpjU355JYMVG4OH5glBdq1ByV5eGIuadp2UppMVGmmTfb
+	4K+yiTfP5GBLaYbh2NlA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3y6n4gfyeh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 22 May 2024 06:08:54 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 44M68rYs023009
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 22 May 2024 06:08:53 GMT
+Received: from [10.216.52.184] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 21 May
+ 2024 23:08:48 -0700
+Message-ID: <1eaa6f78-07d8-25e7-2e00-1284dd37f761@quicinc.com>
+Date: Wed, 22 May 2024 11:38:37 +0530
 MIME-Version: 1.0
-Message-Id: <20240522-mtd-nand-mxc-nand-exec-op-v4-1-75b611e0ac44@pengutronix.de>
-References: <20240522-mtd-nand-mxc-nand-exec-op-v4-0-75b611e0ac44@pengutronix.de>
-In-Reply-To: <20240522-mtd-nand-mxc-nand-exec-op-v4-0-75b611e0ac44@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Sascha Hauer <s.hauer@pengutronix.de>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1716356396; l=7729;
- i=s.hauer@pengutronix.de; s=20230412; h=from:subject:message-id;
- bh=7BAnbozBUGliEkFA2yy81ruk4ikDMyqp7A70k41kDBQ=;
- b=k1rA42IW50j9pVIJPSjaiDAHAQE1zGNksRYIP7CwGs6nq0J0uHy3JeKS6N09Eughvq/6o4Cy1
- AzOIdp7zcvbDKDwbiVqBKpxOhgdKtD2YZiJcTiv97zbGwlhmdf8T4Es
-X-Developer-Key: i=s.hauer@pengutronix.de; a=ed25519;
- pk=4kuc9ocmECiBJKWxYgqyhtZOHj5AWi7+d0n/UjhkwTg=
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: s.hauer@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v6 4/8] drivers: mtd: nand: Add qpic_common API file
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
+References: <20240521105532.1537845-1-quic_mdalam@quicinc.com>
+ <20240521105532.1537845-5-quic_mdalam@quicinc.com>
+ <20240521145140.5cb49946@xps-13>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20240521145140.5cb49946@xps-13>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aUN5v4k1sl7V4N9StjvzU3eaRECy46JR
+X-Proofpoint-ORIG-GUID: aUN5v4k1sl7V4N9StjvzU3eaRECy46JR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-22_02,2024-05-21_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405010000 definitions=main-2405220043
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240521_224017_396416_8C9998F7 
-X-CRM114-Status: GOOD (  21.21  )
+X-CRM114-CacheID: sfid-20240521_230907_172814_98C2D033 
+X-CRM114-Status: GOOD (  12.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,276 +101,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Our read_page hook currently reads out a page and also counts and
-returns the number of bitflips. In upcoming exec_op conversion we'll
-need to read the page data in exec_op, but the bitflip information
-will be needed in mxc_nand_read_page(). To ease exec_op conversion
-separate the page read out from the bitflip evaluation.
-
-For the v2/v3 controllers we can leave the bitflip information in the
-status register for later evaluation. For the v1 controller this is
-not possible, because the status register is overwritten with each
-subpage read. We therefore store the bitflip information in the private
-data.
-
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/raw/mxc_nand.c | 140 ++++++++++++++++++++++++----------------
- 1 file changed, 86 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 003008355b3c2..3fe0b471f4a2d 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -20,6 +20,7 @@
- #include <linux/irq.h>
- #include <linux/completion.h>
- #include <linux/of.h>
-+#include <linux/bitfield.h>
- 
- #define DRIVER_NAME "mxc_nand"
- 
-@@ -47,6 +48,8 @@
- #define NFC_V1_V2_CONFIG1		(host->regs + 0x1a)
- #define NFC_V1_V2_CONFIG2		(host->regs + 0x1c)
- 
-+#define NFC_V1_V2_ECC_STATUS_RESULT_ERM GENMASK(3, 2)
-+
- #define NFC_V2_CONFIG1_ECC_MODE_4	(1 << 0)
- #define NFC_V1_V2_CONFIG1_SP_EN		(1 << 2)
- #define NFC_V1_V2_CONFIG1_ECC_EN	(1 << 3)
-@@ -132,7 +135,7 @@ struct mxc_nand_devtype_data {
- 	uint16_t (*get_dev_status)(struct mxc_nand_host *);
- 	int (*check_int)(struct mxc_nand_host *);
- 	void (*irq_control)(struct mxc_nand_host *, int);
--	u32 (*get_ecc_status)(struct mxc_nand_host *);
-+	u32 (*get_ecc_status)(struct nand_chip *);
- 	const struct mtd_ooblayout_ops *ooblayout;
- 	void (*select_chip)(struct nand_chip *chip, int cs);
- 	int (*setup_interface)(struct nand_chip *chip, int csline,
-@@ -175,6 +178,7 @@ struct mxc_nand_host {
- 	int			eccsize;
- 	int			used_oobsize;
- 	int			active_cs;
-+	unsigned int		ecc_stats_v1;
- 
- 	struct completion	op_completion;
- 
-@@ -406,19 +410,81 @@ static void irq_control(struct mxc_nand_host *host, int activate)
- 	}
- }
- 
--static u32 get_ecc_status_v1(struct mxc_nand_host *host)
-+static u32 get_ecc_status_v1(struct nand_chip *chip)
- {
--	return readw(NFC_V1_V2_ECC_STATUS_RESULT);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	unsigned int ecc_stats, max_bitflips = 0;
-+	int no_subpages, i;
-+
-+	no_subpages = mtd->writesize >> 9;
-+
-+	ecc_stats = host->ecc_stats_v1;
-+
-+	for (i = 0; i < no_subpages; i++) {
-+		switch (ecc_stats & 0x3) {
-+		case 0:
-+		default:
-+			break;
-+		case 1:
-+			mtd->ecc_stats.corrected++;
-+			max_bitflips = 1;
-+			break;
-+		case 2:
-+			mtd->ecc_stats.failed++;
-+			break;
-+		}
-+
-+		ecc_stats >>= 2;
-+	}
-+
-+	return max_bitflips;
- }
- 
--static u32 get_ecc_status_v2(struct mxc_nand_host *host)
-+static u32 get_ecc_status_v2_v3(struct nand_chip *chip, unsigned int ecc_stat)
- {
--	return readl(NFC_V1_V2_ECC_STATUS_RESULT);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+	u8 ecc_bit_mask, err_limit;
-+	unsigned int max_bitflips = 0;
-+	int no_subpages, err;
-+
-+	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
-+	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
-+
-+	no_subpages = mtd->writesize >> 9;
-+
-+	do {
-+		err = ecc_stat & ecc_bit_mask;
-+		if (err > err_limit) {
-+			mtd->ecc_stats.failed++;
-+		} else {
-+			mtd->ecc_stats.corrected += err;
-+			max_bitflips = max_t(unsigned int, max_bitflips, err);
-+		}
-+
-+		ecc_stat >>= 4;
-+	} while (--no_subpages);
-+
-+	return max_bitflips;
- }
- 
--static u32 get_ecc_status_v3(struct mxc_nand_host *host)
-+static u32 get_ecc_status_v2(struct nand_chip *chip)
- {
--	return readl(NFC_V3_ECC_STATUS_RESULT);
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+
-+	u32 ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
-+
-+	return get_ecc_status_v2_v3(chip, ecc_stat);
-+}
-+
-+static u32 get_ecc_status_v3(struct nand_chip *chip)
-+{
-+	struct mxc_nand_host *host = nand_get_controller_data(chip);
-+
-+	u32 ecc_stat = readl(NFC_V3_ECC_STATUS_RESULT);
-+
-+	return get_ecc_status_v2_v3(chip, ecc_stat);
- }
- 
- static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
-@@ -712,9 +778,9 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
--	unsigned int bitflips_corrected = 0;
- 	int no_subpages;
- 	int i;
-+	unsigned int ecc_stats = 0;
- 
- 	host->devtype_data->enable_hwecc(chip, ecc);
- 
-@@ -727,8 +793,6 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
- 	no_subpages = mtd->writesize >> 9;
- 
- 	for (i = 0; i < no_subpages; i++) {
--		uint16_t ecc_stats;
--
- 		/* NANDFC buffer 0 is used for page read/write */
- 		writew((host->active_cs << 4) | i, NFC_V1_V2_BUF_ADDR);
- 
-@@ -737,32 +801,18 @@ static int mxc_nand_read_page_v1(struct nand_chip *chip, void *buf, void *oob,
- 		/* Wait for operation to complete */
- 		wait_op_done(host, true);
- 
--		ecc_stats = get_ecc_status_v1(host);
--
--		ecc_stats >>= 2;
--
--		if (buf && ecc) {
--			switch (ecc_stats & 0x3) {
--			case 0:
--			default:
--				break;
--			case 1:
--				mtd->ecc_stats.corrected++;
--				bitflips_corrected = 1;
--				break;
--			case 2:
--				mtd->ecc_stats.failed++;
--				break;
--			}
--		}
-+		ecc_stats |= FIELD_GET(NFC_V1_V2_ECC_STATUS_RESULT_ERM,
-+				       readw(NFC_V1_V2_ECC_STATUS_RESULT)) << i * 2;
- 	}
- 
-+	host->ecc_stats_v1 = ecc_stats;
-+
- 	if (buf)
- 		memcpy32_fromio(buf, host->main_area0, mtd->writesize);
- 	if (oob)
- 		copy_spare(mtd, true, oob);
- 
--	return bitflips_corrected;
-+	return 0;
- }
- 
- static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
-@@ -770,10 +820,6 @@ static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
--	unsigned int max_bitflips = 0;
--	u32 ecc_stat, err;
--	int no_subpages;
--	u8 ecc_bit_mask, err_limit;
- 
- 	host->devtype_data->enable_hwecc(chip, ecc);
- 
-@@ -791,26 +837,7 @@ static int mxc_nand_read_page_v2_v3(struct nand_chip *chip, void *buf,
- 	if (oob)
- 		copy_spare(mtd, true, oob);
- 
--	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
--	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
--
--	no_subpages = mtd->writesize >> 9;
--
--	ecc_stat = host->devtype_data->get_ecc_status(host);
--
--	do {
--		err = ecc_stat & ecc_bit_mask;
--		if (err > err_limit) {
--			mtd->ecc_stats.failed++;
--		} else {
--			mtd->ecc_stats.corrected += err;
--			max_bitflips = max_t(unsigned int, max_bitflips, err);
--		}
--
--		ecc_stat >>= 4;
--	} while (--no_subpages);
--
--	return max_bitflips;
-+	return 0;
- }
- 
- static int mxc_nand_read_page(struct nand_chip *chip, uint8_t *buf,
-@@ -818,13 +845,18 @@ static int mxc_nand_read_page(struct nand_chip *chip, uint8_t *buf,
- {
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
- 	void *oob_buf;
-+	int ret;
- 
- 	if (oob_required)
- 		oob_buf = chip->oob_poi;
- 	else
- 		oob_buf = NULL;
- 
--	return host->devtype_data->read_page(chip, buf, oob_buf, 1, page);
-+	ret = host->devtype_data->read_page(chip, buf, oob_buf, 1, page);
-+	if (ret)
-+		return ret;
-+
-+	return host->devtype_data->get_ecc_status(chip);
- }
- 
- static int mxc_nand_read_page_raw(struct nand_chip *chip, uint8_t *buf,
-
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiA1LzIxLzIwMjQgNjoyMSBQTSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIaSwKPiAKPj4g
+ICBkcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlICAgICAgICAgICAgfCAgICA0ICstCj4+ICAgZHJp
+dmVycy9tdGQvbmFuZC9xcGljX2NvbW1vbi5jICAgICAgIHwgIDc0MCArKysrKysrKysrKysrKysr
+Kwo+PiAgIGRyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyAgICB8IDEwOTAgKy0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gICBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLXFwaWMtY29t
+bW9uLmggfCAgNDY3ICsrKysrKysrKysrCj4+ICAgNCBmaWxlcyBjaGFuZ2VkLCAxMjIyIGluc2Vy
+dGlvbnMoKyksIDEwNzkgZGVsZXRpb25zKC0pCj4+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZl
+cnMvbXRkL25hbmQvcXBpY19jb21tb24uYwo+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRl
+L2xpbnV4L210ZC9uYW5kLXFwaWMtY29tbW9uLmgKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL25hbmQvTWFrZWZpbGUgYi9kcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlCj4+IGluZGV4IDE5
+ZTEyOTFhYzRkNS4uZTU5MTA2ZTBhM2FmIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5k
+L01ha2VmaWxlCj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvTWFrZWZpbGUKPj4gQEAgLTMsNyAr
+Myw5IEBACj4+ICAgbmFuZGNvcmUtb2JqcyA6PSBjb3JlLm8gYmJ0Lm8KPj4gICBvYmotJChDT05G
+SUdfTVREX05BTkRfQ09SRSkgKz0gbmFuZGNvcmUubwo+PiAgIG9iai0kKENPTkZJR19NVERfTkFO
+RF9FQ0NfTUVESUFURUspICs9IGVjYy1tdGsubwo+PiAtCj4+ICtpZmVxICgkKENPTkZJR19NVERf
+TkFORF9RQ09NKSx5KQo+PiArb2JqLXkJKz0gcXBpY19jb21tb24ubwo+PiArZW5kaWYKPiAKPiBC
+cmVha3MgaWYgeW91IHNldCBDT05GSUdfTVREX05BTkRfUUNPTSA9IG0KICBPayAsIHdpbGwgZml4
+IGluIG5leHQgcGF0Y2guCj4gCj4+ICAgb2JqLXkJKz0gb25lbmFuZC8KPj4gICBvYmoteQkrPSBy
+YXcvCj4+ICAgb2JqLXkJKz0gc3BpLwo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9x
+cGljX2NvbW1vbi5jIGIvZHJpdmVycy9tdGQvbmFuZC9xcGljX2NvbW1vbi5jCj4+IG5ldyBmaWxl
+IG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uZGZiYmI1ZjYyNmI2Cj4+IC0tLSAv
+ZGV2L251bGwKPj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9xcGljX2NvbW1vbi5jCj4+IEBAIC0w
+LDAgKzEsNzQwIEBACj4+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5
+Cj4+ICsvKgo+PiArICogQ29weXJpZ2h0IChjKSAyMDE2LCBUaGUgTGludXggRm91bmRhdGlvbi4g
+QWxsIHJpZ2h0cyByZXNlcnZlZC4KPj4gKyAqLwo+PiArI2luY2x1ZGUgPGxpbnV4L2JpdG9wcy5o
+Pgo+PiArI2luY2x1ZGUgPGxpbnV4L2Nsay5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+
+Cj4+ICsjaW5jbHVkZSA8bGludXgvZG1hZW5naW5lLmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvZG1h
+LW1hcHBpbmcuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9kbWEvcWNvbV9hZG0uaD4KPj4gKyNpbmNs
+dWRlIDxsaW51eC9kbWEvcWNvbV9iYW1fZG1hLmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvbW9kdWxl
+Lmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvbXRkL3BhcnRpdGlvbnMuaD4KPiAKPiBEaWRuJ3QgeW91
+IHNheSB5b3Ugd291bGQgcmVtb3ZlIHRoYXQgaW5jbHVkZT8KICBTb3JyeSwgbWlzc2VkIGl0ICwg
+d2lsbCBmaXggaW4gbmV4dCBwYXRjaC4KPiAKPiBUaGFua3MsCj4gTWlxdcOobAoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
