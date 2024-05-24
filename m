@@ -4,51 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A653C25B79
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2024 07:42:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 814D1C25B7D
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 May 2024 08:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=yuas5jJvu6Lp3v5DoAsk0e90TESIJZ+1eEZWwM4dRl4=; b=uz6N7V05nQ/lFV
-	454RoodC+5EOR4PLPRAK6ulqcpxz2JCahaYIravAJakq1O20sFEouBP6x1tIDpaQgesBuTArm/AzS
-	OhVJaupF0tUk6lqUABXI6/ByncJzy11/B1L4Q3DQgN0fA+jHkBuvCA+zxG80gX7iLXbfjhPdzNnaq
-	fV4+4Feof1qe6tWAmdscm0cF1P2zL0WBxRboYonpi92mGzTK3HLojYccM5qifsxNQjIa5m4Iuhn2E
-	Li6sf1gQHT0Oi30gtshdCBpPMsIybXNnhXEONBYZi2W5B9ppByXDFt336kWgHM8Fk1NqJALD5+bCo
-	8EFG9A/We7ej4AvSFFVA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CXaH9on3/cIICXt6F3AQV2DS08LsQ4SE3ppcxC092Xs=; b=FF49TTLokO1EBD
+	n0amnaKyJNb0fWA0c/re2jGP6BkLwjKZMyETaMK5edz4IS1DZ8Tki/FU75q/UijgmxYq7hLyvwnO+
+	s9JuALyXKk2sHD1Bsemp11S6lfrsnEwlolwEW9kG6OqNEkBnsvHEScRuY3n5U1u5IsuFBmdQfOjWM
+	Tv20DhUMyTEYb1XmOdq4Bvf/BPvjQ5tCjZBOg0vFvK6a0zlSMdbYHeJwSRBGz3UnoWqFfOxHwipB5
+	TQRW+o4WnOQgMjJDlIukFqLuFtZTT521kiNOCjW1k7JpwvP0+TCHFjLV8NcYb7Lcj2yfaSFkNsgBi
+	hczlrSKbHqDbr/OmGqgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAPYy-00000008IEh-2kD6;
-	Fri, 24 May 2024 07:42:04 +0000
-Received: from mail.quirkbyte.pl ([94.177.238.152])
+	id 1sAQaj-00000008Pvn-4AWr;
+	Fri, 24 May 2024 08:47:58 +0000
+Received: from www530.your-server.de ([188.40.30.78])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAPYw-00000008ID6-0h4N
+	id 1sAQag-00000008Pv3-49cl
 	for linux-mtd@lists.infradead.org;
-	Fri, 24 May 2024 07:42:03 +0000
-Received: by mail.quirkbyte.pl (Postfix, from userid 1002)
-	id C9F5E86ECE; Fri, 24 May 2024 09:41:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=quirkbyte.pl; s=mail;
-	t=1716536520; bh=V4qwQGqC7KpJoyielzRpnopuINFIOvKXsSgJ3ZENIXU=;
-	h=Date:From:To:Subject:From;
-	b=QdGQKMK6HNu0HeERfX4Ts1VHQg2p2T+x6hat1ra7sP2RFfTNn43BStBg+hgjl6FhF
-	 wDTJIq+NHy+QIwNIeFoxjByMieHgidLkO+o8OoTOUX5Pe/KfuFulcNvpBXpo4cvT+t
-	 aMb4LO5R1LBapTOmjiubDJI7FiqIQu4hYSylhR6KAzOubrhl7viagueP6D2sq6riwE
-	 H0/zVxkw97xo9+B6j9lZUhNvZaR1cbV5Jb/zZrlPAuTmmF5idcdk5ZvNBgbjqmydMm
-	 tTuhTUwUdPoNsia+gf59SISQYtlMmENGBWhv0MwM+bqQG+smfXk+EWyZpak+N2vedE
-	 7nZwN7VsOpPFA==
-Received: by mail.quirkbyte.pl for <linux-mtd@lists.infradead.org>; Fri, 24 May 2024 07:40:52 GMT
-Message-ID: <20240524084500-0.1.37.1t0u1.0.9j24zoic1n@quirkbyte.pl>
-Date: Fri, 24 May 2024 07:40:52 GMT
-From: "Norbert Karecki" <norbert.karecki@quirkbyte.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: Fotowoltaika - propozycja instalacji
-X-Mailer: mail.quirkbyte.pl
+	Fri, 24 May 2024 08:47:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=+37b90Lx/brt8rw4v1F6llZaQY8yfFwNx63kKufwdlE=; b=hMyYGSxi0p2F+gDPEhOi/EfhDT
+	s3Kii6AQ8H54ZZjgdQgtE8OS8NrHwl69Q6Yhwp73bUOgDKRzBX2RFzYGN0jLSXNwwXCn6y1sZ8pLD
+	PweQGkRqZix293wWYhSG8NdvfyO83188dNO+PY38VCoqEePIbNF9bNlBeYKNgMEbfuspT9s4wvCJj
+	qJlDiC+3nZGL51jOLskf2W7EpEmQvQJWVbOGxRjUsbGKGWCEvbQw0AWKwzldbz8ILP12v+7cJOlIP
+	hl5+0ZMsm7a+cHp55dcAQZ1r1YEDchuMDPyUO9aqSTYQm8a7YlnIfDdFRqQl6M0PawfNgjjHqfmf8
+	6w9Amslw==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1sAQac-00028n-3a; Fri, 24 May 2024 10:47:50 +0200
+Received: from [80.62.117.110] (helo=localhost)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <esben@geanix.com>)
+	id 1sAQab-000IJR-2z;
+	Fri, 24 May 2024 10:47:49 +0200
+From: Esben Haabendal <esben@geanix.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] memory: fsl_ifc: Make FSL_IFC config visible and
+ selectable
+In-Reply-To: <9a7f73f4-f5dc-4342-855b-08df6a839bb5@kernel.org> (Krzysztof
+	Kozlowski's message of "Thu, 23 May 2024 16:36:17 +0200")
+References: <20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com>
+	<979fd913-050b-445d-9ca8-0ec6906ce3ea@kernel.org>
+	<87cypc38gu.fsf@geanix.com>
+	<9a7f73f4-f5dc-4342-855b-08df6a839bb5@kernel.org>
+Date: Fri, 24 May 2024 10:47:48 +0200
+Message-ID: <87le3zoatn.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27284/Thu May 23 10:32:30 2024)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240524_004202_363761_57B8F1E1 
-X-CRM114-Status: UNSURE (   0.71  )
+X-CRM114-CacheID: sfid-20240524_014755_421568_CEB78831 
+X-CRM114-Status: UNSURE (   9.71  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -61,22 +83,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAogCkN6eSByb3p3YcW8YWxpIFBhxYRzdHdvIG1vbnRhxbwgc3lzdGVtdSBm
-b3Rvd29sdGFpY3puZWdvPwogCkluc3RhbGFjamEgZm90b3dvbHRhaWN6bmEgamVzdCBuYWpsZXBz
-enltIHNwb3NvYmVtIG5hIG9ibmnFvGVuaWUgd3lzb2tvxZtjaSByYWNodW5rw7N3IHphIHByxIVk
-IChwb3pvc3RhasSFIHR5bGtvIG9wxYJhdHkgc3RhxYJlKSBpIHphYmV6cGllY3plbmllIHNpxJkg
-cHJ6ZWQgcm9zbsSFY3ltaSBjZW5hbWkgZW5lcmdpaSBlbGVrdHJ5Y3puZWouIEplc3QgdG8gdyBw
-ZcWCbmkgb2RuYXdpYWxuZSBpIGJlemVtaXN5am5lIMW6csOzZMWCbyBlbmVyZ2lpLCBkemnEmWtp
-IGN6ZW11IHByenljenluaWFteSBzacSZIGRvIG9jaHJvbnkgxZtyb2Rvd2lza2EgbmF0dXJhbG5l
-Z28uCiAKRHppYcWCYW15IG9kIHdpZWx1IGxhdCBuYSByeW5rdSBlbmVyZ2V0eWN6bnltLiBQcnp5
-Z290dWplbXkgcHJvamVrdCwgd3ljZW7EmSBvcmF6IGtvbXBsZWtzb3dvIHd5a29uYW15IGkgemfF
-gm9zaW15IHJlYWxpemFjasSZIGRvIHpha8WCYWR1IGVuZXJnZXR5Y3puZWdvLiAKIApDenkgY2hj
-xIUgUGHFhHN0d28gcG96bmHEhyBuYXN6xIUgcHJvcG96eWNqxJk/ICAKCgpQb3pkcmF3aWFtCk5v
-cmJlcnQgS2FyZWNraQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Krzysztof Kozlowski <krzk@kernel.org> writes:
+
+> On 23/05/2024 16:32, Esben Haabendal wrote:
+>> Krzysztof Kozlowski <krzk@kernel.org> writes:
+>> 
+>>> On 23/05/2024 15:58, Esben Haabendal wrote:
+>>>> While use of fsl_ifc driver with NAND flash is fine, as the fsl_ifc_nand
+>>>> driver selects FSL_IFC automatically, we need the option to be selectable
+>>>> for platforms using fsl_ifc with NOR flash.
+>>>
+>>> Which driver is that?
+>> 
+>> This is drivers/memory/fsl_ifc.o driver. It is for Integrated Flash
+>> Controller (IFC) from NXP. It is used in various Layerscape socs.
+>
+> ? I know that, I mean the NOR flash working here.
+
+Ah, sorry. The NOR flash I am using here is a Spansion S29AL016J.
+
+>>> Which DTS?
+>> 
+>> It is for "fsl,ifc" compatible devices.
+>
+> That's not a NOR flash.
+
+Nope.  The binding used for the NOR flash is "cfi-flash".
+
+/Esben
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
