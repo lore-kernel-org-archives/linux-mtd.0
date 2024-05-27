@@ -4,78 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8397C25B74
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 May 2024 07:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2282FC25B7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 May 2024 12:15:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=z9Kpj6Td2lpP2+pVOpgbmMZgBeifrFnPcYOqxar38g8=; b=4SRZSELtwjEMy/
-	3dsMRtxwsCiKsmjaXgDV0pl0g3gG4lfcBPNdhBPQTx5YqGjmfmV9Qklj6V7mZa77bCj58P9N+zzkl
-	femYJEJrk0W6pXsyMvFHyHG0gPKAJDeQLon9dfFxPK69ekdZWCgvgK64E6sJxx5vuRfFIhdknnVce
-	L9EQEflHvGTE4BV7NUuDRAUluEjYj6iUm13/zYLg4vM6AXsUeb2j8cQLBNEiAPTPWGGM5ickCbIJf
-	ThTxAubLxXwrft/MwmhvREPmTPQJbNNjOrdh0xNkLB+dC61tFd++U/Tr+28f/k3vqGuWbjzDIIvj8
-	mh1uIcUAEI/RDJkkat8Q==;
+	List-Owner; bh=xRRK+KdQaHiedY93jWRKK3juoFvUB55XKaIW3WRhIAI=; b=WVg/uWk1sKB/i9
+	CRvlRtxmkPqkh7fIjBeXkEHWxg57nNWa/lFVZKzC++d9y+9Ef9pvpK+i0Gvv+u1jyx7JGcIiIlR+M
+	cyQalgAf9rRflEznhslV1RRHXcRXNX4QFPyzRw7b92qCloW3OLSb1C8Kcyyi+Wt43psGeJDRxwVkZ
+	dOjdqY7skQn5drqvmTeVbBkpPLJD1VCGysNcSNAe49WGNeC91BIpDpZTT7G0R8SwetslIk4abV3vu
+	HHEvHoT28aoz7xPXfV3JskxeX3Q1p4yFHccy3N3i654tOKsOFhwFy5nAEYZunAGmRwnYw1JGxXKm6
+	orwxlB4eYMtHG9s3dxAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBV4j-0000000E6ts-1hsF;
-	Mon, 27 May 2024 07:47:21 +0000
-Received: from www530.your-server.de ([188.40.30.78])
+	id 1sBZFn-0000000EoUF-0svX;
+	Mon, 27 May 2024 12:15:03 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBV4g-0000000E6ss-2o1y
-	for linux-mtd@lists.infradead.org;
-	Mon, 27 May 2024 07:47:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=j4aj9tNdSCThBc71zb119bQ/6ie6a20643nUo5sbWSY=; b=kQsy3pHEn/Rbo+0i3xHus7tJSG
-	B3+aqvvEIdrZklAyyOXOehVRhenOWNAZ6lPb28oD+6sGgLPU8zwbax0qdtzuGnHe4iP5G79T/7Ofg
-	xT6D2Ga7Qx2eISJRHQBiFzTOHepisJYm2EMzdA40dTCB7ypL9FgbgxIGnI66pmkXnTeBiBgiDYInf
-	wwzgNa8EdLLSUY0WFYjmGz9pi4hTlU7DqJC6xviyujK2gtPmHr3wAVhA49qDWFHkNgNRWH9a7bYNY
-	RmbNMQGdmt+NehhbybWoglS0LhkLMpUZZibGYZ60nmuPWCnrYJ6xQGT41QszsHTlBjjzsZmuz0KQy
-	kzMqeP9Q==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1sBV4e-0009Gh-VK; Mon, 27 May 2024 09:47:16 +0200
-Received: from [185.17.218.86] (helo=localhost)
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <esben@geanix.com>)
-	id 1sBV4e-000HiL-2j;
-	Mon, 27 May 2024 09:47:16 +0200
-From: Esben Haabendal <esben@geanix.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
-  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] memory: fsl_ifc: Make FSL_IFC config visible and
- selectable
-In-Reply-To: <87msobaes6.fsf@geanix.com> (Esben Haabendal's message of "Mon,
-	27 May 2024 09:35:05 +0200")
-References: <20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com>
-	<979fd913-050b-445d-9ca8-0ec6906ce3ea@kernel.org>
-	<87cypc38gu.fsf@geanix.com>
-	<9a7f73f4-f5dc-4342-855b-08df6a839bb5@kernel.org>
-	<87le3zoatn.fsf@geanix.com>
-	<6c166ad5-8004-4bc4-9107-a47ba9a72161@kernel.org>
-	<87ttijaglp.fsf@geanix.com>
-	<c045f1a4-9ddf-4c53-a69b-22ceb68a1ce8@kernel.org>
-	<87msobaes6.fsf@geanix.com>
-Date: Mon, 27 May 2024 09:47:16 +0200
-Message-ID: <87ikyzae7v.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1sBZFj-0000000EoRT-0LxB;
+	Mon, 27 May 2024 12:15:00 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 63BBEC000C;
+	Mon, 27 May 2024 12:14:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1716812093;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GrVdm/z2KvEg0yrOWu25wDX0USnHvBtchkP2Qgvi/GQ=;
+	b=NAtbkWQ4kSk5tHLF/oQ6om0bg/WONKQXCF8eNDvX2hs2jjRjwRju1xTWDYYOSNnCV//GE8
+	9r14Zar2835r35aPdW+jborI8AcU277ShICTaAoxXQRQUhrF16cOb5+KNM2S2fT9Wtgp5T
+	XELWvf/LXocc96xrD1O6NbAVAfmoh2N2fWfcYV3Yehi6HJrytAn1GLW/xxzlRkrfh6tsC4
+	M6/03LKLVzLGOmuCuOCZZ5XwUfxjYocgsdFh3MEzxXtvlWazpZY4YDRnyKA+MXQAAtpAOp
+	CjT0tBWyOIVvuQZusP2d5Ee0MfFJjp4IQ4Q/O22w8ErTlMd6dJJkHQ03d3LLZA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Val Packett <val@packett.cool>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	stable@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: rockchip: ensure NVDDR timings are rejected
+Date: Mon, 27 May 2024 14:14:51 +0200
+Message-Id: <20240527121451.29710-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240519031409.26464-1-val@packett.cool>
+References: 
 MIME-Version: 1.0
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27287/Sun May 26 10:27:50 2024)
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'b27d8946b5edd9827ee3c2f9ea1dd30022fb1ebe'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240527_004718_737526_EEFED30D 
-X-CRM114-Status: GOOD (  21.76  )
+X-CRM114-CacheID: sfid-20240527_051459_283887_087D1086 
+X-CRM114-Status: UNSURE (   7.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,130 +82,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Esben Haabendal <esben@geanix.com> writes:
+On Sun, 2024-05-19 at 03:13:39 UTC, Val Packett wrote:
+> .setup_interface first gets called with a "target" value of
+> NAND_DATA_IFACE_CHECK_ONLY, in which case an error is expected
+> if the controller driver does not support the timing mode (NVDDR).
+> 
+> Fixes: a9ecc8c814e9 ("mtd: rawnand: Choose the best timings, NV-DDR included")
+> Signed-off-by: Val Packett <val@packett.cool>
+> Cc: stable@vger.kernel.org
 
-> Krzysztof Kozlowski <krzk@kernel.org> writes:
->
->> On 27/05/2024 08:55, Esben Haabendal wrote:
->>> Krzysztof Kozlowski <krzk@kernel.org> writes:
->>> 
->>>> On 24/05/2024 10:47, Esben Haabendal wrote:
->>>>> Krzysztof Kozlowski <krzk@kernel.org> writes:
->>>>>
->>>>>> On 23/05/2024 16:32, Esben Haabendal wrote:
->>>>>>> Krzysztof Kozlowski <krzk@kernel.org> writes:
->>>>>>>
->>>>>>>> On 23/05/2024 15:58, Esben Haabendal wrote:
->>>>>>>>> While use of fsl_ifc driver with NAND flash is fine, as the fsl_ifc_nand
->>>>>>>>> driver selects FSL_IFC automatically, we need the option to be selectable
->>>>>>>>> for platforms using fsl_ifc with NOR flash.
->>>>>>>>
->>>>>>>> Which driver is that?
->>>>>>>
->>>>>>> This is drivers/memory/fsl_ifc.o driver. It is for Integrated Flash
->>>>>>> Controller (IFC) from NXP. It is used in various Layerscape socs.
->>>>>>
->>>>>> ? I know that, I mean the NOR flash working here.
->>>>>
->>>>> Ah, sorry. The NOR flash I am using here is a Spansion S29AL016J.
->>>>>
->>>>>>>> Which DTS?
->>>>>>>
->>>>>>> It is for "fsl,ifc" compatible devices.
->>>>>>
->>>>>> That's not a NOR flash.
->>>>>
->>>>> Nope.  The binding used for the NOR flash is "cfi-flash".
->>>>
->>>> And now let's get back to my original question. I asked for driver, not
->>>> device, and for DTS not compatible.
->>> 
->>> You got me really confused now. I am not sure what you are asking me
->>> for, and why.
->>> 
->>> I am sending a patch which changes to Kconfig for a memory controller
->>> driver. The change is AFAICS quite similar to commit be34f45f0d4a
->>> ("memory: omap-gpmc: Make OMAP_GPMC config visible and selectable").
->>> 
->>> As for the NOR flash that in this situation is attached to the IFC
->>> controller, it is (as mentioned) Spansion S29AL016J. It is handled by
->>> the drivers/mtd/maps/physmap.o driver (CONFIG_MTD_PHYSMAP +
->>> CONFIG_MTD_PHYSMAP_OF)
->>
->> Thanks.
->>
->>> 
->>> The DTS used to specify the NOR flash is
->>
->> Upstream DTS. I don't care about downstream.
->
-> Upstream DTS is arch/arm/boot/dts/nxp/ls/ls1021a.dtsi
->
-> Which has
->
->                 ifc: memory-controller@1530000 {
->                         compatible = "fsl,ifc";
->                         reg = <0x0 0x1530000 0x0 0x10000>;
->                         interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
->                         status = "disabled";
->                 };
->
-> The NOR flash is not specified in upstream DTS, as it is board and not
-> SoC specific.
->
-> I assume it is not considered bad practise to keep downstream DTS out of
-> tree.
->
->>> &ifc {
->>>         status = "okay";
->>>         #address-cells = <2>;
->>>         #size-cells = <1>;
->>>         ranges = <0x0 0x0 0x0 0x60000000 0x00200000>;
->>> 
->>>         nor_flash: nor@0,0 {
->>>                 #address-cells = <1>;
->>>                 #size-cells = <1>;
->>>                 compatible = "cfi-flash";
->>>                 reg = <0x0 0x0 0x200000>;
->>>                 bank-width = <2>;
->>> 
->>>                 partition@0 {
->>>                         reg = <0x000000 0x0f0000>;
->>>                         label = "boot0";
->>>                 };
->>>         };
->>> };
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
-Ok, I seem to still be confused as to what you want from me. If you are
-saying that the kernel is not supposed to care about out-of-tree DTS
-(and thereby any bootloader provided DTB), I would like to bring your
-attention to arch/arm/boot/dts/nxp/ls/ls1021a-twr.dts in upstream:
-
-&ifc {
-        #address-cells = <2>;
-        #size-cells = <1>;
-        /* NOR Flash on board */
-        ranges = <0x0 0x0 0x0 0x60000000 0x08000000>;
-        status = "okay";
-
-        nor@0,0 {
-                #address-cells = <1>;
-                #size-cells = <1>;
-                compatible = "cfi-flash";
-                reg = <0x0 0x0 0x8000000>;
-                big-endian;
-                bank-width = <2>;
-                device-width = <1>;
-        };
-};
-
-This is basically identical to what I am using, and it will have the
-same problem. It requires CONFIG_FSL_IFC enabled, which is not possible
-(without enabling CONFIG_MTD_NAND_FSL_IFC). This board does not have
-NAND, so I don't think it is reasonable to require keeping support for
-it enabled to be able to use NOR flash.
-
-/Esben
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
