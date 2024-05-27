@@ -4,66 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D5BC25B78
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 May 2024 21:08:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EF8FC25B74
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 May 2024 06:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ulEgp1cduOmZkkK1TBxQk/QZfBOAwXVANdbWlvUu6uo=; b=ddjL7sXyS4aGJp
-	8cY8Ppk0rOGZZmUWqSPeb5bDhX1dn0ka/rbJzqardYUjOb/9yOt8CpEnSSf8PpqSHTEwOaqDAexbh
-	pnMgMgtCZpeEwUSp1P9VDwFAP3O59Hcy0CBYRDLD299B4aHUwmFEBAHF2etbvq8cE25aVkLU53uPw
-	1VHOcZsARR66+dgrSTDeXd+c2zG+AT2CZSUWrSOTTxUiLBQI1baWO3g0PgRvid9PvC7fu/7TByQ1U
-	rT4gTyKTyVMCEFbBjAJtSwnQS3215ecPtYx6yH0xFXhgCpjCQntYuMOKEaVufYHtg+gVMXhVQ6HSP
-	Z3wYyux4RAngvNpEKIWw==;
+	List-Owner; bh=p8tXlHZFOWn7YzJJWxvlayuHQBHjDDzhLoqueWRtzAI=; b=nmfK5hbeuv9Ay/
+	eAs5IgwU5gcd/da70O1q2Hn1DrUrc954TyY/DYB3foYcdw2Mqi9e+EJ8L0pLfTRvWK6w3WZsVs0b3
+	98eWNKp0HFAtA5Ff0GBrFGfe9710ongbxd/wa0fcbVYn1gw0MLgHB7IG1NVAWHARbIl2ACpBOthVa
+	95yNsgCf/o/uIVUOJG48nwhMxieDcbCpj2jPQFQxOc8nwgkejNPd0N03JA7L6jYYDyGI9xgxar1aH
+	4EkKyhpRrAW3QNIBiqfZ8c4N+vn1tlT4mU64AYOPfHtsD/5h2bg/O7NpShnVXY5jlpfvrqq9QI6AF
+	wev5x3ASbOIpOFdY0dHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAycx-0000000Bh9m-1HFI;
-	Sat, 25 May 2024 21:08:31 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sBUH1-0000000DzPJ-0KaQ;
+	Mon, 27 May 2024 06:55:59 +0000
+Received: from www530.your-server.de ([188.40.30.78])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAycu-0000000Bh88-1wJf
+	id 1sBUGx-0000000DzOO-0huY
 	for linux-mtd@lists.infradead.org;
-	Sat, 25 May 2024 21:08:30 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 71046CE0AB7;
-	Sat, 25 May 2024 21:08:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B3E1BC2BD11;
-	Sat, 25 May 2024 21:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716671300;
-	bh=nEqzW9oyU97phZK7uKMU6F+19PuFaeFngjJCCflqxZQ=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=a4jfikW636doLx2EGDH1HbLcxJr7Z6z/6pjy7lAkZkppcwxHwdN33XKfwH/6Xnxtb
-	 WSe4kmvEomGswDc1YgcCtAgEGy06mNzMbC/jZC3ervetVlQfEkkkwig2r9t7TzLZt3
-	 env1annT0VxaT15IFemG9lwekH1XBTldoByFGvvaAdSYVfX5ihDTAgnI2bpeq63vxh
-	 Xc8cXiZrhCZI0OEqRBWHh89tjerg9aH1py0winOBxgR+qNVBMDDLL4OZFIfV0JL42K
-	 RmGxKvRYiGIF/EodAp7bS/14JGTR2NVEEL0Wxf/7dT0Drbd1rCm0/D/md0JYe3gn49
-	 xq/NheNJDHrVw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ACF8AC43333;
-	Sat, 25 May 2024 21:08:20 +0000 (UTC)
-Subject: Re: [GIT PULL] JFFS2 changes for v6.10-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <1964508139.144819.1716585977753.JavaMail.zimbra@nod.at>
-References: <1964508139.144819.1716585977753.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <1964508139.144819.1716585977753.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/jffs2-for-linus-6.10-rc1
-X-PR-Tracked-Commit-Id: af9a8730ddb6a4b2edd779ccc0aceb994d616830
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6951abe8f37b1f4f9a0e7c036873f0ab4f56abf1
-Message-Id: <171667130070.10959.173856068914692305.pr-tracker-bot@kernel.org>
-Date: Sat, 25 May 2024 21:08:20 +0000
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+	Mon, 27 May 2024 06:55:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Qq3+xYe/YAnEavdjtFQxxGGF2ofcopXV/qtuneNfe0A=; b=mTUlAJnZ2zdCm7YVNNcH3ZNJsH
+	849hc9R7sHcjnd+vqa5gY8GhB4KCr/EralmAgExTuMm90CBK/BX7+hNKNS97z6JcIuWEFtbUokG4I
+	ASCOyhxXXbs9zgACeHzRyhOF2JnXOR7FCMzotlzvkTwm/h4oc7W+1iGGTG0UUHecxPh9iZOmgQE0x
+	/YZMflyzsrkmICIoGHzXLNeYbHJ1WiWJdN55BgH9vk3zzo1LJhtwV7w42L/XnviBaNI5J+sisvPtl
+	H27oM7ayIIzNRLaGq2NECJ58T0axMrea6lMN+PEAC67McYUXC3KsMziCMiYhNgopYuhOag5m472wQ
+	2lSMzSeA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1sBUGp-000EIj-BG; Mon, 27 May 2024 08:55:47 +0200
+Received: from [185.17.218.86] (helo=localhost)
+	by sslproxy05.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <esben@geanix.com>)
+	id 1sBUGp-0002o8-0w;
+	Mon, 27 May 2024 08:55:46 +0200
+From: Esben Haabendal <esben@geanix.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] memory: fsl_ifc: Make FSL_IFC config visible and
+ selectable
+In-Reply-To: <6c166ad5-8004-4bc4-9107-a47ba9a72161@kernel.org> (Krzysztof
+	Kozlowski's message of "Sat, 25 May 2024 18:41:06 +0200")
+References: <20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com>
+	<979fd913-050b-445d-9ca8-0ec6906ce3ea@kernel.org>
+	<87cypc38gu.fsf@geanix.com>
+	<9a7f73f4-f5dc-4342-855b-08df6a839bb5@kernel.org>
+	<87le3zoatn.fsf@geanix.com>
+	<6c166ad5-8004-4bc4-9107-a47ba9a72161@kernel.org>
+Date: Mon, 27 May 2024 08:55:46 +0200
+Message-ID: <87ttijaglp.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27287/Sun May 26 10:27:50 2024)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240525_140828_704078_3EDE3049 
-X-CRM114-Status: UNSURE (   3.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240526_235555_521726_439C45FC 
+X-CRM114-Status: GOOD (  15.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,24 +84,101 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Fri, 24 May 2024 23:26:17 +0200 (CEST):
+Krzysztof Kozlowski <krzk@kernel.org> writes:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/jffs2-for-linus-6.10-rc1
+> On 24/05/2024 10:47, Esben Haabendal wrote:
+>> Krzysztof Kozlowski <krzk@kernel.org> writes:
+>> 
+>>> On 23/05/2024 16:32, Esben Haabendal wrote:
+>>>> Krzysztof Kozlowski <krzk@kernel.org> writes:
+>>>>
+>>>>> On 23/05/2024 15:58, Esben Haabendal wrote:
+>>>>>> While use of fsl_ifc driver with NAND flash is fine, as the fsl_ifc_nand
+>>>>>> driver selects FSL_IFC automatically, we need the option to be selectable
+>>>>>> for platforms using fsl_ifc with NOR flash.
+>>>>>
+>>>>> Which driver is that?
+>>>>
+>>>> This is drivers/memory/fsl_ifc.o driver. It is for Integrated Flash
+>>>> Controller (IFC) from NXP. It is used in various Layerscape socs.
+>>>
+>>> ? I know that, I mean the NOR flash working here.
+>> 
+>> Ah, sorry. The NOR flash I am using here is a Spansion S29AL016J.
+>> 
+>>>>> Which DTS?
+>>>>
+>>>> It is for "fsl,ifc" compatible devices.
+>>>
+>>> That's not a NOR flash.
+>> 
+>> Nope.  The binding used for the NOR flash is "cfi-flash".
+>
+> And now let's get back to my original question. I asked for driver, not
+> device, and for DTS not compatible.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6951abe8f37b1f4f9a0e7c036873f0ab4f56abf1
+You got me really confused now. I am not sure what you are asking me
+for, and why.
 
-Thank you!
+I am sending a patch which changes to Kconfig for a memory controller
+driver. The change is AFAICS quite similar to commit be34f45f0d4a
+("memory: omap-gpmc: Make OMAP_GPMC config visible and selectable").
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+As for the NOR flash that in this situation is attached to the IFC
+controller, it is (as mentioned) Spansion S29AL016J. It is handled by
+the drivers/mtd/maps/physmap.o driver (CONFIG_MTD_PHYSMAP +
+CONFIG_MTD_PHYSMAP_OF)
+
+The DTS used to specify the NOR flash is
+
+&ifc {
+        status = "okay";
+        #address-cells = <2>;
+        #size-cells = <1>;
+        ranges = <0x0 0x0 0x0 0x60000000 0x00200000>;
+
+        nor_flash: nor@0,0 {
+                #address-cells = <1>;
+                #size-cells = <1>;
+                compatible = "cfi-flash";
+                reg = <0x0 0x0 0x200000>;
+                bank-width = <2>;
+
+                partition@0 {
+                        reg = <0x000000 0x0f0000>;
+                        label = "boot0";
+                };
+        };
+};
+
+So as mentioned, it is a quite standard "cfi-flash" compatible device
+declaration.
+
+Do you think there is a way that ti enable CONFIG_FSL_IFC for my
+situation without the config being visible? Something like automatically
+selecting CONFIG_FSL_IFC when CONFIG_MTD_PHYSMAP and
+CONFIG_MTD_PHYSMAP_OF is enabled? Will that not include a risk of
+pulling in CONFIG_FSL_IFC in some cases where it is not desired?
+
+Something like
+
+config MTD_PHYSMAP
+	tristate "Flash device in physical memory map"
+	depends on MTD_CFI || MTD_JEDECPROBE || MTD_ROM || MTD_RAM || MTD_LPDDR
+        select FSL_IFC if SOC_LS1021A
+
+But that looks like a road somewhere not so nice. The generic
+MTD_PHYSMAP being littered with architecture specific selects.
+
+Or is there something completely obvious (not for me then) that I am
+missing?
+
+/Esben
 
 ______________________________________________________
 Linux MTD discussion mailing list
