@@ -4,74 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1D55C25B7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 May 2024 13:30:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82E00C25B74
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 May 2024 14:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mpy9ulR8VRc+5QznLtr+ctcYWelJ5PRnHVgWxa4CkTE=; b=UKlKCuxMhcBDJN
-	aYTKmXr8IPPLM86tN8I7UCG6tYx5nK4TMRd7+uHH9qS1VivJSvRweg05if3hgOivQpZG/Rsu+Q83Q
-	ZgyybHyulsdey1kdHTpx25qkBaQnfxllgHa6s3ZbzbXUlnwqBQ+6cohKGSX2CXv8nxXlwvE97YZfm
-	bLh8cCZL6txyJdiPWlpe+1+m0lp1QruGzGqXXaLiMo5ZBomy0Nyczm6EFzwqQjL3TYbPCTDDVYny7
-	jH2PCzo8Z3x696Wula8CGsuyTm7/oFHdjpG+cAix5akpnt+W2l1SgN+wmYXEzuxyviq6dUdiwpzAI
-	7IkPP0W5J+frij2EV6dA==;
+	List-Owner; bh=00stEscRwj+ahqFzGv4g1hmVCLbqpC5vW02v8HAuaUE=; b=Fxos4KHm6C8GOk
+	jdrBTwCMoWjR9crRM85hpD6NTBIzhNcg0VkfbHxbIa4300ZO9unM3OOgJUIHFZ3Xn/5gRL5xf14nS
+	SPHb3WFydtyIZYXMXbEfC7W+r2dwxXRVW6ktS+ke35ZMut3gk4iySvJkPMgSV400+UIIB8jUjRq7V
+	A73nwscurQtBMsU05BlBPxiHmt4hInmgLystImkdNzDupzAs7Cb0sOpDZYM37JFsVLcJ7e8J9+5yG
+	5tgP4KzkNn8D7RXRgTudb9YnIxUGjHJDusy4Q9sAl31lVHMicYzmlaO5aOYku4toMmfrF0GsbuxCx
+	QfMf/QZ6eBU9y7B5NNAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBaQr-0000000F61Y-3e9E;
-	Mon, 27 May 2024 13:30:33 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1sBbPq-0000000FOfX-2XgH;
+	Mon, 27 May 2024 14:33:34 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBZJh-0000000Eq9P-24Dp;
-	Mon, 27 May 2024 12:19:11 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2420F1C0003;
-	Mon, 27 May 2024 12:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1716812343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9HFncU1PhOHKdcu8vvbi3jbm3StjIMaMlXJRXdVMGNw=;
-	b=oTrXooR9clakWRqcxff2jUrpg+xOGC2/Wh2pZvkxR2oXNxjWE2TRUI2KnX9Qp/t+IT+YSy
-	fMLZGe4NN5Nhi+YARc8b6vknTmcP36AfFysSNfnu7b991hGQFGSBo3qyp7O2bpCCPMzsod
-	pCD1JUyBzL3fwovy8Y3C91BprjLGyxtJHhCJjG23Wfv+BxVG4cAla3AqvFdK6JY4ljgTNr
-	TIkninxriOji7uPAJHNj1AqcduSwYWcXp1iQV4nT8RqEkQ6TR646EXTYIbOLIkxDwft3ER
-	pwI6uQ1Js30Ab0vz0VIOtQ7Ptgnl87gONUKHqnjPILdVREfgob7Tc8BXrBivcg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	oxffffaa@gmail.com,
-	kernel@sberdevices.ru
-Subject: Re: [PATCH v6 2/3] mtd: rawnand: meson: refactor use of 'meson_nfc_cmd_access()'
-Date: Mon, 27 May 2024 14:19:01 +0200
-Message-Id: <20240527121901.178655-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240507230903.3399594-3-avkrasnov@salutedevices.com>
-References: 
+	id 1sBbPo-0000000FOds-0u0p
+	for linux-mtd@lists.infradead.org;
+	Mon, 27 May 2024 14:33:34 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 8A9FBCE0F93;
+	Mon, 27 May 2024 14:33:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 778C7C2BBFC;
+	Mon, 27 May 2024 14:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716820408;
+	bh=S0TBfxjUtfuVEbYgXZOiLFontODzcJL+M7Q4Hl3IXRg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=bzAdraRGohEIH3y+D1Vl5PXrkEGVsueuZciQhCH0pHkrz1zTJoJ9c+AfE/p1ZH7Wy
+	 1UVDEP11Z89Zbrj/a2XL5PDFU1PD8j0lMO64aR6Li76qX8X4WvZZEHfeK+vxixENPw
+	 ROFu6qkY6rxmaZeD0fYzoBF1ccjMsMfsUaGccNTjOTe5f4q4eVhjaeB3qXDhfyYfSR
+	 8ab6Us7ChKC8p4lrShwl70/46ZlhxFYaQ5tNcOTuYnnyvmLbLcxs2d+hvk12H71jTO
+	 IBWtXH+SaJznQsDR/0uQBmSEmXkymZXicM56gE95nL/L0iYR42Q93aCc+KxwVuH1Pq
+	 yL21heGWNLkkw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Michael Walle <mwalle@kernel.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  Ricardo Ribalda <ribalda@kernel.org>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 4/6] mtd: spi-nor: get rid of SPI_NOR_NO_FR
+In-Reply-To: <494daaab-a93c-44cd-a437-d306a8269251@linaro.org> (Tudor
+	Ambarus's message of "Mon, 22 Apr 2024 06:59:56 +0100")
+References: <20240419141249.609534-1-mwalle@kernel.org>
+	<20240419141249.609534-5-mwalle@kernel.org>
+	<494daaab-a93c-44cd-a437-d306a8269251@linaro.org>
+Date: Mon, 27 May 2024 16:33:26 +0200
+Message-ID: <mafs0ttij1g09.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'2234585f5c12f2a633fff715cca32ce0b40cfa29'
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240527_051905_824541_EAF6F3DF 
-X-CRM114-Status: UNSURE (   5.08  )
+X-CRM114-CacheID: sfid-20240527_073332_508700_209159A6 
+X-CRM114-Status: UNSURE (   9.41  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,15 +79,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2024-05-07 at 23:09:02 UTC, Arseniy Krasnov wrote:
-> Move call 'meson_nfc_cmd_seed()' and check for 'NAND_NEED_SCRAMBLING'
-> to 'meson_nfc_cmd_access()', thus removing code duplication.
-> 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+On Mon, Apr 22 2024, Tudor Ambarus wrote:
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+> On 4/19/24 15:12, Michael Walle wrote:
+>> The evervision FRAM devices are the only user of the NO_FR flag. Dro
+>
+> everspin is evervision?
 
-Miquel
+Looks like a typo to me. Evervision seems to only create display panels.
+I can do s/evervision/everspin/, both in commit message and in code when
+applying.
+
+>
+>> the global flag and instead use a manufacturer fixup for the evervision
+>> flashes to drop the fast read support.
+>> 
+>> Signed-off-by: Michael Walle <mwalle@kernel.org>
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
