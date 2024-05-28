@@ -4,62 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CA93C25B7E
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 20:30:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FFF4C27C43
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 21:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xuy6WbtIaJ6DJ+LdfzCchitL1Hg540qaCKEXg0gS6XM=; b=0TEuvPLZWwfvHc
-	ErSffO9hhrXFDR1VzMVg+XlaUdLUHEBpdzxMryiBlxMSPKNo/ToYZJDbG5BkhrbYsQt+lSiecB38P
-	LufiMzF/IaMDwUanMcBAp+WT3Ile11Yr1mZ08qLp0bWuO+K1vg/tqCYsllFYn/K/enPSAdZflfhR6
-	wc46DG96iOmZSgUAq/ifZjI0VLg5niFHBb17dxb4PwjlTQiZ8lVaNseAFlM2EeUGNx/zMjHz36Uit
-	Q76DbsDw1xbEamgrO07oOwXzflyUNwq/00UjIym1Ketwnl5DAcrir9TqR9RAo5Bz1IPdlrUZ3V1uk
-	ROjKxRpQ2B/FPhfzUC7w==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5NmHX98u67rBwOXhor7ueB4U0sKcvCnsJyl9KlbITHY=; b=JZgibIj8BF1YaF
+	aYQ+LTuwygSfxNfcNLqZEBjk0ErogzO+bUGuxZEOxaAw12WzgccCPCYbw45Xua8dKYkefL0bJaoPB
+	en4WmP7oVPOtkYoPFYQDy89oE47aI0c/Z0hYpREa5lOjV/WDQvTquex2fuXnoWP9yP/fIFi1pLUSQ
+	VevVIvxtqs7AQ6A9aeu/6CrThw7oFY9Yelnc7NgGXwEG7d8kO0xCBOIM2EoXkXiPPtPCFbs8aZfV/
+	1dgMLlduxWalsSjlq3duzM8uUp7Vo6mGvxzmhKbExi10wixmOKt8BXKIDQDnu2itun9+Q/YwbWBYT
+	61AdNr7ULuIdhsHpyiFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sC3Sa-00000001yif-1ra9;
-	Tue, 28 May 2024 20:30:16 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1sC4RQ-000000026Re-2kyh;
+	Tue, 28 May 2024 21:33:08 +0000
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sC3SX-00000001yi9-3rz4
+	id 1sC4RL-000000026P9-3iBQ
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 May 2024 20:30:15 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1sC3SW-0007Mg-AK; Tue, 28 May 2024 22:30:12 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1sC3SU-003N9K-TD; Tue, 28 May 2024 22:30:10 +0200
-Received: from localhost ([::1] helo=dude02.red.stw.pengutronix.de)
-	by dude02.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <s.hauer@pengutronix.de>)
-	id 1sC3SU-006Cok-2X;
-	Tue, 28 May 2024 22:30:10 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH] mtd: nand: mxc_nand: always copy_spare() for page write
-Date: Tue, 28 May 2024 22:30:06 +0200
-Message-Id: <20240528203006.1479230-1-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+	Tue, 28 May 2024 21:33:07 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D3A0D2045D;
+	Tue, 28 May 2024 21:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=eKKTTVsOye+aPNKRzZ122169aw7bdpQ6y9COLPAXegCVrG5iSFsKe8NmabTrtfzVmJzDv5
+	Ne2IuD4WBUJ9KFI2/n+OeUSe50fsuI871CPGI9BXPcJJwGF3yCfpaEpNu/AstvRM8I1NMM
+	jJQ5ZoiYnmImiq61l3/GUCVuppLSong=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=/F8BJdjswiKMjas+DwonGKmjEG3HjzGZ3ZDNGxX+svqxoF5eTGLjTUR3XiAExDuzESXHh8
+	mDMDQki+foK9VsAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=eKKTTVsOye+aPNKRzZ122169aw7bdpQ6y9COLPAXegCVrG5iSFsKe8NmabTrtfzVmJzDv5
+	Ne2IuD4WBUJ9KFI2/n+OeUSe50fsuI871CPGI9BXPcJJwGF3yCfpaEpNu/AstvRM8I1NMM
+	jJQ5ZoiYnmImiq61l3/GUCVuppLSong=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=/F8BJdjswiKMjas+DwonGKmjEG3HjzGZ3ZDNGxX+svqxoF5eTGLjTUR3XiAExDuzESXHh8
+	mDMDQki+foK9VsAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB93113A5D;
+	Tue, 28 May 2024 21:32:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jMu/KYpNVmbCTwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 28 May 2024 21:32:58 +0000
+Date: Tue, 28 May 2024 23:32:49 +0200
+From: David Sterba <dsterba@suse.cz>
+To: kernel test robot <lkp@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-pm@vger.kernel.org, netdev@vger.kernel.org,
+	nouveau@lists.freedesktop.org
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 6dc544b66971c7f9909ff038b62149105272d26a
+Message-ID: <20240528213249.GH8631@twin.jikos.cz>
+References: <202405290242.YsJ4ENkU-lkp@intel.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: s.hauer@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+In-Reply-To: <202405290242.YsJ4ENkU-lkp@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-3.58 / 50.00];
+	BAYES_HAM(-2.58)[98.11%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240528_133014_056682_CC38CCE7 
-X-CRM114-Status: GOOD (  12.64  )
+X-CRM114-CacheID: sfid-20240528_143304_092478_6F729AB6 
+X-CRM114-Status: GOOD (  11.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,50 +132,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: dsterba@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When doing a page write we always have to copy the OOB data in place,
-as the controller will always write it. Not copying it means we write
-random data to the OOB area.
+On Wed, May 29, 2024 at 02:19:47AM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> branch HEAD: 6dc544b66971c7f9909ff038b62149105272d26a  Add linux-next specific files for 20240528
+> 
+> Error/Warning reports:
+> 
+> https://lore.kernel.org/oe-kbuild-all/202405282036.maEDO54Q-lkp@intel.com
+> https://lore.kernel.org/oe-kbuild-all/202405282148.jaF0FLhu-lkp@intel.com
+> https://lore.kernel.org/oe-kbuild-all/202405282308.UEzt6hqC-lkp@intel.com
+> 
+> Error/Warning: (recently discovered and may have been fixed)
+> 
+> drivers/dma-buf/udmabuf.c:45:(.text+0x140): undefined reference to `vmf_insert_pfn'
+> fs/btrfs/fiemap.c:822:26: warning: 'last_extent_end' may be used uninitialized [-Wmaybe-uninitialized]
 
-Fixes: 3df54960b63cc ("mtd: nand: mxc_nand: implement exec_op")
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
-Miquel, feel free to fixup the original patch with this.
----
- drivers/mtd/nand/raw/mxc_nand.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+The report says it's gcc 13.2, that one I use (and expect others as well
+as it's a recent one) and we also have -Wmaybe-uninitialized enabled in
+fs/btrfs/ to catch such warnings. Yet this is reported on mips64, is
+there something special about that compiler+architecture?
 
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 9d50f41b3d5a1..e90c6047e82a5 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -806,8 +806,7 @@ static int mxc_nand_write_page_ecc(struct nand_chip *chip, const uint8_t *buf,
- 	struct mxc_nand_host *host = nand_get_controller_data(chip);
- 	int ret;
- 
--	if (oob_required)
--		copy_spare(mtd, false, chip->oob_poi);
-+	copy_spare(mtd, false, chip->oob_poi);
- 
- 	host->devtype_data->enable_hwecc(chip, true);
- 
-@@ -823,8 +822,7 @@ static int mxc_nand_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 
--	if (oob_required)
--		copy_spare(mtd, false, chip->oob_poi);
-+	copy_spare(mtd, false, chip->oob_poi);
- 
- 	return nand_prog_page_op(chip, page, 0, buf, mtd->writesize);
- }
--- 
-2.39.2
-
+The warning is IMO a false positive, the maybe-uninitialized variable is
+passed as pointer but initialized on success and never used on failure.
+We can safely silence the warning by initializing the variable to 0 but
+this may be pointing to a problem with mips64+gcc namely because other
+compiler+host combinations do not warn abou that.
 
 ______________________________________________________
 Linux MTD discussion mailing list
