@@ -4,149 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2859C4345F
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Apr 2024 07:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D80C25B78
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 06:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5EmXKI4cuC5V3ACBenSyGSCbjDEioKpJdwDT2u8E6r0=; b=aHQhdiuA6DVHYb
-	GnoC0wC40v6j9quIf37mK6dmuDB8iZxfiEoic+YPCq2sErLhmtChrm8CoOIO+s4Hw423yddHg0PaR
-	5LFg0zRrnvkFLRlWjTe+B3TC3RFPyIUSesmhaMeQJ0gV4Ed3OoNxA8cTvYl45BdSDsH83J/gB5Kkj
-	RxUklm6iDseqWq1wF0Cory3qXj1/EZ/6hwUq17J0W4RMltDeHl6zJSF59dSDDx3ydjKbIBpJp9Gkg
-	yPbPGfq/+KE1+w13vPj1nGZxlaeSilTwuFZNkT24f5xrl25qJj4r8C+OsFnxvRzJEclrn0g+t5dWs
-	W9mMcFZK+EXEEEOlN+Zw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wQ4zuIke2L1j7Bi2wiashUrWLUchBF31+heG3U7tcQM=; b=S3z1dvAO/ILdHP
+	phpxzcXINtv4tTm1gGaekr/t3YbRnNOoakAKGMntA7Aa1MXWj/e8ot3OmoTkHWQhwI/BK38/VH+fv
+	dFXFjCk24KDK2Zk9vDNC8SjEG7GUFfhTusE46HRHA+6as5zJ7z6nAzyOhCsp8UUeWVOiW4SsgPOP2
+	qnQQaY5ftiOi16kFsSbVH38cIJc7lY05jecLpo+qXrJtaXWZhV+5Tii1F0wcsgndTFyP/n7bnr93O
+	tmyFAeN8n4a5SEbJUNs1dfOa9RrXFQimrDHwLk+tqmaeglaD1jgl2fR6pB3Sf0d8xYQo6lUJu9tAg
+	XoIWDbqhFqpzKrX/pC+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0GBV-0000000BVC0-0wQI;
-	Fri, 26 Apr 2024 07:39:53 +0000
-Received: from mail-koreacentralazlp170100001.outbound.protection.outlook.com ([2a01:111:f403:c40f::1] helo=SLXP216CU001.outbound.protection.outlook.com)
+	id 1sBqiE-0000000HFG0-356t;
+	Tue, 28 May 2024 06:53:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0GBR-0000000BVAe-3wUD
+	id 1sBqiB-0000000HFFR-12ao
 	for linux-mtd@lists.infradead.org;
-	Fri, 26 Apr 2024 07:39:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XwnDRvWY4aI/douMrPHdPijCD5DJnzsyG7vfa/26aPvhLPcdSoBMLeegVNOclyuD5jZ+AF5kI+hPdLRz+74sV52l+0JVGcawJjbZEcT8Q7dBtfH5SHHVYAvMqvmOkd4f+WpLZ7uwCoAgzd3ciDP1NL34F5tFLDwIQ39loFT3csvaT8HBKjqwTgvpuxWLqqBE/g+E46t3Bojt59GotfNbRNTQbEIDgaq5kkGRhpsiy/wosaMpn0HWf34pxDn38uQ0nWKpzEmy+Z6SEAkSKiEMOy443tKITRzMBsJ74nOT9AFPcY/FpwcJM4bm4IH8+MQVUCwEqKIyl5afegv/GviMFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zzkkPuee2T82cp/0qZR4rnsEcY0YlFdyeSlonUHYzfE=;
- b=fwuJybmGtPZtGH/Gc726osqsSL5JMGurRMiOnuiqzll4NjQyUWCEtTR/eXSi/5AvfqPr7QJbFjiCX+i1jgrhFDfa3CjWqymTuFXiSYiSsyrlq0b7UwG/eRkpN8YfYHsO4GPNo6PThhpKSc/a0Psq6s8HwycNFh5p8LRhmhXm6XOMDu2/pRweFv+g2vHQ9Jmna+egOoncDwEWsmVfhbotvD8oFjqM2cL0CTia3eGLbqvA45KkIRwvxxSGl19NaRju3X8GpBW5rRU1Ets6JPzrZ0s6qrQ3D9WgohqR7o+z3kER9nKd9wsKYCoiVo8t4pgrRWkNpGVF0hMxUYIndfKdvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=skyhighmemory.com; dmarc=pass action=none
- header.from=skyhighmemory.com; dkim=pass header.d=skyhighmemory.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=skyhighmemory.onmicrosoft.com; s=selector1-skyhighmemory-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zzkkPuee2T82cp/0qZR4rnsEcY0YlFdyeSlonUHYzfE=;
- b=tcOiAYDhJZxbaCikW/ozS0lC2Mu+okjKbO/TvPdyPkc+Td2NXjve/fPetaAtL7TiB3gjYyPa3A8tdT/rGoyw91m/vQr0DISLHZow9TnVhVv+ZOWDtAnMJom/srE60u2stO5inNP7dB2W71/v1PoNn+pGmArsD5hlwqChycNgRP5CJuD6r6fLbdg6ga9E9GQzbHW73gskGlBKBDvHrQn1a2P2Cwy4JfPnXYldHK9ecQfHsKU5FlfoHeiOisgMs/PBIDgnqt2/+lfD4WvojFU2VmeBek7I6xSsCsJD5jmUDGnvLafcQCMBaARH/N1dqMmmnOqKg7uwNOeDgG+vBQsqBQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=skyhighmemory.com;
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM (2603:1096:101:11b::5)
- by PU4P216MB1356.KORP216.PROD.OUTLOOK.COM (2603:1096:301:a2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.25; Fri, 26 Apr
- 2024 07:39:42 +0000
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::b40e:6aa9:78cd:c4c]) by SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::b40e:6aa9:78cd:c4c%5]) with mapi id 15.20.7519.021; Fri, 26 Apr 2024
- 07:39:42 +0000
-From: KR Kim <kr.kim@skyhighmemory.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: kr.kim@skyhighmemory.com,
-	mika.westerberg@linux.intel.com,
-	michael@walle.cc,
-	tudor.ambarus@linaro.org,
-	acelan.kao@canonical.com,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	moh.sardi@skyhighmemory.com,
-	zhi.feng@skyhighmemory.com,
-	changsub.shim@skyhighmemory.com
-Subject: 
-Date: Fri, 26 Apr 2024 16:39:28 +0900
-Message-Id: <20240426073928.331321-1-kr.kim@skyhighmemory.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: SL2P216CA0091.KORP216.PROD.OUTLOOK.COM (2603:1096:101:3::6)
- To SE2P216MB2102.KORP216.PROD.OUTLOOK.COM (2603:1096:101:11b::5)
+	Tue, 28 May 2024 06:53:32 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id B5E6D61E1B;
+	Tue, 28 May 2024 06:53:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3125AC3277B;
+	Tue, 28 May 2024 06:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716879210;
+	bh=BArEwSrXwGGJ6krqRUj+LaAy+epmDL5fbbyry2xksTA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=fnlENPOhDJDE7JqsEh1H5AeaYtZgq7/+fUSkrmztvTj7m+DXsnvDC/c1GimkJ1QuG
+	 uktkHOicEaafpgFSd11AyJn9SpdsGdpKlpHqmCkLwmWeBwVtWlbdyVVaY/V1bOpOD4
+	 /KVzFURMHD4UMRNlQckT6uEqh/6Ozalf40L6Oe9QE3SMS3gLSXvFkXlI/aY1c3lEFl
+	 Msdaypbui04Tsj4mHq/E0FVFQdKDxXq/m9+F4BaPU0WcaiR4aAtoWEfZGRLdFjZzRO
+	 /ul45wsyzwTJFedSwfaSrk49PZmaXuw3GQHETrq7bOtUlG7A/Nba2Je5ZswD7IdG5s
+	 l7XOGPsS1sxcw==
+Message-ID: <e3aa72af-c824-4b71-a99d-c0b9294bfd8a@kernel.org>
+Date: Tue, 28 May 2024 08:53:26 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SE2P216MB2102:EE_|PU4P216MB1356:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7e687af-3af9-4365-d836-08dc65c4090b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|52116005|366007|1800799015|38350700005;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?PJr8mKdmlUGYtuXSOABOGLg3SfVL1aHNEoRswJ+xjG45Rc5lusjGZyCRKc6q?=
- =?us-ascii?Q?8hfLUSc5h8zNey+D3XFam8etR8+RtLtHBxGkgtySN+P3ThwuHCzd0Yd46+Ni?=
- =?us-ascii?Q?D2vEmbLs2Qn5lTnnDDlL54zsdACiLLn4VFK728YtQeTIjs0H/OvcfR4q4Ge+?=
- =?us-ascii?Q?qqnhCuEB1b1MOXLJwsb4Vozv8u+IOC6tVlMBVTpEHUI2/N/F7vo+YSet5Gr+?=
- =?us-ascii?Q?nuAFK/IA3B/fuavm9JfPN5dLugTG4N2lxLBN/ZhI2S7lb7ku/OyVCO+37G7N?=
- =?us-ascii?Q?S9crzNY/n7zLod/DlnIj1qlAMuyz8utOnPj36qwAX8aixJkW+BsWgQqNjWJi?=
- =?us-ascii?Q?9rmMndOAHH5qwIIVFADV4TzDvn6dSohJj5GyRD4QJAqPQNYQd0FYzpxRP/hI?=
- =?us-ascii?Q?oHXlO2X7SN3qfe0mnOksxomAoB85Kaxabb6GyU5kXCuA63uyjla07pfm8HiA?=
- =?us-ascii?Q?nQcE+HBIi0hbv0a8Vu68EbL5HVpQt4dVbiOgTpWur49G/zB3AztMYX8Vi+3i?=
- =?us-ascii?Q?dL3aSXIVOSWPmA7H8rqEUvy2YrHx7WBNUrDTzmfis7ao95JWm//ykYeuujs9?=
- =?us-ascii?Q?ltu4O7D+9WG02jMrtSQCOdwaK71lPNuf8mDcNUbiZLKwIyXWV9zBK6UYvk/W?=
- =?us-ascii?Q?vV0vz1XcyQaO9Gs+6xjR7glsb+fPQOKsIr6sxBuEQqf+HaXQKlTnWTR3SVkN?=
- =?us-ascii?Q?CggezAjWJ6RoEvh7K7SrnLtXMH4uDCAEoiNHkWHcYdQaz9tqXK6pixK7jYbs?=
- =?us-ascii?Q?CK+JJ5Fcj4dHiYYEsEEjwNV412aU4d9dXvo5ejOt1Qx9bqj29oQ5peSswGIL?=
- =?us-ascii?Q?gyt3UOPr1wwF7auXQbxoiVruNXy6DdOyMnGuWkGaVYshwDjZHQ/oiNIuI5ki?=
- =?us-ascii?Q?rI058Qbusn35U5RPuDGBDRMTrioupuO5LutiLYnW1PgeKXXkzx8qTHG4SJnj?=
- =?us-ascii?Q?U0fpgzZRsqJw11dk+FUbWU6p+oUJ2OrJDpGvWkej7mFwPnIWZgn6+YkZxe7b?=
- =?us-ascii?Q?AVSDvClCsCcViTQ3L6n3D0of1zASeueGtqVsB8JXDauGOudFcTvcwyaLR1NH?=
- =?us-ascii?Q?YEBA3plNRobW0zfhKHt031ejKOW+IFEic1us22iuC7pW2EeESXSRui1yesPQ?=
- =?us-ascii?Q?NHIYAcH6bTDhnXKauzpqdbTEkQqWR9MJaCf3PBH7wy94J5T9chsxlElPCq6P?=
- =?us-ascii?Q?nABsLlBUViRjS+GnHk/aCs3MFOTDkYgiFe6Gqeas6XNqV5wettxfIn6JCId/?=
- =?us-ascii?Q?TAVXsnjo262vVZLlhiaLp6Y7K77TQ56w9bmYtFKcUhjy4TLJyeI1gdghe125?=
- =?us-ascii?Q?evRWItPesWnOA9BazuCC0HseCnG2iMO1QlGjIwtru8jK8g=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SE2P216MB2102.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(366007)(1800799015)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aX7rGcZyFKk21/wINU6gUJ+PYl4ruTYsZAKsNxrFrVq6gN7mqH1l1WvTTpSc?=
- =?us-ascii?Q?/OgwIGHlb7kYNF/MBgOVz+Va/c5ucRVHUekWQYRTWRKRK69pMP0ViriVKIUB?=
- =?us-ascii?Q?LmypiXLV92xy1GWo9yfCdNo4qy5ep+OCYBYkZG7765jGtoYc8sVZHTzQqJRO?=
- =?us-ascii?Q?r4Lgre0HvxDhQLkVIKIoU8Fuz+eYEYk2WdIAE9/eGeFX3DvoXolEQBc5vX08?=
- =?us-ascii?Q?NMRKhdRLGPNvj645S4iMEyanDe8loImyGyJnYndHSoeSq+mW6A7W31XxwecL?=
- =?us-ascii?Q?F4lDlE3V1kZf6gwlRd/eY6rocvBGdy7neaArKCar0Npo7TgIh5uDA2LdK4qP?=
- =?us-ascii?Q?SLJOpDaI0eJBa2PyZw+RZd0ENZ/jV3tQl5QFqfLfao80oHK6sIrUAfDS+t+a?=
- =?us-ascii?Q?F+dju5HkPcCkwFw0UoKqCXWJjP9I2MNipHVY8VpA3cRTiLwndjmM+nl6PvuT?=
- =?us-ascii?Q?+W9R70j0z/Aw0MPUHBK+2vLU4Ysff66uJ/oI6tyi03u3oBFgVKlJHvzkm/Eb?=
- =?us-ascii?Q?k8k+9K/iFndfGHfcGffZmizoQRjBjsC6sQmElmAOSGiey/qGUWaKLNqiiRLm?=
- =?us-ascii?Q?NEWy9o8O1hyNqXseskdzOOelMeZa8IG9o/88ieQ1yFmO31x1WgGJ9gBTVpIB?=
- =?us-ascii?Q?LDTF5qIAOXzJcWpXaBzqqRdG7W7R0dLZhT7VkfpZoxzxGSA1AYGqVJcU9KZ5?=
- =?us-ascii?Q?svnNI2YDZ0BCFE1wEZcp9tuEWhmJIDWKmAyaVlMtw6LgwKWSRB8xYbpMLFIp?=
- =?us-ascii?Q?SfRhJgiIiT9fhuuOwad54CCpZVVrHgmy2gjGEk1Pkvbzyf8Sjae7aYstB8HT?=
- =?us-ascii?Q?ahUD0gpUyQWo0YzM7HEdQi/8nLYSw5mWFrIDcIE0YimDFkobvaRDAEd21Ykp?=
- =?us-ascii?Q?WuAEIRXyP88YpUXl0K6XwN2YGRIqsvDLfQr1NMPYeZG/nvchzSwO2p5z1cmK?=
- =?us-ascii?Q?k6Qv3p7f8QoNh0LVQiiXyW1+s+PGdxzZ78jB0khkAVTsMa001CGyzVSC8UYo?=
- =?us-ascii?Q?9YnQkxjIS8wDG0m86qF4+N28iL3GpbbpLSHKJOe5k8/z/Da/oLHd0EF/lNr3?=
- =?us-ascii?Q?++OINxzfwSnnYAm8nLCctEFHoAJ2+cjkvK9W2pCwfhtXL2kdKPLjKNPlWiSb?=
- =?us-ascii?Q?vV6ROJ8WHnIMWJtJRVt1hdtWUmDMoQqAMdaQuMWDH1AUxl8/dRh20x+mExcB?=
- =?us-ascii?Q?HsnxDSqoV10NhBewldebRdDqPIWo/QoItibtRHwNhOQMpgb03GbGLDSQaqss?=
- =?us-ascii?Q?XpINgK4JOlvvG8gnR0MrPml2TIooCktHDYXod12UhF2GAW8W5cQxDFjeX5wY?=
- =?us-ascii?Q?ST1qusiTWnitONkQX7PvIxYt5cr0UWO8VFW2zGQRNGv8nDY2WEEN8NyhwTWE?=
- =?us-ascii?Q?dQtCSUxeOa4vijLJ2rQF0Wn57sF1YxLhp8hoGkBPRO7CiXMBy+Yfv+wywL46?=
- =?us-ascii?Q?bq3okGaVVoJQ3qLgPrmXMBXurJ87qJv70WYr2aaMzM+MhmsNQPes0jKW6lhk?=
- =?us-ascii?Q?MUCsrCZIHWjbFblySqOKbaPNM5DBYT8OZpfCDAAwbMJYVo6MNs0vaRGifVk6?=
- =?us-ascii?Q?P/Sd3KhP+Y4NwyhudmqF1uXDmzNlCggzA819tBrZpT+IRyBoIDard/7ChXvH?=
- =?us-ascii?Q?GA=3D=3D?=
-X-OriginatorOrg: skyhighmemory.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7e687af-3af9-4365-d836-08dc65c4090b
-X-MS-Exchange-CrossTenant-AuthSource: SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2024 07:39:42.0391
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 39b82b34-0966-49dc-81a7-5bcab7ea53c0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TSN4QWECVB4VxIAxpy6O7vzPnn+l3VnpdCXlX/6jBA6Oqg9EqkWlM71mtqsOQg80NlwruqTwmRRkAfsQhAc/UcDBmIV8CQ7gJ48mbZgGHrQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU4P216MB1356
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] memory: fsl_ifc: Make FSL_IFC config visible and
+ selectable
+To: Esben Haabendal <esben@geanix.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com>
+ <979fd913-050b-445d-9ca8-0ec6906ce3ea@kernel.org> <87cypc38gu.fsf@geanix.com>
+ <9a7f73f4-f5dc-4342-855b-08df6a839bb5@kernel.org> <87le3zoatn.fsf@geanix.com>
+ <6c166ad5-8004-4bc4-9107-a47ba9a72161@kernel.org> <87ttijaglp.fsf@geanix.com>
+ <c045f1a4-9ddf-4c53-a69b-22ceb68a1ce8@kernel.org> <87msobaes6.fsf@geanix.com>
+ <87ikyzae7v.fsf@geanix.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <87ikyzae7v.fsf@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240426_003950_161366_166061D9 
-X-CRM114-Status: GOOD (  18.87  )
+X-CRM114-CacheID: sfid-20240527_235331_412524_363627D5 
+X-CRM114-Status: UNSURE (   9.51  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,271 +124,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Subject: [PATCH] SPI Nand patch code of SkyHigh Memory
-From: KR Kim <kr.kim@skyhighmemory.com>
-Date: Fri, 26 Apr 2024 15:53:22 +0900
-From 2b46394628957f31d2a239c80f67c2f8b24c3c32 Mon Sep 17 00:00:00 2001
+On 27/05/2024 09:47, Esben Haabendal wrote:
+> 
+> Ok, I seem to still be confused as to what you want from me. If you are
+> saying that the kernel is not supposed to care about out-of-tree DTS
+> (and thereby any bootloader provided DTB), I would like to bring your
+> attention to arch/arm/boot/dts/nxp/ls/ls1021a-twr.dts in upstream:
+> 
+> &ifc {
+>         #address-cells = <2>;
+>         #size-cells = <1>;
+>         /* NOR Flash on board */
+>         ranges = <0x0 0x0 0x0 0x60000000 0x08000000>;
+>         status = "okay";
+> 
+>         nor@0,0 {
+>                 #address-cells = <1>;
+>                 #size-cells = <1>;
+>                 compatible = "cfi-flash";
+>                 reg = <0x0 0x0 0x8000000>;
+>                 big-endian;
+>                 bank-width = <2>;
+>                 device-width = <1>;
+>         };
+> };
+> 
 
-The following list shows the additional features that are required to support Skyhighmemory S35ML0xG3 SPI Nand:
+I don't understand why it took so many emails to answer that (my first)
+question... Sounds good, however you did not update the existing select.
+Drivers are not supposed to select user-visible symbols (leads to
+issues), so you need to change it to depends and update defconfigs.
 
-    [Always ECC On]
-       Always keep the ECC On during Bad Block Marking and Bad Block Checking
-       1. The on-die ECC feature is totally transparent to the host. The ECC parity bits used for this feature do not occupy the NAND spare areas.
-       2. The host is free to have its own ECC engine by using the spare areas that have standard size. 
-       3. We provide this patch to enable users who have limited ECC capabilities on the host side to use the NAND flash. This patch has been tested thoroughly on Linux. 
 
-    [Change ECC Status information]
-       This patch changes the ECC status information as follows to maintain compatibility.
-	00 (normal)                               
-	01(1-2 errors corrected)          
-	10(3-6 errors corrected)          
-	11(uncorrectable)
----
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |  14 +++-
- drivers/mtd/nand/spi/skyhigh.c | 145 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   3 +
- 4 files changed, 162 insertions(+), 2 deletions(-)
- mode change 100644 => 100755 drivers/mtd/nand/spi/Makefile
- mode change 100644 => 100755 drivers/mtd/nand/spi/core.c
- create mode 100644 drivers/mtd/nand/spi/skyhigh.c
- mode change 100644 => 100755 include/linux/mtd/spinand.h
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-old mode 100644
-new mode 100755
-index 19cc77288ebb..1e61ab21893a
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
--spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
-+spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-old mode 100644
-new mode 100755
-index e0b6715e5dfe..d09b2bd05284
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -196,6 +196,17 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
- static int spinand_ecc_enable(struct spinand_device *spinand,
- 			      bool enable)
- {
-+	/* 
-+	 * SkyHigh Memory : always ECC on 
-+	 * The on-die ECC feature is totally transparent to the host. 
-+	 * The ECC parity bits used for this feature do not occupy the NAND spare areas.
-+	 * The host is free to have its own ECC engine by using the spare areas that have standard size. 
-+	 * We provide this patch to enable users who have limited ECC capabilities on the host side to use the NAND flash. 
-+	 * This patch has been tested thoroughly on Linux. 
-+	 */
-+	if (spinand->flags & SPINAND_ON_DIE_ECC_MANDATORY)
-+		return 0;
-+
- 	return spinand_upd_cfg(spinand, CFG_ECC_ENABLE,
- 			       enable ? CFG_ECC_ENABLE : 0);
- }
-@@ -561,7 +572,7 @@ static int spinand_reset_op(struct spinand_device *spinand)
- 			    NULL);
- }
- 
--static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
-+int spinand_lock_block(struct spinand_device *spinand, u8 lock)
- {
- 	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
- }
-@@ -945,6 +956,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&paragon_spinand_manufacturer,
-+	&skyhigh_spinand_manufacturer,
- 	&toshiba_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- 	&xtx_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
-new file mode 100644
-index 000000000000..f001357b4d85
---- /dev/null
-+++ b/drivers/mtd/nand/spi/skyhigh.c
-@@ -0,0 +1,145 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022 SkyHigh Memory Limited
-+ *
-+ * Author: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_SKYHIGH		0x01
-+
-+#define SKYHIGH_STATUS_ECC_1TO2_BITFLIPS	(1 << 4)
-+#define SKYHIGH_STATUS_ECC_3TO6_BITFLIPS	(2 << 4)
-+#define SKYHIGH_STATUS_ECC_UNCOR_ERROR  	(3 << 4)
-+
-+#define SKYHIGH_CONFIG_PROTECT_EN	BIT(1)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 4, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int skyhigh_spinand_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* SkyHigh's ecc parity is stored in the internal hidden area */
-+	region->length = 0;
-+	region->offset = mtd->oobsize;
-+
-+	return 0;
-+}
-+
-+static int skyhigh_spinand_ooblayout_free(struct mtd_info *mtd, int section,
-+					  struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->length = mtd->oobsize - 2;
-+	region->offset = 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops skyhigh_spinand_ooblayout = {
-+	.ecc = skyhigh_spinand_ooblayout_ecc,
-+	.free = skyhigh_spinand_ooblayout_free,
-+};
-+
-+static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand,
-+				  u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case SKYHIGH_STATUS_ECC_1TO2_BITFLIPS:
-+		return 2;
-+
-+ 	case SKYHIGH_STATUS_ECC_3TO6_BITFLIPS:
-+		return 6; 
-+
-+ 	case SKYHIGH_STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct spinand_info skyhigh_spinand_table[] = {
-+	SPINAND_INFO("S35ML01G301",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML01G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML02G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML04G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
-+		     NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+};
-+
-+static int skyhigh_spinand_init(struct spinand_device *spinand)
-+{
-+	return spinand_lock_block(spinand, SKYHIGH_CONFIG_PROTECT_EN);
-+}
-+
-+static const struct spinand_manufacturer_ops skyhigh_spinand_manuf_ops = {
-+	.init = skyhigh_spinand_init,
-+ };
-+
-+const struct spinand_manufacturer skyhigh_spinand_manufacturer = {
-+	.id = SPINAND_MFR_SKYHIGH,
-+	.name = "SkyHigh",
-+	.chips = skyhigh_spinand_table,
-+	.nchips = ARRAY_SIZE(skyhigh_spinand_table),
-+	.ops = &skyhigh_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-old mode 100644
-new mode 100755
-index 5c19ead60499..2856eff28bea
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -268,6 +268,7 @@ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer paragon_spinand_manufacturer;
-+extern const struct spinand_manufacturer skyhigh_spinand_manufacturer;
- extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
- extern const struct spinand_manufacturer xtx_spinand_manufacturer;
-@@ -312,6 +313,7 @@ struct spinand_ecc_info {
- 
- #define SPINAND_HAS_QE_BIT		BIT(0)
- #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
-+#define SPINAND_ON_DIE_ECC_MANDATORY	BIT(2)	/* SHM */
- 
- /**
-  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
-@@ -518,5 +520,6 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
-+int spinand_lock_block(struct spinand_device *spinand, u8 lock);	/* SHM */
- 
- #endif /* __LINUX_MTD_SPINAND_H */
--- 
-2.34.1
+
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
