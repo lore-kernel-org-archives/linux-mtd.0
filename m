@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 413D0C25B7C
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 10:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C938AC25B78
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 11:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=WJyEwbtc0W/uJl+0Jzh4DUUr0v14hR3FTs20Bn7ZSQc=; b=EEJ
-	HcPSlzoPMrMM59UeR7AntbSdZl3JjcOHBy/x+Uixmg0G7jz+Pax+t+YAKPbKUAqHbRPAQthP3J558
-	YpKGhOmcu32p1IBVWDasVqUOpFHFPOWUzt0KoUB4he+b9Th7VoiH973ZZKmOKsd+BTzbjXDFL/MmK
-	b3YeMZ1tiNtNt/eVNooQ0EHU6QfHPiFMsDH1IxiOfWaeuvNFFkvEoMWZVxh44g7hk7vV0CpdvFTdA
-	/nKtgDLsznsq3ZeyOXcxonjYefG7v/eEeJjZfQyMJI/7O2mMyFcECABPW3cTGnm931Rv85LavsIlY
-	n2ORdhDBd9gjIGLRNSvkMPaJUCdQQ7w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=C4aX6DGJzUgGMRQ2/l7g25sLaH4M/LSwbzo5lO4sw+g=; b=PwtSwMjycBHC/1
+	stSVzhPG63B0jK4kEJMmO0CQ7De7rvERdhIYqL6RZ3wcN60xoSaCNPGrZSbCyi7hF1R+OzNPdKuZP
+	zC+zoGmOa9RpZyDknAg/SMvAVFF8N07GW4cDRpMu37mK+qiQhPesRzEad8fDfgENYy77QtY9ZdHxR
+	un58KEGwP6SDKq0J/22yqxqa2K5CeeP9EzdPUw6WVFxchfCCJtOEVx3TXohYDh8Rgsp8tYaPvyXAw
+	aavnbb8GkqZIJmmlwQvDxvST6re+yojdhhDgX7FH8++l/LZKvwFu4+kl98g924fomALc5qQJbnMZK
+	otIsLJdKRGH1+TLS4p+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBu8I-00000000EeK-3cb5;
-	Tue, 28 May 2024 10:32:42 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1sBua3-00000000IT9-0cAY;
+	Tue, 28 May 2024 11:01:23 +0000
+Received: from www530.your-server.de ([188.40.30.78])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBu8G-00000000Edj-0fX1
+	id 1sBua0-00000000ISD-2SzS
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 May 2024 10:32:41 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-529648cd69dso783526e87.2
-        for <linux-mtd@lists.infradead.org>; Tue, 28 May 2024 03:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716892355; x=1717497155; darn=lists.infradead.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VoT1uoy28kMc0kK85lK0e8hkQ2fA1zp91fLjG0p30Yg=;
-        b=YdMlPy3Hd+KfoNjj77M/qeB1BA3cZN+NHo/vRNbgtjZiHdza0Q3D7lkSt0E34/fsv1
-         z5FiSJ8F5PgsU9pnha1M+7L79nzHbmj/tbw3O7mtEt4S0N3Ot7naBzk3UPsGrVn+wrlO
-         SK3LhMEep89Da6XlUQDSO57sJ5Db8IlPqfsB5ZTSbKC38w6tj+JPDhetpA5PwOqshAHt
-         YswUsszEgqvt5+hCPCfc7YmA/8UOQHSP+nw6hcdl39lR1kcSApuFD0Jnwmz5UwhsifTQ
-         LaxbKmc3sHKiCjJ9hnBPyfNt8fftpiXhVcmsLDGIQNcJdB2gAmvv1PraJ6oxb2scUdI0
-         LwWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716892355; x=1717497155;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VoT1uoy28kMc0kK85lK0e8hkQ2fA1zp91fLjG0p30Yg=;
-        b=SB/HWodjSf+m0vq6pE5HCXPRxkUpXtokAY0fiXCfP5qTa5Hz9EmMZ2XNue+vG7tt/R
-         V1rSxVO1fkZROeM0nUsNHc7obbZ7UgQJI/b3kMzeL+rdgdhdNhxp4nJWVIK4lBViFMgv
-         m3t3UNiZR89Kd1BsN+Ef1yTkdL/wm8mjv8P4pQgxMR0jmdH4RiKltXPqoThJ7In8u9mo
-         84pPwRqNENiGWw7JXnmKxLpmZH0QD+Td3Y38QfXarD/QT0qhToEl7wKX/8LBFvlo2l0X
-         LSfHcc8vEAR5+01r6ijdAZRCFEkorMer83uU1MedtJ3xcHsWIm87FX8zFQx7/+ZKEA05
-         SXdA==
-X-Gm-Message-State: AOJu0Yw6uHVHiydxpFAWYPxPFTP9V/vPHu9g5ZHOP+CHQt5YOWTude+h
-	2Y2FIxtoty8uoqJC7cftfPFhWtx7KfIrXpQ7HTlqkLMTdyulVxaWO12lCLBSW0fg0grbNeCshgo
-	1ClIcxkRG7Ggt7dK8OrTUaKGiojJ/CzKd
-X-Google-Smtp-Source: AGHT+IFwijUtkIgcFiA7182tNoANL00NIKs1b87sqRGv02sW2lK/d3Y192BaSTiESp1ZXQ+d+WLwWrSg4PLxQasGYFE=
-X-Received: by 2002:a05:6512:794:b0:529:46e:b2a5 with SMTP id
- 2adb3069b0e04-52964eac45fmr9855484e87.2.1716892354560; Tue, 28 May 2024
- 03:32:34 -0700 (PDT)
+	Tue, 28 May 2024 11:01:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Hs/HaD02iDeto1uLspqeiJWInIgpGjlvaek2azNHp58=; b=Pe8RHyiHjJYpdVm8fFoeYeRPkS
+	3xkMMMGxye0zx+UtVGsa64mID/7Afu8Td7szz69x6LWa+osV9j5lKjZS7UEKaKuH39HTthO8lh2WZ
+	BWZw/TCFkjOgBQpRcVsQwh5iyY+3FrHLc1d7+PCpC17S8lnuEAqopJ3VtwSOaPRvydmS8Zk2K/kF/
+	BgDY6YL5aRzQe4W6n7mABxANtdo5EowU8Tft/ND0T/LUtahPJiBmagekAtGqdnjut7BnUpMffWCWQ
+	t9wkjbaDvLC1kfIq67FXTuLdIMlZWmNoNt8z2o3DBZkyXrpXPayG1LRs0wmBW8cC94+dpP0rsoK0x
+	5kWplkaA==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1sBuZy-000PLs-Td; Tue, 28 May 2024 13:01:18 +0200
+Received: from [185.17.218.86] (helo=localhost)
+	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <esben@geanix.com>)
+	id 1sBuZy-000AHn-2B;
+	Tue, 28 May 2024 13:01:18 +0200
+From: Esben Haabendal <esben@geanix.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Michael Walle <mwalle@kernel.org>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] memory: fsl_ifc: Make FSL_IFC config visible and
+ selectable
+In-Reply-To: <ccdacf52-1b31-43a1-a8fd-33a252e24d51@kernel.org> (Krzysztof
+	Kozlowski's message of "Tue, 28 May 2024 12:21:02 +0200")
+References: <20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com>
+	<979fd913-050b-445d-9ca8-0ec6906ce3ea@kernel.org>
+	<87cypc38gu.fsf@geanix.com>
+	<9a7f73f4-f5dc-4342-855b-08df6a839bb5@kernel.org>
+	<87le3zoatn.fsf@geanix.com>
+	<6c166ad5-8004-4bc4-9107-a47ba9a72161@kernel.org>
+	<87ttijaglp.fsf@geanix.com>
+	<c045f1a4-9ddf-4c53-a69b-22ceb68a1ce8@kernel.org>
+	<87msobaes6.fsf@geanix.com> <87ikyzae7v.fsf@geanix.com>
+	<e3aa72af-c824-4b71-a99d-c0b9294bfd8a@kernel.org>
+	<87y17ul0cb.fsf@geanix.com>
+	<ccdacf52-1b31-43a1-a8fd-33a252e24d51@kernel.org>
+Date: Tue, 28 May 2024 13:01:17 +0200
+Message-ID: <87plt6kxoi.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-From: Mani K <manivalaguru@gmail.com>
-Date: Tue, 28 May 2024 16:02:22 +0530
-Message-ID: <CAGhZNMM8DpbuKX==XrM_xBYuL4S5VAgezSupGN-FHd+ENq+ang@mail.gmail.com>
-Subject: UBIFS Recovery Process on Power Cutoff
-To: linux-mtd@lists.infradead.org
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27289/Tue May 28 10:30:59 2024)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240528_033240_224807_423A1F47 
-X-CRM114-Status: UNSURE (   8.64  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240528_040120_779133_3CD00E55 
+X-CRM114-Status: GOOD (  19.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,33 +95,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+Krzysztof Kozlowski <krzk@kernel.org> writes:
 
-We have a system based on a Custom ARM SOC running on a Linux kernel
-with a UBIFS filesystem maintained on NOR flash. When the system power
-is cut off abruptly, we notice recovery-related messages when the
-filesystem is mounted. This recovery process takes additional boot
-time of 2-3 seconds.
+> On 28/05/2024 12:03, Esben Haabendal wrote:
+>> Krzysztof Kozlowski <krzk@kernel.org> writes:
+>> 
+>>> On 27/05/2024 09:47, Esben Haabendal wrote:
+>>>>
+>>>> Ok, I seem to still be confused as to what you want from me. If you are
+>>>> saying that the kernel is not supposed to care about out-of-tree DTS
+>>>> (and thereby any bootloader provided DTB), I would like to bring your
+>>>> attention to arch/arm/boot/dts/nxp/ls/ls1021a-twr.dts in upstream:
+>>>>
+>>>> &ifc {
+>>>>         #address-cells = <2>;
+>>>>         #size-cells = <1>;
+>>>>         /* NOR Flash on board */
+>>>>         ranges = <0x0 0x0 0x0 0x60000000 0x08000000>;
+>>>>         status = "okay";
+>>>>
+>>>>         nor@0,0 {
+>>>>                 #address-cells = <1>;
+>>>>                 #size-cells = <1>;
+>>>>                 compatible = "cfi-flash";
+>>>>                 reg = <0x0 0x0 0x8000000>;
+>>>>                 big-endian;
+>>>>                 bank-width = <2>;
+>>>>                 device-width = <1>;
+>>>>         };
+>>>> };
+>>>>
+>>>
+>>> I don't understand why it took so many emails to answer that (my first)
+>>> question...
+>> 
+>> Because I did not understand the question. Primarely because I was (and
+>> is) surprised that out-of-tree DTS is not supported. I was convinced
+>> that out-of-tree DTS was the right way for hardware which is not
+>> commonly available.
+>
+> Even some non-GA hardware could, and IMHO should, be upstreamed, at
+> least some parts of it. This gives the user/upstreamer reason to do
+> changes. Otherwise you might get questions for contributions: why you
+> are doing and why this is worth?
+>
+> Downstream or any fork is not really answer to such questions, because
+> they are allowed to make whatever stupid choices they want (not saying
+> it was done here, but in general), which should not be a reason to do
+> anything upstream. If downstream creates wrong DTS files, shall we
+> create wrong device drivers or bindings for them? No.
 
-Here are the log messages we observe:
-[    4.411551] ubi0: background thread "ubi_bgt0d" started, PID 586
-[    7.191406] UBIFS (ubi0:0): Mounting in unauthenticated mode
-[    7.197659] UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, PID 663
-[    7.212730] UBIFS (ubi0:0): recovery needed
-[    7.951546] UBIFS (ubi0:0): recovery completed
-[    7.956280] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, name "app"
-[    7.963620] UBIFS (ubi0:0): LEB size: 65408 bytes (63 KiB),
-min./max. I/O unit sizes: 8 bytes/256 bytes
-[    7.973226] UBIFS (ubi0:0): FS size: 15828736 bytes (15 MiB, 242
-LEBs), journal size 2289280 bytes (2 MiB, 35 LEBs)
-[    7.983874] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
-[    7.989827] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0),
-UUID 00000000-0000-0008-0000-000000000001, small LPT model
+Of-course not. But to be fair, in this case, there has not been any new
+bindings created, and no creative usage of existing bindings. Only
+straight forward usage of existing drivers (IFC and physmap MTD driver),
+which I am surprised no one else had seen the need to fix in upstream.
 
-Is there any option to prevent the recovery process from happening?
+But do you/we really want to open the flood gates for DTS maintenance of
+a gazillion embedded boards that only a few in the world have an
+interest in? I suspect it would create quite a lot of patches to flow
+through maintainers, with very litle benefit to most people. But for me
+(as in the companies doing such these kind of embedded hardware), it is
+a clear benefit to put upstream DTS files.
 
-Regards,
-Manikandan V
+But what about boards where device-tree is created/modified dynamically
+by bootloader? Is that also not really supported?
+
+>>> Sounds good, however you did not update the existing select.
+>>> Drivers are not supposed to select user-visible symbols (leads to
+>>> issues), so you need to change it to depends and update defconfigs.
+>> 
+>> Do you wan this split into multiple commits, or a single commit changing
+>> the Kconfig to make FSL_IFC user-visible, and changing select of it to
+>> DEPENDS, and updating the related defconfig(s)?
+>
+> One commit for Kconfigs (nand and memory), additional commits for
+> defconfigs, one per each arch, because defconfigs might go via arch tree.
+
+Sounds good. I will send a v2 with that.
+
+/Esben
 
 ______________________________________________________
 Linux MTD discussion mailing list
