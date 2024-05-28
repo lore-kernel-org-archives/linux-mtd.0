@@ -4,83 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEBBBC25B7C
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 12:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A420C25B7C
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 12:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=p4YypLDhRjcGBUj2CRIxExeACFrhOzB6Y320RkQSMGI=; b=ooKTnatka7bGbL
-	LkDOQ7GmznWTe14HsA0v9EsLQS/e8xdCz05WymaMA0hi4Y9QkLcaRYFdIIscoZWwkflvT4cBXHCK1
-	WwHBobPJyYqeGRTyLrdKOdaKO5r0uwbCvCudRDhFyxkUDgd3som7LnNZUmGUNoKctgLYv8RYDKcG1
-	MumCOOAxhbr5zUVGlDWOUuP69EUOxS/z5GDcJmlEfvtRfkFXGeW8FV0R0Iv0uqtY5tUukX7PRbzhh
-	oC98qDQVbQlZuAJBydP7531d+2J5siEp3MLQcqxGiKHc3+CmNkPZ+9uZaymNMStACtsKEUonczKQI
-	oASPt+0r5XyrlrACP1+Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fnlqd1U+mHn/EbPZmDTgLYJ7SzpT8VmXZR4hGnN5Fps=; b=QxUvNEuNBoBtIg
+	Y89aTDT+SugyvGnGEqPQT0/WQgZOs88MRceMUh0kfS7ZheZblqjUO15X/yT/M/WMuKq07bhRxFOGy
+	zjiPgrnIILcZDMbJPxqV7I10oZswcU5byAKlGOXbsCfZ6UXrQAQOxx6PBDs7iljJpul8LO4jA+jbL
+	MsotjCSuTX9lgUyVCv0ya7PrVJHRFMXeEVcqXHa3JZ5yW9Xb37rTGpqSXWvHiYxNi14mh5ymKN/lG
+	zQiXtT6ilsUp/eCvOrKXd+ab73DnmF+OF93brMrRKQnXmpIuORmHhqWeXwooGvsHqCNkCjZzxLv9r
+	TmwgU8gxhPzmovzchVwQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBvx6-00000000agh-11s2;
-	Tue, 28 May 2024 12:29:16 +0000
-Received: from www530.your-server.de ([188.40.30.78])
+	id 1sBwFo-00000000dsC-0AOa;
+	Tue, 28 May 2024 12:48:36 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBvx2-00000000afI-2TNx
+	id 1sBwFk-00000000dqU-0DNN
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 May 2024 12:29:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-Id:Date:Subject:From:Sender:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References; bh=caMKrdEi8GmeDybKcQjT0Mo+9mRU5xyYPBFpLgpU7mA=; b=aT
-	YiduIzrgX0rBg2aMeQudM1FDfvFKJ343fVanRBJ5VkuasUeYrUlWDdIsD6/xoXz/QB4G60zOBfQSF
-	/rvQ1Zt9PUVklV9jwsCCC6HdP4j5KgUZTq/UXUFbFT3Dx+ZUnW0/LALiZA86anaMDv3mj9Oq7UibS
-	28bHw0MonA9UHaD47MazwUFnhNgozYSk7bSFSUe5ZZmnxP+lwu3ARBh0U1kdRAR9aueBK/1t3C1IM
-	iIXmq/Ju5+V5GlTv+qrF8173SGRGeBYZs6NsY9Lnt0tzmoTuJfopVqyTI18t0HzpOj9pn5PMOzYER
-	Wt3YYzACaE8zomu1gJlCzPvymMiHXU4g==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1sBvwt-000G8p-HX; Tue, 28 May 2024 14:29:03 +0200
-Received: from [185.17.218.86] (helo=localhost)
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <esben@geanix.com>)
-	id 1sBvws-000C97-0D;
-	Tue, 28 May 2024 14:29:02 +0200
-From: Esben Haabendal <esben@geanix.com>
-Subject: [PATCH v2 0/2] memory: fsl_ifc: Make FSL_IFC config visible and
+	Tue, 28 May 2024 12:48:34 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A4721FF809;
+	Tue, 28 May 2024 12:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1716900506;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DLJWkJDSvhOXa3XSbG71htDtV3QhuWVrpRwUqqioGx0=;
+	b=ICY6tl549JvPFPlVwt7iObOMHzhwO2lt67WGlfgFejMB/CKbBgh0rHR0kbXuCmasmx4bAF
+	X/za9QNoeNAJlaHCDrzMsH+35b9WPdDGQpZ7AHVDDay3ObaxU2lQj8Dc3JH6fJmX8qW8AJ
+	h3HlXE4vvI9RI8NreTXfiU6d/1ZwADbZKLSNSjlRvrrin8YNfItjGk5eWQDCAHal0Iv9pC
+	hjiVU6v+VeEwDNHxhfAKOnjCN4Xs62Z9A/i2yii7l2bdqsNKzLNC/rWvHIzZEE6Qna5ZTq
+	UxnZB3XMLJO/2rXiu8CDVjQM98YnjqCKGP+MsBKcRMAxwH4LXtfx/AuUo9IPpQ==
+Date: Tue, 28 May 2024 14:48:23 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Esben Haabendal <esben@geanix.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Tudor Ambarus
+ <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael
+ Walle <mwalle@kernel.org>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 1/2] memory: fsl_ifc: Make FSL_IFC config visible and
  selectable
-Date: Tue, 28 May 2024 14:28:51 +0200
-Message-Id: <20240528-fsl-ifc-config-v2-0-5fd7be76650d@geanix.com>
+Message-ID: <20240528144823.2ec929f6@xps-13>
+In-Reply-To: <20240528-fsl-ifc-config-v2-1-5fd7be76650d@geanix.com>
+References: <20240528-fsl-ifc-config-v2-0-5fd7be76650d@geanix.com>
+	<20240528-fsl-ifc-config-v2-1-5fd7be76650d@geanix.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAAPOVWYC/3XMQQ7CIBCF4as0s3YMUC3WlfcwXbR0oJMoGDCkp
- uHuYvcu/5e8b4NEkSnBtdkgUubEwddQhwbMMnpHyHNtUEKdxFm1aNMD2Ro0wVt2aC5a90JNqtc
- E9fSKZHndwftQe+H0DvGz+1n+1r9UliixI2t1O81GU3dzNHpejyY8YSilfAHeNOeYrQAAAA==
-To: Krzysztof Kozlowski <krzk@kernel.org>, 
- Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linuxppc-dev@lists.ozlabs.org, Esben Haabendal <esben@geanix.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1716899341; l=1744;
- i=esben@geanix.com; s=20240523; h=from:subject:message-id;
- bh=rvbdUN0VgLOxYODsqTBZc4SNyjK2yjGwIGw8fwwSIhg=;
- b=1H0rFqG0iwRxc9arIZ+939vI/XBypQXHYkFazli6NBy3csijY7hcf/xVFDS1azQUvTdjmRH/k
- u/XdQsx/uStBk4lCFDMcFLzKhAE/3SrU/borh93m1ZnEBh8C1JPn7+w
-X-Developer-Key: i=esben@geanix.com; a=ed25519;
- pk=PbXoezm+CERhtgVeF/QAgXtEzSkDIahcWfC7RIXNdEk=
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27289/Tue May 28 10:30:59 2024)
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240528_052913_005413_9DAB0827 
-X-CRM114-Status: UNSURE (   9.30  )
+X-CRM114-CacheID: sfid-20240528_054832_389329_BC47CD44 
+X-CRM114-Status: UNSURE (   8.13  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,56 +78,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While use of fsl_ifc driver with NAND flash is fine, as the fsl_ifc_nand
-driver selects FSL_IFC automatically, we need the CONFIG_FSL_IFC option to
-be selectable for platforms using fsl_ifc with NOR flash.
-    
-Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
-To: Krzysztof Kozlowski <krzk@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: Pratyush Yadav <pratyush@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-To: Vignesh Raghavendra <vigneshr@ti.com>
-To: Michael Ellerman <mpe@ellerman.id.au>
-To: Nicholas Piggin <npiggin@gmail.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-To: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Esben Haabendal <esben@geanix.com>
-
-Changes in v2:
-- CONFIG_MTD_NAND_FSL_IFC depends on CONFIG_FSL_IFC instead of select.
-- Refresh powerpc config snippet accordingly.
-- Link to v1: https://lore.kernel.org/r/20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com
-
----
-Esben Haabendal (2):
-      memory: fsl_ifc: Make FSL_IFC config visible and selectable
-      powerpc/configs: Update defconfig with now user-visible CONFIG_FSL_IFC
-
- arch/powerpc/configs/85xx-hw.config | 2 ++
- drivers/memory/Kconfig              | 2 +-
- drivers/mtd/nand/raw/Kconfig        | 3 +--
- 3 files changed, 4 insertions(+), 3 deletions(-)
----
-base-commit: a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6
-change-id: 20240523-fsl-ifc-config-c877902b297e
-
-Best regards,
--- 
-Esben Haabendal <esben@geanix.com>
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRXNiZW4sCgplc2JlbkBnZWFuaXguY29tIHdyb3RlIG9uIFR1ZSwgMjggTWF5IDIwMjQgMTQ6
+Mjg6NTIgKzAyMDA6Cgo+IFdoaWxlIHVzZSBvZiBmc2xfaWZjIGRyaXZlciB3aXRoIE5BTkQgZmxh
+c2ggaXMgZmluZSwgYXMgdGhlIGZzbF9pZmNfbmFuZAo+IGRyaXZlciBzZWxlY3RzIEZTTF9JRkMg
+YXV0b21hdGljYWxseSwgd2UgbmVlZCB0aGUgQ09ORklHX0ZTTF9JRkMgb3B0aW9uIHRvCj4gYmUg
+c2VsZWN0YWJsZSBmb3IgcGxhdGZvcm1zIHVzaW5nIGZzbF9pZmMgd2l0aCBOT1IgZmxhc2guCj4g
+Cj4gRml4ZXM6IGVhMGMwYWQ2YjZlYiAoIm1lbW9yeTogRW5hYmxlIGNvbXBpbGUgdGVzdGluZyBm
+b3IgbW9zdCBvZiB0aGUgZHJpdmVycyIpCj4gU2lnbmVkLW9mZi1ieTogRXNiZW4gSGFhYmVuZGFs
+IDxlc2JlbkBnZWFuaXguY29tPgoKTG9va3MgZ29vZCB0byBtZS4KClJldmlld2VkLWJ5OiBNaXF1
+ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgoKVGhhbmtzLApNaXF1w6hsCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
