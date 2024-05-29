@@ -4,62 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30640C25B75
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2024 09:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF14BC41513
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2024 11:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=f75gX+8RwCHGga8pkoB5nnNd9flTMFgvXpgtvtGIOlc=; b=0NDwIZrvjTlKD+
-	m9wNromIIwBFIbYPOtoI+g1f8LhYq9WjGJoXCYD8wGqyo604WKibzLVneTgJHmwwx3KM0cnYfXyAB
-	z/hEFi0VMAvsmpRQG0f1evc4o4wApQOccdgfAfSzgnfBpHQuw2lbQy4kJdteuO3lR25uMkpThxWY9
-	Sx33orMkXeGWx4IDLDNkVZ7cOX7nSC9tDMcuBr/ZP9K/YLwskImKL2IXfPxTwxo2IvCQ/p1of4Hsw
-	sNGwUIsE4vanOYwo+eqas2DO/BPZ2dYk2bg6rELT1F/4kVH63QiPPudGB2H7CrfThmFky9aiqECAV
-	tMJHyojRTXT7TQAgf3sQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=j8/F6rQLPBTnENOFTAN4cEVzk+246Untj/nNrLEryxM=; b=UqWUfMeSgEG+oh
+	Zoc7aaq2ZL2TyxYBRyJ+U+Dg/2LUQotS4/NxHzNc8MKC53M6s1bw7WE6XAMiT6z1mZQMql5JAaCci
+	i1E4BrCO1MPZk2nMSeWwgN/yPP3EjLaK0gqC5VpV3EQilbI7CjOBUXhq33QbH3jpx4YabmjgzjoYI
+	0VdQ9pkWddx3G3xSuAN6ZD1KEXx/uJkOgEGwAPV46KCbPAu6gxq9+GlO+zjXcc2dq2BPRL6QDsFQr
+	CK30t3/6czmmNLFMD/Dg1qIWJnbHGPPhgeqgSB1sj0nimViQmeM+7gxbPRhPAIMFMpzBbTo8+iX7+
+	QuGVRJ8yUrpfJ1Linc4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCFxW-00000003hPd-1u3i;
-	Wed, 29 May 2024 09:51:02 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sCHEA-00000003uSC-1H4L;
+	Wed, 29 May 2024 11:12:18 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCFxT-00000003hP2-0HwJ
+	id 1sCHE4-00000003uQZ-3VZK
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 May 2024 09:51:00 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 48030CE16FE;
-	Wed, 29 May 2024 09:50:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC778C2BD10;
-	Wed, 29 May 2024 09:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716976255;
-	bh=ZVR3E9jt+JeuDy6+irGL6vYnObXajj8jRHzDpvRmroI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lctE4Bh1TGIJCLrkhqlvJnCzezIF4H3ZpbzZ6lBo0Hc+Y2JB9UTuGPUNIK+jRCJpm
-	 BUTmu7BkIsMyyoKxru67VB4F/7AouoHSteP6cUE3/xJJvYFZDV/IM6H2TUkjDzKhfx
-	 xX4cOE6x8CUFAGhDoNI8NY7/teS/gd2zNJJgWLvVgVGiSt9DGWCSMtjEmf1xVe9cro
-	 53rbOnl2zw4PkjcQlF9A2oSG/1CEOutqPd6pcDC5MMWwpouboOe6xhbhctTQ2QHdfW
-	 vPJVxb2msGrDUst4oh4Kw/EF9X4LvEBfkjnZqepCJM4VkNA3h4V/il/Pz96lqhDy6T
-	 8Ln4hVhZHOMrA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: make mtd_test.c a separate module
-Date: Wed, 29 May 2024 11:50:39 +0200
-Message-Id: <20240529095049.1915393-1-arnd@kernel.org>
+	Wed, 29 May 2024 11:12:14 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Vq67K4Dr4zwQPT;
+	Wed, 29 May 2024 19:08:13 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0E7BF180A9C;
+	Wed, 29 May 2024 19:12:01 +0800 (CST)
+Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 29 May
+ 2024 19:12:00 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/2] ubifs: dbg_check_ltab: Fix wrong lprops table information caused by missing pnode checking
+Date: Wed, 29 May 2024 19:12:19 +0800
+Message-ID: <20240529111219.3964764-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240529111219.3964764-1-chengzhihao1@huawei.com>
+References: <20240529111219.3964764-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.175.104.67]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240529_025059_482658_49347330 
-X-CRM114-Status: GOOD (  10.46  )
+X-CRM114-CacheID: sfid-20240529_041213_065544_F804D248 
+X-CRM114-Status: GOOD (  15.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,107 +69,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+The lprops table information calculation depends on the scanning results
+in LPT area, and the dirty space calculation depends on the dirty state
+of each node. If pnode cannot be found in the LPT tree, the pnode is judged
+as dirty(See dbg_is_pnode_dirty). So the dirty space could be more than
+the actual value when there exists pnode not traversed, for example:
+The max_leb_cnt of the UBIFS image is 1024 and the leb_cnt is 300, it could
+have 1014 main LEBs at most and DIV_ROUND_UP(main_lebs, UBIFS_LPT_FANOUT) =
+254 pnodes at most. Now, the image has 300 LEBs and it is loaded into a
+volume with 1022 LEBs, it has 1012 main LEBs after auto-resizing, the
+traversing results in dbg_is_pnode_dirty() are shown as:
+                           n1 (lv4, root)
+		n4    n5     n6     n7 (lv3)
+          n16 n20 n24 n28 ....    n19 n23 n27 n31 (lv2)
+   n64 n80 ...                          n79 n95 n111 | n127 (lv1)
+p0 p1 ...                                p251 | p252 | p253 p254 p255 (lv0)
+0,1,2 ...              1004 1005 1006 1007 | 1008 1009 1010 1011 | NA
 
-This file gets linked into nine different modules, which causes a warning:
+According to implementations in dbg_is_pnode_dirty, the pnodes p253, p254,
+p255 are not traversed and they are wrongly judged as dirty, because the
+max main LEB number is 1011.
 
-scripts/Makefile.build:236: drivers/mtd/tests/Makefile: mtd_test.o is added to multiple modules: mtd_nandbiterrs mtd_oobtest mtd_pagetest mtd_readtest mtd_speedtest mtd_stresstest mtd_subpagetest mtd_torturetest
+Fix it by traversing pnodes without limiting LEB number under main_lebs.
 
-Make it a separate module instead.
-
-Fixes: a995c792280d ("mtd: tests: rename sources in order to link a helper object")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/tests/Makefile   | 34 +++++++++++++++++-----------------
- drivers/mtd/tests/mtd_test.c |  9 +++++++++
- 2 files changed, 26 insertions(+), 17 deletions(-)
+ fs/ubifs/lpt_commit.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/tests/Makefile b/drivers/mtd/tests/Makefile
-index 5de0378f90db..7dae831ee8b6 100644
---- a/drivers/mtd/tests/Makefile
-+++ b/drivers/mtd/tests/Makefile
-@@ -1,19 +1,19 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_MTD_TESTS) += mtd_oobtest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_pagetest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_readtest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_speedtest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_stresstest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_subpagetest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_torturetest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_nandecctest.o
--obj-$(CONFIG_MTD_TESTS) += mtd_nandbiterrs.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_oobtest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_pagetest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_readtest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_speedtest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_stresstest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_subpagetest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_torturetest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_nandecctest.o mtd_test.o
-+obj-$(CONFIG_MTD_TESTS) += mtd_nandbiterrs.o mtd_test.o
- 
--mtd_oobtest-objs := oobtest.o mtd_test.o
--mtd_pagetest-objs := pagetest.o mtd_test.o
--mtd_readtest-objs := readtest.o mtd_test.o
--mtd_speedtest-objs := speedtest.o mtd_test.o
--mtd_stresstest-objs := stresstest.o mtd_test.o
--mtd_subpagetest-objs := subpagetest.o mtd_test.o
--mtd_torturetest-objs := torturetest.o mtd_test.o
--mtd_nandbiterrs-objs := nandbiterrs.o mtd_test.o
-+mtd_oobtest-objs := oobtest.o
-+mtd_pagetest-objs := pagetest.o
-+mtd_readtest-objs := readtest.o
-+mtd_speedtest-objs := speedtest.o
-+mtd_stresstest-objs := stresstest.o
-+mtd_subpagetest-objs := subpagetest.o
-+mtd_torturetest-objs := torturetest.o
-+mtd_nandbiterrs-objs := nandbiterrs.o
-diff --git a/drivers/mtd/tests/mtd_test.c b/drivers/mtd/tests/mtd_test.c
-index c84250beffdc..f391e0300cdc 100644
---- a/drivers/mtd/tests/mtd_test.c
-+++ b/drivers/mtd/tests/mtd_test.c
-@@ -25,6 +25,7 @@ int mtdtest_erase_eraseblock(struct mtd_info *mtd, unsigned int ebnum)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(mtdtest_erase_eraseblock);
- 
- static int is_block_bad(struct mtd_info *mtd, unsigned int ebnum)
+diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+index 9a477924c978..52f091593615 100644
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -1509,24 +1509,27 @@ static int dbg_is_nnode_dirty(struct ubifs_info *c, int lnum, int offs)
+  */
+ static int dbg_is_pnode_dirty(struct ubifs_info *c, int lnum, int offs)
  {
-@@ -57,6 +58,7 @@ int mtdtest_scan_for_bad_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
+-	int i, cnt;
++	struct ubifs_pnode *pnode;
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(mtdtest_scan_for_bad_eraseblocks);
+-	cnt = DIV_ROUND_UP(c->main_lebs, UBIFS_LPT_FANOUT);
+-	for (i = 0; i < cnt; i++) {
+-		struct ubifs_pnode *pnode;
++	pnode = ubifs_pnode_lookup(c, 0);
++	if (IS_ERR(pnode))
++		return PTR_ERR(pnode);
++	while (pnode) {
+ 		struct ubifs_nbranch *branch;
  
- int mtdtest_erase_good_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
- 				unsigned int eb, int ebcnt)
-@@ -75,6 +77,7 @@ int mtdtest_erase_good_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(mtdtest_erase_good_eraseblocks);
- 
- int mtdtest_read(struct mtd_info *mtd, loff_t addr, size_t size, void *buf)
- {
-@@ -92,6 +95,7 @@ int mtdtest_read(struct mtd_info *mtd, loff_t addr, size_t size, void *buf)
- 
- 	return err;
- }
-+EXPORT_SYMBOL_GPL(mtdtest_read);
- 
- int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
- 		const void *buf)
-@@ -107,3 +111,8 @@ int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
- 
- 	return err;
- }
-+EXPORT_SYMBOL_GPL(mtdtest_write);
+-		cond_resched();
+-		pnode = ubifs_pnode_lookup(c, i);
+-		if (IS_ERR(pnode))
+-			return PTR_ERR(pnode);
+ 		branch = &pnode->parent->nbranch[pnode->iip];
+ 		if (branch->lnum != lnum || branch->offs != offs)
+-			continue;
++			goto next_pnode;
+ 		if (test_bit(DIRTY_CNODE, &pnode->flags))
+ 			return 1;
+ 		return 0;
++next_pnode:
++		pnode = find_next_pnode(c, pnode);
++		if (IS_ERR(pnode))
++			return PTR_ERR(pnode);
++		cond_resched();
+ 	}
 +
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("MTD function test helpers");
-+MODULE_AUTHOR("Akinobu Mita");
+ 	return 1;
+ }
+ 
 -- 
 2.39.2
 
