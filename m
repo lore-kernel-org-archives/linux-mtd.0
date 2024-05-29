@@ -4,53 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64FC1C25B75
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2024 07:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6B97C25B75
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2024 08:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3i0H4vS0ThOJrF1IotJdJbJDGiGW1kAcSFJjGY+WoLA=; b=V54sNBsL59g0fz
-	AsWelaStiAsgnP0/h7rRFcWcRrC8xpXrnw5cco30nhTvfGybSfhVKKjNUn01tQQqnjj12zGBHqiYb
-	zl7w0ZKCzSWltE408jQxss8VSqVi/nP1GZRu8b+b2WyCQVMO1WTfb0Z0tWflm+7YWqCd33wLBXjj3
-	wyJHyunjfV9+Xj5iUEdeGOcve8OJZzrrP1J74rINhUOKQX5WgKZebyl/Tii+p8/pbQ1ubencx+8+9
-	uooxo3mT1JaC6HcyoJTxmPaos0bo2xZ5M+9EWm7atg7/KqAlDu0QfzQeIi9WfRMNB0umLIqmaBUWB
-	3ThIhAaAorfxWzIuO8rQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9nr3lnOtazWrXXSgHVPpMfRsWLepsKWIKrfY0o/eIl0=; b=nsfkfBjWrrDb3q
+	sQi1e4ZQmjH9aqgonqG4h2uR5aRaG85Z0D7j5Cu91rvHg1HpjWSYwrBxguaPO+2AF6eAQAXSU4gCg
+	zdsp2Ag687t+lquOVMWra/+y2LsawImCA681C+3lG8vZsNjSIRBaSg839Y29bFXGbZ1cNafIC2v94
+	2XSU5t/pi2aUkDaMF//H+n+cq0MRTb7hkvdsop9JubNbat3mP6ljjdc9/5pI836r6lkRTlrkuobd7
+	DD4CQniTTsQiQnad0Q2Tba0p1X8J1ItooDJj//hpGWAMD5MexNP3d1ez/ajmA3i17cuc7mieS+PdS
+	uAXY+HhSKMkLFvGDlQDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCE5P-00000003E2B-2qye;
-	Wed, 29 May 2024 07:51:03 +0000
-Received: from mail.explorepulse.pl ([51.91.254.67])
+	id 1sCERx-00000003Jro-3Ewu;
+	Wed, 29 May 2024 08:14:21 +0000
+Received: from gandalf.ozlabs.org ([150.107.74.76] helo=mail.ozlabs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCE5M-00000003E19-3usX
+	id 1sCERt-00000003JpM-3ENs
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 May 2024 07:51:02 +0000
-Received: by mail.explorepulse.pl (Postfix, from userid 1002)
-	id 4CDFC249C5; Wed, 29 May 2024 09:50:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=explorepulse.pl;
-	s=mail; t=1716969059;
-	bh=dqx6etWJTU7o7oR1uR2aRBCwaPXPl4dirwwzUCFBDcc=;
-	h=Date:From:To:Subject:From;
-	b=DygPUpOc8irkq/mcMudVEzpP4NHI5baqyQf8JPsFgagjWmckxMDEPdxqNxmVYeojW
-	 hjoBd637/pbNbv0EaCV8xK28ZomGzINvfVT9S1Qr17mE0kNnGnb4kyCRRrT9pJOnZI
-	 N5XsE6XpRkK4tudddrA44CasbcIy5TXfEiKpNHy3F2HoAaMcgxq33BqQZAZqkn2pUT
-	 HSrlOBwWJurQJOo1CSIEGG2DDRiUOg2Z1PPsc8eqDD69Hwu/1HzSOt+4DxIlY6uaSZ
-	 qiPqeYqHHN7IOHJ1b0KrLzrWu0G9cABKqrFOOVSoAdfYLcV7bh3GxhUApwrmOGHahu
-	 ecfc9c/mGE6aA==
-Received: by mail.explorepulse.pl for <linux-mtd@lists.infradead.org>; Wed, 29 May 2024 07:50:44 GMT
-Message-ID: <20240529084500-0.1.bh.shi6.0.pa7q3qb7ou@explorepulse.pl>
-Date: Wed, 29 May 2024 07:50:44 GMT
-From: "Marcin Gard" <marcin.grad@explorepulse.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
-X-Mailer: mail.explorepulse.pl
+	Wed, 29 May 2024 08:14:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1716970452;
+	bh=VLyOIVHLU95mQ240RHuf6Ii/24aWHKil9L7bk/lJvVw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=W9qTdkjE50eVY4m38Xna9RRypsO9BtrskqY6vWcjxSrgVi39Z93csviy5xBM/UNMr
+	 ICfG1KTNxzfBD4X3x2uVCllEt+4f/FgdJnx06ZEYrCOu2fotVGk6X4r4rDufY4QLCF
+	 QvRN+Ox7uPNwTiyPiOopyQrTGyqQjoexx4p7oe65iXBQ6luGAX4rIXjZ3jylG9s7CI
+	 MBlmwPrfB0FfKh45fiG8FNWDLGxl7oZDjA4vQrA89Pbrvfz2QJKWAJpc1asSxcZT8H
+	 xI1dHj9McpQeLHMkGUip+8jxjs8rAg5MwNQFSUfWuMC+hVWVv6mUFKDFY8eQXG3nl/
+	 zNpm84X9VKX5w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Vq2GT6cdtz4x2w;
+	Wed, 29 May 2024 18:14:08 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Esben Haabendal <esben@geanix.com>, Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe
+ Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 2/2] powerpc/configs: Update defconfig with now
+ user-visible CONFIG_FSL_IFC
+In-Reply-To: <87le3ukqnj.fsf@geanix.com>
+References: <20240528-fsl-ifc-config-v2-0-5fd7be76650d@geanix.com>
+ <20240528-fsl-ifc-config-v2-2-5fd7be76650d@geanix.com>
+ <096662e8-03cf-4c13-baa0-11918cab7511@kernel.org>
+ <87le3ukqnj.fsf@geanix.com>
+Date: Wed, 29 May 2024 18:14:07 +1000
+Message-ID: <87ed9l3ui8.fsf@mail.lhotse>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240529_005101_132971_D1DF87C9 
-X-CRM114-Status: UNSURE (   1.20  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240529_011418_274082_E7E0C3FF 
+X-CRM114-Status: GOOD (  18.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,16 +78,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
-cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
-xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
-Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
-ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllCk1hcmNpbiBHYXJkCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Esben Haabendal <esben@geanix.com> writes:
+> Krzysztof Kozlowski <krzk@kernel.org> writes:
+>
+>> On 28/05/2024 14:28, Esben Haabendal wrote:
+>>> With CONFIG_FSL_IFC now being user-visible, and thus changed from a select
+>>> to depends in CONFIG_MTD_NAND_FSL_IFC, the dependencies needs to be
+>>> selected in config snippets.
+>>> 
+>>> Signed-off-by: Esben Haabendal <esben@geanix.com>
+>>> ---
+>>>  arch/powerpc/configs/85xx-hw.config | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>> 
+>>> diff --git a/arch/powerpc/configs/85xx-hw.config b/arch/powerpc/configs/85xx-hw.config
+>>> index 524db76f47b7..8aff83217397 100644
+>>> --- a/arch/powerpc/configs/85xx-hw.config
+>>> +++ b/arch/powerpc/configs/85xx-hw.config
+>>> @@ -24,6 +24,7 @@ CONFIG_FS_ENET=y
+>>>  CONFIG_FSL_CORENET_CF=y
+>>>  CONFIG_FSL_DMA=y
+>>>  CONFIG_FSL_HV_MANAGER=y
+>>> +CONFIG_FSL_IFC=y
+>>
+>> Does not look like placed according to config order.
+>
+> Correct.
+>
+>> This is not alphabetically sorted, but as Kconfig creates it (make
+>> savedefconfig).
+>
+> Are you sure about this?
+>
+> It looks very much alphabetically sorted, with only two "errors"
+>
+> $ diff -u 85xx-hw.config 85xx-hw.config.sorted 
+> --- 85xx-hw.config      2024-05-28 15:05:44.665354428 +0200
+> +++ 85xx-hw.config.sorted       2024-05-28 15:05:56.102019081 +0200
+> @@ -15,8 +15,8 @@
+>  CONFIG_DMADEVICES=y
+>  CONFIG_E1000E=y
+>  CONFIG_E1000=y
+> -CONFIG_EDAC=y
+>  CONFIG_EDAC_MPC85XX=y
+> +CONFIG_EDAC=y
+>  CONFIG_EEPROM_AT24=y
+>  CONFIG_EEPROM_LEGACY=y
+>  CONFIG_FB_FSL_DIU=y
+> @@ -71,10 +71,10 @@
+>  CONFIG_MTD_CMDLINE_PARTS=y
+>  CONFIG_MTD_NAND_FSL_ELBC=y
+>  CONFIG_MTD_NAND_FSL_IFC=y
+> -CONFIG_MTD_RAW_NAND=y
+>  CONFIG_MTD_PHYSMAP_OF=y
+>  CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_PLATRAM=y
+> +CONFIG_MTD_RAW_NAND=y
+>  CONFIG_MTD_SPI_NOR=y
+>  CONFIG_NETDEVICES=y
+>  CONFIG_NVRAM=y
+>
+> I don't think that this file has ever been Kconfig sorted since it was
+> created back in ancient times.
+>
+> And as it is merged with other config snippets using merge_into_defconfig
+> function. I have no idea how to use savedefconfig to maintain such a snippet.
+> It would require doing the reverse of the merge_into_defconfig.
+
+Right. This is a config fragment, not a full config, so it's not managed
+with savedefconfig.
+
+Alphabetical order is preferable when adding new symbols.
+
+cheers
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
