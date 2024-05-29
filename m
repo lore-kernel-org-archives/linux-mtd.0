@@ -4,123 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FFF4C27C43
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 May 2024 21:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE73C27C43
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 May 2024 02:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5NmHX98u67rBwOXhor7ueB4U0sKcvCnsJyl9KlbITHY=; b=JZgibIj8BF1YaF
-	aYQ+LTuwygSfxNfcNLqZEBjk0ErogzO+bUGuxZEOxaAw12WzgccCPCYbw45Xua8dKYkefL0bJaoPB
-	en4WmP7oVPOtkYoPFYQDy89oE47aI0c/Z0hYpREa5lOjV/WDQvTquex2fuXnoWP9yP/fIFi1pLUSQ
-	VevVIvxtqs7AQ6A9aeu/6CrThw7oFY9Yelnc7NgGXwEG7d8kO0xCBOIM2EoXkXiPPtPCFbs8aZfV/
-	1dgMLlduxWalsSjlq3duzM8uUp7Vo6mGvxzmhKbExi10wixmOKt8BXKIDQDnu2itun9+Q/YwbWBYT
-	61AdNr7ULuIdhsHpyiFQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=QjfTPZDTw6RuSHLO9OiPTB/TcBb4brBO5DsV7u71MgI=; b=G36GdMLjXnuV5NgbkYCIwFm4HS
+	DFe+aAXScjcJBE9JVimdubTqjWm0dhQyESxQ75zRCDDRc5Etmp0jqJiPFBTd0FKjVWAVw196FkWrV
+	+Hgz3p1lpsDouNHLMk2avOent3Hoh4rdvWbmD1Mq+x6+0URHM4AT7HQxyf8eP+cqOoOCZrK/3k44g
+	hkUldRECSLZKO0BUQQGn2DhMqD2mZEgc3llydBjywq8562PZdCAHpHXqXk+p6351wLuI4e/ac6/b2
+	+yq0W/SBYN4KwuNFtD6byaR1mDXL9VskXZw5iKxH8Z3uqS2nEL7RGDPdwpWXXoHGhi8luLDvfAGAZ
+	MAOp213Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sC4RQ-000000026Re-2kyh;
-	Tue, 28 May 2024 21:33:08 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1sC9Ve-00000002eRA-2xhH;
+	Wed, 29 May 2024 02:57:50 +0000
+Received: from szxga06-in.huawei.com ([45.249.212.32])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sC4RL-000000026P9-3iBQ
+	id 1sC9Vb-00000002eQG-1o1j
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 May 2024 21:33:07 +0000
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D3A0D2045D;
-	Tue, 28 May 2024 21:32:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1716931978;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
-	b=eKKTTVsOye+aPNKRzZ122169aw7bdpQ6y9COLPAXegCVrG5iSFsKe8NmabTrtfzVmJzDv5
-	Ne2IuD4WBUJ9KFI2/n+OeUSe50fsuI871CPGI9BXPcJJwGF3yCfpaEpNu/AstvRM8I1NMM
-	jJQ5ZoiYnmImiq61l3/GUCVuppLSong=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1716931978;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
-	b=/F8BJdjswiKMjas+DwonGKmjEG3HjzGZ3ZDNGxX+svqxoF5eTGLjTUR3XiAExDuzESXHh8
-	mDMDQki+foK9VsAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1716931978;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
-	b=eKKTTVsOye+aPNKRzZ122169aw7bdpQ6y9COLPAXegCVrG5iSFsKe8NmabTrtfzVmJzDv5
-	Ne2IuD4WBUJ9KFI2/n+OeUSe50fsuI871CPGI9BXPcJJwGF3yCfpaEpNu/AstvRM8I1NMM
-	jJQ5ZoiYnmImiq61l3/GUCVuppLSong=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1716931978;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
-	b=/F8BJdjswiKMjas+DwonGKmjEG3HjzGZ3ZDNGxX+svqxoF5eTGLjTUR3XiAExDuzESXHh8
-	mDMDQki+foK9VsAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB93113A5D;
-	Tue, 28 May 2024 21:32:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jMu/KYpNVmbCTwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 28 May 2024 21:32:58 +0000
-Date: Tue, 28 May 2024 23:32:49 +0200
-From: David Sterba <dsterba@suse.cz>
-To: kernel test robot <lkp@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-pm@vger.kernel.org, netdev@vger.kernel.org,
-	nouveau@lists.freedesktop.org
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 6dc544b66971c7f9909ff038b62149105272d26a
-Message-ID: <20240528213249.GH8631@twin.jikos.cz>
-References: <202405290242.YsJ4ENkU-lkp@intel.com>
+	Wed, 29 May 2024 02:57:49 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VpvCk6VZwz1xrvP
+	for <linux-mtd@lists.infradead.org>; Wed, 29 May 2024 10:56:18 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id CF3E61A016C
+	for <linux-mtd@lists.infradead.org>; Wed, 29 May 2024 10:57:35 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Wed, 29 May 2024 10:57:35 +0800
+Subject: Re: UBIFS Recovery Process on Power Cutoff
+To: Mani K <manivalaguru@gmail.com>, <linux-mtd@lists.infradead.org>
+References: <CAGhZNMM8DpbuKX==XrM_xBYuL4S5VAgezSupGN-FHd+ENq+ang@mail.gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <1414abb0-43b2-8f78-54f3-b80504effebd@huawei.com>
+Date: Wed, 29 May 2024 10:57:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202405290242.YsJ4ENkU-lkp@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-3.58 / 50.00];
-	BAYES_HAM(-2.58)[98.11%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
+In-Reply-To: <CAGhZNMM8DpbuKX==XrM_xBYuL4S5VAgezSupGN-FHd+ENq+ang@mail.gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240528_143304_092478_6F729AB6 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20240528_195747_655497_DC9EABFD 
+X-CRM114-Status: GOOD (  14.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,38 +64,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: dsterba@suse.cz
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 29, 2024 at 02:19:47AM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> branch HEAD: 6dc544b66971c7f9909ff038b62149105272d26a  Add linux-next specific files for 20240528
-> 
-> Error/Warning reports:
-> 
-> https://lore.kernel.org/oe-kbuild-all/202405282036.maEDO54Q-lkp@intel.com
-> https://lore.kernel.org/oe-kbuild-all/202405282148.jaF0FLhu-lkp@intel.com
-> https://lore.kernel.org/oe-kbuild-all/202405282308.UEzt6hqC-lkp@intel.com
-> 
-> Error/Warning: (recently discovered and may have been fixed)
-> 
-> drivers/dma-buf/udmabuf.c:45:(.text+0x140): undefined reference to `vmf_insert_pfn'
-> fs/btrfs/fiemap.c:822:26: warning: 'last_extent_end' may be used uninitialized [-Wmaybe-uninitialized]
-
-The report says it's gcc 13.2, that one I use (and expect others as well
-as it's a recent one) and we also have -Wmaybe-uninitialized enabled in
-fs/btrfs/ to catch such warnings. Yet this is reported on mips64, is
-there something special about that compiler+architecture?
-
-The warning is IMO a false positive, the maybe-uninitialized variable is
-passed as pointer but initialized on success and never used on failure.
-We can safely silence the warning by initializing the variable to 0 but
-this may be pointing to a problem with mips64+gcc namely because other
-compiler+host combinations do not warn abou that.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC81LzI4IDE4OjMyLCBNYW5pIEsg0LS1wDoKPiBIZWxsbywKPiAKPiBXZSBoYXZlIGEg
+c3lzdGVtIGJhc2VkIG9uIGEgQ3VzdG9tIEFSTSBTT0MgcnVubmluZyBvbiBhIExpbnV4IGtlcm5l
+bAo+IHdpdGggYSBVQklGUyBmaWxlc3lzdGVtIG1haW50YWluZWQgb24gTk9SIGZsYXNoLiBXaGVu
+IHRoZSBzeXN0ZW0gcG93ZXIKPiBpcyBjdXQgb2ZmIGFicnVwdGx5LCB3ZSBub3RpY2UgcmVjb3Zl
+cnktcmVsYXRlZCBtZXNzYWdlcyB3aGVuIHRoZQo+IGZpbGVzeXN0ZW0gaXMgbW91bnRlZC4gVGhp
+cyByZWNvdmVyeSBwcm9jZXNzIHRha2VzIGFkZGl0aW9uYWwgYm9vdAo+IHRpbWUgb2YgMi0zIHNl
+Y29uZHMuCj4gCj4gSGVyZSBhcmUgdGhlIGxvZyBtZXNzYWdlcyB3ZSBvYnNlcnZlOgo+IFsgICAg
+NC40MTE1NTFdIHViaTA6IGJhY2tncm91bmQgdGhyZWFkICJ1YmlfYmd0MGQiIHN0YXJ0ZWQsIFBJ
+RCA1ODYKPiBbICAgIDcuMTkxNDA2XSBVQklGUyAodWJpMDowKTogTW91bnRpbmcgaW4gdW5hdXRo
+ZW50aWNhdGVkIG1vZGUKPiBbICAgIDcuMTk3NjU5XSBVQklGUyAodWJpMDowKTogYmFja2dyb3Vu
+ZCB0aHJlYWQgInViaWZzX2JndDBfMCIgc3RhcnRlZCwgUElEIDY2Mwo+IFsgICAgNy4yMTI3MzBd
+IFVCSUZTICh1YmkwOjApOiByZWNvdmVyeSBuZWVkZWQKPiBbICAgIDcuOTUxNTQ2XSBVQklGUyAo
+dWJpMDowKTogcmVjb3ZlcnkgY29tcGxldGVkCj4gWyAgICA3Ljk1NjI4MF0gVUJJRlMgKHViaTA6
+MCk6IFVCSUZTOiBtb3VudGVkIFVCSSBkZXZpY2UgMCwgdm9sdW1lIDAsIG5hbWUgImFwcCIKPiBb
+ICAgIDcuOTYzNjIwXSBVQklGUyAodWJpMDowKTogTEVCIHNpemU6IDY1NDA4IGJ5dGVzICg2MyBL
+aUIpLAo+IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogOCBieXRlcy8yNTYgYnl0ZXMKPiBbICAg
+IDcuOTczMjI2XSBVQklGUyAodWJpMDowKTogRlMgc2l6ZTogMTU4Mjg3MzYgYnl0ZXMgKDE1IE1p
+QiwgMjQyCj4gTEVCcyksIGpvdXJuYWwgc2l6ZSAyMjg5MjgwIGJ5dGVzICgyIE1pQiwgMzUgTEVC
+cykKPiBbICAgIDcuOTgzODc0XSBVQklGUyAodWJpMDowKTogcmVzZXJ2ZWQgZm9yIHJvb3Q6IDAg
+Ynl0ZXMgKDAgS2lCKQo+IFsgICAgNy45ODk4MjddIFVCSUZTICh1YmkwOjApOiBtZWRpYSBmb3Jt
+YXQ6IHc0L3IwIChsYXRlc3QgaXMgdzUvcjApLAo+IFVVSUQgMDAwMDAwMDAtMDAwMC0wMDA4LTAw
+MDAtMDAwMDAwMDAwMDAxLCBzbWFsbCBMUFQgbW9kZWwKPiAKPiBJcyB0aGVyZSBhbnkgb3B0aW9u
+IHRvIHByZXZlbnQgdGhlIHJlY292ZXJ5IHByb2Nlc3MgZnJvbSBoYXBwZW5pbmc/Cj4gCgpVQklG
+UyBtYWtlcyBpdCBiZSBjb25zaXN0ZW50IGFnYWluIGJ5IHJlcGxheWluZyBqb3VybmFsKHJlY292
+ZXJ5LXJlbGF0ZWQgCm1lc3NhZ2VzLiBUaGUgYWltIG9mIHJlY292ZXJ5IGlzIHRvIHVwZGF0ZSB0
+aGUgbWV0YWRhdGEsIG90aGVyd2lzZSB0aGUgCnVzZXJkYXRhIGNvdWxkIGJlIGxvc3QvY29ycnVw
+dGVkIGZvciB0aGUgc3RhbGUgbWV0YWRhdGEpLCB0aGUgZmlsZXN5c3RlbSAKaW1hZ2UgY291bGQg
+YmVjb21lIGluY29uc2lzdGVudCBpZiBVQklGUyBza2lwcyB0aGUgcmVjb3ZlcnksIHNvIEkgdGhp
+bmsgCnN0b3BwaW5nIHJlY292ZXJ5IGlzIG5vdCByaWdodC4KCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
