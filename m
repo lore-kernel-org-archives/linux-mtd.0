@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA8AFC41513
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5573C25B74
 	for <linux-mtd@archiver.kernel.org>; Thu, 30 May 2024 14:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fNOu2iC2z84bkpY/ksGYPKaKIk6LhIFEuqlRw9Ww0nM=; b=X0MQJFl1JsM3Ug
-	p5KA2ouwwozBO8oLqawJK9LF19jEYJSQOdZi0hoVScqZTgcVFwR7EHVgKukJ2Ot3kOiWacTH+8mEu
-	s+ZNbsfX1BPfAg+vZASgfXnS9mAxnddceMIkZFo62TSTmk5EeFtOT3XYIPJXePa0jCtTlUaNy+eNG
-	rkrb2hq2smlz8lxwOA7H9qSe4/ZTBD0UNnyU/iLZ+9aTChrHNvbCmVARA3mYWYQtxHNeO+K+DjFJ1
-	VmQWM4JHi42lLMwHaxVZAvELh8taCvHOFo6Zd+9jerrIrM9D6YLa/1QdlT8Rq72JB/wEytGGXvznM
-	2PFaDOyyaHeDebCapw7w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=dZ9fQtpWJR8QXTgcQxYrzErC91FyDKcxNyEaGvAiBV4=; b=DOhjAq+ALi8ctT
+	ZNRoYzxgg/6WznMF4HJpxwrFTU6HqmywDCC162F+x953y1T5lV+ZRJYkVsGYnkHZrsipdVZm9HgM8
+	9TuCFgvf1XK1EAABX2RkMq+w+AM7ddvacyHRaFY/dTw1pzjTKq5JVnLqDuZSgwP7x83Kqgu9H3vcQ
+	Gp8bM4cJcufI77wU5iRNRShav+UbrOQ3r9WvJlhoZNK8XSsNrKGPW1GV5KH9OiFcm7WFsE/jsAhfa
+	OwkMIoeJXttH5aifEtbquyGwOJEVaGkFlSzFWbapgNCnF0BZLwwXCf/5E28j+JjK/zKyMMe0vUMgS
+	a56b83F3MieaePYHCZnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCh3R-00000007ai4-0MmU;
-	Thu, 30 May 2024 14:46:57 +0000
+	id 1sCh3Q-00000007ahz-28kl;
+	Thu, 30 May 2024 14:46:56 +0000
 Received: from www530.your-server.de ([188.40.30.78])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCh3M-00000007aft-0ZeA;
+	id 1sCh3L-00000007afr-3cAg;
 	Thu, 30 May 2024 14:46:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=DR+biPGlYSGpZ+eEYjKOY4OeXDd2KnIrfa/0OCmMW9E=; b=NFkC4yABayuL0SL1hIBI8W1du+
-	T3MZqaBFNXMYIdsiFGnY4t4vN9zt4JV+Jc59ebpDaVe/2p6AYg24lNsQOe6P3bFtHhviXITU/3Jym
-	h0bqtqnit8ThM/AaX/+wIdYRH4WABYTpkpAorGlNwwjhS5rZIbG8nOLkExJfN3TUTec98kaHV8Im/
-	uKOdSsStbBiLacIkvQklyxZSCcSuGdksCBKkmxNR/H5RwwFnWQY6TVIyOWoKkyaR7QRtf7XBScKTa
-	Bb32PLsKgUVTsFxQlMR6OrkICUSsA2BHc1xFmTBlfrkDGAILcz1HtwnGkaWZQQlsWUG06eINLP69a
-	E17EGdGw==;
+	s=default2211; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References; bh=ghtoP556IbQ/4WNCjbdXYdl4SF/fbsBPebHF32JHF24=; b=k4
+	I/tL93vaUznDzldj8OIPU2ha2h+e6lf/zM1QEjKjHd2quynoZiN1zahEuzRAZ4+bHOgWq6Tbcs9fw
+	WDm+F+bs7JNE35wJf32IceQHAa2k1bYDmfWo+pV1TMAMzOdTngeDMadfuXhAt7PFC/RBhnwTzSX8T
+	wHNFXEfLZF+PEC6vTMV7D9qZoO472Z/18NA/Aotrm8RUpFMHDVJ5LikAlBhiB9QYzA1THkfYr95No
+	ZeWt5QiDAPIPMwc+SiEFIl8T+fp3u1YZwLBdY+aPN4ew7GLvZ39Ie7N5M+K4R8bgRhbLoAwhs4djm
+	wMe4Y08hGige7WNGIuBmJ8nOelEK7RAA==;
 Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <esben@geanix.com>)
-	id 1sCh3B-000CAe-KS; Thu, 30 May 2024 16:46:41 +0200
+	id 1sCh3B-000CAW-Cu; Thu, 30 May 2024 16:46:41 +0200
 Received: from [185.17.218.86] (helo=localhost)
 	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <esben@geanix.com>)
-	id 1sCh3A-000N8Q-2m;
+	id 1sCh3A-000N5A-1R;
 	Thu, 30 May 2024 16:46:40 +0200
 From: Esben Haabendal <esben@geanix.com>
-Date: Thu, 30 May 2024 16:46:36 +0200
-Subject: [PATCH v3 1/3] memory: fsl_ifc: Make FSL_IFC config visible and
+Subject: [PATCH v3 0/3] memory: fsl_ifc: Make FSL_IFC config visible and
  selectable
+Date: Thu, 30 May 2024 16:46:35 +0200
+Message-Id: <20240530-fsl-ifc-config-v3-0-1fd2c3d233dd@geanix.com>
 MIME-Version: 1.0
-Message-Id: <20240530-fsl-ifc-config-v3-1-1fd2c3d233dd@geanix.com>
-References: <20240530-fsl-ifc-config-v3-0-1fd2c3d233dd@geanix.com>
-In-Reply-To: <20240530-fsl-ifc-config-v3-0-1fd2c3d233dd@geanix.com>
+X-B4-Tracking: v=1; b=H4sIAEuRWGYC/3WMQQ6CMBAAv0J6dk0p0oIn/2E8QLuFTbQlrWkwh
+ L9bOGmMx5lkZmERA2Fk52JhARNF8i5DdSiYHjs3IJDJzAQXJ16LCmy8A1kN2jtLA+hGqZaLXrQ
+ KWY6mgJbmfXi9ZR4pPn147f9UbvbvKpVQgkRrVdUbrVBeBuwczUftH2x7JfHZNz+9AA61NapHJ
+ WXNzVe/rusbKHPTy+0AAAA=
 To: Krzysztof Kozlowski <krzk@kernel.org>, 
  Tudor Ambarus <tudor.ambarus@linaro.org>, 
  Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, 
@@ -70,18 +71,19 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
  Esben Haabendal <esben@geanix.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1717080399; l=1542;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1717080399; l=1363;
  i=esben@geanix.com; s=20240523; h=from:subject:message-id;
- bh=lSsBHROKQmgg5+ha1ztlFWTe4EVHhL1T/vXqe+WJJUE=;
- b=Rw8YFVh+YnzoP3xy0ZD/Bc+ulic0bj3eu4xdUcK3o3H1+HBhui0PwPmFajMBmrtRx9Eht24PV
- +fUCrwijTW9Cduj9aWfNCo5qv2Rc5g5IJfiSRFY0iLWhM9mmcc4Alna
+ bh=hec9jZ8GWjjsOhfEAzSjDoHUwtpSRvZqlBCq8AeIrFo=;
+ b=buzvR/qD7i5oCABreVm4NXVrvG2Yrha5/9sV9qT58rBe0Y1V0HlLMjxj016UsCkarlgM2PV1D
+ qnXPPLMay4qDek66RR3yRO4bP1kvryYBpWSCZwqM67gmus4KuCWQaIZ
 X-Developer-Key: i=esben@geanix.com; a=ed25519;
  pk=PbXoezm+CERhtgVeF/QAgXtEzSkDIahcWfC7RIXNdEk=
 X-Authenticated-Sender: esben@geanix.com
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27291/Thu May 30 10:29:52 2024)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240530_074652_357414_9B6F9B3C 
-X-CRM114-Status: GOOD (  10.60  )
+X-CRM114-CacheID: sfid-20240530_074652_159813_B9E6AEB4 
+X-CRM114-Status: UNSURE (   8.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,43 +105,35 @@ driver selects FSL_IFC automatically, we need the CONFIG_FSL_IFC option to
 be selectable for platforms using fsl_ifc with NOR flash.
 
 Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Changes in v3:
+- Refresh arm64 defconfig.
+- Link to v2: https://lore.kernel.org/r/20240528-fsl-ifc-config-v2-0-5fd7be76650d@geanix.com
+
+Changes in v2:
+- CONFIG_MTD_NAND_FSL_IFC depends on CONFIG_FSL_IFC instead of select.
+- Refresh powerpc config snippet accordingly.
+- Link to v1: https://lore.kernel.org/r/20240523-fsl-ifc-config-v1-1-6eff73bdc7e6@geanix.com
+
 Signed-off-by: Esben Haabendal <esben@geanix.com>
 ---
- drivers/memory/Kconfig       | 2 +-
- drivers/mtd/nand/raw/Kconfig | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
+Esben Haabendal (3):
+      memory: fsl_ifc: Make FSL_IFC config visible and selectable
+      powerpc/configs: Update defconfig with now user-visible CONFIG_FSL_IFC
+      arm64/configs: Update defconfig with now user-visible CONFIG_FSL_IFC
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 8efdd1f97139..c82d8d8a16ea 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -167,7 +167,7 @@ config FSL_CORENET_CF
- 	  represents a coherency violation.
- 
- config FSL_IFC
--	bool "Freescale IFC driver" if COMPILE_TEST
-+	bool "Freescale IFC driver"
- 	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || COMPILE_TEST
- 	depends on HAS_IOMEM
- 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index cbf8ae85e1ae..614257308516 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -234,8 +234,7 @@ config MTD_NAND_FSL_IFC
- 	tristate "Freescale IFC NAND controller"
- 	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || COMPILE_TEST
- 	depends on HAS_IOMEM
--	select FSL_IFC
--	select MEMORY
-+	depends on FSL_IFC
- 	help
- 	  Various Freescale chips e.g P1010, include a NAND Flash machine
- 	  with built-in hardware ECC capabilities.
+ arch/arm64/configs/defconfig        | 1 +
+ arch/powerpc/configs/85xx-hw.config | 2 ++
+ drivers/memory/Kconfig              | 2 +-
+ drivers/mtd/nand/raw/Kconfig        | 3 +--
+ 4 files changed, 5 insertions(+), 3 deletions(-)
+---
+base-commit: a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6
+change-id: 20240523-fsl-ifc-config-c877902b297e
 
+Best regards,
 -- 
-2.45.1
+Esben Haabendal <esben@geanix.com>
 
 
 ______________________________________________________
