@@ -4,60 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16A86C25B75
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2024 07:26:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7831C25B75
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jun 2024 07:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YmZ11GhM8PGXMhGV8ij3bappi4nFHMgXQrzhs0AoGVE=; b=VVdgfFGGEVxvwt29qW42i7q778
-	kAmxyWxRZtiDa1Wmn6ZdVEiMKgiQOB2xXg9qesCCVC04JySjtwgb0qKgY2KgHsD4xSraG0IELey1B
-	MPSWerLwn6EkpG1BE7yIioI7EmuL68qW/p7ocKAEhET6y7CFHd+vEdknoneYM3Z27BrrXh6FLtfjI
-	hbmeM7llJ4ma22zIWIm7EnkUTrU1caI3qpsA8Pu1mEBRmtZJvXij98zFV9thFdLNqbBxnAdipJhzw
-	sI/CM6Zb2oQVqxI7VUmjHm8oaZsj4RZ8nplS9ZI/jKLjK6xZYHyn+xPLQ4hC2+LHsDFSiG9ADMD9V
-	JQU7GyBg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PGHtt1WFO/PZZF2g4JngH33CIQAg+7n0gB1RPtv+euA=; b=sBZg7LANlgA9J3
+	oMlwgIzOEeoErBLQTxccvo4aXmdm7bMwt/93iZj8LB++6I/F6//hFOH5XdLJ6hcE9+6++w2N6XsuF
+	A2GrScXmxiHji0cXPozaS+fKI3ddiuGqMrRSYeNKnG33ReyykXK6rvczqaAWqmT2HmcbgH6zl4PNQ
+	5bxnp9EmmFbztLcOLvonJP4khJ3bzs0zHwmU7bR7Acj9JOdeB6h2tFGVp61KAYa63i0IyxWw0XmoK
+	8RqxPRE3oTxYgH2o18vEtkva8BG2mxU+SouHiFsPk/u1bsA4zSvh4mqf7lKufZnXbr/bURMjPix56
+	V8x3g9bAqgJRba++vDIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sE24w-0000000FtV4-3BaP;
-	Mon, 03 Jun 2024 07:26:02 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sE2Il-0000000Fvlh-0peu;
+	Mon, 03 Jun 2024 07:40:19 +0000
+Received: from mail-oa1-x41.google.com ([2001:4860:4864:20::41])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sE24s-0000000FtUL-3mZZ
+	id 1sE2Ih-0000000Fvkk-1s3w
 	for linux-mtd@lists.infradead.org;
-	Mon, 03 Jun 2024 07:26:00 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 8139BCE0159;
-	Mon,  3 Jun 2024 07:25:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C6C6C2BD10;
-	Mon,  3 Jun 2024 07:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717399555;
-	bh=fEr+RytRIwgb/dvHPPXLkBVdzxQTfCtF/89gxECoHJ4=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=NaH5Gd7KT62gYBVqbgKqORFkGKaQUYYE1wWSR/XUDsxkXAFnN6L5wOwaX+0O5OKnb
-	 JnUgBMjbL7hm/8N0EaDhWRXlLDBq4r79XakcmJ2kM2th9eHiBMA3jZCTjtdgtH7foC
-	 DaQeAAJkoNDTGscVVzADdhlGQuUo1ilyMNBP7D4+Jdt57BfPBuY6ER8Q5hOUA8GeDc
-	 YajMHlvyXB3wtcYMkItOyrEVFtCih6AZX6Z0UGGSaYxrzrVv5OZScqCpsqEKC6HPS7
-	 bK7EKaeGrcoLMbJJ+3FJeOqs34Tj5qvj8aJVPZf+4knIg/6LQei+WwsjNvAPNhp2IN
-	 IYrlOLYucE08g==
-Date: Mon, 03 Jun 2024 09:25:42 +0200
-Message-Id: <D1Q7BU6PJ356.1CTXPUZE8U6XX@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: macronix: workaround for device id re-use
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Rasmus
- Villemoes" <rasmus.villemoes@prevas.dk>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Esben Haabendal" <esben@geanix.com>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-X-Mailer: aerc 0.16.0
-References: <20240524-macronix-mx25l3205d-fixups-v1-1-ee152e56afb3@geanix.com>
-In-Reply-To: <20240524-macronix-mx25l3205d-fixups-v1-1-ee152e56afb3@geanix.com>
+	Mon, 03 Jun 2024 07:40:16 +0000
+Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-24ca0876a83so2203360fac.2
+        for <linux-mtd@lists.infradead.org>; Mon, 03 Jun 2024 00:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717400411; x=1718005211; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2FWb75cH+3iCprEXqTnOlMXbH+prg3pAb1WVvaGmF9A=;
+        b=jJNbosV/y6aWVfWqCqaV0NEv30HPibEHl26M9pve/8o+j9FI02ySu3MFlddyzQjkov
+         h53JahBRje4+9IqnjDIxdxEiVbjJt8U7+UkDG37opzlkMzBS3TtGl4Wg7zqusFB8CVZG
+         SzPLPhJ5KKfrFEUIQEmlqaaftLD4gUGkYL5/cZQ5xaZYXQdbsOmvJNxDlMMJGHUV0RXh
+         D3ZYGJ356bXrdPFHqAbwx2dH4zZzEXa+Jg4wUwz5G1OO2qIhmOOzjzdhGokCIEjor7oF
+         NWO8Ca4/910w0FgyLeQqSa67nYCasLLIDPgKENMbhDNZ/CCxBCuYX2BPRSlID7yceRhD
+         gPZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717400411; x=1718005211;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2FWb75cH+3iCprEXqTnOlMXbH+prg3pAb1WVvaGmF9A=;
+        b=dUIc1UNly86WeZpGvJ41L2YrmkDtjdg/Bqbha8T+lMb12XC3E5bqVguhZC1CUDlIDf
+         T3/LTGkjo/2E4aktvzU1dop1gYT+C+CAaegG5qmtoAO0Y9rre1+p7FqFvjTRluUzb80u
+         zP3DsRylQu3mMVH5t7gcOu0her31A/We1K/99QWyazmO0Ltx1jyJaqylQ8uzIkRhe+xH
+         Xem6AtNUZEQpPgw7J+j6NwYRbx/7g7I/ae8a0LHrVoui7LVwksGx9tstgfT1FuGROy1q
+         8s55EjdBHuDose6LP8HF8H6qhrKK3G355tByvXSGy9UfY496IipF0dbcLfqieQmMeZi2
+         G5Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCWk57+g+KZK3eDoyojmSSgO4C7UJdnxYeAuXDZJQsXNPewtsl0Dfyf8T7F37w2iAnlLZ+6kPbIxWkINK3sb2aAwDyFK362a8spwyQSZAQ==
+X-Gm-Message-State: AOJu0YzZKyYOyUX4BPu5CKX3V4uKHjCILWravJE1CZZxJZaRSQPaEIoW
+	hx2LQkw+zuu8RoKRyCnXU3fw0VYgfZiomg+vWKv3/9D5QNevg3p9Yr5lSlX4niE=
+X-Google-Smtp-Source: AGHT+IF5/ByL3b/SC1mcU5unJApgzzwn4Zx24MkG74MKNAPQfKKM9gMvAoT31/rXitQaS4tx8uULRQ==
+X-Received: by 2002:a05:6870:a714:b0:24f:f413:3039 with SMTP id 586e51a60fabf-2508b9b8415mr9956592fac.2.1717400410647;
+        Mon, 03 Jun 2024 00:40:10 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423cb705sm4904998b3a.4.2024.06.03.00.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Jun 2024 00:40:10 -0700 (PDT)
+Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
+	by twhmp6px (Postfix) with ESMTPS id 117BE8095A;
+	Mon,  3 Jun 2024 15:43:08 +0800 (CST)
+From: Cheng Ming Lin <linchengming884@gmail.com>
+To: miquel.raynal@bootlin.com,
+	dwmw2@infradead.org,
+	computersforpeace@gmail.com,
+	marek.vasut@gmail.com,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: richard@nod.at,
+	alvinzhou@mxic.com.tw,
+	leoyu@mxic.com.tw,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: [PATCH] Documentation: mtd: spinand: macronix: Add support for serial NAND flash
+Date: Mon,  3 Jun 2024 15:39:53 +0800
+Message-Id: <20240603073953.16399-1-linchengming884@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240603_002559_329275_468DBBB5 
-X-CRM114-Status: GOOD (  44.23  )
+X-CRM114-CacheID: sfid-20240603_004015_514747_D76423DC 
+X-CRM114-Status: UNSURE (   8.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,210 +98,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4472884850093508113=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4472884850093508113==
-Content-Type: multipart/signed;
- boundary=62dfc1cd91faea84d32d705095127aab3d83287f351da8bd6655d6784688;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
---62dfc1cd91faea84d32d705095127aab3d83287f351da8bd6655d6784688
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+MX35UF{1,2,4}GE4AD and MX35UF{1,2}GE4AC have been merge into 
+Linux kernel mainline. 
+Commit ID: "c374839f9b4475173e536d1eaddff45cb481dbdf".
 
-Hi,
+For SPI-NAND flash support on Linux kernel LTS v5.4.y,
+add SPI-NAND flash MX35UF{1,2,4}GE4AD and MX35UF{1,2}GE4AC in id tables.
 
-On Fri May 24, 2024 at 12:48 PM CEST, Esben Haabendal wrote:
-> Macronix engineers apparantly do not understand the purpose of having
-> an ID actually identify the chip and its capabilities. Sigh.
->
-> The original Macronix SPI NOR flash that identifies itself as 0xC22016
-> with RDID was MX25L3205D. This chip does not support SFDP, but does
-> support the 2READ command (1-2-2).
->
-> When Macronix announced EoL for MX25L3205D, the recommended
-> replacement part was MX25L3206E, which conveniently also identifies
-> itself as 0xC22016. It does not support 2READ, but supports DREAD
-> (1-1-2) instead, and supports SFDP for discovering this.
->
-> When Macronix announced EoL for MX25L3206E, the recommended
-> replacement part was MX25L3233F, which also identifies itself as
-> 0xC22016. It supports DREAD, 2READ, and the quad modes QREAD (1-1-4)
-> and 4READ (1-4-4). This also support SFDP.
+Those five flashes have been validate on Xilinx zynq-picozed board and
+Linux kernel LTS v5.4.y.
 
-Thanks for collecting all this info!
+Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+---
+ drivers/mtd/nand/spi/macronix.c | 45 +++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-> So far, all of these chips have been handled the same way by the Linux
-> driver. The SFDP information have not been read, and no dual and quad
-> read modes have been enabled.
->
-> The trouble begins when we want to enable the faster read modes. The
-> RDID command only return the same 3 bytes for all 3 chips, so that
-> doesn't really help.
->
-> But we can take advantage of the fact that only the old MX25L3205D
-> chip does not support SFDP, so by triggering the old initialization
-> mechanism where we try to read and parse SFDP, but has a fall-back
-> configuration in place, we can configure all 3 chips to their optimal
-> configurations.
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index f18c6cfe8ff5..e1446798bfb3 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -132,6 +132,51 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 					      &update_cache_variants),
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
++	SPINAND_INFO("MX35UF4GE4AD", 0xb7,
++		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF2GE4AD", 0xa6,
++		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF2GE4AC", 0xa2,
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF1GE4AD", 0x96,
++		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX35UF1GE4AC", 0x92,
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
+ };
+ 
+ static int macronix_spinand_detect(struct spinand_device *spinand)
+-- 
+2.25.1
 
-You are (mis)using the quad info bits to trigger an sfdp read,
-correct? In that case, I'd rather see a new flag in .no_sfdp_flags
-to explicitly trigger the SFDP read. Then your new flash would only
-need this flag and doesn't require the shenanigans with the fixup,
-right?
-
-> With this, MX25L3205D will get the faster 2READ command enabled,
-> speading up reads. This should be safe.
->
-> MX25L3206E will get the faster DREAD command enabled. This should also
-> be safe.
->
-> MX25L3233F will get all of DREAD, 2READ, QREAD and 4READ enabled. In
-> order for this to actually work, the WP#/SIO2 and HOLD#/SIO3 pins must
-> be correctly wired to the SPI controller.
-
-That should already be taken care of with the spi-{tx,rx}-bus-width.
-
--michael
-
-> Signed-off-by: Esben Haabendal <esben@geanix.com>
-> ---
-> I only have access to boards with MX25L3233F flashes, so haven't been
-> able to test the backwards compatibility. If anybody has boards with
-> MX25L3205D and/or MX25L3206E, please help test this patch. Keep an eye
-> for read performance regression.
->
-> It is worth nothing that both MX25L3205D and MX25L3206E are
-> end-of-life, and is unavailable from Macronix, so any new boards
-> featuring a Macronix flash with this ID will likely be using
-> MX25L3233F.
-> ---
->  drivers/mtd/spi-nor/macronix.c | 60 ++++++++++++++++++++++++++++++++++++=
-+++++-
->  1 file changed, 59 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macroni=
-x.c
-> index ea6be95e75a5..c1e64ee3baa3 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -8,6 +8,63 @@
-> =20
->  #include "core.h"
-> =20
-> +/*
-> + * There is a whole sequence of chips from Macronix that uses the same d=
-evice
-> + * id. These are recommended as EoL replacement parts by Macronix, altho=
-ugh they
-> + * are only partly software compatible.
-> + *
-> + * Recommended replacement for MX25L3205D was MX25L3206E.
-> + * Recommended replacement for MX25L3206E was MX25L3233F.
-> + *
-> + * MX25L3205D does not support RDSFDP. The other two does.
-> + *
-> + * MX25L3205D supports 1-2-2 (2READ) command.
-> + * MX25L3206E supports 1-1-2 (DREAD) command.
-> + * MX25L3233F supports 1-1-2 (DREAD), 1-2-2 (2READ), 1-1-4 (QREAD), and =
-1-4-4
-> + * (4READ) commands.
-> + *
-> + * In order to trigger reading optional SFDP configuration, the
-> + * SPI_NOR_DUAL_READ|SPI_NOR_QUAD_READ flags are set, seemingly enabling=
- 1-1-2
-> + * and 1-1-4 for MX25L3205D. The other chips supporting RDSFDP will have=
- the
-> + * correct read commands configured based on SFDP information.
-> + *
-> + * As none of the other will enable 1-1-4 and NOT 1-4-4, so we identify
-> + * MX25L3205D when we see that.
-> + */
-> +static int
-> +mx25l3205d_late_init(struct spi_nor *nor)
-> +{
-> +	struct spi_nor_flash_parameter *params =3D nor->params;
-> +
-> +	/*                          DREAD  2READ  QREAD  4READ
-> +	 *                          1-1-2  1-2-2  1-1-4  1-4-4
-> +	 * Before SFDP parse          1      0      1      0
-> +	 * 3206e after SFDP parse     1      0      0      0
-> +	 * 3233f after SFDP parse     1      1      1      1
-> +	 * 3205d after this func      0      1      0      0
-> +	 */
-> +	if ((params->hwcaps.mask & SNOR_HWCAPS_READ_1_1_4) &&
-> +	    !(params->hwcaps.mask & SNOR_HWCAPS_READ_1_4_4)) {
-> +		/* Should be MX25L3205D */
-> +		params->hwcaps.mask &=3D ~SNOR_HWCAPS_READ_1_1_2;
-> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
-> +					  0, 0, 0, 0);
-> +		params->hwcaps.mask &=3D ~SNOR_HWCAPS_READ_1_1_4;
-> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_4],
-> +					  0, 0, 0, 0);
-> +		params->hwcaps.mask |=3D SNOR_HWCAPS_READ_1_2_2;
-> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_2_2],
-> +					  0, 4, SPINOR_OP_READ_1_2_2,
-> +					  SNOR_PROTO_1_2_2);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct spi_nor_fixups mx25l3205d_fixups =3D {
-> +	.late_init =3D mx25l3205d_late_init,
-> +};
-> +
->  static int
->  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
->  			    const struct sfdp_parameter_header *bfpt_header,
-> @@ -61,7 +118,8 @@ static const struct flash_info macronix_nor_parts[] =
-=3D {
->  		.id =3D SNOR_ID(0xc2, 0x20, 0x16),
->  		.name =3D "mx25l3205d",
->  		.size =3D SZ_4M,
-> -		.no_sfdp_flags =3D SECT_4K,
-> +		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-> +		.fixups =3D &mx25l3205d_fixups
->  	}, {
->  		.id =3D SNOR_ID(0xc2, 0x20, 0x17),
->  		.name =3D "mx25l6405d",
->
-> ---
-> base-commit: a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6
-> change-id: 20240524-macronix-mx25l3205d-fixups-882e92eed7d7
->
-> Best regards,
-
-
---62dfc1cd91faea84d32d705095127aab3d83287f351da8bd6655d6784688
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZl1v9xIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/gMxwGAvrjWMLnmjxWYUHiaiERNrQqk9PERyYF8
-ZttkIypS4wKL0tvNNNDWENLL9KwJu/yJAYCbHkiwVlZGfD+dI9XKXdXXu/SMT363
-c1pHCkOvDZ82nN21GLn+EMMOYVTEswg+beg=
-=u1Gm
------END PGP SIGNATURE-----
-
---62dfc1cd91faea84d32d705095127aab3d83287f351da8bd6655d6784688--
-
-
---===============4472884850093508113==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4472884850093508113==--
-
