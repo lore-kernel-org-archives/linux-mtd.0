@@ -4,59 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F614C41513
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CBDCC27C52
 	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2024 21:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0R1GnJ1EO8QNhS7Sy5B2D/H5XWxXK1MhbGWbdd4sCEY=; b=CTZkCQJbfQD/qV
-	m2zGIoRUOSAPgXSEO9Yvzcqf2oQFjieE9PzTLAzvHADYJNN7zu8nlN+k0+0tDzpvynFvXgI+0D7gY
-	Bodn2FbWzarKVAeP3DHvU7JR2v9EFsu1JJFVg165k/bOEh0cENCfl8053O2/phfSdHtQBrbbGQZkO
-	n4crMBAYVNvLaE8AFNiQX2YL1HBbSJENpcNAP8v1NipqU+dIb8YGPedQXTPaFGar+Hq46Qx1Rzjji
-	ZY6m8+zxhqXnKVBRNgozyy+i8OepuM9vJr48YZv90ZobvJkj+8DnkyVjsoHqZ9ykxc3lLRoMbZSvD
-	mMyP7lpgX43uzeRcFDsg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LKkyQ39N5iIGlv/wg77XYBW2SVZF0edeBEA0M2dr4Mg=; b=j0lCGOZuruEVzM
+	KfY5Ah+hZ/qpWc06hE6+06DdgU6xnovF2olpWzWZIgVGN9BQ7HUX6+J+c9Ah+I4b4mcbmoi5x4/lT
+	4y6q5D1zclgBIYUQ4ZCGB0938iPR0r334V4QEz/rQFmlO2a+9m0UpIr7HdUcjxmp+69B6llASgTr8
+	RQawlIaPnZfRx5QyaCMhdQY7YVC6M+7w2Jq2s/cUIOhlORqMdvBJ/hJzKKpMPQQwP+zbtEh142ZFX
+	xs5sJ+Z/M2Ju8h5f/jFdij02z9zt9lOG/jjE2d09o7MiDJRvDs6QFvPehMYQbZeqpELSqkgu8SoOI
+	X3PF1WWUjcTCC0UXCBTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEbit-00000003rIV-0gAo;
-	Tue, 04 Jun 2024 21:29:39 +0000
+	id 1sEbiu-00000003rJ2-0Xhb;
+	Tue, 04 Jun 2024 21:29:40 +0000
 Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEbio-00000003rDs-3Zik
+	id 1sEbio-00000003rCv-3a6D
 	for linux-mtd@lists.infradead.org;
 	Tue, 04 Jun 2024 21:29:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=jNaCNho3HkpDyJKsOVs+JnrFnTAQRUo8cA0Au9KuneI=; b=goYC5Q
-	ZYCkI43IZ1cDYG9/MiRnx4/qitPVvR9trSSdIkyUU9HOKNbtOHE06oYckn/gBdwL
-	4AaIoV2WUrWwltIDSzIR6kfyepo4XckxtcR0N5nA2CGe8C8OHH3OrkPqhXHYfxSD
-	ceOIC5tTEInewC7QCNN650EZMgoIdAfBDPF9MByFZZzNxiLSJwq3L/ZNuBbjC0Oh
-	BYKJEVngtBHWUmm+MGcuBdxKTmZ5j43gg/N8NOpZGlGYeOSe/eDSK45V2nBZ7c4J
-	uVdSA5jxQPkj5GkOAmRi9I+qO9loA/7FSoeAqtX5+juIUH43s1Mh1+c8O7VgOgUk
-	PZhCC5QWGnLY+TfA==
-Received: (qmail 2450944 invoked from network); 4 Jun 2024 23:29:27 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 Jun 2024 23:29:27 +0200
-X-UD-Smtp-Session: l3s3148p1@Lcj4JBcaAtpehhtB
+	:mime-version:content-transfer-encoding; s=k1; bh=LWsYD8EI4ECNkK
+	uHeAZPt+ug0/S0KoVB/ZZVlAu0SMU=; b=ZdJZDbBc22cv9m8UWoeg3yme/4+yOz
+	5SvA0tZgBV57Tu33GOr7OtENrx14IZG2qyt7+YVjdxZc6Tibo4FcrqP+TMNOCH+3
+	puOvlB6M4WHRhxot2aZMyXpF+HwWSL1rvvp8rqhl5ZO+Wb/z4N07sfYImA0w2og5
+	0Laf7IZrs5TfuHuIUvQTippQT6rNZEZW1P74P+3GFsEVigZ3S5I42jSl5tQwNNJx
+	ficrJSiBkB+AUfdOb96FCckH4fRl05EujAq9jwd2P6dWcH5qecH76TgyEy/qB1xX
+	mtSVl5TXqbpQJi2A1rlN8V4y1Y/E2/Xgb6/o/uoEMsLo5gfLxfk+QAZw==
+Received: (qmail 2450878 invoked from network); 4 Jun 2024 23:29:25 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 Jun 2024 23:29:25 +0200
+X-UD-Smtp-Session: l3s3148p1@yqDgJBca7tlehhtB
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-kernel@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-mtd@lists.infradead.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: rawnand: intel: use 'time_left' variable with wait_for_completion_timeout()
-Date: Tue,  4 Jun 2024 23:29:21 +0200
-Message-ID: <20240604212919.5038-6-wsa+renesas@sang-engineering.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH 0/2] mtd: use 'time_left' instead of 'timeout' with wait_*() functions
+Date: Tue,  4 Jun 2024 23:29:19 +0200
+Message-ID: <20240604212919.5038-4-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240604212919.5038-4-wsa+renesas@sang-engineering.com>
-References: <20240604212919.5038-4-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240604_142935_195865_7C0A6093 
-X-CRM114-Status: GOOD (  12.55  )
+X-CRM114-CacheID: sfid-20240604_142935_219573_017E4D72 
+X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,45 +72,32 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 There is a confusing pattern in the kernel to use a variable named 'timeout' to
-store the result of wait_for_completion_timeout() causing patterns like:
+store the result of wait_*() functions causing patterns like:
 
-	timeout = wait_for_completion_timeout(...)
-	if (!timeout) return -ETIMEDOUT;
+        timeout = wait_for_completion_timeout(...)
+        if (!timeout) return -ETIMEDOUT;
 
 with all kinds of permutations. Use 'time_left' as a variable to make the code
-self explaining.
+obvious and self explaining.
 
-Fix to the proper variable type 'unsigned long' while here.
+This is part of a tree-wide series. The rest of the patches can be found here:
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/time_left
+
+Because these patches are generated, I audit them before sending. This is why I
+will send series step by step. Build bot is happy with these patches, though.
+No functional changes intended.
+
+Wolfram Sang (2):
+  mtd: nand: mxc_nand: use 'time_left' variable with
+    wait_for_completion_timeout()
+  mtd: rawnand: intel: use 'time_left' variable with
+    wait_for_completion_timeout()
+
  drivers/mtd/nand/raw/intel-nand-controller.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/mxc_nand.c              | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index f0ad2308f6d5..78174c463b36 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -295,7 +295,7 @@ static int ebu_dma_start(struct ebu_nand_controller *ebu_host, u32 dir,
- 	unsigned long flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
- 	dma_addr_t buf_dma;
- 	int ret;
--	u32 timeout;
-+	unsigned long time_left;
- 
- 	if (dir == DMA_DEV_TO_MEM) {
- 		chan = ebu_host->dma_rx;
-@@ -335,8 +335,8 @@ static int ebu_dma_start(struct ebu_nand_controller *ebu_host, u32 dir,
- 	dma_async_issue_pending(chan);
- 
- 	/* Wait DMA to finish the data transfer.*/
--	timeout = wait_for_completion_timeout(dma_completion, msecs_to_jiffies(1000));
--	if (!timeout) {
-+	time_left = wait_for_completion_timeout(dma_completion, msecs_to_jiffies(1000));
-+	if (!time_left) {
- 		dev_err(ebu_host->dev, "I/O Error in DMA RX (status %d)\n",
- 			dmaengine_tx_status(chan, cookie, NULL));
- 		dmaengine_terminate_sync(chan);
 -- 
 2.43.0
 
