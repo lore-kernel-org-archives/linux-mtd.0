@@ -4,170 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD09BC25B78
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2024 15:31:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F40ECC25B78
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2024 15:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3L7PoNECI9Bg9GZnHQH3/7I8jGcQmOsTdTkYSNnY0ug=; b=ruJ7nxRuB+WYva
-	9/G955GXxhX6bbTaa2JHY6QorTgtGHWf0ZZ4nqUk7plSOQ+YPFvUo1xxtxfnfoD5EeynIGc47fKcw
-	fRrr6o0i1freBgRNTJUIXMcwKiKULONolX/z7xzaM5xxb0a7ARnv9gkSkg0I5/OGSoFdVnei78x2T
-	RHJl48SbiyzuKlON/ZlvNOli45GQViwU0pUjaXQW/PZfnctSDy2Q4pRVoCN+5WRiC40vWWjiR1f82
-	FlCwqk0X/ZBpjdWr99s4rIDkBD/a4XaW8ypg6NnCUgEVQu2jIDl1jFw6Y7gXsvdnvs6ERfnXyyMe1
-	ksp7qyN4pKXJzaHwGnWg==;
+	List-Owner; bh=PkkOVWF66v1GGhB0++TOAEkPoaT8q5KFTETt2Mw1M54=; b=qVIPCzDp/c2F4x
+	AioO6YklDcc+JIw4mCERsHhvsb9SUACs2NOLrKwpft5/h/0y7WF/aukXanP/JRrKmI3LLI2oXOEAM
+	dn4De6XblDZPi9i0GcVaXKhZ9U6BVqjdf4JnGjx6wDPXq/Xn7dIcvQoKP3PMbG39and8qkat4+svR
+	C6/FTtid+afNpoF1itxY62HPDv8K+qHaXHVbhkkOvShYSytCiwBFk8aZad+kXe/3vHi20UFlB1PoY
+	ExLGUA1Yk5ZoGuKhjIyhx238UXnN69NMx4k6QDCK9bkdvfbQJa3MgS9Ap5SUFulkBkYMqoGKkurmg
+	ij1y3e9O21eATMnOXAjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEW8V-00000002w87-48rJ;
-	Tue, 04 Jun 2024 15:31:43 +0000
-Received: from mail-dm3nam02on20600.outbound.protection.outlook.com ([2a01:111:f403:2405::600] helo=NAM02-DM3-obe.outbound.protection.outlook.com)
+	id 1sEWTc-000000030xs-0SlT;
+	Tue, 04 Jun 2024 15:53:32 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEW8S-00000002w4C-1wHG
-	for linux-mtd@lists.infradead.org;
-	Tue, 04 Jun 2024 15:31:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b3GtlgLT+YOpJF5MA/Ekrr+89lUXEGgAeK2m1cQjL4jYZ4wLF+Ue/q1wtJYJKkS+yquxyXf0rs7LvchZsBqjpDzdqHdLQYUAwcLYsfY1uajSauqXNq0plVFDgWaEXDwnABFdxVG5D7qRXfRqeJJqDtLNmcK+QQL57+OMY4SaJWVEXvzLaaGmx+e77uSdlpn+hzFHEcalkNpBFLjcmfNUUgV01cLw9nbCP3zqyVBm0stSjrgKcAwLbXxwosZUj8MXlYno/ly3sTuu0uCHvprAiqyF2xMIPvSTzzrT4boIFlDRI6dPYW/5Ac2BMnWBUyTWWpmaBLTN1FxEHP+Sewf9hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/F1KfEKhpIZi2d6LSgkuejULkpmbf4FYzUrPyBRNDGE=;
- b=kAu8Qjoqy49BFBMlY8RG0iYgFLPKJs2RBlityiHMMZZYWBwnbY8o3cIjnBqg0nE7pjgxHF8eM0Pgmf7Wt0X7uALRAvpHNPhXUjGyE4WFud/8fLClifvOjvNT6CY6qixmeggcR1XwAb+yhCY+3UR93ZkDmTRFHDf4FdqOL+eJ7W1IXuBEBsZ9RrYl/9+2Sy3hZDWye4VilAwJ7y1w3yU/N5++uflZxQWTt+cp7G9mS9BLpDvhyKaPr8nNWaNyYC8Nj68KKxOJwqnTpThWQcE9ma5t+gBFmWS2IDy1LV9X4FjnhfwjA7dRJFX8mp7dqIKE5I7HLNX98SFUm0bq/oSCzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
- header.d=asem.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/F1KfEKhpIZi2d6LSgkuejULkpmbf4FYzUrPyBRNDGE=;
- b=ujez5/fnPNaFtOwyYoW20dnJ8Bz6oRRINQKqSnGZpO+Sa4MizXeTrJvAdZInZPhSdpFZifFsfvxIBrgX5deOhShlvHLr7PPQpQFr4XUTdteBCmGrkBmQJVufQ75X73gBGEOjCjXwzrYUyjZp1XPnwp8fcQTeKHORJ/VwmxUgTXx2suNYAyaw+fDhI7beO8YT2RtYe3VXwsHlabxk36dTRuhnIy7tEQef9W2Mqkw1UCk4A77CzKCqNbD8O2QFXdb9tmLKNo7YFOZ/tzKD68ts5CcYQlqYChM6ZGng+fBI37aiNoXM1i5fE1/XcmPcyE3cCVAtWb7zFwOLF/v/OhGJDQ==
-Received: from PH0PR22MB3789.namprd22.prod.outlook.com (2603:10b6:510:29c::11)
- by BY1PR22MB5557.namprd22.prod.outlook.com (2603:10b6:a03:4aa::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.25; Tue, 4 Jun
- 2024 15:31:21 +0000
-Received: from PH0PR22MB3789.namprd22.prod.outlook.com
- ([fe80::e21a:e0c7:aff:b839]) by PH0PR22MB3789.namprd22.prod.outlook.com
- ([fe80::e21a:e0c7:aff:b839%4]) with mapi id 15.20.7633.021; Tue, 4 Jun 2024
- 15:31:21 +0000
-From: FLAVIO SULIGOI <f.suligoi@asem.it>
-To: 'Michael Walle' <mwalle@kernel.org>, Tudor Ambarus
-	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>,
-	Thorsten Scherer <t.scherer@eckelmann.de>, Marek Vasut <marex@denx.de>, Imre
- Kaloz <kaloz@openwrt.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: RE: EXTERNAL: [PATCH] dt-bindings: mtd: spi-nor: deprecate Everspin
- MRAM devices
-Thread-Topic: EXTERNAL: [PATCH] dt-bindings: mtd: spi-nor: deprecate Everspin
- MRAM devices
-Thread-Index: AQHatlLKRKOhNYntBkyzBolAkIG/5rG3shNw
-Date: Tue, 4 Jun 2024 15:31:21 +0000
-Message-ID: <PH0PR22MB3789629B835FB187E3E94510FAF82@PH0PR22MB3789.namprd22.prod.outlook.com>
-References: <20240604074231.1874972-1-mwalle@kernel.org>
-In-Reply-To: <20240604074231.1874972-1-mwalle@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=asem.it;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR22MB3789:EE_|BY1PR22MB5557:EE_
-x-ms-office365-filtering-correlation-id: 83f37af7-1906-4679-a05d-08dc84ab630d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|7416005|38070700009;
-x-microsoft-antispam-message-info: =?utf-8?B?RHd0bE1Xb21LZ1JIQ0JvUkg3VVEyUDc2aFRUbDhYMk95aEp3UEJZRXZnN3dl?=
- =?utf-8?B?NTBTcEJXZC9XbVdabkhVbTl1Um5Ccjh5VzJxQytlM0RkREFzOTVuc3dPTCs0?=
- =?utf-8?B?YzVCUXdGY0Jqa3lEdEkrSE9TR2RSMEhEYjJsREJ0RWJYZW8zVVp1NDJ4OC9F?=
- =?utf-8?B?STkzcWJoVDZZZ05EZXNTYktNaGtHNUlUT2tiSXNrdDRLZzdjOWJ0YUlIZ2RV?=
- =?utf-8?B?U1c5bWVsS1cvMHFXc2lWb0dTMUtJZ2QxVzlkdnFGSld6MEhYR0YxeXVxVnEr?=
- =?utf-8?B?Q1pWMDUrZ2ZBY3FSaWJrcnFra2tNOFU5K3dpcVU4SCtZRWE2NHUxU21WTVln?=
- =?utf-8?B?L09rUjUwT0NMVjExUVN3MzcrWjFoZk9CN1Fkc3p5TXFxUHJLM2pyYVgvaWcx?=
- =?utf-8?B?SlB1TE1sZTgxSnJmZkJSOFBrckZqTWJzc016bVMyUnZJRTNjdk9Ucndaa0dD?=
- =?utf-8?B?T2xJc3ZMamFramR3Z0kwUG14Qy9ZdVUzZ3g5UzJsUG5SMVAwOHFuS3ordU5K?=
- =?utf-8?B?MDVEdkQ5SHlMeElaMlVibjloT0pIb3VPTTB2SUF6TTFUUkczOW1VdmxpR3R6?=
- =?utf-8?B?bmxHUFlqMFovMFdlVFovb09PYjdUTklWSE83Um41VDUwb1p2OWxaRVdLN0NB?=
- =?utf-8?B?enp0cHBDTk1sc2xHbGxHRjk1cEdGdnVoZktuc3JSQ1lLQ0MxZnhBeEFxdGJl?=
- =?utf-8?B?K2pyRnpzRlhDOFgrU0JETTc5anN1MmxXYUJuNTArWkE1VzkycjBjMExTaURJ?=
- =?utf-8?B?ejByZVllVm1NdTNGYld6Q0h5VmcrZGJjY2Vib3JpcWRjOU1mSzUyc0xiL1BN?=
- =?utf-8?B?Q2dKd3lRN3kyZGt6L1ZXTHErbmhYb2F1clNSUlFMdGg3WGdTK01kenp6WkpQ?=
- =?utf-8?B?K0ZvTTJJWVRuN2wzQmU1Q3hZaFJaT2cveTlaUUNyRXlqYjdiTnpXS1pUVUtT?=
- =?utf-8?B?bzZyZkRkT2xtZ0FLaGdxUEg2d1JhbXVubWdrSmJJZ29YRVFZOTdoU1hWUXpG?=
- =?utf-8?B?Nmt6QTQyN1dIeEVmQUVrWEJYSTlwUk5waWtHclJyUk9Nek9VSDkwb1I4YUl6?=
- =?utf-8?B?K2tMb3h5K3h5MjByL2RNQm9PcEJ6a3RscHpETGFFTUVjWUN0YnFaa1B3NzlJ?=
- =?utf-8?B?bHhsT1NjZ3VOS1Y5RmEyelpoQmlldHlGZWd4ZUdHbjlCUE9OQ0Z6blQxWWhT?=
- =?utf-8?B?OXJNSkdwcHYzdHlGeXlHYmtkWTNHMzc0cHp1eXo4SW02cVd5eHZiOFpEUUFs?=
- =?utf-8?B?ZUFub3gwTGhVaC93cUVSQWFSbTJiZ0ZSV1FmLzAzVlNLL0tjUDdGaVpCWlZo?=
- =?utf-8?B?dXR3OXBnQlFOM1I5bkw2Ukd6VmVEWVZtTDZKRWJFeUhqeE5FQUJZc1lJdWxu?=
- =?utf-8?B?TmgvVklNSUpBbVNTUGdyUUpQVkNxKzNxVm42QmhGL2xxWWl1eFEvMG5mTFRq?=
- =?utf-8?B?WVd5OWM4TWM2YmlxN2Jmem9vNFFYQXpaTFNhTWtnY1dkU3VvSzUzbnFHOGds?=
- =?utf-8?B?Z2x6OWpvMFVLZDAxWUtIUmt0Tm9NYURSaXRjYXhGeFYvaUVPT1RwTkFFWlpY?=
- =?utf-8?B?OXVQM1FJalU1L3I3T2ZzVkwxd1NCRVFqMTU1ZWhOc2VyVzRpME9BOXZGZUhC?=
- =?utf-8?B?UUllOEFJbXhBZkFFWlp2UnZ1a2JEOWZ3Z3pyZFJmQllOalphcyt5M3VZK0xt?=
- =?utf-8?B?UlhYdXU0UWRvdnJlNjYzakVLV2gzN1prUWc0NHFUbzRiWGx1M2FmVHpxTkNr?=
- =?utf-8?B?UHlkOEJ3SFhWTkY1cTluR0pZYnV1UnQwTmhXUjFRcnhSaWpvUklkdVhuR3BY?=
- =?utf-8?B?bUNtNnpVSTVzY25GSzI0UT09?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR22MB3789.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZEx2dUphYzNZZ1NqdWNMaUFTNDVwSzV6amN5cVdsdEQwQ1BnQkFGWW9sZzR0?=
- =?utf-8?B?ZVdsK0lLOVVJcHBHYzh2Z3JpWnM2RGxxWVhRWEw2VXJnSUh3SzAzc2VOelUv?=
- =?utf-8?B?YlFmekpXUDRrc2NiditHV2dIanNDNEIxa0dGUndoMmVyMnNTbkwyZEoxbmtC?=
- =?utf-8?B?WGpYMXBqUGs3UENPNy9zUkc3TWpsVk9mMTk5N0tjUzlNcWpjT3Q0akhQQmRk?=
- =?utf-8?B?OGRPR0ZuWWkxTm5qdHNlcWNTOWxwRzBlYTAwVjJralJKa2tEdXhkWlVzTU1i?=
- =?utf-8?B?NHdjcm4wTVlWcEtSZyt2bEV6UlFEWkhoU0NDaG54UXBSdHQ4eG5IQnFkb25j?=
- =?utf-8?B?ZFNOM0c4UE9kY1l6ZU9KaHh6ZGtMMll1TW1YTHkwcXNTSnp4L28vTlR4UE1P?=
- =?utf-8?B?WDJqdEttcTJBdkV2Ym9wdWdXUW1va1lnZm96blhieGxUd0U5QkNzaTJwUXZM?=
- =?utf-8?B?dTk3dldqb2NONkZ0dWJDQy9QMWZ4SHlNSVVJU3M5WmpJektwQUpSWi92SWlE?=
- =?utf-8?B?enlTRk5mODFJc2ROZ3h3b1FCQitIbzdLSm9hNE15aEtIMldiMDVham5jV3Rj?=
- =?utf-8?B?eUJsdzVCditCQ1RCWGhwaWZQWXZ6UGVXNm96djRiL1dFNXhDOWNqTUx3VXpL?=
- =?utf-8?B?KzdIOExlQnVhYWI2U0NybVdSa2hIb2I1SUR5NWR1b1FVMGRGQnE5UWViZmhp?=
- =?utf-8?B?V01CVEJKbDBKcUZ5YkJ1Y1RJNzBSRjVkdFlTc1N2eXQ1clVVTVBDNGtFMW55?=
- =?utf-8?B?QXdGL0drVTltZ1VBdThLZ0dpMXhaYlFMV2JBbktoL2xPcXpyZFk5QjcyTmdO?=
- =?utf-8?B?RFZhWTgxWlEya211cEN5RDNLS0xxcjFXODdrRHA4WkFrMGRCMzQ0RjRUWEZS?=
- =?utf-8?B?dzBlQnRrODJ0MzZKOXR2Q0pHbnFRU1lVTDZvYXdLZWxxRU9PRmV0OWFQd3Q1?=
- =?utf-8?B?M3M3YlA0eXQ4NW9wOWtTM05nZ3M0WTQzMVlicVZ2RHMrd2RaMXJOZFZXNjBL?=
- =?utf-8?B?ZWZQQ2lxdGFlbDdvMm55dEZvMjJRUDdUa3FlMjRMcXhheTFPLzFEb1JPK2hD?=
- =?utf-8?B?d1ZuTGNmVEtOWm5WNC9GNmpXNzNKSHNVd0FuT0szRTI0QlEyZFJPcjdUQ0xm?=
- =?utf-8?B?ZW1XNmdTL0wraUVGakFEZ3BGSDM3aGpNTmx1YkVBQyt1RTFwMS9JSFJFRlF6?=
- =?utf-8?B?UU54MzJJSEVNTnpvSnBDR1NQRkZ6WjJ0MEJPak1Ic3lORHduNFN5eVNJN1dW?=
- =?utf-8?B?VXRvdmhrZ2F0bGxtUGxFMUN0Vmd2WFdMUE5hRUZUd3Z6RVJmRzRWdEt0MlBw?=
- =?utf-8?B?QjY4TnF4N3g5dFlsd1AxVmVzc0xOd1Y1RGtaOXdJYXcrL01weW1ILzh6RUli?=
- =?utf-8?B?Tk1IS1NyY0M4NnRMaHhiL00rbE5SZVFjdWF4Q1Q2QTNRY0JTTnM3SytsV0Ni?=
- =?utf-8?B?V2pIVzIyd1RHb1lJa1JFT2JUSmN0dlZldUdLRlZLVWI0ZnZLTloyWXFidHZu?=
- =?utf-8?B?MmpMSWlBc3Y2SEpINm9VemxNSVR5d3p4R3NHVkJnRzcvMEU2a1I5d2h0NWZ2?=
- =?utf-8?B?eXBoVWI1R25admdDeDFXNTEvTUF4TGk4cGZlWnBlcGJvQnpYY0RCSVFhTVhk?=
- =?utf-8?B?L3JXSlVjKzBBZnF3bkErc1NYUVJvU2hCTzFrMjZudGZMdExweVBsQmFFK1pB?=
- =?utf-8?B?ZnRkNm43YWtuTFpyekk1akJqWUVWeWJyVzRsTTlZVHZOQzlyL3Q1ZUVabEV4?=
- =?utf-8?B?c0JzVmIrUlNQeDBaUHhtbTBzR1BqTjlwMVJCSlFPSnoxS0RVSUlIaFdnQ0xo?=
- =?utf-8?B?NnVhcXJVMmxlZW5mTmtGVUFhZlpDUmoyWCsyQVpNeDc4Y3p4YWRNbHY1UjFj?=
- =?utf-8?B?QTd4cFpGS2pBeUZhdW94UFdlUllGRzBldVUwNlFPbXRQV0kwVjhqUDFQaUxz?=
- =?utf-8?B?a1dORGhvQzY1NnoxTUVVVUVqaUI1b2VFYThNWS9iT3FRYWNIYjMzdWxGdkc4?=
- =?utf-8?B?UG1HbFd1VHkvd0V2ZWpNWUlrdTgzeGdiMHJSQ1lqZTRJd3IzVEk1M2JiOHY5?=
- =?utf-8?B?UUJ3TDdMRkpvbnBqRXFRSmI2bEEydzRSWXpyNERRcWRtb3lmUmdzMjNKandK?=
- =?utf-8?B?KythbHJiR2NyUWZkNVFwcjZxR05iRmR2V0dGVWFoZFV5YTAwWGJlK3A3eTdv?=
- =?utf-8?Q?u8rJfrLyKBFnktcS7wQK6ms=3D?=
+	id 1sEWTW-000000030ul-3L9x;
+	Tue, 04 Jun 2024 15:53:29 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8618E6134C;
+	Tue,  4 Jun 2024 15:53:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D41BC2BBFC;
+	Tue,  4 Jun 2024 15:52:38 +0000 (UTC)
+Date: Tue, 4 Jun 2024 11:52:35 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Corey Minyard <minyard@acm.org>, Allen Pais <apais@linux.microsoft.com>, Sebastian Reichel <sebastian.reichel@collabora.com>, Perry Yuan <perry.yuan@amd.com>, Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>, Nuno Sa <nuno.sa@analog.com>, Guenter Roeck <linux@roeck-us.net>, Randy Dunlap <rdunlap@infradead.org>, Andi Shyti <andi.shyti@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, Lee Jones <lee@kernel.org>, Samuel Holland <samuel@sholland.org>, Elad Nachman <enachman@marvell.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Johannes Berg <johannes.berg@intel.com>, Gregory Greenman <gregory.greenman@intel.com>, Benjamin Berg <benjamin.berg@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, Robert Richter <rrichter@amd.com>, Vinod Koul <vkoul@kernel.org>, Chunfeng Yun <chunfeng.yun@mediatek.com>, Linus Walleij <linus.walleij@linaro.org>, Hans de Goede <hdegoede@redhat.com>, Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Nikita Kravets <teackot@gmail.com>, Jiri Slaby <jirislaby@kernel.org>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Stanley Chang <stanley_chang@realtek.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Abdel Alkuor <abdelalkuor@geotab.com>, Kent Overstreet <kent.overstreet@linux.dev>, Eric Biggers <ebiggers@google.com>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, Daniel Bristot de Oliveira <bristot@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, Abel Wu <wuyun.abel@bytedance.com>, John Johansen <john.johansen@canonical.com>, Mimi Zohar <zohar@linux.ibm.com>, Stefan Berger <stefanb@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Eric Snowberg <eric.snowberg@oracle.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org, qat-linux@intel.com, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-staging@lists.linux.dev, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org, cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal
+ <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Daniel Scally <djrscally@gmail.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Heiko Stuebner <heiko@sntech.de>, Peter De Schrijver <pdeschrijver@nvidia.com>, Prashant Gaikwad <pgaikwad@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, Mario Limonciello <mario.limonciello@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>, Jean Delvare <jdelvare@suse.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Tony Lindgren <tony@atomide.com>, Adrian Hunter <adrian.hunter@intel.com>, Hu Ziji <huziji@marvell.com>, Ulf Hansson <ulf.hansson@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Potnuri Bharat Teja <bharat@chelsio.com>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miri Korenblit <miriam.rachel.korenblit@intel.com>, Kalle Valo <kvalo@kernel.org>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Oliver O'Halloran <oohall@gmail.com>, Kishon Vijay Abraham I <kishon@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, JC Kuo <jckuo@nvidia.com>, Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Sebastian Reichel <sre@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>, Helge Deller <deller@gmx.de>, Brian Foster <bfoster@redhat.com>, Zhihao Cheng <chengzhihao1@huawei.com>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v1 1/1] treewide: Align match_string() with
+ sysfs_match_string()
+Message-ID: <20240604115235.044acfd6@gandalf.local.home>
+In-Reply-To: <87tti9cfry.fsf@intel.com>
+References: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
+	<87tti9cfry.fsf@intel.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: asem.it
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR22MB3789.namprd22.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83f37af7-1906-4679-a05d-08dc84ab630d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2024 15:31:21.5308
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 855b093e-7340-45c7-9f0c-96150415893e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4mkk9+eA1Cm8Pb/gLi/h33bEhM2jztZBJyNlBh9JODo/dJszL6a5UleiL7GxR9sbegMuTnMJC90eS6e83rBzHa9+YPN2gRV856TQlrE7tdWBcgw1ahZ9gUg4H4SmrCqB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR22MB5557
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240604_083141_305143_39AD400E 
-X-CRM114-Status: GOOD (  25.43  )
+X-CRM114-CacheID: sfid-20240604_085326_943913_D5AAE3F9 
+X-CRM114-Status: GOOD (  26.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -184,76 +63,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+On Tue, 04 Jun 2024 10:45:37 +0300
+Jani Nikula <jani.nikula@linux.intel.com> wrote:
 
-...
-> ---
-> The referenced binding only supports the true AT25 compatible EEPROMs
-> where you have to specify additional properties like size and page size
-> or cypress FRAM devices where all the properties are discovered by the
-> driver. I don't have the actual hardware, therefore I can't work on a
-> proper driver and binding. But I really want to deprecate the use of
-> these EEPROM like devices in SPI-NOR. So as a first step, mark the
-> devices in the DT bindings as deprecated.
+> On Sun, 02 Jun 2024, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > Make two APIs look similar. Hence convert match_string() to be
+> > a 2-argument macro. In order to avoid unneeded churn, convert
+> > all users as well. There is no functional change intended.  
 > 
-> There are three in-tree users of this. I hope I've CCed all the relevant
-> people. With the switch to the at25 driver also comes a user-space
-> facing change: there is no more MTD device. Instead there is an "eeprom"
-> file in /sys now, just like for every other EEPROM.
+> Why do we think it's a good idea to increase and normalize the use of
+> double-underscore function names across the kernel, like
+> __match_string() in this case? It should mean "reserved for the
+> implementation, not to be called directly".
 > 
-> Marek already expressed, that the sps1 dts can likely be removed
-> altogether. I'd like to hear from the other board DTS maintainers if
-> they seem some problems moving to the EEPROM interface - or maybe that
-> device isn't used at all anyway. So in the end, we can hopefully move
-> all the users over to the at25 driver.
-
-Good idea, I had already tried a similar Everspin MRAM, the EM0004LXB,
-using the at25 driver, and it works fine.
-
-> ---
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> If it's to be used directly, it should be named accordingly, right?
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 6e3afb42926e..2dccb6b049ea 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -21,7 +21,6 @@ properties:
->                (m25p(40|80|16|32|64|128)|\
->                n25q(32b|064|128a11|128a13|256a|512a|164k)))|\
->                atmel,at25df(321a|641|081a)|\
-> -              everspin,mr25h(10|40|128|256)|\
-> 
-> (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|25635e)|\
->                (mxicy|macronix),mx25u(4033|4035)|\
->                (spansion,)?s25fl(128s|256s1|512s|008k|064k|164k)|\
-> @@ -42,6 +41,14 @@ properties:
->                - spansion,s25fs512s
->            - const: jedec,spi-nor
->        - const: jedec,spi-nor
-> +
-> +      # Deprecated bindings
-> +      - items:
-> +          - pattern: "^everspin,mr25h(10|40|128|256)$"
-> +          - const: jedec,spi-nor
-> +        description:
-> +          Deprecated binding, use
-> Documentation/devicetree/bindings/eeprom/at25.yaml.
-> +        deprecated: true
->      description:
->        SPI NOR flashes compatible with the JEDEC SFDP standard or which
-> may be
->        identified with the READ ID opcode (0x9F) do not deserve a
-> specific
-> --
-> 2.39.2
+> Being in line with __sysfs_match_string() isn't a great argument alone,
+> because this adds three times the number of __match_string() calls than
+> there are __sysfs_match_string() calls. It's not a good model to follow.
+> Arguably both should be renamed.
 
+Agreed. I want to get rid of any functions starting with an underscore
+except for those that are basically the same function used internally for
+convenience.
 
-Reviewed-by: Flavio Suligoi <f.suligoi@asem.it>
+Perhaps "match_string_dynamic()"? Where it is used for dynamically
+allocated arrays without known size. Or, allow a third parameter for
+dynamic arrays.
 
+#define match_string(_a, _s, ...)
+	char _______STR[] = __stringify((__VA_ARGS__));	\
+	if (sizeof(_______STR) > 3)			\
+		__match_string(_a, _s, ##__VA_ARGS__);  \
+	else						\
+		__match_string(_a, _s, ARRAY_SIZE(_a));
 
-Flavio
+What the above stringify((__VA_ARGS__)) does is to check the size of any
+args added to match_string(). if there isn't any, it will turn into:
+"()\0", which is of size 3. If you add an argument, it will be:
+"(<arg>)\0", which will have a size greater than three.
+
+(trace_printk() does this trick in include/linux/kernel.h).
+
+This way, both:
+
+ match_string(array, sting);
+
+or
+
+ match_string(array, string, size);
+
+will work.
+
+-- Steve
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
