@@ -4,69 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D2ADC25B78
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2024 17:01:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3480C27C53
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jun 2024 17:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ggNV2ADJBfll4zBkiuimwAGi1NgDlI94tIzBGh8b9nM=; b=PBKiqxyIRvI1AJ2cCVwQolMhgB
-	mtIcmBZ80yvUdH40eQmqclhsLpZRtMPcBR7YylFO2b/Px4wf11UQRjbHy8RMn4wPHbd94RBVPa6//
-	ODrK2IFhEuwzr1HzswHec7oSG+QxZ/6owRDr28t8aUTIXYYIERD136Ei8T9wmrlxnMAgFkbByNUvc
-	UVmFLcmUIIkdMoWuHGDxYFkwI4tZP9BPWoTvxG3SPljq5nO6NIGWtG7wsZABsH/5he9uaFdkVgt2p
-	P2aHey2DaP6bLUnVD03dzip0Rhlrnd4nrcdj+6B6rbBLyUyz7bANcLjL0F+N6f0IVE4OdQzWz9NVG
-	C5/Rtvdg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Cc:
+	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zidkicMzAtQQWT8bDYC7wbRsE3Wd0az6Y92xa7oWOHk=; b=Y8Akx/WXNoYzBl
+	e9M4Tf8F7PU34DnGVHUxzoyX7gzCyibFHc0GVa8utVJ1/ABlG1o07YqOImtgGQhhHM2d8rLKkK6iC
+	WjOEo8pbEtmExB9cGbK8xdqcn/k9JbsrLRVeZ68IPxiVG0WgOCJV/hf5N1Decf8G18Jwu6zHAD2QM
+	UEDogd+YbGcOwS/S/kVY9QKiVddhZqfZQVgL5fGideuZYHQLahVu97S99d57r1CtdUTS9PqlKGrO+
+	RnbT/MpuC2IgaDWy1B6sEIhPLPgPuHUtISsxrCrJzZq5n8CVGp6+zHUKt5J3PwZXk9YOs4lLKl3Is
+	DvZ5UmoJqV7M1d/RWsqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEXXS-00000003E2x-3D8f;
-	Tue, 04 Jun 2024 17:01:34 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sEYBA-00000003Lc6-1CXO;
+	Tue, 04 Jun 2024 17:42:36 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEXXP-00000003E1g-1ROh
+	id 1sEYB5-00000003LMb-0MKq
 	for linux-mtd@lists.infradead.org;
-	Tue, 04 Jun 2024 17:01:33 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 8FE92CE1268;
-	Tue,  4 Jun 2024 17:01:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D40C2BBFC;
-	Tue,  4 Jun 2024 17:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717520488;
-	bh=R6BbQWmZ4P9fschyN5itAlWnBsUdPsq0nefia1AQqJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ip1BNRF/dND0ElXHf+t3tJJ9w39d706EeHlpD8aicjNPUPRAQKV1tZn3o8oe0G6i9
-	 Zc7suHix4wIxOTZ3KsvuBg9DIKFwDR05kqn3rnIuH5l0VQ3D0YJvFlGfplOUHdh7GM
-	 Zwc95653ntre+06ZScGg3XT8JwDnX+VFVBJ19hZx1EiAm+8Faz7bLuty58k+1vIV05
-	 bhQQa/hpD8CWXsul+EQoTlhF5fQUH96vAoC+UtmvijgO49t/FFhiPp4/FGEB2s4Wjn
-	 CJnbBCJvjEDub39mjIdALz7Fh01rbRZy8IvrQTnDT2QVjGCQrsQAd0WwDnOEoI26Lk
-	 7lguoLO8//HdQ==
-Date: Tue, 4 Jun 2024 18:01:23 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Thorsten Scherer <t.scherer@eckelmann.de>,
-	Marek Vasut <marex@denx.de>, Imre Kaloz <kaloz@openwrt.org>,
-	Andrew Lunn <andrew@lunn.ch>, Flavio Suligoi <f.suligoi@asem.it>
+	Tue, 04 Jun 2024 17:42:33 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4340:4ee9:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id E08B675;
+	Tue,  4 Jun 2024 19:42:16 +0200 (CEST)
+Mime-Version: 1.0
+Date: Tue, 04 Jun 2024 19:42:16 +0200
+Message-Id: <D1RF2GI60GXE.3A3W7Q3W19GPN@kernel.org>
 Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: deprecate Everspin MRAM
  devices
-Message-ID: <20240604-ladylike-gout-6fd6ae992712@spud>
+Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Pratyush Yadav"
+ <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, "Rob Herring" <robh@kernel.org>, "Krzysztof Kozlowski"
+ <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, =?utf-8?q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, "Thorsten Scherer"
+ <t.scherer@eckelmann.de>, "Marek Vasut" <marex@denx.de>, "Imre Kaloz"
+ <kaloz@openwrt.org>, "Andrew Lunn" <andrew@lunn.ch>, "Flavio Suligoi"
+ <f.suligoi@asem.it>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Conor Dooley" <conor@kernel.org>
+X-Mailer: aerc 0.16.0
 References: <20240604074231.1874972-1-mwalle@kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240604074231.1874972-1-mwalle@kernel.org>
+ <20240604-ladylike-gout-6fd6ae992712@spud>
+In-Reply-To: <20240604-ladylike-gout-6fd6ae992712@spud>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240604_100131_907564_1480B1A3 
-X-CRM114-Status: GOOD (  30.28  )
+X-CRM114-CacheID: sfid-20240604_104231_490674_62230C75 
+X-CRM114-Status: GOOD (  37.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,117 +69,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2232797022601186464=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============2232797022601186464==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="HGv9EZxHu5PamIl2"
-Content-Disposition: inline
-
-
---HGv9EZxHu5PamIl2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jun 04, 2024 at 09:42:31AM +0200, Michael Walle wrote:
-> These devices are more like an AT25 compatible EEPROM instead of
-> flashes. Like an EEPROM the user doesn't need to explicitly erase the
-> memory, nor are there sectors or pages. Thus, instead of the SPI-NOR
-> (flash) driver, one should instead use the at25 EEPROM driver.
->=20
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Cc: Thorsten Scherer <t.scherer@eckelmann.de>
-> Cc: Marek Vasut <marex@denx.de>
-> Cc: Imre Kaloz <kaloz@openwrt.org>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Flavio Suligoi <f.suligoi@asem.it>
-> ---
-> The referenced binding only supports the true AT25 compatible EEPROMs
-> where you have to specify additional properties like size and page size
-> or cypress FRAM devices where all the properties are discovered by the
-> driver. I don't have the actual hardware, therefore I can't work on a
-> proper driver and binding. But I really want to deprecate the use of
-> these EEPROM like devices in SPI-NOR. So as a first step, mark the
-> devices in the DT bindings as deprecated.
->=20
-> There are three in-tree users of this. I hope I've CCed all the relevant
-> people. With the switch to the at25 driver also comes a user-space
-> facing change: there is no more MTD device. Instead there is an "eeprom"
-> file in /sys now, just like for every other EEPROM.
->=20
-> Marek already expressed, that the sps1 dts can likely be removed
-> altogether. I'd like to hear from the other board DTS maintainers if
-> they seem some problems moving to the EEPROM interface - or maybe that
-> device isn't used at all anyway. So in the end, we can hopefully move
-> all the users over to the at25 driver.
-> ---
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/D=
-ocumentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 6e3afb42926e..2dccb6b049ea 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -21,7 +21,6 @@ properties:
->                (m25p(40|80|16|32|64|128)|\
->                n25q(32b|064|128a11|128a13|256a|512a|164k)))|\
->                atmel,at25df(321a|641|081a)|\
-> -              everspin,mr25h(10|40|128|256)|\
->                (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|25635=
-e)|\
->                (mxicy|macronix),mx25u(4033|4035)|\
->                (spansion,)?s25fl(128s|256s1|512s|008k|064k|164k)|\
-> @@ -42,6 +41,14 @@ properties:
->                - spansion,s25fs512s
->            - const: jedec,spi-nor
->        - const: jedec,spi-nor
-> +
-> +      # Deprecated bindings
-> +      - items:
-> +          - pattern: "^everspin,mr25h(10|40|128|256)$"
-> +          - const: jedec,spi-nor
-> +        description:
-> +          Deprecated binding, use Documentation/devicetree/bindings/eepr=
-om/at25.yaml.
-> +        deprecated: true
-
-The idea here seems okay, but directing people to use the at25 binding,
-without actually documenting the replacement compatibles etc is far from
-ideal. I think even a wording change that points out that that these
-devices need to be documented in that file would be an improvement, the
-current wording makes it seem like the works been done.
-Until there's a replacement driver, I don't think you could really
-expect anyone to move to a new binding anyway.
-
---HGv9EZxHu5PamIl2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZl9IYwAKCRB4tDGHoIJi
-0teVAP9+WE9Aa+SjNHv9SwetwqU+ib6o+pUyU7AnhGLRW5bKSgD/Q9iMrnHzSIg3
-MshQhm2puWAwgGZUaoE1eXPubreqxww=
-=z7/H
------END PGP SIGNATURE-----
-
---HGv9EZxHu5PamIl2--
-
-
---===============2232797022601186464==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2232797022601186464==--
-
+T24gVHVlIEp1biA0LCAyMDI0IGF0IDc6MDEgUE0gQ0VTVCwgQ29ub3IgRG9vbGV5IHdyb3RlOgo+
+IE9uIFR1ZSwgSnVuIDA0LCAyMDI0IGF0IDA5OjQyOjMxQU0gKzAyMDAsIE1pY2hhZWwgV2FsbGUg
+d3JvdGU6Cj4gPiBUaGVzZSBkZXZpY2VzIGFyZSBtb3JlIGxpa2UgYW4gQVQyNSBjb21wYXRpYmxl
+IEVFUFJPTSBpbnN0ZWFkIG9mCj4gPiBmbGFzaGVzLiBMaWtlIGFuIEVFUFJPTSB0aGUgdXNlciBk
+b2Vzbid0IG5lZWQgdG8gZXhwbGljaXRseSBlcmFzZSB0aGUKPiA+IG1lbW9yeSwgbm9yIGFyZSB0
+aGVyZSBzZWN0b3JzIG9yIHBhZ2VzLiBUaHVzLCBpbnN0ZWFkIG9mIHRoZSBTUEktTk9SCj4gPiAo
+Zmxhc2gpIGRyaXZlciwgb25lIHNob3VsZCBpbnN0ZWFkIHVzZSB0aGUgYXQyNSBFRVBST00gZHJp
+dmVyLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxtd2FsbGVAa2VybmVs
+Lm9yZz4KPiA+IENjOiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJv
+bml4LmRlPgo+ID4gQ2M6IFRob3JzdGVuIFNjaGVyZXIgPHQuc2NoZXJlckBlY2tlbG1hbm4uZGU+
+Cj4gPiBDYzogTWFyZWsgVmFzdXQgPG1hcmV4QGRlbnguZGU+Cj4gPiBDYzogSW1yZSBLYWxveiA8
+a2Fsb3pAb3BlbndydC5vcmc+Cj4gPiBDYzogQW5kcmV3IEx1bm4gPGFuZHJld0BsdW5uLmNoPgo+
+ID4gQ2M6IEZsYXZpbyBTdWxpZ29pIDxmLnN1bGlnb2lAYXNlbS5pdD4KPiA+IC0tLQo+ID4gVGhl
+IHJlZmVyZW5jZWQgYmluZGluZyBvbmx5IHN1cHBvcnRzIHRoZSB0cnVlIEFUMjUgY29tcGF0aWJs
+ZSBFRVBST01zCj4gPiB3aGVyZSB5b3UgaGF2ZSB0byBzcGVjaWZ5IGFkZGl0aW9uYWwgcHJvcGVy
+dGllcyBsaWtlIHNpemUgYW5kIHBhZ2Ugc2l6ZQo+ID4gb3IgY3lwcmVzcyBGUkFNIGRldmljZXMg
+d2hlcmUgYWxsIHRoZSBwcm9wZXJ0aWVzIGFyZSBkaXNjb3ZlcmVkIGJ5IHRoZQo+ID4gZHJpdmVy
+LiBJIGRvbid0IGhhdmUgdGhlIGFjdHVhbCBoYXJkd2FyZSwgdGhlcmVmb3JlIEkgY2FuJ3Qgd29y
+ayBvbiBhCj4gPiBwcm9wZXIgZHJpdmVyIGFuZCBiaW5kaW5nLiBCdXQgSSByZWFsbHkgd2FudCB0
+byBkZXByZWNhdGUgdGhlIHVzZSBvZgo+ID4gdGhlc2UgRUVQUk9NIGxpa2UgZGV2aWNlcyBpbiBT
+UEktTk9SLiBTbyBhcyBhIGZpcnN0IHN0ZXAsIG1hcmsgdGhlCj4gPiBkZXZpY2VzIGluIHRoZSBE
+VCBiaW5kaW5ncyBhcyBkZXByZWNhdGVkLgo+ID4gCj4gPiBUaGVyZSBhcmUgdGhyZWUgaW4tdHJl
+ZSB1c2VycyBvZiB0aGlzLiBJIGhvcGUgSSd2ZSBDQ2VkIGFsbCB0aGUgcmVsZXZhbnQKPiA+IHBl
+b3BsZS4gV2l0aCB0aGUgc3dpdGNoIHRvIHRoZSBhdDI1IGRyaXZlciBhbHNvIGNvbWVzIGEgdXNl
+ci1zcGFjZQo+ID4gZmFjaW5nIGNoYW5nZTogdGhlcmUgaXMgbm8gbW9yZSBNVEQgZGV2aWNlLiBJ
+bnN0ZWFkIHRoZXJlIGlzIGFuICJlZXByb20iCj4gPiBmaWxlIGluIC9zeXMgbm93LCBqdXN0IGxp
+a2UgZm9yIGV2ZXJ5IG90aGVyIEVFUFJPTS4KPiA+IAo+ID4gTWFyZWsgYWxyZWFkeSBleHByZXNz
+ZWQsIHRoYXQgdGhlIHNwczEgZHRzIGNhbiBsaWtlbHkgYmUgcmVtb3ZlZAo+ID4gYWx0b2dldGhl
+ci4gSSdkIGxpa2UgdG8gaGVhciBmcm9tIHRoZSBvdGhlciBib2FyZCBEVFMgbWFpbnRhaW5lcnMg
+aWYKPiA+IHRoZXkgc2VlbSBzb21lIHByb2JsZW1zIG1vdmluZyB0byB0aGUgRUVQUk9NIGludGVy
+ZmFjZSAtIG9yIG1heWJlIHRoYXQKPiA+IGRldmljZSBpc24ndCB1c2VkIGF0IGFsbCBhbnl3YXku
+IFNvIGluIHRoZSBlbmQsIHdlIGNhbiBob3BlZnVsbHkgbW92ZQo+ID4gYWxsIHRoZSB1c2VycyBv
+dmVyIHRvIHRoZSBhdDI1IGRyaXZlci4KPiA+IC0tLQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9tdGQvamVkZWMsc3BpLW5vci55YW1sIHwgOSArKysrKysrKy0KPiA+ICAx
+IGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gPiAKPiA+IGRp
+ZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2plZGVjLHNw
+aS1ub3IueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvamVkZWMs
+c3BpLW5vci55YW1sCj4gPiBpbmRleCA2ZTNhZmI0MjkyNmUuLjJkY2NiNmIwNDllYSAxMDA2NDQK
+PiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvamVkZWMsc3Bp
+LW5vci55YW1sCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
+L2plZGVjLHNwaS1ub3IueWFtbAo+ID4gQEAgLTIxLDcgKzIxLDYgQEAgcHJvcGVydGllczoKPiA+
+ICAgICAgICAgICAgICAgIChtMjVwKDQwfDgwfDE2fDMyfDY0fDEyOCl8XAo+ID4gICAgICAgICAg
+ICAgICAgbjI1cSgzMmJ8MDY0fDEyOGExMXwxMjhhMTN8MjU2YXw1MTJhfDE2NGspKSl8XAo+ID4g
+ICAgICAgICAgICAgICAgYXRtZWwsYXQyNWRmKDMyMWF8NjQxfDA4MWEpfFwKPiA+IC0gICAgICAg
+ICAgICAgIGV2ZXJzcGluLG1yMjVoKDEwfDQwfDEyOHwyNTYpfFwKPiA+ICAgICAgICAgICAgICAg
+IChteGljeXxtYWNyb25peCksbXgyNWwoNDAwNWF8MTYwNmV8NjQwNWR8ODAwNXwxMjgwNWR8MjU2
+MzVlKXxcCj4gPiAgICAgICAgICAgICAgICAobXhpY3l8bWFjcm9uaXgpLG14MjV1KDQwMzN8NDAz
+NSl8XAo+ID4gICAgICAgICAgICAgICAgKHNwYW5zaW9uLCk/czI1ZmwoMTI4c3wyNTZzMXw1MTJz
+fDAwOGt8MDY0a3wxNjRrKXxcCj4gPiBAQCAtNDIsNiArNDEsMTQgQEAgcHJvcGVydGllczoKPiA+
+ICAgICAgICAgICAgICAgIC0gc3BhbnNpb24sczI1ZnM1MTJzCj4gPiAgICAgICAgICAgIC0gY29u
+c3Q6IGplZGVjLHNwaS1ub3IKPiA+ICAgICAgICAtIGNvbnN0OiBqZWRlYyxzcGktbm9yCj4gPiAr
+Cj4gPiArICAgICAgIyBEZXByZWNhdGVkIGJpbmRpbmdzCj4gPiArICAgICAgLSBpdGVtczoKPiA+
+ICsgICAgICAgICAgLSBwYXR0ZXJuOiAiXmV2ZXJzcGluLG1yMjVoKDEwfDQwfDEyOHwyNTYpJCIK
+PiA+ICsgICAgICAgICAgLSBjb25zdDogamVkZWMsc3BpLW5vcgo+ID4gKyAgICAgICAgZGVzY3Jp
+cHRpb246Cj4gPiArICAgICAgICAgIERlcHJlY2F0ZWQgYmluZGluZywgdXNlIERvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9lZXByb20vYXQyNS55YW1sLgo+ID4gKyAgICAgICAgZGVw
+cmVjYXRlZDogdHJ1ZQo+Cj4gVGhlIGlkZWEgaGVyZSBzZWVtcyBva2F5LCBidXQgZGlyZWN0aW5n
+IHBlb3BsZSB0byB1c2UgdGhlIGF0MjUgYmluZGluZywKPiB3aXRob3V0IGFjdHVhbGx5IGRvY3Vt
+ZW50aW5nIHRoZSByZXBsYWNlbWVudCBjb21wYXRpYmxlcyBldGMgaXMgZmFyIGZyb20KPiBpZGVh
+bC4gSSB0aGluayBldmVuIGEgd29yZGluZyBjaGFuZ2UgdGhhdCBwb2ludHMgb3V0IHRoYXQgdGhh
+dCB0aGVzZQo+IGRldmljZXMgbmVlZCB0byBiZSBkb2N1bWVudGVkIGluIHRoYXQgZmlsZSB3b3Vs
+ZCBiZSBhbiBpbXByb3ZlbWVudCwgdGhlCj4gY3VycmVudCB3b3JkaW5nIG1ha2VzIGl0IHNlZW0g
+bGlrZSB0aGUgd29ya3MgYmVlbiBkb25lLgo+IFVudGlsIHRoZXJlJ3MgYSByZXBsYWNlbWVudCBk
+cml2ZXIsIEkgZG9uJ3QgdGhpbmsgeW91IGNvdWxkIHJlYWxseQo+IGV4cGVjdCBhbnlvbmUgdG8g
+bW92ZSB0byBhIG5ldyBiaW5kaW5nIGFueXdheS4KCkZhaXIgZW5vdWdoLiBUaGUgZHJpdmVyIGlz
+IGFscmVhZHkgdGhlcmUgYW5kIGl0IGJhc2ljYWxseSB3b3JrcyAtCkZsYXZpbyBpcyBhbHJlYWR5
+IHVzaW5nIGl0LiBJdCBpcyBqdXN0LCB0aGF0IGF0IHRoZSBtb21lbnQgeW91IGhhdmUKdG8gdXNl
+IHRoZSAoZGVwcmVjYXRlZCkgImF0bWVsLGF0MjUiIGNvbXBhdGlibGUgYW5kIHlvdSdsbCBoYXZl
+IHRvCnNwZWNpZnkgcGFnZXNpemUgZXRjLiBUaGF0IGlzIHJlYWxseSBoYWNreSwgYmVjYXVzZSBG
+L01SQU0gZGV2aWNlcwpkb2Vzbid0IGhhdmUgYSBwYWdlc2l6ZS4KCkFueXdheSwgSSB3YXMgYWxy
+ZWFkeSB3b3JraW5nIG9uIHRoZSBhdDI1IGJpbmRpbmcgYnV0IHRoZW4gSSd2ZQpub3RpY2VkIHRo
+YXQgdGhlIGN1cnJlbnQgRlJBTSBiaW5kaW5nIGlzIHJlYWxseSBoYXJkY29kZWQgdG8gY3lwcmVz
+cwpkZXZpY2VzIGFuZCBhcyBtZW50aW9uZWQgaW4gdGhlIGNvbW1pdCBtZXNzYWdlLCBJIGRvbid0
+IGhhdmUgYW55CmhhcmR3YXJlIHRvIGFjdHVhbGx5IHdyaXRlIHRoZSBwcm9wZXIgZHJpdmVyIHN1
+cHBvcnQuIE1heWJlIHdlCnNob3VsZCBzZXR0bGUgb24gdGhlIGJpbmRpbmcgZmlyc3QsIGkuZS4K
+CiBjb21wYXRpYmxlID0gImV2ZXJzcGluLG1yMjUiLCAiYXRtZWwsYXQyNSI7CiBzaXplID0gPE4+
+OwoKdnMKCiBjb21wYXRpYmxlID0gImV2ZXJzcGluLG1yMjVoMjU2IjsgIyBubyBzaXplIG5lZWRl
+ZAoKRm9yIHJlZmVyZW5jZSwgdGhlIGFscmVhZHkgc3VwcG9ydGVkIGN5cHJlc3MgZnJhbSBoYXMg
+dGhlIGZvbGxvd2luZzoKCiBjb21wYXRpYmxlID0gImN5cHJlc3MsZm0yNSIsICJhdG1lbCxhdDI1
+IjsKICMgbm8gc2l6ZSBuZWVkZWQsIGJlY2F1c2UgdGhlIGRyaXZlciB3aWxsIGZpZ3VyZSBpdCBv
+dXQgYnkgcmVhZGluZwogIyB0aGUgSUQKCkJlc2lkZXMgdGhhdCwgSSB3b3VsZCByZWFsbHkgZ2V0
+IHNvbWUgZmVlZGJhY2sgZnJvbSB0aGUgdGhyZWUKaW4tdHJlZSB1c2VycyBvbiBtaWdyYXRpbmcg
+dG8gdGhlIEVFUFJPTSBkcml2ZXIgYW5kIHRodXMgYXdheSBmcm9tCk1URC4KCi1taWNoYWVsCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
