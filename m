@@ -4,8 +4,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12C05C25B76
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 18:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92F1BC25B76
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 18:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,61 +13,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=DJ3/HzMA90mX7GPJ5KHEIb79PvSkJPd/UcF7SWiMC+E=; b=jSWy8uB4V5ZNY+3B7KZTiZE9js
-	E9v0zOclr0xxh1iTgcu9VlGpB/bpyCrx+WLgbR6i0eQAK68hIhdJhWgayZVla5HowAF53JffbCu5M
-	z7OSXZU1PgsC2ezyaGpndKpyC7VwC6QY2Tp8XpHmzqOYdXHwr/qi7NcxHCuLHEhdTtz7V74YMa135
-	Wm5TO3fil+AJdFsvLe9eO47TDYd8oSHDNe3XVSLNpXC4YLXRaSXHVQHeGD4y7uSl4YPnXHmnZr6qS
-	brPhxTf4/pAg8Itj/41fr0XLTV/HywapShafGWdU/uDOybfhqXaX1froh5ROEJXhwbkJSXEC/qzaE
-	qk7vO4PA==;
+	bh=utEbZ85CUvtUwAwcrmshZ9UDUyzIulNHACba3acDnlQ=; b=TBVwcpRvsOpNFmCSPKxxeXtP29
+	sIxtlfOkfjhNCmUTcIHE7MwIdaVon6E5e9tv4SwxUI2mZFtu9D4xD92WMRdCdnoOmDMa3oAtmgMcm
+	UYtKxZsjQY5YL7/LPSGdNVh8aIKGrT6gVDJdTioK+QiCpaJRSbNuClgeSn3XLp5uw7ExoOcmJjqbz
+	O+7Jrd6VOL5tMN+LpNiz+KNvF1dUuSMIiDo+ayRunXSz/XH84xMTwSSlGsJVEqGOAWpgoj86JVU5D
+	2nBgm84RWD/9ZHU/n7uZ9bbPWP5sJo4/U0HunXS6AfyWSyG1yyzNtNiRga0GOZLnkjNVSllq85QY4
+	3qE+NI7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuyO-000000074ZN-0CIh;
-	Wed, 05 Jun 2024 18:02:56 +0000
-Received: from mail-yw1-x114a.google.com ([2607:f8b0:4864:20::114a])
+	id 1sEuyY-000000074i1-0K4V;
+	Wed, 05 Jun 2024 18:03:06 +0000
+Received: from mail-yw1-x1149.google.com ([2607:f8b0:4864:20::1149])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuyK-000000074VO-2SNs
+	id 1sEuyP-000000074Xh-1omR
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jun 2024 18:02:54 +0000
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-629638f1cb0so235947b3.3
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2024 11:02:49 -0700 (PDT)
+	Wed, 05 Jun 2024 18:02:59 +0000
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-627e9a500faso436207b3.1
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2024 11:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717610569; x=1718215369; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1717610573; x=1718215373; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IUTCTG4PiwJpsjy0QKETkEiNDEwH04EYXsIQhajeZMg=;
-        b=IR/DeYKNMovsS1s2UDxRYLH6q9DJ71xQWy94cfrvIGmI1nreETvgX2vD5YFJseh6Ln
-         CSY10mgNWg4jNFuZWvy1Vrlseii3iG/SPeoRgqZJ1cYtNLM4jxj0GnTKTurTf4JBcd62
-         QopZOZk72Ffdl8P2CUTcxgO/V3mpXjdDpNIg7ymZdXfypf/lfwAajpnchNaVonsc0T3L
-         2gd7X/0d8l80WH04zVQHA6LKQOVGMxg1f+XllghN+GYxe3NaE1VCmbUJUtZVVY4bpqlS
-         QJY57rAYkbMDJxpiBz7C/Su8aIGT1a58sFj8lEwtS+k71guvv48lmVaF61hmugppvqdP
-         twnA==
+        bh=qDI8h7ZoQYy75CqD6I2McYIto2hpIA5emU6fq1I3LPI=;
+        b=Yjbi3QJZibdkUbW2N3vMMC1ImMtHZv/d3JfO3j+oCvyP/qglVa+uAZWcBkmHlryH5c
+         KcPmcdbGEVxC6SMPM8PA9mpTSlW37t/Mxb3injMfRd2pJ1QFf7DmQgv+k2GJBDrk7dAp
+         tQw4HQpa5I9SYXAptjJtuOdl0I+0Dn0HqaX5jPuS8L9xKI69cWuL7awMsweA/9k6yg3Q
+         AsINBnzLKdg9r+nXdzwMCBdTaSVlgaHRZUx5IMhCE8KXHfKxppzjn/CDJksoCUA3JaPf
+         If1lkhy6BHRL794wjNU/VZghIWrg9TfOXsS6xZqJcNfrcVChYeG7jMnVNmJGHk5YH5EW
+         q3XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717610569; x=1718215369;
+        d=1e100.net; s=20230601; t=1717610573; x=1718215373;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IUTCTG4PiwJpsjy0QKETkEiNDEwH04EYXsIQhajeZMg=;
-        b=aV0kPRxh1Cuk3lSYz1sbAuNa0iVPDv1ht0bkZHG5faCQEVT9wJ5GRCXhjh8e4r6VcL
-         X0IpxH8S4IblB77DBiWA2da/uqkZ4AwXnlm8RyKf0TqXEZKhZmFt9kE6oVlJ0qF14ogO
-         V+y4N016fcPf3S1ffPN1kUDdT+IQ3gijQfoY8A+pNiTbnx5pyyekN5xbi1ZT2YiK3+hv
-         FAUGUxqvlO/uVRQgbIg7mCK2FHpzbnc0Ao9Oc85ijr3o5rnekwC2JLe4w8cYSdTX6AMN
-         +T9ZzM6QlgRMF9f3xTos8rJFNRdO/GYLU2YoDJ/Q2nccAqwoizqF3T9V/PYZM6xYPGwb
-         hseA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMqo2gsxu8Vnfsr8/q1SC0Eebmvj0fRFM40sBU3wPFOi7hCHpiHAxGcgkcK/Fb8lBhoCIhQZDdycKaitekygh/e8loe8PIC9dWHd9koQ==
-X-Gm-Message-State: AOJu0YyRzcdRCn3LRkIttXBURA0znt4QLp6YXzDk4tt1DyssfcIjDb0s
-	LXFre91vxVkloKqewS+AsqCjflibRGkqmoHmAKuJIdeY/RZ62xK/A5CvVU2QNeGSQrpcq8goc6F
-	9rrvpsrICbg==
-X-Google-Smtp-Source: AGHT+IGRE1l9odt4GG6RaI8M/uHdLkQEjh5Taz0VKgQ269YOTeE9TiCNJPVhuqv1Ry405YEIQ6hIdx0yWPVe/Q==
+        bh=qDI8h7ZoQYy75CqD6I2McYIto2hpIA5emU6fq1I3LPI=;
+        b=hJmfr02WVa9kvCX9FILpFz22KYcfPcqI0u7k6s3zfH5/F5OWhSiaZCmebTXX/PuVkF
+         lLaTt/NGNvQQxNcsuOJJmsQSQfQOiYJi4o+NSj9Jsu3qJkJUnEfhunLaGWSIZ3w35yOG
+         76s8dcLt61MwreravgnmmK2S3BtBaFvANMv6d7bH3DbRr2rouI108L7bNi8fDaL3WHuk
+         INDdHJ1DQrkCYVj6FE+u2gPDkox12TxbBy8AMlVpHD7e4W3hjEpqldzqPqD4/KHmU+2M
+         rihzN6BfrPZnj4JE4OqHpyhl4UqDszy7YwB04YE0MA8Ui/31yYFrrdilDUUOueTnjX1J
+         ChVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVhjfLgIKwpysRlabL0ImWwSYHtJ6MSWs+gznmrnoJKdWd96eqvDihCDMFA28OSiP7fhprJ6GOGOJ++AvA9WQMX8HbkwNWn7nJD5iIxOQ==
+X-Gm-Message-State: AOJu0YySxY5SMJUFIMustpznpFbTJYOYpqb9mz3k74Vbbu1NqylczLtP
+	/tkZt2hg/78u60O7uYqfSfsyiGzsoiiHGZ7y7DHNW+z2EzSSmPlB/71MLrkSWoYxCCEVAzK+skO
+	XAGuzlhp1Hg==
+X-Google-Smtp-Source: AGHT+IHsHtY+bAgPNOkcmVi64EeRKQimO371NMHALyHppPPqEXYX97pSerbED4x3JFp6tor3148MLJe9OAqS8w==
 X-Received: from joychakr.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:6ea])
- (user=joychakr job=sendgmr) by 2002:a81:4c07:0:b0:62a:415b:a137 with SMTP id
- 00721157ae682-62cbb4a2295mr5047937b3.1.1717610568813; Wed, 05 Jun 2024
- 11:02:48 -0700 (PDT)
-Date: Wed,  5 Jun 2024 18:02:32 +0000
+ (user=joychakr job=sendgmr) by 2002:a05:690c:39c:b0:627:96bd:b2b with SMTP id
+ 00721157ae682-62cbb596fc6mr8780427b3.6.1717610573043; Wed, 05 Jun 2024
+ 11:02:53 -0700 (PDT)
+Date: Wed,  5 Jun 2024 18:02:33 +0000
 In-Reply-To: <20240605180238.2617808-1-joychakr@google.com>
 Mime-Version: 1.0
 References: <20240605180238.2617808-1-joychakr@google.com>
 X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
-Message-ID: <20240605180238.2617808-2-joychakr@google.com>
-Subject: [PATCH v1 11/17] mtd: ubi: nvmem: Change nvmem reg_read/write return type
+Message-ID: <20240605180238.2617808-3-joychakr@google.com>
+Subject: [PATCH v1 12/17] soc: atmel: sfr: Change nvmem reg_read/write return type
 From: Joy Chakraborty <joychakr@google.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
@@ -85,8 +85,8 @@ Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-usb@vger.kernel.org, manugautam@google.com, 
 	Joy Chakraborty <joychakr@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_110252_675892_3C65036C 
-X-CRM114-Status: GOOD (  11.43  )
+X-CRM114-CacheID: sfid-20240605_110257_605133_D8B2185E 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,33 +107,34 @@ Change nvmem read/write function definition return type to ssize_t.
 
 Signed-off-by: Joy Chakraborty <joychakr@google.com>
 ---
- drivers/mtd/ubi/nvmem.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soc/atmel/sfr.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-index 8aeb9c428e51..eab14821343d 100644
---- a/drivers/mtd/ubi/nvmem.c
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -20,8 +20,8 @@ struct ubi_nvmem {
- 	struct list_head list;
+diff --git a/drivers/soc/atmel/sfr.c b/drivers/soc/atmel/sfr.c
+index cc94ca1b494c..c1c8e59cf6fc 100644
+--- a/drivers/soc/atmel/sfr.c
++++ b/drivers/soc/atmel/sfr.c
+@@ -20,13 +20,16 @@ struct atmel_sfr_priv {
+ 	struct regmap			*regmap;
  };
  
--static int ubi_nvmem_reg_read(void *priv, unsigned int from,
--			      void *val, size_t bytes)
-+static ssize_t ubi_nvmem_reg_read(void *priv, unsigned int from,
-+				  void *val, size_t bytes)
+-static int atmel_sfr_read(void *context, unsigned int offset,
+-			  void *buf, size_t bytes)
++static ssize_t atmel_sfr_read(void *context, unsigned int offset,
++			      void *buf, size_t bytes)
  {
- 	size_t to_read, bytes_left = bytes;
- 	struct ubi_nvmem *unv = priv;
-@@ -55,7 +55,7 @@ static int ubi_nvmem_reg_read(void *priv, unsigned int from,
- 	if (err)
- 		return err;
+ 	struct atmel_sfr_priv *priv = context;
++	int ret;
++
++	ret = regmap_bulk_read(priv->regmap, SFR_SN0 + offset,
++			       buf, bytes / 4);
  
--	return bytes_left == 0 ? 0 : -EIO;
-+	return bytes - bytes_left;
+-	return regmap_bulk_read(priv->regmap, SFR_SN0 + offset,
+-				buf, bytes / 4);
++	return ret < 0 ? ret : bytes;
  }
  
- static int ubi_nvmem_add(struct ubi_volume_info *vi)
+ static struct nvmem_config atmel_sfr_nvmem_config = {
 -- 
 2.45.1.467.gbab1589fc0-goog
 
