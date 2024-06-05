@@ -4,8 +4,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D281C27C55
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 18:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2087C25B76
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 18:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,61 +13,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=YK/lKUuYEnC9aStADkzPhn4SwxAZ4bXpjjF77w/ViWc=; b=LDO9CyNUIKXzlhmf+V1qcNB7ij
-	Ilv/NyOw6aGe7m5S0n2PaIwo5SGv8s7FdhE0KAZYLOu5KwEClE1101ZRvzQJjqycjGAw0Nzm0e7vy
-	Z8dYH8L2DhHUD1dYBmr9eRBoHxTarj0Zi+cb4grFM00PA8qWkyeQziR4iAGL6AkKmPSHAVUfN4u8e
-	UU764NwT3wLgkClUu2/SQ1cdc5y5rjQogi3cnRGcqKD54zZQn/7r2PpqCe6xDPJ39GNOw18bp4i4X
-	if+bKXuM+ayD48ghZZ/gTPtW+Z+dCmdyfE9FkUALULlGVWAEodIT4OCbcCTT9LK2UcjD4kTzh+qH3
-	rleW0Xew==;
+	bh=9dMs9Q71rYOg2i/GzbJInU1ylrhrPk+uUEhO+kc/M+A=; b=ZOpyjri75uxT1fsg7wSYephPhI
+	IZoBeDh207a+prsWJ7wcWMMQgOomIhsSy6aCYb6zM5j75a50Xdu9NrUCqF+XhIV4w89D6+toGeAhn
+	g4mcsovsdawwbViN10oaceXOjUsx9wu4wOqgaoQ2gi42BK8fe4UCGF/zBcI5wu5upFv7jSIE3ZTso
+	h02H9SgbzA7GzzJV6Vvhg7crb1ZTuA/yOtKlpNQu8H5CGzgmZ65ZjWzz/800lGyXRhGctTGxh1JaF
+	tHXCS8Y2qBaZp0554UjqinSnw2E1U2QHd5wJ5WxqvMGMmsSbsmOklCZ7qNNAGBFGdAB1+UiLTN1xh
+	gxxE07pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuw1-000000073Om-1DEi;
-	Wed, 05 Jun 2024 18:00:29 +0000
+	id 1sEuw6-000000073TN-46W0;
+	Wed, 05 Jun 2024 18:00:35 +0000
 Received: from mail-yw1-x1149.google.com ([2607:f8b0:4864:20::1149])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuvm-000000073At-3n3z
+	id 1sEuvp-000000073Cr-3ylu
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jun 2024 18:00:17 +0000
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-627e6fe0303so278457b3.2
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2024 11:00:10 -0700 (PDT)
+	Wed, 05 Jun 2024 18:00:19 +0000
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-62a0eb1c809so264887b3.2
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2024 11:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717610409; x=1718215209; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1717610414; x=1718215214; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fOg+UnJ80V7MsfirTppZcqaQfW4UzyZaf6xSdj4zJek=;
-        b=CYN4WXdksiWsFe0Xt0EmOQkJ6hKZPJW6wU913/6LgpvSNOi4CtnN9lftC7feBoHj4/
-         +bE/FzAZ86EcJS808FiqDR/Y8Q2lJvLir/smaeVC8eMBNie3h5CKLfqL/8wwAslGG2Kn
-         gj4rOz3wUQZHRL4IprtZKIeYE4wlb+qDPoZ8PC0aV7aOdrYy5uPqL5WANrqNYR+GdQ6l
-         5xjVeDd3vJmpfuMKRKVTyiKrbNp429qknLzVsufQAygTGt2mSa15q0YOzJLExecF1GP5
-         mjRzQaoKuNJkvE92ERm8zVLzO/qMbc08nTk9vPjWa9djEj1sOcbQi5ug1zmH9WfL20Fq
-         5/8A==
+        bh=qvmsbFq1f0xb8qTUeLHIrwaOpt4YNpx3HYdX4+QrPhA=;
+        b=1UL4KDKPz8BjQ2nQUK1wAI9AVEkK5QoOHEH1zd+mFQDxnQtU+Wo5+9+nBBscBO0tE0
+         KRtD8BT6UO2wZU0gnRr5WKqI1Ktq6rhrFrQG17fkzufK4IlUL5zu2diNsQ70sqHY+44s
+         ZeQE2oCW+AFnfffOOhkZEJJQ5P8bdQoEGcdhYXkL93xik0IaCY9YGniEuY7Vpxv4xqTM
+         1gd8iJW8rylEY7Nw8PDxrsaw2lZXLuGWx4yXo8Kz2YZEeq5VeD4CThxud/5W+Exrt5/O
+         IlSsQvNa5Q57iUYtx07OacZiAB2SDkeYv5TvteEJtLR4M0zov49A8NIm9LX5/F1LBg2p
+         vbTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717610409; x=1718215209;
+        d=1e100.net; s=20230601; t=1717610414; x=1718215214;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fOg+UnJ80V7MsfirTppZcqaQfW4UzyZaf6xSdj4zJek=;
-        b=SpD/m7hxYG5AxFHnI1Wq/UCDhcblGvcLcboccCBLRvUjUfxvBdvfRZFzHNeZH8Qx+B
-         6e580I/1417cABsXoZPqf6WNoUR35uHtxM4ils4XPcM5FFzvo0l9MsZyLO5Tc2qpxadl
-         2sAR26IOkxU7r4otbrKmmLipKDrPAt97MLDfDlUH91pZn75wt+XetLIiRAIh4uP9JdUI
-         n2b1rFmBMN/3B1CkoB3gO174mzgBQXGXOJ3UTugmgeDX/5SuD7C10KZDzp/euaxMm1VE
-         OTLgmcoxZxMYaHNhghT6gr1sAGppjEKP+cro5kZSughpU61sUG0VWJXH9kK9U8UN733g
-         tTHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCpi9Lw0oB3P6ch1h9yBjPRZ0G30PvSeK7xvfJOxVjQkO88GCMUa6vvOrnQ2KQEatXcxy3yUoSx8qmdG3OE50cv06qAF0KFap7mPCCuA==
-X-Gm-Message-State: AOJu0Yz7+sLX2fmZ2B9PFUZ8PqlAShBPC9N2+0IXGQxeEhKKHgKz/6Xl
-	aBaIsXF9PA794Aa86FkhC9X1tDVPMJNTO8ZIf02ZEIiuODEMyuotRB4kTWGuuXjj/P27HqaqwoS
-	J3ED9sCu9/g==
-X-Google-Smtp-Source: AGHT+IGVqeHwMyqXKI282yIc4vrmNhlrddNc8SUJnwKBYMg45bAMjkiEv9ztSUrQcKvlvHzhm96dBXxGRdgPkg==
+        bh=qvmsbFq1f0xb8qTUeLHIrwaOpt4YNpx3HYdX4+QrPhA=;
+        b=pLqQRKjISoEX2VdRSy/mEoHtX/B51U9kryRG/+BisTGMdHnCn4iIHigdk+EOCfb45i
+         frqDmVX7xcwICGyGDUYxJnT4FRvvRx4ywwj53fwy7qaoR7oUnA6fdmdzdFwklKyt2OyP
+         xK+FhrBIKpSpfIlgKK9baQ1PuUAiOP3/Er7MBzjhTQppZmOJ5bUWCWDRPPzlXHqIePnm
+         u6uqXmKIOMSGopRJfA+rQMlxoggeZVFizAdLh5Zp68YyvjYyHBUVSHi/igEEz4Y8abtz
+         +vp4EVgUsCb4+iDOPVWXAy+0amvJdKBfsyzwfWvZGFtw7mwv2mSAmjyKbhqBMALW1HWk
+         rY4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXbV6tG8+y2gm2RNoBbrgZf6i/gp3FRysHaZHSB3S9S7MzX3aWcfpsSzepo1T6N8ksjefdN9v10sA2YClJJYCVEEYaeym0mI66TieiZdg==
+X-Gm-Message-State: AOJu0Yzs/5c1X7IgEwZ0DeCaViw7hehLiM3lKuV80AParp80ybQZufHd
+	aZFW49nwoojA1ndf+nHOSEpO5yynI8lWMEnGWwI2GDrme/bUAC7Igl5z4pol4FWimrNT07/ftF4
+	tN1C8ATpcbw==
+X-Google-Smtp-Source: AGHT+IHixjuOYQ1InGCAjmo87JHH7BxdpNaY95UBwdRBHB8eZTSP6/tJXCeai8kdlzm5GsjEUY/q6O3hk54taA==
 X-Received: from joychakr.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:6ea])
- (user=joychakr job=sendgmr) by 2002:a05:6902:b12:b0:dfa:7282:d6d4 with SMTP
- id 3f1490d57ef6-dfacac47b9amr605485276.6.1717610409394; Wed, 05 Jun 2024
- 11:00:09 -0700 (PDT)
-Date: Wed,  5 Jun 2024 17:59:46 +0000
+ (user=joychakr job=sendgmr) by 2002:a05:690c:6688:b0:622:cd7d:fec4 with SMTP
+ id 00721157ae682-62cbb5e6bc6mr8437267b3.9.1717610413829; Wed, 05 Jun 2024
+ 11:00:13 -0700 (PDT)
+Date: Wed,  5 Jun 2024 17:59:47 +0000
 In-Reply-To: <20240605175953.2613260-1-joychakr@google.com>
 Mime-Version: 1.0
 References: <20240605175953.2613260-1-joychakr@google.com>
 X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
-Message-ID: <20240605175953.2613260-3-joychakr@google.com>
-Subject: [PATCH v1 02/17] media: i2c: ov2740: Change nvmem reg_read/write
+Message-ID: <20240605175953.2613260-4-joychakr@google.com>
+Subject: [PATCH v1 03/17] media: i2c: video-i2c: Change nvmem reg_read/write
  return type
 From: Joy Chakraborty <joychakr@google.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
@@ -86,8 +86,8 @@ Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-usb@vger.kernel.org, manugautam@google.com, 
 	Joy Chakraborty <joychakr@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_110015_000589_BBF0BF06 
-X-CRM114-Status: GOOD (  11.30  )
+X-CRM114-CacheID: sfid-20240605_110018_021349_17975DB8 
+X-CRM114-Status: GOOD (  11.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,33 +108,32 @@ Change nvmem read/write function definition return type to ssize_t.
 
 Signed-off-by: Joy Chakraborty <joychakr@google.com>
 ---
- drivers/media/i2c/ov2740.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/media/i2c/video-i2c.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/i2c/ov2740.c b/drivers/media/i2c/ov2740.c
-index c48dbcde9877..0101ab55a5ef 100644
---- a/drivers/media/i2c/ov2740.c
-+++ b/drivers/media/i2c/ov2740.c
-@@ -1212,8 +1212,8 @@ static void ov2740_remove(struct i2c_client *client)
- 	pm_runtime_disable(&client->dev);
- }
+diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
+index 56dbe07a1c99..2bfc221b5104 100644
+--- a/drivers/media/i2c/video-i2c.c
++++ b/drivers/media/i2c/video-i2c.c
+@@ -151,12 +151,15 @@ struct video_i2c_chip {
+ 	int (*hwmon_init)(struct video_i2c_data *data);
+ };
  
--static int ov2740_nvmem_read(void *priv, unsigned int off, void *val,
--			     size_t count)
-+static ssize_t ov2740_nvmem_read(void *priv, unsigned int off, void *val,
-+				 size_t count)
+-static int mlx90640_nvram_read(void *priv, unsigned int offset, void *val,
+-			     size_t bytes)
++static ssize_t mlx90640_nvram_read(void *priv, unsigned int offset, void *val,
++				   size_t bytes)
  {
- 	struct nvm_data *nvm = priv;
- 	struct device *dev = regmap_get_device(nvm->regmap);
-@@ -1241,7 +1241,7 @@ static int ov2740_nvmem_read(void *priv, unsigned int off, void *val,
- 	pm_runtime_put(dev);
- exit:
- 	v4l2_subdev_unlock_state(sd_state);
--	return ret;
-+	return ret < 0 ? ret : count;
+ 	struct video_i2c_data *data = priv;
++	int ret;
++
++	ret = regmap_bulk_read(data->regmap, MLX90640_EEPROM_START_ADDR + offset, val, bytes);
+ 
+-	return regmap_bulk_read(data->regmap, MLX90640_EEPROM_START_ADDR + offset, val, bytes);
++	return ret < 0 ? ret : bytes;
  }
  
- static int ov2740_register_nvmem(struct i2c_client *client,
+ static struct nvmem_config mlx90640_nvram_config = {
 -- 
 2.45.1.467.gbab1589fc0-goog
 
