@@ -4,88 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C278C25B76
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 05:50:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C77C27C52
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 07:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lVYYBitEjM9ipeK/WcVyfmam5/eCSOgBPOIYhVaeYIw=; b=Yg8+EoaSrf/7wo
-	OsHAi5pMWgHp7F4xcKRbEqShWbvv6qsjQq2S9K8sP6+7IX3NaPSUR1WWxgrfFaEx9WQ92ffB1ckRr
-	fl1zNakMKgZlc6VsLKYtqauE0z7LVZofaMj2QE6vdal6NJ5CZmxqM8fEA62GNEatHI6/LwbJ0k4h6
-	5XzVJYtYroo4QpGt1g0/fQIpGVNsJA72dv1Lq7oixH0gEef/Z+R8LWMpuxVfuVpKqFjNBmylPDdaM
-	8jwVyT+E548uCR9b4Tv2pimTEheNH/KZzvzhbDRDKw97SGBlw7dozxLFUC1V5e3aOwoEqAlmwVSHP
-	+g6M6ayEQKmMWsoF+yZg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Vx1SKLIOavj8Jcx2nDs1jM8softm8zrpNZcwoH7KF4Q=; b=MVtRV+Pu1F7SZa
+	q4k3Pty6zyfIangPctrF5DBJzJS/ibzZpqS23R1Jb0oKNIH3O2UAwNnd771ntVq4z+0nrv/PzCQu2
+	8d1U/NYnqQaNLQrb6AUGDFLtidXSe/frMjPfQd7eHQvIHXPtifBAN8CA005YEX5jeU++/GEoD24L2
+	rY47uJ2RPdVlGtW89OT4/r6siqJAOHRZZpNW20byzaYfME/srNgEgOoVJZ3EMIsi+t1+RRvdY4d/M
+	sBn8h14mhPOFW1YOLrRVda7xO/7mXKHO/JY/YpNoKgRAW9PYDOHJj2B6qdnHUOMqaBd/j94QpRrHl
+	019AgakrpV8yo/bkCvbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEjXG-00000004hoW-00ZX;
-	Wed, 05 Jun 2024 05:50:10 +0000
-Received: from mail-il1-x12f.google.com ([2607:f8b0:4864:20::12f])
+	id 1sElJc-000000052h8-3rHK;
+	Wed, 05 Jun 2024 07:44:12 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEjXD-00000004hnG-2xWX
+	id 1sElJX-000000052dN-3aTq
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jun 2024 05:50:08 +0000
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-374a6b5c504so10993935ab.2
-        for <linux-mtd@lists.infradead.org>; Tue, 04 Jun 2024 22:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717566605; x=1718171405; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OXXx+G8S3LAOXSoSSC7Exyjxb+cKriQft0ZkCAiNSTo=;
-        b=EYpuqr5dTr4dkaBC+bg8ufRwlFS3Ug+HNUf/EHjYUmc7+gAYBzOlPtoRpsPIAA7Qtt
-         pSJuohxohDmiSp8EtO2krcw5yiln/PhbgPuMQ6jOUPoTcnB9eQZAkAnhhi4mV17MMkMo
-         /J+Lc4pSzOuAoSOp7YZQvWZvx7i6PiF7nvizo6WuqvNoXAmORNC8N/PLT9Sn3+tdp9np
-         s+sWMfnY27a1Cfg+tMQJq6XBHBpdrrPfTY1tVdeU/EI6YydaLJObtGH9LnafSDyonVyW
-         Ux2Y2BQI3T9u1eX/2PtcUoOVdUOW7BWHBGDFiGkOHesNXyvihEsvP0V7Fx0inTWdhhm0
-         9E8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717566605; x=1718171405;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OXXx+G8S3LAOXSoSSC7Exyjxb+cKriQft0ZkCAiNSTo=;
-        b=fCo/j2WzO6otDLS92rRyQDBnVyyw1AqfWVjepVuL3PQuRxTamTvu7tEqvI0B7xfpnx
-         SR4KFS5gqk4pyKQEU6UUOFBI93du55xezNsBYBqzRFOxvEVzuFGZfLYlT0edz7mONMu5
-         My56433ULXgaQMowj2f7CiIART6Q8KNZR2JljN8QmDucvYm+9CTy3+bDmVM3z7YnsljP
-         UnEAReKdeRZsHYYW7hhkdZSFSNlhuYD8inegSW5X2xrBBeC4Fl4vLh4Qz4qoueqfd9rl
-         Ix22anVsWO3ZavkkPKVKLLqVkqpNAgDhjWuKyiuHviXBYSAtotybW5uBd97VXPWaeF5j
-         zWsA==
-X-Forwarded-Encrypted: i=1; AJvYcCW34y3Vwf2h5VRmVq5P3g2612ORUPDRyl5u9TO/cxS5Zm0vmpVwBMYT40jICC0Yufp1zLJHmLNoqj4r1A9YkjWK7vZ2W1kgTHJ0fm5Jhw==
-X-Gm-Message-State: AOJu0Ywt6U8mSJLFC4Tp/NX/RVO7+BEOol4TbevmWAL8Dt1n3hSpUkcH
-	R0KiCMeTniESKaxo+/20WC71xkMCWOYfJLGnHSrk2FEoaMK21+YR
-X-Google-Smtp-Source: AGHT+IG38HU/vMh5r37/64xeKQTWdknfeAX9UDHPB1tG+qQoA83kVSKVnVC84EjBIYaGa+AdYwOc5w==
-X-Received: by 2002:a05:6e02:1d05:b0:374:9af0:5f38 with SMTP id e9e14a558f8ab-374b1f55db6mr14629265ab.32.1717566605527;
-        Tue, 04 Jun 2024 22:50:05 -0700 (PDT)
-Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6c3598487d9sm7845318a12.70.2024.06.04.22.50.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 22:50:05 -0700 (PDT)
-Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 3FBDD80587;
-	Wed,  5 Jun 2024 13:52:59 +0800 (CST)
-From: Cheng Ming Lin <linchengming884@gmail.com>
-To: miquel.raynal@bootlin.com,
-	dwmw2@infradead.org,
-	computersforpeace@gmail.com,
-	marek.vasut@gmail.com,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: richard@nod.at,
-	alvinzhou@mxic.com.tw,
-	leoyu@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] mtd: spinand: macronix: Add support for serial NAND flash
-Date: Wed,  5 Jun 2024 13:48:58 +0800
-Message-Id: <20240605054858.37560-1-linchengming884@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	Wed, 05 Jun 2024 07:44:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B21C01BF20A;
+	Wed,  5 Jun 2024 07:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1717573442;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gMazlr+f0ay0OQRRaQaLtVjPs1acjHVrV/9BzKL3MHk=;
+	b=QGKdGKKgTQwaxwc7fzB9V3qEm+4vNF63AtrXImg09JWC6pPjni7y6vu9B4TIVsawzG1ri+
+	utuOAP2q5gaPux+W+FabcM5e8JGR74mA6aitOyTySvwAynZ4qPIyAjf5ElVLFusrKaAeIO
+	QNJl7eBavwHYr0tiIfNM+bt+3aENtas+Yd0pmM5FRcYAv5E3Pv+ZIMJUbbz7TPs3hjlM6n
+	giURPVPgGjS2A/1+/WPXZDGStYZpaBe6t8o850O10cBLFosy6TF67428plfi6cVPrKr3b0
+	4lmf6Ojyyw74JLYMGSFqAZ8UsuVrk2ARRxAzjHSucGncWW1hT1WYpyUxLZjlpQ==
+Date: Wed, 5 Jun 2024 09:43:59 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 0/2] mtd: use 'time_left' instead of 'timeout' with
+ wait_*() functions
+Message-ID: <20240605094359.53a6d8ca@xps-13>
+In-Reply-To: <20240604212919.5038-4-wsa+renesas@sang-engineering.com>
+References: <20240604212919.5038-4-wsa+renesas@sang-engineering.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240604_225007_769230_4BF61D1B 
-X-CRM114-Status: UNSURE (   9.14  )
+X-CRM114-CacheID: sfid-20240605_004408_181755_CD87D24A 
+X-CRM114-Status: UNSURE (   9.33  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -98,90 +70,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Cheng Ming Lin <chengminglin@mxic.com.tw>
-
-commit c374839f9b4475173e536d1eaddff45cb481dbdf upstream.
-
-MX35UF{1,2,4}GE4AD and MX35UF{1,2}GE4AC have been
-merged into Linux kernel mainline through upstream commit.
-
-For SPI-NAND flash support on Linux kernel LTS v5.4.y,
-add SPI-NAND flash MX35UF{1,2,4}GE4AD and MX35UF{1,2}GE4AC in id tables.
-
-Those five flashes have been validated on Xilinx zynq-picozed board and
-Linux kernel LTS v5.4.y.
-
-Cc: stable@vger.kernel.org # 5.4.y
-Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
----
- drivers/mtd/nand/spi/macronix.c | 45 +++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-index f18c6cfe8ff5..e1446798bfb3 100644
---- a/drivers/mtd/nand/spi/macronix.c
-+++ b/drivers/mtd/nand/spi/macronix.c
-@@ -132,6 +132,51 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout, NULL)),
-+	SPINAND_INFO("MX35UF4GE4AD", 0xb7,
-+		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
-+				     mx35lf1ge4ab_ecc_get_status)),
-+	SPINAND_INFO("MX35UF2GE4AD", 0xa6,
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
-+				     mx35lf1ge4ab_ecc_get_status)),
-+	SPINAND_INFO("MX35UF2GE4AC", 0xa2,
-+		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
-+				     mx35lf1ge4ab_ecc_get_status)),
-+	SPINAND_INFO("MX35UF1GE4AD", 0x96,
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
-+				     mx35lf1ge4ab_ecc_get_status)),
-+	SPINAND_INFO("MX35UF1GE4AC", 0x92,
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
-+				     mx35lf1ge4ab_ecc_get_status)),
- };
- 
- static int macronix_spinand_detect(struct spinand_device *spinand)
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgV29sZnJhbSwKCndzYStyZW5lc2FzQHNhbmctZW5naW5lZXJpbmcuY29tIHdyb3RlIG9uIFR1
+ZSwgIDQgSnVuIDIwMjQgMjM6Mjk6MTkKKzAyMDA6Cgo+IFRoZXJlIGlzIGEgY29uZnVzaW5nIHBh
+dHRlcm4gaW4gdGhlIGtlcm5lbCB0byB1c2UgYSB2YXJpYWJsZSBuYW1lZCAndGltZW91dCcgdG8K
+PiBzdG9yZSB0aGUgcmVzdWx0IG9mIHdhaXRfKigpIGZ1bmN0aW9ucyBjYXVzaW5nIHBhdHRlcm5z
+IGxpa2U6Cj4gCj4gICAgICAgICB0aW1lb3V0ID0gd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0
+KC4uLikKPiAgICAgICAgIGlmICghdGltZW91dCkgcmV0dXJuIC1FVElNRURPVVQ7Cj4gCj4gd2l0
+aCBhbGwga2luZHMgb2YgcGVybXV0YXRpb25zLiBVc2UgJ3RpbWVfbGVmdCcgYXMgYSB2YXJpYWJs
+ZSB0byBtYWtlIHRoZSBjb2RlCj4gb2J2aW91cyBhbmQgc2VsZiBleHBsYWluaW5nLgoKR29vZCBp
+ZGVhLiBUaGUgd2FpdGluZyBmdW5jdGlvbnMgYXJlIGdlbmVyYWxseSBjb25mdXNpbmcgYmVjYXVz
+ZSB0aGUKc2VtYW50aWNzIG9mIHRoZSByZXR1cm4gdmFsdWVzIGFyZSBkaWZmZXJlbnQsIHNvIHRo
+aXMgaXMgYSBnb29kIGZpcnN0CnN0ZXAsIEknbGwgdGFrZSB0aGVtIHRocm91Z2ggbXRkLW5leHQg
+c29vbi4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
