@@ -4,90 +4,138 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30E9AC25B76
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 20:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC7E1C25B76
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 21:18:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
-	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=5UT8WgvsPoW2AtNnCv+Th4BShg3/dvBd+PIcTR/tQcM=; b=o/wWL7mVY8i4I5ycqJJLOmkJiW
-	NyVaOcF4C3pN524YVR6uighI3iIDiYLLldfK9ZeQxn9RBa5xGXYL+xFF7NGuWbpzmVpnkPqIwEYWv
-	y8lhHnB3GdI8Spc0xNsMztlTHdVYpQQ5b+I2s0E0m2Q1zM5Qzhvq35McpZxv0AqTbEwQapYExe8mt
-	JOmq2YsY/49Y1xm2kUDp0JVto8qyNQNNxM63br6qlo5xWvfMwaZL6M+ni6k5L408KolUUNpvnK6J8
-	SxBssFwc6PfqvSC68su0qh6PgnqjNYh1P3X/AF8RfH5Jp8ky5R604x04/UsrcwOzHfcnwlABKniIv
-	XbWvk6rg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=QkgbgmvKFMw1o15nHRsjUjY+qFf4KdCeCXjMdn4tDk8=; b=v7UPIeMV8C9ksK
+	z4Kic6N2xMINy1oDcECa327KvsSgmqFJXYG6E8wlnawAq3XkESSqI0FsrYDydGZmQiUH7fpXSYRhW
+	7LGikh+GVZpcWKdx4qsqbD6gAVW1Nhkq2HDgUjx1lo3YsGehLHVSvwljwxKIlnj+RHY/GqL/YDRbt
+	QLESzBaUEZBmwGm9FgAv5YdpkJ6JGe211n6dCJSR2zDVX5zLpOy7lqG2pKw21TK027hWX69wSnaHm
+	Z3WreoMOO6XMC7I5x5i08MFtdSCYAc6YdEFY9FypWXKfGfwwmgfSUxXUJz5F3wKVYG7z35iQAJYen
+	RPjpAMcD95nMs2Fy5wPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEx43-00000007Qn9-1Bpk;
-	Wed, 05 Jun 2024 20:16:55 +0000
-Received: from mail-yw1-x1149.google.com ([2607:f8b0:4864:20::1149])
+	id 1sEy1Z-00000007a4r-21w0;
+	Wed, 05 Jun 2024 21:18:25 +0000
+Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuwB-000000073Tl-3RE1
-	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jun 2024 18:01:05 +0000
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-62a2aec8521so607577b3.0
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2024 11:00:35 -0700 (PDT)
+	id 1sEy1V-00000007a4L-2JNG;
+	Wed, 05 Jun 2024 21:18:23 +0000
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-681953ad4f2so188677a12.2;
+        Wed, 05 Jun 2024 14:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717610434; x=1718215234; darn=lists.infradead.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MVw14u+NFBf2FJ7HWAHlLpDDoc6dqDnKHHZFCo9Dzmo=;
-        b=G2z68Q42h8BopQasNC59Hs1iU6alvuTCNS3++OdmKiQ5yn8O3op6CCl2OMR44KEs3h
-         tqXBYH3WeAjYKGLPhr0uuEuEsCOaRxv5R74eUo3eF4kZTZlggp+gsYsL2FJf2atqLRI8
-         wSpwd9nDpECCC9+s+cbRMCa4afFaxTd0Cn00gsyketdA5vKiH8P8Efxo/+LBtpnrRTX7
-         cco5CJRd9j2SDjg5tse/3onRoO5soomEeS0lXJ0RErL9Xl5ioyFWURmOHEqBK3mUFtkX
-         9V7k+lpdhW2OYZ8HOrxuy+Tyc4jAgwhZsxlwR58fJCbUcR3H2WHOxA/LilsKzzmW2SL4
-         JIXg==
+        d=gmail.com; s=20230601; t=1717622297; x=1718227097; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=0TC939jtnzolf29JXwiWps/F6ODviUjUE8F+jRVq7Bg=;
+        b=AO3JwLPiOrahP+1j6eYwzfqNVwwM2ydyIr/+0huzf6vX+irn4o8ZJtUuyq83z3lahM
+         CyaMd7NfmW9O6plCDPm9/rxa+Rk55O7mGSMLPSSr/ydvVCpL7oeRbvriPpBWF6XVMa5u
+         FGAQDc48/KfIpSc/BdtIZLqZVgB5445Sd4pJ09h9tm6CVJ+PuRpmtf0NO5ieoIUXrmlk
+         Ob8f0pvsbXHsCnkaDxSAyZv0pXUbqkWV6Rxq7tFkncwsoUZp8DL6QDvkFLQaqhsNwJzN
+         6v5rGvSoh0YBRbUgTW1qcePWIZTpSf4/ZY0F17YOBSh0MqDEx+d0/VyNId4TRW50b9A8
+         aqPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717610434; x=1718215234;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MVw14u+NFBf2FJ7HWAHlLpDDoc6dqDnKHHZFCo9Dzmo=;
-        b=DT2OgH1HuUrOvIEds5ZYDUiOSesJkwAwH7m3LH7SkoKu92ERPDNV025i8JhCumlX3P
-         IJ7R9DDb5E8UvtFTU28hTJbtLhCG9OCIUe+4U+q9NVHh/CgFBrfcEeGfErSOnxn6l3uN
-         OILmovKryWSpviBVzd1Ley6w4GwcDQlzA2F+HJWu/3dbcJ21AOR4Quazt3fT3mu9cEyY
-         0IGqsx4IqeDaPzJhBN4y6/QaUQzYu9Dp/3D8xD7ywhuCMhcCuFmn8MMYknydqwsA7Vuk
-         oSyr/mI8PN8nmDY/imEAUascGviioHDSucoU3PKuYo246G/sa8YkeVz6gYNa8TM2OSd/
-         9XNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMP42X5LSiO7FJqGkKG42P/TPznFyMHZaEKs695rkoKntQAzPnZhHVJv/DHwW2ozU2uNKWSHSwx17gG0H6fUp4SOa4pHsllUFluSRgow==
-X-Gm-Message-State: AOJu0YxjBQz5REEh8yICRlX0Fjdh50Migtqj4IPVm+9coWeM7pJVl6lB
-	X52GEIO0FSEA1T7ptVadKO+IS1325YgYWA0RIo6bpo9sFBOzPL1aRZJiOhXYDxZv9cyXptOzOzk
-	wrdUykbWNrA==
-X-Google-Smtp-Source: AGHT+IFNKfAUW4OMaL9qXpdep3tJtwg2SPr15+NfVtMPZB9WLEiwmeB7gCF1Z3uW4GFYC8/zL1lL4yiz6W2izA==
-X-Received: from joychakr.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:6ea])
- (user=joychakr job=sendgmr) by 2002:a05:690c:39c:b0:627:96bd:b2b with SMTP id
- 00721157ae682-62cbb596fc6mr8752147b3.6.1717610434368; Wed, 05 Jun 2024
- 11:00:34 -0700 (PDT)
-Date: Wed,  5 Jun 2024 17:59:52 +0000
-In-Reply-To: <20240605175953.2613260-1-joychakr@google.com>
-Mime-Version: 1.0
+        d=1e100.net; s=20230601; t=1717622297; x=1718227097;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0TC939jtnzolf29JXwiWps/F6ODviUjUE8F+jRVq7Bg=;
+        b=uxggb+DDl2scQvwjGZnvwspz0ImEe5s9bM1RnJm+Pq6RGtPUYelTvATZ0/+/v9HEeX
+         pOeqKXk4l/PSGB6RbcsHf61Eo0Z1Wg9L5JplSCvhWVPE4bFaOZxjyecYTFIh0XyDykY/
+         qihxbsAJiedWkP+Vbq946hg7H/pBt4BcuSATJ6Aj4BQcgorhYEASAKhUYRFDewuM1UOm
+         zo2vQPUk+h650JAUKZrUwuxjSvxWln5qSiK7Qha8IUR2Fgb/Qky2timUvM0byfU8nqsc
+         Hl5gmi+z042UQoLu8mgtAqXiBXwQQZa2t5AK1k6otMxLzT6C2FhGEkec2mnCblpwThQD
+         GCxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPlxl0VwQqx0iQBOUpmGu84Q6T9Ld4UM+mjKe62CyqLxCTFYmIZnmjhikwEPnLvgtIvFNjiIJ7AkfLex0Je1pi3JgHWwdwJ9iHOGsshsxIEFXgBbvIMtHSYqmniTkXD+DwCxEjRK6pZ47mEA+81KT/dk/GcGAh8CYhgXY/JIoutbLKhY3eXy9zbep62uh2UjLvtZw8V+8=
+X-Gm-Message-State: AOJu0YxnE5fKlwnyFPzyDdlBXtC4//Id4RH/k9J77+IAupqxXR2L9Lrf
+	VZ/snD67BiHxBV3di53N/euaLgeZy0Xbh8QN2m1kO6qk5fy8pmaE
+X-Google-Smtp-Source: AGHT+IH6mpaSlgZbj9wjlN2+g8jBX7TUrx4Tkes9rmgCSfmSHpu1TLrHJW7JJ/KoS4CQMuRhy5Masw==
+X-Received: by 2002:a17:90b:128e:b0:2c2:8d2c:8292 with SMTP id 98e67ed59e1d1-2c28d2c8317mr2042051a91.48.1717622296577;
+        Wed, 05 Jun 2024 14:18:16 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c28066d59fsm1922215a91.24.2024.06.05.14.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Jun 2024 14:18:15 -0700 (PDT)
+Message-ID: <20a9ea0b-74d0-47b2-8dc0-2b5e7d070d38@roeck-us.net>
+Date: Wed, 5 Jun 2024 14:18:13 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 05/17] misc: ds1682: Change nvmem reg_read/write return
+ type
+To: Joy Chakraborty <joychakr@google.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Bingbu Cao <bingbu.cao@intel.com>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-usb@vger.kernel.org, manugautam@google.com
 References: <20240605175953.2613260-1-joychakr@google.com>
-X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
-Message-ID: <20240605175953.2613260-9-joychakr@google.com>
-Subject: [PATCH v1 08/17] misc: eeprom: 93xx46: Change nvmem reg_read/write
- return type
-From: Joy Chakraborty <joychakr@google.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
-	Bingbu Cao <bingbu.cao@intel.com>, Zhihao Cheng <chengzhihao1@huawei.com>, 
-	Jerome Brunet <jbrunet@baylibre.com>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	linux-usb@vger.kernel.org, manugautam@google.com, 
-	Joy Chakraborty <joychakr@google.com>
+ <20240605175953.2613260-6-joychakr@google.com>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240605175953.2613260-6-joychakr@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_110040_756433_2742FFC1 
-X-CRM114-Status: GOOD (  11.07  )
+X-CRM114-CacheID: sfid-20240605_141821_624213_02C8EB6D 
+X-CRM114-Status: GOOD (  13.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,71 +147,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Change nvmem read/write function definition return type to ssize_t.
+On 6/5/24 10:59, Joy Chakraborty wrote:
+> Change nvmem read/write function definition return type to ssize_t.
+> 
+> Signed-off-by: Joy Chakraborty <joychakr@google.com>
+> ---
+>   drivers/misc/ds1682.c | 16 ++++++----------
+>   1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/misc/ds1682.c b/drivers/misc/ds1682.c
+> index 5f8dcd0e3848..953341666ddb 100644
+> --- a/drivers/misc/ds1682.c
+> +++ b/drivers/misc/ds1682.c
+> @@ -198,26 +198,22 @@ static const struct bin_attribute ds1682_eeprom_attr = {
+>   	.write = ds1682_eeprom_write,
+>   };
+>   
+> -static int ds1682_nvmem_read(void *priv, unsigned int offset, void *val,
+> -			     size_t bytes)
+> +static ssize_t ds1682_nvmem_read(void *priv, unsigned int offset, void *val,
+> +				 size_t bytes)
+>   {
+>   	struct i2c_client *client = priv;
+> -	int ret;
+>   
+> -	ret = i2c_smbus_read_i2c_block_data(client, DS1682_REG_EEPROM + offset,
+> +	return i2c_smbus_read_i2c_block_data(client, DS1682_REG_EEPROM + offset,
+>   					    bytes, val);
+> -	return ret < 0 ? ret : 0;
+>   }
+>   
+> -static int ds1682_nvmem_write(void *priv, unsigned int offset, void *val,
+> -			      size_t bytes)
+> +static ssize_t ds1682_nvmem_write(void *priv, unsigned int offset, void *val,
+> +				  size_t bytes)
+>   {
+>   	struct i2c_client *client = priv;
+> -	int ret;
+>   
+> -	ret = i2c_smbus_write_i2c_block_data(client, DS1682_REG_EEPROM + offset,
+> +	return i2c_smbus_write_i2c_block_data(client, DS1682_REG_EEPROM + offset,
+>   					     bytes, val);
 
-Signed-off-by: Joy Chakraborty <joychakr@google.com>
----
- drivers/misc/eeprom/eeprom_93xx46.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+i2c_smbus_write_i2c_block_data() does not return the number of bytes written.
+It returns either 0 or an error code.
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 45c8ae0db8f9..5d618a13fe5a 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -79,10 +79,11 @@ static inline bool has_quirk_extra_read_cycle(struct eeprom_93xx46_dev *edev)
- 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE;
- }
- 
--static int eeprom_93xx46_read(void *priv, unsigned int off,
--			      void *val, size_t count)
-+static ssize_t eeprom_93xx46_read(void *priv, unsigned int off,
-+				  void *val, size_t count)
- {
- 	struct eeprom_93xx46_dev *edev = priv;
-+	size_t bytes_read = count;
- 	char *buf = val;
- 	int err = 0;
- 	int bits;
-@@ -158,7 +159,7 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
- 
- 	mutex_unlock(&edev->lock);
- 
--	return err;
-+	return err < 0 ? err : bytes_read;
- }
- 
- static int eeprom_93xx46_ew(struct eeprom_93xx46_dev *edev, int is_on)
-@@ -258,12 +259,13 @@ eeprom_93xx46_write_word(struct eeprom_93xx46_dev *edev,
- 	return ret;
- }
- 
--static int eeprom_93xx46_write(void *priv, unsigned int off,
-+static ssize_t eeprom_93xx46_write(void *priv, unsigned int off,
- 				   void *val, size_t count)
- {
- 	struct eeprom_93xx46_dev *edev = priv;
- 	char *buf = val;
- 	int i, ret, step = 1;
-+	size_t bytes_written = count;
- 
- 	if (unlikely(off >= edev->size))
- 		return -EFBIG;
-@@ -304,7 +306,7 @@ static int eeprom_93xx46_write(void *priv, unsigned int off,
- 
- 	/* erase/write disable */
- 	eeprom_93xx46_ew(edev, 0);
--	return ret;
-+	return ret < 0 ? ret : bytes_written;
- }
- 
- static int eeprom_93xx46_eral(struct eeprom_93xx46_dev *edev)
--- 
-2.45.1.467.gbab1589fc0-goog
+Guenter
 
 
 ______________________________________________________
