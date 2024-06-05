@@ -4,71 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37EE1C25B76
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 17:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D76AC27C52
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 18:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=i6V4CO/mMwffwvq3sgD22AjH7Dt0melwOO3MnDvzbYo=; b=wtLZVI864nPjHZ/QUnKP8zcdRr
-	uG1giiZsYip9VZGwYCGEhMrZXpV5V2ZC5nyQqEFsYiuVKDFOELBb/tElZDNnbz7cykM9sE0YWeLs1
-	7lO078ldZoiwZQRreasmnlzQ/JqkP+4lELY7Ng4dJvfmc0+Ok+B+XYXFhoQ1T3X68QQps4yc5ASr1
-	/Xi0lBh6t8vaX7uCsyNZlQMWy0IXdKdXlhH4arlrNOJQsat2NTvvBzKn+jj/bQl+frYSOQ/o5V0eu
-	j3Nsv62x8OSojBiH61r9cCBb2fbEJQKpniQWEUa99fzUIygFojFNXR0c9ijviiBbGvDttOGE8fBj4
-	0P3BpFHA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
+	Mime-Version:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=bF2RGjs3E4WEDJl/F/oGBAfs0VRI9JOK/PZflLGqAuk=; b=vYn
+	ngQ9cVY72dGjiC6NjcVUhr3fGdwZgSLKPvViM19QikXxfeVLzJ/eSiQTgmUOKRJK1MleqONY0DvcR
+	PCz+kIzX/SBbLPv3JdLguTOzX2zKA7wNQ8OTu7+L2t3CxjFxp1O6rSuxZWhhSkuBuqp7GfgMOx+Hp
+	a+zb1oW0yOHGk2IHhk+bsj3NHKhw/fv4F1VXEOqnbB2Jmxy+kNewpNBBriqJhxT/cBkDgHQ7m08mY
+	lRvfTd9pD2qIwi+idfbD3C2dfqc4qUs8dFeVIFNeUvquAzcHLQuI3gBCHmmy+qSNd4hxdF4go0G2c
+	JdiQg42+67El/ZmQlC0ODCL8AH8RdnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuct-000000070NA-1xu5;
-	Wed, 05 Jun 2024 17:40:43 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sEuvm-000000073Ct-1t8t;
+	Wed, 05 Jun 2024 18:00:14 +0000
+Received: from mail-yw1-x114a.google.com ([2607:f8b0:4864:20::114a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEucq-000000070MR-2rEs
+	id 1sEuvg-0000000737i-37RC
 	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jun 2024 17:40:42 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A627161917;
-	Wed,  5 Jun 2024 17:40:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E44ACC2BD11;
-	Wed,  5 Jun 2024 17:40:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717609238;
-	bh=CKS6iYqS40zJomaUzCL7cLtl2HG//3bkjoqgTiDMYRE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KYqTCkXZaR/rfoTARNJgJLoRy174DfcfO0fElOzeLUNBLw5xypFs97Jw9z1pGh9Q3
-	 gfOP60FUfdsF+0H4LOrwRRxTYgfZy6o17y9xvs853VLINN4TSf64mOUBLS21E2Nl5u
-	 e5Fosn4cV1sjvxeKQsrXV6ZIa92COVgprwVheklrnmF7Bo4w/3EeL2QCTupKVO4fnh
-	 Dj3P9O4Y6mkfLAh0EVddZCJ7XnSHTG/TSeBzVlV98evTInw1ASfbzOVSzbBowIDjHe
-	 ZxUJTfmCUpDFrAUsQdkj1uiyJXI0iitH8M8TP+mi6MBebmAXyq6bI0ZRIGLd1JkVbs
-	 1zBYdiiZ9asqg==
-Date: Wed, 5 Jun 2024 18:40:32 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Thorsten Scherer <t.scherer@eckelmann.de>,
-	Marek Vasut <marex@denx.de>, Imre Kaloz <kaloz@openwrt.org>,
-	Andrew Lunn <andrew@lunn.ch>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: deprecate Everspin MRAM
- devices
-Message-ID: <20240605-cosmetics-upgrade-837934256ede@spud>
-References: <20240604074231.1874972-1-mwalle@kernel.org>
- <20240604-ladylike-gout-6fd6ae992712@spud>
- <D1RF2GI60GXE.3A3W7Q3W19GPN@kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <D1RF2GI60GXE.3A3W7Q3W19GPN@kernel.org>
+	Wed, 05 Jun 2024 18:00:13 +0000
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-62a089511f9so15297967b3.1
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2024 11:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1717610401; x=1718215201; darn=lists.infradead.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w5RPl7PD7LMs1k1njsQ/RXiUssQb7CTl+XBmOvI3R5A=;
+        b=yECAyktsMmMfokeRy/1WsqJE0UcU4iJEt0wytqZ/QBs2s8BwUQpzFoSP600W7EO6T2
+         7GGUuPYXkbqIqRkzPiqFTbjb33040JkRPfghjJn6NL4kqmUXu03y3b4iiIak8yFcHv+2
+         NkE/f+IV5xuYmj/1OP8tk19GPKWIXnfAUlwqBcaPVHqSvDtn0tSYF+gfi6P9gZGCfBn/
+         58+LVqY+RQbZGvO6RuiPHxd621aidYGlMIcXURRplH/ov+ebt0K1Izt5u6qf8SkZuhdP
+         yi0ItZN1S4ccRBGcr9J8+rFuKvcwr3OoaoctG6oYAwfETsNK3KL8xavkNo0W6QiGRwgm
+         B56Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717610401; x=1718215201;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w5RPl7PD7LMs1k1njsQ/RXiUssQb7CTl+XBmOvI3R5A=;
+        b=YKNTCmrHd89QAb1Hck6fH4JIV/WfOHSVuieXr6Jm/4FwCjeryAwFE9qXDmA3gGzcTw
+         TMd7iReW8ygfL9akbvchK1W9odZFM3l0KJpDf/u08Wvw0IclMcGDU/82J2j1PwFB6Lp9
+         dDbWcqmHW7cZQmYtnDOyvVF3xZGU75FZYCgVfPVV7AEAmctlFaStSUQ3+lMmPNHoV7HV
+         14ow+Ty4oK/SXiQkQ8neJzoAwbVptH9/83FhiCa9DshqcvINc41JysD6FixvWvtYfIu6
+         HcJEJYP+/YT4y6dzk5zqlWEbumKqrqaejcKcT/p5jyjr/kNRrNFyA/x1Q4q/njLOy1Gu
+         mLRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU8LsdRfqD8S0/GfRrvX2WQiA9MieaocULuIkmgUyd/PEi0rKAF8jMbVeUE6JP8kK41UgKCMe/1lCzaYlDCsBU/8d2VZiOL5wAGKe+mDg==
+X-Gm-Message-State: AOJu0YxcdQcvKcf7z2av87fESvvoI9m6C2vdbCaJ2cddNXEbUxOMW3S5
+	dbG3D85ecsf4POJkTKxtSOHHdyPSGSn2zY6FVCg7xQZ0b+rSnXjBo/MNU6iAILYPGC0waT0NpWQ
+	lmqK5j3IGTw==
+X-Google-Smtp-Source: AGHT+IE3beT3+LJiyuyeey70O4vTmt9cNoEU8h7bwGC3fodiNqs+98CXh8Kyq/MReppn/4vWIwzPR7Cf0wAFHw==
+X-Received: from joychakr.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:6ea])
+ (user=joychakr job=sendgmr) by 2002:a05:6902:987:b0:dfa:7552:e09e with SMTP
+ id 3f1490d57ef6-dfade7e34cbmr71646276.0.1717610400689; Wed, 05 Jun 2024
+ 11:00:00 -0700 (PDT)
+Date: Wed,  5 Jun 2024 17:59:44 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
+Message-ID: <20240605175953.2613260-1-joychakr@google.com>
+Subject: [PATCH v1 00/17] nvmem: Handle change of return type in
+ reg_read/write() definition
+From: Joy Chakraborty <joychakr@google.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Lars-Peter Clausen <lars@metafoo.de>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	Bingbu Cao <bingbu.cao@intel.com>, Zhihao Cheng <chengzhihao1@huawei.com>, 
+	Jerome Brunet <jbrunet@baylibre.com>, 
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-iio@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-usb@vger.kernel.org, manugautam@google.com, 
+	Joy Chakraborty <joychakr@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_104040_851285_9B6B0D4C 
-X-CRM114-Status: GOOD (  48.23  )
+X-CRM114-CacheID: sfid-20240605_110008_808728_014E3E10 
+X-CRM114-Status: GOOD (  10.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,159 +96,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5672177627948387215=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+This patch series facilitates compilation post the change in definition
+of nvmem_reg_read_t and nvmem_reg_write_t callback in
+https://lore.kernel.org/all/171751721565.70889.16944298203785853489.b4-ty@linaro.org/
 
---===============5672177627948387215==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="o639TIyIFJbIbFT2"
-Content-Disposition: inline
+Currently the nvmem core change is picked on
+https://git.kernel.org/pub/scm/linux/kernel/git/srini/nvmem.git/log/?h=for-next
 
+---
+V1 Changes : Change read/write return type to ssize_t and handle
+relevant logic changes
+---
 
---o639TIyIFJbIbFT2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Joy Chakraborty (17):
+  hwmon: pmbus: adm1266: Change nvmem reg_read/write return type
+  media: i2c: ov2740: Change nvmem reg_read/write return type
+  media: i2c: video-i2c: Change nvmem reg_read/write return type
+  iio: pressure: bmp280: Change nvmem reg_read/write return type
+  misc: ds1682: Change nvmem reg_read/write return type
+  misc: eeprom: at24: Change nvmem reg_read/write return type
+  misc: eeprom: at25: Change nvmem reg_read/write return type
+  misc: eeprom: 93xx46: Change nvmem reg_read/write return type
+  misc: mchp_pci1xxxx: Change nvmem reg_read/write return type
+  mtd: core: Change nvmem reg_read/write return type
+  mtd: ubi: nvmem: Change nvmem reg_read/write return type
+  soc: atmel: sfr: Change nvmem reg_read/write return type
+  w1: slaves: w1_ds250x: Change nvmem reg_read/write return type
+  thunderbolt: switch: Change nvmem reg_read/write return type
+  thunderbolt: retimer: Change nvmem reg_read/write return type
+  soc: tegra: fuse: Change nvmem reg_read/write return type
+  rtc: Change nvmem reg_read/write return type
 
-On Tue, Jun 04, 2024 at 07:42:16PM +0200, Michael Walle wrote:
-> On Tue Jun 4, 2024 at 7:01 PM CEST, Conor Dooley wrote:
-> > On Tue, Jun 04, 2024 at 09:42:31AM +0200, Michael Walle wrote:
-> > > These devices are more like an AT25 compatible EEPROM instead of
-> > > flashes. Like an EEPROM the user doesn't need to explicitly erase the
-> > > memory, nor are there sectors or pages. Thus, instead of the SPI-NOR
-> > > (flash) driver, one should instead use the at25 EEPROM driver.
-> > >=20
-> > > Signed-off-by: Michael Walle <mwalle@kernel.org>
-> > > Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > > Cc: Thorsten Scherer <t.scherer@eckelmann.de>
-> > > Cc: Marek Vasut <marex@denx.de>
-> > > Cc: Imre Kaloz <kaloz@openwrt.org>
-> > > Cc: Andrew Lunn <andrew@lunn.ch>
-> > > Cc: Flavio Suligoi <f.suligoi@asem.it>
-> > > ---
-> > > The referenced binding only supports the true AT25 compatible EEPROMs
-> > > where you have to specify additional properties like size and page si=
-ze
-> > > or cypress FRAM devices where all the properties are discovered by the
-> > > driver. I don't have the actual hardware, therefore I can't work on a
-> > > proper driver and binding. But I really want to deprecate the use of
-> > > these EEPROM like devices in SPI-NOR. So as a first step, mark the
-> > > devices in the DT bindings as deprecated.
-> > >=20
-> > > There are three in-tree users of this. I hope I've CCed all the relev=
-ant
-> > > people. With the switch to the at25 driver also comes a user-space
-> > > facing change: there is no more MTD device. Instead there is an "eepr=
-om"
-> > > file in /sys now, just like for every other EEPROM.
-> > >=20
-> > > Marek already expressed, that the sps1 dts can likely be removed
-> > > altogether. I'd like to hear from the other board DTS maintainers if
-> > > they seem some problems moving to the EEPROM interface - or maybe that
-> > > device isn't used at all anyway. So in the end, we can hopefully move
-> > > all the users over to the at25 driver.
-> > > ---
-> > >  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 9 +++++++=
-+-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml=
- b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > > index 6e3afb42926e..2dccb6b049ea 100644
-> > > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > > @@ -21,7 +21,6 @@ properties:
-> > >                (m25p(40|80|16|32|64|128)|\
-> > >                n25q(32b|064|128a11|128a13|256a|512a|164k)))|\
-> > >                atmel,at25df(321a|641|081a)|\
-> > > -              everspin,mr25h(10|40|128|256)|\
-> > >                (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|2=
-5635e)|\
-> > >                (mxicy|macronix),mx25u(4033|4035)|\
-> > >                (spansion,)?s25fl(128s|256s1|512s|008k|064k|164k)|\
-> > > @@ -42,6 +41,14 @@ properties:
-> > >                - spansion,s25fs512s
-> > >            - const: jedec,spi-nor
-> > >        - const: jedec,spi-nor
-> > > +
-> > > +      # Deprecated bindings
-> > > +      - items:
-> > > +          - pattern: "^everspin,mr25h(10|40|128|256)$"
-> > > +          - const: jedec,spi-nor
-> > > +        description:
-> > > +          Deprecated binding, use Documentation/devicetree/bindings/=
-eeprom/at25.yaml.
-> > > +        deprecated: true
-> >
-> > The idea here seems okay, but directing people to use the at25 binding,
-> > without actually documenting the replacement compatibles etc is far from
-> > ideal. I think even a wording change that points out that that these
-> > devices need to be documented in that file would be an improvement, the
-> > current wording makes it seem like the works been done.
-> > Until there's a replacement driver, I don't think you could really
-> > expect anyone to move to a new binding anyway.
->=20
-> Fair enough. The driver is already there and it basically works -
-> Flavio is already using it. It is just, that at the moment you have
-> to use the (deprecated) "atmel,at25" compatible and you'll have to
-> specify pagesize etc. That is really hacky, because F/MRAM devices
-> doesn't have a pagesize.
->=20
-> Anyway, I was already working on the at25 binding but then I've
-> noticed that the current FRAM binding is really hardcoded to cypress
-> devices and as mentioned in the commit message, I don't have any
-> hardware to actually write the proper driver support. Maybe we
-> should settle on the binding first, i.e.
->=20
->  compatible =3D "everspin,mr25", "atmel,at25";
->  size =3D <N>;
->=20
-> vs
->=20
->  compatible =3D "everspin,mr25h256"; # no size needed
+ drivers/hwmon/pmbus/adm1266.c                 |  4 +-
+ drivers/iio/pressure/bmp280-core.c            | 14 ++++---
+ drivers/media/i2c/ov2740.c                    |  6 +--
+ drivers/media/i2c/video-i2c.c                 |  9 +++--
+ drivers/misc/ds1682.c                         | 16 +++-----
+ drivers/misc/eeprom/at24.c                    | 10 +++--
+ drivers/misc/eeprom/at25.c                    | 11 +++---
+ drivers/misc/eeprom/eeprom_93xx46.c           | 12 +++---
+ .../misc/mchp_pci1xxxx/mchp_pci1xxxx_otpe2p.c | 16 ++++----
+ drivers/mtd/mtdcore.c                         | 18 ++++-----
+ drivers/mtd/ubi/nvmem.c                       |  6 +--
+ drivers/rtc/rtc-abx80x.c                      | 15 +++----
+ drivers/rtc/rtc-cmos.c                        |  8 ++--
+ drivers/rtc/rtc-ds1305.c                      | 18 ++++++---
+ drivers/rtc/rtc-ds1307.c                      | 22 +++++++----
+ drivers/rtc/rtc-ds1343.c                      | 18 ++++++---
+ drivers/rtc/rtc-ds1511.c                      | 12 +++---
+ drivers/rtc/rtc-ds1553.c                      | 14 ++++---
+ drivers/rtc/rtc-ds1685.c                      | 14 ++++---
+ drivers/rtc/rtc-ds1742.c                      | 14 ++++---
+ drivers/rtc/rtc-ds3232.c                      | 22 +++++++----
+ drivers/rtc/rtc-isl12026.c                    | 12 +++---
+ drivers/rtc/rtc-isl1208.c                     |  8 ++--
+ drivers/rtc/rtc-m48t59.c                      | 12 +++---
+ drivers/rtc/rtc-m48t86.c                      | 12 +++---
+ drivers/rtc/rtc-max31335.c                    | 18 ++++++---
+ drivers/rtc/rtc-meson.c                       | 18 ++++++---
+ drivers/rtc/rtc-omap.c                        | 12 +++---
+ drivers/rtc/rtc-pcf2127.c                     | 20 ++++++----
+ drivers/rtc/rtc-pcf85063.c                    | 20 +++++++---
+ drivers/rtc/rtc-pcf85363.c                    | 39 ++++++++++++-------
+ drivers/rtc/rtc-rp5c01.c                      | 14 ++++---
+ drivers/rtc/rtc-rv3028.c                      | 32 +++++++++------
+ drivers/rtc/rtc-rv3029c2.c                    | 20 +++++++---
+ drivers/rtc/rtc-rv3032.c                      | 24 ++++++++----
+ drivers/rtc/rtc-rv8803.c                      | 16 +++++---
+ drivers/rtc/rtc-rx8581.c                      | 39 ++++++++++++-------
+ drivers/rtc/rtc-stk17ta8.c                    | 14 ++++---
+ drivers/rtc/rtc-sun6i.c                       |  8 ++--
+ drivers/rtc/rtc-ti-k3.c                       | 16 +++++---
+ drivers/rtc/rtc-twl.c                         | 20 +++++++---
+ drivers/soc/atmel/sfr.c                       | 11 ++++--
+ drivers/soc/tegra/fuse/fuse-tegra.c           |  6 +--
+ drivers/thunderbolt/retimer.c                 |  8 ++--
+ drivers/thunderbolt/switch.c                  |  8 ++--
+ drivers/w1/slaves/w1_ds250x.c                 |  4 +-
+ 46 files changed, 408 insertions(+), 282 deletions(-)
 
-I dunno, I am usually biased to having the more specific compatible
-and not needing the extra properties.
+-- 
+2.45.1.467.gbab1589fc0-goog
 
->=20
-> For reference, the already supported cypress fram has the following:
->=20
->  compatible =3D "cypress,fm25", "atmel,at25";
->  # no size needed, because the driver will figure it out by reading
->  # the ID
->=20
-> Besides that, I would really get some feedback from the three
-> in-tree users on migrating to the EEPROM driver and thus away from
-> MTD.
->=20
-> -michael
->=20
-
---o639TIyIFJbIbFT2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZmCjEAAKCRB4tDGHoIJi
-0vmBAQDQxQ5szdr041sx7R+TpFAH4HedbmvxhYWiKlgzMsLOnQEAwq1Oaz5rvxm1
-xP8LD1K4V3yS6vDch1ByCLRxQNPpCQ4=
-=61oL
------END PGP SIGNATURE-----
-
---o639TIyIFJbIbFT2--
-
-
---===============5672177627948387215==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5672177627948387215==--
-
