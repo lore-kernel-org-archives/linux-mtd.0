@@ -4,54 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D088C25B76
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 03:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D661C25B76
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jun 2024 04:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GrnU+MA8OZLhNoO7yNtMfusyXz4/4gVEsAp3K/5n5iI=; b=k665zaUKk8s28n
-	hi7CORllKG1VIcRMI1J06LPD8fikt3kdj3l1k6MP2ySSIgA6Jal2n0GluaD3ZI03j6T1lCaXmDEoa
-	CMUK0dUDWOs2IolRF6at2uOIPMX/8C8lE77X3UTkCHknwzMA42jSQo/b+ILTgKOp7gAhWuBVIKQdS
-	fE8TIsPKynuBZSEN5RvIrWc6lCx1E02bKvCER5iMBzRIKf09OWfe8W+HqRW1ybrFUlTWYiDt4nEFu
-	iG8B0wPueY4a+VT6J13qVj1EL/HoU7/T2AtmD1OqNmlt+rcdUFngRS7m8ElZZEPljuZpv6TWWsQyo
-	ifeXXEJjeSrrsfvjAndw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=++yoSxSmQo0NhKHbF0uWIAnz9jKSKMTRKnhRNIj4kOA=; b=HMBhpMJY6gJmp7
+	du5SAIvmwiKo5g7dq0ZVNbT38XduF322i6AE0UV3s9B/lg8bqklSrnqBx6I1HSqX30WV424/4Jm70
+	qTdn62kgLmhsNrSVfcfMDWUQ1vaz9VGnirBbKn+Cfpjm+2MigGJ4PiajkhKHFXcZgiwy2HHdagml0
+	iDLavWt/QCV7O2Jhti0g611CDMAwLH/lmz9+IAiDlPSP54Z/Ruv26JhlUMvQArZKbM4htMKYgKJfx
+	y8uTkzW2Pyp7r5F28F8wDWaCzBU8kLT1ga+MnjGoijF5Tj9UPHLfbGs/7oAvhtHgLxSaL4uFn6um9
+	xnnp/qcUc0PDx8gOBx/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEhH7-00000004XBY-1vDa;
-	Wed, 05 Jun 2024 03:25:21 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1sEiHI-00000004brz-3m7b;
+	Wed, 05 Jun 2024 04:29:36 +0000
+Received: from mail-dm6nam12on20600.outbound.protection.outlook.com ([2a01:111:f403:2417::600] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEhH3-00000004XB9-3yd2
-	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jun 2024 03:25:20 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VvCRB3YvVzwRkJ;
-	Wed,  5 Jun 2024 11:21:10 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id B2E1318007A;
-	Wed,  5 Jun 2024 11:25:06 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 5 Jun 2024 11:25:05 +0800
-To: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
-	<miquel.raynal@bootlin.com>, "zhangyi (F)" <yi.zhang@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Subject: UBIFS: problem report: about lpt LEB scanning failed (no issue)
-Message-ID: <97ca7fe4-4ad4-edd1-e97a-1d540aeabe2d@huawei.com>
-Date: Wed, 5 Jun 2024 11:25:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1sEiHF-00000004bpz-1aQ3;
+	Wed, 05 Jun 2024 04:29:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XUSesPNpWuyLTwtXZCqzkSjqzDRZ/SVR/0V/C31z01relle05+Vb+08NPPgXADBmMKz3KHKisVrcwHjAYK/uZ9mCuN5GNeRxNRR29c4PGPl19H6TrtJ/db4MQBibvL1xFzSAiLlKuakTeocIQXlbgODyy9CpGhfz58sIGaoEqEbkOOiS7ONwcpMSIDvSd4Qk18xMUmNRVne1HwGZJKPSreY8t4w5L3HfDDxYuY05hnOCHjxbIdCd3FUuCZHT+l4tRzoYazbppvTW/jDOi+dhU9itiJyHp1QYQjApZpRxNog0D5O2Dz7lY4dhxDFGW1SoOg9Npgra/ZarQqWa/AYk1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZxgcLqg7K6tYbiI1YLFLI8WZj2voyoRV28JFaVuKhvc=;
+ b=VpV4m2TPfXtsaRmotkM+ZMvc5b/65DhwWPpE/azv2ccweNK3ZV1TuXyUCncbyGcwJ5wdnQqgDOrc8by0lVAdD2+7bTTr1mhCid66rW5y1K6VGzXGvRirMFLlkvTOd+lhltAdgk/ijQNLQsJtu6Xbi5+JyKIWtafIkNBz+9Q1ipAJwR6KMvXXYPhavjmDMSlVds6BC7z50j1nhRm4UZOo2gxv7vZ+3ooQz9ImxFopPgxhmm4+Av+JeveJK2QjnFlE3jodEjRo4rm/UaUIyhAkLsoF9tVEB/EGzLEUbhGHLrQKUrcMj4rzRd18jN9p4d3clrW3ekEsSEh7XReCt9AubQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZxgcLqg7K6tYbiI1YLFLI8WZj2voyoRV28JFaVuKhvc=;
+ b=0G0o//Gdp9QnQxsEoSJzHZdh7c6wgKJvjqNALcHtN41Ybz0y84N95k85SzbmhhHd2HEI/waBbMs0MFbkmWKT1MLNfD4dYxdsHBAuCUV16+blX8MPmO9F/gSS0EIGfPZodyR4H4aifGrGJ/FW71cUoA9LGo74dXqBuFuP6DUYLLg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB8252.namprd12.prod.outlook.com (2603:10b6:8:ee::7) by
+ CH3PR12MB9430.namprd12.prod.outlook.com (2603:10b6:610:1cd::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.31; Wed, 5 Jun
+ 2024 04:29:23 +0000
+Received: from DS7PR12MB8252.namprd12.prod.outlook.com
+ ([fe80::2d0c:4206:cb3c:96b7]) by DS7PR12MB8252.namprd12.prod.outlook.com
+ ([fe80::2d0c:4206:cb3c:96b7%5]) with mapi id 15.20.7633.021; Wed, 5 Jun 2024
+ 04:29:23 +0000
+Date: Wed, 5 Jun 2024 09:58:21 +0530
+From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Corey Minyard <minyard@acm.org>, Allen Pais <apais@linux.microsoft.com>, Sebastian Reichel <sebastian.reichel@collabora.com>, Perry Yuan <perry.yuan@amd.com>, Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>, Nuno Sa <nuno.sa@analog.com>, Guenter Roeck <linux@roeck-us.net>, Randy Dunlap <rdunlap@infradead.org>, Andi Shyti <andi.shyti@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, Lee Jones <lee@kernel.org>, Samuel Holland <samuel@sholland.org>, Elad Nachman <enachman@marvell.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Johannes Berg <johannes.berg@intel.com>, Gregory Greenman <gregory.greenman@intel.com>, Benjamin Berg <benjamin.berg@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, Robert Richter <rrichter@amd.com>, Vinod Koul <vkoul@kernel.org>, Chunfeng Yun <chunfeng.yun@mediatek.com>, Linus Walleij <linus.walleij@linaro.org>, Hans de Goede <hdegoede@redhat.com>, Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Nikita Kravets <teackot@gmail.com>, Jiri Slaby <jirislaby@kernel.org>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Stanley Chang <stanley_chang@realtek.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Abdel Alkuor <abdelalkuor@geotab.com>, Kent Overstreet <kent.overstreet@linux.dev>, Eric Biggers <ebiggers@google.com>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, "Steven Rostedt (Google)" <rostedt@goodmis.org>, Daniel Bristot de Oliveira <bristot@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, Abel Wu <wuyun.abel@bytedance.com>, John Johansen <john.johansen@canonical.com>, Mimi Zohar <zohar@linux.ibm.com>, Stefan Berger <stefanb@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Eric Snowberg <eric.snowberg@oracle.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org, linux-ide@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org, qat-linux@intel.com, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-staging@lists.linux.dev, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org, cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal <dlemoal@kernel.org>,
+ Niklas Cassel <cassel@kernel.org>, Daniel Scally <djrscally@gmail.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Heiko Stuebner <heiko@sntech.de>, Peter De Schrijver <pdeschrijver@nvidia.com>, Prashant Gaikwad <pgaikwad@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Huang Rui <ray.huang@amd.com>, Mario Limonciello <mario.limonciello@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>, Jean Delvare <jdelvare@suse.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Tony Lindgren <tony@atomide.com>, Adrian Hunter <adrian.hunter@intel.com>, Hu Ziji <huziji@marvell.com>, Ulf Hansson <ulf.hansson@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Potnuri Bharat Teja <bharat@chelsio.com>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miri Korenblit <miriam.rachel.korenblit@intel.com>, Kalle Valo <kvalo@kernel.org>, Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Oliver O'Halloran <oohall@gmail.com>, Kishon Vijay Abraham I <kishon@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, JC Kuo <jckuo@nvidia.com>, Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Sebastian Reichel <sre@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>, Helge Deller <deller@gmx.de>, Brian Foster <bfoster@redhat.com>, Zhihao Cheng <chengzhihao1@huawei.com>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v1 1/1] treewide: Align match_string() with
+ sysfs_match_string()
+Message-ID: <Zl/pZXNss8vQfEh+@BLR-5CG11610CF.amd.com>
+References: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
+Content-Disposition: inline
+In-Reply-To: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
+X-ClientProxiedBy: PN2PR01CA0094.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:27::9) To DS7PR12MB8252.namprd12.prod.outlook.com
+ (2603:10b6:8:ee::7)
 MIME-Version: 1.0
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB8252:EE_|CH3PR12MB9430:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d71100c-5903-4196-bc10-08dc85181329
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|7416005|366007|1800799015;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?TR0jt3DjeeeFlYLQoRK2wd4FGN/qTr3M/0NhgRSmV5FTXAZ/ChFE6dOz2WlR?=
+ =?us-ascii?Q?RMMO0TSe0y8fX1FvMswwuB+Cw60xsR/r2B6JGTzFTYMaOAlt5qr0Kw4dqx18?=
+ =?us-ascii?Q?B3M3dPGzwmuEkZ2i/PORnH1Cjs2NmVTdzgoFgVFqKQflM1JAQCxAA9I/qzC0?=
+ =?us-ascii?Q?VI8dDTCeGJmS+hax3H3F4akhZOMB0f+5BkkSgjxqXHBMWkPR9eri5q9IBOvx?=
+ =?us-ascii?Q?Z3M1sWhtFry/KKRr0Pvjhskfk+NoT0YCbToQSLouR0cdVTAH5r3/GKup/o2u?=
+ =?us-ascii?Q?cwJFq49a0/YJPWMoEAUI/L2xszblWBYyt0K5elmhE+lH1jLNEw6hIzcLmv3A?=
+ =?us-ascii?Q?DztytQo5qICQJZGeuA233IM9ydL4Qpvs80AIrFwCzqNewrZhIYgkkJ3GnsOl?=
+ =?us-ascii?Q?Zc0AJmn8U8Aw33tTmX5arFSnJN9oQp490Uf3s9anqeuoghN6buuBp/5xvQMN?=
+ =?us-ascii?Q?/RzcO35GTG7kUsBIGFh2Ex1O19OaMEXr1O6mJO0lmc8b+tXLRsF5zW8Q/gqQ?=
+ =?us-ascii?Q?akFY40YyeLmyAwo+bkXA6sPanw8a9PvWG/zFDP38yiQeOdRebEkB+jBZce/j?=
+ =?us-ascii?Q?BfX5CIn90PerZLVEFS4yIbqmUY+/js7wShwpwgfcIkEzmTZF0bAzefevYNoi?=
+ =?us-ascii?Q?8y+KJtQf6D7CC+pX10F6SFuYecSVWcScT7hX0fbfJJ6wVFcrRmz0i5jhq5GB?=
+ =?us-ascii?Q?2X/FNw6jSOk8mwF3KPNnIgYOoTkwEEdQRJ11/hDkLnC1JJ8OLTtamMVGb0EE?=
+ =?us-ascii?Q?cbfYvjgvKdh3w0m5poiM8jzzPgwfE0M1+/gdkppes1u3JSSODPXT0+AhKrD3?=
+ =?us-ascii?Q?EEdzHGvifIuMCazilW7+/+/7EdmfCTxuhalrwTTbBsDhtcR1jowTiVnAqvfY?=
+ =?us-ascii?Q?LzuZG5kqPuKS73GxjsdktcxxEVZQKsyKHLJQpSmQm3w7SXVRb/ZBgkVVz66s?=
+ =?us-ascii?Q?OgdHAIdmWaQx5Q63Zed5XcNHLbs3mrE5jKn4/fmEV9zKgn8/bZ++UYVPCJNG?=
+ =?us-ascii?Q?zmmd/DPwjRPYCMvLEbRnIOXmN8z78SRpaLmGzgrjIiMZkQ3IP8UO+8amN6qH?=
+ =?us-ascii?Q?eF/55RKpY92DJATflwhDgATB1W+WKQKBuwf/blgiDMBzigIhxVRyE1+s3L+A?=
+ =?us-ascii?Q?wdRvspgSjX4RAgj12RcvlubO+A70SF9bl2NGtpiNgMs/9Oq/UYXheWS1lSoi?=
+ =?us-ascii?Q?atWMI67YH/k29faGl1/3Knvf6FotIQV2H2s8rg8h0XcxexD+ijz3AEurgXfB?=
+ =?us-ascii?Q?epr1lSlgUoFVFZIVqym7GXtC4IPyfz9pV/R7KriAUwk6wNLM8vEsCYV/5zlm?=
+ =?us-ascii?Q?dIFCftoggNuzpEQyyuv66T8Y?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB8252.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(366007)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GoEdR4M+NZV+gKBBU5jniAj8lrECAZQQk3XbFhYOIwRnrIO+C48lXqYmxP9C?=
+ =?us-ascii?Q?ABtJTJKrksvKKp6yNN7qFBOUY/JMS0LE04sI6aPhOWnCHQZlnXHGzwxOyT0P?=
+ =?us-ascii?Q?CPbdaa01A8jfqaijmYok1y+TqtaczhSq6kN54tvmHkaS/J106nTP1hDsGzjC?=
+ =?us-ascii?Q?/HKFK4vtvNvM55/0uBFf8C64xGRLLTgHHSxpCRUi2l8V4/x5yA2m+oR7fg9g?=
+ =?us-ascii?Q?vk8i6cHhYIZl/r8BmLiaWsv1/Xlk4K3eXtg+qbqohsgxnqxsI7FD3DBsABW3?=
+ =?us-ascii?Q?yWtS9XOWnFjb6U8VGOTMPoWIhkPnbS5BWx4Dmygal+rw0vdKBeIU9xp4HFTE?=
+ =?us-ascii?Q?M1xNNMx3YSvTEGB/PlMmBtQHw6ohmjrfiQC6+hfbw49ny4ND+lCfDG+S6PFg?=
+ =?us-ascii?Q?VkFlkvwMTpUc6LIcFCndyw8b2LVdtval2XZ9M6JAn/eH4nHQ0vfXkbGt5ZAX?=
+ =?us-ascii?Q?LXo+J/wdsAZ93jy12SZ48fv9gIAcjnu5a7HNskesrUFCX7dYxtZ/ZiPIjsoT?=
+ =?us-ascii?Q?1UBuk6emMfPDh6N99+IKpPeTUNOplNtO/0ua78EyuQefuDRwKwvc5R6hItzz?=
+ =?us-ascii?Q?bDpthfat7YjslVru9QKw+T8AcFibvwQDF2n8r10KADE6xuGFWgJozb5/Brsq?=
+ =?us-ascii?Q?yfDUNaJg9puRhk3USkMXA97/MmsQJbUMuX2kyihsEenzWI9RKzH8glPGu8Q9?=
+ =?us-ascii?Q?Z6BJt7+CqZ88qxLx/w21QrHyergJGC49N/+gt0ggTcQBg+0HESWBdXK0N4om?=
+ =?us-ascii?Q?kJ5qP2+iCsDkYVPOuLPRs/wXEy+5POFQs/wNn7Z4M8TIcvlHM+KDalPM8z+J?=
+ =?us-ascii?Q?hf1STfPPbV5GUTOo8wm7TjUdUfEM8k1CQ66ueIFNW0X73NG0AjvMAPe8AF9Z?=
+ =?us-ascii?Q?BD6EroIlOma+zBp741WtpUnw14lf8Sg63mfwIG8mBabAW4PGRLHSB/Gy2xkp?=
+ =?us-ascii?Q?CMmXirRjt3g0Qz0XVwj6pvVjn3I/Nzq3MaCaRmrAZ6noneNXMMXjtGug08de?=
+ =?us-ascii?Q?lT2XHdgyD7ZSuby/Taie6RLRQP1oWErvwxZIftsLrejZuc28mVBijETAhxXW?=
+ =?us-ascii?Q?MDX3EPL3wVbEgGeeCjuenD1eUlqSnvpKTdaQaRT3xtUpJuiZ5BEGw96toTPT?=
+ =?us-ascii?Q?XPNue4VPzxqTxOfQSgVKCgE/OasJblcEgfZJqGBaPMYqZbGaK+0C20EEl4FM?=
+ =?us-ascii?Q?L3OLf951ueg1DSuh0oSvpYIy3GQk7cB74NZoR5D/UzoETTeu/H5TxVlzLGSe?=
+ =?us-ascii?Q?JAFs8QJIJIZIPhvJPxyrcUiiyhqkBgl4Jd1KExuYHG+hXbV71/Ed3qeISyyw?=
+ =?us-ascii?Q?WphVOY8CNz/ZJOr3teXBeN2vF3j/e8PoRLwJPeZAYUDsi0fnk2jzW5CFRJDa?=
+ =?us-ascii?Q?MpYvvJGgly7jDmrlewBYgikmX/1NJYPs1dwit9yYP0qPdOkyRtssX6fV1DDQ?=
+ =?us-ascii?Q?pfZEH9Z5qZuaYTuEjkReM+t8okSJ4JPh7iLiMQ/dMA+nMTjHJAaKv7bQQCZp?=
+ =?us-ascii?Q?4xwIyBNdZrVLoXWlY4/mISFkNd64rTH0NN2fIZ6ZlTsMzZEjGaqjdvbjd6ms?=
+ =?us-ascii?Q?jT8Q5Nfg/U2HzGQfaZnH6/JVvNz+UdEnsDcQx4YI?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d71100c-5903-4196-bc10-08dc85181329
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB8252.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2024 04:29:22.9168
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T1dxbax+ztSvrRDMCEYhc4X8/u/IH6yJ+Lu/KrmdUjAtcefr09pt0ngCNQOZd3mreFJef3FdCvf/gZpFaihJhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9430
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240604_202518_365631_F0AEC49B 
-X-CRM114-Status: GOOD (  15.41  )
+X-CRM114-CacheID: sfid-20240604_212933_492762_4FBD5B94 
+X-CRM114-Status: GOOD (  12.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,264 +149,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Problem description
-
-Recently I was testing UBIFS with fsstress on a nor flash(simulated by 
-mtdram, 64M size,16K PEB, which means big lpt mode for UBIFS), the 
-utilization rate of one CPU(fsstress program) is 100%, and the fsstress 
-program cannot be killed. The fsstress program stucks in a dead loop:
-
-do_commit -> ubifs_lpt_start_commit:
-
-   while (need_write_all(c)) {
-
-     mutex_unlock(&c->lp_mutex);
-
-     err = lpt_gc(c);
-
-     if (err)
-
-       return err;
-
-     mutex_lock(&c->lp_mutex);
-
-   }
-
-Then I found that lpt_gc_lnum handles the same LEB(lnum 8) every time, 
-and the c->ltab[i].dirty for LEB 8 is not equal to c->leb_size after 
-invoking lpt_gc_lnum(). After analyzing the lpt nodes on LEB 8, 
-lpt_gc_lnum returns early before scanning all lpt nodes. The lpt LEB 8 
-is shown as(partial):
-
-[  104.740309] LEB 8:14383 len 13, nnode num 31,
-[  104.740689] dirty 1
-[  104.740905] LEB 8:14396 len 13, nnode num 7,
-[  104.741277] dirty 1
-[  104.741486] LEB 8:14409 len 13, nnode num 1,
-[  104.741870] dirty 1
-[  104.742078] LEB 8:14422 len 16, pnode num 745
-[  104.742475] dirty 1
-[  104.742682] B type 8 0
-[  104.742925] LEB 8:14438, pad 2 bytes min_io_size 8
-[  104.743301] LEB 8:14440, free 1368 bytes  // Actually, the left 1368 
-bytes are not 0xff, the scanning function(dump_lpt_leb) parses lpt nodes 
-in a wrong way
-[  104.743674] (pid 1095) finish dumping LEB 8
-
-The binary image for LEB 8 is(partial):
-
-0x3840 = 14400
-
-  00003840: 6a e4 60 cf 91 b1 f3 82 03 17 59 11 40 ac b9 fc 99 11 83 c3 
-83 03  ff  ff   90 6e c3 ec 04 f3 26 a1  j.`.......Y.@.......... 
-..n....&.
-  00003860: bf 09 41 a2 6f 94 15 09 58 ee 5f ce 97 7e 09 b8 86 a0 d8 2c 
-62 3b 47 37 62 e5 e8 59 86 be 82 fe  ..A.o...X._..~.....,b;G      7b..Y....
-  00003880: 17 6d 63 95 ce 80 76 6e ad e6 44 af f6 43 06 ab 41 28 04 99 
-72 1f 31 91 cb 96 b1 ef 43 6e 22 2c  .mc...vn..D..C..A(..r.1      .....Cn",
-  000038a0: 26 57 d0 9c b5 76 8b 08 1d fc 41 07 8c ba 26 3b 45 e1 7b 23 
-de d5 19 63 f3 6c e8 95 b7 02 5a 89  &W...v....A...&;E.{#...      c.l....Z.
-  000038c0: 83 81 0e 72 7c 4b 59 a3 c4 c0 e1 e5 22 7c 27 8d 85 ad c2 93 
-25 ac 5b 32 c8 02 07 2f 24 f9 e0 f6  ...r|KY....."|'.....%.[      2.../$...
-  000038e0: e3 87 f2 bb 62 23 d5 e4 2e b7 8c 41 61 43 2a a4 2f ce 92 4f 
-62 47 88 a2 11 a6 51 1f da 51 e7 a4  ....b#.....AaC*./..ObG.      ...Q..Q..
+On Sun, Jun 02, 2024 at 06:57:12PM +0300, Andy Shevchenko wrote:
+> Make two APIs look similar. Hence convert match_string() to be
+> a 2-argument macro. In order to avoid unneeded churn, convert
+> all users as well. There is no functional change intended.
 
 
-Let's parse above data by lpt_gc_lnum().
-
-The nnode(1) is at 8: 14409~14421, corresponding data is '17 59 11 40 ac 
-b9 fc 99 11 83 c3 83 03',  the type field is the lower 
-UBIFS_LPT_TYPE_BITS(4) bits in '0x11' according to ubifs_pack_nnode(), 
-and the data looks good and it can be parsed as a nnode. The next 2 
-bytes(8: 14422~14423) are 0xff, which means that lpt data is written 
-into flash with an alignment of 8 bytes(See write_cnodes). After 
-modifying the code of lpt_gc_lnum(), let UBIFS skip the 2 bytes(0xff), 
-UBIFS could parse all lpt nodes in LEB 8. But in fact, UBIFS parses 
-these 2 bytes(0xff) as the crc field of pnode(8: 14422~14437), and the 
-crc16 result of the pnode is just 0xffff, so the field(8: 14422~14437) 
-is parsed as a pnode, and the left lpt nnodes cannot be parsed because 
-of the wrong parsing offset.
-
-
-Why it can happen?
-
-The root cause is that the implementation of lpt area disk layout is 
-simple, it would be better if UBIFS has a length field in LPT node. 
-Otherwise, it could be possible that the crc16 result is right both for 
-offset_A~offset_B(node X) and  offset_A+2~ offset_C(node Y).
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 1b7e82a0ad2e..b6f52f44625f 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -1117,9 +1117,9 @@ static ssize_t store_energy_performance_preference(
+>  	if (ret != 1)
+>  		return -EINVAL;
+>  
+> -	ret = match_string(energy_perf_strings, -1, str_preference);
+> +	ret = __match_string(energy_perf_strings, -1, str_preference);
+>  	if (ret < 0)
+> -		return -EINVAL;
+> +		return ret;
+>  
+>  	mutex_lock(&amd_pstate_limits_lock);
+>  	ret = amd_pstate_set_energy_pref_index(cpudata, ret);
 
 
-Will it happen on a nand flash?
+For drivers/cpufreq/amd-pstate.c
 
-In theory, I would say 'yes'. But I never meet it after testing for a 
-whole day. I guess that the min_io_size for nand is (at least) 512, the 
-length of pending bytes(0xff) is hardly less than 3 bytes, so it is hard 
-to reproduce that the crc16 result is right both for 
-offset_A~offset_B(node X) and  offset_A+2~ offset_C(node Y).
+Acked-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
 
-
-How to reproduce it?
-
-You can generate a problem image by a script test.sh (When you see hung 
-task warning or the utilization rate of one CPU becomes 100%, it means 
-the problem occurs).
-
-#!/bin/sh
-
-DEV=/dev/ubi0_0
-KEY_FILE=/tmp/key
-MNT=/root/temp
-mtdram_patt="mtdram test device"
-
-function fatal()
-{
-     echo "Error: $1" 1>&2
-     exit 1
-}
-
-function find_mtd_device()
-{
-     printf "%s" "$(grep "$1" /proc/mtd | sed -e 
-"s/^mtd\([0-9]\+\):.*$/\1/")"
-}
-
-# Load mtdram with specified size and PEB size
-# Usage: load_mtdram <flash size> <PEB size>
-# 1. Flash size is specified in MiB
-# 2. PEB size is specified in KiB
-function load_mtdram()
-{
-     local size="$1";     shift
-     local peb_size="$1"; shift
-
-     size="$(($size * 1024))"
-     modprobe mtdram total_size="$size" erase_size="$peb_size"
-}
-
-
-function run_test()
-{
-     local size="$1";
-     local peb_size="$2";
-     local page_size="$3";
-
-     echo 
-"======================================================================"
-     printf "%s" "MTDRAM ${size}MiB PEB size ${peb_size}KiB"
-     echo ""
-
-     load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
-     mtdnum="$(find_mtd_device "$mtdram_patt")"
-
-     flash_eraseall /dev/mtd$mtdnum
-     modprobe ubi mtd="$mtdnum,$page_size" || fatal "modprobe ubi fail"
-     ubimkvol -N vol_test -m -n 0 /dev/ubi0 || fatal "mkvol fail"
-     modprobe ubifs || fatal "modprobe ubifs fail"
-     mount -t ubifs $DEV $MNT || fatal "mount ubifs fail"
-
-     fsstress -d $MNT -l0 -p4 -n10000 &
-     sleep $((RANDOM % 120))
-
-     ps -e | grep -w fsstress > /dev/null 2>&1
-     while [ $? -eq 0 ]
-     do
-         killall -9 fsstress > /dev/null 2>&1
-         sleep 1
-         ps -e | grep -w fsstress > /dev/null 2>&1
-     done
-
-     while true
-     do
-         res=`mount | grep "$MNT"`
-         if [[ "$res" == "" ]]
-         then
-             break;
-         fi
-         umount $MNT
-         sleep 0.1
-     done
-
-     modprobe -r ubifs
-     modprobe -r ubi
-     modprobe -r mtdram
-
-     echo 
-"----------------------------------------------------------------------"
-}
-
-while true
-do
-     run_test "64" "16" "512"
-done
-
-https://bugzilla.kernel.org/show_bug.cgi?id=218935
-
-Or you can mount the problem image(disk.tar.gz) directly by following 
-script:
-#!/bin/sh
-DEV=/dev/ubi0_0
-KEY_FILE=/tmp/key
-MNT=/root/temp
-mtdram_patt="mtdram test device"
-
-function fatal()
-{
-	echo "Error: $1" 1>&2
-	exit 1
-}
-
-function find_mtd_device()
-{
-	printf "%s" "$(grep "$1" /proc/mtd | sed -e "s/^mtd\([0-9]\+\):.*$/\1/")"
-}
-
-# Load mtdram with specified size and PEB size
-# Usage: load_mtdram <flash size> <PEB size>
-# 1. Flash size is specified in MiB
-# 2. PEB size is specified in KiB
-function load_mtdram()
-{
-	local size="$1";     shift
-	local peb_size="$1"; shift
-
-	size="$(($size * 1024))"
-	modprobe mtdram total_size="$size" erase_size="$peb_size"
-}
-
-
-function run_test()
-{
-	local size="$1";
-	local peb_size="$2";
-	local page_size="$3";
-
-	echo 
-"======================================================================"
-	printf "%s" "MTDRAM ${size}MiB PEB size ${peb_size}KiB"
-	echo ""
-
-	load_mtdram "$size" "$peb_size" || echo "cannot load mtdram"
-	mtdnum="$(find_mtd_device "$mtdram_patt")"
-
-	flash_eraseall /dev/mtd$mtdnum
-	tar xvzf disk.tar.gz
-	dd if=disk of=/dev/mtd0 bs=1M
-	modprobe ubi mtd=0,512
-	mount /dev/ubi0_0 /root/temp
-}
-
-run_test "64" "16" "512"
-
-
-PS: I report the problem as no issue, because I don't think we can fix 
-it without modifying disk layout. I think it's just a designment nit, no 
-need to fix it. I just want people know the problem if someone meet it 
-one day.
+--
+Thanks and Regards
+gautham.
 
 ______________________________________________________
 Linux MTD discussion mailing list
