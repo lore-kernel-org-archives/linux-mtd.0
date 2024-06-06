@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3992CC27C54
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2024 17:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 748A1C27C54
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jun 2024 17:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OWzHFc2+s5MjPjqCD4GkBc+OrDeh5wCPrOqS9k4nfuw=; b=PVGzABEMtxfLoc
-	fq6jQSM7g/w+KV4pQZI+tFbxov9t2dv6ulpR/I+EcHY6AyTS3M0QRXwhr7rwPs3ZRzyBS7WlTK9Ta
-	864L4p+beS86zQRDfKw4jMJcX6L1WB3ppNWO0AjQ6/bLutzuPM4fdT6tDLEe3h/LYs2Js8bJCi8HT
-	nrGou9/M+MPZ7fxdEEYd64W7encka1A11RDpDgi2GEdICtl4cotZ/JfJCLBUd65YD/e/FR5b21J9+
-	TpUOpaSYd9RHLJI+PexUqyUarlnLG1hDc69plWAeXWkadI4oZx6UgmXJ6SMWpNv8KLDRvz1cs4k4C
-	2maEKAh5MHj6Daxf6x+A==;
+	List-Owner; bh=TFuhYwWHbHepaCu7E9rrTOhc9Rtxkhl0hK4yQhEIwfI=; b=ASPB/h8bZYRIQg
+	ohtur/yJqHDas/idEuZDaKpCNkhrI1FAEezeK8zC39j0CXdF+iyF35LV9eRJmnpZNdCqATLhKnMS+
+	6EAC0fDgkRnrD5Q7+QNIVL8pNzjCRmWWmjZHFNWC4KzN9Pg9mOfdQ4058O4jH1FeFJfDAuFKQXWMf
+	Lh+f7r0tVzjV/04oBdE5HlCqBSHWzQdztZRuiV6JeDvl6OBkDSW2KHSFroc/VUGqTe6GI0C4rv8nb
+	eigItRPZ6xHp6joigERsxAz4mJa3KH78FCj437Fsyr3SemLOeiRECzlakXIq033iGC1rkPtRAWeeM
+	LpLyZ5AU3DnaMvinCgDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFGpu-0000000AhzS-13Go;
-	Thu, 06 Jun 2024 17:23:38 +0000
+	id 1sFGyh-0000000Almh-1Dvt;
+	Thu, 06 Jun 2024 17:32:43 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFGpt-0000000Ahz8-0Dpo
+	id 1sFGyf-0000000Allp-1tJR
 	for linux-mtd@bombadil.infradead.org;
-	Thu, 06 Jun 2024 17:23:37 +0000
+	Thu, 06 Jun 2024 17:32:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
 	Date:References:In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FedF7oPNdqEHHuz3xwLH/2qCzL60HSgGzIWdOOictbg=; b=RZ9LEP/Awp3wZrbcoo6Mu46y2T
-	VUpW6RO/btTewLRma8PcqKG776hBWBst06WJbUWKTCH3EL0Q9gCaI3TNU4TBzkW2L+mvFID+sVwbN
-	y6Cn9O4WCdoVEBQ/C7fSfmF9GS3J2tT/C/+FhhGbNHINzM5kiJi/bd9rUwlt5xElDhfg9MpkCQmMW
-	8LGlQ1J64caETlWnF9+5GLKRY5WqjMEn3Mb7CxLH4YV+luBeVc76no9wYDUCU1xu98gZXTRnc7vz1
-	Jf0MMH9K+0xJhW73Uq7IFdGoPeYBSE056jVMEjYgWebvRRvFFNWoZJDhEFbaWUrf3L3OhTX04FKZh
-	iOgL05yQ==;
+	bh=Y733XPBLBlsCRJvCsHFw1IatFR5ZrX9hSMVLNzZBq14=; b=mhSXN4DoLzIoXnxFuuE/9l3MNz
+	NlD7VjwwjspZRlsj/QQmWGBxwq6q4/w4hW8GrnaWthw+CWrgrP5n86/1yWz0xOPOr7jGeQPwL2Ltn
+	JnTErRLfkACE6PheQoyG/zKh0NutgUx3vLX6S62txbbm5W6TfFFh2F1n9avsVG8AtY1ebsX+bM/+o
+	G41jkdeRcGksI2JY9CwtKVvWf/2oCfoWG2KM9g3xXPboCPZBOr4mCZKB4RvZWsqGJJJOYm/aQgIeA
+	3/yDRfgPtdhDN+k0REbY/KU5LxfkpzWsUhDFzjdu5CgEJ1Y/0o/OrthEWobv0Dxa0SCN0yCzYCj7c
+	OsTpiKkg==;
 Received: from www530.your-server.de ([188.40.30.78])
 	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFGpq-00000001fiC-0mwL
+	id 1sFGyc-00000001fvz-2A2P
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Jun 2024 17:23:35 +0000
+	Thu, 06 Jun 2024 17:32:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
 	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
 	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=FedF7oPNdqEHHuz3xwLH/2qCzL60HSgGzIWdOOictbg=; b=FPpehQCxUOysukHnwgSo9tnbW9
-	BCihYTPtfMSlFzboPjZijiIEGyz+GdYfLd/HrMnHchxFF/4hVPywBldgzxXt/ktfM1ZAoE3FI+Kzw
-	XmPkaIqI25ncKL6rVy2/wvF4f9W0XQqWOyu1bKY51xnVcFlEdS9cMP+lzaeS2cg3fV35y/LuWi1hu
-	9qPudxhAouqNt4/5qHMDrPWf9YHMrLIlU28EdRXbimH1Tbt2BinGwqO8ERIQCEuzKUqxrqgRZ2MVZ
-	PDyNHA7KJ0uKIZFKepEtLmYIJui+Z5sRhT0QSUaTcKAuzTzqW/gP80mHyPJfOKZ/EgOxzJASGIY/b
-	Sz+UKIwQ==;
+	bh=Y733XPBLBlsCRJvCsHFw1IatFR5ZrX9hSMVLNzZBq14=; b=LXsGgSjCSjRcLVaAjOPlzPC8XN
+	g/iJ3K58NxblpOgdKs5siF13Ib20wE9x0B8Mo7gwDrVW3DTfkZ3fAhg0+e7/eH/sHhfV2yy2LXCJq
+	NfcDUMhXMTrhyNjpvvy15eXEOnpk/PfbrMRr6gmpqGbx8sVkk21xIe5hCfPYchgc7PDSAumVaoiaZ
+	hEBF43qi0Djd2WJgswXrhSrxBFUziEhhK1wsQJlUXqxJrOsoy4imqT/xq96zin5nI/2X4u3Lm5SrR
+	TFbL8bCSd1zr7RaCOzUw0eiBhKfZuAsx7qcMCNPMMzIDdER2E01PbMidnw7T64b+TaMbeuoT9Nvio
+	vVA6HZCQ==;
 Received: from sslproxy07.your-server.de ([78.47.199.104])
 	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <esben@geanix.com>)
-	id 1sFGpl-0002rG-Mz; Thu, 06 Jun 2024 19:23:26 +0200
+	id 1sFGyR-0003qJ-B2; Thu, 06 Jun 2024 19:32:23 +0200
 Received: from [80.62.117.184] (helo=localhost)
 	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <esben@geanix.com>)
-	id 1sFGph-000MWE-31;
-	Thu, 06 Jun 2024 19:23:25 +0200
+	id 1sFGyN-0007dL-1o;
+	Thu, 06 Jun 2024 19:32:23 +0200
 From: Esben Haabendal <esben@geanix.com>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Michael Walle
- <mwalle@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,  Richard
- Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  Rasmus
- Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: macronix: enable quad/dual speed
- for mx25l3205d chips
-In-Reply-To: <cdd6bc25-6282-4e43-9909-16ab918ed983@linaro.org> (Tudor
-	Ambarus's message of "Thu, 6 Jun 2024 14:33:16 +0100")
-References: <20240603-macronix-mx25l3205d-fixups-v2-0-ff98da26835c@geanix.com>
-	<20240603-macronix-mx25l3205d-fixups-v2-2-ff98da26835c@geanix.com>
-	<cdd6bc25-6282-4e43-9909-16ab918ed983@linaro.org>
-Date: Thu, 06 Jun 2024 19:23:25 +0200
-Message-ID: <87v82m9e9e.fsf@geanix.com>
+Cc: Michael Walle <mwalle@kernel.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  Rasmus Villemoes
+ <rasmus.villemoes@prevas.dk>
+Subject: Re: [PATCH] mtd: spi-nor: macronix: workaround for device id re-use
+In-Reply-To: <8513a828-6669-4bf3-91d3-799771866f32@linaro.org> (Tudor
+	Ambarus's message of "Thu, 6 Jun 2024 14:29:44 +0100")
+References: <20240524-macronix-mx25l3205d-fixups-v1-1-ee152e56afb3@geanix.com>
+	<D1Q7BU6PJ356.1CTXPUZE8U6XX@kernel.org>
+	<8513a828-6669-4bf3-91d3-799771866f32@linaro.org>
+Date: Thu, 06 Jun 2024 19:32:22 +0200
+Message-ID: <87r0da9duh.fsf@geanix.com>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-Authenticated-Sender: esben@geanix.com
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27298/Thu Jun  6 10:30:08 2024)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_182334_229050_5DCFA908 
-X-CRM114-Status: GOOD (  17.72  )
+X-CRM114-CacheID: sfid-20240606_183238_696717_4476F71A 
+X-CRM114-Status: GOOD (  32.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,68 +105,197 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Tudor Ambarus <tudor.ambarus@linaro.org> writes:
 
-> On 6/3/24 14:09, Esben Haabendal wrote:
->> Macronix engineers apparantly do not understand the purpose of having
->> an ID actually identify the chip and its capabilities. Sigh.
+> On 6/3/24 08:25, Michael Walle wrote:
+>> Hi,
 >> 
->> The original Macronix SPI NOR flash that identifies itself as 0xC22016
->> with RDID was MX25L3205D. This chip does not support SFDP, but does
->> support the 2READ command (1-2-2).
->> 
->> When Macronix announced EoL for MX25L3205D, the recommended
->> replacement part was MX25L3206E, which conveniently also identifies
->> itself as 0xC22016. It does not support 2READ, but supports DREAD
->> (1-1-2) instead, and supports SFDP for discovering this.
->> 
->> When Macronix announced EoL for MX25L3206E, the recommended
->> replacement part was MX25L3233F, which also identifies itself as
->> 0xC22016. It supports DREAD, 2READ, and the quad modes QREAD (1-1-4)
->> and 4READ (1-4-4). This also support SFDP.
->> 
->> So far, all of these chips have been handled the same way by the Linux
->> driver. The SFDP information have not been read, and no dual and quad
->> read modes have been enabled.
->> 
->> The trouble begins when we want to enable the faster read modes. The
->> RDID command only return the same 3 bytes for all 3 chips, so that
->> doesn't really help.
->> 
->> Instead, we can use the SPI_NOR_TRY_SFDP flag, which forces the spi-nor
->> system to try using SFDP, but fallback to the parameters specified in
->> struct flash_info.
->> 
->> This way, boards using MX25L3205D will continue as before this change.
->> That is without taking advantage of the 1-2-2 that it supports.
->> 
->> For MX25L3206E and MX25L3233F, the SFDP parameters are used, and they will
->> therefore be using the optimal dual or quad mode supported by the flash
->> and the SPI controller it is attached to.
->> 
->> Signed-off-by: Esben Haabendal <esben@geanix.com>
->> ---
->>  drivers/mtd/spi-nor/macronix.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
->> index ea6be95e75a5..090f28e05a5d 100644
->> --- a/drivers/mtd/spi-nor/macronix.c
->> +++ b/drivers/mtd/spi-nor/macronix.c
->> @@ -61,7 +61,7 @@ static const struct flash_info macronix_nor_parts[] = {
->>  		.id = SNOR_ID(0xc2, 0x20, 0x16),
->>  		.name = "mx25l3205d",
->>  		.size = SZ_4M,
->> -		.no_sfdp_flags = SECT_4K,
->> +		.no_sfdp_flags = SECT_4K | SPI_NOR_TRY_SFDP,
->>  	}, {
+>> On Fri May 24, 2024 at 12:48 PM CEST, Esben Haabendal wrote:
+>>> Macronix engineers apparantly do not understand the purpose of having
+>>> an ID actually identify the chip and its capabilities. Sigh.
+>>>
+>>> The original Macronix SPI NOR flash that identifies itself as 0xC22016
+>>> with RDID was MX25L3205D. This chip does not support SFDP, but does
+>>> support the 2READ command (1-2-2).
 >
-> let's remove support for MX25L3205D. You'll then be able to drop the
-> flash entry altogether and instead rely on SFDP to discover the flash's
-> capabilities.
+> and it lacks support for 1-1-2?
 
-So anybody updating their Linux kernel for boards using MX25L3205D will
-get a bad surprise? While in the embedded world, upgrading Linux kernel
-is not the common case, it doesn't seem right to knowingly make it
-difficult to those few who actually tries to do the right thing.
+Yes.
+
+>>> When Macronix announced EoL for MX25L3205D, the recommended
+>>> replacement part was MX25L3206E, which conveniently also identifies
+>>> itself as 0xC22016. It does not support 2READ, but supports DREAD
+>>> (1-1-2) instead, and supports SFDP for discovering this.
+>>>
+>>> When Macronix announced EoL for MX25L3206E, the recommended
+>>> replacement part was MX25L3233F, which also identifies itself as
+>>> 0xC22016. It supports DREAD, 2READ, and the quad modes QREAD (1-1-4)
+>>> and 4READ (1-4-4). This also support SFDP.
+>> 
+>> Thanks for collecting all this info!
+>> 
+>>> So far, all of these chips have been handled the same way by the Linux
+>>> driver. The SFDP information have not been read, and no dual and quad
+>>> read modes have been enabled.
+>>>
+>>> The trouble begins when we want to enable the faster read modes. The
+>>> RDID command only return the same 3 bytes for all 3 chips, so that
+>>> doesn't really help.
+>>>
+>>> But we can take advantage of the fact that only the old MX25L3205D
+>>> chip does not support SFDP, so by triggering the old initialization
+>>> mechanism where we try to read and parse SFDP, but has a fall-back
+>>> configuration in place, we can configure all 3 chips to their optimal
+>>> configurations.
+>> 
+>> You are (mis)using the quad info bits to trigger an sfdp read,
+>
+> right, not ideal.
+>
+>> correct? In that case, I'd rather see a new flag in .no_sfdp_flags
+>> to explicitly trigger the SFDP read. Then your new flash would only
+>
+> I hate to update the core for vendor's madness.
+
+Me too. But on the other hand, it would be ashame to not support such
+common parts.
+
+>> need this flag and doesn't require the shenanigans with the fixup,
+>> right?
+>> 
+>>> With this, MX25L3205D will get the faster 2READ command enabled,
+>>> speading up reads. This should be safe.
+>>>
+>>> MX25L3206E will get the faster DREAD command enabled. This should also
+>>> be safe.
+>>>
+>>> MX25L3233F will get all of DREAD, 2READ, QREAD and 4READ enabled. In
+>>> order for this to actually work, the WP#/SIO2 and HOLD#/SIO3 pins must
+>>> be correctly wired to the SPI controller.
+>> 
+> don't add superfluous info. we already know how quad works.
+
+Noted. And I already did drop that part in v2.
+
+>> That should already be taken care of with the spi-{tx,rx}-bus-width.
+>> 
+>> -michael
+>> 
+>>> Signed-off-by: Esben Haabendal <esben@geanix.com>
+>>> ---
+>>> I only have access to boards with MX25L3233F flashes, so haven't been
+>>> able to test the backwards compatibility. If anybody has boards with
+>>> MX25L3205D and/or MX25L3206E, please help test this patch. Keep an eye
+>>> for read performance regression.
+>>>
+>>> It is worth nothing that both MX25L3205D and MX25L3206E are
+>>> end-of-life, and is unavailable from Macronix, so any new boards
+>>> featuring a Macronix flash with this ID will likely be using
+>>> MX25L3233F.
+>>> ---
+>>>  drivers/mtd/spi-nor/macronix.c | 60 +++++++++++++++++++++++++++++++++++++++++-
+>>>  1 file changed, 59 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+>>> index ea6be95e75a5..c1e64ee3baa3 100644
+>>> --- a/drivers/mtd/spi-nor/macronix.c
+>>> +++ b/drivers/mtd/spi-nor/macronix.c
+>>> @@ -8,6 +8,63 @@
+>>>  
+>>>  #include "core.h"
+>>>  
+>>> +/*
+>>> + * There is a whole sequence of chips from Macronix that uses the same device
+>>> + * id. These are recommended as EoL replacement parts by Macronix, although they
+>>> + * are only partly software compatible.
+>>> + *
+>>> + * Recommended replacement for MX25L3205D was MX25L3206E.
+>>> + * Recommended replacement for MX25L3206E was MX25L3233F.
+>>> + *
+>>> + * MX25L3205D does not support RDSFDP. The other two does.
+>>> + *
+>>> + * MX25L3205D supports 1-2-2 (2READ) command.
+>>> + * MX25L3206E supports 1-1-2 (DREAD) command.
+>>> + * MX25L3233F supports 1-1-2 (DREAD), 1-2-2 (2READ), 1-1-4 (QREAD), and 1-4-4
+>>> + * (4READ) commands.
+>>> + *
+>>> + * In order to trigger reading optional SFDP configuration, the
+>>> + * SPI_NOR_DUAL_READ|SPI_NOR_QUAD_READ flags are set, seemingly enabling 1-1-2
+>>> + * and 1-1-4 for MX25L3205D. The other chips supporting RDSFDP will have the
+>>> + * correct read commands configured based on SFDP information.
+>>> + *
+>>> + * As none of the other will enable 1-1-4 and NOT 1-4-4, so we identify
+>>> + * MX25L3205D when we see that.
+>
+> I find this description more clear than the commit message. I've written
+> some questions for the commit message, then I removed them once I read
+> this description.
+>
+>>> + */
+>>> +static int
+>>> +mx25l3205d_late_init(struct spi_nor *nor)
+>>> +{
+>>> +	struct spi_nor_flash_parameter *params = nor->params;
+>>> +
+>>> +	/*                          DREAD  2READ  QREAD  4READ
+>>> +	 *                          1-1-2  1-2-2  1-1-4  1-4-4
+>>> +	 * Before SFDP parse          1      0      1      0
+>>> +	 * 3206e after SFDP parse     1      0      0      0
+>>> +	 * 3233f after SFDP parse     1      1      1      1
+>>> +	 * 3205d after this func      0      1      0      0
+>>> +	 */
+>>> +	if ((params->hwcaps.mask & SNOR_HWCAPS_READ_1_1_4) &&
+>>> +	    !(params->hwcaps.mask & SNOR_HWCAPS_READ_1_4_4)) {
+>>> +		/* Should be MX25L3205D */
+>>> +		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_1_1_2;
+>>> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
+>>> +					  0, 0, 0, 0);
+>>> +		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_1_1_4;
+>>> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_4],
+>>> +					  0, 0, 0, 0);
+>>> +		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
+>>> +		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_2_2],
+>>> +					  0, 4, SPINOR_OP_READ_1_2_2,
+>>> +					  SNOR_PROTO_1_2_2);
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static const struct spi_nor_fixups mx25l3205d_fixups = {
+>>> +	.late_init = mx25l3205d_late_init,
+>>> +};
+>>> +
+>>>  static int
+>>>  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+>>>  			    const struct sfdp_parameter_header *bfpt_header,
+>>> @@ -61,7 +118,8 @@ static const struct flash_info macronix_nor_parts[] = {
+>>>  		.id = SNOR_ID(0xc2, 0x20, 0x16),
+>>>  		.name = "mx25l3205d",
+>>>  		.size = SZ_4M,
+>>> -		.no_sfdp_flags = SECT_4K,
+>>> +		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+>>> +		.fixups = &mx25l3205d_fixups
+>>>  	}, {
+>>>  		.id = SNOR_ID(0xc2, 0x20, 0x17),
+>>>  		.name = "mx25l6405d",
+>>>
+>
+> If all support 1-1-2, (seems MX25L3205D doesn't), then we may have a
+> change to don't update the core.
+>
+> Frankly I don't care too much about what happens in the manufacturer
+> drivers, but I do care about the core and to not extend it with . This
+> patch is not too heavy to be unmaintainable and shows clear where the
+> problem is, we can keep this as well.
+>
+> Other option that I'd like you to consider is whether we just remove
+> support for MX25L3205D, thus the entry altogether, and instead rely on
+> SFDP to set everything.
+
+I won't mind for the hardware I am involved with. But on the
+other hand, I personally don't think it is right to cause problems for
+anyone upgrading the kernel to boards using MX25L3205D. But I will leave
+that to you maintainers, as you both have to bear the maintance burden
+and will be the ones to get the blame if the change upsets someone :)
 
 /Esben
 
