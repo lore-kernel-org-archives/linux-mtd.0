@@ -4,47 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D38DC27C65
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92822C27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+tVRmzlRFz+OZFai0Nn6aDiVSyhlqM1HV3ZExrF1qcY=; b=afxc5R71MwDUbX
-	xdFYv5iD5XaTofwZOo+pBeU/NmnaJMxLgiDox+Iy5uyFNw+Ts7YGRPzaT/4TAtU0BKw1GlIwuoZzo
-	o0IpKmAxwzBHZuCo8xuVUsNhawlFo7JHQNPFuTD8w2j4awTnSvD2Zyz0+gQvFJfClOosOW6nujRkc
-	OJXy51w5duCzx+Ipzi/r/7TThcJ832ot/GEIkn8fBDRGfo/WanpEkXyF2ZmCQf2pzu2fyOFYQQRtb
-	09L7Ik7UHJ9atSeThM10sN4SoQmsLJMbQ9A7t0LA+5jammsTebKbhClMs88cGELNZ26swJA6xMuxF
-	XzY79LQbk3jcReA3LUqw==;
+	List-Owner; bh=ekJ6MLPCkA0/scdCcUDieOZEgvEU4Ah0yqvyYS9c5Kw=; b=koRY/cRAAvE+Ox
+	WxtfnL7EuSv3panCJdS8hBU/MfDMldUarl4DmG6PyQplNl+bQzMtuDK858h1s1EZO1jMHw/lZGHBi
+	6gkgwAkSTSnS+bXWI5al6fVu6wDHvgyGwC7Sa8lbVmx9zry6IHS7jsGK5KQUBgXZU9cC86QnyKgWQ
+	edxETQOA/GItN8ezkrK18XkN7sSxDuFk7iX16PFSHrIMJGqiB7MMwYO/V3log1yZMVmWOK3UywVmQ
+	gp4+RdL6k7H6BCWd75TAGIoBNxnt3ipOzVbcWviFjGAJIMR9MN6L3Qo6qlqlCsx49sZuNGYGPXGpT
+	Ktez4j48u9iZLLyfbkiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRGA-0000000CJj9-1lwU;
-	Fri, 07 Jun 2024 04:31:26 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1sFRGE-0000000CJm8-2U46;
+	Fri, 07 Jun 2024 04:31:31 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCC-0000000CGav-3UZ6
+	id 1sFRCt-0000000CHAL-0zP7
+	for linux-mtd@bombadil.infradead.org;
+	Fri, 07 Jun 2024 04:28:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=Jx3RsWB8uk4l0PJlWfvUoAGOXJxaaT1aylj5Tfav1Jc=; b=Yr6P+DKp8WmOFuGWF0KjkO5s4t
+	lqmO/q5u2BvS9NSNkMNTwnYM45uX2FacHDHTqCfeZmY0hHIOOqycNEj/rKYp9Pqa7bxChnPeDEufJ
+	yRfd1FdPao5mi3RHUQWG8JDvpnh33Onjo0j+o+bHJHvuF+3clGwX/lOGysNupC374I+wALQpt08JL
+	dE/tUc5zOzCLwf2Q+s4w1hHfDHj3RNY//bB5Ulws+EvXGRxNPyFgvNKQdEzGRHAEoA8NbwjPHQ6PX
+	GrvsFsBUoATYPJPm3HmNgirBVBurtCbC5VDGoFfm6yA7bcSiiTLSn58JBj0G0OE7R7WzToXZgX+8y
+	MM5CyXWg==;
+Received: from szxga01-in.huawei.com ([45.249.212.187])
+	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sFRCo-00000004U6a-3K2d
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:28:02 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSmx6R7bzdZhG;
-	Fri,  7 Jun 2024 12:25:53 +0800 (CST)
+	Fri, 07 Jun 2024 04:28:01 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwSk70d9BzsTSD;
+	Fri,  7 Jun 2024 12:23:27 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id CC282140124;
-	Fri,  7 Jun 2024 12:27:03 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B8A53180085;
+	Fri,  7 Jun 2024 12:27:25 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:26:49 +0800
+ 2024 12:27:09 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 030/110] ubifs-utils: Add linux hexdump implementations lib
-Date: Fri, 7 Jun 2024 12:24:55 +0800
-Message-ID: <20240607042615.2069840-31-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 058/110] fsck.ubifs: Add inconsistent problem handling asking function
+Date: Fri, 7 Jun 2024 12:25:23 +0800
+Message-ID: <20240607042615.2069840-59-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,8 +68,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212721_810984_E98F18B1 
-X-CRM114-Status: GOOD (  24.48  )
+X-CRM114-CacheID: sfid-20240607_052759_459166_57D9EE33 
+X-CRM114-Status: GOOD (  19.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,272 +86,168 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add linux hexdump implementations lib, because function print_hex_dump()
-is used in UBIFS linux kernel libs.
-
-This is a preparation for replacing implementation of UBIFS utils with
-linux kernel libs.
+There are four dimensions to define the type of inconsistent problems:
+ 1. fixable: Some inconsistent problems can't be fixed, for example
+    corrupted superblock. Un-fixable problem will abort program.
+ 2. must fix: Some inconsistent problems can be ignored(eg. incorrect
+    isize), but some are not(eg. corrupted TNC), which will affect the
+    subsequent fsck steps.
+ 3. drop data: Some fixing methods will drop user data, which is
+    unacceptable for safe mode. If it happens, fsck will be aborted.
+ 4. need rebuild: Some inconsistent problems depends on rebuilding
+    filesystem to be fixed(eg. corrupted master node, corrupted TNC).
+Define an asking function to handle above kinds of inconsistent problems.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am    |   1 +
- ubifs-utils/common/defs.h    |   6 ++
- ubifs-utils/common/hexdump.c | 218 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 225 insertions(+)
- create mode 100644 ubifs-utils/common/hexdump.c
+ ubifs-utils/Makemodule.am           |   3 +-
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |   3 +
+ ubifs-utils/fsck.ubifs/problem.c    | 111 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 116 insertions(+), 1 deletion(-)
+ create mode 100644 ubifs-utils/fsck.ubifs/problem.c
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index c14ba028..cb4e1cf1 100644
+index 0ed91dff..faff911f 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -24,6 +24,7 @@ common_SOURCES = \
- 	ubifs-utils/common/hashtable/hashtable_itr.c \
- 	ubifs-utils/common/devtable.h \
- 	ubifs-utils/common/devtable.c \
-+	ubifs-utils/common/hexdump.c \
- 	ubifs-utils/common/ubifs.h \
- 	ubifs-utils/common/key.h \
- 	ubifs-utils/common/lpt.h \
-diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
-index 6d99a2fd..548d9dfb 100644
---- a/ubifs-utils/common/defs.h
-+++ b/ubifs-utils/common/defs.h
-@@ -26,6 +26,12 @@ enum { MKFS_PROGRAM_TYPE = 0 };
+@@ -79,7 +79,8 @@ fsck_ubifs_SOURCES = \
+ 	$(common_SOURCES) \
+ 	$(libubifs_SOURCES) \
+ 	ubifs-utils/fsck.ubifs/fsck.ubifs.h \
+-	ubifs-utils/fsck.ubifs/fsck.ubifs.c
++	ubifs-utils/fsck.ubifs/fsck.ubifs.c \
++	ubifs-utils/fsck.ubifs/problem.c
  
- enum { ERR_LEVEL = 1, WARN_LEVEL, INFO_LEVEL, DEBUG_LEVEL };
+ fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
+ fsck_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index d267dd24..b9783c15 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -88,4 +88,7 @@ static inline const char *mode_name(const struct ubifs_info *c)
+ /* Exit code for fsck program. */
+ extern int exit_code;
  
-+enum {
-+	DUMP_PREFIX_NONE,
-+	DUMP_PREFIX_ADDRESS,
-+	DUMP_PREFIX_OFFSET
-+};
++/* problem.c */
++bool fix_problem(const struct ubifs_info *c, int problem_type);
 +
- #define pr_debug(fmt, ...) do { if (info_.debug_level >= DEBUG_LEVEL)	\
- 	printf("<DEBUG> %s[%d] (%s): %s: " fmt, PROGRAM_NAME, getpid(),	\
- 	       info_.dev_name, __FUNCTION__, ##__VA_ARGS__);		\
-diff --git a/ubifs-utils/common/hexdump.c b/ubifs-utils/common/hexdump.c
+ #endif
+diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
 new file mode 100644
-index 00000000..7ac46943
+index 00000000..9a8c2e06
 --- /dev/null
-+++ b/ubifs-utils/common/hexdump.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/ubifs-utils/fsck.ubifs/problem.c
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * lib/hexdump.c
++ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
++ *
++ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
 + */
 +
 +#include <stdio.h>
++#include <stdlib.h>
++#include <getopt.h>
 +
-+#include "linux_types.h"
++#include "ubifs.h"
 +#include "defs.h"
++#include "debug.h"
++#include "fsck.ubifs.h"
 +
-+#define __get_unaligned_t(type, ptr) ({					   \
-+	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr); \
-+	__pptr->x;								\
-+})
-+
-+#define get_unaligned(ptr)      __get_unaligned_t(typeof(*(ptr)), (ptr))
-+
-+const char hex_asc[] = "0123456789abcdef";
-+
-+#define hex_asc_lo(x)   hex_asc[((x) & 0x0f)]
-+#define hex_asc_hi(x)   hex_asc[((x) & 0xf0) >> 4]
-+
-+void print_hex_dump(const char *prefix_str, int prefix_type,
-+		    int rowsize, int groupsize,
-+		    const void *buf, size_t len, bool ascii);
-+/**
-+ * hex_dump_to_buffer - convert a blob of data to "hex ASCII" in memory
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @rowsize: number of bytes to print per line; must be 16 or 32
-+ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
-+ * @linebuf: where to put the converted data
-+ * @linebuflen: total size of @linebuf, including space for terminating NUL
-+ * @ascii: include ASCII after the hex output
++/*
++ * problem flags.
 + *
-+ * hex_dump_to_buffer() works on one "line" of output at a time, i.e.,
-+ * 16 or 32 bytes of input data converted to hex + ASCII output.
-+ *
-+ * Given a buffer of u8 data, hex_dump_to_buffer() converts the input data
-+ * to a hex + ASCII dump at the supplied memory location.
-+ * The converted output is always NUL-terminated.
-+ *
-+ * E.g.:
-+ *   hex_dump_to_buffer(frame->data, frame->len, 16, 1,
-+ *			linebuf, sizeof(linebuf), true);
-+ *
-+ * example output buffer:
-+ * 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-+ *
-+ * Return:
-+ * The amount of bytes placed in the buffer without terminating NUL. If the
-+ * output was truncated, then the return value is the number of bytes
-+ * (excluding the terminating NUL) which would have been written to the final
-+ * string if enough space had been available.
++ * PROBLEM_FIXABLE: problem is fixable, unsolvable problem such as corrupted
++ *		    super block will abort the fsck program
++ * PROBLEM_MUST_FIX: problem must be fixed because it will affect the subsequent
++ *		     fsck process, otherwise aborting the fsck program
++ * PROBLEM_DROP_DATA: user data could be dropped after fixing the problem
++ * PROBLEM_NEED_REBUILD: rebuilding filesystem is needed to fix the problem
 + */
-+static int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
-+			      int groupsize, char *linebuf, size_t linebuflen,
-+			      bool ascii)
++#define PROBLEM_FIXABLE		(1<<0)
++#define PROBLEM_MUST_FIX	(1<<1)
++#define PROBLEM_DROP_DATA	(1<<2)
++#define PROBLEM_NEED_REBUILD	(1<<3)
++
++struct fsck_problem {
++	unsigned int flags;
++	const char *desc;
++};
++
++static const struct fsck_problem problem_table[] = {};
++
++static void print_problem(const struct ubifs_info *c,
++			  const struct fsck_problem *problem)
 +{
-+	const u8 *ptr = buf;
-+	int ngroups;
-+	u8 ch;
-+	int j, lx = 0;
-+	int ascii_column;
-+	int ret;
++	log_out(c, "problem: %s", problem->desc);
++}
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
-+
-+	if (len > rowsize)		/* limit to one line at a time */
-+		len = rowsize;
-+	if (!is_power_of_2(groupsize) || groupsize > 8)
-+		groupsize = 1;
-+	if ((len % groupsize) != 0)	/* no mixed size output */
-+		groupsize = 1;
-+
-+	ngroups = len / groupsize;
-+	ascii_column = rowsize * 2 + rowsize / groupsize + 1;
-+
-+	if (!linebuflen)
-+		goto overflow1;
-+
-+	if (!len)
-+		goto nil;
-+
-+	if (groupsize == 8) {
-+		const u64 *ptr8 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%16.16llx", j ? " " : "",
-+				       get_unaligned(ptr8 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else if (groupsize == 4) {
-+		const u32 *ptr4 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%8.8x", j ? " " : "",
-+				       get_unaligned(ptr4 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else if (groupsize == 2) {
-+		const u16 *ptr2 = buf;
-+
-+		for (j = 0; j < ngroups; j++) {
-+			ret = snprintf(linebuf + lx, linebuflen - lx,
-+				       "%s%4.4x", j ? " " : "",
-+				       get_unaligned(ptr2 + j));
-+			if (ret >= linebuflen - lx)
-+				goto overflow1;
-+			lx += ret;
-+		}
-+	} else {
-+		for (j = 0; j < len; j++) {
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			ch = ptr[j];
-+			linebuf[lx++] = hex_asc_hi(ch);
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			linebuf[lx++] = hex_asc_lo(ch);
-+			if (linebuflen < lx + 2)
-+				goto overflow2;
-+			linebuf[lx++] = ' ';
-+		}
-+		if (j)
-+			lx--;
-+	}
-+	if (!ascii)
-+		goto nil;
-+
-+	while (lx < ascii_column) {
-+		if (linebuflen < lx + 2)
-+			goto overflow2;
-+		linebuf[lx++] = ' ';
-+	}
-+	for (j = 0; j < len; j++) {
-+		if (linebuflen < lx + 2)
-+			goto overflow2;
-+		ch = ptr[j];
-+		linebuf[lx++] = (isascii(ch) && isprint(ch)) ? ch : '.';
-+	}
-+nil:
-+	linebuf[lx] = '\0';
-+	return lx;
-+overflow2:
-+	linebuf[lx++] = '\0';
-+overflow1:
-+	return ascii ? ascii_column + len : (groupsize * 2 + 1) * ngroups - 1;
++static void fatal_error(const struct ubifs_info *c,
++			const struct fsck_problem *problem)
++{
++	if (!(problem->flags & PROBLEM_FIXABLE))
++		log_out(c, "inconsistent problem cannot be fixed");
++	else
++		log_out(c, "inconsistent problem must be fixed");
++	exit(exit_code);
 +}
 +
 +/**
-+ * print_hex_dump - print a text hex dump to syslog for a binary blob of data
-+ * @prefix_str: string to prefix each line with;
-+ *  caller supplies trailing spaces for alignment if desired
-+ * @prefix_type: controls whether prefix of an offset, address, or none
-+ *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
-+ * @rowsize: number of bytes to print per line; must be 16 or 32
-+ * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @ascii: include ASCII after the hex output
++ * fix_problem - whether fixing the inconsistent problem
++ * @c: UBIFS file-system description object
++ * @problem_type: the type of inconsistent problem
 + *
-+ * Given a buffer of u8 data, print_hex_dump() prints a hex + ASCII dump
-+ * to the kernel log at the specified kernel log level, with an optional
-+ * leading prefix.
-+ *
-+ * print_hex_dump() works on one "line" of output at a time, i.e.,
-+ * 16 or 32 bytes of input data converted to hex + ASCII output.
-+ * print_hex_dump() iterates over the entire input @buf, breaking it into
-+ * "line size" chunks to format and print.
-+ *
-+ * E.g.:
-+ *   print_hex_dump(KERN_DEBUG, "raw data: ", DUMP_PREFIX_ADDRESS,
-+ *		    16, 1, frame->data, frame->len, true);
-+ *
-+ * Example output using %DUMP_PREFIX_OFFSET and 1-byte mode:
-+ * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-+ * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
-+ * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
++ * This function decides to fix/skip the inconsistent problem or abort the
++ * program according to @problem_type, returns %true if the problem should
++ * be fixed, returns %false if the problem will be skipped.
 + */
-+void print_hex_dump(const char *prefix_str, int prefix_type,
-+		    int rowsize, int groupsize,
-+		    const void *buf, size_t len, bool ascii)
++bool fix_problem(const struct ubifs_info *c, int problem_type)
 +{
-+	const u8 *ptr = buf;
-+	int i, linelen, remaining = len;
-+	char linebuf[32 * 3 + 2 + 32 + 1];
++	bool ans, ask = true, def_y = true;
++	const struct fsck_problem *problem = &problem_table[problem_type];
++	const char *question = (problem->flags & PROBLEM_NEED_REBUILD) ?
++				"Rebuild filesystem?" : "Fix it?";
 +
-+	if (rowsize != 16 && rowsize != 32)
-+		rowsize = 16;
++	ubifs_assert(c, FSCK(c)->mode != REBUILD_MODE);
 +
-+	for (i = 0; i < len; i += rowsize) {
-+		linelen = min(remaining, rowsize);
-+		remaining -= rowsize;
-+
-+		hex_dump_to_buffer(ptr + i, linelen, rowsize, groupsize,
-+				   linebuf, sizeof(linebuf), ascii);
-+
-+		switch (prefix_type) {
-+		case DUMP_PREFIX_ADDRESS:
-+			printf("%s%p: %s\n", prefix_str, ptr + i, linebuf);
-+			break;
-+		case DUMP_PREFIX_OFFSET:
-+			printf("%s%.8x: %s\n", prefix_str, i, linebuf);
-+			break;
-+		default:
-+			printf("%s%s\n", prefix_str, linebuf);
-+			break;
-+		}
++	if (!(problem->flags & PROBLEM_FIXABLE)) {
++		exit_code |= FSCK_UNCORRECTED;
++		fatal_error(c, problem);
 +	}
++
++	if (FSCK(c)->mode == CHECK_MODE ||
++	    ((problem->flags & PROBLEM_DROP_DATA) && FSCK(c)->mode == SAFE_MODE) ||
++	    ((problem->flags & PROBLEM_NEED_REBUILD) &&
++	     (FSCK(c)->mode == SAFE_MODE || FSCK(c)->mode == DANGER_MODE0)))
++		def_y = false;
++
++	if ((problem->flags & PROBLEM_NEED_REBUILD) &&
++	    (FSCK(c)->mode == DANGER_MODE0 || FSCK(c)->mode == DANGER_MODE1))
++		ask = false;
++
++	print_problem(c, problem);
++	ans = def_y;
++	if (FSCK(c)->mode == NORMAL_MODE) {
++		printf("%s[%d] (%s%s)", c->program_name, getpid(),
++		       c->dev_name ? : "-", mode_name(c));
++		if (prompt(question, def_y))
++			ans = true;
++		else
++			ans = false;
++	} else {
++		if (ask)
++			log_out(c, "%s %c\n", question, def_y ? 'y' : 'n');
++	}
++
++	if (!ans) {
++		exit_code |= FSCK_UNCORRECTED;
++		if (problem->flags & PROBLEM_MUST_FIX)
++			fatal_error(c, problem);
++	} else {
++		exit_code |= FSCK_NONDESTRUCT;
++	}
++
++	return ans;
 +}
 -- 
 2.13.6
