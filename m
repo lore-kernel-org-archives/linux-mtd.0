@@ -4,62 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C556FC27C65
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FEE3C27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zRxZgnTgqYYDL6NUGNA5Fdt8CnSh9bHUHo6/C1mw5yk=; b=4nPuAlmuz3Md2k
-	ZeNpsOZuXbV47kRZZxapgtHPjaECUlrOHY+phsPg7lq02lif1Csa3fLqae9sTqNvaXYLQXyifLt4X
-	6WyxAVmLGfL/vg5QODtPgoq03/DDqgs17lZxbmDGk+NMxafv6yVuc+EvQ14uCumO4aByb6Lkehyig
-	+SHIEU4l4XxTVVYMW2nYVPUp9mVmHdjvk1is02h95Dk5iUUSStyl21L72ZwoV+glUGvXVw3k9W+c1
-	pS8mGw0nWE03tnfGrk2MzCx85z3m3H2g4GsvZYv6hKbn7emsybUYwEfhqeIdJYSWh/Q5qtqaU/g3f
-	v1ugVieGnuqSWfs3bl7w==;
+	List-Owner; bh=g2H+GSox8Y0r35sRBzKz7MGVEfZC+oBoy/TrBf0rKfs=; b=ZD6acMkY491/7u
+	aa4wGu8utXFv0KEwjTr6mUMS+DuX7XeXCw3C4ZxOb+Llh2cPr7kxjFc+7fLE7nfV4dri9Fek0C6rX
+	oVBPEyaVlQYSxbQSGTt+9iNhCuHSRogW8sA9ROBXH26+0zoSFNguXaqYwZFLM2s/h7avyRsObYx9W
+	90HV4BWgC4Z0FaoWyqC5R1BlHjjL4cZeobfl6tqqlRjF+jyMP3C17OGRVAUHlOPMBKwP/3kIgA/xy
+	Pue2NnaW2e3t/v7dsf+wpTsjSvwlOBJf+ttxs21ImY1EULbq2LYYdhJgzC/FuXQ9gYLE7xKjMt11f
+	wTVgKC+k5yXXHyCid5Lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRFn-0000000CJQ9-42Ik;
-	Fri, 07 Jun 2024 04:31:04 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1sFRFs-0000000CJTP-1Fha;
+	Fri, 07 Jun 2024 04:31:08 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCk-0000000CH3R-1LMJ
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 07 Jun 2024 04:27:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=8xJNH+QlcuLCJoAkssdptjkoBl6VHGuttJoFP1V7A+Q=; b=SIYp5nBC2Pq54thbIexSqJT6cZ
-	h44XJq3HRk1oEvee11pQvy2pwXqWx+dyu/haGWTM4wP0fps/oNrmm+WtUTfH1qdyRsfRPVDT2fRze
-	9svYbCJKONpVDvI7nrrpMu4zG+wYDwe0Tsp/nP/syZeBtTLTDfW5DFp7xQ9aNFxlxohYOvM6N2i2k
-	TcXarDk+AagyiyugkD6tKUcQWP+vTjI8sebfCwjy2Bt+1zxCuwQboNVw6MlPGayJGsgbZFWtt5tt+
-	QA7ztgmsSBvCqzwjTlHZd2WswpsjpujtCVj5bFjZgRTX3bFF/oMt4gsU9McqJMFAXw1nQQWHy0loN
-	SAdCqgXg==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
-	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCg-00000004U2T-0uY2
+	id 1sFRC5-0000000CGSp-0qXq
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:53 +0000
+	Fri, 07 Jun 2024 04:27:55 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSkQ1PXBz1SB3b;
-	Fri,  7 Jun 2024 12:23:42 +0800 (CST)
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwSjr33zHzwS93;
+	Fri,  7 Jun 2024 12:23:12 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id E5C01180AA6;
-	Fri,  7 Jun 2024 12:27:40 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4E46A18007E;
+	Fri,  7 Jun 2024 12:27:11 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:27 +0800
+ 2024 12:26:58 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 082/110] fsck.ubifs: Traverse TNC and construct files
-Date: Fri, 7 Jun 2024 12:25:47 +0800
-Message-ID: <20240607042615.2069840-83-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 043/110] ubifs-utils: Adapt dir.c in libubifs
+Date: Fri, 7 Jun 2024 12:25:08 +0800
+Message-ID: <20240607042615.2069840-44-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -68,8 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052750_874140_0D6A6C44 
-X-CRM114-Status: GOOD (  20.57  )
+X-CRM114-CacheID: sfid-20240606_212716_007642_B702E516 
+X-CRM114-Status: GOOD (  22.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,724 +71,1737 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 6/18 step of fsck. Traverse TNC and construct files. There
-could be following steps and possible errors:
- Step 1. Traverse TNC, check whether the leaf node is valid, remove invalid
- nodes, construct file for valid node and insert file into file tree.
-  a. corrupted node searched from TNC: remove corresponding TNC branch for
-     danger mode and normal mode with 'yes' answer, other modes will exit.
-  b. corrupted index node read from TNC: danger mode with rebuild_fs and
-     normal mode with 'yes' answer will turn to rebuild filesystem, other
-     modes will exit.
+Adapt dir.c in libubifs, compared with linux kernel implementations:
+ 1. Remove all functions. Only keep an empty source file, fsck will
+    add new functions for mkdir/link operations without using linux
+    in-memory inode/dentry.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am              |   3 +-
- ubifs-utils/fsck.ubifs/check_files.c   | 201 ++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/extract_files.c | 216 ++++++++++++++++++++++++---------
- ubifs-utils/fsck.ubifs/fsck.ubifs.c    |  15 ++-
- ubifs-utils/fsck.ubifs/fsck.ubifs.h    |   6 +-
- ubifs-utils/fsck.ubifs/problem.c       |   6 +
- ubifs-utils/libubifs/debug.c           |  12 +-
- ubifs-utils/libubifs/debug.h           |   1 +
- 8 files changed, 395 insertions(+), 65 deletions(-)
- create mode 100644 ubifs-utils/fsck.ubifs/check_files.c
+ ubifs-utils/libubifs/dir.c | 1713 --------------------------------------------
+ 1 file changed, 1713 deletions(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index b7ee3de4..e12052ce 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -83,7 +83,8 @@ fsck_ubifs_SOURCES = \
- 	ubifs-utils/fsck.ubifs/problem.c \
- 	ubifs-utils/fsck.ubifs/load_fs.c \
- 	ubifs-utils/fsck.ubifs/extract_files.c \
--	ubifs-utils/fsck.ubifs/rebuild_fs.c
-+	ubifs-utils/fsck.ubifs/rebuild_fs.c \
-+	ubifs-utils/fsck.ubifs/check_files.c
- 
- fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
- fsck_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
-diff --git a/ubifs-utils/fsck.ubifs/check_files.c b/ubifs-utils/fsck.ubifs/check_files.c
-new file mode 100644
-index 00000000..982c05b7
---- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/check_files.c
-@@ -0,0 +1,201 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include "bitops.h"
-+#include "kmem.h"
-+#include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
-+#include "fsck.ubifs.h"
-+
-+struct invalid_node {
-+	union ubifs_key key;
-+	int lnum;
-+	int offs;
-+	struct list_head list;
-+};
-+
-+struct iteration_info {
-+	struct list_head invalid_nodes;
-+};
-+
-+static int add_invalid_node(struct ubifs_info *c, union ubifs_key *key,
-+			    int lnum, int offs, struct iteration_info *iter)
-+{
-+	struct invalid_node *in;
-+
-+	in = kmalloc(sizeof(struct invalid_node), GFP_KERNEL);
-+	if (!in) {
-+		log_err(c, errno, "can not allocate invalid node");
-+		return -ENOMEM;
-+	}
-+
-+	key_copy(c, key, &in->key);
-+	in->lnum = lnum;
-+	in->offs = offs;
-+	list_add(&in->list, &iter->invalid_nodes);
-+
-+	return 0;
-+}
-+
-+static int construct_file(struct ubifs_info *c, union ubifs_key *key,
-+			  int lnum, int offs, void *node,
-+			  struct iteration_info *iter)
-+{
-+	ino_t inum = 0;
-+	struct rb_root *tree = &FSCK(c)->scanned_files;
-+	struct scanned_node *sn = NULL;
-+	struct ubifs_ch *ch = (struct ubifs_ch *)node;
-+
-+	switch (ch->node_type) {
-+	case UBIFS_INO_NODE:
-+	{
-+		struct scanned_ino_node ino_node;
-+
-+		if (!parse_ino_node(c, lnum, offs, node, key, &ino_node)) {
-+			if (fix_problem(c, INVALID_INO_NODE, NULL))
-+				return add_invalid_node(c, key, lnum, offs, iter);
-+		}
-+		inum = key_inum(c, key);
-+		sn = (struct scanned_node *)&ino_node;
-+		break;
-+	}
-+	case UBIFS_DENT_NODE:
-+	case UBIFS_XENT_NODE:
-+	{
-+		struct scanned_dent_node dent_node;
-+
-+		if (!parse_dent_node(c, lnum, offs, node, key, &dent_node)) {
-+			if (fix_problem(c, INVALID_DENT_NODE, NULL))
-+				return add_invalid_node(c, key, lnum, offs, iter);
-+		}
-+		inum = dent_node.inum;
-+		sn = (struct scanned_node *)&dent_node;
-+		break;
-+	}
-+	case UBIFS_DATA_NODE:
-+	{
-+		struct scanned_data_node data_node;
-+
-+		if (!parse_data_node(c, lnum, offs, node, key, &data_node)) {
-+			if (fix_problem(c, INVALID_DATA_NODE, NULL))
-+				return add_invalid_node(c, key, lnum, offs, iter);
-+		}
-+		inum = key_inum(c, key);
-+		sn = (struct scanned_node *)&data_node;
-+		break;
-+	}
-+	default:
-+		ubifs_assert(c, 0);
-+	}
-+
-+	dbg_fsck("construct file(%lu) for %s node, TNC location %d:%d, in %s",
-+		 inum, ubifs_get_key_name(key_type(c, key)), sn->lnum, sn->offs,
-+		 c->dev_name);
-+	return insert_or_update_file(c, tree, sn, key_type(c, key), inum);
-+}
-+
-+static int check_leaf(struct ubifs_info *c, struct ubifs_zbranch *zbr,
-+		      void *priv)
-+{
-+	void *node;
-+	struct iteration_info *iter = (struct iteration_info *)priv;
-+	union ubifs_key *key = &zbr->key;
-+	int lnum = zbr->lnum, offs = zbr->offs, len = zbr->len, err = 0;
-+
-+	if (len < UBIFS_CH_SZ) {
-+		ubifs_err(c, "bad leaf length %d (LEB %d:%d)",
-+			  len, lnum, offs);
-+		set_failure_reason_callback(c, FR_TNC_CORRUPTED);
-+		return -EINVAL;
-+	}
-+	if (key_type(c, key) != UBIFS_INO_KEY &&
-+	    key_type(c, key) != UBIFS_DATA_KEY &&
-+	    key_type(c, key) != UBIFS_DENT_KEY &&
-+	    key_type(c, key) != UBIFS_XENT_KEY) {
-+		ubifs_err(c, "bad key type %d (LEB %d:%d)",
-+			  key_type(c, key), lnum, offs);
-+		set_failure_reason_callback(c, FR_TNC_CORRUPTED);
-+		return -EINVAL;
-+	}
-+
-+	node = kmalloc(len, GFP_NOFS);
-+	if (!node)
-+		return -ENOMEM;
-+
-+	err = ubifs_tnc_read_node(c, zbr, node);
-+	if (err) {
-+		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED)) {
-+			if (fix_problem(c, TNC_DATA_CORRUPTED, NULL))
-+				err = add_invalid_node(c, key, lnum, offs, iter);
-+		}
-+		goto out;
-+	}
-+
-+	err = construct_file(c, key, lnum, offs, node, iter);
-+
-+out:
-+	kfree(node);
-+	return err;
-+}
-+
-+static int remove_invalid_nodes(struct ubifs_info *c,
-+				struct list_head *invalid_nodes, int error)
-+{
-+	int ret = 0;;
-+	struct invalid_node *in;
-+
-+	while (!list_empty(invalid_nodes)) {
-+		in = list_entry(invalid_nodes->next, struct invalid_node, list);
-+
-+		if (!error) {
-+			error = ubifs_tnc_remove_node(c, &in->key, in->lnum, in->offs);
-+			if (error) {
-+				/* TNC traversing is finished, any TNC path is accessible */
-+				ubifs_assert(c, !get_failure_reason_callback(c));
-+				ret = error;
-+			}
-+		}
-+
-+		list_del(&in->list);
-+		kfree(in);
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * traverse_tnc_and_construct_files - traverse TNC and construct all files.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function checks all index nodes and non-index nodes by traversing TNC,
-+ * then construct file according to scanned non-index nodes and insert file
-+ * into file tree. Returns zero in case of success, a negative error code in
-+ * case of failure.
-+ */
-+int traverse_tnc_and_construct_files(struct ubifs_info *c)
-+{
-+	int err, ret;
-+	struct iteration_info iter;
-+
-+	FSCK(c)->scanned_files = RB_ROOT;
-+	INIT_LIST_HEAD(&iter.invalid_nodes);
-+
-+	err = dbg_walk_index(c, check_leaf, NULL, &iter);
-+
-+	ret = remove_invalid_nodes(c, &iter.invalid_nodes, err);
-+	if (!err)
-+		err = ret;
-+
-+	if (err)
-+		destroy_file_tree(c, &FSCK(c)->scanned_files);
-+	return err;
-+}
-diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
-index c3ab2b76..e9c71a3c 100644
---- a/ubifs-utils/fsck.ubifs/extract_files.c
-+++ b/ubifs-utils/fsck.ubifs/extract_files.c
-@@ -74,15 +74,24 @@ bool parse_ino_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 	ino_t inum = key_inum(c, key);
- 
- 	if (!inum || inum > INUM_WATERMARK) {
--		dbg_fsck("bad inode node(bad inum %lu) at %d:%d, in %s",
--			 inum, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node(bad inum %lu) at %d:%d, in %s",
-+				 inum, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node(bad inum %lu) at %d:%d",
-+				inum, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (ch->node_type != key_type(c, key)) {
--		dbg_fsck("bad inode node %lu(inconsistent node type %d vs key_type %d) at %d:%d, in %s",
--			 inum, ch->node_type, key_type(c, key),
--			 lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(inconsistent node type %d vs key_type %d) at %d:%d, in %s",
-+				 inum, ch->node_type, key_type(c, key),
-+				 lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(inconsistent node type %d vs key_type %d) at %d:%d",
-+				inum, ch->node_type, key_type(c, key),
-+				lnum, offs);
- 		goto out;
- 	}
- 
-@@ -101,60 +110,101 @@ bool parse_ino_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 	ino_node->size = le64_to_cpu(ino->size);
- 
- 	if (inum == UBIFS_ROOT_INO && !S_ISDIR(ino_node->mode)) {
--		dbg_fsck("bad inode node %lu(root inode is not dir, tyoe %u) at %d:%d, in %s",
--			 inum, ino_node->mode & S_IFMT, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(root inode is not dir, tyoe %u) at %d:%d, in %s",
-+				 inum, ino_node->mode & S_IFMT, lnum, offs,
-+				 c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(root inode is not dir, tyoe %u) at %d:%d",
-+				inum, ino_node->mode & S_IFMT, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (ino_node->size > c->max_inode_sz) {
--		dbg_fsck("bad inode node %lu(size %llu is too large) at %d:%d, in %s",
--			 inum, ino_node->size, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(size %llu is too large) at %d:%d, in %s",
-+				 inum, ino_node->size, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(size %llu is too large) at %d:%d",
-+				inum, ino_node->size, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (le16_to_cpu(ino->compr_type) >= UBIFS_COMPR_TYPES_CNT) {
--		dbg_fsck("bad inode node %lu(unknown compression type %d) at %d:%d, in %s",
--			 inum, le16_to_cpu(ino->compr_type), lnum, offs,
--			 c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(unknown compression type %d) at %d:%d, in %s",
-+				 inum, le16_to_cpu(ino->compr_type), lnum, offs,
-+				 c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(unknown compression type %d) at %d:%d",
-+				inum, le16_to_cpu(ino->compr_type), lnum, offs);
- 		goto out;
- 	}
- 
- 	if (ino_node->xnms + ino_node->xcnt > XATTR_LIST_MAX) {
--		dbg_fsck("bad inode node %lu(too big xnames %u xcount %u) at %d:%d, in %s",
--			 inum, ino_node->xnms, ino_node->xcnt,
--			 lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(too big xnames %u xcount %u) at %d:%d, in %s",
-+				 inum, ino_node->xnms, ino_node->xcnt,
-+				 lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(too big xnames %u xcount %u) at %d:%d",
-+				inum, ino_node->xnms, ino_node->xcnt,
-+				lnum, offs);
- 		goto out;
- 	}
- 
- 	if (data_len < 0 || data_len > UBIFS_MAX_INO_DATA) {
--		dbg_fsck("bad inode node %lu(invalid data len %d) at %d:%d, in %s",
--			 inum, data_len, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(invalid data len %d) at %d:%d, in %s",
-+				 inum, data_len, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(invalid data len %d) at %d:%d",
-+				inum, data_len, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (UBIFS_INO_NODE_SZ + data_len != node_len) {
--		dbg_fsck("bad inode node %lu(inconsistent data len %d vs node len %d) at %d:%d, in %s",
--			 inum, data_len, node_len, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(inconsistent data len %d vs node len %d) at %d:%d, in %s",
-+				 inum, data_len, node_len, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(inconsistent data len %d vs node len %d) at %d:%d",
-+				inum, data_len, node_len, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (ino_node->is_xattr) {
- 		if (!S_ISREG(ino_node->mode)) {
--			dbg_fsck("bad inode node %lu(bad type %u for xattr) at %d:%d, in %s",
--				 inum, ino_node->mode & S_IFMT,
--				 lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(bad type %u for xattr) at %d:%d, in %s",
-+					 inum, ino_node->mode & S_IFMT,
-+					 lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(bad type %u for xattr) at %d:%d",
-+					inum, ino_node->mode & S_IFMT,
-+					lnum, offs);
- 			goto out;
- 		}
- 		if (data_len != ino_node->size) {
--			dbg_fsck("bad inode node %lu(inconsistent data_len %d vs size %llu for xattr) at %d:%d, in %s",
--				 inum, data_len, ino_node->size,
--				 lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(inconsistent data_len %d vs size %llu for xattr) at %d:%d, in %s",
-+					 inum, data_len, ino_node->size,
-+					 lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(inconsistent data_len %d vs size %llu for xattr) at %d:%d",
-+					inum, data_len, ino_node->size,
-+					lnum, offs);
- 			goto out;
- 		}
- 		if (ino_node->xcnt || ino_node->xsz || ino_node->xnms) {
--			dbg_fsck("bad inode node %lu(non zero xattr count %u xattr size %u xattr names %u for xattr) at %d:%d, in %s",
--				 inum, ino_node->xcnt, ino_node->xsz,
--				 ino_node->xnms, lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(non zero xattr count %u xattr size %u xattr names %u for xattr) at %d:%d, in %s",
-+					 inum, ino_node->xcnt, ino_node->xsz,
-+					 ino_node->xnms, lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(non zero xattr count %u xattr size %u xattr names %u for xattr) at %d:%d",
-+					inum, ino_node->xcnt, ino_node->xsz,
-+					ino_node->xnms, lnum, offs);
- 			goto out;
- 		}
- 	}
-@@ -162,15 +212,23 @@ bool parse_ino_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 	switch (ino_node->mode & S_IFMT) {
- 	case S_IFREG:
- 		if (!ino_node->is_xattr && data_len != 0) {
--			dbg_fsck("bad inode node %lu(bad data len %d for reg file) at %d:%d, in %s",
--				 inum, data_len, lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(bad data len %d for reg file) at %d:%d, in %s",
-+					 inum, data_len, lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(bad data len %d for reg file) at %d:%d",
-+					inum, data_len, lnum, offs);
- 			goto out;
- 		}
- 		break;
- 	case S_IFDIR:
- 		if (data_len != 0) {
--			dbg_fsck("bad inode node %lu(bad data len %d for dir file) at %d:%d, in %s",
--				 inum, data_len, lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(bad data len %d for dir file) at %d:%d, in %s",
-+					 inum, data_len, lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(bad data len %d for dir file) at %d:%d",
-+					inum, data_len, lnum, offs);
- 			goto out;
- 		}
- 		break;
-@@ -187,8 +245,12 @@ bool parse_ino_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 			 * Just drop the inode node when above class of
- 			 * exceptions are found.
- 			 */
--			dbg_fsck("bad symlink inode node %lu(bad data len %d) at %d:%d, in %s",
--				 inum, data_len, lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad symlink inode node %lu(bad data len %d) at %d:%d, in %s",
-+					 inum, data_len, lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad symlink inode node %lu(bad data len %d) at %d:%d",
-+					inum, data_len, lnum, offs);
- 			goto out;
- 		}
- 		break;
-@@ -200,9 +262,14 @@ bool parse_ino_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 		int sz_new = sizeof(dev->new), sz_huge = sizeof(dev->huge);
- 
- 		if (data_len != sz_new && data_len != sz_huge) {
--			dbg_fsck("bad inode node %lu(bad data len %d for char/block file, expect %d or %d) at %d:%d, in %s",
--				 inum, data_len, sz_new, sz_huge, lnum,
--				 offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(bad data len %d for char/block file, expect %d or %d) at %d:%d, in %s",
-+					 inum, data_len, sz_new, sz_huge, lnum,
-+					 offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(bad data len %d for char/block file, expect %d or %d) at %d:%d",
-+					inum, data_len, sz_new, sz_huge, lnum,
-+					offs);
- 			goto out;
- 		}
- 		break;
-@@ -211,22 +278,35 @@ bool parse_ino_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 		fallthrough;
- 	case S_IFIFO:
- 		if (data_len != 0) {
--			dbg_fsck("bad inode node %lu(bad data len %d for fifo/sock file) at %d:%d, in %s",
--				 inum, data_len, lnum, offs, c->dev_name);
-+			if (FSCK(c)->mode == REBUILD_MODE)
-+				dbg_fsck("bad inode node %lu(bad data len %d for fifo/sock file) at %d:%d, in %s",
-+					 inum, data_len, lnum, offs, c->dev_name);
-+			else
-+				log_out(c, "bad inode node %lu(bad data len %d for fifo/sock file) at %d:%d",
-+					inum, data_len, lnum, offs);
- 			goto out;
- 		}
- 		break;
- 	default:
- 		/* invalid file type. */
--		dbg_fsck("bad inode node %lu(unknown type %u) at %d:%d, in %s",
--			 inum, ino_node->mode & S_IFMT, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(unknown type %u) at %d:%d, in %s",
-+				 inum, ino_node->mode & S_IFMT, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(unknown type %u) at %d:%d",
-+				inum, ino_node->mode & S_IFMT, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (ino_node->is_encrypted && !inode_can_be_encrypted(c, ino_node)) {
--		dbg_fsck("bad inode node %lu(encrypted but cannot be encrypted, type %u, is_xattr %d, fs_encrypted %d) at %d:%d, in %s",
--			 inum, ino_node->mode & S_IFMT, ino_node->is_xattr,
--			 c->encrypted, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad inode node %lu(encrypted but cannot be encrypted, type %u, is_xattr %d, fs_encrypted %d) at %d:%d, in %s",
-+				 inum, ino_node->mode & S_IFMT, ino_node->is_xattr,
-+				 c->encrypted, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad inode node %lu(encrypted but cannot be encrypted, type %u, is_xattr %d, fs_encrypted %d) at %d:%d",
-+				inum, ino_node->mode & S_IFMT, ino_node->is_xattr,
-+				c->encrypted, lnum, offs);
- 		goto out;
- 	}
- 
-@@ -272,10 +352,16 @@ bool parse_dent_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 	    (key_type == UBIFS_XENT_KEY &&
- 	     strnlen((const char *)dent->name, nlen) != nlen) ||
- 	    inum > INUM_WATERMARK || key_type != ch->node_type) {
--		dbg_fsck("bad %s node(len %d nlen %d type %d inum %lu key_type %d node_type %d) at %d:%d, in %s",
--			 ch->node_type == UBIFS_XENT_NODE ? "xattr entry" : "directory entry",
--			 node_len, nlen, dent->type, inum, key_type,
--			 ch->node_type, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad %s node(len %d nlen %d type %d inum %lu key_type %d node_type %d) at %d:%d, in %s",
-+				 ch->node_type == UBIFS_XENT_NODE ? "xattr entry" : "directory entry",
-+				 node_len, nlen, dent->type, inum, key_type,
-+				 ch->node_type, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad %s node(len %d nlen %d type %d inum %lu key_type %d node_type %d) at %d:%d",
-+				ch->node_type == UBIFS_XENT_NODE ? "xattr entry" : "directory entry",
-+				node_len, nlen, dent->type, inum, key_type,
-+				ch->node_type, lnum, offs);
- 		goto out;
- 	}
- 
-@@ -318,15 +404,23 @@ bool parse_data_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 	ino_t inum = key_inum(c, key);
- 
- 	if (ch->node_type != key_type(c, key)) {
--		dbg_fsck("bad data node(inconsistent node type %d vs key_type %d) at %d:%d, in %s",
--			 ch->node_type, key_type(c, key),
--			 lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad data node(inconsistent node type %d vs key_type %d) at %d:%d, in %s",
-+				 ch->node_type, key_type(c, key),
-+				 lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad data node(inconsistent node type %d vs key_type %d) at %d:%d",
-+				ch->node_type, key_type(c, key), lnum, offs);
- 		goto out;
- 	}
- 
- 	if (!inum || inum > INUM_WATERMARK) {
--		dbg_fsck("bad data node(bad inum %lu) at %d:%d, in %s",
--			 inum, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad data node(bad inum %lu) at %d:%d, in %s",
-+				 inum, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad data node(bad inum %lu) at %d:%d",
-+				inum, lnum, offs);
- 		goto out;
- 	}
- 
-@@ -336,14 +430,22 @@ bool parse_data_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 	data_node->size = le32_to_cpu(dn->size);
- 
- 	if (!data_node->size || data_node->size > UBIFS_BLOCK_SIZE) {
--		dbg_fsck("bad data node(invalid size %u) at %d:%d, in %s",
--			 data_node->size, lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad data node(invalid size %u) at %d:%d, in %s",
-+				 data_node->size, lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad data node(invalid size %u) at %d:%d",
-+				data_node->size, lnum, offs);
- 		goto out;
- 	}
- 
- 	if (le16_to_cpu(dn->compr_type) >= UBIFS_COMPR_TYPES_CNT) {
--		dbg_fsck("bad data node(invalid compression type %d) at %d:%d, in %s",
--			 le16_to_cpu(dn->compr_type), lnum, offs, c->dev_name);
-+		if (FSCK(c)->mode == REBUILD_MODE)
-+			dbg_fsck("bad data node(invalid compression type %d) at %d:%d, in %s",
-+				 le16_to_cpu(dn->compr_type), lnum, offs, c->dev_name);
-+		else
-+			log_out(c, "bad data node(invalid compression type %d) at %d:%d",
-+				le16_to_cpu(dn->compr_type), lnum, offs);
- 		goto out;
- 	}
- 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-index 471c2cd9..c85e9147 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -434,7 +434,17 @@ void handle_error(const struct ubifs_info *c, int reason_set)
+diff --git a/ubifs-utils/libubifs/dir.c b/ubifs-utils/libubifs/dir.c
+index c77ea57f..9d5f6446 100644
+--- a/ubifs-utils/libubifs/dir.c
++++ b/ubifs-utils/libubifs/dir.c
+@@ -29,1716 +29,3 @@
   */
- static int do_fsck(void)
- {
+ 
+ #include "ubifs.h"
+-
+-/**
+- * inherit_flags - inherit flags of the parent inode.
+- * @dir: parent inode
+- * @mode: new inode mode flags
+- *
+- * This is a helper function for 'ubifs_new_inode()' which inherits flag of the
+- * parent directory inode @dir. UBIFS inodes inherit the following flags:
+- * o %UBIFS_COMPR_FL, which is useful to switch compression on/of on
+- *   sub-directory basis;
+- * o %UBIFS_SYNC_FL - useful for the same reasons;
+- * o %UBIFS_DIRSYNC_FL - similar, but relevant only to directories.
+- *
+- * This function returns the inherited flags.
+- */
+-static int inherit_flags(const struct inode *dir, umode_t mode)
+-{
+-	int flags;
+-	const struct ubifs_inode *ui = ubifs_inode(dir);
+-
+-	if (!S_ISDIR(dir->i_mode))
+-		/*
+-		 * The parent is not a directory, which means that an extended
+-		 * attribute inode is being created. No flags.
+-		 */
+-		return 0;
+-
+-	flags = ui->flags & (UBIFS_COMPR_FL | UBIFS_SYNC_FL | UBIFS_DIRSYNC_FL);
+-	if (!S_ISDIR(mode))
+-		/* The "DIRSYNC" flag only applies to directories */
+-		flags &= ~UBIFS_DIRSYNC_FL;
+-	return flags;
+-}
+-
+-/**
+- * ubifs_new_inode - allocate new UBIFS inode object.
+- * @c: UBIFS file-system description object
+- * @dir: parent directory inode
+- * @mode: inode mode flags
+- * @is_xattr: whether the inode is xattr inode
+- *
+- * This function finds an unused inode number, allocates new inode and
+- * initializes it. Non-xattr new inode may be written with xattrs(selinux/
+- * encryption) before writing dentry, which could cause inconsistent problem
+- * when powercut happens between two operations. To deal with it, non-xattr
+- * new inode is initialized with zero-nlink and added into orphan list, caller
+- * should make sure that inode is relinked later, and make sure that orphan
+- * removing and journal writing into an committing atomic operation. Returns
+- * new inode in case of success and an error code in case of failure.
+- */
+-struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+-			      umode_t mode, bool is_xattr)
+-{
+-	int err;
+-	struct inode *inode;
+-	struct ubifs_inode *ui;
+-	bool encrypted = false;
+-
+-	inode = new_inode(c->vfs_sb);
+-	ui = ubifs_inode(inode);
+-	if (!inode)
+-		return ERR_PTR(-ENOMEM);
+-
+-	/*
+-	 * Set 'S_NOCMTIME' to prevent VFS form updating [mc]time of inodes and
+-	 * marking them dirty in file write path (see 'file_update_time()').
+-	 * UBIFS has to fully control "clean <-> dirty" transitions of inodes
+-	 * to make budgeting work.
+-	 */
+-	inode->i_flags |= S_NOCMTIME;
+-
+-	inode_init_owner(&nop_mnt_idmap, inode, dir, mode);
+-	simple_inode_init_ts(inode);
+-	inode->i_mapping->nrpages = 0;
+-
+-	if (!is_xattr) {
+-		err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
+-		if (err) {
+-			ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
+-			goto out_iput;
+-		}
+-	}
+-
+-	switch (mode & S_IFMT) {
+-	case S_IFREG:
+-		inode->i_mapping->a_ops = &ubifs_file_address_operations;
+-		inode->i_op = &ubifs_file_inode_operations;
+-		inode->i_fop = &ubifs_file_operations;
+-		break;
+-	case S_IFDIR:
+-		inode->i_op  = &ubifs_dir_inode_operations;
+-		inode->i_fop = &ubifs_dir_operations;
+-		inode->i_size = ui->ui_size = UBIFS_INO_NODE_SZ;
+-		break;
+-	case S_IFLNK:
+-		inode->i_op = &ubifs_symlink_inode_operations;
+-		break;
+-	case S_IFSOCK:
+-	case S_IFIFO:
+-	case S_IFBLK:
+-	case S_IFCHR:
+-		inode->i_op  = &ubifs_file_inode_operations;
+-		break;
+-	default:
+-		BUG();
+-	}
+-
+-	ui->flags = inherit_flags(dir, mode);
+-	ubifs_set_inode_flags(inode);
+-	if (S_ISREG(mode))
+-		ui->compr_type = c->default_compr;
+-	else
+-		ui->compr_type = UBIFS_COMPR_NONE;
+-	ui->synced_i_size = 0;
+-
+-	spin_lock(&c->cnt_lock);
+-	/* Inode number overflow is currently not supported */
+-	if (c->highest_inum >= INUM_WARN_WATERMARK) {
+-		if (c->highest_inum >= INUM_WATERMARK) {
+-			spin_unlock(&c->cnt_lock);
+-			ubifs_err(c, "out of inode numbers");
+-			err = -EINVAL;
+-			goto out_iput;
+-		}
+-		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
+-			   (unsigned long)c->highest_inum, INUM_WATERMARK);
+-	}
+-
+-	inode->i_ino = ++c->highest_inum;
+-	/*
+-	 * The creation sequence number remains with this inode for its
+-	 * lifetime. All nodes for this inode have a greater sequence number,
+-	 * and so it is possible to distinguish obsolete nodes belonging to a
+-	 * previous incarnation of the same inode number - for example, for the
+-	 * purpose of rebuilding the index.
+-	 */
+-	ui->creat_sqnum = ++c->max_sqnum;
+-	spin_unlock(&c->cnt_lock);
+-
+-	if (!is_xattr) {
+-		set_nlink(inode, 0);
+-		err = ubifs_add_orphan(c, inode->i_ino);
+-		if (err) {
+-			ubifs_err(c, "ubifs_add_orphan failed: %i", err);
+-			goto out_iput;
+-		}
+-		down_read(&c->commit_sem);
+-		ui->del_cmtno = c->cmt_no;
+-		up_read(&c->commit_sem);
+-	}
+-
+-	if (encrypted) {
+-		err = fscrypt_set_context(inode, NULL);
+-		if (err) {
+-			if (!is_xattr) {
+-				set_nlink(inode, 1);
+-				ubifs_delete_orphan(c, inode->i_ino);
+-			}
+-			ubifs_err(c, "fscrypt_set_context failed: %i", err);
+-			goto out_iput;
+-		}
+-	}
+-
+-	return inode;
+-
+-out_iput:
+-	make_bad_inode(inode);
+-	iput(inode);
+-	return ERR_PTR(err);
+-}
+-
+-static int dbg_check_name(const struct ubifs_info *c,
+-			  const struct ubifs_dent_node *dent,
+-			  const struct fscrypt_name *nm)
+-{
+-	if (!dbg_is_chk_gen(c))
+-		return 0;
+-	if (le16_to_cpu(dent->nlen) != fname_len(nm))
+-		return -EINVAL;
+-	if (memcmp(dent->name, fname_name(nm), fname_len(nm)))
+-		return -EINVAL;
 -	return 0;
-+	int err;
-+
-+	log_out(c, "Traverse TNC and construct files");
-+	err = traverse_tnc_and_construct_files(c);
-+	if (err) {
-+		handle_error(c, HAS_TNC_CORRUPTED);
-+		return err;
-+	}
-+
-+	destroy_file_tree(c, &FSCK(c)->scanned_files);
-+	return err;
- }
- 
- int main(int argc, char *argv[])
-@@ -468,6 +478,9 @@ int main(int argc, char *argv[])
- 		goto out_close;
- 	}
- 
-+	/*
-+	 * Step 6: Traverse tnc and construct files
-+	 */
- 	err = do_fsck();
- 	if (err && FSCK(c)->try_rebuild) {
- 		ubifs_destroy_filesystem(c);
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 109c3924..fe6070ac 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -38,7 +38,8 @@ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
- 
- /* Types of inconsistent problems */
- enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
--       TNC_CORRUPTED, TNC_DATA_CORRUPTED, ORPHAN_CORRUPTED };
-+       TNC_CORRUPTED, TNC_DATA_CORRUPTED, ORPHAN_CORRUPTED, INVALID_INO_NODE,
-+       INVALID_DENT_NODE, INVALID_DATA_NODE };
- 
- enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
- 
-@@ -295,4 +296,7 @@ int check_and_correct_files(struct ubifs_info *c);
- /* rebuild_fs.c */
- int ubifs_rebuild_filesystem(struct ubifs_info *c);
- 
-+/* check_files.c */
-+int traverse_tnc_and_construct_files(struct ubifs_info *c);
-+
- #endif
-diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
-index 9c8730a5..f99fd90e 100644
---- a/ubifs-utils/fsck.ubifs/problem.c
-+++ b/ubifs-utils/fsck.ubifs/problem.c
-@@ -42,6 +42,9 @@ static const struct fsck_problem problem_table[] = {
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "Corrupted index node"},	// TNC_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted data searched from TNC"},	// TNC_DATA_CORRUPTED
- 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Corrupted orphan LEB"},	// ORPHAN_CORRUPTED
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Invalid inode node"},	// INVALID_INO_NODE
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Invalid dentry node"},	// INVALID_DENT_NODE
-+	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Invalid data node"},	// INVALID_DATA_NODE
- };
- 
- static const char *get_question(const struct fsck_problem *problem,
-@@ -54,6 +57,9 @@ static const char *get_question(const struct fsck_problem *problem,
- 	case BUD_CORRUPTED:
- 		return "Drop bud?";
- 	case TNC_DATA_CORRUPTED:
-+	case INVALID_INO_NODE:
-+	case INVALID_DENT_NODE:
-+	case INVALID_DATA_NODE:
- 		return "Drop it?";
- 	case ORPHAN_CORRUPTED:
- 		return "Drop orphans on the LEB?";
-diff --git a/ubifs-utils/libubifs/debug.c b/ubifs-utils/libubifs/debug.c
-index eaf403f9..836cbc74 100644
---- a/ubifs-utils/libubifs/debug.c
-+++ b/ubifs-utils/libubifs/debug.c
-@@ -51,7 +51,7 @@ static const char *get_key_hash(int hash)
- 	}
- }
- 
--static const char *get_key_type(int type)
-+const char *ubifs_get_key_name(int type)
- {
- 	switch (type) {
- 	case UBIFS_INO_KEY:
-@@ -102,23 +102,25 @@ const char *dbg_snprintf_key(const struct ubifs_info *c,
- 		case UBIFS_INO_KEY:
- 			len -= snprintf(p, len, "(%lu, %s)",
- 					(unsigned long)key_inum(c, key),
--					get_key_type(type));
-+					ubifs_get_key_name(type));
- 			break;
- 		case UBIFS_DENT_KEY:
- 		case UBIFS_XENT_KEY:
- 			len -= snprintf(p, len, "(%lu, %s, %#08x)",
- 					(unsigned long)key_inum(c, key),
--					get_key_type(type), key_hash(c, key));
-+					ubifs_get_key_name(type),
-+					key_hash(c, key));
- 			break;
- 		case UBIFS_DATA_KEY:
- 			len -= snprintf(p, len, "(%lu, %s, %u)",
- 					(unsigned long)key_inum(c, key),
--					get_key_type(type), key_block(c, key));
-+					ubifs_get_key_name(type),
-+					key_block(c, key));
- 			break;
- 		case UBIFS_TRUN_KEY:
- 			len -= snprintf(p, len, "(%lu, %s)",
- 					(unsigned long)key_inum(c, key),
--					get_key_type(type));
-+					ubifs_get_key_name(type));
- 			break;
- 		default:
- 			len -= snprintf(p, len, "(bad key type: %#08x, %#08x)",
-diff --git a/ubifs-utils/libubifs/debug.h b/ubifs-utils/libubifs/debug.h
-index 400b4759..d015e62f 100644
---- a/ubifs-utils/libubifs/debug.h
-+++ b/ubifs-utils/libubifs/debug.h
-@@ -85,6 +85,7 @@ static inline int dbg_is_chk_index(__unused const struct ubifs_info *c)
- { return 0; }
- 
- /* Dump functions */
-+const char *ubifs_get_key_name(int type);
- const char *ubifs_get_type_name(int type);
- const char *dbg_ntype(int type);
- const char *dbg_cstate(int cmt_state);
+-}
+-
+-static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+-				   unsigned int flags)
+-{
+-	int err;
+-	union ubifs_key key;
+-	struct inode *inode = NULL;
+-	struct ubifs_dent_node *dent = NULL;
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct fscrypt_name nm;
+-
+-	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
+-
+-	err = fscrypt_prepare_lookup(dir, dentry, &nm);
+-	if (err == -ENOENT)
+-		return d_splice_alias(NULL, dentry);
+-	if (err)
+-		return ERR_PTR(err);
+-
+-	if (fname_len(&nm) > UBIFS_MAX_NLEN) {
+-		inode = ERR_PTR(-ENAMETOOLONG);
+-		goto done;
+-	}
+-
+-	dent = kmalloc(UBIFS_MAX_DENT_NODE_SZ, GFP_NOFS);
+-	if (!dent) {
+-		inode = ERR_PTR(-ENOMEM);
+-		goto done;
+-	}
+-
+-	if (fname_name(&nm) == NULL) {
+-		if (nm.hash & ~UBIFS_S_KEY_HASH_MASK)
+-			goto done; /* ENOENT */
+-		dent_key_init_hash(c, &key, dir->i_ino, nm.hash);
+-		err = ubifs_tnc_lookup_dh(c, &key, dent, nm.minor_hash);
+-	} else {
+-		dent_key_init(c, &key, dir->i_ino, &nm);
+-		err = ubifs_tnc_lookup_nm(c, &key, dent, &nm);
+-	}
+-
+-	if (err) {
+-		if (err == -ENOENT)
+-			dbg_gen("not found");
+-		else
+-			inode = ERR_PTR(err);
+-		goto done;
+-	}
+-
+-	if (dbg_check_name(c, dent, &nm)) {
+-		inode = ERR_PTR(-EINVAL);
+-		goto done;
+-	}
+-
+-	inode = ubifs_iget(dir->i_sb, le64_to_cpu(dent->inum));
+-	if (IS_ERR(inode)) {
+-		/*
+-		 * This should not happen. Probably the file-system needs
+-		 * checking.
+-		 */
+-		err = PTR_ERR(inode);
+-		ubifs_err(c, "dead directory entry '%pd', error %d",
+-			  dentry, err);
+-		ubifs_ro_mode(c, err);
+-		goto done;
+-	}
+-
+-	if (IS_ENCRYPTED(dir) &&
+-	    (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode)) &&
+-	    !fscrypt_has_permitted_context(dir, inode)) {
+-		ubifs_warn(c, "Inconsistent encryption contexts: %lu/%lu",
+-			   dir->i_ino, inode->i_ino);
+-		iput(inode);
+-		inode = ERR_PTR(-EPERM);
+-	}
+-
+-done:
+-	kfree(dent);
+-	fscrypt_free_filename(&nm);
+-	return d_splice_alias(inode, dentry);
+-}
+-
+-static int ubifs_prepare_create(struct inode *dir, struct dentry *dentry,
+-				struct fscrypt_name *nm)
+-{
+-	if (fscrypt_is_nokey_name(dentry))
+-		return -ENOKEY;
+-
+-	return fscrypt_setup_filename(dir, &dentry->d_name, 0, nm);
+-}
+-
+-static int ubifs_create(struct mnt_idmap *idmap, struct inode *dir,
+-			struct dentry *dentry, umode_t mode, bool excl)
+-{
+-	struct inode *inode;
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+-					.dirtied_ino = 1 };
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	struct fscrypt_name nm;
+-	int err, sz_change;
+-
+-	/*
+-	 * Budget request settings: new inode, new direntry, changing the
+-	 * parent directory inode.
+-	 */
+-
+-	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+-		dentry, mode, dir->i_ino);
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err)
+-		return err;
+-
+-	err = ubifs_prepare_create(dir, dentry, &nm);
+-	if (err)
+-		goto out_budg;
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	inode = ubifs_new_inode(c, dir, mode, false);
+-	if (IS_ERR(inode)) {
+-		err = PTR_ERR(inode);
+-		goto out_fname;
+-	}
+-
+-	err = ubifs_init_security(dir, inode, &dentry->d_name);
+-	if (err)
+-		goto out_inode;
+-
+-	set_nlink(inode, 1);
+-	mutex_lock(&dir_ui->ui_mutex);
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
+-	if (err)
+-		goto out_cancel;
+-	mutex_unlock(&dir_ui->ui_mutex);
+-
+-	ubifs_release_budget(c, &req);
+-	fscrypt_free_filename(&nm);
+-	insert_inode_hash(inode);
+-	d_instantiate(dentry, inode);
+-	return 0;
+-
+-out_cancel:
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	mutex_unlock(&dir_ui->ui_mutex);
+-	set_nlink(inode, 0);
+-out_inode:
+-	iput(inode);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-out_budg:
+-	ubifs_release_budget(c, &req);
+-	ubifs_err(c, "cannot create regular file, error %d", err);
+-	return err;
+-}
+-
+-static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
+-{
+-	int err;
+-	umode_t mode = S_IFCHR | WHITEOUT_MODE;
+-	struct inode *inode;
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-
+-	/*
+-	 * Create an inode('nlink = 1') for whiteout without updating journal,
+-	 * let ubifs_jnl_rename() store it on flash to complete rename whiteout
+-	 * atomically.
+-	 */
+-
+-	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+-		dentry, mode, dir->i_ino);
+-
+-	inode = ubifs_new_inode(c, dir, mode, false);
+-	if (IS_ERR(inode)) {
+-		err = PTR_ERR(inode);
+-		goto out_free;
+-	}
+-
+-	init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
+-	ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
+-
+-	err = ubifs_init_security(dir, inode, &dentry->d_name);
+-	if (err)
+-		goto out_inode;
+-
+-	/* The dir size is updated by do_rename. */
+-	insert_inode_hash(inode);
+-
+-	return inode;
+-
+-out_inode:
+-	iput(inode);
+-out_free:
+-	ubifs_err(c, "cannot create whiteout file, error %d", err);
+-	return ERR_PTR(err);
+-}
+-
+-/**
+- * lock_2_inodes - a wrapper for locking two UBIFS inodes.
+- * @inode1: first inode
+- * @inode2: second inode
+- *
+- * We do not implement any tricks to guarantee strict lock ordering, because
+- * VFS has already done it for us on the @i_mutex. So this is just a simple
+- * wrapper function.
+- */
+-static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
+-{
+-	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
+-	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
+-}
+-
+-/**
+- * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
+- * @inode1: first inode
+- * @inode2: second inode
+- */
+-static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
+-{
+-	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
+-	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
+-}
+-
+-static int ubifs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
+-			 struct file *file, umode_t mode)
+-{
+-	struct dentry *dentry = file->f_path.dentry;
+-	struct inode *inode;
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+-					.dirtied_ino = 1};
+-	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
+-	struct ubifs_inode *ui;
+-	int err, instantiated = 0;
+-	struct fscrypt_name nm;
+-
+-	/*
+-	 * Budget request settings: new inode, new direntry, changing the
+-	 * parent directory inode.
+-	 * Allocate budget separately for new dirtied inode, the budget will
+-	 * be released via writeback.
+-	 */
+-
+-	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+-		dentry, mode, dir->i_ino);
+-
+-	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
+-	if (err)
+-		return err;
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err) {
+-		fscrypt_free_filename(&nm);
+-		return err;
+-	}
+-
+-	err = ubifs_budget_space(c, &ino_req);
+-	if (err) {
+-		ubifs_release_budget(c, &req);
+-		fscrypt_free_filename(&nm);
+-		return err;
+-	}
+-
+-	inode = ubifs_new_inode(c, dir, mode, false);
+-	if (IS_ERR(inode)) {
+-		err = PTR_ERR(inode);
+-		goto out_budg;
+-	}
+-	ui = ubifs_inode(inode);
+-
+-	err = ubifs_init_security(dir, inode, &dentry->d_name);
+-	if (err)
+-		goto out_inode;
+-
+-	set_nlink(inode, 1);
+-	mutex_lock(&ui->ui_mutex);
+-	insert_inode_hash(inode);
+-	d_tmpfile(file, inode);
+-	ubifs_assert(c, ui->dirty);
+-
+-	instantiated = 1;
+-	mutex_unlock(&ui->ui_mutex);
+-
+-	lock_2_inodes(dir, inode);
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 1);
+-	if (err)
+-		goto out_cancel;
+-	unlock_2_inodes(dir, inode);
+-
+-	ubifs_release_budget(c, &req);
+-	fscrypt_free_filename(&nm);
+-
+-	return finish_open_simple(file, 0);
+-
+-out_cancel:
+-	unlock_2_inodes(dir, inode);
+-out_inode:
+-	if (!instantiated)
+-		iput(inode);
+-out_budg:
+-	ubifs_release_budget(c, &req);
+-	if (!instantiated)
+-		ubifs_release_budget(c, &ino_req);
+-	fscrypt_free_filename(&nm);
+-	ubifs_err(c, "cannot create temporary file, error %d", err);
+-	return err;
+-}
+-
+-/**
+- * vfs_dent_type - get VFS directory entry type.
+- * @type: UBIFS directory entry type
+- *
+- * This function converts UBIFS directory entry type into VFS directory entry
+- * type.
+- */
+-static unsigned int vfs_dent_type(uint8_t type)
+-{
+-	switch (type) {
+-	case UBIFS_ITYPE_REG:
+-		return DT_REG;
+-	case UBIFS_ITYPE_DIR:
+-		return DT_DIR;
+-	case UBIFS_ITYPE_LNK:
+-		return DT_LNK;
+-	case UBIFS_ITYPE_BLK:
+-		return DT_BLK;
+-	case UBIFS_ITYPE_CHR:
+-		return DT_CHR;
+-	case UBIFS_ITYPE_FIFO:
+-		return DT_FIFO;
+-	case UBIFS_ITYPE_SOCK:
+-		return DT_SOCK;
+-	default:
+-		BUG();
+-	}
+-	return 0;
+-}
+-
+-/*
+- * The classical Unix view for directory is that it is a linear array of
+- * (name, inode number) entries. Linux/VFS assumes this model as well.
+- * Particularly, 'readdir()' call wants us to return a directory entry offset
+- * which later may be used to continue 'readdir()'ing the directory or to
+- * 'seek()' to that specific direntry. Obviously UBIFS does not really fit this
+- * model because directory entries are identified by keys, which may collide.
+- *
+- * UBIFS uses directory entry hash value for directory offsets, so
+- * 'seekdir()'/'telldir()' may not always work because of possible key
+- * collisions. But UBIFS guarantees that consecutive 'readdir()' calls work
+- * properly by means of saving full directory entry name in the private field
+- * of the file description object.
+- *
+- * This means that UBIFS cannot support NFS which requires full
+- * 'seekdir()'/'telldir()' support.
+- */
+-static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+-{
+-	int fstr_real_len = 0, err = 0;
+-	struct fscrypt_name nm;
+-	struct fscrypt_str fstr = {0};
+-	union ubifs_key key;
+-	struct ubifs_dent_node *dent;
+-	struct inode *dir = file_inode(file);
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	bool encrypted = IS_ENCRYPTED(dir);
+-
+-	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, ctx->pos);
+-
+-	if (ctx->pos > UBIFS_S_KEY_HASH_MASK || ctx->pos == 2)
+-		/*
+-		 * The directory was seek'ed to a senseless position or there
+-		 * are no more entries.
+-		 */
+-		return 0;
+-
+-	if (encrypted) {
+-		err = fscrypt_prepare_readdir(dir);
+-		if (err)
+-			return err;
+-
+-		err = fscrypt_fname_alloc_buffer(UBIFS_MAX_NLEN, &fstr);
+-		if (err)
+-			return err;
+-
+-		fstr_real_len = fstr.len;
+-	}
+-
+-	if (file->f_version == 0) {
+-		/*
+-		 * The file was seek'ed, which means that @file->private_data
+-		 * is now invalid. This may also be just the first
+-		 * 'ubifs_readdir()' invocation, in which case
+-		 * @file->private_data is NULL, and the below code is
+-		 * basically a no-op.
+-		 */
+-		kfree(file->private_data);
+-		file->private_data = NULL;
+-	}
+-
+-	/*
+-	 * 'generic_file_llseek()' unconditionally sets @file->f_version to
+-	 * zero, and we use this for detecting whether the file was seek'ed.
+-	 */
+-	file->f_version = 1;
+-
+-	/* File positions 0 and 1 correspond to "." and ".." */
+-	if (ctx->pos < 2) {
+-		ubifs_assert(c, !file->private_data);
+-		if (!dir_emit_dots(file, ctx)) {
+-			if (encrypted)
+-				fscrypt_fname_free_buffer(&fstr);
+-			return 0;
+-		}
+-
+-		/* Find the first entry in TNC and save it */
+-		lowest_dent_key(c, &key, dir->i_ino);
+-		fname_len(&nm) = 0;
+-		dent = ubifs_tnc_next_ent(c, &key, &nm);
+-		if (IS_ERR(dent)) {
+-			err = PTR_ERR(dent);
+-			goto out;
+-		}
+-
+-		ctx->pos = key_hash_flash(c, &dent->key);
+-		file->private_data = dent;
+-	}
+-
+-	dent = file->private_data;
+-	if (!dent) {
+-		/*
+-		 * The directory was seek'ed to and is now readdir'ed.
+-		 * Find the entry corresponding to @ctx->pos or the closest one.
+-		 */
+-		dent_key_init_hash(c, &key, dir->i_ino, ctx->pos);
+-		fname_len(&nm) = 0;
+-		dent = ubifs_tnc_next_ent(c, &key, &nm);
+-		if (IS_ERR(dent)) {
+-			err = PTR_ERR(dent);
+-			goto out;
+-		}
+-		ctx->pos = key_hash_flash(c, &dent->key);
+-		file->private_data = dent;
+-	}
+-
+-	while (1) {
+-		dbg_gen("ino %llu, new f_pos %#x",
+-			(unsigned long long)le64_to_cpu(dent->inum),
+-			key_hash_flash(c, &dent->key));
+-		ubifs_assert(c, le64_to_cpu(dent->ch.sqnum) >
+-			     ubifs_inode(dir)->creat_sqnum);
+-
+-		fname_len(&nm) = le16_to_cpu(dent->nlen);
+-		fname_name(&nm) = dent->name;
+-
+-		if (encrypted) {
+-			fstr.len = fstr_real_len;
+-
+-			err = fscrypt_fname_disk_to_usr(dir, key_hash_flash(c,
+-							&dent->key),
+-							le32_to_cpu(dent->cookie),
+-							&nm.disk_name, &fstr);
+-			if (err)
+-				goto out;
+-		} else {
+-			fstr.len = fname_len(&nm);
+-			fstr.name = fname_name(&nm);
+-		}
+-
+-		if (!dir_emit(ctx, fstr.name, fstr.len,
+-			       le64_to_cpu(dent->inum),
+-			       vfs_dent_type(dent->type))) {
+-			if (encrypted)
+-				fscrypt_fname_free_buffer(&fstr);
+-			return 0;
+-		}
+-
+-		/* Switch to the next entry */
+-		key_read(c, &dent->key, &key);
+-		dent = ubifs_tnc_next_ent(c, &key, &nm);
+-		if (IS_ERR(dent)) {
+-			err = PTR_ERR(dent);
+-			goto out;
+-		}
+-
+-		kfree(file->private_data);
+-		ctx->pos = key_hash_flash(c, &dent->key);
+-		file->private_data = dent;
+-		cond_resched();
+-	}
+-
+-out:
+-	kfree(file->private_data);
+-	file->private_data = NULL;
+-
+-	if (encrypted)
+-		fscrypt_fname_free_buffer(&fstr);
+-
+-	if (err != -ENOENT)
+-		ubifs_err(c, "cannot find next direntry, error %d", err);
+-	else
+-		/*
+-		 * -ENOENT is a non-fatal error in this context, the TNC uses
+-		 * it to indicate that the cursor moved past the current directory
+-		 * and readdir() has to stop.
+-		 */
+-		err = 0;
+-
+-
+-	/* 2 is a special value indicating that there are no more direntries */
+-	ctx->pos = 2;
+-	return err;
+-}
+-
+-/* Free saved readdir() state when the directory is closed */
+-static int ubifs_dir_release(struct inode *dir, struct file *file)
+-{
+-	kfree(file->private_data);
+-	file->private_data = NULL;
+-	return 0;
+-}
+-
+-static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+-		      struct dentry *dentry)
+-{
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct inode *inode = d_inode(old_dentry);
+-	struct ubifs_inode *ui = ubifs_inode(inode);
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	int err, sz_change;
+-	struct ubifs_budget_req req = { .new_dent = 1, .dirtied_ino = 2,
+-				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
+-	struct fscrypt_name nm;
+-
+-	/*
+-	 * Budget request settings: new direntry, changing the target inode,
+-	 * changing the parent inode.
+-	 */
+-
+-	dbg_gen("dent '%pd' to ino %lu (nlink %d) in dir ino %lu",
+-		dentry, inode->i_ino,
+-		inode->i_nlink, dir->i_ino);
+-	ubifs_assert(c, inode_is_locked(dir));
+-	ubifs_assert(c, inode_is_locked(inode));
+-
+-	err = fscrypt_prepare_link(old_dentry, dir, dentry);
+-	if (err)
+-		return err;
+-
+-	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
+-	if (err)
+-		return err;
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	err = dbg_check_synced_i_size(c, inode);
+-	if (err)
+-		goto out_fname;
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err)
+-		goto out_fname;
+-
+-	lock_2_inodes(dir, inode);
+-
+-	inc_nlink(inode);
+-	ihold(inode);
+-	inode_set_ctime_current(inode);
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, inode->i_nlink == 1);
+-	if (err)
+-		goto out_cancel;
+-	unlock_2_inodes(dir, inode);
+-
+-	ubifs_release_budget(c, &req);
+-	d_instantiate(dentry, inode);
+-	fscrypt_free_filename(&nm);
+-	return 0;
+-
+-out_cancel:
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	drop_nlink(inode);
+-	unlock_2_inodes(dir, inode);
+-	ubifs_release_budget(c, &req);
+-	iput(inode);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-	return err;
+-}
+-
+-static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
+-{
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct inode *inode = d_inode(dentry);
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	int err, sz_change, budgeted = 1;
+-	struct ubifs_budget_req req = { .mod_dent = 1, .dirtied_ino = 2 };
+-	unsigned int saved_nlink = inode->i_nlink;
+-	struct fscrypt_name nm;
+-
+-	/*
+-	 * Budget request settings: deletion direntry, deletion inode (+1 for
+-	 * @dirtied_ino), changing the parent directory inode. If budgeting
+-	 * fails, go ahead anyway because we have extra space reserved for
+-	 * deletions.
+-	 */
+-
+-	dbg_gen("dent '%pd' from ino %lu (nlink %d) in dir ino %lu",
+-		dentry, inode->i_ino,
+-		inode->i_nlink, dir->i_ino);
+-
+-	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
+-	if (err)
+-		return err;
+-
+-	err = ubifs_purge_xattrs(inode);
+-	if (err)
+-		return err;
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	ubifs_assert(c, inode_is_locked(dir));
+-	ubifs_assert(c, inode_is_locked(inode));
+-	err = dbg_check_synced_i_size(c, inode);
+-	if (err)
+-		goto out_fname;
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err) {
+-		if (err != -ENOSPC)
+-			goto out_fname;
+-		budgeted = 0;
+-	}
+-
+-	lock_2_inodes(dir, inode);
+-	inode_set_ctime_current(inode);
+-	drop_nlink(inode);
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
+-	if (err)
+-		goto out_cancel;
+-	unlock_2_inodes(dir, inode);
+-
+-	if (budgeted)
+-		ubifs_release_budget(c, &req);
+-	else {
+-		/* We've deleted something - clean the "no space" flags */
+-		c->bi.nospace = c->bi.nospace_rp = 0;
+-		smp_wmb();
+-	}
+-	fscrypt_free_filename(&nm);
+-	return 0;
+-
+-out_cancel:
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	set_nlink(inode, saved_nlink);
+-	unlock_2_inodes(dir, inode);
+-	if (budgeted)
+-		ubifs_release_budget(c, &req);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-	return err;
+-}
+-
+-/**
+- * ubifs_check_dir_empty - check if a directory is empty or not.
+- * @dir: VFS inode object of the directory to check
+- *
+- * This function checks if directory @dir is empty. Returns zero if the
+- * directory is empty, %-ENOTEMPTY if it is not, and other negative error codes
+- * in case of errors.
+- */
+-int ubifs_check_dir_empty(struct inode *dir)
+-{
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct fscrypt_name nm = { 0 };
+-	struct ubifs_dent_node *dent;
+-	union ubifs_key key;
+-	int err;
+-
+-	lowest_dent_key(c, &key, dir->i_ino);
+-	dent = ubifs_tnc_next_ent(c, &key, &nm);
+-	if (IS_ERR(dent)) {
+-		err = PTR_ERR(dent);
+-		if (err == -ENOENT)
+-			err = 0;
+-	} else {
+-		kfree(dent);
+-		err = -ENOTEMPTY;
+-	}
+-	return err;
+-}
+-
+-static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
+-{
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct inode *inode = d_inode(dentry);
+-	int err, sz_change, budgeted = 1;
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	struct ubifs_budget_req req = { .mod_dent = 1, .dirtied_ino = 2 };
+-	struct fscrypt_name nm;
+-
+-	/*
+-	 * Budget request settings: deletion direntry, deletion inode and
+-	 * changing the parent inode. If budgeting fails, go ahead anyway
+-	 * because we have extra space reserved for deletions.
+-	 */
+-
+-	dbg_gen("directory '%pd', ino %lu in dir ino %lu", dentry,
+-		inode->i_ino, dir->i_ino);
+-	ubifs_assert(c, inode_is_locked(dir));
+-	ubifs_assert(c, inode_is_locked(inode));
+-	err = ubifs_check_dir_empty(d_inode(dentry));
+-	if (err)
+-		return err;
+-
+-	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
+-	if (err)
+-		return err;
+-
+-	err = ubifs_purge_xattrs(inode);
+-	if (err)
+-		return err;
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err) {
+-		if (err != -ENOSPC)
+-			goto out_fname;
+-		budgeted = 0;
+-	}
+-
+-	lock_2_inodes(dir, inode);
+-	inode_set_ctime_current(inode);
+-	clear_nlink(inode);
+-	drop_nlink(dir);
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
+-	if (err)
+-		goto out_cancel;
+-	unlock_2_inodes(dir, inode);
+-
+-	if (budgeted)
+-		ubifs_release_budget(c, &req);
+-	else {
+-		/* We've deleted something - clean the "no space" flags */
+-		c->bi.nospace = c->bi.nospace_rp = 0;
+-		smp_wmb();
+-	}
+-	fscrypt_free_filename(&nm);
+-	return 0;
+-
+-out_cancel:
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inc_nlink(dir);
+-	set_nlink(inode, 2);
+-	unlock_2_inodes(dir, inode);
+-	if (budgeted)
+-		ubifs_release_budget(c, &req);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-	return err;
+-}
+-
+-static int ubifs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+-		       struct dentry *dentry, umode_t mode)
+-{
+-	struct inode *inode;
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	int err, sz_change;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+-					.dirtied_ino = 1};
+-	struct fscrypt_name nm;
+-
+-	/*
+-	 * Budget request settings: new inode, new direntry and changing parent
+-	 * directory inode.
+-	 */
+-
+-	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+-		dentry, mode, dir->i_ino);
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err)
+-		return err;
+-
+-	err = ubifs_prepare_create(dir, dentry, &nm);
+-	if (err)
+-		goto out_budg;
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	inode = ubifs_new_inode(c, dir, S_IFDIR | mode, false);
+-	if (IS_ERR(inode)) {
+-		err = PTR_ERR(inode);
+-		goto out_fname;
+-	}
+-
+-	err = ubifs_init_security(dir, inode, &dentry->d_name);
+-	if (err)
+-		goto out_inode;
+-
+-	set_nlink(inode, 1);
+-	mutex_lock(&dir_ui->ui_mutex);
+-	insert_inode_hash(inode);
+-	inc_nlink(inode);
+-	inc_nlink(dir);
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
+-	if (err) {
+-		ubifs_err(c, "cannot create directory, error %d", err);
+-		goto out_cancel;
+-	}
+-	mutex_unlock(&dir_ui->ui_mutex);
+-
+-	ubifs_release_budget(c, &req);
+-	d_instantiate(dentry, inode);
+-	fscrypt_free_filename(&nm);
+-	return 0;
+-
+-out_cancel:
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	drop_nlink(dir);
+-	mutex_unlock(&dir_ui->ui_mutex);
+-	set_nlink(inode, 0);
+-out_inode:
+-	iput(inode);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-out_budg:
+-	ubifs_release_budget(c, &req);
+-	return err;
+-}
+-
+-static int ubifs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+-		       struct dentry *dentry, umode_t mode, dev_t rdev)
+-{
+-	struct inode *inode;
+-	struct ubifs_inode *ui;
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	union ubifs_dev_desc *dev = NULL;
+-	int sz_change;
+-	int err, devlen = 0;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+-					.dirtied_ino = 1 };
+-	struct fscrypt_name nm;
+-
+-	/*
+-	 * Budget request settings: new inode, new direntry and changing parent
+-	 * directory inode.
+-	 */
+-
+-	dbg_gen("dent '%pd' in dir ino %lu", dentry, dir->i_ino);
+-
+-	if (S_ISBLK(mode) || S_ISCHR(mode)) {
+-		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
+-		if (!dev)
+-			return -ENOMEM;
+-		devlen = ubifs_encode_dev(dev, rdev);
+-	}
+-
+-	req.new_ino_d = ALIGN(devlen, 8);
+-	err = ubifs_budget_space(c, &req);
+-	if (err) {
+-		kfree(dev);
+-		return err;
+-	}
+-
+-	err = ubifs_prepare_create(dir, dentry, &nm);
+-	if (err) {
+-		kfree(dev);
+-		goto out_budg;
+-	}
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	inode = ubifs_new_inode(c, dir, mode, false);
+-	if (IS_ERR(inode)) {
+-		kfree(dev);
+-		err = PTR_ERR(inode);
+-		goto out_fname;
+-	}
+-
+-	err = ubifs_init_security(dir, inode, &dentry->d_name);
+-	if (err) {
+-		kfree(dev);
+-		goto out_inode;
+-	}
+-
+-	init_special_inode(inode, inode->i_mode, rdev);
+-	inode->i_size = ubifs_inode(inode)->ui_size = devlen;
+-	ui = ubifs_inode(inode);
+-	ui->data = dev;
+-	ui->data_len = devlen;
+-	set_nlink(inode, 1);
+-
+-	mutex_lock(&dir_ui->ui_mutex);
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
+-	if (err)
+-		goto out_cancel;
+-	mutex_unlock(&dir_ui->ui_mutex);
+-
+-	ubifs_release_budget(c, &req);
+-	insert_inode_hash(inode);
+-	d_instantiate(dentry, inode);
+-	fscrypt_free_filename(&nm);
+-	return 0;
+-
+-out_cancel:
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	mutex_unlock(&dir_ui->ui_mutex);
+-	set_nlink(inode, 0);
+-out_inode:
+-	iput(inode);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-out_budg:
+-	ubifs_release_budget(c, &req);
+-	return err;
+-}
+-
+-static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+-			 struct dentry *dentry, const char *symname)
+-{
+-	struct inode *inode;
+-	struct ubifs_inode *ui;
+-	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+-	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	int err, sz_change, len = strlen(symname);
+-	struct fscrypt_str disk_link;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
+-					.dirtied_ino = 1 };
+-	struct fscrypt_name nm;
+-
+-	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+-		symname, dir->i_ino);
+-
+-	err = fscrypt_prepare_symlink(dir, symname, len, UBIFS_MAX_INO_DATA,
+-				      &disk_link);
+-	if (err)
+-		return err;
+-
+-	/*
+-	 * Budget request settings: new inode, new direntry and changing parent
+-	 * directory inode.
+-	 */
+-	req.new_ino_d = ALIGN(disk_link.len - 1, 8);
+-	err = ubifs_budget_space(c, &req);
+-	if (err)
+-		return err;
+-
+-	err = ubifs_prepare_create(dir, dentry, &nm);
+-	if (err)
+-		goto out_budg;
+-
+-	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+-
+-	inode = ubifs_new_inode(c, dir, S_IFLNK | S_IRWXUGO, false);
+-	if (IS_ERR(inode)) {
+-		err = PTR_ERR(inode);
+-		goto out_fname;
+-	}
+-
+-	err = ubifs_init_security(dir, inode, &dentry->d_name);
+-	if (err)
+-		goto out_inode;
+-
+-	ui = ubifs_inode(inode);
+-	ui->data = kmalloc(disk_link.len, GFP_NOFS);
+-	if (!ui->data) {
+-		err = -ENOMEM;
+-		goto out_inode;
+-	}
+-
+-	if (IS_ENCRYPTED(inode)) {
+-		disk_link.name = ui->data; /* encrypt directly into ui->data */
+-		err = fscrypt_encrypt_symlink(inode, symname, len, &disk_link);
+-		if (err)
+-			goto out_inode;
+-	} else {
+-		memcpy(ui->data, disk_link.name, disk_link.len);
+-		inode->i_link = ui->data;
+-	}
+-
+-	/*
+-	 * The terminating zero byte is not written to the flash media and it
+-	 * is put just to make later in-memory string processing simpler. Thus,
+-	 * data length is @disk_link.len - 1, not @disk_link.len.
+-	 */
+-	ui->data_len = disk_link.len - 1;
+-	inode->i_size = ubifs_inode(inode)->ui_size = disk_link.len - 1;
+-	set_nlink(inode, 1);
+-
+-	mutex_lock(&dir_ui->ui_mutex);
+-	dir->i_size += sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	inode_set_mtime_to_ts(dir,
+-			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
+-	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
+-	if (err)
+-		goto out_cancel;
+-	mutex_unlock(&dir_ui->ui_mutex);
+-
+-	insert_inode_hash(inode);
+-	d_instantiate(dentry, inode);
+-	err = 0;
+-	goto out_fname;
+-
+-out_cancel:
+-	dir->i_size -= sz_change;
+-	dir_ui->ui_size = dir->i_size;
+-	mutex_unlock(&dir_ui->ui_mutex);
+-	set_nlink(inode, 0);
+-out_inode:
+-	/* Free inode->i_link before inode is marked as bad. */
+-	fscrypt_free_inode(inode);
+-	iput(inode);
+-out_fname:
+-	fscrypt_free_filename(&nm);
+-out_budg:
+-	ubifs_release_budget(c, &req);
+-	return err;
+-}
+-
+-/**
+- * lock_4_inodes - a wrapper for locking three UBIFS inodes.
+- * @inode1: first inode
+- * @inode2: second inode
+- * @inode3: third inode
+- * @inode4: fourth inode
+- *
+- * This function is used for 'ubifs_rename()' and @inode1 may be the same as
+- * @inode2 whereas @inode3 and @inode4 may be %NULL.
+- *
+- * We do not implement any tricks to guarantee strict lock ordering, because
+- * VFS has already done it for us on the @i_mutex. So this is just a simple
+- * wrapper function.
+- */
+-static void lock_4_inodes(struct inode *inode1, struct inode *inode2,
+-			  struct inode *inode3, struct inode *inode4)
+-{
+-	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
+-	if (inode2 != inode1)
+-		mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
+-	if (inode3)
+-		mutex_lock_nested(&ubifs_inode(inode3)->ui_mutex, WB_MUTEX_3);
+-	if (inode4)
+-		mutex_lock_nested(&ubifs_inode(inode4)->ui_mutex, WB_MUTEX_4);
+-}
+-
+-/**
+- * unlock_4_inodes - a wrapper for unlocking three UBIFS inodes for rename.
+- * @inode1: first inode
+- * @inode2: second inode
+- * @inode3: third inode
+- * @inode4: fourth inode
+- */
+-static void unlock_4_inodes(struct inode *inode1, struct inode *inode2,
+-			    struct inode *inode3, struct inode *inode4)
+-{
+-	if (inode4)
+-		mutex_unlock(&ubifs_inode(inode4)->ui_mutex);
+-	if (inode3)
+-		mutex_unlock(&ubifs_inode(inode3)->ui_mutex);
+-	if (inode1 != inode2)
+-		mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
+-	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
+-}
+-
+-static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+-		     struct inode *new_dir, struct dentry *new_dentry,
+-		     unsigned int flags)
+-{
+-	struct ubifs_info *c = old_dir->i_sb->s_fs_info;
+-	struct inode *old_inode = d_inode(old_dentry);
+-	struct inode *new_inode = d_inode(new_dentry);
+-	struct inode *whiteout = NULL;
+-	struct ubifs_inode *old_inode_ui = ubifs_inode(old_inode);
+-	struct ubifs_inode *whiteout_ui = NULL;
+-	int err, release, sync = 0, move = (new_dir != old_dir);
+-	int is_dir = S_ISDIR(old_inode->i_mode);
+-	int unlink = !!new_inode, new_sz, old_sz;
+-	struct ubifs_budget_req req = { .new_dent = 1, .mod_dent = 1,
+-					.dirtied_ino = 3 };
+-	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
+-			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
+-	struct ubifs_budget_req wht_req;
+-	unsigned int saved_nlink;
+-	struct fscrypt_name old_nm, new_nm;
+-
+-	/*
+-	 * Budget request settings:
+-	 *   req: deletion direntry, new direntry, removing the old inode,
+-	 *   and changing old and new parent directory inodes.
+-	 *
+-	 *   wht_req: new whiteout inode for RENAME_WHITEOUT.
+-	 *
+-	 *   ino_req: marks the target inode as dirty and does not write it.
+-	 */
+-
+-	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu flags 0x%x",
+-		old_dentry, old_inode->i_ino, old_dir->i_ino,
+-		new_dentry, new_dir->i_ino, flags);
+-
+-	if (unlink) {
+-		ubifs_assert(c, inode_is_locked(new_inode));
+-
+-		/* Budget for old inode's data when its nlink > 1. */
+-		req.dirtied_ino_d = ALIGN(ubifs_inode(new_inode)->data_len, 8);
+-		err = ubifs_purge_xattrs(new_inode);
+-		if (err)
+-			return err;
+-	}
+-
+-	if (unlink && is_dir) {
+-		err = ubifs_check_dir_empty(new_inode);
+-		if (err)
+-			return err;
+-	}
+-
+-	err = fscrypt_setup_filename(old_dir, &old_dentry->d_name, 0, &old_nm);
+-	if (err)
+-		return err;
+-
+-	err = fscrypt_setup_filename(new_dir, &new_dentry->d_name, 0, &new_nm);
+-	if (err) {
+-		fscrypt_free_filename(&old_nm);
+-		return err;
+-	}
+-
+-	new_sz = CALC_DENT_SIZE(fname_len(&new_nm));
+-	old_sz = CALC_DENT_SIZE(fname_len(&old_nm));
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err) {
+-		fscrypt_free_filename(&old_nm);
+-		fscrypt_free_filename(&new_nm);
+-		return err;
+-	}
+-	err = ubifs_budget_space(c, &ino_req);
+-	if (err) {
+-		fscrypt_free_filename(&old_nm);
+-		fscrypt_free_filename(&new_nm);
+-		ubifs_release_budget(c, &req);
+-		return err;
+-	}
+-
+-	if (flags & RENAME_WHITEOUT) {
+-		union ubifs_dev_desc *dev = NULL;
+-
+-		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
+-		if (!dev) {
+-			err = -ENOMEM;
+-			goto out_release;
+-		}
+-
+-		/*
+-		 * The whiteout inode without dentry is pinned in memory,
+-		 * umount won't happen during rename process because we
+-		 * got parent dentry.
+-		 */
+-		whiteout = create_whiteout(old_dir, old_dentry);
+-		if (IS_ERR(whiteout)) {
+-			err = PTR_ERR(whiteout);
+-			kfree(dev);
+-			goto out_release;
+-		}
+-
+-		whiteout_ui = ubifs_inode(whiteout);
+-		whiteout_ui->data = dev;
+-		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
+-		ubifs_assert(c, !whiteout_ui->dirty);
+-
+-		memset(&wht_req, 0, sizeof(struct ubifs_budget_req));
+-		wht_req.new_ino = 1;
+-		wht_req.new_ino_d = ALIGN(whiteout_ui->data_len, 8);
+-		/*
+-		 * To avoid deadlock between space budget (holds ui_mutex and
+-		 * waits wb work) and writeback work(waits ui_mutex), do space
+-		 * budget before ubifs inodes locked.
+-		 */
+-		err = ubifs_budget_space(c, &wht_req);
+-		if (err) {
+-			iput(whiteout);
+-			goto out_release;
+-		}
+-		set_nlink(whiteout, 1);
+-
+-		/* Add the old_dentry size to the old_dir size. */
+-		old_sz -= CALC_DENT_SIZE(fname_len(&old_nm));
+-	}
+-
+-	lock_4_inodes(old_dir, new_dir, new_inode, whiteout);
+-
+-	/*
+-	 * Like most other Unix systems, set the @i_ctime for inodes on a
+-	 * rename.
+-	 */
+-	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
+-
+-	/* We must adjust parent link count when renaming directories */
+-	if (is_dir) {
+-		if (move) {
+-			/*
+-			 * @old_dir loses a link because we are moving
+-			 * @old_inode to a different directory.
+-			 */
+-			drop_nlink(old_dir);
+-			/*
+-			 * @new_dir only gains a link if we are not also
+-			 * overwriting an existing directory.
+-			 */
+-			if (!unlink)
+-				inc_nlink(new_dir);
+-		} else {
+-			/*
+-			 * @old_inode is not moving to a different directory,
+-			 * but @old_dir still loses a link if we are
+-			 * overwriting an existing directory.
+-			 */
+-			if (unlink)
+-				drop_nlink(old_dir);
+-		}
+-	}
+-
+-	old_dir->i_size -= old_sz;
+-	ubifs_inode(old_dir)->ui_size = old_dir->i_size;
+-
+-	/*
+-	 * And finally, if we unlinked a direntry which happened to have the
+-	 * same name as the moved direntry, we have to decrement @i_nlink of
+-	 * the unlinked inode.
+-	 */
+-	if (unlink) {
+-		/*
+-		 * Directories cannot have hard-links, so if this is a
+-		 * directory, just clear @i_nlink.
+-		 */
+-		saved_nlink = new_inode->i_nlink;
+-		if (is_dir)
+-			clear_nlink(new_inode);
+-		else
+-			drop_nlink(new_inode);
+-	} else {
+-		new_dir->i_size += new_sz;
+-		ubifs_inode(new_dir)->ui_size = new_dir->i_size;
+-	}
+-
+-	/*
+-	 * Do not ask 'ubifs_jnl_rename()' to flush write-buffer if @old_inode
+-	 * is dirty, because this will be done later on at the end of
+-	 * 'ubifs_rename()'.
+-	 */
+-	if (IS_SYNC(old_inode)) {
+-		sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
+-		if (unlink && IS_SYNC(new_inode))
+-			sync = 1;
+-		/*
+-		 * S_SYNC flag of whiteout inherits from the old_dir, and we
+-		 * have already checked the old dir inode. So there is no need
+-		 * to check whiteout.
+-		 */
+-	}
+-
+-	err = ubifs_jnl_rename(c, old_dir, old_inode, &old_nm, new_dir,
+-			       new_inode, &new_nm, whiteout, sync, !!whiteout);
+-	if (err)
+-		goto out_cancel;
+-
+-	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
+-	ubifs_release_budget(c, &req);
+-
+-	if (whiteout) {
+-		ubifs_release_budget(c, &wht_req);
+-		iput(whiteout);
+-	}
+-
+-	mutex_lock(&old_inode_ui->ui_mutex);
+-	release = old_inode_ui->dirty;
+-	mark_inode_dirty_sync(old_inode);
+-	mutex_unlock(&old_inode_ui->ui_mutex);
+-
+-	if (release)
+-		ubifs_release_budget(c, &ino_req);
+-	if (IS_SYNC(old_inode))
+-		/*
+-		 * Rename finished here. Although old inode cannot be updated
+-		 * on flash, old ctime is not a big problem, don't return err
+-		 * code to userspace.
+-		 */
+-		old_inode->i_sb->s_op->write_inode(old_inode, NULL);
+-
+-	fscrypt_free_filename(&old_nm);
+-	fscrypt_free_filename(&new_nm);
+-	return 0;
+-
+-out_cancel:
+-	if (unlink) {
+-		set_nlink(new_inode, saved_nlink);
+-	} else {
+-		new_dir->i_size -= new_sz;
+-		ubifs_inode(new_dir)->ui_size = new_dir->i_size;
+-	}
+-	old_dir->i_size += old_sz;
+-	ubifs_inode(old_dir)->ui_size = old_dir->i_size;
+-	if (is_dir) {
+-		if (move) {
+-			inc_nlink(old_dir);
+-			if (!unlink)
+-				drop_nlink(new_dir);
+-		} else {
+-			if (unlink)
+-				inc_nlink(old_dir);
+-		}
+-	}
+-	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
+-	if (whiteout) {
+-		ubifs_release_budget(c, &wht_req);
+-		set_nlink(whiteout, 0);
+-		iput(whiteout);
+-	}
+-out_release:
+-	ubifs_release_budget(c, &ino_req);
+-	ubifs_release_budget(c, &req);
+-	fscrypt_free_filename(&old_nm);
+-	fscrypt_free_filename(&new_nm);
+-	return err;
+-}
+-
+-static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
+-			struct inode *new_dir, struct dentry *new_dentry)
+-{
+-	struct ubifs_info *c = old_dir->i_sb->s_fs_info;
+-	struct ubifs_budget_req req = { .new_dent = 1, .mod_dent = 1,
+-				.dirtied_ino = 2 };
+-	int sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
+-	struct inode *fst_inode = d_inode(old_dentry);
+-	struct inode *snd_inode = d_inode(new_dentry);
+-	int err;
+-	struct fscrypt_name fst_nm, snd_nm;
+-
+-	ubifs_assert(c, fst_inode && snd_inode);
+-
+-	/*
+-	 * Budget request settings: changing two direntries, changing the two
+-	 * parent directory inodes.
+-	 */
+-
+-	dbg_gen("dent '%pd' ino %lu in dir ino %lu exchange dent '%pd' ino %lu in dir ino %lu",
+-		old_dentry, fst_inode->i_ino, old_dir->i_ino,
+-		new_dentry, snd_inode->i_ino, new_dir->i_ino);
+-
+-	err = fscrypt_setup_filename(old_dir, &old_dentry->d_name, 0, &fst_nm);
+-	if (err)
+-		return err;
+-
+-	err = fscrypt_setup_filename(new_dir, &new_dentry->d_name, 0, &snd_nm);
+-	if (err) {
+-		fscrypt_free_filename(&fst_nm);
+-		return err;
+-	}
+-
+-	err = ubifs_budget_space(c, &req);
+-	if (err)
+-		goto out;
+-
+-	lock_4_inodes(old_dir, new_dir, NULL, NULL);
+-
+-	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
+-
+-	if (old_dir != new_dir) {
+-		if (S_ISDIR(fst_inode->i_mode) && !S_ISDIR(snd_inode->i_mode)) {
+-			inc_nlink(new_dir);
+-			drop_nlink(old_dir);
+-		}
+-		else if (!S_ISDIR(fst_inode->i_mode) && S_ISDIR(snd_inode->i_mode)) {
+-			drop_nlink(new_dir);
+-			inc_nlink(old_dir);
+-		}
+-	}
+-
+-	err = ubifs_jnl_xrename(c, old_dir, fst_inode, &fst_nm, new_dir,
+-				snd_inode, &snd_nm, sync);
+-
+-	unlock_4_inodes(old_dir, new_dir, NULL, NULL);
+-	ubifs_release_budget(c, &req);
+-
+-out:
+-	fscrypt_free_filename(&fst_nm);
+-	fscrypt_free_filename(&snd_nm);
+-	return err;
+-}
+-
+-static int ubifs_rename(struct mnt_idmap *idmap,
+-			struct inode *old_dir, struct dentry *old_dentry,
+-			struct inode *new_dir, struct dentry *new_dentry,
+-			unsigned int flags)
+-{
+-	int err;
+-	struct ubifs_info *c = old_dir->i_sb->s_fs_info;
+-
+-	if (flags & ~(RENAME_NOREPLACE | RENAME_WHITEOUT | RENAME_EXCHANGE))
+-		return -EINVAL;
+-
+-	ubifs_assert(c, inode_is_locked(old_dir));
+-	ubifs_assert(c, inode_is_locked(new_dir));
+-
+-	err = fscrypt_prepare_rename(old_dir, old_dentry, new_dir, new_dentry,
+-				     flags);
+-	if (err)
+-		return err;
+-
+-	if (flags & RENAME_EXCHANGE)
+-		return ubifs_xrename(old_dir, old_dentry, new_dir, new_dentry);
+-
+-	return do_rename(old_dir, old_dentry, new_dir, new_dentry, flags);
+-}
+-
+-int ubifs_getattr(struct mnt_idmap *idmap, const struct path *path,
+-		  struct kstat *stat, u32 request_mask, unsigned int flags)
+-{
+-	loff_t size;
+-	struct inode *inode = d_inode(path->dentry);
+-	struct ubifs_inode *ui = ubifs_inode(inode);
+-
+-	mutex_lock(&ui->ui_mutex);
+-
+-	if (ui->flags & UBIFS_APPEND_FL)
+-		stat->attributes |= STATX_ATTR_APPEND;
+-	if (ui->flags & UBIFS_COMPR_FL)
+-		stat->attributes |= STATX_ATTR_COMPRESSED;
+-	if (ui->flags & UBIFS_CRYPT_FL)
+-		stat->attributes |= STATX_ATTR_ENCRYPTED;
+-	if (ui->flags & UBIFS_IMMUTABLE_FL)
+-		stat->attributes |= STATX_ATTR_IMMUTABLE;
+-
+-	stat->attributes_mask |= (STATX_ATTR_APPEND |
+-				STATX_ATTR_COMPRESSED |
+-				STATX_ATTR_ENCRYPTED |
+-				STATX_ATTR_IMMUTABLE);
+-
+-	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
+-	stat->blksize = UBIFS_BLOCK_SIZE;
+-	stat->size = ui->ui_size;
+-
+-	/*
+-	 * Unfortunately, the 'stat()' system call was designed for block
+-	 * device based file systems, and it is not appropriate for UBIFS,
+-	 * because UBIFS does not have notion of "block". For example, it is
+-	 * difficult to tell how many block a directory takes - it actually
+-	 * takes less than 300 bytes, but we have to round it to block size,
+-	 * which introduces large mistake. This makes utilities like 'du' to
+-	 * report completely senseless numbers. This is the reason why UBIFS
+-	 * goes the same way as JFFS2 - it reports zero blocks for everything
+-	 * but regular files, which makes more sense than reporting completely
+-	 * wrong sizes.
+-	 */
+-	if (S_ISREG(inode->i_mode)) {
+-		size = ui->xattr_size;
+-		size += stat->size;
+-		size = ALIGN(size, UBIFS_BLOCK_SIZE);
+-		/*
+-		 * Note, user-space expects 512-byte blocks count irrespectively
+-		 * of what was reported in @stat->size.
+-		 */
+-		stat->blocks = size >> 9;
+-	} else
+-		stat->blocks = 0;
+-	mutex_unlock(&ui->ui_mutex);
+-	return 0;
+-}
+-
+-const struct inode_operations ubifs_dir_inode_operations = {
+-	.lookup      = ubifs_lookup,
+-	.create      = ubifs_create,
+-	.link        = ubifs_link,
+-	.symlink     = ubifs_symlink,
+-	.unlink      = ubifs_unlink,
+-	.mkdir       = ubifs_mkdir,
+-	.rmdir       = ubifs_rmdir,
+-	.mknod       = ubifs_mknod,
+-	.rename      = ubifs_rename,
+-	.setattr     = ubifs_setattr,
+-	.getattr     = ubifs_getattr,
+-	.listxattr   = ubifs_listxattr,
+-	.update_time = ubifs_update_time,
+-	.tmpfile     = ubifs_tmpfile,
+-	.fileattr_get = ubifs_fileattr_get,
+-	.fileattr_set = ubifs_fileattr_set,
+-};
+-
+-const struct file_operations ubifs_dir_operations = {
+-	.llseek         = generic_file_llseek,
+-	.release        = ubifs_dir_release,
+-	.read           = generic_read_dir,
+-	.iterate_shared = ubifs_readdir,
+-	.fsync          = ubifs_fsync,
+-	.unlocked_ioctl = ubifs_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.compat_ioctl   = ubifs_compat_ioctl,
+-#endif
+-};
 -- 
 2.13.6
 
