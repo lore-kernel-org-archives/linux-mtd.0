@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF9FC27C65
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4AACC27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Pbq5MuyfZsNSxfwvRqIGPP7VdaAlPydUpIfZa5XNk90=; b=ZRLiXrGDv5Q4M7
-	MiHNW8hbnbSa54JnYF7JhX/8rmX7B4lMZWzHjuSmU4VNmGcyWdcp9+YaHJ1TsZJs8Va8dhY53zYOf
-	CpJ/zoXnRvJYn2DxHA67Zy6Pk+ogFB8man4oy1TMS1gPvnLeiIQ6PFRtjbv3b4M08J0j25T5W6Cn6
-	VqO2L3MIKvBVr0jWw9VyZA34MRIJBIABTfTEGCqfzVf4mNp9U9qz9fXR327LQ9BtH4fTUnRlkuL4P
-	CHZxNEGnU98I6SYXMkyiI+gaHb+ORpXf2UrUONws7PwnsAljGGZp2/q9qxDsPsWao1b0ABiVVTFBW
-	tHTpUrDZ8XooDvEv/9YQ==;
+	List-Owner; bh=S9i83gitIitQ3bTEenmrLmunWFwXKMeIEb/RD1bj5a0=; b=AmmxpuHcRP0PMX
+	RWPPDa1FfHRjnLTc4P93/lHSCw6Ulob6iok1jIulRxdnoiFV6IiFy1mWf5x46OJ4z/qC9gzvZEVt1
+	N37n6mvdgTxc5tmjy5L952lj4MKwiYD7bHW5T6T0KGrNjS1pTBp5JHcDyoLPxwVNWhYuaBDhCauPK
+	KdWsfa+6qjN3bjXFN8UAKXuS/ouBrzKQZtUrMnOwx8Fem7CJMruNfJdHEfSzHHZL51ZqNF7YA1CAo
+	eL/hbqyU51/UHbPb4rUSuw6KVu0TonUwn3BdPt+OHOKZ47HRh6kTyReY/iaigLBbvZTJCuywVXGfS
+	zCVy6DttKw1A4FxSgQKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFSDM-0000000CUmO-441G;
-	Fri, 07 Jun 2024 05:32:36 +0000
+	id 1sFSDR-0000000CUpM-1gQK;
+	Fri, 07 Jun 2024 05:32:41 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCQ-0000000CGne-2EpU
+	id 1sFRCS-0000000CGoa-1WiD
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 07 Jun 2024 04:27:35 +0000
+	Fri, 07 Jun 2024 04:27:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=2tm9AyXVu5zcWxLT0Bb7iayOe5Teguuw+cQsNQKRzNg=; b=TTZLDdj4c78CQwT5zMw31mnHvX
-	C19wyqX/dRLM7Nd7KX7hmKrMlWQAL08FG7Sc/8atbYRUTYwd4NXmkcCpwGAxcf6kq1qeujiUicDpX
-	Ds85IKgU7UeIi9JQ+/oikcXN2Fzc6SsnHahReS7BOJTIKdN+iC+F5l/die/XfIyVBTpuDPSLEAAOI
-	uCwhuusmwRxKvYCt8C8h2PUfofkTWY8TLikO2TsBBU//qVyvUneSp8KuYXuHkkOpHskrbqBGDJqOo
-	koLguTcP3Mlr4fwnjCXBnA+rcRcb4zt1PYZlexHFfMBQym00YkmnafI7GqoFeP+Tr91t6JHPEAyoK
-	cCRJ+JuQ==;
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	bh=SWXfuxKIqvxwaRG0mRZChJCBlnJu2lqRPPr8vj7lYZI=; b=kJkqDjVfzvb6CANRuiNoC30NzO
+	hgaAZ002ex3rSrqqFeLZQrz++5msdQTQb91my5Gf2aHc/IDFsR0dRIc9RFDYWkA234HQapbRXlzNl
+	oZZ+W03aLI9+tU23iEzixobWcwJx1oZ9rr18HBDYqWiE8/CpOHRmouOOIvdJDa7Z9YbOyemSlrYKr
+	cqVUKbsvFV1jYPtTUvEWhDZUp9KmyuEphvB50/VwFJadbVqLsx9MRGnIlBod8fJXK6sWjY32R6fPs
+	yNn2HxYsfhNDUcudTwmskIPoyyp7ylFRIlmbZiZtp2DK2J5L3vL98ceoz9A8kfIoinPpOTtZWOZax
+	+h4jxcJA==;
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCN-00000004Tsg-0my1
+	id 1sFRCN-00000004Tsm-0yEV
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:33 +0000
+	Fri, 07 Jun 2024 04:27:35 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSjP3X7JzmXhG;
-	Fri,  7 Jun 2024 12:22:49 +0800 (CST)
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VwSkt13WFzPpnL;
+	Fri,  7 Jun 2024 12:24:06 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4D786180085;
+	by mail.maildlp.com (Postfix) with ESMTPS id 6E979180085;
 	Fri,  7 Jun 2024 12:27:25 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:05 +0800
+ 2024 12:27:06 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 052/110] ubifs-utils: Adapt gc subsystem in libubifs
-Date: Fri, 7 Jun 2024 12:25:17 +0800
-Message-ID: <20240607042615.2069840-53-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 054/110] ubifs-utils: Add descriptions for new lib files in libubifs/README
+Date: Fri, 7 Jun 2024 12:25:19 +0800
+Message-ID: <20240607042615.2069840-55-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -68,9 +68,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052731_563809_213201E8 
-X-CRM114-Status: UNSURE (   8.04  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240607_052731_998289_766F1BBB 
+X-CRM114-Status: GOOD (  10.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,86 +86,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt gc subsystem(find.c, gc.c, scan.c) in libubifs, compared with
-linux kernel implementations:
- 1. Adapt print_hex_dump based on implementations in hexdump.c.
+There are many linux kernel source files have been adapted into
+ubifs-utils, add descriptions for these source files in README.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/find.c |  9 ++++++++-
- ubifs-utils/libubifs/gc.c   | 10 +++++++---
- ubifs-utils/libubifs/scan.c |  7 ++++++-
- 3 files changed, 21 insertions(+), 5 deletions(-)
+ ubifs-utils/Makemodule.am   |  2 +-
+ ubifs-utils/libubifs/README | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 1 deletion(-)
+ create mode 100644 ubifs-utils/libubifs/README
 
-diff --git a/ubifs-utils/libubifs/find.c b/ubifs-utils/libubifs/find.c
-index 873e6e1c..ecf689c4 100644
---- a/ubifs-utils/libubifs/find.c
-+++ b/ubifs-utils/libubifs/find.c
-@@ -14,8 +14,15 @@
-  * for fast access, falling back on scanning the LPT as a last resort.
-  */
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index d297f7a2..c02ec313 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -49,7 +49,7 @@ mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUI
+ mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
+ 	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common -I $(top_srcdir)/ubifs-utils/libubifs -rdynamic
  
--#include <linux/sort.h>
-+#include <sys/types.h>
+-EXTRA_DIST += ubifs-utils/common/README
++EXTRA_DIST += ubifs-utils/common/README ubifs-utils/libubifs/README
+ 
+ dist_sbin_SCRIPTS = ubifs-utils/mount.ubifs
+ 
+diff --git a/ubifs-utils/libubifs/README b/ubifs-utils/libubifs/README
+new file mode 100644
+index 00000000..551ed8e6
+--- /dev/null
++++ b/ubifs-utils/libubifs/README
+@@ -0,0 +1,30 @@
++UBIFS Library (Imported from linux kernel 6.8-rc2 41bccc98fb7931d63)
 +
-+#include "linux_err.h"
-+#include "bitops.h"
-+#include "sort.h"
- #include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "misc.h"
- 
- /**
-  * struct scan_data - data provided to scan callback functions
-diff --git a/ubifs-utils/libubifs/gc.c b/ubifs-utils/libubifs/gc.c
-index 3134d070..c3595358 100644
---- a/ubifs-utils/libubifs/gc.c
-+++ b/ubifs-utils/libubifs/gc.c
-@@ -41,10 +41,14 @@
-  * good, and GC takes extra care when moving them.
-  */
- 
--#include <linux/slab.h>
--#include <linux/pagemap.h>
--#include <linux/list_sort.h>
-+#include "linux_err.h"
-+#include "bitops.h"
-+#include "kmem.h"
- #include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
-+#include "misc.h"
- 
- /*
-  * GC may need to move more than one LEB to make progress. The below constants
-diff --git a/ubifs-utils/libubifs/scan.c b/ubifs-utils/libubifs/scan.c
-index 84a9157d..74509fd0 100644
---- a/ubifs-utils/libubifs/scan.c
-+++ b/ubifs-utils/libubifs/scan.c
-@@ -15,7 +15,12 @@
-  * debugging functions.
-  */
- 
-+#include "linux_err.h"
-+#include "kmem.h"
- #include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
- 
- /**
-  * scan_padding_bytes - scan for padding bytes.
-@@ -232,7 +237,7 @@ void ubifs_scanned_corruption(const struct ubifs_info *c, int lnum, int offs,
- 	if (len > 8192)
- 		len = 8192;
- 	ubifs_err(c, "first %d bytes from LEB %d:%d", len, lnum, offs);
--	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 4, buf, len, 1);
-+	print_hex_dump("", DUMP_PREFIX_OFFSET, 32, 4, buf, len, 1);
- }
- 
- /**
++* ubifs.h is a selection of definitions from fs/ubifs/ubifs.h from the linux kernel.
++* key.h is copied from fs/ubifs/key.h from the linux kernel.
++* ubifs-media.h is copied from fs/ubifs/ubifs-media.h from the linux kernel.
++* find.c is copied from fs/ubifs/find.c from the linux kernel.
++* scan.c is copied from fs/ubifs/scan.c from the linux kernel.
++* gc.c is copied from fs/ubifs/gc.c from the linux kernel.
++* log.c is copied from fs/ubifs/log.c from the linux kernel, and amended.
++* tnc_commit.c is copied from fs/ubifs/tnc_commit.c from the linux kernel, and amended.
++* master.c is copied from fs/ubifs/master.c from the linux kernel, and amended.
++* recovery.c is copied from fs/ubifs/recovery.c from the linux kernel, and amended.
++* lpt.c is a selection of functions copied from fs/ubifs/lpt.c from the linux kernel, and amended.
++* auth.c is a selection of functions copied from fs/ubifs/auth.c from the linux kernel, and amended.
++* budget.c is a selection of functions copied from fs/ubifs/budget.c from the linux kernel, and amended.
++* commit.c is a selection of functions copied from fs/ubifs/commit.c from the linux kernel, and amended.
++* debug.c is a selection of functions copied from fs/ubifs/debug.c from the linux kernel, and amended.
++* debug.h is a selection of functions copied from fs/ubifs/debug.h from the linux kernel, and amended.
++* io.c is a selection of functions copied from fs/ubifs/io.c from the linux kernel, and amended.
++* lprops.c is a selection of functions copied from fs/ubifs/lprops.c from the linux kernel, and amended.
++* lpt_commit.c is a selection of functions copied from fs/ubifs/lpt_commit.c from the linux kernel, and amended.
++* misc.h is a selection of functions copied from fs/ubifs/misc.h from the linux kernel, and amended.
++* orphan.c is a selection of functions copied from fs/ubifs/orphan.c from the linux kernel, and amended.
++* replay.c is a selection of functions copied from fs/ubifs/replay.c from the linux kernel, and amended.
++* sb.c is a selection of functions copied from fs/ubifs/sb.c from the linux kernel, and amended.
++* super.c is a selection of functions copied from fs/ubifs/super.c from the linux kernel, and amended.
++* tnc.c is a selection of functions copied from fs/ubifs/tnc.c from the linux kernel, and amended.
++* tnc_misc.c is a selection of functions copied from fs/ubifs/tnc_misc.c from the linux kernel, and amended.
++* journal.c is a selection of functions copied from fs/ubifs/journal.c from the linux kernel, and amended.
++* dir.c is a selection of functions copied from fs/ubifs/dir.c from the linux kernel, and amended.
 -- 
 2.13.6
 
