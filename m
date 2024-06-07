@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C31DC27C75
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7098EC27C65
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gb1djqrY8cDi9djS2sNU5qt5W305UxOOTq+CEGUOdeo=; b=iF6vRv4Pu8tbsr
-	43W1dVER5rM2qqoYbwQT0Ne1Ewyi4HGXx7dQrw/l0OTuUOIGGUAr2PhG0OM9uVIVhvNi/ceDOjAmr
-	WSRNwcEOKrkJ1ckgHIyy4GgS1NWrAUvoY8jEK9OS5J8RrpbH7UbAnbnq054KoWBvwVinbXtmJgnWC
-	3pg9wwkSyss7uOPVXcTtgMXjwm64qA02zSqhFyEciDUnOfys+oe+UmimiccWvA+VvHO2hGDA5yfLE
-	hUYRH5WTIk1HqloghlvtEJm6h8l6mV3zpRCw3YSuEKE3W3K120sp9W3BnknHOy4XQ4pLqqIJ6tvr6
-	eLr5++mpIayusWdmkHWw==;
+	List-Owner; bh=y+ReBg26CxgakjcoOWDaRNltXpendPqd2kxDPbubIak=; b=zuX123EXHS6WiW
+	2hAHYkMKEQ2+exa1NFb2+8z9pHtF2ktMIVVB5g9aaWn2TkxmX79FoUuq4lNlfPlS1TQ7/dKDJ0nq4
+	jrF/TMvAhKKorgmie0TpwVy0BaSbo+8y6h3zuZDCMwfDyjdIwt0XrLKY9/jXjLtADzl0raCPwSjIm
+	yle2apBlr2lsq0k0GwQvY8cBRMV4Z694NoGhluYrblh1cPoPAX7GfIoAHnwFHPmfJtj/WU4A5bCza
+	tC3fK0rj2R/VkmoWBz5DWCDDmOrMeVntj85Kix01LZUXzKwwEnqHGSyB8JvLuXeZV0C9boInAgItf
+	wKEbbsQcAyflvspg/QHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFSD5-0000000CUWv-0puG;
+	id 1sFSD5-0000000CUXF-3GWu;
 	Fri, 07 Jun 2024 05:32:19 +0000
 Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRBl-0000000CG9r-0HaU
+	id 1sFRBk-0000000CG9K-0enm
 	for linux-mtd@lists.infradead.org;
 	Fri, 07 Jun 2024 04:26:59 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSjS5PxQz1SB5K;
-	Fri,  7 Jun 2024 12:22:52 +0800 (CST)
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSjR5rc6z1SB5L;
+	Fri,  7 Jun 2024 12:22:51 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6CDE714041A;
-	Fri,  7 Jun 2024 12:26:51 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 8C2CD14038F;
+	Fri,  7 Jun 2024 12:26:50 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:26:40 +0800
+ 2024 12:26:37 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 019/110] ubifs-utils: Add compiler attributes implementations
-Date: Fri, 7 Jun 2024 12:24:44 +0800
-Message-ID: <20240607042615.2069840-20-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 015/110] ubifs-utils: Extract UBI opening/closing/volume_check_empty functions into a new source file
+Date: Fri, 7 Jun 2024 12:24:40 +0800
+Message-ID: <20240607042615.2069840-16-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212653_619735_0A327019 
-X-CRM114-Status: GOOD (  19.99  )
+X-CRM114-CacheID: sfid-20240606_212652_832321_EA54D4A0 
+X-CRM114-Status: GOOD (  23.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,170 +71,290 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add compiler attributes implementations, such as __packed, __unused,
-__const, etc., which could be used in linux kernel libs. Besides, change
-some existing attributes into linux kernel style.
-
-This is a preparation for replacing implementation of UBIFS utils with
-linux kernel libs.
+Move UBI opening/closing/volume_check_empty functions into common/super.c.
+These functions will be used in fsck.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am                |  1 +
- ubifs-utils/common/compiler_attributes.h | 79 ++++++++++++++++++++++++++++++++
- ubifs-utils/common/fscrypt.h             |  6 ++-
- ubifs-utils/common/sign.c                |  4 +-
- 4 files changed, 86 insertions(+), 4 deletions(-)
- create mode 100644 ubifs-utils/common/compiler_attributes.h
+ ubifs-utils/Makemodule.am           |   1 +
+ ubifs-utils/common/super.c          | 123 ++++++++++++++++++++++++++++++++++++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 114 ---------------------------------
+ 3 files changed, 124 insertions(+), 114 deletions(-)
+ create mode 100644 ubifs-utils/common/super.c
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 90cc7005..d58570fe 100644
+index 8af65be7..90cc7005 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -1,4 +1,5 @@
- common_SOURCES = \
-+	ubifs-utils/common/compiler_attributes.h \
- 	ubifs-utils/common/defs.h \
- 	ubifs-utils/common/crc16.h \
- 	ubifs-utils/common/crc16.c \
-diff --git a/ubifs-utils/common/compiler_attributes.h b/ubifs-utils/common/compiler_attributes.h
-new file mode 100644
-index 00000000..bb65d3a9
---- /dev/null
-+++ b/ubifs-utils/common/compiler_attributes.h
-@@ -0,0 +1,79 @@
-+#ifndef __COMPILER_ATTRIBUTES_H__
-+#define __COMPILER_ATTRIBUTES_H__
-+
-+#if __has_attribute(__fallthrough__)
-+#define fallthrough	__attribute__((__fallthrough__))
-+#else
-+#define fallthrough     do {} while (0)
-+#endif
-+
-+#define __packed	__attribute__((__packed__))
-+#define __unused	__attribute__((__unused__))
-+#define __const		__attribute__((__const__))
-+#define __must_check    __attribute__((__warn_unused_result__))
-+#ifndef __force
-+#define __force
-+#endif
-+
-+/*
-+ * Optional: only supported since clang >= 14.0
-+ *
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-error-function-attribute
-+ */
-+#if __has_attribute(__error__)
-+# define __compiletime_error(msg)       __attribute__((__error__(msg)))
-+#else
-+# define __compiletime_error(msg)
-+#endif
-+
-+#ifndef __compiletime_error
-+# define __compiletime_error(message)
-+#endif
-+
-+#ifdef __OPTIMIZE__
-+# define __compiletime_assert(condition, msg, prefix, suffix)		\
-+	do {								\
-+		extern void prefix ## suffix(void) __compiletime_error(msg); \
-+		if (!(condition))					\
-+			prefix ## suffix();				\
-+	} while (0)
-+#else
-+# define __compiletime_assert(condition, msg, prefix, suffix) do { } while (0)
-+#endif
-+
-+#define _compiletime_assert(condition, msg, prefix, suffix) \
-+	__compiletime_assert(condition, msg, prefix, suffix)
-+
-+/**
-+ * compiletime_assert - break build and emit msg if condition is false
-+ * @condition: a compile-time constant condition to check
-+ * @msg:       a message to emit if condition is false
-+ *
-+ * In tradition of POSIX assert, this macro will break the build if the
-+ * supplied condition is *false*, emitting the supplied error message if the
-+ * compiler has support to do so.
-+ */
-+#define compiletime_assert(condition, msg) \
-+	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-+
-+/**
-+ * BUILD_BUG_ON_MSG - break compile if a condition is true & emit supplied
-+ *		      error message.
-+ * @condition: the condition which the compiler should know is false.
-+ *
-+ * See BUILD_BUG_ON for description.
-+ */
-+#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-+
-+/**
-+ * BUILD_BUG_ON - break compile if a condition is true.
-+ * @condition: the condition which the compiler should know is false.
-+ *
-+ * If you have some code which relies on certain constants being equal, or
-+ * some other compile-time-evaluated condition, you should use BUILD_BUG_ON to
-+ * detect if someone changes it.
-+ */
-+#define BUILD_BUG_ON(condition) \
-+	BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-+
-+#endif
-diff --git a/ubifs-utils/common/fscrypt.h b/ubifs-utils/common/fscrypt.h
-index 908a5041..b8a599de 100644
---- a/ubifs-utils/common/fscrypt.h
-+++ b/ubifs-utils/common/fscrypt.h
-@@ -25,6 +25,8 @@
- #include <openssl/rand.h>
- #endif
- #include <assert.h>
-+
-+#include "compiler_attributes.h"
- #include "ubifs.h"
- #include "crypto.h"
+@@ -15,6 +15,7 @@ common_SOURCES = \
+ 	ubifs-utils/common/key.h \
+ 	ubifs-utils/common/lpt.h \
+ 	ubifs-utils/common/lpt.c \
++	ubifs-utils/common/super.c \
+ 	ubifs-utils/common/sign.h \
+ 	include/mtd/ubifs-media.h
  
-@@ -79,7 +81,7 @@ struct fscrypt_context {
- 	__u8 flags;
- 	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
- 	__u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
--} __attribute__((packed));
-+} __packed;
+diff --git a/ubifs-utils/common/super.c b/ubifs-utils/common/super.c
+new file mode 100644
+index 00000000..eee0197d
+--- /dev/null
++++ b/ubifs-utils/common/super.c
+@@ -0,0 +1,123 @@
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++
++#include "defs.h"
++
++/**
++ * open_ubi - open the libubi.
++ * @c: the UBIFS file-system description object
++ * @node: name of the UBI volume character device to fetch information about
++ *
++ * This function opens libubi, and initialize device & volume information
++ * according to @node. Returns %0 in case of success and %-1 in case of failure.
++ */
++int open_ubi(struct ubifs_info *c, const char *node)
++{
++	struct stat st;
++
++	if (stat(node, &st) || !S_ISCHR(st.st_mode))
++		return -1;
++
++	c->libubi = libubi_open();
++	if (!c->libubi)
++		return -1;
++	if (ubi_get_vol_info(c->libubi, node, &c->vi))
++		goto out_err;
++	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
++		goto out_err;
++
++	return 0;
++
++out_err:
++	close_ubi(c);
++	return -1;
++}
++
++void close_ubi(struct ubifs_info *c)
++{
++	if (c->libubi) {
++		libubi_close(c->libubi);
++		c->libubi = NULL;
++	}
++}
++
++/**
++ * open_target - open the output target.
++ * @c: the UBIFS file-system description object
++ *
++ * Open the output target. The target can be an UBI volume
++ * or a file.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int open_target(struct ubifs_info *c)
++{
++	if (c->libubi) {
++		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
++
++		if (c->dev_fd == -1)
++			return sys_errmsg("cannot open the UBI volume '%s'",
++					   c->dev_name);
++		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
++			close(c->dev_fd);
++			return sys_errmsg("ubi_set_property(set direct_write) failed");
++		}
++	} else {
++		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
++			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
++		if (c->dev_fd == -1)
++			return sys_errmsg("cannot create output file '%s'",
++					   c->dev_name);
++	}
++	return 0;
++}
++
++
++/**
++ * close_target - close the output target.
++ * @c: the UBIFS file-system description object
++ *
++ * Close the output target. If the target was an UBI
++ * volume, also close libubi.
++ *
++ * Returns %0 in case of success and %-1 in case of failure.
++ */
++int close_target(struct ubifs_info *c)
++{
++	if (c->dev_fd >= 0) {
++		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
++			return sys_errmsg("ubi_set_property(clear direct_write) failed");
++		if (close(c->dev_fd) == -1)
++			return sys_errmsg("cannot close the target '%s'", c->dev_name);
++	}
++	return 0;
++}
++
++/**
++ * check_volume_empty - check if the UBI volume is empty.
++ * @c: the UBIFS file-system description object
++ *
++ * This function checks if the UBI volume is empty by looking if its LEBs are
++ * mapped or not.
++ *
++ * Returns %0 in case of success, %1 is the volume is not empty,
++ * and a negative error code in case of failure.
++ */
++int check_volume_empty(struct ubifs_info *c)
++{
++	int lnum, err;
++
++	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
++		err = ubi_is_mapped(c->dev_fd, lnum);
++		if (err < 0)
++			return err;
++		if (err == 1)
++			return 1;
++	}
++	return 0;
++}
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index 8bff44b2..2181595e 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -518,44 +518,6 @@ static long long get_bytes(const char *str)
+ 	return bytes;
+ }
+ 
+-void close_ubi(struct ubifs_info *c)
+-{
+-	if (c->libubi) {
+-		libubi_close(c->libubi);
+-		c->libubi = NULL;
+-	}
+-}
+-
+-/**
+- * open_ubi - open the libubi.
+- * @c: the UBIFS file-system description object
+- * @node: name of the UBI volume character device to fetch information about
+- *
+- * This function opens libubi, and initialize device & volume information
+- * according to @node. Returns %0 in case of success and %-1 in case of failure.
+- */
+-int open_ubi(struct ubifs_info *c, const char *node)
+-{
+-	struct stat st;
+-
+-	if (stat(node, &st) || !S_ISCHR(st.st_mode))
+-		return -1;
+-
+-	c->libubi = libubi_open();
+-	if (!c->libubi)
+-		return -1;
+-	if (ubi_get_vol_info(c->libubi, node, &c->vi))
+-		goto out_err;
+-	if (ubi_get_dev_info1(c->libubi, c->vi.dev_num, &c->di))
+-		goto out_err;
+-
+-	return 0;
+-
+-out_err:
+-	close_ubi(c);
+-	return -1;
+-}
+-
+ static void select_default_compr(void)
+ {
+ 	if (c->encrypted) {
+@@ -2821,82 +2783,6 @@ static int write_orphan_area(void)
+ }
  
  /**
-  * For encrypted symlinks, the ciphertext length is stored at the beginning
-@@ -88,7 +90,7 @@ struct fscrypt_context {
- struct fscrypt_symlink_data {
- 	__le16 len;
- 	char encrypted_path[1];
--} __attribute__((packed));
-+} __packed;
- 
- 
- #ifndef FS_MAX_KEY_SIZE
-diff --git a/ubifs-utils/common/sign.c b/ubifs-utils/common/sign.c
-index 9c53e671..7530503a 100644
---- a/ubifs-utils/common/sign.c
-+++ b/ubifs-utils/common/sign.c
-@@ -28,6 +28,7 @@
- #include <openssl/conf.h>
- #include <err.h>
- 
-+#include "compiler_attributes.h"
- #include "sign.h"
- #include "defs.h"
- #include "ubifs.h"
-@@ -116,8 +117,7 @@ static void drain_openssl_errors(void)
- 
- static const char *key_pass;
- 
--static int pem_pw_cb(char *buf, int len, __attribute__((unused)) int w,
--		     __attribute__((unused)) void *v)
-+static int pem_pw_cb(char *buf, int len, __unused int w, __unused void *v)
- {
- 	int pwlen;
- 
+- * check_volume_empty - check if the UBI volume is empty.
+- * @c: the UBIFS file-system description object
+- *
+- * This function checks if the UBI volume is empty by looking if its LEBs are
+- * mapped or not.
+- *
+- * Returns %0 in case of success, %1 is the volume is not empty,
+- * and a negative error code in case of failure.
+- */
+-int check_volume_empty(struct ubifs_info *c)
+-{
+-	int lnum, err;
+-
+-	for (lnum = 0; lnum < c->vi.rsvd_lebs; lnum++) {
+-		err = ubi_is_mapped(c->dev_fd, lnum);
+-		if (err < 0)
+-			return err;
+-		if (err == 1)
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-/**
+- * open_target - open the output target.
+- * @c: the UBIFS file-system description object
+- *
+- * Open the output target. The target can be an UBI volume
+- * or a file.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-int open_target(struct ubifs_info *c)
+-{
+-	if (c->libubi) {
+-		c->dev_fd = open(c->dev_name, O_RDWR | O_EXCL);
+-
+-		if (c->dev_fd == -1)
+-			return sys_errmsg("cannot open the UBI volume '%s'",
+-					   c->dev_name);
+-		if (ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 1)) {
+-			close(c->dev_fd);
+-			return sys_errmsg("ubi_set_property(set direct_write) failed");
+-		}
+-	} else {
+-		c->dev_fd = open(c->dev_name, O_CREAT | O_RDWR | O_TRUNC,
+-			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+-		if (c->dev_fd == -1)
+-			return sys_errmsg("cannot create output file '%s'",
+-					   c->dev_name);
+-	}
+-	return 0;
+-}
+-
+-
+-/**
+- * close_target - close the output target.
+- * @c: the UBIFS file-system description object
+- *
+- * Close the output target. If the target was an UBI
+- * volume, also close libubi.
+- *
+- * Returns %0 in case of success and %-1 in case of failure.
+- */
+-int close_target(struct ubifs_info *c)
+-{
+-	if (c->dev_fd >= 0) {
+-		if (c->libubi && ubi_set_property(c->dev_fd, UBI_VOL_PROP_DIRECT_WRITE, 0))
+-			return sys_errmsg("ubi_set_property(clear direct_write) failed");
+-		if (close(c->dev_fd) == -1)
+-			return sys_errmsg("cannot close the target '%s'", c->dev_name);
+-	}
+-	return 0;
+-}
+-
+-/**
+  * init - initialize things.
+  */
+ static int init(void)
 -- 
 2.13.6
 
