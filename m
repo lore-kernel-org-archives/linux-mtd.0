@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67CF5C27C75
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35040C27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OlSpzEFPzUyaknc9adIZIcO61hy3AcSgFih41YhWT8s=; b=zCdiUxEUJJZhpy
-	bcAlA8G4U5N3oIqS/UUqHueMSTNRf7L4R8FwWMKsM7Qix9Af3cFWNVc8EuvY6dPp75sarFK8ZpWFp
-	Ip+eBc6Vviz9sgipgh+mbG4CAe94SVHXjP8c44Pju5mVbb4t+RG460kTMqOV5TsW/ZMLLZsThNtUx
-	MxwPoWrBeCRXopvufHXnlI8i3TPp+NH2NVh3+X9/PExelD37AhxpTndOZ85jkdG4fItQBFMSgdL8i
-	5ztNzNgqTT6gIut1JTJxME7NASs6EQMEyDwch5DCV6PDi04800WH3ZiLb93BJzcuihDqe1xluoww2
-	v9H9eOt7itWg8sEbYPPg==;
+	List-Owner; bh=QTonX5WId2yFFK69DCeY86bAjeVn3UsG0NtLU/hF9FM=; b=fA4wdry3rluPV1
+	iQeSPVdqRz81xJenIi3Bb7k8zsw61HdfLfM316QSU9yNoDQAvGzafXAbuyqnUe/iEd7Qdxv7Zggp1
+	wDmpbxVDfs9JD/zRrODndJXHgc9ka9DME89iFCZ7VxgwMkysfSC/b7oocEDPiwPvCZg3ZvytIMKmz
+	dywlh+yolaCjZBrmfF2ozR/t7ifkAWZncxx58HZe26t0FFXMJwvSm3oujpYQMTvcraiwo1IPfKdUs
+	49K/FMQEvWH+zZXEBOVJgOT1OmIzzmyLEQe7EGrO3Q9jI77HgLy14eACJPY/WL5MW8U/zRQkKfngq
+	2sdDDxIxOfNJgGkDW1LQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRBj-0000000CG9l-40z4;
-	Fri, 07 Jun 2024 04:26:51 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1sFRBl-0000000CGC1-2Vb1;
+	Fri, 07 Jun 2024 04:26:53 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRBc-0000000CG3l-1gCY
+	id 1sFRBc-0000000CG3i-1mv4
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:26:47 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwShK3nCLzmYL0;
-	Fri,  7 Jun 2024 12:21:53 +0800 (CST)
+	Fri, 07 Jun 2024 04:26:48 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwSj41ZmNzsRgt;
+	Fri,  7 Jun 2024 12:22:32 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5B24D140427;
-	Fri,  7 Jun 2024 12:26:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id D52C818007E;
+	Fri,  7 Jun 2024 12:26:30 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:26:28 +0800
+ 2024 12:26:29 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 003/110] ubifs-utils: Split common source files from mkfs.ubifs
-Date: Fri, 7 Jun 2024 12:24:28 +0800
-Message-ID: <20240607042615.2069840-4-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 005/110] ubifs-utils: Define PROGRAM_NAME as variable
+Date: Fri, 7 Jun 2024 12:24:30 +0800
+Message-ID: <20240607042615.2069840-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,9 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212644_906160_FBE16589 
-X-CRM114-Status: UNSURE (   8.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240606_212644_887233_3CFCE7DD 
+X-CRM114-Status: GOOD (  14.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,228 +71,173 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Split common source files into common dir from mkfs.ubifs, this is a
-preparation for importing libubifs(from linux kernel) to replace
-current UBIFS libs.
+PROGRAM_NAME is defined as a const string "mkfs.ubifs", which won't be
+suitable for fsck.ubifs. Add 'program_name' member in ubifs_info
+structure, define PROGRAM_NAME as ubifs_info.program_name. Then, error
+messages will display right program name if fsck.ubifs is supported.
+Besides, add 'program_type' member in ubifs_info structure to identify
+which current program type is, without comparing program name.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am                          | 57 ++++++++++++----------
- ubifs-utils/{mkfs.ubifs => common}/README          |  2 +-
- ubifs-utils/{mkfs.ubifs => common}/compr.c         |  0
- ubifs-utils/{mkfs.ubifs => common}/compr.h         |  0
- ubifs-utils/{mkfs.ubifs => common}/crc16.c         |  0
- ubifs-utils/{mkfs.ubifs => common}/crc16.h         |  0
- ubifs-utils/{mkfs.ubifs => common}/crypto.c        |  0
- ubifs-utils/{mkfs.ubifs => common}/crypto.h        |  0
- ubifs-utils/{mkfs.ubifs => common}/defs.h          |  0
- ubifs-utils/{mkfs.ubifs => common}/devtable.c      |  0
- ubifs-utils/{mkfs.ubifs => common}/fscrypt.c       |  0
- ubifs-utils/{mkfs.ubifs => common}/fscrypt.h       |  0
- .../{mkfs.ubifs => common}/hashtable/hashtable.c   |  0
- .../{mkfs.ubifs => common}/hashtable/hashtable.h   |  0
- .../hashtable/hashtable_itr.c                      |  0
- .../hashtable/hashtable_itr.h                      |  0
- .../hashtable/hashtable_private.h                  |  0
- ubifs-utils/{mkfs.ubifs => common}/key.h           |  0
- ubifs-utils/{mkfs.ubifs => common}/lpt.c           |  0
- ubifs-utils/{mkfs.ubifs => common}/lpt.h           |  0
- ubifs-utils/{mkfs.ubifs => common}/sign.c          |  0
- ubifs-utils/{mkfs.ubifs => common}/sign.h          |  0
- ubifs-utils/{mkfs.ubifs => common}/ubifs.h         |  0
- 23 files changed, 31 insertions(+), 28 deletions(-)
- rename ubifs-utils/{mkfs.ubifs => common}/README (91%)
- rename ubifs-utils/{mkfs.ubifs => common}/compr.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/compr.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/crc16.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/crc16.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/crypto.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/crypto.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/defs.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/devtable.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/fscrypt.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/fscrypt.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable_itr.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable_itr.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/hashtable/hashtable_private.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/key.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/lpt.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/lpt.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/sign.c (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/sign.h (100%)
- rename ubifs-utils/{mkfs.ubifs => common}/ubifs.h (100%)
+ ubifs-utils/common/crypto.c              | 10 +++++++---
+ ubifs-utils/common/defs.h                |  4 ++++
+ ubifs-utils/common/fscrypt.c             |  7 +++++--
+ ubifs-utils/common/hashtable/hashtable.c | 14 +++++++++-----
+ ubifs-utils/common/lpt.c                 |  7 +++++--
+ ubifs-utils/common/ubifs.h               |  6 ++++++
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c      |  3 +++
+ 7 files changed, 39 insertions(+), 12 deletions(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 6814d47b..4a617c19 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -1,37 +1,40 @@
--mkfs_ubifs_SOURCES = \
--	ubifs-utils/mkfs.ubifs/mkfs.ubifs.c \
--	ubifs-utils/mkfs.ubifs/defs.h \
--	ubifs-utils/mkfs.ubifs/lpt.h \
--	ubifs-utils/mkfs.ubifs/mkfs.ubifs.h \
--	ubifs-utils/mkfs.ubifs/crc16.h \
--	ubifs-utils/mkfs.ubifs/key.h \
--	ubifs-utils/mkfs.ubifs/compr.h \
--	ubifs-utils/mkfs.ubifs/ubifs.h \
--	ubifs-utils/mkfs.ubifs/sign.h \
--	ubifs-utils/mkfs.ubifs/crc16.c \
--	ubifs-utils/mkfs.ubifs/lpt.c \
--	ubifs-utils/mkfs.ubifs/compr.c \
--	ubifs-utils/mkfs.ubifs/hashtable/hashtable.h \
--	ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h \
--	ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h \
--	ubifs-utils/mkfs.ubifs/hashtable/hashtable.c \
--	ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c \
--	ubifs-utils/mkfs.ubifs/devtable.c \
-+common_SOURCES = \
-+	ubifs-utils/common/defs.h \
-+	ubifs-utils/common/crc16.h \
-+	ubifs-utils/common/crc16.c \
-+	ubifs-utils/common/compr.h \
-+	ubifs-utils/common/compr.c \
-+	ubifs-utils/common/hashtable/hashtable.h \
-+	ubifs-utils/common/hashtable/hashtable_itr.h \
-+	ubifs-utils/common/hashtable/hashtable_private.h \
-+	ubifs-utils/common/hashtable/hashtable.c \
-+	ubifs-utils/common/hashtable/hashtable_itr.c \
-+	ubifs-utils/common/devtable.c \
-+	ubifs-utils/common/ubifs.h \
-+	ubifs-utils/common/key.h \
-+	ubifs-utils/common/lpt.h \
-+	ubifs-utils/common/lpt.c \
-+	ubifs-utils/common/sign.h \
- 	include/mtd/ubifs-media.h
+diff --git a/ubifs-utils/common/crypto.c b/ubifs-utils/common/crypto.c
+index 60a67a4e..614a16de 100644
+--- a/ubifs-utils/common/crypto.c
++++ b/ubifs-utils/common/crypto.c
+@@ -23,10 +23,14 @@
+ #include <string.h>
+ #include <assert.h>
  
- if WITH_CRYPTO
--mkfs_ubifs_SOURCES += ubifs-utils/mkfs.ubifs/crypto.c \
--		ubifs-utils/mkfs.ubifs/crypto.h \
--		ubifs-utils/mkfs.ubifs/fscrypt.c \
--		ubifs-utils/mkfs.ubifs/fscrypt.h \
--		ubifs-utils/mkfs.ubifs/sign.c
-+common_SOURCES += ubifs-utils/common/crypto.c \
-+		ubifs-utils/common/crypto.h \
-+		ubifs-utils/common/fscrypt.c \
-+		ubifs-utils/common/fscrypt.h \
-+		ubifs-utils/common/sign.c
- endif
- 
-+mkfs_ubifs_SOURCES = \
-+	$(common_SOURCES) \
-+	ubifs-utils/mkfs.ubifs/mkfs.ubifs.h \
-+	ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+-#define PROGRAM_NAME "mkfs.ubifs"
+-#include "common.h"
+-#include "defs.h"
+ #include "fscrypt.h"
++#include "defs.h"
++#include "ubifs.h"
 +
- mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm
--mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS)\
--	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/mkfs.ubifs/
-+mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
-+	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/mkfs.ubifs/ -I$(top_srcdir)/ubifs-utils/common
++/* common.h requires the PROGRAM_NAME macro */
++extern struct ubifs_info info_;
++#define PROGRAM_NAME (info_.program_name)
++#include "common.h"
  
--EXTRA_DIST += ubifs-utils/mkfs.ubifs/README
-+EXTRA_DIST += ubifs-utils/common/README
+ static int do_hash(const EVP_MD *md, const unsigned char *in, size_t len, unsigned char *out)
+ {
+diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
+index e1aded03..143f6c65 100644
+--- a/ubifs-utils/common/defs.h
++++ b/ubifs-utils/common/defs.h
+@@ -12,6 +12,10 @@
+ #include <byteswap.h>
+ #include <errno.h>
  
- dist_sbin_SCRIPTS = ubifs-utils/mount.ubifs
++#define MKFS_PROGRAM_NAME "mkfs.ubifs"
++
++enum { MKFS_PROGRAM_TYPE = 0 };
++
+ extern int debug_level;
  
-diff --git a/ubifs-utils/mkfs.ubifs/README b/ubifs-utils/common/README
-similarity index 91%
-rename from ubifs-utils/mkfs.ubifs/README
-rename to ubifs-utils/common/README
-index 7e199390..8c10fd4b 100644
---- a/ubifs-utils/mkfs.ubifs/README
-+++ b/ubifs-utils/common/README
-@@ -1,4 +1,4 @@
--UBIFS File System - Make File System program
-+Common Library
+ #define dbg_msg(lvl, fmt, ...) do {if (debug_level >= lvl)                \
+diff --git a/ubifs-utils/common/fscrypt.c b/ubifs-utils/common/fscrypt.c
+index 94c6c377..cc989638 100644
+--- a/ubifs-utils/common/fscrypt.c
++++ b/ubifs-utils/common/fscrypt.c
+@@ -20,11 +20,14 @@
  
- * crc16.h and crc16.c were copied from the linux kernel.
- * crc32.h and crc32.c were copied from mtd-utils and amended.
-diff --git a/ubifs-utils/mkfs.ubifs/compr.c b/ubifs-utils/common/compr.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/compr.c
-rename to ubifs-utils/common/compr.c
-diff --git a/ubifs-utils/mkfs.ubifs/compr.h b/ubifs-utils/common/compr.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/compr.h
-rename to ubifs-utils/common/compr.h
-diff --git a/ubifs-utils/mkfs.ubifs/crc16.c b/ubifs-utils/common/crc16.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/crc16.c
-rename to ubifs-utils/common/crc16.c
-diff --git a/ubifs-utils/mkfs.ubifs/crc16.h b/ubifs-utils/common/crc16.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/crc16.h
-rename to ubifs-utils/common/crc16.h
-diff --git a/ubifs-utils/mkfs.ubifs/crypto.c b/ubifs-utils/common/crypto.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/crypto.c
-rename to ubifs-utils/common/crypto.c
-diff --git a/ubifs-utils/mkfs.ubifs/crypto.h b/ubifs-utils/common/crypto.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/crypto.h
-rename to ubifs-utils/common/crypto.h
-diff --git a/ubifs-utils/mkfs.ubifs/defs.h b/ubifs-utils/common/defs.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/defs.h
-rename to ubifs-utils/common/defs.h
-diff --git a/ubifs-utils/mkfs.ubifs/devtable.c b/ubifs-utils/common/devtable.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/devtable.c
-rename to ubifs-utils/common/devtable.c
-diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.c b/ubifs-utils/common/fscrypt.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/fscrypt.c
-rename to ubifs-utils/common/fscrypt.c
-diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.h b/ubifs-utils/common/fscrypt.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/fscrypt.h
-rename to ubifs-utils/common/fscrypt.h
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable.c b/ubifs-utils/common/hashtable/hashtable.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable.c
-rename to ubifs-utils/common/hashtable/hashtable.c
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable.h b/ubifs-utils/common/hashtable/hashtable.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable.h
-rename to ubifs-utils/common/hashtable/hashtable.h
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c b/ubifs-utils/common/hashtable/hashtable_itr.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.c
-rename to ubifs-utils/common/hashtable/hashtable_itr.c
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h b/ubifs-utils/common/hashtable/hashtable_itr.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable_itr.h
-rename to ubifs-utils/common/hashtable/hashtable_itr.h
-diff --git a/ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h b/ubifs-utils/common/hashtable/hashtable_private.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/hashtable/hashtable_private.h
-rename to ubifs-utils/common/hashtable/hashtable_private.h
-diff --git a/ubifs-utils/mkfs.ubifs/key.h b/ubifs-utils/common/key.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/key.h
-rename to ubifs-utils/common/key.h
-diff --git a/ubifs-utils/mkfs.ubifs/lpt.c b/ubifs-utils/common/lpt.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/lpt.c
-rename to ubifs-utils/common/lpt.c
-diff --git a/ubifs-utils/mkfs.ubifs/lpt.h b/ubifs-utils/common/lpt.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/lpt.h
-rename to ubifs-utils/common/lpt.h
-diff --git a/ubifs-utils/mkfs.ubifs/sign.c b/ubifs-utils/common/sign.c
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/sign.c
-rename to ubifs-utils/common/sign.c
-diff --git a/ubifs-utils/mkfs.ubifs/sign.h b/ubifs-utils/common/sign.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/sign.h
-rename to ubifs-utils/common/sign.h
-diff --git a/ubifs-utils/mkfs.ubifs/ubifs.h b/ubifs-utils/common/ubifs.h
-similarity index 100%
-rename from ubifs-utils/mkfs.ubifs/ubifs.h
-rename to ubifs-utils/common/ubifs.h
+ #include <endian.h>
+ 
+-#define PROGRAM_NAME "mkfs.ubifs"
+-#include "common.h"
+ #include "fscrypt.h"
+ #include "defs.h"
++#include "ubifs.h"
+ 
++/* common.h requires the PROGRAM_NAME macro */
++extern struct ubifs_info info_;
++#define PROGRAM_NAME (info_.program_name)
++#include "common.h"
+ 
+ static __u8 fscrypt_masterkey[FS_MAX_KEY_SIZE];
+ static struct cipher *fscrypt_cipher;
+diff --git a/ubifs-utils/common/hashtable/hashtable.c b/ubifs-utils/common/hashtable/hashtable.c
+index c1f99edd..071afd22 100644
+--- a/ubifs-utils/common/hashtable/hashtable.c
++++ b/ubifs-utils/common/hashtable/hashtable.c
+@@ -1,15 +1,19 @@
+ /* Copyright (C) 2004 Christopher Clark <firstname.lastname@cl.cam.ac.uk> */
+ 
+-#define PROGRAM_NAME "hashtable"
+-
+-#include "common.h"
+-#include "hashtable.h"
+-#include "hashtable_private.h"
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <math.h>
+ 
++#include "ubifs.h"
++#include "hashtable.h"
++#include "hashtable_private.h"
++
++/* common.h requires the PROGRAM_NAME macro */
++extern struct ubifs_info info_;
++#define PROGRAM_NAME (info_.program_name)
++#include "common.h"
++
+ /*
+ Credit for primes table: Aaron Krowne
+  http://br.endernet.org/~akrowne/
+diff --git a/ubifs-utils/common/lpt.c b/ubifs-utils/common/lpt.c
+index 23ffe7f7..746fc7db 100644
+--- a/ubifs-utils/common/lpt.c
++++ b/ubifs-utils/common/lpt.c
+@@ -24,14 +24,17 @@
+ #include <openssl/evp.h>
+ #endif
+ 
+-#define PROGRAM_NAME "mkfs.ubifs"
+-#include "common.h"
+ #include "lpt.h"
+ #include "defs.h"
+ #include "ubifs.h"
+ #include "crc16.h"
+ #include "sign.h"
+ 
++/* common.h requires the PROGRAM_NAME macro */
++extern struct ubifs_info info_;
++#define PROGRAM_NAME (info_.program_name)
++#include "common.h"
++
+ /**
+  * do_calc_lpt_geom - calculate sizes for the LPT area.
+  * @c: the UBIFS file-system description object
+diff --git a/ubifs-utils/common/ubifs.h b/ubifs-utils/common/ubifs.h
+index 0eef31ac..2b0ffe56 100644
+--- a/ubifs-utils/common/ubifs.h
++++ b/ubifs-utils/common/ubifs.h
+@@ -273,6 +273,9 @@ struct ubifs_znode
+  * @highest_inum: highest used inode number
+  * @max_sqnum: current global sequence number
+  *
++ * @program_type: used to identify the type of current program
++ * @program_name: program name
++ *
+  * @jhead_cnt: count of journal heads
+  * @max_bud_bytes: maximum number of bytes allowed in buds
+  *
+@@ -360,6 +363,9 @@ struct ubifs_info
+ 	ino_t highest_inum;
+ 	unsigned long long max_sqnum;
+ 
++	int program_type;
++	const char *program_name;
++
+ 	int jhead_cnt;
+ 	long long max_bud_bytes;
+ 
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index a440bc4b..b4bed018 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -3056,6 +3056,9 @@ int main(int argc, char *argv[])
+ {
+ 	int err;
+ 
++	info_.program_name = MKFS_PROGRAM_NAME;
++	info_.program_type = MKFS_PROGRAM_TYPE;
++
+ 	if (crypto_init())
+ 		return -1;
+ 
 -- 
 2.13.6
 
