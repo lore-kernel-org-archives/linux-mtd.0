@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 598C1C27C6F
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8B41C27C78
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VBAUPrZgbisdJ/c6RAamOflpBTnuyPdQ5VTVsPjEOwE=; b=ohWbG8jXb8oJ1u
-	zf+gUYoKStdq9uLjJ/8TG6uzFazC61NmQiJ10YJC5sUpAokpzir3uPg/Rzfya8g0hPOMigiC/Zty4
-	ca6RaDadjxvhguOheRNUkUu+V3g2rP2Q2EpLuBU3nc6Yl6F8M3ni4ki0p4G9IpBakg8ZFCs9nODhq
-	t+ACl38XNGkHOjvjplzBjVK7LZbsdZZONV9BeMlfiv53frwQcXQ4PKRgHQefqbLlFb1BmumEVjjGA
-	3+iCGUJrbbSB6XASDs7naXHq8Hd4uwE3q+8GCbm2iTFXOTJ6Ei5o125d9tfu0pqAvICyj9oeCQKTs
-	cesz88mJpP4smLgUzwmQ==;
+	List-Owner; bh=4jm6nib5zAIm10iP68ynyZuD5Gx9FrtoMugLolsH+7Y=; b=hFTPiYbeKxvpKT
+	tCel008amay1snzM0yMuhxwGApANodIUn4IHcpgZIYD0ZJP+6ZxKogUI+kN9DwSBEOzrT1CCvpnWp
+	RA3Ow5ZSUCJxfK7l+n09iSiHpHPqE/TnNrMR77puizIMkiEmsWHVaL5k5FboTqV9i1sKJA36n8Okh
+	r9bUj3cfgP6u1EwFq0YfyS9gD1RA7IKfAdgsFbXPlqGaqC1Ooz3yog5mOMpgSyJDY0DeAjubXJLrv
+	WVKecOmuRuX3Todza8oaeBDqGnkqej/b/NpILu0sRFq/wWuy3dyRhA19H2hRLp7fvksq4JvfjzS1g
+	MIppmerKByqhI6zXbjYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFSD7-0000000CUXx-2Nfu;
-	Fri, 07 Jun 2024 05:32:21 +0000
+	id 1sFSDA-0000000CUZr-2mXQ;
+	Fri, 07 Jun 2024 05:32:24 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRBk-0000000CG9L-0zPQ
+	id 1sFRC5-0000000CGSe-048V
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:05 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwShk5frwzmYDj;
-	Fri,  7 Jun 2024 12:22:14 +0800 (CST)
+	Fri, 07 Jun 2024 04:27:28 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSmp1T5fzdZhH;
+	Fri,  7 Jun 2024 12:25:46 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9A9F81400D5;
-	Fri,  7 Jun 2024 12:26:50 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 1DAC9180085;
+	Fri,  7 Jun 2024 12:27:11 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:26:39 +0800
+ 2024 12:26:56 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 017/110] mtd-utils: Extract list implementation to common lib and add list_sort support
-Date: Fri, 7 Jun 2024 12:24:42 +0800
-Message-ID: <20240607042615.2069840-18-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 040/110] ubifs-utils: Adapt recovery subsystem in libubifs
+Date: Fri, 7 Jun 2024 12:25:05 +0800
+Message-ID: <20240607042615.2069840-41-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212652_973942_2C2A55BD 
-X-CRM114-Status: GOOD (  32.75  )
+X-CRM114-CacheID: sfid-20240606_212714_947558_38956344 
+X-CRM114-Status: GOOD (  30.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,656 +71,492 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Current list implementation code is put under jffs utils, extract it into
-common lib, and add more list operations(eg. list_move, list_splice, etc.).
-Besides, add list sorting support in new source file lib/list_sort.c.
-
-This is a preparation for replacing implementation of UBIFS utils with
-linux kernel libs.
+Adapt recovery subsystem(replay.c, recovery.c) in libubifs, compared with
+linux kernel implementations:
+ 1. Remove authentication related implementations
+    (eg. authenticate_sleb_hash), authentication is not supported in fsck
+    for now.
+ 2. Add explicit type conversions(const char *) to avoid compiling
+    warnings.
+ 3. Replace implementations of inode_fix_size() with ubifs_assert(0),
+    authentication is not supported in fsck, so this function won't
+    be invoked.
+ 4. Remove unused ubifs_clean_lebs() and ubifs_write_rcvrd_mst_node().
+ 5. Adapt fix_unclean_leb/recover_head/fix_size_in_place to ignore
+    %-EBADMSG, subsequent steps will check nodes in lpt/main area
+    carefully.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- include/list.h            | 263 ++++++++++++++++++++++++++++++++++++++++++++++
- jffsX-utils/Makemodule.am |   3 +-
- jffsX-utils/compr.c       |  49 ---------
- jffsX-utils/compr.h       |   5 +-
- lib/Makemodule.am         |   2 +
- lib/list_sort.c           | 246 +++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 514 insertions(+), 54 deletions(-)
- create mode 100644 include/list.h
- create mode 100644 lib/list_sort.c
+ ubifs-utils/libubifs/recovery.c | 236 ++++------------------------------------
+ ubifs-utils/libubifs/replay.c   |  90 +++------------
+ 2 files changed, 35 insertions(+), 291 deletions(-)
 
-diff --git a/include/list.h b/include/list.h
-new file mode 100644
-index 00000000..d26c9d1c
---- /dev/null
-+++ b/include/list.h
-@@ -0,0 +1,263 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2006 Silicon Graphics, Inc.
-+ * All Rights Reserved.
-+ */
-+#ifndef __LIST_H__
-+#define __LIST_H__
-+
-+#include <stddef.h>
-+
-+/*
-+ * This undef is here because BSD 4.4 added some LIST_ macros into system
-+ * header file sys/queue.h. This header is included in many other system
-+ * headers and thus causes "macro redefined" warnings.
-+ *
-+ * As OS X is kind of a derivate of BSD, this affects OS X too.
-+ *
-+ * To use our own LIST_ macros (copied from kernel code), we have to
-+ * at first undefine the conflicting system macros.
-+ *
-+ */
-+#undef LIST_HEAD
-+#undef LIST_HEAD_INIT
-+
-+/*
-+ * Simple, generic doubly-linked list implementation.
-+ */
-+
-+struct list_head {
-+	struct list_head *next;
-+	struct list_head *prev;
-+};
-+
-+#define LIST_HEAD_INIT(name) { &(name), &(name) }
-+
-+#define LIST_HEAD(name) \
-+		struct list_head name = LIST_HEAD_INIT(name)
-+
-+#define INIT_LIST_HEAD(list) list_head_init(list)
-+static inline void list_head_init(struct list_head *list)
-+{
-+	list->next = list->prev = list;
-+}
-+
-+static inline void list_head_destroy(struct list_head *list)
-+{
-+	list->next = list->prev = NULL;
-+}
-+
-+static inline void __list_add(struct list_head *add,
-+			      struct list_head *prev, struct list_head *next)
-+{
-+	next->prev = add;
-+	add->next = next;
-+	add->prev = prev;
-+	prev->next = add;
-+}
-+
-+static inline void list_add(struct list_head *add, struct list_head *head)
-+{
-+	__list_add(add, head, head->next);
-+}
-+
-+static inline void list_add_tail(struct list_head *add, struct list_head *head)
-+{
-+	__list_add(add, head->prev, head);
-+}
-+
-+static inline void __list_del(struct list_head *prev, struct list_head *next)
-+{
-+	next->prev = prev;
-+	prev->next = next;
-+}
-+
-+static inline void list_del_init(struct list_head *entry)
-+{
-+	__list_del(entry->prev, entry->next);
-+	list_head_init(entry);
-+}
-+
-+static inline void list_del(struct list_head *entry)
-+{
-+	__list_del(entry->prev, entry->next);
-+}
-+
-+static inline void list_move(struct list_head *list, struct list_head *head)
-+{
-+	__list_del(list->prev, list->next);
-+	list_add(list, head);
-+}
-+
-+static inline void list_move_tail(struct list_head *list, struct list_head *head)
-+{
-+	__list_del(list->prev, list->next);
-+	list_add_tail(list, head);
-+}
-+
-+/**
-+ * list_is_last - tests whether @list is the last entry in list @head
-+ * @list: the entry to test
-+ * @head: the head of the list
-+ */
-+static inline int list_is_last(const struct list_head *list, const struct list_head *head)
-+{
-+	return list->next == head;
-+}
-+
-+static inline int list_empty(const struct list_head *head)
-+{
-+	return head->next == head;
-+}
-+
-+static inline void __list_splice(struct list_head *list,
-+				 struct list_head *prev,
-+				 struct list_head *next)
-+{
-+	struct list_head *first = list->next;
-+	struct list_head *last = list->prev;
-+
-+	first->prev = prev;
-+	prev->next = first;
-+
-+	last->next = next;
-+	next->prev = last;
-+}
-+
-+static inline void list_splice(struct list_head *list, struct list_head *head)
-+{
-+	if (!list_empty(list))
-+		__list_splice(list, head, head->next);
-+}
-+
-+static inline void list_splice_tail(struct list_head *list,
-+				    struct list_head *head)
-+{
-+	if (!list_empty(list))
-+		__list_splice(list, head->prev, head);
-+}
-+
-+static inline void list_splice_init(struct list_head *list,
-+				    struct list_head *head)
-+{
-+	if (!list_empty(list)) {
-+		__list_splice(list, head, head->next);
-+		list_head_init(list);
-+	}
-+}
-+
-+#define list_entry(ptr, type, member) ({			\
-+	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
-+	(type *)( (char *)__mptr - offsetof(type,member) );})
-+
-+#define list_for_each(pos, head) \
-+	for (pos = (head)->next; pos != (head); pos = pos->next)
-+
-+#define list_for_each_safe(pos, n, head) \
-+	for (pos = (head)->next, n = pos->next; pos != (head); \
-+		pos = n, n = pos->next)
-+
-+#define list_for_each_entry(pos, head, member)				\
-+	for (pos = list_entry((head)->next, typeof(*pos), member);	\
-+	     &pos->member != (head); 	\
-+	     pos = list_entry(pos->member.next, typeof(*pos), member))
-+
-+#define list_for_each_entry_safe(pos, n, head, member)			\
-+	for (pos = list_entry((head)->next, typeof(*pos), member),	\
-+		n = list_entry(pos->member.next, typeof(*pos), member);	\
-+	     &pos->member != (head); 					\
-+	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
-+
-+#define list_first_entry(ptr, type, member) \
-+	list_entry((ptr)->next, type, member)
-+
-+#define container_of(ptr, type, member) ({			\
-+	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
-+	(type *)( (char *)__mptr - offsetof(type,member) );})
-+
-+/**
-+ * list_entry_is_head - test if the entry points to the head of the list
-+ * @pos:	the type * to cursor
-+ * @head:	the head for your list.
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_entry_is_head(pos, head, member)				\
-+	(&pos->member == (head))
-+
-+typedef int __attribute__((nonnull(2,3))) (*list_cmp_func_t)(void *,
-+			const struct list_head *, const struct list_head *);
-+__attribute__((nonnull(2,3)))
-+void list_sort(void *priv, struct list_head *head, list_cmp_func_t cmp);
-+
-+/**
-+ * list_splice_tail_init - join two lists and reinitialise the emptied list
-+ * @list: the new list to add.
-+ * @head: the place to add it in the first list.
-+ *
-+ * Each of the lists is a queue.
-+ * The list at @list is reinitialised
-+ */
-+static inline void list_splice_tail_init(struct list_head *list,
-+					 struct list_head *head)
-+{
-+	if (!list_empty(list)) {
-+		__list_splice(list, head->prev, head);
-+		INIT_LIST_HEAD(list);
-+	}
-+}
-+
-+/**
-+ * list_replace - replace old entry by new one
-+ * @old : the element to be replaced
-+ * @new : the new element to insert
-+ *
-+ * If @old was empty, it will be overwritten.
-+ */
-+static inline void list_replace(struct list_head *old,
-+				struct list_head *new)
-+{
-+	new->next = old->next;
-+	new->next->prev = new;
-+	new->prev = old->prev;
-+	new->prev->next = new;
-+}
-+
-+/**
-+ * list_last_entry - get the last element from a list
-+ * @ptr:	the list head to take the element from.
-+ * @type:	the type of the struct this is embedded in.
-+ * @member:	the name of the list_head within the struct.
-+ *
-+ * Note, that list is expected to be not empty.
-+ */
-+#define list_last_entry(ptr, type, member) \
-+	list_entry((ptr)->prev, type, member)
-+
-+/**
-+ * list_prev_entry - get the prev element in list
-+ * @pos:	the type * to cursor
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_prev_entry(pos, member) \
-+	list_entry((pos)->member.prev, typeof(*(pos)), member)
-+
-+/**
-+ * list_next_entry - get the next element in list
-+ * @pos:	the type * to cursor
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_next_entry(pos, member) \
-+	list_entry((pos)->member.next, typeof(*(pos)), member)
-+
-+/**
-+ * list_for_each_entry_reverse - iterate backwards over list of given type.
-+ * @pos:	the type * to use as a loop cursor.
-+ * @head:	the head for your list.
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_for_each_entry_reverse(pos, head, member)			\
-+	for (pos = list_last_entry(head, typeof(*pos), member);		\
-+	     &pos->member != (head); 					\
-+	     pos = list_prev_entry(pos, member))
-+
-+#endif	/* __LIST_H__ */
-diff --git a/jffsX-utils/Makemodule.am b/jffsX-utils/Makemodule.am
-index 266c12ef..2374b858 100644
---- a/jffsX-utils/Makemodule.am
-+++ b/jffsX-utils/Makemodule.am
-@@ -9,7 +9,8 @@ mkfs_jffs2_SOURCES = \
- 	jffsX-utils/rbtree.h \
- 	jffsX-utils/summary.h \
- 	include/linux/jffs2.h \
--	include/mtd/jffs2-user.h
-+	include/mtd/jffs2-user.h \
-+	include/list.h
- mkfs_jffs2_LDADD = libmtd.a $(ZLIB_LIBS) $(LZO_LIBS)
- mkfs_jffs2_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS)
+diff --git a/ubifs-utils/libubifs/recovery.c b/ubifs-utils/libubifs/recovery.c
+index f0d51dd2..910414cb 100644
+--- a/ubifs-utils/libubifs/recovery.c
++++ b/ubifs-utils/libubifs/recovery.c
+@@ -35,9 +35,17 @@
+  * refuses to mount.
+  */
  
-diff --git a/jffsX-utils/compr.c b/jffsX-utils/compr.c
-index 01176ebe..d408ef8a 100644
---- a/jffsX-utils/compr.c
-+++ b/jffsX-utils/compr.c
-@@ -17,55 +17,6 @@
+-#include <linux/crc32.h>
+-#include <linux/slab.h>
++#include <sys/types.h>
++
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
++#include "crc32.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "misc.h"
  
- extern int page_size;
+ /**
+  * is_empty - determine whether a buffer is empty (contains all 0xff).
+@@ -364,31 +372,6 @@ out_free:
+ }
  
--/* LIST IMPLEMENTATION (from linux/list.h) */
--
--#define LIST_HEAD_INIT(name) { &(name), &(name) }
--
--#define LIST_HEAD(name) \
--	struct list_head name = LIST_HEAD_INIT(name)
--
--static inline void __list_add(struct list_head *new,
--		struct list_head *prev,
--		struct list_head *next)
+ /**
+- * ubifs_write_rcvrd_mst_node - write the recovered master node.
+- * @c: UBIFS file-system description object
+- *
+- * This function writes the master node that was recovered during mounting in
+- * read-only mode and must now be written because we are remounting rw.
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int ubifs_write_rcvrd_mst_node(struct ubifs_info *c)
 -{
--	next->prev = new;
--	new->next = next;
--	new->prev = prev;
--	prev->next = new;
+-	int err;
+-
+-	if (!c->rcvrd_mst_node)
+-		return 0;
+-	c->rcvrd_mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
+-	c->mst_node->flags |= cpu_to_le32(UBIFS_MST_DIRTY);
+-	err = write_rcvrd_mst_node(c, c->rcvrd_mst_node);
+-	if (err)
+-		return err;
+-	kfree(c->rcvrd_mst_node);
+-	c->rcvrd_mst_node = NULL;
+-	return 0;
 -}
 -
--static inline void list_add(struct list_head *new, struct list_head *head)
+-/**
+  * is_last_write - determine if an offset was in the last write to a LEB.
+  * @c: UBIFS file-system description object
+  * @buf: buffer to check
+@@ -530,7 +513,7 @@ static int fix_unclean_leb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 			if (start) {
+ 				err = ubifs_leb_read(c, lnum, sleb->buf, 0,
+ 						     start, 1);
+-				if (err)
++				if (err && err != -EBADMSG)
+ 					return err;
+ 			}
+ 			/* Pad to min_io_size */
+@@ -926,7 +909,7 @@ static int recover_head(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ 		if (offs == 0)
+ 			return ubifs_leb_unmap(c, lnum);
+ 		err = ubifs_leb_read(c, lnum, sbuf, 0, offs, 1);
+-		if (err)
++		if (err && err != -EBADMSG)
+ 			return err;
+ 		return ubifs_leb_change(c, lnum, sbuf, offs);
+ 	}
+@@ -968,129 +951,6 @@ int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf)
+ }
+ 
+ /**
+- * clean_an_unclean_leb - read and write a LEB to remove corruption.
+- * @c: UBIFS file-system description object
+- * @ucleb: unclean LEB information
+- * @sbuf: LEB-sized buffer to use
+- *
+- * This function reads a LEB up to a point pre-determined by the mount recovery,
+- * checks the nodes, and writes the result back to the flash, thereby cleaning
+- * off any following corruption, or non-fatal ECC errors.
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-static int clean_an_unclean_leb(struct ubifs_info *c,
+-				struct ubifs_unclean_leb *ucleb, void *sbuf)
 -{
--	__list_add(new, head, head->next);
+-	int err, lnum = ucleb->lnum, offs = 0, len = ucleb->endpt, quiet = 1;
+-	void *buf = sbuf;
+-
+-	dbg_rcvry("LEB %d len %d", lnum, len);
+-
+-	if (len == 0) {
+-		/* Nothing to read, just unmap it */
+-		return ubifs_leb_unmap(c, lnum);
+-	}
+-
+-	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
+-	if (err && err != -EBADMSG)
+-		return err;
+-
+-	while (len >= 8) {
+-		int ret;
+-
+-		cond_resched();
+-
+-		/* Scan quietly until there is an error */
+-		ret = ubifs_scan_a_node(c, buf, len, lnum, offs, quiet);
+-
+-		if (ret == SCANNED_A_NODE) {
+-			/* A valid node, and not a padding node */
+-			struct ubifs_ch *ch = buf;
+-			int node_len;
+-
+-			node_len = ALIGN(le32_to_cpu(ch->len), 8);
+-			offs += node_len;
+-			buf += node_len;
+-			len -= node_len;
+-			continue;
+-		}
+-
+-		if (ret > 0) {
+-			/* Padding bytes or a valid padding node */
+-			offs += ret;
+-			buf += ret;
+-			len -= ret;
+-			continue;
+-		}
+-
+-		if (ret == SCANNED_EMPTY_SPACE) {
+-			ubifs_err(c, "unexpected empty space at %d:%d",
+-				  lnum, offs);
+-			return -EUCLEAN;
+-		}
+-
+-		if (quiet) {
+-			/* Redo the last scan but noisily */
+-			quiet = 0;
+-			continue;
+-		}
+-
+-		ubifs_scanned_corruption(c, lnum, offs, buf);
+-		return -EUCLEAN;
+-	}
+-
+-	/* Pad to min_io_size */
+-	len = ALIGN(ucleb->endpt, c->min_io_size);
+-	if (len > ucleb->endpt) {
+-		int pad_len = len - ALIGN(ucleb->endpt, 8);
+-
+-		if (pad_len > 0) {
+-			buf = c->sbuf + len - pad_len;
+-			ubifs_pad(c, buf, pad_len);
+-		}
+-	}
+-
+-	/* Write back the LEB atomically */
+-	err = ubifs_leb_change(c, lnum, sbuf, len);
+-	if (err)
+-		return err;
+-
+-	dbg_rcvry("cleaned LEB %d", lnum);
+-
+-	return 0;
 -}
 -
--static inline void list_add_tail(struct list_head *new, struct list_head *head)
+-/**
+- * ubifs_clean_lebs - clean LEBs recovered during read-only mount.
+- * @c: UBIFS file-system description object
+- * @sbuf: LEB-sized buffer to use
+- *
+- * This function cleans a LEB identified during recovery that needs to be
+- * written but was not because UBIFS was mounted read-only. This happens when
+- * remounting to read-write mode.
+- *
+- * This function returns %0 on success and a negative error code on failure.
+- */
+-int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf)
 -{
--	__list_add(new, head->prev, head);
+-	dbg_rcvry("recovery");
+-	while (!list_empty(&c->unclean_leb_list)) {
+-		struct ubifs_unclean_leb *ucleb;
+-		int err;
+-
+-		ucleb = list_entry(c->unclean_leb_list.next,
+-				   struct ubifs_unclean_leb, list);
+-		err = clean_an_unclean_leb(c, ucleb, sbuf);
+-		if (err)
+-			return err;
+-		list_del(&ucleb->list);
+-		kfree(ucleb);
+-	}
+-	return 0;
 -}
 -
--static inline void __list_del(struct list_head *prev, struct list_head *next)
+-/**
+  * grab_empty_leb - grab an empty LEB to use as GC LEB and run commit.
+  * @c: UBIFS file-system description object
+  *
+@@ -1224,7 +1084,6 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
+  * @i_size: size on inode
+  * @d_size: maximum size based on data nodes
+  * @exists: indicates whether the inode exists
+- * @inode: inode if pinned in memory awaiting rw mode to fix it
+  */
+ struct size_entry {
+ 	struct rb_node rb;
+@@ -1232,7 +1091,6 @@ struct size_entry {
+ 	loff_t i_size;
+ 	loff_t d_size;
+ 	int exists;
+-	struct inode *inode;
+ };
+ 
+ /**
+@@ -1319,7 +1177,6 @@ void ubifs_destroy_size_tree(struct ubifs_info *c)
+ 	struct size_entry *e, *n;
+ 
+ 	rbtree_postorder_for_each_entry_safe(e, n, &c->size_tree, rb) {
+-		iput(e->inode);
+ 		kfree(e);
+ 	}
+ 
+@@ -1422,7 +1279,7 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
+ 		return 0;
+ 	/* Read the LEB */
+ 	err = ubifs_leb_read(c, lnum, c->sbuf, 0, c->leb_size, 1);
+-	if (err)
++	if (err && err != -EBADMSG)
+ 		goto out;
+ 	/* Change the size field and recalculate the CRC */
+ 	ino = c->sbuf + offs;
+@@ -1441,12 +1298,14 @@ static int fix_size_in_place(struct ubifs_info *c, struct size_entry *e)
+ 	if (err)
+ 		goto out;
+ 	dbg_rcvry("inode %lu at %d:%d size %lld -> %lld",
+-		  (unsigned long)e->inum, lnum, offs, i_size, e->d_size);
++		  (unsigned long)e->inum, lnum, offs, (long long)i_size,
++		  (long long)e->d_size);
+ 	return 0;
+ 
+ out:
+ 	ubifs_warn(c, "inode %lu failed to fix size %lld -> %lld error %d",
+-		   (unsigned long)e->inum, e->i_size, e->d_size, err);
++		   (unsigned long)e->inum, (long long)e->i_size,
++		   (long long)e->d_size, err);
+ 	return err;
+ }
+ 
+@@ -1455,64 +1314,12 @@ out:
+  * @c: UBIFS file-system description object
+  * @e: inode size information for recovery
+  */
+-static int inode_fix_size(struct ubifs_info *c, struct size_entry *e)
++static int inode_fix_size(struct ubifs_info *c, __unused struct size_entry *e)
+ {
+-	struct inode *inode;
+-	struct ubifs_inode *ui;
+-	int err;
+-
+-	if (c->ro_mount)
+-		ubifs_assert(c, !e->inode);
+-
+-	if (e->inode) {
+-		/* Remounting rw, pick up inode we stored earlier */
+-		inode = e->inode;
+-	} else {
+-		inode = ubifs_iget(c->vfs_sb, e->inum);
+-		if (IS_ERR(inode))
+-			return PTR_ERR(inode);
+-
+-		if (inode->i_size >= e->d_size) {
+-			/*
+-			 * The original inode in the index already has a size
+-			 * big enough, nothing to do
+-			 */
+-			iput(inode);
+-			return 0;
+-		}
+-
+-		dbg_rcvry("ino %lu size %lld -> %lld",
+-			  (unsigned long)e->inum,
+-			  inode->i_size, e->d_size);
+-
+-		ui = ubifs_inode(inode);
+-
+-		inode->i_size = e->d_size;
+-		ui->ui_size = e->d_size;
+-		ui->synced_i_size = e->d_size;
++	ubifs_assert(c, 0);
+ 
+-		e->inode = inode;
+-	}
+-
+-	/*
+-	 * In readonly mode just keep the inode pinned in memory until we go
+-	 * readwrite. In readwrite mode write the inode to the journal with the
+-	 * fixed size.
+-	 */
+-	if (c->ro_mount)
+-		return 0;
+-
+-	err = ubifs_jnl_write_inode(c, inode);
+-
+-	iput(inode);
+-
+-	if (err)
+-		return err;
+-
+-	rb_erase(&e->rb, &c->size_tree);
+-	kfree(e);
+-
+-	return 0;
++	// To be implemented
++	return -EINVAL;
+ }
+ 
+ /**
+@@ -1571,7 +1378,6 @@ int ubifs_recover_size(struct ubifs_info *c, bool in_place)
+ 				err = fix_size_in_place(c, e);
+ 				if (err)
+ 					return err;
+-				iput(e->inode);
+ 			} else {
+ 				err = inode_fix_size(c, e);
+ 				if (err)
+diff --git a/ubifs-utils/libubifs/replay.c b/ubifs-utils/libubifs/replay.c
+index c59d47fe..ff9efaac 100644
+--- a/ubifs-utils/libubifs/replay.c
++++ b/ubifs-utils/libubifs/replay.c
+@@ -20,9 +20,14 @@
+  * larger is the journal, the more memory its index may consume.
+  */
+ 
++#include "linux_err.h"
++#include "bitops.h"
++#include "kmem.h"
+ #include "ubifs.h"
+-#include <linux/list_sort.h>
+-#include <crypto/hash.h>
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "misc.h"
+ 
+ /**
+  * struct replay_entry - replay list entry.
+@@ -485,7 +490,8 @@ int ubifs_validate_entry(struct ubifs_info *c,
+ 	if (le32_to_cpu(dent->ch.len) != nlen + UBIFS_DENT_NODE_SZ + 1 ||
+ 	    dent->type >= UBIFS_ITYPES_CNT ||
+ 	    nlen > UBIFS_MAX_NLEN || dent->name[nlen] != 0 ||
+-	    (key_type == UBIFS_XENT_KEY && strnlen(dent->name, nlen) != nlen) ||
++	    (key_type == UBIFS_XENT_KEY &&
++	     strnlen((const char*)dent->name, nlen) != nlen) ||
+ 	    le64_to_cpu(dent->inum) > MAX_INUM) {
+ 		ubifs_err(c, "bad %s node", key_type == UBIFS_DENT_KEY ?
+ 			  "directory entry" : "extended attribute entry");
+@@ -558,19 +564,6 @@ static int is_last_bud(struct ubifs_info *c, struct ubifs_bud *bud)
+ 	return data == 0xFFFFFFFF;
+ }
+ 
+-/* authenticate_sleb_hash is split out for stack usage */
+-static int noinline_for_stack
+-authenticate_sleb_hash(struct ubifs_info *c,
+-		       struct shash_desc *log_hash, u8 *hash)
 -{
--	next->prev = prev;
--	prev->next = next;
+-	SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
+-
+-	hash_desc->tfm = c->hash_tfm;
+-
+-	ubifs_shash_copy_state(c, log_hash, hash_desc);
+-	return crypto_shash_final(hash_desc, hash);
 -}
 -
--static inline void list_del(struct list_head *entry)
--{
--	__list_del(entry->prev, entry->next);
--	entry->next = (void *) 0;
--	entry->prev = (void *) 0;
--}
+ /**
+  * authenticate_sleb - authenticate one scan LEB
+  * @c: UBIFS file-system description object
+@@ -588,69 +581,14 @@ authenticate_sleb_hash(struct ubifs_info *c,
+  * that could be authenticated or a negative error code.
+  */
+ static int authenticate_sleb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+-			     struct shash_desc *log_hash, int is_last)
++			     __unused struct shash_desc *log_hash,
++			     __unused int is_last)
+ {
+-	int n_not_auth = 0;
+-	struct ubifs_scan_node *snod;
+-	int n_nodes = 0;
+-	int err;
+-	u8 hash[UBIFS_HASH_ARR_SZ];
+-	u8 hmac[UBIFS_HMAC_ARR_SZ];
 -
--#define list_entry(ptr, type, member) \
--	((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
--
--#define list_for_each_entry(pos, head, member)                          \
--	for (pos = list_entry((head)->next, typeof(*pos), member);      \
--			&pos->member != (head);                                    \
--			pos = list_entry(pos->member.next, typeof(*pos), member))
--
--
- /* Available compressors are on this list */
- static LIST_HEAD(jffs2_compressor_list);
+ 	if (!ubifs_authenticated(c))
+ 		return sleb->nodes_cnt;
  
-diff --git a/jffsX-utils/compr.h b/jffsX-utils/compr.h
-index f1f59758..69699523 100644
---- a/jffsX-utils/compr.h
-+++ b/jffsX-utils/compr.h
-@@ -15,6 +15,7 @@
- #include <stdlib.h>
- #include <stdint.h>
- #include "linux/jffs2.h"
-+#include "list.h"
- 
- #define CONFIG_JFFS2_RTIME
- 
-@@ -49,10 +50,6 @@
- #define KERN_INFO
- #define KERN_DEBUG
- 
--struct list_head {
--	struct list_head *next, *prev;
--};
+-	list_for_each_entry(snod, &sleb->nodes, list) {
 -
- void jffs2_set_compression_mode(int mode);
- int jffs2_get_compression_mode(void);
- int jffs2_set_compression_mode_name(const char *mode_name);
-diff --git a/lib/Makemodule.am b/lib/Makemodule.am
-index 570896b4..7f890daa 100644
---- a/lib/Makemodule.am
-+++ b/lib/Makemodule.am
-@@ -5,6 +5,8 @@ libmtd_a_SOURCES = \
- 	include/libfec.h \
- 	lib/common.c \
- 	include/common.h \
-+	lib/list_sort.c \
-+	include/list.h \
- 	lib/libcrc32.c \
- 	include/crc32.h \
- 	lib/libmtd_legacy.c \
-diff --git a/lib/list_sort.c b/lib/list_sort.c
-new file mode 100644
-index 00000000..d8734389
---- /dev/null
-+++ b/lib/list_sort.c
-@@ -0,0 +1,246 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "list.h"
-+
-+/*
-+ * Returns a list organized in an intermediate format suited
-+ * to chaining of merge() calls: null-terminated, no reserved or
-+ * sentinel head node, "prev" links not maintained.
-+ */
-+__attribute__((nonnull(2,3,4)))
-+static struct list_head *merge(void *priv, list_cmp_func_t cmp,
-+			       struct list_head *a, struct list_head *b)
-+{
-+	struct list_head *head, **tail = &head;
-+
-+	for (;;) {
-+		/* if equal, take 'a' -- important for sort stability */
-+		if (cmp(priv, a, b) <= 0) {
-+			*tail = a;
-+			tail = &a->next;
-+			a = a->next;
-+			if (!a) {
-+				*tail = b;
-+				break;
-+			}
-+		} else {
-+			*tail = b;
-+			tail = &b->next;
-+			b = b->next;
-+			if (!b) {
-+				*tail = a;
-+				break;
-+			}
-+		}
-+	}
-+	return head;
-+}
-+
-+/*
-+ * Combine final list merge with restoration of standard doubly-linked
-+ * list structure.  This approach duplicates code from merge(), but
-+ * runs faster than the tidier alternatives of either a separate final
-+ * prev-link restoration pass, or maintaining the prev links
-+ * throughout.
-+ */
-+__attribute__((nonnull(2,3,4,5)))
-+static void merge_final(void *priv, list_cmp_func_t cmp, struct list_head *head,
-+			struct list_head *a, struct list_head *b)
-+{
-+	struct list_head *tail = head;
-+	unsigned int count = 0;
-+
-+	for (;;) {
-+		/* if equal, take 'a' -- important for sort stability */
-+		if (cmp(priv, a, b) <= 0) {
-+			tail->next = a;
-+			a->prev = tail;
-+			tail = a;
-+			a = a->next;
-+			if (!a)
-+				break;
-+		} else {
-+			tail->next = b;
-+			b->prev = tail;
-+			tail = b;
-+			b = b->next;
-+			if (!b) {
-+				b = a;
-+				break;
-+			}
-+		}
-+	}
-+
-+	/* Finish linking remainder of list b on to tail */
-+	tail->next = b;
-+	do {
-+		/*
-+		 * If the merge is highly unbalanced (e.g. the input is
-+		 * already sorted), this loop may run many iterations.
-+		 * Continue callbacks to the client even though no
-+		 * element comparison is needed, so the client's cmp()
-+		 * routine can invoke cond_resched() periodically.
-+		 */
-+		if (!++count)
-+			cmp(priv, b, b);
-+		b->prev = tail;
-+		tail = b;
-+		b = b->next;
-+	} while (b);
-+
-+	/* And the final links to make a circular doubly-linked list */
-+	tail->next = head;
-+	head->prev = tail;
-+}
-+
-+/**
-+ * list_sort - sort a list
-+ * @priv: private data, opaque to list_sort(), passed to @cmp
-+ * @head: the list to sort
-+ * @cmp: the elements comparison function
-+ *
-+ * The comparison function @cmp must return > 0 if @a should sort after
-+ * @b ("@a > @b" if you want an ascending sort), and <= 0 if @a should
-+ * sort before @b *or* their original order should be preserved.  It is
-+ * always called with the element that came first in the input in @a,
-+ * and list_sort is a stable sort, so it is not necessary to distinguish
-+ * the @a < @b and @a == @b cases.
-+ *
-+ * This is compatible with two styles of @cmp function:
-+ * - The traditional style which returns <0 / =0 / >0, or
-+ * - Returning a boolean 0/1.
-+ * The latter offers a chance to save a few cycles in the comparison
-+ * (which is used by e.g. plug_ctx_cmp() in block/blk-mq.c).
-+ *
-+ * A good way to write a multi-word comparison is::
-+ *
-+ *	if (a->high != b->high)
-+ *		return a->high > b->high;
-+ *	if (a->middle != b->middle)
-+ *		return a->middle > b->middle;
-+ *	return a->low > b->low;
-+ *
-+ *
-+ * This mergesort is as eager as possible while always performing at least
-+ * 2:1 balanced merges.  Given two pending sublists of size 2^k, they are
-+ * merged to a size-2^(k+1) list as soon as we have 2^k following elements.
-+ *
-+ * Thus, it will avoid cache thrashing as long as 3*2^k elements can
-+ * fit into the cache.  Not quite as good as a fully-eager bottom-up
-+ * mergesort, but it does use 0.2*n fewer comparisons, so is faster in
-+ * the common case that everything fits into L1.
-+ *
-+ *
-+ * The merging is controlled by "count", the number of elements in the
-+ * pending lists.  This is beautifully simple code, but rather subtle.
-+ *
-+ * Each time we increment "count", we set one bit (bit k) and clear
-+ * bits k-1 .. 0.  Each time this happens (except the very first time
-+ * for each bit, when count increments to 2^k), we merge two lists of
-+ * size 2^k into one list of size 2^(k+1).
-+ *
-+ * This merge happens exactly when the count reaches an odd multiple of
-+ * 2^k, which is when we have 2^k elements pending in smaller lists,
-+ * so it's safe to merge away two lists of size 2^k.
-+ *
-+ * After this happens twice, we have created two lists of size 2^(k+1),
-+ * which will be merged into a list of size 2^(k+2) before we create
-+ * a third list of size 2^(k+1), so there are never more than two pending.
-+ *
-+ * The number of pending lists of size 2^k is determined by the
-+ * state of bit k of "count" plus two extra pieces of information:
-+ *
-+ * - The state of bit k-1 (when k == 0, consider bit -1 always set), and
-+ * - Whether the higher-order bits are zero or non-zero (i.e.
-+ *   is count >= 2^(k+1)).
-+ *
-+ * There are six states we distinguish.  "x" represents some arbitrary
-+ * bits, and "y" represents some arbitrary non-zero bits:
-+ * 0:  00x: 0 pending of size 2^k;           x pending of sizes < 2^k
-+ * 1:  01x: 0 pending of size 2^k; 2^(k-1) + x pending of sizes < 2^k
-+ * 2: x10x: 0 pending of size 2^k; 2^k     + x pending of sizes < 2^k
-+ * 3: x11x: 1 pending of size 2^k; 2^(k-1) + x pending of sizes < 2^k
-+ * 4: y00x: 1 pending of size 2^k; 2^k     + x pending of sizes < 2^k
-+ * 5: y01x: 2 pending of size 2^k; 2^(k-1) + x pending of sizes < 2^k
-+ * (merge and loop back to state 2)
-+ *
-+ * We gain lists of size 2^k in the 2->3 and 4->5 transitions (because
-+ * bit k-1 is set while the more significant bits are non-zero) and
-+ * merge them away in the 5->2 transition.  Note in particular that just
-+ * before the 5->2 transition, all lower-order bits are 11 (state 3),
-+ * so there is one list of each smaller size.
-+ *
-+ * When we reach the end of the input, we merge all the pending
-+ * lists, from smallest to largest.  If you work through cases 2 to
-+ * 5 above, you can see that the number of elements we merge with a list
-+ * of size 2^k varies from 2^(k-1) (cases 3 and 5 when x == 0) to
-+ * 2^(k+1) - 1 (second merge of case 5 when x == 2^(k-1) - 1).
-+ */
-+__attribute__((nonnull(2,3)))
-+void list_sort(void *priv, struct list_head *head, list_cmp_func_t cmp)
-+{
-+	struct list_head *list = head->next, *pending = NULL;
-+	size_t count = 0;	/* Count of pending */
-+
-+	if (list == head->prev)	/* Zero or one elements */
-+		return;
-+
-+	/* Convert to a null-terminated singly-linked list. */
-+	head->prev->next = NULL;
-+
-+	/*
-+	 * Data structure invariants:
-+	 * - All lists are singly linked and null-terminated; prev
-+	 *   pointers are not maintained.
-+	 * - pending is a prev-linked "list of lists" of sorted
-+	 *   sublists awaiting further merging.
-+	 * - Each of the sorted sublists is power-of-two in size.
-+	 * - Sublists are sorted by size and age, smallest & newest at front.
-+	 * - There are zero to two sublists of each size.
-+	 * - A pair of pending sublists are merged as soon as the number
-+	 *   of following pending elements equals their size (i.e.
-+	 *   each time count reaches an odd multiple of that size).
-+	 *   That ensures each later final merge will be at worst 2:1.
-+	 * - Each round consists of:
-+	 *   - Merging the two sublists selected by the highest bit
-+	 *     which flips when count is incremented, and
-+	 *   - Adding an element from the input as a size-1 sublist.
-+	 */
-+	do {
-+		size_t bits;
-+		struct list_head **tail = &pending;
-+
-+		/* Find the least-significant clear bit in count */
-+		for (bits = count; bits & 1; bits >>= 1)
-+			tail = &(*tail)->prev;
-+		/* Do the indicated merge */
-+		if (bits) {
-+			struct list_head *a = *tail, *b = a->prev;
-+
-+			a = merge(priv, cmp, b, a);
-+			/* Install the merged result in place of the inputs */
-+			a->prev = b->prev;
-+			*tail = a;
-+		}
-+
-+		/* Move one element from input list to pending */
-+		list->prev = pending;
-+		pending = list;
-+		list = list->next;
-+		pending->next = NULL;
-+		count++;
-+	} while (list);
-+
-+	/* End of input; merge together all the pending lists. */
-+	list = pending;
-+	pending = pending->prev;
-+	for (;;) {
-+		struct list_head *next = pending->prev;
-+
-+		if (!next)
-+			break;
-+		list = merge(priv, cmp, pending, list);
-+		pending = next;
-+	}
-+	/* The final merge, rebuilding prev links */
-+	merge_final(priv, cmp, head, pending, list);
-+}
+-		n_nodes++;
+-
+-		if (snod->type == UBIFS_AUTH_NODE) {
+-			struct ubifs_auth_node *auth = snod->node;
+-
+-			err = authenticate_sleb_hash(c, log_hash, hash);
+-			if (err)
+-				goto out;
+-
+-			err = crypto_shash_tfm_digest(c->hmac_tfm, hash,
+-						      c->hash_len, hmac);
+-			if (err)
+-				goto out;
+-
+-			err = ubifs_check_hmac(c, auth->hmac, hmac);
+-			if (err) {
+-				err = -EPERM;
+-				goto out;
+-			}
+-			n_not_auth = 0;
+-		} else {
+-			err = crypto_shash_update(log_hash, snod->node,
+-						  snod->len);
+-			if (err)
+-				goto out;
+-			n_not_auth++;
+-		}
+-	}
+-
+-	/*
+-	 * A powercut can happen when some nodes were written, but not yet
+-	 * the corresponding authentication node. This may only happen on
+-	 * the last bud though.
+-	 */
+-	if (n_not_auth) {
+-		if (is_last) {
+-			dbg_mnt("%d unauthenticated nodes found on LEB %d, Ignoring them",
+-				n_not_auth, sleb->lnum);
+-			err = 0;
+-		} else {
+-			dbg_mnt("%d unauthenticated nodes found on non-last LEB %d",
+-				n_not_auth, sleb->lnum);
+-			err = -EPERM;
+-		}
+-	} else {
+-		err = 0;
+-	}
+-out:
+-	return err ? err : n_nodes - n_not_auth;
++	// To be implemented
++	return -EINVAL;
+ }
+ 
+ /**
+@@ -768,7 +706,7 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
+ 				goto out_dump;
+ 
+ 			err = insert_dent(c, lnum, snod->offs, snod->len, hash,
+-					  &snod->key, dent->name,
++					  &snod->key, (const char *)dent->name,
+ 					  le16_to_cpu(dent->nlen), snod->sqnum,
+ 					  !le64_to_cpu(dent->inum), &used);
+ 			break;
 -- 
 2.13.6
 
