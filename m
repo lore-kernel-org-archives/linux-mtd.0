@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EEC5C27C6E
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF9FC27C65
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3z45mDCRkkdU9T1OGO+FrGWGQcR5uhYYNO3IEbD8qGM=; b=QLigAetKL9a8j3
-	KjLcEMiE7nW9boUqSo0S4i1qjHFho+sgU5LdnddhAqE51yxDOjgzjaDVvEHVxis+7F8xC0xSMI3/3
-	13NbHOls5vVyqK3EfGh9ULDuwCmPD/e6wQLCdeM4GTrhFZkViLA4nRuR6bHY4K6hxuKcm9Zy2kDBN
-	4tm30+yqik2AKLhVLXxnH4q8rg7aB+0umSDCgeU6RezpFmwxyfiCCZVJUOygUQX4DASLvtJiytUfW
-	wdelKkvZMUfrZ4NSglXJEwqvrgqxn/i8IksYGWpyJfqgqD0bvBaKSa9XAB+IDQaocRln6REYyhMW/
-	HNNIfNPML6kIpv1BmX/w==;
+	List-Owner; bh=Pbq5MuyfZsNSxfwvRqIGPP7VdaAlPydUpIfZa5XNk90=; b=ZRLiXrGDv5Q4M7
+	MiHNW8hbnbSa54JnYF7JhX/8rmX7B4lMZWzHjuSmU4VNmGcyWdcp9+YaHJ1TsZJs8Va8dhY53zYOf
+	CpJ/zoXnRvJYn2DxHA67Zy6Pk+ogFB8man4oy1TMS1gPvnLeiIQ6PFRtjbv3b4M08J0j25T5W6Cn6
+	VqO2L3MIKvBVr0jWw9VyZA34MRIJBIABTfTEGCqfzVf4mNp9U9qz9fXR327LQ9BtH4fTUnRlkuL4P
+	CHZxNEGnU98I6SYXMkyiI+gaHb+ORpXf2UrUONws7PwnsAljGGZp2/q9qxDsPsWao1b0ABiVVTFBW
+	tHTpUrDZ8XooDvEv/9YQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFSDI-0000000CUi8-3oHt;
-	Fri, 07 Jun 2024 05:32:32 +0000
+	id 1sFSDM-0000000CUmO-441G;
+	Fri, 07 Jun 2024 05:32:36 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCR-0000000CGoA-0kEe
+	id 1sFRCQ-0000000CGne-2EpU
 	for linux-mtd@bombadil.infradead.org;
 	Fri, 07 Jun 2024 04:27:35 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=aD21uFQOr3U2l74WkzYonNTSwN2AixyiieSHQ9Ay924=; b=OTNAR9F/3h5yG/arngMF07UCrd
-	5vbFFbkNljpqoLgvJ5I5JSyADdqF0vqOWt6mxQy9fzuiHeXdoC2TfNTM4UdfMkam+8TK3aBwGS+54
-	4NCSxKM6+J8x1heckAr+hpmQ3Gcx0996fOLzz/pe1tVPT6dbBKRUDbUiRjQCkdyc1ATZ1MeZDyiVy
-	vQmidKOIoKsFvWuSqOKfXwmifDTFtYQdXwbJgb7rwTGt9nBkXbkyTaxt8KCTM03AmDEw/b0vTCdhX
-	FAsc1dADBlVInwRlYrRld+z5MOZEhg4mHhirFUMPRY3J+0W80KSoiBizAdC0a6oZB7j9GjGh6cZVR
-	0wfH6YMg==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	bh=2tm9AyXVu5zcWxLT0Bb7iayOe5Teguuw+cQsNQKRzNg=; b=TTZLDdj4c78CQwT5zMw31mnHvX
+	C19wyqX/dRLM7Nd7KX7hmKrMlWQAL08FG7Sc/8atbYRUTYwd4NXmkcCpwGAxcf6kq1qeujiUicDpX
+	Ds85IKgU7UeIi9JQ+/oikcXN2Fzc6SsnHahReS7BOJTIKdN+iC+F5l/die/XfIyVBTpuDPSLEAAOI
+	uCwhuusmwRxKvYCt8C8h2PUfofkTWY8TLikO2TsBBU//qVyvUneSp8KuYXuHkkOpHskrbqBGDJqOo
+	koLguTcP3Mlr4fwnjCXBnA+rcRcb4zt1PYZlexHFfMBQym00YkmnafI7GqoFeP+Tr91t6JHPEAyoK
+	cCRJ+JuQ==;
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCN-00000004Tsf-0lRA
+	id 1sFRCN-00000004Tsg-0my1
 	for linux-mtd@lists.infradead.org;
 	Fri, 07 Jun 2024 04:27:33 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSk66h4jz1S9pR;
-	Fri,  7 Jun 2024 12:23:26 +0800 (CST)
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSjP3X7JzmXhG;
+	Fri,  7 Jun 2024 12:22:49 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id A7C42180AA6;
+	by mail.maildlp.com (Postfix) with ESMTPS id 4D786180085;
 	Fri,  7 Jun 2024 12:27:25 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:09 +0800
+ 2024 12:27:05 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 057/110] fsck.ubifs: Add fsck support
-Date: Fri, 7 Jun 2024 12:25:22 +0800
-Message-ID: <20240607042615.2069840-58-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 052/110] ubifs-utils: Adapt gc subsystem in libubifs
+Date: Fri, 7 Jun 2024 12:25:17 +0800
+Message-ID: <20240607042615.2069840-53-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -68,8 +68,9 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052731_931736_19B24F0B 
-X-CRM114-Status: GOOD (  23.77  )
+X-CRM114-CacheID: sfid-20240607_052731_563809_213201E8 
+X-CRM114-Status: UNSURE (   8.04  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,580 +87,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add basic process code for fsck.ubifs. There are following modes for fsck:
- 1. normal mode: Check the filesystem, ask user whether or not to fix
-    the problem as long as inconsistent data is found during fs checking.
- 2. safe mode: Check and safely repair the filesystem, if there are any
-    data dropping operations needed by fixing, fsck will fail.
- 3. danger mode: Answer 'yes' to all questions. There two sub modes:
-    a) Check and repair the filesystem according to TNC, data dropping
-       will be reported. If TNC/master/log is corrupted, fsck will fail.
-    b) Check and forcedly repair the filesystem according to TNC, turns
-       to rebuild filesystem if TNC/master/log is corrupted. Always make
-       fsck succeed.
- 4. check mode: Make no changes to the filesystem, only check the
-    filesystem.
- 5. rebuild mode: Scan entire UBI volume to find all nodes, and rebuild
-    filesystem, always make fsck success.
+Adapt gc subsystem(find.c, gc.c, scan.c) in libubifs, compared with
+linux kernel implementations:
+ 1. Adapt print_hex_dump based on implementations in hexdump.c.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- .gitignore                          |   1 +
- ubifs-utils/Makemodule.am           |  12 ++
- ubifs-utils/common/defs.h           |   3 +-
- ubifs-utils/fsck.ubifs/.gitignore   |   1 +
- ubifs-utils/fsck.ubifs/fsck.ubifs.c | 259 ++++++++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |  91 +++++++++++++
- ubifs-utils/libubifs/debug.c        |   8 +-
- ubifs-utils/libubifs/super.c        |  52 ++++++++
- ubifs-utils/libubifs/ubifs.h        |   8 ++
- 9 files changed, 432 insertions(+), 3 deletions(-)
- create mode 100644 ubifs-utils/fsck.ubifs/.gitignore
- create mode 100644 ubifs-utils/fsck.ubifs/fsck.ubifs.c
- create mode 100644 ubifs-utils/fsck.ubifs/fsck.ubifs.h
+ ubifs-utils/libubifs/find.c |  9 ++++++++-
+ ubifs-utils/libubifs/gc.c   | 10 +++++++---
+ ubifs-utils/libubifs/scan.c |  7 ++++++-
+ 3 files changed, 21 insertions(+), 5 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index 8c51ee5f..3eb66c14 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -30,6 +30,7 @@ flash_otp_lock
- flash_otp_write
- flash_unlock
- flashcp
-+fsck.ubifs
- ftl_check
- ftl_format
- jffs2dump
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 936b49fc..0ed91dff 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -75,8 +75,20 @@ mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUI
- mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
- 	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common -I $(top_srcdir)/ubifs-utils/libubifs -rdynamic
+diff --git a/ubifs-utils/libubifs/find.c b/ubifs-utils/libubifs/find.c
+index 873e6e1c..ecf689c4 100644
+--- a/ubifs-utils/libubifs/find.c
++++ b/ubifs-utils/libubifs/find.c
+@@ -14,8 +14,15 @@
+  * for fast access, falling back on scanning the LPT as a last resort.
+  */
  
-+fsck_ubifs_SOURCES = \
-+	$(common_SOURCES) \
-+	$(libubifs_SOURCES) \
-+	ubifs-utils/fsck.ubifs/fsck.ubifs.h \
-+	ubifs-utils/fsck.ubifs/fsck.ubifs.c
+-#include <linux/sort.h>
++#include <sys/types.h>
 +
-+fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
-+fsck_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
-+	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common -I $(top_srcdir)/ubifs-utils/libubifs \
-+	-I$(top_srcdir)/ubifs-utils/fsck.ubifs -rdynamic
-+
- EXTRA_DIST += ubifs-utils/common/README ubifs-utils/libubifs/README
++#include "linux_err.h"
++#include "bitops.h"
++#include "sort.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "misc.h"
  
- dist_sbin_SCRIPTS = ubifs-utils/mount.ubifs
+ /**
+  * struct scan_data - data provided to scan callback functions
+diff --git a/ubifs-utils/libubifs/gc.c b/ubifs-utils/libubifs/gc.c
+index 3134d070..c3595358 100644
+--- a/ubifs-utils/libubifs/gc.c
++++ b/ubifs-utils/libubifs/gc.c
+@@ -41,10 +41,14 @@
+  * good, and GC takes extra care when moving them.
+  */
  
- sbin_PROGRAMS += mkfs.ubifs
-+sbin_PROGRAMS += fsck.ubifs
-diff --git a/ubifs-utils/common/defs.h b/ubifs-utils/common/defs.h
-index 79451c40..8c8347a9 100644
---- a/ubifs-utils/common/defs.h
-+++ b/ubifs-utils/common/defs.h
-@@ -23,8 +23,9 @@ extern struct ubifs_info info_;
- #include "common.h"
- 
- #define MKFS_PROGRAM_NAME "mkfs.ubifs"
-+#define FSCK_PROGRAM_NAME "fsck.ubifs"
- 
--enum { MKFS_PROGRAM_TYPE = 0 };
-+enum { MKFS_PROGRAM_TYPE = 0, FSCK_PROGRAM_TYPE };
- 
- enum {
- 	DUMP_PREFIX_NONE,
-diff --git a/ubifs-utils/fsck.ubifs/.gitignore b/ubifs-utils/fsck.ubifs/.gitignore
-new file mode 100644
-index 00000000..09d664aa
---- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/.gitignore
-@@ -0,0 +1 @@
-+/fsck.ubifs
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-new file mode 100644
-index 00000000..b1286150
---- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
-@@ -0,0 +1,259 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <getopt.h>
-+#include <signal.h>
-+
+-#include <linux/slab.h>
+-#include <linux/pagemap.h>
+-#include <linux/list_sort.h>
++#include "linux_err.h"
 +#include "bitops.h"
 +#include "kmem.h"
-+#include "ubifs.h"
+ #include "ubifs.h"
 +#include "defs.h"
 +#include "debug.h"
 +#include "key.h"
 +#include "misc.h"
-+#include "fsck.ubifs.h"
-+
-+/*
-+ * Because we copy functions from the kernel, we use a subset of the UBIFS
-+ * file-system description object struct ubifs_info.
-+ */
-+struct ubifs_info info_;
-+static struct ubifs_info *c = &info_;
-+
-+int exit_code = FSCK_OK;
-+
-+static const char *optstring = "Vrg:abyn";
-+
-+static const struct option longopts[] = {
-+	{"version",            0, NULL, 'V'},
-+	{"reserve",            1, NULL, 'r'},
-+	{"debug",              1, NULL, 'g'},
-+	{"auto",               1, NULL, 'a'},
-+	{"rebuild",            1, NULL, 'b'},
-+	{"yes",                1, NULL, 'y'},
-+	{"nochange",           1, NULL, 'n'},
-+	{NULL, 0, NULL, 0}
-+};
-+
-+static const char *helptext =
-+"Usage: fsck.ubifs [OPTIONS] ubi_volume\n"
-+"Check & repair UBIFS filesystem on a given UBI volume\n\n"
-+"Options:\n"
-+"-V, --version            Display version information\n"
-+"-g, --debug=LEVEL        Display debug information (0 - none, 1 - error message,\n"
-+"                         2 - warning message[default], 3 - notice message, 4 - debug message)\n"
-+"-a, --auto               Automatic safely repair without droping data (No questions).\n"
-+"                         Can not be specified at the same time as the -y or -n options\n"
-+"-y, --yes                Assume \"yes\" to all questions. Automatic repair and report dropping data (No questions).\n"
-+"                         There are two submodes for this working mode:\n"
-+"                           a. default - Fail if TNC/master/log is corrupted. Only -y option is specified\n"
-+"                           b. rebuild fs - Turn to rebuild fs if TNC/master/log is corrupted. Specify -b option to make effect\n"
-+"                         Can not be specified at the same time as the -a or -n options\n"
-+"-b, --rebuild            Forcedly repair the filesystem even by rebuilding filesystem.\n"
-+"                         Depends on -y option\n"
-+"-n, --nochange           Make no changes to the filesystem, only check filesystem.\n"
-+"                         Can not be specified at the same time as the -a or -y options\n"
-+"Examples:\n"
-+"\t1. Check and repair filesystem from UBI volume /dev/ubi0_0\n"
-+"\t   fsck.ubifs /dev/ubi0_0\n"
-+"\t2. Only check without modifying filesystem from UBI volume /dev/ubi0_0\n"
-+"\t   fsck.ubifs -n /dev/ubi0_0\n"
-+"\t3. Check and safely repair filesystem from UBI volume /dev/ubi0_0\n"
-+"\t   fsck.ubifs -a /dev/ubi0_0\n"
-+"\t4. Check and forcedly repair filesystem from UBI volume /dev/ubi0_0\n"
-+"\t   fsck.ubifs -y -b /dev/ubi0_0\n\n";
-+
-+static inline void usage(void)
-+{
-+	printf("%s", helptext);
-+	exit_code |= FSCK_USAGE;
-+	exit(exit_code);
-+}
-+
-+static void get_options(int argc, char* argv[], int *mode)
-+{
-+	int opt, i, submode = 0;
-+	char *endp;
-+
-+	while (1) {
-+		opt = getopt_long(argc, argv, optstring, longopts, &i);
-+		if (opt == -1)
-+			break;
-+		switch (opt) {
-+		case 'V':
-+			common_print_version();
-+			exit(FSCK_OK);
-+		case 'g':
-+			c->debug_level = strtol(optarg, &endp, 0);
-+			if (*endp != '\0' || endp == optarg ||
-+			    c->debug_level < 0 || c->debug_level > DEBUG_LEVEL) {
-+				log_err(c, 0, "bad debugging level '%s'", optarg);
-+				usage();
-+			}
-+			break;
-+		case 'a':
-+			if (*mode != NORMAL_MODE) {
-+			conflict_opt:
-+				log_err(c, 0, "Only one of the options -a, -n or -y may be specified");
-+				usage();
-+			}
-+			*mode = SAFE_MODE;
-+			break;
-+		case 'y':
-+			if (*mode != NORMAL_MODE)
-+				goto conflict_opt;
-+			*mode = DANGER_MODE0;
-+			break;
-+		case 'b':
-+			submode = 1;
-+			break;
-+		case 'n':
-+			if (*mode != NORMAL_MODE)
-+				goto conflict_opt;
-+			*mode = CHECK_MODE;
-+			c->ro_mount = 1;
-+			break;
-+		case 'r':
-+			/* Compatible with FSCK(8). */
-+			break;
-+		default:
-+			usage();
-+		}
-+	}
-+
-+	if (submode) {
-+		if (*mode != DANGER_MODE0) {
-+			log_err(c, 0, "Option -y is not specified when -b is used");
-+			usage();
-+		} else
-+			*mode = DANGER_MODE1;
-+	}
-+
-+	if (optind != argc) {
-+		c->dev_name = strdup(argv[optind]);
-+		if (!c->dev_name) {
-+			log_err(c, errno, "can not allocate dev_name");
-+			exit_code |= FSCK_ERROR;
-+			exit(exit_code);
-+		}
-+	}
-+
-+	if (!c->dev_name) {
-+		log_err(c, 0, "no ubi_volume specified");
-+		usage();
-+	}
-+}
-+
-+static void exit_callback(void)
-+{
-+	if (exit_code & FSCK_NONDESTRUCT)
-+		log_out(c, "********** Filesystem was modified **********");
-+	if (exit_code & FSCK_UNCORRECTED)
-+		log_out(c, "********** WARNING: Filesystem still has errors **********");
-+	if (exit_code & ~(FSCK_OK|FSCK_NONDESTRUCT))
-+		log_out(c, "FSCK failed, exit code %d", exit_code);
-+	else
-+		log_out(c, "FSCK success!");
-+}
-+
-+static void fsck_assert_failed(__unused const struct ubifs_info *c)
-+{
-+	exit_code |= FSCK_ERROR;
-+	exit(exit_code);
-+}
-+
-+static void signal_cancel(int sig)
-+{
-+	ubifs_warn(c, "killed by signo %d", sig);
-+	exit_code |= FSCK_CANCELED;
-+	exit(exit_code);
-+}
-+
-+static int init_fsck_info(struct ubifs_info *c, int argc, char *argv[])
-+{
-+	int err = 0, mode = NORMAL_MODE;
-+	struct sigaction sa;
-+	struct ubifs_fsck_info *fsck = NULL;
-+
-+	if (atexit(exit_callback)) {
-+		log_err(c, errno, "can not set exit callback");
-+		return -errno;
-+	}
-+
-+	init_ubifs_info(c, FSCK_PROGRAM_TYPE);
-+	get_options(argc, argv, &mode);
-+
-+	fsck = calloc(1, sizeof(struct ubifs_fsck_info));
-+	if (!fsck) {
-+		err = -errno;
-+		log_err(c, errno, "can not allocate fsck info");
-+		goto out_err;
-+	}
-+
-+	c->private = fsck;
-+	FSCK(c)->mode = mode;
-+	c->assert_failed_cb = fsck_assert_failed;
-+
-+	memset(&sa, 0, sizeof(struct sigaction));
-+	sa.sa_handler = signal_cancel;
-+	if (sigaction(SIGINT, &sa, NULL) || sigaction(SIGTERM, &sa, NULL)) {
-+		err = -errno;
-+		log_err(c, errno, "can not set signal handler");
-+		goto out_err;
-+	}
-+
-+	return 0;
-+
-+out_err:
-+	free(fsck);
-+	free(c->dev_name);
-+	c->dev_name = NULL;
-+	return err;
-+}
-+
-+static void destroy_fsck_info(struct ubifs_info *c)
-+{
-+	free(c->private);
-+	c->private = NULL;
-+	free(c->dev_name);
-+	c->dev_name = NULL;
-+}
-+
-+/*
-+ * do_fsck - Check & repair the filesystem.
-+ */
-+static int do_fsck(void)
-+{
-+	return 0;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int err;
-+
-+	err = init_fsck_info(c, argc, argv);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out_exit;
-+	}
-+
-+	err = ubifs_open_volume(c, c->dev_name);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out_destroy_fsck;
-+	}
-+
-+	err = do_fsck();
-+
-+	ubifs_close_volume(c);
-+out_destroy_fsck:
-+	destroy_fsck_info(c);
-+out_exit:
-+	return exit_code;
-+}
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-new file mode 100644
-index 00000000..d267dd24
---- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
-+
-+#ifndef __FSCK_UBIFS_H__
-+#define __FSCK_UBIFS_H__
-+
-+/* Exit codes used by fsck-type programs */
-+#define FSCK_OK			0	/* No errors */
-+#define FSCK_NONDESTRUCT	1	/* File system errors corrected */
-+#define FSCK_REBOOT		2	/* System should be rebooted */
-+#define FSCK_UNCORRECTED	4	/* File system errors left uncorrected */
-+#define FSCK_ERROR		8	/* Operational error */
-+#define FSCK_USAGE		16	/* Usage or syntax error */
-+#define FSCK_CANCELED		32	/* Aborted with a signal or ^C */
-+#define FSCK_LIBRARY		128	/* Shared library error */
-+
-+/*
-+ * There are 6 working modes for fsck:
-+ * NORMAL_MODE:	Check the filesystem, ask user whether or not to fix the
-+ *		problem as long as inconsistent data is found during checking.
-+ * SAFE_MODE:	Check and safely repair the filesystem, if there are any
-+ *		data dropping operations needed by fixing, fsck will fail.
-+ * DANGER_MODE0:Check and repair the filesystem according to TNC, data dropping
-+ *              will be reported. If TNC/master/log is corrupted, fsck will fail.
-+ * DANGER_MODE1:Check and forcedly repair the filesystem according to TNC,
-+ *		turns to @REBUILD_MODE mode automatically if TNC/master/log is
-+ *		corrupted.
-+ * REBUILD_MODE:Scan entire UBI volume to find all nodes, and rebuild the
-+ *		filesystem, always make fsck success.
-+ * CHECK_MODE:	Make no changes to the filesystem, only check the filesystem.
-+ */
-+enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
-+       DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
-+
-+/**
-+ * struct ubifs_fsck_info - UBIFS fsck information.
-+ * @mode: working mode
-+ */
-+struct ubifs_fsck_info {
-+	int mode;
-+};
-+
-+#define FSCK(c) ((struct ubifs_fsck_info*)c->private)
-+
-+static inline const char *mode_name(const struct ubifs_info *c)
-+{
-+	if (!c->private)
-+		return "";
-+
-+	switch (FSCK(c)->mode) {
-+	case NORMAL_MODE:
-+		return ",normal mode";
-+	case SAFE_MODE:
-+		return ",safe mode";
-+	case DANGER_MODE0:
-+		return ",danger mode";
-+	case DANGER_MODE1:
-+		return ",danger + rebuild mode";
-+	case REBUILD_MODE:
-+		return ",rebuild mode";
-+	case CHECK_MODE:
-+		return ",check mode";
-+	default:
-+		return "";
-+	}
-+}
-+
-+#define log_out(c, fmt, ...) do {					\
-+	printf("%s[%d] (%s%s): " fmt "\n", c->program_name ? : "noprog",\
-+	       getpid(), c->dev_name ? : "-", mode_name(c),		\
-+	       ##__VA_ARGS__);						\
-+} while (0)
-+
-+#define log_err(c, err, fmt, ...) do {					\
-+	printf("%s[%d][ERROR] (%s%s): %s: " fmt,			\
-+	       c->program_name ? : "noprog", getpid(),			\
-+	       c->dev_name ? : "-", mode_name(c),			\
-+	       __FUNCTION__, ##__VA_ARGS__);				\
-+	if (err)							\
-+		printf(" - %s", strerror(err));				\
-+	printf("\n");							\
-+} while (0)
-+
-+/* Exit code for fsck program. */
-+extern int exit_code;
-+
-+#endif
-diff --git a/ubifs-utils/libubifs/debug.c b/ubifs-utils/libubifs/debug.c
-index a2109906..94928da3 100644
---- a/ubifs-utils/libubifs/debug.c
-+++ b/ubifs-utils/libubifs/debug.c
-@@ -1021,7 +1021,11 @@ void ubifs_assert_failed(struct ubifs_info *c, const char *expr,
  
- 	/*
- 	 * Different from linux kernel.
--	 * There is only one action(readonly) when assertion is failed.
-+	 * Invoke callback function if there is one, otherwise make filesystem
-+	 * readonly when assertion is failed.
- 	 */
--	ubifs_ro_mode(c, -EINVAL);
-+	if (c->assert_failed_cb)
-+		c->assert_failed_cb(c);
-+	else
-+		ubifs_ro_mode(c, -EINVAL);
- }
-diff --git a/ubifs-utils/libubifs/super.c b/ubifs-utils/libubifs/super.c
-index 9fa366f3..155489d9 100644
---- a/ubifs-utils/libubifs/super.c
-+++ b/ubifs-utils/libubifs/super.c
-@@ -138,6 +138,53 @@ int close_target(struct ubifs_info *c)
+ /*
+  * GC may need to move more than one LEB to make progress. The below constants
+diff --git a/ubifs-utils/libubifs/scan.c b/ubifs-utils/libubifs/scan.c
+index 84a9157d..74509fd0 100644
+--- a/ubifs-utils/libubifs/scan.c
++++ b/ubifs-utils/libubifs/scan.c
+@@ -15,7 +15,12 @@
+  * debugging functions.
+  */
+ 
++#include "linux_err.h"
++#include "kmem.h"
+ #include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
+ 
+ /**
+  * scan_padding_bytes - scan for padding bytes.
+@@ -232,7 +237,7 @@ void ubifs_scanned_corruption(const struct ubifs_info *c, int lnum, int offs,
+ 	if (len > 8192)
+ 		len = 8192;
+ 	ubifs_err(c, "first %d bytes from LEB %d:%d", len, lnum, offs);
+-	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 4, buf, len, 1);
++	print_hex_dump("", DUMP_PREFIX_OFFSET, 32, 4, buf, len, 1);
  }
  
  /**
-+ * ubifs_open_volume - open UBI volume.
-+ * @c: the UBIFS file-system description object
-+ * @volume_name: the UBI volume name
-+ *
-+ * Open ubi volume. This function is implemented by open_ubi + open_target.
-+ *
-+ * Returns %0 in case of success and a negative error code in case of failure.
-+ */
-+int ubifs_open_volume(struct ubifs_info *c, const char *volume_name)
-+{
-+	int err;
-+
-+	err = open_ubi(c, volume_name);
-+	if (err) {
-+		ubifs_err(c, "cannot open libubi. %s", strerror(errno));
-+		return err;
-+	}
-+
-+	err = open_target(c);
-+	if (err)
-+		close_ubi(c);
-+
-+	return err;
-+}
-+
-+/**
-+ * ubifs_close_volume - close UBI volume.
-+ * @c: the UBIFS file-system description object
-+ *
-+ * Close ubi volume. This function is implemented by close_target + close_ubi.
-+ *
-+ * Returns %0 in case of success and a negative error code in case of failure.
-+ */
-+int ubifs_close_volume(struct ubifs_info *c)
-+{
-+	int err;
-+
-+	err = close_target(c);
-+	if (err)
-+		return err;
-+
-+	close_ubi(c);
-+
-+	return 0;
-+}
-+
-+/**
-  * check_volume_empty - check if the UBI volume is empty.
-  * @c: the UBIFS file-system description object
-  *
-@@ -197,6 +244,11 @@ void init_ubifs_info(struct ubifs_info *c, int program_type)
- 	case MKFS_PROGRAM_TYPE:
- 		c->program_name = MKFS_PROGRAM_NAME;
- 		break;
-+	case FSCK_PROGRAM_TYPE:
-+		c->program_name = FSCK_PROGRAM_NAME;
-+		/* Always check crc for data node. */
-+		c->no_chk_data_crc = 0;
-+		break;
- 	default:
- 		assert(0);
- 		break;
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index 2af9d87b..babaae8f 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1026,6 +1026,9 @@ struct ubifs_budg_info {
-  *
-  * @new_ihead_lnum: used by debugging to check @c->ihead_lnum
-  * @new_ihead_offs: used by debugging to check @c->ihead_offs
-+ *
-+ * @private: private information related to specific situation, eg. fsck.
-+ * @assert_failed_cb: callback function to handle assertion failure
-  */
- struct ubifs_info {
- 	struct ubifs_sb_node *sup_node;
-@@ -1248,6 +1251,9 @@ struct ubifs_info {
- 
- 	int new_ihead_lnum;
- 	int new_ihead_offs;
-+
-+	void *private;
-+	void (*assert_failed_cb)(const struct ubifs_info *c);
- };
- 
- extern atomic_long_t ubifs_clean_zn_cnt;
-@@ -1684,6 +1690,8 @@ int open_ubi(struct ubifs_info *c, const char *node);
- void close_ubi(struct ubifs_info *c);
- int open_target(struct ubifs_info *c);
- int close_target(struct ubifs_info *c);
-+int ubifs_open_volume(struct ubifs_info *c, const char *volume_name);
-+int ubifs_close_volume(struct ubifs_info *c);
- int check_volume_empty(struct ubifs_info *c);
- void init_ubifs_info(struct ubifs_info *c, int program_type);
- int init_constants_early(struct ubifs_info *c);
 -- 
 2.13.6
 
