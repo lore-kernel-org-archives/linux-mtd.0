@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A999DC27C53
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A07C27C65
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:28:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i8YgrPc9a4jvnsJRkxGn2dEImTIJVV3okfo+2b47UvY=; b=vFdRz8m5KxBwaq
-	+I1ihyq+BC3k3nLIJKFDkKGTlAfOUOlJljCNhw1qKFQegNPUD6NlUWYlmrI8kdGUqB6qaY6tykj4B
-	CxSK5I9Jlu7iFzQwplOPPLrb+zDHEj9+t9Gzhejzob2GCBRvSTgMXLY1idU5dVO4VdBgZn1d9HP2A
-	HKPqPVanw+W/CoiiFBC1r08lBEE3T4orUa8nd7WpYM2z5hLnpuv9i51nKEVytkLAc4sBny3IRPCe9
-	ocrGQi+nRkc6c3M4u4lRltkWToj2xG+yzmoHougKYlMw97Fxgeu2fP2YhRLO6UGM8tYwvTDugZ8kz
-	/Jfku07aYtBxw+BTv07A==;
+	List-Owner; bh=v2PIjtWivF8qtgLCnqi0qLvzrg/PRrObF1The0Jx5F8=; b=HOEvdH9inDE1gh
+	fSR310Sf9HrVZbvPvCl7A9ou/kf6DvX44z+2bTXFg7jxhYjxTOv/gWtgQpfTATsYsNwp+b74Plxwv
+	UrxUyESCK+AgVFvg0xcxV/7YDC2T0+ReknlM2i54SxhgOVSLT2/3Fb5ApBHre605+n/+xCvDSGVPx
+	oNIcyncpqGKzo0RKUaz9Y+ztvJIxecTXHqr26ohr/PzJCel/aycgjAK/OX641uv3qPvFbbj+okrOY
+	z5VPIoQp4D9mLEDqV8bhWrmHh/ROGXdJFtBGJJoHEGEOBanjWz1tXv4/I8zzPI1mw2T9lZlxJt/JA
+	SG1fuN9KTEXq8uB8kzsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCq-0000000CH9C-3W2S;
-	Fri, 07 Jun 2024 04:28:00 +0000
+	id 1sFRCt-0000000CHBE-3lea;
+	Fri, 07 Jun 2024 04:28:03 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRBp-0000000CGFH-1hrL
+	id 1sFRBr-0000000CGH9-3TQv
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:08 +0000
+	Fri, 07 Jun 2024 04:27:10 +0000
 Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwShl6mSbzmYTF;
-	Fri,  7 Jun 2024 12:22:15 +0800 (CST)
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwShm0VlHzmYTL;
+	Fri,  7 Jun 2024 12:22:16 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id C1F0B14038F;
+	by mail.maildlp.com (Postfix) with ESMTPS id DE10A14038F;
 	Fri,  7 Jun 2024 12:26:51 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:26:45 +0800
+ 2024 12:26:46 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 025/110] ubifs-utils: Add spinlock implementations
-Date: Fri, 7 Jun 2024 12:24:50 +0800
-Message-ID: <20240607042615.2069840-26-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 027/110] ubifs-utils: Add rwsem implementations
+Date: Fri, 7 Jun 2024 12:24:52 +0800
+Message-ID: <20240607042615.2069840-28-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212657_687588_572EE6EC 
-X-CRM114-Status: GOOD (  11.26  )
+X-CRM114-CacheID: sfid-20240606_212700_568250_E9FF44EE 
+X-CRM114-Status: GOOD (  11.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,59 +71,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add spinlock implementations, because there are some spinlocks
-(eg. c->cnt_lock, c->buds_lock) used in UBIFS linux kernel libs.
-The spinlock is implementated based on pthread mutex.
+Add rwsem implementations, because there are some rwsems
+(eg. c->commit_sem) used in UBIFS linux kernel libs.
+The rwsem is implementated based on pthread mutex.
 
 This is a preparation for replacing implementation of UBIFS utils with
 linux kernel libs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am     |  3 ++-
- ubifs-utils/common/spinlock.h | 14 ++++++++++++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
- create mode 100644 ubifs-utils/common/spinlock.h
+ ubifs-utils/Makemodule.am  |  1 +
+ ubifs-utils/common/rwsem.h | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
+ create mode 100644 ubifs-utils/common/rwsem.h
 
 diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index 9e075071..7849114e 100644
+index 9f33f0db..ece8a6e9 100644
 --- a/ubifs-utils/Makemodule.am
 +++ b/ubifs-utils/Makemodule.am
-@@ -5,6 +5,7 @@ common_SOURCES = \
- 	ubifs-utils/common/atomic.h \
- 	ubifs-utils/common/bitops.h \
+@@ -7,6 +7,7 @@ common_SOURCES = \
  	ubifs-utils/common/bitops.c \
-+	ubifs-utils/common/spinlock.h \
+ 	ubifs-utils/common/spinlock.h \
+ 	ubifs-utils/common/mutex.h \
++	ubifs-utils/common/rwsem.h \
  	ubifs-utils/common/kmem.h \
  	ubifs-utils/common/kmem.c \
  	ubifs-utils/common/defs.h \
-@@ -39,7 +40,7 @@ mkfs_ubifs_SOURCES = \
- 	$(common_SOURCES) \
- 	ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
- 
--mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm
-+mkfs_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
- mkfs_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
- 	-I$(top_srcdir)/ubi-utils/include -I$(top_srcdir)/ubifs-utils/common
- 
-diff --git a/ubifs-utils/common/spinlock.h b/ubifs-utils/common/spinlock.h
+diff --git a/ubifs-utils/common/rwsem.h b/ubifs-utils/common/rwsem.h
 new file mode 100644
-index 00000000..b9ed3938
+index 00000000..3761724b
 --- /dev/null
-+++ b/ubifs-utils/common/spinlock.h
-@@ -0,0 +1,14 @@
++++ b/ubifs-utils/common/rwsem.h
+@@ -0,0 +1,19 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __LINUX_SPINLOCK_H_
-+#define __LINUX_SPINLOCK_H_
++#ifndef __LINUX_RWSEM_H_
++#define __LINUX_RWSEM_H_
 +
 +#include <pthread.h>
 +
-+#define spinlock_t		pthread_mutex_t
-+#define DEFINE_SPINLOCK(x)	pthread_mutex_t x = PTHREAD_MUTEX_INITIALIZER
-+#define spin_lock_init(x)	pthread_mutex_init(x, NULL)
++struct rw_semaphore {
++	pthread_mutex_t lock;
++};
 +
-+#define spin_lock(x)		pthread_mutex_lock(x)
-+#define spin_unlock(x)		pthread_mutex_unlock(x)
++#define init_rwsem(x)			pthread_mutex_init(&(x)->lock, NULL)
++
++#define down_read(x)			pthread_mutex_lock(&(x)->lock)
++#define down_write(x)			pthread_mutex_lock(&(x)->lock)
++#define up_read(x)			pthread_mutex_unlock(&(x)->lock)
++#define up_write(x)			pthread_mutex_unlock(&(x)->lock)
++#define down_write_trylock(x)		(pthread_mutex_trylock(&(x)->lock) == 0)
 +
 +#endif
 -- 
