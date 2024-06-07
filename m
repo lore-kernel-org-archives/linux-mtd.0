@@ -4,72 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5870C27C55
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 06:47:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F262C27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 08:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5nJiFxB16RG5Fr/JJtoT2IwACzazFl9C5YBpwb3Dpok=; b=bmgvGUMVkycplN
-	KbhYc+0qV30ApP0p1graHg6FKhkmLJdhdaCsqkIQ9Z74zLIun9cltjlOZop/t6fwoox1hBOWxf4bY
-	r6ssAB+6FcGtTJROupkpFxWCkgleAX7IkNpfMlPZXO+hTM/1yh55jb2KfkLyoTZceXWIl+F9EUZwZ
-	7oZIckKqMwTJH8Z/COu8Tg5zR8wjvQE2fV0jpOGXhDuy/NsYbmfGKKKZEWOopX7G01qZZ9zEfG0cV
-	wdt2rntt1F3fpa9LWriViRlio1jxlE1Q5DIJzPrCajj+ushM6C/Hf+9ZenEWR9lSguoHDmM8DdsAE
-	Fqrl+c1rgtX3pv5i8iSA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=yuas5jJvu6Lp3v5DoAsk0e90TESIJZ+1eEZWwM4dRl4=; b=hr4NFnHPfSnNkS
+	csvSb+SLExB3TAkm3rwq2dpsNcBXbVwwQ7RB6XqlEPCzUMtkeRBSTq83kcWsexRVy7twKrz716Uk2
+	SZ34jJ6Uddh41a0OK9RTgQU5HfF8iGfL2c+z9uEhaiy1PE9MKmCzJZ8qzw52gPxzHV++fzt6p1nMD
+	FN88I64GvpkAmJXwa48G8yq9bRuyHpIlzL6215eo5Rl0GGFDeqv/g36mnRhVloXEb6q20yBZx36sq
+	IHQYH7vFHg1Wil9WVy3fdevAlLwd3upbQYAMV55GuVwThXVlU/zh5ujdQkTngZ9PCZaucXpvylITG
+	bw5nqw5MFtr5KA8KSqJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFTNd-0000000CkgR-45mT;
-	Fri, 07 Jun 2024 06:47:17 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1sFUey-0000000D4KH-21mu;
+	Fri, 07 Jun 2024 08:09:16 +0000
+Received: from mail.quirkbyte.pl ([94.177.238.152])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCV-0000000CGs4-3hsM
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 07 Jun 2024 04:27:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=nvcouXUn6hpYDqzWtNyUREoYphv5BiYQXqZWwmFf95c=; b=rjkEkTc5XIwzDwtYdmq6DDliYG
-	rbz+KSsDiYn5JcaHrEPIUsz3iYzVTz+Bv9DC7dgl3y8zgnKV4lU38rslat7mSBdZlER8NOeajspMy
-	XRFGHcWri9DF8g7MDoHeH6ap6OOx386X6QgjXWrFI9DCVfvcYJ/yObGXq8eGWDdb22sLWpTIoGEQO
-	Sx0shrcbSP432ZTBEtgVYXtscAHvb0Waf6jW50/FG9UwEbhL70u5UJgcHwZ8mIJTxd7w6X7/RYYuR
-	fCZjedF18VKE7+WHc79a++GHTs1QjNYVbfE3EGSip1ojoD6aTtlBiu4RRWHN165dOxFNf79Kio9aB
-	NxM+xluA==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
-	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCN-00000004TsZ-406H
+	id 1sFUev-0000000D4JV-2MDL
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:38 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSk72qVCz1SB2c;
-	Fri,  7 Jun 2024 12:23:27 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2301B180085;
-	Fri,  7 Jun 2024 12:27:26 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:14 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
-	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
-	<huangxiaojia2@huawei.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 064/110] fsck.ubifs: rebuild_fs: Remove deleted nodes from valid node tree
-Date: Fri, 7 Jun 2024 12:25:29 +0800
-Message-ID: <20240607042615.2069840-65-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
-References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
+	Fri, 07 Jun 2024 08:09:14 +0000
+Received: by mail.quirkbyte.pl (Postfix, from userid 1002)
+	id 654668A0C8; Fri,  7 Jun 2024 10:06:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=quirkbyte.pl; s=mail;
+	t=1717747647; bh=V4qwQGqC7KpJoyielzRpnopuINFIOvKXsSgJ3ZENIXU=;
+	h=Date:From:To:Subject:From;
+	b=CaIS3mBGSSdiO4P8JjFjY85l/oxAlxG5eCmtk9zb31Jj82HIRDWLy55q0JON3FckS
+	 NZFdbPVSzfopqV5QBkCGbmD9co7b7GnqkmF1AdZio/2ZpfT/9NY3Sa2ZWq6CuhechR
+	 Mdd5UbYWCudH+F0LaznEaalyt7v5Or15sg0a7etYgNOY33TwHUeKHGTTIOV9stu6yX
+	 5oz7Vzn9bQfNajBpeXzfmx61qs0eF1Hog65rR6ACpK7akYOKf+kBc2T25CHxy59EDy
+	 SAyqjdhJqwODWHV8tMAFVH06aVrnta4lHd+kUsKLsxP3m0BW7xHV+JhYFgbI35bf1G
+	 wyQbGZowN4uvw==
+Received: by mail.quirkbyte.pl for <linux-mtd@lists.infradead.org>; Fri,  7 Jun 2024 08:06:06 GMT
+Message-ID: <20240607084500-0.1.3g.1z809.0.mclobngrde@quirkbyte.pl>
+Date: Fri,  7 Jun 2024 08:06:06 GMT
+From: "Norbert Karecki" <norbert.karecki@quirkbyte.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: Fotowoltaika - propozycja instalacji
+X-Mailer: mail.quirkbyte.pl
 MIME-Version: 1.0
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052732_624570_80FD2CC4 
-X-CRM114-Status: GOOD (  12.54  )
+X-CRM114-CacheID: sfid-20240607_010913_846224_0C441EA0 
+X-CRM114-Status: UNSURE (   0.73  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,173 +61,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 2/12 step of rebuilding. Traverse nodes from del_inos and
-del_dents trees, remove inode nodes and dentry nodes with smaller sqnum
-from valid trees.
-
-This step handles deleting case, for example, file A is deleted, deleted
-inode node and deleted dentry node are written, if we ignore the deleted
-nodes, file A can be recovered after rebuilding because undeleted inode
-node and undeleted dentry node can be scanned. There's an exception, if
-deleted inode node and deleted dentry node are reclaimed(by gc) after
-deletion, file A is recovered. UBIFS rebuild_fs cannot solve it, because
-the real existence information of nodes depends on TNC, but TNC should
-not be depended for UBIFS rebuild_fs.
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 120 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 119 insertions(+), 1 deletion(-)
-
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 3ca94869..dbb0f3bc 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -364,6 +364,117 @@ out:
- 	return err;
- }
- 
-+static struct scanned_ino_node *
-+lookup_valid_ino_node(struct ubifs_info *c, struct scanned_info *si,
-+		      struct scanned_ino_node *target)
-+{
-+	int cmp;
-+	struct scanned_ino_node *ino_node;
-+	struct rb_node *p;
-+
-+	p = si->valid_inos.rb_node;
-+	while (p) {
-+		ino_node = rb_entry(p, struct scanned_ino_node, rb);
-+		cmp = keys_cmp(c, &target->key, &ino_node->key);
-+		if (cmp < 0) {
-+			p = p->rb_left;
-+		} else if (cmp > 0) {
-+			p = p->rb_right;
-+		} else {
-+			if (target->header.sqnum > ino_node->header.sqnum)
-+				return ino_node;
-+			else
-+				return NULL;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct scanned_dent_node *
-+lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
-+		       struct scanned_dent_node *target)
-+{
-+	int cmp, nlen;
-+	struct scanned_dent_node *dent_node;
-+	struct rb_node *p;
-+
-+	p = si->valid_dents.rb_node;
-+	while (p) {
-+		dent_node = rb_entry(p, struct scanned_dent_node, rb);
-+		cmp = keys_cmp(c, &target->key, &dent_node->key);
-+		if (cmp < 0) {
-+			p = p->rb_left;
-+		} else if (cmp > 0) {
-+			p = p->rb_right;
-+		} else {
-+			nlen = min(target->nlen, dent_node->nlen);
-+			cmp = strncmp(target->name, dent_node->name, nlen) ? :
-+				      target->nlen - dent_node->nlen;
-+			if (cmp < 0) {
-+				p = p->rb_left;
-+			} else if (cmp > 0) {
-+				p = p->rb_right;
-+			} else {
-+				if (target->header.sqnum >
-+				    dent_node->header.sqnum)
-+					return dent_node;
-+				else
-+					return NULL;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * remove_del_nodes - remove deleted nodes from valid node tree.
-+ * @c: UBIFS file-system description object
-+ * @si: records nodes and files information during scanning
-+ *
-+ * This function compares sqnum between deleted node and corresponding valid
-+ * node, removes valid node from tree if the sqnum of deleted node is bigger.
-+ * Deleted ino/dent nodes will be removed from @si->del_inos/@si->del_dents
-+ * after this function finished.
-+ */
-+static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
-+{
-+	struct scanned_ino_node *del_ino_node, *valid_ino_node;
-+	struct scanned_dent_node *del_dent_node, *valid_dent_node;
-+	struct rb_node *this;
-+
-+	this = rb_first(&si->del_inos);
-+	while (this) {
-+		del_ino_node = rb_entry(this, struct scanned_ino_node, rb);
-+		this = rb_next(this);
-+
-+		valid_ino_node = lookup_valid_ino_node(c, si, del_ino_node);
-+		if (valid_ino_node) {
-+			rb_erase(&valid_ino_node->rb, &si->valid_inos);
-+			kfree(valid_ino_node);
-+		}
-+
-+		rb_erase(&del_ino_node->rb, &si->del_inos);
-+		kfree(del_ino_node);
-+	}
-+
-+	this = rb_first(&si->del_dents);
-+	while (this) {
-+		del_dent_node = rb_entry(this, struct scanned_dent_node, rb);
-+		this = rb_next(this);
-+
-+		valid_dent_node = lookup_valid_dent_node(c, si, del_dent_node);
-+		if (valid_dent_node) {
-+			rb_erase(&valid_dent_node->rb, &si->valid_dents);
-+			kfree(valid_dent_node);
-+		}
-+
-+		rb_erase(&del_dent_node->rb, &si->del_dents);
-+		kfree(del_dent_node);
-+	}
-+}
-+
- /**
-  * ubifs_rebuild_filesystem - Rebuild filesystem.
-  * @c: UBIFS file-system description object
-@@ -389,9 +500,16 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 	/* Step 1: Scan valid/deleted nodes from volume. */
- 	log_out(c, "Scan nodes");
- 	err = scan_nodes(c, &si);
--	if (err)
-+	if (err) {
- 		exit_code |= FSCK_ERROR;
-+		goto out;
-+	}
-+
-+	/* Step 2: Remove deleted nodes from valid node tree. */
-+	log_out(c, "Remove deleted nodes");
-+	remove_del_nodes(c, &si);
- 
-+out:
- 	destroy_scanned_info(c, &si);
- 	destroy_rebuild_info(c);
- 
--- 
-2.13.6
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAogCkN6eSByb3p3YcW8YWxpIFBhxYRzdHdvIG1vbnRhxbwgc3lzdGVtdSBm
+b3Rvd29sdGFpY3puZWdvPwogCkluc3RhbGFjamEgZm90b3dvbHRhaWN6bmEgamVzdCBuYWpsZXBz
+enltIHNwb3NvYmVtIG5hIG9ibmnFvGVuaWUgd3lzb2tvxZtjaSByYWNodW5rw7N3IHphIHByxIVk
+IChwb3pvc3RhasSFIHR5bGtvIG9wxYJhdHkgc3RhxYJlKSBpIHphYmV6cGllY3plbmllIHNpxJkg
+cHJ6ZWQgcm9zbsSFY3ltaSBjZW5hbWkgZW5lcmdpaSBlbGVrdHJ5Y3puZWouIEplc3QgdG8gdyBw
+ZcWCbmkgb2RuYXdpYWxuZSBpIGJlemVtaXN5am5lIMW6csOzZMWCbyBlbmVyZ2lpLCBkemnEmWtp
+IGN6ZW11IHByenljenluaWFteSBzacSZIGRvIG9jaHJvbnkgxZtyb2Rvd2lza2EgbmF0dXJhbG5l
+Z28uCiAKRHppYcWCYW15IG9kIHdpZWx1IGxhdCBuYSByeW5rdSBlbmVyZ2V0eWN6bnltLiBQcnp5
+Z290dWplbXkgcHJvamVrdCwgd3ljZW7EmSBvcmF6IGtvbXBsZWtzb3dvIHd5a29uYW15IGkgemfF
+gm9zaW15IHJlYWxpemFjasSZIGRvIHpha8WCYWR1IGVuZXJnZXR5Y3puZWdvLiAKIApDenkgY2hj
+xIUgUGHFhHN0d28gcG96bmHEhyBuYXN6xIUgcHJvcG96eWNqxJk/ICAKCgpQb3pkcmF3aWFtCk5v
+cmJlcnQgS2FyZWNraQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
