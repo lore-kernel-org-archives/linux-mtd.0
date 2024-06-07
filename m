@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E13CAC27C65
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:29:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3758C27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CoqBacZvUeP/69v5DHog8Ei3l7GgWKSskzAkwaEJxaQ=; b=vmwZOMk9+CmOl5
-	Mvati04W+L9RIam8icTp2Ckd+cMteWY+NauNbDtcXP/fcnxlZfxGDjQn6zj3Kvp9G7dV4F8y1uZJQ
-	BJ398bsQGwEKD5gutR5iit+T2Icv+MAR+If2b6CtieLIzVX7F5su2s7faODG/mTUNtVhzI5+EH3oK
-	TJrxeEBJu8fymTdfadVCZ8NO1HqogtFz8Wt9tpfc/FNfDi/49DuwczTkfc80zzh9cjbOZIdrQhqVQ
-	AzHHdSXmkdeS4PLcSBQIZEX/LC9ybT7mCsjWCVsYyrthAT0NYd98H6WfE1+nLzLLM97b8JmMqs8UM
-	1xqw0YR2vz17Ph+avJbg==;
+	List-Owner; bh=H5vPrPpiHkOxi4jozjvPGiadamCSylX4y+DgJoOxhDY=; b=OeLhb+VMGglH/v
+	xmYFS8w7Oc2DpEgf7hkGXg7wCPmeejWkx1RMkLzc9wFoXk09dsCBqMOWpYR5j19jDHufu4C3vuj21
+	M+cHbb1FbrOYVq+Tqu8r7RkXh0HYuxMcUDfjJrttor+9/Ac1kxWfhfm6VVPzxjhLL3jrnf7QCL+ox
+	ZsetS5NZENa9IPY5Fxo8IZMb95jdgIkWVUR/xEvl6DjELS8VUiv/pn0i5rXN2UR7Mv1d5rT7C00iO
+	2z8X7wmAFcj57VtjVlTDceLzLR5pe0SROO4FRNV09NKkQmJzJKikF+Lm8NpE/vpiwjF2uZX3XK1Rl
+	WLMIPcWD1+p8Mc3NzSXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRDu-0000000CHyv-1Gkj;
-	Fri, 07 Jun 2024 04:29:06 +0000
+	id 1sFRDy-0000000CI22-21C8;
+	Fri, 07 Jun 2024 04:29:10 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCC-0000000CGb2-25Qx
+	id 1sFRCE-0000000CGd6-0rHP
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 07 Jun 2024 04:27:20 +0000
+	Fri, 07 Jun 2024 04:27:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=JAFqEiAikkQbPN10uVqTWWX6j1y0xHjGhkKm9qsaVfQ=; b=Z9oOm7PkJvsBUHTHfQFyc4P2PV
-	nPgY0tuBUR4cCaFRiVO1CakOVg9faRA7hpWm7BiuaxhKGV+5jMJZ9TDLnhE9HVl8gMEIkmnMoJqQA
-	Gdn7q5jTnP266G8MkVnVHd82d1i4ou3c97UxExvU6SRCebxZYmw/WNN9FfozmgtgB7SAnCgQkcTCo
-	TobekjS7bhMrKJ4+ffHZSjJZzbUu7xqUUTKGY+KIEc5iNLcNYbYJprsYX74ueWtcqi1X12Q3ZdP9V
-	h+v/SuwjJ/hne2i4KLebOabZFJYOoYF256mwu7NthkuWm5TcO89oEHCwVL1o9vYFpN+DEEvLaomcx
-	dtjcT2bw==;
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	bh=4P0FUmXIMbm2rgpNOY3618E5zhi4ml34GKai6Rf5y7Y=; b=ozuYRh4x0GpIidXkT4BEAeoYq/
+	pNGV6uMkLuM5e6McO3ZadwclsQuSXP1KwLHEM4iH6gsqI+Z9g2pUo/Mbx6QuYP8RO0D5wtZXh8eP/
+	8jWapwHfIE9X6bk3UfNVjhRme+Ni6qRaBRn5P+JKOuWEdvDWAmZjSyOLAf8uPvPp+02zFQ7lHl9sp
+	81rv0jBITEGX1Aa6jQn3NBR72JxAAm22A0/IEFSk2oHZOeEpVhWGPgC7MmYQ5GwEYo+yJdqApqqo+
+	/yr7GYaVl03jWSMJW6n3MZX3AqFKFh5auemxGiWw6cPDwqYAcHhTk0hFPxEK4fpp+tVMSPYmkpMHn
+	pebs6TWw==;
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRC8-00000004Tpx-2Dzv
+	id 1sFRCA-00000004Tq9-1mTh
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:19 +0000
+	Fri, 07 Jun 2024 04:27:20 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSj74rZLzmYTP;
-	Fri,  7 Jun 2024 12:22:35 +0800 (CST)
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSjs0zV8z1SB5N;
+	Fri,  7 Jun 2024 12:23:13 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7CCB018007E;
+	by mail.maildlp.com (Postfix) with ESMTPS id D6D50180085;
 	Fri,  7 Jun 2024 12:27:11 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:00 +0800
+ 2024 12:27:03 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 045/110] ubifs-utils: Adapt budget.c in libubifs
-Date: Fri, 7 Jun 2024 12:25:10 +0800
-Message-ID: <20240607042615.2069840-46-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 050/110] ubifs-utils: Adapt misc.h in libubifs
+Date: Fri, 7 Jun 2024 12:25:15 +0800
+Message-ID: <20240607042615.2069840-51-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -68,8 +68,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052717_224921_49AF7DC7 
-X-CRM114-Status: GOOD (  18.04  )
+X-CRM114-CacheID: sfid-20240607_052719_151182_40947CCB 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,202 +86,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt budget.c in libubifs, compared with linux kernel implementations:
- 1. Remove writeback related functions, there are no dirty pages/inodes
-    for UBIFS in userspace process.
+Adapt misc.h in libubifs, compared with linux kernel implementations:
+ 1. Remove some functions(eg. ubifs_compr_name, ubifs_wake_up_bgt) which
+    won't be used in fsck/mkfs.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/budget.c | 133 +++---------------------------------------
- 1 file changed, 7 insertions(+), 126 deletions(-)
+ ubifs-utils/libubifs/misc.h | 75 +--------------------------------------------
+ 1 file changed, 1 insertion(+), 74 deletions(-)
 
-diff --git a/ubifs-utils/libubifs/budget.c b/ubifs-utils/libubifs/budget.c
-index d76eb7b3..5550c9af 100644
---- a/ubifs-utils/libubifs/budget.c
-+++ b/ubifs-utils/libubifs/budget.c
-@@ -18,9 +18,11 @@
-  * approximations are used.
-  */
- 
-+#include "bitops.h"
- #include "ubifs.h"
--#include <linux/writeback.h>
--#include <linux/math64.h>
-+#include "defs.h"
-+#include "debug.h"
-+#include "misc.h"
- 
- /*
-  * When pessimistic budget calculations say that there is no enough space,
-@@ -30,31 +32,6 @@
-  */
- #define MAX_MKSPC_RETRIES 3
- 
--/*
-- * The below constant defines amount of dirty pages which should be written
-- * back at when trying to shrink the liability.
-- */
--#define NR_TO_WRITE 16
--
--/**
-- * shrink_liability - write-back some dirty pages/inodes.
-- * @c: UBIFS file-system description object
-- * @nr_to_write: how many dirty pages to write-back
-- *
-- * This function shrinks UBIFS liability by means of writing back some amount
-- * of dirty inodes and their pages.
-- *
-- * Note, this function synchronizes even VFS inodes which are locked
-- * (@i_mutex) by the caller of the budgeting function, because write-back does
-- * not touch @i_mutex.
-- */
--static void shrink_liability(struct ubifs_info *c, int nr_to_write)
--{
--	down_read(&c->vfs_sb->s_umount);
--	writeback_inodes_sb_nr(c->vfs_sb, nr_to_write, WB_REASON_FS_FREE_SPACE);
--	up_read(&c->vfs_sb->s_umount);
--}
--
- /**
-  * run_gc - run garbage collector.
-  * @c: UBIFS file-system description object
-@@ -80,23 +57,6 @@ static int run_gc(struct ubifs_info *c)
+diff --git a/ubifs-utils/libubifs/misc.h b/ubifs-utils/libubifs/misc.h
+index 615878e8..4b718068 100644
+--- a/ubifs-utils/libubifs/misc.h
++++ b/ubifs-utils/libubifs/misc.h
+@@ -50,18 +50,6 @@ static inline int ubifs_zn_cow(const struct ubifs_znode *znode)
  }
  
  /**
-- * get_liability - calculate current liability.
+- * ubifs_wake_up_bgt - wake up background thread.
 - * @c: UBIFS file-system description object
-- *
-- * This function calculates and returns current UBIFS liability, i.e. the
-- * amount of bytes UBIFS has "promised" to write to the media.
 - */
--static long long get_liability(struct ubifs_info *c)
+-static inline void ubifs_wake_up_bgt(struct ubifs_info *c)
 -{
--	long long liab;
--
--	spin_lock(&c->space_lock);
--	liab = c->bi.idx_growth + c->bi.data_growth + c->bi.dd_growth;
--	spin_unlock(&c->space_lock);
--	return liab;
+-	if (c->bgt && !c->need_bgt) {
+-		c->need_bgt = 1;
+-		wake_up_process(c->bgt);
+-	}
 -}
 -
 -/**
-  * make_free_space - make more free space on the file-system.
-  * @c: UBIFS file-system description object
+  * ubifs_tnc_find_child - find next child in znode.
+  * @znode: znode to search at
+  * @start: the zbranch index to start at
+@@ -82,42 +70,6 @@ ubifs_tnc_find_child(struct ubifs_znode *znode, int start)
+ }
+ 
+ /**
+- * ubifs_inode - get UBIFS inode information by VFS 'struct inode' object.
+- * @inode: the VFS 'struct inode' pointer
+- */
+-static inline struct ubifs_inode *ubifs_inode(const struct inode *inode)
+-{
+-	return container_of(inode, struct ubifs_inode, vfs_inode);
+-}
+-
+-/**
+- * ubifs_compr_present - check if compressor was compiled in.
+- * @compr_type: compressor type to check
+- * @c: the UBIFS file-system description object
+- *
+- * This function returns %1 of compressor of type @compr_type is present, and
+- * %0 if not.
+- */
+-static inline int ubifs_compr_present(struct ubifs_info *c, int compr_type)
+-{
+-	ubifs_assert(c, compr_type >= 0 && compr_type < UBIFS_COMPR_TYPES_CNT);
+-	return !!ubifs_compressors[compr_type]->capi_name;
+-}
+-
+-/**
+- * ubifs_compr_name - get compressor name string by its type.
+- * @compr_type: compressor type
+- * @c: the UBIFS file-system description object
+- *
+- * This function returns compressor type string.
+- */
+-static inline const char *ubifs_compr_name(struct ubifs_info *c, int compr_type)
+-{
+-	ubifs_assert(c, compr_type >= 0 && compr_type < UBIFS_COMPR_TYPES_CNT);
+-	return ubifs_compressors[compr_type]->name;
+-}
+-
+-/**
+  * ubifs_wbuf_sync - synchronize write-buffer.
+  * @wbuf: write-buffer to synchronize
   *
-@@ -117,24 +77,8 @@ static long long get_liability(struct ubifs_info *c)
- static int make_free_space(struct ubifs_info *c)
- {
- 	int err, retries = 0;
--	long long liab1, liab2;
- 
- 	do {
--		liab1 = get_liability(c);
--		/*
--		 * We probably have some dirty pages or inodes (liability), try
--		 * to write them back.
--		 */
--		dbg_budg("liability %lld, run write-back", liab1);
--		shrink_liability(c, NR_TO_WRITE);
--
--		liab2 = get_liability(c);
--		if (liab2 < liab1)
--			return -EAGAIN;
--
--		dbg_budg("new liability %lld (not shrunk)", liab2);
--
--		/* Liability did not shrink again, try GC */
- 		dbg_budg("Run GC");
- 		err = run_gc(c);
- 		if (!err)
-@@ -254,12 +198,10 @@ long long ubifs_calc_available(const struct ubifs_info *c, int min_idx_lebs)
-  * This function checks whether current user is allowed to use reserved pool.
-  * Returns %1  current user is allowed to use reserved pool and %0 otherwise.
-  */
--static int can_use_rp(struct ubifs_info *c)
-+static int can_use_rp(__unused struct ubifs_info *c)
- {
--	if (uid_eq(current_fsuid(), c->rp_uid) || capable(CAP_SYS_RESOURCE) ||
--	    (!gid_eq(c->rp_gid, GLOBAL_ROOT_GID) && in_group_p(c->rp_gid)))
--		return 1;
--	return 0;
-+	/* Fsck can always use reserved pool. */
-+	return c->program_type == FSCK_PROGRAM_TYPE;
+@@ -135,21 +87,6 @@ static inline int ubifs_wbuf_sync(struct ubifs_wbuf *wbuf)
  }
  
  /**
-@@ -556,49 +498,6 @@ void ubifs_release_budget(struct ubifs_info *c, struct ubifs_budget_req *req)
- }
- 
- /**
-- * ubifs_convert_page_budget - convert budget of a new page.
-- * @c: UBIFS file-system description object
+- * ubifs_encode_dev - encode device node IDs.
+- * @dev: UBIFS device node information
+- * @rdev: device IDs to encode
 - *
-- * This function converts budget which was allocated for a new page of data to
-- * the budget of changing an existing page of data. The latter is smaller than
-- * the former, so this function only does simple re-calculation and does not
-- * involve any write-back.
+- * This is a helper function which encodes major/minor numbers of a device node
+- * into UBIFS device node description. We use standard Linux "new" and "huge"
+- * encodings.
 - */
--void ubifs_convert_page_budget(struct ubifs_info *c)
+-static inline int ubifs_encode_dev(union ubifs_dev_desc *dev, dev_t rdev)
 -{
--	spin_lock(&c->space_lock);
--	/* Release the index growth reservation */
--	c->bi.idx_growth -= c->max_idx_node_sz << UBIFS_BLOCKS_PER_PAGE_SHIFT;
--	/* Release the data growth reservation */
--	c->bi.data_growth -= c->bi.page_budget;
--	/* Increase the dirty data growth reservation instead */
--	c->bi.dd_growth += c->bi.page_budget;
--	/* And re-calculate the indexing space reservation */
--	c->bi.min_idx_lebs = ubifs_calc_min_idx_lebs(c);
--	spin_unlock(&c->space_lock);
+-	dev->new = cpu_to_le32(new_encode_dev(rdev));
+-	return sizeof(dev->new);
 -}
 -
 -/**
-- * ubifs_release_dirty_inode_budget - release dirty inode budget.
-- * @c: UBIFS file-system description object
-- * @ui: UBIFS inode to release the budget for
-- *
-- * This function releases budget corresponding to a dirty inode. It is usually
-- * called when after the inode has been written to the media and marked as
-- * clean. It also causes the "no space" flags to be cleared.
-- */
--void ubifs_release_dirty_inode_budget(struct ubifs_info *c,
--				      struct ubifs_inode *ui)
--{
--	struct ubifs_budget_req req;
--
--	memset(&req, 0, sizeof(struct ubifs_budget_req));
--	/* The "no space" flags will be cleared because dd_growth is > 0 */
--	req.dd_growth = c->bi.inode_budget + ALIGN(ui->data_len, 8);
--	ubifs_release_budget(c, &req);
--}
--
--/**
-  * ubifs_reported_space - calculate reported free space.
+  * ubifs_add_dirt - add dirty space to LEB properties.
   * @c: the UBIFS file-system description object
-  * @free: amount of free space
-@@ -694,21 +593,3 @@ long long ubifs_get_free_space_nolock(struct ubifs_info *c)
- 		free = 0;
- 	return free;
+  * @lnum: LEB to add dirty space for
+@@ -209,7 +146,7 @@ struct ubifs_branch *ubifs_idx_branch(const struct ubifs_info *c,
+  * @c: the UBIFS file-system description object
+  * @idx: index node
+  */
+-static inline void *ubifs_idx_key(const struct ubifs_info *c,
++static inline void *ubifs_idx_key(__unused const struct ubifs_info *c,
+ 				  const struct ubifs_idx_node *idx)
+ {
+ 	return (void *)((struct ubifs_branch *)idx->branches)->key;
+@@ -276,14 +213,4 @@ static inline int ubifs_next_log_lnum(const struct ubifs_info *c, int lnum)
+ 	return lnum;
  }
--
--/**
-- * ubifs_get_free_space - return amount of free space.
-- * @c: UBIFS file-system description object
-- *
-- * This function calculates and returns amount of free space to report to
-- * user-space.
-- */
--long long ubifs_get_free_space(struct ubifs_info *c)
+ 
+-static inline int ubifs_xattr_max_cnt(struct ubifs_info *c)
 -{
--	long long free;
+-	int max_xattrs = (c->leb_size / 2) / UBIFS_INO_NODE_SZ;
 -
--	spin_lock(&c->space_lock);
--	free = ubifs_get_free_space_nolock(c);
--	spin_unlock(&c->space_lock);
--
--	return free;
+-	ubifs_assert(c, max_xattrs < c->max_orphans);
+-	return max_xattrs;
 -}
+-
+-const char *ubifs_assert_action_name(struct ubifs_info *c);
+-
+ #endif /* __UBIFS_MISC_H__ */
 -- 
 2.13.6
 
