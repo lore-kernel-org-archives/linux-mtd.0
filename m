@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19B07C27C53
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7B4EC27C53
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:34:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CdFyd47Xev6Inp2uOgx4LC1ONHCVjWClux3Llryljrg=; b=MSMrv09/VaedB3
-	nCZvME/8My3XTBVRKorpVyc1sGQesaZpL+rEGOc5MzLSfxXffDvjk2ggAzwIgvwc2SiqHf1XEOnRb
-	YyDDSmGeOlzmx8qkvpZIHf/IzLnTP9Ps5x8mUO9e28i9atm+Friifs7NpBQPwWLCqiI5Kaf+NeK3D
-	adW6irILtk8cKM7fDl6NvZZxNBzZiwWFxm9O/OI25f3tYytKbtyWcRJ7D1IFkZxP1C9JxiXM5hehv
-	S2q0PB5RfjXbhbEUmacegFFM53gWn1G264bQdMqfIuISuA+PMOaspiCT/t6E6AFuCV9yvrCHNJ8/I
-	eAq8F6zT5bWCzExEoTCw==;
+	List-Owner; bh=UWugwiE3+s8pvI2YiDGK8H54NJJqWZxkSonGaUDFyMc=; b=uNWHBQxls4VxIh
+	RujVmyVJhEUaLy+Kx3YIkNWpa+a+/VJbLMFExZOGTZ0GriKjaaF+Q0e9Zy5AwMyc9AjSL0tXa6YoS
+	PaAsPLiPEfJMio6r5K3+hGRv5POrBfIBkE4oBNFMDSRf2//S86WhCgmYMZyTdlEQ9se6P1pLK4mJJ
+	VfjORtLKv3ykCqJjUbP/5D/v58F6/onyIPyBZi8ATJQvIBfdk0fRjrBEuDdhDnthGLtShoCFahsH0
+	SmR6lXfrSe7Mc+TJ98Ifx8NQEQAv4UkBp0kOoxiz9FIHb0irSklUQk6+6UDhhnCozL5JDKWttHG/m
+	WuZWwuG4qiecRLcxezgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFSEc-0000000CVzH-0wtG;
-	Fri, 07 Jun 2024 05:33:54 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1sFSEf-0000000CW2O-2ycS;
+	Fri, 07 Jun 2024 05:33:57 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCY-0000000CGte-1Rbq
+	id 1sFRCn-0000000CH6G-3oeO
 	for linux-mtd@lists.infradead.org;
 	Fri, 07 Jun 2024 04:28:16 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSnM2zMszdZMD;
-	Fri,  7 Jun 2024 12:26:15 +0800 (CST)
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwSkQ3104zwSGJ;
+	Fri,  7 Jun 2024 12:23:42 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 52590180085;
-	Fri,  7 Jun 2024 12:27:40 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 536E3180AA6;
+	Fri,  7 Jun 2024 12:27:41 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:20 +0800
+ 2024 12:27:31 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 073/110] fsck.ubifs: rebuild_fs: Build LPT
-Date: Fri, 7 Jun 2024 12:25:38 +0800
-Message-ID: <20240607042615.2069840-74-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 088/110] fsck.ubifs: Check whether the TNC is empty
+Date: Fri, 7 Jun 2024 12:25:53 +0800
+Message-ID: <20240607042615.2069840-89-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212743_296197_B32F9DCD 
-X-CRM114-Status: GOOD (  21.38  )
+X-CRM114-CacheID: sfid-20240606_212758_855042_DDAE51F4 
+X-CRM114-Status: GOOD (  18.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,304 +71,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is the 10/12 step of rebuilding. All LEBs' properties can be
-calculated in previous steps according to all nodes' position, then
-construct LPT just like mkfs does, and write LPT on flash.
+This is the 11/18 step of fsck. Check whether the TNC is empty, turn to
+rebuild_fs if it is not found. Can we recreate a new root dir to avoid
+empty TNC? The answer is no, lpt fixing should be done before creating
+new entry, but lpt fixing needs a committing before new dirty data
+generated to ensure that bud data won't be overwritten(bud LEB could
+become freeable after replaying journal, corrected lpt may treat it as
+a free one to hold new data, see details in space checking & correcting
+step). Then we have to create the new root dir after fixing lpt and a
+committing, znode without childs(empty TNC) maybe written on disk at the
+moment of committing, which corrupts the UBIFS image. So we choose to
+rebuild the filesystem if the TNC is empty, this case is equivalent to
+corrupted TNC.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/fsck.ubifs.h |   2 +
- ubifs-utils/fsck.ubifs/rebuild_fs.c | 149 ++++++++++++++++++++++++++++--------
- ubifs-utils/libubifs/ubifs.h        |   2 +
- 3 files changed, 119 insertions(+), 34 deletions(-)
+ ubifs-utils/fsck.ubifs/check_files.c | 25 +++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c  |  7 +++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  4 +++-
+ ubifs-utils/fsck.ubifs/problem.c     |  1 +
+ 4 files changed, 36 insertions(+), 1 deletion(-)
 
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index bc1d7503..1d97aed3 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -186,6 +186,7 @@ struct scanned_file {
-  * @write_buf: write buffer for LEB @head_lnum
-  * @head_lnum: current writing LEB number
-  * @head_offs: current writing position in LEB @head_lnum
-+ * @need_update_lpt: whether to update lpt while writing index nodes
-  */
- struct ubifs_rebuild_info {
- 	unsigned long *used_lebs;
-@@ -194,6 +195,7 @@ struct ubifs_rebuild_info {
- 	void *write_buf;
- 	int head_lnum;
- 	int head_offs;
-+	bool need_update_lpt;
- };
- 
- /**
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index e1d1957f..085df2b9 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -489,6 +489,22 @@ lookup_valid_dent_node(struct ubifs_info *c, struct scanned_info *si,
- 	return NULL;
- }
- 
-+static void update_lpt(struct ubifs_info *c, struct scanned_node *sn,
-+		       bool deleted)
-+{
-+	int index = sn->lnum - c->main_first;
-+	int pos = sn->offs + ALIGN(sn->len, 8);
-+
-+	set_bit(index, FSCK(c)->rebuild->used_lebs);
-+	FSCK(c)->rebuild->lpts[index].end = max_t(int,
-+					FSCK(c)->rebuild->lpts[index].end, pos);
-+
-+	if (deleted)
-+		return;
-+
-+	FSCK(c)->rebuild->lpts[index].used += ALIGN(sn->len, 8);
-+}
-+
- /**
-  * remove_del_nodes - remove deleted nodes from valid node tree.
-  * @c: UBIFS file-system description object
-@@ -512,13 +528,7 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
- 
- 		valid_ino_node = lookup_valid_ino_node(c, si, del_ino_node);
- 		if (valid_ino_node) {
--			int lnum = del_ino_node->header.lnum - c->main_first;
--			int pos = del_ino_node->header.offs +
--				  ALIGN(del_ino_node->header.len, 8);
--
--			set_bit(lnum, FSCK(c)->rebuild->used_lebs);
--			FSCK(c)->rebuild->lpts[lnum].end =
--				max_t(int, FSCK(c)->rebuild->lpts[lnum].end, pos);
-+			update_lpt(c, &del_ino_node->header, true);
- 			rb_erase(&valid_ino_node->rb, &si->valid_inos);
- 			kfree(valid_ino_node);
- 		}
-@@ -534,13 +544,7 @@ static void remove_del_nodes(struct ubifs_info *c, struct scanned_info *si)
- 
- 		valid_dent_node = lookup_valid_dent_node(c, si, del_dent_node);
- 		if (valid_dent_node) {
--			int lnum = del_dent_node->header.lnum - c->main_first;
--			int pos = del_dent_node->header.offs +
--				  ALIGN(del_dent_node->header.len, 8);
--
--			set_bit(lnum, FSCK(c)->rebuild->used_lebs);
--			FSCK(c)->rebuild->lpts[lnum].end =
--				max_t(int, FSCK(c)->rebuild->lpts[lnum].end, pos);
-+			update_lpt(c, &del_dent_node->header, true);
- 			rb_erase(&valid_dent_node->rb, &si->valid_dents);
- 			kfree(valid_dent_node);
- 		}
-@@ -730,12 +734,12 @@ static void init_root_ino(struct ubifs_info *c, struct ubifs_ino_node *ino)
-  * get_free_leb - get a free LEB according to @FSCK(c)->rebuild->used_lebs.
-  * @c: UBIFS file-system description object
-  *
-- * This function tries to find a free LEB, %0 is returned if found, otherwise
-- * %ENOSPC is returned.
-+ * This function tries to find a free LEB, lnum is returned if found, otherwise
-+ * %-ENOSPC is returned.
-  */
- static int get_free_leb(struct ubifs_info *c)
- {
--	int lnum, err;
-+	int lnum;
- 
- 	lnum = find_next_zero_bit(FSCK(c)->rebuild->used_lebs, c->main_lebs, 0);
- 	if (lnum >= c->main_lebs) {
-@@ -745,14 +749,7 @@ static int get_free_leb(struct ubifs_info *c)
- 	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
- 	lnum += c->main_first;
- 
--	err = ubifs_leb_unmap(c, lnum);
--	if (err)
--		return err;
--
--	FSCK(c)->rebuild->head_lnum = lnum;
--	FSCK(c)->rebuild->head_offs = 0;
--
--	return 0;
-+	return lnum;
- }
- 
- /**
-@@ -780,6 +777,14 @@ static int flush_write_buf(struct ubifs_info *c)
- 	if (err)
- 		return err;
- 
-+	if (FSCK(c)->rebuild->need_update_lpt) {
-+		int index = FSCK(c)->rebuild->head_lnum - c->main_first;
-+
-+		FSCK(c)->rebuild->lpts[index].free = c->leb_size - len;
-+		FSCK(c)->rebuild->lpts[index].dirty = pad;
-+		FSCK(c)->rebuild->lpts[index].flags = LPROPS_INDEX;
-+	}
-+
- 	FSCK(c)->rebuild->head_lnum = -1;
+diff --git a/ubifs-utils/fsck.ubifs/check_files.c b/ubifs-utils/fsck.ubifs/check_files.c
+index 2be96193..4190bf91 100644
+--- a/ubifs-utils/fsck.ubifs/check_files.c
++++ b/ubifs-utils/fsck.ubifs/check_files.c
+@@ -499,3 +499,28 @@ int handle_dentry_tree(struct ubifs_info *c)
  
  	return 0;
-@@ -797,13 +802,20 @@ static int flush_write_buf(struct ubifs_info *c)
-  */
- static int reserve_space(struct ubifs_info *c, int len, int *lnum, int *offs)
- {
--	int err;
-+	int err, new_lnum;
- 
- 	if (FSCK(c)->rebuild->head_lnum == -1) {
- get_new:
--		err = get_free_leb(c);
-+		new_lnum = get_free_leb(c);
-+		if (new_lnum < 0)
-+			return new_lnum;
-+
-+		err = ubifs_leb_unmap(c, new_lnum);
- 		if (err)
- 			return err;
-+
-+		FSCK(c)->rebuild->head_lnum = new_lnum;
-+		FSCK(c)->rebuild->head_offs = 0;
- 	}
- 
- 	if (len > c->leb_size - FSCK(c)->rebuild->head_offs) {
-@@ -921,15 +933,9 @@ static int parse_node_info(struct ubifs_info *c, struct scanned_node *sn,
- 			   union ubifs_key *key, char *name, int name_len,
- 			   struct list_head *idx_list, int *idx_cnt)
- {
--	int lnum, pos;
- 	struct idx_entry *e;
- 
--	lnum = sn->lnum - c->main_first;
--	pos = sn->offs + ALIGN(sn->len, 8);
--
--	set_bit(lnum, FSCK(c)->rebuild->used_lebs);
--	FSCK(c)->rebuild->lpts[lnum].end = max_t(int,
--					FSCK(c)->rebuild->lpts[lnum].end, pos);
-+	update_lpt(c, sn, idx_cnt == NULL);
- 
- 	if (idx_cnt == NULL)
- 		/* Skip truncation node. */
-@@ -1026,6 +1032,7 @@ static int build_tnc(struct ubifs_info *c, struct list_head *lower_idxs,
- 		return -ENOMEM;
- 
- 	list_sort(c, lower_idxs, cmp_idx);
-+	FSCK(c)->rebuild->need_update_lpt = true;
- 
- 	ubifs_assert(c, lower_cnt != 0);
- 
-@@ -1089,6 +1096,7 @@ static int build_tnc(struct ubifs_info *c, struct list_head *lower_idxs,
- 
- 	/* Flush the last index LEB */
- 	err = flush_write_buf(c);
-+	FSCK(c)->rebuild->need_update_lpt = false;
- 
- out:
- 	list_for_each_entry_safe(e, tmp_e, lower_idxs, list) {
-@@ -1239,6 +1247,71 @@ out_idx_list:
  }
- 
- /**
-+ * build_lpt - construct LPT and write it into flash.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function builds LPT according to @FSCK(c)->rebuild->lpts and writes
-+ * LPT into flash.
-+ */
-+static int build_lpt(struct ubifs_info *c)
-+{
-+	int i, len, free, dirty, lnum;
-+	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
-+
-+	memset(&c->lst, 0, sizeof(struct ubifs_lp_stats));
-+	/* Set gc lnum. */
-+	lnum = get_free_leb(c);
-+	if (lnum < 0)
-+		return lnum;
-+	c->gc_lnum = lnum;
-+
-+	/* Update LPT. */
-+	for (i = 0; i < c->main_lebs; i++) {
-+		if (!test_bit(i, FSCK(c)->rebuild->used_lebs) ||
-+		    c->gc_lnum == i + c->main_first) {
-+			free = c->leb_size;
-+			dirty = 0;
-+		} else if (FSCK(c)->rebuild->lpts[i].flags & LPROPS_INDEX) {
-+			free = FSCK(c)->rebuild->lpts[i].free;
-+			dirty = FSCK(c)->rebuild->lpts[i].dirty;
-+		} else {
-+			len = ALIGN(FSCK(c)->rebuild->lpts[i].end, c->min_io_size);
-+			free = c->leb_size - len;
-+			dirty = len - FSCK(c)->rebuild->lpts[i].used;
-+
-+			if (dirty == c->leb_size) {
-+				free = c->leb_size;
-+				dirty = 0;
-+			}
-+		}
-+
-+		FSCK(c)->rebuild->lpts[i].free = free;
-+		FSCK(c)->rebuild->lpts[i].dirty = dirty;
-+		c->lst.total_free += free;
-+		c->lst.total_dirty += dirty;
-+
-+		if (free == c->leb_size)
-+			c->lst.empty_lebs++;
-+
-+		if (!(FSCK(c)->rebuild->lpts[i].flags & LPROPS_INDEX)) {
-+			int spc;
-+
-+			spc = free + dirty;
-+			if (spc < c->dead_wm)
-+				c->lst.total_dead += spc;
-+			else
-+				c->lst.total_dark += ubifs_calc_dark(c, spc);
-+			c->lst.total_used += c->leb_size - spc;
-+		} else {
-+			c->lst.idx_lebs += 1;
-+		}
-+	}
-+
-+	/* Write LPT. */
-+	return ubifs_create_lpt(c, FSCK(c)->rebuild->lpts, c->main_lebs, hash_lpt);
-+}
 +
 +/**
-  * ubifs_rebuild_filesystem - Rebuild filesystem.
-  * @c: UBIFS file-system description object
-  *
-@@ -1302,6 +1375,14 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 	 * Step 9: Build TNC.
- 	 */
- 	err = traverse_files_and_nodes(c);
-+	if (err) {
-+		exit_code |= FSCK_ERROR;
-+		goto out;
++ * tnc_is_empty - Check whether the TNC is empty.
++ * @c: UBIFS file-system description object
++ *
++ * Returns %true if the TNC is empty, otherwise %false is returned.
++ */
++bool tnc_is_empty(struct ubifs_info *c)
++{
++	/*
++	 * Check whether the TNC is empty, turn to rebuild_fs if it is empty.
++	 * Can we recreate a new root dir to avoid empty TNC? The answer is no,
++	 * lpt fixing should be done before creating new entry, but lpt fixing
++	 * needs a committing before new dirty data generated to ensure that
++	 * bud data won't be overwritten(bud LEB could become freeable after
++	 * replaying journal, corrected lpt may treat it as a free one to hold
++	 * new data, see details in space checking & correcting step). Then we
++	 * have to create the new root dir after fixing lpt and a committing,
++	 * znode without childs(empty TNC) maybe written on disk at the moment
++	 * of committing, which corrupts the UBIFS image. So we choose to
++	 * rebuild the filesystem if the TNC is empty, this case is equivalent
++	 * to corrupted TNC.
++	 */
++	return c->zroot.znode->child_cnt == 0;
++}
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index 85a5baf0..14f77fc2 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -467,6 +467,12 @@ static int do_fsck(void)
+ 		goto free_disconnected_files;
+ 	}
+ 
++	log_out(c, "Check whether the TNC is empty");
++	if (tnc_is_empty(c) && fix_problem(c, EMPTY_TNC, NULL)) {
++		err = -EINVAL;
++		FSCK(c)->try_rebuild = true;
 +	}
 +
-+	/* Step 10. Build LPT. */
-+	log_out(c, "Build LPT");
-+	err = build_lpt(c);
- 	if (err)
- 		exit_code |= FSCK_ERROR;
+ free_disconnected_files:
+ 	destroy_file_list(c, &FSCK(c)->disconnected_files);
+ free_used_lebs:
+@@ -512,6 +518,7 @@ int main(int argc, char *argv[])
+ 	 * Step 8: Check and handle invalid files
+ 	 * Step 9: Check and handle unreachable files
+ 	 * Step 10: Check and correct files
++	 * Step 11: Check whether the TNC is empty
+ 	 */
+ 	err = do_fsck();
+ 	if (err && FSCK(c)->try_rebuild) {
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index d1423c01..663d5dcf 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -43,7 +43,8 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
+        FILE_HAS_0_NLINK_INODE, FILE_HAS_INCONSIST_TYPE, FILE_HAS_TOO_MANY_DENT,
+        FILE_SHOULDNT_HAVE_DATA, FILE_HAS_NO_DENT, XATTR_HAS_NO_HOST,
+        XATTR_HAS_WRONG_HOST, FILE_HAS_NO_ENCRYPT, FILE_IS_DISCONNECTED,
+-       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT };
++       FILE_ROOT_HAS_DENT, DENTRY_IS_UNREACHABLE, FILE_IS_INCONSISTENT,
++       EMPTY_TNC };
  
-diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index c9d582da..6f965555 100644
---- a/ubifs-utils/libubifs/ubifs.h
-+++ b/ubifs-utils/libubifs/ubifs.h
-@@ -338,6 +338,7 @@ enum {
-  * @flags: LEB properties flags (see above)
-  * @lnum: LEB number
-  * @end: the end postition of LEB calculated by the last node
-+ * @used: amount of used space in bytes
-  * @list: list of same-category lprops (for LPROPS_EMPTY and LPROPS_FREEABLE)
-  * @hpos: heap position in heap of same-category lprops (other categories)
-  */
-@@ -347,6 +348,7 @@ struct ubifs_lprops {
- 	int flags;
- 	int lnum;
- 	int end;
-+	int used;
- 	union {
- 		struct list_head list;
- 		int hpos;
+ enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
+ 
+@@ -319,5 +320,6 @@ int traverse_tnc_and_construct_files(struct ubifs_info *c);
+ void update_files_size(struct ubifs_info *c);
+ int handle_invalid_files(struct ubifs_info *c);
+ int handle_dentry_tree(struct ubifs_info *c);
++bool tnc_is_empty(struct ubifs_info *c);
+ 
+ #endif
+diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
+index e8f08606..795f05fa 100644
+--- a/ubifs-utils/fsck.ubifs/problem.c
++++ b/ubifs-utils/fsck.ubifs/problem.c
+@@ -60,6 +60,7 @@ static const struct fsck_problem problem_table[] = {
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Root dir should not have a dentry"},	// FILE_ROOT_HAS_DENT
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA, "Dentry is unreachable"},	// DENTRY_IS_UNREACHABLE
+ 	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX, "File is inconsistent"},	// FILE_IS_INCONSISTENT
++	{PROBLEM_FIXABLE | PROBLEM_MUST_FIX | PROBLEM_DROP_DATA | PROBLEM_NEED_REBUILD, "TNC is empty"},	// EMPTY_TNC
+ };
+ 
+ static const char *get_question(const struct fsck_problem *problem,
 -- 
 2.13.6
 
