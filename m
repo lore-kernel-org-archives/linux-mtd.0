@@ -4,79 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFDFEC27C53
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 13:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 554E2C27C5F
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 15:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W2VTgRN91i2lW1EqmZG8THu42lHsmCeZ4P1UeFpGx5k=; b=S4wNsgOkkzrh1S
-	3fGThajahkxlzbLw1PGaOMnCzpBFVyHLjvidByzNsMVkUGOybdpevLbSX/9i56UNrOTGMt9pv5Lgk
-	zvVPyX7jN/a3RHzClhGxSuKIw08HexRruWgXpoCjOfNkc+GLMvyuXgFh3Y4Tz8iYOMmr+IeqnxCjM
-	PvnqQCrnDkfFF6Mt425c+jJnyrBp1M1WBzWq/lqjBq7zNAQxwhpBIuR7zQljAzY+4PBJpyASU1LpA
-	L5JmbWn1jscEVEGlGXnOVThuN2jq4g+QC62lS1scemEOcFPuFXV0MyOj/0HdXbSYRi++YqESpMrbG
-	ij8zWEVRi7i5prTH9Z7w==;
+	List-Owner; bh=3R9WxrGXI0MWgAtMRz8MCvl4L1gMwCzHZ9CO+jihnZ8=; b=m6RHcgwvN7+qtu
+	KLb8jAFpwvzyahjVMEE/ZuRoimhWKQ/zxwYT6xigube9IYDX/WBbXV2Xzm3NnF0XZXIQs/1x7eXH/
+	PBMF7ZFcPZ7BhZu3slq5He/TnV5AARGH40mjPGF5rCh13zyepPlqO9CDd/B3w8uZZp0eeHfPuKDr3
+	LkQAP40Y2HLSJZl59/hkKckN25kMOM1JHzU6aJuBMgnC/UscMRV4lbgyD7mk5H8xKXpVkPHN1tzgu
+	qd6TPluEBPtt3IsZBF7NuDwmcclFJCi7UkkC+9mHoBsobO+/LW8cTJhB8g5y7WJULd+FBySo/vYJz
+	r4X3mAkDXeBhZx2Cf5Zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFZgI-0000000E9p6-1JA4;
-	Fri, 07 Jun 2024 13:30:58 +0000
-Received: from www530.your-server.de ([188.40.30.78])
+	id 1sFbeK-0000000EkDD-06tN;
+	Fri, 07 Jun 2024 15:37:04 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFZgF-0000000E9mv-2p2T
+	id 1sFbeH-0000000EkBA-0ucp
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 13:30:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=4RK0KP7M28kJmksdDmKUG3G7jD95U6jiMrw57i0ZVTM=; b=WrX6Z9ve4U6Im4uuz46Fg4XVd8
-	JGVOITQkIYs/cPdZB1J1TAMmvmrvcg6FUzBV5GdtGYXnBM+AcTkOOyotGGRS8x9GbwytmUWIfXkRS
-	HvTJKZ3vRzhOpDs6pLBxtbNnp3X112Fr0LMY0Eg0aKgQIfUkaX6H2MJA+xNUYrS15D0kBwfo1l35u
-	TxtUrExfdcCpi3N2CY9HRqZ4eOXaFN7qg+c/00ERts9eydWnEl9U0TQVbCI7DXGi1UcHkWg/zktEE
-	i0S8TuoQOglfFCQF4Pt6sw8qeTiBvsnN2yWqEDxEB1CTXNX6LhBgBMj0UxuSDjYoYL9amoGnT09G9
-	2BAWAMgQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1sFZgE-0001N2-De; Fri, 07 Jun 2024 15:30:50 +0200
-Received: from [185.17.218.86] (helo=localhost)
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <esben@geanix.com>)
-	id 1sFZgA-000BVy-0C;
-	Fri, 07 Jun 2024 15:30:50 +0200
-From: Esben Haabendal <esben@geanix.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Michael Walle <mwalle@kernel.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  Rasmus Villemoes
- <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: core: add flag for doing optional
- SFDP
-In-Reply-To: <1d683b33-16db-4d81-92cb-d98e35b87cba@linaro.org> (Tudor
-	Ambarus's message of "Fri, 7 Jun 2024 10:22:55 +0100")
-References: <20240603-macronix-mx25l3205d-fixups-v2-0-ff98da26835c@geanix.com>
-	<20240603-macronix-mx25l3205d-fixups-v2-1-ff98da26835c@geanix.com>
-	<a379a411-2c9e-4d9d-aa8f-4c4f3463cc27@linaro.org>
-	<D1SZKLZBDDBA.1Z7ZD4UEOX05F@kernel.org>
-	<48719b0f-1a7f-47f9-948a-c981a0a29b41@linaro.org>
-	<D1T10API5U80.1OKB56YTFGMTN@kernel.org> <874ja6aszh.fsf@geanix.com>
-	<1d683b33-16db-4d81-92cb-d98e35b87cba@linaro.org>
-Date: Fri, 07 Jun 2024 15:30:49 +0200
-Message-ID: <87le3g283a.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Fri, 07 Jun 2024 15:37:03 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-42160f2dc32so13146575e9.3
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Jun 2024 08:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1717774617; x=1718379417; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4WFHGyOf2WCg/AHCXQoRe0OOLDlNcvfZjAFHn1msRSw=;
+        b=OZMadpBsN8F9MWDVmJsi94S02rH3wNjOK/2O+lkGiG985Q6msH9Cs5Bpg8SiK6Vf5L
+         2B5MClTYWGT7K/AxEwja2Jjkc/BSlFqTJSCoBw5LleIJ7w38rZ+Sa35NXTBBcTQVxJ2d
+         wRo9zA4hYKwkfHxpXToGJCG19jx6pC3dMiUAWKDkV3wJLFh2pE2zFSF4sNZ/AEaK4lec
+         3MNOee6/VjEFZje79EKqBwWTjD3JBcytGE9YAkMLmGGP6ev2iQphjs/L1e8xb2KOZhau
+         JeolbJVS0n8G5jMDYQQgoD+OGgRMdwwDTXkUjalsMiLx7F9C5Vmr0FMzj8bI1ryf2siZ
+         qmsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717774617; x=1718379417;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4WFHGyOf2WCg/AHCXQoRe0OOLDlNcvfZjAFHn1msRSw=;
+        b=EK0hnPyG7EfqnF7pcYwwuNICpKm+wBJ7/bvrUzGxo54bQ0Tpqz3nFjjFrgPvv+W1uK
+         EPWCWAKTMsYPpwCgTlPPMe8FyPEfRQFdTwBt/V9Munp1xejewozCYmApGuvX9UYSlJYz
+         r3J5HH6BIwztU+hHbRU9pFrOdMig4O03VjaR7MM8P5WxfGDQ7/IDH5DT982WwSx2NV5g
+         ugNetlpe23UIoFM9rXAZBmHM5+FWc89PfweZ6gfuMfLCaF7nJwIHrNsJCwqphp0wBRho
+         E9ORtHesUxqhzYuPKCsZrASjTkOs1uHZiE8H+p1Syl2QfhIZkIXhZaImcHpUPdXeA5TP
+         EdhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWG/T+T+M3Y3ZCnEFxoNAhfPoBZcvBt0YmbUMYsYebJ3t2Ju9/pY/bELnBaWoY8u5KJzCTYXcWP7tcNkpd+X9kU3hiCzA7y3e/s3mnTIA==
+X-Gm-Message-State: AOJu0YxvZZj5JVqj2FNjwilOOjWxsK94gSiyOl9nRqP8VgYgAEoN8bM3
+	MwPNj+QRltMuuraBEvNisl/vFfm/dPki4fjbve/FeoY5ZyvjnEVuRMohSgdXJAY=
+X-Google-Smtp-Source: AGHT+IEDldfKJ9oi/vJP0wgtmawveExjpCYHaZ1+MQjCvlUC+KOjWN7/r5DIQyvHKU1HK5ctc+JgNw==
+X-Received: by 2002:a05:600c:444b:b0:420:29a8:ff5e with SMTP id 5b1f17b1804b1-42164a0c1c9mr25925175e9.19.1717774617356;
+        Fri, 07 Jun 2024 08:36:57 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-4215f89aacfsm48862905e9.42.2024.06.07.08.36.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Jun 2024 08:36:56 -0700 (PDT)
+Message-ID: <7cc32596-8af0-43ff-91fd-59264d0a29ac@linaro.org>
+Date: Fri, 7 Jun 2024 16:36:55 +0100
 MIME-Version: 1.0
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27299/Fri Jun  7 10:27:20 2024)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 07/17] misc: eeprom: at25: Change nvmem reg_read/write
+ return type
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Joy Chakraborty <joychakr@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Bingbu Cao <bingbu.cao@intel.com>, Zhihao Cheng <chengzhihao1@huawei.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-usb@vger.kernel.org, manugautam@google.com
+References: <20240605175953.2613260-1-joychakr@google.com>
+ <20240605175953.2613260-8-joychakr@google.com>
+ <f98a1d8f-e936-4798-8447-c642e8fe11d5@moroto.mountain>
+Content-Language: en-US
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <f98a1d8f-e936-4798-8447-c642e8fe11d5@moroto.mountain>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_063056_039063_A0CC4D2E 
-X-CRM114-Status: GOOD (  30.90  )
+X-CRM114-CacheID: sfid-20240607_083701_465750_BFEEBCA7 
+X-CRM114-Status: GOOD (  10.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,138 +105,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Tudor Ambarus <tudor.ambarus@linaro.org> writes:
 
-> On 6/6/24 18:20, Esben Haabendal wrote:
->> "Michael Walle" <mwalle@kernel.org> writes:
->> 
->>> On Thu Jun 6, 2024 at 4:52 PM CEST, Tudor Ambarus wrote:
->>>> On 6/6/24 14:59, Michael Walle wrote:
->>>>> On Thu Jun 6, 2024 at 3:31 PM CEST, Tudor Ambarus wrote:
->>>>>> On 6/3/24 14:09, Esben Haabendal wrote:
->>>>>>> A dedicated flag for triggering call to
->>>>>>> spi_nor_sfdp_init_params_deprecated() allows enabling optional SFDP read
->>>>>>> and parse, with fallback to legacy flash parameters, without having dual,
->>>>>>> quad or octal parameters set in the legacy flash parameters.
->>>>>>>
->>>>>>> With this, spi-nor flash parts without SFDP that is replaced with a
->>>>>>> different flash NOR flash part that does have SFDP, but shares the same
->>>>>>> manufacturer and device ID is easily handled.
->>>>>>>
->>>>>>> Signed-off-by: Esben Haabendal <esben@geanix.com>
->>>>>>> ---
->>>>>>>  drivers/mtd/spi-nor/core.c | 3 ++-
->>>>>>>  drivers/mtd/spi-nor/core.h | 1 +
->>>>>>>  2 files changed, 3 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->>>>>>> index 3e1f1913536b..1c4d66fc993b 100644
->>>>>>> --- a/drivers/mtd/spi-nor/core.c
->>>>>>> +++ b/drivers/mtd/spi-nor/core.c
->>>>>>> @@ -2933,7 +2933,8 @@ static void spi_nor_init_params_deprecated(struct spi_nor *nor)
->>>>>>>  
->>>>>>>  	spi_nor_manufacturer_init_params(nor);
->>>>>>>  
->>>>>>> -	if (nor->info->no_sfdp_flags & (SPI_NOR_DUAL_READ |
->>>>>>> +	if (nor->info->no_sfdp_flags & (SPI_NOR_TRY_SFDP |
->>>>>>
->>>>>> I don't like that we update deprecated methods. The solution though is
->>>>>> elegant.
->>>>>
->>>>> I actually had the same concern. But currently there is no
->>>>> non-deprecated way to handle this case, right?
->>>>>
->>>>> Right now we have the following cases:
->>>>>  (1) pure SFDP parsing
->>>>>  (2) non-SFDP flashes with static configuration only
->>>>>  (3) legacy implementation, where the magic flags decide whether we
->>>>>      use SFDP
->>>>>
->>>>> Which case is eventually used depends on the ID of the flash -
->>>>> assuming there will only be IDs which either fall into (1) *or* (2).
->>>>> That assumption is clearly wrong :)
->>>>>
->>>>> I'd propose a new case in spi_nor_init_params()
->>>>>  (4) try SFDP with a fallback to the static flags from the
->>>>>      flash_info db.
->>>>>
->>>>
->>>> that's not that bad, but I would avoid doing it if it's not common. You
->>>> also have to update the core a bit, you can't use no_sfdp_flags &
->>>> TRY_SFDP, it's misleading. Does it worth it?
->>>
->>> IMHO no_sfdp_flags is the correct place (maybe TRY_SFDP is wrong,
->>> maybe SFDP_FALLBACK?)
->> 
->> TRY_SFDP might not be the best choice. But SFDP_FALLBACK sounds to me
->> like it is fallback _to_ SFDP, so rather counter-intuitive.
->> 
->>> because the flash is first treated like in
->>> case (2). Then SFDP is tried based on that flag.
->> 
->> It is first treated like in case (2), and then tried for case (1),
->> falling back to the result from case (2) if/when case (1) fails.
->> 
->>> Is it worth it? I
->>> don't know, Esben is doing the development here ;) So up to him.
->> 
->> I am not sure exactly how it should look like, but I do like the idea
->> proposed above, case (4). It is easier to describe and understand than
->> the current legacy implementation.
->> 
->>>> I won't oppose too much, but to me it feels that we're trying to keep
->>>> alive a dead man.
->>>
->>> Maybe, but we'd have a readily solution if we face a similar
->>> problem in the future. I'm really not sure, how many flashes there
->>> are, but I think these magic bits (which tells the legacy
->>> implementation to try SFDP) will mask quite a few of these.
->>> I.e. in an ideal world where we could finally drop case (3) and
->>> you'd need to split the flashes between case (1) or (2), I think
->>> there will be quite some in (4).
->> 
->> I like this. Judging by the way Macronix is handling this particular
->> chip, I strongly assume that there are several other examples of this
->> for other Macronix parts. Of-course, as long as the original part using
->> the particular flash id supported SFDP, and all later flashes using the
->> same id also does, none of this is needed.
->
-> okay, let's implement 4/
 
-Great. Let's do that.
+On 06/06/2024 09:41, Dan Carpenter wrote:
+> So the original bug was that rmem_read() is returning positive values
+> on success instead of zero[1].  That started a discussion about partial
+> reads which resulted in changing the API to support partial reads[2].
+> That patchset broke the build.  This patchset is trying to fix the
+> build breakage.
+> 
+> [1]https://lore.kernel.org/all/20240206042408.224138-1-joychakr@google.com/
+> [2]https://lore.kernel.org/all/20240510082929.3792559-2-joychakr@google.com/
+> 
+> The bug in rmem_read() is still not fixed.  That needs to be fixed as
+> a stand alone patch.  We can discuss re-writing the API separately.
+I agree with Dan, Lets fix the rmem_read and start working on the API 
+rework in parallel.
 
-But other than avoiding the "magic flags decide whether we use SFDP",
-should I be doing anything different?
+Am happy to pick the [1].
 
-I assume we should still be calling the default_init() fixup functions,
-both for manufacturer and flash level. Or should we leave this for the
-deprecated case only?
 
-If the semantics is basically the same as for the deprecated, why not
-simply change the implementation of the deprecated approach to what we
-need? So having 3 cases:
-
-(1) SFDP only [indicated by size==0]
-(2) static config only [indicated by no_sfdp_flags & SPI_NOR_SKIP_SFDP]
-(3) SFDP with fallback to static config [indicated with size!=0 and
-    !(no_sfdp_flags & SPI_NOR_SKIP_SFDP]
-
-Any reason that we should not be able to easily convert existing
-depracted flash info specifications to the new SFDP with fallback to
-static config?
-
-Also I am wondering if anyone can remember or otherwise figure out why
-we are doing this memcpy() dance with nor->params in
-spi_nor_sfdp_init_params_deprecated()? Why not simply call
-spi_nor_parse_sfdp() before
-spi_nor_no_sfdp_init_params()/spi_nor_manufacturer_init_params()?
-
-/Esben
+--srini
 
 ______________________________________________________
 Linux MTD discussion mailing list
