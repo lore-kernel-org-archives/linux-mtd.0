@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85191C27C53
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73D94C27C65
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 05:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h9xo3z08jAQSCrPHYXXl8kZ5JtAp0IqJ+KyLMLm4JII=; b=YmYMaWKi3VAZim
-	ulN8aiL7x/dKp3+GPsjEK2vtSmUEhzhlCSWLLcvrSRnlYLpsIDuvOq5iSjMZrcAodFHITwP944GbQ
-	HCE7dg3klEljrjgL44c8QwO+IHlLhN4EuVHw1CR1sMx1EXQ6BvTUcmLYjwWocxbdrBOWigegbu2wg
-	Xeb+3yqMgoZd41mxJWrnkoLVw+tE2H+AnNe1ms6v+P1Vc4+jHYfC8vNL3NhZiTiMfs73+F1pLcHgG
-	Ib5wZWQHJFPHt7zBtaFfcQu7tWukJ2wgNN373OGL5FGEgKGXn+11tvjGTLrecVlbRUdge+Ke2UjQS
-	0uFOuTCOKoidyiRjmB8g==;
+	List-Owner; bh=ejVIugrOq6/bG+E8n8XdVzUGv2DODtiQAo/KkPvBbS4=; b=S2Qnjjgd8OlCdG
+	3JmbhUNVWq9mJXZoQz//yxOFVlC4M8okyvMhr5TTyw3TWKw7nIzgFDpWh9QbiFGJMJxanLvGpwbhp
+	wxj+hhs5PzYOqfspugw4ElELSbP2zOXYJa9GD01AFbJMLhdoZEwjh9+yuTiilXCV9Yoavm01wTvs7
+	/fTfJcFBq4SSzlu+U/nfGEaqo9AoUdIiX7YtAYeJIoftJj+gkIdD2V5/IHVdayZr2IGfdo4qWvP2N
+	+kac2e7kfyBYYm5ySUmvPR1bNKI8AtP/q35Xs2UyqFeBTALN+aZawG/sBJSl69ly2CHB5KcW+SBKx
+	gRRe1QDO5YUC57fmckhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFSDh-0000000CV7I-2bWB;
-	Fri, 07 Jun 2024 05:32:57 +0000
+	id 1sFSDl-0000000CVB3-1d14;
+	Fri, 07 Jun 2024 05:33:01 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCV-0000000CGrE-0rmj
+	id 1sFRCU-0000000CGr3-3dxc
 	for linux-mtd@bombadil.infradead.org;
 	Fri, 07 Jun 2024 04:27:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=WRuEVPa0ME5xWPL7EGdw5lN7RL07gFD0lL0pc7iNBq8=; b=j6F+C42b5x90lcgO/VSSDmIZjW
-	IeVBr+De7Xb3ublkQTD/W4eJwFM27zIj4S2BAoFQK0s9QU2ksE4BtbpmqpAdXJv/UForIFlfzWE8M
-	dNIAR0SpuGH61N7mHRTaP0fKdZXoxxl+VcR2K9UlnzGYrSHk57tGLOIUCchOUVoZotBXAI2pO9FtJ
-	tVAnzZ0eMs+RvoVvQBxhvCluABYQQnaLZB9QnUXcY0XjUXyto19RBH982t+vhjdp/uksg1UdwVpNg
-	OIKEsmRS/nGaWLCE0ENmzmDFrNmfwJW0LN/pCUaqdBOIgsOi/SdO5JSIqaxBF0E01ExhFgUGYRE73
-	ICaAKnKQ==;
+	bh=ZUAr1ufFUsEm4sWui1HFEKc7WyQ9zaC1fX1tBHYuVyk=; b=bYWcozPC9HcAAWHl6Ko0IE41rD
+	isn/uYnj9VsZiz6SOkV9Mj1pu4C1hHSebLPgieW46rURjmbRMbSUR/TQ/bOs61yT1pE8Ro77MJB6G
+	s5lRP10ehQUxb+eDOeWvS+qr0I7YoH22LJveU/CxinNsmvIAN+9Im58sdRs3AVrbKZ/59eF0lM8J9
+	o3PJL4nVKQ8X1Sptg0ENvaIrkdZF5euhYBis3Y+niQtgoeIMEzjFoGRQcT07sKwhYfuETw///YVxZ
+	U4PUNK4a9PwI/lMkFZ6iTnnGXM28E4t5ZrZ4Xb8ou/VkHIjsiggBpxQ/9cgkVahoXpcX/I/4pFeHz
+	9sN07j9w==;
 Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCN-00000004Tsj-0rVe
+	id 1sFRCN-00000004Tsd-0pY4
 	for linux-mtd@lists.infradead.org;
 	Fri, 07 Jun 2024 04:27:37 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSn50h7pzdZdd;
-	Fri,  7 Jun 2024 12:26:01 +0800 (CST)
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VwSn46w8QzdZdG;
+	Fri,  7 Jun 2024 12:26:00 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 03E8C180085;
-	Fri,  7 Jun 2024 12:27:26 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id D8923180085;
+	Fri,  7 Jun 2024 12:27:25 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:12 +0800
+ 2024 12:27:11 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 062/110] fsck.ubifs: Add file organization realization
-Date: Fri, 7 Jun 2024 12:25:27 +0800
-Message-ID: <20240607042615.2069840-63-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 060/110] fsck.ubifs: Load filesystem information from UBI volume
+Date: Fri, 7 Jun 2024 12:25:25 +0800
+Message-ID: <20240607042615.2069840-61-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -68,8 +68,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052732_005464_FD5F7E75 
-X-CRM114-Status: GOOD (  18.60  )
+X-CRM114-CacheID: sfid-20240607_052732_012259_073BD2B6 
+X-CRM114-Status: GOOD (  17.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,380 +86,227 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order to check the consistency of each file and the reachability of
-the whole dentry tree, fsck orginizes all nodes into files. And the
-final recovered file(xattr is treated as a file) is organized as:
-   (rbtree, inum indexed)
-        /    \
-     file1   file2
-     /    \
-  file3  file4
-
-file {
-        inode node // each file has 1 inode node
-        dentry (sub rb_tree, sqnum indexed) // '/' has no dentries,
-                                            // otherwise at least 1
-                                            // dentry is required.
-        trun node // the newest one truncation node
-        data (sub rb_tree, block number indexed) // Each file may have 0
-                                                 // or many data nodes
-	xattrs (sub rb_tree, inum indexed) // Each file may have 0 or
-                                           // many xattr files
-}
-
-Each file from file rb_tree is constructed by scanning nodes(eg. inode,
-dentry, etc.) from the TNC or the UBI volume. File's xattrs will be
-initialized in subsequent steps.
+Load filesystem information from UBI volume (Similar to UBIFS mounting
+process), initialize kinds of buffers and read superblock. This is the
+base step for both fsck and rebuild_fs. Subsequent pacthes will complete
+this step by adding more steps(eg. read master, replay journal, etc.)
+which are only used in fsck.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/fsck.ubifs/extract_files.c | 275 +++++++++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h    |  43 ++++++
- 2 files changed, 318 insertions(+)
+ ubifs-utils/Makemodule.am           |   3 +-
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c |   7 ++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h |   7 ++
+ ubifs-utils/fsck.ubifs/load_fs.c    | 127 ++++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/problem.c    |   4 +-
+ 5 files changed, 146 insertions(+), 2 deletions(-)
+ create mode 100644 ubifs-utils/fsck.ubifs/load_fs.c
 
-diff --git a/ubifs-utils/fsck.ubifs/extract_files.c b/ubifs-utils/fsck.ubifs/extract_files.c
-index dd52ef84..58aa9db8 100644
---- a/ubifs-utils/fsck.ubifs/extract_files.c
-+++ b/ubifs-utils/fsck.ubifs/extract_files.c
-@@ -403,3 +403,278 @@ bool parse_trun_node(struct ubifs_info *c, int lnum, int offs, void *node,
- out:
- 	return valid;
- }
+diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
+index faff911f..864271ab 100644
+--- a/ubifs-utils/Makemodule.am
++++ b/ubifs-utils/Makemodule.am
+@@ -80,7 +80,8 @@ fsck_ubifs_SOURCES = \
+ 	$(libubifs_SOURCES) \
+ 	ubifs-utils/fsck.ubifs/fsck.ubifs.h \
+ 	ubifs-utils/fsck.ubifs/fsck.ubifs.c \
+-	ubifs-utils/fsck.ubifs/problem.c
++	ubifs-utils/fsck.ubifs/problem.c \
++	ubifs-utils/fsck.ubifs/load_fs.c
+ 
+ fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
+ fsck_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index 36a8e061..9bc9c259 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -423,8 +423,15 @@ int main(int argc, char *argv[])
+ 		goto out_destroy_fsck;
+ 	}
+ 
++	/* Init: Read superblock */
++	err = ubifs_load_filesystem(c);
++	if (err)
++		goto out_close;
 +
-+/**
-+ * insert_file_dentry - insert dentry according to scanned dent node.
-+ * @file: file object
-+ * @n_dent: scanned dent node
+ 	err = do_fsck();
+ 
++	ubifs_destroy_filesystem(c);
++out_close:
+ 	ubifs_close_volume(c);
+ out_destroy_fsck:
+ 	destroy_fsck_info(c);
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index 53dc5ff0..eb365b1a 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -36,6 +36,9 @@
+ enum { NORMAL_MODE = 0, SAFE_MODE, DANGER_MODE0,
+        DANGER_MODE1, REBUILD_MODE, CHECK_MODE };
+ 
++/* Types of inconsistent problems */
++enum { SB_CORRUPTED = 0 };
++
+ /**
+  * struct ubifs_fsck_info - UBIFS fsck information.
+  * @mode: working mode
+@@ -96,4 +99,8 @@ extern int exit_code;
+ /* problem.c */
+ bool fix_problem(const struct ubifs_info *c, int problem_type);
+ 
++/* load_fs.c */
++int ubifs_load_filesystem(struct ubifs_info *c);
++void ubifs_destroy_filesystem(struct ubifs_info *c);
++
+ #endif
+diff --git a/ubifs-utils/fsck.ubifs/load_fs.c b/ubifs-utils/fsck.ubifs/load_fs.c
+new file mode 100644
+index 00000000..4a06b4c2
+--- /dev/null
++++ b/ubifs-utils/fsck.ubifs/load_fs.c
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
 + *
-+ * Insert file dentry information. Returns zero in case of success, a
-+ * negative error code in case of failure.
++ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
 + */
-+static int insert_file_dentry(struct scanned_file *file,
-+			      struct scanned_dent_node *n_dent)
-+{
-+	struct scanned_dent_node *dent;
-+	struct rb_node **p, *parent = NULL;
 +
-+	p = &file->dent_nodes.rb_node;
-+	while (*p) {
-+		parent = *p;
-+		dent = rb_entry(parent, struct scanned_dent_node, rb);
-+		if (n_dent->header.sqnum < dent->header.sqnum)
-+			p = &(*p)->rb_left;
-+		else
-+			p = &(*p)->rb_right;
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "bitops.h"
++#include "kmem.h"
++#include "ubifs.h"
++#include "defs.h"
++#include "debug.h"
++#include "key.h"
++#include "misc.h"
++#include "fsck.ubifs.h"
++
++int ubifs_load_filesystem(struct ubifs_info *c)
++{
++	int err;
++	size_t sz;
++
++	err = init_constants_early(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		return err;
 +	}
 +
-+	dent = kmalloc(sizeof(struct scanned_dent_node), GFP_KERNEL);
-+	if (!dent)
-+		return -ENOMEM;
++	err = check_volume_empty(c);
++	if (err <= 0) {
++		exit_code |= FSCK_ERROR;
++		log_err(c, 0, "%s UBI volume!", err < 0 ? "bad" : "empty");
++		return -EINVAL;
++	}
 +
-+	*dent = *n_dent;
-+	rb_link_node(&dent->rb, parent, p);
-+	rb_insert_color(&dent->rb, &file->dent_nodes);
++	if (c->ro_media && !c->ro_mount) {
++		exit_code |= FSCK_ERROR;
++		log_err(c, 0, "cannot read-write on read-only media");
++		return -EROFS;
++	}
 +
-+	return 0;
-+}
++	err = -ENOMEM;
++	c->bottom_up_buf = kmalloc_array(BOTTOM_UP_HEIGHT, sizeof(int),
++					 GFP_KERNEL);
++	if (!c->bottom_up_buf) {
++		exit_code |= FSCK_ERROR;
++		log_err(c, errno, "cannot allocate bottom_up_buf");
++		goto out_free;
++	}
 +
-+/**
-+ * update_file_data - insert/update data according to scanned data node.
-+ * @c: UBIFS file-system description object
-+ * @file: file object
-+ * @n_dn: scanned data node
-+ *
-+ * Insert or update file data information. Returns zero in case of success,
-+ * a negative error code in case of failure.
-+ */
-+static int update_file_data(struct ubifs_info *c, struct scanned_file *file,
-+			    struct scanned_data_node *n_dn)
-+{
-+	int cmp;
-+	struct scanned_data_node *dn, *o_dn = NULL;
-+	struct rb_node **p, *parent = NULL;
++	c->sbuf = vmalloc(c->leb_size);
++	if (!c->sbuf) {
++		exit_code |= FSCK_ERROR;
++		log_err(c, errno, "cannot allocate sbuf");
++		goto out_free;
++	}
 +
-+	p = &file->data_nodes.rb_node;
-+	while (*p) {
-+		parent = *p;
-+		dn = rb_entry(parent, struct scanned_data_node, rb);
-+		cmp = keys_cmp(c, &n_dn->key, &dn->key);
-+		if (cmp < 0) {
-+			p = &(*p)->rb_left;
-+		} else if (cmp > 0) {
-+			p = &(*p)->rb_right;
-+		} else {
-+			o_dn = dn;
-+			break;
++	if (!c->ro_mount) {
++		c->ileb_buf = vmalloc(c->leb_size);
++		if (!c->ileb_buf) {
++			exit_code |= FSCK_ERROR;
++			log_err(c, errno, "cannot allocate ileb_buf");
++			goto out_free;
 +		}
 +	}
 +
-+	if (o_dn) {
-+		/* found data node with same block no. */
-+		if (o_dn->header.sqnum < n_dn->header.sqnum) {
-+			o_dn->header = n_dn->header;
-+			o_dn->size = n_dn->size;
-+		}
++	c->mounting = 1;
 +
-+		return 0;
++	log_out(c, "Read superblock");
++	err = ubifs_read_superblock(c);
++	if (err) {
++		if (test_and_clear_failure_reason_callback(c, FR_DATA_CORRUPTED))
++			fix_problem(c, SB_CORRUPTED);
++		exit_code |= FSCK_ERROR;
++		goto out_mounting;
 +	}
 +
-+	dn = kmalloc(sizeof(struct scanned_data_node), GFP_KERNEL);
-+	if (!dn)
-+		return -ENOMEM;
++	err = init_constants_sb(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		goto out_mounting;
++	}
 +
-+	*dn = *n_dn;
-+	INIT_LIST_HEAD(&dn->list);
-+	rb_link_node(&dn->rb, parent, p);
-+	rb_insert_color(&dn->rb, &file->data_nodes);
++	sz = ALIGN(c->max_idx_node_sz, c->min_io_size) * 2;
++	c->cbuf = kmalloc(sz, GFP_NOFS);
++	if (!c->cbuf) {
++		err = -ENOMEM;
++		exit_code |= FSCK_ERROR;
++		log_err(c, errno, "cannot allocate cbuf");
++		goto out_mounting;
++	}
++
++	err = alloc_wbufs(c);
++	if (err) {
++		exit_code |= FSCK_ERROR;
++		log_err(c, 0, "cannot allocate wbuf");
++		goto out_mounting;
++	}
++
++	c->mounting = 0;
 +
 +	return 0;
-+}
 +
-+/**
-+ * update_file - update file information.
-+ * @c: UBIFS file-system description object
-+ * @file: file object
-+ * @sn: scanned node
-+ * @key_type: type of @sn
-+ *
-+ * Update inode/dent/truncation/data node information of @file. Returns
-+ * zero in case of success, a negative error code in case of failure.
-+ */
-+static int update_file(struct ubifs_info *c, struct scanned_file *file,
-+		       struct scanned_node *sn, int key_type)
-+{
-+	int err = 0;
++out_mounting:
++	c->mounting = 0;
++out_free:
++	kfree(c->cbuf);
++	kfree(c->ileb_buf);
++	kfree(c->sbuf);
++	kfree(c->bottom_up_buf);
++	kfree(c->sup_node);
 +
-+	switch (key_type) {
-+	case UBIFS_INO_KEY:
-+	{
-+		struct scanned_ino_node *o_ino, *n_ino;
-+
-+		o_ino = &file->ino;
-+		n_ino = (struct scanned_ino_node *)sn;
-+		if (o_ino->header.exist && o_ino->header.sqnum > sn->sqnum)
-+			goto out;
-+
-+		*o_ino = *n_ino;
-+		break;
-+	}
-+	case UBIFS_DENT_KEY:
-+	case UBIFS_XENT_KEY:
-+	{
-+		struct scanned_dent_node *dent = (struct scanned_dent_node *)sn;
-+
-+		err = insert_file_dentry(file, dent);
-+		break;
-+	}
-+	case UBIFS_DATA_KEY:
-+	{
-+		struct scanned_data_node *dn = (struct scanned_data_node *)sn;
-+
-+		err = update_file_data(c, file, dn);
-+		break;
-+	}
-+	case UBIFS_TRUN_KEY:
-+	{
-+		struct scanned_trun_node *o_trun, *n_trun;
-+
-+		o_trun = &file->trun;
-+		n_trun = (struct scanned_trun_node *)sn;
-+		if (o_trun->header.exist && o_trun->header.sqnum > sn->sqnum)
-+			goto out;
-+
-+		*o_trun = *n_trun;
-+		break;
-+	}
-+	default:
-+		err = -EINVAL;
-+		log_err(c, 0, "unknown key type %d", key_type);
-+	}
-+
-+out:
 +	return err;
 +}
 +
-+/**
-+ * insert_or_update_file - insert or update file according to scanned node.
-+ * @c: UBIFS file-system description object
-+ * @file_tree: tree of all scanned files
-+ * @sn: scanned node
-+ * @key_type: key type of @sn
-+ * @inum: inode number
-+ *
-+ * According to @sn, this function inserts file into the tree, or updates
-+ * file information if it already exists in the tree. Returns zero in case
-+ * of success, a negative error code in case of failure.
-+ */
-+int insert_or_update_file(struct ubifs_info *c, struct rb_root *file_tree,
-+			  struct scanned_node *sn, int key_type, ino_t inum)
++void ubifs_destroy_filesystem(struct ubifs_info *c)
 +{
-+	int err;
-+	struct scanned_file *file, *old_file = NULL;
-+	struct rb_node **p, *parent = NULL;
++	free_wbufs(c);
 +
-+	p = &file_tree->rb_node;
-+	while (*p) {
-+		parent = *p;
-+		file = rb_entry(parent, struct scanned_file, rb);
-+		if (inum < file->inum) {
-+			p = &(*p)->rb_left;
-+		} else if (inum > file->inum) {
-+			p = &(*p)->rb_right;
-+		} else {
-+			old_file = file;
-+			break;
-+		}
-+	}
-+	if (old_file)
-+		return update_file(c, old_file, sn, key_type);
-+
-+	file = kzalloc(sizeof(struct scanned_file), GFP_KERNEL);
-+	if (!file)
-+		return -ENOMEM;
-+
-+	file->inum = inum;
-+	file->dent_nodes = RB_ROOT;
-+	file->data_nodes = RB_ROOT;
-+	file->xattr_files = RB_ROOT;
-+	INIT_LIST_HEAD(&file->list);
-+	err = update_file(c, file, sn, key_type);
-+	if (err) {
-+		kfree(file);
-+		return err;
-+	}
-+	rb_link_node(&file->rb, parent, p);
-+	rb_insert_color(&file->rb, file_tree);
-+
-+	return 0;
++	kfree(c->cbuf);
++	kfree(c->ileb_buf);
++	kfree(c->sbuf);
++	kfree(c->bottom_up_buf);
++	kfree(c->sup_node);
 +}
-+
-+/**
-+ * destroy_file_content - destroy scanned data/dentry nodes in give file.
-+ * @c: UBIFS file-system description object
-+ * @file: file object
-+ *
-+ * Destroy all data/dentry nodes and xattrs attached to @file.
-+ */
-+void destroy_file_content(struct ubifs_info *c, struct scanned_file *file)
-+{
-+	struct scanned_data_node *data_node;
-+	struct scanned_dent_node *dent_node;
-+	struct scanned_file *xattr_file;
-+	struct rb_node *this;
-+
-+	this = rb_first(&file->data_nodes);
-+	while (this) {
-+		data_node = rb_entry(this, struct scanned_data_node, rb);
-+		this = rb_next(this);
-+
-+		rb_erase(&data_node->rb, &file->data_nodes);
-+		kfree(data_node);
-+	}
-+
-+	this = rb_first(&file->dent_nodes);
-+	while (this) {
-+		dent_node = rb_entry(this, struct scanned_dent_node, rb);
-+		this = rb_next(this);
-+
-+		rb_erase(&dent_node->rb, &file->dent_nodes);
-+		kfree(dent_node);
-+	}
-+
-+	this = rb_first(&file->xattr_files);
-+	while (this) {
-+		xattr_file = rb_entry(this, struct scanned_file, rb);
-+		this = rb_next(this);
-+
-+		ubifs_assert(c, !rb_first(&xattr_file->xattr_files));
-+		destroy_file_content(c, xattr_file);
-+		rb_erase(&xattr_file->rb, &file->xattr_files);
-+		kfree(xattr_file);
-+	}
-+}
-+
-+/**
-+ * destroy_file_tree - destroy files from a given tree.
-+ * @c: UBIFS file-system description object
-+ * @file_tree: tree of all scanned files
-+ *
-+ * Destroy scanned files from a given tree.
-+ */
-+void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree)
-+{
-+	struct scanned_file *file;
-+	struct rb_node *this;
-+
-+	this = rb_first(file_tree);
-+	while (this) {
-+		file = rb_entry(this, struct scanned_file, rb);
-+		this = rb_next(this);
-+
-+		destroy_file_content(c, file);
-+
-+		rb_erase(&file->rb, file_tree);
-+		kfree(file);
-+	}
-+}
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 3511d90e..80d3af84 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -136,6 +136,45 @@ struct scanned_trun_node {
+diff --git a/ubifs-utils/fsck.ubifs/problem.c b/ubifs-utils/fsck.ubifs/problem.c
+index 9a8c2e06..acb9e45e 100644
+--- a/ubifs-utils/fsck.ubifs/problem.c
++++ b/ubifs-utils/fsck.ubifs/problem.c
+@@ -34,7 +34,9 @@ struct fsck_problem {
+ 	const char *desc;
  };
  
- /**
-+ * scanned_file - file info scanned from UBIFS volume.
-+ *
-+ * @calc_nlink: calculated count of directory entries refer this inode
-+ * @calc_xcnt: calculated count of extended attributes
-+ * @calc_xsz: calculated summary size of all extended attributes
-+ * @calc_xnms: calculated sum of lengths of all extended attribute names
-+ * @calc_size: calculated file size
-+ * @has_encrypted_info: whether the file has encryption related xattrs
-+ *
-+ * @inum: inode number
-+ * @ino: inode node
-+ * @trun: truncation node
-+ *
-+ * @rb: link in the tree of all scanned files
-+ * @list: link in the list files for kinds of processing
-+ * @dent_nodes: tree of all scanned dentry nodes
-+ * @data_nodes: tree of all scanned data nodes
-+ * @xattr_files: tree of all scanned xattr files
-+ */
-+struct scanned_file {
-+	unsigned int calc_nlink;
-+	unsigned int calc_xcnt;
-+	unsigned int calc_xsz;
-+	unsigned int calc_xnms;
-+	unsigned long long calc_size;
-+	bool has_encrypted_info;
-+
-+	ino_t inum;
-+	struct scanned_ino_node ino;
-+	struct scanned_trun_node trun;
-+
-+	struct rb_node rb;
-+	struct list_head list;
-+	struct rb_root dent_nodes;
-+	struct rb_root data_nodes;
-+	struct rb_root xattr_files;
+-static const struct fsck_problem problem_table[] = {};
++static const struct fsck_problem problem_table[] = {
++	{0, "Corrupted superblock"},	// SB_CORRUPTED
 +};
-+
-+/**
-  * struct ubifs_fsck_info - UBIFS fsck information.
-  * @mode: working mode
-  * @failure_reason: reasons for failed operations
-@@ -208,5 +247,9 @@ bool parse_data_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 		     union ubifs_key *key, struct scanned_data_node *data_node);
- bool parse_trun_node(struct ubifs_info *c, int lnum, int offs, void *node,
- 		     union ubifs_key *key, struct scanned_trun_node *trun_node);
-+int insert_or_update_file(struct ubifs_info *c, struct rb_root *file_tree,
-+			  struct scanned_node *sn, int key_type, ino_t inum);
-+void destroy_file_content(struct ubifs_info *c, struct scanned_file *file);
-+void destroy_file_tree(struct ubifs_info *c, struct rb_root *file_tree);
  
- #endif
+ static void print_problem(const struct ubifs_info *c,
+ 			  const struct fsck_problem *problem)
 -- 
 2.13.6
 
