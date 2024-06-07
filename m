@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BDB3C27C53
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0334C27C65
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RXNOB8gDJmUELCV9WtRQ8RAfOX0DBH2A5ZE79x8adqc=; b=buLLvn31EDLLMp
-	8CR16PN395qYPi9XUSmBkI5mQNA1rOq2bkTgAggjNxfuYtMfBW0Yvufy6NHpMvcNcwcO0eVfgEoJA
-	6n1gdkfuXpzceK6BU83cErL52c8wv0Zn7BmMJp/JyfhnmNm83CNUVghnlOCo2mdZXg/1CMk4tU2Ln
-	q6hl196umrJW36jAB3EQI0JZy/53ynDXdQ1tlH74sZCuZUUo5qwad76PLsO8TY3494QH74etVTgRP
-	nTaJSl5r3FT3aaIS8Iaac5GJkDayGT9eoQI7Lqo8THQRNIs18zJF2TKuvhnwff+2vHC+6wDyu1vTK
-	p/HFvzOjnS9GNgZVqYDA==;
+	List-Owner; bh=NREsd+7k1pvzF2E+qklyXJ5IxN1wAl4RlSA75qK02g4=; b=R7D7u/jgh72SGX
+	g2Mm5WyGdDucXfFal2wYlngG7DPCiPMZ8jEajCipw489b7KUJ2FNd30oW7x5eU1xVneI1ugIGY5CF
+	Mb9QQr9Ysz5NAqpkchzFH3Ju5lLayvP6xBBhfdcT+WV2Fcz8xjeQrKCOmBdLPOLNDlgcHqTV7PQfp
+	Ryghwtqnw5kw02+gZvsFMu7B6XlDmZhgSZg7pbPqPcUBSbl5nOHB4bF9+QEItG22eq5AfbqjL6SWy
+	i856yFLVdXVZTfKi2lqppN73oLXohhYyy8oql93zB4eZGT1Y4cTahnSGDhOhJ7xjUUHSarVJB2o36
+	Oryd2ihZItmLIhhfPmJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRFg-0000000CJKo-08YV;
-	Fri, 07 Jun 2024 04:30:56 +0000
+	id 1sFRFj-0000000CJMv-1pGx;
+	Fri, 07 Jun 2024 04:30:59 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCi-0000000CH1t-21yZ
+	id 1sFRCj-0000000CH34-3wYf
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 07 Jun 2024 04:27:52 +0000
+	Fri, 07 Jun 2024 04:27:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
 	:Reply-To:Content-ID:Content-Description;
-	bh=iviqPQmmJATCICoKEN3ICm/ZgBrdDILWJfzTpziudMg=; b=jOG0CdAD/SHnbXYCHtb9DcHkl3
-	AmHMT6COjUvtRF+2cVnMLHuO1n5wC2RCLEdwPDVIwn5J/rmEQ1kwqkZ7G9SlItXlJXZMgTzgf0SqI
-	4f2coAuAEBI1GxF4g9nQ5uHQcnnJToLQ5DA0XccwwihN0B9e9+onKlw8iQtU2LftfgJmJKsBq0jcq
-	X//DTgbrvehVhi0G5qvL+U4b8WnEAkw96pNToNHKTE5iDpCTVgvW0ZB7yLQFzAR8GwD2B4qXydUNI
-	wdcH8TeQFYzTIarvg9wNbNMFSNBIf/J8Cb9QBV9Y/OodSvZJiSa73x+mrhxq6dTbR0B1UD/N6o6nM
-	Vx9mBsYQ==;
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	bh=IdPM7FIpGyxf66DnbfxD/zxVQev457b3Yv3zzF6YVy4=; b=LJ034hwS2st1DMKVojIWdPn7MJ
+	l7/4orD3UPwdbMdk7xEhxIcrXuoHfeFcyqHV1x42ZP+7Y26NGOWlNPH+t9P8r3rz6pmW8BMG9GdA8
+	33mFUx9PbT5zdfelpMc3UCxZ42GO5onCmVFfWcd+t4/lzunhgwRYlrQ0GrPams/LoSxeFIFRdtkgq
+	f7ra7FeKzDXmnPdz2CVKWBSE/poEP1mhcahyAPSOP5KE9N357aPi37xEJmDnHUrYG/857jKzPknPv
+	UqoUsIYA12SyW1w1mvJsp2y1mak/VgRgHHB7S7dSnN/Mt3nkxxspNqeCIEfMVgQWhBHyhpYlHh1WQ
+	FvtDC1Dg==;
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by casper.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRCd-00000004U1A-0nQm
+	id 1sFRCg-00000004U2S-0qtq
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:51 +0000
+	Fri, 07 Jun 2024 04:27:52 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VwSlB0lXyzPpnM;
-	Fri,  7 Jun 2024 12:24:22 +0800 (CST)
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VwSkQ2HNYz1SB5B;
+	Fri,  7 Jun 2024 12:23:42 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 62E50180085;
+	by mail.maildlp.com (Postfix) with ESMTPS id 125F0180AA6;
 	Fri,  7 Jun 2024 12:27:41 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:27:32 +0800
+ 2024 12:27:28 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 089/110] fsck.ubifs: Move common functions and data structures into check_space.c
-Date: Fri, 7 Jun 2024 12:25:54 +0800
-Message-ID: <20240607042615.2069840-90-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 084/110] fsck.ubifs: Update files' size for check mode
+Date: Fri, 7 Jun 2024 12:25:49 +0800
+Message-ID: <20240607042615.2069840-85-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -68,8 +68,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240607_052747_865293_D65A477B 
-X-CRM114-Status: GOOD (  26.97  )
+X-CRM114-CacheID: sfid-20240607_052750_835948_0C96B1F9 
+X-CRM114-Status: GOOD (  13.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,677 +86,157 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a preparation for adding LPT checking support. Move some data
-structures and functions into check_space.c, also factor out some common
-functions in libubifs:
- 1. Move 'lpts' from rebuild module, make it resuable for non-rebuild_fs
-    modes.
- 2. Move function 'get_free_leb' from rebuild_fs.c, it could be reused in
-    building LPT.
- 3. Move function 'build_lpt' from rebuild_fs.c, it could be reused in
-    building LPT.
- 4. Factor out lpt nodes freeing into a new function ubifs_free_lpt_nodes.
- 5. Factor out nnode dirty marking implementations into a new function
-    ubifs_make_nnode_dirty.
- 5. Export the function of nnode number calculation, calc_nnode_num is
-    renamed as ubifs_calc_nnode_num.
- 6. Export the function of making pnode dirty, do_make_pnode_dirty is
-    renamed as ubifs_make_pnode_dirty.
- 7. Rename next_pnode_to_dirty to ubifs_find_next_pnode and export it.
- 8. Export free_buds and expend its parameters.
+This is the 7/18 step of fsck. Update files' size according to size
+tree for check mode, now all files are updated after replaying journal.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/Makemodule.am            |   3 +-
- ubifs-utils/fsck.ubifs/check_space.c |  94 ++++++++++++++++++++++++++
- ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  11 +++-
- ubifs-utils/fsck.ubifs/rebuild_fs.c  | 124 +++++++++--------------------------
- ubifs-utils/libubifs/lpt.c           |   6 +-
- ubifs-utils/libubifs/lpt_commit.c    |  97 ++++++++++++++-------------
- ubifs-utils/libubifs/super.c         |   9 ++-
- ubifs-utils/libubifs/ubifs.h         |   7 ++
- 8 files changed, 204 insertions(+), 147 deletions(-)
- create mode 100644 ubifs-utils/fsck.ubifs/check_space.c
+ ubifs-utils/fsck.ubifs/check_files.c | 45 ++++++++++++++++++++++++++++++++++++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.c  |  3 +++
+ ubifs-utils/fsck.ubifs/fsck.ubifs.h  |  1 +
+ ubifs-utils/libubifs/recovery.c      | 16 -------------
+ ubifs-utils/libubifs/ubifs.h         | 16 +++++++++++++
+ 5 files changed, 65 insertions(+), 16 deletions(-)
 
-diff --git a/ubifs-utils/Makemodule.am b/ubifs-utils/Makemodule.am
-index e12052ce..f63ca7a2 100644
---- a/ubifs-utils/Makemodule.am
-+++ b/ubifs-utils/Makemodule.am
-@@ -84,7 +84,8 @@ fsck_ubifs_SOURCES = \
- 	ubifs-utils/fsck.ubifs/load_fs.c \
- 	ubifs-utils/fsck.ubifs/extract_files.c \
- 	ubifs-utils/fsck.ubifs/rebuild_fs.c \
--	ubifs-utils/fsck.ubifs/check_files.c
-+	ubifs-utils/fsck.ubifs/check_files.c \
-+	ubifs-utils/fsck.ubifs/check_space.c
- 
- fsck_ubifs_LDADD = libmtd.a libubi.a $(ZLIB_LIBS) $(LZO_LIBS) $(ZSTD_LIBS) $(UUID_LIBS) $(LIBSELINUX_LIBS) $(OPENSSL_LIBS) -lm -lpthread
- fsck_ubifs_CPPFLAGS = $(AM_CPPFLAGS) $(ZLIB_CFLAGS) $(LZO_CFLAGS) $(ZSTD_CFLAGS) $(UUID_CFLAGS) $(LIBSELINUX_CFLAGS) \
-diff --git a/ubifs-utils/fsck.ubifs/check_space.c b/ubifs-utils/fsck.ubifs/check_space.c
-new file mode 100644
-index 00000000..f758bf1a
---- /dev/null
-+++ b/ubifs-utils/fsck.ubifs/check_space.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Huawei Technologies Co, Ltd.
-+ *
-+ * Authors: Zhihao Cheng <chengzhihao1@huawei.com>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+#include "linux_err.h"
-+#include "bitops.h"
-+#include "kmem.h"
-+#include "ubifs.h"
-+#include "defs.h"
-+#include "debug.h"
-+#include "key.h"
-+#include "misc.h"
-+#include "fsck.ubifs.h"
-+
-+/**
-+ * get_free_leb - get a free LEB according to @FSCK(c)->used_lebs.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function tries to find a free LEB, lnum is returned if found, otherwise
-+ * %-ENOSPC is returned.
-+ */
-+int get_free_leb(struct ubifs_info *c)
-+{
-+	int lnum;
-+
-+	lnum = find_next_zero_bit(FSCK(c)->used_lebs, c->main_lebs, 0);
-+	if (lnum >= c->main_lebs) {
-+		ubifs_err(c, "No space left.");
-+		return -ENOSPC;
-+	}
-+	set_bit(lnum, FSCK(c)->used_lebs);
-+	lnum += c->main_first;
-+
-+	return lnum;
-+}
-+
-+/**
-+ * build_lpt - construct LPT and write it into flash.
-+ * @c: UBIFS file-system description object
-+ * @calculate_lp_cb: callback function to calculate the properties for given LEB
-+ *
-+ * This function builds LPT according to the calculated results by
-+ * @calculate_lp_cb and writes LPT into flash. Returns zero in case of success,
-+ * a negative error code in case of failure.
-+ */
-+int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb)
-+{
-+	int i, err, lnum, free, dirty;
-+	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
-+
-+	memset(&c->lst, 0, sizeof(struct ubifs_lp_stats));
-+	/* Set gc lnum. */
-+	lnum = get_free_leb(c);
-+	if (lnum < 0)
-+		return lnum;
-+	c->gc_lnum = lnum;
-+
-+	/* Update LPT. */
-+	for (i = 0; i < c->main_lebs; i++) {
-+		err = calculate_lp_cb(c, i, &free, &dirty);
-+		if (err)
-+			return err;
-+
-+		FSCK(c)->lpts[i].free = free;
-+		FSCK(c)->lpts[i].dirty = dirty;
-+		c->lst.total_free += free;
-+		c->lst.total_dirty += dirty;
-+
-+		if (free == c->leb_size)
-+			c->lst.empty_lebs++;
-+
-+		if (FSCK(c)->lpts[i].flags & LPROPS_INDEX) {
-+			c->lst.idx_lebs += 1;
-+		} else {
-+			int spc;
-+
-+			spc = free + dirty;
-+			if (spc < c->dead_wm)
-+				c->lst.total_dead += spc;
-+			else
-+				c->lst.total_dark += ubifs_calc_dark(c, spc);
-+			c->lst.total_used += c->leb_size - spc;
-+		}
-+	}
-+
-+	/* Write LPT. */
-+	return ubifs_create_lpt(c, FSCK(c)->lpts, c->main_lebs, hash_lpt);
-+}
-diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-index 663d5dcf..011835ff 100644
---- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-+++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
-@@ -48,6 +48,9 @@ enum { SB_CORRUPTED = 0, MST_CORRUPTED, LOG_CORRUPTED, BUD_CORRUPTED,
- 
- enum { HAS_DATA_CORRUPTED = 1, HAS_TNC_CORRUPTED = 2 };
- 
-+typedef int (*calculate_lp_callback)(struct ubifs_info *c,
-+				     int index, int *free, int *dirty);
-+
- struct scanned_file;
- 
- /**
-@@ -199,14 +202,12 @@ struct invalid_file_problem {
- 
- /**
-  * ubifs_rebuild_info - UBIFS rebuilding information.
-- * @lpts: lprops table
-  * @write_buf: write buffer for LEB @head_lnum
-  * @head_lnum: current writing LEB number
-  * @head_offs: current writing position in LEB @head_lnum
-  * @need_update_lpt: whether to update lpt while writing index nodes
-  */
- struct ubifs_rebuild_info {
--	struct ubifs_lprops *lpts;
- 	void *write_buf;
- 	int head_lnum;
- 	int head_offs;
-@@ -222,6 +223,7 @@ struct ubifs_rebuild_info {
-  * @scanned_files: tree of all scanned files
-  * @used_lebs: a bitmap used for recording used lebs
-  * @disconnected_files: regular files without dentries
-+ * @lpts: lprops table
-  * @try_rebuild: %true means that try to rebuild fs when fsck failed
-  * @rebuild: rebuilding-related information
-  */
-@@ -232,6 +234,7 @@ struct ubifs_fsck_info {
- 	struct rb_root scanned_files;
- 	unsigned long *used_lebs;
- 	struct list_head disconnected_files;
-+	struct ubifs_lprops *lpts;
- 	bool try_rebuild;
- 	struct ubifs_rebuild_info *rebuild;
- };
-@@ -322,4 +325,8 @@ int handle_invalid_files(struct ubifs_info *c);
- int handle_dentry_tree(struct ubifs_info *c);
- bool tnc_is_empty(struct ubifs_info *c);
- 
-+/* check_space.c */
-+int get_free_leb(struct ubifs_info *c);
-+int build_lpt(struct ubifs_info *c, calculate_lp_callback calculate_lp_cb);
-+
- #endif
-diff --git a/ubifs-utils/fsck.ubifs/rebuild_fs.c b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-index 8fc78ce3..1161f5af 100644
---- a/ubifs-utils/fsck.ubifs/rebuild_fs.c
-+++ b/ubifs-utils/fsck.ubifs/rebuild_fs.c
-@@ -81,9 +81,9 @@ static int init_rebuild_info(struct ubifs_info *c)
- 		log_err(c, errno, "can not allocate bitmap of used lebs");
- 		goto free_rebuild;
+diff --git a/ubifs-utils/fsck.ubifs/check_files.c b/ubifs-utils/fsck.ubifs/check_files.c
+index 29848c4e..0fd6b32a 100644
+--- a/ubifs-utils/fsck.ubifs/check_files.c
++++ b/ubifs-utils/fsck.ubifs/check_files.c
+@@ -309,3 +309,48 @@ out:
  	}
--	FSCK(c)->rebuild->lpts = kzalloc(sizeof(struct ubifs_lprops) * c->main_lebs,
--					 GFP_KERNEL);
--	if (!FSCK(c)->rebuild->lpts) {
-+	FSCK(c)->lpts = kzalloc(sizeof(struct ubifs_lprops) * c->main_lebs,
-+				GFP_KERNEL);
-+	if (!FSCK(c)->lpts) {
- 		err = -ENOMEM;
- 		log_err(c, errno, "can not allocate lpts");
- 		goto free_used_lebs;
-@@ -98,7 +98,7 @@ static int init_rebuild_info(struct ubifs_info *c)
- 	return 0;
- 
- free_lpts:
--	kfree(FSCK(c)->rebuild->lpts);
-+	kfree(FSCK(c)->lpts);
- free_used_lebs:
- 	kfree(FSCK(c)->used_lebs);
- free_rebuild:
-@@ -111,7 +111,7 @@ free_sbuf:
- static void destroy_rebuild_info(struct ubifs_info *c)
- {
- 	vfree(FSCK(c)->rebuild->write_buf);
--	kfree(FSCK(c)->rebuild->lpts);
-+	kfree(FSCK(c)->lpts);
- 	kfree(FSCK(c)->used_lebs);
- 	kfree(FSCK(c)->rebuild);
- 	vfree(c->sbuf);
-@@ -496,13 +496,12 @@ static void update_lpt(struct ubifs_info *c, struct scanned_node *sn,
- 	int pos = sn->offs + ALIGN(sn->len, 8);
- 
- 	set_bit(index, FSCK(c)->used_lebs);
--	FSCK(c)->rebuild->lpts[index].end = max_t(int,
--					FSCK(c)->rebuild->lpts[index].end, pos);
-+	FSCK(c)->lpts[index].end = max_t(int, FSCK(c)->lpts[index].end, pos);
- 
- 	if (deleted)
- 		return;
- 
--	FSCK(c)->rebuild->lpts[index].used += ALIGN(sn->len, 8);
-+	FSCK(c)->lpts[index].used += ALIGN(sn->len, 8);
- }
- 
- /**
-@@ -731,28 +730,6 @@ static void init_root_ino(struct ubifs_info *c, struct ubifs_ino_node *ino)
- }
- 
- /**
-- * get_free_leb - get a free LEB according to @FSCK(c)->used_lebs.
-- * @c: UBIFS file-system description object
-- *
-- * This function tries to find a free LEB, lnum is returned if found, otherwise
-- * %-ENOSPC is returned.
-- */
--static int get_free_leb(struct ubifs_info *c)
--{
--	int lnum;
--
--	lnum = find_next_zero_bit(FSCK(c)->used_lebs, c->main_lebs, 0);
--	if (lnum >= c->main_lebs) {
--		ubifs_err(c, "No space left.");
--		return -ENOSPC;
--	}
--	set_bit(lnum, FSCK(c)->used_lebs);
--	lnum += c->main_first;
--
--	return lnum;
--}
--
--/**
-  * flush_write_buf - flush write buffer.
-  * @c: UBIFS file-system description object
-  *
-@@ -780,9 +757,9 @@ static int flush_write_buf(struct ubifs_info *c)
- 	if (FSCK(c)->rebuild->need_update_lpt) {
- 		int index = FSCK(c)->rebuild->head_lnum - c->main_first;
- 
--		FSCK(c)->rebuild->lpts[index].free = c->leb_size - len;
--		FSCK(c)->rebuild->lpts[index].dirty = pad;
--		FSCK(c)->rebuild->lpts[index].flags = LPROPS_INDEX;
-+		FSCK(c)->lpts[index].free = c->leb_size - len;
-+		FSCK(c)->lpts[index].dirty = pad;
-+		FSCK(c)->lpts[index].flags = LPROPS_INDEX;
- 	}
- 
- 	FSCK(c)->rebuild->head_lnum = -1;
-@@ -1220,7 +1197,7 @@ static int traverse_files_and_nodes(struct ubifs_info *c)
- 		lnum = i + c->main_first;
- 		dbg_fsck("re-write LEB %d, in %s", lnum, c->dev_name);
- 
--		end = FSCK(c)->rebuild->lpts[i].end;
-+		end = FSCK(c)->lpts[i].end;
- 		len = ALIGN(end, c->min_io_size);
- 
- 		err = ubifs_leb_read(c, lnum, c->sbuf, 0, len, 0);
-@@ -1247,69 +1224,28 @@ out_idx_list:
  	return err;
  }
++
++/**
++ * update_files_size - Update files' size.
++ * @c: UBIFS file-system description object
++ *
++ * This function updates files' size according to @c->size_tree for check mode.
++ */
++void update_files_size(struct ubifs_info *c)
++{
++	struct rb_node *this;
++
++	if (FSCK(c)->mode != CHECK_MODE) {
++		/* Other modes(rw) have updated inode size in place. */
++		dbg_fsck("skip updating files' size%s, in %s",
++			 mode_name(c), c->dev_name);
++		return;
++	}
++
++	log_out(c, "Update files' size");
++
++	this = rb_first(&c->size_tree);
++	while (this) {
++		struct size_entry *e;
++
++		e = rb_entry(this, struct size_entry, rb);
++		this = rb_next(this);
++
++		if (e->exists && e->i_size < e->d_size) {
++			struct scanned_file *file;
++
++			file = lookup_file(&FSCK(c)->scanned_files, e->inum);
++			if (file && file->ino.header.exist &&
++			    file->ino.size < e->d_size) {
++				dbg_fsck("update file(%lu) size %llu->%llu, in %s",
++					 e->inum, file->ino.size,
++					 (unsigned long long)e->d_size,
++					 c->dev_name);
++				file->ino.size = e->d_size;
++			}
++		}
++
++		rb_erase(&e->rb, &c->size_tree);
++		kfree(e);
++	}
++}
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.c b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+index 1486ab4d..79b0babc 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.c
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.c
+@@ -443,6 +443,8 @@ static int do_fsck(void)
+ 		return err;
+ 	}
  
--/**
-- * build_lpt - construct LPT and write it into flash.
-- * @c: UBIFS file-system description object
-- *
-- * This function builds LPT according to @FSCK(c)->rebuild->lpts and writes
-- * LPT into flash.
++	update_files_size(c);
++
+ 	kfree(FSCK(c)->used_lebs);
+ 	destroy_file_tree(c, &FSCK(c)->scanned_files);
+ 	return err;
+@@ -481,6 +483,7 @@ int main(int argc, char *argv[])
+ 
+ 	/*
+ 	 * Step 6: Traverse tnc and construct files
++	 * Step 7: Update files' size
+ 	 */
+ 	err = do_fsck();
+ 	if (err && FSCK(c)->try_rebuild) {
+diff --git a/ubifs-utils/fsck.ubifs/fsck.ubifs.h b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+index 0d4a0d63..6c93eb6b 100644
+--- a/ubifs-utils/fsck.ubifs/fsck.ubifs.h
++++ b/ubifs-utils/fsck.ubifs/fsck.ubifs.h
+@@ -298,5 +298,6 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c);
+ 
+ /* check_files.c */
+ int traverse_tnc_and_construct_files(struct ubifs_info *c);
++void update_files_size(struct ubifs_info *c);
+ 
+ #endif
+diff --git a/ubifs-utils/libubifs/recovery.c b/ubifs-utils/libubifs/recovery.c
+index a5133a0f..905e1645 100644
+--- a/ubifs-utils/libubifs/recovery.c
++++ b/ubifs-utils/libubifs/recovery.c
+@@ -1082,22 +1082,6 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
+ }
+ 
+ /**
+- * struct size_entry - inode size information for recovery.
+- * @rb: link in the RB-tree of sizes
+- * @inum: inode number
+- * @i_size: size on inode
+- * @d_size: maximum size based on data nodes
+- * @exists: indicates whether the inode exists
 - */
--static int build_lpt(struct ubifs_info *c)
-+static int calculate_lp(struct ubifs_info *c, int index, int *free, int *dirty)
- {
--	int i, len, free, dirty, lnum;
--	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
+-struct size_entry {
+-	struct rb_node rb;
+-	ino_t inum;
+-	loff_t i_size;
+-	loff_t d_size;
+-	int exists;
+-};
 -
--	memset(&c->lst, 0, sizeof(struct ubifs_lp_stats));
--	/* Set gc lnum. */
--	lnum = get_free_leb(c);
--	if (lnum < 0)
--		return lnum;
--	c->gc_lnum = lnum;
--
--	/* Update LPT. */
--	for (i = 0; i < c->main_lebs; i++) {
--		if (!test_bit(i, FSCK(c)->used_lebs) ||
--		    c->gc_lnum == i + c->main_first) {
--			free = c->leb_size;
--			dirty = 0;
--		} else if (FSCK(c)->rebuild->lpts[i].flags & LPROPS_INDEX) {
--			free = FSCK(c)->rebuild->lpts[i].free;
--			dirty = FSCK(c)->rebuild->lpts[i].dirty;
--		} else {
--			len = ALIGN(FSCK(c)->rebuild->lpts[i].end, c->min_io_size);
--			free = c->leb_size - len;
--			dirty = len - FSCK(c)->rebuild->lpts[i].used;
--
--			if (dirty == c->leb_size) {
--				free = c->leb_size;
--				dirty = 0;
--			}
--		}
--
--		FSCK(c)->rebuild->lpts[i].free = free;
--		FSCK(c)->rebuild->lpts[i].dirty = dirty;
--		c->lst.total_free += free;
--		c->lst.total_dirty += dirty;
--
--		if (free == c->leb_size)
--			c->lst.empty_lebs++;
--
--		if (!(FSCK(c)->rebuild->lpts[i].flags & LPROPS_INDEX)) {
--			int spc;
--
--			spc = free + dirty;
--			if (spc < c->dead_wm)
--				c->lst.total_dead += spc;
--			else
--				c->lst.total_dark += ubifs_calc_dark(c, spc);
--			c->lst.total_used += c->leb_size - spc;
--		} else {
--			c->lst.idx_lebs += 1;
-+	if (!test_bit(index, FSCK(c)->used_lebs) ||
-+	    c->gc_lnum == index + c->main_first) {
-+		*free = c->leb_size;
-+		*dirty = 0;
-+	} else if (FSCK(c)->lpts[index].flags & LPROPS_INDEX) {
-+		*free = FSCK(c)->lpts[index].free;
-+		*dirty = FSCK(c)->lpts[index].dirty;
-+	} else {
-+		int len = ALIGN(FSCK(c)->lpts[index].end, c->min_io_size);
-+
-+		*free = c->leb_size - len;
-+		*dirty = len - FSCK(c)->lpts[index].used;
-+
-+		if (*dirty == c->leb_size) {
-+			*free = c->leb_size;
-+			*dirty = 0;
- 		}
- 	}
- 
--	/* Write LPT. */
--	return ubifs_create_lpt(c, FSCK(c)->rebuild->lpts, c->main_lebs, hash_lpt);
-+	return 0;
- }
- 
- /**
-@@ -1485,7 +1421,7 @@ int ubifs_rebuild_filesystem(struct ubifs_info *c)
- 
- 	/* Step 10. Build LPT. */
- 	log_out(c, "Build LPT");
--	err = build_lpt(c);
-+	err = build_lpt(c, calculate_lp);
- 	if (err) {
- 		exit_code |= FSCK_ERROR;
- 		goto out;
-diff --git a/ubifs-utils/libubifs/lpt.c b/ubifs-utils/libubifs/lpt.c
-index b07f1f77..fc70cad5 100644
---- a/ubifs-utils/libubifs/lpt.c
-+++ b/ubifs-utils/libubifs/lpt.c
-@@ -523,7 +523,7 @@ static void add_pnode_dirt(struct ubifs_info *c, struct ubifs_pnode *pnode)
- }
- 
- /**
-- * calc_nnode_num - calculate nnode number.
-+ * ubifs_calc_nnode_num - calculate nnode number.
-  * @row: the row in the tree (root is zero)
-  * @col: the column in the row (leftmost is zero)
-  *
-@@ -533,7 +533,7 @@ static void add_pnode_dirt(struct ubifs_info *c, struct ubifs_pnode *pnode)
-  * This function calculates and returns the nnode number for the nnode at @row
-  * and @col.
-  */
--static int calc_nnode_num(int row, int col)
-+int ubifs_calc_nnode_num(int row, int col)
- {
- 	int num, bits;
- 
-@@ -779,7 +779,7 @@ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
- 					nnode->nbranch[j].offs = 0;
- 				}
- 			}
--			nnode->num = calc_nnode_num(row, i);
-+			nnode->num = ubifs_calc_nnode_num(row, i);
- 			ubifs_pack_nnode(c, p, nnode);
- 			p += c->nnode_sz;
- 			len += c->nnode_sz;
-diff --git a/ubifs-utils/libubifs/lpt_commit.c b/ubifs-utils/libubifs/lpt_commit.c
-index 43eb7a6a..8a44546d 100644
---- a/ubifs-utils/libubifs/lpt_commit.c
-+++ b/ubifs-utils/libubifs/lpt_commit.c
-@@ -545,16 +545,15 @@ no_space:
- }
- 
- /**
-- * next_pnode_to_dirty - find next pnode to dirty.
-+ * ubifs_find_next_pnode - find next pnode.
+-/**
+  * add_ino - add an entry to the size tree.
   * @c: UBIFS file-system description object
-  * @pnode: pnode
-  *
-- * This function returns the next pnode to dirty or %NULL if there are no more
-- * pnodes.  Note that pnodes that have never been written (lnum == 0) are
-- * skipped.
-+ * This function returns the next pnode or %NULL if there are no more pnodes.
-+ * Note that pnodes that have never been written (lnum == 0) are skipped.
-  */
--static struct ubifs_pnode *next_pnode_to_dirty(struct ubifs_info *c,
--					       struct ubifs_pnode *pnode)
-+struct ubifs_pnode *ubifs_find_next_pnode(struct ubifs_info *c,
-+					  struct ubifs_pnode *pnode)
- {
- 	struct ubifs_nnode *nnode;
- 	int iip;
-@@ -622,28 +621,35 @@ static void add_pnode_dirt(struct ubifs_info *c, struct ubifs_pnode *pnode)
- }
- 
- /**
-- * do_make_pnode_dirty - mark a pnode dirty.
-+ * ubifs_make_nnode_dirty - mark a nnode dirty.
-+ * @c: UBIFS file-system description object
-+ * @nnode: nnode to mark dirty
-+ */
-+void ubifs_make_nnode_dirty(struct ubifs_info *c, struct ubifs_nnode *nnode)
-+{
-+	while (nnode) {
-+		if (!test_and_set_bit(DIRTY_CNODE, &nnode->flags)) {
-+			c->dirty_nn_cnt += 1;
-+			ubifs_add_nnode_dirt(c, nnode);
-+			nnode = nnode->parent;
-+		} else
-+			break;
-+	}
-+}
-+
-+/**
-+ * ubifs_make_pnode_dirty - mark a pnode dirty.
-  * @c: UBIFS file-system description object
-  * @pnode: pnode to mark dirty
-  */
--static void do_make_pnode_dirty(struct ubifs_info *c, struct ubifs_pnode *pnode)
-+void ubifs_make_pnode_dirty(struct ubifs_info *c, struct ubifs_pnode *pnode)
- {
- 	/* Assumes cnext list is empty i.e. not called during commit */
- 	if (!test_and_set_bit(DIRTY_CNODE, &pnode->flags)) {
--		struct ubifs_nnode *nnode;
--
- 		c->dirty_pn_cnt += 1;
- 		add_pnode_dirt(c, pnode);
- 		/* Mark parent and ancestors dirty too */
--		nnode = pnode->parent;
--		while (nnode) {
--			if (!test_and_set_bit(DIRTY_CNODE, &nnode->flags)) {
--				c->dirty_nn_cnt += 1;
--				ubifs_add_nnode_dirt(c, nnode);
--				nnode = nnode->parent;
--			} else
--				break;
--		}
-+		ubifs_make_nnode_dirty(c, pnode->parent);
- 	}
- }
- 
-@@ -667,8 +673,8 @@ static int make_tree_dirty(struct ubifs_info *c)
- 		return PTR_ERR(pnode);
- 
- 	while (pnode) {
--		do_make_pnode_dirty(c, pnode);
--		pnode = next_pnode_to_dirty(c, pnode);
-+		ubifs_make_pnode_dirty(c, pnode);
-+		pnode = ubifs_find_next_pnode(c, pnode);
- 		if (IS_ERR(pnode))
- 			return PTR_ERR(pnode);
- 	}
-@@ -878,20 +884,7 @@ static int make_nnode_dirty(struct ubifs_info *c, int node_num, int lnum,
- 	} else if (c->lpt_lnum != lnum || c->lpt_offs != offs)
- 			return 0; /* nnode is obsolete */
- 	/* Assumes cnext list is empty i.e. not called during commit */
--	if (!test_and_set_bit(DIRTY_CNODE, &nnode->flags)) {
--		c->dirty_nn_cnt += 1;
--		ubifs_add_nnode_dirt(c, nnode);
--		/* Mark parent and ancestors dirty too */
--		nnode = nnode->parent;
--		while (nnode) {
--			if (!test_and_set_bit(DIRTY_CNODE, &nnode->flags)) {
--				c->dirty_nn_cnt += 1;
--				ubifs_add_nnode_dirt(c, nnode);
--				nnode = nnode->parent;
--			} else
--				break;
--		}
--	}
-+	ubifs_make_nnode_dirty(c, nnode);
- 	return 0;
- }
- 
-@@ -922,7 +915,7 @@ static int make_pnode_dirty(struct ubifs_info *c, int node_num, int lnum,
- 	branch = &pnode->parent->nbranch[pnode->iip];
- 	if (branch->lnum != lnum || branch->offs != offs)
- 		return 0;
--	do_make_pnode_dirty(c, pnode);
-+	ubifs_make_pnode_dirty(c, pnode);
- 	return 0;
- }
- 
-@@ -1414,14 +1407,33 @@ static struct ubifs_nnode *next_nnode(struct ubifs_info *c,
- }
- 
- /**
-+ * ubifs_free_lpt_nodes - free pnodes/nnodes in LPT.
-+ * @c: UBIFS file-system description object
-+ */
-+void ubifs_free_lpt_nodes(struct ubifs_info *c)
-+{
-+	int i, hght;
-+	struct ubifs_nnode *nnode;
-+
-+	nnode = first_nnode(c, &hght);
-+	while (nnode) {
-+		for (i = 0; i < UBIFS_LPT_FANOUT; i++)
-+			kfree(nnode->nbranch[i].nnode);
-+		nnode = next_nnode(c, nnode, &hght);
-+	}
-+
-+	kfree(c->nroot);
-+	c->nroot = NULL;
-+}
-+
-+/**
-  * ubifs_lpt_free - free resources owned by the LPT.
-  * @c: UBIFS file-system description object
-  * @wr_only: free only resources used for writing
-  */
- void ubifs_lpt_free(struct ubifs_info *c, int wr_only)
- {
--	struct ubifs_nnode *nnode;
--	int i, hght;
-+	int i;
- 
- 	/* Free write-only things first */
- 
-@@ -1439,17 +1451,12 @@ void ubifs_lpt_free(struct ubifs_info *c, int wr_only)
- 
- 	/* Now free the rest */
- 
--	nnode = first_nnode(c, &hght);
--	while (nnode) {
--		for (i = 0; i < UBIFS_LPT_FANOUT; i++)
--			kfree(nnode->nbranch[i].nnode);
--		nnode = next_nnode(c, nnode, &hght);
--	}
-+	ubifs_free_lpt_nodes(c);
- 	for (i = 0; i < LPROPS_HEAP_CNT; i++)
- 		kfree(c->lpt_heap[i].arr);
- 	kfree(c->dirty_idx.arr);
--	kfree(c->nroot);
- 	vfree(c->ltab);
-+	c->ltab = NULL;
- 	kfree(c->lpt_nod_buf);
- }
- 
-diff --git a/ubifs-utils/libubifs/super.c b/ubifs-utils/libubifs/super.c
-index 155489d9..559623f9 100644
---- a/ubifs-utils/libubifs/super.c
-+++ b/ubifs-utils/libubifs/super.c
-@@ -654,15 +654,20 @@ void free_orphans(struct ubifs_info *c)
- /**
-  * free_buds - free per-bud objects.
-  * @c: UBIFS file-system description object
-+ * @delete_from_list: whether to delete the bud from list
-  */
--static void free_buds(struct ubifs_info *c)
-+void free_buds(struct ubifs_info *c, bool delete_from_list)
- {
- 	struct ubifs_bud *bud, *n;
- 
- 	rbtree_postorder_for_each_entry_safe(bud, n, &c->buds, rb) {
-+		if (delete_from_list)
-+			list_del(&bud->list);
- 		kfree(bud->log_hash);
- 		kfree(bud);
- 	}
-+
-+	c->buds = RB_ROOT;
- }
- 
- /**
-@@ -693,5 +698,5 @@ void destroy_journal(struct ubifs_info *c)
- 	ubifs_destroy_idx_gc(c);
- 	ubifs_destroy_size_tree(c);
- 	ubifs_tnc_close(c);
--	free_buds(c);
-+	free_buds(c, false);
- }
+  * @inum: inode number
 diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
-index 72497cd9..45c4105c 100644
+index 03150cdb..72497cd9 100644
 --- a/ubifs-utils/libubifs/ubifs.h
 +++ b/ubifs-utils/libubifs/ubifs.h
-@@ -1778,6 +1778,7 @@ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip);
- void ubifs_add_lpt_dirt(struct ubifs_info *c, int lnum, int dirty);
- void ubifs_add_nnode_dirt(struct ubifs_info *c, struct ubifs_nnode *nnode);
- uint32_t ubifs_unpack_bits(const struct ubifs_info *c, uint8_t **addr, int *pos, int nrbits);
-+int ubifs_calc_nnode_num(int row, int col);
- struct ubifs_nnode *ubifs_first_nnode(struct ubifs_info *c, int *hght);
- /* Needed only in debugging code in lpt_commit.c */
- int ubifs_unpack_nnode(const struct ubifs_info *c, void *buf,
-@@ -1785,9 +1786,14 @@ int ubifs_unpack_nnode(const struct ubifs_info *c, void *buf,
- int ubifs_lpt_calc_hash(struct ubifs_info *c, u8 *hash);
+@@ -1297,6 +1297,22 @@ static inline int ubifs_authenticated(const struct ubifs_info *c)
+ 	return c->authenticated;
+ }
  
- /* lpt_commit.c */
-+struct ubifs_pnode *ubifs_find_next_pnode(struct ubifs_info *c,
-+					  struct ubifs_pnode *pnode);
-+void ubifs_make_nnode_dirty(struct ubifs_info *c, struct ubifs_nnode *nnode);
-+void ubifs_make_pnode_dirty(struct ubifs_info *c, struct ubifs_pnode *pnode);
- int ubifs_lpt_start_commit(struct ubifs_info *c);
- int ubifs_lpt_end_commit(struct ubifs_info *c);
- int ubifs_lpt_post_commit(struct ubifs_info *c);
-+void ubifs_free_lpt_nodes(struct ubifs_info *c);
- void ubifs_lpt_free(struct ubifs_info *c, int wr_only);
- 
- /* lprops.c */
-@@ -1830,6 +1836,7 @@ int take_gc_lnum(struct ubifs_info *c);
- int alloc_wbufs(struct ubifs_info *c);
- void free_wbufs(struct ubifs_info *c);
- void free_orphans(struct ubifs_info *c);
-+void free_buds(struct ubifs_info *c, bool delete_from_list);
- void destroy_journal(struct ubifs_info *c);
- 
- /* recovery.c */
++/**
++ * struct size_entry - inode size information for recovery.
++ * @rb: link in the RB-tree of sizes
++ * @inum: inode number
++ * @i_size: size on inode
++ * @d_size: maximum size based on data nodes
++ * @exists: indicates whether the inode exists
++ */
++struct size_entry {
++	struct rb_node rb;
++	ino_t inum;
++	loff_t i_size;
++	loff_t d_size;
++	int exists;
++};
++
+ #ifdef WITH_CRYPTO
+ int ubifs_init_authentication(struct ubifs_info *c);
+ int ubifs_shash_init(const struct ubifs_info *c, struct shash_desc *desc);
 -- 
 2.13.6
 
