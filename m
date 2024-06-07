@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FEE3C27C53
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C024AC27C6E
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jun 2024 04:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g2H+GSox8Y0r35sRBzKz7MGVEfZC+oBoy/TrBf0rKfs=; b=ZD6acMkY491/7u
-	aa4wGu8utXFv0KEwjTr6mUMS+DuX7XeXCw3C4ZxOb+Llh2cPr7kxjFc+7fLE7nfV4dri9Fek0C6rX
-	oVBPEyaVlQYSxbQSGTt+9iNhCuHSRogW8sA9ROBXH26+0zoSFNguXaqYwZFLM2s/h7avyRsObYx9W
-	90HV4BWgC4Z0FaoWyqC5R1BlHjjL4cZeobfl6tqqlRjF+jyMP3C17OGRVAUHlOPMBKwP/3kIgA/xy
-	Pue2NnaW2e3t/v7dsf+wpTsjSvwlOBJf+ttxs21ImY1EULbq2LYYdhJgzC/FuXQ9gYLE7xKjMt11f
-	wTVgKC+k5yXXHyCid5Lw==;
+	List-Owner; bh=6uqGokGPwkEGyLTiydhuvt/3a7cYbQ/O3RidtnPKfYk=; b=TcpVkbewtCyhCZ
+	N4oPBZXPyYYFZbGOz+r0Sfs88BDVmZ45YmPtb+kewc37SjvKCYBQHgKHMs7ZyyCHWk4HWoTzaeah6
+	8fBUPEPJkWwzQre6wpE/FcBEv3XeqliurymhzYI8MRXYCqW+qjFFSxjOrcg5YnCIUqyQziXDLBXNh
+	l7wjHzEOhIUEOft0uXgpvBPp4kKNQOIM06pv8G2fBKhZF2PA1Viv6SUX2aNcZZZPntCJTu+PTHLGz
+	a3g8xkQ1ElQphHpkqHgBza+o11zDe2yMcI1JL+HGHvZjktxTAvtev4VNnqQWvG0FAq+DsEyIJWSNO
+	amQI7EbEElVYIkyR6AKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRFs-0000000CJTP-1Fha;
-	Fri, 07 Jun 2024 04:31:08 +0000
+	id 1sFRFw-0000000CJXe-3bFf;
+	Fri, 07 Jun 2024 04:31:12 +0000
 Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sFRC5-0000000CGSp-0qXq
+	id 1sFRC4-0000000CGSE-2STH
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Jun 2024 04:27:55 +0000
+	Fri, 07 Jun 2024 04:27:56 +0000
 Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwSjr33zHzwS93;
-	Fri,  7 Jun 2024 12:23:12 +0800 (CST)
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwSjq6SdTzsTDr;
+	Fri,  7 Jun 2024 12:23:11 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4E46A18007E;
-	Fri,  7 Jun 2024 12:27:11 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 816BD180085;
+	Fri,  7 Jun 2024 12:27:10 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Jun
- 2024 12:26:58 +0800
+ 2024 12:26:52 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <david.oberhollenzer@sigma-star.at>,
 	<miquel.raynal@bootlin.com>, <yi.zhang@huawei.com>, <xiangyang3@huawei.com>,
 	<huangxiaojia2@huawei.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH mtd-utils 043/110] ubifs-utils: Adapt dir.c in libubifs
-Date: Fri, 7 Jun 2024 12:25:08 +0800
-Message-ID: <20240607042615.2069840-44-chengzhihao1@huawei.com>
+Subject: [RFC PATCH mtd-utils 034/110] ubifs-utils: Adapt ubifs header file in libubifs
+Date: Fri, 7 Jun 2024 12:24:59 +0800
+Message-ID: <20240607042615.2069840-35-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240607042615.2069840-1-chengzhihao1@huawei.com>
 References: <20240607042615.2069840-1-chengzhihao1@huawei.com>
@@ -53,8 +53,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240606_212716_007642_B702E516 
-X-CRM114-Status: GOOD (  22.58  )
+X-CRM114-CacheID: sfid-20240606_212714_793587_EDE05235 
+X-CRM114-Status: GOOD (  36.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,1737 +71,1342 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Adapt dir.c in libubifs, compared with linux kernel implementations:
- 1. Remove all functions. Only keep an empty source file, fsck will
-    add new functions for mkdir/link operations without using linux
-    in-memory inode/dentry.
+Adapt ubifs header file in libubifs, compared with linux kernel
+implementations:
+ 1. New header file contains all definitions in common/ubifs.h
+ 2. Remove some structures(eg. ubifs_mount_opts, bu_info) and
+    functions(eg. ubifs_sync_wbufs_by_inode, ubifs_jnl_XXX) which
+    won't be used in fsck/mkfs.
+ 3. Modify some authentication related functions, keep functions
+    that mkfs may need, other functions are defined as empty.
+ 4. Move ubifs message printing functions(ubifs_err/warn/msg) which
+    are originally defined in misc.c into ubifs.h.
 
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- ubifs-utils/libubifs/dir.c | 1713 --------------------------------------------
- 1 file changed, 1713 deletions(-)
+ ubifs-utils/libubifs/ubifs.h | 832 +++++++++++--------------------------------
+ 1 file changed, 201 insertions(+), 631 deletions(-)
 
-diff --git a/ubifs-utils/libubifs/dir.c b/ubifs-utils/libubifs/dir.c
-index c77ea57f..9d5f6446 100644
---- a/ubifs-utils/libubifs/dir.c
-+++ b/ubifs-utils/libubifs/dir.c
-@@ -29,1716 +29,3 @@
-  */
+diff --git a/ubifs-utils/libubifs/ubifs.h b/ubifs-utils/libubifs/ubifs.h
+index 4226b21e..f32818dc 100644
+--- a/ubifs-utils/libubifs/ubifs.h
++++ b/ubifs-utils/libubifs/ubifs.h
+@@ -11,38 +11,18 @@
+ #ifndef __UBIFS_H__
+ #define __UBIFS_H__
  
- #include "ubifs.h"
+-#include <asm/div64.h>
+-#include <linux/statfs.h>
+-#include <linux/fs.h>
+-#include <linux/err.h>
+-#include <linux/sched.h>
+-#include <linux/slab.h>
+-#include <linux/vmalloc.h>
+-#include <linux/spinlock.h>
+-#include <linux/mutex.h>
+-#include <linux/rwsem.h>
+-#include <linux/mtd/ubi.h>
+-#include <linux/pagemap.h>
+-#include <linux/backing-dev.h>
+-#include <linux/security.h>
+-#include <linux/xattr.h>
+-#include <linux/random.h>
+-#include <linux/sysfs.h>
+-#include <linux/completion.h>
+-#include <crypto/hash_info.h>
+-#include <crypto/hash.h>
+-#include <crypto/utils.h>
 -
--/**
-- * inherit_flags - inherit flags of the parent inode.
-- * @dir: parent inode
-- * @mode: new inode mode flags
-- *
-- * This is a helper function for 'ubifs_new_inode()' which inherits flag of the
-- * parent directory inode @dir. UBIFS inodes inherit the following flags:
-- * o %UBIFS_COMPR_FL, which is useful to switch compression on/of on
-- *   sub-directory basis;
-- * o %UBIFS_SYNC_FL - useful for the same reasons;
-- * o %UBIFS_DIRSYNC_FL - similar, but relevant only to directories.
-- *
-- * This function returns the inherited flags.
+-#include <linux/fscrypt.h>
+-
++#include <string.h>
++
++#include "linux_types.h"
++#include "list.h"
++#include "rbtree.h"
++#include "spinlock.h"
++#include "mutex.h"
++#include "rwsem.h"
++#include "atomic.h"
++#include "libubi.h"
+ #include "ubifs-media.h"
+ 
+-/* Version of this UBIFS implementation */
+-#define UBIFS_VERSION 1
+-
+-/* UBIFS file system VFS magic number */
+-#define UBIFS_SUPER_MAGIC 0x24051905
+-
+ /* Number of UBIFS blocks per VFS page */
+ #define UBIFS_BLOCKS_PER_PAGE (PAGE_SIZE / UBIFS_BLOCK_SIZE)
+ #define UBIFS_BLOCKS_PER_PAGE_SHIFT (PAGE_SHIFT - UBIFS_BLOCK_SHIFT)
+@@ -59,6 +39,9 @@
+  */
+ #define MIN_INDEX_LEBS 2
+ 
++/* Maximum logical eraseblock size in bytes */
++#define UBIFS_MAX_LEB_SZ (2*1024*1024)
++
+ /* Minimum amount of data UBIFS writes to the flash */
+ #define MIN_WRITE_SZ (UBIFS_DATA_NODE_SZ + 8)
+ 
+@@ -74,12 +57,6 @@
+ /* Maximum number of entries in each LPT (LEB category) heap */
+ #define LPT_HEAP_SZ 256
+ 
+-/*
+- * Background thread name pattern. The numbers are UBI device and volume
+- * numbers.
 - */
--static int inherit_flags(const struct inode *dir, umode_t mode)
--{
--	int flags;
--	const struct ubifs_inode *ui = ubifs_inode(dir);
+-#define BGT_NAME_PATTERN "ubifs_bgt%d_%d"
 -
--	if (!S_ISDIR(dir->i_mode))
--		/*
--		 * The parent is not a directory, which means that an extended
--		 * attribute inode is being created. No flags.
--		 */
--		return 0;
--
--	flags = ui->flags & (UBIFS_COMPR_FL | UBIFS_SYNC_FL | UBIFS_DIRSYNC_FL);
--	if (!S_ISDIR(mode))
--		/* The "DIRSYNC" flag only applies to directories */
--		flags &= ~UBIFS_DIRSYNC_FL;
--	return flags;
--}
--
--/**
-- * ubifs_new_inode - allocate new UBIFS inode object.
-- * @c: UBIFS file-system description object
-- * @dir: parent directory inode
-- * @mode: inode mode flags
-- * @is_xattr: whether the inode is xattr inode
-- *
-- * This function finds an unused inode number, allocates new inode and
-- * initializes it. Non-xattr new inode may be written with xattrs(selinux/
-- * encryption) before writing dentry, which could cause inconsistent problem
-- * when powercut happens between two operations. To deal with it, non-xattr
-- * new inode is initialized with zero-nlink and added into orphan list, caller
-- * should make sure that inode is relinked later, and make sure that orphan
-- * removing and journal writing into an committing atomic operation. Returns
-- * new inode in case of success and an error code in case of failure.
+ /* Maximum possible inode number (only 32-bit inodes are supported now) */
+ #define MAX_INUM 0xFFFFFFFF
+ 
+@@ -115,64 +92,11 @@
+ /* How much an extended attribute adds to the host inode */
+ #define CALC_XATTR_BYTES(data_len) ALIGN(UBIFS_INO_NODE_SZ + (data_len) + 1, 8)
+ 
+-/*
+- * Znodes which were not touched for 'OLD_ZNODE_AGE' seconds are considered
+- * "old", and znode which were touched last 'YOUNG_ZNODE_AGE' seconds ago are
+- * considered "young". This is used by shrinker when selecting znode to trim
+- * off.
 - */
--struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
--			      umode_t mode, bool is_xattr)
--{
--	int err;
--	struct inode *inode;
--	struct ubifs_inode *ui;
--	bool encrypted = false;
--
--	inode = new_inode(c->vfs_sb);
--	ui = ubifs_inode(inode);
--	if (!inode)
--		return ERR_PTR(-ENOMEM);
--
--	/*
--	 * Set 'S_NOCMTIME' to prevent VFS form updating [mc]time of inodes and
--	 * marking them dirty in file write path (see 'file_update_time()').
--	 * UBIFS has to fully control "clean <-> dirty" transitions of inodes
--	 * to make budgeting work.
--	 */
--	inode->i_flags |= S_NOCMTIME;
--
--	inode_init_owner(&nop_mnt_idmap, inode, dir, mode);
--	simple_inode_init_ts(inode);
--	inode->i_mapping->nrpages = 0;
--
--	if (!is_xattr) {
--		err = fscrypt_prepare_new_inode(dir, inode, &encrypted);
--		if (err) {
--			ubifs_err(c, "fscrypt_prepare_new_inode failed: %i", err);
--			goto out_iput;
--		}
--	}
--
--	switch (mode & S_IFMT) {
--	case S_IFREG:
--		inode->i_mapping->a_ops = &ubifs_file_address_operations;
--		inode->i_op = &ubifs_file_inode_operations;
--		inode->i_fop = &ubifs_file_operations;
--		break;
--	case S_IFDIR:
--		inode->i_op  = &ubifs_dir_inode_operations;
--		inode->i_fop = &ubifs_dir_operations;
--		inode->i_size = ui->ui_size = UBIFS_INO_NODE_SZ;
--		break;
--	case S_IFLNK:
--		inode->i_op = &ubifs_symlink_inode_operations;
--		break;
--	case S_IFSOCK:
--	case S_IFIFO:
--	case S_IFBLK:
--	case S_IFCHR:
--		inode->i_op  = &ubifs_file_inode_operations;
--		break;
--	default:
--		BUG();
--	}
--
--	ui->flags = inherit_flags(dir, mode);
--	ubifs_set_inode_flags(inode);
--	if (S_ISREG(mode))
--		ui->compr_type = c->default_compr;
--	else
--		ui->compr_type = UBIFS_COMPR_NONE;
--	ui->synced_i_size = 0;
--
--	spin_lock(&c->cnt_lock);
--	/* Inode number overflow is currently not supported */
--	if (c->highest_inum >= INUM_WARN_WATERMARK) {
--		if (c->highest_inum >= INUM_WATERMARK) {
--			spin_unlock(&c->cnt_lock);
--			ubifs_err(c, "out of inode numbers");
--			err = -EINVAL;
--			goto out_iput;
--		}
--		ubifs_warn(c, "running out of inode numbers (current %lu, max %u)",
--			   (unsigned long)c->highest_inum, INUM_WATERMARK);
--	}
--
--	inode->i_ino = ++c->highest_inum;
--	/*
--	 * The creation sequence number remains with this inode for its
--	 * lifetime. All nodes for this inode have a greater sequence number,
--	 * and so it is possible to distinguish obsolete nodes belonging to a
--	 * previous incarnation of the same inode number - for example, for the
--	 * purpose of rebuilding the index.
--	 */
--	ui->creat_sqnum = ++c->max_sqnum;
--	spin_unlock(&c->cnt_lock);
--
--	if (!is_xattr) {
--		set_nlink(inode, 0);
--		err = ubifs_add_orphan(c, inode->i_ino);
--		if (err) {
--			ubifs_err(c, "ubifs_add_orphan failed: %i", err);
--			goto out_iput;
--		}
--		down_read(&c->commit_sem);
--		ui->del_cmtno = c->cmt_no;
--		up_read(&c->commit_sem);
--	}
--
--	if (encrypted) {
--		err = fscrypt_set_context(inode, NULL);
--		if (err) {
--			if (!is_xattr) {
--				set_nlink(inode, 1);
--				ubifs_delete_orphan(c, inode->i_ino);
--			}
--			ubifs_err(c, "fscrypt_set_context failed: %i", err);
--			goto out_iput;
--		}
--	}
--
--	return inode;
--
--out_iput:
--	make_bad_inode(inode);
--	iput(inode);
--	return ERR_PTR(err);
--}
--
--static int dbg_check_name(const struct ubifs_info *c,
--			  const struct ubifs_dent_node *dent,
--			  const struct fscrypt_name *nm)
--{
--	if (!dbg_is_chk_gen(c))
--		return 0;
--	if (le16_to_cpu(dent->nlen) != fname_len(nm))
--		return -EINVAL;
--	if (memcmp(dent->name, fname_name(nm), fname_len(nm)))
--		return -EINVAL;
--	return 0;
--}
--
--static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
--				   unsigned int flags)
--{
--	int err;
--	union ubifs_key key;
--	struct inode *inode = NULL;
--	struct ubifs_dent_node *dent = NULL;
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct fscrypt_name nm;
--
--	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
--
--	err = fscrypt_prepare_lookup(dir, dentry, &nm);
--	if (err == -ENOENT)
--		return d_splice_alias(NULL, dentry);
--	if (err)
--		return ERR_PTR(err);
--
--	if (fname_len(&nm) > UBIFS_MAX_NLEN) {
--		inode = ERR_PTR(-ENAMETOOLONG);
--		goto done;
--	}
--
--	dent = kmalloc(UBIFS_MAX_DENT_NODE_SZ, GFP_NOFS);
--	if (!dent) {
--		inode = ERR_PTR(-ENOMEM);
--		goto done;
--	}
--
--	if (fname_name(&nm) == NULL) {
--		if (nm.hash & ~UBIFS_S_KEY_HASH_MASK)
--			goto done; /* ENOENT */
--		dent_key_init_hash(c, &key, dir->i_ino, nm.hash);
--		err = ubifs_tnc_lookup_dh(c, &key, dent, nm.minor_hash);
--	} else {
--		dent_key_init(c, &key, dir->i_ino, &nm);
--		err = ubifs_tnc_lookup_nm(c, &key, dent, &nm);
--	}
--
--	if (err) {
--		if (err == -ENOENT)
--			dbg_gen("not found");
--		else
--			inode = ERR_PTR(err);
--		goto done;
--	}
--
--	if (dbg_check_name(c, dent, &nm)) {
--		inode = ERR_PTR(-EINVAL);
--		goto done;
--	}
--
--	inode = ubifs_iget(dir->i_sb, le64_to_cpu(dent->inum));
--	if (IS_ERR(inode)) {
--		/*
--		 * This should not happen. Probably the file-system needs
--		 * checking.
--		 */
--		err = PTR_ERR(inode);
--		ubifs_err(c, "dead directory entry '%pd', error %d",
--			  dentry, err);
--		ubifs_ro_mode(c, err);
--		goto done;
--	}
--
--	if (IS_ENCRYPTED(dir) &&
--	    (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode)) &&
--	    !fscrypt_has_permitted_context(dir, inode)) {
--		ubifs_warn(c, "Inconsistent encryption contexts: %lu/%lu",
--			   dir->i_ino, inode->i_ino);
--		iput(inode);
--		inode = ERR_PTR(-EPERM);
--	}
--
--done:
--	kfree(dent);
--	fscrypt_free_filename(&nm);
--	return d_splice_alias(inode, dentry);
--}
--
--static int ubifs_prepare_create(struct inode *dir, struct dentry *dentry,
--				struct fscrypt_name *nm)
--{
--	if (fscrypt_is_nokey_name(dentry))
--		return -ENOKEY;
--
--	return fscrypt_setup_filename(dir, &dentry->d_name, 0, nm);
--}
--
--static int ubifs_create(struct mnt_idmap *idmap, struct inode *dir,
--			struct dentry *dentry, umode_t mode, bool excl)
--{
--	struct inode *inode;
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
--					.dirtied_ino = 1 };
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	struct fscrypt_name nm;
--	int err, sz_change;
--
--	/*
--	 * Budget request settings: new inode, new direntry, changing the
--	 * parent directory inode.
--	 */
--
--	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
--		dentry, mode, dir->i_ino);
--
--	err = ubifs_budget_space(c, &req);
--	if (err)
--		return err;
--
--	err = ubifs_prepare_create(dir, dentry, &nm);
--	if (err)
--		goto out_budg;
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	inode = ubifs_new_inode(c, dir, mode, false);
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_fname;
--	}
--
--	err = ubifs_init_security(dir, inode, &dentry->d_name);
--	if (err)
--		goto out_inode;
--
--	set_nlink(inode, 1);
--	mutex_lock(&dir_ui->ui_mutex);
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
--	if (err)
--		goto out_cancel;
--	mutex_unlock(&dir_ui->ui_mutex);
--
--	ubifs_release_budget(c, &req);
--	fscrypt_free_filename(&nm);
--	insert_inode_hash(inode);
--	d_instantiate(dentry, inode);
--	return 0;
--
--out_cancel:
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	mutex_unlock(&dir_ui->ui_mutex);
--	set_nlink(inode, 0);
--out_inode:
--	iput(inode);
--out_fname:
--	fscrypt_free_filename(&nm);
--out_budg:
--	ubifs_release_budget(c, &req);
--	ubifs_err(c, "cannot create regular file, error %d", err);
--	return err;
--}
--
--static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
--{
--	int err;
--	umode_t mode = S_IFCHR | WHITEOUT_MODE;
--	struct inode *inode;
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--
--	/*
--	 * Create an inode('nlink = 1') for whiteout without updating journal,
--	 * let ubifs_jnl_rename() store it on flash to complete rename whiteout
--	 * atomically.
--	 */
--
--	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
--		dentry, mode, dir->i_ino);
--
--	inode = ubifs_new_inode(c, dir, mode, false);
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_free;
--	}
--
--	init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
--	ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
--
--	err = ubifs_init_security(dir, inode, &dentry->d_name);
--	if (err)
--		goto out_inode;
--
--	/* The dir size is updated by do_rename. */
--	insert_inode_hash(inode);
--
--	return inode;
--
--out_inode:
--	iput(inode);
--out_free:
--	ubifs_err(c, "cannot create whiteout file, error %d", err);
--	return ERR_PTR(err);
--}
--
--/**
-- * lock_2_inodes - a wrapper for locking two UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- *
-- * We do not implement any tricks to guarantee strict lock ordering, because
-- * VFS has already done it for us on the @i_mutex. So this is just a simple
-- * wrapper function.
-- */
--static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
--{
--	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
--	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
--}
--
--/**
-- * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- */
--static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
--{
--	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
--	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
--}
--
--static int ubifs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
--			 struct file *file, umode_t mode)
--{
--	struct dentry *dentry = file->f_path.dentry;
--	struct inode *inode;
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
--					.dirtied_ino = 1};
--	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
--	struct ubifs_inode *ui;
--	int err, instantiated = 0;
--	struct fscrypt_name nm;
--
--	/*
--	 * Budget request settings: new inode, new direntry, changing the
--	 * parent directory inode.
--	 * Allocate budget separately for new dirtied inode, the budget will
--	 * be released via writeback.
--	 */
--
--	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
--		dentry, mode, dir->i_ino);
--
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
--	if (err)
--		return err;
--
--	err = ubifs_budget_space(c, &req);
--	if (err) {
--		fscrypt_free_filename(&nm);
--		return err;
--	}
--
--	err = ubifs_budget_space(c, &ino_req);
--	if (err) {
--		ubifs_release_budget(c, &req);
--		fscrypt_free_filename(&nm);
--		return err;
--	}
--
--	inode = ubifs_new_inode(c, dir, mode, false);
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_budg;
--	}
--	ui = ubifs_inode(inode);
--
--	err = ubifs_init_security(dir, inode, &dentry->d_name);
--	if (err)
--		goto out_inode;
--
--	set_nlink(inode, 1);
--	mutex_lock(&ui->ui_mutex);
--	insert_inode_hash(inode);
--	d_tmpfile(file, inode);
--	ubifs_assert(c, ui->dirty);
--
--	instantiated = 1;
--	mutex_unlock(&ui->ui_mutex);
--
--	lock_2_inodes(dir, inode);
--	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 1);
--	if (err)
--		goto out_cancel;
--	unlock_2_inodes(dir, inode);
--
--	ubifs_release_budget(c, &req);
--	fscrypt_free_filename(&nm);
--
--	return finish_open_simple(file, 0);
--
--out_cancel:
--	unlock_2_inodes(dir, inode);
--out_inode:
--	if (!instantiated)
--		iput(inode);
--out_budg:
--	ubifs_release_budget(c, &req);
--	if (!instantiated)
--		ubifs_release_budget(c, &ino_req);
--	fscrypt_free_filename(&nm);
--	ubifs_err(c, "cannot create temporary file, error %d", err);
--	return err;
--}
--
--/**
-- * vfs_dent_type - get VFS directory entry type.
-- * @type: UBIFS directory entry type
-- *
-- * This function converts UBIFS directory entry type into VFS directory entry
-- * type.
-- */
--static unsigned int vfs_dent_type(uint8_t type)
--{
--	switch (type) {
--	case UBIFS_ITYPE_REG:
--		return DT_REG;
--	case UBIFS_ITYPE_DIR:
--		return DT_DIR;
--	case UBIFS_ITYPE_LNK:
--		return DT_LNK;
--	case UBIFS_ITYPE_BLK:
--		return DT_BLK;
--	case UBIFS_ITYPE_CHR:
--		return DT_CHR;
--	case UBIFS_ITYPE_FIFO:
--		return DT_FIFO;
--	case UBIFS_ITYPE_SOCK:
--		return DT_SOCK;
--	default:
--		BUG();
--	}
--	return 0;
--}
+-#define OLD_ZNODE_AGE 20
+-#define YOUNG_ZNODE_AGE 5
 -
 -/*
-- * The classical Unix view for directory is that it is a linear array of
-- * (name, inode number) entries. Linux/VFS assumes this model as well.
-- * Particularly, 'readdir()' call wants us to return a directory entry offset
-- * which later may be used to continue 'readdir()'ing the directory or to
-- * 'seek()' to that specific direntry. Obviously UBIFS does not really fit this
-- * model because directory entries are identified by keys, which may collide.
-- *
-- * UBIFS uses directory entry hash value for directory offsets, so
-- * 'seekdir()'/'telldir()' may not always work because of possible key
-- * collisions. But UBIFS guarantees that consecutive 'readdir()' calls work
-- * properly by means of saving full directory entry name in the private field
-- * of the file description object.
-- *
-- * This means that UBIFS cannot support NFS which requires full
-- * 'seekdir()'/'telldir()' support.
+- * Some compressors, like LZO, may end up with more data then the input buffer.
+- * So UBIFS always allocates larger output buffer, to be sure the compressor
+- * will not corrupt memory in case of worst case compression.
 - */
--static int ubifs_readdir(struct file *file, struct dir_context *ctx)
--{
--	int fstr_real_len = 0, err = 0;
--	struct fscrypt_name nm;
--	struct fscrypt_str fstr = {0};
--	union ubifs_key key;
--	struct ubifs_dent_node *dent;
--	struct inode *dir = file_inode(file);
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	bool encrypted = IS_ENCRYPTED(dir);
--
--	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, ctx->pos);
--
--	if (ctx->pos > UBIFS_S_KEY_HASH_MASK || ctx->pos == 2)
--		/*
--		 * The directory was seek'ed to a senseless position or there
--		 * are no more entries.
--		 */
--		return 0;
--
--	if (encrypted) {
--		err = fscrypt_prepare_readdir(dir);
--		if (err)
--			return err;
--
--		err = fscrypt_fname_alloc_buffer(UBIFS_MAX_NLEN, &fstr);
--		if (err)
--			return err;
--
--		fstr_real_len = fstr.len;
--	}
--
--	if (file->f_version == 0) {
--		/*
--		 * The file was seek'ed, which means that @file->private_data
--		 * is now invalid. This may also be just the first
--		 * 'ubifs_readdir()' invocation, in which case
--		 * @file->private_data is NULL, and the below code is
--		 * basically a no-op.
--		 */
--		kfree(file->private_data);
--		file->private_data = NULL;
--	}
--
--	/*
--	 * 'generic_file_llseek()' unconditionally sets @file->f_version to
--	 * zero, and we use this for detecting whether the file was seek'ed.
--	 */
--	file->f_version = 1;
--
--	/* File positions 0 and 1 correspond to "." and ".." */
--	if (ctx->pos < 2) {
--		ubifs_assert(c, !file->private_data);
--		if (!dir_emit_dots(file, ctx)) {
--			if (encrypted)
--				fscrypt_fname_free_buffer(&fstr);
--			return 0;
--		}
--
--		/* Find the first entry in TNC and save it */
--		lowest_dent_key(c, &key, dir->i_ino);
--		fname_len(&nm) = 0;
--		dent = ubifs_tnc_next_ent(c, &key, &nm);
--		if (IS_ERR(dent)) {
--			err = PTR_ERR(dent);
--			goto out;
--		}
--
--		ctx->pos = key_hash_flash(c, &dent->key);
--		file->private_data = dent;
--	}
--
--	dent = file->private_data;
--	if (!dent) {
--		/*
--		 * The directory was seek'ed to and is now readdir'ed.
--		 * Find the entry corresponding to @ctx->pos or the closest one.
--		 */
--		dent_key_init_hash(c, &key, dir->i_ino, ctx->pos);
--		fname_len(&nm) = 0;
--		dent = ubifs_tnc_next_ent(c, &key, &nm);
--		if (IS_ERR(dent)) {
--			err = PTR_ERR(dent);
--			goto out;
--		}
--		ctx->pos = key_hash_flash(c, &dent->key);
--		file->private_data = dent;
--	}
--
--	while (1) {
--		dbg_gen("ino %llu, new f_pos %#x",
--			(unsigned long long)le64_to_cpu(dent->inum),
--			key_hash_flash(c, &dent->key));
--		ubifs_assert(c, le64_to_cpu(dent->ch.sqnum) >
--			     ubifs_inode(dir)->creat_sqnum);
--
--		fname_len(&nm) = le16_to_cpu(dent->nlen);
--		fname_name(&nm) = dent->name;
--
--		if (encrypted) {
--			fstr.len = fstr_real_len;
--
--			err = fscrypt_fname_disk_to_usr(dir, key_hash_flash(c,
--							&dent->key),
--							le32_to_cpu(dent->cookie),
--							&nm.disk_name, &fstr);
--			if (err)
--				goto out;
--		} else {
--			fstr.len = fname_len(&nm);
--			fstr.name = fname_name(&nm);
--		}
--
--		if (!dir_emit(ctx, fstr.name, fstr.len,
--			       le64_to_cpu(dent->inum),
--			       vfs_dent_type(dent->type))) {
--			if (encrypted)
--				fscrypt_fname_free_buffer(&fstr);
--			return 0;
--		}
--
--		/* Switch to the next entry */
--		key_read(c, &dent->key, &key);
--		dent = ubifs_tnc_next_ent(c, &key, &nm);
--		if (IS_ERR(dent)) {
--			err = PTR_ERR(dent);
--			goto out;
--		}
--
--		kfree(file->private_data);
--		ctx->pos = key_hash_flash(c, &dent->key);
--		file->private_data = dent;
--		cond_resched();
--	}
--
--out:
--	kfree(file->private_data);
--	file->private_data = NULL;
--
--	if (encrypted)
--		fscrypt_fname_free_buffer(&fstr);
--
--	if (err != -ENOENT)
--		ubifs_err(c, "cannot find next direntry, error %d", err);
--	else
--		/*
--		 * -ENOENT is a non-fatal error in this context, the TNC uses
--		 * it to indicate that the cursor moved past the current directory
--		 * and readdir() has to stop.
--		 */
--		err = 0;
--
--
--	/* 2 is a special value indicating that there are no more direntries */
--	ctx->pos = 2;
--	return err;
--}
--
--/* Free saved readdir() state when the directory is closed */
--static int ubifs_dir_release(struct inode *dir, struct file *file)
--{
--	kfree(file->private_data);
--	file->private_data = NULL;
--	return 0;
--}
--
--static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
--		      struct dentry *dentry)
--{
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct inode *inode = d_inode(old_dentry);
--	struct ubifs_inode *ui = ubifs_inode(inode);
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	int err, sz_change;
--	struct ubifs_budget_req req = { .new_dent = 1, .dirtied_ino = 2,
--				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
--	struct fscrypt_name nm;
--
--	/*
--	 * Budget request settings: new direntry, changing the target inode,
--	 * changing the parent inode.
--	 */
--
--	dbg_gen("dent '%pd' to ino %lu (nlink %d) in dir ino %lu",
--		dentry, inode->i_ino,
--		inode->i_nlink, dir->i_ino);
--	ubifs_assert(c, inode_is_locked(dir));
--	ubifs_assert(c, inode_is_locked(inode));
--
--	err = fscrypt_prepare_link(old_dentry, dir, dentry);
--	if (err)
--		return err;
--
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
--	if (err)
--		return err;
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	err = dbg_check_synced_i_size(c, inode);
--	if (err)
--		goto out_fname;
--
--	err = ubifs_budget_space(c, &req);
--	if (err)
--		goto out_fname;
--
--	lock_2_inodes(dir, inode);
--
--	inc_nlink(inode);
--	ihold(inode);
--	inode_set_ctime_current(inode);
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, inode->i_nlink == 1);
--	if (err)
--		goto out_cancel;
--	unlock_2_inodes(dir, inode);
--
--	ubifs_release_budget(c, &req);
--	d_instantiate(dentry, inode);
--	fscrypt_free_filename(&nm);
--	return 0;
--
--out_cancel:
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	drop_nlink(inode);
--	unlock_2_inodes(dir, inode);
--	ubifs_release_budget(c, &req);
--	iput(inode);
--out_fname:
--	fscrypt_free_filename(&nm);
--	return err;
--}
--
--static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
--{
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct inode *inode = d_inode(dentry);
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	int err, sz_change, budgeted = 1;
--	struct ubifs_budget_req req = { .mod_dent = 1, .dirtied_ino = 2 };
--	unsigned int saved_nlink = inode->i_nlink;
--	struct fscrypt_name nm;
--
--	/*
--	 * Budget request settings: deletion direntry, deletion inode (+1 for
--	 * @dirtied_ino), changing the parent directory inode. If budgeting
--	 * fails, go ahead anyway because we have extra space reserved for
--	 * deletions.
--	 */
--
--	dbg_gen("dent '%pd' from ino %lu (nlink %d) in dir ino %lu",
--		dentry, inode->i_ino,
--		inode->i_nlink, dir->i_ino);
--
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
--	if (err)
--		return err;
--
--	err = ubifs_purge_xattrs(inode);
--	if (err)
--		return err;
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	ubifs_assert(c, inode_is_locked(dir));
--	ubifs_assert(c, inode_is_locked(inode));
--	err = dbg_check_synced_i_size(c, inode);
--	if (err)
--		goto out_fname;
--
--	err = ubifs_budget_space(c, &req);
--	if (err) {
--		if (err != -ENOSPC)
--			goto out_fname;
--		budgeted = 0;
--	}
--
--	lock_2_inodes(dir, inode);
--	inode_set_ctime_current(inode);
--	drop_nlink(inode);
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
--	if (err)
--		goto out_cancel;
--	unlock_2_inodes(dir, inode);
--
--	if (budgeted)
--		ubifs_release_budget(c, &req);
--	else {
--		/* We've deleted something - clean the "no space" flags */
--		c->bi.nospace = c->bi.nospace_rp = 0;
--		smp_wmb();
--	}
--	fscrypt_free_filename(&nm);
--	return 0;
--
--out_cancel:
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	set_nlink(inode, saved_nlink);
--	unlock_2_inodes(dir, inode);
--	if (budgeted)
--		ubifs_release_budget(c, &req);
--out_fname:
--	fscrypt_free_filename(&nm);
--	return err;
--}
--
--/**
-- * ubifs_check_dir_empty - check if a directory is empty or not.
-- * @dir: VFS inode object of the directory to check
-- *
-- * This function checks if directory @dir is empty. Returns zero if the
-- * directory is empty, %-ENOTEMPTY if it is not, and other negative error codes
-- * in case of errors.
-- */
--int ubifs_check_dir_empty(struct inode *dir)
--{
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct fscrypt_name nm = { 0 };
--	struct ubifs_dent_node *dent;
--	union ubifs_key key;
--	int err;
--
--	lowest_dent_key(c, &key, dir->i_ino);
--	dent = ubifs_tnc_next_ent(c, &key, &nm);
--	if (IS_ERR(dent)) {
--		err = PTR_ERR(dent);
--		if (err == -ENOENT)
--			err = 0;
--	} else {
--		kfree(dent);
--		err = -ENOTEMPTY;
--	}
--	return err;
--}
--
--static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
--{
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	struct inode *inode = d_inode(dentry);
--	int err, sz_change, budgeted = 1;
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	struct ubifs_budget_req req = { .mod_dent = 1, .dirtied_ino = 2 };
--	struct fscrypt_name nm;
--
--	/*
--	 * Budget request settings: deletion direntry, deletion inode and
--	 * changing the parent inode. If budgeting fails, go ahead anyway
--	 * because we have extra space reserved for deletions.
--	 */
--
--	dbg_gen("directory '%pd', ino %lu in dir ino %lu", dentry,
--		inode->i_ino, dir->i_ino);
--	ubifs_assert(c, inode_is_locked(dir));
--	ubifs_assert(c, inode_is_locked(inode));
--	err = ubifs_check_dir_empty(d_inode(dentry));
--	if (err)
--		return err;
--
--	err = fscrypt_setup_filename(dir, &dentry->d_name, 1, &nm);
--	if (err)
--		return err;
--
--	err = ubifs_purge_xattrs(inode);
--	if (err)
--		return err;
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	err = ubifs_budget_space(c, &req);
--	if (err) {
--		if (err != -ENOSPC)
--			goto out_fname;
--		budgeted = 0;
--	}
--
--	lock_2_inodes(dir, inode);
--	inode_set_ctime_current(inode);
--	clear_nlink(inode);
--	drop_nlink(dir);
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0, 0);
--	if (err)
--		goto out_cancel;
--	unlock_2_inodes(dir, inode);
--
--	if (budgeted)
--		ubifs_release_budget(c, &req);
--	else {
--		/* We've deleted something - clean the "no space" flags */
--		c->bi.nospace = c->bi.nospace_rp = 0;
--		smp_wmb();
--	}
--	fscrypt_free_filename(&nm);
--	return 0;
--
--out_cancel:
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inc_nlink(dir);
--	set_nlink(inode, 2);
--	unlock_2_inodes(dir, inode);
--	if (budgeted)
--		ubifs_release_budget(c, &req);
--out_fname:
--	fscrypt_free_filename(&nm);
--	return err;
--}
--
--static int ubifs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
--		       struct dentry *dentry, umode_t mode)
--{
--	struct inode *inode;
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	int err, sz_change;
--	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
--					.dirtied_ino = 1};
--	struct fscrypt_name nm;
--
--	/*
--	 * Budget request settings: new inode, new direntry and changing parent
--	 * directory inode.
--	 */
--
--	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
--		dentry, mode, dir->i_ino);
--
--	err = ubifs_budget_space(c, &req);
--	if (err)
--		return err;
--
--	err = ubifs_prepare_create(dir, dentry, &nm);
--	if (err)
--		goto out_budg;
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	inode = ubifs_new_inode(c, dir, S_IFDIR | mode, false);
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_fname;
--	}
--
--	err = ubifs_init_security(dir, inode, &dentry->d_name);
--	if (err)
--		goto out_inode;
--
--	set_nlink(inode, 1);
--	mutex_lock(&dir_ui->ui_mutex);
--	insert_inode_hash(inode);
--	inc_nlink(inode);
--	inc_nlink(dir);
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
--	if (err) {
--		ubifs_err(c, "cannot create directory, error %d", err);
--		goto out_cancel;
--	}
--	mutex_unlock(&dir_ui->ui_mutex);
--
--	ubifs_release_budget(c, &req);
--	d_instantiate(dentry, inode);
--	fscrypt_free_filename(&nm);
--	return 0;
--
--out_cancel:
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	drop_nlink(dir);
--	mutex_unlock(&dir_ui->ui_mutex);
--	set_nlink(inode, 0);
--out_inode:
--	iput(inode);
--out_fname:
--	fscrypt_free_filename(&nm);
--out_budg:
--	ubifs_release_budget(c, &req);
--	return err;
--}
--
--static int ubifs_mknod(struct mnt_idmap *idmap, struct inode *dir,
--		       struct dentry *dentry, umode_t mode, dev_t rdev)
--{
--	struct inode *inode;
--	struct ubifs_inode *ui;
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	union ubifs_dev_desc *dev = NULL;
--	int sz_change;
--	int err, devlen = 0;
--	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
--					.dirtied_ino = 1 };
--	struct fscrypt_name nm;
--
--	/*
--	 * Budget request settings: new inode, new direntry and changing parent
--	 * directory inode.
--	 */
--
--	dbg_gen("dent '%pd' in dir ino %lu", dentry, dir->i_ino);
--
--	if (S_ISBLK(mode) || S_ISCHR(mode)) {
--		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
--		if (!dev)
--			return -ENOMEM;
--		devlen = ubifs_encode_dev(dev, rdev);
--	}
--
--	req.new_ino_d = ALIGN(devlen, 8);
--	err = ubifs_budget_space(c, &req);
--	if (err) {
--		kfree(dev);
--		return err;
--	}
--
--	err = ubifs_prepare_create(dir, dentry, &nm);
--	if (err) {
--		kfree(dev);
--		goto out_budg;
--	}
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	inode = ubifs_new_inode(c, dir, mode, false);
--	if (IS_ERR(inode)) {
--		kfree(dev);
--		err = PTR_ERR(inode);
--		goto out_fname;
--	}
--
--	err = ubifs_init_security(dir, inode, &dentry->d_name);
--	if (err) {
--		kfree(dev);
--		goto out_inode;
--	}
--
--	init_special_inode(inode, inode->i_mode, rdev);
--	inode->i_size = ubifs_inode(inode)->ui_size = devlen;
--	ui = ubifs_inode(inode);
--	ui->data = dev;
--	ui->data_len = devlen;
--	set_nlink(inode, 1);
--
--	mutex_lock(&dir_ui->ui_mutex);
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
--	if (err)
--		goto out_cancel;
--	mutex_unlock(&dir_ui->ui_mutex);
--
--	ubifs_release_budget(c, &req);
--	insert_inode_hash(inode);
--	d_instantiate(dentry, inode);
--	fscrypt_free_filename(&nm);
--	return 0;
--
--out_cancel:
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	mutex_unlock(&dir_ui->ui_mutex);
--	set_nlink(inode, 0);
--out_inode:
--	iput(inode);
--out_fname:
--	fscrypt_free_filename(&nm);
--out_budg:
--	ubifs_release_budget(c, &req);
--	return err;
--}
--
--static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
--			 struct dentry *dentry, const char *symname)
--{
--	struct inode *inode;
--	struct ubifs_inode *ui;
--	struct ubifs_inode *dir_ui = ubifs_inode(dir);
--	struct ubifs_info *c = dir->i_sb->s_fs_info;
--	int err, sz_change, len = strlen(symname);
--	struct fscrypt_str disk_link;
--	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
--					.dirtied_ino = 1 };
--	struct fscrypt_name nm;
--
--	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
--		symname, dir->i_ino);
--
--	err = fscrypt_prepare_symlink(dir, symname, len, UBIFS_MAX_INO_DATA,
--				      &disk_link);
--	if (err)
--		return err;
--
--	/*
--	 * Budget request settings: new inode, new direntry and changing parent
--	 * directory inode.
--	 */
--	req.new_ino_d = ALIGN(disk_link.len - 1, 8);
--	err = ubifs_budget_space(c, &req);
--	if (err)
--		return err;
--
--	err = ubifs_prepare_create(dir, dentry, &nm);
--	if (err)
--		goto out_budg;
--
--	sz_change = CALC_DENT_SIZE(fname_len(&nm));
--
--	inode = ubifs_new_inode(c, dir, S_IFLNK | S_IRWXUGO, false);
--	if (IS_ERR(inode)) {
--		err = PTR_ERR(inode);
--		goto out_fname;
--	}
--
--	err = ubifs_init_security(dir, inode, &dentry->d_name);
--	if (err)
--		goto out_inode;
--
--	ui = ubifs_inode(inode);
--	ui->data = kmalloc(disk_link.len, GFP_NOFS);
--	if (!ui->data) {
--		err = -ENOMEM;
--		goto out_inode;
--	}
--
--	if (IS_ENCRYPTED(inode)) {
--		disk_link.name = ui->data; /* encrypt directly into ui->data */
--		err = fscrypt_encrypt_symlink(inode, symname, len, &disk_link);
--		if (err)
--			goto out_inode;
--	} else {
--		memcpy(ui->data, disk_link.name, disk_link.len);
--		inode->i_link = ui->data;
--	}
--
--	/*
--	 * The terminating zero byte is not written to the flash media and it
--	 * is put just to make later in-memory string processing simpler. Thus,
--	 * data length is @disk_link.len - 1, not @disk_link.len.
--	 */
--	ui->data_len = disk_link.len - 1;
--	inode->i_size = ubifs_inode(inode)->ui_size = disk_link.len - 1;
--	set_nlink(inode, 1);
--
--	mutex_lock(&dir_ui->ui_mutex);
--	dir->i_size += sz_change;
--	dir_ui->ui_size = dir->i_size;
--	inode_set_mtime_to_ts(dir,
--			      inode_set_ctime_to_ts(dir, inode_get_ctime(inode)));
--	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0, 1);
--	if (err)
--		goto out_cancel;
--	mutex_unlock(&dir_ui->ui_mutex);
--
--	insert_inode_hash(inode);
--	d_instantiate(dentry, inode);
--	err = 0;
--	goto out_fname;
--
--out_cancel:
--	dir->i_size -= sz_change;
--	dir_ui->ui_size = dir->i_size;
--	mutex_unlock(&dir_ui->ui_mutex);
--	set_nlink(inode, 0);
--out_inode:
--	/* Free inode->i_link before inode is marked as bad. */
--	fscrypt_free_inode(inode);
--	iput(inode);
--out_fname:
--	fscrypt_free_filename(&nm);
--out_budg:
--	ubifs_release_budget(c, &req);
--	return err;
--}
--
--/**
-- * lock_4_inodes - a wrapper for locking three UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- * @inode3: third inode
-- * @inode4: fourth inode
-- *
-- * This function is used for 'ubifs_rename()' and @inode1 may be the same as
-- * @inode2 whereas @inode3 and @inode4 may be %NULL.
-- *
-- * We do not implement any tricks to guarantee strict lock ordering, because
-- * VFS has already done it for us on the @i_mutex. So this is just a simple
-- * wrapper function.
-- */
--static void lock_4_inodes(struct inode *inode1, struct inode *inode2,
--			  struct inode *inode3, struct inode *inode4)
--{
--	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
--	if (inode2 != inode1)
--		mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
--	if (inode3)
--		mutex_lock_nested(&ubifs_inode(inode3)->ui_mutex, WB_MUTEX_3);
--	if (inode4)
--		mutex_lock_nested(&ubifs_inode(inode4)->ui_mutex, WB_MUTEX_4);
--}
--
--/**
-- * unlock_4_inodes - a wrapper for unlocking three UBIFS inodes for rename.
-- * @inode1: first inode
-- * @inode2: second inode
-- * @inode3: third inode
-- * @inode4: fourth inode
-- */
--static void unlock_4_inodes(struct inode *inode1, struct inode *inode2,
--			    struct inode *inode3, struct inode *inode4)
--{
--	if (inode4)
--		mutex_unlock(&ubifs_inode(inode4)->ui_mutex);
--	if (inode3)
--		mutex_unlock(&ubifs_inode(inode3)->ui_mutex);
--	if (inode1 != inode2)
--		mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
--	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
--}
--
--static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
--		     struct inode *new_dir, struct dentry *new_dentry,
--		     unsigned int flags)
--{
--	struct ubifs_info *c = old_dir->i_sb->s_fs_info;
--	struct inode *old_inode = d_inode(old_dentry);
--	struct inode *new_inode = d_inode(new_dentry);
--	struct inode *whiteout = NULL;
--	struct ubifs_inode *old_inode_ui = ubifs_inode(old_inode);
--	struct ubifs_inode *whiteout_ui = NULL;
--	int err, release, sync = 0, move = (new_dir != old_dir);
--	int is_dir = S_ISDIR(old_inode->i_mode);
--	int unlink = !!new_inode, new_sz, old_sz;
--	struct ubifs_budget_req req = { .new_dent = 1, .mod_dent = 1,
--					.dirtied_ino = 3 };
--	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
--			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
--	struct ubifs_budget_req wht_req;
--	unsigned int saved_nlink;
--	struct fscrypt_name old_nm, new_nm;
--
--	/*
--	 * Budget request settings:
--	 *   req: deletion direntry, new direntry, removing the old inode,
--	 *   and changing old and new parent directory inodes.
--	 *
--	 *   wht_req: new whiteout inode for RENAME_WHITEOUT.
--	 *
--	 *   ino_req: marks the target inode as dirty and does not write it.
--	 */
--
--	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu flags 0x%x",
--		old_dentry, old_inode->i_ino, old_dir->i_ino,
--		new_dentry, new_dir->i_ino, flags);
--
--	if (unlink) {
--		ubifs_assert(c, inode_is_locked(new_inode));
--
--		/* Budget for old inode's data when its nlink > 1. */
--		req.dirtied_ino_d = ALIGN(ubifs_inode(new_inode)->data_len, 8);
--		err = ubifs_purge_xattrs(new_inode);
--		if (err)
--			return err;
--	}
--
--	if (unlink && is_dir) {
--		err = ubifs_check_dir_empty(new_inode);
--		if (err)
--			return err;
--	}
--
--	err = fscrypt_setup_filename(old_dir, &old_dentry->d_name, 0, &old_nm);
--	if (err)
--		return err;
--
--	err = fscrypt_setup_filename(new_dir, &new_dentry->d_name, 0, &new_nm);
--	if (err) {
--		fscrypt_free_filename(&old_nm);
--		return err;
--	}
--
--	new_sz = CALC_DENT_SIZE(fname_len(&new_nm));
--	old_sz = CALC_DENT_SIZE(fname_len(&old_nm));
--
--	err = ubifs_budget_space(c, &req);
--	if (err) {
--		fscrypt_free_filename(&old_nm);
--		fscrypt_free_filename(&new_nm);
--		return err;
--	}
--	err = ubifs_budget_space(c, &ino_req);
--	if (err) {
--		fscrypt_free_filename(&old_nm);
--		fscrypt_free_filename(&new_nm);
--		ubifs_release_budget(c, &req);
--		return err;
--	}
--
--	if (flags & RENAME_WHITEOUT) {
--		union ubifs_dev_desc *dev = NULL;
--
--		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
--		if (!dev) {
--			err = -ENOMEM;
--			goto out_release;
--		}
--
--		/*
--		 * The whiteout inode without dentry is pinned in memory,
--		 * umount won't happen during rename process because we
--		 * got parent dentry.
--		 */
--		whiteout = create_whiteout(old_dir, old_dentry);
--		if (IS_ERR(whiteout)) {
--			err = PTR_ERR(whiteout);
--			kfree(dev);
--			goto out_release;
--		}
--
--		whiteout_ui = ubifs_inode(whiteout);
--		whiteout_ui->data = dev;
--		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
--		ubifs_assert(c, !whiteout_ui->dirty);
--
--		memset(&wht_req, 0, sizeof(struct ubifs_budget_req));
--		wht_req.new_ino = 1;
--		wht_req.new_ino_d = ALIGN(whiteout_ui->data_len, 8);
--		/*
--		 * To avoid deadlock between space budget (holds ui_mutex and
--		 * waits wb work) and writeback work(waits ui_mutex), do space
--		 * budget before ubifs inodes locked.
--		 */
--		err = ubifs_budget_space(c, &wht_req);
--		if (err) {
--			iput(whiteout);
--			goto out_release;
--		}
--		set_nlink(whiteout, 1);
--
--		/* Add the old_dentry size to the old_dir size. */
--		old_sz -= CALC_DENT_SIZE(fname_len(&old_nm));
--	}
--
--	lock_4_inodes(old_dir, new_dir, new_inode, whiteout);
--
--	/*
--	 * Like most other Unix systems, set the @i_ctime for inodes on a
--	 * rename.
--	 */
--	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
--
--	/* We must adjust parent link count when renaming directories */
--	if (is_dir) {
--		if (move) {
--			/*
--			 * @old_dir loses a link because we are moving
--			 * @old_inode to a different directory.
--			 */
--			drop_nlink(old_dir);
--			/*
--			 * @new_dir only gains a link if we are not also
--			 * overwriting an existing directory.
--			 */
--			if (!unlink)
--				inc_nlink(new_dir);
--		} else {
--			/*
--			 * @old_inode is not moving to a different directory,
--			 * but @old_dir still loses a link if we are
--			 * overwriting an existing directory.
--			 */
--			if (unlink)
--				drop_nlink(old_dir);
--		}
--	}
--
--	old_dir->i_size -= old_sz;
--	ubifs_inode(old_dir)->ui_size = old_dir->i_size;
--
--	/*
--	 * And finally, if we unlinked a direntry which happened to have the
--	 * same name as the moved direntry, we have to decrement @i_nlink of
--	 * the unlinked inode.
--	 */
--	if (unlink) {
--		/*
--		 * Directories cannot have hard-links, so if this is a
--		 * directory, just clear @i_nlink.
--		 */
--		saved_nlink = new_inode->i_nlink;
--		if (is_dir)
--			clear_nlink(new_inode);
--		else
--			drop_nlink(new_inode);
--	} else {
--		new_dir->i_size += new_sz;
--		ubifs_inode(new_dir)->ui_size = new_dir->i_size;
--	}
--
--	/*
--	 * Do not ask 'ubifs_jnl_rename()' to flush write-buffer if @old_inode
--	 * is dirty, because this will be done later on at the end of
--	 * 'ubifs_rename()'.
--	 */
--	if (IS_SYNC(old_inode)) {
--		sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
--		if (unlink && IS_SYNC(new_inode))
--			sync = 1;
--		/*
--		 * S_SYNC flag of whiteout inherits from the old_dir, and we
--		 * have already checked the old dir inode. So there is no need
--		 * to check whiteout.
--		 */
--	}
--
--	err = ubifs_jnl_rename(c, old_dir, old_inode, &old_nm, new_dir,
--			       new_inode, &new_nm, whiteout, sync, !!whiteout);
--	if (err)
--		goto out_cancel;
--
--	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
--	ubifs_release_budget(c, &req);
--
--	if (whiteout) {
--		ubifs_release_budget(c, &wht_req);
--		iput(whiteout);
--	}
--
--	mutex_lock(&old_inode_ui->ui_mutex);
--	release = old_inode_ui->dirty;
--	mark_inode_dirty_sync(old_inode);
--	mutex_unlock(&old_inode_ui->ui_mutex);
--
--	if (release)
--		ubifs_release_budget(c, &ino_req);
--	if (IS_SYNC(old_inode))
--		/*
--		 * Rename finished here. Although old inode cannot be updated
--		 * on flash, old ctime is not a big problem, don't return err
--		 * code to userspace.
--		 */
--		old_inode->i_sb->s_op->write_inode(old_inode, NULL);
--
--	fscrypt_free_filename(&old_nm);
--	fscrypt_free_filename(&new_nm);
--	return 0;
--
--out_cancel:
--	if (unlink) {
--		set_nlink(new_inode, saved_nlink);
--	} else {
--		new_dir->i_size -= new_sz;
--		ubifs_inode(new_dir)->ui_size = new_dir->i_size;
--	}
--	old_dir->i_size += old_sz;
--	ubifs_inode(old_dir)->ui_size = old_dir->i_size;
--	if (is_dir) {
--		if (move) {
--			inc_nlink(old_dir);
--			if (!unlink)
--				drop_nlink(new_dir);
--		} else {
--			if (unlink)
--				inc_nlink(old_dir);
--		}
--	}
--	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
--	if (whiteout) {
--		ubifs_release_budget(c, &wht_req);
--		set_nlink(whiteout, 0);
--		iput(whiteout);
--	}
--out_release:
--	ubifs_release_budget(c, &ino_req);
--	ubifs_release_budget(c, &req);
--	fscrypt_free_filename(&old_nm);
--	fscrypt_free_filename(&new_nm);
--	return err;
--}
--
--static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
--			struct inode *new_dir, struct dentry *new_dentry)
--{
--	struct ubifs_info *c = old_dir->i_sb->s_fs_info;
--	struct ubifs_budget_req req = { .new_dent = 1, .mod_dent = 1,
--				.dirtied_ino = 2 };
--	int sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
--	struct inode *fst_inode = d_inode(old_dentry);
--	struct inode *snd_inode = d_inode(new_dentry);
--	int err;
--	struct fscrypt_name fst_nm, snd_nm;
--
--	ubifs_assert(c, fst_inode && snd_inode);
--
--	/*
--	 * Budget request settings: changing two direntries, changing the two
--	 * parent directory inodes.
--	 */
--
--	dbg_gen("dent '%pd' ino %lu in dir ino %lu exchange dent '%pd' ino %lu in dir ino %lu",
--		old_dentry, fst_inode->i_ino, old_dir->i_ino,
--		new_dentry, snd_inode->i_ino, new_dir->i_ino);
--
--	err = fscrypt_setup_filename(old_dir, &old_dentry->d_name, 0, &fst_nm);
--	if (err)
--		return err;
--
--	err = fscrypt_setup_filename(new_dir, &new_dentry->d_name, 0, &snd_nm);
--	if (err) {
--		fscrypt_free_filename(&fst_nm);
--		return err;
--	}
--
--	err = ubifs_budget_space(c, &req);
--	if (err)
--		goto out;
--
--	lock_4_inodes(old_dir, new_dir, NULL, NULL);
--
--	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
--
--	if (old_dir != new_dir) {
--		if (S_ISDIR(fst_inode->i_mode) && !S_ISDIR(snd_inode->i_mode)) {
--			inc_nlink(new_dir);
--			drop_nlink(old_dir);
--		}
--		else if (!S_ISDIR(fst_inode->i_mode) && S_ISDIR(snd_inode->i_mode)) {
--			drop_nlink(new_dir);
--			inc_nlink(old_dir);
--		}
--	}
--
--	err = ubifs_jnl_xrename(c, old_dir, fst_inode, &fst_nm, new_dir,
--				snd_inode, &snd_nm, sync);
--
--	unlock_4_inodes(old_dir, new_dir, NULL, NULL);
--	ubifs_release_budget(c, &req);
--
--out:
--	fscrypt_free_filename(&fst_nm);
--	fscrypt_free_filename(&snd_nm);
--	return err;
--}
--
--static int ubifs_rename(struct mnt_idmap *idmap,
--			struct inode *old_dir, struct dentry *old_dentry,
--			struct inode *new_dir, struct dentry *new_dentry,
--			unsigned int flags)
--{
--	int err;
--	struct ubifs_info *c = old_dir->i_sb->s_fs_info;
--
--	if (flags & ~(RENAME_NOREPLACE | RENAME_WHITEOUT | RENAME_EXCHANGE))
--		return -EINVAL;
--
--	ubifs_assert(c, inode_is_locked(old_dir));
--	ubifs_assert(c, inode_is_locked(new_dir));
--
--	err = fscrypt_prepare_rename(old_dir, old_dentry, new_dir, new_dentry,
--				     flags);
--	if (err)
--		return err;
--
--	if (flags & RENAME_EXCHANGE)
--		return ubifs_xrename(old_dir, old_dentry, new_dir, new_dentry);
--
--	return do_rename(old_dir, old_dentry, new_dir, new_dentry, flags);
--}
--
--int ubifs_getattr(struct mnt_idmap *idmap, const struct path *path,
--		  struct kstat *stat, u32 request_mask, unsigned int flags)
--{
--	loff_t size;
--	struct inode *inode = d_inode(path->dentry);
--	struct ubifs_inode *ui = ubifs_inode(inode);
--
--	mutex_lock(&ui->ui_mutex);
--
--	if (ui->flags & UBIFS_APPEND_FL)
--		stat->attributes |= STATX_ATTR_APPEND;
--	if (ui->flags & UBIFS_COMPR_FL)
--		stat->attributes |= STATX_ATTR_COMPRESSED;
--	if (ui->flags & UBIFS_CRYPT_FL)
--		stat->attributes |= STATX_ATTR_ENCRYPTED;
--	if (ui->flags & UBIFS_IMMUTABLE_FL)
--		stat->attributes |= STATX_ATTR_IMMUTABLE;
--
--	stat->attributes_mask |= (STATX_ATTR_APPEND |
--				STATX_ATTR_COMPRESSED |
--				STATX_ATTR_ENCRYPTED |
--				STATX_ATTR_IMMUTABLE);
--
--	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
--	stat->blksize = UBIFS_BLOCK_SIZE;
--	stat->size = ui->ui_size;
--
--	/*
--	 * Unfortunately, the 'stat()' system call was designed for block
--	 * device based file systems, and it is not appropriate for UBIFS,
--	 * because UBIFS does not have notion of "block". For example, it is
--	 * difficult to tell how many block a directory takes - it actually
--	 * takes less than 300 bytes, but we have to round it to block size,
--	 * which introduces large mistake. This makes utilities like 'du' to
--	 * report completely senseless numbers. This is the reason why UBIFS
--	 * goes the same way as JFFS2 - it reports zero blocks for everything
--	 * but regular files, which makes more sense than reporting completely
--	 * wrong sizes.
--	 */
--	if (S_ISREG(inode->i_mode)) {
--		size = ui->xattr_size;
--		size += stat->size;
--		size = ALIGN(size, UBIFS_BLOCK_SIZE);
--		/*
--		 * Note, user-space expects 512-byte blocks count irrespectively
--		 * of what was reported in @stat->size.
--		 */
--		stat->blocks = size >> 9;
--	} else
--		stat->blocks = 0;
--	mutex_unlock(&ui->ui_mutex);
--	return 0;
--}
--
--const struct inode_operations ubifs_dir_inode_operations = {
--	.lookup      = ubifs_lookup,
--	.create      = ubifs_create,
--	.link        = ubifs_link,
--	.symlink     = ubifs_symlink,
--	.unlink      = ubifs_unlink,
--	.mkdir       = ubifs_mkdir,
--	.rmdir       = ubifs_rmdir,
--	.mknod       = ubifs_mknod,
--	.rename      = ubifs_rename,
--	.setattr     = ubifs_setattr,
--	.getattr     = ubifs_getattr,
--	.listxattr   = ubifs_listxattr,
--	.update_time = ubifs_update_time,
--	.tmpfile     = ubifs_tmpfile,
--	.fileattr_get = ubifs_fileattr_get,
--	.fileattr_set = ubifs_fileattr_set,
--};
--
--const struct file_operations ubifs_dir_operations = {
--	.llseek         = generic_file_llseek,
--	.release        = ubifs_dir_release,
--	.read           = generic_read_dir,
--	.iterate_shared = ubifs_readdir,
--	.fsync          = ubifs_fsync,
--	.unlocked_ioctl = ubifs_ioctl,
--#ifdef CONFIG_COMPAT
--	.compat_ioctl   = ubifs_compat_ioctl,
+-#define WORST_COMPR_FACTOR 2
+-
+-#ifdef CONFIG_FS_ENCRYPTION
+-#define UBIFS_CIPHER_BLOCK_SIZE FSCRYPT_CONTENTS_ALIGNMENT
+-#else
+-#define UBIFS_CIPHER_BLOCK_SIZE 0
 -#endif
+-
+-/*
+- * How much memory is needed for a buffer where we compress a data node.
+- */
+-#define COMPRESSED_DATA_NODE_BUF_SZ \
+-	(UBIFS_DATA_NODE_SZ + UBIFS_BLOCK_SIZE * WORST_COMPR_FACTOR)
+-
+ /* Maximum expected tree height for use by bottom_up_buf */
+ #define BOTTOM_UP_HEIGHT 64
+ 
+-/* Maximum number of data nodes to bulk-read */
+-#define UBIFS_MAX_BULK_READ 32
+-
+-#ifdef CONFIG_UBIFS_FS_AUTHENTICATION
+ #define UBIFS_HASH_ARR_SZ UBIFS_MAX_HASH_LEN
+ #define UBIFS_HMAC_ARR_SZ UBIFS_MAX_HMAC_LEN
+-#else
+-#define UBIFS_HASH_ARR_SZ 0
+-#define UBIFS_HMAC_ARR_SZ 0
+-#endif
+-
+-/*
+- * The UBIFS sysfs directory name pattern and maximum name length (3 for "ubi"
+- * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
+- */
+-#define UBIFS_DFS_DIR_NAME "ubi%d_%d"
+-#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
+-
+-/*
+- * Lockdep classes for UBIFS inode @ui_mutex.
+- */
+-enum {
+-	WB_MUTEX_1 = 0,
+-	WB_MUTEX_2 = 1,
+-	WB_MUTEX_3 = 2,
+-	WB_MUTEX_4 = 3,
 -};
+ 
+ /*
+  * Znode flags (actually, bit numbers which store the flags).
+@@ -265,18 +189,6 @@ enum {
+ 	LEB_RETAINED,
+ };
+ 
+-/*
+- * Action taken upon a failed ubifs_assert().
+- * @ASSACT_REPORT: just report the failed assertion
+- * @ASSACT_RO: switch to read-only mode
+- * @ASSACT_PANIC: call BUG() and possible panic the kernel
+- */
+-enum {
+-	ASSACT_REPORT = 0,
+-	ASSACT_RO,
+-	ASSACT_PANIC,
+-};
+-
+ /**
+  * struct ubifs_old_idx - index node obsoleted since last commit start.
+  * @rb: rb-tree node
+@@ -351,81 +263,25 @@ struct ubifs_gced_idx_leb {
+ 
+ /**
+  * struct ubifs_inode - UBIFS in-memory inode description.
+- * @vfs_inode: VFS inode description object
+  * @creat_sqnum: sequence number at time of creation
+- * @del_cmtno: commit number corresponding to the time the inode was deleted,
+- *             protected by @c->commit_sem;
+  * @xattr_size: summarized size of all extended attributes in bytes
+  * @xattr_cnt: count of extended attributes this inode has
+  * @xattr_names: sum of lengths of all extended attribute names belonging to
+  *               this inode
+- * @dirty: non-zero if the inode is dirty
+- * @xattr: non-zero if this is an extended attribute inode
+- * @bulk_read: non-zero if bulk-read should be used
+- * @ui_mutex: serializes inode write-back with the rest of VFS operations,
+- *            serializes "clean <-> dirty" state changes, serializes bulk-read,
+- *            protects @dirty, @bulk_read, @ui_size, and @xattr_size
+- * @xattr_sem: serilizes write operations (remove|set|create) on xattr
+- * @ui_lock: protects @synced_i_size
+- * @synced_i_size: synchronized size of inode, i.e. the value of inode size
+- *                 currently stored on the flash; used only for regular file
+- *                 inodes
+  * @ui_size: inode size used by UBIFS when writing to flash
+  * @flags: inode flags (@UBIFS_COMPR_FL, etc)
+  * @compr_type: default compression type used for this inode
+- * @last_page_read: page number of last page read (for bulk read)
+- * @read_in_a_row: number of consecutive pages read in a row (for bulk read)
+  * @data_len: length of the data attached to the inode
+  * @data: inode's data
+- *
+- * @ui_mutex exists for two main reasons. At first it prevents inodes from
+- * being written back while UBIFS changing them, being in the middle of an VFS
+- * operation. This way UBIFS makes sure the inode fields are consistent. For
+- * example, in 'ubifs_rename()' we change 4 inodes simultaneously, and
+- * write-back must not write any of them before we have finished.
+- *
+- * The second reason is budgeting - UBIFS has to budget all operations. If an
+- * operation is going to mark an inode dirty, it has to allocate budget for
+- * this. It cannot just mark it dirty because there is no guarantee there will
+- * be enough flash space to write the inode back later. This means UBIFS has
+- * to have full control over inode "clean <-> dirty" transitions (and pages
+- * actually). But unfortunately, VFS marks inodes dirty in many places, and it
+- * does not ask the file-system if it is allowed to do so (there is a notifier,
+- * but it is not enough), i.e., there is no mechanism to synchronize with this.
+- * So UBIFS has its own inode dirty flag and its own mutex to serialize
+- * "clean <-> dirty" transitions.
+- *
+- * The @synced_i_size field is used to make sure we never write pages which are
+- * beyond last synchronized inode size. See 'ubifs_writepage()' for more
+- * information.
+- *
+- * The @ui_size is a "shadow" variable for @inode->i_size and UBIFS uses
+- * @ui_size instead of @inode->i_size. The reason for this is that UBIFS cannot
+- * make sure @inode->i_size is always changed under @ui_mutex, because it
+- * cannot call 'truncate_setsize()' with @ui_mutex locked, because it would
+- * deadlock with 'ubifs_writepage()' (see file.c). All the other inode fields
+- * are changed under @ui_mutex, so they do not need "shadow" fields. Note, one
+- * could consider to rework locking and base it on "shadow" fields.
+  */
+ struct ubifs_inode {
+-	struct inode vfs_inode;
+ 	unsigned long long creat_sqnum;
+-	unsigned long long del_cmtno;
+ 	unsigned int xattr_size;
+ 	unsigned int xattr_cnt;
+ 	unsigned int xattr_names;
+-	unsigned int dirty:1;
+-	unsigned int xattr:1;
+-	unsigned int bulk_read:1;
+ 	unsigned int compr_type:2;
+-	struct mutex ui_mutex;
+-	struct rw_semaphore xattr_sem;
+-	spinlock_t ui_lock;
+-	loff_t synced_i_size;
+ 	loff_t ui_size;
+ 	int flags;
+-	pgoff_t last_page_read;
+-	pgoff_t read_in_a_row;
+ 	int data_len;
+ 	void *data;
+ };
+@@ -673,9 +529,6 @@ typedef int (*ubifs_lpt_scan_callback)(struct ubifs_info *c,
+  * @io_mutex: serializes write-buffer I/O
+  * @lock: serializes @buf, @lnum, @offs, @avail, @used, @next_ino and @inodes
+  *        fields
+- * @timer: write-buffer timer
+- * @no_timer: non-zero if this write-buffer does not have a timer
+- * @need_sync: non-zero if the timer expired and the wbuf needs sync'ing
+  * @next_ino: points to the next position of the following inode number
+  * @inodes: stores the inode numbers of the nodes which are in wbuf
+  *
+@@ -701,9 +554,6 @@ struct ubifs_wbuf {
+ 	int (*sync_callback)(struct ubifs_info *c, int lnum, int free, int pad);
+ 	struct mutex io_mutex;
+ 	spinlock_t lock;
+-	struct hrtimer timer;
+-	unsigned int no_timer:1;
+-	unsigned int need_sync:1;
+ 	int next_ino;
+ 	ino_t *inodes;
+ };
+@@ -801,28 +651,6 @@ struct ubifs_znode {
+ };
+ 
+ /**
+- * struct bu_info - bulk-read information.
+- * @key: first data node key
+- * @zbranch: zbranches of data nodes to bulk read
+- * @buf: buffer to read into
+- * @buf_len: buffer length
+- * @gc_seq: GC sequence number to detect races with GC
+- * @cnt: number of data nodes for bulk read
+- * @blk_cnt: number of data blocks including holes
+- * @oef: end of file reached
+- */
+-struct bu_info {
+-	union ubifs_key key;
+-	struct ubifs_zbranch zbranch[UBIFS_MAX_BULK_READ];
+-	void *buf;
+-	int buf_len;
+-	int gc_seq;
+-	int cnt;
+-	int blk_cnt;
+-	int eof;
+-};
+-
+-/**
+  * struct ubifs_node_range - node length range description data structure.
+  * @len: fixed node length
+  * @min_len: minimum possible node length
+@@ -839,24 +667,6 @@ struct ubifs_node_range {
+ };
+ 
+ /**
+- * struct ubifs_compressor - UBIFS compressor description structure.
+- * @compr_type: compressor type (%UBIFS_COMPR_LZO, etc)
+- * @cc: cryptoapi compressor handle
+- * @comp_mutex: mutex used during compression
+- * @decomp_mutex: mutex used during decompression
+- * @name: compressor name
+- * @capi_name: cryptoapi compressor name
+- */
+-struct ubifs_compressor {
+-	int compr_type;
+-	struct crypto_comp *cc;
+-	struct mutex *comp_mutex;
+-	struct mutex *decomp_mutex;
+-	const char *name;
+-	const char *capi_name;
+-};
+-
+-/**
+  * struct ubifs_budget_req - budget requirements of an operation.
+  *
+  * @fast: non-zero if the budgeting should try to acquire budget quickly and
+@@ -943,26 +753,6 @@ struct ubifs_orphan {
+ };
+ 
+ /**
+- * struct ubifs_mount_opts - UBIFS-specific mount options information.
+- * @unmount_mode: selected unmount mode (%0 default, %1 normal, %2 fast)
+- * @bulk_read: enable/disable bulk-reads (%0 default, %1 disable, %2 enable)
+- * @chk_data_crc: enable/disable CRC data checking when reading data nodes
+- *                (%0 default, %1 disable, %2 enable)
+- * @override_compr: override default compressor (%0 - do not override and use
+- *                  superblock compressor, %1 - override and use compressor
+- *                  specified in @compr_type)
+- * @compr_type: compressor type to override the superblock compressor with
+- *              (%UBIFS_COMPR_NONE, etc)
+- */
+-struct ubifs_mount_opts {
+-	unsigned int unmount_mode:2;
+-	unsigned int bulk_read:2;
+-	unsigned int chk_data_crc:2;
+-	unsigned int override_compr:1;
+-	unsigned int compr_type:2;
+-};
+-
+-/**
+  * struct ubifs_budg_info - UBIFS budgeting information.
+  * @idx_growth: amount of bytes budgeted for index growth
+  * @data_growth: amount of bytes budgeted for cached data
+@@ -996,24 +786,12 @@ struct ubifs_budg_info {
+ 	int dent_budget;
+ };
+ 
+-/**
+- * ubifs_stats_info - per-FS statistics information.
+- * @magic_errors: number of bad magic numbers (will be reset with a new mount).
+- * @node_errors: number of bad nodes (will be reset with a new mount).
+- * @crc_errors: number of bad crcs (will be reset with a new mount).
+- */
+-struct ubifs_stats_info {
+-	unsigned int magic_errors;
+-	unsigned int node_errors;
+-	unsigned int crc_errors;
+-};
+-
+ struct ubifs_debug_info;
+ 
+ /**
+  * struct ubifs_info - UBIFS file-system description data structure
+  * (per-superblock).
+- * @vfs_sb: VFS @struct super_block object
++ *
+  * @sup_node: The super block node as read from the device
+  *
+  * @highest_inum: highest used inode number
+@@ -1023,7 +801,14 @@ struct ubifs_debug_info;
+  * @cnt_lock: protects @highest_inum and @max_sqnum counters
+  * @fmt_version: UBIFS on-flash format version
+  * @ro_compat_version: R/O compatibility version
+- * @uuid: UUID from super block
++ *
++ * @debug_level: level of debug messages, 0 - none, 1 - error message,
++ *		 2 - warning message, 3 - notice message, 4 - debug message
++ * @program_type: used to identify the type of current program
++ * @program_name: program name
++ * @dev_name: device name
++ * @dev_fd: opening handler for an UBI volume or an image file
++ * @libubi: opening handler for libubi
+  *
+  * @lhead_lnum: log head logical eraseblock number
+  * @lhead_offs: log head offset
+@@ -1048,7 +833,6 @@ struct ubifs_debug_info;
+  * @commit_sem: synchronizes committer with other processes
+  * @cmt_state: commit state
+  * @cs_lock: commit state lock
+- * @cmt_wq: wait queue to sleep on if the log is full and a commit is running
+  *
+  * @big_lpt: flag that LPT is too big to write whole during commit
+  * @space_fixup: flag indicating that free space in LEBs needs to be cleaned up
+@@ -1056,11 +840,8 @@ struct ubifs_debug_info;
+  * @encrypted: flag indicating that this file system contains encrypted files
+  * @no_chk_data_crc: do not check CRCs when reading data nodes (except during
+  *                   recovery)
+- * @bulk_read: enable bulk-reads
+- * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
+- * @rw_incompat: the media is not R/W compatible
+- * @assert_action: action to take when a ubifs_assert() fails
+  * @authenticated: flag indigating the FS is mounted in authenticated mode
++ * @superblock_need_write: flag indicating that we need to write superblock node
+  *
+  * @tnc_mutex: protects the Tree Node Cache (TNC), @zroot, @cnext, @enext, and
+  *             @calc_idx_sz
+@@ -1082,15 +863,6 @@ struct ubifs_debug_info;
+  * @mst_node: master node
+  * @mst_offs: offset of valid master node
+  *
+- * @max_bu_buf_len: maximum bulk-read buffer length
+- * @bu_mutex: protects the pre-allocated bulk-read buffer and @c->bu
+- * @bu: pre-allocated bulk-read information
+- *
+- * @write_reserve_mutex: protects @write_reserve_buf
+- * @write_reserve_buf: on the write path we allocate memory, which might
+- *                     sometimes be unavailable, in which case we use this
+- *                     write reserve buffer
+- *
+  * @log_lebs: number of logical eraseblocks in the log
+  * @log_bytes: log size in bytes
+  * @log_last: last LEB of the log
+@@ -1103,12 +875,14 @@ struct ubifs_debug_info;
+  * @main_lebs: count of LEBs in the main area
+  * @main_first: first LEB of the main area
+  * @main_bytes: main area size in bytes
++ * @default_compr: default compression type
++ * @favor_lzo: favor LZO compression method
++ * @favor_percent: lzo vs. zlib threshold used in case favor LZO
+  *
+  * @key_hash_type: type of the key hash
+  * @key_hash: direntry key hash function
+  * @key_fmt: key format
+  * @key_len: key length
+- * @hash_len: The length of the index node hashes
+  * @fanout: fanout of the index tree (number of links per indexing node)
+  *
+  * @min_io_size: minimal input/output unit size
+@@ -1117,8 +891,6 @@ struct ubifs_debug_info;
+  *                  time (MTD write buffer size)
+  * @max_write_shift: number of bits in @max_write_size minus one
+  * @leb_size: logical eraseblock size in bytes
+- * @leb_start: starting offset of logical eraseblocks within physical
+- *             eraseblocks
+  * @half_leb_size: half LEB size
+  * @idx_leb_size: how many bytes of an LEB are effectively available when it is
+  *                used to store indexing nodes (@leb_size - @max_idx_node_sz)
+@@ -1150,10 +922,8 @@ struct ubifs_debug_info;
+  *                data nodes of maximum size - used in free space reporting
+  * @dead_wm: LEB dead space watermark
+  * @dark_wm: LEB dark space watermark
+- * @block_cnt: count of 4KiB blocks on the FS
+  *
+  * @ranges: UBIFS node length ranges
+- * @ubi: UBI volume descriptor
+  * @di: UBI device information
+  * @vi: UBI volume information
+  *
+@@ -1172,11 +942,6 @@ struct ubifs_debug_info;
+  * @ohead_offs: orphan head offset
+  * @no_orphs: non-zero if there are no orphans
+  *
+- * @bgt: UBIFS background thread
+- * @bgt_name: background thread name
+- * @need_bgt: if background thread should run
+- * @need_wbuf_sync: if write-buffers have to be synchronized
+- *
+  * @gc_lnum: LEB number used for garbage collection
+  * @sbuf: a buffer of LEB size used by GC and replay for scanning
+  * @idx_gc: list of index LEBs that have been garbage collected
+@@ -1184,10 +949,6 @@ struct ubifs_debug_info;
+  * @gc_seq: incremented for every non-index LEB garbage collected
+  * @gced_lnum: last non-index LEB that was garbage collected
+  *
+- * @infos_list: links all 'ubifs_info' objects
+- * @umount_mutex: serializes shrinker and un-mount
+- * @shrinker_run_no: shrinker run number
+- *
+  * @space_bits: number of bits needed to record free or dirty space
+  * @lpt_lnum_bits: number of bits needed to record a LEB number in the LPT
+  * @lpt_offs_bits: number of bits needed to record an offset in the LPT
+@@ -1230,6 +991,7 @@ struct ubifs_debug_info;
+  *
+  * @ltab_lnum: LEB number of LPT's own lprops table
+  * @ltab_offs: offset of LPT's own lprops table
++ * @lpt: lprops table
+  * @ltab: LPT's own lprops table
+  * @ltab_cmt: LPT's own lprops table (commit copy)
+  * @lsave_cnt: number of LEB numbers in LPT's save table
+@@ -1238,25 +1000,22 @@ struct ubifs_debug_info;
+  * @lsave: LPT's save table
+  * @lscan_lnum: LEB number of last LPT scan
+  *
+- * @rp_size: size of the reserved pool in bytes
+- * @report_rp_size: size of the reserved pool reported to user-space
+- * @rp_uid: reserved pool user ID
+- * @rp_gid: reserved pool group ID
++ * @rp_size: reserved pool size
+  *
+- * @hash_tfm: the hash transformation used for hashing nodes
+- * @hmac_tfm: the HMAC transformation for this filesystem
+- * @hmac_desc_len: length of the HMAC used for authentication
+- * @auth_key_name: the authentication key name
+- * @auth_hash_name: the name of the hash algorithm used for authentication
+- * @auth_hash_algo: the authentication hash used for this fs
++ * @hash_algo_name: the name of the hashing algorithm to use
++ * @hash_algo: The hash algo number (from include/linux/hash_info.h)
++ * @auth_key_filename: authentication key file name
++ * @x509_filename: x509 certificate file name for authentication
++ * @hash_len: the length of the hash
++ * @root_idx_hash: The hash of the root index node
++ * @lpt_hash: The hash of the LPT
++ * @mst_hash: The hash of the master node
+  * @log_hash: the log hash from the commit start node up to the latest reference
+  *            node.
+  *
+- * @empty: %1 if the UBI device is empty
+  * @need_recovery: %1 if the file-system needs recovery
+  * @replaying: %1 during journal replay
+  * @mounting: %1 while mounting
+- * @probing: %1 while attempting to mount if SB_SILENT mount flag is set
+  * @remounting_rw: %1 while re-mounting from R/O mode to R/W mode
+  * @replay_list: temporary list used during journal replay
+  * @replay_buds: list of buds to replay
+@@ -1266,16 +1025,11 @@ struct ubifs_debug_info;
+  * @rcvrd_mst_node: recovered master node to write when re-mounting R/O mounted
+  *                  FS to R/W mode
+  * @size_tree: inode size information for recovery
+- * @mount_opts: UBIFS-specific mount options
+- *
+- * @dbg: debugging-related information
+- * @stats: statistics exported over sysfs
+  *
+- * @kobj: kobject for /sys/fs/ubifs/
+- * @kobj_unregister: completion to unregister sysfs kobject
++ * @new_ihead_lnum: used by debugging to check @c->ihead_lnum
++ * @new_ihead_offs: used by debugging to check @c->ihead_offs
+  */
+ struct ubifs_info {
+-	struct super_block *vfs_sb;
+ 	struct ubifs_sb_node *sup_node;
+ 
+ 	ino_t highest_inum;
+@@ -1284,7 +1038,13 @@ struct ubifs_info {
+ 	spinlock_t cnt_lock;
+ 	int fmt_version;
+ 	int ro_compat_version;
+-	unsigned char uuid[16];
++
++	int debug_level;
++	int program_type;
++	const char *program_name;
++	char *dev_name;
++	int dev_fd;
++	libubi_t libubi;
+ 
+ 	int lhead_lnum;
+ 	int lhead_offs;
+@@ -1306,20 +1066,12 @@ struct ubifs_info {
+ 	struct rw_semaphore commit_sem;
+ 	int cmt_state;
+ 	spinlock_t cs_lock;
+-	wait_queue_head_t cmt_wq;
+-
+-	struct kobject kobj;
+-	struct completion kobj_unregister;
+ 
+ 	unsigned int big_lpt:1;
+ 	unsigned int space_fixup:1;
+ 	unsigned int double_hash:1;
+ 	unsigned int encrypted:1;
+ 	unsigned int no_chk_data_crc:1;
+-	unsigned int bulk_read:1;
+-	unsigned int default_compr:2;
+-	unsigned int rw_incompat:1;
+-	unsigned int assert_action:2;
+ 	unsigned int authenticated:1;
+ 	unsigned int superblock_need_write:1;
+ 
+@@ -1342,13 +1094,6 @@ struct ubifs_info {
+ 	struct ubifs_mst_node *mst_node;
+ 	int mst_offs;
+ 
+-	int max_bu_buf_len;
+-	struct mutex bu_mutex;
+-	struct bu_info bu;
+-
+-	struct mutex write_reserve_mutex;
+-	void *write_reserve_buf;
+-
+ 	int log_lebs;
+ 	long long log_bytes;
+ 	int log_last;
+@@ -1361,12 +1106,14 @@ struct ubifs_info {
+ 	int main_lebs;
+ 	int main_first;
+ 	long long main_bytes;
++	int default_compr;
++	int favor_lzo;
++	int favor_percent;
+ 
+ 	uint8_t key_hash_type;
+ 	uint32_t (*key_hash)(const char *str, int len);
+ 	int key_fmt;
+ 	int key_len;
+-	int hash_len;
+ 	int fanout;
+ 
+ 	int min_io_size;
+@@ -1374,7 +1121,6 @@ struct ubifs_info {
+ 	int max_write_size;
+ 	int max_write_shift;
+ 	int leb_size;
+-	int leb_start;
+ 	int half_leb_size;
+ 	int idx_leb_size;
+ 	int leb_cnt;
+@@ -1402,12 +1148,10 @@ struct ubifs_info {
+ 	int leb_overhead;
+ 	int dead_wm;
+ 	int dark_wm;
+-	int block_cnt;
+ 
+ 	struct ubifs_node_range ranges[UBIFS_NODE_TYPES_CNT];
+-	struct ubi_volume_desc *ubi;
+-	struct ubi_device_info di;
+-	struct ubi_volume_info vi;
++	struct ubi_dev_info di;
++	struct ubi_vol_info vi;
+ 
+ 	struct rb_root orph_tree;
+ 	struct list_head orph_list;
+@@ -1424,11 +1168,6 @@ struct ubifs_info {
+ 	int ohead_offs;
+ 	int no_orphs;
+ 
+-	struct task_struct *bgt;
+-	char bgt_name[sizeof(BGT_NAME_PATTERN) + 9];
+-	int need_bgt;
+-	int need_wbuf_sync;
+-
+ 	int gc_lnum;
+ 	void *sbuf;
+ 	struct list_head idx_gc;
+@@ -1436,10 +1175,6 @@ struct ubifs_info {
+ 	int gc_seq;
+ 	int gced_lnum;
+ 
+-	struct list_head infos_list;
+-	struct mutex umount_mutex;
+-	unsigned int shrinker_run_no;
+-
+ 	int space_bits;
+ 	int lpt_lnum_bits;
+ 	int lpt_offs_bits;
+@@ -1480,6 +1215,7 @@ struct ubifs_info {
+ 
+ 	int ltab_lnum;
+ 	int ltab_offs;
++	struct ubifs_lprops *lpt;
+ 	struct ubifs_lpt_lprops *ltab;
+ 	struct ubifs_lpt_lprops *ltab_cmt;
+ 	int lsave_cnt;
+@@ -1489,97 +1225,99 @@ struct ubifs_info {
+ 	int lscan_lnum;
+ 
+ 	long long rp_size;
+-	long long report_rp_size;
+-	kuid_t rp_uid;
+-	kgid_t rp_gid;
+ 
+-	struct crypto_shash *hash_tfm;
+-	struct crypto_shash *hmac_tfm;
+-	int hmac_desc_len;
+-	char *auth_key_name;
+-	char *auth_hash_name;
+-	enum hash_algo auth_hash_algo;
++	char *hash_algo_name;
++	int hash_algo;
++	char *auth_key_filename;
++	char *auth_cert_filename;
++	int hash_len;
++	uint8_t root_idx_hash[UBIFS_MAX_HASH_LEN];
++	uint8_t lpt_hash[UBIFS_MAX_HASH_LEN];
++	uint8_t mst_hash[UBIFS_MAX_HASH_LEN];
+ 
+ 	struct shash_desc *log_hash;
+ 
+-	/* The below fields are used only during mounting and re-mounting */
+-	unsigned int empty:1;
+ 	unsigned int need_recovery:1;
+ 	unsigned int replaying:1;
+ 	unsigned int mounting:1;
+ 	unsigned int remounting_rw:1;
+-	unsigned int probing:1;
+ 	struct list_head replay_list;
+ 	struct list_head replay_buds;
+ 	unsigned long long cs_sqnum;
+ 	struct list_head unclean_leb_list;
+ 	struct ubifs_mst_node *rcvrd_mst_node;
+ 	struct rb_root size_tree;
+-	struct ubifs_mount_opts mount_opts;
+ 
+-	struct ubifs_debug_info *dbg;
+-	struct ubifs_stats_info *stats;
++	int new_ihead_lnum;
++	int new_ihead_offs;
+ };
+ 
+-extern struct list_head ubifs_infos;
+-extern spinlock_t ubifs_infos_lock;
+ extern atomic_long_t ubifs_clean_zn_cnt;
+-extern const struct super_operations ubifs_super_operations;
+-extern const struct address_space_operations ubifs_file_address_operations;
+-extern const struct file_operations ubifs_file_operations;
+-extern const struct inode_operations ubifs_file_inode_operations;
+-extern const struct file_operations ubifs_dir_operations;
+-extern const struct inode_operations ubifs_dir_inode_operations;
+-extern const struct inode_operations ubifs_symlink_inode_operations;
+-extern struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
+-extern int ubifs_default_version;
+ 
+ /* auth.c */
+ static inline int ubifs_authenticated(const struct ubifs_info *c)
+ {
+-	return (IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION)) && c->authenticated;
++	return c->authenticated;
+ }
+ 
+-struct shash_desc *__ubifs_hash_get_desc(const struct ubifs_info *c);
+-static inline struct shash_desc *ubifs_hash_get_desc(const struct ubifs_info *c)
+-{
+-	return ubifs_authenticated(c) ? __ubifs_hash_get_desc(c) : NULL;
+-}
+-
+-static inline int ubifs_shash_init(const struct ubifs_info *c,
+-				   struct shash_desc *desc)
+-{
+-	if (ubifs_authenticated(c))
+-		return crypto_shash_init(desc);
+-	else
+-		return 0;
+-}
++#ifdef WITH_CRYPTO
++int ubifs_init_authentication(struct ubifs_info *c);
++int ubifs_shash_init(const struct ubifs_info *c, struct shash_desc *desc);
++int ubifs_shash_update(const struct ubifs_info *c, struct shash_desc *desc,
++		       const void *buf, unsigned int len);
++int ubifs_shash_final(const struct ubifs_info *c, struct shash_desc *desc,
++		      u8 *out);
++struct shash_desc *ubifs_hash_get_desc(const struct ubifs_info *c);
++int __ubifs_node_calc_hash(const struct ubifs_info *c, const void *buf,
++			   u8 *hash);
++int ubifs_master_node_calc_hash(const struct ubifs_info *c, const void *node,
++				uint8_t *hash);
++int ubifs_sign_superblock_node(struct ubifs_info *c, void *node);
++void ubifs_bad_hash(const struct ubifs_info *c, const void *node,
++		    const u8 *hash, int lnum, int offs);
++void __ubifs_exit_authentication(struct ubifs_info *c);
++#else
++static inline int ubifs_init_authentication(__unused struct ubifs_info *c)
++{ return 0; }
++static inline int ubifs_shash_init(__unused const struct ubifs_info *c,
++				   __unused struct shash_desc *desc)
++{ return 0; }
++static inline int ubifs_shash_update(__unused const struct ubifs_info *c,
++				     __unused struct shash_desc *desc,
++				     __unused const void *buf,
++				     __unused unsigned int len) { return 0; }
++static inline int ubifs_shash_final(__unused const struct ubifs_info *c,
++				    __unused struct shash_desc *desc,
++				    __unused u8 *out) { return 0; }
++static inline struct shash_desc *
++ubifs_hash_get_desc(__unused const struct ubifs_info *c) { return NULL; }
++static inline int __ubifs_node_calc_hash(__unused const struct ubifs_info *c,
++					 __unused const void *buf,
++					 __unused u8 *hash) { return 0; }
++static inline int
++ubifs_master_node_calc_hash(__unused const struct ubifs_info *c,
++			    __unused const void *node, __unused uint8_t *hash)
++{ return 0; }
++static inline int ubifs_sign_superblock_node(__unused struct ubifs_info *c,
++					     __unused void *node)
++{ return 0; }
++static inline void ubifs_bad_hash(__unused const struct ubifs_info *c,
++				  __unused const void *node,
++				  __unused const u8 *hash, __unused int lnum,
++				  __unused int offs) {}
++static inline void __ubifs_exit_authentication(__unused struct ubifs_info *c) {}
++#endif
+ 
+-static inline int ubifs_shash_update(const struct ubifs_info *c,
+-				      struct shash_desc *desc, const void *buf,
+-				      unsigned int len)
++static inline int ubifs_prepare_auth_node(__unused struct ubifs_info *c,
++					  __unused void *node,
++					  __unused struct shash_desc *inhash)
+ {
+-	int err = 0;
+-
+-	if (ubifs_authenticated(c)) {
+-		err = crypto_shash_update(desc, buf, len);
+-		if (err < 0)
+-			return err;
+-	}
+-
++	// To be implemented
+ 	return 0;
+ }
+ 
+-static inline int ubifs_shash_final(const struct ubifs_info *c,
+-				    struct shash_desc *desc, u8 *out)
+-{
+-	return ubifs_authenticated(c) ? crypto_shash_final(desc, out) : 0;
+-}
+-
+-int __ubifs_node_calc_hash(const struct ubifs_info *c, const void *buf,
+-			  u8 *hash);
+-static inline int ubifs_node_calc_hash(const struct ubifs_info *c,
+-					const void *buf, u8 *hash)
++static inline int
++ubifs_node_calc_hash(const struct ubifs_info *c, const void *buf, u8 *hash)
+ {
+ 	if (ubifs_authenticated(c))
+ 		return __ubifs_node_calc_hash(c, buf, hash);
+@@ -1587,8 +1325,13 @@ static inline int ubifs_node_calc_hash(const struct ubifs_info *c,
+ 		return 0;
+ }
+ 
+-int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
+-			     struct shash_desc *inhash);
++static inline int
++ubifs_node_check_hash(__unused const struct ubifs_info *c,
++		      __unused const void *buf, __unused const u8 *expected)
++{
++	// To be implemented
++	return 0;
++}
+ 
+ /**
+  * ubifs_check_hash - compare two hashes
+@@ -1599,10 +1342,12 @@ int ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
+  * Compare two hashes @expected and @got. Returns 0 when they are equal, a
+  * negative error code otherwise.
+  */
+-static inline int ubifs_check_hash(const struct ubifs_info *c,
+-				   const u8 *expected, const u8 *got)
++static inline int
++ubifs_check_hash(__unused const struct ubifs_info *c,
++		 __unused const u8 *expected, __unused const u8 *got)
+ {
+-	return crypto_memneq(expected, got, c->hash_len);
++	// To be implemented
++	return 0;
+ }
+ 
+ /**
+@@ -1614,37 +1359,12 @@ static inline int ubifs_check_hash(const struct ubifs_info *c,
+  * Compare two hashes @expected and @got. Returns 0 when they are equal, a
+  * negative error code otherwise.
+  */
+-static inline int ubifs_check_hmac(const struct ubifs_info *c,
+-				   const u8 *expected, const u8 *got)
+-{
+-	return crypto_memneq(expected, got, c->hmac_desc_len);
+-}
+-
+-#ifdef CONFIG_UBIFS_FS_AUTHENTICATION
+-void ubifs_bad_hash(const struct ubifs_info *c, const void *node,
+-		    const u8 *hash, int lnum, int offs);
+-#else
+-static inline void ubifs_bad_hash(const struct ubifs_info *c, const void *node,
+-				  const u8 *hash, int lnum, int offs) {};
+-#endif
+-
+-int __ubifs_node_check_hash(const struct ubifs_info *c, const void *buf,
+-			  const u8 *expected);
+-static inline int ubifs_node_check_hash(const struct ubifs_info *c,
+-					const void *buf, const u8 *expected)
++static inline int
++ubifs_check_hmac(__unused const struct ubifs_info *c,
++		 __unused const u8 *expected, __unused const u8 *got)
+ {
+-	if (ubifs_authenticated(c))
+-		return __ubifs_node_check_hash(c, buf, expected);
+-	else
+-		return 0;
+-}
+-
+-int ubifs_init_authentication(struct ubifs_info *c);
+-void __ubifs_exit_authentication(struct ubifs_info *c);
+-static inline void ubifs_exit_authentication(struct ubifs_info *c)
+-{
+-	if (ubifs_authenticated(c))
+-		__ubifs_exit_authentication(c);
++	// To be implemented
++	return 0;
+ }
+ 
+ /**
+@@ -1655,8 +1375,8 @@ static inline void ubifs_exit_authentication(struct ubifs_info *c)
+  * This returns a pointer to the hash of a branch. Since the key already is a
+  * dynamically sized object we cannot use a struct member here.
+  */
+-static inline u8 *ubifs_branch_hash(struct ubifs_info *c,
+-				    struct ubifs_branch *br)
++static inline u8 *
++ubifs_branch_hash(struct ubifs_info *c, struct ubifs_branch *br)
+ {
+ 	return (void *)br + sizeof(*br) + c->key_len;
+ }
+@@ -1669,33 +1389,28 @@ static inline u8 *ubifs_branch_hash(struct ubifs_info *c,
+  *
+  * With authentication this copies a hash, otherwise does nothing.
+  */
+-static inline void ubifs_copy_hash(const struct ubifs_info *c, const u8 *from,
+-				   u8 *to)
++static inline void
++ubifs_copy_hash(const struct ubifs_info *c, const u8 *from, u8 *to)
+ {
+ 	if (ubifs_authenticated(c))
+ 		memcpy(to, from, c->hash_len);
+ }
+ 
+-int __ubifs_node_insert_hmac(const struct ubifs_info *c, void *buf,
+-			      int len, int ofs_hmac);
+-static inline int ubifs_node_insert_hmac(const struct ubifs_info *c, void *buf,
+-					  int len, int ofs_hmac)
++static inline int
++ubifs_node_insert_hmac(__unused const struct ubifs_info *c, __unused void *buf,
++		       __unused int len, __unused int ofs_hmac)
+ {
+-	if (ubifs_authenticated(c))
+-		return __ubifs_node_insert_hmac(c, buf, len, ofs_hmac);
+-	else
+-		return 0;
++	// To be implemented
++	return 0;
+ }
+ 
+-int __ubifs_node_verify_hmac(const struct ubifs_info *c, const void *buf,
+-			     int len, int ofs_hmac);
+-static inline int ubifs_node_verify_hmac(const struct ubifs_info *c,
+-					 const void *buf, int len, int ofs_hmac)
++static inline int
++ubifs_node_verify_hmac(__unused const struct ubifs_info *c,
++		       __unused const void *buf, __unused int len,
++		       __unused int ofs_hmac)
+ {
+-	if (ubifs_authenticated(c))
+-		return __ubifs_node_verify_hmac(c, buf, len, ofs_hmac);
+-	else
+-		return 0;
++	// To be implemented
++	return 0;
+ }
+ 
+ /**
+@@ -1706,29 +1421,33 @@ static inline int ubifs_node_verify_hmac(const struct ubifs_info *c,
+  * be 0 for unauthenticated filesystems or the real size of an auth node
+  * authentication is enabled.
+  */
+-static inline int ubifs_auth_node_sz(const struct ubifs_info *c)
++static inline int
++ubifs_auth_node_sz(__unused const struct ubifs_info *c)
+ {
+-	if (ubifs_authenticated(c))
+-		return sizeof(struct ubifs_auth_node) + c->hmac_desc_len;
+-	else
+-		return 0;
++	// To be implemented
++	return 0;
+ }
+-int ubifs_sb_verify_signature(struct ubifs_info *c,
+-			      const struct ubifs_sb_node *sup);
+-bool ubifs_hmac_zero(struct ubifs_info *c, const u8 *hmac);
+ 
+-int ubifs_hmac_wkm(struct ubifs_info *c, u8 *hmac);
++static inline bool
++ubifs_hmac_zero(__unused struct ubifs_info *c, __unused const u8 *hmac)
++{
++	// To be implemented
++	return true;
++}
+ 
+-int __ubifs_shash_copy_state(const struct ubifs_info *c, struct shash_desc *src,
+-			     struct shash_desc *target);
+-static inline int ubifs_shash_copy_state(const struct ubifs_info *c,
+-					   struct shash_desc *src,
+-					   struct shash_desc *target)
++static inline int
++ubifs_shash_copy_state(__unused const struct ubifs_info *c,
++		       __unused struct shash_desc *src,
++		       __unused struct shash_desc *target)
++{
++	// To be implemented
++	return 0;
++}
++
++static inline void ubifs_exit_authentication(struct ubifs_info *c)
+ {
+ 	if (ubifs_authenticated(c))
+-		return __ubifs_shash_copy_state(c, src, target);
+-	else
+-		return 0;
++		__ubifs_exit_authentication(c);
+ }
+ 
+ /* io.c */
+@@ -1763,9 +1482,6 @@ void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last);
+ int ubifs_io_init(struct ubifs_info *c);
+ void ubifs_pad(const struct ubifs_info *c, void *buf, int pad);
+ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf);
+-int ubifs_bg_wbufs_sync(struct ubifs_info *c);
+-void ubifs_wbuf_add_ino_nolock(struct ubifs_wbuf *wbuf, ino_t inum);
+-int ubifs_sync_wbufs_by_inode(struct ubifs_info *c, struct inode *inode);
+ 
+ /* scan.c */
+ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
+@@ -1793,49 +1509,11 @@ int ubifs_log_end_commit(struct ubifs_info *c, int new_ltail_lnum);
+ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum);
+ int ubifs_consolidate_log(struct ubifs_info *c);
+ 
+-/* journal.c */
+-int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+-		     const struct fscrypt_name *nm, const struct inode *inode,
+-		     int deletion, int xent);
+-int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+-			 const union ubifs_key *key, const void *buf, int len);
+-int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode);
+-int ubifs_jnl_delete_inode(struct ubifs_info *c, const struct inode *inode);
+-int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
+-		      const struct inode *fst_inode,
+-		      const struct fscrypt_name *fst_nm,
+-		      const struct inode *snd_dir,
+-		      const struct inode *snd_inode,
+-		      const struct fscrypt_name *snd_nm, int sync);
+-int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+-		     const struct inode *old_inode,
+-		     const struct fscrypt_name *old_nm,
+-		     const struct inode *new_dir,
+-		     const struct inode *new_inode,
+-		     const struct fscrypt_name *new_nm,
+-		     const struct inode *whiteout, int sync);
+-int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+-		       loff_t old_size, loff_t new_size);
+-int ubifs_jnl_delete_xattr(struct ubifs_info *c, const struct inode *host,
+-			   const struct inode *inode, const struct fscrypt_name *nm);
+-int ubifs_jnl_change_xattr(struct ubifs_info *c, const struct inode *inode1,
+-			   const struct inode *inode2);
+-
+ /* budget.c */
+ int ubifs_budget_space(struct ubifs_info *c, struct ubifs_budget_req *req);
+ void ubifs_release_budget(struct ubifs_info *c, struct ubifs_budget_req *req);
+-void ubifs_release_dirty_inode_budget(struct ubifs_info *c,
+-				      struct ubifs_inode *ui);
+-int ubifs_budget_inode_op(struct ubifs_info *c, struct inode *inode,
+-			  struct ubifs_budget_req *req);
+-void ubifs_release_ino_dirty(struct ubifs_info *c, struct inode *inode,
+-				struct ubifs_budget_req *req);
+-void ubifs_cancel_ino_op(struct ubifs_info *c, struct inode *inode,
+-			 struct ubifs_budget_req *req);
+-long long ubifs_get_free_space(struct ubifs_info *c);
+ long long ubifs_get_free_space_nolock(struct ubifs_info *c);
+ int ubifs_calc_min_idx_lebs(struct ubifs_info *c);
+-void ubifs_convert_page_budget(struct ubifs_info *c);
+ long long ubifs_reported_space(const struct ubifs_info *c, long long free);
+ long long ubifs_calc_available(const struct ubifs_info *c, int min_idx_lebs);
+ 
+@@ -1853,8 +1531,6 @@ int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
+ 			struct ubifs_znode **zn, int *n);
+ int ubifs_tnc_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
+ 			void *node, const struct fscrypt_name *nm);
+-int ubifs_tnc_lookup_dh(struct ubifs_info *c, const union ubifs_key *key,
+-			void *node, uint32_t secondary_hash);
+ int ubifs_tnc_locate(struct ubifs_info *c, const union ubifs_key *key,
+ 		     void *node, int *lnum, int *offs);
+ int ubifs_tnc_add(struct ubifs_info *c, const union ubifs_key *key, int lnum,
+@@ -1867,8 +1543,6 @@ int ubifs_tnc_add_nm(struct ubifs_info *c, const union ubifs_key *key,
+ int ubifs_tnc_remove(struct ubifs_info *c, const union ubifs_key *key);
+ int ubifs_tnc_remove_nm(struct ubifs_info *c, const union ubifs_key *key,
+ 			const struct fscrypt_name *nm);
+-int ubifs_tnc_remove_dh(struct ubifs_info *c, const union ubifs_key *key,
+-			uint32_t cookie);
+ int ubifs_tnc_remove_range(struct ubifs_info *c, union ubifs_key *from_key,
+ 			   union ubifs_key *to_key);
+ int ubifs_tnc_remove_ino(struct ubifs_info *c, ino_t inum);
+@@ -1885,13 +1559,8 @@ void destroy_old_idx(struct ubifs_info *c);
+ int is_idx_node_in_tnc(struct ubifs_info *c, union ubifs_key *key, int level,
+ 		       int lnum, int offs);
+ int insert_old_idx_znode(struct ubifs_info *c, struct ubifs_znode *znode);
+-int ubifs_tnc_get_bu_keys(struct ubifs_info *c, struct bu_info *bu);
+-int ubifs_tnc_bulk_read(struct ubifs_info *c, struct bu_info *bu);
+ 
+ /* tnc_misc.c */
+-struct ubifs_znode *ubifs_tnc_levelorder_next(const struct ubifs_info *c,
+-					      struct ubifs_znode *zr,
+-					      struct ubifs_znode *znode);
+ int ubifs_search_zbranch(const struct ubifs_info *c,
+ 			 const struct ubifs_znode *znode,
+ 			 const union ubifs_key *key, int *n);
+@@ -1911,14 +1580,7 @@ int ubifs_tnc_read_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+ int ubifs_tnc_start_commit(struct ubifs_info *c, struct ubifs_zbranch *zroot);
+ int ubifs_tnc_end_commit(struct ubifs_info *c);
+ 
+-/* shrinker.c */
+-unsigned long ubifs_shrink_scan(struct shrinker *shrink,
+-				struct shrink_control *sc);
+-unsigned long ubifs_shrink_count(struct shrinker *shrink,
+-				 struct shrink_control *sc);
+-
+ /* commit.c */
+-int ubifs_bg_thread(void *info);
+ void ubifs_commit_required(struct ubifs_info *c);
+ void ubifs_request_bg_commit(struct ubifs_info *c);
+ int ubifs_run_commit(struct ubifs_info *c);
+@@ -1935,7 +1597,6 @@ int ubifs_write_master(struct ubifs_info *c);
+ int ubifs_read_superblock(struct ubifs_info *c);
+ int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup);
+ int ubifs_fixup_free_space(struct ubifs_info *c);
+-int ubifs_enable_encryption(struct ubifs_info *c);
+ 
+ /* replay.c */
+ int ubifs_validate_entry(struct ubifs_info *c,
+@@ -1951,19 +1612,16 @@ int ubifs_get_idx_gc_leb(struct ubifs_info *c);
+ int ubifs_garbage_collect_leb(struct ubifs_info *c, struct ubifs_lprops *lp);
+ 
+ /* orphan.c */
+-int ubifs_add_orphan(struct ubifs_info *c, ino_t inum);
+-void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum);
+ int ubifs_orphan_start_commit(struct ubifs_info *c);
+ int ubifs_orphan_end_commit(struct ubifs_info *c);
+ int ubifs_mount_orphans(struct ubifs_info *c, int unclean, int read_only);
+ int ubifs_clear_orphans(struct ubifs_info *c);
+ 
+ /* lpt.c */
++int ubifs_calc_dflt_lpt_geom(struct ubifs_info *c, int *main_lebs, int *big_lpt);
+ int ubifs_calc_lpt_geom(struct ubifs_info *c);
+ int ubifs_create_lpt(struct ubifs_info *c, struct ubifs_lprops *lps, int lp_cnt,
+ 		     u8 *hash);
+-int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
+-			  int *lpt_lebs, int *big_lpt, u8 *hash);
+ int ubifs_lpt_init(struct ubifs_info *c, int rd, int wr);
+ struct ubifs_lprops *ubifs_lpt_lookup(struct ubifs_info *c, int lnum);
+ struct ubifs_lprops *ubifs_lpt_lookup_dirty(struct ubifs_info *c, int lnum);
+@@ -2023,142 +1681,54 @@ const struct ubifs_lprops *ubifs_fast_find_freeable(struct ubifs_info *c);
+ const struct ubifs_lprops *ubifs_fast_find_frdi_idx(struct ubifs_info *c);
+ int ubifs_calc_dark(const struct ubifs_info *c, int spc);
+ 
+-/* file.c */
+-int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync);
+-int ubifs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+-		  struct iattr *attr);
+-int ubifs_update_time(struct inode *inode, int flags);
+-
+-/* dir.c */
+-struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
+-			      umode_t mode, bool is_xattr);
+-int ubifs_getattr(struct mnt_idmap *idmap, const struct path *path,
+-		  struct kstat *stat, u32 request_mask, unsigned int flags);
+-int ubifs_check_dir_empty(struct inode *dir);
+-
+-/* xattr.c */
+-int ubifs_xattr_set(struct inode *host, const char *name, const void *value,
+-		    size_t size, int flags, bool check_lock);
+-ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
+-			size_t size);
+-
+-#ifdef CONFIG_UBIFS_FS_XATTR
+-extern const struct xattr_handler * const ubifs_xattr_handlers[];
+-ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size);
+-void ubifs_evict_xattr_inode(struct ubifs_info *c, ino_t xattr_inum);
+-int ubifs_purge_xattrs(struct inode *host);
+-#else
+-#define ubifs_listxattr NULL
+-#define ubifs_xattr_handlers NULL
+-static inline void ubifs_evict_xattr_inode(struct ubifs_info *c,
+-					   ino_t xattr_inum) { }
+-static inline int ubifs_purge_xattrs(struct inode *host)
+-{
+-	return 0;
+-}
+-#endif
+-
+-#ifdef CONFIG_UBIFS_FS_SECURITY
+-extern int ubifs_init_security(struct inode *dentry, struct inode *inode,
+-			const struct qstr *qstr);
+-#else
+-static inline int ubifs_init_security(struct inode *dentry,
+-			struct inode *inode, const struct qstr *qstr)
+-{
+-	return 0;
+-}
+-#endif
+-
+-
+ /* super.c */
+-struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
++int open_ubi(struct ubifs_info *c, const char *node);
++void close_ubi(struct ubifs_info *c);
++int open_target(struct ubifs_info *c);
++int close_target(struct ubifs_info *c);
++int check_volume_empty(struct ubifs_info *c);
++void init_ubifs_info(struct ubifs_info *c, int program_type);
++int init_constants_early(struct ubifs_info *c);
++int init_constants_sb(struct ubifs_info *c);
++void init_constants_master(struct ubifs_info *c);
++int take_gc_lnum(struct ubifs_info *c);
++int alloc_wbufs(struct ubifs_info *c);
++void free_wbufs(struct ubifs_info *c);
++void free_orphans(struct ubifs_info *c);
++void destroy_journal(struct ubifs_info *c);
+ 
+ /* recovery.c */
+ int ubifs_recover_master_node(struct ubifs_info *c);
+-int ubifs_write_rcvrd_mst_node(struct ubifs_info *c);
+ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
+ 					 int offs, void *sbuf, int jhead);
+ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
+ 					     int offs, void *sbuf);
+ int ubifs_recover_inl_heads(struct ubifs_info *c, void *sbuf);
+-int ubifs_clean_lebs(struct ubifs_info *c, void *sbuf);
+ int ubifs_rcvry_gc_commit(struct ubifs_info *c);
+ int ubifs_recover_size_accum(struct ubifs_info *c, union ubifs_key *key,
+ 			     int deletion, loff_t new_size);
+ int ubifs_recover_size(struct ubifs_info *c, bool in_place);
+ void ubifs_destroy_size_tree(struct ubifs_info *c);
+ 
+-/* ioctl.c */
+-int ubifs_fileattr_get(struct dentry *dentry, struct fileattr *fa);
+-int ubifs_fileattr_set(struct mnt_idmap *idmap,
+-		       struct dentry *dentry, struct fileattr *fa);
+-long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+-void ubifs_set_inode_flags(struct inode *inode);
+-#ifdef CONFIG_COMPAT
+-long ubifs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+-#endif
+-
+-/* compressor.c */
+-int __init ubifs_compressors_init(void);
+-void ubifs_compressors_exit(void);
+-void ubifs_compress(const struct ubifs_info *c, const void *in_buf, int in_len,
+-		    void *out_buf, int *out_len, int *compr_type);
+-int ubifs_decompress(const struct ubifs_info *c, const void *buf, int len,
+-		     void *out, int *out_len, int compr_type);
+-
+-/* sysfs.c */
+-int ubifs_sysfs_init(void);
+-void ubifs_sysfs_exit(void);
+-int ubifs_sysfs_register(struct ubifs_info *c);
+-void ubifs_sysfs_unregister(struct ubifs_info *c);
+-
+-#include "debug.h"
+-#include "misc.h"
+-#include "key.h"
+-
+-#ifndef CONFIG_FS_ENCRYPTION
+-static inline int ubifs_encrypt(const struct inode *inode,
+-				struct ubifs_data_node *dn,
+-				unsigned int in_len, unsigned int *out_len,
+-				int block)
+-{
+-	struct ubifs_info *c = inode->i_sb->s_fs_info;
+-	ubifs_assert(c, 0);
+-	return -EOPNOTSUPP;
+-}
+-static inline int ubifs_decrypt(const struct inode *inode,
+-				struct ubifs_data_node *dn,
+-				unsigned int *out_len, int block)
+-{
+-	struct ubifs_info *c = inode->i_sb->s_fs_info;
+-	ubifs_assert(c, 0);
+-	return -EOPNOTSUPP;
+-}
+-#else
+-/* crypto.c */
+-int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
+-		  unsigned int in_len, unsigned int *out_len, int block);
+-int ubifs_decrypt(const struct inode *inode, struct ubifs_data_node *dn,
+-		  unsigned int *out_len, int block);
+-#endif
+-
+-extern const struct fscrypt_operations ubifs_crypt_operations;
+-
+ /* Normal UBIFS messages */
+-__printf(2, 3)
+-void ubifs_msg(const struct ubifs_info *c, const char *fmt, ...);
+-__printf(2, 3)
+-void ubifs_err(const struct ubifs_info *c, const char *fmt, ...);
+-__printf(2, 3)
+-void ubifs_warn(const struct ubifs_info *c, const char *fmt, ...);
+-/*
+- * A conditional variant of 'ubifs_err()' which doesn't output anything
+- * if probing (ie. SB_SILENT set).
+- */
+-#define ubifs_errc(c, fmt, ...)						\
+-do {									\
+-	if (!(c)->probing)						\
+-		ubifs_err(c, fmt, ##__VA_ARGS__);			\
++enum { ERR_LEVEL = 1, WARN_LEVEL, INFO_LEVEL, DEBUG_LEVEL };
++#define ubifs_msg(c, fmt, ...) do {					\
++	if (c->debug_level >= INFO_LEVEL)				\
++		printf("<INFO> %s[%d] (%s): %s: " fmt "\n",		\
++		       c->program_name, getpid(),			\
++		       c->dev_name, __FUNCTION__, ##__VA_ARGS__);	\
++} while (0)
++#define ubifs_warn(c, fmt, ...) do {					\
++	if (c->debug_level >= WARN_LEVEL)				\
++		printf("<WARN> %s[%d] (%s): %s: " fmt "\n",		\
++		       c->program_name, getpid(),			\
++		       c->dev_name, __FUNCTION__, ##__VA_ARGS__);	\
++} while (0)
++#define ubifs_err(c, fmt, ...) do {					\
++	if (c->debug_level >= ERR_LEVEL)				\
++		printf("<ERROR> %s[%d] (%s): %s: " fmt "\n",		\
++		       c->program_name, getpid(),			\
++		       c->dev_name, __FUNCTION__, ##__VA_ARGS__);	\
+ } while (0)
+ 
+ #endif /* !__UBIFS_H__ */
 -- 
 2.13.6
 
