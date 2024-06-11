@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69866C25B76
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 05:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74FC2C25B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 05:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xDZBcIxD5gtNmiEKyRARnqX9mpQAHpFRHW/OYk/8rCY=; b=RswRdfO23ayWPj
-	kxJqznNMxJ/iPik48kONPyQaKgjmCPsTME1+SzKQ4TEWUG1u4MioGFwqUBwmCa/Wgiuiu3ap00qBz
-	75hr0ec+Urx0b5Mj5AhttnHRoZ1RKY8DWEWW5yO7tBNOX/NQBvS2sJVUT1lJeb1Dibtlcg7tRXKUi
-	/9WBIXEcyK6NW6Cxf2N5R2Dfc0as2rLOrmra4MwCafHD1NJOGATK1Ru5Vy01/bnuNj/fqdJFhXj55
-	PwhpJgn7VUO6O8Yc2ePXjddrN5cpIt0RzyJL/rocHWWXPP2rZFWhw83pxgEjzUx5DJiBsLzVliVmY
-	u3xAUPRPjGEw6PBZhusg==;
+	List-Owner; bh=qCzcs+FZunoVaPNDaxgOHry6PYg0iO+KvnmFIWdxt9I=; b=cMxiKuCFV4ifSS
+	yMZ0fMTJOnFzb7DKgarACggY1fYdHSclh23gu9s1sMIyn7v0XQuilRo1RJwrGr7ihoPiEdyhjbnO6
+	LNfZE3gOU2SV5VI7O+72iuqXi+gyrFFMMaUNbrTLJAvvyuoDfWmZt9cap/uJ59SJb8xABnv4VV2ZH
+	0xCe3l7JJ8TDYFeu4KLP/GsWGif2ZJL0x35qeB5iqGmEhVKRmvqcZn+wFjQjuiXUy92Rz+rqQEoH2
+	cuDtklHVnjg60dLFtfpgXIXQkskC0LK8VcJNbr+k4dPae95xweEpYUlFE4zlvmzLD9lSQhF8NKtPB
+	yN4CF0nyOXmYszqq7c/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtvE-00000007QwU-0QNw;
-	Tue, 11 Jun 2024 05:19:52 +0000
+	id 1sGtvJ-00000007R0K-1817;
+	Tue, 11 Jun 2024 05:19:57 +0000
 Received: from 2a02-8389-2341-5b80-cdb4-8e7d-405d-6b77.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:cdb4:8e7d:405d:6b77] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtv2-00000007QpR-0wAa;
-	Tue, 11 Jun 2024 05:19:40 +0000
+	id 1sGtv4-00000007QqN-2LdZ;
+	Tue, 11 Jun 2024 05:19:42 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -63,9 +63,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH 03/26] loop: stop using loop_reconfigure_limits in __loop_clr_fd
-Date: Tue, 11 Jun 2024 07:19:03 +0200
-Message-ID: <20240611051929.513387-4-hch@lst.de>
+Subject: [PATCH 04/26] loop: always update discard settings in loop_reconfigure_limits
+Date: Tue, 11 Jun 2024 07:19:04 +0200
+Message-ID: <20240611051929.513387-5-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240611051929.513387-1-hch@lst.de>
 References: <20240611051929.513387-1-hch@lst.de>
@@ -86,43 +86,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-__loop_clr_fd wants to clear all settings on the device.  Prepare for
-moving more settings into the block limits by open coding
-loop_reconfigure_limits.
+Simplify loop_reconfigure_limits by always updating the discard limits.
+This adds a little more work to loop_set_block_size, but doesn't change
+the outcome as the discard flag won't change.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/loop.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/block/loop.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 93780f41646b75..93a49c40a31a71 100644
+index 93a49c40a31a71..c658282454af1b 100644
 --- a/drivers/block/loop.c
 +++ b/drivers/block/loop.c
-@@ -1133,6 +1133,7 @@ static int loop_configure(struct loop_device *lo, blk_mode_t mode,
+@@ -975,8 +975,7 @@ loop_set_status_from_info(struct loop_device *lo,
+ 	return 0;
+ }
  
- static void __loop_clr_fd(struct loop_device *lo, bool release)
+-static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize,
+-		bool update_discard_settings)
++static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize)
  {
-+	struct queue_limits lim;
- 	struct file *filp;
- 	gfp_t gfp = lo->old_gfp_mask;
+ 	struct queue_limits lim;
  
-@@ -1156,7 +1157,14 @@ static void __loop_clr_fd(struct loop_device *lo, bool release)
- 	lo->lo_offset = 0;
- 	lo->lo_sizelimit = 0;
- 	memset(lo->lo_file_name, 0, LO_NAME_SIZE);
--	loop_reconfigure_limits(lo, 512, false);
-+
-+	/* reset the block size to the default */
-+	lim = queue_limits_start_update(lo->lo_queue);
-+	lim.logical_block_size = 512;
-+	lim.physical_block_size = 512;
-+	lim.io_min = 512;
-+	queue_limits_commit_update(lo->lo_queue, &lim);
-+
- 	invalidate_disk(lo->lo_disk);
- 	loop_sysfs_exit(lo);
- 	/* let user-space know about this change */
+@@ -984,8 +983,7 @@ static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize,
+ 	lim.logical_block_size = bsize;
+ 	lim.physical_block_size = bsize;
+ 	lim.io_min = bsize;
+-	if (update_discard_settings)
+-		loop_config_discard(lo, &lim);
++	loop_config_discard(lo, &lim);
+ 	return queue_limits_commit_update(lo->lo_queue, &lim);
+ }
+ 
+@@ -1086,7 +1084,7 @@ static int loop_configure(struct loop_device *lo, blk_mode_t mode,
+ 	else
+ 		bsize = 512;
+ 
+-	error = loop_reconfigure_limits(lo, bsize, true);
++	error = loop_reconfigure_limits(lo, bsize);
+ 	if (WARN_ON_ONCE(error))
+ 		goto out_unlock;
+ 
+@@ -1496,7 +1494,7 @@ static int loop_set_block_size(struct loop_device *lo, unsigned long arg)
+ 	invalidate_bdev(lo->lo_device);
+ 
+ 	blk_mq_freeze_queue(lo->lo_queue);
+-	err = loop_reconfigure_limits(lo, arg, false);
++	err = loop_reconfigure_limits(lo, arg);
+ 	loop_update_dio(lo);
+ 	blk_mq_unfreeze_queue(lo->lo_queue);
+ 
 -- 
 2.43.0
 
