@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C50BCC27C5E
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 06:33:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15F08C25B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 06:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gALYk2emFAfnuHEPNjVUOJCSusPzdLPiK6Qxi6YkEHg=; b=KcT3kwsxq18QTL
-	zS1Mfh/rQ2UkI1tICzaU6JLAr+0/vCKn3J5h5N5QyVy2tqpnOe7AG6/jqr+2RGi3k7MLRmZKitfAe
-	DoEQhbZZP/CF29sAjILBjmCZ9Mqysi/g3vDYVqO+Rbk3p588xAyvAJJbw3DqmtgjMw+XkUT4Sbg7N
-	PfO5dcz+F5Pq69jVxW0jd3BqC+LOIJJrKZ9+qceL8oJKQgkbWtFx3lJS6lbEMpuW+51Qcb2/s9Uus
-	3s9VqqUL6cpqHd2jr3oSH5K7IakMOh+rfCJaWhzk8a4BLN9y8g3bg3Z8N8BA6/KS4fU/VFfQKi9b0
-	KpY7WzrzEe0am8677PPA==;
+	List-Owner; bh=mPoPHSm/mvFSsBFXjCaqi6bj99sk7hYBX5SsRzTmW8E=; b=CDx5oj7ek1HDux
+	aOm8HKhc/wCy1GpVSIm7qBGRKW4WZpdIkburywvyXUORUR69hhhUhI+qHvZ44ZVT22YvZvBsrD5lp
+	20InzhyFuDhnHLRRBY5nV2FCY09uTj6SzoeaNyIFItduvWeR3dgvGM5VX7u9c8rKfmzgsZ78l6kma
+	35HebLXeENykMyg0Pa7ZdnMxAqmShjAiSh1iSDaZlJiJruJyqwW4vui2v1wTiInSV8B7Bjg087rOE
+	CVxPSzsS8awjpAPXZifb4GLedFvlW+HF3jXPoYOjYl4c7NDQJy6tGX5DW+YRA0cm2SaXtXEeZ96zn
+	EijEzQ7cgq/vD7sfj61Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGv4T-00000007haT-0ngc;
-	Tue, 11 Jun 2024 06:33:29 +0000
+	id 1sGv4e-00000007hjH-3Axh;
+	Tue, 11 Jun 2024 06:33:40 +0000
 Received: from 2a02-8389-2341-5b80-cdb4-8e7d-405d-6b77.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:cdb4:8e7d:405d:6b77] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtw4-00000007Rfx-3Hsc;
-	Tue, 11 Jun 2024 05:20:45 +0000
+	id 1sGtwA-00000007RkZ-1jS3;
+	Tue, 11 Jun 2024 05:20:58 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -63,9 +63,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH 24/26] block: move the pci_p2pdma flag to queue_limits
-Date: Tue, 11 Jun 2024 07:19:24 +0200
-Message-ID: <20240611051929.513387-25-hch@lst.de>
+Subject: [PATCH 26/26] block: move the bounce flag into the feature field
+Date: Tue, 11 Jun 2024 07:19:26 +0200
+Message-ID: <20240611051929.513387-27-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240611051929.513387-1-hch@lst.de>
 References: <20240611051929.513387-1-hch@lst.de>
@@ -86,86 +86,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Move the pci_p2pdma flag into the queue_limits feature field so that it
-can be set atomically and all I/O is frozen when changing the flag.
+Move the bounce field into the flags field to reclaim a little bit of
+space.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-mq-debugfs.c   | 1 -
- drivers/nvme/host/core.c | 8 +++-----
- include/linux/blkdev.h   | 7 ++++---
- 3 files changed, 7 insertions(+), 9 deletions(-)
+ block/blk-settings.c    | 1 -
+ block/blk.h             | 2 +-
+ drivers/scsi/scsi_lib.c | 2 +-
+ include/linux/blkdev.h  | 6 ++++--
+ 4 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index f2fd72f4414ae8..8b5a68861c119b 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -90,7 +90,6 @@ static const char *const blk_queue_flag_name[] = {
- 	QUEUE_FLAG_NAME(STATS),
- 	QUEUE_FLAG_NAME(REGISTERED),
- 	QUEUE_FLAG_NAME(QUIESCED),
--	QUEUE_FLAG_NAME(PCI_P2PDMA),
- 	QUEUE_FLAG_NAME(RQ_ALLOC_TIME),
- 	QUEUE_FLAG_NAME(HCTX_ACTIVE),
- 	QUEUE_FLAG_NAME(SQ_SCHED),
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 5ecf762d7c8837..31e752e8d632cd 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3735,6 +3735,9 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, struct nvme_ns_info *info)
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index 96e07f24bd9aa1..d0e9096f93ca8a 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -479,7 +479,6 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
+ 					b->max_write_zeroes_sectors);
+ 	t->max_zone_append_sectors = min(queue_limits_max_zone_append_sectors(t),
+ 					 queue_limits_max_zone_append_sectors(b));
+-	t->bounce = max(t->bounce, b->bounce);
  
- 	if (ctrl->opts && ctrl->opts->data_digest)
- 		lim.features |= BLK_FEAT_STABLE_WRITES;
-+	if (ctrl->ops->supports_pci_p2pdma &&
-+	    ctrl->ops->supports_pci_p2pdma(ctrl))
-+		lim.features |= BLK_FEAT_PCI_P2PDMA;
+ 	t->seg_boundary_mask = min_not_zero(t->seg_boundary_mask,
+ 					    b->seg_boundary_mask);
+diff --git a/block/blk.h b/block/blk.h
+index 79e8d5d4fe0caf..fa32f7fad5d7e6 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -394,7 +394,7 @@ struct bio *__blk_queue_bounce(struct bio *bio, struct request_queue *q);
+ static inline bool blk_queue_may_bounce(struct request_queue *q)
+ {
+ 	return IS_ENABLED(CONFIG_BOUNCE) &&
+-		q->limits.bounce == BLK_BOUNCE_HIGH &&
++		(q->limits.features & BLK_FEAT_BOUNCE_HIGH) &&
+ 		max_low_pfn >= max_pfn;
+ }
  
- 	disk = blk_mq_alloc_disk(ctrl->tagset, &lim, ns);
- 	if (IS_ERR(disk))
-@@ -3744,11 +3747,6 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, struct nvme_ns_info *info)
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index 54f771ec8cfb5e..e2f7bfb2b9e450 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1986,7 +1986,7 @@ void scsi_init_limits(struct Scsi_Host *shost, struct queue_limits *lim)
+ 		shost->dma_alignment, dma_get_cache_alignment() - 1);
  
- 	ns->disk = disk;
- 	ns->queue = disk->queue;
--
--	if (ctrl->ops->supports_pci_p2pdma &&
--	    ctrl->ops->supports_pci_p2pdma(ctrl))
--		blk_queue_flag_set(QUEUE_FLAG_PCI_P2PDMA, ns->queue);
--
- 	ns->ctrl = ctrl;
- 	kref_init(&ns->kref);
+ 	if (shost->no_highmem)
+-		lim->bounce = BLK_BOUNCE_HIGH;
++		lim->features |= BLK_FEAT_BOUNCE_HIGH;
  
+ 	dma_set_seg_boundary(dev, shost->dma_boundary);
+ 	dma_set_max_seg_size(dev, shost->max_segment_size);
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index ffb7a42871b4ed..cc4f6e64e8e3f5 100644
+index d7ad25def6e50b..d1d9787e76ce73 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -319,6 +319,9 @@ enum {
+@@ -325,6 +325,9 @@ enum {
  
- 	/* supports Zone Reset All */
- 	BLK_FEAT_ZONE_RESETALL			= (1u << 11),
+ 	/* skip this queue in blk_mq_(un)quiesce_tagset */
+ 	BLK_FEAT_SKIP_TAGSET_QUIESCE		= (1u << 13),
 +
-+	/* supports PCI(e) p2p requests */
-+	BLK_FEAT_PCI_P2PDMA			= (1u << 12),
++	/* bounce all highmem pages */
++	BLK_FEAT_BOUNCE_HIGH			= (1u << 14),
  };
  
  /*
-@@ -588,7 +591,6 @@ struct request_queue {
- #define QUEUE_FLAG_STATS	20	/* track IO start and completion times */
- #define QUEUE_FLAG_REGISTERED	22	/* queue has been registered to a disk */
- #define QUEUE_FLAG_QUIESCED	24	/* queue has been quiesced */
--#define QUEUE_FLAG_PCI_P2PDMA	25	/* device supports PCI p2p requests */
- #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
- #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
- #define QUEUE_FLAG_SQ_SCHED     30	/* single queue style io dispatch */
-@@ -611,8 +613,7 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
- #define blk_queue_zone_resetall(q)	\
- 	((q)->limits.features & BLK_FEAT_ZONE_RESETALL)
- #define blk_queue_dax(q)	((q)->limits.features & BLK_FEAT_DAX)
--#define blk_queue_pci_p2pdma(q)	\
--	test_bit(QUEUE_FLAG_PCI_P2PDMA, &(q)->queue_flags)
-+#define blk_queue_pci_p2pdma(q)	((q)->limits.features & BLK_FEAT_PCI_P2PDMA)
- #ifdef CONFIG_BLK_RQ_ALLOC_TIME
- #define blk_queue_rq_alloc_time(q)	\
- 	test_bit(QUEUE_FLAG_RQ_ALLOC_TIME, &(q)->queue_flags)
+@@ -332,7 +335,7 @@ enum {
+  */
+ #define BLK_FEAT_INHERIT_MASK \
+ 	(BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA | BLK_FEAT_ROTATIONAL | \
+-	 BLK_FEAT_STABLE_WRITES | BLK_FEAT_ZONED)
++	 BLK_FEAT_STABLE_WRITES | BLK_FEAT_ZONED | BLK_FEAT_BOUNCE_HIGH)
+ 
+ /* internal flags in queue_limits.flags */
+ enum {
+@@ -352,7 +355,6 @@ enum blk_bounce {
+ struct queue_limits {
+ 	unsigned int		features;
+ 	unsigned int		flags;
+-	enum blk_bounce		bounce;
+ 	unsigned long		seg_boundary_mask;
+ 	unsigned long		virt_boundary_mask;
+ 
 -- 
 2.43.0
 
