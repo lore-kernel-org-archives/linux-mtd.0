@@ -4,52 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14EA7C41513
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A34AEC27C65
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yr7bC1Twa/YWmlaGpLpEHuzI/WZgv8l5PKDrxVmK+NM=; b=K8eS4ZkKVJddE2
-	cDejmuW+jmHyUOnH/47/twfwfO7kAa42gPT7eMFGU1ejXxQC6maAusTor7PXz/Wdp5idnjIb4EVhS
-	nd+1FCzEHYzfUwDUEtCmYA/bNeMYdPVcNgr4GWQJfn0tLhbeTTWGrkp0hPoLVsUmWrqwJA8Yjycs7
-	El/9angeVbCDmZ4Kod6iqPxtWf18NFvWJxbmwtWnFQDRwYfowiH9j5Xg1gl7KrOVqL0PN9HHirbXK
-	QIHejU883gNH1YOkxSSsEIKglciIEDk1oqkNQGHF1iLCVKSoWfTyqRjBWTEBBuWUDVJula3qr5RBb
-	UXqLtf+Xi+Bkn11smX2A==;
+	List-Owner; bh=EPQGAbPz6R5UB/v/Z2vup+ST//Op9wOy36f5qYWhnRI=; b=HWvdKIUzHT/Svh
+	H5skW507SA3VYNbXfAyY3Aai2toTg3g6G8BRzleGsKa94XSUpUG3z1BEIbjdeyBmwLUyJNl6D33wy
+	forsjRzRHrtJ6g/9KdyWPPFiO/nFaYjbzN5viPP0g5tH4oMfErbCGg0Id9Ka862sqKf5nht/VYmde
+	CY2dcWW5UbYDGWKVVTcKBeU4tLVaTLIvyZgo43QTl9u/DkDobGudNB4VVFE0Pzf6c0TI/k6DJq2Z2
+	DYRcQ6PDMOamUGjNkRS2tI5vqvuJxvPqU5dMYZWgBkSszwqGeKHqSvf/JVuJJ7kFq2wfa6fekDa7h
+	0Ho44GDrExTRJYH6agJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwcJ-000000080xt-1L9q;
-	Tue, 11 Jun 2024 08:12:31 +0000
-Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
+	id 1sGwcd-0000000816t-41Lv;
+	Tue, 11 Jun 2024 08:12:51 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwc5-000000080q8-07zn;
-	Tue, 11 Jun 2024 08:12:28 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F414222D0F;
-	Tue, 11 Jun 2024 08:12:14 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EBB43137DF;
-	Tue, 11 Jun 2024 08:12:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VT1AN90GaGbKWQAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 11 Jun 2024 08:12:13 +0000
-Message-ID: <4032635d-a17f-44e5-a547-b175fa271945@suse.de>
-Date: Tue, 11 Jun 2024 10:12:13 +0200
+	id 1sGwcZ-0000000815g-3tq3;
+	Tue, 11 Jun 2024 08:12:49 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 3E604CE0988;
+	Tue, 11 Jun 2024 08:12:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85352C2BD10;
+	Tue, 11 Jun 2024 08:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718093565;
+	bh=zMBbLHWiI0o4/6MjscYA2/ULza201WjvhSMdL22ilmQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=efMUQjqzDR6/6LZgdCczIkMTU67PAqpDM0RBu6vBwxbRTCrqV/SLQPjysAgXVIH+u
+	 Gs7FwJjGTrCL01zQP92DMiL3AF1rQHaJ0EqlTORyNynpUYXTzsuY6sJ9mfoqPT1Tvg
+	 BSo7cvDW+fM7fvH1aN5LdfHWfYWXWuQSJiOAXVL+z2KUCiOWthz8XV9sMCo6FSpXv+
+	 2SHsDignO7grM22XDSxgAJ0znadsNiLDmWusigAzWpriOV5Y9jvSmQhMPwNSEb8Bvj
+	 SvInHsx54FSttIPvfIwG30ulL5P3X40mKZipSzOnWLUzNb0kOcJMR/irZgSdTd0fnE
+	 LJc4doaBwGC7g==
+Message-ID: <a10087ad-8b2c-4a6c-accb-fb1e8015e704@kernel.org>
+Date: Tue, 11 Jun 2024 17:12:40 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/26] sd: move zone limits setup out of
- sd_read_block_characteristics
+Subject: Re: [PATCH 17/26] block: move the stable_write flag to queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -73,24 +69,14 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-3-hch@lst.de>
+ <20240611051929.513387-18-hch@lst.de>
 Content-Language: en-US
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240611051929.513387-3-hch@lst.de>
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: F414222D0F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20240611051929.513387-18-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_011219_384301_6BA14D4A 
-X-CRM114-Status: GOOD (  17.19  )
+X-CRM114-CacheID: sfid-20240611_011248_189289_55266415 
+X-CRM114-Status: GOOD (  10.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,40 +88,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gNi8xMS8yNCAwNzoxOSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gTW92ZSBhIGJpdCBv
-ZiBjb2RlIHRoYXQgc2V0cyB1cCB0aGUgem9uZSBmbGFnIGFuZCB0aGUgd3JpdGUgZ3JhbnVsYXJp
-dHkKPiBpbnRvIHNkX3piY19yZWFkX3pvbmVzIHRvIGJlIHdpdGggdGhlIHJlc3Qgb2YgdGhlIHpv
-bmVkIGxpbWl0cy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxz
-dC5kZT4KPiAtLS0KPiAgIGRyaXZlcnMvc2NzaS9zZC5jICAgICB8IDIxICstLS0tLS0tLS0tLS0t
-LS0tLS0tLQo+ICAgZHJpdmVycy9zY3NpL3NkX3piYy5jIHwgMTMgKysrKysrKysrKysrLQo+ICAg
-MiBmaWxlcyBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAyMSBkZWxldGlvbnMoLSkKPiAKPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3NkLmMgYi9kcml2ZXJzL3Njc2kvc2QuYwo+IGluZGV4
-IDg1YjQ1MzQ1YTI3NzM5Li41YmZlZDYxYzcwZGI4ZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3Nj
-c2kvc2QuYwo+ICsrKyBiL2RyaXZlcnMvc2NzaS9zZC5jCj4gQEAgLTMzMDgsMjkgKzMzMDgsMTAg
-QEAgc3RhdGljIHZvaWQgc2RfcmVhZF9ibG9ja19jaGFyYWN0ZXJpc3RpY3Moc3RydWN0IHNjc2lf
-ZGlzayAqc2RrcCwKPiAgIAkJYmxrX3F1ZXVlX2ZsYWdfY2xlYXIoUVVFVUVfRkxBR19BRERfUkFO
-RE9NLCBxKTsKPiAgIAl9Cj4gICAKPiAtCj4gLSNpZmRlZiBDT05GSUdfQkxLX0RFVl9aT05FRCAv
-KiBzZF9wcm9iZSByZWplY3RzIFpCRCBkZXZpY2VzIGVhcmx5IG90aGVyd2lzZSAqLwo+IC0JaWYg
-KHNka3AtPmRldmljZS0+dHlwZSA9PSBUWVBFX1pCQykgewo+IC0JCWxpbS0+em9uZWQgPSB0cnVl
-Owo+IC0KPiAtCQkvKgo+IC0JCSAqIFBlciBaQkMgYW5kIFpBQyBzcGVjaWZpY2F0aW9ucywgd3Jp
-dGVzIGluIHNlcXVlbnRpYWwgd3JpdGUKPiAtCQkgKiByZXF1aXJlZCB6b25lcyBvZiBob3N0LW1h
-bmFnZWQgZGV2aWNlcyBtdXN0IGJlIGFsaWduZWQgdG8KPiAtCQkgKiB0aGUgZGV2aWNlIHBoeXNp
-Y2FsIGJsb2NrIHNpemUuCj4gLQkJICovCj4gLQkJbGltLT56b25lX3dyaXRlX2dyYW51bGFyaXR5
-ID0gc2RrcC0+cGh5c2ljYWxfYmxvY2tfc2l6ZTsKPiAtCX0gZWxzZSB7Cj4gLQkJLyoKPiAtCQkg
-KiBIb3N0LWF3YXJlIGRldmljZXMgYXJlIHRyZWF0ZWQgYXMgY29udmVudGlvbmFsLgo+IC0JCSAq
-Lwo+IC0JCWxpbS0+em9uZWQgPSBmYWxzZTsKPiAtCX0KPiAtI2VuZGlmIC8qIENPTkZJR19CTEtf
-REVWX1pPTkVEICovCj4gLQo+ICAgCWlmICghc2RrcC0+Zmlyc3Rfc2NhbikKPiAgIAkJcmV0dXJu
-Owo+ICAgCj4gLQlpZiAobGltLT56b25lZCkKPiArCWlmIChzZGtwLT5kZXZpY2UtPnR5cGUgPT0g
-VFlQRV9aQkMpCgpXaHkgbm90IHNkX2lzX3pvbmVkKCk/CgpDaGVlcnMsCgpIYW5uZXMKLS0gCkRy
-LiBIYW5uZXMgUmVpbmVja2UgICAgICAgICAgICAgICAgICBLZXJuZWwgU3RvcmFnZSBBcmNoaXRl
-Y3QKaGFyZUBzdXNlLmRlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArNDkgOTExIDc0
-MDUzIDY4OApTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHbWJILCBGcmFua2Vuc3RyLiAxNDYsIDkw
-NDYxIE7DvHJuYmVyZwpIUkIgMzY4MDkgKEFHIE7DvHJuYmVyZyksIEdGOiBJLiBUb3RldiwgQS4g
-TWNEb25hbGQsIFcuIEtub2JsaWNoCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 6/11/24 2:19 PM, Christoph Hellwig wrote:
+> Move the io_stat flag into the queue_limits feature field so that it can
+
+s/io_stat/stable_write
+
+> be set atomically and all I/O is frozen when changing the flag.
+> 
+> The flag is now inherited by blk_stack_limits, which greatly simplifies
+> the code in dm, and fixed md which previously did not pass on the flag
+> set on lower devices.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Other than the nit above, looks OK to me.
+
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+
+-- 
+Damien Le Moal
+Western Digital Research
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
