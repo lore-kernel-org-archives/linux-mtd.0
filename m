@@ -4,51 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BFF8C25B76
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD97CC27C65
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KzGIjG5oYoZ5JSnpg1/tZ5MPvC0epzIk59O2y/h+zvQ=; b=sfkk3EAR3aOV/e
-	G15XNX7T8LudyME9nh+B7GQZUpyZR25YcOPG8bFEu2wUfpt5TuiMNFPzVBSjbbFRxU4bhFnaq6QRI
-	roqXGavqHArHZqLPaaGaeZC63AQIQv3sq4Wt82slg+Xy/atw7IPhz1rY4hMepwOXXkLTTuBQVVEDe
-	enc3vhpm0CWHUttpKS9OeAO744buzC5/ptK9ZM+8AgfC74WU/TT+5p8/z9AzILDjQuHa5gWySqKJE
-	6hJIc4t1chdk5jvIwEEF4dr/g5UlMnZmA69SPdr5TqcV65aQpSy++cpw9SjKaKzjf0v0jzdYaqQBX
-	qJFDb80cE9ZqLYlfO05w==;
+	List-Owner; bh=rWNrfCXG/sVMo2UiBProhVcMqj5zzfqfMtrB3KQALFM=; b=aipTfW3OZOO0QR
+	pYCKSu7jANUVA3eM+DcPxaaiD9z8XdBKSG9gq43IKd/0nw+NJVc4blL6E2Kv3116OqyjIQnsMuVfM
+	5QMuEUR5BXpb4BGp/x/TKsmBP7e+llwGxsP6X1Qj7ba87fNNC3GfRU7ciIz82CkeVtvpt7l+hfOkk
+	Q20DtRDLF5PCwolQkw3AjsQ3urRkhhHcw6pjfvqUub/RIscX2CoOoNa/n6zZ5GJSRHmrOJJ3jc17k
+	pzZofvxq/q6K2j4NUxLk4wFMYeU64UEXJfai7g6zSRI9Lu2DTDTNCvfdIyEdAQ/6/CSnymbkpeswY
+	W0psvptYtbRuA8yneeSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwnc-000000085R8-1n9D;
-	Tue, 11 Jun 2024 08:24:12 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1sGwnl-000000085Vy-3NCj;
+	Tue, 11 Jun 2024 08:24:21 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwnM-000000085J9-13Kl;
-	Tue, 11 Jun 2024 08:24:10 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 57C2E20572;
-	Tue, 11 Jun 2024 08:23:54 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A965137DF;
-	Tue, 11 Jun 2024 08:23:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1p7uGJkJaGbsXQAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 11 Jun 2024 08:23:53 +0000
-Message-ID: <def8fea1-66ae-4fea-9b49-2842b91404ea@suse.de>
-Date: Tue, 11 Jun 2024 10:23:52 +0200
+	id 1sGwnc-000000085Qw-3DO3;
+	Tue, 11 Jun 2024 08:24:18 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id CD28C60D2E;
+	Tue, 11 Jun 2024 08:24:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2C5C2BD10;
+	Tue, 11 Jun 2024 08:24:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718094251;
+	bh=EFLCVdoWVXgI8x+vDqpH+KGLXZNaxOUmiQChqNs4meI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Q/kBEFZ/0xrAI2sEu9TaynLfxDXFSelXwQfPVhceWBMJF67rXnsoSf0WPmrSssyjG
+	 wAyQEjvNKOSDuGTW99P/n/USyXBpEs/hJPBtWDhhYK8Vw7vkoUePhP/xVsLzFkoqW6
+	 lvKTjjxF0YRUZJg2F6zMuxFTCUXMjyMw9CECUZorzcdjTlaZUCv5Igv6ct9+LSc3ef
+	 11G6zLnpcAxQhEGJrLPj98OB8egVZFZCicz/XL1AiLWkTGFK+0l5ihYD/pd34iBMBZ
+	 L/cJqhcyVqLZ5BGlUzg23fH/c4iANFyH2WwiPuUXno5waidx9DiZljw1OQFE15jkSs
+	 eG4YOkLzWNcuA==
+Message-ID: <cb865b5b-ea4d-49cc-b41b-7f46b62b9dd0@kernel.org>
+Date: Tue, 11 Jun 2024 17:24:04 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/26] block: remove blk_flush_policy
+Subject: Re: [PATCH 23/26] block: move the zone_resetall flag to queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -72,24 +69,14 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-13-hch@lst.de>
+ <20240611051929.513387-24-hch@lst.de>
 Content-Language: en-US
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240611051929.513387-13-hch@lst.de>
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 57C2E20572
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20240611051929.513387-24-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_012357_459295_E804BF21 
-X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-CacheID: sfid-20240611_012413_054261_7445079B 
+X-CRM114-Status: UNSURE (   7.31  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -102,22 +89,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gNi8xMS8yNCAwNzoxOSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gRm9sZCBibGtfZmx1
-c2hfcG9saWN5IGludG8gdGhlIG9ubHkgY2FsbGVyIHRvIHByZXBhcmUgZm9yIHBlbmRpbmcgY2hh
-bmdlcwo+IHRvIGl0Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2lnIDxoY2hA
-bHN0LmRlPgo+IC0tLQo+ICAgYmxvY2svYmxrLWZsdXNoLmMgfCAzMyArKysrKysrKysrKysrKyst
-LS0tLS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAx
-OCBkZWxldGlvbnMoLSkKPiAKUmV2aWV3ZWQtYnk6IEhhbm5lcyBSZWluZWNrZSA8aGFyZUBzdXNl
-LmRlPgoKQ2hlZXJzLAoKSGFubmVzCi0tIApEci4gSGFubmVzIFJlaW5lY2tlICAgICAgICAgICAg
-ICAgICAgS2VybmVsIFN0b3JhZ2UgQXJjaGl0ZWN0CmhhcmVAc3VzZS5kZSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgKzQ5IDkxMSA3NDA1MyA2ODgKU1VTRSBTb2Z0d2FyZSBTb2x1dGlv
-bnMgR21iSCwgRnJhbmtlbnN0ci4gMTQ2LCA5MDQ2MSBOw7xybmJlcmcKSFJCIDM2ODA5IChBRyBO
-w7xybmJlcmcpLCBHRjogSS4gVG90ZXYsIEEuIE1jRG9uYWxkLCBXLiBLbm9ibGljaAoKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 6/11/24 2:19 PM, Christoph Hellwig wrote:
+> Move the zone_resetall flag into the queue_limits feature field so that
+> it can be set atomically and all I/O is frozen when changing the flag.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+
+-- 
+Damien Le Moal
+Western Digital Research
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
