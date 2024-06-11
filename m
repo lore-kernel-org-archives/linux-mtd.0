@@ -4,48 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B9D4C25B76
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:23:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BFF8C25B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n93OG0nj1aNL/yE1j2BGNZqQuBE37R6yDbiCLz8jrfk=; b=hRL0M9bkuthHA1
-	bAz+PezmvQx6cK95fmTDEvolbyQfkBaAzfjG/KW/9nPO9N0NHKdp1z9aL4DKtGlNdN5cbJNCVOWEN
-	8W15nsfjgOncIzIIZgHemPJgccYPtAfNkj9y7ML6rWh8VqcxhreAJ28lV4TSKE1qdiBhJqgXA21TD
-	zbyXxEJVtrVMEqBE/kEv1aP/EhrKAG/217aoUNjWTzZrJMi8MOGQN0QbHOyIomltbi5F4Dq5wRoYD
-	6GiuOJJ86RAdeArIabZHbNr+RY5b/usQVMh2lRDoygtCdONoaGSrm3NbSf/ClmbFXwH9l3HXdfIu4
-	Auq2O5KJNvVU4v1Q6qFA==;
+	List-Owner; bh=KzGIjG5oYoZ5JSnpg1/tZ5MPvC0epzIk59O2y/h+zvQ=; b=sfkk3EAR3aOV/e
+	G15XNX7T8LudyME9nh+B7GQZUpyZR25YcOPG8bFEu2wUfpt5TuiMNFPzVBSjbbFRxU4bhFnaq6QRI
+	roqXGavqHArHZqLPaaGaeZC63AQIQv3sq4Wt82slg+Xy/atw7IPhz1rY4hMepwOXXkLTTuBQVVEDe
+	enc3vhpm0CWHUttpKS9OeAO744buzC5/ptK9ZM+8AgfC74WU/TT+5p8/z9AzILDjQuHa5gWySqKJE
+	6hJIc4t1chdk5jvIwEEF4dr/g5UlMnZmA69SPdr5TqcV65aQpSy++cpw9SjKaKzjf0v0jzdYaqQBX
+	qJFDb80cE9ZqLYlfO05w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwn6-000000085C3-2bs6;
-	Tue, 11 Jun 2024 08:23:40 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sGwnc-000000085R8-1n9D;
+	Tue, 11 Jun 2024 08:24:12 +0000
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwmz-0000000859e-0BUJ;
-	Tue, 11 Jun 2024 08:23:34 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 534AECE1A05;
-	Tue, 11 Jun 2024 08:23:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86496C2BD10;
-	Tue, 11 Jun 2024 08:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718094210;
-	bh=PCwVdRvz4XJGGIiNmDy6wMkXrr3H3HUMT3pkIraybk8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JFzobLSEwQfpgalfDjsXhew6RBycCszqE2f2C/Ru/r8ifaDggADerb3ZWcDYMf7wy
-	 2UguDgiYd7paLCb6tqnoYu2dxS7VJu76k45dUpfxH2c8l3qFSrNn2EGh4jWjnKfIAS
-	 HBvH4pVK5+Is/WKoiUVoWutNlCyWeMQP2hCSD9Kx8S9haYF4sfr4JiJhYG2nonJP87
-	 ivR19am2NLev5ARZzY2SbXtQPtiKMKt2kSHRh2CyzGWwYvO/eLAkUihfoIzngcBiyb
-	 99DP2nymQwawaYtHi2qz0jmjPnoMpqNkIxNh8Ag/5f+XcYLmzaYxN9ppmZ11QAIus7
-	 gALv/eJkusunA==
-Message-ID: <29c6bbe8-f0fe-49dd-a28b-327d86ceb51d@kernel.org>
-Date: Tue, 11 Jun 2024 17:23:25 +0900
+	id 1sGwnM-000000085J9-13Kl;
+	Tue, 11 Jun 2024 08:24:10 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 57C2E20572;
+	Tue, 11 Jun 2024 08:23:54 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A965137DF;
+	Tue, 11 Jun 2024 08:23:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 1p7uGJkJaGbsXQAAD6G6ig
+	(envelope-from <hare@suse.de>); Tue, 11 Jun 2024 08:23:53 +0000
+Message-ID: <def8fea1-66ae-4fea-9b49-2842b91404ea@suse.de>
+Date: Tue, 11 Jun 2024 10:23:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 22/26] block: move the zoned flag into the feature field
+Subject: Re: [PATCH 12/26] block: remove blk_flush_policy
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -69,14 +72,24 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-23-hch@lst.de>
+ <20240611051929.513387-13-hch@lst.de>
 Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-23-hch@lst.de>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20240611051929.513387-13-hch@lst.de>
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 57C2E20572
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_012333_323491_EA122D1E 
-X-CRM114-Status: UNSURE (   6.93  )
+X-CRM114-CacheID: sfid-20240611_012357_459295_E804BF21 
+X-CRM114-Status: UNSURE (   8.53  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,27 +102,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the boolean zoned field into the flags field to reclaim a little
-> bit of space.
-
-Nit: flags -> feature flags
-
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-
--- 
-Damien Le Moal
-Western Digital Research
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gNi8xMS8yNCAwNzoxOSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gRm9sZCBibGtfZmx1
+c2hfcG9saWN5IGludG8gdGhlIG9ubHkgY2FsbGVyIHRvIHByZXBhcmUgZm9yIHBlbmRpbmcgY2hh
+bmdlcwo+IHRvIGl0Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2lnIDxoY2hA
+bHN0LmRlPgo+IC0tLQo+ICAgYmxvY2svYmxrLWZsdXNoLmMgfCAzMyArKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAx
+OCBkZWxldGlvbnMoLSkKPiAKUmV2aWV3ZWQtYnk6IEhhbm5lcyBSZWluZWNrZSA8aGFyZUBzdXNl
+LmRlPgoKQ2hlZXJzLAoKSGFubmVzCi0tIApEci4gSGFubmVzIFJlaW5lY2tlICAgICAgICAgICAg
+ICAgICAgS2VybmVsIFN0b3JhZ2UgQXJjaGl0ZWN0CmhhcmVAc3VzZS5kZSAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKzQ5IDkxMSA3NDA1MyA2ODgKU1VTRSBTb2Z0d2FyZSBTb2x1dGlv
+bnMgR21iSCwgRnJhbmtlbnN0ci4gMTQ2LCA5MDQ2MSBOw7xybmJlcmcKSFJCIDM2ODA5IChBRyBO
+w7xybmJlcmcpLCBHRjogSS4gVG90ZXYsIEEuIE1jRG9uYWxkLCBXLiBLbm9ibGljaAoKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
