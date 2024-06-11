@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46AC6C25B76
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 05:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AC13C25B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 05:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tELaiX7IoXJh5PzLeJAKBLwf4XeEtyqz2fCMRnbA6Vc=; b=pW01Io05ygyUbH
-	SdnKGKmoJ2wDm+60qSBbXJnau+NWG9/s5J0S5BNTkwHeuCjUFgVI+5bqKGtbD73LNfxxzeESvf1aD
-	dkOQncMDJ3fEa26FM5Xzlpbfs3EEqcxMaToYWBaZKzO5PJAfSNpCO3Qu75nhy6YES8pnitAkmyN01
-	aWyezu9h0Vr2LI5K3SekbOkOdc2KRAgK2h2mfq39wioKUJQMc6qwp3qkhtY6v0JuhDfUka5vHeEwv
-	6eSpN63X6ds868bEKxt7n0BEzFa0Mz+N3EG4KU8AxjrEuBxF8Pj8jpuhh6s9xwRlLZOtRMqFznXi9
-	ZH2ntPP1xePzgOyW8rjg==;
+	List-Owner; bh=TqtPt4fIeP5onxu0FdsVPWJYF1j7chOYwxgNUoscf+8=; b=g9bmelhVr9ACDp
+	nEVg/rX6eYz43I23KNDOraNUBJbhkR9HWFtvnqGR8jMDLZauoOv122UGApAlyYjrlUSga5e5pV6Zd
+	xcaPnfqAc1D+YQB3SwAJMVyrAFvs2d4GhzMLKM7HQDxE9DahfRlZz36G2e+E8pi0nvW3rc0gog9qZ
+	5KtC+m9Ke9Pz4YOE66+H/5Au/K1scRu5IG60PlZpShSk7MxqNUw4hNsQPsT3PwMAGHfT4KL2yZ1mG
+	jYzCYRlMPonceGN1Nl4oDi+S6rGALiqMzgp+EPTYFacAqimi2yfpjjeZfOZxGL5fHE0LFMQh8FjZL
+	xJMWZxQtVyibqRllT19g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtvs-00000007RVc-3w6Q;
-	Tue, 11 Jun 2024 05:20:32 +0000
+	id 1sGtw0-00000007RcF-04Ce;
+	Tue, 11 Jun 2024 05:20:40 +0000
 Received: from 2a02-8389-2341-5b80-cdb4-8e7d-405d-6b77.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:cdb4:8e7d:405d:6b77] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtvI-00000007Qyl-3It7;
-	Tue, 11 Jun 2024 05:19:57 +0000
+	id 1sGtvL-00000007R0v-1C21;
+	Tue, 11 Jun 2024 05:19:59 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -63,9 +63,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH 08/26] virtio_blk: remove virtblk_update_cache_mode
-Date: Tue, 11 Jun 2024 07:19:08 +0200
-Message-ID: <20240611051929.513387-9-hch@lst.de>
+Subject: [PATCH 09/26] nbd: move setting the cache control flags to __nbd_set_size
+Date: Tue, 11 Jun 2024 07:19:09 +0200
+Message-ID: <20240611051929.513387-10-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240611051929.513387-1-hch@lst.de>
 References: <20240611051929.513387-1-hch@lst.de>
@@ -86,53 +86,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-virtblk_update_cache_mode boils down to a single call to
-blk_queue_write_cache.  Remove it in preparation for moving the cache
-control flags into the queue_limits.
+Move setting the cache control flags in nbd in preparation for moving
+these flags into the queue_limits structure.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/virtio_blk.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ drivers/block/nbd.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 2351f411fa4680..378b241911ca87 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -1089,14 +1089,6 @@ static int virtblk_get_cache_mode(struct virtio_device *vdev)
- 	return writeback;
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index ad887d614d5b3f..44b8c671921e5c 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -342,6 +342,12 @@ static int __nbd_set_size(struct nbd_device *nbd, loff_t bytesize,
+ 		lim.max_hw_discard_sectors = UINT_MAX;
+ 	else
+ 		lim.max_hw_discard_sectors = 0;
++	if (!(nbd->config->flags & NBD_FLAG_SEND_FLUSH))
++		blk_queue_write_cache(nbd->disk->queue, false, false);
++	else if (nbd->config->flags & NBD_FLAG_SEND_FUA)
++		blk_queue_write_cache(nbd->disk->queue, true, true);
++	else
++		blk_queue_write_cache(nbd->disk->queue, true, false);
+ 	lim.logical_block_size = blksize;
+ 	lim.physical_block_size = blksize;
+ 	error = queue_limits_commit_update(nbd->disk->queue, &lim);
+@@ -1286,19 +1292,10 @@ static void nbd_bdev_reset(struct nbd_device *nbd)
+ 
+ static void nbd_parse_flags(struct nbd_device *nbd)
+ {
+-	struct nbd_config *config = nbd->config;
+-	if (config->flags & NBD_FLAG_READ_ONLY)
++	if (nbd->config->flags & NBD_FLAG_READ_ONLY)
+ 		set_disk_ro(nbd->disk, true);
+ 	else
+ 		set_disk_ro(nbd->disk, false);
+-	if (config->flags & NBD_FLAG_SEND_FLUSH) {
+-		if (config->flags & NBD_FLAG_SEND_FUA)
+-			blk_queue_write_cache(nbd->disk->queue, true, true);
+-		else
+-			blk_queue_write_cache(nbd->disk->queue, true, false);
+-	}
+-	else
+-		blk_queue_write_cache(nbd->disk->queue, false, false);
  }
  
--static void virtblk_update_cache_mode(struct virtio_device *vdev)
--{
--	u8 writeback = virtblk_get_cache_mode(vdev);
--	struct virtio_blk *vblk = vdev->priv;
--
--	blk_queue_write_cache(vblk->disk->queue, writeback, false);
--}
--
- static const char *const virtblk_cache_types[] = {
- 	"write through", "write back"
- };
-@@ -1116,7 +1108,7 @@ cache_type_store(struct device *dev, struct device_attribute *attr,
- 		return i;
- 
- 	virtio_cwrite8(vdev, offsetof(struct virtio_blk_config, wce), i);
--	virtblk_update_cache_mode(vdev);
-+	blk_queue_write_cache(disk->queue, virtblk_get_cache_mode(vdev), false);
- 	return count;
- }
- 
-@@ -1528,7 +1520,8 @@ static int virtblk_probe(struct virtio_device *vdev)
- 	vblk->index = index;
- 
- 	/* configure queue flush support */
--	virtblk_update_cache_mode(vdev);
-+	blk_queue_write_cache(vblk->disk->queue, virtblk_get_cache_mode(vdev),
-+			false);
- 
- 	/* If disk is read-only in the host, the guest should obey */
- 	if (virtio_has_feature(vdev, VIRTIO_BLK_F_RO))
+ static void send_disconnects(struct nbd_device *nbd)
 -- 
 2.43.0
 
