@@ -4,79 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FD11C27C5E
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 07:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42232C25B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 07:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IJRuz77zGHQ+SQGsNhCYdEOATQF1turGbBuQgAL8gRQ=; b=PxOyfR7DI71xkl
-	MrzHroxEWJs/NhAzpMW4ZkVIbutbkM/DH+BxhUAZ1AHKziHcw46nRR4mvK1INWMSQdtJy0yMatCQ9
-	JNFo20hrwIyyUZgwSRru9b8nYrI1BBy9hcbJdRjWIM0+trgRl7D7lK+4vKFDTOpkn1f+/CJFLpbAC
-	msgl/zp4N0dASgRUbjX7fPiJgdsZlVXKGbJx2d9aD5c9vZc5mSNw5NbB52Z6vaUh0cEGdl9zucFXx
-	l/LyoRnsffgMNfNMy7MkNwl/Uxl2jJ12Ogv9g+4LH0IVaJP2Vev/qDgyekCgOUrMHiccUZZSfvcsB
-	6v4jnGbBM50NWiytkn2A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3i0H4vS0ThOJrF1IotJdJbJDGiGW1kAcSFJjGY+WoLA=; b=qI5AXjBs6fT4yj
+	oWbjCZwN2KOGRBX9yPT7Jh3nKS/Kt94LnoZ84vTE7HZXlEDeBWEImEwfRAyxGVy0zV6fjc02P3TNc
+	UHeOvqABRFL+Gf37NwnWJaGkktq37dBpTl4cYlgoJoVocwgHJ/IsoBoiFup0DkHWN7timvADPoH/Z
+	II7GMb/+I+UevuymFY56CyIjRL5hRWhDG0LVAxP4Yfg4LKOeN5jPk0Y9RIWNO8HUXPjt7LUSC/Agg
+	eCIix1cJx+++n/U2Da4MyFYLTG/FEMDRfGrw3jx4LrXy1gTY5VC4/zLccxOpF5YJcnHN3GuyUIdHM
+	bMQLtUMivoZveJGQA1Ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGw0l-00000007rlM-3AKo;
-	Tue, 11 Jun 2024 07:33:43 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sGw8I-00000007tKT-0iW9;
+	Tue, 11 Jun 2024 07:41:30 +0000
+Received: from mail.explorepulse.pl ([51.91.254.67])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGw0i-00000007rke-3xk3;
-	Tue, 11 Jun 2024 07:33:42 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D4C1760C25;
-	Tue, 11 Jun 2024 07:33:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD458C2BD10;
-	Tue, 11 Jun 2024 07:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718091219;
-	bh=oHlrsHMGSP+TFKBHBiaHuNGPDyXYV0yztvtK1Y/4xoA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NK69Ca5T+un738Cht9WHCgDsDCtG+gx8LYD6gWuaN5n85S7Yoy0xxNUkFXn4cHxHv
-	 Wlv+wGcdYIf+EVH9ZUhb5I5VG8NRhQniAqY8z0Q49SoQKDz4xicGpKlJi87Afp005I
-	 EtH89giKv6HAFkHTX4qfxqAZNfqbbdEoL02qUnKFAY7p5J0TI+KJ8srSwUMmzd4BcU
-	 hfvqIdBP7X08PHZVdAv1hTm1A4VlEuGPTd2au2zULBAaTxZxCjrUn/VKKe7PVNMklX
-	 962B+4yOZjBDU8ZEfAUGNkCr9yE5Pg/u5zYNHenczAAetVmyH+GxTRZJ9JSnWhGfdr
-	 S8dGvnoNweUXw==
-Message-ID: <57a98863-e1ca-4ef8-aa7c-5012daa22808@kernel.org>
-Date: Tue, 11 Jun 2024 16:33:32 +0900
+	id 1sGw8C-00000007tCI-05jh
+	for linux-mtd@lists.infradead.org;
+	Tue, 11 Jun 2024 07:41:26 +0000
+Received: by mail.explorepulse.pl (Postfix, from userid 1002)
+	id 97F1524215; Tue, 11 Jun 2024 09:41:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=explorepulse.pl;
+	s=mail; t=1718091675;
+	bh=dqx6etWJTU7o7oR1uR2aRBCwaPXPl4dirwwzUCFBDcc=;
+	h=Date:From:To:Subject:From;
+	b=WVLCWGRiGsJM3oeA+1kBeG6jG8p1KfsOPURDD/y074U/BBvgRYtxeQhWNVbYI7VuB
+	 RsCCKd5Rjl3dQzJXmpS4mUCNnxwVrX4nDtNd25+MqGAGjWVWSB/vIVzoGM8OEfNQ3f
+	 V+w7tlqja3VDqSgktJB6tA/28JEuEfLQiowT+Y+BFl3Z4xAww15Hf0J0n4RDXS5rRO
+	 mA0Ib0vnpP2baQiiAattPUyerfXmpSmzkzkTeeC8KvjyP/UsRhuT2uQyH1kdS8wdnS
+	 c5RI4o/jnzqxG3VsX3LH22e5uUqP/ABgWDEvqNWAu5IyvRRWiztN02oG0aTrOhAycz
+	 cFwNn14EVci6A==
+Received: by mail.explorepulse.pl for <linux-mtd@lists.infradead.org>; Tue, 11 Jun 2024 07:40:54 GMT
+Message-ID: <20240611084500-0.1.bp.shi6.0.d9djjeehl1@explorepulse.pl>
+Date: Tue, 11 Jun 2024 07:40:54 GMT
+From: "Marcin Gard" <marcin.grad@explorepulse.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
+X-Mailer: mail.explorepulse.pl
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/26] block: remove blk_flush_policy
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Richard Weinberger <richard@nod.at>,
- Philipp Reisner <philipp.reisner@linbit.com>,
- Lars Ellenberg <lars.ellenberg@linbit.com>,
- =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
- Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
- drbd-dev@lists.linbit.com, nbd@other.debian.org,
- linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
- linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-13-hch@lst.de>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-13-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_003341_078903_A15B15BC 
-X-CRM114-Status: UNSURE (   6.46  )
+X-CRM114-CacheID: sfid-20240611_004124_858074_5F24A14D 
+X-CRM114-Status: UNSURE (   0.72  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,24 +62,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Fold blk_flush_policy into the only caller to prepare for pending changes
-> to it.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-
--- 
-Damien Le Moal
-Western Digital Research
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
+cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
+xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
+Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
+ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllCk1hcmNpbiBHYXJkCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
