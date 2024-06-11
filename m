@@ -4,80 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 886B5C27C5E
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC8EEC25B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jun 2024 08:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lNdk+LisKOQoo8BrUZxrgZjpi0D9PgxOoio1qSUVDtM=; b=UJoZ9b4WXItvv4
-	cyq+S8amfdmvnyMohXKyiUbfGbBx2FjdW8x6QuFp4M8kJXRhwyAaDmXMvlxzSoMRY9gwF6LyHNWvT
-	Zd/OMO7SqG+FJuPQYpCqX1aEjwLOE/FDKJ45Ll7m0W6ndSJPSi+f4lhUNRn3A3K9iW4K7k3aYpIAi
-	vibtb8crpEouB1hrXekcGeb+W/MYniqZVHwVPN8HNWtXT4FVYvXrE7LflaGuKe7z/axuaguw0y8b2
-	qimkoJjPgXQ7raTkF3aCapIzVPhWDYDveyK2VtSgh6Zd1pcyKjfbHlsVFu/qfhupkzSBNnV3R0zCp
-	uxcRgN++sBXZBkquIY4A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=w054i7+w+sQfPI7q3EvSkDwfJ69XV3iyo4+rod5z2jA=; b=q+ufUX4JhWXqXM
+	H/EeJJDnPoXE8Bh66SPrrqZZ/4ZV7TUX5QmM12iVqT58CPuNIlLUFVAoNssz6fko/RLgqs+xrJRtt
+	+a0EO53xWblN3kwjIcXp+b/uGbf5GrmsIGBU0xgKmlad8Yu8aMVNgolG8V6oT4Os4hySmc7CFFrej
+	OKCrqvXxo6OVVNGI+vJcxDF3bk9rGbgQACVQMmZiFmXnwUv8kthwliHG1InFPYmpQh5bUuBvgYDeS
+	FFLmpWIGc7NuJyCUK01cF1Xwdd3kPQshXRwWQ/9DK4jZOvIBpHpBAEhG5ctki055q6lSHPqRHvWwW
+	qxNatxD/YTps3LmA2PAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwZo-0000000804z-1VFr;
-	Tue, 11 Jun 2024 08:09:56 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sGwa7-000000080D5-3LaT;
+	Tue, 11 Jun 2024 08:10:15 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwZl-0000000804M-2X3x;
-	Tue, 11 Jun 2024 08:09:54 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7900960D2E;
-	Tue, 11 Jun 2024 08:09:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F729C2BD10;
-	Tue, 11 Jun 2024 08:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718093392;
-	bh=q0QC/DwdDecsb+SsO2WPgUlAOrUNDUio/s56qnb48bM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ASIoL/u9H/6b4lUyYk5oEzSADY2SPITglYQKbn22RE2v5Zmv+Bdu4yXt2dx4LBuyj
-	 NVG1rUDMHnNTWyjPGwlGMS7q0dEKke4PAWQg/UzftKu/Ly2DNOhNfxEkKQj6EFDaHU
-	 gbMPLXlbaDGII4KmlbUUWCoStYYGCahBnCwU3sHyUUKQqZ1YdU0vcRocoxwls2ROg2
-	 gKF/wxkN6x65ww9rMbS9NJlQNYUg7Y5U2acfwFYdpXRWwDXOcSxo1CVQbqP3uooiqP
-	 0hvYmqaICGemmnL938SwljJXBPejQKyIB0+ALAtSSclYdQCRHYhtFi/CQNV4wF5aIA
-	 8HiTkYhUDl6Cg==
-Message-ID: <d51e4163-99e3-4435-870d-faef3887ab6a@kernel.org>
-Date: Tue, 11 Jun 2024 17:09:45 +0900
+	id 1sGwa4-00000008099-1Jrw;
+	Tue, 11 Jun 2024 08:10:14 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 9E2B561966AC;
+	Tue, 11 Jun 2024 10:10:06 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id dq3ga0-vBU1s; Tue, 11 Jun 2024 10:10:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id CCB0B61966DF;
+	Tue, 11 Jun 2024 10:10:05 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id tf6HmT0i1hfW; Tue, 11 Jun 2024 10:10:05 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id A4C2761966AE;
+	Tue, 11 Jun 2024 10:10:05 +0200 (CEST)
+Date: Tue, 11 Jun 2024 10:10:05 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, 
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, 
+	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Message-ID: <259826832.217854.1718093405190.JavaMail.zimbra@nod.at>
+Subject: [ANNOUNCE] Alpine Linux Persistence and Storage Summit 2024
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 16/26] block: move the io_stat flag setting to
- queue_limits
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Richard Weinberger <richard@nod.at>,
- Philipp Reisner <philipp.reisner@linbit.com>,
- Lars Ellenberg <lars.ellenberg@linbit.com>,
- =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
- Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
- drbd-dev@lists.linbit.com, nbd@other.debian.org,
- linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
- linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-17-hch@lst.de>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-17-hch@lst.de>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Index: uTc1ISVhQXOptDvYOEYQnAc9FxHE/A==
+Thread-Topic: Alpine Linux Persistence and Storage Summit 2024
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_010953_759625_D6434AFA 
-X-CRM114-Status: GOOD (  11.25  )
+X-CRM114-CacheID: sfid-20240611_011012_551164_872F9D3E 
+X-CRM114-Status: UNSURE (   4.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,24 +76,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the io_stat flag into the queue_limits feature field so that it
-> can be set atomically and all I/O is frozen when changing the flag.
+We proudly announce the 7th Alpine Linux Persistence and Storage Summit
+(ALPSS), which will be held September 24th to 27th at the Lizumerhuette
+(https://www.lizumer-huette.at/) in Austria.
 
-Why a feature ? It seems more appropriate for io_stat to be a flag rather than
-a feature as that is a block layer thing rather than a device characteristic, no ?
+The goal of this conference is to discuss the hot topics in Linux storage
+and file systems, such as persistent memory, NVMe, zoned storage, and I/O
+scheduling in a cool and relaxed setting with spectacular views in the
+Austrian alps.
 
-> 
-> Simplify md and dm to set the flag unconditionally instead of avoiding
-> setting a simple flag for cases where it already is set by other means,
-> which is a bit pointless.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+We plan to have a small selection of short and to the point talks with
+lots of room for discussion in small groups, as well as ample downtime
+to enjoy the surrounding.
 
--- 
-Damien Le Moal
-Western Digital Research
+Attendance is free except for the accommodation and food at the lodge
+but the number of seats is strictly limited.  Cost for accommodation and
+half pension is between 54 and 84 EUR depending on the room category
+and membership in an alpine society.
 
+If you are interested in attending please reserve a seat by mailing your
+favorite topic(s) to:
+
+        alpss-pc@penguingang.at
+
+If you are interested in giving a short and crisp talk please also send
+an abstract to the same address.
+
+The Lizumerhuette is an Alpine Society lodge in a high alpine environment.
+A hike of approximately 2 hours is required to the lodge, and no other
+accommodations are available within walking distance.
+
+Note that unlike the previous years reservations for the lodge are not
+handled through the reservation system.
+
+Check our website at https://www.alpss.at/ for more details.
+
+Thank you on behalf of the program committee:
+
+    Christoph Hellwig
+    Johannes Thumshirn
+    Richard Weinberger
 
 ______________________________________________________
 Linux MTD discussion mailing list
