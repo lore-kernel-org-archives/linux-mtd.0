@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EDE8C27C77
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jun 2024 05:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E139C27C75
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jun 2024 05:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cd9hTZwmyC+q4lEyvn+afKnHn3TCUOti/+66ATzyK7U=; b=S/Hi3m3r2F+2tT
-	XTVIJCNuDjaGuYyGTAiKnVtVHNOpv5sT1dHbYCcKhnZUHXDVjJ/pfsx+ywJWSvTKaI/0hW7UVQiP2
-	tecm1096t1EcX2BQ+pKzMkzb0mYVHZlzaTrWJZzgXVkNNOg1cQyoCnKd0VvkTW/ubG/xqDCX/nQHM
-	yfgM0LMqyNAWGpga6t0rqomFKcJ9E6RG/5zzkNd53fd/Jog68goR7C9tW5/QpRg9ZgzKGqOFh/Ws3
-	invf8g8nmppvS45a0BKhHrEv5deJQQ0yPNDu/EjGcBH7aojyhY79/YBM5aixdFB9eDCc9/EuH7iyi
-	5104olmqQyUDMZYEyZbQ==;
+	List-Owner; bh=NrHfUG0tCcFfj35Q5MJuetyDYQfAMk0RneVB6+sm11Q=; b=rs4fdoRefxD8Tw
+	dpAItHK8zJJqQPU41ImI7tlljfwDnVAPDDRRx16DuY2ahL3mos4lW+w7RGZ61MmIQSXP+9QKVm+2G
+	sc9kWEEc9fsT4smuIKqfwsbFmnnZ5+eLb22yRkN42/xWHbOBT8wDRADcHvL6w2GuHsGJ0TiljgdWw
+	CJCfXTPLtXFHrdl6PjCrv0mWqRLf2iss7zkFfp+v69+Tkl8ZxZCym32uugw7wAGsVvYhgVwjNmllN
+	6FOJbuzK970E72TDiCejPuHrEvYrWOu/kgTmSSpq2pCs5Wiay7GQDEvfI6dMTuPvGFrcqzql1cUIZ
+	TUSEs35WX5hLMUOB6ShQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHG6p-0000000B5WQ-3kxc;
-	Wed, 12 Jun 2024 05:01:19 +0000
+	id 1sHG9F-0000000B5wn-40Ba;
+	Wed, 12 Jun 2024 05:03:49 +0000
 Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHG6m-0000000B5Vq-3EBs;
-	Wed, 12 Jun 2024 05:01:18 +0000
+	id 1sHG9C-0000000B5vk-1WEq;
+	Wed, 12 Jun 2024 05:03:47 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 775D868C4E; Wed, 12 Jun 2024 07:01:10 +0200 (CEST)
-Date: Wed, 12 Jun 2024 07:01:09 +0200
+	id 0069168C4E; Wed, 12 Jun 2024 07:03:41 +0200 (CEST)
+Date: Wed, 12 Jun 2024 07:03:41 +0200
 From: Christoph Hellwig <hch@lst.de>
 To: Damien Le Moal <dlemoal@kernel.org>
 Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
@@ -55,16 +55,16 @@ Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
 	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
 	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 19/26] block: move the nowait flag to queue_limits
-Message-ID: <20240612050109.GA26959@lst.de>
-References: <20240611051929.513387-1-hch@lst.de> <20240611051929.513387-20-hch@lst.de> <4845aae8-ad03-407e-bf31-f164b8f684d4@kernel.org>
+Subject: Re: [PATCH 21/26] block: move the poll flag to queue_limits
+Message-ID: <20240612050341.GA27049@lst.de>
+References: <20240611051929.513387-1-hch@lst.de> <20240611051929.513387-22-hch@lst.de> <d1775d3f-daaa-4193-9f68-06ec47563b35@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4845aae8-ad03-407e-bf31-f164b8f684d4@kernel.org>
+In-Reply-To: <d1775d3f-daaa-4193-9f68-06ec47563b35@kernel.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_220116_973941_515E8163 
-X-CRM114-Status: GOOD (  11.86  )
+X-CRM114-CacheID: sfid-20240611_220346_679994_3105C794 
+X-CRM114-Status: GOOD (  12.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,20 +81,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 11, 2024 at 05:16:37PM +0900, Damien Le Moal wrote:
-> > @@ -1825,9 +1815,7 @@ int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
-> >  	int r;
-> >  
-> >  	if (dm_table_supports_nowait(t))
-> > -		blk_queue_flag_set(QUEUE_FLAG_NOWAIT, q);
-> > -	else
-> > -		blk_queue_flag_clear(QUEUE_FLAG_NOWAIT, q);
-> > +		limits->features &= ~BLK_FEAT_NOWAIT;
-> 
-> Shouldn't you set the flag here instead of clearing it ?
+On Tue, Jun 11, 2024 at 05:21:07PM +0900, Damien Le Moal wrote:
+> Kind of the same remark as for io_stat about this not really being a device
+> feature. But I guess seeing "features" as a queue feature rather than just a
+> device feature makes it OK to have poll (and io_stat) as a feature rather than
+> a flag.
 
-No, but the dm_table_supports_nowait check needs to be inverted.
- 
+So unlike io_stat this very much is a feature and a feature only as
+we don't even allow changing it.  It purely exposes a device (or
+rather driver) capability.
 
 ______________________________________________________
 Linux MTD discussion mailing list
