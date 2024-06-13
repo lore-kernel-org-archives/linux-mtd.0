@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C840EC27C4F
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2024 12:58:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D47C7C27C6E
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2024 14:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FuiZyTTjeXD7PMbeM+fsEQVheNkivDrm51va9XSJTks=; b=xfdoQ0mIeYrE5F
-	F3tQPDmLRv1Ra15barFvD3xvTQlkVOx+lbuhlSuXuHqgnwmD7KTMw43SjbbJM5RhWgJBfcWitnRjr
-	R02FPicJ1PSdq8mtf5s/JxVZa1gCraOYb1CB99fQFxRlWpyzpN6aOts3jJEDao7YjdYevGSGcmbTZ
-	VwMoVJ5XOJVsFLvkbgPaSHkE+cbqIN/NXO86wA/wNukc71COmXHiZeEAbpRS3kL0/zBM21WSCDsTC
-	gxsrP4NL08ClxOk9AdGVR5BACS6HMdrAXahVjs1iD7HKwshN+e/MfCKpO9C/G+GhrgU0nmeaOjlvM
-	fnoXDfk36zIpm+DuXENg==;
+	List-Owner; bh=DPtga/wH14wetGJjrRSGTEokrS/PyDSjIgFIpbGSjYM=; b=WZWBINgc9cBqyd
+	P8HKYdNkeCbfYTGXqXKmZBTci1BMfryMlNNuW9WHOV1zuk5yyYhlv+YzIH2q3OLENoaakOFKYvlvJ
+	QrtsqH2T4rtL0DUmFg0Ay/UX1Ogkfqf3xmujokCBGTuq3M2K58fFOQsym6CFFINlK0DbaPSl4yhTi
+	fMNEDyWn9R6MNve4Pk49WYc35r5bFDHvWjyOaNDBMtqmHFEySQRSOK1UpcglqoOgccnDliQDTXhQF
+	jq/8eT+p7y60VgEmCCSqpsrsXmcbYRTTu2gpSFZpONTrzyNuMBJ6KPFRJ55rbOeCSicbTFleZ2TjR
+	K5M7kb3SuRKF2V30nINg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHk1e-0000000Gb09-1Z7z;
-	Thu, 13 Jun 2024 12:57:58 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1sHl4o-0000000GsLx-0tCg;
+	Thu, 13 Jun 2024 14:05:18 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHk1b-0000000Gaye-0g2C
-	for linux-mtd@lists.infradead.org;
-	Thu, 13 Jun 2024 12:57:57 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AF49EE000F;
-	Thu, 13 Jun 2024 12:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1718283471;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ln17ZxRL+upVh68wnbTdi1KTA2jYfvXcMhNeLfk448s=;
-	b=HS2TOvkZeG68w8F8vNWzKEgAX22dLWuSPHlDvOdcAPBycdM7mjvCte+RRtlAbl3VFoiZj/
-	qPcNES9ddnnPHYkw/e8p/WKEf/zkC4Zxr4c8IVlFQx0SiX76phFUUJOW9DSAh1TTJsqPhx
-	I2pKDrlruxBKZn2mTt15ASOW9pmAOVatGGVjIjboWTEiG6ebFdHH5p0J5lU89Exyg05WkH
-	lbazXqjFMXfxCLx/I9Mj2kfhC0BPiYk4viK2Cqr5rzIx22blshbo71cjUkgxCfj2XlPhEq
-	gLjvufC8BxaTKgwzy0DCeiIQsmaw3NWiV8L2srBMZ/90k578XQY2eQ21MsSyxQ==
-Message-ID: <ba441a7c-28f8-49c0-95b9-71a586007e44@yoseli.org>
-Date: Thu, 13 Jun 2024 14:57:50 +0200
+	id 1sHl4k-0000000GsKk-3Ry0;
+	Thu, 13 Jun 2024 14:05:16 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C2B2968BEB; Thu, 13 Jun 2024 16:05:08 +0200 (CEST)
+Date: Thu, 13 Jun 2024 16:05:08 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com, nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
+ they fail
+Message-ID: <20240613140508.GA16529@lst.de>
+References: <20240611051929.513387-1-hch@lst.de> <20240611051929.513387-11-hch@lst.de> <ZmlVziizbaboaBSn@macbook> <20240612150030.GA29188@lst.de> <ZmnFH17bTV2Ot_iR@macbook>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Issue with JFFS2 and a_ops->dirty_folio
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, willy@infradead.org,
- Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
-References: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
- <ZmrV9vLwj0uFj5Dn@infradead.org>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <ZmrV9vLwj0uFj5Dn@infradead.org>
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Disposition: inline
+In-Reply-To: <ZmnFH17bTV2Ot_iR@macbook>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240613_055755_910765_A6FCB4A7 
-X-CRM114-Status: GOOD (  17.89  )
+X-CRM114-CacheID: sfid-20240613_070515_227385_C12388BF 
+X-CRM114-Status: GOOD (  33.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,144 +76,167 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Christoph,
+On Wed, Jun 12, 2024 at 05:56:15PM +0200, Roger Pau Monn=E9 wrote:
+> Right.  AFAICT advertising "feature-barrier" and/or
+> "feature-flush-cache" could be done based on whether blkback
+> understand those commands, not on whether the underlying storage
+> supports the equivalent of them.
+> =
 
-On 13/06/2024 13:20, Christoph Hellwig wrote:
-> On Thu, Jun 13, 2024 at 09:05:17AM +0200, Jean-Michel Hautbois wrote:
->> Hi everyone !
->>
->> I am currently working on a Coldfire (MPC54418) and quite everything goes
->> well, except that I can only execute one command from user space before
->> getting a segmentation fault on the do_exit() syscall.
-> 
-> Looks like jffs2 is simply missing a dirty_folio implementation.  The
-> simple filemap_dirty_folio should do the job, please try the patch
-> below:
-> 
-> 
-> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-> index 62ea76da7fdf23..7124cbad6c35ae 100644
-> --- a/fs/jffs2/file.c
-> +++ b/fs/jffs2/file.c
-> @@ -19,6 +19,7 @@
->   #include <linux/highmem.h>
->   #include <linux/crc32.h>
->   #include <linux/jffs2.h>
-> +#include <linux/writeback.h>
->   #include "nodelist.h"
->   
->   static int jffs2_write_end(struct file *filp, struct address_space *mapping,
-> @@ -75,6 +76,7 @@ const struct address_space_operations jffs2_file_address_operations =
->   	.read_folio =	jffs2_read_folio,
->   	.write_begin =	jffs2_write_begin,
->   	.write_end =	jffs2_write_end,
-> +	.dirty_folio =	filemap_dirty_folio,
->   };
->   
->   static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+> Worst case we can print a warning message once about the underlying
+> storage failing to complete flush/barrier requests, and that data
+> integrity might not be guaranteed going forward, and not propagate the
+> error to the upper layer?
+> =
 
+> What would be the consequence of propagating a flush error to the
+> upper layers?
 
-Thanks, I did implement this one, but now I have another weird issue, I 
-don't know if this can be related...
+If you propage the error to the upper layer you will generate an
+I/O error there, which usually leads to a file system shutdown.
 
-When the bash command is launched (my init command is init=/bin/bash) I 
-can launch a first command (say, ls for instance) and it works fine. But 
-a second call to this same command or any other one juste returns as if 
-nothing was done... And I can't even debug, strace fails too:
+> Given the description of the feature in the blkif header, I'm afraid
+> we cannot guarantee that seeing the feature exposed implies barrier or
+> flush support, since the request could fail at any time (or even from
+> the start of the disk attachment) and it would still sadly be a correct
+> implementation given the description of the options.
 
-execve("/bin/ls", ["/bin/ls"], 0xbfb31ef0 /* 5 vars */) = 0
-brk(NULL)                               = 0x2ab7c000
-atomic_barrier()                        = 0
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or 
-directory)
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 
--1 ENOENT (No such file or directory)
-openat(AT_FDCWD, "/lib/libresolv.so.2", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
-read(3, 
-"\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\4\0\0\0\1\0\0\0\0\0\0\0004"..., 
-512) = 512
-statx(3, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, 
-STATX_BASIC_STATS, 
-{stx_mask=STATX_TYPE|STATX_MODE|STATX_NLINK|STATX_UID|STATX_GID|STATX_MTIME|STATX_CTIME|STATX_INO|STATX_SIZE|STATX_BLOCKS|STATX_
-MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0755, stx_size=43120, ...}) = 0
-mmap2(NULL, 59888, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) 
-=[   15.830000] random: crng init done
-  0x60022000
-mmap2(0x6002c000, 16384, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x8000) = 0x6002c000
-mmap2(0x60030000, 2544, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x60030000
-close(3)                                = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-openat(AT_FDCWD, "/lib/libc.so.6", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
-read(3, 
-"\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\4\0\0\0\1\0\2\324\n\0\0\0004"..., 
-512) = 512
-statx(3, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, 
-STATX_BASIC_STATS, 
-{stx_mask=STATX_TYPE|STATX_MODE|STATX_NLINK|STATX_UID|STATX_GID|STATX_MTIME|STATX_CTIME|STATX_INO|STATX_SIZE|STATX_BLOCKS|STATX_
-MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0755, stx_size=1257660, ...}) = 0
-mmap2(NULL, 1290920, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 
-0) = 0x60032000
-mmap2(0x6015e000, 24576, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x12c000) = 0x6015e000
-mmap2(0x60164000, 37544, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x60164000
-close(3)                                = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-mmap2(NULL, 16384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 
-0) = 0x6016e000
-set_thread_area(0x601759c0)             = 0
-get_thread_area()                       = 0x601759c0
-atomic_barrier()                        = 0
-set_tid_address(0x6016e548)             = 28
-set_robust_list(0x6016e54c, 12)         = 0
-mprotect(0x6015e000, 8192, PROT_READ)   = 0
-mprotect(0x6002c000, 8192, PROT_READ)   = 0
-mprotect(0x2ab72000, 8192, PROT_READ)   = 0
-mprotect(0x6001e000, 8192, PROT_READ)   = 0
---- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_MAPERR, si_addr=0xc00815f4} ---
-+++ killed by SIGSEGV +++
+Well, then we could do something like the patch below, which keeps
+the existing behavior, but insolates the block layer from it and
+removes the only user of blk_queue_write_cache from interrupt
+context:
 
-I suppose this can be related to the ELF_DT_DYN_BASE address, but I 
-can't see what is going on yet.
+---
+From e6e82c769ab209a77302994c3829cf6ff7a595b8 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Thu, 30 May 2024 08:58:52 +0200
+Subject: xen-blkfront: don't disable cache flushes when they fail
 
-Thanks,
-JM
+blkfront always had a robust negotiation protocol for detecting a write
+cache.  Stop simply disabling cache flushes in the block layer as the
+flags handling is moving to the atomic queue limits API that needs
+user context to freeze the queue for that.  Instead handle the case
+of the feature flags cleared inside of blkfront.  This removes old
+debug code to check for such a mismatch which was previously impossible
+to hit, including the check for passthrough requests that blkfront
+never used to start with.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/block/xen-blkfront.c | 44 +++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+index 9b4ec3e4908cce..e2c92d5095ff17 100644
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -788,6 +788,14 @@ static int blkif_queue_rw_req(struct request *req, str=
+uct blkfront_ring_info *ri
+ 			 * A barrier request a superset of FUA, so we can
+ 			 * implement it the same way.  (It's also a FLUSH+FUA,
+ 			 * since it is guaranteed ordered WRT previous writes.)
++			 *
++			 * Note that can end up here with a FUA write and the
++			 * flags cleared.  This happens when the flag was
++			 * run-time disabled and raced with I/O submission in
++			 * the block layer.  We submit it as a normal write
++			 * here.  A pure flush should never end up here with
++			 * the flags cleared as they are completed earlier for
++			 * the !feature_flush case.
+ 			 */
+ 			if (info->feature_flush && info->feature_fua)
+ 				ring_req->operation =3D
+@@ -795,8 +803,6 @@ static int blkif_queue_rw_req(struct request *req, stru=
+ct blkfront_ring_info *ri
+ 			else if (info->feature_flush)
+ 				ring_req->operation =3D
+ 					BLKIF_OP_FLUSH_DISKCACHE;
+-			else
+-				ring_req->operation =3D 0;
+ 		}
+ 		ring_req->u.rw.nr_segments =3D num_grant;
+ 		if (unlikely(require_extra_req)) {
+@@ -887,16 +893,6 @@ static inline void flush_requests(struct blkfront_ring=
+_info *rinfo)
+ 		notify_remote_via_irq(rinfo->irq);
+ }
+ =
+
+-static inline bool blkif_request_flush_invalid(struct request *req,
+-					       struct blkfront_info *info)
+-{
+-	return (blk_rq_is_passthrough(req) ||
+-		((req_op(req) =3D=3D REQ_OP_FLUSH) &&
+-		 !info->feature_flush) ||
+-		((req->cmd_flags & REQ_FUA) &&
+-		 !info->feature_fua));
+-}
+-
+ static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 			  const struct blk_mq_queue_data *qd)
+ {
+@@ -908,23 +904,30 @@ static blk_status_t blkif_queue_rq(struct blk_mq_hw_c=
+tx *hctx,
+ 	rinfo =3D get_rinfo(info, qid);
+ 	blk_mq_start_request(qd->rq);
+ 	spin_lock_irqsave(&rinfo->ring_lock, flags);
+-	if (RING_FULL(&rinfo->ring))
+-		goto out_busy;
+ =
+
+-	if (blkif_request_flush_invalid(qd->rq, rinfo->dev_info))
+-		goto out_err;
++	/*
++	 * Check if the backend actually supports flushes.
++	 *
++	 * While the block layer won't send us flushes if we don't claim to
++	 * support them, the Xen protocol allows the backend to revoke support
++	 * at any time.  That is of course a really bad idea and dangerous, but
++	 * has been allowed for 10+ years.  In that case we simply clear the
++	 * flags, and directly return here for an empty flush and ignore the
++	 * FUA flag later on.
++	 */
++	if (unlikely(req_op(qd->rq) =3D=3D REQ_OP_FLUSH && !info->feature_flush))
++		goto out;
+ =
+
++	if (RING_FULL(&rinfo->ring))
++		goto out_busy;
+ 	if (blkif_queue_request(qd->rq, rinfo))
+ 		goto out_busy;
+ =
+
+ 	flush_requests(rinfo);
++out:
+ 	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
+ 	return BLK_STS_OK;
+ =
+
+-out_err:
+-	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
+-	return BLK_STS_IOERR;
+-
+ out_busy:
+ 	blk_mq_stop_hw_queue(hctx);
+ 	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
+@@ -1627,7 +1630,6 @@ static irqreturn_t blkif_interrupt(int irq, void *dev=
+_id)
+ 					blkif_req(req)->error =3D BLK_STS_OK;
+ 				info->feature_fua =3D 0;
+ 				info->feature_flush =3D 0;
+-				xlvbd_flush(info);
+ 			}
+ 			fallthrough;
+ 		case BLKIF_OP_READ:
+-- =
+
+2.43.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
