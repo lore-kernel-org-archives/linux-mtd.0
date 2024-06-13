@@ -4,100 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78022C2BA16
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jun 2024 15:56:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C8D8C27C75
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jun 2024 07:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=z4aQ+w6hF6HvpNFdBjXNmJ1iMUrKWNqzAef64vhigt0=; b=IBLAK/4ss3XsiZ
-	OO9p7JAok5geHwm5nbEKJLUREUBFpeiUh4OLsAAScQ6T7OMgjNkzs+h0GPnG6maHHzvER6MsCqUvp
-	Ug4d2w7Od07CiqnlmqIXZ4mh1DnoWohLggt5WP7aH8f/ShuR/GY7cw3ttampO079VJ6qLCxVmg0BD
-	q9SbyhlVEfM2ukiLuFrY1pMfZCASz5JQDm3VZ9s9Uh9xSDrFVWdyaGqO8APdMO0ZD/4g7Oz3uYdM/
-	t0xpx5HHt9OW23pkvCz1pigpJ7psLEBAnjTqSlbLvUlyMZkOBr29Im0a/dtE0jcyoZ9tDg/n6NVW6
-	SwPvw/HhECDzISQE8AQg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:Message-ID:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=xnfLjFGMVSzmMKJahGP3OuiLpAhhhj+Bhcx1j9Z/LRw=; b=qY/UH9kfn6BlB2WT3YE1gFiKOv
+	GJzYf2snclP92IdNnH2B48mUdhkEKTDEuBVh7OHh7ZHL7fPsauwzTgKJj0KEYhQySt8qsTeg+cXNz
+	pCMKkrambEIJz/5vsMcAaKVS/nHJq0jXOWKBkAUx+da9/EGOllsjA/USX2cPZDLP19cO21Zkh5mPL
+	v1P9NeHXyNnlzfHgcku3vjT0CYjk4Gc1k4ySJdoEjdtdVMLwDaWBDYu5PMBdPT2gVdc0tj0b5/fQi
+	q6UjEWmv27QI1GnoiMq6PI7KaXInjXVS0+d8zO/TbfKlpxnhX13R78PO68WkQV/PyWbpq1DT5FDxP
+	Sqg7MGmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHQKl-0000000DGE6-1Iis;
-	Wed, 12 Jun 2024 15:56:23 +0000
-Received: from mail-qv1-xf32.google.com ([2607:f8b0:4864:20::f32])
+	id 1sHeWV-0000000FPJk-1D2m;
+	Thu, 13 Jun 2024 07:05:27 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHQKh-0000000DGBM-1ZTq
+	id 1sHeWR-0000000FPHv-1gTd
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Jun 2024 15:56:21 +0000
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6ae259b1c87so9673096d6.1
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Jun 2024 08:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1718207778; x=1718812578; darn=lists.infradead.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0JAgWI6yypeQvJHtBsLjxy9EsiTAtsBZFfQkPH4VMNc=;
-        b=rX7Bsud9E9W0KKEvRVo9vvePC5oHluX/AQX63C1qV5YfkT+kP1M2N9koFyDpxTruG+
-         noq+TYDb1dy8XBnF7LqyPkoF5phpMnSIAKHq4Mi7DJ/Tv9M9V1uR43PoZ0fnNX2DMpf4
-         COBnzcz8xnnA1TNMGpIZ7/JaF6lhnh6TEeEic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718207778; x=1718812578;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0JAgWI6yypeQvJHtBsLjxy9EsiTAtsBZFfQkPH4VMNc=;
-        b=T8EHDM0JPJQNvip0y8PJbZgG0DRkrZO79iZ0jnSk/QleMo1G8dSl0wo8MHDFWjK/kG
-         /fzdkJ2aWwIoVCfxAbh67TGPS9Oxf8rZL2OmPu+xwA0+jvppmuzP+rQIrjJoxt+v65QA
-         rRHxywew39gpxQ5/rIohYctLCCRbvae/jp4g7KRlMFy0QqpDLKM2opF95Cuczpbzuo27
-         p6KUdSpYn2QBsnaSa1JBAWjDQRTSIi3GLBOp2qsWNQxa4H+CnnN67CBZeqNOKdbFokqA
-         twQaqVpTVrSa+Isv0oONq//OBlrCOVOXZpygvpHft7Jt3kDg+K/nYsqukFpasFVFoWmH
-         Jj6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWREI5S/wZpgBohwaPMMd7qbwq5XZVE/T3GI/cctUBuWufOy4nywghAiseSNiw2CALJeQStkvWS4klOSXq59SVBDWF/2YhYVBvNu89fRQ==
-X-Gm-Message-State: AOJu0YwMpbt56LxsGCX7sTzJlZjBJmXzcGH6KKeMRhW1xGR+g5K1SRd+
-	1PZfmwJZRYMymH8vZ7lo8YhPvNX0KMgcowG4SqXdb5ihVv0UZ/AxnGx3PvISrBM=
-X-Google-Smtp-Source: AGHT+IH3vJ/Cfk8LzYoeLv9cXT/SgN6Pt3X56xC7VVYFazmjn8i4deMSmAqg4iM25NKqjeo5TBvU1g==
-X-Received: by 2002:a05:6214:2a47:b0:6b0:7365:dde0 with SMTP id 6a1803df08f44-6b2a33de160mr1306776d6.18.1718207777691;
-        Wed, 12 Jun 2024 08:56:17 -0700 (PDT)
-Received: from localhost ([213.195.124.163])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b0884337e9sm22877866d6.16.2024.06.12.08.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jun 2024 08:56:17 -0700 (PDT)
-Date: Wed, 12 Jun 2024 17:56:15 +0200
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
- they fail
-Message-ID: <ZmnFH17bTV2Ot_iR@macbook>
-References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-11-hch@lst.de>
- <ZmlVziizbaboaBSn@macbook>
- <20240612150030.GA29188@lst.de>
+	Thu, 13 Jun 2024 07:05:25 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2C16320009;
+	Thu, 13 Jun 2024 07:05:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1718262319;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=94/HQ7UFsg3zLtaBFFGaUMR4/4ICG6Lrs8af0wpASsI=;
+	b=Rxnluk4omhHGSkigsY+MaP0/dqLBlDNpcHc/n0I2xlQzToeEpPS9WJCnvXwVfnBTxT76nl
+	xPMiSlm+CjVPm5ia+VyZtUmKTJ7STyL4qu/nQjxCaG5vD4erBbOx23/xV4fwZGqNczalem
+	R3cQ8B0utWrs/6aTlEeAI23bfG8wFhaitZGx55nAXV4GkO9pbtBxpDcnuPWUkY93IQjPNo
+	A98QxlOaNOCOqMfz7NTPT4aV4Rh98sU45owukA+MQjpo3olp54mnoMT9hF4HHfjwTApW3v
+	VPA7llYeAw7Sxf63F/sdD6bKtE8i010U2/fRTQwR1c+5pIjDnwyu47EJDFZxTQ==
+Message-ID: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
+Date: Thu, 13 Jun 2024 09:05:17 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240612150030.GA29188@lst.de>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org
+Cc: willy@infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-m68k@lists.linux-m68k.org
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: Issue with JFFS2 and a_ops->dirty_folio
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240612_085619_446078_8C2833EF 
-X-CRM114-Status: GOOD (  32.20  )
+X-CRM114-CacheID: sfid-20240613_000523_775888_E4F95979 
+X-CRM114-Status: UNSURE (   8.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,64 +67,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBKdW4gMTIsIDIwMjQgYXQgMDU6MDA6MzBQTSArMDIwMCwgQ2hyaXN0b3BoIEhlbGx3
-aWcgd3JvdGU6Cj4gT24gV2VkLCBKdW4gMTIsIDIwMjQgYXQgMTA6MDE6MThBTSArMDIwMCwgUm9n
-ZXIgUGF1IE1vbm7DqSB3cm90ZToKPiA+IE9uIFR1ZSwgSnVuIDExLCAyMDI0IGF0IDA3OjE5OjEw
-QU0gKzAyMDAsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOgo+ID4gPiBibGtmcm9udCBhbHdheXMg
-aGFkIGEgcm9idXN0IG5lZ290aWF0aW9uIHByb3RvY29sIGZvciBkZXRlY3RpbmcgYSB3cml0ZQo+
-ID4gPiBjYWNoZS4gIFN0b3Agc2ltcGx5IGRpc2FibGluZyBjYWNoZSBmbHVzaGVzIHdoZW4gdGhl
-eSBmYWlsIGFzIHRoYXQgaXMKPiA+ID4gYSBncmF2ZSBlcnJvci4KPiA+IAo+ID4gSXQncyBteSB1
-bmRlcnN0YW5kaW5nIHRoZSBjdXJyZW50IGNvZGUgYXR0ZW1wdHMgdG8gY292ZXIgdXAgZm9yIHRo
-ZQo+ID4gbGFjayBvZiBndWFyYW50ZWVzIHRoZSBmZWF0dXJlIGl0c2VsZiBwcm92aWRlczoKPiAK
-PiA+IFNvIGV2ZW4gd2hlbiB0aGUgZmVhdHVyZSBpcyBleHBvc2VkLCB0aGUgYmFja2VuZCBtaWdo
-dCByZXR1cm4KPiA+IEVPUE5PVFNVUFAgZm9yIHRoZSBmbHVzaC9iYXJyaWVyIG9wZXJhdGlvbnMu
-Cj4gCj4gSG93IGlzIHRoaXMgc3VwcG9zZWQgdG8gd29yaz8gIEkgbWVhbiBpbiB0aGUgd29yc3Qg
-Y2FzZSB3ZSBjb3VsZAo+IGp1c3QgaW1tZWRpYXRlbHkgY29tcGxldGUgdGhlIGZsdXNoIHJlcXVl
-c3RzIGluIHRoZSBkcml2ZXIsIGJ1dAo+IHdlJ3JlIHJlYWxseSBseWluZyB0byBhbnkgdXBwZXIg
-bGF5ZXIuCgpSaWdodC4gIEFGQUlDVCBhZHZlcnRpc2luZyAiZmVhdHVyZS1iYXJyaWVyIiBhbmQv
-b3IKImZlYXR1cmUtZmx1c2gtY2FjaGUiIGNvdWxkIGJlIGRvbmUgYmFzZWQgb24gd2hldGhlciBi
-bGtiYWNrCnVuZGVyc3RhbmQgdGhvc2UgY29tbWFuZHMsIG5vdCBvbiB3aGV0aGVyIHRoZSB1bmRl
-cmx5aW5nIHN0b3JhZ2UKc3VwcG9ydHMgdGhlIGVxdWl2YWxlbnQgb2YgdGhlbS4KCldvcnN0IGNh
-c2Ugd2UgY2FuIHByaW50IGEgd2FybmluZyBtZXNzYWdlIG9uY2UgYWJvdXQgdGhlIHVuZGVybHlp
-bmcKc3RvcmFnZSBmYWlsaW5nIHRvIGNvbXBsZXRlIGZsdXNoL2JhcnJpZXIgcmVxdWVzdHMsIGFu
-ZCB0aGF0IGRhdGEKaW50ZWdyaXR5IG1pZ2h0IG5vdCBiZSBndWFyYW50ZWVkIGdvaW5nIGZvcndh
-cmQsIGFuZCBub3QgcHJvcGFnYXRlIHRoZQplcnJvciB0byB0aGUgdXBwZXIgbGF5ZXI/CgpXaGF0
-IHdvdWxkIGJlIHRoZSBjb25zZXF1ZW5jZSBvZiBwcm9wYWdhdGluZyBhIGZsdXNoIGVycm9yIHRv
-IHRoZQp1cHBlciBsYXllcnM/Cgo+ID4gU3VjaCBmYWlsdXJlIGlzIHRpZWQgb24gd2hldGhlciB0
-aGUgdW5kZXJseWluZyBibGtiYWNrIHN0b3JhZ2UKPiA+IHN1cHBvcnRzIFJFUV9PUF9XUklURSB3
-aXRoIFJFUV9QUkVGTFVTSCBvcGVyYXRpb24uICBibGtiYWNrIHdpbGwKPiA+IGV4cG9zZSAiZmVh
-dHVyZS1iYXJyaWVyIiBhbmQvb3IgImZlYXR1cmUtZmx1c2gtY2FjaGUiIHdpdGhvdXQga25vd2lu
-Zwo+ID4gd2hldGhlciB0aGUgdW5kZXJseWluZyBiYWNrZW5kIHN1cHBvcnRzIHRob3NlIG9wZXJh
-dGlvbnMsIGhlbmNlIHRoZQo+ID4gd2VpcmQgZmFsbGJhY2sgaW4gYmxrZnJvbnQuCj4gCj4gSWYg
-d2UgYXJlIGp1c3QgdGFsa2luZyBhYm91dCB0aGUgTGludXggYmxrYmFjayBkcml2ZXIgKEkga25v
-dyB0aGVyZQo+IHByb2JhYmx5IGFyZSBhIGZldyBvdGhlciBpbXBsZW1lbnRhdGlvbnMpIGl0IHdv
-bid0IGV2ZXJ5IGRvIHRoYXQuCj4gSSBzZWUgaXQgaGFzIGNvZGUgdG8gZG8gc28sIGJ1dCB0aGUg
-TGludXggYmxvY2sgbGF5ZXIgZG9lc24ndAo+IGFsbG93IHRoZSBmbHVzaCBvcGVyYXRpb24gdG8g
-cmFuZG9tbHkgZmFpbCBpZiBpdCB3YXMgcHJldmlvdXNseQo+IGFkdmVydGlzZWQuICBOb3RlIHRo
-YXQgZXZlbiBibGtmcm9udCBjb25mb3JtcyB0byB0aGlzIGFzIGl0IGZpeGVzCj4gdXAgdGhlIHJl
-dHVybiB2YWx1ZSB3aGVuIGl0IGdldHMgdGhpcyBub3RzdXBwIGVycm9yIHRvIG9rLgoKWWVzLCBJ
-J20gYWZyYWlkIGl0J3MgaW1wb3NzaWJsZSB0byBrbm93IHdoYXQgdGhlIG11bHRpcGxlIGluY2Fy
-bmF0aW9ucwpvZiBhbGwgdGhlIHNjYXR0ZXJlZCBibGtiYWNrIGltcGxlbWVudGF0aW9ucyBwb3Nz
-aWJseSBkbyAoRnJlZUJTRCwKTmV0QlNELCBRRU1VIGFuZCBibGt0YXAgYXQgbGVhc3QgSSBrbm93
-IG9mKS4KCj4gPiBPdmVyYWxsIGJsa2JhY2sgc2hvdWxkIGVuc3VyZSB0aGF0IFJFUV9QUkVGTFVT
-SCBpcyBzdXBwb3J0ZWQgYmVmb3JlCj4gPiBleHBvc2luZyAiZmVhdHVyZS1iYXJyaWVyIiBvciAi
-ZmVhdHVyZS1mbHVzaC1jYWNoZSIsIGFzIHRoZW4gdGhlCj4gPiBleHBvc2VkIGZlYXR1cmVzIHdv
-dWxkIHJlYWxseSBtYXRjaCB3aGF0IHRoZSB1bmRlcmx5aW5nIGJhY2tlbmQKPiA+IHN1cHBvcnRz
-IChyYXRoZXIgdGhhbiB0aGUgY29tbWFuZHMgYmxrYmFjayBrbm93cyBhYm91dCkuCj4gCj4gWWVz
-LiAgVGhlIGluLXRyZWUgeGVuLWJsa2JhY2sgZG9lcyB0aGF0LCBidXQgZXZlbiB3aXRob3V0IHRo
-YXQgdGhlCj4gTGludXggYmxvY2sgbGF5ZXIgYWN0dWFsbHkgbWFrZXMgc3VyZSBmbHVzaGVzIHNl
-bnQgYnkgdXBwZXIgbGF5ZXJzCj4gYWx3YXlzIHN1Y2NlZWQgZXZlbiB3aGVuIG5vdCBzdXBwb3J0
-ZWQuCgpHaXZlbiB0aGUgZGVzY3JpcHRpb24gb2YgdGhlIGZlYXR1cmUgaW4gdGhlIGJsa2lmIGhl
-YWRlciwgSSdtIGFmcmFpZAp3ZSBjYW5ub3QgZ3VhcmFudGVlIHRoYXQgc2VlaW5nIHRoZSBmZWF0
-dXJlIGV4cG9zZWQgaW1wbGllcyBiYXJyaWVyIG9yCmZsdXNoIHN1cHBvcnQsIHNpbmNlIHRoZSBy
-ZXF1ZXN0IGNvdWxkIGZhaWwgYXQgYW55IHRpbWUgKG9yIGV2ZW4gZnJvbQp0aGUgc3RhcnQgb2Yg
-dGhlIGRpc2sgYXR0YWNobWVudCkgYW5kIGl0IHdvdWxkIHN0aWxsIHNhZGx5IGJlIGEgY29ycmVj
-dAppbXBsZW1lbnRhdGlvbiBnaXZlbiB0aGUgZGVzY3JpcHRpb24gb2YgdGhlIG9wdGlvbnMuCgpU
-aGFua3MsIFJvZ2VyLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi everyone !
+
+I am currently working on a Coldfire (MPC54418) and quite everything 
+goes well, except that I can only execute one command from user space 
+before getting a segmentation fault on the do_exit() syscall.
+
+I tried to debug it and it appears to be failing in folio_mark_dirty() 
+on the 'return mapping->a_ops->dirty_folio(mapping, folio);' call.
+
+I added a VM_BUG_ON_FOLIO():
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index c2a48592c258..122ca2253263 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2857,9 +2857,9 @@ bool folio_mark_dirty(struct folio *folio)
+                  */
+                 if (folio_test_reclaim(folio))
+                         folio_clear_reclaim(folio);
+-               if (mapping->a_ops->dirty_folio)
+-                       return mapping->a_ops->dirty_folio(mapping, folio);
+-               return noop_dirty_folio(mapping, folio);
++
++               VM_BUG_ON_FOLIO(!mapping->a_ops->dirty_folio, folio);
++               return mapping->a_ops->dirty_folio(mapping, folio);
+         }
+
+         return noop_dirty_folio(mapping, folio);
+
+And it appears that this is because if tries unconditionally to call the 
+a_ops->dirty_folio() function in JFFS2. The bug report is at the bottom 
+of this mail. We see: aops:0x41340ae0
+
+Which, in my build, leads to jffs2_file_address_operations.
+And indeed, there is no .dirty_folio nor anything relating to folios in 
+there.
+
+I don't really know how to solve this though, as I am no expert in this 
+specific part at all !
+
+Thanks for your answers,
+BR
+JM
+
+---
+
+bash-5.2# ls
+bin       etc       lib32     mnt       root      sys       usr
+data      home [    9.730000] page: refcount:2 mapcount:1 
+mapping:42097964 index:0x97 pfn:0x27f01
+      [    9.740000] aops:0x41340ae0 ino:b6 dentry name:"libc.so.6"
+     9.740000] flags: 0x28(uptodate|lru|zone=0)
+;36ml[    9.750000] raw: 00000028 4fed39bc 4ffd9d24 42097964 00000097 
+00000000 00000000 00000002
+inux[    9.760000] raw: 4fe02000
+rc   9.760000] page dumped because: 
+VM_BUG_ON_FOLIO(!mapping->a_ops->dirty_folio)
+[m  [    9.770000] kernel BUG at mm/page-writeback.c:2861!
+  [    9.770000] *** TRAP #7 ***   FORMAT=4
+[    9.770000] Current process id is 24
+[    9.770000] BAD KERNEL TRAP: 00000000
+[    9.770000] PC: [<41058ff2>] folio_mark_dirty+0x68/0x82
+[    9.770000] SR: 2010  SP: 41dcddb4  a2: 418fb710
+[    9.770000] d0: 00000027    d1: 0000009e    d2: 4ffd9c24    d3: 60160000
+[    9.770000] d4: 4fe03419    d5: 4ffd9c24    a0: 41dcdd00    a1: 414491f0
+[    9.770000] Process ls (pid: 24, task=418fb710)
+[    9.770000] Frame format=4 eff addr=413d4c3c pc=413dbd16
+[    9.770000] Stack from 41dcddf0:
+[    9.770000]         00000b2d 413dea77 413dbce8 4fe03419 41dcdf1a 
+410750ee 4ffd9c24 00000000
+[    9.770000]         ffffffff fffffffe 41dcde9e 60164000 00000001 
+41317ea4 41074d0c 41078bb0
+[    9.770000]         00000001 41d67034 ffffffff 41dd6600 60164000 
+41dd6600 41d6e3d0 41dcc000
+[    9.770000]         41d6e3fc 00000000 00000000 00000000 00000000 
+41dcdf5c 410753f2 41dcdf1a
+[    9.770000]         41d67034 60160000 60164000 41dcde9e 41d6e3fc 
+41dcdef6 41dcdf1a 4102a940
+[    9.770000]         41d6e3d4 41d67344 41d6e3d0 41dc0000 00000100 
+00000003 4107ad24 41dcdf1a
+[    9.770000] Call Trace: [<410750ee>] unmap_page_range+0x3e2/0x672
+[    9.770000]  [<41317ea4>] mas_find+0x0/0xfa
+[    9.770000]  [<41074d0c>] unmap_page_range+0x0/0x672
+[    9.770000]  [<41078bb0>] vma_next+0x0/0x14
+[    9.770000]  [<410753f2>] unmap_vmas+0x74/0x98
+[    9.770000]  [<4102a940>] up_read+0x0/0x34
+[    9.770000]  [<4107ad24>] exit_mmap+0xd4/0x1c0
+[    9.770000]  [<410093f8>] arch_local_irq_enable+0x0/0xc
+[    9.770000]  [<410093ec>] arch_local_irq_disable+0x0/0xc
+[    9.770000]  [<41006bfa>] __mmput+0x2e/0x86
+[    9.770000]  [<4100a168>] do_exit+0x21e/0x6f2
+[    9.770000]  [<4100a7ba>] sys_exit_group+0x0/0x14
+[    9.770000]  [<4100a778>] do_group_exit+0x22/0x64
+[    9.770000]  [<4100a7ce>] pid_child_should_wake+0x0/0x56
+[    9.770000]  [<410058c8>] system_call+0x54/0xa8
+[    9.770000]
+[    9.770000] Code: bd16 4879 413d 4c3c 4eb9 4132 b30a 4e47 <2f02> 2f0b 
+4e90 508f 241f 265f 4e75 2f02 42a7 4eb9 4105 8f56 60ec 2f0b 266f 0008
+[    9.770000] Disabling lock debugging due to kernel taint
+[    9.770000] note: ls[24] exited with irqs disabled
+     9.780000] Fixing recursive fault but reboot is needed!
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
