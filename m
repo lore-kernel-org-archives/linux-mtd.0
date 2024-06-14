@@ -4,102 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3073FC27C6E
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jun 2024 07:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC522C27C75
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jun 2024 10:21:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J35t5Wb8F/yrlC/PW9vTrIE+7CZxHjM+ZJ67L5xmy+o=; b=qi6NF0OuRbsIIj
-	xl3/ojZCO4y+keHXruGgxUz3BTJo0ZZ9OXvCrCZHiNNjLKKStWkoX5CVt/LldYXOG878BQaOL7yBJ
-	HD26gmij0CHAf+CLRmubteJy59Uhqq3unfPC2J9Q9sHmht6Xh3y2UFkJACalOYk/sE/yldweGvT6W
-	urAyfT2llzUUUe27zEDPv1Jv24/xWhOd5gsooNGpXkBhfwkjq1KqVUbLcm9O/PCo932ZrP+CQug6h
-	VjiLrWh6s7Iwk2+butO02/lk9cdZwaUzY5dWqZpTKgo13xxkgT1yk7KgqQlxWRnNxh8zVxHWBvQpU
-	YMb/T7UJASJZI+q48LAA==;
+	List-Owner; bh=Ao/YlTYxwwmKFeBu8uwa/hYV1Kf47O4Y37O62fwYRLY=; b=Z0JA4gB2Zu4eD0
+	iECogek+/2xSYpOLGKBntEeFEEjDs0XD1SV/lgHVacKGggkE6R32bmqu+8vQ+uaNgE3dsTFUe/IID
+	48rqlystPY+hkjLsQrAnY/8VBSlsB+NbDANG2w0cswJBg9H/EyAvZquvu4uug6NxxkxahgQ1fgO17
+	poIpVd5ISg0qEgwPCgaWxL/jTO+r6GiPFQKemjml3xHkusimmFnRbMItkpWJSUCVDT4lZ6RpBRHm8
+	8R4sDCrUoa4JfEob/CQsQL3WVeTZyt+m/2INNyYuqKnJYkiZ5mqTo6aMghej71PdBEZ5tdxmVjeEy
+	HXIhN0ZkQ5X/hUYHYBiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sI1nr-00000001s0b-2Odz;
-	Fri, 14 Jun 2024 07:56:55 +0000
-Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
+	id 1sI43r-00000002OOm-0jdL;
+	Fri, 14 Jun 2024 10:21:35 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sI1nl-00000001ryW-3oj5
+	id 1sI43m-00000002ONS-1ug5
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Jun 2024 07:56:52 +0000
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-43ffbc0927fso10911301cf.3
-        for <linux-mtd@lists.infradead.org>; Fri, 14 Jun 2024 00:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1718351805; x=1718956605; darn=lists.infradead.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=;
-        b=RaIl4x/adI/HuNOc3VwbvU4uzLYKtkqKRWQ80BHrpZC5GbHDiZnP4JzreUyoFVzgqt
-         9xw9ntMGnEtX/px4pV4l1WCY/aB/VN6z86GjIstb0stV2pbCIJKqw1tS0JdlPWeUHJGX
-         AZ+F+C17IleGHh1XY9koLX+jaBCQVbz3P3FAM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718351805; x=1718956605;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=;
-        b=T+1wfidHrA6Xxugza8i/4b35bncjY/+PXdbhQGWiv7zU807N84QA8nPO5o0Q527FFZ
-         At/uwT1Sji8GmGkVHlyVzjWmV3iQVDRimORVZ88UgPboZCwntruE+8PXypyxvhOMAfkR
-         6EJSQIyUMqua6cqIoAIXqTeogan/X1GR75ef11k7aYRifz1AqQHWLxIbDZmt209T0qgf
-         CSQ4btcDnyFDSsLaqbFWaivh2JOV2WY9Xrj4wGmySaxEut1lUpnM9hGqX6ahWJJe6QRb
-         KnTp8cY15gCHnZvGbRcJX7L1QWYBuat82/CUVFqFd3yPtfuPlCZnSu7xvOcl+keLH2cq
-         v5ew==
-X-Forwarded-Encrypted: i=1; AJvYcCUvYKRrU3SpJasMwCy/zl5DgIDpZQ9x3QidJTGjD8uhitigSJ+i5lRfRBnbdwzhKhKi5rNUHblmsQNuBvDddvpXLbVl1MWQtzdS2tdJ8w==
-X-Gm-Message-State: AOJu0Ywm/L1yINLivb5PprOPlIyYE9skPQOH05zuGN1lZOGwpH3eYiT2
-	RABl/19HmXBjchcShnlsPO0V7mR2uRhyYV6jPjBP12TQ7Y7RLJz3OXhgiKCW/Y0=
-X-Google-Smtp-Source: AGHT+IEDi8BhVjLu2vbVbmBxB83hP6gyIibQXt+H84ODwaVrhmTedMPZYFZeMGGsfo/+7hGiDnXdRg==
-X-Received: by 2002:a05:622a:1822:b0:43e:2639:a987 with SMTP id d75a77b69052e-44216b3a874mr27744421cf.59.1718351804940;
-        Fri, 14 Jun 2024 00:56:44 -0700 (PDT)
-Received: from localhost ([213.195.124.163])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-441f2ff9ef8sm13823221cf.89.2024.06.14.00.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jun 2024 00:56:44 -0700 (PDT)
-Date: Fri, 14 Jun 2024 09:56:42 +0200
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
- they fail
-Message-ID: <Zmv3usMvGGK7ZbMT@macbook>
-References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-11-hch@lst.de>
- <ZmlVziizbaboaBSn@macbook>
- <20240612150030.GA29188@lst.de>
- <ZmnFH17bTV2Ot_iR@macbook>
- <20240613140508.GA16529@lst.de>
+	Fri, 14 Jun 2024 10:21:32 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 40BE16000B;
+	Fri, 14 Jun 2024 10:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1718360486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mpcjwEZIHNFU5D94FMi7pIStPsDrEGl0hbTEiz2Z9LY=;
+	b=SvRd4NExxDwA0YczYp+ajo7cwtM4pJEUU7pyyJdCf8HEJnjlZjEYUoYBFBHwb8vJF5qcXI
+	dEttT4vtdSOiKIzMqIShv6uDNEr/SSkiYLBvYit3MbVpoe/g6QY+n6t/NlF8/ERhC/IMXI
+	gKIAUqbIa3e+ENHdENLIbZ5aZt/3C1AiQ3Duj6x2RffzS7NI5XvJ1pbMd7j+rcsowrAo9G
+	G35dTC6I+7tmZEQy9uWK4XBr+muOx7jkBo35iZde9aIRLULXvypevykT3Rha4RDwe9j3B7
+	P3af2IDpfXDvpTLH8ZuH57zJu+cOCRGtKskXLVThoi7Qvvl23+gTWT0JwT8D2g==
+Message-ID: <c8814c0f-7f03-435c-ac5b-084bd0ad8fe6@yoseli.org>
+Date: Fri, 14 Jun 2024 12:21:23 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240613140508.GA16529@lst.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Issue with JFFS2 and a_ops->dirty_folio
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, willy@infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
+References: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
+ <ZmrV9vLwj0uFj5Dn@infradead.org>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <ZmrV9vLwj0uFj5Dn@infradead.org>
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240614_005650_137144_D20B3168 
-X-CRM114-Status: GOOD (  47.97  )
+X-CRM114-CacheID: sfid-20240614_032131_135108_8958E9E7 
+X-CRM114-Status: GOOD (  21.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,105 +70,193 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBKdW4gMTMsIDIwMjQgYXQgMDQ6MDU6MDhQTSArMDIwMCwgQ2hyaXN0b3BoIEhlbGx3
-aWcgd3JvdGU6Cj4gT24gV2VkLCBKdW4gMTIsIDIwMjQgYXQgMDU6NTY6MTVQTSArMDIwMCwgUm9n
-ZXIgUGF1IE1vbm7DqSB3cm90ZToKPiA+IFJpZ2h0LiAgQUZBSUNUIGFkdmVydGlzaW5nICJmZWF0
-dXJlLWJhcnJpZXIiIGFuZC9vcgo+ID4gImZlYXR1cmUtZmx1c2gtY2FjaGUiIGNvdWxkIGJlIGRv
-bmUgYmFzZWQgb24gd2hldGhlciBibGtiYWNrCj4gPiB1bmRlcnN0YW5kIHRob3NlIGNvbW1hbmRz
-LCBub3Qgb24gd2hldGhlciB0aGUgdW5kZXJseWluZyBzdG9yYWdlCj4gPiBzdXBwb3J0cyB0aGUg
-ZXF1aXZhbGVudCBvZiB0aGVtLgo+ID4gCj4gPiBXb3JzdCBjYXNlIHdlIGNhbiBwcmludCBhIHdh
-cm5pbmcgbWVzc2FnZSBvbmNlIGFib3V0IHRoZSB1bmRlcmx5aW5nCj4gPiBzdG9yYWdlIGZhaWxp
-bmcgdG8gY29tcGxldGUgZmx1c2gvYmFycmllciByZXF1ZXN0cywgYW5kIHRoYXQgZGF0YQo+ID4g
-aW50ZWdyaXR5IG1pZ2h0IG5vdCBiZSBndWFyYW50ZWVkIGdvaW5nIGZvcndhcmQsIGFuZCBub3Qg
-cHJvcGFnYXRlIHRoZQo+ID4gZXJyb3IgdG8gdGhlIHVwcGVyIGxheWVyPwo+ID4gCj4gPiBXaGF0
-IHdvdWxkIGJlIHRoZSBjb25zZXF1ZW5jZSBvZiBwcm9wYWdhdGluZyBhIGZsdXNoIGVycm9yIHRv
-IHRoZQo+ID4gdXBwZXIgbGF5ZXJzPwo+IAo+IElmIHlvdSBwcm9wYWdlIHRoZSBlcnJvciB0byB0
-aGUgdXBwZXIgbGF5ZXIgeW91IHdpbGwgZ2VuZXJhdGUgYW4KPiBJL08gZXJyb3IgdGhlcmUsIHdo
-aWNoIHVzdWFsbHkgbGVhZHMgdG8gYSBmaWxlIHN5c3RlbSBzaHV0ZG93bi4KPiAKPiA+IEdpdmVu
-IHRoZSBkZXNjcmlwdGlvbiBvZiB0aGUgZmVhdHVyZSBpbiB0aGUgYmxraWYgaGVhZGVyLCBJJ20g
-YWZyYWlkCj4gPiB3ZSBjYW5ub3QgZ3VhcmFudGVlIHRoYXQgc2VlaW5nIHRoZSBmZWF0dXJlIGV4
-cG9zZWQgaW1wbGllcyBiYXJyaWVyIG9yCj4gPiBmbHVzaCBzdXBwb3J0LCBzaW5jZSB0aGUgcmVx
-dWVzdCBjb3VsZCBmYWlsIGF0IGFueSB0aW1lIChvciBldmVuIGZyb20KPiA+IHRoZSBzdGFydCBv
-ZiB0aGUgZGlzayBhdHRhY2htZW50KSBhbmQgaXQgd291bGQgc3RpbGwgc2FkbHkgYmUgYSBjb3Jy
-ZWN0Cj4gPiBpbXBsZW1lbnRhdGlvbiBnaXZlbiB0aGUgZGVzY3JpcHRpb24gb2YgdGhlIG9wdGlv
-bnMuCj4gCj4gV2VsbCwgdGhlbiB3ZSBjb3VsZCBkbyBzb21ldGhpbmcgbGlrZSB0aGUgcGF0Y2gg
-YmVsb3csIHdoaWNoIGtlZXBzCj4gdGhlIGV4aXN0aW5nIGJlaGF2aW9yLCBidXQgaW5zb2xhdGVz
-IHRoZSBibG9jayBsYXllciBmcm9tIGl0IGFuZAo+IHJlbW92ZXMgdGhlIG9ubHkgdXNlciBvZiBi
-bGtfcXVldWVfd3JpdGVfY2FjaGUgZnJvbSBpbnRlcnJ1cHQKPiBjb250ZXh0OgoKTEdUTSwgSSdt
-IG5vdCBzdXJlIHRoZXJlJ3MgbXVjaCBlbHNlIHdlIGNhbiBkby4KCj4gLS0tCj4gRnJvbSBlNmU4
-MmM3NjlhYjIwOWE3NzMwMjk5NGMzODI5Y2Y2ZmY3YTU5NWI4IE1vbiBTZXAgMTcgMDA6MDA6MDAg
-MjAwMQo+IEZyb206IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPgo+IERhdGU6IFRodSwg
-MzAgTWF5IDIwMjQgMDg6NTg6NTIgKzAyMDAKPiBTdWJqZWN0OiB4ZW4tYmxrZnJvbnQ6IGRvbid0
-IGRpc2FibGUgY2FjaGUgZmx1c2hlcyB3aGVuIHRoZXkgZmFpbAo+IAo+IGJsa2Zyb250IGFsd2F5
-cyBoYWQgYSByb2J1c3QgbmVnb3RpYXRpb24gcHJvdG9jb2wgZm9yIGRldGVjdGluZyBhIHdyaXRl
-Cj4gY2FjaGUuICBTdG9wIHNpbXBseSBkaXNhYmxpbmcgY2FjaGUgZmx1c2hlcyBpbiB0aGUgYmxv
-Y2sgbGF5ZXIgYXMgdGhlCj4gZmxhZ3MgaGFuZGxpbmcgaXMgbW92aW5nIHRvIHRoZSBhdG9taWMg
-cXVldWUgbGltaXRzIEFQSSB0aGF0IG5lZWRzCj4gdXNlciBjb250ZXh0IHRvIGZyZWV6ZSB0aGUg
-cXVldWUgZm9yIHRoYXQuICBJbnN0ZWFkIGhhbmRsZSB0aGUgY2FzZQo+IG9mIHRoZSBmZWF0dXJl
-IGZsYWdzIGNsZWFyZWQgaW5zaWRlIG9mIGJsa2Zyb250LiAgVGhpcyByZW1vdmVzIG9sZAo+IGRl
-YnVnIGNvZGUgdG8gY2hlY2sgZm9yIHN1Y2ggYSBtaXNtYXRjaCB3aGljaCB3YXMgcHJldmlvdXNs
-eSBpbXBvc3NpYmxlCj4gdG8gaGl0LCBpbmNsdWRpbmcgdGhlIGNoZWNrIGZvciBwYXNzdGhyb3Vn
-aCByZXF1ZXN0cyB0aGF0IGJsa2Zyb250Cj4gbmV2ZXIgdXNlZCB0byBzdGFydCB3aXRoLgo+IAo+
-IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPgo+IC0tLQo+ICBk
-cml2ZXJzL2Jsb2NrL3hlbi1ibGtmcm9udC5jIHwgNDQgKysrKysrKysrKysrKysrKysrKy0tLS0t
-LS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCAyMSBkZWxl
-dGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ibG9jay94ZW4tYmxrZnJvbnQuYyBi
-L2RyaXZlcnMvYmxvY2sveGVuLWJsa2Zyb250LmMKPiBpbmRleCA5YjRlYzNlNDkwOGNjZS4uZTJj
-OTJkNTA5NWZmMTcgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ibG9jay94ZW4tYmxrZnJvbnQuYwo+
-ICsrKyBiL2RyaXZlcnMvYmxvY2sveGVuLWJsa2Zyb250LmMKPiBAQCAtNzg4LDYgKzc4OCwxNCBA
-QCBzdGF0aWMgaW50IGJsa2lmX3F1ZXVlX3J3X3JlcShzdHJ1Y3QgcmVxdWVzdCAqcmVxLCBzdHJ1
-Y3QgYmxrZnJvbnRfcmluZ19pbmZvICpyaQo+ICAJCQkgKiBBIGJhcnJpZXIgcmVxdWVzdCBhIHN1
-cGVyc2V0IG9mIEZVQSwgc28gd2UgY2FuCj4gIAkJCSAqIGltcGxlbWVudCBpdCB0aGUgc2FtZSB3
-YXkuICAoSXQncyBhbHNvIGEgRkxVU0grRlVBLAo+ICAJCQkgKiBzaW5jZSBpdCBpcyBndWFyYW50
-ZWVkIG9yZGVyZWQgV1JUIHByZXZpb3VzIHdyaXRlcy4pCj4gKwkJCSAqCj4gKwkJCSAqIE5vdGUg
-dGhhdCBjYW4gZW5kIHVwIGhlcmUgd2l0aCBhIEZVQSB3cml0ZSBhbmQgdGhlCj4gKwkJCSAqIGZs
-YWdzIGNsZWFyZWQuICBUaGlzIGhhcHBlbnMgd2hlbiB0aGUgZmxhZyB3YXMKPiArCQkJICogcnVu
-LXRpbWUgZGlzYWJsZWQgYW5kIHJhY2VkIHdpdGggSS9PIHN1Ym1pc3Npb24gaW4KPiArCQkJICog
-dGhlIGJsb2NrIGxheWVyLiAgV2Ugc3VibWl0IGl0IGFzIGEgbm9ybWFsIHdyaXRlCgpTaW5jZSBi
-bGtmcm9udCBubyBsb25nZXIgc2lnbmFscyB0aGF0IEZVQSBpcyBubyBsb25nZXIgYXZhaWxhYmxl
-IGZvciB0aGUKZGV2aWNlLCBnZXR0aW5nIGEgcmVxdWVzdCB3aXRoIEZVQSBpcyBub3QgYWN0dWFs
-bHkgYSByYWNlIEkgdGhpbms/Cgo+ICsJCQkgKiBoZXJlLiAgQSBwdXJlIGZsdXNoIHNob3VsZCBu
-ZXZlciBlbmQgdXAgaGVyZSB3aXRoCj4gKwkJCSAqIHRoZSBmbGFncyBjbGVhcmVkIGFzIHRoZXkg
-YXJlIGNvbXBsZXRlZCBlYXJsaWVyIGZvcgo+ICsJCQkgKiB0aGUgIWZlYXR1cmVfZmx1c2ggY2Fz
-ZS4KPiAgCQkJICovCj4gIAkJCWlmIChpbmZvLT5mZWF0dXJlX2ZsdXNoICYmIGluZm8tPmZlYXR1
-cmVfZnVhKQo+ICAJCQkJcmluZ19yZXEtPm9wZXJhdGlvbiA9Cj4gQEAgLTc5NSw4ICs4MDMsNiBA
-QCBzdGF0aWMgaW50IGJsa2lmX3F1ZXVlX3J3X3JlcShzdHJ1Y3QgcmVxdWVzdCAqcmVxLCBzdHJ1
-Y3QgYmxrZnJvbnRfcmluZ19pbmZvICpyaQo+ICAJCQllbHNlIGlmIChpbmZvLT5mZWF0dXJlX2Zs
-dXNoKQo+ICAJCQkJcmluZ19yZXEtPm9wZXJhdGlvbiA9Cj4gIAkJCQkJQkxLSUZfT1BfRkxVU0hf
-RElTS0NBQ0hFOwo+IC0JCQllbHNlCj4gLQkJCQlyaW5nX3JlcS0+b3BlcmF0aW9uID0gMDsKPiAg
-CQl9Cj4gIAkJcmluZ19yZXEtPnUucncubnJfc2VnbWVudHMgPSBudW1fZ3JhbnQ7Cj4gIAkJaWYg
-KHVubGlrZWx5KHJlcXVpcmVfZXh0cmFfcmVxKSkgewo+IEBAIC04ODcsMTYgKzg5Myw2IEBAIHN0
-YXRpYyBpbmxpbmUgdm9pZCBmbHVzaF9yZXF1ZXN0cyhzdHJ1Y3QgYmxrZnJvbnRfcmluZ19pbmZv
-ICpyaW5mbykKPiAgCQlub3RpZnlfcmVtb3RlX3ZpYV9pcnEocmluZm8tPmlycSk7Cj4gIH0KPiAg
-Cj4gLXN0YXRpYyBpbmxpbmUgYm9vbCBibGtpZl9yZXF1ZXN0X2ZsdXNoX2ludmFsaWQoc3RydWN0
-IHJlcXVlc3QgKnJlcSwKPiAtCQkJCQkgICAgICAgc3RydWN0IGJsa2Zyb250X2luZm8gKmluZm8p
-Cj4gLXsKPiAtCXJldHVybiAoYmxrX3JxX2lzX3Bhc3N0aHJvdWdoKHJlcSkgfHwKPiAtCQkoKHJl
-cV9vcChyZXEpID09IFJFUV9PUF9GTFVTSCkgJiYKPiAtCQkgIWluZm8tPmZlYXR1cmVfZmx1c2gp
-IHx8Cj4gLQkJKChyZXEtPmNtZF9mbGFncyAmIFJFUV9GVUEpICYmCj4gLQkJICFpbmZvLT5mZWF0
-dXJlX2Z1YSkpOwo+IC19Cj4gLQo+ICBzdGF0aWMgYmxrX3N0YXR1c190IGJsa2lmX3F1ZXVlX3Jx
-KHN0cnVjdCBibGtfbXFfaHdfY3R4ICpoY3R4LAo+ICAJCQkgIGNvbnN0IHN0cnVjdCBibGtfbXFf
-cXVldWVfZGF0YSAqcWQpCj4gIHsKPiBAQCAtOTA4LDIzICs5MDQsMzAgQEAgc3RhdGljIGJsa19z
-dGF0dXNfdCBibGtpZl9xdWV1ZV9ycShzdHJ1Y3QgYmxrX21xX2h3X2N0eCAqaGN0eCwKPiAgCXJp
-bmZvID0gZ2V0X3JpbmZvKGluZm8sIHFpZCk7Cj4gIAlibGtfbXFfc3RhcnRfcmVxdWVzdChxZC0+
-cnEpOwo+ICAJc3Bpbl9sb2NrX2lycXNhdmUoJnJpbmZvLT5yaW5nX2xvY2ssIGZsYWdzKTsKPiAt
-CWlmIChSSU5HX0ZVTEwoJnJpbmZvLT5yaW5nKSkKPiAtCQlnb3RvIG91dF9idXN5Owo+ICAKPiAt
-CWlmIChibGtpZl9yZXF1ZXN0X2ZsdXNoX2ludmFsaWQocWQtPnJxLCByaW5mby0+ZGV2X2luZm8p
-KQo+IC0JCWdvdG8gb3V0X2VycjsKPiArCS8qCj4gKwkgKiBDaGVjayBpZiB0aGUgYmFja2VuZCBh
-Y3R1YWxseSBzdXBwb3J0cyBmbHVzaGVzLgo+ICsJICoKPiArCSAqIFdoaWxlIHRoZSBibG9jayBs
-YXllciB3b24ndCBzZW5kIHVzIGZsdXNoZXMgaWYgd2UgZG9uJ3QgY2xhaW0gdG8KPiArCSAqIHN1
-cHBvcnQgdGhlbSwgdGhlIFhlbiBwcm90b2NvbCBhbGxvd3MgdGhlIGJhY2tlbmQgdG8gcmV2b2tl
-IHN1cHBvcnQKPiArCSAqIGF0IGFueSB0aW1lLiAgVGhhdCBpcyBvZiBjb3Vyc2UgYSByZWFsbHkg
-YmFkIGlkZWEgYW5kIGRhbmdlcm91cywgYnV0Cj4gKwkgKiBoYXMgYmVlbiBhbGxvd2VkIGZvciAx
-MCsgeWVhcnMuICBJbiB0aGF0IGNhc2Ugd2Ugc2ltcGx5IGNsZWFyIHRoZQo+ICsJICogZmxhZ3Ms
-IGFuZCBkaXJlY3RseSByZXR1cm4gaGVyZSBmb3IgYW4gZW1wdHkgZmx1c2ggYW5kIGlnbm9yZSB0
-aGUKPiArCSAqIEZVQSBmbGFnIGxhdGVyIG9uLgo+ICsJICovCj4gKwlpZiAodW5saWtlbHkocmVx
-X29wKHFkLT5ycSkgPT0gUkVRX09QX0ZMVVNIICYmICFpbmZvLT5mZWF0dXJlX2ZsdXNoKSkKPiAr
-CQlnb3RvIG91dDsKCkRvbid0IHlvdSBuZWVkIHRvIGNvbXBsZXRlIHRoZSByZXF1ZXN0IGhlcmU/
-CgpUaGFua3MsIFJvZ2VyLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi there,
+
+On 13/06/2024 13:20, Christoph Hellwig wrote:
+> On Thu, Jun 13, 2024 at 09:05:17AM +0200, Jean-Michel Hautbois wrote:
+>> Hi everyone !
+>>
+>> I am currently working on a Coldfire (MPC54418) and quite everything goes
+>> well, except that I can only execute one command from user space before
+>> getting a segmentation fault on the do_exit() syscall.
+> 
+> Looks like jffs2 is simply missing a dirty_folio implementation.  The
+> simple filemap_dirty_folio should do the job, please try the patch
+> below:
+> 
+> 
+> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+> index 62ea76da7fdf23..7124cbad6c35ae 100644
+> --- a/fs/jffs2/file.c
+> +++ b/fs/jffs2/file.c
+> @@ -19,6 +19,7 @@
+>   #include <linux/highmem.h>
+>   #include <linux/crc32.h>
+>   #include <linux/jffs2.h>
+> +#include <linux/writeback.h>
+>   #include "nodelist.h"
+>   
+>   static int jffs2_write_end(struct file *filp, struct address_space *mapping,
+> @@ -75,6 +76,7 @@ const struct address_space_operations jffs2_file_address_operations =
+>   	.read_folio =	jffs2_read_folio,
+>   	.write_begin =	jffs2_write_begin,
+>   	.write_end =	jffs2_write_end,
+> +	.dirty_folio =	filemap_dirty_folio,
+>   };
+>   
+>   static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+
+I managed to modify my rootfs and I am using ubifs. It is far more 
+complete and indeed an error occurs in the ubifs_dirty_folio() call. I 
+don't know if there is any interest there, but the volume is mounted 
+read-only on purpose:
+
+[    4.490000] ubi0: attaching mtd5
+[    4.500000] ubi0: MTD device 5 is write-protected, attach in 
+read-only mode
+[    4.890000] ubi0: scanning is finished
+[    4.940000] ubi0 warning: autoresize: skip auto-resize because of R/O 
+mode
+[    4.950000] ubi0: attached mtd5 (name "root2", size 64 MiB)
+[    4.960000] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 
+bytes
+[    4.960000] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    4.970000] ubi0: VID header offset: 2048 (aligned 2048), data 
+offset: 4096
+[    4.980000] ubi0: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
+[    4.980000] ubi0: user volume: 1, internal volumes: 1, max. volumes 
+count: 128
+[    4.990000] ubi0: max/mean erase counter: 0/0, WL threshold: 4096, 
+image sequence number: 1619801263
+[    5.000000] ubi0: available PEBs: 215, total reserved PEBs: 297, PEBs 
+reserved for bad PEB handling: 80
+[    5.010000] ubi0: background thread "ubi_bgt0d" started, PID 25
+[    5.020000] UBIFS (ubi0:0): read-only UBI device
+[    5.030000] UBIFS (ubi0:0): Mounting in unauthenticated mode
+[    5.130000] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, 
+name "root2", R/O mode
+[    5.140000] UBIFS (ubi0:0): LEB size: 126976 bytes (124 KiB), 
+min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    5.150000] UBIFS (ubi0:0): FS size: 25649152 bytes (24 MiB, 202 
+LEBs), max 2048 LEBs, journal size 9023488 bytes (8 MiB, 72 LEBs)
+[    5.160000] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
+[    5.160000] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0), 
+UUID 43E9BD53-C843-4AEE-897E-5684A795D2C8, small LPT model
+[    5.180000] VFS: Mounted root (ubifs filesystem) readonly on device 0:13.
+
+And when I execute a command:
+
+bash-5.2# ls
+bin       etc       lib32     mnt       root      sys 
+12.560000] UBIFS error (ubi0:0 pid 26): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+4mus[   12.570000] UBIFS warning (ubi0:0 pid 26): ubifs_ro_mode: 
+switched to read-only mode, error -22
+r  12.580000] CPU: 0 PID: 26 Comm: ls Not tainted 
+6.10.0-rc3stmark2-001-00024-gc73f39277b30-dirty #455
+[   12.580000] Stack from 42937dac:
+[   12.580000]         42937dac 414a3f4c 414a3f4c 4fed4a01 41dda000 
+420885cc 413e2b20 414a3f4c
+[   12.580000]         41115112 41dda000 ffffffea 414b3c43 000005c5 
+4fed4a98 6015e000 4105e058
+[   12.580000]         420885cc 4fed4a98 415ed419 42937f12 4107ae8a 
+4fed4a98 00000000 ffffffff
+[   12.580000]         fffffffe 42937e96 60162000 00000001 413c03ce 
+4107aa9e 4107ea74 00000001
+[   12.580000]         42909034 ffffffff 42940600 60162000 42940600 
+428c0450 42936000 428c048c
+[   12.580000]         00000000 00000000 00000000 00000000 42937f54 
+4107b19c 42937f12 42909034
+[   12.580000] Call Trace: [<413e2b20>] dump_stack+0xc/0x10
+[   12.580000]  [<41115112>] ubifs_dirty_folio+0x3e/0x4a
+[   12.580000]  [<4105e058>] folio_mark_dirty+0x6e/0x82
+[   12.580000]  [<4107ae8a>] unmap_page_range+0x3ec/0x68a
+[   12.580000]  [<413c03ce>] mas_find+0x0/0xfa
+[   12.580000]  [<4107aa9e>] unmap_page_range+0x0/0x68a
+[   12.580000]  [<4107ea74>] vma_next+0x0/0x14
+[   12.580000]  [<4107b19c>] unmap_vmas+0x74/0x98
+[   12.580000]  [<4102cc68>] up_read+0x0/0x2a
+[   12.580000]  [<41080c14>] exit_mmap+0xd4/0x1d2
+[   12.580000]  [<410098ff>] will_become_orphaned_pgrp+0x27/0x7c
+[   12.580000]  [<413e6eb4>] _raw_spin_unlock_irq+0x0/0x14
+[   12.580000]  [<41006db0>] __mmput+0x2e/0xa0
+[   12.580000]  [<4100a7ae>] do_exit+0x264/0x764
+[   12.580000]  [<413e6ec4>] _raw_spin_unlock_irq+0x10/0x14
+[   12.580000]  [<4100adfe>] do_group_exit+0x26/0x78
+[   12.580000]  [<4100ae50>] sys_exit_group+0x0/0x14
+[   12.580000]  [<4100ae64>] pid_child_should_wake+0x0/0x56
+[   12.580000]  [<41005918>] system_call+0x54/0xa8
+[   12.580000]
+[   17.600000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   17.610000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   17.620000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   17.630000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 150 of inode 156, error -30
+[   17.640000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   17.650000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+[   26.440000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+[   26.450000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+[   26.460000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+[   31.520000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   31.530000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   31.540000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   31.550000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 101 of inode 81, error -30
+[   31.560000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   31.570000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+[   36.640000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   36.650000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   36.660000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   36.670000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 102 of inode 81, error -30
+[   36.680000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   36.690000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+[   36.700000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   36.710000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   36.720000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   36.730000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 150 of inode 156, error -30
+[   36.740000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   36.750000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+
+ From now on, nothing happens anymore.
+What can cause this ? I see in the file.c:
+"An attempt to dirty a page without budgeting for it - should not happen."
+
+So, why can it happen :-) ?
+
+Thanks a lot !
+BR,
+JM
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
