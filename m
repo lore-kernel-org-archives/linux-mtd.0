@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 419FEC2BA15
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0A56C2BBCA
 	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 13:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,44 +12,44 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HlkNGhhiJ1iXkXG83grdBWcFEm3Ev5eeAgbogszQRpI=; b=bTlctiIGO1koVt
-	b2SQvqDKQwKy77sXRj1nhZR+Lsk7ThkPPOUBZzJnfTGqO2/BCkZOgCAFJGzgxM5Hz5yihPTaSIBdn
-	AIUOHOOnIoN5T2UWdmjIuaJtlzr5CqlEXBi4b3yNaWGYlz0c1I12z8py7LHt0Il6+JaAR2z411L9z
-	+Ez1TTKx22H2TJIKYmJAVMIw1Wb+Gt3DmU+0OndxbY6Wk26NAVgv2PW8PVJcEBLNVPsIwSxDr/Ot0
-	Kk4VQ0RUmgdRKbsuazI8aEf6r4AYXcPHdiffXAfwJuB7Hf2pUMEThdAWl96DnWAtIvaMauPk4V4Nz
-	J8KvG8tbyyzkawitFmjQ==;
+	List-Owner; bh=80Wgazs9sD3ZvSmre64iKNXGs5hAAq75benAieKS2pc=; b=wpN3oB9/uaiMJU
+	FcnSnoiDclgF+Y52RN6+IHEc3c1pCGEjxArDxe16ObAooMv9lQSgql6fe4X3RDhz2hsDYuZIXukd7
+	WllC9rXuYW6UGTjQ0yo/Muv8DYbgktVYEu99B158wI5dMQflJTgGZ9BpsnjcNTo0sIU6XXq8sHP28
+	1bULTWHbl2BNvb8v4+kvy6OBgt7Ve4hsa+uxIfROZ59dPXa6zkfmufqqLEvRmNeRQ84spH9volMPq
+	fH9XINxJchqTiO1oAzp+79P8aAnWUbsb+yUKbcmmcy2YUCqajVpSDms8U3woITIzf8vDerzfZMO44
+	80yq1KAHkYUXiZDney0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCWF-0000000Asg0-1hG1;
-	Mon, 17 Jun 2024 13:35:35 +0000
+	id 1sJCWG-0000000AsgL-0ACI;
+	Mon, 17 Jun 2024 13:35:36 +0000
 Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCW8-0000000Asag-3K3U
+	id 1sJCW8-0000000AsaP-3N4t
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jun 2024 13:35:30 +0000
+	Mon, 17 Jun 2024 13:35:31 +0000
 Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id A5BDA10000B;
-	Mon, 17 Jun 2024 16:35:23 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A5BDA10000B
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 65F13100007;
+	Mon, 17 Jun 2024 16:35:22 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 65F13100007
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1718631323;
-	bh=YcHG6WWlH0ElSTuFNLEX2yBk3OYum4OtJYp6S6fudRY=;
+	s=mail; t=1718631322;
+	bh=6/RL8IVZXxsdzvdm9UvKBkh1bDI5itnPbUoDhIDETh4=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=oox7kvXCIibITAlHTmBPP+PQgiGmN+ytwo7GRD1FAakArfLHnuuCIONgRs7OnI5cb
-	 VKlgm6mTm0dfolhKJSvHLPdacW5HP9LsnV2gn3a+BXoIse8ooynrr4Bn6rVhuIlfhT
-	 3eVYhBQpky9ptqMS9r8txCdeeoZq/2O2MXxBnpSUoLg8RSiguji0/gK2cYV3/cNtNE
-	 mtAK+9xaZH6kdtEFR4JvdOdYc16ikFCAPpw+E6djeq/3cWLaZs3dIdOoIkydH8rhUU
-	 rVOX/PYk5QExj5eXwC6vPOYQ+V3om3sq5LgsDaWRoT7Nk5o8ImYhxEfjQ0puNXtUy1
-	 DlJNAdGsXuheg==
+	b=gaPSf/+cuRtm7oF3DuCWDQfBXa7rxFiBrGu1l85VOZhzHH0ScMfuL4FEikFv3fcHw
+	 tMTb4dW70EgkcQ5FBobWGQaH2i0jmQaX6e8CZyvIdWBgyISK0e6rZSFXrgArUlgClA
+	 sQlFISL7D1f+2BW2Wg9/0Mk8cTAOIPZiaJJjArdPA6NkOwjWHcuMTLLmNfPWFUqFA4
+	 KMVPQq+6GSXLaxpCMAFpPCdGVepbfIXkfA87U8uVg96c1PSNN/74FXxhTrTkzmRjzW
+	 JReLwX7FiAZcS1ghc0auFpDvkXMW8hKwCMKUe5ZmvNNcoJj7SCrC4lTwUPtLokkHJB
+	 F4f6gdinvp/iw==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 17 Jun 2024 16:35:23 +0300 (MSK)
+	Mon, 17 Jun 2024 16:35:22 +0300 (MSK)
 Received: from CAB-WSD-0004828.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 17 Jun 2024 16:35:23 +0300
+ 15.2.1118.40; Mon, 17 Jun 2024 16:35:21 +0300
 From: Martin Kurbanov <mmkurbanov@salutedevices.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg
@@ -61,9 +61,9 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<avromanov@salutedevices.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
 	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v1 5/5] mtd: spinand: esmt: OTP access for F50{L,D}1G41LB
-Date: Mon, 17 Jun 2024 16:34:57 +0300
-Message-ID: <20240617133504.179705-6-mmkurbanov@salutedevices.com>
+Subject: [PATCH v1 1/5] mtd: spinand: make spinand_{read,write}_page global
+Date: Mon, 17 Jun 2024 16:34:53 +0300
+Message-ID: <20240617133504.179705-2-mmkurbanov@salutedevices.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
 References: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
@@ -88,8 +88,8 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/17 11:22:00 #25639124
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_063529_230131_F14E5D91 
-X-CRM114-Status: GOOD (  15.00  )
+X-CRM114-CacheID: sfid-20240617_063529_238187_345E53A2 
+X-CRM114-Status: GOOD (  13.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,114 +106,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Support for OTP area access on ESMT F50L1G41LB and F50D1G41LB chips.
+Change these functions from static to global so that to use them later
+in OTP operations. Since reading OTP pages is no different from reading
+pages from the main area.
 
 Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 ---
- drivers/mtd/nand/spi/esmt.c | 69 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 67 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/spi/core.c | 24 ++++++++++++++++++++----
+ include/linux/mtd/spinand.h |  6 ++++++
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
-index 4597a82de23a4..1806e9d48c176 100644
---- a/drivers/mtd/nand/spi/esmt.c
-+++ b/drivers/mtd/nand/spi/esmt.c
-@@ -12,6 +12,13 @@
- /* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
- #define SPINAND_MFR_ESMT_C8			0xc8
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index e0b6715e5dfed..807c24b0c7c4f 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -566,8 +566,16 @@ static int spinand_lock_block(struct spinand_device *spinand, u8 lock)
+ 	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK, lock);
+ }
  
-+#define ESMT_F50L1G41LB_CFG_OTP_PROTECT		BIT(7)
-+#define ESMT_F50L1G41LB_CFG_OTP_LOCK		\
-+	(CFG_OTP_ENABLE | ESMT_F50L1G41LB_CFG_OTP_PROTECT)
-+
-+#define ESMT_F50L1G41LB_PAGE_SIZE		2112
-+#define ESMT_F50L1G41LB_OTP_PAGES		28
-+
- static SPINAND_OP_VARIANTS(read_cache_variants,
- 			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
- 			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-@@ -102,6 +109,60 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
- 	.free = f50l1g41lb_ooblayout_free,
- };
+-static int spinand_read_page(struct spinand_device *spinand,
+-			     const struct nand_page_io_req *req)
++/**
++ * spinand_read_page() - Read the page
++ * @spinand: the spinand device
++ * @req: the I/O request
++ *
++ * Return: 0 or a positive number of bitflips corrected on success.
++ * A negative error code otherwise.
++ */
++int spinand_read_page(struct spinand_device *spinand,
++		      const struct nand_page_io_req *req)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+ 	u8 status;
+@@ -597,8 +605,16 @@ static int spinand_read_page(struct spinand_device *spinand,
+ 	return nand_ecc_finish_io_req(nand, (struct nand_page_io_req *)req);
+ }
  
-+static int f50l1g41lb_otp_info(struct spinand_device *spinand, size_t len,
-+			       struct otp_info *buf, size_t *retlen)
-+{
-+	if (len < sizeof(*buf))
-+		return -EINVAL;
+-static int spinand_write_page(struct spinand_device *spinand,
+-			      const struct nand_page_io_req *req)
++/**
++ * spinand_write_page() - Write the page
++ * @spinand: the spinand device
++ * @req: the I/O request
++ *
++ * Return: 0 or a positive number of bitflips corrected on success.
++ * A negative error code otherwise.
++ */
++int spinand_write_page(struct spinand_device *spinand,
++		       const struct nand_page_io_req *req)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+ 	u8 status;
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5c19ead604996..555846517faf6 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -519,4 +519,10 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+ int spinand_select_target(struct spinand_device *spinand, unsigned int target);
+ 
++int spinand_read_page(struct spinand_device *spinand,
++		      const struct nand_page_io_req *req);
 +
-+	buf->locked = 0;
-+	buf->start = 0;
-+	buf->length = ESMT_F50L1G41LB_PAGE_SIZE * ESMT_F50L1G41LB_OTP_PAGES;
++int spinand_write_page(struct spinand_device *spinand,
++		       const struct nand_page_io_req *req);
 +
-+	*retlen = sizeof(*buf);
-+	return 0;
-+}
-+
-+static int f50l1g41lb_otp_lock(struct spinand_device *spinand, loff_t from,
-+			       size_t len)
-+{
-+	struct spi_mem_op write_op = SPINAND_WR_EN_DIS_OP(true);
-+	struct spi_mem_op exec_op = SPINAND_PROG_EXEC_OP(0);
-+	int ret;
-+
-+	ret = spinand_upd_cfg(spinand, ESMT_F50L1G41LB_CFG_OTP_LOCK,
-+			      ESMT_F50L1G41LB_CFG_OTP_LOCK);
-+	if (!ret)
-+		return ret;
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &write_op);
-+	if (!ret)
-+		goto out;
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &exec_op);
-+	if (!ret)
-+		goto out;
-+
-+	ret = spinand_wait(spinand, 10, 5, NULL);
-+	if (!ret)
-+		goto out;
-+
-+out:
-+	if (spinand_upd_cfg(spinand, ESMT_F50L1G41LB_CFG_OTP_LOCK, 0)) {
-+		WARN(1, "Can not disable OTP mode\n");
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct spinand_otp_ops f50l1g41lb_otp_ops = {
-+	.info = f50l1g41lb_otp_info,
-+	.lock = f50l1g41lb_otp_lock,
-+	.read = spinand_otp_read,
-+	.write = spinand_otp_write,
-+};
-+
- static const struct spinand_info esmt_c8_spinand_table[] = {
- 	SPINAND_INFO("F50L1G41LB",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
-@@ -112,7 +173,9 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL),
-+		     SPINAND_OTP_INFO(ESMT_F50L1G41LB_OTP_PAGES,
-+				      &f50l1g41lb_otp_ops)),
- 	SPINAND_INFO("F50D1G41LB",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
- 				0x7f, 0x7f),
-@@ -122,7 +185,9 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     0,
--		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
-+		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL),
-+		     SPINAND_OTP_INFO(ESMT_F50L1G41LB_OTP_PAGES,
-+				      &f50l1g41lb_otp_ops)),
- 	SPINAND_INFO("F50D2G41KA",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
- 				0x7f, 0x7f),
+ #endif /* __LINUX_MTD_SPINAND_H */
 -- 
 2.43.2
 
