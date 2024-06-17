@@ -4,80 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE4F1C27C6E
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 06:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70D19C27C6E
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 07:16:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3u1Iw/vUvESnB6f5kcjL6bHFfJilbaS2hBFCDnMjUzA=; b=fAnDG+g6eyeg8U
-	xmwbBfYcMcRc4/xkpyYOOqTkMjCtI4h1SCtv6vN0RjeXC5klQM/PjmvPER9t6SFBWfri/xxz5/vO0
-	JF7paD3q1DZzUzsnz6hn8DvxW5dE1kO2vpfv4pHttGGOKs1R37OKzaV3E31Un/ZVUhX8TqDI72d++
-	nriBHNyWJXgilwiB2lBdZ27lEO0BwBWOzJMpOn314+TbUDZZofczMgH56MIYG1TillHsI1VNrzGIX
-	uIEePJS3kS20/S4njMaWE6t4e9N97DP4jJcT8ndTWC8i9JkrbntKEzjYfSQ8m50/1WPy+tIU9q92r
-	t3NV8AH+dNfu57XLxpCQ==;
+	List-Owner; bh=KtkuS9uRd8JhUsOgs4L0egC7NZSkhQn7LQt/uE/oVZE=; b=fcfGtC2ylKEhaz
+	tbZnHL2pwKlTXq5LeemUuOqTkRAfO5a6Ynp1TKygugg6dmShjIIldvYHwMNaAIYUS3CaehCJ6UNAF
+	npDLdWL8sMSiKYLT2fNZ2jTnufAU/WRvB+xbFJlXn0nYw3U/u09FzSblaHrIwXTWekCk44dH/4vTO
+	hbKrBgECM4vvkcZARCBbBxPGtY8inbf2qrF+zYYnxGW59Qbvw8icLg+uswDyFgxohx7gzf2nbBM6I
+	dplHK3ceFwMN8eVknvGXotL+gvRTLHov16jYa0ZBWZfiRSwkflKdG2JBNLg6Yd7n5YmzPiPfZfwMe
+	a3u0dt4fNsx3dY9SkvQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5p5-00000009ROo-1KuD;
-	Mon, 17 Jun 2024 06:26:35 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5p2-00000009RN2-0Udv;
-	Mon, 17 Jun 2024 06:26:33 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D5232CE0E70;
-	Mon, 17 Jun 2024 06:26:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 897D7C2BD10;
-	Mon, 17 Jun 2024 06:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718605589;
-	bh=5ukl1My1jMqhSyTqZEFqdGlI+72qAecy5V2ti5Kc46U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OVa4VXa4gPyN4KTWboLud3pwf0TJbbk/rQ5BM4+Ufc5q6edplugfrWWUEhonGkfMR
-	 QHtsT5neG8mJ3vHyVK4COzgFtMwuBSA3Ltr1Kmgg0P9h/SDaPK/4D4vixnSs7AOdoo
-	 HP6agM24471d/vJb4Hh8SFe0zewqIqWCGc3aXNawn13hq27CQJOtkzwEi0TWYKBp4l
-	 c0TLeE0D0RKiKV3rNJyqOIzjVOG/87Bt7edT59MQLl5UfWjsDRSx6vZMzrYnvW4QJA
-	 /RoDuAqhbb/WQma0tOFHLAJHwURkZ+Z0rxy3rGxoovWXWM4rnyYIVDHULrocVjTDvQ
-	 k66Zct4kG1uEw==
-Message-ID: <c9871979-de72-49ca-879b-5f2bd773d517@kernel.org>
-Date: Mon, 17 Jun 2024 15:26:23 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 19/26] block: move the nowait flag to queue_limits
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+	id 1sJ6as-00000009Zqs-2jM5;
+	Mon, 17 Jun 2024 07:15:58 +0000
+Received: from [91.187.204.140] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sJ5VJ-00000009IaG-2UjF;
+	Mon, 17 Jun 2024 06:06:10 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Richard Weinberger <richard@nod.at>,
- Philipp Reisner <philipp.reisner@linbit.com>,
- Lars Ellenberg <lars.ellenberg@linbit.com>,
- =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
- Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
- drbd-dev@lists.linbit.com, nbd@other.debian.org,
- linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
- linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	=?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	=?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+	Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com,
+	nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org,
+	ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Hannes Reinecke <hare@suse.de>
+Subject: [PATCH 12/26] block: remove blk_flush_policy
+Date: Mon, 17 Jun 2024 08:04:39 +0200
+Message-ID: <20240617060532.127975-13-hch@lst.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240617060532.127975-1-hch@lst.de>
 References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-20-hch@lst.de>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <20240617060532.127975-20-hch@lst.de>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240616_232632_576857_37884785 
-X-CRM114-Status: UNSURE (   9.89  )
-X-CRM114-Notice: Please train this message.
+MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,21 +89,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 6/17/24 15:04, Christoph Hellwig wrote:
-> Move the nowait flag into the queue_limits feature field so that it can
-> be set atomically with the queue frozen.
-> 
-> Stacking drivers are simplified in that they now can simply set the
-> flag, and blk_stack_limits will clear it when the features is not
-> supported by any of the underlying devices.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fold blk_flush_policy into the only caller to prepare for pending changes
+to it.
 
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+---
+ block/blk-flush.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
+diff --git a/block/blk-flush.c b/block/blk-flush.c
+index c17cf8ed8113db..2234f8b3fc05f2 100644
+--- a/block/blk-flush.c
++++ b/block/blk-flush.c
+@@ -100,23 +100,6 @@ blk_get_flush_queue(struct request_queue *q, struct blk_mq_ctx *ctx)
+ 	return blk_mq_map_queue(q, REQ_OP_FLUSH, ctx)->fq;
+ }
+ 
+-static unsigned int blk_flush_policy(unsigned long fflags, struct request *rq)
+-{
+-	unsigned int policy = 0;
+-
+-	if (blk_rq_sectors(rq))
+-		policy |= REQ_FSEQ_DATA;
+-
+-	if (fflags & (1UL << QUEUE_FLAG_WC)) {
+-		if (rq->cmd_flags & REQ_PREFLUSH)
+-			policy |= REQ_FSEQ_PREFLUSH;
+-		if (!(fflags & (1UL << QUEUE_FLAG_FUA)) &&
+-		    (rq->cmd_flags & REQ_FUA))
+-			policy |= REQ_FSEQ_POSTFLUSH;
+-	}
+-	return policy;
+-}
+-
+ static unsigned int blk_flush_cur_seq(struct request *rq)
+ {
+ 	return 1 << ffz(rq->flush.seq);
+@@ -399,12 +382,26 @@ bool blk_insert_flush(struct request *rq)
+ {
+ 	struct request_queue *q = rq->q;
+ 	unsigned long fflags = q->queue_flags;	/* may change, cache */
+-	unsigned int policy = blk_flush_policy(fflags, rq);
+ 	struct blk_flush_queue *fq = blk_get_flush_queue(q, rq->mq_ctx);
++	unsigned int policy = 0;
+ 
+ 	/* FLUSH/FUA request must never be merged */
+ 	WARN_ON_ONCE(rq->bio != rq->biotail);
+ 
++	if (blk_rq_sectors(rq))
++		policy |= REQ_FSEQ_DATA;
++
++	/*
++	 * Check which flushes we need to sequence for this operation.
++	 */
++	if (fflags & (1UL << QUEUE_FLAG_WC)) {
++		if (rq->cmd_flags & REQ_PREFLUSH)
++			policy |= REQ_FSEQ_PREFLUSH;
++		if (!(fflags & (1UL << QUEUE_FLAG_FUA)) &&
++		    (rq->cmd_flags & REQ_FUA))
++			policy |= REQ_FSEQ_POSTFLUSH;
++	}
++
+ 	/*
+ 	 * @policy now records what operations need to be done.  Adjust
+ 	 * REQ_PREFLUSH and FUA for the driver.
 -- 
-Damien Le Moal
-Western Digital Research
+2.43.0
 
 
 ______________________________________________________
