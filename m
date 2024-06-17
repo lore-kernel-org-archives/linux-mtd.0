@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28D2BC41513
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 13:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D441C2BA18
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 13:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MYT1d59EgmQQieDphY7VljxMnOX/8WQ0hVbqxsZor7A=; b=uJNz2+XbrpQF1L
-	1r/vycCAtIPnHZl7wmSOlGlulNQHxUhDCUvwWESgGn+ZmZCw4UqLUn3XspBSTeS/vE0pxpU7agqzr
-	VrCZzTbolnBd1pm8fg8jYyH4jBN1DWcA2sNncMXAjpNUWk31fTJWNUCL2xNtXBgNNDGVgmMF8IiTV
-	QVfbhrcptFrpcL7/wEP+TBQUVCxas2ZyFxYSHon0943rU/cS3cNuS7LzGjP8fbPBCbZyDmnjJz1gO
-	eXsVeQcuv9TO+vxpsddGvT0G29TCK23IZQfcKa7mCrdO/rslTE0jA7ctNb92oN66afVr/Q9pb6VBc
-	3T9tyNnjWzjJQo3RYbgw==;
+	List-Owner; bh=eFnNBBB1CxkpGNmsiLLWEHi5/jp5qWAAOxp5zNCdwo0=; b=vWw3u1DuYF13Wb
+	GHkJ60cwMvAijPq8dCr4b3L5N/CgzL80RlIV6BlRT9GReq2mmqCe5nu0gEHVIazELO9Tb0yvHy6Nm
+	+r2u/mK0aMARnf8L9dDL+bsrvqRvRquDJDP/y6h3MzusB1r/GsCZ3P50LwIg/njQH2fMig540TLob
+	BVsjWQowgY7SjvSY80WjG7T2hMKLAREhkXLJKEUgL84ebuWh7TxdvC/4LfZD/e/rCEaykNbJ1wJuc
+	IJOF1WfJK0r0A1JEKDJFdSYp6yUTQXhGpKXVU31p4c9Pe8m4Ea54fjBB0AT8wrEmGxP48HWWGDLyd
+	n3UtBy804K8jU/9EsfRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCWD-0000000Asef-0gQy;
-	Mon, 17 Jun 2024 13:35:33 +0000
+	id 1sJCWJ-0000000AsiT-0upd;
+	Mon, 17 Jun 2024 13:35:39 +0000
 Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCW8-0000000Asao-3OAp
+	id 1sJCW8-0000000Asap-3ijW
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jun 2024 13:35:31 +0000
+	Mon, 17 Jun 2024 13:35:32 +0000
 Received: from p-infra-ksmg-sc-msk02.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id B942412000B;
-	Mon, 17 Jun 2024 16:35:22 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B942412000B
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 5913812000C;
+	Mon, 17 Jun 2024 16:35:23 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5913812000C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1718631322;
-	bh=WcL5BZZJWEHlfSbXCMuvF0QCupxulygIhNPX45T5o3s=;
+	s=mail; t=1718631323;
+	bh=/PdmQDr5X1ZUQQlzbIxZZmM5eEFyv/yRCGrGua+f4yo=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=UTCLUCTBoM1LCdwkUwSeYKSgzkZGnZR6ckMCJiHtPJiOmcIXhLiPxexwxyS+277QL
-	 AhuKHtCO30NzKNX72/k8dVQuGOcb/9FUp7Ki1WfaYMIGaChxPBWE5cFbiK92OznQLK
-	 GXL/LERi4tZ+y58WiSGVA484xOvXUEtO7ifIY3vcXfQpHigY2fn1u9Z9tDqsvQqUvc
-	 y3IOMgxCWPhwiJI9TdtTWsT6f9RKlmhBCHAxCpOEu46gPeh6yv+ugZwetYV2f8uYUZ
-	 F02RT+jw18S1J9f5Lt5YXGtQUfnpm/H1qd7+D+lOJAhaBDtMTydpmKFFDndKPY8I0G
-	 P5YiXBU74fmSg==
+	b=B42RruPxDcQ7Qnmb1F2d92k0TDLMQae2lgOBpkj0qKyN/yxq2T99FyelQKXt7Aa1n
+	 nIrmyq6gHFleC+UrmJC2ZIcTiBOZE4ItxeyTBP9UWBVSeDZ+mOrCaWPlPcE6YQi0vi
+	 VnlkiUgkBuTH3zDGc5AJM45SBO2kVark8wPT5wsUAUiU6axjcW3o/27xDTfsWJ5B7s
+	 OjtlYHnC3jm871sRUffltz8JB1sCyYvEQcF2vMD+5uZV/NoQ0YWFlWDJlspV1AgQql
+	 vkC5ajsTXkQAHa6+q2ZB6gYW9Prk3P8fEYD1Cm7DxBQrRl7xa2CAi5e+4RPFFF6aah
+	 R7f+j0wlL/TwA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 17 Jun 2024 16:35:22 +0300 (MSK)
+	Mon, 17 Jun 2024 16:35:23 +0300 (MSK)
 Received: from CAB-WSD-0004828.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -61,9 +61,9 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<avromanov@salutedevices.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
 	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v1 2/5] mtd: spinand: add OTP support
-Date: Mon, 17 Jun 2024 16:34:54 +0300
-Message-ID: <20240617133504.179705-3-mmkurbanov@salutedevices.com>
+Subject: [PATCH v1 4/5] mtd: spinand: micron: OTP access for MT29F2G01ABAGD
+Date: Mon, 17 Jun 2024 16:34:56 +0300
+Message-ID: <20240617133504.179705-5-mmkurbanov@salutedevices.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
 References: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
@@ -88,8 +88,8 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/17 12:47:00 #25641689
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_063529_276142_EDC01A80 
-X-CRM114-Status: GOOD (  30.38  )
+X-CRM114-CacheID: sfid-20240617_063529_318231_7391CEAA 
+X-CRM114-Status: GOOD (  18.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,381 +106,162 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The MTD subsystem already supports accessing two OTP areas: user and
-factory. User areas can be written by the user. This patch only adds
-support for the user areas.
-
-In this patch the OTP_INFO macro is provided to add parameters to
-spinand_info.
-To implement OTP operations, the client (flash driver) is provided with
-5 callbacks: .read(), .write(), .info(), .lock(), .erase().
+Support for OTP area access on Micron MT29F2G01ABAGD chip.
 
 Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 ---
- drivers/mtd/nand/spi/Makefile |   3 +-
- drivers/mtd/nand/spi/core.c   |   3 +
- drivers/mtd/nand/spi/otp.c    | 219 ++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h   |  56 +++++++++
- 4 files changed, 280 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/otp.c
+ drivers/mtd/nand/spi/micron.c | 117 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 116 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 19cc77288ebbc..60d2e830ffc6b 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
-+spinand-objs := core.o otp.o
-+spinand-objs += alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
- spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 807c24b0c7c4f..2cb825edd49d0 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1111,6 +1111,7 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 		spinand->flags = table[i].flags;
- 		spinand->id.len = 1 + table[i].devid.len;
- 		spinand->select_target = table[i].select_target;
-+		spinand->otp = &table[i].otp;
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 8d741be6d5f3e..a538409db4ccd 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -9,6 +9,7 @@
+ #include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/mtd/spinand.h>
++#include <linux/spi/spi-mem.h>
  
- 		op = spinand_select_op_variant(spinand,
- 					       info->op_variants.read_cache);
-@@ -1292,6 +1293,8 @@ static int spinand_init(struct spinand_device *spinand)
- 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
- 	mtd->_resume = spinand_mtd_resume;
+ #define SPINAND_MFR_MICRON		0x2c
  
-+	spinand_set_mtd_otp_ops(spinand);
+@@ -28,6 +29,16 @@
+ 
+ #define MICRON_SELECT_DIE(x)	((x) << 6)
+ 
++#define MICRON_MT29F2G01ABAGD_OTP_PAGES			12
++#define MICRON_MT29F2G01ABAGD_OTP_PAGE_SIZE		2176
++#define MICRON_MT29F2G01ABAGD_OTP_SIZE_BYTES		\
++	(MICRON_MT29F2G01ABAGD_OTP_PAGES *		\
++	 MICRON_MT29F2G01ABAGD_OTP_PAGE_SIZE)
 +
- 	if (nand->ecc.engine) {
- 		ret = mtd_ooblayout_count_freebytes(mtd);
- 		if (ret < 0)
-diff --git a/drivers/mtd/nand/spi/otp.c b/drivers/mtd/nand/spi/otp.c
-new file mode 100644
-index 0000000000000..e1f96b1898dcb
---- /dev/null
-+++ b/drivers/mtd/nand/spi/otp.c
-@@ -0,0 +1,219 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
-+ *
-+ * Author: Martin Kurbanov <mmkurbanov@salutedevices.com>
-+ */
++#define MICRON_MT29F2G01ABAGD_CFG_OTP_STATE		BIT(7)
++#define MICRON_MT29F2G01ABAGD_CFG_OTP_LOCK		\
++	(CFG_OTP_ENABLE | MICRON_MT29F2G01ABAGD_CFG_OTP_STATE)
 +
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/spinand.h>
-+
-+static size_t spinand_otp_size(struct spinand_device *spinand)
+ static SPINAND_OP_VARIANTS(quadio_read_cache_variants,
+ 		//SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+@@ -182,6 +193,108 @@ static int micron_8_ecc_get_status(struct spinand_device *spinand,
+ 	return -EINVAL;
+ }
+ 
++static int mt29f2g01abagd_otp_is_locked(struct spinand_device *spinand)
 +{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	size_t otp_pagesize = nanddev_page_size(nand) +
-+			      nanddev_per_page_oobsize(nand);
-+
-+	return spinand->otp->layout.npages * otp_pagesize;
-+}
-+
-+static unsigned int spinand_otp_npages(const struct spinand_device *spinand)
-+{
-+	return spinand->otp->layout.npages;
-+}
-+
-+static int spinand_otp_rw(struct spinand_device *spinand, loff_t from,
-+			  size_t len, u8 *buf, size_t *retlen, bool is_write)
-+{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	struct nand_page_io_req req = { 0 };
-+	unsigned long long page;
-+	size_t copied = 0;
-+	size_t otp_pagesize = nanddev_page_size(nand) +
-+			      nanddev_per_page_oobsize(nand);
-+	int ret = 0;
-+
-+	page = from;
-+	req.dataoffs = do_div(page, otp_pagesize);
-+	req.pos.page = page;
-+	req.type = is_write ? NAND_PAGE_WRITE : NAND_PAGE_READ;
-+	req.mode = MTD_OPS_RAW;
-+	req.databuf.in = buf;
-+
-+	while (copied < len && req.pos.page < spinand_otp_npages(spinand)) {
-+		req.datalen = min_t(unsigned int,
-+				    otp_pagesize - req.dataoffs,
-+				    len - copied);
-+
-+		if (is_write)
-+			ret = spinand_write_page(spinand, &req);
-+		else
-+			ret = spinand_read_page(spinand, &req);
-+
-+		if (ret < 0)
-+			break;
-+
-+		req.dataoffs = 0;
-+		copied += req.datalen;
-+		req.pos.page++;
-+	}
-+
-+	*retlen = copied;
-+
-+	return ret;
-+}
-+
-+/**
-+ * spinand_otp_read() - Read from OTP area
-+ * @spinand: the spinand device
-+ * @from: the offset to read
-+ * @len: the number of data bytes to read
-+ * @buf: the buffer to store the read data
-+ * @retlen: the pointer to variable to store the number of read bytes
-+ *
-+ * Return: 0 on success, an error code otherwise.
-+ */
-+int spinand_otp_read(struct spinand_device *spinand, loff_t from, size_t len,
-+		     u8 *buf, size_t *retlen)
-+{
-+	return spinand_otp_rw(spinand, from, len, buf, retlen, false);
-+}
-+
-+/**
-+ * spinand_otp_write() - Write to OTP area
-+ * @spinand:  the spinand device
-+ * @from: the offset to write to
-+ * @len: the number of bytes to write
-+ * @buf: the buffer with data to write
-+ * @retlen: the pointer to variable to store the number of written bytes
-+ *
-+ * Return: 0 on success, an error code otherwise.
-+ */
-+int spinand_otp_write(struct spinand_device *spinand, loff_t from, size_t len,
-+		      const u8 *buf, size_t *retlen)
-+{
-+	return spinand_otp_rw(spinand, from, len, (u8 *)buf, retlen, true);
-+}
-+
-+static int spinand_mtd_otp_info(struct mtd_info *mtd, size_t len,
-+				size_t *retlen, struct otp_info *buf)
-+{
-+	struct spinand_device *spinand = mtd_to_spinand(mtd);
-+	const struct spinand_otp_ops *ops = spinand->otp->ops;
++	size_t buf_size = MICRON_MT29F2G01ABAGD_OTP_PAGE_SIZE;
++	size_t retlen;
++	u8 *buf;
 +	int ret;
 +
-+	mutex_lock(&spinand->lock);
-+	ret = ops->info(spinand, len, buf, retlen);
-+	mutex_unlock(&spinand->lock);
++	buf = kmalloc(buf_size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
 +
-+	return ret;
-+}
-+
-+static int spinand_mtd_otp_rw(struct mtd_info *mtd, loff_t ofs, size_t len,
-+			      size_t *retlen, u8 *buf, bool is_write)
-+{
-+	struct spinand_device *spinand = mtd_to_spinand(mtd);
-+	const struct spinand_otp_ops *ops = spinand->otp->ops;
-+	size_t total_len = len;
-+	int ret;
-+
-+	if (ofs < 0 || ofs + len > spinand_otp_size(spinand))
-+		return -EINVAL;
-+
-+	total_len = min_t(size_t, total_len, spinand_otp_size(spinand) - ofs);
-+	if (!total_len)
-+		return 0;
-+
-+	mutex_lock(&spinand->lock);
-+
-+	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, CFG_OTP_ENABLE);
++	ret = spinand_upd_cfg(spinand,
++			      MICRON_MT29F2G01ABAGD_CFG_OTP_LOCK,
++			      MICRON_MT29F2G01ABAGD_CFG_OTP_STATE);
 +	if (ret)
-+		goto out_unlock;
++		goto out;
 +
-+	if (is_write)
-+		ret = ops->write(spinand, ofs, len, buf, retlen);
-+	else
-+		ret = ops->read(spinand, ofs, len, buf, retlen);
++	ret = spinand_otp_read(spinand, 0, buf_size, buf, &retlen);
 +
-+	if (spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0)) {
++	if (spinand_upd_cfg(spinand, MICRON_MT29F2G01ABAGD_CFG_OTP_LOCK,
++			    0)) {
 +		WARN(1, "Can not disable OTP mode\n");
 +		ret = -EIO;
 +	}
 +
-+out_unlock:
-+	mutex_unlock(&spinand->lock);
-+	return ret;
-+}
++	if (!ret) {
++		size_t i = 0;
 +
-+static int spinand_mtd_otp_read(struct mtd_info *mtd, loff_t from, size_t len,
-+				size_t *retlen, u8 *buf)
-+{
-+	return spinand_mtd_otp_rw(mtd, from, len, retlen, buf, false);
-+}
++		/* If all zeros, then the OTP area is locked. */
++		while (i < buf_size && *(uint32_t *)(&buf[i]) == 0)
++			i += 4;
 +
-+static int spinand_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
-+				 size_t *retlen, const u8 *buf)
-+{
-+	return spinand_mtd_otp_rw(mtd, to, len, retlen, (u8 *)buf, true);
-+}
-+
-+static int spinand_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spinand_device *spinand = mtd_to_spinand(mtd);
-+	const struct spinand_otp_ops *ops = spinand->otp->ops;
-+	int ret;
-+
-+	if (!ops->erase)
-+		return -EOPNOTSUPP;
-+
-+	if (!len)
-+		return 0;
-+
-+	if (from < 0 || (from + len) > spinand_otp_size(spinand))
-+		return -EINVAL;
-+
-+	mutex_lock(&spinand->lock);
-+	ret = ops->erase(spinand, from, len);
-+	mutex_unlock(&spinand->lock);
-+
-+	return ret;
-+}
-+
-+static int spinand_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-+{
-+	struct spinand_device *spinand = mtd_to_spinand(mtd);
-+	const struct spinand_otp_ops *ops = spinand->otp->ops;
-+	int ret;
-+
-+	if (!ops->lock)
-+		return -EOPNOTSUPP;
-+
-+	if (from < 0 || (from + len) > spinand_otp_size(spinand))
-+		return -EINVAL;
-+
-+	mutex_lock(&spinand->lock);
-+	ret = ops->lock(spinand, from, len);
-+	mutex_unlock(&spinand->lock);
-+
-+	return ret;
-+}
-+
-+/**
-+ * spinand_set_mtd_otp_ops() - Set up OTP methods
-+ * @spinand: the spinand device
-+ *
-+ * Set up OTP methods.
-+ */
-+void spinand_set_mtd_otp_ops(struct spinand_device *spinand)
-+{
-+	struct mtd_info *mtd = spinand_to_mtd(spinand);
-+
-+	if (!spinand->otp->ops)
-+		return;
-+
-+	mtd->_get_user_prot_info = spinand_mtd_otp_info;
-+	mtd->_read_user_prot_reg = spinand_mtd_otp_read;
-+	mtd->_write_user_prot_reg = spinand_mtd_otp_write;
-+	mtd->_lock_user_prot_reg = spinand_mtd_otp_lock;
-+	mtd->_erase_user_prot_reg = spinand_mtd_otp_erase;
-+}
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 555846517faf6..a0d42a9be333f 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -322,6 +322,43 @@ struct spinand_ondie_ecc_conf {
- 	u8 status;
- };
- 
-+/**
-+ * struct spinand_otp_layout - structure to describe the SPI NAND OTP area
-+ * @npages: number of pages in the OTP
-+ */
-+struct spinand_otp_layout {
-+	unsigned int npages;
-+};
-+
-+/**
-+ * struct spinand_otp_ops - SPI NAND OTP methods
-+ * @info: Get the OTP area information
-+ * @lock: lock an OTP region
-+ * @erase: erase an OTP region
-+ * @read: read from the SPI NAND OTP area
-+ * @write: write to the SPI NAND OTP area
-+ */
-+struct spinand_otp_ops {
-+	int (*info)(struct spinand_device *spinand, size_t len,
-+		    struct otp_info *buf, size_t *retlen);
-+	int (*lock)(struct spinand_device *spinand, loff_t from, size_t len);
-+	int (*erase)(struct spinand_device *spinand, loff_t from, size_t len);
-+	int (*read)(struct spinand_device *spinand, loff_t from, size_t len,
-+		    u8 *buf, size_t *retlen);
-+	int (*write)(struct spinand_device *spinand, loff_t from, size_t len,
-+		     const u8 *buf, size_t *retlen);
-+};
-+
-+/**
-+ * struct spinand_otp - SPI NAND OTP grouping structure
-+ * @layout: OTP region layout
-+ * @ops: OTP access ops
-+ */
-+struct spinand_otp {
-+	const struct spinand_otp_layout layout;
-+	const struct spinand_otp_ops *ops;
-+};
-+
- /**
-  * struct spinand_info - Structure used to describe SPI NAND chips
-  * @model: model name
-@@ -354,6 +391,7 @@ struct spinand_info {
- 	} op_variants;
- 	int (*select_target)(struct spinand_device *spinand,
- 			     unsigned int target);
-+	struct spinand_otp otp;
- };
- 
- #define SPINAND_ID(__method, ...)					\
-@@ -379,6 +417,14 @@ struct spinand_info {
- #define SPINAND_SELECT_TARGET(__func)					\
- 	.select_target = __func,
- 
-+#define SPINAND_OTP_INFO(__npages, __ops)				\
-+	.otp = {							\
-+		.layout = {						\
-+			.npages = __npages,				\
-+		},							\
-+		.ops = __ops,						\
++		if (i == buf_size)
++			ret = 1;
 +	}
 +
- #define SPINAND_INFO(__model, __id, __memorg, __eccreq, __op_variants,	\
- 		     __flags, ...)					\
- 	{								\
-@@ -422,6 +468,7 @@ struct spinand_dirmap {
-  *		passed in spi_mem_op be DMA-able, so we can't based the bufs on
-  *		the stack
-  * @manufacturer: SPI NAND manufacturer information
-+ * @otp: SPI NAND OTP info.
-  * @priv: manufacturer private data
-  */
- struct spinand_device {
-@@ -450,6 +497,7 @@ struct spinand_device {
- 	u8 *oobbuf;
- 	u8 *scratchbuf;
- 	const struct spinand_manufacturer *manufacturer;
-+	const struct spinand_otp *otp;
- 	void *priv;
- };
- 
-@@ -525,4 +573,12 @@ int spinand_read_page(struct spinand_device *spinand,
- int spinand_write_page(struct spinand_device *spinand,
- 		       const struct nand_page_io_req *req);
- 
-+void spinand_set_mtd_otp_ops(struct spinand_device *spinand);
++out:
++	kfree(buf);
++	return ret;
++}
 +
-+int spinand_otp_read(struct spinand_device *spinand, loff_t from, size_t len,
-+		     u8 *buf, size_t *retlen);
++static int mt29f2g01abagd_otp_info(struct spinand_device *spinand, size_t len,
++				   struct otp_info *buf, size_t *retlen)
++{
++	int locked;
 +
-+int spinand_otp_write(struct spinand_device *spinand, loff_t from, size_t len,
-+		      const u8 *buf, size_t *retlen);
++	if (len < sizeof(*buf))
++		return -EINVAL;
 +
- #endif /* __LINUX_MTD_SPINAND_H */
++	locked = mt29f2g01abagd_otp_is_locked(spinand);
++	if (locked < 0)
++		return locked;
++
++	buf->locked = locked;
++	buf->start = 0;
++	buf->length = MICRON_MT29F2G01ABAGD_OTP_SIZE_BYTES;
++
++	*retlen = sizeof(*buf);
++	return 0;
++}
++
++static int mt29f2g01abagd_otp_lock(struct spinand_device *spinand, loff_t from,
++				   size_t len)
++{
++	struct spi_mem_op write_op = SPINAND_WR_EN_DIS_OP(true);
++	struct spi_mem_op exec_op = SPINAND_PROG_EXEC_OP(0);
++	int ret;
++
++	ret = spinand_upd_cfg(spinand,
++			      MICRON_MT29F2G01ABAGD_CFG_OTP_LOCK,
++			      MICRON_MT29F2G01ABAGD_CFG_OTP_LOCK);
++	if (!ret)
++		return ret;
++
++	ret = spi_mem_exec_op(spinand->spimem, &write_op);
++	if (!ret)
++		goto out;
++
++	ret = spi_mem_exec_op(spinand->spimem, &exec_op);
++	if (!ret)
++		goto out;
++
++	ret = spinand_wait(spinand, 10, 5, NULL);
++	if (!ret)
++		goto out;
++
++out:
++	if (spinand_upd_cfg(spinand, MICRON_MT29F2G01ABAGD_CFG_OTP_LOCK, 0)) {
++		WARN(1, "Can not disable OTP mode\n");
++		ret = -EIO;
++	}
++
++	return ret;
++}
++
++static const struct spinand_otp_ops mt29f2g01abagd_otp_ops = {
++	.info = mt29f2g01abagd_otp_info,
++	.lock = mt29f2g01abagd_otp_lock,
++	.read = spinand_otp_read,
++	.write = spinand_otp_write,
++};
++
+ static const struct spinand_info micron_spinand_table[] = {
+ 	/* M79A 2Gb 3.3V */
+ 	SPINAND_INFO("MT29F2G01ABAGD",
+@@ -193,7 +306,9 @@ static const struct spinand_info micron_spinand_table[] = {
+ 					      &x4_update_cache_variants),
+ 		     0,
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+-				     micron_8_ecc_get_status)),
++				     micron_8_ecc_get_status),
++		     SPINAND_OTP_INFO(MICRON_MT29F2G01ABAGD_OTP_PAGES,
++				      &mt29f2g01abagd_otp_ops)),
+ 	/* M79A 2Gb 1.8V */
+ 	SPINAND_INFO("MT29F2G01ABBGD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
 -- 
 2.43.2
 
