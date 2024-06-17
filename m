@@ -4,77 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAB08C2BA18
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 09:38:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6EFCC2BA1A
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 09:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
-	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ybf8osM5t7wuSIeGtX9op8DxpOMGcF99vbfq5nLt7c8=; b=4+MW2/GcEEH2jY
-	YJm/SEy2G2uS+KK+VSQQ1t/d3tHQV/9ZfPTPUN6zBgph83Wtps2G0f4P0mAs22yngCarZkgcf/FKT
-	dy6bf8hl+LJoE6LrIHIVNTcx+5ia3xfCrf9JsYa2csiUaLbxsg+m1oGB6I9PVZx7HZRsLW8prceBz
-	y3eRtvFi+r2nI4Xh4DG3DMdaRVo8LsRGXPXIHeFhlOErHa9QFflFzmYxbM0caJ/TqNQpZCzqG5Pgd
-	407Q8efOsTHktNACsSRel0pWOE9sUop3bWnNU2b+8f1o7L/EEll6on3wHzQ3GRFoHSvjRJkxJzvNU
-	053ketxeaRiP/21BUWxA==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id
+	:Date:Subject:From:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Y6ln+1hZKosKXrplee3dBiHKrZMl8t6ZJ6fpdlIVbG8=; b=dxXqMpZXR8sqmU
+	h+OqLIJZnN2Vk11RzkrTwPpvW9WuRWuYYJCUkXxSbkXwjcvWlngbc6BfQ+O4tTvSYDEqdr8QGkIGv
+	V9WA0fjrmH1xOCJtaboxVajkYywq5rSVFo0CoFTQeI/0AXUqvL61UXJ+SS7sMKNW13LhK5+y0QpiU
+	aJL390YLaJC5DPrCotd8AElFO2VHovVGyifKODzpXAm4vKrB/iK6nPIjdq9b71TfOJfkyCxc3ZcCi
+	i60bBPQ8Wfp0ZxDEHiDzwvenN/KNO1sDLKu43ehtRxl4a7G2HVwcXGoTZkOnBKRzwDYpke7dHJcu2
+	noEvEQW5DiodCKTsz4Cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ8p6-0000000A4kN-2pzT;
-	Mon, 17 Jun 2024 09:38:48 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sJ8pA-0000000A4ma-3nyj;
+	Mon, 17 Jun 2024 09:38:52 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ8ok-0000000A4ZC-2frB
-	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jun 2024 09:38:34 +0000
+	id 1sJ8ok-0000000A4ZB-3M9t;
+	Mon, 17 Jun 2024 09:38:35 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 94AC061261;
-	Mon, 17 Jun 2024 09:38:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9B6E1C4DDF4;
+	by sin.source.kernel.org (Postfix) with ESMTP id 4846DCE10C7;
 	Mon, 17 Jun 2024 09:38:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 73D6BC4AF1D;
+	Mon, 17 Jun 2024 09:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718617104;
-	bh=9BeMjQzY2D1n5KMEIdhe/MnEyijbRClm3qeQuf/mLsg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=sDRB50X6+QsBNtJcO3ey8MFr7RpFAwt9saUt/dnZtQSBe6zmyoNd5QVKYfqHOZ19m
-	 KcG8bYvv8R/+QQgWYgKnI9/Mv0+ragWccOPdF/4dZB4L1Zbyglg1PCUFxnOTIXQQyu
-	 YjaBtukQZj4Mm44cP+EQSMuaG3VgzkyKgzjMCWW2pmDS/6XNKmwjGi6hFMFVxnSAf2
-	 4Vl8Jxnyf5AgyAX5eJEJHSiH5XZJNt74NbaWO6RcuN1Iin+jIRdWeWU3UKUqeQmieO
-	 Ss631ZaglNNiyqA6ZV8ZghdVswMR0esdmNiceSKgYcBwrxEL7lF3BINWTJh9JOabaN
-	 R//mXUiyC0hIg==
+	s=k20201202; t=1718617103;
+	bh=i6RhQCKDg7MqMv++bBvxUOcJMyPbeayIUY4WN3MUOo0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=muc5yp+YJf0Vmc8rC4tYSgg5QC+x/PcB4Ffaj2xefNQb8y9uyx9eZ3qzQcjy/IkQc
+	 6zy5zyPllyeMLBV2MUl5Fmnjq2JWZN48iv0yEkhCgz3cyGDKQByDOVMVd+l6gCd5mk
+	 Uk/VQD6FNF8nv09Gx9uVPwmyt1OG1eG8f5tOKYI/knIi/v4fTX1LC2AibrtjkpYryQ
+	 FbwMMxTt+EPVYwh0ZVcDrQaCp5iGAWUEc8uRW2R8jZTiZFkw04z5vaBtsdeZJuaVTz
+	 qIzK6YqNLs6XKgy7qoMq7v4d6VmM/0N9lnfjpu9AREEw1itHaYdzM7WDdYNkEoqux4
+	 +6rV93gxJ8npw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC54C2BA18;
-	Mon, 17 Jun 2024 09:38:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FBCFC27C6E;
+	Mon, 17 Jun 2024 09:38:23 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Mon, 17 Jun 2024 12:36:53 +0300
-Subject: [PATCH v10 19/38] mtd: rawnand: add support for ts72xx
+Subject: [PATCH v10 00/38] ep93xx device tree conversion
+Date: Mon, 17 Jun 2024 12:36:34 +0300
+Message-Id: <20240617-ep93xx-v10-0-662e640ed811@maquefel.me>
 MIME-Version: 1.0
-Message-Id: <20240617-ep93xx-v10-19-662e640ed811@maquefel.me>
-References: <20240617-ep93xx-v10-0-662e640ed811@maquefel.me>
-In-Reply-To: <20240617-ep93xx-v10-0-662e640ed811@maquefel.me>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+X-B4-Tracking: v=1; b=H4sIAKMDcGYC/2XQzU7DMAwH8FdBPZMpdpovTrwH4uAmLo2g3Ui7a
+ mjau5NOogV6dOKf/U+u1cg58Vg9PVyrzHMa03EoBcjHhyp0NLyxSLEcVChRSSO14JNXl4uQEKx
+ RYBkjVqW5oZFFk2kI3dLe0zhxXi5Omdt0ua94eS11m4+9mLrMtM2tsQZUGvEATkkUIIb0niY6j
+ N25ScNzT59nbvnj0PMyskvjdMxf99CzWgbv4s1KSKGiUaRbAKn4z4wlx1xv0MMG6wIJorU+Bg4
+ g91CvEABxhbrAqD1ZE3Vs0e+h2SDCBk2BQUnbOAqeyO2h/YG1BHArtMtGr5WrDbG1sIdug4hmh
+ W75HFAmBrKoXLuHfoPqF/QFgjaMxOWN4V/U2+32DYaleCNRAgAA
+To: Arnd Bergmann <arnd@arndb.de>, 
+ Hartley Sweeten <hsweeten@visionengravers.com>, 
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Sebastian Reichel <sre@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Nikita Shubin <nikita.shubin@maquefel.me>, Vinod Koul <vkoul@kernel.org>, 
+ Wim Van Sebroeck <wim@linux-watchdog.org>, 
+ Guenter Roeck <linux@roeck-us.net>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Chris Packham <chris.packham@alliedtelesis.co.nz>, 
- Nikita Shubin <nikita.shubin@maquefel.me>, 
- Daniel Golle <daniel@makrotopia.org>, Johan Jonker <jbx6244@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- Arnd Bergmann <arnd@arndb.de>
+ Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Ralf Baechle <ralf@linux-mips.org>, 
+ "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
+ Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+ dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org, 
+ linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-sound@vger.kernel.org, 
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Andrew Lunn <andrew@lunn.ch>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1718617100; l=8042;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1718617100; l=18566;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=jHDUJ6eL0sN9Xsu30iSDeAiNw2Ly7ktT7Xc33sA1DRU=;
- b=7whG2QUWWlNOcmggBTFvIVl5Ld4/2C5EW3thSe5nH3JxmugkjazxUwHmHimUAQ4QEhWfJcD4/F33
- 7zFz+No1Bo2EfRnUAU5IpRfL2tdSJ+/5S8eLlQkuhM9bVZ5vngLC
+ bh=i6RhQCKDg7MqMv++bBvxUOcJMyPbeayIUY4WN3MUOo0=;
+ b=NXvBjPyo90Bap/22JofKXwm8kBSL53pX+lfvyjdSKcIHE7XxvS7Y5Ua8Q1OK1+NtIApG+Gka+bwi
+ Ak3RGEeEA6v3ucdAu/WMNCfm6WtqYErchnZ4oQY66e10+qz5m9pA
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
  with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_023827_252966_8C03BEBA 
-X-CRM114-Status: GOOD (  23.44  )
+X-CRM114-CacheID: sfid-20240617_023827_551752_0E6DDA6A 
+X-CRM114-Status: GOOD (  22.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,278 +124,475 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+The goal is to recieve ACKs for all patches in series to merge it via Arnd branch.
 
-Technologic Systems has it's own nand controller implementation in CPLD.
+Unfortunately, CLK subsystem suddenly went silent on clk portion of series V2 reroll, 
+tried to ping them for about a month but no luck.
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/r/20240408-ep93xx-clk-v2-1-adcd68c13753@maquefel.me
+
+Some changes since last version (v9) - see "Changes in v10", mostly
+cosmetic.
+
+Following patches require attention from Stephen Boyd or clk subsystem:
+
+- clk: ep93xx: add DT support for Cirrus EP93xx
+
+Vinod, i have replaced titles s/dma/dmaengine/ in:
+
+- dmaengine: cirrus: Convert to DT for Cirrus EP93xx
+- dmaengine: cirrus: remove platform code
+
+Patches should be formated with '--histogram'
+
 ---
- drivers/mtd/nand/raw/Kconfig                       |   6 +
- drivers/mtd/nand/raw/Makefile                      |   1 +
- drivers/mtd/nand/raw/technologic-nand-controller.c | 222 +++++++++++++++++++++
- 3 files changed, 229 insertions(+)
+Changes in v10:
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index cbf8ae85e1ae..5a51b835f6b6 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -449,6 +449,12 @@ config MTD_NAND_RENESAS
- 	  Enables support for the NAND controller found on Renesas R-Car
- 	  Gen3 and RZ/N1 SoC families.
- 
-+config MTD_NAND_TS72XX
-+	tristate "ts72xx NAND controller"
-+	depends on ARCH_EP93XX && HAS_IOMEM
-+	help
-+	  Enables support for NAND controller on ts72xx SBCs.
-+
- comment "Misc"
- 
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 25120a4afada..d0b0e6b83568 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_MTD_NAND_MLC_LPC32XX)      += lpc32xx_mlc.o
- obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
- obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
- obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
-+obj-$(CONFIG_MTD_NAND_TS72XX)           += technologic-nand-controller.o
- obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_VF610_NFC)	+= vf610_nfc.o
-diff --git a/drivers/mtd/nand/raw/technologic-nand-controller.c b/drivers/mtd/nand/raw/technologic-nand-controller.c
-new file mode 100644
-index 000000000000..0e45a6fd91dd
---- /dev/null
-+++ b/drivers/mtd/nand/raw/technologic-nand-controller.c
-@@ -0,0 +1,222 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Technologic Systems TS72xx NAND controller driver
-+ *
-+ * Copyright (C) 2023 Nikita Shubin <nikita.shubin@maquefel.me>
-+ *
-+ * Derived from: plat_nand.c
-+ *  Author: Vitaly Wool <vitalywool@gmail.com>
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/platnand.h>
-+
-+#define TS72XX_NAND_CONTROL_ADDR_LINE	BIT(22)	/* 0xN0400000 */
-+#define TS72XX_NAND_BUSY_ADDR_LINE	BIT(23)	/* 0xN0800000 */
-+
-+#define TS72XX_NAND_ALE			BIT(0)
-+#define TS72XX_NAND_CLE			BIT(1)
-+#define TS72XX_NAND_NCE			BIT(2)
-+
-+#define TS72XX_NAND_CTRL_CLE		(TS72XX_NAND_NCE | TS72XX_NAND_CLE)
-+#define TS72XX_NAND_CTRL_ALE		(TS72XX_NAND_NCE | TS72XX_NAND_ALE)
-+
-+struct ts72xx_nand_data {
-+	struct nand_controller	controller;
-+	struct nand_chip	chip;
-+	void __iomem		*base;
-+	void __iomem		*ctrl;
-+	void __iomem		*busy;
-+};
-+
-+static inline struct ts72xx_nand_data *chip_to_ts72xx(struct nand_chip *chip)
-+{
-+	return container_of(chip, struct ts72xx_nand_data, chip);
-+}
-+
-+static int ts72xx_nand_attach_chip(struct nand_chip *chip)
-+{
-+	switch (chip->ecc.engine_type) {
-+	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-+		return -EINVAL;
-+	case NAND_ECC_ENGINE_TYPE_SOFT:
-+		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-+			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-+		fallthrough;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static void ts72xx_nand_ctrl(struct nand_chip *chip, u8 value)
-+{
-+	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
-+	unsigned char bits = ioread8(data->ctrl) & ~GENMASK(2, 0);
-+
-+	iowrite8(bits | value, data->ctrl);
-+}
-+
-+static int ts72xx_nand_exec_instr(struct nand_chip *chip,
-+				const struct nand_op_instr *instr)
-+{
-+	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
-+	unsigned int timeout_us;
-+	u32 status;
-+	int ret;
-+
-+	switch (instr->type) {
-+	case NAND_OP_CMD_INSTR:
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_CLE);
-+		iowrite8(instr->ctx.cmd.opcode, data->base);
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
-+		break;
-+
-+	case NAND_OP_ADDR_INSTR:
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_ALE);
-+		iowrite8_rep(data->base, instr->ctx.addr.addrs, instr->ctx.addr.naddrs);
-+		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
-+		break;
-+
-+	case NAND_OP_DATA_IN_INSTR:
-+		ioread8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+
-+	case NAND_OP_DATA_OUT_INSTR:
-+		iowrite8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+
-+	case NAND_OP_WAITRDY_INSTR:
-+		timeout_us = instr->ctx.waitrdy.timeout_ms * 1000;
-+		ret = readb_poll_timeout(data->busy, status, status & BIT(5), 0, timeout_us);
-+		if (ret)
-+			return ret;
-+
-+		break;
-+	}
-+
-+	if (instr->delay_ns)
-+		ndelay(instr->delay_ns);
-+
-+	return 0;
-+}
-+
-+static int ts72xx_nand_exec_op(struct nand_chip *chip,
-+			       const struct nand_operation *op, bool check_only)
-+{
-+	unsigned int i;
-+	int ret;
-+
-+	if (check_only)
-+		return 0;
-+
-+	for (i = 0; i < op->ninstrs; i++) {
-+		ret = ts72xx_nand_exec_instr(chip, &op->instrs[i]);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_controller_ops ts72xx_nand_ops = {
-+	.attach_chip = ts72xx_nand_attach_chip,
-+	.exec_op = ts72xx_nand_exec_op,
-+};
-+
-+static int ts72xx_nand_probe(struct platform_device *pdev)
-+{
-+	struct ts72xx_nand_data *data;
-+	struct fwnode_handle *child;
-+	struct mtd_info *mtd;
-+	int err;
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	nand_controller_init(&data->controller);
-+	data->controller.ops = &ts72xx_nand_ops;
-+	data->chip.controller = &data->controller;
-+
-+	data->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(data->base))
-+		return PTR_ERR(data->base);
-+	data->ctrl = data->base + TS72XX_NAND_CONTROL_ADDR_LINE;
-+	data->busy = data->base + TS72XX_NAND_BUSY_ADDR_LINE;
-+
-+	child = fwnode_get_next_child_node(dev_fwnode(&pdev->dev), NULL);
-+	if (!child)
-+		return dev_err_probe(&pdev->dev, -ENXIO,
-+				"ts72xx controller node should have exactly one child\n");
-+
-+	nand_set_flash_node(&data->chip, to_of_node(child));
-+	mtd = nand_to_mtd(&data->chip);
-+	mtd->dev.parent = &pdev->dev;
-+	platform_set_drvdata(pdev, data);
-+
-+	/*
-+	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-+	 * Set ->engine_type before registering the NAND devices in order to
-+	 * provide a driver specific default value.
-+	 */
-+	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-+
-+	/* Scan to find existence of the device */
-+	err = nand_scan(&data->chip, 1);
-+	if (err)
-+		goto err_handle_put;
-+
-+	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	if (err)
-+		goto err_clean_nand;
-+
-+	return 0;
-+
-+err_clean_nand:
-+	nand_cleanup(&data->chip);
-+err_handle_put:
-+	fwnode_handle_put(child);
-+	return err;
-+}
-+
-+static void ts72xx_nand_remove(struct platform_device *pdev)
-+{
-+	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
-+	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
-+	struct nand_chip *chip = &data->chip;
-+	int ret;
-+
-+	ret = mtd_device_unregister(nand_to_mtd(chip));
-+	WARN_ON(ret);
-+	nand_cleanup(chip);
-+	fwnode_handle_put(fwnode);
-+}
-+
-+static const struct of_device_id ts72xx_id_table[] = {
-+	{ .compatible = "technologic,ts7200-nand" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ts72xx_id_table);
-+
-+static struct platform_driver ts72xx_nand_driver = {
-+	.driver = {
-+		.name = "ts72xx-nand",
-+		.of_match_table = ts72xx_id_table,
-+	},
-+	.probe = ts72xx_nand_probe,
-+	.remove_new = ts72xx_nand_remove,
-+};
-+module_platform_driver(ts72xx_nand_driver);
-+
-+MODULE_AUTHOR("Nikita Shubin <nikita.shubin@maquefel.me>");
-+MODULE_DESCRIPTION("Technologic Systems TS72xx NAND controller driver");
-+MODULE_LICENSE("GPL");
+Reordered SoB tags to make sure they appear before Rb and Acked tags.
 
+dmaengine: cirrus: Convert to DT for Cirrus EP93xx
+    - s/dma/dmaengine/ title
+
+dmaengine: cirrus: remove platform code
+    - s/dma/dmaengine/ title
+
+soc: Add SoC driver for Cirrus ep93xx:
+    - added __init for ep93xx_adev_alloc(), ep93xx_controller_register()
+    - added static, __initconst for pinctrl_names[]
+    - clk revision for SPI is now resolved here through differently named
+      clk device
+    - more verbose Kconfig description
+
+clk: ep93xx: add DT support for Cirrus EP93xx:
+    - dropped includes
+    - dropped ep93xx_soc_table[]
+    - add different named clk and dropped involved includes
+    - moved pll's and fclk, hclk, pclk init to separate function
+    - fixed ep93xx_clk_ids[] explicit lines
+
+- Link to v9: https://lore.kernel.org/r/20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me
+- Link to v2 clk: https://lore.kernel.org/r/20240408-ep93xx-clk-v2-1-adcd68c13753@maquefel.me
+
+Changes in v9:
+
+ARM: dts: add Cirrus EP93XX SoC .dtsi
+    - added #interrupt-cells to gpio nodes with interrupts-controller
+    - fixed EOF
+
+ARM: dts: ep93xx: Add EDB9302 DT
+    - Alexander Sverdlin: fixed bug in Device Tree resulting in CS4271 not working
+
+input: keypad: ep93xx: add DT support for Cirrus EP93xx
+    - fixed identation and type
+
+- Link to v8: https://lore.kernel.org/r/20240226-ep93xx-v8-0-3136dca7238f@maquefel.me/
+
+Changes in v8:
+
+soc: Add SoC driver for Cirrus ep93xx
+    - fixed freeing adev instead of rdev
+    - use __free() and no_free_ptr() for rdev allocation
+    - s/of_device_get_match_data()/device_get_match_data()/
+
+ata: pata_ep93xx: add device tree support
+    - more appropriate usage of dev_err_probe()
+
+pinctrl: add a Cirrus ep93xx SoC pin controller
+    - 8 per row in ide_9312_pins
+
+mtd: rawnand: add support for ts72xx
+    - fwnode_handle_put() for fwnode in ts72xx_nand_remove()
+
+- Link to v7: https://lore.kernel.org/r/20240118-ep93xx-v7-0-d953846ae771@maquefel.me
+
+Changes in v7:
+
+mtd: rawnand: add support for ts72xx
+    - fixed KConfig description
+
+ARM: ep93xx: Add terminator to gpiod_lookup_table
+    - + Reported-by, Fixes
+
+ARM: ep93xx: add regmap aux_dev
+    - + trailing comma
+    - - #include <linux/spinlock.h>
+
+clk: ep93xx: add DT support for Cirrus EP93xx
+    - dropped unused defines
+    - return from default in ep93xx_mux_get_parent()
+    - use guard() in ep93xx_mux_set_parent_lock()
+    - <math.h> header for abs_diff()
+    - fixed comments
+
+pinctrl: add a Cirrus ep93xx SoC pin controller
+    - dropped comments for DEVCFG defines
+    - <linux/array_size.h> for ARRAY_SIZE()
+    - + default in ep93xx_get_group_name()
+    - correct cast for id->driver_data
+    - s/device_set_of_node_from_dev()/device_set_node()/
+
+power: reset: Add a driver for the ep93xx reset
+    - Add <linux/container_of.h>, <linux/errno.h>, <linux/slab.h>
+    - Add <linux/module.h>, <linux/mod_devicetable.h>
+    - Remove <platform_device.h>
+
+spi: ep93xx: add DT support for Cirrus EP93xx
+    - Replace with ret = dev_err_probe(...);
+
+ata: pata_ep93xx: add device tree support
+    - fixed wrong rebase with some partes leaked in "ata: pata_ep93xx: remove legacy pinctrl use"
+    - fix dma_request_chan() error processing
+
+dma: cirrus: Convert to DT for Cirrus EP93xx
+    - fixed commit message (dropped explicit "only")
+    - fixed clk_get() processing to defer probe and log spamming
+    - refactor ep93xx_m2p_dma_filter()
+    - dropped blank line in ep93xx_m2p_dma_of_xlate()
+    - refactor ep93xx_m2m_dma_of_xlate()
+
+dma: cirrus: remove platform code
+    - s/dma/DMA/ in commit message
+
+soc: Add SoC driver for Cirrus ep93xx
+    - add period
+    - use cleanup and guard() for spinlocking
+    - correct cast for device_get_match_data()
+    - dropped dev_info() with SoC revision - i can't find it anywhere since 2.6 :/,
+      don't know why i was so sured that ep93xx always printed that
+
+ata: pata_ep93xx: remove legacy pinctrl use
+    - made error handling in DMA as Uwe suggested
+
+- Link to v6: https://lore.kernel.org/r/20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me
+
+Changes in v6:
+
+- clk: ep93xx: add DT support for Cirrus EP93xx
+  - s/spin_lock_irqsave()/guard()/
+  - refactor index check in ep93xx_mux_set_parent_lock() to something more readable
+  - use in_range in ep93xx_mux_set_parent_lock()/ep93xx_ddiv_set_rate()
+  - use GENMASK() in ep93xx_ddiv_recalc_rate()
+  - comment reserved bit in ep93xx_ddiv_set_rate()
+  - move out from loop ClkDiv value assigment
+  - some style fixes
+
+Andy, i was i asked to set index of XTALI explicitly, i am not setting ddiv_pdata
+there becouse only XTALI is jnown in advance, and i think setting them in one place is more convenient.
+
+- pinctrl: add a Cirrus ep93xx SoC pin controller
+  - drop OF from Kconfig
+  - droped linux/of.h include
+  - add space to */ where it is applicable
+  - add coma in multiline assigment
+  - "return NULL" as default case in ep93xx_get_group_name()
+  - fixed casting id->driver_data
+  - use device_set_of_node_from_dev()
+  - use dev_err_probe()
+
+- power: reset: Add a driver for the ep93xx reset
+  - drop linux/of.h include
+
+- soc: Add SoC driver for Cirrus ep93xx
+  - s/GPL-2.0/GPL-2.0-only/
+  - drop linux/kernel.h include
+  - + blank line before linux/soc/cirrus/ep93xx.h
+  - + blank line after ep93xx_get_soc_rev()
+  - + coma for pinctrl_names
+  - valid casting to int for of_device_get_match_data() return value
+
+- mtd: rawnand: add support for ts72xx
+  - return as part of switch case
+  - s/iowrite8/iowrite8_rep/
+
+- net: cirrus: add DT support for Cirrus EP93xx
+  - fix header sorting
+
+- dma: cirrus: Convert to DT for Cirrus EP93xx
+  - use devm_clk_get
+  - use is_slave_direction
+
+Changes in v5:
+
+- gpio: ep93xx: split device in multiple
+  - ordered headers
+  - use irqd_to_hwirq()
+  - s/platform_get_irq()/platform_get_irq_optional()/
+
+- [PATCH v4 02/42] ARM: ep93xx: add swlocked prototypes
+  - replaced with ARM: ep93xx: add regmap aux_dev
+
+- [PATCH v4 03/42] dt-bindings: clock: Add Cirrus EP93xx
+  - fixed identation
+  - removed EP93XX_CLK_END
+  - and dropped it
+  - clock bindings moved to syscon with renaming to cirrus,ep9301-syscon.h
+
+- clk: ep93xx: add DT support for Cirrus EP93xx
+  - convert to auxiliary and use parent device tree node
+  - moved all clocks except XTALI here
+  - used devm version everywhere and *_parent_hw() instead of passing name where it's possible
+  - unfortunately devm_clk_hw_register_fixed_rate doesn't have a parent index version
+
+- [PATCH v4 05/42] dt-bindings: pinctrl: Add Cirrus EP93xx
+  - "unevaluatedProperties: false" for pins
+  - returned "additionalProperties: false" where it was
+  - and dropped it
+
+- pinctrl: add a Cirrus ep93xx SoC pin controller
+  - sorted includes
+  - convert to auxiliary and use parent device tree node
+
+- power: reset: Add a driver for the ep93xx reset
+  - convert to auxiliary device
+
+- dt-bindings: soc: Add Cirrus EP93xx
+  - dropped all ref to reboot, clk, pinctrl subnodes
+  - added pins, as it's now used for pinctrl
+  - added #clock-cells, as it's now used for clk
+
+- dt-bindings: pwm: Add Cirrus EP93xx
+  - $ref to pwm.yaml
+  - fixed 'pwm-cells'
+  - s/additionalProperties/unevaluatedProperties/
+
+- soc: Add SoC driver for Cirrus ep93xx
+  - removed clocks, they are moved to clk auxiliary driver, as we dropped the clk dt node
+  - removed all swlocked exported functions
+  - dropped static spinlock
+  - added instantiating auxiliary reboot, clk, pinctrl
+
+- dt-bindings: spi: Add Cirrus EP93xx
+  - Document DMA support
+
+- spi: ep93xx: add DT support for Cirrus EP93xx
+  - dropped CONFIG_OF and SPI/DMA platform data entirely
+  - s/master/host/
+  - reworked DMA setup so we can use probe defer
+
+- dt-bindings: dma: Add Cirrus EP93xx
+  - dropped bindings header (moved ports description to YAML)
+  - changed '#dma-cells' to 2, we use port, direction in cells so we can drop platform code completely
+
+- dma: cirrus: add DT support for Cirrus EP93xx
+  - dropped platform probing completely
+  - dropped struct ep93xx_dma_data replaced with internal struct ep93xx_dma_chan_cfg with port/direction
+  - added xlate functions for m2m/m2p
+  - we require filters to set dma_cfg before hw_setup
+
+- dt-bindings: ata: Add Cirrus EP93xx
+  - Document DMA support
+
+- ata: pata_ep93xx: add device tree support
+  - drop DMA platform header with data
+  - use DMA OF so we can defer probing until DMA is up
+
+- ARM: dts: add Cirrus EP93XX SoC .dtsi
+- ARM: dts: ep93xx: add ts7250 board
+- ARM: dts: ep93xx: Add EDB9302 DT
+  - replaced "eclk: clock-controller" to syscon reference
+  - replaced "pinctrl: pinctrl" to syscon reference
+  - gpios are now "enabled" by default
+  - reworked i2s node
+  - change all dma nodes and refs
+
+- new additions to I2S
+  - Document DMA
+  - Document Audio Port usage
+  - drop legacy DMA support
+
+- Link to v4: https://lore.kernel.org/r/20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me
+
+Changes in v4:
+
+- gpio: ep93xx: split device in multiple
+  - s/generic_handle_irq/generic_handle_domain_irq/
+  - s/int offset/irq_hw_number_t offset/ though now it looks a bit odd to me
+  - drop i = 0
+  - drop 'error'
+  - use dev_err_probe withour printing devname once again
+
+dt-bindings: clock: Add Cirrus EP93xx
+  - renamed cirrus,ep93xx-clock.h -> cirrus,ep9301-clk.h
+
+clk: ep93xx: add DT support for Cirrus EP93xx
+  - drop unused includes
+  - use .name only for xtali, pll1, pll2 parents
+  - convert // to /*
+  - pass clk_parent_data instead of char* clock name
+
+dt-bindings: pinctrl: Add Cirrus EP93xx
+  - s/additionalProperties/unevaluatedProperties/
+
+dt-bindings: soc: Add Cirrus EP93xx
+  - move syscon to soc directory
+  - add vendor prefix
+  - make reboot same style as pinctrl, clk
+  - use absolute path for ref
+  - expand example
+
+soc: Add SoC driver for Cirrus ep93xx
+  - s/0xf0000000/GENMASK(31, 28)/
+  - s/ret/ep93xx_chip_revision(map)/
+  - drop symbol exports
+  - convert to platform driver
+
+dt-bindings: rtc: Add Cirrus EP93xx
+  - allOf: with $ref to rtc.yaml
+  - s/additionalProperties/unevaluatedProperties/
+
+dt-bindings: watchdog: Add Cirrus EP93x
+  - drop description
+  - reword
+
+power: reset: Add a driver for the ep93xx reset
+  - lets use 'GPL-2.0+' instead of '(GPL-2.0)'
+  - s/of_device/of/
+  - drop mdelay with warning
+  - return 0 at the end
+
+net: cirrus: add DT support for Cirrus EP93xx
+  - fix leaking np
+
+mtd: nand: add support for ts72xx
+  - +bits.h
+  - drop comment
+  - ok to fwnode_get_next_child_node
+  - use goto to put handle and nand and report error
+
+ARM: dts: add Cirrus EP93XX SoC .dtsi
+  - add simple-bus for ebi, as we don't require to setup anything
+  - add arm,pl011 compatible to uart nodes
+  - drop i2c-gpio, as it's isn't used anywhere
+
+ARM: dts: ep93xx: add ts7250 board
+  - generic node name for temperature-sensor
+  - drop i2c
+  - move nand, rtc, watchdog to ebi node
+
+- Link to v3: https://lore.kernel.org/r/20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me
+
+---
+Alexander Sverdlin (3):
+      ASoC: ep93xx: Drop legacy DMA support
+      ARM: dts: ep93xx: Add EDB9302 DT
+      ASoC: cirrus: edb93xx: Delete driver
+
+Nikita Shubin (35):
+      gpio: ep93xx: split device in multiple
+      ARM: ep93xx: add regmap aux_dev
+      clk: ep93xx: add DT support for Cirrus EP93xx
+      pinctrl: add a Cirrus ep93xx SoC pin controller
+      power: reset: Add a driver for the ep93xx reset
+      dt-bindings: soc: Add Cirrus EP93xx
+      soc: Add SoC driver for Cirrus ep93xx
+      dt-bindings: dma: Add Cirrus EP93xx
+      dmaengine: cirrus: Convert to DT for Cirrus EP93xx
+      dt-bindings: watchdog: Add Cirrus EP93x
+      watchdog: ep93xx: add DT support for Cirrus EP93xx
+      dt-bindings: pwm: Add Cirrus EP93xx
+      pwm: ep93xx: add DT support for Cirrus EP93xx
+      dt-bindings: spi: Add Cirrus EP93xx
+      spi: ep93xx: add DT support for Cirrus EP93xx
+      dt-bindings: net: Add Cirrus EP93xx
+      net: cirrus: add DT support for Cirrus EP93xx
+      dt-bindings: mtd: Add ts7200 nand-controller
+      mtd: rawnand: add support for ts72xx
+      dt-bindings: ata: Add Cirrus EP93xx
+      ata: pata_ep93xx: add device tree support
+      dt-bindings: input: Add Cirrus EP93xx keypad
+      input: keypad: ep93xx: add DT support for Cirrus EP93xx
+      wdt: ts72xx: add DT support for ts72xx
+      gpio: ep93xx: add DT support for gpio-ep93xx
+      ASoC: dt-bindings: ep93xx: Document DMA support
+      ASoC: dt-bindings: ep93xx: Document Audio Port support
+      ARM: dts: add Cirrus EP93XX SoC .dtsi
+      ARM: dts: ep93xx: add ts7250 board
+      ARM: ep93xx: DT for the Cirrus ep93xx SoC platforms
+      pwm: ep93xx: drop legacy pinctrl
+      ata: pata_ep93xx: remove legacy pinctrl use
+      ARM: ep93xx: delete all boardfiles
+      ARM: ep93xx: soc: drop defines
+      dmaengine: cirrus: remove platform code
+
+ .../bindings/arm/cirrus/cirrus,ep9301.yaml         |   38 +
+ .../bindings/ata/cirrus,ep9312-pata.yaml           |   42 +
+ .../bindings/dma/cirrus,ep9301-dma-m2m.yaml        |   84 ++
+ .../bindings/dma/cirrus,ep9301-dma-m2p.yaml        |  144 ++
+ .../bindings/input/cirrus,ep9307-keypad.yaml       |   87 ++
+ .../devicetree/bindings/mtd/technologic,nand.yaml  |   45 +
+ .../devicetree/bindings/net/cirrus,ep9301-eth.yaml |   59 +
+ .../devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml |   53 +
+ .../bindings/soc/cirrus/cirrus,ep9301-syscon.yaml  |   94 ++
+ .../bindings/sound/cirrus,ep9301-i2s.yaml          |   16 +
+ .../devicetree/bindings/spi/cirrus,ep9301-spi.yaml |   70 +
+ .../bindings/watchdog/cirrus,ep9301-wdt.yaml       |   42 +
+ arch/arm/Makefile                                  |    1 -
+ arch/arm/boot/dts/cirrus/Makefile                  |    4 +
+ arch/arm/boot/dts/cirrus/ep93xx-bk3.dts            |  125 ++
+ arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts        |  181 +++
+ arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts         |  145 ++
+ arch/arm/boot/dts/cirrus/ep93xx.dtsi               |  444 ++++++
+ arch/arm/mach-ep93xx/Kconfig                       |   20 +-
+ arch/arm/mach-ep93xx/Makefile                      |   11 -
+ arch/arm/mach-ep93xx/clock.c                       |  733 ----------
+ arch/arm/mach-ep93xx/core.c                        | 1018 --------------
+ arch/arm/mach-ep93xx/dma.c                         |  114 --
+ arch/arm/mach-ep93xx/edb93xx.c                     |  368 -----
+ arch/arm/mach-ep93xx/ep93xx-regs.h                 |   38 -
+ arch/arm/mach-ep93xx/gpio-ep93xx.h                 |  111 --
+ arch/arm/mach-ep93xx/hardware.h                    |   25 -
+ arch/arm/mach-ep93xx/irqs.h                        |   76 --
+ arch/arm/mach-ep93xx/platform.h                    |   42 -
+ arch/arm/mach-ep93xx/soc.h                         |  212 ---
+ arch/arm/mach-ep93xx/timer-ep93xx.c                |  143 --
+ arch/arm/mach-ep93xx/ts72xx.c                      |  422 ------
+ arch/arm/mach-ep93xx/ts72xx.h                      |   94 --
+ arch/arm/mach-ep93xx/vision_ep9307.c               |  321 -----
+ drivers/ata/pata_ep93xx.c                          |  107 +-
+ drivers/clk/Kconfig                                |    8 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-ep93xx.c                           |  834 ++++++++++++
+ drivers/dma/ep93xx_dma.c                           |  287 +++-
+ drivers/gpio/gpio-ep93xx.c                         |  345 ++---
+ drivers/input/keyboard/ep93xx_keypad.c             |   74 +-
+ drivers/mtd/nand/raw/Kconfig                       |    6 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/technologic-nand-controller.c |  222 +++
+ drivers/net/ethernet/cirrus/ep93xx_eth.c           |   63 +-
+ drivers/pinctrl/Kconfig                            |    7 +
+ drivers/pinctrl/Makefile                           |    1 +
+ drivers/pinctrl/pinctrl-ep93xx.c                   | 1434 ++++++++++++++++++++
+ drivers/power/reset/Kconfig                        |   10 +
+ drivers/power/reset/Makefile                       |    1 +
+ drivers/power/reset/ep93xx-restart.c               |   84 ++
+ drivers/pwm/pwm-ep93xx.c                           |   26 +-
+ drivers/soc/Kconfig                                |    1 +
+ drivers/soc/Makefile                               |    1 +
+ drivers/soc/cirrus/Kconfig                         |   17 +
+ drivers/soc/cirrus/Makefile                        |    2 +
+ drivers/soc/cirrus/soc-ep93xx.c                    |  252 ++++
+ drivers/spi/spi-ep93xx.c                           |   66 +-
+ drivers/watchdog/ep93xx_wdt.c                      |    8 +
+ drivers/watchdog/ts72xx_wdt.c                      |    8 +
+ include/dt-bindings/clock/cirrus,ep9301-syscon.h   |   46 +
+ include/linux/platform_data/dma-ep93xx.h           |   94 --
+ include/linux/platform_data/eth-ep93xx.h           |   10 -
+ include/linux/platform_data/keypad-ep93xx.h        |   32 -
+ include/linux/platform_data/spi-ep93xx.h           |   15 -
+ include/linux/soc/cirrus/ep93xx.h                  |   47 +-
+ sound/soc/cirrus/Kconfig                           |    9 -
+ sound/soc/cirrus/Makefile                          |    4 -
+ sound/soc/cirrus/edb93xx.c                         |  116 --
+ sound/soc/cirrus/ep93xx-i2s.c                      |   19 -
+ sound/soc/cirrus/ep93xx-pcm.c                      |   19 +-
+ 71 files changed, 5149 insertions(+), 4550 deletions(-)
+---
+base-commit: 2df0193e62cf887f373995fb8a91068562784adc
+change-id: 20230605-ep93xx-01c76317e2d2
+
+Best regards,
 -- 
-2.43.2
+Nikita Shubin <nikita.shubin@maquefel.me>
 
 
 
