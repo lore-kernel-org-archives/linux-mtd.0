@@ -4,75 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84B22C2BA18
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 16:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67DA8C27C79
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 16:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Cc:Date:
-	In-Reply-To:From:Subject:Mime-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=57cxqs5lh7Ey3Adm1ong5NaeMVf43IJ4JbU/KIsWhOk=; b=UzAOu29pr8gkxn
-	uS/C+kC42DEvReWgG0tqSlZ3Gl5+JzziJkzP+hXkvPqLa+az7f6ow0WWCqs81if+7mgE5i/GHSRgu
-	MY10gfgr7RBWIo08iNEDWTVYlKBiOMdGCvSOM1fTk4Eac0ralE050roUZq80QcvWJBdykE/KQmgRF
-	qx2F1q7AZ8pd2rVAxYWJPy9fZpxlzHkmBo/Wwp/9sQYOXVBY+rBhSFBxk+BnRgAKduAbj976LYI4S
-	HJ0WdndWfo+iWymH7nhtu9to96NA+WRU2SfIHNKJX9k4ZxaGzDrbqqu6NdU9LoRO6nDdYTviH8B8w
-	r2XlKEg2OiMiwzDDLvWw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=CHqVtmimHdCsf5CJO52UpRf3W7w7E4c6saYFcmMYTP4=; b=WlX2WvxAL+KXuZNQm1AGz0zxvt
+	Marvrp4jtCgU9taE6Nszle2wgW78S2mAmLqTs+rMTXttLIeCvicqaP8pB2wZpq2o6fb8h197f7d4m
+	djr+g7ym3ZZUm+Kd1tqlcoPxOJDtVJ+V7sLCFjJn2FLJv8UtbT/22ixFDd6iBvOEcb/NNPQADl6yb
+	fOefuRu2irK/Aw6hdDhnW+c38uLiQKUL0V3D0CvUdwYSvS5APd5BvmFsOJEgWT3SGpJr5wjAMNTP7
+	FiLSqc1VMM2gS1kmbrjMP23RQocuJiQRw1/OvOJtVGdxEWVyVUdlph3Ii76E8Kee2hUsrhbZa7n2k
+	1gLRpEbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJErG-0000000BeT9-0z2k;
-	Mon, 17 Jun 2024 16:05:26 +0000
-Received: from qs51p00im-qukt01080501.me.com ([17.57.155.22])
+	id 1sJFb6-0000000Bpqm-1SMt;
+	Mon, 17 Jun 2024 16:52:48 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJErD-0000000BeSN-1YTI
+	id 1sJFb2-0000000BpoX-1GbF
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jun 2024 16:05:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mac.com; s=1a1hai;
-	t=1718640322; bh=ams6j7WKomm1oRicNJ1/r9gMg38ZDFI+xkZNs8TEMhU=;
-	h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-	b=moyJRz09gh/fQP+v90FcVIfHpJirByHENxA081YTvOOLYbA11oxvR0WTUosty8AOT
-	 NvU7uvj65AiHZG0QI1x6Q7YlxUl5NeoFJI7r8cXCNJf99gcQ8Pfem29LKpGN7kZrr7
-	 twz1m3E1DlmKQz42PugunNL4enjg7KW49vZqrO2ECya2icCsQyQbe0sNayMmELANxS
-	 HaANSg5minaQACXNUq/4pNXJph/e+9FeN670Nq2teEHKIIDfi8VuVw+5TKSFP3w9WO
-	 OEuBHLSaszOJfU43oQe+7ttdQP/agxQdo/fyIPC6iXGEhZ9MLmgIFBd/cvsJyB18m1
-	 5UCdxX031zW6g==
-Received: from [172.20.144.3] (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
-	by qs51p00im-qukt01080501.me.com (Postfix) with ESMTPSA id B8B9E1980328;
-	Mon, 17 Jun 2024 16:05:17 +0000 (UTC)
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+	Mon, 17 Jun 2024 16:52:46 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 619E26195FC1;
+	Mon, 17 Jun 2024 18:52:41 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id rVZusyb9lOqr; Mon, 17 Jun 2024 18:52:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 0EE376195FC6;
+	Mon, 17 Jun 2024 18:52:41 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Srg5VmlXEUGF; Mon, 17 Jun 2024 18:52:40 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id DF1846195FC1;
+	Mon, 17 Jun 2024 18:52:40 +0200 (CEST)
+Date: Mon, 17 Jun 2024 18:52:40 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Gagan Sidhu <broly@mac.com>
+Cc: ZhaoLong Wang <wangzhaolong1@huawei.com>, 
+	chengzhihao1 <chengzhihao1@huawei.com>, 
+	dpervushin <dpervushin@embeddedalley.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	yangerkun <yangerkun@huawei.com>, yi zhang <yi.zhang@huawei.com>
+Message-ID: <1802911356.251780.1718643160760.JavaMail.zimbra@nod.at>
+In-Reply-To: <65E62DA3-EF16-44BD-8E51-E751BD2C496F@mac.com>
+References: <CFAC276E-E652-40CD-B3D8-563B95E679A8@mac.com> <561660214.251562.1718638970757.JavaMail.zimbra@nod.at> <14779870-BA54-4ABF-8ABF-FF1D23D172A7@mac.com> <1641029267.251608.1718640023954.JavaMail.zimbra@nod.at> <65E62DA3-EF16-44BD-8E51-E751BD2C496F@mac.com>
 Subject: Re: [PATCH v2] ubi: gluebi: Fix NULL pointer dereference caused by
  ftl notifier
-From: Gagan Sidhu <broly@mac.com>
-In-Reply-To: <1641029267.251608.1718640023954.JavaMail.zimbra@nod.at>
-Date: Mon, 17 Jun 2024 10:05:13 -0600
-Cc: ZhaoLong Wang <wangzhaolong1@huawei.com>,
- chengzhihao1 <chengzhihao1@huawei.com>,
- dpervushin <dpervushin@embeddedalley.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- yangerkun <yangerkun@huawei.com>,
- yi zhang <yi.zhang@huawei.com>
-Message-Id: <65E62DA3-EF16-44BD-8E51-E751BD2C496F@mac.com>
-References: <CFAC276E-E652-40CD-B3D8-563B95E679A8@mac.com>
- <561660214.251562.1718638970757.JavaMail.zimbra@nod.at>
- <14779870-BA54-4ABF-8ABF-FF1D23D172A7@mac.com>
- <1641029267.251608.1718640023954.JavaMail.zimbra@nod.at>
-To: Richard Weinberger <richard@nod.at>
-X-Mailer: Apple Mail (2.3445.104.21)
-X-Proofpoint-ORIG-GUID: buHqJC9Wi3ZoO48bM3PVXyOG_kezwdJU
-X-Proofpoint-GUID: buHqJC9Wi3ZoO48bM3PVXyOG_kezwdJU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-17_14,2024-06-17_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015 phishscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2406170125
+MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: gluebi: Fix NULL pointer dereference caused by ftl notifier
+Thread-Index: CeaQ9NY8GO3IkkuxNvz0If8vASUkgg==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_090523_493895_EABF3271 
-X-CRM114-Status: GOOD (  14.43  )
+X-CRM114-CacheID: sfid-20240617_095244_544464_C7BFFB10 
+X-CRM114-Status: UNSURE (   7.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,39 +84,26 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-aSBkb27igJl0IHRoaW5rIG15IGFydGljdWxhdGlvbiBpcyBjb3JyZWN0IGlmIHlvdSBpbnRlcnBy
-ZXRlZCBpdCBhcyB0aGF0LgoKYXMgaSB1bmRlcnN0YW5kIGl0LCBnbHVlYmkgc2ltcGx5IG1ha2Vz
-IGl0IGhhbmR5IHdoZW4geW91IGhhdmUgYSBmaWxlc3lzdGVtIHBhY2tlZCB3aXRoaW4gYSB1Ymkg
-ZmlsZSwgYW5kIGl0IHdpbGwgdGFrZSB0aGF0IGZpbGUgYW5kIG1vdW50IGl0YXMgYSBibG9jayBk
-ZXZpY2UuCgpzbyBpIHdvdWxkIHNheSBpdOKAmXMgbm90IE1URC0+VUJJLT5HTFVFQkktPk1URC0+
-TVREQkxPQ0sKCml04oCZZCBzYXkgaXTigJlzIG1vcmUgTVRELT5HTFVFQkktPk1UREJMT0NLCgp0
-aGF0IGlzLCB0aGUgc3F1YXNoZnMgKGFjdHVhbCBmaWxlc3lzdGVtKSBpcyBzaW1wbHkgd3JhcHBl
-ZCBpbiBhIHViaSBmaWxlIGZvciBnbHVlYmksIHdoaWNoIHdpbGwgdGhlbiBtYWtlIGl0IGEgYmxv
-Y2sgZGV2aWNlLgoKaeKAmW0gbm90IHVzaW5nIGFuIGFjdHVhbCBVQklGUyBhbnl3aGVyZSwgYXNp
-ZGUgZnJvbSBzaXR0aW5nIHVuZGVybmVhdGggdGhlIHNxdWFzaGZzIHRvIGhhbmRsZSB0aGUgbWFw
-cGluZyBmcm9tIHRoZSBzcXVhc2ggdG8gdGhlIG5hbmQgKHRvIGhhbmRsZSBiYWQgYmxvY2tzKS4K
-CmUuZy4gaSBoYXZlIGEgcm9vdGZzIGluIGEgc3F1YXNoZnMgZmlsZQoJLWkgd3JhcCB0aGF0IHNx
-dWFzaGZzIGZpbGUgaW50byBhIHNxdWFzaGZzLnViaQoJLWkgdXNlIGdsdWViaSB0byBkZXRlY3Qg
-dGhpcyBzcXVhc2hmcy51YmkgZmlsZSBhcyBhIGJsb2NrIGRldmljZSBhbmQgbW91bnQgaXQKCnRo
-YXTigJlzIGFib3V0IGl0LgoKClRoYW5rcywKR2FnYW4KCj4gT24gSnVuIDE3LCAyMDI0LCBhdCAx
-MDowMCBBTSwgUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4gd3JvdGU6Cj4gCj4g
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBWb246ICJHYWdhbiBTaWRodSIgPGJy
-b2x5QG1hYy5jb20+Cj4+IHllcywgaSBoYXZlIGEgc3F1YXNoZnMgaW5zaWRlIGEgdWJpIHZvbHVt
-ZSwgYW5kIGkgY3JlYXRlIHViaSBibG9jayBkZXZpY2UgZnJvbQo+PiBpdC4KPj4gCj4+IGkgZG8g
-dXNlIGNvbmZpZ19tdGRfdWJpX2Jsb2NrIGJlY2F1c2UgdGhlIGZpbGVzeXN0ZW0gaXMgc3F1YXNo
-ZnMuCj4+IAo+PiBzbyBpIHRoaW5rIGl04oCZcyBhZmZpcm1hdGl2ZSB0byBib3RoIHF1ZXN0aW9u
-cy4gZ2x1ZWJpIGZvciB0aGUgYmxvY2sgZGV2aWNlIGZyb20KPj4gdGhlIHViaS5mcyBmaWxlLCB0
-aGVuIGNvbmZpZ19tdGRfdWJpX2Jsb2NrIHRvIG1vdW50IHRoaXMgcmVhZC1vbmx5IGZpbGVzeXN0
-ZW0KPj4gYXMgYSBibG9jayBkZXZpY2UuCj4+IAo+PiB0aGUgZW5kIHJlc3VsdCBvZiBib3RoIG9w
-dGlvbnMgaXMgYSByZWFkLW9ubHkgYmxvY2sgZGV2aWNlIHRoYXQgY2FuIGhhbmRsZSBiYWQKPj4g
-YmxvY2tzIG9uIG5hbmQgZGV2aWNlcy4KPj4gCj4+IGlmIGkgd2FzIHVzaW5nIGFuIE0yNVA4MCwg
-aSB3b3VsZG7igJl0IGV2ZW4gYmUgdXNpbmcgdWJpLgo+PiAKPj4gc28gQ09ORklHX01URF9VQklf
-e0dMVUVCSSxCTE9DS30gYXJlIGhhbmR5IGZvciBjYXNlcyB3aGVyZSB5b3UgbmVlZCBhbiBtdGQg
-YmxvY2sKPj4gZGV2aWNlIHdpdGggYSByZWFkLW9ubHkgZmlsZSBzeXN0ZW0gd2hlcmUgdGhlIFVC
-SSB0YWtlcyBjYXJlIG9mIHRoZQo+PiBpZGlvc3luY3Jhc2llcyB0aGF0IG1ha2UgTkFORCAoaW1v
-LCBvZmMpIGluZmVyaW9yIHRvIFNQSQo+IAo+IElzbid0IE1URCAtPiBVQkkgLT4gR0xVQkkgLT4g
-TVREIC0+IE1UREJMT0NLIHBlcmZvcm1hbmNlIHdpc2UgYSBuaWdodG1hcmU/Cj4gV2UgaGF2ZSBV
-QklCbG9jayBmb3IgdGhpcyB1c2UgY2FzZS4KPiAKPiBUaGFua3MsCj4gLy9yaWNoYXJkCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkdhZ2FuIFNpZGh1IiA8YnJv
+bHlAbWFjLmNvbT4KPiBpIGRvbuKAmXQgdGhpbmsgbXkgYXJ0aWN1bGF0aW9uIGlzIGNvcnJlY3Qg
+aWYgeW91IGludGVycHJldGVkIGl0IGFzIHRoYXQuCj4gCj4gYXMgaSB1bmRlcnN0YW5kIGl0LCBn
+bHVlYmkgc2ltcGx5IG1ha2VzIGl0IGhhbmR5IHdoZW4geW91IGhhdmUgYSBmaWxlc3lzdGVtCj4g
+cGFja2VkIHdpdGhpbiBhIHViaSBmaWxlLCBhbmQgaXQgd2lsbCB0YWtlIHRoYXQgZmlsZSBhbmQg
+bW91bnQgaXRhcyBhIGJsb2NrCj4gZGV2aWNlLgoKVGhlcmUgaXMgbm8gc3VjaCB0aGluZyBhcyBh
+biBVQkkgZmlsZS4gVUJJIGhvc3RzIHZvbHVtZXMuCllvdSBjYW4gaW5zdGFsbCBpbnRvIHRoZXNl
+IHZvbHVtZXMgd2hhdGV2ZXIgeW91IHdhbnQuCkFsc28gYSBmaWxlIHN5c3RlbSBzdWNoIGFzIFVC
+SUZTLCBidXQgdGhpcyBzZWVtcyBub3QgdG8gYmUgdGhlIGNhc2UgaGVyZS4KCj4gc28gaSB3b3Vs
+ZCBzYXkgaXTigJlzIG5vdCBNVEQtPlVCSS0+R0xVRUJJLT5NVEQtPk1UREJMT0NLCj4gCj4gaXTi
+gJlkIHNheSBpdOKAmXMgbW9yZSBNVEQtPkdMVUVCSS0+TVREQkxPQ0sKCk5vLiBHTFVCSSBlbXVs
+YXRlcyBhIE1URCBvbiB0b3Agb2YgYW4gVUJJIHZvbHVtZS4KU28gZXZlcnkgcmVhZC93cml0ZSBv
+cGVyYXRpb24gb2YgdGhlIGZpbGVzeXN0ZW0gd2lsbCBmaXJzdCB0byB0aHJvdWdoOgoKMS4gYmxv
+Y2sgbGF5ZXIKMi4gTVREQkxPQ0sgKGFuZCBtdGQpCjMuIEdMVUJJCjQuIFVCSQo1LiBNVEQgKHRo
+aXMgdGltZSB0aGUgcmVhbCBvbmUpCgpJcyB0aGlzIHJlYWxseSBhIHNldHVwIE9wZW5XUlQgaXMg
+dXNpbmc/CkknbSBub3Qgc2F5aW5nIGl0J3MgaW1wb3NzaWJsZSwgYnV0IGZhciBmcm9tIGlkZWFs
+LgpXZSBoYXZlIFVCSUJsb2NrIGZvciByZWFzb25zLgoKQW55d2F5LCBzaW5jZSB0aGUga2VybmVs
+IGhhcyB0byBiZSB1c2VyIHNwYWNlIGZyaWVuZGx5IGFuZAp1c2VycyBzZWVtcyB0byB1c2Ugc3Vj
+aCAib2RkIiBzdGFja2luZ3MgSSBjb25zaWRlciByZXZlcnRpbmcgdGhpcyBwYXRjaC4KWmhhb0xv
+bmcgV2FuZywgd2hhdCBkbyB5b3UgdGhpbms/CgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
