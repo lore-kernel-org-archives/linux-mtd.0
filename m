@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4C5DC2BA1A
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 10:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973E1C27C79
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 10:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=71ZPlUbIg9qASPITrg01jYptkD5xPnskNFxNz39W1ng=; b=cNQssIkAsJ3Azv
-	1dMi5D22KOm3yGVTmKEKZ7400BvVZD489AbnIZzUfE3Hw9j2KScak11j7jnQfOqNIYlvksiviWFEr
-	8KnMKB7urAcdAuIEP5aKp/h6u1h9ZG1OGcWq3AFzF1rgKezwEZTZn3LwL1CoVFQiYpCv5CW23cYzt
-	NRm4qbNIdSObJdLx2FysepzNm2D1JY/CoWnaju+4tQxgQ23rcPPCBW2EfQUDYOjsRS0VynMh2IxSn
-	cbR/1Mas9GGRBxU4VQcnjmPUDUn0rJl5wYKhPQh6V0cK3Ni9TxEirpA3qxGk9GPbfhgIp3F/5tCO7
-	WR79sxKtbyQaCUJ07jEQ==;
+	List-Owner; bh=BesKuyhwVwC+euW19Q/NS6i9QYgPHCYx46vbotrjeng=; b=P9Dc41RUsi/GnZ
+	+82xE3rvHfMoFQkRA2bVTlffptRH18TFwIZDC+GqfyqUo4zgbno8SYkn09uO4iaQoplUrnbQA3WIZ
+	CS4CaQdvpw0ndHmmFIPhvd63echPPsm14sUOE64OfOQ5yDjttVi3QG72sv0vVCkC6fT3po5xqLmDq
+	dcyUK06777xvDOjwZ6+iniucFMN3JGGcObi+5qxem3EOY8YR1eey8aLXpoaOpCoQ36ORcVnE7toah
+	yVu9o1BiK99cjbKRhnegmr0OWb1XX2zJnkaOBsV6TPMuhgc6Cr/ljduAekvHqjKzilIUQSqwD04n0
+	imVYk1Bb67/uxDM0vvJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ9iZ-0000000AHEQ-3lGt;
-	Mon, 17 Jun 2024 10:36:07 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1sJ9jH-0000000AHSn-3PMr;
+	Mon, 17 Jun 2024 10:36:51 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ9iX-0000000AHDp-0qFU;
-	Mon, 17 Jun 2024 10:36:06 +0000
+	id 1sJ9jF-0000000AHS4-1Jud;
+	Mon, 17 Jun 2024 10:36:50 +0000
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 75F3B5FECC;
-	Mon, 17 Jun 2024 10:36:03 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CE20A38037;
+	Mon, 17 Jun 2024 10:36:47 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6842139AB;
-	Mon, 17 Jun 2024 10:36:02 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34E77139AB;
+	Mon, 17 Jun 2024 10:36:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AHKOMJIRcGYTDAAAD6G6ig
-	(envelope-from <hare@suse.de>); Mon, 17 Jun 2024 10:36:02 +0000
-Message-ID: <c91d77a0-eec5-4af0-b3dd-bc2724108fc9@suse.de>
-Date: Mon, 17 Jun 2024 12:36:02 +0200
+	id oblHDL8RcGZPDAAAD6G6ig
+	(envelope-from <hare@suse.de>); Mon, 17 Jun 2024 10:36:47 +0000
+Message-ID: <0f819ed5-9549-4edf-98b3-19eed8558dfe@suse.de>
+Date: Mon, 17 Jun 2024 12:36:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/26] block: move cache control settings out of
- queue->flags
+Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -72,26 +71,26 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
- Ulf Hansson <ulf.hansson@linaro.org>
+ Damien Le Moal <dlemoal@kernel.org>
 References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-14-hch@lst.de>
+ <20240617060532.127975-15-hch@lst.de>
 Content-Language: en-US
 From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240617060532.127975-14-hch@lst.de>
+In-Reply-To: <20240617060532.127975-15-hch@lst.de>
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
-X-Rspamd-Queue-Id: 75F3B5FECC
+X-Rspamd-Queue-Id: CE20A38037
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_033605_414213_0B987520 
-X-CRM114-Status: GOOD (  15.27  )
+X-CRM114-CacheID: sfid-20240617_033649_664223_DD67599B 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,34 +107,28 @@ Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gNi8xNy8yNCAwODowNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gTW92ZSB0aGUgY2Fj
-aGUgY29udHJvbCBzZXR0aW5ncyBpbnRvIHRoZSBxdWV1ZV9saW1pdHMgc28gdGhhdCB0aGUgZmxh
-Z3MKPiBjYW4gYmUgc2V0IGF0b21pY2FsbHkgd2l0aCB0aGUgZGV2aWNlIHF1ZXVlIGZyb3plbi4K
-PiAKPiBBZGQgbmV3IGZlYXR1cmVzIGFuZCBmbGFncyBmaWVsZCBmb3IgdGhlIGRyaXZlciBzZXQg
-ZmxhZ3MsIGFuZCBpbnRlcm5hbAo+ICh1c3VhbGx5IHN5c2ZzLWNvbnRyb2xsZWQpIGZsYWdzIGlu
-IHRoZSBibG9jayBsYXllci4gIE5vdGUgdGhhdCB3ZSdsbAo+IGV2ZW50dWFsbHkgcmVtb3ZlIGVu
-b3VnaCBmaWVsZCBmcm9tIHF1ZXVlX2xpbWl0cyB0byBicmluZyBpdCBiYWNrIHRvIHRoZQo+IHBy
-ZXZpb3VzIHNpemUuCj4gCj4gVGhlIGRpc2FibGUgZmxhZyBpcyBpbnZlcnRlZCBjb21wYXJlZCB0
-byB0aGUgcHJldmlvdXMgbWVhbmluZywgd2hpY2gKPiBtZWFucyBpdCBub3cgc3Vydml2ZXMgYSBy
-ZXNjYW4sIHNpbWlsYXIgdG8gdGhlIG1heF9zZWN0b3JzIGFuZAo+IG1heF9kaXNjYXJkX3NlY3Rv
-cnMgdXNlciBsaW1pdHMuCj4gCj4gVGhlIEZMVVNIIGFuZCBGVUEgZmxhZ3MgYXJlIG5vdyBpbmhl
-cml0ZWQgYnkgYmxrX3N0YWNrX2xpbWl0cywgd2hpY2gKPiBzaW1wbGlmaWVkIHRoZSBjb2RlIGlu
-IGRtIGEgbG90LCBidXQgYWxzbyBjYXVzZXMgYSBzbGlnaHQgYmVoYXZpb3IKPiBjaGFuZ2UgaW4g
-dGhhdCBkbS1zd2l0Y2ggYW5kIGRtLXVuc3RyaXBlIG5vdyBhZHZlcnRpc2UgYSB3cml0ZSBjYWNo
-ZQo+IGRlc3BpdGUgc2V0dGluZyBudW1fZmx1c2hfYmlvcyB0byAwLiAgVGhlIEkvTyBwYXRoIHdp
-bGwgaGFuZGxlIHRoaXMKPiBncmFjZWZ1bGx5LCBidXQgYXMgZmFyIGFzIEkgY2FuIHRlbGwgdGhl
-IGxhY2sgb2YgbnVtX2ZsdXNoX2Jpb3MKPiBhbmQgdGh1cyBmbHVzaCBzdXBwb3J0IGlzIGEgcHJl
-LWV4aXN0aW5nIGRhdGEgaW50ZWdyaXR5IGJ1ZyBpbiB0aG9zZQo+IHRhcmdldHMgdGhhdCByZWFs
-bHkgbmVlZHMgZml4aW5nLCBhZnRlciB3aGljaCBhIG5vbi16ZXJvIG51bV9mbHVzaF9iaW9zCj4g
-c2hvdWxkIGJlIHJlcXVpcmVkIGluIGRtIGZvciB0YXJnZXRzIHRoYXQgbWFwIHRvIHVuZGVybHlp
-bmcgZGV2aWNlcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxz
-dC5kZT4KPiBBY2tlZC1ieTogVWxmIEhhbnNzb24gPHVsZi5oYW5zc29uQGxpbmFyby5vcmc+IFtt
-bWNdCj4gLS0tCgpSZXZpZXdlZC1ieTogSGFubmVzIFJlaW5lY2tlIDxoYXJlQHN1c2UuZGU+CgpD
-aGVlcnMsCgpIYW5uZXMKLS0gCkRyLiBIYW5uZXMgUmVpbmVja2UgICAgICAgICAgICAgICAgICBL
-ZXJuZWwgU3RvcmFnZSBBcmNoaXRlY3QKaGFyZUBzdXNlLmRlICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICArNDkgOTExIDc0MDUzIDY4OApTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHbWJI
-LCBGcmFua2Vuc3RyLiAxNDYsIDkwNDYxIE7DvHJuYmVyZwpIUkIgMzY4MDkgKEFHIE7DvHJuYmVy
-ZyksIEdGOiBJLiBUb3RldiwgQS4gTWNEb25hbGQsIFcuIEtub2JsaWNoCgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+T24gNi8xNy8yNCAwODowNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gTW92ZSB0aGUgbm9u
+cm90IGZsYWcgaW50byB0aGUgcXVldWVfbGltaXRzIGZlYXR1cmUgZmllbGQgc28gdGhhdCBpdCBj
+YW4KPiBiZSBzZXQgYXRvbWljYWxseSB3aXRoIHRoZSBxdWV1ZSBmcm96ZW4uCj4gCj4gVXNlIHRo
+ZSBjaGFuY2UgdG8gc3dpdGNoIHRvIGRlZmF1bHRpbmcgdG8gbm9uLXJvdGF0aW9uYWwgYW5kIHJl
+cXVpcmUKPiB0aGUgZHJpdmVyIHRvIG9wdCBpbnRvIHJvdGF0aW9uYWwsIHdoaWNoIG1hdGNoZXMg
+dGhlIHBvbGFyaXR5IG9mIHRoZQo+IHN5c2ZzIGludGVyZmFjZS4KPiAKPiBGb3IgdGhlIHoycmFt
+LCBwczN2cmFtLCAyeCBtZW1zdGljaywgdWJpYmxvY2sgYW5kIGRjc3NibGsgdGhlIG5ldwo+IHJv
+dGF0aW9uYWwgZmxhZyBpcyBub3Qgc2V0IGFzIHRoZXkgY2xlYXJseSBhcmUgbm90IHJvdGF0aW9u
+YWwgZGVzcGl0ZQo+IHRoaXMgYmVpbmcgYSBiZWhhdmlvciBjaGFuZ2UuICBUaGVyZSBhcmUgc29t
+ZSBvdGhlciBkcml2ZXJzIHRoYXQKPiB1bmNvbmRpdGlvbmFsbHkgc2V0IHRoZSByb3RhdGlvbmFs
+IGZsYWcgdG8ga2VlcCB0aGUgZXhpc3RpbmcgYmVoYXZpb3IKPiBhcyB0aGV5IGFyZ3VhYmx5IGNh
+biBiZSB1c2VkIG9uIHJvdGF0aW9uYWwgZGV2aWNlcyBldmVuIGlmIHRoYXQgaXMKPiBwcm9iYWJs
+eSBub3QgdGhlaXIgbWFpbiB1c2UgdG9kYXkgKGUuZy4gdmlydGlvX2JsayBhbmQgZHJiZCkuCj4g
+Cj4gVGhlIGZsYWcgaXMgYXV0b21hdGljYWxseSBpbmhlcml0ZWQgaW4gYmxrX3N0YWNrX2xpbWl0
+cyBtYXRjaGluZyB0aGUKPiBleGlzdGluZyBiZWhhdmlvciBpbiBkbSBhbmQgbWQuCj4gCj4gU2ln
+bmVkLW9mZi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+Cj4gUmV2aWV3ZWQtYnk6
+IERhbWllbiBMZSBNb2FsIDxkbGVtb2FsQGtlcm5lbC5vcmc+Cj4gLS0tCgpSZXZpZXdlZC1ieTog
+SGFubmVzIFJlaW5lY2tlIDxoYXJlQHN1c2UuZGU+CgpDaGVlcnMsCgpIYW5uZXMKLS0gCkRyLiBI
+YW5uZXMgUmVpbmVja2UgICAgICAgICAgICAgICAgICBLZXJuZWwgU3RvcmFnZSBBcmNoaXRlY3QK
+aGFyZUBzdXNlLmRlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICArNDkgOTExIDc0MDUz
+IDY4OApTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHbWJILCBGcmFua2Vuc3RyLiAxNDYsIDkwNDYx
+IE7DvHJuYmVyZwpIUkIgMzY4MDkgKEFHIE7DvHJuYmVyZyksIEdGOiBJLiBUb3RldiwgQS4gTWNE
+b25hbGQsIFcuIEtub2JsaWNoCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
