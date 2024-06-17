@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23679C2BA18
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A373C27C79
 	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 13:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7Xu1XJi6d0JZaEJQPY5KP0lSGQFjcgbCHw5ZEKHM6To=; b=Dd1xovIYRJu3Kz
-	v51/G2nM3nzpD8gyVb3/jmDv7KIa9Vm2gVIDJlYTCyPwEdIz6i/ijIVR4u+VqlavBG+3sxSDJoQZ0
-	9h0PXzyfkyVfIgv9rIJbnfOt2qpuduvGJFD84NmDEUoMpJekoTZPVhr320+M8lcVgQbhmB8Gdgf8g
-	EMpa2jGIBO3PpRxdSKfJh9zvPOLcvNvJRyZU905fvnkWgJ1X07f8Dd0SQXbXjOXrW91whgAnb32P2
-	s4uRBCgPlnddOKiUZtzSMIR+sB1TFrSFkjNB3RCpVj78rZ7C8DsHD4w8iqsv5wEsqXByFLkGEzltP
-	Crx++tkHIBHTcCZCOv5g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=a72YkaVNUhoZLGEIb3Wz06/+tx2c1WyeHjNLfDrJuNM=; b=HRmTK+w7+sDmzm
+	m0mjTDkzL++zxnxRtdMVLs5lUYKIFO/cOBIut6T6750vBiNBjhWvp4pFi7G7/8r1ftYEd1QFJTiD6
+	rNKKeH4q6izR5uhudOYV6iSUxq0FCPH04NjlRQon70QlHc3kV8515lk1eF73WLIGvOjoKJDUiRRd3
+	PQUCRqBGhq4AQ3aLXqhrVNvGCIIHvkOhx26J+oeNWX4Zs2aunXHJre4SH5tfotk9eNX7avVtHDKML
+	Go+ijzkw4DWFJrUlmAhAOCwBID9ezjVnq9yUxsy8fNQQB8i+oZPagpNe/VbP/YEP9K6dFpXItodZz
+	3Jp4q6lqyjAU5/wK+sHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCWE-0000000Asfc-28ks;
-	Mon, 17 Jun 2024 13:35:34 +0000
+	id 1sJCWD-0000000Asf8-3JiB;
+	Mon, 17 Jun 2024 13:35:33 +0000
 Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCW8-0000000AsaO-3c1k
+	id 1sJCW8-0000000AsaN-3Miq
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jun 2024 13:35:31 +0000
+	Mon, 17 Jun 2024 13:35:30 +0000
 Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 1D6CB100009;
-	Mon, 17 Jun 2024 16:35:23 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1D6CB100009
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 3D810100003;
+	Mon, 17 Jun 2024 16:35:22 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3D810100003
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1718631323;
-	bh=s3IdEpoU8Idriuk8g63QAeoI/TR/7zBrB1N7H/17w8U=;
+	s=mail; t=1718631322;
+	bh=8FxyRaKeWJqwgkCh0J/SmA262Y/mTap6YRFjgrEtVGQ=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=AmHPfDiTxt1A03tynXh9e4ElOYSFwA3pboSyYhjiSNG8gKbnaYEZAZZMOSy6rwT1x
-	 y4WyLGydxdIAhK7mFXjCMFz0gCGChrXigonvXRyRzMmsCTESZyRjUc1uU40TgPhgxQ
-	 7Rii47N1O2fy7bzmaP7fvLDGk3fcUpd/C1Pd2vLou5cx0GljRkqT7nvOXaKQQFfbUb
-	 dUGzzHs7Ot/Noyca2lt8U1joca4VAqTw5Z287f85cphupiZRAxk101WBU4vBUhRX2x
-	 QLs88HsEufe8DnBR+MWI7Vn1WnvCH/t8vuGlocrP4f98uhd2L2KJ7CPjcUM3ZTVw3F
-	 traq7Z2IKwx1g==
+	b=q8djABTXUS7lmXQBL3d/t9Su5FRjJ5E/+T7yzdlvPQ4RUGUHTaZEYGl3Y9YuOZGXP
+	 k6WR9F3zUi6QeW+OQtMdMBhMbyCmDWHegizsIR6McU2rg9D9MvaUKgxa7Q8rlJtNd/
+	 XxKSn0skJx3AAKyJSwFDjzDqn75u9fg/1BdfHMe4trOiofr3HoNaPM74H7Fq/+S+x3
+	 fzgdU+gMgCqwHG4HmK/srRenwQkIeGduYXAeeCLLd7rGs5iLrPJMyK45NihfYEq5r5
+	 6a5MblZ4rRlXOQ5AtY+cwEcP8ye4ewiJQi0WgeBszCI7srlLrH4lGOfoYJ9GqUy8NA
+	 ZcKXrVXsEYbAA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
@@ -49,7 +49,7 @@ Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.1
 Received: from CAB-WSD-0004828.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 17 Jun 2024 16:35:22 +0300
+ 15.2.1118.40; Mon, 17 Jun 2024 16:35:21 +0300
 From: Martin Kurbanov <mmkurbanov@salutedevices.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg
@@ -61,12 +61,10 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<avromanov@salutedevices.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
 	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
-Subject: [PATCH v1 3/5] mtd: spinand: make spinand_wait() global
-Date: Mon, 17 Jun 2024 16:34:55 +0300
-Message-ID: <20240617133504.179705-4-mmkurbanov@salutedevices.com>
+Subject: [PATCH v1 0/5] mtd: spinand: add OTP support
+Date: Mon, 17 Jun 2024 16:34:52 +0300
+Message-ID: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
 X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
-References: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
 MIME-Version: 1.0
 X-Originating-IP: [100.64.160.123]
 X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
@@ -88,8 +86,9 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/17 11:22:00 #25639124
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_063529_283468_1194E2E5 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20240617_063529_239503_399C43CA 
+X-CRM114-Status: UNSURE (   9.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,58 +105,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Change the function spinand_wait() from static to global so that SPI
-NAND flash drivers don't duplicate it.
+This patchset implements the SPI-NAND OTP functions to allow access to
+the SPI-NAND OTP data.
+Specific support is added for Micron MT29F2G01ABAGD and ESMT F50L1G41LB/
+F50D1G41LB flash chips.
 
-Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
----
- drivers/mtd/nand/spi/core.c | 18 ++++++++++++++----
- include/linux/mtd/spinand.h |  3 +++
- 2 files changed, 17 insertions(+), 4 deletions(-)
+Martin Kurbanov (5):
+  mtd: spinand: make spinand_{read,write}_page global
+  mtd: spinand: add OTP support
+  mtd: spinand: make spinand_wait() global
+  mtd: spinand: micron: OTP access for MT29F2G01ABAGD
+  mtd: spinand: esmt: OTP access for F50{L,D}1G41LB
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 2cb825edd49d0..c3e3d1e9599f1 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -496,10 +496,20 @@ static int spinand_erase_op(struct spinand_device *spinand,
- 	return spi_mem_exec_op(spinand->spimem, &op);
- }
- 
--static int spinand_wait(struct spinand_device *spinand,
--			unsigned long initial_delay_us,
--			unsigned long poll_delay_us,
--			u8 *s)
-+/**
-+ * spinand_wait() - Poll memory device status
-+ * @spinand: the spinand device
-+ * @initial_delay_us: delay in us before starting to poll
-+ * @poll_delay_us: time to sleep between reads in us
-+ * @s: the pointer to variable to store the value of REG_STATUS
-+ *
-+ * This function polls a status register (REG_STATUS) and returns when
-+ * the STATUS_READY bit is 0 or when the timeout has expired.
-+ *
-+ * Return: 0 on success, a negative error code otherwise.
-+ */
-+int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
-+		 unsigned long poll_delay_us, u8 *s)
- {
- 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
- 						      spinand->scratchbuf);
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index a0d42a9be333f..3b9e7ed32c81d 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -567,6 +567,9 @@ int spinand_match_and_init(struct spinand_device *spinand,
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
- 
-+int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
-+		 unsigned long poll_delay_us, u8 *s);
-+
- int spinand_read_page(struct spinand_device *spinand,
- 		      const struct nand_page_io_req *req);
- 
+ drivers/mtd/nand/spi/Makefile |   3 +-
+ drivers/mtd/nand/spi/core.c   |  45 +++++--
+ drivers/mtd/nand/spi/esmt.c   |  69 ++++++++++-
+ drivers/mtd/nand/spi/micron.c | 117 +++++++++++++++++-
+ drivers/mtd/nand/spi/otp.c    | 219 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |  65 ++++++++++
+ 6 files changed, 506 insertions(+), 12 deletions(-)
+ create mode 100644 drivers/mtd/nand/spi/otp.c
+
 -- 
 2.43.2
 
