@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEB36C2BA16
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 06:13:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1470C27C7B
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 06:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=33Cfb0IUJwxEo96k2vBSAIL4t8HZrXZq5bFS+eY08zY=; b=vFfOvh2xUwJ3WB
-	1p7tMcQCxD26/h3sdcSNwL4bvf244MhvcJ8x5ShI9ApSFFowsm3dzsCM0H180bmN7HdWz1gHDuMIh
-	eWY1/iiuyKuo70AZRjlOgao107w1p1YIAJgRKAWq0CKaw+pt9E+Eb3/b6vmoqznSwGRdUFZGltjAb
-	KiaSrkr9HrL63kVQ/ukov/94inY8LMkoKLlAWWqNn9X2WJtf1C/esD0POdP0PxOlSv8b6yYFVqIec
-	kKRg5pXq2m+bZ1FYUDeQlLxDAuShOrimtQ8BW7MYZK9L1Zfqaj5/ls3xbuTi0zihlNqrSawSWk1Ce
-	v/pQIsMls3F0OtVBznLw==;
+	List-Owner; bh=xO5TNZEXZupgCPtmj3MU7Bhe30wFcxRz4B1YHIvmZfY=; b=2qT5+NQAS/ayKL
+	qrrGIMvADs7l03LYNYTEsZPNxr31XmsXFvV6ioBguaFqiBVStWRsRY002olH1uAlkxxxu626KQNvn
+	gux3oMeazqDpfe33FxTRN0qHU3rMrn0gVhl9Vxoe/P2y8K7R4/GgZpAuEA0ZHNsWB4QQnIKQG0jcM
+	sgTvk+7+QCh5852Sb25qZX1J5WbKb9I7R34/tQ7ydxFPWg6LP2bQcoyhKJSW5BF4lH9Vlpz6Lr4m2
+	L/nzglrtIHpOBEXQrTxGQmmTcliN398jVaCIJYSg3TnK3CF1DApnT1DDejOGAU8AXslySHJ4dQTl/
+	9rhGiEvRhk7u1R79+qow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5cj-00000009NxY-0dmc;
-	Mon, 17 Jun 2024 06:13:49 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sJ5dO-00000009OIA-2UHh;
+	Mon, 17 Jun 2024 06:14:30 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5cZ-00000009Nrh-2toz;
-	Mon, 17 Jun 2024 06:13:47 +0000
+	id 1sJ5dL-00000009OGd-3NL6;
+	Mon, 17 Jun 2024 06:14:29 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 79463CE0FD1;
-	Mon, 17 Jun 2024 06:13:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E26F1C2BD10;
-	Mon, 17 Jun 2024 06:13:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id E064A61127;
+	Mon, 17 Jun 2024 06:14:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD93C2BD10;
+	Mon, 17 Jun 2024 06:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718604815;
-	bh=i+c+RpVRjeaE7WIb31u0YOButoWpoMUXbmMH2ED9KM8=;
+	s=k20201202; t=1718604866;
+	bh=0lJUnETFqPY6tW6TrXFvmKZbVynd6dSdhAW9BC6m+kE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NGDwf0zXEmzo9+7Yx4d9cGXV793JqUi91piwr9DLQr9gvYLzjssulS3nd0FDXod4o
-	 1NiEaNf9DKv91oATngwE6MlpuTxufePFFAUPAiGTMSZ8Iyqb43pbMY/AWpT0yfgG9x
-	 h7tK/rGWoSYR5lk30x+/zxQfjGaL8mJv2SH7mMjlqBwSC3JpHWjWgqv3xYEnVpUZ3T
-	 GLm2uelJLLxYyxbZLJP4lmiyxvgd2hfNI8V/LV1wIStwKjwJDXjuh7JmDm0LI0dTdZ
-	 pEsb3rbnrZU0AByYnkj2ZCWuHVBzn8LtTQfnCUTAC98K23Vza+t2P0C82aHVfqiJXZ
-	 7lE9UMorz5Ztg==
-Message-ID: <72e2cebc-a748-4e39-8783-440a82cd40c1@kernel.org>
-Date: Mon, 17 Jun 2024 15:13:29 +0900
+	b=KOFdmVOJ7h8N9C7m0i5IH5j0T08893gjt00viGEXx0ITrjnEVSc7/n9x0PQNWhoCT
+	 R0G81HXchAoQj63QO9zRTuNrWvr+9t+JPXFgDrlIxVtX306FULncwLvEYKw7dkrJFz
+	 S6g5cy4QX7ofX49F8f+GhBjuuHoOe+F7NO0rxdIU4Xo0KJqwPt8S0uxmuFJz89cUcE
+	 b/qPpB1pTQXoj1rhBApU3rTIJGnWH/qdRZJ9WOKQ+vU7PAj3CbnFFbcYvIj/VggV6B
+	 QjSaWBl2euqvrvUDeNk514rvS2oC47UJWpHbvgG7uFw1q8j7/c3YYf4Afd7F+Ekvnv
+	 W3vwVHRQv5iRw==
+Message-ID: <d7b45e0b-68a9-4612-861a-7f192fbe6f84@kernel.org>
+Date: Mon, 17 Jun 2024 15:14:21 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/26] loop: regularize upgrading the block size for
- direct I/O
+Subject: Re: [PATCH 07/26] loop: also use the default block size from an
+ underlying block device
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -71,15 +71,14 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
  Hannes Reinecke <hare@suse.de>, Bart Van Assche <bvanassche@acm.org>
 References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-7-hch@lst.de>
+ <20240617060532.127975-8-hch@lst.de>
 From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
 Organization: Western Digital Research
-In-Reply-To: <20240617060532.127975-7-hch@lst.de>
+In-Reply-To: <20240617060532.127975-8-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240616_231340_117834_4E9AE051 
-X-CRM114-Status: UNSURE (   8.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240616_231427_943647_9440166D 
+X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,16 +96,14 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 6/17/24 15:04, Christoph Hellwig wrote:
-> The LOOP_CONFIGURE path automatically upgrades the block size to that
-> of the underlying file for O_DIRECT file descriptors, but the
-> LOOP_SET_BLOCK_SIZE path does not.  Fix this by lifting the code to
-> pick the block size into common code.
+> Fix the code in loop_reconfigure_limits to pick a default block size for
+> O_DIRECT file descriptors to also work when the loop device sits on top
+> of a block device and not just on a regular file on a block device based
+> file system.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > Reviewed-by: Hannes Reinecke <hare@suse.de>
 > Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-
-Looks good to me.
 
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 
