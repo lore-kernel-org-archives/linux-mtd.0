@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4355AC27C77
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 06:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F0B0C27C6E
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 06:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gHzKJZzos3MuVWTj9t69QQ4tbVpzIAYAY5P+gbEaMeY=; b=lbiSuJWXnya/gm
-	yd1tJOv8MArH1gsyF/efyh/Ftb4QfGb6/1Alig5N1LBl4J6w9HhE4xNd02e6609dfuZeW2a4ivyRK
-	B5veYQ+92X0uOgdXYT4/gw5B20DL9FCPSuxm6T8IEOW/jeCa3YPl0Xuu5B4P8xS59WQk8/TJwAil7
-	gt7oAfiPU7ftmEZXj0P5ntozYLeiXxkvIZu4Fl2p2tcOJ7RI2vamEbO+MNgyRCwRcSY6FUv2xgK2v
-	64DCTGZFf8w7Cix37D4nvVI2OR8V8h+rTLHh2gatAJoGxRdrM7yTIHYR1IaJUdl9YZOymlsKkTAoh
-	dGVoPLWU/Lv+sUbRrEiQ==;
+	List-Owner; bh=SXOiiSDpqHMhS/OxpsRUCBrMck0Jhh67kMvJTFqpWBA=; b=M8NM7BkOc26jeO
+	AiPsxX4arG3j86wEKQls5Z/kuAp23uorKIr7gfD3hqwzbNAPPkvMnsux8beLz28Q50WUFWt5n8j7k
+	7X/av//mrcU5/vjU2saVCygYkjvp1WrTL9suQtswp2oMwOmMx8YY0b/xsCQLLMWmd01Q422SecDJB
+	v7aQuobQ1wYkryEFa86+T6Tj4aoZm46KrgnI6nNFVjPdVcVA1vu87yPaodCIRlsOAIQgW/BdBEfw3
+	UUe2lp196n98vhT7aN5dPwNmKLJj1JwUnaIBaarAKnso3Nw5DItvxab5eYvBsUvu1koxpX8CEqcs0
+	4g9pAxKmHceKYpW1Mf8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5Wi-00000009Jqx-0zxN;
-	Mon, 17 Jun 2024 06:07:36 +0000
+	id 1sJ5Wn-00000009Jvd-1GAt;
+	Mon, 17 Jun 2024 06:07:41 +0000
 Received: from [91.187.204.140] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5Vf-00000009IvN-27mo;
-	Mon, 17 Jun 2024 06:06:32 +0000
+	id 1sJ5Vm-00000009J1l-1XQN;
+	Mon, 17 Jun 2024 06:06:39 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -64,9 +64,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org,
 	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 18/26] block: move the synchronous flag to queue_limits
-Date: Mon, 17 Jun 2024 08:04:45 +0200
-Message-ID: <20240617060532.127975-19-hch@lst.de>
+Subject: [PATCH 20/26] block: move the dax flag to queue_limits
+Date: Mon, 17 Jun 2024 08:04:47 +0200
+Message-ID: <20240617060532.127975-21-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240617060532.127975-1-hch@lst.de>
 References: <20240617060532.127975-1-hch@lst.de>
@@ -87,149 +87,139 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Move the synchronous flag into the queue_limits feature field so that it
-can be set atomically with the queue frozen.
+Move the dax flag into the queue_limits feature field so that it can be
+set atomically with the queue frozen.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- block/blk-mq-debugfs.c        | 1 -
- drivers/block/brd.c           | 2 +-
- drivers/block/zram/zram_drv.c | 4 ++--
- drivers/nvdimm/btt.c          | 3 +--
- drivers/nvdimm/pmem.c         | 4 ++--
- include/linux/blkdev.h        | 7 ++++---
- 6 files changed, 10 insertions(+), 11 deletions(-)
+ block/blk-mq-debugfs.c       | 1 -
+ drivers/md/dm-table.c        | 4 ++--
+ drivers/nvdimm/pmem.c        | 7 ++-----
+ drivers/s390/block/dcssblk.c | 2 +-
+ include/linux/blkdev.h       | 6 ++++--
+ 5 files changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index eb73f1d348e5a9..957774e40b1d0c 100644
+index 62b132e9a9ce3b..f4fa820251ce83 100644
 --- a/block/blk-mq-debugfs.c
 +++ b/block/blk-mq-debugfs.c
-@@ -85,7 +85,6 @@ static const char *const blk_queue_flag_name[] = {
- 	QUEUE_FLAG_NAME(SAME_COMP),
- 	QUEUE_FLAG_NAME(FAIL_IO),
- 	QUEUE_FLAG_NAME(NOXMERGES),
--	QUEUE_FLAG_NAME(SYNCHRONOUS),
+@@ -88,7 +88,6 @@ static const char *const blk_queue_flag_name[] = {
  	QUEUE_FLAG_NAME(SAME_FORCE),
  	QUEUE_FLAG_NAME(INIT_DONE),
  	QUEUE_FLAG_NAME(POLL),
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index b25dc463b5e3a6..d77deb571dbd06 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -335,6 +335,7 @@ static int brd_alloc(int i)
- 		.max_hw_discard_sectors	= UINT_MAX,
- 		.max_discard_segments	= 1,
- 		.discard_granularity	= PAGE_SIZE,
-+		.features		= BLK_FEAT_SYNCHRONOUS,
- 	};
+-	QUEUE_FLAG_NAME(DAX),
+ 	QUEUE_FLAG_NAME(STATS),
+ 	QUEUE_FLAG_NAME(REGISTERED),
+ 	QUEUE_FLAG_NAME(QUIESCED),
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 84d636712c7284..e44697037e86f4 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1834,11 +1834,11 @@ int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+ 		limits->features |= BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA;
  
- 	list_for_each_entry(brd, &brd_devices, brd_list)
-@@ -366,7 +367,6 @@ static int brd_alloc(int i)
- 	strscpy(disk->disk_name, buf, DISK_NAME_LEN);
- 	set_capacity(disk, rd_size * 2);
- 	
--	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, disk->queue);
- 	blk_queue_flag_set(QUEUE_FLAG_NOWAIT, disk->queue);
- 	err = add_disk(disk);
- 	if (err)
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index f8f1b5b54795ac..efcb8d9d274c31 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -2208,7 +2208,8 @@ static int zram_add(void)
- #if ZRAM_LOGICAL_BLOCK_SIZE == PAGE_SIZE
- 		.max_write_zeroes_sectors	= UINT_MAX,
- #endif
--		.features			= BLK_FEAT_STABLE_WRITES,
-+		.features			= BLK_FEAT_STABLE_WRITES |
-+						  BLK_FEAT_SYNCHRONOUS,
- 	};
- 	struct zram *zram;
- 	int ret, device_id;
-@@ -2246,7 +2247,6 @@ static int zram_add(void)
+ 	if (dm_table_supports_dax(t, device_not_dax_capable)) {
+-		blk_queue_flag_set(QUEUE_FLAG_DAX, q);
++		limits->features |= BLK_FEAT_DAX;
+ 		if (dm_table_supports_dax(t, device_not_dax_synchronous_capable))
+ 			set_dax_synchronous(t->md->dax_dev);
+ 	} else
+-		blk_queue_flag_clear(QUEUE_FLAG_DAX, q);
++		limits->features &= ~BLK_FEAT_DAX;
  
- 	/* Actual capacity set using sysfs (/sys/block/zram<id>/disksize */
- 	set_capacity(zram->disk, 0);
--	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, zram->disk->queue);
- 	ret = device_add_disk(NULL, zram->disk, zram_disk_groups);
- 	if (ret)
- 		goto out_cleanup_disk;
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index e474afa8e9f68d..e79c06d65bb77b 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -1501,6 +1501,7 @@ static int btt_blk_init(struct btt *btt)
- 		.logical_block_size	= btt->sector_size,
- 		.max_hw_sectors		= UINT_MAX,
- 		.max_integrity_segments	= 1,
-+		.features		= BLK_FEAT_SYNCHRONOUS,
- 	};
- 	int rc;
- 
-@@ -1518,8 +1519,6 @@ static int btt_blk_init(struct btt *btt)
- 	btt->btt_disk->fops = &btt_fops;
- 	btt->btt_disk->private_data = btt;
- 
--	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, btt->btt_disk->queue);
--
- 	set_capacity(btt->btt_disk, btt->nlba * btt->sector_size >> 9);
- 	rc = device_add_disk(&btt->nd_btt->dev, btt->btt_disk, NULL);
- 	if (rc)
+ 	if (dm_table_any_dev_attr(t, device_dax_write_cache_enabled, NULL))
+ 		dax_write_cache(t->md->dax_dev, true);
 diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index 501cf226df0187..b821dcf018f6ae 100644
+index b821dcf018f6ae..1dd74c969d5a09 100644
 --- a/drivers/nvdimm/pmem.c
 +++ b/drivers/nvdimm/pmem.c
-@@ -455,7 +455,8 @@ static int pmem_attach_disk(struct device *dev,
- 		.logical_block_size	= pmem_sector_size(ndns),
- 		.physical_block_size	= PAGE_SIZE,
- 		.max_hw_sectors		= UINT_MAX,
--		.features		= BLK_FEAT_WRITE_CACHE,
-+		.features		= BLK_FEAT_WRITE_CACHE |
-+					  BLK_FEAT_SYNCHRONOUS,
- 	};
- 	int nid = dev_to_node(dev), fua;
- 	struct resource *res = &nsio->res;
-@@ -546,7 +547,6 @@ static int pmem_attach_disk(struct device *dev,
+@@ -465,7 +465,6 @@ static int pmem_attach_disk(struct device *dev,
+ 	struct dax_device *dax_dev;
+ 	struct nd_pfn_sb *pfn_sb;
+ 	struct pmem_device *pmem;
+-	struct request_queue *q;
+ 	struct gendisk *disk;
+ 	void *addr;
+ 	int rc;
+@@ -499,6 +498,8 @@ static int pmem_attach_disk(struct device *dev,
+ 	}
+ 	if (fua)
+ 		lim.features |= BLK_FEAT_FUA;
++	if (is_nd_pfn(dev))
++		lim.features |= BLK_FEAT_DAX;
+ 
+ 	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+ 				dev_name(&ndns->dev))) {
+@@ -509,7 +510,6 @@ static int pmem_attach_disk(struct device *dev,
+ 	disk = blk_alloc_disk(&lim, nid);
+ 	if (IS_ERR(disk))
+ 		return PTR_ERR(disk);
+-	q = disk->queue;
+ 
+ 	pmem->disk = disk;
+ 	pmem->pgmap.owner = pmem;
+@@ -547,9 +547,6 @@ static int pmem_attach_disk(struct device *dev,
  	}
  	pmem->virt_addr = addr;
  
--	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, q);
- 	if (pmem->pfn_flags & PFN_MAP)
- 		blk_queue_flag_set(QUEUE_FLAG_DAX, q);
+-	if (pmem->pfn_flags & PFN_MAP)
+-		blk_queue_flag_set(QUEUE_FLAG_DAX, q);
+-
+ 	disk->fops		= &pmem_fops;
+ 	disk->private_data	= pmem;
+ 	nvdimm_namespace_disk_name(ndns, disk->disk_name);
+diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+index 6d1689a2717e5f..d5a5d11ae0dcdf 100644
+--- a/drivers/s390/block/dcssblk.c
++++ b/drivers/s390/block/dcssblk.c
+@@ -548,6 +548,7 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+ {
+ 	struct queue_limits lim = {
+ 		.logical_block_size	= 4096,
++		.features		= BLK_FEAT_DAX,
+ 	};
+ 	int rc, i, j, num_of_segments;
+ 	struct dcssblk_dev_info *dev_info;
+@@ -643,7 +644,6 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+ 	dev_info->gd->fops = &dcssblk_devops;
+ 	dev_info->gd->private_data = dev_info;
+ 	dev_info->gd->flags |= GENHD_FL_NO_PART;
+-	blk_queue_flag_set(QUEUE_FLAG_DAX, dev_info->gd->queue);
  
+ 	seg_byte_size = (dev_info->end - dev_info->start + 1);
+ 	set_capacity(dev_info->gd, seg_byte_size >> 9); // size in sectors
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 8936eb6ba60956..cee7b44a142513 100644
+index f3d4519d609d95..7022e06a3dd9a3 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -301,6 +301,9 @@ enum {
+@@ -307,6 +307,9 @@ enum {
  
- 	/* don't modify data until writeback is done */
- 	BLK_FEAT_STABLE_WRITES			= (1u << 5),
+ 	/* supports REQ_NOWAIT */
+ 	BLK_FEAT_NOWAIT				= (1u << 7),
 +
-+	/* always completes in submit context */
-+	BLK_FEAT_SYNCHRONOUS			= (1u << 6),
++	/* supports DAX */
++	BLK_FEAT_DAX				= (1u << 8),
  };
  
  /*
-@@ -566,7 +569,6 @@ struct request_queue {
- #define QUEUE_FLAG_SAME_COMP	4	/* complete on same CPU-group */
- #define QUEUE_FLAG_FAIL_IO	5	/* fake timeout */
- #define QUEUE_FLAG_NOXMERGES	9	/* No extended merges */
--#define QUEUE_FLAG_SYNCHRONOUS	11	/* always completes in submit context */
+@@ -575,7 +578,6 @@ struct request_queue {
  #define QUEUE_FLAG_SAME_FORCE	12	/* force complete on same CPU */
  #define QUEUE_FLAG_INIT_DONE	14	/* queue is initialized */
  #define QUEUE_FLAG_POLL		16	/* IO polling enabled if set */
-@@ -1315,8 +1317,7 @@ static inline bool bdev_nonrot(struct block_device *bdev)
- 
- static inline bool bdev_synchronous(struct block_device *bdev)
- {
--	return test_bit(QUEUE_FLAG_SYNCHRONOUS,
--			&bdev_get_queue(bdev)->queue_flags);
-+	return bdev->bd_disk->queue->limits.features & BLK_FEAT_SYNCHRONOUS;
- }
- 
- static inline bool bdev_stable_writes(struct block_device *bdev)
+-#define QUEUE_FLAG_DAX		19	/* device supports DAX */
+ #define QUEUE_FLAG_STATS	20	/* track IO start and completion times */
+ #define QUEUE_FLAG_REGISTERED	22	/* queue has been registered to a disk */
+ #define QUEUE_FLAG_QUIESCED	24	/* queue has been quiesced */
+@@ -602,7 +604,7 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+ #define blk_queue_io_stat(q)	((q)->limits.features & BLK_FEAT_IO_STAT)
+ #define blk_queue_zone_resetall(q)	\
+ 	test_bit(QUEUE_FLAG_ZONE_RESETALL, &(q)->queue_flags)
+-#define blk_queue_dax(q)	test_bit(QUEUE_FLAG_DAX, &(q)->queue_flags)
++#define blk_queue_dax(q)	((q)->limits.features & BLK_FEAT_DAX)
+ #define blk_queue_pci_p2pdma(q)	\
+ 	test_bit(QUEUE_FLAG_PCI_P2PDMA, &(q)->queue_flags)
+ #ifdef CONFIG_BLK_RQ_ALLOC_TIME
 -- 
 2.43.0
 
