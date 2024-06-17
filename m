@@ -4,51 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA729C2BA1A
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 10:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8F68C2BA1A
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 10:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hs79d48yXVydZGpR5LpZmQtN/Vd7cRVmRt6LkS5enUE=; b=wVbX539jqtSxMH
-	pjBuiE1n0I26KmP0cICj278Fw6ZDJowFBspWUu91/9qT/SvEqyy09zoelQivQ+gnQ15wfu96xOpPG
-	kl5hBvaxWwGLncuc+mg1xYF5z338BvHd++smEExsTu+itVbkzx4ITxlhZEfwTaQYaiRYqoRm/IiS/
-	C3DXZzwRgsue3IWnt5zuH6um2oYvyCJcGvu3/CMJMEscDYUKK2Y2aU9IzMYVLzbW65QXN5ojCDruT
-	4/A4bfbMtKZQzunPfxpSWgOMZ7JJjZAVSQpBTssQVzX9zhGwSLaiZMUSkmm0bBUkDisS1bab0M+zl
-	ADHu+xSZiLENcMcyMYRQ==;
+	List-Owner; bh=GnBpDbpT3YjTe26m7tYQPTTQwzcs1XtlYyJfqsMLnRU=; b=vTIVuQzypaRZ8g
+	tBh3GmsqiNZDUrOnHJkXVcLqPT6+REXt8rnA4cZ0a/xMsA3lsd64GFMErS4bsTTknpwaCSpfx0PWe
+	5jPQ6iiEJyZQKTQ50KnbwV8+9hVZmEx08/sQ5SiFNywwCjy6u4yV4joGVPp/Rf2XRIWadDuDu35Uk
+	9X75kc4hWDCRTVcQawblQCMCZI9B8Sq1OhCicTHYaUv/KGzPbYfr2XcLG4+7EmgcuBHSu1C8GSZur
+	amZZOByI3KuDy5AacU8cKAPpUzhjtQGhOPZLvzIgehD4ZzWaGVSWHjMoqdJzZdH3vnhfbNQY6Zhyy
+	1ZtGpfNa2SG1yiOrbO4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ9oy-0000000AJWC-32SX;
-	Mon, 17 Jun 2024 10:42:44 +0000
-Received: from smtp-out2.suse.de ([195.135.223.131])
+	id 1sJ9pU-0000000AJmL-1iNb;
+	Mon, 17 Jun 2024 10:43:16 +0000
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ9oq-0000000AJRW-1Izq;
-	Mon, 17 Jun 2024 10:42:43 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	id 1sJ9pO-0000000AJie-1vp3;
+	Mon, 17 Jun 2024 10:43:14 +0000
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AB3C95FEE7;
-	Mon, 17 Jun 2024 10:42:34 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D41D35FEE9;
+	Mon, 17 Jun 2024 10:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1718620989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eS6cZAP8PrCUOUN3SU0P3EiUgWRFs6k3X4SwgCCySaI=;
+	b=cmmSBPs25p4H4sEPwGAIYUiX2uwegnyNhIlwPRzQIpdoOZGj4JzaP3T8DaODLiPWw9mUSz
+	s5RMqwmmPfI36ETol7BRoAzdTd/vWZnvteESUa9wQj/IFwaYT5ru7oXBeGITPuMeg/aVw4
+	ZM+TU4wok4o8O2S9lA/KuJze2r5v9p0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1718620989;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eS6cZAP8PrCUOUN3SU0P3EiUgWRFs6k3X4SwgCCySaI=;
+	b=B92gbOLVQD6eAgdjn6Bzl4NFN7iNb0ySX50WmsPod9PQCFGJEWc7mxy6VV5cJV6T7cKH+y
+	aEdGgm/8XNL9s8Cw==
 Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1718620988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eS6cZAP8PrCUOUN3SU0P3EiUgWRFs6k3X4SwgCCySaI=;
+	b=TiRVzeY4b8BgXR1AVgVsNj7xraN6gx3lVPXLO5ki0L3pyeW2PafUroYNXEvKyBSl6Ggs44
+	O8c3ELPSkDfeSso6KRmUefFHpezgWAKZGNzsEQ4v1MvPsuF7iSYFfz+y7Q05o2mR/FYIfg
+	IE68WQfGWmDYf2Hn74jpq+bs83fGxNo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1718620988;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eS6cZAP8PrCUOUN3SU0P3EiUgWRFs6k3X4SwgCCySaI=;
+	b=t5CaYJdw/5jN1yYQGG3K3dgg+uYjoVndVeOMh4ZeKdHOePhVDEm+C37+u16j5art4bCLkv
+	h7mou1Tr9IUL9RCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7F6813AAA;
-	Mon, 17 Jun 2024 10:42:33 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 23BEA13AAA;
+	Mon, 17 Jun 2024 10:43:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MDskNBkTcGb/DQAAD6G6ig
-	(envelope-from <hare@suse.de>); Mon, 17 Jun 2024 10:42:33 +0000
-Message-ID: <10acf40f-b4e0-40d1-ab6c-5c2baa178362@suse.de>
-Date: Mon, 17 Jun 2024 12:42:33 +0200
+	id HfgcCDwTcGYwDgAAD6G6ig
+	(envelope-from <hare@suse.de>); Mon, 17 Jun 2024 10:43:08 +0000
+Message-ID: <23e0aac6-9af5-468f-a7d1-a331fe06c3a3@suse.de>
+Date: Mon, 17 Jun 2024 12:43:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 21/26] block: move the poll flag to queue_limits
+Subject: Re: [PATCH 22/26] block: move the zoned flag into the features field
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -73,24 +109,35 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
  Damien Le Moal <dlemoal@kernel.org>
 References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-22-hch@lst.de>
+ <20240617060532.127975-23-hch@lst.de>
 Content-Language: en-US
 From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240617060532.127975-22-hch@lst.de>
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Queue-Id: AB3C95FEE7
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+In-Reply-To: <20240617060532.127975-23-hch@lst.de>
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[38];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLex1noz7jcsrkfdtgx8bqesde)];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,lst.de:email]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_034237_953385_DB9D804E 
-X-CRM114-Status: GOOD (  13.11  )
+X-CRM114-CacheID: sfid-20240617_034310_732261_A6463694 
+X-CRM114-Status: UNSURE (   9.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,28 +154,25 @@ Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gNi8xNy8yNCAwODowNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gTW92ZSB0aGUgcG9s
-bCBmbGFnIGludG8gdGhlIHF1ZXVlX2xpbWl0cyBmZWF0dXJlIGZpZWxkIHNvIHRoYXQgaXQgY2Fu
-Cj4gYmUgc2V0IGF0b21pY2FsbHkgd2l0aCB0aGUgcXVldWUgZnJvemVuLgo+IAo+IFN0YWNraW5n
-IGRyaXZlcnMgYXJlIHNpbXBsaWZpZWQgaW4gdGhhdCB0aGV5IG5vdyBjYW4gc2ltcGx5IHNldCB0
-aGUKPiBmbGFnLCBhbmQgYmxrX3N0YWNrX2xpbWl0cyB3aWxsIGNsZWFyIGl0IHdoZW4gdGhlIGZl
-YXR1cmVzIGlzIG5vdAo+IHN1cHBvcnRlZCBieSBhbnkgb2YgdGhlIHVuZGVybHlpbmcgZGV2aWNl
-cy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4KPiBS
-ZXZpZXdlZC1ieTogRGFtaWVuIExlIE1vYWwgPGRsZW1vYWxAa2VybmVsLm9yZz4KPiAtLS0KPiAg
-IGJsb2NrL2Jsay1jb3JlLmMgICAgICAgICAgICAgIHwgIDUgKystLQo+ICAgYmxvY2svYmxrLW1x
-LWRlYnVnZnMuYyAgICAgICAgfCAgMSAtCj4gICBibG9jay9ibGstbXEuYyAgICAgICAgICAgICAg
-ICB8IDMxICsrKysrKysrKysrLS0tLS0tLS0tCj4gICBibG9jay9ibGstc2V0dGluZ3MuYyAgICAg
-ICAgICB8IDEwICsrKystLS0KPiAgIGJsb2NrL2Jsay1zeXNmcy5jICAgICAgICAgICAgIHwgIDQg
-Ky0tCj4gICBkcml2ZXJzL21kL2RtLXRhYmxlLmMgICAgICAgICB8IDU0ICsrKysrKysrKy0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gICBkcml2ZXJzL252bWUvaG9zdC9tdWx0aXBhdGguYyB8
-IDEyICstLS0tLS0tCj4gICBpbmNsdWRlL2xpbnV4L2Jsa2Rldi5oICAgICAgICB8ICA0ICsrLQo+
-ICAgOCBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCA3NiBkZWxldGlvbnMoLSkKPiAK
-UmV2aWV3ZWQtYnk6IEhhbm5lcyBSZWluZWNrZSA8aGFyZUBzdXNlLmRlPgoKQ2hlZXJzLAoKSGFu
-bmVzCi0tIApEci4gSGFubmVzIFJlaW5lY2tlICAgICAgICAgICAgICAgICAgS2VybmVsIFN0b3Jh
-Z2UgQXJjaGl0ZWN0CmhhcmVAc3VzZS5kZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-KzQ5IDkxMSA3NDA1MyA2ODgKU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR21iSCwgRnJhbmtlbnN0
-ci4gMTQ2LCA5MDQ2MSBOw7xybmJlcmcKSFJCIDM2ODA5IChBRyBOw7xybmJlcmcpLCBHRjogSS4g
-VG90ZXYsIEEuIE1jRG9uYWxkLCBXLiBLbm9ibGljaAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+T24gNi8xNy8yNCAwODowNCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gTW92ZSB0aGUgem9u
+ZWQgZmxhZ3MgaW50byB0aGUgZmVhdHVyZXMgZmllbGQgdG8gcmVjbGFpbSBhIGxpdHRsZQo+IGJp
+dCBvZiBzcGFjZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxz
+dC5kZT4KPiBSZXZpZXdlZC1ieTogRGFtaWVuIExlIE1vYWwgPGRsZW1vYWxAa2VybmVsLm9yZz4K
+PiAtLS0KPiAgIGJsb2NrL2Jsay1zZXR0aW5ncy5jICAgICAgICAgICB8ICA1ICsrLS0tCj4gICBk
+cml2ZXJzL2Jsb2NrL251bGxfYmxrL3pvbmVkLmMgfCAgMiArLQo+ICAgZHJpdmVycy9ibG9jay91
+YmxrX2Rydi5jICAgICAgIHwgIDIgKy0KPiAgIGRyaXZlcnMvYmxvY2svdmlydGlvX2Jsay5jICAg
+ICB8ICA1ICsrKy0tCj4gICBkcml2ZXJzL21kL2RtLXRhYmxlLmMgICAgICAgICAgfCAxMSArKysr
+KystLS0tLQo+ICAgZHJpdmVycy9tZC9kbS16b25lLmMgICAgICAgICAgIHwgIDIgKy0KPiAgIGRy
+aXZlcnMvbWQvZG0tem9uZWQtdGFyZ2V0LmMgICB8ICAyICstCj4gICBkcml2ZXJzL252bWUvaG9z
+dC96bnMuYyAgICAgICAgfCAgMiArLQo+ICAgZHJpdmVycy9zY3NpL3NkX3piYy5jICAgICAgICAg
+IHwgIDIgKy0KPiAgIGluY2x1ZGUvbGludXgvYmxrZGV2LmggICAgICAgICB8ICA5ICsrKysrKy0t
+LQo+ICAgMTAgZmlsZXMgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0p
+Cj4gClJldmlld2VkLWJ5OiBIYW5uZXMgUmVpbmVja2UgPGhhcmVAc3VzZS5kZT4KCkNoZWVycywK
+Ckhhbm5lcwotLSAKRHIuIEhhbm5lcyBSZWluZWNrZSAgICAgICAgICAgICAgICAgIEtlcm5lbCBT
+dG9yYWdlIEFyY2hpdGVjdApoYXJlQHN1c2UuZGUgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICs0OSA5MTEgNzQwNTMgNjg4ClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdtYkgsIEZyYW5r
+ZW5zdHIuIDE0NiwgOTA0NjEgTsO8cm5iZXJnCkhSQiAzNjgwOSAoQUcgTsO8cm5iZXJnKSwgR0Y6
+IEkuIFRvdGV2LCBBLiBNY0RvbmFsZCwgVy4gS25vYmxpY2gKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
