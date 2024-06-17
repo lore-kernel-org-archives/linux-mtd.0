@@ -4,62 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D95F8C27C79
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 13:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23679C2BA18
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jun 2024 13:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/uS1gglaCiSIugMcsvVYPzrUGLAFPhKoi4pQ6AvbFPE=; b=lhj0FGbn2N8sqNoobyJWeORrEd
-	Sn3LbhzDXNnRMSt1DVf3dUQw8Rx2DttC3sYnDzQruOW0KtUbQB0JzNX7CjC6WBtcG0kSqaK/3uDKj
-	k4zdlTnufpAjHETBDH2HVShHPcZ6FakgYOTOkT035UWMXd0Puy8sjpjOpkYDsZSLki3RtdyTr10kF
-	WILc1cpZTAirkmLrAKGx3/EIblUNfmubdujUHr9j98qfQ08PPxO0M/KycdFHELYaUW+IBghMbq6zB
-	42E+T5VXgvi4YuwIbvATTGtpHn+1mEkizPInTKUZ2MbXMs01vd8SfYCq3fKR82xR1AvQWYAfWbbnx
-	69LN4R3Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7Xu1XJi6d0JZaEJQPY5KP0lSGQFjcgbCHw5ZEKHM6To=; b=Dd1xovIYRJu3Kz
+	v51/G2nM3nzpD8gyVb3/jmDv7KIa9Vm2gVIDJlYTCyPwEdIz6i/ijIVR4u+VqlavBG+3sxSDJoQZ0
+	9h0PXzyfkyVfIgv9rIJbnfOt2qpuduvGJFD84NmDEUoMpJekoTZPVhr320+M8lcVgQbhmB8Gdgf8g
+	EMpa2jGIBO3PpRxdSKfJh9zvPOLcvNvJRyZU905fvnkWgJ1X07f8Dd0SQXbXjOXrW91whgAnb32P2
+	s4uRBCgPlnddOKiUZtzSMIR+sB1TFrSFkjNB3RCpVj78rZ7C8DsHD4w8iqsv5wEsqXByFLkGEzltP
+	Crx++tkHIBHTcCZCOv5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCIs-0000000AoWu-2HeI;
-	Mon, 17 Jun 2024 13:21:46 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1sJCWE-0000000Asfc-28ks;
+	Mon, 17 Jun 2024 13:35:34 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCIo-0000000AoUN-3uC1
+	id 1sJCW8-0000000AsaO-3c1k
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jun 2024 13:21:44 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W2r5f5hYJzxRsV;
-	Mon, 17 Jun 2024 21:17:26 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id CFDEE14011B;
-	Mon, 17 Jun 2024 21:21:36 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+	Mon, 17 Jun 2024 13:35:31 +0000
+Received: from p-infra-ksmg-sc-msk01.sberdevices.ru (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 1D6CB100009;
+	Mon, 17 Jun 2024 16:35:23 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1D6CB100009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1718631323;
+	bh=s3IdEpoU8Idriuk8g63QAeoI/TR/7zBrB1N7H/17w8U=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=AmHPfDiTxt1A03tynXh9e4ElOYSFwA3pboSyYhjiSNG8gKbnaYEZAZZMOSy6rwT1x
+	 y4WyLGydxdIAhK7mFXjCMFz0gCGChrXigonvXRyRzMmsCTESZyRjUc1uU40TgPhgxQ
+	 7Rii47N1O2fy7bzmaP7fvLDGk3fcUpd/C1Pd2vLou5cx0GljRkqT7nvOXaKQQFfbUb
+	 dUGzzHs7Ot/Noyca2lt8U1joca4VAqTw5Z287f85cphupiZRAxk101WBU4vBUhRX2x
+	 QLs88HsEufe8DnBR+MWI7Vn1WnvCH/t8vuGlocrP4f98uhd2L2KJ7CPjcUM3ZTVw3F
+	 traq7Z2IKwx1g==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Mon, 17 Jun 2024 16:35:22 +0300 (MSK)
+Received: from CAB-WSD-0004828.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Mon, 17 Jun 2024 21:21:36 +0800
-Subject: Re: Lots of fastmap writes
-To: Rickard x Andersson <rickaran@axis.com>, <richard@nod.at>,
-	<linux-mtd@lists.infradead.org>
-CC: <rickard314.andersson@gmail.com>
-References: <f59e5ae3-8193-43f3-604c-9a846d6e8ead@axis.com>
- <95a9872f-77b2-e9a0-f5dc-a376964bc93e@huawei.com>
- <f92bb95d-05a1-315b-000c-5189004175d5@huawei.com>
- <aad1b520-ee9e-476f-911b-45be9eb09195@axis.com>
- <a8bf10e3-009f-3d4b-fa4b-43bbc6e1bebc@huawei.com>
- <0a53be8a-6d21-0ae3-a013-e1155140c889@axis.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <ab27b215-8069-02cf-6bfa-9c8d85aea697@huawei.com>
-Date: Mon, 17 Jun 2024 21:21:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ 15.2.1118.40; Mon, 17 Jun 2024 16:35:22 +0300
+From: Martin Kurbanov <mmkurbanov@salutedevices.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mika Westerberg
+	<mika.westerberg@linux.intel.com>, Michael Walle <michael@walle.cc>, Mark
+ Brown <broonie@kernel.org>, Chia-Lin Kao <acelan.kao@canonical.com>, Md Sadre
+ Alam <quic_mdalam@quicinc.com>, Ezra Buehler
+	<ezra.buehler@husqvarnagroup.com>, Sridharan S N <quic_sridsn@quicinc.com>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>, Alexey Romanov
+	<avromanov@salutedevices.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v1 3/5] mtd: spinand: make spinand_wait() global
+Date: Mon, 17 Jun 2024 16:34:55 +0300
+Message-ID: <20240617133504.179705-4-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
+References: <20240617133504.179705-1-mmkurbanov@salutedevices.com>
 MIME-Version: 1.0
-In-Reply-To: <0a53be8a-6d21-0ae3-a013-e1155140c889@axis.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 185966 [Jun 17 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 20 0.3.20 743589a8af6ec90b529f2124c2bbfc3ce1d2f20f, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/06/17 11:22:00 #25639124
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_062143_362037_2DC5875E 
-X-CRM114-Status: GOOD (  28.67  )
+X-CRM114-CacheID: sfid-20240617_063529_283468_1194E2E5 
+X-CRM114-Status: GOOD (  14.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,119 +101,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjQvNi8xNyAxOToyMCwgUmlja2FyZCB4IEFuZGVyc3NvbiDlhpnpgZM6Cj4gT24gNi8x
-NC8yNCAxNDoyOCwgWmhpaGFvIENoZW5nIHdyb3RlOgo+PiDlnKggMjAyNC82LzE0IDE5OjQyLCBS
-aWNrYXJkIFggQW5kZXJzc29uIOWGmemBkzoKPj4+IE9uIDYvNC8yNCAwMzo1MiwgWmhpaGFvIENo
-ZW5nIHdyb3RlOgo+Pgo+PiBbLi4uXQo+Pj4+Cj4+Pj4gQlRXLCBhZnRlciBhcHBseWluZyB0aGUg
-cGF0Y2hlcywgdGhlIGtlcm5lbCBzaG91bGQgcnVuIG9uIGEgbmV3IAo+Pj4+IGZsYXNoLCB0aGUg
-aW1wcm92ZWQgd2Vhci1sZXZlbGluZyBhbGdvcml0aG0gY2Fubm90IHJlc2N1ZSB0aGUgd29ybiAK
-Pj4+PiBvdXQgaW1hZ2UuCj4+Pj4KPj4+Cj4+PiBUaGFua3MgZm9yIHRoZSBwYXRjaGVzIQo+Pj4K
-Pj4+IEkgaGF2ZSBiYWNrcG9ydGVkIHRoZSBwYXRjaGVzIHRvIExpbnV4IGtlcm5lbCA2LjEuIERv
-IHlvdSB0aGluayB0aGUgCj4+PiBwYXRjaGVzIGFyZSBzYWZlIHRvIGFwcGx5IHRvIExpbnV4IGtl
-cm5lbCA2LjE/Cj4+Cj4+IFllcywgaXQncyBva2F5LiBJIGhhdmUgYmFja3BvcnRlZCB0aGUgcGF0
-Y2hlcyB0byBvdXIgcHJvZHVjdChrZXJuZWwgCj4+IHY1LjEwKSBhbmQgaXQgd29ya3MgZmluZS4K
-PiAKPiBUaGFua3MhIEkgYmFja3BvcnRlZCB0aGUgcGF0Y2hlcyB0byBMaW51eCA2LjEgYW5kIGRp
-ZCBydW4gbXkgb3duIHN0cmVzcyAKPiB0ZXN0IGZvciBhIGZldyBkYXlzLiAoT24gYW5vdGhlciBk
-ZXZpY2Ugd2l0aCBmcmVzaCBmbGFzaCBtZW1vcnkuKSBJdCAKPiBzZWVtcyBsaWtlIHRoZSB3ZWFy
-IG9mIHRoZSBmYXN0bWFwIHBoeXNpY2FsIGJsb2NrcyAoMC02MykgaXMgYSBsb3QgbGVzcyAKPiBu
-b3cgd2l0aCB0aGUgcGF0Y2hlcyBhcHBsaWVkLCB3aGljaCBpcyBnb29kLgo+IAo+IEhvd2V2ZXIg
-SSBnb3QgdGhpcyBwcm9ibGVtIGFmdGVyIGFsbW9zdCAzIGRheXMgb2Ygc3RyZXNzIHRlc3Rpbmcg
-KGZpbGUgCj4gc3lzdGVtIGlzIHNldCB0byByZWFkIG9ubHkgbW9kZSk6Cj4gCj4gCj4gWyA3ODg1
-LjAzNjU3N11bwqAgVDE4Ml0gdWJpMjogc2NydWJiZWQgUEVCIDI5MDQgKExFQiAwOjIyOSksIGRh
-dGEgbW92ZWQgCj4gdG8gUEVCIDYyNwo+IFs4MzcyMS43MjQ2MjFdW8KgIFQxODJdIHViaTI6IHNj
-cnViYmVkIFBFQiA5ODMgKExFQiAwOjMyNDApLCBkYXRhIG1vdmVkIAo+IHRvIFBFQiA3Cj4gWzgz
-NzIxLjgzMjUyMV1bwqAgVDE4Ml0gdWJpMjogc2NydWJiZWQgUEVCIDk5NyAoTEVCIDA6MjgxOSks
-IGRhdGEgbW92ZWQgCj4gdG8gUEVCIDUKPiBbODM3ODQuNzUwNzE0XVvCoCBUMTgyXSB1YmkyOiBz
-Y3J1YmJlZCBQRUIgMTkyNyAoTEVCIDA6MTApLCBkYXRhIG1vdmVkIHRvIAo+IFBFQiAyCj4gWzE2
-NTgxMi42NTc5MzRdW8KgIFQxODJdIHViaTI6IHNjcnViYmVkIFBFQiAzNjkxIChMRUIgMDoxMSks
-IGRhdGEgbW92ZWQgCj4gdG8gUEVCIDE4Cj4gWzE2Njc0OC4wNTUyNDJdW8KgIFQxODJdIHViaTI6
-IHNjcnViYmVkIFBFQiAzMDQ1IChMRUIgMDoyKSwgZGF0YSBtb3ZlZCB0byAKPiBQRUIgODM3Cj4g
-WzE2NjgzNC43NDI0NTFdW8KgIFQxODJdIHViaTI6IHNjcnViYmVkIFBFQiA5MTggKExFQiAwOjIp
-LCBkYXRhIG1vdmVkIHRvIAo+IFBFQiA0MwoKTG9va3MgbGlrZSB0aGF0IHNvbWUgb2YgUEVCcyBo
-YXZlIG1ldCB0aGUgYml0ZmxpcCBlcnJvcnMuCgo+IFsyMzk5ODYuNDk2ODQwXVtUMzEzODddIFVC
-SUZTIGVycm9yICh1YmkyOjAgcGlkIDMxMzg3KTogdWJpZnNfc2NhbjogCj4gY29ycnVwdCBlbXB0
-eSBzcGFjZSBhdCBMRUIgMzUxOToxMDEzNzYKPiBbMjM5OTg2LjUwNjgwOV1bVDMxMzg3XSBVQklG
-UyBlcnJvciAodWJpMjowIHBpZCAzMTM4Nyk6IAo+IHViaWZzX3NjYW5uZWRfY29ycnVwdGlvbjog
-Y29ycnVwdGlvbiBhdCBMRUIgMzUxOToxMDEzNzYKPiBbMjM5OTg2LjUxOTc0Ml1bVDMxMzg3XSBV
-QklGUyBlcnJvciAodWJpMjowIHBpZCAzMTM4Nyk6IAo+IHViaWZzX3NjYW5uZWRfY29ycnVwdGlv
-bjogZmlyc3QgODE5MiBieXRlcyBmcm9tIExFQiAzNTE5OjEwMTM3Ngo+IFsyMzk5ODYuNTMyMDUy
-XVtUMzEzODddIDAwMDAwMDAwOiBmZmZmZmZmZSBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiAK
-PiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZsKgIC4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uCgpUaGUgZGF0YSBjb250ZW50KDB4ZmZmZmZmZmUpIGlzIHdlaXJkLCBz
-aG91bGRuJ3QgaXQgYmUgJzB4ZmZmZmZmZmYnPyBPbmUgCmJpdCBmbGlwcy4gYW5kIHRoZXJlIGlz
-IG5vIEVDQyBlcnJvciBtZXNzYWdlcyEKCj4gWzIzOTk4Ni41MzIyMzBdW1QzMTM4N10gMDAwMDAw
-MjA6IGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIAo+IGZmZmZmZmZmIGZmZmZm
-ZmZmIGZmZmZmZmZmIGZmZmZmZmZmwqAgLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4K
-PiBbMjM5OTg2LjUzMjQ1MF1bVDMxMzg3XSAwMDAwMDA0MDogZmZmZmZmZmYgZmZmZmZmZmYgZmZm
-ZmZmZmYgZmZmZmZmZmYgCj4gZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmbCoCAu
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLgo+IFsyMzk5ODYuNTMyNjA3XVtUMzEzODdd
-IDAwMDAwMDYwOiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiAKPiBmZmZmZmZm
-ZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZsKgIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uCj4gWzIzOTk4Ni41MzI3MzJdW1QzMTM4N10gMDAwMDAwODA6IGZmZmZmZmZmIGZmZmZm
-ZmZmIGZmZmZmZmZmIGZmZmZmZmZmIAo+IGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZm
-ZmZmwqAgLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4KPiAKPiAuLi4KPiAKPiBbMjM5
-OTg2LjYwMzI4M11bVDMxMzg3XSAwMDAwMTAwMDogZmZmZmZmZmUgZmZmZmZmZmYgZmZmZmZmZmYg
-ZmZmZmZmZmYgCj4gZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmbCoCAuLi4uLi4u
-Li4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLgoKSGVyZSBpcyB0b28uCj4gWzIzOTk4Ni42MDM2Njdd
-W1QzMTM4N10gMDAwMDEwMjA6IGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIAo+
-IGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmwqAgLi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLi4uLi4uLi4uLi4KPiAKPiAuLi4KPiAKPiBbMjM5OTg2LjcwNzc0M11bVDMxMzg3XSAwMDAw
-MWZlMDogZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgCj4gZmZmZmZmZmYgZmZm
-ZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmbCoCAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
-Lgo+IAo+IAo+IFsyMzk5ODYuNzA3ODk0XVtUMzEzODddIFVCSUZTIGVycm9yICh1YmkyOjAgcGlk
-IDMxMzg3KTogdWJpZnNfc2NhbjogTEVCIAo+IDM1MTkgc2Nhbm5pbmcgZmFpbGVkCj4gWzIzOTk4
-Ni43MjQ2MjVdW1QzMTM4N10gVUJJRlMgZXJyb3IgKHViaTI6MCBwaWQgMzEzODcpOiBkb19jb21t
-aXQ6IAo+IGNvbW1pdCBmYWlsZWQsIGVycm9yIC0xMTcKPiBbMjM5OTg2LjczNDMzNV1bVDMxMzg3
-XSBVQklGUyB3YXJuaW5nICh1YmkyOjAgcGlkIDMxMzg3KTogCj4gdWJpZnNfcm9fbW9kZS5wYXJ0
-LjA6IHN3aXRjaGVkIHRvIHJlYWQtb25seSBtb2RlLCBlcnJvciAtMTE3Cj4gWzIzOTk4Ni43NDgy
-NzZdW1QzMTM4N10gQ1BVOiAwIFBJRDogMzEzODcgQ29tbTogc3luYyBLZHVtcDogbG9hZGVkIE5v
-dCAKPiB0YWludGVkIDYuMS41NS1heGlzOS1kZXZlbCAjMQo+IFsyMzk5ODYuNzU3MzI3XVtUMzEz
-ODddIEhhcmR3YXJlIG5hbWU6IEZyZWVzY2FsZSBpLk1YNiBTb2xvWCAoRGV2aWNlIFRyZWUpCj4g
-WzIzOTk4Ni43NjQwOTVdW1QzMTM4N13CoCB1bndpbmRfYmFja3RyYWNlIGZyb20gc2hvd19zdGFj
-aysweDE4LzB4MWMKPiBbMjM5OTg2Ljc3MDIwOF1bVDMxMzg3XcKgIHNob3dfc3RhY2sgZnJvbSBk
-dW1wX3N0YWNrX2x2bCsweDI0LzB4MmMKPiBbMjM5OTg2Ljc3NjIxNV1bVDMxMzg3XcKgIGR1bXBf
-c3RhY2tfbHZsIGZyb20gZG9fY29tbWl0KzB4YzAvMHg1MjgKPiBbMjM5OTg2Ljc4MjE2N11bVDMx
-Mzg3XcKgIGRvX2NvbW1pdCBmcm9tIHViaWZzX3N5bmNfZnMrMHg4NC8weDk4Cj4gWzIzOTk4Ni43
-ODc5OTFdW1QzMTM4N13CoCB1Ymlmc19zeW5jX2ZzIGZyb20gaXRlcmF0ZV9zdXBlcnMrMHg5Yy8w
-eDExOAo+IFsyMzk5ODYuNzk0MjY4XVtUMzEzODddwqAgaXRlcmF0ZV9zdXBlcnMgZnJvbSBrc3lz
-X3N5bmMrMHg1NC8weDhjCj4gWzIzOTk4Ni44MDAxNzVdW1QzMTM4N13CoCBrc3lzX3N5bmMgZnJv
-bSBzeXNfc3luYysweDEwLzB4MTgKPiBbMjM5OTg2LjgwNTQ5Ml1bVDMxMzg3XcKgIHN5c19zeW5j
-IGZyb20gcmV0X2Zhc3Rfc3lzY2FsbCsweDAvMHg2NAo+IFsyMzk5ODYuODExMzk0XVtUMzEzODdd
-IEV4Y2VwdGlvbiBzdGFjaygweGM4MWI1ZmE4IHRvIDB4YzgxYjVmZjApCj4gWzIzOTk4Ni44MTcz
-MTRdW1QzMTM4N10gNWZhMDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMDAw
-MDAwNzIgYmU4YjVkNDQgCj4gMDAwMDAwMDEgYmU4YjVkNDQgMDAwMDAwMDAgMDA0ZTUyOTkKPiBb
-MjM5OTg2LjgyNjQyM11bVDMxMzg3XSA1ZmMwOiAwMDAwMDA3MiBiZThiNWQ0NCAwMDAwMDAwMCAw
-MDAwMDAyNCAKPiAwMDRhMTJjZCBiNmY3NGNlOCAwMDAwMDAwMCAwMDRmODA2Ywo+IFsyMzk5ODYu
-ODM1NTMwXVtUMzEzODddIDVmZTA6IDAwNGY4ZjE0IGJlOGI1YmFjIDAwNGU1MjlmIGI2ZWY0ZTU4
-Cj4gCj4gSXMgdGhlIGFib3ZlIGVycm9yIHNvbWV0aGluZyB5b3UgaGF2ZSBzZWVuIGJlZm9yZT8K
-CkkgbWV0IHRoaXMga2luZCBvZiBlcnJvcihjb3JydXB0IGVtcHR5IHNwYWNlKSBmb3Igc2V2ZXJh
-bCB0aW1lcyAoYm90aCAKdjQuNCBhbmQgdjUuMTApLCB0byBiZSBob25lc3QsIEkgaGF2ZSBubyBp
-ZGVhIGhvdyBpdCBoYXBwZW5zLiBpdCBsb29rcyAKbGlrZSB0aGF0IHNvbWV0aGluZyB3cm9uZyBo
-YXBwZW5zIG9uIGZsYXNoKGVnLiB1bmNvcnJlY3RlZCBiaXRmaWxwcykuCgo+IAo+Pj4KPj4+IEFu
-b3RoZXIgdGhpbmcsIHdvdWxkIGl0IG5vdCBiZSBwb3NzaWJsZSB0byByZXNjdWUgdGhhdCBwYXJ0
-aWN1bGFyIAo+Pj4gd29ybiBvdXQgZGV2aWNlIGJ5IHNpbXBseSB0dXJuaW5nIGZhc3RtYXAgb2Zm
-IG9uIHRoYXQgZGV2aWNlPwo+Pj4KPj4KPj4gQ2FuIEkgcmVnYXJkIHRoZSByZXNjdWluZyBhcyBt
-YWtpbmcgZXJhc2UgY291bnRlcnMgYmVjb21lIG5vcm1hbCAKPj4gYWdhaW4obWF4IC0gbWluIDw9
-IFVCSV9XTF9USFJFU0hPTEQpPyBJZiBzbywgSSdtIGFmcmFpZCB0aGF0IG5vdCBhbGwgCj4+IFBF
-QnMgY2FuIGJlIHJlc2N1ZWQsIGFjY29yZGluZyB0byBnZXRfcGViX2Zvcl93bCgpLgo+PiBGb3Ig
-ZXhhbXBsZTogUEIsIFBDIGNhbm5vdCBiZSByZXNjdWVkLCB1bmxlc3MgUEEgaXMgdGFrZW4gZm9y
-IHdyaXRpbmcgCj4+IGFuZCB0aGVuIHdsIGlzIGp1c3QgcmlnaHQgc2NoZWR1bGVkLgo+Pgo+PiB1
-YmktPmZyZWUgdHJlZToKPj4gwqDCoMKgwqDCoCAyOTYwMChQQikKPj4gMShQQSnCoMKgwqDCoMKg
-wqDCoCAyOTYwMChQQykKPiAKPiBJIG1lYW4gdGhhdCBJIHRoaW5rIHRoYXQgdGhlIGJhZGx5IHdv
-cm4gZGV2aWNlIGNvdWxkIGJlIG1hZGUgdXNhYmxlIAo+IGFnYWluIGJ5IHR1cm5pbmcgb2ZmIGZh
-c3RtYXAuIEkgbWVhbiB3b3VsZCBpdCBub3Qgd29yayBwcm9wZXJseT8gSSBkbyAKPiBob3dldmVy
-IHVuZGVyc3RhbmQgdGhhdCB0aGUgZmlyc3QgNjQgcGh5c2ljYWwgZXJhc2UgYmxvY2tzIHdvdWxk
-IG5vdCBiZSAKPiB1c2VkIGluIHByYWN0aWNlIHNpbmNlIHRoZSBlcmFzZSBjb3VudHMgb2YgdGhv
-c2UgYmxvY2tzIGFyZSB2ZXJ5IGhpZ2guIAo+IEJ1dCB3b3VsZCBub3QgdGhlIGZpbHN5c3RlbSB3
-b3JrIE9LPyBPciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nPwo+IAoKSSB0aGluayB0aGUgZmlyc3Qg
-NjQgUEVCcyBjb3VsZCBiZSB1c2VkIHdoZW4gdGhlIG51bWJlciBvZiBmcmVlIFBFQnMgCmJlbG93
-cyA2NCwgZm9yIGV4YW1wbGUgVUJJIHJ1bnMgb3V0IG9mIHNwYWNlIG9yIHRoZXJlIGFyZSBtYW55
-IGVyYXNpbmcgCndvcmtzIG5vdCBiZWluZyBleGVjdXRlZCBiZWZvcmUgZ2V0dGluZyBhIGZyZWUg
-UEVCLgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Change the function spinand_wait() from static to global so that SPI
+NAND flash drivers don't duplicate it.
+
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+---
+ drivers/mtd/nand/spi/core.c | 18 ++++++++++++++----
+ include/linux/mtd/spinand.h |  3 +++
+ 2 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 2cb825edd49d0..c3e3d1e9599f1 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -496,10 +496,20 @@ static int spinand_erase_op(struct spinand_device *spinand,
+ 	return spi_mem_exec_op(spinand->spimem, &op);
+ }
+ 
+-static int spinand_wait(struct spinand_device *spinand,
+-			unsigned long initial_delay_us,
+-			unsigned long poll_delay_us,
+-			u8 *s)
++/**
++ * spinand_wait() - Poll memory device status
++ * @spinand: the spinand device
++ * @initial_delay_us: delay in us before starting to poll
++ * @poll_delay_us: time to sleep between reads in us
++ * @s: the pointer to variable to store the value of REG_STATUS
++ *
++ * This function polls a status register (REG_STATUS) and returns when
++ * the STATUS_READY bit is 0 or when the timeout has expired.
++ *
++ * Return: 0 on success, a negative error code otherwise.
++ */
++int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
++		 unsigned long poll_delay_us, u8 *s)
+ {
+ 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
+ 						      spinand->scratchbuf);
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index a0d42a9be333f..3b9e7ed32c81d 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -567,6 +567,9 @@ int spinand_match_and_init(struct spinand_device *spinand,
+ int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+ int spinand_select_target(struct spinand_device *spinand, unsigned int target);
+ 
++int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
++		 unsigned long poll_delay_us, u8 *s);
++
+ int spinand_read_page(struct spinand_device *spinand,
+ 		      const struct nand_page_io_req *req);
+ 
+-- 
+2.43.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
