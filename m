@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 991B3C27C79
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2024 17:59:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8447C2BA1A
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2024 17:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/ID6zZKN5z2/L2T5eDUfwSlF9d2Fim2ZT4qbPWlRFN8=; b=mvyXZsSbScO6KW
-	itltsNtUNjANpxiVMvdDJ/LTwbEWqlN6eLJElA6NY8lNqT+xCP2U54+6xiC2gEu2WrcuCnCyqb5Nk
-	NjxQCVdySdxG8vdszwjOGat98rXsH7YZXN274/zQISz1PuRTa/vGbEKZULFiRkt49wzpXy2Y/aVR6
-	pNkpEwIJQdIJ+fH2K8sogIZJ8/VMIPINRXX41WKhig3MG/3b6TBGAIdagTMXTfas1hRA8zRB+mxya
-	M2Rbnn2Zq95uyfkqHw3ljt5sXEMzYG6SUVwvDXdSB6aYZNJTXl5ieqdOeSQT+yZjgqQCdf38Bpd9w
-	riTzEP+aThvpEpFqqM6w==;
+	List-Owner; bh=ZTHYdcNsUPpN1t9GfpDXO04a7Vt9N+bCDSAGKa2jEPg=; b=MZwKjuSQ6hgx+T
+	hY15Jn2utOHQbau5ZpMiiNRgMrjaMVZHhegWENLPpqNopUsXNKnCaKj1C23liPT4+AtE06pV5tvR/
+	LB1qr2rKfSYKxG33bjcmCRtNGUKlqLG+PSWRLnXyo0xa3aiSDA6TaVBKZseQ4DkIUI7sH8G8wf34n
+	Cd77b4ywaX2rxnb5mG+ytBZc94m/g7S2OHqWqPo67doVH6SsseZOarvvBFCymR6cMyxsYp3zNf751
+	KEPTxq20hPfF9+dgMgInin0K6uLzfQn1JHox+cbuQ6fJaGsQjM/QWq6e1fTmuntrhhqEC5UmyPDuv
+	1bOReXu9oYdQLqlBPzGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKM3z-00000006BQS-0Wn9;
-	Thu, 20 Jun 2024 17:59:11 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1sKM49-00000006BZj-3Qqt;
+	Thu, 20 Jun 2024 17:59:21 +0000
+Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKM3X-00000006B4q-3ZhO
+	id 1sKM3r-00000006BHo-0aBi
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jun 2024 17:58:46 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a6ef64b092cso136121066b.1
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2024 10:58:43 -0700 (PDT)
+	Thu, 20 Jun 2024 17:59:07 +0000
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a6ef46d25efso136935666b.0
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2024 10:59:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906322; x=1719511122; darn=lists.infradead.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906341; x=1719511141; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=POfTgIlDMKnuctYd9TdkfbMoA75Hg7wnTz1QoAWu+kM=;
-        b=efOkIF6drM05J8KUEmWQ/eNKhjDpLo0srOxrbB94FddvYb41H1Snz+7PCJ5mRi94mJ
-         Aqhj6peVn22UdgupGytr0w8bAWInI1FVCPO2Hfpgx7aL5nsu/z3+8bWQpsd/W3MKb21J
-         oo17sGP5KOAySy5nyxPzERSF0a3EkbdX/CnFYBuxKUTMt2kM+Ya6xtE3YPIxoBaAijX/
-         dDHTebkx0UfB/obtgPWeJFHhJfd2huk0VMSMNFT3nUO0vhh8cvha5IwqD+gFY5N7xNCX
-         CBHQ+lcrLg5qR/PKAo7eKbskmGllz84uvVCO1quATe3yuQ1JYUF0rSVWuJ37i7olczwV
-         6hnA==
+        bh=IJI26duvfMm0hH2VM1fi6stFJmPonSLGaDj169i8hcM=;
+        b=NrpDK7u1rax5gQjPzWWtIoAfQMlFj0UACw2l57VFonJTYnEY/1Aope8KvGMUuWeFQQ
+         997GbiqUDCzrxtqbb4/qeNxCG2GFa1AwwdF+GRI23i2a5q3PnHAYLSs8wRi0KW/c846u
+         ulcNkZqkwn9pHE0254A+ulqIm1NQZB6iEZ/Asgu/ybnNNmmwby/aJE1X5YA8yxsIF//K
+         h/jJQm3uJntYHgIYSl+CxD4QiyqrPFGEk7eMu79y4tcLPbFNvrT2o49tlPVzKG16YoFC
+         8quoS8AOdLyVhxQYXt6up5k+OKVqo1tFqkRXdIbiRVD9/ERKC9V8jAKyBdfTC7IH7Jks
+         /Fxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906322; x=1719511122;
+        d=1e100.net; s=20230601; t=1718906341; x=1719511141;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=POfTgIlDMKnuctYd9TdkfbMoA75Hg7wnTz1QoAWu+kM=;
-        b=Rw/QvHkp7aFXaB4ZYWxjANI5wDevugb139g1fY4o2SSkuWZms/XCQDdG5/9JkturPv
-         8yCgVloBJTFrIYNAA++peoCih1pmMJieZbchNZ5Ajdo0TvgnvuEF/UTeNdEKARDRR9j/
-         rinx6/WonxXQUCiAJNkHpk+ZsKPwAYbcj7TBZo7HxV7k0AEJ214lRVqyr6q/t1Gs5kDO
-         X0NjpFeIsIFKQnceZNZ64I5omtr63pGYbVSnXF3kiCYMtdG+JpDwb1RleLLytU11Nnhy
-         AGNoO5DwHVYWG0yxFOwkTwTAC7mIrhkRKls1ctVfATyg98ZufGZuTTs0YOwwokM7DbrD
-         z8mw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhmmKHa5zFJXq7AXV7QtkDRa6u28EjvRa/5Q2ajPjW4HgbKoQZcZRWr8gXSVYb2gD6aV9p4anzF1NEXoUBQr9JCrdIIsVIEWPdGqzWxA==
-X-Gm-Message-State: AOJu0YzEgY6vUqN/LHSpv1uxG7wvmqNCMYswRPgAf+7QdtOY8qL+v4AC
-	sNemZhkKXQ+Bi049zRc7QR1wdOGxssP4FuNASalrKEhO4JVLJJMez/DkE4Pa53c=
-X-Google-Smtp-Source: AGHT+IHTrvjRefjDyJtTKiBTdA/7eaPFIlKAqed0dBKu9bDkvkontU8BQ0nzLod+LvZtaEx3jpBdyA==
-X-Received: by 2002:a17:907:8b8b:b0:a6f:ad2f:ac5d with SMTP id a640c23a62f3a-a6fad2fad21mr380433766b.6.1718906321968;
-        Thu, 20 Jun 2024 10:58:41 -0700 (PDT)
+        bh=IJI26duvfMm0hH2VM1fi6stFJmPonSLGaDj169i8hcM=;
+        b=H4UeNP1X8hzxB/PIXhMNySYZ4QDbzFncPuQmHjzYgvHcBFKvgWbPIIt4UVaN2bWxyG
+         4IpC1PeCFqhNqLHab8rikUvtBm78ASzr+Yozw0o57fLRjLoOa2a2uNyvHI06AYYKxYgq
+         ODhP7LQ1xsbO57L2sqCgl+/AoR8Jv7g1dm0SP3H1giyVpQHzIqdDIqtUZmuQVvBoeUel
+         cnr2OpCwZs245YlL6kJ2HC91H3cHRNVQ2HeBfaUtxeERtVhYHcpCf4gPaHiN1pCbKHdB
+         i7zEiIJI0xr9qsnMKYZgVOZ+XdazVXnJGkmNO0CY6zb0tvCOPC90LPA6eaGyPViRVbsw
+         Hy4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUBBnXSV87p8RCiNCp4ZqKcQNYgFwcbfWY9REqct331DC9tsHTUjus4tukbr4AOOEC6rUustKeVRJlWsxxlZKlEc5h5EZJolCeMr6vD/g==
+X-Gm-Message-State: AOJu0YzBxWv2Xkp75IpffD1VQMI4WRgiC31R4IKRQnY/Qstn2YixFZHB
+	pyDmuJZEjoSSRLeLL+w7+ASNYIG6YkgBX1RsVYpVn5fHdsyZkRmQmT5zPBM75Fc=
+X-Google-Smtp-Source: AGHT+IFE99yiH6KlSLSijoysmvGidn2b7gOkfW49nNmYq3cUnll4tztljhinaCegKpYiciiy0oFs8g==
+X-Received: by 2002:a17:907:1606:b0:a6f:b19d:90ac with SMTP id a640c23a62f3a-a6fb19d9667mr375299966b.69.1718906340595;
+        Thu, 20 Jun 2024 10:59:00 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.58.40
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.58.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 10:58:41 -0700 (PDT)
+        Thu, 20 Jun 2024 10:59:00 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -82,8 +82,8 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Yangtao Li <frank.li@vivo.com>,
 	Arnd Bergmann <arnd@arndb.de>,
+	Yangtao Li <frank.li@vivo.com>,
 	Li Zetao <lizetao1@huawei.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Chancel Liu <chancel.liu@nxp.com>,
@@ -98,16 +98,16 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
 Cc: Markus Elfring <Markus.Elfring@web.de>
-Subject: [Patch v4 03/10] ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT binding
-Date: Thu, 20 Jun 2024 19:56:34 +0200
-Message-Id: <20240620175657.358273-4-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v4 04/10] ARM: dts: lpc32xx: Add missing dma and i2s properties
+Date: Thu, 20 Jun 2024 19:56:35 +0200
+Message-Id: <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
 References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_105843_933947_20EEDFE6 
-X-CRM114-Status: GOOD (  17.36  )
+X-CRM114-CacheID: sfid-20240620_105903_622402_A42FE379 
+X-CRM114-Status: GOOD (  16.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,131 +124,191 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add nxp,lpc3220-i2s DT binding documentation.
+Adds properties declared in the new DT bindings:
+ - nxp,lpc3220-i2s.yaml
+ - nxp,lpc3220-dmamux.yaml
+for dma router/mux and I2S interface.
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
 Changes for v4:
-- Custom dma-vc-names property with standard dmas and dma-names
-- Added to MAINTAINERS
+- This patch is renamed from
+  "ARM: dts: lpc32xx: Add missing properties for the i2s interfaces"
+  to describe dma changes as well
+- Added dmas and dma-names properties in to all node which have dma request signals
+- Add bus properties to pl08x dma node since they are removed from platform data in phy3250.c
+- Put clock-controller@0 and dma-router@7c under the same syscon, simple-mfd device
 
 Changes for v3:
-- Added '$ref: dai-common.yaml#' and '#sound-dai-cells'
-- Dropped all clock-names, references
-- Dropped status property from the example
-- Added interrupts property
-- 'make dt_binding_check' pass
+- Split previous commit for separate subsystems
+- Add properties to match dt binding
 
-Changes for v2:
-- Added maintainers field
-- Dropped clock-names
-- Dropped unused unneded interrupts field
+ arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi | 53 +++++++++++++++++++++++---
+ 1 file changed, 48 insertions(+), 5 deletions(-)
 
- .../bindings/sound/nxp,lpc3220-i2s.yaml       | 73 +++++++++++++++++++
- MAINTAINERS                                   | 10 +++
- 2 files changed, 83 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml b/Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-new file mode 100644
-index 000000000000..40a0877a8aba
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nxp,lpc3220-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP LPC32XX I2S Controller
-+
-+description:
-+  The I2S controller in LPC32XX SoCs, ASoC DAI.
-+
-+maintainers:
-+  - J.M.B. Downing <jonathan.downing@nautel.com>
-+  - Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,lpc3220-i2s
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: input clock of the peripheral.
-+
-+  dmas:
-+    items:
-+      - description: RX DMA Channel
-+      - description: TX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - dmas
-+  - dma-names
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/lpc32xx-clock.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2s@20094000 {
-+      compatible = "nxp,lpc3220-i2s";
-+      reg = <0x20094000 0x1000>;
-+      interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&clk LPC32XX_CLK_I2S0>;
-+      dmas = <&dma 0 1>, <&dma 13 1>;
-+      dma-names = "rx", "tx";
-+      #sound-dai-cells = <0>;
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f7adf9f66dfa..fadf1baafd89 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8918,6 +8918,16 @@ S:	Maintained
- F:	sound/soc/fsl/fsl*
- F:	sound/soc/fsl/imx*
+diff --git a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
+index 974410918f35..c58dc127e59f 100644
+--- a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
++++ b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
+@@ -67,6 +67,8 @@ slc: flash@20020000 {
+ 			reg = <0x20020000 0x1000>;
+ 			clocks = <&clk LPC32XX_CLK_SLC>;
+ 			status = "disabled";
++			dmas = <&dma 1 1>;
++			dma-names = "rx-tx";
+ 		};
  
-+FREESCALE SOC LPC32XX SOUND DRIVERS
-+M:	J.M.B. Downing <jonathan.downing@nautel.com>
-+M:	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-+R:	Vladimir Zapolskiy <vz@mleia.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+L:	linuxppc-dev@lists.ozlabs.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-+N:	lpc32xx
+ 		mlc: flash@200a8000 {
+@@ -75,6 +77,8 @@ mlc: flash@200a8000 {
+ 			interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&clk LPC32XX_CLK_MLC>;
+ 			status = "disabled";
++			dmas = <&dma 12 1>;
++			dma-names = "rx-tx";
+ 		};
+ 
+ 		dma: dma@31000000 {
+@@ -83,6 +87,13 @@ dma: dma@31000000 {
+ 			interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&clk LPC32XX_CLK_DMA>;
+ 			clock-names = "apb_pclk";
++			#dma-cells = <2>;
++			dma-channels = <8>;
++			dma-requests = <16>;
++			lli-bus-interface-ahb1;
++			mem-bus-interface-ahb1;
++			memcpy-burst-size = <256>;
++			memcpy-bus-width = <32>;
+ 		};
+ 
+ 		usb {
+@@ -182,6 +193,8 @@ ssp0: spi@20084000 {
+ 				clock-names = "apb_pclk";
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 14 1 1>, <&dmamux 15 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -191,6 +204,8 @@ spi1: spi@20088000 {
+ 				clocks = <&clk LPC32XX_CLK_SPI1>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 11 1 0>;
++				dma-names = "rx-tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -206,6 +221,8 @@ ssp1: spi@2008c000 {
+ 				clock-names = "apb_pclk";
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 3 1 1>, <&dmamux 11 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -215,12 +232,19 @@ spi2: spi@20090000 {
+ 				clocks = <&clk LPC32XX_CLK_SPI2>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 3 1 0>;
++				dma-names = "rx-tx";
+ 				status = "disabled";
+ 			};
+ 
+ 			i2s0: i2s@20094000 {
+ 				compatible = "nxp,lpc3220-i2s";
+ 				reg = <0x20094000 0x1000>;
++				interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk LPC32XX_CLK_I2S0>;
++				dmas = <&dma 0 1>, <&dma 13 1>;
++				dma-names = "rx", "tx";
++				#sound-dai-cells = <0>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -231,12 +255,19 @@ sd: sd@20098000 {
+ 					     <13 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clk LPC32XX_CLK_SD>;
+ 				clock-names = "apb_pclk";
++				dmas = <&dma 4 1>;
++				dma-names = "rx";
+ 				status = "disabled";
+ 			};
+ 
+ 			i2s1: i2s@2009c000 {
+ 				compatible = "nxp,lpc3220-i2s";
+ 				reg = <0x2009c000 0x1000>;
++				interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk LPC32XX_CLK_I2S1>;
++				dmas = <&dma 2 1>, <&dmamux 10 1 1>;
++				dma-names = "rx", "tx";
++				#sound-dai-cells = <0>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -312,21 +343,27 @@ fab {
+ 			compatible = "simple-bus";
+ 			ranges = <0x20000000 0x20000000 0x30000000>;
+ 
+-			/* System Control Block */
+-			scb {
+-				compatible = "simple-bus";
+-				ranges = <0x0 0x40004000 0x00001000>;
++			syscon@40004000 {
++				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
++				reg = <0x40004000 0x114>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
++				ranges = <0 0x40004000 0x114>;
+ 
+ 				clk: clock-controller@0 {
+ 					compatible = "nxp,lpc3220-clk";
+ 					reg = <0x00 0x114>;
+ 					#clock-cells = <1>;
+-
+ 					clocks = <&xtal_32k>, <&xtal>;
+ 					clock-names = "xtal_32k", "xtal";
+ 				};
 +
- FREESCALE SOC SOUND QMC DRIVER
- M:	Herve Codina <herve.codina@bootlin.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++				dmamux: dma-router@7c {
++					compatible = "nxp,lpc3220-dmamux";
++					reg = <0x7c 0x8>;
++					#dma-cells = <3>;
++					dma-masters = <&dma>;
++				};
+ 			};
+ 
+ 			mic: interrupt-controller@40008000 {
+@@ -362,6 +399,8 @@ uart1: serial@40014000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x40014000 0x1000>;
+ 				interrupts = <26 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dma 6 1>, <&dma 5 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -369,6 +408,8 @@ uart2: serial@40018000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x40018000 0x1000>;
+ 				interrupts = <25 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dma 8 1>, <&dma 7 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -376,6 +417,8 @@ uart7: serial@4001c000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x4001c000 0x1000>;
+ 				interrupts = <24 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dmamux 10 1 0>, <&dma 9 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
 -- 
 2.25.1
 
