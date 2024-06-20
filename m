@@ -4,69 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26635C27C79
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2024 16:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FD6C2BB85
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2024 17:57:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lBKWk5pXB97VLBxixHuofiHy168Q5zk9OJW2ls0fRPo=; b=kAWejzbV1mWoWl
-	QRANqCeUvRooIe6XR9gkg/GnRtmMIyqtJCoQ9XftqAvtC7ZjCehTLSwi9YuJaFLjHcJLbaZuomtcS
-	AnleIWi80vAqYWMi1O7at1RE3s9J1jB2iBU8S7LLkz38G6+nzPFcDL6dFW8s42le4CmG2rbmEitcA
-	s/kKlJ55qlmtwCJxEIXAIfjrBj1nhApKFZ1ns9WU8pzSQlkYufaiGblSa7C4obQnlnpC345KSW4Uq
-	0qhAR4nrlsQLR4wt66cgS9Qn+nUZqhp9QyaHBpPP8LR/wljSSIQdC3HP2ZGHyXxSeC1daLw0Sg8Wk
-	4qPHARI1zl6CumiNtuzg==;
+	List-Owner; bh=qUYArb0vHNQ4jS3qJqR+yveqdIdaOOrXsDbvOgQY/SY=; b=Qu2d4sGC0DmOs8
+	iUvk5YP2m62l9/gN9P6WSFS/2t1PzioOMoCS6A8zGgISg3IY0iPs+zbOOhBpXuk8wmH5oQpc6o0wY
+	Wkrtv4BOUws7dmw/mPIpCkQWYmmCGoGSvSzlgvrH6PSwuULnzICyS0nwnPqciIx2jWvbvkbPYywCd
+	NJ1otkzJTEya8z6p7AOCOUg5ls7iysMfLrn3CXa/7ey2LzVv5+raKqGaY/IIyqCFE1pvFmskLEs9o
+	VowFRAc9eMahR4oR+buo7vEfauDeY7EI5xG2LSPPtpZyQqK/SvMKndDelYSDw9kFFKURe0pgIWpUh
+	6bbvyXj2A8QO4WwCZovQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKKbw-00000005q56-07GG;
-	Thu, 20 Jun 2024 16:26:08 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1sKM2O-00000006AGi-1DKC;
+	Thu, 20 Jun 2024 17:57:32 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKKbs-00000005pyI-1Mzr
+	id 1sKM2G-00000006AAN-2DnJ
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 20 Jun 2024 17:57:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=UP/GNN9hhxz4nMUGrLaNfWrPk3mVaVMWtBi9huNJxPk=; b=IqJLLbkw0yqbmZ0XbZtgNSDT4q
+	Ff/oXAndXse5gfvrKbRAj61xgHuabQyGj3b1ohba4Pkq978Y6PfimJvpk5pe5m9aCGq8fyFsG6FtA
+	+OttMbmBje4b53d+dZS8aCx6+PlYeJKj/jlAVudg4yWH9DYF5ZQEkC2b2Ckcab2ZOApRCuEYeqXQw
+	M5xmLdjC+LqhRcmjoGzjqgt1BRQ/gdh70PoowfVoXiOQswFw2Zbp+u/Ier9YxzEXu2Vp2NLGj5D/e
+	mFxazAbTVFJk+JmUPXIZALMyL8BcxbPlxgTIYFNpg6I0DNRVuwXpgOYeSnC+KtN4ifTUnmuc6zMNL
+	Y9jkL6Og==;
+Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sKM2A-00000007ac3-1Pm2
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jun 2024 16:26:05 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6FF501C0005;
-	Thu, 20 Jun 2024 16:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1718900757;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sMAaUukcd0doO0dRRodMLTypr1iYWufXt8C9e7HTtwg=;
-	b=KPDKIqlzYu0VBtYoga+w6FHQyMQKEJyYfelR/j1Tb+6ObzKdKGSqbhtIWEICOmFe7pSTPT
-	Qnpy/SWdynNPjIQTFhKl4wWoDmXxiE5aMnDSeLr0nNoJdLOVHpH7DMVBzs34LwjwAsl8G9
-	sstAH1nbnfaDsVyo6MhU8cxjOIyIB5M5wMVABFOIDEYy2eQQUbvYcNLmq1540Fpzu46jkq
-	qizPlI7c8MwKjT3GivBlw2lM9P3/UHOujIToYcE2hFydEA73Y+W2U0jSAtGyOtIvkyVJaW
-	/7h+72rbrBjVzNRkdxWI51wvM0WcT+qVUN/lUm2vDHvzVwamN1b/oyi6/OUT+g==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Thu, 20 Jun 2024 18:25:48 +0200
-Subject: [PATCH] mtd: nand: Add support for M5441x NFC
+	Thu, 20 Jun 2024 17:57:22 +0000
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a62ef52e837so134826866b.3
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2024 10:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1718906235; x=1719511035; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UP/GNN9hhxz4nMUGrLaNfWrPk3mVaVMWtBi9huNJxPk=;
+        b=15HSo2ezmX/RnimCD35puWc7eZJztgOxAJLqYEv5r8XzUZdzgZUxmBDcCNvqvo9TmA
+         eEKPeHYVGYKl5A7Nk1lGqp1cMTq027RZY/6qAj9LNEP6oCuvOl2XBl+p5nmrULTyJ7RC
+         HT+7eE2JbjTg1bCsi0qJp7fS9iJyocdeMC3TVItsDWbWNTQWAsEiX9tU4LBPJaXN2SH5
+         705En9ohwj2QzjVBt/UkfDnhYvpa+8Ps9iZcY+003kbWQFzbDcSwGv4x4kEuZz5L6504
+         q8rLaYTkF9m16eRXBcCg/V70Eyslesi3CkvP9OyJsZIqhqJx/ruRDYcZTRd4cMO3sn8I
+         pnfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718906235; x=1719511035;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UP/GNN9hhxz4nMUGrLaNfWrPk3mVaVMWtBi9huNJxPk=;
+        b=CC28L804DKdEOP694zwj1DFmua3PBV4CqEGyykoMRbz/snD6G0jqdxcBZT4hrE5hES
+         RGUodD9WS8cGkWbG7F1DOkHijw02Sgp03+8Ukrcdi4myajGVOlkpffW3DU2STYisBYp8
+         WIqIQqtcY67wizAxU8rnws4ZJuVmlfgU6C4mM89xxALwwCZI7albRHNlr/NWF3+mgc3G
+         vNHxpDhCKh0Jxdk3FG5pxb6mkH7qct+Ek6qbsKIYTy/j2O4b0QFcMBYjnRCrnOcK/Sz2
+         wvO2nrgUBCLX656LVnkLqBv+rub8Cb11RTauWwma/4c7V1VVLQipFJWeSTBX26YgSTA1
+         9yGg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/hP1ji3s8lzLG99WquDQBNIlETUFg1qjaE9DLxD5Nn16+1izAX3ZHc6pmaib7fVTG/ZXAI9FjatSjra+nkDkL14z/mueB5wMBw3XGlg==
+X-Gm-Message-State: AOJu0Yy3/n9Ito6LI7vPWlbw+tUpus2u9ZzdirvFGdHfUNdPNJVnQPCJ
+	QKKTqWpcjGyGvgr4KmRbbh1ub28TY2noDMfu4qq9fi5XHiytMSEVZKhToqqNS94=
+X-Google-Smtp-Source: AGHT+IHwzCxasTWecNI2BQg/1Mqv76qvz0pqMMUj9hgHTBodTuDhBkY00q2aX9YgUG43J9U17WwHFQ==
+X-Received: by 2002:a17:906:a09:b0:a6e:f7bf:712e with SMTP id a640c23a62f3a-a6fab618973mr379689666b.27.1718906235388;
+        Thu, 20 Jun 2024 10:57:15 -0700 (PDT)
+Received: from localhost.localdomain ([91.216.213.152])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56f42e80sm781370766b.186.2024.06.20.10.57.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jun 2024 10:57:14 -0700 (PDT)
+From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"J.M.B. Downing" <jonathan.downing@nautel.com>,
+	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yangtao Li <frank.li@vivo.com>,
+	Li Zetao <lizetao1@huawei.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Chancel Liu <chancel.liu@nxp.com>,
+	dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sound@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Cc: Markus Elfring <Markus.Elfring@web.de>
+Subject: [Patch v4 00/10] Add audio support for LPC32XX CPUs
+Date: Thu, 20 Jun 2024 19:56:31 +0200
+Message-Id: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-Id: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
-X-B4-Tracking: v=1; b=H4sIAAtYdGYC/x3MQQ5AMBBA0avIrE1So23EVcSCmjILJS0iEXfXW
- L7F/w8kjsIJ2uKByJck2UJGVRbgliHMjDJlAynSypLCc09H5GHF4B2uzhutqxsbYqpHbZgaC7n
- dI3u5/2/Xv+8HeMI+4GcAAAA=
-To: Geert Uytterhoeven <geert@linux-m68k.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Stefan Agner <stefan@agner.ch>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1718900756; l=7211;
- i=jeanmichel.hautbois@yoseli.org; s=20240608; h=from:subject:message-id;
- bh=IEbK275dZGdX1r5WehYrzNJpO82iroodmypGqB6CcPg=;
- b=67/+Hf4fKek2/mcNRdpGlE6XDLZN2U/PfRRY3vL1azQDxGyJG8iz0wGEuo+o6a8IQI28REv+F
- IjWOCVQ4xZMCT5s0+GznJjKauh5vRDpAtZiYWh7gg3dag+/5MQR0wQh
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=oMZuYhJzT0j5MI73RlNUVYaA8VdWpFR/Sao0JKz1D2I=
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_092604_678465_0424DE7C 
-X-CRM114-Status: GOOD (  26.31  )
+X-CRM114-CacheID: sfid-20240620_185719_059938_6131035A 
+X-CRM114-Status: GOOD (  15.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,230 +136,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The vf610_nfc driver is also the one which should be used for the
-coldfire series. Sadly, these device don't support device-tree and so we
-need to do a few modifications:
-- Adapt the probe to use pdata if available
-- Add a new variant as there is a small part to adapt in
-  vf610_nfc_select_target()
-- Add the corresponding missing register definitions
+This pach set is to bring back audio to machines with a LPC32XX CPU.
+The legacy LPC32XX SoC used to have audio spport in linux 2.6.27.
+The support was dropped due to lack of interest from mainaeners.
 
-Tested successfully on a 54418 custom board with a raw NAND:
-[    2.640000] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
-[    2.650000] nand: Micron MT29F4G08ABADAWP
-[    2.650000] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+Piotr Wojtaszczyk (10):
+  dt-bindings: dma: pl08x: Add dma-cells description
+  dt-bindings: dma: Add lpc32xx DMA mux binding
+  ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT binding
+  ARM: dts: lpc32xx: Add missing dma and i2s properties
+  clk: lpc32xx: initialize regmap using parent syscon
+  dmaengine: Add dma router for pl08x in LPC32XX SoC
+  ARM: lpc32xx: Remove pl08x platform data in favor for device tree
+  mtd: rawnand: lpx32xx: Request DMA channels using DT entries
+  ASoC: fsl: Add i2s and pcm drivers for LPC32xx CPUs
+  i2x: pnx: Use threaded irq to fix warning from del_timer_sync()
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
- arch/m68k/include/asm/m5441xsim.h |  7 ++++
- drivers/mtd/nand/raw/Kconfig      |  2 +-
- drivers/mtd/nand/raw/vf610_nfc.c  | 79 ++++++++++++++++++++++++++++++++++-----
- 3 files changed, 77 insertions(+), 11 deletions(-)
+ .../devicetree/bindings/dma/arm-pl08x.yaml    |   7 +
+ .../bindings/dma/nxp,lpc3220-dmamux.yaml      |  56 +++
+ .../bindings/sound/nxp,lpc3220-i2s.yaml       |  73 ++++
+ MAINTAINERS                                   |  21 +
+ arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi        |  53 ++-
+ arch/arm/mach-lpc32xx/phy3250.c               |  54 ---
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/nxp/clk-lpc32xx.c                 |  10 +-
+ drivers/dma/Kconfig                           |   9 +
+ drivers/dma/Makefile                          |   1 +
+ drivers/dma/lpc32xx-dmamux.c                  | 195 +++++++++
+ drivers/i2c/busses/i2c-pnx.c                  |   4 +-
+ drivers/mtd/nand/raw/lpc32xx_mlc.c            |  10 +-
+ drivers/mtd/nand/raw/lpc32xx_slc.c            |  10 +-
+ sound/soc/fsl/Kconfig                         |   7 +
+ sound/soc/fsl/Makefile                        |   2 +
+ sound/soc/fsl/lpc3xxx-i2s.c                   | 376 ++++++++++++++++++
+ sound/soc/fsl/lpc3xxx-i2s.h                   |  79 ++++
+ sound/soc/fsl/lpc3xxx-pcm.c                   |  73 ++++
+ 19 files changed, 954 insertions(+), 87 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
+ create mode 100644 drivers/dma/lpc32xx-dmamux.c
+ create mode 100644 sound/soc/fsl/lpc3xxx-i2s.c
+ create mode 100644 sound/soc/fsl/lpc3xxx-i2s.h
+ create mode 100644 sound/soc/fsl/lpc3xxx-pcm.c
 
-diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-index f48cf63bd782..d4ee1eab7c4a 100644
---- a/arch/m68k/include/asm/m5441xsim.h
-+++ b/arch/m68k/include/asm/m5441xsim.h
-@@ -99,6 +99,7 @@
- #define MCFINT2_PIT1		14
- #define MCFINT2_PIT2		15
- #define MCFINT2_PIT3		16
-+#define MCFINT2_NFC		25
- #define MCFINT2_RTC		26
- 
- /*
-@@ -333,4 +334,10 @@
- #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
- #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
- 
-+/*
-+ * Flash module
-+ */
-+#define MCF_NFC_BASE		0xfc0fc000
-+#define MCF_NFC_SIZE		(0xfc0fff3b - 0xfc0fc000)
-+#define MCF_NFC_ISR		(MCFINT2_VECBASE + MCFINT2_NFC)
- #endif /* m5441xsim_h */
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index cbf8ae85e1ae..2ea3ee32a540 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -252,7 +252,7 @@ config MTD_NAND_FSL_UPM
- 
- config MTD_NAND_VF610_NFC
- 	tristate "Freescale VF610/MPC5125 NAND controller"
--	depends on (SOC_VF610 || COMPILE_TEST)
-+	depends on (SOC_VF610 || COMPILE_TEST || M5441x)
- 	depends on HAS_IOMEM
- 	help
- 	  Enables support for NAND Flash Controller on some Freescale
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index f31d23219f91..06f1ed5433c8 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -146,6 +146,7 @@
- 
- enum vf610_nfc_variant {
- 	NFC_VFC610 = 1,
-+	NFC_M54418 = 2,
- };
- 
- struct vf610_nfc {
-@@ -486,10 +487,24 @@ static void vf610_nfc_select_target(struct nand_chip *chip, unsigned int cs)
- 	if (nfc->variant != NFC_VFC610)
- 		return;
- 
--	tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
--	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
--	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
--	tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
-+	if (nfc->variant == NFC_M54418) {
-+		/*
-+		 * According to the Reference Manual:
-+		 * bit 24: Reserved, must be set (ROW_ADDR_CHIP_SEL_SHIFT)
-+		 * bit 25-27: Reserved, must be cleared
-+		 * bit 28: Reserved, must be set (ROW_ADDR_CHIP_SEL_RB_SHIFT)
-+		 * bit 29-31: Reserved, must be cleared
-+		 */
-+		tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
-+		tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
-+		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
-+		tmp |= 1 << ROW_ADDR_CHIP_SEL_SHIFT;
-+	} else {
-+		tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
-+		tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
-+		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
-+		tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
-+	}
- 
- 	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
- }
-@@ -700,11 +715,26 @@ static int vf610_nfc_write_oob(struct nand_chip *chip, int page)
- 	return nand_prog_page_end_op(chip);
- }
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id vf610_nfc_dt_ids[] = {
- 	{ .compatible = "fsl,vf610-nfc", .data = (void *)NFC_VFC610 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, vf610_nfc_dt_ids);
-+#endif
-+
-+static const struct platform_device_id vf610_nfc_id_table[] = {
-+	{
-+		.name = "mcf5441x-nfc",
-+		.driver_data = (kernel_ulong_t)NFC_M54418,
-+	}, {
-+		.name = "vf610-nfc",
-+		.driver_data = (kernel_ulong_t)NFC_VFC610,
-+	}, {
-+		/* sentinel */
-+	},
-+};
-+MODULE_DEVICE_TABLE(platform, vf610_nfc_id_table);
- 
- static void vf610_nfc_preinit_controller(struct vf610_nfc *nfc)
- {
-@@ -810,6 +840,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 	struct vf610_nfc *nfc;
- 	struct mtd_info *mtd;
- 	struct nand_chip *chip;
-+	struct nand_chip *pdata;
- 	struct device_node *child;
- 	int err;
- 	int irq;
-@@ -820,30 +851,53 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 
- 	nfc->dev = &pdev->dev;
- 	chip = &nfc->chip;
-+	pdata = dev_get_platdata(&pdev->dev);
-+	if (pdata)
-+		*chip = *pdata;
-+
- 	mtd = nand_to_mtd(chip);
- 
- 	mtd->owner = THIS_MODULE;
- 	mtd->dev.parent = nfc->dev;
--	mtd->name = DRV_NAME;
-+
-+	/*
-+	 * We keep the MTD name unchanged to avoid breaking platforms
-+	 * where the MTD cmdline parser is used and the bootloader
-+	 * has not been updated to use the new naming scheme.
-+	 */
-+	if (!nfc->dev->of_node)
-+		mtd->name = "NAND";
-+	else
-+		mtd->name = DRV_NAME;
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
- 
- 	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(nfc->regs))
-+	if (IS_ERR(nfc->regs)) {
-+		dev_err(nfc->dev, "Unable to map registers!\n");
- 		return PTR_ERR(nfc->regs);
-+	}
- 
-+#ifdef CONFIG_OF
- 	nfc->clk = devm_clk_get_enabled(&pdev->dev, NULL);
- 	if (IS_ERR(nfc->clk)) {
- 		dev_err(nfc->dev, "Unable to get and enable clock!\n");
- 		return PTR_ERR(nfc->clk);
- 	}
- 
--	nfc->variant = (enum vf610_nfc_variant)device_get_match_data(&pdev->dev);
--	if (!nfc->variant)
--		return -ENODEV;
-+	const void *data = device_get_match_data(&pdev->dev);
- 
-+	nfc->variant = (enum vf610_nfc_variant)data;
-+	if (!nfc->variant) {
-+		dev_err(nfc->dev, "No variant data found!\n");
-+		return -ENODEV;
-+	}
-+#else
-+	nfc->variant = (enum vf610_nfc_variant)platform_get_device_id(pdev)->driver_data;
-+#endif
-+#ifdef CONFIG_OF
- 	for_each_available_child_of_node(nfc->dev->of_node, child) {
- 		if (of_device_is_compatible(child, "fsl,vf610-nfc-nandcs")) {
- 
-@@ -862,6 +916,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 		dev_err(nfc->dev, "NAND chip sub-node missing!\n");
- 		return -ENODEV;
- 	}
-+#else
-+	nfc->clk = NULL;
-+	mtd->dev.parent = &pdev->dev;
-+#endif
- 
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
- 
-@@ -937,11 +995,12 @@ static SIMPLE_DEV_PM_OPS(vf610_nfc_pm_ops, vf610_nfc_suspend, vf610_nfc_resume);
- static struct platform_driver vf610_nfc_driver = {
- 	.driver		= {
- 		.name	= DRV_NAME,
--		.of_match_table = vf610_nfc_dt_ids,
-+		.of_match_table = of_match_ptr(vf610_nfc_dt_ids),
- 		.pm	= &vf610_nfc_pm_ops,
- 	},
- 	.probe		= vf610_nfc_probe,
- 	.remove_new	= vf610_nfc_remove,
-+	.id_table = vf610_nfc_id_table,
- };
- 
- module_platform_driver(vf610_nfc_driver);
-
----
-base-commit: e5b3efbe1ab1793bb49ae07d56d0973267e65112
-change-id: 20240620-upstream-nfc-mcf5441x-82e23b45e286
-
-Best regards,
 -- 
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+2.25.1
 
 
 ______________________________________________________
