@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57DCBC2BA1A
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2024 14:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26635C27C79
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jun 2024 16:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DxYCmTN4IajBH802H3plxDzK12WUx3soHzT6WhbMZw8=; b=hel9BgtPHmVvEX
-	QF2WBUFZBf6jrJ4Tg2xPivCsGgkLZIXfWdCWY4c/5pm/1FbZHK1FuSIoIM+6GzD6TI5wOGTU0AXZr
-	3VVuoOADfPNnyVty1luLjd+3JyyNUUrirI3MhaHwote7hiniqY+m268PNMOhiQXwsFicGD8mLQhQu
-	jf1yMFSlSH6Y6sh65HTQ/F125MpxwPYWXsJ717zdUdqA1d0kp8SSOvvQShtgIYIG0kvNzvq1tw8+g
-	57zYRkSp71IExBAnRC42Tz+ccjK8/FdhEmzFn51RDrQU10AbuK+jOAjjOdJwJE7VwShtFOqIYM2yk
-	Hkm6h8M+QTNAdUzGN/xA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=lBKWk5pXB97VLBxixHuofiHy168Q5zk9OJW2ls0fRPo=; b=kAWejzbV1mWoWl
+	QRANqCeUvRooIe6XR9gkg/GnRtmMIyqtJCoQ9XftqAvtC7ZjCehTLSwi9YuJaFLjHcJLbaZuomtcS
+	AnleIWi80vAqYWMi1O7at1RE3s9J1jB2iBU8S7LLkz38G6+nzPFcDL6dFW8s42le4CmG2rbmEitcA
+	s/kKlJ55qlmtwCJxEIXAIfjrBj1nhApKFZ1ns9WU8pzSQlkYufaiGblSa7C4obQnlnpC345KSW4Uq
+	0qhAR4nrlsQLR4wt66cgS9Qn+nUZqhp9QyaHBpPP8LR/wljSSIQdC3HP2ZGHyXxSeC1daLw0Sg8Wk
+	4qPHARI1zl6CumiNtuzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKIsz-00000005UAK-3rzp;
-	Thu, 20 Jun 2024 14:35:37 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sKKbw-00000005q56-07GG;
+	Thu, 20 Jun 2024 16:26:08 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKIsx-00000005U98-1r3W
+	id 1sKKbs-00000005pyI-1Mzr
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jun 2024 14:35:36 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6B62C6216B;
-	Thu, 20 Jun 2024 14:35:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1637C2BD10;
-	Thu, 20 Jun 2024 14:35:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718894134;
-	bh=EUEYZw/kD9IsbumaJrAAUG5hqVgcrDB6vpnPWq6BWs0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=YHqkRDUb3YBDlGNlITyO0ypBjBWRg7S+fvdUj9JkmK+o7w4D/7yhz62NFEyukaTu+
-	 m+AHZmoOGoz9LpwL4NcjHXVqx4lc5bb4u7SDvMv0IYLhZYeisQhNMPDaxUDdTclPGh
-	 7g9aCowhLqvVxm9D6po9o26w+5gRNyMf7mpQ4iaWqhDCm3UslpN1MxYsLaRI/uNwwu
-	 qou4h42lp7jT7cq0hOjaXOdYdYVe7RnKeZSgxvJNZP26CfzI9cJ8BzDup+0k6fqBdW
-	 Z4LBTP9O1tHLPih048EyJ2K8IcmF0bRa6CkqR5ysWCwXo1iAq25RjRrf4Jk670jX/p
-	 fLqJ9JLV8F7mg==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  Linus Walleij <linus.walleij@linaro.org>,
-  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,  e9hack
- <e9hack@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: winbond: fix w25q128 regression
-In-Reply-To: <91d155ab7526c14e882f7b88a129fbcd@kernel.org> (Michael Walle's
-	message of "Thu, 20 Jun 2024 16:09:13 +0200")
-References: <20240610074809.2180535-1-mwalle@kernel.org>
-	<76f8be4e-3050-4ae6-93b4-9524a0689022@linaro.org>
-	<D233KUGR81P5.1BJ8JSACE7C6A@kernel.org> <mafs04j9ng1ay.fsf@kernel.org>
-	<91d155ab7526c14e882f7b88a129fbcd@kernel.org>
-Date: Thu, 20 Jun 2024 16:35:31 +0200
-Message-ID: <mafs0zfrfel70.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Thu, 20 Jun 2024 16:26:05 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6FF501C0005;
+	Thu, 20 Jun 2024 16:25:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1718900757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=sMAaUukcd0doO0dRRodMLTypr1iYWufXt8C9e7HTtwg=;
+	b=KPDKIqlzYu0VBtYoga+w6FHQyMQKEJyYfelR/j1Tb+6ObzKdKGSqbhtIWEICOmFe7pSTPT
+	Qnpy/SWdynNPjIQTFhKl4wWoDmXxiE5aMnDSeLr0nNoJdLOVHpH7DMVBzs34LwjwAsl8G9
+	sstAH1nbnfaDsVyo6MhU8cxjOIyIB5M5wMVABFOIDEYy2eQQUbvYcNLmq1540Fpzu46jkq
+	qizPlI7c8MwKjT3GivBlw2lM9P3/UHOujIToYcE2hFydEA73Y+W2U0jSAtGyOtIvkyVJaW
+	/7h+72rbrBjVzNRkdxWI51wvM0WcT+qVUN/lUm2vDHvzVwamN1b/oyi6/OUT+g==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Thu, 20 Jun 2024 18:25:48 +0200
+Subject: [PATCH] mtd: nand: Add support for M5441x NFC
 MIME-Version: 1.0
+Message-Id: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIAAtYdGYC/x3MQQ5AMBBA0avIrE1So23EVcSCmjILJS0iEXfXW
+ L7F/w8kjsIJ2uKByJck2UJGVRbgliHMjDJlAynSypLCc09H5GHF4B2uzhutqxsbYqpHbZgaC7n
+ dI3u5/2/Xv+8HeMI+4GcAAAA=
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1718900756; l=7211;
+ i=jeanmichel.hautbois@yoseli.org; s=20240608; h=from:subject:message-id;
+ bh=IEbK275dZGdX1r5WehYrzNJpO82iroodmypGqB6CcPg=;
+ b=67/+Hf4fKek2/mcNRdpGlE6XDLZN2U/PfRRY3vL1azQDxGyJG8iz0wGEuo+o6a8IQI28REv+F
+ IjWOCVQ4xZMCT5s0+GznJjKauh5vRDpAtZiYWh7gg3dag+/5MQR0wQh
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=oMZuYhJzT0j5MI73RlNUVYaA8VdWpFR/Sao0JKz1D2I=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_073535_614392_4658D688 
-X-CRM114-Status: GOOD (  28.63  )
+X-CRM114-CacheID: sfid-20240620_092604_678465_0424DE7C 
+X-CRM114-Status: GOOD (  26.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,94 +83,231 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 20 2024, Michael Walle wrote:
+The vf610_nfc driver is also the one which should be used for the
+coldfire series. Sadly, these device don't support device-tree and so we
+need to do a few modifications:
+- Adapt the probe to use pdata if available
+- Add a new variant as there is a small part to adapt in
+  vf610_nfc_select_target()
+- Add the corresponding missing register definitions
 
->>>> > Commit 83e824a4a595 ("mtd: spi-nor: Correct flags for Winbond w25q128")
->>>> That commit did:
->>>> -       { "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
->>>> -               NO_SFDP_FLAGS(SECT_4K) },
->>>> +       { "w25q128", INFO(0xef4018, 0, 0, 0)
->>>> +               PARSE_SFDP
->>>> +               FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
->>>> 
->> [...]
->>>> > diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
->>>> > index ca67bf2c46c3..6b6dec6f8faf 100644
->>>> > --- a/drivers/mtd/spi-nor/winbond.c
->>>> > +++ b/drivers/mtd/spi-nor/winbond.c
->>>> > @@ -105,7 +105,9 @@ static const struct flash_info winbond_nor_parts[] = {
->>>> >  	}, {
->>>> >  		.id = SNOR_ID(0xef, 0x40, 0x18),
->>>> >  		.name = "w25q128",
->>>> > +		.size = SZ_16M,
->>>> >  		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
->>>> > +		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
->>>> and here you add dual and quad to trigger SFDP parsing I guess. All fine
->>>> if the old flash supports dual and quad read. But please update the
->>>> commit message describing the intention. With that ACK. Would be good to
->>>> have this merged soon.
->>> Right. It's not because it will trigger the SFDP parsing, but
->>> because that what was tested by Esben. We're lucky that this will
->>> trigger the SFDP parsing ;) I'll explain that in more detail and add
->>> a Link: to the bug report mail.
->> Should we treat this flash similar to the Macronix ones Esben sent out
->> patches for [0]? It seems that there are some old parts without SFDP
->> support and new ones with SFDP support. From your comment in [1]:
->> 
->>> This is an entry matching various flash families from Winbond, see my
->>> reply in v1. I'm not sure we should remove these as we could break the
->>> older ones, which might or might not have SFDP tables. We don't know.
->> Since the entry matches multiple families, do _all_ of them support dual
->> and quad read? If not, attempting to enable dual or quad reads on them
->> can cause problems.
->
-> I rely on the information Helmut provided. Also the w25q64 and the w25q256
-> both have these flags set. So I'd say it's less likely the 128 doesn't
-> support it.
+Tested successfully on a 54418 custom board with a raw NAND:
+[    2.640000] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
+[    2.650000] nand: Micron MT29F4G08ABADAWP
+[    2.650000] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
 
-Okay, fair enough.
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/include/asm/m5441xsim.h |  7 ++++
+ drivers/mtd/nand/raw/Kconfig      |  2 +-
+ drivers/mtd/nand/raw/vf610_nfc.c  | 79 ++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 77 insertions(+), 11 deletions(-)
 
->
->> Also, for parts that _do_ have SFDP available, won't it be better to use
->> the information in SFDP instead of our hard-coded ones anyway? Using
->> SPI_NOR_TRY_SFDP here would let us do that.
->
-> Sure, but this is about fixing the referenced commit. A later patch will
-> then move that to TRY_SFDP. We can't fix this regression by introducing
-> new code IMHO. This seems to be the easiest fix.
+diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+index f48cf63bd782..d4ee1eab7c4a 100644
+--- a/arch/m68k/include/asm/m5441xsim.h
++++ b/arch/m68k/include/asm/m5441xsim.h
+@@ -99,6 +99,7 @@
+ #define MCFINT2_PIT1		14
+ #define MCFINT2_PIT2		15
+ #define MCFINT2_PIT3		16
++#define MCFINT2_NFC		25
+ #define MCFINT2_RTC		26
+ 
+ /*
+@@ -333,4 +334,10 @@
+ #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+ #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+ 
++/*
++ * Flash module
++ */
++#define MCF_NFC_BASE		0xfc0fc000
++#define MCF_NFC_SIZE		(0xfc0fff3b - 0xfc0fc000)
++#define MCF_NFC_ISR		(MCFINT2_VECBASE + MCFINT2_NFC)
+ #endif /* m5441xsim_h */
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index cbf8ae85e1ae..2ea3ee32a540 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -252,7 +252,7 @@ config MTD_NAND_FSL_UPM
+ 
+ config MTD_NAND_VF610_NFC
+ 	tristate "Freescale VF610/MPC5125 NAND controller"
+-	depends on (SOC_VF610 || COMPILE_TEST)
++	depends on (SOC_VF610 || COMPILE_TEST || M5441x)
+ 	depends on HAS_IOMEM
+ 	help
+ 	  Enables support for NAND Flash Controller on some Freescale
+diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+index f31d23219f91..06f1ed5433c8 100644
+--- a/drivers/mtd/nand/raw/vf610_nfc.c
++++ b/drivers/mtd/nand/raw/vf610_nfc.c
+@@ -146,6 +146,7 @@
+ 
+ enum vf610_nfc_variant {
+ 	NFC_VFC610 = 1,
++	NFC_M54418 = 2,
+ };
+ 
+ struct vf610_nfc {
+@@ -486,10 +487,24 @@ static void vf610_nfc_select_target(struct nand_chip *chip, unsigned int cs)
+ 	if (nfc->variant != NFC_VFC610)
+ 		return;
+ 
+-	tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+-	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
+-	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
+-	tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
++	if (nfc->variant == NFC_M54418) {
++		/*
++		 * According to the Reference Manual:
++		 * bit 24: Reserved, must be set (ROW_ADDR_CHIP_SEL_SHIFT)
++		 * bit 25-27: Reserved, must be cleared
++		 * bit 28: Reserved, must be set (ROW_ADDR_CHIP_SEL_RB_SHIFT)
++		 * bit 29-31: Reserved, must be cleared
++		 */
++		tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
++		tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
++		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
++		tmp |= 1 << ROW_ADDR_CHIP_SEL_SHIFT;
++	} else {
++		tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
++		tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
++		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
++		tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
++	}
+ 
+ 	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
+ }
+@@ -700,11 +715,26 @@ static int vf610_nfc_write_oob(struct nand_chip *chip, int page)
+ 	return nand_prog_page_end_op(chip);
+ }
+ 
++#ifdef CONFIG_OF
+ static const struct of_device_id vf610_nfc_dt_ids[] = {
+ 	{ .compatible = "fsl,vf610-nfc", .data = (void *)NFC_VFC610 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, vf610_nfc_dt_ids);
++#endif
++
++static const struct platform_device_id vf610_nfc_id_table[] = {
++	{
++		.name = "mcf5441x-nfc",
++		.driver_data = (kernel_ulong_t)NFC_M54418,
++	}, {
++		.name = "vf610-nfc",
++		.driver_data = (kernel_ulong_t)NFC_VFC610,
++	}, {
++		/* sentinel */
++	},
++};
++MODULE_DEVICE_TABLE(platform, vf610_nfc_id_table);
+ 
+ static void vf610_nfc_preinit_controller(struct vf610_nfc *nfc)
+ {
+@@ -810,6 +840,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	struct vf610_nfc *nfc;
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *chip;
++	struct nand_chip *pdata;
+ 	struct device_node *child;
+ 	int err;
+ 	int irq;
+@@ -820,30 +851,53 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 
+ 	nfc->dev = &pdev->dev;
+ 	chip = &nfc->chip;
++	pdata = dev_get_platdata(&pdev->dev);
++	if (pdata)
++		*chip = *pdata;
++
+ 	mtd = nand_to_mtd(chip);
+ 
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->dev.parent = nfc->dev;
+-	mtd->name = DRV_NAME;
++
++	/*
++	 * We keep the MTD name unchanged to avoid breaking platforms
++	 * where the MTD cmdline parser is used and the bootloader
++	 * has not been updated to use the new naming scheme.
++	 */
++	if (!nfc->dev->of_node)
++		mtd->name = "NAND";
++	else
++		mtd->name = DRV_NAME;
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+ 		return irq;
+ 
+ 	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(nfc->regs))
++	if (IS_ERR(nfc->regs)) {
++		dev_err(nfc->dev, "Unable to map registers!\n");
+ 		return PTR_ERR(nfc->regs);
++	}
+ 
++#ifdef CONFIG_OF
+ 	nfc->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+ 	if (IS_ERR(nfc->clk)) {
+ 		dev_err(nfc->dev, "Unable to get and enable clock!\n");
+ 		return PTR_ERR(nfc->clk);
+ 	}
+ 
+-	nfc->variant = (enum vf610_nfc_variant)device_get_match_data(&pdev->dev);
+-	if (!nfc->variant)
+-		return -ENODEV;
++	const void *data = device_get_match_data(&pdev->dev);
+ 
++	nfc->variant = (enum vf610_nfc_variant)data;
++	if (!nfc->variant) {
++		dev_err(nfc->dev, "No variant data found!\n");
++		return -ENODEV;
++	}
++#else
++	nfc->variant = (enum vf610_nfc_variant)platform_get_device_id(pdev)->driver_data;
++#endif
++#ifdef CONFIG_OF
+ 	for_each_available_child_of_node(nfc->dev->of_node, child) {
+ 		if (of_device_is_compatible(child, "fsl,vf610-nfc-nandcs")) {
+ 
+@@ -862,6 +916,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 		dev_err(nfc->dev, "NAND chip sub-node missing!\n");
+ 		return -ENODEV;
+ 	}
++#else
++	nfc->clk = NULL;
++	mtd->dev.parent = &pdev->dev;
++#endif
+ 
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ 
+@@ -937,11 +995,12 @@ static SIMPLE_DEV_PM_OPS(vf610_nfc_pm_ops, vf610_nfc_suspend, vf610_nfc_resume);
+ static struct platform_driver vf610_nfc_driver = {
+ 	.driver		= {
+ 		.name	= DRV_NAME,
+-		.of_match_table = vf610_nfc_dt_ids,
++		.of_match_table = of_match_ptr(vf610_nfc_dt_ids),
+ 		.pm	= &vf610_nfc_pm_ops,
+ 	},
+ 	.probe		= vf610_nfc_probe,
+ 	.remove_new	= vf610_nfc_remove,
++	.id_table = vf610_nfc_id_table,
+ };
+ 
+ module_platform_driver(vf610_nfc_driver);
 
-New code will make it harder to backport to stable kernels. Beyond that,
-I don't see why we can't fix a regression with new code.
+---
+base-commit: e5b3efbe1ab1793bb49ae07d56d0973267e65112
+change-id: 20240620-upstream-nfc-mcf5441x-82e23b45e286
 
-Here's why I suggested this: before 83e824a4a595 ("mtd: spi-nor: Correct
-flags for Winbond w25q128"), all flashes with this ID got only the
-SECT_4K flag -- and thus only single SPI mode. After that commit, all
-flashes with this ID got their settings configured via SFDP. Using the
-TRY_SFDP approach allows both of those configurations to co-exist. Old
-ones still use the old configuration, new ones get to use SFDP.
-
-Now we add a different configuration that adds dual and quad reads to
-these old flashes. As mentioned above, this is unlikely to cause
-problems, but a new configuration regardless. So _in principle_ I think
-TRY_SFDP would be the best balance.
-
-But I get your point -- since both w25q64 and w25q256 have these flags,
-it is likely someone just never bothered updating w25q128. So this patch
-LGTM. I'll apply it once you send a new version with an updated commit
-message.
-
->
-> -michael
->
->> [0]
->> https://lore.kernel.org/linux-mtd/20240603-macronix-mx25l3205d-fixups-v2-0-ff98da26835c@geanix.com/
->> [1]
->> https://lore.kernel.org/linux-mtd/0525440a652854a2a575256cd07d3559@walle.cc/
->
-
+Best regards,
 -- 
-Regards,
-Pratyush Yadav
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
