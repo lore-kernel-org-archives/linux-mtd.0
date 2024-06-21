@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2803BC27C4F
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2024 06:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88F48C27C4F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2024 06:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gX2UoII8qBawscbcRVtCeFAbKlXz1DE+worcZ4k6P1Y=; b=Gdn5IEf/p9Mxzk
-	51/G2pLs1N962mKf+cFADoBlyNQpL2Xf7lTS6PfTRT5z4hwmwbR3hK7ks+vY7ZyFG8b2tx6D2Dup6
-	lsgoNDAc1V+5LKjpoV4hHYgLZh+uFsm7jTtuGMVV8nAv6ciKdE9yFuOI3ipZIUh0Omn0hbGafua/N
-	D9Kh2GIuUWW755yHy9K5/BBIUzyB0E4EptriGE5bBIjeLJXtpjmtyfoq7dzjjmXBcUFYSOAbVgyLz
-	ORHGRHYmV7ESgEdqyT9GwbxGAXtN3bl55vbQGNtC07FrCLZkzz6hUL/CKVSrcIRDtVMusnZLhDmDC
-	fTjra6I0g0Ivrw+T8H7A==;
+	List-Owner; bh=No6v4yQOkcENedlsnWWk7rc48aOozGD+58zT52MLo7o=; b=rL0JiL9CXeBsS/
+	jAFdy0vS/BUTnxMkT4V8zJmiQYdxHmQ5z17D7He+rQhfQhTl9pw04kLgSJha0zDqsglfkiaZ18Zne
+	XXjsof8U6uyLzj2i6u5+LQnt0t2ibY7/sfDAHL9OfHT2+TElJ8ioTGY+AB0FT0z26OD1lpDjmUkUX
+	oodwS+pgzIARBkbzvHOkkELrAAlMyLmRcB857hj3Qy8/VMxGJA8omWHzOOkbFM2E09aq/T/hMqjfV
+	PabQtcHxO/xo3Ww6Pk43T8o6jpiXQcvzM0VMcODBMXxCCeMRrm5HklrYupaYbOqZs5Te55elmKpAz
+	y6o5DrnARNIEU5SQbA5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKXc9-00000007vHh-2wXG;
-	Fri, 21 Jun 2024 06:19:13 +0000
+	id 1sKXe3-00000007w2O-1uPw;
+	Fri, 21 Jun 2024 06:21:11 +0000
 Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKXbt-00000007v9t-3RSm;
-	Fri, 21 Jun 2024 06:19:10 +0000
+	id 1sKXds-00000007vwb-10Q1;
+	Fri, 21 Jun 2024 06:21:01 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E4DD8CE2B38;
-	Fri, 21 Jun 2024 06:18:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22111C2BBFC;
-	Fri, 21 Jun 2024 06:18:43 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 9868ACE2B4D;
+	Fri, 21 Jun 2024 06:20:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AB4C2BBFC;
+	Fri, 21 Jun 2024 06:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718950735;
-	bh=iOKs0kuwYeauur49traV6Ei5QgiBo+V6ci2r2oGoz5Y=;
+	s=k20201202; t=1718950857;
+	bh=IiCPd22GUUG2UxULkuTSSyyTZ/pmI4F7nyOYPBord1k=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CQ5+RO+eixfOSNiyNe6mYshUgJvT0bBT4RbBHfzXKwWoWUVDdMTdin7bNvMeociBa
-	 nsxe1skVxv8y216/k3GjD97zpMhRmVcHnKNoQQjUEIDFLDXLOx3HazsbPRQpp8Wgtd
-	 URk3Blz7BFahR8cKNcyHmn2uxfK86Y/OqF9sI1Q245ew1hsIEgxFDimmiZ9+leoFKN
-	 bFTDPzHrfjIDkH0vL43WSNL6GWH6QcG//xXqawpgJXcVrGqP+6n8pqSHSc0LN28WsZ
-	 IWtKNkMhQE4HAfPFsV1PtgcWsaTID0wJ9ME+tjwO5TMqWlHdX4Miz81t8+Qz01ZGXY
-	 CxmBFLYjgBjFg==
-Message-ID: <f49c5ee8-6bdb-481b-a131-a6478526f1e1@kernel.org>
-Date: Fri, 21 Jun 2024 08:18:41 +0200
+	b=OhtXpZpLrdBOpdBtgNAUDtgMaVbFjc/ppNy+deGKwuXAwkwbRJ1Q7kpX96yURiGPY
+	 Q+dS4zFpn9mijqwy+WF/PZQ/03NZquYSWhFf19qDH0Luyyw82dLwx8dKv1b9KcLbaE
+	 9+aUalJ2KoxVeOXUo35FcrpjXarIeQU0DgKVv4nvLyNc7eRiH/lP7r3c3+pbZlgFk+
+	 7lpve1YzSqsiXwzhIpGbYBzxGhzgtpUXU9bG7w8uHxLTXUC04cAgC49mQwYt5r9n0x
+	 BuhgXKvau/UMRX6lN0ZzKsdUufBNeCR6S/URsPykjbdQ+V12JoV8wx9m4LufStkpzU
+	 dwN+w1x/CopKQ==
+Message-ID: <23a12b79-b3ac-47a1-9bc3-73a62f96e60f@kernel.org>
+Date: Fri, 21 Jun 2024 08:20:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v4 03/10] ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT
- binding
+Subject: Re: [Patch v4 04/10] ARM: dts: lpc32xx: Add missing dma and i2s
+ properties
 To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
@@ -58,7 +58,7 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
+ Arnd Bergmann <arnd@arndb.de>, Yangtao Li <frank.li@vivo.com>,
  Li Zetao <lizetao1@huawei.com>, Michael Ellerman <mpe@ellerman.id.au>,
  Chancel Liu <chancel.liu@nxp.com>, dmaengine@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -68,7 +68,7 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  linux-mtd@lists.infradead.org
 Cc: Markus Elfring <Markus.Elfring@web.de>
 References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-4-piotr.wojtaszczyk@timesys.com>
+ <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -114,11 +114,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240620175657.358273-4-piotr.wojtaszczyk@timesys.com>
+In-Reply-To: <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_231858_972415_7553D2A0 
-X-CRM114-Status: UNSURE (   6.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240620_232100_694741_AB0352C4 
+X-CRM114-Status: GOOD (  11.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,26 +135,67 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 20/06/2024 19:56, Piotr Wojtaszczyk wrote:
-> Add nxp,lpc3220-i2s DT binding documentation.
+> Adds properties declared in the new DT bindings:
+>  - nxp,lpc3220-i2s.yaml
+>  - nxp,lpc3220-dmamux.yaml
+> for dma router/mux and I2S interface.
 > 
 > Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 
-Thanks for doing this. Appreciated.
+You are doing here multiple things at once. This should be
+
+One patch is dma properties.
 
 >  
-> +FREESCALE SOC LPC32XX SOUND DRIVERS
-> +M:	J.M.B. Downing <jonathan.downing@nautel.com>
-> +M:	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-> +R:	Vladimir Zapolskiy <vz@mleia.com>
-> +L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> +L:	linuxppc-dev@lists.ozlabs.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-> +N:	lpc32xx
+>  			i2s0: i2s@20094000 {
+>  				compatible = "nxp,lpc3220-i2s";
+>  				reg = <0x20094000 0x1000>;
+> +				interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk LPC32XX_CLK_I2S0>;
+> +				dmas = <&dma 0 1>, <&dma 13 1>;
+> +				dma-names = "rx", "tx";
+> +				#sound-dai-cells = <0>;
 
-Drop the last "N:".
+Sound dai cells is another patch (or entire node is separate patch).
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>  				status = "disabled";
+>  			};
+>  
+> @@ -231,12 +255,19 @@ sd: sd@20098000 {
+>  					     <13 IRQ_TYPE_LEVEL_HIGH>;
+>  				clocks = <&clk LPC32XX_CLK_SD>;
+>  				clock-names = "apb_pclk";
+> +				dmas = <&dma 4 1>;
+> +				dma-names = "rx";
+>  				status = "disabled";
+>  			};
+>  
+>  			i2s1: i2s@2009c000 {
+>  				compatible = "nxp,lpc3220-i2s";
+>  				reg = <0x2009c000 0x1000>;
+> +				interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&clk LPC32XX_CLK_I2S1>;
+> +				dmas = <&dma 2 1>, <&dmamux 10 1 1>;
+> +				dma-names = "rx", "tx";
+> +				#sound-dai-cells = <0>;
+>  				status = "disabled";
+>  			};
+>  
+> @@ -312,21 +343,27 @@ fab {
+>  			compatible = "simple-bus";
+>  			ranges = <0x20000000 0x20000000 0x30000000>;
+>  
+> -			/* System Control Block */
+> -			scb {
+> -				compatible = "simple-bus";
+> -				ranges = <0x0 0x40004000 0x00001000>;
+> +			syscon@40004000 {
+> +				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
+> +				reg = <0x40004000 0x114>;
+
+This hunk is also separate patch.
+
+
 
 Best regards,
 Krzysztof
