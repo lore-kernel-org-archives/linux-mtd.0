@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B81F9C2BA1A
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2024 05:52:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73E42C27C4F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2024 05:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Cc:References:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H6W9BuPtCMn8ebP4UByP2XZZNYPma1XlThfSKPbTckI=; b=zlCkRvY6Z0CF3k
-	fCRHJa+AGy9LAFRrab7YAjxwrUpTXbc1U3t4N37t3FZSpJ6CfEHzqSaLtMeMoWAeUt5ajx6aqbTMn
-	UGmVVB+7ZRC2JRchLEq6MXwP3TsYgZ8pnEwsNnrPKD+AfmMbYxPm50by1Cxp2cW3L30jnRDE4jkrk
-	XZb28Z6uGRXeiwrsO6SWYJh/aqkxZTuNhpxx1tPIxOi8E65wbW5JsOvg1HP+hj52+DPgH5I0XRZbt
-	7X8+Y1KJlwyHMl8H7YTM2nbiP9fjF2aHo7ol+82m7LaYmxvnhj7POFY0H+rrsa5t3TZy6XStufJwC
-	e+emCo6qTr1axIdcRlMw==;
+	List-Owner; bh=4cYcfRDuYCOltF5R7hSGl0QBil91FUaLELsBg8e1680=; b=HPsZ/YAkDn5ymH
+	DF4OJSl88rrEURULkuhmT9OmpdNshvt3nhrnSPHxl2iyy8qVuIfploLO9+q14raRhB3e1YezMUUnU
+	8Pia9czq9j+wMIU/OZ6+TJikJTUvb3Ogx9W9Uh5I6rPcLUazT7jf1DCzYrmCBf+aiIy+zSFh/bqRc
+	PmZsZmx9zR9rV8vBRGOzJVpB80RzvtuOnvgHQoSdNnaH5KbPagxQ5GDNDpXhfTh9UYJ2anggTZ3+3
+	XraWnccYGmMv3vitN1TFRbVFdtw/X0tr9QyscBDCLFBnb+RACEk31tKzA4Zh5D6361DRnEmQ5RZwm
+	SRjgurIieb4hNOl1NNuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKXCF-00000007ppD-10Bv;
-	Fri, 21 Jun 2024 05:52:27 +0000
-Received: from mout.web.de ([212.227.15.4])
+	id 1sKXGb-00000007qWD-1l73;
+	Fri, 21 Jun 2024 05:56:57 +0000
+Received: from mout.web.de ([212.227.15.3])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKXC8-00000007poT-34jj;
-	Fri, 21 Jun 2024 05:52:23 +0000
+	id 1sKXGX-00000007qVK-0zXn;
+	Fri, 21 Jun 2024 05:56:54 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1718949090; x=1719553890; i=markus.elfring@web.de;
-	bh=B/FtBrdM0MhQsIGzDSXhE0531n+bBkbvzx6WIgFpcl4=;
+	s=s29768273; t=1718949371; x=1719554171; i=markus.elfring@web.de;
+	bh=70TtcVLm9kmqiepSERoWu/9Hwwx1Rf4phfsof9PPYa4=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:Cc:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=g9WFBtZJ6jlB7Xhm4LApEB33Lek0861qyFNqPb11SiEuEbAqlDQlxKGJ5LkLcnKc
-	 BLrvnBx5OAZfeh7r05oZsGab+pZ3zwUw4URvK5pCKhai8AwyJ+I/pjcANj2N0e0Ok
-	 Mkmv5/vIM+W39FeC0LdnMz95DnOVdsSFEQ+vZOZ9m7d1f1aLUhBTEz2FlVHJ+Msge
-	 F2abgY6fqjIjiJCuN8Xjwe9BEutZDXssCtL8EMyIa8rMKy/KVuzTLEbV1DW2YCUKl
-	 jfdAXFHp5JAi+4+MgmH6z/bfnkBLFFTvtuXHYcrAekFxHSUZpK4NhTH0MVAPA7ATR
-	 7Ouc4OrP0NrGubXFlQ==
+	b=wO5bF2dnR36pYugAZFszjcO3gw0sL18WgGHyX6gNBuq9IaZKpqCaNVBg+xCZQrMx
+	 Y2/x2INaouP5hzu5A401lKHRk7OGa3pJy5idb/1yHkzlUWvXWThvtMFbrnTqNOOaQ
+	 DijgoTMjTEyJ+dI2rxFtO1nrQdEFiMI+S/8ZepiBj2pGkSWclmr6QLpGDbcMh40Q+
+	 XRUlVAvh/BsNifyu6T8mjVYsbFLPDy2WrtwyIoO94VC1T7Y7w5W5sAhzntGtkBQkM
+	 Sg3JFn+9S/TJCMLmkTHUru/f9YHCz3ElL6T4dGGVpuOJy1ueVodJvxjo5Odt1Pd/j
+	 EoKpzuAwElV5I+mU2Q==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
 Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MQPdl-1ryJTH0wtN-00XZsv; Fri, 21
- Jun 2024 07:51:30 +0200
-Message-ID: <62a564df-e78f-470b-a1b3-2e49b6c05395@web.de>
-Date: Fri, 21 Jun 2024 07:51:27 +0200
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MN6FV-1s1cnG2hm9-00UG7M; Fri, 21
+ Jun 2024 07:56:11 +0200
+Message-ID: <bc3d018e-5a60-46b0-8e84-7158d231d2cc@web.de>
+Date: Fri, 21 Jun 2024 07:56:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v4 06/10] dmaengine: Add dma router for pl08x in LPC32XX
- SoC
+Subject: Re: [Patch v4 07/10] ARM: lpc32xx: Remove pl08x platform data in
+ favor for device tree
 To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
@@ -62,38 +62,38 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
- Li Zetao <lizetao1@huawei.com>, Chancel Liu <chancel.liu@nxp.com>,
- Michael Ellerman <mpe@ellerman.id.au>, dmaengine@vger.kernel.org,
+ Li Zetao <lizetao1@huawei.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Chancel Liu <chancel.liu@nxp.com>, dmaengine@vger.kernel.org,
  devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
  linux-sound@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
+ <20240620175657.358273-8-piotr.wojtaszczyk@timesys.com>
 Content-Language: en-GB
 Cc: LKML <linux-kernel@vger.kernel.org>
 From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
-X-Provags-ID: V03:K1:bPaZvoxzJ/h40pvO52zJQM/EXwvqLuVGmwbJlhznsZdSb7+5vV9
- ivg/UFZwjDfRawbpm6w0wCBUaQyp9SJcyDqFrot02cTYmewtQVP7vrWLKc5MV0m8Yvuzqml
- 3MMYaa56tKHofEPv+LYWJE+ygSMZ+e5P2grD4YKSoPHdjNrcG5SnDh1+y4SlXyeVzIcF9Y6
- 7Ufmk6v6MTeNw2cuMzL1w==
-UI-OutboundReport: notjunk:1;M01:P0:UuJ6HPlnuco=;b+auAotmGPrPfJRrtNoxICqpvzR
- pKZtILPKcz2H6Q3tjierCqUY1bw3iXANbljk6kGRZQ8Ir2J+sNZeAoqtxl3Ol0bMTRtSR+4A5
- R+79tcqE/AFMIX8Tj1+dTIq7iGX7H4Z/u4Wn+kGkiczsJT8uP+YBDZA8XWHHbBvTsgBvIgd/M
- t9dbgwBnBviEkn54bA4PV6n6FJWZ2Y4y+qtNc/0yhyMsZfG7v0588p63zWHDOl0BeqabSRk0R
- iSEF/OpLj1jUM9QoM53KVYIxp38zUjrP0FNRW9Bg99ZVq+9y4Cm4pt4oIst1Zi6lZ24WYkyvF
- BbLoTfMQq5eSvbcruXX4b4W4yMHhw5+LoDEdfBn/pTE++mjkuh4AWG5xEAjppkayQT5jEk7+e
- yfcqBPTlRwvN6YwtV8y0qh3+k0GcUhaS/rk5Zy7282DcKttFw8dGIzfia8vte2yv9T+KDpp7x
- ZoVyYf4Iic/IeCnBZg6D0yD+WT406j6qhg495/RmOh3i+X08miyIXWRWAtUxvD+Z2q98HXkGZ
- OnDeEaI4pDSADbegqEszNfdwJ/7SJuW4t99TgT5m1p647pYuyGNkeHX71fk1jCeF/cva/8v4g
- TaikQTpWxd8OrwGHTigbYnrR3Vlnp1LmtBfdQRH8Cw/GcZVyr+9cvXVDmQondRXAg7T013/yY
- IUdhxPtFPZpkDp9Ex3fUOe4K5g0Yvq38AyBxinSmvccQ0O9581SX9FEcl6oyvQFs6TqaswsiA
- v9A67FvaC4G/xzhDWdxVjzSCMCp7GXb3ZVKMN2KLd4wMMcDjDQRJ1S4hyog0GLC1LbvrxWaTj
- pBtdYg/1eB+cdDSUEzEgIwCtPrPRwhWBwKvX/wkLonUvM=
+In-Reply-To: <20240620175657.358273-8-piotr.wojtaszczyk@timesys.com>
+X-Provags-ID: V03:K1:iTUduqMb9cBGoyLdNuW6NQOj676Ul3b9o6PsNTkjdCixiNwYyKR
+ oRvmzegMp0qsnzSo70irPsk4uNh054uLIALzh4CztbqWraJbmZHWwsKMRTm8H8QF3uXl6aw
+ kX1K/LyUquko0H/IMh72DAyOoKYpTBJD4E6yCi3y21vP7Qgmc0rbTfrxSric9CHiwM0yEkI
+ srUTTBp1uUclGZLL0j4BA==
+UI-OutboundReport: notjunk:1;M01:P0:4zwWuLMBIcI=;p3T9mcjmv9EhVlHD/sbm6ZtwCba
+ UW1bkeS7/UTJNK3NQOP8ZTd48Yusiy5ZCAL1lyRMxOHwlVEQftGxe98qQylZmEpcdepsI+I/O
+ /Gd7WAKyUHB2sWSHJFyt0//5tzvkYVAoJqXpUa173WTSwzFjjp8Mmm16e3xjTwMiEFa8s1wFo
+ RMVLj3dQ43GBmpWNbS+3WoOplbIYIXLIkTgqR0dhJ4mOuVn7lHvfrCplqqsferQTJvMYZH7Ns
+ INtfxjHQy8bLawfnhVbbBE/yeGK0Fy4EbE/1qo+BZpOZK8+cjnghxQiiNggT9SJC+GIa2e0zP
+ rnZGJ5ZtpynHbThpuiManMYgp/NWQfdMvTFFm5GdzCAvNlfWeSzAbYaxc/DPQ8sT/Y6Xw89rd
+ q8uoiSTyU6wQpib1I/h7mL0JaUI5nU9o3ByLA4f87UBVBXaz5YcBmAvvNVoEVCVylJ2gm24eb
+ TWhgJG8fsq5TFXpP3zrBtVGr6/cqv3HwJv9XoRqhahaTAuc9AnSt9P/xeisDATr5AxmRFGNZn
+ Bf/aIaIQEJArOgYQwP+hVLatduOlUoeajtsaXAzmhQhWtQhSvVjGxsNbdKOpwkku0X5GctvOg
+ gJWAZy6HqbpBqQ8qQNH8sZen5E60fHE9ZMADZS9NrbJYBwfUApaMyYfHpyOEsdlZ9xrGY2Bvg
+ s5zglaFXZisv5uabkgkayKCx/HDe0gnGtkZ6QIu4bm/w9BbmW0vXhd6jTqtK9ZCyhGf0aHRV6
+ 4HgugA1UVbpqfWetnoa0VNmw+tRV61JKjOqSbx+O2VEMFROG/2I206GuAeiCCobeg14qAVH39
+ d60BOgwvPQJESFlorxlJel7invZ+WB2Ew+jDa9ggMRf9o=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_225221_081075_A1AFC7F9 
-X-CRM114-Status: UNSURE (   5.34  )
+X-CRM114-CacheID: sfid-20240620_225653_594363_4855CDE6 
+X-CRM114-Status: UNSURE (   7.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -106,17 +106,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-4oCmCj4gdGhpcyBkcml2ZXIgYWxsb3dzIHRvIHJvdXRlIGEgc2lnbmFsIHJlcXVlc3QgbGluZSB0
-aHJ1IHRoZSBtdWx0aXBsZXhlciBmb3IKPiBnaXZlbiBwZXJpcGhlcmFsLgoKV291bGQgeW91IGxp
-a2UgdG8gY2hvb3NlIGFuIGltcGVyYXRpdmUgd29yZGluZyBmb3IgYW4gaW1wcm92ZWQgY2hhbmdl
-IGRlc2NyaXB0aW9uPwpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
-L2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlZS9Eb2N1bWVudGF0aW9uL3Byb2Nlc3Mvc3VibWl0
-dGluZy1wYXRjaGVzLnJzdD9oPXY2LjEwLXJjNCNuOTQKClJlZ2FyZHMsCk1hcmt1cwoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+> With the driver for nxp,lpc3220-dmamux we can remove the pl08x platform
+> data and let pl08x driver to create peripheral channels from the DT
+> properties.
+
+Do you see opportunities to improve such a change description?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.10-rc4#n94
+
+Regards,
+Markus
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
