@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88F48C27C4F
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2024 06:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F8C3C27C4F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jun 2024 06:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=No6v4yQOkcENedlsnWWk7rc48aOozGD+58zT52MLo7o=; b=rL0JiL9CXeBsS/
-	jAFdy0vS/BUTnxMkT4V8zJmiQYdxHmQ5z17D7He+rQhfQhTl9pw04kLgSJha0zDqsglfkiaZ18Zne
-	XXjsof8U6uyLzj2i6u5+LQnt0t2ibY7/sfDAHL9OfHT2+TElJ8ioTGY+AB0FT0z26OD1lpDjmUkUX
-	oodwS+pgzIARBkbzvHOkkELrAAlMyLmRcB857hj3Qy8/VMxGJA8omWHzOOkbFM2E09aq/T/hMqjfV
-	PabQtcHxO/xo3Ww6Pk43T8o6jpiXQcvzM0VMcODBMXxCCeMRrm5HklrYupaYbOqZs5Te55elmKpAz
-	y6o5DrnARNIEU5SQbA5Q==;
+	List-Owner; bh=Q5GrWKE4aFfPQc0U+EBuJaTM7ybJKXUFX8ZYa12Fu3g=; b=pY48UHhANPUba3
+	Yl2R8ybEcuiUj7QQBIeGVGzNEy9fRuu+fsCFaCf9vpoTKfY0UWJJHc28iEHa80jaFGVPDyPOZtTgw
+	pJ/jAQ87a98lm5Pr//0AvUuEe3AFBm6euFWswklGkbInbDDrhBPXoAzZNl39BCuKaaZfU7Qxhiz6J
+	ib35U4haThkDoPWJeoi0PKIOnaAGRyAOLk8+QsOjeG+H4UhZoXObprTKN4tDcszfh0XuF7Z+8OELm
+	ZVHJLefz1AdOSkjeYYoEKpU/eXrbIFrA7NGfsx18JKuRfKm6EvIzBQ+c8Kve/VH6aqq49zxzYjJ5Q
+	uV+MbhW3/6frYMyUfPzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKXe3-00000007w2O-1uPw;
-	Fri, 21 Jun 2024 06:21:11 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sKXeV-00000007wEy-0Ri8;
+	Fri, 21 Jun 2024 06:21:39 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKXds-00000007vwb-10Q1;
-	Fri, 21 Jun 2024 06:21:01 +0000
+	id 1sKXeR-00000007wD2-0kVe;
+	Fri, 21 Jun 2024 06:21:36 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 9868ACE2B4D;
-	Fri, 21 Jun 2024 06:20:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AB4C2BBFC;
-	Fri, 21 Jun 2024 06:20:46 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7917C62094;
+	Fri, 21 Jun 2024 06:21:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A6B2C4AF08;
+	Fri, 21 Jun 2024 06:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718950857;
-	bh=IiCPd22GUUG2UxULkuTSSyyTZ/pmI4F7nyOYPBord1k=;
+	s=k20201202; t=1718950894;
+	bh=GD5gbNSJp6UQk8/yJrPvP96TbskjaVlQv6P39YGphmk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OhtXpZpLrdBOpdBtgNAUDtgMaVbFjc/ppNy+deGKwuXAwkwbRJ1Q7kpX96yURiGPY
-	 Q+dS4zFpn9mijqwy+WF/PZQ/03NZquYSWhFf19qDH0Luyyw82dLwx8dKv1b9KcLbaE
-	 9+aUalJ2KoxVeOXUo35FcrpjXarIeQU0DgKVv4nvLyNc7eRiH/lP7r3c3+pbZlgFk+
-	 7lpve1YzSqsiXwzhIpGbYBzxGhzgtpUXU9bG7w8uHxLTXUC04cAgC49mQwYt5r9n0x
-	 BuhgXKvau/UMRX6lN0ZzKsdUufBNeCR6S/URsPykjbdQ+V12JoV8wx9m4LufStkpzU
-	 dwN+w1x/CopKQ==
-Message-ID: <23a12b79-b3ac-47a1-9bc3-73a62f96e60f@kernel.org>
-Date: Fri, 21 Jun 2024 08:20:43 +0200
+	b=peiW8s9swwRPGkgpMT41/Bp21Ec+4n5vSmISCgPHzSXpkMTsp//RmyLMJKgFfew/m
+	 WbVGVfYWkpzgFPB86g/yvz95f52kHgdPKrfJyzUVD0q1P7Y8vHsYW0TbWsoKJAlkzS
+	 T5W1lXP3S4SCUtng8Ku3bm100hRPgCzeJOSqKB4WpT0CHNapAFxx9gZ+8Z+fn8Jq00
+	 v/Lh994vagvniVhYH4mXT40T55y44qyFROXs6xnX5uAbQ/jwLLOYRPJzQQlaYfq+IK
+	 Eo8l0T7ER1q4Jf+pM5UZH1xyz7H0cSC/HnhPsBsiDKRp7otZa5InajvKeFXFUg3+7p
+	 i0o8/ONr/P83Q==
+Message-ID: <251fb5b4-525b-4e67-93d7-a24b92634467@kernel.org>
+Date: Fri, 21 Jun 2024 08:21:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v4 04/10] ARM: dts: lpc32xx: Add missing dma and i2s
- properties
+Subject: Re: [Patch v4 05/10] clk: lpc32xx: initialize regmap using parent
+ syscon
 To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
@@ -68,7 +68,7 @@ To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
  linux-mtd@lists.infradead.org
 Cc: Markus Elfring <Markus.Elfring@web.de>
 References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
+ <20240620175657.358273-6-piotr.wojtaszczyk@timesys.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -114,10 +114,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240620175657.358273-5-piotr.wojtaszczyk@timesys.com>
+In-Reply-To: <20240620175657.358273-6-piotr.wojtaszczyk@timesys.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_232100_694741_AB0352C4 
-X-CRM114-Status: GOOD (  11.29  )
+X-CRM114-CacheID: sfid-20240620_232135_422115_99FDD4C1 
+X-CRM114-Status: UNSURE (   8.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -135,67 +136,21 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 20/06/2024 19:56, Piotr Wojtaszczyk wrote:
-> Adds properties declared in the new DT bindings:
->  - nxp,lpc3220-i2s.yaml
->  - nxp,lpc3220-dmamux.yaml
-> for dma router/mux and I2S interface.
-> 
-> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-
-You are doing here multiple things at once. This should be
-
-One patch is dma properties.
-
 >  
->  			i2s0: i2s@20094000 {
->  				compatible = "nxp,lpc3220-i2s";
->  				reg = <0x20094000 0x1000>;
-> +				interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&clk LPC32XX_CLK_I2S0>;
-> +				dmas = <&dma 0 1>, <&dma 13 1>;
-> +				dma-names = "rx", "tx";
-> +				#sound-dai-cells = <0>;
+> -	base = of_iomap(np, 0);
+> -	if (!base) {
+> -		pr_err("failed to map system control block registers\n");
+> -		return;
+> -	}
+> -
+> -	clk_regmap = regmap_init_mmio(NULL, base, &lpc32xx_scb_regmap_config);
+> +	clk_regmap = syscon_node_to_regmap(np->parent);
+>  	if (IS_ERR(clk_regmap)) {
+>  		pr_err("failed to regmap system control block: %ld\n",
+>  			PTR_ERR(clk_regmap));
+> -		iounmap(base);
 
-Sound dai cells is another patch (or entire node is separate patch).
-
->  				status = "disabled";
->  			};
->  
-> @@ -231,12 +255,19 @@ sd: sd@20098000 {
->  					     <13 IRQ_TYPE_LEVEL_HIGH>;
->  				clocks = <&clk LPC32XX_CLK_SD>;
->  				clock-names = "apb_pclk";
-> +				dmas = <&dma 4 1>;
-> +				dma-names = "rx";
->  				status = "disabled";
->  			};
->  
->  			i2s1: i2s@2009c000 {
->  				compatible = "nxp,lpc3220-i2s";
->  				reg = <0x2009c000 0x1000>;
-> +				interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks = <&clk LPC32XX_CLK_I2S1>;
-> +				dmas = <&dma 2 1>, <&dmamux 10 1 1>;
-> +				dma-names = "rx", "tx";
-> +				#sound-dai-cells = <0>;
->  				status = "disabled";
->  			};
->  
-> @@ -312,21 +343,27 @@ fab {
->  			compatible = "simple-bus";
->  			ranges = <0x20000000 0x20000000 0x30000000>;
->  
-> -			/* System Control Block */
-> -			scb {
-> -				compatible = "simple-bus";
-> -				ranges = <0x0 0x40004000 0x00001000>;
-> +			syscon@40004000 {
-> +				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
-> +				reg = <0x40004000 0x114>;
-
-This hunk is also separate patch.
-
-
+This looks backwards incompatible. You should keep the fallback way.
 
 Best regards,
 Krzysztof
