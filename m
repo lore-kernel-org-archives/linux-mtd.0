@@ -4,65 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1671C27C53
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Jun 2024 21:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 212A1C2BD09
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Jun 2024 23:12:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=//F2UJnpzlKoV4yWlCLX9xN7xRPCJj1pcsKIb9aU81E=; b=XJrwc/TLgryk+4
-	hEInFn/NE6zKk6va+Rwzq4a8DE/4xAqp+YCq/ldf1UaH0WoHtc0EMEa1mWykllzyvpFVHojmDFeAa
-	SyHOzFJ6V5RHqUF4vfL/3s9B+ocC2CV8/6bVjVpSf1325r3aY/c4LwbuX6jZyHIfff+O3M8co72IH
-	Z+ABRFEtoap99lOexGzrJictfHxVXt8XiGGxXi9hTqWAemJKpYOD28Zzq7AAH9HtyLpI1c7XQEdmk
-	vNjuEsXiOlrpHx+u9Nj/OsdEysQBqHZd17Mkt/2RzS0dhRfJb2Ewwaos0TUkGV25GHX6wYbDzcOSG
-	QT4G7Tf0DuKnSi3nqgIA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
+	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=MYGoDy46KbQRw9i+xWcKepPuq7Bo6C1T7NxXkNNeqDo=; b=Xb3gy43aiVBHsw
+	LulC8i/6J7qudIfPd77OZdkqupw1OBh2aLk8VwTg/DFMJwpG4lrkA4oMJMmLSwrfqiLKyGVQWDzNV
+	GvQfxKZJgqO93Cyb9SaD2yOhNp+7N6nldReg+EJpKSr4waXNTKMDB6BpsyqoFBQh+RivjwmdADPBK
+	VonJNDg1Z5Sn+vcUbWj7XKF7H92LXOlJUuF0vE8OyHS/wHuMiYkshJCo1tD3QyLz7yTLVs9bpe5rF
+	6utdVipzysfIKmCaLjPeFkgHBdik2fEZdyCbEclvphri8hgPm/zmhkOx8f/akylwkofZH5zSd9OEv
+	8FoAB6waPz0pa5Ch8yiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sL7xH-0000000Cnwr-1Hdf;
-	Sat, 22 Jun 2024 21:07:27 +0000
-Received: from pidgin.makrotopia.org ([2a07:2ec0:3002::65])
+	id 1sL9u9-0000000Cyqx-3GKZ;
+	Sat, 22 Jun 2024 23:12:21 +0000
+Received: from mgamail.intel.com ([198.175.65.19])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sL7xD-0000000Cnvq-1VPF
-	for linux-mtd@lists.infradead.org;
-	Sat, 22 Jun 2024 21:07:24 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.97.1)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1sL7x3-000000005mW-11XI;
-	Sat, 22 Jun 2024 21:07:13 +0000
-Date: Sat, 22 Jun 2024 22:07:10 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Gagan Sidhu <broly@mac.com>
-Cc: Zhihao Cheng <chengzhihao1@huawei.com>,
-	Richard Weinberger <richard@nod.at>,
-	ZhaoLong Wang <wangzhaolong1@huawei.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	yangerkun <yangerkun@huawei.com>, yi zhang <yi.zhang@huawei.com>
-Subject: Re: [PATCH v2] ubi: gluebi: Fix NULL pointer dereference caused by
- ftl notifier
-Message-ID: <Znc8_hcjH3_0plN4@makrotopia.org>
-References: <251ae039-9f46-081b-a7ee-fe47de268865@huawei.com>
- <EFEC7C06-A3B2-46D6-99F4-ADA7F7199188@mac.com>
- <45d2ef27-95cc-16c4-8b0a-4413421d785b@huawei.com>
- <772249DB-434C-4AB9-AE6B-1CB684E1E11A@mac.com>
- <e562e94b-274d-4a82-3dad-d3e1109a2607@huawei.com>
- <7558AC97-FFFC-4593-B946-9F8FBD8D62FA@mac.com>
- <da6f4aa8-e79d-d70a-eeb5-0068ffc1ef52@huawei.com>
- <BE6684D5-1CEE-46AA-84BF-C6146667D84B@mac.com>
- <69656f63-d2ad-8215-eba6-12603fb38f62@huawei.com>
- <4FBEAA67-7829-481C-8EB0-06621B73F935@mac.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4FBEAA67-7829-481C-8EB0-06621B73F935@mac.com>
+	id 1sL9u4-0000000Cyoq-1Va6;
+	Sat, 22 Jun 2024 23:12:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1719097937; x=1750633937;
+  h=date:from:to:cc:subject:message-id;
+  bh=F6FyhjxDwrnRfFKQwRZEXEyXdQXVBW4MdI4AGIrkByc=;
+  b=OFck1OoB36BUTJjsCxHj4kD25Wh1xcJSJeKVe59/K3g4MQnOBSa2j9tK
+   PwJA6QFz7K1K3Y21oqDmHiFfHktkEfH5gjSKg/La5MMU+dN/TZhVZ5RFq
+   ZuLopBlMbdcTGX4y4mOVoLSW0v60Img6MPA01wB+zgpdq0SoFzaGUeaDt
+   vv/rLo6AVhWWkwDLHcaWp1Qw19o47ladiW85DX+4cp/LKS09sscCER4hZ
+   wfVZQXbW9sHz2Q+jUO04KJFPxg8aAK0zW+SgL5ZFAj3J2lgjlVnYh74d8
+   yOyqWS9QCot1Lbw4gkrhLaPQo9zFlbhB5VsmSv4eBplTqS7RX2fgxt9so
+   g==;
+X-CSE-ConnectionGUID: 6Du17YmvSsSDjkLTnufJDA==
+X-CSE-MsgGUID: B3gRgeHaRZCE+rawykO1MQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11111"; a="15934180"
+X-IronPort-AV: E=Sophos;i="6.08,258,1712646000"; 
+   d="scan'208";a="15934180"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2024 16:12:11 -0700
+X-CSE-ConnectionGUID: aM+jftoRTP2XdYmg/fZGOQ==
+X-CSE-MsgGUID: HUt80JxiQ3CKAsQIRkmCHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,258,1712646000"; 
+   d="scan'208";a="73669129"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 22 Jun 2024 16:12:08 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sL9tt-000A4o-0V;
+	Sat, 22 Jun 2024 23:12:05 +0000
+Date: Sun, 23 Jun 2024 07:11:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ amd-gfx@lists.freedesktop.org, imx@lists.linux.dev,
+ intel-xe@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ f76698bd9a8ca01d3581236082d786e9a6b72bb7
+Message-ID: <202406230716.DQbMBKh0-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240622_140723_438162_A827B571 
-X-CRM114-Status: UNSURE (   9.44  )
+X-CRM114-CacheID: sfid-20240622_161216_533920_40E74C9A 
+X-CRM114-Status: UNSURE (   5.71  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,22 +85,255 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBKdW4gMjEsIDIwMjQgYXQgMDg6NDM6NDdQTSAtMDYwMCwgR2FnYW4gU2lkaHUgd3Jv
-dGU6Cj4gWy4uLl0KPiBHTFVFQkkgc2hvdWxkIGJlIG9wZXJhdGluZyBvbiB0aGUgL2Rldi9tdGRi
-bG9ja1ggZGV2aWNlIGFuZCBub3QgdWJpYmxvY2swXzAgYW5kIHRodXMgdGhlIGJvb3QgcHJvY2Vk
-dXJlIGNyZWF0ZWQgYnkgb3BlbndydCBzaG91bGQgYmUgdW5hZmZlY3RlZC4KPiAKPiBhdCBsZWFz
-dCB0aGF04oCZcyBob3cgaSB3b3VsZCB1bmRlcnN0YW5kIHRoZSBzaXR1YXRpb24gaWYgZWFjaCBh
-cmUgY3JlYXRpbmcgdGhlaXIgb3duIGRldmljZXMuCj4gCj4gd2UgbmVlZCB0byBmaWd1cmUgb3V0
-IGEgc29sdXRpb24gb3IgbWF5YmUgbWFzdGVyIHJpY2ggc2hvdWxkIGVuZCBvdXIgb25nb2luZyBk
-aXNjdXNzaW9uIGJlY2F1c2UgdGVjaG5pY2FsbHkg4oCcaXTigJlzIG5vdCBtYWlubGluZeKAnSBh
-bmQgd2XigJlyZSBwcm9iYWJseSBib3JpbmcgdGhlIHJlY2lwaWVudHMuCgpJJ3ZlIHN1Z2dlc3Rl
-ZCBhIHNpbXBsZSBzb2x1dGlvbiBoZXJlOgoKaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMjQvNi8x
-Ny8xNjAyCgpZb3UgY291bGQgdHJ5IHRoYXQgYW5kIGxldCB1cyBrbm93IGlmIGl0IHJlc29sdmVz
-IHRoZSBpc3N1ZSBmb3IgeW91LgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: f76698bd9a8ca01d3581236082d786e9a6b72bb7  Add linux-next specific files for 20240621
+
+Error/Warning reports:
+
+https://lore.kernel.org/oe-kbuild-all/202406220536.JnAncjqz-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202406220754.evK8Hrjw-lkp@intel.com
+
+Error/Warning: (recently discovered and may have been fixed)
+
+drivers/soc/qcom/smsm.c:(.text.qcom_smsm_remove+0x70): undefined reference to `mbox_free_channel'
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+include/linux/container_of.h:20:54: error: invalid use of undefined type 'struct thpsize'
+include/linux/list.h:645:25: error: invalid use of undefined type 'struct thpsize'
+include/linux/stddef.h:16:33: error: invalid use of undefined type 'struct thpsize'
+mm/huge_memory.c:455:21: error: implicit declaration of function 'to_thpsize'; did you mean 'thp_size'? [-Werror=implicit-function-declaration]
+mm/huge_memory.c:455:37: error: invalid type argument of '->' (have 'int')
+mm/huge_memory.c:558:35: error: 'MTHP_STAT_FILE_ALLOC' undeclared (first use in this function); did you mean 'THP_FILE_ALLOC'?
+mm/huge_memory.c:559:38: error: 'MTHP_STAT_FILE_FALLBACK' undeclared (first use in this function); did you mean 'THP_FILE_FALLBACK'?
+mm/huge_memory.c:560:45: error: 'MTHP_STAT_FILE_FALLBACK_CHARGE' undeclared (first use in this function); did you mean 'THP_FILE_FALLBACK_CHARGE'?
+mm/huge_memory.c:579:17: warning: assignment to 'struct thpsize *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+mm/huge_memory.c:579:33: error: invalid application of 'sizeof' to incomplete type 'struct thpsize'
+mm/huge_memory.c:583:44: error: invalid use of undefined type 'struct thpsize'
+mm/huge_memory.c:608:15: warning: passing argument 1 of 'kfree' makes pointer from integer without a cast [-Wint-conversion]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arm64-defconfig
+|   `-- arch-arm64-boot-dts-ti-k3-am62p-j722s-common-main.dtsi.-.:Warning-(graph_child_address):bus-f0000-usb-f900000-usb:graph-node-has-single-child-node-port-address-cells-size-cells-are-not-necessary
+|-- arm64-randconfig-051-20240622
+|   |-- arch-arm64-boot-dts-mediatek-mt8188-evb.dtb:power-controller:power-domain:power-domain:power-domain:power-domain:Unevaluated-properties-are-not-allowed-(-power-domain-power-domain-were-unexpected)
+|   |-- arch-arm64-boot-dts-mediatek-mt8390-genio-evk.dtb:mailbox:clock-names-is-a-required-property
+|   |-- arch-arm64-boot-dts-mediatek-mt8390-genio-evk.dtb:power-controller:power-domain:power-domain:power-domain:power-domain:Unevaluated-properties-are-not-allowed-(-power-domain-power-domain-were-unexpecte
+|   |-- arch-arm64-boot-dts-qcom-ipq5018-tplink-archer-ax55-v1.dtb:usb-8af8800:interrupt-names:hs_phy_irq-is-too-short
+|   |-- arch-arm64-boot-dts-qcom-ipq5018-tplink-archer-ax55-v1.dtb:usb-8af8800:interrupt-names:pwr_event-was-expected
+|   `-- arch-arm64-boot-dts-qcom-ipq5018-tplink-archer-ax55-v1.dtb:usb-8af8800:interrupts:is-too-short
+|-- arm64-randconfig-r131-20240622
+|   `-- arch-arm64-boot-dts-ti-k3-am62p-j722s-common-main.dtsi.-.:Warning-(graph_child_address):bus-f0000-usb-f900000-usb:graph-node-has-single-child-node-port-address-cells-size-cells-are-not-necessary
+|-- csky-randconfig-r111-20240622
+|   `-- drivers-clk-imx-clk-composite-7ulp.c:sparse:sparse:Using-plain-integer-as-NULL-pointer
+|-- loongarch-randconfig-r121-20240622
+|   |-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-long-long-const-noderef-__user-got-unsigned-long-long-usertype-ptr
+|   `-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-long-long-usertype-ptr-got-void-noderef-__user
+|-- mips-randconfig-r023-20221012
+|   `-- drivers-soc-qcom-smsm.c:(.text.qcom_smsm_remove):undefined-reference-to-mbox_free_channel
+|-- sparc-randconfig-r111-20240622
+|   |-- drivers-mtd-nand-raw-mxc_nand.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-buf-got-void-noderef-__iomem
+|   `-- drivers-mtd-nand-raw-mxc_nand.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-short-noderef-usertype-__iomem-t-got-void-buf
+|-- x86_64-randconfig-014-20240202
+|   |-- include-linux-container_of.h:error:invalid-use-of-undefined-type-struct-thpsize
+|   |-- include-linux-list.h:error:invalid-use-of-undefined-type-struct-thpsize
+|   |-- include-linux-stddef.h:error:invalid-use-of-undefined-type-struct-thpsize
+|   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_ALLOC-undeclared-(first-use-in-this-function)
+|   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_FALLBACK-undeclared-(first-use-in-this-function)
+|   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_FALLBACK_CHARGE-undeclared-(first-use-in-this-function)
+|   |-- mm-huge_memory.c:error:implicit-declaration-of-function-to_thpsize
+|   |-- mm-huge_memory.c:error:invalid-application-of-sizeof-to-incomplete-type-struct-thpsize
+|   |-- mm-huge_memory.c:error:invalid-type-argument-of-(have-int-)
+|   |-- mm-huge_memory.c:error:invalid-use-of-undefined-type-struct-thpsize
+|   |-- mm-huge_memory.c:warning:assignment-to-struct-thpsize-from-int-makes-pointer-from-integer-without-a-cast
+|   `-- mm-huge_memory.c:warning:passing-argument-of-kfree-makes-pointer-from-integer-without-a-cast
+`-- x86_64-randconfig-072-20240622
+    |-- drivers-input-touchscreen-wacom_w8001.c:warning:Finger-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
+    `-- drivers-input-touchscreen-wacom_w8001.c:warning:Pen-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
+clang_recent_errors
+|-- i386-randconfig-062-20240622
+|   |-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-volatile-noderef-__user-ptr-got-unsigned-long-long-usertype-ptr
+|   |-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-long-long-usertype-ptr-got-void-noderef-__user
+|   |-- net-l2tp-l2tp_core.c:sparse:sparse:cast-removes-address-space-__rcu-of-expression
+|   |-- net-l2tp-l2tp_core.c:sparse:sparse:dereference-of-noderef-expression
+|   |-- net-l2tp-l2tp_core.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-list_head-const-list-got-struct-list_head-noderef-__rcu-pos
+|   |-- net-l2tp-l2tp_core.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-list_head-noderef-__rcu-pos-got-struct-list_head-assigned-tmp
+|   `-- net-l2tp-l2tp_core.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-list_head-noderef-__rcu-pos-got-struct-list_head-next
+|-- x86_64-randconfig-121-20240622
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-resource-dcn32-dcn32_resource_helpers.c:sparse:sparse:Using-plain-integer-as-NULL-pointer
+`-- x86_64-randconfig-123-20240622
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash1-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-orig_hash-got-struct-ftrace_hash-noderef-__rcu
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-assigned-filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-save_filter_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-assigned-notrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-save_notrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_filter_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+    `-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+
+elapsed time: 1700m
+
+configs tested: 134
+configs skipped: 2
+
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                               defconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arc                   randconfig-001-20240622   gcc-13.2.0
+arc                   randconfig-002-20240622   gcc-13.2.0
+arm                               allnoconfig   clang-19
+arm                                 defconfig   clang-14
+arm                          pxa168_defconfig   clang-19
+arm                   randconfig-001-20240622   gcc-13.2.0
+arm                   randconfig-002-20240622   clang-19
+arm                   randconfig-003-20240622   clang-14
+arm                   randconfig-004-20240622   gcc-13.2.0
+arm                         wpcm450_defconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                               defconfig   gcc-13.2.0
+arm64                 randconfig-001-20240622   clang-19
+arm64                 randconfig-002-20240622   clang-14
+arm64                 randconfig-003-20240622   gcc-13.2.0
+arm64                 randconfig-004-20240622   clang-19
+csky                             alldefconfig   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                                defconfig   gcc-13.2.0
+csky                  randconfig-001-20240622   gcc-13.2.0
+csky                  randconfig-002-20240622   gcc-13.2.0
+hexagon                           allnoconfig   clang-19
+hexagon                             defconfig   clang-19
+hexagon               randconfig-001-20240622   clang-19
+hexagon               randconfig-002-20240622   clang-19
+i386         buildonly-randconfig-001-20240622   gcc-13
+i386         buildonly-randconfig-002-20240622   clang-18
+i386         buildonly-randconfig-003-20240622   clang-18
+i386         buildonly-randconfig-004-20240622   gcc-13
+i386         buildonly-randconfig-005-20240622   gcc-13
+i386         buildonly-randconfig-006-20240622   clang-18
+i386                  randconfig-001-20240622   gcc-10
+i386                  randconfig-002-20240622   clang-18
+i386                  randconfig-003-20240622   gcc-13
+i386                  randconfig-004-20240622   gcc-13
+i386                  randconfig-005-20240622   clang-18
+i386                  randconfig-006-20240622   gcc-13
+i386                  randconfig-011-20240622   gcc-9
+i386                  randconfig-012-20240622   gcc-7
+i386                  randconfig-013-20240622   clang-18
+i386                  randconfig-014-20240622   clang-18
+i386                  randconfig-015-20240622   clang-18
+i386                  randconfig-016-20240622   clang-18
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                           defconfig   gcc-13.2.0
+loongarch                 loongson3_defconfig   gcc-13.2.0
+loongarch             randconfig-001-20240622   gcc-13.2.0
+loongarch             randconfig-002-20240622   gcc-13.2.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                                defconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                               defconfig   gcc-13.2.0
+nios2                 randconfig-001-20240622   gcc-13.2.0
+nios2                 randconfig-002-20240622   gcc-13.2.0
+openrisc                          allnoconfig   gcc-13.2.0
+openrisc                            defconfig   gcc-13.2.0
+parisc                            allnoconfig   gcc-13.2.0
+parisc                              defconfig   gcc-13.2.0
+parisc                randconfig-001-20240622   gcc-13.2.0
+parisc                randconfig-002-20240622   gcc-13.2.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                           allnoconfig   gcc-13.2.0
+powerpc                      chrp32_defconfig   clang-19
+powerpc                      cm5200_defconfig   clang-19
+powerpc                   currituck_defconfig   clang-19
+powerpc                      mgcoge_defconfig   clang-19
+powerpc                     mpc5200_defconfig   clang-14
+powerpc                      pasemi_defconfig   clang-19
+powerpc               randconfig-001-20240622   gcc-13.2.0
+powerpc               randconfig-002-20240622   gcc-13.2.0
+powerpc               randconfig-003-20240622   clang-19
+powerpc                      walnut_defconfig   gcc-13.2.0
+powerpc64             randconfig-001-20240622   gcc-13.2.0
+powerpc64             randconfig-002-20240622   gcc-13.2.0
+powerpc64             randconfig-003-20240622   gcc-13.2.0
+riscv                             allnoconfig   gcc-13.2.0
+riscv                               defconfig   clang-19
+riscv                 randconfig-001-20240622   gcc-13.2.0
+riscv                 randconfig-002-20240622   gcc-13.2.0
+s390                              allnoconfig   clang-19
+s390                                defconfig   clang-19
+s390                  randconfig-001-20240622   clang-19
+s390                  randconfig-002-20240622   clang-15
+sh                                allnoconfig   gcc-13.2.0
+sh                                  defconfig   gcc-13.2.0
+sh                 kfr2r09-romimage_defconfig   gcc-13.2.0
+sh                    randconfig-001-20240622   gcc-13.2.0
+sh                    randconfig-002-20240622   gcc-13.2.0
+sh                           sh2007_defconfig   gcc-13.2.0
+sparc                             allnoconfig   gcc-13.2.0
+sparc                               defconfig   gcc-13.2.0
+sparc64                             defconfig   gcc-13.2.0
+sparc64               randconfig-001-20240622   gcc-13.2.0
+sparc64               randconfig-002-20240622   gcc-13.2.0
+um                                allnoconfig   clang-17
+um                                  defconfig   clang-19
+um                             i386_defconfig   gcc-13
+um                    randconfig-001-20240622   gcc-10
+um                    randconfig-002-20240622   clang-19
+um                           x86_64_defconfig   clang-15
+x86_64       buildonly-randconfig-001-20240622   gcc-8
+x86_64       buildonly-randconfig-002-20240622   clang-18
+x86_64       buildonly-randconfig-003-20240622   gcc-12
+x86_64       buildonly-randconfig-004-20240622   gcc-13
+x86_64       buildonly-randconfig-005-20240622   clang-18
+x86_64       buildonly-randconfig-006-20240622   gcc-13
+x86_64                randconfig-001-20240622   clang-18
+x86_64                randconfig-002-20240622   clang-18
+x86_64                randconfig-003-20240622   clang-18
+x86_64                randconfig-004-20240622   clang-18
+x86_64                randconfig-005-20240622   clang-18
+x86_64                randconfig-006-20240622   clang-18
+x86_64                randconfig-011-20240622   gcc-12
+x86_64                randconfig-012-20240622   gcc-8
+x86_64                randconfig-013-20240622   clang-18
+x86_64                randconfig-014-20240622   gcc-8
+x86_64                randconfig-015-20240622   clang-18
+x86_64                randconfig-016-20240622   gcc-12
+x86_64                randconfig-071-20240622   clang-18
+x86_64                randconfig-072-20240622   gcc-8
+x86_64                randconfig-073-20240622   clang-18
+x86_64                randconfig-074-20240622   gcc-12
+x86_64                randconfig-075-20240622   gcc-13
+x86_64                randconfig-076-20240622   gcc-10
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                randconfig-001-20240622   gcc-13.2.0
+xtensa                randconfig-002-20240622   gcc-13.2.0
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
