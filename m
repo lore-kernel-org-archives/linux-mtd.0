@@ -4,47 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55176C2BD09
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 13:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9441AC3064D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 15:20:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7BA4nscZ5G0y4VUXhpQ/UTqWDSniRp1Q6ZVOtiECbSs=; b=KhiWxnoR9EvoYS
-	JuzV/Rttli8PMdP3DlJatyaqb3lZVL4sRCqRx+Fq7l5r/M8jlsQao+L1lRvCny21LYpG7MqEq9EZQ
-	Mi+ctNgYsgoplNERNjpO6F+V7qRzjL0muPKHkliiYtScPsLv0J40uBeL+hwYYssupe5l812wycohx
-	KAo606trjV9swQKOKNI1SY1NaVWoQop/D+qnBlDJ3xU02H5bqCUkPTRDnk9jAIkrrq+ypjYGab4YB
-	3s9K6znPjG0uX7ZlTQYIk5otRFto5NEoPs1KoHpIJBCmf5ww4nO7LuW9AF3FaKR7F52MYbmX7jEht
-	3AZknRxh8EU5II+r2AFQ==;
+	List-Owner; bh=L+oiyk275kS+tS1erkcPb7c8v/XYce2Q2DbXceQjmDM=; b=kt+O1PlriQrk7B
+	d1ReuepWix6KpOj8rs9hw7L7mHwEotE1TrVfXIf/nEUu4NsEvSnlsz+SePVA+Whp3J8BAPawPT/Wl
+	tj9cT2WOgUIwtO+T3EtJML7k5QoGb/KGVE0M9sKPVIXL3WWfeBwL/VB9YmhWFFf8+pR6Q+k/0EEP1
+	u99Aa4n83Fr+YvMKx+go7xaTr5pLL5cdyudTnE8tbmqYMo1UwyKdlVi/rHeiOfnfi8Y0EF8xSWEFe
+	WaQW52yGFa9UpXRwIW739ymO7by4cm+RU0jTYPsccIaK570jOzXVnyjVC7orHXJvRLwz4M/eyhWlZ
+	zsJ0XYrchq+c4KV7y6Zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLk1L-0000000Gyok-2w4q;
-	Mon, 24 Jun 2024 13:46:11 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sLlUj-0000000HHvQ-14Ln;
+	Mon, 24 Jun 2024 15:20:37 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLk1H-0000000Gyn6-310j;
-	Mon, 24 Jun 2024 13:46:09 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 511A060346;
-	Mon, 24 Jun 2024 13:46:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C6A4C32782;
-	Mon, 24 Jun 2024 13:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719236766;
-	bh=nEbRkmLliGbrhN7a0dFrrROolzsUWf2ymgDG1frRQgc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HPvBUv03t5fHmHl5Vdhl5NNvWh/1rmgJmDIUT78BrhNjkekMyiHBemsXBtITKK+pk
-	 Ph9y6SGv/k+x5Jl2xhlIMX2sddEfv5ScOkESPGjMaDvg1ZXM5kaST/YeMPDuDVXpgg
-	 iH6h0sucNAo73sjXdAnuoapZ6RfRXTSWnSxyRGyPeNDve4kUinDBuUenLUefA9rCqX
-	 54StG+jluCv5aLHX9mMsHCk5XhZuGMG20N2tbjRRxE9agT2YFzShKRFvN/weyUUZ99
-	 p5MaDhc41zpO0i44wkIP3EtvIWnOiXRYHg0365/uFE0+rIV0Jq+m7pwvM4OmoBjW+O
-	 CdaoXjn9E8fNg==
-Date: Mon, 24 Jun 2024 15:45:57 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	id 1sLlUf-0000000HHuV-2E58;
+	Mon, 24 Jun 2024 15:20:35 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id AAC0B68D05; Mon, 24 Jun 2024 17:20:28 +0200 (CEST)
+Date: Mon, 24 Jun 2024 17:20:28 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+	kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
 	lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
 	Damien Le Moal <dlemoal@kernel.org>, Hannes Reinecke <hare@suse.de>,
 	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
@@ -58,17 +46,17 @@ Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
 	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org, ying.huang@intel.com,
 	feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [axboe-block:for-next] [block]  bd4a633b6f: fsmark.files_per_sec
- -64.5% regression
-Message-ID: <Znl4lXRmK2ukDB7r@ryzen.lan>
-References: <202406241546.6bbd44a7-oliver.sang@intel.com>
- <20240624083537.GA19941@lst.de>
+Subject: Re: [axboe-block:for-next] [block]  bd4a633b6f:
+ fsmark.files_per_sec -64.5% regression
+Message-ID: <20240624152028.GA11961@lst.de>
+References: <202406241546.6bbd44a7-oliver.sang@intel.com> <20240624083537.GA19941@lst.de> <Znl4lXRmK2ukDB7r@ryzen.lan>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240624083537.GA19941@lst.de>
+In-Reply-To: <Znl4lXRmK2ukDB7r@ryzen.lan>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240624_064607_874942_E7F71C3F 
-X-CRM114-Status: GOOD (  10.18  )
+X-CRM114-CacheID: sfid-20240624_082033_752930_770476C7 
+X-CRM114-Status: GOOD (  11.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,24 +73,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 24, 2024 at 10:35:37AM +0200, Christoph Hellwig wrote:
-> This is odd to say at least.  Any chance you can check the value
-> of /sys/block/$DEVICE/queue/rotational for the relevant device before
-> and after this commit?  And is this an ATA or NVMe SSD?
+On Mon, Jun 24, 2024 at 03:45:57PM +0200, Niklas Cassel wrote:
+> Seems to be ATA SSD:
+> https://download.01.org/0day-ci/archive/20240624/202406241546.6bbd44a7-oliver.sang@intel.com/job.yaml
 > 
+> ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2BG012T4_BTHC428201ZX1P2OGN-part1"
+> 
+> Most likely btrfs does something different depending on the nonrot flag
+> being set or not. (And like you are suggesting, most likely the value of
+> the nonrot flag is somehow different after commit bd4a633b6f)
 
-Seems to be ATA SSD:
-https://download.01.org/0day-ci/archive/20240624/202406241546.6bbd44a7-oliver.sang@intel.com/job.yaml
+Yes, btrfs does.  That's why I'm curious about the before and after,
+as I can't see any way how they would be set differently.  Right now
+I can only claim with vitual AHCI devices, which claim to be rotational,
+though.
 
-ssd_partitions: "/dev/disk/by-id/ata-INTEL_SSDSC2BG012T4_BTHC428201ZX1P2OGN-part1"
-
-Most likely btrfs does something different depending on the nonrot flag
-being set or not. (And like you are suggesting, most likely the value of
-the nonrot flag is somehow different after commit bd4a633b6f)
-
-
-Kind regards,
-Niklas
 
 ______________________________________________________
 Linux MTD discussion mailing list
