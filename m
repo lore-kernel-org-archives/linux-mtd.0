@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 212A1C2BD09
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Jun 2024 23:12:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D4CFC2BD09
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 05:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From
-	:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MYGoDy46KbQRw9i+xWcKepPuq7Bo6C1T7NxXkNNeqDo=; b=Xb3gy43aiVBHsw
-	LulC8i/6J7qudIfPd77OZdkqupw1OBh2aLk8VwTg/DFMJwpG4lrkA4oMJMmLSwrfqiLKyGVQWDzNV
-	GvQfxKZJgqO93Cyb9SaD2yOhNp+7N6nldReg+EJpKSr4waXNTKMDB6BpsyqoFBQh+RivjwmdADPBK
-	VonJNDg1Z5Sn+vcUbWj7XKF7H92LXOlJUuF0vE8OyHS/wHuMiYkshJCo1tD3QyLz7yTLVs9bpe5rF
-	6utdVipzysfIKmCaLjPeFkgHBdik2fEZdyCbEclvphri8hgPm/zmhkOx8f/akylwkofZH5zSd9OEv
-	8FoAB6waPz0pa5Ch8yiQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Ic2HTpHB/Qyo9Rsp55sqN8vNTCGtfQ6SVjuW3GU3muc=; b=uC12lp0HYCNPy0
+	4LgTwcSwL9zP4Poj3OI72roGPdaJShnhEkSGgPH6HYOkMtAdH+LwtPzkuYIdhjjRHpRsp9Tu+a5T5
+	1AmNogCeFCPnteKPd+KYQTKbzqCowi1WSHVapg+XCFORuVmo5fAmDMMUfVUn4NxfCQxq7WZVy6rce
+	/5bhzB8yNvHKi0D2Eii99b+GEFefWhV85eF3EMcPabzIY/of0YEjI/HfmXxVH59SeAw879HRIgyeO
+	gKsKjhLAErpn2fHEy9MmIVn7Dn/tmaQi3HsWQg4r19aoOuFUbTsELaciu1oEdk3uXOsuJUUuyzk0g
+	ZTJAnfvV8j5JAriM3u6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sL9u9-0000000Cyqx-3GKZ;
-	Sat, 22 Jun 2024 23:12:21 +0000
-Received: from mgamail.intel.com ([198.175.65.19])
+	id 1sLcQ6-0000000FcuN-1rl2;
+	Mon, 24 Jun 2024 05:39:14 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sL9u4-0000000Cyoq-1Va6;
-	Sat, 22 Jun 2024 23:12:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719097937; x=1750633937;
-  h=date:from:to:cc:subject:message-id;
-  bh=F6FyhjxDwrnRfFKQwRZEXEyXdQXVBW4MdI4AGIrkByc=;
-  b=OFck1OoB36BUTJjsCxHj4kD25Wh1xcJSJeKVe59/K3g4MQnOBSa2j9tK
-   PwJA6QFz7K1K3Y21oqDmHiFfHktkEfH5gjSKg/La5MMU+dN/TZhVZ5RFq
-   ZuLopBlMbdcTGX4y4mOVoLSW0v60Img6MPA01wB+zgpdq0SoFzaGUeaDt
-   vv/rLo6AVhWWkwDLHcaWp1Qw19o47ladiW85DX+4cp/LKS09sscCER4hZ
-   wfVZQXbW9sHz2Q+jUO04KJFPxg8aAK0zW+SgL5ZFAj3J2lgjlVnYh74d8
-   yOyqWS9QCot1Lbw4gkrhLaPQo9zFlbhB5VsmSv4eBplTqS7RX2fgxt9so
-   g==;
-X-CSE-ConnectionGUID: 6Du17YmvSsSDjkLTnufJDA==
-X-CSE-MsgGUID: B3gRgeHaRZCE+rawykO1MQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11111"; a="15934180"
-X-IronPort-AV: E=Sophos;i="6.08,258,1712646000"; 
-   d="scan'208";a="15934180"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2024 16:12:11 -0700
-X-CSE-ConnectionGUID: aM+jftoRTP2XdYmg/fZGOQ==
-X-CSE-MsgGUID: HUt80JxiQ3CKAsQIRkmCHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,258,1712646000"; 
-   d="scan'208";a="73669129"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 22 Jun 2024 16:12:08 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sL9tt-000A4o-0V;
-	Sat, 22 Jun 2024 23:12:05 +0000
-Date: Sun, 23 Jun 2024 07:11:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, imx@lists.linux.dev,
- intel-xe@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Mark Brown <broonie@kernel.org>
-Subject: [linux-next:master] BUILD REGRESSION
- f76698bd9a8ca01d3581236082d786e9a6b72bb7
-Message-ID: <202406230716.DQbMBKh0-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	id 1sLcPz-0000000FctE-2c2Z;
+	Mon, 24 Jun 2024 05:39:09 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 1F6C0CE1027;
+	Mon, 24 Jun 2024 05:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B15F4C2BBFC;
+	Mon, 24 Jun 2024 05:39:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719207543;
+	bh=jJ/Xhogs+nACCcEGlLfB6HJx/oX5Us+Ij/qie1qauF4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sz4Qa+WiiSVBfHghGys3is+d97crwImMZeX7km8DzqnirbEPwfFZiUsmg6QqCM+N6
+	 c3c9aY7v1tMgkJLVofzfYgrdifCkut9gb4NmvmjJRWjmnT6OYukYuIyWAQEhngcX4F
+	 O8/e/Z44xYgaTJz/QYq9RKcZvEoLmyQ3jf8pDlTBkg74DTdqTZnQoZsWorOW4NgJvh
+	 xvLb//6rdSGgcpcwEunLcd0qoLukSM6AWY9RA2dcg61pLa34v87nkJNg60bx1O9K6A
+	 Hwy8zWgE3SCaqvfHiFzOcl+K9aM7hfFXbQXNEPSrtRPKdZ/UjFUoVfxDApoXdr8U6V
+	 K+8UhvHhXxQsg==
+Date: Mon, 24 Jun 2024 11:08:59 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"J.M.B. Downing" <jonathan.downing@nautel.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
+	Li Zetao <lizetao1@huawei.com>, Chancel Liu <chancel.liu@nxp.com>,
+	Michael Ellerman <mpe@ellerman.id.au>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Markus Elfring <Markus.Elfring@web.de>
+Subject: Re: [Patch v4 06/10] dmaengine: Add dma router for pl08x in LPC32XX
+ SoC
+Message-ID: <ZnkGcwd8M1QFfmxl@matsya>
+References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
+ <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240622_161216_533920_40E74C9A 
-X-CRM114-Status: UNSURE (   5.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240623_223908_048491_B00A8250 
+X-CRM114-Status: GOOD (  34.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,254 +88,287 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: f76698bd9a8ca01d3581236082d786e9a6b72bb7  Add linux-next specific files for 20240621
+Hi Piotr,
 
-Error/Warning reports:
+Any reason why dmaengine parts cant be sent separately, why are they
+clubbed together, I dont see any obvious dependencies...
 
-https://lore.kernel.org/oe-kbuild-all/202406220536.JnAncjqz-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202406220754.evK8Hrjw-lkp@intel.com
+On 20-06-24, 19:56, Piotr Wojtaszczyk wrote:
+> LPC32XX connects few of its peripherals to pl08x DMA thru a multiplexer,
+> this driver allows to route a signal request line thru the multiplexer for
+> given peripheral.
 
-Error/Warning: (recently discovered and may have been fixed)
+What is the difference b/w this and lpc18xx driver, why not reuse that
+one?
 
-drivers/soc/qcom/smsm.c:(.text.qcom_smsm_remove+0x70): undefined reference to `mbox_free_channel'
-
-Unverified Error/Warning (likely false positive, please contact us if interested):
-
-include/linux/container_of.h:20:54: error: invalid use of undefined type 'struct thpsize'
-include/linux/list.h:645:25: error: invalid use of undefined type 'struct thpsize'
-include/linux/stddef.h:16:33: error: invalid use of undefined type 'struct thpsize'
-mm/huge_memory.c:455:21: error: implicit declaration of function 'to_thpsize'; did you mean 'thp_size'? [-Werror=implicit-function-declaration]
-mm/huge_memory.c:455:37: error: invalid type argument of '->' (have 'int')
-mm/huge_memory.c:558:35: error: 'MTHP_STAT_FILE_ALLOC' undeclared (first use in this function); did you mean 'THP_FILE_ALLOC'?
-mm/huge_memory.c:559:38: error: 'MTHP_STAT_FILE_FALLBACK' undeclared (first use in this function); did you mean 'THP_FILE_FALLBACK'?
-mm/huge_memory.c:560:45: error: 'MTHP_STAT_FILE_FALLBACK_CHARGE' undeclared (first use in this function); did you mean 'THP_FILE_FALLBACK_CHARGE'?
-mm/huge_memory.c:579:17: warning: assignment to 'struct thpsize *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-mm/huge_memory.c:579:33: error: invalid application of 'sizeof' to incomplete type 'struct thpsize'
-mm/huge_memory.c:583:44: error: invalid use of undefined type 'struct thpsize'
-mm/huge_memory.c:608:15: warning: passing argument 1 of 'kfree' makes pointer from integer without a cast [-Wint-conversion]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- arm64-defconfig
-|   `-- arch-arm64-boot-dts-ti-k3-am62p-j722s-common-main.dtsi.-.:Warning-(graph_child_address):bus-f0000-usb-f900000-usb:graph-node-has-single-child-node-port-address-cells-size-cells-are-not-necessary
-|-- arm64-randconfig-051-20240622
-|   |-- arch-arm64-boot-dts-mediatek-mt8188-evb.dtb:power-controller:power-domain:power-domain:power-domain:power-domain:Unevaluated-properties-are-not-allowed-(-power-domain-power-domain-were-unexpected)
-|   |-- arch-arm64-boot-dts-mediatek-mt8390-genio-evk.dtb:mailbox:clock-names-is-a-required-property
-|   |-- arch-arm64-boot-dts-mediatek-mt8390-genio-evk.dtb:power-controller:power-domain:power-domain:power-domain:power-domain:Unevaluated-properties-are-not-allowed-(-power-domain-power-domain-were-unexpecte
-|   |-- arch-arm64-boot-dts-qcom-ipq5018-tplink-archer-ax55-v1.dtb:usb-8af8800:interrupt-names:hs_phy_irq-is-too-short
-|   |-- arch-arm64-boot-dts-qcom-ipq5018-tplink-archer-ax55-v1.dtb:usb-8af8800:interrupt-names:pwr_event-was-expected
-|   `-- arch-arm64-boot-dts-qcom-ipq5018-tplink-archer-ax55-v1.dtb:usb-8af8800:interrupts:is-too-short
-|-- arm64-randconfig-r131-20240622
-|   `-- arch-arm64-boot-dts-ti-k3-am62p-j722s-common-main.dtsi.-.:Warning-(graph_child_address):bus-f0000-usb-f900000-usb:graph-node-has-single-child-node-port-address-cells-size-cells-are-not-necessary
-|-- csky-randconfig-r111-20240622
-|   `-- drivers-clk-imx-clk-composite-7ulp.c:sparse:sparse:Using-plain-integer-as-NULL-pointer
-|-- loongarch-randconfig-r121-20240622
-|   |-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-long-long-const-noderef-__user-got-unsigned-long-long-usertype-ptr
-|   `-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-long-long-usertype-ptr-got-void-noderef-__user
-|-- mips-randconfig-r023-20221012
-|   `-- drivers-soc-qcom-smsm.c:(.text.qcom_smsm_remove):undefined-reference-to-mbox_free_channel
-|-- sparc-randconfig-r111-20240622
-|   |-- drivers-mtd-nand-raw-mxc_nand.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-buf-got-void-noderef-__iomem
-|   `-- drivers-mtd-nand-raw-mxc_nand.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-short-noderef-usertype-__iomem-t-got-void-buf
-|-- x86_64-randconfig-014-20240202
-|   |-- include-linux-container_of.h:error:invalid-use-of-undefined-type-struct-thpsize
-|   |-- include-linux-list.h:error:invalid-use-of-undefined-type-struct-thpsize
-|   |-- include-linux-stddef.h:error:invalid-use-of-undefined-type-struct-thpsize
-|   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_ALLOC-undeclared-(first-use-in-this-function)
-|   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_FALLBACK-undeclared-(first-use-in-this-function)
-|   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_FALLBACK_CHARGE-undeclared-(first-use-in-this-function)
-|   |-- mm-huge_memory.c:error:implicit-declaration-of-function-to_thpsize
-|   |-- mm-huge_memory.c:error:invalid-application-of-sizeof-to-incomplete-type-struct-thpsize
-|   |-- mm-huge_memory.c:error:invalid-type-argument-of-(have-int-)
-|   |-- mm-huge_memory.c:error:invalid-use-of-undefined-type-struct-thpsize
-|   |-- mm-huge_memory.c:warning:assignment-to-struct-thpsize-from-int-makes-pointer-from-integer-without-a-cast
-|   `-- mm-huge_memory.c:warning:passing-argument-of-kfree-makes-pointer-from-integer-without-a-cast
-`-- x86_64-randconfig-072-20240622
-    |-- drivers-input-touchscreen-wacom_w8001.c:warning:Finger-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-    `-- drivers-input-touchscreen-wacom_w8001.c:warning:Pen-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-clang_recent_errors
-|-- i386-randconfig-062-20240622
-|   |-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-volatile-noderef-__user-ptr-got-unsigned-long-long-usertype-ptr
-|   |-- drivers-gpu-drm-xe-xe_oa.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-unsigned-long-long-usertype-ptr-got-void-noderef-__user
-|   |-- net-l2tp-l2tp_core.c:sparse:sparse:cast-removes-address-space-__rcu-of-expression
-|   |-- net-l2tp-l2tp_core.c:sparse:sparse:dereference-of-noderef-expression
-|   |-- net-l2tp-l2tp_core.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-list_head-const-list-got-struct-list_head-noderef-__rcu-pos
-|   |-- net-l2tp-l2tp_core.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-list_head-noderef-__rcu-pos-got-struct-list_head-assigned-tmp
-|   `-- net-l2tp-l2tp_core.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-list_head-noderef-__rcu-pos-got-struct-list_head-next
-|-- x86_64-randconfig-121-20240622
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-resource-dcn32-dcn32_resource_helpers.c:sparse:sparse:Using-plain-integer-as-NULL-pointer
-`-- x86_64-randconfig-123-20240622
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash1-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-orig_hash-got-struct-ftrace_hash-noderef-__rcu
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-assigned-filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-save_filter_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-assigned-notrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-save_notrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-    |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_filter_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-    `-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-
-elapsed time: 1700m
-
-configs tested: 134
-configs skipped: 2
-
-tested configs:
-alpha                             allnoconfig   gcc-13.2.0
-alpha                               defconfig   gcc-13.2.0
-arc                               allnoconfig   gcc-13.2.0
-arc                                 defconfig   gcc-13.2.0
-arc                   randconfig-001-20240622   gcc-13.2.0
-arc                   randconfig-002-20240622   gcc-13.2.0
-arm                               allnoconfig   clang-19
-arm                                 defconfig   clang-14
-arm                          pxa168_defconfig   clang-19
-arm                   randconfig-001-20240622   gcc-13.2.0
-arm                   randconfig-002-20240622   clang-19
-arm                   randconfig-003-20240622   clang-14
-arm                   randconfig-004-20240622   gcc-13.2.0
-arm                         wpcm450_defconfig   gcc-13.2.0
-arm64                             allnoconfig   gcc-13.2.0
-arm64                               defconfig   gcc-13.2.0
-arm64                 randconfig-001-20240622   clang-19
-arm64                 randconfig-002-20240622   clang-14
-arm64                 randconfig-003-20240622   gcc-13.2.0
-arm64                 randconfig-004-20240622   clang-19
-csky                             alldefconfig   gcc-13.2.0
-csky                              allnoconfig   gcc-13.2.0
-csky                                defconfig   gcc-13.2.0
-csky                  randconfig-001-20240622   gcc-13.2.0
-csky                  randconfig-002-20240622   gcc-13.2.0
-hexagon                           allnoconfig   clang-19
-hexagon                             defconfig   clang-19
-hexagon               randconfig-001-20240622   clang-19
-hexagon               randconfig-002-20240622   clang-19
-i386         buildonly-randconfig-001-20240622   gcc-13
-i386         buildonly-randconfig-002-20240622   clang-18
-i386         buildonly-randconfig-003-20240622   clang-18
-i386         buildonly-randconfig-004-20240622   gcc-13
-i386         buildonly-randconfig-005-20240622   gcc-13
-i386         buildonly-randconfig-006-20240622   clang-18
-i386                  randconfig-001-20240622   gcc-10
-i386                  randconfig-002-20240622   clang-18
-i386                  randconfig-003-20240622   gcc-13
-i386                  randconfig-004-20240622   gcc-13
-i386                  randconfig-005-20240622   clang-18
-i386                  randconfig-006-20240622   gcc-13
-i386                  randconfig-011-20240622   gcc-9
-i386                  randconfig-012-20240622   gcc-7
-i386                  randconfig-013-20240622   clang-18
-i386                  randconfig-014-20240622   clang-18
-i386                  randconfig-015-20240622   clang-18
-i386                  randconfig-016-20240622   clang-18
-loongarch                         allnoconfig   gcc-13.2.0
-loongarch                           defconfig   gcc-13.2.0
-loongarch                 loongson3_defconfig   gcc-13.2.0
-loongarch             randconfig-001-20240622   gcc-13.2.0
-loongarch             randconfig-002-20240622   gcc-13.2.0
-m68k                              allnoconfig   gcc-13.2.0
-m68k                                defconfig   gcc-13.2.0
-microblaze                        allnoconfig   gcc-13.2.0
-microblaze                          defconfig   gcc-13.2.0
-mips                              allnoconfig   gcc-13.2.0
-nios2                             allnoconfig   gcc-13.2.0
-nios2                               defconfig   gcc-13.2.0
-nios2                 randconfig-001-20240622   gcc-13.2.0
-nios2                 randconfig-002-20240622   gcc-13.2.0
-openrisc                          allnoconfig   gcc-13.2.0
-openrisc                            defconfig   gcc-13.2.0
-parisc                            allnoconfig   gcc-13.2.0
-parisc                              defconfig   gcc-13.2.0
-parisc                randconfig-001-20240622   gcc-13.2.0
-parisc                randconfig-002-20240622   gcc-13.2.0
-parisc64                            defconfig   gcc-13.2.0
-powerpc                           allnoconfig   gcc-13.2.0
-powerpc                      chrp32_defconfig   clang-19
-powerpc                      cm5200_defconfig   clang-19
-powerpc                   currituck_defconfig   clang-19
-powerpc                      mgcoge_defconfig   clang-19
-powerpc                     mpc5200_defconfig   clang-14
-powerpc                      pasemi_defconfig   clang-19
-powerpc               randconfig-001-20240622   gcc-13.2.0
-powerpc               randconfig-002-20240622   gcc-13.2.0
-powerpc               randconfig-003-20240622   clang-19
-powerpc                      walnut_defconfig   gcc-13.2.0
-powerpc64             randconfig-001-20240622   gcc-13.2.0
-powerpc64             randconfig-002-20240622   gcc-13.2.0
-powerpc64             randconfig-003-20240622   gcc-13.2.0
-riscv                             allnoconfig   gcc-13.2.0
-riscv                               defconfig   clang-19
-riscv                 randconfig-001-20240622   gcc-13.2.0
-riscv                 randconfig-002-20240622   gcc-13.2.0
-s390                              allnoconfig   clang-19
-s390                                defconfig   clang-19
-s390                  randconfig-001-20240622   clang-19
-s390                  randconfig-002-20240622   clang-15
-sh                                allnoconfig   gcc-13.2.0
-sh                                  defconfig   gcc-13.2.0
-sh                 kfr2r09-romimage_defconfig   gcc-13.2.0
-sh                    randconfig-001-20240622   gcc-13.2.0
-sh                    randconfig-002-20240622   gcc-13.2.0
-sh                           sh2007_defconfig   gcc-13.2.0
-sparc                             allnoconfig   gcc-13.2.0
-sparc                               defconfig   gcc-13.2.0
-sparc64                             defconfig   gcc-13.2.0
-sparc64               randconfig-001-20240622   gcc-13.2.0
-sparc64               randconfig-002-20240622   gcc-13.2.0
-um                                allnoconfig   clang-17
-um                                  defconfig   clang-19
-um                             i386_defconfig   gcc-13
-um                    randconfig-001-20240622   gcc-10
-um                    randconfig-002-20240622   clang-19
-um                           x86_64_defconfig   clang-15
-x86_64       buildonly-randconfig-001-20240622   gcc-8
-x86_64       buildonly-randconfig-002-20240622   clang-18
-x86_64       buildonly-randconfig-003-20240622   gcc-12
-x86_64       buildonly-randconfig-004-20240622   gcc-13
-x86_64       buildonly-randconfig-005-20240622   clang-18
-x86_64       buildonly-randconfig-006-20240622   gcc-13
-x86_64                randconfig-001-20240622   clang-18
-x86_64                randconfig-002-20240622   clang-18
-x86_64                randconfig-003-20240622   clang-18
-x86_64                randconfig-004-20240622   clang-18
-x86_64                randconfig-005-20240622   clang-18
-x86_64                randconfig-006-20240622   clang-18
-x86_64                randconfig-011-20240622   gcc-12
-x86_64                randconfig-012-20240622   gcc-8
-x86_64                randconfig-013-20240622   clang-18
-x86_64                randconfig-014-20240622   gcc-8
-x86_64                randconfig-015-20240622   clang-18
-x86_64                randconfig-016-20240622   gcc-12
-x86_64                randconfig-071-20240622   clang-18
-x86_64                randconfig-072-20240622   gcc-8
-x86_64                randconfig-073-20240622   clang-18
-x86_64                randconfig-074-20240622   gcc-12
-x86_64                randconfig-075-20240622   gcc-13
-x86_64                randconfig-076-20240622   gcc-10
-xtensa                            allnoconfig   gcc-13.2.0
-xtensa                randconfig-001-20240622   gcc-13.2.0
-xtensa                randconfig-002-20240622   gcc-13.2.0
+> 
+> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+> ---
+> Changes for v4:
+> - This patch is new in v4
+> 
+>  MAINTAINERS                  |   1 +
+>  drivers/dma/Kconfig          |   9 ++
+>  drivers/dma/Makefile         |   1 +
+>  drivers/dma/lpc32xx-dmamux.c | 195 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 206 insertions(+)
+>  create mode 100644 drivers/dma/lpc32xx-dmamux.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fadf1baafd89..5ffe988ee282 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2403,6 +2403,7 @@ R:	Vladimir Zapolskiy <vz@mleia.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
+> +F:	drivers/dma/lpc32xx-dmamux.c
+>  N:	lpc32xx
+>  
+>  ARM/Marvell Dove/MV78xx0/Orion SOC support
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index 002a5ec80620..aeace3d7e066 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -378,6 +378,15 @@ config LPC18XX_DMAMUX
+>  	  Enable support for DMA on NXP LPC18xx/43xx platforms
+>  	  with PL080 and multiplexed DMA request lines.
+>  
+> +config LPC32XX_DMAMUX
+> +	bool "NXP LPC32xx DMA MUX for PL080"
+> +	depends on ARCH_LPC32XX || COMPILE_TEST
+> +	depends on OF && AMBA_PL08X
+> +	select MFD_SYSCON
+> +	help
+> +	  Support for PL080 multiplexed DMA request lines on
+> +	  LPC32XX platrofm.
+> +
+>  config LS2X_APB_DMA
+>  	tristate "Loongson LS2X APB DMA support"
+>  	depends on LOONGARCH || COMPILE_TEST
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index 802ca916f05f..6f1350b62e7f 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -50,6 +50,7 @@ obj-$(CONFIG_INTEL_IOATDMA) += ioat/
+>  obj-y += idxd/
+>  obj-$(CONFIG_K3_DMA) += k3dma.o
+>  obj-$(CONFIG_LPC18XX_DMAMUX) += lpc18xx-dmamux.o
+> +obj-$(CONFIG_LPC32XX_DMAMUX) += lpc32xx-dmamux.o
+>  obj-$(CONFIG_LS2X_APB_DMA) += ls2x-apb-dma.o
+>  obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
+>  obj-$(CONFIG_MILBEAUT_XDMAC) += milbeaut-xdmac.o
+> diff --git a/drivers/dma/lpc32xx-dmamux.c b/drivers/dma/lpc32xx-dmamux.c
+> new file mode 100644
+> index 000000000000..4e6ce6026164
+> --- /dev/null
+> +++ b/drivers/dma/lpc32xx-dmamux.c
+> @@ -0,0 +1,195 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright 2024 Timesys Corporation <piotr.wojtaszczyk@timesys.com>
+> +//
+> +// Based on TI DMA Crossbar driver by:
+> +//   Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com
+> +//   Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> +
+> +#include <linux/err.h>
+> +#include <linux/init.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of.h>
+> +#include <linux/of_dma.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/spinlock.h>
+> +
+> +#define LPC32XX_SSP_CLK_CTRL 0x78
+> +#define LPC32XX_I2S_CLK_CTRL 0x7c
+> +
+> +struct lpc32xx_dmamux {
+> +	int signal;
+> +	char *name_sel0;
+> +	char *name_sel1;
+> +	int muxval;
+> +	int muxreg;
+> +	int bit;
+> +	bool busy;
+> +};
+> +
+> +/* From LPC32x0 User manual "3.2.1 DMA request signals" */
+> +static struct lpc32xx_dmamux lpc32xx_muxes[] = {
+> +	{
+> +		.signal = 3,
+> +		.name_sel0 = "spi2-rx-tx",
+> +		.name_sel1 = "ssp1-rx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 5,
+> +	},
+> +	{
+> +		.signal = 10,
+> +		.name_sel0 = "uart7-rx",
+> +		.name_sel1 = "i2s1-dma1",
+> +		.muxreg = LPC32XX_I2S_CLK_CTRL,
+> +		.bit = 4,
+> +	},
+> +	{
+> +		.signal = 11,
+> +		.name_sel0 = "spi1-rx-tx",
+> +		.name_sel1 = "ssp1-tx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 4,
+> +	},
+> +	{
+> +		.signal = 14,
+> +		.name_sel0 = "none",
+> +		.name_sel1 = "ssp0-rx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 3,
+> +	},
+> +	{
+> +		.signal = 15,
+> +		.name_sel0 = "none",
+> +		.name_sel1 = "ssp0-tx",
+> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
+> +		.bit = 2,
+> +	},
+> +};
+> +
+> +struct lpc32xx_dmamux_data {
+> +	struct dma_router dmarouter;
+> +	struct regmap *reg;
+> +	spinlock_t lock; /* protects busy status flag */
+> +};
+> +
+> +static void lpc32xx_dmamux_release(struct device *dev, void *route_data)
+> +{
+> +	struct lpc32xx_dmamux_data *dmamux = dev_get_drvdata(dev);
+> +	struct lpc32xx_dmamux *mux = route_data;
+> +	unsigned long flags;
+> +
+> +	dev_dbg(dev, "releasing dma request signal %d routed to %s\n",
+> +		mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
+> +
+> +	guard(spinlock)(&dmamux->lock);
+> +
+> +	mux->busy = false;
+> +}
+> +
+> +static void *lpc32xx_dmamux_reserve(struct of_phandle_args *dma_spec,
+> +				    struct of_dma *ofdma)
+> +{
+> +	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
+> +	struct device *dev = &pdev->dev;
+> +	struct lpc32xx_dmamux_data *dmamux = platform_get_drvdata(pdev);
+> +	unsigned long flags;
+> +	struct lpc32xx_dmamux *mux = NULL;
+> +	int i;
+> +
+> +	if (dma_spec->args_count != 3) {
+> +		dev_err(&pdev->dev, "invalid number of dma mux args\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(lpc32xx_muxes); i++) {
+> +		if (lpc32xx_muxes[i].signal == dma_spec->args[0])
+> +			mux = &lpc32xx_muxes[i];
+> +	}
+> +	if (!mux) {
+> +		dev_err(&pdev->dev, "invalid mux request number: %d\n",
+> +			dma_spec->args[0]);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	if (dma_spec->args[2] > 1) {
+> +		dev_err(&pdev->dev, "invalid dma mux value: %d\n",
+> +			dma_spec->args[1]);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	/* The of_node_put() will be done in the core for the node */
+> +	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
+> +	if (!dma_spec->np) {
+> +		dev_err(&pdev->dev, "can't get dma master\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	spin_lock_irqsave(&dmamux->lock, flags);
+> +	if (mux->busy) {
+> +		spin_unlock_irqrestore(&dmamux->lock, flags);
+> +		dev_err(dev, "dma request signal %d busy, routed to %s\n",
+> +			mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
+> +		of_node_put(dma_spec->np);
+> +		return ERR_PTR(-EBUSY);
+> +	}
+> +
+> +	mux->busy = true;
+> +	mux->muxval = dma_spec->args[2] ? BIT(mux->bit) : 0;
+> +
+> +	regmap_update_bits(dmamux->reg, mux->muxreg, BIT(mux->bit), mux->muxval);
+> +	spin_unlock_irqrestore(&dmamux->lock, flags);
+> +
+> +	dma_spec->args[2] = 0;
+> +	dma_spec->args_count = 2;
+> +
+> +	dev_dbg(dev, "dma request signal %d routed to %s\n",
+> +		mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
+> +
+> +	return mux;
+> +}
+> +
+> +static int lpc32xx_dmamux_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct lpc32xx_dmamux_data *dmamux;
+> +	int ret;
+> +
+> +	dmamux = devm_kzalloc(&pdev->dev, sizeof(*dmamux), GFP_KERNEL);
+> +	if (!dmamux)
+> +		return -ENOMEM;
+> +
+> +	dmamux->reg = syscon_node_to_regmap(np->parent);
+> +	if (IS_ERR(dmamux->reg)) {
+> +		dev_err(&pdev->dev, "syscon lookup failed\n");
+> +		return PTR_ERR(dmamux->reg);
+> +	}
+> +
+> +	spin_lock_init(&dmamux->lock);
+> +	platform_set_drvdata(pdev, dmamux);
+> +	dmamux->dmarouter.dev = &pdev->dev;
+> +	dmamux->dmarouter.route_free = lpc32xx_dmamux_release;
+> +
+> +	return of_dma_router_register(np, lpc32xx_dmamux_reserve,
+> +				      &dmamux->dmarouter);
+> +}
+> +
+> +static const struct of_device_id lpc32xx_dmamux_match[] = {
+> +	{ .compatible = "nxp,lpc3220-dmamux" },
+> +	{},
+> +};
+> +
+> +static struct platform_driver lpc32xx_dmamux_driver = {
+> +	.probe	= lpc32xx_dmamux_probe,
+> +	.driver = {
+> +		.name = "lpc32xx-dmamux",
+> +		.of_match_table = lpc32xx_dmamux_match,
+> +	},
+> +};
+> +
+> +static int __init lpc32xx_dmamux_init(void)
+> +{
+> +	return platform_driver_register(&lpc32xx_dmamux_driver);
+> +}
+> +arch_initcall(lpc32xx_dmamux_init);
+> -- 
+> 2.25.1
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+~Vinod
 
 ______________________________________________________
 Linux MTD discussion mailing list
