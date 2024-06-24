@@ -4,79 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D4CFC2BD09
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 05:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AE4AC2BD09
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 06:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ic2HTpHB/Qyo9Rsp55sqN8vNTCGtfQ6SVjuW3GU3muc=; b=uC12lp0HYCNPy0
-	4LgTwcSwL9zP4Poj3OI72roGPdaJShnhEkSGgPH6HYOkMtAdH+LwtPzkuYIdhjjRHpRsp9Tu+a5T5
-	1AmNogCeFCPnteKPd+KYQTKbzqCowi1WSHVapg+XCFORuVmo5fAmDMMUfVUn4NxfCQxq7WZVy6rce
-	/5bhzB8yNvHKi0D2Eii99b+GEFefWhV85eF3EMcPabzIY/of0YEjI/HfmXxVH59SeAw879HRIgyeO
-	gKsKjhLAErpn2fHEy9MmIVn7Dn/tmaQi3HsWQg4r19aoOuFUbTsELaciu1oEdk3uXOsuJUUuyzk0g
-	ZTJAnfvV8j5JAriM3u6A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cKR9c0/wQSZ62BeDs3jFISEN+H1JD5dar1YB2xf+q10=; b=MbHNIYsTKznRIs
+	i2jV4pGqswhQbpDPhqCUpjS+/myvuDJsKsjcmH7BbU/yIgpME3qfr9TRjPxQRJe/TfoJwvsAQEk8I
+	DXBPtBOrKlZ8Zv9usxCu5uSDW7hB1deWjU07KJNg4q681g9jNRAV2ySWKjmhrPNNFrTZtQaVUIO2Q
+	YamZcp8wtSC7qDG9ltKmRYImWws5RRfWOkoouXiCVLz4w3js399u/5UQ9Fsocj2MWOmmT4nboRQ74
+	dn9sklZZSkeBBKfzAJY3vsW5yiHfWYe864mxbOVGP9W17kzb6v9PXP8nL0eZdRotonItRt5YVfup2
+	ePbyKGdzE1+gZjrxLXTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLcQ6-0000000FcuN-1rl2;
-	Mon, 24 Jun 2024 05:39:14 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sLcx1-0000000FhAq-0kMZ;
+	Mon, 24 Jun 2024 06:13:15 +0000
+Received: from mail-lj1-x236.google.com ([2a00:1450:4864:20::236])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLcPz-0000000FctE-2c2Z;
-	Mon, 24 Jun 2024 05:39:09 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 1F6C0CE1027;
-	Mon, 24 Jun 2024 05:39:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B15F4C2BBFC;
-	Mon, 24 Jun 2024 05:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719207543;
-	bh=jJ/Xhogs+nACCcEGlLfB6HJx/oX5Us+Ij/qie1qauF4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sz4Qa+WiiSVBfHghGys3is+d97crwImMZeX7km8DzqnirbEPwfFZiUsmg6QqCM+N6
-	 c3c9aY7v1tMgkJLVofzfYgrdifCkut9gb4NmvmjJRWjmnT6OYukYuIyWAQEhngcX4F
-	 O8/e/Z44xYgaTJz/QYq9RKcZvEoLmyQ3jf8pDlTBkg74DTdqTZnQoZsWorOW4NgJvh
-	 xvLb//6rdSGgcpcwEunLcd0qoLukSM6AWY9RA2dcg61pLa34v87nkJNg60bx1O9K6A
-	 Hwy8zWgE3SCaqvfHiFzOcl+K9aM7hfFXbQXNEPSrtRPKdZ/UjFUoVfxDApoXdr8U6V
-	 K+8UhvHhXxQsg==
-Date: Mon, 24 Jun 2024 11:08:59 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"J.M.B. Downing" <jonathan.downing@nautel.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+	id 1sLcwx-0000000Fh9L-40E4
+	for linux-mtd@lists.infradead.org;
+	Mon, 24 Jun 2024 06:13:13 +0000
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ec52fbb50bso19334311fa.2
+        for <linux-mtd@lists.infradead.org>; Sun, 23 Jun 2024 23:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719209589; x=1719814389; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B/qRlD3FVKL5iXIy13BpU+Kwpwg+2SoBUqkyXN31Zr4=;
+        b=Oley6BEx+1748yS2PkAeU+7h/bkBK4oUeFReo8EXq8m6iDoi0JjueZViUSMzjBTr7G
+         ZJvOrem8l+QIGN5JehiHLkK6VudnRrWpRvye8WrLOj1AhM8PwUtnIywBtU6ry0lSLRwK
+         0TotRsYQbrTEkk+nNtHWFZ6IitPIUFJgZ3emT//z4+czNa6gxO03i+giQIaTBUhxaqGn
+         0Lom27c+tztMsk7qTRQAS5kOm7wTr7hXpVAQ1LOeh7rMuBBxB5nXMCyexyJw0r+qu8Tt
+         U2jjofFv79ptIo3YEkVhr0H2rbyreqwKOiYiv5xvoH72cCKGDKTlAw4jnw83xP6WgCe1
+         OO1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719209589; x=1719814389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B/qRlD3FVKL5iXIy13BpU+Kwpwg+2SoBUqkyXN31Zr4=;
+        b=Q5JnUsJEA/sSuggmZmAFmC/GtUgF/tnCL5TLzsFnVbj5JSIoOqDYZAF8OpTTfnh8mJ
+         LN6qwnukk8KdUx1uGgiao8M6q9BG4PY2vKrHyzwyTNXA6m63KtFs02oKsnzui3BP7o6G
+         x2IK3AVjAizMrnRCL7QNyhbOzd9lLI1filCLobtNVZ2MgVIVRrHdnWXHa83+7Dg82zlV
+         ZdpGYaz7L+WP7SEyiq5Dnek3TuWYrSZWSOqIFDpMWXRvreKNEOphiwBJ05iJMPYo/e+T
+         rKwtInGtRpr+JbWesskXTvdVDi+Von4Z79qXr5boD9XSmLRtVD2Zu1m1n9yOhgV7SriK
+         8/5A==
+X-Forwarded-Encrypted: i=1; AJvYcCU1oi81EAl63MOGcSYl8IgK6k12S5vC8tX6VedQpQMwFLw9vOhftbEhfp8/mbdIkgG38LYrA0hWVj8I871c4VxQfBtuUd9CIXjoKYl63A==
+X-Gm-Message-State: AOJu0Ywo/HgMXighbFzUBwh+AFfFGXmmNDzBF+mH0rtB95u6ne1muX23
+	IzzYz+GUnHk0JmBGEEGC6tOMsjfHMTZCG7qH2egejTh2e5OM44BP
+X-Google-Smtp-Source: AGHT+IFl2QVb5+Ml2dJdo6naTCB0whKifzTd6jKoUynZMwmvr+54Ah3ay9voWlVFhwkF/YCas3qXBA==
+X-Received: by 2002:a2e:8416:0:b0:2ec:500c:b2db with SMTP id 38308e7fff4ca-2ec5b37a4bfmr18655871fa.22.1719209588710;
+        Sun, 23 Jun 2024 23:13:08 -0700 (PDT)
+Received: from linaro-pc.lan (40.37.82.80.dsl-dynamic.vsi.ru. [80.82.37.40])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2ec5d2c3446sm4011481fa.38.2024.06.23.23.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jun 2024 23:13:08 -0700 (PDT)
+From: Maxim Anisimov <maxim.anisimov.ua@gmail.com>
+To: 
+Cc: maxim.anisimov.ua@gmail.com,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>,
-	Li Zetao <lizetao1@huawei.com>, Chancel Liu <chancel.liu@nxp.com>,
-	Michael Ellerman <mpe@ellerman.id.au>, dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Markus Elfring <Markus.Elfring@web.de>
-Subject: Re: [Patch v4 06/10] dmaengine: Add dma router for pl08x in LPC32XX
- SoC
-Message-ID: <ZnkGcwd8M1QFfmxl@matsya>
-References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
+	Martin Kurbanov <mmkurbanov@salutedevices.com>,
+	Michael Walle <michael@walle.cc>,
+	Mark Brown <broonie@kernel.org>,
+	"Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spinand: Add support for HeYangTek HYF1GQ4UDACAE
+Date: Mon, 24 Jun 2024 09:12:17 +0300
+Message-ID: <20240624061246.5292-1-maxim.anisimov.ua@gmail.com>
+X-Mailer: git-send-email 2.45.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240623_223908_048491_B00A8250 
-X-CRM114-Status: GOOD (  34.59  )
+X-CRM114-CacheID: sfid-20240623_231312_088963_7C32AB1D 
+X-CRM114-Status: GOOD (  18.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,282 +98,176 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Piotr,
+Add Support HeYangTek HYF1GQ4UDACAE SPI NAND.
 
-Any reason why dmaengine parts cant be sent separately, why are they
-clubbed together, I dont see any obvious dependencies...
+Datasheet Link:
+- https://www.heyangtek.cn/previewfile.jsp?file=ABUIABA9GAAgwsvRnwYo-eDpsgc
 
-On 20-06-24, 19:56, Piotr Wojtaszczyk wrote:
-> LPC32XX connects few of its peripherals to pl08x DMA thru a multiplexer,
-> this driver allows to route a signal request line thru the multiplexer for
-> given peripheral.
+Signed-off-by: Maxim Anisimov <maxim.anisimov.ua@gmail.com>
+---
+ drivers/mtd/nand/spi/Makefile    |   4 +-
+ drivers/mtd/nand/spi/core.c      |   1 +
+ drivers/mtd/nand/spi/heyangtek.c | 112 +++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h      |   1 +
+ 4 files changed, 116 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/mtd/nand/spi/heyangtek.c
 
-What is the difference b/w this and lpc18xx driver, why not reuse that
-one?
-
-> 
-> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-> ---
-> Changes for v4:
-> - This patch is new in v4
-> 
->  MAINTAINERS                  |   1 +
->  drivers/dma/Kconfig          |   9 ++
->  drivers/dma/Makefile         |   1 +
->  drivers/dma/lpc32xx-dmamux.c | 195 +++++++++++++++++++++++++++++++++++
->  4 files changed, 206 insertions(+)
->  create mode 100644 drivers/dma/lpc32xx-dmamux.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fadf1baafd89..5ffe988ee282 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2403,6 +2403,7 @@ R:	Vladimir Zapolskiy <vz@mleia.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/dma/nxp,lpc3220-dmamux.yaml
-> +F:	drivers/dma/lpc32xx-dmamux.c
->  N:	lpc32xx
->  
->  ARM/Marvell Dove/MV78xx0/Orion SOC support
-> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-> index 002a5ec80620..aeace3d7e066 100644
-> --- a/drivers/dma/Kconfig
-> +++ b/drivers/dma/Kconfig
-> @@ -378,6 +378,15 @@ config LPC18XX_DMAMUX
->  	  Enable support for DMA on NXP LPC18xx/43xx platforms
->  	  with PL080 and multiplexed DMA request lines.
->  
-> +config LPC32XX_DMAMUX
-> +	bool "NXP LPC32xx DMA MUX for PL080"
-> +	depends on ARCH_LPC32XX || COMPILE_TEST
-> +	depends on OF && AMBA_PL08X
-> +	select MFD_SYSCON
-> +	help
-> +	  Support for PL080 multiplexed DMA request lines on
-> +	  LPC32XX platrofm.
-> +
->  config LS2X_APB_DMA
->  	tristate "Loongson LS2X APB DMA support"
->  	depends on LOONGARCH || COMPILE_TEST
-> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-> index 802ca916f05f..6f1350b62e7f 100644
-> --- a/drivers/dma/Makefile
-> +++ b/drivers/dma/Makefile
-> @@ -50,6 +50,7 @@ obj-$(CONFIG_INTEL_IOATDMA) += ioat/
->  obj-y += idxd/
->  obj-$(CONFIG_K3_DMA) += k3dma.o
->  obj-$(CONFIG_LPC18XX_DMAMUX) += lpc18xx-dmamux.o
-> +obj-$(CONFIG_LPC32XX_DMAMUX) += lpc32xx-dmamux.o
->  obj-$(CONFIG_LS2X_APB_DMA) += ls2x-apb-dma.o
->  obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
->  obj-$(CONFIG_MILBEAUT_XDMAC) += milbeaut-xdmac.o
-> diff --git a/drivers/dma/lpc32xx-dmamux.c b/drivers/dma/lpc32xx-dmamux.c
-> new file mode 100644
-> index 000000000000..4e6ce6026164
-> --- /dev/null
-> +++ b/drivers/dma/lpc32xx-dmamux.c
-> @@ -0,0 +1,195 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +//
-> +// Copyright 2024 Timesys Corporation <piotr.wojtaszczyk@timesys.com>
-> +//
-> +// Based on TI DMA Crossbar driver by:
-> +//   Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com
-> +//   Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> +
-> +#include <linux/err.h>
-> +#include <linux/init.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/of.h>
-> +#include <linux/of_dma.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/spinlock.h>
-> +
-> +#define LPC32XX_SSP_CLK_CTRL 0x78
-> +#define LPC32XX_I2S_CLK_CTRL 0x7c
-> +
-> +struct lpc32xx_dmamux {
-> +	int signal;
-> +	char *name_sel0;
-> +	char *name_sel1;
-> +	int muxval;
-> +	int muxreg;
-> +	int bit;
-> +	bool busy;
-> +};
-> +
-> +/* From LPC32x0 User manual "3.2.1 DMA request signals" */
-> +static struct lpc32xx_dmamux lpc32xx_muxes[] = {
-> +	{
-> +		.signal = 3,
-> +		.name_sel0 = "spi2-rx-tx",
-> +		.name_sel1 = "ssp1-rx",
-> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
-> +		.bit = 5,
-> +	},
-> +	{
-> +		.signal = 10,
-> +		.name_sel0 = "uart7-rx",
-> +		.name_sel1 = "i2s1-dma1",
-> +		.muxreg = LPC32XX_I2S_CLK_CTRL,
-> +		.bit = 4,
-> +	},
-> +	{
-> +		.signal = 11,
-> +		.name_sel0 = "spi1-rx-tx",
-> +		.name_sel1 = "ssp1-tx",
-> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
-> +		.bit = 4,
-> +	},
-> +	{
-> +		.signal = 14,
-> +		.name_sel0 = "none",
-> +		.name_sel1 = "ssp0-rx",
-> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
-> +		.bit = 3,
-> +	},
-> +	{
-> +		.signal = 15,
-> +		.name_sel0 = "none",
-> +		.name_sel1 = "ssp0-tx",
-> +		.muxreg = LPC32XX_SSP_CLK_CTRL,
-> +		.bit = 2,
-> +	},
-> +};
-> +
-> +struct lpc32xx_dmamux_data {
-> +	struct dma_router dmarouter;
-> +	struct regmap *reg;
-> +	spinlock_t lock; /* protects busy status flag */
-> +};
-> +
-> +static void lpc32xx_dmamux_release(struct device *dev, void *route_data)
-> +{
-> +	struct lpc32xx_dmamux_data *dmamux = dev_get_drvdata(dev);
-> +	struct lpc32xx_dmamux *mux = route_data;
-> +	unsigned long flags;
-> +
-> +	dev_dbg(dev, "releasing dma request signal %d routed to %s\n",
-> +		mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
-> +
-> +	guard(spinlock)(&dmamux->lock);
-> +
-> +	mux->busy = false;
-> +}
-> +
-> +static void *lpc32xx_dmamux_reserve(struct of_phandle_args *dma_spec,
-> +				    struct of_dma *ofdma)
-> +{
-> +	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
-> +	struct device *dev = &pdev->dev;
-> +	struct lpc32xx_dmamux_data *dmamux = platform_get_drvdata(pdev);
-> +	unsigned long flags;
-> +	struct lpc32xx_dmamux *mux = NULL;
-> +	int i;
-> +
-> +	if (dma_spec->args_count != 3) {
-> +		dev_err(&pdev->dev, "invalid number of dma mux args\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	for (i = 0; i < ARRAY_SIZE(lpc32xx_muxes); i++) {
-> +		if (lpc32xx_muxes[i].signal == dma_spec->args[0])
-> +			mux = &lpc32xx_muxes[i];
-> +	}
-> +	if (!mux) {
-> +		dev_err(&pdev->dev, "invalid mux request number: %d\n",
-> +			dma_spec->args[0]);
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	if (dma_spec->args[2] > 1) {
-> +		dev_err(&pdev->dev, "invalid dma mux value: %d\n",
-> +			dma_spec->args[1]);
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	/* The of_node_put() will be done in the core for the node */
-> +	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
-> +	if (!dma_spec->np) {
-> +		dev_err(&pdev->dev, "can't get dma master\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	spin_lock_irqsave(&dmamux->lock, flags);
-> +	if (mux->busy) {
-> +		spin_unlock_irqrestore(&dmamux->lock, flags);
-> +		dev_err(dev, "dma request signal %d busy, routed to %s\n",
-> +			mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
-> +		of_node_put(dma_spec->np);
-> +		return ERR_PTR(-EBUSY);
-> +	}
-> +
-> +	mux->busy = true;
-> +	mux->muxval = dma_spec->args[2] ? BIT(mux->bit) : 0;
-> +
-> +	regmap_update_bits(dmamux->reg, mux->muxreg, BIT(mux->bit), mux->muxval);
-> +	spin_unlock_irqrestore(&dmamux->lock, flags);
-> +
-> +	dma_spec->args[2] = 0;
-> +	dma_spec->args_count = 2;
-> +
-> +	dev_dbg(dev, "dma request signal %d routed to %s\n",
-> +		mux->signal, mux->muxval ? mux->name_sel1 : mux->name_sel1);
-> +
-> +	return mux;
-> +}
-> +
-> +static int lpc32xx_dmamux_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct lpc32xx_dmamux_data *dmamux;
-> +	int ret;
-> +
-> +	dmamux = devm_kzalloc(&pdev->dev, sizeof(*dmamux), GFP_KERNEL);
-> +	if (!dmamux)
-> +		return -ENOMEM;
-> +
-> +	dmamux->reg = syscon_node_to_regmap(np->parent);
-> +	if (IS_ERR(dmamux->reg)) {
-> +		dev_err(&pdev->dev, "syscon lookup failed\n");
-> +		return PTR_ERR(dmamux->reg);
-> +	}
-> +
-> +	spin_lock_init(&dmamux->lock);
-> +	platform_set_drvdata(pdev, dmamux);
-> +	dmamux->dmarouter.dev = &pdev->dev;
-> +	dmamux->dmarouter.route_free = lpc32xx_dmamux_release;
-> +
-> +	return of_dma_router_register(np, lpc32xx_dmamux_reserve,
-> +				      &dmamux->dmarouter);
-> +}
-> +
-> +static const struct of_device_id lpc32xx_dmamux_match[] = {
-> +	{ .compatible = "nxp,lpc3220-dmamux" },
-> +	{},
-> +};
-> +
-> +static struct platform_driver lpc32xx_dmamux_driver = {
-> +	.probe	= lpc32xx_dmamux_probe,
-> +	.driver = {
-> +		.name = "lpc32xx-dmamux",
-> +		.of_match_table = lpc32xx_dmamux_match,
-> +	},
-> +};
-> +
-> +static int __init lpc32xx_dmamux_init(void)
-> +{
-> +	return platform_driver_register(&lpc32xx_dmamux_driver);
-> +}
-> +arch_initcall(lpc32xx_dmamux_init);
-> -- 
-> 2.25.1
-
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 19cc77288ebb..69d95fbdd0ce 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
+-spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
++spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o heyangtek.o
++spinand-objs += macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index e0b6715e5dfe..45795e5f1e49 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -942,6 +942,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&esmt_c8_spinand_manufacturer,
+ 	&foresee_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
++	&heyangtek_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+ 	&paragon_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/heyangtek.c b/drivers/mtd/nand/spi/heyangtek.c
+new file mode 100644
+index 000000000000..d4a5dbca40fb
+--- /dev/null
++++ b/drivers/mtd/nand/spi/heyangtek.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author:
++ *      Andrey Zolotarev <andrey.zolotarev@keenetic.com> - the main driver logic
++ *      Maxim Anisimov <maxim.anisimov.ua@gmail.com> - adaptation to mainline linux kernel
++ *
++ * Based on:
++ *      https://github.com/keenetic/kernel-49/commit/bacade569fb12bc0ad31ba09bca9b890118fbca7
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_HEYANGTEK		0xC9
++
++#define STATUS_ECC_LIMIT_BITFLIPS	(3 << 4)
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int hyfxgq4uda_ooblayout_ecc(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	region->offset = section * 16 + 8;
++	region->length = 8;
++
++	return 0;
++}
++
++static int hyfxgq4uda_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	/* ECC-protected user meta-data */
++	region->offset = section * 16 + 4;
++	region->length = 4;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops hyfxgq4uda_ooblayout = {
++	.ecc = hyfxgq4uda_ooblayout_ecc,
++	.free = hyfxgq4uda_ooblayout_free,
++};
++
++static int hyfxgq4uda_ecc_get_status(struct spinand_device *spinand,
++				     u8 status)
++{
++	struct nand_device *nand = spinand_to_nand(spinand);
++
++	switch (status & STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++
++	case STATUS_ECC_HAS_BITFLIPS:
++		return nanddev_get_ecc_conf(nand)->strength >> 1;
++
++	case STATUS_ECC_LIMIT_BITFLIPS:
++		return nanddev_get_ecc_conf(nand)->strength;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
++static const struct spinand_info heyangtek_spinand_table[] = {
++	SPINAND_INFO("HYF1GQ4UDACAE",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x21),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&hyfxgq4uda_ooblayout,
++				     hyfxgq4uda_ecc_get_status)),
++};
++
++static const struct spinand_manufacturer_ops heyangtek_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer heyangtek_spinand_manufacturer = {
++	.id = SPINAND_MFR_HEYANGTEK,
++	.name = "HeYangTek",
++	.chips = heyangtek_spinand_table,
++	.nchips = ARRAY_SIZE(heyangtek_spinand_table),
++	.ops = &heyangtek_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5c19ead60499..06ee35a27e3b 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -265,6 +265,7 @@ extern const struct spinand_manufacturer ato_spinand_manufacturer;
+ extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
+ extern const struct spinand_manufacturer foresee_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
++extern const struct spinand_manufacturer heyangtek_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+ extern const struct spinand_manufacturer paragon_spinand_manufacturer;
 -- 
-~Vinod
+2.45.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
