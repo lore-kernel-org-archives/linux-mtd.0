@@ -4,89 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53A83C2BD05
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 08:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 255F6C2D0D1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jun 2024 13:03:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EN5CMPQXptLpsC844DduN2N+46mTIPFX0o13Va17CG0=; b=n8fCd8a3eK/OpK
-	yimPyg+OMGp2/Y8LsEdcOC9wUtHC8p3lvDeB3BNa5nBmidVAllpw/b8WxPGwh0VXF4Y5PUQ+x4owx
-	/xbUI02ZtG1ojKMt4Tz02mU/ZIyRxfkY7D4CBKIW78mmzLydRwkp2LpO2BhpHCxgzciMs4QwDtOs7
-	mwpZN+80+pt1kVlYU5FZ+YpxwAnhRY/g4e53Iy5xxwDDIcDE73/ym2EGx+PifJPm6Mn76O/aNj/VF
-	9rXxrwtQfxE0IXZAwkXK2GYueti5CGmdK9iBFRKjUVxVlyDVhG9dK4SqFWiRbJfLMx1cxm+ZVs0tF
-	GRccUlEHDEKTEpn1ds7A==;
+	List-Owner; bh=T4eVJWFg1UufBBGBGEe1oI6YJhmvlwY3vliCtBqBioE=; b=LaAJ/gkk60zIOm
+	9/juR/e5oR61SfP3WJXdP+MAn7hx/SPxdgypAQDJQwzBm4A4gJvq6OZPYGM0LS4dzy78iy5tVAkWF
+	CmCPrKir3c7Rq6Z55rcGqsKnnbGh1xaCThIYWoI4ly5K06ygjBCpOTc8LSTPLjXPyYL30dlW2szEM
+	xzntICK8P9q6zZyNpYkaqc2kvvaw+rtIfbHDujKaQi7JWkTyxEd/tb/bo7RdM3/4pvUwzNn57b4VZ
+	OcqMTYjbzQ8ma/44De06ctVjBzDVEB6KTOt2WCUOsKNm6ILLqK4QYcqeUV79MhkEu/TjiG6XH5I85
+	Kwx6DjPu8leSS7Vb/HcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLfXt-0000000G9s1-21HK;
-	Mon, 24 Jun 2024 08:59:29 +0000
-Received: from mail-qk1-x730.google.com ([2607:f8b0:4864:20::730])
+	id 1sLjMM-0000000GqwB-3TRS;
+	Mon, 24 Jun 2024 13:03:50 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLfXp-0000000G9r7-0eRo
+	id 1sLjMK-0000000GqvA-0s4h
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jun 2024 08:59:27 +0000
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-795569eedcaso223155885a.3
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2024 01:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719219563; x=1719824363; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hdsmDqmNgGZQgfRkYZ6dfoEvN0ahnTXGnc7hhzCQrmg=;
-        b=z53/IqVzfQn19xGBDQZAWHCCB+OQnfGr1RpZSk712hMZrcoKgIUWIJHyrZnOsBy28w
-         s75/99W8E4Y1SJmJQD7MO/F+3TOFnSS8uOnVuT/9iln1CoLxUHIa/mDMkkxswpID1bpe
-         AEeki1ddME0QY5gVsw/WRo8IpSRp6vcCLxDbYFZogDBHkWGCbPU2EXZ5c0cwQ0xrYYD7
-         setCLocxX2XbeR5aL6EBwr8qxFMk+dWIfdGrCga1lc4jhD2iI0aJR2uApPY4ujsB4b8h
-         Ce7KxpQgKjRvT8AIZOFWn4DEK5ewDsRuYAqiyx0N17INnOl8JdDEfkt4F/EEw/QWaK8k
-         DqyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719219563; x=1719824363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hdsmDqmNgGZQgfRkYZ6dfoEvN0ahnTXGnc7hhzCQrmg=;
-        b=iH04H2XJrSQdhFjUE1ozatas3hH94+h1YW8Pizhx0jkKREqLRQNHL17z8l4GZDuoR8
-         mZbKTSFraa0ZLDjh/K2/uUMv+0jNQTCea8H0alZU4iBjlxsM9xQrbgrlB4TWKsRrv0/I
-         hPhRo0VDFxfo9DxTaaNrWetpYTbQxoJZfxVHMjM2MW2Fu6wzOqZmOzfkQ9bYnrFpu394
-         AN3Zhko3G6IMwZg7mBayUPifqvosrP7ovy9b4ZhKfiJ4iyH4C5XNMp5Tu2qydHQq8Vdf
-         DOdQ6VubJUB9Y+u+1/PK2wiVjLCXh8REoLma1tmSM0GkLtsnlDKrnnDv1U9H/1nJSAWr
-         nEPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtiy9oGb1RybF9VDhJuNsQtu5Laqmw0bIiA9Veg1hVURRJ5pSIBvk/LVIjhc1CLYYAI+jVBPKPIreiKdjLykT51oZWmBqAR3PX1FMctQ==
-X-Gm-Message-State: AOJu0YxFaNaom9+MDEWfS9inR8Zf8WajuieQAKFGQFtkWnVErFFPM1H0
-	8o+4oZOy6Tb9G9KcFDLra1ALUtnbYTynTuK/U0jjmarklvzxT1Eo6659DDPtPqv6GPbAYF9utNX
-	Ve4U0ULdDVBCvrQj9Rw3gwcagOjYZ4zYMMn3ZBA==
-X-Google-Smtp-Source: AGHT+IHJdukmHTX31XZGqN8Ya5O7xqbZeOSn9ad1olNhKCpFsHEHdPHP6m4H5tAF93YKuWVFl5Mnqdf3Ba8kIeeVBLc=
-X-Received: by 2002:a05:6214:4a45:b0:6b4:ff32:8287 with SMTP id
- 6a1803df08f44-6b5409be0b9mr37950676d6.22.1719219562855; Mon, 24 Jun 2024
- 01:59:22 -0700 (PDT)
+	Mon, 24 Jun 2024 13:03:49 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 651DA60C01;
+	Mon, 24 Jun 2024 13:03:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FB54C2BBFC;
+	Mon, 24 Jun 2024 13:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719234224;
+	bh=C3Q5DK6TNILzpVXRTgf8TUgPn26tkA9li9PG5wh8BTk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=azm+95N+JH112xDShF9/qM9hFFN9aBa7g/Qf/5mN5cZs06EwnZn2ZiRXRQbdv9EAd
+	 qhjSVa4n7E0uqA28yoVj7ijQK98dRqD+6EnpOvfWXz65A4yRjnltZX88V77+Pp1kxX
+	 6/+GvIeUpywNjfC37NFWiiLbsCOiI+iOHmCGktyLyntyTMX/yzHA1SKskxLYykDLwC
+	 osg/qVULJAs8wrVyFMSuqla+cC6Sen01Ph61YTdbVZ6RLl1hHjM28rIEeUducdnfI5
+	 UW3PqGRHwV2k9Amx7aIYO8gX+QGi5oMJUA9ErNgzOWWGSa1fgVdVJSVaN9mWl3IUMW
+	 RO8zSlJ0KC7Sg==
+Message-ID: <a11f009d-b3af-4837-8e00-17a5349f9518@kernel.org>
+Date: Mon, 24 Jun 2024 23:03:39 +1000
 MIME-Version: 1.0
-References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-7-piotr.wojtaszczyk@timesys.com> <ZnkGcwd8M1QFfmxl@matsya>
-In-Reply-To: <ZnkGcwd8M1QFfmxl@matsya>
-From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Date: Mon, 24 Jun 2024 10:59:11 +0200
-Message-ID: <CAG+cZ06R5P1g+1Pk3gbQ6Yod0mBM41dFTgvnBWg61HZFUtmx-w@mail.gmail.com>
-Subject: Re: [Patch v4 06/10] dmaengine: Add dma router for pl08x in LPC32XX SoC
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, "J.M.B. Downing" <jonathan.downing@nautel.com>, 
-	Vladimir Zapolskiy <vz@mleia.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Yangtao Li <frank.li@vivo.com>, Arnd Bergmann <arnd@arndb.de>, Li Zetao <lizetao1@huawei.com>, 
-	Chancel Liu <chancel.liu@nxp.com>, Michael Ellerman <mpe@ellerman.id.au>, dmaengine@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, Markus Elfring <Markus.Elfring@web.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: nand: Add support for M5441x NFC
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+References: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240624_015925_419191_48779AD7 
-X-CRM114-Status: GOOD (  13.91  )
+X-CRM114-CacheID: sfid-20240624_060348_421005_9E7ED3C1 
+X-CRM114-Status: GOOD (  38.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,24 +72,244 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBKdW4gMjQsIDIwMjQgYXQgNzozOeKAr0FNIFZpbm9kIEtvdWwgPHZrb3VsQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+IEFueSByZWFzb24gd2h5IGRtYWVuZ2luZSBwYXJ0cyBjYW50IGJlIHNl
-bnQgc2VwYXJhdGVseSwgd2h5IGFyZSB0aGV5Cj4gY2x1YmJlZCB0b2dldGhlciwgSSBkb250IHNl
-ZSBhbnkgb2J2aW91cyBkZXBlbmRlbmNpZXMuLi4KClRoZSBJMlMgZHJpdmVyIGRlcGVuZHMgb24g
-dGhlIGRtYWVuZ2luZSBwYXJ0cwoKPiBPbiAyMC0wNi0yNCwgMTk6NTYsIFBpb3RyIFdvanRhc3pj
-enlrIHdyb3RlOgo+ID4gTFBDMzJYWCBjb25uZWN0cyBmZXcgb2YgaXRzIHBlcmlwaGVyYWxzIHRv
-IHBsMDh4IERNQSB0aHJ1IGEgbXVsdGlwbGV4ZXIsCj4gPiB0aGlzIGRyaXZlciBhbGxvd3MgdG8g
-cm91dGUgYSBzaWduYWwgcmVxdWVzdCBsaW5lIHRocnUgdGhlIG11bHRpcGxleGVyIGZvcgo+ID4g
-Z2l2ZW4gcGVyaXBoZXJhbC4KPgo+IFdoYXQgaXMgdGhlIGRpZmZlcmVuY2UgYi93IHRoaXMgYW5k
-IGxwYzE4eHggZHJpdmVyLCB3aHkgbm90IHJldXNlIHRoYXQKPiBvbmU/CgpUaGUgbHBjMTh4eCB1
-c2VkIHRoZSBzYW1lIGRtYSBwZXJpcGhlcmFsIChwbDA4eCkgYnV0IHRoZSByZXF1ZXN0IHNpZ25h
-bAptdWx0aXBsZXhlciBhcm91bmQgcGwwOHggaXMgY29tcGxldGVseSBkaWZmZXJlbnQgLSB0aGVy
-ZSBhcmUgbm8gY29tbW9uIHBhcnRzLgoKLS0gClBpb3RyIFdvanRhc3pjenlrClRpbWVzeXMKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Jean-Michel,
+
+On 21/6/24 02:25, Jean-Michel Hautbois wrote:
+> The vf610_nfc driver is also the one which should be used for the
+> coldfire series. Sadly, these device don't support device-tree and so we
+> need to do a few modifications:
+> - Adapt the probe to use pdata if available
+> - Add a new variant as there is a small part to adapt in
+>    vf610_nfc_select_target()
+> - Add the corresponding missing register definitions
+> 
+> Tested successfully on a 54418 custom board with a raw NAND:
+> [    2.640000] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
+> [    2.650000] nand: Micron MT29F4G08ABADAWP
+> [    2.650000] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> 
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
+>   arch/m68k/include/asm/m5441xsim.h |  7 ++++
+
+I can take this ColdFire part via the m68knommu/coldfire tree if you like?
+
+Regards
+Greg
+
+
+>   drivers/mtd/nand/raw/Kconfig      |  2 +-
+>   drivers/mtd/nand/raw/vf610_nfc.c  | 79 ++++++++++++++++++++++++++++++++++-----
+>   3 files changed, 77 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+> index f48cf63bd782..d4ee1eab7c4a 100644
+> --- a/arch/m68k/include/asm/m5441xsim.h
+> +++ b/arch/m68k/include/asm/m5441xsim.h
+> @@ -99,6 +99,7 @@
+>   #define MCFINT2_PIT1		14
+>   #define MCFINT2_PIT2		15
+>   #define MCFINT2_PIT3		16
+> +#define MCFINT2_NFC		25
+>   #define MCFINT2_RTC		26
+>   
+>   /*
+> @@ -333,4 +334,10 @@
+>   #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+>   #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+>   
+> +/*
+> + * Flash module
+> + */
+> +#define MCF_NFC_BASE		0xfc0fc000
+> +#define MCF_NFC_SIZE		(0xfc0fff3b - 0xfc0fc000)
+> +#define MCF_NFC_ISR		(MCFINT2_VECBASE + MCFINT2_NFC)
+>   #endif /* m5441xsim_h */
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index cbf8ae85e1ae..2ea3ee32a540 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -252,7 +252,7 @@ config MTD_NAND_FSL_UPM
+>   
+>   config MTD_NAND_VF610_NFC
+>   	tristate "Freescale VF610/MPC5125 NAND controller"
+> -	depends on (SOC_VF610 || COMPILE_TEST)
+> +	depends on (SOC_VF610 || COMPILE_TEST || M5441x)
+>   	depends on HAS_IOMEM
+>   	help
+>   	  Enables support for NAND Flash Controller on some Freescale
+> diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+> index f31d23219f91..06f1ed5433c8 100644
+> --- a/drivers/mtd/nand/raw/vf610_nfc.c
+> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
+> @@ -146,6 +146,7 @@
+>   
+>   enum vf610_nfc_variant {
+>   	NFC_VFC610 = 1,
+> +	NFC_M54418 = 2,
+>   };
+>   
+>   struct vf610_nfc {
+> @@ -486,10 +487,24 @@ static void vf610_nfc_select_target(struct nand_chip *chip, unsigned int cs)
+>   	if (nfc->variant != NFC_VFC610)
+>   		return;
+>   
+> -	tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+> -	tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
+> -	tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
+> -	tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
+> +	if (nfc->variant == NFC_M54418) {
+> +		/*
+> +		 * According to the Reference Manual:
+> +		 * bit 24: Reserved, must be set (ROW_ADDR_CHIP_SEL_SHIFT)
+> +		 * bit 25-27: Reserved, must be cleared
+> +		 * bit 28: Reserved, must be set (ROW_ADDR_CHIP_SEL_RB_SHIFT)
+> +		 * bit 29-31: Reserved, must be cleared
+> +		 */
+> +		tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+> +		tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
+> +		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
+> +		tmp |= 1 << ROW_ADDR_CHIP_SEL_SHIFT;
+> +	} else {
+> +		tmp = vf610_nfc_read(nfc, NFC_ROW_ADDR);
+> +		tmp &= ~(ROW_ADDR_CHIP_SEL_RB_MASK | ROW_ADDR_CHIP_SEL_MASK);
+> +		tmp |= 1 << ROW_ADDR_CHIP_SEL_RB_SHIFT;
+> +		tmp |= BIT(cs) << ROW_ADDR_CHIP_SEL_SHIFT;
+> +	}
+>   
+>   	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
+>   }
+> @@ -700,11 +715,26 @@ static int vf610_nfc_write_oob(struct nand_chip *chip, int page)
+>   	return nand_prog_page_end_op(chip);
+>   }
+>   
+> +#ifdef CONFIG_OF
+>   static const struct of_device_id vf610_nfc_dt_ids[] = {
+>   	{ .compatible = "fsl,vf610-nfc", .data = (void *)NFC_VFC610 },
+>   	{ /* sentinel */ }
+>   };
+>   MODULE_DEVICE_TABLE(of, vf610_nfc_dt_ids);
+> +#endif
+> +
+> +static const struct platform_device_id vf610_nfc_id_table[] = {
+> +	{
+> +		.name = "mcf5441x-nfc",
+> +		.driver_data = (kernel_ulong_t)NFC_M54418,
+> +	}, {
+> +		.name = "vf610-nfc",
+> +		.driver_data = (kernel_ulong_t)NFC_VFC610,
+> +	}, {
+> +		/* sentinel */
+> +	},
+> +};
+> +MODULE_DEVICE_TABLE(platform, vf610_nfc_id_table);
+>   
+>   static void vf610_nfc_preinit_controller(struct vf610_nfc *nfc)
+>   {
+> @@ -810,6 +840,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>   	struct vf610_nfc *nfc;
+>   	struct mtd_info *mtd;
+>   	struct nand_chip *chip;
+> +	struct nand_chip *pdata;
+>   	struct device_node *child;
+>   	int err;
+>   	int irq;
+> @@ -820,30 +851,53 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>   
+>   	nfc->dev = &pdev->dev;
+>   	chip = &nfc->chip;
+> +	pdata = dev_get_platdata(&pdev->dev);
+> +	if (pdata)
+> +		*chip = *pdata;
+> +
+>   	mtd = nand_to_mtd(chip);
+>   
+>   	mtd->owner = THIS_MODULE;
+>   	mtd->dev.parent = nfc->dev;
+> -	mtd->name = DRV_NAME;
+> +
+> +	/*
+> +	 * We keep the MTD name unchanged to avoid breaking platforms
+> +	 * where the MTD cmdline parser is used and the bootloader
+> +	 * has not been updated to use the new naming scheme.
+> +	 */
+> +	if (!nfc->dev->of_node)
+> +		mtd->name = "NAND";
+> +	else
+> +		mtd->name = DRV_NAME;
+>   
+>   	irq = platform_get_irq(pdev, 0);
+>   	if (irq < 0)
+>   		return irq;
+>   
+>   	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(nfc->regs))
+> +	if (IS_ERR(nfc->regs)) {
+> +		dev_err(nfc->dev, "Unable to map registers!\n");
+>   		return PTR_ERR(nfc->regs);
+> +	}
+>   
+> +#ifdef CONFIG_OF
+>   	nfc->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+>   	if (IS_ERR(nfc->clk)) {
+>   		dev_err(nfc->dev, "Unable to get and enable clock!\n");
+>   		return PTR_ERR(nfc->clk);
+>   	}
+>   
+> -	nfc->variant = (enum vf610_nfc_variant)device_get_match_data(&pdev->dev);
+> -	if (!nfc->variant)
+> -		return -ENODEV;
+> +	const void *data = device_get_match_data(&pdev->dev);
+>   
+> +	nfc->variant = (enum vf610_nfc_variant)data;
+> +	if (!nfc->variant) {
+> +		dev_err(nfc->dev, "No variant data found!\n");
+> +		return -ENODEV;
+> +	}
+> +#else
+> +	nfc->variant = (enum vf610_nfc_variant)platform_get_device_id(pdev)->driver_data;
+> +#endif
+> +#ifdef CONFIG_OF
+>   	for_each_available_child_of_node(nfc->dev->of_node, child) {
+>   		if (of_device_is_compatible(child, "fsl,vf610-nfc-nandcs")) {
+>   
+> @@ -862,6 +916,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>   		dev_err(nfc->dev, "NAND chip sub-node missing!\n");
+>   		return -ENODEV;
+>   	}
+> +#else
+> +	nfc->clk = NULL;
+> +	mtd->dev.parent = &pdev->dev;
+> +#endif
+>   
+>   	chip->options |= NAND_NO_SUBPAGE_WRITE;
+>   
+> @@ -937,11 +995,12 @@ static SIMPLE_DEV_PM_OPS(vf610_nfc_pm_ops, vf610_nfc_suspend, vf610_nfc_resume);
+>   static struct platform_driver vf610_nfc_driver = {
+>   	.driver		= {
+>   		.name	= DRV_NAME,
+> -		.of_match_table = vf610_nfc_dt_ids,
+> +		.of_match_table = of_match_ptr(vf610_nfc_dt_ids),
+>   		.pm	= &vf610_nfc_pm_ops,
+>   	},
+>   	.probe		= vf610_nfc_probe,
+>   	.remove_new	= vf610_nfc_remove,
+> +	.id_table = vf610_nfc_id_table,
+>   };
+>   
+>   module_platform_driver(vf610_nfc_driver);
+> 
+> ---
+> base-commit: e5b3efbe1ab1793bb49ae07d56d0973267e65112
+> change-id: 20240620-upstream-nfc-mcf5441x-82e23b45e286
+> 
+> Best regards,
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
