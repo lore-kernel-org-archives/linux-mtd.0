@@ -4,98 +4,182 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC69FC2BBCA
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2024 12:42:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FE97C2BBCA
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2024 12:55:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=o8f3z+tJOc1bCVguOYzycWHkLLga2N8u43hTQLGITQc=; b=v5l6mVkJylSVtN
-	RDJEQTQKQehWiIRANn31D0uPiROWSE0T2X6wLpZK3q8rcAjyMfC3SYyntlbmbMV285FCilFKL7hrB
-	M/hOsihEkrJt9HQaxXOTTeGa3tedhl5swzHDN/9n+4NO4xIgPWxjSkpd2zwoOnwHIl+DA1uvgRiUL
-	Yjgr3m0vxe7x2aPmJkV5R1UyrMZ4mfu12OHANJSewTyrkdI2yVpJ4X+MRoJtrwU1OV+DG9eVFBno9
-	1u0YcWH8Azdhnbi6P0E/S4Di95PzAzw1xYoTgllLy686ZqZCUeDPu4U661tGygi3us9rRTt4dBSeA
-	dlao3U33LqXUa5nD7GTA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hO/Gv5RAmxzLJdms4YylXVpYZWQRXm2ZSwo/gpcVN2E=; b=bDroFxHzqsv6rC
+	GY7IBFGnxlhmrX842+YxAi3atfEfjcwYTxO+6lp7XolQpi01o5Q5jDRmpzfUJJF8XAc6s6nTBBMaG
+	C4vokDs83cj4AloINRFSnWeKN+uu0QBItYljP7RkFqHaJWJQqp7JU7m0imD7YaQ+gsU8Uw72VidwR
+	p7o7q5N6Pyl/u6kGWMpFaiZ3xhFsoHXNqDhEVj7RyN6XfLst/TCJ8SspW8qU5bXdL1qnUwn5QdK1Q
+	//agewHTxQoxfhCFXKmsOAybB41jwefrmDOJpsIwEgQCEFcDkyYnkvC3nURS1vFOlMbpFdR3RgtfR
+	ZkbPZ0Fr5exRnb1zDJ1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM5Ur-00000002plW-1GAD;
-	Tue, 25 Jun 2024 12:42:05 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1sM5i4-00000002ri4-3So7;
+	Tue, 25 Jun 2024 12:55:44 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM5Up-00000002pjn-0b72
-	for linux-mtd@lists.infradead.org;
-	Tue, 25 Jun 2024 12:42:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1719319321;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=7EWz1vItROBUOYp6sdJspiDZ8uU1laai0jDHb5Vv+x0=;
-	b=bcz2ZO74XTpPmuwteaSHPlbXpyKcmerHBKjWMd0xiSHOnbRnzGNBJoigvscKbkIsDfxpMM
-	ywCzTf5cUkS2RkGcFUYpjcB/IVB+ttJHJc8rCfVdUokegq0SmNjUndT5Tmbn5kHCd8kVKu
-	Kqc5wxbimUV7R/1nD3IiwW0xJr8pRsg=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-460-RCkWgWX_Nm-SSEzUrXPwMA-1; Tue,
- 25 Jun 2024 08:40:23 -0400
-X-MC-Unique: RCkWgWX_Nm-SSEzUrXPwMA-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9D4051956096;
-	Tue, 25 Jun 2024 12:40:17 +0000 (UTC)
-Received: from hydra.redhat.com (unknown [10.39.192.194])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id DCA1319560B2;
-	Tue, 25 Jun 2024 12:40:06 +0000 (UTC)
-From: Jocelyn Falempe <jfalempe@redhat.com>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Kees Cook <kees@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jocelyn Falempe <jfalempe@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-hyperv@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] printk: Add a short description string to kmsg_dump()
-Date: Tue, 25 Jun 2024 14:39:29 +0200
-Message-ID: <20240625123954.211184-1-jfalempe@redhat.com>
+	id 1sM5hw-00000002rfM-1Vj1;
+	Tue, 25 Jun 2024 12:55:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1719320136; x=1750856136;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=g44pi5Xs4hPKpIahgvtBZhj79WVgTvddJZITtLLqTmQ=;
+  b=hlULqhnw3HOiqrpGr7f6VVGcfMBpdEr51brMOKiZYK/X7A2kQxbLXVmU
+   y1iYnrnzangAs8BY04R5H0mZybXsaSC34mHvGnM9RKG8NroCH8NeC8zVD
+   4jXypFtC+MbHly0HMFO16s9MWn3oxpi+tXDcxq0jYBYteQm4I6D+Qy83u
+   evTFArTNuq9NpK3KOpVe3IRpp1gAZK5FlMNSGacPqZf21f3NUFRCVlaMd
+   cVl4feRVrd9uFD1lCOI4lJ4TsJgHAc0gqdhSi047LNkxmXqyD3DpAcs1G
+   AnWwAdIrNbb8N2y5JWbKshJQc8/Doh7r7VUL6wg7+p6blPbIzsEiDou7t
+   g==;
+X-CSE-ConnectionGUID: UJLdpc9SQc+ViX3Ya+pZGA==
+X-CSE-MsgGUID: xeUj0FdWSpmTkPSDvp5Orw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11113"; a="20214275"
+X-IronPort-AV: E=Sophos;i="6.08,264,1712646000"; 
+   d="scan'208";a="20214275"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2024 05:55:29 -0700
+X-CSE-ConnectionGUID: DAfdpKBjT8yJ0UJHz+vjhA==
+X-CSE-MsgGUID: qE7JRxOvTISFHj+f1j9www==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,264,1712646000"; 
+   d="scan'208";a="74840818"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Jun 2024 05:55:29 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 25 Jun 2024 05:55:28 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 25 Jun 2024 05:55:28 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Tue, 25 Jun 2024 05:55:28 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.172)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Tue, 25 Jun 2024 05:55:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P877rga0ffxa36oerW/54lgJySlksVhmHUs/ljksxYw/ove5mGoGDAz+v9ofg7MvFUlVM0t9TGG/91if0Ah4ey2x4NIJhgSJwo8OfLoCzJ0/89Vu+7KsQv6Y8YrBLWMD7jgHJHt6oJz729Z2MGJfM6blOzrs5GLBmselbYYy3O3Bbb6C2qi3hpRnsrEbx4bdH3dvaZK1KmqWnIGf/uBKThqowCNr6ZTSGieuBdOXlbXOeJu63YkVFZxSyaI54lFUzmuIDvj76ZtEO0Sa/Tvc8SanzgGf0KkrgOKIBFil0+TGHgN4DTiXyLRAZyUqun5MHAueArihaxhUhnqkdupLVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CWov00CtmkGmnXw1yr4tlqb4big4vy+jr49WOSXgTwU=;
+ b=FXvN27RxSnJUQTMjwIugTalx9jOY/r6cxCH8Wsy9iVSVMYn3nZEq3uI/hsRhmq0CmxCZR+m7pZFp0LMBig14tYOIBJbgGqCa9l0k3Sv9i5Q9mgdSyl0vVtpVKczXt7aeIR2ACePgMD1dm/0/q6RuCC4ZsIMTH5lRACz9Lwfph0API0Z1Edxd/0e6Y8dt0ay/vvktjtNf9jxGGG50vp8ccphFJtfDdszLuEA8sC1ekesWnUK7O2eTaUahdC4ai4+F4mH5ibQdroYjGzHsVcMSQcSmCyNLaWr7BTOjgPwN6X7K7dQgFtpU85hnXMGTl0T6fUET25JUvlYLGZsky6tC9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB6039.namprd11.prod.outlook.com (2603:10b6:8:76::6) by
+ DM4PR11MB5277.namprd11.prod.outlook.com (2603:10b6:5:388::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7698.30; Tue, 25 Jun 2024 12:55:26 +0000
+Received: from DS7PR11MB6039.namprd11.prod.outlook.com
+ ([fe80::3f0c:a44c:f6a2:d3a9]) by DS7PR11MB6039.namprd11.prod.outlook.com
+ ([fe80::3f0c:a44c:f6a2:d3a9%3]) with mapi id 15.20.7698.025; Tue, 25 Jun 2024
+ 12:55:26 +0000
+Date: Tue, 25 Jun 2024 20:55:13 +0800
+From: Philip Li <philip.li@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+CC: kernel test robot <lkp@intel.com>, Linux Memory Management List
+	<linux-mm@kvack.org>, <amd-gfx@lists.freedesktop.org>, <imx@lists.linux.dev>,
+	<intel-xe@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-arm-msm@vger.kernel.org>, <linux-input@vger.kernel.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+	<linux-trace-kernel@vger.kernel.org>, <netdev@vger.kernel.org>, Mark Brown
+	<broonie@kernel.org>, Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ f76698bd9a8ca01d3581236082d786e9a6b72bb7
+Message-ID: <Znq+MVbzKvDAXkaX@rli9-mobl>
+References: <202406230716.DQbMBKh0-lkp@intel.com>
+ <20240624123154.4c3125c3093636de35b407dd@linux-foundation.org>
+Content-Disposition: inline
+In-Reply-To: <20240624123154.4c3125c3093636de35b407dd@linux-foundation.org>
+X-ClientProxiedBy: SG2PR04CA0168.apcprd04.prod.outlook.com (2603:1096:4::30)
+ To DS7PR11MB6039.namprd11.prod.outlook.com (2603:10b6:8:76::6)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB6039:EE_|DM4PR11MB5277:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7ed01ead-e6b9-43ef-2104-08dc95161537
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230037|7416011|376011|1800799021|366013;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?ZhSH/lbW6BitPLq78KS+g/XWUmze0Slwf/YlYwkex05hCx546pEv+Pp3fJWU?=
+ =?us-ascii?Q?cMxNC6avhZcmDuQJNXf0cxGk5Z80vEBsqP1rkA9rRtUb3ifloSmX7kltzQWO?=
+ =?us-ascii?Q?T7eNpMBw+oabQ0hdRMnqu/MT2cEUJ8HOBEn/pCyLFUwirzmX5Q7SKTCu/otb?=
+ =?us-ascii?Q?sOscJalebYSszmBonJxK+TWqSdKLO3H6Ubo6Q2H0BR0tQ/+VL6NdHvhHxmhh?=
+ =?us-ascii?Q?KaSFV03QrA6SHDqmibCO12VMoYwMQA4wdlZmcXhCeZG0RhqmjZD2DBSiNIlU?=
+ =?us-ascii?Q?EhEn1brmoMQhxyDFKfo6ToBWE02ZKARLywmC0GQfQBm2fyepNcRAd3PDEzg6?=
+ =?us-ascii?Q?yFNhE4FCDrDg4zpplocH+vVN/Xruahgk28tbEhbbqy2mQvbZBrk+6XEwCICi?=
+ =?us-ascii?Q?m7JgUB0jWxnISCOK2RB2putNxZ++mxmK1IBF/ZGZlZaTe5IvAkUWGSZhvU0L?=
+ =?us-ascii?Q?2uuzhTfMQRTZ7wjUOLn8gKmNV+cec6DenhRHjaIjK0RjWkmdSVLFX6uMgpiY?=
+ =?us-ascii?Q?+DxNBM72IG8Y2z8maGbPzHBf0dGMyIppIwKH9QAH4ifDUJg01QhX8VTzesJQ?=
+ =?us-ascii?Q?Cl5no1KzpLgB61fQVZ+Ev3IaNUVxhkhCyJWAGAcbf+ApBAp08HHtXyYjA4yJ?=
+ =?us-ascii?Q?MjdCTeDyfB/VIyTLhk0vR0RZYTt2dRtLBNnDm2b00DS5UFVLcHVRNZaRlfkt?=
+ =?us-ascii?Q?2V+MvK8CfUWowRz2bCwtF9yQc3UKDlNK5M0sKtSlEF6fr/fleOiv0mCVbnw5?=
+ =?us-ascii?Q?BqxdOowwefHV4dQ/VJohwb6q+VWkO1y/xpaaQcx10s1bOo/0+4enqHxM3JYx?=
+ =?us-ascii?Q?n1DL6MEmliWDV3kmb6/cVj7L1kEw5pNeoONADGNPg76LBE1LoIBLTUzFSk+m?=
+ =?us-ascii?Q?iSnhOoF1ZzTjnI5CiA9buHP34wJMmSq/wmTlnZc15FsxqDU0IA6cwK4bg0gq?=
+ =?us-ascii?Q?cqnnwXrM862yLA/sxRQXgoGcdxVwetrNzq3i9foijaHw9qGMGJjrSfhT6o6h?=
+ =?us-ascii?Q?xNG9A/kco/qTcgLq6auxOKOlySQomz0NdxizgNXRxCrBZo4TX2NDjwV9SOCL?=
+ =?us-ascii?Q?CYj3mTWR0dBkLN9AzQr2guDe7PIKgTX+yIBMRingnguU8Ha8YjbpiwAN/Tqw?=
+ =?us-ascii?Q?9m/WvlUpW7rDR3v4dKOM2UoEyIksXaV4jSed+L+WQCLzUUpmq92fbA2FrO/S?=
+ =?us-ascii?Q?6PeHxPghz9Fb+8qZ6tIRdd8wYH7bCSR2tTGH875Ky08ZWqznZqjSIpT/agv6?=
+ =?us-ascii?Q?aSecfBaCLYU3mmtrQYygJrnodOi5321QuwgZHLJQ3w=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB6039.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(7416011)(376011)(1800799021)(366013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FyIu3o/UWaqo0W+2ziYcAR2/11UTCK0oJYOJ+Hp3uriZ7xEiy3zUkLxAlalM?=
+ =?us-ascii?Q?x5edpZuy1NTrWFtVCUCYCkfakYjwIrNvOoIOSaFJJXUGpTjy8dZycEfFIv17?=
+ =?us-ascii?Q?XTDYERWA0DNY+h/8poirYc4VjJOqlEYoBntNdmaBxws2sPfshpcwDrdxQGzj?=
+ =?us-ascii?Q?KebZp1Ky0yhYgu2OpgqRP2ba4czSQf9Pl/UFCtV98XvMF+re3VpCixljePY5?=
+ =?us-ascii?Q?Jgs5orlSrYfh1KgCBOJJJ2VCSs+0ISnKN3vjfKZFaXkxEQjwpZOOp/XM2alD?=
+ =?us-ascii?Q?tGnYrWTb+O80wAKcKDFQjrtaGfMszDaG0TuiaTUahCJzovx5p63XLBiVXSBx?=
+ =?us-ascii?Q?wMRGSVM0I9u+ZsIJHesRHRM+TqcwPYnOflldvFMDbKLM23iKahUpiYv7YXy1?=
+ =?us-ascii?Q?fDPo7NZU+YKgxqVARhsr1Z92VrFkzJvsnTJC+HpHQQ87zHf9rGJCVQmIKbJy?=
+ =?us-ascii?Q?Jn0f80lvCxMD8YFIPddgzrU6NvPpuCXJVeuBkCB1BFvPFBf4koaYe+n14Vlu?=
+ =?us-ascii?Q?O67/wk19J+N8178WQz5uiHUNzB+l/SRvbqcbmxesfzJiYh/wpbhQqMqN2c5v?=
+ =?us-ascii?Q?KKbyLN37DBWtorSoCUhe2nhyQP2OT2fYxtgzzF5B6Qoc4VKcEB7xIq4TPpfL?=
+ =?us-ascii?Q?GbuIzWxpiVQCBIoWAJIgPrewSEnDJAQ9IyVO3AOV5G8DTeZU9Dl0N7gwu//O?=
+ =?us-ascii?Q?f68dC8GIxfJWYQ2oDZDjQv0EOxtOWw9Lm4LHZvrCexuudlcNr45jCG6sL6uu?=
+ =?us-ascii?Q?Z0EVbIOz4qnwA4LD7O7dblOx6EpWWpYaqakqFLqtGaAJCXzQUb9jvo2V/eaS?=
+ =?us-ascii?Q?1s/Y1DkADA3H4PJdeHR3wrrBqMltwbF9Bge/zYsxa0SWtiGThEFdeY0bQa76?=
+ =?us-ascii?Q?/wcL3K6eipfOsavXZEadyjhpLTvZ5gBatbOs+YSE3O6ZCabv30WOqILhROYg?=
+ =?us-ascii?Q?8fkU6dTuF3TXkLEmI+6u8FuGiaOmLL+xHy63Ws/L0IdxdY3udzuMOOJmpXN9?=
+ =?us-ascii?Q?0rJsDeQX7BkhCoAOOumLJMXRA8gGvGn145R+lC4zoiKwSMSRiaHfMYZUK4XE?=
+ =?us-ascii?Q?ckRhvVKsdtYhluMFG60oxvW1lDhxvsH8GKcKDU+GQBFNSiL90WvP4bgG/+M9?=
+ =?us-ascii?Q?W3YqkTAjBk2I9drYc6j2daZOqG/CXcLl12jzHnjBu6wMjhdri3r2S8wWjUq6?=
+ =?us-ascii?Q?J13jSMS5YQqpqOPThQR855oExymcWY9xrJuLFp0Km1Z2TLV4IEHIi8cOfOkZ?=
+ =?us-ascii?Q?BkB2fxNuniAiw3l2egsz9kpxHdqwfMmboqpxFOXOc0DNoSjPU/uJumtVhJB5?=
+ =?us-ascii?Q?jWLzHTMScGrgoRwnuJc52/oSGU31jVXWb2fCB3DAxtGLc+AR5lnw0r1QmIve?=
+ =?us-ascii?Q?6GmIEDHDjjukjDTdzlf4Bn+8qap81Uw6UFRSoxlHC8k4FRu8kAWigvWFhrbr?=
+ =?us-ascii?Q?wSTodaj823UTcitysuB/3pdLdiFQmEL5KwTt6SvSjxSvMzN3sPmgl+9/H83l?=
+ =?us-ascii?Q?ATtFqCxWpgB77/5m1aw0jkeRb2KqL9xBpUHZS70iuczCe8ffOCw0anWGEZpE?=
+ =?us-ascii?Q?YVNftbCVCe7vJJnlUgZv9EwVWzDyhu29kszZAswA?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ed01ead-e6b9-43ef-2104-08dc95161537
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB6039.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2024 12:55:26.0864
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /3v4ISKi8dIs5u6YAztN4x1hkwhMEgNJ+hBkoDH2xpqAO65AE5e9HLB8aafw8/iW8bUchXQXB+5d4aoWZ/XnaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5277
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240625_054203_411174_26F222FD 
-X-CRM114-Status: GOOD (  21.49  )
+X-CRM114-CacheID: sfid-20240625_055536_433253_2842F922 
+X-CRM114-Status: GOOD (  18.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,207 +196,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-kmsg_dump doesn't forward the panic reason string to the kmsg_dumper
-callback.
-This patch adds a new parameter "const char *desc" to the kmsg_dumper
-dump() callback, and update all drivers that are using it.
+On Mon, Jun 24, 2024 at 12:31:54PM -0700, Andrew Morton wrote:
+> On Sun, 23 Jun 2024 07:11:24 +0800 kernel test robot <lkp@intel.com> wrote:
+> 
+> > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> > branch HEAD: f76698bd9a8ca01d3581236082d786e9a6b72bb7  Add linux-next specific files for 20240621
+> > 
+> > Error/Warning reports:
+> > 
+> > https://lore.kernel.org/oe-kbuild-all/202406220536.JnAncjqz-lkp@intel.com
+> > https://lore.kernel.org/oe-kbuild-all/202406220754.evK8Hrjw-lkp@intel.com
+> > 
+> > Error/Warning: (recently discovered and may have been fixed)
+> > 
+> > drivers/soc/qcom/smsm.c:(.text.qcom_smsm_remove+0x70): undefined reference to `mbox_free_channel'
+> > 
+> > Unverified Error/Warning (likely false positive, please contact us if interested):
+> > 
+> > include/linux/container_of.h:20:54: error: invalid use of undefined type 'struct thpsize'
+> > include/linux/list.h:645:25: error: invalid use of undefined type 'struct thpsize'
+> > include/linux/stddef.h:16:33: error: invalid use of undefined type 'struct thpsize'
+> > mm/huge_memory.c:455:21: error: implicit declaration of function 'to_thpsize'; did you mean 'thp_size'? [-Werror=implicit-function-declaration]
+> > mm/huge_memory.c:455:37: error: invalid type argument of '->' (have 'int')
+> > mm/huge_memory.c:558:35: error: 'MTHP_STAT_FILE_ALLOC' undeclared (first use in this function); did you mean 'THP_FILE_ALLOC'?
+> > mm/huge_memory.c:559:38: error: 'MTHP_STAT_FILE_FALLBACK' undeclared (first use in this function); did you mean 'THP_FILE_FALLBACK'?
+> > mm/huge_memory.c:560:45: error: 'MTHP_STAT_FILE_FALLBACK_CHARGE' undeclared (first use in this function); did you mean 'THP_FILE_FALLBACK_CHARGE'?
+> > mm/huge_memory.c:579:17: warning: assignment to 'struct thpsize *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+> > mm/huge_memory.c:579:33: error: invalid application of 'sizeof' to incomplete type 'struct thpsize'
+> > mm/huge_memory.c:583:44: error: invalid use of undefined type 'struct thpsize'
+> > mm/huge_memory.c:608:15: warning: passing argument 1 of 'kfree' makes pointer from integer without a cast [-Wint-conversion]
+> > 
+> >
+> > ...
+> >
+> >
+> > |-- x86_64-randconfig-014-20240202
+> > |   |-- include-linux-container_of.h:error:invalid-use-of-undefined-type-struct-thpsize
+> > |   |-- include-linux-list.h:error:invalid-use-of-undefined-type-struct-thpsize
+> > |   |-- include-linux-stddef.h:error:invalid-use-of-undefined-type-struct-thpsize
+> > |   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_ALLOC-undeclared-(first-use-in-this-function)
+> > |   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_FALLBACK-undeclared-(first-use-in-this-function)
+> > |   |-- mm-huge_memory.c:error:MTHP_STAT_FILE_FALLBACK_CHARGE-undeclared-(first-use-in-this-function)
+> > |   |-- mm-huge_memory.c:error:implicit-declaration-of-function-to_thpsize
+> > |   |-- mm-huge_memory.c:error:invalid-application-of-sizeof-to-incomplete-type-struct-thpsize
+> > |   |-- mm-huge_memory.c:error:invalid-type-argument-of-(have-int-)
+> > |   |-- mm-huge_memory.c:error:invalid-use-of-undefined-type-struct-thpsize
+> > |   |-- mm-huge_memory.c:warning:assignment-to-struct-thpsize-from-int-makes-pointer-from-integer-without-a-cast
+> > |   `-- mm-huge_memory.c:warning:passing-argument-of-kfree-makes-pointer-from-integer-without-a-cast
+> 
+> Is there a way for us to obtain that config file?
 
-To avoid updating all kmsg_dump() call, it adds a kmsg_dump_desc()
-function and a macro for backward compatibility.
+Sorry, kindly ignore the issues associated with x86_64-randconfig-014-20240202 kconfig.
+The bisected reports for it are mostly wrong such as [1], [2] due to bot issue, thus these
+wrong info was included in this summary report as well.
 
-I've written this for drm_panic, but it can be useful for other
-kmsg_dumper.
-It allows to see the panic reason, like "sysrq triggered crash"
-or "VFS: Unable to mount root fs on xxxx" on the drm panic screen.
+[1] https://lore.kernel.org/oe-kbuild-all/202406220112.qjyQbasK-lkp@intel.com/
+[2] https://lore.kernel.org/oe-kbuild-all/202406211750.Ks4k82Gi-lkp@intel.com/
 
-Signed-off-by: Jocelyn Falempe <jfalempe@redhat.com>
----
- arch/powerpc/kernel/nvram_64.c             |  3 ++-
- arch/powerpc/platforms/powernv/opal-kmsg.c |  3 ++-
- drivers/gpu/drm/drm_panic.c                |  3 ++-
- drivers/hv/hv_common.c                     |  3 ++-
- drivers/mtd/mtdoops.c                      |  3 ++-
- fs/pstore/platform.c                       |  3 ++-
- include/linux/kmsg_dump.h                  | 13 ++++++++++---
- kernel/panic.c                             |  2 +-
- kernel/printk/printk.c                     |  8 +++++---
- 9 files changed, 28 insertions(+), 13 deletions(-)
 
-diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
-index e385d3164648c..6b3a80d8cfa64 100644
---- a/arch/powerpc/kernel/nvram_64.c
-+++ b/arch/powerpc/kernel/nvram_64.c
-@@ -643,7 +643,8 @@ void __init nvram_init_oops_partition(int rtas_partition_exists)
-  * partition.  If that's too much, go back and capture uncompressed text.
-  */
- static void oops_to_nvram(struct kmsg_dumper *dumper,
--			  enum kmsg_dump_reason reason)
-+			  enum kmsg_dump_reason reason,
-+			  const char *desc)
- {
- 	struct oops_log_info *oops_hdr = (struct oops_log_info *)oops_buf;
- 	static unsigned int oops_count = 0;
-diff --git a/arch/powerpc/platforms/powernv/opal-kmsg.c b/arch/powerpc/platforms/powernv/opal-kmsg.c
-index 6c3bc4b4da983..49b60de6feb04 100644
---- a/arch/powerpc/platforms/powernv/opal-kmsg.c
-+++ b/arch/powerpc/platforms/powernv/opal-kmsg.c
-@@ -20,7 +20,8 @@
-  * message, it just ensures that OPAL completely flushes the console buffer.
-  */
- static void kmsg_dump_opal_console_flush(struct kmsg_dumper *dumper,
--				     enum kmsg_dump_reason reason)
-+				     enum kmsg_dump_reason reason,
-+				     const char *desc)
- {
- 	/*
- 	 * Outside of a panic context the pollers will continue to run,
-diff --git a/drivers/gpu/drm/drm_panic.c b/drivers/gpu/drm/drm_panic.c
-index 293d4dcbc80da..88e9359fe6d78 100644
---- a/drivers/gpu/drm/drm_panic.c
-+++ b/drivers/gpu/drm/drm_panic.c
-@@ -604,7 +604,8 @@ static struct drm_plane *to_drm_plane(struct kmsg_dumper *kd)
- 	return container_of(kd, struct drm_plane, kmsg_panic);
- }
- 
--static void drm_panic(struct kmsg_dumper *dumper, enum kmsg_dump_reason reason)
-+static void drm_panic(struct kmsg_dumper *dumper, enum kmsg_dump_reason reason,
-+		      const char *desc)
- {
- 	struct drm_plane *plane = to_drm_plane(dumper);
- 
-diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-index 9c452bfbd5719..b0786ee9c94e3 100644
---- a/drivers/hv/hv_common.c
-+++ b/drivers/hv/hv_common.c
-@@ -207,7 +207,8 @@ static int hv_die_panic_notify_crash(struct notifier_block *self,
-  * buffer and call into Hyper-V to transfer the data.
-  */
- static void hv_kmsg_dump(struct kmsg_dumper *dumper,
--			 enum kmsg_dump_reason reason)
-+			 enum kmsg_dump_reason reason,
-+			 const char *desc)
- {
- 	struct kmsg_dump_iter iter;
- 	size_t bytes_written;
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 2f11585b5613e..c618999a96832 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -298,7 +298,8 @@ static void find_next_position(struct mtdoops_context *cxt)
- }
- 
- static void mtdoops_do_dump(struct kmsg_dumper *dumper,
--			    enum kmsg_dump_reason reason)
-+			    enum kmsg_dump_reason reason,
-+			    const char *desc)
- {
- 	struct mtdoops_context *cxt = container_of(dumper,
- 			struct mtdoops_context, dump);
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index 3497ede88aa01..a6ed5d56021ef 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -275,7 +275,8 @@ void pstore_record_init(struct pstore_record *record,
-  * end of the buffer.
-  */
- static void pstore_dump(struct kmsg_dumper *dumper,
--			enum kmsg_dump_reason reason)
-+			enum kmsg_dump_reason reason,
-+			const char *desc)
- {
- 	struct kmsg_dump_iter iter;
- 	unsigned long	total = 0;
-diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-index 906521c2329ca..a8f8a6204542d 100644
---- a/include/linux/kmsg_dump.h
-+++ b/include/linux/kmsg_dump.h
-@@ -49,13 +49,15 @@ struct kmsg_dump_iter {
-  */
- struct kmsg_dumper {
- 	struct list_head list;
--	void (*dump)(struct kmsg_dumper *dumper, enum kmsg_dump_reason reason);
-+	void (*dump)(struct kmsg_dumper *dumper,
-+		     enum kmsg_dump_reason reason,
-+		     const char *desc);
- 	enum kmsg_dump_reason max_reason;
- 	bool registered;
- };
- 
- #ifdef CONFIG_PRINTK
--void kmsg_dump(enum kmsg_dump_reason reason);
-+void kmsg_dump_desc(enum kmsg_dump_reason reason, const char *desc);
- 
- bool kmsg_dump_get_line(struct kmsg_dump_iter *iter, bool syslog,
- 			char *line, size_t size, size_t *len);
-@@ -71,7 +73,7 @@ int kmsg_dump_unregister(struct kmsg_dumper *dumper);
- 
- const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason);
- #else
--static inline void kmsg_dump(enum kmsg_dump_reason reason)
-+static inline void kmsg_dump_desc(enum kmsg_dump_reason reason, const char *desc)
- {
- }
- 
-@@ -107,4 +109,9 @@ static inline const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason)
- }
- #endif
- 
-+static inline void kmsg_dump(enum kmsg_dump_reason reason)
-+{
-+	kmsg_dump_desc(reason, NULL);
-+}
-+
- #endif /* _LINUX_KMSG_DUMP_H */
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 0843a275531a7..0a8b29c44f3c1 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -378,7 +378,7 @@ void panic(const char *fmt, ...)
- 
- 	panic_print_sys_info(false);
- 
--	kmsg_dump(KMSG_DUMP_PANIC);
-+	kmsg_dump_desc(KMSG_DUMP_PANIC, buf);
- 
- 	/*
- 	 * If you doubt kdump always works fine in any situation,
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index d0bff0b0abfdb..2e7195894e41a 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -4287,14 +4287,16 @@ const char *kmsg_dump_reason_str(enum kmsg_dump_reason reason)
- EXPORT_SYMBOL_GPL(kmsg_dump_reason_str);
- 
- /**
-- * kmsg_dump - dump kernel log to kernel message dumpers.
-+ * kmsg_dump_desc - dump kernel log to kernel message dumpers.
-  * @reason: the reason (oops, panic etc) for dumping
-+ * @desc: a short string to describe what caused the panic or oops. Can be NULL
-+ * if no additional description is available.
-  *
-  * Call each of the registered dumper's dump() callback, which can
-  * retrieve the kmsg records with kmsg_dump_get_line() or
-  * kmsg_dump_get_buffer().
-  */
--void kmsg_dump(enum kmsg_dump_reason reason)
-+void kmsg_dump_desc(enum kmsg_dump_reason reason, const char *desc)
- {
- 	struct kmsg_dumper *dumper;
- 
-@@ -4314,7 +4316,7 @@ void kmsg_dump(enum kmsg_dump_reason reason)
- 			continue;
- 
- 		/* invoke dumper which will iterate over records */
--		dumper->dump(dumper, reason);
-+		dumper->dump(dumper, reason, desc);
- 	}
- 	rcu_read_unlock();
- }
-
-base-commit: f76698bd9a8ca01d3581236082d786e9a6b72bb7
--- 
-2.45.1
-
+> 
+> "mm: shmem: add multi-size THP sysfs interface for anonymous shmem"
+> moved things into mm_tytpes.h but didn't include it so perhaps this
+> will fix:
+> 
+> --- a/mm/huge_memory.c~mm-shmem-add-multi-size-thp-sysfs-interface-for-anonymous-shmem-fix-4
+> +++ a/mm/huge_memory.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/swapops.h>
+>  #include <linux/backing-dev.h>
+>  #include <linux/dax.h>
+> +#include <linux/mm_types.h>
+>  #include <linux/khugepaged.h>
+>  #include <linux/freezer.h>
+>  #include <linux/pfn_t.h>
+> _
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
