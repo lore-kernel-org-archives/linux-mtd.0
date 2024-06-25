@@ -4,73 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74855C30653
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2024 21:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A567CC2BBCA
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2024 21:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VEbw//AVrOtZ+zVoeGBDIIc6PRGLtu81rtiHijdoqwk=; b=otfS/aJTqj1E1w
-	3RuIxuTyhFyL/whHy30ZPlA2wFkHlWLueGtOfzIvlv1uM4C09vqY7nJkxAd8Hq4IfNVDLFPofr4LU
-	Aeu6QbmADuM3+5zTIPN9x0A8IYN/2EnJAj+LxzaloW5R/u2IeaWqJov6HqHQas+duxJ37Tq/1e0c6
-	9oHtfPsCSet1FogrdUtMhKrf6nOFDvlbtu0VbIhBKlXmTtIXsuhIbrVV2ap1+X5FwQ7OWom7a1HUY
-	KMl5ybMMm386QYQAaeV7DT3SCAVe3tA980+/cF2zGSZnWHP99a9O18dGxXr9aMHdZIt0zt6DI2caT
-	pTghOPnKIxqrLLuU14Pg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FsP3OVQdseBtSZbTwgwsirO5ZeKRT2BgGe4NxRs3Dd4=; b=vi5BgeU2s9zKqH
+	4TXP8Ak7wFwBkvG1hL36HkYRF9Dg6SsGdZUAL+3rWAeR5L/N69VUoqa4Jdh7krcAiOT7OWZ0Zpu0f
+	o3UaPZjzfKpb6kzwKpEO6KogBY7Iyg5+hfwTEbJVsXb95jw5Dksj4+aJz8j4LL1aZ6t6FpI4UolMo
+	pSZy2RkNSqSFWBCtauM0+qhGlTTKPAX0v4q73K5o45YOgW7tfDvQ+vBIHUzO8JJh4hF6nHBJolZSC
+	9j2Xg2pTFjT6YvP+ma05omQR/kLB1Jgi6ku6IqNlFkP7aqkI7qfnIExVsq2PZc7ADu/R+Z96sspb7
+	PE2qDIzOBlXci7lUIUbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMDSl-00000004WWR-3YAG;
-	Tue, 25 Jun 2024 21:12:27 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sME99-00000004dOh-2T3G;
+	Tue, 25 Jun 2024 21:56:15 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMDSe-00000004WUa-1RJr;
-	Tue, 25 Jun 2024 21:12:22 +0000
+	id 1sME96-00000004dMk-1Bgu
+	for linux-mtd@lists.infradead.org;
+	Tue, 25 Jun 2024 21:56:13 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4626CCE1F2C;
-	Tue, 25 Jun 2024 21:12:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F61C32781;
-	Tue, 25 Jun 2024 21:12:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7D1B261786;
+	Tue, 25 Jun 2024 21:56:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2FEC32781;
+	Tue, 25 Jun 2024 21:56:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719349937;
-	bh=hyygwZzV0TA9MeTrczY+xfhnsSFmoluW/aMTxSPPF7g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ArcIuk0uRfsESHfkGfkKUOWRPGGQRoYshDAKXgfL7RAidYC2yoPUOF4EOIWRth/zx
-	 ykHnbRshuPVKR4UsTmEqJpfbjR7Lxb1MgohaxTO7sN4G186OXUULYfjTSoMk/JACVy
-	 rDH4YFTTQFVhxEeWdIOOD5ronHyHYn5GlVnw+3JtZFiKhbLmGLU7w1aHq4GtR8VqXx
-	 zOrwlDLRr/Fxt5QON7ooh6qk8zgpeQFn4BGJ4f8p9B/da2ub1m3VU/0NxxHk78cBsC
-	 Ylf78UIPjF87TiTkhrpWjEAnrqweWrfQoiMdjHdFmTSchTgaZPSVi6dGjUTTadSf7V
-	 tnFI4Gu0p7ohg==
-Date: Tue, 25 Jun 2024 23:12:12 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"J.M.B. Downing" <jonathan.downing@nautel.com>, Vladimir Zapolskiy <vz@mleia.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Yangtao Li <frank.li@vivo.com>, Li Zetao <lizetao1@huawei.com>, 
-	Chancel Liu <chancel.liu@nxp.com>, Michael Ellerman <mpe@ellerman.id.au>, dmaengine@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-sound@vger.kernel.org, linux-clk@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, Markus Elfring <Markus.Elfring@web.de>
-Subject: Re: [Patch v4 10/10] i2x: pnx: Use threaded irq to fix warning from
- del_timer_sync()
-Message-ID: <73yvglxha45d5ft74m3y5fdmkgatm2yftvhza2msg4ombjz42f@wz43pubhbpdz>
-References: <20240620175657.358273-1-piotr.wojtaszczyk@timesys.com>
- <20240620175657.358273-11-piotr.wojtaszczyk@timesys.com>
- <jgqhlnysuwajlfxjwetas53jzdk6nnmewead2xzyt3xngwpcvl@xbooed6cwlq4>
- <CAG+cZ04suU53wR5f0PhudgNmkxTRtwEXTS1cWH1o9_rTNM94Cg@mail.gmail.com>
+	s=k20201202; t=1719352571;
+	bh=K11oj0mpuiJIpnSwm951vDCz0rxmDAGitZS/Kht8+BI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qa1EKwMJcV/aUJojPxmYqAbh2FsUSFrsVTAGePBLcNRsVgU6LOmgyD4/sUPB0nXX/
+	 kSVZAQTdoZlRL7O0SOSayMt+FYQXENyZABcqPkkX05YJRsYBVPxZVme7CGcSisP0zI
+	 oiaZHsGiztbVzbbtEF4eN/uGl//4QJjUgJiahuNDCKVg8mez7WBudax3owXTUtOlSw
+	 F8AB/TtNqQMqY/XzZzkM0MRUI6zUCbHR/ma+HbkkkLzc1yhu4y5OvC06cwuVeedDJP
+	 jLzIIFhR8lFrmIvR/1bcXrl8tOvgglPIeh+ZiAjWpleMny0ipv/77yds55NlH9ka5s
+	 HpfFk8QvXbX8Q==
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: mtd: qcom,nandc: Define properties at top-level
+Date: Tue, 25 Jun 2024 15:56:05 -0600
+Message-ID: <20240625215605.192260-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAG+cZ04suU53wR5f0PhudgNmkxTRtwEXTS1cWH1o9_rTNM94Cg@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240625_141220_761332_2867D640 
-X-CRM114-Status: GOOD (  23.37  )
+X-CRM114-CacheID: sfid-20240625_145612_454323_3B4139AA 
+X-CRM114-Status: UNSURE (   8.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,40 +73,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUGlvdHIsCgpPbiBGcmksIEp1biAyMSwgMjAyNCBhdCAwMjowODowM1BNIEdNVCwgUGlvdHIg
-V29qdGFzemN6eWsgd3JvdGU6Cj4gT24gRnJpLCBKdW4gMjEsIDIwMjQgYXQgMTI6NTfigK9BTSBB
-bmRpIFNoeXRpIDxhbmRpLnNoeXRpQGtlcm5lbC5vcmc+IHdyb3RlOgo+ID4gT24gVGh1LCBKdW4g
-MjAsIDIwMjQgYXQgMDc6NTY6NDFQTSBHTVQsIFBpb3RyIFdvanRhc3pjenlrIHdyb3RlOgo+ID4g
-PiBXaGVuIGRlbF90aW1lcl9zeW5jKCkgaXMgY2FsbGVkIGluIGFuIGludGVycnVwdCBjb250ZXh0
-IGl0IHRocm93cyBhIHdhcm5pbmcKPiA+ID4gYmVjYXVzZSBvZiBwb3RlbnRpYWwgZGVhZGxvY2su
-IFRocmVhZGVkIGlycSBoYW5kbGVyIGZpeGVzIHRoZSBwb3RlbnRpYWwKPiA+ID4gcHJvYmxlbS4K
-PiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogUGlvdHIgV29qdGFzemN6eWsgPHBpb3RyLndvanRh
-c3pjenlrQHRpbWVzeXMuY29tPgo+ID4KPiA+IGRpZCB5b3UgcnVuIGludG8gYSBsb2NrZGVwIHNw
-bGF0Pwo+ID4KPiA+IEFueXRoaW5nIGFnYWluc3QgdXNpbmcgZGVsX3RpbWVyKCksIGluc3RlYWQ/
-IEhhdmUgeW91IHRyaWVkPwo+IAo+IEkgZGlkbid0IGdldCBhIGxvY2tkZXAgc3BsYXQgYnV0IGNv
-bnNvbGUgd2FzIGZsb29kZWQgd2l0aCB3YXJuaW5ncyBmcm9tCj4gaHR0cHM6Ly9naXRodWIuY29t
-L3RvcnZhbGRzL2xpbnV4L2Jsb2IvdjYuMTAtcmM0L2tlcm5lbC90aW1lL3RpbWVyLmMjTDE2NTUK
-PiBJbiB0aGUgbGludXgga2VybmVsIHY1LjE1IEkgZGlkbid0IHNlZSB0aGVzZSB3YXJuaW5ncy4K
-PiAKPiBJJ20gbm90IGEgbWFpbnRhaW5lciBvZiB0aGUgZHJpdmVyIGFuZCBJIGRpZG4ndCBkbyBh
-bnkgcmVzZWFyY2ggb24KPiB3aGF0IGtpbmQgb2YgaW1wYWN0Cj4gd291bGQgaGF2ZSB1c2luZyBk
-ZWxfdGltZXIoKSBpbnN0YWQuIE1heWJlIFZsYWRpbWlyIFphcG9sc2tpeSB3aWxsIGtub3cgdGhh
-dC4KCllvdXIgcGF0Y2ggaXMgZGVmaW5pdGVseSBjb3JyZWN0LCBubyBkb3VidCBhYm91dCB0aGF0
-LgoKQW5kIEkgZG9uJ3QgaGF2ZSBhbnl0aGluZyBhZ2luYXN0IGNoYW5naW5nIGlycSBoYW5kbGVy
-cyB0bwp0aHJlYWRlZCBoYW5kbGVycy4gQnV0IEkgd291bGQgYmUgY2FyZWZ1bCBhdCBkb2luZyB0
-aGF0IGRlcGVuZGluZwpvbiB0aGUgdXNlIG9mIHRoZSBjb250cm9sbGVyIGFuZCBmb3IgYWNjZXB0
-aW5nIHN1Y2ggY2hhbmdlIEkKd291bGQgbmVlZCBhbiBhY2sgZnJvbSBzb21lb25lIHdobyBrbm93
-cyB0aGUgZGV2aWNlLiBWbGFkaW1pciwKcGVyaGFwcz8KClRoZXJlIGFyZSBjYXNlcyB3aGVyZSB1
-c2luZyB0aHJlYWRlZCBoYW5kbGVycyBhcmUgbm90IHRvdGFsbHkKcmlnaHQsIGZvciBleGFtcGxl
-IHdoZW4gdGhlIGNvbnRyb2xsZXIgaXMgdXNlZCBhdCBlYXJseSBib290IGZvcgpwb3dlciBtYW5h
-Z2VtZW50IGhhbmRsaW5nLiBJIGRvbid0IHRoaW5rIGl0J3MgdGhlIGNhc2UgZm9yIHRoaXMKZHJp
-dmVyLCBidXQgSSBjYW4ndCBiZSAxMDAlIHN1cmUuCgpJZiB5b3Ugd2VyZSBhYmxlIHRvIHNlZSB0
-aGUgZmxvb2Qgb2YgV0FSTl9PTidzLCB3b3VsZCBiZQppbnRlcmVzdGluZyB0byBrbm93IGhvdyBp
-dCBiZWhhdmVzIHdpdGggZGVsX3RpbWVyKCkuIE1pbmQKZ2l2aW5nIGl0IGEgdGVzdD8KClRoYW5r
-cywKQW5kaQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Convention is DT schemas should define all properties at the top-level
+and not inside of if/then schemas. That minimizes the if/then schemas
+and is more future proof.
+
+There were 2 "if" schemas for "qcom,ipq806x-nand" and the
+"qcom,boot-partitions: true" unnecessary, so the conditional schemas
+can be simplified a bit.
+
+Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+---
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 38 +++++++------------
+ 1 file changed, 14 insertions(+), 24 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+index 4ada60fbf81d..35b4206ea918 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
++++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+@@ -31,6 +31,18 @@ properties:
+       - const: core
+       - const: aon
+ 
++  qcom,cmd-crci:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Must contain the ADM command type CRCI block instance number specified for
++      the NAND controller on the given platform
++
++  qcom,data-crci:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Must contain the ADM data type CRCI block instance number specified for
++      the NAND controller on the given platform
++
+ patternProperties:
+   "^nand@[a-f0-9]$":
+     type: object
+@@ -83,18 +95,6 @@ allOf:
+           items:
+             - const: rxtx
+ 
+-        qcom,cmd-crci:
+-          $ref: /schemas/types.yaml#/definitions/uint32
+-          description:
+-            Must contain the ADM command type CRCI block instance number
+-            specified for the NAND controller on the given platform
+-
+-        qcom,data-crci:
+-          $ref: /schemas/types.yaml#/definitions/uint32
+-          description:
+-            Must contain the ADM data type CRCI block instance number
+-            specified for the NAND controller on the given platform
+-
+   - if:
+       properties:
+         compatible:
+@@ -119,19 +119,9 @@ allOf:
+             - const: rx
+             - const: cmd
+ 
+-  - if:
+-      properties:
+-        compatible:
+-          contains:
+-            enum:
+-              - qcom,ipq806x-nand
++        qcom,cmd-crci: false
++        qcom,data-crci: false
+ 
+-    then:
+-      patternProperties:
+-        "^nand@[a-f0-9]$":
+-          properties:
+-            qcom,boot-partitions: true
+-    else:
+       patternProperties:
+         "^nand@[a-f0-9]$":
+           properties:
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
