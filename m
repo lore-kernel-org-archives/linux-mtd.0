@@ -4,49 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34772C30658
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2024 08:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 015E2C2BBCA
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jun 2024 09:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yPRZVRs5Z/iIGSGoIibAj+wt3xvrO3Du/XDCQB8CV2A=; b=cP3tf6XkAnMLyT
-	lEN+FaBiw+Jphel73V3ChBCESLMsvfZP+LH8e0sPOnc9M4kryj3FnFTpUFKjMtQYARbm0sQSU1uoL
-	oWU/ll5cEEbf3HjXqRAzvixAx/xW8iWpR3lPni6O1KxJUqAzuFnglxBEmGAzpu6u/WZ3PqhQrs5Td
-	VODU8gCxJlEygaCDZqVlogNfNjhELFJT6tk0blGEIw0/6WfRW4zqLX3kUxI7VYRzOpG/GrxShtbJh
-	YZzT4KWHbkYU+Qo1AJJwft87pcjj/R/kbZPHZcYIy9vpH+5nehbw4E18RF+0JcygLvsCexqeQZGTY
-	SYqmIF0bNTVSGZevzfgw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=u6+960NKB4WL+W5eBIBceulI1yxNOsWI5ll0JIgimro=; b=o+wYv29tBw9ahB
+	dSolLPHxzIN4XXQc2g1LR0Ayo8B9VNrdF3X4PQCg2rCtJkILwMoKI6ITH/JZpNOCBiunKsFqlOMOm
+	Ly0cfOylVQ1dgPPRlmuH84CJ9qC0SUKA3he59H1R37ffq7lDgLlu+EXL1FkHsGm2YeCDoP7eF7v2I
+	j0nCfbW1kobm4NE1yS+abQlLHRB4KrGhWEEFxcWiuh8yqIltHKskOU3iF9CZcodKohUtdconUFxbb
+	KJ45OrqZSV8DvumM070Z7Y1A8B8dAkshWUbNS4QidAVBc+BAzLpbtkgrOZAJz0y9MUxvFLxUhh/bR
+	HKrErs5flEFSpBtTuYqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM1ze-00000002BuO-48Lp;
-	Tue, 25 Jun 2024 08:57:38 +0000
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM1zb-00000002Btq-1pcn;
-	Tue, 25 Jun 2024 08:57:35 +0000
-Date: Tue, 25 Jun 2024 01:57:35 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: Christoph Hellwig <hch@lst.de>, oe-lkp@lists.linux.dev, lkp@intel.com,
-	Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
-	Damien Le Moal <dlemoal@kernel.org>, Hannes Reinecke <hare@suse.de>,
-	linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, virtualization@lists.linux.dev,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-scsi@vger.kernel.org, ying.huang@intel.com,
-	feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [axboe-block:for-next] [block]  1122c0c1cc:  aim7.jobs-per-min
- 22.6% improvement
-Message-ID: <ZnqGf49cvy6W-xWf@infradead.org>
-References: <202406250948.e0044f1d-oliver.sang@intel.com>
+	id 1sM2X4-00000002HXN-0AZk;
+	Tue, 25 Jun 2024 09:32:10 +0000
+Received: from fw2.prolan.hu ([193.68.50.107])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sM2X0-00000002HVk-25oB
+	for linux-mtd@lists.infradead.org;
+	Tue, 25 Jun 2024 09:32:08 +0000
+Received: from proxmox-mailgw.intranet.prolan.hu (localhost.localdomain [127.0.0.1])
+	by proxmox-mailgw.intranet.prolan.hu (Proxmox) with ESMTP id E887DA0E06;
+	Tue, 25 Jun 2024 11:31:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prolan.hu; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:from:from:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=mail; bh=jqOG5ysnLZOZ6WX79LN01rD+JfmYfnoYRxkCIH5M/Aw=; b=
+	AlBPowAz5+JtwBhJZkFUllPXZpNCxGsgMFykypOPf7cEE2Mz9vni49vGSg+9dte3
+	RUx3V/zabtxDXga67j6pmamPvvmcVeAsTR1GBVk5Vufq5IDWnohYAhtLqGisXVBP
+	wAb5QqrEfMna8bhKOwL6c2xnudd2LxkRhLgJtaNsvS+U2nZd4MZvhYMknegLxCqt
+	0g7D3Qki3f8s/j2YQcr/Ygl4KV/HTwN6VqEd++UQnjQKuMgHZ+kWGXzTz6YgNJLb
+	n5kmcwbA8U9HsT2G//3tu+rBPmX3ydsu0SFd1YiwYksoRsOgesgmMkDgPdPQ/E2b
+	GKi2no4IglckNUdjAl1OaATwRWT3eImHlzg8j38PW0/prmZ681Clx670radVnzPC
+	ErxK26oMJ/UQ7Kyq8guVYaNCH35bbeEkkZ/8Hyq8UDE7/bN7XrDAhgEzleatbebY
+	mFxKkea+Vu/dnxpH6wAU2UfDmUaNBlxDVOhMoU/yzk8Uicltv3Ccmdsb9pLGfaxi
+	3PyVED9U1WdeZJxyNSdqs9qK2xUzFrNExuiMKFiVPJjT8D0HP8TnZOGgYvjyp86W
+	S84OTOLNL14stO7iL+O0l/Y/qKX6NafkOZcoMC9AGdlEL9tffEy24dtR9Qvu7ltI
+	lbEohxSMbNqOHDQ0h3L5OdoqMmyVXd3C63c1w45o59s=
+From: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>
+To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] mtd: cmdlinepart: Replace `dbg()` macro with `pr_debug()`
+Date: Tue, 25 Jun 2024 11:31:47 +0200
+Message-ID: <20240625093148.3579660-1-csokas.bence@prolan.hu>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202406250948.e0044f1d-oliver.sang@intel.com>
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1719307913;VERSION=7972;MC=1585764846;ID=1416094;TRN=0;CRV=0;IPC=;SP=0;SIPS=0;PI=3;F=0
+X-ESET-Antispam: OK
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29916D3B546C7167
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240625_023207_018139_BE1BFAD3 
+X-CRM114-Status: UNSURE (   8.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -58,150 +74,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Oliver,
-
-can you test the patch below?  It restores the previous behavior if
-the device did not have a volatile write cache.  I think at least
-for raid0 and raid1 without bitmap the new behavior actually is correct
-and better, but it will need fixes for other modes.  If the underlying
-devices did have a volatile write cache I'm a bit lost what the problem
-was and this probably won't fix the issue.
-
----
-From 81c816827197f811e14add7a79220ed9eef6af02 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Tue, 25 Jun 2024 08:48:18 +0200
-Subject: md: set md-specific flags for all queue limits
-
-The md driver wants to enforce a number of flags to an all devices, even
-when not inheriting them from the underlying devices.  To make sure these
-flags survive the queue_limits_set calls that md uses to update the
-queue limits without deriving them form the previous limits add a new
-md_init_stacking_limits helper that calls blk_set_stacking_limits and sets
-these flags.
-
-Fixes: 1122c0c1cc71 ("block: move cache control settings out of queue->flags")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/md/md.c     | 13 ++++++++-----
- drivers/md/md.h     |  1 +
- drivers/md/raid0.c  |  2 +-
- drivers/md/raid1.c  |  2 +-
- drivers/md/raid10.c |  2 +-
- drivers/md/raid5.c  |  2 +-
- 6 files changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 69ea54aedd99a1..8368438e58e989 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -5853,6 +5853,13 @@ static void mddev_delayed_delete(struct work_struct *ws)
- 	kobject_put(&mddev->kobj);
- }
- 
-+void md_init_stacking_limits(struct queue_limits *lim)
-+{
-+	blk_set_stacking_limits(lim);
-+	lim->features = BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA |
-+			BLK_FEAT_IO_STAT | BLK_FEAT_NOWAIT;
-+}
-+
- struct mddev *md_alloc(dev_t dev, char *name)
- {
- 	/*
-@@ -5871,10 +5878,6 @@ struct mddev *md_alloc(dev_t dev, char *name)
- 	int shift;
- 	int unit;
- 	int error;
--	struct queue_limits lim = {
--		.features		= BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA |
--					  BLK_FEAT_IO_STAT | BLK_FEAT_NOWAIT,
--	};
- 
- 	/*
- 	 * Wait for any previous instance of this device to be completely
-@@ -5914,7 +5917,7 @@ struct mddev *md_alloc(dev_t dev, char *name)
- 		 */
- 		mddev->hold_active = UNTIL_STOP;
- 
--	disk = blk_alloc_disk(&lim, NUMA_NO_NODE);
-+	disk = blk_alloc_disk(NULL, NUMA_NO_NODE);
- 	if (IS_ERR(disk)) {
- 		error = PTR_ERR(disk);
- 		goto out_free_mddev;
-diff --git a/drivers/md/md.h b/drivers/md/md.h
-index c4d7ebf9587d07..28cb4b0b6c1740 100644
---- a/drivers/md/md.h
-+++ b/drivers/md/md.h
-@@ -893,6 +893,7 @@ extern int strict_strtoul_scaled(const char *cp, unsigned long *res, int scale);
- 
- extern int mddev_init(struct mddev *mddev);
- extern void mddev_destroy(struct mddev *mddev);
-+void md_init_stacking_limits(struct queue_limits *lim);
- struct mddev *md_alloc(dev_t dev, char *name);
- void mddev_put(struct mddev *mddev);
- extern int md_run(struct mddev *mddev);
-diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-index 62634e2a33bd0f..32d58752477847 100644
---- a/drivers/md/raid0.c
-+++ b/drivers/md/raid0.c
-@@ -379,7 +379,7 @@ static int raid0_set_limits(struct mddev *mddev)
- 	struct queue_limits lim;
- 	int err;
- 
--	blk_set_stacking_limits(&lim);
-+	md_init_stacking_limits(&lim);
- 	lim.max_hw_sectors = mddev->chunk_sectors;
- 	lim.max_write_zeroes_sectors = mddev->chunk_sectors;
- 	lim.io_min = mddev->chunk_sectors << 9;
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 1a0eba65b8a92b..04a0c2ca173245 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -3194,7 +3194,7 @@ static int raid1_set_limits(struct mddev *mddev)
- 	struct queue_limits lim;
- 	int err;
- 
--	blk_set_stacking_limits(&lim);
-+	md_init_stacking_limits(&lim);
- 	lim.max_write_zeroes_sectors = 0;
- 	err = mddev_stack_rdev_limits(mddev, &lim, MDDEV_STACK_INTEGRITY);
- 	if (err) {
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 3334aa803c8380..2a9c4ee982e023 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -3974,7 +3974,7 @@ static int raid10_set_queue_limits(struct mddev *mddev)
- 	struct queue_limits lim;
- 	int err;
- 
--	blk_set_stacking_limits(&lim);
-+	md_init_stacking_limits(&lim);
- 	lim.max_write_zeroes_sectors = 0;
- 	lim.io_min = mddev->chunk_sectors << 9;
- 	lim.io_opt = lim.io_min * raid10_nr_stripes(conf);
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 0192a6323f09ba..10219205160bbf 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -7708,7 +7708,7 @@ static int raid5_set_limits(struct mddev *mddev)
- 	 */
- 	stripe = roundup_pow_of_two(data_disks * (mddev->chunk_sectors << 9));
- 
--	blk_set_stacking_limits(&lim);
-+	md_init_stacking_limits(&lim);
- 	lim.io_min = mddev->chunk_sectors << 9;
- 	lim.io_opt = lim.io_min * (conf->raid_disks - conf->max_degraded);
- 	lim.features |= BLK_FEAT_RAID_PARTIAL_STRIPES_EXPENSIVE;
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBtYWNybyB3YXMgbGVmdCBvdmVyIGZyb20gdGhlIGRhd24gb2YgR2l0IGhpc3RvcnkuCkZv
+ciBzb21lIHJlYXNvbiBpdCB3YXMgZGVmaW5lZCBpbiBzdWNoIGEgd2F5IHRoYXQKeW91IG5lZWRl
+ZCBkb3VibGUgYnJhY2tldHMgYXJvdW5kIGl0LiBSZXBsYWNlIGl0IHdpdGgKdGhlIG5vdy1zdGFu
+ZGFyZCBgcHJfZGVidWcoKWAuCgpTaWduZWQtb2ZmLWJ5OiBDc8Oza8OhcywgQmVuY2UgPGNzb2th
+cy5iZW5jZUBwcm9sYW4uaHU+Ci0tLQogZHJpdmVycy9tdGQvcGFyc2Vycy9jbWRsaW5lcGFydC5j
+IHwgMTggKysrKystLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCsp
+LCAxMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9wYXJzZXJzL2NtZGxp
+bmVwYXJ0LmMgYi9kcml2ZXJzL210ZC9wYXJzZXJzL2NtZGxpbmVwYXJ0LmMKaW5kZXggYjM0ODU2
+ZGVmODE2Li41MDRlNWZhMmI0NWIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3BhcnNlcnMvY21k
+bGluZXBhcnQuYworKysgYi9kcml2ZXJzL210ZC9wYXJzZXJzL2NtZGxpbmVwYXJ0LmMKQEAgLTQ0
+LDE0ICs0NCw2IEBACiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CiAjaW5jbHVkZSA8bGludXgv
+ZXJyLmg+CiAKLS8qIGRlYnVnIG1hY3JvICovCi0jaWYgMAotI2RlZmluZSBkYmcoeCkgZG8geyBw
+cmludGsoIkRFQlVHLUNNRExJTkUtUEFSVDogIik7IHByaW50ayB4OyB9IHdoaWxlKDApCi0jZWxz
+ZQotI2RlZmluZSBkYmcoeCkKLSNlbmRpZgotCi0KIC8qIHNwZWNpYWwgc2l6ZSByZWZlcnJpbmcg
+dG8gYWxsIHRoZSByZW1haW5pbmcgc3BhY2UgaW4gYSBwYXJ0aXRpb24gKi8KICNkZWZpbmUgU0la
+RV9SRU1BSU5JTkcgVUxMT05HX01BWAogI2RlZmluZSBPRkZTRVRfQ09OVElOVU9VUyBVTExPTkdf
+TUFYCkBAIC0xOTksOSArMTkxLDkgQEAgc3RhdGljIHN0cnVjdCBtdGRfcGFydGl0aW9uICogbmV3
+cGFydChjaGFyICpzLAogCXBhcnRzW3RoaXNfcGFydF0ubmFtZSA9IGV4dHJhX21lbTsKIAlleHRy
+YV9tZW0gKz0gbmFtZV9sZW4gKyAxOwogCi0JZGJnKCgicGFydGl0aW9uICVkOiBuYW1lIDwlcz4s
+IG9mZnNldCAlbGx4LCBzaXplICVsbHgsIG1hc2sgZmxhZ3MgJXhcbiIsCisJcHJfZGVidWcoInBh
+cnRpdGlvbiAlZDogbmFtZSA8JXM+LCBvZmZzZXQgJWxseCwgc2l6ZSAlbGx4LCBtYXNrIGZsYWdz
+ICV4XG4iLAogCSAgICAgdGhpc19wYXJ0LCBwYXJ0c1t0aGlzX3BhcnRdLm5hbWUsIHBhcnRzW3Ro
+aXNfcGFydF0ub2Zmc2V0LAotCSAgICAgcGFydHNbdGhpc19wYXJ0XS5zaXplLCBwYXJ0c1t0aGlz
+X3BhcnRdLm1hc2tfZmxhZ3MpKTsKKwkgICAgIHBhcnRzW3RoaXNfcGFydF0uc2l6ZSwgcGFydHNb
+dGhpc19wYXJ0XS5tYXNrX2ZsYWdzKTsKIAogCS8qIHJldHVybiAodXBkYXRlZCkgcG9pbnRlciB0
+byBleHRyYV9tZW0gbWVtb3J5ICovCiAJaWYgKGV4dHJhX21lbV9wdHIpCkBAIC0yNjcsNyArMjU5
+LDcgQEAgc3RhdGljIGludCBtdGRwYXJ0X3NldHVwX3JlYWwoY2hhciAqcykKIAkJfQogCQltdGRf
+aWRfbGVuID0gcCAtIG10ZF9pZDsKIAotCQlkYmcoKCJwYXJzaW5nIDwlcz5cbiIsIHArMSkpOwor
+CQlwcl9kZWJ1ZygicGFyc2luZyA8JXM+XG4iLCBwKzEpOwogCiAJCS8qCiAJCSAqIHBhcnNlIG9u
+ZSBtdGQuIGhhdmUgaXQgcmVzZXJ2ZSBtZW1vcnkgZm9yIHRoZQpAQCAtMzA0LDggKzI5Niw4IEBA
+IHN0YXRpYyBpbnQgbXRkcGFydF9zZXR1cF9yZWFsKGNoYXIgKnMpCiAJCXRoaXNfbXRkLT5uZXh0
+ID0gcGFydGl0aW9uczsKIAkJcGFydGl0aW9ucyA9IHRoaXNfbXRkOwogCi0JCWRiZygoIm10ZGlk
+PTwlcz4gbnVtX3BhcnRzPTwlZD5cbiIsCi0JCSAgICAgdGhpc19tdGQtPm10ZF9pZCwgdGhpc19t
+dGQtPm51bV9wYXJ0cykpOworCQlwcl9kZWJ1ZygibXRkaWQ9PCVzPiBudW1fcGFydHM9PCVkPlxu
+IiwKKwkJICAgICB0aGlzX210ZC0+bXRkX2lkLCB0aGlzX210ZC0+bnVtX3BhcnRzKTsKIAogCiAJ
+CS8qIEVPUyAtIHdlJ3JlIGRvbmUgKi8KLS0gCjIuMzQuMQoKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
