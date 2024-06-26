@@ -4,63 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A38AFC30653
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2024 13:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC257C3064D
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jun 2024 16:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L7jMDxE7xu+sHLtyip4De9iXIDcmqe0XPcNYKc1tVZk=; b=n00f/bZTQI9bN4
-	82iX/lS5LOZw5zUlBqNL6H/v4Ravrqlqgpazcn6rfw/uXZhOuhw1VXsd1JbfCMRXD7hSlVyHjUTqc
-	5aZiJtQky8g1u/Q21Qvlq701l0oCMZlKyun1AaOmrytJ2f6DmoJRA6AZxk7tf6BoTli3Vws/BrCDU
-	Ts+/VBIgcaabvfRBRbTqxopWA96XfoWYEHRDr36lAcskfYeZt3FskGq9P0agvFAqSOyFd1+LbxkJW
-	6rrNMGcaJScZjJngxKJKbHoQQybkSFOYrhMRWoJiKukB+EW9uplOjsgnH5T+eTSRshPYl+Mxm/t/K
-	oVx70xcTC3ckfkgStcVA==;
+	List-Owner; bh=w1XX0h6d9NO7fUz11Ba5KByLsBPQi4mEKcpz69QJUfk=; b=v2Y0Gq7jo4TcjN
+	gR+HBz4+3UMeeqlEEOjQuiBV7H1YxddLkP139i/bOEHSJ7FEp6IUIe7iqpdZbeMkPy7BUucZMekkP
+	liaZqqPvW5xNqqhnQ/0KJxHyDs6QAsEy3jwRDJoQ4Zx0gv68huxuQz+KIDEd2xYQt70s6W1tCMrb1
+	0DJc/bOPOruIR8KmouGNnmIMLnZEzHWm9+ktta/eIg5bN5LF3tp8TQwi6JOhZ+bYHWx8sa3ZsqWM7
+	JNS5Yeqcxd8dIk2uGl2ZxapoxbWDp8RjrtBdSoe8aYMKorM0e/wt0AI8q64p3dq0iTJRq2PXzq3J4
+	ODkTGl6EXJtoB5mbmnhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMShy-00000006xmv-0OGd;
-	Wed, 26 Jun 2024 13:29:10 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1sMVLK-00000007Z91-10pA;
+	Wed, 26 Jun 2024 16:17:58 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMShu-00000006xkX-10ZC
+	id 1sMVLG-00000007Z6o-0w0h
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Jun 2024 13:29:08 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A3DA5C0008;
-	Wed, 26 Jun 2024 13:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1719408543;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PP9w32Smj5kF17ItJ7qIzuuKC9WIW96IhYXhKbYU93I=;
-	b=YF9SH7dcM5Eiiczp9j4yCDk7UnAhKzh45lFnp3oP7N6GRJUTQNXvT+yG8YbMuCRgmtjzQC
-	sK9qaTMcsqu8QgLbS5uElTkMVhIJcfaWSFADZXy389mqBTihQKqqAZ8ijNHLGDWMgDqRtV
-	SabjU2aTulUHz9313MaRd4c6tQ+Tqek6EuUXYWVhPFJL8H8iLhViJnd2/5enVuG+EAdFA4
-	22hxiw3isspMg1v/YiG8RNki6CffHPH0adsaPx4vhlodQiT0uabw6uIN7WnsJAdv0n3kHn
-	R/UILgt1tlH+k7Bp8jYeVhwtlw5XYCbaJzegKVYENyrtqnzNZ4Z3BlCp+ezRyQ==
-Message-ID: <a7084eac-b92a-4ddb-a079-f4a600b93f8e@yoseli.org>
-Date: Wed, 26 Jun 2024 15:28:59 +0200
+	Wed, 26 Jun 2024 16:17:56 +0000
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45QAfTrd016143;
+	Wed, 26 Jun 2024 16:17:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	OiLfA5O+/ZeHcC50qu+rYwFxTh2FAIEZezR9uUyk3+I=; b=WbYBVpnLIh9kXYj3
+	qenoIy40RVm6YF+eMIEP/m453412/uQpETjAJcnldORJQ/TEdBzvWCTeklEa4SFH
+	cIFzIlKySqa0aZNODPp7R3zRA1pYBlh+8GMG6qmP+cLsFSWTHIxsSez9zQVutPQz
+	zvZzzN49Byad98KM666pXpV8NTUPZAB21SMSWwEOfkpDpK8z5A+P+cPQivMWIn2y
+	OgbGJdUL3Q7o0dEnOgsoc3q8cBi4gGxRSEb15uePM6p1mi5XcB4n4sZRYvTI+c6q
+	zR1sj2cLwpbrI8rh5eV45LTClEyzOw44rr24pLcpAC7BxeYa2X+1i47f0UrEnIPi
+	60eQgQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 400gcm91n5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 26 Jun 2024 16:17:49 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 45QGHm2v010236
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 26 Jun 2024 16:17:48 GMT
+Received: from [10.48.244.230] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 26 Jun
+ 2024 09:17:47 -0700
+Message-ID: <4f7e3e79-9eec-4a84-a19c-ef26760250c7@quicinc.com>
+Date: Wed, 26 Jun 2024 09:17:47 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: m68k 54418 fails to execute user space
-To: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Christoph Hellwig <hch@infradead.org>, wbx@openadk.org
-References: <c252ab82-dc4a-4267-84c3-4a20471524c5@yoseli.org>
- <735e19b6-3747-417f-ba5b-1a7da137a3a3@yoseli.org>
- <7fb2988d-ab89-405f-8cf1-edcdd2196376@gmail.com>
-Content-Language: en-US, fr
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <7fb2988d-ab89-405f-8cf1-edcdd2196376@gmail.com>
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Subject: Re: [PATCH] mtd: add missing MODULE_DESCRIPTION() macros
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <20240610-md-drivers-mtd-v1-1-0f59183e4005@quicinc.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240610-md-drivers-mtd-v1-1-0f59183e4005@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WuR0WnuN4h2GlT2QMgiGdsmao2MAfIzf
+X-Proofpoint-ORIG-GUID: WuR0WnuN4h2GlT2QMgiGdsmao2MAfIzf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-26_07,2024-06-25_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ mlxlogscore=946 clxscore=1015 mlxscore=0 phishscore=0 impostorscore=0
+ adultscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2406140001 definitions=main-2406260119
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240626_062906_635102_9F0AF87A 
-X-CRM114-Status: GOOD (  20.07  )
+X-CRM114-CacheID: sfid-20240626_091754_313715_D7A5AFBC 
+X-CRM114-Status: GOOD (  15.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,93 +96,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwKCk9uIDI2LzA2LzIwMjQgMDM6NTYsIE1pY2hhZWwgU2NobWl0eiB3cm90ZToK
-PiBKZWFuLU1pY2hlbCwKPiAKPiBPbiAyNC8wNi8yNCAyMDo1NiwgSmVhbi1NaWNoZWwgSGF1dGJv
-aXMgd3JvdGU6Cj4+Cj4+IFdoZW4gSSBwcmludGsgdGhlIGRvX3BhZ2VfZmF1bHQgZmlyc3QgZGVi
-dWcsIEkgZ2V0IGZvciB0aGUgZmlyc3QgY2FsbCAKPj4gdG8gbHM6Cj4+IGJhc2gtNS4yIyBscwo+
-PiBbwqDCoCAxNC43MDAwMDBdIGRvIHBhZ2UgZmF1bHQ6Cj4+IFvCoMKgIDE0LjcwMDAwMF0gcmVn
-cy0+c3I9MHgwLCByZWdzLT5wYz0weDcwMDY5ZWU2LCBhZGRyZXNzPTB4NzAwNjllZTYsIAo+PiAw
-LCAocHRydmFsKQo+IAo+IFBhZ2Ugbm90IHByZXNlbnQsIHJlYWQgZmF1bHQuIFBsZWFzZSBkaXNh
-YmxlIG9iZnVzY2F0aW9uIG9mIGtlcm5lbCAKPiBwb2ludGVyIGFkZHJlc3NlcyBieSBwcmludGsu
-IE1heWJlIGFsc28gZGlzYWJsZSBhZGRyZXNzIHNwYWNlIAo+IHJhbmRvbWl6YXRpb24gd2hpbGUg
-ZGVidWdnaW5nIHRoaXMuCj4gCj4+IFRoaXMgY2FsbCB3b3JrcyBhbG1vc3QgZmluZSAoSSBzdGls
-bCBoYXZlIHRoZSBhc3NlcnQgZmFpbGVkOiAKPj4gZm9saW8tPnByaXZhdGUgIT0gTlVMTCBpc3N1
-ZSkuCj4+Cj4+IEFuZCB3aGVuIEkgY2FsbCBpdCBhIHNlY29uZCB0aW1lLCBJIGdldDoKPj4gYmFz
-aC01LjIjIGxzCj4+IFvCoMKgIDE5LjgyMDAwMF0gZG8gcGFnZSBmYXVsdDoKPj4gW8KgwqAgMTku
-ODIwMDAwXSByZWdzLT5zcj0weDAsIHJlZ3MtPnBjPTB4NjAxMWQ2NWEsIGFkZHJlc3M9MHg3MDBl
-MjAwNCwgCj4+IDIsIChwdHJ2YWwpCj4gCj4gUGFnZSBub3QgcHJlc2VudCwgd3JpdGUgZmF1bHQu
-Cj4gCj4gSXQgd291bGQgYmUgaGVscGZ1bCBpZiB5b3UgY291bGQgZ2V0IGEgZHVtcCBvZiAvcHJv
-Yy8xL21hcHMgYmVmb3JlIHRoZSAKPiBleGVjdmUoKSBzeXNjYWxsIGluIHlvdXIgaGVsbG93b3Js
-ZCBpbml0IHJlcGxhY2VtZW50LiBUaGF0IG1pZ2h0IGNvbmZpcm0gCj4gYWxsIHRoZXNlIGFkZHJl
-c3NlcyBhcmUgbGVnaXQgKGFzc3VtaW5nIG1hcHBpbmdzIHN1cnZpdmUgYWNyb3NzIAo+IGV4ZWN2
-ZSgpLCB0aGF0IGlzKSwgYW5kIHdoYXQgdGhleSBjb3JyZXNwb25kIHRvLgo+IAo+Pgo+PiBUaGUg
-YWRkcmVzcyBjb3JyZXNwb25kcyB0byB0aGUgZGVmaW5lZCB6b25lIEVMRl9FVF9EWU5fQkFTRSBh
-cyBJIHNldCAKPj4gaXQgdG8gMHg3MDAwMDAwMC4KPj4KPj4gcmVncy0+cGMgaXMgbm90IHRoZSBz
-YW1lIGFzIHRoZSBhZGRyZXNzLiBJdCBtaWdodCBiZSB1bnJlbGV2YW50LCBidXQgCj4+IGFueSBo
-ZWxwIGlzIGFwcHJlY2lhdGVkIHRvIHVuZGVyc3RhbmQgdGhlIHByb2Nlc3MgYmVoaW5kIDotKS4K
-Pj4KPj4gSSBrZWVwIGRpZ2dpbmcsIGFuZCBJIGFtIGluIHRoZSBhc20gcGFydCB3aGljaCBmZWFy
-cyBtZSBhIGJpdCAhCj4gCj4gSSBkb24ndCBzZWUgdGhhdCB5b3UnZCBuZWVkIHRvIGxvb2sgYXQg
-YW55IGFzbSBjb2RlIGhlcmUuCgpJIGFkZCBhIHNtYWxsIHRlc3QgaW4gZG9fcGFnZV9mYXVsdCwg
-YW5kIGluIGNhc2Ugb2YgYW4gZXJyb3IsIGl0IHBhbmljcy4gClRoZSByZXN1bHQgZm9sbG93czoK
-IMKgLi9zY3JpcHRzL2RlY29kZV9zdGFja3RyYWNlLnNoIHZtbGludXggPCAvdG1wL3RyYWNlLmxv
-ZwpbICAgIDMuODU3MDAwXSBSdW4gL2Jpbi9iYXNoIGFzIGluaXQgcHJvY2VzcwpbICAgIDMuODU4
-MDAwXSAgIHdpdGggYXJndW1lbnRzOgpbICAgIDMuODYxMDAwXSAgICAgL2Jpbi9iYXNoClsgICAg
-My44NjIwMDBdICAgd2l0aCBlbnZpcm9ubWVudDoKWyAgICAzLjg2MzAwMF0gICAgIEhPTUU9Lwpb
-ICAgIDMuODY0MDAwXSAgICAgVEVSTT1saW51eApbICAgIDQuMjQyMDAwXSBkbyBwYWdlIGZhdWx0
-OgpbICAgIDQuMjQyMDAwXSByZWdzLT5zcj0weDIwMDAsIHJlZ3MtPnBjPTB4NDEzNjY5MjQsIGFk
-ZHJlc3M9MHg3MDBiMzM2NCwgCjIsIDQxZmIwMDAwClsgICAgNC4yNDIwMDBdIEtlcm5lbCBwYW5p
-YyAtIG5vdCBzeW5jaW5nOiBwYWdlIGZhdWx0IGVycm9yClsgICAgNC4yNDIwMDBdIENQVTogMCBQ
-SUQ6IDEgQ29tbTogYmFzaCBOb3QgdGFpbnRlZCAKNi4xMC4wLXJjNS1nOTI3ZGE2Y2YwMWZlLWRp
-cnR5ICMyNQpbICAgIDQuMjQyMDAwXSBTdGFjayBmcm9tIDQxODZkZGE4OgpbICAgIDQuMjQyMDAw
-XSAgICAgICAgIDQxODZkZGE4IDQxNDIzYWE0IDQxNDIzYWE0IDcwMGIzMzAwIDAwMDAwMDAxIAow
-MDAwMDAwMCA0MTM2ZWUxMCA0MTQyM2FhNApbICAgIDQuMjQyMDAwXSAgICAgICAgIDQxMzY2ZDdh
-IDcwMGIzMzY0IDcwMGIzMzY0IDAwMDAwMDAwIDAwMDAwMDBkIAo0MTg2ZGU2MCA0MWZiMDAwMCA0
-MWQ1MWE2MApbICAgIDQuMjQyMDAwXSAgICAgICAgIDQxMDA1Njk2IDQxNDE2YTkwIDQxNDE2YTRk
-IDAwMDAyMDAwIDQxMzY2OTI0IAo3MDBiMzM2NCAwMDAwMDAwMiA0MWZiMDAwMApbICAgIDQuMjQy
-MDAwXSAgICAgICAgIDAwMDAwMDBhIDcwMGIzMzY0IDAwMDAwMDAwIDAwMDAwMDBkIDAwMDAwMDEy
-IAo0MWQ1MWEwMCA0MTg2ZGU2MCA0MWQ1MWE2MApbICAgIDQuMjQyMDAwXSAgICAgICAgIDQxZmI4
-MWMwIDQxZDUxYTYwIDQxMDA1MmZlIDQxMDA1MjlhIDQxODZkZTYwIAo3MDBiMzM2NCAwMDAwMDAw
-MiAwMDAwMDAwMApbICAgIDQuMjQyMDAwXSAgICAgICAgIDcwMGJjNDE0IDAwMDAwMDAzIDAwMDA4
-MDAwIDcwMGFjMDAwIDQxMDAzNjYwIAo0MTg2ZGU2MCAwMDAwMDAwMCAwMDAwMDAwMApbICAgIDQu
-MjQyMDAwXSBDYWxsIFRyYWNlOiBkdW1wX3N0YWNrIChsaWIvZHVtcF9zdGFjay5jOjEyNCkKWyAg
-ICA0LjI0MjAwMF0gcGFuaWMgKGtlcm5lbC9wYW5pYy5jOjI2NiBrZXJuZWwvcGFuaWMuYzozNjgp
-ClsgICAgNC4yNDIwMDBdIGRvX3BhZ2VfZmF1bHQgKGFyY2gvbTY4ay9tbS9mYXVsdC5jOjg4IChk
-aXNjcmltaW5hdG9yIDEpKQpbICAgIDQuMjQyMDAwXSBfX2NsZWFyX3VzZXIgKGFyY2gvbTY4ay9s
-aWIvdWFjY2Vzcy5jOjEwOCkKWyAgICA0LjI0MjAwMF0gYnVzZXJyX2MgKGFyY2gvbTY4ay9rZXJu
-ZWwvdHJhcHMuYzo3MjUgCmFyY2gvbTY4ay9rZXJuZWwvdHJhcHMuYzo3NzUpClsgICAgNC4yNDIw
-MDBdIGJ1c2Vycl9jIChhcmNoL202OGsva2VybmVsL3RyYXBzLmM6NzQ4IAphcmNoL202OGsva2Vy
-bmVsL3RyYXBzLmM6Nzc1KQpbICAgIDQuMjQyMDAwXSBidXNlcnIgKGFyY2gvbTY4ay9rZXJuZWwv
-ZW50cnkuUzoxMTYpClsgICAgNC4yNDIwMDBdIG1hX3Nsb3RzIChsaWIvbWFwbGVfdHJlZS5jOjc1
-OSkKWyAgICA0LjI0MjAwMF0gX19jbGVhcl91c2VyIChhcmNoL202OGsvbGliL3VhY2Nlc3MuYzox
-MDgpClsgICAgNC4yNDIwMDBdIGVsZl9sb2FkIChmcy9iaW5mbXRfZWxmLmM6MTI1IChkaXNjcmlt
-aW5hdG9yIDEpIApmcy9iaW5mbXRfZWxmLmM6NDIxIChkaXNjcmltaW5hdG9yIDEpKQpbICAgIDQu
-MjQyMDAwXSBsb2FkX2VsZl9iaW5hcnkgKGZzL2JpbmZtdF9lbGYuYzoxMTMyKQpbICAgIDQuMjQy
-MDAwXSBtZW1zZXQgKGFyY2gvbTY4ay9saWIvbWVtc2V0LmM6MTEpClsgICAgNC4yNDIwMDBdIGxv
-YWRfbWlzY19iaW5hcnkgKGZzL2JpbmZtdF9taXNjLmM6OTcgCmZzL2JpbmZtdF9taXNjLmM6MTQ2
-IGZzL2JpbmZtdF9taXNjLmM6MjEzKQpbICAgIDQuMjQyMDAwXSBtZW1zZXQgKGFyY2gvbTY4ay9s
-aWIvbWVtc2V0LmM6MTEpClsgICAgNC4yNDIwMDBdIGJwcm1fZXhlY3ZlIChmcy9leGVjLmM6MTc5
-NyBmcy9leGVjLmM6MTgzOSBmcy9leGVjLmM6MTg5MSAKZnMvZXhlYy5jOjE4NjcpClsgICAgNC4y
-NDIwMDBdIGNvcHlfc3RyaW5nc19rZXJuZWwgKGZzL2V4ZWMuYzo2NjkpClsgICAgNC4yNDIwMDBd
-IGNvdW50X3N0cmluZ3Nfa2VybmVsIChmcy9leGVjLmM6NDczKQpbICAgIDQuMjQyMDAwXSBrZXJu
-ZWxfZXhlY3ZlIChmcy9leGVjLmM6MjA1OCkKWyAgICA0LjI0MjAwMF0gX19keW5hbWljX3ByX2Rl
-YnVnIChsaWIvZHluYW1pY19kZWJ1Zy5jOjg2NSkKWyAgICA0LjI0MjAwMF0gcnVuX2luaXRfcHJv
-Y2VzcyAoaW5pdC9tYWluLmM6MTM4OSkKWyAgICA0LjI0MjAwMF0gX3ByaW50ayAoa2VybmVsL3By
-aW50ay9wcmludGsuYzoyMzY1KQpbICAgIDQuMjQyMDAwXSBrZXJuZWxfaW5pdCAoaW5pdC9tYWlu
-LmM6MTUwOCkKWyAgICA0LjI0MjAwMF0ga2VybmVsX2luaXQgKGluaXQvbWFpbi5jOjE0NTkpClsg
-ICAgNC4yNDIwMDBdIHJldF9mcm9tX2tlcm5lbF90aHJlYWQgKGFyY2gvbTY4ay9rZXJuZWwvZW50
-cnkuUzoxNDIpClsgICAgNC4yNDIwMDBdClsgICAgNC4yNDIwMDBdIC0tLVsgZW5kIEtlcm5lbCBw
-YW5pYyAtIG5vdCBzeW5jaW5nOiBwYWdlIGZhdWx0IGVycm9yIF0tLS0KCkxvb2tzIGxpa2UgYSBt
-ZW1vcnkgbWFwcGluZyBmYWlsdXJlLCBidXQgd2h5ID8KTXkgSlRBRyBhdCB0aGlzIHBvaW50IGR1
-bXBzIGEgbGlzdCBvZiAwcyBhdCAweDQxZmIwMDAwIGFuZCBteSBTRFJBTSAKc3RhcnRzIGF0IDB4
-NDAwMDAwMDAgYW5kIGVuZHMgYXQgMHg1MDAwMDAwMCAoMjU2TUIpLgoKSXQgbG9va3MgbGlrZSBh
-IFRMQiB3cml0ZSBtaXNzIHdoaWNoIGlzIG9ic2N1cmUgdG8gbWUgOi0pLgoKSSB0cmllZCB0byB1
-c2UgdGhlIC9wcm9jIGJ1dCBhcyBleHBlY3RlZCBpdCBpcyBub3QgYWxpdmUgYWZ0ZXIgbW91bnRp
-bmcgaXQuClRoYW5rcywKSk0KCgo+IENoZWVycywKPiAKPiAgwqDCoMKgIE1pY2hhZWwKPiAKPj4K
-Pj4gVGhhbmtzICEKPj4gSk0KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 6/10/2024 10:07 PM, Jeff Johnson wrote:
+> With ARCH=x86, make allmodconfig && make W=1 C=1 reports:
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/brcm_u-boot.o
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/tplink_safeloader.o
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
+> WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
+> 
+> Add the missing invocations of the MODULE_DESCRIPTION() macro.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> ---
+> Corrections to these descriptions are welcomed. I'm not an expert in
+> this code so in most cases I've taken these descriptions directly from
+> code comments, Kconfig descriptions, or git logs.  History has shown
+> that in some cases these are originally wrong due to cut-n-paste
+> errors, and in other cases the drivers have evolved such that the
+> original information is no longer accurate.
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0020.c     | 1 +
+>  drivers/mtd/chips/cfi_util.c            | 1 +
+>  drivers/mtd/maps/map_funcs.c            | 1 +
+>  drivers/mtd/parsers/brcm_u-boot.c       | 1 +
+>  drivers/mtd/parsers/tplink_safeloader.c | 1 +
+>  5 files changed, 5 insertions(+)
+
+Following up to see if anything else is needed from me. Hoping to see this in
+linux-next so I can remove it from my tracking spreadsheet :)
+
+/jeff
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
