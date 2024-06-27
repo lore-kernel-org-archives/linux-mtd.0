@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0CF4C2BD09
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 06:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC064C2BD09
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 06:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZdN1aMSBFtkgsHuQ9FTrnTeIDTjCM0Xz+tTNdpxHSO8=; b=lqvIhuZZ0zZYr4
-	HIl+I+Cat7shEKq7aPmQKTg2oNVmCD47Xl6+Xhr1FCN7Y91rsYBaskBFFRXehg2FSm119CvNGJYNA
-	PFakz/hb1lpZJvjAFNgFlpRvY7c4b3gxks4DHiYEDVLU5leJQRgfgxF0orJu6UsxU6gttBiKPrV1C
-	VwwMFuihk69a95bvkgPxKEdUjVymDLamrS8A9rNhF4I5KIlzXWSOkBotNIdLon9Eh6tL41E/3abvv
-	DocCvwOcNB/oQ55kkRPWL9ptQwnuW0rXHf/pcA+i/vw8tw7wiRVbv2LUZxQRX1N7qy2h0OuGHeJDQ
-	ptvFfNeP5uc/DskxczGg==;
+	List-Owner; bh=7shpRxgbJ/JExCSFSDNpm9WtklSKHwgav9QtkXtP+yI=; b=ubTVGx5uYe3mde
+	OQhdZN5XWT8pf/k7ad46jWmLMwkthAoaUIogilBguR5/96smfwJEo7k8nztxMz7l1q/K+xDIIYB4i
+	AJh6qWbS4QwLl3aZ8qJ4JKH6yYkOiGRBQO7nS1WwGsFdbHLw94ep0WqYjuBmcWlNNW4VsoQd84N0C
+	N7dxB5zlb5iS7W/pcj2rcgz1+v/oIRpvMeP00YxP2EhOYxf4LNICiomJYZtzZ9QOSE+A0xNLehIWl
+	U8ZFMfXbieNYCTphlAmjoOf/JfuPkIeOFmjMfmAEgKZEvjIjXfEoxBIwyN2BtTSujJtEJIeRyTJpD
+	yIIQhGd1LuKAQfIj0zNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMioH-00000009PfR-1B2x;
-	Thu, 27 Jun 2024 06:40:45 +0000
-Received: from mail-m16.yeah.net ([1.95.21.15])
+	id 1sMioP-00000009Ph8-1OeI;
+	Thu, 27 Jun 2024 06:40:53 +0000
+Received: from mail-m16.yeah.net ([1.95.21.17])
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMioE-00000009Peb-0SOD;
+	id 1sMioE-00000009Peg-44Pp;
 	Thu, 27 Jun 2024 06:40:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
 	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=4E9CM/5/mBeIexGZwjxuNqelU9W/5r9P19OkUaKlST4=;
-	b=dfzvGqDhDzW8CIUfGN8u6wD8w3rvXo2pAA6zlf+rQX4lPDA5QpbZ/I6YFCAH/R
-	AtSNZnRznbzJIxQX9GYN1yCEM9d2DlnR33U0XRfkg1QxcmeuHPWSm5pAfp63ZeJY
-	YZZj9WZvf9XhghQZl3e5rxftZCaCaIcC0bxl20ZTq6rCI=
+	Content-Type; bh=4JVbwBMrJBsF2RiES/eofL7TJIZJsypozKg6acb8498=;
+	b=GYRR4FqzDkNp1v7oDKqNrfn9aTuYTBcS9pYvjMeIJk0GfmCpOvdr9diNXmUFDF
+	tJS8yBHis8oy2IxK4vyninFJi+/AAlhZ4jJvsiDlc9840Rlmwl9VrAr6IFENjVEE
+	iM5l9zBkUZJ9GJ+RB1iq8DZjfvoWQQxAPZm+3JpxUx3gw=
 Received: from dragon (unknown [114.218.218.47])
-	by gzsmtp2 (Coremail) with SMTP id Ms8vCgDXP5t6Bn1m600aAA--.26605S3;
-	Thu, 27 Jun 2024 14:28:12 +0800 (CST)
-Date: Thu, 27 Jun 2024 14:28:06 +0800
+	by gzsmtp3 (Coremail) with SMTP id M88vCgD3vx6aBn1m1VYZAA--.51586S3;
+	Thu, 27 Jun 2024 14:28:44 +0800 (CST)
+Date: Thu, 27 Jun 2024 14:28:41 +0800
 From: Shawn Guo <shawnguo2@yeah.net>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -51,21 +51,21 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
 	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 5/6] arm64: dts: imx8-ss-conn: add gpmi nand node
-Message-ID: <Zn0GdvvigLqcGXxn@dragon>
+Subject: Re: [PATCH v2 6/6] arm64: dts: imx8dxl-ss-conn: add gpmi nand
+Message-ID: <Zn0GmUVgk1Plj5mA@dragon>
 References: <20240520-gpmi_nand-v2-0-e3017e4c9da5@nxp.com>
- <20240520-gpmi_nand-v2-5-e3017e4c9da5@nxp.com>
+ <20240520-gpmi_nand-v2-6-e3017e4c9da5@nxp.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240520-gpmi_nand-v2-5-e3017e4c9da5@nxp.com>
-X-CM-TRANSID: Ms8vCgDXP5t6Bn1m600aAA--.26605S3
+In-Reply-To: <20240520-gpmi_nand-v2-6-e3017e4c9da5@nxp.com>
+X-CM-TRANSID: M88vCgD3vx6aBn1m1VYZAA--.51586S3
 X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUaK0PUUUUU
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUVaZXUUUUU
 X-Originating-IP: [114.218.218.47]
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiBBILZWZqryB7ewABs6
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiCRwLZWZv-cwmbAAAsJ
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240626_234042_603895_8A68B5C1 
-X-CRM114-Status: UNSURE (   5.50  )
+X-CRM114-CacheID: sfid-20240626_234043_351534_D4E59B17 
+X-CRM114-Status: UNSURE (   5.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,8 +83,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 20, 2024 at 12:09:16PM -0400, Frank Li wrote:
-> Add gpmi nand support.
+On Mon, May 20, 2024 at 12:09:17PM -0400, Frank Li wrote:
+> Update gpmi nand and dma_apbh interrupt number for imx8dxl.
 > 
 > Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
