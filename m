@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 416A3C30653
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D72AAC2BD09
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zIz4dnCmlt0NRcS7UBLwmC4ShWfHRwvySBMU32EmCRE=; b=tRvIUTNk91iTHN
-	X7bcgBzHlwYYxrV3rTFLPTaFGRlYtsrT3IzTFbSZd4COrY2L2sWf83qcqRXyWoWfsOXb1TZnvZTAz
-	UpNY+PleTnaX0g26L877D7CZGSTUQ0CFtvSnAXFQf+96fAmDwff4AI0ezPvNo1Z3+wcG7oNb0CxnL
-	jOB6XnfU7Y157T7UnknjhyGu32cGIsyRK2iQ4lgTGDZTtkMU1/whiZZOD9zFMnJ9f2VMa1Eojg77/
-	Xnw7N7YQmYtwdugTvfMpcA1k/qBENJcXULIF5qzfQ/gdkW5Lorx/GrCzHxuqu76DTt1/sIqoRkpU6
-	A8aRh4O62D6LhUEsXX/Q==;
+	List-Owner; bh=BUDgwEYcFsxSFf8NMKPm1viuGq/P8UL3veNCp9B3BZA=; b=QCUnlD0EK7d42q
+	r7EszTXW5wt2c+VZgFnLYnIVE45azC9ElSHvtsMk0e8cqEPMWzE7Zv+Te2+dqtu1XH2BBq7ibnnWd
+	e/AB4/sPTBD6N1SnHXRIeu13zWHCs9TyH9T4d7IECSuelBvIEr9zWavenFH6kFSP13lgReN6q5mWs
+	0xZGcs7wyZ1RSsBdNdMAK7SjdbCZvfTedn8G+tCOPGAGENU4G9Gk/rEWB7Ccgix0Zk66i9g0XNHqs
+	sIGp+knnRqsHvo8+ySxrVdeFPya0ZUS+HrUxcCETsh18/s7aiXrWxfqJkjVwVY/5Ipl7Tk8CP/8A8
+	eUzwGp10YZecK0wJsBkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqdk-0000000AlDd-3e33;
-	Thu, 27 Jun 2024 15:02:24 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1sMqeC-0000000AlTr-1wtP;
+	Thu, 27 Jun 2024 15:02:52 +0000
+Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqdf-0000000Al9u-2GGl
+	id 1sMqdz-0000000AlMX-3Wxs
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jun 2024 15:02:22 +0000
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a729d9d7086so133137266b.0
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:02:19 -0700 (PDT)
+	Thu, 27 Jun 2024 15:02:41 +0000
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a7194ce90afso703697766b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:02:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500538; x=1720105338; darn=lists.infradead.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500558; x=1720105358; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ILtq9+4c141AHxBgbXMa+RP0emWEvg+/fmgpWsAX5kw=;
-        b=ssgSzel/ifvcSxif6Gg2nrwD0dI7YKzmW9T3cZz2dsn+O0GuYupWLuL4ooArzf7PRH
-         zi2oVAkdktmfekjX0udfXbKXE11+haGzktzgOO6J2nfqUbdGpPYQwRw8Htj62ek4x6h/
-         myqZcM4VjDGpkoUc05jko1UWnVKLZ5r2J1yxat14OBJP6Z/BFUc3ZE3Y5syQxJLOndeJ
-         /kRLzn4rkKrJo6sOFk4fnG1Mm1KaEgBmjHUUUawI1aCvZBShTaRu0qHHNfnwMszuNxYg
-         sXHFjqtQI9UbXzjK+62kocgpPAiLbhwepqBjBllikJABX63wbCUw7X+hwyK1APSOihl+
-         XAxg==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f9ppopi9ppNssy3Y6kMvZbEvjKhcjUNqGrL0dAUL4ao=;
+        b=zD/wcUArasPg3fHAJswJT+kjg/LzBo5iwFQIyE8O+sTL52nMgK0yMnsUn3Ut8oNLDs
+         /ScJQbnHZStqzfdGi9KMKkEQNrZQkbrUwQRcAZOANHJm/oF6Vjj4KCo0VIYIB3rC6UnP
+         eBaMjNsGIDll+f4Yo1ms+eXVG66rbWH1LhlBr4nKSsa54q8uR9dFWTZzRFiVzKZvcAEn
+         omKbt/YtjTQwKB+jANuB2kGTbVpwB8vlcHqCHUxufWQE354++mNcfbG0CGLDVkqV0nRF
+         ups0IRoXyP5staXuopwYDPe6Bn9MT5r6H+cH9o/IldtpWnnWMAEGrw8lsoB/jtH2rUgz
+         +zvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500538; x=1720105338;
+        d=1e100.net; s=20230601; t=1719500558; x=1720105358;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ILtq9+4c141AHxBgbXMa+RP0emWEvg+/fmgpWsAX5kw=;
-        b=YywChwAgp36NNxLeJlbvWw70X9fhGXtrzWY4bXwBIFJrkZimH9dFdzKz1AxthV0ulY
-         0jxxQts/JN4CpIIZPu4J3UMzN7HbiIxFjw3Z88SxXSFIODYaTLM6VDC3rfjzYWCxvcH9
-         8QrUsYs8IfqDnsyWB2KnxyMjOiC8q7NJZG51LGacLTfx/87qd92Uma2AFyOvl9+jiA4I
-         abscsI9Y4N6TNJHTPR6rh5i1K9AvgLUgSINXLhwgdhWcsidPRMQ8+SjrP/5CqcECc7fI
-         zGoTV+yCnTdMA0auRqk1oINof32BpEnQaxCdRQPIxup+mJNXXbID7CPgHm6Hp6J1yZBi
-         HcpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWCx5GAydN7NBrq+vAtFnwVQtMTDLPoYLqbm9zlU/HoM4+c0+fStc5Tr29c1FsKkVQQ7NRRh7/1OH8fmWMHHIp3JZ1rPy01P+wpZSaU0g==
-X-Gm-Message-State: AOJu0Yyubz39vEC9igF1c+Q/CbYN+hZrVfHZkWKCkQtLOPd/NDRkbCM6
-	ovokN1GsjreZA9mrgy1BVh/g0fX8/aEDjXWYjTLuxDBXH7txAaoxAONt4oDx6w4=
-X-Google-Smtp-Source: AGHT+IGhzRCqP2RV73RAfCGRkGAsHtE5znhuHD+qNGBvgcJ+PHUmpdeZlb/WN59v+vhaTirBRQcRFg==
-X-Received: by 2002:a17:906:dfc7:b0:a6e:f869:d718 with SMTP id a640c23a62f3a-a7296f808e2mr189909566b.21.1719500537821;
-        Thu, 27 Jun 2024 08:02:17 -0700 (PDT)
+        bh=f9ppopi9ppNssy3Y6kMvZbEvjKhcjUNqGrL0dAUL4ao=;
+        b=cdjQw8kP+bF3kg4CZzV5+A/yrE63SPbLbqTSl62IUe/wDN576mp+BnQ3Vd5JBlmfSM
+         YgNMFNHwrB3HhRzDuT7YJcXiY1ay3GFuoxaHKbNMvalJgbXJGp+evnc7JhJWXQXsxXZf
+         vTjI6ZvSNmo+YJ9jUci20oehKyOSTpjMtKUGiXqVzaWAMKunwQ0GxT5CE82qdAdp0WTl
+         KucVS/hsAkMSnpZQV/cFr2NFRF2So1G5o/q8CBKM97zqUNYjaCeIw065GjePph1gPtGa
+         yVoNvx/wQqWG5jWInA+d5gLfwLw8cfkSxdncKhsA532SICAORZB9D2bZ012QOYLMoOMj
+         ZzcA==
+X-Forwarded-Encrypted: i=1; AJvYcCWoc7YtOIjzbxYOUQkMFI/nsvFsSrRXL8YiQsqcTGXxj0z8egQC7Mq0/g2G5WeWk/u4Y0yzsWiDg5M1P1wQg0qfVZ+T71lD39+Mp2C5/Q==
+X-Gm-Message-State: AOJu0Yz/JJGsl7Bs9RMVKj7jYyVbu52mXqZrntiZ1zVYXvz4aOcoa53M
+	fMaSLEjoSwwWpXyL5JHIgxJRB0We6ZCpM5bnK9MAmsO33E3SLvJIrcKDydizQBo=
+X-Google-Smtp-Source: AGHT+IHNxN4PmRPFk0RxdcCHSntPRfVHwfmOqM6zTS7G+/s/UPca4WGfngbQvLyYCR5O6HreQqUr+w==
+X-Received: by 2002:a17:907:6a0e:b0:a72:8296:ca42 with SMTP id a640c23a62f3a-a728296d1cfmr421637966b.49.1719500557261;
+        Thu, 27 Jun 2024 08:02:37 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.02.16
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.02.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:02:17 -0700 (PDT)
+        Thu, 27 Jun 2024 08:02:36 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -82,11 +82,11 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Arnd Bergmann <arnd@arndb.de>,
 	Yangtao Li <frank.li@vivo.com>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Li Zetao <lizetao1@huawei.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
 	Chancel Liu <chancel.liu@nxp.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Corentin Labbe <clabbe@baylibre.com>,
 	dmaengine@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -98,17 +98,16 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [Patch v5 03/12] ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT binding
-Date: Thu, 27 Jun 2024 17:00:21 +0200
-Message-Id: <20240627150046.258795-4-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v5 04/12] ARM: dts: lpc32xx: Use simple-mfd for clock control block
+Date: Thu, 27 Jun 2024 17:00:22 +0200
+Message-Id: <20240627150046.258795-5-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240627_080219_704162_21A26DE9 
-X-CRM114-Status: GOOD (  17.77  )
+X-CRM114-CacheID: sfid-20240627_080239_972319_1F68381C 
+X-CRM114-Status: GOOD (  13.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,134 +124,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add nxp,lpc3220-i2s DT binding documentation.
+The clock control block shares registers with other Soc components
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 Changes for v5:
-- Removed "N:" from the MAINTAINERS entry
+- This patch is new in v5
+- Split previous patch for lpc32xx.dtsi in to 3 patches
 
-Changes for v4:
-- Custom dma-vc-names property with standard dmas and dma-names
-- Added to MAINTAINERS
+ arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Changes for v3:
-- Added '$ref: dai-common.yaml#' and '#sound-dai-cells'
-- Dropped all clock-names, references
-- Dropped status property from the example
-- Added interrupts property
-- 'make dt_binding_check' pass
-
-Changes for v2:
-- Added maintainers field
-- Dropped clock-names
-- Dropped unused unneded interrupts field
-
- .../bindings/sound/nxp,lpc3220-i2s.yaml       | 73 +++++++++++++++++++
- MAINTAINERS                                   |  9 +++
- 2 files changed, 82 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml b/Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-new file mode 100644
-index 000000000000..40a0877a8aba
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nxp,lpc3220-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP LPC32XX I2S Controller
-+
-+description:
-+  The I2S controller in LPC32XX SoCs, ASoC DAI.
-+
-+maintainers:
-+  - J.M.B. Downing <jonathan.downing@nautel.com>
-+  - Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,lpc3220-i2s
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: input clock of the peripheral.
-+
-+  dmas:
-+    items:
-+      - description: RX DMA Channel
-+      - description: TX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+      - const: tx
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - dmas
-+  - dma-names
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/lpc32xx-clock.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2s@20094000 {
-+      compatible = "nxp,lpc3220-i2s";
-+      reg = <0x20094000 0x1000>;
-+      interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&clk LPC32XX_CLK_I2S0>;
-+      dmas = <&dma 0 1>, <&dma 13 1>;
-+      dma-names = "rx", "tx";
-+      #sound-dai-cells = <0>;
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 79b44addc139..ceec359c68fc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8918,6 +8918,15 @@ S:	Maintained
- F:	sound/soc/fsl/fsl*
- F:	sound/soc/fsl/imx*
+diff --git a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
+index 974410918f35..8bf88d141e5b 100644
+--- a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
++++ b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
+@@ -312,18 +312,17 @@ fab {
+ 			compatible = "simple-bus";
+ 			ranges = <0x20000000 0x20000000 0x30000000>;
  
-+FREESCALE SOC LPC32XX SOUND DRIVERS
-+M:	J.M.B. Downing <jonathan.downing@nautel.com>
-+M:	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-+R:	Vladimir Zapolskiy <vz@mleia.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+L:	linuxppc-dev@lists.ozlabs.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
-+
- FREESCALE SOC SOUND QMC DRIVER
- M:	Herve Codina <herve.codina@bootlin.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+-			/* System Control Block */
+-			scb {
+-				compatible = "simple-bus";
+-				ranges = <0x0 0x40004000 0x00001000>;
++			syscon@40004000 {
++				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
++				reg = <0x40004000 0x114>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
++				ranges = <0 0x40004000 0x114>;
+ 
+ 				clk: clock-controller@0 {
+ 					compatible = "nxp,lpc3220-clk";
+ 					reg = <0x00 0x114>;
+ 					#clock-cells = <1>;
+-
+ 					clocks = <&xtal_32k>, <&xtal>;
+ 					clock-names = "xtal_32k", "xtal";
+ 				};
 -- 
 2.25.1
 
