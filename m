@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC880C2BD09
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E61A2C2BD09
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tq/IQ3pMZLSf7xgKXwkG/4dTihdT3fA7jQDxPWCSVF4=; b=eFLiPS8lvUOVLm
-	ZLbiRAxu0Y5NIYczFd3m3YPbmRLuEJ9Ji7qfenyq8lX2iSeGnhlNPtsLbU5500acfGVuIHGRD3EGa
-	rjgJBlnY0D3ZGXEekEBAM9HR2UrncVaaQkfuMNTRDQ1YNox3S1t+HAxtdQr0mJedCEB4DJyQ1a0Ca
-	GFPxFmps6tO8zuo5aZoNjvqvDjJZUEn8jk+sNCCxhNUsQLocFct2qnSRuhoCEdSy5c79nWGAXIOqc
-	x7i6xMgGzxnFhguK5uhl0OhihFbSTD54GZ3QLMvcQrn4fG+BsHG/0ZqfgQyxWPcWK0MEjtLy7Jzj+
-	RynTrwv1cwbmxBLcl4XQ==;
+	List-Owner; bh=vMg+62JJu86VUkHFb5jLctvphZjtd/SWHtLjNpid6vU=; b=eB2JhlZpZY7zWF
+	DDXmvygq4OrQUfUZQnLqhleXlpfs+CIidcoWaIrgYeYwJeL8dp3pLhkj6/HnQU5m3dF47wujJQfvP
+	UWMSHD8zTh00cG9/38Cx66yQHFy/n48HxygtO9YO8EkINI8qazCd+E9Ti1jWiz8Ehr0aEyG4WW/Ez
+	jDfR2CFo8RaReXDoA/pQdkJ/7Bc1PPvrTeAlZkKoadsadeE+u2ez4cHUlwN2/8herKsWev7c3VItU
+	jlu0PqxLIVdGIte+gEa70Tl1qrpEN47TjnqfXF3uUK6a1suC2VEa1YCgAPkfFpjRZ1K4qusl5zkEE
+	IYDr6MYbTSyMFbtExjew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqg1-0000000Amcu-3OCg;
-	Thu, 27 Jun 2024 15:04:45 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1sMqgl-0000000An4t-1Ip2;
+	Thu, 27 Jun 2024 15:05:31 +0000
+Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqfx-0000000AmZP-3cRE
+	id 1sMqgJ-0000000Amp2-22Dy
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jun 2024 15:04:44 +0000
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a724b4f1218so697069866b.2
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:04:41 -0700 (PDT)
+	Thu, 27 Jun 2024 15:05:08 +0000
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a72988749f0so165743966b.0
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:05:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500680; x=1720105480; darn=lists.infradead.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500701; x=1720105501; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0kKU0V25b+NdpL5Nxb/CadexmGEKpxevd8xM2vqH8ko=;
-        b=i5seAKceJvgeIY4o546fYQ7lvuaqTGFKl7nqJTo12CEyz/T1NwMPCpewx1ZpL379kn
-         /Mise/J+xQmJcEGAU1TFPHMB1O0zMTv+TXURVPpv1uu5TgknBCakzPbIqPRilmahB0rI
-         //XeGQvk2Tr9WN525hyu5AcM+C00HMRbEpIyPLzCHztpBzlDP4dGeZSvZUkBZT528tX7
-         PZrzEh4RQKDLpof/VOBnI6YmR7Qq1nHwNSyLQp8G+r3pKxYoMJaAzV3Hkm7ORqOI5JNw
-         QOB4V7A/0sR2+8c1qCc9Xk4uoEJhddoZjy4FdC8beOfVq+oUN/1Yuist8+2JBHiYcuRF
-         72WA==
+        bh=qlfqqNuePgzxnKNqcmpyV6VlaFL61/a1m7RWp8EKzmI=;
+        b=u67c/6k61om6ZaIemTSdmkcdpJHzDlNspd1gQx7PDJh0LIXrIZ1uYJtTo/d7makfEu
+         DH+LVO861+xhw/3Fzoi7KmnfDcBoMW0EmPQez4tkzahHbZ0U7fLORng+kTht246zQqHq
+         Q90uAhNG+0pVIxZMUC1/z3XS1/YjZKwlYlTrXFkWBzMEuVEmoLVXVdqqwn9vOfhfhgRK
+         R+FdE4MOZSLeBtAs0QsfasY8m5L9MzRUFGdCagaOTbjITmYC8Ky9uDIDLhQeRaTfAIcH
+         WTiV4lwPRmnz8oGZSwhV2BoabZFX3xywCF0+/kfgETSSvop2Aj9sUdCwtF2sChTQ2G+e
+         +zQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500680; x=1720105480;
+        d=1e100.net; s=20230601; t=1719500701; x=1720105501;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0kKU0V25b+NdpL5Nxb/CadexmGEKpxevd8xM2vqH8ko=;
-        b=QPGPlu9ML+rYomsOcDE4g5527bBDMkBOjn99gN4BZ1sE+CJJvvpubLzI8IeQLLEzPI
-         ZEUSfab6KJmabNVSZ9gPPNCG9Nz6SXMTSgc4TFHDRwHLjn7bxLzKyyJtU9E5SF7BEi8K
-         M0Sv5uImv6obvCTla38jSlXaOxMNSfjdgna+WhDC6qhEPRRRPcwirOnJilzwyTebT3Y3
-         01+Fu6w+7RdMPlNRg/pZEDj/5js3X8WXWVA0VMnMwSQEIgLs7nxmhI3fX4WBRv1A4EpT
-         KGUYCVlYaYt/xENbfM71Vvjso7aQLTDL7qbZkevh3w7uU3GLf58yEWLaB/2bhRhLDySc
-         adXg==
-X-Forwarded-Encrypted: i=1; AJvYcCW5P4di9vISkm0ayHDhtenoEf9AIXpUNpGXYuCzvyJyYDhA6cQ2NCy1PIUJF+Hmg7VmebTt/TYSviFwgGynvVBkPzWKm5SKW/OhWkv+KQ==
-X-Gm-Message-State: AOJu0YwbDE5M6+EuvObaWBBpWertzQaGaYSzhcQz0QfYWHLzHy35dviW
-	YtbJhSnVmgE+m5qNgR3LReksZMIaRdCmIE6cR8+8hO34PM29KB9aMZOgv1HKptw=
-X-Google-Smtp-Source: AGHT+IEDRv7diooeJV6LJXwf0EjCsVi9YKqxuCA0IYC1Rui0S1k3Zcq9kDuWbuWeuGO8t2Iv/ci0ng==
-X-Received: by 2002:a17:906:d509:b0:a6f:5192:6f4d with SMTP id a640c23a62f3a-a7242c4dfd3mr693613366b.8.1719500679193;
-        Thu, 27 Jun 2024 08:04:39 -0700 (PDT)
+        bh=qlfqqNuePgzxnKNqcmpyV6VlaFL61/a1m7RWp8EKzmI=;
+        b=t11Va3N/HyZuwdjzBkMQKJOGPxeJZ69+LN2pA5ZPHMSSgQ86s6SF724a5ku7nlARRI
+         eEBVM9yk4nYTmgl+xoSJEeaAKCd9jJBKalKqpAxDd0+o9H28Qp+u6IoUk2OmQRMkGYee
+         Uzii8C39IllV7JVWUNiaC54cMugIJ4d6MYzFPZuVI9zkvJE6AP+WBJydUgEDNtA5iKAm
+         LmHp2qlJEvXvRksc/vxhAh6PAxrAfnBSOFrhyUN0cRLGUIGbGhHnanyxLFrvdIbGEoRb
+         099MGlHphFQFVHJWWE8Gj/JUXLjxBkmu7yE1z2leui0yJRMdZkb8McaG9vCjjVy5QQ1V
+         DZXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXyHpUzZXTwGA8gVDx1KNCvYmfS1s1OdnPnfHk6yiG4Bfd1ipvKy3xBkIKA7D2im3BPCqpfXxyVwilFLx4wBSLjaAizHGT+uD2/lwj3kQ==
+X-Gm-Message-State: AOJu0YzNyzJHw2pYtw0SZnj9KK3O+c6POeBViIFDoVdtDah6Ia3zWsdr
+	VeR8A9oJm1X1TVwZfMTNg6VUczSICkFSbwhXtnjyxVR/gMEFbaDiXkkWNDlhWiI=
+X-Google-Smtp-Source: AGHT+IG7+72JuTkmfei28oG/7JVrxU3ps3QHPQoiD1pWol9v1gojWq8iop0TCv6tIgOCdtK2QwuliA==
+X-Received: by 2002:a17:907:c001:b0:a72:6de9:de90 with SMTP id a640c23a62f3a-a727f65e4b7mr608670766b.5.1719500700647;
+        Thu, 27 Jun 2024 08:05:00 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.04.37
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.04.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:04:38 -0700 (PDT)
+        Thu, 27 Jun 2024 08:04:59 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -85,8 +85,8 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Yangtao Li <frank.li@vivo.com>,
 	Li Zetao <lizetao1@huawei.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
 	Chancel Liu <chancel.liu@nxp.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Corentin Labbe <clabbe@baylibre.com>,
 	dmaengine@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -98,16 +98,16 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [Patch v5 10/12] mtd: rawnand: lpx32xx: Request DMA channels using DT entries
-Date: Thu, 27 Jun 2024 17:00:28 +0200
-Message-Id: <20240627150046.258795-11-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v5 11/12] ASoC: fsl: Add i2s and pcm drivers for LPC32xx CPUs
+Date: Thu, 27 Jun 2024 17:00:29 +0200
+Message-Id: <20240627150046.258795-12-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240627_080442_004712_5FB2DE17 
-X-CRM114-Status: GOOD (  14.38  )
+X-CRM114-CacheID: sfid-20240627_080503_607962_E45A9EE8 
+X-CRM114-Status: GOOD (  31.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,97 +124,645 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Move away from pl08x platform data towards device tree.
+This driver was ported from an old version in linux 2.6.27 and adjusted
+for the new ASoC framework and DMA API.
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
 Changes for v5:
-- Added fallback dma channel request for backward compatibility with DMA with
-  platform data instead DT
+- Removed "N:" from the MAINTAINERS entry
+- Removed unused filter_data and flags variables
 
 Changes for v4:
-- This patch is new in v4
+- Add to MAINTAINERS
+- Use guard(mutex)(&i2s_info_p->lock) when possible
+- Request dma chennels using DT entries in devm_snd_dmaengine_pcm_register
 
- drivers/mtd/nand/raw/lpc32xx_mlc.c | 26 +++++++++++++++-----------
- drivers/mtd/nand/raw/lpc32xx_slc.c | 26 +++++++++++++++-----------
- 2 files changed, 30 insertions(+), 22 deletions(-)
+Changes for v3:
+- Split previous commit for separate subsystems
+- Add support and <jonathan.downing@nautel.com> as a maintainer for the driver
+- Replaced `SND_SOC` config dependency with COMPILE_TEST
+- Moved `snd-soc-fsl-lpc3xxx-y` in Makefile up in the list to maintain alfabedical order
+- Changed comment to c++ format
+- replaced custom absd32() with standard abs() function
+- Added clock provider check in lpc3xxx_i2s_set_dai_fmt()
+- Removed empty lpc32xx_i2s_remove() function
+- Reworked i2s regs definitions to include LPC3XXX prefix
+- Replaced custom _BIT, _SBD with standard BIT and FIELD_PREP macros
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 677fcb03f9be..92cebe871bb4 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -574,18 +574,22 @@ static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
- 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
- 	dma_cap_mask_t mask;
+Changes for v2:
+- Coding Style cleanup
+- Use dev_err_probe() for error handling in probe function
+- Removed unneded err_clk_disable label
+- Removed empty function
+- Droped of_match_ptr in lpc32xx_i2s_match DT match table
+- ASoC struct adjustmes for the latest 6.10-rc3 kernel
+
+ MAINTAINERS                 |   1 +
+ sound/soc/fsl/Kconfig       |   7 +
+ sound/soc/fsl/Makefile      |   2 +
+ sound/soc/fsl/lpc3xxx-i2s.c | 375 ++++++++++++++++++++++++++++++++++++
+ sound/soc/fsl/lpc3xxx-i2s.h |  79 ++++++++
+ sound/soc/fsl/lpc3xxx-pcm.c |  72 +++++++
+ 6 files changed, 536 insertions(+)
+ create mode 100644 sound/soc/fsl/lpc3xxx-i2s.c
+ create mode 100644 sound/soc/fsl/lpc3xxx-i2s.h
+ create mode 100644 sound/soc/fsl/lpc3xxx-pcm.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 118d48747641..adfe07a99c1a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8927,6 +8927,7 @@ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ L:	linuxppc-dev@lists.ozlabs.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/sound/nxp,lpc3220-i2s.yaml
++F:	sound/soc/fsl/lpc3xxx-*
  
--	if (!host->pdata || !host->pdata->dma_filter) {
--		dev_err(mtd->dev.parent, "no DMA platform data\n");
--		return -ENOENT;
--	}
--
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
--					     "nand-mlc");
-+	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
- 	if (!host->dma_chan) {
--		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
--		return -EBUSY;
-+		/* fallback to request using platform data */
-+		if (!host->pdata || !host->pdata->dma_filter) {
-+			dev_err(mtd->dev.parent, "no DMA platform data\n");
-+			return -ENOENT;
-+		}
-+
-+		dma_cap_zero(mask);
-+		dma_cap_set(DMA_SLAVE, mask);
-+		host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-mlc");
-+
-+		if (!host->dma_chan) {
-+			dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
-+			return -EBUSY;
-+		}
- 	}
+ FREESCALE SOC SOUND QMC DRIVER
+ M:	Herve Codina <herve.codina@bootlin.com>
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 270726c134b3..72f2d4d15696 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -130,6 +130,13 @@ config SND_SOC_FSL_RPMSG
+ 	  This option is only useful for out-of-tree drivers since
+ 	  in-tree drivers select it automatically.
  
- 	/*
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 1c5fa855b9f2..3b7e3d259785 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -721,18 +721,22 @@ static int lpc32xx_nand_dma_setup(struct lpc32xx_nand_host *host)
- 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
- 	dma_cap_mask_t mask;
- 
--	if (!host->pdata || !host->pdata->dma_filter) {
--		dev_err(mtd->dev.parent, "no DMA platform data\n");
--		return -ENOENT;
--	}
--
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
--					     "nand-slc");
-+	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
- 	if (!host->dma_chan) {
--		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
--		return -EBUSY;
-+		/* fallback to request using platform data */
-+		if (!host->pdata || !host->pdata->dma_filter) {
-+			dev_err(mtd->dev.parent, "no DMA platform data\n");
-+			return -ENOENT;
-+		}
++config SND_SOC_FSL_LPC3XXX
++	tristate "SoC Audio for NXP LPC32XX CPUs"
++	depends on ARCH_LPC32XX || COMPILE_TEST
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y or M if you want to add support for the LPC3XXX I2S interface.
 +
-+		dma_cap_zero(mask);
-+		dma_cap_set(DMA_SLAVE, mask);
-+		host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-slc");
+ config SND_SOC_IMX_PCM_DMA
+ 	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 2fe78eed3a48..2a61e2f96438 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_SND_SOC_P1022_RDK) += snd-soc-p1022-rdk.o
+ snd-soc-fsl-audmix-y := fsl_audmix.o
+ snd-soc-fsl-asoc-card-y := fsl-asoc-card.o
+ snd-soc-fsl-asrc-y := fsl_asrc.o fsl_asrc_dma.o
++snd-soc-fsl-lpc3xxx-y := lpc3xxx-pcm.o lpc3xxx-i2s.o
+ snd-soc-fsl-sai-y := fsl_sai.o
+ snd-soc-fsl-ssi-y := fsl_ssi.o
+ snd-soc-fsl-ssi-$(CONFIG_DEBUG_FS) += fsl_ssi_dbg.o
+@@ -29,6 +30,7 @@ snd-soc-fsl-qmc-audio-y := fsl_qmc_audio.o
+ obj-$(CONFIG_SND_SOC_FSL_AUDMIX) += snd-soc-fsl-audmix.o
+ obj-$(CONFIG_SND_SOC_FSL_ASOC_CARD) += snd-soc-fsl-asoc-card.o
+ obj-$(CONFIG_SND_SOC_FSL_ASRC) += snd-soc-fsl-asrc.o
++obj-$(CONFIG_SND_SOC_FSL_LPC3XXX) += snd-soc-fsl-lpc3xxx.o
+ obj-$(CONFIG_SND_SOC_FSL_SAI) += snd-soc-fsl-sai.o
+ obj-$(CONFIG_SND_SOC_FSL_SSI) += snd-soc-fsl-ssi.o
+ obj-$(CONFIG_SND_SOC_FSL_SPDIF) += snd-soc-fsl-spdif.o
+diff --git a/sound/soc/fsl/lpc3xxx-i2s.c b/sound/soc/fsl/lpc3xxx-i2s.c
+new file mode 100644
+index 000000000000..0e5b4d5202ff
+--- /dev/null
++++ b/sound/soc/fsl/lpc3xxx-i2s.c
+@@ -0,0 +1,375 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Author: Kevin Wells <kevin.wells@nxp.com>
++//
++// Copyright (C) 2008 NXP Semiconductors
++// Copyright 2023 Timesys Corporation <piotr.wojtaszczyk@timesys.com>
 +
-+		if (!host->dma_chan) {
-+			dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
-+			return -EBUSY;
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/io.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/initval.h>
++#include <sound/soc.h>
++
++#include "lpc3xxx-i2s.h"
++
++#define I2S_PLAYBACK_FLAG 0x1
++#define I2S_CAPTURE_FLAG 0x2
++
++#define LPC3XXX_I2S_RATES ( \
++	SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
++	SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
++
++#define LPC3XXX_I2S_FORMATS ( \
++	SNDRV_PCM_FMTBIT_S8 | \
++	SNDRV_PCM_FMTBIT_S16_LE | \
++	SNDRV_PCM_FMTBIT_S32_LE)
++
++static void __lpc3xxx_find_clkdiv(u32 *clkx, u32 *clky, int freq, int xbytes, u32 clkrate)
++{
++	u32 i2srate;
++	u32 idxx, idyy;
++	u32 savedbitclkrate, diff, trate, baseclk;
++
++	/* Adjust rate for sample size (bits) and 2 channels and offset for
++	 * divider in clock output
++	 */
++	i2srate = (freq / 100) * 2 * (8 * xbytes);
++	i2srate = i2srate << 1;
++	clkrate = clkrate / 100;
++	baseclk = clkrate;
++	*clkx = 1;
++	*clky = 1;
++
++	/* Find the best divider */
++	*clkx = *clky = 0;
++	savedbitclkrate = 0;
++	diff = ~0;
++	for (idxx = 1; idxx < 0xFF; idxx++) {
++		for (idyy = 1; idyy < 0xFF; idyy++) {
++			trate = (baseclk * idxx) / idyy;
++			if (abs(trate - i2srate) < diff) {
++				diff = abs(trate - i2srate);
++				savedbitclkrate = trate;
++				*clkx = idxx;
++				*clky = idyy;
++			}
 +		}
- 	}
- 
- 	return 0;
++	}
++}
++
++static int lpc3xxx_i2s_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *cpu_dai)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(cpu_dai);
++	struct device *dev = i2s_info_p->dev;
++	u32 flag;
++	int ret = 0;
++
++	guard(mutex)(&i2s_info_p->lock);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		flag = I2S_PLAYBACK_FLAG;
++	else
++		flag = I2S_CAPTURE_FLAG;
++
++	if (flag & i2s_info_p->streams_in_use) {
++		dev_warn(dev, "I2S channel is busy\n");
++		ret = -EBUSY;
++		return ret;
++	}
++
++	if (i2s_info_p->streams_in_use == 0) {
++		ret = clk_prepare_enable(i2s_info_p->clk);
++		if (ret) {
++			dev_err(dev, "Can't enable clock, err=%d\n", ret);
++			return ret;
++		}
++	}
++
++	i2s_info_p->streams_in_use |= flag;
++	return 0;
++}
++
++static void lpc3xxx_i2s_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *cpu_dai)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(cpu_dai);
++	struct regmap *regs = i2s_info_p->regs;
++	const u32 stop_bits = (LPC3XXX_I2S_RESET | LPC3XXX_I2S_STOP);
++	u32 flag;
++
++	guard(mutex)(&i2s_info_p->lock);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		flag = I2S_PLAYBACK_FLAG;
++		regmap_write(regs, LPC3XXX_REG_I2S_TX_RATE, 0);
++		regmap_update_bits(regs, LPC3XXX_REG_I2S_DAO, stop_bits, stop_bits);
++	} else {
++		flag = I2S_CAPTURE_FLAG;
++		regmap_write(regs, LPC3XXX_REG_I2S_RX_RATE, 0);
++		regmap_update_bits(regs, LPC3XXX_REG_I2S_DAI, stop_bits, stop_bits);
++	}
++	i2s_info_p->streams_in_use &= ~flag;
++
++	if (i2s_info_p->streams_in_use == 0)
++		clk_disable_unprepare(i2s_info_p->clk);
++}
++
++static int lpc3xxx_i2s_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
++				      int clk_id, unsigned int freq, int dir)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(cpu_dai);
++
++	/* Will use in HW params later */
++	i2s_info_p->freq = freq;
++
++	return 0;
++}
++
++static int lpc3xxx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(cpu_dai);
++	struct device *dev = i2s_info_p->dev;
++
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_I2S) {
++		dev_warn(dev, "unsupported bus format %d\n", fmt);
++		return -EINVAL;
++	}
++
++	if ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_BP_FP) {
++		dev_warn(dev, "unsupported clock provider %d\n", fmt);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int lpc3xxx_i2s_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(cpu_dai);
++	struct device *dev = i2s_info_p->dev;
++	struct regmap *regs = i2s_info_p->regs;
++	int xfersize;
++	u32 tmp, clkx, clky;
++
++	tmp = LPC3XXX_I2S_RESET | LPC3XXX_I2S_STOP;
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		tmp |= LPC3XXX_I2S_WW8 | LPC3XXX_I2S_WS_HP(LPC3XXX_I2S_WW8_HP);
++		xfersize = 1;
++		break;
++
++	case SNDRV_PCM_FORMAT_S16_LE:
++		tmp |= LPC3XXX_I2S_WW16 | LPC3XXX_I2S_WS_HP(LPC3XXX_I2S_WW16_HP);
++		xfersize = 2;
++		break;
++
++	case SNDRV_PCM_FORMAT_S32_LE:
++		tmp |= LPC3XXX_I2S_WW32 | LPC3XXX_I2S_WS_HP(LPC3XXX_I2S_WW32_HP);
++		xfersize = 4;
++		break;
++
++	default:
++		dev_warn(dev, "Unsupported audio data format %d\n", params_format(params));
++		return -EINVAL;
++	}
++
++	if (params_channels(params) == 1)
++		tmp |= LPC3XXX_I2S_MONO;
++
++	__lpc3xxx_find_clkdiv(&clkx, &clky, i2s_info_p->freq, xfersize, i2s_info_p->clkrate);
++
++	dev_dbg(dev, "Stream                : %s\n",
++		substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? "playback" : "capture");
++	dev_dbg(dev, "Desired clock rate    : %d\n", i2s_info_p->freq);
++	dev_dbg(dev, "Base clock rate       : %d\n", i2s_info_p->clkrate);
++	dev_dbg(dev, "Transfer size (bytes) : %d\n", xfersize);
++	dev_dbg(dev, "Clock divider (x)     : %d\n", clkx);
++	dev_dbg(dev, "Clock divider (y)     : %d\n", clky);
++	dev_dbg(dev, "Channels              : %d\n", params_channels(params));
++	dev_dbg(dev, "Data format           : %s\n", "I2S");
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		regmap_write(regs, LPC3XXX_REG_I2S_DMA1,
++			     LPC3XXX_I2S_DMA1_TX_EN | LPC3XXX_I2S_DMA0_TX_DEPTH(4));
++		regmap_write(regs, LPC3XXX_REG_I2S_TX_RATE, (clkx << 8) | clky);
++		regmap_write(regs, LPC3XXX_REG_I2S_DAO, tmp);
++	} else {
++		regmap_write(regs, LPC3XXX_REG_I2S_DMA0,
++			     LPC3XXX_I2S_DMA0_RX_EN | LPC3XXX_I2S_DMA1_RX_DEPTH(4));
++		regmap_write(regs, LPC3XXX_REG_I2S_RX_RATE, (clkx << 8) | clky);
++		regmap_write(regs, LPC3XXX_REG_I2S_DAI, tmp);
++	}
++
++	return 0;
++}
++
++static int lpc3xxx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
++			       struct snd_soc_dai *cpu_dai)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(cpu_dai);
++	struct regmap *regs = i2s_info_p->regs;
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			regmap_update_bits(regs, LPC3XXX_REG_I2S_DAO,
++					   LPC3XXX_I2S_STOP, LPC3XXX_I2S_STOP);
++		else
++			regmap_update_bits(regs, LPC3XXX_REG_I2S_DAI,
++					   LPC3XXX_I2S_STOP, LPC3XXX_I2S_STOP);
++		break;
++
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			regmap_update_bits(regs, LPC3XXX_REG_I2S_DAO,
++					   (LPC3XXX_I2S_RESET | LPC3XXX_I2S_STOP), 0);
++		else
++			regmap_update_bits(regs, LPC3XXX_REG_I2S_DAI,
++					   (LPC3XXX_I2S_RESET | LPC3XXX_I2S_STOP), 0);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static int lpc3xxx_i2s_dai_probe(struct snd_soc_dai *dai)
++{
++	struct lpc3xxx_i2s_info *i2s_info_p = snd_soc_dai_get_drvdata(dai);
++
++	snd_soc_dai_init_dma_data(dai, &i2s_info_p->playback_dma_config,
++				  &i2s_info_p->capture_dma_config);
++	return 0;
++}
++
++const struct snd_soc_dai_ops lpc3xxx_i2s_dai_ops = {
++	.probe	= lpc3xxx_i2s_dai_probe,
++	.startup = lpc3xxx_i2s_startup,
++	.shutdown = lpc3xxx_i2s_shutdown,
++	.trigger = lpc3xxx_i2s_trigger,
++	.hw_params = lpc3xxx_i2s_hw_params,
++	.set_sysclk = lpc3xxx_i2s_set_dai_sysclk,
++	.set_fmt = lpc3xxx_i2s_set_dai_fmt,
++};
++
++struct snd_soc_dai_driver lpc3xxx_i2s_dai_driver = {
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = LPC3XXX_I2S_RATES,
++		.formats = LPC3XXX_I2S_FORMATS,
++		},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = LPC3XXX_I2S_RATES,
++		.formats = LPC3XXX_I2S_FORMATS,
++		},
++	.ops = &lpc3xxx_i2s_dai_ops,
++	.symmetric_rate = 1,
++	.symmetric_channels = 1,
++	.symmetric_sample_bits = 1,
++};
++
++static const struct snd_soc_component_driver lpc32xx_i2s_component = {
++	.name = "lpc32xx-i2s",
++	.legacy_dai_naming = 1,
++};
++
++static const struct regmap_config lpc32xx_i2s_regconfig = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = LPC3XXX_REG_I2S_RX_RATE,
++};
++
++static int lpc32xx_i2s_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct lpc3xxx_i2s_info *i2s_info_p;
++	struct resource *res;
++	void __iomem *iomem;
++	int ret;
++
++	i2s_info_p = devm_kzalloc(dev, sizeof(*i2s_info_p), GFP_KERNEL);
++	if (!i2s_info_p)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, i2s_info_p);
++	i2s_info_p->dev = dev;
++
++	iomem = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(iomem))
++		return dev_err_probe(dev, PTR_ERR(iomem), "Can't map registers\n");
++
++	i2s_info_p->regs = devm_regmap_init_mmio(dev, iomem, &lpc32xx_i2s_regconfig);
++	if (IS_ERR(i2s_info_p->regs))
++		return dev_err_probe(dev, PTR_ERR(i2s_info_p->regs),
++				     "failed to init register map: %d\n", ret);
++
++	i2s_info_p->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(i2s_info_p->clk))
++		return dev_err_probe(dev, PTR_ERR(i2s_info_p->clk), "Can't get clock\n");
++
++	i2s_info_p->clkrate = clk_get_rate(i2s_info_p->clk);
++	if (i2s_info_p->clkrate == 0)
++		return dev_err_probe(dev, -EINVAL, "Invalid returned clock rate\n");
++
++	mutex_init(&i2s_info_p->lock);
++
++	ret = devm_snd_soc_register_component(dev, &lpc32xx_i2s_component,
++					      &lpc3xxx_i2s_dai_driver, 1);
++	if (ret)
++		return dev_err_probe(dev, ret, "Can't register cpu_dai component\n");
++
++	i2s_info_p->playback_dma_config.addr = (dma_addr_t)(res->start + LPC3XXX_REG_I2S_TX_FIFO);
++	i2s_info_p->playback_dma_config.maxburst = 4;
++
++	i2s_info_p->capture_dma_config.addr = (dma_addr_t)(res->start + LPC3XXX_REG_I2S_RX_FIFO);
++	i2s_info_p->capture_dma_config.maxburst = 4;
++
++	ret = lpc3xxx_pcm_register(pdev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Can't register pcm component\n");
++
++	return 0;
++}
++
++static const struct of_device_id lpc32xx_i2s_match[] = {
++	{ .compatible = "nxp,lpc3220-i2s" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, lpc32xx_i2s_match);
++
++static struct platform_driver lpc32xx_i2s_driver = {
++	.probe = lpc32xx_i2s_probe,
++	.driver		= {
++		.name	= "lpc3xxx-i2s",
++		.of_match_table = lpc32xx_i2s_match,
++	},
++};
++
++module_platform_driver(lpc32xx_i2s_driver);
++
++MODULE_AUTHOR("Kevin Wells <kevin.wells@nxp.com>");
++MODULE_AUTHOR("Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>");
++MODULE_DESCRIPTION("ASoC LPC3XXX I2S interface");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/fsl/lpc3xxx-i2s.h b/sound/soc/fsl/lpc3xxx-i2s.h
+new file mode 100644
+index 000000000000..eec755448478
+--- /dev/null
++++ b/sound/soc/fsl/lpc3xxx-i2s.h
+@@ -0,0 +1,79 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Author: Kevin Wells <kevin.wells@nxp.com>
++ *
++ * Copyright (C) 2008 NXP Semiconductors
++ * Copyright 2023 Timesys Corporation <piotr.wojtaszczyk@timesys.com>
++ */
++
++#ifndef __SOUND_SOC_LPC3XXX_I2S_H
++#define __SOUND_SOC_LPC3XXX_I2S_H
++
++#include <linux/types.h>
++#include <linux/regmap.h>
++
++struct lpc3xxx_i2s_info {
++	struct device *dev;
++	struct clk *clk;
++	struct mutex lock; /* To serialize user-space access */
++	struct regmap *regs;
++	u32 streams_in_use;
++	u32 clkrate;
++	int freq;
++	struct snd_dmaengine_dai_dma_data playback_dma_config;
++	struct snd_dmaengine_dai_dma_data capture_dma_config;
++};
++
++int lpc3xxx_pcm_register(struct platform_device *pdev);
++
++/* I2S controller register offsets */
++#define LPC3XXX_REG_I2S_DAO		0x00
++#define LPC3XXX_REG_I2S_DAI		0x04
++#define LPC3XXX_REG_I2S_TX_FIFO	0x08
++#define LPC3XXX_REG_I2S_RX_FIFO	0x0C
++#define LPC3XXX_REG_I2S_STAT	0x10
++#define LPC3XXX_REG_I2S_DMA0	0x14
++#define LPC3XXX_REG_I2S_DMA1	0x18
++#define LPC3XXX_REG_I2S_IRQ		0x1C
++#define LPC3XXX_REG_I2S_TX_RATE	0x20
++#define LPC3XXX_REG_I2S_RX_RATE	0x24
++
++/* i2s_daO i2s_dai register definitions */
++#define LPC3XXX_I2S_WW8      FIELD_PREP(0x3, 0) /* Word width is 8bit */
++#define LPC3XXX_I2S_WW16     FIELD_PREP(0x3, 1) /* Word width is 16bit */
++#define LPC3XXX_I2S_WW32     FIELD_PREP(0x3, 3) /* Word width is 32bit */
++#define LPC3XXX_I2S_MONO     BIT(2)   /* Mono */
++#define LPC3XXX_I2S_STOP     BIT(3)   /* Stop, diables the access to FIFO, mutes the channel */
++#define LPC3XXX_I2S_RESET    BIT(4)   /* Reset the channel */
++#define LPC3XXX_I2S_WS_SEL   BIT(5)   /* Channel Master(0) or slave(1) mode select */
++#define LPC3XXX_I2S_WS_HP(s) FIELD_PREP(0x7FC0, s) /* Word select half period - 1 */
++#define LPC3XXX_I2S_MUTE     BIT(15)  /* Mute the channel, Transmit channel only */
++
++#define LPC3XXX_I2S_WW32_HP  0x1f /* Word select half period for 32bit word width */
++#define LPC3XXX_I2S_WW16_HP  0x0f /* Word select half period for 16bit word width */
++#define LPC3XXX_I2S_WW8_HP   0x7  /* Word select half period for 8bit word width */
++
++/* i2s_stat register definitions */
++#define LPC3XXX_I2S_IRQ_STAT     BIT(0)
++#define LPC3XXX_I2S_DMA0_REQ     BIT(1)
++#define LPC3XXX_I2S_DMA1_REQ     BIT(2)
++
++/* i2s_dma0 Configuration register definitions */
++#define LPC3XXX_I2S_DMA0_RX_EN     BIT(0)       /* Enable RX DMA1 */
++#define LPC3XXX_I2S_DMA0_TX_EN     BIT(1)       /* Enable TX DMA1 */
++#define LPC3XXX_I2S_DMA0_RX_DEPTH(s) FIELD_PREP(0xF00, s)  /* Set the DMA1 RX Request level */
++#define LPC3XXX_I2S_DMA0_TX_DEPTH(s) FIELD_PREP(0xF0000, s) /* Set the DMA1 TX Request level */
++
++/* i2s_dma1 Configuration register definitions */
++#define LPC3XXX_I2S_DMA1_RX_EN     BIT(0)       /* Enable RX DMA1 */
++#define LPC3XXX_I2S_DMA1_TX_EN     BIT(1)       /* Enable TX DMA1 */
++#define LPC3XXX_I2S_DMA1_RX_DEPTH(s) FIELD_PREP(0x700, s) /* Set the DMA1 RX Request level */
++#define LPC3XXX_I2S_DMA1_TX_DEPTH(s) FIELD_PREP(0x70000, s) /* Set the DMA1 TX Request level */
++
++/* i2s_irq register definitions */
++#define LPC3XXX_I2S_RX_IRQ_EN     BIT(0)       /* Enable RX IRQ */
++#define LPC3XXX_I2S_TX_IRQ_EN     BIT(1)       /* Enable TX IRQ */
++#define LPC3XXX_I2S_IRQ_RX_DEPTH(s)  FIELD_PREP(0xFF00, s)  /* valid values ar 0 to 7 */
++#define LPC3XXX_I2S_IRQ_TX_DEPTH(s)  FIELD_PREP(0xFF0000, s) /* valid values ar 0 to 7 */
++
++#endif
+diff --git a/sound/soc/fsl/lpc3xxx-pcm.c b/sound/soc/fsl/lpc3xxx-pcm.c
+new file mode 100644
+index 000000000000..c0d499b9b8ba
+--- /dev/null
++++ b/sound/soc/fsl/lpc3xxx-pcm.c
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// Author: Kevin Wells <kevin.wells@nxp.com>
++//
++// Copyright (C) 2008 NXP Semiconductors
++// Copyright 2023 Timesys Corporation <piotr.wojtaszczyk@timesys.com>
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++#include <linux/amba/pl08x.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/soc.h>
++
++#include "lpc3xxx-i2s.h"
++
++#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
++			SNDRV_PCM_FMTBIT_U8 | \
++			SNDRV_PCM_FMTBIT_S16_LE | \
++			SNDRV_PCM_FMTBIT_U16_LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_U24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE | \
++			SNDRV_PCM_FMTBIT_U32_LE | \
++			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
++
++static const struct snd_pcm_hardware lpc3xxx_pcm_hardware = {
++	.info = (SNDRV_PCM_INFO_MMAP |
++		 SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_INTERLEAVED |
++		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		 SNDRV_PCM_INFO_PAUSE |
++		 SNDRV_PCM_INFO_RESUME),
++	.formats = STUB_FORMATS,
++	.period_bytes_min = 128,
++	.period_bytes_max = 2048,
++	.periods_min = 2,
++	.periods_max = 1024,
++	.buffer_bytes_max = 128 * 1024
++};
++
++static const struct snd_dmaengine_pcm_config lpc3xxx_dmaengine_pcm_config = {
++	.pcm_hardware = &lpc3xxx_pcm_hardware,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++	.compat_filter_fn = pl08x_filter_id,
++	.prealloc_buffer_size = 128 * 1024,
++};
++
++const struct snd_soc_component_driver lpc3xxx_soc_platform_driver = {
++	.name = "lpc32xx-pcm",
++};
++
++int lpc3xxx_pcm_register(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, &lpc3xxx_dmaengine_pcm_config, 0);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to register dmaengine: %d\n", ret);
++		return ret;
++	}
++
++	return devm_snd_soc_register_component(&pdev->dev, &lpc3xxx_soc_platform_driver,
++					       NULL, 0);
++}
++EXPORT_SYMBOL(lpc3xxx_pcm_register);
 -- 
 2.25.1
 
