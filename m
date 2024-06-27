@@ -4,110 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF05C30653
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:05:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB207C3064D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 16:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=15nBWS4wJqkWQq0SmIvLpOAlZh2LhQlJoT6xjdbLa6I=; b=rtjf1YMSSMOsZc
-	3WFewno4wPBZ5slel6tbBL/NnmhROu+Cy3koVHAaMv11hBaPQis0f6gmIJNzARtBxmTKvikaYPcaU
-	w8Sq0dT89fUlkuxoq0TSFjJCVxxIc99eRrdqcKAgPL5yjPI8DaACIrz+wSsx6WL/hIYL4iVwGpUhP
-	b3vbjeIyjgdbLOqS+jceijxnfCNNsspHEakQbde3TYyknqZoMPpBHKDGBs7MYDCJ1N6JYT6TWMHRI
-	gzTCbDz1AKCBVdCSJ3gXImLF6oSqkDM2mj0Vo9djMKF6Drz3ofs2Ei1BplbJQwIpAJyvxWzy7kooG
-	vnat06+cWsgi23SURTDQ==;
+	List-Owner; bh=6Kmaho9cgkpU6+WO+zH/FR/s0U4RfNJi3UjTGMv1O/M=; b=FjcCPluu8snSPZ
+	YBy96dQS3Ziy1+8K5pNlSj+BnbBZZTZi3zXv50d1aTEypJ4M4vWAdoRqYvVl/ZhdLAH4p1Kx0LNrW
+	6c/AMiXQd4Wj91oVo9inESn96vUuOcdsz/KFYM8B3/3ZSFvk49UbeGQjJ3lFcwX1dW1hVr2/8WCF4
+	eS9rJw0yl89nXv0l9A71Ts0aHitOhgPm9qBylBjSNc5pm6ya8dZmQnRf11pyugJu8P7sFer0Ib2d/
+	JLKk8PGQLvsx+CZGgktIoVVkDrjJywz8ivjoiUUNIuZKLdeMmUI0KR4E432sZVSCk8PtkpPd2Tgrq
+	cdlH9lMbDq1sQdgo1d5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqgm-0000000An5o-22qw;
-	Thu, 27 Jun 2024 15:05:32 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1sMrd2-0000000Ayiw-1IS3;
+	Thu, 27 Jun 2024 16:05:44 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqgc-0000000AmzJ-0KTI
+	id 1sMrcx-0000000Ayee-3J9t
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jun 2024 15:05:26 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a724cd0e9c2so599155666b.3
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500720; x=1720105520; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c0en4a04xGUdMe3CHuzskBvRxKjfQMua42qeg+gKOfI=;
-        b=hkKQMjZG3RFqosb1RI6hshV0D07zqF0Ucgg5UWdfTA9odxeUAT0c94gjeFEsynzjF4
-         TMgXpv3cTsoDZwvNg1BeulXZxjlMlZ3pXtoXFZCXy9B/F1W0w87bb2Ig/OJ4By+vf496
-         iiRtuCOJnM3N6JhPuQMaupyudDWl+pDkQwyTo4Nm6TGTh890adsc1GleuiZfMEn9iMX2
-         AAL2ubT7CycKa/I7Vgejymp8yB1R3QboGavxfEc6lDeMIlmDlkKRuFwLnHhExDtnZIYy
-         GYzEmvAGm2Js7ZZVWcyMUg79LyTdcEO10DM/Jjdlasmyj8/7AxVuGTEzEZfzjxZbHPdL
-         0VeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500720; x=1720105520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c0en4a04xGUdMe3CHuzskBvRxKjfQMua42qeg+gKOfI=;
-        b=J1vPAms2voQ3DMvttugys3Vep+rxuT4Ss4zbhmx0r8VsqEBHd76mEBYLDgPt8FkdQI
-         SBeqL1rUBFZ/QVRBS3IwsKk1ywABN3KcA/NGOxlv7D4ute0MGz4LHg5EncpdqSfB2HSP
-         XMhQ3fzGTofkaKhVYL9ZqGv04jG6X34lZqCDCx2YRXH0sNdz44XHaa/4+KTJZ2wY3/jl
-         bCBZU6O/J+cEHBdjs8k07Vrt6C61bf8g2F57cHVzrn29vSjsOMLUrsoD01YdiA09GYjj
-         Ilaem5rHkcj0jGc5OuFYT+P1fD3HqRB356oOnlfq5+Wao7U0Vb7AkE2pwOpGz4rFS8vR
-         1ODA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHo/DGGb2AQhkHAkF3J2cNj3uzX5Jn4JofayuwEfYEQEzVNuJDCWKCtQdKMdwiIjLvipeay8/fz0BJAS9i1hSRKgkOQx6Ur8uQ3s6DVQ==
-X-Gm-Message-State: AOJu0YxG2cfUBlsa+E198uIBzpiGuk0V6P6A4T44EljwZjy1LYB5E2kn
-	2CsK87BTYfNV9SuUJqorjulEGhuV/eQCSq3saqJpXjrqAyV/vuO7vBcgLEpsZSY=
-X-Google-Smtp-Source: AGHT+IFWt98+h6PiAC5RUj8DxZquK6YDjOivxXx0avHukTQoTFEMXOT45G3SobQ5Q+1zYPM7YJ42Nw==
-X-Received: by 2002:a17:907:3ad4:b0:a6f:4de6:79f with SMTP id a640c23a62f3a-a7245bad98emr764943466b.40.1719500720489;
-        Thu, 27 Jun 2024 08:05:20 -0700 (PDT)
-Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.05.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:05:19 -0700 (PDT)
-From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"J.M.B. Downing" <jonathan.downing@nautel.com>,
-	Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Yangtao Li <frank.li@vivo.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Li Zetao <lizetao1@huawei.com>,
-	Chancel Liu <chancel.liu@nxp.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Corentin Labbe <clabbe@baylibre.com>,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [Patch v5 12/12] i2x: pnx: Fix potential deadlock warning from del_timer_sync() call in isr
-Date: Thu, 27 Jun 2024 17:00:30 +0200
-Message-Id: <20240627150046.258795-13-piotr.wojtaszczyk@timesys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
-References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
+	Thu, 27 Jun 2024 16:05:41 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 16C8F1C000B;
+	Thu, 27 Jun 2024 16:05:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1719504337;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dtm6RuQJK7HKXMqLOw3rQerxE/QDxsxWMgh9vmm6n3k=;
+	b=ZVO1kRfEaJlPja4FjGy+YaxVv2IN7F8Z6Yo36vhnWUVJEcpQW89uhnRI2AiEd4zu6Dzkrt
+	4AOF/EonhspOx/8+7FDoPuX0AhK6z2jfAQV3vkFbHp5ZKuGYfsGcDGOtL41FV3L1Fula25
+	iQ6VE6z+ovdSuEcKmx8jkQJR8wlN9GxgVYRWZ62TLiXztV2DIpFsu85NzrnTIKq2iJFNSi
+	JydmPPqNjM6ptGPKi2eY+YZVmdareA92mFavAF5YIZwsu/DJqRhHGoXdR2cK2xjn67k2Q6
+	S8fZiaf1tJdbb9f7QYlqD5d1pQ22a+qsIIhemVKHj3B6mNbTs6dKxy/YZRGARw==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Thu, 27 Jun 2024 18:05:28 +0200
+Subject: [PATCH v2 1/2] arch: m68k: Add definitions for flash NFC support
 MIME-Version: 1.0
+Message-Id: <20240627-upstream-nfc-mcf5441x-v2-1-312929d09ee5@yoseli.org>
+References: <20240627-upstream-nfc-mcf5441x-v2-0-312929d09ee5@yoseli.org>
+In-Reply-To: <20240627-upstream-nfc-mcf5441x-v2-0-312929d09ee5@yoseli.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719504334; l=968;
+ i=jeanmichel.hautbois@yoseli.org; s=20240608; h=from:subject:message-id;
+ bh=7MQUtBtmxwtqSjwHgGQHzsi6UX1cWt9yIlLizuWjabU=;
+ b=r2PAnoXwjNQlDMjnfDZiZz4dyFqRDwOrUTG3Glt35IMJoP78EndtTyrT7IvPZX8LH2hPKhM0L
+ 9jolZSxpmurBQeDAEmH7t6FHruD54qiX1tgjkzAD70B1BvdQpnwzjdU
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=oMZuYhJzT0j5MI73RlNUVYaA8VdWpFR/Sao0JKz1D2I=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240627_080522_166882_EB8D74D7 
-X-CRM114-Status: GOOD (  24.34  )
+X-CRM114-CacheID: sfid-20240627_090540_059192_B5A84DA2 
+X-CRM114-Status: UNSURE (   8.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,187 +84,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When del_timer_sync() is called in an interrupt context it throws a warning
-because of potential deadlock. The timer is used only to exit from
-wait_for_completion() after a timeout so replacing the call with
-wait_for_completion_timeout() allows to remove the problematic timer and
-its related functions altogether.
+Add a few definitions, as the base address for the NFC for the M5441x.
 
-Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
-Changes for v5:
-- Replaced wait_for_completion() with wait_for_completion_timeout().
-- Removed unneded "alg_data->mif.timer" and its functions
-- Request irq with devm_request_irq() as before the patch
-- Renamed the patch and reword description for the new way to fix
-  the warning
+ arch/m68k/include/asm/m5441xsim.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Changes for v4:
-- Request irq with devm_request_threaded_irq() to prevent the warning
+diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+index f48cf63bd782..d4ee1eab7c4a 100644
+--- a/arch/m68k/include/asm/m5441xsim.h
++++ b/arch/m68k/include/asm/m5441xsim.h
+@@ -99,6 +99,7 @@
+ #define MCFINT2_PIT1		14
+ #define MCFINT2_PIT2		15
+ #define MCFINT2_PIT3		16
++#define MCFINT2_NFC		25
+ #define MCFINT2_RTC		26
+ 
+ /*
+@@ -333,4 +334,10 @@
+ #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+ #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+ 
++/*
++ * Flash module
++ */
++#define MCF_NFC_BASE		0xfc0fc000
++#define MCF_NFC_SIZE		(0xfc0fff3b - 0xfc0fc000)
++#define MCF_NFC_ISR		(MCFINT2_VECBASE + MCFINT2_NFC)
+ #endif /* m5441xsim_h */
 
- drivers/i2c/busses/i2c-pnx.c | 48 ++++++++----------------------------
- 1 file changed, 10 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-pnx.c b/drivers/i2c/busses/i2c-pnx.c
-index a12525b3186b..f448505d5468 100644
---- a/drivers/i2c/busses/i2c-pnx.c
-+++ b/drivers/i2c/busses/i2c-pnx.c
-@@ -15,7 +15,6 @@
- #include <linux/ioport.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
--#include <linux/timer.h>
- #include <linux/completion.h>
- #include <linux/platform_device.h>
- #include <linux/io.h>
-@@ -32,7 +31,6 @@ struct i2c_pnx_mif {
- 	int			ret;		/* Return value */
- 	int			mode;		/* Interface mode */
- 	struct completion	complete;	/* I/O completion */
--	struct timer_list	timer;		/* Timeout */
- 	u8 *			buf;		/* Data buffer */
- 	int			len;		/* Length of data buffer */
- 	int			order;		/* RX Bytes to order via TX */
-@@ -117,24 +115,6 @@ static inline int wait_reset(struct i2c_pnx_algo_data *data)
- 	return (timeout <= 0);
- }
- 
--static inline void i2c_pnx_arm_timer(struct i2c_pnx_algo_data *alg_data)
--{
--	struct timer_list *timer = &alg_data->mif.timer;
--	unsigned long expires = msecs_to_jiffies(alg_data->timeout);
--
--	if (expires <= 1)
--		expires = 2;
--
--	del_timer_sync(timer);
--
--	dev_dbg(&alg_data->adapter.dev, "Timer armed at %lu plus %lu jiffies.\n",
--		jiffies, expires);
--
--	timer->expires = jiffies + expires;
--
--	add_timer(timer);
--}
--
- /**
-  * i2c_pnx_start - start a device
-  * @slave_addr:		slave address
-@@ -259,8 +239,6 @@ static int i2c_pnx_master_xmit(struct i2c_pnx_algo_data *alg_data)
- 				~(mcntrl_afie | mcntrl_naie | mcntrl_drmie),
- 				  I2C_REG_CTL(alg_data));
- 
--			del_timer_sync(&alg_data->mif.timer);
--
- 			dev_dbg(&alg_data->adapter.dev,
- 				"%s(): Waking up xfer routine.\n",
- 				__func__);
-@@ -276,8 +254,6 @@ static int i2c_pnx_master_xmit(struct i2c_pnx_algo_data *alg_data)
- 			~(mcntrl_afie | mcntrl_naie | mcntrl_drmie),
- 			  I2C_REG_CTL(alg_data));
- 
--		/* Stop timer. */
--		del_timer_sync(&alg_data->mif.timer);
- 		dev_dbg(&alg_data->adapter.dev,
- 			"%s(): Waking up xfer routine after zero-xfer.\n",
- 			__func__);
-@@ -364,8 +340,6 @@ static int i2c_pnx_master_rcv(struct i2c_pnx_algo_data *alg_data)
- 				 mcntrl_drmie | mcntrl_daie);
- 			iowrite32(ctl, I2C_REG_CTL(alg_data));
- 
--			/* Kill timer. */
--			del_timer_sync(&alg_data->mif.timer);
- 			complete(&alg_data->mif.complete);
- 		}
- 	}
-@@ -400,8 +374,6 @@ static irqreturn_t i2c_pnx_interrupt(int irq, void *dev_id)
- 			 mcntrl_drmie);
- 		iowrite32(ctl, I2C_REG_CTL(alg_data));
- 
--		/* Stop timer, to prevent timeout. */
--		del_timer_sync(&alg_data->mif.timer);
- 		complete(&alg_data->mif.complete);
- 	} else if (stat & mstatus_nai) {
- 		/* Slave did not acknowledge, generate a STOP */
-@@ -419,8 +391,6 @@ static irqreturn_t i2c_pnx_interrupt(int irq, void *dev_id)
- 		/* Our return value. */
- 		alg_data->mif.ret = -EIO;
- 
--		/* Stop timer, to prevent timeout. */
--		del_timer_sync(&alg_data->mif.timer);
- 		complete(&alg_data->mif.complete);
- 	} else {
- 		/*
-@@ -453,9 +423,8 @@ static irqreturn_t i2c_pnx_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
--static void i2c_pnx_timeout(struct timer_list *t)
-+static void i2c_pnx_timeout(struct i2c_pnx_algo_data *alg_data)
- {
--	struct i2c_pnx_algo_data *alg_data = from_timer(alg_data, t, mif.timer);
- 	u32 ctl;
- 
- 	dev_err(&alg_data->adapter.dev,
-@@ -472,7 +441,6 @@ static void i2c_pnx_timeout(struct timer_list *t)
- 	iowrite32(ctl, I2C_REG_CTL(alg_data));
- 	wait_reset(alg_data);
- 	alg_data->mif.ret = -EIO;
--	complete(&alg_data->mif.complete);
- }
- 
- static inline void bus_reset_if_active(struct i2c_pnx_algo_data *alg_data)
-@@ -514,6 +482,7 @@ i2c_pnx_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 	struct i2c_msg *pmsg;
- 	int rc = 0, completed = 0, i;
- 	struct i2c_pnx_algo_data *alg_data = adap->algo_data;
-+	unsigned long time_left;
- 	u32 stat;
- 
- 	dev_dbg(&alg_data->adapter.dev,
-@@ -548,7 +517,6 @@ i2c_pnx_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 		dev_dbg(&alg_data->adapter.dev, "%s(): mode %d, %d bytes\n",
- 			__func__, alg_data->mif.mode, alg_data->mif.len);
- 
--		i2c_pnx_arm_timer(alg_data);
- 
- 		/* initialize the completion var */
- 		init_completion(&alg_data->mif.complete);
-@@ -564,7 +532,10 @@ i2c_pnx_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
- 			break;
- 
- 		/* Wait for completion */
--		wait_for_completion(&alg_data->mif.complete);
-+		time_left = wait_for_completion_timeout(&alg_data->mif.complete,
-+							alg_data->timeout);
-+		if (time_left == 0)
-+			i2c_pnx_timeout(alg_data);
- 
- 		if (!(rc = alg_data->mif.ret))
- 			completed++;
-@@ -653,7 +624,10 @@ static int i2c_pnx_probe(struct platform_device *pdev)
- 	alg_data->adapter.algo_data = alg_data;
- 	alg_data->adapter.nr = pdev->id;
- 
--	alg_data->timeout = I2C_PNX_TIMEOUT_DEFAULT;
-+	alg_data->timeout = msecs_to_jiffies(I2C_PNX_TIMEOUT_DEFAULT);
-+	if (alg_data->timeout <= 1)
-+		alg_data->timeout = 2;
-+
- #ifdef CONFIG_OF
- 	alg_data->adapter.dev.of_node = of_node_get(pdev->dev.of_node);
- 	if (pdev->dev.of_node) {
-@@ -673,8 +647,6 @@ static int i2c_pnx_probe(struct platform_device *pdev)
- 	if (IS_ERR(alg_data->clk))
- 		return PTR_ERR(alg_data->clk);
- 
--	timer_setup(&alg_data->mif.timer, i2c_pnx_timeout, 0);
--
- 	snprintf(alg_data->adapter.name, sizeof(alg_data->adapter.name),
- 		 "%s", pdev->name);
- 
 -- 
-2.25.1
+2.43.0
 
 
 ______________________________________________________
