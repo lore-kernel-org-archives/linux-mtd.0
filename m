@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30712C2BD09
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:04:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC880C2BD09
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fZ7XTJ/4kmLuuvz+2RJ3V9NGxNHulBE4gIBCRqPtCos=; b=EIeaTdAwX+47it
-	bgmYul1DLr0EG+btZoJNMflqsDw5fKLz2k/jU85cBh0Nd4Lln5XiQulIPE04pDfHSIPLK2VSMMEn/
-	UsvIxKL1bJSmLZkF1yGmkz1RBGvYjSJAdXRJ4qcns5kGE5csKhHjqqqX6CDKRVuGjq6ZgeNfsIkWW
-	74K7s1L5XH3YG8TKZ+5Yhaf/TjRvXaYcD6ucBFGwnhlCKii4I0/KRaBpYfUeiU8EQ0jTiNHipxpH6
-	JEB99NEQ6orbHg8akd4rYKDcySCm1Ru2zclM+wiANxfhNcKb+mDE+xgOz4mDmGPttHP1B//X7E71K
-	Vve86UQpoRh1/fzfHn7w==;
+	List-Owner; bh=Tq/IQ3pMZLSf7xgKXwkG/4dTihdT3fA7jQDxPWCSVF4=; b=eFLiPS8lvUOVLm
+	ZLbiRAxu0Y5NIYczFd3m3YPbmRLuEJ9Ji7qfenyq8lX2iSeGnhlNPtsLbU5500acfGVuIHGRD3EGa
+	rjgJBlnY0D3ZGXEekEBAM9HR2UrncVaaQkfuMNTRDQ1YNox3S1t+HAxtdQr0mJedCEB4DJyQ1a0Ca
+	GFPxFmps6tO8zuo5aZoNjvqvDjJZUEn8jk+sNCCxhNUsQLocFct2qnSRuhoCEdSy5c79nWGAXIOqc
+	x7i6xMgGzxnFhguK5uhl0OhihFbSTD54GZ3QLMvcQrn4fG+BsHG/0ZqfgQyxWPcWK0MEjtLy7Jzj+
+	RynTrwv1cwbmxBLcl4XQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqfz-0000000AmbC-11Sv;
-	Thu, 27 Jun 2024 15:04:43 +0000
-Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
+	id 1sMqg1-0000000Amcu-3OCg;
+	Thu, 27 Jun 2024 15:04:45 +0000
+Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqfd-0000000AmPI-2oxA
+	id 1sMqfx-0000000AmZP-3cRE
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jun 2024 15:04:23 +0000
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5854ac817afso823339a12.2
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:04:21 -0700 (PDT)
+	Thu, 27 Jun 2024 15:04:44 +0000
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a724b4f1218so697069866b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:04:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500660; x=1720105460; darn=lists.infradead.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500680; x=1720105480; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SAbEFx8Qx1jb1E3qZFdMOF6RPU8ZJ7qI5KSjiERwRt4=;
-        b=o9cRWdYfZg+C7UopBIWa4vg+AZDS1JzeBI4gxp1FI6lMA6dJiuWO9+7t04wZZNztbF
-         4bNrG6hr8hTRr/sBJlBug/cfrBKkHiNUIlO3Apg8UjojaFVpBLvYZAl/xkDciaUkI+wq
-         RkGjcyGPebesw4xjrJTIYGinZ1SyNUXIJVwrvNJFr1OpGh3lx8fEyprDLK2AChVMRTBM
-         asZqTns7zS+GKKfCHfHbHPiRbSsRISOEXLnsgkuHRXw4ZjN3nCAp6I99MVgiI66mARSB
-         6J7Y6lcbuOfSReTs9ZFjZM1yeEP/CgmZn8MLcdnpHXpkADj00zgYtw7NoCfuHc3J6nxh
-         Z6YA==
+        bh=0kKU0V25b+NdpL5Nxb/CadexmGEKpxevd8xM2vqH8ko=;
+        b=i5seAKceJvgeIY4o546fYQ7lvuaqTGFKl7nqJTo12CEyz/T1NwMPCpewx1ZpL379kn
+         /Mise/J+xQmJcEGAU1TFPHMB1O0zMTv+TXURVPpv1uu5TgknBCakzPbIqPRilmahB0rI
+         //XeGQvk2Tr9WN525hyu5AcM+C00HMRbEpIyPLzCHztpBzlDP4dGeZSvZUkBZT528tX7
+         PZrzEh4RQKDLpof/VOBnI6YmR7Qq1nHwNSyLQp8G+r3pKxYoMJaAzV3Hkm7ORqOI5JNw
+         QOB4V7A/0sR2+8c1qCc9Xk4uoEJhddoZjy4FdC8beOfVq+oUN/1Yuist8+2JBHiYcuRF
+         72WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500660; x=1720105460;
+        d=1e100.net; s=20230601; t=1719500680; x=1720105480;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SAbEFx8Qx1jb1E3qZFdMOF6RPU8ZJ7qI5KSjiERwRt4=;
-        b=otsTSgTOFlp5AXdRl9zsSPq0Cuz9Jq6hS4VTGtkSi+pPDe8WL9SK4mHtm3g0SPrl4W
-         gNE5prWTJ0K35nWMhHPlOs80uQ7lDCyNBNGxgB6kmQLj5MScQLctGWvF/1xOlShjNTYw
-         X+KiFl6dXHkIoEReVQyjowaRa1KdLKfZta9UGu9Af9ziqcF0jXGcQXXZnpWrng1ddkFm
-         yeUBOd0Ec3bm3zXTYxkM1s+di4B8IKl/zCemi67X1SKYRZ9ipzbiQtxN1ZmaJ/NHoST4
-         ykks4bUMyEW1W3Am0bH8AKD10wBw6+PCR5d1acFojAgP7eMvN+GTlrvF5MR1lR4PlRvf
-         +MWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVLF0Og6Oz+r7z7/J9lKrFCg5RRefdlylh5vN18wthx8c5sz7DBcjt6gISXl2paI6lLRO5pazqjlg/bvKWETCVzkaaork4/7g3ezd9qGw==
-X-Gm-Message-State: AOJu0Yzc54vjNbsdpSlGvgVL28w8680JHl2faTPuVxUlaUY1Yadv/7IH
-	I1f0Kz0kHi92DsLJEeJxB47MA1JWBXocuF1igtX/M2Uihbdjyev0US0vtfewM6Y=
-X-Google-Smtp-Source: AGHT+IGWWjdS8xPoV3qLbjKKjfLtKfd3PYZl/5ZuwXyyzk52xq360p0PA+fjmtbO1v8hyBEWixy7Fw==
-X-Received: by 2002:a17:906:c44d:b0:a72:548a:6f42 with SMTP id a640c23a62f3a-a72548a702emr877880166b.18.1719500659616;
-        Thu, 27 Jun 2024 08:04:19 -0700 (PDT)
+        bh=0kKU0V25b+NdpL5Nxb/CadexmGEKpxevd8xM2vqH8ko=;
+        b=QPGPlu9ML+rYomsOcDE4g5527bBDMkBOjn99gN4BZ1sE+CJJvvpubLzI8IeQLLEzPI
+         ZEUSfab6KJmabNVSZ9gPPNCG9Nz6SXMTSgc4TFHDRwHLjn7bxLzKyyJtU9E5SF7BEi8K
+         M0Sv5uImv6obvCTla38jSlXaOxMNSfjdgna+WhDC6qhEPRRRPcwirOnJilzwyTebT3Y3
+         01+Fu6w+7RdMPlNRg/pZEDj/5js3X8WXWVA0VMnMwSQEIgLs7nxmhI3fX4WBRv1A4EpT
+         KGUYCVlYaYt/xENbfM71Vvjso7aQLTDL7qbZkevh3w7uU3GLf58yEWLaB/2bhRhLDySc
+         adXg==
+X-Forwarded-Encrypted: i=1; AJvYcCW5P4di9vISkm0ayHDhtenoEf9AIXpUNpGXYuCzvyJyYDhA6cQ2NCy1PIUJF+Hmg7VmebTt/TYSviFwgGynvVBkPzWKm5SKW/OhWkv+KQ==
+X-Gm-Message-State: AOJu0YwbDE5M6+EuvObaWBBpWertzQaGaYSzhcQz0QfYWHLzHy35dviW
+	YtbJhSnVmgE+m5qNgR3LReksZMIaRdCmIE6cR8+8hO34PM29KB9aMZOgv1HKptw=
+X-Google-Smtp-Source: AGHT+IEDRv7diooeJV6LJXwf0EjCsVi9YKqxuCA0IYC1Rui0S1k3Zcq9kDuWbuWeuGO8t2Iv/ci0ng==
+X-Received: by 2002:a17:906:d509:b0:a6f:5192:6f4d with SMTP id a640c23a62f3a-a7242c4dfd3mr693613366b.8.1719500679193;
+        Thu, 27 Jun 2024 08:04:39 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.04.17
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.04.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:04:18 -0700 (PDT)
+        Thu, 27 Jun 2024 08:04:38 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -82,11 +82,11 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Yangtao Li <frank.li@vivo.com>,
 	Arnd Bergmann <arnd@arndb.de>,
+	Yangtao Li <frank.li@vivo.com>,
 	Li Zetao <lizetao1@huawei.com>,
-	Chancel Liu <chancel.liu@nxp.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
+	Chancel Liu <chancel.liu@nxp.com>,
 	Corentin Labbe <clabbe@baylibre.com>,
 	dmaengine@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -98,16 +98,16 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [Patch v5 09/12] ARM: lpc32xx: Remove pl08x platform data in favor for device tree
-Date: Thu, 27 Jun 2024 17:00:27 +0200
-Message-Id: <20240627150046.258795-10-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v5 10/12] mtd: rawnand: lpx32xx: Request DMA channels using DT entries
+Date: Thu, 27 Jun 2024 17:00:28 +0200
+Message-Id: <20240627150046.258795-11-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240627_080421_833075_E6609F7A 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20240627_080442_004712_5FB2DE17 
+X-CRM114-Status: GOOD (  14.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,87 +124,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-With the driver for nxp,lpc3220-dmamux we can remove the pl08x platform
-data and let pl08x driver to create peripheral channels from the DT
-properties.
+Move away from pl08x platform data towards device tree.
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
+Changes for v5:
+- Added fallback dma channel request for backward compatibility with DMA with
+  platform data instead DT
+
 Changes for v4:
 - This patch is new in v4
 
- arch/arm/mach-lpc32xx/phy3250.c | 54 ---------------------------------
- 1 file changed, 54 deletions(-)
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 26 +++++++++++++++-----------
+ drivers/mtd/nand/raw/lpc32xx_slc.c | 26 +++++++++++++++-----------
+ 2 files changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arm/mach-lpc32xx/phy3250.c b/arch/arm/mach-lpc32xx/phy3250.c
-index 66701bf43248..0c7797a0e44e 100644
---- a/arch/arm/mach-lpc32xx/phy3250.c
-+++ b/arch/arm/mach-lpc32xx/phy3250.c
-@@ -16,64 +16,10 @@
- #include <asm/mach/arch.h>
- #include "common.h"
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index 677fcb03f9be..92cebe871bb4 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -574,18 +574,22 @@ static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+ 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 	dma_cap_mask_t mask;
  
--static struct pl08x_channel_data pl08x_slave_channels[] = {
--	{
--		.bus_id = "nand-slc",
--		.min_signal = 1, /* SLC NAND Flash */
--		.max_signal = 1,
--		.periph_buses = PL08X_AHB1,
--	},
--	{
--		.bus_id = "nand-mlc",
--		.min_signal = 12, /* MLC NAND Flash */
--		.max_signal = 12,
--		.periph_buses = PL08X_AHB1,
--	},
--};
+-	if (!host->pdata || !host->pdata->dma_filter) {
+-		dev_err(mtd->dev.parent, "no DMA platform data\n");
+-		return -ENOENT;
+-	}
 -
--static int pl08x_get_signal(const struct pl08x_channel_data *cd)
--{
--	return cd->min_signal;
--}
--
--static void pl08x_put_signal(const struct pl08x_channel_data *cd, int ch)
--{
--}
--
--static struct pl08x_platform_data pl08x_pd = {
--	/* Some reasonable memcpy defaults */
--	.memcpy_burst_size = PL08X_BURST_SZ_256,
--	.memcpy_bus_width = PL08X_BUS_WIDTH_32_BITS,
--	.slave_channels = &pl08x_slave_channels[0],
--	.num_slave_channels = ARRAY_SIZE(pl08x_slave_channels),
--	.get_xfer_signal = pl08x_get_signal,
--	.put_xfer_signal = pl08x_put_signal,
--	.lli_buses = PL08X_AHB1,
--	.mem_buses = PL08X_AHB1,
--};
--
--static struct lpc32xx_slc_platform_data lpc32xx_slc_data = {
--	.dma_filter = pl08x_filter_id,
--};
--
--static struct lpc32xx_mlc_platform_data lpc32xx_mlc_data = {
--	.dma_filter = pl08x_filter_id,
--};
--
--static const struct of_dev_auxdata lpc32xx_auxdata_lookup[] __initconst = {
--	OF_DEV_AUXDATA("arm,pl080", 0x31000000, "pl08xdmac", &pl08x_pd),
--	OF_DEV_AUXDATA("nxp,lpc3220-slc", 0x20020000, "20020000.flash",
--		       &lpc32xx_slc_data),
--	OF_DEV_AUXDATA("nxp,lpc3220-mlc", 0x200a8000, "200a8000.flash",
--		       &lpc32xx_mlc_data),
--	{ }
--};
--
- static void __init lpc3250_machine_init(void)
- {
- 	lpc32xx_serial_init();
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
+-					     "nand-mlc");
++	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
+ 	if (!host->dma_chan) {
+-		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+-		return -EBUSY;
++		/* fallback to request using platform data */
++		if (!host->pdata || !host->pdata->dma_filter) {
++			dev_err(mtd->dev.parent, "no DMA platform data\n");
++			return -ENOENT;
++		}
++
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_SLAVE, mask);
++		host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-mlc");
++
++		if (!host->dma_chan) {
++			dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
++			return -EBUSY;
++		}
+ 	}
  
--	of_platform_default_populate(NULL, lpc32xx_auxdata_lookup, NULL);
- }
+ 	/*
+diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+index 1c5fa855b9f2..3b7e3d259785 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_slc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+@@ -721,18 +721,22 @@ static int lpc32xx_nand_dma_setup(struct lpc32xx_nand_host *host)
+ 	struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+ 	dma_cap_mask_t mask;
  
- static const char *const lpc32xx_dt_compat[] __initconst = {
+-	if (!host->pdata || !host->pdata->dma_filter) {
+-		dev_err(mtd->dev.parent, "no DMA platform data\n");
+-		return -ENOENT;
+-	}
+-
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
+-					     "nand-slc");
++	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
+ 	if (!host->dma_chan) {
+-		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+-		return -EBUSY;
++		/* fallback to request using platform data */
++		if (!host->pdata || !host->pdata->dma_filter) {
++			dev_err(mtd->dev.parent, "no DMA platform data\n");
++			return -ENOENT;
++		}
++
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_SLAVE, mask);
++		host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-slc");
++
++		if (!host->dma_chan) {
++			dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
++			return -EBUSY;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.25.1
 
