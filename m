@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D72AAC2BD09
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:02:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59F6AC3064D
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jun 2024 15:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BUDgwEYcFsxSFf8NMKPm1viuGq/P8UL3veNCp9B3BZA=; b=QCUnlD0EK7d42q
-	r7EszTXW5wt2c+VZgFnLYnIVE45azC9ElSHvtsMk0e8cqEPMWzE7Zv+Te2+dqtu1XH2BBq7ibnnWd
-	e/AB4/sPTBD6N1SnHXRIeu13zWHCs9TyH9T4d7IECSuelBvIEr9zWavenFH6kFSP13lgReN6q5mWs
-	0xZGcs7wyZ1RSsBdNdMAK7SjdbCZvfTedn8G+tCOPGAGENU4G9Gk/rEWB7Ccgix0Zk66i9g0XNHqs
-	sIGp+knnRqsHvo8+ySxrVdeFPya0ZUS+HrUxcCETsh18/s7aiXrWxfqJkjVwVY/5Ipl7Tk8CP/8A8
-	eUzwGp10YZecK0wJsBkw==;
+	List-Owner; bh=BvgU+QCYBUrGLVlVcB3rK2/WQUGCDZ1kgMjlYDIA25g=; b=CvdDBsrXaXF7XT
+	OrFpG+YSEhhXH2XVQHLgZ7oKDtyt9Ya/nSLrvz0I56tnkSLPOn6V8Uj8pzAqJS4eQVKIyqvW9X8Yx
+	Q5n1+Cf7O4IIp1PJZho56IJpMLnAkS7CEPtv3s7/vFj6s4xqmHSgj7F+d3A2TywdQMbvde6jAGvkq
+	sQpHVzfiF0fBO1Gl86Q5ze7mTEU/UMsHO+QYdmjexWLBHUderINO3dFL4JU/idoCiLohdeB6rRCoK
+	M/pMF0eYW1UrVyXloOHvtFfGan0q63Sxz1Oyrn4hH2Rrv8JtJ9vsM/6pBT5hTRbJW1Cf9rnEoEOGN
+	Vl1rUK6m6qIiSLHvnp5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqeC-0000000AlTr-1wtP;
-	Thu, 27 Jun 2024 15:02:52 +0000
-Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
+	id 1sMqeU-0000000AleZ-11DE;
+	Thu, 27 Jun 2024 15:03:10 +0000
+Received: from mail-lj1-x236.google.com ([2a00:1450:4864:20::236])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMqdz-0000000AlMX-3Wxs
+	id 1sMqeM-0000000AlaI-0x7t
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jun 2024 15:02:41 +0000
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a7194ce90afso703697766b.2
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:02:39 -0700 (PDT)
+	Thu, 27 Jun 2024 15:03:04 +0000
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2eaae2a6dc1so6327351fa.0
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jun 2024 08:03:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500558; x=1720105358; darn=lists.infradead.org;
+        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1719500580; x=1720105380; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=f9ppopi9ppNssy3Y6kMvZbEvjKhcjUNqGrL0dAUL4ao=;
-        b=zD/wcUArasPg3fHAJswJT+kjg/LzBo5iwFQIyE8O+sTL52nMgK0yMnsUn3Ut8oNLDs
-         /ScJQbnHZStqzfdGi9KMKkEQNrZQkbrUwQRcAZOANHJm/oF6Vjj4KCo0VIYIB3rC6UnP
-         eBaMjNsGIDll+f4Yo1ms+eXVG66rbWH1LhlBr4nKSsa54q8uR9dFWTZzRFiVzKZvcAEn
-         omKbt/YtjTQwKB+jANuB2kGTbVpwB8vlcHqCHUxufWQE354++mNcfbG0CGLDVkqV0nRF
-         ups0IRoXyP5staXuopwYDPe6Bn9MT5r6H+cH9o/IldtpWnnWMAEGrw8lsoB/jtH2rUgz
-         +zvw==
+        bh=mJvIbWYuYPh2MYk+7zUochFUm6khQh2owZTLDHTohpE=;
+        b=10AJW+yK8i2eAOmaYbEuOnmaAocQxExQGcp0Gpq39qwS9NCAGfJ8iUsPunt4554rSw
+         gO13oj1EJhZyyMsqOWMy3iuc22LVQ/MU6Y9SRzt5IuwCuBqVaFi52yccUhBMZ5XsAo4r
+         w1BJ89VwntXvi8NOWPeahC7u3qwJldkb6EG81d96I8IYG5JOTKB8LThnA3SYebnm8l2C
+         sbrJj/Y2ovcp2br70nqPaTGc06X4kEJUzYJF6cZk+0qkwSsq6zbj4BmuEkHeojWf8YBJ
+         dpB7r4SO8dIshEJzLw8wMC6weay177gRzPhveVKvB6TjzD9aM/Y7Dh7YItL2O2bGlrrJ
+         YcMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500558; x=1720105358;
+        d=1e100.net; s=20230601; t=1719500580; x=1720105380;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f9ppopi9ppNssy3Y6kMvZbEvjKhcjUNqGrL0dAUL4ao=;
-        b=cdjQw8kP+bF3kg4CZzV5+A/yrE63SPbLbqTSl62IUe/wDN576mp+BnQ3Vd5JBlmfSM
-         YgNMFNHwrB3HhRzDuT7YJcXiY1ay3GFuoxaHKbNMvalJgbXJGp+evnc7JhJWXQXsxXZf
-         vTjI6ZvSNmo+YJ9jUci20oehKyOSTpjMtKUGiXqVzaWAMKunwQ0GxT5CE82qdAdp0WTl
-         KucVS/hsAkMSnpZQV/cFr2NFRF2So1G5o/q8CBKM97zqUNYjaCeIw065GjePph1gPtGa
-         yVoNvx/wQqWG5jWInA+d5gLfwLw8cfkSxdncKhsA532SICAORZB9D2bZ012QOYLMoOMj
-         ZzcA==
-X-Forwarded-Encrypted: i=1; AJvYcCWoc7YtOIjzbxYOUQkMFI/nsvFsSrRXL8YiQsqcTGXxj0z8egQC7Mq0/g2G5WeWk/u4Y0yzsWiDg5M1P1wQg0qfVZ+T71lD39+Mp2C5/Q==
-X-Gm-Message-State: AOJu0Yz/JJGsl7Bs9RMVKj7jYyVbu52mXqZrntiZ1zVYXvz4aOcoa53M
-	fMaSLEjoSwwWpXyL5JHIgxJRB0We6ZCpM5bnK9MAmsO33E3SLvJIrcKDydizQBo=
-X-Google-Smtp-Source: AGHT+IHNxN4PmRPFk0RxdcCHSntPRfVHwfmOqM6zTS7G+/s/UPca4WGfngbQvLyYCR5O6HreQqUr+w==
-X-Received: by 2002:a17:907:6a0e:b0:a72:8296:ca42 with SMTP id a640c23a62f3a-a728296d1cfmr421637966b.49.1719500557261;
-        Thu, 27 Jun 2024 08:02:37 -0700 (PDT)
+        bh=mJvIbWYuYPh2MYk+7zUochFUm6khQh2owZTLDHTohpE=;
+        b=WmUEUA/LtfeNS2sjGzk8mmN57xc1Ee3qbksPhp+YPgzifNWpA1LXRi6mWRhOVfEemA
+         KEGN9dSgD0Wc3U++zYt8DDEVI/DCFxBdfhqIQLy+rD2TKwk0+zSFFRv0PoDRcgOOY4DO
+         WMgat3bLvv6j+dtrnKx+Gqv9sXnXroXiMEsFg5jsV462kKsJ4Qy2grh0XIPSY78jvHwN
+         QUiMFqKne8e7zBUjc+uRBF53XT7i5Q7i/N7hlssfkKZxJXFAWIJGJ50hF0ZmiLB9UrVW
+         T2TvFCVOu61bB2XRXgd+I3fUnRxDGhlRIksQhFNHTaYWnfiRCiAVla35O9GeAvWL/mZt
+         /0iA==
+X-Forwarded-Encrypted: i=1; AJvYcCXruWARMRUd92y7cxTTNGKAy7BxzFUdhm01X1oPQF2BwFb8iK4Kxnd/VOlcQojzypBntEbCUWZXHIqfyvO49ohNH5e7uJS4O+HsHefmhg==
+X-Gm-Message-State: AOJu0YzJ7L+NWDkmR53QIV+VqbGCDnWig73orhziFnF0aReLn/M/3d6q
+	UY5P2szcJ386B+WJUlHTqUn39lB+d2n4F9ylEAVs53fJkL+mSbsZ38KBC6mF6DI=
+X-Google-Smtp-Source: AGHT+IGZ1++Ks98/Qf/5imxTRRLFDrmwBrTqFEXDtzEcoEhTACvV1BuNeYZAcogKlXox/ewKi1ymKA==
+X-Received: by 2002:a19:6455:0:b0:52c:db0e:6c4a with SMTP id 2adb3069b0e04-52ce182bea2mr10424279e87.2.1719500580105;
+        Thu, 27 Jun 2024 08:03:00 -0700 (PDT)
 Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.02.35
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d7ca289sm67189066b.222.2024.06.27.08.02.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 08:02:36 -0700 (PDT)
+        Thu, 27 Jun 2024 08:02:59 -0700 (PDT)
 From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 To: Vinod Koul <vkoul@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -82,11 +82,11 @@ To: Vinod Koul <vkoul@kernel.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Yangtao Li <frank.li@vivo.com>,
 	Arnd Bergmann <arnd@arndb.de>,
+	Yangtao Li <frank.li@vivo.com>,
 	Li Zetao <lizetao1@huawei.com>,
-	Chancel Liu <chancel.liu@nxp.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
+	Chancel Liu <chancel.liu@nxp.com>,
 	Corentin Labbe <clabbe@baylibre.com>,
 	dmaengine@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -98,16 +98,16 @@ To: Vinod Koul <vkoul@kernel.org>,
 	linux-clk@vger.kernel.org,
 	linux-i2c@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [Patch v5 04/12] ARM: dts: lpc32xx: Use simple-mfd for clock control block
-Date: Thu, 27 Jun 2024 17:00:22 +0200
-Message-Id: <20240627150046.258795-5-piotr.wojtaszczyk@timesys.com>
+Subject: [Patch v5 05/12] ARM: dts: lpc32xx: Add missing dma properties
+Date: Thu, 27 Jun 2024 17:00:23 +0200
+Message-Id: <20240627150046.258795-6-piotr.wojtaszczyk@timesys.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240627_080239_972319_1F68381C 
-X-CRM114-Status: GOOD (  13.83  )
+X-CRM114-CacheID: sfid-20240627_080302_383588_F9124555 
+X-CRM114-Status: GOOD (  13.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,7 +124,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The clock control block shares registers with other Soc components
+Adds properties declared in the new DT binding nxp,lpc3220-dmamux.yaml
+and corresponding phandles.
 
 Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 ---
@@ -132,36 +133,147 @@ Changes for v5:
 - This patch is new in v5
 - Split previous patch for lpc32xx.dtsi in to 3 patches
 
- arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi | 38 ++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
-index 974410918f35..8bf88d141e5b 100644
+index 8bf88d141e5b..6135ce4dde61 100644
 --- a/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
 +++ b/arch/arm/boot/dts/nxp/lpc/lpc32xx.dtsi
-@@ -312,18 +312,17 @@ fab {
- 			compatible = "simple-bus";
- 			ranges = <0x20000000 0x20000000 0x30000000>;
+@@ -67,6 +67,8 @@ slc: flash@20020000 {
+ 			reg = <0x20020000 0x1000>;
+ 			clocks = <&clk LPC32XX_CLK_SLC>;
+ 			status = "disabled";
++			dmas = <&dma 1 1>;
++			dma-names = "rx-tx";
+ 		};
  
--			/* System Control Block */
--			scb {
--				compatible = "simple-bus";
--				ranges = <0x0 0x40004000 0x00001000>;
-+			syscon@40004000 {
-+				compatible = "nxp,lpc3220-creg", "syscon", "simple-mfd";
-+				reg = <0x40004000 0x114>;
+ 		mlc: flash@200a8000 {
+@@ -75,6 +77,8 @@ mlc: flash@200a8000 {
+ 			interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&clk LPC32XX_CLK_MLC>;
+ 			status = "disabled";
++			dmas = <&dma 12 1>;
++			dma-names = "rx-tx";
+ 		};
+ 
+ 		dma: dma@31000000 {
+@@ -83,6 +87,13 @@ dma: dma@31000000 {
+ 			interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&clk LPC32XX_CLK_DMA>;
+ 			clock-names = "apb_pclk";
++			#dma-cells = <2>;
++			dma-channels = <8>;
++			dma-requests = <16>;
++			lli-bus-interface-ahb1;
++			mem-bus-interface-ahb1;
++			memcpy-burst-size = <256>;
++			memcpy-bus-width = <32>;
+ 		};
+ 
+ 		usb {
+@@ -182,6 +193,8 @@ ssp0: spi@20084000 {
+ 				clock-names = "apb_pclk";
  				#address-cells = <1>;
- 				#size-cells = <1>;
-+				ranges = <0 0x40004000 0x114>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 14 1 1>, <&dmamux 15 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
  
- 				clk: clock-controller@0 {
- 					compatible = "nxp,lpc3220-clk";
- 					reg = <0x00 0x114>;
- 					#clock-cells = <1>;
--
+@@ -191,6 +204,8 @@ spi1: spi@20088000 {
+ 				clocks = <&clk LPC32XX_CLK_SPI1>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 11 1 0>;
++				dma-names = "rx-tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -206,6 +221,8 @@ ssp1: spi@2008c000 {
+ 				clock-names = "apb_pclk";
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 3 1 1>, <&dmamux 11 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -215,12 +232,16 @@ spi2: spi@20090000 {
+ 				clocks = <&clk LPC32XX_CLK_SPI2>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
++				dmas = <&dmamux 3 1 0>;
++				dma-names = "rx-tx";
+ 				status = "disabled";
+ 			};
+ 
+ 			i2s0: i2s@20094000 {
+ 				compatible = "nxp,lpc3220-i2s";
+ 				reg = <0x20094000 0x1000>;
++				dmas = <&dma 0 1>, <&dma 13 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -231,12 +252,16 @@ sd: sd@20098000 {
+ 					     <13 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&clk LPC32XX_CLK_SD>;
+ 				clock-names = "apb_pclk";
++				dmas = <&dma 4 1>;
++				dma-names = "rx";
+ 				status = "disabled";
+ 			};
+ 
+ 			i2s1: i2s@2009c000 {
+ 				compatible = "nxp,lpc3220-i2s";
+ 				reg = <0x2009c000 0x1000>;
++				dmas = <&dma 2 1>, <&dmamux 10 1 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -326,6 +351,13 @@ clk: clock-controller@0 {
  					clocks = <&xtal_32k>, <&xtal>;
  					clock-names = "xtal_32k", "xtal";
  				};
++
++				dmamux: dma-router@7c {
++					compatible = "nxp,lpc3220-dmamux";
++					reg = <0x7c 0x8>;
++					#dma-cells = <3>;
++					dma-masters = <&dma>;
++				};
+ 			};
+ 
+ 			mic: interrupt-controller@40008000 {
+@@ -361,6 +393,8 @@ uart1: serial@40014000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x40014000 0x1000>;
+ 				interrupts = <26 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dma 6 1>, <&dma 5 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -368,6 +402,8 @@ uart2: serial@40018000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x40018000 0x1000>;
+ 				interrupts = <25 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dma 8 1>, <&dma 7 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
+@@ -375,6 +411,8 @@ uart7: serial@4001c000 {
+ 				compatible = "nxp,lpc3220-hsuart";
+ 				reg = <0x4001c000 0x1000>;
+ 				interrupts = <24 IRQ_TYPE_LEVEL_HIGH>;
++				dmas = <&dmamux 10 1 0>, <&dma 9 1>;
++				dma-names = "rx", "tx";
+ 				status = "disabled";
+ 			};
+ 
 -- 
 2.25.1
 
