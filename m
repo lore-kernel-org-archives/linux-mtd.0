@@ -4,80 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9269C2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2024 17:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6FA9C2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2024 17:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Subject:To:From:
+	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tNOxN7YL4ZgAh0Dt1i1pS7oW8I/nnV3Xqmxbw7Vz/vc=; b=CMsYn33+R5qPQF
-	2TpHXx/WUVKbL+5NqFFwhroD/P26lHyXAqbTr/W25uTXc65oW5DDoefcj1t893ewh9aQwX2ZGiOwb
-	SvUmCZnzzJEYIZyR3xy+O7t9GptuWJRB2f3izVP4XUSpA6PqCFva9fwE3fJq7O+Y3TqXcUQoDrIIO
-	ulolC6PocWgFuNnCq0kZmSRpn9hxX3cj/6elrSe1Tt/apFwfT3frzrZEVOOoJYCskvcaZAlJhuOrA
-	Hth0l/zw8LYL0hpHhZdPqqwKYzgi/Cg0tvwC7V3j1ngKS36bVolxlZu+r7bNEuV8FLd4ko8jVDlSK
-	WTdslJtOE5FQkor1gIDA==;
+	List-Owner; bh=h16LrDV5NXFbSOLjLF9pm1oIXS7MFfb54W+kTkz8zPU=; b=aIshEoUhJzp6Gu
+	VvuAf/1BzspnBLBrCNIBE7fuz+6DAirm7vvDljyhkU4JPH1QbF5FRlrEjMtoEdvUlIw7NsIwLYRWV
+	AsOK7XkXc6sG6jSmkrPMzZtu+Xv47e2UrvgGNSYtp6UnpAxIN6qBtDM3+9ZUCoF5T/Sbsy5hICoOr
+	J195RKEP3NlphqPbAZUWcJ8lmuDwreElzHjZPugXbQcYo/ekqwSlxbocopfCoTj+GKIgN+8ofqEgM
+	iomO5CGYXLCJxPy2p0x9qgjLZUE8nsDS+uQzquc6gsj55stBUO+D4Ma+ZDz/RY9t9AD7AM6Tu1Ynj
+	2iLmZdcEYiwQEH9f6BpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNFEw-0000000ETpI-0WC1;
-	Fri, 28 Jun 2024 17:18:26 +0000
-Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
+	id 1sNFff-0000000EXN1-0Uu4;
+	Fri, 28 Jun 2024 17:46:03 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNFEs-0000000ETnj-35KL
+	id 1sNFfc-0000000EXKb-39nr
 	for linux-mtd@lists.infradead.org;
-	Fri, 28 Jun 2024 17:18:24 +0000
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a725ea1a385so105006166b.3
-        for <linux-mtd@lists.infradead.org>; Fri, 28 Jun 2024 10:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719595100; x=1720199900; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o3nvsIkFRTprl2veHnwGjNIAA2Gwnu2oo8W5vdGeBr8=;
-        b=jV2/vlEflqClamFbrHKkc2otVgcnpn7MaysZFymiXn3zhB4aS+6l6r6H5shPrj/0u/
-         7K630cVUuu+tVLXbOJDBD7vKxCm8d58XB/MKgXlmp6ifnu0Ox/pcEv+/yKKORDSsGe2k
-         RHa8RDpNEKSMCb52G6Da44RCVE6kPDiVsb9TBtGI5J4xrmvs8F1ienOQ0vPhXV5oV7No
-         rapIebOcjH+Ne8S9VhsKk7J/5md1GNBle84gKvX2u6yp3boc1eYOpoyjQvLfUONQqJn+
-         Ad72mhV3VVzieUrDl2QOXgZZyJUDJYHhEATUNJksA4Xnr3iqZoUYph7stGccOY4mnD32
-         FnIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719595100; x=1720199900;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o3nvsIkFRTprl2veHnwGjNIAA2Gwnu2oo8W5vdGeBr8=;
-        b=rv3PucaNo/cqrtCmPGEnwq7X9PgHFvaFjMSLhnPPSX8yS84CravNtErlfYLaWj9daW
-         /OU57oOlLljvz1SVwmU6kO1osPo57boR2d5JKZpTKVWjFPwRuPZhWuEbvaEhGvGfcqJy
-         fk9qx/gBxr76X9iRSCGHLdtCPDpYZSTy+tWDg19feCfEMCJ5iPMQFX63VEuwA/r9EkJy
-         wrb57MRcHRkc2tFkmUJFv8EwcOKqelmbOvJZ0Yv97Pg6ybG5+6fW37WJx40k0jqk/+MF
-         PfoCi84Bb8iItPBqVhK8RNa0tOIYfdz0PjibzGCoMtN0ag73oTTjUqZDs0xTgDtGdwrT
-         cvdA==
-X-Forwarded-Encrypted: i=1; AJvYcCWgfSZFS1HTuht/aYk5zm13CfYrxQWnnLT8RbRzgRA90FZr5hHSbH7dGGF4TKXUs6nyogsF/pdsCjkXNBa/9WrAtBUSHfSM6gFwC7GNhg==
-X-Gm-Message-State: AOJu0YyCrR/gJikoTJl/3oMqIBO/QdcaQLOJYJPXo1bSWngyUB48Gj+j
-	b/uyaiGMML3zgwlG+54OiSZWDiXddMq0brjQ44tR+TFb9on+501rU6hOR7vsb9zKc0IYwKl6cDw
-	9e8vYRClijxBaNPzdsDtf9JTO8w==
-X-Google-Smtp-Source: AGHT+IFTZVskAjk2l5yWcH1+gZhoO6yQpm6ONFChSoLYbpKIhZVBVjX6P7gzsYaRUL4jBvTsbM8BFPkV4wxIIQ+MkWQ=
-X-Received: by 2002:a17:907:c78e:b0:a6f:bc02:a008 with SMTP id
- a640c23a62f3a-a7242c4de49mr1349695666b.4.1719595100397; Fri, 28 Jun 2024
- 10:18:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20240628140328.279792-1-erezgeva@nwtime.org> <20240628140328.279792-4-erezgeva@nwtime.org>
- <20240628-refuse-actress-b76985aa020c@spud> <D2BS0YMA48BG.1PEPFC3KMFV8N@kernel.org>
- <CANeKEMMrXK=mw=n=9DuTnprkTs3ct446oaC2QTJyst8Nd+D6rw@mail.gmail.com> <D2BT0DT9UQ66.2L497FSY7GMAL@kernel.org>
-In-Reply-To: <D2BT0DT9UQ66.2L497FSY7GMAL@kernel.org>
-From: Erez <erezgeva2@gmail.com>
-Date: Fri, 28 Jun 2024 19:17:42 +0200
-Message-ID: <CANeKEMO9hBhBs91nZkZRht9J29iRC2Tgf6ucWq=nbO7XAqzzng@mail.gmail.com>
-Subject: Re: [PATCH 3/4] dt-bindings: mtd: macronix,mx25l12833f: add SPI-NOR chip
-To: Michael Walle <mwalle@kernel.org>
-Cc: Conor Dooley <conor@kernel.org>, Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
-	linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+	Fri, 28 Jun 2024 17:46:02 +0000
+Received: from localhost (unknown [IPv6:2a02:810b:4340:4ee9:4685:ff:fe12:5967])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 7147F5444;
+	Fri, 28 Jun 2024 19:45:50 +0200 (CEST)
+Mime-Version: 1.0
+Date: Fri, 28 Jun 2024 19:45:50 +0200
+Message-Id: <D2BU69BDUOL0.63A7T034CORP@kernel.org>
+Cc: "Conor Dooley" <conor@kernel.org>, "Erez Geva" <erezgeva@nwtime.org>,
+ <linux-mtd@lists.infradead.org>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, <devicetree@vger.kernel.org>, "Rob
+ Herring" <robh@kernel.org>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>,
+ "Conor Dooley" <conor+dt@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Erez" <erezgeva2@gmail.com>
+Subject: Re: [PATCH 3/4] dt-bindings: mtd: macronix,mx25l12833f: add SPI-NOR
+ chip
+X-Mailer: aerc 0.16.0
+References: <20240628140328.279792-1-erezgeva@nwtime.org>
+ <20240628140328.279792-4-erezgeva@nwtime.org>
+ <20240628-refuse-actress-b76985aa020c@spud>
+ <D2BS0YMA48BG.1PEPFC3KMFV8N@kernel.org>
+ <CANeKEMMrXK=mw=n=9DuTnprkTs3ct446oaC2QTJyst8Nd+D6rw@mail.gmail.com>
+ <D2BT0DT9UQ66.2L497FSY7GMAL@kernel.org>
+ <CANeKEMO9hBhBs91nZkZRht9J29iRC2Tgf6ucWq=nbO7XAqzzng@mail.gmail.com>
+In-Reply-To: <CANeKEMO9hBhBs91nZkZRht9J29iRC2Tgf6ucWq=nbO7XAqzzng@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240628_101822_795891_AE481A41 
-X-CRM114-Status: GOOD (  18.39  )
+X-CRM114-CacheID: sfid-20240628_104600_955774_9F86D7BC 
+X-CRM114-Status: GOOD (  13.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,51 +76,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 28 Jun 2024 at 18:51, Michael Walle <mwalle@kernel.org> wrote:
+> What is the kernel policy regarding obsolete flash chips?
+> Macronix annonce on end of life of mx25l12805d in 2010.
+
+Which doesn't mean there are no boards using it. But EOL in 2010
+might be a strong argument to remove it. But I don't see the need
+for it, yet.
+
+> > Also please have a look at
+> > https://docs.kernel.org/driver-api/mtd/spi-nor.html
 >
-> On Fri Jun 28, 2024 at 6:30 PM CEST, Erez wrote:
-> > I do not know why they decided to use the same JEDEC ID for two chips.
-> > Your guess is as good as mine.
->
-> That's a common pattern and we try hard to figure that out during
-> probe time instead of hardcoding it. E.g. by looking at the SFDP
-> data. Have a look at various fixups in drivers/mtd/spi-nor/.
+> The new mx25l12833f supports SFDP, the obsolete mx25l12805d does not.
+> I did manage to read the SFDP, though I do not have a copy of it (I do
+> not have the hardware any more).
 
-That's a good approach.
-The obsolete mx25l12805d does not support the SFDP table.
-The new mx25l12833f does.
+So how would you test newer versions of this series?
 
-What is the kernel policy regarding obsolete flash chips?
-Macronix annonce on end of life of mx25l12805d in 2010.
-Perhaps we should remove mx25l12805d,
- and leave the mx25l12833f configuration in mtd/spi-nor/macronix.c?
+> To my best knowledge SFDP table do not contain information on OTP,
 
->
-> compatibles are really the last resort to distinguish flash devices.
+That's true, but we need it to detect flashes during runtime in the
+future. Imagine sometime later, there's a third flash with this
+exact ID, then we need to have the SFDP to figure out if there are
+any differences between yours and the new one.
 
-I totally agree. Use JEDEC ID a lot better.
-In this case Macronix decided to reuse an obsolete chip ID.
-
->
-> Next time, please mention such information in the commit message,
-> please.
-
-Thanks for the tip.
-I did write it in the fourth patch, but I can add it in part 3 as well.
-
-> Also please have a look at
-> https://docs.kernel.org/driver-api/mtd/spi-nor.html
-
-The new mx25l12833f supports SFDP, the obsolete mx25l12805d does not.
-I did manage to read the SFDP, though I do not have a copy of it (I do
-not have the hardware any more).
-To my best knowledge SFDP table do not contain information on OTP,
-
-Thanks
-  Erez Geva
-
->
-> -michael
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
