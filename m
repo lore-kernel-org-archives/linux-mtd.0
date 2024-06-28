@@ -4,74 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D645EC2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2024 18:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63BCAC2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2024 19:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qgVF2QRlCHiKC6WXgWK9hzAJ9dvjtuTTuJxtZFGboXo=; b=LQjiQ57vd+iQcs
-	uBdk0R/35m3XfWktKhKF8gQYtE7ZpfVE9ZWcR5soXAEZYFqxo13F7E7y5DitduN4z7rYCMfugJRY9
-	y1/5aus2mYSxcIJHU/IcCCURF8RccGejgs6uQxDgSNFDWCDlW4tA5gs+PSyNPAXpcrMRSyqlFBysW
-	eouuL5RDr+wtZiec9SJH+x/lRo0yjZq/ReMuRiHxHcU1o++hNU/iCJtDUWOKqbOj011oasg6nQoMg
-	mQXA+kz+C7W8cXYoJwfUEL6wiN1mcpUxKCxUcfn6iFWo2M4wXoFXyFR0J/P+gC230v9So1vxrBLTL
-	mcpyPLL660wWWhpYsV8Q==;
+	List-Owner; bh=YvyAgtznGZlCgnTqGY5oVIKyL6ag+cld7XkZaZSrkYQ=; b=gsgwyMExv/INml
+	C7MV9YMCGu9kELzNKUzzwk/pyoW/U7Sn0IZNno3bpUh2dSXzlv1Iz2TGB7g8DvN5dwo8ZhEaj38+T
+	CPzv2fiCy/Wj17yHwA8z4X4/n5JuzTxRLZZaCY/komclt/ulrY0vjcGmBe1dbVBTmrPY87fETAW8/
+	xeIVrElNsqdfU2WGrdNfKzZjlKQ+9+6e6UJuwxkYVY0Ns8hZveMakLflf1xIjQyrwmFXfJsdybosx
+	k9qz96eVQ926HZ2RYbVvJhl7vpJXnmUgRRCChGKegM/D8Y8BCgrFS8tTkOOSXRR9AoYjJrOmTkfn6
+	JMEhsuMmNIu7XOTkMRqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNGGL-0000000EcTY-1pUf;
-	Fri, 28 Jun 2024 18:23:57 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sNHKW-0000000Ekt9-4BKU;
+	Fri, 28 Jun 2024 19:32:21 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNGGA-0000000EcRH-12z9;
-	Fri, 28 Jun 2024 18:23:48 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 52FDCCE4250;
-	Fri, 28 Jun 2024 18:23:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72894C116B1;
-	Fri, 28 Jun 2024 18:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719599023;
-	bh=PSU3tdTo76FLPP7xiWLKc41rwOiwu52i+9dzvpqpwII=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=ZdyI0W+nmqUJCWipPdNf4cmBtY+rypYDwx+itWdMspkZMxFXGqTXLiqwqj+P/L2HW
-	 ayxR9qnJXpys3ydRLPfokVQx98MOeqM03nKa/ytsBexikuA9liqDpHV1OfVVALU+tE
-	 f7Fj4nqi4PEUTPns+yPNM8egQuCOh0Ovv/wpOD+UZ/8SlcGE22Ghaiomf6798XikSx
-	 0fgHRjbt7tZT77y95s6ou8xunrmc2rYTHBH4XJGA+fSkOoEi4YpexqWOIht15+aPX7
-	 D00T9WThNkC2oKuTUBzvB83od0XpV7aqlLaIS7DCv64svIp/Io9uTUPLn1flWW5vhe
-	 Y1c3dtBmP4QfA==
-From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- "J.M.B. Downing" <jonathan.downing@nautel.com>, 
- Vladimir Zapolskiy <vz@mleia.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Arnd Bergmann <arnd@arndb.de>, Yangtao Li <frank.li@vivo.com>, 
- Li Zetao <lizetao1@huawei.com>, Chancel Liu <chancel.liu@nxp.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Corentin Labbe <clabbe@baylibre.com>, 
- dmaengine@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, 
- linux-sound@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org, 
- Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-In-Reply-To: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
-References: <20240627150046.258795-1-piotr.wojtaszczyk@timesys.com>
-Subject: Re: (subset) [Patch v5 00/12] Add audio support for LPC32XX CPUs
-Message-Id: <171959901719.141669.17001815513243855671.b4-ty@kernel.org>
-Date: Fri, 28 Jun 2024 19:23:37 +0100
+	id 1sNHKS-0000000Eksc-3Fk6
+	for linux-mtd@lists.infradead.org;
+	Fri, 28 Jun 2024 19:32:18 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a6265d3ba8fso103881866b.0
+        for <linux-mtd@lists.infradead.org>; Fri, 28 Jun 2024 12:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719603135; x=1720207935; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PxckOsAOkmt2Z/dhIOH0h8pCT8yqSu788yaL0xNxpAg=;
+        b=OuO2ZV56Ff7EP7rVJDV/yTDmS8Kr3Suz5Z4S+KelnWlGq+kfPcUASPuN6nR60jfpUl
+         eyVXCRYO3+8PWPrCmc3fhhklASLEGSBq4FJRuE7GJRH7Bt5viAOLMwWM950CVJOBlhSg
+         uBQoMQhNRojgdkfMvId2Nb9EL71i5N+schI3aQN7FiAn8/40k0lbQOYy1nWQxcqGcCQx
+         oiHRODgf+f9BY3DPTIjF0Vr+XJVSUd25ug3y5E6efYTU+eOwIM0EMmQHue+YTptZOZUc
+         WaZj45RVwWCijk9I68MlsN46p0AIcVhxXQp9Bms26l6N9bccM3eG8EGr5bENBFmE2MhE
+         pqNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719603135; x=1720207935;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PxckOsAOkmt2Z/dhIOH0h8pCT8yqSu788yaL0xNxpAg=;
+        b=iYZjLLpb/5AOAd82vx3+VZ28KXwStb2tuBCKQNcvZqlw9NRGqyQTaC0OYqBepWYsl7
+         J6ITR+WIplpEBLmIPWFY6qClMKRSTHmUw99J3O0DULB5SbZ99jegeu9pw553czUHSWvC
+         6qWbwT8G9729rU1n72DpHBNJi3KHG373W1Htcb//AXTfnrDHqHxzeeWQiwMQ+zBS2JMl
+         o4w3ByaQf9StePLw354tCiE69G/xXwLHWsQ9dwbsn5iF/pX44ie11KUlOiMd115J8UDM
+         U2mFaBAcZeB4BZtKRNFX3DDKMPiKgKQfymMcM4iaA01yUkia80RAUhuPB2vcbt17Q0PZ
+         jL6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUFWgjDp6b5mTWCY5P52XlB5a3RQkt/XNeL2Annm396COk0n1svVBSeDgPBpqgbjLkTMmKOD20zzKeUwmSXtMDi7CU/kAa9uCiMO+EpzQ==
+X-Gm-Message-State: AOJu0YxA1aFFoB9KG0oGp6Wdyu0AgxVT92U+fHou5Q9DarXwjHZb3/hv
+	hIGWdQREcwUQRo3xKgBbMa9eND6QonTV3Af+k0bTFM1T/WPOKKum7IqtmkRe0s2jXoleqmfj8mn
+	ei/nwsqMnS09SI9jAUJzD1yQXig==
+X-Google-Smtp-Source: AGHT+IEcIJk3aOEVCfHZaTOBEzliwOv1OW0IgkYWVgv3YyCrG+TRBh+fl5e85vwIPrct8FMab5SprzZALrLoAgdlAkc=
+X-Received: by 2002:a17:907:c816:b0:a6e:f594:a292 with SMTP id
+ a640c23a62f3a-a7242e119dbmr1458130966b.63.1719603134625; Fri, 28 Jun 2024
+ 12:32:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Mailer: b4 0.14-dev-d4707
+References: <20240628140328.279792-1-erezgeva@nwtime.org> <20240628140328.279792-4-erezgeva@nwtime.org>
+ <20240628-refuse-actress-b76985aa020c@spud> <D2BS0YMA48BG.1PEPFC3KMFV8N@kernel.org>
+ <CANeKEMMrXK=mw=n=9DuTnprkTs3ct446oaC2QTJyst8Nd+D6rw@mail.gmail.com>
+ <D2BT0DT9UQ66.2L497FSY7GMAL@kernel.org> <CANeKEMO9hBhBs91nZkZRht9J29iRC2Tgf6ucWq=nbO7XAqzzng@mail.gmail.com>
+ <D2BU69BDUOL0.63A7T034CORP@kernel.org>
+In-Reply-To: <D2BU69BDUOL0.63A7T034CORP@kernel.org>
+From: Erez <erezgeva2@gmail.com>
+Date: Fri, 28 Jun 2024 21:31:37 +0200
+Message-ID: <CANeKEMPLqdc0iKPcD5d16r91tsbKZwZ0getq2gxOhc42sdu7Mg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] dt-bindings: mtd: macronix,mx25l12833f: add SPI-NOR chip
+To: Michael Walle <mwalle@kernel.org>
+Cc: Conor Dooley <conor@kernel.org>, Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240628_112346_680283_5F96B27E 
-X-CRM114-Status: GOOD (  15.90  )
+X-CRM114-CacheID: sfid-20240628_123216_836218_09DD3C7E 
+X-CRM114-Status: GOOD (  25.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,58 +96,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 27 Jun 2024 17:00:18 +0200, Piotr Wojtaszczyk wrote:
-> This pach set is to bring back audio to machines with a LPC32XX CPU.
-> The legacy LPC32XX SoC used to have audio spport in linux 2.6.27.
-> The support was dropped due to lack of interest from mainaeners.
-> 
-> Piotr Wojtaszczyk (12):
->   dt-bindings: dma: pl08x: Add dma-cells description
->   dt-bindings: dma: Add lpc32xx DMA mux binding
->   ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT binding
->   ARM: dts: lpc32xx: Use simple-mfd for clock control block
->   ARM: dts: lpc32xx: Add missing dma properties
->   ARM: dts: lpc32xx: Add missing i2s properties
->   clk: lpc32xx: initialize regmap using parent syscon
->   dmaengine: Add dma router for pl08x in LPC32XX SoC
->   ARM: lpc32xx: Remove pl08x platform data in favor for device tree
->   mtd: rawnand: lpx32xx: Request DMA channels using DT entries
->   ASoC: fsl: Add i2s and pcm drivers for LPC32xx CPUs
->   i2x: pnx: Fix potential deadlock warning from del_timer_sync() call in
->     isr
-> 
-> [...]
+On Fri, 28 Jun 2024 at 19:45, Michael Walle <mwalle@kernel.org> wrote:
+>
+> > What is the kernel policy regarding obsolete flash chips?
+> > Macronix annonce on end of life of mx25l12805d in 2010.
+>
+> Which doesn't mean there are no boards using it. But EOL in 2010
+> might be a strong argument to remove it. But I don't see the need
+> for it, yet.
 
-Applied to
+Fair enough. That means I was in the right direction.
+Just need a better description for the patch :-)
+I'll update for version 2.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>
+> > > Also please have a look at
+> > > https://docs.kernel.org/driver-api/mtd/spi-nor.html
+> >
+> > The new mx25l12833f supports SFDP, the obsolete mx25l12805d does not.
+> > I did manage to read the SFDP, though I do not have a copy of it (I do
+> > not have the hardware any more).
+>
+> So how would you test newer versions of this series?
 
-Thanks!
+I develop the OTP callbacks with a mx25l12805d for a company using it.
+I am no longer in contact with them.
 
-[03/12] ASoC: dt-bindings: lpc32xx: Add lpc32xx i2s DT binding
-        commit: 752fea92d9b3e4255a2f75e7efa6fe148562ccbf
-[11/12] ASoC: fsl: Add i2s and pcm drivers for LPC32xx CPUs
-        commit: 0959de657a10cc40b2cc41cff9169ab0e0fd4456
+The testing can be done with any Macronix SPI-NOR with OTP.
+I did not check, but I guess most of their chips have an OTP using the
+same opcodes/methods.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+At least mx25l12805d and mx25l12833f use the same.
+I did not add mx25l12833f as I did not use it and as it uses
+asymmetric OTP (the MTD supports symmetric OTP).
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>
+> > To my best knowledge SFDP table do not contain information on OTP,
+>
+> That's true, but we need it to detect flashes during runtime in the
+> future. Imagine sometime later, there's a third flash with this
+> exact ID, then we need to have the SFDP to figure out if there are
+> any differences between yours and the new one.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Sure, as I said the mx25l12833f does provide SFDP.
+In patch 4, I removed the size property to force the driver to read SFDP.
+I was not sure about the flags though.
+I did not see any difference compared to using the setting of
+mx25l12805d without SFDP.
+Yet my focus of work was the OTP.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Erez
 
-Thanks,
-Mark
-
+>
+> -michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
