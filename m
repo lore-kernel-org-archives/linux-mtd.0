@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAB2FC2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2024 14:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91C1EC30658
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jun 2024 14:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xXl07vW/glOMAd4b9ear9UIsEhsI+KNF0koFyiIOpjE=; b=XizVs50xUAb0NV
-	DZFSTIfdrmquROwzRHBLFJK1AEwM+qAMF8ZnBXoswybL5po860vZalNxsPZtbKk1iZWZ0NGSM+AD9
-	+FKT/AgYiOch5KS/DBxVj/7DdQd7Gx6ydszD/9/tEPyQDtyIY01DUHbnuEgCBf7A0OiRqvHFcpQyp
-	wsTdIHIzZvOwMqPH5MW+fdqBBCf38VdeWU4NdXXXlNdk+WXMSAL8mBDa8YvqqfjxHJTdGbSa9aDEE
-	hiT1ojAz7YS9vP8c+uMzKaF1JLCPux4NYL4h3CE+TCz343ChsHmkngPwv6XtXO0BWmlbNwAJduMsZ
-	QqMB+dFNOCEDYfAW6mZg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bKLSSPhrQC/q/D7t5tW4RKPBj8YJByhB2T0rhvm51g4=; b=rPoxOTSHxlkiLa
+	Pb6zARHd6wDuZ+pxwj2N6xIbkjyVSmzg6NsFGbiemyT5QasVBeEfNciugxAYpD9gNH5g38wjB5qj4
+	X80UYI7UNl6ApaZEcIMw6E1/qhBeHk8BrhQ3X7x/n8pH6KkBSZdQblsHLAMn+Epx46DceoK3ribuz
+	s3YW65sfa8owy1CTrYOpzPHY+ruGLaAuWSRaY/iObZJvdJG4RwjHLi1dMrtgc9uUE/RYV2LKGwo/n
+	jRQY0dWe9tLXptOkiy01I5v8yh2QaiZ65pBlKFmyvfOypnfdCJRFfzBPLgG3aQn7gSKGPJrC7FIMY
+	Xl2dM72q38DwlVBDWAvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNCD5-0000000Dv0h-0hge;
-	Fri, 28 Jun 2024 14:04:19 +0000
+	id 1sNCD6-0000000Dv1Q-3ZIO;
+	Fri, 28 Jun 2024 14:04:20 +0000
 Received: from chessie.fmt1.pfcs.com ([66.220.13.234] helo=chessie.everett.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNCD2-0000000DuzA-0ydl
+	id 1sNCD4-0000000Dv0H-1IQO
 	for linux-mtd@lists.infradead.org;
-	Fri, 28 Jun 2024 14:04:17 +0000
+	Fri, 28 Jun 2024 14:04:19 +0000
 Received: from localhost.localdomain (unknown [31.16.248.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by chessie.everett.org (Postfix) with ESMTPSA id 4W9ccK4ZHBzMQKt;
-	Fri, 28 Jun 2024 14:04:01 +0000 (UTC)
+	by chessie.everett.org (Postfix) with ESMTPSA id 4W9ccN55gSzMQL9;
+	Fri, 28 Jun 2024 14:04:04 +0000 (UTC)
 From: Erez Geva <erezgeva@nwtime.org>
 To: linux-mtd@lists.infradead.org,
 	Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -47,15 +47,16 @@ Cc: linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Erez Geva <ErezGeva2@gmail.com>
-Subject: [PATCH 0/4] Add support for SPI-NOR Macronix OTP
-Date: Fri, 28 Jun 2024 16:03:24 +0200
-Message-Id: <20240628140328.279792-1-erezgeva@nwtime.org>
+Subject: [PATCH 1/4] Add generic functions for accessing the SPI-NOR chip.
+Date: Fri, 28 Jun 2024 16:03:25 +0200
+Message-Id: <20240628140328.279792-2-erezgeva@nwtime.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240628140328.279792-1-erezgeva@nwtime.org>
+References: <20240628140328.279792-1-erezgeva@nwtime.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240628_070416_300398_7787201A 
-X-CRM114-Status: UNSURE (   7.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240628_070418_385554_ECDF165F 
+X-CRM114-Status: GOOD (  13.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,22 +75,268 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Erez Geva <ErezGeva2@gmail.com>
 
-Add support for SPI-NOR Macronix OTP.
-And add mx25l12833f with OTP.
+Functions:
 
-Erez Geva (4):
-  Add generic functions for accessing the SPI chip.
-  Add support for SPI-NOR Macronix OTP.
-  dt-bindings: mtd: macronix,mx25l12833f: add SPI-NOR chip
-  Add Macronix SPI-NOR mx25l12833f with OTP.
+ - Send a opcode
 
- .../bindings/mtd/jedec,spi-nor.yaml           |   2 +-
- drivers/mtd/spi-nor/core.c                    | 131 ++++++++----
- drivers/mtd/spi-nor/core.h                    |  27 +--
- drivers/mtd/spi-nor/macronix.c                | 190 ++++++++++++++++++
- include/linux/mtd/spi-nor.h                   |  10 +
- 5 files changed, 301 insertions(+), 59 deletions(-)
+ - Read a register
 
+ - Write a register
+
+Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
+---
+ drivers/mtd/spi-nor/core.c | 130 +++++++++++++++++++++++++++----------
+ drivers/mtd/spi-nor/core.h |  27 +-------
+ 2 files changed, 99 insertions(+), 58 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 028514c6996f..0f267da339a4 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -354,53 +354,134 @@ int spi_nor_write_any_volatile_reg(struct spi_nor *nor, struct spi_mem_op *op,
+ }
+ 
+ /**
+- * spi_nor_write_enable() - Set write enable latch with Write Enable command.
++ * _nor_send_cmd() - Send instruction without address or data to the chip.
+  * @nor:	pointer to 'struct spi_nor'.
++ * @opcode:	Command to send
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_write_enable(struct spi_nor *nor)
++static inline int _nor_send_cmd(struct spi_nor *nor, u8 opcode)
+ {
+ 	int ret;
+ 
+ 	if (nor->spimem) {
+-		struct spi_mem_op op = SPI_NOR_WREN_OP;
++		struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),
++					   SPI_MEM_OP_NO_ADDR,
++					   SPI_MEM_OP_NO_DUMMY,
++					   SPI_MEM_OP_NO_DATA);
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREN,
+-						       NULL, 0);
++		ret = spi_nor_controller_ops_write_reg(nor, opcode, NULL, 0);
+ 	}
+ 
+-	if (ret)
+-		dev_dbg(nor->dev, "error %d on Write Enable\n", ret);
++	return ret;
++}
++
++/**
++ * spi_nor_send_cmd() - Send instruction without address or data to the chip.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @opcode:	Command to send
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_send_cmd(struct spi_nor *nor, u8 opcode)
++{
++	int ret;
++
++	ret = _nor_send_cmd(nor, opcode);
+ 
+ 	return ret;
+ }
+ 
+ /**
+- * spi_nor_write_disable() - Send Write Disable instruction to the chip.
++ * spi_nor_read_reg() - Send instruction without address or data to the chip.
+  * @nor:	pointer to 'struct spi_nor'.
++ * @opcode:	Command to send
++ * @len:	register value length
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-int spi_nor_write_disable(struct spi_nor *nor)
++int spi_nor_read_reg(struct spi_nor *nor, u8 opcode, size_t len)
+ {
+ 	int ret;
+ 
+ 	if (nor->spimem) {
+-		struct spi_mem_op op = SPI_NOR_WRDI_OP;
++		struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),
++					   SPI_MEM_OP_NO_ADDR,
++					   SPI_MEM_OP_NO_DUMMY,
++					   SPI_MEM_OP_DATA_IN(len, nor->bouncebuf, 0));
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WRDI,
+-						       NULL, 0);
++		ret = spi_nor_controller_ops_read_reg(nor, opcode, nor->bouncebuf, len);
+ 	}
+ 
++	return ret;
++}
++
++/*
++ * spi_nor_write_reg() - Send instruction without address or data to the chip.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @opcode:	Command to send
++ * @len:	register value length
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_write_reg(struct spi_nor *nor, u8 opcode, size_t len)
++{
++	int ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),
++					   SPI_MEM_OP_NO_ADDR,
++					   SPI_MEM_OP_NO_DUMMY,
++					   SPI_MEM_OP_DATA_OUT(len, nor->bouncebuf, 0));
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = spi_nor_controller_ops_write_reg(nor, opcode, nor->bouncebuf, len);
++	}
++
++	return ret;
++}
++
++/**
++ * spi_nor_write_enable() - Set write enable latch with Write Enable command.
++ * @nor:	pointer to 'struct spi_nor'.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_write_enable(struct spi_nor *nor)
++{
++	int ret;
++
++	ret = _nor_send_cmd(nor, SPINOR_OP_WREN);
++
++	if (ret)
++		dev_dbg(nor->dev, "error %d on Write Enable\n", ret);
++
++	return ret;
++}
++
++/**
++ * spi_nor_write_disable() - Send Write Disable instruction to the chip.
++ * @nor:	pointer to 'struct spi_nor'.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++int spi_nor_write_disable(struct spi_nor *nor)
++{
++	int ret;
++
++	ret = _nor_send_cmd(nor, SPINOR_OP_WRDI);
++
+ 	if (ret)
+ 		dev_dbg(nor->dev, "error %d on Write Disable\n", ret);
+ 
+@@ -521,18 +602,8 @@ int spi_nor_set_4byte_addr_mode_en4b_ex4b(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+-	if (nor->spimem) {
+-		struct spi_mem_op op = SPI_NOR_EN4B_EX4B_OP(enable);
+-
+-		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+-
+-		ret = spi_mem_exec_op(nor->spimem, &op);
+-	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor,
+-						       enable ? SPINOR_OP_EN4B :
+-								SPINOR_OP_EX4B,
+-						       NULL, 0);
+-	}
++	ret = _nor_send_cmd(nor, enable ? SPINOR_OP_EN4B :
++						SPINOR_OP_EX4B);
+ 
+ 	if (ret)
+ 		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
+@@ -765,16 +836,7 @@ int spi_nor_global_block_unlock(struct spi_nor *nor)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nor->spimem) {
+-		struct spi_mem_op op = SPI_NOR_GBULK_OP;
+-
+-		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+-
+-		ret = spi_mem_exec_op(nor->spimem, &op);
+-	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_GBULK,
+-						       NULL, 0);
+-	}
++	ret = _nor_send_cmd(nor, SPINOR_OP_GBULK);
+ 
+ 	if (ret) {
+ 		dev_dbg(nor->dev, "error %d on Global Block Unlock\n", ret);
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 442786685515..df456a713d92 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -25,18 +25,6 @@
+ 		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
+ 		   SPI_MEM_OP_DATA_IN(len, buf, 0))
+ 
+-#define SPI_NOR_WREN_OP							\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 0),			\
+-		   SPI_MEM_OP_NO_ADDR,					\
+-		   SPI_MEM_OP_NO_DUMMY,					\
+-		   SPI_MEM_OP_NO_DATA)
+-
+-#define SPI_NOR_WRDI_OP							\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 0),			\
+-		   SPI_MEM_OP_NO_ADDR,					\
+-		   SPI_MEM_OP_NO_DUMMY,					\
+-		   SPI_MEM_OP_NO_DATA)
+-
+ #define SPI_NOR_RDSR_OP(buf)						\
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 0),			\
+ 		   SPI_MEM_OP_NO_ADDR,					\
+@@ -67,24 +55,12 @@
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+ 
+-#define SPI_NOR_EN4B_EX4B_OP(enable)					\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B, 0),	\
+-		   SPI_MEM_OP_NO_ADDR,					\
+-		   SPI_MEM_OP_NO_DUMMY,					\
+-		   SPI_MEM_OP_NO_DATA)
+-
+ #define SPI_NOR_BRWR_OP(buf)						\
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BRWR, 0),			\
+ 		   SPI_MEM_OP_NO_ADDR,					\
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
+ 
+-#define SPI_NOR_GBULK_OP						\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 0),			\
+-		   SPI_MEM_OP_NO_ADDR,					\
+-		   SPI_MEM_OP_NO_DUMMY,					\
+-		   SPI_MEM_OP_NO_DATA)
+-
+ #define SPI_NOR_DIE_ERASE_OP(opcode, addr_nbytes, addr, dice)		\
+ 	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
+ 		   SPI_MEM_OP_ADDR(dice ? addr_nbytes : 0, addr, 0),	\
+@@ -611,6 +587,9 @@ extern const struct attribute_group *spi_nor_sysfs_groups[];
+ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ 			     struct spi_mem_op *op,
+ 			     const enum spi_nor_protocol proto);
++int spi_nor_send_cmd(struct spi_nor *nor, u8 opcode);
++int spi_nor_read_reg(struct spi_nor *nor, u8 opcode, size_t len);
++int spi_nor_write_reg(struct spi_nor *nor, u8 opcode, size_t len);
+ int spi_nor_write_enable(struct spi_nor *nor);
+ int spi_nor_write_disable(struct spi_nor *nor);
+ int spi_nor_set_4byte_addr_mode_en4b_ex4b(struct spi_nor *nor, bool enable);
 -- 
 2.39.2
 
