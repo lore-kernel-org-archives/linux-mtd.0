@@ -4,94 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00164C30658
-	for <linux-mtd@archiver.kernel.org>; Sat, 29 Jun 2024 08:01:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF0AC27C4F
+	for <linux-mtd@archiver.kernel.org>; Sat, 29 Jun 2024 10:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:Cc:
-	References:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TiJSyYlUEo/9taK5+kBezVcHzHhzKRXPoIDqdk5/5vE=; b=Iq6CBCNPrxyaoPQsbcFEXoEcGb
-	j0fYUlC5Gg1YFkfjvOXgH9Atj9oLPXBVAQCMzDPUmvrUyLJczBnvvL+YDDQ0HaI3RcqDrO5evrnaH
-	0XNqCgRa58om0T9uwZQmdxxU3zbRB+0YmgBBpXYTb3V/yZflvVUvj8eydoSId89/FuACKoXDkjn8O
-	CjG98E0aBQKmK9I4z/+LOTt54Yo4iWebpvyQ6kOeY+yI1z9XkPFg5QDVFc15xwItLmG3BShLc4UF6
-	nUL6uCirfzX6ogM9NCsz/rY9J4TCWEOTLER1OM87qS8SZeOuDVf6NPcB0lRp00laxbodiO3sWe/vR
-	K5qGpprQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=tqfWYaJtPSVPhKT/thMdrdKwFYMjoW8PoIu1sh5N0VA=; b=eGXnSk1qFR6E6P
+	YPivcB8DhJ1mVAAIE176rvov0+4uByMobH2AmHSktMqN8CfD2r5EPxmqyeBFFCXlelTT1tdxlQX9+
+	K8PHxkwPI2n+tavwB5tFcrpLVkqpnVJxOBov4o7NuuWsrxtpuZOxcN9dkYx8eCRuAq5KPJ34KC7zz
+	NYqCBBs6wB77GZB/2meaZ82fPv1UbnUmDVYxajffbHkob7YzGz5j1fy5y+w2XKmfeCcdzaiE2iZi4
+	M6lkgMi/hRONmtbI9KeqhTEusTARWrUnIKXc4W4zb1mUTAkTqt49xBsykDGtx+ray0BzN5vOTb8wo
+	ZDcvFa5aTqfI1ec5zBog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNT1X-0000000G5Ve-1PYU;
-	Sat, 29 Jun 2024 08:01:31 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNT1U-0000000G5Up-33tL
+	id 1sNVUo-0000000GG3n-05cP;
+	Sat, 29 Jun 2024 10:39:54 +0000
+Received: from chessie.fmt1.pfcs.com ([2001:470:1:205::234] helo=chessie.everett.org)
+	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sNVUk-0000000GG1B-2lr1
 	for linux-mtd@lists.infradead.org;
-	Sat, 29 Jun 2024 08:01:30 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-70670188420so1043733b3a.2
-        for <linux-mtd@lists.infradead.org>; Sat, 29 Jun 2024 01:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719648088; x=1720252888; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RVZFO1FkOZN43VwhDsUFI8m9w2uZibjKDiWK6PAbrwE=;
-        b=dLcJzmt5meJPP1VqiEkDDEMn9HpVaWBChC4bBaF4sXXY+9XRX2kYA9PQ5Bep2G7viY
-         PvVFRnpOGih7+A0TcEuRZ2Lsz/RArJK5tDWCzpoxUNFewSey34mG5SL8x1gS4Km6ZaHA
-         KAFvHDrNmX0qzOeQXNQPKb8ui5A/9fnOPrKyz1XJHtBDUGnZ85g4SGUxrBxUHynpNmLk
-         nS+eNv6bEdLMwEZMThgZKlpMiNaOricG0QV5XiamYiHFtPYyVd3aqbmCrz9AmXJijgMh
-         n6EdTWVyp/HAp56mj9iBOWaSRPN20e5lp0UXAeVFvNverQtyOlnluVqJqJqEQ12ViWpx
-         6CCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719648088; x=1720252888;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RVZFO1FkOZN43VwhDsUFI8m9w2uZibjKDiWK6PAbrwE=;
-        b=abESC56b6FYHK65uOO8sn9jfsMPSv8qJyjXpkxzFsheKJIaCWm5UbCe0jlypNeE/IF
-         grVn6pnCNfOkjnFtabckGZkB7m0u6T5dMLXgfJb3eIbmx/M7xYP9CI9N43cdWXm++JqX
-         Ibdgxhu4m0SukM99UuJA9n/f1+0wqRjrE6oM7pmF7JaS6hCYsXUokPBeh8IUuU3x5V3P
-         ekiLWdi9KYoe3Io/lSRBlks6hqAy64OHMB4VnGY2Yqee3Z4Jx1pPzXJ/twIf1lbaAnTR
-         T87pdPrVRU0jkB8PdCRlefQKlVwVNaQ1lZ46/wpX6rDQoUh98lNn/Ys+68r80dJHwmV8
-         cHKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXM90XUKdoL1jvTKRqb7O58l3GXQ1u45WRJNUItphqhN6B2lhsj6P3yW4gvZ0o18jnyFcYXNSLhAfblnjBUypBsXHEP8jaRShddA5NE6g==
-X-Gm-Message-State: AOJu0YzlVEclZzwf1yqVwVlEF29UT2DpDQyRm11EnxD5x8YnnBiFgEJc
-	ToW2JhYtaLTFjhiQFn14wXZRz8hXj7b2YQ5lUWDc6DFAu5rno6yR
-X-Google-Smtp-Source: AGHT+IGbKv40OC5mDaOBFOYXNNOUwtkx3qqlTzN5ZmmL41H/SNbMVh1aYZxa8FS2RvtudOgVTuELsw==
-X-Received: by 2002:a05:6a00:1ca4:b0:706:68ff:2bce with SMTP id d2e1a72fcca58-70aaad1e232mr458676b3a.2.1719648087517;
-        Sat, 29 Jun 2024 01:01:27 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70802565b3asm2768066b3a.53.2024.06.29.01.01.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 29 Jun 2024 01:01:27 -0700 (PDT)
-Subject: Re: m68k 54418 fails to execute user space
-To: Andreas Schwab <schwab@linux-m68k.org>
-References: <c252ab82-dc4a-4267-84c3-4a20471524c5@yoseli.org>
- <735e19b6-3747-417f-ba5b-1a7da137a3a3@yoseli.org>
- <7fb2988d-ab89-405f-8cf1-edcdd2196376@gmail.com>
- <a7084eac-b92a-4ddb-a079-f4a600b93f8e@yoseli.org>
- <c7235957-1f00-40dd-a78a-925b0b943ec7@gmail.com>
- <57879ac8-eaf5-48f1-b4ef-6619d9108440@yoseli.org>
- <d66e2daa-8b31-727f-bd66-6976b0bc0130@gmail.com>
- <ce18844d-9a93-40c7-9ac6-b49b8f823c47@yoseli.org>
- <64c30829-499d-fb48-16ee-891f8d8c443a@gmail.com>
- <04ffd421-28e8-4bde-b44b-e3685bed99fc@yoseli.org>
- <8ba7fa44-876e-5f7b-70c8-e8a5499db2a4@gmail.com>
- <87msn4z15c.fsf@linux-m68k.org>
-Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
- linux-m68k@lists.linux-m68k.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Christoph Hellwig <hch@infradead.org>, wbx@openadk.org
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <c7203054-2839-eb94-2be7-b27c0c3c7770@gmail.com>
-Date: Sat, 29 Jun 2024 20:01:19 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+	Sat, 29 Jun 2024 10:39:52 +0000
+Received: from localhost.localdomain (unknown [31.16.248.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by chessie.everett.org (Postfix) with ESMTPSA id 4WB8212wC9zMQLv;
+	Sat, 29 Jun 2024 10:39:37 +0000 (UTC)
+From: Erez Geva <erezgeva@nwtime.org>
+To: linux-mtd@lists.infradead.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	devicetree@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Erez Geva <ErezGeva2@gmail.com>
+Subject: [PATCH v2 3/4] dt-bindings: mtd: macronix,mx25l12833f: add SPI-NOR chip
+Date: Sat, 29 Jun 2024 12:39:12 +0200
+Message-Id: <20240629103914.161530-4-erezgeva@nwtime.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240629103914.161530-1-erezgeva@nwtime.org>
+References: <20240629103914.161530-1-erezgeva@nwtime.org>
 MIME-Version: 1.0
-In-Reply-To: <87msn4z15c.fsf@linux-m68k.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240629_010128_806935_819A07AB 
-X-CRM114-Status: GOOD (  10.54  )
+X-CRM114-CacheID: sfid-20240629_033950_757507_AE1E4D48 
+X-CRM114-Status: GOOD (  10.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,27 +68,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Andreas,
+From: Erez Geva <ErezGeva2@gmail.com>
 
-Am 29.06.2024 um 18:57 schrieb Andreas Schwab:
-> On Jun 29 2024, Michael Schmitz wrote:
->
->> No heap space allocated here. I would have expected that to cause an error
->> message from libc ...
->
-> No, the heap starts at _end and there is still enough space before the
-> next page boundary.
+Add Macronix SPI-NOR mx25l12833f.
 
-Right - not all that unusual then.
+mx25l12833f uses the same JEDEC ID as mx25l12805d.
 
-Thanks,
+Although mx25l12833f is a new chip that support read ID and SFDP,
+ users might want to specify it in the device tree,
+ to differ it from the old mx25l12805d chip.
 
-	Michael
+Macronix annonce the end of life of mx25l12805d in 2010.
+
+See:
+  "https://www.macronix.com/Lists/TechDoc/Attachments/9861/PCN31_2009 PCN_MX25L6405D and MX25L12805D.pdf"
+
+Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
+---
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 6e3afb42926e..625a618a7992 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -22,7 +22,7 @@ properties:
+               n25q(32b|064|128a11|128a13|256a|512a|164k)))|\
+               atmel,at25df(321a|641|081a)|\
+               everspin,mr25h(10|40|128|256)|\
+-              (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|25635e)|\
++              (mxicy|macronix),mx25l(4005a|1606e|6405d|8005|12805d|12833f|25635e)|\
+               (mxicy|macronix),mx25u(4033|4035)|\
+               (spansion,)?s25fl(128s|256s1|512s|008k|064k|164k)|\
+               (sst|microchip),sst25vf(016b|032b|040b)|\
+-- 
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
