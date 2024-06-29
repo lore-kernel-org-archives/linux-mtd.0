@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB0C9C30658
-	for <linux-mtd@archiver.kernel.org>; Sat, 29 Jun 2024 10:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B9EC27C4F
+	for <linux-mtd@archiver.kernel.org>; Sat, 29 Jun 2024 11:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+8DDHFo0qeTyou784iQETnexoIN4Vvzc0oReTS6I+Ns=; b=aZdigXkzCCQBsv
-	Q7ZNTJQx9yMLM/IEXCwBTakqYSHNl9ODNx2B2zp3i66q5AQq+eE+XlZAYaeZX5nYrsGP/YsD5G4Ha
-	iXcJv4f9lkA3qqoOSPxvqPF1QKzdBfrZhgXFB9YKIQbwUkLfmyUbKidU7ggobD+Y05Ean3eS7IScC
-	OofT02y2S72SPfJWduF1d2Jk3/eVnr7aV4RM7AY3OpgQ/AU638SVpfC9Xo1/FbV6e6IT6QYiyZuLS
-	TyzCMX74DrsluyDIE6Pf1Y936PjUD/KBzKZI3ACvj0aOAQylibZI7Q5EiYwMnGfB8Lt/2bj1PwIf0
-	2sMWK6/VjLCPehyBbbKQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=GocfvXXKWOoQBBTz39Li3Sk6TgAAzlt0PkVIh9TiLEU=; b=xh/ZLRutmLyjXh4M+c0XVxby72
+	9lMgDWsy1+gwfi5CQPf/gy7LHcaM+10GkkfDyeKsvkrwFmfVeZMs1eTwnTV6fyWRi3HVsHhMP5GIt
+	NKhIctK04xbAB4ozujpfLRQvEfv7AgsuQATaNocIYQ9dgv34n93IcD7hxq7zrmysW+yssZ5+LOnK3
+	vUO4+J3WhbzBmxxr5Qbt/gqIJvVlvBqtnF4Q54PVIMySLDC/8eB+lR2NuqwI+07zwOvh6f5wovRJT
+	QMXhoqk2a4+RwvN6RlyLTIIEz3SjKdbDv+feeJZ5CnYyhOasxgsB3TcwdjkTagYnflUP5J/MHr0J2
+	Ha1og1fQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNVUn-0000000GG3A-1pVy;
-	Sat, 29 Jun 2024 10:39:53 +0000
-Received: from chessie.fmt1.pfcs.com ([2001:470:1:205::234] helo=chessie.everett.org)
-	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sNVUj-0000000GG1B-1UU9
+	id 1sNWAL-0000000GJtv-1x4x;
+	Sat, 29 Jun 2024 11:22:49 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sNWAI-0000000GJtA-0GJ1
 	for linux-mtd@lists.infradead.org;
-	Sat, 29 Jun 2024 10:39:50 +0000
-Received: from localhost.localdomain (unknown [31.16.248.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by chessie.everett.org (Postfix) with ESMTPSA id 4WB81y4Gz6zMQLp;
-	Sat, 29 Jun 2024 10:39:34 +0000 (UTC)
-From: Erez Geva <erezgeva@nwtime.org>
-To: linux-mtd@lists.infradead.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	devicetree@vger.kernel.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Erez Geva <ErezGeva2@gmail.com>
-Subject: [PATCH v2 2/4] Add support for SPI-NOR Macronix OTP.
-Date: Sat, 29 Jun 2024 12:39:11 +0200
-Message-Id: <20240629103914.161530-3-erezgeva@nwtime.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240629103914.161530-1-erezgeva@nwtime.org>
-References: <20240629103914.161530-1-erezgeva@nwtime.org>
+	Sat, 29 Jun 2024 11:22:47 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WB8tY0CHZzjZ0f;
+	Sat, 29 Jun 2024 19:18:13 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id 26DB6180089;
+	Sat, 29 Jun 2024 19:22:36 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Sat, 29 Jun 2024 19:22:35 +0800
+Subject: Re: ubifs: why ubifs doesn't support 2 copied of super blocks for
+ better fs reliability
+To: Ryder Wang <rydercoding@hotmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>
+References: <MEYP282MB3164B8C92CD51ACC0897F0F2BFD5A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+ <497aa593-5999-821d-a2b7-69c0953e1e3e@huawei.com>
+ <MEYP282MB3164701A51B29DB61B106566BFD5A@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+ <MEYP282MB3164987D45E3CFC61B3E7CECBFD02@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <f9c0f1f3-5fbf-c86d-4056-b75ee368df76@huawei.com>
+Date: Sat, 29 Jun 2024 19:22:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <MEYP282MB3164987D45E3CFC61B3E7CECBFD02@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240629_033949_440827_A8E91E81 
-X-CRM114-Status: GOOD (  18.14  )
+X-CRM114-CacheID: sfid-20240629_042246_301316_0C4C1AC1 
+X-CRM114-Status: GOOD (  12.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,255 +69,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Erez Geva <ErezGeva2@gmail.com>
-
-Macronix SPI-NOR support OTP.
-Add callbacks to read, write and lock the OTP.
-
-Notice Macronix OTP do not support erase.
-Every bit written with '0', can not be changed further.
-
-Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
----
- drivers/mtd/spi-nor/macronix.c | 185 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h    |  10 ++
- 2 files changed, 195 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index ea6be95e75a5..f210231468a6 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -8,6 +8,180 @@
- 
- #include "core.h"
- 
-+/**
-+ * macronix_nor_otp_enter() - Send Enter Secured OTP instruction to the chip.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int macronix_nor_otp_enter(struct spi_nor *nor)
-+{
-+	int error;
-+
-+	error = spi_nor_send_cmd(nor, SPINOR_OP_ENSO);
-+
-+	if (error)
-+		dev_dbg(nor->dev, "error %d on Macronix Enter Secured OTP\n", error);
-+
-+	return error;
-+}
-+
-+/**
-+ * macronix_nor_otp_exit() - Send Exit Secured OTP instruction to the chip.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int macronix_nor_otp_exit(struct spi_nor *nor)
-+{
-+	int error;
-+
-+	error = spi_nor_send_cmd(nor, SPINOR_OP_EXSO);
-+
-+	if (error)
-+		dev_dbg(nor->dev, "error %d on Macronix Enter Secured OTP\n", error);
-+
-+	return error;
-+}
-+
-+/**
-+ * macronix_nor_otp_read() - read security register
-+ * @nor:	pointer to 'struct spi_nor'
-+ * @addr:       offset to read from
-+ * @len:        number of bytes to read
-+ * @buf:        pointer to dst buffer
-+ *
-+ * Return: number of bytes read successfully, -errno otherwise
-+ */
-+static int macronix_nor_otp_read(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
-+{
-+	int ret, error;
-+
-+	error = macronix_nor_otp_enter(nor);
-+	if (error)
-+		return error;
-+
-+	ret = spi_nor_read_data(nor, addr, len, buf);
-+
-+	error = macronix_nor_otp_exit(nor);
-+
-+	if (ret < 0)
-+		dev_dbg(nor->dev, "error %d on Macronix read OTP data\n", ret);
-+	else if (error)
-+		return error;
-+
-+	return ret;
-+}
-+
-+/**
-+ * macronix_nor_otp_write() - write security register
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @addr:       offset to write to
-+ * @len:        number of bytes to write
-+ * @buf:        pointer to src buffer
-+ *
-+ * Return: number of bytes written successfully, -errno otherwise
-+ */
-+static int macronix_nor_otp_write(struct spi_nor *nor, loff_t addr, size_t len, const u8 *buf)
-+{
-+	int error, ret = 0;
-+
-+	error = macronix_nor_otp_enter(nor);
-+	if (error)
-+		return error;
-+
-+	error = spi_nor_write_enable(nor);
-+	if (error)
-+		goto otp_write_err;
-+
-+	ret = spi_nor_write_data(nor, addr, len, buf);
-+	if (ret < 0) {
-+		dev_dbg(nor->dev, "error %d on Macronix write OTP data\n", ret);
-+		goto otp_write_err;
-+	}
-+
-+	error = spi_nor_wait_till_ready(nor);
-+	if (error)
-+		dev_dbg(nor->dev, "error %d on Macronix waiting write OTP finish\n", error);
-+
-+otp_write_err:
-+
-+	error = macronix_nor_otp_exit(nor);
-+
-+	return ret;
-+}
-+
-+/**
-+ * macronix_nor_otp_lock() - lock the OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int macronix_nor_otp_lock(struct spi_nor *nor, unsigned int region)
-+{
-+	int error;
-+	u8 *rdscur = nor->bouncebuf;
-+
-+	error = spi_nor_read_reg(nor, SPINOR_OP_RDSCUR, 1);
-+	if (error) {
-+		dev_dbg(nor->dev, "error %d on read security register\n", error);
-+		return error;
-+	}
-+
-+	switch (region) {
-+	case 0: /* Lock 1st 4K-bit region */
-+		if (rdscur[0] & SEC_REG_LDSO)
-+			return 0; /* Already locked */
-+		rdscur[0] |= SEC_REG_LDSO;
-+		break;
-+	case 1: /* Lock 2nd 4K-bit region */
-+		if (rdscur[0] & SEC_REG_LDS1)
-+			return 0; /* Already locked */
-+		rdscur[0] |= SEC_REG_LDS1;
-+		break;
-+	default:
-+		return 0; /* Unknown region */
-+	}
-+
-+	error = spi_nor_write_reg(nor, SPINOR_OP_WRSCUR, 1);
-+	if (error)
-+		dev_dbg(nor->dev, "error %d on update security register\n", error);
-+
-+	return error;
-+}
-+
-+/**
-+ * macronix_nor_otp_is_locked() - get the OTP region lock status
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int macronix_nor_otp_is_locked(struct spi_nor *nor, unsigned int region)
-+{
-+	int ret;
-+	u8 *rdscur = nor->bouncebuf;
-+
-+	ret = spi_nor_read_reg(nor, SPINOR_OP_RDSCUR, 1);
-+	if (ret) {
-+		dev_dbg(nor->dev, "error %d on read security register\n", ret);
-+		return ret;
-+	}
-+
-+	switch (region) {
-+	case 0: /* 1st 4K-bit region */
-+		ret = (rdscur[0] & SEC_REG_LDSO) > 0;
-+		break;
-+	case 1: /* 2nd 4K-bit region */
-+		ret = (rdscur[0] & SEC_REG_LDS1) > 0;
-+		break;
-+	default: /* Unknown region */
-+		break;
-+	}
-+	return ret;
-+}
-+
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
-@@ -190,8 +364,19 @@ static void macronix_nor_default_init(struct spi_nor *nor)
- 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
- }
- 
-+static const struct spi_nor_otp_ops macronix_nor_otp_ops = {
-+	.read = macronix_nor_otp_read,
-+	.write = macronix_nor_otp_write,
-+	/* .erase = Macronix OTP do not support erase, */
-+	.lock = macronix_nor_otp_lock,
-+	.is_locked = macronix_nor_otp_is_locked,
-+};
-+
- static int macronix_nor_late_init(struct spi_nor *nor)
- {
-+	if (nor->params->otp.org->n_regions)
-+		nor->params->otp.ops = &macronix_nor_otp_ops;
-+
- 	if (!nor->params->set_4byte_addr_mode)
- 		nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
- 
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index cdcfe0fd2e7d..f5965f90f51e 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -81,6 +81,16 @@
- #define SPINOR_OP_BP		0x02	/* Byte program */
- #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
- 
-+/* Used by Macronix OTP. */
-+#define SPINOR_OP_RDSCUR	0x2b	/* read security register */
-+#define SPINOR_OP_WRSCUR	0x2f	/* write security register */
-+#define SPINOR_OP_ENSO		0xb1	/* enter secured OTP */
-+#define SPINOR_OP_EXSO		0xc1	/* exit secured OTP */
-+
-+/* Security register */
-+#define SEC_REG_LDSO		BIT(1)  /* lock-down bit 1st 4K-bit */
-+#define SEC_REG_LDS1		BIT(0)  /* lock-down bit 2nd 4K-bit */
-+
- /* Used for Macronix and Winbond flashes. */
- #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
- #define SPINOR_OP_EX4B		0xe9	/* Exit 4-byte mode */
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC82LzI4IDEwOjI4LCBSeWRlciBXYW5nINC0tcA6Cj4gSGVsbG8sCj4gCj4gSXQgbG9v
+a3MgdWJpZnMgaGFzIG9ubHkgMSBzdXBlciBibG9jay4gU3VwZXIgYmxvY2sgbWF5IGJlIGNvcnJ1
+cHRlZCBieSBwb3dlci1jdXQgd2hpbGUgTkFORCBlcmFzaW5nIG9yIHdyaXRpbmcsIEVDQyBlcnJv
+ciBhbmQgZXRjLiBXaGVuIHN1cGVyIGJsb2NrIGlzIGNvcnJ1cHRlZCwgdWJpZnMgbW91bnQgd2ls
+bCBhbHdheXMgZmFpbC4KPiAKCkhhdmUgeW91IG1ldCB0aGUgcHJvYmxlbSBjYXVzZWQgYnkgY29y
+cnVwdGVkIHN1cGVyYmxvY2s/IEkgb25seSBzYXcgb25jZSAKaW4gb3VyIHByb2R1Y3QsIGluIHdo
+aWNoIHRoZXJlIHdhcmUgbWFueSBwcm9ibGVtIGVyYXNlYmxvY2tzIGluIHRoZSBmbGFzaC4KCj4g
+SSBhbSBhc2tpbmcgd2h5IHViaWZzIGRvZXNuJ3Qgc3VwcG9ydCAyIGNvcGllZCBvZiBzdXBlciBi
+bG9ja3MgZm9yIGJldHRlciBmcyByZWxpYWJpbGl0eT8gQXMgd2Uga25vdywgYm90aCB1aWJmcyBt
+YXN0ZXIgYmxvY2sgYW5kIHViaSB2b2x1bWUgdGFibGUgaGF2ZSAyIGNvcGllcywgc28gdGhleSBh
+cmUgdmVyeSBzdHJvbmdlci4gSXMgdGhlcmUgYW55IGRldiBwbGFuIHRvIHN1cHBvcnQgaXQgb24g
+c3VwZXIgYmxvY2s/CgpJIGhhdmUgbm8gaWRlYXMgYWJvdXQgdGhpcyBxdWVzdGlvbiBlaXRoZXIg
+YWZ0ZXIgbG9va2luZyB0aHJvdWdoIHRoZSAKaGlzdG9yeSBhbmQgd2hpdGVwYXBlclsxXS4gVGhl
+IHN1cGVyYmxvY2sgaXMgdXBkYXRlZCBpbiBhIHZlcnkgbG93IApmcmVxdWVuY3koZWcuIGF1dG8t
+cmVzaXplKSwgYW5kIGl0IGlzIHVwZGF0ZWQgYnkgYXRvbWljIGNoYW5naW5nLiBTbyBJIApndWVz
+cyB0aGF0IGNvcnJ1cHRlZCBzdXBlcmJsb2NrIGlzIGhhcmRseSBnZW5lcmF0ZWQgZnJvbSB0aGUg
+dmlldyBvZiAKVUJJRlMgbGF5ZXIuIEhvd2V2ZXIsIHRoZSBVQkkgd2lsbCBkbyB3ZWFyLWxldmVp
+bmcsIHdoaWNoIGNvdWxkIAphdG9taWNhbGx5IGV4Y2hhbmdlIHR3byBMRUJzKG1heSBjb250YWlu
+IHN1cGVyYmxvY2spLCB0aGVuIHRoZSB1cGRhdGluZyAKZnJlcXVlbmN5IG9mIHN1cGVyYmxvY2sg
+Y291bGQgYmUgaW5jcmVhc2VkLiBUaGUgZmluYWwgcHJvYmFiaWxpdHkgb2YgCmNvcnJ1cHRlZCBz
+dXBlcmJsb2NrIGlzIGhhcmQgdG8gc2F5LiBTbywgSSdtIG5vdCBzdXJlIGl0J3MgYSB2ZXJ5IAp2
+YWx1YWJsZSB0aGluZyB0byBtYWludGFpbiB0d28gc3VwZXJibG9ja3MgaW4gVUJJRlMsIGFmdGVy
+YWxsLCBpdCB3aWxsIApjaGFuZ2UgZGlzayBzdHJ1Y3R1cmUuCgpbMV0gaHR0cDovL3d3dy5saW51
+eC1tdGQuaW5mcmFkZWFkLm9yZy9kb2MvdWJpZnNfd2hpdGVwYXBlci5wZGYKCj4gCj4gQmVzdCBy
+ZWdhcmRzLAo+IFJ5ZGVyCj4gLgo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
