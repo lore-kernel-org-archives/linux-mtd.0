@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAA9BC30659
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2024 12:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EBCEC2BD09
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2024 12:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M+INLndzsLUJ2D1ZHTfSs5OsDiVXi7Q06vvzunDJ70Y=; b=i+pQK62T/2C4RV
-	zryiJbB+hj+IW9kJjc6eV9O0FMgxQvHCYXyKsthWv6jeOXjCovyvmYah14qKVm+oUkKE1xYS2wGKY
-	Ap1ZcmdgTFc0zRstzm+J7GGGQxaaAYY3B03o3k0v8OvznHzwtH4a8vO4HvTtEGmd2S/Hw7DNhAtTH
-	i3ghXfhDqGNtVP8YdZYnK8fTifmEcXZ4XLeJjU6xJEYgWVqYODr8OIqPVPllQaqTmwqPXxSS0HPG9
-	Xh96Oo9FOaTvSX8JvoA5pBabu/cYI9MiBGg0NG9uBZtrX1crDBz6MXezb7a9ZEPsdmyIXgm3i9ljh
-	QeYOwtnES6/akMJlvuxA==;
+	List-Owner; bh=A//q+GrS/5R6PV4cw5wnIyE0zU+Hmd0BAUUBDPT7oSo=; b=C/0xzm4Qbf0UYo
+	Ut3KXPUAyUKd7IiHbIpycyYQ7h0/wQgdv/2UIIy9INFJkNvc2K33xkOjZmwAa9Iv/hUvT5/KwPcWY
+	3QbnCHop2WMjlS/WeYJm3S1c+sWnLow7cQ3wxlCaH9Rg/KVeOocdovU0c5pJFmEengJJ6zopI8ksj
+	S8ZpZNEud0EY9AiXc328fXCrXc/4DhBeqRAyAWYeI35DmI/ElP0fzU9gbXn+RJdUbcUksqM/qv4Ou
+	oSgDua17GyKkfCCDiZS8+cElZnDC0p9MbEayk9xYAOfmJedi0d7oAZp4aF6WCgZvq54daYHSyu14e
+	/7zS+mUTzMX85MaRKJLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOG2D-000000038c8-1XQL;
-	Mon, 01 Jul 2024 12:21:29 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1sOG2h-000000038wK-0sfV;
+	Mon, 01 Jul 2024 12:21:59 +0000
+Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOFhv-0000000300S-3aQQ
+	id 1sOFhv-00000002zzi-3cUR
 	for linux-mtd@lists.infradead.org;
 	Mon, 01 Jul 2024 12:00:38 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C068CC0007;
-	Mon,  1 Jul 2024 12:00:29 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 581EE4000D;
+	Mon,  1 Jul 2024 12:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1719835230;
+	t=1719835224;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0mMFdDlVb8tiUU5WEmsBNo9BoejZis2bqk/srViz/iU=;
-	b=AxdWh2iPt5xV83865WrQsdKKsm33cg8tiIZCQRdI0G/urVsuKUyuxPGfkCZyLi9VfYMhN9
-	Mv/LpkDuIXI4FvUIdFlKpY7abT98KSQvkNeaBhStjHcMnyvX2XCflRrY92p/9t85UrMlth
-	YdQWL0Bx43mL4w+D/hXQPb008V4VQHNJQi/rHktDbJgSQ+fYG2YIzLAkWNiMbh+fuKwuwo
-	zZzy7GYtbty+Zw//kx1ME8KW3imMOnaHAoqu3+qwtDnL41tNvpq8sDWAfneotFVcNxWwUF
-	/cFTAQgSVFyU3deqh5S5RxxkmaSAPJAK1JzwYH1KSC17v7or6cpdIHv90UGk9g==
+	bh=CUg8N+QU6C4GigySnqcnzizYYV5dL0IssWNRBHYgoR4=;
+	b=V2oJLv+RDDvqgpngTUbpB2a6TqKGtzwCGJpaaFDMDfbnge8RAnjGpH1m6ap5z8NWqCS/2W
+	IU1MMAw6Ba7+TjoXnpgHbxTuLB+qiRTqiBNp9PuiDOWqb54yDwkx7F09HhUpzb56wjVEpR
+	DJoReRIf7jPqHRlz2OmTy0RCnV9vK+Ltu/Gjf/ucBlgZluSn6e/8uiJJS4aQED73zbbqoA
+	eKFmmHfh2k22S6YbUD6c7jqPUeF1tX9Ppota+lkv6pAQnO/NXbKHjSV5qatTzmjjW3Cywb
+	THYi+GtG0MNmJ1dAwk4+zBwSbpTKOnMfcDKNHWc+Qb1DcoXhMPjFYlKZSCj8cg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+To: "Rob Herring (Arm)" <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: nand: mxc_nand: use 'time_left' variable with wait_for_completion_timeout()
-Date: Mon,  1 Jul 2024 14:00:29 +0200
-Message-Id: <20240701120029.525541-1-miquel.raynal@bootlin.com>
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: qcom,nandc: Define properties at top-level
+Date: Mon,  1 Jul 2024 14:00:22 +0200
+Message-Id: <20240701120022.525479-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240604212919.5038-5-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240625215605.192260-1-robh@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'73c6e7963ee8b835c5f267222ec011510be2b630'
+X-linux-mtd-patch-commit: b'31489eac5e4835d4521be320c8e5f4517780572b'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240701_050032_491926_B4FF8965 
-X-CRM114-Status: UNSURE (   8.45  )
+X-CRM114-CacheID: sfid-20240701_050032_501508_DF38ABA3 
+X-CRM114-Status: UNSURE (   8.16  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,17 +83,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2024-06-04 at 21:29:20 UTC, Wolfram Sang wrote:
-> There is a confusing pattern in the kernel to use a variable named 'timeout' to
-> store the result of wait_for_completion_timeout() causing patterns like:
+On Tue, 2024-06-25 at 21:56:05 UTC, "Rob Herring (Arm)" wrote:
+> Convention is DT schemas should define all properties at the top-level
+> and not inside of if/then schemas. That minimizes the if/then schemas
+> and is more future proof.
 > 
-> 	timeout = wait_for_completion_timeout(...)
-> 	if (!timeout) return -ETIMEDOUT;
+> There were 2 "if" schemas for "qcom,ipq806x-nand" and the
+> "qcom,boot-partitions: true" unnecessary, so the conditional schemas
+> can be simplified a bit.
 > 
-> with all kinds of permutations. Use 'time_left' as a variable to make the code
-> self explaining.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
