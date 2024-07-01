@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 192BDC30653
-	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2024 13:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A46B2C2BD09
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2024 16:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mLicKOS9aWgAY5aLFWp8MSIq+7cweY+E3az6kN/s3WY=; b=dB4R9jx70JszAY
-	HhjBXZkmJn7ltCk/cfFDzdaxwP0c7lbhYKxSge/p4KXRJguEfZfZ9113aaFn07uTPQ8jN/Kh+7kFB
-	9Zzgd+/MuVV3xEF7OfbHuaGWRcsQt4N9KSDi/ZgeSJGZ5FRRoyuI+vydoKGjnXmy23ZXwi82rMSrO
-	LzdY4EN/Ll62FF84IKamHIHTg7tHSTyg9V1ByzZJDyMHzXuAUOheHAU5mwhJ/PvrJTCSk8OGiHgAK
-	LJGXwo3EfnPhrW0XcGZdZzjF1nsnRNM0DmIqyGLqlHQ9JayHt6zCFJM7fIHjEUgx3PQp3b1Ww3n0a
-	1D6zEZfxV7k0dyFj5ccw==;
+	List-Owner; bh=Q/Xi/VBYm4TDf6IVB6FXIfugt5hP9+so04dkXh5QsoY=; b=VfPZzsH2FeSM81
+	YzfVYdEsezFGp9IoZOTqktARwveqshRSM0TUDAkaNxjS+bgNPaflLIpx7K3xPDJifJDLgVjKOPBMm
+	ouETJskpOsaDDsD4rt6pwnOMKl7ZNcbVx0sC0SXvbHTKxH153eR4vEmYtKgA7+N2/YQRJifFgnBMr
+	PyG/NHLzpnN/pCuxBiV5/BpUrX+EVDaaDrvdeJA/cb5JAkALpOx9bW6t+RVjx9Il8ya+E2cCn/qPG
+	ox0Ew3KoH9QvLUpmMPrU1TaWe5qcXs4u4msEDtM3vVQCl8QiwyUHs7SEMQpEaG1vxst12wxZEx3W+
+	JyFzdy7NpOuiLNAKOgOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOHUE-00000003aPB-0O6r;
-	Mon, 01 Jul 2024 13:54:30 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1sOJeg-000000043vX-0z9p;
+	Mon, 01 Jul 2024 16:13:26 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOHU7-00000003aJh-03Uu
+	id 1sOJed-000000043uE-30Nc
 	for linux-mtd@lists.infradead.org;
-	Mon, 01 Jul 2024 13:54:25 +0000
-Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
-	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-	(envelope-from <m.felsch@pengutronix.de>)
-	id 1sOHTX-0001LY-ET; Mon, 01 Jul 2024 15:53:47 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-Date: Mon, 01 Jul 2024 15:53:43 +0200
-Subject: [PATCH 4/9] mtd: devices: add AT24 eeprom support
+	Mon, 01 Jul 2024 16:13:25 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-57cc1c00ba6so711215a12.1
+        for <linux-mtd@lists.infradead.org>; Mon, 01 Jul 2024 09:13:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719850401; x=1720455201; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tJORc4y41njo2myTxYBaIZoGdagWJX2FVE52D6Y2Z1U=;
+        b=SXsNBJNZevfEc0mKjnkbwRZPWYYwZeoIim+qzeJh5VfBP2TpcUCbUgREc0bR65sNh4
+         W/s9PyaIn83NmGJ3FPPt3oqLnwEnuFjaRhmEFASbUTuFX0C0hurBHPIDdv85Z+z6TFkG
+         93UpwjhnUHo9VLlKMpJKSrGCyzXaPdFozEvRJn59ixXUz9rBk5P9r6WhM4KT6tcT0V+Q
+         16TLQBZ8IG/CT0iilIOr0WN13zOUg7nRwS5m253CZnVVm+BypblFCBxYOBVpvwETJmzB
+         zNUPmQTIexNZRuPTPUTNZWUrsOhcgugidAgslpycI6mgCimLu+olK67ZOIbWmwZUcroM
+         AUlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719850401; x=1720455201;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tJORc4y41njo2myTxYBaIZoGdagWJX2FVE52D6Y2Z1U=;
+        b=T1o95I4Q+te28t1W5R6yniL4D/j6FBEpRaYVUuvZs0cT6Jcaiue4FmbOMlwd86I/OF
+         MvJDikq46dvgsAgyIApBWQamNmmPmNADiKHiizkNaTK/bcPJTxsV+XCpCH6vIpyjCwmk
+         Hjm60LA6oyAPjsDjqfgoroP8W2jodfBin22y5+BbUpW2YoAgJPQt0iS6kXrtk0KIkeJQ
+         MqBwMpG6y3mPmEUBCJoVUAryqpOFH7AvTD8MWKwXXL4RgYpcnem3M+GgUF03eDD9hIpt
+         0nDzsYmXISgwEBHHAg6VUHrcvXAQQPVB43fUR3bwBWjBUvcAWXSjGbE891m6SPUz8hgz
+         lImw==
+X-Forwarded-Encrypted: i=1; AJvYcCVT+0uah+tPBk7ZlE79/KXkb0P1UVtvsaZNlGOk0djIRw0Pbs0V2ekbtGEGDlzGIALuwzBy2Qy0i2BVEBhp4lrR1LH4tZAtRe8WQNWCVA==
+X-Gm-Message-State: AOJu0Yx3OsLN4uFB9hb/AbnmQ0j5z2snJ8OLA+jeYOoHFEpJ3YmspTIk
+	ypUawjom4WpJnCQ8lEAdC4AQx1vGwuDRBVpafjuZE8VlJglu/qsV1vcy9DlEkt2FmLZZAXtKDM3
+	NooHbYIKLocQSAsqB4GHjlLD81g==
+X-Google-Smtp-Source: AGHT+IGhN32U3cLFjDcl/ZaK+BN5oNiVFeatcJG7osJjACBaeXKS643lckiY3fxmVC9Kln5Tlpu49ktmbd8AO6QKvjs=
+X-Received: by 2002:a17:906:a091:b0:a6f:49eb:31a5 with SMTP id
+ a640c23a62f3a-a75144b67a4mr312328166b.77.1719850400469; Mon, 01 Jul 2024
+ 09:13:20 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-4-3fd5f4a193cc@pengutronix.de>
-References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
-In-Reply-To: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Arnd Bergmann <arnd@arndb.de>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Russell King <linux@armlinux.org.uk>, 
- Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, 
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
- Tony Lindgren <tony@atomide.com>, 
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Magnus Damm <magnus.damm@gmail.com>, Dinh Nguyen <dinguyen@kernel.org>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-aspeed@lists.ozlabs.org, imx@lists.linux.dev, 
- linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
- linux-tegra@vger.kernel.org, openbmc@lists.ozlabs.org, 
- linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org, 
- loongarch@lists.linux.dev, Marco Felsch <m.felsch@pengutronix.de>
-X-Mailer: b4 0.15-dev
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
-X-SA-Exim-Mail-From: m.felsch@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+References: <20240629103914.161530-1-erezgeva@nwtime.org> <20240629103914.161530-4-erezgeva@nwtime.org>
+ <1c457520-07b7-4bde-b040-e8bca959a4f5@linaro.org> <CANeKEMOODBNZA6efh0E0Ga_KaVs5Y3WLcUftRhNwYHhnXO=GNw@mail.gmail.com>
+ <CANeKEMO42rJt5Ob4_HDcZ3eEMvuMOPvRaFaLwL8SA65NtxSV7A@mail.gmail.com>
+ <1d56c3b2-7adf-45b9-a509-956340f3f17b@linaro.org> <04f5162d-8a95-45ce-a891-3f711b27a469@linaro.org>
+ <CANeKEMPAng8K1Gbab-MXP0KodS=r1Bzstsvg4zadWdu1O7wqWg@mail.gmail.com> <be8daf89-14a9-41ad-9403-8e550e5ae284@linaro.org>
+In-Reply-To: <be8daf89-14a9-41ad-9403-8e550e5ae284@linaro.org>
+From: Erez <erezgeva2@gmail.com>
+Date: Mon, 1 Jul 2024 18:12:42 +0200
+Message-ID: <CANeKEMMA5L4pu7Vyyv0wU7VcEYK6q2Tk8p4BKPe5E5qXdHzWZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mtd: macronix,mx25l12833f: add
+ SPI-NOR chip
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Esben Haabendal <esben@geanix.com>, Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240701_065423_751204_627A5AC8 
-X-CRM114-Status: GOOD (  36.00  )
+X-CRM114-CacheID: sfid-20240701_091323_781665_D27D01C2 
+X-CRM114-Status: GOOD (  37.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,508 +97,121 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-At the moment there are three ways to access EEPROM content from
-user-space:
+On Mon, 1 Jul 2024 at 14:53, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+>
+>
+> On 7/1/24 12:03 PM, Erez wrote:
+> > On Mon, 1 Jul 2024 at 12:23, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+> >>
+> >>
+> >>
+> >> On 7/1/24 11:15 AM, Tudor Ambarus wrote:
+> >>>
+> >>>
+> >>> On 7/1/24 10:46 AM, Erez wrote:
+> >>>> When using mx25l12805d, we do not read SFDP.
+> >>>> As it uses the no-SFDP flags.
+> >>>> When using mx25l12833f hardware with mx25l12805d driver, it did not
+> >>>> try to read the SFDP.
+> >>>> Yet mx25l12833f does have SFDP, when I remove the no-SFDP flags, the
+> >>>> driver fetch the SFDP.
+> >>>>
+> >>>> Secondly SFDP does not contain OTP information.
+> >>>>
+> >>>> mx25l12805d has two OTP regions of 128 KiB and 384 KiB (yes asymmetric).
+> >>>> While mx25l12833f has two OTP regions of 512 KiB.
+> >>>>
+> >>>> How do we handle it?
+> >>>
+> >>> You would first try to parse SFDP and initialize the flash based on
+> >>> SFDP. If there's no SFDP then you fallback to the flags declared at
+> >>> flash declaration. Esben had a try recently, see [1]. I don't know if
+> >>> there's any progress in that direction.
+> >>>
+> >>
+> >> And you can then decide which OTP org to use based on whether SFDP is
+> >> present or not.
+> >
+> > That can work, but sound like a hack.
+>
+> It's not a hack, we're just doing our best to dynamically identify the
+> flash.
 
-  1st) via the single nvmem device (rw)
-  2nd) via the single 'eeprom' device (rw)
-  3th) via nvmem-cells (r)
+Call it whatever you want.
 
-EEPROMs can become quite large nowadays (>=64K). Exposing such devices
-as single device isn't always sufficient. There may be partitions which
-require different access permissions. Also write access always need to
-to verify the offset.
+>
+> > Is that really that important to hack?
+>
+> we push really hard against new compatibles. Users shouldn't care about
+> what SPI NOR flash is there.
 
-Port the current misc/eeprom/at24.c driver to the MTD framework since
-EEPROMs are memory-technology devices and the framework already supports
-partitioning. This allow using of-paritions like we do for SPI-NOR
-devices already:
+I am in. I do not like compatibility.
+I do not like to see them in the device tree.
+I did not create the mess.
+It seems like Macronix likes to reuse JEDEC IDs.
+As most new chips have SPDF, the mess is with OTP mainly.
+We can think about a different model.
+Perhaps allow the user to define the OTP size and number of regions
+using a 'flash_otp_set' tool?
+I am open to ideas.
 
-&eeprom {
-	compatible = "atmel,24c02";
-	reg = <0x52>;
-	pagesize = <16>;
-	#address-cells = <1>;
-	#size-cells = <0>;
+>
+> > Just for OTP, that very few use?
+> > And if in the future Macronix adds a newer one with the same JEDEC ID,
+> > but a different OTP size?
+>
+> we'll compare SFDP data and choose based on the differences. This is not
+> encouraged. Instead ask for unique IDs or choose other flash.
 
-	partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
-		label = "board-eeprom";
+That requires additional callback in the SFDP, not a big challenge.
+Yet most SFDP tables are not sufficient to determine OTP.
+Found only one table with OTP support flag.
+No size, offset  and number of regions to work with.
+The only hint is do we have SFDP or not.
 
-		otp@0 {
-			compatible = "nvmem-cells";
-			label = "manufaturing";
-			reg = <0x0 0xe0>;
+>
+> > Macronix does not consult with the Linux Kernel on these matters.
+> >
+>
+> I'm complaining about unique flash IDs for years now. Hopefully vendors
+> have learnt their lesson. I didn't see new flash designs reusing old IDs.
 
-			nvmem-layout {
-				compatible = "fixed-layout";
-				#address-cells = <1>;
-				#size-cells = <1>;
+I can not speak in Macronix's name.
+I know they did that, not sure if they stop.
 
-				/* MACs stored in ASCII */
-				ethmac1: mac-address@0 {
-					reg = <0x0 0xc>;
-				};
+>
+> > Anyhow as I do not have the hardware anymore, I can not do more
+> > changes and test them.
+> >
+>
+> Be aware that we're not queuing patches without some minimal tests. If
+> you don't have the hardware, contact mchp and see if they care,
+> otherwise we're wasting our time. Here are the minimum testing requirements:
+> https://docs.kernel.org/driver-api/mtd/spi-nor.html#minimum-testing-requirements
+> For OTP we'll also need some OTP tests.
 
-				ethmac2: mac-address@c {
-					reg = <0xc 0xc>;
-				};
+OTP as its name can be written once.
+So a simple OTP test would be nice.
 
-				test@d8 {
-					reg = <0xd8 0x8>;
-				};
-			};
-		j};
+Anyhow I ordered 3 Macronix's MX25L3233F that have OTP.
+The OTP works the same as the other Macronix chips.
+The MX25L3233F ID is 0xc22016 same as "mx25l3205d".
+Seems Macronix are persistent on reusing IDs.
+First revision of MX25L3233F was in 2015,
 
-		user@e0 {
-			reg = <0xe0 0x100>;
-		};
-	};
-};
+I will connect to my old BeagleBone-black.
+I think I can perform the test with it.
 
-The porting was straight forward:
- - at24_read/write funcs are adapted to be MTD compatible
- - (re-)adding the write-protection gpio handling since the devices can
-   now be accessed via NVMEM and MTD API
- - Replace the NVMEM with MTD registration. The mtdcore is taking care
-   of exposing the NVMEM and eeprom device correctly ensure backward
-   compatibility.
+As I say, I am more interested in testing the code.
+Less on which Macronix chip we use.
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Thanks for your time
+ Erez
 
-Changelog:
-v2:
-- resync misc/eeprom/at24.c with mtd/at24.c driver
-- add backward compatibility
-- drop misc/eeprom/at24.c driver
-- adapt Kconfig EEPROM_AT24 Kconfig entry
-- shift infrastructure support into separate patch
-- adapt commit message
----
- MAINTAINERS                                 |   2 +-
- drivers/misc/eeprom/Kconfig                 |  30 +------
- drivers/misc/eeprom/Makefile                |   1 -
- drivers/mtd/devices/Kconfig                 |  31 +++++++
- drivers/mtd/devices/Makefile                |   1 +
- drivers/{misc/eeprom => mtd/devices}/at24.c | 122 +++++++++++++++-------------
- 6 files changed, 103 insertions(+), 84 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d6c90161c7bf..a3a56f34d754 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3355,7 +3355,7 @@ L:	linux-i2c@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
- F:	Documentation/devicetree/bindings/eeprom/at24.yaml
--F:	drivers/misc/eeprom/at24.c
-+F:	drivers/mtd/devices/at24.c
- 
- ATA OVER ETHERNET (AOE) DRIVER
- M:	"Justin Sanders" <justin@coraid.com>
-diff --git a/drivers/misc/eeprom/Kconfig b/drivers/misc/eeprom/Kconfig
-index 4e61ac18cc96..3a9aaec2f2c7 100644
---- a/drivers/misc/eeprom/Kconfig
-+++ b/drivers/misc/eeprom/Kconfig
-@@ -3,34 +3,10 @@ menu "EEPROM support"
- 
- config EEPROM_AT24
- 	tristate "I2C EEPROMs / RAMs / ROMs from most vendors"
--	depends on I2C && SYSFS
--	select NVMEM
--	select NVMEM_SYSFS
--	select REGMAP
--	select REGMAP_I2C
-+	select MTD_EEPROM_AT24
- 	help
--	  Enable this driver to get read/write support to most I2C EEPROMs
--	  and compatible devices like FRAMs, SRAMs, ROMs etc. After you
--	  configure the driver to know about each chip on your target
--	  board.  Use these generic chip names, instead of vendor-specific
--	  ones like at24c64, 24lc02 or fm24c04:
--
--	     24c00, 24c01, 24c02, spd (readonly 24c02), 24c04, 24c08,
--	     24c16, 24c32, 24c64, 24c128, 24c256, 24c512, 24c1024, 24c2048
--
--	  Unless you like data loss puzzles, always be sure that any chip
--	  you configure as a 24c32 (32 kbit) or larger is NOT really a
--	  24c16 (16 kbit) or smaller, and vice versa. Marking the chip
--	  as read-only won't help recover from this. Also, if your chip
--	  has any software write-protect mechanism you may want to review the
--	  code to make sure this driver won't turn it on by accident.
--
--	  If you use this with an SMBus adapter instead of an I2C adapter,
--	  full functionality is not available.  Only smaller devices are
--	  supported (24c16 and below, max 4 kByte).
--
--	  This driver can also be built as a module.  If so, the module
--	  will be called at24.
-+	  Deprecated config option to get read/write support to most I2C
-+	  EEPROMs. Please use MTD_EEPROM_AT24 instead.
- 
- config EEPROM_AT25
- 	tristate "SPI EEPROMs (FRAMs) from most vendors"
-diff --git a/drivers/misc/eeprom/Makefile b/drivers/misc/eeprom/Makefile
-index 65794e526d5d..2ace4f09d0f0 100644
---- a/drivers/misc/eeprom/Makefile
-+++ b/drivers/misc/eeprom/Makefile
-@@ -1,5 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_EEPROM_AT24)	+= at24.o
- obj-$(CONFIG_EEPROM_AT25)	+= at25.o
- obj-$(CONFIG_EEPROM_MAX6875)	+= max6875.o
- obj-$(CONFIG_EEPROM_93CX6)	+= eeprom_93cx6.o
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index ff2f9e55ef28..8c6720ea84e7 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -3,6 +3,37 @@ menu "Self-contained MTD device drivers"
- 	depends on MTD!=n
- 	depends on HAS_IOMEM
- 
-+config MTD_EEPROM_AT24
-+	tristate "MTD I2C EEPROMs / RAMs / ROMs from most vendors"
-+	depends on I2C && SYSFS
-+	select NVMEM
-+	select NVMEM_SYSFS
-+	select REGMAP
-+	select REGMAP_I2C
-+	help
-+	  Enable this driver to get read/write support to most I2C EEPROMs
-+	  and compatible devices like FRAMs, SRAMs, ROMs etc. After you
-+	  configure the driver to know about each chip on your target
-+	  board.  Use these generic chip names, instead of vendor-specific
-+	  ones like at24c64, 24lc02 or fm24c04:
-+
-+	     24c00, 24c01, 24c02, spd (readonly 24c02), 24c04, 24c08,
-+	     24c16, 24c32, 24c64, 24c128, 24c256, 24c512, 24c1024, 24c2048
-+
-+	  Unless you like data loss puzzles, always be sure that any chip
-+	  you configure as a 24c32 (32 kbit) or larger is NOT really a
-+	  24c16 (16 kbit) or smaller, and vice versa. Marking the chip
-+	  as read-only won't help recover from this. Also, if your chip
-+	  has any software write-protect mechanism you may want to review the
-+	  code to make sure this driver won't turn it on by accident.
-+
-+	  If you use this with an SMBus adapter instead of an I2C adapter,
-+	  full functionality is not available.  Only smaller devices are
-+	  supported (24c16 and below, max 4 kByte).
-+
-+	  This driver can also be built as a module.  If so, the module
-+	  will be called at24.
-+
- config MTD_PMC551
- 	tristate "Ramix PMC551 PCI Mezzanine RAM card support"
- 	depends on PCI
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index d11eb2b8b6f8..00ef5d87a957 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -4,6 +4,7 @@
- #
- 
- obj-$(CONFIG_MTD_DOCG3)		+= docg3.o
-+obj-$(CONFIG_MTD_EEPROM_AT24)	+= at24.o
- obj-$(CONFIG_MTD_SLRAM)		+= slram.o
- obj-$(CONFIG_MTD_PHRAM)		+= phram.o
- obj-$(CONFIG_MTD_PMC551)	+= pmc551.o
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/mtd/devices/at24.c
-similarity index 92%
-rename from drivers/misc/eeprom/at24.c
-rename to drivers/mtd/devices/at24.c
-index 4bd4f32bcdab..713f40a1d95c 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/mtd/devices/at24.c
-@@ -4,6 +4,7 @@
-  *
-  * Copyright (C) 2005-2007 David Brownell
-  * Copyright (C) 2008 Wolfram Sang, Pengutronix
-+ * Copyright (C) 2024 Pengutronix, Marco Felsch <kernel@pengutronix.de>
-  */
- 
- #include <linux/acpi.h>
-@@ -16,8 +17,8 @@
- #include <linux/kernel.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-+#include <linux/mtd/mtd.h>
- #include <linux/mutex.h>
--#include <linux/nvmem-provider.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/pm_runtime.h>
-@@ -84,8 +85,9 @@ struct at24_data {
- 	u16 page_size;
- 	u8 flags;
- 
--	struct nvmem_device *nvmem;
-+	struct mtd_info mtd;
- 	struct regulator *vcc_reg;
-+	struct gpio_desc *wp_gpio;
- 	void (*read_post)(unsigned int off, char *buf, size_t count);
- 
- 	/*
-@@ -96,6 +98,11 @@ struct at24_data {
- 	struct regmap *client_regmaps[] __counted_by(num_addresses);
- };
- 
-+static struct at24_data *mtd_to_at24(struct mtd_info *mtd)
-+{
-+	return container_of(mtd, struct at24_data, mtd);
-+}
-+
- /*
-  * This parameter is to help this driver avoid blocking other drivers out
-  * of I2C for potentially troublesome amounts of time. With a 100 kHz I2C
-@@ -424,20 +431,19 @@ static ssize_t at24_regmap_write(struct at24_data *at24, const char *buf,
- 	return -ETIMEDOUT;
- }
- 
--static int at24_read(void *priv, unsigned int off, void *val, size_t count)
-+static int at24_read(struct mtd_info *mtd, loff_t from, size_t len,
-+		     size_t *retlen, u_char *buf)
- {
--	struct at24_data *at24;
-+	struct at24_data *at24 = mtd_to_at24(mtd);
- 	struct device *dev;
--	char *buf = val;
- 	int i, ret;
- 
--	at24 = priv;
- 	dev = at24_base_client_dev(at24);
- 
--	if (unlikely(!count))
--		return count;
-+	if (unlikely(!len))
-+		return len;
- 
--	if (off + count > at24->byte_len)
-+	if (from + len > at24->byte_len)
- 		return -EINVAL;
- 
- 	ret = pm_runtime_resume_and_get(dev);
-@@ -449,13 +455,14 @@ static int at24_read(void *priv, unsigned int off, void *val, size_t count)
- 	 */
- 	mutex_lock(&at24->lock);
- 
--	for (i = 0; count; i += ret, count -= ret) {
--		ret = at24_regmap_read(at24, buf + i, off + i, count);
-+	for (i = 0; len; i += ret, len -= ret) {
-+		ret = at24_regmap_read(at24, buf + i, from + i, len);
- 		if (ret < 0) {
- 			mutex_unlock(&at24->lock);
- 			pm_runtime_put(dev);
- 			return ret;
- 		}
-+		*retlen += ret;
- 	}
- 
- 	mutex_unlock(&at24->lock);
-@@ -463,25 +470,24 @@ static int at24_read(void *priv, unsigned int off, void *val, size_t count)
- 	pm_runtime_put(dev);
- 
- 	if (unlikely(at24->read_post))
--		at24->read_post(off, buf, i);
-+		at24->read_post(from, buf, i);
- 
- 	return 0;
- }
- 
--static int at24_write(void *priv, unsigned int off, void *val, size_t count)
-+static int at24_write(struct mtd_info *mtd, loff_t to, size_t len,
-+		      size_t *retlen, const u_char *buf)
- {
--	struct at24_data *at24;
-+	struct at24_data *at24 = mtd_to_at24(mtd);
- 	struct device *dev;
--	char *buf = val;
- 	int ret;
- 
--	at24 = priv;
- 	dev = at24_base_client_dev(at24);
- 
--	if (unlikely(!count))
-+	if (unlikely(!len))
- 		return -EINVAL;
- 
--	if (off + count > at24->byte_len)
-+	if (to + len > at24->byte_len)
- 		return -EINVAL;
- 
- 	ret = pm_runtime_resume_and_get(dev);
-@@ -493,18 +499,23 @@ static int at24_write(void *priv, unsigned int off, void *val, size_t count)
- 	 */
- 	mutex_lock(&at24->lock);
- 
--	while (count) {
--		ret = at24_regmap_write(at24, buf, off, count);
-+	gpiod_set_value_cansleep(at24->wp_gpio, 0);
-+
-+	while (len) {
-+		ret = at24_regmap_write(at24, buf, to, len);
- 		if (ret < 0) {
- 			mutex_unlock(&at24->lock);
- 			pm_runtime_put(dev);
- 			return ret;
- 		}
- 		buf += ret;
--		off += ret;
--		count -= ret;
-+		to += ret;
-+		len -= ret;
-+		*retlen += ret;
- 	}
- 
-+	gpiod_set_value_cansleep(at24->wp_gpio, 1);
-+
- 	mutex_unlock(&at24->lock);
- 
- 	pm_runtime_put(dev);
-@@ -562,6 +573,8 @@ static void at24_probe_temp_sensor(struct i2c_client *client)
- {
- 	struct at24_data *at24 = i2c_get_clientdata(client);
- 	struct i2c_board_info info = { .type = "jc42" };
-+	struct mtd_info *mtd = &at24->mtd;
-+	size_t len;
- 	int ret;
- 	u8 val;
- 
-@@ -569,12 +582,12 @@ static void at24_probe_temp_sensor(struct i2c_client *client)
- 	 * Byte 2 has value 11 for DDR3, earlier versions don't
- 	 * support the thermal sensor present flag
- 	 */
--	ret = at24_read(at24, 2, &val, 1);
-+	ret = at24_read(mtd, 2, 1, &len, &val);
- 	if (ret || val != 11)
- 		return;
- 
- 	/* Byte 32, bit 7 is set if temp sensor is present */
--	ret = at24_read(at24, 32, &val, 1);
-+	ret = at24_read(mtd, 32, 1, &len, &val);
- 	if (ret || !(val & BIT(7)))
- 		return;
- 
-@@ -586,17 +599,19 @@ static void at24_probe_temp_sensor(struct i2c_client *client)
- static int at24_probe(struct i2c_client *client)
- {
- 	struct regmap_config regmap_config = { };
--	struct nvmem_config nvmem_config = { };
- 	u32 byte_len, page_size, flags, addrw;
- 	const struct at24_chip_data *cdata;
- 	struct device *dev = &client->dev;
- 	bool i2c_fn_i2c, i2c_fn_block;
- 	unsigned int i, num_addresses;
- 	struct at24_data *at24;
-+	struct device_node *np;
-+	struct mtd_info *mtd;
- 	bool full_power;
- 	struct regmap *regmap;
- 	bool writable;
- 	u8 test_byte;
-+	size_t len;
- 	int err;
- 
- 	i2c_fn_i2c = i2c_check_functionality(client->adapter, I2C_FUNC_I2C);
-@@ -703,6 +718,10 @@ static int at24_probe(struct i2c_client *client)
- 					page_size, at24_io_limit);
- 		if (!i2c_fn_i2c && at24->write_max > I2C_SMBUS_BLOCK_MAX)
- 			at24->write_max = I2C_SMBUS_BLOCK_MAX;
-+
-+		at24->wp_gpio = gpiod_get_optional(dev, "wp", GPIOD_OUT_HIGH);
-+		if (IS_ERR(at24->wp_gpio))
-+			return PTR_ERR(at24->wp_gpio);
- 	}
- 
- 	/* use dummy devices for multiple-address chips */
-@@ -712,37 +731,31 @@ static int at24_probe(struct i2c_client *client)
- 			return err;
- 	}
- 
--	/*
--	 * We initialize nvmem_config.id to NVMEM_DEVID_AUTO even if the
--	 * label property is set as some platform can have multiple eeproms
--	 * with same label and we can not register each of those with same
--	 * label. Failing to register those eeproms trigger cascade failure
--	 * on such platform.
--	 */
--	nvmem_config.id = NVMEM_DEVID_AUTO;
--
-+	mtd = &at24->mtd;
- 	if (device_property_present(dev, "label")) {
- 		err = device_property_read_string(dev, "label",
--						  &nvmem_config.name);
-+						  &mtd->name);
- 		if (err)
- 			return err;
- 	} else {
--		nvmem_config.name = dev_name(dev);
-+		mtd->name = dev_name(dev);
- 	}
--
--	nvmem_config.type = NVMEM_TYPE_EEPROM;
--	nvmem_config.dev = dev;
--	nvmem_config.read_only = !writable;
--	nvmem_config.root_only = !(flags & AT24_FLAG_IRUGO);
--	nvmem_config.owner = THIS_MODULE;
--	nvmem_config.compat = true;
--	nvmem_config.base_dev = dev;
--	nvmem_config.reg_read = at24_read;
--	nvmem_config.reg_write = at24_write;
--	nvmem_config.priv = at24;
--	nvmem_config.stride = 1;
--	nvmem_config.word_size = 1;
--	nvmem_config.size = byte_len;
-+	mtd->dev.parent = dev;
-+	mtd->type = MTD_EEPROM;
-+	mtd->flags = MTD_CAP_EEPROM;
-+	if (!writable)
-+		mtd->flags = MTD_CAP_ROM;
-+
-+	mtd->writesize = 1;
-+	mtd->writebufsize = 1;
-+	mtd->size = byte_len;
-+	mtd->_read = at24_read;
-+	mtd->_write = at24_write;
-+
-+	/* Fixed partitions are only supported on OF plaforms */
-+	np = to_of_node(dev_fwnode(dev));
-+	if (np)
-+		mtd_set_of_node(mtd, np);
- 
- 	i2c_set_clientdata(client, at24);
- 
-@@ -764,7 +777,7 @@ static int at24_probe(struct i2c_client *client)
- 	 * it's powered off right now).
- 	 */
- 	if (full_power) {
--		err = at24_read(at24, 0, &test_byte, 1);
-+		err = at24_read(mtd, 0, 1, &len, &test_byte);
- 		if (err) {
- 			pm_runtime_disable(dev);
- 			if (!pm_runtime_status_suspended(dev))
-@@ -773,13 +786,12 @@ static int at24_probe(struct i2c_client *client)
- 		}
- 	}
- 
--	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
--	if (IS_ERR(at24->nvmem)) {
-+	err = mtd_device_register(mtd, NULL, 0);
-+	if (err) {
- 		pm_runtime_disable(dev);
- 		if (!pm_runtime_status_suspended(dev))
- 			regulator_disable(at24->vcc_reg);
--		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
--				     "failed to register nvmem\n");
-+		return dev_err_probe(dev, err, "failed to register mtd\n");
- 	}
- 
- 	/* If this a SPD EEPROM, probe for DDR3 thermal sensor */
-
--- 
-2.39.2
-
+>
+> Cheers,
+> ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
