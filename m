@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C641DC30659
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA587C3065E
 	for <linux-mtd@archiver.kernel.org>; Mon,  1 Jul 2024 13:54:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,30 +12,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vSQ/BhcAx3cUR3B7y44vebg5l2b5oBjb7Pft0vZ6i4E=; b=As7BRO1h/YOR1e
-	gKRC70OQfBmEl2OQtShE2xKOa+rd/Yrr3UJZeb2iGhKXdbDvxPIGrTUcYy7/yoy8Nr+RUpkrs9rmo
-	/FHTl6RGgaAJDfU8f4pJMp+Oa6RVVVIAU7Z2O2pnLqmvgkIEnntB7J+DlYNAW803+vv5G5Elpy8M+
-	fZNiCGohUw4aiSlGMUfi0/nyyO2VNWbxqPafEx8IbloJ9MUWV4S6DRoVUYmNsqraLYOTFcMi41vbf
-	1fZ1lz8J6Ct58tcJk9wHy/Zg1Yh1zgkMDNBQ8Zs2UtmNbZ+ViSep8oLx41AmSsgxvky0OtwmB2WJO
-	pfY6rmMakQa4/mUuNyQg==;
+	List-Owner; bh=lz+xUrEgj64B94odLclECfoPBLL4p3ZZmJdnjsFrYLg=; b=p7OQXjVwzlzWat
+	HePWK4sCZPz2SvWca8+J5bexyXW36nJNQ6Vyv4vIfe1jhOZJnkIEZ9DJuoh3fiwU/zxxu6Kq4+mgM
+	as1jBb5mAJMMzBD/9fYPecr/BAyVzdEp0r/TOCSnO+JE3Dt+Br5kF+niWG4lEnumv6S+FuqXuwWtk
+	5kRKcKF2reOUEAcSrRtCUqvbC0VGcw4ldL3pK8/evUR5a2ipi+FWxjiOnLEDrKQkeUCOH3fXc+luW
+	gWFnEsm2NFQ5FPJxfta0xr76n/GGP00bs3fBcfKNDVd8oRO/uiOHs6q82ulC3btGPA4rDtraoehdC
+	klzSHIJFctvy+Re3howw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOHUC-00000003aNx-1t6m;
-	Mon, 01 Jul 2024 13:54:28 +0000
+	id 1sOHU6-00000003aJt-39CE;
+	Mon, 01 Jul 2024 13:54:22 +0000
 Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOHU4-00000003aFh-1Myw
+	id 1sOHU3-00000003aFJ-1Mnt
 	for linux-mtd@lists.infradead.org;
-	Mon, 01 Jul 2024 13:54:23 +0000
+	Mon, 01 Jul 2024 13:54:21 +0000
 Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
 	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
 	(envelope-from <m.felsch@pengutronix.de>)
-	id 1sOHTY-0001LY-20; Mon, 01 Jul 2024 15:53:48 +0200
+	id 1sOHTX-0001LY-UP; Mon, 01 Jul 2024 15:53:47 +0200
 From: Marco Felsch <m.felsch@pengutronix.de>
-Date: Mon, 01 Jul 2024 15:53:48 +0200
-Subject: [PATCH 9/9] eeprom: at24: remove deprecated Kconfig symbol
+Date: Mon, 01 Jul 2024 15:53:47 +0200
+Subject: [PATCH 8/9] LoongArch: convert to MTD_EEPROM_AT24
 MIME-Version: 1.0
-Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-9-3fd5f4a193cc@pengutronix.de>
+Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-8-3fd5f4a193cc@pengutronix.de>
 References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 In-Reply-To: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -76,9 +76,8 @@ X-SA-Exim-Mail-From: m.felsch@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240701_065420_402003_89D63399 
-X-CRM114-Status: UNSURE (   9.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240701_065419_430003_1CAD2AB0 
+X-CRM114-Status: GOOD (  11.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,32 +94,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-All kernel users are shifted to the new MTD_EEPROM_AT24 Kconfig symbol
-so we can drop the old one.
+The EEPROM_AT24 Kconfig symbol is marked as deprecated. Make use of the
+new Kconfig symbol to select the I2C EEPROM driver support.
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- drivers/misc/eeprom/Kconfig | 7 -------
- 1 file changed, 7 deletions(-)
+ arch/loongarch/configs/loongson3_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/eeprom/Kconfig b/drivers/misc/eeprom/Kconfig
-index 3a9aaec2f2c7..9e071cfdc6c6 100644
---- a/drivers/misc/eeprom/Kconfig
-+++ b/drivers/misc/eeprom/Kconfig
-@@ -1,13 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "EEPROM support"
- 
--config EEPROM_AT24
--	tristate "I2C EEPROMs / RAMs / ROMs from most vendors"
--	select MTD_EEPROM_AT24
--	help
--	  Deprecated config option to get read/write support to most I2C
--	  EEPROMs. Please use MTD_EEPROM_AT24 instead.
--
- config EEPROM_AT25
- 	tristate "SPI EEPROMs (FRAMs) from most vendors"
- 	depends on SPI && SYSFS
+diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
+index b4252c357c8e..31daff75a01a 100644
+--- a/arch/loongarch/configs/loongson3_defconfig
++++ b/arch/loongarch/configs/loongson3_defconfig
+@@ -433,7 +433,7 @@ CONFIG_NVME_TARGET_LOOP=m
+ CONFIG_NVME_TARGET_RDMA=m
+ CONFIG_NVME_TARGET_FC=m
+ CONFIG_NVME_TARGET_TCP=m
+-CONFIG_EEPROM_AT24=m
++CONFIG_MTD_EEPROM_AT24=m
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_BLK_DEV_SR=y
+ CONFIG_CHR_DEV_SG=y
 
 -- 
 2.39.2
