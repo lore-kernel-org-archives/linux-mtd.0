@@ -4,115 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB307C3064D
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2024 12:34:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A8CAC3064D
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Jul 2024 13:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V4ygYskZvcXaUP80YZeCQ7u8a5DCIseUlyXM28120Ac=; b=OrerSLPTYr+3uU
-	z8UwvC2LZhZZRXeXYrl/g8l9D9aEwaKlhYU2KoJbJ/6PI5gBqvWj5Wy9WRrb/I+SHEtA3Z9Oa1oB5
-	zQysdYYAvNPYWmGQ9WvD183kz7cvb0LlO2E70tmWcdME7/rZTAB1m2+9pYeLreALjTuC4+grUYM7o
-	okOoe6W6SjU7oluPgE4dFl/lsX1Pjbrz3qEOd9cY2Hj9cydRBknJGbA9AgRmGwFxVhYXCMoZ+xc/1
-	OawGJjIT1H8DfeqhxUEm/PVcsfYPLzLX+YJ9gfs854CWnUYDXClr0iDjmyk4eTmX10T4nzZQJRePU
-	lSsyHi2O43Rehum53trw==;
+	List-Owner; bh=BpLMJ2qDDFrJSaqzAqrglEroIYraoCkOjTWtwIJ4OAA=; b=PgMENnVNL/yuNB
+	13EiKr8mEl2MtNg4IP/SnMlrl4sOuLdvLIjCkwwfch7CIe02/+2IvdTEuKL7AIfNLugKs7a0AZuYZ
+	sGO3maPK+9S3fU4BZDZCcRTbrCtgI8r53Mu9nWWPdirB+nUMy+X+IhMw/N5A6km85DHT5i/mO+Om6
+	5jpojlHrx75pW+omrJClnq6DAXNkJ09WsB7ZZEV6GZega7cxRBE9LxV5UDwUFGe6/s8qzNaef1pzb
+	vAUENfltQfddpeq8VDzPUb72Bvzrut/syNi4rKl2kSUQrsqAvWCPAnywEOJOCV/HoTlU+ZrCd6Ztq
+	d6coXELMYQUtjhfiV/6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOchp-00000006hcH-2tEB;
-	Tue, 02 Jul 2024 12:33:57 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sOdlq-00000006tl4-45zv;
+	Tue, 02 Jul 2024 13:42:10 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOchc-00000006hZN-1amn;
-	Tue, 02 Jul 2024 12:33:46 +0000
+	id 1sOdlj-00000006tjd-16tu;
+	Tue, 02 Jul 2024 13:42:08 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B409761A7C;
-	Tue,  2 Jul 2024 12:33:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4008C116B1;
-	Tue,  2 Jul 2024 12:33:37 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 99CABCE1E02;
+	Tue,  2 Jul 2024 13:42:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBF12C116B1;
+	Tue,  2 Jul 2024 13:41:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719923623;
-	bh=GA51DlW7gyCa7i0vwnMzMgSaMHScVIotmcKUeWgcVo8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YPNQPDTDvW/mnjGeKTfnqCWq3k1+Co9ZrxUcipdvs6pCHm3w/lJpqx1RP8MidWJs8
-	 6+G+RrFnL0E8vOM83YyqRzmzPnGIKqVT3L+1mPSz8UsqUfHH84qpJtKxgIq0yAFNEF
-	 BGv4P2zBi03UxZWTlxV3YMP+ygNPLHdItxaew0bcUEys9a5Q27xBjhqlTCIXkhAONL
-	 yJ/GxJmddvxH+oayt57Bbe99LfEKbNNoez5b230c9L1zj4v2wUs4w0KdRQ3z8cru4M
-	 iG92Q7oS1XuRgYt9BdYotqOmKUKLzRP0E1eSGhYY0D6PDVMzg+mnou2ZIwaLR26Fk1
-	 Af1TbkPl8ZKjA==
-Message-ID: <6103ffa6-68df-45a3-ada6-1f8d541d8f02@kernel.org>
-Date: Tue, 2 Jul 2024 14:33:34 +0200
+	s=k20201202; t=1719927719;
+	bh=xIoq5ERoFam9CoYgw94MfcDDBIP2EzSXozZdimkHqf4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=krETZqZRZTW0k1iXLzs/FxWIvDBiOf5o+FbJZkpGtilaCd7GZcjqyo6SomGAunMEB
+	 BUZlu7wccEG6kossKFkepABl2/j8Nsn7yh5jjmmGZM1zHjJ9xrqOuEtGVXyytIMsr2
+	 wG70VQbbYM2x2Z/V9Ig4oLAFMTqYBVlvAMt9/+Ln7Tq6kiinYWiEYV3FCbh+gW1XUs
+	 fS2rs45SRfaUC94gwzDWRVv91uNOx//oOHa5IBx4jkma5NwzrumUbaXnlnE+BGlD5D
+	 5wo+CtDPOBVAmhVS6Z9McL5acmawuElTWYvsSBGtPlNdIXCvftH0RegptVZxUnYM36
+	 rCuzSmxjJO+hA==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Marco Felsch <m.felsch@pengutronix.de>,  Miquel Raynal
+ <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
+  Vignesh Raghavendra <vigneshr@ti.com>,  Arnd Bergmann <arnd@arndb.de>,
+  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,  Bartosz Golaszewski
+ <brgl@bgdev.pl>,  Russell King <linux@armlinux.org.uk>,  Joel Stanley
+ <joel@jms.id.au>,  Andrew Jeffery <andrew@codeconstruct.com.au>,  Nicolas
+ Ferre <nicolas.ferre@microchip.com>,  Alexandre Belloni
+ <alexandre.belloni@bootlin.com>,  Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>,  Shawn Guo <shawnguo@kernel.org>,  Sascha
+ Hauer <s.hauer@pengutronix.de>,  Pengutronix Kernel Team
+ <kernel@pengutronix.de>,  Fabio Estevam <festevam@gmail.com>,  Vladimir
+ Zapolskiy <vz@mleia.com>,  Andrew Lunn <andrew@lunn.ch>,  Gregory Clement
+ <gregory.clement@bootlin.com>,  Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>,  Tony Lindgren <tony@atomide.com>,
+  Geert Uytterhoeven <geert+renesas@glider.be>,  Magnus Damm
+ <magnus.damm@gmail.com>,  Dinh Nguyen <dinguyen@kernel.org>,  Thierry
+ Reding <thierry.reding@gmail.com>,  Jonathan Hunter
+ <jonathanh@nvidia.com>,  Jonathan =?utf-8?Q?Neusch=C3=A4fer?=
+ <j.neuschaefer@gmx.net>,
+  Michael Ellerman <mpe@ellerman.id.au>,  Nicholas Piggin
+ <npiggin@gmail.com>,  Christophe Leroy <christophe.leroy@csgroup.eu>,
+  "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,  Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>,  Huacai Chen <chenhuacai@kernel.org>,  WANG
+ Xuerui <kernel@xen0n.name>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org,  linux-i2c@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-aspeed@lists.ozlabs.org,
+  imx@lists.linux.dev,  linux-omap@vger.kernel.org,
+  linux-renesas-soc@vger.kernel.org,  linux-tegra@vger.kernel.org,
+  openbmc@lists.ozlabs.org,  linuxppc-dev@lists.ozlabs.org,
+  linux-mips@vger.kernel.org,  loongarch@lists.linux.dev,  Maxime Ripard
+ <mripard@kernel.org>
+Subject: Re: [PATCH 4/9] mtd: devices: add AT24 eeprom support
+In-Reply-To: <07b701a9-7b52-45b7-8dba-1c25d77cbf15@linaro.org> (Tudor
+	Ambarus's message of "Mon, 1 Jul 2024 17:14:14 +0100")
+References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
+	<20240701-b4-v6-10-topic-usbc-tcpci-v1-4-3fd5f4a193cc@pengutronix.de>
+	<07b701a9-7b52-45b7-8dba-1c25d77cbf15@linaro.org>
+Date: Tue, 02 Jul 2024 15:41:52 +0200
+Message-ID: <mafs0ikxnykpr.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] powerpc/configs: Update defconfig with now
- user-visible CONFIG_FSL_IFC
-To: Michael Ellerman <mpe@ellerman.id.au>, Esben Haabendal
- <esben@geanix.com>, Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-References: <20240530-fsl-ifc-config-v3-0-1fd2c3d233dd@geanix.com>
- <20240530-fsl-ifc-config-v3-2-1fd2c3d233dd@geanix.com>
- <d203dd45-fe69-48dc-aa36-d9870065f2e9@kernel.org>
- <87v81oj93e.fsf@mail.lhotse>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <87v81oj93e.fsf@mail.lhotse>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240702_053344_555617_6D25C285 
-X-CRM114-Status: UNSURE (   8.04  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240702_064203_683918_E9A46115 
+X-CRM114-Status: GOOD (  25.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,29 +103,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 02/07/2024 14:01, Michael Ellerman wrote:
-> Krzysztof Kozlowski <krzk@kernel.org> writes:
->> On 30/05/2024 16:46, Esben Haabendal wrote:
->>> With CONFIG_FSL_IFC now being user-visible, and thus changed from a select
->>> to depends in CONFIG_MTD_NAND_FSL_IFC, the dependencies needs to be
->>> selected in defconfigs.
->>>
->>> Signed-off-by: Esben Haabendal <esben@geanix.com>
->>
->> Anyone is going to pick this up?
-> 
-> Doesn't it need to be merged along with patch 1?
+On Mon, Jul 01 2024, Tudor Ambarus wrote:
 
-Well, it's late to talk about this... I replied 3 weeks ago, when taking
-the first patch, that I don't consider defconfig as a guaranteed feature
-thus no hard-bisectability requirement. Three weeks and no comments on
-that, so no, this does not have to be merged with patch 1.
+> On 7/1/24 2:53 PM, Marco Felsch wrote:
+>> EEPROMs can become quite large nowadays (>=64K). Exposing such devices
+>> as single device isn't always sufficient. There may be partitions which
+>> require different access permissions. Also write access always need to
+>> to verify the offset.
+>> 
+>> Port the current misc/eeprom/at24.c driver to the MTD framework since
+>> EEPROMs are memory-technology devices and the framework already supports
+>
+> I was under the impression that MTD devices are tightly coupled by erase
+> blocks. But then we see MTD_NO_ERASE, so what are MTD devices after all?
 
-The best if it goes the same cycle, though. So for v6.11.
+I was curious as well so I did some digging.
 
-Best regards,
-Krzysztof
+The Kconfig help says:
 
+    Memory Technology Devices are flash, RAM and similar chips, often
+    used for solid state file systems on embedded devices [...]
+
+The FAQ on the MTD documentation [0] says:
+
+    Unix traditionally only knew block devices and character devices.
+    Character devices were things like keyboards or mice, that you could
+    read current data from, but couldn't be seek-ed and didn't have a size.
+    Block devices had a fixed size and could be seek-ed. They also happened
+    to be organized in blocks of multiple bytes, usually 512.
+
+    Flash doesn't match the description of either block or character
+    devices. They behave similar to block device, but have differences. For
+    example, block devices don't distinguish between write and erase
+    operations. Therefore, a special device type to match flash
+    characteristics was created: MTD.
+
+    So MTD is neither a block nor a char device. There are translations to
+    use them, as if they were. But those translations are nowhere near the
+    original, just like translated Chinese poems.
+
+And in the section below, it lists some properties of an MTD device:
+
+    - Consists of eraseblocks.
+    - Eraseblocks are larger (typically 128KiB).
+    - Maintains 3 main operations: read from eraseblock, write to
+      eraseblock, and erase eraseblock.
+    - Bad eraseblocks are not hidden and should be dealt with in
+      software.
+    - Eraseblocks wear-out and become bad and unusable after about 10^3
+      (for MLC NAND) - 10^5 (NOR, SLC NAND) erase cycles.
+
+This does support the assumption you had about MTD devices being tightly
+coupled with erase block. It also makes it quite clear that an EEPROM is
+not MTD -- since EEPROMs are byte-erasable.
+
+Of course, the existence of MTD_NO_ERASE nullifies a lot of
+these points. So it seems the subsystem has evolved. MTD_NO_ERASE was
+added by 92cbfdcc3661d ("[MTD] replace MTD_RAM with MTD_GENERIC_TYPE")
+in 2006, but this commit only adds the flag. The functionality of "not
+requiring an explicit erase" for RAM devices has existed since the start
+of the git history at least.
+
+I also found a thread from 2013 by Maxime Ripard (+Cc) suggesting adding
+EEPROMs to MTD [1]. The main purpose would have been unifying the EEPROM
+drivers under a single interface. I am not sure what came of it though,
+since I can't find any patches that followed up with the proposal.
+
+Overall, I'd say that while originally MTD was written with flash
+devices with erase blocks in mind, the subsystem seems to have evolved
+with time to include other types of devices.
+
+I don't see anything obviously wrong with adding EEPROMs to the type of
+devices in MTD as well. It doesn't seem to be too invasive to the
+subsystem (I do see some dubious code when skimming through the patches,
+but nothing unfixable). And the EEPROM drivers can get a common
+interface. The other option would be to create a separate subsystem for
+EEPROMs, but perhaps that would just lead to a bunch of code being
+duplicated.
+
+I'd like to hear if somebody thinks otherwise, and sees reasons to _not_
+do this.
+
+[0] http://www.linux-mtd.infradead.org/faq/general.html
+[1] https://lore.kernel.org/linux-mtd/20130705201118.GM2959@lukather/
+
+-- 
+Regards,
+Pratyush Yadav
 
 ______________________________________________________
 Linux MTD discussion mailing list
