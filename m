@@ -4,106 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC852C2BD09
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2024 08:22:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C18BC2BD09
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Jul 2024 08:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/4LljJpJRh9QpzkGoI7puzW6KrfqW8KtAN3voF1Nimo=; b=caTr6WkLiZJSNE
-	57R0dDS1ggvs1pbLvxdglvgaDaRNy47JLRo+tWMjiFRq5p0sF6UXm04zrGdeDGz0PfTmeN1whDEz/
-	V66i812Xc3oficq3oRBmx1voK47UCbuL9/C7jHDcEto1YN6I9NYGYNTdFrmo3C5adJq1jNeyhV04u
-	pPmovthmnilAPaKx/2r3EBE7zfna958F4XjGE2IMgxdcrdoTCJIvHrMk2jpyTorpOdmuMyhEDVTdK
-	ffekg2IV2Jsxm/4xPHOHI4cAj8EqpUU2QSB2bhY9/XOERsYf4pii4dndoGLEv01ywb04uXuKYXP4r
-	eHonx/XMdXtYex0AH/Bg==;
+	List-Owner; bh=N236vACw7WI+ufhYv4knAFwFUmDKaBp88paxHEJTMqU=; b=AR4CRFRNGfVV7Z
+	Ig3MjSaVc2dHmRO1c74rLv2gbLn0Etikn+g+catrFNrGY+0VVCsuHqk0wFnNe64Juj2obmxGPlnGU
+	grlruv9qDV3kcGCXne6CXV7NPRPQQODTO4uWGyCVaMZowz6JzcCULkDPcNTWKC0ywGHXcq50dT6DZ
+	VXXD/47sqT5jKKhRnrZzf0tqK4BiL0GXTxvnS9b2dR9HjifnhdEpTPHOanvcXJMf502kdXr5ZAOp+
+	sL3PVMaue1kJxSc2ZtpOOLY9tLZoSdxfaTj5SsEajL6JLJxEkYKyAJJH8hB667RfMJSCgKHXz24bG
+	J5jF3yNgKxVrorFNDBOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOvG6-00000009Ppo-0G4Z;
-	Wed, 03 Jul 2024 08:22:34 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1sOvHS-00000009Pzx-3cmw;
+	Wed, 03 Jul 2024 08:23:58 +0000
+Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOvG3-00000009Poa-1E8r
+	id 1sOvHP-00000009PzT-2Xit
 	for linux-mtd@lists.infradead.org;
-	Wed, 03 Jul 2024 08:22:33 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2eaae2a6dc1so67727311fa.0
-        for <linux-mtd@lists.infradead.org>; Wed, 03 Jul 2024 01:22:30 -0700 (PDT)
+	Wed, 03 Jul 2024 08:23:57 +0000
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a724b3a32d2so592922266b.2
+        for <linux-mtd@lists.infradead.org>; Wed, 03 Jul 2024 01:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1719994949; x=1720599749; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TMQqT/Muz0iwxmBm/vQkZCAi7Byb2pCrA2WM9iHg1No=;
-        b=a0bLBiPTozDqWAuNycFMJXkHUB8rq3YjIt8udc8kesCaRjSbrbAKz5CYntq4eBkUhI
-         D+wKYX7RoP383WqKkQBemKp365JsGRzgp43IqXfOHhfEoGNRbnsewLiL9swya9fzfv9y
-         CXJf5oExXSrBUjPq+CjOPtJbfHF/rHNI23ODarpvLLOSv/p660JmRaJT28OfUz5k27MK
-         In7EIaHSVVVm6XXv1OEIxtmwPyGgblCgPA8yiOQwzm9ICZkOym6Tpt9zdgiphgYwddJ3
-         68XhTolbWRO0Ni/szk83DiFyFGg0NCxR7/7pkJFBcw2hj+ltzJoZQhZ48G/4JA31oqk4
-         LQWw==
+        d=gmail.com; s=20230601; t=1719995033; x=1720599833; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zCMYXJXadwK61w5sdXjhb6LXfr4ZtVK+ganCBejHY3k=;
+        b=fYIX077IRyS/klakKv/QCbqG4CE49OA8AUk5RY/iroSCFgph0GNfKnRUaXN0UCnncG
+         0PZzW/EOz5aN3WsCZLcvzKW40cjY+qJqM57PqfKox53181SQjlLYZjzGJm9tIufiLZUt
+         DFTi8kg49lSwoufQHVyfNBVqx6wR8/c3Y4sZJakOh8aP2NvUs/489hTvelDeM/2d+zuc
+         GYQHCZ4btwJ8xkB+XlaqiZazcyb9Qcrnd40iwNkMIF+guKEoS0/iBYW8c8uiGNYI+YwH
+         7Gcr3dT6KO3yXUdYB/PCsMug4Cveurtw7oRt3f6bY5nzmm289P7eIp+jWPHV/rDyEjcL
+         ngBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719994949; x=1720599749;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TMQqT/Muz0iwxmBm/vQkZCAi7Byb2pCrA2WM9iHg1No=;
-        b=wVF5NjWTS5MxMMumuf99EXiovb75eUvUrkki4J1UI/BVSNRCj8Ahokui+6Ydeft4un
-         LiItDUJRU2+2AxTrEm3lzSH99ar8D+vQz8yY/ToE+ZtT/HSSA4H5e3s+psFvUYyoDZt3
-         n2B4qcAhOxcHsiR20e4kWFZdJzHH54ieSur430DR4kdqTQPyZPiCSIfrFPf/D4ogQw3s
-         RgCU9484t5mEmRQYkfJdkOWVo5/UjrHi5kWoHli2/DOZKplUusWQO2pDrAfVNExfwG22
-         mdvt1aLX++82ViCDqkCxO0y6EYlZzoErMXaXV7mjE9Yrc7G4rYhfZldlX+vsHzBR5yEJ
-         kMbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1q3QZqw6kBkmZxYqE99NjJO5tL7XNb6TIybLGxpiJ9aKQhlgpTrLraLjpMUPX/bviYmn1FcP4Oxnb96MvXUn9U2hnq2QoAe1u9iHHeQ==
-X-Gm-Message-State: AOJu0YzsweutwtnJMoDv2RedrOPUL0VNFYLytE7O8N+9Y45vUt4T80LJ
-	BMoyzch/QOEzGYLgEbo+vh1EhER3BvcaZIL/TGcgr6d0x2WdIvI63SOMHLb/Lts=
-X-Google-Smtp-Source: AGHT+IGgmL2y9QM4c4g0Wf6Xz0uaCMi9coDigbGLy4p0by/hZmKG4KPflaiBbCeCe+DcbaFV7kidJA==
-X-Received: by 2002:a2e:bc88:0:b0:2ee:7a54:3b14 with SMTP id 38308e7fff4ca-2ee7a543b8dmr26465461fa.7.1719994949278;
-        Wed, 03 Jul 2024 01:22:29 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70802959d41sm10094847b3a.96.2024.07.03.01.22.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 01:22:28 -0700 (PDT)
-Date: Wed, 3 Jul 2024 10:22:11 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: Jocelyn Falempe <jfalempe@redhat.com>
-Cc: Kees Cook <kees@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uros Bizjak <ubizjak@gmail.com>, linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] printk: Add a short description string to kmsg_dump()
-Message-ID: <ZoUKM9-RiOrv0_Vf@pathway.suse.cz>
-References: <20240702122639.248110-1-jfalempe@redhat.com>
- <202407021326.E75B8EA@keescook>
- <10ea2ea1-e692-443e-8b48-ce9884e8b942@redhat.com>
+        d=1e100.net; s=20230601; t=1719995033; x=1720599833;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zCMYXJXadwK61w5sdXjhb6LXfr4ZtVK+ganCBejHY3k=;
+        b=eCuA1RXIVti0FISlUK5hxn35gQMO9g45ZxfeWANy+aIrOIXeNdkKIcHA9+zw294dIC
+         MPsSFo6OBqKYYcyL9Xy+8q9zQa2TZOUBAOsPPul1U92AXYMAmzccOXG8S8DQm2+sxZQF
+         d/1sG46TtI+gFyEJl5/YTlQApRdwZxP/+iaBdLHrNlJEPWsChNLWb8gHQuAR+RekAVf9
+         vLdYgOANI6eHacYZwvF0m2WZeLGH8S2HrM9pdEbK/+hSmUjS7h6MGx8LP/sgDQ/7B5w7
+         6lCfPldua0xvvYoFFmLigm0Sgf7FKeJPHai8NXSPhpdSgh+8wSF8xZ4UKfBDI/Vy7r7V
+         yQAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjLXnEMyviMMNBvVXfoFKwDBak5QzlJQmKCsNAiqNR//TDoKNDKxIM7pQa8ZrYHtnzdxupa3clrkPbLvTSOt16DBKp6LAbAXQvk77U8w==
+X-Gm-Message-State: AOJu0YxPI9NwLa6W4hpzJ2kj2noNIXBhmpaxOY83nKzluBk//PtMQ7Sy
+	q7wID8KLRh4lGuHt+Qrjykmah8i1hD/LUUycohlK2B7+LOwa4cKODEzGf5SC8jbMnLnqw2WvE5F
+	h5LlcSvDe8UcvhjYkCCb3A5CuaQ==
+X-Google-Smtp-Source: AGHT+IELcZTIilt/NDQQO1QrB9EIggXdx7nlZ6ejwLcXZXR9gSKZjLqipfoOr74YTbP8BXrqr93Wpl4wY+4zDdSTw8s=
+X-Received: by 2002:a17:907:84d:b0:a75:29ea:283f with SMTP id
+ a640c23a62f3a-a7529ea28d3mr540210566b.66.1719995033305; Wed, 03 Jul 2024
+ 01:23:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <10ea2ea1-e692-443e-8b48-ce9884e8b942@redhat.com>
+References: <20240629103914.161530-1-erezgeva@nwtime.org> <20240629103914.161530-4-erezgeva@nwtime.org>
+ <1c457520-07b7-4bde-b040-e8bca959a4f5@linaro.org> <CANeKEMOODBNZA6efh0E0Ga_KaVs5Y3WLcUftRhNwYHhnXO=GNw@mail.gmail.com>
+ <CANeKEMO42rJt5Ob4_HDcZ3eEMvuMOPvRaFaLwL8SA65NtxSV7A@mail.gmail.com>
+ <1d56c3b2-7adf-45b9-a509-956340f3f17b@linaro.org> <CANeKEMMe-Onpn7xWQHgWz1Ps_uQPEMa7HrKA00HpoKjG+DCJNQ@mail.gmail.com>
+ <3bafcbea-6aa5-43ca-9d12-3916be3fe03d@linaro.org> <CANeKEMM02-Jvb8Pd0fZJFnRg-hsAW+hckYWm11tZZXNMPSPJ=w@mail.gmail.com>
+ <9b45cc73-2251-4085-af95-7ccd00dd6d3b@linaro.org>
+In-Reply-To: <9b45cc73-2251-4085-af95-7ccd00dd6d3b@linaro.org>
+From: Erez <erezgeva2@gmail.com>
+Date: Wed, 3 Jul 2024 10:23:16 +0200
+Message-ID: <CANeKEMP+mRefYZNb+TuBmOD7dC6=7Rg7D1EcfnjJoiaeaV28SQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mtd: macronix,mx25l12833f: add
+ SPI-NOR chip
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Jaime Liao <jaimeliao@mxic.com.tw>, leoyu@mxic.com.tw, 
+	Alvin Zhou <alvinzhou@mxic.com.tw>, Julien Su <juliensu@mxic.com.tw>, 
+	Esben Haabendal <esben@geanix.com>, Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240703_012231_358049_F56D4516 
-X-CRM114-Status: GOOD (  35.21  )
+X-CRM114-CacheID: sfid-20240703_012355_672424_8D634AEA 
+X-CRM114-Status: GOOD (  40.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,83 +100,155 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 2024-07-03 09:57:26, Jocelyn Falempe wrote:
-> 
-> 
-> On 02/07/2024 22:29, Kees Cook wrote:
-> > On Tue, Jul 02, 2024 at 02:26:04PM +0200, Jocelyn Falempe wrote:
-> > > kmsg_dump doesn't forward the panic reason string to the kmsg_dumper
-> > > callback.
-> > > This patch adds a new struct kmsg_dump_detail, that will hold the
-> > > reason and description, and pass it to the dump() callback.
-> > 
-> > Thanks! I like this much better. :)
-> > 
-> > > 
-> > > To avoid updating all kmsg_dump() call, it adds a kmsg_dump_desc()
-> > > function and a macro for backward compatibility.
-> > > 
-> > > I've written this for drm_panic, but it can be useful for other
-> > > kmsg_dumper.
-> > > It allows to see the panic reason, like "sysrq triggered crash"
-> > > or "VFS: Unable to mount root fs on xxxx" on the drm panic screen.
-> > > 
-> > > v2:
-> > >   * Use a struct kmsg_dump_detail to hold the reason and description
-> > >     pointer, for more flexibility if we want to add other parameters.
-> > >     (Kees Cook)
-> > >   * Fix powerpc/nvram_64 build, as I didn't update the forward
-> > >     declaration of oops_to_nvram()
-> > 
-> > The versioning history commonly goes after the "---".
-> 
-> ok, I was not aware of this.
-> > 
-> > > [...]
-> > > diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-> > > index 906521c2329c..65f5a47727bc 100644
-> > > --- a/include/linux/kmsg_dump.h
-> > > +++ b/include/linux/kmsg_dump.h
-> > > @@ -39,6 +39,17 @@ struct kmsg_dump_iter {
-> > >   	u64	next_seq;
-> > >   };
-> > > +/**
-> > > + *struct kmsg_dump_detail - kernel crash detail
-> > 
-> > Is kern-doc happy with this? I think there is supposed to be a space
-> > between the "*" and the first word:
-> > 
-> >   /**
-> >    * struct kmsg...
-> > 
-> > 
-> Good catch, yes there is a space missing.
-> 
-> I just checked with "make htmldocs", and in fact include/linux/kmsg_dump.h
-> is not indexed for kernel documentation.
-> And you can't find the definition of struct kmsg_dumper in the online doc.
-> https://www.kernel.org/doc/html/latest/search.html?q=kmsg_dumper
-> 
-> > Otherwise looks good to me!
-> > 
-> 
-> Thanks.
-> 
-> As this patch touches different subsystems, do you know on which tree it
-> should land ?
+On Wed, 3 Jul 2024 at 09:12, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+>
+>
+> On 7/3/24 12:16 AM, Erez wrote:
+> > On Tue, 2 Jul 2024 at 07:00, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+> >>
+> >>
+> >>
+> >> On 7/1/24 6:08 PM, Erez wrote:
+> >>> On Mon, 1 Jul 2024 at 12:15, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 7/1/24 10:46 AM, Erez wrote:
+> >>>>> When using mx25l12805d, we do not read SFDP.
+> >>>>> As it uses the no-SFDP flags.
+> >>>>> When using mx25l12833f hardware with mx25l12805d driver, it did not
+> >>>>> try to read the SFDP.
+> >>>>> Yet mx25l12833f does have SFDP, when I remove the no-SFDP flags, the
+> >>>>> driver fetch the SFDP.
+> >>>>>
+> >>>>> Secondly SFDP does not contain OTP information.
+> >>>>>
+> >>>>> mx25l12805d has two OTP regions of 128 KiB and 384 KiB (yes asymmetric).
+> >>>>> While mx25l12833f has two OTP regions of 512 KiB.
+> >>>>>
+> >>>>> How do we handle it?
+> >>>>
+> >>>> You would first try to parse SFDP and initialize the flash based on
+> >>>> SFDP. If there's no SFDP then you fallback to the flags declared at
+> >>>> flash declaration. Esben had a try recently, see [1]. I don't know if
+> >>>> there's any progress in that direction.
+> >>>>
+> >>>> Also, you haven't mentioned anything about the testing. Do you have the
+> >>>> flash?
+> >>>>
+> >>>> [1]
+> >>>> https://lore.kernel.org/linux-mtd/20240603-macronix-mx25l3205d-fixups-v2-0-ff98da26835c@geanix.com/
+> >>>
+> >>> Looking at "mtd: spi-nor: macronix: workaround for device id re-use"
+> >>> I guess it can be applied to all Macronix devices.
+> >>
+> >> No, no, we're going to do it individually just where it's needed.
+> >> Issuing unsupported commands is not that great.
+> >
+> > Would be nice if we could ask Macronix directly.
+>
+> we did. They said it's not ideal, but it's okay.
+> >
+> > Looking on their web site and reading some spec. and status reports.
+> > Using the IDs with  'no_sfdp_flags' in drivers/mtd/spi-nor/macronix.c
+> > I did not search for new chips reusing IDs of chips at end of life.
+> > But we found 3 already:
+> > MX25U51245G appears in the table with the same ID as MX66U51235F.
+>
+> is there an extension ID that differentiate the two?
+>
+> > Esben Haabendal found MX25L3233F which reuses  MX25L3205D ID.
+> > And I found MX25L12833F reuses MX25L12805D ID.
+>
+> Yes. And we already have a plan for these. We need someone that cares
+> about them to implement it.
+>
+> > Chips that are not in end of life do support SFDP, at least the new
+> > versions of the chips according to their spec.
+> > It seems quite systematic.
+> >
+>
+> maybe
 
-Andrew usually takes patches against kernel/panic.c.
+I check the public spec of all chips, but one, which are in the
+Macronix driver table and are still in production.
+They all support SFDP. I do not understand the "maybe".
+As for the chips in end of life, we found 3 new chips that reuse the
+ID, we can find the rest.
 
-Or you could take it via the DRM tree, especially if you already have the code
-using the string.
+>
+> > By the way, the chip MX25L2005A part number is 'MX25L2005' without the 'A'.
+>
+> feel free to propose a patch
+>
+> >
+> > We can support Macronix chips that are not in the table, just by
+> > reading the SFDP.
+> > In that case we can name them like "mx-szNN".
+>
+> We don't care about the flash name.
 
-Also I could take it via the printk tree. The only complication is
-that I am going to be away the following two weeks and would come
-back in the middle of the merge window. I do not expect much problems
-with this change but...
+Agree.
 
-Best Regards,
-Petr
+>
+> If all the flash settings that we care about can be discovered by SFDP
+> then one won't need to declare a flash entry at all, and instead rely on
+> the driver to setup the flash settings solely based on the SFDP tables.
+> See spi-nor-generic handling.
+
+Excellent feature!
+
+>
+> >
+> > The table below uses fixed width characters.
+> >
+> > ID      Part.         Size              Status          SFDP status
+> > according to spec.
+> >                                                         New chip with
+> > SFDP for EOL
+> > c22012  MX25L2005(A)  SZ_256K =  2Mb    EOL             MX25L2006E
+> > c22532  MX25U2033E    SZ_256K =  2Mb    EOL
+> > c22013  MX25L4005A    SZ_512K =  4Mb    EOL
+> > c22533  MX25U4035     SZ_512K =  4Mb    EOL
+> > c22534  MX25U8035     SZ_1M   =  8Mb    EOL
+> > c22016  MX25L3205D    SZ_4M   =  32Mb   EOL             MX25L3233F
+> > c29e16  MX25L3255E    SZ_4M   =  32Mb   EOL
+> > c22017  MX25L6405D    SZ_8M   =  64Mb   EOL
+> > c22018  MX25L12805D   SZ_16M  =  128Mb  EOL             MX25L12833F
+> > c22538  MX25U12835F   SZ_16M  =  128Mb  EOL
+> > c2253a  MX66U51235F   SZ_64M  =  512Mb  EOL             MX25U51245G
+> > c22010  MX25L512E     SZ_64K  =  512Kb  NO_REC          Have-SFDP!
+> > c22015  MX25L1606E    SZ_2M   =  16Mb   NO_REC          Have-SFDP!
+> > c22536  MX25U3235F    SZ_4M   =  32Mb   NO_REC          Have-SFDP!
+> > c22816  MX25R3235F    SZ_4M   =  32Mb   NO_REC          Have-SFDP!
+> > c22537  MX25U6435F    SZ_8M   =  64Mb   NO_REC          Have-SFDP!
+> > c22019  MX25L25635E   SZ_32M  =  256Mb  NO_REC          Have-SFDP!
+> > c22539  MX25U25635F   SZ_32M  =  256Mb  NO_REC          Have-SFDP!
+> > c2201a  MX66L51235F   SZ_64M  =  512Mb  NO_REC          Have-SFDP!
+> > c2261b  MX66L1G55G    SZ_128M =  1Gb    NO_REC          Spec. is not public
+> > c22314  MX25V8035F    SZ_1M   =  8Mb    PROD            Have-SFDP!
+> > c22815  MX25R1635F    SZ_2M   =  16Mb   PROD            Have-SFDP!
+> > c2201b  MX66L1G45G    SZ_128M =  1Gb    PROD            Have-SFDP!
+> > c2253c  MX66U2G45G    SZ_256M =  2Gb    PROD            Have-SFDP!
+> > c2253a  MX25U51245G   SZ_64M  =  512Mb  PROD            Have-SFDP!
+> >
+> > EOL     End of Life
+> > PROD    Normal Production
+> > NO_REC  Not recommend for new design
+> >
+> >
+>
+> not sure what you want me to do with these.
+
+That we can read SFDP for all chips from Macronix.
+Only old chips before 2010 do not have SFDP.
+
+Erez
+
+>
+> Cheers,
+> ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
