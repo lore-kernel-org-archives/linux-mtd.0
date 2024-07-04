@@ -4,65 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19F91C30653
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jul 2024 14:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAC9EC30653
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Jul 2024 15:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:In-Reply-To:
-	Date:MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
-	List-Owner; bh=GOjbNgh5uOmWdrKJUVn4zGW8TUxndv0kwtYQ1ivQkuI=; b=fO2aa79b8xUFwW
-	5MqBj39WkFe3OLSUgfIMuCBNXQ5nEP1CeuP9/4opXB70kSVEGg4LE+ucZOAu8cv0RlSPsMXjXy8ta
-	vF3dBc2zvD+a2avcGwQZXJG6TohkrkmZk16NPwY3veywKEO+qjVmjSCx+1GmOcuEmQC0dDKx0rhEE
-	e72m21GrMwolf7Bk70E+ssyEKThefpLygRZf4su4lWB8vuW8iA1eEw+OL/9gLBCNHD6uOEpcpYfHi
-	HcZ6c3ui0B1UH1yUc4KK4XXkFpmD8/VP2GLmTAsF+mIJTl1mh/WxSGBGvC/GLh3GbQXwxEsGqGWuU
-	KCB2yh46LazvtOkgoqng==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=T9CtlrtfxMb6X6RnYtsYsAl5PMw+sfjlvzQqdQnfclY=; b=y2BWkrWALyh+CL
+	DCUpEL2rqs3CjHIA1KBg3UIxAuc8AZQj1Q82iP0zWzP14cAlYWWM5uJb/VkWFbLesvMQ8i4ZhF+zP
+	NCa+HazDZCdEOQzt6aQ4U2uvzbUS4cJsr+6W5vn5upX/dsPcNmaw1RcDodZVGPw2yqaWxlTj57nmY
+	eC4KwG9D5PUSObT0uUjT/L5v8pz+mC1dyNu8mmmlcoZgPd+usJW85S6sp5DPCgqOok4bpxPSHe8+N
+	i522o/VbUrvk8kZx2Ugp4iU/nmDWVgzehLuXql2PidBi87D9OrMg913F/F09Gpf6wXejrMxurftQn
+	KtttYHU/2MgXG96DWjhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPN3D-0000000DN9u-23uK;
-	Thu, 04 Jul 2024 14:03:07 +0000
-Received: from mail-io1-f71.google.com ([209.85.166.71])
+	id 1sPOH6-0000000DgFE-37xn;
+	Thu, 04 Jul 2024 15:21:32 +0000
+Received: from mail-oi1-x234.google.com ([2607:f8b0:4864:20::234])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPN3A-0000000DN8v-1se0
+	id 1sPOH4-0000000DgE7-0Ve9
 	for linux-mtd@lists.infradead.org;
-	Thu, 04 Jul 2024 14:03:05 +0000
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7f3d5b154f5so73982239f.2
-        for <linux-mtd@lists.infradead.org>; Thu, 04 Jul 2024 07:03:02 -0700 (PDT)
+	Thu, 04 Jul 2024 15:21:31 +0000
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3c9cc681ee7so279997b6e.1
+        for <linux-mtd@lists.infradead.org>; Thu, 04 Jul 2024 08:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1720106488; x=1720711288; darn=lists.infradead.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WaX8CCBrV7Ns4d1cmuX50bUgmfYZE40zweco6bwoQdg=;
+        b=GNxiLlh7Ui0mNsjtUoJpoQJ6JiVfQ8wkiJPsct32klTyMJBE0wGqcGp7/IVN5LAMve
+         WMmZsgTYV4rKltS8R/ub5dyuF73iYZ3wifb3NBYH/tKpdE+BUU+o3jkf2bX1oBHpRX1A
+         X9osPcxxTqLUJK7mIift5Zd6v4cPR64JO7gzUE7/2rdx7XnDQsfnq2qqLI2y1EApmqgl
+         7dNsiiQMcTT3KugJRwms/da9zG/s8bDFNnJehf+Ws3x1KaQypRLBxFtOZX9XjIw3yugV
+         F0bTmSTWQ0R9kIK8bJaOhQTaNxZKT1/FQh96vi3CvfiQxUz+t3zC3ewVXRWiypavhSiv
+         VEwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720101782; x=1720706582;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1720106488; x=1720711288;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2MFu0Vvjl11woYTcFBgJSbf4fZOqby39eiMdbGhwcbY=;
-        b=nebIMEwoOcT2WM9KyOIChHXShDelFnfdMfXVIliZKSmlsOjOJFAglazHfSWyDsOoQ2
-         9W4lMJ3A1gYu2+yRLiGWWRBo3zFS1C3qNjziJ6d1uCMCjWsd+BEIFoBad2F5xDvNARg6
-         3yimlzcFY3xl6bJXYQ6pHyG7rd9n/XEdLkcmFp4UiOULZV9jXj3wffmgGKd4a6TmyQ5Q
-         X36sz4wSIihaGwH67NoRiIUg3MyOY5RCp/hIh6bAbUMi5GoPr3k27ExW0LCvJy5Tdm8X
-         ZYmV8QWECCrP9ulLP5dmE6dOddWYv16Hx4BOd8aMCphhmR6Ek+s5Viw2CVcpqH+LhHxI
-         RJpA==
-X-Forwarded-Encrypted: i=1; AJvYcCViiOVYTpJJbIgQHWoRcvbnOFuAJ+6zyupuYAAK66X4Ih1j5oYQPcjphGq6il40xF7mvdEBncTx8QUrv6gIbxCAWar5Mr8OnvtrdFuzdQ==
-X-Gm-Message-State: AOJu0Yx1jNQAV8VzJPTH56rGeu/ubCK9A17n1W++239xNiR99flJP+BM
-	lbCdFRZXMToz3s84HL6t0l9Ku5Q7+NUdVjytwJ1UzIZw1U3vUIna85dPILqjNrI/bYhw9jaOHHU
-	lRHQbViQSZgp9XaudSU+GmZzojoqmddfGl+vCnEWB0K+p021ZwwH3Wt0=
-X-Google-Smtp-Source: AGHT+IG3z1yiP+WDt+Se4A168xPC8xr6NJzaqkmWzpP6rB2eaIoHhuGAgnV98AGH0YOdSfC3IF+/dJPQrpHi76LWi6BD+3sH3sci
+        bh=WaX8CCBrV7Ns4d1cmuX50bUgmfYZE40zweco6bwoQdg=;
+        b=FRRDvSw1SjBN7BJs2khkE8KkECXc7Qr8aAPG4oowLAo/3WcLo+wsjSJFD9E+laYdaa
+         T1n1YS3gx0iajAZ4ilLv842t4C94ECU0FgqgG+DLIwgqQLo2yQdl5+jtt2AUDDfp7Tdx
+         dSm7WqoNN9+NAAjLwH12hfHH3DXnoo65Q2aWzqIANigV8/KZvIiYZOkik0TE0et8HNGr
+         Y7S0eClsGymwB5kFvIAhoKVpfGQirDPRQeQIWZkOgQOjOS5rbKea0cdO5Z9p7Hda6Lou
+         1uGR17dp3nN0q53q9PZsIB/2joRseBdG2uYxti2yM5z9Lvyvy7LM/EUGsMNi1xcFH1AP
+         mx3Q==
+X-Gm-Message-State: AOJu0Yx7pwIl3DPbM39cBzKLNn/1HDtuwzvqFeqstA5y6eP/nYaIysA3
+	FL5idbB4O10pYhn9cfKfj+b5YcY2/mQuRU4Lm6HGripaFqDxh2XwgcTtN1j1H9w=
+X-Google-Smtp-Source: AGHT+IHPMix6qcM+Nva0ZxsZ3hvJv95sc3hL3WE1yiFjOboD/FAcPZ3nhf3pNFPiOcE259rj4nTxtg==
+X-Received: by 2002:a05:6808:30a2:b0:3d2:edf3:6fd7 with SMTP id 5614622812f47-3d915d549e4mr644866b6e.22.1720106488099;
+        Thu, 04 Jul 2024 08:21:28 -0700 (PDT)
+Received: from localhost ([2603:8080:b800:f700:96a0:e6e9:112e:f4c])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5c414939fdcsm1785257eaf.25.2024.07.04.08.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jul 2024 08:21:27 -0700 (PDT)
+Date: Thu, 4 Jul 2024 10:21:25 -0500
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: [bug report] mtd: rawnand: lpx32xx: Request DMA channels using DT
+ entries
+Message-ID: <da026465-a28b-44f6-8b79-cfacdd274874@stanley.mountain>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:9825:b0:4b9:685d:7f2a with SMTP id
- 8926c6da1cb9f-4bf5fe43c39mr82395173.4.1720101782219; Thu, 04 Jul 2024
- 07:03:02 -0700 (PDT)
-Date: Thu, 04 Jul 2024 07:03:02 -0700
-In-Reply-To: <00000000000093a8ec0615b682a9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b4fe57061c6c6774@google.com>
-Subject: Re: [syzbot] [jffs2?] KASAN: slab-out-of-bounds Read in jffs2_sum_add_kvec
-From: syzbot <syzbot+d7c218ea1def103f6bcd@syzkaller.appspotmail.com>
-To: brauner@kernel.org, chengzhihao1@huawei.com, dev@elkcl.ru, 
-	dwmw2@infradead.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com, walmeida@microsoft.com
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240704_070304_508553_E4907ED1 
-X-CRM114-Status: UNSURE (   4.55  )
+X-CRM114-CacheID: sfid-20240704_082130_188463_9E9612BE 
+X-CRM114-Status: UNSURE (   8.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,27 +89,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-syzbot suspects this issue was fixed by commit:
+Hello Piotr Wojtaszczyk,
 
-commit c6854e5a267c28300ff045480b5a7ee7f6f1d913
-Author: Ilya Denisyev <dev@elkcl.ru>
-Date:   Fri Apr 12 15:53:54 2024 +0000
+Commit 7326d3fb1ee3 ("mtd: rawnand: lpx32xx: Request DMA channels
+using DT entries") from Jun 27, 2024 (linux-next), leads to the
+following Smatch static checker warning:
 
-    jffs2: prevent xattr node from overflowing the eraseblock
+	drivers/mtd/nand/raw/lpc32xx_mlc.c:609 lpc32xx_dma_setup()
+	error: 'host->dma_chan' dereferencing possible ERR_PTR()
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12204ae1980000
-start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7c218ea1def103f6bcd
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1309ca57180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f9afeb180000
+drivers/mtd/nand/raw/lpc32xx_mlc.c
+    572 static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+    573 {
+    574         struct mtd_info *mtd = nand_to_mtd(&host->nand_chip);
+    575         dma_cap_mask_t mask;
+    576 
+    577         host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
+                                 ^^^^^^^^^^^^^^^^
 
-If the result looks correct, please mark the issue as fixed by replying with:
+    578         if (!host->dma_chan) {
 
-#syz fix: jffs2: prevent xattr node from overflowing the eraseblock
+Why do we have two functions called dma_request_chan/channel()???  Confusing.
+Anyway, the _chan() function returns error pointers and the _channel() function
+returns NULL.  So this check is wrong.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+    579                 /* fallback to request using platform data */
+    580                 if (!host->pdata || !host->pdata->dma_filter) {
+    581                         dev_err(mtd->dev.parent, "no DMA platform data\n");
+    582                         return -ENOENT;
+    583                 }
+    584 
+    585                 dma_cap_zero(mask);
+    586                 dma_cap_set(DMA_SLAVE, mask);
+    587                 host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter, "nand-mlc");
+                                         ^^^^^^^^^^^^^^^^^^^
+
+    588 
+    589                 if (!host->dma_chan) {
+    590                         dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+    591                         return -EBUSY;
+    592                 }
+    593         }
+    594 
+    595         /*
+    596          * Set direction to a sensible value even if the dmaengine driver
+    597          * should ignore it. With the default (DMA_MEM_TO_MEM), the amba-pl08x
+    598          * driver criticizes it as "alien transfer direction".
+    599          */
+    600         host->dma_slave_config.direction = DMA_DEV_TO_MEM;
+    601         host->dma_slave_config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+    602         host->dma_slave_config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+    603         host->dma_slave_config.src_maxburst = 128;
+    604         host->dma_slave_config.dst_maxburst = 128;
+    605         /* DMA controller does flow control: */
+    606         host->dma_slave_config.device_fc = false;
+    607         host->dma_slave_config.src_addr = MLC_BUFF(host->io_base_phy);
+    608         host->dma_slave_config.dst_addr = MLC_BUFF(host->io_base_phy);
+--> 609         if (dmaengine_slave_config(host->dma_chan, &host->dma_slave_config)) {
+    610                 dev_err(mtd->dev.parent, "Failed to setup DMA slave\n");
+    611                 goto out1;
+    612         }
+    613 
+    614         return 0;
+    615 out1:
+    616         dma_release_channel(host->dma_chan);
+    617         return -ENXIO;
+    618 }
+
+regards,
+dan carpenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
