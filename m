@@ -4,85 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C123AC3271E
-	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jul 2024 11:52:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BC7FC30658
+	for <linux-mtd@archiver.kernel.org>; Fri,  5 Jul 2024 14:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+sl+/xvHJkTGWI3Zc1xaTiEdIhwTqIpF5mYJE3PU+i0=; b=fsVYpSNcblli72
-	+u4oIxbsvzuLFIJxe+uCLHPaXVGsDGeCILOfTM0LCqWu+Ki3wZRJz46QgT65bzk1ld2K0OcIABSge
-	QxtYUrlDeHt/1lxm0dxMugZhr+KGRpivy+T9jZD+eQp2WWDNTcC9Tjlt0gJE76zI1Zem/ZE03cLFF
-	hd2EYlFqojUaSy4Do2WeURmtor4DLQa7d68oYHWUYzvv3XMDfN3NRkF157eh/mWjwZtGY+KWFGRKM
-	C5RrKPi6fxzbKlW7XBxgwTpzyT1o4wowjoLYAQUSEMiYD0VRHBM63q33viKoWBqebuVE7Og0jphe9
-	QOsa/6GSW8hudwgw+lPw==;
+	List-Owner; bh=5T8SDPfqoi9bjvELiCOWXNaovmkWgVIqi+cBv2dv9FQ=; b=IdWd5eebhVG4Eh
+	pIrbkaJkk4m2Wzh3ILC9y+EoPqAAohV5Q65rbw3dAOB5Z0NwtUeJbXoifZw1+UeasRtnDDVPOnK5n
+	6yMz8xi0cWNrbKwTKJfpl+ynTlEv/sa7ROFcWpDEztLFXpsFYxYxw9gNK2bu/MOSrk3byYNJKTOeN
+	8Emm5eDkuO3FLHm19aZ2v1IP7qwCM7D4AFxXjCqNQB93gv5WGv1LxKWhqOp48ac1UQkiAgjHso3fP
+	NSDhVQ/kS6uc0rQAXYPIO/Kj0eUP6hrTpUVQccdpdddeFhWkwl+haLFJDrYbWo8I02mHp2zwhGh08
+	d7S7sxHGWEkNwNvc0JpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPhTu-0000000FqPG-3GHn;
-	Fri, 05 Jul 2024 11:52:02 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1sPjp4-0000000GBt5-1vU4;
+	Fri, 05 Jul 2024 14:22:02 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPhTg-0000000FqM7-0W4b
+	id 1sPjp1-0000000GBsL-1upS
 	for linux-mtd@lists.infradead.org;
-	Fri, 05 Jul 2024 11:51:50 +0000
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a77c9c5d68bso75170566b.2
-        for <linux-mtd@lists.infradead.org>; Fri, 05 Jul 2024 04:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20230601.gappssmtp.com; s=20230601; t=1720180306; x=1720785106; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+QojLwX8k68lmn9KlieWzohao5qbJAQQ4QJADw03ISo=;
-        b=cn3Mc4V8uG9J2ESKKcW1aUgC7t/BjCWz9DvhjfPZdPgiLBzm5kkp31LgNkB8PadoYQ
-         9aTS/Xyp+bTjNZUCAIOskGZIenRi/2vAzs5dwbyqNm+deLEMgG1subtedNWo+88Z/Gnj
-         Oc5J/2Y6p048zfzix5qxPTl7duIblO0687B1bbXSX9vvLHkHXqo/WZs6bIYseNHo/YlS
-         IWxN3EHWwVa0ZBzcG0j5imTOrBiklBu17tIrnQ9ZVX4TYxRYFW/kcXljKyvCdkPvjksP
-         yHZef9LF2tZh0Zm7x+LGnFL37xD3mB8KWhAT6HeL+2easJt/Z8FvfSkmQFRvrBDgS46i
-         adZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720180306; x=1720785106;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+QojLwX8k68lmn9KlieWzohao5qbJAQQ4QJADw03ISo=;
-        b=tRQFa5pFYJQ5RWQhlZ26kCFe6UXIH8HPFQ76OYDjR0jBG15UCU7WFZEuT1swBa6ujF
-         yQ09nr0GoqG87ER3Ae8nRCXIrWrR6Cg2qLvJ8SEx9R9mplhlhXgxRvxTz8AmYr4+9rIX
-         gHbjt+cWvMD9v5MOhb/8TcmUsDm+LiLHlTr2bIYkDxy75VEQBVd8mIvTvBdWUNE2sayO
-         4OCfNdb+pCyx+eR4z9fXCaYg5agPEa1JpmaRun70eeT7uVrso+Uwiev/S/SYjU395O03
-         eHRNDALYYfznOfZKyqsj1Rs9RBeD3XrfsfYOxAAuYtEuCU+fugurkqo52WYrGlqFpWiY
-         op8g==
-X-Forwarded-Encrypted: i=1; AJvYcCVS6nCOSqOSxEIC5faWzLELtL5XgthH1pfP3x1R1S9R316B3d0QTChLgUbJBJasm3Lf+g5Ae2yvXilF91WVF5+qIHg7NqDfqoGus/kv+g==
-X-Gm-Message-State: AOJu0YwcNU0pUKnwuZdx82p/GRvSBMUipf3uNvmfZi0R3LqpudeLi13j
-	zBTPXjflPQHjTt83DAarWksHKgK/u6Oo30+fVBZQkHfcEnltLhPgb0/+I1snNFk=
-X-Google-Smtp-Source: AGHT+IFHA1gnQKRQ18iPmWbS0NPjG9TbNdQHs95PiwC+5AeAhU74MhAe3PLIFlm88Q5NStc5UX6U7A==
-X-Received: by 2002:a17:906:4751:b0:a74:e717:4259 with SMTP id a640c23a62f3a-a77ba48db88mr281324166b.41.1720180306439;
-        Fri, 05 Jul 2024 04:51:46 -0700 (PDT)
-Received: from localhost.localdomain ([91.216.213.152])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72ab06531fsm674762866b.100.2024.07.05.04.51.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jul 2024 04:51:46 -0700 (PDT)
-From: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-To: miquel.raynal@bootlin.com
-Cc: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	stable@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Li Zetao <lizetao1@huawei.com>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [Patch v2] mtd: rawnand: lpx32xx: Fix dma_request_chan() error checks
-Date: Fri,  5 Jul 2024 13:51:35 +0200
-Message-Id: <20240705115139.126522-1-piotr.wojtaszczyk@timesys.com>
-X-Mailer: git-send-email 2.25.1
+	Fri, 05 Jul 2024 14:22:01 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id B9398CE10F6;
+	Fri,  5 Jul 2024 14:21:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02F71C116B1;
+	Fri,  5 Jul 2024 14:21:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720189314;
+	bh=Ii14oGG8TVlZ45csFGX+BROKWE2U6DZi++XTunUacY8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=QK5L66MN8zZIANHUePEyqpxGu06N6dHrCpYxDUXzjSpE14AOatITc6Whx6AD5vE5o
+	 sEYHwKMzENpopE7sO183rgdLLzxrjhQmjMzntKY8YcpEP4v7mTPPaGlpZIyOWHLNll
+	 czjrxijeGkoL3f15Mscek5cfwztzQCg2z06Vi4hTwk397FoqzJJCvquE3X7B/vzkne
+	 V0s4oR4hQHh81KbklLr3vHjJ7yuVQL1uNoWEfqgTd1mBM902K9lkAEfpm8yY9tyXcc
+	 KYVOec0G3wEnWpYnxn/ZZMkV/tZfUS4A7we7OCMjBBsmK80R7gcQDdmp+LOObY3OJt
+	 aw5LwlwhHdwAQ==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Subject: [GIT PULL] mtd: spi-nor: changes for v6.11
+Date: Fri, 05 Jul 2024 16:21:51 +0200
+Message-ID: <mafs0bk3bor5s.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240705_045148_304749_8B430EDB 
-X-CRM114-Status: GOOD (  12.09  )
+X-CRM114-CacheID: sfid-20240705_072159_694928_023881AB 
+X-CRM114-Status: GOOD (  10.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,51 +73,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The dma_request_chan() returns error pointer in case of error, while
-dma_request_channel() returns NULL in case of error therefore different
-error checks are needed for the two.
+Hi,
 
-Fixes: 7326d3fb1ee3 ("mtd: rawnand: lpx32xx: Request DMA channels using DT entries")
-Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-Cc: stable@vger.kernel.org
----
-Changes v2:
- - Corrected 'Fixes' tag
- - add Cc: stable 
+Here are the SPI NOR changes for v6.11.
 
- drivers/mtd/nand/raw/lpc32xx_mlc.c | 2 +-
- drivers/mtd/nand/raw/lpc32xx_slc.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Regards,
+Pratyush Yadav
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 92cebe871bb4..b9c3adc54c01 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -575,7 +575,7 @@ static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
- 	dma_cap_mask_t mask;
- 
- 	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
--	if (!host->dma_chan) {
-+	if (IS_ERR(host->dma_chan)) {
- 		/* fallback to request using platform data */
- 		if (!host->pdata || !host->pdata->dma_filter) {
- 			dev_err(mtd->dev.parent, "no DMA platform data\n");
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 3b7e3d259785..ade971e4cc3b 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -722,7 +722,7 @@ static int lpc32xx_nand_dma_setup(struct lpc32xx_nand_host *host)
- 	dma_cap_mask_t mask;
- 
- 	host->dma_chan = dma_request_chan(mtd->dev.parent, "rx-tx");
--	if (!host->dma_chan) {
-+	if (IS_ERR(host->dma_chan)) {
- 		/* fallback to request using platform data */
- 		if (!host->pdata || !host->pdata->dma_filter) {
- 			dev_err(mtd->dev.parent, "no DMA platform data\n");
--- 
-2.25.1
+The following changes since commit 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0:
 
+  Linux 6.10-rc1 (2024-05-26 15:20:12 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-6.11
+
+for you to fetch changes up to d35df77707bf5ae1221b5ba1c8a88cf4fcdd4901:
+
+  mtd: spi-nor: winbond: fix w25q128 regression (2024-06-21 17:49:36 +0200)
+
+----------------------------------------------------------------
+SPI NOR changes for 6.11
+
+Notable changes:
+
+- Drop support for Xilinx S3AN flashes. These flashes are for the very
+  old Xilinx Spartan 3 FPGAs and they need some awkward code in the core
+  to support. Drop support for these flashes, along with the special
+  handling we needed for them in the core like non-power-of-2 page size
+  handling and the .setup() callback.
+
+- Fix regression for old w25q128 flashes without SFDP tables. Commit
+  83e824a4a595 ("mtd: spi-nor: Correct flags for Winbond w25q128")
+  dropped support for such devices under the assumption that they aren't
+  being used anymore. Users have now surfaced [0] so fix the regression
+  by supporting both kind of devices.
+
+- Core cleanups including removal of SPI_NOR_NO_FR flag and
+  simplification of spi_nor_get_flash_info().
+
+[0] https://lore.kernel.org/r/CALxbwRo_-9CaJmt7r7ELgu+vOcgk=xZcGHobnKf=oT2=u4d4aA@mail.gmail.com/
+
+----------------------------------------------------------------
+Michael Walle (6):
+      mtd: spi-nor: Remove support for Xilinx S3AN flashes
+      mtd: spi-nor: get rid of non-power-of-2 page size handling
+      mtd: spi-nor: remove .setup() callback
+      mtd: spi-nor: get rid of SPI_NOR_NO_FR
+      mtd: spi-nor: simplify spi_nor_get_flash_info()
+      mtd: spi-nor: winbond: fix w25q128 regression
+
+ drivers/mtd/spi-nor/Makefile   |   1 -
+ drivers/mtd/spi-nor/core.c     | 206 ++++++++++++++++-------------------------
+ drivers/mtd/spi-nor/core.h     |  12 ---
+ drivers/mtd/spi-nor/everspin.c |  19 +++-
+ drivers/mtd/spi-nor/winbond.c  |   2 +
+ drivers/mtd/spi-nor/xilinx.c   | 169 ---------------------------------
+ 6 files changed, 98 insertions(+), 311 deletions(-)
+ delete mode 100644 drivers/mtd/spi-nor/xilinx.c
 
 ______________________________________________________
 Linux MTD discussion mailing list
