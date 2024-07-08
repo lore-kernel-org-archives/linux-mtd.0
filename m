@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD67EC3DA42
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jul 2024 07:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 412FAC3DA45
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jul 2024 07:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vW36DHrKKss87CVJaiKhPRujZvtHR41n4UKD4vDSb7Q=; b=ykLAYKAlyX4DfC
-	d1hORdXl2Bq7zgSxWsnqjSH31kWr4rposkRr4pEW+FohKpwj8ibhyWOolT4uMKkDM4R5pxPpvUeMI
-	wdzVa8N5q0nLz4i/7NsFAwbsyWgWVYrs0K798KdCfhzfELIqy9eZ3TRi01rwEqo2ktkiBeYMnOtsZ
-	hy0XKHw6hVOe85nNhn3apsfmDpnn+0rxVMoZfWrXehrQh6qD4bMtyH8TKp77jdzIF/rz9txPUsnOb
-	ey+9E/k4pSObE/05EZ2XchpQ2PcHTrzbEkAAgGOAlcpOOnmW5TfnuPv/dVPgnPakuQGTWkMz9PqHc
-	rjsUX6O1P3ONIYoHUhNg==;
+	List-Owner; bh=DfJcDMMhgYZ9VmM5cFsOEOp0hKf1tV488f0kq6IoWeQ=; b=xIB8wr4gTFbAbo
+	IbHO8PZs7VxO37KVF+zp0gJbxG/QZdwJ4vmnvQ4iYAqiFTwopy90h0eHiUGtRfUG3lknNRKMbXKq2
+	KusfobXy3DmwfvyTvBj8uYz9nY2ciVAAQwXuKK4QpopzBW+Y1/r5p7gxuiVA7GHtUjEL+bVaqeTrL
+	LK9pV3+MJ+YTgFxvGv07ZGZaekuEbTAwykKIT7huL99B9OcEV4eNbVf9f2qYjW0eatIzua0J+OkNE
+	cEOphgHvDQpusZzK5XKKQLvTXFKLHfqBBvWq4rqsjZyxuEWpHccEcsqC8dbSlFW+TYOdwLVXVt/DI
+	1rJO8c0zUdW8x1b0l0/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sQiNw-00000002xbq-3kPC;
-	Mon, 08 Jul 2024 07:02:04 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1sQiNy-00000002xce-2LDG;
+	Mon, 08 Jul 2024 07:02:06 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sQiNh-00000002xXj-0zQc;
-	Mon, 08 Jul 2024 07:01:50 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 68E841C0002;
-	Mon,  8 Jul 2024 07:01:45 +0000 (UTC)
+	id 1sQiNo-00000002xYj-3s9y
+	for linux-mtd@lists.infradead.org;
+	Mon, 08 Jul 2024 07:01:58 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4B88F20007;
+	Mon,  8 Jul 2024 07:01:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1720422106;
+	t=1720422114;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UFyhUQfDWH2BkI3PZl+BB8bptYesbh+J9oIuRZIQ3+Y=;
-	b=csnDubFDvkPISyceGvrqdlxbuax7LfjnBvSwBCZIVZ2Bxzx1nbRCMLzV2cfRFTcvcgoMoS
-	160VjK8L2pogbqOcIoH0+rZvjxx/z70M36+8OWVwh6ivxior4c7pEnySrkrvSz7RnPbeRk
-	a1LKS2zVqAGX/eTJU93s5cv9nHVsjHnGMMl318U/tWVu9Ak6GLx9qvgbRrmk9eiH0Q4+4B
-	X8Z0VqjFKuAFq2zt3P4B2xglPp/FfNB/dfxLDEOvpwwr7gO6+cwuVlCKaxlTjj3+cIxTZv
-	qTbrBXbZFRXl2IbKTCT8wsVqZ7oBfY4OggevI9HURM4Zo4B+shwE78DqIqRCBg==
+	bh=X+I3UPmsCQqa7VNrWRNTEA+DBLGE5VNKe5lzl9UQuF8=;
+	b=LyfU1B3BwJ8dUJv9SKTWE7K8enxz23xs4syYwBby3SGdAvHwr0StbteCkbeXIllsLQYpte
+	4u477vOwS8ZThtOMDyq5fAPlPg3Z0a0nt8Mqlpw1VEBtMwcih3NbSXS65i3RWaYWzcykAM
+	i8uZrb7JLuWAucR/cdjkbOe3H1CM5HkMxM+3UVfBDTQ3lXcRUxSU82DZXboU/Rc5MK71G1
+	j1WrC15+260BAOn6K47cOErVHrTPcl8NHT888iYXg7uQUt7u3wfDXjsRhfI9H016U4Wayh
+	RmTg1iM3GA7k79E1zIoopNUif5EfdZkcbe0itEXx54XTp3erV6Hsosen48vS6Q==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>,
-	miquel.raynal@bootlin.com
-Cc: stable@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Li Zetao <lizetao1@huawei.com>,
+To: Cheng Ming Lin <linchengming884@gmail.com>,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com
+Cc: richard@nod.at,
 	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2] mtd: rawnand: lpx32xx: Fix dma_request_chan() error checks
-Date: Mon,  8 Jul 2024 09:01:44 +0200
-Message-Id: <20240708070144.12186-1-miquel.raynal@bootlin.com>
+	linux-kernel@vger.kernel.org,
+	alvinzhou@mxic.com.tw,
+	leoyu@mxic.com.tw,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH v2 1/2] mtd: spinand: macronix: Add support for reading Device ID 2
+Date: Mon,  8 Jul 2024 09:01:51 +0200
+Message-Id: <20240708070151.12247-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240705115139.126522-1-piotr.wojtaszczyk@timesys.com>
+In-Reply-To: <20240704024839.241101-2-linchengming884@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'5f713030117a12b0239e604c163e69af58bb0b63'
+X-linux-mtd-patch-commit: b'20dc4c711a2a3260f02f15e1cdd4f34cc38e8b4f'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240708_000149_448587_CA4DE1C7 
-X-CRM114-Status: UNSURE (   6.43  )
+X-CRM114-CacheID: sfid-20240708_000157_125071_085552A5 
+X-CRM114-Status: UNSURE (   8.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,14 +81,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-07-05 at 11:51:35 UTC, Piotr Wojtaszczyk wrote:
-> The dma_request_chan() returns error pointer in case of error, while
-> dma_request_channel() returns NULL in case of error therefore different
-> error checks are needed for the two.
+On Thu, 2024-07-04 at 02:48:38 UTC, Cheng Ming Lin wrote:
+> From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 > 
-> Fixes: 7326d3fb1ee3 ("mtd: rawnand: lpx32xx: Request DMA channels using DT entries")
-> Signed-off-by: Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
-> Cc: stable@vger.kernel.org
+> Adding the Device ID 2 on Macronix serial NAND flash.
+> 
+> When the number of flashes increases, we need to utilize
+> Device ID 2 to distinguish between different flashes.
+> 
+> These flashes have been validated on Xilinx zynq-picozed
+> board which included Macronix SPI Host.
+> 
+> Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
