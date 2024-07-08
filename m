@@ -4,61 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B027AC30653
-	for <linux-mtd@archiver.kernel.org>; Sun,  7 Jul 2024 14:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 678B1C3DA42
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Jul 2024 06:24:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OVkkgF6ua4CotTyI9IzeATHwP1hMZHGEDMCVZzA02qc=; b=HHAqeNaS5tdlYn
-	qkK1Ak7zHtEcgJotrJ28NwFFu1k++2rOLOVOE+7dozEi0Rq817gTF8NgVeC2A626rpOr2Cwp7dXlz
-	fytNwIBjSj5v953Flun7byyaaWd+6mrNhZbPUoeFg36lolkV5tzem5PJA3GIaCHP9xiL5xBCZn+Fh
-	3LbWyX3ZGTz9M4oHgUprVOoClvRltNPFdTWJwpgiXDBy4s5XSaO05rZiSAU3WFjp8oY0aeMKlIGUd
-	u7GLouGTQDPpkeyt6REjXfyCk6BGnNvREpS72W4F/uh2J253u9lH7Qy+Dn34jDoWpT3XmqEwjeYAY
-	17S3NHqQuG+LTJQV9f2g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=u2QzNRP2gSY65FRNtOXib5/pPfTDEXaWwcU2f6+Q9gw=; b=LU8VhiPlw/EOjIRt6H6ospQJXN
+	2zPQ2ziDSzPiJ/USJQil/tQsDpOw6O8OsKywWPtbLylAh282W48eSRgYWhpKrBMt3qEysG6HNgHsy
+	8syuI50tZQQ9r5GVgZtrxbLUHTqwpNFEyDvPXAOMEIAYrW3Sp9hKTTXOMvQqjgXoorDcGW6N5Vi07
+	24fGF3LmAOwNEmwMGddAWYMwpMbuzLR55mtoI0DdPkG8GPW4CnEHkoGK+eKPTOIfhuqZ69d4shLnK
+	rnrK4QE63O/dOUg+Rov3Wc9gBqccNnMJneH8HGqA1Bmi3M5ezVkpJn5B+3G5isC3c7p634cyX6lmx
+	au0ZqQSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sQTH1-00000001u0p-3nPy;
-	Sun, 07 Jul 2024 14:53:55 +0000
-Received: from domac.alu.hr ([161.53.235.3])
+	id 1sQhnk-00000002ryM-4Aey;
+	Mon, 08 Jul 2024 06:24:40 +0000
+Received: from mxout70.expurgate.net ([91.198.224.70])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sQTGz-00000001u0J-0V35
+	id 1sQhng-00000002rxS-2YA5
 	for linux-mtd@lists.infradead.org;
-	Sun, 07 Jul 2024 14:53:54 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 8C1EE6017E;
-	Sun,  7 Jul 2024 16:53:51 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id e_e-a6ribevo; Sun,  7 Jul 2024 16:53:49 +0200 (CEST)
-Received: from [192.168.178.20] (dh207-40-28.xnet.hr [88.207.40.28])
-	by domac.alu.hr (Postfix) with ESMTPSA id DEC556015E;
-	Sun,  7 Jul 2024 16:53:39 +0200 (CEST)
-Message-ID: <ada86a07-f19d-45f0-b839-21eb2395d41b@gmail.com>
-Date: Sun, 7 Jul 2024 16:53:39 +0200
+	Mon, 08 Jul 2024 06:24:38 +0000
+Received: from [127.0.0.1] (helo=localhost)
+	by relay.expurgate.net with smtp (Exim 4.92)
+	(envelope-from <prvs=0933383879=ms@dev.tdt.de>)
+	id 1sQhnW-00Ettk-5Q; Mon, 08 Jul 2024 08:24:26 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+	by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ms@dev.tdt.de>)
+	id 1sQhnU-008AJd-4H; Mon, 08 Jul 2024 08:24:24 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+	by securemail.tdt.de (Postfix) with ESMTP id C90D5240053;
+	Mon,  8 Jul 2024 08:24:23 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+	by securemail.tdt.de (Postfix) with ESMTP id 38FB4240050;
+	Mon,  8 Jul 2024 08:24:23 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+	by mail.dev.tdt.de (Postfix) with ESMTP id 70A2A34AE0;
+	Mon,  8 Jul 2024 08:24:22 +0200 (CEST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?Q?Re=3A_=5BPROBLEM_linux-next=5D_drivers/mtd/mtdpart=2Ec=3A?=
- =?UTF-8?B?NjkzOjM0OiBlcnJvcjog4oCYJXPigJkgZGlyZWN0aXZlIGFyZ3VtZW50IGlzIG51?=
- =?UTF-8?Q?ll?=
-From: Mirsad Todorovac <mtodorovac69@gmail.com>
-To: Jonas Gorski <jonas.gorski@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-References: <47e0483d-6e3d-43a8-9273-25278a4a74b9@gmail.com>
- <0c095098-4b3e-481b-b866-29cacb9f165d@milecki.pl>
- <CAOiHx=nmcf1mRy_i9vUDNtqOZTQ=PFWY8MGEV1FZfgt=GHqj5A@mail.gmail.com>
- <f9818a25-0604-49a8-af06-3dc7de006377@gmail.com>
-Content-Language: en-US
-In-Reply-To: <f9818a25-0604-49a8-af06-3dc7de006377@gmail.com>
+Date: Mon, 08 Jul 2024 08:24:22 +0200
+From: Martin Schiller <ms@dev.tdt.de>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linus.walleij@linaro.org, nico@fluxnic.net, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] mtd: cfi_cmdset_0001: Disable write buffer
+ functions if FORCE_WORD_WRITE is 1
+Organization: TDT AG
+In-Reply-To: <20240707094302.784948-2-olek2@wp.pl>
+References: <20240707094302.784948-1-olek2@wp.pl>
+ <20240707094302.784948-2-olek2@wp.pl>
+Message-ID: <0135dec8e53837912712cb08ba2ddca7@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-purgate: clean
+X-purgate-type: clean
+X-purgate-ID: 151534::1720419864-67452D95-A9D6B882/0/0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240707_075353_493188_3B2D4DAF 
-X-CRM114-Status: GOOD (  17.23  )
+X-CRM114-CacheID: sfid-20240707_232436_829226_64AFF908 
+X-CRM114-Status: GOOD (  19.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,121 +78,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiA3LzcvMjQgMTY6MDksIE1pcnNhZCBUb2Rvcm92YWMgd3JvdGU6Cj4gCj4gCj4gT24g
-Ny83LzI0IDEwOjEyLCBKb25hcyBHb3Jza2kgd3JvdGU6Cj4+IE9uIFN1biwgNyBKdWwgMjAyNCBh
-dCAwOTozOCwgUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPiB3cm90ZToKPj4+Cj4+
-PiBTb21lIG1vcmUgZGVzY3JpcHRpdmUgc3ViamVjdCB3b3VsZCBiZSBuaWNlIDopCj4+Pgo+Pj4K
-Pj4+IE9uIDcuMDcuMjAyNCAwMjoxMCwgTWlyc2FkIFRvZG9yb3ZhYyB3cm90ZToKPj4+PiBJbiBm
-aWxlIGluY2x1ZGVkIGZyb20gLi9pbmNsdWRlL2FzbS1nZW5lcmljL2J1Zy5oOjIyLAo+Pj4+ICAg
-ICAgICAgICAgICAgICAgIGZyb20gLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9idWcuaDo4NywKPj4+
-PiAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51eC9idWcuaDo1LAo+Pj4+ICAg
-ICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L2ZvcnRpZnktc3RyaW5nLmg6NiwK
-Pj4+PiAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51eC9zdHJpbmcuaDozNzQs
-Cj4+Pj4gICAgICAgICAgICAgICAgICAgZnJvbSAuL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BhZ2Vf
-MzIuaDoxOCwKPj4+PiAgICAgICAgICAgICAgICAgICBmcm9tIC4vYXJjaC94ODYvaW5jbHVkZS9h
-c20vcGFnZS5oOjE0LAo+Pj4+ICAgICAgICAgICAgICAgICAgIGZyb20gLi9hcmNoL3g4Ni9pbmNs
-dWRlL2FzbS9wcm9jZXNzb3IuaDoyMCwKPj4+PiAgICAgICAgICAgICAgICAgICBmcm9tIC4vYXJj
-aC94ODYvaW5jbHVkZS9hc20vdGltZXguaDo1LAo+Pj4+ICAgICAgICAgICAgICAgICAgIGZyb20g
-Li9pbmNsdWRlL2xpbnV4L3RpbWV4Lmg6NjcsCj4+Pj4gICAgICAgICAgICAgICAgICAgZnJvbSAu
-L2luY2x1ZGUvbGludXgvdGltZTMyLmg6MTMsCj4+Pj4gICAgICAgICAgICAgICAgICAgZnJvbSAu
-L2luY2x1ZGUvbGludXgvdGltZS5oOjYwLAo+Pj4+ICAgICAgICAgICAgICAgICAgIGZyb20gLi9p
-bmNsdWRlL2xpbnV4L3N0YXQuaDoxOSwKPj4+PiAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5j
-bHVkZS9saW51eC9tb2R1bGUuaDoxMywKPj4+PiAgICAgICAgICAgICAgICAgICBmcm9tIGRyaXZl
-cnMvbXRkL210ZHBhcnQuYzoxMDoKPj4+PiBkcml2ZXJzL210ZC9tdGRwYXJ0LmM6IEluIGZ1bmN0
-aW9uIOKAmHBhcnNlX210ZF9wYXJ0aXRpb25z4oCZOgo+Pj4+IGRyaXZlcnMvbXRkL210ZHBhcnQu
-Yzo2OTM6MzQ6IGVycm9yOiDigJglc+KAmSBkaXJlY3RpdmUgYXJndW1lbnQgaXMgbnVsbCBbLVdl
-cnJvcj1mb3JtYXQtb3ZlcmZsb3c9XQo+Pj4+ICAgIDY5MyB8ICAgICAgICAgICAgICAgICAgICAg
-ICAgIHByX2RlYnVnKCIlczogZ290IHBhcnNlciAlc1xuIiwgbWFzdGVyLT5uYW1lLAo+Pj4+ICAg
-ICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+
-fn5+fgo+Pj4+IC4vaW5jbHVkZS9saW51eC9wcmludGsuaDozNzY6MjE6IG5vdGU6IGluIGRlZmlu
-aXRpb24gb2YgbWFjcm8g4oCYcHJfZm104oCZCj4+Pj4gICAgMzc2IHwgI2RlZmluZSBwcl9mbXQo
-Zm10KSBmbXQKPj4+PiAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgIF5+fgo+Pj4+IC4vaW5j
-bHVkZS9saW51eC9keW5hbWljX2RlYnVnLmg6MjQ4Ojk6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBt
-YWNybyDigJhfX2R5bmFtaWNfZnVuY19jYWxsX2Nsc+KAmQo+Pj4+ICAgIDI0OCB8ICAgICAgICAg
-X19keW5hbWljX2Z1bmNfY2FsbF9jbHMoX19VTklRVUVfSUQoZGRlYnVnKSwgY2xzLCBmbXQsIGZ1
-bmMsICMjX19WQV9BUkdTX18pCj4+Pj4gICAgICAgIHwgICAgICAgICBefn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fgo+Pj4+IC4vaW5jbHVkZS9saW51eC9keW5hbWljX2RlYnVnLmg6MjUwOjk6IG5vdGU6
-IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhfZHluYW1pY19mdW5jX2NhbGxfY2xz4oCZCj4+Pj4g
-ICAgMjUwIHwgICAgICAgICBfZHluYW1pY19mdW5jX2NhbGxfY2xzKF9EUFJJTlRLX0NMQVNTX0RG
-TFQsIGZtdCwgZnVuYywgIyNfX1ZBX0FSR1NfXykKPj4+PiAgICAgICAgfCAgICAgICAgIF5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn4KPj4+PiAuL2luY2x1ZGUvbGludXgvZHluYW1pY19kZWJ1Zy5oOjI2
-OTo5OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYX2R5bmFtaWNfZnVuY19jYWxs4oCZ
-Cj4+Pj4gICAgMjY5IHwgICAgICAgICBfZHluYW1pY19mdW5jX2NhbGwoZm10LCBfX2R5bmFtaWNf
-cHJfZGVidWcsICAgICAgICAgICAgIFwKPj4+PiAgICAgICAgfCAgICAgICAgIF5+fn5+fn5+fn5+
-fn5+fn5+fgo+Pj4+IC4vaW5jbHVkZS9saW51eC9wcmludGsuaDo2MTA6OTogbm90ZTogaW4gZXhw
-YW5zaW9uIG9mIG1hY3JvIOKAmGR5bmFtaWNfcHJfZGVidWfigJkKPj4+PiAgICA2MTAgfCAgICAg
-ICAgIGR5bmFtaWNfcHJfZGVidWcoZm10LCAjI19fVkFfQVJHU19fKQo+Pj4+ICAgICAgICB8ICAg
-ICAgICAgXn5+fn5+fn5+fn5+fn5+fgo+Pj4+IGRyaXZlcnMvbXRkL210ZHBhcnQuYzo2OTM6MjU6
-IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhwcl9kZWJ1Z+KAmQo+Pj4+ICAgIDY5MyB8
-ICAgICAgICAgICAgICAgICAgICAgICAgIHByX2RlYnVnKCIlczogZ290IHBhcnNlciAlc1xuIiwg
-bWFzdGVyLT5uYW1lLAo+Pj4+ICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+
-fn5+Cj4+Pj4gZHJpdmVycy9tdGQvbXRkcGFydC5jOjY5Mzo1MDogbm90ZTogZm9ybWF0IHN0cmlu
-ZyBpcyBkZWZpbmVkIGhlcmUKPj4+PiAgICA2OTMgfCAgICAgICAgICAgICAgICAgICAgICAgICBw
-cl9kZWJ1ZygiJXM6IGdvdCBwYXJzZXIgJXNcbiIsIG1hc3Rlci0+bmFtZSwKPj4+PiAgICAgICAg
-fCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn4KPj4+
-Pgo+Pj4+IE9mZmVuZGluZyBjb21taXQgaXMgNWI2NDRhYTAxMmY2Ny4KPj4+Cj4+PiBBY3R1YWxs
-eSBpdCBnb2VzIGJhY2sgdG8gMjAxNSB0byB0aGUgY29tbWl0IDhlMmM5OTJiNTlmYyAoIm10ZDog
-bXRkcGFydDogYWRkIGRlYnVnIHByaW50cyB0byBwYXJ0aXRpb24gcGFyc2VyLiIpLgo+Pj4KPj4+
-Cj4+Pj4gUHJvcG9zZWQgbm9uLWludHJ1c2l2ZSBmaXggcmVzb2x2ZXMgdGhlIHdhcm5pbmcvZXJy
-b3IsIGJ1dCBJIGNvdWxkIG5vdCB0ZXN0IHRoZSBjb2RlLgo+Pj4+IChJIGRvbid0IGhhdmUgdGhl
-IHBoeXNpY2FsIGRldmljZS4pCj4+Pj4KPj4+PiAtLS0tLS0tLS0tLS0tLS0tLT48LS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL210ZHBhcnQuYyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYwo+Pj4+IGluZGV4IDY4MTFh
-NzE0MzQ5ZC4uODE2NjVkNjdlZDJkIDEwMDY0NAo+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL210ZHBh
-cnQuYwo+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYwo+Pj4+IEBAIC02OTEsNyArNjkx
-LDcgQEAgaW50IHBhcnNlX210ZF9wYXJ0aXRpb25zKHN0cnVjdCBtdGRfaW5mbyAqbWFzdGVyLCBj
-b25zdCBjaGFyICpjb25zdCAqdHlwZXMsCj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgIGlm
-ICghcGFyc2VyICYmICFyZXF1ZXN0X21vZHVsZSgiJXMiLCAqdHlwZXMpKQo+Pj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHBhcnNlciA9IG10ZF9wYXJ0X3BhcnNlcl9nZXQoKnR5
-cGVzKTsKPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgcHJfZGVidWcoIiVzOiBnb3QgcGFy
-c2VyICVzXG4iLCBtYXN0ZXItPm5hbWUsCj4+Pj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBwYXJzZXIgPyBwYXJzZXItPm5hbWUgOiBOVUxMKTsKPj4+PiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHBhcnNlciA/IHBhcnNlci0+bmFtZSA6ICIobnVsbCIpKTsKPj4+PiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFwYXJzZXIpCj4+Pj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgY29udGludWU7Cj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAg
-IHJldCA9IG10ZF9wYXJ0X2RvX3BhcnNlKHBhcnNlciwgbWFzdGVyLCAmcHBhcnRzLCBkYXRhKTsK
-Pj4+Pgo+Pj4+Cj4+Pj4gSG9wZSB0aGlzIGhlbHBzLgo+Pj4KPj4+IEknZCBzYXkgaXQncyBzaW1w
-bGUgZW5vdWdoIHRvIHNlbmQgcGF0Y2ggd2l0aG91dCBhY3R1YWwgaHcgdGVzdGluZy4KPj4KPj4g
-VGhvdWdoIHRoZSBrZXJuZWwncyB2c3ByaW50ZiB3aWxsIGFscmVhZHkgaGFuZGxlIE5VTEwgcG9p
-bnRlcnMgYW5kCj4+IHByaW50ICIobnVsbCkiIFsxXSwgc28gSSdtIG5vdCBzdXJlIGlmIHRoaXMg
-aXMgYW4gYWN0dWFsIGltcHJvdmVtZW50Lgo+Pgo+PiBUaGUgb25seSB3YXkgdGhpcyBjYW4gYmUg
-TlVMTCB0aG91Z2ggaXMgaWYgdGhlIHJlcXVlc3RfbW9kdWxlKCkKPj4gZmFpbGVkLCBzbyBtYXli
-ZSBhIHByb3BlciBlcnJvciBtZXNzYWdlIHdvdWxkIGJlIGJldHRlciBoZXJlIGluc3RlYWQKPj4g
-b2YgYW4gb2JzY3VyZSAiZ290IHBhcnNlciAobnVsbCkiLiBZb3UgZG9uJ3QgZXZlbiBrbm93IHdo
-aWNoIHR5cGUKPj4gd2Fzbid0IGF2YWlsYWJsZS4gRS5nLiBwcl9kZWJ1ZygiJTogbm8gcGFyc2Vy
-IGZvciB0eXBlICVzCj4+IGF2YWlsYWJsZVxuIiwgbWFzdGVyLT5uYW1lLCAqdHlwZXMpLgo+IAo+
-IEFncmVlZC4gWW91ciBwcm9wb3NhbCBpcyBtdWNoIG1vcmUgZGVzY3JpcHRpdmUuCj4gCj4gV2ls
-bCB5b3UgZG8gdGhpcyBwYXRjaCBvciBzaG91bGQgSSBhbmQgcHV0IGEgU3VnZ2VzdGVkLWJ5OiA/
-Cj4gCj4gSG93ZXZlciwgSSB3b3VsZCBzbGVlcCBtdWNoIGJldHRlciBpZiB0aGlzIGlzIHRlc3Rl
-ZCBvbiBhY3R1YWwgaHcuIDotLwoKSXMgdGhpcyB3aGF0IHlvdSBoYWQgaW4gbWluZD8KCi0tLS0t
-LS0tLS0tLS0tLS0tPjwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmRpZmYgLS1naXQgYS9k
-cml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMKaW5kZXggNjgxMWE3
-MTQzNDlkLi5kZDAyNjkwYWJmM2EgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL210ZHBhcnQuYwor
-KysgYi9kcml2ZXJzL210ZC9tdGRwYXJ0LmMKQEAgLTY5MCw4ICs2OTAsMTIgQEAgaW50IHBhcnNl
-X210ZF9wYXJ0aXRpb25zKHN0cnVjdCBtdGRfaW5mbyAqbWFzdGVyLCBjb25zdCBjaGFyICpjb25z
-dCAqdHlwZXMsCiAgICAgICAgICAgICAgICAgICAgICAgIHBhcnNlciA9IG10ZF9wYXJ0X3BhcnNl
-cl9nZXQoKnR5cGVzKTsKICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFwYXJzZXIgJiYgIXJl
-cXVlc3RfbW9kdWxlKCIlcyIsICp0eXBlcykpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgcGFyc2VyID0gbXRkX3BhcnRfcGFyc2VyX2dldCgqdHlwZXMpOwotICAgICAgICAgICAgICAg
-ICAgICAgICBwcl9kZWJ1ZygiJXM6IGdvdCBwYXJzZXIgJXNcbiIsIG1hc3Rlci0+bmFtZSwKLSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYXJzZXIgPyBwYXJzZXItPm5hbWUgOiBOVUxM
-KTsKKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFwYXJzZXIpCisgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgcHJfZGVidWcoIiVzOiBubyBwYXJzZXIgYXZhaWxhYmxlIGZvciB0eXBl
-ICVzXG4iLAorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWFzdGVyLT5u
-YW1lLCAqdHlwZXMpOworICAgICAgICAgICAgICAgICAgICAgICBlbHNlCisgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgcHJfZGVidWcoIiVzOiBnb3QgcGFyc2VyICVzXG4iLCBtYXN0ZXIt
-Pm5hbWUsCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYXJzZXItPm5h
-bWUpOwogICAgICAgICAgICAgICAgICAgICAgICBpZiAoIXBhcnNlcikKICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBjb250aW51ZTsKICAgICAgICAgICAgICAgICAgICAgICAgcmV0ID0g
-bXRkX3BhcnRfZG9fcGFyc2UocGFyc2VyLCBtYXN0ZXIsICZwcGFydHMsIGRhdGEpOwotLQoKQmVz
-dCByZWdhcmRzLApNaXJzYWQgVG9kb3JvdmFjCgo+IEJlc3QgcmVnYXJkcywKPiBNaXJzYWQgVG9k
-b3JvdmFjCj4gCj4+IFsxXSBodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC9sYXRlc3Qv
-c291cmNlL2xpYi92c3ByaW50Zi5jI0w2OTYKPj4KPj4gQmVzdCBSZWdhcmRzLAo+PiBKb25hcwoK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 2024-07-07 11:43, Aleksander Jan Bajkowski wrote:
+> Some write buffer functions are not used when FORCE_WORD_WRITE is set 
+> to 1.
+> So the compile warning messages are output if FORCE_WORD_WRITE is 1. To
+> resolve this disable the write buffer functions if FORCE_WORD_WRITE is 
+> 1.
+> 
+> This is similar fix to: 557c759036fc3976a5358cef23e65a263853b93f.
+> 
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c
+> b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index c10693ba265b..5404637e54e2 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -62,8 +62,10 @@
+> 
+>  static int cfi_intelext_read (struct mtd_info *, loff_t, size_t,
+> size_t *, u_char *);
+>  static int cfi_intelext_write_words(struct mtd_info *, loff_t,
+> size_t, size_t *, const u_char *);
+> +#if !FORCE_WORD_WRITE
+>  static int cfi_intelext_write_buffers(struct mtd_info *, loff_t,
+> size_t, size_t *, const u_char *);
+>  static int cfi_intelext_writev(struct mtd_info *, const struct kvec
+> *, unsigned long, loff_t, size_t *);
+> +#endif
+>  static int cfi_intelext_erase_varsize(struct mtd_info *, struct 
+> erase_info *);
+>  static void cfi_intelext_sync (struct mtd_info *);
+>  static int cfi_intelext_lock(struct mtd_info *mtd, loff_t ofs, 
+> uint64_t len);
+> @@ -305,6 +307,7 @@ static void fixup_use_point(struct mtd_info *mtd)
+>  	}
+>  }
+> 
+> +#if !FORCE_WORD_WRITE
+>  static void fixup_use_write_buffers(struct mtd_info *mtd)
+>  {
+>  	struct map_info *map = mtd->priv;
+> @@ -315,6 +318,7 @@ static void fixup_use_write_buffers(struct mtd_info 
+> *mtd)
+>  		mtd->_writev = cfi_intelext_writev;
+>  	}
+>  }
+> +#endif /* !FORCE_WORD_WRITE */
+> 
+>  /*
+>   * Some chips power-up with all sectors locked by default.
+> @@ -1720,6 +1724,7 @@ static int cfi_intelext_write_words (struct
+> mtd_info *mtd, loff_t to , size_t le
+>  }
+> 
+> 
+> +#if !FORCE_WORD_WRITE
+>  static int __xipram do_write_buffer(struct map_info *map, struct 
+> flchip *chip,
+>  				    unsigned long adr, const struct kvec **pvec,
+>  				    unsigned long *pvec_seek, int len)
+> @@ -1948,6 +1953,7 @@ static int cfi_intelext_write_buffers (struct
+> mtd_info *mtd, loff_t to,
+> 
+>  	return cfi_intelext_writev(mtd, &vec, 1, to, retlen);
+>  }
+> +#endif /* !FORCE_WORD_WRITE */
+> 
+>  static int __xipram do_erase_oneblock(struct map_info *map, struct
+> flchip *chip,
+>  				      unsigned long adr, int len, void *thunk)
+
+Thank you for sending this patch upstream.
+
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
