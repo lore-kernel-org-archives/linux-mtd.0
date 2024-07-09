@@ -4,108 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D805C2BD09
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2024 10:39:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ED67C3DA41
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Jul 2024 13:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rBGl1DXiRsD45J4VwBuCkNQvWr3Q7HXi8d9WbhjbuwQ=; b=XpnVbaUkXnTsmn
-	JYhMBGtFilxvEFP7ZkRtf5tJgODrnKnzivxsMYoE1sWgsoHq06SHICXPy5IVFlqVywxgu4tNjNSaz
-	SluiRBOGcRwEsAm3mNjcJIgOF6NFkrsqD8IDa9fknUd96q+x/r8Tea7okMQuVnDcem+pcbbr84um+
-	WTZcoerWhbxrGa9IhPKMxaPwGGya9AwMvmkESKd0ipVzAk1nFN6EKasrCTX0UJa9oLDvHbfV9+yMl
-	Yd1uu3HZ0+iNEuLJ9mqsAp/CG5j0yX+vqdLnF/ZtmVuXiqdFNIlnxGNIFwMvYhfrhRhGs4yUAtwrC
-	X9TbDhNRpQU575+XUIZQ==;
+	List-Owner; bh=+EG7qrtfJlMtSGsilEVpDLnSZgYI0eLBG8JnzdEI9Lc=; b=Q6fNpd+CgXz0Ck
+	D5amD2HpZ/0kgS1A9mKMWprtVnYewUYGxhtFuoOBLq6yxqb1+LP9OwSdgoORik009WamwvDb0t/a1
+	n0iNHVGbTBTzGLoaKzPK7AubJO2oIf0df6CX89iy9wsSZCoTLqo76PcbNOp/XsFYQcuRpTpdQmYWl
+	DhSxP9x3K8HKyIONdru1GREErOZyslx1ez1w3BOPdlkHS3yPdcvWpJE83Vq3N50ns2jBFy2nS1ST7
+	NtHmps1ZHokcsQPx6N+Glh4CZ0zwtXdRs4FpUfYJZUjLkU3GSX8+UAo+OWJE7tBVdJRIEJi3xBNWd
+	8KEvuHfdtpK6KZQMtP1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sR8Fy-00000006qNC-2VhN;
-	Tue, 09 Jul 2024 10:39:34 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1sRBNN-00000007TnH-0hjT;
+	Tue, 09 Jul 2024 13:59:25 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sR8Ft-00000006qMa-2l0q
-	for linux-mtd@lists.infradead.org;
-	Tue, 09 Jul 2024 10:39:33 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1sR8FD-0003rR-B5; Tue, 09 Jul 2024 12:38:47 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1sR8F7-008G9a-MD; Tue, 09 Jul 2024 12:38:41 +0200
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1sR8F7-006Uv6-1k;
-	Tue, 09 Jul 2024 12:38:41 +0200
-Date: Tue, 9 Jul 2024 12:38:41 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Maxime Ripard <mripard@kernel.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Russell King <linux@armlinux.org.uk>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>, Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-	imx@lists.linux.dev, linux-omap@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-	openbmc@lists.ozlabs.org, linuxppc-dev@lists.ozlabs.org,
-	linux-mips@vger.kernel.org, loongarch@lists.linux.dev
-Subject: Re: [PATCH 4/9] mtd: devices: add AT24 eeprom support
-Message-ID: <20240709103841.7x7n4hdtqrunyoc3@pengutronix.de>
-References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
- <20240701-b4-v6-10-topic-usbc-tcpci-v1-4-3fd5f4a193cc@pengutronix.de>
- <07b701a9-7b52-45b7-8dba-1c25d77cbf15@linaro.org>
- <mafs0ikxnykpr.fsf@kernel.org>
- <20240702-congenial-vigilant-boar-aeae44@houat>
- <mafs0ed8byj5z.fsf@kernel.org>
- <20240702-mighty-brilliant-eel-b0d9fa@houat>
- <20240708084440.70186564@xps-13>
- <20240709092214.omr7ccphdzdk7z7j@pengutronix.de>
- <20240709114302.3c604ef3@xps-13>
+	id 1sRBNG-00000007Tjq-3XvV;
+	Tue, 09 Jul 2024 13:59:21 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9170C61350;
+	Tue,  9 Jul 2024 13:59:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45DDFC4AF14;
+	Tue,  9 Jul 2024 13:59:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720533557;
+	bh=lOu/lBsHlc0T260klipFJ3eC1pkfxWiSQhwcmOXWsVc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=OMBqYN+uslxW2al/s9+gRrrahqmKqVwbxAMJYDtN8CWX81snbPwX15dfdtn8Pz0Bb
+	 +IovT5mqe8Psr+vz6GaBBc8o9RtQfYU6M4S+2Gx+NUUbpGA/HK3Z8knXugNYi3p6+U
+	 78qpneNgjjFgQAu76HOpnjtMqWno1vSL98EX4VAp2LPz4j5pT0E+/44KPIi32WwZPu
+	 tjNTXmY9EyO8A+MLcG62SSxJozhu8leZy8nJpLXGcyGV7LP2vcOGKrl4bJWU0XsFYT
+	 kF6bpZbhgYDo9J/AqwU/6ppB7azQQTD2wdfdk7DA15FIUWikczGZ3sHsmu1spFGXbn
+	 HqYrIHjyJ7isQ==
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4255fc43f1cso34426635e9.0;
+        Tue, 09 Jul 2024 06:59:17 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUXdlzu/Djfgp7yiwexP20/H9JIlSscHYxgbctMcmvZgewxEJ3i8wEk5pjSNW9iYw4lIS7d5uoKTd/5fz1m+v+1AE3IKS9mmAyx7Adne1lo2jPX+q8Ax5QzX4Oapa22QPtqEno6L9ubNf4cS5CHeXUfpad6
+X-Gm-Message-State: AOJu0YzzGgfiHJRkNUzQCM8fRYvPi/dcmXPkpRSMW+hbFLajJBcJEL6T
+	X+xZaQ1FfGi0nY4ItSpW03x5zzROA/cRvCyTrFH3115X8ymVyYHl6wbyIcVaSIhV0+bli5hqrf2
+	KScRvOzO4Law68uQht+8NRVWGSQ==
+X-Google-Smtp-Source: AGHT+IGMENhIgXoK8usdNd4oA5p2Oya5uy5180V2zPL6MX5LWDNpdwwwQ6+gVbUVi74o5Dj052FJFnlAxOODOirsQJA=
+X-Received: by 2002:a05:6512:3c8c:b0:52e:9951:7881 with SMTP id
+ 2adb3069b0e04-52eb99d20b8mr2282487e87.52.1720533535249; Tue, 09 Jul 2024
+ 06:58:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240709114302.3c604ef3@xps-13>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+References: <20240617-ep93xx-v10-0-662e640ed811@maquefel.me>
+ <CAHp75VfSC9gAD9ipeWRPdQOxUp4FXqYYei-cJTs38nbz0cHpkg@mail.gmail.com>
+ <48c242838c77034485a9e667dc0e867207c5beed.camel@maquefel.me>
+ <241a4cf9830b0118f01e8fcf2853c62527636049.camel@maquefel.me> <jyvlqfvqn5bp3jmvxvwyrcqmihjohuq3o757mfph7x37kbwvtq@gtgyh4fca4fq>
+In-Reply-To: <jyvlqfvqn5bp3jmvxvwyrcqmihjohuq3o757mfph7x37kbwvtq@gtgyh4fca4fq>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 9 Jul 2024 07:58:42 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+9Jk90HovH8bwzgCHwwh9j4mBm_Aaiq+EOj1HT3R17_Q@mail.gmail.com>
+Message-ID: <CAL_Jsq+9Jk90HovH8bwzgCHwwh9j4mBm_Aaiq+EOj1HT3R17_Q@mail.gmail.com>
+Subject: Re: [PATCH v10 00/38] ep93xx device tree conversion
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+Cc: Nikita Shubin <nikita.shubin@maquefel.me>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>, 
+	Hartley Sweeten <hsweeten@visionengravers.com>, 
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Sebastian Reichel <sre@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, 
+	Sergey Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Ralf Baechle <ralf@linux-mips.org>, "Wu, Aaron" <Aaron.Wu@analog.com>, Lee Jones <lee@kernel.org>, 
+	Olof Johansson <olof@lixom.net>, Niklas Cassel <cassel@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, 
+	devicetree@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-watchdog@vger.kernel.org, linux-pwm@vger.kernel.org, 
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-sound@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Vinod Koul <vkoul@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240709_033931_918771_F5873F9B 
-X-CRM114-Status: GOOD (  46.21  )
+X-CRM114-CacheID: sfid-20240709_065919_038104_B80FA39E 
+X-CRM114-Status: GOOD (  31.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,140 +106,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24-07-09, Miquel Raynal wrote:
-> Hi Marco,
-> =
-
-> > > > > >> I also found a thread from 2013 by Maxime Ripard (+Cc) suggest=
-ing adding
-> > > > > >> EEPROMs to MTD [1]. The main purpose would have been unifying =
-the EEPROM
-> > > > > >> drivers under a single interface. I am not sure what came of i=
-t though,
-> > > > > >> since I can't find any patches that followed up with the propo=
-sal.    =
-
-> > > > > >
-> > > > > > That discussion led to drivers/nvmem after I started to work on
-> > > > > > some early prototype, and Srinivas took over that work.    =
-
-> > > > > =
-
-> > > > > So would you say it is better for EEPROM drivers to use nvmem ins=
-tead of
-> > > > > moving under MTD?    =
-
-> > > > =
-
-> > > > I thought so at the time, but that was more than 10y ago, and I have
-> > > > followed neither nvmem nor MTD since so I don't really have an opin=
-ion
-> > > > there.
-> > > > =
-
-> > > > It looks like drivers/misc/eeprom/at24.c has support for nvmem thou=
-gh,
-> > > > and MTD can be used as an nvmem provider too, so it's not clear to =
-me
-> > > > why we would want to create yet another variant.
-> > > > =
-
-> > > > But again, you shouldn't really ask me in the first place :)
-> > > > =
-
-> > > > I'm sure Miquel, Srinivas, and surely others, are much more relevan=
-t to
-> > > > answer that question.  =
-
-> > > =
-
-> > > More relevant, I doubt, but just a feeling: EEPROMs have their own
-> > > subsystem now, NVMEM, which, as Maxime said, was initially written for
-> > > that very specific case. EEPROMs don't have the complexity of MTD
-> > > devices, and thus pulling the whole MTD subsystem just for getting
-> > > partitions seems counter intuitive to me. You can definitely "split"
-> > > EEPROM devices with NVMEM as well anyway.  =
-
-> > =
-
-> > I asked for feedback on my RFC [1] and all I got was to merge both
-> > drivers into one and make the driver backward compatible, which I did by
-> > this commit.
-> =
-
-> I'm sorry for not bringing this earlier.
-
-The purpose of the RFC was exactly to figure out the way to go therefore
-I'm a bit surprised now :/
-
-> > > Overall I think the idea of getting rid of these misc/ drivers is goes
-> > > into the right direction, but registering directly into NVMEM makes
-> > > more sense IMO.  =
-
-> > =
-
-> > So you propose to have two places for the partition handling (one for
-> > MTD and one for NVMEM) instead of one and moving the code into NVMEM
-> > directly?
-> =
-
-> Why two places for the partitions handling? Just one, in NVMEM. Also
-
-Without checking the details I think that converting the MTD
-partitioning code into NVMEM partitioning code is a bigger task. As you
-said below there are many legacy code paths you need to consider so they
-still work afterwards as well.
-
-> usually EEPROMs don't require very advanced partitioning schemes,
-> unlike flashes (which are the most common MTD devices today).
-
-As said in my cover letter EEPROMs can become quite large and MTD
-supports partitioning storage devices which is very handy for large
-EEPROMs as well.
-
-> > That doesn't sound right to me either. Also I don't get the
-> > point why EEPROMs can't be handled by the MTD layer?
-> =
-
-> They can, but should they? Just compile the two layers and observe
-> the size difference. MTD is complex and old, carries a lot of history,
-> and the user interface is also not straightforward because you need to
-> handle pages, blocks, erases, bitflips, ECC stats, OOB bytes and
-> positions, two OTP areas... None of that exists in the EEPROM world. So
-> why would you want to register into MTD and pull a huge subsystem while
-> there is a much more recent, simpler and way lighter subsystem fitting
-> much better your device?
-
-Didn't checked the size but the honest, MTD provides many Kconfig
-switches to trim the size down. As of now the mtd.o is made of up to 5
-(6 if chipreg.o is counted -> should be an opt) files which is of course
-larger than the pure misc/eeprom/at24.c driver but not that large. =
-
-
-Regards,
-  Marco
-
-> > The layer already
-> > supports devices of type MTD_RAM which are very simple and don't require
-> > an erase-op at least I don't see one.
-> =
-
-> MTD_RAM has been there forever, probably for "bad" reasons. BTW there
-> has been an attempt at removing it which was reverted in _2006_ and then
-> felt into the cracks:
-> 21c8db9eff95 ("[MTD] Restore MTD_ROM and MTD_RAM types")
-> =
-
-> Thanks,
-> Miqu=E8l
-> =
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBKdWwgNSwgMjAyNCBhdCAzOjIx4oCvQU0gVXdlIEtsZWluZS1Lw7ZuaWcKPHUua2xl
+aW5lLWtvZW5pZ0BiYXlsaWJyZS5jb20+IHdyb3RlOgo+Cj4gSGVsbG8sCj4KPiBPbiBUaHUsIEp1
+biAyNywgMjAyNCBhdCAxMToyOTo0NEFNICswMzAwLCBOaWtpdGEgU2h1YmluIHdyb3RlOgo+ID4g
+T24gVHVlLCAyMDI0LTA2LTE4IGF0IDE5OjIwICswMzAwLCBOaWtpdGEgU2h1YmluIHdyb3RlOgo+
+ID4gPiBIZWxsbyBBbmR5IQo+ID4gPiBPbiBNb24sIDIwMjQtMDYtMTcgYXQgMTI6NTggKzAyMDAs
+IEFuZHkgU2hldmNoZW5rbyB3cm90ZToKPiA+ID4gPiBPbiBNb24sIEp1biAxNywgMjAyNCBhdCAx
+MTozOOKAr0FNIE5pa2l0YSBTaHViaW4gdmlhIEI0IFJlbGF5Cj4gPiA+ID4gPGRldm51bGwrbmlr
+aXRhLnNodWJpbi5tYXF1ZWZlbC5tZUBrZXJuZWwub3JnPiB3cm90ZToKPiA+ID4gPiA+Cj4gPiA+
+ID4gPiBUaGUgZ29hbCBpcyB0byByZWNpZXZlIEFDS3MgZm9yIGFsbCBwYXRjaGVzIGluIHNlcmll
+cyB0byBtZXJnZSBpdAo+ID4gPiA+ID4gdmlhIEFybmQgYnJhbmNoLgo+ID4gPiA+Cj4gPiA+ID4g
+J3JlY2VpdmUnCj4gPiA+ID4KPiA+ID4gPiA+IFVuZm9ydHVuYXRlbHksIENMSyBzdWJzeXN0ZW0g
+c3VkZGVubHkgd2VudCBzaWxlbnQgb24gY2xrIHBvcnRpb24KPiA+ID4gPiA+IG9mCj4gPiA+ID4g
+PiBzZXJpZXMgVjIgcmVyb2xsLAo+ID4gPiA+ID4gdHJpZWQgdG8gcGluZyB0aGVtIGZvciBhYm91
+dCBhIG1vbnRoIGJ1dCBubyBsdWNrLgo+ID4gPiA+ID4KPiA+ID4gPiA+IExpbms6Cj4gPiA+ID4g
+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjQwNDA4LWVwOTN4eC1jbGstdjItMS1hZGNk
+NjhjMTM3NTNAbWFxdWVmZWwubWUKPiA+ID4gPiA+Cj4gPiA+ID4gPiBTb21lIGNoYW5nZXMgc2lu
+Y2UgbGFzdCB2ZXJzaW9uICh2OSkgLSBzZWUgIkNoYW5nZXMgaW4gdjEwIiwKPiA+ID4gPiA+IG1v
+c3RseQo+ID4gPiA+ID4gY29zbWV0aWMuCj4gPiA+ID4KPiA+ID4gPiAuLi4KPiA+ID4gPgo+ID4g
+PiA+ID4gUGF0Y2hlcyBzaG91bGQgYmUgZm9ybWF0ZWQgd2l0aCAnLS1oaXN0b2dyYW0nCj4gPiA+
+ID4KPiA+ID4gPiAnZm9ybWF0dGVkJwo+ID4gPiA+Cj4gPiA+ID4gLi4uCj4gPiA+ID4KPiA+ID4g
+PiA+IENoYW5nZXMgaW4gdjEwOgo+ID4gPiA+ID4KPiA+ID4gPiA+IFJlb3JkZXJlZCBTb0IgdGFn
+cyB0byBtYWtlIHN1cmUgdGhleSBhcHBlYXIgYmVmb3JlIFJiIGFuZCBBY2tlZAo+ID4gPiA+ID4g
+dGFncy4KPiA+ID4gPgo+ID4gPiA+IFRoaXMgaXMgbm90IHJlcXVpcmVkLiBUaGUgaW1wb3J0YW5j
+ZSBpcyBvbmx5IHRoZSBvcmRlciBvZiBTb0JzCj4gPiA+ID4gdGhlbXNlbHZlcy4gSWYgdGhleSBh
+cmUgaW50ZXJsZWF2ZWQgd2l0aCBvdGhlciB0YWdzLCBpdCdzIGZpbmUuCj4gPiA+Cj4gPiA+IEFo
+IC0gb2suIEp1c3Qgc2F3IHNvbWVvbmUgd2FzIGNvbXBsYWluaW5nIGFib3V0IGI0IHJlb3JkZXJp
+bmcgdGhlbS4KPiA+ID4KPiA+ID4gPgo+ID4gPiA+IC4uLgo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4g
+PiBIb3BlZnVsbHkgdG8gc2VlIHRoaXMgc2VyaWVzIGJlaW5nIGV2ZW50dWFsbHkgYXBwbGllZCBz
+b29uLgo+ID4gPiA+IEFybmQ/IChEbyB3ZSBoYXZlIGFsbCBuZWNlc3Nhcnkgc3Vic3lzdGVtIG1h
+aW50YWluZXJzJyB0YWdzLCBidHc/KQo+ID4gPiA+Cj4gPiA+ID4KPiA+ID4KPiA+ID4gQXMgaSBz
+ZWUgZnJvbSBteSBwZXJzcGVjdGl2ZSBvbmx5IHRocmVlIGxlZnQ6Cj4gPiA+Cj4gPiA+IENsayBz
+dWJzeXN0ZW06Cj4gPiA+Cj4gPiA+IC0gY2xrOiBlcDkzeHg6IGFkZCBEVCBzdXBwb3J0IGZvciBD
+aXJydXMgRVA5M3h4Cj4gPiA+Cj4gPiA+IERNQSBzdWJzeXN0ZW0gKGJ1dCB0aGUgb25seSByZXF1
+ZXN0IGZyb20gVmlub2QsIGFzIGZhciBhcyBpIHJlbWVtYmVyLAo+ID4gPiB3YXMgZml4aW5nIGNv
+bW1pdHMgdGl0bGVzKToKPiA+ID4KPiA+ID4gLSBkbWFlbmdpbmU6IGNpcnJ1czogQ29udmVydCB0
+byBEVCBmb3IgQ2lycnVzIEVQOTN4eAo+ID4gPiAtIGRtYWVuZ2luZTogY2lycnVzOiByZW1vdmUg
+cGxhdGZvcm0gY29kZQo+ID4gPgo+ID4gPiBCZXNpZGUgdGhhdCB0YWdzIG1pc3Npbmcgb24gcGxh
+dGZvcm0gY29kZSByZW1vdmFsICh3aGljaCBjYW4gYmUgQWNrZWQKPiA+ID4gYnkgQXJuZCBoaW1z
+ZWxmIGkgYmVsaWV2ZSkgYW5kIGR0c2kvZHRzIGZpbGVzIChzYW1lID8pLgo+ID4KPiA+IFZpbm9k
+IGFja2VkIHRoZSBhYm92ZSB0d28gcGF0Y2hlczoKPiA+Cj4gPiBodHRwczovL2xvcmUua2VybmVs
+Lm9yZy9hbGwvWm5rSXA4Yk9jWkszeVZLUEBtYXRzeWEvCj4gPiBodHRwczovL2xvcmUua2VybmVs
+Lm9yZy9hbGwvWm5rSW1wOEJ0VGR4bDdPM0BtYXRzeWEvCj4gPgo+ID4gc28gb25seToKPiA+Cj4g
+PiAtIGNsazogZXA5M3h4OiBhZGQgRFQgc3VwcG9ydCBmb3IgQ2lycnVzIEVQOTN4eAo+ID4KPiA+
+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDI0MDYxNy1lcDkzeHgtdjEwLTMtNjYyZTY0
+MGVkODExQG1hcXVlZmVsLm1lLwo+ID4KPiA+IGxlZnQuCj4gPgo+ID4gSG9wZSBTdGVwaGVuIHdp
+bGwgZmluZCBzb21lIHRpbWUgZm9yIHRoaXMgb25lLgo+Cj4gQXMgd2UncmUgYXBwcm9hY2hpbmcg
+dGhlIG1lcmdlIHdpbmRvdyBhbmQgdGhpcyBpcyBzdGlsbCB1bmNsZWFyLCBJCj4gYXBwbGllZCB0
+aGUgcHdtIGJpdHMgKGkuZS4gcGF0Y2hlcyAxMiwgMTMpLiBJZiBJIHVuZGVyc3RhbmQgY29ycmVj
+dGx5LAo+IHBhdGNoIDMzIGlzbid0IHN1aXRhYmxlIGZvciBhcHBsaWNhdGlvbiB5ZXQgYXMgaXQg
+aGFzIGEgZGVwZW5kZW5jeSBvbgo+IHBpbmN0cmwgY2hhbmdlcyBpbiB0aGF0IHNlcmllcy4KCk5v
+dyBjYXVzaW5nIGFuIGVycm9yIGluIGxpbnV4LW5leHQ6CgpEb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvcHdtL2NpcnJ1cyxlcDkzMDEtcHdtLmV4YW1wbGUuZHRzOjE4OjE4OgpmYXRh
+bCBlcnJvcjogZHQtYmluZGluZ3MvY2xvY2svY2lycnVzLGVwOTMwMS1zeXNjb24uaDogTm8gc3Vj
+aCBmaWxlIG9yCmRpcmVjdG9yeQogICAxOCB8ICAgICAgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdz
+L2Nsb2NrL2NpcnJ1cyxlcDkzMDEtc3lzY29uLmg+CiAgICAgIHwgICAgICAgICAgICAgICAgICBe
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KY29tcGlsYXRpb24gdGVy
+bWluYXRlZC4KbWFrZVsyXTogKioqIFtzY3JpcHRzL01ha2VmaWxlLmxpYjo0NDI6CkRvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wd20vY2lycnVzLGVwOTMwMS1wd20uZXhhbXBsZS5k
+dGJdCkVycm9yIDEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
