@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F26E4C2BD09
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2024 01:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 187C0C3DA47
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2024 01:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iKkU55rt1Yy9QEg7qjcpp8JCZIzeaUOzwcQ9EdcG09E=; b=gM+Nw+LeMUYPxi
-	O/Y4F3rEyCA9XmLhHYnHv4W/ff85H9qIjsOu781GlqG3r1JyFOyeqbSTjKO17YaR8TYjqW3cB3DQJ
-	r9KElshDWNwxLNYRdajQVcKWvcvWPZ69btxVO70lxuDnTUk2Tk68NnxoZmLdzOsggBSmZWp+vcHX7
-	r1OvD2Bl9G6gZGyDrLnQ2bmQMBPN4NjuK1go5LeoFovc5huYNu4814VEe1ur4BUGH0qhJj/b5Rcbb
-	Ckycy8ogiAbccrDdHWuCO8/dwQVDQS8lEIf8GN7wiHTA0KfBBtf3kjh+W6i+VR8eHHkGqDv5PU8gp
-	xT67fjXt+FHPB5MBEJuw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=E4S4XgBfeMv4+Tpu/pJGEZVCscd+ITajsT7DLac5m5k=; b=cLjUmcVOBnHQF0
+	D3EfX4JGt0OyjhFbSy/pYdIal/YubxPiDg0tWw+1LqbBGox+YxCD141B57xMcP6ps0CfcHEOYfNBr
+	JRY2nQf8FNh1+9R3akpFOsrFTTz8vU/MBZEW9b+kXDcbwPPZjdYwiCskO9YAgteCDME7hBUXTLJiJ
+	w5z23Jn34WwFevoz2puwNCB8AhbGzS9sxuKNy18A3d5pvRZMxJYUWedtaAyFMKB9cjCEBHcMA7F7B
+	RoCzqV0sm5TOHtMbrG41wPJs0Pz1TtOv7iJSHtSUyiIQlUXYOu4C8TyZpkDVfr+TZ+BtCChng+h0p
+	qsZf2KmNxLBrmWYAaYZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRLx2-000000093OD-23hG;
-	Wed, 10 Jul 2024 01:16:56 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1sRLxD-000000093Rk-1PXM;
+	Wed, 10 Jul 2024 01:17:07 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRLwz-000000093Nd-2kg4
+	id 1sRLx9-000000093Pp-2oZ5
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Jul 2024 01:16:55 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2c96170d23eso3567231a91.0
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Jul 2024 18:16:52 -0700 (PDT)
+	Wed, 10 Jul 2024 01:17:05 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1fb8781ef1bso19105755ad.3
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Jul 2024 18:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720574209; x=1721179009; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f3njM0FEW3UtBZycSVpdIBD2yfZfAl+1hpFSCVAeh3Y=;
-        b=RHurIJiyODbj78IiEekJKVLXt2ECt/Q6d6260m2VghpOVu7fTE2Jp96krZgnMirbMs
-         lMRSklSRmTNBYbYea38rKcWcKvEix4Oh+bT7Qo16eaPib1FXxBs1Yk7rsgs2orz+Mqku
-         PZdiSyU9Wm53f+hngWTIRMxRP5lcnqfKf1YAhuQpgNq5VTNwzFx3reMgbjKyQ0qJmr3u
-         gcRgTQoJwwF5YAriTl+IAXSSKgLiawb4bGi+p7z7rZJnD9kAJicugA7xgD4a7mhDcdyP
-         kN37RcZJ/DM/8kvYxhCuzFiv6O27zk+IjRDg2zEwq5eSul9Xj7jRHzLQoGSP0r4qQoq4
-         7HBQ==
+        d=gmail.com; s=20230601; t=1720574223; x=1721179023; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lf0ReuyQOi5SXQsUOQzTmoOvTe5c8o2DFeqT2/r8W4I=;
+        b=YpqEBpD69sC8LauXB/0a8nTGL/fBB8TxJ1gf+uo7WYfH411+q3i0xLImzNq5ifBA9h
+         0Mw7cBwyg+mfYieOo5hFW52SQyPAe9sVUTS16piK8LKmev1qygi9cRrVV96d7HvI1aN1
+         wRToy+JarikkvoKyiOf0r+Gp1gtXfSZ2QjCD6LrzUkHeVJ2SQclnI5qERsYzOTFtd1fX
+         PcU2AO0ZKWsVXCKlgSGUMUGXuYymdCcuYE2qJopp4BD71lLEqZosluUNSAHWpmbKuXwX
+         zZ7JjJePLmNkYmKHDfYImtA/1WDtytxlt2gwkwI+xmNlmNTv5QlDnuOi2QtyLSw9hCDL
+         xCfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720574209; x=1721179009;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f3njM0FEW3UtBZycSVpdIBD2yfZfAl+1hpFSCVAeh3Y=;
-        b=QHkya9XFEosV5HaOeoAdQPTvUyQp97A7yieh2SVge3zt11FMaygAbCiBL9TGwrDzAU
-         85YfXEDYxKxkuqneJE/ADJhIVt8E869kDhVxhmmLDsx435XNeZu0QEa8y63xl/6F648x
-         DbkQuDCsNHA2d8c/RVV8grl6OMTzFXDyMvNwsEvk7zhxcTkFrkIioexrPM62PFA3FNa1
-         n1r1AnTBI9NCSP8dmbLfLAGuPBRkhDtzeYFEHnEK5fvPUTLa53a4YWxTAafdY0Oahx4f
-         MVskm2+7kyIjI5mAyiVJgWKjcTH2N4tmIOEU+5xudVf71m5knzQ96tBTFp35A6NPKAUT
-         1WRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHKo0CEn9/F+h5KE7U1YABzrcv2KttWyYm0fFl9XaZeGKivhibZr/d3V1ZZXgHSbSVJ4FdBVMSA2340m6F96npV0/5Wj/rdzyooik0DA==
-X-Gm-Message-State: AOJu0YwXUUW7kikqeCtHMsPfSBQyE8TRW0p8tkMhvfXXpco/B9yuyFbY
-	e0HTYpTlBAgEg1sTUSidLZ5ju1Cn8Z5z6pqd43t/HsFM88xBmk1m
-X-Google-Smtp-Source: AGHT+IFj3ohK/qKnVGJPwpuwa41E1V1AfWL5q5n3zwa1A52vKNtv1TGwfj0kxHnRr8ppFOdgQZsKgQ==
-X-Received: by 2002:a17:90a:fa8d:b0:2c9:6f53:1f44 with SMTP id 98e67ed59e1d1-2ca35be8b8cmr3206106a91.3.1720574209121;
-        Tue, 09 Jul 2024 18:16:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720574223; x=1721179023;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lf0ReuyQOi5SXQsUOQzTmoOvTe5c8o2DFeqT2/r8W4I=;
+        b=kzx0x+JdYySLXaV1QzfHwyeP2gFnRjYQwRIx3wHskPODKhP9ruw+rayu6OOixX7ohY
+         j5GRCjZX7V5TToS3B/OeC4c0rlvITm2txPENfDs+67MfHqoOo7sWYa5mgxCVcyJ4anvR
+         oiWtuKgkm/7H2PtV4LUT1qScOioM+dKpUqFVoIji+F461F6mgZKJnw7E/dcgFLcc3fAd
+         JYKtxN4hct0lhdQ6vizu+37E0H6zmS+Vi/vtev9wUjmcvUZza2gpCuwK2ICGCSSw5DNH
+         zxOqPDrSlTc2CEeYofH4rPgAWo+11kTxxyx0cV5B7Pj2Fbbx3n+8yp3y+snxqxB5ilIX
+         Px9g==
+X-Forwarded-Encrypted: i=1; AJvYcCV/ZW98qJBNks1PqQmL5wjS1TaKSjjWMK/ZGq0E4Iqj7KMg03s0mvmGy2Nf1WUeqSJuTFj6PlDSy1hsYM+T5vQXL6P1vdH+t4vzFg+OXQ==
+X-Gm-Message-State: AOJu0YwctCvzpHcNymJ2NQFFCCWBAcFZPThJ/4KQ8YZSfJ26/rf6oUB1
+	dV3C786pvtYRL+QW3eCe/r6PozTINbFBEvBjEFTrzGH5Lui/12LT
+X-Google-Smtp-Source: AGHT+IEgKzUS2C58JGutlZ0YXRBY+FjMO0+UJyNyABmzG1f2vpoCM4JuCsrJpw5PgmaB9SqS74yOZQ==
+X-Received: by 2002:a17:902:e54c:b0:1fb:5c3d:b8c3 with SMTP id d9443c01a7336-1fbb6cdab3amr35816045ad.4.1720574222520;
+        Tue, 09 Jul 2024 18:17:02 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c99a95197asm10732198a91.16.2024.07.09.18.16.48
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ad4bc9sm22010445ad.286.2024.07.09.18.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jul 2024 18:16:48 -0700 (PDT)
+        Tue, 09 Jul 2024 18:17:02 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id F398980B36;
-	Wed, 10 Jul 2024 09:26:13 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id 9157880B36;
+	Wed, 10 Jul 2024 09:26:27 +0800 (CST)
 From: Cheng Ming Lin <linchengming884@gmail.com>
 To: miquel.raynal@bootlin.com,
 	vigneshr@ti.com,
@@ -74,15 +75,16 @@ Cc: richard@nod.at,
 	alvinzhou@mxic.com.tw,
 	leoyu@mxic.com.tw,
 	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: [PATCH 0/3] Add fixups for two-plane serial NAND flash
-Date: Wed, 10 Jul 2024 09:15:38 +0800
-Message-Id: <20240710011541.342682-1-linchengming884@gmail.com>
+Subject: [PATCH 1/3] include/linux/mtd/spinand.h: Add fixups for spinand
+Date: Wed, 10 Jul 2024 09:15:39 +0800
+Message-Id: <20240710011541.342682-2-linchengming884@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240710011541.342682-1-linchengming884@gmail.com>
+References: <20240710011541.342682-1-linchengming884@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240709_181653_724800_7457F163 
-X-CRM114-Status: UNSURE (   7.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240709_181703_778940_224B2223 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,35 +103,67 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Cheng Ming Lin <chengminglin@mxic.com.tw>
 
-Macronix serial NAND flash with a two-plane structure
-requires insertion of Plane Select bit into the column
-address during the write_to_cache operation.
+Add struct spi_nand_fixups as SPI NAND fixup hooks.
 
-Additionally, for MX35{U,F}2G14AC, insertion of Plane
-Select bit into the column address is required during
-the read_from_cache operation.
+To determine whether the Plane Select bit should be
+inserted into the column address in core.c, add the
+member struct spinand_info to struct spinand_device
+to ascertain whether the device has fixups.
 
-In spinand.h, add struct spi_nand_fixups as SPI NAND
-fixup hooks.
+Signed-off-by: Cheng Ming Lin <chengminglin@mxic.com.tw>
+---
+ include/linux/mtd/spinand.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-In macronix.c, add fixup functions and update ID table.
-
-In core.c, add an if statement to determine whether to
-insert the Plane Select bit for the column address.
-
-These flashes have been validated on Xilinx zynq-picozed
-board which included Macronix SPI Host.
-
-Cheng Ming Lin (3):
-  include/linux/mtd/spinand.h: Add fixups for spinand
-  mtd: spinand: macronix: Fixups for PLANE_SELECT_BIT
-  mtd: spinand: Insert Plane Select bit for the column address
-
- drivers/mtd/nand/spi/core.c     |  7 +++++
- drivers/mtd/nand/spi/macronix.c | 51 +++++++++++++++++++++++++++++----
- include/linux/mtd/spinand.h     | 17 +++++++++++
- 3 files changed, 69 insertions(+), 6 deletions(-)
-
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 5c19ead60499..c079c6ac1541 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -354,6 +354,7 @@ struct spinand_info {
+ 	} op_variants;
+ 	int (*select_target)(struct spinand_device *spinand,
+ 			     unsigned int target);
++	const struct spi_nand_fixups *fixups;
+ };
+ 
+ #define SPINAND_ID(__method, ...)					\
+@@ -379,6 +380,9 @@ struct spinand_info {
+ #define SPINAND_SELECT_TARGET(__func)					\
+ 	.select_target = __func,
+ 
++#define SPINAND_PLANE_SELECT_BIT(__func)					\
++	.fixups = __func,
++
+ #define SPINAND_INFO(__model, __id, __memorg, __eccreq, __op_variants,	\
+ 		     __flags, ...)					\
+ 	{								\
+@@ -398,6 +402,18 @@ struct spinand_dirmap {
+ 	struct spi_mem_dirmap_desc *rdesc_ecc;
+ };
+ 
++/**
++ * struct spi_nand_fixups - SPI NAND fixup hooks
++ * @write_to_cache: program load requires Plane Select bit in CADD.
++ * @read_from_cache: read from cache requires Plane Select bit in CADD.
++ */
++struct spi_nand_fixups {
++	unsigned int (*write_to_cache)(struct spinand_device *spinand,
++				const struct nand_page_io_req *req, unsigned int column);
++	u16 (*read_from_cache)(struct spinand_device *spinand,
++				const struct nand_page_io_req *req, u16 column);
++};
++
+ /**
+  * struct spinand_device - SPI NAND device instance
+  * @base: NAND device instance
+@@ -449,6 +465,7 @@ struct spinand_device {
+ 	u8 *databuf;
+ 	u8 *oobbuf;
+ 	u8 *scratchbuf;
++	const struct spinand_info *info;
+ 	const struct spinand_manufacturer *manufacturer;
+ 	void *priv;
+ };
 -- 
 2.25.1
 
