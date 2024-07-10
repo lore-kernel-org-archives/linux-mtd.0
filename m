@@ -4,60 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD233C3DA41
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2024 21:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 126D6C3DA41
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2024 22:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=T1x9OiSjcIDUr9dn9XkFfeKQIWtJpW/A1CaNdYn9ST8=; b=DV6RvUuYtoQZUf
-	khUXHc57z1Gg0bjoDXSFWWARyTku/4Vsw9AtwiUtKLGWlF2hxYrNguojh9m69q7rk3MeEHflW88SH
-	whrbR46WFCsOmUnoxDRSEPuRlr1EVjBO3nU1A5HmnsN08MIiV9EGBOYhtY4Qg4uTutlQh/327n3SC
-	TIrty1/W1NbDs55A8s+hAXCxihQJUQ4FkTI1FA09iYPWIy46cR3Hf3Uwd/t5cuIyYOaCLv/b65T3U
-	RuYw+rOoszUUz+DjFGCk6k4FN6s1t3YAZVUyKuVFUJ7WpSQXzF9kXIXffdNQC8Yxsnuwk3lLmzBxm
-	38zGpp+LLKaDATuowycw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=oKB44e+3YVMeYDTIRQDijuTMeZcIVPqDNUCN36VNeZ8=; b=O1FNdaraAAcCyy
+	hMH6RiLyqchmGnkP+FmiuLV4mTaJq1ig+mpvI6ow8dRfnr2T5gtx5/RnjWnL/qdWUTFEwmz8sO2gG
+	BJaFQsEGuSW6Hmw3t1fVqt8ZRvgdnYHEeHwrnKNLDbx3wRBngw1oMSXm9F75mCDqAmIi4K69xu1fy
+	sbcOskSPgSdSIYRrOUlqP1hVftyvfzt2yi4VgDjeCSKekTHpUka8ixaB9tuHtPQMRXAg1kycezeHA
+	F6eSHOhsrsSchEB7MEySfCOOQl17BG6k2ef07/5XCl8gvcnqkK8MFLxkKYGOTukHG3zU9Xsl5V16m
+	BDwLbSeH/lh/fH9jzyzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRf31-0000000BoPN-3Kes;
-	Wed, 10 Jul 2024 21:40:24 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1sRfVa-0000000Bssb-3ZHk;
+	Wed, 10 Jul 2024 22:09:54 +0000
+Received: from mgamail.intel.com ([192.198.163.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRf2z-0000000BoPD-4AEh
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 10 Jul 2024 21:40:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=t4jvbJ7n8PAGp09Txkl3fReWKpqoTyQAeWAGk4qQm/o=; b=pmRu7gZQLcNyFlN272TC6n+Pfl
-	0uX+C6vTTtndMxjKm5byN5vFdxVg0GwLIoEoJwWuns0WUGdROO2+1dhzZdKWoWp4/6I0qHZXSvO3V
-	b0UHmFkud2zX/YFmg+nENEt+OXUQh5LT3Gs3nhF3EeiCDkKHe/K+S9GYaq7eqiSfXHn3+tBGM4ynd
-	Cz0mbigeg0DtzD6U0hCaJxnixGOU0TmvkUubdRu7YLQRCTiu9O4jyMHOPEFlpG6QftsSvbxvtqzgA
-	6gbAiIzwS/WK4J1HlwxETq0/JNEPhHZQ5GzpkGWBbWs+I7RVC0kZ8QkO9qyzUyXG5PUpgQPdCglft
-	j8Hxw89g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRf2x-00000009uiC-3NoI;
-	Wed, 10 Jul 2024 21:40:19 +0000
-Date: Wed, 10 Jul 2024 22:40:19 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: linux-fsdevel@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>, devel@lists.orangefs.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	linux-f2fs-devel@lists.sourceforge.net,
-	Tyler Hicks <code@tyhicks.com>, ecryptfs@vger.kernel.org,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	linux-nilfs@vger.kernel.org, reiserfs-devel@vger.kernel.org
-Subject: [6.12] Conversion of aops->write_end to use a folio
-Message-ID: <Zo7_w-BjbbbrxadX@casper.infradead.org>
+	id 1sRfVY-0000000BssA-1ee9
+	for linux-mtd@lists.infradead.org;
+	Wed, 10 Jul 2024 22:09:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720649392; x=1752185392;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wSMLdOaAIyfeMlYDPE9ykwDaq14eIz1cba3/eVSQBdo=;
+  b=CLou8rv+TW6JB+pKAO687vVTgiUldAdEGYMJw/UpZMnN6EWfwH+Tmydy
+   0RNNhpVj+bix3DSgWhH8KA9J3qP1+LFgOca361GI6M92y5TSbHuScg1iI
+   0p3JUOKh88siyI6b8NkjJMf9Xctv9FXMBHSWaDlVueTBK3Bi+jF3Uz8h0
+   ZakaffyEzRanbsZcoTRuYFO1WqcBGaYunQD8o1r7T34+LuS6yCYER7bPW
+   HnsKZhKYrzRI/n4Kov1y5lYdZBlUMHrsgpL8cqApnLNBuswV/cBTrsqQd
+   HyQKvQ8tWgUzi+SzJzZt+v+JMr5qFtkjC2wp0+wzWIyUMawP0CCo6lBhP
+   g==;
+X-CSE-ConnectionGUID: EWckwlyQSTurRH0dCDrv6A==
+X-CSE-MsgGUID: pcejwnOlQxSjoKEQWUBc1Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11129"; a="20911553"
+X-IronPort-AV: E=Sophos;i="6.09,198,1716274800"; 
+   d="scan'208";a="20911553"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2024 15:09:51 -0700
+X-CSE-ConnectionGUID: eaqdFRdISdqNQ+NTKGO1yw==
+X-CSE-MsgGUID: hl/y1xj5Q2GJi/ICes6TNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,198,1716274800"; 
+   d="scan'208";a="48440999"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 10 Jul 2024 15:09:48 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sRfVS-000YLq-1N;
+	Wed, 10 Jul 2024 22:09:46 +0000
+Date: Thu, 11 Jul 2024 06:09:02 +0800
+From: kernel test robot <lkp@intel.com>
+To: Cheng Ming Lin <linchengming884@gmail.com>, miquel.raynal@bootlin.com,
+	vigneshr@ti.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, richard@nod.at,
+	alvinzhou@mxic.com.tw, leoyu@mxic.com.tw,
+	Cheng Ming Lin <chengminglin@mxic.com.tw>
+Subject: Re: [PATCH 2/3] mtd: spinand: macronix: Fixups for PLANE_SELECT_BIT
+Message-ID: <202407110520.pbPnrOlM-lkp@intel.com>
+References: <20240710011541.342682-3-linchengming884@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <20240710011541.342682-3-linchengming884@gmail.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240710_150952_467202_03FEF998 
+X-CRM114-Status: GOOD (  12.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,30 +91,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For the 6.12 merge window, I intend to submit a patch series loosely
-similar to the one you can find at
+Hi Cheng,
 
-http://git.infradead.org/?p=users/willy/pagecache.git;a=shortlog;h=refs/heads/write-end
+kernel test robot noticed the following build warnings:
 
-(aka git://git.infradead.org/users/willy/pagecache.git write-end)
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on next-20240710]
+[cannot apply to linus/master v6.10-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This is split into a few pieces:
+url:    https://github.com/intel-lab-lkp/linux/commits/Cheng-Ming-Lin/include-linux-mtd-spinand-h-Add-fixups-for-spinand/20240710-184654
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20240710011541.342682-3-linchengming884%40gmail.com
+patch subject: [PATCH 2/3] mtd: spinand: macronix: Fixups for PLANE_SELECT_BIT
+config: i386-randconfig-014-20240711 (https://download.01.org/0day-ci/archive/20240711/202407110520.pbPnrOlM-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240711/202407110520.pbPnrOlM-lkp@intel.com/reproduce)
 
- - Directory handling conversion for ufs, sysv, minix & qnx6, all posted
-   recently.
- - Various prep patches in reiserfs, jffs2, block fops, nilfs2, ntfs3,
-   ecryptfs, f2fs, fuse, orangefs and vboxsf
- - The big bang conversion that is now appropriately trivial in each
-   affected filesystem.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202407110520.pbPnrOlM-lkp@intel.com/
 
-It would be nice to get sign-offs from the various fs maintainers on
-the prep patches.  I'll send those out in the next 24 hours.  If you
-want to take them through your tree, I ask that you do that for 6.11 so
-we're not juggling git trees trying to resolve conflicts in 6.12.
+All warnings (new ones prefixed by >>):
 
-I don't think we need signoffs from the various fs maintainers for the
-big bang patch as the individual changes are so trivial.  But if you
-want to give it a look-over, the more eyes the better.
+>> drivers/mtd/nand/spi/macronix.c:113: warning: Function parameter or struct member 'spinand' not described in 'write_Plane_Select_bit_in_cadd'
+>> drivers/mtd/nand/spi/macronix.c:113: warning: Function parameter or struct member 'req' not described in 'write_Plane_Select_bit_in_cadd'
+>> drivers/mtd/nand/spi/macronix.c:113: warning: Function parameter or struct member 'column' not described in 'write_Plane_Select_bit_in_cadd'
+>> drivers/mtd/nand/spi/macronix.c:113: warning: expecting prototype for Macronix serial NAND flash with a two(). Prototype was for write_Plane_Select_bit_in_cadd() instead
+
+
+vim +113 drivers/mtd/nand/spi/macronix.c
+
+   102	
+   103	/**
+   104	 * Macronix serial NAND flash with a two-plane structure
+   105	 * should insert Plane Select bit into the column address
+   106	 * during the write_to_cache operation.
+   107	 * Additionally, MX35{U,F}2G14AC also need to insert Plane
+   108	 * Select bit into the column address during the read_from_cache
+   109	 * operation.
+   110	 */
+   111	static unsigned int write_Plane_Select_bit_in_cadd(struct spinand_device *spinand,
+   112				const struct nand_page_io_req *req, unsigned int column)
+ > 113	{
+   114		struct nand_device *nand = spinand_to_nand(spinand);
+   115	
+   116		return column | (req->pos.plane << fls(nanddev_page_size(nand)));
+   117	}
+   118	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
