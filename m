@@ -4,77 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 126D6C3DA41
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Jul 2024 22:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32FC6C3DA41
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 Jul 2024 03:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oKB44e+3YVMeYDTIRQDijuTMeZcIVPqDNUCN36VNeZ8=; b=O1FNdaraAAcCyy
-	hMH6RiLyqchmGnkP+FmiuLV4mTaJq1ig+mpvI6ow8dRfnr2T5gtx5/RnjWnL/qdWUTFEwmz8sO2gG
-	BJaFQsEGuSW6Hmw3t1fVqt8ZRvgdnYHEeHwrnKNLDbx3wRBngw1oMSXm9F75mCDqAmIi4K69xu1fy
-	sbcOskSPgSdSIYRrOUlqP1hVftyvfzt2yi4VgDjeCSKekTHpUka8ixaB9tuHtPQMRXAg1kycezeHA
-	F6eSHOhsrsSchEB7MEySfCOOQl17BG6k2ef07/5XCl8gvcnqkK8MFLxkKYGOTukHG3zU9Xsl5V16m
-	BDwLbSeH/lh/fH9jzyzA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZRXJv25j8SyCbMxWkSia6/XgLebbXB7b48sel9ghTp4=; b=dZ37BtioCfziWi
+	ZJd+v7wGb0SkFpKC1KEO5X3/hxcgG3ok2j99LVT5rsa63Q3aqijbDGp/Qeaum11W36REnZpaoCTI3
+	fd/CG8p60PgyiDpbwTzyh+mKea+me5jcla6gMs/UZrcUrdjso9eeGIUGMnXD8Tr0S8p0X3ZxhPrS9
+	nFLSfa91VELb/rApVqR7MhFOxvfFIJqwp/s3quzcW0nRZXy8E+DB33bhAeMUcjlSjcJQrrmwidNl/
+	z6APfsmKNCz+1/tcfxUL76BEWhHiky+0UEHb/HGqbaGvRuUhm3srvS7H/A2Cf/7JEKE8/EgsA8H8H
+	v++8begZ33I9Ku3eep6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRfVa-0000000Bssb-3ZHk;
-	Wed, 10 Jul 2024 22:09:54 +0000
-Received: from mgamail.intel.com ([192.198.163.13])
+	id 1sRk8m-0000000CWd3-2fBp;
+	Thu, 11 Jul 2024 03:06:40 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRfVY-0000000BssA-1ee9
+	id 1sRk8j-0000000CWa4-02fw
 	for linux-mtd@lists.infradead.org;
-	Wed, 10 Jul 2024 22:09:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1720649392; x=1752185392;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wSMLdOaAIyfeMlYDPE9ykwDaq14eIz1cba3/eVSQBdo=;
-  b=CLou8rv+TW6JB+pKAO687vVTgiUldAdEGYMJw/UpZMnN6EWfwH+Tmydy
-   0RNNhpVj+bix3DSgWhH8KA9J3qP1+LFgOca361GI6M92y5TSbHuScg1iI
-   0p3JUOKh88siyI6b8NkjJMf9Xctv9FXMBHSWaDlVueTBK3Bi+jF3Uz8h0
-   ZakaffyEzRanbsZcoTRuYFO1WqcBGaYunQD8o1r7T34+LuS6yCYER7bPW
-   HnsKZhKYrzRI/n4Kov1y5lYdZBlUMHrsgpL8cqApnLNBuswV/cBTrsqQd
-   HyQKvQ8tWgUzi+SzJzZt+v+JMr5qFtkjC2wp0+wzWIyUMawP0CCo6lBhP
-   g==;
-X-CSE-ConnectionGUID: EWckwlyQSTurRH0dCDrv6A==
-X-CSE-MsgGUID: pcejwnOlQxSjoKEQWUBc1Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11129"; a="20911553"
-X-IronPort-AV: E=Sophos;i="6.09,198,1716274800"; 
-   d="scan'208";a="20911553"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2024 15:09:51 -0700
-X-CSE-ConnectionGUID: eaqdFRdISdqNQ+NTKGO1yw==
-X-CSE-MsgGUID: hl/y1xj5Q2GJi/ICes6TNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,198,1716274800"; 
-   d="scan'208";a="48440999"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 10 Jul 2024 15:09:48 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sRfVS-000YLq-1N;
-	Wed, 10 Jul 2024 22:09:46 +0000
-Date: Thu, 11 Jul 2024 06:09:02 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cheng Ming Lin <linchengming884@gmail.com>, miquel.raynal@bootlin.com,
-	vigneshr@ti.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, richard@nod.at,
-	alvinzhou@mxic.com.tw, leoyu@mxic.com.tw,
-	Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH 2/3] mtd: spinand: macronix: Fixups for PLANE_SELECT_BIT
-Message-ID: <202407110520.pbPnrOlM-lkp@intel.com>
-References: <20240710011541.342682-3-linchengming884@gmail.com>
+	Thu, 11 Jul 2024 03:06:38 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WKKJh2Ns8z2Cl7k;
+	Thu, 11 Jul 2024 11:02:12 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6053B1A0188;
+	Thu, 11 Jul 2024 11:06:25 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpemd200001.china.huawei.com
+ (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 11 Jul
+ 2024 11:06:24 +0800
+From: Wang Zhaolong <wangzhaolong1@huawei.com>
+To: <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>, <chengzhihao1@huawei.com>
+Subject: [RFC 0/1] ubifs: inode deletion deadlock 
+Date: Thu, 11 Jul 2024 11:06:23 +0800
+Message-ID: <20240711030624.266440-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240710011541.342682-3-linchengming884@gmail.com>
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240710_150952_467202_03FEF998 
-X-CRM114-Status: GOOD (  12.25  )
+X-CRM114-CacheID: sfid-20240710_200637_231996_E5FC53A4 
+X-CRM114-Status: UNSURE (   8.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,61 +69,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Cheng,
+Hi.
 
-kernel test robot noticed the following build warnings:
+While the previous patch set [1] aimed to address the ABBA deadlock between
+inode reclaiming and deleted inode writing, I discovered that the problem
+still persists in the form of an AA deadlock after applying those changes.
 
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on next-20240710]
-[cannot apply to linus/master v6.10-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The core issue is that although [1] avoids the ABBA deadlock by getting the
+xattr inodes before locking BASEHD's wbuf->io_mutex. But the inode reclaiming
+process can still get stuck waiting for the xattr inodes that have already
+been marked as I_FREEING.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Cheng-Ming-Lin/include-linux-mtd-spinand-h-Add-fixups-for-spinand/20240710-184654
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20240710011541.342682-3-linchengming884%40gmail.com
-patch subject: [PATCH 2/3] mtd: spinand: macronix: Fixups for PLANE_SELECT_BIT
-config: i386-randconfig-014-20240711 (https://download.01.org/0day-ci/archive/20240711/202407110520.pbPnrOlM-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240711/202407110520.pbPnrOlM-lkp@intel.com/reproduce)
+root@debian:~# cat /proc/537/stack
+[<0>] __wait_on_freeing_inode+0xb2/0xf0
+[<0>] find_inode_fast.isra.0+0x63/0xb0
+[<0>] iget_locked+0x72/0x1c0
+[<0>] ubifs_iget+0x3e/0x5c0 [ubifs]
+[<0>] ubifs_jnl_write_inode+0x11f/0x6c0 [ubifs]
+[<0>] ubifs_evict_inode.cold+0x39/0x6a [ubifs]
+[<0>] evict+0xd1/0x1a0
+[<0>] inode_lru_isolate+0x238/0x2b0
+[<0>] __list_lru_walk_one+0x77/0x150
+[<0>] list_lru_walk_one+0x4a/0x70
+[<0>] prune_icache_sb+0x49/0x80
+[<0>] super_cache_scan+0x124/0x1b0
+[<0>] do_shrink_slab+0x13e/0x2c0
+[<0>] shrink_slab+0xac/0x2b0
+[<0>] drop_slab_node+0x45/0x90
+[<0>] drop_slab+0x38/0x70
+[<0>] drop_caches_sysctl_handler+0x74/0x90
+[<0>] proc_sys_call_handler+0x143/0x260
+[<0>] new_sync_write+0x116/0x1c0
+[<0>] vfs_write+0x1b7/0x250
+[<0>] ksys_write+0x5f/0xe0
+[<0>] do_syscall_64+0x33/0x40
+[<0>] entry_SYSCALL_64_after_hwframe+0x67/0xd1
+root@debian:~# cat /proc/541/stack
+[<0>] __wait_on_freeing_inode+0xb2/0xf0
+[<0>] find_inode_fast.isra.0+0x63/0xb0
+[<0>] iget_locked+0x72/0x1c0
+[<0>] ubifs_iget+0x3e/0x5c0 [ubifs]
+[<0>] ubifs_jnl_write_inode+0x11f/0x6c0 [ubifs]
+[<0>] ubifs_evict_inode.cold+0x39/0x6a [ubifs]
+[<0>] evict+0xd1/0x1a0
+[<0>] do_unlinkat+0x1df/0x2f0
+[<0>] do_syscall_64+0x33/0x40
+[<0>] entry_SYSCALL_64_after_hwframe+0x67/0xd1
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202407110520.pbPnrOlM-lkp@intel.com/
+The root cause of the problem lies in two aspects:
 
-All warnings (new ones prefixed by >>):
+1. UBIFS uses inodes to represent xattrs.
+2. During the eviction process, iget_locked(), which waits for I_FREEING,
+   is called again.
 
->> drivers/mtd/nand/spi/macronix.c:113: warning: Function parameter or struct member 'spinand' not described in 'write_Plane_Select_bit_in_cadd'
->> drivers/mtd/nand/spi/macronix.c:113: warning: Function parameter or struct member 'req' not described in 'write_Plane_Select_bit_in_cadd'
->> drivers/mtd/nand/spi/macronix.c:113: warning: Function parameter or struct member 'column' not described in 'write_Plane_Select_bit_in_cadd'
->> drivers/mtd/nand/spi/macronix.c:113: warning: expecting prototype for Macronix serial NAND flash with a two(). Prototype was for write_Plane_Select_bit_in_cadd() instead
+Therefore, in this patch, I aim to provide a solution that avoids
+waiting within the eviction process. However, I must admit that my
+current code implementation is not very elegant and could be improved.
 
+Wang Zhaolong (1):
+  ubifs: avoid deadlock when deleting an inode with xattr
 
-vim +113 drivers/mtd/nand/spi/macronix.c
-
-   102	
-   103	/**
-   104	 * Macronix serial NAND flash with a two-plane structure
-   105	 * should insert Plane Select bit into the column address
-   106	 * during the write_to_cache operation.
-   107	 * Additionally, MX35{U,F}2G14AC also need to insert Plane
-   108	 * Select bit into the column address during the read_from_cache
-   109	 * operation.
-   110	 */
-   111	static unsigned int write_Plane_Select_bit_in_cadd(struct spinand_device *spinand,
-   112				const struct nand_page_io_req *req, unsigned int column)
- > 113	{
-   114		struct nand_device *nand = spinand_to_nand(spinand);
-   115	
-   116		return column | (req->pos.plane << fls(nanddev_page_size(nand)));
-   117	}
-   118	
+ fs/ubifs/journal.c | 42 ++++++++++++++++++++++++++++++++++--------
+ fs/ubifs/super.c   | 15 +++++++++++++++
+ fs/ubifs/ubifs.h   |  1 +
+ fs/ubifs/xattr.c   | 12 +++++++-----
+ 4 files changed, 57 insertions(+), 13 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
