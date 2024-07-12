@@ -4,110 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 105E9C3DA4B
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:11:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 464E5C2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=f1W13nWSQUhUV+ThxSdfK3GH8v2AXMy+EVNuiSZpRck=; b=rE+XN3Y2iyOUWz9u9yLH4Jysb7
-	M70Xe7dn4vTcoOfdQkZF/s5K22E7X/bmICPbDVuCZ/hHXL1USyXuT3xSBXROIABxzNXVN3d4oZIBG
-	n+aDqTuEDXhi+3rBLex7E7nNs/FN5iF6t2bDsSgvEja29IMoh9EUNej5LdRQmF99CKB7+zQ/4t7CU
-	T+PB+lMAqDLuFTgLiEM48mkQJVIeoPmVb5lMV9uhFKxqOoUXfHO10GIOoutTunw0xfJv6WuqYO5V3
-	SEzwv8Mv5NbNRp9RRhyUX22N9kyCDAp5FLOJSSCdHqBwSWtFQh7R0BL3wQ+VaIK1EYaqzK1O3vBfB
-	YujzB7kw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cMyJq20UkInjGiKvHx6Rl5mxIktmEC3PN9fClfPg/b4=; b=Zv2rBnc3THeBMq
+	epUF0swoGezStrfW7ipI6J5yvYpDxm822qKhupfLwVDHN/TWSAnebGiV5eB4xvWgmrXWh5pn2/X3n
+	6XP8lIwOKBLbDUwVLioxZoUqHvaH1IfzDMEYMntFxM16iqEioO0y/n0ex8877U1ID2/ziI/iMCq8l
+	tNxobenpLdyAIUtO9xgXV0JnFjFXCIXYCliRPECk/CqMfNCXwFGjjOgxDAIw0tFVUrFpcRtoaxnKq
+	ZbyDQYtfjoafzWp/E0S2W7kdwN3tMMwsq/Tg/p7EzmdFK35jJLl1ziPQ11MmHz74EvSrGkQllKlVR
+	o7AZl2eQH3njpZKOQmpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSH00-00000000HRx-2iHy;
-	Fri, 12 Jul 2024 14:11:48 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1sSHMv-00000000L3v-20Os;
+	Fri, 12 Jul 2024 14:35:29 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSGzy-00000000HRP-04Z7
-	for linux-mtd@lists.infradead.org;
-	Fri, 12 Jul 2024 14:11:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720793504;
+	id 1sSHMc-00000000Kxu-0C5w;
+	Fri, 12 Jul 2024 14:35:11 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0858B6000B;
+	Fri, 12 Jul 2024 14:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1720794905;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o2DwS+N+WpDe9hXUlwXatDaB5K36zULgGVjjk0aits0=;
-	b=HkQjljxlILzTzV1aj+mMzoq99YUaImdsbkQj5kio7EJKjoJu1moa6thlhUZw6ARtpFljpm
-	K37lKQDd5fQkMQ4p1bUUzeA4RJNz9vVieSGSlgA80oi/UGUzDFuLKQZosvebsgWdYp/VHK
-	TAyvSPCBZi/LxcNRpcxUQtAfUgfcLQM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-l0snUfUyN9y20wRRo_QidQ-1; Fri, 12 Jul 2024 10:11:42 -0400
-X-MC-Unique: l0snUfUyN9y20wRRo_QidQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3678e549a1eso1106747f8f.0
-        for <linux-mtd@lists.infradead.org>; Fri, 12 Jul 2024 07:11:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720793501; x=1721398301;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o2DwS+N+WpDe9hXUlwXatDaB5K36zULgGVjjk0aits0=;
-        b=HEGa04XxMEISGeVGtbUsr8a3eRWcXV8AJViqasfUUjkqGoReEk/kgB4lJvp839dhkJ
-         sRs23niraJGuQWVfMnEOiQA/bPkqAWMhuiRjKnQ5wNSpKp7czwdEyPABAQsF9ifQq5BE
-         PqJjA9g5HX5aLGItggGi7Nwkra8QmXst3Sc8eHkl3/FMPk48eXebQSr4F6sro+16pet8
-         9MbvC0A2AKwmtsc6dkos5abaXiYrK6FM4VVGrUtcGbzEw8ykHKKX4w38eoHd4Ji9EJ5d
-         nOQNywfvD435Izd9GLpcxACJRENadYvEoKriuAMj8HsjYd6zy0NTRxky2R4EBpGOrUN0
-         bU+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVil1jhbGj/XNvc/WjlJ6qnRoeiH/2w1v2327wkg2BHTcrKR9N/GCJNz60haxArysCbm2jnGlzGMGZtMfDafQVWF1AiTVftjEcyW1GEoQ==
-X-Gm-Message-State: AOJu0YyO+OC02uBaEi3TT9kStD7vdDotWjZXypSXT3LNPb04OXK4HAS6
-	n8vO+2Pp8IAi79M2GvsO7byzYF6eusq1PmYAgTlX4vo87BavFDOuIxMIdW8aHI+elWCGMOmHe24
-	4Iqegx5WcmglR0HDfbQJE/EybZg7zYBBBoxDpzyIcO48h4CMhD8CN4E+w10Lyx6k=
-X-Received: by 2002:adf:f8d2:0:b0:367:40eb:a3c3 with SMTP id ffacd0b85a97d-36804fec57emr1911307f8f.34.1720793501792;
-        Fri, 12 Jul 2024 07:11:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFf3U4d9gFM4veykTOQEiy8D2ryeNYD+ff/pVMiWh3YGrTu6bLAg3UO2081Jf+2o1pI3Alwgw==
-X-Received: by 2002:adf:f8d2:0:b0:367:40eb:a3c3 with SMTP id ffacd0b85a97d-36804fec57emr1911266f8f.34.1720793501451;
-        Fri, 12 Jul 2024 07:11:41 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-367cde7e187sm10376600f8f.21.2024.07.12.07.11.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jul 2024 07:11:40 -0700 (PDT)
-Message-ID: <a24ea2d7-9f48-412c-9a40-9624f6c4f9d9@redhat.com>
-Date: Fri, 12 Jul 2024 16:11:38 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] printk: Add a short description string to kmsg_dump()
-To: Kees Cook <kees@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	bh=+CiVeB36WC3XhinXVvw3aBG/Q6TEMnuDcanTg5z9DXE=;
+	b=RCA9lVVX1fd75spCVuVahSk1RoqL9eZbgexe3LnZmD+IsA7s0KLR4kU0QT6UQzVSQrcrPX
+	hRiL3pPLMNwY4j16hbLtdlG5J+BEEA1PW7OW7sjOjXbSeY14TvMoAj1mIPMbsItiZvowOQ
+	piShlvO2atXTdq/ISgShhl/xtRHkX+Z96RhtZHiU1TLZR7Gnw5w1RasNCG0SS+DHpspE3C
+	dZUPWp3bNqaTriRX3hgPZNbOHazHGNgNQK8n++DqtMVk37DB13EUCRlel7A9e3Q4Zwg3Ay
+	L9g8Ji7Nb82hIJNCnIwTjQT/ej4Az4/PbJYd7xyyek1Zmaaf4T3FbmlAXVsP/w==
+Date: Fri, 12 Jul 2024 16:35:03 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Frank Li <Frank.Li@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli"
- <gpiccoli@igalia.com>, Petr Mladek <pmladek@suse.com>,
- Steven Rostedt <rostedt@goodmis.org>, John Ogness
- <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Jani Nikula <jani.nikula@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Kefeng Wang <wangkefeng.wang@huawei.com>,
- Thomas Gleixner <tglx@linutronix.de>, Uros Bizjak <ubizjak@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org
-References: <20240702122639.248110-1-jfalempe@redhat.com>
- <2d886ba5-950b-4dff-81ea-8748d7d67c55@redhat.com>
- <277007E3-48FA-482C-9EE0-FA28F470D6C4@kernel.org>
-From: Jocelyn Falempe <jfalempe@redhat.com>
-In-Reply-To: <277007E3-48FA-482C-9EE0-FA28F470D6C4@kernel.org>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US, fr
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>, Vinod Koul
+ <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: dma: fsl-mxs-dma: Add compatible
+ string "fsl,imx8qxp-dma-apbh"
+Message-ID: <20240712163503.69dad6b1@xps-13>
+In-Reply-To: <20240527121836.178457-1-miquel.raynal@bootlin.com>
+References: <20240520-gpmi_nand-v2-2-e3017e4c9da5@nxp.com>
+	<20240527121836.178457-1-miquel.raynal@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240712_071146_173605_AFCB947D 
-X-CRM114-Status: GOOD (  10.98  )
+X-CRM114-CacheID: sfid-20240712_073510_241982_9645924F 
+X-CRM114-Status: GOOD (  12.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,41 +76,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 12/07/2024 15:34, Kees Cook wrote:
-> 
-> 
-> On July 12, 2024 2:59:30 AM PDT, Jocelyn Falempe <jfalempe@redhat.com> wrote:
->> Gentle ping, I need reviews from powerpc, usermod linux, mtd, pstore and hyperv, to be able to push it in the drm-misc tree.
-> 
-> Oops, I thought I'd Acked already!
-> 
-> Acked-by: Kees Cook <kees@kernel.org>
-> 
-> And, yeah, as mpe said, you're all good to take this via drm-misc.
-
-Thanks a lot. If there is no objection I will push it to drm-misc mid 
-next week. I may have all required acks by then.
-> 
-> Thanks!
-> 
-> -Kees
-> 
-> 
-
-Best regards,
-
--- 
-
-Jocelyn
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVmlub2QsCgptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tIHdyb3RlIG9uIE1vbiwgMjcgTWF5
+IDIwMjQgMTQ6MTg6MzYgKzAyMDA6Cgo+IE9uIE1vbiwgMjAyNC0wNS0yMCBhdCAxNjowOToxMyBV
+VEMsIEZyYW5rIExpIHdyb3RlOgo+ID4gQWRkIGNvbXBhdGlibGUgc3RyaW5nICJmc2wsaW14OHF4
+cC1kbWEtYXBiaCIuIEl0IHJlcXVpcmVzIHBvd2VyLWRvbWFpbnMKPiA+IGNvbXBhcmVkIHdpdGgg
+ImZzbCxpbXgyOC1kbWEtYXBiaCIuCj4gPiAKPiA+IEFsbG93ICdwb3dlci1kb21haW5zJyBwcm9w
+ZXJ0eSBiZWNhdXNlIGkuTVg4RFhMIGkuTVg4UU0gYW5kIGkuTVg4UVhQIG5lZWQKPiA+IGl0Lgo+
+ID4gCj4gPiBLZWVwIHRoZSBzYW1lIHJlc3RyaWN0aW9uIGFib3V0ICdwb3dlci1kb21haW5zJyBm
+b3Igb3RoZXIgY29tcGF0aWJsZQo+ID4gc3RyaW5ncy4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTog
+RnJhbmsgTGkgPEZyYW5rLkxpQG54cC5jb20+Cj4gPiBSZXZpZXdlZC1ieTogUm9iIEhlcnJpbmcg
+KEFybSkgPHJvYmhAa2VybmVsLm9yZz4gIAo+IAo+IEFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2Vy
+bmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBuYW5kL25leHQs
+IHRoYW5rcy4KCkkganVzdCByZWFsaXplIG5vdyBJIHBpY2tlZCB0aGlzIHVwIHdoZXJlYXMgaXQg
+d2FzIG5vdCBpbnRlbmRlZCB0byBiZQptZXJnZWQgdGhyb3VnaCBtdGQuIEknbSBmaW5lIGtlZXBp
+bmcgdGhpcyBwYXRjaCBmb3IgdGhlIG5leHQgbWVyZ2UKd2luZG93IGlmIEkgZ2V0IHlvdXIgZXhw
+bGljaXQgYWdyZWVtZW50IG90aGVyd2lzZSBJJ2xsIGRyb3AgaXQuCgpUaGFua3MsCk1pcXXDqGwK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
