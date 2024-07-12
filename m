@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 464E5C2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96C86C3DA45
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cMyJq20UkInjGiKvHx6Rl5mxIktmEC3PN9fClfPg/b4=; b=Zv2rBnc3THeBMq
-	epUF0swoGezStrfW7ipI6J5yvYpDxm822qKhupfLwVDHN/TWSAnebGiV5eB4xvWgmrXWh5pn2/X3n
-	6XP8lIwOKBLbDUwVLioxZoUqHvaH1IfzDMEYMntFxM16iqEioO0y/n0ex8877U1ID2/ziI/iMCq8l
-	tNxobenpLdyAIUtO9xgXV0JnFjFXCIXYCliRPECk/CqMfNCXwFGjjOgxDAIw0tFVUrFpcRtoaxnKq
-	ZbyDQYtfjoafzWp/E0S2W7kdwN3tMMwsq/Tg/p7EzmdFK35jJLl1ziPQ11MmHz74EvSrGkQllKlVR
-	o7AZl2eQH3njpZKOQmpw==;
+	List-Owner; bh=WqZEKIIuLpn9yXQkiOPSgJDHR3KDX70ealb63GwzEY8=; b=V3e2WCGQg5anBs
+	J6bwANFK5+XbC3Ap/q96V0nU0PoRTPneYZFcMzY/lYOU/12HJUkGAmZVsBHEdHyAKDGw7Y3QuivGZ
+	Wc+z/sLF2ifkkFeG4UpN0m4B8IOufCOqV/CKwvHZi+RsvicHM/UnnkOjSoJpxuZbhFxHA7mE6CvcP
+	vVdrQ9P8ZM//A0M9njl1MIBjksdcTSSvzi3u3XcmjkIR8y2NJkKHzLflRUZG14dyCWX3jEm4waDPu
+	SOqxHB86zqOJWb34LWLOddck4G05PqZP5gNThtq+UTPc0jOQ99FZk7FKLO3j9JMCMLnMEvqoEUGn0
+	BqSu3hPTBGlQjGeXSgQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSHMv-00000000L3v-20Os;
-	Fri, 12 Jul 2024 14:35:29 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1sSHP8-00000000Lbx-2mAL;
+	Fri, 12 Jul 2024 14:37:46 +0000
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSHMc-00000000Kxu-0C5w;
-	Fri, 12 Jul 2024 14:35:11 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0858B6000B;
-	Fri, 12 Jul 2024 14:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1720794905;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+CiVeB36WC3XhinXVvw3aBG/Q6TEMnuDcanTg5z9DXE=;
-	b=RCA9lVVX1fd75spCVuVahSk1RoqL9eZbgexe3LnZmD+IsA7s0KLR4kU0QT6UQzVSQrcrPX
-	hRiL3pPLMNwY4j16hbLtdlG5J+BEEA1PW7OW7sjOjXbSeY14TvMoAj1mIPMbsItiZvowOQ
-	piShlvO2atXTdq/ISgShhl/xtRHkX+Z96RhtZHiU1TLZR7Gnw5w1RasNCG0SS+DHpspE3C
-	dZUPWp3bNqaTriRX3hgPZNbOHazHGNgNQK8n++DqtMVk37DB13EUCRlel7A9e3Q4Zwg3Ay
-	L9g8Ji7Nb82hIJNCnIwTjQT/ej4Az4/PbJYd7xyyek1Zmaaf4T3FbmlAXVsP/w==
-Date: Fri, 12 Jul 2024 16:35:03 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Frank Li <Frank.Li@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>, Vinod Koul
- <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: dma: fsl-mxs-dma: Add compatible
- string "fsl,imx8qxp-dma-apbh"
-Message-ID: <20240712163503.69dad6b1@xps-13>
-In-Reply-To: <20240527121836.178457-1-miquel.raynal@bootlin.com>
-References: <20240520-gpmi_nand-v2-2-e3017e4c9da5@nxp.com>
-	<20240527121836.178457-1-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	id 1sSHP6-00000000Lay-1sLz
+	for linux-mtd@lists.infradead.org;
+	Fri, 12 Jul 2024 14:37:45 +0000
+Received: from cwcc.thunk.org (pool-173-48-116-79.bstnma.fios.verizon.net [173.48.116.79])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46CEb8Pq026641
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Jul 2024 10:37:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1720795032; bh=1Gn6aaaJtlJEaxDX5RF5pO/WPW2zmse3sX2wC3biWbQ=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=H+YYV5EgAW5YM8jOjPb5/kXfHSNhicmHQvMULSGWZvaL5Jrop5oNBR7HRvskjJZ5u
+	 4JFfxYEjjwFeoKEaGdxxpLXj8WvHtpLcqXEuTYGOaJeocdS6VXclSwn8l4XwAFEfeN
+	 pTO3ioXk3hG552FmpcbcHaflew3b4fgYCj/Xiuc98EQqM0Q4r5C5MzMjMHxVVer0TE
+	 dgXs8jPrHEDiiWDHfIFOrDPHtTS8h95cNU3YkJDgHKvXR+gQ8z3R00yVQhctBzyinJ
+	 RKTs684wIDVGAGwbS+y2+nc4jdvkFxRW/bKSItJrLUPfwBUpW9M21AqoStEwRRNVPa
+	 G9z+tHBGyuJbQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 9F99D15C27B4; Fri, 12 Jul 2024 10:37:08 -0400 (EDT)
+Date: Fri, 12 Jul 2024 10:37:08 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Zhihao Cheng <chengzhihao@huaweicloud.com>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, yangerkun <yangerkun@huawei.com>,
+        "wangzhaolong (A)" <wangzhaolong1@huawei.com>
+Subject: Re: [BUG REPORT] potential deadlock in inode evicting under the
+ inode lru traversing context on ext4 and ubifs
+Message-ID: <20240712143708.GA151742@mit.edu>
+References: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240712_073510_241982_9645924F 
-X-CRM114-Status: GOOD (  12.05  )
+X-CRM114-CacheID: sfid-20240712_073744_649946_47D081EF 
+X-CRM114-Status: GOOD (  15.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,26 +75,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVmlub2QsCgptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tIHdyb3RlIG9uIE1vbiwgMjcgTWF5
-IDIwMjQgMTQ6MTg6MzYgKzAyMDA6Cgo+IE9uIE1vbiwgMjAyNC0wNS0yMCBhdCAxNjowOToxMyBV
-VEMsIEZyYW5rIExpIHdyb3RlOgo+ID4gQWRkIGNvbXBhdGlibGUgc3RyaW5nICJmc2wsaW14OHF4
-cC1kbWEtYXBiaCIuIEl0IHJlcXVpcmVzIHBvd2VyLWRvbWFpbnMKPiA+IGNvbXBhcmVkIHdpdGgg
-ImZzbCxpbXgyOC1kbWEtYXBiaCIuCj4gPiAKPiA+IEFsbG93ICdwb3dlci1kb21haW5zJyBwcm9w
-ZXJ0eSBiZWNhdXNlIGkuTVg4RFhMIGkuTVg4UU0gYW5kIGkuTVg4UVhQIG5lZWQKPiA+IGl0Lgo+
-ID4gCj4gPiBLZWVwIHRoZSBzYW1lIHJlc3RyaWN0aW9uIGFib3V0ICdwb3dlci1kb21haW5zJyBm
-b3Igb3RoZXIgY29tcGF0aWJsZQo+ID4gc3RyaW5ncy4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTog
-RnJhbmsgTGkgPEZyYW5rLkxpQG54cC5jb20+Cj4gPiBSZXZpZXdlZC1ieTogUm9iIEhlcnJpbmcg
-KEFybSkgPHJvYmhAa2VybmVsLm9yZz4gIAo+IAo+IEFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2Vy
-bmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCBuYW5kL25leHQs
-IHRoYW5rcy4KCkkganVzdCByZWFsaXplIG5vdyBJIHBpY2tlZCB0aGlzIHVwIHdoZXJlYXMgaXQg
-d2FzIG5vdCBpbnRlbmRlZCB0byBiZQptZXJnZWQgdGhyb3VnaCBtdGQuIEknbSBmaW5lIGtlZXBp
-bmcgdGhpcyBwYXRjaCBmb3IgdGhlIG5leHQgbWVyZ2UKd2luZG93IGlmIEkgZ2V0IHlvdXIgZXhw
-bGljaXQgYWdyZWVtZW50IG90aGVyd2lzZSBJJ2xsIGRyb3AgaXQuCgpUaGFua3MsCk1pcXXDqGwK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Fri, Jul 12, 2024 at 02:27:20PM +0800, Zhihao Cheng wrote:
+> Problem description
+> ===================
+> 
+> The inode reclaiming process(See function prune_icache_sb) collects all
+> reclaimable inodes and mark them with I_FREEING flag at first, at that
+> time, other processes will be stuck if they try getting these inodes(See
+> function find_inode_fast), then the reclaiming process destroy the
+> inodes by function dispose_list().
+> Some filesystems(eg. ext4 with ea_inode feature, ubifs with xattr) may
+> do inode lookup in the inode evicting callback function, if the inode
+> lookup is operated under the inode lru traversing context, deadlock
+> problems may happen.
+> 
+> Case 1: In function ext4_evict_inode(), the ea inode lookup could happen
+> if ea_inode feature is enabled, the lookup process will be stuck under
+> the evicting context like this:
+> 
+>  1. File A has inode i_reg and an ea inode i_ea
+>  2. getfattr(A, xattr_buf) // i_ea is added into lru // lru->i_ea
+>  3. Then, following three processes running like this:
+> 
+>     PA                              PB
+>  echo 2 > /proc/sys/vm/drop_caches
+>   shrink_slab
+>    prune_dcache_sb
+>    // i_reg is added into lru, lru->i_ea->i_reg
+>    prune_icache_sb
+>     list_lru_walk_one
+>      inode_lru_isolate
+>       i_ea->i_state |= I_FREEING // set inode state
+>       i_ea->i_state |= I_FREEING // set inode state
+
+Um, I don't see how this can happen.  If the ea_inode is in use,
+i_count will be greater than zero, and hence the inode will never be
+go down the rest of the path in inode_lru_inode():
+
+	if (atomic_read(&inode->i_count) ||
+	    ...) {
+		list_lru_isolate(lru, &inode->i_lru);
+		spin_unlock(&inode->i_lock);
+		this_cpu_dec(nr_unused);
+		return LRU_REMOVED;
+	}
+
+Do you have an actual reproduer which triggers this?  Or would this
+happen be any chance something that was dreamed up with DEPT?
+
+       	      	     	       	    		- Ted
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
