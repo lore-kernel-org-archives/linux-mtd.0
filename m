@@ -4,91 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04886C3DA45
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 08:21:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A19B7C2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 08:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C/irkQNsUBXxaLCl5msjRsLkJXFnha6HQQ/ZZyZ4/Mk=; b=0R5BHjEtUC4w++
-	eRw3QCJiIWADJEl218ZwLOhvu2aMsbvBoCjbG6eL6KzVkBMEfSt4cubd3YkSseCorS+ZfwSLD6arq
-	yo8H2JfmMDXmHNt16BmPi1bs+nTQFJlmJcp42yllOBV1yzNxAkEAHX9XNQ+T8vD6QtS7vLbdQ96vc
-	7GSf/boehtLr9RkXQZPHZiTQmH75xhMAf7HOBqYo4McTE+2MvYiVNPQI9aZjgn5R6Ud4jo2jEi7xa
-	tc6DyeMh8UreauxMWeCOTn5xicf5wPcBMdExEg5wD/cUnA5Awd2F0MN/YnJ6lIffC1k6uI2ydvKtD
-	dr3lyZ5+0jsuK+///DYA==;
+	List-Owner; bh=4HbM0ooYQ/LEMjQwb9OZubPMjsWtpc0bMi6VjTczKr4=; b=qjWEVt8zJIjqg3
+	NmuQqxjdqtnyODMscLXzJ1QtFrv7WmDFE+KKmMOUU1rX6PYjzMKJyq3q0/pg1CJv7f6xd8S+5+UG1
+	/eUnrd5gV78DWcQrrOMP4tuy8SUiRRG9rn8aVaGtB8oWhPTReP/QXadva3kkSaDQswsHyj5GcCfRB
+	cUFgnVYY3d6GuflzzpFaDChuHCam9ZMX7yOUWrD/RobublrM4G7Q1b8hF4xSw1I/QiC6Q5II4ud2T
+	U6t4urxPDUv9L9WLZpYfVfoSUk2Y2kWxKHSubyN50GI+uanSHJz66cpHWShCnX5n1w8Qo/+YP+9kE
+	u+iOdiWu+5ybJrlcwlsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSBX0-0000000Gs8m-2fVy;
-	Fri, 12 Jul 2024 08:21:30 +0000
-Received: from www530.your-server.de ([188.40.30.78])
+	id 1sSBjV-0000000GueR-3QRk;
+	Fri, 12 Jul 2024 08:34:25 +0000
+Received: from mgamail.intel.com ([192.198.163.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSBWv-0000000Gs3Y-01Cl
-	for linux-mtd@lists.infradead.org;
-	Fri, 12 Jul 2024 08:21:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=lcIxnxTVnl7eemhsDeBtjmieMiTqljeGdfc5S4iHFWY=; b=D6UzQg9PXsMWYd67Vt5J9PuK0P
-	1xQqh0XjxrgQYSaLeHw1dXhozg6f51dU3KeMOV/HzXN+rZhUlCpwah3Lx/MyZom2RsQY+eI6NLECY
-	4vi2c9G7q+TbVu2ofATbYF1nhYnhnAhsUhy7PIBGjDeGx7VIHg6up+cINV1dOESIeoD55mOoRmeb+
-	KVpC+9Bjzv0/b4UUSCSJFpVSIABLnnNYaQ1hOEUiElTSIKCH+P3S35GTvWVjC8yD53emrZBPqMkGW
-	mSperykogVaW/4N8l3pYPrpSi1FMBjB46zbpRjGPnAGioY6BgXLUttvNCxgTeQKdR7Y2wYbE2LV/z
-	AGINDtmQ==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1sSBWT-0001oA-Qt; Fri, 12 Jul 2024 10:20:57 +0200
-Received: from [87.49.147.209] (helo=localhost)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <esben@geanix.com>)
-	id 1sSBWS-000Q04-2s;
-	Fri, 12 Jul 2024 10:20:56 +0200
-From: Esben Haabendal <esben@geanix.com>
-To: Erez <erezgeva2@gmail.com>
-Cc: Michael Walle <mwalle@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Jaime Liao <jaimeliao@mxic.com.tw>,
-  leoyu@mxic.com.tw,  Alvin Zhou <alvinzhou@mxic.com.tw>,  Julien Su
- <juliensu@mxic.com.tw>,  Erez Geva <erezgeva@nwtime.org>,
-  linux-mtd@lists.infradead.org,  Pratyush Yadav <pratyush@kernel.org>,
-  linux-kernel@vger.kernel.org,  Miquel Raynal <miquel.raynal@bootlin.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  devicetree@vger.kernel.org,  Rob Herring
- <robh@kernel.org>,  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor
- Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mtd: macronix,mx25l12833f: add
- SPI-NOR chip
-In-Reply-To: <CANeKEMNtXb4ZV7kcLbHY+Mti6dPV9UZ2wTyUq5z0qtmtNNqSVA@mail.gmail.com>
-	(Erez's message of "Fri, 12 Jul 2024 00:09:01 +0200")
-References: <20240629103914.161530-1-erezgeva@nwtime.org>
-	<20240629103914.161530-4-erezgeva@nwtime.org>
-	<1c457520-07b7-4bde-b040-e8bca959a4f5@linaro.org>
-	<CANeKEMOODBNZA6efh0E0Ga_KaVs5Y3WLcUftRhNwYHhnXO=GNw@mail.gmail.com>
-	<CANeKEMO42rJt5Ob4_HDcZ3eEMvuMOPvRaFaLwL8SA65NtxSV7A@mail.gmail.com>
-	<1d56c3b2-7adf-45b9-a509-956340f3f17b@linaro.org>
-	<CANeKEMMe-Onpn7xWQHgWz1Ps_uQPEMa7HrKA00HpoKjG+DCJNQ@mail.gmail.com>
-	<3bafcbea-6aa5-43ca-9d12-3916be3fe03d@linaro.org>
-	<CANeKEMM02-Jvb8Pd0fZJFnRg-hsAW+hckYWm11tZZXNMPSPJ=w@mail.gmail.com>
-	<9b45cc73-2251-4085-af95-7ccd00dd6d3b@linaro.org>
-	<CANeKEMP+mRefYZNb+TuBmOD7dC6=7Rg7D1EcfnjJoiaeaV28SQ@mail.gmail.com>
-	<875xtd48ps.fsf@geanix.com>
-	<CANeKEMNJ3_ET5pQo2wg7_GSLX+vE+dqW-CV=v2DnG10xcgSdzQ@mail.gmail.com>
-	<D2MZ405LVTN8.3LTVN3KTUD6A3@kernel.org>
-	<CANeKEMNtXb4ZV7kcLbHY+Mti6dPV9UZ2wTyUq5z0qtmtNNqSVA@mail.gmail.com>
-Date: Fri, 12 Jul 2024 10:20:56 +0200
-Message-ID: <878qy7vx5j.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1sSBjR-0000000Gudt-2a8f;
+	Fri, 12 Jul 2024 08:34:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720773262; x=1752309262;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pq5PExVlhukFj3U0b+zsykWbjKB4zXqVv9oUhe4GayI=;
+  b=AMdXqh2kAzOVGAdIKBJeVBJTQ0Vngm3IoOubG9IXYN8ikGMv9mNVili7
+   yvcn0O9r26DD9TXDqM0z1/2jpn8fvq8uONNUNBMBXEtDdTZOvLjN7etAW
+   VcFk1eN5vj7zvS4wrhhCm96TTEHrVUDjHsL5GCcQcaqzngqTVEha8CFzT
+   Ijx2C3Tb6wEXIvAFiU0RCkCa8KyCzWi8Jpv3vP8Nu60VHnQjVfmG6OqmX
+   M8DRYYnuEVpl0bwnff3DuptoanvinK3Cc7ZJROI4J+Um2kKMTGNDHvWsf
+   NF53IZFm6HDb1o7hZKrSxWlRd/ZAStSCK+0JgvKRt+buTBQ4uAdf5XwTo
+   Q==;
+X-CSE-ConnectionGUID: N2TMSNdkT7eUfKLJC4MGoQ==
+X-CSE-MsgGUID: RNQUFbxHQgmEAg89mGvsmQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11130"; a="29611213"
+X-IronPort-AV: E=Sophos;i="6.09,202,1716274800"; 
+   d="scan'208";a="29611213"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2024 01:34:21 -0700
+X-CSE-ConnectionGUID: ixOa7lDgSiKEeMgMv0eYSg==
+X-CSE-MsgGUID: AQs+thZ5SKmeKy6XedTRjQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,202,1716274800"; 
+   d="scan'208";a="53774969"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa005.jf.intel.com with ESMTP; 12 Jul 2024 01:34:16 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sSBjJ-000aYE-1K;
+	Fri, 12 Jul 2024 08:34:13 +0000
+Date: Fri, 12 Jul 2024 16:33:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Esben Haabendal <esben@geanix.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+	linux-arm-kernel@lists.infradead.org,
+	Esben Haabendal <esben@geanix.com>
+Subject: Re: [PATCH v3 14/15] mtd: spi-nor: Drop deprecated mechanism for
+ optional SFDP parsing
+Message-ID: <202407121629.O2ykn94e-lkp@intel.com>
+References: <20240711-macronix-mx25l3205d-fixups-v3-14-99353461dd2d@geanix.com>
 MIME-Version: 1.0
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27333/Thu Jul 11 10:35:59 2024)
+Content-Disposition: inline
+In-Reply-To: <20240711-macronix-mx25l3205d-fixups-v3-14-99353461dd2d@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240712_012125_071778_BE0D1965 
-X-CRM114-Status: GOOD (  28.80  )
+X-CRM114-CacheID: sfid-20240712_013421_918772_EE1DDC31 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,78 +100,152 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Erez <erezgeva2@gmail.com> writes:
+Hi Esben,
 
-> On Thu, 11 Jul 2024 at 21:57, Michael Walle <mwalle@kernel.org> wrote:
->> On Thu Jul 11, 2024 at 8:57 PM CEST, Erez wrote:
->> > Yes, I think we should.
->> >
->> > Reading the specification provided publicly by Macronix.
->> > For all the JEDEC IDs with the no SFDP flag in drivers/mtd/spi-nor/macronix.c
->> > All of them have a new version or a new chip with the same JEDEC ID
->> > that supports SFDP.
->> > There are 2 chips that Macronix does not provide spec. in public.
->> > I can ask Macronix technical support on these 2 chips.
->>
->> We don't add flashes we cannot test.
->
-> I did not suggest adding anything new.
-> I refer to the list of chips we already have in drivers/mtd/spi-nor/macronix.c
-> I presume someone tested them before adding them to the list in the past.
-> And probably the old chip did not have the SFDP table back then.
->
-> What I checked with the chip specifications is that all Macronix chips
-> since 2010 have SFDP.
->
-> The situation today is that all Macronix chips that are NOT in the
-> Macronix table work based on the SFDP table.
-> But new chips that use a JEDEC found in the Macronix table, skip the
-> SFDP table and use the setting of the old chip.
+kernel test robot noticed the following build errors:
 
-Not entirely true.
+[auto build test ERROR on a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6]
 
-Those that entries in the Macronix table that has SPI_NOR_DUAL_READ
-and/or SPI_NOR_QUAD_READ in no_sfdp_flags is caught by
-the magic flags matching in spi_nor_init_params_deprecated() and will
-have spi_nor_parse_sfdp() called from
-spi_nor_sfdp_init_params_deprecated(). So flashes reusing ID for these
-will have the SFDP tables parsed.
+url:    https://github.com/intel-lab-lkp/linux/commits/Esben-Haabendal/mtd-spi-nor-core-add-flag-for-doing-optional-SFDP-parsing/20240711-224454
+base:   a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6
+patch link:    https://lore.kernel.org/r/20240711-macronix-mx25l3205d-fixups-v3-14-99353461dd2d%40geanix.com
+patch subject: [PATCH v3 14/15] mtd: spi-nor: Drop deprecated mechanism for optional SFDP parsing
+config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20240712/202407121629.O2ykn94e-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project a0c6b8aef853eedaa0980f07c0a502a5a8a9740e)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240712/202407121629.O2ykn94e-lkp@intel.com/reproduce)
 
-The rest of the entries in the Macronix table is not so lucky. When a
-replacement chip (with the same ID) is used, it will not be configured
-with the values found in SFDP table.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202407121629.O2ykn94e-lkp@intel.com/
 
-> So I suggest we read the SFDP table for all Macronix chips.
+All errors (new ones prefixed by >>):
 
-Based on their strategy of re-using flash ID, I think this is a sane
-approach.
+   In file included from drivers/mtd/spi-nor/core.c:13:
+   In file included from include/linux/device.h:32:
+   In file included from include/linux/device/driver.h:21:
+   In file included from include/linux/module.h:19:
+   In file included from include/linux/elf.h:6:
+   In file included from arch/s390/include/asm/elf.h:173:
+   In file included from arch/s390/include/asm/mmu_context.h:11:
+   In file included from arch/s390/include/asm/pgalloc.h:18:
+   In file included from include/linux/mm.h:2210:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/mtd/spi-nor/core.c:17:
+   In file included from include/linux/mtd/spi-nor.h:11:
+   In file included from include/linux/spi/spi-mem.h:14:
+   In file included from include/linux/spi/spi.h:17:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+         |                                                           ^
+   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
+     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+         |                                                      ^
+   In file included from drivers/mtd/spi-nor/core.c:17:
+   In file included from include/linux/mtd/spi-nor.h:11:
+   In file included from include/linux/spi/spi-mem.h:14:
+   In file included from include/linux/spi/spi.h:17:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
+         |                                                           ^
+   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
+     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+         |                                                      ^
+   In file included from drivers/mtd/spi-nor/core.c:17:
+   In file included from include/linux/mtd/spi-nor.h:11:
+   In file included from include/linux/spi/spi-mem.h:14:
+   In file included from include/linux/spi/spi.h:17:
+   In file included from include/linux/scatterlist.h:9:
+   In file included from arch/s390/include/asm/io.h:78:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   In file included from drivers/mtd/spi-nor/core.c:25:
+>> drivers/mtd/spi-nor/core.h:722:54: error: expected ';' after return statement
+     722 |         return (nor->info->no_sfdp_flags & SPI_NOR_TRY_SFDP)
+         |                                                             ^
+         |                                                             ;
+   17 warnings and 1 error generated.
 
-> Old Macronix chips that do not have SFDP will use the setting from the
-> Macronix table. i.e backward compatible.
-> While new chips which do have an SFDP table will work with the new
-> setting we find in the table.
 
-Yes, if we apply the new SPI_NOR_TRY_SFDP flag to the matching table
-entries.
+vim +722 drivers/mtd/spi-nor/core.h
 
-> Of course, we might have issues in parsing the SFDP table itself.
-> So we fix them as developers report and send chip ID and part number
-> with the SFDP table content.
-> I do not see the point of "hiding" with the old setting.
-> Anyhow, as we do not like the IDs table and keep it for backward-compatible,
-> so it only makes sense we should use the SFDP table as much as possible.
->
-> My check was to ensure Tudor that all Macronix chips have SFDP whether
-> they are in the IDs table or not and we are not wasting a no-op on a
-> chip which can not have an SFDP table.
->
-> All I suggest is we add the new 'SPI_NOR_TRY_SFDP' flag, to all
-> Macronix chips.. Which will try to read the SFDP to any Macronix chip.
+   712	
+   713	/**
+   714	 * spi_nor_try_sfdp() - returns true if optional SFDP parsing should be tried
+   715	 * for this flash, with fallback to static parameters and settings based on
+   716	 * flash ID if SFDP parsing fails.
+   717	 *
+   718	 * Return: true if optional SFDP parsing should be tried
+   719	 */
+   720	static inline bool spi_nor_try_sfdp(const struct spi_nor *nor)
+   721	{
+ > 722		return (nor->info->no_sfdp_flags & SPI_NOR_TRY_SFDP)
+   723	}
+   724	
 
-Makes sense. But obviously comes with a risk as we won't be able to
-test all chips for regression when doing that.
-
-/Esben
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
