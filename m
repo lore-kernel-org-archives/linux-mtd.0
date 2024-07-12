@@ -4,75 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C3F0C2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 06:28:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 473C0C2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 06:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vHfKkqRjMwo8pK5/xxR0Ia3wWQ5bSErqfC43GRl4hxY=; b=0l9z/VLteC3JcZ
-	g7/L0aQAwwf+zi5yeOGMrybUzGx+orF5wA/5m2afPT+YnmDssDh5DSG3DRhPIifII/AmzFsgJpYh7
-	GBI1R/OhteMzngtpJGrUVDG+WeRHNbXpt6dTmH+RDY/sBK3XU7acQzSk8tK6MMQWVjlw/4hsPBNDG
-	O460zVn3ZS+YazwvTsbvvGHDUE2CyhcP5vzAwrP0xcgObOq6ezsvhou9qUfDIQZo33SeWdo6JyVcQ
-	xwerKCaceZEs5PBQZYjhf3UR6BGPwUTeXzwy6ON1Z1lT0v/5Jgx0LHG3/27C4lBRqiBLKkY/H9UXY
-	QBks0s9yD953zp/4LiuQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=smETuOOgtELP6E3mYmh1dgzNCPgPULRYGSlnpMdXUFA=; b=FkTjyxLO63XU5p
+	CNNbeko/1foI3hiDiWjLKSTu4cRBGCuKNbkdU+Rjly9ZQCLqtASiZEdCJSePMwzk7r8n7XeJSPrK2
+	ZahVvJjz2uSTasth10G3S+SII82UZ6vfSI4qXsnQ5FeNf4wGM6TsIJ5eP9Cy6+TNa0z96dxnOvGHC
+	wuMDvyBTT/myeuYx6MUfxC3lnPz3leddxvuBM2PBQtg3sqcurFgeOZ++r09ACVjJjuWQtacMb7FKU
+	5ab5Ka5mz+bucptCcu9yiA7VzXEiwdgzQ3AZ+2FeAhQSnR3hgHhI3zJco9EmjUCmf8QICUcP0xMhy
+	pWw/pwLFuEP9GPl4p7Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sS9l8-0000000Gd2a-37U9;
-	Fri, 12 Jul 2024 06:27:58 +0000
-Received: from dggsgout12.his.huawei.com ([45.249.212.56])
+	id 1sS9vl-0000000GeFY-3the;
+	Fri, 12 Jul 2024 06:38:57 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sS9l5-0000000Gcz3-07Ii
+	id 1sS9vi-0000000GeEU-12xv
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Jul 2024 06:27:57 +0000
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WL1q34zCHz4f3jJF
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Jul 2024 14:27:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 6CD8C1A016E
-	for <linux-mtd@lists.infradead.org>; Fri, 12 Jul 2024 14:27:39 +0800 (CST)
-Received: from [10.174.178.46] (unknown [10.174.178.46])
-	by APP2 (Coremail) with SMTP id Syh0CgB34YbZzJBmRSN_Bw--.31285S3;
-	Fri, 12 Jul 2024 14:27:37 +0800 (CST)
-To: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Ted Tso <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
- Christoph Hellwig <hch@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, "zhangyi (F)" <yi.zhang@huawei.com>,
- yangerkun <yangerkun@huawei.com>, "wangzhaolong (A)"
- <wangzhaolong1@huawei.com>
-From: Zhihao Cheng <chengzhihao@huaweicloud.com>
-Subject: [BUG REPORT] potential deadlock in inode evicting under the inode lru
- traversing context on ext4 and ubifs
-Message-ID: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
-Date: Fri, 12 Jul 2024 14:27:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Fri, 12 Jul 2024 06:38:56 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WL1zS5XJ6zQjM1;
+	Fri, 12 Jul 2024 14:34:44 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id 944CE140336;
+	Fri, 12 Jul 2024 14:38:42 +0800 (CST)
+Received: from huawei.com (10.175.104.67) by kwepemm000013.china.huawei.com
+ (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 12 Jul
+ 2024 14:38:42 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] ubifs: ubifs_jnl_write_inode: Only check once for the limitation of xattr count
+Date: Fri, 12 Jul 2024 14:36:24 +0800
+Message-ID: <20240712063625.3363974-2-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240712063625.3363974-1-chengzhihao1@huawei.com>
+References: <20240712063625.3363974-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-X-CM-TRANSID: Syh0CgB34YbZzJBmRSN_Bw--.31285S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFWfKr4xZF17AF1rArWUArb_yoWxJw45pr
-	WDWrySyr4kXFyY934vqr4kXw1093WkKF4UXr95CrnrZ3WDJF1IqF17try5AFW7GrWkA3s0
-	qa1UCr1DCa1ay3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UQzVbUUUUU=
-X-CM-SenderInfo: xfkh0wx2klxt3r6k3tpzhluzxrxghudrp/
+X-Originating-IP: [10.175.104.67]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240711_232755_528143_0D0B6B2B 
-X-CRM114-Status: GOOD (  12.57  )
+X-CRM114-CacheID: sfid-20240711_233854_509943_6EEC4EAD 
+X-CRM114-Status: GOOD (  11.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,133 +64,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkuIFJlY2VudGx5LCB3ZSBmb3VuZCBhIGRlYWRsb2NrIGluIGlub2RlIHJlY2xpYWltaW5nIHBy
-b2Nlc3MgY2F1c2VkIGJ5IApjaXJjdWxhciBkZXBlbmRlbmNlIGJldHdlZW4gZmlsZSBpbm9kZSBh
-bmQgZmlsZSdzIHhhdHRyIGlub2RlLgoKUHJvYmxlbSBkZXNjcmlwdGlvbgo9PT09PT09PT09PT09
-PT09PT09CgpUaGUgaW5vZGUgcmVjbGFpbWluZyBwcm9jZXNzKFNlZSBmdW5jdGlvbiBwcnVuZV9p
-Y2FjaGVfc2IpIGNvbGxlY3RzIGFsbCAKcmVjbGFpbWFibGUgaW5vZGVzIGFuZCBtYXJrIHRoZW0g
-d2l0aCBJX0ZSRUVJTkcgZmxhZyBhdCBmaXJzdCwgYXQgdGhhdCAKdGltZSwgb3RoZXIgcHJvY2Vz
-c2VzIHdpbGwgYmUgc3R1Y2sgaWYgdGhleSB0cnkgZ2V0dGluZyB0aGVzZSBpbm9kZXMoU2VlIApm
-dW5jdGlvbiBmaW5kX2lub2RlX2Zhc3QpLCB0aGVuIHRoZSByZWNsYWltaW5nIHByb2Nlc3MgZGVz
-dHJveSB0aGUgCmlub2RlcyBieSBmdW5jdGlvbiBkaXNwb3NlX2xpc3QoKS4KU29tZSBmaWxlc3lz
-dGVtcyhlZy4gZXh0NCB3aXRoIGVhX2lub2RlIGZlYXR1cmUsIHViaWZzIHdpdGggeGF0dHIpIG1h
-eSAKZG8gaW5vZGUgbG9va3VwIGluIHRoZSBpbm9kZSBldmljdGluZyBjYWxsYmFjayBmdW5jdGlv
-biwgaWYgdGhlIGlub2RlIApsb29rdXAgaXMgb3BlcmF0ZWQgdW5kZXIgdGhlIGlub2RlIGxydSB0
-cmF2ZXJzaW5nIGNvbnRleHQsIGRlYWRsb2NrIApwcm9ibGVtcyBtYXkgaGFwcGVuLgoKQ2FzZSAx
-OiBJbiBmdW5jdGlvbiBleHQ0X2V2aWN0X2lub2RlKCksIHRoZSBlYSBpbm9kZSBsb29rdXAgY291
-bGQgaGFwcGVuIAppZiBlYV9pbm9kZSBmZWF0dXJlIGlzIGVuYWJsZWQsIHRoZSBsb29rdXAgcHJv
-Y2VzcyB3aWxsIGJlIHN0dWNrIHVuZGVyIAp0aGUgZXZpY3RpbmcgY29udGV4dCBsaWtlIHRoaXM6
-CgogIDEuIEZpbGUgQSBoYXMgaW5vZGUgaV9yZWcgYW5kIGFuIGVhIGlub2RlIGlfZWEKICAyLiBn
-ZXRmYXR0cihBLCB4YXR0cl9idWYpIC8vIGlfZWEgaXMgYWRkZWQgaW50byBscnUgLy8gbHJ1LT5p
-X2VhCiAgMy4gVGhlbiwgZm9sbG93aW5nIHRocmVlIHByb2Nlc3NlcyBydW5uaW5nIGxpa2UgdGhp
-czoKCiAgICAgUEEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBQQgogIGVjaG8gMiA+IC9w
-cm9jL3N5cy92bS9kcm9wX2NhY2hlcwogICBzaHJpbmtfc2xhYgogICAgcHJ1bmVfZGNhY2hlX3Ni
-CiAgICAvLyBpX3JlZyBpcyBhZGRlZCBpbnRvIGxydSwgbHJ1LT5pX2VhLT5pX3JlZwogICAgcHJ1
-bmVfaWNhY2hlX3NiCiAgICAgbGlzdF9scnVfd2Fsa19vbmUKICAgICAgaW5vZGVfbHJ1X2lzb2xh
-dGUKICAgICAgIGlfZWEtPmlfc3RhdGUgfD0gSV9GUkVFSU5HIC8vIHNldCBpbm9kZSBzdGF0ZQog
-ICAgICBpbm9kZV9scnVfaXNvbGF0ZQogICAgICAgX19pZ2V0KGlfcmVnKQogICAgICAgc3Bpbl91
-bmxvY2soJmlfcmVnLT5pX2xvY2spCiAgICAgICBzcGluX3VubG9jayhscnVfbG9jaykKICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBybSBmaWxlIEEKICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgaV9yZWctPm5saW5rID0gMAogICAgICAgaXB1dChpX3Jl
-ZykgLy8gaV9yZWctPm5saW5rIGlzIDAsIGRvIGV2aWN0CiAgICAgICAgZXh0NF9ldmljdF9pbm9k
-ZQogICAgICAgICBleHQ0X3hhdHRyX2RlbGV0ZV9pbm9kZQogICAgICAgICAgZXh0NF94YXR0cl9p
-bm9kZV9kZWNfcmVmX2FsbAogICAgICAgZXh0NF94YXR0cl9pbm9kZV9pZ2V0CiAgICAgICAgICAg
-IGV4dDRfaWdldChpX2VhLT5pX2lubykKICAgICAgICAgICAgIGlnZXRfbG9ja2VkCiAgICAgICAg
-ICAgICAgZmluZF9pbm9kZV9mYXN0CiAgICAgICAgICAgICAgIF9fd2FpdF9vbl9mcmVlaW5nX2lu
-b2RlKGlfZWEpIC0tLS2h+iBBQSBkZWFkbG9jawogICAgIGRpc3Bvc2VfbGlzdCAvLyBjYW5ub3Qg
-YmUgZXhlY3V0ZWQgYnkgcHJ1bmVfaWNhY2hlX3NiCiAgICAgIHdha2VfdXBfYml0KCZpX2VhLT5p
-X3N0YXRlKQoKQ2FzZSAyOiBJbiBkZWxldGVkIGlub2RlIHdyaXRpbmcgZnVuY3Rpb24gdWJpZnNf
-am5sX3dyaXRlX2lub2RlKCksIGZpbGUgCmRlbGV0aW5nIHByb2Nlc3MgaG9sZHMgQkFTRUhEJ3Mg
-d2J1Zi0+aW9fbXV0ZXggd2hpbGUgZ2V0dGluZyB0aGUgeGF0dHIgCmlub2RlLCB3aGljaCBjb3Vs
-ZCByYWNlIHdpdGggaW5vZGUgcmVjbGFpbWluZyBwcm9jZXNzKFRoZSByZWNsYWltaW5nIApwcm9j
-ZXNzIGNvdWxkIHRyeSBsb2NraW5nIEJBU0VIRCdzIHdidWYtPmlvX211dGV4IGluIGlub2RlIGV2
-aWN0aW5nIApmdW5jdGlvbiksIHRoZW4gYW4gQUJCQSBkZWFkbG9jayBwcm9ibGVtIHdvdWxkIGhh
-cHBlbiBhcyBmb2xsb3dpbmc6CgogIDEuIEZpbGUgQSBoYXMgaW5vZGUgaWEgYW5kIGEgeGF0dHIo
-d2l0aCBpbm9kZSBpeGEpLCByZWd1bGFyIGZpbGUgQiBoYXMKICAgICBpbm9kZSBpYiBhbmQgYSB4
-YXR0ci4KICAyLiBnZXRmYXR0cihBLCB4YXR0cl9idWYpIC8vIGl4YSBpcyBhZGRlZCBpbnRvIGxy
-dSAvLyBscnUtPml4YQogIDMuIFRoZW4sIGZvbGxvd2luZyB0aHJlZSBwcm9jZXNzZXMgcnVubmlu
-ZyBsaWtlIHRoaXM6CgogICAgICAgICBQQSAgICAgICAgICAgICAgICBQQiAgICAgICAgICAgICAg
-ICAgICAgICAgIFBDCiAgICAgICAgICAgICAgICAgZWNobyAyID4gL3Byb2Mvc3lzL3ZtL2Ryb3Bf
-Y2FjaGVzCiAgICAgICAgICAgICAgICAgIHNocmlua19zbGFiCiAgICAgICAgICAgcHJ1bmVfZGNh
-Y2hlX3NiCiAgICAgICAgICAgLy8gaWIgYW5kIGlhIGFyZSBhZGRlZCBpbnRvIGxydSwgbHJ1LT5p
-eGEtPmliLT5pYQogICAgICAgICAgICAgICAgICAgcHJ1bmVfaWNhY2hlX3NiCiAgICAgICAgICAg
-ICAgICAgICAgbGlzdF9scnVfd2Fsa19vbmUKICAgICAgICAgICAgICAgICAgICAgaW5vZGVfbHJ1
-X2lzb2xhdGUKICAgICAgICAgICAgICAgICAgICAgIGl4YS0+aV9zdGF0ZSB8PSBJX0ZSRUVJTkcg
-Ly8gc2V0IGlub2RlIHN0YXRlCiAgICAgICAgICAgICAgICAgICAgIGlub2RlX2xydV9pc29sYXRl
-CiAgICAgICAgICAgICAgICAgICAgICBfX2lnZXQoaWIpCiAgICAgICAgICAgICAgICAgICAgICBz
-cGluX3VubG9jaygmaWItPmlfbG9jaykKICAgICAgICAgICAgICAgICAgICAgIHNwaW5fdW5sb2Nr
-KGxydV9sb2NrKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgcm0gZmlsZSBCCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgaWItPm5saW5rID0gMAogIHJtIGZpbGUgQQogICBpcHV0KGlhKQogICAgdWJp
-ZnNfZXZpY3RfaW5vZGUoaWEpCiAgICAgdWJpZnNfam5sX2RlbGV0ZV9pbm9kZShpYSkKICAgICAg
-dWJpZnNfam5sX3dyaXRlX2lub2RlKGlhKQogICAgICAgbWFrZV9yZXNlcnZhdGlvbihCQVNFSEQp
-IC8vIExvY2sgd2J1Zi0+aW9fbXV0ZXgKICAgICAgIHViaWZzX2lnZXQoaXhhLT5pX2lubykKICAg
-ICAgICBpZ2V0X2xvY2tlZAogICAgICAgICBmaW5kX2lub2RlX2Zhc3QKICAgICAgICAgIF9fd2Fp
-dF9vbl9mcmVlaW5nX2lub2RlKGl4YSkKICAgICAgICAgICB8ICAgICAgICAgIGlwdXQoaWIpIC8v
-IGliLT5ubGluayBpcyAwLCBkbyBldmljdAogICAgICAgICAgIHwgICAgICAgICAgIHViaWZzX2V2
-aWN0X2lub2RlCiAgICAgICAgICAgfCAgICAgICAgICAgIHViaWZzX2pubF9kZWxldGVfaW5vZGUo
-aWIpCiAgICAgICAgICCh/SAgICAgICAgICAgICB1Ymlmc19qbmxfd3JpdGVfaW5vZGUKICAgICAg
-QUJCQSBkZWFkbG9jayCh+y0tLS0tbWFrZV9yZXNlcnZhdGlvbihCQVNFSEQpCiAgICAgICAgICAg
-ICAgICAgICAgZGlzcG9zZV9saXN0IC8vIGNhbm5vdCBiZSBleGVjdXRlZCBieSBwcnVuZV9pY2Fj
-aGVfc2IKICAgICAgICAgICAgICAgICAgICAgd2FrZV91cF9iaXQoJml4YS0+aV9zdGF0ZSkKClJl
-cHJvZHVjZXI6Cj09PT09PT09PT09CgpodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19i
-dWcuY2dpP2lkPTIxOTAyMgoKQWJvdXQgc29sdXRpb25zCj09PT09PT09PT09PT09PQoKV2UgaGF2
-ZSB0aG91Z2h0IHNvbWUgc29sdXRpb25zLCBidXQgYWxsIG9mIHRoZW0gd2lsbCBpbXBvcnQgbmV3
-IGluZmx1ZW5jZS4KClNvbHV0aW9uIDE6IERvbid0IGNhY2hlIHhhdHRyIGlub2RlLCBtYWtlIGRy
-b3BfaW5vZGUgY2FsbGJhY2sgcmV0dXJuIAp0cnVlIGZvciB4YXR0ciBpbm9kZS4gSXQgd2lsbCBt
-YWtlIGdldHRpbmcgeGF0dHIgc2xvd2VyLgpUZXN0IGNvZGU6CiAgICAgZ2V0dGltZW9mZGF5KCZz
-LCBOVUxMKTsKICAgICBmb3IgKGkgPSAwOyBpIDwgMTAwMDA7ICsraSkKICAgICAgICAgaWYgKGdl
-dHhhdHRyKCIvcm9vdC90ZW1wL2ZpbGVfYSIsICJ1c2VyLmEiLCBidWYsIDQwOTgpIDwgMCkKICAg
-ICAgICAgICAgIHBlcnJvcigiZ2V0eGF0dHIiKTsKICAgICBnZXR0aW1lb2ZkYXkoJmUsIE5VTEwp
-OwogICAgIHByaW50ZigiY29zdCAlbGQgdXNcbiIsIDEwMDAwMDAgKiAoZS50dl9zZWMgLSBzLnR2
-X3NlYykgKyBlLnR2X3VzZWMgCi0gcy50dl91c2VjKTsKUmVzdWx0OgpleHQ0Ogpjb3N0IDE1MTA2
-OCB1cyAvLyB3aXRob3V0IGZpeApjb3N0IDMyMTU5NCB1cyAvLyB3aXRoIGZpeAp1YmlmczoKMTM0
-MTI1IHVzIC8vIHdpdGhvdXQgZml4CjM3MTAyMyB1cyAvLyB3aXRoIGZpeAoKU29sdXRpb24gMjog
-RG9uJ3QgcHV0IHhhdHRyIGlub2RlIGludG8gbHJ1LCB3aGljaCBpcyBpbXBsZW1lbnRlZCBieSAK
-aG9sZGluZyB4YXR0ciBpbm9kZSdzIHJlZmNudCB1bnRpbCB0aGUgZmlsZSBpbm9kZSBpcyBldmlj
-dGVkLCBiZXNpZGVzIAp0aGF0LCBtYWtlIGRyb3BfaW5vZGUgY2FsbGJhY2sgcmV0dXJuIHRydWUg
-Zm9yIHhhdHRyIGlub2RlLiBUaGUgc29sdXRpb24gCnBpbnMgeGF0dHIgaW5vZGUgaW4gbWVtb3J5
-IHVudGlsIHRoZSBmaWxlIGlub2RlIGlzIGV2aWN0ZWQsIGZpbGUgaW5vZGUgCndvbid0IGJlIGV2
-aWN0ZWQgaWYgaXQgaGFzIHBhZ2VjYWhlcywgc3BlY2lmaWNhbGx5Ogppbm9kZV9scnVfaXNvbGF0
-ZQogIGlmIChpbm9kZV9oYXNfYnVmZmVycyhpbm9kZSkgfHwgIW1hcHBpbmdfZW1wdHkoJmlub2Rl
-LT5pX2RhdGEpKSB7IC8vIApmaWxlIGlub2RlIHdvbid0IGJlIGV2aWN0ZWQsIHNvIGl0cycgeGF0
-dHIgaW5vZGUgd29uJ3QgYmUgcmVjbGFpbWVkIHRvbywgCndoaWNoIHdpbGwgaW5jcmVhc2UgdGhl
-IG1lbW9yeSBub2lzZS4KICAgX19pZ2V0KGlub2RlKTsKICAgaWYgKHJlbW92ZV9pbm9kZV9idWZm
-ZXJzKGlub2RlKSkKICAgLi4uCiAgIGlwdXQoaW5vZGUpOwogIH0KClNvbHV0aW9uIDM6IEZvcmJp
-ZCBpbm9kZSBldmljdGluZyB1bmRlciB0aGUgaW5vZGUgbHJ1IHRyYXZlcnNpbmcgCmNvbnRleHQu
-IFNwZWNpZmljYWxseSwgbWFyayBpbm9kZSB3aXRoICdJX0ZSRUVJTkcnIGluc3RlYWQgb2YgZ2V0
-dGluZyAKaXRzJyByZWZjbnQgdG8gZWxpbWluYXRlIHRoZSBpbm9kZSBnZXR0aW5nIGNoYW5jZSBp
-biAKaW5vZGVfbHJ1X2lzb2xhdGUoKS4gVGhlIHNvbHV0aW9uIGlzIHdyb25nLCBiZWNhdXNlIHRo
-ZSBwYWdlY2FoZXMgbWF5IApzdGlsbCBhbGl2ZSBhZnRlciBpbnZhbGlkYXRlX21hcHBpbmdfcGFn
-ZXMoKSwgc28gd2UgY2Fubm90IGRlc3Ryb3kgdGhlIApmaWxlIGlub2RlIGFmdGVyIGNsZWFyaW5n
-IElfV0lMTF9GUkVFLgpkaWZmIC0tZ2l0IGEvZnMvaW5vZGUuYyBiL2ZzL2lub2RlLmMKaW5kZXgg
-M2E0MWY4M2E0YmE1Li5jNjQ5YmUyMmY4NDEgMTAwNjQ0Ci0tLSBhL2ZzL2lub2RlLmMKKysrIGIv
-ZnMvaW5vZGUuYwpAQCAtODQzLDcgKzg0NCw3IEBAIHN0YXRpYyBlbnVtIGxydV9zdGF0dXMgaW5v
-ZGVfbHJ1X2lzb2xhdGUoc3RydWN0IApsaXN0X2hlYWQgKml0ZW0sCiAgICAgICAqIGJlIHVuZGVy
-IHByZXNzdXJlIGJlZm9yZSB0aGUgY2FjaGUgaW5zaWRlIHRoZSBoaWdobWVtIHpvbmUuCiAgICAg
-ICAqLwogICAgICBpZiAoaW5vZGVfaGFzX2J1ZmZlcnMoaW5vZGUpIHx8ICFtYXBwaW5nX2VtcHR5
-KCZpbm9kZS0+aV9kYXRhKSkgewotICAgICAgICBfX2lnZXQoaW5vZGUpOworICAgICAgICBpbm9k
-ZS0+aV9zdGF0ZSB8PSBJX1dJTExfRlJFRTsKICAgICAgICAgIHNwaW5fdW5sb2NrKCZpbm9kZS0+
-aV9sb2NrKTsKICAgICAgICAgIHNwaW5fdW5sb2NrKGxydV9sb2NrKTsKICAgICAgICAgIGlmIChy
-ZW1vdmVfaW5vZGVfYnVmZmVycyhpbm9kZSkpIHsKQEAgLTg1NSw5ICs4NTYsOSBAQCBzdGF0aWMg
-ZW51bSBscnVfc3RhdHVzIGlub2RlX2xydV9pc29sYXRlKHN0cnVjdCAKbGlzdF9oZWFkICppdGVt
-LAogICAgICAgICAgICAgICAgICBfX2NvdW50X3ZtX2V2ZW50cyhQR0lOT0RFU1RFQUwsIHJlYXAp
-OwogICAgICAgICAgICAgIG1tX2FjY291bnRfcmVjbGFpbWVkX3BhZ2VzKHJlYXApOwogICAgICAg
-ICAgfQotICAgICAgICBpcHV0KGlub2RlKTsKKyAgICAgICAgc3Bpbl9sb2NrKCZpbm9kZS0+aV9s
-b2NrKTsKKyAgICAgICAgaW5vZGUtPmlfc3RhdGUgJj0gfklfV0lMTF9GUkVFOwogICAgICAgICAg
-c3Bpbl9sb2NrKGxydV9sb2NrKTsKLSAgICAgICAgcmV0dXJuIExSVV9SRVRSWTsKICAgICAgfQoK
-U29sdXRpb24gNDogQnJlYWsgdGhlIGNpcmN1bGFyIGRlcGVuZGVuY2UgYmV0d2VlbiBmaWxlIGlu
-b2RlIGFuZCBmaWxlJ3MgCnhhdHRyIGlub2RlLCBmb3IgZXhhbXBsZSwgYWZ0ZXIgY29tcGFyaW5n
-IAppbm9kZV9scnVfaXNvbGF0ZShwcnVuZV9pY2FjaGVfc2IpIHdpdGggaW52YWxpZGF0ZV9pbm9k
-ZXMsIHdlIGZvdW5kIHRoYXQgCmludmFsaWRhdGVfbWFwcGluZ19wYWdlcyBpcyBub3QgaW52b2tl
-ZCBieSBpbnZhbGlkYXRlX2lub2RlcywgY2FuIHdlIApkaXJlY3RseSByZW1vdmUgdGhlIGJyYW5j
-aCAnaWYgKGlub2RlX2hhc19idWZmZXJzKGlub2RlKSB8fCAKIW1hcHBpbmdfZW1wdHkoJmlub2Rl
-LT5pX2RhdGEpKScgZnJvbSBpbm9kZV9scnVfaXNvbGF0ZT8KCkFueSBiZXR0ZXIgc29sdXRpb25z
-PwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+No need to check the limitation of xattr count every time in function
+ubifs_jnl_write_inode(), because the 'ui->xattr_cnt' won't be modified
+by others in the inode evicting process.
+
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/ubifs/journal.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 4a35f9e8f668..8e98be642371 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -981,6 +981,12 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+ 
+ 	dbg_jnl("ino %lu, nlink %u", inode->i_ino, inode->i_nlink);
+ 
++	if (kill_xattrs && ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
++		ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
++		ubifs_ro_mode(c, err);
++		return -EPERM;
++	}
++
+ 	/*
+ 	 * If the inode is being deleted, do not write the attached data. No
+ 	 * need to synchronize the write-buffer either.
+@@ -1012,12 +1018,6 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+ 		struct inode *xino;
+ 		struct ubifs_dent_node *xent, *pxent = NULL;
+ 
+-		if (ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
+-			err = -EPERM;
+-			ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
+-			goto out_release;
+-		}
+-
+ 		lowest_xent_key(c, &key, inode->i_ino);
+ 		while (1) {
+ 			xent = ubifs_tnc_next_ent(c, &key, &nm);
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
