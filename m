@@ -4,58 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C2BC2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 06:40:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04886C3DA45
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 08:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	CC:To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ib9uy8PQKpLkdVZ3kiVHItJ6+/4a/fJ11xx3/mWpNXY=; b=fSTPoC4Z6pWvKLFnpw+QtH8Yhz
-	b2tADn/USxZfY/3eW8ywgx0ZbHTz3xal/CbxOgFiJjkGWRwlnNC2f1Mz27yIuorO4nBQUzrvXta8b
-	8zp0EimmpLB9Vh9sNG0MgBQZp3py0ej+J30uf996iS9gGTzIMQH/1zWk6xzyKk7uLto1sUyGQK7lU
-	ljOqDViXXDxidjEHD1YaoZCNa13eHNl3C1yQXUA2BzCPmzXVSsaT31gED6xQxsY/P1AhShADN8mpe
-	WuaUJ1oPc2LG8TLZQo0UuN9eupvwfAvJc940hiqCYrqNbvgxgjybEE5kpCkLX7wbJmwY9bx8/vx6T
-	bBntfLTA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=C/irkQNsUBXxaLCl5msjRsLkJXFnha6HQQ/ZZyZ4/Mk=; b=0R5BHjEtUC4w++
+	eRw3QCJiIWADJEl218ZwLOhvu2aMsbvBoCjbG6eL6KzVkBMEfSt4cubd3YkSseCorS+ZfwSLD6arq
+	yo8H2JfmMDXmHNt16BmPi1bs+nTQFJlmJcp42yllOBV1yzNxAkEAHX9XNQ+T8vD6QtS7vLbdQ96vc
+	7GSf/boehtLr9RkXQZPHZiTQmH75xhMAf7HOBqYo4McTE+2MvYiVNPQI9aZjgn5R6Ud4jo2jEi7xa
+	tc6DyeMh8UreauxMWeCOTn5xicf5wPcBMdExEg5wD/cUnA5Awd2F0MN/YnJ6lIffC1k6uI2ydvKtD
+	dr3lyZ5+0jsuK+///DYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sS9xN-0000000GecN-3MAj;
-	Fri, 12 Jul 2024 06:40:37 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1sSBX0-0000000Gs8m-2fVy;
+	Fri, 12 Jul 2024 08:21:30 +0000
+Received: from www530.your-server.de ([188.40.30.78])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sS9xK-0000000Gebo-359J
+	id 1sSBWv-0000000Gs3Y-01Cl
 	for linux-mtd@lists.infradead.org;
-	Fri, 12 Jul 2024 06:40:36 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WL20d5hsBzwX7D;
-	Fri, 12 Jul 2024 14:35:45 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id E4341180ADF;
-	Fri, 12 Jul 2024 14:40:30 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Fri, 12 Jul 2024 14:40:30 +0800
-Subject: Re: [PATCH 0/2] ubifs: Fix deadlock between inode reclaiming and host
- inode writing
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>
-References: <20240710022628.1227996-1-chengzhihao1@huawei.com>
-Message-ID: <505847e7-9ab9-f8b4-07ee-592dbafc645a@huawei.com>
-Date: Fri, 12 Jul 2024 14:40:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Fri, 12 Jul 2024 08:21:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=lcIxnxTVnl7eemhsDeBtjmieMiTqljeGdfc5S4iHFWY=; b=D6UzQg9PXsMWYd67Vt5J9PuK0P
+	1xQqh0XjxrgQYSaLeHw1dXhozg6f51dU3KeMOV/HzXN+rZhUlCpwah3Lx/MyZom2RsQY+eI6NLECY
+	4vi2c9G7q+TbVu2ofATbYF1nhYnhnAhsUhy7PIBGjDeGx7VIHg6up+cINV1dOESIeoD55mOoRmeb+
+	KVpC+9Bjzv0/b4UUSCSJFpVSIABLnnNYaQ1hOEUiElTSIKCH+P3S35GTvWVjC8yD53emrZBPqMkGW
+	mSperykogVaW/4N8l3pYPrpSi1FMBjB46zbpRjGPnAGioY6BgXLUttvNCxgTeQKdR7Y2wYbE2LV/z
+	AGINDtmQ==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1sSBWT-0001oA-Qt; Fri, 12 Jul 2024 10:20:57 +0200
+Received: from [87.49.147.209] (helo=localhost)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <esben@geanix.com>)
+	id 1sSBWS-000Q04-2s;
+	Fri, 12 Jul 2024 10:20:56 +0200
+From: Esben Haabendal <esben@geanix.com>
+To: Erez <erezgeva2@gmail.com>
+Cc: Michael Walle <mwalle@kernel.org>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Jaime Liao <jaimeliao@mxic.com.tw>,
+  leoyu@mxic.com.tw,  Alvin Zhou <alvinzhou@mxic.com.tw>,  Julien Su
+ <juliensu@mxic.com.tw>,  Erez Geva <erezgeva@nwtime.org>,
+  linux-mtd@lists.infradead.org,  Pratyush Yadav <pratyush@kernel.org>,
+  linux-kernel@vger.kernel.org,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  devicetree@vger.kernel.org,  Rob Herring
+ <robh@kernel.org>,  Krzysztof Kozlowski <krzk+dt@kernel.org>,  Conor
+ Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mtd: macronix,mx25l12833f: add
+ SPI-NOR chip
+In-Reply-To: <CANeKEMNtXb4ZV7kcLbHY+Mti6dPV9UZ2wTyUq5z0qtmtNNqSVA@mail.gmail.com>
+	(Erez's message of "Fri, 12 Jul 2024 00:09:01 +0200")
+References: <20240629103914.161530-1-erezgeva@nwtime.org>
+	<20240629103914.161530-4-erezgeva@nwtime.org>
+	<1c457520-07b7-4bde-b040-e8bca959a4f5@linaro.org>
+	<CANeKEMOODBNZA6efh0E0Ga_KaVs5Y3WLcUftRhNwYHhnXO=GNw@mail.gmail.com>
+	<CANeKEMO42rJt5Ob4_HDcZ3eEMvuMOPvRaFaLwL8SA65NtxSV7A@mail.gmail.com>
+	<1d56c3b2-7adf-45b9-a509-956340f3f17b@linaro.org>
+	<CANeKEMMe-Onpn7xWQHgWz1Ps_uQPEMa7HrKA00HpoKjG+DCJNQ@mail.gmail.com>
+	<3bafcbea-6aa5-43ca-9d12-3916be3fe03d@linaro.org>
+	<CANeKEMM02-Jvb8Pd0fZJFnRg-hsAW+hckYWm11tZZXNMPSPJ=w@mail.gmail.com>
+	<9b45cc73-2251-4085-af95-7ccd00dd6d3b@linaro.org>
+	<CANeKEMP+mRefYZNb+TuBmOD7dC6=7Rg7D1EcfnjJoiaeaV28SQ@mail.gmail.com>
+	<875xtd48ps.fsf@geanix.com>
+	<CANeKEMNJ3_ET5pQo2wg7_GSLX+vE+dqW-CV=v2DnG10xcgSdzQ@mail.gmail.com>
+	<D2MZ405LVTN8.3LTVN3KTUD6A3@kernel.org>
+	<CANeKEMNtXb4ZV7kcLbHY+Mti6dPV9UZ2wTyUq5z0qtmtNNqSVA@mail.gmail.com>
+Date: Fri, 12 Jul 2024 10:20:56 +0200
+Message-ID: <878qy7vx5j.fsf@geanix.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-In-Reply-To: <20240710022628.1227996-1-chengzhihao1@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27333/Thu Jul 11 10:35:59 2024)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240711_234034_966135_32B952F4 
-X-CRM114-Status: UNSURE (   8.33  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240712_012125_071778_BE0D1965 
+X-CRM114-Status: GOOD (  28.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,25 +100,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC83LzEwIDEwOjI2LCBaaGloYW8gQ2hlbmcg0LS1wDoKPiBQYXRjaCAxIG9wdGltaXpl
-cyBsb2dpYyBwcm9jZXNzIGluIGZ1bmN0aW9uIHViaWZzX2pubF93cml0ZV9pbm9kZSgpLgo+IFBh
-dGNoIDIgZml4ZXMgYW4gQUJCQSBkZWFkbG9jayBwcm9ibGVtIGJhc2VkIG9uIHRoZSBwcm9jZXNz
-IGJ5IGFwcGx5aW5nCj4gcGF0Y2ggMS4KPiAKPiBaaGloYW8gQ2hlbmcgKDIpOgo+ICAgIHViaWZz
-OiB1Ymlmc19qbmxfd3JpdGVfaW5vZGU6IE9ubHkgY2hlY2sgb25jZSBmb3IgdGhlIGxpbWl0YXRp
-b24gb2YKPiAgICAgIHhhdHRyIGNvdW50Cj4gICAgdWJpZnM6IEZpeCBBQkJBIGRlYWRsb2NrIGJl
-dHdlZW4gaW5vZGUgcmVjbGFpbWluZyBhbmQgZGVsZXRlZCBpbm9kZQo+ICAgICAgd3JpdGluZwo+
-IAo+ICAgZnMvdWJpZnMvam91cm5hbC5jIHwgMTA2ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KystLS0tLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDY2IGluc2VydGlvbnMoKyks
-IDQwIGRlbGV0aW9ucygtKQo+IAoKUGxlYXNlIGlnbm9yZSB0aGlzIHNlcmllcyBvZiBwYXRjaGVz
-LCB0aGUgdjIgdmVyc2lvbiBjYW4gYmUgZm91bmQgaGVyZToKWzFdIApodHRwczovL2xvcmUua2Vy
-bmVsLm9yZy9saW51eC1tdGQvMzdjMjljNDItNzY4NS1kMWYwLTA2N2QtNjM1ODJmZmFjNDA1QGh1
-YXdlaWNsb3VkLmNvbS9ULyN1ClsyXSAKaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtbXRk
-LzIwMjQwNzEyMDYzNjI1LjMzNjM5NzQtMS1jaGVuZ3poaWhhbzFAaHVhd2VpLmNvbS9ULyN0Cgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Erez <erezgeva2@gmail.com> writes:
+
+> On Thu, 11 Jul 2024 at 21:57, Michael Walle <mwalle@kernel.org> wrote:
+>> On Thu Jul 11, 2024 at 8:57 PM CEST, Erez wrote:
+>> > Yes, I think we should.
+>> >
+>> > Reading the specification provided publicly by Macronix.
+>> > For all the JEDEC IDs with the no SFDP flag in drivers/mtd/spi-nor/macronix.c
+>> > All of them have a new version or a new chip with the same JEDEC ID
+>> > that supports SFDP.
+>> > There are 2 chips that Macronix does not provide spec. in public.
+>> > I can ask Macronix technical support on these 2 chips.
+>>
+>> We don't add flashes we cannot test.
+>
+> I did not suggest adding anything new.
+> I refer to the list of chips we already have in drivers/mtd/spi-nor/macronix.c
+> I presume someone tested them before adding them to the list in the past.
+> And probably the old chip did not have the SFDP table back then.
+>
+> What I checked with the chip specifications is that all Macronix chips
+> since 2010 have SFDP.
+>
+> The situation today is that all Macronix chips that are NOT in the
+> Macronix table work based on the SFDP table.
+> But new chips that use a JEDEC found in the Macronix table, skip the
+> SFDP table and use the setting of the old chip.
+
+Not entirely true.
+
+Those that entries in the Macronix table that has SPI_NOR_DUAL_READ
+and/or SPI_NOR_QUAD_READ in no_sfdp_flags is caught by
+the magic flags matching in spi_nor_init_params_deprecated() and will
+have spi_nor_parse_sfdp() called from
+spi_nor_sfdp_init_params_deprecated(). So flashes reusing ID for these
+will have the SFDP tables parsed.
+
+The rest of the entries in the Macronix table is not so lucky. When a
+replacement chip (with the same ID) is used, it will not be configured
+with the values found in SFDP table.
+
+> So I suggest we read the SFDP table for all Macronix chips.
+
+Based on their strategy of re-using flash ID, I think this is a sane
+approach.
+
+> Old Macronix chips that do not have SFDP will use the setting from the
+> Macronix table. i.e backward compatible.
+> While new chips which do have an SFDP table will work with the new
+> setting we find in the table.
+
+Yes, if we apply the new SPI_NOR_TRY_SFDP flag to the matching table
+entries.
+
+> Of course, we might have issues in parsing the SFDP table itself.
+> So we fix them as developers report and send chip ID and part number
+> with the SFDP table content.
+> I do not see the point of "hiding" with the old setting.
+> Anyhow, as we do not like the IDs table and keep it for backward-compatible,
+> so it only makes sense we should use the SFDP table as much as possible.
+>
+> My check was to ensure Tudor that all Macronix chips have SFDP whether
+> they are in the IDs table or not and we are not wasting a no-op on a
+> chip which can not have an SFDP table.
+>
+> All I suggest is we add the new 'SPI_NOR_TRY_SFDP' flag, to all
+> Macronix chips.. Which will try to read the SFDP to any Macronix chip.
+
+Makes sense. But obviously comes with a risk as we won't be able to
+test all chips for regression when doing that.
+
+/Esben
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
