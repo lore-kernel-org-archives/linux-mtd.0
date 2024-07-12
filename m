@@ -4,154 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3076C2BD09
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9560DC2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 16:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y8FCxqGR+F/5g8hZds2V2Gfvns46BAneom+QdqwcHRw=; b=EahdiIOF2cabfg
-	Vn0jqk++Z334iqTlyQv6otS/f7XtKN5DkQn1WL4x2LEpPCp8djwbRmW4RBcZZrNkhtgEuZjUmKFtB
-	wdlHwUUeaVoHLQCmb6hHziAug7hrPtn1P5t07InyTA0IJ0eS4uXVHkWbYCEh/q/PeUI1FGSmeXjBR
-	IEZq68mBGLzx5BmLfhUB+516qBgQOZ6y96fk2BR9yZec4RZFkIYVSk/6i/ISZ/oVTCLBMa6GVBio4
-	Ofeet7yq6a0H/9ArGXq5e5qDBxC6sVClAkHsZlW14805qtTm3RtTDi4oicr1mkN98RidrB+iQD4gT
-	Z7+q0BEOp8/lvZXQknIQ==;
+	List-Owner; bh=rwxk4MRXtEhBBWXJ40AmkfiQHNrbAbaVD0EJ/F/wfEo=; b=2SqfBY9CguVdAm
+	dCPt3+7y6xW4AJOn2kTE8XSkpSJ3FK6Ioir5fHP44p6cay5Mz9Xuhnmdl6lOWbYLZ1Rt7SFFRo9kg
+	90fMctJLQGuj8U25znhqronO+df+YkTUh3vgQfDjRsZFbhU83JKjKkjB6uYWZvaZ+UvJdIQ9P45Ng
+	GS9jKL6Ywhea93LwIVZr6QXPyZ13EU6ichkd6NHDAQBqAl04uKZoLYfZaJtB6NFTTcRvRnX27jJOB
+	+YtbXa8Fwvs9CsZBdTlc6GE0TooP0A7dL3Tph1GEH7F9NLhiZROqR3+B6qaO/Oe1+okQEV4LBWDxT
+	TZg//nctfSDVzbmD5DRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSHXB-00000000N1V-2bdj;
-	Fri, 12 Jul 2024 14:46:05 +0000
-Received: from mail-westeuropeazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c201::3] helo=AS8PR04CU009.outbound.protection.outlook.com)
+	id 1sSIlL-00000000cIG-3dDV;
+	Fri, 12 Jul 2024 16:04:47 +0000
+Received: from mgamail.intel.com ([192.198.163.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSHX9-00000000N0a-2bcL;
-	Fri, 12 Jul 2024 14:46:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HeDojaWcsP6+JwFvspV8ZwvVkANQUsm58gxnuQRPptuMcWy1jx/5mukeuQVSQVl5KLi/NCsuDD6cAJ50s6nIKVruSVEIoEn2Y9HZudoNjYnzGP6DnzogHpDowWo88Z8Y4fq1ZtwkxTlFLoHvagrI4GxwMdxi3ZdMEAiqpsUpK/DmwQ8PIYOgtztjW6QAwhTAPDDMVr326mHPtIfwhV8ZN0CudcC+vhP4aSlt3QA8nNBW74qXhYMPu90v4E/YhZYKGsDYLiWoB+jDcCn/zpDe+pHvonW9sj8UHfpwiOSaZ/C3uCnSdWIxAsuk8a+nCtcWYL+DhoXef6NC2fxv8JjBaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P903uT99vb1AdsPdL0iDgpUzro41rc0Pdyka3oMRrjM=;
- b=mV+Dc9MP3o68gsdBgCcNGFYzs89g5I1yAaQueuF7CP659V2l5/+x7gFkvpkleA1nu93Md1rKfSUIzVCeVqhV1zUsWRfUt0j3U1qyorLYIPReenXRW24dUJXvbTP3A/1JdstufX0SqtWwa33rm94PjQGmZsvbnKdxubCzq/GeywSg9if9JJYPszmBWjfm9wLHN/NKOfd7BL3rWPqfIdx0YY4X0LgTDNvsRkWDOH8yFLmncLpq2LA/7eOD5XZRh4qrHbjZbcHLHO9tvmRLNaom6Z+bIRThe/LVLDKzVSsdfSzZG2D3QOfoRxlqh46EQM/2iTmHwmJZ6zILgXZ+pdAvmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P903uT99vb1AdsPdL0iDgpUzro41rc0Pdyka3oMRrjM=;
- b=HgkqwxXHxiksCmP/5dYnw6G1XEoxnX74/BMjEbi8FOr6mmPz6WDhd3/qa1WU3lYWE/r3Dpo6V1iTScy/0IrWzGVOxHp8+ORU+FKJfiFuIHj+hnxDHyjfv2DUpe8EybkZF7adaJeAWbKVR94LTOMpBh2OiAtn0EDyxKsHGRI5gAg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DU4PR04MB10598.eurprd04.prod.outlook.com (2603:10a6:10:580::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.22; Fri, 12 Jul
- 2024 14:45:59 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9126:a61e:341d:4b06%4]) with mapi id 15.20.7762.020; Fri, 12 Jul 2024
- 14:45:59 +0000
-Date: Fri, 12 Jul 2024 10:45:50 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
+	id 1sSIlH-00000000cFu-3xK6;
+	Fri, 12 Jul 2024 16:04:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720800284; x=1752336284;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PrS7/hiydmmIrI/4eU8UQmnYT4Fs6FNxX99+1XPQp5g=;
+  b=HQj2u4nkWCLecpQ4CwitUkkV4prMCEd4IVZQLjsNBZdUH+LdFWxreYeq
+   d+pQaTOx3ottfe0ReDPrZ3MHafDt4jKM7t6CF90H9Hamre/4gYBIow2pd
+   xCRArmec33La3fvEQ8JdGb/+pBUL67xpb9sftUveSfpTKiFtYDT8G3x2o
+   5ECuojTutXaXCTYJ8+tqezvy2FI9RdE2bwxYqCU0o7IjnSqQT27r79XIe
+   NjGm2Q9gl4iozpZmz0gD4XRviNLQ07Nu8vW+96pQ325VvBHgV3bYkWbax
+   NkPHCSZk53VYjSlZTcOSputmwYhC6zrFNmjM+grbwWmOmzdxabhbZXVk9
+   g==;
+X-CSE-ConnectionGUID: Z0gtPnLSSqOOlB8YfWtTzA==
+X-CSE-MsgGUID: ThmstuCkS0217qdKMUHyCw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11131"; a="29653989"
+X-IronPort-AV: E=Sophos;i="6.09,203,1716274800"; 
+   d="scan'208";a="29653989"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2024 09:04:36 -0700
+X-CSE-ConnectionGUID: fTm1fZsjS9OPqAi2nNETVg==
+X-CSE-MsgGUID: 2/xcHUf6T0ydbDSMfiqbAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,203,1716274800"; 
+   d="scan'208";a="48838240"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 12 Jul 2024 09:04:32 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sSIl3-000awc-2n;
+	Fri, 12 Jul 2024 16:04:29 +0000
+Date: Sat, 13 Jul 2024 00:04:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Esben Haabendal <esben@geanix.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
-	Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: dma: fsl-mxs-dma: Add compatible
- string "fsl,imx8qxp-dma-apbh"
-Message-ID: <ZpFBnnbxD9VUs1zp@lizhi-Precision-Tower-5810>
-References: <20240520-gpmi_nand-v2-2-e3017e4c9da5@nxp.com>
- <20240527121836.178457-1-miquel.raynal@bootlin.com>
- <20240712163503.69dad6b1@xps-13>
-Content-Disposition: inline
-In-Reply-To: <20240712163503.69dad6b1@xps-13>
-X-ClientProxiedBy: BYAPR06CA0006.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::19) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: oe-kbuild-all@lists.linux.dev, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+	linux-arm-kernel@lists.infradead.org,
+	Esben Haabendal <esben@geanix.com>
+Subject: Re: [PATCH v3 14/15] mtd: spi-nor: Drop deprecated mechanism for
+ optional SFDP parsing
+Message-ID: <202407122344.BP3r1VyN-lkp@intel.com>
+References: <20240711-macronix-mx25l3205d-fixups-v3-14-99353461dd2d@geanix.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DU4PR04MB10598:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10884c1f-06db-4740-bcbb-08dca2815854
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|52116014|7416014|376014|1800799024|38350700014;
-X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?rm92L7XYPWTMenIgY1nH6NgvMh9nzED142qXTOcxvxyt+ZIsZhDMvNeBos?=
- =?iso-8859-1?Q?T0HPtY+pF8BjWm6c9sO/wo1GNKip3emweZjZuMvdTioSa5fHAELrlIQ+K9?=
- =?iso-8859-1?Q?T5KNoOBn5bEARWDyNSJ5Cf9A9JrXmGRP8Sr8OYwlbQ6FQ/iMDN4a6IWGhE?=
- =?iso-8859-1?Q?YtZ4ub4jzgyZ93V+tPkmHrnP+KYx3/j32plu/Gp/iUBfA4qX507nrUlZuR?=
- =?iso-8859-1?Q?Q1EOXhCXhIvQx8/8j+XopxwAAIcy9KwHLnPfRO4hzDhbzPR90vzhkklWeV?=
- =?iso-8859-1?Q?NwQICli6+OYkwYoPR48RgRZZWLZGZPPxMOO+koPBUXfN+JDmdigVxo6M7R?=
- =?iso-8859-1?Q?Q09o9t+uQqOaz0W+nyqi/Jp2rEbQzu/JbGyYEDK22HyEGqLCJZ2BGPIhNh?=
- =?iso-8859-1?Q?LVBiYqt/kkol86F+2JE8bGD5UvTCJRFTDdf9QPBefxESjCldQHpHVsxOS+?=
- =?iso-8859-1?Q?PqfNkCuvm4ITaHyOnP19vNkDBZPDTTpWN007PSS69fEQ5oxsUA1tSli1nz?=
- =?iso-8859-1?Q?0PzYZEDXlZvTEw2QZq9HZoIgAgqrWS/Qcr8SSunOqOER+yOHzMZk3QxsUP?=
- =?iso-8859-1?Q?qMtztpqEV7jFTj89UMKBWe2BQC/K3VSWogWI10kD1W3hU/4IVzi24KNTBU?=
- =?iso-8859-1?Q?YSPyRtQs2/1v+b9P/CFx7os4+SQL6VKAEA8sXA63Mzsxt8M5D25W0JrImv?=
- =?iso-8859-1?Q?lD/hQ0wVGrKFvzUa+6iLpq5zCOGQ/HfK1Gl4Zxw1ToEFsyWPw7znR/RIb9?=
- =?iso-8859-1?Q?OpZvuNN6UZ1jitFoLlobv+opQlAT+Td6UIMjH5qTCMhxRfa9NELr1OFVlQ?=
- =?iso-8859-1?Q?PzigJk0Uk4IggJd9Mds/tcX0LwFqy2DzKJNMhZGzP9M8UijJFmoJV4MbTM?=
- =?iso-8859-1?Q?LHkfCm+Ph4X/ShXgllNfsOGKJSK22Coc2+kkglE2ndbTbsEG6ooZFa8gWK?=
- =?iso-8859-1?Q?je0ejig+jebEuDuAuWMcR35zFLmVbMiXpjFR2kY2lpfAu7X7HrKkiDvGr3?=
- =?iso-8859-1?Q?1zmt0J8az4KKPUxNWYC3w0JIiYdKAo3nQ9N63eY4nQ4vpyrwQxdI3L7DXe?=
- =?iso-8859-1?Q?ov2uqTTB+YDkj2cd29Nlmtd+daC9IuMyITkFaJpm581bDGC660nxt7qPqo?=
- =?iso-8859-1?Q?++Jzv8eMCnH0Su6gSdWtdp9cqUd7pVb5B8WucBpYdUOR/TDuO6P0BTCpNC?=
- =?iso-8859-1?Q?e+Bss9H0ANqjCF1cEfK9/jwt8PXsEz/kjLOO887vyWWHtyv0zJefHgxOrs?=
- =?iso-8859-1?Q?alWtevBYwC191e8b+NpOKd6+i1uyEPQ9d1p1xCjlvdynwIwNgH0CoaRNHL?=
- =?iso-8859-1?Q?4GAxFy5zfPJ9XG3dkmr3d16/xqhWV0qfcprlekiT4NoZlSyYUOGvE2vwLU?=
- =?iso-8859-1?Q?QnmEYcDnMgWL29nu+siQqW31lagnx5VT+Scs+T7PUj+PI8uzEorpg=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(52116014)(7416014)(376014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?sNAjG5vVAafOCmmSPBzy+yfV8rJZYX7PM3gCjzXeCU9W22o1iCLulcCRbI?=
- =?iso-8859-1?Q?g85LFkr7WbK4UX13xAyuoIqaOvLl2WBU+G3Q0ipFP9gqo8XmammZm3s7UM?=
- =?iso-8859-1?Q?FvNGXQAL0/16aM1LRtOEsZfDmC6zBQMZfiBhT231psAOgA/lwEEVrMmCa+?=
- =?iso-8859-1?Q?oYJyCm36AFJUh/XPyzXCRFwnN6YTg5UIPNRwLFXwEsbkoYAOQOIeK3dY73?=
- =?iso-8859-1?Q?yNCZ9P8ah3U+C/XBQHZTHfd3/hQC9XslqUwXoJkTcxFrE7xNt2WKpa8P43?=
- =?iso-8859-1?Q?eYNYYlUa1No3P7XyisTLq8wFtAwPSyVUseKLsJYvYCVSjGaKS6eiNfnCCn?=
- =?iso-8859-1?Q?Fbs88WoEMyxg0x8C9upQs0TcFk3TweZ7KmfKhfHBLSAVR9l3zd6FlZQCEP?=
- =?iso-8859-1?Q?jlugj295p2JwRwTA+iIxp0sYLmCSOz+DsCWKuXyxN1A/W6Xn+587OBcvHE?=
- =?iso-8859-1?Q?IWTduWpJr6SbWlVewfY+6vol9NeySHCZhCPByIe9XC6xdz2z60QD/RqAli?=
- =?iso-8859-1?Q?r4rbS+10KI24OEryfNLwcmH+GQhvyyevzPrNi6qIRp0vYtewXqIEb//Q0I?=
- =?iso-8859-1?Q?O+TmKuuG3uOgvVpR+OZXBHXg0bKfkqJQjyOUqcJpeKW6JEl/gnrZDdA616?=
- =?iso-8859-1?Q?uYoUVRdY/AWx1cR4GwWYznJPssdSPrpGVWvv91fuMpF6bsbp+/pzxiyh2O?=
- =?iso-8859-1?Q?Esvwms1qrwtgZL4m5oJ4ky6kvbTssP52bep0cifLjDEa6PHbD/fFxjRi3s?=
- =?iso-8859-1?Q?kvXnHr7ceKlokiYaTx+l4SI6vcBlhYnfLTMo8GvZKPWRigmDkzevfpMTBO?=
- =?iso-8859-1?Q?NZ37Qm4TUiNUpOL9/Ih0KpkIU7O5/kPAACRXnEq7Ve8zLbhOyB1v1J4z5n?=
- =?iso-8859-1?Q?0z73OmvvtEey00B6KoBwWilJbJzdt85dw19qP0umBJdBZWKMhw8f44DgSX?=
- =?iso-8859-1?Q?dj8KmHjLVfpVFkKXaXc9km5yOnMu0IKk10elhYTte+5UTePGxVSB2svhZP?=
- =?iso-8859-1?Q?phGu6JyGjJ0mauDp1d4CFsulkBaY/bkvWEerv3YFKAZLnhf58rp2mWoEFC?=
- =?iso-8859-1?Q?f32QLsWGaE1EniHVwOayLdRJsjjScdlCWV+EjHYrHC29ZNa6i5NsH1plsM?=
- =?iso-8859-1?Q?v3vvmsdNvtk+ur1kJS3ekcEHpGVni1vJl9eWxOFnYQkEFJ5Pd3MGHwO4wW?=
- =?iso-8859-1?Q?Ars/6p5f+yO3Bf/DqWC7399r68TZDppT0hAir6TvHM/LTRAuhVpc1zSnsj?=
- =?iso-8859-1?Q?FSr+OVYMW4wH4r5/Gv0Rg2diU9MMRD3MiqD589AnPKkrlvXzrJC2MdUad1?=
- =?iso-8859-1?Q?zSYoBwC4tYlrp9o4tjm3fRBA+NGKXzhIMtISmwPd16JSR3Rq6YTLlIp9sZ?=
- =?iso-8859-1?Q?KNx6rnpH71GVQ/jXb59xHPXT2wyYc4P0v30AWxiFRC+jVmCCtsP5u9CIKi?=
- =?iso-8859-1?Q?aS/4/snw7gyeZ7QoKvmtL1umq77KtAosUwOAaz4019fWmjUNdrZ5zhXGur?=
- =?iso-8859-1?Q?8LOJ/npx2gmDemVCiWI1QPS8gOyk2sZC6fR9q4d2N6q90AU9OP9JsF66vT?=
- =?iso-8859-1?Q?SuKxdjeYuf8RXJ+JIuq6m+Kgkop4rwE1jNMOJeVf1HT0r0ZIx4DoTEyTgi?=
- =?iso-8859-1?Q?+XlTPXv/+iW3n4OaqOqVme1BCtpnK09IzP?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10884c1f-06db-4740-bcbb-08dca2815854
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2024 14:45:59.7237
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SMeXNah5iGMGIfV380JO496m40rNaCnSH24T7Y77SdWYPOcLSAQVAvEu/2NervidZGXLBI7Fr/QWGaYngGG/PQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10598
+Content-Disposition: inline
+In-Reply-To: <20240711-macronix-mx25l3205d-fixups-v3-14-99353461dd2d@geanix.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240712_074603_686560_B8DD1C3C 
-X-CRM114-Status: GOOD (  17.91  )
+X-CRM114-CacheID: sfid-20240712_090444_037084_31E146C2 
+X-CRM114-Status: GOOD (  11.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,54 +95,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 12, 2024 at 04:35:03PM +0200, Miquel Raynal wrote:
-> Hi Vinod,
-> =
+Hi Esben,
 
-> miquel.raynal@bootlin.com wrote on Mon, 27 May 2024 14:18:36 +0200:
-> =
+kernel test robot noticed the following build errors:
 
-> > On Mon, 2024-05-20 at 16:09:13 UTC, Frank Li wrote:
-> > > Add compatible string "fsl,imx8qxp-dma-apbh". It requires power-domai=
-ns
-> > > compared with "fsl,imx28-dma-apbh".
-> > > =
+[auto build test ERROR on a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6]
 
-> > > Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP =
-need
-> > > it.
-> > > =
+url:    https://github.com/intel-lab-lkp/linux/commits/Esben-Haabendal/mtd-spi-nor-core-add-flag-for-doing-optional-SFDP-parsing/20240711-224454
+base:   a38297e3fb012ddfa7ce0321a7e5a8daeb1872b6
+patch link:    https://lore.kernel.org/r/20240711-macronix-mx25l3205d-fixups-v3-14-99353461dd2d%40geanix.com
+patch subject: [PATCH v3 14/15] mtd: spi-nor: Drop deprecated mechanism for optional SFDP parsing
+config: arm-randconfig-003-20240712 (https://download.01.org/0day-ci/archive/20240712/202407122344.BP3r1VyN-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240712/202407122344.BP3r1VyN-lkp@intel.com/reproduce)
 
-> > > Keep the same restriction about 'power-domains' for other compatible
-> > > strings.
-> > > =
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202407122344.BP3r1VyN-lkp@intel.com/
 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > Reviewed-by: Rob Herring (Arm) <robh@kernel.org>  =
+All errors (new ones prefixed by >>):
 
-> > =
+   In file included from drivers/mtd/spi-nor/atmel.c:9:
+   drivers/mtd/spi-nor/core.h: In function 'spi_nor_try_sfdp':
+>> drivers/mtd/spi-nor/core.h:722:61: error: expected ';' before '}' token
+     722 |         return (nor->info->no_sfdp_flags & SPI_NOR_TRY_SFDP)
+         |                                                             ^
+         |                                                             ;
+     723 | }
+         | ~                                                            
 
-> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.gi=
-t nand/next, thanks.
-> =
 
-> I just realize now I picked this up whereas it was not intended to be
-> merged through mtd. I'm fine keeping this patch for the next merge
-> window if I get your explicit agreement otherwise I'll drop it.
+vim +722 drivers/mtd/spi-nor/core.h
 
-I think it is fine. Basically this dma is only used for GPMI NAND now.
+   712	
+   713	/**
+   714	 * spi_nor_try_sfdp() - returns true if optional SFDP parsing should be tried
+   715	 * for this flash, with fallback to static parameters and settings based on
+   716	 * flash ID if SFDP parsing fails.
+   717	 *
+   718	 * Return: true if optional SFDP parsing should be tried
+   719	 */
+   720	static inline bool spi_nor_try_sfdp(const struct spi_nor *nor)
+   721	{
+ > 722		return (nor->info->no_sfdp_flags & SPI_NOR_TRY_SFDP)
+   723	}
+   724	
 
-Frank
-
-> =
-
-> Thanks,
-> Miqu=E8l
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
