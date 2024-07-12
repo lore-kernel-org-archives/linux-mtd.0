@@ -4,66 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96C86C3DA45
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3076C2BD09
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Jul 2024 14:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WqZEKIIuLpn9yXQkiOPSgJDHR3KDX70ealb63GwzEY8=; b=V3e2WCGQg5anBs
-	J6bwANFK5+XbC3Ap/q96V0nU0PoRTPneYZFcMzY/lYOU/12HJUkGAmZVsBHEdHyAKDGw7Y3QuivGZ
-	Wc+z/sLF2ifkkFeG4UpN0m4B8IOufCOqV/CKwvHZi+RsvicHM/UnnkOjSoJpxuZbhFxHA7mE6CvcP
-	vVdrQ9P8ZM//A0M9njl1MIBjksdcTSSvzi3u3XcmjkIR8y2NJkKHzLflRUZG14dyCWX3jEm4waDPu
-	SOqxHB86zqOJWb34LWLOddck4G05PqZP5gNThtq+UTPc0jOQ99FZk7FKLO3j9JMCMLnMEvqoEUGn0
-	BqSu3hPTBGlQjGeXSgQg==;
+	List-Owner; bh=Y8FCxqGR+F/5g8hZds2V2Gfvns46BAneom+QdqwcHRw=; b=EahdiIOF2cabfg
+	Vn0jqk++Z334iqTlyQv6otS/f7XtKN5DkQn1WL4x2LEpPCp8djwbRmW4RBcZZrNkhtgEuZjUmKFtB
+	wdlHwUUeaVoHLQCmb6hHziAug7hrPtn1P5t07InyTA0IJ0eS4uXVHkWbYCEh/q/PeUI1FGSmeXjBR
+	IEZq68mBGLzx5BmLfhUB+516qBgQOZ6y96fk2BR9yZec4RZFkIYVSk/6i/ISZ/oVTCLBMa6GVBio4
+	Ofeet7yq6a0H/9ArGXq5e5qDBxC6sVClAkHsZlW14805qtTm3RtTDi4oicr1mkN98RidrB+iQD4gT
+	Z7+q0BEOp8/lvZXQknIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSHP8-00000000Lbx-2mAL;
-	Fri, 12 Jul 2024 14:37:46 +0000
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
+	id 1sSHXB-00000000N1V-2bdj;
+	Fri, 12 Jul 2024 14:46:05 +0000
+Received: from mail-westeuropeazlp170110003.outbound.protection.outlook.com ([2a01:111:f403:c201::3] helo=AS8PR04CU009.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSHP6-00000000Lay-1sLz
-	for linux-mtd@lists.infradead.org;
-	Fri, 12 Jul 2024 14:37:45 +0000
-Received: from cwcc.thunk.org (pool-173-48-116-79.bstnma.fios.verizon.net [173.48.116.79])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46CEb8Pq026641
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Jul 2024 10:37:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1720795032; bh=1Gn6aaaJtlJEaxDX5RF5pO/WPW2zmse3sX2wC3biWbQ=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=H+YYV5EgAW5YM8jOjPb5/kXfHSNhicmHQvMULSGWZvaL5Jrop5oNBR7HRvskjJZ5u
-	 4JFfxYEjjwFeoKEaGdxxpLXj8WvHtpLcqXEuTYGOaJeocdS6VXclSwn8l4XwAFEfeN
-	 pTO3ioXk3hG552FmpcbcHaflew3b4fgYCj/Xiuc98EQqM0Q4r5C5MzMjMHxVVer0TE
-	 dgXs8jPrHEDiiWDHfIFOrDPHtTS8h95cNU3YkJDgHKvXR+gQ8z3R00yVQhctBzyinJ
-	 RKTs684wIDVGAGwbS+y2+nc4jdvkFxRW/bKSItJrLUPfwBUpW9M21AqoStEwRRNVPa
-	 G9z+tHBGyuJbQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 9F99D15C27B4; Fri, 12 Jul 2024 10:37:08 -0400 (EDT)
-Date: Fri, 12 Jul 2024 10:37:08 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Zhihao Cheng <chengzhihao@huaweicloud.com>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, yangerkun <yangerkun@huawei.com>,
-        "wangzhaolong (A)" <wangzhaolong1@huawei.com>
-Subject: Re: [BUG REPORT] potential deadlock in inode evicting under the
- inode lru traversing context on ext4 and ubifs
-Message-ID: <20240712143708.GA151742@mit.edu>
-References: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
-MIME-Version: 1.0
+	id 1sSHX9-00000000N0a-2bcL;
+	Fri, 12 Jul 2024 14:46:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HeDojaWcsP6+JwFvspV8ZwvVkANQUsm58gxnuQRPptuMcWy1jx/5mukeuQVSQVl5KLi/NCsuDD6cAJ50s6nIKVruSVEIoEn2Y9HZudoNjYnzGP6DnzogHpDowWo88Z8Y4fq1ZtwkxTlFLoHvagrI4GxwMdxi3ZdMEAiqpsUpK/DmwQ8PIYOgtztjW6QAwhTAPDDMVr326mHPtIfwhV8ZN0CudcC+vhP4aSlt3QA8nNBW74qXhYMPu90v4E/YhZYKGsDYLiWoB+jDcCn/zpDe+pHvonW9sj8UHfpwiOSaZ/C3uCnSdWIxAsuk8a+nCtcWYL+DhoXef6NC2fxv8JjBaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P903uT99vb1AdsPdL0iDgpUzro41rc0Pdyka3oMRrjM=;
+ b=mV+Dc9MP3o68gsdBgCcNGFYzs89g5I1yAaQueuF7CP659V2l5/+x7gFkvpkleA1nu93Md1rKfSUIzVCeVqhV1zUsWRfUt0j3U1qyorLYIPReenXRW24dUJXvbTP3A/1JdstufX0SqtWwa33rm94PjQGmZsvbnKdxubCzq/GeywSg9if9JJYPszmBWjfm9wLHN/NKOfd7BL3rWPqfIdx0YY4X0LgTDNvsRkWDOH8yFLmncLpq2LA/7eOD5XZRh4qrHbjZbcHLHO9tvmRLNaom6Z+bIRThe/LVLDKzVSsdfSzZG2D3QOfoRxlqh46EQM/2iTmHwmJZ6zILgXZ+pdAvmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P903uT99vb1AdsPdL0iDgpUzro41rc0Pdyka3oMRrjM=;
+ b=HgkqwxXHxiksCmP/5dYnw6G1XEoxnX74/BMjEbi8FOr6mmPz6WDhd3/qa1WU3lYWE/r3Dpo6V1iTScy/0IrWzGVOxHp8+ORU+FKJfiFuIHj+hnxDHyjfv2DUpe8EybkZF7adaJeAWbKVR94LTOMpBh2OiAtn0EDyxKsHGRI5gAg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DU4PR04MB10598.eurprd04.prod.outlook.com (2603:10a6:10:580::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.22; Fri, 12 Jul
+ 2024 14:45:59 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9126:a61e:341d:4b06%4]) with mapi id 15.20.7762.020; Fri, 12 Jul 2024
+ 14:45:59 +0000
+Date: Fri, 12 Jul 2024 10:45:50 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Han Xu <han.xu@nxp.com>,
+	Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: dma: fsl-mxs-dma: Add compatible
+ string "fsl,imx8qxp-dma-apbh"
+Message-ID: <ZpFBnnbxD9VUs1zp@lizhi-Precision-Tower-5810>
+References: <20240520-gpmi_nand-v2-2-e3017e4c9da5@nxp.com>
+ <20240527121836.178457-1-miquel.raynal@bootlin.com>
+ <20240712163503.69dad6b1@xps-13>
 Content-Disposition: inline
-In-Reply-To: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
+In-Reply-To: <20240712163503.69dad6b1@xps-13>
+X-ClientProxiedBy: BYAPR06CA0006.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::19) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DU4PR04MB10598:EE_
+X-MS-Office365-Filtering-Correlation-Id: 10884c1f-06db-4740-bcbb-08dca2815854
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|52116014|7416014|376014|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?rm92L7XYPWTMenIgY1nH6NgvMh9nzED142qXTOcxvxyt+ZIsZhDMvNeBos?=
+ =?iso-8859-1?Q?T0HPtY+pF8BjWm6c9sO/wo1GNKip3emweZjZuMvdTioSa5fHAELrlIQ+K9?=
+ =?iso-8859-1?Q?T5KNoOBn5bEARWDyNSJ5Cf9A9JrXmGRP8Sr8OYwlbQ6FQ/iMDN4a6IWGhE?=
+ =?iso-8859-1?Q?YtZ4ub4jzgyZ93V+tPkmHrnP+KYx3/j32plu/Gp/iUBfA4qX507nrUlZuR?=
+ =?iso-8859-1?Q?Q1EOXhCXhIvQx8/8j+XopxwAAIcy9KwHLnPfRO4hzDhbzPR90vzhkklWeV?=
+ =?iso-8859-1?Q?NwQICli6+OYkwYoPR48RgRZZWLZGZPPxMOO+koPBUXfN+JDmdigVxo6M7R?=
+ =?iso-8859-1?Q?Q09o9t+uQqOaz0W+nyqi/Jp2rEbQzu/JbGyYEDK22HyEGqLCJZ2BGPIhNh?=
+ =?iso-8859-1?Q?LVBiYqt/kkol86F+2JE8bGD5UvTCJRFTDdf9QPBefxESjCldQHpHVsxOS+?=
+ =?iso-8859-1?Q?PqfNkCuvm4ITaHyOnP19vNkDBZPDTTpWN007PSS69fEQ5oxsUA1tSli1nz?=
+ =?iso-8859-1?Q?0PzYZEDXlZvTEw2QZq9HZoIgAgqrWS/Qcr8SSunOqOER+yOHzMZk3QxsUP?=
+ =?iso-8859-1?Q?qMtztpqEV7jFTj89UMKBWe2BQC/K3VSWogWI10kD1W3hU/4IVzi24KNTBU?=
+ =?iso-8859-1?Q?YSPyRtQs2/1v+b9P/CFx7os4+SQL6VKAEA8sXA63Mzsxt8M5D25W0JrImv?=
+ =?iso-8859-1?Q?lD/hQ0wVGrKFvzUa+6iLpq5zCOGQ/HfK1Gl4Zxw1ToEFsyWPw7znR/RIb9?=
+ =?iso-8859-1?Q?OpZvuNN6UZ1jitFoLlobv+opQlAT+Td6UIMjH5qTCMhxRfa9NELr1OFVlQ?=
+ =?iso-8859-1?Q?PzigJk0Uk4IggJd9Mds/tcX0LwFqy2DzKJNMhZGzP9M8UijJFmoJV4MbTM?=
+ =?iso-8859-1?Q?LHkfCm+Ph4X/ShXgllNfsOGKJSK22Coc2+kkglE2ndbTbsEG6ooZFa8gWK?=
+ =?iso-8859-1?Q?je0ejig+jebEuDuAuWMcR35zFLmVbMiXpjFR2kY2lpfAu7X7HrKkiDvGr3?=
+ =?iso-8859-1?Q?1zmt0J8az4KKPUxNWYC3w0JIiYdKAo3nQ9N63eY4nQ4vpyrwQxdI3L7DXe?=
+ =?iso-8859-1?Q?ov2uqTTB+YDkj2cd29Nlmtd+daC9IuMyITkFaJpm581bDGC660nxt7qPqo?=
+ =?iso-8859-1?Q?++Jzv8eMCnH0Su6gSdWtdp9cqUd7pVb5B8WucBpYdUOR/TDuO6P0BTCpNC?=
+ =?iso-8859-1?Q?e+Bss9H0ANqjCF1cEfK9/jwt8PXsEz/kjLOO887vyWWHtyv0zJefHgxOrs?=
+ =?iso-8859-1?Q?alWtevBYwC191e8b+NpOKd6+i1uyEPQ9d1p1xCjlvdynwIwNgH0CoaRNHL?=
+ =?iso-8859-1?Q?4GAxFy5zfPJ9XG3dkmr3d16/xqhWV0qfcprlekiT4NoZlSyYUOGvE2vwLU?=
+ =?iso-8859-1?Q?QnmEYcDnMgWL29nu+siQqW31lagnx5VT+Scs+T7PUj+PI8uzEorpg=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(52116014)(7416014)(376014)(1800799024)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?sNAjG5vVAafOCmmSPBzy+yfV8rJZYX7PM3gCjzXeCU9W22o1iCLulcCRbI?=
+ =?iso-8859-1?Q?g85LFkr7WbK4UX13xAyuoIqaOvLl2WBU+G3Q0ipFP9gqo8XmammZm3s7UM?=
+ =?iso-8859-1?Q?FvNGXQAL0/16aM1LRtOEsZfDmC6zBQMZfiBhT231psAOgA/lwEEVrMmCa+?=
+ =?iso-8859-1?Q?oYJyCm36AFJUh/XPyzXCRFwnN6YTg5UIPNRwLFXwEsbkoYAOQOIeK3dY73?=
+ =?iso-8859-1?Q?yNCZ9P8ah3U+C/XBQHZTHfd3/hQC9XslqUwXoJkTcxFrE7xNt2WKpa8P43?=
+ =?iso-8859-1?Q?eYNYYlUa1No3P7XyisTLq8wFtAwPSyVUseKLsJYvYCVSjGaKS6eiNfnCCn?=
+ =?iso-8859-1?Q?Fbs88WoEMyxg0x8C9upQs0TcFk3TweZ7KmfKhfHBLSAVR9l3zd6FlZQCEP?=
+ =?iso-8859-1?Q?jlugj295p2JwRwTA+iIxp0sYLmCSOz+DsCWKuXyxN1A/W6Xn+587OBcvHE?=
+ =?iso-8859-1?Q?IWTduWpJr6SbWlVewfY+6vol9NeySHCZhCPByIe9XC6xdz2z60QD/RqAli?=
+ =?iso-8859-1?Q?r4rbS+10KI24OEryfNLwcmH+GQhvyyevzPrNi6qIRp0vYtewXqIEb//Q0I?=
+ =?iso-8859-1?Q?O+TmKuuG3uOgvVpR+OZXBHXg0bKfkqJQjyOUqcJpeKW6JEl/gnrZDdA616?=
+ =?iso-8859-1?Q?uYoUVRdY/AWx1cR4GwWYznJPssdSPrpGVWvv91fuMpF6bsbp+/pzxiyh2O?=
+ =?iso-8859-1?Q?Esvwms1qrwtgZL4m5oJ4ky6kvbTssP52bep0cifLjDEa6PHbD/fFxjRi3s?=
+ =?iso-8859-1?Q?kvXnHr7ceKlokiYaTx+l4SI6vcBlhYnfLTMo8GvZKPWRigmDkzevfpMTBO?=
+ =?iso-8859-1?Q?NZ37Qm4TUiNUpOL9/Ih0KpkIU7O5/kPAACRXnEq7Ve8zLbhOyB1v1J4z5n?=
+ =?iso-8859-1?Q?0z73OmvvtEey00B6KoBwWilJbJzdt85dw19qP0umBJdBZWKMhw8f44DgSX?=
+ =?iso-8859-1?Q?dj8KmHjLVfpVFkKXaXc9km5yOnMu0IKk10elhYTte+5UTePGxVSB2svhZP?=
+ =?iso-8859-1?Q?phGu6JyGjJ0mauDp1d4CFsulkBaY/bkvWEerv3YFKAZLnhf58rp2mWoEFC?=
+ =?iso-8859-1?Q?f32QLsWGaE1EniHVwOayLdRJsjjScdlCWV+EjHYrHC29ZNa6i5NsH1plsM?=
+ =?iso-8859-1?Q?v3vvmsdNvtk+ur1kJS3ekcEHpGVni1vJl9eWxOFnYQkEFJ5Pd3MGHwO4wW?=
+ =?iso-8859-1?Q?Ars/6p5f+yO3Bf/DqWC7399r68TZDppT0hAir6TvHM/LTRAuhVpc1zSnsj?=
+ =?iso-8859-1?Q?FSr+OVYMW4wH4r5/Gv0Rg2diU9MMRD3MiqD589AnPKkrlvXzrJC2MdUad1?=
+ =?iso-8859-1?Q?zSYoBwC4tYlrp9o4tjm3fRBA+NGKXzhIMtISmwPd16JSR3Rq6YTLlIp9sZ?=
+ =?iso-8859-1?Q?KNx6rnpH71GVQ/jXb59xHPXT2wyYc4P0v30AWxiFRC+jVmCCtsP5u9CIKi?=
+ =?iso-8859-1?Q?aS/4/snw7gyeZ7QoKvmtL1umq77KtAosUwOAaz4019fWmjUNdrZ5zhXGur?=
+ =?iso-8859-1?Q?8LOJ/npx2gmDemVCiWI1QPS8gOyk2sZC6fR9q4d2N6q90AU9OP9JsF66vT?=
+ =?iso-8859-1?Q?SuKxdjeYuf8RXJ+JIuq6m+Kgkop4rwE1jNMOJeVf1HT0r0ZIx4DoTEyTgi?=
+ =?iso-8859-1?Q?+XlTPXv/+iW3n4OaqOqVme1BCtpnK09IzP?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10884c1f-06db-4740-bcbb-08dca2815854
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2024 14:45:59.7237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SMeXNah5iGMGIfV380JO496m40rNaCnSH24T7Y77SdWYPOcLSAQVAvEu/2NervidZGXLBI7Fr/QWGaYngGG/PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10598
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240712_073744_649946_47D081EF 
-X-CRM114-Status: GOOD (  15.02  )
+X-CRM114-CacheID: sfid-20240712_074603_686560_B8DD1C3C 
+X-CRM114-Status: GOOD (  17.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,60 +163,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 12, 2024 at 02:27:20PM +0800, Zhihao Cheng wrote:
-> Problem description
-> ===================
-> 
-> The inode reclaiming process(See function prune_icache_sb) collects all
-> reclaimable inodes and mark them with I_FREEING flag at first, at that
-> time, other processes will be stuck if they try getting these inodes(See
-> function find_inode_fast), then the reclaiming process destroy the
-> inodes by function dispose_list().
-> Some filesystems(eg. ext4 with ea_inode feature, ubifs with xattr) may
-> do inode lookup in the inode evicting callback function, if the inode
-> lookup is operated under the inode lru traversing context, deadlock
-> problems may happen.
-> 
-> Case 1: In function ext4_evict_inode(), the ea inode lookup could happen
-> if ea_inode feature is enabled, the lookup process will be stuck under
-> the evicting context like this:
-> 
->  1. File A has inode i_reg and an ea inode i_ea
->  2. getfattr(A, xattr_buf) // i_ea is added into lru // lru->i_ea
->  3. Then, following three processes running like this:
-> 
->     PA                              PB
->  echo 2 > /proc/sys/vm/drop_caches
->   shrink_slab
->    prune_dcache_sb
->    // i_reg is added into lru, lru->i_ea->i_reg
->    prune_icache_sb
->     list_lru_walk_one
->      inode_lru_isolate
->       i_ea->i_state |= I_FREEING // set inode state
->       i_ea->i_state |= I_FREEING // set inode state
+On Fri, Jul 12, 2024 at 04:35:03PM +0200, Miquel Raynal wrote:
+> Hi Vinod,
+> =
 
-Um, I don't see how this can happen.  If the ea_inode is in use,
-i_count will be greater than zero, and hence the inode will never be
-go down the rest of the path in inode_lru_inode():
+> miquel.raynal@bootlin.com wrote on Mon, 27 May 2024 14:18:36 +0200:
+> =
 
-	if (atomic_read(&inode->i_count) ||
-	    ...) {
-		list_lru_isolate(lru, &inode->i_lru);
-		spin_unlock(&inode->i_lock);
-		this_cpu_dec(nr_unused);
-		return LRU_REMOVED;
-	}
+> > On Mon, 2024-05-20 at 16:09:13 UTC, Frank Li wrote:
+> > > Add compatible string "fsl,imx8qxp-dma-apbh". It requires power-domai=
+ns
+> > > compared with "fsl,imx28-dma-apbh".
+> > > =
 
-Do you have an actual reproduer which triggers this?  Or would this
-happen be any chance something that was dreamed up with DEPT?
+> > > Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP =
+need
+> > > it.
+> > > =
 
-       	      	     	       	    		- Ted
+> > > Keep the same restriction about 'power-domains' for other compatible
+> > > strings.
+> > > =
+
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > Reviewed-by: Rob Herring (Arm) <robh@kernel.org>  =
+
+> > =
+
+> > Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.gi=
+t nand/next, thanks.
+> =
+
+> I just realize now I picked this up whereas it was not intended to be
+> merged through mtd. I'm fine keeping this patch for the next merge
+> window if I get your explicit agreement otherwise I'll drop it.
+
+I think it is fine. Basically this dma is only used for GPMI NAND now.
+
+Frank
+
+> =
+
+> Thanks,
+> Miqu=E8l
 
 ______________________________________________________
 Linux MTD discussion mailing list
