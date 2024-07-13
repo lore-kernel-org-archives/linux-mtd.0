@@ -4,57 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F7BC3DA42
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Jul 2024 08:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C5F5C3DA45
+	for <linux-mtd@archiver.kernel.org>; Sat, 13 Jul 2024 08:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WkS+g5r3AC9vlOeS9k0O6Xp0rsmJtsH3QIVLpCvDny0=; b=JXV7kmeWQHZNpguTsuHuf8DPgY
-	74/VWkGCMy33xyA5UtzWQYJWJuJIPT8LKHWM+CgG0KRWt0vszlrD+IJHdfozQsbN/lmLRg0TqsHdc
-	wgcpcAk7qwgVgw2Ewt/YpwRlbldUcObsTKmT0xP/aEUQ8V1pwoLbtlLeSW6BqcUoA+uQveEKNWZps
-	lXkvM6qq//gX4AxRyrQRXQQJOUc/FqI9bqjnHb+9j4DHmq6k5U9tz8p29AA0OBsrn5KzhB2p+t2yW
-	b+x8BEFfzJKzxIxpzH3T36DbK6HXPLbWahp112ds2LgzSZlITV2ruYNHCVlL88EweJw8FJxT4QgYx
-	ajX9NxmA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=Gr0GKygKr7V8h78841rSGlWEXLN24wdTrhysysBZKYs=; b=GR38k8oeVkEj1QywufSh5wu3eY
+	lCZlmvoNnmt3dCL3zuKiDPKIUwt19kdk+yBgqe0xa8CTu4w/uQ8Hh7r4nt8ZhuQnZZta78ws++ZEh
+	MvOa2nIwTZQ94FmbeBtQqaCcCaY8kV13i6W/A2ZaHUWzIfl+zaiv10UTwchp2lQp/oH6QcLJqH5IT
+	fpoGWiidr0Y4wSzlkuS5iFR1K+L8/3AnngSsCgjrXtFlGExQM9/cYhPpVWAl/j2uJJxfGEuu+VXz2
+	NCVxb3oX3aQz8Ab6C02L1/2Sx2lmwQzEez67agpKwici9dl0OFC0mN/F2jqNbVfNtk9vUB2GE0QQ/
+	rGRO/Q4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSXvt-00000002AXn-0oH3;
-	Sat, 13 Jul 2024 08:16:41 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1sSYOr-00000002CWe-2xcH;
+	Sat, 13 Jul 2024 08:46:37 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSXvo-00000002AWu-3V1c
+	id 1sSYOo-00000002CVv-3eJ5
 	for linux-mtd@lists.infradead.org;
-	Sat, 13 Jul 2024 08:16:39 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WLh512nFlzxTQR;
-	Sat, 13 Jul 2024 16:11:49 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id B990118005F;
-	Sat, 13 Jul 2024 16:16:27 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Sat, 13 Jul 2024 16:16:27 +0800
+	Sat, 13 Jul 2024 08:46:37 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id C22E86196A56;
+	Sat, 13 Jul 2024 10:46:31 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id KRQdpSGc2R3V; Sat, 13 Jul 2024 10:46:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id E28046196A71;
+	Sat, 13 Jul 2024 10:46:30 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id SLU5LTIjVIPa; Sat, 13 Jul 2024 10:46:30 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id C6CB06196A56;
+	Sat, 13 Jul 2024 10:46:30 +0200 (CEST)
+Date: Sat, 13 Jul 2024 10:46:30 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: chengzhihao1 <chengzhihao1@huawei.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Ben Hutchings <bwh@kernel.org>, kernel test robot <lkp@intel.com>
+Message-ID: <1422580650.65606.1720860390692.JavaMail.zimbra@nod.at>
+In-Reply-To: <3c624cf1-b5a3-f89c-ac6a-0875fcabaf25@huawei.com>
+References: <20240713073519.25325-1-richard@nod.at> <3c624cf1-b5a3-f89c-ac6a-0875fcabaf25@huawei.com>
 Subject: Re: [PATCH] ubi: Fix ubi_init() ubiblock_exit() section mismatch
-To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
-CC: <linux-kernel@vger.kernel.org>, Ben Hutchings <bwh@kernel.org>, kernel
- test robot <lkp@intel.com>
-References: <20240713073519.25325-1-richard@nod.at>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <3c624cf1-b5a3-f89c-ac6a-0875fcabaf25@huawei.com>
-Date: Sat, 13 Jul 2024 16:16:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20240713073519.25325-1-richard@nod.at>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Fix ubi_init() ubiblock_exit() section mismatch
+Thread-Index: JLuc69wdLoWYy8hheIEtVbp4M8FslQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240713_011637_069096_3907AF11 
-X-CRM114-Status: GOOD (  12.07  )
+X-CRM114-CacheID: sfid-20240713_014635_068248_9B0E8E5E 
+X-CRM114-Status: UNSURE (   7.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,29 +73,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyNC83LzEzIDE1OjM1LCBSaWNoYXJkIFdlaW5iZXJnZXIg0LS1wDoKPiBTaW5jZSB1Ymli
-bG9ja19leGl0KCkgaXMgbm93IGNhbGxlZCBmcm9tIGFuIGluaXQgZnVuY3Rpb24sCj4gdGhlIF9f
-ZXhpdCBzZWN0aW9uIG5vIGxvbmdlciBtYWtlcyBzZW5zZS4KPiAKPiBDYzogQmVuIEh1dGNoaW5n
-cyA8YndoQGtlcm5lbC5vcmc+Cj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BA
-aW50ZWwuY29tPgo+IENsb3NlczogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvb2Uta2J1aWxkLWFs
-bC8yMDI0MDcxMzE0MDMud1pKcGQ4bjItbGtwQGludGVsLmNvbS8KPiBTaWduZWQtb2ZmLWJ5OiBS
-aWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+IC0tLQo+ICAgZHJpdmVycy9tdGQv
-dWJpL2Jsb2NrLmMgfCAyICstCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEg
-ZGVsZXRpb24oLSkKCkxvb2tzIGxpa2UgdGhhdCB5b3UgcHJlZmVyIGEgc2ltcGxlciBmaXguIEZl
-ZWwgZmluZSB0byBhZGQKClJldmlld2VkLWJ5OiBaaGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBo
-dWF3ZWkuY29tPgo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvYmxvY2suYyBiL2Ry
-aXZlcnMvbXRkL3ViaS9ibG9jay5jCj4gaW5kZXggYmY3MzA4ZThlYzJmZS4uNjBkMDE1NWJlODY5
-ZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC91YmkvYmxvY2suYwo+ICsrKyBiL2RyaXZlcnMv
-bXRkL3ViaS9ibG9jay5jCj4gQEAgLTY3MCw3ICs2NzAsNyBAQCBpbnQgX19pbml0IHViaWJsb2Nr
-X2luaXQodm9pZCkKPiAgIAlyZXR1cm4gcmV0Owo+ICAgfQo+ICAgCj4gLXZvaWQgX19leGl0IHVi
-aWJsb2NrX2V4aXQodm9pZCkKPiArdm9pZCB1YmlibG9ja19leGl0KHZvaWQpCj4gICB7Cj4gICAJ
-dWJpX3VucmVnaXN0ZXJfdm9sdW1lX25vdGlmaWVyKCZ1YmlibG9ja19ub3RpZmllcik7Cj4gICAJ
-dWJpYmxvY2tfcmVtb3ZlX2FsbCgpOwo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
+ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Piwg
+ImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPgo+IENDOiAibGludXgt
+a2VybmVsIiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4sICJCZW4gSHV0Y2hpbmdzIiA8
+YndoQGtlcm5lbC5vcmc+LCAia2VybmVsIHRlc3Qgcm9ib3QiIDxsa3BAaW50ZWwuY29tPgo+IEdl
+c2VuZGV0OiBTYW1zdGFnLCAxMy4gSnVsaSAyMDI0IDEwOjE2OjE1Cj4gQmV0cmVmZjogUmU6IFtQ
+QVRDSF0gdWJpOiBGaXggdWJpX2luaXQoKSB1YmlibG9ja19leGl0KCkgc2VjdGlvbiBtaXNtYXRj
+aAoKPiDlnKggMjAyNC83LzEzIDE1OjM1LCBSaWNoYXJkIFdlaW5iZXJnZXIg5YaZ6YGTOgo+PiBT
+aW5jZSB1YmlibG9ja19leGl0KCkgaXMgbm93IGNhbGxlZCBmcm9tIGFuIGluaXQgZnVuY3Rpb24s
+Cj4+IHRoZSBfX2V4aXQgc2VjdGlvbiBubyBsb25nZXIgbWFrZXMgc2Vuc2UuCj4+IAo+PiBDYzog
+QmVuIEh1dGNoaW5ncyA8YndoQGtlcm5lbC5vcmc+Cj4+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVz
+dCByb2JvdCA8bGtwQGludGVsLmNvbT4KPj4gQ2xvc2VzOgo+PiBodHRwczovL2xvcmUua2VybmVs
+Lm9yZy9vZS1rYnVpbGQtYWxsLzIwMjQwNzEzMTQwMy53WkpwZDhuMi1sa3BAaW50ZWwuY29tLwo+
+PiBTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+PiAt
+LS0KPj4gICBkcml2ZXJzL210ZC91YmkvYmxvY2suYyB8IDIgKy0KPj4gICAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiAKPiBMb29rcyBsaWtlIHRoYXQgeW91
+IHByZWZlciBhIHNpbXBsZXIgZml4LiBGZWVsIGZpbmUgdG8gYWRkCgpZZXMsIGFuZCBCZW4gc2Vu
+dCB0aGUgcGF0Y2ggZmlyc3QuIDopCiAKPiBSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVu
+Z3poaWhhbzFAaHVhd2VpLmNvbT4KClRoYW5rcyBmb3IgdGhlIHJldmlldyEKQW5kIGVzcGVjaWFs
+bHkgdGhhbmtzIGZvciByZXZpZXdpbmcgc28gbWFueSBVQkkvVUJJRlMgcGF0Y2hlcywKSSBhcHBy
+ZWNpYXRlIHlvdXIgaGVscC4KClRoYW5rcywKLy9yaWNoYXJkCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
