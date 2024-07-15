@@ -4,60 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4005FC3DA45
-	for <linux-mtd@archiver.kernel.org>; Sat, 13 Jul 2024 09:03:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6448DC3DA5D
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Jul 2024 08:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=S0Ax/mFxT2XFa9UnY8NVBwOVyKB9t1ywOBF7Ss39QLc=; b=Vv8Awk6zPDHdD1aNACTxJPnRBv
-	KwgKhyoXCVNWIBohPi9msoXfBn/U1tUZwDZ/j7WYRpcJrnpmNUgyz3UWwx/l5aTk0bLF0YeyDNYm3
-	1fe3dz6wiIZpQBJlMAHjj3Vo6oXPjiPLbI+uJR2DTmbjTAZ0v9wRCmqtTl4Vppiu2o/r97fwsPrYX
-	OOY/KlNOFY26cFyXGbIgL0+uhmks7a34njjtQVhOdHphOsz+mjdeMUgGQ0sEgv8zHtJ6s69pEftPY
-	HCsyl/JJgcSG4hc+UDfn/WAndlvB/Npy86FbVw1kMtAIq+hUOFaMAVggMHgpezUkcp73FWlsbiB/b
-	cR39svqg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CCrpqMG52v3B14RKaV774XyNGpe5rvu8NTw69lOA2J8=; b=ruM2pwYuJ97I//
+	3Hsrag4hQbjYkgGq5UXoYXKbv11e+QlMgqE8RUtTwQnlOM3Z5XmLJPSIJJCJoEZ4PGeYCV6y6VV6d
+	HTGLL04zWhhKtm8VcjKod6UlzoqmxywOLyHWgzcZPrvbx+kV7yhEqX9wuJyp7ybCj1dAvoBu9HCyF
+	53eAtoyAIe3w/9EriU3LlfHDXXihjW4IyWqtSCQjdX9bK2vXWVlF2jgpRrbjBytkq2sPsptw+MNF8
+	ike+aC8+x1GKFeXGvFKvymFNEo2kiqGhfwgDaOjsiKLelk71Al5ysm0nNTxknrkCcoJQRimrEXVt2
+	8+4ahE2mmxyNR9Z40oyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSYf2-00000002EAC-2Y9T;
-	Sat, 13 Jul 2024 09:03:20 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1sTHFl-00000006MR4-0is4;
+	Mon, 15 Jul 2024 08:40:13 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSYeo-00000002E4j-30Mc
+	id 1sTHFd-00000006MMM-0cQx
 	for linux-mtd@lists.infradead.org;
-	Sat, 13 Jul 2024 09:03:18 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WLj7Q2TZ5zQlPP;
-	Sat, 13 Jul 2024 16:58:58 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 605BA180088;
-	Sat, 13 Jul 2024 17:02:57 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Sat, 13 Jul 2024 17:02:56 +0800
-Subject: Re: [PATCH] ubi: Fix ubi_init() ubiblock_exit() section mismatch
-To: Richard Weinberger <richard@nod.at>
-CC: linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, Ben Hutchings <bwh@kernel.org>, kernel test
- robot <lkp@intel.com>
-References: <20240713073519.25325-1-richard@nod.at>
- <3c624cf1-b5a3-f89c-ac6a-0875fcabaf25@huawei.com>
- <1422580650.65606.1720860390692.JavaMail.zimbra@nod.at>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <9a210424-eac1-957e-dd6e-4290924216e3@huawei.com>
-Date: Sat, 13 Jul 2024 17:02:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Mon, 15 Jul 2024 08:40:06 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A3B6560EBB;
+	Mon, 15 Jul 2024 08:40:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EACB0C4DE16;
+	Mon, 15 Jul 2024 08:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721032804;
+	bh=9XRADCykKASXBd5xpAHe0JIYlPfbmXG6/ToHGes8RsE=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=uv0wkOGEJ7sUKpTSafUkS5yDwXKuht938zNjKWmJKbMhUrcor5ka6lOMiV2crR2K4
+	 TnAYMmgefMI90gmvN5fhBfz0lTfGQ5ogYvUPRQtW5gbpCBiKSnipkT9JvvGnEIh/mf
+	 7J9ExanuoJ0R8Evtzv7lO+5R+ljYyQtnU0EWNmvWROAp84WttBBuX3j9Ll4jgUyUU+
+	 INRlMiSngAnCJUw7RkTaHGSkVoulF8H6wzS5ytuF/gk7ARDTISiVfCZh5TUNVQ9wp/
+	 xXnyhPrSszLcpXfiozH3LKkeKpWNOCmcewotlpO6dx+9IBrJDqu58NPjL1fhEK9g+8
+	 7n7RUhizjhsEg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB07C3DA4D;
+	Mon, 15 Jul 2024 08:40:03 +0000 (UTC)
+From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
+Date: Mon, 15 Jul 2024 11:38:22 +0300
+Subject: [PATCH v11 18/38] dt-bindings: mtd: Add ts7200 nand-controller
 MIME-Version: 1.0
-In-Reply-To: <1422580650.65606.1720860390692.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+Message-Id: <20240715-ep93xx-v11-18-4e924efda795@maquefel.me>
+References: <20240715-ep93xx-v11-0-4e924efda795@maquefel.me>
+In-Reply-To: <20240715-ep93xx-v11-0-4e924efda795@maquefel.me>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-e3e53
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1721032799; l=1633;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=7r17/fFhBG5Dh5YlKHGbUghicWp/sbQ+SRw1TNILVrU=;
+ b=1f7TqxagAEcOnV9Y0GsX1+c0L3Cxrj1SA5IscId+56GgZNgZ/hrN0mObprBRCYT56yGBqi5pxK06
+ 9CWNRhQMDNvh5fP6ecH+A0CEYE7ajMGxNg2Z6TEXvXpiVIvLNLwI
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
+ with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240713_020307_105618_7BD4C0AF 
-X-CRM114-Status: GOOD (  14.27  )
+X-CRM114-CacheID: sfid-20240715_014005_307946_9543FE28 
+X-CRM114-Status: UNSURE (   9.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,43 +86,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Reply-To: nikita.shubin@maquefel.me
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjQvNy8xMyAxNjo0NiwgUmljaGFyZCBXZWluYmVyZ2VyIOWGmemBkzoKPiAtLS0tLSBV
-cnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4+IFZvbjogImNoZW5nemhpaGFvMSIgPGNoZW5nemhp
-aGFvMUBodWF3ZWkuY29tPgo+PiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJsaW51
-eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4KPj4gQ0M6ICJsaW51eC1rZXJu
-ZWwiIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPiwgIkJlbiBIdXRjaGluZ3MiIDxid2hA
-a2VybmVsLm9yZz4sICJrZXJuZWwgdGVzdCByb2JvdCIgPGxrcEBpbnRlbC5jb20+Cj4+IEdlc2Vu
-ZGV0OiBTYW1zdGFnLCAxMy4gSnVsaSAyMDI0IDEwOjE2OjE1Cj4+IEJldHJlZmY6IFJlOiBbUEFU
-Q0hdIHViaTogRml4IHViaV9pbml0KCkgdWJpYmxvY2tfZXhpdCgpIHNlY3Rpb24gbWlzbWF0Y2gK
-PiAKPj4g5ZyoIDIwMjQvNy8xMyAxNTozNSwgUmljaGFyZCBXZWluYmVyZ2VyIOWGmemBkzoKPj4+
-IFNpbmNlIHViaWJsb2NrX2V4aXQoKSBpcyBub3cgY2FsbGVkIGZyb20gYW4gaW5pdCBmdW5jdGlv
-biwKPj4+IHRoZSBfX2V4aXQgc2VjdGlvbiBubyBsb25nZXIgbWFrZXMgc2Vuc2UuCj4+Pgo+Pj4g
-Q2M6IEJlbiBIdXRjaGluZ3MgPGJ3aEBrZXJuZWwub3JnPgo+Pj4gUmVwb3J0ZWQtYnk6IGtlcm5l
-bCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPgo+Pj4gQ2xvc2VzOgo+Pj4gaHR0cHM6Ly9sb3Jl
-Lmtlcm5lbC5vcmcvb2Uta2J1aWxkLWFsbC8yMDI0MDcxMzE0MDMud1pKcGQ4bjItbGtwQGludGVs
-LmNvbS8KPj4+IFNpZ25lZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2Qu
-YXQ+Cj4+PiAtLS0KPj4+ICAgIGRyaXZlcnMvbXRkL3ViaS9ibG9jay5jIHwgMiArLQo+Pj4gICAg
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IExvb2tz
-IGxpa2UgdGhhdCB5b3UgcHJlZmVyIGEgc2ltcGxlciBmaXguIEZlZWwgZmluZSB0byBhZGQKPiAK
-PiBZZXMsIGFuZCBCZW4gc2VudCB0aGUgcGF0Y2ggZmlyc3QuIDopCj4gICAKPj4gUmV2aWV3ZWQt
-Ynk6IFpoaWhhbyBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cj4gCj4gVGhhbmtzIGZv
-ciB0aGUgcmV2aWV3IQo+IEFuZCBlc3BlY2lhbGx5IHRoYW5rcyBmb3IgcmV2aWV3aW5nIHNvIG1h
-bnkgVUJJL1VCSUZTIHBhdGNoZXMsCj4gSSBhcHByZWNpYXRlIHlvdXIgaGVscC4KCllvdSdyZSB3
-ZWxjb21lLgpCVFcsIEkgaGF2ZSB0d28gZmF2b3JzIHRvIG5lZWQgeW91ciBoZWxwLgoxLiBHaXZl
-IG1lIHNvbWUgZmVlZGJhY2tzIGFib3V0IHRoZSBmc2NrLnViaWZzIHBhdGNoIHNlcmllcyAKW2h0
-dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eC1tdGQvbGlzdC8/c2VyaWVz
-PTQwOTkzNV0sIAptYXliZSB5b3UgaGF2ZSBzdGFydGVkIGxvb2tpbmcgYXQgdGhlbS4gSSBrbm93
-IGl0IGlzIGEgaHVnZSByZXZpZXdpbmcgCndvcmssIG1heWJlIHlvdSBjYW4gc3RhcnQgd2l0aCB1
-c2luZywgdGVzdGluZyBvciByZWFkaW5nIHRoZSBkb2N1bWVudHMuCjIuIEkgcmVwb3J0ZWQgYSAK
-QlVHW2h0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWV4dDQvMzQ2OTkzZjItODdmNi1lMjBm
-LThmNWEtZDE5Zjg0YzE2MDRjQGh1YXdlaWNsb3VkLmNvbS9ULyNtMzY4MjU2NzFiMDE4ODgwY2Ex
-N2U0YzA5M2E0ZGJmYzFiNjZkNWRiOF0gCnJlY2VudGx5LCBwbGVhc2UgbGV0IG1lIGtub3cgaWYg
-eW91IGhhdmUgYSBnb29kIHNvbHV0aW9uLgoKPiAKPiBUaGFua3MsCj4gLy9yaWNoYXJkCj4gCj4g
-Lgo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+Add YAML bindings for ts7200 NAND Controller.
+
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../devicetree/bindings/mtd/technologic,nand.yaml  | 45 ++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/technologic,nand.yaml b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+new file mode 100644
+index 000000000000..f9d87c46094b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/technologic,nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Technologic Systems NAND controller
++
++maintainers:
++  - Nikita Shubin <nikita.shubin@maquefel.me>
++
++allOf:
++  - $ref: nand-controller.yaml
++
++properties:
++  compatible:
++    oneOf:
++      - const: technologic,ts7200-nand
++      - items:
++          - enum:
++              - technologic,ts7300-nand
++              - technologic,ts7260-nand
++              - technologic,ts7250-nand
++          - const: technologic,ts7200-nand
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    nand-controller@60000000 {
++        compatible = "technologic,ts7200-nand";
++        reg = <0x60000000 0x8000000>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++        nand@0 {
++           reg = <0>;
++        };
++    };
+
+-- 
+2.43.2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
