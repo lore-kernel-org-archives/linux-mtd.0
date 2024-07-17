@@ -4,58 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38954C3DA42
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2024 08:45:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54AEC3DA4B
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Jul 2024 11:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=iJ67AYzGZwUwnQ81yJeYVlajs1dDyYpG35eOOPaVX9Q=; b=Z/4lNuNzhk6tHP
-	KBOKfFQ9H07UTEzvxntMndvamMndG3uWyb3zvimEmMO7niIzNSslQmO93S1BX7/726uU1XGA3NiwW
-	p4bu7JlKZ/I5CBNIa1nAPChMX/6ojtdWqdWHecBCbz9RBIAiWPt97hjpr94gYdh+QZpreQsL9rSz6
-	iuDlIwBn86VjRRwV6HDKiMNOHoRDVWWf48NYZ90WTiauziVsBy3zuu4/MNjf2bO0zieBRF448up+T
-	UZdhJMI/38roWE2aJIDsGXZqeYSDhCyk6238jZjSjGdTwPgg3lYx2GrVDI/jQo9UohjhF9G8ArnMa
-	ldL8rWDbgKuBdQMBlSlQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=gPkvFkX4uNvjhNOSL3r9AE3k5CSZzLcHNXrA2JrOPGo=; b=wUE9LUxh/ScOaeOvzSmp9A6zuN
+	+FYlwk/DKmr7jVLIpVqU35Z1UcW5jePTg13mfxKsX3R5iJuwhxk309wT21242K+P/FMiN58WI+TXi
+	4xZjFZeXtKGj+u//ggyXGXJvRKVNCddtkbE+HK/91+TFJIwltZq/D62iMi+tw2wjUXEo7E0/XeExv
+	LRLduNVh2me1Ix6OkbJn4HiEAoMWa6sTwioUvo2rzkbJBOep63OeF0QnhxuWxZwb5emrOnMGecgPg
+	qc5/j9u2AROZCmu+Lnq3g53PqeefenMTzdQ+ItON2eBtOhAlEada4oL+5aAaiV7ZeZoqI7zA8vpFF
+	M4beZYMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sU0Hu-0000000DC4U-366h;
-	Wed, 17 Jul 2024 08:45:26 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1sU2c2-0000000DawU-2lg8;
+	Wed, 17 Jul 2024 11:14:22 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sU0Hq-0000000DC3s-3YFv
+	id 1sU2bv-0000000Dav6-0Ujs
 	for linux-mtd@lists.infradead.org;
-	Wed, 17 Jul 2024 08:45:24 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8438C240009;
-	Wed, 17 Jul 2024 08:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1721205920;
+	Wed, 17 Jul 2024 11:14:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721214852;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=TB/yiXe82vQof9GHBCvoSjARSrJ9BLJhn3mfBzQm20k=;
-	b=La7ARwx9HstcFPogNwfE8qsKSHZFylNYIH9QHjLuIeXdAV3i966IuEjENeLybBnKa98VPn
-	0e0JhWDqMfD9NxEIMv/aDRFojBftxkf+o3drwzwlhr5D2f+zmFahig+zXfJGaEKSt5WaQN
-	XDbR7RVO32sN9/vNdLTaJUtE+ChIW8ifMzvGZgjiGhkIbE+joJ5IkT8lHQVO0VniCKMjMd
-	cDmhLwd/b9+D+DK6IGq+24NkkKd8UN8JUPw1aYib9Uk4kvpXZ0GW7BZ5npiotJyuEphCOR
-	GXazCLCT35mj8SiHCVDqWT5S7WOBjelkGjtv7MUmMYjzL5tttqICoOyGuhcJpw==
-Date: Wed, 17 Jul 2024 10:45:19 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <Tudor.Ambarus@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush
- Yadav <pratyush@kernel.org>
-Subject: [GIT PULL] mtd: nand: Changes for 6.11
-Message-ID: <20240717104519.6175541d@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RAGmeywEZ/JgSZ6hAqPsmz089vwWWyWA+lKvknqNmtE=;
+	b=SE3AWkhA+4UZaCJekQMUNxUI9cKBoZAZXU1LGG3dxjhyaSgB06lZJDVczgpoPTNGwYLf1r
+	s+8nBGvPnKI2f6rg6xfsnAfOVIYhOEP0yOX4kPdcXT6zDidvGMhkUih5aKUN9cWP2p/UoY
+	go16Wgh0r/ACUqZjOL6XvY1btn+ijxM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-509-WWa_5qKhP_aH5JCcY10esg-1; Wed, 17 Jul 2024 07:14:11 -0400
+X-MC-Unique: WWa_5qKhP_aH5JCcY10esg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-36805bfd95aso3551292f8f.3
+        for <linux-mtd@lists.infradead.org>; Wed, 17 Jul 2024 04:14:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721214850; x=1721819650;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RAGmeywEZ/JgSZ6hAqPsmz089vwWWyWA+lKvknqNmtE=;
+        b=W0nZzV5ymR1ZmLqE7toUvNP9CmFXKwDicIFdcj+3A/oyN3HMBTbylnt+X5U+oCIr1A
+         2dfEHe+QIBfMRfHndaJYr06PA7W3DQsPCdJeve+V9Sp6lvwBfWWPSDYwojZ+Q4lYI7VJ
+         7+ygcwFn1zwm+iiLcyPoSWWsfPEmK2D3vlpFuGfvayksgjHtm2tv+UwqQA01J/l+fj9p
+         sUk8ayhcPWpTby+ltR5Sdhg/yXJek72Ovb+IKRl/sOV4pdWZwqLujidUmL8D/d8bWflo
+         e9HpL36l2VAuy++ZqBoEMUu4uHjsvm4RVSjMa2JQt2KocRLNPIwyD6MLjadfBTAkx0R/
+         1Y3A==
+X-Forwarded-Encrypted: i=1; AJvYcCVRDB4jC6rWXEKAtxGyHig/FwrpQBqLt22vUEXnWkrARVkseOq2cAOObpCPUv+aCHxJWHpo4I+dHLd8mA3gQstP7D1KtPZ/ic03f4CFNQ==
+X-Gm-Message-State: AOJu0YyVT6GeNnBc9arC0mn1dzJnkZ90i3hvDqxuKZUAAmVz20EDuare
+	hLiYhm0TGaJ4MMadIqe3MVj/8fy1szln0V7nQnIF8HdwNhpKKoQVie6fpWjuDi7bEgJRV65noYb
+	9ErG5uNfwshXe6ZUpTHygDXoU+RRgUviaempHJv4rBpqbFkQaZHAnUNypTeDH7PI=
+X-Received: by 2002:a5d:5f8c:0:b0:367:943e:f436 with SMTP id ffacd0b85a97d-36831652b7cmr1395241f8f.30.1721214850120;
+        Wed, 17 Jul 2024 04:14:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHkv5VJxD9qI1kB5PB9WhCMM3ozFKBNBC+x5bcWuyaH6WTwCYKMg89QMw7W+wtEnk2KMCsWzg==
+X-Received: by 2002:a5d:5f8c:0:b0:367:943e:f436 with SMTP id ffacd0b85a97d-36831652b7cmr1395208f8f.30.1721214849630;
+        Wed, 17 Jul 2024 04:14:09 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3680dafbec3sm11450684f8f.85.2024.07.17.04.14.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jul 2024 04:14:09 -0700 (PDT)
+Message-ID: <f559a33a-6d2e-476d-87f6-cb1887e99b62@redhat.com>
+Date: Wed, 17 Jul 2024 13:14:07 +0200
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] printk: Add a short description string to kmsg_dump()
+To: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+ <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>, Petr Mladek
+ <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+ John Ogness <john.ogness@linutronix.de>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jani Nikula <jani.nikula@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Uros Bizjak <ubizjak@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org
+References: <20240702122639.248110-1-jfalempe@redhat.com>
+From: Jocelyn Falempe <jfalempe@redhat.com>
+In-Reply-To: <20240702122639.248110-1-jfalempe@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US, fr
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240717_014523_371988_A85FCEA4 
-X-CRM114-Status: GOOD (  11.60  )
+X-CRM114-CacheID: sfid-20240717_041415_761773_61947E48 
+X-CRM114-Status: GOOD (  18.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,72 +117,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIHRoZSBOQU5EIFBSIGZvciA2LjExLgoKSSBqdXN0IHB1c2hlZCAtZiB0
-aGUgbmFuZC9uZXh0IGJyYW5jaCB0byBkcm9wIGEgRE1BIHJlbGF0ZWQgcGF0Y2ggZm9yCndoaWNo
-IEkgcmVjZWl2ZWQgbm8gYW5zd2VyIGZyb20gVmlub2QuIEkgYXBwbGllZCBpdCBieSBtaXN0YWtl
-IGFuZCBqdXN0CmZpZ3VyZWQgdGhhdCBvdXQgbGFzdCB3ZWVrLgoKVGhhbmtzLApNaXF1w6hsCgpU
-aGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDE2MTNlNjA0ZGYwY2QzNTljZjJhN2Zi
-ZDliZTdhMGJjZmFjZmFiZDA6CgogIExpbnV4IDYuMTAtcmMxICgyMDI0LTA1LTI2IDE1OjIwOjEy
-IC0wNzAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDov
-L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXguZ2l0IHRh
-Z3MvbmFuZC9mb3ItNi4xMQoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIGE1MDNmOTFh
-MzY0NTY1MWEzOWJhZjk3ZjFhZWQ5MGQ1ZDlmOWJkYTk6CgogIG10ZDogcmF3bmFuZDogbHB4MzJ4
-eDogRml4IGRtYV9yZXF1ZXN0X2NoYW4oKSBlcnJvciBjaGVja3MgKDIwMjQtMDctMTcgMTA6Mzk6
-MzkgKzAyMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClJhdyBOQU5EIGNoYW5nZXM7CgpUaGUgRnJlZXNjYWxlIE1YQyBk
-cml2ZXIgaGFzIGJlZW4gY29udmVydGVkIHRvIHRoZSBuZXdlciAtPmV4ZWNfb3AoKQppbnRlcmZh
-Y2UuIFRoZSBtZXNvbiBkcml2ZXIgbm93IHN1cHBvcnRzIGhhbmRsaW5nIHRoZSBib290IFJPTSBh
-cmVhIHdpdGgKdmVyeSBzcGVjaWZpYyBFQ0MgbmVlZHMuIFN1cHBvcnQgZm9yIHRoZSBpTVg4UVhQ
-IGhhcyBiZWVuIGFkZGVkIHRvIHRoZQpHUE1JIGRyaXZlci4gVGhlIGxweDMyeHggZHJpdmVyIG5v
-dyBjYW4gZ2V0IHRoZSBETUEgY2hhbm5lbHMgdXNpbmcgRFQKZW50cmllcy4gVGhlIFFjb20gYmlu
-ZGluZyBoYXMgYmVlbiBpbXByb3ZlZCB0byBiZSBtb3JlIGZ1dHVyZSBwcm9vZiBieQpSb2IuIEFu
-ZCB0aGVuIHRoZXJlIGlzIHRoZSB1c3VhbCBsb2FkIG9mIG1pc2MgYW5kIG1pbm9yIGNoYW5nZXMu
-CgpTUEktTkFORCBjaGFuZ2VzOgoKVGhlIE1hY3Jvbml4IHZlbmRvciBkcml2ZXIgaGFzIGJlZW4g
-aW1wcm92ZWQgdG8gc3VwcG9ydCBhbiBleHRlbmRlZCBJRAp0byBhdm9pZCBjb25mbGljdGluZyB3
-aXRoIG9sZGVyIGRldmljZXMgYWZ0ZXIgYW4gSUQgcmV1c2UgaXNzdWUuCgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkFyc2Vu
-aXkgS3Jhc25vdiAoMyk6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IGFtbG9naWMsbWVzb24tbmFu
-ZDogc3VwcG9ydCBmaWVsZHMgZm9yIGJvb3QgUk9NIGNvZGUKICAgICAgbXRkOiByYXduYW5kOiBt
-ZXNvbjogcmVmYWN0b3IgdXNlIG9mICdtZXNvbl9uZmNfY21kX2FjY2VzcygpJwogICAgICBtdGQ6
-IHJhd25hbmQ6IG1lc29uOiByZWFkL3dyaXRlIGFjY2VzcyBmb3IgYm9vdCBST00gcGFnZXMKCkNo
-ZW5nIE1pbmcgTGluICgyKToKICAgICAgbXRkOiBzcGluYW5kOiBtYWNyb25peDogQWRkIHN1cHBv
-cnQgZm9yIHJlYWRpbmcgRGV2aWNlIElEIDIKICAgICAgbXRkOiBzcGluYW5kOiBtYWNyb25peDog
-QWRkIHN1cHBvcnQgZm9yIHNlcmlhbCBOQU5EIGZsYXNoCgpEci4gRGF2aWQgQWxhbiBHaWxiZXJ0
-ICgxKToKICAgICAgbXRkOiByYXduYW5kOiBjYWRlbmNlOiByZW1vdmUgdW51c2VkIHN0cnVjdCAn
-ZWNjX2luZm8nCgpGcmFuayBMaSAoMik6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IGdwbWktbmFu
-ZDogQWRkICdmc2wsaW14OHF4cC1ncG1pLW5hbmQnIGNvbXBhdGlibGUgc3RyaW5nCiAgICAgIG10
-ZDogcmF3bmFuZDogZ3BtaTogYWRkICdzdXBwb3J0X2Vkb190aW1pbmcnIGluIGdwbWlfZGV2ZGF0
-YQoKSGFuIFh1ICgxKToKICAgICAgbXRkOiByYXduYW5kOiBncG1pOiBhZGQgaU1YOFFYUCBzdXBw
-b3J0LgoKUGlvdHIgV29qdGFzemN6eWsgKDIpOgogICAgICBtdGQ6IHJhd25hbmQ6IGxweDMyeHg6
-IFJlcXVlc3QgRE1BIGNoYW5uZWxzIHVzaW5nIERUIGVudHJpZXMKICAgICAgbXRkOiByYXduYW5k
-OiBscHgzMnh4OiBGaXggZG1hX3JlcXVlc3RfY2hhbigpIGVycm9yIGNoZWNrcwoKUm9iIEhlcnJp
-bmcgKEFybSkgKDEpOgogICAgICBkdC1iaW5kaW5nczogbXRkOiBxY29tLG5hbmRjOiBEZWZpbmUg
-cHJvcGVydGllcyBhdCB0b3AtbGV2ZWwKClNhc2NoYSBIYXVlciAoMyk6CiAgICAgIG10ZDogcmF3
-bmFuZDogbXhjOiBzZXBhcmF0ZSBwYWdlIHJlYWQgZnJvbSBlY2MgY2FsYwogICAgICBtdGQ6IHJh
-d25hbmQ6IG14YzogaW1wbGVtZW50IGV4ZWNfb3AKICAgICAgbXRkOiByYXduYW5kOiBteGM6IHN1
-cHBvcnQgc29mdHdhcmUgRUNDCgpXb2xmcmFtIFNhbmcgKDIpOgogICAgICBtdGQ6IHJhd25hbmQ6
-IG14YzogdXNlICd0aW1lX2xlZnQnIHZhcmlhYmxlIHdpdGggd2FpdF9mb3JfY29tcGxldGlvbl90
-aW1lb3V0KCkKICAgICAgbXRkOiByYXduYW5kOiBpbnRlbDogdXNlICd0aW1lX2xlZnQnIHZhcmlh
-YmxlIHdpdGggd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCkKCiAuLi4vYmluZGluZ3MvbXRk
-L2FtbG9naWMsbWVzb24tbmFuZC55YW1sICAgICAgICAgIHwgIDE4ICsKIC4uLi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL210ZC9ncG1pLW5hbmQueWFtbCAgICAgICAgfCAgMjIgKwogLi4uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbXRkL3Fjb20sbmFuZGMueWFtbCAgICAgICB8ICAzOCArLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvY2FkZW5jZS1uYW5kLWNvbnRyb2xsZXIuYyAgICB8ICAgNSAtCiBkcml2ZXJz
-L210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMgICAgICAgIHwgIDIwICstCiBkcml2
-ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmggICAgICAgIHwgICA2ICstCiBk
-cml2ZXJzL210ZC9uYW5kL3Jhdy9pbnRlbC1uYW5kLWNvbnRyb2xsZXIuYyAgICAgIHwgICA2ICst
-CiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9scGMzMnh4X21sYy5jICAgICAgICAgICAgICAgIHwgIDI2
-ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9scGMzMnh4X3NsYy5jICAgICAgICAgICAgICAgIHwg
-IDI2ICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgICAgICAgICAgICAgICAg
-IHwgIDg2ICsrLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhjX25hbmQuYyAgICAgICAgICAgICAg
-ICAgICB8IDcwOCArKysrKysrKysrLS0tLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9zcGkvbWFj
-cm9uaXguYyAgICAgICAgICAgICAgICAgICB8ICA2NCArLQogMTIgZmlsZXMgY2hhbmdlZCwgNTY5
-IGluc2VydGlvbnMoKyksIDQ1NiBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+
+On 02/07/2024 14:26, Jocelyn Falempe wrote:
+> kmsg_dump doesn't forward the panic reason string to the kmsg_dumper
+> callback.
+> This patch adds a new struct kmsg_dump_detail, that will hold the
+> reason and description, and pass it to the dump() callback.
+> 
+> To avoid updating all kmsg_dump() call, it adds a kmsg_dump_desc()
+> function and a macro for backward compatibility.
+> 
+> I've written this for drm_panic, but it can be useful for other
+> kmsg_dumper.
+> It allows to see the panic reason, like "sysrq triggered crash"
+> or "VFS: Unable to mount root fs on xxxx" on the drm panic screen.
+> 
+> v2:
+>   * Use a struct kmsg_dump_detail to hold the reason and description
+>     pointer, for more flexibility if we want to add other parameters.
+>     (Kees Cook)
+>   * Fix powerpc/nvram_64 build, as I didn't update the forward
+>     declaration of oops_to_nvram()
+> 
+> Signed-off-by: Jocelyn Falempe <jfalempe@redhat.com>
+> ---
+>   arch/powerpc/kernel/nvram_64.c             |  8 ++++----
+>   arch/powerpc/platforms/powernv/opal-kmsg.c |  4 ++--
+>   arch/um/kernel/kmsg_dump.c                 |  2 +-
+>   drivers/gpu/drm/drm_panic.c                |  4 ++--
+>   drivers/hv/hv_common.c                     |  4 ++--
+>   drivers/mtd/mtdoops.c                      |  2 +-
+>   fs/pstore/platform.c                       | 10 +++++-----
+>   include/linux/kmsg_dump.h                  | 22 +++++++++++++++++++---
+>   kernel/panic.c                             |  2 +-
+>   kernel/printk/printk.c                     | 11 ++++++++---
+>   10 files changed, 45 insertions(+), 24 deletions(-)
+> 
+
+[...]
+
+I pushed it to drm-misc-next, with the whitespace change in kmsg_dump.h
+
+Thanks all for your reviews and comments.
+
+Best regards,
+
+-- 
+
+Jocelyn
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
