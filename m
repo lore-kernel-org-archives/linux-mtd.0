@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BF6CC3DA60
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2024 03:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 531F8C3DA49
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2024 03:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=48mAe0xvXGPPr+fVRgzQt4DPSkug+3yHd5tsl05IDn0=; b=HJaBaWJdDTzJN/
-	lPvusVoVLLJvYN0MjdY9egML2CX8VsgOWWNyS34jDXG3n//aVxgkXGGTOzDyNxWSNNvrf6DkTMLlE
-	tSk5lr94ooVOzj7w1zta9Q4M3L4xyiPp24/sTvuD2SfCy0NkJ+x+dMSxcr6BlUXs0p13ssYE3JMww
-	X0rKTRl6/cIeNGppQvECSeF356AISyPDLDow96dUUePXaPRJfhsrcCW4Tp8Y4jYJozuWddxEeba4E
-	JLBN5LwD46LeV6hlSyOTrJRpGp1JH9JIoubgH6wo9i79Q4ixjJ4sEekuLEbv+LW1EHe8duhXU4zgc
-	bSgqo4z94jXTY888UTPg==;
+	List-Owner; bh=kZ3vL5Qdry/LLZvEQDLE/Nfa+/X1W0BWRT6kNE1u7iw=; b=cMTBq1BVX4vRiJ
+	aDGNATBBdBYMkxzrKB2LUHXvKhTBzSItu1vUaH4mpiS6sOdlJma0snrYfrSsdSuTwsARjTS2aVMop
+	OZDPxcUsp4Z3f+etAUiB//IIIm4NrEWIyZ77stFUIwlwvrTEo8+vFb2ex63nkkKKgKJQL73OcOhMF
+	Pr5Iq9oR5Vh9XUxRpVK/07HzlU64k3+1PfvQNIz2lyiuS3jTOx82rI95iNoBBVLbjUqR4GY+BGk+Z
+	obWdxBd9RQB5vTirtf7MvQyodlvF2lNus3YER8hcnazTmvTYdDKft4BXdN+6hUC5rR3O4Ym/60RGt
+	F9BkLZOUhkSFmkS0k5yw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sUI7Q-0000000FeR9-2HWq;
-	Thu, 18 Jul 2024 03:47:48 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1sUI7S-0000000FeSj-11g1;
+	Thu, 18 Jul 2024 03:47:50 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sUI7N-0000000FePT-1A14
+	id 1sUI7O-0000000FeQ6-3mlu
 	for linux-mtd@lists.infradead.org;
-	Thu, 18 Jul 2024 03:47:47 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-70b1808dee9so239762b3a.2
-        for <linux-mtd@lists.infradead.org>; Wed, 17 Jul 2024 20:47:44 -0700 (PDT)
+	Thu, 18 Jul 2024 03:47:48 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1fb8781ef1bso3803065ad.3
+        for <linux-mtd@lists.infradead.org>; Wed, 17 Jul 2024 20:47:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721274464; x=1721879264; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1721274466; x=1721879266; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pzLxElrWQ9zwK7gS/JxRiE2f82xa98E1x4NzX0Ply7k=;
-        b=TfZWFoBOTuNaRA93b0jx161qtOr3as5ZBw3+6JHpETbcmJ0KIN17HjNqM+FQWLIrBp
-         TIUpwLYow8th5WVzOrF6IuPQ+bmAojfxk1Vxtrj2sZtEbIaA2XfGMBE+uGjUyJia4kPQ
-         c3GV75ZhozIaDYD0VzW70ZvK/j0iusHFmtC57cu36B/W4hGcK2XrC0N4TzEWIA1XsJ8j
-         oBuwnwKzBbG/4Jdkil4m7UZ835Lv0D8fK0+Xme4vuJZMB3d6zffhl/kMzovAfxjV1JnY
-         pieo4Ad5b8UGdRP21yATmPKL3pIeFQJlTTyAI2EGlE+M8SgvmPgDfVTkqjecok0HOcaE
-         2AJQ==
+        bh=aiGhB9iAlrnpuT0nNXOC/VcBouLV1340qQn/2ASaTHE=;
+        b=d8ECzLwRnCYagjGx5IhnSim2AJ2ND4yXaWI4YiGefGviVMiLrkpLG0irWCuWpJiKJ6
+         FCSkiZ2MHpk44ELDO2kfQCibMjMabgE30HLVoLIWdCLGMwZSFNc8pL0Och/Wsr8xWmM5
+         JUECMGLPIixje0XUlHejnMhvsfSv9cXWRv5FuIATSHa9Xmsf9QbFPL2eCR7LhRUScuyw
+         MwIKkRtzgvo4YyBi8bz/S7HETjL1igi55LJoRL9LnuKtI2yqPbOjPzuZT3ki6SsaAzWW
+         3OxdOYv250NyWgKDKOFkHOT77wN0eFdCNdTJq5Qv1iNyyIVBIKNL3XjYMSwEuV8kN/Tv
+         2BNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721274464; x=1721879264;
+        d=1e100.net; s=20230601; t=1721274466; x=1721879266;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pzLxElrWQ9zwK7gS/JxRiE2f82xa98E1x4NzX0Ply7k=;
-        b=Jv4Cq2SCsniSUamkQz1TGM+/zeCsKtFSbjElr25OSgKZrOJFSVD2c0EyEK2xzEcvH/
-         6bO7jLUdnMpKhlyqwbX5bZIFKbaot66uOQGXRlsLfgNu0j/R38MGUPbMvjWBlMt4YQVH
-         +hkM4wB6MEiyB2Lg62RmmnAyCKDql255FMmAw1mbcRG7SirsnXvqxfEkLzvdUt/sk5LI
-         QA0LDfTizmwYB7YG7syLtBZ1eKYdoB+Fj5D0JJ89HTGAQgbB22eTTPlEawYrGTTFdvaW
-         hrF9TpPDsop7rRD0NUuRcgnG/v7liTHlflN1psfcxC6EAf/luDt3QWBj3KwfI8d9vOdJ
-         eCwg==
-X-Gm-Message-State: AOJu0YwL/qi02evJU5nOiAUTDDsPAIhEvBLawWPlv91c9DJlQ8NV/juA
-	1yNArpuYu9icjIYLNV/QlPHH+HZVgEYJWLNYpwDHXUn1gJJv6XJL
-X-Google-Smtp-Source: AGHT+IFr1OWqAhW4l4NG6tilVdQj6eglU6t3bObxxl3lVgpLLrts4FrIjsoB2bkVwVjv0ARFggj79A==
-X-Received: by 2002:a05:6a21:78a2:b0:1c0:f0be:1536 with SMTP id adf61e73a8af0-1c3fddb3cadmr4714398637.40.1721274464165;
-        Wed, 17 Jul 2024 20:47:44 -0700 (PDT)
+        bh=aiGhB9iAlrnpuT0nNXOC/VcBouLV1340qQn/2ASaTHE=;
+        b=ERPvpa9R/AvJQ5F7TYfIqttnh8PILeAqd2OF0ABaFtv8SN+sCuG3VYzmaL6nnIg9Si
+         UisOl5BYm8Cp0jJhrUYB08t48nUMWmOrehy9Ohm7gE9QUy9gv/nT9PsaBf0yTes3aj0v
+         HwZlW6f7eWLmZyuDy95gYchOYhELpPeQNw/zkEWB4Z5h+Ucf4Q1jHSXw6c5c7HPr0oGc
+         egWCod4nJPFqprsMn7RGhO5YQPN5hb2qW+j9kIDyuHSxsMJrRFRFQ/gxqd9ZAqgFBamF
+         BSAoGwIGHPvfysc/x1H0HJSrOwi90558b9ACDtYDz4wjvw6AhQai28bOQgRCBDgQaSGt
+         TSOA==
+X-Gm-Message-State: AOJu0Yxf0YFtLC5g68pg6JcJHqJfYON2R2bmDdh9Q1WeGYw9Qo0ZW39J
+	Px+H33xi5KmTj2pFjiWglbMkj5Na8CgnaoY8nd4/XkO7YkbVbgsP
+X-Google-Smtp-Source: AGHT+IHZgl9U0WUl8+4EuXclgpCb+62yP5nP7OnVXEfj9sPDD1BYRn8ossNcYdB2xJD+qRTSocLQsw==
+X-Received: by 2002:a17:902:dacc:b0:1fc:5ed5:ff51 with SMTP id d9443c01a7336-1fc5ed60186mr7628615ad.43.1721274465384;
+        Wed, 17 Jul 2024 20:47:45 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc265f9cccsm62394835ad.66.2024.07.17.20.47.43
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc54069156sm15587545ad.242.2024.07.17.20.47.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 20:47:43 -0700 (PDT)
+        Wed, 17 Jul 2024 20:47:45 -0700 (PDT)
 Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
-	by twhmp6px (Postfix) with ESMTPS id 65583800D3;
-	Thu, 18 Jul 2024 11:56:55 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id 72F7A805EF;
+	Thu, 18 Jul 2024 11:56:56 +0800 (CST)
 From: AlvinZhou <alvinzhou.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	linux-spi@vger.kernel.org,
@@ -80,16 +80,16 @@ Cc: chengminglin@mxic.com.tw,
 	leoyu@mxic.com.tw,
 	AlvinZhou <alvinzhou@mxic.com.tw>,
 	JaimeLiao <jaimeliao@mxic.com.tw>
-Subject: [PATCH v9 1/6] mtd: spi-nor: add Octal DTR support for Macronix flash
-Date: Thu, 18 Jul 2024 11:46:09 +0800
-Message-Id: <20240718034614.484018-2-alvinzhou.tw@gmail.com>
+Subject: [PATCH v9 2/6] spi: spi-mem: Allow specifying the byte order in Octal DTR mode
+Date: Thu, 18 Jul 2024 11:46:10 +0800
+Message-Id: <20240718034614.484018-3-alvinzhou.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
 References: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240717_204745_763077_93522EBE 
-X-CRM114-Status: GOOD (  19.85  )
+X-CRM114-CacheID: sfid-20240717_204746_994906_7FD6A2AC 
+X-CRM114-Status: GOOD (  16.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,145 +108,85 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: AlvinZhou <alvinzhou@mxic.com.tw>
 
-Create Macronix specify method for enable Octal DTR mode and
-set 20 dummy cycles to allow running at the maximum supported
-frequency for Macronix Octal flash.
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-Use number of dummy cycles which is parse by SFDP then convert
-it to bit pattern and set in CR2 register.
-Set CR2 register for enable octal DTR mode.
+There are NOR flashes (Macronix) that swap the bytes on a 16-bit
+boundary when configured in Octal DTR mode. The byte order of
+16-bit words is swapped when read or written in Octal Double
+Transfer Rate (DTR) mode compared to Single Transfer Rate (STR)
+modes. If one writes D0 D1 D2 D3 bytes using 1-1-1 mode, and uses
+8D-8D-8D SPI mode for reading, it will read back D1 D0 D3 D2.
+Swapping the bytes may introduce some endianness problems. It can
+affect the boot sequence if the entire boot sequence is not handled
+in either 8D-8D-8D mode or 1-1-1 mode. Therefore, it is necessary
+to swap the bytes back to ensure the same byte order as in STR modes.
+Fortunately there are controllers that could swap the bytes back at
+runtime, addressing the flash's endiannesses requirements. Provide a
+way for the upper layers to specify the byte order in Octal DTR mode.
 
-Use Read ID to confirm that enabling/diabling octal DTR mode
-was successful.
+Merge Tudor's patch and add modifications for suiting newer version
+of Linux kernel.
 
-Macronix ID format is A-A-B-B-C-C in octal DTR mode.
-To ensure the successful enablement of octal DTR mode, confirm
-that the 6-byte data is entirely correct.
-
-Co-developed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Suggested-by: Michael Walle <mwalle@kernel.org>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 Signed-off-by: AlvinZhou <alvinzhou@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/macronix.c | 91 ++++++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ drivers/spi/spi-mem.c       | 3 +++
+ include/linux/spi/spi-mem.h | 8 +++++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index ea6be95e75a5..f039819a5252 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -8,6 +8,24 @@
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 17b8baf749e6..abc6792e738c 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -172,6 +172,9 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 		if (!spi_mem_controller_is_capable(ctlr, dtr))
+ 			return false;
  
- #include "core.h"
- 
-+#define MXIC_NOR_OP_RD_CR2	0x71		/* Read configuration register 2 opcode */
-+#define MXIC_NOR_OP_WR_CR2	0x72		/* Write configuration register 2 opcode */
-+#define MXIC_NOR_ADDR_CR2_MODE	0x00000000	/* CR2 address for setting spi/sopi/dopi mode */
-+#define MXIC_NOR_ADDR_CR2_DC	0x00000300	/* CR2 address for setting dummy cycles */
-+#define MXIC_NOR_REG_DOPI_EN	0x2		/* Enable Octal DTR */
-+#define MXIC_NOR_REG_SPI_EN	0x0		/* Enable SPI */
++		if (op->data.swap16 && !spi_mem_controller_is_capable(ctlr, swap16))
++			return false;
 +
-+/* Convert dummy cycles to bit pattern */
-+#define MXIC_NOR_REG_DC(p) \
-+	((20 - (p)) >> 1)
-+
-+/* Macronix write CR2 operations */
-+#define MXIC_NOR_WR_CR2(addr, ndata, buf)			\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(MXIC_NOR_OP_WR_CR2, 0),	\
-+		   SPI_MEM_OP_ADDR(4, addr, 0),			\
-+		   SPI_MEM_OP_NO_DUMMY,				\
-+		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
-+
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
-@@ -185,6 +203,78 @@ static const struct flash_info macronix_nor_parts[] = {
- 	}
+ 		if (op->cmd.nbytes != 2)
+ 			return false;
+ 	} else {
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index f866d5c8ed32..c46d2b8029be 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -90,6 +90,8 @@ enum spi_mem_data_dir {
+  * @data.buswidth: number of IO lanes used to send/receive the data
+  * @data.dtr: whether the data should be sent in DTR mode or not
+  * @data.ecc: whether error correction is required or not
++ * @data.swap16: whether the byte order of 16-bit words is swapped when read
++ *		 or written in Octal DTR mode compared to STR mode.
+  * @data.dir: direction of the transfer
+  * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+  *		 operation does not involve transferring data
+@@ -124,7 +126,8 @@ struct spi_mem_op {
+ 		u8 buswidth;
+ 		u8 dtr : 1;
+ 		u8 ecc : 1;
+-		u8 __pad : 6;
++		u8 swap16 : 1;
++		u8 __pad : 5;
+ 		enum spi_mem_data_dir dir;
+ 		unsigned int nbytes;
+ 		union {
+@@ -297,10 +300,13 @@ struct spi_controller_mem_ops {
+  * struct spi_controller_mem_caps - SPI memory controller capabilities
+  * @dtr: Supports DTR operations
+  * @ecc: Supports operations with error correction
++ * @swap16: Supports swapping bytes on a 16 bit boundary when configured in
++ *	    Octal DTR
+  */
+ struct spi_controller_mem_caps {
+ 	bool dtr;
+ 	bool ecc;
++	bool swap16;
  };
  
-+static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf, i;
-+	int ret;
-+
-+	/* Use dummy cycles which is parse by SFDP and convert to bit pattern. */
-+	buf[0] = MXIC_NOR_REG_DC(nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].num_wait_states);
-+	op = (struct spi_mem_op)MXIC_NOR_WR_CR2(MXIC_NOR_ADDR_CR2_DC, 1, buf);
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	/* Set the octal and DTR enable bits. */
-+	buf[0] = MXIC_NOR_REG_DOPI_EN;
-+	op = (struct spi_mem_op)MXIC_NOR_WR_CR2(MXIC_NOR_ADDR_CR2_MODE, 1, buf);
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	/* Read flash ID to make sure the switch was successful. */
-+	ret = spi_nor_read_id(nor, 4, 4, buf, SNOR_PROTO_8_8_8_DTR);
-+	if (ret) {
-+		dev_dbg(nor->dev, "error %d reading JEDEC ID after enabling 8D-8D-8D mode\n", ret);
-+		return ret;
-+	}
-+
-+	/* Macronix SPI-NOR flash 8D-8D-8D read ID would get 6 bytes data A-A-B-B-C-C */
-+	for (i = 0; i < nor->info->id->len; i++)
-+		if (buf[i * 2] != buf[(i * 2) + 1] || buf[i * 2] != nor->info->id->bytes[i])
-+			return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int macronix_nor_octal_dtr_dis(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	int ret;
-+
-+	/*
-+	 * The register is 1-byte wide, but 1-byte transactions are not
-+	 * allowed in 8D-8D-8D mode. Since there is no register at the
-+	 * next location, just initialize the value to 0 and let the
-+	 * transaction go on.
-+	 */
-+	buf[0] = MXIC_NOR_REG_SPI_EN;
-+	buf[1] = 0x0;
-+	op = (struct spi_mem_op)MXIC_NOR_WR_CR2(MXIC_NOR_ADDR_CR2_MODE, 2, buf);
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+	if (ret)
-+		return ret;
-+
-+	/* Read flash ID to make sure the switch was successful. */
-+	ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
-+	if (ret) {
-+		dev_dbg(nor->dev, "error %d reading JEDEC ID after disabling 8D-8D-8D mode\n", ret);
-+		return ret;
-+	}
-+
-+	if (memcmp(buf, nor->info->id->bytes, nor->info->id->len))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int macronix_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
-+{
-+	return enable ? macronix_nor_octal_dtr_en(nor) : macronix_nor_octal_dtr_dis(nor);
-+}
-+
- static void macronix_nor_default_init(struct spi_nor *nor)
- {
- 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
-@@ -194,6 +284,7 @@ static int macronix_nor_late_init(struct spi_nor *nor)
- {
- 	if (!nor->params->set_4byte_addr_mode)
- 		nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
-+	nor->params->set_octal_dtr = macronix_nor_set_octal_dtr;
- 
- 	return 0;
- }
+ #define spi_mem_controller_is_capable(ctlr, cap)	\
 -- 
 2.25.1
 
