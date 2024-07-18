@@ -4,120 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA058C3DA5D
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2024 03:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66A76C3DA49
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2024 03:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1qJLFRW6zY7J8B5RG4rbqA/Ma6wHQqacZpBrV6SyXAs=; b=I6aIfMzBYfk3F2
-	XD7KycwdtQEuvudcLC4Y5N4JQGY4rReI8CowtTao0h9CrsVDwAwBiLbsWMlv/mx7r9AvUVEWkZsAO
-	XEVriVZB7eFCYAIsaOlWCopyU33gn0ZSsFLCrBrDoZw5mIcLpGfM/shDDKLAN1eposnliqGZ+ZfxF
-	D1JaonB+01uiQVhxlEwV+C31Ao8dgDnENf7Btxszz+2ddG0uBZczXG+txSNOfkh5j5HwIG3lvktOJ
-	xMRWaVgklYbExsnlSgsNwv+1X3CfanRS/TtiLFa4g0T0etbspiwyINvhxIiTUjucDHpJwGHUyW+aD
-	xdI+IKQMVaDzs3cC8Csw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JkAZr7F8VvYaC4+o0ihLOLYxR9x1fy1a6PqPX3b+A5k=; b=mGehZ2vP0PErig
+	lr8J6twesovuIIMAFhasVQyr3fLkECbIcAMu1n0Wn+Z3mBKXKX2ImdUi15KvAvwimhP05CXmh/n2+
+	kHHSxb6fbkPe3MRgMw4nqVLA8Pn1jQOWumaztNkpG8N8PEeMv/ku1ztL1k90kt/zI8uXmOGZgNXtt
+	rt4Gx2yTwtClIawzoMJTGpxHxILbs7hNyQWkjGYm3dJj4TbN6J69p/vCqXFIutddArNXqb98iDmou
+	IFaza8tIArfRcVSL/1lDpzEl4fJffcsrjfaUVvpQ4DvaKGJ+IYH6Mw0ekdWjCWVwko3dooFi5UwyT
+	NBFw6cWROfGSCmHGoUcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sUHSF-0000000FaaY-1aIg;
-	Thu, 18 Jul 2024 03:05:15 +0000
-Received: from mail-sy4aus01olkn20801.outbound.protection.outlook.com ([2a01:111:f403:2819::801] helo=AUS01-SY4-obe.outbound.protection.outlook.com)
+	id 1sUI7J-0000000FeOv-3Sh2;
+	Thu, 18 Jul 2024 03:47:41 +0000
+Received: from mail-il1-x12c.google.com ([2607:f8b0:4864:20::12c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sUHSB-0000000FaYC-2W1y
+	id 1sUI7F-0000000FeOM-44Ms
 	for linux-mtd@lists.infradead.org;
-	Thu, 18 Jul 2024 03:05:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=RLW8oXY/Fy1JaTOyMr2bTiOYJG5zlx5kQdTEAu9jBPJjt6tPKnqz6PMDkLCy3zk2RVG3gPWc1aAH3xeZRli3JI8weyfKXEKkg/Sc9ZZYs1kIH6Hg3DZgFSLyclcvIrlXHz4QGGnusGxMj6B3j7XWeiLtpm2WT4baQnrbv9mlNiw1c2/aJlFMFnAJt2UXJVuycAWjDdtHBl8m5h4WyYJ75EAY0htbfGbfJYcXmHkGAsVRrFXnGT2wXRu8xABtDuOIvvadbt4L8q58UI9GSY/hzE84V9P9/jIIifJDmsmlNJKF/hfiLZq26SANkBVU3Cye2d92/IphxHQTUxGLxilO5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WLzBeUv7uEyatawNZn4TXVt661GeDzmP6Lg6H1TaZCY=;
- b=CTRjdT69OshQWI/gJScyDcdzXAxomRcTXQVHKOvz1tTfW4Kdt9gJuxh+eTRV7pithOo1MYJJEozvzF56kC7p82H9s8fmUZnjedthPWSz7VuWJ+McqWEmil8NeE//XXkNafrEFTmjxTSd34QqBkADXBt7LqiGa+JuUiPy0BHgxXcvAOthDNbf7UFL/UtyV37mv53s35bZ5b1FeJZ3MU5DelUNQq/e2jZQx0Grd+hWPpr1zIHQP56wf4PqGc0hztnIJZ/ehIecmu+Zz4f2CoszMq6QVA9lYmYzDhIkGy2PraoD/LYafbe/1D98ih1ppcodSWzi4MGJAxIPU/rQN6Ocpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WLzBeUv7uEyatawNZn4TXVt661GeDzmP6Lg6H1TaZCY=;
- b=N8CX28Rd5jGYT0SF2qilAXhEtdeM5ZyYbQpX9By5d3M2U4qYx7l+5GnPGpglnHnOLBZR602YkNmGLotQ/cteRXeMw5FQqU1sUSRcDABCBF66yzR2KNf7skEtR1u3RvOxLGc3Gpa+kVn3B+DoDBTzYU6+ODEXXLvYNuaKGn34Wxr/IDzq3GRhbj8aIabkJzytJMxoGh/mJ1Al88HiRlN99dbR2l91xkgrAfL4EAwuk7mqovLpsUXp1rNxN3C7BfLEXeL4Bz1ovipnKpYd+MGQe7WderHLbE/qAAq40QxKHk64G+63E97i1g8jif9NDqRTBuQ8AkBBYpiXACfFMITNTw==
-Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:159::11)
- by SY4P282MB3661.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1c0::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.17; Thu, 18 Jul
- 2024 03:04:50 +0000
-Received: from MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
- ([fe80::f65e:52a:9bfb:525f]) by MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
- ([fe80::f65e:52a:9bfb:525f%5]) with mapi id 15.20.7784.017; Thu, 18 Jul 2024
- 03:04:50 +0000
-From: Ryder Wang <rydercoding@hotmail.com>
-To: Theodore Ts'o <tytso@mit.edu>, Zhihao Cheng <chengzhihao@huaweicloud.com>
-CC: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, LKML
-	<linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Christoph Hellwig
-	<hch@infradead.org>, linux-mtd <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, "zhangyi (F)" <yi.zhang@huawei.com>, yangerkun
-	<yangerkun@huawei.com>, "wangzhaolong (A)" <wangzhaolong1@huawei.com>
-Subject: Re: [BUG REPORT] potential deadlock in inode evicting under the inode
- lru traversing context on ext4 and ubifs
-Thread-Topic: [BUG REPORT] potential deadlock in inode evicting under the
- inode lru traversing context on ext4 and ubifs
-Thread-Index: AQHa1CTInbJ5495Kk0Oyw9CF3kyldLHzKagAgAiorN0=
-Date: Thu, 18 Jul 2024 03:04:50 +0000
-Message-ID: <MEYP282MB3164B39D532251DC6C36B652BFAC2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-References: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
- <20240712143708.GA151742@mit.edu>
-In-Reply-To: <20240712143708.GA151742@mit.edu>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-tmn: [JV5QR5IXsnChSSdq0+cS3AJvHdP1OA03]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MEYP282MB3164:EE_|SY4P282MB3661:EE_
-x-ms-office365-filtering-correlation-id: c7cfac0f-5a47-4335-7f5e-08dca6d66379
-x-microsoft-antispam: BCL:0;ARA:14566002|19110799003|461199028|8060799006|3412199025|102099032|440099028;
-x-microsoft-antispam-message-info: J9LaPZ5lds60YiEF5umOrG1UmOo5Imp33idt7iBE7WGnkNGBF35v9i4d0q/dbPZwctLI/9/F253gi95x8gn0w5VTnoWmQTY4IcGL4FTvYCVZ5Qbmlb1LMKogK6tG/lhcmhGtUZesS/WBYd+jy92V3LuSrmkPlrB/tso/Tj2FnDYZj/83asGgyan6n2/WfSREiM4Eur9Gb1iZ2eyn7y6jXEK4LjWdIpKZOJjU0RVwDp7rwT7ksQP9Tn2w36DZ86rEJ4KaRoSioPcTHSp5gRj6dUfQQPnYaslDS0lP9Jr2NAH0KeaUrWPIx1DyXpsZy5DyKtJUCKVWICm86tDtQlbCWLjtzGZqFjg2SQxLgTgRwpHEGtx6lVHBtEhzbbu+uKhLqxfeYfHwRtYhRvAKu2FmKrzosJkkVAEzdB7hhISQHWHp+C/UHj/dZ1MPe8TB/wn3guyeP39iG5hri+d40O0RmJ/U+a3YL8kkiFXfVfa/mRHlsLLg/wgRHEkuz6h8N+YFL/A3GEk5EweKMZNffePfk6kgOc0xgM0KDRhEn7htO7SyPqLRSbDDzuHnOTO8zDAE35jRFaIP9Gm72TVO81anE8q653AyRv8rdwVR9LICxgHiYnlGdPFW753JNzWDPg5sdMHjM7f/lxRa+o1ZTP2S+Q==
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?+ailHlAzLLI3Pmbdph/b8iovr3EOB5E4cTBGw9bdxGmXocT62+p/a1z43R?=
- =?iso-8859-1?Q?w/Z8FBDXxFtXvC6I1ijw3dmeG7fSlmk77cMsDnFsFWDMeh8XLI2HgVgWkP?=
- =?iso-8859-1?Q?brDxdI2dT5VIhWukVkpL3m4kncjdL2Vqq+PkvuVQWXYtU2jPwgO1Hion40?=
- =?iso-8859-1?Q?hA5bn0kINK9YnWbLvXge4YNZV/hsc+LsTihktKCEEyUEVtBboXY/G09I9h?=
- =?iso-8859-1?Q?g2XbSY/He1GAyITuTkJgL52mmtNxgKBLqQGQ63QekwY9mNEcwY0wCaNpAK?=
- =?iso-8859-1?Q?wmTFTKM6MJPlQYrH3U4NaGO8Q1kBuwVnz6KjhV/5DRIFOCuAKQlg2bU9ol?=
- =?iso-8859-1?Q?e2lYZSAEY/AaidqKYTO3JsOvX5OGJD7ZThwPGpsPLnFnIq7X0mJl6RUX1j?=
- =?iso-8859-1?Q?kI6/Hyu5QFDAR27AG/iNvzEJXqGzT01wH6hISyxkW7RpWyTxizTFGA5++E?=
- =?iso-8859-1?Q?EeadmPGcuK4PBYFR7iU0JJANin6U4dR/vJLXYrQEgIAxBCLvACjBTVopZO?=
- =?iso-8859-1?Q?jGK4doMohNKK0Kad21Ja/+FOwTUISpRTJO7HLTM7TiJGBrCKEJXoU2aA55?=
- =?iso-8859-1?Q?oGB94yhpAZbXzjJtD5Js25Vjf2efDaRLR8imJcdJ0QcECrUT4NNhO0vEr6?=
- =?iso-8859-1?Q?E3heju6ajObz2XzQv1GN7/vovIXVpA97WwPPi/XT10DzsaWM9kD8EwVo12?=
- =?iso-8859-1?Q?KTJ/NlHsITNwq7zncpJpboCP3g+eK/dm2ALMMhgjyayDYwzeYqgJO71m84?=
- =?iso-8859-1?Q?nPL7TqjRfIKZVhv6EM5QQOrFcpLB6p0LuE/aGc/FoTrNm3o0o5+0DtzWaQ?=
- =?iso-8859-1?Q?sx7NbukCaIg5QShNefk0S64auiqzrZ2ljBHphqqkI1GjjZS/OQHvWacIjX?=
- =?iso-8859-1?Q?GLtAd+jnko6Dgz8uwYQACGLu+gBBdrprjVZnQurJOvxVwzSUVPy7SA3vvs?=
- =?iso-8859-1?Q?KacC1S42cuB/WrJ9vqoB6cfKgK3lmu89j2VQj0GMW2z6N89xTaxPNCh9a3?=
- =?iso-8859-1?Q?P46kCSjnQL/vFI5OQ5fD5o24rAibrmOohcYOb/fHDF5WjkUV/vsig9CM5N?=
- =?iso-8859-1?Q?kkBlDtgNfEJ7kMZxrOHpuU2Cm2D4Ib2fvopog71zKNcGTcxzLAwLgXcKlw?=
- =?iso-8859-1?Q?mtmQiEt9FIiDb5TdhXubipPEXIIhTCgIOHUVedSB+t4ACI4i/Lzd/n2cm1?=
- =?iso-8859-1?Q?RJrwuK3C1QzSXi/BFnMHBHBSMOw9StN6qflc0Ahxbo4OzBQFMbgFEMuiKv?=
- =?iso-8859-1?Q?Ek2K0UnlHsTubTHKB/m56mF1eIgPC6j5mGvuHb3+I=3D?=
+	Thu, 18 Jul 2024 03:47:39 +0000
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-396eb81a1cfso139215ab.2
+        for <linux-mtd@lists.infradead.org>; Wed, 17 Jul 2024 20:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721274456; x=1721879256; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VDh6Ql+TGdlrLagqD7b5t329MBkSs5xxrsa8OqakPWc=;
+        b=At0YD8t8iTsT0SkhhxQjh664lrvKEtyEnf8KCCBwMcTAW6t1NCHw/VeHz2a+eAU7e0
+         l75tV4znAASJyp314JXTLReROAx6kyxUXkBWvBPRqSajstTnoenc1A07rjYhLicbiGWh
+         rK91wkG/+nky7vMFO7zNZXSVnIRbAiLWNsROZ6+jZlGfCvQGvKy+N31Xt/G+TRhTY5Cl
+         tl377I4zgabkL71a27/YFMAu/352c+oQ18OmVPyCNQh/W4nH0Jd0YO7/5hC5LeY6fqY2
+         xbmH7uNu1P3CpI59uWVNzSXeSbuh4BhHwg381Qx8VR6g6OhoSW/NT/8owlEhw1YxK5fT
+         jYCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721274456; x=1721879256;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VDh6Ql+TGdlrLagqD7b5t329MBkSs5xxrsa8OqakPWc=;
+        b=UxPHsgIs91l1v8Oppcd38v4pEis1ptOVVmMYmX5OAuzVp0nHU5Z9kDLGFSjmuaR8o/
+         5iS3fkYZaUaLczAzhlzVb9jl3GlDA+TgpmRvD+N2crjmMrGA+YCsbBOBrPNzNBl5qAaM
+         K00BqBSuBA2Q0aCHhPHKePjzEENYFifGO5i/vfVFojyMD20Uo1xXlR1vXyr0BXlskI3Q
+         bSgUFzIMAmBgyjTSyVaH8e28EiUlAC+B8E2PpAGP78aVO5p6XjgeaM8xwrfJYoG08qZS
+         PWaNmOdcBFe9NB9CEbBjo5FFJY2qRVC7A4hi2hRzUWxRiVICTB9xH+OhDFR1FGHOGVGh
+         N94g==
+X-Gm-Message-State: AOJu0YzTCJgJ7gUrq1wJx8ufbeFZU+VXdZjuuoq7ze64WV/mn+WtiBfY
+	KHhPhm/dnmiv0evBOu5wVLjgnR1PtcP6b8ZeyahJjdYLY3klyOT+
+X-Google-Smtp-Source: AGHT+IEslbSVdfarj8VF3abfpeoMwQof3aoz3IYeXUjuJa1oSpr3Ne+IxLanbUpayuHh8H8+p2mXdw==
+X-Received: by 2002:a05:6e02:216d:b0:375:c9f0:5297 with SMTP id e9e14a558f8ab-39557425460mr45169865ab.26.1721274456490;
+        Wed, 17 Jul 2024 20:47:36 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7ebc384bsm8946018b3a.70.2024.07.17.20.47.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jul 2024 20:47:35 -0700 (PDT)
+Received: from hqs-appsw-a2o.mp600.macronix.com (linux-patcher [172.17.236.67])
+	by twhmp6px (Postfix) with ESMTPS id 94805800D3;
+	Thu, 18 Jul 2024 11:56:47 +0800 (CST)
+From: AlvinZhou <alvinzhou.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	mwalle@kernel.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	broonie@kernel.org
+Cc: chengminglin@mxic.com.tw,
+	leoyu@mxic.com.tw,
+	AlvinZhou <alvinzhou@mxic.com.tw>
+Subject: [PATCH v9 0/6] Add octal DTR support for Macronix flash
+Date: Thu, 18 Jul 2024 11:46:08 +0800
+Message-Id: <20240718034614.484018-1-alvinzhou.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-7719-20-msonline-outlook-722bc.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7cfac0f-5a47-4335-7f5e-08dca6d66379
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2024 03:04:50.1493
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY4P282MB3661
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240717_200511_648406_61FE7B48 
-X-CRM114-Status: UNSURE (   9.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240717_204738_038748_2CFE92F0 
+X-CRM114-Status: GOOD (  10.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,21 +102,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> Um, I don't see how this can happen.  If the ea_inode is in use,
-> i_count will be greater than zero, and hence the inode will never be
-> go down the rest of the path in inode_lru_inode():
-> 
->         if (atomic_read(&inode->i_count) ||
->             ...) {
->                 list_lru_isolate(lru, &inode->i_lru);
->                 spin_unlock(&inode->i_lock);
->                 this_cpu_dec(nr_unused);
->                 return LRU_REMOVED;
->         }
+From: AlvinZhou <alvinzhou@mxic.com.tw>
 
-Yes, in the function inode_lru_inode (in case of clearing cache), there has been such inode->i_state check mechanism to avoid double-removing the inode which is being removed by another process. Unluckily, no such similar inode->i_state check mechanism in the function iput_final (in case of removing file), so double-removing inode can still appear.
+Add method for Macronix Octal DTR Eable/Disable.
+Merge Tudor's patch "Allow specifying the byte order in DTR mode"
 
-It looks we need to add some inode->i_state check in iput_final() , if we want to fix this race condition bug.
+v9:
+  Change the name of the configuration register 2 for Macronix Octal flash.
+  Fix the bit value in __pad of struct spi_mem_op.
+  Use the local variable proto instead of nor->read_proto.
+
+v8:
+  Supplement missing S-o-b
+  Remove function spi_nor_is_octal_dtr_swab16
+  Split IDs by MX25 & MX66
+  Add dump of capability in debugfs
+  Add dump of params in debugfs
+  Add dump of reult for mtd-utils tests
+  Add SNOR_ID(0xC2) in last of Macronix ID table
+
+v7:
+  Add dtr_swab16 judgement to enable/disable Macronix xSPI host
+  controller swap byte feature.
+
+v6:
+  Add byte swap support for spi-mxic.c
+  Remove flash name in ID table.
+
+v5:
+  Remove manufacturer read id function.
+  For increased readability, separate Flash IDs based on whether
+  it supports RWW feature.
+
+v4:
+  Add patch for adding manufacturer read id function.
+  remove patch "hook manufacturer by checking first byte id" 
+
+v3:
+  Add patch for hook manufacturer by comparing ID 1st byte.
+  Add patches for specifying the byte order in DTR mode by merging
+  Tudor's patch.
+
+v2:
+  Following exsting rules to re-create Macronix specify Octal DTR method.
+  change signature to jaimeliao@mxic.com.tw
+  Clear sector size information in flash INFO.
+
+AlvinZhou (6):
+  mtd: spi-nor: add Octal DTR support for Macronix flash
+  spi: spi-mem: Allow specifying the byte order in Octal DTR mode
+  mtd: spi-nor: core: Allow specifying the byte order in Octal DTR mode
+  mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order from BFPT
+  spi: mxic: Add support for swapping byte
+  mtd: spi-nor: add support for Macronix Octal flash
+
+ drivers/mtd/spi-nor/core.c     |  4 ++
+ drivers/mtd/spi-nor/core.h     |  1 +
+ drivers/mtd/spi-nor/macronix.c | 95 +++++++++++++++++++++++++++++++++-
+ drivers/mtd/spi-nor/sfdp.c     |  4 ++
+ drivers/mtd/spi-nor/sfdp.h     |  1 +
+ drivers/spi/spi-mem.c          |  3 ++
+ drivers/spi/spi-mxic.c         | 17 ++++--
+ include/linux/spi/spi-mem.h    |  8 ++-
+ 8 files changed, 127 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
