@@ -4,59 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 729FAC3DA60
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2024 11:08:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7176CC3DA63
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Jul 2024 13:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:Subject:To:From:Cc:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=B2XpxDhYrJD70A+HIUzeh25y8GVrh/Ggz+vrOWDtSgQ=; b=D20IoTonhAY8OTauS+Xw2h7da3
-	JsNe4umU645VfLyHUKd+DjWGuWBxEtWr3yuToRXVbJhpEvl0K8a9hsFwHVxf8AoaoXXBT0Z6zT4d1
-	+zls1pXBvN3sG/dWiTuqE06AvtD5hWZAdo4ueQuKFURoJog5Na3HYdLvdAnxEeoL4sM8PHJ+tBoRh
-	kknpKA3LQdnLlx6UbgavaIXTexS/lq0yJZH3buDpOBC2BFQdZTQ2mCft3AVJOeOImvV12YHfkItOg
-	fQPHgZT1TIWwnPA8U9bjnuLy0VCMnm4bvtwxjhZfbdn1RGnwXg8S/VI0Hky7MquCS2cPocXFk0aFs
-	CBdeOXdw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1jTV/Kvm6baAjTNQ3lvvG9SiPiys8dWelsu2tgLPwYE=; b=lEkNkk2OTnDQ1K
+	8aSzoHDMDWbMm51BsQwncj0qTEOJNGYzMF4A9vUa5D0LAQaG++41BXFgW5LhD/y8PpsG0BT3Nkfm9
+	1Ohka51tkcTbZ9b8pCTtPyMKL9O7gQ/VmIUT5nWt/7oXvRu2DXa8lzO35rj/8PZ1l96CAbYnJT51D
+	YscKt6FBXlaSLq57jUxUebOZlge54SOImx7YmzsFEM57tiots4O/5dcNL4dT3f+BZ/8g4e99fnmOR
+	c7Ua0iaLxT2PHYZaf/2O2p9Zvoy1MlRBUYrFY+McigL9bvyfMbJBvEDqbYSuJMv+Zd1a9FJ13/Q63
+	2PRCaIw2FwAJLNBlPPrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sUOzt-0000000GmhK-2vIB;
-	Thu, 18 Jul 2024 11:08:29 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sURNA-0000000HA4d-2yqx;
+	Thu, 18 Jul 2024 13:40:40 +0000
+Received: from smtp-out1.suse.de ([2a07:de40:b251:101:10:150:64:1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sUOzp-0000000GmgL-4BYj
+	id 1sURN5-0000000HA34-30r6
 	for linux-mtd@lists.infradead.org;
-	Thu, 18 Jul 2024 11:08:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8F01D61985;
-	Thu, 18 Jul 2024 11:08:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7995C116B1;
-	Thu, 18 Jul 2024 11:08:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721300904;
-	bh=ZN0pfgpa0h7azAOrGIhoAmuGEZwhBLLWXbFXqsh4JG8=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=h6dxjD+W+1KBsJmorH+kzYS6OC3n/7vk5YubMYIkMHfssB4lSlYx4U3HLzNDDVeW3
-	 jjBeLGTnvoW1xDdCY0HAHwdeSOxfxVnVqKGVaOvKEC5BSdgi9yv0Mi1hMbBcmKfwtB
-	 JSsygvwTseI0kdqMkIeVdCTs/wWt32Ej9i6FiCLIDu5XZq1zD/PWi/x7dYWFc1dJyx
-	 b7j5AwwA6wPCDDbw5MFI/YD9+0wP7T4GE5Ai7ePbful+ZwfQDp4RUTbQDboaK2TU9s
-	 UwrHE95jc0mWnr5H3LDtfB6VMur+elj005mUjPQZf0LXFl8igZNajTC7pVnPAA1pQO
-	 MsqPzRLit7Ppg==
-Date: Thu, 18 Jul 2024 13:08:18 +0200
-Message-Id: <D2SM8SE7KJCC.3DY7BH5LJMM6M@kernel.org>
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: <claus.fabig@emerson.com>, <tudor.ambarus@linaro.org>,
- <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>
-Subject: Re: Subject: [PATCH] mtd: spi-nor: add support for MRAM Everspin
- EM008LXB
-X-Mailer: aerc 0.16.0
-References: <ZpjY9APb+VdiFO0q@5QFXWL3.emrsn.org>
-In-Reply-To: <ZpjY9APb+VdiFO0q@5QFXWL3.emrsn.org>
+	Thu, 18 Jul 2024 13:40:39 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D94721C26;
+	Thu, 18 Jul 2024 13:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721310032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fHr41Dfa8NxLB4Op/U4h+N3DTR4Jz1LVWa1aI9bFijA=;
+	b=1wicsR8WcFWTA3Ee5gqqGVZoD0TgohY5g7Qi7DU0KiVnWOspCiYyBW6gmJDsTukGdkpBU+
+	a8nAhtzSrfjaQ9KHjTfJ6zMYudpA50JjZkqSweqm3Onr6aZejAqtjDIVo0DworpI9axvbV
+	qjtxJqawtYZD6v2m18kWhCdyqFLf21Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721310032;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fHr41Dfa8NxLB4Op/U4h+N3DTR4Jz1LVWa1aI9bFijA=;
+	b=2RAWIehlIP1hHLb0vIUwRy8RcRGHKYWYZ8HgQxAKROQGQgJ6YqgUvckAJq8IwRi0hU3qBR
+	mn0LjpdqXriZ9eAg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1wicsR8W;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2RAWIehl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721310032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fHr41Dfa8NxLB4Op/U4h+N3DTR4Jz1LVWa1aI9bFijA=;
+	b=1wicsR8WcFWTA3Ee5gqqGVZoD0TgohY5g7Qi7DU0KiVnWOspCiYyBW6gmJDsTukGdkpBU+
+	a8nAhtzSrfjaQ9KHjTfJ6zMYudpA50JjZkqSweqm3Onr6aZejAqtjDIVo0DworpI9axvbV
+	qjtxJqawtYZD6v2m18kWhCdyqFLf21Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721310032;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fHr41Dfa8NxLB4Op/U4h+N3DTR4Jz1LVWa1aI9bFijA=;
+	b=2RAWIehlIP1hHLb0vIUwRy8RcRGHKYWYZ8HgQxAKROQGQgJ6YqgUvckAJq8IwRi0hU3qBR
+	mn0LjpdqXriZ9eAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4ACD41379D;
+	Thu, 18 Jul 2024 13:40:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uGM+ElAbmWYECgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 18 Jul 2024 13:40:32 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 025F7A0987; Thu, 18 Jul 2024 15:40:31 +0200 (CEST)
+Date: Thu, 18 Jul 2024 15:40:31 +0200
+From: Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Zhihao Cheng <chengzhihao@huaweicloud.com>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	"zhangyi (F)" <yi.zhang@huawei.com>,
+	yangerkun <yangerkun@huawei.com>,
+	"wangzhaolong (A)" <wangzhaolong1@huawei.com>
+Subject: Re: [BUG REPORT] potential deadlock in inode evicting under the
+ inode lru traversing context on ext4 and ubifs
+Message-ID: <20240718134031.sxnwwzzj54jxl3e5@quack3>
+References: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
+ <20240712143708.GA151742@mit.edu>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240712143708.GA151742@mit.edu>
+X-Rspamd-Queue-Id: 5D94721C26
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spamd-Bar: /
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240718_040826_191111_CADB08A9 
-X-CRM114-Status: GOOD (  27.38  )
+X-CRM114-CacheID: sfid-20240718_064035_937710_A198336D 
+X-CRM114-Status: GOOD (  25.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,221 +143,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5388921455567153370=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============5388921455567153370==
-Content-Type: multipart/signed;
- boundary=25fd51e0eade6fc92ff5244ae630edc3fe71c2c62d389baf92d948343c5d;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+On Fri 12-07-24 10:37:08, Theodore Ts'o wrote:
+> On Fri, Jul 12, 2024 at 02:27:20PM +0800, Zhihao Cheng wrote:
+> > Problem description
+> > ===================
+> > 
+> > The inode reclaiming process(See function prune_icache_sb) collects all
+> > reclaimable inodes and mark them with I_FREEING flag at first, at that
+> > time, other processes will be stuck if they try getting these inodes(See
+> > function find_inode_fast), then the reclaiming process destroy the
+> > inodes by function dispose_list().
+> > Some filesystems(eg. ext4 with ea_inode feature, ubifs with xattr) may
+> > do inode lookup in the inode evicting callback function, if the inode
+> > lookup is operated under the inode lru traversing context, deadlock
+> > problems may happen.
+> > 
+> > Case 1: In function ext4_evict_inode(), the ea inode lookup could happen
+> > if ea_inode feature is enabled, the lookup process will be stuck under
+> > the evicting context like this:
+> > 
+> >  1. File A has inode i_reg and an ea inode i_ea
+> >  2. getfattr(A, xattr_buf) // i_ea is added into lru // lru->i_ea
+> >  3. Then, following three processes running like this:
+> > 
+> >     PA                              PB
+> >  echo 2 > /proc/sys/vm/drop_caches
+> >   shrink_slab
+> >    prune_dcache_sb
+> >    // i_reg is added into lru, lru->i_ea->i_reg
+> >    prune_icache_sb
+> >     list_lru_walk_one
+> >      inode_lru_isolate
+> >       i_ea->i_state |= I_FREEING // set inode state
+> >       i_ea->i_state |= I_FREEING // set inode state
+> 
+> Um, I don't see how this can happen.  If the ea_inode is in use,
+> i_count will be greater than zero, and hence the inode will never be
+> go down the rest of the path in inode_lru_inode():
+> 
+> 	if (atomic_read(&inode->i_count) ||
+> 	    ...) {
+> 		list_lru_isolate(lru, &inode->i_lru);
+> 		spin_unlock(&inode->i_lock);
+> 		this_cpu_dec(nr_unused);
+> 		return LRU_REMOVED;
+> 	}
+> 
+> Do you have an actual reproduer which triggers this?  Or would this
+> happen be any chance something that was dreamed up with DEPT?
 
---25fd51e0eade6fc92ff5244ae630edc3fe71c2c62d389baf92d948343c5d
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+No, it looks like a real problem and I agree with the analysis. We don't
+hold ea_inode reference (i.e., ea_inode->i_count) from a normal inode. The
+normal inode just owns that that special on-disk xattr reference. Standard
+inode references are acquired and dropped as needed.
 
-Hi,
+And this is exactly the problem: ext4_xattr_inode_dec_ref_all() called from
+evict() needs to lookup the ea_inode and iget() it. So if we are processing
+a list of inodes to dispose, all inodes have I_FREEING bit already set and
+if ea_inode and its parent normal inode are both in the list, then the
+evict()->ext4_xattr_inode_dec_ref_all()->iget() will deadlock.
 
-There is something odd with your mail client, maybe have a look at
-git send-email.
+Normally we don't hit this path because LRU list walk is not handling
+inodes with 0 link count. But a race with unlink can make that happen with
+iput() from inode_lru_isolate().
 
-Also we usually push back on the MRAM devices and refer the users to
-the at25 driver. But as this doesn't use the NO_ERASE flag.. I'll
-let Tudor and Pratyush decide.
+I'm pondering about the best way to fix this. Maybe we could handle the
+need for inode pinning in inode_lru_isolate() in a similar way as in
+writeback code so that last iput() cannot happen from inode_lru_isolate().
+In writeback we use I_SYNC flag to pin the inode and evict() waits for this
+flag to clear. I'll probably sleep to it and if I won't find it too
+disgusting to live tomorrow, I can code it.
 
-> From: Claus Fabig <claus.fabig@emerson.com>
-> Date: Thu, 18 Jul 2024 09:53:36 +0200
-> Subject: [PATCH] mtd: spi-nor: add support for MRAM Everspin EM008LXB
->
-> The Everspin EM008LXB MRAM has 8Mb and is populated on a custom board
-> using Microchip's PCI12000 spi host controller running on low 30MHz clock=
-.
-> According to Everspin Read Fast (0xb) command below 60MHz is neither
-> specified and nor tested. Test shows that using Read Fast (0xb) will
-> result in reading inconsistent data in this setup but writing is fine, so
-> only supporting Read (0x3) command should be acceptable for the moment.
-
-This is really odd. Is there an explanation for that? Usually, fast
-read will just add dummy cycles in between. Also the datasheet just
-mentions a "maximum frequency" which actually makes sense. Do the
-dummy cycles for our fast read operation match the number of dummy
-cycles in your device?
-
-> The device is JEDEC compatible (JESD251 and JESD251-1) but not able to
-> provide SFDP information.
-
-There is no SFDP data for this chip is it? But it has a READ_ID
-command.
-
-> For spec v3.2 refer to www.everspin.com/file/158315/download.
-
-Please as a "Link:" tag just before your SoB.
-
-> Successfully tested according to
-> www.kernel.org/doc/html/latest/driver-api/mtd/spi-nor.html:
-
-Great thanks, this should go below the "---" line.
-
-> cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/partname
-> em008lxb
->
-> cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/manufacturer
-> everspin
->
-> cat /sys/kernel/debug/spi-nor/spi-EMR5555\:00/capabilities
-> Supported read modes by the flash
->  1S-1S-1S
->   opcode        0x03
->   mode cycles   0
->   dummy cycles  0
->
-> Supported page program modes by the flash
->  1S-1S-1S
->   opcode        0x02
->
-> cat /sys/kernel/debug/spi-nor/spi-EMR5555\:00/params
-> name            em008lxb
-> id              (null)
-> size            1.00 MiB
-> write size      1
-> page size       256
-> address nbytes  3
-> flags           HAS_SR_TB | HAS_16BIT_SR | HAS_4BIT_BP | HAS_SR_BP3_BIT6
->
-> opcodes
->  read           0x03
->   dummy cycles  0
->  erase          0xd8
->  program        0x02
->  8D extension   none
->
-> protocols
->  read           1S-1S-1S
->  write          1S-1S-1S
->  register       1S-1S-1S
->
-> erase commands
->  d8 (1.00 MiB) [0]
->  c7 (1.00 MiB)
->
-> sector map
->  region (in hex)   | erase mask | overlaid
->  ------------------+------------+----------
->  00000000-000fffff |     [0   ] | no
->
-> cat /proc/mtd
-> dev:    size   erasesize  name
-> mtd0: 00020000 00020000 "spi-EMR1010:00"
-> mtd1: 00100000 00100000 "spi-EMR5555:00"
->
-> mtd_debug info /dev/mtd1
-> mtd.type =3D MTD_NORFLASH
-> mtd.flags =3D MTD_CAP_NORFLASH
-> mtd.size =3D 1048576 (1M)
-> mtd.erasesize =3D 1048576 (1M)
-> mtd.writesize =3D 1
-> mtd.oobsize =3D 0
-> regions =3D 0
->
-> dd if=3D/dev/urandom of=3Dspi_test bs=3D1M count=3D1
-> mtd_debug erase /dev/mtd1 0 1048576
-> mtd_debug read /dev/mtd1 0 1048576 spi_read
-> Copied 1048576 bytes from address 0x00000000 in flash to spi_read
-> hexdump spi_read
-> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-> *
-> 0100000
-> sha256sum spi_read
-> f5fb04aa5b882706b9309e885f19477261336ef76a150c3b4d3489dfac3953ec  spi_rea=
-d
-> mtd_debug write /dev/mtd1 0 1048576 spi_test
-> Copied 1048576 bytes from spi_test to address 0x00000000 in flash
-> mtd_debug read /dev/mtd1 0 1048576 spi_read
-> Copied 1048576 bytes from address 0x00000000 in flash to spi_read
-> sha256sum spi*
-> cf9a1f3f4089602d194d67d1a918a574a5ca1d9aa71d391a661818c1f0ee1aab  spi_rea=
-d
-> cf9a1f3f4089602d194d67d1a918a574a5ca1d9aa71d391a661818c1f0ee1aab  spi_tes=
-t
->
-> Signed-off-by: claus.fabig@emerson.com
-> ---
->  drivers/mtd/spi-nor/core.c     | 2 +-
->  drivers/mtd/spi-nor/everspin.c | 5 +++++
->  2 files changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index e0c4efc424f4..95267d9e8b65 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3713,7 +3713,7 @@ static const struct spi_device_id spi_nor_dev_ids[]=
- =3D {
->  	{ "mr25h256" }, /* 256 Kib, 40 MHz */
->  	{ "mr25h10" },  /*   1 Mib, 40 MHz */
->  	{ "mr25h40" },  /*   4 Mib, 40 MHz */
-> -
-> +	{ "em008lxb" }, /*   8 Mib, 133 MHz */
-
-Nope. No new spi_device_ids. See also below.
-
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(spi, spi_nor_dev_ids);
-> diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspi=
-n.c
-> index add37104d673..c1f004c39c1c 100644
-> --- a/drivers/mtd/spi-nor/everspin.c
-> +++ b/drivers/mtd/spi-nor/everspin.c
-> @@ -31,6 +31,11 @@ static const struct flash_info everspin_nor_parts[] =
-=3D {
->  		.size =3D SZ_512K,
->  		.sector_size =3D SZ_512K,
->  		.flags =3D SPI_NOR_NO_ERASE,
-> +	}, {
-> +		.name =3D "em008lxb",
-
-Drop the name, but add the corresponding ".id" property. Then, this
-entry will be fetched automatically. In your DT you use the generic
-compatible.
-
-> +		.size =3D SZ_1M,
-> +		.sector_size =3D SZ_1M,
-
-This is odd. The sector size is 64kB.
-
-> +		.flags =3D SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
->  	}
->  };
-> =20
-
--michael
-
---25fd51e0eade6fc92ff5244ae630edc3fe71c2c62d389baf92d948343c5d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZpj3oxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/i+2gGApwFatLfNayXGxzmcHrseo4uGtOfMoENB
-O6DNoU9/Fm5+HD3aztpm+7gv9xgT5Ks6AX9nNgXKf8l7tp0bLp0i+Em3rv69B4iL
-oji3p955e17/s30L9jQTx46ty9oPvZ0bLkM=
-=ojOc
------END PGP SIGNATURE-----
-
---25fd51e0eade6fc92ff5244ae630edc3fe71c2c62d389baf92d948343c5d--
-
-
---===============5388921455567153370==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5388921455567153370==--
-
