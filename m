@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2339FC3DA61
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2024 06:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EEE6C3DA61
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2024 08:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
 	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MVvuS+DIy86+tgI9kAFXtJpEP/0RHMIgt0zW/SStcbE=; b=32EUDGo0QMB0ShpO4v4Ryn14qi
-	X1cPTIMVYcWEuFdQJCyq+JR5F99GxAK9bIeIvEVQ73N6ALZn8bAX5sWu/DNZ7XVZZDIcKLmJsQNZ3
-	7ijfD58mIyr8n2lJ/kXPN3+FlKA5F2PS6X0y/yNCSZsUlPd1rw+7ssRgtMqahCi64pzKVQmGZC592
-	f2cXGLSyzDLkFpMRzd/T9RbMn6VOvMjvJAzcIyFZX7PTKINzGSgFTF0259OPJWbgLdiahIb+4Fcs3
-	6KP/8b3cBsPN2KFtvRnGAN5B6x+iYoX1g7aRLvWG1R+Ha1ihydStG66LvrkpCJe9V49Yn+TVSlQn9
-	DCnqyEfw==;
+	bh=3KUUHB278Z/atPYo2OttT00vmxw96BbnRB6z5koEexg=; b=kFHXa6KHOnlkHtaLrGytZBJ2Eh
+	lMaByMY1PMkAl6oUQxJUeI1sG88BMj7q5qohWn6hK1rzdgUX6Y1f3CBcgvaYhWiM13qC8m+YuUwct
+	flu8O7GFHRwjZP9uT2qg401UdY1qoV9JR3xj0iQMQGEfQgywNfWIbvhp5EL4JaqFtdK8ba4KavDAt
+	LRbvfNnCAWa1vVcsmKSVbi2x5ob0bzKOduEOTNo+j6EJ587YL5wepxjO5aswXazKWc0ESZPl+h7TO
+	FAmHW+SoiguQdOZ8ifhPQ6ytr5O9bJK1ZIr7AONeCJFbBeAT5kRSdcqHAtzjKixWjNEL4FvqA9JZh
+	7fIT8YrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sYghW-0000000Du7U-2jR6;
-	Tue, 30 Jul 2024 06:51:14 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sYhmF-0000000E8wK-36O3;
+	Tue, 30 Jul 2024 08:00:11 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sYghS-0000000Du6w-480E
+	id 1sYhmC-0000000E8vB-2HaC
 	for linux-mtd@lists.infradead.org;
-	Tue, 30 Jul 2024 06:51:12 +0000
+	Tue, 30 Jul 2024 08:00:10 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id AAA8061D64;
-	Tue, 30 Jul 2024 06:51:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 093C1C32782;
-	Tue, 30 Jul 2024 06:51:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0CCCC61DBC;
+	Tue, 30 Jul 2024 08:00:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38DF5C4AF09;
+	Tue, 30 Jul 2024 08:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722322269;
-	bh=1WFcT64RSEjm7Ii66YeE3ETbzhdz0+SBx8kjGGmN/B8=;
+	s=k20201202; t=1722326407;
+	bh=CniaYDnRATpHlUBQAU6fUV84X3DZPceXVpYV08y62g4=;
 	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=WjVTieLVyO13O1v5Q4hSk6J2fGOI1AN8W5V/uK8KClhZlqljIFaZMyM3mfNDejImh
-	 AT6nhFEu9viOm0yXMJar0Qes3eeRoFBwMlcIqro81wZvtTG+beiohFmfU48yh+klCj
-	 n6oXht/PuZARsL00DBtxCavGidXet1FvyNBO+QDtkadV4mRsGogmM0ZQN1oB3cms/Z
-	 kCsjg8DP0165QhGR6qmy6HJglbQv21Z4JlXEeg+gC5Suabz43vhkdpxP8bY1YahQin
-	 pp0DBoDoqsIFQ/y070rm0vJlZwNYU4jn9E+HBK6NJfNvvuhP+j8YVm42F9rCpBFybf
-	 /9nqvVr3iUvRA==
-Date: Tue, 30 Jul 2024 08:51:05 +0200
-Message-Id: <D32OADQF733D.3CVS3ZRPEBL2O@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add n25q064a WP support
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Richard Weinberger" <richard@nod.at>, "Tudor
- Ambarus" <tudor.ambarus@linaro.org>, "Vignesh Raghavendra"
- <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
+	b=C708Uhm5+PEhyeLz+K6SvIsqQUqE+wrv8CE1GSljfy3RE8XNoWeC+F5vv6Drkw2cp
+	 zsFSTYkSidoHQ/II+QsNZk3RGiwZtAQWHcSm7m6qtof/fdptSs8IcSZugln+aghpFq
+	 S/7kXZFFKHelPcTjyuW755H5MRdFb/zptFpGFTgEbvnVmfPFCY12Do9hnwGYJHXe+F
+	 8ZO4Pq4Fx2ZvTtQcsz+d9a4gLGYFDxqHz5THXGc/y95Gqvtc3oTVCN+pvlqiw051D0
+	 0I7Q8/bdGnm3XwIPdKAj49yncZ/u4tI9gmdGzEFrTS7DFzVZzaunIcmu61dJee4lVt
+	 VRAv3v744arSQ==
+Date: Tue, 30 Jul 2024 10:00:03 +0200
+Message-Id: <D32PR6R1LENM.3RUPQVJ1HRWG7@kernel.org>
+Subject: Re: Subject: [PATCH] mtd: spi-nor: add support for MRAM Everspin
+ EM008LXB
+Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 From: "Michael Walle" <mwalle@kernel.org>
-To: "Brian Norris" <computersforpeace@gmail.com>,
- <linux-mtd@lists.infradead.org>
+To: <claus.fabig@emerson.com>, <tudor.ambarus@linaro.org>,
+ <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>
 X-Mailer: aerc 0.16.0
-References: <20240726185825.142733-1-computersforpeace@gmail.com>
-In-Reply-To: <20240726185825.142733-1-computersforpeace@gmail.com>
+References: <5bb5d445-e54c-48c3-b7f7-c07886af629e@usgdcecpmsgap03.emrsn.org>
+In-Reply-To: <5bb5d445-e54c-48c3-b7f7-c07886af629e@usgdcecpmsgap03.emrsn.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240729_235111_113746_401AF004 
-X-CRM114-Status: GOOD (  15.50  )
+X-CRM114-CacheID: sfid-20240730_010008_692848_FFF2802D 
+X-CRM114-Status: GOOD (  34.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,83 +69,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0240998043687755836=="
+Content-Type: multipart/mixed; boundary="===============0961377897086134437=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============0240998043687755836==
+--===============0961377897086134437==
 Content-Type: multipart/signed;
- boundary=8174d0b0f781d51f8f766bb0a557a7d87b11217219900dbe638b81c96dfc;
+ boundary=95cb2f6b2372b8c8d1366bfc28389e4f6d080c4216470e4cd6558fd47f48;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---8174d0b0f781d51f8f766bb0a557a7d87b11217219900dbe638b81c96dfc
+--95cb2f6b2372b8c8d1366bfc28389e4f6d080c4216470e4cd6558fd47f48
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
 Hi,
 
-On Fri Jul 26, 2024 at 8:58 PM CEST, Brian Norris wrote:
-> These flash chips are used on Google / TP-Link / ASUS OnHub devices, and
-> OnHub devices are write-protected by default (same as any other
-> ChromeOS/Chromebook system). I've referred to datasheets, and tested on
-> OnHub devices.
+On Fri Jul 26, 2024 at 2:04 PM CEST, claus.fabig wrote:
+> > Hi,
+> Hi Michael, thanks for your response resp. advices and apologies for the =
+late response.
+> >=20
+> > There is something odd with your mail client, maybe have a look at
+> > git send-email.
+> Unfortunately I am only able to send/receive email from my windows machin=
+e and=20
+> therefore have some challenges within our company infrastructure.
+> I still try to find the best way to get the formatting correct.
 
-Out of curiosity, there is also a hardware write protect switch
-somehow, right? At least that's my understanding how verify boot
-works.
+In that case you can also have a look at:
+https://b4.docs.kernel.org/en/latest/contributor/send.html
 
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Also we usually push back on the MRAM devices and refer the users to
+> > the at25 driver. But as this doesn't use the NO_ERASE flag.. I'll
+> > let Tudor and Pratyush decide.
+> I am aware that using at25 driver works but have the task to integrate th=
+at in mtd
+> since another used MRAM Everspin flash MR25H10 on our board is also acces=
+sed=20
+> in that way and already part of the mainline. That will lead to confusion=
+ on user side.
 
-This looks good:
-Reviewed-by: Michael Walle <mwalle@kernel.org>
+I suggest that you'll look into evaluating and converting your
+existing boards to nvmem (which is the interface at25 exposes)
+instead.
 
-But could you have a look whether this flash supports SFDP.
-According to the datasheet it looks like it does. In that case,
-could you please dump it according to:
-https://docs.kernel.org/driver-api/mtd/spi-nor.html
+The MTD maintainers agreed that new fram/mram won't likely be added
+anymore. As I said, this patch might be an exception, because you
+are actually emulating a flash device (because you *don't* have the
+NO_ERASE flag). Otherwise, the m/fram are more like an EEPROM and
+thus should use the at25 driver.
 
-Thanks,
+> > > From: Claus Fabig <claus.fabig@emerson.com>
+> > > Date: Thu, 18 Jul 2024 09:53:36 +0200
+> > > Subject: [PATCH] mtd: spi-nor: add support for MRAM Everspin EM008LXB
+> > >
+> > > The Everspin EM008LXB MRAM has 8Mb and is populated on a custom
+> > board
+> > > using Microchip's PCI12000 spi host controller running on low 30MHz c=
+lock.
+> > > According to Everspin Read Fast (0xb) command below 60MHz is neither
+> > > specified and nor tested. Test shows that using Read Fast (0xb) will
+> > > result in reading inconsistent data in this setup but writing is fine=
+, so
+> > > only supporting Read (0x3) command should be acceptable for the momen=
+t.
+> >=20
+> > This is really odd. Is there an explanation for that? Usually, fast
+> > read will just add dummy cycles in between. Also the datasheet just
+> > mentions a "maximum frequency" which actually makes sense. Do the
+> > dummy cycles for our fast read operation match the number of dummy
+> > cycles in your device?
+> >=20
+> Yes, at first I configured the chip with 8 dummy cycles to match with pla=
+tform
+> dummy cycles with the result of reading inconsistent data.=20
+> The answer from Everspin product engineering was:
+> "Read fast has only been tested down to 66 Mhz. If you are only running a=
+t 30 Mhz,=20
+> you should be using the Read command instead. Read Fast is designed for H=
+igher=20
+> speed operation". Unfortunately no more explanation.
+
+I guess you cannot use it with at least 66MHz?
+
+> > > The device is JEDEC compatible (JESD251 and JESD251-1) but not able t=
+o
+> > > provide SFDP information.
+> >=20
+> > There is no SFDP data for this chip is it? But it has a READ_ID
+> > command.
+> For my understanding reading SFDP works with command 0x5A which is not=20
+> supported, reading ID is command 0x9F and supported. I don't understand y=
+our point.
+> Maybe you could give me a hint to better understand.
+
+Please see my comments on the code in my first reply. You basically
+don't probe the driver by the name, but by it's ID.
+
 -michael
 
-> ---
->
->  drivers/mtd/spi-nor/micron-st.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron=
--st.c
-> index 3c6499fdb712..e6bab2d00c92 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -436,6 +436,8 @@ static const struct flash_info st_nor_parts[] =3D {
->  		.id =3D SNOR_ID(0x20, 0xbb, 0x17),
->  		.name =3D "n25q064a",
->  		.size =3D SZ_8M,
-> +		.flags =3D SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
-> +			 SPI_NOR_BP3_SR_BIT6,
->  		.no_sfdp_flags =3D SECT_4K | SPI_NOR_QUAD_READ,
->  	}, {
->  		.id =3D SNOR_ID(0x20, 0xbb, 0x18),
-
-
---8174d0b0f781d51f8f766bb0a557a7d87b11217219900dbe638b81c96dfc
+--95cb2f6b2372b8c8d1366bfc28389e4f6d080c4216470e4cd6558fd47f48
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZqiNWRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hyeQGA4/ZtgLhE6bvlVn3L9QYDW7xKRuKnWIUf
-ciNmd6WMnsUZHW7N5UtlkVI30mL3AD7lAX4/eY/6fSnexk/cBYIkWEAf0NL69/gJ
-z6MjfMTf+WD7OhTC6Ck2VyDgELNG+MRyHag=
-=S/s3
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZqidgxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/jHRQF+O2Tp2yymNM81QCMqmznfxfBIfi6OjCWD
+PXij072XPxSy0DLrC+I1IkoxaV4DXCemAYD4Bp6go3cilHA545XnLXyR0lfuaAIb
+F2NuZbR818FQ8NdTvGVsKNSGifUHyahLzoU=
+=3Ucz
 -----END PGP SIGNATURE-----
 
---8174d0b0f781d51f8f766bb0a557a7d87b11217219900dbe638b81c96dfc--
+--95cb2f6b2372b8c8d1366bfc28389e4f6d080c4216470e4cd6558fd47f48--
 
 
---===============0240998043687755836==
+--===============0961377897086134437==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -156,5 +194,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============0240998043687755836==--
+--===============0961377897086134437==--
 
