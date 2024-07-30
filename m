@@ -4,64 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0BC1C3DA49
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2024 11:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3C6C3DA49
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Jul 2024 11:33:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8aOb9zrFy5tZMAA3VVnIW2c7DEDv59XToOQym/O0qUQ=; b=gtxbtle7G8upcv
-	9bwTq+tsZ9H0dtSS6n7VywWn4lU1xuWjS2gSjTuoWXKcJ15yngigJyfiuVWAYFKRqNw23NsxbjTgh
-	AOndkEXjHCMgyVP1eJOkgXMgrcVSjvbNyCVyiCZTo0nejbWdQoxo/W5j9Tgame3QcILZHWW2aXBSg
-	wTVw4XNYgDrS7DK9bl/R3lABWMvVQKDP/SyDuA0ndFMZ5o0ECk+acY21MVoavwaCg8sLQf+PL6Tad
-	k+GnkKzylCrxI0X+cZO/ANKxvhcKfwrPI9ZHPSHnNSlxsJzd8txBhxSege1ePShSiIUVJuzBlmUU1
-	n0bzVTDe6UIqwStje68w==;
+	List-Owner; bh=1F+sgfZ7/X9OAW9V6v2QUZwRSLBk9APkF38AupauIrY=; b=tQJlupAkBgwGl1
+	XE5OKhG5Mnc7NL10W7NCDBL0XqWaGkAeBUhsBvzPHNzp3RCfyuWCklm2kuH0hWLhjMh9Q7e1+mLI/
+	LZnEY66pln2wjVT5xt/jCOW/tm1cY6C6sjwDMm3k45+kPC4cTDlAsoJ98CSnr8attu81f75kVoGyA
+	4YGHEpymsOhoH+SUmoDEwW9K8B4DSPRu8DZcGOvBsCAjeJFiGOgb24HEL3mp/IjUBQ/IPF2DcDIXk
+	sv3KfoSMErwVjEtijmvysT2A9Fpdlf1ab7fDiEF/L1Zq739hQylYhRm2Tk9QkthXRYUdO+PjLLo67
+	YeC3edFi1D470ySUwoeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sYkxs-0000000Esld-3gF7;
-	Tue, 30 Jul 2024 11:24:24 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sYl6K-0000000EupH-0hbm;
+	Tue, 30 Jul 2024 11:33:08 +0000
+Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sYkxo-0000000Esjn-2PiP
+	id 1sYl6H-0000000Euoc-0GN5
 	for linux-mtd@lists.infradead.org;
-	Tue, 30 Jul 2024 11:24:22 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id AA885CE0EC4;
-	Tue, 30 Jul 2024 11:24:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8819AC32782;
-	Tue, 30 Jul 2024 11:24:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722338658;
-	bh=FstNwrfsX5X7GY12ufzHw8RhOHEWqp+Zb6hF3L2QyEw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=q0PC9Yzkm8atb0xilzRFm0z9wGS/xfgYkjlkMxV3TVh2roxXMFMIZBFvo/v8pgR9l
-	 wh9xfiIP9GwXvDvE5HIn0DHHmUzOdggPa8ycSXB0bNN0tUi4n3UThc4uXAfPJY86IX
-	 NR93f07dSVaIJQkmR0TXtgLOwtbA8X7nt5xCl09XcpbbmKo2oswSsM7/hKsU4Wrx6N
-	 H6lTIeE9dLWVPF3axeanttYRCpaqYwZrXhmDY8dwtOIFjtAU7A1Nr6IAgQbZJRQhOS
-	 kB8VaDtruP8Q+fgNN+VOEm+tVCBSOgD8fWqf5bFLBZScAL6W0fIp6vjGCObQY0tmNR
-	 sbwNvx8SK02Tw==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Brian Norris" <computersforpeace@gmail.com>,
-  <linux-mtd@lists.infradead.org>,  "Miquel Raynal"
- <miquel.raynal@bootlin.com>,  "Pratyush Yadav" <pratyush@kernel.org>,
-  "Richard Weinberger" <richard@nod.at>,  "Tudor Ambarus"
- <tudor.ambarus@linaro.org>,  "Vignesh Raghavendra" <vigneshr@ti.com>,
-  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add n25q064a WP support
-In-Reply-To: <D32OADQF733D.3CVS3ZRPEBL2O@kernel.org> (Michael Walle's message
-	of "Tue, 30 Jul 2024 08:51:05 +0200")
-References: <20240726185825.142733-1-computersforpeace@gmail.com>
-	<D32OADQF733D.3CVS3ZRPEBL2O@kernel.org>
-Date: Tue, 30 Jul 2024 13:24:15 +0200
-Message-ID: <mafs034nr2kdc.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	Tue, 30 Jul 2024 11:33:06 +0000
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a7d2a9a23d9so488123966b.3
+        for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2024 04:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1722339183; x=1722943983; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oGrqCdIbJB4kLBzVc6vEIIcN2LnpLgEe9LoSmjtXu+0=;
+        b=Nq3P404n0zdLx1T4M2ULMO7N9AVjjp/Pr8VV8pBo/57bW6QL5Xpbk2Aj1YSDIVCL+p
+         LVoQO+ZpOr+ouwp7AxHu/A4o7efSgOHgfIvHwqjyNEN4rL2FQzLqEG/C1lc5FXxv+ZwY
+         jZqJ+1cag7Xf9yPNOxBF0OkZBh50urjXq/UW2/cZMzjkCfYwBbKaUTezr2dyyRqCaMGy
+         008rj6bGcyTPj64lWNUXBLdZPEr07mkrAVD+U3drjol44sCWloym8T3CuHR612FoREu4
+         X68rCoTZSzKyOnW1c0e1oWJAYEn8XGTsfVuJMv4N6p00u0AINVX/eALT5uFpwxEx1HIk
+         K+bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722339183; x=1722943983;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGrqCdIbJB4kLBzVc6vEIIcN2LnpLgEe9LoSmjtXu+0=;
+        b=PUITMB4cSWvNKWTiUjToZbwZh23FaSM4UC3ek6W0PyBamXEKfAihlU+diwIxvBp9FB
+         PcITWxKpcGuvQmE91RcqtQon1GBrJoHCjW+HeBRuEUFpWvRImRav+68jgRZ3DPtP6SAG
+         qRp6A3wxLcY33hf3/TiTyDuT+hHnvt/m1XoJD+OvA2vQWBx6mM2sn4la0Xu2FbptFcC/
+         E8Nm3w2bxVk7VzbQvFqAYXZZ3UPoeDWNUbVVIqICH0uK33pIfAjIffEtdtZhZ/sDLWrQ
+         WFP7/ooMVD/U8so7FW3GnopcsMDCkTIPc3AskYU8kyV8mICqKTsGLXPynBnqEfzOfBCP
+         F6aw==
+X-Forwarded-Encrypted: i=1; AJvYcCW1hKNrQ8AoD2lTthlBYnv4zJq5ulLPevVwnWaAEdyd9yZVHek1nvurQ1JjfGHC4cUOddHBtOgHY4Uog0VvSA2WTBc9BSILouBOIeCMLQ==
+X-Gm-Message-State: AOJu0YycP24qV1TjVzda/w1qLTU2qUhAQ4yfJeffdpw3LGtJIi+KZqa7
+	Hx3Ou+srXYZMNCzlghLoy/BkBIo9tMNZJTawvgBBnB38NgWdhzqJDY93cWMweDo=
+X-Google-Smtp-Source: AGHT+IFMbs1ZTtf8Vsd7RnM1UPZIBl9v3hNGf7hvVfcYCgMKV5fTKWqhNUt5peDUHpXqJAPKMYSdCA==
+X-Received: by 2002:a17:906:c145:b0:a77:c364:c4eb with SMTP id a640c23a62f3a-a7d4004f339mr721159866b.20.1722339182686;
+        Tue, 30 Jul 2024 04:33:02 -0700 (PDT)
+Received: from [192.168.0.157] ([79.115.63.215])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acab2311asm643341366b.18.2024.07.30.04.33.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jul 2024 04:33:02 -0700 (PDT)
+Message-ID: <454deacb-88cc-4ab0-80b4-006d863a56d2@linaro.org>
+Date: Tue, 30 Jul 2024 12:33:00 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add n25q064a WP support
+To: Michael Walle <mwalle@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+References: <20240726185825.142733-1-computersforpeace@gmail.com>
+ <D32OADQF733D.3CVS3ZRPEBL2O@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <D32OADQF733D.3CVS3ZRPEBL2O@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240730_042420_811375_F2C137F8 
-X-CRM114-Status: GOOD (  10.71  )
+X-CRM114-CacheID: sfid-20240730_043305_306828_065CF3DF 
+X-CRM114-Status: GOOD (  17.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,31 +97,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 30 2024, Michael Walle wrote:
+Hi, Brian,
 
+On 7/30/24 7:51 AM, Michael Walle wrote:
 > Hi,
->
+> 
 > On Fri Jul 26, 2024 at 8:58 PM CEST, Brian Norris wrote:
 >> These flash chips are used on Google / TP-Link / ASUS OnHub devices, and
 >> OnHub devices are write-protected by default (same as any other
 >> ChromeOS/Chromebook system). I've referred to datasheets, and tested on
 >> OnHub devices.
->
+> 
 > Out of curiosity, there is also a hardware write protect switch
 > somehow, right? At least that's my understanding how verify boot
 > works.
->
+> 
 >>
 >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->
+> 
 > This looks good:
 > Reviewed-by: Michael Walle <mwalle@kernel.org>
+> 
+> But could you have a look whether this flash supports SFDP.
+> According to the datasheet it looks like it does. In that case,
+> could you please dump it according to:
+> https://docs.kernel.org/driver-api/mtd/spi-nor.html
 
-Applied to spi-nor/next. Thanks, both!
+This would help getting rid of the no_sfdp_flags and size from the flash
+definition. Another reason is that the SFDP dump can help us
+differentiate between flavors of the same flash, if it'll ever be the
+case, and help us keep backward compatibility.
 
--- 
-Regards,
-Pratyush Yadav
+Also, if you care, would be good to extend the SPI NOR documentation on
+how one shall test the Block Protection.
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
