@@ -4,80 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA5B1C3DA64
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2024 09:19:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6BCFC3DA7F
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2024 09:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WwilaGKBNAijU/INd3unK1toS3oMFqVREAWhJLDllNE=; b=xRinFFJzrF64Dqpop6wZgY9QO6
-	v0mu5i99NN1iB6J45ZIsm/N2iOm5RsKR+wpA+Y36fxkWiQH/QMNVqcQx+xC8a9sGKSiQ3aDXuksvf
-	smugOywIz14JCWYaCsEtyJUlURNCEPrutd5axz8OxtYZZE15g/pFTWSTVO7SZCjCyXf+nmkQEZEXY
-	PgPr0taUhsh2oCbLO//Ip8gch6XW0EAtrPdZhGezRDZWsOhhlCEBl8gomNaPkbAa+7hLeb0paHjzT
-	2zUZ2n4GbJ0SwvPOo5vue38t47fq5s1xschMX7KMHSKi2hghKUKes2I56Z99t4Ol5ctYQiguh6dOE
-	fOnAVeuw==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Subject:From:To:Date:Message-ID:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7TIbUZL7sD1AR8+H0y0bt/eqE6HpB6TV46AOBUURJ1Q=; b=G4uHD11AxfLdmF
+	bRhsZOI664eHQ57cQh0wVbSDLog5D+yddpqYbpS/a7XsUH8dnHMlmSxLz2dwZXjn0yu2brQgmcCnX
+	thyqWaTrXQw5DIrbJRXoOZrAUi5BlsjAxVbozscQqgOBglzbcDwrtTMA2o3xCCjStYh97vD6tqCtV
+	8+aLTFZlGIWSlj8TRcKK90H7cNvK795Jd0yrVv9VyhfaecnCwJ1yTYj2wNqANH2R6oTTFeV4AW5hC
+	BO0/FwKkJZBmSS23BchD9lxBw88DMnvl9ALt+QDYP05ieWa0ZgkQnU5af1M2TeGD3JT/gR/cnrLpJ
+	aVmPa+tVVfhKTn9qPCJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sZ5Ux-00000000T90-14yD;
-	Wed, 31 Jul 2024 09:19:55 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1sZ61F-00000000cte-3lCS;
+	Wed, 31 Jul 2024 09:53:17 +0000
+Received: from mail-bmxind01on20701.outbound.protection.outlook.com ([2a01:111:f403:2021::701] helo=IND01-BMX-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sZ5UI-00000000Sty-4AZN;
-	Wed, 31 Jul 2024 09:19:17 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 254664090;
-	Wed, 31 Jul 2024 11:19:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1722417543;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=HprpdnPTmMpjlLpYTx/G5QGJKkhmU8L+PeKIYH3jtBs=;
-	b=GF+4IjxB2TIt42gTk4Pq7iBvhsew8XFF/tg3hs4xxBp2l4el+lQQsXPhZvZFqqB+B/yaW6
-	pzeQ2eS8abDXh6pdv1yxwcvJORltW5gNWTIW0M24ZEJ7ykvuKYGpIuVnXI7NGUsssc7EbO
-	zsO0EbswGGZ3xx8mYRyGCm+PvftxCaOhhWWI18zvToFcWjLI3dI8n0hmd6FN0UblTS4N3g
-	4KjFaPK/srzD4zY+qjD0495XF/PXdGoT4ddnA/+P/Ur9npBDCLkIoX8f6Yg1ZcNXm0ks7m
-	tSJ6zIh9C1UpyhD0IJCKiR+s+z5RScfmnR3LiHAR8TWRFiVWsf33B8zZU3w3mA==
-Date: Wed, 31 Jul 2024 11:19:01 +0200
-Message-Id: <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc>
-From: "Michael Walle" <michael@walle.cc>
-To: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
- <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
- <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "sbinding@opensource.cirrus.com"
- <sbinding@opensource.cirrus.com>, "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "perex@perex.cz"
- <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
- <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
- <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
- <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
-X-Mailer: aerc 0.16.0
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com> <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org> <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org> <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org> <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org> <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com> <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org> <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org> <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com> <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com> <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc> <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
-In-Reply-To: <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
+	id 1sZ61C-00000000csO-2GtN
+	for linux-mtd@lists.infradead.org;
+	Wed, 31 Jul 2024 09:53:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=LB9jtacU8kmMFuTc1yhPGpQaxXeloT0bxTJ7xYta1JweUt5BP60aO0JYWb7UiiCgtK3XBduCBIf0FlX6KYC2m6NghMttmHUwZ8lh7srGuqXZlNi1BYmVvODZNfGHbyKP/m3xiF/sk3M6TLdG6eZpQ9OsWsSF0EoIXGpLmcbynEES75FoY0ClHliKDJImHVUe8SwkZmWxv1xaoWoJVMTZqkBPNCRzEQkDN4mu5BJpI7KBuDkGjG/gH8waBFJgzuHkUO4Blt8tGoEByuLhMpykNu6GEoZB7lSNLSWjjmAL0qdlQXdq8LO9PchXkpi+lntxix2ae0s9VshsLg3T+wDuIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YyZFZvEuZGHmsb6hGSVp6RM7XN5sdENCm4vsEvL9BOc=;
+ b=eSxNCR3whJdoz6zJWAe3/5fXiB+QEHnLtdRxCdta8Q0mlu/oazp7y1DKkcl94AaWCm0DqN+ictH9qMpUoiydwv79/BFaYUSkEk7G5QLK+VQItV7fVo2oCgnd3P/Dslb1UVpaUq3TnDxfIffJNBX7q1DTR1LFs6e+0vs93tmAoII7eOeXHDD2L/EcRsvmbLbzGUIDTW9jWaG9l1fvl+OtpUfZOdLZeAzHkvF1ukdJf2+KpDC1rmbsNoATZo2uONbSali2aHRHqDEDAOp2kJZ1EJzJVJCTWPdOo8OiyF1qP21OkG0Z62wEUelyodwczx8/09fCo/E7bT8vSvYE7fnEkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=iwave-global.com; dmarc=pass action=none
+ header.from=iwave-global.com; dkim=pass header.d=iwave-global.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iwave-global.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YyZFZvEuZGHmsb6hGSVp6RM7XN5sdENCm4vsEvL9BOc=;
+ b=FX0azrprtwyjRFa1rIwpv8/OtyOhC+pYRyvJVFtEc6lhDj7Rv+z/nywTBBzLmh+4BEtOBhYkAkj4V3a1G3y8Bu30MbZduiUtgj4xi9MItgH60KyZNCMtVTEl6HVl0vpoNE54Uj08b2KevRBtKaCUmqJMzPIJMHUeE7jKhpuBgRI33QGjxJ7z7/+jUOxcf+VYQbqX0+gIM8+WxaNjJ4C5Az2pNWBn48Ra14zZ4ZkVFrDj6x8ny7bg0cU5hMkqg04S6LMfRr2rJMfz7kmP6tm0jYbWCW6LBenlU2P/4sAlXN0egrn/l2pLgJrh7nHqE4guslHGBKXTwgqwegqj04X43g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=iwave-global.com;
+Received: from PN2P287MB3056.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:231::17)
+ by MA0P287MB1089.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:108::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7807.32; Wed, 31 Jul
+ 2024 09:53:03 +0000
+Received: from PN2P287MB3056.INDP287.PROD.OUTLOOK.COM
+ ([fe80::fb1a:8ba7:3b03:f4ed]) by PN2P287MB3056.INDP287.PROD.OUTLOOK.COM
+ ([fe80::fb1a:8ba7:3b03:f4ed%7]) with mapi id 15.20.7828.016; Wed, 31 Jul 2024
+ 09:53:03 +0000
+Message-ID: <17c0f7e8-5e16-41e1-9b11-a6fa00169856@iwave-global.com>
+Date: Wed, 31 Jul 2024 15:23:00 +0530
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Nikhil Kashyap H R <nikhil.kashyap@iwave-global.com>
+Subject: Investigation Request - Strange PEB Reservation Behavior in UBI
+X-ClientProxiedBy: BMXPR01CA0091.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:54::31) To PN2P287MB3056.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:c01:231::17)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PN2P287MB3056:EE_|MA0P287MB1089:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d8020ba-014b-4043-65d2-08dcb14691b2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?OVdIekFTUEpzdWwvdytjWDUwTHd4Q1NnckNPbDEvRGtOclRueS9hOGNjalo3?=
+ =?utf-8?B?bXNsMkNXZUVydDNBL0RES3pLTGpXRnRIcVdxbzVaeVlqeUtXa3NIQWlYbzBF?=
+ =?utf-8?B?Q0JzUnlFaDE0ZkllUXZUTmIyc2NISHFhL09KVG5kNE40WFM5Y0E5bERnbStE?=
+ =?utf-8?B?K0NPWlduZ2ZkVDRLc1I0L0VBZlhjN24yT0IyaG8zUlRJUGQzTVQxdFA4YW9a?=
+ =?utf-8?B?bWwzUUsxc2o3TjZFb09ia3FEekpPYnRVa29SbEpURWM5RkV1cnhTMHJJTkxj?=
+ =?utf-8?B?MzZCMGI0UTVHU3BGcnYxVVpNanovbXhZeUN5cFVVVllkd1V2cFFjTjROUDli?=
+ =?utf-8?B?UnIySkoyV1JKcEIwK3NJbS9kbFVwKzRHM1NmQW1rSkF0dU9NU0QyQ0ZkVnFU?=
+ =?utf-8?B?Yy9hQjBkTm9lSUJrYmg0NDlMckFCVTEwN0ZqN2ptTkZMWnlkLzNjNUR1bWd4?=
+ =?utf-8?B?b0dPU3lIU3Y2bTYvRThNWVQ2UllmbFk1RERCRW9Oa0V3SDEwQzhrNUM5akhJ?=
+ =?utf-8?B?ZHZ0OVhJWlZIRE9zSWlIbkh3Q250dDZVN1EzL0orRW90YmpWeTQyeXhXamxX?=
+ =?utf-8?B?NFN3MnpIcVYzZjlkaStMOE81VTlFTmtlQVVMNkh4dEpudEk2dkRUVTVzQ2Np?=
+ =?utf-8?B?Z1ZkUUR1bUhyVys0Tkp5dUtIOEYwTVBjcHozQlZCYnpLYTY4dXZuOHNTMFBy?=
+ =?utf-8?B?Uy9RMm1VclFyVTBJN3RhQ2JyZjNpaEx4YXc1bFJ3NXovNVoyOCtUOWhFQVBY?=
+ =?utf-8?B?SCtHdkdZRVhERGdCRkRITzYwc080aTdqT21zbEc0Y2dWSDdWdTIzVDdHaXRE?=
+ =?utf-8?B?TlNJTmx0YjIxaWE3a0xQN3hqZjdEV3NsQ0lmTmR4N05remxiU1ZNUUdCUE4x?=
+ =?utf-8?B?MXVZSVNRalRrWVIzeHpMeElnQm5JOUNySkkzUVFZOE9QOGcxR000dSs4S1Z2?=
+ =?utf-8?B?UzNZVkJRbWpPbnFNTlRudktpRmU0Ym1OYkhyNkgySjUvdzcraElab1NSWEwz?=
+ =?utf-8?B?YmJPdDNBbHZQR1FSTVNHdE9oa29rYjFsV0V1K0Y1R1A3eXlkVjFLdTFQSGNs?=
+ =?utf-8?B?cFkxajlnSTRtVW1oWlJXVEpCYmxXa2NySHZDUlpkM3JRRytUak1ZbHdBQkNO?=
+ =?utf-8?B?KzNOZkVFbi9hWkFXQmR0ZFMwWk5YZVdCbFEvWFdyK0FEWXdhays1cFRTUUFV?=
+ =?utf-8?B?Z09ITlQ4U082QlIyU0JqVnlidG1QWlQ2clB6cVFPdTU0R2ZnWXdjS25XNms2?=
+ =?utf-8?B?NXJHRnFVdVR0c1QrbmFkL0hnblJITm5wOGpyZDJqZ3BSNk9BOW1FaDArelh1?=
+ =?utf-8?B?NWwyRlBuUHBFRC9NUlZrQUM3UmloMmQyWS9zOHA5b3VTcHdadmZKNWlSaUlR?=
+ =?utf-8?B?ZFdEcXRrc1VlTXFNbXdoYnFIK21DVW9wWU9kVEZybVg2dlcxbGVGYTQwNk16?=
+ =?utf-8?B?MUs4SklJTURaK3M5NjVWeWk0L21BWXdXajFTenorQjFrazhNVHVXK1ArUFdh?=
+ =?utf-8?B?dEJKeFREWTZibEtQQnEya1daVUJYSTlkVW1hOSs2Wm9YR1NjSGNyTjRYTWZl?=
+ =?utf-8?B?bGQ4ZWVoYjRId01WQXhZOERKSFlYSnJlN0wxTGtiOHE3UzFLZERkSzd2eXNC?=
+ =?utf-8?B?bTVyUHBobncvQjVZbmVML0JqY2huWHpmL0srSzgydFhPN1MzcTlBOW9yRzNy?=
+ =?utf-8?B?Y2F6QzQzaHNzcnpDWGpEUGYza3dQejhEZUdpcUFQR3E2L1NsaktFbmZpNXc1?=
+ =?utf-8?B?bTBGdDJJeHBDSGUyKytjNGJyMlVPUm1PZWJnTFNLQXlLVnlrdWx6RjcyNEFW?=
+ =?utf-8?B?UjRWQ1QwSW11Snh3U0RGdz09?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PN2P287MB3056.INDP287.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aG4wZjBOSXhieHlPNVFYenlsNFRKYkw1dUxKYXFiWGNmdjRJUERRME9YSnpY?=
+ =?utf-8?B?d21KeHc2d2xJV09VaTdHZGQ0dHpvblFrM0RJVzBDODFBRjdwb2wzbU81Qkd1?=
+ =?utf-8?B?aVpNaWEwMlJ6RzAyNUJmdS92R25ucXZZb0pIZHpicU5iOUpVRUZCeGdXa3ly?=
+ =?utf-8?B?VzJqb2ZEeStjRHowc1phbE80MnNaOWV0RkVoM0xlRnp2c091LzlObHhkVGVl?=
+ =?utf-8?B?RUdUSHZnOWg3alh2TzZIODhWRkliU3MyeW8wNWV4alMzQlhSbGRjWXZlNnIz?=
+ =?utf-8?B?OGNLYmlKTEdHUXY4YU43MERVYWNkWXJ3dmo1RnI0TElSWHZxV1RRMlJaL2V1?=
+ =?utf-8?B?MjdNU3ZuUzRFd1paRHljalloR1p4NTJCOXBLeWY0UlZWaGV6UXAzZExaMDhs?=
+ =?utf-8?B?cHBSOVMwaWxNc0RNcUpDM1VSLzZvN0JiRnVPeUsrOXd1ZFRDanFIWnVhRlNO?=
+ =?utf-8?B?cGdnZTdIaVRjUytieHJERks1VzhNMnNpWXVGZjk1TkN6RmN5czJ2L0hFcW8r?=
+ =?utf-8?B?UmlSRHFaZktuYW94dXFMaGV2L3RYUUtqdmt6Q09RUjkyUjFyeGlLUmhkbnkw?=
+ =?utf-8?B?L05xQzNxaldUODRlYTVVYlpTeTZIUENONlRhUERtWG1NcDZMNVA3Y2dBajli?=
+ =?utf-8?B?aGlNbDJLdjczNDFFZFhIeHk5ODJ3aCtaK2dQVWgxTWo0TmFNV1VvOHErK1FJ?=
+ =?utf-8?B?U1NoeEhJRWhIdlVzTVB4VWR4eG1KVlFCcERqNDRUMVRoeUtZT25BV1ltRzRD?=
+ =?utf-8?B?NEx0OG9yT1BLQ2ZkS1JnS1psTVkzMTFNbFh0TDF4dzFSam9hdXYyY0VNb0pX?=
+ =?utf-8?B?cGdncVVTUGt1T1F3RHdEQkxYK09DZFp4bWdYcXhJbEZMeFpBb1ludjRTN3kv?=
+ =?utf-8?B?QS9Gd0xWQzhLUWNOWDNDQmdteHlNOU5LczlRZi9BNFBYeEZ6VkFOMVFSbXg3?=
+ =?utf-8?B?Z29vY01XVEp1STZTWVlEM0dSYzhuTksvRE0vWHhnREwxRTFycVVGTXA0dDh2?=
+ =?utf-8?B?VCt1dDJzZDVNbWM0dFlITkpRd1RYVkNQaU5hSGdoQUhQb1BKM0haRkI4d1pt?=
+ =?utf-8?B?KzZjOVUyVkJ2aFZRSlNjd3A4OXBwRDNGLzh1VmZlUDM2QXZ4K21uMENMUG9X?=
+ =?utf-8?B?YThiQis0THZMbXZEWEJXUHNFM29VU3JYMkhwZTczSFR4MjFFL001K0s5cmt4?=
+ =?utf-8?B?NC8rRkoyZnlrbFcvL3Voak15bEJNdG9GK0lrYUc4a0hwYTczU0NyWWE0MCtj?=
+ =?utf-8?B?cy9RdWlrYk9jd0V0QUkyKzZlcW8yTGRvZkJIMjQ5YzRDTDByN2NQMitoSXBM?=
+ =?utf-8?B?N05ycXhTVDBIaHpDY0RTRnNpaHBTQ3hBODI1RHpKeHBGenhSYjFQSWhrWng4?=
+ =?utf-8?B?YTAvQUhjV0xLRFNPQzBER2NXTENEcHR6YzNYem9YV2xrak5tRDI2NUx3UjBV?=
+ =?utf-8?B?UFFEMzVtcnFpeVlQVm56UHUweXJoaE00L3M0QmF4dXBMMkxJWDBlamhVSXNU?=
+ =?utf-8?B?L2JxRjhRY1BrcVNRU1RwcVhYV2xuOWMvRHZ3RHZ0bGNEK1FUTThWMjZoTDdR?=
+ =?utf-8?B?RytmdVcrZmMwSFFFUVY4alc5MkZBUFNQVFZqdkp6OFhNQUdiMVphakFIK1py?=
+ =?utf-8?B?MFlmQVF5SGhPWGZzdWZhSXNYckI1NGlnOHJab1I5LzJXUnVRKzl3T1dxOFkv?=
+ =?utf-8?B?NUtJUFZYczFpNlg1THJXQnFBb1NVODBEL2hQMzhOdXpwMjk4dFBMUDMwTVR5?=
+ =?utf-8?B?WkVEclF2QTEzVkJ4VnVmcXlLbFZndi9PZTFMM3hjTTZuOXAySFNXbFJ4OEhh?=
+ =?utf-8?B?VHJnMnlVTlJCSXk2eXdWZ21OeFM4N04wb0NxSG5SbWRERFkrNFRiK0dETUJs?=
+ =?utf-8?B?OU13U2tsbmdMMXlRTVhpTTdZRkNxWlk4d0lDQldnZkI5cFVNaGFHNnU5MHpp?=
+ =?utf-8?B?bDU0NG0zODhKL3loU3c4VUoyREkveTI5VERNQUIvSDhJc0xOM3k5bmp0N1lK?=
+ =?utf-8?B?RHYxUDZXSU1PTXVQUzlwNUlOTVdSOVZ3UWViRmFtd2Z5OHFHdTdSYTZUSGh4?=
+ =?utf-8?B?NFBWd3hjS3NNODgyWFFlb0JRMEp4N1F3UUh1UDlYNCt6aDFPK3YxdksyQkt1?=
+ =?utf-8?B?UXNOc1BKOVdYUXl4cTdGd1pBZEdhYVI3YWkwZC93NXBVTnRURnRKMVlWQW1E?=
+ =?utf-8?Q?2Cx2NyU3EXB5GmlV4NgkSK8=3D?=
+X-OriginatorOrg: iwave-global.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d8020ba-014b-4043-65d2-08dcb14691b2
+X-MS-Exchange-CrossTenant-AuthSource: PN2P287MB3056.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2024 09:53:03.0655
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 507ae903-cc48-4d6e-bdb6-35278120a345
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HY4bZ3UFz0MnhRpsj9sjsbmjPZ5reIU9q0YCu+M9f4R5t+DS67i0LxBwEIxHghd8q9WPJBxWJPCUMrTdhYV1JoJG9X03R9NqZOK8Uck/tPE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MA0P287MB1089
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240731_021915_547117_399D006D 
-X-CRM114-Status: GOOD (  22.73  )
+X-CRM114-CacheID: sfid-20240731_025314_742232_42C24A7E 
+X-CRM114-Status: GOOD (  14.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,104 +165,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7234976829108823714=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7234976829108823714==
-Content-Type: multipart/signed;
- boundary=ca39702cffd96d931aee706a09ce1aa2ba1611296eda65bd78f72e98793e;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+Dear Team,
+I am writing to request an investigation into a strange issue we have 
+observed regarding PEB reservation for bad block management in UBI. For 
+context, our system uses MT29FxxG NAND flash chips with a minimum of 
+4016 valid blocks (NVB) per LUN out of a total of 4096 blocks.
+We have noticed that when using the CONFIG_MTD_UBI_BEB_LIMIT parameter, 
+which is typically calculated as 1024 * (1 - MinNVB / TotalNVB) = 20 
+PEBs, UBI is reserving significantly more PEBs than expected. Instead of 
+the expected 20 PEBs, UBI is reserving around 160 PEBs per LUN, which is 
+approximately 8 times more than it should be.
+To work around this issue, we have set the CONFIG_MTD_UBI_BEB_LIMIT 
+parameter to 3, which corresponds to ~91 reserved PEBs per LUN. However, 
+this strange 8x multiplier effect is concerning and requires further 
+investigation. Additionally, we have observed crashes in our system and 
+suspect that the over-reservation of PEBs for bad block handling may be 
+related to these issues.
+We would like to understand the root cause of the crashes and how the 
+excessive PEB reservation might be contributing to the problem. We have 
+some similar questions related to the PEB's usage in UBI operations:
+Why is UBI reserving significantly more PEBs for bad block handling than 
+expected when using the CONFIG_MTD_UBI_BEB_LIMIT parameter?
+1A) The typical calculation suggests reserving 20 PEBs, but UBI is 
+reserving 8 times more, around 160 PEBs per LUN. What is causing this 8x 
+multiplier effect?
+Does the issue of over-reserving PEBs only occur when multiple NAND 
+partitions are grouped under the same parent MTD device, as is the case 
+with the custom driver? Or can it also happen with a single NAND 
+partition per MTD device?
+Is the over-reservation of PEBs for bad block handling related to the 
+crashes observed in the system? If so, what is the root cause of the 
+crashes and how does the excessive PEB reservation contribute to the issue?
+What is the expected behavior of UBI when reserving PEBs for bad block 
+management based on the CONFIG_MTD_UBI_BEB_LIMIT parameter? Why is UBI 
+not following the typical calculation in this case?
+Are there any known bugs, issues or unexpected behaviors in the UBI 
+subsystem or NAND flash drivers that could explain the observed PEB 
+reservation problem? If so, are there any workarounds or fixes available?
+We would greatly appreciate if you could investigate this issue and 
+provide us with your findings and recommendations.
+Thank you for your assistance.
+Best regards,
+Nikhil Kashyap H R
 
---ca39702cffd96d931aee706a09ce1aa2ba1611296eda65bd78f72e98793e
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-Hi Michal,
-
-> >> Based on the inputs/suggestions from Tudor, i am planning to add a new
-> >> layer between the SPI-NOR and MTD layers to support stacked and parall=
-el
-> >> configurations. This new layer will be part of the spi-nor and located=
- in
-> >> mtd/spi-nor/
-> >=20
-> > Will AMD submit to maintain this layer? What happens if the
-> > maintainer will leave AMD? TBH, personally, I don't like to
-> > maintain such a niche feature.
-> > I'd really like to see some use cases and performance reports for
-> > this, like actual boards (and no evaluation boards don't count). Why
-> > wouldn't someone just use an octal flash?
->
-> AMD/Xilinx is not creating products that's why we don't have data on actu=
-al=20
-> boards but I don't really understand why evaluation boards don't count.
-
-Because on an eval board the vendor just puts everything possible on
-the board.
-
-> A lot of=20
-> customers are taking schematics from us and removing parts which they don=
-'t need=20
-> and add their custom part.
->
-> But one product for parallel configuration which is publicly saying that =
-it is=20
-> using it is for example this SOM.
-> https://shop.trenz-electronic.de/en/TE0820-05-2AI21MA-MPSoC-Module-with-A=
-MD-Zynq-UltraScale-ZU2CG-1I-2-GByte-DDR4-SDRAM-4-x-5-cm
->
-> I am not marketing guy to tell if there is any other which publicly sayin=
-g we=20
-> are using this feature but we can only develop/support/maintain support f=
-or=20
-> these configurations on our evaluation boards because that's what we have=
- access=20
-> to and what we know how it is done.
->
-> Also performance numbers from us can be only provided against our evaluat=
-ion boards.
-
-Which is good enough.
-
-All I'm saying is that you shouldn't put burden on us (the SPI NOR
-maintainers) for what seems to me at least as a niche. Thus I was
-asking for performance numbers and users. Convince me that I'm
-wrong and that is worth our time.
-
-The first round of patches were really invasive regarding the core
-code. So if there is a clean layering approach which can be enabled
-as a module and you are maintaining it I'm fine with that (even if
-the core code needs some changes then like hooks or so, not sure).
-
--michael
-
---ca39702cffd96d931aee706a09ce1aa2ba1611296eda65bd78f72e98793e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZqoBhREcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+FjVAYC5j+67h/KcneaPcQzec/oCTc8m829x/Zf8
-EK35rLhdUySt8hQX8KGtzw5kcHwOdKEBgPjKd9pncip/3XoPQTsDQcLTz0R/NsXm
-914ogzDCj82ep11eIYUq1UjdDpsyJWJMFA==
-=QrXm
------END PGP SIGNATURE-----
-
---ca39702cffd96d931aee706a09ce1aa2ba1611296eda65bd78f72e98793e--
-
-
---===============7234976829108823714==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7234976829108823714==--
-
