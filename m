@@ -4,81 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321B4C3DA64
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2024 14:11:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72C8CC3DA7F
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Jul 2024 17:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:From:Cc:Subject:To:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=J/qYwRSu5LmDMpU9Egxbwhb3ho/wPMGZ9FqiCITyYuw=; b=OLcjx/Z0fljfutzzitrnWrY7Ha
-	AbkIL3lTTij3YIiS1QJsA/RF0ph2GOh7iFOjd586F/lchPvNmrmopx2VfYpjHkp/Hl1O1u13Qgi+o
-	NPDTGP5TbfqEPrgbStEwos2G3+fUT93dDVaYRKbQT1foKJjxby+BMPEBtFpRHUcqqssSOfhlgx7Tf
-	tXMqxn2sqp/0qeTzoXGqTZg0UJoRYuE9HcjtP2XG2og1tlO3TzUlT7v4YW7uHgVkTClLw/IyFK0Ba
-	FDCANK3jNkczrg/ha80m3R4QRyEk0J4tr241hqq4wVpWDuE8D9Xi8kLGG3SoPUt9rdrDmzZnoOCrq
-	Gr62frIA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uNCJ6DNoXa3OL8Lw4j9p3Jvei5TiIU6SnznGsLN1GKU=; b=rMHRYqiN2G7Bci
+	EChf4tPysQh1IRgTCAuURilmEqGwINWcsEqLzTxkBgnIdA+QMURjWC6xteKp5F2winD6KO5raw9iI
+	5ICmEAOQ19L7kkfdcALbz6W15h8r+zQeipTGh7ZZbHguHd3i/1Npnqcfl7eq+IlayPHxjATNIxofw
+	+C/nYg63/jCWyq5zTMMK4TK0pXb4IBaHaadvrCQJGZK6kIckUt0z9eU8zqx1zPXdoybhyRHO5o8Fk
+	+9H8NmMirbvX5ZOhBaZKFwmsYUk3/ypZ3eHtvopXm/1iZfvJ0vLLvi4W3UpaGqLHrGXh7n4+KBQr6
+	lfa6+UAeyVx3BcB7B0mQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sZA3K-00000001QJs-2BC7;
-	Wed, 31 Jul 2024 14:11:42 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1sZCrU-00000001yd0-0TaF;
+	Wed, 31 Jul 2024 17:11:40 +0000
+Received: from mail-yw1-x1134.google.com ([2607:f8b0:4864:20::1134])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sZA2n-00000001QBc-3gpC;
-	Wed, 31 Jul 2024 14:11:11 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E4BD2505D;
-	Wed, 31 Jul 2024 16:11:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1722435067;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=g0FCq4nnchDFfxh51t3tr65YF79O4pzb8rTXeXDOps0=;
-	b=RheJVGsLyDe1VaZaZGyLz41KRqG0eQbpu4lcvjRkmhqYsQxVpnY6SHspc+AJsru6X0q+4H
-	bFookNN2M2VflPjpAAD+KOxP9DSJKXFp+N5ii2OEzP5Mgf0JxBAhKMVXa+A/z9hdaMiFVU
-	fIYwA/Yrhh0W5AFk+8q9MlwIDS81LaZkUIvk2pT5xihTXbtf6qz8ClP1SJsvpKShFVOdsd
-	d9SijFRnSMSkdjPpL9ejDJsPMgkEgPbHP2qO4t795kQoPdBkT7deSy2NsBu4gEQc2GD+eq
-	+UD6qx97Lzo8BKfKecddrJISdAvVIB3G0WsxUA5xQY7a7wjGLRtxXewwju3sqQ==
-Date: Wed, 31 Jul 2024 16:11:05 +0200
-Message-Id: <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc>
-To: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
- <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
- <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "sbinding@opensource.cirrus.com"
- <sbinding@opensource.cirrus.com>, "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "perex@perex.cz"
- <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
- <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
- <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
- <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
-From: "Michael Walle" <michael@walle.cc>
-X-Mailer: aerc 0.16.0
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
- <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org> <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org> <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org> <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com> <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org> <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org> <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com> <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com> <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc> <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com> <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc> <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
-In-Reply-To: <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
+	id 1sZCqb-00000001yLS-49rp
+	for linux-mtd@lists.infradead.org;
+	Wed, 31 Jul 2024 17:10:47 +0000
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-661369ff30aso45804737b3.2
+        for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2024 10:10:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722445844; x=1723050644; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DG9Dsrk5EbbKUqbUuC/SLfjiErZu07ODQyjNbdBQFKM=;
+        b=kCoW0Zl6wt2TrQuAtaKawqRRhnjYj/FqIHDxfXYgET4t/i8NzSbDrlEE3ADow8Qz7u
+         d4KGZyGSy7J0J81aEdifo2tT7LNkBfzjl3IsAVBdGjffWhEibcsq9DvJFkLZCpeuhRQF
+         C12AN9vN4x+eiX6KcwcpMmzPtufPXh+kP20Qv8Yxrkm+K4N3l9vshoZOMe4JGu+KPv7d
+         CpEZHO7sBAHOmE+eZulquMGLFaZfhzfWZBBck2KrfjkIof2gkCJj0oLo6Z3q6oggDtuR
+         jPsBpnzoXsoph2zhJd18t9hQFo5HiDCL6F53qpwrke3OJjxG/EipCP4vTorYi7RgLf2C
+         XuRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722445844; x=1723050644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DG9Dsrk5EbbKUqbUuC/SLfjiErZu07ODQyjNbdBQFKM=;
+        b=mBvmIYYdpfAcAqN1o+ZT4VQY73NFVgbAzKSqtU6LOu802jm2x2Uurlz6XCflRnL73J
+         spfwMfiHMQJPWyDG7+kLxJPjW/zCXJeURsjkUsLB2ajZ7oGTX0t3grTMl2bMcJiv6Mg/
+         h00jR/EHMzsUHNYajHtaTvHdkyGoYvha6NFiTN6sESLEjc/29v0bc3PGvX8QGK9Sr9zQ
+         8muaT7DTlzWVGc8GnWhSFTHXcH9aw0ua13EpPldfmoZSHQpHfy+1kIfFJd/ohVanZ8sV
+         4gDHp1FDczvkayhIelGIFOWbCOpQl117KdSaeI6lZCALIYHSmxr6gstDvQTFgqAWFcOw
+         EH2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVipQz3HBM6oLey7xcAI7a/lFdrVI0rQ2eT2zux/2slHZe5F2wFx/wBru32QIc5Wz+mukse3cr+SFG6o3cMl8Jz+U7PS5b+FZGcDo2UBQ==
+X-Gm-Message-State: AOJu0Yxd8dkjdCZq+4kIcG49DfR82OmZ7OE7/eMwhp/OrFyPn/CqnMH7
+	WdO6HtYgBd6tWX+CPDw4QLs3clxTyK28+Lk14hMBZ4ofjIJywRk+neaJVaSsnt6yZS85iPKlC5/
+	7rCTCeuXzJ3mtHIaW+7004zPF4iY=
+X-Google-Smtp-Source: AGHT+IFCW0KBtutTT9yo+ccyb6xdU+bDoCL8vXjw62S5YbYqpKMe64BaRn6jyq9lgwFDPjqYD3SPVCD48sQtrx7IcUk=
+X-Received: by 2002:a81:8805:0:b0:64b:44b4:e1a with SMTP id
+ 00721157ae682-67a0769c813mr157755737b3.26.1722445844349; Wed, 31 Jul 2024
+ 10:10:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20240726185825.142733-1-computersforpeace@gmail.com>
+ <D32OADQF733D.3CVS3ZRPEBL2O@kernel.org> <454deacb-88cc-4ab0-80b4-006d863a56d2@linaro.org>
+ <CAN8TOE8-9=P7p8Tkc+5kG5Sqan+RAWAc7k2VH-p5W9hR-bb_Xg@mail.gmail.com> <0685ef1b-b0e1-4c53-94dc-4d5de5be8e94@linaro.org>
+In-Reply-To: <0685ef1b-b0e1-4c53-94dc-4d5de5be8e94@linaro.org>
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 31 Jul 2024 10:10:32 -0700
+Message-ID: <CAN8TOE-YGSRxjrMNqHWfP7RYKUnPs-V=d_FFJfZtquPedEe+dA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add n25q064a WP support
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Michael Walle <mwalle@kernel.org>, linux-mtd@lists.infradead.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Pratyush Yadav <pratyush@kernel.org>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240731_071110_232160_A5DD3D18 
-X-CRM114-Status: GOOD (  23.68  )
+X-CRM114-CacheID: sfid-20240731_101046_052185_A0EAD221 
+X-CRM114-Status: GOOD (  17.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,97 +88,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7435958553958133170=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7435958553958133170==
-Content-Type: multipart/signed;
- boundary=96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-
---96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-> > All I'm saying is that you shouldn't put burden on us (the SPI NOR
-> > maintainers) for what seems to me at least as a niche. Thus I was
-> > asking for performance numbers and users. Convince me that I'm
-> > wrong and that is worth our time.
->
-> No. It is not really just feature of our evaluation boards. Customers are=
- using=20
-> it. I was talking to one guy from field and he confirms me that these=20
-> configurations are used by his multiple customers in real products.
-
-Which begs the question, do we really have to support every feature
-in the core (I'd like to hear Tudors and Pratyush opinion here).
-Honestly, this just looks like a concatenation of two QSPI
-controllers. Why didn't you just use a normal octal controller which
-is a protocol also backed by the JEDEC standard. Is it any faster?
-Do you get more capacity? Does anyone really use large SPI-NOR
-flashes? If so, why? I mean you've put that controller on your SoC,
-you must have some convincing arguments why a customer should use
-it.
-
-> > The first round of patches were really invasive regarding the core
-> > code. So if there is a clean layering approach which can be enabled
-> > as a module and you are maintaining it I'm fine with that (even if
-> > the core code needs some changes then like hooks or so, not sure).
->
-> That discussion started with Miquel some years ago when he was trying to =
-to=20
-> solve description in DT which is merged for a while in the kernel.
-
-What's your point here? From what I can tell the DT binding is wrong
-and needs to be reworked anyway.
-
-> And Amit is trying to figure it out which way to go.
-> I don't want to predict where that code should be going or how it should =
-look=20
-> like because don't have spi-nor experience. But I hope we finally move fo=
-rward=20
-> on this topic to see the path how to upstream support for it.
-
-You still didn't answer my initial question. Will AMD support and
-maintain that code? I was pushing you towards putting that code into
-your own driver because then that's up to you what you are doing
-there.
-
-So how do we move forward? I'd like to see as little as core changes
-possible to get your dual flash setup working. I'm fine with having a
-layer in spi-nor/ (not sure that's how it will work with mtdcat
-which looks like it's similar as your stacked flash) as long as it
-can be a module (selected by the driver).
-
--michael
-
---96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZqpF+REcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+L4FAYD66zueUFU1636OvgoGDTll3VhlpfWvCNks
-ygBkg8btX0/kDdus+Zs1Lz63qoncGBIBfjSOIExt4q/UijTQMIfXmQjnzxUHEsUH
-/aUgW/mzMqFLKqdncy63f8sPZX5ZY3vmAA==
-=2i8/
------END PGP SIGNATURE-----
-
---96d5968b07d14bbafb7edd54105440eb618b58c0255484c32a5e40a9f01c--
-
-
---===============7435958553958133170==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7435958553958133170==--
-
+SGkgVHVkb3IsCgpPbiBXZWQsIEp1bCAzMSwgMjAyNCBhdCAxOjUx4oCvQU0gVHVkb3IgQW1iYXJ1
+cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiB3cm90ZToKPiBBIHNoYXN1bSBvbiB0aGUgU0ZE
+UCBkdW1wIHdvdWxkIGJlIGdvb2QgdG8gaGF2ZSBzb21lIHNvcnQgb2YgaW50ZWdyaXR5Cj4gYXNz
+dXJhbmNlLCBlLmcuOgo+IHNoYTI1NnN1bSAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGkwLjAvc3Bp
+LW5vci9zZmRwCgojIHNoYTI1NnN1bSAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGkwLjAvc3BpLW5v
+ci9zZmRwCjIwMzBkMDQ3NTgxNjQ0OTFlNDE0ZTFkNTVlMTZiMDQ4MDNmNTY1M2ZiNTkxZmRhNTA5
+OTFjNzI4YzQ5YzFjMzcKL3N5cy9idXMvc3BpL2RldmljZXMvc3BpMC4wL3NwaS1ub3Ivc2ZkcAoK
+PiBTb21lIHRlc3QgaW4gbXRkLXV0aWxzIHdvdWxkIGJlIGdvb2QgaW5kZWVkLCBidXQgbmFycmF0
+aXZlIHNoYWxsIGJlIGFsc28KPiBvayBmb3Igbm93LiBXaGF0IEkgZmVhciBpcyB0aGF0IHBlb3Bs
+ZSBqdXN0IHVzZSBqdXN0IGEgZmxhc2ggbG9jay91bmxvY2sKPiBhbGwgc2VjdG9ycyB0ZXN0LCB3
+aGljaCBpcyBub3QgaWRlYWwuIFdlIHNoYWxsIGFsc28gdGVzdCBsb2NraW5nIG9uIHNvbWUKPiBz
+ZWN0b3JzIGZyb20gdGhlIHRvcCBhbmQgYm90dG9tLCB0byB2ZXJpZnkgdGhlIGNvcnJlY3RuZXNz
+IG9mIHRoZSBUQgo+IGJpdCwgY2hlY2sgaWYgQlAzIGlzIHdvcmtpbmcgYnkgbG9ja2luZyBzb21l
+IHNlY3RvcnMgaW4gdGhhdCBhcmVhLgo+IEhhdmVuJ3QgbG9va2VkIGF0IHRoZSBCUCBhcmVhIGlu
+IGEgd2hpbGUsIGJ1dCB5b3UgZ2V0IG15IHBvaW50LCBJIGZlZWwKPiB0ZXN0aW5nIGlzIG5vdCBp
+ZGVhbCBhbmQgYSBndWlkZWxpbmUgd291bGQgaGVscC4KPgo+IElmIHlvdSBldmVyIGZlZWwgdGhh
+dCB5b3UgY2FuIHNwZW5kIHNvbWUgdGltZSBvbiB0aGlzLCBoZWxwIGlzIGFwcHJlY2lhdGVkLgoK
+T0suIEl0J3MgcG9zc2libGUsIGJ1dCBubyBndWFyYW50ZWVzLiBJIHRoaW5rIGluIHRoZSBkaXN0
+YW50IHBhc3QKKHdoZW4gSSB3YXMgc3RpbGwgbWFpbnRhaW5pbmcgc29tZSBvZiB0aGlzIGFyZWEp
+LCBJIGFjdHVhbGx5IHN0YXJ0ZWQKdG8gd3JpdGUgc3VjaCBhIG10ZC11dGlscyB0ZXN0LCBidXQg
+SSBuZXZlciBjbGVhbmVkIGl0IHVwIGFuZApzdWJtaXR0ZWQgaXQuIEZvciBvbmUsIGEgcHJvcGVy
+IGV4aGF1c3RpdmUgdGVzdCB3b3VsZCBiZSByYXRoZXIgc2xvdywKYXMgd2UnZCB3YW50IHRvIHRl
+c3QgYWxsIHRoZSBwb3NzaWJsZSBwcm90ZWN0aW9uIHJhbmdlcywgYW5kIHRoZW4KZXJhc2Uvd3Jp
+dGUvcmVhZCB0aGUgd2hvbGUgdGhpbmcuIFNvbWUgcm91Z2ggbWVhc3VyZW1lbnQgb24gbXkgc3lz
+dGVtCnNob3dzIGFib3V0IGEgbWludXRlIGZvciBlcmFzaW5nIHRoZSB3aG9sZSBjaGlwLCAyNSBz
+ZWNvbmRzIGZvcgp3cml0aW5nLCBhbmQgNyBzZWNvbmRzIGZvciByZWFkaW5nIC0tIHdoaWNoIG1l
+YW5zIHdpdGggNSBiaXRzIG9mCnByb3RlY3Rpb24gcmFuZ2UgKDQgYml0cywgcGx1cyB0b3AvYm90
+dG9tIGJpdCkgd2UgaGF2ZSAzMiBjb21iaW5hdGlvbnMKKiB+MS41IG1pbnV0ZXMgdGVzdCA9IDQ4
+IG1pbnV0ZXMuIFRoYXQncyAuLi4gZG9hYmxlIEkgZ3Vlc3MsIGFuZCBpdApjb3VsZCBwcm9iYWJs
+eSBiZSBvcHRpbWl6ZWQgYSBiaXQgdG8gcmVkdWNlIHRoZSBudW1iZXIgb2YgZXJhc2UKY3ljbGVz
+LiBCdXQgaXQncyBub3QgZ3JlYXQuCgpBbnl3YXksIG1heWJlIEknbGwgcGxheSB3aXRoIGl0LgoK
+QnJpYW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
