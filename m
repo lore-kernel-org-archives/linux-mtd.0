@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA35DC52D6D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7807AC52D71
 	for <linux-mtd@archiver.kernel.org>; Sun,  4 Aug 2024 17:44:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,56 +12,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lSDJnBo3zSf3PD2Zc1A+jNvuPIyojVTeBnT2/54gbo8=; b=BXnHU8AXdGicit
-	LlqrstO3G+KMJPcbE63wo/5kWQJtgOYchNfROPUPIzyK5pW79UmByb4gT5aIEpNFMD5vCWHjtg4UF
-	NDx9yovItt2wytEsgabsLRC2FHklCxOe4hjHpOFFfPUqrTjgYTt6LEObQG2o7Qk7cCGyfySqtaJbY
-	vaDYbTL6d7DFph4hrROPuvhME7sfmMvPP+fhxzHLtPDnpZUMwny7/yPnvzB4J+I5h0c3k7U9PfbPU
-	Bo3dathQsKbqnKUY7l4+E838Ho2A8AQzFzZvErdhdv1JFbOHo9izZt+gfjvVz0tLGXzJQCMVOTXJf
-	ZZkPKDq/7P3L4IvfVTAQ==;
+	List-Owner; bh=pQNjTwW+MOpp9C5Q/MHr5cvRe4inORamchhN1WnnaDA=; b=sbneLcAWmuSOv9
+	hFTgJtW49Vidxr+r11Y7fIKlNaHkhoXPS2nrh8vQuYn2+cUQYEJki/BQfQC75q2mZQADFqFw1SUC2
+	eWtIpjGtrG17C7jgLIiH9LfR9Kqqa2ceoxxJFh6bIsj8vAL5xGVWhSu8oeEV+nwbvM9pNfOrgm+Pb
+	kA3TZo/j5UZPu6l/N7YTNqNyq7Mkt59RKYk4t7rIi376jajfD69dCiGyfKIYSzpRb+vvS9L+nZHEA
+	bMCithXQ/AijMoLES3QZDWIZ+0StPsta/JCmzxr6iUXlU5j7gv3dsAKK1FwjL90BmiJk+/RBYR+3x
+	cDjYVYutn1ini4ZmlAfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1safHW-0000000DgvE-3xFJ;
-	Sun, 04 Aug 2024 17:44:34 +0000
-Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+	id 1safHY-0000000Dgvg-0zMv;
+	Sun, 04 Aug 2024 17:44:36 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1safHU-0000000Dgtw-1sum;
-	Sun, 04 Aug 2024 17:44:33 +0000
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-368313809a4so2763383f8f.0;
-        Sun, 04 Aug 2024 10:44:31 -0700 (PDT)
+	id 1safHW-0000000DguQ-03ou;
+	Sun, 04 Aug 2024 17:44:35 +0000
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-427fc97a88cso67939045e9.0;
+        Sun, 04 Aug 2024 10:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722793470; x=1723398270; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1722793472; x=1723398272; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N4Tqx/xl+do4nmfv0ZFIXdX55krJHtI/dy8e3uyNR1Y=;
-        b=g11TvcJtEdjUDt2DaViK0o8i4sVPz+L9lfvDJJOWPDOpMPaWf164kGSOezIoZ4ASS3
-         5fhhtHHh8c41NJWkNsEvElTdN3SbQkBySerqv/E0NJcimoTLvy1NC1um1XHEL00zC1Yj
-         lUtBdDYzX6XruAzvWHfBtarWPWfWLyGt118SOQjtfq+XZfa21G/qGT5j97OzRccgyjwz
-         yVCXZ/THYQVgrMo2TlNO7r2BSAPssYQhZ9BkD1nfcUGNGM7rp7RTWfPEaB4sCsn19VUJ
-         eMDl7FsfE3PorAOj6G03AbFFy8jC42Oa1OtzsE2wyPX0djhBF13DJvGb0cWFS5AuQO6W
-         3V6A==
+        bh=NJElgdSeo7tFBhUWI5Y2VGkmcaarTUGB2bJhxj7nOts=;
+        b=K8z8gMZ7BL9qsooCkXLPlo2AxcpT4TSjOtMoKYYisu5BcLqYyDtWZWji2910FMWhek
+         zlBbC9wd24WzR+0GWT8sMZxjiJOhR4FWZiSH5gFb/ykzd1OQBEuJqKdcMMObyqoRgrPv
+         OPS31wqBNUyZgDy2Yjj/FlF3FAEkNHDYyWkqgfjJxxkek1BQHoxdc5/tUcKa700AKWmo
+         oET2AcljtmiRvxA32eGMQlKlRftxhft7RO3QJ4M4mNWGmLQxcFzg6V2v2xjrMllrsttW
+         Clad14n0MIpoJ/P1yppAIYpzVtO+PBZjyVYGqLR0MC5Pm45wJ0wI2DgpEKPccI8nXBNd
+         XX2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722793470; x=1723398270;
+        d=1e100.net; s=20230601; t=1722793472; x=1723398272;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N4Tqx/xl+do4nmfv0ZFIXdX55krJHtI/dy8e3uyNR1Y=;
-        b=U/aHKGDXUXR10JO6ypzHxFJuvVB1ahqHWcPgBSeLxmrFN7V6BxwQWm4JRQgluO2rjF
-         YjZO+fRfiqsMiFO/j3PugUPHKvUrPaKjRhlmJbE0ZEV12zv4W4Nib+9xrHibX4DHIX17
-         22CjVWiT2WkI+o4f47kF3+UComS+d7IpZaLuaRDzi/9o55Zfu0R7YAkWXxT9DXYE5WGo
-         16mPfvontsyDYALxzn0sxRL/N/LXXCuXdxBVucskb0y5jljHY3rE4l9OZk2l1/DrhVIN
-         /xKmWeMJbEZa1yqpECr9spftkDBEUkd7LmnK3lZmpWxefehE3VsSjJBfM2wY3pWK8yzK
-         4Bzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUaKueC6NVF0corPexcjfEfprgFSKIFewsFS/n3LB2IS394uQow5sw/dpl4lfj5Lx5qgReXQQ9hEsrTk2kud1eLvOjdplGEi4FQmzzo/PLsLzdjf3xyUahdjJnDQ2JbbkoKExhhUkimdHu0oObB
-X-Gm-Message-State: AOJu0YzAjA47Zu7t4aFart13AcyY9FInrJRnQubQebJaMaFrl2/lmH8k
-	xJ36zm4WZzXofFzuADdPYizl03Uit1rnNyqjVNNhAmMx63vp594g
-X-Google-Smtp-Source: AGHT+IEmGipmy6C03p1fUHWreExFigGkvjGoxjZh2tkYrSz+71MUHqO1UlAfqWKZFbKWjp32T3vinQ==
-X-Received: by 2002:a05:6000:b50:b0:367:938f:550 with SMTP id ffacd0b85a97d-36bb35de344mr8566122f8f.25.1722793470174;
-        Sun, 04 Aug 2024 10:44:30 -0700 (PDT)
+        bh=NJElgdSeo7tFBhUWI5Y2VGkmcaarTUGB2bJhxj7nOts=;
+        b=m6hgfN85Vr6LpCvVN1S2vQynRMTl2QflZrTmLiZwf9ijQehrWTHRDEuIMO4VYLXlQZ
+         2DeaSKfVRPB8fauleNMxNhzwnT4fGWdrdTtXqgF00l24670EgtIQk9yAJTbiwwWiLXy0
+         1WckT1sJgeBmsbUSZvHa1j0hG/YYcIrbGZav2gfUimNZoHpak/J393LH+90ks43LgiDe
+         5hbW6xhX9B2o0QFFzDXO1bTXfpc+uATYA1lHvH8P64wCjYzJ1UTd/fxIoyiYtL9Gctaw
+         etGSaEfboy2VTsyOV9SpX/jVWn6oOCPLZL5WwaizxFcwLU/pcCDL9QAha40gV4Wox3/2
+         Qysg==
+X-Forwarded-Encrypted: i=1; AJvYcCVxb9N5AyD0sdWi3Yzh/Tkawrqdk/RGDXycoFvIgfWJtGpKhhI+3Hf9NWRnDOt/4XuVwv5AnmW2h8rAxpFCn7k7OXKicDCrD3SQyAZtAEbftqVDHLxKkjLwPQhpZuji5kTLLqbRPt0o134SEhYo
+X-Gm-Message-State: AOJu0YwFsdXkQpaf5wtNLt4nJjcch7tRXqYXvaosurfuuKWLnOVKeDUF
+	iaecb8BKW+xI0kjyOkOHS3ARUmxeExpTZxXC8UdwDCJaJD4bQJ7+
+X-Google-Smtp-Source: AGHT+IF6h/dGDHwUKaeJf81/S6Xw4YXN06iaLrsJ+xyLkFLlhqRSyGV1A+2MwoRSks+8BuECDOiQtg==
+X-Received: by 2002:a05:600c:470e:b0:426:59fe:ac2d with SMTP id 5b1f17b1804b1-428e6b9369bmr73165125e9.32.1722793472007;
+        Sun, 04 Aug 2024 10:44:32 -0700 (PDT)
 Received: from localhost.localdomain (host-87-6-196-30.retail.telecomitalia.it. [87.6.196.30])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-428e6e0357asm109530485e9.12.2024.08.04.10.44.28
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-428e6e0357asm109530485e9.12.2024.08.04.10.44.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Aug 2024 10:44:29 -0700 (PDT)
+        Sun, 04 Aug 2024 10:44:31 -0700 (PDT)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Ulf Hansson <ulf.hansson@linaro.org>,
 	Rob Herring <robh@kernel.org>,
@@ -84,16 +84,16 @@ To: Ulf Hansson <ulf.hansson@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-nvme@lists.infradead.org
-Subject: [PATCH v2 1/6] dt-bindings: nvme: Document nvme-card compatible
-Date: Sun,  4 Aug 2024 19:44:05 +0200
-Message-ID: <20240804174414.18171-2-ansuelsmth@gmail.com>
+Subject: [PATCH v2 2/6] nvme: assign of_node to nvme device
+Date: Sun,  4 Aug 2024 19:44:06 +0200
+Message-ID: <20240804174414.18171-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240804174414.18171-1-ansuelsmth@gmail.com>
 References: <20240804174414.18171-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240804_104432_497642_7C8F4538 
-X-CRM114-Status: GOOD (  14.78  )
+X-CRM114-CacheID: sfid-20240804_104434_092680_BBB655B3 
+X-CRM114-Status: GOOD (  14.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,99 +110,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document new nvme-card compatible to permit defining fixed-partition in
-DT by the use of the block2mtd module to use block devices as MTD.
+Introduce support for a dedicated node for a nvme card. This will be a
+subnode of the nvme controller node that will have the "nvme-card"
+compatible.
+
+This follow a similar implementation done for mmc where the specific mmc
+card have a dedicated of_node.
+
+This can be used for scenario where block2mtd module is used to declare
+partition in DT and block2mtd is called on the root block of the nvme
+card, permitting the usage of fixed-partition parser or alternative
+ones.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- .../devicetree/bindings/nvme/nvme-card.yaml   | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/nvme/nvme-card.yaml
+ drivers/nvme/host/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvme/nvme-card.yaml b/Documentation/devicetree/bindings/nvme/nvme-card.yaml
-new file mode 100644
-index 000000000000..20e9a877fac4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/nvme/nvme-card.yaml
-@@ -0,0 +1,78 @@
-+# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvme/nvme-card.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NVME Card
-+
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com>
-+
-+description: |
-+  This documents describes the devicetree bindings for a NVME controller
-+  child node describing a nvme-card.
-+
-+properties:
-+  compatible:
-+    const: nvme-card
-+
-+  partitions:
-+    $ref: /schemas/mtd/partitions/partitions.yaml
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pcie {
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+
-+        bridge@0,0 {
-+            reg = <0x00000000 0 0 0 0>;
-+            #address-cells = <3>;
-+            #size-cells = <2>;
-+            ranges;
-+
-+            nvme@1,0 {
-+                compatible = "pci144d,a809";
-+
-+                reg = <0x00010000 0 0 0 0>;
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                card {
-+                    compatible = "nvme-card";
-+
-+                    partitions {
-+                        compatible = "fixed-partitions";
-+                        #address-cells = <1>;
-+                        #size-cells = <1>;
-+
-+                        bootloader@0 {
-+                          label = "bootloader";
-+                          reg = <0x00000000 0x00080000>;
-+                        };
-+
-+                        tclinux@80000 {
-+                          label = "tclinux";
-+                          reg = <0x00080000 0x02800000>;
-+                        };
-+
-+                        tclinux_slave@2880000 {
-+                          label = "tclinux_slave";
-+                          reg = <0x02880000 0x02800000>;
-+                        };
-+
-+                        rootfs_data@5080000 {
-+                          label = "rootfs_data";
-+                          reg = <0x5080000 0x00800000>;
-+                        };
-+                    };
-+                };
-+            };
-+        };
-+    };
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 053d5b4909cd..344523274d1b 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -14,6 +14,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/backing-dev.h>
++#include <linux/of.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/pr.h>
+@@ -4651,6 +4652,7 @@ void nvme_uninit_ctrl(struct nvme_ctrl *ctrl)
+ 	nvme_hwmon_exit(ctrl);
+ 	nvme_fault_inject_fini(&ctrl->fault_inject);
+ 	dev_pm_qos_hide_latency_tolerance(ctrl->device);
++	of_node_put(ctrl->device->of_node);
+ 	cdev_device_del(&ctrl->cdev, ctrl->device);
+ 	nvme_put_ctrl(ctrl);
+ }
+@@ -4771,6 +4773,8 @@ int nvme_init_ctrl(struct nvme_ctrl *ctrl, struct device *dev,
+ 	else
+ 		ctrl->device->groups = nvme_dev_attr_groups;
+ 	ctrl->device->release = nvme_free_ctrl;
++	ctrl->device->of_node = of_get_compatible_child(ctrl->dev->of_node,
++							"nvme-card");
+ 	dev_set_drvdata(ctrl->device, ctrl);
+ 
+ 	return ret;
 -- 
 2.45.2
 
