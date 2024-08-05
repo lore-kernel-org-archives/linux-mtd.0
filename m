@@ -4,60 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75851C3DA7F
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2024 09:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2D73C3DA7F
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2024 11:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=83zbUL06uIXPI+zpZm4xUOmb3gqv77mPphhV2O+l5UQ=; b=RYC5S0YV28rGHy4/lNvIKZXRQZ
-	RABBSdWCj7YPEfNpCdh+peH3v5VURZ4prK+Hfkq9+xbmGbMGXuw0kwt8qNwive9qgwsEDHy7tz7EH
-	xG/eIi76GHTlAHzlXdcKZQ2glHWt1MI2UBsj39y2zKdMZe3Ojs61gs1hvyBzCItPMsupl53FrOLnt
-	3etHkZonTSBIQNfgJUpoqbkspPUI1y8CFBm7Rgk13a3LvIQVaDeFOUTgfaWV7WCt0klXKQ3J5XVZG
-	L7E90bkxQCwYxLzmy5BlGAR2rfDzjBPgoBYamXl/ig9dFeyhe9i8pxbiiw2gAJKHCRUtTLGLGt+ua
-	1APK/gNg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8IXqa7GV5peX/zZhw55RXFxMbRR4NKyctl/+TU7U9DA=; b=cFHocHCvjD8n/d
+	T/e0eMVOVzBtZCrc33PJ5adbeY4zI4IjRx4zY/LQX6kgDNd2qOr+T+r5VuYNYldhZmDriR+PGUsPJ
+	rpbDjoRTOysAwkvm5ki2aXhDEtlMWiZVoEkOzQp7Z01tn1JVgiS0VqR6juZpxa73xdyboqmGgi3Qd
+	nc2GUjkyynO6/AvHrurvg5cxlwqEYrcBAyF8fY0KabZZPqlTHPrCRc+mzyOASxKu3HIWKbPsPICTk
+	8TwtxxbKBYOUeSyygNWT9Uw0iNAQ7NPPvOcU01I3ZyyvlpwNCHiMqP/iM25Vp8C+JdgIK8Gv6zy6e
+	glZI1TdB0ZXUB74otR/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1satrj-0000000FFu8-2ZxZ;
-	Mon, 05 Aug 2024 09:18:55 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1savTI-0000000FcIh-3k5L;
+	Mon, 05 Aug 2024 11:01:48 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1satrg-0000000FFsu-3kIT
-	for linux-mtd@lists.infradead.org;
-	Mon, 05 Aug 2024 09:18:54 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 09E1A60BC2;
-	Mon,  5 Aug 2024 09:18:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 617B4C4AF0D;
-	Mon,  5 Aug 2024 09:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722849531;
-	bh=olTzeeELT3svBY3+B4w293FIAcU7jIz5+119Yrz92fA=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=ILG1+VnOsPIei8KUPF2+KQPdcLGdnZfajTnnz2+ZkOMjloAHGEuqVu6EacyGELdPH
-	 w1rpTuUMIOcoGVEOiRIv/jkfkjyUN/AklI3g8ZmUHqGvqPDnYsB2/B0e/4OYMOhce4
-	 QoBXaNaJaTpMbBR7STvE/xYbvLc5pkisNCyn1NGzVPT6/Anc9HmNYDKEJdbl/0qRLJ
-	 eCAFtAGpAQx+zR0ksyEmYJmG8tsEI6UzEXQqtMhAw9Nw7LtXPwIePRDpfzd2i2fhRX
-	 1pZkYOH/RNN46zm0Zy/Fz75ax8Gv/FTTAzjptipx14MBOsFNLffLk5a7UTc1kiF6Hq
-	 vgGetTADOHmRw==
-Date: Mon, 05 Aug 2024 11:18:47 +0200
-Message-Id: <D37V6QTQZM50.2I613FUEQIWXG@kernel.org>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: handle JEDEC manufacturer bank
-Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "A. Zini" <alessandro.zini@siemens.com>, <linux-mtd@lists.infradead.org>
-X-Mailer: aerc 0.16.0
-References: <20240729102016.8527-1-alessandro.zini@siemens.com>
- <20240729102016.8527-2-alessandro.zini@siemens.com>
-In-Reply-To: <20240729102016.8527-2-alessandro.zini@siemens.com>
+	id 1savT2-0000000FcDs-0Yy4;
+	Mon, 05 Aug 2024 11:01:33 +0000
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5bb477e3a6dso1378204a12.0;
+        Mon, 05 Aug 2024 04:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722855690; x=1723460490; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=w92A5DSLMtWgFu3PG5e7V2aasOF9qr2/85zMzlFL76I=;
+        b=TW0Bt6V6JJjOA3vJJUveyESRaVBlRMswSYAbZ5dwgkqQlt3S3Z8z/aUmINJ7LpXLai
+         IfMaE4SjK3DzKWRpJJ4WFZAuAOwmkvp5/q8Jm9ug6uzmJDmyUx2DNnlKsaknQi3kl113
+         Fjk2VTwlsM0gfsRyOs24lgEwGXQHXBq4wLljkBl/C7pWngnIID7vZNEwAGXNeA57mNb0
+         mnlf8DR8JrfHV/6jG6oesQ77xUr4NWDQD84yk50rNZKZ6kehadyn5R5aD62ahClel0CU
+         K2LuHmJXfQfDpzOvegocpOs+/3AOXwLVG7XT+CzurfO7KCNB2grBGL8RjZtPRFmzjv26
+         fWIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722855690; x=1723460490;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w92A5DSLMtWgFu3PG5e7V2aasOF9qr2/85zMzlFL76I=;
+        b=WAwoKw/haB+FYOA0TlYYrH19JxHydx0xcmglCSZA4/iE2fe0zj6zh443Bu12znx0kw
+         Ae7XD99rjAyFxXODsZFNOiR7+qU8n6DMZt/ZwsWNkFnKDT5cJc4hrjhHdGNG4oaIOLup
+         iqNfx0BhyuytOs0x0erCG3G3X0ZtbI3pGF+I29V9NvwMYCMMsbmBN7AU6gHBFPbOM3rq
+         k44mOpXrkorC1kBBA8OKlpaP0TdH6J9z9bEDV8sabn8UAPvZEzO+Bb6X0pu9rLf5OKeX
+         8+BrW+Xko3Ia9VJ0r/nbT12sCDJFWO88WmcnXarIUkBrJy6gwed+xYUqR3onCFxq3MH+
+         eEPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVsFUOQU/ysdvs9J7QWA9od0mOxdvcKrEEYBiZdO3grGqON83rpwlQpZRGoUP9Psnu8kPs31r7pCjfGVSesOMZj580Px2uPPSQWUAOXNKXFjgEiqV3PE5UsnjiyRbBrJpUhYIolDDlhJdcvV7eF
+X-Gm-Message-State: AOJu0YwrPWjHqYd2GabVllqxqlIWEed+/r2z6eCrw5ha9EEMRarLajwt
+	5A5PDNUOSlg3wf15GWltaOxSQaIMSAlasQdUtORPyVLknJZGdlTm
+X-Google-Smtp-Source: AGHT+IG3bgoM32LacSe8Aeid35LCdMXycqCOoZj2eJ0y9sS0Tr1FkiYG5HntASlHWcu+NtMPW2GNSg==
+X-Received: by 2002:aa7:c50e:0:b0:57d:456:e838 with SMTP id 4fb4d7f45d1cf-5b7f57f6c52mr8123532a12.31.1722855689903;
+        Mon, 05 Aug 2024 04:01:29 -0700 (PDT)
+Received: from Ansuel-XPS. (host-95-255-112-66.business.telecomitalia.it. [95.255.112.66])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5b83a153f34sm4805088a12.56.2024.08.05.04.01.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Aug 2024 04:01:29 -0700 (PDT)
+Message-ID: <66b0b109.050a0220.93681.d015@mx.google.com>
+X-Google-Original-Message-ID: <ZrA-9btkfLnpPip-@Ansuel-XPS.>
+Date: Mon, 5 Aug 2024 04:54:45 +0200
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: kernel test robot <lkp@intel.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Joern Engel <joern@lazybastard.org>,
+	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Wolfram Sang <wsa-dev@sang-engineering.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2 6/6] mtd: parser: add support for Airoha parser
+References: <20240804174414.18171-7-ansuelsmth@gmail.com>
+ <202408050612.Ya1m6REu-lkp@intel.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <202408050612.Ya1m6REu-lkp@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240805_021853_023119_5B4B1D14 
-X-CRM114-Status: GOOD (  17.67  )
+X-CRM114-CacheID: sfid-20240805_040132_205683_E68DAE8E 
+X-CRM114-Status: GOOD (  23.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,81 +101,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7525197470730426848=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============7525197470730426848==
-Content-Type: multipart/signed;
- boundary=7407663a4ca55d9825de2ab38bfc33c3bc1ef4f3a5aac6ff4bd0c5982949;
- micalg=pgp-sha384; protocol="application/pgp-signature"
+On Mon, Aug 05, 2024 at 06:52:04AM +0800, kernel test robot wrote:
+> Hi Christian,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on robh/for-next]
+> [also build test ERROR on linus/master v6.11-rc1 next-20240802]
+> [cannot apply to mtd/mtd/next mtd/mtd/fixes]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/dt-bindings-nvme-Document-nvme-card-compatible/20240805-014740
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> patch link:    https://lore.kernel.org/r/20240804174414.18171-7-ansuelsmth%40gmail.com
+> patch subject: [PATCH v2 6/6] mtd: parser: add support for Airoha parser
+> config: xtensa-allyesconfig (https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/config)
+> compiler: xtensa-linux-gcc (GCC) 14.1.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202408050612.Ya1m6REu-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    drivers/mtd/parsers/ofpart_airoha.c: In function 'airoha_partitions_post_parse':
+>    drivers/mtd/parsers/ofpart_airoha.c:33:16: error: implicit declaration of function 'kzalloc' [-Wimplicit-function-declaration]
+>       33 |         prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+>          |                ^~~~~~~
+> >> drivers/mtd/parsers/ofpart_airoha.c:33:14: error: assignment to 'struct property *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+>       33 |         prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+>          |              ^
+> 
+> 
+> vim +33 drivers/mtd/parsers/ofpart_airoha.c
+> 
+>     10	
+>     11	int airoha_partitions_post_parse(struct mtd_info *mtd,
+>     12					 struct mtd_partition *parts,
+>     13					 int nr_parts)
+>     14	{
+>     15		struct mtd_partition *part;
+>     16		int len, a_cells, s_cells;
+>     17		struct device_node *pp;
+>     18		struct property *prop;
+>     19		const __be32 *reg;
+>     20		__be32 *new_reg;
+>     21	
+>     22		part = &parts[nr_parts - 1];
+>     23		pp = part->of_node;
+>     24	
+>     25		/* Skip if ART partition have a valid offset instead of a dynamic one */
+>     26		if (!of_device_is_compatible(pp, "airoha,dynamic-art"))
+>     27			return 0;
+>     28	
+>     29		/* ART partition is set at the end of flash - size */
+>     30		part->offset = mtd->size - part->size;
+>     31	
+>     32		/* Update the offset with the new calculate value in DT */
+>   > 33		prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
---7407663a4ca55d9825de2ab38bfc33c3bc1ef4f3a5aac6ff4bd0c5982949
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-
-> JEDEC JEP106 maintains a list of manufacturers IDs, consisting in 7
-> bit of information plus 1 parity bit, for a total of 1 Byte. Since the
-> number of manufacturers is way larger than this, JEDEC additionally
-> defines the continuation code 0x7f to be used as a prefix to the
-> actual ID, subdividing IDs in different banks.
->
-> This commit handles such manufacturer bank code by introducing a new
-> mfr_bank field in flash_info struct. This field is intended to be
-> populated when specifying a manufacturer part, and for retro
-> compatibility it is assumed to be 1 if omitted.
-> Note that this assumption was already implicitly taken, as only a
-> couple of the already supported manufacturer parts have the
-> continuation code prefixed to the actual ID.
->
-> Given the fast expanding pace of JEP106, the read ID operation has
-> been expanded to 128 Bytes plus the pre-existing 6 Bytes for the ID
-> code, thus supporting up to 128 banks.
-
-Quick remarks without having looked deeper into this patch.
-
-I really don't like issuing a 128byte command for older flashes.  So
-maybe we can just stick to the 6 bytes and if that's not enough we
-can use the extended format.
-
-I'd like to keep the .id as the primary index. This will now
-introduce a mfr_bank, so the unique key will be (mfr_bank,id). Can
-we somehow encode the continuation codes into the id itself? E.g.
-we know the manufacturer ID is always < 127. Honestly, I'm not sure
-this is the way to go as we know flash manufacturers sometimes don't
-care. So right now, we just compare the .id with whats returned by
-the RDID command without interpreting it.
-
--michael
-
---7407663a4ca55d9825de2ab38bfc33c3bc1ef4f3a5aac6ff4bd0c5982949
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZrCY+BIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hZBgGA2sELz1hfTvX9rlsl761WWVNM0svdimW8
-HMMnPzpiyr/gyq+7/KceToNEF5Ltu+OWAX4uBmRkEBjIXYz9vyvFVNZsuZJQwc2h
-g92tJ5C9YeMom9kWf+rK9axTY8bolWuPt9s=
-=AC69
------END PGP SIGNATURE-----
-
---7407663a4ca55d9825de2ab38bfc33c3bc1ef4f3a5aac6ff4bd0c5982949--
-
-
---===============7525197470730426848==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Mhhh somehow I can't repro this with instructions?
+-- 
+	Ansuel
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7525197470730426848==--
-
