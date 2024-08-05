@@ -4,82 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 487C1C3DA7F
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2024 08:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E0ECC3DA7F
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2024 09:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:Cc:Subject:To:From:Message-Id:Date:Reply-To:
+	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=0KloiavGbjfKeHdXoRxdpu24uoZ4Dia8BVSqLTu18pA=; b=hRYo77+FZs61mQwQuxnUoydyYJ
-	NO9qJRUOGNqTR5O639/tO6POZmW7z5bejraooIfTKQg4GmGsrRkmJKHQEtyQ78gI8SkRVqMicU9S3
-	pA115vn2vqSE3wqN6OPtri78Cn5zohIrDRszbJn3ZGkCcTGm/TqP2fHy9GoD1nLcESH/zJ7+pX3UR
-	lKuRyAvV+K1t+QqTygTPgPkpPyFf5mtvr7mRWlKQAtqxBj0xWVPeLiOOKpLUNM8tGgmKSQT7nxA7U
-	p8es/6JCsIIfA6XxAxdd5cg40V8XL8P+1pkcy4DY2gFbsW/gv9WUrkPmjoLjCCyWzDd6fhUqG52HN
-	9QhIRT5g==;
+	bh=pHzgNlZixLWEXWr8b/YVW40L+p2qsco43wg9CCdBLk0=; b=x8+pQTQLcJ3WNP119O2EQQuFyv
+	tXJvMJyNB+a7DjHF7zwgQLGZNOQBHPaHqg9bZy76JldDt+PciTfC5L8H1jQXzFdHNqwuarnblbYMO
+	3CSNtG+NVqvN/U6bF7aDpbd/e/NgOV/5Yis3K7WkVzEiY0FR++bvsrFT5dQ+zIlldIhgRv5JH9Lw1
+	WPf9URbdS+j6uDo6YAQ1gf8F/NLPUoYNO8O6V9JIsJj+fZgl9Pa+PKtVJW28Z8+E/qMpkYiAz2Ac1
+	QBHb+hJAuBH1mcGMvFAyg5H3RkHydmzwy6rf6iUniTS2m2PSBhljmj/mPUsSqY0PbiqSGBW1soUaO
+	SKPs8+ZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sat4v-0000000F7pb-0d5K;
-	Mon, 05 Aug 2024 08:28:29 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1satag-0000000FCiK-3BTT;
+	Mon, 05 Aug 2024 09:01:18 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sat4N-0000000F7fg-2mYx;
-	Mon, 05 Aug 2024 08:27:57 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 6B1195A;
-	Mon,  5 Aug 2024 10:27:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1722846473;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=pUqwKBDJFkodBBhte7QAw25AFRcMVF0f8NkCBp7prpE=;
-	b=Xz4N6dp22hYF2AXHtRYSTPjo7ZjKOR+ESIUofL4d1NxVw0oMPU3BOhc0n8s+hU33iEsO+k
-	BLD1Fcxt8SCRjaFQxpfxypFZ4gASu3qKdA6ikTcmt0k1CqBwJFyYkInCPZnPN5BqyQCGvx
-	NND3r8V7X3eMSuM17N5LL0GoS4Y2Tk9lnHBtFlprvZnsfIOk7q4gn/hAJimCcxncUhoTj/
-	5wDS23MkipfNsVS57qYI5Cm8JADUklV8hBieOqoh9J18KK1E2hDr7MaoX2YAq864N+m9Fa
-	EMHm/jWo/5yA5M9JtsyzORdTdojQpt9yMktitFJ9WOq8a0smAQlAU5LAVRPIyA==
-Date: Mon, 05 Aug 2024 10:27:51 +0200
-Message-Id: <D37U3QPX0J5J.21CTXMW2KC72G@walle.cc>
-From: "Michael Walle" <michael@walle.cc>
-To: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
- <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
- <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "sbinding@opensource.cirrus.com"
- <sbinding@opensource.cirrus.com>, "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "perex@perex.cz"
- <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "Neal Frager"
- <neal.frager@amd.com>
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
- <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
- <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
- <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
+	id 1satac-0000000FCfV-3rFD
+	for linux-mtd@lists.infradead.org;
+	Mon, 05 Aug 2024 09:01:16 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0127360BC1;
+	Mon,  5 Aug 2024 09:01:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E86BC4AF0D;
+	Mon,  5 Aug 2024 09:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722848473;
+	bh=/9hl84gQd3/SwOJQ4KQR8ASh8B9epxHOoZ459l4GyK0=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=G9JtxPbFHX62rM/hMHDwnJyIw6FOP3T6QQo4PD3F1XqzOMUMSaKthamJPzon6p3Me
+	 r+l0doJUgsQ8l14BlrGrAbgxlB9qcrLOlFcbwJm9PL5+LcKqlkVP6PVl8pg55ZXaTm
+	 PrndtZSnrdx+TunNJ7RNMJ4/ZZT9y4FPnXeP+0FRuosbEDvNahEVhKatRySeDYMaol
+	 8FNQN4PJWXQVdaGVUonh+V6HQi9UWktwmL3SAUnInr6O9WL6RnuMqq92+98DLrEcHK
+	 4fDJew4tUhDBFCCZdJCZioHbCr5NdZbFOn/ooaoJ7sE0Eniq71ZkokHUm+p3OtxwRy
+	 jZux3C1LTCKoA==
+Date: Mon, 05 Aug 2024 11:01:09 +0200
+Message-Id: <D37UT8JYBDX1.2OURSPGD336B1@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: micron-st: Add n25q064a WP support
+Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>,
+ <linux-mtd@lists.infradead.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Pratyush Yadav" <pratyush@kernel.org>,
+ "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Brian Norris" <computersforpeace@gmail.com>
 X-Mailer: aerc 0.16.0
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
- <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org> <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org> <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com> <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org> <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org> <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com> <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com> <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc> <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com> <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc> <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com> <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc> <c01d048f-ad8b-417e-8ff0-96f9252c87f2@amd.com>
-In-Reply-To: <c01d048f-ad8b-417e-8ff0-96f9252c87f2@amd.com>
+References: <20240726185825.142733-1-computersforpeace@gmail.com>
+ <D32OADQF733D.3CVS3ZRPEBL2O@kernel.org>
+ <454deacb-88cc-4ab0-80b4-006d863a56d2@linaro.org>
+ <CAN8TOE8-9=P7p8Tkc+5kG5Sqan+RAWAc7k2VH-p5W9hR-bb_Xg@mail.gmail.com>
+ <0685ef1b-b0e1-4c53-94dc-4d5de5be8e94@linaro.org>
+ <D33LRTJ8BE0T.2EQJ1MGLG2NUS@kernel.org>
+ <CAN8TOE--TYg8r8qCd_HAZ_w2+wRSPF6RUAuK3g-Po5QPVXdRLQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE--TYg8r8qCd_HAZ_w2+wRSPF6RUAuK3g-Po5QPVXdRLQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240805_012755_873703_58BB0CE9 
-X-CRM114-Status: GOOD (  42.07  )
+X-CRM114-CacheID: sfid-20240805_020115_115386_021D02FF 
+X-CRM114-Status: GOOD (  35.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,141 +76,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5390536100260751541=="
+Content-Type: multipart/mixed; boundary="===============7688296778970880665=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============5390536100260751541==
+--===============7688296778970880665==
 Content-Type: multipart/signed;
- boundary=03bf29cfa3430590a1d9727a08ddac11bdf5dff27a995675d5ac3297628b;
+ boundary=39b3f79ce120f1030ba7edc1580bb2b21bb064927d8a128b2d0f6eb0e883;
  micalg=pgp-sha384; protocol="application/pgp-signature"
 
---03bf29cfa3430590a1d9727a08ddac11bdf5dff27a995675d5ac3297628b
+--39b3f79ce120f1030ba7edc1580bb2b21bb064927d8a128b2d0f6eb0e883
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
 
 Hi,
 
-> >>> All I'm saying is that you shouldn't put burden on us (the SPI NOR
-> >>> maintainers) for what seems to me at least as a niche. Thus I was
-> >>> asking for performance numbers and users. Convince me that I'm
-> >>> wrong and that is worth our time.
-> >>
-> >> No. It is not really just feature of our evaluation boards. Customers =
-are using
-> >> it. I was talking to one guy from field and he confirms me that these
-> >> configurations are used by his multiple customers in real products.
-> >=20
-> > Which begs the question, do we really have to support every feature
-> > in the core (I'd like to hear Tudors and Pratyush opinion here).
-> > Honestly, this just looks like a concatenation of two QSPI
-> > controllers.=20
+> > We really need some kind of dump the relevant registers here. I have
+> > some very old patch, which dumps the status register, but is has
+> > it's own quirks. But IMHO we should (maybe additional to the
+> > functional tests) look at the locking bits in the corresponding
+> > registers. I.e.
+> >  flash_lock foobar
+> >  <verify the status register>
+> >  flash_unlock foobar
+> >  <verify the status register>
+> >  flash_lock barfoo
+> >  <verify the status register>
+> >  etc.
 >
-> Based on my understanding for stacked yes. For parallel no.
+> I don't actually think that would be a very good test. It would be
+> testing the implementation more than the functionality. What do you
+> "verify" in the status register? Would the test just re-implement the
+> swp.c protection-range logic? And notably, this omits *all* checks
+> that the protection register actually protects from anything (write,
+> erase).
+>
+> Or maybe I'm misinterpreting what you mean.
 
-See below.
+No that's what I've meant. Maybe I'm having another perspective and
+I'm biased because of that, but I'm really not trusting the software
+layer, esp. not when it comes to flash locking. Because most of the
+time this involves the "very last resort recovery" on our products.
+So we really have to ensure the flash is locked and therefore, one
+*must* look at the corresponding bits in the hardware (using the
+simplest method possible). The beauty of the lock bits is that if
+you know they are set, there is nothing software can do to write or
+erase these sectors. Once you know all the bits are set correctly,
+you can just skip the write/erase/read test.
 
-> > Why didn't you just use a normal octal controller which
-> > is a protocol also backed by the JEDEC standard.=20
+> > Just inferring the correctness from behavior (exercised by writing
+> > to the flash and verifying it) will lead to errors as it is hard to
+> > catch all the corner cases.
 >
-> On newer SOC octal IP core is used.
-> Amit please comment.
->
-> > Is it any faster?
->
-> Amit: please provide numbers.
->
-> > Do you get more capacity? Does anyone really use large SPI-NOR
-> > flashes? If so, why?
->
-> You get twice more capacity based on that configuration. I can't answer t=
-he=20
-> second question because not working with field. But both of that configur=
-ations=20
-> are used by customers. Adding Neal if he wants to add something more to i=
-t.
->
-> > I mean you've put that controller on your SoC,
-> > you must have some convincing arguments why a customer should use
-> > it.
->
-> I expect recommendation is to use single configuration but if you need bi=
-gger=20
-> space for your application the only way to extend it is to use stacked=20
-> configuration with two the same flashes next to each other.
-> If you want to have bigger size and also be faster answer is parallel=20
-> configuration.
+> Why would that lead to errors?
 
-But who is using expensive NOR flash for bulk storage anyway? You're
-only mentioning parallel mode. Also the performance numbers were
-just about the parallel mode. What about stacked mode? Because
-there's a chance that parallel mode works without modification of
-the core (?).
+Ever tried to lock two different ranges after another? Or unlock a
+smaller range than the one that is currently locked? IIRC, that
+should work. But I've never tried it myself. Or just locking (parts)
+of a smaller partition (i.e. an mtd device which doesn't cover the
+whole spi flash).
 
-> >>> The first round of patches were really invasive regarding the core
-> >>> code. So if there is a clean layering approach which can be enabled
-> >>> as a module and you are maintaining it I'm fine with that (even if
-> >>> the core code needs some changes then like hooks or so, not sure).
-> >>
-> >> That discussion started with Miquel some years ago when he was trying =
-to to
-> >> solve description in DT which is merged for a while in the kernel.
-> >=20
-> > What's your point here? From what I can tell the DT binding is wrong
-> > and needs to be reworked anyway.
+> It should be relatively easy to:
 >
-> I am just saying that this is not any adhoc new feature but configuration=
- which=20
-> has been already discussed and some steps made. If DT binding is wrong it=
- can be=20
-> deprecated and use new one but for that it has be clear which way to go.
+> 1. enumerate the supported protection ranges (MEMLOCK / MEMUNLOCK
+> ioctls on known-likely ranges, looking for EINVAL return codes)
+> 2. iterate through all such ranges; for a given range:
+> 2(a). erase the whole flash
+> 2(b). write the whole flash with a known pattern
+> 2(c). read the whole flash
+> 2(d). ensure that the expected-protected range remains 0xff
+> 2(e). ensure that the expected-unprotected range contains the known patte=
+rn
 
-Well, AMD could have side stepped all this if they had just
-integrated a normal OSPI flash controller, which would have the same
-requirements regarding the pins (if not even less) and it would have
-been *easy* to integrate it into the already available ecosystem.
-That was what my initial question was about. Why did you choose two
-QSPI ports instead of one OSPI port.
+Not sure 2(a) will work or if some flashes will reject the chip
+erase command if some sectors are locked. To sidestep this I guess
+you should use the smallest possible erase (i.e. ususally the 4k
+erase opcode).
 
-> >> And Amit is trying to figure it out which way to go.
-> >> I don't want to predict where that code should be going or how it shou=
-ld look
-> >> like because don't have spi-nor experience. But I hope we finally move=
- forward
-> >> on this topic to see the path how to upstream support for it.
-> >=20
-> > You still didn't answer my initial question. Will AMD support and
-> > maintain that code? I was pushing you towards putting that code into
-> > your own driver because then that's up to you what you are doing
-> > there.
->
-> Of course. We care about our code and about supporting our SOC and featur=
-es=20
-> which are related to it. It means yes, we will be regularly testing it an=
-d=20
-> taking care about it.
+But yeah, once this is all in place you can probably do that with a
+tool, otherwise it's really tedious work and doing it by hand is
+error prone.
 
-Great!
+> I suppose step #1 can be tough, because the full slate of possible
+> protection ranges is technically ... enormous. But "likely" ranges are
+> much fewer, with a few power-of-2 patterns, top/bottom, and maybe some
+> "both top and bottom" ranges on some flashes? Anyway, like I said in
+> my other reply, this should take on the order of 60 minutes on some
+> flashes, which is expensive but not prohibitive.
+
+Well we support 4 block protection bits and one TB bit. So there are
+2^5 different configurations?
 
 -michael
 
---03bf29cfa3430590a1d9727a08ddac11bdf5dff27a995675d5ac3297628b
+> > From what I remember, flashrom has it's own drivers in userspace,
+> > no?
+>
+> Yes, and that's all rather ugly. But it also has a linux_mtd backend
+> since a few years back:
+>
+> https://review.coreboot.org/plugins/gitiles/flashrom/+/HEAD/linux_mtd.c
+>
+> Brian
+
+
+--39b3f79ce120f1030ba7edc1580bb2b21bb064927d8a128b2d0f6eb0e883
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZrCNBxEcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+D0yAX9v9JlDnbIpdOCS72W3tYefpyIMOMJFhLT8
-3eqCeFJUFK2hxDoU8gmixkNu/Kl4MXYBgKfLynzYT52vb2f71/plUjcnZdBYV4FK
-7K4sPzf8p4h0phil2a/eiFugkFWYhC5dEw==
-=jcIk
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZrCU1RIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/hSxgGAt69h5Yor03kSvbs95kOS0BWCwy6nCBJK
+AZ6IQ3p/fdUD2daoju7HC/4Pf7yIFP0iAXoC2DgCm8PICAbscuEgVW42burOLSZ7
+1XzurCNGAkDkCSHRuDx5kpQYGSuHMUybqBk=
+=oDFf
 -----END PGP SIGNATURE-----
 
---03bf29cfa3430590a1d9727a08ddac11bdf5dff27a995675d5ac3297628b--
+--39b3f79ce120f1030ba7edc1580bb2b21bb064927d8a128b2d0f6eb0e883--
 
 
---===============5390536100260751541==
+--===============7688296778970880665==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -236,5 +206,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============5390536100260751541==--
+--===============7688296778970880665==--
 
