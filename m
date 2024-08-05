@@ -4,92 +4,247 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2D73C3DA7F
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2024 11:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 206E5C52D70
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Aug 2024 11:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8IXqa7GV5peX/zZhw55RXFxMbRR4NKyctl/+TU7U9DA=; b=cFHocHCvjD8n/d
-	T/e0eMVOVzBtZCrc33PJ5adbeY4zI4IjRx4zY/LQX6kgDNd2qOr+T+r5VuYNYldhZmDriR+PGUsPJ
-	rpbDjoRTOysAwkvm5ki2aXhDEtlMWiZVoEkOzQp7Z01tn1JVgiS0VqR6juZpxa73xdyboqmGgi3Qd
-	nc2GUjkyynO6/AvHrurvg5cxlwqEYrcBAyF8fY0KabZZPqlTHPrCRc+mzyOASxKu3HIWKbPsPICTk
-	8TwtxxbKBYOUeSyygNWT9Uw0iNAQ7NPPvOcU01I3ZyyvlpwNCHiMqP/iM25Vp8C+JdgIK8Gv6zy6e
-	glZI1TdB0ZXUB74otR/Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
+	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=cggK712lqQKB/+hGVJN3kl1HaL68A24qVdsBHt+clSY=; b=knfN0CuGtzNig2i1yjGihlRnpf
+	jyqPrdKSEsoEnLEAJ0L/apji9FA6jTS2QUXmqe4kUonW9ZuZPLF2U31tQ08ZuZPwPe59DeE2C17in
+	VJ9JTvNfIvbUIdDtAYx73aWY5fYebneF5RYnXNJdxQXpzljU2FO4gQfBCkv3+CZ7w6HgvfIpLYmLJ
+	HHYymPaz/2uSFdbf6u2KpQlyIBeRXqlUAkV9TbUhdyuoIWwDFHSsyJ/+AOb4yAXlVA4MXaogP1677
+	6NO9j/RSA/PxgUws2i7ctQSD2gsnupE2K8/RIRD9B28cn2LdIplRU7xxBy8kvaMvrSUz46ccGEpbx
+	rqHFlCow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1savTI-0000000FcIh-3k5L;
+	id 1savTI-0000000FcIU-1ASd;
 	Mon, 05 Aug 2024 11:01:48 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+Received: from mail-bn8nam04on2062f.outbound.protection.outlook.com ([2a01:111:f403:2408::62f] helo=NAM04-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1savT2-0000000FcDs-0Yy4;
-	Mon, 05 Aug 2024 11:01:33 +0000
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5bb477e3a6dso1378204a12.0;
-        Mon, 05 Aug 2024 04:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722855690; x=1723460490; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=w92A5DSLMtWgFu3PG5e7V2aasOF9qr2/85zMzlFL76I=;
-        b=TW0Bt6V6JJjOA3vJJUveyESRaVBlRMswSYAbZ5dwgkqQlt3S3Z8z/aUmINJ7LpXLai
-         IfMaE4SjK3DzKWRpJJ4WFZAuAOwmkvp5/q8Jm9ug6uzmJDmyUx2DNnlKsaknQi3kl113
-         Fjk2VTwlsM0gfsRyOs24lgEwGXQHXBq4wLljkBl/C7pWngnIID7vZNEwAGXNeA57mNb0
-         mnlf8DR8JrfHV/6jG6oesQ77xUr4NWDQD84yk50rNZKZ6kehadyn5R5aD62ahClel0CU
-         K2LuHmJXfQfDpzOvegocpOs+/3AOXwLVG7XT+CzurfO7KCNB2grBGL8RjZtPRFmzjv26
-         fWIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722855690; x=1723460490;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w92A5DSLMtWgFu3PG5e7V2aasOF9qr2/85zMzlFL76I=;
-        b=WAwoKw/haB+FYOA0TlYYrH19JxHydx0xcmglCSZA4/iE2fe0zj6zh443Bu12znx0kw
-         Ae7XD99rjAyFxXODsZFNOiR7+qU8n6DMZt/ZwsWNkFnKDT5cJc4hrjhHdGNG4oaIOLup
-         iqNfx0BhyuytOs0x0erCG3G3X0ZtbI3pGF+I29V9NvwMYCMMsbmBN7AU6gHBFPbOM3rq
-         k44mOpXrkorC1kBBA8OKlpaP0TdH6J9z9bEDV8sabn8UAPvZEzO+Bb6X0pu9rLf5OKeX
-         8+BrW+Xko3Ia9VJ0r/nbT12sCDJFWO88WmcnXarIUkBrJy6gwed+xYUqR3onCFxq3MH+
-         eEPg==
-X-Forwarded-Encrypted: i=1; AJvYcCVsFUOQU/ysdvs9J7QWA9od0mOxdvcKrEEYBiZdO3grGqON83rpwlQpZRGoUP9Psnu8kPs31r7pCjfGVSesOMZj580Px2uPPSQWUAOXNKXFjgEiqV3PE5UsnjiyRbBrJpUhYIolDDlhJdcvV7eF
-X-Gm-Message-State: AOJu0YwrPWjHqYd2GabVllqxqlIWEed+/r2z6eCrw5ha9EEMRarLajwt
-	5A5PDNUOSlg3wf15GWltaOxSQaIMSAlasQdUtORPyVLknJZGdlTm
-X-Google-Smtp-Source: AGHT+IG3bgoM32LacSe8Aeid35LCdMXycqCOoZj2eJ0y9sS0Tr1FkiYG5HntASlHWcu+NtMPW2GNSg==
-X-Received: by 2002:aa7:c50e:0:b0:57d:456:e838 with SMTP id 4fb4d7f45d1cf-5b7f57f6c52mr8123532a12.31.1722855689903;
-        Mon, 05 Aug 2024 04:01:29 -0700 (PDT)
-Received: from Ansuel-XPS. (host-95-255-112-66.business.telecomitalia.it. [95.255.112.66])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5b83a153f34sm4805088a12.56.2024.08.05.04.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Aug 2024 04:01:29 -0700 (PDT)
-Message-ID: <66b0b109.050a0220.93681.d015@mx.google.com>
-X-Google-Original-Message-ID: <ZrA-9btkfLnpPip-@Ansuel-XPS.>
-Date: Mon, 5 Aug 2024 04:54:45 +0200
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: kernel test robot <lkp@intel.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Joern Engel <joern@lazybastard.org>,
-	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Wolfram Sang <wsa-dev@sang-engineering.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-nvme@lists.infradead.org, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v2 6/6] mtd: parser: add support for Airoha parser
-References: <20240804174414.18171-7-ansuelsmth@gmail.com>
- <202408050612.Ya1m6REu-lkp@intel.com>
+	id 1savSj-0000000Fc8G-1sNQ;
+	Mon, 05 Aug 2024 11:01:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=tvYXjX835sr1xNPG7/FwjZ9zMcEeJxxvtLq6DMVCxNTI2VQ4EkKOmwsOtVeehGXdNPUSaqJi0oJzd9blTfaAQ2ld4VjnfisBBKrbNBHDDIhZut35p02cKfj9us3JNVrvgX4K5n248JWoeToe89GOeP/TFd8TQDhBahVW06tFrpRR1X+rrny5ocOPv2slYBPBZQk8cILvcfnxem7D5r55K1QGz7qHaPueD5AhbYkFh6zcrdjJYmQ0Z73oTU+/7pJcbDSvLSBgWYfPzqpawuBu5csJqGvUrI5a3XlmHaOefOXy2qyOcE7HUyw71ubKoTgD32Nrl4xbFn65TbcxWPurTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vbo23A1SlkC8BWYfrG46Q2gif3cx7rdi9xwlhU59K5w=;
+ b=rNYH1FJrrbjSF+7w20nSOu8/IW/G9YBhRdrS9M9KROc1MFmxsXY3+D6D7PyllYwHTQkrwS3rZs5T4h4DvuBEHy4s1MHhK04MD7DL/aq6R1wrKMF1v9D1erktIccMuaTFcReUUSwHyFyU5wVBWQQKt0ymvW0a/bjXCGokYwEZEsvNL8kCmPzc+oFApPMlwweovmXmRQx1RvvryFvynYInyTu5LlY70EOOztbYvYTwB14/pA8wmfwndVa1PcNTWN7mpw2sj3gp9ewW+NN5Aj/pFH9V/Su66ZhnREn18FlNXiIrzwqyEQ1iRVfNg2DDH0ZdgQGKzDgK33kIGPOplSy4pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vbo23A1SlkC8BWYfrG46Q2gif3cx7rdi9xwlhU59K5w=;
+ b=hJgOUaJHp9M5Q+wd83TEF0eJAqvANPN7E7YPpQAffATNAwey+yAyYakmNx7nWV4zSGNUeH07EWI3ApZ9BQ9ScdjVPsWIsIHJXesJ6OcFFaO/6q8I1RsJukkYLKZY9LlFNNzlVNUWQ2T1+JFYhDSAFYlql9w0XCALTrMZsUYSRS8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8109.namprd12.prod.outlook.com (2603:10b6:a03:4f5::8)
+ by LV2PR12MB6014.namprd12.prod.outlook.com (2603:10b6:408:170::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.26; Mon, 5 Aug
+ 2024 11:01:05 +0000
+Received: from SJ2PR12MB8109.namprd12.prod.outlook.com
+ ([fe80::7f35:efe7:5e82:5e30]) by SJ2PR12MB8109.namprd12.prod.outlook.com
+ ([fe80::7f35:efe7:5e82:5e30%5]) with mapi id 15.20.7828.021; Mon, 5 Aug 2024
+ 11:01:05 +0000
+Message-ID: <1b726ef7-e25c-4a19-aaa8-77fdbdd8bcca@amd.com>
+Date: Mon, 5 Aug 2024 13:00:40 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
+To: Michael Walle <michael@walle.cc>,
+ "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "pratyush@kernel.org" <pratyush@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+ "lee@kernel.org" <lee@kernel.org>,
+ "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+ "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>,
+ Neal Frager <neal.frager@amd.com>
+Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+ "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+ "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+ "git (AMD-Xilinx)" <git@amd.com>,
+ "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ "beanhuo@micron.com" <beanhuo@micron.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
+ <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org>
+ <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org>
+ <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org>
+ <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com>
+ <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc>
+ <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
+ <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc>
+ <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
+ <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc>
+ <c01d048f-ad8b-417e-8ff0-96f9252c87f2@amd.com>
+ <D37U3QPX0J5J.21CTXMW2KC72G@walle.cc>
+Content-Language: en-US
+From: Michal Simek <michal.simek@amd.com>
+Autocrypt: addr=michal.simek@amd.com; keydata=
+ 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
+ 3i3l5DA=
+In-Reply-To: <D37U3QPX0J5J.21CTXMW2KC72G@walle.cc>
+X-ClientProxiedBy: VI1PR09CA0174.eurprd09.prod.outlook.com
+ (2603:10a6:800:120::28) To SJ2PR12MB8109.namprd12.prod.outlook.com
+ (2603:10b6:a03:4f5::8)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202408050612.Ya1m6REu-lkp@intel.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8109:EE_|LV2PR12MB6014:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48e3e644-3ad2-4eb3-a8bf-08dcb53de69b
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014|921020;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?UU41Wm8ycnVKbFR6S2VpTEN2RDFGL0dQejIyY2t6dVJxeWxqRjU2YVUzcEpK?=
+ =?utf-8?B?dmRyWVo3VmxvSUN6VTh3bWFuRUdSbStlY1c4MjYrZFFKbXZjQVUzY3huUjBm?=
+ =?utf-8?B?S2UwNzE5bnM3aVZMVkhPeUpjS29wT1ZVVXY4WE1yU1ZhNXQ0czdXSThBL0la?=
+ =?utf-8?B?NmRhRUx3N0d6YVpwcGI2czRiQkN6MjA5SmR0UExudDlwYm1NQURoZTBKNUlr?=
+ =?utf-8?B?ck8wNkZKcDJadEtEdVZ4b3k2bjB4ZWNpVHdSNThtcU9rYzBEZ0pRQWI2a2Zo?=
+ =?utf-8?B?NzhEMS9XTXpaVlBmK3B6cGxISk45eFZ4amNJN0FPZXJRUHR1cHo3UGtOVTkx?=
+ =?utf-8?B?R3dnQTVrV1M2emdwOWw3NjFUSGt3N0hEdndEM1ArR29aQ3Byc3A3Znpmd1JL?=
+ =?utf-8?B?d094VitBZHVBVk94d3J4QWkvZGVzZEhuMG04MTBaNEVtZHN1SHlsVGZmbGJP?=
+ =?utf-8?B?bUFsM0NnaUw5QUk0TXdrK0VoWDcrNEdvV2JUNmRoT2pQWmQyK2U2SkRqNGtx?=
+ =?utf-8?B?S24wZXhqUjFwZTJvd0tuaEdvL2JSR3QvSTlvRjc5bG1tSUhkYVU4YUtvZ0Zl?=
+ =?utf-8?B?am1KYUlhdGgvWEMyWXFpZ1o2NjNLZGZKcy9EQ0JhWC9USlNzcHh6TGorT2Zy?=
+ =?utf-8?B?UmRKc2k5MXZ1WTc1bHFoY3lFdU51ck1aOEY2ZmJ3RThUVE4rUVlrWWJESTRa?=
+ =?utf-8?B?aDlZNTU5MXZmci8ydXgwNkR1aWN0alFmbEc2UU5KdFR6aUlCM3JqczZ1Lzkv?=
+ =?utf-8?B?ZVpLbGtKMGkrSzVJOWR0VHJlWnJaOW95YXhPYlVWOWpPcm9ueXBDSU1SVnU0?=
+ =?utf-8?B?UUtQQU1uQU9yQjFTN21UUWhKTUFHUzhsYy8xOGJVWk9TUE1KMXorcThBWCtq?=
+ =?utf-8?B?Y21ZRUtHYmRIcndzdW1YNVIyWHJGY1Bud1pEeStibkRZUUVyM1ZOYXFIZmxZ?=
+ =?utf-8?B?cnZVUFRINTZnYnFYMnpBMnpmMmdUTGlSNlcwWWNkUjBRbkNtaksxZnpCNVU1?=
+ =?utf-8?B?V2NsS1RxN2ZxZWNoNzJGeUFOWG8zc0lGY01oY3dKc01NcHQ2OEUzZk1DaWIy?=
+ =?utf-8?B?VlBJL3RJMVZXSCtwaDJqZHRNTWE2L1IvRDhKdXAzU3p1cktJQXhxeDFnQU51?=
+ =?utf-8?B?bVJsOXVsZ3dpbHQ3ckFtUlAzN1huRHByd2hKbGRiUS83NnIyUXVRcFB3TXZZ?=
+ =?utf-8?B?cXg5QTIxRU5YY3dLWWlneUZWZk1QWUdDbXN3UjNqeFcwTk9xVnl0VHpSN2dL?=
+ =?utf-8?B?WktTWU13b3NiYjcxRG04emFzS0RyRXY2UGRtOGVjVzZvZURXVmhDYy93QnA0?=
+ =?utf-8?B?YzVyMmFqR2hyUTk3MlpaM3NvK2EyRSs0MEN6bi9UTU03K2xZYTZuOGtKdlVV?=
+ =?utf-8?B?QkZsMnJpbUkvcVQ0RWJCL0pNTlJBSWJ0NFM1Y21jRHM2UEErOW1WeFhBMXUw?=
+ =?utf-8?B?TElpNXNOMkZHTDlHVUZFanRyMlVvM25KOXByQ3ZWbkJpc1RTaVJ3NmtYVnRZ?=
+ =?utf-8?B?R0xCRk8vKzFMUGh2NXArazVtZ0k4bGhYYVBmRzF1ang2dlMvVHhsTTd1eU8r?=
+ =?utf-8?B?WEt0ZGZ3NHBSbG1OVC9oK3RHNmt5WE1NcWZZV1hibDQ4RHNlOHdYbzMzZ3lM?=
+ =?utf-8?B?QW91MzZ0dFpua092L0luNFU2R1cxT2ZDNUt2UTl6NURCRG91eVBRYUJheVRC?=
+ =?utf-8?B?UFdGN0JNalRRcjVoRUZPR0Z3K0dpL1oyenF6OXJMdkNnRFEvbnkwa2tSc0xy?=
+ =?utf-8?B?SHRPcEtORVYyN1VIQ0RTdHFHT08zRTR1WTcrbjFraUpSUkFKT3pubUp6THM2?=
+ =?utf-8?B?OFJpSTJja1hRUmZOQkVNclV0T25KNFVTSEdhcVJJemZiU2hrV1QrMXFrR1E0?=
+ =?utf-8?Q?40asSLL0YzlRQ?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8109.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TFk3M2E0Z2plc2ZiOHB2WXY3M2kzUS9qOHJFTkdUTjF2K3FxVUV2b2JVMUZF?=
+ =?utf-8?B?WHo2MUdnSGlrSi8zMU9FOVYvai9ycjBhWkJwY1ZzZWtxWUxWcHFESlNtMnhw?=
+ =?utf-8?B?am5icEwzQkMyaEt1WTJ0bGIzdC9CVC9mTXJyYm5Sd1pSbGxseVBLbkRhWEZx?=
+ =?utf-8?B?akRtZVloeGJqcjFRSGQ5Qk9wNHBkNW95dmJZUk45Q0VZU3lUYmpBUmxZYS90?=
+ =?utf-8?B?OThveWxWRkVFWkNnZEkyMDN4ZE5NRENYbmZSSnF5MFU0VzNKbHhKSlJlSDU2?=
+ =?utf-8?B?bnBjMlZHTUNUcFczN0RkSHNWeGhKQ0pkTXJEZmtsdVMrekY3UEdETSs5dlhp?=
+ =?utf-8?B?NEVCZVpXQVhLTjhnSmNnRVcvVFR6d1FxdHU5Z2IvZndObWxVaysvWHFzZTRM?=
+ =?utf-8?B?cE5JRU4xVytMYnVTQlFwTUIyLzFUOFliTkNnMjNwQUpLWlZaRWU2Q29YWTY4?=
+ =?utf-8?B?ZEE1bTJxVGd6c2FpbDBGaFgydzBXVGVtVHh0dlQ2bjkxOFJpRGxhM095QWcz?=
+ =?utf-8?B?dTlac1BrMG55VzhNdXhDaEY5OTNvM1RmNmJsUXlZMmZ6cUlnZkJ0RVdtb055?=
+ =?utf-8?B?bmVlamtWdkNZS0VEM0lNVWUrM3p5N1RaMGdIS2pTZTN2ZHo4S01EaGN1cmN2?=
+ =?utf-8?B?cFpqaTkzMlVZd3NibDV2S0JkQ2YyQ3BBdk9MNFBLanNzNGtCcGEzREhSMkNC?=
+ =?utf-8?B?U0RvMGNHSHFQY2RuNVFMbWJ3c1JhL3RURDZnZEJKaGxYdUtRWTBrUlpwUXhh?=
+ =?utf-8?B?V25DOEh2SVk4YjhJQmhxS1ZVT3N1dHVTazkxRmdaMzFMMmFhb1hoa3daREM0?=
+ =?utf-8?B?Q2NnUTlzMUM3K0M3ZDRaVnhxdmVUYkMwdjJWdWVVUVBRQ1pMVURZL1pMRWJk?=
+ =?utf-8?B?dzU0d1E5L09MTTM4M0pNTkxwOU9sOW83RFNnbDRVU1dMTGNHZmRVRjBkcUZK?=
+ =?utf-8?B?SG42bEwvUWxwQisvdzQ5VUZpTGI3cHBvaVhKdFlzZy92N1YzeklsN09sRlJO?=
+ =?utf-8?B?UmZ6L2c4b2NvMmtZbnB2YS9oWWd0T2RXSG9PVXpiRUMxSlhiaFdPMitaZnI4?=
+ =?utf-8?B?aXRHM2ZqekhNUFlCRjJ2QVBzaHU5OEZ0L3BLQkcrN1hEM3dXMzY2MEFtNnVJ?=
+ =?utf-8?B?dU9PbEl5NkJXT045aDY0cTY5cUNIMHRUaGJFRFZpY3hhUEs1Si8wSkxUTGlw?=
+ =?utf-8?B?RExuamQ3Q3lrT01na3NKTHh3R3Q2RGpBdDVHVXcrUG4zUzhMKzJwZk1JYWV5?=
+ =?utf-8?B?S0xyWDdTTk9tczQ2eDBYc2dzbFlSemZqdVhjODFSVWMyM09QUXNETzVvMi8x?=
+ =?utf-8?B?RThHbkZWWTB0VlRVS3FQOUJFWEd1anhGazVCQmU2ejF5ZExtVjI4VE5XM2FT?=
+ =?utf-8?B?S3IyUTRoR2MzYTZuK0RnNDlrWlQ4aW93TXNmbUcyM0hqOW1VTVBWK0o3UDZr?=
+ =?utf-8?B?OEJ5bUxPZzN3UzVzRUZid2lLSnVNRDA3QmZrZzZuR3FPY2RhYjdIWmZpd3VK?=
+ =?utf-8?B?MlEyNmVrNGZDSnNUbkhIbzd5QTJYbENHQ1V0RzJncWNkUk83YW1pR1cyMWRC?=
+ =?utf-8?B?S2o1akVweGl1QktDaTA2MlZxMFFZL2RtNUxEYmsvaU1xU05OWUI0dlpYTXhI?=
+ =?utf-8?B?OG5obmZUMkpvaGd1WndDVjdMOGlTRlJrTGhCalV6dlQ5V041ekFKYmErTjRM?=
+ =?utf-8?B?NktwWGZWY1hvdk9rTjZGMDVseEFHM1hnRW92OVJLRGIxVUxKdytxaWkyMGJO?=
+ =?utf-8?B?bkd6Rkg3NnlKOTBlUFVtV1pDUVdYTlJSZ1I3VzdlUE5KTG0xMjFtbTZMdEVI?=
+ =?utf-8?B?a2haSXUrOUIvelM1aHhnb3dpYTZ1M0ZiNU02Y2c3OWVEaGZ4U01INWtVZnpx?=
+ =?utf-8?B?L2ZmUXJTVE03R2FZcVVvQkxoQ3EzVjlNcVZDTGhGWVJlVzI4RnRmSjBoZlFK?=
+ =?utf-8?B?ZTdNb2VyWS8zbTJucFEwdUovK2dDSktnQjVLWi82UmZGZnhVR09QclJxK3VF?=
+ =?utf-8?B?ckpheTZ3ZjVwTWg4ZFg1eGFOVXhwRWxVVXFIaUNRQ1VWaDQwdUJvRFdwQ3BM?=
+ =?utf-8?B?UXF4L1lYYzFVVVZ1NGZLWkVRR2NlNDhMQmxjVXd5MlRUaGZMQWZaMENwWXpR?=
+ =?utf-8?Q?fUskuUII2QUbdmUFf9rODKFsS?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48e3e644-3ad2-4eb3-a8bf-08dcb53de69b
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8109.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2024 11:01:05.0677
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lx89rO16LqFzFQTu709ksPAEzwWwmvAZu0VEgpe0MfEi533rtHgMjI3aE/zO9baO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB6014
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240805_040132_205683_E68DAE8E 
-X-CRM114-Status: GOOD (  23.83  )
+X-CRM114-CacheID: sfid-20240805_040113_631640_6014D35D 
+X-CRM114-Status: UNSURE (   6.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,81 +256,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 05, 2024 at 06:52:04AM +0800, kernel test robot wrote:
-> Hi Christian,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on robh/for-next]
-> [also build test ERROR on linus/master v6.11-rc1 next-20240802]
-> [cannot apply to mtd/mtd/next mtd/mtd/fixes]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/dt-bindings-nvme-Document-nvme-card-compatible/20240805-014740
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-> patch link:    https://lore.kernel.org/r/20240804174414.18171-7-ansuelsmth%40gmail.com
-> patch subject: [PATCH v2 6/6] mtd: parser: add support for Airoha parser
-> config: xtensa-allyesconfig (https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/config)
-> compiler: xtensa-linux-gcc (GCC) 14.1.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202408050612.Ya1m6REu-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->    drivers/mtd/parsers/ofpart_airoha.c: In function 'airoha_partitions_post_parse':
->    drivers/mtd/parsers/ofpart_airoha.c:33:16: error: implicit declaration of function 'kzalloc' [-Wimplicit-function-declaration]
->       33 |         prop = kzalloc(sizeof(*prop), GFP_KERNEL);
->          |                ^~~~~~~
-> >> drivers/mtd/parsers/ofpart_airoha.c:33:14: error: assignment to 'struct property *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->       33 |         prop = kzalloc(sizeof(*prop), GFP_KERNEL);
->          |              ^
-> 
-> 
-> vim +33 drivers/mtd/parsers/ofpart_airoha.c
-> 
->     10	
->     11	int airoha_partitions_post_parse(struct mtd_info *mtd,
->     12					 struct mtd_partition *parts,
->     13					 int nr_parts)
->     14	{
->     15		struct mtd_partition *part;
->     16		int len, a_cells, s_cells;
->     17		struct device_node *pp;
->     18		struct property *prop;
->     19		const __be32 *reg;
->     20		__be32 *new_reg;
->     21	
->     22		part = &parts[nr_parts - 1];
->     23		pp = part->of_node;
->     24	
->     25		/* Skip if ART partition have a valid offset instead of a dynamic one */
->     26		if (!of_device_is_compatible(pp, "airoha,dynamic-art"))
->     27			return 0;
->     28	
->     29		/* ART partition is set at the end of flash - size */
->     30		part->offset = mtd->size - part->size;
->     31	
->     32		/* Update the offset with the new calculate value in DT */
->   > 33		prop = kzalloc(sizeof(*prop), GFP_KERNEL);
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+Hi,
 
-Mhhh somehow I can't repro this with instructions?
--- 
-	Ansuel
+On 8/5/24 10:27, Michael Walle wrote:
+> Hi,
+> 
+>>>>> All I'm saying is that you shouldn't put burden on us (the SPI NOR
+>>>>> maintainers) for what seems to me at least as a niche. Thus I was
+>>>>> asking for performance numbers and users. Convince me that I'm
+>>>>> wrong and that is worth our time.
+>>>>
+>>>> No. It is not really just feature of our evaluation boards. Customers are using
+>>>> it. I was talking to one guy from field and he confirms me that these
+>>>> configurations are used by his multiple customers in real products.
+>>>
+>>> Which begs the question, do we really have to support every feature
+>>> in the core (I'd like to hear Tudors and Pratyush opinion here).
+>>> Honestly, this just looks like a concatenation of two QSPI
+>>> controllers.
+>>
+>> Based on my understanding for stacked yes. For parallel no.
+> 
+> See below.
+> 
+>>> Why didn't you just use a normal octal controller which
+>>> is a protocol also backed by the JEDEC standard.
+>>
+>> On newer SOC octal IP core is used.
+>> Amit please comment.
+>>
+>>> Is it any faster?
+>>
+>> Amit: please provide numbers.
+>>
+>>> Do you get more capacity? Does anyone really use large SPI-NOR
+>>> flashes? If so, why?
+>>
+>> You get twice more capacity based on that configuration. I can't answer the
+>> second question because not working with field. But both of that configurations
+>> are used by customers. Adding Neal if he wants to add something more to it.
+>>
+>>> I mean you've put that controller on your SoC,
+>>> you must have some convincing arguments why a customer should use
+>>> it.
+>>
+>> I expect recommendation is to use single configuration but if you need bigger
+>> space for your application the only way to extend it is to use stacked
+>> configuration with two the same flashes next to each other.
+>> If you want to have bigger size and also be faster answer is parallel
+>> configuration.
+> 
+> But who is using expensive NOR flash for bulk storage anyway? 
+
+I expect you understand that even if I know companies which does it I am not 
+allow to share their names.
+
+But customers don't need to have other free pins to connect for example emmc.
+That's why adding one more "expensive flash" can be for them only one option.
+
+Also I bet that price for one more qspi flash is nothing compare to chip itself 
+and other related expenses for low volume production.
+
+> You're
+> only mentioning parallel mode. Also the performance numbers were
+> just about the parallel mode. What about stacked mode? Because
+> there's a chance that parallel mode works without modification of
+> the core (?).
+
+I will let Amit to comment it.
+
+
+> 
+>>>>> The first round of patches were really invasive regarding the core
+>>>>> code. So if there is a clean layering approach which can be enabled
+>>>>> as a module and you are maintaining it I'm fine with that (even if
+>>>>> the core code needs some changes then like hooks or so, not sure).
+>>>>
+>>>> That discussion started with Miquel some years ago when he was trying to to
+>>>> solve description in DT which is merged for a while in the kernel.
+>>>
+>>> What's your point here? From what I can tell the DT binding is wrong
+>>> and needs to be reworked anyway.
+>>
+>> I am just saying that this is not any adhoc new feature but configuration which
+>> has been already discussed and some steps made. If DT binding is wrong it can be
+>> deprecated and use new one but for that it has be clear which way to go.
+> 
+> Well, AMD could have side stepped all this if they had just
+> integrated a normal OSPI flash controller, which would have the same
+> requirements regarding the pins (if not even less) and it would have
+> been *easy* to integrate it into the already available ecosystem.
+> That was what my initial question was about. Why did you choose two
+> QSPI ports instead of one OSPI port.
+
+Keep in your mind that ZynqMP is 9years old SoC. Zynq 12+ years with a lot of 
+internal development happening before. Not sure if ospi even exists at that 
+time. Also if any IP was available for the price which they were targeting.
+I don't think make sense to discuss OSPI in this context because that's not in 
+these SoCs.
+I have never worked with spi that's why don't know historical context to provide 
+more details.
+
+Thanks,
+Michal
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
