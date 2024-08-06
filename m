@@ -4,96 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C268C3DA64
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Aug 2024 11:42:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5415C49EA1
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Aug 2024 12:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PC/VrMBLdYYmp9pBNWj0pY+PbNYKthXSA6vGgNqA7c4=; b=t2helV+h+2OUcB
-	REf7CYcrRBi0F21SLX2JUC2eybJiyR9t/3yTWDMBRRHlJMOusRo7F7n1xumRsH1VpKuW2NaLEsj86
-	ntHxIW4GTuBiXOfP1SfyC+PUGYRFZjhiIGshUhiV64/h3/gq8ovsPvJl+0+59DPADPo6ssiSFR9q0
-	OCByaBYblDAYjPa8Grs9etT960iUL864S3WBcMAETkNx5MWfe0MWsSP/vukOJM8egTmxd2njzYDQj
-	FUExjppnR5INgOyoZWnvuSuSv2oqlcak6BXtZ/9meQy8jyGlVIdItvfiJttrpjtZQUBDJZDS40ueK
-	b4lNTup6WQFjat41oDYg==;
+	List-Archive:List-Unsubscribe:List-Id:To:From:Subject:Message-ID:Date:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=VBLM0pEB4O/znERpqHRCP+5JofWlM/HHx1UgUvc27Z0=; b=rQK
+	rZuSFa20IiIgPGde5RkOpjl7dX8m6GCHUch71BSrqeZeGoM1HFjJfS+w7T81DpWDIrmqLdYcPgiqD
+	X5zlooX8PVeOWCoEE/xv/ebiTESgm+O0is65QvkMFa+rhuMsG/BWrDGs5jPm+C4E2k2wF2tarjdZQ
+	Iy/g5zn6mldarXPP//ct0MUTza1rQ9KImdl4lLNk5RR5dHPi05gZ1RLpa56j3WT/P2a+0CT30GDuy
+	GveazEz0rqpWNne7LEn3sMr1MdOphZdscetmpjWk5XVzsp2Gd2WO62edLz3dRKhRiFSRq7imHcjwU
+	f5HKXrvNXe5z71toXj/cWrdiSqYQcoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbIZl-00000001NUj-1UBa;
-	Tue, 06 Aug 2024 11:42:01 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1sbJTR-00000001WtD-029N;
+	Tue, 06 Aug 2024 12:39:33 +0000
+Received: from mail-io1-f72.google.com ([209.85.166.72])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbIZQ-00000001NC8-0rPg;
-	Tue, 06 Aug 2024 11:41:57 +0000
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2f15dd0b489so7931801fa.3;
-        Tue, 06 Aug 2024 04:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722944498; x=1723549298; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W8UY9azmTjhPunDkBNM5W4aID9KMi7XRKzM/JmHz9bA=;
-        b=eT9Sx+vPxcQ/ClCkX2MA8DN0HjdoLbW824bnSjeb1XglYBQe6fpyL7R+C/V5Dv18+2
-         UHoE5pSp2ZRsau4L5TU46w7oN3gMiY8pXWJARVtdqdDF7XrjXFSJLUdT+CC+PiEb1cW9
-         /1PjrxD2b5RYH7dTUGtuhrG2aWIKlDcgT49oI194rp8YLfkOgvaDXnnGV1O8VMcICYwS
-         Wzzx6XsNeSihzRj3+g9+r4aZOVs4M4hWgKnyv1G+CVjEvfiwz1gTCwTaGZXxJOFRwSNX
-         dyzdWdf7yiN1tLG+ufTHP384iQ/QgwEQE95GB7sTQyJSVvMKZz/+Mnyl77Jh87TjhNzh
-         Q5rw==
+	id 1sbJTO-00000001Ws1-1TWq
+	for linux-mtd@lists.infradead.org;
+	Tue, 06 Aug 2024 12:39:31 +0000
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-81f8d1720ebso84024639f.2
+        for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2024 05:39:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722944498; x=1723549298;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W8UY9azmTjhPunDkBNM5W4aID9KMi7XRKzM/JmHz9bA=;
-        b=NWUVjrxcLRE7enYa0hc4vOcAUrhN73zQKLNsjVlJw1gMazOu7ovZ0Kzz3HewOzg69h
-         Ez16y16FsH7AdJhY/6YQdGb9g9aEbJxNX/AAgUuU6oVUP/R9/J33G0QohBBXGAGEd7Ox
-         MwzHHnyzbjpI/0BnshzRUcd6Y0XRKH4iWTyinqd/Mo50aUZFtUDej7pc8qcyVp18wLky
-         CBXrNvHd5DEXGJB9agKA2psyzHzXLxM3ZskqpVGYnFYPvP0PFrBxpuCDQcvJkfYVyqtr
-         onKQbl5D1FPLbDE62N1bL/yvi4Op95M4wawfh8QAH6+zrNunNnaZpQmkdLjKHrQqTxh2
-         sChQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUjN8gSoutxPlkB7KE0PWhXUHD9G+Au3WU3BwyqPMd+wGMBHX3zVuX8MMnJkNw89EP+9SsVZKjV7xibcl9KXAlHaDoqV8fstnAWRoEqohlNEYD4mkazVKdWabeFK0f7bEsrcNTApY1/NLh8NY/p
-X-Gm-Message-State: AOJu0YyiQZ5FBUosqWQzO35+KGKKivufaKga/xhLvYFm5V4eOEHciUm7
-	jUXtwo+cTsDyu7AiqCRAkk7Tdk+bXGz7dLIIYHSG5jsjXQRhzj4F
-X-Google-Smtp-Source: AGHT+IGx9JpvtWSSJNncxBn64nyf6VX1HlPIDvZrqJFY+6GFP8Hs6JdctNgOCKrCUWNgRJKHapbLMA==
-X-Received: by 2002:a2e:8747:0:b0:2ef:2061:8bf5 with SMTP id 38308e7fff4ca-2f15ab27c85mr88378811fa.40.1722944497625;
-        Tue, 06 Aug 2024 04:41:37 -0700 (PDT)
-Received: from localhost.localdomain (host-87-6-196-30.retail.telecomitalia.it. [87.6.196.30])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-428e6e7cce6sm176105845e9.31.2024.08.06.04.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 04:41:37 -0700 (PDT)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Joern Engel <joern@lazybastard.org>,
-	Keith Busch <kbusch@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mmc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-nvme@lists.infradead.org
-Subject: [PATCH v3 6/6] mtd: parser: add support for Airoha parser
-Date: Tue,  6 Aug 2024 13:41:16 +0200
-Message-ID: <20240806114118.17198-7-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240806114118.17198-1-ansuelsmth@gmail.com>
-References: <20240806114118.17198-1-ansuelsmth@gmail.com>
+        d=1e100.net; s=20230601; t=1722947968; x=1723552768;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xIsK4Zhm8DeNTVyySFlh0qMMYw6ijS/N/XatwMsGdQE=;
+        b=Zn3+VEwS2u2lxI1Sh9Ssxvhzo1SpKv7j/2nK2OAlyZQAxuOU0otaAxCqUn5t81ByCB
+         sX753eVkDpQ6dT4C13PN82OwMpQDAiZPQRIOfMJVFoyr+hijADXAYPw4/0aZiaL474tt
+         U8hoWTatKaBsiCfO/xWbAqabvKXRgUD/9ugmRqNE6sK9PF/PAewCj7JnQZ0VpqaoIJiQ
+         bIETFsC00U+NKgrz0Fgza3kUA48pJY0GaFot5n22Fm4prdxVims88b6i+jKSJvGCY3b2
+         1OwTDo7kamLWIqRspwuxrgqTdHjtB/txhHmzm3f/70mxpb90sa5/1IF+CSqyYgu5ptAj
+         25FQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+b+XR5ALf+NbOFalh9Nm9Fk9kUGpOLcY7EIXcLz6vN3MUv4HWqC8FgYCV7fUtpE+ccTCBr3gvG5KTwYSrjVygwCo1vOoTrYDIY7ue2A==
+X-Gm-Message-State: AOJu0YyU1f96KLiAIkGpsc3lonIv2iTz7YzKCee9kj1uxXMZNrPksHKN
+	BIxiVWESJ1Lll5D7CF88QG7YFMSVv1RdjyyXhJaaC+Wj/Qgalh5c2Ij07B+yiZlNFHNh3S7ybGJ
+	ZvIaFQWPFbKtpjrfiHqcjytoKj9VB1kVMnErYbBzqX1JuP25AwLTMFrE=
+X-Google-Smtp-Source: AGHT+IGFR/jSOji8KiIQk8A8GUKQozz6fTjGvhbdsdH+fAhCdZu6unNrrCGgXIDP/yPM76dGkcwgEOja1BoxJyAl4wQXa6SydWMd
 MIME-Version: 1.0
+X-Received: by 2002:a92:c561:0:b0:381:c14:70cf with SMTP id
+ e9e14a558f8ab-39b1fb6bed1mr13341315ab.1.1722947968517; Tue, 06 Aug 2024
+ 05:39:28 -0700 (PDT)
+Date: Tue, 06 Aug 2024 05:39:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a15b4e061f031536@google.com>
+Subject: [syzbot] Monthly jffs2 report (Aug 2024)
+From: syzbot <syzbot+list5279c8c444a08dc01075@syzkaller.appspotmail.com>
+To: dwmw2@infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, richard@nod.at, 
+	syzkaller-bugs@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240806_044140_465524_A31AD28E 
-X-CRM114-Status: GOOD (  31.26  )
+X-CRM114-CacheID: sfid-20240806_053930_410051_180FC83C 
+X-CRM114-Status: UNSURE (   4.16  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,187 +78,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for Airoha parser based on a post parse ofpart function.
+Hello jffs2 maintainers/developers,
 
-Airoha partition table follow normal fixed-partition implementation
-with a special implementation for the ART partition. This is always the
-last partition and is placed from the end of the flash - the partition
-size.
+This is a 31-day syzbot report for the jffs2 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/jffs2
 
-To enable this special implementation for ART partition, the relevant
-node require the "airoha,dynamic-art" compatible. With that declared,
-offset value is ignored and real offset is updated with the calculated
-value.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 4 issues are still open and 1 has been fixed so far.
 
-Due to usage of specific bad block management driver, the MTD size might
-vary hence the ART partition offset needs to be dynamically parsed and
-can't be declared statically.
+Some of the still happening issues:
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Ref Crashes Repro Title
+<1> 730     Yes   kernel BUG in jffs2_del_ino_cache
+                  https://syzkaller.appspot.com/bug?extid=44664704c1494ad5f7a0
+<2> 13      Yes   KASAN: slab-use-after-free Read in jffs2_garbage_collect_pass
+                  https://syzkaller.appspot.com/bug?extid=e84662c5f30b8c401437
+<3> 3       Yes   kernel BUG in jffs2_start_garbage_collect_thread
+                  https://syzkaller.appspot.com/bug?extid=61a9d95630970eece39d
+
 ---
- drivers/mtd/parsers/Kconfig         | 10 +++++
- drivers/mtd/parsers/Makefile        |  1 +
- drivers/mtd/parsers/ofpart_airoha.c | 57 +++++++++++++++++++++++++++++
- drivers/mtd/parsers/ofpart_airoha.h | 18 +++++++++
- drivers/mtd/parsers/ofpart_core.c   |  6 +++
- 5 files changed, 92 insertions(+)
- create mode 100644 drivers/mtd/parsers/ofpart_airoha.c
- create mode 100644 drivers/mtd/parsers/ofpart_airoha.h
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index da03ab6efe04..d6c53aa16ea6 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -72,6 +72,16 @@ config MTD_OF_PARTS
- 	  flash memory node, as described in
- 	  Documentation/devicetree/bindings/mtd/mtd.yaml.
- 
-+config MTD_OF_PARTS_AIROHA
-+	bool "Airoha EN7815 partitioning support"
-+	depends on MTD_OF_PARTS && (ARCH_AIROHA || COMPILE_TEST)
-+	default ARCH_AIROHA
-+	help
-+	  This provides partitions parser for Airoha EN7815 family devices
-+	  that can have dynamic "ART" partition at the end of the flash.
-+	  It takes care of finding the correct offset and update property
-+	  with it.
-+
- config MTD_OF_PARTS_BCM4908
- 	bool "BCM4908 partitioning support"
- 	depends on MTD_OF_PARTS && (ARCH_BCMBCA || COMPILE_TEST)
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-index 9b00c62b837a..d67f9b4d39ac 100644
---- a/drivers/mtd/parsers/Makefile
-+++ b/drivers/mtd/parsers/Makefile
-@@ -5,6 +5,7 @@ obj-$(CONFIG_MTD_BRCM_U_BOOT)		+= brcm_u-boot.o
- obj-$(CONFIG_MTD_CMDLINE_PARTS)		+= cmdlinepart.o
- obj-$(CONFIG_MTD_OF_PARTS)		+= ofpart.o
- ofpart-y				+= ofpart_core.o
-+ofpart-$(CONFIG_MTD_OF_PARTS_AIROHA)	+= ofpart_airoha.o
- ofpart-$(CONFIG_MTD_OF_PARTS_BCM4908)	+= ofpart_bcm4908.o
- ofpart-$(CONFIG_MTD_OF_PARTS_LINKSYS_NS)+= ofpart_linksys_ns.o
- obj-$(CONFIG_MTD_PARSER_IMAGETAG)	+= parser_imagetag.o
-diff --git a/drivers/mtd/parsers/ofpart_airoha.c b/drivers/mtd/parsers/ofpart_airoha.c
-new file mode 100644
-index 000000000000..5e2cc7b6376b
---- /dev/null
-+++ b/drivers/mtd/parsers/ofpart_airoha.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024 Christian Marangi <ansuelsmth@gmail.com>
-+ */
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include "ofpart_airoha.h"
-+
-+int airoha_partitions_post_parse(struct mtd_info *mtd,
-+				 struct mtd_partition *parts,
-+				 int nr_parts)
-+{
-+	struct mtd_partition *part;
-+	int len, a_cells, s_cells;
-+	struct device_node *pp;
-+	struct property *prop;
-+	const __be32 *reg;
-+	__be32 *new_reg;
-+
-+	part = &parts[nr_parts - 1];
-+	pp = part->of_node;
-+
-+	/* Skip if ART partition have a valid offset instead of a dynamic one */
-+	if (!of_device_is_compatible(pp, "airoha,dynamic-art"))
-+		return 0;
-+
-+	/* ART partition is set at the end of flash - size */
-+	part->offset = mtd->size - part->size;
-+
-+	/* Update the offset with the new calculate value in DT */
-+	prop = kzalloc(sizeof(*prop), GFP_KERNEL);
-+	if (!prop)
-+		return -ENOMEM;
-+
-+	/* Reg already validated by fixed-partition parser */
-+	reg = of_get_property(pp, "reg", &len);
-+
-+	/* Fixed partition */
-+	a_cells = of_n_addr_cells(pp);
-+	s_cells = of_n_size_cells(pp);
-+
-+	prop->name = "reg";
-+	prop->length = (a_cells + s_cells) * sizeof(__be32);
-+	prop->value = kmemdup(reg, (a_cells + s_cells) * sizeof(__be32),
-+			      GFP_KERNEL);
-+	new_reg = prop->value;
-+	memset(new_reg, 0, a_cells * sizeof(__be32));
-+	new_reg[a_cells - 1] = cpu_to_be32(part->offset);
-+	if (a_cells > 1)
-+		new_reg[0] = cpu_to_be32(part->offset >> 32);
-+	of_update_property(pp, prop);
-+
-+	return 0;
-+}
-diff --git a/drivers/mtd/parsers/ofpart_airoha.h b/drivers/mtd/parsers/ofpart_airoha.h
-new file mode 100644
-index 000000000000..3e8a8456c13a
---- /dev/null
-+++ b/drivers/mtd/parsers/ofpart_airoha.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __OFPART_AIROHA_H
-+#define __OFPART_AIROHA_H
-+
-+#ifdef CONFIG_MTD_OF_PARTS_AIROHA
-+int airoha_partitions_post_parse(struct mtd_info *mtd,
-+				 struct mtd_partition *parts,
-+				 int nr_parts);
-+#else
-+static inline int airoha_partitions_post_parse(struct mtd_info *mtd,
-+					       struct mtd_partition *parts,
-+					       int nr_parts)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif
-+
-+#endif
-diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
-index e7b8e9d0a910..9e078636d158 100644
---- a/drivers/mtd/parsers/ofpart_core.c
-+++ b/drivers/mtd/parsers/ofpart_core.c
-@@ -16,6 +16,7 @@
- #include <linux/slab.h>
- #include <linux/mtd/partitions.h>
- 
-+#include "ofpart_airoha.h"
- #include "ofpart_bcm4908.h"
- #include "ofpart_linksys_ns.h"
- 
-@@ -23,6 +24,10 @@ struct fixed_partitions_quirks {
- 	int (*post_parse)(struct mtd_info *mtd, struct mtd_partition *parts, int nr_parts);
- };
- 
-+static struct fixed_partitions_quirks airoha_partitions_quirks = {
-+	.post_parse = airoha_partitions_post_parse,
-+};
-+
- static struct fixed_partitions_quirks bcm4908_partitions_quirks = {
- 	.post_parse = bcm4908_partitions_post_parse,
- };
-@@ -192,6 +197,7 @@ static const struct of_device_id parse_ofpart_match_table[] = {
- 	/* Generic */
- 	{ .compatible = "fixed-partitions" },
- 	/* Customized */
-+	{ .compatible = "airoha,fixed-partitions", .data = &airoha_partitions_quirks, },
- 	{ .compatible = "brcm,bcm4908-partitions", .data = &bcm4908_partitions_quirks, },
- 	{ .compatible = "linksys,ns-partitions", .data = &linksys_ns_partitions_quirks, },
- 	{},
--- 
-2.45.2
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
 ______________________________________________________
 Linux MTD discussion mailing list
