@@ -4,68 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 675A0C52D71
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Aug 2024 15:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2B5FC52D71
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Aug 2024 17:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pkaAeos0tFbANXK++BAxVQ8DUdSI8TaBVJeg0ggyEu8=; b=gwixbnjfHbeHvNRzN00A7185vF
-	zHVP9d6timhJXXHZEz/25is3SdXT2iqenFB6qwb1wB9FQ8m4+l70g4yL6JzGfoauCK/tMRabZ7+m7
-	ikzjvkKheTKoZXy4PBwuUhEngPShvIEtG9DTZ/iZArfJPviejCewqiu8kt68GBh2GHx5cviP7uYQi
-	v1fcbDXuR+lN7YyjuhiN3gQ9jt4o/KNVVwO5A1QhJTKsuwtMzUveYII891Y8M4qmq4RZG4JBWu/dh
-	/TaHsNzRqw1vpTiYqCD/pMTriuVRytNvkwvqgutb6H6sNhxRFzFwFHAVfHc+agWXU0FaY4awfw9yU
-	lwWee63w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=aWBVrCrNQ6MIEULH5jLvF3KjYOp7RkCLjzH5u6IqQbs=; b=nwdZVY8+TuQg1d
+	ko2fdw8Ypu9lnQwA9WnErN9nHqi/l96dylWtlyklmGImpNDuCS1dmtSPq1H398kZM5kFXQUBuCL9O
+	oiqWQlJ2++CWfvvtwBgIcH34p4YV5KzoxGXZ+ezntdClOrAvUblQdYdZsZkjTtWPpfFH10kEqca8V
+	UxsTLj/a96mWUSMjIBgkJDxsqQaeab1RGFVxmBTOHlSkPkJ4dm7Mfx2u8cLijxNrXplEVsWEZ1aWs
+	/nCRREqYqF521dk0Q28DlsNzg3E/E6ByNtj60udxAOizsMdn/0zeMezjUrM1mTmRlfeD5ygk13QpU
+	V3Fe2D+l5f0R89OS/9Vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbMHy-00000002Cs9-4BmP;
-	Tue, 06 Aug 2024 15:39:55 +0000
-Received: from mail.manjaro.org ([2a01:4f8:c0c:51f3::1])
+	id 1sbNo5-00000002T4w-1Bam;
+	Tue, 06 Aug 2024 17:17:09 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbMHi-00000002Cog-046m;
-	Tue, 06 Aug 2024 15:39:40 +0000
+	id 1sbNo3-00000002T4j-27gG
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 06 Aug 2024 17:17:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=vef8U/NvAQhnHHBic1VYdlSRlaLPaFr0gvNkGR8+8sc=; b=o+N6ITuPUtl1j/Km3Svu/0dngw
+	V9Vg+4JN5qQkRuZ3OMYdlDXHUlELAfP/D/EGYXOWWi/2vCIGozyY1nJ2XXePOVfeK+d1XAkVZbhxi
+	RaBVdqpvON6r2YbatALt7dxjtEEKcWFT8qL3gYHpG0/7Ofi5oFjI3VeLQcXlCJq3CT9X577FuR3/9
+	x6XTMgzkns3aQI42SdjU/rGvOZBaAjAqvgl2m/vOnvnbiiSQ0o33oUmJEoYL6L+1BSooq3lJuWSY1
+	bIqbo1Ts4na6ZMsnTxa+WtQQTrCTnSNz1VfHrgBnjS1FQU4h8DDMX0A4NmLoo5SiZv83jSMdXSf5h
+	jCuwX5Lg==;
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sbNnz-00000006Uke-3g3T
+	for linux-mtd@lists.infradead.org;
+	Tue, 06 Aug 2024 17:17:06 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 476HGikm086270;
+	Tue, 6 Aug 2024 12:16:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1722964604;
+	bh=vef8U/NvAQhnHHBic1VYdlSRlaLPaFr0gvNkGR8+8sc=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=HR6xnu+IjF19lbyGqcqPovQSx1xLvAJtKdPvCYxE8HOhUoVaks8u5zMZrhsYExdSt
+	 ubStEkDqDPeU5Kr5Y3pDzAUcG1cbZWTgI6csBORT3iGbRbNYDw9WynmyePWAmWN6+N
+	 dUpBepF1PkCzRylIBAtWzwzBLACMsPv6GoFVY71k=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 476HGieX078762
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Aug 2024 12:16:44 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Aug 2024 12:16:44 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Aug 2024 12:16:44 -0500
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 476HGfLB061428;
+	Tue, 6 Aug 2024 12:16:41 -0500
+Message-ID: <653f0d75-c35b-4182-8378-a4f0727301f0@ti.com>
+Date: Tue, 6 Aug 2024 22:46:40 +0530
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1722958773;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2Chn8ymlqazavJ1DZmXPdLBrye9DBk3cugxlezlxhvc=;
-	b=VfEMfp9veTf9vofJGHvARhjKJLQWxXoE6CZ4ZfPJBcyubeBt6RFYznvEmk0qhNLGaLcWIZ
-	V4ZVilXZpCU9C/H3Fj/ysZ/XgET0TF1ZDcxMeq8V3CyxyQdsNk7NIj2fbogg2t01z7WsLv
-	wvZqgRJCniv7XWLsHstRuSCgMls15R5RXpdkYXYEbuirc0/HNhXfXfbC+UTQp1+RTHuNyc
-	HQCGgdhhrNGrjo/ZN4a8er9JdyzG+eHz0KiwhMuHq/wV0VtW6AozR7DoRbDrDnLY5G34gi
-	SGgRl+hV/9eqi04hVkBzZk6CNzURj7hKvvnqvMopGb0w7ymNHesO9/LnmyrCtw==
-Date: Tue, 06 Aug 2024 17:39:32 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>, Ulf Hansson <ulf.hansson@linaro.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Joern Engel <joern@lazybastard.org>, Keith
- Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Sagi Grimberg
- <sagi@grimberg.me>, Wolfram Sang <wsa+renesas@sang-engineering.com>, Florian
- Fainelli <f.fainelli@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org
-Subject: Re: [PATCH v3 2/6] nvme: assign of_node to nvme device
-In-Reply-To: <66b21f20.5d0a0220.200175.4b9b@mx.google.com>
-References: <20240806114118.17198-1-ansuelsmth@gmail.com>
- <20240806114118.17198-3-ansuelsmth@gmail.com>
- <20240806124312.GB10156@lst.de>
- <66b21f20.5d0a0220.200175.4b9b@mx.google.com>
-Message-ID: <ceab3813dad635387e9f216203292fbe@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: hyperbus: rpc-if: Add missing MODULE_DEVICE_TABLE
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+        Miquel Raynal
+	<miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>
+CC: Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Sergei Shtylyov
+	<sergei.shtylyov@cogentembedded.com>,
+        <linux-mtd@lists.infradead.org>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Prabhakar Mahadev Lad
+	<prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.au@gmail.com>, <linux-renesas-soc@vger.kernel.org>
+References: <20240731080846.257139-1-biju.das.jz@bp.renesas.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Content-Language: en-US
+In-Reply-To: <20240731080846.257139-1-biju.das.jz@bp.renesas.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240806_083938_701293_45C5F903 
-X-CRM114-Status: GOOD (  24.73  )
+X-CRM114-CacheID: sfid-20240806_181704_272353_3A0E551D 
+X-CRM114-Status: GOOD (  16.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,60 +104,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello all,
 
-On 2024-08-06 15:03, Christian Marangi wrote:
-> On Tue, Aug 06, 2024 at 02:43:12PM +0200, Christoph Hellwig wrote:
->> On Tue, Aug 06, 2024 at 01:41:12PM +0200, Christian Marangi wrote:
->> > Introduce support for a dedicated node for a nvme card. This will be a
->> > subnode of the nvme controller node that will have the "nvme-card"
->> > compatible.
->> >
->> > This follow a similar implementation done for mmc where the specific mmc
->> > card have a dedicated of_node.
->> >
->> > This can be used for scenario where block2mtd module is used to declare
->> > partition in DT and block2mtd is called on the root block of the nvme
->> > card, permitting the usage of fixed-partition parser or alternative
->> > ones.
->> 
->> Err, hell no.  Why would you wire up a purely PCIe device to OF?
->> PCIe is self-discovering.
->> 
-> 
-> Well on embedded pure PCIe card most of the time are not a thing...
-> Unless it's an enterprise product, everything is integrated in the pcb
-> and not detachable for cost saving measure or also if the thing use 
-> PCIe
-> protocol but it tighlty coupled with the SoC.
-> 
-> This implementation is already very common for all kind of pcie devices
-> like wireless card, gpio expander that are integrated in the PCB and
-> require property in DT like calibration data, quirks or GPIO pin
-> definitions, i2c...
-> 
-> In modern SoC we are seeing an influx of using cheap flash storage
-> option instead of NAND or NOR as modern hw require more space and price
-> increase is not that high... Almost any high tier device is switching 
-> to
-> using emmc and even attached NVME and simulating MTD with them for easy
-> usage.
-> 
-> Please consider this well used scenario in emebedded where PCIe is just
-> a comunication way and the concept of detachable doesn't exist at all
-> and things can be described in DT as static. Also these storage are 
-> used
-> for rootfs mount so userspace is not so viable.
 
-As a note, perhaps this is another good example of a "fixed layout"
-PCIe device found on an SBC:
+On 31/07/24 13:38, Biju Das wrote:
+> The rpc-if-hyperflash driver can be compiled as a module, but lacks
+> MODULE_DEVICE_TABLE() and will therefore not be loaded automatically.
+> Fix this.
+> 
+> Fixes: 5de15b610f78 ("mtd: hyperbus: add Renesas RPC-IF driver")
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
 
-https://lore.kernel.org/linux-rockchip/20240805073425.3492078-1-jacobe.zang@wesion.com/T/#u
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+
+> Note:
+>  Only compile tested. Changes are similar to [1]
+>  [1] https://lore.kernel.org/all/20240731072955.224125-1-biju.das.jz@bp.renesas.com/
+> ---
+>  drivers/mtd/hyperbus/rpc-if.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
+> index b22aa57119f2..e7a28f3316c3 100644
+> --- a/drivers/mtd/hyperbus/rpc-if.c
+> +++ b/drivers/mtd/hyperbus/rpc-if.c
+> @@ -163,9 +163,16 @@ static void rpcif_hb_remove(struct platform_device *pdev)
+>  	pm_runtime_disable(hyperbus->rpc.dev);
+>  }
+>  
+> +static const struct platform_device_id rpc_if_hyperflash_id_table[] = {
+> +	{ .name = "rpc-if-hyperflash" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(platform, rpc_if_hyperflash_id_table);
+> +
+>  static struct platform_driver rpcif_platform_driver = {
+>  	.probe	= rpcif_hb_probe,
+>  	.remove_new = rpcif_hb_remove,
+> +	.id_table = rpc_if_hyperflash_id_table,
+>  	.driver	= {
+>  		.name	= "rpc-if-hyperflash",
+>  	},
+
+-- 
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
