@@ -4,53 +4,189 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EEE8C52D6D
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Aug 2024 07:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC9D8C3DA64
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Aug 2024 09:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xoVRPUqkcP72GyOzBSNrgYpVjqUjyEROPt8DsVIFemc=; b=IGkQGeXVSUTHtt
-	Z/SvkwFH33OceVvd0EobZ50ZTnlBRI4GFmAcFw0MOpuU2hnORBA0r2Tmqfz2SjcI3u/HbuNvf6RKk
-	gw0nOh/THRhERfsw2A1rUH7/nORJ+OM8KJnzGmyxM9KBWCpXlCMc0BdogxV+n6x/2KEfc0CBaWKz1
-	yihrSud1sTnBXk4BSEnh87GAZQdrANT5hEQxamJz3W5qNeFOm1lDpMkDm3q8zHGXwP/1Z8LulXOQC
-	tI6bZGtspgQeqPJrpmQqlenY2wUFk+m96/XAn24cGKwAijvNtYtuEJv86fPV+TkgtbCRf4fIhaXw+
-	wgOX3T6ioWpXVNQOgJqQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XAtDqvds3IaeGeVhgp5pi7VOTGmjza+Alt8zqhnSjyk=; b=ZK28hl8W5TfwNx
+	BpJaaH6iF4Y4QMcgqXmWf1PwRxeW/QYZgQbrF9LsVvGP8iWBM4ssqned6OSTAW+DKIXCMx40an238
+	izcc1NIAhFCVWRzA48EA/xYqqYLl3Ss0DiDvVP73BOOobUCyOb1CXI56vInz9AnX+ViZDB8HE7NPl
+	yRYCt8p5xDgWdrZPxwEbvUaK05SykbVXhfCoCCTyxbApGlLWTRqLTeb5r89Q/nG1WYgqp2KxY1mjH
+	Kz+sgkywCDCWtxB9I/YqrOtvGUycIoEytEUbf6Gs1r/jLXfmDRPlbsd3GIlk0iaA59s8jomcmUAgp
+	L20k0Zzu3uIG/ufinOow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbEfQ-00000000nKq-0ioU;
-	Tue, 06 Aug 2024 07:31:36 +0000
-Received: from mail.synergynova.pl ([51.195.47.69])
+	id 1sbGQI-000000015rw-3KXn;
+	Tue, 06 Aug 2024 09:24:06 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbEfM-00000000nKG-1DFI
-	for linux-mtd@lists.infradead.org;
-	Tue, 06 Aug 2024 07:31:34 +0000
-Received: by mail.synergynova.pl (Postfix, from userid 1002)
-	id B4B1FA380C; Tue,  6 Aug 2024 09:31:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synergynova.pl;
-	s=mail; t=1722929486;
-	bh=H2qKgXE2kH8cJbbzmMD4Hpjt6I9O7VcxhCsYYCpgFnQ=;
-	h=Date:From:To:Subject:From;
-	b=ufg4uAe0DXCs2uL1WnSzJGMSd7jmYuREpGFRDzm5ukayMfrtBwgzXYIJUqvJ30bqF
-	 Vv/hsD2PCS3Xl9/3s4TCq0koS69WhsZcHmgfmRw8coSUpCKDZCA5kLI4f4zYGJovNZ
-	 0F8T7QDePS/uxYOObbo9bkYAAY5IzfdZ5YpJ6ERYHNQDjUVIr0w3CHmokDS/PXBxI1
-	 bMh8x5VewvQSxvrwZLxSMhWpUkR5kA2jHpAOQZ0b3RERpnNKfncnBJEkKn58vSdxvc
-	 RALewc4YICtmLCAACJcMhsvqpGdRhzcfX8VCRJSq6aMI9xmA+ZYKh4GzTz8A7ZLxnh
-	 ZzM/MaOpHbmpA==
-Received: by mail.synergynova.pl for <linux-mtd@lists.infradead.org>; Tue,  6 Aug 2024 07:30:53 GMT
-Message-ID: <20240806084500-0.1.ii.13jey.0.7a03hpaf5j@synergynova.pl>
-Date: Tue,  6 Aug 2024 07:30:53 GMT
-From: =?UTF-8?Q?"Tadeusz_=C5=81ukomski"?= <tadeusz.lukomski@synergynova.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Prosz=C4=99_o_kontakt?=
-X-Mailer: mail.synergynova.pl
+	id 1sbGQF-000000015r3-2Fdq;
+	Tue, 06 Aug 2024 09:24:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722936243; x=1754472243;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=zcMiJSY3LofeRSh+fbVNTpX7F5qR5Hf57lWi74x7KTw=;
+  b=lTixvis9YJcSWKXIkHBNJGdu7DuNfADHF21inufOifNaIgjef1mb1Y5m
+   zDa8aJXMdH1ELj4nQCMvlOQkX8F3uHyJqDEbBFTsrjqfLgNNTkDBQfPmA
+   Sqf9apC6ihQst9MPWSkmW348AQwssrhgu3Yjs1iy21zKQ+EtVVpwqNOJ6
+   RHzydKOD6a00gYkrHPs58NU1aPVTCvEd7AGqyNff83oSQQKmDFeS6ONg2
+   9lBcxkM+9CjZRLGUhgaZtwnBSSYtmw9zHY8Fw1i7jNDZE0nEoIx0jEREi
+   LoqqdQSW1O+InMKzKTl9/WK60RK1M4HVddoxNk99XC3bGqKlfr/qkn2xq
+   A==;
+X-CSE-ConnectionGUID: UUTTFaQNSCOYAyouCbQfXQ==
+X-CSE-MsgGUID: JvF4bi8mRMqvM3S5P2ka7w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11155"; a="24804498"
+X-IronPort-AV: E=Sophos;i="6.09,267,1716274800"; 
+   d="scan'208";a="24804498"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2024 02:24:02 -0700
+X-CSE-ConnectionGUID: tPmp0XXUSrCyhbWoh7Pz5Q==
+X-CSE-MsgGUID: NgYuYPyGT0GnDpeFeC2ADA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,267,1716274800"; 
+   d="scan'208";a="56394576"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Aug 2024 02:24:02 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 6 Aug 2024 02:24:01 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 6 Aug 2024 02:24:01 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Tue, 6 Aug 2024 02:24:01 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Tue, 6 Aug 2024 02:24:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IZRIFIxNp+K3sp9fQivRdvG8K/vmfx0AgRaZ+gj3cOheVQnRike0RkXEMwbXcn4wJ1XLM/Ie3oEkkHO7Z9EI2ZWggPOs/S/j64YvrAYYgcZdCv3+al8V6ceTxR6iNK+s4l2Xsa3a/4K+vCmSYgrmgJQPcnY4gAUWewpkCIv3DvC6aq5q2uCqOdGS1a2X/fVTsX3GaPmNP3uoG1fcTm2NTEAHxRob9GFV4tZIJotfG78zrZT09/31D/8NPZIUzgiaxjHLKjduoKOlJi89cpJLFN+o9DqYtUlV1Onuajc4+BDDEOS3AZvSyjb1iXzfqKijQQrTRp0fjhF/P0Uq+Yxsog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j4YngrO/ie+momr1mtK1eZHFOBeLltyFaAyqihqLPRQ=;
+ b=JSCArwNtpqDj3t1vV+WCH6YnQ0TLhxpfTzxuILazpw5zh6iEPtYAKfNPtGBDXs4blVQGWEKXuyXWny9TQBPWDzpY0ETyhvBpUDxQTRql9zcd4OT0jiqrpQ/ARjH5a+8fcMuCnXlQg1vBzHeU7eRlv1uFCzv1IlS3DTh5vpRtmKWH6Kd+5bUq3ZqcKzLNpRgD/si4yYMZO6+CvPcjklTknPjJNq+9v2KKkDTWc9SwyZmfsrNLgCoC3guz/OKEMGCsF/Unp1HOencGxtoKdBWD02ngLc47smEaZqwbHZHGaaj3sM7VcZB7h53NSh3oUdfrnEuNcfBZaxSmNm7qG/Rgyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5423.namprd11.prod.outlook.com (2603:10b6:5:39b::20)
+ by PH7PR11MB6425.namprd11.prod.outlook.com (2603:10b6:510:1f7::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.26; Tue, 6 Aug
+ 2024 09:23:58 +0000
+Received: from DM4PR11MB5423.namprd11.prod.outlook.com
+ ([fe80::dffa:e0c8:dbf1:c82e]) by DM4PR11MB5423.namprd11.prod.outlook.com
+ ([fe80::dffa:e0c8:dbf1:c82e%5]) with mapi id 15.20.7828.023; Tue, 6 Aug 2024
+ 09:23:58 +0000
+Date: Tue, 6 Aug 2024 17:23:43 +0800
+From: Philip Li <philip.li@intel.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+CC: kernel test robot <lkp@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, "Conor
+ Dooley" <conor+dt@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	Joern Engel <joern@lazybastard.org>, Keith Busch <kbusch@kernel.org>, "Jens
+ Axboe" <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg
+	<sagi@grimberg.me>, Wolfram Sang <wsa-dev@sang-engineering.com>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Thomas Bogendoerfer
+	<tsbogend@alpha.franken.de>, <linux-mmc@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
+	<oe-kbuild-all@lists.linux.dev>
+Subject: Re: [PATCH v2 6/6] mtd: parser: add support for Airoha parser
+Message-ID: <ZrHrn9NzeOhp+Sdl@rli9-mobl>
+References: <20240804174414.18171-7-ansuelsmth@gmail.com>
+ <202408050612.Ya1m6REu-lkp@intel.com>
+ <66b0b109.050a0220.93681.d015@mx.google.com>
+Content-Disposition: inline
+In-Reply-To: <66b0b109.050a0220.93681.d015@mx.google.com>
+X-ClientProxiedBy: SG2PR04CA0168.apcprd04.prod.outlook.com (2603:1096:4::30)
+ To DM4PR11MB5423.namprd11.prod.outlook.com (2603:10b6:5:39b::20)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5423:EE_|PH7PR11MB6425:EE_
+X-MS-Office365-Filtering-Correlation-Id: e2d420c8-411f-450f-7a99-08dcb5f9805a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Jzyyp7gTaT3aB+la4mG/9m15tLlGBBHKgdGii3IFm+/D5N2TLFtniRb/8DWJ?=
+ =?us-ascii?Q?2UNcLRhuKcBuWsCg9FI3l2LD4Fb2BrtlFqfW9v2u1bI93++AwxHA7mK1zUik?=
+ =?us-ascii?Q?OKBvQwAJzgTKEBL5XUtQyYTUjAorpyg/nzNWzQJhix7Vo6cGW+DwCSsTwuMY?=
+ =?us-ascii?Q?FntftSDcxtwzeBgyXdr/8QcC1a1SlILGtogvfP2oMp86wRrrtWeurxlGb3Fa?=
+ =?us-ascii?Q?6DIvD+mIEihZ71rXi4VEKGhbfgwb/f5cCJUBwfTcS5kCwdlDEhDdOLN78H9h?=
+ =?us-ascii?Q?BbRnR9LeOpigKBhfIMz8IuoBLmGCMawkgr4FNZiQI0pw5v39Fx121iiLE7m9?=
+ =?us-ascii?Q?N+4AeBxvlOihExKUInHxkP1xL7BGZl1t2I1UEJyUyVqdASmqFFXVnPTY+Zt3?=
+ =?us-ascii?Q?5Kcj7pfBC8qhcjxvAcn6LYevrh+mcFyPQFYUpZ53qA5xA6ZUbOk0zAUoCWto?=
+ =?us-ascii?Q?amai+gukVhEdzWdNZDYgQk/KMGpaC/SR7QZsyhjp8ov3oYb88SQm6EG9RJ1Q?=
+ =?us-ascii?Q?YcI4sHoZMF426okbfZSmw9TTXrusHpsNELnu9H/NSS0GKb7dkG4uTgKncRQS?=
+ =?us-ascii?Q?CSX5YZCuQiZVegaLVib2pt2oVxDX7aev6OCD1jcdCQR0Qp6YS8zeiJnMWsTK?=
+ =?us-ascii?Q?tHINkcQ6bapPFgU6NMLSv0AQVRs7ejpWYg6avSWPJcEr+Bxz/caHuEX1oipy?=
+ =?us-ascii?Q?KIhzsFqyGX1lJ7WlZVR+7vsx++hJ0ZA8UoUOtHwz5GkwoqVU6rKyRhUq5SWP?=
+ =?us-ascii?Q?HPS22WswK/SpCcQ2jxaTUckm8TGUdi/S+qS/39p3JR+bQKDqqney3dXG8g+w?=
+ =?us-ascii?Q?jYkUmMfbqG5RXa/EIoouXIv8a3TRXDw6ZcpZPeLD1NjTzgcNGyEg73tcHE5j?=
+ =?us-ascii?Q?y+KA0i9bHudnFNNUFm9RF/+K0RPq8f80quLAG3iO04M5AdzS590bnFajUb3x?=
+ =?us-ascii?Q?wSdoMbIwRNINisi9/OzZxtAX2wuf1vAmjXBeCkGBT9AJ3XzGLKE3kky2AoKT?=
+ =?us-ascii?Q?bPaugrvs15bOfHoMHNt9oSr3I2abmc8mgEiiz3b3WfQ8zwlw328YMOrkz7hT?=
+ =?us-ascii?Q?FBN7hdbk8UrfBafk25KCkLz/Ay3Hn8dH/d2KzxaqDralP9mNtx0pk54hI/uE?=
+ =?us-ascii?Q?FZmeQpSZd86ZQxDyLICx3HT2RR2vTo9OfKWpHg+jqezEC1dJF6Y9XevCoS/w?=
+ =?us-ascii?Q?oH44UFD0AMGEnh9eOezsYvL4MseaAdWaCkC7c9CY/ZbHHAgCgWI6o6zNCgdY?=
+ =?us-ascii?Q?gEVlF9XBRIfkzBgNBecwu9l0qzpanHzZvEg0gfrI2G/W0+yQjopU3uXX0s1C?=
+ =?us-ascii?Q?f/nQrXpfmiZ7nKmEiEafiC8x?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5423.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JMHHKJor+0bgFFsTR5gpmDeuVYkSvj8gAqUrpndUVz1sCJ4ExYzBlv5e2zo0?=
+ =?us-ascii?Q?zZ0EV5XUb8L8aRtx5JHJTNSGcpJ9KB2FTkzz72by2dY5IZM1oqIz0t2o2pB+?=
+ =?us-ascii?Q?q8f5xTLR2FsfMPaNGlPH+UcaqjT+PH2Mmbf34GirmVxYOr8meL+fSqcrS7M1?=
+ =?us-ascii?Q?sDi3Q5Lfh+BC5TF1LewUPD9DXqlHAWfOAbnApT5JldeRqbqCjzViu8iI/eod?=
+ =?us-ascii?Q?ntXnSEPcNHsYKP9oSuj/bd9nb1t9zIw8jbvzzlQJLujoSXnkTy0R5Ldt387A?=
+ =?us-ascii?Q?PO+6SaN0cHbB+r6cGBdB/u3DGzQ/EkhNwGfK+cQEoa/ghOagkWsasVx9gblT?=
+ =?us-ascii?Q?BrZiGbrwL6JarfYSoXTv4V7cTbhSOr5WSUTVP9Cg2pq1rKfpOT1EiUXmvpVZ?=
+ =?us-ascii?Q?bApfNfOEYoUnYt0nYoID0uev9eRbaRDjqDNx6G42NW7YBHoLLPMXDyx62Liq?=
+ =?us-ascii?Q?VTakSTOG/Rwk+ixvq6S+Ifc8N/44pBXc0F2KwBTKVbtZcskaCZwIs9v3eptG?=
+ =?us-ascii?Q?gf2MfoAhf8Bma/ptIhMyqzc3MzWDxGy7+xrXc1E5b4FTMdxkT7/843MZaoAv?=
+ =?us-ascii?Q?wWX5gSs9ruyz9w8c53YXnza33IG4VD9w03IcpYL4rTbssQj/aPrfmYaIwktH?=
+ =?us-ascii?Q?pE2049s6KqHi6LDIgULT6gbIynEedaaZQl0xVeWyoZscQMtc2/HQ85zx//It?=
+ =?us-ascii?Q?OcCDlIjNYv4JR5l+J01T8lEK5f+cYbAQZxHY2FEqqhqIwut+Ts6FOTlHv6Th?=
+ =?us-ascii?Q?c78grABoBFBbGMQSRc5hSCg7PAj4RScxHECK1zSAZA6pqgBNBA5O94Dm3xQ3?=
+ =?us-ascii?Q?y/tTgK1ixdRdhTaQ5PrNUu6+xvYpYnzk12KhwXEHMn+9NP634tCmf94xuCse?=
+ =?us-ascii?Q?MSCOgB8gZizRHaFbKisdm4K9j57R0eJlRq2pyYT05lorS7Nf9cprFeqFghCy?=
+ =?us-ascii?Q?MNt5BBfY+gsIZiB4wJ87q11jUH+XrpsPDkXyl+1Ek9BUGhxdm9ciBWI0spL6?=
+ =?us-ascii?Q?RPlSKpAEPR6S3RBKDXT/mUjTWq43arUuRkC6GupduTj7W+aS5wcP8Ghkcxce?=
+ =?us-ascii?Q?lw4UPEpuEFvtntfOT/L608kyiTGGAXllQL3A/fL5cNiXEiGTeeyJFRDetCUU?=
+ =?us-ascii?Q?Pb/7cIpmnFZ7Piu5JDQAGzpg9o+mohJQ0/uSPulbG3h5ZFI3GUF1wKbqKjYJ?=
+ =?us-ascii?Q?pYlCQckNjKowbHLsnIrysZu3cNOWrSIEhWLqn+/Qmasf7xxLAy0E7XzhhGEL?=
+ =?us-ascii?Q?nXaoXiWl/poKpKA8QrRRzIJ8Fdxcwrqub2sjg2rGqLnuTBAcOx2v7AVRMnwV?=
+ =?us-ascii?Q?lSlf2b/r9Zqq77VNEqkagfbLZjpeVd3ePLy3U8c9H/MEMgnAYYT0lb3XxSLI?=
+ =?us-ascii?Q?6UbqpWAe48+spUAwv2pZOf+MisHRoXC9538PLwLMjkMbqezkxZ7uuJZdBwej?=
+ =?us-ascii?Q?FxmYd8LnIvwAkQNEBSwPoAuJ3ZgPL6sYWkpjlIVapULKeN13gxYCtV5sMXeF?=
+ =?us-ascii?Q?wIl1wQTcbaUijUDcs+b8Al+VU+9kMfb9EVrF+L+b+BgzJjZQHQKp0j77gzJv?=
+ =?us-ascii?Q?niIbN1SgmZNQC3OvbzaodoC1KR9A7vXr5ppus21L?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2d420c8-411f-450f-7a99-08dcb5f9805a
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5423.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2024 09:23:58.7640
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZGCROC1TLXFXfdLFjHh6Rakgh/LRTWfRhJN2fyCpbfZj4+QRctw4SyQJ0M+RbwJcIURXlMV5vfjdkP6C2m7Z9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6425
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240806_003133_041250_006E9A69 
-X-CRM114-Status: UNSURE (   0.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240806_022403_624390_C18904FF 
+X-CRM114-Status: GOOD (  25.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,16 +198,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKQ3p5IGplc3QgbW/FvGxpd2/Fm8SHIG5hd2nEhXphbmlhIHdzcMOzxYJw
-cmFjeSB6IFBhxYRzdHdlbT8KClogY2jEmWNpxIUgcG9yb3ptYXdpYW0geiBvc29ixIUgemFqbXVq
-xIVjxIUgc2nEmSBkemlhxYJhbmlhbWkgendpxIV6YW55bWkgemUgc3ByemVkYcW8xIUuCgpQb21h
-Z2FteSBza3V0ZWN6bmllIHBvenlza2l3YcSHIG5vd3ljaCBrbGllbnTDs3cuCgpaYXByYXN6YW0g
-ZG8ga29udGFrdHUuCgoKUG96ZHJhd2lhbSBzZXJkZWN6bmllClRhZGV1c3ogxYF1a29tc2tpCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Mon, Aug 05, 2024 at 04:54:45AM +0200, Christian Marangi wrote:
+> On Mon, Aug 05, 2024 at 06:52:04AM +0800, kernel test robot wrote:
+> > Hi Christian,
+> > 
+> > kernel test robot noticed the following build errors:
+> > 
+> > [auto build test ERROR on robh/for-next]
+> > [also build test ERROR on linus/master v6.11-rc1 next-20240802]
+> > [cannot apply to mtd/mtd/next mtd/mtd/fixes]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > 
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/dt-bindings-nvme-Document-nvme-card-compatible/20240805-014740
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+> > patch link:    https://lore.kernel.org/r/20240804174414.18171-7-ansuelsmth%40gmail.com
+> > patch subject: [PATCH v2 6/6] mtd: parser: add support for Airoha parser
+> > config: xtensa-allyesconfig (https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/config)
+> > compiler: xtensa-linux-gcc (GCC) 14.1.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202408050612.Ya1m6REu-lkp@intel.com/
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> >    drivers/mtd/parsers/ofpart_airoha.c: In function 'airoha_partitions_post_parse':
+> >    drivers/mtd/parsers/ofpart_airoha.c:33:16: error: implicit declaration of function 'kzalloc' [-Wimplicit-function-declaration]
+> >       33 |         prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+> >          |                ^~~~~~~
+> > >> drivers/mtd/parsers/ofpart_airoha.c:33:14: error: assignment to 'struct property *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+> >       33 |         prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+> >          |              ^
+> > 
+> > 
+> > vim +33 drivers/mtd/parsers/ofpart_airoha.c
+> > 
+> >     10	
+> >     11	int airoha_partitions_post_parse(struct mtd_info *mtd,
+> >     12					 struct mtd_partition *parts,
+> >     13					 int nr_parts)
+> >     14	{
+> >     15		struct mtd_partition *part;
+> >     16		int len, a_cells, s_cells;
+> >     17		struct device_node *pp;
+> >     18		struct property *prop;
+> >     19		const __be32 *reg;
+> >     20		__be32 *new_reg;
+> >     21	
+> >     22		part = &parts[nr_parts - 1];
+> >     23		pp = part->of_node;
+> >     24	
+> >     25		/* Skip if ART partition have a valid offset instead of a dynamic one */
+> >     26		if (!of_device_is_compatible(pp, "airoha,dynamic-art"))
+> >     27			return 0;
+> >     28	
+> >     29		/* ART partition is set at the end of flash - size */
+> >     30		part->offset = mtd->size - part->size;
+> >     31	
+> >     32		/* Update the offset with the new calculate value in DT */
+> >   > 33		prop = kzalloc(sizeof(*prop), GFP_KERNEL);
+> > 
+> > -- 
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
+> 
+> Mhhh somehow I can't repro this with instructions?
+
+Hi Ansuel, would you mind sharing the steps of reproduce? I can reproduce this with steps
+described in the repro link [1]
+
+[1] https://download.01.org/0day-ci/archive/20240805/202408050612.Ya1m6REu-lkp@intel.com/reproduce
+
+> -- 
+> 	Ansuel
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
