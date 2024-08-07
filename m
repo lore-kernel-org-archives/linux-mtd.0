@@ -4,61 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B5A5C3DA7F
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2024 13:38:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA07CC52D6F
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Aug 2024 21:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ostgJeQeN3/IWEi+dTH+7ByXjkUxpTx1aBDvxpapLS4=; b=s3JpdmO1t3O27/
-	EcWANYr6gSqCilW05I4VCFCvjQjHiE/TfDrX/S2omB9qzTCKvgfdKcaa/4sx9uXFitHNNawFLNKFc
-	kInk7omqJPcC8Pm3JnclLen5FvS4UgvE2Lwi2WBF0xOib8N2JgvuIg3g5AveXTW5zgwIDVQa8JdUS
-	lCD+i8HU0GUX4ZE+eGj3doEl5Qh5plnZgxcmEK4hPtlC04w+CksZenRnddFl1KnmuD3ssrH42oLpR
-	ucmKMNmNzmd0VpDU+IZ5ky/Ynl6/Jh+n72v8xvGew8MJnfqRAhzDfdko97LlGdnNkSc85DvIUt6U9
-	RkFwDufvWdWx9nbJxMgQ==;
+	List-Owner; bh=a6y68UDon4Wz4E/x/VDcZ9rH9WJYayVO2s5g+Ak8Nbg=; b=kKcUpTJGnv21op
+	7ftvx81Nknu72DR2qdX4rmLVQKAKWW3W5vXnM+11TCCCzGJMQshm0vbJJ8iuRrzHOa8kmYrgP0aEY
+	x8zKsa4MO7+BNnowU0cWzxRL8KE5jU308dBK4ilLaDXWLDfpteVx1JI2NfvWkpWxssWj0uP0kWb7P
+	F3BmZF29j/27OL9WtknKn3bkA6aEhDNHiPfts/APhhIgOOLkwpREzDFF8qLrFQLzwiuYuoMf8fb3o
+	A3jH9SeTDDapPUNP1NK3rPshEC9IueFrKZ56eMQIg9rUwr3v8AG4SQ9OYVb1kw0qXXtZYb0gtV0K2
+	adC3gGNw8avQC6W5hzNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbgrZ-00000005Aar-1eol;
-	Wed, 07 Aug 2024 13:38:01 +0000
-Received: from mta-64-226.siemens.flowmailer.net ([185.136.64.226])
+	id 1sboDq-00000006Kkj-1mxg;
+	Wed, 07 Aug 2024 21:29:30 +0000
+Received: from mgamail.intel.com ([198.175.65.17])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbgrM-00000005AQy-0WcO
-	for linux-mtd@lists.infradead.org;
-	Wed, 07 Aug 2024 13:37:59 +0000
-Received: by mta-64-226.siemens.flowmailer.net with ESMTPSA id 2024080713374201598c944edfcfe0b2
-        for <linux-mtd@lists.infradead.org>;
-        Wed, 07 Aug 2024 15:37:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=alessandro.zini@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=hDMZFLANYzQPGz13BNr9gsq51EvdP4NttKLWXR3XOi4=;
- b=I0pPWZwns/HQYfIaPkrYEKXe9/+mN5Tpn3hWtlbnKJTwuuSVOpL8hpGOtJOX6t7FivflIF
- O5LcAThoOkZ80TVrA/Qq4uwFNOIu5ojh5G2R+K0t61vqcPN6Clvd2jfiKxbDTP+MwfME/m0j
- IU7IqajCfMCPwT4SbrO8FVSV+KdBDyQv4ikRRuGq5N2JT38gyHCQJTuXN70jn01RC47gUwLb
- yRZw39n9F2nJpeGFnJqew1T/2BSOj3dpBg4L3sktXPJTVwwiF7ZCotYhCfZ3iSPVSacCttJ5
- 136w52xMdnovObz69rGXXQ57th8C1914GTlECauQlzghhLjXpBfodJOA==;
-From: "A. Zini" <alessandro.zini@siemens.com>
-To: mwalle@kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: alessandro.zini@siemens.com,
-	miquel.raynal@bootlin.com,
-	pratyush@kernel.org,
-	richard@nod.at,
-	tudor.ambarus@linaro.org,
-	vigneshr@ti.com
-Subject: Re: [PATCH 1/3] mtd: spi-nor: handle JEDEC manufacturer bank
-Date: Wed,  7 Aug 2024 15:37:40 +0200
-Message-ID: <20240807133741.27785-1-alessandro.zini@siemens.com>
-In-Reply-To: <D37V6QTQZM50.2I613FUEQIWXG@kernel.org>
-References: <D37V6QTQZM50.2I613FUEQIWXG@kernel.org>
+	id 1sboDl-00000006KjH-3xWv;
+	Wed, 07 Aug 2024 21:29:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723066166; x=1754602166;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qzOKWUz41TYDR4cdz3l1k0/R2WuyA/BV//cD3NYMHPA=;
+  b=X2jr41G3XqJNaZQz1HpI5Q7wnD1FioeLOxpPfxD/LyTe1nUkqy1b+kWn
+   W8fyQbvFhppJGXUTUeH2Up/9ePbLARu94LhJv6B6W099VjdWn5Sei4Fn8
+   EMpbj4y9EbsYoLmFCRYkLz9g9jFqGBAb9ulSjV0iRJKr3w/FAkSHyC3T2
+   RiYiv7sHgMIzbI7AZA1muiPsdY59fh1Auj4qbKvk4X9sh2t7zSXJkZIns
+   HoNeJ56/nDslGxxBJ5BylZKxK14jeNa2reP2C8KJvK7TgE1JaIjfFYlJs
+   PY7Woz60qer7WGmk8nfVZzsvlrAyOPTDUBv/WgelddJhWaGwSQNkN7rKF
+   A==;
+X-CSE-ConnectionGUID: ShL5oFQ4TuWSOGu3AxQx+g==
+X-CSE-MsgGUID: 2GvjaooiTbyQGEF5Poh8Ig==
+X-IronPort-AV: E=McAfee;i="6700,10204,11157"; a="21286287"
+X-IronPort-AV: E=Sophos;i="6.09,271,1716274800"; 
+   d="scan'208";a="21286287"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2024 14:29:16 -0700
+X-CSE-ConnectionGUID: VO5TdQLCThqYeLxhxHYGww==
+X-CSE-MsgGUID: iSgMtuprRgqN7ExnMuFUDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,271,1716274800"; 
+   d="scan'208";a="56947521"
+Received: from unknown (HELO b6bf6c95bbab) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 07 Aug 2024 14:29:08 -0700
+Received: from kbuild by b6bf6c95bbab with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sboDM-0005jV-21;
+	Wed, 07 Aug 2024 21:29:02 +0000
+Date: Thu, 8 Aug 2024 05:27:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christian Marangi <ansuelsmth@gmail.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Joern Engel <joern@lazybastard.org>,
+	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Wolfram Sang <wsa-dev@sang-engineering.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v3 6/6] mtd: parser: add support for Airoha parser
+Message-ID: <202408080559.nVw5Qez6-lkp@intel.com>
+References: <20240806114118.17198-7-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-1327013:519-21489:flowmailer
+Content-Disposition: inline
+In-Reply-To: <20240806114118.17198-7-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240807_063748_982760_00375BEC 
-X-CRM114-Status: GOOD (  16.63  )
+X-CRM114-CacheID: sfid-20240807_142926_056690_064EA958 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,44 +101,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> > Given the fast expanding pace of JEP106, the read ID operation has
-> > been expanded to 128 Bytes plus the pre-existing 6 Bytes for the ID
-> > code, thus supporting up to 128 banks.
->
-> I really don't like issuing a 128byte command for older flashes. So
-> maybe we can just stick to the 6 bytes and if that's not enough we
-> can use the extended format.
+Hi Christian,
 
-I agree that there may be better solutions than this. The idea for this
-patch was indeed to gather some of them and trigger a discussion.
+kernel test robot noticed the following build errors:
 
-The question I have here is how can we determine when it's "enough"?
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on mtd/mtd/fixes linus/master v6.11-rc2 next-20240807]
+[cannot apply to mtd/mtd/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> I'd like to keep the .id as the primary index. This will now
-> introduce a mfr_bank, so the unique key will be (mfr_bank,id). Can
-> we somehow encode the continuation codes into the id itself? E.g.
-> we know the manufacturer ID is always < 127. Honestly, I'm not sure
-> this is the way to go as we know flash manufacturers sometimes don't
-> care. So right now, we just compare the .id with whats returned by
-> the RDID command without interpreting it.
+url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/dt-bindings-nvme-Document-nvme-card-compatible/20240806-195029
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240806114118.17198-7-ansuelsmth%40gmail.com
+patch subject: [PATCH v3 6/6] mtd: parser: add support for Airoha parser
+config: arc-randconfig-r121-20240807 (https://download.01.org/0day-ci/archive/20240808/202408080559.nVw5Qez6-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240808/202408080559.nVw5Qez6-lkp@intel.com/reproduce)
 
-Even though the manufacturer bank is technically not part of the ID as
-per JEDEC standard, it's still a piece of information needed to
-correctly identify a chip and avoid collisions.
-Therefore, my opinion is that it should be part of the unique key,
-whether encoded in the id itself or in a different field.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408080559.nVw5Qez6-lkp@intel.com/
 
-One other possibility could be, when needed, to add two bytes to the id
-field, them being one continuation code and one multiplier factor
-indicating how many continuation codes are present for this
-manufacturer. The absence of the leading continuation code would
-(obviously) be assumed as bank 1.
-The spi_nor_match_id() function should of course be adapted to handle
-this additional information, but we would not have to add an additional
-mfr_bank field.
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
---
-Alessandro
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+>> ERROR: modpost: "of_update_property" [drivers/mtd/parsers/ofpart.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
