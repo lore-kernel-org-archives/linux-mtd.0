@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2469C52D71
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2024 06:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A607CC3DA4A
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2024 13:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OxmTmkeGWkzGFwFycWRkgyHHXPZ54Galhj7S79b0ZjQ=; b=mazx+Z8Ii2jlws
-	TWoTty2kuxllTfyMPmccdds1JP/wllHoI1dB/b8SjZWIW9+AynaZ9xsZzDGYUjjtMAn6kYa7IKlKz
-	JOd6QLAiblcsa1qZyFj3PbvaSf8d5CA6x6+xXUdrmdmF2bKAddPafRkwNx26TpePbCSVhIEp17jPh
-	EF74dP4GwM93/vdjtr4OTl74lj0b/IY7CSJ2yufymsDRxdzRC4bIVzK3fhxZ1FWDPI0rMaMPEY73G
-	1pOqB77zBHpFpRwu1Hy3/Vu8xxtVC81NgxNgYOgOuv6cuJNjnd5gAvNSpUrwEAcTZAATVCKjZ2fjo
-	lJWkjIgXclgK8Y/hoZVg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=caEBNenY+96DdEpAA/agdy+3/c2xTJ2UT6yRJxTGO2s=; b=TtcP/RCJCq2cQK
+	i1D8VKT9AV6n0igHs6odHXRidOOQvohVT0fXBj3qQActmHSgcZ5TFP7OfHsiAs3QPzXU6A3530Kys
+	rLtmv/iL38JvhBV2yLNrOUhWK7O9rRpurMhcON1HwF+ldsbfuTNMAcosHEahPF8kOk22lNZjIXeTK
+	+/gMREx9pofJqo2bBHjN7LbIq0ubkpdTZYb5BnOe/ajhmOFCQQAJ1b0dCE8n5vc7c0VskW8X713re
+	gc7c2LedoyB5FF0a34wECwfvHMcWC5nF+ciAcMfymVFyPJYsGOIptKXHlX6wVc11WAaZkr6x501RN
+	MCm8x8VziGxMwzEClzSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1scJQR-0000000ATAl-0j3A;
-	Fri, 09 Aug 2024 06:48:35 +0000
-Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
+	id 1scPcG-0000000BK9P-2vQw;
+	Fri, 09 Aug 2024 13:25:12 +0000
+Received: from mx0a-00300601.pphosted.com ([148.163.146.64])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1scJQO-0000000AT9b-0v7F
+	id 1scPcC-0000000BK7h-1695
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Aug 2024 06:48:33 +0000
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-52f01afa11cso2085350e87.0
-        for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2024 23:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723186110; x=1723790910; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=awMllGHlNTMUHiAzNhHBD3WsHP+5NhEuahbeF4CxRz0=;
-        b=cdV5v3kkMWNaAsn6QYUaYSLnYh4uBnKSM5DA2MAjdmzsvulOQPFF32ZEElrcX7kYaW
-         I8qYzxHtRta05SmqYfJEKpfgYisZL6TE/4PyaZrS13UtC1PjuM7SjOv3LNZZtwCrWnUV
-         WqiLTmauplj6Iin4kuXFjZtTfYtNj7xNTE45v16KB+SmarqiFtyDrNYczGY/v1HgrrIE
-         UStBtc7Npga8FNQXRKYTC7kwKMUrQQZo68Q5ae0g4AlCfT6BhStBF8aY0ZlTAQvH5ZrM
-         +qaU2fvZavlhIdZ4TqxTPYpKkqRTa1iUwfOt5Flrksvzu86L1T9UorHnN0wGw0uxiu0u
-         bXog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723186110; x=1723790910;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=awMllGHlNTMUHiAzNhHBD3WsHP+5NhEuahbeF4CxRz0=;
-        b=fk+TEXgM25+ejoPG6qtrTO26Invh3J5GVmlhB2Gi5TEBwI/oXNcIYT3TNkCb3Dfo+Z
-         XtRrh/vjDmE05m0mil8HqSQeOstPrWOnQ4GMGvYkEsEnlNu18EZux8xeZwSu6KDsnkjw
-         a4eihcVaCY6hzb3vJH5hZZ+4+CdUmlcV4GpZQPY1/L9q28htQxPG7GPwPQRAuw9lOLaK
-         5dJV/3SOu6dFRuGp9DETdr3RdT/oMHCNNmaSIe/xfjeVguUhHaY/it1Gn0sDqOtN2XS2
-         YM9awU6nlsrfmFCGjzHHAQw8hU9hzQIfHfiAMCfUew81znfucsPk6FacmSt+8a3HSS96
-         9+TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUUAe0juLKT5fBOUedvg2wtv4gZGXF3s8JnPFfMtXKx7ztvuFT7VSxjRATSaemzV/lb6ckLKJ/I1E=@lists.infradead.org
-X-Gm-Message-State: AOJu0YxxSDIV5N+G6zao0uiema1WTC+Ta+fowPNfzsKZA6hHOeOHAHlM
-	xdwFe2E5Mef3W5orwiIjtO80RebINu8AFYW2pz/SEpAHCEIwnZ6aYRokyghxF8kKncx3YP+L9pz
-	pQonnQzv4SIS4qY5P0vwoMx7bUtc=
-X-Google-Smtp-Source: AGHT+IGQ8eJlZAkFtH4sp8+WWj+e/9OZ+apcotabpI+LPBGrb62fWRUl6dC49ZcDGOav+iLDtIT4xNIGPjMag4piiGY=
-X-Received: by 2002:a05:6512:6c4:b0:530:b76c:65df with SMTP id
- 2adb3069b0e04-530ee99ce52mr332804e87.35.1723186109447; Thu, 08 Aug 2024
- 23:48:29 -0700 (PDT)
+	Fri, 09 Aug 2024 13:25:10 +0000
+Received: from pps.filterd (m0359308.ppops.net [127.0.0.1])
+	by mx0b-00300601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 479C4eFv004134;
+	Fri, 9 Aug 2024 13:24:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emerson.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=email; bh=IXuzo+k1Fuz
+	U2qFtsu2QEn/iOLlKK50tpT2YpCc7BLo=; b=S0u+U4+c20+I+JaBO+MRF9CNY79
+	hed6TRlrsljcIvzAgKkwXfp2BcYoIQ9UEe3nYm8QYtlsiLzGjImFkoClf1sInEsP
+	n8yEtbSDbURC6KFACcH3Ys1zSg+Kh9QAFsCDLQhnTB/eXEJV7zGEl3kREAEM3Ehd
+	hhZOUDND9YrT44KQ5b77GTRVxqNEyU9KIkA0vw/vySoo6+0Invbw3O7PHCTEMOPf
+	FhWa+ZmEfr3hVLl1u4dg8m4VClUKv1G45mqJF0gfRUmOUhkfYklFkfdHGbCIwPce
+	N95Is2d/wBfKOuAcyKIthkvHnxBJgL/JbWldfRCdmfqtpfyRhjaycD0ElcA==
+Received: from usgdcecpmsgae03.extemr.org ([144.191.128.204])
+	by mx0b-00300601.pphosted.com (PPS) with ESMTPS id 40wjsk1bta-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Aug 2024 13:24:55 +0000 (GMT)
+Received: from usgdcecpmsgap05.emrsn.org (10.16.75.137) by mail.emerson.com
+ (10.16.11.129) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 9 Aug
+ 2024 13:25:28 +0000
+Received: from usgdcecpmsgap05.emrsn.org (10.16.75.137) by
+ usgdcecpmsgap05.emrsn.org (10.16.75.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 9 Aug 2024 13:24:40 +0000
+Received: from localhost.localdomain (10.19.249.15) by Inetmail.emrsn.net
+ (10.16.75.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11 via Frontend
+ Transport; Fri, 9 Aug 2024 13:24:38 +0000
+From: Claus Fabig <claus.fabig@emerson.com>
+To: <claus.fabig@emerson.com>, <mwalle@kernel.org>, <tudor.ambarus@linaro.org>,
+        <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mtd: spi-nor: add support for MRAM Everspin EM008LX
+Date: Fri, 9 Aug 2024 15:21:58 +0200
+Message-ID: <20240809132246.3395-1-claus.fabig@emerson.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20240808-loongson1-nand-v8-0-c96dea418b41@gmail.com>
- <20240808-loongson1-nand-v8-1-c96dea418b41@gmail.com> <20240808-backyard-unglue-3cf429ad8da5@spud>
-In-Reply-To: <20240808-backyard-unglue-3cf429ad8da5@spud>
-From: Keguang Zhang <keguang.zhang@gmail.com>
-Date: Fri, 9 Aug 2024 14:47:53 +0800
-Message-ID: <CAJhJPsVOTAj9ePzeHkwDX049FKd=9Rs_NjQE2qwQL76GKSC66Q@mail.gmail.com>
-Subject: Re: [PATCH v8 1/2] dt-bindings: mtd: Add Loongson-1 NAND Controller
-To: Conor Dooley <conor@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-media@vger.kernel.org
+X-Proofpoint-GUID: RFcVTwCqkTrzuRZrgTpuLLKXg_H3yzgQ
+X-Proofpoint-ORIG-GUID: RFcVTwCqkTrzuRZrgTpuLLKXg_H3yzgQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-09_10,2024-08-07_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 adultscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408090097
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240808_234832_286694_1EB5D7A4 
-X-CRM114-Status: GOOD (  27.50  )
+X-CRM114-CacheID: sfid-20240809_062508_966320_B1A5ABD3 
+X-CRM114-Status: GOOD (  15.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,75 +89,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBBdWcgOCwgMjAyNCBhdCAxMTozN+KAr1BNIENvbm9yIERvb2xleSA8Y29ub3JAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cj4KPiBPbiBUaHUsIEF1ZyAwOCwgMjAyNCBhdCAwNzoyMjoxOVBNICsw
-ODAwLCBLZWd1YW5nIFpoYW5nIHZpYSBCNCBSZWxheSB3cm90ZToKPiA+IEZyb206IEtlZ3Vhbmcg
-WmhhbmcgPGtlZ3VhbmcuemhhbmdAZ21haWwuY29tPgo+ID4KPiA+IEFkZCBkZXZpY2V0cmVlIGJp
-bmRpbmcgZG9jdW1lbnQgZm9yIExvb25nc29uLTEgTkFORCBDb250cm9sbGVyLgo+ID4KPiA+IFNp
-Z25lZC1vZmYtYnk6IEtlZ3VhbmcgWmhhbmcgPGtlZ3VhbmcuemhhbmdAZ21haWwuY29tPgo+ID4g
-LS0tCj4gPiBDaGFuZ2VzIGluIHY4Ogo+ID4gLSBBZGQgYSBkZXNjcmlwdGlvbiBwYXJ0Lgo+ID4g
-LSBBZGp1c3QgdGhlIGNvbXBhdGlibGUgYmVjYXVzZSB0aGUgbWF0Y2ggZGF0YSBmb3IgbHMxYy1u
-ZmMgZGlmZmVycyBmcm9tIGxzMWItbmZjLgo+ID4gLSBNYXJrICduYW5kLXVzZS1zb2Z0LWVjYy1l
-bmdpbmUnIGFuZCAnbmFuZC1lY2MtYWxnbycgYXMgbWFuZGF0b3J5Lgo+ID4gLSBEZWxldGUgdGhl
-IHN1cGVyZmx1b3VzIGJsYW5rIGxpbmVzLgo+ID4KPiA+IENoYW5nZXMgaW4gdjc6Cj4gPiAtIHJl
-bmFtZSB0aGUgZmlsZSB0byBsb29uZ3NvbixsczFiLW5mYy55YW1sCj4gPgo+ID4gQ2hhbmdlcyBp
-biB2NjoKPiA+IC0gQSBuZXdseSBhZGRlZCBwYXRjaAo+ID4gLS0tCj4gPiAgLi4uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbXRkL2xvb25nc29uLGxzMWItbmZjLnlhbWwgfCA3NSArKysrKysrKysrKysr
-KysrKysrKysrCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDc1IGluc2VydGlvbnMoKykKPiA+Cj4gPiBk
-aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9sb29uZ3Nv
-bixsczFiLW5mYy55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9s
-b29uZ3NvbixsczFiLW5mYy55YW1sCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXgg
-MDAwMDAwMDAwMDAwLi43Y2UzMzUzMjRhMjkKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbG9vbmdzb24sbHMxYi1uZmMueWFt
-bAo+Cj4gV2hlbiBJIGZpcnN0IHJlYWQgIm5mYyIgaGVyZSBJIHRob3VnaHQgaXQgd2FzIGEgY29w
-eS1wYXN0ZSBtaXN0YWtlLCBhcwo+ICJuZmMiIGlzIGEgdGVjaG5vbG9neSBvZiBpdCdzIG93bi4g
-SSB0aGluayBpdCB3b3VsZCBtYWtlIHNlbnNlIHRvIHJlbmFtZQo+IHRvICJsb29uZ3NvbixsczFi
-LW5hbmQtY29udHJvbGxlciIgZXRjIHRvIHJlbW92ZSB0aGF0IHNvcnQgb2YgY29uZnVzaW9uLgo+
-IFRoZXNlIGRldmljZXMgbWlnaHQgbm90IGltcGxlbWVudCBORkMsIGJ1dCB3aGF0J3MgdG8gc2F5
-IHRoYXQgYSBmdXR1cmUKPiBkZXZpY2Ugd2lsbCBub3Q/Cj4KU29ycnkgZm9yIHRoZSBjb25mdXNp
-b24uClRoZSBzdHJpbmcgImxvb25nc29uLGxzMWItbmFuZC1jb250cm9sbGVyIiBtaWdodCBiZSB0
-b28gbG9uZy4KTWF5IEkgcmVuYW1lIGl0IHRvICJsb29uZ3NvbixsczFiLW5hbmQiPwoKPiBDaGVl
-cnMsCj4gQ29ub3IuCj4KPiA+IEBAIC0wLDAgKzEsNzUgQEAKPiA+ICsjIFNQRFgtTGljZW5zZS1J
-ZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkKPiA+ICslWUFNTCAxLjIK
-PiA+ICstLS0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL210ZC9sb29u
-Z3NvbixsczFiLW5mYy55YW1sIwo+ID4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9t
-ZXRhLXNjaGVtYXMvY29yZS55YW1sIwo+ID4gKwo+ID4gK3RpdGxlOiBMb29uZ3Nvbi0xIE5BTkQg
-Q29udHJvbGxlcgo+ID4gKwo+ID4gK21haW50YWluZXJzOgo+ID4gKyAgLSBLZWd1YW5nIFpoYW5n
-IDxrZWd1YW5nLnpoYW5nQGdtYWlsLmNvbT4KPiA+ICsKPiA+ICtkZXNjcmlwdGlvbjogfAo+Cj4g
-VGhpcyB8IGlzIG5vdCBuZWVkZWQuCj4KV2lsbCByZW1vdmUgfC4KVGhhbmtzIQoKPiA+ICsgIFRo
-ZSBMb29uZ3Nvbi0xIE5BTkQgY29udHJvbGxlciBhYnN0cmFjdHMgYWxsIHN1cHBvcnRlZCBvcGVy
-YXRpb25zLAo+ID4gKyAgbWVhbmluZyBpdCBkb2VzIG5vdCBzdXBwb3J0IGxvdy1sZXZlbCBhY2Nl
-c3MgdG8gcmF3IE5BTkQgZmxhc2ggY2hpcHMuCj4gPiArICBNb3Jlb3ZlciwgdGhlIGNvbnRyb2xs
-ZXIgaXMgcGFpcmVkIHdpdGggdGhlIERNQSBlbmdpbmUgdG8gcGVyZm9ybQo+ID4gKyAgUkVBRCBh
-bmQgUFJPR1JBTSBmdW5jdGlvbnMuCj4gPiArCj4gPiArYWxsT2Y6Cj4gPiArICAtICRyZWY6IG5h
-bmQtY29udHJvbGxlci55YW1sCj4gPiArCj4gPiArcHJvcGVydGllczoKPiA+ICsgIGNvbXBhdGli
-bGU6Cj4gPiArICAgIG9uZU9mOgo+ID4gKyAgICAgIC0gZW51bToKPiA+ICsgICAgICAgICAgLSBs
-b29uZ3NvbixsczFiLW5mYwo+ID4gKyAgICAgICAgICAtIGxvb25nc29uLGxzMWMtbmZjCj4gPiAr
-ICAgICAgLSBpdGVtczoKPiA+ICsgICAgICAgICAgLSBlbnVtOgo+ID4gKyAgICAgICAgICAgICAg
-LSBsb29uZ3NvbixsczFhLW5mYwo+ID4gKyAgICAgICAgICAtIGNvbnN0OiBsb29uZ3NvbixsczFi
-LW5mYwo+ID4gKwo+ID4gKyAgcmVnOgo+ID4gKyAgICBtYXhJdGVtczogMQo+ID4gKwo+ID4gKyAg
-ZG1hczoKPiA+ICsgICAgbWF4SXRlbXM6IDEKPiA+ICsKPiA+ICsgIGRtYS1uYW1lczoKPiA+ICsg
-ICAgY29uc3Q6IHJ4dHgKPiA+ICsKPiA+ICtwYXR0ZXJuUHJvcGVydGllczoKPiA+ICsgICJebmFu
-ZEBbMC0zXSQiOgo+ID4gKyAgICB0eXBlOiBvYmplY3QKPiA+ICsgICAgJHJlZjogcmF3LW5hbmQt
-Y2hpcC55YW1sCj4gPiArCj4gPiArICAgIHJlcXVpcmVkOgo+ID4gKyAgICAgIC0gbmFuZC11c2Ut
-c29mdC1lY2MtZW5naW5lCj4gPiArICAgICAgLSBuYW5kLWVjYy1hbGdvCj4gPiArCj4gPiArICAg
-IHVuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UKPiA+ICsKPiA+ICtyZXF1aXJlZDoKPiA+ICsg
-IC0gY29tcGF0aWJsZQo+ID4gKyAgLSByZWcKPiA+ICsgIC0gZG1hcwo+ID4gKyAgLSBkbWEtbmFt
-ZXMKPiA+ICsKPiA+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlCj4gPiArCj4gPiArZXhh
-bXBsZXM6Cj4gPiArICAtIHwKPiA+ICsgICAgbmFuZC1jb250cm9sbGVyQDFmZTc4MDAwIHsKPiA+
-ICsgICAgICAgIGNvbXBhdGlibGUgPSAibG9vbmdzb24sbHMxYi1uZmMiOwo+ID4gKyAgICAgICAg
-cmVnID0gPDB4MWZlNzgwMDAgMHg0MD47Cj4gPiArICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwx
-PjsKPiA+ICsgICAgICAgICNzaXplLWNlbGxzID0gPDA+Owo+ID4gKyAgICAgICAgZG1hcyA9IDwm
-ZG1hIDA+Owo+ID4gKyAgICAgICAgZG1hLW5hbWVzID0gInJ4dHgiOwo+ID4gKwo+ID4gKyAgICAg
-ICAgbmFuZEAwIHsKPiA+ICsgICAgICAgICAgICByZWcgPSA8MD47Cj4gPiArICAgICAgICAgICAg
-bmFuZC11c2Utc29mdC1lY2MtZW5naW5lOwo+ID4gKyAgICAgICAgICAgIG5hbmQtZWNjLWFsZ28g
-PSAiaGFtbWluZyI7Cj4gPiArICAgICAgICB9Owo+ID4gKyAgICB9Owo+ID4KPiA+IC0tCj4gPiAy
-LjQzLjAKPiA+Cj4gPgoKCgotLQpCZXN0IHJlZ2FyZHMsCgpLZWd1YW5nIFpoYW5nCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The Everspin EM008LX MRAM has 8Mb and is populated on a custom board
+using Microchip's PCI12000 spi host controller running on low 30MHz clock.
+According to Everspin Read Fast (0xb) command below 60MHz is neither
+specified and nor tested. Test shows that using Read Fast (0xb) will
+result in reading inconsistent data in this setup but writing is fine, so
+only supporting Read (0x3) command should be acceptable for the moment.
+The device is JEDEC compatible (JESD251 and JESD251-1) but not able to
+provide SFDP information.
+
+For spec v3.2 refer to Link: https://www.everspin.com/file/158315/download.
+
+Successfully tested according to
+Link: https://www.kernel.org/doc/html/latest/driver-api/mtd/spi-nor.html.
+
+Signed-off-by: Claus Fabig <claus.fabig@emerson.com>
+---
+Changes in V2:
+ - add id for probing instead of name
+ - change sector size from 1MB to 64k
+
+test em008lxb MRAM
+cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/partname
+em008lx
+cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/jedec_id
+6bbb14
+cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/manufacturer
+everspin
+cat /sys/kernel/debug/spi-nor/spi-EMR5555\:00/capabilities
+Supported read modes by the flash
+ 1S-1S-1S
+  opcode	0x03
+  mode cycles	0
+  dummy cycles	0
+
+Supported page program modes by the flash
+ 1S-1S-1S
+  opcode	0x02
+cat /sys/kernel/debug/spi-nor/spi-EMR5555\:00/params
+name		em008lx
+id		6b bb 14 10 48 5f
+size		1.00 MiB
+write size	1
+page size	256
+address nbytes	3
+flags		HAS_SR_TB | HAS_16BIT_SR | HAS_4BIT_BP | HAS_SR_BP3_BIT6
+
+opcodes
+ read		0x03
+  dummy cycles	0
+ erase		0xd8
+ program	0x02
+ 8D extension	none
+
+protocols
+ read		1S-1S-1S
+ write		1S-1S-1S
+ register	1S-1S-1S
+
+erase commands
+ d8 (64.0 KiB) [0]
+ c7 (1.00 MiB)
+
+sector map
+ region (in hex)   | erase mask | overlaid
+ ------------------+------------+----------
+ 00000000-000fffff |     [0   ] | no
+cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00020000 00020000 "spi-EMR1010:00"
+mtd1: 00100000 00010000 "spi-EMR5555:00"
+mtd_debug info /dev/mtd1
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 1048576 (1M)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1 
+mtd.oobsize = 0 
+regions = 0
+
+dd if=/dev/urandom of=spi_test bs=1M count=1
+mtd_debug erase /dev/mtd1 0 1048576
+mtd_debug read /dev/mtd1 0 1048576 spi_read
+Copied 1048576 bytes from address 0x00000000 in flash to spi_read
+hexdump spi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0100000
+sha256sum spi_read
+f5fb04aa5b882706b9309e885f19477261336ef76a150c3b4d3489dfac3953ec  spi_read
+mtd_debug write /dev/mtd1 0 1048576 spi_test
+Copied 1048576 bytes from spi_test to address 0x00000000 in flash
+mtd_debug read /dev/mtd1 0 1048576 spi_read
+Copied 1048576 bytes from address 0x00000000 in flash to spi_read
+sha256sum spi*
+8b73cb3cf9a032236fc3f41c974fced7b8dd43262628c5425f178c84ad619965  spi_read
+8b73cb3cf9a032236fc3f41c974fced7b8dd43262628c5425f178c84ad619965  spi_test
+
+ drivers/mtd/spi-nor/everspin.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
+index add37104d673..178529ed0a28 100644
+--- a/drivers/mtd/spi-nor/everspin.c
++++ b/drivers/mtd/spi-nor/everspin.c
+@@ -31,6 +31,12 @@ static const struct flash_info everspin_nor_parts[] = {
+ 		.size = SZ_512K,
+ 		.sector_size = SZ_512K,
+ 		.flags = SPI_NOR_NO_ERASE,
++	}, {
++		.id = SNOR_ID(0x6b, 0xbb, 0x14),
++		.name = "em008lx",
++		.size = SZ_1M,
++		.sector_size = SZ_64K,
++		.flags = SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
+ 	}
+ };
+ 
+-- 
+2.43.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
