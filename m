@@ -4,80 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A607CC3DA4A
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2024 13:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8DF2C3DA4A
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2024 14:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=caEBNenY+96DdEpAA/agdy+3/c2xTJ2UT6yRJxTGO2s=; b=TtcP/RCJCq2cQK
-	i1D8VKT9AV6n0igHs6odHXRidOOQvohVT0fXBj3qQActmHSgcZ5TFP7OfHsiAs3QPzXU6A3530Kys
-	rLtmv/iL38JvhBV2yLNrOUhWK7O9rRpurMhcON1HwF+ldsbfuTNMAcosHEahPF8kOk22lNZjIXeTK
-	+/gMREx9pofJqo2bBHjN7LbIq0ubkpdTZYb5BnOe/ajhmOFCQQAJ1b0dCE8n5vc7c0VskW8X713re
-	gc7c2LedoyB5FF0a34wECwfvHMcWC5nF+ciAcMfymVFyPJYsGOIptKXHlX6wVc11WAaZkr6x501RN
-	MCm8x8VziGxMwzEClzSg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=GeTkDrtnM9N+fGulHoCJSx69TrmOi82MF1jKkO4Qt+k=; b=M+Dg/VLwe6CdwK43oVH3x/szYR
+	8E5kybqrzvvySUBe4Q+1aCO54rEukwaS8uknSWQqOAjRmr3rqx+zHWbjNG9wXe6mOqQgb4+g8Qrll
+	Y0C5TYdztmnDK/ttvbqMjEuh+09F3TM9QeSmuY+7oqCOl+EmdvtVAn34RCxy4aHNzfECP/g3F7cLs
+	o+jODiYFDpj78pbdSYhIVfpcq4I39QsZdLWTd+XNsYkFIu/P1tCvEHywD+C0vAdItpVE45ea8Nd1r
+	l7VWtDwlUc9RNCgVKBgI85Vn9F4V8MKTbhMuKnLypYwRcuoFwHo4q+4aRtrZZOWwRiDLoZ395ROzy
+	Fhs25FcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1scPcG-0000000BK9P-2vQw;
-	Fri, 09 Aug 2024 13:25:12 +0000
-Received: from mx0a-00300601.pphosted.com ([148.163.146.64])
+	id 1scQvo-0000000BafR-1SVV;
+	Fri, 09 Aug 2024 14:49:28 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1scPcC-0000000BK7h-1695
+	id 1scQvm-0000000Baez-0GhH
 	for linux-mtd@lists.infradead.org;
-	Fri, 09 Aug 2024 13:25:10 +0000
-Received: from pps.filterd (m0359308.ppops.net [127.0.0.1])
-	by mx0b-00300601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 479C4eFv004134;
-	Fri, 9 Aug 2024 13:24:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emerson.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=email; bh=IXuzo+k1Fuz
-	U2qFtsu2QEn/iOLlKK50tpT2YpCc7BLo=; b=S0u+U4+c20+I+JaBO+MRF9CNY79
-	hed6TRlrsljcIvzAgKkwXfp2BcYoIQ9UEe3nYm8QYtlsiLzGjImFkoClf1sInEsP
-	n8yEtbSDbURC6KFACcH3Ys1zSg+Kh9QAFsCDLQhnTB/eXEJV7zGEl3kREAEM3Ehd
-	hhZOUDND9YrT44KQ5b77GTRVxqNEyU9KIkA0vw/vySoo6+0Invbw3O7PHCTEMOPf
-	FhWa+ZmEfr3hVLl1u4dg8m4VClUKv1G45mqJF0gfRUmOUhkfYklFkfdHGbCIwPce
-	N95Is2d/wBfKOuAcyKIthkvHnxBJgL/JbWldfRCdmfqtpfyRhjaycD0ElcA==
-Received: from usgdcecpmsgae03.extemr.org ([144.191.128.204])
-	by mx0b-00300601.pphosted.com (PPS) with ESMTPS id 40wjsk1bta-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Aug 2024 13:24:55 +0000 (GMT)
-Received: from usgdcecpmsgap05.emrsn.org (10.16.75.137) by mail.emerson.com
- (10.16.11.129) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 9 Aug
- 2024 13:25:28 +0000
-Received: from usgdcecpmsgap05.emrsn.org (10.16.75.137) by
- usgdcecpmsgap05.emrsn.org (10.16.75.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 9 Aug 2024 13:24:40 +0000
-Received: from localhost.localdomain (10.19.249.15) by Inetmail.emrsn.net
- (10.16.75.137) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11 via Frontend
- Transport; Fri, 9 Aug 2024 13:24:38 +0000
-From: Claus Fabig <claus.fabig@emerson.com>
-To: <claus.fabig@emerson.com>, <mwalle@kernel.org>, <tudor.ambarus@linaro.org>,
-        <pratyush@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] mtd: spi-nor: add support for MRAM Everspin EM008LX
-Date: Fri, 9 Aug 2024 15:21:58 +0200
-Message-ID: <20240809132246.3395-1-claus.fabig@emerson.com>
-X-Mailer: git-send-email 2.43.0
+	Fri, 09 Aug 2024 14:49:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 36BB061262;
+	Fri,  9 Aug 2024 14:49:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8E49C4AF0D;
+	Fri,  9 Aug 2024 14:49:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723214964;
+	bh=26n09ZIaJtD0l1jyPbXELEN64tF3YdvsFI0WbmrVEqk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=U2JA35G7gH/3s3VRNzS8PKNYunNi9aYQoVFy8XmJ+BwfY5+bQa7LTU3v1QTfEBH3z
+	 1t4PxiF8wc0NPzfu0gGcJvmJ5VmEiSi+Iq0iwjl++g93EP98Q0DQrXRG3xN9y0We0I
+	 bf1MPn6fHCyPlu0BUjSdcq+Qw5H0nGovMyYEVmjHAFjeUpy1vqOqYvHdhJAMmAniIF
+	 d60vrsmjvpbV/gABQG5bJECMEkg2ftFXso1EZx1AWXsGn7jxRGwUm+XHwQufcnGt9f
+	 L+r+rgdbLYi/JOksgGbaFh2DYTh7wcwOaJi0qFR0aOr9yNcLD0+IGD4Lc5GF9d75er
+	 hwoaAVk4w+VkQ==
+Date: Fri, 9 Aug 2024 15:49:20 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Keguang Zhang <keguang.zhang@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-media@vger.kernel.org
+Subject: Re: [PATCH v8 1/2] dt-bindings: mtd: Add Loongson-1 NAND Controller
+Message-ID: <20240809-smuggler-patrol-067003f0ba9b@spud>
+References: <20240808-loongson1-nand-v8-0-c96dea418b41@gmail.com>
+ <20240808-loongson1-nand-v8-1-c96dea418b41@gmail.com>
+ <20240808-backyard-unglue-3cf429ad8da5@spud>
+ <CAJhJPsVOTAj9ePzeHkwDX049FKd=9Rs_NjQE2qwQL76GKSC66Q@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-GUID: RFcVTwCqkTrzuRZrgTpuLLKXg_H3yzgQ
-X-Proofpoint-ORIG-GUID: RFcVTwCqkTrzuRZrgTpuLLKXg_H3yzgQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-09_10,2024-08-07_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- malwarescore=0 phishscore=0 clxscore=1015 mlxlogscore=999
- priorityscore=1501 adultscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408090097
+In-Reply-To: <CAJhJPsVOTAj9ePzeHkwDX049FKd=9Rs_NjQE2qwQL76GKSC66Q@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240809_062508_966320_B1A5ABD3 
-X-CRM114-Status: GOOD (  15.15  )
+X-CRM114-CacheID: sfid-20240809_074926_531602_8E791C2E 
+X-CRM114-Status: GOOD (  25.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,132 +75,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4857348491622911341=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Everspin EM008LX MRAM has 8Mb and is populated on a custom board
-using Microchip's PCI12000 spi host controller running on low 30MHz clock.
-According to Everspin Read Fast (0xb) command below 60MHz is neither
-specified and nor tested. Test shows that using Read Fast (0xb) will
-result in reading inconsistent data in this setup but writing is fine, so
-only supporting Read (0x3) command should be acceptable for the moment.
-The device is JEDEC compatible (JESD251 and JESD251-1) but not able to
-provide SFDP information.
 
-For spec v3.2 refer to Link: https://www.everspin.com/file/158315/download.
+--===============4857348491622911341==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SxlQ+XhTGBIdU8Mo"
+Content-Disposition: inline
 
-Successfully tested according to
-Link: https://www.kernel.org/doc/html/latest/driver-api/mtd/spi-nor.html.
 
-Signed-off-by: Claus Fabig <claus.fabig@emerson.com>
----
-Changes in V2:
- - add id for probing instead of name
- - change sector size from 1MB to 64k
+--SxlQ+XhTGBIdU8Mo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-test em008lxb MRAM
-cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/partname
-em008lx
-cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/jedec_id
-6bbb14
-cat /sys/bus/spi/devices/spi-EMR5555\:00/spi-nor/manufacturer
-everspin
-cat /sys/kernel/debug/spi-nor/spi-EMR5555\:00/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x03
-  mode cycles	0
-  dummy cycles	0
+On Fri, Aug 09, 2024 at 02:47:53PM +0800, Keguang Zhang wrote:
+> On Thu, Aug 8, 2024 at 11:37=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
+rote:
+> >
+> > On Thu, Aug 08, 2024 at 07:22:19PM +0800, Keguang Zhang via B4 Relay wr=
+ote:
+> > > From: Keguang Zhang <keguang.zhang@gmail.com>
+> > >
+> > > Add devicetree binding document for Loongson-1 NAND Controller.
+> > >
+> > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > > ---
+> > > Changes in v8:
+> > > - Add a description part.
+> > > - Adjust the compatible because the match data for ls1c-nfc differs f=
+rom ls1b-nfc.
+> > > - Mark 'nand-use-soft-ecc-engine' and 'nand-ecc-algo' as mandatory.
+> > > - Delete the superfluous blank lines.
+> > >
+> > > Changes in v7:
+> > > - rename the file to loongson,ls1b-nfc.yaml
+> > >
+> > > Changes in v6:
+> > > - A newly added patch
+> > > ---
+> > >  .../devicetree/bindings/mtd/loongson,ls1b-nfc.yaml | 75 ++++++++++++=
+++++++++++
+> > >  1 file changed, 75 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.=
+yaml b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml
+> > > new file mode 100644
+> > > index 000000000000..7ce335324a29
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml
+> >
+> > When I first read "nfc" here I thought it was a copy-paste mistake, as
+> > "nfc" is a technology of it's own. I think it would make sense to rename
+> > to "loongson,ls1b-nand-controller" etc to remove that sort of confusion.
+> > These devices might not implement NFC, but what's to say that a future
+> > device will not?
+> >
+> Sorry for the confusion.
+> The string "loongson,ls1b-nand-controller" might be too long.
 
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode	0x02
-cat /sys/kernel/debug/spi-nor/spi-EMR5555\:00/params
-name		em008lx
-id		6b bb 14 10 48 5f
-size		1.00 MiB
-write size	1
-page size	256
-address nbytes	3
-flags		HAS_SR_TB | HAS_16BIT_SR | HAS_4BIT_BP | HAS_SR_BP3_BIT6
+It "might"? Why do you think it is too long?
 
-opcodes
- read		0x03
-  dummy cycles	0
- erase		0xd8
- program	0x02
- 8D extension	none
+> May I rename it to "loongson,ls1b-nand"?
 
-protocols
- read		1S-1S-1S
- write		1S-1S-1S
- register	1S-1S-1S
+Sure.
 
-erase commands
- d8 (64.0 KiB) [0]
- c7 (1.00 MiB)
+--SxlQ+XhTGBIdU8Mo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-sector map
- region (in hex)   | erase mask | overlaid
- ------------------+------------+----------
- 00000000-000fffff |     [0   ] | no
-cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00020000 00020000 "spi-EMR1010:00"
-mtd1: 00100000 00010000 "spi-EMR5555:00"
-mtd_debug info /dev/mtd1
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 1048576 (1M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1 
-mtd.oobsize = 0 
-regions = 0
+-----BEGIN PGP SIGNATURE-----
 
-dd if=/dev/urandom of=spi_test bs=1M count=1
-mtd_debug erase /dev/mtd1 0 1048576
-mtd_debug read /dev/mtd1 0 1048576 spi_read
-Copied 1048576 bytes from address 0x00000000 in flash to spi_read
-hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0100000
-sha256sum spi_read
-f5fb04aa5b882706b9309e885f19477261336ef76a150c3b4d3489dfac3953ec  spi_read
-mtd_debug write /dev/mtd1 0 1048576 spi_test
-Copied 1048576 bytes from spi_test to address 0x00000000 in flash
-mtd_debug read /dev/mtd1 0 1048576 spi_read
-Copied 1048576 bytes from address 0x00000000 in flash to spi_read
-sha256sum spi*
-8b73cb3cf9a032236fc3f41c974fced7b8dd43262628c5425f178c84ad619965  spi_read
-8b73cb3cf9a032236fc3f41c974fced7b8dd43262628c5425f178c84ad619965  spi_test
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZrYscAAKCRB4tDGHoIJi
+0tPAAPsG15YkPAlg2tUUrN2amO1EFgloq1wSMyBK1Q29C6L50AEA4AVTK9jOQ9Zg
+mm2+nrwrqf0WFQT/soeSzKGLISNMVg4=
+=zt9F
+-----END PGP SIGNATURE-----
 
- drivers/mtd/spi-nor/everspin.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+--SxlQ+XhTGBIdU8Mo--
 
-diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
-index add37104d673..178529ed0a28 100644
---- a/drivers/mtd/spi-nor/everspin.c
-+++ b/drivers/mtd/spi-nor/everspin.c
-@@ -31,6 +31,12 @@ static const struct flash_info everspin_nor_parts[] = {
- 		.size = SZ_512K,
- 		.sector_size = SZ_512K,
- 		.flags = SPI_NOR_NO_ERASE,
-+	}, {
-+		.id = SNOR_ID(0x6b, 0xbb, 0x14),
-+		.name = "em008lx",
-+		.size = SZ_1M,
-+		.sector_size = SZ_64K,
-+		.flags = SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
- 	}
- };
- 
--- 
-2.43.0
 
+--===============4857348491622911341==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4857348491622911341==--
+
