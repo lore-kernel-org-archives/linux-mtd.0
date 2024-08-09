@@ -4,87 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B1F3C52D7C
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2024 17:42:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD86DC531DE
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Aug 2024 23:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kfw1aFO0SsIYDrMDXQCGEsMaMkYpkuJbLUOFtlDvhQ0=; b=PxEPFI9zpsOIlz
-	n82MPJLEKFh6IxoufHDy5g/R2X9S9tB5X6tTAylSa6gJ5yVqpZLhGcATdKBai+slm0PHSkHVCizSZ
-	8ToDZEHdUS5GLpC0gSXmW3mMbKWAl9Q5onOefmURxkuKpqDik/4L1s5uuArXyYpcXEwwTjLBQyhiv
-	vnQnA7pusVi38V+OB7E9PACdTdNFCkpLxzxkaLhyCt6sRpB4qmlP35HF+kZi5SDVzljD7w2VrXmjn
-	X3q1NxeYyHyWlA5nuy7tSQQriwWGhf3bDftY44DVyaXMv4pTLTu5dEnabvq+vI+xdY0KMe7GYERek
-	Pw6yy6mCmiVyXSF3PeLg==;
+	List-Owner; bh=oa6DcZChtVfsdSlC1EcT5LNZkRFInVx71Gajvm0THCA=; b=B1Bsclbc+xyLSy
+	gJg5WK6iViL9PXNPo7YM4hSz16nB5n4AEWCHzExM8jFQHasjpZ7odJCl9JKhTKVn3a02DhBdUPcq+
+	MjgFSwPtqYNf6tlofsV2+SY0mKADPV6XWnK/m7Wa0M0Ex/VkgReojzQ5IpgxCAzl/EOamUuRY/Wcp
+	uLUgQcLvFJz7ZZgtMxtFBn2V8ciTDnPI2SYWN3RnkNp6abudJK0oXRAUAMhIxmS3TyudEJ+at9vTy
+	i6hPBi4E3iEUosF4LX1S1mT43zhVxth7k7b6HiNswwzoknLU2KyS/M7eNCIPmZdmT4pZJITxZ66Cr
+	9b3FFtJEwwCQSDozWK+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1scTdY-0000000C6U7-1eU8;
-	Fri, 09 Aug 2024 17:42:48 +0000
-Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
+	id 1scYd4-0000000Ci4P-41Wd;
+	Fri, 09 Aug 2024 23:02:38 +0000
+Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1scTcy-0000000C6Ln-2XT7
-	for linux-mtd@lists.infradead.org;
-	Fri, 09 Aug 2024 17:42:14 +0000
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4280bbdad3dso17099175e9.0
-        for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2024 10:42:11 -0700 (PDT)
+	id 1scYcz-0000000Ci17-1Gm4;
+	Fri, 09 Aug 2024 23:02:36 +0000
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-428f5c0833bso20614425e9.0;
+        Fri, 09 Aug 2024 16:02:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1723225330; x=1723830130; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VamUtaKsdnMO3Xj/IeNiDDarpPSNzAwlcfOY5Y0XulA=;
-        b=smWLZLfI4pUuQf0mLllki6LEgYy6Q95LejrQlFLquTQztABTAKtFWQQvRzO4afrCGM
-         ApT6VaxLl8QJ1BF1DzkWV8k9P0g3WO1tYU7poTHUdWKqcd6xidYIDk0eiDpEyDdTBBhA
-         bmfFB8TI9tXRUu0egrcFFRvTeW0wS1x4MJYeAIK/EFkrUgeusyqOxahyZ5qeTV2QkIlO
-         Wz1tvfP/skaJ79LnFKyDjhLVu1gHxktd0RNkjm+NQVHET3MtqKfZBejVQZH2h0A35Wwu
-         owmXfYxuB98SZRGq82XV1nULFjyWGLocYhtfkYibjxGmNv8Ic/sg5FOpoa2NlQ6zpiZg
-         xmTQ==
+        d=gmail.com; s=20230601; t=1723244552; x=1723849352; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zJtL0MfF3HGZoWE7QS0/OcrDoRKxdV59VhkJ0rmXwsw=;
+        b=KHIaUxqJ7wDUJdgCroF++swHBkUfT8/djy+ZZY3h7jy4t688/XD7rGFof5SzXUiFxE
+         vJChGVEhT5wh9feSl0+kjUC4/Fd6FTDyOZuTOZsOAQOh1nihreOShnUzNLYTGQ86dpE2
+         2M+yhjfQLfX2KZhcObK+sBHjPE3d5F/VgKJxMLAwU+/DkE8vFgEHh9MoQiKiR1vye19V
+         f75tw/MVFovGNgfe8vZeVyIUaN38My7wfB0c6o1/O/mdGHCYoDP34ejDDyXII6tKhVTM
+         pc2t3PWJkTbOyqxJUopQ7Z+bBiOD2zAzCwlVRFdQWtf+soHpnhh4MQbGh7lXwO3/fltS
+         Z1og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723225330; x=1723830130;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1723244552; x=1723849352;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VamUtaKsdnMO3Xj/IeNiDDarpPSNzAwlcfOY5Y0XulA=;
-        b=E0HS3aJLc5WkzlUpTqiHIzod/BJG19Q0zn559P1usplTBcjfAHFbJ9AKSjTHRo3J1s
-         Wh2ueC/jQocaAqCteBhlZA1BzjV9crPJvemi8UMAupMq8n2T37OQaWycYSUfzR4tho0o
-         NRhO/xO5GqIC82dkYBsjh9Zv6Emk/r1n9CzrRc2lZqEZNApPVYakUV50PQ/j2pC3IIXF
-         95O5J5eeCupGFEr+OZ7kRgVg9Rsu0K2fLmw+rkrLn7bvRKxePqMyw2c8Ms9hShFoQZcD
-         MFuTbwJk3JwTk5a86+eby7B54DBR3V7wK7C4dt5mcUXl28Sy9rguSFaggvUTt6GvQfAL
-         TUfg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpTQQNwZqi0s8y5Uh0GEkRpW1nOSGzsNlCvaadyuivs8B3sODB5K2airDehjwXHT/ul0Ie37mai10=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz1eUfhIFxjwrjaG6Ea/Vb/mRgaoDu2TdFgJQRjGgYPWzja0Tkl
-	lGfUx6SeEigRxyKYVDPkJQZ64q5CDm6JHdHoASekdkzdQVe3exnErywNGNoV50Q=
-X-Google-Smtp-Source: AGHT+IGx9DDT4b4iSnts3ZE5LnnsizuK3egrq2q0nfjCRLIg7gJH+YoQ/HeD8f5UDBhmZse6UJatjQ==
-X-Received: by 2002:a05:600c:3b89:b0:426:62c5:4741 with SMTP id 5b1f17b1804b1-429c3a18df4mr16561655e9.2.1723225330233;
-        Fri, 09 Aug 2024 10:42:10 -0700 (PDT)
-Received: from [192.168.68.116] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-429c750ec0bsm1080765e9.15.2024.08.09.10.42.09
+        bh=zJtL0MfF3HGZoWE7QS0/OcrDoRKxdV59VhkJ0rmXwsw=;
+        b=lu3ERMcVzoMw2nC/Zut6ObSOypWUnWqIZbqW7XAXkYMElp3ZU5RomVfVD10NJXvUi0
+         PscF152WU6jCEgH5aVFZQmpZD74I1F57OU6lWXq3bJfrv3hX8NynayEl7lbBG/qT1OiP
+         zBo3FvpUOEWnvn/6btlFjzFk9JFuDoE17QTWhPSFsztfxok31inDD60oEQaT2Pcy2fYy
+         bKsduE/eDO7nfj4dxy5C4zE7jYO6fek4gLDRTZOVyA8OTQnz2Wjw+B6/Ar8kARjGSsFr
+         OxC5FPYsUvmVw6MyNdJqiRuKv07jATfzgXuJDDkohlhqej7cc9/heCztWFnM4cQaSG+L
+         g/bA==
+X-Forwarded-Encrypted: i=1; AJvYcCW41SxpGz59lKUbGvc0spflC5vu4INPuzLC7n/Ibe9eJGwjW5ErL+gFXCcQvEgnR7zwuajtv11LYXG31NBUIfxZ0AOeyluhNx1r1ZI4v+5WwQhmXopEOsdS1I23TcZRwSfdweQ7rZlbr+ASoLXp
+X-Gm-Message-State: AOJu0YyaTW/7RmB9zHVZ2iPCqzIBS7aYe/Z1xVLblIxe9Pj6ALwiVc1g
+	CYJeD2/ce3vKyam9MKAbmIoZUt1twbXUf1ykiycgt1Q6t4hoxlqE
+X-Google-Smtp-Source: AGHT+IFxZor+5gNGTlA+oAGQcOKniA7tCPtYOXKQQ764BxqhepnN1UfZ1qeLzc7ivDbkqqu6KUpp8w==
+X-Received: by 2002:a05:600c:4e8d:b0:424:a7f1:ba2 with SMTP id 5b1f17b1804b1-4290b8dee6dmr56055055e9.17.1723244551486;
+        Fri, 09 Aug 2024 16:02:31 -0700 (PDT)
+Received: from localhost.localdomain (host-87-10-253-138.retail.telecomitalia.it. [87.10.253.138])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-429c75044a8sm7987485e9.9.2024.08.09.16.02.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 10:42:09 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Michael Walle <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, 
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, u-boot@lists.denx.de, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-In-Reply-To: <20240808055710.19292-1-zajec5@gmail.com>
-References: <20240808055710.19292-1-zajec5@gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Update path for U-Boot environment
- variables YAML
-Message-Id: <172322532687.402259.7753078917073034445.b4-ty@linaro.org>
-Date: Fri, 09 Aug 2024 18:42:06 +0100
+        Fri, 09 Aug 2024 16:02:31 -0700 (PDT)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Joern Engel <joern@lazybastard.org>,
+	Keith Busch <kbusch@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Saravana Kannan <saravanak@google.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	linux-mmc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org
+Subject: [PATCH v4 3/7] dt-bindings: mmc: add property for partitions node in mmc-card node
+Date: Fri,  9 Aug 2024 19:21:01 +0200
+Message-ID: <20240809172106.25892-4-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240809172106.25892-1-ansuelsmth@gmail.com>
+References: <20240809172106.25892-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240809_104212_650164_98D24319 
-X-CRM114-Status: UNSURE (   6.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240809_160233_359235_DEA32592 
+X-CRM114-Status: GOOD (  12.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,17 +106,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIFRodSwgMDggQXVnIDIwMjQgMDc6NTc6MTAgKzAyMDAsIFJhZmHFgiBNacWCZWNraSB3cm90
-ZToKPiBUaGlzIGZpbGUgd2FzIG1vdmVkIHRvIHRoZSBsYXlvdXRzLyBzdWJkaXJlY3RvcnkuCj4g
-Cj4gCgpBcHBsaWVkLCB0aGFua3MhCgpbMS8xXSBNQUlOVEFJTkVSUzogVXBkYXRlIHBhdGggZm9y
-IFUtQm9vdCBlbnZpcm9ubWVudCB2YXJpYWJsZXMgWUFNTAogICAgICBjb21taXQ6IGY2ZDFjZGRk
-NzZiMmRhMTkwNDYyZDg0NTQ2ZTUyMDJkM2IyYWE5MmIKCkJlc3QgcmVnYXJkcywKLS0gClNyaW5p
-dmFzIEthbmRhZ2F0bGEgPHNyaW5pdmFzLmthbmRhZ2F0bGFAbGluYXJvLm9yZz4KCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Add property for defining partitions node in mmc-card node to define
+partitions in DT by the use of the block2mtd module to use block
+devices as MTD.
+
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ .../devicetree/bindings/mmc/mmc-card.yaml     | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mmc/mmc-card.yaml b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
+index fd347126449a..0f32d24417bc 100644
+--- a/Documentation/devicetree/bindings/mmc/mmc-card.yaml
++++ b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
+@@ -26,6 +26,9 @@ properties:
+       Use this to indicate that the mmc-card has a broken hpi
+       implementation, and that hpi should not be used.
+ 
++  partitions:
++    $ref: /schemas/mtd/partitions/partitions.yaml
++
+ required:
+   - compatible
+   - reg
+@@ -45,4 +48,41 @@ examples:
+         };
+     };
+ 
++    mmc1 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        card@0 {
++            compatible = "mmc-card";
++            reg = <0>;
++            broken-hpi;
++
++            partitions {
++                compatible = "fixed-partitions";
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                bootloader@0 {
++                  label = "bootloader";
++                  reg = <0x00000000 0x00080000>;
++                };
++
++                tclinux@80000 {
++                  label = "tclinux";
++                  reg = <0x00080000 0x02800000>;
++                };
++
++                tclinux_slave@2880000 {
++                  label = "tclinux_slave";
++                  reg = <0x02880000 0x02800000>;
++                };
++
++                rootfs_data@5080000 {
++                  label = "rootfs_data";
++                  reg = <0x5080000 0x00800000>;
++                };
++            };
++        };
++    };
++
+ ...
+-- 
+2.45.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
