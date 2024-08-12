@@ -4,81 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38600C3DA7F
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 07:38:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F7D4C52D7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 07:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Fzb5tcGls6nakiLbe8GxhmoG1Fwkv2YX1uoQ3RE3mPg=; b=wt4KJ3v7cFwjeP8J8DXgiiGC4U
-	f5p3dmprYguiRANF8GqFwSrPrxAJwOHgA1g0qfOUjm1nlEHdlqsGj4abdahQnI6eOXgDq4RNAq1qp
-	8RspXD9eXqbprEeCWeWroizZ9aFJU51Tsuc1tYG1fPhN4IlJd2+xBOv9tqTMFUlwd3ErzxY+Pb3ZU
-	kv24GBJByRvTsZHecg2xQ3//LYC2DHyQAbKUPD3RYqcTlK8GlsbhBpbr/FReJWUobnuZkU0tJiOUc
-	QWa01msQnOJywYBat+m20oZx68rhDmVRXgReKpc/0VVWyM8WG7v2RFF3l/JPDZQG+7N8zSR7JF98K
-	YFMU6ivA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=He2bRQCdaZBHE0Pzh0MM/LG2F92m8kNSwK56WllGFUA=; b=gGwL3Q1sdEEPPq
+	cP0IUgLyhkaVYPdYo9AH4dtYU2n5Aurw1nW/FkNQAAH8PeG+YnRHWUmtAIesOH58HijlUq/ioruXG
+	L7DCsn35y3WR70MbgYGygMhL8jbm5UP+C6EtKdwSOhGgtjk3x9Hvz0qm1dtPC6UpdXwTUgnaPvZoC
+	Ma1Ir+eTBVKl0FDxlLoYIH6sIU6FJy5yIMBaBZuieakmXmo+Sg4zsa5JtU0Mb9wq+IbsJKFRAUnhQ
+	DuvuAruLPwV5rjCYfbabkKSJuKilkNFQjGyaEnSB/Rn+vhCNGRJMNDPVb1WE3Dr/+Czh8lWCIylBD
+	oSnNJTy+d8YqI9vqctow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdPcs-0000000HBEM-3sVK;
-	Mon, 12 Aug 2024 07:37:58 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1sdPl8-0000000HCR7-3GEB;
+	Mon, 12 Aug 2024 07:46:30 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdPcG-0000000HB9t-2Tpr;
-	Mon, 12 Aug 2024 07:37:22 +0000
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id C68914E1;
-	Mon, 12 Aug 2024 09:37:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1723448229;
+	id 1sdPl5-0000000HCQj-0t96
+	for linux-mtd@lists.infradead.org;
+	Mon, 12 Aug 2024 07:46:29 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C0BAA60002;
+	Mon, 12 Aug 2024 07:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1723448783;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=Ht+N+M8B+B3kbQk5vj/Y5jdskCwHjTQjDHS8S8jMFoE=;
-	b=AkzbjScU1M0U22mz4vNqG+wEZuZA/HnOzvtfYOhqtm+aoBv8UcPR5i8Jjo9f4pPNKLISN0
-	cbD/rIQPlx3RlRIVHYJPIb02JPYmMWQmip92i8MaTaaXCDmDXPsUjZjh/sAUpkTjxZbMWP
-	dbKftvKLPZ8qdGcu9TVUsqn/S3RCgj8nuMkWSLZhmQovHprJSJGJ9ciWKFEloMRldQ9O77
-	f4JOQH5CB9/FvQm0DReuPOvHMF+bhOlVkuaZN1khj45m+vSoKgHe/Xo711WEHOQkuYw2oe
-	y68AVBZ20jkEO8vgEMngqkWF5V1UAlfFo445YUFCNDdls+i1+3OO0Di5nMo93g==
-Date: Mon, 12 Aug 2024 09:37:06 +0200
-Message-Id: <D3DREP874QG7.2UOSZSBI3BRQY@walle.cc>
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Cc: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
- <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
- <pratyush@kernel.org>, "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com"
- <vigneshr@ti.com>, "sbinding@opensource.cirrus.com"
- <sbinding@opensource.cirrus.com>, "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "perex@perex.cz"
- <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "patches@opensource.cirrus.com"
- <patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
- <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
- <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
-From: "Michael Walle" <michael@walle.cc>
-To: "Miquel Raynal" <miquel.raynal@bootlin.com>
-X-Mailer: aerc 0.16.0
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
- <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org> <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org> <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com> <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org> <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org> <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com> <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com> <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc> <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com> <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc> <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com> <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc> <20240812092937.2bd5c85a@xps-13>
-In-Reply-To: <20240812092937.2bd5c85a@xps-13>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EYJhz07idCmll0VNWnjmDisDihkjE0werNys1pVEO3Q=;
+	b=Z4mW4LdRNvEZqdaZMcyTuoJ7VIbeeqc2hHDGsKNErW76JnRwY5FwmpMf+Yh+wWhT62BoZo
+	VRn71biGCirvzb/WFkktT/vY8XMYPaLERYFBoD43yk+O1ad2nJIbTMiWdyc13CguY/RU/+
+	kkG2AE9qoqiioGlJO144gJkUBblehNG8ZDzghMNO1MVwHVN75m6NeQ+5K7XsNvMe19gsf+
+	NcMb9hghIJ9plw1Bxl2T6zC7EzpqPvpXcqi1WUeDqgOtFZpXtQ7YjQQzHT8j78pGCw0sVE
+	ZKIq3ZDtUnUqynJRm8ObF/CH1NWfKNyxdM13zCav9u4dKssOoKvxS34BXohEsQ==
+Date: Mon, 12 Aug 2024 09:46:21 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Keguang Zhang <keguang.zhang@gmail.com>
+Cc: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 3/3] mtd: rawnand: Add Loongson-1 NAND Controller
+ driver
+Message-ID: <20240812094621.1f4954d4@xps-13>
+In-Reply-To: <CAJhJPsUfRpkK6sNuHR0tNfr24bnv8HhJc6FQ0W+_=WeRouhzJQ@mail.gmail.com>
+References: <20240430-loongson1-nand-v7-0-60787c314fa4@gmail.com>
+	<20240430-loongson1-nand-v7-3-60787c314fa4@gmail.com>
+	<20240506095938.4a910adc@xps-13>
+	<CAJhJPsUfRpkK6sNuHR0tNfr24bnv8HhJc6FQ0W+_=WeRouhzJQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240812_003721_113008_54765F0F 
-X-CRM114-Status: GOOD (  17.85  )
+X-CRM114-CacheID: sfid-20240812_004627_720409_F59B72A1 
+X-CRM114-Status: GOOD (  11.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,73 +76,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0453278750448477690=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============0453278750448477690==
-Content-Type: multipart/signed;
- boundary=223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-
---223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-
-> > > > The first round of patches were really invasive regarding the core
-> > > > code. So if there is a clean layering approach which can be enabled
-> > > > as a module and you are maintaining it I'm fine with that (even if
-> > > > the core code needs some changes then like hooks or so, not sure). =
-=20
-> > >
-> > > That discussion started with Miquel some years ago when he was trying=
- to to=20
-> > > solve description in DT which is merged for a while in the kernel. =
-=20
-> >=20
-> > What's your point here? From what I can tell the DT binding is wrong
-> > and needs to be reworked anyway.
->
-> I'm sorry I'm now catching up, can you point at the thread explaining
-> what is wrong in the bindings? I didn't find where this was detailed. Or
-> otherwise summarize quickly what needs to change?
-
-Somewhere in this mega thread Tudor had some remarks about the
-bindings. Amit also mentioned it here:
-
-https://lore.kernel.org/r/IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7=
-699.namprd12.prod.outlook.com/
-
--michael
-
---223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZrm7oxEcbWljaGFlbEB3
-YWxsZS5jYwAKCRASJzzuPgIf+PctAYCbuUNxmdpx/X9rB1exzej6BdgcJkd3X4VZ
-PwvBiJJJwfBXsF9QanNEeTL8VZQbzQUBgLkzbud/s0TfQrzHuMn9pAovYMF4/C2l
-/lZ51bqyfaZad2v94+7DWWCbHWBW5f/7Yg==
-=hWwd
------END PGP SIGNATURE-----
-
---223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa--
-
-
---===============0453278750448477690==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============0453278750448477690==--
-
+SGkgS2VndWFuZywKCj4gPiA+ICsKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIG5mYy0+ZGF0
+YS0+cGFyc2VfYWRkcmVzcyhjaGlwLCBhZGRycywgbmFkZHJzLCBjbWQpOwo+ID4gPiArICAgICAg
+ICAgICAgICAgICAgICAgLyogc2V0IE5BTkQgYWRkcmVzcyAqLwo+ID4gPiArICAgICAgICAgICAg
+ICAgICAgICAgbmFuZF93cml0ZWwobmZjLCBOQU5EX0FERFIxLCBuZmMtPmFkZHIxX3JlZyk7Cj4g
+PiA+ICsgICAgICAgICAgICAgICAgICAgICBuYW5kX3dyaXRlbChuZmMsIE5BTkRfQUREUjIsIG5m
+Yy0+YWRkcjJfcmVnKTsKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwo+ID4gPiAr
+ICAgICAgICAgICAgIGNhc2UgTkFORF9PUF9EQVRBX0lOX0lOU1RSOgo+ID4gPiArICAgICAgICAg
+ICAgIGNhc2UgTkFORF9PUF9EQVRBX09VVF9JTlNUUjoKPiA+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgIG9mZnNldCA9IG5hbmRfc3Vib3BfZ2V0X2RhdGFfc3RhcnRfb2ZmKHN1Ym9wLCBvcF9pZCk7
+Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICBuZmMtPmxlbiA9IG5hbmRfc3Vib3BfZ2V0X2Rh
+dGFfbGVuKHN1Ym9wLCBvcF9pZCk7Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICBpZiAoaW5z
+dHItPnR5cGUgPT0gTkFORF9PUF9EQVRBX0lOX0lOU1RSKQo+ID4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBuZmMtPmJ1ZiA9Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAodm9pZCAqKWluc3RyLT5jdHguZGF0YS5idWYuaW4gKyBvZmZzZXQ7Cj4gPiA+ICsg
+ICAgICAgICAgICAgICAgICAgICBlbHNlIGlmIChpbnN0ci0+dHlwZSA9PSBOQU5EX09QX0RBVEFf
+T1VUX0lOU1RSKQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBuZmMtPmJ1ZiA9
+Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAodm9pZCAqKWluc3RyLT5j
+dHguZGF0YS5idWYub3V0ICsgb2Zmc2V0OyAgCj4gPgo+ID4gVGhlIGJ1ZiBwb2ludGVyIGZlZWxz
+IGNsdW5reS4gWW91IGRvbid0IGtub3cgZm9yIGhvdyBsb25nIHRoZSBidWZmZXIKPiA+IHlvdSBw
+b2ludCB0byB3aWxsIGJlIHZhbGlkLCBwbGVhc2UgZG9uJ3QgZG8gdGhhdC4KPiA+ICAKPiBUaGUg
+YnVmIHBvaW50ZXIgaXMgdXNlZCBmb3IgRE1BIHRyYW5zZmVyIGFmdGVyd2FyZHMuCj4gSSByZWZl
+cnJlZCB0byBvdGhlciBkcml2ZXJzLCBhbmQgdGhleSB1c2VkIHRoZSBzYW1lIGFwcHJvYWNoLgo+
+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y2LjguOS9zb3VyY2UvZHJpdmVycy9t
+dGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jI0w2NDcKCm5mY19vcCBpcyBhIGxv
+Y2FsIHZhcmlhYmxlLCBpdCBkb2Vzbid0IGxpdmUgcGFzdCB0aGUgZnVuY3Rpb24gY2FsbC4KCj4g
+aHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjYuOC45L3NvdXJjZS9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9yb2NrY2hpcC1uYW5kLWNvbnRyb2xsZXIuYyNMMzY2CgpUaGFua3MsCk1pcXXD
+qGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
