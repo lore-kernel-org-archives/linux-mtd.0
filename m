@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1456DC3DA7F
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 09:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57226C52D7C
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 09:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zbbITJRUEJQ4/bZx2J9GjOEkRXBMP1hYjYS90EHKjt8=; b=34rzV3C7wwmy0A
-	WgqA0w8en6TUTWghIrOvr8+PrZaII6xMrwiquqzo/FHLD8Swtotv79UnFl1tHVC33MBDZHHOHpgbE
-	e+6W8GtINw9uMbKrUZL+J06f3zed/2Pp7qT6pENAbukvSt52qoqMnpSxT3gkYHCzfPNI+qI9Uf8yl
-	OEBQdSBoc44h43gvAe5iSRVUTCiLRiKUgAFaXAWFocFFE9W/0s8LBsb/dVZSsGVsgzQ0Eug+y9ZFO
-	IKCrjl3xu0Dy6RLbVWxnzTaW+IeSZQJRx6+vqu5HnXQ3FHaXOmEHBql+Iokk8w+LYJM4+XhDjxHCR
-	kcA6z0b6g4elqcYJ80Eg==;
+	List-Owner; bh=k231n7LNHT9dhunaklsiUSznIxqaB+R8MPszPoOfjgM=; b=Mkrg6BMKE8mhAM
+	4LqzqwBxU6/Vzm4fenHRHOVUYhGt4ZWQ7A1sCSTWB9BAgMp3dM18OhvnAayQUtIHptKfaSkXbGLKA
+	U0kMlE72SVLMqhDlESPwbzqyoxtH32VfE14bTtC6FdlVJHAfcsVzQSBlMlZcznVQls5oadiHXO5Mt
+	wTSD+o4C5dJvDTtuXpnal0GK//ktyrlDdS9bc/GK67D4DuTCqf52Q1m+ZXDNQML0Pt5hmGmnO/kat
+	IdqcISw1mlaX6zPQmFb+ZSZa/MylKAk4S3qFdTJI04OhbYaIuHye9JjC8UOg0VipNdGdlc51teQUs
+	Ii2qgGtAKFyaaSOQJOlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdR71-0000000HOla-1sEh;
-	Mon, 12 Aug 2024 09:13:11 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sdR8L-0000000HPJW-2zj1;
+	Mon, 12 Aug 2024 09:14:33 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdR6K-0000000HOVH-3bey;
-	Mon, 12 Aug 2024 09:12:30 +0000
+	id 1sdR7j-0000000HP4Y-2Sgn;
+	Mon, 12 Aug 2024 09:13:56 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2B92C610D5;
-	Mon, 12 Aug 2024 09:12:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A6E3C32782;
-	Mon, 12 Aug 2024 09:12:22 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0614261090;
+	Mon, 12 Aug 2024 09:13:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8104C32782;
+	Mon, 12 Aug 2024 09:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723453947;
-	bh=AHpXAkDP1WOYSED8knHUVOD/Zs18SE8A5sym1YavS1k=;
+	s=k20201202; t=1723454034;
+	bh=49cb+KN9og7h4py/ImFy9HdNnL09UTPkZvB/QwOgiKs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dwZiu2L2qrosCfyV3a2YbYsWIBs39ADt90UptUvF6G8dvCVqehKEfQmgsGLhkwELH
-	 lw9zshioXY1etWuw5E7/VCPvkKp9jnw+Ix0aYWrhngRvN9OPSYx17C/mwIRWQzKCty
-	 kqfDZ1XaDYLD2q/lxAOx6Pnx2H/uY4A+k6eAxkgcAuhO6Ss1efuKyRU/0Vgo6v1r+G
-	 XRJlsEU5em0E6Hoay9NgHr+weOXwawheAdvQiqIv/+NACdqU2EvThF0+bH9oVGDyxa
-	 u4vwqmHKac9maxVsKChRabkyomPHT5JHfGejOPbu9aLKemjMxmXIFAHGcOYYPP1Fql
-	 7xb60X6KYGiYw==
-Message-ID: <1f823600-68c4-418f-b2bf-6d5d64a1ee56@kernel.org>
-Date: Mon, 12 Aug 2024 11:12:19 +0200
+	b=B/+5L8vNZuErYIeftIT+43oZoJ1FE3n3CC4tQ02MrKWNjTCpfkbml+lvVrmYI8fH5
+	 nARsGbSOkZM4Ypn52YpXqpygbWG4LV8QsfD0LZnvHMVpqZ4nXuLwz8/SaF5QWTvM0u
+	 lb1twb1NkW1z1sdD6Lr0Beot0iSsANQ1tPdyqh+hPPk/M0boo4RVLI7DOVs4lfloup
+	 q2XDjoQCKlveMcgR46xhREUygMxnYufUpWJHbTHeh+GVhY9JyRj29q9Sod4ye2ojnh
+	 rkbIrauEYapoMl7+5PvdsTg1S5GCBIcUBIge2IJGcxIiIsTFFp3B1akk6FCSTDgLDu
+	 /rNLw1XXuT5Ow==
+Message-ID: <33ae3c93-81cb-491c-a5b3-239c7c413eb3@kernel.org>
+Date: Mon, 12 Aug 2024 11:13:47 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: nuvoton,ma35d1-nand: add new
- bindings
+Subject: Re: [PATCH 2/2] mtd: rawnand: nuvoton: add new driver for the Nuvoton
+ MA35 SoC
 To: Hui-Ping Chen <hpchen0nvt@gmail.com>, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, robh@kernel.org, krzk+dt@kernel.org,
  conor+dt@kernel.org, sumit.semwal@linaro.org, christian.koenig@amd.com,
@@ -56,9 +56,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
  linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
  linaro-mm-sig@lists.linaro.org
 References: <20240812030045.20831-1-hpchen0nvt@gmail.com>
- <20240812030045.20831-2-hpchen0nvt@gmail.com>
- <7a8b9bdf-f4df-4da0-83ca-157175817e99@kernel.org>
- <203578df-11a6-425a-b2be-cc09dae62f8f@gmail.com>
+ <20240812030045.20831-3-hpchen0nvt@gmail.com>
+ <06d627d5-947c-4da4-826a-76033386b575@kernel.org>
+ <3b7b629e-0085-4821-932c-e89faad15c1a@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,10 +104,10 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <203578df-11a6-425a-b2be-cc09dae62f8f@gmail.com>
+In-Reply-To: <3b7b629e-0085-4821-932c-e89faad15c1a@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240812_021229_072259_940C9513 
-X-CRM114-Status: UNSURE (   7.25  )
+X-CRM114-CacheID: sfid-20240812_021355_767576_1EF9839B 
+X-CRM114-Status: UNSURE (   6.38  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -125,30 +125,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/08/2024 11:02, Hui-Ping Chen wrote:
-> 
-> 
+On 12/08/2024 11:10, Hui-Ping Chen wrote:
 >>> +
->>> +      nand-ecc-step-size:
->>> +        enum: [512, 1024]
->> No defaults? So is this required?
-> 
-> This is required, but I will also add a default.
-
-If this is required and should be in required: list. Default does not
-make sense then... it contradicts the point of being required.
-
-> 
-> 
-> 
+>>> +/* NAND-type Flash BCH Error Data Registers */
+>>> +#define MA35_NFI_REG_NANDECCED0	(0x960)
+>>> +#define MA35_NFI_REG_NANDECCED1	(0x964)
+>>> +#define MA35_NFI_REG_NANDECCED2	(0x968)
+>>> +#define MA35_NFI_REG_NANDECCED3	(0x96C)
+>>> +#define MA35_NFI_REG_NANDECCED4	(0x970)
+>>> +#define MA35_NFI_REG_NANDECCED5	(0x974)
 >>> +
->>> +      nand-ecc-strength:
->>> +        enum: [8, 12, 24]
->> No defaults? So is this required?
+>>> +/* NAND-type Flash Redundant Area Registers */
+>>> +#define MA35_NFI_REG_NANDRA0		(0xA00)
+>>> +#define MA35_NFI_REG_NANDRA1		(0xA04)
+>>> +
+>>> +#define SKIP_SPARE_BYTES	4
+>>> +
+>>> +/* BCH algorithm related constants and variables */
+>>> +enum {
+>>> +	eBCH_NONE = 0,
+>>> +	eBCH_T8,
+>>> +	eBCH_T12,
+>>> +	eBCH_T24,
+>>> +	eBCH_CNT
+>>> +} E_BCHALGORITHM;
+>>> +
+>>> +static const int g_i32BCHAlgoIdx[eBCH_CNT] = {BCH_T8, BCH_T8, BCH_T12, BCH_T24};
+>>> +static struct nand_ecclayout_user ma35_nand_oob;
+>> Why this is file-scope?
 > 
-> This is required, but I will also add a default.
+> I will remove the `static`.
 
-Ditto
+No, why this cannot be instance dependent? Quick looks says it could.
+And should.
 
 
 Best regards,
