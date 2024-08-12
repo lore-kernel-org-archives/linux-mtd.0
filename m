@@ -4,81 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB4F0C3DA7F
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 12:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86096C3DA7F
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 13:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MTh/Yzo2xj/fXZbbqkQGkyoh+bBSX6XPmImYLm2riTI=; b=qZmOr6lEjeseRL
-	0V3cT6Bsu9OWk3SQyPe0Rfk7BIJ3BG5NaEFkCl7AGSvLnD5mLihWYXRojbGCf5JhfjVCVcuxMHT2w
-	+IW0PLUVcEDzaEWRdeHH3IVtNejJwBIZROiVVilZpqMGdfTmNpUqN3mHvN1yoxe2ghN2u+b17IFwb
-	DN/I8/TQXlPmft+uKJgPemzditNtyWFX5aH3Tp5CDRaRtnfjRujBSKykUSWILwfO21LtftzOU5+Ij
-	BvfD6xdkRkr2ldYUEMYO60OelUwOj+lVj47mG6G8W6nvx4hq5anHpF4dTq7v2YE17/EXDntaX2e0T
-	0V7B/8UXPAHALFZHgi6Q==;
+	List-Owner; bh=21S5rVaTyrD8QlXeSCNigtMKFjHd2IFKjt28ajwGXtk=; b=kE0ZsGHXidyYTb
+	C0nkT2EblrbhQzIGgAOPce7L65v9YahTjbUuHofyqhffbDtV1D/C+mf176IyAEo9x0AnPldKPYkHO
+	ewNKmzBwbKtFMfHlHqJ2pfA0iQYGd+5cwEDLTc2oKAec1r6j+dEvj0Fl1itwhR8OxOD/YqwDgR1Vj
+	2TwoTaGYAhWUjViE6ODkCtlpdpMo65RB7vWLnOgddM6eOtgqbiijw86odW1cGjUNqbE5gv2sjSHCf
+	Wvw4jtqkmvfCAzO45uHUKZLnUhfdgcVNsCPA3hyEQRX0VxSxJgK2wHUO/UIB6R6K0JcMNfXVXFiBz
+	g6jHFroA+LboQ/Af2uRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdUYU-00000000KRd-2WHW;
-	Mon, 12 Aug 2024 12:53:46 +0000
-Received: from mgamail.intel.com ([198.175.65.19])
+	id 1sdUw0-00000000Niv-2CbS;
+	Mon, 12 Aug 2024 13:18:04 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdUXr-00000000KHl-2qRv;
-	Mon, 12 Aug 2024 12:53:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723467188; x=1755003188;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Sf7fii3Uk5dXCYdQrY2jiMwoeseQxuJiZtqIZOoSKZ4=;
-  b=PWfsWDBfJbjy0oUuum6dngv9MxDNOECu/YwdCjuE9UmhasTMplMiarev
-   ROpDRJlLRB4kou6+sS0BIYhIVCUQ5H6FHsz1PptWi9rM9THYI62aAspQV
-   Y+GD5HmP6KzF4/3THDt73Rc15pf/eZkyIzGlZ5Tn3bMVudAUOmxr3uv6O
-   LUZPtjXlDIhPLHz+gyeGZoclneT8EBK9O+B68jjG/Fa1wmApZlkm1V7kO
-   D/D0TFEhDlFwzkwPvkyCV/lFDzojUkbZmrM5LX1u737hDFRt6UuhnghNb
-   bJDhkyrVgO9ZJSgDGBY+JwIbjIDK8uoKDf6IVtLoIDh3aQsG+zUxa/hvE
-   w==;
-X-CSE-ConnectionGUID: NUD+OLXwTW2/pp/yI7m17g==
-X-CSE-MsgGUID: uYGlQfkgTNumtKXmdK7Ezg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11162"; a="21426110"
-X-IronPort-AV: E=Sophos;i="6.09,283,1716274800"; 
-   d="scan'208";a="21426110"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2024 05:53:07 -0700
-X-CSE-ConnectionGUID: orTAER7nTNqDVXXYoMVpUA==
-X-CSE-MsgGUID: PxMXHWnoT4aGV9ihNublwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,283,1716274800"; 
-   d="scan'208";a="63089626"
-Received: from unknown (HELO b6bf6c95bbab) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 12 Aug 2024 05:53:02 -0700
-Received: from kbuild by b6bf6c95bbab with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sdUXk-000Bo3-0Q;
-	Mon, 12 Aug 2024 12:53:00 +0000
-Date: Mon, 12 Aug 2024 20:52:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Hui-Ping Chen <hpchen0nvt@gmail.com>, miquel.raynal@bootlin.com,
-	richard@nod.at, vigneshr@ti.com, robh@kernel.org,
-	krzk+dt@kernel.org, conor+dt@kernel.org, sumit.semwal@linaro.org,
-	christian.koenig@amd.com, esben@geanix.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	Hui-Ping Chen <hpchen0nvt@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: rawnand: nuvoton: add new driver for the
- Nuvoton MA35 SoC
-Message-ID: <202408122007.quTiDXPR-lkp@intel.com>
-References: <20240812030045.20831-3-hpchen0nvt@gmail.com>
+	id 1sdUvw-00000000NiA-24n8;
+	Mon, 12 Aug 2024 13:18:02 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 41E7620002;
+	Mon, 12 Aug 2024 13:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1723468677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JdcV2kRk9M7GFAK/D+USec3altBfiWngrF1bMZJR0h0=;
+	b=T1DGM4+ftpehFe4HTk9kRVwPAVKw3AXm0nD1T1JMZhEdelkbXoOfgy4NgYAKj95rVaLvIp
+	nZnomFB1XkmKUg7BHzwy2Zpp7FfDaMYjbRXKCK5jVbxGkA4HSJ1kb6ERXFei+u8THVVKQK
+	AB7ydR869hd6hCgePz3L2ncJBB48RgAJbw3nqvRXWZ2bnwmJrOyzsbOyD1LgGLVygbOXe1
+	h2sXickvc/8OCgBUceYdm1WA7UmkQX6+A8msWci8Mu3YNPv7JKtz5mpXi+/Z91kCss8Pbp
+	noYDmTyhdrsEflAz5id8Ax4oD5XfbGH/ORmkMLDhKex9GquwQMFbGoeyrW6ljA==
+Date: Mon, 12 Aug 2024 15:17:55 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Joern Engel <joern@lazybastard.org>, Keith
+ Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+ <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Saravana Kannan
+ <saravanak@google.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, linux-mmc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org
+Subject: Re: [PATCH v4 0/7] mtd: improve block2mtd + airoha parser
+Message-ID: <20240812151755.0feab4b2@xps-13>
+In-Reply-To: <66b9df7c.050a0220.3574aa.d5bb@mx.google.com>
+References: <20240809172106.25892-1-ansuelsmth@gmail.com>
+	<20240812104954.1e8d55f7@xps-13>
+	<66b9df7c.050a0220.3574aa.d5bb@mx.google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240812030045.20831-3-hpchen0nvt@gmail.com>
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240812_055307_788908_4641D22B 
-X-CRM114-Status: GOOD (  13.81  )
+X-CRM114-CacheID: sfid-20240812_061801_340107_76D26B03 
+X-CRM114-Status: GOOD (  45.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,140 +78,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Hui-Ping,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on linus/master v6.11-rc3 next-20240812]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Hui-Ping-Chen/dt-bindings-mtd-nuvoton-ma35d1-nand-add-new-bindings/20240812-110259
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20240812030045.20831-3-hpchen0nvt%40gmail.com
-patch subject: [PATCH 2/2] mtd: rawnand: nuvoton: add new driver for the Nuvoton MA35 SoC
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20240812/202408122007.quTiDXPR-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240812/202408122007.quTiDXPR-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408122007.quTiDXPR-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:991:29: warning: cast from 'irqreturn_t (*)(int, struct ma35_nand_info *)' (aka 'enum irqreturn (*)(int, struct ma35_nand_info *)') to 'irq_handler_t' (aka 'enum irqreturn (*)(int, void *)') converts to incompatible function type [-Wcast-function-type-strict]
-     991 |         if (request_irq(nand->irq, (irq_handler_t)&ma35_nand_irq,
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning generated.
-
-
-vim +991 drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c
-
-   921	
-   922	static int ma35_nand_probe(struct platform_device *pdev)
-   923	{
-   924		struct ma35_nand_info *nand;
-   925		struct nand_chip *chip;
-   926		struct mtd_info *mtd;
-   927		int retval = 0;
-   928	
-   929		nand = devm_kzalloc(&pdev->dev, sizeof(struct ma35_nand_info), GFP_KERNEL);
-   930		if (!nand)
-   931			return -ENOMEM;
-   932	
-   933		nand_controller_init(&nand->controller);
-   934	
-   935		nand->regs = devm_platform_ioremap_resource(pdev, 0);
-   936		if (IS_ERR(nand->regs))
-   937			return PTR_ERR(nand->regs);
-   938	
-   939		nand->dev = &pdev->dev;
-   940		chip = &nand->chip;
-   941		mtd = nand_to_mtd(chip);
-   942		nand_set_controller_data(chip, nand);
-   943		nand_set_flash_node(chip, pdev->dev.of_node);
-   944	
-   945		mtd->priv = chip;
-   946		mtd->owner = THIS_MODULE;
-   947		mtd->dev.parent = &pdev->dev;
-   948	
-   949		nand->clk = of_clk_get(pdev->dev.of_node, 0);
-   950		if (IS_ERR(nand->clk))
-   951			return dev_err_probe(&pdev->dev, PTR_ERR(nand->clk),
-   952					     "failed to find nand clock\n");
-   953	
-   954		retval = clk_prepare_enable(nand->clk);
-   955		if (retval < 0) {
-   956			dev_err(&pdev->dev, "Failed to enable clock\n");
-   957			return -ENXIO;
-   958		}
-   959	
-   960		nand->chip.controller    = &nand->controller;
-   961	
-   962		chip->legacy.cmdfunc     = ma35_nand_command;
-   963		chip->legacy.waitfunc    = ma35_waitfunc;
-   964		chip->legacy.read_byte   = ma35_nand_read_byte;
-   965		chip->legacy.select_chip = ma35_nand_select_chip;
-   966		chip->legacy.read_buf    = ma35_read_buf_dma;
-   967		chip->legacy.write_buf   = ma35_write_buf_dma;
-   968		chip->legacy.dev_ready   = ma35_nand_devready;
-   969		chip->legacy.chip_delay  = 25; /* us */
-   970	
-   971		/* Read OOB data first, then HW read page */
-   972		chip->ecc.hwctl      = ma35_nand_enable_hwecc;
-   973		chip->ecc.calculate  = ma35_nand_calculate_ecc;
-   974		chip->ecc.correct    = ma35_nand_correct_data;
-   975		chip->ecc.write_page = ma35_nand_write_page_hwecc;
-   976		chip->ecc.read_page  = ma35_nand_read_page_hwecc_oob_first;
-   977		chip->ecc.read_oob   = ma35_nand_read_oob_hwecc;
-   978		chip->options |= (NAND_NO_SUBPAGE_WRITE | NAND_USES_DMA);
-   979	
-   980		ma35_nand_initialize(nand);
-   981		platform_set_drvdata(pdev, nand);
-   982	
-   983		nand->controller.ops = &ma35_nand_controller_ops;
-   984	
-   985		nand->irq = platform_get_irq(pdev, 0);
-   986		if (nand->irq < 0) {
-   987			dev_err(&pdev->dev, "failed to get platform irq\n");
-   988			return -EINVAL;
-   989		}
-   990	
- > 991		if (request_irq(nand->irq, (irq_handler_t)&ma35_nand_irq,
-   992				IRQF_TRIGGER_HIGH, "ma35d1-nand", nand)) {
-   993			dev_err(&pdev->dev, "Error requesting NAND IRQ\n");
-   994			return -ENXIO;
-   995		}
-   996	
-   997		retval = nand_scan(chip, 1);
-   998		if (retval)
-   999			return retval;
-  1000	
-  1001		if (mtd_device_register(mtd, nand->parts, nand->nr_parts)) {
-  1002			nand_cleanup(chip);
-  1003			devm_kfree(&pdev->dev, nand);
-  1004			return retval;
-  1005		}
-  1006	
-  1007		pr_info("ma35-nfi: registered successfully! mtdid=%s\n", mtd->name);
-  1008	
-  1009		return retval;
-  1010	}
-  1011	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hyaXN0aWFuLAoKYW5zdWVsc210aEBnbWFpbC5jb20gd3JvdGUgb24gTW9uLCAxMiBBdWcg
+MjAyNCAxMjoxMDowMyArMDIwMDoKCj4gT24gTW9uLCBBdWcgMTIsIDIwMjQgYXQgMTA6NDk6NTRB
+TSArMDIwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IEhpIENocmlzdGlhbiwKPiA+IAo+ID4g
+YW5zdWVsc210aEBnbWFpbC5jb20gd3JvdGUgb24gRnJpLCAgOSBBdWcgMjAyNCAxOToyMDo1OCAr
+MDIwMDoKPiA+ICAgCj4gPiA+IFRoaXMgc21hbGwgc2VyaWVzIGhhbmRsZSAyIHByb2JsZW1zLgo+
+ID4gPiAKPiA+ID4gSXQgZG9lcyB0cnkgdG8gIiJzdGFuZGFyZGl6ZSIiIHRoZSB1c2FnZSBvZiBi
+bG9jazJtdGQgbW9kdWxlIHdpdGgKPiA+ID4gTVREIE9GIG5vZGVzLgo+ID4gPiAKPiA+ID4gSXQg
+aXMgdmVyeSBlYXN5IHRvIGFkZCBzdXBwb3J0IGZvciBNVEQgcGFyc2VyIGJ5IGp1c3QgYWRkaW5n
+IGFuCj4gPiA+IE9GIG5vZGUgdG8gdGhlIG10ZCBjcmVhdGVkIGZvciBibG9jazJtdGQuCj4gPiA+
+IAo+ID4gPiBUaGlzIGFwcGx5IG9ubHkgaWYgdGhlIHJvb3QgYmxvY2sgaXMgdXNlZCBmb3IgYmxv
+Y2sybXRkIHRvIGFsbG93Cj4gPiA+IHNjZW5hcmlvIHdoZXJlIHRoZSBmdWxsIGVNTUMgb3IgYW4g
+TlZNRSBpcyB1c2VkIGZvciBNVEQgYW5kIGl0IGRvZXNuJ3QKPiA+ID4gaGF2ZSBhbnkgcGFydGl0
+aW9uIHRhYmxlLgo+ID4gPiAKPiA+ID4gVG8gYWxzbyBzdXBwb3J0IE5WTUUsIHNpbWlsYXIgdG8g
+aG93IGl0J3MgZG9uZSB3aXRoIGVNTUMsIHdlIGludHJvZHVjZQo+ID4gPiBhIHN1Ym5vZGUgdG8g
+dGhlIE5WTUUgY29udHJvbGxlciB0aGF0IG5lZWRzIHRvIGhhdmUgdGhlICJudm1lLWNhcmQiCj4g
+PiA+IGNvbXBhdGlibGUgd2hlcmUgYSBkZXYgY2FuIGRlZmluZSBmaXhlZC1wYXJpdGlvbnMgZm9y
+IE1URCBwYXJzZXIgdXNhZ2UuCj4gPiA+IAo+ID4gPiBUaGlzIHNlcmllcyBhbHNvIGFkZCBzdXBw
+b3J0IGZvciB0aGUgQWlyb2hhIHBhcnRpdGlvbiB0YWJsZSB3aGVyZQo+ID4gPiB0aGUgbGFzdCBw
+YXJ0aXRpb24gaXMgYWx3YXlzIEFSVCBhbmQgaXMgcGxhY2VkIGF0IHRoZSBlbmQgb2YgdGhlIGZs
+YXNoLgo+ID4gPiAKPiA+ID4gVGhpcyByZXF1aXJlIGR5bmFtaWMgY2FsY3VsYXRpb24gb2YgdGhl
+IG9mZnNldCBhcyBzb21lIGRlZGljYXRlZAo+ID4gPiBkcml2ZXIgZm9yIGJhZCBibG9jayBtYW5h
+Z2VtZW50IG1pZ2h0IGJlIHVzZWQgdGhhdCByZXNlcnZlIHNvbWUgc3BhY2UKPiA+ID4gYXQgdGhl
+IGVuZCBvZiB0aGUgZmxhc2ggZm9yIGJsb2NrIGFjY291bnRpbmcuICAKPiA+IAo+ID4gV2hvIGlz
+IHJlc2VydmluZyB0aGlzIHNwYWNlPyBBbmQgdGhpcyBpcyBub3QgcmVmbGVjdGVkIGFueXdoZXJl
+IGluIHRoZQo+ID4gcGFydGl0aW9uIHRhYmxlPwo+ID4gIAo+IAo+IFRvIGJlIG1vcmUgcHJlY2lz
+ZSBNZWRpYXRlayB1c2UgYSBjdXN0b20gd2F5IHRvIGhhbmRsZSBiYWQgYmxvY2tzIGNhbGxlZAo+
+IEJNVCB3aGVyZSB0aGV5IHJlc2VydmUgYW5kIHN0b3JlIGRhdGEgYXQgdGhlIGVuZCBvZiB0aGUg
+bmFuZC4gVGhpcyBpcwo+IGxvYWRlZCBiZWZvcmUgdGhlIGZsYXNoIGRyaXZlciBjb250cm9sbGVy
+IHNvIHdoZW4gTVREIGlzIGluaXQsIHRoZSBzaXplCj4gaXMgYWxyZWFkeSByZWR1Y2VkLiBUaGUg
+cmVzZXJ2ZWQgc3BhY2UgY2FuIGNoYW5nZSBhbmQgaXQgcmVhbGx5IGRlcGVuZHMKPiBvbiB0aGUg
+dHVuZWQgdmFsdWVzIGhlbmNlIGl0IG1heSBjaGFuZ2UuCgpJcyB0aGlzIHN1cHBvcnRlZCBpbiBt
+YWlubGluZSBMaW51eD8gTVREIGhhbmRsZXMgdGhlIGJhZCBibG9ja3MgYW5kIHRoZQpiYWQgYmxv
+Y2sgdGFibGVzLCBzbyBJIGRvbid0IHVuZGVyc3RhbmQgaG93IHRoaXMgaGFyZHdhcmUgZmVhdHVy
+ZSBjYW4KbGl2ZSB0b2dldGhlciB3aXRoIE1URC4KCkFueXdheSwgeW91IGFyZSB0YWxraW5nIGFi
+b3V0IE1NQ3MsIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkgdGhlcmUgYXJlCmJhZCBibG9ja3MsIG5v
+ciB3aGF0IGlzIGNoZWNraW5nIHRoZW0gYW5kIHdoZW4uIFRoaXMgaXMgYWxsIHN0aWxsIHZlcnkK
+ZnV6enkgdG8gbWUsIEknbSBzb3JyeS4KCj4gPiA+IE5ldyBhYXJjaDY0IEFpcm9oYSBTb0MgbWFr
+ZSB1c2Ugb2YgdGhpcyBwYXJ0aXRpb24gdGFibGUgYW5kIHVzZSBibG9jazJtdGQKPiA+ID4gZm9y
+IGVNTUMgdG8gdHJlYXQgdGhlbSBhcyBNVEQgd2l0aCBjdXN0b20gYmFkIGJsb2NrIG1hbmFnZW1l
+bnQgYW5kIGJsb2NrCj4gPiA+IHRyYWNraW5nLiAgCj4gPiAKPiA+IEkgYW0gc29ycnksIEkgYW0g
+bm90IHVzZWQgdG8gc3VjaCB1c2UgY2FzZXMsIGFuZCBJIHJlYWxseSBmYWlsIGdldHRpbmcKPiA+
+IHdoeSB5b3Ugd291bGQgbGlrZSB0byB1c2UgbXRkIHdpdGggYW4gZU1NQy4gQ2FuIHlvdSBleHBs
+YWluIGEgbGl0dGxlCj4gPiBiaXQgbW9yZSB3aGF0IGlzIG5vdCBhdmFpbGFibGUgaW4gdGhlIGJs
+b2NrIHdvcmxkIHRoYXQgeW91IHJlYWxseSBuZWVkCj4gPiBmcm9tIG10ZD8gIAo+IAo+IFNpbmNl
+IHZlbmRvciBuZWVkcyBtb3JlIHNwYWNlIGFuZCBkb2Vzbid0IHdhbnQgdG8gYWRhcHQgdG8gYmxv
+Y2sgd29ybGQsCj4gdGhleSBhcmUgc3RhcnRpbmcgdG8gdXNlIGVNTUMgb3IgYmxvY2sgZGV2aWNl
+cyBpbiBnZW5lcmFsIHVucGFydGl0aW9uZWQKPiBhbmQgcmF3IAoKT2theSwgd2h5IG5vdCwgaXQn
+cyBlYXNpZXIgZm9yIFJPTXMgdG8gYWNjZXNzIGl0IEkgZ3Vlc3MuCgo+IGFuZCB1c2luZyBibG9j
+azJtdGQgdG8gc2ltdWxhdGUgaXQuCgpUaGlzIGlzIHdoYXQgSSBkb24ndCB1bmRlcnN0YW5kLiBZ
+b3UgY2FuIHZlcnkgd2VsbCBhY2Nlc3MgeW91ciBibG9jawpkZXZpY2UgYnkgb2Zmc2V0LCB3aHkg
+ZG8geW91IG5lZWQgdGhlIG10ZCBpbnRlcmZhY2UgYXQgYWxsPwoKPiBUaGV5IGRvbid0IGNhcmUg
+YWJvdXQgdGhlCj4gcGVyZm9ybWFuY2UgcGVuYWxpdGllcyBhcyBpdCdzIHNvbWV0aGluZyByZWFk
+IGF0IGJvb3QgdGltZSBhbmQgb25seSBuZXcKPiBmaXJtd2FyZSBvciBzb21lIGNvbmZpZyBmaWxl
+cyBhcmUgd3JpdHRlbi4KPiAKPiBJcyBpdCBtb3JlIGNsZWFyIG5vdz8KCkkgc3RpbGwgZG9uJ3Qg
+dW5kZXJzdGFuZCB0aGUgbmVlZCBmb3IgZ29pbmcgdGhyb3VnaCBNVEQgdGJoLgoKPiA+IEFsc28s
+IGRpZCB5b3UgY29uc2lkZXIgbnZtZW0gbGF5b3V0cyBpbnN0ZWFkIHRvIGRldGVjdCBhbmQgZGVm
+aW5lIHRoZQo+ID4gQVJUIGFyZWE/IChqdXN0IGFza2luZykuCj4gPiAgIAo+IAo+IFRoZXkgc3Rp
+bGwgbmVlZCBhIE1URCBwYXJ0aXRpb24KCldoeT8KCj4gYW5kIG1vc3Qgb2YgdGhlIHRpbWUgdXNl
+cnNwYWNlIHRvb2wgYXJlCj4gdXNlZCBvbiB0aGUgQVJUIHBhcnRpdGlvbi4gVXNpbmcgYmxvY2sy
+bXRkIGFuZCBEVCBzdXBwb3J0IHdpbGwgcGVybWl0Cj4gdGhlIHVzZSBvZiBudm1lbSBjZWxsIGFz
+IGEgc2lkZSBlZmZlY3QgKGFuZCB0aGF0IGlzIGEgbWlzc2l2ZSBib251cwo+IHBvaW50IG9mIHRo
+aXMgaG9uZXN0bHkpCgpNVEQgYWxzbyByZWdpc3RlcnMgaW50byBOVk1FTSwgc28gdGhpcyBpcyBu
+aWNlIGlmIHlvdSBuZWVkIGJvdGgsIGJ1dCBpZgp3aGF0IHlvdSBuZWVkIGlzIHNvbWUgTlZNRU0g
+YXJlYSBkZXJpdmVkIGR5bmFtaWNhbGx5IGFuZCB5b3UgcmVnaXN0ZXIKaW50byBNVEQgZm9yIHRo
+YXQsIHRoZW4gbm8sIEknbSBzb3JyeSwgdGhhdCdzIG5vdCB0aGUgY29ycmVjdCBhcHByb2FjaC4K
+ClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
