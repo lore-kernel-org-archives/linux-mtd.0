@@ -4,45 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 972C2C52D7C
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 07:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38600C3DA7F
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Aug 2024 07:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eYNPmtyYhyxSf13XwTt0rd+u72FVVFsZDCV6Gn8wr+w=; b=JJG0q4cN05puEj
-	7YKKsG+qB/YHsaICifyXEc+Mq+fu6iClf0l6h5t7D3+Scmf2KwAHmz4BF9GULmIKhNOV8bxKRUMgJ
-	8aaiNdctbAQEft4/qsw8yUR4kFSYi6qDR6eJ0vhjZxzBgrWf5TsQF6z1AQDWC7d2wrgSMfaZYP6qO
-	5ua3PvX9i31za45muHkaITuEwHYCKJrREXvvMoo5MJFelG4D0g1Jpp0IOVM7rd157VrNWfMY22l3K
-	9pxzpEfWaoEB6JUpHHOrCjfXs2yd0NfQ6XwimuRDBlS9p6NUBdFni2cqIrgEAklg46qJM72SrPHK4
-	AGwKmmIJdnL6Ton6azBg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
+	:List-Id:In-Reply-To:References:To:From:Cc:Subject:Message-Id:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Fzb5tcGls6nakiLbe8GxhmoG1Fwkv2YX1uoQ3RE3mPg=; b=wt4KJ3v7cFwjeP8J8DXgiiGC4U
+	f5p3dmprYguiRANF8GqFwSrPrxAJwOHgA1g0qfOUjm1nlEHdlqsGj4abdahQnI6eOXgDq4RNAq1qp
+	8RspXD9eXqbprEeCWeWroizZ9aFJU51Tsuc1tYG1fPhN4IlJd2+xBOv9tqTMFUlwd3ErzxY+Pb3ZU
+	kv24GBJByRvTsZHecg2xQ3//LYC2DHyQAbKUPD3RYqcTlK8GlsbhBpbr/FReJWUobnuZkU0tJiOUc
+	QWa01msQnOJywYBat+m20oZx68rhDmVRXgReKpc/0VVWyM8WG7v2RFF3l/JPDZQG+7N8zSR7JF98K
+	YFMU6ivA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdPVo-0000000HAEb-3NUE;
-	Mon, 12 Aug 2024 07:30:40 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1sdPcs-0000000HBEM-3sVK;
+	Mon, 12 Aug 2024 07:37:58 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdPUv-0000000H9yF-3YlE;
-	Mon, 12 Aug 2024 07:29:47 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B0A1D240003;
-	Mon, 12 Aug 2024 07:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1723447780;
+	id 1sdPcG-0000000HB9t-2Tpr;
+	Mon, 12 Aug 2024 07:37:22 +0000
+Received: from localhost (unknown [213.135.10.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id C68914E1;
+	Mon, 12 Aug 2024 09:37:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1723448229;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oafu0WWZyssl+BW+Fc+4njgLE2C72ugrKSjldnyJ7kY=;
-	b=WEDU8dF6RenmlSwiIq9vVp2pzFbsWxnkYCVxQLUKOYDBbFEFoQGMFFmc91lP0KUuHn4IDj
-	8XZTuv2pMuqtdRDxi7wQ1OWVe02fI7Y2og656C23HlxDJpBXvxbubDNKYrIyi9lKoFZM4J
-	9RoNxQ3bQlACBJEdCZvWEAkE6JfvLHRprKtow+JhVL/pMnA7NHqpl5er3BUf67rPBZ8yHy
-	ovTZBKJ5F7SOsq66sVHnBsc0WF2noadJJSxD5+u2nNQJWt74CI6PLVOsvEzLiFzGsjZ7i5
-	PILpt3F8Ui7nDkyVYvKrltfc3/+wgSa7Rt9w8NklTYmY+iSd5tZ2352tYgL7mw==
-Date: Mon, 12 Aug 2024 09:29:37 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Michael Walle" <michael@walle.cc>
+	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
+	 references:references; bh=Ht+N+M8B+B3kbQk5vj/Y5jdskCwHjTQjDHS8S8jMFoE=;
+	b=AkzbjScU1M0U22mz4vNqG+wEZuZA/HnOzvtfYOhqtm+aoBv8UcPR5i8Jjo9f4pPNKLISN0
+	cbD/rIQPlx3RlRIVHYJPIb02JPYmMWQmip92i8MaTaaXCDmDXPsUjZjh/sAUpkTjxZbMWP
+	dbKftvKLPZ8qdGcu9TVUsqn/S3RCgj8nuMkWSLZhmQovHprJSJGJ9ciWKFEloMRldQ9O77
+	f4JOQH5CB9/FvQm0DReuPOvHMF+bhOlVkuaZN1khj45m+vSoKgHe/Xo711WEHOQkuYw2oe
+	y68AVBZ20jkEO8vgEMngqkWF5V1UAlfFo445YUFCNDdls+i1+3OO0Di5nMo93g==
+Date: Mon, 12 Aug 2024 09:37:06 +0200
+Message-Id: <D3DREP874QG7.2UOSZSBI3BRQY@walle.cc>
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
 Cc: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
  <amit.kumar-mahapatra@amd.com>, "Tudor Ambarus" <tudor.ambarus@linaro.org>,
  "broonie@kernel.org" <broonie@kernel.org>, "pratyush@kernel.org"
@@ -66,33 +69,16 @@ Cc: "Michal Simek" <michal.simek@amd.com>, "Mahapatra, Amit Kumar"
  <linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
  "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>, "Conor Dooley"
  <conor.dooley@microchip.com>, "beanhuo@micron.com" <beanhuo@micron.com>
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Message-ID: <20240812092937.2bd5c85a@xps-13>
-In-Reply-To: <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc>
+From: "Michael Walle" <michael@walle.cc>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+X-Mailer: aerc 0.16.0
 References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
-	<b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
-	<BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
-	<e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
-	<BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
-	<576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org>
-	<BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com>
-	<c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org>
-	<9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org>
-	<BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com>
-	<IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com>
-	<D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc>
-	<e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com>
-	<D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc>
-	<9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com>
-	<D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+ <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
+ <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org> <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com> <576d56ed-d24b-40f9-9ae4-a02c50eea2ab@linaro.org> <BN7PR12MB2802F288C6A6B1580CF07959DC95A@BN7PR12MB2802.namprd12.prod.outlook.com> <c6f209c8-47da-4881-921d-683464b9ddd5@linaro.org> <9cdb7f8b-e64f-46f6-94cb-194a25a42ccd@linaro.org> <BN7PR12MB28028B63E69134094D50F3E4DC2A2@BN7PR12MB2802.namprd12.prod.outlook.com> <IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7699.namprd12.prod.outlook.com> <D2ZHJ765LUGP.2KTA46P1BL75X@walle.cc> <e1587f61-f765-4a22-b06e-71387cc49c4d@amd.com> <D33M26RLVLHF.3Q5YARPBNSBOY@walle.cc> <9fb60743-3e89-49fa-a399-3cf2607a7e41@amd.com> <D33S9T73M6ND.G7CCJ4PDVYQU@walle.cc> <20240812092937.2bd5c85a@xps-13>
+In-Reply-To: <20240812092937.2bd5c85a@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240812_002946_195839_0A247FA8 
-X-CRM114-Status: GOOD (  14.88  )
+X-CRM114-CacheID: sfid-20240812_003721_113008_54765F0F 
+X-CRM114-Status: GOOD (  17.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,25 +90,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0453278750448477690=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGFlbCwKCj4gPiA+IFRoZSBmaXJzdCByb3VuZCBvZiBwYXRjaGVzIHdlcmUgcmVhbGx5
-IGludmFzaXZlIHJlZ2FyZGluZyB0aGUgY29yZQo+ID4gPiBjb2RlLiBTbyBpZiB0aGVyZSBpcyBh
-IGNsZWFuIGxheWVyaW5nIGFwcHJvYWNoIHdoaWNoIGNhbiBiZSBlbmFibGVkCj4gPiA+IGFzIGEg
-bW9kdWxlIGFuZCB5b3UgYXJlIG1haW50YWluaW5nIGl0IEknbSBmaW5lIHdpdGggdGhhdCAoZXZl
-biBpZgo+ID4gPiB0aGUgY29yZSBjb2RlIG5lZWRzIHNvbWUgY2hhbmdlcyB0aGVuIGxpa2UgaG9v
-a3Mgb3Igc28sIG5vdCBzdXJlKS4gIAo+ID4KPiA+IFRoYXQgZGlzY3Vzc2lvbiBzdGFydGVkIHdp
-dGggTWlxdWVsIHNvbWUgeWVhcnMgYWdvIHdoZW4gaGUgd2FzIHRyeWluZyB0byB0byAKPiA+IHNv
-bHZlIGRlc2NyaXB0aW9uIGluIERUIHdoaWNoIGlzIG1lcmdlZCBmb3IgYSB3aGlsZSBpbiB0aGUg
-a2VybmVsLiAgCj4gCj4gV2hhdCdzIHlvdXIgcG9pbnQgaGVyZT8gRnJvbSB3aGF0IEkgY2FuIHRl
-bGwgdGhlIERUIGJpbmRpbmcgaXMgd3JvbmcKPiBhbmQgbmVlZHMgdG8gYmUgcmV3b3JrZWQgYW55
-d2F5LgoKSSdtIHNvcnJ5IEknbSBub3cgY2F0Y2hpbmcgdXAsIGNhbiB5b3UgcG9pbnQgYXQgdGhl
-IHRocmVhZCBleHBsYWluaW5nCndoYXQgaXMgd3JvbmcgaW4gdGhlIGJpbmRpbmdzPyBJIGRpZG4n
-dCBmaW5kIHdoZXJlIHRoaXMgd2FzIGRldGFpbGVkLiBPcgpvdGhlcndpc2Ugc3VtbWFyaXplIHF1
-aWNrbHkgd2hhdCBuZWVkcyB0byBjaGFuZ2U/CgpUaGFua3MhCk1pcXXDqGwKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
-Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvCg==
+--===============0453278750448477690==
+Content-Type: multipart/signed;
+ boundary=223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+
+--223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+> > > > The first round of patches were really invasive regarding the core
+> > > > code. So if there is a clean layering approach which can be enabled
+> > > > as a module and you are maintaining it I'm fine with that (even if
+> > > > the core code needs some changes then like hooks or so, not sure). =
+=20
+> > >
+> > > That discussion started with Miquel some years ago when he was trying=
+ to to=20
+> > > solve description in DT which is merged for a while in the kernel. =
+=20
+> >=20
+> > What's your point here? From what I can tell the DT binding is wrong
+> > and needs to be reworked anyway.
+>
+> I'm sorry I'm now catching up, can you point at the thread explaining
+> what is wrong in the bindings? I didn't find where this was detailed. Or
+> otherwise summarize quickly what needs to change?
+
+Somewhere in this mega thread Tudor had some remarks about the
+bindings. Amit also mentioned it here:
+
+https://lore.kernel.org/r/IA0PR12MB769944254171C39FF4171B52DCB42@IA0PR12MB7=
+699.namprd12.prod.outlook.com/
+
+-michael
+
+--223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKcEABMJAC8WIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZrm7oxEcbWljaGFlbEB3
+YWxsZS5jYwAKCRASJzzuPgIf+PctAYCbuUNxmdpx/X9rB1exzej6BdgcJkd3X4VZ
+PwvBiJJJwfBXsF9QanNEeTL8VZQbzQUBgLkzbud/s0TfQrzHuMn9pAovYMF4/C2l
+/lZ51bqyfaZad2v94+7DWWCbHWBW5f/7Yg==
+=hWwd
+-----END PGP SIGNATURE-----
+
+--223c054a831d10cf82c25ffa0250f24ef7d81ccf0ed949c366b87bf81bfa--
+
+
+--===============0453278750448477690==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0453278750448477690==--
+
