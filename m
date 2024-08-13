@@ -4,47 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A35B4C52D7C
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Aug 2024 20:04:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 296EBC52D7B
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Aug 2024 20:07:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q1QoZmqzx4/M9dGWcecptviqdawxmwZYnFvipgziby4=; b=VUvP6WIdLTYWDm
-	E1/74NC3SQDOsBz41S1dJnJslxg374owkddRzEHLn2d9E5IkbEgkZXnDAqEOh+hxAWAdv4ghhZwrN
-	dXIUTl2lcnMsBXX1TgasB0nr8/pjBdstiZz1XUr11rAvW/yw3NkIIOPb+jd2OX/bX6/WoyJYl4Fgg
-	KdsCqFKZDnvw9KAjbVYumqhyZF8yzGSjU/f+NhbGx2pbJlg7eUdDIlPqVW/tdRi+y/nRyde2w2HIA
-	6vBeIKLJEkG7s+LuuVYak+cJQmkAr7c9+IbWuQ0sZqJ/T+DdpEg9dbZDlqjnM+ALR5U1g4+ya/blv
-	o7DjWliKvz3bBZL9RPSA==;
+	List-Owner; bh=ANq+Y6iWgT2ULy4O9oPGso/275xPGMe7bQBWEfOHZzw=; b=dQTnKindPJLwlV
+	U6zQbzwwBjMfODz1jSluFu6EsYFTpgoFTlDLnILRZu6X4Gu+KYfHc98pwDUB/89y1vluD/RYyU2x0
+	lPumhLyYQQIAc2PszmyKhX0oIrEV71Gt9v9Si9s0UZMdvN55le78Hw1mGH2KSiNT06bzOd+Et8HXJ
+	vZXleD6dIDlrIiy+I8qE0BHTmumBjAMU8BRfNJb4ZdnWR30o8mh8Rj8PaR6p+3XSAZLm86g5Ct7/j
+	3BtCYtvKXHGk5G9LMFrQn9tTKn9Cqa3t76yRs9u9XWFIe7LdvAz2D2UR8JC8SAGCL7ys8gCc+7XAR
+	LQeGQmpkIvwH4hLfFpqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdxka-00000004pPg-2bvf;
-	Tue, 13 Aug 2024 20:04:12 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sdxnw-00000004q4X-0Pke;
+	Tue, 13 Aug 2024 20:07:40 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdxkX-00000004pP8-36uC;
-	Tue, 13 Aug 2024 20:04:11 +0000
+	id 1sdxnt-00000004q3t-0SFm;
+	Tue, 13 Aug 2024 20:07:38 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4389F61876;
-	Tue, 13 Aug 2024 20:04:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BEC0C32782;
-	Tue, 13 Aug 2024 20:04:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 33DF461873;
+	Tue, 13 Aug 2024 20:07:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95ACDC4AF10;
+	Tue, 13 Aug 2024 20:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723579449;
-	bh=UFOl4J9OOLeA/avOTNcqCYZZ/CpgemOJRd4RI2dE8NE=;
+	s=k20201202; t=1723579655;
+	bh=pcU0DlQ+ID/ze4Ee6AQQElRUnHpjqLCr6VqHuIdU5FI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XGcqusiRlC9deLr9QYPYiRhUvn4t2H3EU5OEktIDyF1qvFlcxrdD4vg+aoYIu76S/
-	 WoBa1P6pMfqFoGhFbli9mxU63c/X2+p36akcstBb6nxeWI7r7sLDS+LzNV8FTQ24Z3
-	 /6Yfge4f6Qd16eDjFHKPgzicqpetK8dh07WG4iAts8JSjiFtlZfWdI3eb420063oJJ
-	 ZLjwylNw7SGP0cLllOjHDGGgEipimoFI/CYIYl1zkMfgsXeA8Pvf/iPLw1YG8FJ6m4
-	 EAy6xNsGPcOVRfPaJPy58zCzt5RcBd9CeBc0HFYUGoligaYaP2NWAXcX/kvbSIdbak
-	 +vzKfGqjh/+bA==
-Date: Tue, 13 Aug 2024 14:04:07 -0600
+	b=Z+a9BFGu5rXoC2VXF6YVaCHXPLBvjQuCO8q/YvNGn+2s8sNyKgBQOKR/h+Ir4j/no
+	 olrDkMK2uBr05dFbfSDhtvK0drNBkgcfwHf0f4I4yBTsilX/69neoR+L9aMLsl97ot
+	 v2XrSh2CgqXEZlReERf1DOAfXBEFIiSX49Run3f1H/eIYLw5Fp3Q8RcdUyKdNAEu9N
+	 Q1kzD3q88FLCEQb5JTURDmmAikCCifDm+nDix/zedHtEqRj6rmIzIEeApdN5iT2uf7
+	 0B/2krLSkbGHqqWiM1VXpoV6E/5RJRBy9TpuHYIfHQ40KAr4ZG5gfWjAt7dzQPBQlg
+	 1hhTdmNsn2RCA==
+Date: Tue, 13 Aug 2024 14:07:34 -0600
 From: Rob Herring <robh@kernel.org>
-To: Christoph Hellwig <hch@lst.de>,
-	Christian Marangi <ansuelsmth@gmail.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
 Cc: Ulf Hansson <ulf.hansson@linaro.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
@@ -53,26 +52,24 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Joern Engel <joern@lazybastard.org>,
 	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Sagi Grimberg <sagi@grimberg.me>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
 	Saravana Kannan <saravanak@google.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	Florian Fainelli <f.fainelli@gmail.com>, linux-mmc@vger.kernel.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org
-Subject: Re: [PATCH v4 2/7] nvme: assign of_node to nvme device
-Message-ID: <20240813200407.GA1634759-robh@kernel.org>
+Subject: Re: [PATCH v4 3/7] dt-bindings: mmc: add property for partitions
+ node in mmc-card node
+Message-ID: <20240813200734.GA1659224-robh@kernel.org>
 References: <20240809172106.25892-1-ansuelsmth@gmail.com>
- <20240809172106.25892-3-ansuelsmth@gmail.com>
- <20240812111205.GC14300@lst.de>
- <66b9fbb4.df0a0220.3bee6e.1e99@mx.google.com>
- <20240812133128.GA24058@lst.de>
+ <20240809172106.25892-4-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20240812133128.GA24058@lst.de>
+In-Reply-To: <20240809172106.25892-4-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240813_130409_894746_1EBF8E11 
-X-CRM114-Status: GOOD (  30.44  )
+X-CRM114-CacheID: sfid-20240813_130737_235727_4729CBD0 
+X-CRM114-Status: GOOD (  12.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,67 +86,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 12, 2024 at 03:31:28PM +0200, Christoph Hellwig wrote:
-> On Mon, Aug 12, 2024 at 02:10:28PM +0200, Christian Marangi wrote:
-> > The chosen name was arbritrary just to follow eMMC ones. Can totally
-> > change if problematic.
+On Fri, Aug 09, 2024 at 07:21:01PM +0200, Christian Marangi wrote:
+> Add property for defining partitions node in mmc-card node to define
+> partitions in DT by the use of the block2mtd module to use block
+> devices as MTD.
 
-The purpose of those eMMC nodes was to describe various non-standard 
-stuff you get when discoverable devices get soldered on a board. Power 
-rails, reset GPIOs, etc. It was not to put partition info there, but I 
-suppose having the node opens it to such abuse.
+You justified patch 1 saying eMMC already supported this, but then here 
+you add support.
+
+Both are a NAK for me as both already have a way to describe partitions 
+with GPT.
 
 > 
-> NVMe namespaces are dynamic and can be created and deleted at will
-> at runtime.  I just don't see how they would even fit into OF
-> concepts.
-> 
-> There is a huge impedance mismatch here, to the point where I completely
-> fail to understand what you are trying to do.
-> 
-> > But support of OF for PCIe is already a thing for a long time. (it all
-> > works by setting the compatible of the PCIe ID card) and used in wifi
-> > card at assign MAC address, calibration data, disable frequency.
-> 
-> Please point to a document describing how, but more importantly why
-> this is done.  I've worked with and maintained Linux PCI(e) drivers for
-> about 20 years and never seen it.  And the concept simply doesn't make
-> sense in terms of a dynamically probed bus.
-
-With OpenFirmware systems, the firmware will probe PCI and populate 
-nodes with what it discovered and with how it configured things. IBM 
-PSeries uses DT for PCI hotplug as well, AIUI.
-
-For Flattened DT, PCI devices are typically only present if there are 
-extra non-discoverable things (again, happens when devices are soldered 
-down and not in standard slots). Another example is a NIC where they 
-cheaped out and didn't put an EEPROM to store the MAC address, so you 
-store it in the DT. Now we're starting to see non-discoverable things 
-sitting behind PCI devices, so we need the PCI device in DT to describe 
-those downstream devices.
-
-> > Not having this well organized and consistent schema in DT will result
-> > in additional condition in the drivers...
-> 
-> NVMe Controllers are PCI functions (or virtual entities over the network).
-> Defining them in a static DT scheme does not make sense.  NVMe Namespaces
-> which are what contains the block data are dynamically discoverred and
-> can be created and deleted at runtime, so refering to them in DT is even
-> more broken.  I really don't see how any of this could remotely work.
-> 
-> > If these 2 patch are problematic I can totally drop from the series but
-> > it was really to add consistency in NVMe and eMMC. The real important
-> > part is eMMC that is becoming the de-facto replacement for NAND/NOR on
-> > high tier devices (mostly wifi6/7 consumer router)
-> 
-> If you aren't dealing with raw(ish) NAND don't use mtd.  MTD is designed
-> to deal with the nitty gritty details of NOR and NAND flash.  If you
-> already have an FTL running in the device there is absolutely no reason
-> to use it.
-
-Yes, agreed.
-
-Rob
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+>  .../devicetree/bindings/mmc/mmc-card.yaml     | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 
 ______________________________________________________
 Linux MTD discussion mailing list
