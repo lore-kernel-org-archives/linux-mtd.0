@@ -4,88 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84BE0C52D7C
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Aug 2024 09:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37FE7C52D7C
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Aug 2024 14:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
-	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f4w9HBd65rRHYC4issOwuI10XfIhIVId1fDuP16WkDQ=; b=e/RfWUxCgQIU7U
-	UAmQ+IcuX6JMV2o5My0UhLUI5P0/oHsBK2x3y9UOmpRKkwMf3bsqvfUjf+j5NmyJJWbE3JiM2MwEW
-	TR2gPlMXZ8eUSPQiIXuOcXgiyG8t4KPCbULo6vFeT1NvfMnqC8C64qgHr4WmYTRB4BnUnk4Q+yB/0
-	Z+oW9B5GTJ1oxsvp6IvA6W4sQg23giLjQ9ssTgspeXAXDf1Uk3/wVbIGzsi+mdQxNP6IsiI9vwlgB
-	vejXvpbZSaEiaxe/JQot9n6V7+AzNP1pHXj6SDJCMcgRCFmnAuF/5WwTl+Q9xfMAE1gOGiiwfsVBH
-	xSnvJ1YeZF7PYSJGY5iA==;
+	List-Owner; bh=kTHUWD31OYtK3kSsVXkoB5H6S5hAidJgsQAbZlOS4g4=; b=to1SVnucy+Gd61
+	JsKZZL+JI/UAtHwk3aus8ZDIPImLZJI1wrmPT2PQFGjQb5/lKiWSkOkFkhHRjS5u+1kDYUWS1w7C3
+	+tiCnCyRQlCtSkOxzbqlkf92o6Xiy1zMu+hUtuG4OUDJarrmInFmiMGHT64fcNAVqI495BTJADtof
+	YemxgH9dHdnB0EhJViow3CWPRJbLjsuiE99h736lqgCiIRfqX3xLWZcxdat8GuSswJ0uZZxRcUpzk
+	Mj/EEAdzZ79ZhKSJzEjkoKH5NILgJNPI1CruIjSCjOOQyPVFmP8HdK8TqCz0aHUJjgpzePhyllWhn
+	P8cQr67oW+Xow/pm33uQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdncz-000000036Qf-3sYx;
-	Tue, 13 Aug 2024 09:15:41 +0000
-Received: from mout.web.de ([212.227.17.11])
+	id 1sdsae-000000041z6-0vcy;
+	Tue, 13 Aug 2024 14:33:36 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sdncv-000000036Px-26js;
-	Tue, 13 Aug 2024 09:15:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1723540507; x=1724145307; i=markus.elfring@web.de;
-	bh=rGguLSfwniavDEMHMy3GgVchwkMAgtGND+6W9QtIiDc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=d5dn+5kltuhJs+yuGh2lf8dfvJaXvvciQnd54XEgwRZJo8cjfX2+W9DHfMDFAnRr
-	 oSpeJMNhQZ+xRSgUMaw9dtiSuGP/+3XXDgqBn20m9B7uSHvULJR8NcaMdqXjTaqpy
-	 XlpwQ9WqhDkYAiz3/dHqg9i+sH/z5QPhQyB6fvHTbTlSglVuFAFgzylDODlukXD7y
-	 Q/HER3TJ7bVzCl/2fsXGaIk6t5uKRT/nX5OWt2MtaxDaDhEUh1vLqn8Ni8mrtBfFm
-	 0FqRC6VbxIto64aRQRSiEU7pDfAmYr7XTxqN96Jlr4sws/DIoFaUUMNODKY+7mUmj
-	 wRMHI5XxapfQM8Cn2A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MVrbz-1snSHu1zMb-00UOJc; Tue, 13
- Aug 2024 11:15:07 +0200
-Message-ID: <d49cf866-2223-45e9-9ef6-c72990d87a3a@web.de>
-Date: Tue, 13 Aug 2024 11:15:04 +0200
+	id 1sdsaa-000000041xr-0zHR
+	for linux-mtd@lists.infradead.org;
+	Tue, 13 Aug 2024 14:33:33 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id AEA6ECE13E0;
+	Tue, 13 Aug 2024 14:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E37C4AF0F;
+	Tue, 13 Aug 2024 14:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723559607;
+	bh=3a6mRuAjt3jIt4YRX2DWO332ocA6zv8y2+Yw3KbG7FI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=iUfWLnfG8bNGd7QIFpHNn6S9UB701G5zggTss4wNqKyd6g6F1qk2ziwTav9jz4BF2
+	 OjilPhBCr5rE7/MjXrlL9eHesqGEQi9uIECrgGYSmJChNaOWcugFxm7+bFh9UlQWd2
+	 06gjYgy/WiBPRTk0IRDwY6kC19B9mvcX9i1AbWzA2QrzYAVVzEoU4emS+DjEUvSk8Y
+	 +Y5f9FQMaGFM2wb4K5OPES2TlqAw8zH5VmoIxWN+E/wgPZz6hWLQQDy8tqEVYbhLD4
+	 a+4BI4EUQlE+58dD2KmCNIodh59x0gapma8B+e3OQMifg8B4Te2mgwBnXfxCjPZdC8
+	 oAmZFAZBjFj9g==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-mtd@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: winbond: add Zetta ZD25Q128C support
+In-Reply-To: <20240804221535.291923-1-mwalle@kernel.org> (Michael Walle's
+	message of "Mon, 5 Aug 2024 00:15:35 +0200")
+References: <20240804221535.291923-1-mwalle@kernel.org>
+Date: Tue, 13 Aug 2024 16:33:25 +0200
+Message-ID: <mafs0mslgze4q.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Christian Marangi <ansuelsmth@gmail.com>, linux-nvme@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
- Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Jens Axboe <axboe@kernel.dk>, Joern Engel <joern@lazybastard.org>,
- Keith Busch <kbusch@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh@kernel.org>,
- Sagi Grimberg <sagi@grimberg.me>, Saravana Kannan <saravanak@google.com>,
- =?UTF-8?Q?Thomas_Bogend=C3=B6rfer?= <tsbogend@alpha.franken.de>,
- Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>
-References: <20240809172106.25892-3-ansuelsmth@gmail.com>
-Subject: Re: [PATCH v4 2/7] nvme: assign of_node to nvme device
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240809172106.25892-3-ansuelsmth@gmail.com>
-X-Provags-ID: V03:K1:5OSznLC1x5l4DccGvfE0cxn4yFFn97VuHg47N4spG6KwoK18cCa
- u7rC+LnBerN5Fj1djIeJHC6ZxqyG7ZBcxRpFbTchUIFAChFRqkBj6wpD3oqHdOEEgRtDlAC
- HtE4KPgNjcMfqicWP1nbyFIFu1giD/7GYtwnkDB7ZP5HD8l4Xm4RETt47ea7DrRFOc6jI9A
- QNidh/HFdpT2P/8HmYCtg==
-UI-OutboundReport: notjunk:1;M01:P0:Np8KOEmCYsI=;z/+4c8gTK4XQuaeM7RbBj1+xKBe
- GnmhKkOHHh7e2w732IW8Ag8dTzkXWWfoFRPDNRTDGp4oBqnzRFaqT+QJbgQQzC5q6DoheDvy4
- 4K6hzfjCrIfu1vC7alajleh3cyZ2aBMvJRAnti80z1OClHWKpyU+mLguk1rPeZWI3VNsnjP+a
- l8ZkQeoG0gceLGFDodqgh9p0ukXev3bK4614cWlibUmfPs6N3YNly+XAR4sUkNF6Gi0TKJsS9
- hubWrA3hNvPzUJSlFw4ISIRx6o+r7YnU7J2pKPWy6vgmUgKzcUHhwD3K8HDcPgOoRgw+403/c
- JpzEz60bFdXa0J7JUAdpZrD+577k+Vl+S2iHX3wpIzu4ahBML1W/4sCyzDEgeSd3KRI2xfVI2
- kdE/Cq3EwMociuNW+MJkQaEc6/PzjG56aiZYqnM4YgYSXcizwNvx3KM2Npxq27nG7HErsi1c2
- L8P8AY8CeYDNtgdzsLF2H4pr3q11W6YZSNZLYiCHIojtSZ7LXF4PIg1ibLyEzFaaUcj9ypMPV
- n63CvwhN4LzUcjFE7+JCcPow/boReJ0/oyROQ+Ma830y1msb9f/kF2SCdhbq+6YiH40GRzZot
- LMeWdIma1ZZs+76tDn6IQ2k4YADjqiRKCt+t4GtoaA74dEjaRzeilmv6Vv1mdtW0g1Sw/imUn
- KdGibm3XsP/wn4CYQcjGHH/dnKNnRL7GKKaU7dYu7r0Mxad+CGBoQnV3LFbdUO5gLSTnLTLlV
- PVDDFYhJTg0NhnHj75a7PtNc3iEd/KBBh6G/2B+OswXxAUGsr6JcX3NThjfdQXHro2VXnXY6J
- PLaVer5xX68HLw1Rsd5DNE6g==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240813_021537_939709_1AACE8AA 
-X-CRM114-Status: UNSURE (   4.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240813_073332_521425_07C51608 
+X-CRM114-Status: GOOD (  10.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,13 +71,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-4oCmCj4gVGhpcyBmb2xsb3cgYSBzaW1pbGFyIGltcGxlbWVudGF0aW9uIGRvbmUgZm9yIG1tYyDi
-gKYKCiAgICAgICBmb2xsb3dzPwoKUmVnYXJkcywKTWFya3VzCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+On Mon, Aug 05 2024, Michael Walle wrote:
+
+> Zetta normally uses BAh as its vendor ID. But for the ZD25Q128C they
+> took the one from Winbond and messed up the size parameters in SFDP.
+> Most functions seem compatible with the W25Q128, we just have to fix up
+> the size.
+>
+> Link: http://www.zettadevice.com/upload/file/20150821/DS_Zetta_25Q128_RevA.pdf
+> Link: https://www.lcsc.com/datasheet/lcsc_datasheet_2312081757_Zetta-ZD25Q128CSIGT_C19626875.pdf
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+
+Applied to spi-nor/next. Thanks!
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
