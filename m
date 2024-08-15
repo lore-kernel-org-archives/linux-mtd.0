@@ -4,56 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06CA4C531DE
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Aug 2024 19:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 143F3C3DA7F
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2024 09:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5ce3OVCiJ2SBfBxHBLAJHavQlrPSbUbphzy3ELf7nyY=; b=OPbYcyYV5VBe52
-	JCLzraY7TXg4dTOxwhtev9wG+OUnixGXuQlI8Y592mWTDjmk9wzx2AEHesCLYrPg70ItQYAhIOthL
-	fXnhfMr9c/5xEG4nTJC5/BmVPq7Q428d29CQfnapq112iPf9MpnNeiJNoHZSeFZGhzEdhrG4r2H+3
-	1iAvz97jvBSy5eIreagIptocOtYmKQhqTBYbqEBLfeTH7yHUU1PmCFmcGPo3R5HEvwllz9IhQdeVZ
-	xrpFsCQMjhcFYG4WcM58Kt6OkCm8SOKXo9yrqte0S3Q4WMKcomS2NdVOKj+rCVO9pBVuyGlxsleNt
-	kusy4eiidZeSEiPpfjng==;
+	List-Owner; bh=XHZCyCGyqL6d7Yuo6P6lKocripaRYIeVT0OJMGM9oq8=; b=Ekmdd2lVA78++j
+	b6b0LPD9LFr4hTe0t+yDrfDl4gnMl+qBfPzwBKpkoI8I200lvIEjKBbQXaQg4x++kDLOuZLDU1EUb
+	FgIAzEXmcSWFkzpf8WQ492SCpvNf/mIy/jNhMWfI9GKtPiGH8Ej8QXTmYBrqw54x+jOwBDxpdfio2
+	dYNIZTzDZxpeUFew1gOQ4QhyvfGGTIFCdR6gNDBcWyr8TiF2WZ1+kFSYHk2wzWfxQeerQ0G2Vv+gf
+	IdJZWwXD9ZAMKw5vml0WnLXBggfKeytKjxS3rIYtd+iL9Tq4mKEXnkD8QMWBWQaw7oUnjZgF5SqSo
+	9m/V1/p7TD9wNVpNZetQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seK9Z-000000087kB-2b0o;
-	Wed, 14 Aug 2024 19:59:29 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1seWXd-00000009Sgu-3kyn;
+	Thu, 15 Aug 2024 09:13:09 +0000
+Received: from fw2.prolan.hu ([193.68.50.107])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seK9X-000000087jq-3pXN
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 14 Aug 2024 19:59:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=dyVdPuVZWPTtj3niivHVjJclPba065VEMrZlN/1509Y=; b=VRCUv56rDLppLTGlOUP6XX06FM
-	U6UYnFzNg7mdEV7rTY/CqOvFfZj/ZatHbLwxZpWyCDXb6Fda9RgdR8K9Il9fGt3ZNeWgIg2rIhLxY
-	9lzbxOEuRHQu5GaMDh8TDnJHCzP/ntxAiS1dpjY6beTXgrD7XRmh+gifXKhEohiwwx1voWmop2zHp
-	r6d7rBmbyQW/WpXE6CLHAhTQl/fMXupuGcsC82Xq8VWKi3+37Xi6C2/NshcGOFmYO1NW94PpH7JTk
-	YIgSoU1YTqi6jsJzd2YTYMVltGqO578+0efmzfUUCay0y/WXGGZjv//3CcXQGhd2Lfp1uv+iqB91P
-	OJTfWX8w==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seK9Q-0000000130W-2f8i;
-	Wed, 14 Aug 2024 19:59:20 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	linux-mtd@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: [PATCH 2/2] jffs2: Use a folio in jffs2_garbage_collect_dnode()
-Date: Wed, 14 Aug 2024 20:59:13 +0100
-Message-ID: <20240814195915.249871-3-willy@infradead.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240814195915.249871-1-willy@infradead.org>
-References: <20240814195915.249871-1-willy@infradead.org>
+	id 1seWXa-00000009SfW-2TLf
+	for linux-mtd@lists.infradead.org;
+	Thu, 15 Aug 2024 09:13:08 +0000
+Received: from proxmox-mailgw.intranet.prolan.hu (localhost.localdomain [127.0.0.1])
+	by proxmox-mailgw.intranet.prolan.hu (Proxmox) with ESMTP id D262EA0A9C
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2024 11:12:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prolan.hu; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:from:from:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=mail; bh=U7qf3CuRiNYt6ty+47vj
+	a54VEpIhbjlLBZwmgXv51LA=; b=QKWleObvtdwmUEoYq0rAfP03TdFmVSAlN28T
+	e3xPT0+GnfVAE/C78faPiHJKOTXcrti9/Hp/9OpeAA4L4dw/FWUH3CdV1GO+JHQe
+	5r8aYGzRsifIuCOWoSvMlwE0Bp5gL/g53wc81zspKUj6FQAD3rc6NLnwiwSsU+TJ
+	a7i4fIF0ynqxKN0FRc1OlITjwBY/d1P7Y8ej+B6/TVEJIPp0GyTb0bSYqCeb15tD
+	s2zp62/CxtRATu/aHrvXp4giPlC9NvyuHPzZrdfvd7yJEqwj6KbyTB2MY8+4y47C
+	HjrrvrY51Q6c1Q3Sub1petPlFZm/nXLuTb9aNVjXisEFLU92zVGdhc3fPVv46YJW
+	zvFoLYmJRnucneuHvvcIu4GPE+KfUoOxIrmbgJrd1PT7PMa27qn5CU9NoiPiDyml
+	B1B7hHnZmnVsDhs7i4avR8WrMTZnK9K/079PRmcYEPve8/iNIjfqDLWNMqmXt9h8
+	SBiBb3eEXXsw9B/sninaF/qfMbSRkn3ecjSBkl9MPMueIufa65lf2SO48oInSphE
+	dZYRPceZgPnpj9U8gNvlpyoOEb6eghOwsXCm8meMzYN2Q5bJhL25TVjBXcUNjv4f
+	I10vC3fMBYZlC4kUSyLby5e/3D5tcBKi5sYmTUWqJtb0+czbyAxf4UaQgjtbFwTL
+	+fUXToQ=
+From: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>
+To: <linux-mtd@lists.infradead.org>
+CC: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>
+Subject: [PATCH 2/2] fs-tests: integck: Refactor: split out common remount logic
+Date: Thu, 15 Aug 2024 11:12:27 +0200
+Message-ID: <20240815091225.3237097-2-csokas.bence@prolan.hu>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240815091225.3237097-1-csokas.bence@prolan.hu>
+References: <20240815091225.3237097-1-csokas.bence@prolan.hu>
 MIME-Version: 1.0
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1723713177;VERSION=7976;MC=2896845279;ID=1007645;TRN=0;CRV=0;IPC=;SP=0;SIPS=0;PI=3;F=0
+X-ESET-Antispam: OK
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29ACD94854607563
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240815_021306_805890_79962FC0 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,83 +74,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Call read_cache_folio() instead of read_cache_page() to get the folio
-containing the page.  No attempt is made here to support large folios
-as I assume that will never be interesting for jffs2.  Includes a switch
-from kmap to kmap_local which looks safe.
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/jffs2/gc.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 5c6602f3c189..822949d0eb00 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -1171,7 +1171,7 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 	uint32_t alloclen, offset, orig_end, orig_start;
- 	int ret = 0;
- 	unsigned char *comprbuf = NULL, *writebuf;
--	struct page *page;
-+	struct folio *folio;
- 	unsigned char *pg_ptr;
- 
- 	memset(&ri, 0, sizeof(ri));
-@@ -1317,25 +1317,25 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 		BUG_ON(start > orig_start);
- 	}
- 
--	/* The rules state that we must obtain the page lock *before* f->sem, so
-+	/* The rules state that we must obtain the folio lock *before* f->sem, so
- 	 * drop f->sem temporarily. Since we also hold c->alloc_sem, nothing's
- 	 * actually going to *change* so we're safe; we only allow reading.
- 	 *
- 	 * It is important to note that jffs2_write_begin() will ensure that its
--	 * page is marked Uptodate before allocating space. That means that if we
--	 * end up here trying to GC the *same* page that jffs2_write_begin() is
--	 * trying to write out, read_cache_page() will not deadlock. */
-+	 * folio is marked uptodate before allocating space. That means that if we
-+	 * end up here trying to GC the *same* folio that jffs2_write_begin() is
-+	 * trying to write out, read_cache_folio() will not deadlock. */
- 	mutex_unlock(&f->sem);
--	page = read_cache_page(inode->i_mapping, start >> PAGE_SHIFT,
-+	folio = read_cache_folio(inode->i_mapping, start >> PAGE_SHIFT,
- 			       __jffs2_read_folio, NULL);
--	if (IS_ERR(page)) {
--		pr_warn("read_cache_page() returned error: %ld\n",
--			PTR_ERR(page));
-+	if (IS_ERR(folio)) {
-+		pr_warn("read_cache_folio() returned error: %ld\n",
-+			PTR_ERR(folio));
- 		mutex_lock(&f->sem);
--		return PTR_ERR(page);
-+		return PTR_ERR(folio);
- 	}
- 
--	pg_ptr = kmap(page);
-+	pg_ptr = kmap_local_folio(folio, 0);
- 	mutex_lock(&f->sem);
- 
- 	offset = start;
-@@ -1400,7 +1400,6 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 		}
- 	}
- 
--	kunmap(page);
--	put_page(page);
-+	folio_release_kmap(folio, pg_ptr);
- 	return ret;
- }
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+cmVtb3VudF90ZXN0ZWRfZnMoKSBhbmQgcmVjb3Zlcl90ZXN0ZWRfZnMoKSBib3RoIGhhdmUKYWxt
+b3N0IHRoZSBzYW1lIGNvZGUgZm9yIHJlbW91bnRpbmcgdGhlIHRhcmdldCBGUwpSTyB0aGVuIFJX
+LiBTcGxpdCB0aGlzIHNlcXVlbmNlIGludG8gYSBuZXcKZnVuY3Rpb24gY2FsbGVkIHJlbW91bnRf
+cm9fcncoKS4KClNpZ25lZC1vZmYtYnk6IENzw7Nrw6FzLCBCZW5jZSA8Y3Nva2FzLmJlbmNlQHBy
+b2xhbi5odT4KLS0tCiB0ZXN0cy9mcy10ZXN0cy9pbnRlZ3JpdHkvaW50ZWdjay5jIHwgODUgKysr
+KysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9u
+cygrKSwgNTAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdHMvZnMtdGVzdHMvaW50ZWdy
+aXR5L2ludGVnY2suYyBiL3Rlc3RzL2ZzLXRlc3RzL2ludGVncml0eS9pbnRlZ2NrLmMKaW5kZXgg
+NmNlOGM5ZC4uZWRkMDljMCAxMDA2NDQKLS0tIGEvdGVzdHMvZnMtdGVzdHMvaW50ZWdyaXR5L2lu
+dGVnY2suYworKysgYi90ZXN0cy9mcy10ZXN0cy9pbnRlZ3JpdHkvaW50ZWdjay5jCkBAIC0yNjY4
+LDYgKzI2NjgsMzUgQEAgc3RhdGljIGludCB1bW91bnRfYW5kX3JlbW91bnQoaW50IG1vdW50ZWQs
+IGludCByZWF0dCwgaW50IHVtX3JvcncpCiAJcmV0dXJuIDA7CiB9CiAKKy8qKgorICogUmVtb3Vu
+dCB0aGUgdGVzdCBmaWxlLXN5c3RlbSBSTyBmaXJzdCwgdGhlbiBSVy4KKyAqLworc3RhdGljIGlu
+dCByZW1vdW50X3JvX3J3KGNvbnN0IGNoYXIgKnRyaWVzKQoreworCWludCByZXQ7CisJdW5zaWdu
+ZWQgbG9uZyBmbGFnczsKKworCWZsYWdzID0gZnNpbmZvLm1vdW50X2ZsYWdzIHwgTVNfUkRPTkxZ
+IHwgTVNfUkVNT1VOVDsKKwlyZXQgPSBtb3VudChmc2luZm8uZnNkZXYsIGZzaW5mby5tb3VudF9w
+b2ludCwgZnNpbmZvLmZzdHlwZSwKKwkJICAgIGZsYWdzLCBmc2luZm8ubW91bnRfb3B0cyk7CisJ
+aWYgKHJldCkgeworCQlwY3YoImNhbm5vdCByZW1vdW50ICVzIFIvTyVzIiwgdHJpZXMsIGZzaW5m
+by5tb3VudF9wb2ludCk7CisJCXJldHVybiAtMTsKKwl9CisKKwlmbGFncyA9IGZzaW5mby5tb3Vu
+dF9mbGFncyB8IE1TX1JFTU9VTlQ7CisJZmxhZ3MgJj0gfigodW5zaWduZWQgbG9uZylNU19SRE9O
+TFkpOworCXJldCA9IG1vdW50KGZzaW5mby5mc2RldiwgZnNpbmZvLm1vdW50X3BvaW50LCBmc2lu
+Zm8uZnN0eXBlLAorCQkgICAgZmxhZ3MsIGZzaW5mby5tb3VudF9vcHRzKTsKKwlpZiAocmV0KSB7
+CisJCXBjdigicmVtb3VudGVkICVzIFIvTyVzLCBidXQgY2Fubm90IHJlLW1vdW50IGl0IFIvVyIs
+CisJCSAgICB0cmllcywgZnNpbmZvLm1vdW50X3BvaW50KTsKKwkJcmV0dXJuIC0xOworCX0KKwor
+CXJldHVybiAwOworfQorCiAvKioKICAqIFJlLW1vdW50IHRoZSB0ZXN0IGZpbGUtc3lzdGVtLiBU
+aGlzIGZ1bmN0aW9uIHJhbmRvbWx5IHNlbGVjdCBob3cgdG8KICAqIHJlLW1vdW50LgpAQCAtMjY5
+MiwyNCArMjcyMSw5IEBAIHN0YXRpYyBpbnQgcmVtb3VudF90ZXN0ZWRfZnModm9pZCkKIAkJdW0g
+PSAxOwogCiAJaWYgKHJvcncxKSB7Ci0JCWZsYWdzID0gZnNpbmZvLm1vdW50X2ZsYWdzIHwgTVNf
+UkRPTkxZIHwgTVNfUkVNT1VOVDsKLQkJcmV0ID0gbW91bnQoZnNpbmZvLmZzZGV2LCBmc2luZm8u
+bW91bnRfcG9pbnQsIGZzaW5mby5mc3R5cGUsCi0JCQkgICAgZmxhZ3MsIGZzaW5mby5tb3VudF9v
+cHRzKTsKLQkJaWYgKHJldCkgewotCQkJcGN2KCJjYW5ub3QgcmVtb3VudCAlcyBSL08gKDEpIiwK
+LQkJCSAgICBmc2luZm8ubW91bnRfcG9pbnQpOwotCQkJcmV0dXJuIC0xOwotCQl9Ci0KLQkJZmxh
+Z3MgPSBmc2luZm8ubW91bnRfZmxhZ3MgfCBNU19SRU1PVU5UOwotCQlmbGFncyAmPSB+KCh1bnNp
+Z25lZCBsb25nKU1TX1JET05MWSk7Ci0JCXJldCA9IG1vdW50KGZzaW5mby5mc2RldiwgZnNpbmZv
+Lm1vdW50X3BvaW50LCBmc2luZm8uZnN0eXBlLAotCQkJICAgIGZsYWdzLCBmc2luZm8ubW91bnRf
+b3B0cyk7Ci0JCWlmIChyZXQpIHsKLQkJCXBjdigicmVtb3VudGVkICVzIFIvTyAoMSksIGJ1dCBj
+YW5ub3QgcmUtbW91bnQgaXQgUi9XIiwKLQkJCSAgICBmc2luZm8ubW91bnRfcG9pbnQpOworCQly
+ZXQgPSByZW1vdW50X3JvX3J3KCIgKDEpIik7CisJCWlmIChyZXQpCiAJCQlyZXR1cm4gLTE7Ci0J
+CX0KIAl9CiAKIAlpZiAodW0pIHsKQEAgLTI3MzAsMjMgKzI3NDQsOSBAQCBzdGF0aWMgaW50IHJl
+bW91bnRfdGVzdGVkX2ZzKHZvaWQpCiAJfQogCiAJaWYgKHJvcncyKSB7Ci0JCWZsYWdzID0gZnNp
+bmZvLm1vdW50X2ZsYWdzIHwgTVNfUkRPTkxZIHwgTVNfUkVNT1VOVDsKLQkJcmV0ID0gbW91bnQo
+ZnNpbmZvLmZzZGV2LCBmc2luZm8ubW91bnRfcG9pbnQsIGZzaW5mby5mc3R5cGUsCi0JCQkgICAg
+ZmxhZ3MsIGZzaW5mby5tb3VudF9vcHRzKTsKLQkJaWYgKHJldCkgewotCQkJcGN2KCJjYW5ub3Qg
+cmUtbW91bnQgJXMgUi9PICgzKSIsIGZzaW5mby5tb3VudF9wb2ludCk7Ci0JCQlyZXR1cm4gLTE7
+Ci0JCX0KLQotCQlmbGFncyA9IGZzaW5mby5tb3VudF9mbGFncyB8IE1TX1JFTU9VTlQ7Ci0JCWZs
+YWdzICY9IH4oKHVuc2lnbmVkIGxvbmcpTVNfUkRPTkxZKTsKLQkJcmV0ID0gbW91bnQoZnNpbmZv
+LmZzZGV2LCBmc2luZm8ubW91bnRfcG9pbnQsIGZzaW5mby5mc3R5cGUsCi0JCQkgICAgZmxhZ3Ms
+IGZzaW5mby5tb3VudF9vcHRzKTsKLQkJaWYgKHJldCkgewotCQkJcGN2KCJyZW1vdW50ZWQgJXMg
+Ui9PICgzKSwgYnV0IGNhbm5vdCByZS1tb3VudCBpdCBiYWNrIFIvVyIsCi0JCQkgICAgIGZzaW5m
+by5tb3VudF9wb2ludCk7CisJCXJldCA9IHJlbW91bnRfcm9fcncoIiAoMykiKTsKKwkJaWYgKHJl
+dCkKIAkJCXJldHVybiAtMTsKLQkJfQogCX0KIAogCUNIRUNLKGNoZGlyKGZzaW5mby5tb3VudF9w
+b2ludCkgPT0gMCk7CkBAIC0zMjA5LDcgKzMyMDksNiBAQCBzdGF0aWMgdm9pZCBmcmVlX2ZzX2lu
+Zm8oc3RydWN0IGRpcl9pbmZvICpkaXIpCiBzdGF0aWMgaW50IHJlY292ZXJfdGVzdGVkX2ZzKHZv
+aWQpCiB7CiAJaW50IHJldDsKLQl1bnNpZ25lZCBsb25nIGZsYWdzOwogCXVuc2lnbmVkIGludCAg
+dW1fcm9ydywgcm9ydzI7CiAJc3RydWN0IG1udGVudCAqbW50ZW50OwogCkBAIC0zMjMxLDIzICsz
+MjMwLDkgQEAgc3RhdGljIGludCByZWNvdmVyX3Rlc3RlZF9mcyh2b2lkKQogCQlyZXR1cm4gLTE7
+CiAKIAlpZiAocm9ydzIpIHsKLQkJZmxhZ3MgPSBmc2luZm8ubW91bnRfZmxhZ3MgfCBNU19SRE9O
+TFkgfCBNU19SRU1PVU5UOwotCQlyZXQgPSBtb3VudChmc2luZm8uZnNkZXYsIGZzaW5mby5tb3Vu
+dF9wb2ludCwgZnNpbmZvLmZzdHlwZSwKLQkJCSAgICBmbGFncywgZnNpbmZvLm1vdW50X29wdHMp
+OwotCQlpZiAocmV0KSB7Ci0JCQlwY3YoImNhbm5vdCByZS1tb3VudCAlcyBSL08iLCBmc2luZm8u
+bW91bnRfcG9pbnQpOwotCQkJcmV0dXJuIC0xOwotCQl9Ci0KLQkJZmxhZ3MgPSBmc2luZm8ubW91
+bnRfZmxhZ3MgfCBNU19SRU1PVU5UOwotCQlmbGFncyAmPSB+KCh1bnNpZ25lZCBsb25nKU1TX1JE
+T05MWSk7Ci0JCXJldCA9IG1vdW50KGZzaW5mby5mc2RldiwgZnNpbmZvLm1vdW50X3BvaW50LCBm
+c2luZm8uZnN0eXBlLAotCQkJICAgIGZsYWdzLCBmc2luZm8ubW91bnRfb3B0cyk7Ci0JCWlmIChy
+ZXQpIHsKLQkJCXBjdigicmVtb3VudGVkICVzIFIvTywgYnV0IGNhbm5vdCByZS1tb3VudCBpdCBi
+YWNrIFIvVyIsCi0JCQkgICAgIGZzaW5mby5tb3VudF9wb2ludCk7CisJCXJldCA9IHJlbW91bnRf
+cm9fcncoIiIpOworCQlpZiAocmV0KQogCQkJcmV0dXJuIC0xOwotCQl9CiAJfQogCiAJcmV0dXJu
+IDA7Ci0tIAoyLjM0LjEKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
