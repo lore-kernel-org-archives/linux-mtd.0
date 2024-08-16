@@ -4,62 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F394C52D7D
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Aug 2024 09:13:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60699C531DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Aug 2024 11:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MxfwQL+1aWiuAb23vNfTTkQkuw/oqBHevffRvKHFxpA=; b=nHIEThtTf/L4A+
-	DI7bhN89FtMA9KXGXSkN0bkBIL9/6B3/Apw/7rDhs5dH+kJS5WuzXiVZK9883WbHKta8BMDDBvNcI
-	5Qfq5/plnI3oCUO53SHhS+NKryjp5D04oBCnvlei9g+bHkm+/JRCgZJfNwQ3N3t+xt84tdXrGqyHJ
-	KdB12cp6ul7uKRYBIyS2Qe0NfQ2CipVhdMq7gBvDrk1yC84h3zC3w29QROuY6Rag6h2Ik9gQ+3blG
-	/msu9CjAJzAFDWwv57WsiOu5W8l5dvWZg8G47gjSdsOg6DY49XmrTFoTX/E4gLSzlY3Ce64hbUFd/
-	qQ0q+wMM2sAHt2fU+USw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mXpUzTcHDtFENthZ2V8MwgG05jStR2QRJgTIK/q0+Pw=; b=ic1VZK69P2MGU5
+	/RVr/v+1FvGl7i3cpLYu0s3Y+wRdwYOFwvyRc+CLG3x0dwyfYgBIs2AdD5FF4VC6MX2jptbQDTGvm
+	vUZXUyW3SdK7DF3DEPDog+arq2kXp7VOk5c3e+V9BxX+2zkTyEbPuGvKJuWhSrBzVg8uvndjxfArd
+	p69XbrIAL9Dwykj6ra6PSg+eJ8wXvrnuMRcPrtUmXj3pHiADAF5gscVVqg2pDTXpYhXvhlcMKAhR7
+	iP1rbV9AbFKrtawBmnv5OrAcT5cX6DtnThFnEP+oh24bXsH6vg3Fc41cn2VAUOO462qLzVDQ8xRdB
+	2Xu3aGsDuQVAZaTWgKpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seWXa-00000009Sg3-1Bgb;
-	Thu, 15 Aug 2024 09:13:06 +0000
-Received: from fw2.prolan.hu ([193.68.50.107])
+	id 1sev9m-0000000ClhK-3jRx;
+	Fri, 16 Aug 2024 11:30:10 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seWXV-00000009SfL-3Uyr
+	id 1sev9h-0000000ClfF-3YWs
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Aug 2024 09:13:03 +0000
-Received: from proxmox-mailgw.intranet.prolan.hu (localhost.localdomain [127.0.0.1])
-	by proxmox-mailgw.intranet.prolan.hu (Proxmox) with ESMTP id AB69EA07A3
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2024 11:12:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prolan.hu; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:from:from:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=mail; bh=NZ8bKfl4gonvQhmr//xirnlf9a5JTxsFL3V0tsm6tsM=; b=
-	G+/OUlD/XLG6b2ZdIhfdR0vag1v4RvlGtqFVkHDmJo1efFw3oLybAK2jQaYgDDiq
-	wd27ogQNQdpWMR/2S/NZymULU3q8NTEC+ww9bWf6eM1M7ScjJV2zLXU8jznL0Olo
-	P7dkGBvWf+Yv6XzzOEZQyLkLa06q04EbZK46QCGMZS9blWE2l7N70NRQnSuKd7eK
-	VVXKH889Cjoh7GXAkmtIVWXsg8niH1O6FOyHKIMKf4ZuCEMY0Vo3h2kmPE8ZVj1f
-	JpbdnIi0O5w9+c0mG64Ljb2QXfDGbPXvSVR57+MoQoWHo3Bwn2OCQIns/plRTvy2
-	rq4DbD1X4cuGjXpIxMrLRUBmg/wtNZCfAN0xRmwZUvwQ9kAgqacq5ubfXrMNeFid
-	SigMNsPAvW6b3mKpBclbOTTf5JnJ+lAwhIU5aS2sUCDE2j/GCgpGqTupQkA5lb3U
-	iyinF5OANA9Xy3x0U04EQbVylRQLqro9LiQZKGVm3V2wl4GR+qv0HIGwy6KdpCrm
-	/YUQkWuEbqfu2HnDgX8VQnambPy/PIz2XH2IpGmjP1+A0Y5d+sYb1q/SMpxzqzRG
-	zeX8Rm0AHwJjKGW0HbaFOgTFPjzGFZRujZbCcBlPWs4SwJZ/azY/H6xLD1clLrxY
-	mpZ+EHlS1pKYTG6SIu3PXN9+awvQwgG4uDPSDiBVCpM=
-From: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>
-To: <linux-mtd@lists.infradead.org>
-CC: =?UTF-8?q?Cs=C3=B3k=C3=A1s=2C=20Bence?= <csokas.bence@prolan.hu>
-Subject: [PATCH 1/2] fs-tests: integck: Refactor: split out common remount logic
-Date: Thu, 15 Aug 2024 11:12:25 +0200
-Message-ID: <20240815091225.3237097-1-csokas.bence@prolan.hu>
-X-Mailer: git-send-email 2.34.1
+	Fri, 16 Aug 2024 11:30:07 +0000
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-53212e0aa92so2084426e87.0
+        for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2024 04:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723807803; x=1724412603; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GnMi7JbSYPde+7YBzDVTOzXtIwhsTCSKyuwPWEFsgL8=;
+        b=CNNnRmUk7kl+SdsoJl/0qGHM0S8DEjADqj1PSXJnc9EXFVxkDp7+87HGFVe653ByS0
+         xadMnH93QFsBx6JODHZH45N3f6AFnyee9B2NWZbwPXAlJTTEKlndd8ySg2Zfkj/SBCwO
+         qvpLHXTTNbg+a+o4XGuJuNYpzqJj1q43RPdTAa29P0qiFDAy2H260omNRBmUatZhKnuu
+         yy31DyNqXAxhEOd959cZUqWUkeECo0FVBLzHe0Wk+jW4PgUqEEkstGLE3c2BhZ3tPG9i
+         qsn0ZecB/P9PdECMjA6g3lexDWj84SEx9Zh4q1qsS9JjhX1zl+RtBQ39bAxEbhIlmDTK
+         Cr9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723807803; x=1724412603;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GnMi7JbSYPde+7YBzDVTOzXtIwhsTCSKyuwPWEFsgL8=;
+        b=TUGeONEkakIcw25dv5egs80uQYU6xUt8iag2qN/I3VO8jfGvzVGSXCMzUEsLrBCJoU
+         TX9w3TegLsdbgMYOwzs3yOQ9RKWfCr3GAZP1qrbgrC7FYYQ8pjgwEK2hod2Ot6qpKm6s
+         qXd46poMiTbfSSofAIyRFGJLaWuZpe8/qEiSoS+EWsPdzbYNdaBon94MC/FjxP8DuanQ
+         ElUP+mMTLaLmQUXDVMhVjwQStAtL+U/RckUn1Yaiu+Mea9g/iEu8iRvALVhTfSq8HI3S
+         wH9LQI3oWTKRzRrhHBwxNAjvJAUoFRyZ67bdFc6uvNHQdDcEBT6+Jpsezvi8m13BZDj3
+         wbAg==
+X-Forwarded-Encrypted: i=1; AJvYcCWcAtYZMrHQos+8KSpC5ZTF+qjMvtH1Ixypcif0c4G44PfcQopXcbJVRB1MCB4GyCk2e8QgpLGYmHLE/oonIH3ch5FKZJbhCao1Up73Ng==
+X-Gm-Message-State: AOJu0Yx3O6oihnTI1HZPzRkP14iaeBUDisrS0iyhmlxZjq7h4rLCzEhx
+	R301Xnft2sbz16nYcsA5Bq839OPzgzrtwqi38zgKGnbdMNwHg1tPFHh8fiATtSNX0uwpykx9nfo
+	2xudJR7vo/PEJTc3N7BhmxPkhRg==
+X-Google-Smtp-Source: AGHT+IGyprlgMqb1PSWV/W4lvz0OA8aUMxdwsofz1Aj6sKzkZI1MvB/GcBj/4MOkkj417LlFdIz34kK7mdo05QGiGf4=
+X-Received: by 2002:a05:6512:1244:b0:52c:d6d7:9dd0 with SMTP id
+ 2adb3069b0e04-5331c6a1a86mr1585932e87.20.1723807802357; Fri, 16 Aug 2024
+ 04:30:02 -0700 (PDT)
 MIME-Version: 1.0
-X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1723713168;VERSION=7976;MC=1181167021;ID=1007644;TRN=0;CRV=0;IPC=;SP=0;SIPS=0;PI=3;F=0
-X-ESET-Antispam: OK
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29ACD94854607563
+References: <20240629103914.161530-1-erezgeva@nwtime.org> <20240629103914.161530-4-erezgeva@nwtime.org>
+ <1c457520-07b7-4bde-b040-e8bca959a4f5@linaro.org> <CANeKEMOODBNZA6efh0E0Ga_KaVs5Y3WLcUftRhNwYHhnXO=GNw@mail.gmail.com>
+ <CANeKEMO42rJt5Ob4_HDcZ3eEMvuMOPvRaFaLwL8SA65NtxSV7A@mail.gmail.com>
+ <1d56c3b2-7adf-45b9-a509-956340f3f17b@linaro.org> <CANeKEMMe-Onpn7xWQHgWz1Ps_uQPEMa7HrKA00HpoKjG+DCJNQ@mail.gmail.com>
+ <3bafcbea-6aa5-43ca-9d12-3916be3fe03d@linaro.org> <CANeKEMM02-Jvb8Pd0fZJFnRg-hsAW+hckYWm11tZZXNMPSPJ=w@mail.gmail.com>
+ <9b45cc73-2251-4085-af95-7ccd00dd6d3b@linaro.org> <CANeKEMP+mRefYZNb+TuBmOD7dC6=7Rg7D1EcfnjJoiaeaV28SQ@mail.gmail.com>
+ <875xtd48ps.fsf@geanix.com> <CANeKEMNJ3_ET5pQo2wg7_GSLX+vE+dqW-CV=v2DnG10xcgSdzQ@mail.gmail.com>
+ <D2MZ405LVTN8.3LTVN3KTUD6A3@kernel.org> <CANeKEMNtXb4ZV7kcLbHY+Mti6dPV9UZ2wTyUq5z0qtmtNNqSVA@mail.gmail.com>
+ <878qy7vx5j.fsf@geanix.com> <CANeKEMPD=nLnor8-oF0t9D8f5D+mLU4XqZ-07avX55BF3TJ8_Q@mail.gmail.com>
+In-Reply-To: <CANeKEMPD=nLnor8-oF0t9D8f5D+mLU4XqZ-07avX55BF3TJ8_Q@mail.gmail.com>
+From: Erez <erezgeva2@gmail.com>
+Date: Fri, 16 Aug 2024 13:29:24 +0200
+Message-ID: <CANeKEMMRuFXiqQ6uHuo47qai7w5E_1KdTht_rNczPdOHsEcpfg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dt-bindings: mtd: macronix,mx25l12833f: add
+ SPI-NOR chip
+To: Esben Haabendal <esben@geanix.com>
+Cc: Michael Walle <mwalle@kernel.org>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	Jaime Liao <jaimeliao@mxic.com.tw>, leoyu@mxic.com.tw, 
+	Alvin Zhou <alvinzhou@mxic.com.tw>, Julien Su <juliensu@mxic.com.tw>, 
+	Erez Geva <erezgeva@nwtime.org>, linux-mtd@lists.infradead.org, 
+	Pratyush Yadav <pratyush@kernel.org>, linux-kernel@vger.kernel.org, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240815_021302_362024_89AEEF83 
-X-CRM114-Status: GOOD (  18.00  )
+X-CRM114-CacheID: sfid-20240816_043005_938380_3C1960C9 
+X-CRM114-Status: GOOD (  42.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,127 +99,160 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-cmVtb3VudF90ZXN0ZWRfZnMoKSBhbmQgcmVjb3Zlcl90ZXN0ZWRfZnMoKSBib3RoIGhhdmUKYWxt
-b3N0IHRoZSBzYW1lIGNvZGUgZm9yIHVtb3VudCdpbmcgdGhlIHRhcmdldCBGUyBhbmQKbW91bnQn
-aW5nIGl0IGJhY2suIFNwbGl0IHRoaXMgc2VxdWVuY2UgaW50byBhIG5ldwpmdW5jdGlvbiBjYWxs
-ZWQgdW1vdW50X2FuZF9yZW1vdW50KCkuCgpTaWduZWQtb2ZmLWJ5OiBDc8Oza8OhcywgQmVuY2Ug
-PGNzb2thcy5iZW5jZUBwcm9sYW4uaHU+Ci0tLQoKTm90ZXM6CiAgICBgLS1jb2xvci1tb3ZlZGAg
-aXMgcmVjb21tZW5kZWQKCiB0ZXN0cy9mcy10ZXN0cy9pbnRlZ3JpdHkvaW50ZWdjay5jIHwgMjA0
-ICsrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOTYgaW5zZXJ0
-aW9ucygrKSwgMTA4IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RzL2ZzLXRlc3RzL2lu
-dGVncml0eS9pbnRlZ2NrLmMgYi90ZXN0cy9mcy10ZXN0cy9pbnRlZ3JpdHkvaW50ZWdjay5jCmlu
-ZGV4IDBhN2YxNDIuLjZjZThjOWQgMTAwNjQ0Ci0tLSBhL3Rlc3RzL2ZzLXRlc3RzL2ludGVncml0
-eS9pbnRlZ2NrLmMKKysrIGIvdGVzdHMvZnMtdGVzdHMvaW50ZWdyaXR5L2ludGVnY2suYwpAQCAt
-MjU3Nyw2ICsyNTc3LDk3IEBAIHN0YXRpYyBpbnQgcm1fbWludXNfcmZfZGlyKGNvbnN0IGNoYXIg
-KmRpcl9uYW1lKQogCXJldHVybiAwOwogfQogCisvKgorICogRGV0YWNoIHRoZSBNVEQgZGV2aWNl
-IGZyb20gVUJJIGFuZCBhdHRhY2ggaXQgYmFjay4gVGhpcyBmdW5jdGlvbiBpcyB1c2VkCisgKiB3
-aGVkIHBlcmZvcm1pbmcgZW11bGF0ZWQgcG93ZXIgY3V0IHRlc3RpbmcgYW5kdGhlIHBvd2VyIGN1
-dHMgYXJlIGFtdWxhdGVkIGJ5CisgKiBVQkksIG5vdCBieSBVQklGUy4gSW4gdGhpcyBjYXNlLCB0
-byByZWNvdmVyIGZyb20gdGhlIGVtdWxhdGVkIHBvd2VyIGN1dCB3ZQorICogaGF2ZSB0byB1bm1v
-dW50IFVCSUZTIGFuZCByZS1hdHRhY2ggdGhlIE1URCBkZXZpY2UuCisgKi8KK3N0YXRpYyBpbnQg
-cmVhdHRhY2godm9pZCkKK3sKKwlpbnQgZXJyID0gMDsKKwlsaWJ1YmlfdCBsaWJ1Ymk7CisJc3Ry
-dWN0IHViaV9hdHRhY2hfcmVxdWVzdCByZXE7CisKKwlsaWJ1YmkgPSBsaWJ1Ymlfb3BlbigpOwor
-CWlmICghbGlidWJpKSB7CisJCWlmIChlcnJubyA9PSAwKQorCQkJcmV0dXJuIGVycm1zZygiVUJJ
-IGlzIG5vdCBwcmVzZW50IGluIHRoZSBzeXN0ZW0iKTsKKwkJcmV0dXJuIHN5c19lcnJtc2coImNh
-bm5vdCBvcGVuIGxpYnViaSIpOworCX0KKworCWVyciA9IHViaV9kZXRhY2hfbXRkKGxpYnViaSwg
-Ii9kZXYvdWJpX2N0cmwiLCBhcmdzLm10ZG4pOworCWlmIChlcnIpIHsKKwkJc3lzX2Vycm1zZygi
-Y2Fubm90IGRldGFjaCBtdGQlZCIsIGFyZ3MubXRkbik7CisJCWdvdG8gb3V0OworCX0KKworCXJl
-cS5kZXZfbnVtID0gVUJJX0RFVl9OVU1fQVVUTzsKKwlyZXEubXRkX251bSA9IGFyZ3MubXRkbjsK
-KwlyZXEudmlkX2hkcl9vZmZzZXQgPSAwOworCXJlcS5tdGRfZGV2X25vZGUgPSBOVUxMOworCXJl
-cS5tYXhfYmViX3BlcjEwMjQgPSAwOworCisJZXJyID0gdWJpX2F0dGFjaChsaWJ1YmksICIvZGV2
-L3ViaV9jdHJsIiwgJnJlcSk7CisJaWYgKGVycikKKwkJc3lzX2Vycm1zZygiY2Fubm90IGF0dGFj
-aCBtdGQlZCIsIGFyZ3MubXRkbik7CisKK291dDoKKwlsaWJ1YmlfY2xvc2UobGlidWJpKTsKKwly
-ZXR1cm4gZXJyOworfQorCisvKioKKyAqIFVubW91bnQgYW5kIG1vdW50IGJhY2sgdGhlIHRlc3Qg
-ZmlsZS1zeXN0ZW0uCisgKi8KK3N0YXRpYyBpbnQgdW1vdW50X2FuZF9yZW1vdW50KGludCBtb3Vu
-dGVkLCBpbnQgcmVhdHQsIGludCB1bV9yb3J3KQoreworCWludCByZXQgPSAwOworCXVuc2lnbmVk
-IGxvbmcgZmxhZ3M7CisKKwlpZiAobW91bnRlZCkKKwkJcmV0ID0gdW1vdW50KGZzaW5mby5tb3Vu
-dF9wb2ludCk7CisJaWYgKHJldCkgeworCQlwY3YoImNhbm5vdCB1bm1vdW50ICVzIiwgZnNpbmZv
-Lm1vdW50X3BvaW50KTsKKwkJcmV0dXJuIC0xOworCX0KKworCWlmIChyZWF0dCkKKwkJQ0hFQ0so
-cmVhdHRhY2goKSA9PSAwKTsKKworCWlmICghdW1fcm9ydykgeworCQlyZXQgPSBtb3VudChmc2lu
-Zm8uZnNkZXYsIGZzaW5mby5tb3VudF9wb2ludCwKKwkJCSAgICBmc2luZm8uZnN0eXBlLCBmc2lu
-Zm8ubW91bnRfZmxhZ3MsCisJCQkgICAgZnNpbmZvLm1vdW50X29wdHMpOworCQlpZiAocmV0KSB7
-CisJCQlwY3YoInVubW91bnRlZCAlcywgYnV0IGNhbm5vdCBtb3VudCBpdCBiYWNrIFIvVyIsCisJ
-CQkgICAgZnNpbmZvLm1vdW50X3BvaW50KTsKKwkJCXJldHVybiAtMTsKKwkJfQorCX0gZWxzZSB7
-CisJCXJldCA9IG1vdW50KGZzaW5mby5mc2RldiwgZnNpbmZvLm1vdW50X3BvaW50LAorCQkJICAg
-IGZzaW5mby5mc3R5cGUsIGZzaW5mby5tb3VudF9mbGFncyB8IE1TX1JET05MWSwKKwkJCSAgICBm
-c2luZm8ubW91bnRfb3B0cyk7CisJCWlmIChyZXQpIHsKKwkJCXBjdigidW5tb3VudGVkICVzLCBi
-dXQgY2Fubm90IG1vdW50IGl0IGJhY2sgUi9PIiwKKwkJCSAgICBmc2luZm8ubW91bnRfcG9pbnQp
-OworCQkJcmV0dXJuIC0xOworCQl9CisKKwkJZmxhZ3MgPSBmc2luZm8ubW91bnRfZmxhZ3MgfCBN
-U19SRU1PVU5UOworCQlmbGFncyAmPSB+KCh1bnNpZ25lZCBsb25nKU1TX1JET05MWSk7CisJCXJl
-dCA9IG1vdW50KGZzaW5mby5mc2RldiwgZnNpbmZvLm1vdW50X3BvaW50LAorCQkJICAgIGZzaW5m
-by5mc3R5cGUsIGZsYWdzLCBmc2luZm8ubW91bnRfb3B0cyk7CisJCWlmIChyZXQpIHsKKwkJCXBj
-digidW5tb3VudGVkICVzLCBtb3VudGVkIFIvTywgYnV0IGNhbm5vdCByZS1tb3VudCBpdCBSL1ci
-LAorCQkJICAgICBmc2luZm8ubW91bnRfcG9pbnQpOworCQkJcmV0dXJuIC0xOworCQl9CisJfQor
-CisJcmV0dXJuIDA7Cit9CisKIC8qKgogICogUmUtbW91bnQgdGhlIHRlc3QgZmlsZS1zeXN0ZW0u
-IFRoaXMgZnVuY3Rpb24gcmFuZG9tbHkgc2VsZWN0IGhvdyB0bwogICogcmUtbW91bnQuCkBAIC0y
-NjMzLDQxICsyNzI0LDkgQEAgc3RhdGljIGludCByZW1vdW50X3Rlc3RlZF9mcyh2b2lkKQogCQkJ
-fQogCQl9CiAKLQkJcmV0ID0gdW1vdW50KGZzaW5mby5tb3VudF9wb2ludCk7Ci0JCWlmIChyZXQp
-IHsKLQkJCXBjdigiY2Fubm90IHVubW91bnQgJXMiLCBmc2luZm8ubW91bnRfcG9pbnQpOworCQly
-ZXQgPSB1bW91bnRfYW5kX3JlbW91bnQoMSwgMCwgdW1fcm9ydyk7CisJCWlmIChyZXQpCiAJCQly
-ZXR1cm4gLTE7Ci0JCX0KLQotCQlpZiAoIXVtX3JvcncpIHsKLQkJCXJldCA9IG1vdW50KGZzaW5m
-by5mc2RldiwgZnNpbmZvLm1vdW50X3BvaW50LAotCQkJCSAgICBmc2luZm8uZnN0eXBlLCBmc2lu
-Zm8ubW91bnRfZmxhZ3MsCi0JCQkJICAgIGZzaW5mby5tb3VudF9vcHRzKTsKLQkJCWlmIChyZXQp
-IHsKLQkJCQlwY3YoInVubW91bnRlZCAlcywgYnV0IGNhbm5vdCBtb3VudCBpdCBiYWNrIFIvVyIs
-Ci0JCQkJICAgIGZzaW5mby5tb3VudF9wb2ludCk7Ci0JCQkJcmV0dXJuIC0xOwotCQkJfQotCQl9
-IGVsc2UgewotCQkJcmV0ID0gbW91bnQoZnNpbmZvLmZzZGV2LCBmc2luZm8ubW91bnRfcG9pbnQs
-Ci0JCQkJICAgIGZzaW5mby5mc3R5cGUsIGZzaW5mby5tb3VudF9mbGFncyB8IE1TX1JET05MWSwK
-LQkJCQkgICAgZnNpbmZvLm1vdW50X29wdHMpOwotCQkJaWYgKHJldCkgewotCQkJCXBjdigidW5t
-b3VudGVkICVzLCBidXQgY2Fubm90IG1vdW50IGl0IGJhY2sgUi9PIiwKLQkJCQkgICAgZnNpbmZv
-Lm1vdW50X3BvaW50KTsKLQkJCQlyZXR1cm4gLTE7Ci0JCQl9Ci0KLQkJCWZsYWdzID0gZnNpbmZv
-Lm1vdW50X2ZsYWdzIHwgTVNfUkVNT1VOVDsKLQkJCWZsYWdzICY9IH4oKHVuc2lnbmVkIGxvbmcp
-TVNfUkRPTkxZKTsKLQkJCXJldCA9IG1vdW50KGZzaW5mby5mc2RldiwgZnNpbmZvLm1vdW50X3Bv
-aW50LAotCQkJCSAgICBmc2luZm8uZnN0eXBlLCBmbGFncywgZnNpbmZvLm1vdW50X29wdHMpOwot
-CQkJaWYgKHJldCkgewotCQkJCXBjdigidW5tb3VudGVkICVzLCBtb3VudGVkIFIvTywgYnV0IGNh
-bm5vdCByZS1tb3VudCBpdCBSL1ciLAotCQkJCSAgICAgZnNpbmZvLm1vdW50X3BvaW50KTsKLQkJ
-CQlyZXR1cm4gLTE7Ci0JCQl9Ci0JCX0KIAl9CiAKIAlpZiAocm9ydzIpIHsKQEAgLTMxNDMsNDYg
-KzMyMDIsNiBAQCBzdGF0aWMgdm9pZCBmcmVlX2ZzX2luZm8oc3RydWN0IGRpcl9pbmZvICpkaXIp
-CiAJfQogfQogCi0vKgotICogRGV0YWNoIHRoZSBNVEQgZGV2aWNlIGZyb20gVUJJIGFuZCBhdHRh
-Y2ggaXQgYmFjay4gVGhpcyBmdW5jdGlvbiBpcyB1c2VkCi0gKiB3aGVkIHBlcmZvcm1pbmcgZW11
-bGF0ZWQgcG93ZXIgY3V0IHRlc3RpbmcgYW5kdGhlIHBvd2VyIGN1dHMgYXJlIGFtdWxhdGVkIGJ5
-Ci0gKiBVQkksIG5vdCBieSBVQklGUy4gSW4gdGhpcyBjYXNlLCB0byByZWNvdmVyIGZyb20gdGhl
-IGVtdWxhdGVkIHBvd2VyIGN1dCB3ZQotICogaGF2ZSB0byB1bm1vdW50IFVCSUZTIGFuZCByZS1h
-dHRhY2ggdGhlIE1URCBkZXZpY2UuCi0gKi8KLXN0YXRpYyBpbnQgcmVhdHRhY2godm9pZCkKLXsK
-LQlpbnQgZXJyID0gMDsKLQlsaWJ1YmlfdCBsaWJ1Ymk7Ci0Jc3RydWN0IHViaV9hdHRhY2hfcmVx
-dWVzdCByZXE7Ci0KLQlsaWJ1YmkgPSBsaWJ1Ymlfb3BlbigpOwotCWlmICghbGlidWJpKSB7Ci0J
-CWlmIChlcnJubyA9PSAwKQotCQkJcmV0dXJuIGVycm1zZygiVUJJIGlzIG5vdCBwcmVzZW50IGlu
-IHRoZSBzeXN0ZW0iKTsKLQkJcmV0dXJuIHN5c19lcnJtc2coImNhbm5vdCBvcGVuIGxpYnViaSIp
-OwotCX0KLQotCWVyciA9IHViaV9kZXRhY2hfbXRkKGxpYnViaSwgIi9kZXYvdWJpX2N0cmwiLCBh
-cmdzLm10ZG4pOwotCWlmIChlcnIpIHsKLQkJc3lzX2Vycm1zZygiY2Fubm90IGRldGFjaCBtdGQl
-ZCIsIGFyZ3MubXRkbik7Ci0JCWdvdG8gb3V0OwotCX0KLQotCXJlcS5kZXZfbnVtID0gVUJJX0RF
-Vl9OVU1fQVVUTzsKLQlyZXEubXRkX251bSA9IGFyZ3MubXRkbjsKLQlyZXEudmlkX2hkcl9vZmZz
-ZXQgPSAwOwotCXJlcS5tdGRfZGV2X25vZGUgPSBOVUxMOwotCXJlcS5tYXhfYmViX3BlcjEwMjQg
-PSAwOwotCi0JZXJyID0gdWJpX2F0dGFjaChsaWJ1YmksICIvZGV2L3ViaV9jdHJsIiwgJnJlcSk7
-Ci0JaWYgKGVycikKLQkJc3lzX2Vycm1zZygiY2Fubm90IGF0dGFjaCBtdGQlZCIsIGFyZ3MubXRk
-bik7Ci0KLW91dDoKLQlsaWJ1YmlfY2xvc2UobGlidWJpKTsKLQlyZXR1cm4gZXJyOwotfQotCiAv
-KgogICogUmVjb3ZlciB0aGUgdGVzdGVkIGZpbGUtc3lzdGVtIGZyb20gYW4gZW11bGF0ZWQgcG93
-ZXIgY3V0IGZhaWx1cmUgYnkKICAqIHVubW91bnRpbmcgaXQgYW5kIG1vdW50aW5nIGl0IGFnYWlu
-LgpAQCAtMzIwNiw0MSArMzIyNSwxMCBAQCBzdGF0aWMgaW50IHJlY292ZXJfdGVzdGVkX2ZzKHZv
-aWQpCiAJICogd2hpbGUgbW91bnRpbmcgaW4gJ3JlbW91bnRfdGVzdGVkX2ZzKCknLgogCSAqLwog
-CW1udGVudCA9IGdldF90ZXN0ZWRfZnNfbW50ZW50KCk7Ci0JaWYgKG1udGVudCkKLQkJQ0hFQ0so
-dW1vdW50KGZzaW5mby5tb3VudF9wb2ludCkgIT0gLTEpOwogCi0JaWYgKGFyZ3MucmVhdHRhY2gp
-Ci0JCUNIRUNLKHJlYXR0YWNoKCkgPT0gMCk7Ci0KLQlpZiAoIXVtX3JvcncpIHsKLQkJcmV0ID0g
-bW91bnQoZnNpbmZvLmZzZGV2LCBmc2luZm8ubW91bnRfcG9pbnQsCi0JCQkgICAgZnNpbmZvLmZz
-dHlwZSwgZnNpbmZvLm1vdW50X2ZsYWdzLAotCQkJICAgIGZzaW5mby5tb3VudF9vcHRzKTsKLQkJ
-aWYgKHJldCkgewotCQkJcGN2KCJ1bm1vdW50ZWQgJXMsIGJ1dCBjYW5ub3QgbW91bnQgaXQgYmFj
-ayBSL1ciLAotCQkJICAgIGZzaW5mby5tb3VudF9wb2ludCk7Ci0JCQlyZXR1cm4gLTE7Ci0JCX0K
-LQl9IGVsc2UgewotCQlyZXQgPSBtb3VudChmc2luZm8uZnNkZXYsIGZzaW5mby5tb3VudF9wb2lu
-dCwKLQkJCSAgICBmc2luZm8uZnN0eXBlLCBmc2luZm8ubW91bnRfZmxhZ3MgfCBNU19SRE9OTFks
-Ci0JCQkgICAgZnNpbmZvLm1vdW50X29wdHMpOwotCQlpZiAocmV0KSB7Ci0JCQlwY3YoInVubW91
-bnRlZCAlcywgYnV0IGNhbm5vdCBtb3VudCBpdCBiYWNrIFIvTyIsCi0JCQkgICAgZnNpbmZvLm1v
-dW50X3BvaW50KTsKLQkJCXJldHVybiAtMTsKLQkJfQotCi0JCWZsYWdzID0gZnNpbmZvLm1vdW50
-X2ZsYWdzIHwgTVNfUkVNT1VOVDsKLQkJZmxhZ3MgJj0gfigodW5zaWduZWQgbG9uZylNU19SRE9O
-TFkpOwotCQlyZXQgPSBtb3VudChmc2luZm8uZnNkZXYsIGZzaW5mby5tb3VudF9wb2ludCwKLQkJ
-CSAgICBmc2luZm8uZnN0eXBlLCBmbGFncywgZnNpbmZvLm1vdW50X29wdHMpOwotCQlpZiAocmV0
-KSB7Ci0JCQlwY3YoInVubW91bnRlZCAlcywgbW91bnRlZCBSL08sIGJ1dCBjYW5ub3QgcmUtbW91
-bnQgaXQgUi9XIiwKLQkJCSAgICAgZnNpbmZvLm1vdW50X3BvaW50KTsKLQkJCXJldHVybiAtMTsK
-LQkJfQotCX0KKwlyZXQgPSB1bW91bnRfYW5kX3JlbW91bnQoISFtbnRlbnQsIGFyZ3MucmVhdHRh
-Y2gsIHVtX3JvcncpOworCWlmIChyZXQpCisJCXJldHVybiAtMTsKIAogCWlmIChyb3J3Mikgewog
-CQlmbGFncyA9IGZzaW5mby5tb3VudF9mbGFncyB8IE1TX1JET05MWSB8IE1TX1JFTU9VTlQ7Ci0t
-IAoyLjM0LjEKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+I now try to test the OTP code using a Mactronix MX25L3233F with
+Beagle bone black.
+I manage to connect using a SOP DIP and connect it to an spi port using SPIDEV.
+And I use the flashprog tool from https://flashprog.org.
+
+That is just the background of my environment.
+Now to the point, it seems flashprog.org does follow Mactronix.
+The same JEDEC "C2 20 16" used for 4 different chips:
+
+# ./flashprog -p linux_spi:dev=/dev/spidev0.0,spispeed=512 --flash-name
+
+flashprog v1.1-dirty on Linux 6.6.32-ti-arm32-r5 (armv7l)
+flashprog is free software, get the source code at https://flashprog.org
+
+Using clock_gettime for delay loops (clk_id: 1, resolution: 1ns).
+Found Macronix flash chip "MX25L3205(A)" (4096 kB, SPI) on linux_spi.
+Found Macronix flash chip "MX25L3205D/MX25L3208D" (4096 kB, SPI) on linux_spi.
+Found Macronix flash chip "MX25L3206E/MX25L3208E" (4096 kB, SPI) on linux_spi.
+Found Macronix flash chip "MX25L3233F/MX25L3273E" (4096 kB, SPI) on linux_spi.
+Multiple flash chip definitions match the detected chip(s):
+"MX25L3205(A)", "MX25L3205D/MX25L3208D", "MX25L3206E/MX25L3208E",
+"MX25L3233F/MX25L3273E"
+Please specify which chip definition to use with the -c <chipname> option.
+
+Now for OTP, looking at Mactronix data sheets:
+MX25L3205(A) does not have SFDP and no OTP
+MX25L3205D does not have SFDP, uses 2 asymmetric OTP banks of 128-bit
+and 384-bit.
+MX25L3206E supports SFDP, uses 2 asymmetric OTP banks of 128-bit and 384-bit.
+MX25L3233F supports SFDP, uses 1 bank of 4096-bit.
+
+New Mactronix chips also use symmetric OTP banks:
+For example, a chip I tested before with OTP:
+MX25L12833F with a JEDEC "C2 20 18" supports SFDP, uses 2 symmetric
+OTP banks of 4096-bit.
+
+
+My conclusions are:
+1. The best way to support Mactronix chips is to read the SFDP.
+    The table with IDs is relevant only to the old chips that do not
+support SFDP.
+2. The OTP parameters need to be provided via device tree or sysfs.
+     We can not find them on SFDP nor can we deduce them from JEDEC ID
+with conjunction of having SFDP or not.
+     Sadly, we need to enter them on a hardware basis.
+     As OTP support in driver is for symmetric only.
+     We are talking about 2 parameters. bank size and number of banks
+as Mactronix offset is always equal to bank size.
+
+Erez
+
+
+
+
+On Fri, 12 Jul 2024 at 22:16, Erez <erezgeva2@gmail.com> wrote:
+>
+>
+>
+> On Fri, 12 Jul 2024 at 10:21, Esben Haabendal <esben@geanix.com> wrote:
+>>
+>> Erez <erezgeva2@gmail.com> writes:
+>>
+>> > On Thu, 11 Jul 2024 at 21:57, Michael Walle <mwalle@kernel.org> wrote:
+>> >> On Thu Jul 11, 2024 at 8:57 PM CEST, Erez wrote:
+>> >> > Yes, I think we should.
+>> >> >
+>> >> > Reading the specification provided publicly by Macronix.
+>> >> > For all the JEDEC IDs with the no SFDP flag in drivers/mtd/spi-nor/macronix.c
+>> >> > All of them have a new version or a new chip with the same JEDEC ID
+>> >> > that supports SFDP.
+>> >> > There are 2 chips that Macronix does not provide spec. in public.
+>> >> > I can ask Macronix technical support on these 2 chips.
+>> >>
+>> >> We don't add flashes we cannot test.
+>> >
+>> > I did not suggest adding anything new.
+>> > I refer to the list of chips we already have in drivers/mtd/spi-nor/macronix.c
+>> > I presume someone tested them before adding them to the list in the past.
+>> > And probably the old chip did not have the SFDP table back then.
+>> >
+>> > What I checked with the chip specifications is that all Macronix chips
+>> > since 2010 have SFDP.
+>> >
+>> > The situation today is that all Macronix chips that are NOT in the
+>> > Macronix table work based on the SFDP table.
+>> > But new chips that use a JEDEC found in the Macronix table, skip the
+>> > SFDP table and use the setting of the old chip.
+>>
+>> Not entirely true.
+>>
+>> Those that entries in the Macronix table that has SPI_NOR_DUAL_READ
+>> and/or SPI_NOR_QUAD_READ in no_sfdp_flags is caught by
+>> the magic flags matching in spi_nor_init_params_deprecated() and will
+>> have spi_nor_parse_sfdp() called from
+>> spi_nor_sfdp_init_params_deprecated(). So flashes reusing ID for these
+>> will have the SFDP tables parsed.
+>>
+>> The rest of the entries in the Macronix table is not so lucky. When a
+>> replacement chip (with the same ID) is used, it will not be configured
+>> with the values found in SFDP table.
+>>
+>> > So I suggest we read the SFDP table for all Macronix chips.
+>>
+>> Based on their strategy of re-using flash ID, I think this is a sane
+>> approach.
+>>
+>> > Old Macronix chips that do not have SFDP will use the setting from the
+>> > Macronix table. i.e backward compatible.
+>> > While new chips which do have an SFDP table will work with the new
+>> > setting we find in the table.
+>>
+>> Yes, if we apply the new SPI_NOR_TRY_SFDP flag to the matching table
+>> entries.
+>>
+>> > Of course, we might have issues in parsing the SFDP table itself.
+>> > So we fix them as developers report and send chip ID and part number
+>> > with the SFDP table content.
+>> > I do not see the point of "hiding" with the old setting.
+>> > Anyhow, as we do not like the IDs table and keep it for backward-compatible,
+>> > so it only makes sense we should use the SFDP table as much as possible.
+>> >
+>> > My check was to ensure Tudor that all Macronix chips have SFDP whether
+>> > they are in the IDs table or not and we are not wasting a no-op on a
+>> > chip which can not have an SFDP table.
+>> >
+>> > All I suggest is we add the new 'SPI_NOR_TRY_SFDP' flag, to all
+>> > Macronix chips.. Which will try to read the SFDP to any Macronix chip.
+>>
+>> Makes sense. But obviously comes with a risk as we won't be able to
+>> test all chips for regression when doing that.
+>
+>
+> Finding an old chip for testing might be a challenge.
+> But I think we can simulate the behaviour with a new chip that does support RDSFDP.
+>
+> We can change the RDSFDP opcode of 0x5A to another value of an unrecognized opcode of the chip we use for testing.
+> I assume the behaviour of receiving unrecognized opcodes remains.
+>
+> Erez
+>
+>
+>
+>
+>>
+>>
+>> /Esben
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
