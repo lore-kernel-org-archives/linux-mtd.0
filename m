@@ -4,59 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76727C52D7D
-	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2024 12:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F53CC5321D
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Aug 2024 19:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yv+eCUke4um1SvFvO78GPfKRwGDhYrCq0fRDfaEIHNg=; b=STD7DaY50hThTr
-	TddSkN9pqUbkYOzsVTSFJuYzQH+indw4G3KvXvzHOrhMB9+kWfT+mktKAbwPDnDaaxc90S8v86IZZ
-	XchF+Q0UtWfCLvxZDIaht9JlVCIp7rfpiuDTU9MQh+odb64/1MGWm/z9fnY/ZksOBKdFrC+eS7ifx
-	nxB8oV0viLxgO93IYOeY+e9wafGzW+9uWzmpaEyouoSS0edV1EOqadZn8tivT1jhV4q4/dRmjHvXs
-	/Ng+YHYuzChvTKSucuIJ02woU2P+0FVYg9kjB3WJiktwnfxHdAMYUA2Jx/fRr2V7ExSSEYZCscCad
-	Nvw6j2ADx1tAq3sMwinQ==;
+	List-Owner; bh=1pplVC7ie5pV2kDf+kMktntPXUf/OYaFGnf/iSjkg2Q=; b=4DYV+M4D/6BSHl
+	s9zw4c13jRiabBQCQ6pfm0BG6GCliWRCWzAoIAryxckqjFIJ+APA+mHQujjG3uwMBDQcj8TT3KGSN
+	PevTNueO11Mg7MA9dUsSaxP+AAVhoOdMen3C945Ms5sb4Si9D+2UJ4DOJCrB9nerVvlFd3RlAnQl2
+	wwYI4UsNTiG89Tt3z23iqcnhokAZ0QSlEpxitcZgZLBEwfEI6H+FqCKu2NM963lW1fsWScn1P7mR/
+	KVO0uAZiVC+65aIGa3qFHCdZua/lJabufwwli0ZiMkkzSlp56GdVpWpyaaN8dVd8a1FALMlRGFWW8
+	ku3M1HZ/ZDBxv/9/xvag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sfIrN-0000000FDU6-3tHi;
-	Sat, 17 Aug 2024 12:48:45 +0000
-Received: from chessie.fmt1.pfcs.com ([2001:470:1:205::234] helo=chessie.everett.org)
-	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sfIrL-0000000FDSB-0HZD
+	id 1sfP8V-0000000FfWt-0IAd;
+	Sat, 17 Aug 2024 19:30:51 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sfP8S-0000000FfWM-3Nt5
 	for linux-mtd@lists.infradead.org;
-	Sat, 17 Aug 2024 12:48:44 +0000
-Received: from localhost.localdomain (ip1f10f85d.dynamic.kabel-deutschland.de [31.16.248.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by chessie.everett.org (Postfix) with ESMTPSA id 4WmJR00ybyzMQvj;
-	Sat, 17 Aug 2024 12:42:19 +0000 (UTC)
-From: Erez Geva <erezgeva@nwtime.org>
-To: linux-mtd@lists.infradead.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	devicetree@vger.kernel.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Erez Geva <ErezGeva2@gmail.com>
-Subject: [PATCH v3 4/4] mtd: spi-nor: macronix: add manufacturer flags
-Date: Sat, 17 Aug 2024 14:41:40 +0200
-Message-Id: <20240817124140.800637-5-erezgeva@nwtime.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240817124140.800637-1-erezgeva@nwtime.org>
-References: <20240817124140.800637-1-erezgeva@nwtime.org>
+	Sat, 17 Aug 2024 19:30:50 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a77ec5d3b0dso344239866b.0
+        for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2024 12:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723923046; x=1724527846; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJC795JTs2Ekt9gDVD2gEbeCAt29WPxzke9UPmqpJtU=;
+        b=O/Q3HEbU+/bTvO5fpj9jrR8GhnxUmfdh0vX6wks44TePpJnnWdaeI36wdTquAX9Ive
+         NL3ZaOu2oDFXfN2Jhf6jT3N4o4cmI2bYW/bhspX5hxxHcsHPD8yfR061K2NxyRHanEqo
+         wJY05j2cp5NrNuMuDePMgJZVkaNKSBTq6hUVswr0vhnrdF5vWrrccoBwEBT7tuz5sPCM
+         zjEenDokBfeDSxY/VjY+6uqMEEXWNmHaZeigIFSTVFf5j0vsy4oSS4oeSka7mk3lAleR
+         ITj/rHRDr/uXkqIzcHhnhxjKC4cTb7p+IgssQEXJ0jZRxcbeauR/nHRdbsEh7JfXdOde
+         0M3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723923046; x=1724527846;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZJC795JTs2Ekt9gDVD2gEbeCAt29WPxzke9UPmqpJtU=;
+        b=HWFFmyzimuehpRRDOr4iUOofNv25Zrm8zAn3lIK9lcHO9FrZ1v0g0gtC+037RDmGuK
+         GW2lyYdFWpjQmOsxqtVy23iEZKra/h32FVSDF9Dv4qyvXjexHNvRCjrkzGzZZz/jwYtj
+         AokICriRuIgDYvI2ukwg7zq3+gJ/p+NZbTql39b2/zyWFVh5MVRvsN5Q4itbFGulnzEA
+         IUIkQMSpqFLJwK6lcEBAymcyhb3V9REaGtAVkrYguVE7OBCfA9FgIBO18AHzVosQpOqu
+         X8dWlcp/vUxw/TrlpO3CJlMosq0plcitvAZW40v/ihSs/t8hr16HMgpLyNJsyksSX8Qz
+         v9WQ==
+X-Gm-Message-State: AOJu0YzrH5weIJoere1KWgfhvc4qUh/z83CCRXl4qMlxHL66i33EPZZc
+	dZ+K+D3Dvzhv03Cpt65jQSPbJN3g9BpAMTtX4z6AnSV2F3V+yM+9FKX7Sm8iHKPnYlH8tb4wPVS
+	DnShtnoM7KzXgZuWc1dkGDO9naw==
+X-Google-Smtp-Source: AGHT+IFbUR16kAsVyKpURPOC69k6sALRGq1kb8PlxvVjzFANtYa6tdmHkwMpCTolk7kRmB7moSOMuF6h0epC6JVlrkY=
+X-Received: by 2002:a17:906:d265:b0:a7d:3a85:7a3e with SMTP id
+ a640c23a62f3a-a8392a494a3mr425085466b.59.1723923045436; Sat, 17 Aug 2024
+ 12:30:45 -0700 (PDT)
 MIME-Version: 1.0
+References: <20240817124140.800637-1-erezgeva@nwtime.org>
+In-Reply-To: <20240817124140.800637-1-erezgeva@nwtime.org>
+From: Erez <erezgeva2@gmail.com>
+Date: Sat, 17 Aug 2024 21:30:08 +0200
+Message-ID: <CANeKEMO+8=fVx9EXpPoXaLPen79W=7kBTghw3L+9dLwOFOWWoQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Add support for SPI-NOR Macronix OTP
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Rob Herring <robh@kernel.org>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>, linux-kernel@vger.kernel.org, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240817_054843_171879_B55F287E 
-X-CRM114-Status: GOOD (  16.48  )
+X-CRM114-CacheID: sfid-20240817_123048_871659_1F4CF691 
+X-CRM114-Status: GOOD (  22.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,306 +91,124 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Erez Geva <ErezGeva2@gmail.com>
+Hi,
 
-Add flag for always trying reading SFDP:
-All new chips from Macronix support SFDP.
-All old chips in the IDs table were reused by new chips.
+Looking in Documentation/devicetree/bindings/mtd/mtd.yaml
 
-Add flag for reading OTP parameters from device tree.
-As Macronix reuse JEDEC IDs, there is no way to determine OTP parameters.
-Allow users to define the OTP parameters in device tree.
+I see you are defining OTP in a different way, as partitions.
+Each partition is an OTP region which can be user or factory mode
+(since many chips do not define or enforce it).
 
-Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
----
- drivers/mtd/spi-nor/macronix.c | 1 +
- 1 file changed, 1 insertion(+)
+While I try to define the OTP parameters.
 
--- My initial Macronix OTP code was tested with MX25l12833F.
--- As I no longer have that hardware.
+I wonder what you think?
+Should the parameter be in the partitions?
+Do we wish to support asymmetric OTP?
+I only found asymmetric OTP (OTP with different region sizes) with old
+chips. But perhaps I missed it.
 
--- I now testing with MX25L3233F connected to my BeagleBone Black
---  through an 8-PIN SOP (200mil).
--- The BeagleBone Black runs with Debian GNU/Linux 12.
--- And use Kernel 6.6.32-ti-arm32-r5 build with
---  arm-linux-gnueabihf-gcc gcc version 12.2.0 (Debian 12.2.0-14).
+Erez
 
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c22016
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-macronix
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-mx25l3205d
-$ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450000101ff00000109300000ffc2000104600000ffffffffffffff
-ffffffffffffffffffffffffffffffffffffe520f1ffffffff0144eb086b
-083b04bbeeffffffffff00ffffff00ff0c200f5210d800ffffffffffffff
-ffffffffffff003650269ef97764fecfffffffffffff
-$ sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-22d5d34af77c3628300056a0fc4bfbeafa027f544998852cf27f7cebf7881196  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
 
-$ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x03
-  mode cycles   0
-  dummy cycles  0
- 1S-1S-2S
-  opcode        0x3b
-  mode cycles   0
-  dummy cycles  8
- 1S-2S-2S
-  opcode        0xbb
-  mode cycles   0
-  dummy cycles  4
- 1S-1S-4S
-  opcode        0x6b
-  mode cycles   0
-  dummy cycles  8
- 1S-4S-4S
-  opcode        0xeb
-  mode cycles   2
-  dummy cycles  4
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 6e3afb42926e..5fde51309b93 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -90,6 +90,47 @@ properties:
+       the SRWD bit while writing the status register. WP# signal hard
+strapped to GND
+       can be a valid use case.
 
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x02
-
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name            mx25l3205d
-id              c2 20 16 c2 20 16
-size            4.00 MiB
-write size      1
-page size       256
-address nbytes  3
-flags           HAS_16BIT_SR
-
-opcodes
- read           0x03
-  dummy cycles  0
- erase          0x20
- program        0x02
- 8D extension   none
-
-protocols
- read           1S-1S-1S
- write          1S-1S-1S
- register       1S-1S-1S
-
-erase commands
- 20 (4.00 KiB) [1]
- 52 (32.0 KiB) [2]
- d8 (64.0 KiB) [3]
- c7 (4.00 MiB)
-
-sector map
- region (in hex)   | erase mask | flags
- ------------------+------------+----------
- 00000000-003fffff |     [ 123] |
-
-# mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 4194304 (4M)
-mtd.erasesize = 4096 (4K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
--- The BeagleBone Black SPI is very slow, Tests are slow.
-
-# dd if=/dev/urandom of=./spi_test bs=1M count=2
-2+0 records in
-2+0 records out
-2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0682607 s, 30.7 MB/s
-
-# time mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-
-real    0m12.703s
-user    0m0.000s
-sys     0m12.692s
-
-# time mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-
-real    0m1.942s
-user    0m0.000s
-sys     0m0.053s
-
-# hexdump spi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0200000
-
-# sha256sum spi_read
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-
-# time mtd_debug write /dev/mtd0 0 2097152 spi_test
-Copied 2097152 bytes from spi_test to address 0x00000000 in flash
-
-real    0m5.883s
-user    0m0.006s
-sys     0m3.970s
-
-# time mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-
-real    0m2.208s
-user    0m0.003s
-sys     0m0.063s
-
-# sha256sum spi*
-f4f5d1d0a4fef487037cdb3f1be0f9aab68ca32f2dbe8782c927f03adf623ec3  spi_read
-f4f5d1d0a4fef487037cdb3f1be0f9aab68ca32f2dbe8782c927f03adf623ec3  spi_test
-
-# time mtd_debug erase /dev/mtd0 0 2097152
-Erased 2097152 bytes from address 0x00000000 in flash
-
-real    0m12.126s
-user    0m0.001s
-sys     0m12.115s
-
-# time mtd_debug read /dev/mtd0 0 2097152 spi_read
-Copied 2097152 bytes from address 0x00000000 in flash to spi_read
-
-real    0m2.611s
-user    0m0.000s
-sys     0m0.064s
-
-# sha256sum spi*
-4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  spi_read
-f4f5d1d0a4fef487037cdb3f1be0f9aab68ca32f2dbe8782c927f03adf623ec3  spi_test
-
--- MX25L3233F OTP uses 1 region of size of 4096 bits
--- changes in device tree:
-                compatible = "jedec,spi-nor";
-+               otp_len = <512>;
-+               opt_n_regions = <1>;
-
-# flash_otp_info -u /dev/mtd0
-Number of OTP user blocks on /dev/mtd0: 1
-block  0:  offset = 0x0000  size = 512 bytes  [unlocked]
-
-# flash_otp_dump -u /dev/mtd0
-OTP user data for /dev/mtd0
-0x0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0110: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0120: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0130: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0140: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0150: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0160: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0170: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x0190: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x01a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x01b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x01c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x01d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x01e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x01f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-
--- Macronix OTP does not support erase!
--- flash_otp_erase
-
--- TODO: As this testing can be done once per chip, I will do it after review.
-
-# printf '\xde\xad%.0s' {1..256} | flash_otp_write -u /dev/mtd0 0
-# flash_otp_lock -u /dev/mtd0 0 512
-# flash_otp_info -u /dev/mtd0
-
--- Test that mimic old Macronix chip lack SFDP.
--- In order to check how will the driver cope with an old Macronix chip.
--- As we do not posses such an old chip, we will change RDSFDP to an unused opcode.
-
--- changes in include/linux/mtd/spi-nor.h
--#define SPINOR_OP_RDSFDP       0x5a    /* Read SFDP */
-+#define SPINOR_OP_RDSFDP       0x57    /* Read SFDP */
-
-# dmesg | grep spi
-[   42.436974] spi-nor spi0.0: mx25l3205d (4096 Kbytes)
-
--- No error in kernel log!
-
-# ls /sys/bus/spi/devices/spi0.0/spi-nor/
-jedec_id  manufacturer  partname
-
--- No SFDP, as expected!
-
-$ cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode        0x03
-  mode cycles   0
-  dummy cycles  0
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode        0x02
-
-$ cat /sys/kernel/debug/spi-nor/spi0.0/params
-name            mx25l3205d
-id              c2 20 16 c2 20 16
-size            4.00 MiB
-write size      1
-page size       256
-address nbytes  3
-flags           HAS_16BIT_SR
-
-opcodes
- read           0x03
-  dummy cycles  0
- erase          0x20
- program        0x02
- 8D extension   none
-
-protocols
- read           1S-1S-1S
- write          1S-1S-1S
- register       1S-1S-1S
-
-erase commands
- 20 (4.00 KiB) [0]
- d8 (64.0 KiB) [1]
- c7 (4.00 MiB)
-
-sector map
- region (in hex)   | erase mask | flags
- ------------------+------------+----------
- 00000000-003fffff |     [01  ] |
++  opt_n_regions:
++    type: u32
++    description:
++      Some flash devices need OTP parameters in the device tree.
++      As we can not deduce the parameters based on JEDEC ID,
++       or SFDP.
++      This parameter indicates the number of OTP regions.
++      The value must be larger than 1 and mandatory for OTP.
++
++  otp_len:
++    type: u32
++    description:
++      Some flash devices need OTP parameters in the device tree.
++      As we can not deduce the parameters based on JEDEC ID,
++       or SFDP.
++      This parameter indicates the size (length) in bytes of an OTP region.
++      Currently the driver supports symmetric OTP,
++       which means all regions must use the same size.
++      The value must be positive and mandatory for OTP.
++
++  otp_offset:
++    type: u32
++    description:
++      Some flash devices need OTP parameters in the device tree.
++      As we can not deduce the parameters based on JEDEC ID,
++       or SFDP.
++      This parameter indicates the offset in bytes of
++       an OTP region relative to its previous.
++      User can omit it if the offset equals the length.
++      Or in case we have a single OTP region.
++
++  otp_base:
++    type: u32
++    description:
++      Some flash devices need OTP parameters in the device tree.
++      As we can not deduce the parameters based on JEDEC ID,
++       or SFDP.
++      This parameter indicates the base in bytes of the first OTP region.
++      User can omit it if the base is zero.
++      I.e. the address of the first OTP region starts from 0.
++
+   reset-gpios:
+     description:
+       A GPIO line connected to the RESET (active low) signal of the device.
 
 
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 8df87b414e47..0e4dc6127fd1 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -393,4 +393,5 @@ const struct spi_nor_manufacturer spi_nor_macronix = {
- 	.parts = macronix_nor_parts,
- 	.nparts = ARRAY_SIZE(macronix_nor_parts),
- 	.fixups = &macronix_nor_fixups,
-+	.flags = SPI_NOR_MANUFACT_TTY_SFDP | SPI_NOR_MANUFACT_DT_OTP,
- };
--- 
-2.39.2
-
+On Sat, 17 Aug 2024 at 14:42, Erez Geva <erezgeva@nwtime.org> wrote:
+>
+> From: Erez Geva <ErezGeva2@gmail.com>
+>
+> Add support for SPI-NOR Macronix OTP.
+> And add MX25L12833F with OTP.
+>
+> TODO:
+> - Test OTP with 'flash_otp_write' and 'flash_otp_lock'
+> - Question: Do we need documentation on new DT OTP parameters?
+>
+> v2:
+> Improve description of mx25l12833f.
+> Add note about mx25l12833f using the same JEDEC ID as mx25l12805d.
+>
+> v3:
+> Improve description.
+> Rename _nor_send_cmd() to spi_nor_send_cmd_internal()
+> Remove MX25L12833F specific changes.
+> Add reading SFDP to all Macronix chips.
+> Add support of reading OTP parameters from device tree.
+> Reorgenize patches to 2 SPI-NOR patches and 2 Macronix patches
+> Testing with MX25L3233F using BeagleBone Black.
+> Test results are in "mtd: spi-nor: macronix: add manufacturer flags" patch
+>
+> Erez Geva (4):
+>   mtd: spi-nor: core: add manufacturer flags
+>   mtd: spi-nor: core: add generic functions
+>   mtd: spi-nor: macronix: add support for OTP
+>   mtd: spi-nor: macronix: add manufacturer flags
+>
+>  drivers/mtd/spi-nor/core.c     | 166 ++++++++++++++++++++++-------
+>  drivers/mtd/spi-nor/core.h     |  34 ++----
+>  drivers/mtd/spi-nor/macronix.c | 186 +++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/otp.c      |   6 +-
+>  drivers/mtd/spi-nor/winbond.c  |   2 +-
+>  include/linux/mtd/spi-nor.h    |  10 ++
+>  6 files changed, 336 insertions(+), 68 deletions(-)
+>
+> --
+> 2.39.2
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
