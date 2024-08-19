@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B94DDC3DA4A
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2024 03:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23684C54722
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2024 03:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KSOgi46PINr0dgS2RevnXSSGNucBzA/2+jc8odPiQAU=; b=AcHL2zQp6n2klg
-	m5DTaYDf5BFT++OeSJx052lftp1TjIftJcPZoBUtKaeg3Miz+u0r8p2ZD+mTA8fA+PfEd+hvdP4sq
-	fikhMtWTJrEdwWAgEDJQHF4WLJK85bnaapwbf5eY6cvtCl7Jgh1bqhFw1vHE1WUlHcB2i6o+01n3M
-	8f0AQ2gad2rN0rcprMCrX7wrU0ed5KB3ZeuBCiK/GqqWJ9KEDYawdoS8EPuHo8cSrfh7AYNk+6/Kd
-	hyIJsG3prNnTCXC6uj+IMSTgSwg95yIg9Yvtzprnju/fWtrA53+ZAxzCUNUdsf2c1e02yMJ7tar6H
-	LbJsLPhYe2XOZqLGqsCw==;
+	List-Owner; bh=s1/7v4Hj8VVmoXk5zfNclu8ywfBG4hrf0BCf6uNUyTY=; b=a3QHcjcvRrOcWT
+	Wjd2IwiXTC2BBTonvEaAMhDCl0ncPF4+ta9kAJ75ZpTbRH92HoVNQRZP5YDk4iSfFV/gdsYcTaB2D
+	JmQetECvuVcHY8P/xlXdEC/SaqR7zpCEF9atAMQsh076fysMY9OeUgs04jcfU59gQdROAy53evKB/
+	VGrJPy4yaLUDTEt9KZFU/uguxLR6lNOwUIwr3TNCvuo0pYXv5N4hcnPd713SXmXyeEHQwd/ZWWB3H
+	dh9m93tjRjPSpr2o5nZcgiScCQ6lvCVNoCZwccq4MzIj46ZOJj06ZgGn/urax0j6glqDC/uzOp95p
+	2l6ICXSCsaaZA6iyjguA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sft6u-00000000DMe-3mCG;
-	Mon, 19 Aug 2024 03:31:12 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1sft6x-00000000DN8-3wIQ;
+	Mon, 19 Aug 2024 03:31:16 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sft6q-00000000DIa-222U
+	id 1sft6q-00000000DIV-1oux
 	for linux-mtd@lists.infradead.org;
 	Mon, 19 Aug 2024 03:31:11 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WnJ4739TTzpSwL;
-	Mon, 19 Aug 2024 11:29:27 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WnJ0S1mh4zQq5Y;
+	Mon, 19 Aug 2024 11:26:16 +0800 (CST)
 Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 51A2E140361;
+	by mail.maildlp.com (Postfix) with ESMTPS id C70E61800C4;
 	Mon, 19 Aug 2024 11:30:55 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm000013.china.huawei.com
  (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 19 Aug
- 2024 11:30:54 +0800
+ 2024 11:30:55 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <daniel@makrotopia.org>
 CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] ubi: wl: Put source PEB into correct list if trying locking LEB failed
-Date: Mon, 19 Aug 2024 11:26:21 +0800
-Message-ID: <20240819032622.2241165-2-chengzhihao1@huawei.com>
+Subject: [PATCH 2/2] ubi: fastmap: wl: Schedule fm_work if wear-leveling pool is empty
+Date: Mon, 19 Aug 2024 11:26:22 +0800
+Message-ID: <20240819032622.2241165-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240819032622.2241165-1-chengzhihao1@huawei.com>
 References: <20240819032622.2241165-1-chengzhihao1@huawei.com>
@@ -51,8 +51,8 @@ X-Originating-IP: [10.175.104.67]
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240818_203108_765826_EF753D38 
-X-CRM114-Status: GOOD (  12.82  )
+X-CRM114-CacheID: sfid-20240818_203109_053167_F196A5DB 
+X-CRM114-Status: GOOD (  13.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,58 +69,90 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During wear-leveing work, the source PEB will be moved into scrub list
-when source LEB cannot be locked in ubi_eba_copy_leb(), which is wrong
-for non-scrub type source PEB. The problem could bring extra and
-ineffective wear-leveing jobs, which makes more or less negative effects
-for the life time of flash. Specifically, the process is divided 2 steps:
-1. wear_leveling_worker // generate false scrub type PEB
-     ubi_eba_copy_leb // MOVE_RETRY is returned
-       leb_write_trylock // trylock failed
-     scrubbing = 1;
-     e1 is put into ubi->scrub
-2. wear_leveling_worker // schedule false scrub type PEB for wl
-     scrubbing = 1
-     e1 = rb_entry(rb_first(&ubi->scrub))
+Since commit 14072ee33d5a ("ubi: fastmap: Check wl_pool for free peb
+before wear leveling"), wear_leveling_worker() won't schedule fm_work
+if wear-leveling pool is empty, which could temporarily disable the
+wear-leveling until the fastmap is updated(eg. pool becomes empty).
+Fix it by scheduling fm_work if wl_pool is empty during wear-leveing.
 
-The problem can be reproduced easily by running fsstress on a small
-UBIFS partition(<64M, simulated by nandsim) for 5~10mins
-(CONFIG_MTD_UBI_FASTMAP=y,CONFIG_MTD_UBI_WL_THRESHOLD=50). Following
-message is shown:
- ubi0: scrubbed PEB 66 (LEB 0:10), data moved to PEB 165
-
-Since scrub type source PEB has set variable scrubbing as '1', and
-variable scrubbing is checked before variable keep, so the problem can
-be fixed by setting keep variable as 1 directly if the source LEB cannot
-be locked.
-
-Fixes: e801e128b220 ("UBI: fix missing scrub when there is a bit-flip")
-CC: stable@vger.kernel.org
+Fixes: 14072ee33d5a ("ubi: fastmap: Check wl_pool for free peb before wear leveling")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/wl.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/fastmap-wl.c | 19 ++++++++++++++++---
+ drivers/mtd/ubi/wl.c         |  2 +-
+ drivers/mtd/ubi/wl.h         |  3 ++-
+ 3 files changed, 19 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 2a9cc9413c42..9bdb6525f128 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -346,14 +346,27 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+  * WL sub-system.
+  *
+  * @ubi: UBI device description object
++ * @need_fill: whether to fill wear-leveling pool when no PEBs are found
+  */
+-static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi)
++static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi,
++					    bool need_fill)
+ {
+ 	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
+ 	int pnum;
+ 
+-	if (pool->used == pool->size)
++	if (pool->used == pool->size) {
++		if (need_fill && !ubi->fm_work_scheduled) {
++			/*
++			 * We cannot update the fastmap here because this
++			 * function is called in atomic context.
++			 * Let's fail here and refill/update it as soon as
++			 * possible.
++			 */
++			ubi->fm_work_scheduled = 1;
++			schedule_work(&ubi->fm_work);
++		}
+ 		return NULL;
++	}
+ 
+ 	pnum = pool->pebs[pool->used];
+ 	return ubi->lookuptbl[pnum];
+@@ -375,7 +388,7 @@ static bool need_wear_leveling(struct ubi_device *ubi)
+ 	if (!ubi->used.rb_node)
+ 		return false;
+ 
+-	e = next_peb_for_wl(ubi);
++	e = next_peb_for_wl(ubi, false);
+ 	if (!e) {
+ 		if (!ubi->free.rb_node)
+ 			return false;
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index a357f3d27f2f..8a26968aba11 100644
+index 8a26968aba11..fbd399cf6503 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -846,7 +846,14 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 			goto out_not_moved;
- 		}
- 		if (err == MOVE_RETRY) {
--			scrubbing = 1;
-+			/*
-+			 * For source PEB:
-+			 * 1. The scrubbing is set for scrub type PEB, it will
-+			 *    be put back into ubi->scrub list.
-+			 * 2. Non-scrub type PEB will be put back into ubi->used
-+			 *    list.
-+			 */
-+			keep = 1;
- 			dst_leb_clean = 1;
- 			goto out_not_moved;
- 		}
+@@ -683,7 +683,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 	ubi_assert(!ubi->move_to_put);
+ 
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+-	if (!next_peb_for_wl(ubi) ||
++	if (!next_peb_for_wl(ubi, true) ||
+ #else
+ 	if (!ubi->free.rb_node ||
+ #endif
+diff --git a/drivers/mtd/ubi/wl.h b/drivers/mtd/ubi/wl.h
+index 7b6715ef6d4a..a69169c35e31 100644
+--- a/drivers/mtd/ubi/wl.h
++++ b/drivers/mtd/ubi/wl.h
+@@ -5,7 +5,8 @@
+ static void update_fastmap_work_fn(struct work_struct *wrk);
+ static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root);
+ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi);
+-static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi);
++static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi,
++					    bool need_fill);
+ static bool need_wear_leveling(struct ubi_device *ubi);
+ static void ubi_fastmap_close(struct ubi_device *ubi);
+ static inline void ubi_fastmap_init(struct ubi_device *ubi, int *count)
 -- 
 2.39.2
 
