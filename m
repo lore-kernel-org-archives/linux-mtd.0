@@ -4,71 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AEB0C5320E
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2024 11:19:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EC3DC5320E
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2024 11:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qEsAvnpEbxy/rbKFxvmnYKwSI54xFpr8St0WOoN3OCo=; b=UpS62ydECL45Xa
-	+5Y68ztVeX1hUg34XsU5Wx8YUUbEadL28QZ4eWOecfgeTPb1auiTurhXLO+5U/z6FPtTigdEGFkra
-	JwBwdUZIv2ffEdrRl38J+bCCzlr+aMb2njCX/0lkrYKsYil/0XPsA+xLMAZpNK6QWw6xcX7wH0ujd
-	Xm5+8pOhqqIEo1uEPNE2ASN2F+Vg1R283ZbohHbb+MVX1vNuPKZFJSpKQGUJJSOzdZNGedXiQ7hOr
-	dfbKEu7UiGxxdXdGQiaIYwdZeAo+W2EchCczcS9hn5j8ZzK3pghXLiY1p9coCY5pu/SL6yw7/WKCU
-	pMpFajhLiLJ6VLx1E8ig==;
+	List-Owner; bh=v1uKFKCgN1il4JYJjxWyk4HZv20X66rENfwveD44e00=; b=OCyBccwI8cwasC
+	STdpKDNBIoQJzABS7WkWDsgkuMCMlML5c+btHgt7pJuVaYqGNT8RJfiNFdzO4mkTZRLgWZ5x2b7jT
+	VlDpF9r5nxwpfubfM0VcV/tLt6Es8DtQvtd84bhgQmUbD+7XkoCf7FZ0i8HeEqtIistUqmuefv4ZT
+	HHiRvvvTd/zHAHVqlu0TDNYoC89S4Ndzp6GzZdW6vINDTQnmjMWm2sTaO4YgY4j4yLMUfyY61MtqZ
+	8g+G2dLN8VHqxwoZ5fT9ZuyEVNiJf+FT4PHh8NVV5gULkfow42T/JU2XDks/Dgq26DFbBOTzyHCfC
+	ko3kNXIVZxVzLDany9sA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sg0QP-00000001D6W-2q3s;
-	Mon, 19 Aug 2024 11:19:49 +0000
-Received: from mail-wm1-f46.google.com ([209.85.128.46])
+	id 1sg0lJ-00000001Fth-2TVE;
+	Mon, 19 Aug 2024 11:41:25 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sg0Ph-00000001CxM-2TVY;
-	Mon, 19 Aug 2024 11:19:06 +0000
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-428243f928cso33391535e9.3;
-        Mon, 19 Aug 2024 04:19:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724066344; x=1724671144;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sunZvLa92UkOqmspgUhzvam8WEnzIrC7wUHtIu/3w/s=;
-        b=YYniIiwMjORaJB9EqTitjQPNo6BEXHmqocbMlpJ+avoaO6qvlFYAv1gZIjiMy5T7JA
-         lMjnpCy2DvQTYwaxSmIRhwubj+oF+0qOpd/VYj1o0zb9S3hgqeylFpg3vXezAsHpYBxj
-         5QFZUCF+oYt3VGUX+HBuUrJO9h4WcFoLapKl6qSZtRwhWBgbolMZtR2uQxCa9DcmbpMP
-         hXKyZ8NIaCJJhc1tYqT72sJdj1a8d9nLKFGIJxSMWxJsc4QEP7M5+Gju8g2Pyrm7tool
-         L/XJ2HxlfIE2/teSeuUkOhOeXMilqzGRdjh897DJA9xXT1ICt/zMIpPVMzDSlVYwhqnZ
-         sbPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVj3USeODSKsEGSzX3S+A3sjl3HiHCNgh3BIcevN2H3LtBUAe5VvAnlJizcH6lSezKQiP/bUBT2LkU9FHtNkrIYYrxTry2L4t4Q8c56Gpp3yDTezOnPNRdkZeOLpDUVNJSxHx5XBNsyUgAGj1tlvITrrzOy
-X-Gm-Message-State: AOJu0YxxqVQXViKcGZ2ZzoD3JuVY1ctqmEaIB97LCRfBFcPjVEtYyXuo
-	1cWmeIveHVtRd0OVLloD7F+C6ooSTCmQVXunkqhNCvhNFwgXH4Aw
-X-Google-Smtp-Source: AGHT+IHaE9BF0jWCsttsJkk+nv01MgngSkrhSoHa6kJlxiNainzPGo+JdtiEbmikHeT4Y6nIhCEvdA==
-X-Received: by 2002:a05:600c:3152:b0:427:dae6:8416 with SMTP id 5b1f17b1804b1-429ed7d3583mr63636465e9.36.1724066343511;
-        Mon, 19 Aug 2024 04:19:03 -0700 (PDT)
-Received: from krzk-bin ([178.197.215.209])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-429ed648f55sm106525695e9.3.2024.08.19.04.19.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Aug 2024 04:19:02 -0700 (PDT)
-Date: Mon, 19 Aug 2024 13:19:00 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Hui-Ping Chen <hpchen0nvt@gmail.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, sumit.semwal@linaro.org, 
-	christian.koenig@amd.com, esben@geanix.com, linux-arm-kernel@lists.infradead.org, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: nuvoton: add new driver for the
- Nuvoton MA35 SoC
-Message-ID: <t7igmxzylpem6qbasb2esnren743m4dnzw6j3i7vn3dveubu5n@4sy6mmmlhtw3>
-References: <20240819092037.110260-1-hpchen0nvt@gmail.com>
- <20240819092037.110260-3-hpchen0nvt@gmail.com>
+	id 1sg0l7-00000001FqC-10wM
+	for linux-mtd@lists.infradead.org;
+	Mon, 19 Aug 2024 11:41:15 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A826C60C04;
+	Mon, 19 Aug 2024 11:41:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A517EC32782;
+	Mon, 19 Aug 2024 11:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724067672;
+	bh=ii3fHtLFGH2xK/PWkbrHcwHF/9cIc0M6iS4QAUDypYY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=rSCyYUNCYXksJ43siohPDtD9YBNBexAGhkQprRmYMhC+m7rz9dd3CXYK9qctFlOSs
+	 /l+ERTL9/Q+QywGQUtkLygjef5wY3EqEl0rJoUaQByrhZ35QFpUAyGk2yRv/TG+G22
+	 YqBUYIeKNwYaNyU7VqL+NfpjLHR4qet+Xc259a0JDJsgzjFg7aanBlFPa7ZjcwuOCb
+	 BYC0xxlIaiWAFx/HVh9k7vNM9wBXrUs9BCABnAqQ8Rc0SNSylzpzwDHh3D+7eqKSEO
+	 GGX1Gv4rzuwGjQ2oDzIih5N9cIpVJH077lMc5gEpLvQQqqTmQM9UOu/pV+Q1r6obLi
+	 mmqf2wEHVsoqw==
+From: Christian Brauner <brauner@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	linux-mtd@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Finish converting jffs2 to folios
+Date: Mon, 19 Aug 2024 13:41:03 +0200
+Message-ID: <20240819-kursgewinn-koexistieren-489bc246a7df@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240814195915.249871-1-willy@infradead.org>
+References: <20240814195915.249871-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240819092037.110260-3-hpchen0nvt@gmail.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1368; i=brauner@kernel.org; h=from:subject:message-id; bh=ii3fHtLFGH2xK/PWkbrHcwHF/9cIc0M6iS4QAUDypYY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQd1g964v5Y3T+7a8Ghps5ne141zLzHYLAzl+HQNK7Fc kkxN+dFdpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzk3Q6GP5zZO6wOH7/Xf0TX uLR30pUV3pt91Zoc3xz5P7X+1Mz47HCGfypLxa8q7FdlqP95n2vH37iN1373c71hc5ow6febJ+v K9rEBAA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240819_041905_658540_42DABE4B 
-X-CRM114-Status: GOOD (  21.12  )
+X-CRM114-CacheID: sfid-20240819_044113_376791_604D348A 
+X-CRM114-Status: GOOD (  12.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,182 +77,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 19, 2024 at 09:20:37AM +0000, Hui-Ping Chen wrote:
-> Nuvoton MA35 SoCs NAND Flash Interface Controller
-> supports 2KB, 4KB and 8KB page size, and up to 8-bit,
-> 12-bit, and 24-bit hardware ECC calculation circuit
-> to protect data communication.
+On Wed, 14 Aug 2024 20:59:11 +0100, Matthew Wilcox (Oracle) wrote:
+> This patch series applies on top of fs-next.  I suggest it goes through
+> Christian's tree.  After applying these two patches, there are no more
+> references to 'struct page' in jffs2.  I obviously haven't tested it at
+> all beyond compilation.
 > 
-> Signed-off-by: Hui-Ping Chen <hpchen0nvt@gmail.com>
-...
+> Matthew Wilcox (Oracle) (2):
+>   jffs2: Convert jffs2_do_readpage_nolock to take a folio
+>   jffs2: Use a folio in jffs2_garbage_collect_dnode()
+> 
+> [...]
 
-> +static int ma35_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct ma35_nand_info *nand;
-> +	struct nand_chip *chip;
-> +	struct mtd_info *mtd;
-> +	int retval = 0;
-> +
-> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
-> +	if (!nand)
-> +		return -ENOMEM;
-> +
-> +	nand_controller_init(&nand->controller);
-> +
-> +	nand->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(nand->regs))
-> +		return PTR_ERR(nand->regs);
-> +
-> +	nand->dev = &pdev->dev;
-> +	chip = &nand->chip;
-> +	mtd = nand_to_mtd(chip);
-> +	nand_set_controller_data(chip, nand);
-> +	nand_set_flash_node(chip, pdev->dev.of_node);
-> +
-> +	mtd->priv = chip;
-> +	mtd->owner = THIS_MODULE;
-> +	mtd->dev.parent = &pdev->dev;
-> +
-> +	nand->clk = devm_clk_get(&pdev->dev, "nand_gate");
-> +	if (IS_ERR(nand->clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(nand->clk),
-> +				     "failed to find nand clock\n");
-> +
-> +	retval = clk_prepare_enable(nand->clk);
-> +	if (retval < 0) {
-> +		dev_err(&pdev->dev, "failed to enable clock\n");
-> +		retval = -ENXIO;
-> +	}
-> +
-> +	nand->chip.controller    = &nand->controller;
-> +
-> +	chip->legacy.cmdfunc     = ma35_nand_command;
-> +	chip->legacy.waitfunc    = ma35_waitfunc;
-> +	chip->legacy.read_byte   = ma35_nand_read_byte;
-> +	chip->legacy.select_chip = ma35_nand_select_chip;
-> +	chip->legacy.read_buf    = ma35_read_buf_dma;
-> +	chip->legacy.write_buf   = ma35_write_buf_dma;
-> +	chip->legacy.dev_ready   = ma35_nand_devready;
-> +	chip->legacy.chip_delay  = 25; /* us */
-> +
-> +	/* Read OOB data first, then HW read page */
-> +	chip->ecc.hwctl      = ma35_nand_enable_hwecc;
-> +	chip->ecc.calculate  = ma35_nand_calculate_ecc;
-> +	chip->ecc.correct    = ma35_nand_correct_data;
-> +	chip->ecc.write_page = ma35_nand_write_page_hwecc;
-> +	chip->ecc.read_page  = ma35_nand_read_page_hwecc_oob_first;
-> +	chip->ecc.read_oob   = ma35_nand_read_oob_hwecc;
-> +	chip->options |= (NAND_NO_SUBPAGE_WRITE | NAND_USES_DMA);
-> +
-> +	ma35_nand_initialize(nand);
-> +	platform_set_drvdata(pdev, nand);
-> +
-> +	nand->controller.ops = &ma35_nand_controller_ops;
-> +
-> +	nand->irq = platform_get_irq(pdev, 0);
-> +	if (nand->irq < 0)
-> +		return dev_err_probe(&pdev->dev, nand->irq,
-> +				     "failed to get platform irq\n");
-> +
-> +	if (request_irq(nand->irq, ma35_nand_irq, IRQF_TRIGGER_HIGH, "ma35d1-nand", nand)) {
-> +		dev_err(&pdev->dev, "Error requesting NAND IRQ\n");
-> +		return -ENXIO;
-> +	}
-> +
-> +	retval = nand_scan(chip, 1);
-> +	if (retval)
-> +		return retval;
-> +
-> +	if (mtd_device_register(mtd, nand->parts, nand->nr_parts)) {
-> +		nand_cleanup(chip);
-> +		devm_kfree(&pdev->dev, nand);
-> +		return retval;
-> +	}
-> +
-> +	return retval;
-> +}
-> +
-> +static void ma35_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct ma35_nand_info *nand = platform_get_drvdata(pdev);
-> +	struct nand_chip *chip = &nand->chip;
-> +	int ret;
-> +
+Applied to the vfs.folio branch of the vfs/vfs.git tree.
+Patches in the vfs.folio branch should appear in linux-next soon.
 
-Where do you release IRQ handler?
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-> +	ret = mtd_device_unregister(nand_to_mtd(chip));
-> +	WARN_ON(ret);
-> +	nand_cleanup(chip);
-> +
-> +	clk_disable_unprepare(nand->clk);
-> +
-> +	kfree(nand);
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-NAK, you never tested your code.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-> +	platform_set_drvdata(pdev, NULL);
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.folio
 
-Why? Drop.
-
-> +}
-> +
-> +/* PM Support */
-> +#ifdef CONFIG_PM
-> +static int ma35_nand_suspend(struct platform_device *pdev, pm_message_t pm)
-> +{
-> +	struct ma35_nand_info *nand = platform_get_drvdata(pdev);
-> +	unsigned long timeo = jiffies + HZ/2;
-> +
-> +	/* wait DMAC to ready */
-> +	while (1) {
-> +		if ((readl(nand->regs + MA35_NFI_REG_DMACTL) & DMA_BUSY) == 0)
-> +			break;
-> +		if (time_after(jiffies, timeo))
-> +			return -ETIMEDOUT;
-> +	}
-> +
-> +	clk_disable(nand->clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ma35_nand_resume(struct platform_device *pdev)
-> +{
-> +	struct ma35_nand_info *nand = platform_get_drvdata(pdev);
-> +
-> +	clk_enable(nand->clk);
-> +	ma35_nand_hwecc_init(nand);
-> +	ma35_nand_dmac_init(nand);
-> +
-> +	return 0;
-> +}
-> +
-> +#else
-> +#define ma35_nand_suspend NULL
-> +#define ma35_nand_resume NULL
-> +#endif
-> +
-> +static const struct of_device_id ma35_nfi_of_match[] = {
-> +	{ .compatible = "nuvoton,ma35d1-nand" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, ma35_nfi_of_match);
-> +
-> +static struct platform_driver ma35_nand_driver = {
-> +		.driver = {
-
-Messed indentation.
-
-> +		.name   = "ma35d1-nand",
-> +		.owner  = THIS_MODULE,
-
-Drop. Please do not upstream some 10 year old code... Use recent code as
-template, not 10yo stuff...
-
-Best regards,
-Krzysztof
-
+[1/2] jffs2: Convert jffs2_do_readpage_nolock to take a folio
+      https://git.kernel.org/vfs/vfs/c/bcc7d11e6c09
+[2/2] jffs2: Use a folio in jffs2_garbage_collect_dnode()
+      https://git.kernel.org/vfs/vfs/c/2da4c51a66cd
 
 ______________________________________________________
 Linux MTD discussion mailing list
