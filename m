@@ -4,55 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23684C54722
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2024 03:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 100F2C3DA4A
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Aug 2024 09:21:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s1/7v4Hj8VVmoXk5zfNclu8ywfBG4hrf0BCf6uNUyTY=; b=a3QHcjcvRrOcWT
-	Wjd2IwiXTC2BBTonvEaAMhDCl0ncPF4+ta9kAJ75ZpTbRH92HoVNQRZP5YDk4iSfFV/gdsYcTaB2D
-	JmQetECvuVcHY8P/xlXdEC/SaqR7zpCEF9atAMQsh076fysMY9OeUgs04jcfU59gQdROAy53evKB/
-	VGrJPy4yaLUDTEt9KZFU/uguxLR6lNOwUIwr3TNCvuo0pYXv5N4hcnPd713SXmXyeEHQwd/ZWWB3H
-	dh9m93tjRjPSpr2o5nZcgiScCQ6lvCVNoCZwccq4MzIj46ZOJj06ZgGn/urax0j6glqDC/uzOp95p
-	2l6ICXSCsaaZA6iyjguA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zJlXTm1qr+XvKOjHWWO13ddZ7yZh4UzjDSlSq9XsH/Q=; b=4ZdFxhkckn6UaT
+	BQjqfxMWfF7NteOkw+NwBfR211w+Fvn/UVgs2y/VCra9uFT5B5mDcI70XP18AzXE5WHGLPm6k5zJJ
+	c0gyiriuHDM/gXk6NqRnWEUa+W2pFhs55cajuu/Cn+3XPYmcTrBYArA0/X6j6ITfTGHWr5uDdY/66
+	k8M5oi2nSLz28Q04sRxRlAKyaOnV/6h3JDqU170ie5+6o/X0sS3A1nVdgEegxDfj7AnrtYBe+auE2
+	bY4dO8cZ6HjLMvtaVulVcJsUjXyTYl5GSSJ1HNVbLSRz905XESFbfx/aTgdkxEjARr7l1yED1zJRW
+	tGSn6OCW0I9c5TYMPBFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sft6x-00000000DN8-3wIQ;
-	Mon, 19 Aug 2024 03:31:16 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1sfyZq-00000000wBp-3mse;
+	Mon, 19 Aug 2024 09:21:26 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sft6q-00000000DIV-1oux
-	for linux-mtd@lists.infradead.org;
-	Mon, 19 Aug 2024 03:31:11 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WnJ0S1mh4zQq5Y;
-	Mon, 19 Aug 2024 11:26:16 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id C70E61800C4;
-	Mon, 19 Aug 2024 11:30:55 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm000013.china.huawei.com
- (7.193.23.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 19 Aug
- 2024 11:30:55 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <daniel@makrotopia.org>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] ubi: fastmap: wl: Schedule fm_work if wear-leveling pool is empty
-Date: Mon, 19 Aug 2024 11:26:22 +0800
-Message-ID: <20240819032622.2241165-3-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240819032622.2241165-1-chengzhihao1@huawei.com>
-References: <20240819032622.2241165-1-chengzhihao1@huawei.com>
+	id 1sfyZ9-00000000w1d-46J4;
+	Mon, 19 Aug 2024 09:20:45 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2d3d662631aso2666189a91.1;
+        Mon, 19 Aug 2024 02:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724059243; x=1724664043; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nbobm+SvJn90B7VhyfLGtuxVw/Xxjzt17uREQeGl98o=;
+        b=kT72YRLGz7j6YxwcVxeKZ/ibtARCoIYrS1Qnu5HHlzPx+OYDVsHJuCHtzkz8puO8wT
+         xgR+RdAfVVdgbwG1p8wD2YBfr8qrcpaJUdKPuhId+XHX4/E1NW7PwVZ2m6Vp2ZG/iyrK
+         YXWgSGetiNAbFLYEpbkw+28bW/pPil0ysAXhxyJiAkd0b64qPGVyGxU7KCtyB021JJAF
+         miOnrR7ILRM2+nbN9oQlTE0TjeHoblykqI8JDuX3okMu2dsOh4AN+n2EN/TbQhGhfP27
+         qBl96vdqJt78a15A57NXdXACIZ0czqobDhU8HmOLe61VkJKtQijCT4hBl2MrZrPuOHFm
+         Z4Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724059243; x=1724664043;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nbobm+SvJn90B7VhyfLGtuxVw/Xxjzt17uREQeGl98o=;
+        b=gS/v3Jfjm+uh1gAZzk2zvykc1lQeCjK9eSiIF8tN4WrkmVxZohbVWg8YWwz1PSVm7r
+         FN9NSm+Niq0pjeaEdD8MMK+AyzGdvRaDHizAPuJkWrGs0H3856tBxoPItoYQUPLvZYuf
+         Ds/jdTd1NJru2juT+4+M7dUiLZLo9niUG2ykgMGqRuASzXGm5eaM0TtxA0qimLmmbPHe
+         go5ovFOrB/SZ8N7NQVz8Q7XMHwjVmU2NOPJbqae4hQnoZlVTXLwos5N+xGMYbdxTmwUL
+         fq23ZV3nja600w9wcRWaRr5UMfSjn9qjElg3t8LbAfaOVna7MSf9rbTRZMpxnjlwYeQK
+         HOrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXQYfEZ5b32jKyfnp2tAbWhEeuHYxkHejyXmA2cmIrfkowVvllvF27M614spKspMDRmJwam4I07Vl4=@lists.infradead.org
+X-Gm-Message-State: AOJu0YxuJySMnpXsqrvyKBstTN7K3iy4cvroJfVaAzqJyjlexvU26Z7B
+	HXaLL/oaWZXQCPPingXF0xHSdaURrUHF1hMpOu0iSfDq+sLzSxD3
+X-Google-Smtp-Source: AGHT+IHDa/2IA2Yd+H2It0zLuwLh7wv+zRrgCvpU/eheNHrt2fXxv3jnNWn//LpF09xkmOdVGCrL0w==
+X-Received: by 2002:a17:90a:fa06:b0:2d3:da99:b41b with SMTP id 98e67ed59e1d1-2d3dffc6078mr10004128a91.17.1724059242482;
+        Mon, 19 Aug 2024 02:20:42 -0700 (PDT)
+Received: from localhost.localdomain (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e3d97f2asm6750538a91.53.2024.08.19.02.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Aug 2024 02:20:42 -0700 (PDT)
+From: Hui-Ping Chen <hpchen0nvt@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	sumit.semwal@linaro.org,
+	christian.koenig@amd.com,
+	esben@geanix.com
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
+	Hui-Ping Chen <hpchen0nvt@gmail.com>
+Subject: [PATCH v2 0/2] Add support for nuvoton ma35 nand controller
+Date: Mon, 19 Aug 2024 09:20:35 +0000
+Message-Id: <20240819092037.110260-1-hpchen0nvt@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Originating-IP: [10.175.104.67]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240818_203109_053167_F196A5DB 
-X-CRM114-Status: GOOD (  13.83  )
+X-CRM114-CacheID: sfid-20240819_022044_037484_08933B0E 
+X-CRM114-Status: GOOD (  11.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,92 +103,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since commit 14072ee33d5a ("ubi: fastmap: Check wl_pool for free peb
-before wear leveling"), wear_leveling_worker() won't schedule fm_work
-if wear-leveling pool is empty, which could temporarily disable the
-wear-leveling until the fastmap is updated(eg. pool becomes empty).
-Fix it by scheduling fm_work if wl_pool is empty during wear-leveing.
+This patch series adds the mtd nand driver for the nuvoton ma35 ARMv8 SoC.
+It includes DT binding documentation and the ma35 mtd nand driver.
 
-Fixes: 14072ee33d5a ("ubi: fastmap: Check wl_pool for free peb before wear leveling")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mtd/ubi/fastmap-wl.c | 19 ++++++++++++++++---
- drivers/mtd/ubi/wl.c         |  2 +-
- drivers/mtd/ubi/wl.h         |  3 ++-
- 3 files changed, 19 insertions(+), 5 deletions(-)
+v2:
+  - Update nuvoton,ma35d1-nand.yaml
+    - Adjust the order and remove any unnecessary items.
+    - Add 'nand-ecc-step-size' and 'nand-ecc-strength' to the required list.
+  - Update ma35d1 mtd nand driver
+    - Fix coding style.
+    - Use 'devm_clk_get' instead of 'of_clk_get'.
+    - Use 'dev_err_probe' instead of 'dev_err'.
+    - Remove 'pr_info' and 'of_match_ptr'.
+    - Remove 'module_init' and 'module_exit'.
 
-diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-index 2a9cc9413c42..9bdb6525f128 100644
---- a/drivers/mtd/ubi/fastmap-wl.c
-+++ b/drivers/mtd/ubi/fastmap-wl.c
-@@ -346,14 +346,27 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
-  * WL sub-system.
-  *
-  * @ubi: UBI device description object
-+ * @need_fill: whether to fill wear-leveling pool when no PEBs are found
-  */
--static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi)
-+static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi,
-+					    bool need_fill)
- {
- 	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
- 	int pnum;
- 
--	if (pool->used == pool->size)
-+	if (pool->used == pool->size) {
-+		if (need_fill && !ubi->fm_work_scheduled) {
-+			/*
-+			 * We cannot update the fastmap here because this
-+			 * function is called in atomic context.
-+			 * Let's fail here and refill/update it as soon as
-+			 * possible.
-+			 */
-+			ubi->fm_work_scheduled = 1;
-+			schedule_work(&ubi->fm_work);
-+		}
- 		return NULL;
-+	}
- 
- 	pnum = pool->pebs[pool->used];
- 	return ubi->lookuptbl[pnum];
-@@ -375,7 +388,7 @@ static bool need_wear_leveling(struct ubi_device *ubi)
- 	if (!ubi->used.rb_node)
- 		return false;
- 
--	e = next_peb_for_wl(ubi);
-+	e = next_peb_for_wl(ubi, false);
- 	if (!e) {
- 		if (!ubi->free.rb_node)
- 			return false;
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 8a26968aba11..fbd399cf6503 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -683,7 +683,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 	ubi_assert(!ubi->move_to_put);
- 
- #ifdef CONFIG_MTD_UBI_FASTMAP
--	if (!next_peb_for_wl(ubi) ||
-+	if (!next_peb_for_wl(ubi, true) ||
- #else
- 	if (!ubi->free.rb_node ||
- #endif
-diff --git a/drivers/mtd/ubi/wl.h b/drivers/mtd/ubi/wl.h
-index 7b6715ef6d4a..a69169c35e31 100644
---- a/drivers/mtd/ubi/wl.h
-+++ b/drivers/mtd/ubi/wl.h
-@@ -5,7 +5,8 @@
- static void update_fastmap_work_fn(struct work_struct *wrk);
- static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root);
- static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi);
--static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi);
-+static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi,
-+					    bool need_fill);
- static bool need_wear_leveling(struct ubi_device *ubi);
- static void ubi_fastmap_close(struct ubi_device *ubi);
- static inline void ubi_fastmap_init(struct ubi_device *ubi, int *count)
+
+Hui-Ping Chen (2):
+  dt-bindings: mtd: nuvoton,ma35d1-nand: add new bindings
+  mtd: rawnand: nuvoton: add new driver for the Nuvoton MA35 SoC
+
+ .../bindings/mtd/nuvoton,ma35d1-nand.yaml     |   93 ++
+ drivers/mtd/nand/raw/Kconfig                  |    8 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c    | 1070 +++++++++++++++++
+ 4 files changed, 1172 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nuvoton,ma35d1-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c
+
 -- 
-2.39.2
+2.25.1
 
 
 ______________________________________________________
