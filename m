@@ -4,87 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CB37C3DA4A
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2024 05:36:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 235C1C3DA4A
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2024 05:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UJI5u1TOGnDc2Mzf7r/QOYK8tKddnjGsBtDASuDVkz4=; b=paqtSJGfZHRKL4
-	XnvNggAp+2KKsOOAeHHbVNkC/90VF+C2CluL0W20uNAUq/cheH8DXOQhVdC1EQynm5RDKV+MKLSAC
-	1w6VW1sIKGK6IYyCRlO8RCRHWT8t6YFpw/9Q6a3o44IwmSurPmu6u8MdvhO4APKJNlqyobHt6IYbg
-	8Axrw8Hb4v0+h6CxyMWL8zyUhPed6MY6hPfqWJj4Q6/q7NnGgbMuZFTag5vYA1LQuNYVg9uDHsYlX
-	3+geCiVLptBS2jwxYceHHL9utbolhJwNHFMr9yJ5T3n0rzckLthX1DHoIbD3mhNiqu1HzgvI7+Frp
-	N1j7428qHaCg0aIjSjWA==;
+	List-Owner; bh=EdAW3SsDKjAm5Shs5ygH7VG1toGUO1cGwR0qKqcI6Mc=; b=CDxxGGZXQsW2wz
+	AMmlzG1c33OiYMnojA+o87fY9kGAWp2OTPE10ihKYBA6Xd3+Tlgt8Sq4lPViwkHAa+2c+y1A86INr
+	C8xZiaRY1CpipqJqpE2so1nUVcRN7CuS6WO0zK42vnmFEOKSKbmIc7klKomFaWx39tnDS+HyUOBnI
+	z4EL4XC4UkIk7lTyHJC1XUbCi0FxAnqTD3RjVDf8FHOKPJURniRof90lfP8wxuSEokvxNE77xJhXc
+	0n+yMGe1Yfi3tWOjdWEJ4s1xh4umd1xrpCzNWp2+5RESd5TuLZMeonxulwA6iVaMjplMN6LEzdRlK
+	oehod0Gs+tPkYviv0ubw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgHXV-00000003t0h-0IUb;
-	Tue, 20 Aug 2024 05:36:17 +0000
-Received: from mail-oa1-x2b.google.com ([2001:4860:4864:20::2b])
+	id 1sgHju-00000003uhI-33qc;
+	Tue, 20 Aug 2024 05:49:06 +0000
+Received: from mgamail.intel.com ([198.175.65.15])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgHWm-00000003svc-2GxV;
-	Tue, 20 Aug 2024 05:35:33 +0000
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-26ff21d8382so3326272fac.1;
-        Mon, 19 Aug 2024 22:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724132131; x=1724736931; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ndtfIALYxvSwyfZwUZk30HMSZOs/3lo4XrgNJ0/XS/Y=;
-        b=dF+wMYM2sR4PPvmtUd7d2CbZk+xAkSKnYWLEufLtSTYvASKqhrLmDLtXQ2CVl3R2PL
-         Lp2R1X63vDZPI6N68Ed7F3n+vjDietgUjFgcWbXIc1AD/jtPPEQ2DbQrRfmqNc4RCslK
-         4gdsucJBdxZsSKTTk0MU4cX2bqnk2Ev1MueHQ0ga77Z7poH8bIceVkvHmtTk5AncpzOo
-         BLas/FNQXBaxE/941Jc/L6aSK6EtzPNnC/GZxYqye/X5iVNfMYGyA3A+Kg1RHcR15KcY
-         vg80Ap5Sroy75Kxz7kLrO7L3Afg9vYAP0h8KxmyJ5XN3ImMMxCuGtiypWlc1jJ2kK1LI
-         4oMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724132131; x=1724736931;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ndtfIALYxvSwyfZwUZk30HMSZOs/3lo4XrgNJ0/XS/Y=;
-        b=SBFpCMauxBEgR64Azijj9jQIPKEYAyaFiGyAuidenpo1PF3hEQp8FaKqL4qpgYlYva
-         0KQmDaLXsXaqK7I9hGgKsOjSDwmkwu1RRaR1rHsp9oahYd7f3rkIp8VsCHSlOcJhyW7e
-         5GmQG+zPWAs4axzYBKL9nbT20dJHk+tEA7wVeTkwAaQFYsj2UfTfoQcsG+3sk32Icwuh
-         Ccvt8ARFwoYRGbLSaP7oBlfaMX/657zjyq4tmshxJ4LucY+pFdUwYtLbkmU48ta6mcdt
-         SoWBTMHOiIOeE5rwOUaFGnfOmzzTqaeOLHvRm0j8r3I4d+5ifHw7bViD+BZ7Md6tJFJ0
-         ARVA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6Xe0BVGAXL2uYEZAFo9gHGoPrULzEWBXoNyKC+IY3vpjD+DN5KxVAHgzRLqltql0z8CofH72axHQt03ILI9KG@lists.infradead.org, AJvYcCVtUDHW0tp9ZWOdQDg8pPMiHBiA0L7J9l8rU4OLHI0XZLfI9lEXUPdEjBbm9nSnELv+pWJrA99Lfbg/@lists.infradead.org
-X-Gm-Message-State: AOJu0YyF81T+Xfm9BNHsyFf/hnb++ajHQvqWErjrcR9H3XaBKX1Z1kat
-	Lo6Te4B899BqaiPtYmi9Dx/BCYR5OX6jmdh+VJbci8TVxp7dQMsv
-X-Google-Smtp-Source: AGHT+IFtEn8H0UZ4sEWSOI7G4y4Mo1XLRTZ28Kau1HwcAHNrGsrgcbQQoKbgrUrFfpCGq+Yq/fxnrQ==
-X-Received: by 2002:a05:6870:224e:b0:268:a074:39cf with SMTP id 586e51a60fabf-2701c349599mr11711600fac.8.1724132130748;
-        Mon, 19 Aug 2024 22:35:30 -0700 (PDT)
-Received: from [172.19.1.53] (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7127aef5431sm7461828b3a.109.2024.08.19.22.35.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Aug 2024 22:35:30 -0700 (PDT)
-Message-ID: <fe56d8be-9c75-48d5-bc2c-76a79e5d7843@gmail.com>
-Date: Tue, 20 Aug 2024 13:35:26 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	id 1sgHjC-00000003uXn-3Beh;
+	Tue, 20 Aug 2024 05:48:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724132903; x=1755668903;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kioHVavi4eJx3pXSFgQY5R+2SmG3W8PhoaqTGAwxUVc=;
+  b=TgCbmbW3+Va66kKSOoBj2JzWlldUXENeY2d3Q5TLzHvym5ibSZNSQ7fl
+   GScnIjUfIKB8EfcpYw3NhcoHXMSyFkUOCQF8lg0O8nF9tThh8MIbDHZOn
+   0CcHXOY+AuACsJZWjcTGsIwpbFOv63BYMuuhkjsKeS/LvwywswsLvrNs1
+   NkILeQpzn9cGuduJ/KvrhPlE5om0ydDFqWmnj8uc372O4AGiz+RKa05/d
+   xbrq+HjFS9xE/os3k5AT0Xsd0rtf5HYp2V0ktK8CurCFKR9CHlmEbUxaz
+   SX7+d25NDpzQB+FXMKa7JgZ3VtmmywNLTv/pm4JKAeDMxDVMgiy7CRcY6
+   g==;
+X-CSE-ConnectionGUID: G5fXzUUuQFuJ6X0RyDNvAA==
+X-CSE-MsgGUID: GdSwQdbmSNeO1LG/kS8Y7g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="26162711"
+X-IronPort-AV: E=Sophos;i="6.10,161,1719903600"; 
+   d="scan'208";a="26162711"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 22:48:23 -0700
+X-CSE-ConnectionGUID: PgarJjMXQLS1/fA8vVZ+Dg==
+X-CSE-MsgGUID: ZOASBjw8SIibnKhxYvaaRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,161,1719903600"; 
+   d="scan'208";a="60759314"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 19 Aug 2024 22:48:18 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sgHj5-0009lq-2t;
+	Tue, 20 Aug 2024 05:48:15 +0000
+Date: Tue, 20 Aug 2024 13:47:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Hui-Ping Chen <hpchen0nvt@gmail.com>, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com, robh@kernel.org,
+	krzk+dt@kernel.org, conor+dt@kernel.org, sumit.semwal@linaro.org,
+	christian.koenig@amd.com, esben@geanix.com
+Cc: oe-kbuild-all@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+	Hui-Ping Chen <hpchen0nvt@gmail.com>
 Subject: Re: [PATCH v2 2/2] mtd: rawnand: nuvoton: add new driver for the
  Nuvoton MA35 SoC
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
- sumit.semwal@linaro.org, christian.koenig@amd.com, esben@geanix.com,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-References: <20240819092037.110260-1-hpchen0nvt@gmail.com>
- <20240819092037.110260-3-hpchen0nvt@gmail.com>
- <t7igmxzylpem6qbasb2esnren743m4dnzw6j3i7vn3dveubu5n@4sy6mmmlhtw3>
-Content-Language: en-US
-From: Hui-Ping Chen <hpchen0nvt@gmail.com>
-In-Reply-To: <t7igmxzylpem6qbasb2esnren743m4dnzw6j3i7vn3dveubu5n@4sy6mmmlhtw3>
+Message-ID: <202408201329.v0SoF3eS-lkp@intel.com>
+References: <20240819092037.110260-3-hpchen0nvt@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240819092037.110260-3-hpchen0nvt@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240819_223532_607188_8EA17B91 
-X-CRM114-Status: GOOD (  21.94  )
+X-CRM114-CacheID: sfid-20240819_224822_877675_DC20F231 
+X-CRM114-Status: GOOD (  12.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,103 +89,122 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RGVhciBLcnp5c3p0b2YsCgpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuCgoKCk9uIDIwMjQvOC8x
-OSDkuIvljYggMDc6MTksIEtyenlzenRvZiBLb3psb3dza2kgd3JvdGU6Cj4gT24gTW9uLCBBdWcg
-MTksIDIwMjQgYXQgMDk6MjA6MzdBTSArMDAwMCwgSHVpLVBpbmcgQ2hlbiB3cm90ZToKPj4gTnV2
-b3RvbiBNQTM1IFNvQ3MgTkFORCBGbGFzaCBJbnRlcmZhY2UgQ29udHJvbGxlcgo+PiBzdXBwb3J0
-cyAyS0IsIDRLQiBhbmQgOEtCIHBhZ2Ugc2l6ZSwgYW5kIHVwIHRvIDgtYml0LAo+PiAxMi1iaXQs
-IGFuZCAyNC1iaXQgaGFyZHdhcmUgRUNDIGNhbGN1bGF0aW9uIGNpcmN1aXQKPj4gdG8gcHJvdGVj
-dCBkYXRhIGNvbW11bmljYXRpb24uCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEh1aS1QaW5nIENoZW4g
-PGhwY2hlbjBudnRAZ21haWwuY29tPgo+IC4uLgo+Cj4+ICtzdGF0aWMgaW50IG1hMzVfbmFuZF9w
-cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiArewo+PiArCXN0cnVjdCBtYTM1
-X25hbmRfaW5mbyAqbmFuZDsKPj4gKwlzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwOwo+PiArCXN0cnVj
-dCBtdGRfaW5mbyAqbXRkOwo+PiArCWludCByZXR2YWwgPSAwOwo+PiArCj4+ICsJbmFuZCA9IGRl
-dm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2YoKm5hbmQpLCBHRlBfS0VSTkVMKTsKPj4gKwlp
-ZiAoIW5hbmQpCj4+ICsJCXJldHVybiAtRU5PTUVNOwo+PiArCj4+ICsJbmFuZF9jb250cm9sbGVy
-X2luaXQoJm5hbmQtPmNvbnRyb2xsZXIpOwo+PiArCj4+ICsJbmFuZC0+cmVncyA9IGRldm1fcGxh
-dGZvcm1faW9yZW1hcF9yZXNvdXJjZShwZGV2LCAwKTsKPj4gKwlpZiAoSVNfRVJSKG5hbmQtPnJl
-Z3MpKQo+PiArCQlyZXR1cm4gUFRSX0VSUihuYW5kLT5yZWdzKTsKPj4gKwo+PiArCW5hbmQtPmRl
-diA9ICZwZGV2LT5kZXY7Cj4+ICsJY2hpcCA9ICZuYW5kLT5jaGlwOwo+PiArCW10ZCA9IG5hbmRf
-dG9fbXRkKGNoaXApOwo+PiArCW5hbmRfc2V0X2NvbnRyb2xsZXJfZGF0YShjaGlwLCBuYW5kKTsK
-Pj4gKwluYW5kX3NldF9mbGFzaF9ub2RlKGNoaXAsIHBkZXYtPmRldi5vZl9ub2RlKTsKPj4gKwo+
-PiArCW10ZC0+cHJpdiA9IGNoaXA7Cj4+ICsJbXRkLT5vd25lciA9IFRISVNfTU9EVUxFOwo+PiAr
-CW10ZC0+ZGV2LnBhcmVudCA9ICZwZGV2LT5kZXY7Cj4+ICsKPj4gKwluYW5kLT5jbGsgPSBkZXZt
-X2Nsa19nZXQoJnBkZXYtPmRldiwgIm5hbmRfZ2F0ZSIpOwo+PiArCWlmIChJU19FUlIobmFuZC0+
-Y2xrKSkKPj4gKwkJcmV0dXJuIGRldl9lcnJfcHJvYmUoJnBkZXYtPmRldiwgUFRSX0VSUihuYW5k
-LT5jbGspLAo+PiArCQkJCSAgICAgImZhaWxlZCB0byBmaW5kIG5hbmQgY2xvY2tcbiIpOwo+PiAr
-Cj4+ICsJcmV0dmFsID0gY2xrX3ByZXBhcmVfZW5hYmxlKG5hbmQtPmNsayk7Cj4+ICsJaWYgKHJl
-dHZhbCA8IDApIHsKPj4gKwkJZGV2X2VycigmcGRldi0+ZGV2LCAiZmFpbGVkIHRvIGVuYWJsZSBj
-bG9ja1xuIik7Cj4+ICsJCXJldHZhbCA9IC1FTlhJTzsKPj4gKwl9Cj4+ICsKPj4gKwluYW5kLT5j
-aGlwLmNvbnRyb2xsZXIgICAgPSAmbmFuZC0+Y29udHJvbGxlcjsKPj4gKwo+PiArCWNoaXAtPmxl
-Z2FjeS5jbWRmdW5jICAgICA9IG1hMzVfbmFuZF9jb21tYW5kOwo+PiArCWNoaXAtPmxlZ2FjeS53
-YWl0ZnVuYyAgICA9IG1hMzVfd2FpdGZ1bmM7Cj4+ICsJY2hpcC0+bGVnYWN5LnJlYWRfYnl0ZSAg
-ID0gbWEzNV9uYW5kX3JlYWRfYnl0ZTsKPj4gKwljaGlwLT5sZWdhY3kuc2VsZWN0X2NoaXAgPSBt
-YTM1X25hbmRfc2VsZWN0X2NoaXA7Cj4+ICsJY2hpcC0+bGVnYWN5LnJlYWRfYnVmICAgID0gbWEz
-NV9yZWFkX2J1Zl9kbWE7Cj4+ICsJY2hpcC0+bGVnYWN5LndyaXRlX2J1ZiAgID0gbWEzNV93cml0
-ZV9idWZfZG1hOwo+PiArCWNoaXAtPmxlZ2FjeS5kZXZfcmVhZHkgICA9IG1hMzVfbmFuZF9kZXZy
-ZWFkeTsKPj4gKwljaGlwLT5sZWdhY3kuY2hpcF9kZWxheSAgPSAyNTsgLyogdXMgKi8KPj4gKwo+
-PiArCS8qIFJlYWQgT09CIGRhdGEgZmlyc3QsIHRoZW4gSFcgcmVhZCBwYWdlICovCj4+ICsJY2hp
-cC0+ZWNjLmh3Y3RsICAgICAgPSBtYTM1X25hbmRfZW5hYmxlX2h3ZWNjOwo+PiArCWNoaXAtPmVj
-Yy5jYWxjdWxhdGUgID0gbWEzNV9uYW5kX2NhbGN1bGF0ZV9lY2M7Cj4+ICsJY2hpcC0+ZWNjLmNv
-cnJlY3QgICAgPSBtYTM1X25hbmRfY29ycmVjdF9kYXRhOwo+PiArCWNoaXAtPmVjYy53cml0ZV9w
-YWdlID0gbWEzNV9uYW5kX3dyaXRlX3BhZ2VfaHdlY2M7Cj4+ICsJY2hpcC0+ZWNjLnJlYWRfcGFn
-ZSAgPSBtYTM1X25hbmRfcmVhZF9wYWdlX2h3ZWNjX29vYl9maXJzdDsKPj4gKwljaGlwLT5lY2Mu
-cmVhZF9vb2IgICA9IG1hMzVfbmFuZF9yZWFkX29vYl9od2VjYzsKPj4gKwljaGlwLT5vcHRpb25z
-IHw9IChOQU5EX05PX1NVQlBBR0VfV1JJVEUgfCBOQU5EX1VTRVNfRE1BKTsKPj4gKwo+PiArCW1h
-MzVfbmFuZF9pbml0aWFsaXplKG5hbmQpOwo+PiArCXBsYXRmb3JtX3NldF9kcnZkYXRhKHBkZXYs
-IG5hbmQpOwo+PiArCj4+ICsJbmFuZC0+Y29udHJvbGxlci5vcHMgPSAmbWEzNV9uYW5kX2NvbnRy
-b2xsZXJfb3BzOwo+PiArCj4+ICsJbmFuZC0+aXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAw
-KTsKPj4gKwlpZiAobmFuZC0+aXJxIDwgMCkKPj4gKwkJcmV0dXJuIGRldl9lcnJfcHJvYmUoJnBk
-ZXYtPmRldiwgbmFuZC0+aXJxLAo+PiArCQkJCSAgICAgImZhaWxlZCB0byBnZXQgcGxhdGZvcm0g
-aXJxXG4iKTsKPj4gKwo+PiArCWlmIChyZXF1ZXN0X2lycShuYW5kLT5pcnEsIG1hMzVfbmFuZF9p
-cnEsIElSUUZfVFJJR0dFUl9ISUdILCAibWEzNWQxLW5hbmQiLCBuYW5kKSkgewo+PiArCQlkZXZf
-ZXJyKCZwZGV2LT5kZXYsICJFcnJvciByZXF1ZXN0aW5nIE5BTkQgSVJRXG4iKTsKPj4gKwkJcmV0
-dXJuIC1FTlhJTzsKPj4gKwl9Cj4+ICsKPj4gKwlyZXR2YWwgPSBuYW5kX3NjYW4oY2hpcCwgMSk7
-Cj4+ICsJaWYgKHJldHZhbCkKPj4gKwkJcmV0dXJuIHJldHZhbDsKPj4gKwo+PiArCWlmIChtdGRf
-ZGV2aWNlX3JlZ2lzdGVyKG10ZCwgbmFuZC0+cGFydHMsIG5hbmQtPm5yX3BhcnRzKSkgewo+PiAr
-CQluYW5kX2NsZWFudXAoY2hpcCk7Cj4+ICsJCWRldm1fa2ZyZWUoJnBkZXYtPmRldiwgbmFuZCk7
-Cj4+ICsJCXJldHVybiByZXR2YWw7Cj4+ICsJfQo+PiArCj4+ICsJcmV0dXJuIHJldHZhbDsKPj4g
-K30KPj4gKwo+PiArc3RhdGljIHZvaWQgbWEzNV9uYW5kX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1f
-ZGV2aWNlICpwZGV2KQo+PiArewo+PiArCXN0cnVjdCBtYTM1X25hbmRfaW5mbyAqbmFuZCA9IHBs
-YXRmb3JtX2dldF9kcnZkYXRhKHBkZXYpOwo+PiArCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSAm
-bmFuZC0+Y2hpcDsKPj4gKwlpbnQgcmV0Owo+PiArCj4gV2hlcmUgZG8geW91IHJlbGVhc2UgSVJR
-IGhhbmRsZXI/CgpJIHdpbGwgYWRkIGEgcmVsZWFzZSBJUlEgaGFuZGxlciB0byB0aGlzIGZ1bmN0
-aW9uLgoKCgo+PiArCXJldCA9IG10ZF9kZXZpY2VfdW5yZWdpc3RlcihuYW5kX3RvX210ZChjaGlw
-KSk7Cj4+ICsJV0FSTl9PTihyZXQpOwo+PiArCW5hbmRfY2xlYW51cChjaGlwKTsKPj4gKwo+PiAr
-CWNsa19kaXNhYmxlX3VucHJlcGFyZShuYW5kLT5jbGspOwo+PiArCj4+ICsJa2ZyZWUobmFuZCk7
-Cj4gTkFLLCB5b3UgbmV2ZXIgdGVzdGVkIHlvdXIgY29kZS4KCkkgd2lsbCBzdHJlbmd0aGVuIHRo
-ZSB0ZXN0aW5nIG9mIHRoaXMgZnVuY3Rpb24uCgoKCj4+ICsJcGxhdGZvcm1fc2V0X2RydmRhdGEo
-cGRldiwgTlVMTCk7Cj4gV2h5PyBEcm9wLgoKSSB3aWxsIHJlbW92ZSBpdC4KCgoKPj4gK30KPj4g
-Kwo+PiArLyogUE0gU3VwcG9ydCAqLwo+PiArI2lmZGVmIENPTkZJR19QTQo+PiArc3RhdGljIGlu
-dCBtYTM1X25hbmRfc3VzcGVuZChzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2LCBwbV9tZXNz
-YWdlX3QgcG0pCj4+ICt7Cj4+ICsJc3RydWN0IG1hMzVfbmFuZF9pbmZvICpuYW5kID0gcGxhdGZv
-cm1fZ2V0X2RydmRhdGEocGRldik7Cj4+ICsJdW5zaWduZWQgbG9uZyB0aW1lbyA9IGppZmZpZXMg
-KyBIWi8yOwo+PiArCj4+ICsJLyogd2FpdCBETUFDIHRvIHJlYWR5ICovCj4+ICsJd2hpbGUgKDEp
-IHsKPj4gKwkJaWYgKChyZWFkbChuYW5kLT5yZWdzICsgTUEzNV9ORklfUkVHX0RNQUNUTCkgJiBE
-TUFfQlVTWSkgPT0gMCkKPj4gKwkJCWJyZWFrOwo+PiArCQlpZiAodGltZV9hZnRlcihqaWZmaWVz
-LCB0aW1lbykpCj4+ICsJCQlyZXR1cm4gLUVUSU1FRE9VVDsKPj4gKwl9Cj4+ICsKPj4gKwljbGtf
-ZGlzYWJsZShuYW5kLT5jbGspOwo+PiArCj4+ICsJcmV0dXJuIDA7Cj4+ICt9Cj4+ICsKPj4gK3N0
-YXRpYyBpbnQgbWEzNV9uYW5kX3Jlc3VtZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+
-PiArewo+PiArCXN0cnVjdCBtYTM1X25hbmRfaW5mbyAqbmFuZCA9IHBsYXRmb3JtX2dldF9kcnZk
-YXRhKHBkZXYpOwo+PiArCj4+ICsJY2xrX2VuYWJsZShuYW5kLT5jbGspOwo+PiArCW1hMzVfbmFu
-ZF9od2VjY19pbml0KG5hbmQpOwo+PiArCW1hMzVfbmFuZF9kbWFjX2luaXQobmFuZCk7Cj4+ICsK
-Pj4gKwlyZXR1cm4gMDsKPj4gK30KPj4gKwo+PiArI2Vsc2UKPj4gKyNkZWZpbmUgbWEzNV9uYW5k
-X3N1c3BlbmQgTlVMTAo+PiArI2RlZmluZSBtYTM1X25hbmRfcmVzdW1lIE5VTEwKPj4gKyNlbmRp
-Zgo+PiArCj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtYTM1X25maV9vZl9t
-YXRjaFtdID0gewo+PiArCXsgLmNvbXBhdGlibGUgPSAibnV2b3RvbixtYTM1ZDEtbmFuZCIgfSwK
-Pj4gKwl7fSwKPj4gK307Cj4+ICtNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtYTM1X25maV9vZl9t
-YXRjaCk7Cj4+ICsKPj4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG1hMzVfbmFuZF9k
-cml2ZXIgPSB7Cj4+ICsJCS5kcml2ZXIgPSB7Cj4gTWVzc2VkIGluZGVudGF0aW9uLgoKSSB3aWxs
-IGZpeCBpdC4KCgoKPj4gKwkJLm5hbWUgICA9ICJtYTM1ZDEtbmFuZCIsCj4+ICsJCS5vd25lciAg
-PSBUSElTX01PRFVMRSwKPiBEcm9wLiBQbGVhc2UgZG8gbm90IHVwc3RyZWFtIHNvbWUgMTAgeWVh
-ciBvbGQgY29kZS4uLiBVc2UgcmVjZW50IGNvZGUgYXMKPiB0ZW1wbGF0ZSwgbm90IDEweW8gc3R1
-ZmYuLi4KCkkgd2lsbCByZWZlciB0byB0aGUgbmV3IGRyaXZlciBpbXBsZW1lbnRhdGlvbi4KCgoK
-PiBCZXN0IHJlZ2FyZHMsCj4gS3J6eXN6dG9mCgoKQmVzdCByZWdhcmRzLAoKSHVpLVBpbmcgQ2hl
-bgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Hui-Ping,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on linus/master v6.11-rc4 next-20240820]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Hui-Ping-Chen/dt-bindings-mtd-nuvoton-ma35d1-nand-add-new-bindings/20240819-172155
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20240819092037.110260-3-hpchen0nvt%40gmail.com
+patch subject: [PATCH v2 2/2] mtd: rawnand: nuvoton: add new driver for the Nuvoton MA35 SoC
+config: parisc-randconfig-r123-20240820 (https://download.01.org/0day-ci/archive/20240820/202408201329.v0SoF3eS-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 14.1.0
+reproduce: (https://download.01.org/0day-ci/archive/20240820/202408201329.v0SoF3eS-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408201329.v0SoF3eS-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:231:20: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:736:20: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char [usertype] *ptr @@     got unsigned char [noderef] [usertype] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:736:20: sparse:     expected unsigned char [usertype] *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:736:20: sparse:     got unsigned char [noderef] [usertype] __iomem *
+>> drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:764:22: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char *ptr @@     got char [noderef] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:764:22: sparse:     expected char *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:764:22: sparse:     got char [noderef] __iomem *
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:803:22: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char *ptr @@     got char [noderef] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:803:22: sparse:     expected char *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:803:22: sparse:     got char [noderef] __iomem *
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char [usertype] *ptr @@     got unsigned char [noderef] [usertype] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     expected unsigned char [usertype] *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     got unsigned char [noderef] [usertype] __iomem *
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char [usertype] *ptr @@     got unsigned char [noderef] [usertype] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     expected unsigned char [usertype] *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     got unsigned char [noderef] [usertype] __iomem *
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char [usertype] *ptr @@     got unsigned char [noderef] [usertype] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     expected unsigned char [usertype] *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     got unsigned char [noderef] [usertype] __iomem *
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char [usertype] *ptr @@     got unsigned char [noderef] [usertype] __iomem * @@
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     expected unsigned char [usertype] *ptr
+   drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c:506:28: sparse:     got unsigned char [noderef] [usertype] __iomem *
+
+vim +736 drivers/mtd/nand/raw/nuvoton_ma35d1_nand.c
+
+   731	
+   732	static int ma35_nand_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
+   733					      int oob_required, int page)
+   734	{
+   735		struct ma35_nand_info *nand = nand_get_controller_data(chip);
+ > 736		u8 *ptr = (u8 __iomem *)(nand->regs + MA35_NFI_REG_NANDRA0);
+   737		struct mtd_info *mtd = nand_to_mtd(chip);
+   738		u8 *ecc_calc = chip->ecc.calc_buf;
+   739	
+   740		memset((void *)ptr, 0xFF, mtd->oobsize);
+   741		memcpy((void *)ptr, (void *)chip->oob_poi, mtd->oobsize - chip->ecc.total);
+   742	
+   743		ma35_nand_command(chip, NAND_CMD_SEQIN, 0, page);
+   744		ma35_nand_dma_transfer(chip, buf, mtd->writesize, 0x1);
+   745		ma35_nand_command(chip, NAND_CMD_PAGEPROG, -1, -1);
+   746		ma35_waitfunc(chip);
+   747	
+   748		/* Copy parity code in NANDRA to calc */
+   749		memcpy((void *)ecc_calc,
+   750			(void *)(ptr + (mtd->oobsize - chip->ecc.total)),
+   751			chip->ecc.total);
+   752	
+   753		/* Copy parity code in calc to oob_poi */
+   754		memcpy((void *)(chip->oob_poi + (mtd->oobsize - chip->ecc.total)),
+   755			(void *)ecc_calc, chip->ecc.total);
+   756	
+   757		return 0;
+   758	}
+   759	
+   760	static int ma35_nand_read_page_hwecc_oob_first(struct nand_chip *chip, u8 *buf,
+   761							int oob_required, int page)
+   762	{
+   763		struct ma35_nand_info *nand = nand_get_controller_data(chip);
+ > 764		char *ptr = (char __iomem *)(nand->regs + MA35_NFI_REG_NANDRA0);
+   765		struct mtd_info *mtd = nand_to_mtd(chip);
+   766	
+   767		/* 1. read the OOB area  */
+   768		ma35_nand_command(chip, NAND_CMD_READOOB, 0, page);
+   769		ma35_nand_read_buf(chip, chip->oob_poi, mtd->oobsize);
+   770	
+   771		/* 2. copy OOB data to NANDRA for page read */
+   772		memcpy((void *)ptr, (void *)chip->oob_poi, mtd->oobsize);
+   773	
+   774		if ((*(ptr+2) != 0) && (*(ptr+3) != 0))
+   775			memset((void *)buf, 0xff, mtd->writesize);
+   776		else {
+   777			/* 3. read data from nand */
+   778			ma35_nand_command(chip, NAND_CMD_READ0, 0, page);
+   779			ma35_nand_dma_transfer(chip, buf, mtd->writesize, 0x0);
+   780	
+   781			/* 4. restore OOB data from SMRA */
+   782			memcpy((void *)chip->oob_poi, (void *)ptr, mtd->oobsize);
+   783		}
+   784	
+   785		return 0;
+   786	}
+   787	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
