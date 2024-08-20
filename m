@@ -4,154 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BD32C3DA4A
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2024 06:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D24C5320E
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2024 08:06:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sDbDNVknRp4cvn4tmqBYMPOMI+SAnk2FyfzaRfL+Ba4=; b=gSJLbVtDHJWQrP
-	V1hldLvtHOJVrYreV6W646bEs3xVtn/4jNLfo6ueyzWhdHzoMvGrlbPOXG5P9f2LS243jMmVdMmCB
-	nSLWofiDaK315N2ugE/pEuhwzBVK1B7fVJVDSLSZ7THUXwgpoer2X2vBDrSVzk2beA33Ivp+Cj3Ie
-	/kmmu4mYIQs1YQKbAJ/OSRwk7xpwU4pjo3QqrbyRg0KsFTnsa6yS3OCmUBJ0lDQMgmOZ5F5vugaQK
-	sKD1+6CaZtqd6p/NXALR8aRonh4KCitM6ApJDDIrbjeCaiM8jhDt0Ls/y5xfzeFNgJiksICcFp4UT
-	kkWZ5myDXYkNwpr/LehQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GJg6hInlCxpV1tXcGgqGfTEfq8mp1dd4fPUG8aEf5l0=; b=J+nKWsutPh6+rw
+	o1DVzQSCdU7FXmtCljN4pVELWxS86HOTYLaIB5+0372kQoTEWisRJSbCFH2/ZSbX4dsKbOd0eVKUQ
+	IYlSwqq8qnDzLQvqwiRaK7iksXcA5fp1DgjWTF2Mw+MwVoWehcxEhoaYcQ4EFBy6ogImg5GjC0uX2
+	HowMumbeCI3y8D4SVlUTd4wEMOnWi7xhOavpTfEIP94MxdTjEE0OMcwXepVQsfvPqQtaj2RsDl88J
+	chRUJ8ZwqWa7lq+iSixxir4d8o54pIxoPrj7qjCFIoA7k+NXQKGs9FKJOnwtXAh/vH9uaUh6JBtmO
+	i0Go/PBW+NvKsbcwq3KA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgIf6-000000044xk-10LR;
-	Tue, 20 Aug 2024 06:48:12 +0000
-Received: from mail-koreacentralazlp170120005.outbound.protection.outlook.com ([2a01:111:f403:c40f::5] helo=SEVP216CU002.outbound.protection.outlook.com)
+	id 1sgJt9-00000004Jkw-3Xmv;
+	Tue, 20 Aug 2024 08:06:47 +0000
+Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgIeq-000000044u7-2WSe
+	id 1sgJsD-00000004JVQ-3nZ0
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Aug 2024 06:47:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ajh382601j0bBJ+Ej5DiuCH8szNi98zYKklwKxLGGLf2AQ4fxJB/I16Owk3Pq2Knp1du4EgrB+pKZWfOpGGoKMPKI27cqwK7KcW91XpH3MhMHw16UDGwBGMSJFdQ1epEYdBlSwTbYUttws1vOUo3E9aKpsFp6upKbAvhaBZdEpXE/fv0Xhd9T402C9PWGgyt/BWvA4aUorWXFhyPa9w3v4aZL3cN31n5GiLBZMqchvdSeBzdC0YSUTEA3UV7UT88nCOedmiN8nC/o8cDxgTRnmEN9bYePQ22glDI2JRyws+OCereoRO4SaL3NjEjCuR/myE8cA/BIcd3cEppcdhzsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3Bv2Qg8hUk1/amf8atQbGIjfDjpLsk845IEQXEtvGkY=;
- b=DQcytBRJ5JuNpHe9/O3g2uytr++1lkCffLpK2TA6qNI388tkoXSftDkHbz28BShzMeJY8TYDj/sZV6MZBAim7if/mA5El58E/uOyLYPxINYK7NGNlIBlvHF9aqq1g4L4c5YG1Sq/lzh2TL/VNpjyPQdkUt3C3LVJqGdaqo1enIYwdfHwyzKaOcHzWo3iBDRYf/1rVCvD4SCHss4jZWMR22Q4YRcUKkK2HaS4UR6/FPTdW4J0kkFijYAPVA6pKPbjipUfzEPLUTEMWtoor+c9ls2/cgFZ1SqrlVBx7gf2MfbfJMqC0vptGOjOk5aqKTv1twrhpbLn5ithtOy2pf5jJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=skyhighmemory.com; dmarc=pass action=none
- header.from=skyhighmemory.com; dkim=pass header.d=skyhighmemory.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=skyhighmemory.onmicrosoft.com; s=selector1-skyhighmemory-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Bv2Qg8hUk1/amf8atQbGIjfDjpLsk845IEQXEtvGkY=;
- b=PxdvFO7Xrmo7JeknH1kp6vw4blu7mJUysawdyGXUilC10iHEH9iU57TbPDGKh9YC/OlrTc2VRAHm1NHu6MdIqPfufQ5t3i6wrXmk46aUwYGMKuxdky0t3xjf5kgWxum2qtvYrSFgbXjdP7POGihtfiLElKzAmAAzJwlyL8rmiCuWrwUHs5WAfPoJ2A+gCyPtoaLalDCLWATunYJerwIxsliLfvZqlyWRmQ4Q2zaTCzUJAf68OgnEEZs+c/9gK2pperhsb9myInvI1xfw9uo54+/N4T+/+l4b14TGWpevlQjYq90SDsUDZIsi22uVe7EsZ30DU4bDz+FEDSnIWl8unQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=skyhighmemory.com;
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM (2603:1096:101:11b::5)
- by PU4P216MB2010.KORP216.PROD.OUTLOOK.COM (2603:1096:301:131::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.25; Tue, 20 Aug
- 2024 06:47:41 +0000
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::b40e:6aa9:78cd:c4c]) by SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::b40e:6aa9:78cd:c4c%3]) with mapi id 15.20.7875.023; Tue, 20 Aug 2024
- 06:47:41 +0000
-From: KR Kim <kr.kim@skyhighmemory.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	kr.kim@skyhighmemory.com,
-	mmkurbanov@salutedevices.com,
-	broonie@kernel.org,
-	tudor.ambarus@linaro.org,
-	mika.westerberg@linux.intel.com,
-	acelan.kao@canonical.com,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	zhi.feng@skyhighmemory.com,
-	moh.sardi@skyhighmemory.com,
-	Takahiro.Kuwano@infineon.com,
-	changsub.shim@skyhighmemory.com
-Subject: [PATCH] mtd: spinand: add support for SkyHigh Memory ML-3 SPI NAND Flash family
-Date: Tue, 20 Aug 2024 15:45:47 +0900
-Message-Id: <20240820064547.5035-1-kr.kim@skyhighmemory.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: SL2PR03CA0022.apcprd03.prod.outlook.com
- (2603:1096:100:55::34) To SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:11b::5)
+	Tue, 20 Aug 2024 08:05:53 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 99CA640007;
+	Tue, 20 Aug 2024 08:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1724141144;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bSEoN+U6F77zcDOfBwap1b4cPlVZZGGjqoeECh7006g=;
+	b=WrgUVyn0vTqosot4mELnfYpx3opzwojK1I4oFxl2GnwxnfsDhsxNLJOKrV8CweVcQx6or5
+	oCfkXbbSKcGrzHVcLUt8Y/MpMciYANjGIvKesEeY0d+2D5K2n+kitLBs1Kh7B0GXyU6oXg
+	FR0MjP3BjicQ8v13zN/bAoVjtnWP2fLRERFw55QOqNiivYlbIKjTjIJfjU+X5VF3HZxHP/
+	DIzTnzCeMnPfqRAjKwRgW01a34fF+jPuhllXT4LLRFPLiekrZs0T7iWEY1XMLZLOkMAEjU
+	UPY0/0PPiRjjD8b5Jqmxy7cjH/HGFJQuVr/E+K/zYYSJUtyLmlX8ipgSqjeKXw==
+Date: Tue, 20 Aug 2024 10:05:42 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: KR Kim <kr.kim@skyhighmemory.com>
+Cc: richard@nod.at, vigneshr@ti.com, mmkurbanov@salutedevices.com,
+ broonie@kernel.org, tudor.ambarus@linaro.org,
+ mika.westerberg@linux.intel.com, acelan.kao@canonical.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ zhi.feng@skyhighmemory.com, moh.sardi@skyhighmemory.com,
+ Takahiro.Kuwano@infineon.com, changsub.shim@skyhighmemory.com
+Subject: Re: [PATCH] mtd: spinand: add support for SkyHigh Memory ML-3 SPI
+ NAND Flash family
+Message-ID: <20240820100542.31e482b3@xps-13>
+In-Reply-To: <20240820064547.5035-1-kr.kim@skyhighmemory.com>
+References: <20240820064547.5035-1-kr.kim@skyhighmemory.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SE2P216MB2102:EE_|PU4P216MB2010:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01db7dc5-5751-44c2-15cf-08dcc0e3fca9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014|52116014|921020|38350700014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Nr2q2+abgriinBL9xjgu8spXZGVGFlzfZYVoC0OPWku0/JD+dJRKr4gtOi8l?=
- =?us-ascii?Q?6VWpaP8qylyfyYJ5YZ4n2UMtzYoKo05BLs/8ILDZmnd/3eHUMG7MDkr5XILe?=
- =?us-ascii?Q?iIsGjysVan13iU7cP+I2kGta15pe3wi5l5hd6NcPL9PP4Kqf7a3m+alkMu+X?=
- =?us-ascii?Q?arLw50wD/okrD2/ft5z0kupkU0Y4wevm3mAxrPzX+KT9hETMYzmHE5m9Y/Pc?=
- =?us-ascii?Q?jqzK4j7VTR7zJHfrW6OKw7U6cQRuSpFEZ3SGcaxaZ4pDkoni2MMuZgfc51q3?=
- =?us-ascii?Q?2Bj/ArF6sf+TRk9UHyyendAKTytiruoJxCIBqbOOTPrE/s8E5ndwKCGvGqSS?=
- =?us-ascii?Q?iKYYOoSJn56osw9PqldAJ3k3ic4pKoxUlOWxZpXlv/OeboFQVVElyJKkoK8M?=
- =?us-ascii?Q?L0t8gw52VELed1HJ++wCD5mVWqtKxIRhhl5ULen0RUMaD7PB6SLlVb1p5W2o?=
- =?us-ascii?Q?E6n1bMeE3tIqnDPuz1T3xLve9WkPWCNZfNz+wZKyvh7uoB0vFdwgSMgjQN9u?=
- =?us-ascii?Q?JjZQ3LBJKyFq6ujERZS+ZYqZ6MG1HDI72jXY5pmDTpz/x/70slNKSWPL3mAZ?=
- =?us-ascii?Q?5Tg4d+KjpRx/82+O8BTFpNvlPjWXlnnmbAJCt/cP8JbWF+HJ0pH7zIVRYjT6?=
- =?us-ascii?Q?L0ICbirryo+0xwoGPQZ+3vJGrcIggtRzDqr6wDcGxA8Ds8YCheC6c2z8B321?=
- =?us-ascii?Q?P/VNX6RyVFpNT6OGzRN7Ffk2JxoEe5Yo6/HVm9Vb1zV/vFaQfmPZzLTPSkEA?=
- =?us-ascii?Q?08c2f3eySJFVry/3cNeD8KdUCnBjorbvYabtD+x/hXTu94144CwFiE1FCaP/?=
- =?us-ascii?Q?RVB7heHXJU7bLW12G7xSyE+9/84Ar+jd5D5xpkQb8JmLl/VhV36MiBcea+sB?=
- =?us-ascii?Q?BBNngpPitVjhgopjf6tMU04RSXNv4wzzXWioZZlsTOpaBgKxLTtmDMmYik6x?=
- =?us-ascii?Q?FQkliUkt6sZ63IcvpfWT6SoO5yhtr1CDmC20r4GbXfQJsn1NJlHCBfTzNVZK?=
- =?us-ascii?Q?SnG0YeFa+GNqIPEdL5fDK1/C9bkqqyMh6eKc/N62qu3cj96T4vu0/eGxgb+F?=
- =?us-ascii?Q?zJS7RzJYylLx6TykZlU/YKoDNrxviHUPa8for7y6vsmO2096TlAho7wljBa9?=
- =?us-ascii?Q?3yL9gFZbMJ6F0y9k2Mg288xnWENRHCsDNUwVltjPsynXKuJwFCwucK0Y9MPh?=
- =?us-ascii?Q?ReTG8skD8o6pYPl2exmT5+6J9cF31LwC200OWTthaAs7lM2lVIv+pUroLmwU?=
- =?us-ascii?Q?hzN6Zg3TAXX4RtPpz5oExJby/33xc4gjoyhp34HS1PP03+W7qIfecXfT56RR?=
- =?us-ascii?Q?JruTyOLBL9SmGKB8qKKBoMG4uetCP4GgxZoRWCMK8dDbmBKenIh33jFZ1Qi2?=
- =?us-ascii?Q?5y+xGXsr6U/C6XXIRTNUE02jcflBp/Z5AtP+U9Ent2eGv4SlMiF/XC1TbuVU?=
- =?us-ascii?Q?gWznLboz+vI=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SE2P216MB2102.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(52116014)(921020)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0QJMrgGkmWmGFeEP8nx/sHkYR9h5WKwqUMs8mnGrVLjwPxypkfurGLgjMZ81?=
- =?us-ascii?Q?YKrXcxodzByQu3x7dcU03Fdo4IQIuB8IZKoH0S2Vu/j8mn1UYSM3VIHH29TS?=
- =?us-ascii?Q?6jsA2l3iGcEwOKEuczRrJNOd9VQ60DbfKLcJY7YBQfMuickvd+X7fsUdaN5k?=
- =?us-ascii?Q?ukFC39iQXFQ5bZyE8F3HDThSjwSmy5bDSCKQctqc60H1OtEBnhY9F7MeRvV2?=
- =?us-ascii?Q?w0hSaabJJm3yFG8efJfNsffHdf3KwMbElzZqlpwt3MJHvZfTTTWizkNPJfHG?=
- =?us-ascii?Q?B1TxhQ+QuVcEVhrPEInca/Wz/oaglAyYmgHi5ra8hGGE68bdrO0w7WuHGE/d?=
- =?us-ascii?Q?h10803IM3GsRrTF3BcIKoLvjc9z0fQ4s2SylaxoBA68Y+oLUZWKZkFNL0BeE?=
- =?us-ascii?Q?7lQ4b8s4AUaeq73qxPudPMVtC885AYTYrl5o5YgY8uGVfAjauKIeI0gfy8S6?=
- =?us-ascii?Q?qzBEzb2TUsp2BjBOj1Uh63u+jfdQyVhW16qBqwIvGAVFEqrEo8CcC9650c5w?=
- =?us-ascii?Q?aFnPNBkAnUXhPYWDg5gngHQ1GLuxDLLn7bztmCh5oeYUWJc9D2hq6R3GEQKS?=
- =?us-ascii?Q?2uCK14BY3xvTkLmoi6hm4shTHJWMcQ4xY5It9J37xqGZM/9HQVKmwsIjIQ7l?=
- =?us-ascii?Q?0L45TE/0Z8RzRbmADtkW+YBEHKg77zf8aL/M8aeDJZWMpjQVUPCgRN5yNFXY?=
- =?us-ascii?Q?C1dmOmbni5KAyo1kWqs7oEE0gWWwhfHqa997g6guiMQB/ePUPfV1zGgVfujF?=
- =?us-ascii?Q?E0CyDoZ8gW1cpy0Pkf4IQgRwCflc9u00UdkMmolL+Q5PbA90W66majB4r+Sd?=
- =?us-ascii?Q?MwN/mubLWWKsH1TJgHELjBl4sXXc9Uqq5jJSp+IvzY2jy/ynP6gDUP+MtWUT?=
- =?us-ascii?Q?R9d7jMTIBG1hN0n8GYdi35WzHMEJQPRBhwF44fcCtxrqT/msRCpKB0b20BXI?=
- =?us-ascii?Q?AvvKqiUWgptTeAcmDrMDGzKQv1RpOCkl+nK8lzZEB7Q4jUGLTJwJHTg2ORyO?=
- =?us-ascii?Q?wQaHeEDXr1S434GBPSWdkvw7tSEOCTiRdHuQnNvRZiSsGdNW4PwEEjlKvAKJ?=
- =?us-ascii?Q?k+TaUr4UCv9Y6cNhpb2KwMpFuh00BCww9OMEuaZWqYBzbbzWkhKma98OJque?=
- =?us-ascii?Q?qOv0IXKJa7w3+zCuCClbBwjUvhqi0zEewPFfMcopocamzNoY8UtS0NKY1iga?=
- =?us-ascii?Q?3LH47+WrSvZDt1WBoiBtLardPWQTCYRigmelxyqmxkbGm5tFjWPqVWUn8FyE?=
- =?us-ascii?Q?ECUuOLPyMG4e0Jsmu5K8AjWwMSEOdzXF4ptBWV2RojPa2I1AI+/uZ3lKmVlX?=
- =?us-ascii?Q?k5+n3pFfpOejwxtPKqLO7cNKjDDv0ZPtItL+i0niz3yyBvt6eig8f2Qah8HK?=
- =?us-ascii?Q?oCn3qJbTnEMVcvOYS2v3KcLFyU8QNoZdKlrZMiGOhimreAhNk5pcl88581fP?=
- =?us-ascii?Q?autHSxdfkl2K+8WUpCDtJc5b09UJuGy1PdMLjY0vFecuK7ZEU35ms9IQ73M6?=
- =?us-ascii?Q?odankk3h35Wgc4ekilGDkMGrlceLrKZyJNo3IWeVy4rj9Wqghfihkw1vXShw?=
- =?us-ascii?Q?6JCFFAixU60L0mdxlghmSQSz0A1mBG+HPDUoyZ2gHxIFigrjRXcfLToOB7N7?=
- =?us-ascii?Q?YA=3D=3D?=
-X-OriginatorOrg: skyhighmemory.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01db7dc5-5751-44c2-15cf-08dcc0e3fca9
-X-MS-Exchange-CrossTenant-AuthSource: SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2024 06:47:41.0155
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 39b82b34-0966-49dc-81a7-5bcab7ea53c0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E2gH1R1fhVA8RfnG2TZdtX0JNa1tEfUTiHZ/PcwFLgdYKVwEmhvgBiar0s7jp5XCqUg1Xc9yqVlE+7H8D/TVKSHZsxKu+Or4L/txiN/wyNM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU4P216MB2010
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240819_234756_813997_EEDA3E4C 
-X-CRM114-Status: GOOD (  17.82  )
+X-CRM114-CacheID: sfid-20240820_010550_602730_3C26400B 
+X-CRM114-Status: GOOD (  31.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,253 +73,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch has been added to operate properly on SkyHigh memory's SPI NAND.
-This patch is derived from Takahiro's work who is author.
-
-Added:	
-	- Some patch code for the SkyHigh Memory ML-3 SPI NAND Flash family.
-Created: 
-	- skyhigh.c
-	
-Signed-off-by: KR Kim <kr.kim@skyhighmemory.com>
----
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   7 +-
- drivers/mtd/nand/spi/skyhigh.c | 146 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   3 +
- 4 files changed, 156 insertions(+), 2 deletions(-)
- create mode 100644 drivers/mtd/nand/spi/skyhigh.c
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 19cc77288ebb..1e61ab21893a 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
--spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
-+spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index e0b6715e5dfe..4a25ed49a61f 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -34,7 +34,7 @@ static int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
- 	return 0;
- }
- 
--static int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
-+int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
- {
- 	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(reg,
- 						      spinand->scratchbuf);
-@@ -196,6 +196,10 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
- static int spinand_ecc_enable(struct spinand_device *spinand,
- 			      bool enable)
- {
-+	/* SHM : always ECC On */
-+	if (spinand->flags & SPINAND_ON_DIE_ECC_MANDATORY)
-+		return 0;
-+
- 	return spinand_upd_cfg(spinand, CFG_ECC_ENABLE,
- 			       enable ? CFG_ECC_ENABLE : 0);
- }
-@@ -945,6 +949,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&paragon_spinand_manufacturer,
-+	&skyhigh_spinand_manufacturer,
- 	&toshiba_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- 	&xtx_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
-new file mode 100644
-index 000000000000..5829e8a9344b
---- /dev/null
-+++ b/drivers/mtd/nand/spi/skyhigh.c
-@@ -0,0 +1,146 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2024 SkyHigh Memory Limited
-+ *
-+ * Author: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-+ * Co-Author: KR Kim <kr.kim@skyhighmemory.com>
-+ * This patch is derived from Takahiro's work.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_SKYHIGH		0x01
-+
-+#define SKYHIGH_STATUS_ECC_1TO2_BITFLIPS	(1 << 4)
-+#define SKYHIGH_STATUS_ECC_3TO6_BITFLIPS	(2 << 4)
-+#define SKYHIGH_STATUS_ECC_UNCOR_ERROR		(3 << 4)
-+
-+#define SKYHIGH_CONFIG_PROTECT_EN	BIT(1)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 4, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int skyhigh_spinand_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = mtd->oobsize;
-+	region->length = mtd->oobsize / 2;
-+
-+	return 0;
-+}
-+
-+static int skyhigh_spinand_ooblayout_free(struct mtd_info *mtd, int section,
-+					  struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 2;
-+	region->length = mtd->oobsize - 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops skyhigh_spinand_ooblayout = {
-+	.ecc = skyhigh_spinand_ooblayout_ecc,
-+	.free = skyhigh_spinand_ooblayout_free,
-+};
-+
-+static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand, u8 status)
-+{
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case SKYHIGH_STATUS_ECC_1TO2_BITFLIPS:
-+		return 2;
-+
-+	case SKYHIGH_STATUS_ECC_3TO6_BITFLIPS:
-+		return 6;
-+
-+	case SKYHIGH_STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct spinand_info skyhigh_spinand_table[] = {
-+	SPINAND_INFO("S35ML01G301",
-+			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
-+			NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+			NAND_ECCREQ(6, 32),
-+			SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+						&write_cache_variants,
-+						&update_cache_variants),
-+			SPINAND_ON_DIE_ECC_MANDATORY,
-+			SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+			skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML01G300",
-+			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
-+			NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+			NAND_ECCREQ(6, 32),
-+			SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					&write_cache_variants,
-+					&update_cache_variants),
-+			SPINAND_ON_DIE_ECC_MANDATORY,
-+			SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+			skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML02G300",
-+			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
-+			NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-+			NAND_ECCREQ(6, 32),
-+			SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					&write_cache_variants,
-+					&update_cache_variants),
-+			SPINAND_ON_DIE_ECC_MANDATORY,
-+			SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+			skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML04G300",
-+			SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
-+			NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
-+			NAND_ECCREQ(6, 32),
-+			SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					&write_cache_variants,
-+					&update_cache_variants),
-+			SPINAND_ON_DIE_ECC_MANDATORY,
-+			SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+			skyhigh_spinand_ecc_get_status)),
-+};
-+
-+static int skyhigh_spinand_init(struct spinand_device *spinand)
-+{
-+	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK,
-+				SKYHIGH_CONFIG_PROTECT_EN);
-+}
-+
-+static const struct spinand_manufacturer_ops skyhigh_spinand_manuf_ops = {
-+	.init = skyhigh_spinand_init,
-+};
-+
-+const struct spinand_manufacturer skyhigh_spinand_manufacturer = {
-+	.id = SPINAND_MFR_SKYHIGH,
-+	.name = "SkyHigh",
-+	.chips = skyhigh_spinand_table,
-+	.nchips = ARRAY_SIZE(skyhigh_spinand_table),
-+	.ops = &skyhigh_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 5c19ead60499..421c3ce704e7 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -268,6 +268,7 @@ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer paragon_spinand_manufacturer;
-+extern const struct spinand_manufacturer skyhigh_spinand_manufacturer;
- extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
- extern const struct spinand_manufacturer xtx_spinand_manufacturer;
-@@ -312,6 +313,7 @@ struct spinand_ecc_info {
- 
- #define SPINAND_HAS_QE_BIT		BIT(0)
- #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
-+#define SPINAND_ON_DIE_ECC_MANDATORY	BIT(2)
- 
- /**
-  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
-@@ -518,5 +520,6 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
-+int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val);
- 
- #endif /* __LINUX_MTD_SPINAND_H */
--- 
-2.43.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgprci5raW1Ac2t5aGlnaG1lbW9yeS5jb20gd3JvdGUgb24gVHVlLCAyMCBBdWcgMjAyNCAx
+NTo0NTo0NyArMDkwMDoKCj4gVGhpcyBwYXRjaCBoYXMgYmVlbiBhZGRlZCB0byBvcGVyYXRlIHBy
+b3Blcmx5IG9uIFNreUhpZ2ggbWVtb3J5J3MgU1BJIE5BTkQuCj4gVGhpcyBwYXRjaCBpcyBkZXJp
+dmVkIGZyb20gVGFrYWhpcm8ncyB3b3JrIHdobyBpcyBhdXRob3IuCj4gCj4gQWRkZWQ6CQo+IAkt
+IFNvbWUgcGF0Y2ggY29kZSBmb3IgdGhlIFNreUhpZ2ggTWVtb3J5IE1MLTMgU1BJIE5BTkQgRmxh
+c2ggZmFtaWx5Lgo+IENyZWF0ZWQ6IAo+IAktIHNreWhpZ2guYwoKVGhpcyBpcyBub3QgYSBjb3Jy
+ZWN0IGNvbW1pdCBsb2csIHBsZWFzZSByZWFkIHRoZSBzdWJtaXR0aW5nIHByb2Nlc3MKZG9jLgoK
+PiAJCj4gU2lnbmVkLW9mZi1ieTogS1IgS2ltIDxrci5raW1Ac2t5aGlnaG1lbW9yeS5jb20+Cj4g
+LS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlICB8ICAgMiArLQo+ICBkcml2ZXJz
+L210ZC9uYW5kL3NwaS9jb3JlLmMgICAgfCAgIDcgKy0KPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkv
+c2t5aGlnaC5jIHwgMTQ2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICBpbmNs
+dWRlL2xpbnV4L210ZC9zcGluYW5kLmggICAgfCAgIDMgKwo+ICA0IGZpbGVzIGNoYW5nZWQsIDE1
+NiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
+dmVycy9tdGQvbmFuZC9zcGkvc2t5aGlnaC5jCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
+L25hbmQvc3BpL01ha2VmaWxlIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUKPiBpbmRl
+eCAxOWNjNzcyODhlYmIuLjFlNjFhYjIxODkzYSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9u
+YW5kL3NwaS9NYWtlZmlsZQo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlCj4g
+QEAgLTEsNCArMSw0IEBACj4gICMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPiAg
+c3BpbmFuZC1vYmpzIDo9IGNvcmUubyBhbGxpYW5jZW1lbW9yeS5vIGF0by5vIGVzbXQubyBmb3Jl
+c2VlLm8gZ2lnYWRldmljZS5vIG1hY3Jvbml4Lm8KPiAtc3BpbmFuZC1vYmpzICs9IG1pY3Jvbi5v
+IHBhcmFnb24ubyB0b3NoaWJhLm8gd2luYm9uZC5vIHh0eC5vCj4gK3NwaW5hbmQtb2JqcyArPSBt
+aWNyb24ubyBwYXJhZ29uLm8gc2t5aGlnaC5vIHRvc2hpYmEubyB3aW5ib25kLm8geHR4Lm8KPiAg
+b2JqLSQoQ09ORklHX01URF9TUElfTkFORCkgKz0gc3BpbmFuZC5vCj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+
+IGluZGV4IGUwYjY3MTVlNWRmZS4uNGEyNWVkNDlhNjFmIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
+bXRkL25hbmQvc3BpL2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+
+IEBAIC0zNCw3ICszNCw3IEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9yZWFkX3JlZ19vcChzdHJ1Y3Qg
+c3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsIHU4IHJlZywgdTggKnZhbCkKPiAgCXJldHVybiAwOwo+
+ICB9Cj4gIAo+IC1zdGF0aWMgaW50IHNwaW5hbmRfd3JpdGVfcmVnX29wKHN0cnVjdCBzcGluYW5k
+X2RldmljZSAqc3BpbmFuZCwgdTggcmVnLCB1OCB2YWwpCj4gK2ludCBzcGluYW5kX3dyaXRlX3Jl
+Z19vcChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsIHU4IHJlZywgdTggdmFsKQoKVGhp
+cyBzaG91bGQgYmUgZG9uZSBpbiBhIHByZWxpbWluYXJ5IHBhdGNoLgoKPiAgewo+ICAJc3RydWN0
+IHNwaV9tZW1fb3Agb3AgPSBTUElOQU5EX1NFVF9GRUFUVVJFX09QKHJlZywKPiAgCQkJCQkJICAg
+ICAgc3BpbmFuZC0+c2NyYXRjaGJ1Zik7Cj4gQEAgLTE5Niw2ICsxOTYsMTAgQEAgc3RhdGljIGlu
+dCBzcGluYW5kX2luaXRfcXVhZF9lbmFibGUoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5k
+KQo+ICBzdGF0aWMgaW50IHNwaW5hbmRfZWNjX2VuYWJsZShzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ug
+KnNwaW5hbmQsCj4gIAkJCSAgICAgIGJvb2wgZW5hYmxlKQo+ICB7Cj4gKwkvKiBTSE0gOiBhbHdh
+eXMgRUNDIE9uICovCj4gKwlpZiAoc3BpbmFuZC0+ZmxhZ3MgJiBTUElOQU5EX09OX0RJRV9FQ0Nf
+TUFOREFUT1JZKQo+ICsJCXJldHVybiAwOwoKRG8geW91IGhhdmUgYSBkYXRhc2hlZXQ/IENhbiB3
+ZSByZWFsbHkgbm90IGRpc2FibGUgdGhlIGNvcnJlY3Rpb24/Cgo+ICsKPiAgCXJldHVybiBzcGlu
+YW5kX3VwZF9jZmcoc3BpbmFuZCwgQ0ZHX0VDQ19FTkFCTEUsCj4gIAkJCSAgICAgICBlbmFibGUg
+PyBDRkdfRUNDX0VOQUJMRSA6IDApOwoKSG93IGNhbiB0aGlzIGJlIHVzZWZ1bCBpZiB0aGUgZW5n
+aW5lIGNhbm5vdCBiZSBkaXNhYmxlZD8KCj4gIH0KPiBAQCAtOTQ1LDYgKzk0OSw3IEBAIHN0YXRp
+YyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgKnNwaW5hbmRfbWFudWZhY3R1cmVy
+c1tdID0gewo+ICAJJm1hY3Jvbml4X3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJm1pY3Jvbl9z
+cGluYW5kX21hbnVmYWN0dXJlciwKPiAgCSZwYXJhZ29uX3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+
+ICsJJnNreWhpZ2hfc3BpbmFuZF9tYW51ZmFjdHVyZXIsCj4gIAkmdG9zaGliYV9zcGluYW5kX21h
+bnVmYWN0dXJlciwKPiAgCSZ3aW5ib25kX3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJnh0eF9z
+cGluYW5kX21hbnVmYWN0dXJlciwKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkv
+c2t5aGlnaC5jIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvc2t5aGlnaC5jCj4gbmV3IGZpbGUgbW9k
+ZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLjU4MjllOGE5MzQ0Ygo+IC0tLSAvZGV2L251
+bGwKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9za3loaWdoLmMKPiBAQCAtMCwwICsxLDE0
+NiBAQAo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMAo+ICsvKgo+ICsgKiBD
+b3B5cmlnaHQgKGMpIDIwMjQgU2t5SGlnaCBNZW1vcnkgTGltaXRlZAo+ICsgKgo+ICsgKiBBdXRo
+b3I6IFRha2FoaXJvIEt1d2FubyA8dGFrYWhpcm8ua3V3YW5vQGluZmluZW9uLmNvbT4KPiArICog
+Q28tQXV0aG9yOiBLUiBLaW0gPGtyLmtpbUBza3loaWdobWVtb3J5LmNvbT4KPiArICogVGhpcyBw
+YXRjaCBpcyBkZXJpdmVkIGZyb20gVGFrYWhpcm8ncyB3b3JrLgo+ICsgKi8KPiArCj4gKyNpbmNs
+dWRlIDxsaW51eC9kZXZpY2UuaD4KPiArI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPgo+ICsjaW5j
+bHVkZSA8bGludXgvbXRkL3NwaW5hbmQuaD4KPiArCj4gKyNkZWZpbmUgU1BJTkFORF9NRlJfU0tZ
+SElHSAkJMHgwMQo+ICsKPiArI2RlZmluZSBTS1lISUdIX1NUQVRVU19FQ0NfMVRPMl9CSVRGTElQ
+UwkoMSA8PCA0KQo+ICsjZGVmaW5lIFNLWUhJR0hfU1RBVFVTX0VDQ18zVE82X0JJVEZMSVBTCSgy
+IDw8IDQpCj4gKyNkZWZpbmUgU0tZSElHSF9TVEFUVVNfRUNDX1VOQ09SX0VSUk9SCQkoMyA8PCA0
+KQo+ICsKPiArI2RlZmluZSBTS1lISUdIX0NPTkZJR19QUk9URUNUX0VOCUJJVCgxKQo+ICsKPiAr
+c3RhdGljIFNQSU5BTkRfT1BfVkFSSUFOVFMocmVhZF9jYWNoZV92YXJpYW50cywKPiArCQlTUElO
+QU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1FVQURJT19PUCgwLCA0LCBOVUxMLCAwKSwKPiArCQlT
+UElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1g0X09QKDAsIDEsIE5VTEwsIDApLAo+ICsJCVNQ
+SU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfRFVBTElPX09QKDAsIDIsIE5VTEwsIDApLAo+ICsJ
+CVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfWDJfT1AoMCwgMSwgTlVMTCwgMCksCj4gKwkJ
+U1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUCh0cnVlLCAwLCAxLCBOVUxMLCAwKSwKPiAr
+CQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX09QKGZhbHNlLCAwLCAxLCBOVUxMLCAwKSk7
+Cj4gKwo+ICtzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh3cml0ZV9jYWNoZV92YXJpYW50cywK
+PiArCQlTUElOQU5EX1BST0dfTE9BRF9YNCh0cnVlLCAwLCBOVUxMLCAwKSwKPiArCQlTUElOQU5E
+X1BST0dfTE9BRCh0cnVlLCAwLCBOVUxMLCAwKSk7Cj4gKwo+ICtzdGF0aWMgU1BJTkFORF9PUF9W
+QVJJQU5UUyh1cGRhdGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJU1BJTkFORF9QUk9HX0xPQURfWDQo
+ZmFsc2UsIDAsIE5VTEwsIDApLAo+ICsJCVNQSU5BTkRfUFJPR19MT0FEKGZhbHNlLCAwLCBOVUxM
+LCAwKSk7Cj4gKwo+ICtzdGF0aWMgaW50IHNreWhpZ2hfc3BpbmFuZF9vb2JsYXlvdXRfZWNjKHN0
+cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwKPiArCQkJCQkgc3RydWN0IG10ZF9vb2Jf
+cmVnaW9uICpyZWdpb24pCj4gK3sKPiArCWlmIChzZWN0aW9uKQo+ICsJCXJldHVybiAtRVJBTkdF
+Owo+ICsKPiArCXJlZ2lvbi0+b2Zmc2V0ID0gbXRkLT5vb2JzaXplOwoKVGhhdCdzIG5vdCBwb3Nz
+aWJsZQoKPiArCXJlZ2lvbi0+bGVuZ3RoID0gbXRkLT5vb2JzaXplIC8gMjsKPiArCj4gKwlyZXR1
+cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGludCBza3loaWdoX3NwaW5hbmRfb29ibGF5b3V0X2Zy
+ZWUoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAo+ICsJCQkJCSAgc3RydWN0IG10
+ZF9vb2JfcmVnaW9uICpyZWdpb24pCj4gK3sKPiArCWlmIChzZWN0aW9uKQo+ICsJCXJldHVybiAt
+RVJBTkdFOwo+ICsKPiArCXJlZ2lvbi0+b2Zmc2V0ID0gMjsKPiArCXJlZ2lvbi0+bGVuZ3RoID0g
+bXRkLT5vb2JzaXplIC0gMjsKCkFyZW4ndCB0aGUgRUNDIGJ5dGVzIHZpc2libGU/CihpZiBzbywg
+YSBjb21tZW50IGlzIG5lZWRlZCkKCj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gK3N0YXRp
+YyBjb25zdCBzdHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgc2t5aGlnaF9zcGluYW5kX29vYmxheW91
+dCA9IHsKPiArCS5lY2MgPSBza3loaWdoX3NwaW5hbmRfb29ibGF5b3V0X2VjYywKPiArCS5mcmVl
+ID0gc2t5aGlnaF9zcGluYW5kX29vYmxheW91dF9mcmVlLAo+ICt9Owo+ICsKPiArc3RhdGljIGlu
+dCBza3loaWdoX3NwaW5hbmRfZWNjX2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
+cGluYW5kLCB1OCBzdGF0dXMpCj4gK3sKPiArCXN3aXRjaCAoc3RhdHVzICYgU1RBVFVTX0VDQ19N
+QVNLKSB7Cj4gKwljYXNlIFNUQVRVU19FQ0NfTk9fQklURkxJUFM6Cj4gKwkJcmV0dXJuIDA7Cj4g
+Kwo+ICsJY2FzZSBTS1lISUdIX1NUQVRVU19FQ0NfMVRPMl9CSVRGTElQUzoKPiArCQlyZXR1cm4g
+MjsKPiArCj4gKwljYXNlIFNLWUhJR0hfU1RBVFVTX0VDQ18zVE82X0JJVEZMSVBTOgo+ICsJCXJl
+dHVybiA2Owo+ICsKPiArCWNhc2UgU0tZSElHSF9TVEFUVVNfRUNDX1VOQ09SX0VSUk9SOgo+ICsJ
+CXJldHVybiAtRUJBRE1TRzsKPiArCj4gKwlkZWZhdWx0Ogo+ICsJCXJldHVybiAtRUlOVkFMOwo+
+ICsJfQo+ICt9Cj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyBza3loaWdo
+X3NwaW5hbmRfdGFibGVbXSA9IHsKPiArCVNQSU5BTkRfSU5GTygiUzM1TUwwMUczMDEiLAo+ICsJ
+CQlTUElOQU5EX0lEKFNQSU5BTkRfUkVBRElEX01FVEhPRF9PUENPREVfRFVNTVksIDB4MTUpLAo+
+ICsJCQlOQU5EX01FTU9SRygxLCAyMDQ4LCA2NCwgNjQsIDEwMjQsIDIwLCAxLCAxLCAxKSwKPiAr
+CQkJTkFORF9FQ0NSRVEoNiwgMzIpLAo+ICsJCQlTUElOQU5EX0lORk9fT1BfVkFSSUFOVFMoJnJl
+YWRfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJCSZ3cml0ZV9jYWNoZV92YXJpYW50cywKPiArCQkJ
+CQkJJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gKwkJCVNQSU5BTkRfT05fRElFX0VDQ19NQU5E
+QVRPUlksCj4gKwkJCVNQSU5BTkRfRUNDSU5GTygmc2t5aGlnaF9zcGluYW5kX29vYmxheW91dCwK
+PiArCQkJc2t5aGlnaF9zcGluYW5kX2VjY19nZXRfc3RhdHVzKSksCgpJbmRlbnRhdGlvbiAoc2Ft
+ZSBiZWxvdykKCj4gKwlTUElOQU5EX0lORk8oIlMzNU1MMDFHMzAwIiwKPiArCQkJU1BJTkFORF9J
+RChTUElOQU5EX1JFQURJRF9NRVRIT0RfT1BDT0RFX0RVTU1ZLCAweDE0KSwKPiArCQkJTkFORF9N
+RU1PUkcoMSwgMjA0OCwgMTI4LCA2NCwgMTAyNCwgMjAsIDEsIDEsIDEpLAo+ICsJCQlOQU5EX0VD
+Q1JFUSg2LCAzMiksCj4gKwkJCVNQSU5BTkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92
+YXJpYW50cywKPiArCQkJCQkmd3JpdGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJJnVwZGF0ZV9j
+YWNoZV92YXJpYW50cyksCj4gKwkJCVNQSU5BTkRfT05fRElFX0VDQ19NQU5EQVRPUlksCj4gKwkJ
+CVNQSU5BTkRfRUNDSU5GTygmc2t5aGlnaF9zcGluYW5kX29vYmxheW91dCwKPiArCQkJc2t5aGln
+aF9zcGluYW5kX2VjY19nZXRfc3RhdHVzKSksCj4gKwlTUElOQU5EX0lORk8oIlMzNU1MMDJHMzAw
+IiwKPiArCQkJU1BJTkFORF9JRChTUElOQU5EX1JFQURJRF9NRVRIT0RfT1BDT0RFX0RVTU1ZLCAw
+eDI1KSwKPiArCQkJTkFORF9NRU1PUkcoMSwgMjA0OCwgMTI4LCA2NCwgMjA0OCwgNDAsIDIsIDEs
+IDEpLAo+ICsJCQlOQU5EX0VDQ1JFUSg2LCAzMiksCj4gKwkJCVNQSU5BTkRfSU5GT19PUF9WQVJJ
+QU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiArCQkJCQkmd3JpdGVfY2FjaGVfdmFyaWFudHMs
+Cj4gKwkJCQkJJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gKwkJCVNQSU5BTkRfT05fRElFX0VD
+Q19NQU5EQVRPUlksCj4gKwkJCVNQSU5BTkRfRUNDSU5GTygmc2t5aGlnaF9zcGluYW5kX29vYmxh
+eW91dCwKPiArCQkJc2t5aGlnaF9zcGluYW5kX2VjY19nZXRfc3RhdHVzKSksCj4gKwlTUElOQU5E
+X0lORk8oIlMzNU1MMDRHMzAwIiwKPiArCQkJU1BJTkFORF9JRChTUElOQU5EX1JFQURJRF9NRVRI
+T0RfT1BDT0RFX0RVTU1ZLCAweDM1KSwKPiArCQkJTkFORF9NRU1PUkcoMSwgMjA0OCwgMTI4LCA2
+NCwgNDA5NiwgODAsIDIsIDEsIDEpLAo+ICsJCQlOQU5EX0VDQ1JFUSg2LCAzMiksCj4gKwkJCVNQ
+SU5BTkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiArCQkJCQkmd3Jp
+dGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gKwkJ
+CVNQSU5BTkRfT05fRElFX0VDQ19NQU5EQVRPUlksCj4gKwkJCVNQSU5BTkRfRUNDSU5GTygmc2t5
+aGlnaF9zcGluYW5kX29vYmxheW91dCwKPiArCQkJc2t5aGlnaF9zcGluYW5kX2VjY19nZXRfc3Rh
+dHVzKSksCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IHNreWhpZ2hfc3BpbmFuZF9pbml0KHN0cnVj
+dCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKPiArewo+ICsJcmV0dXJuIHNwaW5hbmRfd3JpdGVf
+cmVnX29wKHNwaW5hbmQsIFJFR19CTE9DS19MT0NLLAo+ICsJCQkJU0tZSElHSF9DT05GSUdfUFJP
+VEVDVF9FTik7Cj4gK30KPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFj
+dHVyZXJfb3BzIHNreWhpZ2hfc3BpbmFuZF9tYW51Zl9vcHMgPSB7Cj4gKwkuaW5pdCA9IHNreWhp
+Z2hfc3BpbmFuZF9pbml0LAo+ICt9Owo+ICsKPiArY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZh
+Y3R1cmVyIHNreWhpZ2hfc3BpbmFuZF9tYW51ZmFjdHVyZXIgPSB7Cj4gKwkuaWQgPSBTUElOQU5E
+X01GUl9TS1lISUdILAo+ICsJLm5hbWUgPSAiU2t5SGlnaCIsCj4gKwkuY2hpcHMgPSBza3loaWdo
+X3NwaW5hbmRfdGFibGUsCj4gKwkubmNoaXBzID0gQVJSQVlfU0laRShza3loaWdoX3NwaW5hbmRf
+dGFibGUpLAo+ICsJLm9wcyA9ICZza3loaWdoX3NwaW5hbmRfbWFudWZfb3BzLAo+ICt9Owo+IGRp
+ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmggYi9pbmNsdWRlL2xpbnV4L210
+ZC9zcGluYW5kLmgKPiBpbmRleCA1YzE5ZWFkNjA0OTkuLjQyMWMzY2U3MDRlNyAxMDA2NDQKPiAt
+LS0gYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4L210
+ZC9zcGluYW5kLmgKPiBAQCAtMjY4LDYgKzI2OCw3IEBAIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3Bp
+bmFuZF9tYW51ZmFjdHVyZXIgZ2lnYWRldmljZV9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0
+ZXJuIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBtYWNyb25peF9zcGluYW5kX21h
+bnVmYWN0dXJlcjsKPiAgZXh0ZXJuIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBt
+aWNyb25fc3BpbmFuZF9tYW51ZmFjdHVyZXI7Cj4gIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFu
+ZF9tYW51ZmFjdHVyZXIgcGFyYWdvbl9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiArZXh0ZXJuIGNv
+bnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBza3loaWdoX3NwaW5hbmRfbWFudWZhY3R1
+cmVyOwo+ICBleHRlcm4gY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIHRvc2hpYmFf
+c3BpbmFuZF9tYW51ZmFjdHVyZXI7Cj4gIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51
+ZmFjdHVyZXIgd2luYm9uZF9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0ZXJuIGNvbnN0IHN0
+cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciB4dHhfc3BpbmFuZF9tYW51ZmFjdHVyZXI7Cj4gQEAg
+LTMxMiw2ICszMTMsNyBAQCBzdHJ1Y3Qgc3BpbmFuZF9lY2NfaW5mbyB7Cj4gIAo+ICAjZGVmaW5l
+IFNQSU5BTkRfSEFTX1FFX0JJVAkJQklUKDApCj4gICNkZWZpbmUgU1BJTkFORF9IQVNfQ1JfRkVB
+VF9CSVQJCUJJVCgxKQo+ICsjZGVmaW5lIFNQSU5BTkRfT05fRElFX0VDQ19NQU5EQVRPUlkJQklU
+KDIpCj4gIAo+ICAvKioKPiAgICogc3RydWN0IHNwaW5hbmRfb25kaWVfZWNjX2NvbmYgLSBwcml2
+YXRlIFNQSS1OQU5EIG9uLWRpZSBFQ0MgZW5naW5lIHN0cnVjdHVyZQo+IEBAIC01MTgsNSArNTIw
+LDYgQEAgaW50IHNwaW5hbmRfbWF0Y2hfYW5kX2luaXQoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
+cGluYW5kLAo+ICAKPiAgaW50IHNwaW5hbmRfdXBkX2NmZyhzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ug
+KnNwaW5hbmQsIHU4IG1hc2ssIHU4IHZhbCk7Cj4gIGludCBzcGluYW5kX3NlbGVjdF90YXJnZXQo
+c3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kLCB1bnNpZ25lZCBpbnQgdGFyZ2V0KTsKPiAr
+aW50IHNwaW5hbmRfd3JpdGVfcmVnX29wKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwg
+dTggcmVnLCB1OCB2YWwpOwo+ICAKPiAgI2VuZGlmIC8qIF9fTElOVVhfTVREX1NQSU5BTkRfSCAq
+LwoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
