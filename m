@@ -4,64 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D24C5320E
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2024 08:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 954D3C5320E
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Aug 2024 10:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GJg6hInlCxpV1tXcGgqGfTEfq8mp1dd4fPUG8aEf5l0=; b=J+nKWsutPh6+rw
-	o1DVzQSCdU7FXmtCljN4pVELWxS86HOTYLaIB5+0372kQoTEWisRJSbCFH2/ZSbX4dsKbOd0eVKUQ
-	IYlSwqq8qnDzLQvqwiRaK7iksXcA5fp1DgjWTF2Mw+MwVoWehcxEhoaYcQ4EFBy6ogImg5GjC0uX2
-	HowMumbeCI3y8D4SVlUTd4wEMOnWi7xhOavpTfEIP94MxdTjEE0OMcwXepVQsfvPqQtaj2RsDl88J
-	chRUJ8ZwqWa7lq+iSixxir4d8o54pIxoPrj7qjCFIoA7k+NXQKGs9FKJOnwtXAh/vH9uaUh6JBtmO
-	i0Go/PBW+NvKsbcwq3KA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VFm5T3xDaCz2OG9MPR5jL7VGe7e2UBa82I0XjawFG+M=; b=MHoM450nptLHDo
+	m1OsT9I8zrwhVKA+zlYM/Ap/+ZgOWAlSOLhGhnK6SLgy16soEeclN+s5wRClTAzCNI3JZPr7AKYmE
+	HNh7Dn/uWD/KbTJPKBnrYJNvzB5ZBo3DPtilysie0wCgibHrc9BBAOgoT+40eKDU3gwk/Wgn37Mzv
+	DmlKXC6Nmu44d6gR5Twd1vm+pzX58ZJz1qua0iNibtfx61nu9zd9IMUDJdr8C83vCXlmRR3Arb1HS
+	QEv7of4ZkCv914qNEuU7J3VBKOpuAT7s2wvcNrx3NMTGTtLBRgU6FoRhV6CGAz66nxAR2cWCr0Vfe
+	IGwuZChbOUI6WhydcyUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgJt9-00000004Jkw-3Xmv;
-	Tue, 20 Aug 2024 08:06:47 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1sgMVs-00000004uiy-37Jf;
+	Tue, 20 Aug 2024 10:54:56 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgJsD-00000004JVQ-3nZ0
+	id 1sgMKc-00000004rPe-2lGi
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Aug 2024 08:05:53 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 99CA640007;
-	Tue, 20 Aug 2024 08:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1724141144;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bSEoN+U6F77zcDOfBwap1b4cPlVZZGGjqoeECh7006g=;
-	b=WrgUVyn0vTqosot4mELnfYpx3opzwojK1I4oFxl2GnwxnfsDhsxNLJOKrV8CweVcQx6or5
-	oCfkXbbSKcGrzHVcLUt8Y/MpMciYANjGIvKesEeY0d+2D5K2n+kitLBs1Kh7B0GXyU6oXg
-	FR0MjP3BjicQ8v13zN/bAoVjtnWP2fLRERFw55QOqNiivYlbIKjTjIJfjU+X5VF3HZxHP/
-	DIzTnzCeMnPfqRAjKwRgW01a34fF+jPuhllXT4LLRFPLiekrZs0T7iWEY1XMLZLOkMAEjU
-	UPY0/0PPiRjjD8b5Jqmxy7cjH/HGFJQuVr/E+K/zYYSJUtyLmlX8ipgSqjeKXw==
-Date: Tue, 20 Aug 2024 10:05:42 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: KR Kim <kr.kim@skyhighmemory.com>
-Cc: richard@nod.at, vigneshr@ti.com, mmkurbanov@salutedevices.com,
- broonie@kernel.org, tudor.ambarus@linaro.org,
- mika.westerberg@linux.intel.com, acelan.kao@canonical.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- zhi.feng@skyhighmemory.com, moh.sardi@skyhighmemory.com,
- Takahiro.Kuwano@infineon.com, changsub.shim@skyhighmemory.com
-Subject: Re: [PATCH] mtd: spinand: add support for SkyHigh Memory ML-3 SPI
- NAND Flash family
-Message-ID: <20240820100542.31e482b3@xps-13>
-In-Reply-To: <20240820064547.5035-1-kr.kim@skyhighmemory.com>
-References: <20240820064547.5035-1-kr.kim@skyhighmemory.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	Tue, 20 Aug 2024 10:43:20 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47K7Bmnw019356;
+	Tue, 20 Aug 2024 10:42:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=Ws2OI5JtKlKDH5Gm57dHFO
+	eCu4MHt4lrEht93hnZ5F8=; b=SK9nKNq102mubTNqJ7LlQ58ljPJe9uyWob9Wme
+	6dWFQYYDI9J5MbQn6Lhfd8ipkywvKmTs8xEhgIj66XCqHjkq1tUWpCvtlO6XzumD
+	pREcUhnm4TLETvT4YPW1m30ZDXZI1u5eaBMw5Lo/9rqbToc3gypKxSEUfuoGMHxU
+	pUAsVpMGy03xFsO9OojBdk1m4MXHeSqUtOJsLtDtArus0b7qahn1hGYuNw0d9AfH
+	WQsG88lWydpM9U3WsGJCMo+79T1+T6n/28729By6hK1CjfghG65LtnxJmtdzELjo
+	ZXZzsx8REC31sdz4omOnbtuQWAMS9GEW5bCF9YnyNJc3GwnA==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 414phv8nqx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 10:42:58 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 47KAgwc6023233
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 10:42:58 GMT
+Received: from hu-mdalam-blr.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Tue, 20 Aug 2024 03:42:53 -0700
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: <broonie@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konradybcio@kernel.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <esben@geanix.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>
+Subject: [PATCH v8 0/8] Add QPIC SPI NAND driver
+Date: Tue, 20 Aug 2024 16:12:31 +0530
+Message-ID: <20240820104239.1774600-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: cLlzMHxZWl4HAxp7V-h0wfJhjfNp8lXo
+X-Proofpoint-GUID: cLlzMHxZWl4HAxp7V-h0wfJhjfNp8lXo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-20_09,2024-08-19_03,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1011 adultscore=0 mlxlogscore=697 spamscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408200079
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240820_010550_602730_3C26400B 
-X-CRM114-Status: GOOD (  31.15  )
+X-CRM114-CacheID: sfid-20240820_034318_730423_8D764CEE 
+X-CRM114-Status: GOOD (  12.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,173 +94,121 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgprci5raW1Ac2t5aGlnaG1lbW9yeS5jb20gd3JvdGUgb24gVHVlLCAyMCBBdWcgMjAyNCAx
-NTo0NTo0NyArMDkwMDoKCj4gVGhpcyBwYXRjaCBoYXMgYmVlbiBhZGRlZCB0byBvcGVyYXRlIHBy
-b3Blcmx5IG9uIFNreUhpZ2ggbWVtb3J5J3MgU1BJIE5BTkQuCj4gVGhpcyBwYXRjaCBpcyBkZXJp
-dmVkIGZyb20gVGFrYWhpcm8ncyB3b3JrIHdobyBpcyBhdXRob3IuCj4gCj4gQWRkZWQ6CQo+IAkt
-IFNvbWUgcGF0Y2ggY29kZSBmb3IgdGhlIFNreUhpZ2ggTWVtb3J5IE1MLTMgU1BJIE5BTkQgRmxh
-c2ggZmFtaWx5Lgo+IENyZWF0ZWQ6IAo+IAktIHNreWhpZ2guYwoKVGhpcyBpcyBub3QgYSBjb3Jy
-ZWN0IGNvbW1pdCBsb2csIHBsZWFzZSByZWFkIHRoZSBzdWJtaXR0aW5nIHByb2Nlc3MKZG9jLgoK
-PiAJCj4gU2lnbmVkLW9mZi1ieTogS1IgS2ltIDxrci5raW1Ac2t5aGlnaG1lbW9yeS5jb20+Cj4g
-LS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlICB8ICAgMiArLQo+ICBkcml2ZXJz
-L210ZC9uYW5kL3NwaS9jb3JlLmMgICAgfCAgIDcgKy0KPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkv
-c2t5aGlnaC5jIHwgMTQ2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICBpbmNs
-dWRlL2xpbnV4L210ZC9zcGluYW5kLmggICAgfCAgIDMgKwo+ICA0IGZpbGVzIGNoYW5nZWQsIDE1
-NiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9tdGQvbmFuZC9zcGkvc2t5aGlnaC5jCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L25hbmQvc3BpL01ha2VmaWxlIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUKPiBpbmRl
-eCAxOWNjNzcyODhlYmIuLjFlNjFhYjIxODkzYSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9u
-YW5kL3NwaS9NYWtlZmlsZQo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlCj4g
-QEAgLTEsNCArMSw0IEBACj4gICMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPiAg
-c3BpbmFuZC1vYmpzIDo9IGNvcmUubyBhbGxpYW5jZW1lbW9yeS5vIGF0by5vIGVzbXQubyBmb3Jl
-c2VlLm8gZ2lnYWRldmljZS5vIG1hY3Jvbml4Lm8KPiAtc3BpbmFuZC1vYmpzICs9IG1pY3Jvbi5v
-IHBhcmFnb24ubyB0b3NoaWJhLm8gd2luYm9uZC5vIHh0eC5vCj4gK3NwaW5hbmQtb2JqcyArPSBt
-aWNyb24ubyBwYXJhZ29uLm8gc2t5aGlnaC5vIHRvc2hpYmEubyB3aW5ib25kLm8geHR4Lm8KPiAg
-b2JqLSQoQ09ORklHX01URF9TUElfTkFORCkgKz0gc3BpbmFuZC5vCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+
-IGluZGV4IGUwYjY3MTVlNWRmZS4uNGEyNWVkNDlhNjFmIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
-bXRkL25hbmQvc3BpL2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+
-IEBAIC0zNCw3ICszNCw3IEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9yZWFkX3JlZ19vcChzdHJ1Y3Qg
-c3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsIHU4IHJlZywgdTggKnZhbCkKPiAgCXJldHVybiAwOwo+
-ICB9Cj4gIAo+IC1zdGF0aWMgaW50IHNwaW5hbmRfd3JpdGVfcmVnX29wKHN0cnVjdCBzcGluYW5k
-X2RldmljZSAqc3BpbmFuZCwgdTggcmVnLCB1OCB2YWwpCj4gK2ludCBzcGluYW5kX3dyaXRlX3Jl
-Z19vcChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsIHU4IHJlZywgdTggdmFsKQoKVGhp
-cyBzaG91bGQgYmUgZG9uZSBpbiBhIHByZWxpbWluYXJ5IHBhdGNoLgoKPiAgewo+ICAJc3RydWN0
-IHNwaV9tZW1fb3Agb3AgPSBTUElOQU5EX1NFVF9GRUFUVVJFX09QKHJlZywKPiAgCQkJCQkJICAg
-ICAgc3BpbmFuZC0+c2NyYXRjaGJ1Zik7Cj4gQEAgLTE5Niw2ICsxOTYsMTAgQEAgc3RhdGljIGlu
-dCBzcGluYW5kX2luaXRfcXVhZF9lbmFibGUoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5k
-KQo+ICBzdGF0aWMgaW50IHNwaW5hbmRfZWNjX2VuYWJsZShzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ug
-KnNwaW5hbmQsCj4gIAkJCSAgICAgIGJvb2wgZW5hYmxlKQo+ICB7Cj4gKwkvKiBTSE0gOiBhbHdh
-eXMgRUNDIE9uICovCj4gKwlpZiAoc3BpbmFuZC0+ZmxhZ3MgJiBTUElOQU5EX09OX0RJRV9FQ0Nf
-TUFOREFUT1JZKQo+ICsJCXJldHVybiAwOwoKRG8geW91IGhhdmUgYSBkYXRhc2hlZXQ/IENhbiB3
-ZSByZWFsbHkgbm90IGRpc2FibGUgdGhlIGNvcnJlY3Rpb24/Cgo+ICsKPiAgCXJldHVybiBzcGlu
-YW5kX3VwZF9jZmcoc3BpbmFuZCwgQ0ZHX0VDQ19FTkFCTEUsCj4gIAkJCSAgICAgICBlbmFibGUg
-PyBDRkdfRUNDX0VOQUJMRSA6IDApOwoKSG93IGNhbiB0aGlzIGJlIHVzZWZ1bCBpZiB0aGUgZW5n
-aW5lIGNhbm5vdCBiZSBkaXNhYmxlZD8KCj4gIH0KPiBAQCAtOTQ1LDYgKzk0OSw3IEBAIHN0YXRp
-YyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgKnNwaW5hbmRfbWFudWZhY3R1cmVy
-c1tdID0gewo+ICAJJm1hY3Jvbml4X3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJm1pY3Jvbl9z
-cGluYW5kX21hbnVmYWN0dXJlciwKPiAgCSZwYXJhZ29uX3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+
-ICsJJnNreWhpZ2hfc3BpbmFuZF9tYW51ZmFjdHVyZXIsCj4gIAkmdG9zaGliYV9zcGluYW5kX21h
-bnVmYWN0dXJlciwKPiAgCSZ3aW5ib25kX3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJnh0eF9z
-cGluYW5kX21hbnVmYWN0dXJlciwKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkv
-c2t5aGlnaC5jIGIvZHJpdmVycy9tdGQvbmFuZC9zcGkvc2t5aGlnaC5jCj4gbmV3IGZpbGUgbW9k
-ZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLjU4MjllOGE5MzQ0Ygo+IC0tLSAvZGV2L251
-bGwKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9za3loaWdoLmMKPiBAQCAtMCwwICsxLDE0
-NiBAQAo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMAo+ICsvKgo+ICsgKiBD
-b3B5cmlnaHQgKGMpIDIwMjQgU2t5SGlnaCBNZW1vcnkgTGltaXRlZAo+ICsgKgo+ICsgKiBBdXRo
-b3I6IFRha2FoaXJvIEt1d2FubyA8dGFrYWhpcm8ua3V3YW5vQGluZmluZW9uLmNvbT4KPiArICog
-Q28tQXV0aG9yOiBLUiBLaW0gPGtyLmtpbUBza3loaWdobWVtb3J5LmNvbT4KPiArICogVGhpcyBw
-YXRjaCBpcyBkZXJpdmVkIGZyb20gVGFrYWhpcm8ncyB3b3JrLgo+ICsgKi8KPiArCj4gKyNpbmNs
-dWRlIDxsaW51eC9kZXZpY2UuaD4KPiArI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPgo+ICsjaW5j
-bHVkZSA8bGludXgvbXRkL3NwaW5hbmQuaD4KPiArCj4gKyNkZWZpbmUgU1BJTkFORF9NRlJfU0tZ
-SElHSAkJMHgwMQo+ICsKPiArI2RlZmluZSBTS1lISUdIX1NUQVRVU19FQ0NfMVRPMl9CSVRGTElQ
-UwkoMSA8PCA0KQo+ICsjZGVmaW5lIFNLWUhJR0hfU1RBVFVTX0VDQ18zVE82X0JJVEZMSVBTCSgy
-IDw8IDQpCj4gKyNkZWZpbmUgU0tZSElHSF9TVEFUVVNfRUNDX1VOQ09SX0VSUk9SCQkoMyA8PCA0
-KQo+ICsKPiArI2RlZmluZSBTS1lISUdIX0NPTkZJR19QUk9URUNUX0VOCUJJVCgxKQo+ICsKPiAr
-c3RhdGljIFNQSU5BTkRfT1BfVkFSSUFOVFMocmVhZF9jYWNoZV92YXJpYW50cywKPiArCQlTUElO
-QU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1FVQURJT19PUCgwLCA0LCBOVUxMLCAwKSwKPiArCQlT
-UElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX1g0X09QKDAsIDEsIE5VTEwsIDApLAo+ICsJCVNQ
-SU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfRFVBTElPX09QKDAsIDIsIE5VTEwsIDApLAo+ICsJ
-CVNQSU5BTkRfUEFHRV9SRUFEX0ZST01fQ0FDSEVfWDJfT1AoMCwgMSwgTlVMTCwgMCksCj4gKwkJ
-U1BJTkFORF9QQUdFX1JFQURfRlJPTV9DQUNIRV9PUCh0cnVlLCAwLCAxLCBOVUxMLCAwKSwKPiAr
-CQlTUElOQU5EX1BBR0VfUkVBRF9GUk9NX0NBQ0hFX09QKGZhbHNlLCAwLCAxLCBOVUxMLCAwKSk7
-Cj4gKwo+ICtzdGF0aWMgU1BJTkFORF9PUF9WQVJJQU5UUyh3cml0ZV9jYWNoZV92YXJpYW50cywK
-PiArCQlTUElOQU5EX1BST0dfTE9BRF9YNCh0cnVlLCAwLCBOVUxMLCAwKSwKPiArCQlTUElOQU5E
-X1BST0dfTE9BRCh0cnVlLCAwLCBOVUxMLCAwKSk7Cj4gKwo+ICtzdGF0aWMgU1BJTkFORF9PUF9W
-QVJJQU5UUyh1cGRhdGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJU1BJTkFORF9QUk9HX0xPQURfWDQo
-ZmFsc2UsIDAsIE5VTEwsIDApLAo+ICsJCVNQSU5BTkRfUFJPR19MT0FEKGZhbHNlLCAwLCBOVUxM
-LCAwKSk7Cj4gKwo+ICtzdGF0aWMgaW50IHNreWhpZ2hfc3BpbmFuZF9vb2JsYXlvdXRfZWNjKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwKPiArCQkJCQkgc3RydWN0IG10ZF9vb2Jf
-cmVnaW9uICpyZWdpb24pCj4gK3sKPiArCWlmIChzZWN0aW9uKQo+ICsJCXJldHVybiAtRVJBTkdF
-Owo+ICsKPiArCXJlZ2lvbi0+b2Zmc2V0ID0gbXRkLT5vb2JzaXplOwoKVGhhdCdzIG5vdCBwb3Nz
-aWJsZQoKPiArCXJlZ2lvbi0+bGVuZ3RoID0gbXRkLT5vb2JzaXplIC8gMjsKPiArCj4gKwlyZXR1
-cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGludCBza3loaWdoX3NwaW5hbmRfb29ibGF5b3V0X2Zy
-ZWUoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAo+ICsJCQkJCSAgc3RydWN0IG10
-ZF9vb2JfcmVnaW9uICpyZWdpb24pCj4gK3sKPiArCWlmIChzZWN0aW9uKQo+ICsJCXJldHVybiAt
-RVJBTkdFOwo+ICsKPiArCXJlZ2lvbi0+b2Zmc2V0ID0gMjsKPiArCXJlZ2lvbi0+bGVuZ3RoID0g
-bXRkLT5vb2JzaXplIC0gMjsKCkFyZW4ndCB0aGUgRUNDIGJ5dGVzIHZpc2libGU/CihpZiBzbywg
-YSBjb21tZW50IGlzIG5lZWRlZCkKCj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gK3N0YXRp
-YyBjb25zdCBzdHJ1Y3QgbXRkX29vYmxheW91dF9vcHMgc2t5aGlnaF9zcGluYW5kX29vYmxheW91
-dCA9IHsKPiArCS5lY2MgPSBza3loaWdoX3NwaW5hbmRfb29ibGF5b3V0X2VjYywKPiArCS5mcmVl
-ID0gc2t5aGlnaF9zcGluYW5kX29vYmxheW91dF9mcmVlLAo+ICt9Owo+ICsKPiArc3RhdGljIGlu
-dCBza3loaWdoX3NwaW5hbmRfZWNjX2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
-cGluYW5kLCB1OCBzdGF0dXMpCj4gK3sKPiArCXN3aXRjaCAoc3RhdHVzICYgU1RBVFVTX0VDQ19N
-QVNLKSB7Cj4gKwljYXNlIFNUQVRVU19FQ0NfTk9fQklURkxJUFM6Cj4gKwkJcmV0dXJuIDA7Cj4g
-Kwo+ICsJY2FzZSBTS1lISUdIX1NUQVRVU19FQ0NfMVRPMl9CSVRGTElQUzoKPiArCQlyZXR1cm4g
-MjsKPiArCj4gKwljYXNlIFNLWUhJR0hfU1RBVFVTX0VDQ18zVE82X0JJVEZMSVBTOgo+ICsJCXJl
-dHVybiA2Owo+ICsKPiArCWNhc2UgU0tZSElHSF9TVEFUVVNfRUNDX1VOQ09SX0VSUk9SOgo+ICsJ
-CXJldHVybiAtRUJBRE1TRzsKPiArCj4gKwlkZWZhdWx0Ogo+ICsJCXJldHVybiAtRUlOVkFMOwo+
-ICsJfQo+ICt9Cj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRfaW5mbyBza3loaWdo
-X3NwaW5hbmRfdGFibGVbXSA9IHsKPiArCVNQSU5BTkRfSU5GTygiUzM1TUwwMUczMDEiLAo+ICsJ
-CQlTUElOQU5EX0lEKFNQSU5BTkRfUkVBRElEX01FVEhPRF9PUENPREVfRFVNTVksIDB4MTUpLAo+
-ICsJCQlOQU5EX01FTU9SRygxLCAyMDQ4LCA2NCwgNjQsIDEwMjQsIDIwLCAxLCAxLCAxKSwKPiAr
-CQkJTkFORF9FQ0NSRVEoNiwgMzIpLAo+ICsJCQlTUElOQU5EX0lORk9fT1BfVkFSSUFOVFMoJnJl
-YWRfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJCSZ3cml0ZV9jYWNoZV92YXJpYW50cywKPiArCQkJ
-CQkJJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gKwkJCVNQSU5BTkRfT05fRElFX0VDQ19NQU5E
-QVRPUlksCj4gKwkJCVNQSU5BTkRfRUNDSU5GTygmc2t5aGlnaF9zcGluYW5kX29vYmxheW91dCwK
-PiArCQkJc2t5aGlnaF9zcGluYW5kX2VjY19nZXRfc3RhdHVzKSksCgpJbmRlbnRhdGlvbiAoc2Ft
-ZSBiZWxvdykKCj4gKwlTUElOQU5EX0lORk8oIlMzNU1MMDFHMzAwIiwKPiArCQkJU1BJTkFORF9J
-RChTUElOQU5EX1JFQURJRF9NRVRIT0RfT1BDT0RFX0RVTU1ZLCAweDE0KSwKPiArCQkJTkFORF9N
-RU1PUkcoMSwgMjA0OCwgMTI4LCA2NCwgMTAyNCwgMjAsIDEsIDEsIDEpLAo+ICsJCQlOQU5EX0VD
-Q1JFUSg2LCAzMiksCj4gKwkJCVNQSU5BTkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92
-YXJpYW50cywKPiArCQkJCQkmd3JpdGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJJnVwZGF0ZV9j
-YWNoZV92YXJpYW50cyksCj4gKwkJCVNQSU5BTkRfT05fRElFX0VDQ19NQU5EQVRPUlksCj4gKwkJ
-CVNQSU5BTkRfRUNDSU5GTygmc2t5aGlnaF9zcGluYW5kX29vYmxheW91dCwKPiArCQkJc2t5aGln
-aF9zcGluYW5kX2VjY19nZXRfc3RhdHVzKSksCj4gKwlTUElOQU5EX0lORk8oIlMzNU1MMDJHMzAw
-IiwKPiArCQkJU1BJTkFORF9JRChTUElOQU5EX1JFQURJRF9NRVRIT0RfT1BDT0RFX0RVTU1ZLCAw
-eDI1KSwKPiArCQkJTkFORF9NRU1PUkcoMSwgMjA0OCwgMTI4LCA2NCwgMjA0OCwgNDAsIDIsIDEs
-IDEpLAo+ICsJCQlOQU5EX0VDQ1JFUSg2LCAzMiksCj4gKwkJCVNQSU5BTkRfSU5GT19PUF9WQVJJ
-QU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiArCQkJCQkmd3JpdGVfY2FjaGVfdmFyaWFudHMs
-Cj4gKwkJCQkJJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gKwkJCVNQSU5BTkRfT05fRElFX0VD
-Q19NQU5EQVRPUlksCj4gKwkJCVNQSU5BTkRfRUNDSU5GTygmc2t5aGlnaF9zcGluYW5kX29vYmxh
-eW91dCwKPiArCQkJc2t5aGlnaF9zcGluYW5kX2VjY19nZXRfc3RhdHVzKSksCj4gKwlTUElOQU5E
-X0lORk8oIlMzNU1MMDRHMzAwIiwKPiArCQkJU1BJTkFORF9JRChTUElOQU5EX1JFQURJRF9NRVRI
-T0RfT1BDT0RFX0RVTU1ZLCAweDM1KSwKPiArCQkJTkFORF9NRU1PUkcoMSwgMjA0OCwgMTI4LCA2
-NCwgNDA5NiwgODAsIDIsIDEsIDEpLAo+ICsJCQlOQU5EX0VDQ1JFUSg2LCAzMiksCj4gKwkJCVNQ
-SU5BTkRfSU5GT19PUF9WQVJJQU5UUygmcmVhZF9jYWNoZV92YXJpYW50cywKPiArCQkJCQkmd3Jp
-dGVfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJJnVwZGF0ZV9jYWNoZV92YXJpYW50cyksCj4gKwkJ
-CVNQSU5BTkRfT05fRElFX0VDQ19NQU5EQVRPUlksCj4gKwkJCVNQSU5BTkRfRUNDSU5GTygmc2t5
-aGlnaF9zcGluYW5kX29vYmxheW91dCwKPiArCQkJc2t5aGlnaF9zcGluYW5kX2VjY19nZXRfc3Rh
-dHVzKSksCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IHNreWhpZ2hfc3BpbmFuZF9pbml0KHN0cnVj
-dCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKPiArewo+ICsJcmV0dXJuIHNwaW5hbmRfd3JpdGVf
-cmVnX29wKHNwaW5hbmQsIFJFR19CTE9DS19MT0NLLAo+ICsJCQkJU0tZSElHSF9DT05GSUdfUFJP
-VEVDVF9FTik7Cj4gK30KPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFj
-dHVyZXJfb3BzIHNreWhpZ2hfc3BpbmFuZF9tYW51Zl9vcHMgPSB7Cj4gKwkuaW5pdCA9IHNreWhp
-Z2hfc3BpbmFuZF9pbml0LAo+ICt9Owo+ICsKPiArY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZh
-Y3R1cmVyIHNreWhpZ2hfc3BpbmFuZF9tYW51ZmFjdHVyZXIgPSB7Cj4gKwkuaWQgPSBTUElOQU5E
-X01GUl9TS1lISUdILAo+ICsJLm5hbWUgPSAiU2t5SGlnaCIsCj4gKwkuY2hpcHMgPSBza3loaWdo
-X3NwaW5hbmRfdGFibGUsCj4gKwkubmNoaXBzID0gQVJSQVlfU0laRShza3loaWdoX3NwaW5hbmRf
-dGFibGUpLAo+ICsJLm9wcyA9ICZza3loaWdoX3NwaW5hbmRfbWFudWZfb3BzLAo+ICt9Owo+IGRp
-ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmggYi9pbmNsdWRlL2xpbnV4L210
-ZC9zcGluYW5kLmgKPiBpbmRleCA1YzE5ZWFkNjA0OTkuLjQyMWMzY2U3MDRlNyAxMDA2NDQKPiAt
-LS0gYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4L210
-ZC9zcGluYW5kLmgKPiBAQCAtMjY4LDYgKzI2OCw3IEBAIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3Bp
-bmFuZF9tYW51ZmFjdHVyZXIgZ2lnYWRldmljZV9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0
-ZXJuIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBtYWNyb25peF9zcGluYW5kX21h
-bnVmYWN0dXJlcjsKPiAgZXh0ZXJuIGNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBt
-aWNyb25fc3BpbmFuZF9tYW51ZmFjdHVyZXI7Cj4gIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFu
-ZF9tYW51ZmFjdHVyZXIgcGFyYWdvbl9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiArZXh0ZXJuIGNv
-bnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciBza3loaWdoX3NwaW5hbmRfbWFudWZhY3R1
-cmVyOwo+ICBleHRlcm4gY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIHRvc2hpYmFf
-c3BpbmFuZF9tYW51ZmFjdHVyZXI7Cj4gIGV4dGVybiBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51
-ZmFjdHVyZXIgd2luYm9uZF9zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0ZXJuIGNvbnN0IHN0
-cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciB4dHhfc3BpbmFuZF9tYW51ZmFjdHVyZXI7Cj4gQEAg
-LTMxMiw2ICszMTMsNyBAQCBzdHJ1Y3Qgc3BpbmFuZF9lY2NfaW5mbyB7Cj4gIAo+ICAjZGVmaW5l
-IFNQSU5BTkRfSEFTX1FFX0JJVAkJQklUKDApCj4gICNkZWZpbmUgU1BJTkFORF9IQVNfQ1JfRkVB
-VF9CSVQJCUJJVCgxKQo+ICsjZGVmaW5lIFNQSU5BTkRfT05fRElFX0VDQ19NQU5EQVRPUlkJQklU
-KDIpCj4gIAo+ICAvKioKPiAgICogc3RydWN0IHNwaW5hbmRfb25kaWVfZWNjX2NvbmYgLSBwcml2
-YXRlIFNQSS1OQU5EIG9uLWRpZSBFQ0MgZW5naW5lIHN0cnVjdHVyZQo+IEBAIC01MTgsNSArNTIw
-LDYgQEAgaW50IHNwaW5hbmRfbWF0Y2hfYW5kX2luaXQoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
-cGluYW5kLAo+ICAKPiAgaW50IHNwaW5hbmRfdXBkX2NmZyhzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ug
-KnNwaW5hbmQsIHU4IG1hc2ssIHU4IHZhbCk7Cj4gIGludCBzcGluYW5kX3NlbGVjdF90YXJnZXQo
-c3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kLCB1bnNpZ25lZCBpbnQgdGFyZ2V0KTsKPiAr
-aW50IHNwaW5hbmRfd3JpdGVfcmVnX29wKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwg
-dTggcmVnLCB1OCB2YWwpOwo+ICAKPiAgI2VuZGlmIC8qIF9fTElOVVhfTVREX1NQSU5BTkRfSCAq
-LwoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+v8:
+ * Fixed compilation warning reported by kernel test robot
+ * Added "chip" description in nandc_set_read_loc_first()
+ * Added "chip" description" in nandc_set_read_loc_last()
+ * Changed data type of read_location0, read_location1,
+   read_location2, read_location3, addr0, addr1, cmd, cfg0,
+   cfg1, ecc_bch_cfg, ecc_buf_cfg, clrflashstatus, clrreadstatus,
+   orig_cmd1, orig_vld to __le32 to fix compilation warning.
+ * Included bitfield.h header file in spi-qpic-snand.c to
+   fix compilation warning
+ * Removed unused variable "steps" variable from 
+   qcom_spi_ecc_init_ctx_pipelined()
+
+v7:
+ * Added read_oob() and write_oob() api
+ * Added FIELD_PREP() in spi init
+ * Made CONFIG_SPI_QPIC_SNAND and CONFIG_MTD_NAND_QCOM
+   as bool type
+ * Removed offset 0 in oob_ecc() layout
+ * Handled multiple error condition
+
+v6:
+ * Added FIELD_PREP() and GENMASK() macro
+ * Added qpic_spi_nand{..} structure for
+   spi nand realted variables
+ * Made qpic_common.c slectable based on
+   either CONFIG_MTD_NAND_QCOM or CONFIG_SPI_QPIC_SNAND
+ * Removed rawnand.h from qpic-common.h 
+ * Removed partitions.h and rawnand.h form spi-qpic-snand.c
+ * Added qcom_nand_unalloc() in remove()
+
+v5:
+ * Fixes nandbiterr issue
+ * Added raw_read() and raw_write() API
+ * Added qcom_ prefix to all the common API
+ * Removed register indirection
+ * Following tests for SPI-NAND devices passed
+
+   - mtd_oobtest
+   - mtd_pagetest
+   - mtd_readtest
+   - mtd_speedtest
+   - mtd_stresstest
+   - mtd_subpagetest
+   - mtd_nandbiterrs
+   - nandtest
+   - nanddump
+   - nandwrite
+   - nandbiterr -i
+   - mtd erase
+   - mtd write
+   - dd
+   - hexddump
+
+v4:
+ * In this patch series fixes kernel doc for all the cmmon api
+ * Also fixes dm-binding commit message
+ * Fix qpic_common.c compilation based on config
+
+v3:
+ * In this patch series fixes multiple things like
+   added clock-name, added _alloc_controller api instead
+   of alloc_master, made common apis more generic etc.
+
+ * Addressed all the comment from v2 patch series
+
+v2:
+ * https://lore.kernel.org/linux-arm-msm/20240215134856.1313239-1-quic_mdalam@quicinc.com/
+ * In this series of patchs we have added basic working QPIC SPI NAND
+   driver with READ, WRITE, ERASE etc functionality
+
+ * Addressed all the comments given in RFC [v1] patch
+
+v1:
+ * https://lore.kernel.org/linux-arm-msm/20231031120307.1600689-1-quic_mdalam@quicinc.com/
+ * Initial set of patches for handling QPIC SPI NAND.
+
+
+Md Sadre Alam (8):
+  spi: dt-bindings: Introduce qcom,spi-qpic-snand
+  mtd: rawnand: qcom: cleanup qcom_nandc driver
+  mtd: rawnand: qcom: Add qcom prefix to common api
+  mtd: nand: Add qpic_common API file
+  mtd: rawnand: qcom: use FIELD_PREP and GENMASK
+  spi: spi-qpic: add driver for QCOM SPI NAND flash Interface
+  arm64: dts: qcom: ipq9574: Add SPI nand support
+  arm64: dts: qcom: ipq9574: Disable eMMC node
+
+ .../bindings/spi/qcom,spi-qpic-snand.yaml     |   83 +
+ .../boot/dts/qcom/ipq9574-rdp-common.dtsi     |   43 +
+ arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts   |    2 +-
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |   27 +
+ drivers/mtd/nand/Makefile                     |    7 +
+ drivers/mtd/nand/qpic_common.c                |  738 +++++++
+ drivers/mtd/nand/raw/Kconfig                  |    2 +-
+ drivers/mtd/nand/raw/qcom_nandc.c             | 1730 +++--------------
+ drivers/spi/Kconfig                           |    8 +
+ drivers/spi/Makefile                          |    1 +
+ drivers/spi/spi-qpic-snand.c                  | 1637 ++++++++++++++++
+ include/linux/mtd/nand-qpic-common.h          |  482 +++++
+ 12 files changed, 3331 insertions(+), 1429 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
+ create mode 100644 drivers/mtd/nand/qpic_common.c
+ create mode 100644 drivers/spi/spi-qpic-snand.c
+ create mode 100644 include/linux/mtd/nand-qpic-common.h
+
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
