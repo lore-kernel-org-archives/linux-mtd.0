@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 212FFC52D7C
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Aug 2024 16:25:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B46DC5321D
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Aug 2024 16:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T1IpmeJt+m9T3tuMelsR+49eKYneX7gt4tD6F6i2tUA=; b=i8EvQN9Z2YQ/TX
-	7A55RH1JczsR1ZfGNBz6O2zRZUGI4jzzYQJdueXzkEMPJAY4Vy7sPgHeH6OLioiO8JfFQqmQuBgO7
-	zvYrVuLPj/b0YnO9YNRirdWo4NrLqFa/7aMnjYMWWx/uwVWC2KcFoPzzEvs7U7OCjbAYHcO6FkrvT
-	p7525Ol/yrQmFPxJWifu9LsS83MiRgoE9SS+fo+jvbD2KuSBFfdClqI81/YYTElUyRyFLoN/2xnPD
-	XVdVMS6ko94OJDCLANQ2nmCxNb48HzpHCxcggcdHXc/DK+UtSz2FA83oqTv9ujB4/dLF2/OKhbq3p
-	4ydHZ9vN49Q8kaJIy9pg==;
+	List-Owner; bh=NkhppHAtuttn80ykBG/jzAOXiMXyzYaGsd2E924jOnY=; b=1BJbALA1qt7S6m
+	jV0BVPm5rmcxDE7DoV0M3VM1ZuFritRnqvT9ihSRRffozBoZfStIBm/Q+1QvmT7GI7rj7/wDLe+kW
+	i4lNlPz4+Ct8fUmGhv+866ecHoGWxAL6HpY7b/Joc+QWB7fVyHzmDRybHrQR2AeRYD7bY6syyVfRk
+	guOoy9YIzmSRTuJ5q3FVkJwQicIBhwAdkPYua9l94QzfrZ1TIQZcPMi6FI5z4pcbZWexTwE2SL42t
+	Tn680W5iMzVL37Sf1iaOqzPvEcW3r7boI3DnwMqOE7fK8w+NvT95jRHLB8g1657abvmVurWoHtPhC
+	54j8+LVfnv1uKaf+aqZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgo9a-00000009kPA-0dtV;
-	Wed, 21 Aug 2024 16:25:46 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1sgo9c-00000009kRM-1EDj;
+	Wed, 21 Aug 2024 16:25:48 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgo9P-00000009kHY-3igz
+	id 1sgo9R-00000009kHo-09cm
 	for linux-mtd@lists.infradead.org;
 	Wed, 21 Aug 2024 16:25:39 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E36CA1BF20D;
-	Wed, 21 Aug 2024 16:25:33 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7FD911BF20E;
+	Wed, 21 Aug 2024 16:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1724257534;
+	t=1724257535;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HyJpbryXechL8lbczR61joRwJG61BfRCG337gyErOXw=;
-	b=J5rkXt2zGqov67gV7jovGoeDbTtV7PK8vG5ej9WfPNsxG6VKMUR9AYq387dXfltLsO4ssP
-	9mSTaikVUvzsZxseeYXP9Haxd2zipl9df4I8K6ZvJxy7E2SvaQ+OfVqGjVYJ73LA7DVGbp
-	zGtYjrKbQBL0Es6+wCAVvzY0f+2tSTEGBbGa7WyN5e/VIAT20mi2PEGnaRBPUaIuZJVw/N
-	jSkgnnO4h/+WrwpstfywB3gdUquDHkoWhXTUWhiAz2Vtm8ZkS7YXz+h48OBDpHo4EovBCQ
-	HZ5fBYdXIZSfmibBJu5FI+r7uyhn9J/8cdwCUsKOpuy/l+b9xFhosE6oG9CSDg==
+	bh=KMgBtijO8AtO0H5TNwcNt19aPRO/xhWraRdLoypMwq4=;
+	b=MD5jklBlcg24vDvaUtYmZyXY4yGgxl6UAJHMW8MbpTVBD0QtXgLIwvd+KEeJaLGSklB5Uz
+	PAl9yisB1SxerTX/W53Pm0R542iUPoyMUg1Ztqokvrwa+DSNHpI+bEQASk+uEKnqyF3J/t
+	YGWnxemGSADfRU7CaUjP1zjFvUTeQ+2Rcmg7Hj4ohuZY8xsAOboqIW8sj9luVWna0m0nyF
+	FYqao7aHYwasMyal5TaNXVNdrsOxDTvRKxffcNVeVAsxdYKnHAFC164DH8Ot29LpCiseqc
+	h78QxNgsRIJH8SSjw1UTqgIb7NCh5UUXBg9EiUslPih2lM2jF5GIlSMHth4VFw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -52,17 +52,17 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Alvin Zhou <alvinzhou@mxic.com.tw>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 6/9] mtd: spi-nand: macronix: Fix helper name
-Date: Wed, 21 Aug 2024 18:25:25 +0200
-Message-ID: <20240821162528.218292-7-miquel.raynal@bootlin.com>
+Subject: [PATCH 7/9] mtd: spi-nand: macronix: Extract the bitflip retrieval logic
+Date: Wed, 21 Aug 2024 18:25:26 +0200
+Message-ID: <20240821162528.218292-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240821162528.218292-1-miquel.raynal@bootlin.com>
 References: <20240821162528.218292-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240821_092536_409561_F6973B41 
-X-CRM114-Status: GOOD (  12.02  )
+X-CRM114-CacheID: sfid-20240821_092537_643363_C91D7D6C 
+X-CRM114-Status: GOOD (  15.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,229 +79,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use "macronix_" instead of "mx35lf1ge4ab_" as common prefix for the
-->get_status() callback name. This callback is used by many different
-families, there is no variation in the implementation so far.
+With GET_STATUS commands, SPI-NAND devices can tell the status of the
+last read operation, in particular if there was:
+- no bitflips
+- corrected bitflips
+- uncorrectable bitflips
+
+The next step then to read an ECC status register and retrieve the
+amount of bitflips, when relevant, if possible. The logic used here
+works well for now, but will no longer apply to continuous reads. In
+order to prepare the introduction of continuous reads, let's factorize
+out the code that is specific to single-page reads.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/spi/macronix.c | 49 ++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/spi/macronix.c | 37 ++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-index 3f9e9c572854..7b1fb4b32340 100644
+index 7b1fb4b32340..d26e8a8c5850 100644
 --- a/drivers/mtd/nand/spi/macronix.c
 +++ b/drivers/mtd/nand/spi/macronix.c
-@@ -49,7 +49,7 @@ static const struct mtd_ooblayout_ops mx35lfxge4ab_ooblayout = {
- 	.free = mx35lfxge4ab_ooblayout_free,
- };
- 
--static int mx35lf1ge4ab_get_eccsr(struct spinand_device *spinand, u8 *eccsr)
-+static int macronix_get_eccsr(struct spinand_device *spinand, u8 *eccsr)
- {
- 	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(0x7c, 1),
- 					  SPI_MEM_OP_NO_ADDR,
-@@ -64,8 +64,8 @@ static int mx35lf1ge4ab_get_eccsr(struct spinand_device *spinand, u8 *eccsr)
+@@ -64,12 +64,29 @@ static int macronix_get_eccsr(struct spinand_device *spinand, u8 *eccsr)
  	return 0;
  }
  
--static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
--				       u8 status)
-+static int macronix_ecc_get_status(struct spinand_device *spinand,
-+				   u8 status)
+-static int macronix_ecc_get_status(struct spinand_device *spinand,
+-				   u8 status)
++static int macronix_get_bf(struct spinand_device *spinand, u8 status)
  {
  	struct nand_device *nand = spinand_to_nand(spinand);
  	u8 eccsr;
-@@ -83,7 +83,7 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
- 		 * in order to avoid forcing the wear-leveling layer to move
- 		 * data around if it's not necessary.
- 		 */
--		if (mx35lf1ge4ab_get_eccsr(spinand, spinand->scratchbuf))
-+		if (macronix_get_eccsr(spinand, spinand->scratchbuf))
- 			return nanddev_get_ecc_conf(nand)->strength;
  
- 		eccsr = *spinand->scratchbuf;
-@@ -110,7 +110,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35LF2GE4AB",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x22),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-@@ -129,7 +129,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35LF4GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x37, 0x03),
- 		     NAND_MEMORG(1, 4096, 128, 64, 2048, 40, 1, 1, 1),
-@@ -139,7 +139,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35LF1G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-@@ -194,7 +194,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX31UF1GE4BC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9e),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-@@ -204,7 +204,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
++	/*
++	 * Let's try to retrieve the real maximum number of bitflips
++	 * in order to avoid forcing the wear-leveling layer to move
++	 * data around if it's not necessary.
++	 */
++	if (macronix_get_eccsr(spinand, spinand->scratchbuf))
++		return nanddev_get_ecc_conf(nand)->strength;
++
++	eccsr = *spinand->scratchbuf;
++	if (WARN_ON(eccsr > nanddev_get_ecc_conf(nand)->strength || !eccsr))
++		return nanddev_get_ecc_conf(nand)->strength;
++
++	return eccsr;
++}
++
++static int macronix_ecc_get_status(struct spinand_device *spinand,
++				   u8 status)
++{
+ 	switch (status & STATUS_ECC_MASK) {
+ 	case STATUS_ECC_NO_BITFLIPS:
+ 		return 0;
+@@ -78,21 +95,7 @@ static int macronix_ecc_get_status(struct spinand_device *spinand,
+ 		return -EBADMSG;
  
- 	SPINAND_INFO("MX35LF2G14AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x20),
-@@ -215,7 +215,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF4G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb5, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 2, 1, 1),
-@@ -225,7 +225,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF4G24AD-Z4I8",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xf5, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-@@ -235,7 +235,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF4GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xb7, 0x03),
- 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
-@@ -245,7 +245,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF2G14AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa0),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 2, 1, 1),
-@@ -255,7 +255,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF2G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa4, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-@@ -265,7 +265,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF2G24AD-Z4I8",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xe4, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-@@ -275,7 +275,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF2GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa6, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-@@ -285,7 +285,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF2GE4AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xa2, 0x01),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-@@ -295,7 +295,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF1G14AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x90),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-@@ -305,7 +305,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF1G24AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x94, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-@@ -315,7 +315,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF1GE4AD",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x96, 0x03),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-@@ -325,7 +325,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX35UF1GE4AC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x92, 0x01),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-@@ -335,8 +335,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
+ 	case STATUS_ECC_HAS_BITFLIPS:
+-		/*
+-		 * Let's try to retrieve the real maximum number of bitflips
+-		 * in order to avoid forcing the wear-leveling layer to move
+-		 * data around if it's not necessary.
+-		 */
+-		if (macronix_get_eccsr(spinand, spinand->scratchbuf))
+-			return nanddev_get_ecc_conf(nand)->strength;
 -
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX31LF2GE4BC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x2e),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-@@ -346,7 +345,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- 	SPINAND_INFO("MX3UF2GE4BC",
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xae),
- 		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
-@@ -356,7 +355,7 @@ static const struct spinand_info macronix_spinand_table[] = {
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
- 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
--				     mx35lf1ge4ab_ecc_get_status)),
-+				     macronix_ecc_get_status)),
- };
- 
- static const struct spinand_manufacturer_ops macronix_spinand_manuf_ops = {
+-		eccsr = *spinand->scratchbuf;
+-		if (WARN_ON(eccsr > nanddev_get_ecc_conf(nand)->strength ||
+-			    !eccsr))
+-			return nanddev_get_ecc_conf(nand)->strength;
+-
+-		return eccsr;
+-
++		return macronix_get_bf(spinand, status);
+ 	default:
+ 		break;
+ 	}
 -- 
 2.43.0
 
