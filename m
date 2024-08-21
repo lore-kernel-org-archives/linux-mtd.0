@@ -4,54 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15EAEC52D6F
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Aug 2024 06:39:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1910BC52D6F
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Aug 2024 06:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+9sLc3iqlk6AdBDIcwIj7/jFdDbojtk0xmcD/jJSloA=; b=3CQJ5AQW3gp904
-	U0zGMBICGVhqZZfCIau6qBNDtZTki9s+3+NRzsDX8SDR/9r6puT6gh2SlbJOCx7oBKpqUNbf6zpMD
-	W3eM1PEAmu+tqL40Ew+FU8JBDDudgNfuG1e/k4LhxTa/MdSHCWlIenZCiyC8cYAFRNwYc38rMTmuy
-	5ift9fbTC2YhxeTwloz4g112bRjXZ3ky2NikBztE9rHbSzDiaXaW37cFbVp0n55zY/8Pggbxu8+01
-	rVdUO3msTqjaLV0noAtLIolI/RTQN3sv1SHkReSBQCRRB2AwM+UZ4vWHdAlCaoSQVPHEdoovlmesU
-	8G7U+zFBVz4WjcXI6Z+g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Q5qftmEa/lKV1/rczSDkj0HMZg+gg7kX32EpWvCr+Wk=; b=A+KJ467BT5pjzawPF8gB5gKWvl
+	ImZt0WqmgjGjD51Nomic4zsSxmR5aJhUZFcFWTo7zjNaG03iTuonO28rx+997KsefMNqJm9w5wtw5
+	pCLnXjdyaeRPMfzdPiJrdP3/hkgrrr9tMjSlLaydbRElTzLxOjqj0smjPF3INlObbfOuH3iobvR1p
+	hsN9usZNxTn0jeLAl3VzxJLHivnWvY29ImnS7EPvvYuFWDW/eCrBPVKG0JUQkMQKxpZXwq8y2SBCq
+	65ZkLeczXFK/2F3pQt6hC68mlW6yeoGuwUb+1QnSiAyxFRJE76pREVIsR4O4djTCY4jg1alK8xPNk
+	kSxQrpPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgezt-00000007kDc-1Pqb;
-	Wed, 21 Aug 2024 06:39:09 +0000
-Received: from frasgout.his.huawei.com ([185.176.79.56])
+	id 1sgf5f-00000007lSJ-3jna;
+	Wed, 21 Aug 2024 06:45:07 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgezo-00000007kAr-1Jiz
+	id 1sgf5d-00000007lRB-2XEH
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Aug 2024 06:39:06 +0000
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Wpc5S1qywz6FGY7;
-	Wed, 21 Aug 2024 14:35:08 +0800 (CST)
-Received: from lhrpeml500002.china.huawei.com (unknown [7.191.160.78])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2370F1400D3;
-	Wed, 21 Aug 2024 14:38:46 +0800 (CST)
-Received: from huawei.com (10.67.174.89) by lhrpeml500002.china.huawei.com
- (7.191.160.78) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 21 Aug
- 2024 07:38:44 +0100
-From: Liu Mingrui <liumingrui@huawei.com>
-To: <richard@nod.at>, <chengzhihao1@huawei.com>
-CC: <linux-mtd@lists.infradead.org>, <liumingrui@huawei.com>
-Subject: [PATCH -next] ubifs: Display the inode number when orphan twice happens
-Date: Wed, 21 Aug 2024 06:30:59 +0000
-Message-ID: <20240821063059.2317249-1-liumingrui@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	Wed, 21 Aug 2024 06:45:07 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WpcGP1MJzzhY29;
+	Wed, 21 Aug 2024 14:42:53 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id A75961401F4;
+	Wed, 21 Aug 2024 14:44:53 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Wed, 21 Aug 2024 14:44:53 +0800
+Subject: Re: [PATCH -next] ubifs: Display the inode number when orphan twice
+ happens
+To: Liu Mingrui <liumingrui@huawei.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>
+References: <20240821063059.2317249-1-liumingrui@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <368218ec-faa9-8f39-d779-db02055f424b@huawei.com>
+Date: Wed, 21 Aug 2024 14:44:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.67.174.89]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhrpeml500002.china.huawei.com (7.191.160.78)
+In-Reply-To: <20240821063059.2317249-1-liumingrui@huawei.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240820_233904_520003_A7C94A70 
-X-CRM114-Status: UNSURE (   9.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240820_234505_918664_DDE3A0A0 
+X-CRM114-Status: GOOD (  12.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,36 +66,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Display the inode number in error message when the same orphan inode
-is added twice, which could provide more information for debugging.
-
-Signed-off-by: Liu Mingrui <liumingrui@huawei.com>
----
- fs/ubifs/orphan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index fb957d963ba6..5555dd740889 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -76,7 +76,7 @@ int ubifs_add_orphan(struct ubifs_info *c, ino_t inum)
- 		else if (inum > o->inum)
- 			p = &(*p)->rb_right;
- 		else {
--			ubifs_err(c, "orphaned twice");
-+			ubifs_err(c, "ino %lu orphaned twice", (unsigned long)inum);
- 			spin_unlock(&c->orphan_lock);
- 			kfree(orphan);
- 			return -EINVAL;
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyNC84LzIxIDE0OjMwLCBMaXUgTWluZ3J1aSDQtLXAOgo+IERpc3BsYXkgdGhlIGlub2Rl
+IG51bWJlciBpbiBlcnJvciBtZXNzYWdlIHdoZW4gdGhlIHNhbWUgb3JwaGFuIGlub2RlCj4gaXMg
+YWRkZWQgdHdpY2UsIHdoaWNoIGNvdWxkIHByb3ZpZGUgbW9yZSBpbmZvcm1hdGlvbiBmb3IgZGVi
+dWdnaW5nLgo+IAo+IFNpZ25lZC1vZmYtYnk6IExpdSBNaW5ncnVpIDxsaXVtaW5ncnVpQGh1YXdl
+aS5jb20+Cj4gLS0tCj4gICBmcy91Ymlmcy9vcnBoYW4uYyB8IDIgKy0KPiAgIDEgZmlsZSBjaGFu
+Z2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+IAoKUmV2aWV3ZWQtYnk6IFpoaWhh
+byBDaGVuZyA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+Cj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZz
+L29ycGhhbi5jIGIvZnMvdWJpZnMvb3JwaGFuLmMKPiBpbmRleCBmYjk1N2Q5NjNiYTYuLjU1NTVk
+ZDc0MDg4OSAxMDA2NDQKPiAtLS0gYS9mcy91Ymlmcy9vcnBoYW4uYwo+ICsrKyBiL2ZzL3ViaWZz
+L29ycGhhbi5jCj4gQEAgLTc2LDcgKzc2LDcgQEAgaW50IHViaWZzX2FkZF9vcnBoYW4oc3RydWN0
+IHViaWZzX2luZm8gKmMsIGlub190IGludW0pCj4gICAJCWVsc2UgaWYgKGludW0gPiBvLT5pbnVt
+KQo+ICAgCQkJcCA9ICYoKnApLT5yYl9yaWdodDsKPiAgIAkJZWxzZSB7Cj4gLQkJCXViaWZzX2Vy
+cihjLCAib3JwaGFuZWQgdHdpY2UiKTsKPiArCQkJdWJpZnNfZXJyKGMsICJpbm8gJWx1IG9ycGhh
+bmVkIHR3aWNlIiwgKHVuc2lnbmVkIGxvbmcpaW51bSk7Cj4gICAJCQlzcGluX3VubG9jaygmYy0+
+b3JwaGFuX2xvY2spOwo+ICAgCQkJa2ZyZWUob3JwaGFuKTsKPiAgIAkJCXJldHVybiAtRUlOVkFM
+Owo+IAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
