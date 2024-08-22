@@ -4,80 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB222C5320E
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Aug 2024 08:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D414C3DA4A
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Aug 2024 13:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mUNQYcJrR92x8KTj1NTEsHfCs1CWIa9A6jzlE4yMu+s=; b=WdTV4cVZZTyAzO
-	5BdutyQV7VAPvmUyLgJuj0ZlWVu6t/8Kzs6EXQFuNkY1wVvEi2h9pcrDDDlXmfaomNn8IWpbi5h0B
-	4zjHTTAAk5nxsDZ/8415C1q2ylxxj3V71Y5ZZxUCJ1MJ6sGiF1OzEyawEwAdVX0LOhNd+FPeSZo6n
-	67EMdVeKM4acccKHpCF0za+Or/+2rTPchZRk4IuQno+V0FnybRGQUTS47yrx53dP5GGypQVGbE0KD
-	BWykd14g5HTQsFyN/zrWb40RuYistk7DWhcMn8VfyiO70oSCtOzArm/MmGUW9Ratp9gE/+L4bIL26
-	b0cGWCTAKw95s9QpS+JA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Subject:From:To:MIME-Version:Date:Message-ID:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KbPMZnn6eDHysgLT1Ft42MXbiTxuTPGYQ9xEL1/F7/c=; b=htkKueCAcdbOS/
+	FNqAEA8C0UDc1JBNM3ABf0YpuSPc3JHztSQo6RviCIUnMVmESfSXiaj4PfudzepUFhZN9Q1DydiYW
+	72GEiuwucHs0sahiGG9PcMPVtaRq4d6+A59ojgadqF3likaZvRmveZhasbMuVZkyoA7e2TBCZUbP5
+	6egWjsDDzaZgzCYCPFnRzGSsJL5bdZ+yR/EP7Fu3HE+S1bekuiqwBqu8XNfF5V5nOAxZh5/AguC0a
+	sRLb5bE0C48sqloePJ0yi1/8JNlB0EgaHGciFpePF3hefpdFqRQe2eO4FpyTSuk8t6g4pveTqpjzi
+	A68PA7GMPKLJ5nuHTxhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sh392-0000000C287-0Jkn;
-	Thu, 22 Aug 2024 08:26:12 +0000
-Received: from mgamail.intel.com ([192.198.163.16])
+	id 1sh7fH-0000000Ct1l-1Xns;
+	Thu, 22 Aug 2024 13:15:47 +0000
+Received: from smtp125.iad3b.emailsrvr.com ([146.20.161.125])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sh38w-0000000C27d-3HeB
+	id 1sh7fD-0000000Ct0l-0VU2
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Aug 2024 08:26:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724315166; x=1755851166;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dB2KYzLu/Tv5zD99j9Lz99BYHd0f0NKIEZ0d6sfyKKk=;
-  b=ac8OWJ5xgVmUVRZElIRwGWlmqBF7ooY2z70RZhgR9A5KWgmclaPWn6a4
-   +c1E0dXGZo6d0rI0dCB/XQrROz7mp4+8c8lTvAv64eEKna3axQ80XmbQD
-   VUkqAuRf1pU/14kT0kIK+Fbsq+JiMwVyYTvx8Ij7ogkoDKjt/jaXJ/Vgy
-   4Y2q6B7Gf5mIp0IuSh3zRQx2dta4FY7rCakyK9iSzFkJrnm+B/xTgKH/T
-   a22HL1poeW7tA/Amztjknl02sFy2BT1qeHrIAwKl40ajKBzD0e0ltTQmG
-   QIHW3fK3x+ZZLksaSIlS9adcTFcwSH5hkJinBSFvzwCNZm8jr4M4OEnUr
-   A==;
-X-CSE-ConnectionGUID: HZ40eGhTR8+zGuU3IzMk6w==
-X-CSE-MsgGUID: pO59WGfUQu2AiV7NfTv/2w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11171"; a="13148903"
-X-IronPort-AV: E=Sophos;i="6.10,166,1719903600"; 
-   d="scan'208";a="13148903"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2024 01:26:02 -0700
-X-CSE-ConnectionGUID: uYXY8uX2SiujYrUUtbnVlQ==
-X-CSE-MsgGUID: lBnQwlbcQ2yPb6NGTjducQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,166,1719903600"; 
-   d="scan'208";a="66310543"
-Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 22 Aug 2024 01:25:58 -0700
-Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sh38l-000CZn-1X;
-	Thu, 22 Aug 2024 08:25:55 +0000
-Date: Thu, 22 Aug 2024 16:25:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, broonie@kernel.org,
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	andersson@kernel.org, konradybcio@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	manivannan.sadhasivam@linaro.org, esben@geanix.com,
-	linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v8 5/8] mtd: rawnand: qcom: use FIELD_PREP and GENMASK
-Message-ID: <202408221634.2JY5J8DX-lkp@intel.com>
-References: <20240820104239.1774600-6-quic_mdalam@quicinc.com>
+	Thu, 22 Aug 2024 13:15:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+	s=20221208-6x11dpa4; t=1724332539;
+	bh=KcwxoegHSkI7dfjDERXRjYzBEJLQ9TG7YVPQa4H4Bek=;
+	h=Date:To:From:Subject:From;
+	b=AUtIV80rE89A8Fvk/n1j4mAjxBS0rXoX7zEVFC3yzNN2n0sIFwzW8fDsTIjAlwvN0
+	 XxUD1IOVbWQF/6EyBxGqT8D90BBK+4WvEFSqnhqfhx/RiRYkSL7pk8Ga0FfbwjlnzX
+	 P8GpJKTZmceD2LU+S/nutVfkzGA7DX3mY/nUJ/yY=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp16.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id CCF4BC0268
+	for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2024 09:15:38 -0400 (EDT)
+Message-ID: <dfbf2546-7211-4b4e-a963-ec32e6b3810a@mev.co.uk>
+Date: Thu, 22 Aug 2024 14:15:37 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240820104239.1774600-6-quic_mdalam@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+To: linux-mtd@lists.infradead.org
+From: Ian Abbott <abbotti@mev.co.uk>
+Subject: Problems mounting dirty UBIFS on NOR flash with cadence QSPI
+ controller
+Organization: MEV Ltd.
+X-Classification-ID: 3ff56e04-b5e3-4fac-95c8-c01370b7be39-1-1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240822_012606_916338_5931E4AB 
-X-CRM114-Status: GOOD (  10.18  )
+X-CRM114-CacheID: sfid-20240822_061543_414755_48CE6281 
+X-CRM114-Status: GOOD (  11.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,229 +62,336 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Md,
+Hello,
 
-kernel test robot noticed the following build warnings:
+I'm currently investigating some UBIFS mount failures on an embedded 
+system under development.
 
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on broonie-spi/for-next robh/for-next linus/master v6.11-rc4 next-20240821]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The system is based on an Altera Cyclone V SoCFPGA (armv7l) platform, 
+currently running kernel 6.6.36 (with a few patches for runtime DT 
+overlay support and one or two unrelated driver bug fixes).  This uses a 
+Cadence QSPI controller (compatible="intel,socfpga-qspi", driver = 
+spi-cadence-quadspi, quirks = CQSPI_DISABLE_DAC_MODE | 
+CQSPI_NO_SUPPORT_WR_COMPLETION | CQSPI_SLOW_SRAM).  The SPI NOR flash 
+device is a Cypress (Spansion) S25FL256S1.  The flash device has been 
+partitioned with a single UBI partition filling the device, and contains 
+a single UBIFS volume.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/spi-dt-bindings-Introduce-qcom-spi-qpic-snand/20240820-184732
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20240820104239.1774600-6-quic_mdalam%40quicinc.com
-patch subject: [PATCH v8 5/8] mtd: rawnand: qcom: use FIELD_PREP and GENMASK
-config: s390-randconfig-r111-20240821 (https://download.01.org/0day-ci/archive/20240822/202408221634.2JY5J8DX-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 14.1.0
-reproduce: (https://download.01.org/0day-ci/archive/20240822/202408221634.2JY5J8DX-lkp@intel.com/reproduce)
+% mtdinfo -a
+Count of MTD devices:           1
+Present MTD devices:            mtd0
+Sysfs interface supported:      yes
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408221634.2JY5J8DX-lkp@intel.com/
+mtd0
+Name:                           ubi
+Type:                           nor
+Eraseblock size:                65536 bytes, 64.0 KiB
+Amount of eraseblocks:          512 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 1 byte
+Sub-page size:                  1 byte
+Character device major/minor:   90:0
+Bad blocks are allowed:         false
+Device is writable:             true
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/mtd/nand/raw/qcom_nandc.c:168:55: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] val @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:168:55: sparse:     expected restricted __le32 [usertype] val
-   drivers/mtd/nand/raw/qcom_nandc.c:168:55: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:198:55: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __le32 [usertype] val @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:198:55: sparse:     expected restricted __le32 [usertype] val
-   drivers/mtd/nand/raw/qcom_nandc.c:198:55: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:241:28: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] addr0 @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:241:28: sparse:     expected restricted __le32 [usertype] addr0
-   drivers/mtd/nand/raw/qcom_nandc.c:241:28: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:242:28: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] addr1 @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:242:28: sparse:     expected restricted __le32 [usertype] addr1
-   drivers/mtd/nand/raw/qcom_nandc.c:242:28: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:261:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cmd @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:261:29: sparse:     expected restricted __le32 [usertype] cmd
-   drivers/mtd/nand/raw/qcom_nandc.c:261:29: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:263:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cmd @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:263:29: sparse:     expected restricted __le32 [usertype] cmd
-   drivers/mtd/nand/raw/qcom_nandc.c:263:29: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:265:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cmd @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:265:21: sparse:     expected restricted __le32 [usertype] cmd
-   drivers/mtd/nand/raw/qcom_nandc.c:265:21: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:269:29: sparse: sparse: restricted __le32 degrades to integer
-   drivers/mtd/nand/raw/qcom_nandc.c:269:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0 @@     got unsigned int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:269:22: sparse:     expected restricted __le32 [usertype] cfg0
-   drivers/mtd/nand/raw/qcom_nandc.c:269:22: sparse:     got unsigned int
-   drivers/mtd/nand/raw/qcom_nandc.c:275:29: sparse: sparse: restricted __le32 degrades to integer
-   drivers/mtd/nand/raw/qcom_nandc.c:275:22: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0 @@     got unsigned int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:275:22: sparse:     expected restricted __le32 [usertype] cfg0
-   drivers/mtd/nand/raw/qcom_nandc.c:275:22: sparse:     got unsigned int
->> drivers/mtd/nand/raw/qcom_nandc.c:279:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [assigned] [usertype] ecc_bch_cfg @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:279:29: sparse:     expected restricted __le32 [assigned] [usertype] ecc_bch_cfg
-   drivers/mtd/nand/raw/qcom_nandc.c:279:29: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:292:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] exec @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:292:27: sparse:     expected restricted __le32 [usertype] exec
-   drivers/mtd/nand/raw/qcom_nandc.c:292:27: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:879:20: sparse: sparse: invalid assignment: &=
-   drivers/mtd/nand/raw/qcom_nandc.c:879:20: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:879:20: sparse:    right side has type unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:880:20: sparse: sparse: invalid assignment: |=
-   drivers/mtd/nand/raw/qcom_nandc.c:880:20: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:880:20: sparse:    right side has type int
-   drivers/mtd/nand/raw/qcom_nandc.c:883:27: sparse: sparse: invalid assignment: &=
-   drivers/mtd/nand/raw/qcom_nandc.c:883:27: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:883:27: sparse:    right side has type unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:884:27: sparse: sparse: invalid assignment: |=
-   drivers/mtd/nand/raw/qcom_nandc.c:884:27: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:884:27: sparse:    right side has type int
-   drivers/mtd/nand/raw/qcom_nandc.c:885:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] ecc_buf_cfg @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:885:27: sparse:     expected restricted __le32 [usertype] ecc_buf_cfg
-   drivers/mtd/nand/raw/qcom_nandc.c:885:27: sparse:     got int
->> drivers/mtd/nand/raw/qcom_nandc.c:1490:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0 @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1490:20: sparse:     expected restricted __le32 [usertype] cfg0
-   drivers/mtd/nand/raw/qcom_nandc.c:1490:20: sparse:     got unsigned long
->> drivers/mtd/nand/raw/qcom_nandc.c:1499:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg1 @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1499:20: sparse:     expected restricted __le32 [usertype] cfg1
-   drivers/mtd/nand/raw/qcom_nandc.c:1499:20: sparse:     got unsigned long
->> drivers/mtd/nand/raw/qcom_nandc.c:1506:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0_raw @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1506:24: sparse:     expected restricted __le32 [usertype] cfg0_raw
-   drivers/mtd/nand/raw/qcom_nandc.c:1506:24: sparse:     got unsigned long
->> drivers/mtd/nand/raw/qcom_nandc.c:1511:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg1_raw @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1511:24: sparse:     expected restricted __le32 [usertype] cfg1_raw
-   drivers/mtd/nand/raw/qcom_nandc.c:1511:24: sparse:     got unsigned long
->> drivers/mtd/nand/raw/qcom_nandc.c:1519:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] ecc_bch_cfg @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1519:27: sparse:     expected restricted __le32 [usertype] ecc_bch_cfg
-   drivers/mtd/nand/raw/qcom_nandc.c:1519:27: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1527:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] ecc_buf_cfg @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1527:35: sparse:     expected restricted __le32 [usertype] ecc_buf_cfg
-   drivers/mtd/nand/raw/qcom_nandc.c:1527:35: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:1529:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] clrflashstatus @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1529:30: sparse:     expected restricted __le32 [usertype] clrflashstatus
-   drivers/mtd/nand/raw/qcom_nandc.c:1529:30: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1530:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] clrreadstatus @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1530:29: sparse:     expected restricted __le32 [usertype] clrreadstatus
-   drivers/mtd/nand/raw/qcom_nandc.c:1530:29: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:1613:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cmd_reg @@     got int [assigned] ret @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1613:39: sparse:     expected restricted __le32 [usertype] cmd_reg
-   drivers/mtd/nand/raw/qcom_nandc.c:1613:39: sparse:     got int [assigned] ret
-   drivers/mtd/nand/raw/qcom_nandc.c:1623:49: sparse: sparse: invalid assignment: |=
-   drivers/mtd/nand/raw/qcom_nandc.c:1623:49: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:1623:49: sparse:    right side has type int
-   drivers/mtd/nand/raw/qcom_nandc.c:1626:49: sparse: sparse: invalid assignment: |=
-   drivers/mtd/nand/raw/qcom_nandc.c:1626:49: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:1626:49: sparse:    right side has type unsigned char
-   drivers/mtd/nand/raw/qcom_nandc.c:1711:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] exec @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1711:27: sparse:     expected restricted __le32 [usertype] exec
-   drivers/mtd/nand/raw/qcom_nandc.c:1711:27: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:1770:31: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] chip_sel @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1770:31: sparse:     expected restricted __le32 [usertype] chip_sel
-   drivers/mtd/nand/raw/qcom_nandc.c:1770:31: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1771:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] exec @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1771:27: sparse:     expected restricted __le32 [usertype] exec
-   drivers/mtd/nand/raw/qcom_nandc.c:1771:27: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:1809:24: sparse: sparse: restricted __le32 degrades to integer
-   drivers/mtd/nand/raw/qcom_nandc.c:1810:30: sparse: sparse: invalid assignment: |=
-   drivers/mtd/nand/raw/qcom_nandc.c:1810:30: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:1810:30: sparse:    right side has type unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1813:41: sparse: sparse: restricted __le32 degrades to integer
-   drivers/mtd/nand/raw/qcom_nandc.c:1813:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0 @@     got unsigned int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1813:35: sparse:     expected restricted __le32 [usertype] cfg0
-   drivers/mtd/nand/raw/qcom_nandc.c:1813:35: sparse:     got unsigned int
-   drivers/mtd/nand/raw/qcom_nandc.c:1816:24: sparse: sparse: restricted __le32 degrades to integer
-   drivers/mtd/nand/raw/qcom_nandc.c:1828:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] exec @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1828:27: sparse:     expected restricted __le32 [usertype] exec
-   drivers/mtd/nand/raw/qcom_nandc.c:1828:27: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:1832:17: sparse: sparse: restricted __le32 degrades to integer
-   drivers/mtd/nand/raw/qcom_nandc.c:1866:22: sparse: sparse: invalid assignment: |=
-   drivers/mtd/nand/raw/qcom_nandc.c:1866:22: sparse:    left side has type restricted __le32
-   drivers/mtd/nand/raw/qcom_nandc.c:1866:22: sparse:    right side has type unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1878:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg0 @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1878:20: sparse:     expected restricted __le32 [usertype] cfg0
-   drivers/mtd/nand/raw/qcom_nandc.c:1878:20: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1883:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cfg1 @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1883:20: sparse:     expected restricted __le32 [usertype] cfg1
-   drivers/mtd/nand/raw/qcom_nandc.c:1883:20: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1892:42: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] ecc_buf_cfg @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1892:42: sparse:     expected restricted __le32 [usertype] ecc_buf_cfg
-   drivers/mtd/nand/raw/qcom_nandc.c:1892:42: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1896:34: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] vld @@     got unsigned long @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1896:34: sparse:     expected restricted __le32 [usertype] vld
-   drivers/mtd/nand/raw/qcom_nandc.c:1896:34: sparse:     got unsigned long
-   drivers/mtd/nand/raw/qcom_nandc.c:1897:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] cmd1 @@     got unsigned int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1897:35: sparse:     expected restricted __le32 [usertype] cmd1
-   drivers/mtd/nand/raw/qcom_nandc.c:1897:35: sparse:     got unsigned int
-   drivers/mtd/nand/raw/qcom_nandc.c:1901:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] exec @@     got int @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1901:27: sparse:     expected restricted __le32 [usertype] exec
-   drivers/mtd/nand/raw/qcom_nandc.c:1901:27: sparse:     got int
-   drivers/mtd/nand/raw/qcom_nandc.c:1904:40: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] orig_cmd1 @@     got unsigned int [usertype] cmd1 @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1904:40: sparse:     expected restricted __le32 [usertype] orig_cmd1
-   drivers/mtd/nand/raw/qcom_nandc.c:1904:40: sparse:     got unsigned int [usertype] cmd1
-   drivers/mtd/nand/raw/qcom_nandc.c:1905:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] orig_vld @@     got unsigned int [usertype] vld @@
-   drivers/mtd/nand/raw/qcom_nandc.c:1905:39: sparse:     expected restricted __le32 [usertype] orig_vld
-   drivers/mtd/nand/raw/qcom_nandc.c:1905:39: sparse:     got unsigned int [usertype] vld
+The UBIFS volume started off mostly empty, but was deliberately dirtied 
+by creating a file over and over again with the same name, and 4096 
+bytes of random data, and then cutting power to the system.
 
-vim +279 drivers/mtd/nand/raw/qcom_nandc.c
+When the UBIFS volume is in this dirty state, attempts to mount the 
+dirty UBIFS volume result in timeouts, and further attempt to access the 
+MTD device result in further timeouts, even after removing the 
+spi-cadence-quadspi and spi-nor kernel modules and reloading them.  A 
+complete reboot gets the controllers back in a sensible state, but the 
+problems reoccur when attempting to mount the still dirty UBIFS volume 
+again.
 
-   244	
-   245	/*
-   246	 * update_rw_regs:	set up read/write register values, these will be
-   247	 *			written to the NAND controller registers via DMA
-   248	 *
-   249	 * @num_cw:		number of steps for the read/write operation
-   250	 * @read:		read or write operation
-   251	 * @cw	:		which code word
-   252	 */
-   253	static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, int cw)
-   254	{
-   255		struct nand_chip *chip = &host->chip;
-   256		__le32 cmd, cfg0, cfg1, ecc_bch_cfg;
-   257		struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-   258	
-   259		if (read) {
-   260			if (host->use_ecc)
-   261				cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
-   262			else
-   263				cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
-   264		} else {
-   265			cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
-   266		}
-   267	
-   268		if (host->use_ecc) {
-   269			cfg0 = (host->cfg0 & ~(7U << CW_PER_PAGE)) |
-   270					(num_cw - 1) << CW_PER_PAGE;
-   271	
-   272			cfg1 = host->cfg1;
-   273			ecc_bch_cfg = host->ecc_bch_cfg;
-   274		} else {
-   275			cfg0 = (host->cfg0_raw & ~(7U << CW_PER_PAGE)) |
-   276					(num_cw - 1) << CW_PER_PAGE;
-   277	
-   278			cfg1 = host->cfg1_raw;
- > 279			ecc_bch_cfg = ECC_CFG_ECC_DISABLE;
-   280		}
-   281	
-   282		nandc->regs->cmd = cmd;
-   283		nandc->regs->cfg0 = cfg0;
-   284		nandc->regs->cfg1 = cfg1;
-   285		nandc->regs->ecc_bch_cfg = ecc_bch_cfg;
-   286	
-   287		if (!nandc->props->qpic_version2)
-   288			nandc->regs->ecc_buf_cfg = host->ecc_buf_cfg;
-   289	
-   290		nandc->regs->clrflashstatus = host->clrflashstatus;
-   291		nandc->regs->clrreadstatus = host->clrreadstatus;
-   292		nandc->regs->exec = 1;
-   293	
-   294		if (read)
-   295			nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
-   296					   host->cw_data : host->cw_size, 1);
-   297	}
-   298	
+Here are some kernel logs with debugging turned on for the ubi, ubifs, 
+and spi-nor modules.  I have removed the initial part of the logs until 
+the interesting bit where it recovers a corrupted LEB and erases a PEB 
+while reading some other LEBs.  In the logs below, pid 430 is the mount 
+process, and pid 167 is the background thread for the UBI device:
+
+-------------------------------[8<]----------------------------------
+[  317.968185] UBIFS DBG mnt (pid 430): replay bud LEB 13, head 2, offs 
+80, is_last 1
+[  317.968210] UBIFS DBG rcvry (pid 430): 13:80, jhead 2, grouped 1
+[  317.968227] UBIFS DBG scan (pid 430): scan LEB 13:80
+[  317.968244] UBI DBG gen (pid 430): read 65328 bytes from LEB 0:13:80
+[  317.968263] UBI DBG eba (pid 430): read 65328 bytes from offset 80 of 
+LEB 0:13, PEB 149
+[  317.968284] UBI DBG io (pid 430): read 65328 bytes from PEB 149:208
+[  317.968311] spi-nor spi2.0: from 0x009500d0, len 65328
+[  317.979912] UBIFS DBG scan (pid 430): look at LEB 13:80 (65328 bytes 
+left)
+[  317.979946] UBIFS DBG scan (pid 430): hit empty space at LEB 13:80
+[  317.979961] UBIFS DBG rcvry (pid 430): found corruption (-1) at 13:80
+[  317.980398] UBIFS DBG rcvry (pid 430): cleaning corruption at 13:80
+[  317.980434] UBIFS DBG scan (pid 430): stop scanning LEB 13 at offset 80
+[  317.980448] UBIFS DBG rcvry (pid 430): fixing LEB 13 start 80 endpt 80
+[  317.980464] UBI DBG gen (pid 430): read 80 bytes from LEB 0:13:0
+[  317.980485] UBI DBG eba (pid 430): read 80 bytes from offset 0 of LEB 
+0:13, PEB 149
+[  317.980503] UBI DBG io (pid 430): read 80 bytes from PEB 149:128
+[  317.980528] spi-nor spi2.0: from 0x00950080, len 80
+[  317.980702] UBI DBG gen (pid 430): atomically write 80 bytes to LEB 0:13
+[  317.980743] UBI DBG eba (pid 430): change LEB 0:13
+[  317.980768] UBI DBG wl (pid 430): PEB 150 EC 1
+[  317.980782] UBI DBG wl (pid 430): added PEB 150 EC 1 to the 
+protection queue
+[  317.980797] UBI DBG eba (pid 430): write VID hdr and 80 bytes at 
+offset 0 of LEB 0:13, PEB 150
+[  317.980814] UBI DBG io (pid 430): write VID header to PEB 150
+[  317.980830] UBI DBG io (pid 430): write 64 bytes to PEB 150:64
+[  317.980851] spi-nor spi2.0: to 0x00960040, len 64
+[  317.981916] UBI DBG io (pid 430): write 80 bytes to PEB 150:128
+[  317.981956] spi-nor spi2.0: to 0x00960080, len 80
+[  317.983099] UBI DBG wl (pid 430): PEB 149
+[  317.983125] UBI DBG wl (pid 430): schedule erasure of PEB 149, EC 1, 
+torture 0
+[  317.983173] UBIFS DBG mnt (pid 430): bud LEB 13 replied: dirty 0, 
+free 65328
+[  317.983193] UBIFS DBG mnt (pid 430): replay bud LEB 14, head 1, offs 
+0, is_last 0
+[  317.983210] UBIFS DBG scan (pid 430): scan LEB 14:0
+[  317.983226] UBI DBG gen (pid 430): read 65408 bytes from LEB 0:14:0
+[  317.983244] UBI DBG eba (pid 430): read 65408 bytes from offset 0 of 
+LEB 0:14, PEB 142
+[  317.983263] UBI DBG io (pid 430): read 65408 bytes from PEB 142:128
+[  317.983282] spi-nor spi2.0: from 0x008e0080, len 65408
+[  317.983437] UBI DBG wl (pid 167): erase PEB 149 EC 1 LEB 0:13
+[  317.983461] UBI DBG wl (pid 167): erase PEB 149, old EC 1
+[  317.983482] UBI DBG io (pid 167): read EC header from PEB 149
+[  317.983496] UBI DBG io (pid 167): read 64 bytes from PEB 149:0
+[  317.983515] spi-nor spi2.0: from 0x00950000, len 64
+[  318.000130] UBIFS DBG scan (pid 430): look at LEB 14:19872 (45536 
+bytes left)
+[  318.000143] UBIFS DBG scan (pid 430): scanning inode node at LEB 14:19872
+[  318.000159] UBIFS DBG scan (pid 430): look at LEB 14:20032 (45376 
+bytes left)
+[  318.000172] UBIFS DBG scan (pid 430): scanning truncate node at LEB 
+14:20032
+
+etc.
+
+[  318.012452] UBIFS DBG scan (pid 430): look at LEB 14:65176 (232 bytes 
+left)
+[  318.012468] UBIFS DBG scan (pid 430): scanning truncate node at LEB 
+14:65176
+[  318.012483] UBIFS DBG scan (pid 430): look at LEB 14:65232 (176 bytes 
+left)
+[  318.012496] UBIFS DBG scan (pid 430): hit empty space at LEB 14:65232
+[  318.012509] UBIFS DBG scan (pid 430): stop scanning LEB 14 at offset 
+65232
+[  318.012530] UBIFS DBG mnt (pid 430): add LEB 14:0, key (94, inode)
+[  318.012550] UBIFS DBG mnt (pid 430): add LEB 14:160, key (94, truncate)
+[  318.012566] UBIFS DBG mnt (pid 430): add LEB 14:216, key (94, inode)
+[  318.012582] UBIFS DBG mnt (pid 430): add LEB 14:376, key (94, truncate)
+
+etc.
+
+[  318.031260] UBIFS DBG mnt (pid 430): add LEB 14:64960, key (94, truncate)
+[  318.031275] UBIFS DBG mnt (pid 430): add LEB 14:65016, key (94, inode)
+[  318.031290] UBIFS DBG mnt (pid 430): add LEB 14:65176, key (94, truncate)
+[  318.031307] UBIFS DBG mnt (pid 430): bud LEB 14 replied: dirty 16912, 
+free 176
+[  318.031623] UBI DBG gen (pid 430): read 4 bytes from LEB 0:16:0
+[  318.031648] UBI DBG eba (pid 430): read 4 bytes from offset 0 of LEB 
+0:16, PEB 144
+[  318.031668] UBI DBG io (pid 430): read 4 bytes from PEB 144:128
+[  318.031692] spi-nor spi2.0: from 0x00900080, len 4
+[  318.097506] UBI DBG wl (pid 167): erased PEB 149, new EC 2
+[  318.097539] UBI DBG io (pid 167): write EC header to PEB 149
+[  318.097560] UBI DBG io (pid 167): write 64 bytes to PEB 149:0
+[  318.097584] spi-nor spi2.0: to 0x00950000, len 64
+[  318.598001] cadence-qspi ff705000.spi: Flash command execution timed out.
+[  318.604848] spi-nor spi2.0: operation failed with -110
+[  318.609990] ubi0 warning: ubi_io_read [ubi]: error -110 while reading 
+4 bytes from PEB 144:128, read only 0 bytes, retry
+[  318.610305] spi-nor spi2.0: from 0x00900080, len 4
+[  319.113362] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  319.120596] spi-nor spi2.0: operation failed with -110
+[  319.125779] ubi0 warning: ubi_io_read [ubi]: error -110 while reading 
+4 bytes from PEB 144:128, read only 0 bytes, retry
+[  319.126186] spi-nor spi2.0: from 0x00900080, len 4
+[  319.633343] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  319.640579] spi-nor spi2.0: operation failed with -110
+[  319.645760] ubi0 warning: ubi_io_read [ubi]: error -110 while reading 
+4 bytes from PEB 144:128, read only 0 bytes, retry
+[  319.646223] spi-nor spi2.0: from 0x00900080, len 4
+[  320.153334] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  320.160565] spi-nor spi2.0: operation failed with -110
+[  320.165756] ubi0 error: ubi_io_read [ubi]: error -110 while reading 4 
+bytes from PEB 144:128, read 0 bytes
+[  320.175721] CPU: 1 PID: 430 Comm: mount Tainted: G           O 
+6.6.36-its-ipt4v3 #1
+[  320.175747] Hardware name: Altera SOCFPGA
+[  320.175767]  unwind_backtrace from show_stack+0x18/0x1c
+[  320.175810]  show_stack from dump_stack_lvl+0x40/0x4c
+[  320.175836]  dump_stack_lvl from ubi_io_read+0x160/0x37c [ubi]
+[  320.176106]  ubi_io_read [ubi] from ubi_eba_read_leb+0xa4/0x438 [ubi]
+[  320.176541]  ubi_eba_read_leb [ubi] from ubi_leb_read+0x88/0xf4 [ubi]
+[  320.176986]  ubi_leb_read [ubi] from ubifs_leb_read+0x34/0x80 [ubifs]
+[  320.177701]  ubifs_leb_read [ubifs] from 
+ubifs_replay_journal+0xda4/0x1644 [ubifs]
+[  320.178531]  ubifs_replay_journal [ubifs] from 
+ubifs_mount+0x4cc/0x1cc0 [ubifs]
+[  320.179370]  ubifs_mount [ubifs] from legacy_get_tree+0x2c/0x54
+[  320.179800]  legacy_get_tree from vfs_get_tree+0x2c/0x114
+[  320.179835]  vfs_get_tree from vfs_cmd_create+0x64/0xd0
+[  320.179865]  vfs_cmd_create from sys_fsconfig+0x474/0x52c
+[  320.179895]  sys_fsconfig from ret_fast_syscall+0x0/0x1c
+[  320.179920] Exception stack(0xf4761fa8 to 0xf4761ff0)
+[  320.179939] 1fa0:                   00000000 00ec9eb0 00000003 
+00000006 00000000 00000000
+[  320.179957] 1fc0: 00000000 00ec9eb0 00020000 000001af b6f57e3c 
+b6f5877c b6f58000 00ec968c
+[  320.179971] 1fe0: b6f58384 befc6a50 b6f3887b b6ec559a
+[  320.179992] UBIFS error (ubi0:0 pid 430): ubifs_leb_read [ubifs]: 
+reading 4 bytes from LEB 16:0 failed, error -110
+[  320.190823] CPU: 1 PID: 430 Comm: mount Tainted: G           O 
+6.6.36-its-ipt4v3 #1
+[  320.190852] Hardware name: Altera SOCFPGA
+[  320.190868]  unwind_backtrace from show_stack+0x18/0x1c
+[  320.190909]  show_stack from dump_stack_lvl+0x40/0x4c
+[  320.190934]  dump_stack_lvl from ubifs_leb_read+0x7c/0x80 [ubifs]
+[  320.191397]  ubifs_leb_read [ubifs] from 
+ubifs_replay_journal+0xda4/0x1644 [ubifs]
+[  320.192210]  ubifs_replay_journal [ubifs] from 
+ubifs_mount+0x4cc/0x1cc0 [ubifs]
+[  320.193033]  ubifs_mount [ubifs] from legacy_get_tree+0x2c/0x54
+[  320.193478]  legacy_get_tree from vfs_get_tree+0x2c/0x114
+[  320.193513]  vfs_get_tree from vfs_cmd_create+0x64/0xd0
+[  320.193543]  vfs_cmd_create from sys_fsconfig+0x474/0x52c
+[  320.193572]  sys_fsconfig from ret_fast_syscall+0x0/0x1c
+[  320.193597] Exception stack(0xf4761fa8 to 0xf4761ff0)
+[  320.193615] 1fa0:                   00000000 00ec9eb0 00000003 
+00000006 00000000 00000000
+[  320.193634] 1fc0: 00000000 00ec9eb0 00020000 000001af b6f57e3c 
+b6f5877c b6f58000 00ec968c
+[  320.193647] 1fe0: b6f58384 befc6a50 b6f3887b b6ec559a
+[  320.193749] UBIFS DBG mnt (pid 430): replay bud LEB 17, head 1, offs 
+0, is_last 0
+[  320.193778] UBIFS DBG scan (pid 430): scan LEB 17:0
+[  320.193797] UBI DBG gen (pid 430): read 65408 bytes from LEB 0:17:0
+[  320.193817] UBI DBG eba (pid 430): read 65408 bytes from offset 0 of 
+LEB 0:17, PEB 143
+[  320.193836] UBI DBG io (pid 430): read 65408 bytes from PEB 143:128
+[  320.193859] spi-nor spi2.0: from 0x008f0080, len 65408
+[  320.703328] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  320.710556] spi-nor spi2.0: operation failed with -110
+[  320.715761] ubi0 warning: ubi_io_read [ubi]: error -110 while reading 
+65408 bytes from PEB 143:128, read only 0 bytes, retry
+[  320.718370] spi-nor spi2.0: from 0x008f0080, len 65408
+[  321.223330] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  321.230573] spi-nor spi2.0: operation failed with -110
+[  321.235748] ubi0 warning: ubi_io_read [ubi]: error -110 while reading 
+65408 bytes from PEB 143:128, read only 0 bytes, retry
+[  321.236289] spi-nor spi2.0: from 0x008f0080, len 65408
+[  321.743324] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  321.750555] spi-nor spi2.0: operation failed with -110
+[  321.755732] ubi0 warning: ubi_io_read [ubi]: error -110 while reading 
+65408 bytes from PEB 143:128, read only 0 bytes, retry
+[  321.756179] spi-nor spi2.0: from 0x008f0080, len 65408
+[  322.263322] cadence-qspi ff705000.spi: QSPI is still busy after 500ms 
+timeout.
+[  322.270550] spi-nor spi2.0: operation failed with -110
+[  322.275720] ubi0 error: ubi_io_read [ubi]: error -110 while reading 
+65408 bytes from PEB 143:128, read 0 bytes
+[  322.286026] CPU: 1 PID: 430 Comm: mount Tainted: G           O 
+6.6.36-its-ipt4v3 #1
+[  322.286050] Hardware name: Altera SOCFPGA
+[  322.286067]  unwind_backtrace from show_stack+0x18/0x1c
+[  322.286111]  show_stack from dump_stack_lvl+0x40/0x4c
+[  322.286138]  dump_stack_lvl from ubi_io_read+0x160/0x37c [ubi]
+[  322.286409]  ubi_io_read [ubi] from ubi_eba_read_leb+0xa4/0x438 [ubi]
+[  322.286846]  ubi_eba_read_leb [ubi] from ubi_leb_read+0x88/0xf4 [ubi]
+[  322.287280]  ubi_leb_read [ubi] from ubifs_leb_read+0x34/0x80 [ubifs]
+[  322.287975]  ubifs_leb_read [ubifs] from ubifs_start_scan+0x80/0x104 
+[ubifs]
+[  322.288787]  ubifs_start_scan [ubifs] from ubifs_scan+0x2c/0x2e0 [ubifs]
+[  322.289591]  ubifs_scan [ubifs] from 
+ubifs_replay_journal+0x3fc/0x1644 [ubifs]
+[  322.290395]  ubifs_replay_journal [ubifs] from 
+ubifs_mount+0x4cc/0x1cc0 [ubifs]
+[  322.291206]  ubifs_mount [ubifs] from legacy_get_tree+0x2c/0x54
+[  322.291635]  legacy_get_tree from vfs_get_tree+0x2c/0x114
+[  322.291670]  vfs_get_tree from vfs_cmd_create+0x64/0xd0
+[  322.291700]  vfs_cmd_create from sys_fsconfig+0x474/0x52c
+[  322.291729]  sys_fsconfig from ret_fast_syscall+0x0/0x1c
+[  322.291754] Exception stack(0xf4761fa8 to 0xf4761ff0)
+[  322.291773] 1fa0:                   00000000 00ec9eb0 00000003 
+00000006 00000000 00000000
+[  322.291791] 1fc0: 00000000 00ec9eb0 00020000 000001af b6f57e3c 
+b6f5877c b6f58000 00ec968c
+[  322.291805] 1fe0: b6f58384 befc6a50 b6f3887b b6ec559a
+[  322.291825] UBIFS error (ubi0:0 pid 430): ubifs_leb_read [ubifs]: 
+reading 65408 bytes from LEB 17:0 failed, error -110
+[  322.302953] CPU: 1 PID: 430 Comm: mount Tainted: G           O 
+6.6.36-its-ipt4v3 #1
+[  322.302977] Hardware name: Altera SOCFPGA
+[  322.302990]  unwind_backtrace from show_stack+0x18/0x1c
+[  322.303028]  show_stack from dump_stack_lvl+0x40/0x4c
+[  322.303053]  dump_stack_lvl from ubifs_leb_read+0x7c/0x80 [ubifs]
+[  322.303507]  ubifs_leb_read [ubifs] from ubifs_start_scan+0x80/0x104 
+[ubifs]
+[  322.304335]  ubifs_start_scan [ubifs] from ubifs_scan+0x2c/0x2e0 [ubifs]
+[  322.305156]  ubifs_scan [ubifs] from 
+ubifs_replay_journal+0x3fc/0x1644 [ubifs]
+[  322.305962]  ubifs_replay_journal [ubifs] from 
+ubifs_mount+0x4cc/0x1cc0 [ubifs]
+[  322.306765]  ubifs_mount [ubifs] from legacy_get_tree+0x2c/0x54
+[  322.307194]  legacy_get_tree from vfs_get_tree+0x2c/0x114
+[  322.307229]  vfs_get_tree from vfs_cmd_create+0x64/0xd0
+[  322.307258]  vfs_cmd_create from sys_fsconfig+0x474/0x52c
+[  322.307287]  sys_fsconfig from ret_fast_syscall+0x0/0x1c
+[  322.307313] Exception stack(0xf4761fa8 to 0xf4761ff0)
+[  322.307332] 1fa0:                   00000000 00ec9eb0 00000003 
+00000006 00000000 00000000
+[  322.307350] 1fc0: 00000000 00ec9eb0 00020000 000001af b6f57e3c 
+b6f5877c b6f58000 00ec968c
+[  322.307364] 1fe0: b6f58384 befc6a50 b6f3887b b6ec559a
+[  322.307443] UBIFS error (ubi0:0 pid 430): ubifs_start_scan [ubifs]: 
+cannot read 65408 bytes from LEB 17:0, error -110
+[  322.319829] UBIFS (ubi0:0): background thread "ubifs_bgt0_0" stops
+[  322.320037] UBI DBG gen (pid 430): close device 0, volume 0, mode 2
+[  322.320746] UBI DBG gen (pid 430): close device 0, volume 0, mode 1
+-------------------------------[8<]----------------------------------
+
+Some interesting points in the log:
+
+* 317.979961 where the mount/scanning process finds corruption in LEB 13 
+(PEB 149) is found and LEB 13 is recovered and reassigned to PEB 150, 
+and PE 149 is scheduled for erasure;
+* 317.983437 where the UBI background thread begins examining PEB 149 
+for erasure;
+* 318.031623 where the mount/scanning process begins reading LEB 16 (PEB 
+144), reading 4 bytes from offset 0x00900080;
+* 318.097506 where the UBI background thread has erased PEB 149 and is 
+writing a new header;
+* 318.598001 where the cadence-qspi controller times out the last Flash 
+command and the SPI-NOR read operations start to fail.
+
+My next step is to dig deeper into the spi-cadence-quadspi and spi-nor 
+drivers.  I don't really know what's going on, but perhaps there is some 
+sort of race condition between the erase and the read or the read and 
+the write.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
 
 ______________________________________________________
 Linux MTD discussion mailing list
