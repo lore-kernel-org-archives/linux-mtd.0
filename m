@@ -4,62 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D83CFC52D7C
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Aug 2024 15:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C287DC531DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Aug 2024 16:02:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tP5JhvBGS93P6/vvMenQe7wdmqfZeT9RQ1RDrWpdfyw=; b=t2VwoJdorLVbne
-	yFEB50hZHxV/Is561UVThvE7/EfOK39P3qOLeG+CIfoZisn8scGVmnBCp89b4U/youE3qdSTKzJHh
-	O8+brte6lusaMZijL3m0/0/dz2n0msSy20nAIne2I0uusdy7EUhv0S/bNtsLcf/DMrk7CtKVvyFAA
-	92R1Flrxdz9ssq5TZVa13mylaP4D12w9tglPzI+gSFnGXPOV3JqO37Nur+AtzcFJCg4K2VFeXWc04
-	fwodengvVW4aJBPL9N8WHvDcm7wjCuJo1S1eFjp2BlKm2t5klPgXp6GO5ZDRnZrCQ4yIA+5ld8oE7
-	NDWdGz7WtUog3XINGItQ==;
+	List-Owner; bh=dxTUzeaYqL3vy49fA5/172EaW7lKHPNByuws1xsRD8k=; b=4H9X/Y/oxq3xfR
+	UBpnYqUYvq2qNTfm+QQAvi4d30PudHxLXaC/mOxNiHuZNwzH0glQ+zpHq/Q7xVPA2LlG1lLmZ8u8/
+	7xePkDT+Txpp73QjsJFlrBzvyNKX5KiK8uJFRuAy/D+Okr2dqAYb/WxEDXxsZ6xsRwMVGY4SB9OaC
+	FUPoC1oZ7QU46c70zpckq7B9J58z6fgYP+XDnlylpy07/U7ryU6ys6fEdP0rPJ3r7wd6zywla07SD
+	gGyoTR2b9rnsOpzbXhMKWOHTXtwAWy74yqyj0RtkN7wDK4rX3ZSKL6uLiA+3XGq4I7ROzW7mLQ2WL
+	9ER4bd/Z13Pf7ucWm8ZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1shWXQ-0000000HORj-0ODM;
-	Fri, 23 Aug 2024 15:49:20 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1shWkB-0000000HRd1-0DXl;
+	Fri, 23 Aug 2024 16:02:31 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1shWWu-0000000HOJK-3Z5y
+	id 1shWi8-0000000HR5p-21Ql
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Aug 2024 15:48:51 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0CEDC240003;
-	Fri, 23 Aug 2024 15:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1724428126;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sgE3IvoWI1/Cp/dVJfgn+uI1PxAkHEore+ttPBMGxFA=;
-	b=m0QyDvc+RQ5GMNzZExzQSKZ4FVpEep3AA5NJSkPLn+jl/hXzHQD49NngSMrdTrBe3g3Oea
-	3sC0cT6u+Z4ibMaTsjU1yDdPaGCP+eOMv/YZWXuwFYmqPC5c39ZrGWAy+mhxK5v131iK8K
-	M0UqU2+C7QoBxx2cVBnGaWGitZT5ugfhmX7Sk48MsQ3+VDsTsuN+7+6+ntiw9+jzWRVcI4
-	ReW1qEMteOC0nbpob+K65Ax7dYubexYihPnWA7dFb1Rp0+V4RL4aD2uc6XCLRpZkeLBCJg
-	QrFfDv2iFpsqnifeajXdnjKsyAWdj9wcrJ3JxwBiA76c7NQATLlosJ0q/b6++w==
-Date: Fri, 23 Aug 2024 17:48:43 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Cheng Ming Lin <linchengming884@gmail.com>
-Cc: vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, richard@nod.at, alvinzhou@mxic.com.tw,
- leoyu@mxic.com.tw, Cheng Ming Lin <chengminglin@mxic.com.tw>
-Subject: Re: [PATCH v2 0/2] Add fixups for two-plane serial NAND flash
-Message-ID: <20240823174843.6eec8053@xps-13>
-In-Reply-To: <CAAyq3SazQFSU9C5Z5YURP9cFdc6gLNJfF2ReQ9Z_-GpzVWhoeQ@mail.gmail.com>
-References: <20240718075356.488253-1-linchengming884@gmail.com>
-	<20240812105630.2b71ed19@xps-13>
-	<CAAyq3SazQFSU9C5Z5YURP9cFdc6gLNJfF2ReQ9Z_-GpzVWhoeQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	Fri, 23 Aug 2024 16:00:26 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8499660AFB;
+	Fri, 23 Aug 2024 16:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2306C4AF0F;
+	Fri, 23 Aug 2024 16:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724428823;
+	bh=ru7m6fafSWodJPcKQCrlG6ssAX5n5RbDlgVC49TC3sE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=cTjUNOpTu48evto1G1aJTeexiyGElrfpdAGZ3L/WtNHIcbzyeG03Ab4x7PIYpxb+U
+	 IbSg8A0m41Sz3SZGJwkbLKTdldykUW/51yxMwXegJ05Xrs9nzKNX42DS1Nelcl4o6/
+	 v0TX2M4cGwpkd/0H8eFs8BeaLfoWapTAvRMlI9BnX3b8SBv47OCc3yCz2NaA6V0n4y
+	 KXCcSur3atSOO6MGJv2f9Yes0fnZOarrMRQUtH9HeXzBHYjMtgaIj/WxxrUHKIomTb
+	 6E16Qpp7qS3WxJDMbivXAc5xkmh2eEP2M9rHABQDbu9pIo94h12a5ClXOOd5JnozkK
+	 +Bsz6pizD9Dlw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Pratyush Yadav <pratyush@kernel.org>,  Richard Weinberger
+ <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Michael Walle <michael@walle.cc>,
+  <linux-mtd@lists.infradead.org>,  Julien Su <juliensu@mxic.com.tw>,
+  Alvin Zhou <alvinzhou@mxic.com.tw>,  Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 4/9] mtd: spi-nand: Add continuous read support
+In-Reply-To: <20240823165155.6c80e43c@xps-13> (Miquel Raynal's message of
+	"Fri, 23 Aug 2024 16:51:55 +0200")
+References: <20240821162528.218292-1-miquel.raynal@bootlin.com>
+	<20240821162528.218292-5-miquel.raynal@bootlin.com>
+	<mafs04j7cznwh.fsf@kernel.org> <20240823165155.6c80e43c@xps-13>
+Date: Fri, 23 Aug 2024 18:00:20 +0200
+Message-ID: <mafs0seuvut4b.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240823_084849_172410_A9314286 
-X-CRM114-Status: GOOD (  28.56  )
+X-CRM114-CacheID: sfid-20240823_090024_654782_68B6D164 
+X-CRM114-Status: GOOD (  31.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,55 +74,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hlbmcsCgpsaW5jaGVuZ21pbmc4ODRAZ21haWwuY29tIHdyb3RlIG9uIFR1ZSwgMTMgQXVn
-IDIwMjQgMTQ6MDI6NDQgKzA4MDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBNaXF1ZWwgUmF5bmFsIDxt
-aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiDmlrwgMjAyNOW5tDjmnIgxMuaXpSDpgLHkuIAg5LiL
-5Y2INDo1NuWvq+mBk++8mgo+ID4KPiA+IEhpIENoZW5nLAo+ID4KPiA+IGxpbmNoZW5nbWluZzg4
-NEBnbWFpbC5jb20gd3JvdGUgb24gVGh1LCAxOCBKdWwgMjAyNCAxNTo1Mzo1NCArMDgwMDoKPiA+
-ICAKPiA+ID4gRnJvbTogQ2hlbmcgTWluZyBMaW4gPGNoZW5nbWluZ2xpbkBteGljLmNvbS50dz4K
-PiA+ID4KPiA+ID4gTWFjcm9uaXggc2VyaWFsIE5BTkQgZmxhc2ggd2l0aCBhIHR3by1wbGFuZSBz
-dHJ1Y3R1cmUKPiA+ID4gcmVxdWlyZXMgaW5zZXJ0aW9uIG9mIFBsYW5lIFNlbGVjdCBiaXQgaW50
-byB0aGUgY29sdW1uCj4gPiA+IGFkZHJlc3MgZHVyaW5nIHRoZSB3cml0ZV90b19jYWNoZSBvcGVy
-YXRpb24uCj4gPiA+Cj4gPiA+IEFkZGl0aW9uYWxseSwgZm9yIE1YMzV7VSxGfTJHMTRBQywgaW5z
-ZXJ0aW9uIG9mIFBsYW5lCj4gPiA+IFNlbGVjdCBiaXQgaW50byB0aGUgY29sdW1uIGFkZHJlc3Mg
-aXMgcmVxdWlyZWQgZHVyaW5nCj4gPiA+IHRoZSByZWFkX2Zyb21fY2FjaGUgb3BlcmF0aW9uLiAg
-Cj4gPgo+ID4gSSBndWVzcyBpZiB0aGUgcGxhbmUgYml0IGlzIG5lZWRlZCBmb3IgeW91ciBjaGlw
-cywgaXQgaXMgYWxzbyBuZWVkZWQKPiA+IGZvciBvdGhlciB3aGlwcyB3aXRoIHR3byBwbGFuZXM/
-IENvdWxkIGl0IGJlIHBvc3NpYmxlIHRoYXQgd2UgbmV2ZXIgaGFkCj4gPiBzdXBwb3J0IGZvciBk
-ZXZpY2VzIHdpdGggbW9yZSB0aGFuIG9uZSBwbGFuZSBhbmQgeW91IGp1c3QgZmFsbCBpbnRvIGEK
-PiA+IGNvbW1vbiBpc3N1ZT8gTWF5YmUgd2Ugc2hvdWxkIGFsd2F5cyBhZGQgdGhlIHBsYW5lIGlu
-Zm9ybWF0aW9uIHdoZW4KPiA+IHRoZXJlIGlzIG1vcmUgdGhhbiBvbmUgcGxhbmUgdG8gYWRkcmVz
-cz8gQ2FuIHlvdSBjaGVjayB3aGV0aGVyIHRoaXMgaXMKPiA+IHNwZWNpZmljIHRvIE1hY3Jvbml4
-IG9yIG5vdD8KPiA+ICAKPiAKPiBJIGhhdmUgcmV2aWV3ZWQgdGhlIGNoaXBzIGxpc3RlZCBieSBl
-YWNoIHZlbmRvci4KPiAKPiBNaWNyb24gb2ZmZXJzIE1UMjlGMkcwMUFCe0EsQn1HRCwgTVQyOUYy
-RzAxQUFBRUQgd2l0aCB0d28gcGxhbmVzOwo+IGhvd2V2ZXIsIG9ubHkgTVQyOUYyRzAxQUFBRUQg
-cmVxdWlyZXMgdGhlIHBsYW5lIHNlbGVjdCBiaXQgd2hlbiBwZXJmb3JtaW5nCj4gcHJvZ3JhbSBs
-b2FkIG9yIHJlYWQgZnJvbSBjYWNoZS4KPiAKPiBMaW5rOiBodHRwczovL3NlbWljb25kdWN0b3Jz
-LmVzL3BkZi1kb3duL00vVC8yL01UMjlGMkcwMUFBQUVELU1pY3JvblRlY2hub2xvZ3kucGRmCj4g
-Cj4gV2luYm9uZCBwcm92aWRlcyBXMjVOMDRLViB3aXRoIHR3byBwbGFuZXMsIGJ1dCBpdCBkb2Vz
-IG5vdCByZXF1aXJlIHRoZSBwbGFuZQo+IHNlbGVjdCBiaXQgZm9yIHByb2dyYW0gbG9hZCBvciBj
-YWNoZSByZWFkIG9wZXJhdGlvbnMuCj4gCj4gVGhlcmVmb3JlLCB3ZSBzaG91bGQgbm90IGFsd2F5
-cyBpbmNsdWRlIHRoZSBwbGFuZSBzZWxlY3QgYml0IHdoZW4gZGVhbGluZyB3aXRoCj4gbXVsdGlw
-bGUgcGxhbmVzLgo+IAo+ID4gSW4gdGhpcyBjYXNlIHdlIHdvdWxkbid0IG5lZWQgYSBzcGVjaWZp
-YyBmaXh1cC4KPiA+ICAKPiAKPiBCYXNlZCBvbiB0aGUgYWJvdmUgcGVyc3BlY3RpdmUsIGRvIHdl
-IHN0aWxsIG5lZWQgdG8gdXNlIGZpeHVwLCBvciBjYW4gd2UgdXNlCj4gZmxhZ3MgdG8gZGV0ZXJt
-aW5lIHdoZXRoZXIgdGhlIHBsYW5lIHNlbGVjdCBiaXQgaXMgbmVjZXNzYXJ5PwoKSSBzdGlsbCBw
-cmVmZXIgZmxhZ3MgcmF0aGVyIHRoYW4gaW52YXNpdmUgZml4dXAgaG9va3MuCgo+IAo+ID4gPgo+
-ID4gPiBUaGVzZSBmbGFzaGVzIGhhdmUgYmVlbiB2YWxpZGF0ZWQgb24gWGlsaW54IHp5bnEtcGlj
-b3plZAo+ID4gPiBib2FyZCB3aGljaCBpbmNsdWRlZCBNYWNyb25peCBTUEkgSG9zdC4KPiA+ID4K
-PiA+ID4gQ2hlbmcgTWluZyBMaW4gKDIpOgo+ID4gPiAgIG10ZDogc3BpbmFuZDogQWRkIGZpeHVw
-cyBmb3Igc3BpbmFuZAo+ID4gPiAgIG10ZDogc3BpbmFuZDogbWFjcm9uaXg6IEZpeHVwcyBmb3Ig
-UGxhbmUgU2VsZWN0IGJpdAo+ID4gPgo+ID4gPiAgZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5j
-ICAgICB8ICA3ICsrKysKPiA+ID4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL21hY3Jvbml4LmMgfCA2
-NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0KPiA+ID4gIGluY2x1ZGUvbGludXgv
-bXRkL3NwaW5hbmQuaCAgICAgfCAxNyArKysrKysrKysKPiA+ID4gIDMgZmlsZXMgY2hhbmdlZCwg
-ODQgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPiA+ID4gIAo+ID4KPiA+Cj4gPiBUaGFu
-a3MsCj4gPiBNaXF1w6hsICAKPiAKPiBUaGFua3MsCj4gQ2hlbmdNaW5nIExpbgoKClRoYW5rcywK
-TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Fri, Aug 23 2024, Miquel Raynal wrote:
+
+> Hi Pratyush,
+>
+>> > @@ -684,7 +830,11 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
+>> >  
+>> >  	old_stats = mtd->ecc_stats;
+>> >  
+>> > -	ret = spinand_mtd_regular_page_read(mtd, from, ops, &max_bitflips);
+>> > +	if (static_branch_unlikely(&cont_read_supported) &&
+>> > +	    spinand_use_cont_read(mtd, from, ops))  
+>> 
+>> This looks a bit odd. If your system has two NAND devices, one with
+>> continuous read support and one without, you will enable this static
+>> branch and then attempt to use continuous read for both, right? I think
+>> spinand_use_cont_read() should have a check for spinand->set_cont_read,
+>> otherwise you end up calling a NULL function pointer for the flash
+>> without continuous read.
+>
+> Mmmh that's right, I wanted a slightly more optimal path but the static
+> branch doesn't play well here if it's a global parameter.
+>
+>> This would reduce the cost of checking set_cont_read in the hot path if
+>> there are no flashes with continuous read. When you do have at least
+>> one, you would have to pay it every time. I suppose you can do some sort
+>> of double branch where you take the respective static branch if _all_ or
+>> _none_ of the flashes have continuous read, and then the heterogeneous
+>> setups do the check at runtime. But is spinand_mtd_read() even hot
+>> enough to warrant such optimizations?
+>
+> I believe using static branches here would have been relevant with a
+> single chip use-case, but I don't think it is worth using if we have
+> more than one flash. It is an almost tepid path, at most, so I'll just
+> check ->set_cont_read presence.
+
+Sounds good.
+
+>
+>> > +		ret = spinand_mtd_continuous_page_read(mtd, from, ops, &max_bitflips);
+>> > +	else
+>> > +		ret = spinand_mtd_regular_page_read(mtd, from, ops, &max_bitflips);
+>> >  
+>> >  	if (ops->stats) {
+>> >  		ops->stats->uncorrectable_errors +=
+>> > @@ -874,6 +1024,9 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
+>> >  	};
+>> >  	struct spi_mem_dirmap_desc *desc;
+>> >  
+>> > +	if (static_branch_unlikely(&cont_read_supported))
+>> > +		info.length = nanddev_eraseblock_size(nand);  
+>> 
+>> Same here. With a heterogeneous setup, you will set length to eraseblock
+>> size even for the non-continuous-read flash. Though from a quick look
+>> info.length doesn't seem to be used anywhere meaningful.
+>
+> It is a parameter for the spi controller driver. It may lead to an
+> error if the size is too big for what the controller is capable of,
+> which is not the case for any of the existing controllers which are
+> all capable of mapping a block at least (source: me reading spi code).
+>
+> the info parameter being per-nand it's fine to tune it like that, but I
+> agree the if() conditional is currently wrong in the case of dual
+> devices.
+>
+>> In general, a static branch looks misused here. This isn't even a hot
+>> path where you'd care about performance.
+>
+> TBH the read path might be considered hot, but not hot enough to
+> justify too complex optimizations schemes, definitely.
+
+To clarify, I meant this just for the usage in spinand_create_dirmap().
+This function is called exactly once for each device at probe time. So
+optimizations like static branches don't make much sense here.
+
+For spinand_mtd_read() a case can plausibly be made for doing such
+optimizations, though as you mentioned before the path likely isn't that
+hot. If you fancy it, perhaps run some benchmarks to see what read
+performance you get with static branches and without them to get some
+real data.
+
+-- 
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
