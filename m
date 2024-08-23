@@ -4,65 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C287DC531DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Aug 2024 16:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0CDFC5321D
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Aug 2024 16:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dxTUzeaYqL3vy49fA5/172EaW7lKHPNByuws1xsRD8k=; b=4H9X/Y/oxq3xfR
-	UBpnYqUYvq2qNTfm+QQAvi4d30PudHxLXaC/mOxNiHuZNwzH0glQ+zpHq/Q7xVPA2LlG1lLmZ8u8/
-	7xePkDT+Txpp73QjsJFlrBzvyNKX5KiK8uJFRuAy/D+Okr2dqAYb/WxEDXxsZ6xsRwMVGY4SB9OaC
-	FUPoC1oZ7QU46c70zpckq7B9J58z6fgYP+XDnlylpy07/U7ryU6ys6fEdP0rPJ3r7wd6zywla07SD
-	gGyoTR2b9rnsOpzbXhMKWOHTXtwAWy74yqyj0RtkN7wDK4rX3ZSKL6uLiA+3XGq4I7ROzW7mLQ2WL
-	9ER4bd/Z13Pf7ucWm8ZA==;
+	List-Owner; bh=9arLFU0VEMVGBUXz3MX+skgDG30MtSJ9Bty+mg0uQdw=; b=FyT7AcfEZn04xt
+	O+EYyME9BS7En/v188Y7/6sIUWY2wqsmoOY8vBoL6SzQ3Q/UQse024dxo/oBu3ImilhC2tx89Otea
+	CIU+rsrLD40og9JDPS6b9gHErqNH4y9Ug03unPcy5L4HrNW7GPqraYj+6XwfY1P7A0dBEyfLmKJ4L
+	9UspMOMQVK+0knAyq7iRAjZJwnze9GruQJNCKEM7bBUrJ7T7YZp9P9XD/jciNydi0GHRgtNQDqtRy
+	TvHyXcrQmvJ6wFVi24KW+0SVtxe23Gp0gQYgCvxAg13OwpoAtUWVsMt1ydVU/e2cVH9YibLMDcQnu
+	TrpniiocFy+32VIJiecg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1shWkB-0000000HRd1-0DXl;
-	Fri, 23 Aug 2024 16:02:31 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1shX6Z-0000000HYAF-4Bzk;
+	Fri, 23 Aug 2024 16:25:40 +0000
+Received: from mgamail.intel.com ([192.198.163.19])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1shWi8-0000000HR5p-21Ql
-	for linux-mtd@lists.infradead.org;
-	Fri, 23 Aug 2024 16:00:26 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8499660AFB;
-	Fri, 23 Aug 2024 16:00:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2306C4AF0F;
-	Fri, 23 Aug 2024 16:00:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724428823;
-	bh=ru7m6fafSWodJPcKQCrlG6ssAX5n5RbDlgVC49TC3sE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=cTjUNOpTu48evto1G1aJTeexiyGElrfpdAGZ3L/WtNHIcbzyeG03Ab4x7PIYpxb+U
-	 IbSg8A0m41Sz3SZGJwkbLKTdldykUW/51yxMwXegJ05Xrs9nzKNX42DS1Nelcl4o6/
-	 v0TX2M4cGwpkd/0H8eFs8BeaLfoWapTAvRMlI9BnX3b8SBv47OCc3yCz2NaA6V0n4y
-	 KXCcSur3atSOO6MGJv2f9Yes0fnZOarrMRQUtH9HeXzBHYjMtgaIj/WxxrUHKIomTb
-	 6E16Qpp7qS3WxJDMbivXAc5xkmh2eEP2M9rHABQDbu9pIo94h12a5ClXOOd5JnozkK
-	 +Bsz6pizD9Dlw==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>,  Richard Weinberger
- <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Michael Walle <michael@walle.cc>,
-  <linux-mtd@lists.infradead.org>,  Julien Su <juliensu@mxic.com.tw>,
-  Alvin Zhou <alvinzhou@mxic.com.tw>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 4/9] mtd: spi-nand: Add continuous read support
-In-Reply-To: <20240823165155.6c80e43c@xps-13> (Miquel Raynal's message of
-	"Fri, 23 Aug 2024 16:51:55 +0200")
-References: <20240821162528.218292-1-miquel.raynal@bootlin.com>
-	<20240821162528.218292-5-miquel.raynal@bootlin.com>
-	<mafs04j7cznwh.fsf@kernel.org> <20240823165155.6c80e43c@xps-13>
-Date: Fri, 23 Aug 2024 18:00:20 +0200
-Message-ID: <mafs0seuvut4b.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1shX6X-0000000HY8y-056W;
+	Fri, 23 Aug 2024 16:25:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724430337; x=1755966337;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3XMbUYBDHmzNIbQnFO5jFhgJPAAWpbvUV37uWE91XYY=;
+  b=TEdeqrfcbxLx99L9+0cq0VBP1FYsYkQCqyGgpEXXB7NgjLpHZmGEZM1o
+   NQx9TreuB4uzCjjmgwPmZd4TZ4zYq1JJJPbtCS5UWIAgG4VmaQp80lwTX
+   UDzzfk3z7DoOLXf17bp1gbFtAz7ALyzMi4oenXbDOjNewuDt53YSbDZ/5
+   4UFEQqQ+4RWJSm+o6hc4Rl+j1HvjrGFwfdj7wqu2RbK/LNo/o3iTeK4jz
+   ZMGCGPBnYcSyUWhURFT+PZt683e2Pv2B48DjJsthobbO70wbeYaEPWx2Y
+   rBIcRHHhvf0+OXYffMtR54DlUuEWXdoL821XPp1c553YjUVva109/sXfB
+   Q==;
+X-CSE-ConnectionGUID: LDd3H809SVaL0jj1mrdSVQ==
+X-CSE-MsgGUID: BOFOAmrXQlqQD8oodvxyNQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11172"; a="22504142"
+X-IronPort-AV: E=Sophos;i="6.10,170,1719903600"; 
+   d="scan'208";a="22504142"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2024 09:25:35 -0700
+X-CSE-ConnectionGUID: TyAhmqenSA+fGrOHJsVz6g==
+X-CSE-MsgGUID: lexLTyUnSgSoAmUAGKiMPQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,170,1719903600"; 
+   d="scan'208";a="61694525"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2024 09:25:24 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1shX5I-00000000r8v-11Le;
+	Fri, 23 Aug 2024 19:24:20 +0300
+Date: Fri, 23 Aug 2024 19:24:19 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Russell King <linux@armlinux.org.uk>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Vladimir Zapolskiy <vz@mleia.com>, Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+	imx@lists.linux.dev, linux-omap@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+	openbmc@lists.ozlabs.org, linuxppc-dev@lists.ozlabs.org,
+	linux-mips@vger.kernel.org, loongarch@lists.linux.dev
+Subject: Re: [PATCH 0/9] AT24 EEPROM MTD Support
+Message-ID: <Zsi3s9XithGEROwX@smile.fi.intel.com>
+References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240823_090024_654782_68B6D164 
-X-CRM114-Status: GOOD (  31.98  )
+X-CRM114-CacheID: sfid-20240823_092537_101084_1763B641 
+X-CRM114-Status: GOOD (  20.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,89 +124,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Aug 23 2024, Miquel Raynal wrote:
+On Mon, Jul 01, 2024 at 03:53:39PM +0200, Marco Felsch wrote:
+> This series adds the intial support to handle EEPROMs via the MTD layer
+> as well. This allow the user-space to have separate paritions since
+> EEPROMs can become quite large nowadays.
+> 
+> With this patchset applied EEPROMs can be accessed via:
+>   - legacy 'eeprom' device
+>   - nvmem device
+>   - mtd device(s)
+> 
+> The patchset targets only the AT24 (I2C) EEPROMs since I have no access
+> to AT25 (SPI) EEPROMs nor to one of the other misc/eeprom/* devices.
+> 
+> Note: I'm not familiar with Kconfig symbol migration so I don't know if
+> the last patch is required at the moment. Please be notified that the
+> list of recipients is quite large due to the defconfig changes.
 
-> Hi Pratyush,
->
->> > @@ -684,7 +830,11 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
->> >  
->> >  	old_stats = mtd->ecc_stats;
->> >  
->> > -	ret = spinand_mtd_regular_page_read(mtd, from, ops, &max_bitflips);
->> > +	if (static_branch_unlikely(&cont_read_supported) &&
->> > +	    spinand_use_cont_read(mtd, from, ops))  
->> 
->> This looks a bit odd. If your system has two NAND devices, one with
->> continuous read support and one without, you will enable this static
->> branch and then attempt to use continuous read for both, right? I think
->> spinand_use_cont_read() should have a check for spinand->set_cont_read,
->> otherwise you end up calling a NULL function pointer for the flash
->> without continuous read.
->
-> Mmmh that's right, I wanted a slightly more optimal path but the static
-> branch doesn't play well here if it's a global parameter.
->
->> This would reduce the cost of checking set_cont_read in the hot path if
->> there are no flashes with continuous read. When you do have at least
->> one, you would have to pay it every time. I suppose you can do some sort
->> of double branch where you take the respective static branch if _all_ or
->> _none_ of the flashes have continuous read, and then the heterogeneous
->> setups do the check at runtime. But is spinand_mtd_read() even hot
->> enough to warrant such optimizations?
->
-> I believe using static branches here would have been relevant with a
-> single chip use-case, but I don't think it is worth using if we have
-> more than one flash. It is an almost tepid path, at most, so I'll just
-> check ->set_cont_read presence.
+FWIW, I think that MTD is *not* the place for EEPROMs.
 
-Sounds good.
+Yeah, we have the driver spread over the kernel for EEPROMs (mostly due to
+historical reasons and absence an umbrella subsystem for them), but it's not
+the reason to hack them into something which is not quite suitable.
 
->
->> > +		ret = spinand_mtd_continuous_page_read(mtd, from, ops, &max_bitflips);
->> > +	else
->> > +		ret = spinand_mtd_regular_page_read(mtd, from, ops, &max_bitflips);
->> >  
->> >  	if (ops->stats) {
->> >  		ops->stats->uncorrectable_errors +=
->> > @@ -874,6 +1024,9 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
->> >  	};
->> >  	struct spi_mem_dirmap_desc *desc;
->> >  
->> > +	if (static_branch_unlikely(&cont_read_supported))
->> > +		info.length = nanddev_eraseblock_size(nand);  
->> 
->> Same here. With a heterogeneous setup, you will set length to eraseblock
->> size even for the non-continuous-read flash. Though from a quick look
->> info.length doesn't seem to be used anywhere meaningful.
->
-> It is a parameter for the spi controller driver. It may lead to an
-> error if the size is too big for what the controller is capable of,
-> which is not the case for any of the existing controllers which are
-> all capable of mapping a block at least (source: me reading spi code).
->
-> the info parameter being per-nand it's fine to tune it like that, but I
-> agree the if() conditional is currently wrong in the case of dual
-> devices.
->
->> In general, a static branch looks misused here. This isn't even a hot
->> path where you'd care about performance.
->
-> TBH the read path might be considered hot, but not hot enough to
-> justify too complex optimizations schemes, definitely.
-
-To clarify, I meant this just for the usage in spinand_create_dirmap().
-This function is called exactly once for each device at probe time. So
-optimizations like static branches don't make much sense here.
-
-For spinand_mtd_read() a case can plausibly be made for doing such
-optimizations, though as you mentioned before the path likely isn't that
-hot. If you fancy it, perhaps run some benchmarks to see what read
-performance you get with static branches and without them to get some
-real data.
+If NVMEM needs to be updated and may cover these cases after all (and do not
+forget about *small* size EEPROMs that most likely appear on the devices with
+limited amount of resources!) in a reasonable size and performance, why not?
 
 -- 
-Regards,
-Pratyush Yadav
+With Best Regards,
+Andy Shevchenko
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
