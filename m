@@ -4,64 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C155C531DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Aug 2024 17:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A127C5321E
+	for <linux-mtd@archiver.kernel.org>; Sun, 25 Aug 2024 08:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FMOoTB2/xtwus4z7PhOXCJ0MrSzGM1JAfUP4ObI/JfE=; b=YGEJJZ7Gq6UqgU
-	3n149px1Lqq9zPyjz6lucAoUsbLIBqPpojVDw/owSDe2WmReoPYKlh3iE4Mlr/C0f+qzSdXoeIaG0
-	QuEK4ihceDXh7DLylsp3OhIpv7rkIfQH1+A+P2WZsvExlJBXo3Ci4FS67x2iPMJkf5S3dn4yMv1IY
-	M61T7Rc/DRIb1OVL3E0MumecsPUmUtPEsdvhNOqc1FriJEmxqmXq4uMuQmspI47zdL6QsIbq00GcS
-	nvNeTl42eD1R3uavCQymGcEBBIHPFE/81ST0MIEfVlyyPv4qjMo6v/efvJ+3LSmdfy5cIcoDKVnID
-	P95WJqgByioPARuWN/Kg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HV2g1cLB6ipxSzvRRs0VfbORs9hRtNZAveaoWcXJEUs=; b=wQsXrbzqoGFPnc
+	8PyuXxFcCL1MazavvQoTsK3pRbRBodWgq8/jk2ui0p/l3OBl5Ez+W078PQOc1OxClqtpdI1BZsOwi
+	99dy9KENWyIMWrtaeolMopwp8NApB+uV3zHwQErZ7x8mraSa2CXOvLPX6pe5H96hY8/VFvs9Ud3UU
+	pTTPH4BwqJe0PUkKGPbJBL8zfNI+GSsZxHFLDGhzDaAR8QevD8sJtrpikwY13d1DkpQHe3N5MZiES
+	gPZ5rEEBeY1XFRSVJnVMcY3GVEsQ8zVimkQwPZNwWECZhX3okOjHYbWfWwXVPmVAbExewvNyvfJzF
+	99naAi/Sujj2bPXcuqSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1shYBz-00000000ASD-1LDp;
-	Fri, 23 Aug 2024 17:35:19 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1si8ih-00000003ykV-3fXu;
+	Sun, 25 Aug 2024 08:35:31 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1shYBw-00000000AQ5-2WA4
+	id 1si8ic-00000003yje-1n6k
 	for linux-mtd@lists.infradead.org;
-	Fri, 23 Aug 2024 17:35:18 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E50C040007;
-	Fri, 23 Aug 2024 17:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1724434514;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nak4z/1artOEKYnquWyMtHGZNqWW8VcXZpYkd6Npm4Y=;
-	b=kHcwluRrRyOHi5BCU4EXFlNkHZQSSziNXfIn+cxt1bQ33wbreHG0S3ccwM6ynVHPcmGBIb
-	LYACgRa6Lg6g3wzLHqYXwOGyW4Jcu9FGHuaohDRkGwUgCosLYFg7sgdUDTB+o521XM0kH3
-	FUm93HTuYWOP6dnbzbpF4G2TTXRP+EK5+W8fdIbd+QYc7Zqmql8b+N3mKzBPm5IY5yU8NN
-	sE1RYWdnscyLrR7aEsjZSYOsTRh0NgsHSrOzWBwGRA4YdP5zyOh10bQavX/YUDTkexX0O3
-	7eGdDRjBsn2ROovhPNklGZ+fbJFEcM0diuZ7eLTIWZYPekinrRHAGVvq8G3FQQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Robert Marko <robimarko@gmail.com>,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spinand: winbond: add support for W25N01KV
-Date: Fri, 23 Aug 2024 19:35:13 +0200
-Message-ID: <20240823173513.517469-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240805175125.6658-1-robimarko@gmail.com>
-References: 
+	Sun, 25 Aug 2024 08:35:28 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Ws6Sk3RzCz69JS;
+	Sun, 25 Aug 2024 16:30:30 +0800 (CST)
+Received: from kwepemg500010.china.huawei.com (unknown [7.202.181.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id D3D2818007C;
+	Sun, 25 Aug 2024 16:35:16 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by kwepemg500010.china.huawei.com
+ (7.202.181.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Sun, 25 Aug
+ 2024 16:35:16 +0800
+From: Wang Zhaolong <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] mtd: ubi: remove unused parameter 'pnum' from add_volume()
+Date: Sun, 25 Aug 2024 16:35:15 +0800
+Message-ID: <20240825083515.4074081-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.34.3
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'e2a9fcb36e851adb5b25c4acea53a290fd48a636'
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemg500010.china.huawei.com (7.202.181.71)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240823_103516_799242_CD43FAA8 
-X-CRM114-Status: UNSURE (   5.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240825_013526_749635_A809ADEB 
+X-CRM114-Status: GOOD (  12.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,16 +68,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-08-05 at 17:51:02 UTC, Robert Marko wrote:
-> Add support for Winbond W25N01KV 1Gbit SPI-NAND.
-> 
-> It has 4-bit on-die ECC.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
+The parameter 'pnum' in the function add_volume() is not used inside the
+function body. This patch removes this unused parameter to clean up the
+code and improve readability.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+This change does not affect the functionality of add_volume() or any other
+part of the UBI subsystem, as the removed parameter is not utilized.
 
-Miquel
+Signed-off-by: Wang Zhaolong <wangzhaolong1@huawei.com>
+---
+ drivers/mtd/ubi/attach.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index ae5abe492b52..fe9784c90ea4 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -393,8 +393,7 @@ static int validate_vid_hdr(const struct ubi_device *ubi,
+  * to the allocated "av" object in case of success and a negative error code in
+  * case of failure.
+  */
+-static struct ubi_ainf_volume *add_volume(struct ubi_attach_info *ai,
+-					  int vol_id, int pnum,
++static struct ubi_ainf_volume *add_volume(struct ubi_attach_info *ai, int vol_id,
+ 					  const struct ubi_vid_hdr *vid_hdr)
+ {
+ 	struct ubi_ainf_volume *av;
+@@ -576,7 +575,7 @@ int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
+ 	dbg_bld("PEB %d, LEB %d:%d, EC %d, sqnum %llu, bitflips %d",
+ 		pnum, vol_id, lnum, ec, sqnum, bitflips);
+ 
+-	av = add_volume(ai, vol_id, pnum, vid_hdr);
++	av = add_volume(ai, vol_id, vid_hdr);
+ 	if (IS_ERR(av))
+ 		return PTR_ERR(av);
+ 
+-- 
+2.34.3
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
