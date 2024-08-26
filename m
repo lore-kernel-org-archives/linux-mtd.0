@@ -4,98 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB2DEC5321E
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 07:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B9F2C5321D
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Aug 2024 08:11:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+AYE8Sn6VXt3dw+//RXNvvAtEC4Da1iQJiWWYCrnGSU=; b=BT00fOL3yKj8NO
-	7PdkBzhqo2yv8x6Gpu6ldYwZ2JG3RjXJa/7SvB3anyx0VWkBNzErUAPAF7fse8h5PuGMkeZ00Wf9Y
-	rTmHKSSkXEYtqMPxKHbjrzebUD/+APu8GlNBCsNTqcS+mMu1WtslJH23/FSHG+F582/vDAkRgXj5B
-	Uu6tIpo9vEPQbGg8kyYLF4N/n4M3IODZHXizi1e+8isoJtMDpNagdsg23mLW7AmrDVVlXsuNQMrB7
-	rNZEaMbwt6Jolbd+rLj1pr4oKn/qp6AEvXo4g3ufq+rWetO0WjiE7tZfU0HxYh6KwHX4Q7ddKL303
-	QEj/siwaj12C0qGi2NSw==;
+	List-Owner; bh=tl5ERoRZwLTJ4pbvtEnLC0TaN4VWeSklMyFAJzxn7wQ=; b=Lg2Zoqzcttdqt6
+	rX3Bov4hbogzc94GGDI7ypdv7AT0pD8iikxvu2nSg2APUihNmwJj4knKQy47bz04CqL+FZgzYpOSP
+	NJA4sFWaSNPjJvBDgVm0Q4U9glq0bdOD8x3QuujcAYZ0iqLRXpMSm5FkA3mnNmltaOMsUALooFnWz
+	8uGEIlPL+kml7kvv9XMar41grWO7B8XfJRlyK1jl5sSUi7eXd2N4nyhhgqnNeP9CWHwQWHA9Qz2M2
+	vMI9tQi6medlPqroxRyK7phos5yotG2QJHfhKUORCeVnn6z/DFPrtdQXt4gD3aEO+lxrm4aar3rBd
+	9L/vJdbHUr5pw+EnnE8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siUWx-00000006KjG-3pBq;
-	Mon, 26 Aug 2024 07:52:51 +0000
-Received: from metis.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::104])
+	id 1siUpD-00000006QJT-1Um6;
+	Mon, 26 Aug 2024 08:11:43 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siUWu-00000006KfK-2ZGw
+	id 1siUpA-00000006QIP-44qw
 	for linux-mtd@lists.infradead.org;
-	Mon, 26 Aug 2024 07:52:50 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1siUVR-0006mO-Jk; Mon, 26 Aug 2024 09:51:17 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1siUVK-0038Ph-Cg; Mon, 26 Aug 2024 09:51:10 +0200
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1siUVK-006xmZ-0b;
-	Mon, 26 Aug 2024 09:51:10 +0200
-Date: Mon, 26 Aug 2024 09:51:10 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Russell King <linux@armlinux.org.uk>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>, Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-	imx@lists.linux.dev, linux-omap@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-	openbmc@lists.ozlabs.org, linuxppc-dev@lists.ozlabs.org,
-	linux-mips@vger.kernel.org, loongarch@lists.linux.dev
-Subject: Re: [PATCH 0/9] AT24 EEPROM MTD Support
-Message-ID: <20240826075110.u3cxc6dootou72eq@pengutronix.de>
-References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
- <Zsi3s9XithGEROwX@smile.fi.intel.com>
+	Mon, 26 Aug 2024 08:11:42 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8AE9D4000A;
+	Mon, 26 Aug 2024 08:11:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1724659898;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y/iRKjhXlInk8nm60JRRE3I7S4+qNf65UbzImweU/hM=;
+	b=NNPi6Aevx5xZ/89qX38mGbWVp71kPkd6hYyAQ8LjMLxDeHfDgW/0wA6/K27VDPC9sPUeMy
+	75MshYI7r+2tHJqQtS+2DauRTNc7w3ckyezHKGgw7DITC+BxX/0j54qQcVmfB8XhhvgBgV
+	iCxsm7SS7iuccM1xF5UHyVEdv0qNpRFjAvmu6gVUJDVKTVQnE5g3+81F4Fe0jPTxjytml+
+	FLzYUaDGpVggw9rWc+72hw2wYjs8/7vlgarvV+LQkEG9V/eKMd/S327ejH04G3rzCLxqqw
+	7dFPoCwlP73nytRhSuWZYmyf1co4LhiuNik+MZqs9IkQg4Ayi8+0MgHrVg8mDg==
+Date: Mon, 26 Aug 2024 10:11:36 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chen Ridong <chenridong@huawei.com>
+Cc: <richard@nod.at>, <vigneshr@ti.com>, <chenridong@huaweicloud.com>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2 -next] mtd: rawnand: denali: Fix missing
+ pci_release_regions in probe and remove
+Message-ID: <20240826101136.7849f040@xps-13>
+In-Reply-To: <20240826024339.476921-1-chenridong@huawei.com>
+References: <20240826024339.476921-1-chenridong@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Zsi3s9XithGEROwX@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_005248_680520_230165D2 
-X-CRM114-Status: GOOD (  28.40  )
+X-CRM114-CacheID: sfid-20240826_011141_162319_82355C9D 
+X-CRM114-Status: UNSURE (   8.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,62 +70,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Andy,
-
-On 24-08-23, Andy Shevchenko wrote:
-> On Mon, Jul 01, 2024 at 03:53:39PM +0200, Marco Felsch wrote:
-> > This series adds the intial support to handle EEPROMs via the MTD layer
-> > as well. This allow the user-space to have separate paritions since
-> > EEPROMs can become quite large nowadays.
-> > 
-> > With this patchset applied EEPROMs can be accessed via:
-> >   - legacy 'eeprom' device
-> >   - nvmem device
-> >   - mtd device(s)
-> > 
-> > The patchset targets only the AT24 (I2C) EEPROMs since I have no access
-> > to AT25 (SPI) EEPROMs nor to one of the other misc/eeprom/* devices.
-> > 
-> > Note: I'm not familiar with Kconfig symbol migration so I don't know if
-> > the last patch is required at the moment. Please be notified that the
-> > list of recipients is quite large due to the defconfig changes.
-> 
-> FWIW, I think that MTD is *not* the place for EEPROMs.
-> 
-> Yeah, we have the driver spread over the kernel for EEPROMs (mostly due to
-> historical reasons and absence an umbrella subsystem for them), but it's not
-> the reason to hack them into something which is not quite suitable.
-
-Thank you for you input. There are two things to mention:
- 1st) I send a RFC patch and asked for feedback and all I got was: looks
-      okay, please send a proper patch [1] which I did.
- 2nd) I don't see the hacky part in this patchset.
-
-Anyway the customer doesn't need the nvmem-partitions anymore and
-therefore this patchset can be seen as obsolote.
-
-Regards,
-  Marco
-
-[1] https://lore.kernel.org/lkml/20231201144441.imk7rrjnv2dugo7p@pengutronix.de/T/#m1e0e5778448971b50a883f62bd95622f6422b9a2
-
-> 
-> If NVMEM needs to be updated and may cover these cases after all (and do not
-> forget about *small* size EEPROMs that most likely appear on the devices with
-> limited amount of resources!) in a reasonable size and performance, why not?
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hlbiwKCmNoZW5yaWRvbmdAaHVhd2VpLmNvbSB3cm90ZSBvbiBNb24sIDI2IEF1ZyAyMDI0
+IDAyOjQzOjM5ICswMDAwOgoKPiBUaGUgcGNpX3JlbGVhc2VfcmVnaW9ucyB3YXMgbWlzcyBhdCBl
+cnJvciBjYXNlLCBqdXN0IGFkZCBpdC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaGVuIFJpZG9uZyA8
+Y2hlbnJpZG9uZ0BodWF3ZWkuY29tPgo+IC0tLQoKTmV4dCB0aW1lIHBsZWFzZSBhZGQgYSBjaGFu
+Z2Vsb2cgaGVyZSwgYmVsb3cgdGhlIC0tLS4KCk5vIG5lZWQgdG8gcmVzZW5kIGZvciB0aGlzIHRp
+bWUuCgo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGlfcGNpLmMgfCAxMSArKysrKysrKy0t
+LQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKVGhh
+bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
